@@ -70,7 +70,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(Index to, Index from, complex<dou
 }
 
 void ChebyshevSolver::calculateCoefficientsGPU(vector<Index> &to, Index from, complex<double> *coefficients, int numCoefficients){
-	AmplitudeSet *amplitudeSet = &system->amplitudeSet;
+	AmplitudeSet *amplitudeSet = &model->amplitudeSet;
 
 	int fromBasisIndex = amplitudeSet->getBasisIndex(from);
 /*	int toBasisIndices = new int[to.size()];

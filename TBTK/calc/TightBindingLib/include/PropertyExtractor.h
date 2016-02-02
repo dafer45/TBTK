@@ -1,11 +1,11 @@
 #ifndef COM_DAFER45_BAND_STRUCTURE_PROPERTY_EXTRACTOR
 #define COM_DAFER45_BAND_STRUCTURE_PROPERTY_EXTRACTOR
 
-#include "System.h"
+#include "Model.h"
 
 class PropertyExtractor{
 public:
-	PropertyExtractor(System *system);
+	PropertyExtractor(Model *model);
 	~PropertyExtractor();
 
 	void saveEV(std::string path = "./", std::string filename = "EV.dat");
@@ -36,7 +36,7 @@ private:
 	static void calculateSP_LDOS_ECallback(PropertyExtractor *cb_this, void *sp_ldos_e, const Index &index, int offset);
 	//</Not tested>
 
-	System *system;
+	Model *model;
 	void *hint;
 };
 

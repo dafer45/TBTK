@@ -1,12 +1,12 @@
 #include <iostream>
-#include "../include/System.h"
+#include "../include/Model.h"
 #include <string>
 #include <fstream>
 #include <math.h>
 
 using namespace std;
 
-System::System(int mode, int numEigenstates){
+Model::Model(int mode, int numEigenstates){
 	this->mode = mode;
 	this->numEigenstates = numEigenstates;
 	//Init hamiltonian, eigen_values, and eigen_vectors;
@@ -18,7 +18,7 @@ System::System(int mode, int numEigenstates){
 	scCallback = NULL;
 }
 
-System::~System(){
+Model::~Model(){
 	if(hamiltonian != NULL)
 		delete hamiltonian;
 	if(eigen_values != NULL)
@@ -27,15 +27,15 @@ System::~System(){
 		delete eigen_vectors;
 }
 
-void System::addHA(HoppingAmplitude ha){
+void Model::addHA(HoppingAmplitude ha){
 	amplitudeSet.addHA(ha);
 }
 
-void System::addHAAndHC(HoppingAmplitude ha){
+void Model::addHAAndHC(HoppingAmplitude ha){
 	amplitudeSet.addHAAndHC(ha);
 }
 
-void System::construct(){
+void Model::construct(){
 	cout << "Constructing system\n";
 
 	amplitudeSet.construct();
@@ -52,7 +52,7 @@ void System::construct(){
 	}
 }
 
-void System::update(){
+void Model::update(){
 	int basisSize = getBasisSize();
 
 	for(int n = 0; n < (basisSize*(basisSize+1))/2; n++)
@@ -70,7 +70,7 @@ void System::update(){
 	}
 }
 
-void System::run(){
+void Model::run(){
 	int iterationCounter = 0;
 	construct();
 
@@ -96,15 +96,15 @@ void System::run(){
 	cout << "\n";
 }
 
-/*int System::getBasisIndex(Index index){
+/*int Model::getBasisIndex(Index index){
 	return amplitudeSet.getBasisIndex(index);
 }*/
 
-void System::setSCCallback(bool (*scCallback)(System *system)){
+void Model::setSCCallback(bool (*scCallback)(Model *model)){
 	this->scCallback = scCallback;
 }
 
-void System::print(){
+void Model::print(){
 	amplitudeSet.print();
 
 	if(hamiltonian != NULL){
@@ -147,7 +147,7 @@ extern "C" void zhbev_(char* jobz,		//'E' = Eigenvalues only, 'V' = Eigenvalues 
 						double* rwork,	//Workspace,dimension = max(1, 3*N-2)
 						int* info);		//0 = successful, <0 = -info value was illegal, >0 = info number of offdiagonal elements failed to converge.
 
-void System::solve(){
+void Model::solve(){
 	if(true){//Currently no support for banded matrices.
 		//Setup zhpev to calculate
 		char jobz = 'V';	//...eigenvalues and eigen vectors...

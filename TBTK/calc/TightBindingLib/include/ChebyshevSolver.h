@@ -1,7 +1,7 @@
 #ifndef COM_DAFER45_BAND_STRUCTURE_CHEBYSHEV_SOLVER
 #define COM_DAFER45_BAND_STRUCTURE_CHEBYSHEV_SOLVER
 
-#include "System.h"
+#include "Model.h"
 #include <complex>
 
 class ChebyshevSolver{
@@ -9,7 +9,7 @@ public:
 	ChebyshevSolver();
 	~ChebyshevSolver();
 
-	void setSystem(System *system);
+	void setModel(Model *model);
 
 	void calculateCoefficients(Index to, Index from, std::complex<double> *coefficients, int numCoefficients);
 	void calculateCoefficientsGPU(std::vector<Index> &to, Index from, std::complex<double> *coefficients, int numCoefficients);
@@ -23,7 +23,7 @@ public:
 	void generateGreensFunction(std::complex<double> *greensFunction, std::complex<double> *coefficients);
 	void generateGreensFunctionGPU(std::complex<double> *greensFunction, std::complex<double> *coefficients);
 private:
-	System *system;
+	Model *model;
 	std::complex<double> **generatingFunctionLookupTable;
 	std::complex<double> **generatingFunctionLookupTable_device;
 	int lookupTableNumCoefficients;

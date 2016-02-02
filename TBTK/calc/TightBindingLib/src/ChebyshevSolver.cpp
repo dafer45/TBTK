@@ -22,12 +22,12 @@ ChebyshevSolver::~ChebyshevSolver(){
 	}
 }
 
-void ChebyshevSolver::setSystem(System *system){
-	this->system = system;
+void ChebyshevSolver::setModel(Model *model){
+	this->model = model;
 }
 
 void ChebyshevSolver::calculateCoefficients(Index to, Index from, complex<double> *coefficients, int numCoefficients){
-	AmplitudeSet *amplitudeSet = &system->amplitudeSet;
+	AmplitudeSet *amplitudeSet = &model->amplitudeSet;
 
 	int fromBasisIndex = amplitudeSet->getBasisIndex(from);
 	int toBasisIndex = amplitudeSet->getBasisIndex(to);
@@ -132,7 +132,7 @@ void ChebyshevSolver::calculateCoefficients(Index to, Index from, complex<double
 }
 
 void ChebyshevSolver::calculateCoefficients(Index to, Index from, complex<double> *coefficients, int numCoefficients, double componentCutoff){
-	AmplitudeSet *amplitudeSet = &system->amplitudeSet;
+	AmplitudeSet *amplitudeSet = &model->amplitudeSet;
 
 	int fromBasisIndex = amplitudeSet->getBasisIndex(from);
 	int toBasisIndex = amplitudeSet->getBasisIndex(to);
