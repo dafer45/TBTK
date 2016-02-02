@@ -1,0 +1,28 @@
+#include "../include/AmplitudeSet.h"
+
+using namespace std;
+
+void AmplitudeSet::print(){
+	tree.print();
+}
+
+AmplitudeSet::iterator AmplitudeSet::getIterator(){
+	return AmplitudeSet::iterator(&tree);
+}
+
+AmplitudeSet::iterator::iterator(TreeNode* tree){
+	it = new TreeNode::iterator(tree);
+}
+
+AmplitudeSet::iterator::~iterator(){
+	delete it;
+}
+
+void AmplitudeSet::iterator::searchNextHA(){
+	it->searchNextHA();
+}
+
+HoppingAmplitude* AmplitudeSet::iterator::getHA(){
+	return it->getHA();
+}
+
