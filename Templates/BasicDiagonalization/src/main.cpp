@@ -29,17 +29,12 @@ int main(int argc, char **argv){
 			for(int s = 0; s < 2; s++){
 				//Add hopping ampltudes corresponding to chemical potential
 				model.addHA(HoppingAmplitude({x, y, s},		{x, y, s},	-mu));
-				model.addHA(HoppingAmplitude({x, y, s+2},	{x, y, s+2},	mu));
 
 				//Add hopping parameters corresponding to t
-				if(x+1 < SIZE_X){
+				if(x+1 < SIZE_X)
 					model.addHAAndHC(HoppingAmplitude({x, y, s},	{(x+1)%SIZE_X, y, s},		-t));
-					model.addHAAndHC(HoppingAmplitude({x, y, s+2},	{(x+1)%SIZE_X, y, s+2},		t));
-				}
-				if(y+1 < SIZE_Y){
+				if(y+1 < SIZE_Y)
 					model.addHAAndHC(HoppingAmplitude({x, y, s},	{x, (y+1)%SIZE_Y, s},	-t));
-					model.addHAAndHC(HoppingAmplitude({x, y, s+2},	{x, (y+1)%SIZE_Y, s+2},	t));
-				}
 			}
 		}
 	}
@@ -49,6 +44,7 @@ int main(int argc, char **argv){
 	model.run();
 
 	//Remove any TBResults.h5 file already in the folder
+	FileWriter::setFileName("MyFile.h5");
 	FileWriter::clear();
 
 	//Create property extractor

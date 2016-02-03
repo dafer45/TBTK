@@ -65,7 +65,10 @@ $(PROPERTY_EXTRACTOR_OBJECT): $(PROPERTY_EXTRACTOR_SOURCE)
 
 $(FILE_WRITER_OBJECT): $(FILE_WRITER_SOURCE)
 #	$(CC) $(CFLAGS) -c $(FILE_WRITER_SOURCE) -o $(FILE_WRITER_OBJECT)
-	$(CC) $(CFLAGS) -I../../../hdf5/hdf5-build/hdf5/include -I../../../hdf5/hdf5-1.8.16/include -c $(FILE_WRITER_SOURCE) -o $(FILE_WRITER_OBJECT)
+#	$(CC) $(CFLAGS) -c $(FILE_WRITER_SOURCE) -o $(FILE_WRITER_OBJECT)
+#	$(CC) $(CFLAGS) -I/home/krisb/TBTK/hdf5/hdf5-build/hdf5/include -c $(FILE_WRITER_SOURCE) -o $(FILE_WRITER_OBJECT)
+#	$(CC) $(CFLAGS) -I/home/krisb/TBTK/hdf5/hdf5-build/hdf5/include -I/home/krisb/TBTK/hdf5/hdf5-1.8.16/include -c $(FILE_WRITER_SOURCE) -o $(FILE_WRITER_OBJECT)
+	$(CC) $(CFLAGS) -I$(TBTK_dir)/hdf5/hdf5-build/hdf5/include -I$(TBTK_dir)/hdf5/hdf5-1.8.16/include -c $(FILE_WRITER_SOURCE) -o $(FILE_WRITER_OBJECT)
 
 $(HA_LINKED_LIST_OBJECT): $(HA_LINKED_LIST_SOURCE)
 	$(CC) $(CFLAGS) -c $(HA_LINKED_LIST_SOURCE) -o $(HA_LINKED_LIST_OBJECT)

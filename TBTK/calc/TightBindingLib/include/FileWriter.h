@@ -88,7 +88,6 @@ private:
 
 inline void FileWriter::setFileName(std::string filename){
 	FileWriter::filename = filename;
-	clear();
 }
 
 inline void FileWriter::clear(){
