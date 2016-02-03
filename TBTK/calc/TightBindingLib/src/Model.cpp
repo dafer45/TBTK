@@ -9,22 +9,22 @@ using namespace std;
 Model::Model(int mode, int numEigenstates){
 	this->mode = mode;
 	this->numEigenstates = numEigenstates;
-	//Init hamiltonian, eigen_values, and eigen_vectors;
+/*	//Init hamiltonian, eigen_values, and eigen_vectors;
 	hamiltonian = NULL;
 	eigen_values = NULL;
 	eigen_vectors = NULL;
 
 	maxIterations = 50;
-	scCallback = NULL;
+	scCallback = NULL;*/
 }
 
 Model::~Model(){
-	if(hamiltonian != NULL)
+/*	if(hamiltonian != NULL)
 		delete hamiltonian;
 	if(eigen_values != NULL)
 		delete eigen_values;
 	if(eigen_vectors != NULL)
-		delete eigen_vectors;
+		delete eigen_vectors;*/
 }
 
 void Model::addHA(HoppingAmplitude ha){
@@ -35,7 +35,7 @@ void Model::addHAAndHC(HoppingAmplitude ha){
 	amplitudeSet.addHAAndHC(ha);
 }
 
-void Model::construct(){
+/*void Model::construct(){
 	cout << "Constructing system\n";
 
 	amplitudeSet.construct();
@@ -150,8 +150,8 @@ void Model::solve(){
 		char uplo = 'U';	//...for an upper triangular...
 		int n = getBasisSize();	//...nxn-matrix.
 		//Initialize workspaces
-		complex<double>* work = new complex<double>[(2*n-1)/*sizeof(complex<double>)*/];
-		double* rwork = new double[(3*n-2)/**sizeof(double)*/];
+		complex<double>* work = new complex<double>[(2*n-1)];
+		double* rwork = new double[(3*n-2)];
 		int info;
 		//Solve brop
 		zhpev_(&jobz, &uplo, &n, hamiltonian, eigen_values, eigen_vectors, &n, work, rwork, &info);
@@ -159,7 +159,7 @@ void Model::solve(){
 		//Delete workspaces.
 		delete [] work;
 		delete [] rwork;
-	}
+	}*/
 /*	else{
 		int kd;
 		if(size_z != 1)
@@ -184,5 +184,5 @@ void Model::solve(){
 		delete [] work;
 		delete [] rwork;
 	}*/
-}
+/*}*/
 
