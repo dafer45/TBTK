@@ -5,10 +5,8 @@
 
 #include <iostream>
 #include <complex>
-#include "AmplitudeSet.h"
 #include "Model.h"
 #include "FileWriter.h"
-#include "PropertyExtractor.h"
 #include "DiagonalizationSolver.h"
 
 using namespace std;
@@ -129,8 +127,8 @@ int main(int argc, char **argv){
 
 				//Add hopping parameters corresponding to t
 				if(x+1 < SIZE_X){
-					model.addHAAndHC(HoppingAmplitude({x, y, s},	{(x+1)%SIZE_X, y, s},		-t));
-					model.addHAAndHC(HoppingAmplitude({x, y, s+2},	{(x+1)%SIZE_X, y, s+2},		t));
+					model.addHAAndHC(HoppingAmplitude({x, y, s},	{(x+1)%SIZE_X, y, s},	-t));
+					model.addHAAndHC(HoppingAmplitude({x, y, s+2},	{(x+1)%SIZE_X, y, s+2},	t));
 				}
 				if(y+1 < SIZE_Y){
 					model.addHAAndHC(HoppingAmplitude({x, y, s},	{x, (y+1)%SIZE_Y, s},	-t));
@@ -144,18 +142,14 @@ int main(int argc, char **argv){
 	//Initialize D
 	initD();
 
-	//Construct and run system
-/*	model.construct();
-	model.setMaxIterations(MAX_ITERATIONS);
-	model.setSCCallback(scCallback);
-	model.run();*/
-
+	//Setup and run DiagonalizationSolver
 	DiagonalizationSolver dSolver;
 	dSolver.setModel(&model);
+	dSolver.setMaxIterations(MAX_ITERATIONS);
 	dSolver.setSCCallback(scCallback);
 	dSolver.run();
 
-	//Remove any TBResults.h5 file already in the folder
+	//Set filename and remove any file already in the folder
 	FileWriter::setFileName("MyFile.h5");
 	FileWriter::clear();
 

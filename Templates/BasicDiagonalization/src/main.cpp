@@ -4,7 +4,6 @@
 
 #include <iostream>
 #include <complex>
-#include "AmplitudeSet.h"
 #include "Model.h"
 #include "FileWriter.h"
 #include "PropertyExtractor.h"
@@ -28,7 +27,7 @@ int main(int argc, char **argv){
 	for(int x = 0; x < SIZE_X; x++){
 		for(int y = 0; y < SIZE_Y; y++){
 			for(int s = 0; s < 2; s++){
-				//Add hopping ampltudes corresponding to chemical potential
+				//Add hopping amplitudes corresponding to chemical potential
 				model.addHA(HoppingAmplitude({x, y, s},		{x, y, s},	-mu));
 
 				//Add hopping parameters corresponding to t
@@ -45,11 +44,11 @@ int main(int argc, char **argv){
 	dSolver.setModel(&model);
 	dSolver.run();
 
-	//Remove any TBResults.h5 file already in the folder
+	//Set filename and remove any file already in the folder
 	FileWriter::setFileName("MyFile.h5");
 	FileWriter::clear();
 
-	//Create property extractor
+	//Create PropertyExtractor
 	PropertyExtractor pe(&dSolver);
 
 	//Extract eigenvalues and write these to file
