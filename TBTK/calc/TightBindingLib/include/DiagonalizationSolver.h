@@ -1,5 +1,5 @@
-#ifndef COM_DAFER45_TBTK
-#define COM_DAFER45_TBTK
+#ifndef COM_DAFER45_TBTK_DIAGONALIZATION_SOLVER
+#define COM_DAFER45_TBTK_DIAGONALIZATION_SOLVER
 
 #include "Model.h"
 #include <complex>

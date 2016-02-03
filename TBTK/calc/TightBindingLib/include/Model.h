@@ -1,5 +1,5 @@
-#ifndef COM_DAFER45_BAND_STRUCTURE_SYSTEM
-#define COM_DAFER45_BAND_STRUCTURE_SYSTEM
+#ifndef COM_DAFER45_TBTK_MODEL
+#define COM_DAFER45_TBTK_MODEL
 
 #include <complex>
 #include "AmplitudeSet.h"
