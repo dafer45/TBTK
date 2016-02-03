@@ -5,8 +5,8 @@ using namespace std;
 
 complex<double> i(0,1);
 
-PropertyExtractor::PropertyExtractor(Model *model){
-	this->model = model;
+PropertyExtractor::PropertyExtractor(DiagonalizationSolver *dSolver){
+	this->dSolver = dSolver;
 }
 
 PropertyExtractor::~PropertyExtractor(){
@@ -173,30 +173,30 @@ void PropertyExtractor::saveEV(string path, string filename){
 	ss << filename;
 	ofstream fout;
 	fout.open(ss.str().c_str());
-	for(int n = 0; n < model->getBasisSize(); n++){
-		fout << model->getEigenValues()[n] << "\n";
+	for(int n = 0; n < dSolver->getModel()->getBasisSize(); n++){
+		fout << dSolver->getEigenValues()[n] << "\n";
 	}
 	fout.close();
 }
 
 void PropertyExtractor::getTabulatedAmplitudeSet(int **table, int *dims){
-	model->amplitudeSet.tabulate(table, dims);
+	dSolver->getModel()->amplitudeSet.tabulate(table, dims);
 }
 
 double* PropertyExtractor::getEV(){
-	double *ev = new double[model->getBasisSize()];
-	for(int n = 0; n < model->getBasisSize(); n++)
-		ev[n] = model->getEigenValues()[n];
+	double *ev = new double[dSolver->getModel()->getBasisSize()];
+	for(int n = 0; n < dSolver->getModel()->getBasisSize(); n++)
+		ev[n] = dSolver->getEigenValues()[n];
 	return ev;
 }
 
 double* PropertyExtractor::calculateDOS(double u_lim, double l_lim, int resolution){
-	const double *ev = model->getEigenValues();
+	const double *ev = dSolver->getEigenValues();
 
 	double *dos = new double[resolution];
 	for(int n = 0; n < resolution; n++)
 		dos[n] = 0.;
-	for(int n = 0; n < model->getBasisSize(); n++){
+	for(int n = 0; n < dSolver->getModel()->getBasisSize(); n++){
 		int e = (int)(((ev[n] - l_lim)/(u_lim - l_lim))*resolution);
 		if(e >= 0 && e < resolution){
 			dos[e] += 1.;
@@ -316,27 +316,27 @@ double* PropertyExtractor::calculateSP_LDOS_E(Index pattern, Index ranges, doubl
 void PropertyExtractor::calculateLDOSCallback(PropertyExtractor *cb_this, void* ldos, const Index &index, int offset){
 	if(index.indices.back() > 1)
 		return;
-	const double *eigen_values = cb_this->model->getEigenValues();
-	for(int n = 0; n < cb_this->model->getBasisSize(); n++){
+	const double *eigen_values = cb_this->dSolver->getEigenValues();
+	for(int n = 0; n < cb_this->dSolver->getModel()->getBasisSize(); n++){
 		if(eigen_values[n] < 0){
-			complex<double> u = cb_this->model->getAmplitude(n, index);
+			complex<double> u = cb_this->dSolver->getAmplitude(n, index);
 			((double*)ldos)[offset] += pow(abs(u), 2);
 		}
 	}
 }
 
 void PropertyExtractor::calculateMAGCallback(PropertyExtractor *cb_this, void *mag, const Index &index, int offset){
-	const double *eigen_values = cb_this->model->getEigenValues();
+	const double *eigen_values = cb_this->dSolver->getEigenValues();
 
 	int spin_index = ((int*)cb_this->hint)[0];
 	Index index_u(index);
 	Index index_d(index);
 	index_u.indices.at(spin_index) = 0;
 	index_d.indices.at(spin_index) = 1;
-	for(int n = 0; n < cb_this->model->getBasisSize(); n++){
+	for(int n = 0; n < cb_this->dSolver->getModel()->getBasisSize(); n++){
 		if(eigen_values[n] < 0){
-			complex<double> u_u = cb_this->model->getAmplitude(n, index_u);
-			complex<double> u_d = cb_this->model->getAmplitude(n, index_d);
+			complex<double> u_u = cb_this->dSolver->getAmplitude(n, index_u);
+			complex<double> u_d = cb_this->dSolver->getAmplitude(n, index_d);
 
 			((double*)mag)[3*offset + 0] += real(conj(u_u)*u_d + conj(u_d)*u_u);
 			((double*)mag)[3*offset + 1] += imag(-conj(u_u)*u_d + conj(u_d)*u_u);
@@ -346,7 +346,7 @@ void PropertyExtractor::calculateMAGCallback(PropertyExtractor *cb_this, void *m
 }
 
 void PropertyExtractor::calculateSP_LDOS_ECallback(PropertyExtractor *cb_this, void *sp_ldos_e, const Index &index, int offset){
-	const double *eigen_values = cb_this->model->getEigenValues();
+	const double *eigen_values = cb_this->dSolver->getEigenValues();
 
 	double u_lim = ((double**)cb_this->hint)[0][0];
 	double l_lim = ((double**)cb_this->hint)[0][1];
@@ -359,10 +359,10 @@ void PropertyExtractor::calculateSP_LDOS_ECallback(PropertyExtractor *cb_this, v
 	Index index_d(index);
 	index_u.indices.at(spin_index) = 0;
 	index_d.indices.at(spin_index) = 1;
-	for(int n = 0; n < cb_this->model->getBasisSize(); n++){
+	for(int n = 0; n < cb_this->dSolver->getModel()->getBasisSize(); n++){
 		if(eigen_values[n] > l_lim && eigen_values[n] < u_lim){
-			complex<double> u_u = cb_this->model->getAmplitude(n, index_u);
-			complex<double> u_d = cb_this->model->getAmplitude(n, index_d);
+			complex<double> u_u = cb_this->dSolver->getAmplitude(n, index_u);
+			complex<double> u_d = cb_this->dSolver->getAmplitude(n, index_d);
 
 			int e = (int)((eigen_values[n] - l_lim)/step_size);
 			if(e >= resolution)

@@ -1,11 +1,11 @@
 #ifndef COM_DAFER45_BAND_STRUCTURE_PROPERTY_EXTRACTOR
 #define COM_DAFER45_BAND_STRUCTURE_PROPERTY_EXTRACTOR
 
-#include "Model.h"
+#include "DiagonalizationSolver.h"
 
 class PropertyExtractor{
 public:
-	PropertyExtractor(Model *model);
+	PropertyExtractor(DiagonalizationSolver *dSolver);
 	~PropertyExtractor();
 
 	void saveEV(std::string path = "./", std::string filename = "EV.dat");
@@ -36,7 +36,7 @@ private:
 	static void calculateSP_LDOS_ECallback(PropertyExtractor *cb_this, void *sp_ldos_e, const Index &index, int offset);
 	//</Not tested>
 
-	Model *model;
+	DiagonalizationSolver *dSolver;
 	void *hint;
 };
 

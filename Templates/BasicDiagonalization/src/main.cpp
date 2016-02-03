@@ -8,6 +8,7 @@
 #include "Model.h"
 #include "FileWriter.h"
 #include "PropertyExtractor.h"
+#include "DiagonalizationSolver.h"
 
 using namespace std;
 
@@ -39,16 +40,17 @@ int main(int argc, char **argv){
 		}
 	}
 
-	//Construct and run system
-	model.construct();
-	model.run();
+	//Setup and run DiagonalizationSolver
+	DiagonalizationSolver dSolver;
+	dSolver.setModel(&model);
+	dSolver.run();
 
 	//Remove any TBResults.h5 file already in the folder
 	FileWriter::setFileName("MyFile.h5");
 	FileWriter::clear();
 
 	//Create property extractor
-	PropertyExtractor pe(&model);
+	PropertyExtractor pe(&dSolver);
 
 	//Extract eigenvalues and write these to file
 	double *ev = pe.getEV();

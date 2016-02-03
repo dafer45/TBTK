@@ -9,14 +9,15 @@
 #include "Model.h"
 #include "FileWriter.h"
 #include "PropertyExtractor.h"
+#include "DiagonalizationSolver.h"
 
 using namespace std;
 
 const complex<double> i(0, 1);
 
 //Lattice size
-const int SIZE_X = 4;
-const int SIZE_Y = 4;
+const int SIZE_X = 10;
+const int SIZE_Y = 10;
 
 //Order parameter. The two buffers are alternatively swaped by setting dCounter
 // = 0 or 1. One buffer contains the order parameter used in the previous
@@ -33,7 +34,7 @@ const complex<double> D_INITIAL_GUESS = 0.3;
 
 //Self-consistent callback that is to be called each time a diagonalization has
 //finished. Calculates the order parameter from the current solution.
-bool scCallback(Model *model){
+bool scCallback(DiagonalizationSolver *dSolver){
 	//Clear the order parameter
 	for(int x = 0; x < SIZE_X; x++){
 		for(int y = 0; y < SIZE_Y; y++){
@@ -44,10 +45,10 @@ bool scCallback(Model *model){
 	//Calculate D(x, y) = <c_{x, y, \downarrow}c_{x, y, \uparrow}> = \sum_{E_n<E_F} conj(v_d^{(n)})*u_u^{(n)}
 	for(int x = 0; x < SIZE_X; x++){
 		for(int y = 0; y < SIZE_Y; y++){
-			for(int n = 0; n < model->getBasisSize()/2; n++){
+			for(int n = 0; n < dSolver->getModel()->getBasisSize()/2; n++){
 				//Obtain amplitudes at site (x,y) for electron_up and hole_down components
-				complex<double> u_u = model->getAmplitude(n, {x, y, 0});
-				complex<double> v_d = model->getAmplitude(n, {x, y, 3});
+				complex<double> u_u = dSolver->getAmplitude(n, {x, y, 0});
+				complex<double> v_d = dSolver->getAmplitude(n, {x, y, 3});
 
 				D[(dCounter+1)%2][x][y] -= V_sc*conj(v_d)*u_u;
 			}
@@ -144,10 +145,15 @@ int main(int argc, char **argv){
 	initD();
 
 	//Construct and run system
-	model.construct();
+/*	model.construct();
 	model.setMaxIterations(MAX_ITERATIONS);
 	model.setSCCallback(scCallback);
-	model.run();
+	model.run();*/
+
+	DiagonalizationSolver dSolver;
+	dSolver.setModel(&model);
+	dSolver.setSCCallback(scCallback);
+	dSolver.run();
 
 	//Remove any TBResults.h5 file already in the folder
 	FileWriter::setFileName("MyFile.h5");
