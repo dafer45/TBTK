@@ -41,12 +41,6 @@ public:
 	AmplitudeSet amplitudeSet;
 
 	void saveEV(std::string path = "./", std::string filename = "EV.dat");
-/*	void saveDOS(Index pattern, Index range, std::string path = "./", std::string filename = "DOS.dat");
-	void saveDOS2D(Index pattern, Index range, std::string path = "./", std::string filename = "DOS.dat");
-	void saveCustom(void (*callback)(System *system, double *memory, Index index, int offset),
-			Index pattern, Index range, std::string path = "./", std::string filename = "custom.dat");
-	void saveCustom2D(void (*callback)(System *system, double *memory, Index index, int offset),
-			Index pattern, Index range, std::string path = "./", std::string filename = "custom.dat");*/
 private:
 	int mode;
 	int numEigenstates;
@@ -57,17 +51,6 @@ private:
 
 	int maxIterations;
 	bool (*scCallback)(Model *model);
-
-/*	void calculateDOS(double *dos, Index pattern, Index limits, int currentOffset, int offsetMultiplier);
-	void printDOS(std::ofstream &fout, Index pattern, Index limits);*/
-
-/*	void calculate(void (*callback)(System *system, double *memory, Index index, int offset),
-			double *dos, Index pattern, Index limits, int currentOffset, int offsetMultiplier);
-	void save(void (*callback)(System *system, double *memory, Index index, int offset),
-			Index pattern, Index range, std::string path, std::string filename);
-	void save2D(void (*callback)(System *system, double *memory, Index index, int offset),
-			Index pattern, Index range, std::string path, std::string filename);
-	static void calculateDOSCallback(System *system, double* dos, Index index, int offset);*/
 };
 
 inline int Model::getBasisSize(){

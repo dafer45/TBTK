@@ -96,10 +96,6 @@ void Model::run(){
 	cout << "\n";
 }
 
-/*int Model::getBasisIndex(Index index){
-	return amplitudeSet.getBasisIndex(index);
-}*/
-
 void Model::setSCCallback(bool (*scCallback)(Model *model)){
 	this->scCallback = scCallback;
 }
