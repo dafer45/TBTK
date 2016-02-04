@@ -32,7 +32,7 @@ int main(int argc, char **argv){
 
 				//Add hopping parameters corresponding to t
 				if(x+1 < SIZE_X)
-					model.addHAAndHC(HoppingAmplitude({x, y, s},	{(x+1)%SIZE_X, y, s},		-t));
+					model.addHAAndHC(HoppingAmplitude({x, y, s},	{(x+1)%SIZE_X, y, s},	-t));
 				if(y+1 < SIZE_Y)
 					model.addHAAndHC(HoppingAmplitude({x, y, s},	{x, (y+1)%SIZE_Y, s},	-t));
 			}
@@ -45,7 +45,7 @@ int main(int argc, char **argv){
 	dSolver.run();
 
 	//Set filename and remove any file already in the folder
-	FileWriter::setFileName("MyFile.h5");
+	FileWriter::setFileName("TBTKResults.h5");
 	FileWriter::clear();
 
 	//Create PropertyExtractor

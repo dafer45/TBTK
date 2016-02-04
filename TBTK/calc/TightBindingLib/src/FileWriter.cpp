@@ -13,7 +13,7 @@
 using namespace std;
 
 bool FileWriter::isInitialized = false;
-string FileWriter::filename = "TBResults.h5";
+string FileWriter::filename = "TBTKResults.h5";
 
 void FileWriter::init(){
 	if(isInitialized)

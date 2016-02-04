@@ -150,7 +150,7 @@ int main(int argc, char **argv){
 	dSolver.run();
 
 	//Set filename and remove any file already in the folder
-	FileWriter::setFileName("MyFile.h5");
+	FileWriter::setFileName("TBTKResults.h5");
 	FileWriter::clear();
 
 	//Calculate abs(D) and arg(D)
