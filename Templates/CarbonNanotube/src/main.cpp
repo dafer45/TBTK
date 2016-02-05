@@ -1,6 +1,6 @@
 /* Basic example of diagonalization of a 2D tight-binding model with t = 1 and
- * mu = 0. Hexagonal lattice with edges, four sites per unit cell, and 10x10
- * unit cells.
+ * mu = -1. Carbon nanotube with 4*SIZE_X=8 atoms circumference, and SIZE_Y=20
+ * atoms long.
  */
 
 #include <iostream>
@@ -16,11 +16,11 @@ const complex<double> i(0, 1);
 
 int main(int argc, char **argv){
 	//Lattice size
-	const int SIZE_X = 10;
-	const int SIZE_Y = 10;
+	const int SIZE_X = 2;
+	const int SIZE_Y = 20;
 
 	//Parameters
-	complex<double> mu = 0.0;
+	complex<double> mu = -1.0;
 	complex<double> t = 1.0;
 
 	//Create model and set up hopping parameters
@@ -38,8 +38,7 @@ int main(int argc, char **argv){
 				model.addHAAndHC(HoppingAmplitude({x, y, 0, s},	{x, y, 1, s},	-t));
 				model.addHAAndHC(HoppingAmplitude({x, y, 1, s},	{x, y, 2, s},	-t));
 				model.addHAAndHC(HoppingAmplitude({x, y, 2, s},	{x, y, 3, s},	-t));
-				if(x+1 < SIZE_X)
-					model.addHAAndHC(HoppingAmplitude({x, y, 3, s},	{(x+1)%SIZE_X, y, 0, s},	-t));
+				model.addHAAndHC(HoppingAmplitude({x, y, 3, s},	{(x+1)%SIZE_X, y, 0, s},	-t));
 				if(y+1 < SIZE_Y){
 					model.addHAAndHC(HoppingAmplitude({x, y, 1, s},	{x, (y+1)%SIZE_Y, 0, s},	-t));
 					model.addHAAndHC(HoppingAmplitude({x, y, 2, s},	{x, (y+1)%SIZE_Y, 3, s},	-t));
