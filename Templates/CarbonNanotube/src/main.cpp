@@ -1,5 +1,5 @@
 /* Basic example of diagonalization of a 2D tight-binding model with t = 1 and
- * mu = -1. Carbon nanotube with 4*SIZE_X=8 atoms circumference, and SIZE_Y=20
+ * mu = 0. Carbon nanotube with 4*SIZE_X=8 atoms circumference, and SIZE_Y=20
  * atoms long.
  */
 
@@ -20,7 +20,7 @@ int main(int argc, char **argv){
 	const int SIZE_Y = 20;
 
 	//Parameters
-	complex<double> mu = -1.0;
+	complex<double> mu = 0;
 	complex<double> t = 1.0;
 
 	//Create model and set up hopping parameters
