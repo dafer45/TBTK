@@ -206,23 +206,23 @@ double* PropertyExtractor::calculateDOS(double u_lim, double l_lim, int resoluti
 	return dos;
 }
 
-double* PropertyExtractor::calculateLDOS(Index pattern, Index ranges){
+double* PropertyExtractor::calculateDensity(Index pattern, Index ranges){
 	for(unsigned int n = 0; n < pattern.indices.size(); n++){
 		if(pattern.indices.at(n) >= 0)
 			ranges.indices.at(n) = 1;
 	}
 
-	int ldosArraySize = 1;
+	int densityArraySize = 1;
 	for(unsigned int n = 0; n < ranges.indices.size(); n++){
 		if(pattern.indices.at(n) < IDX_SUM_ALL)
-			ldosArraySize *= ranges.indices.at(n);
+			densityArraySize *= ranges.indices.at(n);
 	}
-	double *ldos = new double[ldosArraySize];
-	for(int n = 0; n < ldosArraySize; n++)
-		ldos[n] = 0.;
-	calculate(calculateLDOSCallback, (void*)ldos, pattern, ranges, 0, 1);
+	double *density = new double[densityArraySize];
+	for(int n = 0; n < densityArraySize; n++)
+		density[n] = 0.;
+	calculate(calculateDensityCallback, (void*)density, pattern, ranges, 0, 1);
 
-	return ldos;
+	return density;
 }
 
 double* PropertyExtractor::calculateMAG(Index pattern, Index ranges){
@@ -261,7 +261,7 @@ double* PropertyExtractor::calculateMAG(Index pattern, Index ranges){
 	return mag;
 }
 
-double* PropertyExtractor::calculateSP_LDOS_E(Index pattern, Index ranges, double u_lim, double l_lim, int resolution){
+double* PropertyExtractor::calculateSP_LDOS(Index pattern, Index ranges, double u_lim, double l_lim, int resolution){
 	//hint[0] is an array of doubles, hint[1] is an array of ints
 	//hint[0][0]: u_lim
 	//hint[0][1]: l_lim
@@ -296,31 +296,31 @@ double* PropertyExtractor::calculateSP_LDOS_E(Index pattern, Index ranges, doubl
 			ranges.indices.at(n) = 1;
 	}
 
-	int sp_ldos_eArraySize = 1;
+	int sp_ldosArraySize = 1;
 	for(unsigned int n = 0; n < ranges.indices.size(); n++){
 		if(pattern.indices.at(n) < IDX_SUM_ALL)
-			sp_ldos_eArraySize *= ranges.indices.at(n);
+			sp_ldosArraySize *= ranges.indices.at(n);
 	}
-	double *sp_ldos_e = new double[6*resolution*sp_ldos_eArraySize];
-	for(int n = 0; n < 6*resolution*sp_ldos_eArraySize; n++)
-		sp_ldos_e[n] = 0;
-	calculate(calculateSP_LDOS_ECallback, (void*)sp_ldos_e, pattern, ranges, 0, 1);
+	double *sp_ldos = new double[6*resolution*sp_ldosArraySize];
+	for(int n = 0; n < 6*resolution*sp_ldosArraySize; n++)
+		sp_ldos[n] = 0;
+	calculate(calculateSP_LDOSCallback, (void*)sp_ldos, pattern, ranges, 0, 1);
 
 	delete [] ((double**)hint)[0];
 	delete [] ((int**)hint)[1];
 	delete [] (void**)hint;
 
-	return sp_ldos_e;
+	return sp_ldos;
 }
 
-void PropertyExtractor::calculateLDOSCallback(PropertyExtractor *cb_this, void* ldos, const Index &index, int offset){
+void PropertyExtractor::calculateDensityCallback(PropertyExtractor *cb_this, void* density, const Index &index, int offset){
 	if(index.indices.back() > 1)
 		return;
 	const double *eigen_values = cb_this->dSolver->getEigenValues();
 	for(int n = 0; n < cb_this->dSolver->getModel()->getBasisSize(); n++){
 		if(eigen_values[n] < 0){
 			complex<double> u = cb_this->dSolver->getAmplitude(n, index);
-			((double*)ldos)[offset] += pow(abs(u), 2);
+			((double*)density)[offset] += pow(abs(u), 2);
 		}
 	}
 }
@@ -345,7 +345,7 @@ void PropertyExtractor::calculateMAGCallback(PropertyExtractor *cb_this, void *m
 	}
 }
 
-void PropertyExtractor::calculateSP_LDOS_ECallback(PropertyExtractor *cb_this, void *sp_ldos_e, const Index &index, int offset){
+void PropertyExtractor::calculateSP_LDOSCallback(PropertyExtractor *cb_this, void *sp_ldos, const Index &index, int offset){
 	const double *eigen_values = cb_this->dSolver->getEigenValues();
 
 	double u_lim = ((double**)cb_this->hint)[0][0];
@@ -367,12 +367,12 @@ void PropertyExtractor::calculateSP_LDOS_ECallback(PropertyExtractor *cb_this, v
 			int e = (int)((eigen_values[n] - l_lim)/step_size);
 			if(e >= resolution)
 				e = resolution-1;
-			((double*)sp_ldos_e)[6*resolution*offset + 6*e + 0] += abs(u_u+u_d)*abs(u_u+u_d)/2.;
-			((double*)sp_ldos_e)[6*resolution*offset + 6*e + 1] += abs(u_u-u_d)*abs(u_u-u_d)/2.;
-			((double*)sp_ldos_e)[6*resolution*offset + 6*e + 2] += abs(u_u-i*u_d)*abs(u_u-i*u_d)/2.;
-			((double*)sp_ldos_e)[6*resolution*offset + 6*e + 3] += abs(u_u+i*u_d)*abs(u_u+i*u_d)/2.;
-			((double*)sp_ldos_e)[6*resolution*offset + 6*e + 4] += real(conj(u_u)*u_u);
-			((double*)sp_ldos_e)[6*resolution*offset + 6*e + 5] += real(conj(u_d)*u_d);
+			((double*)sp_ldos)[6*resolution*offset + 6*e + 0] += abs(u_u+u_d)*abs(u_u+u_d)/2.;
+			((double*)sp_ldos)[6*resolution*offset + 6*e + 1] += abs(u_u-u_d)*abs(u_u-u_d)/2.;
+			((double*)sp_ldos)[6*resolution*offset + 6*e + 2] += abs(u_u-i*u_d)*abs(u_u-i*u_d)/2.;
+			((double*)sp_ldos)[6*resolution*offset + 6*e + 3] += abs(u_u+i*u_d)*abs(u_u+i*u_d)/2.;
+			((double*)sp_ldos)[6*resolution*offset + 6*e + 4] += real(conj(u_u)*u_u);
+			((double*)sp_ldos)[6*resolution*offset + 6*e + 5] += real(conj(u_d)*u_d);
 		}
 	}
 }

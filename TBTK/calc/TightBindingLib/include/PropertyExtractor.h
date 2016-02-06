@@ -14,10 +14,10 @@ public:
 
 	double* getEV();
 	double* calculateDOS(double u_lim, double l_lim, int resolution);
-	double* calculateLDOS(Index pattern, Index ranges);
+	double* calculateDensity(Index pattern, Index ranges);
 	double* calculateMAG(Index pattern, Index ranges);
 	//<Not tested>
-	double* calculateSP_LDOS_E(Index pattern, Index ranges, double u_lim, double l_lim, int resolution);
+	double* calculateSP_LDOS(Index pattern, Index ranges, double u_lim, double l_lim, int resolution);
 	//</Not tested>
 
 	void save(int *memory, int size, int columns, std::string filename, std::string path = "./");
@@ -30,10 +30,10 @@ private:
 	void calculate(void (*callback)(PropertyExtractor *cb_this, void *memory, const Index &index, int offset),
 			void *memory, Index pattern, const Index &ranges, int currentOffset, int offsetMultiplier);
 
-	static void calculateLDOSCallback(PropertyExtractor *cb_this, void *ldos, const Index &index, int offset);
+	static void calculateDensityCallback(PropertyExtractor *cb_this, void *density, const Index &index, int offset);
 	static void calculateMAGCallback(PropertyExtractor *cb_this, void *mag, const Index &index, int offset);
 	//<Not tested>
-	static void calculateSP_LDOS_ECallback(PropertyExtractor *cb_this, void *sp_ldos_e, const Index &index, int offset);
+	static void calculateSP_LDOSCallback(PropertyExtractor *cb_this, void *sp_ldos, const Index &index, int offset);
 	//</Not tested>
 
 	DiagonalizationSolver *dSolver;
