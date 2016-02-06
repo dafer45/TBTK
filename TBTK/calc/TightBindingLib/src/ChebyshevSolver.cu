@@ -223,6 +223,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(vector<Index> &to, Index from, co
 		hoppingAmplitudes[n] *= 2.;
 	cudaMemcpy(hoppingAmplitudes_device, hoppingAmplitudes, maxHoppingAmplitudes*amplitudeSet->getBasisSize()*sizeof(complex<double>), cudaMemcpyHostToDevice);
 
+	cout << "10\n";
 	//Iteratively calculate |jn> and corresponding Chebyshev coefficients.
 	for(int n = 2; n < numCoefficients; n++){
 		subtractVector <<< num_blocks, block_size >>> ((cuDoubleComplex*)jIn2_device,

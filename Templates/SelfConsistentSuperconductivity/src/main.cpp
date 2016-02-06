@@ -139,6 +139,9 @@ int main(int argc, char **argv){
 		}
 	}
 
+	//Construct model
+	model.construct();
+
 	//Initialize D
 	initD();
 

@@ -24,10 +24,11 @@ public:
 	int getBasisIndex(Index index);
 	int getBasisSize();
 
+	void construct();
+
 /*	void setSCCallback(bool (*scCallback)(Model *model));
 	void setMaxIterations(int maxIterations);
 
-	void construct();
 	void update();
 	void solve();
 

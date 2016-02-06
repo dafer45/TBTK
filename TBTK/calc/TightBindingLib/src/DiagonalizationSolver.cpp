@@ -50,7 +50,7 @@ void DiagonalizationSolver::run(){
 void DiagonalizationSolver::init(){
 	cout << "Initializing DiagonalizationSolver\n";
 
-	model->amplitudeSet.construct();
+//	model->amplitudeSet.construct();
 
 	int basisSize = model->getBasisSize();
 	cout << "\tBasis size: " << basisSize << "\n";

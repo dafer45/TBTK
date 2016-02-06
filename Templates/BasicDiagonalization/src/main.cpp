@@ -39,6 +39,9 @@ int main(int argc, char **argv){
 		}
 	}
 
+	//Construct model
+	model.construct();
+
 	//Setup and run DiagonalizationSolver
 	DiagonalizationSolver dSolver;
 	dSolver.setModel(&model);

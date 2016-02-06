@@ -44,8 +44,9 @@ int main(int argc, char **argv){
 			}
 		}
 	}
+
 	//Construct model
-	model.amplitudeSet.construct();
+	model.construct();
 
 	//Set filename and remove any file already in the folder
 	FileWriter::setFileName("TBTKResults.h5");

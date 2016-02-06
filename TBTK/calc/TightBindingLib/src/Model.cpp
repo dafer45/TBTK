@@ -35,7 +35,7 @@ void Model::addHAAndHC(HoppingAmplitude ha){
 	amplitudeSet.addHAAndHC(ha);
 }
 
-/*void Model::construct(){
+void Model::construct(){
 	cout << "Constructing system\n";
 
 	amplitudeSet.construct();
@@ -43,16 +43,16 @@ void Model::addHAAndHC(HoppingAmplitude ha){
 	int basisSize = getBasisSize();
 	cout << "\tBasis size: " << basisSize << "\n";
 
-	if(mode == MODE_ALL_EIGENVECTORS){
+/*	if(mode == MODE_ALL_EIGENVECTORS){
 		hamiltonian = new complex<double>[(basisSize*(basisSize+1))/2];
 		eigen_values = new double[basisSize];
 		eigen_vectors = new complex<double>[basisSize*basisSize];
 
 		update();
-	}
+	}*/
 }
 
-void Model::update(){
+/*void Model::update(){
 	int basisSize = getBasisSize();
 
 	for(int n = 0; n < (basisSize*(basisSize+1))/2; n++)
