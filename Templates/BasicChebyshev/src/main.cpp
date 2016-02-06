@@ -9,7 +9,6 @@
 #include <complex>
 #include "Model.h"
 #include "FileWriter.h"
-#include "PropertyExtractor.h"
 #include "ChebyshevSolver.h"
 
 using namespace std;
@@ -63,7 +62,7 @@ int main(int argc, char **argv){
 
 	//Calculate and save LDOS on site (x, SIZE_Y/2) for x \in [0, SIZE_Y-1]
 	for(int x = 0; x < SIZE_X; x++){
-		//Calculate chebyshev coefficients for
+		//Calculate Chebyshev coefficients for
 		//G_{\uparrow\uparrow}(x,SIZE_Y/2) and
 		//G_{\downarrow\downarrow}(x, SIZE_Y/2). Remove GPU from
 		//function name to run on cpu instead.
