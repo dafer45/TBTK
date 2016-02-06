@@ -9,4 +9,4 @@ bash install.sh
 ####################
 # Initialize session
 ####################
-source init.sh
+source init_session.sh
