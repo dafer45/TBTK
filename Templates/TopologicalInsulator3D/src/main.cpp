@@ -21,9 +21,9 @@ const complex<double> i(0, 1);
 
 int main(int argc, char **argv){
 	//Parameters
-	const int SIZE_X = 10;
-	const int SIZE_Y = 10;
-	const int SIZE_Z = 10;
+	const int SIZE_X = 100;
+	const int SIZE_Y = 100;
+	const int SIZE_Z = 100;
 	const double SCALE_FACTOR = 15.;
 
 	complex<double> mu = -1.0/SCALE_FACTOR;
