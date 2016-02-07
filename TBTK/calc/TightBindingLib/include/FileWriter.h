@@ -1,7 +1,6 @@
 #ifndef COM_DAFER45_TBTK_FILE_WRITER
 #define COM_DAFER45_TBTK_FILE_WRITER
 
-#include "FileIO.h"
 #include "AmplitudeSet.h"
 #include <fstream>
 #include <stdio.h>
