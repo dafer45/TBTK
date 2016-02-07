@@ -169,12 +169,12 @@ void FileWriter::writeDOS(double *dos, double u_lim, double l_lim, int resolutio
 	}
 }
 
-void FileWriter::writeLDOS(double *ldos, int rank, int *dims, string name, string path){
+void FileWriter::writeDensity(double *density, int rank, int *dims, string name, string path){
 	init();
 
-	hsize_t ldos_dims[rank];
+	hsize_t density_dims[rank];
 	for(int n = 0; n < rank; n++)
-		ldos_dims[n] = dims[n];
+		density_dims[n] = dims[n];
 
 	try{
 		stringstream ss;
@@ -186,9 +186,9 @@ void FileWriter::writeLDOS(double *ldos, int rank, int *dims, string name, strin
 		Exception::dontPrint();
 		H5File file(filename, H5F_ACC_RDWR);
 
-		DataSpace dataspace = DataSpace(rank, ldos_dims);
+		DataSpace dataspace = DataSpace(rank, density_dims);
 		DataSet dataset = DataSet(file.createDataSet(name, PredType::IEEE_F64BE, dataspace));
-		dataset.write(ldos, PredType::NATIVE_DOUBLE);
+		dataset.write(density, PredType::NATIVE_DOUBLE);
 		dataspace.close();
 		dataset.close();
 		file.close();
@@ -247,15 +247,15 @@ void FileWriter::writeMAG(double *mag, int rank, int *dims, string name, string 
 	}
 }
 
-void FileWriter::writeSP_LDOS_E(double *sp_ldos_e, int rank, int *dims, double u_lim, double l_lim, int resolution, string name, string path){
+void FileWriter::writeSP_LDOS(double *sp_ldos, int rank, int *dims, double u_lim, double l_lim, int resolution, string name, string path){
 	init();
 
 	const int NUM_SPIN_COMPONENTS = 6;
-	hsize_t sp_ldos_e_dims[rank+2];//Two last dimensions are for energy and spin components
+	hsize_t sp_ldos_dims[rank+2];//Two last dimensions are for energy and spin components
 	for(int n = 0; n < rank; n++)
-		sp_ldos_e_dims[n] = dims[n];
-	sp_ldos_e_dims[rank] = resolution;
-	sp_ldos_e_dims[rank+1] = NUM_SPIN_COMPONENTS;
+		sp_ldos_dims[n] = dims[n];
+	sp_ldos_dims[rank] = resolution;
+	sp_ldos_dims[rank+1] = NUM_SPIN_COMPONENTS;
 
 	double limits[2];
 	limits[0] = u_lim;
@@ -274,9 +274,9 @@ void FileWriter::writeSP_LDOS_E(double *sp_ldos_e, int rank, int *dims, double u
 		Exception::dontPrint();
 		H5File file(filename, H5F_ACC_RDWR);
 
-		DataSpace dataspace = DataSpace(rank+2, sp_ldos_e_dims);
+		DataSpace dataspace = DataSpace(rank+2, sp_ldos_dims);
 		DataSet dataset = DataSet(file.createDataSet(name, PredType::IEEE_F64BE, dataspace));
-		dataset.write(sp_ldos_e, PredType::NATIVE_DOUBLE);
+		dataset.write(sp_ldos, PredType::NATIVE_DOUBLE);
 		dataspace.close();
 
 		dataspace = DataSpace(LIMITS_RANK, limits_dims);

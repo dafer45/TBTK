@@ -27,11 +27,11 @@ public:
 		std::string name = "DOS",
 		std::string path = "/"
 	);
-	static void writeLDOS(
-		double *ldos,
+	static void writeDensity(
+		double *density,
 		int rank,
 		int *dims,
-		std::string name = "LDOS",
+		std::string name = "Density",
 		std::string path = "/"
 	);
 	static void writeMAG(
@@ -41,14 +41,14 @@ public:
 		std::string name = "MAG",
 		std::string path = "/"
 	);
-	static void writeSP_LDOS_E(
-		double *sp_ldos_e,
+	static void writeSP_LDOS(
+		double *sp_ldos,
 		int rank,
 		int *dims,
 		double u_lim,
 		double l_lim,
 		int resolution,
-		std::string name = "SP_LDOS_E",
+		std::string name = "SP_LDOS",
 		std::string path = "/"
 	);
 	static void write(
