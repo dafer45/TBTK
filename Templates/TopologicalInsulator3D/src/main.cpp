@@ -183,24 +183,25 @@ int main(int argc, char **argv){
 		}
 	}
 
-	//Evaluate LDOS
-	double ldos[SIZE_X][SIZE_Y][ENERGY_RESOLUTION];
+	//Evaluate spectral function
+	double *spectralFunction[SIZE_X][SIZE_Y];
 	for(int x = 0; x < SIZE_X; x++){
 		for(int y = 0; y < SIZE_Y; y++){
+			spectralFunction[x][y] = new double[ENERGY_RESOLUTION];
 			for(int n = 0; n < ENERGY_RESOLUTION; n++)
-				ldos[x][y][n] = -imag(greensFunctionU[x + y*SIZE_X][n] + greensFunctionD[x + y*SIZE_X][n])/M_PI;
+				spectralFunction[x][y][n] = -imag(greensFunctionU[x + y*SIZE_X][n] + greensFunctionD[x + y*SIZE_X][n])/M_PI;
 		}
 	}
 
-	//Save LDOS at (k_x, k_y) to LDOS_x_y
+	//Save spectral function at (k_x, k_y) to Spectral_function_x_y
 	int dims[1];
 	dims[0] = ENERGY_RESOLUTION;
 	stringstream ss;
 	for(int x = 0; x < SIZE_X; x++){
 		for(int y = 0; y < SIZE_Y; y++){
 			ss.str("");
-			ss << "LDOS_" << x << "_" << y;
-			FileWriter::write(ldos[x][y], 1, dims, ss.str().c_str());
+			ss << "Spectral_function_" << x << "_" << y;
+			FileWriter::write(spectralFunction[x][y], 1, dims, ss.str().c_str());
 		}
 	}
 
@@ -214,6 +215,7 @@ int main(int argc, char **argv){
 		for(int y = 0; y < SIZE_Y; y++){
 			delete [] greensFunctionU[x + y*SIZE_X];
 			delete [] greensFunctionD[x + y*SIZE_X];
+			delete [] spectralFunction[x][y];
 		}
 	}
 
