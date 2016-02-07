@@ -1,6 +1,8 @@
-/* Basic example of self-consistent superconducting order-parameter for a 2D
- * tight-binding model with t = 1, mu = -1, and V_sc = 2. Lattice with edges
- * and a size of 20x20 sites.
+/* Self-consistent solution for superconducting order-parameter for a 2D
+ * tight-binding model with t_ss = 1, mu = -1, and V_sc = 2. Lattice with edges
+ * and a size of 36x19 sites. A ferromagnetic wire of length 18 is attached on
+ * top of the superconductor with t_mm = 0.75 inside the wire, and t_sm = 0.9
+ * between wire and superconductor.
  */
 
 #include <iostream>
@@ -14,8 +16,8 @@ using namespace std;
 const complex<double> i(0, 1);
 
 //Lattice size
-const int SIZE_X = 20;
-const int SIZE_Y = 20;
+const int SIZE_X = 4*5;
+const int SIZE_Y = 2*5+1;
 
 //Order parameter. The two buffers are alternatively swaped by setting dCounter
 // = 0 or 1. One buffer contains the order parameter used in the previous
@@ -45,8 +47,8 @@ bool scCallback(DiagonalizationSolver *dSolver){
 		for(int y = 0; y < SIZE_Y; y++){
 			for(int n = 0; n < dSolver->getModel()->getBasisSize()/2; n++){
 				//Obtain amplitudes at site (x,y) for electron_up and hole_down components
-				complex<double> u_u = dSolver->getAmplitude(n, {x, y, 0});
-				complex<double> v_d = dSolver->getAmplitude(n, {x, y, 3});
+				complex<double> u_u = dSolver->getAmplitude(n, {0, x, y, 0});
+				complex<double> v_d = dSolver->getAmplitude(n, {0, x, y, 3});
 
 				D[(dCounter+1)%2][x][y] -= V_sc*conj(v_d)*u_u;
 			}
@@ -83,9 +85,9 @@ bool scCallback(DiagonalizationSolver *dSolver){
 //(x, y, spin).
 complex<double> fD(Index from, Index to){
 	//Obtain indices
-	int x = from.indices.at(0);
-	int y = from.indices.at(1);
-	int s = from.indices.at(2);
+	int x = from.indices.at(1);
+	int y = from.indices.at(2);
+	int s = from.indices.at(3);
 
 	//Return appropriate amplitude
 	switch(s){
@@ -114,28 +116,50 @@ void initD(){
 int main(int argc, char **argv){
 	//Parameters
 	complex<double> mu = -1.0;
-	complex<double> t = 1.0;
+	complex<double> t_ss = 1.0;
+	complex<double> t_mm = 0.75;
+	complex<double> t_sm = 0.9;	
+	complex<double> V_z = 0.5;
 
-	//Create model and set up hopping parameters
+	//Create model
 	Model model;
+	//Setup hopping parameters for superconducting layer
 	for(int x = 0; x < SIZE_X; x++){
 		for(int y = 0; y < SIZE_Y; y++){
 			for(int s = 0; s < 2; s++){
-				//Add hopping ampltudes corresponding to chemical potential
-				model.addHA(HoppingAmplitude({x, y, s},		{x, y, s},	-mu));
-				model.addHA(HoppingAmplitude({x, y, s+2},	{x, y, s+2},	mu));
+				//Add hopping amplitudes corresponding to chemical potential
+				model.addHA(HoppingAmplitude({0, x, y, s},	{0, x, y, s},	-mu));
+				model.addHA(HoppingAmplitude({0, x, y, s+2},	{0, x, y, s+2},	mu));
 
-				//Add hopping parameters corresponding to t
+				//Add hopping parameters corresponding to t_ss
 				if(x+1 < SIZE_X){
-					model.addHAAndHC(HoppingAmplitude({x, y, s},	{(x+1)%SIZE_X, y, s},	-t));
-					model.addHAAndHC(HoppingAmplitude({x, y, s+2},	{(x+1)%SIZE_X, y, s+2},	t));
+					model.addHAAndHC(HoppingAmplitude({0, x, y, s},		{0, (x+1)%SIZE_X, y, s},	-t_ss));
+					model.addHAAndHC(HoppingAmplitude({0, x, y, s+2},	{0, (x+1)%SIZE_X, y, s+2},	t_ss));
 				}
 				if(y+1 < SIZE_Y){
-					model.addHAAndHC(HoppingAmplitude({x, y, s},	{x, (y+1)%SIZE_Y, s},	-t));
-					model.addHAAndHC(HoppingAmplitude({x, y, s+2},	{x, (y+1)%SIZE_Y, s+2},	t));
+					model.addHAAndHC(HoppingAmplitude({0, x, y, s},		{0, x, (y+1)%SIZE_Y, s},	-t_ss));
+					model.addHAAndHC(HoppingAmplitude({0, x, y, s+2},	{0, x, (y+1)%SIZE_Y, s+2},	t_ss));
 				}
-				model.addHAAndHC(HoppingAmplitude({x, y, s},	{x, y, 3-s},	fD));
+				model.addHAAndHC(HoppingAmplitude({0, x, y, s},	{0, x, y, 3-s},	fD));
 			}
+		}
+	}
+	//Setup wire and attach it to superconductor
+	for(int x = 0; x < SIZE_X/2; x++){
+		for(int s = 0; s < 2; s++){
+			//Add hopping amplitudes corresponding to Zeeman term
+			model.addHA(HoppingAmplitude({1, x, s},		{1, x, s},	-2.*V_z*(s-1/2.)));
+			model.addHA(HoppingAmplitude({1, x, s+2},	{1, x, s+2},	2.*V_z*(s-1/2.)));
+
+			//Add hopping amplitudes corresponding to t_mm
+			if(x+1 < SIZE_X/2){
+				model.addHAAndHC(HoppingAmplitude({1, x, s},	{1, x+1, s},	-t_mm));
+				model.addHAAndHC(HoppingAmplitude({1, x, s},	{1, x+1, s+2},	t_mm));
+			}
+
+			//Add hopping amplitudes corresponding to t_ms
+			model.addHAAndHC(HoppingAmplitude({1, x, s},	{0, x+SIZE_X/4, SIZE_Y/2, s},	-t_sm));
+			model.addHAAndHC(HoppingAmplitude({1, x, s+2},	{0, x+SIZE_X/4, SIZE_Y/2, s+2},	t_sm));
 		}
 	}
 
