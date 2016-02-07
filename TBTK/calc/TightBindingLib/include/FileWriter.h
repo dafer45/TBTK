@@ -78,12 +78,6 @@ private:
 	static bool isInitialized;
 	static void init();
 	static std::string filename;
-/*	static void writeHeader(std::ofstream &fout, TBFileType tbFileType);
-
-	static void writeShort(std::ofstream &fout, short s);
-	static void writeInt(std::ofstream &fout, int i);
-	static void writeFloat(std::ofstream &fout, float f);
-	static void writeDouble(std::ofstream &fout, double d);*/
 };
 
 inline void FileWriter::setFileName(std::string filename){
