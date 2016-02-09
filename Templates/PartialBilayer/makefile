@@ -5,7 +5,7 @@ CFLAGS = -Wall -std=c++11 -fopenmp
 
 all:
 #	$(CC) $(CFLAGS) src/main.cpp -o build/a.out -lTightBinding -lblas -llapack -lhdf5 -lhdf5_cpp
-	$(CC) $(CFLAGS) src/main.cpp -I../../TBTK/calc/TightBindingLib/include -I../../hdf5/hdf5-build/include -L../../TBTK/calc/TightBindingLib/build -L../../hdf5/hdf5-build/hdf5/lib -o build/a.out -lTightBinding -lblas -llapack -lhdf5 -lhdf5_cpp
+	$(CC) $(CFLAGS) src/main.cpp -I$(TBTK_dir)/TBTK/calc/TightBindingLib/include -I$(TBTK_dir)/hdf5/hdf5-build/include -L$(TBTK_dir)/TBTK/calc/TightBindingLib/build -L$(TBTK_dir)/hdf5/hdf5-build/hdf5/lib -o build/a.out -lTightBinding -lblas -llapack -lhdf5 -lhdf5_cpp
 
 clean:
 	rm -r build/*
