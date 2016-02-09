@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -Wall -std=c++11
+CFLAGS = -Wall -std=c++11 -fopenmp
 NVCCFLAGS = -std=c++11
 
 HOPPING_AMPLITUDE_SOURCE = src/HoppingAmplitude.cpp

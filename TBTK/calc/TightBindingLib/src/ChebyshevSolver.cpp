@@ -294,6 +294,7 @@ void ChebyshevSolver::generateLookupTable(int numCoefficients, int energyResolut
 		generatingFunctionLookupTable[n] = new complex<double>[energyResolution];
 
 	const double DELTA = 0.0001;
+	#pragma omp parallel for
 	for(int n = 0; n < numCoefficients; n++){
 		double denominator = 1.;
 		if(n == 0)
