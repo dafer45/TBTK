@@ -6,9 +6,9 @@ Welcome to the Tight Binding Toolkit - TBTK
 source init_session.sh
 bash install.sh
 
-########################
-# Update TightBindingLib
-########################
+#############
+# Update TBTK
+#############
 bash update.sh
 
 ####################
