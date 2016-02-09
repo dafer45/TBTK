@@ -4,12 +4,12 @@ Welcome to the Tight Binding Toolkit - TBTK
 # Installation instructions
 ###########################
 source init_session.sh
-bash install.sh
+./install.sh
 
 #############
 # Update TBTK
 #############
-bash update.sh
+./update.sh
 
 ####################
 # Initialize session
