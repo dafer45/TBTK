@@ -128,7 +128,7 @@ void ChebyshevSolver::calculateCoefficients(Index to, Index from, complex<double
 	double epsilon = 0.001;
 	double lambda = epsilon*numCoefficients;
 	for(int n = 0; n < numCoefficients; n++)
-		coefficients[n] = coefficients[n]*sinh(lambda*(1 - n/(double)numCoefficients)/sinh(lambda));
+		coefficients[n] = coefficients[n]*sinh(lambda*(1 - n/(double)numCoefficients))/sinh(lambda);
 }
 
 void ChebyshevSolver::calculateCoefficients(Index to, Index from, complex<double> *coefficients, int numCoefficients, double componentCutoff){
@@ -271,7 +271,7 @@ void ChebyshevSolver::calculateCoefficients(Index to, Index from, complex<double
 	double epsilon = 0.001;
 	double lambda = epsilon*numCoefficients;
 	for(int n = 0; n < numCoefficients; n++)
-		coefficients[n] = coefficients[n]*sinh(lambda*(1 - n/(double)numCoefficients)/sinh(lambda));
+		coefficients[n] = coefficients[n]*sinh(lambda*(1 - n/(double)numCoefficients))/sinh(lambda);
 }
 
 void ChebyshevSolver::generateLookupTable(int numCoefficients, int energyResolution){

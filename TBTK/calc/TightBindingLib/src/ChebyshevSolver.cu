@@ -276,7 +276,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(vector<Index> &to, Index from, co
 	double lambda = epsilon*numCoefficients;
 	for(int n = 0; n < numCoefficients; n++)
 		for(int c = 0; c < to.size(); c++)
-			coefficients[n + c*numCoefficients] = coefficients[n + c*numCoefficients]*sinh(lambda*(1 - n/(double)numCoefficients)/sinh(lambda));
+			coefficients[n + c*numCoefficients] = coefficients[n + c*numCoefficients]*sinh(lambda*(1 - n/(double)numCoefficients))/sinh(lambda);
 }
 
 __global__
