@@ -77,11 +77,13 @@ void ChebyshevSolver::calculateCoefficients(Index to, Index from, complex<double
 	}
 
 	//Calculate |j1>
+	for(int c = 0; c < amplitudeSet->getBasisSize(); c++)
+		jResult[c] = 0.;
 	for(int n = 0; n < numHoppingAmplitudes; n++){
 		int from = fromIndices[n];
 		int to = toIndices[n];
 
-		jResult[to] = hoppingAmplitudes[n]*jIn1[from];
+		jResult[to] += hoppingAmplitudes[n]*jIn1[from];
 	}
 
 	jTemp = jIn2;
