@@ -31,13 +31,13 @@ int main(int argc, char **argv){
 		for(int y = 0; y < SIZE_Y_LAYER_BOTTOM; y++){
 			for(int s = 0; s < 2; s++){
 				//Add hopping amplitudes corresponding to chemical potential
-				model.addHA(HoppingAmplitude({0, x, y, s},	{0, x, y, s},	-mu));
+				model.addHA(HoppingAmplitude(-mu,	{0, x, y, s},	{0, x, y, s}));
 
 				//Add hopping parameters corresponding to t
 				if(x+1 < SIZE_X)
-					model.addHAAndHC(HoppingAmplitude({0, x, y, s},	{0, (x+1)%SIZE_X, y, s},		-t));
+					model.addHAAndHC(HoppingAmplitude(-t,	{0, (x+1)%SIZE_X, y, s},	{0, x, y, s}));
 				if(y+1 < SIZE_Y_LAYER_BOTTOM)
-					model.addHAAndHC(HoppingAmplitude({0, x, y, s},	{0, x, (y+1)%SIZE_Y_LAYER_BOTTOM, s},	-t));
+					model.addHAAndHC(HoppingAmplitude(-t,	{0, x, (y+1)%SIZE_Y_LAYER_BOTTOM, s},	{0, x, y, s}));
 			}
 		}
 	}
@@ -46,16 +46,16 @@ int main(int argc, char **argv){
 		for(int y = 0; y < SIZE_Y_LAYER_TOP; y++){
 			for(int s = 0; s < 2; s++){
 				//Add hopping amplitudes corresponding to chemical potential
-				model.addHA(HoppingAmplitude({1, x, y, s},	{1, x, y, s},	-mu));
+				model.addHA(HoppingAmplitude(-mu,	{1, x, y, s},	{1, x, y, s}));
 
 				//Add hopping amplitudes between layer 0 and 1
-				model.addHAAndHC(HoppingAmplitude({0, x, y, s},	{1, x, y, s},	-t));
+				model.addHAAndHC(HoppingAmplitude(-t,	{1, x, y, s},	{0, x, y, s}));
 
 				//Add hopping amplitudes corresponding to t
 				if(x+1 < SIZE_X)
-					model.addHAAndHC(HoppingAmplitude({1, x, y, s},	{1, (x+1)%SIZE_X, y, s},		-t));
+					model.addHAAndHC(HoppingAmplitude(-t,	{1, (x+1)%SIZE_X, y, s},	{1, x, y, s}));
 				if(y+1 < SIZE_Y_LAYER_TOP)
-					model.addHAAndHC(HoppingAmplitude({1, x, y, s},	{1, x, (y+1)%SIZE_Y_LAYER_TOP, s},	-t));
+					model.addHAAndHC(HoppingAmplitude(-t,	{1, x, (y+1)%SIZE_Y_LAYER_TOP, s},	{1, x, y, s}));
 			}
 		}
 	}

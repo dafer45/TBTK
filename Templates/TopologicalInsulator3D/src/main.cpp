@@ -41,41 +41,41 @@ int main(int argc, char **argv){
 		for(int y = 0; y < SIZE_Y; y++){
 			for(int z = 0; z < SIZE_Z; z++){
 				//Diagonal terms
-				model.addHA(HoppingAmplitude({x, y, z, 0},	{x, y, z, 0},	mu + 6./SCALE_FACTOR));
-				model.addHA(HoppingAmplitude({x, y, z, 1},	{x, y, z, 1},	-mu - 6./SCALE_FACTOR));
-				model.addHA(HoppingAmplitude({x, y, z, 2},	{x, y, z, 2},	mu + 6./SCALE_FACTOR));
-				model.addHA(HoppingAmplitude({x, y, z, 3},	{x, y, z, 3},	-mu - 6./SCALE_FACTOR));
+				model.addHA(HoppingAmplitude(mu + 6./SCALE_FACTOR,	{x, y, z, 0},	{x, y, z, 0}));
+				model.addHA(HoppingAmplitude(mu + 6./SCALE_FACTOR,	{x, y, z, 1},	{x, y, z, 1}));
+				model.addHA(HoppingAmplitude(mu + 6./SCALE_FACTOR,	{x, y, z, 2},	{x, y, z, 2}));
+				model.addHA(HoppingAmplitude(mu + 6./SCALE_FACTOR,	{x, y, z, 3},	{x, y, z, 3}));
 
 				//Hopping elements along x-direction
-				model.addHAAndHC(HoppingAmplitude({x, y, z, 0},	{(x+1)%SIZE_X, y, z, 0},	t));
-				model.addHAAndHC(HoppingAmplitude({x, y, z, 1},	{(x+1)%SIZE_X, y, z, 1},	-t));
-				model.addHAAndHC(HoppingAmplitude({x, y, z, 2},	{(x+1)%SIZE_X, y, z, 2},	t));
-				model.addHAAndHC(HoppingAmplitude({x, y, z, 3},	{(x+1)%SIZE_X, y, z, 3},	-t));
-				model.addHAAndHC(HoppingAmplitude({x, y, z, 0},	{(x+1)%SIZE_X, y, z, 3},	i*alpha));
-				model.addHAAndHC(HoppingAmplitude({x, y, z, 3},	{(x+1)%SIZE_X, y, z, 0},	i*alpha));
-				model.addHAAndHC(HoppingAmplitude({x, y, z, 1},	{(x+1)%SIZE_X, y, z, 2},	i*alpha));
-				model.addHAAndHC(HoppingAmplitude({x, y, z, 2},	{(x+1)%SIZE_X, y, z, 1},	i*alpha));
+				model.addHAAndHC(HoppingAmplitude(t,	{(x+1)%SIZE_X, y, z, 0},	{x, y, z, 0}));
+				model.addHAAndHC(HoppingAmplitude(-t,	{(x+1)%SIZE_X, y, z, 1},	{x, y, z, 1}));
+				model.addHAAndHC(HoppingAmplitude(t,	{(x+1)%SIZE_X, y, z, 2},	{x, y, z, 2}));
+				model.addHAAndHC(HoppingAmplitude(-t,	{(x+1)%SIZE_X, y, z, 3},	{x, y, z, 3}));
+				model.addHAAndHC(HoppingAmplitude(i*alpha,	{(x+1)%SIZE_X, y, z, 3},	{x, y, z, 0}));
+				model.addHAAndHC(HoppingAmplitude(i*alpha,	{(x+1)%SIZE_X, y, z, 0},	{x, y, z, 3}));
+				model.addHAAndHC(HoppingAmplitude(i*alpha,	{(x+1)%SIZE_X, y, z, 2},	{x, y, z, 1}));
+				model.addHAAndHC(HoppingAmplitude(i*alpha,	{(x+1)%SIZE_X, y, z, 1},	{x, y, z, 2}));
 
 				//Hopping elements along y-direction
-				model.addHAAndHC(HoppingAmplitude({x, y, z, 0},	{x, (y+1)%SIZE_Y, z, 0},	t));
-				model.addHAAndHC(HoppingAmplitude({x, y, z, 1},	{x, (y+1)%SIZE_Y, z, 1},	-t));
-				model.addHAAndHC(HoppingAmplitude({x, y, z, 2},	{x, (y+1)%SIZE_Y, z, 2},	t));
-				model.addHAAndHC(HoppingAmplitude({x, y, z, 3},	{x, (y+1)%SIZE_Y, z, 3},	-t));
-				model.addHAAndHC(HoppingAmplitude({x, y, z, 0},	{x, (y+1)%SIZE_Y, z, 3},	alpha));
-				model.addHAAndHC(HoppingAmplitude({x, y, z, 3},	{x, (y+1)%SIZE_Y, z, 0},	-alpha));
-				model.addHAAndHC(HoppingAmplitude({x, y, z, 1},	{x, (y+1)%SIZE_Y, z, 2},	alpha));
-				model.addHAAndHC(HoppingAmplitude({x, y, z, 2},	{x, (y+1)%SIZE_Y, z, 1},	-alpha));
+				model.addHAAndHC(HoppingAmplitude(t,	{x, y, z, 0},	{x, (y+1)%SIZE_Y, z, 0}));
+				model.addHAAndHC(HoppingAmplitude(-t,	{x, y, z, 1},	{x, (y+1)%SIZE_Y, z, 1}));
+				model.addHAAndHC(HoppingAmplitude(t,	{x, y, z, 2},	{x, (y+1)%SIZE_Y, z, 2}));
+				model.addHAAndHC(HoppingAmplitude(-t,	{x, y, z, 3},	{x, (y+1)%SIZE_Y, z, 3}));
+				model.addHAAndHC(HoppingAmplitude(alpha,	{x, (y+1)%SIZE_Y, z, 3},	{x, y, z, 0}));
+				model.addHAAndHC(HoppingAmplitude(-alpha,	{x, (y+1)%SIZE_Y, z, 0},	{x, y, z, 3}));
+				model.addHAAndHC(HoppingAmplitude(alpha,	{x, (y+1)%SIZE_Y, z, 2},	{x, y, z, 1}));
+				model.addHAAndHC(HoppingAmplitude(-alpha,	{x, (y+1)%SIZE_Y, z, 1},	{x, y, z, 2}));
 
 				//Hopping elements along y-direction
 				if(z+1 < SIZE_Z){
-					model.addHAAndHC(HoppingAmplitude({x, y, z, 0},	{x, y, (z+1)%SIZE_Z, 0},	t));
-					model.addHAAndHC(HoppingAmplitude({x, y, z, 1},	{x, y, (z+1)%SIZE_Z, 1},	-t));
-					model.addHAAndHC(HoppingAmplitude({x, y, z, 2},	{x, y, (z+1)%SIZE_Z, 2},	t));
-					model.addHAAndHC(HoppingAmplitude({x, y, z, 3},	{x, y, (z+1)%SIZE_Z, 3},	-t));
-					model.addHAAndHC(HoppingAmplitude({x, y, z, 0},	{x, y, (z+1)%SIZE_Z, 1},	i*alpha));
-					model.addHAAndHC(HoppingAmplitude({x, y, z, 1},	{x, y, (z+1)%SIZE_Z, 0},	i*alpha));
-					model.addHAAndHC(HoppingAmplitude({x, y, z, 2},	{x, y, (z+1)%SIZE_Z, 3},	-i*alpha));
-					model.addHAAndHC(HoppingAmplitude({x, y, z, 3},	{x, y, (z+1)%SIZE_Z, 2},	-i*alpha));
+					model.addHAAndHC(HoppingAmplitude(t,	{x, y, (z+1)%SIZE_Z, 0},	{x, y, z, 0}));
+					model.addHAAndHC(HoppingAmplitude(-t,	{x, y, (z+1)%SIZE_Z, 1},	{x, y, z, 1}));
+					model.addHAAndHC(HoppingAmplitude(t,	{x, y, (z+1)%SIZE_Z, 2},	{x, y, z, 2}));
+					model.addHAAndHC(HoppingAmplitude(-t,	{x, y, (z+1)%SIZE_Z, 3},	{x, y, z, 3}));
+					model.addHAAndHC(HoppingAmplitude(i*alpha,	{x, y, (z+1)%SIZE_Z, 1},	{x, y, z, 0}));
+					model.addHAAndHC(HoppingAmplitude(i*alpha,	{x, y, (z+1)%SIZE_Z, 0},	{x, y, z, 1}));
+					model.addHAAndHC(HoppingAmplitude(-i*alpha,	{x, y, (z+1)%SIZE_Z, 3},	{x, y, z, 2}));
+					model.addHAAndHC(HoppingAmplitude(-i*alpha,	{x, y, (z+1)%SIZE_Z, 2},	{x, y, z, 3}));
 				}
 			}
 		}
