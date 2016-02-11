@@ -83,9 +83,10 @@ void ChebyshevSolver::calculateCoefficientsGPU(vector<Index> &to, Index from, co
 	for(int n = 0; n < to.size(); n++)
 		coefficientMap[amplitudeSet->getBasisIndex(to.at(n))] = n;
 
-	cout << "From Index: " << fromBasisIndex << "\n";
-//	cout << "To Index: " << toBasisIndex << "\n";
-	cout << "Basis size: " << amplitudeSet->getBasisSize() << "\n";
+	cout << "ChebyshevSolver::calculateCoefficientsGPU\n";
+	cout << "\tFrom Index: " << fromBasisIndex << "\n";
+//	cout << "\tTo Index: " << toBasisIndex << "\n";
+	cout << "\tBasis size: " << amplitudeSet->getBasisSize() << "\n";
 
 	complex<double> *jIn1 = new complex<double>[amplitudeSet->getBasisSize()];
 	complex<double> *jIn2 = new complex<double>[amplitudeSet->getBasisSize()];
@@ -159,41 +160,56 @@ void ChebyshevSolver::calculateCoefficientsGPU(vector<Index> &to, Index from, co
 	complex<double> *coefficients_device;
 	int *coefficientMap_device;
 
+	int totalMemoryRequirement = amplitudeSet->getBasisSize()*sizeof(complex<double>);
+	totalMemoryRequirement += amplitudeSet->getBasisSize()*sizeof(complex<double>);
+	totalMemoryRequirement += amplitudeSet->getBasisSize()*sizeof(complex<double>);
+	totalMemoryRequirement += maxHoppingAmplitudes*amplitudeSet->getBasisSize()*sizeof(complex<double>);
+	totalMemoryRequirement += maxHoppingAmplitudes*amplitudeSet->getBasisSize()*sizeof(int);
+	totalMemoryRequirement += to.size()*numCoefficients*sizeof(complex<double>);
+	totalMemoryRequirement += amplitudeSet->getBasisSize()*sizeof(int);
+	cout << "\tCUDA memory requirement: ";
+	if(totalMemoryRequirement < 1024)
+		cout << totalMemoryRequirement/1024 << "B\n";
+	else if(totalMemoryRequirement < 1024*1024)
+		cout << totalMemoryRequirement/1024 << "KB\n";
+	else
+		cout << totalMemoryRequirement/1024/1024 << "MB\n";
+
 	if(cudaMalloc((void**)&jIn1_device, amplitudeSet->getBasisSize()*sizeof(complex<double>)) != cudaSuccess)
-		{	cout << "Malloc error\n";	exit(1);	}
+		{	cout << "\tMalloc error\n";	exit(1);	}
 	if(cudaMalloc((void**)&jIn2_device, amplitudeSet->getBasisSize()*sizeof(complex<double>)) != cudaSuccess)
-		{	cout << "Malloc error\n";	exit(1);	}
+		{	cout << "\tMalloc error\n";	exit(1);	}
 	if(cudaMalloc((void**)&jResult_device, amplitudeSet->getBasisSize()*sizeof(complex<double>)) != cudaSuccess)
-		{	cout << "Malloc error\n";	exit(1);	}
+		{	cout << "\tMalloc error\n";	exit(1);	}
 	if(cudaMalloc((void**)&hoppingAmplitudes_device, maxHoppingAmplitudes*amplitudeSet->getBasisSize()*sizeof(complex<double>)) != cudaSuccess)
-		{	cout << "Malloc error\n";	exit(1);	}
+		{	cout << "\tMalloc error\n";	exit(1);	}
 	if(cudaMalloc((void**)&fromIndices_device, maxHoppingAmplitudes*amplitudeSet->getBasisSize()*sizeof(int)) != cudaSuccess)
-		{	cout << "Malloc error\n";	exit(1);	}
+		{	cout << "\tMalloc error\n";	exit(1);	}
 	if(cudaMalloc((void**)&coefficients_device, to.size()*numCoefficients*sizeof(complex<double>)) != cudaSuccess)
-		{	cout << "Malloc error\n";	exit(1);	}
+		{	cout << "\tMalloc error\n";	exit(1);	}
 	if(cudaMalloc((void**)&coefficientMap_device, amplitudeSet->getBasisSize()*sizeof(int)) != cudaSuccess)
-		{	cout << "Malloc error\n";	exit(1);	}
+		{	cout << "\tMalloc error\n";	exit(1);	}
 
 	if(cudaMemcpy(jIn1_device, jIn1, amplitudeSet->getBasisSize()*sizeof(complex<double>), cudaMemcpyHostToDevice) != cudaSuccess)
-		{	cout << "Memcpy error\n";	exit(1);	}
+		{	cout << "\tMemcpy error\n";	exit(1);	}
 	if(cudaMemcpy(jIn2_device, jIn2, amplitudeSet->getBasisSize()*sizeof(complex<double>), cudaMemcpyHostToDevice) != cudaSuccess)
-		{	cout << "Memcpy error\n";	exit(1);	}
+		{	cout << "\tMemcpy error\n";	exit(1);	}
 	if(cudaMemcpy(jResult_device, jResult, amplitudeSet->getBasisSize()*sizeof(complex<double>), cudaMemcpyHostToDevice) != cudaSuccess)
-		{	cout << "Memcpy error\n";	exit(1);	}
+		{	cout << "\tMemcpy error\n";	exit(1);	}
 	if(cudaMemcpy(hoppingAmplitudes_device, hoppingAmplitudes, maxHoppingAmplitudes*amplitudeSet->getBasisSize()*sizeof(complex<double>), cudaMemcpyHostToDevice) != cudaSuccess)
-		{	cout << "Memcpy error\n";	exit(1);	}
+		{	cout << "\tMemcpy error\n";	exit(1);	}
 	if(cudaMemcpy(fromIndices_device, fromIndices, maxHoppingAmplitudes*amplitudeSet->getBasisSize()*sizeof(int), cudaMemcpyHostToDevice) != cudaSuccess)
-		{	cout << "Memcpy error\n";	exit(1);	}
+		{	cout << "\tMemcpy error\n";	exit(1);	}
 	if(cudaMemcpy(coefficients_device, coefficients, to.size()*numCoefficients*sizeof(complex<double>), cudaMemcpyHostToDevice) != cudaSuccess)
-		{	cout << "Memcpy error\n";	exit(1);	}
+		{	cout << "\tMemcpy error\n";	exit(1);	}
 	if(cudaMemcpy(coefficientMap_device, coefficientMap, amplitudeSet->getBasisSize()*sizeof(int), cudaMemcpyHostToDevice) != cudaSuccess)
-		{	cout << "Memcpy error\n";	exit(1);	}
+		{	cout << "\tMemcpy error\n";	exit(1);	}
 
 	//Calculate |j1>
 	int block_size = 1024;
 	int num_blocks = amplitudeSet->getBasisSize()/block_size + (amplitudeSet->getBasisSize()%block_size == 0 ? 0:1);
-	cout << "CUDA Block size: " << block_size << "\n";
-	cout << "CUDA Num blocks: " << num_blocks << "\n";
+	cout << "\tCUDA Block size: " << block_size << "\n";
+	cout << "\tCUDA Num blocks: " << num_blocks << "\n";
 	multiplyMatrixAndVector <<< num_blocks, block_size>>> ((cuDoubleComplex*)jIn1_device,
 								(cuDoubleComplex*)jResult_device,
 								(cuDoubleComplex*)hoppingAmplitudes_device,
@@ -206,10 +222,10 @@ void ChebyshevSolver::calculateCoefficientsGPU(vector<Index> &to, Index from, co
 								numCoefficients);
 	cudaError_t code = cudaGetLastError();
 	if(code != cudaSuccess){
-		cout << "Matrix vector multiplication error 1\n";
-		cout << cudaGetErrorString(code) << "\n";
-		cout << "CUDA Block size: " << block_size << "\n";
-		cout << "CUDA Num blocks: " << num_blocks << "\n";
+		cout << "\tMatrix vector multiplication error 1\n";
+		cout << "\t" << cudaGetErrorString(code) << "\n";
+		cout << "\tCUDA Block size: " << block_size << "\n";
+		cout << "\tCUDA Num blocks: " << num_blocks << "\n";
 		exit(1);
 	}
 
@@ -223,6 +239,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(vector<Index> &to, Index from, co
 		hoppingAmplitudes[n] *= 2.;
 	cudaMemcpy(hoppingAmplitudes_device, hoppingAmplitudes, maxHoppingAmplitudes*amplitudeSet->getBasisSize()*sizeof(complex<double>), cudaMemcpyHostToDevice);
 
+	cout << "\tProgress (100 coefficients per dot): ";
 	//Iteratively calculate |jn> and corresponding Chebyshev coefficients.
 	for(int n = 2; n < numCoefficients; n++){
 		subtractVector <<< num_blocks, block_size >>> ((cuDoubleComplex*)jIn2_device,
@@ -248,11 +265,14 @@ void ChebyshevSolver::calculateCoefficientsGPU(vector<Index> &to, Index from, co
 		jResult_device = jTemp;
 
 		if(n%100 == 0)
-			cout << n << "\n";
+			cout << "." << flush;
+		if(n%1000 == 0)
+			cout << " " << flush;
 	}
+	cout << "\n";
 
 	if(cudaMemcpy(coefficients, coefficients_device, to.size()*numCoefficients*sizeof(complex<double>), cudaMemcpyDeviceToHost) != cudaSuccess){
-		cout << "Memcpy error\n";
+		cout << "\tMemcpy error\n";
 		exit(1);
 	}
 
@@ -294,12 +314,13 @@ void calculateGreensFunction(cuDoubleComplex *greensFunction,
 }
 
 void ChebyshevSolver::loadLookupTableGPU(){
+	cout << "CheyshevSolver::loadLookupTableGPU\n";
 	if(generatingFunctionLookupTable == NULL){
-		cout << "Error in ChebyshevSolver::loadLookupTableGPU: Lookup table has not been generated.\n";
+		cout << "\tError: Lookup table has not been generated.\n";
 		exit(1);
 	}
 	if(generatingFunctionLookupTable_device != NULL){
-		cout << "Error in ChebyshevSolver::loadLookupTableGPU: Lookup table already loaded.\n";
+		cout << "\tError: Lookup table already loaded.\n";
 		exit(1);
 	}
 
@@ -308,18 +329,27 @@ void ChebyshevSolver::loadLookupTableGPU(){
 		for(int e = 0; e < lookupTableResolution; e++)
 			generatingFunctionLookupTable_host[n*lookupTableResolution + e] = generatingFunctionLookupTable[n][e];
 
+	int memoryRequirement = lookupTableNumCoefficients*lookupTableResolution*sizeof(complex<double>);
+	cout << "\tCUDA memory requirement: ";
+	if(memoryRequirement < 1024)
+		cout << memoryRequirement << "B";
+	else if(memoryRequirement < 1024*1024)
+		cout << memoryRequirement/1024 << "KB";
+	else
+		cout << memoryRequirement/1024/1024 << "MB";
 	if(cudaMalloc((void**)&generatingFunctionLookupTable_device, lookupTableNumCoefficients*lookupTableResolution*sizeof(complex<double>))  != cudaSuccess)
-		{	cout << "Malloc error\n";	exit(1);	}
+		{	cout << "\tMalloc error\n";	exit(1);	}
 
 	if(cudaMemcpy(generatingFunctionLookupTable_device, generatingFunctionLookupTable_host, lookupTableNumCoefficients*lookupTableResolution*sizeof(complex<double>), cudaMemcpyHostToDevice) != cudaSuccess)
-		{	cout << "Memcpy error\n";	exit(1);	}
+		{	cout << "\tMemcpy error\n";	exit(1);	}
 
 	delete [] generatingFunctionLookupTable_host;
 }
 
 void ChebyshevSolver::destroyLookupTableGPU(){
+	cout << "ChebyshevSolver::destroyLookupTableGPU\n";
 	if(generatingFunctionLookupTable_device == NULL){
-		cout << "Error in ChebyshevSolver::destroyLookupTableGPU: No lookup table loaded onto GPU.\n";
+		cout << "Error: No lookup table loaded onto GPU.\n";
 		exit(1);
 	}
 
@@ -328,8 +358,9 @@ void ChebyshevSolver::destroyLookupTableGPU(){
 }
 
 void ChebyshevSolver::generateGreensFunctionGPU(complex<double> *greensFunction, complex<double> *coefficients){
+	cout << "ChebyshevSolver::generateGreensFunctionGPU\n";
 	if(generatingFunctionLookupTable_device == NULL){
-		cout << "Error in ChebyshevSolver::generateGreensFunctionGPU: No lookup table loaded onto GPU.\n";
+		cout << "Error: No lookup table loaded onto GPU.\n";
 		exit(1);
 	}
 
@@ -340,19 +371,19 @@ void ChebyshevSolver::generateGreensFunctionGPU(complex<double> *greensFunction,
 	complex<double> *coefficients_device;
 
 	if(cudaMalloc((void**)&greensFunction_device, lookupTableResolution*sizeof(complex<double>))  != cudaSuccess)
-		{	cout << "Malloc error\n";	exit(1);	}
+		{	cout << "\tMalloc error\n";	exit(1);	}
 	if(cudaMalloc((void**)&coefficients_device, lookupTableNumCoefficients*sizeof(complex<double>))  != cudaSuccess)
-		{	cout << "Malloc error\n";	exit(1);	}
+		{	cout << "\tMalloc error\n";	exit(1);	}
 
 	if(cudaMemcpy(greensFunction_device, greensFunction, lookupTableResolution*sizeof(complex<double>), cudaMemcpyHostToDevice) != cudaSuccess)
-		{	cout << "Memcpy error\n";	exit(1);	}
+		{	cout << "\tMemcpy error\n";	exit(1);	}
 	if(cudaMemcpy(coefficients_device, coefficients, lookupTableNumCoefficients*sizeof(complex<double>), cudaMemcpyHostToDevice) != cudaSuccess)
-		{	cout << "Memcpy error\n";	exit(1);	}
+		{	cout << "\tMemcpy error\n";	exit(1);	}
 
 	int block_size = 1024;
 	int num_blocks = lookupTableResolution/block_size + (lookupTableResolution%block_size == 0 ? 0:1);
-	cout << "CUDA Block size: " << block_size << "\n";
-	cout << "CUDA Num blocks: " << num_blocks << "\n";
+	cout << "\tCUDA Block size: " << block_size << "\n";
+	cout << "\tCUDA Num blocks: " << num_blocks << "\n";
 	calculateGreensFunction <<< num_blocks, block_size>>> ((cuDoubleComplex*)greensFunction_device,
 								(cuDoubleComplex*)coefficients_device,
 								(cuDoubleComplex*)generatingFunctionLookupTable_device,
@@ -360,7 +391,7 @@ void ChebyshevSolver::generateGreensFunctionGPU(complex<double> *greensFunction,
 								lookupTableResolution);
 
 	if(cudaMemcpy(greensFunction, greensFunction_device, lookupTableResolution*sizeof(complex<double>), cudaMemcpyDeviceToHost) != cudaSuccess)
-		{	cout << "Memcpy error\n";	exit(1);	}
+		{	cout << "\tMemcpy error\n";	exit(1);	}
 
 	cudaFree(greensFunction_device);
 	cudaFree(coefficients_device);
