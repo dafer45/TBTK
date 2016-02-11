@@ -97,10 +97,8 @@ void ChebyshevSolver::calculateCoefficients(Index to, Index from, complex<double
 
 	//Iteratively calculate |jn> and corresponding Chebyshev coefficients.
 	for(int n = 2; n < numCoefficients; n++){
-		#pragma omp parallel for
 		for(int c = 0; c < amplitudeSet->getBasisSize(); c++)
 			jResult[c] = -jIn2[c];
-		#pragma omp parallel for
 		for(int c = 0; c < numHoppingAmplitudes; c++){
 			int from = fromIndices[c];
 			int to = toIndices[c];
