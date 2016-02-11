@@ -16,6 +16,8 @@ public:
 	/** Constructors.*/
 	HoppingAmplitude(Index fromIndex, Index toIndex, std::complex<double> amplitude);
 	HoppingAmplitude(Index fromIndex, Index toIndex, std::complex<double> (*amplitudeCallback)(Index, Index));
+	HoppingAmplitude(std::complex<double> amplitude, Index toIndex, Index fromIndex);
+	HoppingAmplitude(std::complex<double> (*amplitudeCallback)(Index, Index), Index toIndex, Index fromIndex);
 
 	HoppingAmplitude getHermitianConjugate();
 

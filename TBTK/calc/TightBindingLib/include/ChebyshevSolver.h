@@ -11,10 +11,10 @@ public:
 
 	void setModel(Model *model);
 
-	void calculateCoefficients(Index to, Index from, std::complex<double> *coefficients, int numCoefficients);
-	void calculateCoefficientsGPU(std::vector<Index> &to, Index from, std::complex<double> *coefficients, int numCoefficients);
-	void calculateCoefficientsGPU(Index to, Index from, std::complex<double> *coefficients, int numCoefficients);
-	void calculateCoefficients(Index to, Index from, std::complex<double> *coefficients, int numCoefficients, double componentCutoff);
+	void calculateCoefficients(Index to, Index from, std::complex<double> *coefficients, int numCoefficients, double broadening = 0.0001);
+	void calculateCoefficientsGPU(std::vector<Index> &to, Index from, std::complex<double> *coefficients, int numCoefficients, double broadening = 0.0001);
+	void calculateCoefficientsGPU(Index to, Index from, std::complex<double> *coefficients, int numCoefficients, double broadening = 0.0001);
+	void calculateCoefficientsWithCutoff(Index to, Index from, std::complex<double> *coefficients, int numCoefficients, double componentCutoff, double broadening = 0.0001);
 
 	void generateLookupTable(int numCoefficeints, int energyResolution);
 	void loadLookupTableGPU();

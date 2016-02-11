@@ -63,13 +63,13 @@ void debugNormal(complex<double> *jIn1, complex<double> *jIn2, complex<double> *
 		cout << n << "\t" << jIn1[n] << "\t" << jIn2[n] << "\t" << jResult[n] << "\n";
 }
 
-void ChebyshevSolver::calculateCoefficientsGPU(Index to, Index from, complex<double> *coefficients, int numCoefficients){
+void ChebyshevSolver::calculateCoefficientsGPU(Index to, Index from, complex<double> *coefficients, int numCoefficients, double broadening){
 	vector<Index> toVector;
 	toVector.push_back(to);
-	calculateCoefficientsGPU(toVector, from, coefficients, numCoefficients);
+	calculateCoefficientsGPU(toVector, from, coefficients, numCoefficients, broadening);
 }
 
-void ChebyshevSolver::calculateCoefficientsGPU(vector<Index> &to, Index from, complex<double> *coefficients, int numCoefficients){
+void ChebyshevSolver::calculateCoefficientsGPU(vector<Index> &to, Index from, complex<double> *coefficients, int numCoefficients, double broadening){
 	AmplitudeSet *amplitudeSet = &model->amplitudeSet;
 
 	int fromBasisIndex = amplitudeSet->getBasisIndex(from);
@@ -272,8 +272,9 @@ void ChebyshevSolver::calculateCoefficientsGPU(vector<Index> &to, Index from, co
 	cudaFree(coefficientMap_device);
 
 	//Lorentzian convolution
-	double epsilon = 0.001;
-	double lambda = epsilon*numCoefficients;
+//	double epsilon = 0.001;
+//	double lambda = epsilon*numCoefficients;
+	double lambda = broadening*numCoefficients;
 	for(int n = 0; n < numCoefficients; n++)
 		for(int c = 0; c < to.size(); c++)
 			coefficients[n + c*numCoefficients] = coefficients[n + c*numCoefficients]*sinh(lambda*(1 - n/(double)numCoefficients))/sinh(lambda);

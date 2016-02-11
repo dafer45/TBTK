@@ -12,6 +12,15 @@ HoppingAmplitude::HoppingAmplitude(Index fromIndex, Index toIndex, complex<doubl
 	this->amplitudeCallback = amplitudeCallback;
 };
 
+HoppingAmplitude::HoppingAmplitude(complex<double> amplitude, Index toIndex, Index fromIndex) : fromIndex(fromIndex), toIndex(toIndex){
+	this->amplitude = amplitude;
+	this->amplitudeCallback = NULL;
+};
+
+HoppingAmplitude::HoppingAmplitude(complex<double> (*amplitudeCallback)(Index, Index), Index toIndex, Index fromIndex) : fromIndex(fromIndex), toIndex(toIndex){
+	this->amplitudeCallback = amplitudeCallback;
+};
+
 HoppingAmplitude HoppingAmplitude::getHermitianConjugate(){
 	if(amplitudeCallback)
 		return HoppingAmplitude(toIndex, fromIndex, amplitudeCallback);

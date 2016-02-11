@@ -26,7 +26,7 @@ void ChebyshevSolver::setModel(Model *model){
 	this->model = model;
 }
 
-void ChebyshevSolver::calculateCoefficients(Index to, Index from, complex<double> *coefficients, int numCoefficients){
+void ChebyshevSolver::calculateCoefficients(Index to, Index from, complex<double> *coefficients, int numCoefficients, double broadening){
 	AmplitudeSet *amplitudeSet = &model->amplitudeSet;
 
 	int fromBasisIndex = amplitudeSet->getBasisIndex(from);
@@ -127,13 +127,14 @@ void ChebyshevSolver::calculateCoefficients(Index to, Index from, complex<double
 	delete [] fromIndices;
 
 	//Lorentzian convolution
-	double epsilon = 0.001;
-	double lambda = epsilon*numCoefficients;
+//	double epsilon = 0.001;
+//	double lambda = epsilon*numCoefficients;
+	double lambda = broadening*numCoefficients;
 	for(int n = 0; n < numCoefficients; n++)
 		coefficients[n] = coefficients[n]*sinh(lambda*(1 - n/(double)numCoefficients))/sinh(lambda);
 }
 
-void ChebyshevSolver::calculateCoefficients(Index to, Index from, complex<double> *coefficients, int numCoefficients, double componentCutoff){
+void ChebyshevSolver::calculateCoefficientsWithCutoff(Index to, Index from, complex<double> *coefficients, int numCoefficients, double componentCutoff, double broadening){
 	AmplitudeSet *amplitudeSet = &model->amplitudeSet;
 
 	int fromBasisIndex = amplitudeSet->getBasisIndex(from);
@@ -270,8 +271,9 @@ void ChebyshevSolver::calculateCoefficients(Index to, Index from, complex<double
 	delete [] everReachedIndices;
 
 	//Lorentzian convolution
-	double epsilon = 0.001;
-	double lambda = epsilon*numCoefficients;
+//	double epsilon = 0.001;
+//	double lambda = epsilon*numCoefficients;
+	double lambda = broadening*numCoefficients;
 	for(int n = 0; n < numCoefficients; n++)
 		coefficients[n] = coefficients[n]*sinh(lambda*(1 - n/(double)numCoefficients))/sinh(lambda);
 }
