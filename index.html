@@ -26,6 +26,8 @@
 A flexible indexing scheme allows for general models to be setup with little effort.
 The model can either be solved using a DiagonalizationSolver, giving eigenstates and eigenvectors, or using a ChebyshevSolver to calculate Green's functions.</p>
 
+<p>Note: The library is in beta stage and rapid changes to the code base can occur. It is therefore advised that a local copy of the library is created before updating it in case important projects are dependent on it.</p>
+
 <h2>
 <a id="introductory-material" class="anchor" href="#introductory-material" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Introductory material</h2>
 
@@ -81,7 +83,14 @@ delete [] ev;
 <p>Currently the library can only be installed without modification if the computer has gcc 4.9 and nvcc 7.0 installed, and these can be loaded using "module load gcc/4.9" and "module load nvcc/7.0". If this is the case, type</p>
 
 <pre><code>git clone https://github.com/dafer45/TBTK
-source init_seesion.sh
+source init_session.sh
+./install.sh -CUDA
+</code></pre>
+
+<p>If CUDA is not available it is also possible to install the library without support for GPU by typing</p>
+
+<pre><code>git clone https://github.com/dafer45/TBTK
+source init_session.sh
 ./install.sh
 </code></pre>
 
@@ -108,7 +117,7 @@ source init_session.sh
 <h2>
 <a id="compile-and-run-templates" class="anchor" href="#compile-and-run-templates" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Compile and run Templates</h2>
 
-<p>Enter the template folder, for example Templates/BasicDiagonalization and type</p>
+<p>Enter the template folder, for example Templates/BasicDiagonalization, and type</p>
 
 <pre><code>make
 ./build/a.out
