@@ -31,6 +31,48 @@ The model can either be solved using a DiagonaliztionSolver, giving eigenstates 
 <p><a href="https://github.com/dafer45/TBTK/blob/gh-pages/files/presentation.pdf">Presentation</a><br>
 <a href="https://github.com/dafer45/TBTK/tree/master/Templates">Templates</a> (See src/main.cpp in each template folder)</p>
 
+<h2>
+<a id="example" class="anchor" href="#example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example</h2>
+
+<p>Setting up and diagonalizing a two dimensional tight-binding model with chemical potential mu and nearest neighbor hopping t.
+    //Create model and set up hopping parameters
+    Model model;
+    for(int x = 0; x &lt; SIZE_X; x++){
+        for(int y = 0; y &lt; SIZE_Y; y++){
+            for(int s = 0; s &lt; 2; s++){
+                //Add hopping amplitudes corresponding to chemical potential
+                model.addHA(HoppingAmplitude(-mu,   {x, y, s},  {x, y, s}));</p>
+
+<pre><code>            //Add hopping amplitudes corresponding to t
+            if(x+1 &lt; SIZE_X)
+                model.addHAAndHC(HoppingAmplitude(-t,   {(x+1)%SIZE_X, y, s},   {x, y, s}));
+            if(y+1 &lt; SIZE_Y)
+                model.addHAAndHC(HoppingAmplitude(-t,   {x, (y+1)%SIZE_Y, s},   {x, y, s}));
+        }
+    }
+}
+
+//Construct model
+model.construct();
+
+//Setup and run DiagonalizationSolver
+DiagonalizationSolver dSolver;
+dSolver.setModel(&amp;model);
+dSolver.run();
+
+//Set filename and remove any file already in the folder
+FileWriter::setFileName("TBTKResults.h5");
+FileWriter::clear();
+
+//Create PropertyExtractor
+PropertyExtractor pe(&amp;dSolver);
+
+//Extract eigenvalues and write these to file
+double *ev = pe.getEV();
+FileWriter::writeEV(ev, model.getBasisSize());
+delete [] ev;
+</code></pre>
+
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://github.com/dafer45/TBTK">TBTK</a> is maintained by <a href="https://github.com/dafer45">dafer45</a>.</span>
 
