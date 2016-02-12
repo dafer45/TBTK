@@ -34,16 +34,17 @@ The model can either be solved using a DiagonaliztionSolver, giving eigenstates 
 <h2>
 <a id="example" class="anchor" href="#example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example</h2>
 
-<p>Setting up and diagonalizing a two dimensional tight-binding model with chemical potential mu and nearest neighbor hopping t.
-    //Create model and set up hopping parameters
-    Model model;
-    for(int x = 0; x &lt; SIZE_X; x++){
-        for(int y = 0; y &lt; SIZE_Y; y++){
-            for(int s = 0; s &lt; 2; s++){
-                //Add hopping amplitudes corresponding to chemical potential
-                model.addHA(HoppingAmplitude(-mu,   {x, y, s},  {x, y, s}));</p>
+<p>Setting up and diagonalizing a two dimensional tight-binding model with chemical potential mu and nearest neighbor hopping t.</p>
 
-<pre><code>            //Add hopping amplitudes corresponding to t
+<pre><code>//Create model and set up hopping parameters
+Model model;
+for(int x = 0; x &lt; SIZE_X; x++){
+    for(int y = 0; y &lt; SIZE_Y; y++){
+        for(int s = 0; s &lt; 2; s++){
+            //Add hopping amplitudes corresponding to chemical potential
+            model.addHA(HoppingAmplitude(-mu,   {x, y, s},  {x, y, s}));
+
+            //Add hopping amplitudes corresponding to t
             if(x+1 &lt; SIZE_X)
                 model.addHAAndHC(HoppingAmplitude(-t,   {(x+1)%SIZE_X, y, s},   {x, y, s}));
             if(y+1 &lt; SIZE_Y)
