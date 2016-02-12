@@ -75,6 +75,43 @@ FileWriter::writeEV(ev, model.getBasisSize());
 delete [] ev;
 </code></pre>
 
+<h2>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>Currently the library can only be installed without modification if the computer has gcc 4.9 and nvcc 7.0 installed, and these can be loaded using "module load gcc/4.9" and "module load nvcc/7.0". If this is the case, type</p>
+
+<pre><code>git clone https://github.com/dafer45/TBTK
+source init_seesion.sh
+./install.sh
+</code></pre>
+
+<h2>
+<a id="update" class="anchor" href="#update" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Update</h2>
+
+<p>To update to the latest version of the library, type</p>
+
+<pre><code>git pull
+source init_session.sh
+./update.sh
+</code></pre>
+
+<h2>
+<a id="initialize-session" class="anchor" href="#initialize-session" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Initialize session</h2>
+
+<p>Each time a new session is started by opening a new shell the library has to be initialized by entering the library folder and typing</p>
+
+<pre><code>source init_session.sh
+</code></pre>
+
+<h2>
+<a id="compile-and-run-templates" class="anchor" href="#compile-and-run-templates" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Compile and run Templates</h2>
+
+<p>Enter the template folder, for example Templates/BasicDiagonalization and type</p>
+
+<pre><code>make
+./build/a.out
+</code></pre>
+
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://github.com/dafer45/TBTK">TBTK</a> is maintained by <a href="https://github.com/dafer45">dafer45</a>.</span>
 
