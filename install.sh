@@ -1,8 +1,8 @@
 #!/bin/bash -l
 
-#cd hdf5
-#	bash fetchAndBuild.sh
-#	cd ..
+cd hdf5
+	bash fetchAndBuild.sh
+	cd ..
 
 cp TBTK/calc/TightBindingLib/makefile_without_CUDA TBTK/calc/TightBindingLib/makefile
 while [[ $# > 0 ]]
