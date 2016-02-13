@@ -80,5 +80,13 @@ int main(int argc, char **argv){
 	FileWriter::writeEV(ev, model.getBasisSize());
 	delete [] ev;
 
+	//Extract DOS and write to file
+	const double UPPER_LIMIT = 7.;
+	const double LOWER_LIMIT = -5.;
+	const int RESOLUTION = 1000;
+	double *dos = pe.calculateDOS(UPPER_LIMIT, LOWER_LIMIT, RESOLUTION);
+	FileWriter::writeDOS(dos, UPPER_LIMIT, LOWER_LIMIT, RESOLUTION);
+	delete [] dos;
+
 	return 0;
 }

@@ -15,8 +15,8 @@ const complex<double> i(0, 1);
 
 int main(int argc, char **argv){
 	//Lattice size
-	const int SIZE_X = 40;
-	const int SIZE_Y = 40;
+	const int SIZE_X = 20;
+	const int SIZE_Y = 20;
 
 	//Parameters
 	complex<double> mu = -1.0;
