@@ -37,7 +37,7 @@ The model can either be solved using a DiagonalizationSolver, giving eigenstates
 <h2>
 <a id="example" class="anchor" href="#example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example</h2>
 
-<p>Setting up and diagonalizing a two dimensional tight-binding model with chemical potential mu and nearest neighbor hopping t.</p>
+<p>Setting up and diagonalizing a two dimensional tight-binding model with chemical potential mu and nearest neighbor hopping t. Eigenvalues and DOS are extracted and written to file.</p>
 
 <pre><code>//Create model and set up hopping parameters
 Model model;
@@ -75,6 +75,14 @@ PropertyExtractor pe(&amp;dSolver);
 double *ev = pe.getEV();
 FileWriter::writeEV(ev, model.getBasisSize());
 delete [] ev;
+
+//Extract DOS and write to file
+const double UPPER_LIMIT = 6.;
+const double LOWER_LIMIT = -4.;
+const int RESOLUTION = 1000;
+double *dos = pe.calculateDOS(UPPER_LIMIT, LOWER_LIMIT, RESOLUTION);
+FileWriter::writeDOS(dos, UPPER_LIMIT, LOWER_LIMIT, RESOLUTION);
+delete [] dos;
 </code></pre>
 
 <h2>
@@ -94,7 +102,7 @@ source init_session.sh
 ./install.sh
 </code></pre>
 
-<p>If you are interested in installing the library on a different system, contact <a href="mailto:dafer45@hotmail.com">dafer45@hotmail.com</a> or <a href="mailto:kristofer.bjornson@physics.uu.se">kristofer.bjornson@physics.uu.se</a> for further instructions.</p>
+<p>If you are interested in installing the library on a different system, contact <a href="mailto:kristofer.bjornson@physics.uu.se">kristofer.bjornson@physics.uu.se</a> for further instructions.</p>
 
 <h2>
 <a id="update" class="anchor" href="#update" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Update</h2>
