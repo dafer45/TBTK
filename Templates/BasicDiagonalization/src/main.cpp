@@ -15,8 +15,8 @@ const complex<double> i(0, 1);
 
 int main(int argc, char **argv){
 	//Lattice size
-	const int SIZE_X = 20;
-	const int SIZE_Y = 20;
+	const int SIZE_X = 40;
+	const int SIZE_Y = 40;
 
 	//Parameters
 	complex<double> mu = -1.0;
@@ -58,6 +58,14 @@ int main(int argc, char **argv){
 	double *ev = pe.getEV();
 	FileWriter::writeEV(ev, model.getBasisSize());
 	delete [] ev;
+
+	//Extract DOS and write to file
+	const double UPPER_LIMIT = 6.;
+	const double LOWER_LIMIT = -4.;
+	const int RESOLUTION = 1000;
+	double *dos = pe.calculateDOS(UPPER_LIMIT, LOWER_LIMIT, RESOLUTION);
+	FileWriter::writeDOS(dos, UPPER_LIMIT, LOWER_LIMIT, RESOLUTION);
+	delete [] dos;
 
 	return 0;
 }
