@@ -1,5 +1,7 @@
 Welcome to the Tight Binding Toolkit - TBTK
 
+For an introduction to the library, see http://dafer45.github.io
+
 ###########################
 # Installation instructions
 ###########################
