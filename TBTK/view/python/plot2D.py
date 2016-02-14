@@ -33,6 +33,9 @@ ax = fig.gca(projection='3d')
 Z = dataset[:,:]
 ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap=matplotlib.cm.coolwarm, linewidth=0, antialiased=False)
 ax.set_zlim(numpy.min(Z), numpy.max(Z))
+ax.set_xlabel('x');
+ax.set_ylabel('y');
+ax.set_zlabel(dataset_name);
 
 fig.savefig('figures/' + dataset_name + '.png')
 
