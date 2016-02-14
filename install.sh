@@ -10,8 +10,8 @@ do
 	key=$1
 	case $key in
 		-CUDA)
-		cp TBTK/calc/TightBindingLib/makefile_with_CUDA TBTK/calc/TightBindingLib/makefile
-		shift
+			cp TBTK/calc/TightBindingLib/makefile_with_CUDA TBTK/calc/TightBindingLib/makefile
+			shift
 		;;
 	esac
 done
