@@ -2,17 +2,17 @@ import h5py
 import matplotlib.pyplot
 import sys
 
-if(len(sys.argv) != 2):
-	print "Error: Needs one argument for .hdf5-filename"
+if(len(sys.argv) != 3):
+	print "Error, the following arguments are needed: .hdf5-file, dataset name"
 	exit(1)
 
 filename = sys.argv[1]
+dataset_name = sys.argv[2]
 
 file = h5py.File(filename, 'r');
 
-dataset = file['EV']
+dataset = file[dataset_name]
 
 fig = matplotlib.pyplot.figure()
 matplotlib.pyplot.plot(dataset)
-#matplotlib.pyplot.show()
-fig.savefig('figures/EV.png')
+fig.savefig('figures/' + dataset_name + '.png')
