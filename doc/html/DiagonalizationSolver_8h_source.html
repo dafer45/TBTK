@@ -157,7 +157,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;}</div>
 <div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;</div>
 <div class="line"><a name="l00107"></a><span class="lineno"><a class="line" href="classDiagonalizationSolver.html#ac91af311f7f355b2b05d936c44afceb6">  107</a></span>&#160;<span class="keyword">inline</span> <span class="keyword">const</span> std::complex&lt;double&gt; <a class="code" href="classDiagonalizationSolver.html#ac91af311f7f355b2b05d936c44afceb6">DiagonalizationSolver::getAmplitude</a>(<span class="keywordtype">int</span> state, <span class="keyword">const</span> <a class="code" href="classIndex.html">Index</a> &amp;index){</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    <span class="keywordflow">return</span> eigenVectors[model-&gt;getBasisSize()*state + model-&gt;getBasisIndex(index)];</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    <span class="keywordflow">return</span> eigenVectors[model-&gt;<a class="code" href="classModel.html#af7b9c25026a17d12a5e18fb2822e3013">getBasisSize</a>()*state + model-&gt;<a class="code" href="classModel.html#a7781d01600babe44521c9fa0653289e5">getBasisIndex</a>(index)];</div>
 <div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;}</div>
 <div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;</div>
 <div class="line"><a name="l00111"></a><span class="lineno"><a class="line" href="classDiagonalizationSolver.html#a6e64bbf9f6fced52697291b777652734">  111</a></span>&#160;<span class="keyword">inline</span> <a class="code" href="classModel.html">Model</a>* <a class="code" href="classDiagonalizationSolver.html#a6e64bbf9f6fced52697291b777652734">DiagonalizationSolver::getModel</a>(){</div>
@@ -173,16 +173,18 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="ttc" id="classDiagonalizationSolver_html_a09a6db7bf31f77962448ea5a9a1f9187"><div class="ttname"><a href="classDiagonalizationSolver.html#a09a6db7bf31f77962448ea5a9a1f9187">DiagonalizationSolver::setMaxIterations</a></div><div class="ttdeci">void setMaxIterations(int maxIterations)</div><div class="ttdef"><b>Definition:</b> DiagonalizationSolver.h:95</div></div>
 <div class="ttc" id="classDiagonalizationSolver_html"><div class="ttname"><a href="classDiagonalizationSolver.html">DiagonalizationSolver</a></div><div class="ttdef"><b>Definition:</b> DiagonalizationSolver.h:19</div></div>
 <div class="ttc" id="classDiagonalizationSolver_html_a6e64bbf9f6fced52697291b777652734"><div class="ttname"><a href="classDiagonalizationSolver.html#a6e64bbf9f6fced52697291b777652734">DiagonalizationSolver::getModel</a></div><div class="ttdeci">Model * getModel()</div><div class="ttdef"><b>Definition:</b> DiagonalizationSolver.h:111</div></div>
-<div class="ttc" id="classModel_html"><div class="ttname"><a href="classModel.html">Model</a></div><div class="ttdef"><b>Definition:</b> Model.h:22</div></div>
+<div class="ttc" id="classModel_html"><div class="ttname"><a href="classModel.html">Model</a></div><div class="ttdef"><b>Definition:</b> Model.h:26</div></div>
 <div class="ttc" id="classDiagonalizationSolver_html_a602bcfd2d04f499cdc44ea7eddedcae5"><div class="ttname"><a href="classDiagonalizationSolver.html#a602bcfd2d04f499cdc44ea7eddedcae5">DiagonalizationSolver::~DiagonalizationSolver</a></div><div class="ttdeci">~DiagonalizationSolver()</div><div class="ttdef"><b>Definition:</b> DiagonalizationSolver.cpp:19</div></div>
+<div class="ttc" id="classModel_html_af7b9c25026a17d12a5e18fb2822e3013"><div class="ttname"><a href="classModel.html#af7b9c25026a17d12a5e18fb2822e3013">Model::getBasisSize</a></div><div class="ttdeci">int getBasisSize()</div><div class="ttdef"><b>Definition:</b> Model.h:63</div></div>
 <div class="ttc" id="classDiagonalizationSolver_html_a39647547225238d3210d08b8a2c62ee0"><div class="ttname"><a href="classDiagonalizationSolver.html#a39647547225238d3210d08b8a2c62ee0">DiagonalizationSolver::setSCCallback</a></div><div class="ttdeci">void setSCCallback(bool(*scCallback)(DiagonalizationSolver *diagonalizationSolver))</div><div class="ttdef"><b>Definition:</b> DiagonalizationSolver.h:91</div></div>
 <div class="ttc" id="classIndex_html"><div class="ttname"><a href="classIndex.html">Index</a></div><div class="ttdef"><b>Definition:</b> Index.h:17</div></div>
 <div class="ttc" id="classDiagonalizationSolver_html_a8866a52542b6c94fcd9eb7ef27246dc9"><div class="ttname"><a href="classDiagonalizationSolver.html#a8866a52542b6c94fcd9eb7ef27246dc9">DiagonalizationSolver::getEigenValues</a></div><div class="ttdeci">const double * getEigenValues()</div><div class="ttdef"><b>Definition:</b> DiagonalizationSolver.h:99</div></div>
 <div class="ttc" id="classDiagonalizationSolver_html_ab3f84d060cf751d789e0095540eee178"><div class="ttname"><a href="classDiagonalizationSolver.html#ab3f84d060cf751d789e0095540eee178">DiagonalizationSolver::run</a></div><div class="ttdeci">void run()</div><div class="ttdef"><b>Definition:</b> DiagonalizationSolver.cpp:28</div></div>
+<div class="ttc" id="classModel_html_a7781d01600babe44521c9fa0653289e5"><div class="ttname"><a href="classModel.html#a7781d01600babe44521c9fa0653289e5">Model::getBasisIndex</a></div><div class="ttdeci">int getBasisIndex(Index index)</div><div class="ttdef"><b>Definition:</b> Model.h:67</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Feb 15 2016 23:09:00 for TBTK by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Feb 16 2016 00:08:04 for TBTK by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

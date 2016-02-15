@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['fromindex',['fromIndex',['../classHoppingAmplitude.html#a9dfd43d831dbd412adc1e03f09044535',1,'HoppingAmplitude']]]
+  ['amplitudeset',['amplitudeSet',['../classModel.html#a62b93f23ebd3256dd21d5a73ecedd954',1,'Model']]]
 ];

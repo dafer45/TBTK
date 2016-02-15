@@ -102,96 +102,61 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    IDX_Z = -4,</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    IDX_SPIN = -5};</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;</div>
-<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="classModel.html">   22</a></span>&#160;<span class="keyword">class </span><a class="code" href="classModel.html">Model</a>{</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <span class="keyword">enum</span> {MODE_ALL_EIGENVECTORS, MODE_SOME_EIGENVECTORS, MODE_CHEBYSHEV};</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <a class="code" href="classModel.html">Model</a>(<span class="keywordtype">int</span> mode = MODE_ALL_EIGENVECTORS, <span class="keywordtype">int</span> numEigenstates = 0);</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    ~<a class="code" href="classModel.html">Model</a>();</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <span class="keywordtype">void</span> addHA(<a class="code" href="classHoppingAmplitude.html">HoppingAmplitude</a> ha);</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <span class="keywordtype">void</span> addHAAndHC(<a class="code" href="classHoppingAmplitude.html">HoppingAmplitude</a> ha);</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <span class="keywordtype">int</span> getBasisIndex(<a class="code" href="classIndex.html">Index</a> index);</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="keywordtype">int</span> getBasisSize();</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keywordtype">void</span> construct();</div>
+<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="classModel.html">   26</a></span>&#160;<span class="keyword">class </span><a class="code" href="classModel.html">Model</a>{</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keyword">enum</span> {MODE_ALL_EIGENVECTORS, MODE_SOME_EIGENVECTORS, MODE_CHEBYSHEV};</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <a class="code" href="classModel.html#aaf73229f5d3dc86edb243c076e59e8b5">Model</a>(<span class="keywordtype">int</span> mode = MODE_ALL_EIGENVECTORS, <span class="keywordtype">int</span> numEigenstates = 0);</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <a class="code" href="classModel.html#ad6ebd2062a0b823db841a0b88baac4c0">~Model</a>();</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="comment">/*  void setSCCallback(bool (*scCallback)(Model *model));</span></div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="comment">    void setMaxIterations(int maxIterations);</span></div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="comment">    void update();</span></div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="comment">    void solve();</span></div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="comment">    void run();</span></div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="comment">    const double* getEigenValues();//{  return eigen_values;    }</span></div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="comment">    const std::complex&lt;double&gt;* getEigenVectors();//{   return eigen_vectors;   };</span></div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="comment">    const std::complex&lt;double&gt; getAmplitude(int state, const Index &amp;index);*/</span></div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <span class="keywordtype">void</span> print();</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <a class="code" href="classAmplitudeSet.html">AmplitudeSet</a> amplitudeSet;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <span class="keywordtype">void</span> saveEV(std::string path = <span class="stringliteral">&quot;./&quot;</span>, std::string filename = <span class="stringliteral">&quot;EV.dat&quot;</span>);</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <span class="keywordtype">int</span> mode;</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keywordtype">int</span> numEigenstates;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="comment">/*  std::complex&lt;double&gt;* hamiltonian;</span></div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="comment">    double* eigen_values;</span></div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="comment">    std::complex&lt;double&gt;* eigen_vectors;</span></div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="comment">    int maxIterations;</span></div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="comment">    bool (*scCallback)(Model *model);*/</span></div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;};</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="keyword">inline</span> <span class="keywordtype">int</span> Model::getBasisSize(){</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <span class="keywordflow">return</span> amplitudeSet.<a class="code" href="classAmplitudeSet.html#a68faae198c822e23388806d03847495c">getBasisSize</a>();</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;}</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;<span class="comment">/*inline void Model::setMaxIterations(int maxIterations){</span></div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="comment">    this-&gt;maxIterations = maxIterations;</span></div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="comment">}</span></div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="comment"></span></div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="comment">inline const std::complex&lt;double&gt; Model::getAmplitude(int state, const Index &amp;index){</span></div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<span class="comment">    return eigen_vectors[getBasisSize()*state + getBasisIndex(index)];</span></div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="comment">}*/</span></div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<span class="keyword">inline</span> <span class="keywordtype">int</span> Model::getBasisIndex(<a class="code" href="classIndex.html">Index</a> index){</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    <span class="keywordflow">return</span> amplitudeSet.<a class="code" href="classAmplitudeSet.html#a3520f9ff99f8e998499434e5d7bfdaa9">getBasisIndex</a>(index);</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;}</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="comment">/*inline const double* Model::getEigenValues(){</span></div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;<span class="comment">    if(mode == MODE_ALL_EIGENVECTORS){</span></div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;<span class="comment">        return eigen_values;</span></div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;<span class="comment">    }</span></div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<span class="comment">    else{</span></div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;<span class="comment">        std::cout &lt;&lt; &quot;Error in System::getEigenValues(): Eigenvalues cannot be accessed with this method in MODE_SOME_EIGENVECTORS\n&quot;;</span></div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;<span class="comment">        exit(1);</span></div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="comment">    }</span></div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;<span class="comment">}</span></div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;<span class="comment">inline const std::complex&lt;double&gt;* Model::getEigenVectors(){</span></div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;<span class="comment">    if(mode == MODE_ALL_EIGENVECTORS){</span></div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;<span class="comment">        return eigen_vectors;</span></div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;<span class="comment">    }</span></div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;<span class="comment">    else{</span></div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;<span class="comment">        std::cout &lt;&lt; &quot;Error in System::getEigenValues(): Eigenvectors cannot be accessed with this method in MODE_SOME_EIGENVECTORS&quot;;</span></div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;<span class="comment">        exit(1);</span></div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;<span class="comment">    }</span></div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;<span class="comment">}*/</span></div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classModel.html#a8cb91ef6d2bd91ac7d482c2143a9f78b">addHA</a>(<a class="code" href="classHoppingAmplitude.html">HoppingAmplitude</a> ha);</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classModel.html#aeb9cab2f8954216547f61b1e6d5c66da">addHAAndHC</a>(<a class="code" href="classHoppingAmplitude.html">HoppingAmplitude</a> ha);</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keywordtype">int</span> <a class="code" href="classModel.html#a7781d01600babe44521c9fa0653289e5">getBasisIndex</a>(<a class="code" href="classIndex.html">Index</a> index);</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    <span class="keywordtype">int</span> <a class="code" href="classModel.html#af7b9c25026a17d12a5e18fb2822e3013">getBasisSize</a>();</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classModel.html#aef816753cb32c33914495eb18c68d1b3">construct</a>();</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;</div>
+<div class="line"><a name="l00055"></a><span class="lineno"><a class="line" href="classModel.html#a62b93f23ebd3256dd21d5a73ecedd954">   55</a></span>&#160;    <a class="code" href="classAmplitudeSet.html">AmplitudeSet</a> <a class="code" href="classModel.html#a62b93f23ebd3256dd21d5a73ecedd954">amplitudeSet</a>;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <span class="keywordtype">void</span> saveEV(std::string path = <span class="stringliteral">&quot;./&quot;</span>, std::string filename = <span class="stringliteral">&quot;EV.dat&quot;</span>);</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    <span class="keywordtype">int</span> mode;</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    <span class="keywordtype">int</span> numEigenstates;</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;};</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;</div>
+<div class="line"><a name="l00063"></a><span class="lineno"><a class="line" href="classModel.html#af7b9c25026a17d12a5e18fb2822e3013">   63</a></span>&#160;<span class="keyword">inline</span> <span class="keywordtype">int</span> <a class="code" href="classModel.html#af7b9c25026a17d12a5e18fb2822e3013">Model::getBasisSize</a>(){</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="classModel.html#a62b93f23ebd3256dd21d5a73ecedd954">amplitudeSet</a>.<a class="code" href="classAmplitudeSet.html#a68faae198c822e23388806d03847495c">getBasisSize</a>();</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;}</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;</div>
+<div class="line"><a name="l00067"></a><span class="lineno"><a class="line" href="classModel.html#a7781d01600babe44521c9fa0653289e5">   67</a></span>&#160;<span class="keyword">inline</span> <span class="keywordtype">int</span> <a class="code" href="classModel.html#a7781d01600babe44521c9fa0653289e5">Model::getBasisIndex</a>(<a class="code" href="classIndex.html">Index</a> index){</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="classModel.html#a62b93f23ebd3256dd21d5a73ecedd954">amplitudeSet</a>.<a class="code" href="classAmplitudeSet.html#a3520f9ff99f8e998499434e5d7bfdaa9">getBasisIndex</a>(index);</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;}</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="preprocessor"></span></div>
 <div class="ttc" id="classAmplitudeSet_html_a68faae198c822e23388806d03847495c"><div class="ttname"><a href="classAmplitudeSet.html#a68faae198c822e23388806d03847495c">AmplitudeSet::getBasisSize</a></div><div class="ttdeci">int getBasisSize()</div><div class="ttdef"><b>Definition:</b> AmplitudeSet.h:110</div></div>
+<div class="ttc" id="classModel_html_ad6ebd2062a0b823db841a0b88baac4c0"><div class="ttname"><a href="classModel.html#ad6ebd2062a0b823db841a0b88baac4c0">Model::~Model</a></div><div class="ttdeci">~Model()</div><div class="ttdef"><b>Definition:</b> Model.cpp:19</div></div>
 <div class="ttc" id="classHoppingAmplitude_html"><div class="ttname"><a href="classHoppingAmplitude.html">HoppingAmplitude</a></div><div class="ttdef"><b>Definition:</b> HoppingAmplitude.h:25</div></div>
 <div class="ttc" id="classAmplitudeSet_html"><div class="ttname"><a href="classAmplitudeSet.html">AmplitudeSet</a></div><div class="ttdef"><b>Definition:</b> AmplitudeSet.h:25</div></div>
-<div class="ttc" id="classModel_html"><div class="ttname"><a href="classModel.html">Model</a></div><div class="ttdef"><b>Definition:</b> Model.h:22</div></div>
+<div class="ttc" id="classModel_html_a62b93f23ebd3256dd21d5a73ecedd954"><div class="ttname"><a href="classModel.html#a62b93f23ebd3256dd21d5a73ecedd954">Model::amplitudeSet</a></div><div class="ttdeci">AmplitudeSet amplitudeSet</div><div class="ttdef"><b>Definition:</b> Model.h:55</div></div>
+<div class="ttc" id="classModel_html_aef816753cb32c33914495eb18c68d1b3"><div class="ttname"><a href="classModel.html#aef816753cb32c33914495eb18c68d1b3">Model::construct</a></div><div class="ttdeci">void construct()</div><div class="ttdef"><b>Definition:</b> Model.cpp:30</div></div>
+<div class="ttc" id="classModel_html_a8cb91ef6d2bd91ac7d482c2143a9f78b"><div class="ttname"><a href="classModel.html#a8cb91ef6d2bd91ac7d482c2143a9f78b">Model::addHA</a></div><div class="ttdeci">void addHA(HoppingAmplitude ha)</div><div class="ttdef"><b>Definition:</b> Model.cpp:22</div></div>
+<div class="ttc" id="classModel_html"><div class="ttname"><a href="classModel.html">Model</a></div><div class="ttdef"><b>Definition:</b> Model.h:26</div></div>
+<div class="ttc" id="classModel_html_aaf73229f5d3dc86edb243c076e59e8b5"><div class="ttname"><a href="classModel.html#aaf73229f5d3dc86edb243c076e59e8b5">Model::Model</a></div><div class="ttdeci">Model(int mode=MODE_ALL_EIGENVECTORS, int numEigenstates=0)</div><div class="ttdef"><b>Definition:</b> Model.cpp:14</div></div>
 <div class="ttc" id="AmplitudeSet_8h_html"><div class="ttname"><a href="AmplitudeSet_8h.html">AmplitudeSet.h</a></div><div class="ttdoc">HoppingAmplitude container. </div></div>
+<div class="ttc" id="classModel_html_af7b9c25026a17d12a5e18fb2822e3013"><div class="ttname"><a href="classModel.html#af7b9c25026a17d12a5e18fb2822e3013">Model::getBasisSize</a></div><div class="ttdeci">int getBasisSize()</div><div class="ttdef"><b>Definition:</b> Model.h:63</div></div>
+<div class="ttc" id="classModel_html_aeb9cab2f8954216547f61b1e6d5c66da"><div class="ttname"><a href="classModel.html#aeb9cab2f8954216547f61b1e6d5c66da">Model::addHAAndHC</a></div><div class="ttdeci">void addHAAndHC(HoppingAmplitude ha)</div><div class="ttdef"><b>Definition:</b> Model.cpp:26</div></div>
 <div class="ttc" id="classIndex_html"><div class="ttname"><a href="classIndex.html">Index</a></div><div class="ttdef"><b>Definition:</b> Index.h:17</div></div>
 <div class="ttc" id="classAmplitudeSet_html_a3520f9ff99f8e998499434e5d7bfdaa9"><div class="ttname"><a href="classAmplitudeSet.html#a3520f9ff99f8e998499434e5d7bfdaa9">AmplitudeSet::getBasisIndex</a></div><div class="ttdeci">int getBasisIndex(const Index &amp;index)</div><div class="ttdef"><b>Definition:</b> AmplitudeSet.h:106</div></div>
+<div class="ttc" id="classModel_html_a7781d01600babe44521c9fa0653289e5"><div class="ttname"><a href="classModel.html#a7781d01600babe44521c9fa0653289e5">Model::getBasisIndex</a></div><div class="ttdeci">int getBasisIndex(Index index)</div><div class="ttdef"><b>Definition:</b> Model.h:67</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Feb 15 2016 23:09:00 for TBTK by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Feb 16 2016 00:08:04 for TBTK by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

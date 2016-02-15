@@ -7,5 +7,5 @@ var searchData=
   ['chebyshevsolver_2ecpp',['ChebyshevSolver.cpp',['../ChebyshevSolver_8cpp.html',1,'']]],
   ['chebyshevsolver_2eh',['ChebyshevSolver.h',['../ChebyshevSolver_8h.html',1,'']]],
   ['clear',['clear',['../classFileWriter.html#a8c031cbd9951a7de4113eb47e679fcc9',1,'FileWriter']]],
-  ['construct',['construct',['../classAmplitudeSet.html#a3cd6d0b4fab57a2cd1c73259ed6459a7',1,'AmplitudeSet']]]
+  ['construct',['construct',['../classAmplitudeSet.html#a3cd6d0b4fab57a2cd1c73259ed6459a7',1,'AmplitudeSet::construct()'],['../classModel.html#aef816753cb32c33914495eb18c68d1b3',1,'Model::construct()']]]
 ];

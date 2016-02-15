@@ -10,8 +10,8 @@ var indexSectionsWithContent =
   0: "acdefghilmprstw~",
   1: "acdfhimpt",
   2: "acdfhimpt",
-  3: "acdeghilprstw~",
-  4: "fit",
+  3: "acdeghilmprstw~",
+  4: "afit",
   5: "a",
   6: "rt"
 };

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['indices',['indices',['../classIndex.html#a283c272eea6621b0271643dc4940473b',1,'Index']]]
+  ['fromindex',['fromIndex',['../classHoppingAmplitude.html#a9dfd43d831dbd412adc1e03f09044535',1,'HoppingAmplitude']]]
 ];

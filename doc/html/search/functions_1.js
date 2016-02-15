@@ -5,5 +5,5 @@ var searchData=
   ['calculatecoefficientswithcutoff',['calculateCoefficientsWithCutoff',['../classChebyshevSolver.html#a3f06343673c1cea959fe89d1fb95b669',1,'ChebyshevSolver']]],
   ['chebyshevsolver',['ChebyshevSolver',['../classChebyshevSolver.html#aa855a729f7fd22791d4c9ddebdbefff3',1,'ChebyshevSolver']]],
   ['clear',['clear',['../classFileWriter.html#a8c031cbd9951a7de4113eb47e679fcc9',1,'FileWriter']]],
-  ['construct',['construct',['../classAmplitudeSet.html#a3cd6d0b4fab57a2cd1c73259ed6459a7',1,'AmplitudeSet']]]
+  ['construct',['construct',['../classAmplitudeSet.html#a3cd6d0b4fab57a2cd1c73259ed6459a7',1,'AmplitudeSet::construct()'],['../classModel.html#aef816753cb32c33914495eb18c68d1b3',1,'Model::construct()']]]
 ];
