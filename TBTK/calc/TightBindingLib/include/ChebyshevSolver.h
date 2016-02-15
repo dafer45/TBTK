@@ -13,13 +13,22 @@
 #include "Model.h"
 #include <complex>
 
+/** The ChebyshevSolver can be used to calculate Green's function for a given
+ *  Model. The implementation is based on PhysRevLett.105.167006.
+*/
 class ChebyshevSolver{
 public:
+	/** Constructor. */
 	ChebyshevSolver();
+	/** Destructor. */
 	~ChebyshevSolver();
 
+	/** Set model to work on. */
 	void setModel(Model *model);
 
+	/** Calculates the Chebyshev coefficients for \f$ G_{ij}(E)\f$, where
+	 *  $i = to$ and $j = from$.
+	 *  @param to 'To'-index, or \f$i\f$*/
 	void calculateCoefficients(Index to, Index from, std::complex<double> *coefficients, int numCoefficients, double broadening = 0.0001);
 	void calculateCoefficientsGPU(std::vector<Index> &to, Index from, std::complex<double> *coefficients, int numCoefficients, double broadening = 0.0001);
 	void calculateCoefficientsGPU(Index to, Index from, std::complex<double> *coefficients, int numCoefficients, double broadening = 0.0001);
