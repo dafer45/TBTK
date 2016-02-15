@@ -1,3 +1,9 @@
+/** @file DiagonalizationSolver.h
+ *  @brief Solves a Model using diagonalization
+ *
+ *  @author Kristofer Björnson
+ */
+
 #ifndef COM_DAFER45_TBTK_DIAGONALIZATION_SOLVER
 #define COM_DAFER45_TBTK_DIAGONALIZATION_SOLVER
 

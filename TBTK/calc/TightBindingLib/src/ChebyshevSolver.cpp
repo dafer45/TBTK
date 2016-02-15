@@ -1,3 +1,8 @@
+/** @file ChebyshevSolver.cpp
+ *
+ *  @author Kristofer Björnson
+ */
+
 #include "../include/ChebyshevSolver.h"
 #include <math.h>
 #include "../include/HALinkedList.h"

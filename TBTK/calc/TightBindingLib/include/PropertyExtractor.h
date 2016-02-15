@@ -1,3 +1,9 @@
+/** @file PropertyExtracto.h
+ *  @brief Extracts physical properties from the output of DiagonalizationSolver
+ *
+ * @author Kristofer Björnson
+ */
+
 #ifndef COM_DAFER45_TBTK_PROPERTY_EXTRACTOR
 #define COM_DAFER45_TBTK_PROPERTY_EXTRACTOR
 

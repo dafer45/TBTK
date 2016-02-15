@@ -1,3 +1,12 @@
+/** @file HALinkedList.h
+ *  @brief Support data structure for ChebyshevSolver
+ *
+ *  Only used in the experimental function
+ *  ChebyshevSolver::calculateCoefficients(..., componentCutoff, ...)
+ *
+ *  @author Kristofer Björnson
+ */
+
 #ifndef COM_DAFER45_TBTK_HA_LINKED_LIST
 #define COM_DAFER45_TBTK_HA_LINKED_LIST
 

@@ -1,3 +1,9 @@
+/** @file Index.h
+ *  @brief Datastructure for flexible physical indices
+ *
+ *  @author Kristofer Björnson
+ */
+
 #ifndef COM_DAFER45_TBTK_INDEX
 #define COM_DAFER45_TBTK_INDEX
 

@@ -1,3 +1,8 @@
+/** @file HoppingAmplitude.cpp
+ *
+ *  @author Kristofer Björnson
+ */
+
 #include "../include/HoppingAmplitude.h"
 #include <iostream>
 

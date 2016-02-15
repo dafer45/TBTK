@@ -1,3 +1,8 @@
+/** @file TreeNode.cpp
+ *
+ *  @author Kristofer Björnson
+ */
+
 #include "../include/TreeNode.h"
 #include <iostream>
 

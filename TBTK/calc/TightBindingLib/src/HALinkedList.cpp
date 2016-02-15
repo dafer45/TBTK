@@ -1,3 +1,8 @@
+/** @file HALinkedList.cpp
+ *
+ *  @author Kristofer Björnson
+ */
+
 #include "../include/HALinkedList.h"
 
 HALinkedList::HALinkedList(AmplitudeSet &as){

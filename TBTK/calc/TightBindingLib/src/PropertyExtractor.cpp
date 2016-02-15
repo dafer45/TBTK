@@ -1,3 +1,8 @@
+/** @file PropertyExtractor.cpp
+ *
+ *  @author Kristofer Björnson
+ */
+
 #include "../include/PropertyExtractor.h"
 #include <iostream>
 

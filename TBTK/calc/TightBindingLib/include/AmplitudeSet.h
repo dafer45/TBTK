@@ -1,3 +1,9 @@
+/** @file AmplitudeSet.h
+ *  @brief HoopingAmplitude container
+ *
+ *  @author Kristofer Björnson
+ */
+
 #ifndef COM_DAFER45_TBTK_AMPLITUDE_SET
 #define COM_DAFER45_TBTK_AMPLITUDE_SET
 

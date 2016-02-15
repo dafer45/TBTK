@@ -1,3 +1,9 @@
+/** @file TreeNode
+ *  @brief Node in tree structure used by AmplitudeSet to store HoppingAmplitudes
+ *
+ *  @author Kristofer Björnson
+ */
+
 #ifndef COM_DAFER45_TBTK_TREE_NODE
 #define COM_DAFER45_TBTK_TREE_NODE
 

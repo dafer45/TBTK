@@ -1,3 +1,9 @@
+/** @file HoppingAmplitude.h
+ *  @brief Hopping amplitude from state 'from' to 'to'
+ *
+ *  @author Kristofer Björnson
+ */
+
 #ifndef COM_DAFER45_TBTK_HOPPING_AMPLITUDE
 #define COM_DAFER45_TBTK_HOPPING_AMPLITUDE
 

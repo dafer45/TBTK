@@ -1,3 +1,8 @@
+/** @file AmplitudeSet.c
+ *
+ *  @author Kristofer Björnson
+ */
+
 #include "../include/AmplitudeSet.h"
 #include <iostream>
 

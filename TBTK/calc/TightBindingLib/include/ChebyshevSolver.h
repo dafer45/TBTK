@@ -1,3 +1,11 @@
+/** @file ChebyshevSolver.h
+ *  @brief Solves a Model using the Chebyshev method
+ *
+ *  Based on PhysRevLett.105.167006
+ *
+ *  @author Kristofer Björnson
+ */
+
 #ifndef COM_DAFER45_TBTK_CHEBYSHEV_SOLVER
 #define COM_DAFER45_TBTK_CHEBYSHEV_SOLVER
 

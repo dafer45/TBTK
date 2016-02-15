@@ -1,3 +1,8 @@
+/** @file FileWriter.cpp
+ *
+ *  @author Kristofer Björnson
+ */
+
 #include "../include/FileWriter.h"
 #include "../include/PropertyExtractor.h"
 #include <string>

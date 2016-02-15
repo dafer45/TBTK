@@ -1,3 +1,8 @@
+/** @file Model.cpp
+ *
+ *  @author Kristofer Björnson
+ */
+
 #include <iostream>
 #include "../include/Model.h"
 #include <string>

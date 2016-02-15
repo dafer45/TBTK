@@ -1,3 +1,9 @@
+/** @file FileWriter.h
+ *  @brief Writes data to file
+ *
+ *  @author Kristofer Björnson
+ */
+
 #ifndef COM_DAFER45_TBTK_FILE_WRITER
 #define COM_DAFER45_TBTK_FILE_WRITER
 

@@ -1,3 +1,8 @@
+/** @file DiagonalizationSolver.cpp
+ *
+ *  @author Kristofer Björnson
+ */
+
 #include "../include/DiagonalizationSolver.h"
 
 using namespace std;

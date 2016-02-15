@@ -1,3 +1,9 @@
+/** @file Model.h
+ *  @brief Model Hamiltonian
+ *
+ *  @author Kristofer Björnson
+ */
+
 #ifndef COM_DAFER45_TBTK_MODEL
 #define COM_DAFER45_TBTK_MODEL
 
