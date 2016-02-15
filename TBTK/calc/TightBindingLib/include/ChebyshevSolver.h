@@ -27,7 +27,7 @@ public:
 	void setModel(Model *model);
 
 	/** Calculates the Chebyshev coefficients for \f$ G_{ij}(E)\f$, where
-	 *  $i = to$ and $j = from$.
+	 *  \f$i = \textrm{to}\f$ and \f$j = \textrm{from}\f$.
 	 *  @param to 'To'-index, or \f$i\f$*/
 	void calculateCoefficients(Index to, Index from, std::complex<double> *coefficients, int numCoefficients, double broadening = 0.0001);
 	void calculateCoefficientsGPU(std::vector<Index> &to, Index from, std::complex<double> *coefficients, int numCoefficients, double broadening = 0.0001);
