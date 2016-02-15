@@ -15,7 +15,12 @@
 
 /** The ChebyshevSolver can be used to calculate Green's function for a given
  *  Model. The implementation is based on PhysRevLett.105.167006. The
- *  ChebyshevSolver can be run on CPU, GPU, or a mixture of both.
+ *  ChebyshevSolver can be run on CPU, GPU, or a mixture of both. The
+ *  calculation of Chebyshev coefficients scales as \f$O(n)\f$ with each of the
+ *  following: dimension of the Hilbert space and number of Chebyshev
+ *  coefficients. The generation of Green's functions scales linearly with the
+ *  following: Number of coefficients, energy resolution, and the number of
+ *  Green's functions.
 */
 class ChebyshevSolver{
 public:
