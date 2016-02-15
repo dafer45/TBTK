@@ -1,6 +1,11 @@
-/* Basic example of diagonalization of a 2D tight-binding model with t = 1 and
- * mu = 0. Hexagonal lattice with edges, four sites per unit cell, and 10x10
- * unit cells.
+/** @file Templates/HexagonalLattice/src/main.cpp
+ *  @brief Hexagonal lattice using diagonalization
+ *  
+ *  Basic example of diagonalization of a 2D tight-binding model with t = 1 and
+ *  mu = 0. Hexagonal lattice with edges, four sites per unit cell, and 10x10
+ *  unit cells.
+ *
+ *  @author Kristofer Björnson
  */
 
 #include <iostream>

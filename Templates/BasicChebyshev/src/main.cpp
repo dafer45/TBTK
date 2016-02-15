@@ -1,8 +1,13 @@
-/* Basic example of using the Chebyshev method to solve a 2D tight-binding
- * model with t = 1 and mu = -1. Lattice with edges and a size of 20x20 sites.
- * Using 5000 Chebyshev coefficients and evaluating the Green's function with
- * an energy resolution of 10000. Calculates LDOS at SIZE_X = 20 sites along
- * the line y = SIZE_Y/2 = 10.
+/** @file Templates/BasicChebyshev/src/main.cpp
+ *  @brief Basic Chebyshev example
+ *
+ *  Basic example of using the Chebyshev method to solve a 2D tight-binding
+ *  model with t = 1 and mu = -1. Lattice with edges and a size of 20x20 sites.
+ *  Using 5000 Chebyshev coefficients and evaluating the Green's function with
+ *  an energy resolution of 10000. Calculates LDOS at SIZE_X = 20 sites along
+ *  the line y = SIZE_Y/2 = 10.
+ *
+ *  @author Kristofer Björnson
  */
 
 #include <iostream>

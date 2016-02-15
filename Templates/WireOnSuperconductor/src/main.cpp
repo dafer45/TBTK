@@ -1,8 +1,13 @@
-/* Self-consistent solution for superconducting order-parameter for a 2D
- * tight-binding model with t_ss = 1, mu = -1, and V_sc = 2. Lattice with edges
- * and a size of 36x19 sites. A ferromagnetic wire of length 18 is attached on
- * top of the superconductor with t_mm = 0.75 inside the wire, and t_sm = 0.9
- * between wire and superconductor.
+/** @file Templates/WireOnSuperconductor/src/main.cpp
+ *  @brief Wire on superconductor using self-consistent diagonalization
+ *  
+ *  Self-consistent solution for superconducting order-parameter for a 2D
+ *  tight-binding model with t_ss = 1, mu = -1, and V_sc = 2. Lattice with
+ *  edges and a size of 36x19 sites. A ferromagnetic wire of length 18 is
+ *  attached on top of the superconductor with t_mm = 0.75 inside the wire, and
+ *  t_sm = 0.9 between wire and superconductor.
+ *
+ *  @author Kristofer Björnson
  */
 
 #include <iostream>

@@ -1,5 +1,10 @@
-/* Basic example of diagonalization of a 2D tight-binding model with t = 1 and
- * mu = -1. Lattice with edges and a size of 20x20 sites.
+/** @file Templates/BasicDiagonalization/src/main.cpp
+ *  @brief Basic diagonalization example
+ *
+ *  Basic example of diagonalization of a 2D tight-binding model with t = 1 and
+ *  mu = -1. Lattice with edges and a size of 20x20 sites.
+ *
+ *  @author Kristofer Björnson
  */
 
 #include <iostream>

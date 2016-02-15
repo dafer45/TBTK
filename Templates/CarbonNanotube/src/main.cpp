@@ -1,6 +1,11 @@
-/* Basic example of diagonalization of a 2D tight-binding model with t = 1 and
- * mu = 0. Carbon nanotube with 4*SIZE_X=8 atoms circumference, and SIZE_Y=20
- * atoms long.
+/** @file Templates/CarbonNanotube/src/main.cpp
+ *  @brief Carbon nanotube using diagonalization
+ *
+ *  Basic example of diagonalization of a 2D tight-binding model with t = 1 and
+ *  mu = 0. Carbon nanotube with 4*SIZE_X=8 atoms circumference, and SIZE_Y=20
+ *  atoms long.
+ *
+ *  @author Kristofer Björnson
  */
 
 #include <iostream>

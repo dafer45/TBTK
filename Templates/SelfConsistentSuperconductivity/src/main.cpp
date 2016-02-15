@@ -1,6 +1,11 @@
-/* Basic example of self-consistent superconducting order-parameter for a 2D
- * tight-binding model with t = 1, mu = -1, and V_sc = 2. Lattice with edges
- * and a size of 20x20 sites.
+/** @file Templates/SelfConsistenetSuperconductivity
+ *  @brief Self-consistent superconductivity using diagonalization
+ *
+ *  Basic example of self-consistent superconducting order-parameter for a 2D
+ *  tight-binding model with t = 1, mu = -1, and V_sc = 2. Lattice with edges
+ *  and a size of 20x20 sites.
+ *
+ *  @author Kristofer Björnson
  */
 
 #include <iostream>

@@ -1,9 +1,14 @@
-/* Calculating the band structure at the surface of a 3D topological insulator
- * with periodic boundary conditions along x- and y-direction, and with edges
- * in the z-direciton. The calculation is made in real space for a 100x100x100
- * block by calculating G_{\sigma\sigma}(x', x) for one x and all x' in the
- * surface layer. The Green's function is then Fourer transformed using fftw3
- * to give G_{\sigma\sigma}(k).
+/** @file Templates/TopologicalInsulator3D
+ *  @breif Calculating edge spectrum of a TI using Chebyshev expansion
+ *
+ *  Calculating the band structure at the surface of a 3D topological insulator
+ *  with periodic boundary conditions along x- and y-direction, and with edges
+ *  in the z-direciton. The calculation is made in real space for a 100x100x100
+ *  block by calculating G_{\sigma\sigma}(x', x) for one x and all x' in the
+ *  surface layer. The Green's function is then Fourer transformed using fftw3
+ *  to give G_{\sigma\sigma}(k).
+ *
+ *  @author Kristofer Björnson
  */
 
 #include <iostream>

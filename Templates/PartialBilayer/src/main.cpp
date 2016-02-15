@@ -1,6 +1,11 @@
-/* Basic example of diagonalization of a 2D tight-binding model with t = 1 and
- * mu = -1. Bilayer lattice with edges. First layers size is 20x20 sites, while
- * the second layer is 20x10.
+/** @file Templates/PartialBilayer/src/main.cpp
+ *  @brief Partial bilayer using diagonalization
+ *
+ *  Basic example of diagonalization of a 2D tight-binding model with t = 1 and
+ *  mu = -1. Bilayer lattice with edges. First layers size is 20x20 sites, while
+ *  the second layer is 20x10.
+ *
+ *  @author Kristofer Björnson
  */
 
 #include <iostream>
