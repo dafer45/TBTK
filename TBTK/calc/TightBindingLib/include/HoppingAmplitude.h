@@ -15,10 +15,10 @@
 #include "Index.h"
 
 /** A hopping amplitude is a coefficeint \f$a_{ij}\f$ in a bilinear Hamiltonian
- *  \f$H = \sum_{ij}a_{ij}c_{i}^{dagger}c_{j}\f$, where \f$i\f$ and \f$j\f$
+ *  \f$H = \sum_{ij}a_{ij}c_{i}^{\dagger}c_{j}\f$, where \f$i\f$ and \f$j\f$
  *  are reffered to using 'to' and 'from' respectively. The constructors can be
  *  called with the parameters either in the order (from, to, value) or the
- *  order (value, to, form). The former follows the order in which the process
+ *  order (value, to, from). The former follows the order in which the process
  *  can be thought of as happening, while the later corresponds to the order in
  *  which values and operators stands in the Hamiltonian.
  */
