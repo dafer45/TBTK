@@ -1,5 +1,5 @@
 /** @file AmplitudeSet.h
- *  @brief HoopingAmplitude container
+ *  @brief HoppingAmplitude container
  *
  *  @author Kristofer Björnson
  */
