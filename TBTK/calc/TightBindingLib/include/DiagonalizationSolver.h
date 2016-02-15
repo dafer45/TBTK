@@ -11,7 +11,7 @@
 #include "Model.h"
 #include <complex>
 
-/** Solves a given model by Diagonalizing the Hamiltonian. The eigenvectors and
+/** Solves a given model by Diagonalizing the Hamiltonian. The eigenvalues and
  *  eigenvectors can then either be directly extracted and used to calculate
  *  custom physical quantities, or the PropertyExtractor can be used to extract
  *  common properties. Scales as \f$O(n^3)\f$ with the dimension of the Hilbert
@@ -35,8 +35,8 @@ public:
 	void setMaxIterations(int maxIterations);
 
 	/** Run calculations. Diagonalizes ones if no self-consistency callback
-	 *  have been set, or multiple times until slef-consistencey or maximum
-	 *  number of iterations has been reached. */
+	 *  have been set, or otherwise multiple times until slef-consistencey
+	 *  or maximum number of iterations has been reached. */
 	void run();
 
 	/** Get eigenvalues. */
@@ -47,8 +47,8 @@ public:
 
 	/** Get amplitude for given eigenvector \f$n\f$ and physical index
 	 * \f$x\f$: \f$\Psi_{n}(x)\f$.
-	 *  @param state Eigenstate number.
-	 *  @param index Physical index.
+	 *  @param state Eigenstate number \f$n\f$.
+	 *  @param index Physical index \f$x\f$.
 	 */
 	const std::complex<double> getAmplitude(int state, const Index &index);
 
