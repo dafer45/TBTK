@@ -1,8 +1,8 @@
 /** @package TBTKcalc
  *  @file PropertyExtracto.h
- *  @brief Extracts physical properties from the output of DiagonalizationSolver
+ *  @brief Extracts physical properties from the DiagonalizationSolver
  *
- * @author Kristofer Björnson
+ *  @author Kristofer Björnson
  */
 
 #ifndef COM_DAFER45_TBTK_PROPERTY_EXTRACTOR
