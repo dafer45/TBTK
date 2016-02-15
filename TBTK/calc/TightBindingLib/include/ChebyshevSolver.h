@@ -20,6 +20,7 @@ class ChebyshevSolver{
 public:
 	/** Constructor. */
 	ChebyshevSolver();
+
 	/** Destructor. */
 	~ChebyshevSolver();
 
@@ -116,14 +117,18 @@ public:
 private:
 	/** Model to wok on. */
 	Model *model;
+
 	/** Pointer to lookup table used to speed up evaluation of multiple
 	 *  Green's functions. */
 	std::complex<double> **generatingFunctionLookupTable;
+
 	/** Pointer to lookup table on GPU. */
 	std::complex<double> **generatingFunctionLookupTable_device;
+
 	/** Number of coefficients assumed in the generatino of Green's
 	 *  function using the lookup tables*/
 	int lookupTableNumCoefficients;
+
 	/** Energy resolution assumed in the generation of Green's functios
 	 *  using the lookup table. */
 	int lookupTableResolution;

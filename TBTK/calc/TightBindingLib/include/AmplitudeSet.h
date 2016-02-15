@@ -30,6 +30,7 @@ public:
 
 	/** Add a single HoppingAmplitude. */
 	void addHA(HoppingAmplitude ha);
+
 	/** Add a HoppingAmplitude and its Hermitian conjugate. */
 	void addHAAndHC(HoppingAmplitude ha);
 
@@ -37,9 +38,11 @@ public:
 	 * given 'from'-index.
 	 *  @param index 'From'-index to get HoppingAmplitudes for. */
 	std::vector<HoppingAmplitude>* getHAs(Index index);
+
 	/** Get Hilbert space index corresponding to given 'from'-index.
 	 *  @param index 'From'-index to get Hilbert space index for. */
 	int getBasisIndex(const Index &index);
+
 	/** Get size of Hilbert space. */
 	int getBasisSize();
 
@@ -56,16 +59,20 @@ public:
 
 		/** Reset iterator. */
 		void reset();
+
 		/** Iterate to next HoppingAmplitude. */
 		void searchNextHA();
+
 		/** Get current HoppingAmplitude. */
 		HoppingAmplitude* getHA();
 	private:
 		/** The iterator can only be constructed by the AmplitudeSet. */
 		friend class AmplitudeSet;
+
 		/** Private constructor. Limits the ability to construct the
 		 *  iterator to the AmplitudeSet. */
 		iterator(TreeNode *tree);
+
 		/** TreeNode iterator. Implements the actual iteration. */
 		TreeNode::iterator* it;
 	};
