@@ -1,4 +1,5 @@
-/** @file FileWriter.h
+/** @package TBTKcalc
+ *  @file FileWriter.h
  *  @brief Writes data to file
  *
  *  @author Kristofer Björnson

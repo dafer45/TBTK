@@ -1,4 +1,5 @@
-/** @file AmplitudeSet.h
+/** @package TBTKcalc
+ *  @file AmplitudeSet.h
  *  @brief HoppingAmplitude container
  *
  *  @author Kristofer Björnson

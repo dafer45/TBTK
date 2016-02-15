@@ -1,4 +1,5 @@
-## @package plot2D
+## @package TBTKview
+#  @file plot2D.py
 #  @brief Plot surface
 #
 #  @author Kristofer Björnson

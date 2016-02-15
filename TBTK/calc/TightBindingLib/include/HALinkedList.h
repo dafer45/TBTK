@@ -1,4 +1,5 @@
-/** @file HALinkedList.h
+/** @package TBTKcalc
+ *  @file HALinkedList.h
  *  @brief Support data structure for ChebyshevSolver
  *
  *  Only used in the experimental function

@@ -1,4 +1,5 @@
-## @package plotEV
+## @package TBTKview
+#  @file plotEV.py
 #  @brief Plot eigenvalues
 #
 #  @author Kristofer Björnson

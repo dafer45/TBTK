@@ -1,4 +1,5 @@
-## @package plot1D
+## @package TBTKview
+#  @file plot1D.py
 #  @brief Plot line
 #
 #  @author Kristofer Björnson

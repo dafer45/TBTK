@@ -1,4 +1,5 @@
-/** @file Index.h
+/** @package TBTKcalc
+ *  @file Index.h
  *  @brief Datastructure for flexible physical indices
  *
  *  @author Kristofer Björnson

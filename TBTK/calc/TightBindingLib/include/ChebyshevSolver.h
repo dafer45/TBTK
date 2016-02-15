@@ -1,4 +1,5 @@
-/** @file ChebyshevSolver.h
+/** @package TBTKcalc
+ *  @file ChebyshevSolver.h
  *  @brief Solves a Model using the Chebyshev method
  *
  *  Based on PhysRevLett.105.167006

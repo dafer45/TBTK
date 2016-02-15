@@ -1,4 +1,5 @@
-/** @file Templates/BasicChebyshev/src/main.cpp
+/** @package TBTKtemp
+ *  @file Templates/BasicChebyshev/src/main.cpp
  *  @brief Basic Chebyshev example
  *
  *  Basic example of using the Chebyshev method to solve a 2D tight-binding

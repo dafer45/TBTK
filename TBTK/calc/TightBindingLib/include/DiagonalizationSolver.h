@@ -1,4 +1,5 @@
-/** @file DiagonalizationSolver.h
+/** @package TBTKcalc
+ *  @file DiagonalizationSolver.h
  *  @brief Solves a Model using diagonalization
  *
  *  @author Kristofer Björnson

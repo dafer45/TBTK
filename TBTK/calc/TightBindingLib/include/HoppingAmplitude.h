@@ -1,4 +1,5 @@
-/** @file HoppingAmplitude.h
+/** @package TBTKcalc
+ *  @file HoppingAmplitude.h
  *  @brief Hopping amplitude from state 'from' to 'to'
  *
  *  @author Kristofer Björnson

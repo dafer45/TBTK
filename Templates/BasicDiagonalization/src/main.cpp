@@ -1,4 +1,5 @@
-/** @file Templates/BasicDiagonalization/src/main.cpp
+/** @package TBTKtemp
+ *  @file Templates/BasicDiagonalization/src/main.cpp
  *  @brief Basic diagonalization example
  *
  *  Basic example of diagonalization of a 2D tight-binding model with t = 1 and

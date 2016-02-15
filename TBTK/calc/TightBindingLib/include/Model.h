@@ -1,4 +1,5 @@
-/** @file Model.h
+/** @package TBTKcalc
+ *  @file Model.h
  *  @brief Model Hamiltonian
  *
  *  @author Kristofer Björnson

@@ -1,4 +1,5 @@
-## @package plotDOS
+## @package TBTKview
+#  @file plotDOS.py
 #  @brief Plot density of states
 #
 #  @author Kristofer Björnson

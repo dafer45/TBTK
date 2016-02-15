@@ -1,4 +1,5 @@
-/** @file Templates/HexagonalLattice/src/main.cpp
+/** @package TBTKtemp
+ *  @file Templates/HexagonalLattice/src/main.cpp
  *  @brief Hexagonal lattice using diagonalization
  *  
  *  Basic example of diagonalization of a 2D tight-binding model with t = 1 and
