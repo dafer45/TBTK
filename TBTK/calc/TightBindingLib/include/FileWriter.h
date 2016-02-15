@@ -12,7 +12,7 @@
 #include <fstream>
 #include <stdio.h>
 
-/** Writes data a .hdf5-file. The default file name is TBTKResults.h5. Can
+/** Writes data to a .hdf5-file. The default file name is TBTKResults.h5. Can
  *  be used to write custom n-dimensional arrays of data and parameters to
  *  datasets with custom names. It can also be used to write data such as
  *  eigenvalues, DOS, Density etc. extracted by the PropertyExtractor. In the
@@ -55,7 +55,7 @@ public:
 		std::string path = "/"
 	);
 
-	/** Write magnetization to file. */
+	/** Likely to change. Write magnetization to file. */
 	static void writeMAG(
 		double *mag,
 		int rank,
@@ -64,7 +64,7 @@ public:
 		std::string path = "/"
 	);
 
-	/** Write spin-polarized local density of states to file. */
+	/** Likely to change. Write spin-polarized local density of states to file. */
 	static void writeSP_LDOS(
 		double *sp_ldos,
 		int rank,
