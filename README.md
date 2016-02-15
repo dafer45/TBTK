@@ -5,12 +5,12 @@ For an introduction to the library, see http://dafer45.github.io/TBTK
 ###########################
 # Installation instructions
 ###########################
-Without CUDA (gpu)
-source init_session.sh
+Without CUDA (gpu)  
+source init_session.sh  
 ./install.sh
 
-With CUDA (gpu)
-source init_session.sh
+With CUDA (gpu)  
+source init_session.sh  
 ./install -CUDA
 
 #############
