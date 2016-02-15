@@ -14,7 +14,8 @@
 #include <complex>
 
 /** The ChebyshevSolver can be used to calculate Green's function for a given
- *  Model. The implementation is based on PhysRevLett.105.167006.
+ *  Model. The implementation is based on PhysRevLett.105.167006. The
+ *  ChebyshevSolver can be run on CPU, GPU, or a mixture of both.
 */
 class ChebyshevSolver{
 public:
