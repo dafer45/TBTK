@@ -33,7 +33,8 @@ public:
 	/** Add a HoppingAmplitude and its Hermitian conjugate. */
 	void addHAAndHC(HoppingAmplitude ha);
 
-	/** Get all HoppingAmplitudes with given 'from'-index.
+	/** Get all @link HoppingAmplitude HoppingAmplitudes @endlink with
+	 * given 'from'-index.
 	 *  @param index 'From'-index to get HoppingAmplitudes for. */
 	std::vector<HoppingAmplitude>* getHAs(Index index);
 	/** Get Hilbert space index corresponding to given 'from'-index.
@@ -42,11 +43,12 @@ public:
 	/** Get size of Hilbert space. */
 	int getBasisSize();
 
-	/** Construct Hilbert space. No more HoppingAmplitudes should be added
-	 *  after this call. */
+	/** Construct Hilbert space. No more @link HoppingAmplitude
+	 *  HoppingAmplitudes @endlink should be added after this call. */
 	void construct();
 
-	/** Iterator for iterating through HoppingAmplitudes. */
+	/** Iterator for iterating through @link HoppingAmplitude
+	 *  HoppingAmplitudes @endlink. */
 	class iterator{
 	public:
 		/** Destructor. */
@@ -68,13 +70,15 @@ public:
 		TreeNode::iterator* it;
 	};
 
-	/** Returns an iterator for iterating through HoppingAmplitudes. */
+	/** Returns an iterator for iterating through @link HoppingAmplitude
+	 *  HoppingAmplitudes @endlink. */
 	AmplitudeSet::iterator getIterator();
 
 	/** Print tree structure. Mainly for debuging. */
 	void print();
 
-	/** Tabulates HoppingAmplitudes to make them possible to export. */
+	/** Tabulates @link HoppingAmplitude HoppingAmplitudes @endlink to make
+	 *  them possible to export. */
 	void tabulate(int **table, int *dims);
 private:
 };
