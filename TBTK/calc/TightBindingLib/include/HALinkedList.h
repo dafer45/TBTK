@@ -2,6 +2,8 @@
  *  @file HALinkedList.h
  *  @brief Support data structure for ChebyshevSolver
  *
+ *  Experimental
+ *
  *  Only used in the experimental function
  *  ChebyshevSolver::calculateCoefficients(..., componentCutoff, ...)
  *
