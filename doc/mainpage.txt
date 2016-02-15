@@ -1,0 +1,5 @@
+/*! \mainpage TBTK - Tight-Binding ToolKit
+ *
+ *  TBTK is a c++ library for solving general bilinear Hamiltonians.
+ *  See http://dafer45.github.io/TBTK for an introduction to the library.
+ */
