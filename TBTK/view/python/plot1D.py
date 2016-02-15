@@ -1,3 +1,8 @@
+## @package plot1D
+#  @brief Plot line
+#
+#  @author Kristofer Björnson
+
 import h5py
 import matplotlib.pyplot
 import sys

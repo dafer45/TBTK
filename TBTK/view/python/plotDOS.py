@@ -1,3 +1,8 @@
+## @package plotDOS
+#  @brief Plot density of states
+#
+#  @author Kristofer Björnson
+
 import h5py
 import numpy
 import matplotlib.pyplot

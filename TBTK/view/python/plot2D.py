@@ -1,3 +1,8 @@
+## @package plot2D
+#  @brief Plot surface
+#
+#  @author Kristofer Björnson
+
 import h5py
 import numpy
 import matplotlib.pyplot

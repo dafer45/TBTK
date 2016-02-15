@@ -1,3 +1,8 @@
+## @package plotEV
+#  @brief Plot eigenvalues
+#
+#  @author Kristofer Björnson
+
 import h5py
 import matplotlib.pyplot
 import sys
