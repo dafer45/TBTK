@@ -1,0 +1,14 @@
+\form#0:$ G_{ij}(E)$
+\form#1:$i$
+\form#2:$i = \textrm{to}$
+\form#3:$j = \textrm{from}$
+\form#4:$j$
+\form#5:$\times$
+\form#6:$O(n)$
+\form#7:$O(n^3)$
+\form#8:$n$
+\form#9:$x$
+\form#10:$\Psi_{n}(x)$
+\form#11:$a_{ij}$
+\form#12:$H = \sum_{ij}a_{ij}c_{i}^{dagger}c_{j}$
+\form#13:$H = \sum_{ij}a_{ij}c_{i}^{\dagger}c_{j}$
