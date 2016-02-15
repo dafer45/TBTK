@@ -17,10 +17,10 @@
  *  @endlink. The structure contains the root node for the tree structure in
  *  which the @link HoppingAmplitude HoppingAmplitudes @endlink are stored, as
  *  well as functions for adding and accessing HoppingAmplitudes. Once all
- *  HoppingAmplitudes have been added to the AmplitudeSet, the construct method
- *  has to be called in order to construct an appropriate Hilbert space. The
- *  AmplitudeSet is most importantly used by the Model to store the
- *  Hamiltonian.
+ *  @link HoppingAmplitude HoppingAmplitudes @edlink have been added to the
+ *  AmplitudeSet, the construct method has to be called in order to construct
+ *  an appropriate Hilbert space. The AmplitudeSet is most importantly used by
+ *  the Model to store the Hamiltonian.
  */
 class AmplitudeSet{
 public:
