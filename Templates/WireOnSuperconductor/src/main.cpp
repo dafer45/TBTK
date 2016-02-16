@@ -16,14 +16,15 @@
 #include "Model.h"
 #include "FileWriter.h"
 #include "DiagonalizationSolver.h"
+#include "PropertyExtractor.h"
 
 using namespace std;
 
 const complex<double> i(0, 1);
 
 //Lattice size
-const int SIZE_X = 4*5;
-const int SIZE_Y = 2*5+1;
+const int SIZE_X = 4*7;
+const int SIZE_Y = 2*7+1;
 
 //Order parameter. The two buffers are alternatively swaped by setting dCounter
 // = 0 or 1. One buffer contains the order parameter used in the previous
@@ -78,6 +79,8 @@ bool scCallback(DiagonalizationSolver *dSolver){
 				maxError = error;
 		}
 	}
+
+	return true;
 
 	//Return true or false depending on whether the result has converged or not
 	if(maxError < CONVERGENCE_LIMIT)
@@ -201,6 +204,37 @@ int main(int argc, char **argv){
 	int dDims[D_RANK] = {SIZE_X, SIZE_Y};
 	FileWriter::write(D_abs, D_RANK, dDims, "D_abs");
 	FileWriter::write(D_arg, D_RANK, dDims, "D_arg");
+
+	//Calculate and save magnetization
+	PropertyExtractor pe(&dSolver);
+	complex<double> *mag = pe.calculateMAG({0, IDX_X, IDX_Y, IDX_SPIN},
+						{1, SIZE_X, SIZE_Y, 2});
+	const int MAG_RANK = 2;
+	int mag_dims[MAG_RANK];
+	mag_dims[0] = SIZE_X;
+	mag_dims[1] = SIZE_Y;
+	FileWriter::writeMAG(mag, MAG_RANK, mag_dims);
+	delete [] mag;
+
+	//Calculate and save spin-polarized local density of states
+	const int SP_LDOS_UPPER_LIMIT = 2.;
+	const int SP_LDOS_LOWER_LIMIT = -2.;
+	const int SP_LDOS_RESOLUTION = 1000;
+	complex<double> *sp_ldos = pe.calculateSP_LDOS({0, IDX_X, SIZE_Y/2, IDX_SPIN},
+							{1, SIZE_X, 1, 2},
+							SP_LDOS_UPPER_LIMIT,
+							SP_LDOS_LOWER_LIMIT,
+							SP_LDOS_RESOLUTION);
+	const int SP_LDOS_RANK = 1;
+	int sp_ldos_dims[SP_LDOS_RANK];
+	sp_ldos_dims[0] = SIZE_X;
+	FileWriter::writeSP_LDOS(sp_ldos,
+					SP_LDOS_RANK,
+					sp_ldos_dims,
+					SP_LDOS_UPPER_LIMIT,
+					SP_LDOS_LOWER_LIMIT,
+					SP_LDOS_RESOLUTION);
+	delete [] sp_ldos;
 
 	return 0;
 }
