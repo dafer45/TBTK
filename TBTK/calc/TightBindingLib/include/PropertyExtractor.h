@@ -1,5 +1,5 @@
 /** @package TBTKcalc
- *  @file PropertyExtracto.h
+ *  @file PropertyExtractor.h
  *  @brief Extracts physical properties from the DiagonalizationSolver
  *
  *  @author Kristofer Björnson
