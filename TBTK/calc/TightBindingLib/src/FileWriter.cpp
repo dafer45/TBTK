@@ -211,7 +211,7 @@ void FileWriter::writeDensity(double *density, int rank, int *dims, string name,
 	}
 }
 
-void FileWriter::writeMAG(double *mag, int rank, int *dims, string name, string path){
+/*void FileWriter::writeMAG(double *mag, int rank, int *dims, string name, string path){
 	init();
 
 	hsize_t mag_dims[rank+1];//Last dimension for spin components.
@@ -249,9 +249,62 @@ void FileWriter::writeMAG(double *mag, int rank, int *dims, string name, string 
 		error.printError();
 		return;
 	}
+}*/
+
+void FileWriter::writeMAG(complex<double> *mag, int rank, int *dims, string name, string path){
+	init();
+
+	hsize_t mag_dims[rank+2];//Last two dimension for matrix elements and real/imaginary decomposition.
+	for(int n = 0; n < rank; n++)
+		mag_dims[n] = dims[n];
+	const int NUM_MATRIX_ELEMENTS = 4;
+	mag_dims[rank] = NUM_MATRIX_ELEMENTS;
+
+	int mag_size = 1;
+	for(int n = 0; n < rank+1; n++)
+		mag_size *= mag_dims[n];
+	double *mag_decomposed;
+	mag_decomposed = new double[2*mag_size];
+	for(int n = 0; n < mag_size; n++){
+		mag_decomposed[2*n+0] = real(mag[n]);
+		mag_decomposed[2*n+1] = imag(mag[n]);
+	}
+	mag_dims[rank+1] = 2;
+
+	try{
+		stringstream ss;
+		ss << path;
+		if(path.back() != '/')
+			ss << "/";
+		ss << name;
+
+		Exception::dontPrint();
+		H5File file(filename, H5F_ACC_RDWR);
+
+		DataSpace dataspace = DataSpace(rank+2, mag_dims);
+		DataSet dataset = DataSet(file.createDataSet(name, PredType::IEEE_F64BE, dataspace));
+		dataset.write(mag_decomposed, PredType::NATIVE_DOUBLE);
+		dataspace.close();
+		dataset.close();
+		file.close();
+	}
+	catch(FileIException error){
+		error.printError();
+		return;
+	}
+	catch(DataSetIException error){
+		error.printError();
+		return;
+	}
+	catch(DataSpaceIException error){
+		error.printError();
+		return;
+	}
+
+	delete [] mag_decomposed;
 }
 
-void FileWriter::writeSP_LDOS(double *sp_ldos, int rank, int *dims, double u_lim, double l_lim, int resolution, string name, string path){
+/*void FileWriter::writeSP_LDOS(double *sp_ldos, int rank, int *dims, double u_lim, double l_lim, int resolution, string name, string path){
 	init();
 
 	const int NUM_SPIN_COMPONENTS = 6;
@@ -304,6 +357,76 @@ void FileWriter::writeSP_LDOS(double *sp_ldos, int rank, int *dims, double u_lim
 		error.printError();
 		return;
 	}
+}*/
+
+void FileWriter::writeSP_LDOS(complex<double> *sp_ldos, int rank, int *dims, double u_lim, double l_lim, int resolution, string name, string path){
+	init();
+
+	const int NUM_MATRIX_ELEMENTS = 4;
+	hsize_t sp_ldos_dims[rank+2];//Three last dimensions are for energy, spin components, and real/imaginary decomposition.
+	for(int n = 0; n < rank; n++)
+		sp_ldos_dims[n] = dims[n];
+	sp_ldos_dims[rank] = resolution;
+	sp_ldos_dims[rank+1] = NUM_MATRIX_ELEMENTS;
+
+	int sp_ldos_size = 1;
+	for(int n = 0; n < rank+2; n++)
+		sp_ldos_size *= sp_ldos_dims[n];
+	double *sp_ldos_decomposed;
+	sp_ldos_decomposed = new double[2*sp_ldos_size];
+	for(int n = 0; n < sp_ldos_size; n++){
+		sp_ldos_decomposed[2*n+0] = real(sp_ldos[n]);
+		sp_ldos_decomposed[2*n+1] = imag(sp_ldos[n]);
+	}
+	
+	sp_ldos_dims[rank+2] = 2;
+
+	double limits[2];
+	limits[0] = u_lim;
+	limits[1] = l_lim;
+	const int LIMITS_RANK = 1;
+	hsize_t limits_dims[1];
+	limits_dims[0] = 2;
+
+
+	try{
+		stringstream ss;
+		ss << path;
+		if(path.back() != '/')
+			ss << "/";
+		ss << name;
+
+		Exception::dontPrint();
+		H5File file(filename, H5F_ACC_RDWR);
+
+		DataSpace dataspace = DataSpace(rank+3, sp_ldos_dims);
+		DataSet dataset = DataSet(file.createDataSet(name, PredType::IEEE_F64BE, dataspace));
+		dataset.write(sp_ldos_decomposed, PredType::NATIVE_DOUBLE);
+		dataspace.close();
+
+		dataspace = DataSpace(LIMITS_RANK, limits_dims);
+		Attribute attribute = dataset.createAttribute("UpLowLimits", PredType::IEEE_F64BE, dataspace);
+		attribute.write(PredType::NATIVE_DOUBLE, limits);
+		dataspace.close();
+		dataset.close();
+
+		file.close();
+		dataspace.close();
+	}
+	catch(FileIException error){
+		error.printError();
+		return;
+	}
+	catch(DataSetIException error){
+		error.printError();
+		return;
+	}
+	catch(DataSpaceIException error){
+		error.printError();
+		return;
+	}
+
+	delete [] sp_ldos_decomposed;
 }
 
 void FileWriter::write(double *data, int rank, int *dims, string name, string path){

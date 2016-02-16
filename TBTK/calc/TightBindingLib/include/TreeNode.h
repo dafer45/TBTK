@@ -1,6 +1,6 @@
 /** @package TBTKcalc
  *  @file TreeNode.h
- *  @brief Node in tree used by AmplitudeSet to store HoppingAmplitudes
+ *  @brief Node in tree used by AmplitudeSet to store @link HoppingAmplitude HoppingAmplitudes @endlink
  *
  *  @author Kristofer Björnson
  */
@@ -111,4 +111,3 @@ private:
 };
 
 #endif
-
