@@ -1,3 +1,11 @@
+# -*- encoding: utf-8 -*-
+
+## @package TBTKview
+#  @file plotLDOS.py
+#  @brief Plot local density of states
+#
+#  @author Kristofer Björnson
+
 import h5py
 import numpy
 import matplotlib.pyplot
