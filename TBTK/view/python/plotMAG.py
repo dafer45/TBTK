@@ -17,23 +17,45 @@ file = h5py.File(filename, 'r');
 dataset = file['MAG']
 
 data_dimensions = dataset.shape
-physical_dimensions = len(data_dimensions) - 1 #Last dimension for spin components.
+physical_dimensions = len(data_dimensions) - 2 #Last two dimension for matrix elements and real/imaginary decomposition.
 print "Dimensions: " + str(physical_dimensions)
 if(physical_dimensions != 2):
 	print "Error, can only plot for 2 physical dimensions"
 	exit(0)
 
-x = numpy.arange(0, data_dimensions[0], 1)
-y = numpy.arange(0, data_dimensions[1], 1)
+size_x = data_dimensions[0]
+size_y = data_dimensions[1]
+
+x = numpy.arange(0, size_x, 1)
+y = numpy.arange(0, size_y, 1)
 X, Y = numpy.meshgrid(x, y)
 
-for n in range(0, 3):
-	fig = matplotlib.pyplot.figure()
-	ax = fig.gca(projection='3d')
+#mag_real = dataset[:,:,:,0]
+#mag_imag = dataset[:,:,:,1]
 
-	Z = dataset[:,:,n]
-	ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap=matplotlib.cm.coolwarm, linewidth=0, antialiased=False)
-	ax.set_zlim(numpy.min(Z), numpy.max(Z))
-#	matplotlib.pyplot.show()
-	fig.savefig('figures/MAG' + str(n) + '.png')
+Z=numpy.zeros((size_x, size_y))
+for xp in range(0,size_x):
+	for yp in range(0, size_y):
+		uu = dataset[xp,yp,0,0] + 1j*dataset[xp,yp,0,1]
+		dd = dataset[xp,yp,3,0] + 1j*dataset[xp,yp,3,1]
+		Z[xp,yp] = numpy.real(uu - dd)
+
+fig = matplotlib.pyplot.figure()
+ax = fig.gca(projection='3d')
+ax.plot_surface(X.transpose(), Y.transpose(), Z, rstride=1, cstride=1, cmap=matplotlib.cm.coolwarm, linewidth=0, antialiased=False)
+ax.set_zlim(numpy.min(Z), numpy.max(Z))
+ax.set_xlabel('x');
+ax.set_ylabel('y');
+ax.set_zlabel('Magnetization');
+fig.savefig('figures/MAG.png')
+
+#for n in range(0, 3):
+#	fig = matplotlib.pyplot.figure()
+#	ax = fig.gca(projection='3d')
+
+#	Z = dataset[:,:,n]
+#	ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap=matplotlib.cm.coolwarm, linewidth=0, antialiased=False)
+#	ax.set_zlim(numpy.min(Z), numpy.max(Z))
+##	matplotlib.pyplot.show()
+#	fig.savefig('figures/MAG' + str(n) + '.png')
 

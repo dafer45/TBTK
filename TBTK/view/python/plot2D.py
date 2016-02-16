@@ -1,3 +1,5 @@
+# -*- encoding: utf-8 -*-
+
 ## @package TBTKview
 #  @file plot2D.py
 #  @brief Plot surface
@@ -31,13 +33,13 @@ if(len(dimensions) != 2):
 
 x = numpy.arange(0, dimensions[0], 1)
 y = numpy.arange(0, dimensions[1], 1)
-X, Y = numpy.meshgrid(y, x)
+X, Y = numpy.meshgrid(x, y)
 
 fig = matplotlib.pyplot.figure()
 ax = fig.gca(projection='3d')
 
 Z = dataset[:,:]
-ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap=matplotlib.cm.coolwarm, linewidth=0, antialiased=False)
+ax.plot_surface(X.transpose(), Y.transpose(), Z, rstride=1, cstride=1, cmap=matplotlib.cm.coolwarm, linewidth=0, antialiased=False)
 ax.set_zlim(numpy.min(Z), numpy.max(Z))
 ax.set_xlabel('x');
 ax.set_ylabel('y');
