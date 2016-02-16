@@ -522,7 +522,7 @@ void PropertyExtractor::calculateSP_LDOSCallback(PropertyExtractor *cb_this, voi
 	}
 }
 
-void PropertyExtractor::calculate(void (*callback)(PropertyExtractor *cb_this, void *memory, const Index &index, int offset),
+/*void PropertyExtractor::calculate(void (*callback)(PropertyExtractor *cb_this, void *memory, const Index &index, int offset),
 			void *memory, Index pattern, const Index &ranges, int currentOffset, int offsetMultiplier){
 	unsigned int currentSubindex = 0;
 	for(; currentSubindex < pattern.indices.size(); currentSubindex++){
@@ -531,6 +531,39 @@ void PropertyExtractor::calculate(void (*callback)(PropertyExtractor *cb_this, v
 	}
 
 	if(currentSubindex == pattern.indices.size()){
+		callback(this, memory, pattern, currentOffset);
+	}
+	else{
+		int nextOffsetMultiplier = offsetMultiplier;
+		if(pattern.indices.at(currentSubindex) < IDX_SUM_ALL)
+			nextOffsetMultiplier *= ranges.indices.at(currentSubindex);
+		bool isSumIndex = false;
+		if(pattern.indices.at(currentSubindex) == IDX_SUM_ALL)
+			isSumIndex = true;
+		for(int n = 0; n < ranges.indices.at(currentSubindex); n++){
+			pattern.indices.at(currentSubindex) = n;
+			calculate(callback,
+					memory,
+					pattern,
+					ranges,
+					currentOffset,
+					nextOffsetMultiplier
+			);
+			if(!isSumIndex)
+				currentOffset += offsetMultiplier;
+		}
+	}
+}*/
+
+void PropertyExtractor::calculate(void (*callback)(PropertyExtractor *cb_this, void *memory, const Index &index, int offset),
+			void *memory, Index pattern, const Index &ranges, int currentOffset, int offsetMultiplier){
+	int currentSubindex = pattern.indices.size()-1;
+	for(; currentSubindex >= 0; currentSubindex--){
+		if(pattern.indices.at(currentSubindex) < 0)
+			break;
+	}
+
+	if(currentSubindex == -1){
 		callback(this, memory, pattern, currentOffset);
 	}
 	else{
