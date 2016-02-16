@@ -1,6 +1,6 @@
 /** @package TBTKcalc
  *  @file Index.h
- *  @brief Datastructure for flexible physical indices
+ *  @brief Data structure for flexible physical indices
  *
  *  @author Kristofer Björnson
  */

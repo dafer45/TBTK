@@ -116,4 +116,3 @@ inline void AmplitudeSet::construct(){
 }
 
 #endif
-

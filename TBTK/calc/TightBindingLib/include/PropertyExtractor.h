@@ -88,7 +88,8 @@ public:
 	 *  The six entries per point corresponds to x-up, x-down, y-up,
 	 *  y-down, z-up, and z-down, respectively.
 	 */
-	double* calculateMAG(Index pattern, Index ranges);
+	std::complex<double>* calculateMAG(Index pattern, Index ranges);
+//	double* calculateMAG(Index pattern, Index ranges);
 
 	/** Likely to change. Calculate spin-polarized local density of states.
 	 *
@@ -116,7 +117,8 @@ public:
 	 *  The six entries per point corresponds to x-up, x-down, y-up,
 	 *  y-down, z-up, and z-down, respectively.
 	 */
-	double* calculateSP_LDOS(Index pattern, Index ranges, double u_lim, double l_lim, int resolution);
+	std::complex<double>* calculateSP_LDOS(Index pattern, Index ranges, double u_lim, double l_lim, int resolution);
+//	double* calculateSP_LDOS(Index pattern, Index ranges, double u_lim, double l_lim, int resolution);
 
 	void save(int *memory, int size, int columns, std::string filename, std::string path = "./");
 	void save(double *memory, int size, int columns, std::string filename, std::string path = "./");
@@ -147,4 +149,3 @@ private:
 };
 
 #endif
-

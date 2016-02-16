@@ -57,16 +57,23 @@ public:
 
 	/** Likely to change. Write magnetization to file. */
 	static void writeMAG(
-		double *mag,
+		std::complex<double> *mag,
 		int rank,
 		int *dims,
 		std::string name = "MAG",
 		std::string path = "/"
 	);
+/*	static void writeMAG(
+		double *mag,
+		int rank,
+		int *dims,
+		std::string name = "MAG",
+		std::string path = "/"
+	);*/
 
 	/** Likely to change. Write spin-polarized local density of states to file. */
 	static void writeSP_LDOS(
-		double *sp_ldos,
+		std::complex<double> *sp_ldos,
 		int rank,
 		int *dims,
 		double u_lim,
@@ -75,6 +82,16 @@ public:
 		std::string name = "SP_LDOS",
 		std::string path = "/"
 	);
+/*	static void writeSP_LDOS(
+		double *sp_ldos,
+		int rank,
+		int *dims,
+		double u_lim,
+		double l_lim,
+		int resolution,
+		std::string name = "SP_LDOS",
+		std::string path = "/"
+	);*/
 
 	/** Write custom n-dimensional arrays to file of type double. */
 	static void write(
