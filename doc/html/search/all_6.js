@@ -1,10 +1,18 @@
 var searchData=
 [
-  ['halink',['HALink',['../classHALink.html',1,'']]],
-  ['halinkedlist',['HALinkedList',['../classHALinkedList.html',1,'']]],
-  ['halinkedlist_2ecpp',['HALinkedList.cpp',['../HALinkedList_8cpp.html',1,'']]],
-  ['halinkedlist_2eh',['HALinkedList.h',['../HALinkedList_8h.html',1,'']]],
-  ['hoppingamplitude',['HoppingAmplitude',['../classHoppingAmplitude.html',1,'HoppingAmplitude'],['../classHoppingAmplitude.html#ab0cb7bc32dd15f8de74ad7448437819b',1,'HoppingAmplitude::HoppingAmplitude(Index fromIndex, Index toIndex, std::complex&lt; double &gt; amplitude)'],['../classHoppingAmplitude.html#a6d59e3d7965b6f0ddfa4a0ba2726919d',1,'HoppingAmplitude::HoppingAmplitude(Index fromIndex, Index toIndex, std::complex&lt; double &gt;(*amplitudeCallback)(Index, Index))'],['../classHoppingAmplitude.html#a8826d1867e3956ddd2d6d540558ae49e',1,'HoppingAmplitude::HoppingAmplitude(std::complex&lt; double &gt; amplitude, Index toIndex, Index fromIndex)'],['../classHoppingAmplitude.html#aa8c00b914c579366b9531b30f1c725b5',1,'HoppingAmplitude::HoppingAmplitude(std::complex&lt; double &gt;(*amplitudeCallback)(Index, Index), Index toIndex, Index fromIndex)']]],
-  ['hoppingamplitude_2ecpp',['HoppingAmplitude.cpp',['../HoppingAmplitude_8cpp.html',1,'']]],
-  ['hoppingamplitude_2eh',['HoppingAmplitude.h',['../HoppingAmplitude_8h.html',1,'']]]
+  ['generatebasisindices',['generateBasisIndices',['../classTreeNode.html#a29de938ac72824c846d8cd4cfc427d6e',1,'TreeNode']]],
+  ['generategreensfunction',['generateGreensFunction',['../classChebyshevSolver.html#a4384f5469c4733e4a552e327286fbd7d',1,'ChebyshevSolver::generateGreensFunction(std::complex&lt; double &gt; *greensFunction, std::complex&lt; double &gt; *coefficients, int numCoefficients, int energyResolution)'],['../classChebyshevSolver.html#a0d05d515908ac419ca009a96d60a9f57',1,'ChebyshevSolver::generateGreensFunction(std::complex&lt; double &gt; *greensFunction, std::complex&lt; double &gt; *coefficients)']]],
+  ['generategreensfunctiongpu',['generateGreensFunctionGPU',['../classChebyshevSolver.html#a4875f93da61b5fb622f2ead114316753',1,'ChebyshevSolver']]],
+  ['generatelookuptable',['generateLookupTable',['../classChebyshevSolver.html#a52695687d5ca4f469381931da475673a',1,'ChebyshevSolver']]],
+  ['getamplitude',['getAmplitude',['../classDiagonalizationSolver.html#ac91af311f7f355b2b05d936c44afceb6',1,'DiagonalizationSolver::getAmplitude()'],['../classHoppingAmplitude.html#ae7fb32b504db5ce6c20fd2e6d0b1b8fa',1,'HoppingAmplitude::getAmplitude()']]],
+  ['getbasisindex',['getBasisIndex',['../classAmplitudeSet.html#a3520f9ff99f8e998499434e5d7bfdaa9',1,'AmplitudeSet::getBasisIndex()'],['../classModel.html#a7781d01600babe44521c9fa0653289e5',1,'Model::getBasisIndex()'],['../classTreeNode.html#a98240be4fe7acb002e03f8307476e5f7',1,'TreeNode::getBasisIndex()']]],
+  ['getbasissize',['getBasisSize',['../classAmplitudeSet.html#a68faae198c822e23388806d03847495c',1,'AmplitudeSet::getBasisSize()'],['../classModel.html#af7b9c25026a17d12a5e18fb2822e3013',1,'Model::getBasisSize()']]],
+  ['geteigenvalues',['getEigenValues',['../classDiagonalizationSolver.html#a8866a52542b6c94fcd9eb7ef27246dc9',1,'DiagonalizationSolver']]],
+  ['getev',['getEV',['../classPropertyExtractor.html#a7c4a114f660f6ae34cbf93f966e6546e',1,'PropertyExtractor']]],
+  ['getha',['getHA',['../classAmplitudeSet_1_1iterator.html#ac2008017ece2cd7f8c7571775fda8bbe',1,'AmplitudeSet::iterator::getHA()'],['../classTreeNode_1_1iterator.html#abaa4cc3958bc3ce910898c6bcc7f94f2',1,'TreeNode::iterator::getHA()']]],
+  ['gethas',['getHAs',['../classAmplitudeSet.html#a1bf89cfbfe79ca19a65e4bf3941483d6',1,'AmplitudeSet::getHAs()'],['../classTreeNode.html#a4df0b5db6754bbfc6abc557e8e61044a',1,'TreeNode::getHAs()']]],
+  ['gethermitianconjugate',['getHermitianConjugate',['../classHoppingAmplitude.html#ad730c5960724e8760ea4e8e11cd44942',1,'HoppingAmplitude']]],
+  ['getiterator',['getIterator',['../classAmplitudeSet.html#ac05588ff998e3aa3929d56d508f9499d',1,'AmplitudeSet']]],
+  ['getmodel',['getModel',['../classDiagonalizationSolver.html#a6e64bbf9f6fced52697291b777652734',1,'DiagonalizationSolver']]],
+  ['gettabulatedamplitudeset',['getTabulatedAmplitudeSet',['../classPropertyExtractor.html#a8499be9c3fd7719983f10b7f6e1dc1a7',1,'PropertyExtractor']]]
 ];

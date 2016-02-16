@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['equals',['equals',['../classIndex.html#a263c09d1ae69731da63a8826861a7cf3',1,'Index']]]
+  ['destroylookuptablegpu',['destroyLookupTableGPU',['../classChebyshevSolver.html#ae8b380cac8907191dc8dbe31795c6e2e',1,'ChebyshevSolver']]],
+  ['diagonalizationsolver',['DiagonalizationSolver',['../classDiagonalizationSolver.html#a68292b6f36e9312633c703ac82360447',1,'DiagonalizationSolver']]]
 ];

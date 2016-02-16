@@ -1,9 +1,6 @@
 var searchData=
 [
-  ['saveev',['saveEV',['../classPropertyExtractor.html#a369720236702208d974af9f4c3c48c38',1,'PropertyExtractor']]],
-  ['searchnextha',['searchNextHA',['../classAmplitudeSet_1_1iterator.html#a3b7436410d930a2ce805e12ab6a2fec9',1,'AmplitudeSet::iterator']]],
-  ['setfilename',['setFileName',['../classFileWriter.html#af932bd2767325a7382ca3ae7063513e0',1,'FileWriter']]],
-  ['setmaxiterations',['setMaxIterations',['../classDiagonalizationSolver.html#a09a6db7bf31f77962448ea5a9a1f9187',1,'DiagonalizationSolver']]],
-  ['setmodel',['setModel',['../classChebyshevSolver.html#aa2a9b168b987b1cb4c465984bd363fcf',1,'ChebyshevSolver::setModel()'],['../classDiagonalizationSolver.html#a4491ebaa9ad9718ff05a10713022b561',1,'DiagonalizationSolver::setModel()']]],
-  ['setsccallback',['setSCCallback',['../classDiagonalizationSolver.html#a39647547225238d3210d08b8a2c62ee0',1,'DiagonalizationSolver']]]
+  ['readme',['README',['../md__home_kristofer_TBTK_TBTK_README.html',1,'']]],
+  ['reset',['reset',['../classAmplitudeSet_1_1iterator.html#aae8c7d98c7266f37f16d1154c9197513',1,'AmplitudeSet::iterator::reset()'],['../classTreeNode_1_1iterator.html#ab2bb6c642f43d238889d9a26e877fe6e',1,'TreeNode::iterator::reset()']]],
+  ['run',['run',['../classDiagonalizationSolver.html#ab3f84d060cf751d789e0095540eee178',1,'DiagonalizationSolver']]]
 ];
