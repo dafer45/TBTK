@@ -1,3 +1,5 @@
+# -*- encoding: utf-8 -*-
+
 ## @package TBTKview
 #  @file plot1D.py
 #  @brief Plot line

@@ -1,3 +1,5 @@
+# -*- encoding: utf-8 -*-
+
 ## @package TBTKview
 #  @file plotDOS.py
 #  @brief Plot density of states

@@ -1,3 +1,5 @@
+# -*- encoding: utf-8 -*-
+
 ## @package TBTKview
 #  @file plotEV.py
 #  @brief Plot eigenvalues

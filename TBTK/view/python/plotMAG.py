@@ -1,3 +1,11 @@
+# -*- encoding: utf-8 -*-
+
+## @package TBTKview
+#  @file plotMAG.py
+#  @brief Plot magnetization
+#
+#  @author Kristofer Björnson
+
 import h5py
 import numpy
 import matplotlib.pyplot
