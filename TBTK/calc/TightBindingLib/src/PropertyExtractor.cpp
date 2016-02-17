@@ -587,4 +587,3 @@ void PropertyExtractor::calculate(void (*callback)(PropertyExtractor *cb_this, v
 		}
 	}
 }
-
