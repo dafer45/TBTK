@@ -137,7 +137,7 @@ public:
 	 *  \f]
 	 *  where
 	 *  \f[
-	 *      \rho_{i\sigma i\sigma'}(E) = \sum_{E_n}\langle\Psi_n|c_{i\sigma}^{\dagger}c_{i\sigma'}|\Psi_n\rangle .
+	 *      \rho_{i\sigma i\sigma'}(E) = \sum_{E_n}\langle\Psi_n|c_{i\sigma}^{\dagger}c_{i\sigma'}|\Psi_n\rangle\delta(E - E_n) .
 	 *  \f]
 	 */
 	std::complex<double>* calculateSP_LDOS(Index pattern, Index ranges, double u_lim, double l_lim, int resolution);
