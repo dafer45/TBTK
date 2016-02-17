@@ -6,6 +6,6 @@ var searchData=
   ['writedensity',['writeDensity',['../classFileWriter.html#ac8a50a023abf361b1b2389fa85d5e85b',1,'FileWriter']]],
   ['writedos',['writeDOS',['../classFileWriter.html#af3e9c2794b235aa51a6360492bb0aaf8',1,'FileWriter']]],
   ['writeev',['writeEV',['../classFileWriter.html#a4b3905126105b05f157055b0ee36f77f',1,'FileWriter']]],
-  ['writemag',['writeMAG',['../classFileWriter.html#a3cda51ee1ef235830112bdfadadc9044',1,'FileWriter']]],
-  ['writesp_5fldos',['writeSP_LDOS',['../classFileWriter.html#a2d0eeeada4ed468002398c55989580cb',1,'FileWriter']]]
+  ['writemag',['writeMAG',['../classFileWriter.html#a96f22e324da3dea9c470f765db74fd6f',1,'FileWriter']]],
+  ['writesp_5fldos',['writeSP_LDOS',['../classFileWriter.html#a7e084bb2a93e776c9c8aee1a185c8abe',1,'FileWriter']]]
 ];

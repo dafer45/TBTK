@@ -107,10 +107,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a52da56705bd12894fb30ede999d337c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0f380ba33ce91e94f20d5a7fbe90def0"><td class="memItemLeft" align="right" valign="top">double *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPropertyExtractor.html#a0f380ba33ce91e94f20d5a7fbe90def0">calculateDensity</a> (<a class="el" href="classIndex.html">Index</a> pattern, <a class="el" href="classIndex.html">Index</a> ranges)</td></tr>
 <tr class="separator:a0f380ba33ce91e94f20d5a7fbe90def0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a57ba5caafb561d54ac4d303cc6d52050"><td class="memItemLeft" align="right" valign="top">double *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPropertyExtractor.html#a57ba5caafb561d54ac4d303cc6d52050">calculateMAG</a> (<a class="el" href="classIndex.html">Index</a> pattern, <a class="el" href="classIndex.html">Index</a> ranges)</td></tr>
-<tr class="separator:a57ba5caafb561d54ac4d303cc6d52050"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a00acf4036971ec3ae75c156a06f65a38"><td class="memItemLeft" align="right" valign="top">double *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPropertyExtractor.html#a00acf4036971ec3ae75c156a06f65a38">calculateSP_LDOS</a> (<a class="el" href="classIndex.html">Index</a> pattern, <a class="el" href="classIndex.html">Index</a> ranges, double u_lim, double l_lim, int resolution)</td></tr>
-<tr class="separator:a00acf4036971ec3ae75c156a06f65a38"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a38199ed504d36669ea3f7dbebaf45f95"><td class="memItemLeft" align="right" valign="top">std::complex&lt; double &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPropertyExtractor.html#a38199ed504d36669ea3f7dbebaf45f95">calculateMAG</a> (<a class="el" href="classIndex.html">Index</a> pattern, <a class="el" href="classIndex.html">Index</a> ranges)</td></tr>
+<tr class="separator:a38199ed504d36669ea3f7dbebaf45f95"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9c1d1bc641548f2ccda7df6b4713bfc6"><td class="memItemLeft" align="right" valign="top">std::complex&lt; double &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPropertyExtractor.html#a9c1d1bc641548f2ccda7df6b4713bfc6">calculateSP_LDOS</a> (<a class="el" href="classIndex.html">Index</a> pattern, <a class="el" href="classIndex.html">Index</a> ranges, double u_lim, double l_lim, int resolution)</td></tr>
+<tr class="separator:a9c1d1bc641548f2ccda7df6b4713bfc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af20cbd8d71f096a49d661adc8efab0ac"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af20cbd8d71f096a49d661adc8efab0ac"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>save</b> (int *memory, int size, int columns, std::string filename, std::string path=&quot;./&quot;)</td></tr>
 <tr class="separator:af20cbd8d71f096a49d661adc8efab0ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -244,12 +244,12 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>save2D</b> (std::comp
 
 </div>
 </div>
-<a class="anchor" id="a57ba5caafb561d54ac4d303cc6d52050"></a>
+<a class="anchor" id="a38199ed504d36669ea3f7dbebaf45f95"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">double * PropertyExtractor::calculateMAG </td>
+          <td class="memname">complex&lt; double &gt; * PropertyExtractor::calculateMAG </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classIndex.html">Index</a>&#160;</td>
           <td class="paramname"><em>pattern</em>, </td>
@@ -275,16 +275,19 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>save2D</b> (std::comp
   </dd>
 </dl>
 <p>ranges Speifies the number of elements for each subindex. Is ignored for indices specified with positive integers in the pattern, but is used to loop from 0 to the value in ranges for IDX_X, IDX_Y, IDX_Z, and IDX_SUM_ALL. Appropriate ranges corresponding to the two pattern examples above are {SIZE_X, 1, 1, NUM_SPINS} and {SIZE_X, 1, SIZE_Z, NUM_SPINS}, respectively.</p>
-<dl class="section return"><dt>Returns</dt><dd>A magnetization array with size equal to six time the number of points included by specified patter-range combination. The six entries per point corresponds to x-up, x-down, y-up, y-down, z-up, and z-down, respectively. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>A magnetization array with size equal to four times the number of points included by specified patter-range combination. The four entries are <p class="formulaDsp">
+<img class="formulaDsp" alt="\[ \left[\begin{array}{cc} 0 &amp; 1\\ 2 &amp; 3 \end{array}\right] = \left[\begin{array}{cc} \langle c_{i\uparrow}^{\dagger}c_{i\uparrow}\rangle &amp; \langle c_{i\uparrow}^{\dagger}c_{i\downarrow}\rangle\\ \langle c_{i\downarrow}^{\dagger}c_{u\uparrow}\rangle &amp; \langle c_{i\downarrow}^{\dagger}c_{i\downarrow}\rangle \end{array}\right]. \]" src="form_15.png"/>
+</p>
+ </dd></dl>
 
 </div>
 </div>
-<a class="anchor" id="a00acf4036971ec3ae75c156a06f65a38"></a>
+<a class="anchor" id="a9c1d1bc641548f2ccda7df6b4713bfc6"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">double * PropertyExtractor::calculateSP_LDOS </td>
+          <td class="memname">complex&lt; double &gt; * PropertyExtractor::calculateSP_LDOS </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classIndex.html">Index</a>&#160;</td>
           <td class="paramname"><em>pattern</em>, </td>
@@ -328,7 +331,13 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>save2D</b> (std::comp
   </dd>
 </dl>
 <p>ranges Speifies the number of elements for each subindex. Is ignored for indices specified with positive integers in the pattern, but is used to loop from 0 to the value in ranges for IDX_X, IDX_Y, IDX_Z, and IDX_SUM_ALL. Appropriate ranges corresponding to the two pattern examples above are {SIZE_X, 1, 1, NUM_SPINS} and {SIZE_X, 1, SIZE_Z, NUM_SPINS}, respectively.</p>
-<dl class="section return"><dt>Returns</dt><dd>A spin-polarized LDOS array with size equal to six time the number of points included by specified patter-range combination. The six entries per point corresponds to x-up, x-down, y-up, y-down, z-up, and z-down, respectively. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>A spin-polarized LDOS array with size equal to four times the number of points included by specified patter-range combination. The four entries are <p class="formulaDsp">
+<img class="formulaDsp" alt="\[ \left[\begin{array}{cc} 0 &amp; 1\\ 2 &amp; 3 \end{array}\right] = \left[\begin{array}{cc} \rho_{i\uparrow i\uparrow}(E) &amp; \rho_{i\uparrow i\downarrow}(E)\\ \rho_{i\downarrow i\uparrow}(E) &amp; \rho_{i\downarrow i\downarrow}(E)\\ \end{array}\right], \]" src="form_16.png"/>
+</p>
+ where <p class="formulaDsp">
+<img class="formulaDsp" alt="\[ \rho_{i\sigma i\sigma'}(E) = \sum_{E_n}\langle\Psi_n|c_{i\sigma}^{\dagger}c_{i\sigma'}|\Psi_n\rangle\delta(E - E_n) . \]" src="form_18.png"/>
+</p>
+ </dd></dl>
 
 </div>
 </div>
@@ -409,7 +418,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>save2D</b> (std::comp
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Feb 16 2016 17:51:11 for TBTK by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Feb 17 2016 12:02:11 for TBTK by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

@@ -5,8 +5,8 @@ var searchData=
   ['calculatecoefficientswithcutoff',['calculateCoefficientsWithCutoff',['../classChebyshevSolver.html#a3f06343673c1cea959fe89d1fb95b669',1,'ChebyshevSolver']]],
   ['calculatedensity',['calculateDensity',['../classPropertyExtractor.html#a0f380ba33ce91e94f20d5a7fbe90def0',1,'PropertyExtractor']]],
   ['calculatedos',['calculateDOS',['../classPropertyExtractor.html#a52da56705bd12894fb30ede999d337c2',1,'PropertyExtractor']]],
-  ['calculatemag',['calculateMAG',['../classPropertyExtractor.html#a57ba5caafb561d54ac4d303cc6d52050',1,'PropertyExtractor']]],
-  ['calculatesp_5fldos',['calculateSP_LDOS',['../classPropertyExtractor.html#a00acf4036971ec3ae75c156a06f65a38',1,'PropertyExtractor']]],
+  ['calculatemag',['calculateMAG',['../classPropertyExtractor.html#a38199ed504d36669ea3f7dbebaf45f95',1,'PropertyExtractor']]],
+  ['calculatesp_5fldos',['calculateSP_LDOS',['../classPropertyExtractor.html#a9c1d1bc641548f2ccda7df6b4713bfc6',1,'PropertyExtractor']]],
   ['chebyshevsolver',['ChebyshevSolver',['../classChebyshevSolver.html#aa855a729f7fd22791d4c9ddebdbefff3',1,'ChebyshevSolver']]],
   ['clear',['clear',['../classFileWriter.html#a8c031cbd9951a7de4113eb47e679fcc9',1,'FileWriter']]],
   ['construct',['construct',['../classAmplitudeSet.html#a3cd6d0b4fab57a2cd1c73259ed6459a7',1,'AmplitudeSet::construct()'],['../classModel.html#aef816753cb32c33914495eb18c68d1b3',1,'Model::construct()']]]
