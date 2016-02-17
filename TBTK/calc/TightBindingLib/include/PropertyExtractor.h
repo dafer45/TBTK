@@ -83,10 +83,19 @@ public:
 	 *  {SIZE_X, 1, 1, NUM_SPINS} and {SIZE_X, 1, SIZE_Z, NUM_SPINS},
 	 *  respectively.
 	 *
-	 *  @return A magnetization array with size equal to six time the
+	 *  @return A magnetization array with size equal to four times the
 	 *  number of points included by specified patter-range combination.
-	 *  The six entries per point corresponds to x-up, x-down, y-up,
-	 *  y-down, z-up, and z-down, respectively.
+	 *  The four entries are
+	 *  \f[
+	 *      \left[\begin{array}{cc}
+	 *          0	& 1\\
+	 *          2	& 3
+	 *      \end{array}\right] =
+	 *      \left[\begin{array}{cc}
+	 *          \langle c_{i\uparrow}^{\dagger}c_{i\uparrow}	& \langle c_{i\uparrow}^{\dagger}c_{i\downarrow}\rangle\\
+	 *          \langle c_{i\downarrow}^{\dagger}c_{u\uparrow}	& \langle c_{i\downarrow}^{\dagger}c_{i\downarrow}
+	 *      \end{array}\right].
+	 *  \f]
 	 */
 	std::complex<double>* calculateMAG(Index pattern, Index ranges);
 //	double* calculateMAG(Index pattern, Index ranges);
