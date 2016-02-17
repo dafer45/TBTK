@@ -92,8 +92,8 @@ public:
 	 *          2	& 3
 	 *      \end{array}\right] =
 	 *      \left[\begin{array}{cc}
-	 *          \langle c_{i\uparrow}^{\dagger}c_{i\uparrow}	& \langle c_{i\uparrow}^{\dagger}c_{i\downarrow}\rangle\\
-	 *          \langle c_{i\downarrow}^{\dagger}c_{u\uparrow}	& \langle c_{i\downarrow}^{\dagger}c_{i\downarrow}
+	 *          \langle c_{i\uparrow}^{\dagger}c_{i\uparrow}\rangle		& \langle c_{i\uparrow}^{\dagger}c_{i\downarrow}\rangle\\
+	 *          \langle c_{i\downarrow}^{\dagger}c_{u\uparrow}\rangle	& \langle c_{i\downarrow}^{\dagger}c_{i\downarrow}\rangle
 	 *      \end{array}\right].
 	 *  \f]
 	 */
@@ -121,10 +121,24 @@ public:
 	 *  {SIZE_X, 1, 1, NUM_SPINS} and {SIZE_X, 1, SIZE_Z, NUM_SPINS},
 	 *  respectively.
 	 *
-	 *  @return A spin-polarized LDOS array with size equal to six time the
-	 *  number of points included by specified patter-range combination.
-	 *  The six entries per point corresponds to x-up, x-down, y-up,
-	 *  y-down, z-up, and z-down, respectively.
+	 *  @return A spin-polarized LDOS array with size equal to four times
+	 *  the number of points included by specified patter-range
+	 *  combination.
+	 *  The four entries are
+	 *  \f[
+	 *      \left[\begin{array}{cc}
+	 *          0	& 1\\
+	 *          2	& 3
+	 *      \end{array}\right] =
+	 *      \left[\begin{array}{cc}
+	 *          \rho_{i\uparrow i\uparrow}(E)	& \rho_{i\uparrow i\downarrow}(E)\\
+	 *          \rho_{i\downarrow i\uparrow}(E)	& \rho_{i\downarrow i\downarrow}(E)\\
+	 *      \end{array}\right],
+	 *  \f]
+	 *  where
+	 *  \f[
+	 *      \rho_{i\sigma i\siga'}(E) = \sum_{E_n}\langle\Psi_n|c_{i\sigma}^{\dagger}c_{i\sigma'}|\Psi_n\rangle .
+	 *  \f]
 	 */
 	std::complex<double>* calculateSP_LDOS(Index pattern, Index ranges, double u_lim, double l_lim, int resolution);
 //	double* calculateSP_LDOS(Index pattern, Index ranges, double u_lim, double l_lim, int resolution);
