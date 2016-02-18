@@ -29,6 +29,9 @@ public:
 
 	/** Calculate Green's function for a range of 'to'-indices. */
 	std::complex<double>* calculateGreensFunctions(std::vector<Index> &to, Index from);
+
+	/** Not implemented, returns NULL. Calculate local density of states. */
+	double *calculateLDOS(Index pattern, Index ranges);
 private:
 	/** ChebyshevSolver to work on. */
 	ChebyshevSolver *cSolver;

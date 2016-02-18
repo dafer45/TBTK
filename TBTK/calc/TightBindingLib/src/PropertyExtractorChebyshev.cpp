@@ -87,3 +87,8 @@ complex<double>* PropertyExtractorChebyshev::calculateGreensFunctions(vector<Ind
 
 	return greensFunction;
 }
+
+double* PropertyExtractorChebyshev::calculateLDOS(Index pattern, Index ranges){
+	//To be implemented
+	return NULL;
+}
