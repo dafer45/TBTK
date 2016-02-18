@@ -12,7 +12,7 @@
 
 /** The PropertyExtractor extracts common physical properties such as DOS,
  *  Density, LDOS, etc. from a DiagonalizationSolver. These can then be written
- *   to file using the FileWriter.*/
+ *  to file using the FileWriter.*/
 class PropertyExtractor{
 public:
 	/** Constructor. */
