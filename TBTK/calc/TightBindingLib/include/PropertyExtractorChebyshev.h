@@ -30,7 +30,7 @@ public:
 	/** Calculate Green's function for a range of 'to'-indices. */
 	std::complex<double>* calculateGreensFunctions(std::vector<Index> &to, Index from);
 
-	/** Not implemented, returns NULL. Calculate local density of states. */
+	/** !!!Not tested!!!. Calculate local density of states. */
 	double *calculateLDOS(Index pattern, Index ranges);
 private:
 	/** ChebyshevSolver to work on. */
@@ -52,7 +52,19 @@ private:
 	/** Flag indicating whether the GPU should be used to generate Green's
 	 *  functions. */
 	bool useGPUToGenerateGreensFunctions;
+
+	/** Loops over range indices and calls the appropriate callback
+	 *  function to calculate the correct quantity. */
+	void calculate(void (*callback)(PropertyExtractorChebyshev *cb_this, void *memory, const Index &index, int offset),
+			void *memory, Index pattern, const Index &ranges, int currentOffset, int offsetMultiplier);
+
+	/** !!!Not tested!!! Callback for calculating local density of states.
+	 *  Used by calculateLDOS. */
+	static void calculateLDOSCallback(PropertyExtractorChebyshev *cb_this, void *ldos, const Index &index, int offset);
+
+	/** Hint used to pass information between calculate[Property] and
+	 * calculate[Property]Callback. */
+	void *hint;
 };
 
 #endif
-

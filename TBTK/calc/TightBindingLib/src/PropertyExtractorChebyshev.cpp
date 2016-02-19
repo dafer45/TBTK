@@ -89,6 +89,86 @@ complex<double>* PropertyExtractorChebyshev::calculateGreensFunctions(vector<Ind
 }
 
 double* PropertyExtractorChebyshev::calculateLDOS(Index pattern, Index ranges){
-	//To be implemented
-	return NULL;
+	hint = new int[1];
+	((int*)hint)[0] = -1;
+	for(unsigned int n = 0; n < pattern.indices.size(); n++){
+		if(pattern.indices.at(n) == IDX_SPIN){
+			((int*)hint)[0] = n;
+			pattern.indices.at(n) = 0;
+			ranges.indices.at(n) = 1;
+			break;
+		}
+	}
+	if(((int*)hint)[0] == -1){
+		cout << "Error in PropertyExtractorChebyshev::calculateLDOS: No spin index indicated.\n";
+		delete [] (int*)hint;
+		return NULL;
+	}
+
+	for(unsigned int n = 0; n < pattern.indices.size(); n++){
+		if(pattern.indices.at(n) >= 0)
+			ranges.indices.at(n) = 1;
+	}
+
+	int ldosArraySize = 1.;
+	for(unsigned int n = 0; n < ranges.indices.size(); n++){
+		if(pattern.indices.at(n) < IDX_SUM_ALL)
+			ldosArraySize *= ranges.indices.at(n);
+	}
+	double *ldos = new double[ldosArraySize];
+	for(int n = 0; n < ldosArraySize; n++)
+		ldos[n] = 0.;
+
+	calculate(calculateLDOSCallback, (void*)ldos, pattern, ranges, 0, 1);
+
+	delete [] (int*)hint;
+
+	return ldos;
+}
+
+void PropertyExtractorChebyshev::calculateLDOSCallback(PropertyExtractorChebyshev *cb_this, void *ldos, const Index &index, int offset){
+	int spinIndex = ((int*)(cb_this->hint))[0];
+	for(int s = 0; s < 2; s++){
+		Index i(index);
+		i.indices.at(spinIndex) = s;
+		complex<double> *greensFunction = cb_this->calculateGreensFunction(i, i);
+
+		for(int n = 0; n < cb_this->energyResolution; n++)
+			((double*)ldos)[cb_this->energyResolution*offset + n] -= imag(greensFunction[n])/M_PI;
+
+		delete [] greensFunction;
+	}
+}
+
+void PropertyExtractorChebyshev::calculate(void (*callback)(PropertyExtractorChebyshev *cb_this, void *memory, const Index &index, int offset),
+					void *memory, Index pattern, const Index &ranges, int currentOffset, int offsetMultiplier){
+	int currentSubindex = pattern.indices.size()-1;
+	for(; currentSubindex >= 0; currentSubindex--){
+		if(pattern.indices.at(currentSubindex) < 0)
+			break;
+	}
+
+	if(currentSubindex == -1){
+		callback(this, memory, pattern, currentOffset);
+	}
+	else{
+		int nextOffsetMultiplier = offsetMultiplier;
+		if(pattern.indices.at(currentSubindex) < IDX_SUM_ALL)
+			nextOffsetMultiplier *= ranges.indices.at(currentSubindex);
+		bool isSumIndex = false;
+		if(pattern.indices.at(currentSubindex) == IDX_SUM_ALL)
+			isSumIndex = true;
+		for(int n = 0; n < ranges.indices.at(currentSubindex); n++){
+			pattern.indices.at(currentSubindex) = n;
+			calculate(callback,
+					memory,
+					pattern,
+					ranges,
+					currentOffset,
+					nextOffsetMultiplier
+			);
+			if(!isSumIndex)
+				currentOffset += offsetMultiplier;
+		}
+	}
 }
