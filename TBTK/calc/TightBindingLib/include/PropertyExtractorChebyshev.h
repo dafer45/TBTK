@@ -32,6 +32,9 @@ public:
 
 	/** !!!Not tested!!!. Calculate local density of states. */
 	double *calculateLDOS(Index pattern, Index ranges);
+
+	/** !!!Not tested!!!. Calculate spin-polarized local densito of states. */
+	std::complex<double> *calculateSP_LDOS(Index pattern, Index ranges);
 private:
 	/** ChebyshevSolver to work on. */
 	ChebyshevSolver *cSolver;
@@ -61,6 +64,10 @@ private:
 	/** !!!Not tested!!! Callback for calculating local density of states.
 	 *  Used by calculateLDOS. */
 	static void calculateLDOSCallback(PropertyExtractorChebyshev *cb_this, void *ldos, const Index &index, int offset);
+
+	/** !!!Not tested!!! Callback for calculating spin-polarized local
+	 *  density of states. Used by calculateSP_LDOS. */
+	static void calculateSP_LDOSCallback(PropertyExtractorChebyshev *cb_this, void *sp_ldos, const Index &index, int offset);
 
 	/** Hint used to pass information between calculate[Property] and
 	 * calculate[Property]Callback. */
