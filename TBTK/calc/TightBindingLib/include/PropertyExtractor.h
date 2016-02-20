@@ -30,7 +30,7 @@ public:
 	/** Get eigenvalues. */
 	double* getEV();
 
-	/** Calculate DOS.
+	/** Calculate density of states.
 	 *  @param u_lim Upper limit for energy interval.
 	 *  @param l_lim Lower limit for energy interval.
 	 *  @param resolution Number of points used between l_lim and u_lim.
@@ -63,7 +63,7 @@ public:
 	 */
 	double* calculateDensity(Index pattern, Index ranges);
 
-	/** Likely to change. Calculate magnetization.
+	/** Calculate magnetization.
 	 *
 	 *  @param pattern Specifies the index pattern for which to calculate
 	 *  the magnetization. For example, assume that the index scheme is
@@ -100,7 +100,7 @@ public:
 	std::complex<double>* calculateMAG(Index pattern, Index ranges);
 //	double* calculateMAG(Index pattern, Index ranges);
 
-	/** Likely to change. Calculate spin-polarized local density of states.
+	/** Calculate spin-polarized local density of states.
 	 *
 	 *  @param pattern Specifies the index pattern for which to calculate
 	 *  the spin-polarized LDOS. For example, assume that the index scheme

@@ -408,8 +408,6 @@ complex<double>* PropertyExtractor::calculateSP_LDOS(Index pattern, Index ranges
 }
 
 void PropertyExtractor::calculateDensityCallback(PropertyExtractor *cb_this, void* density, const Index &index, int offset){
-	if(index.indices.back() > 1)
-		return;
 	const double *eigen_values = cb_this->dSolver->getEigenValues();
 	for(int n = 0; n < cb_this->dSolver->getModel()->getBasisSize(); n++){
 		if(eigen_values[n] < 0){

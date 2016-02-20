@@ -55,7 +55,7 @@ public:
 		std::string path = "/"
 	);
 
-	/** Likely to change. Write magnetization to file. */
+	/** Write magnetization to file. */
 	static void writeMAG(
 		std::complex<double> *mag,
 		int rank,
@@ -81,7 +81,7 @@ public:
 		std::string path = "/"
 	);
 
-	/** Likely to change. Write spin-polarized local density of states to file. */
+	/** Write spin-polarized local density of states to file. */
 	static void writeSP_LDOS(
 		std::complex<double> *sp_ldos,
 		int rank,
