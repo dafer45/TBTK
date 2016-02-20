@@ -76,6 +76,8 @@ public:
 		double *ldos,
 		int rank,
 		int *dims,
+		double u_lim,
+		double l_lim,
 		int resolution,
 		std::string name = "LDOS",
 		std::string path = "/"

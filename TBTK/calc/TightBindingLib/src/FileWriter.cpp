@@ -304,13 +304,20 @@ void FileWriter::writeMAG(complex<double> *mag, int rank, int *dims, string name
 	delete [] mag_decomposed;
 }
 
-void FileWriter::writeLDOS(double *ldos, int rank, int *dims, int resolution, string name, string path){
+void FileWriter::writeLDOS(double *ldos, int rank, int *dims, double u_lim, double l_lim, int resolution, string name, string path){
 	init();
 
 	hsize_t ldos_dims[rank+1];//Last dimension is for energy
 	for(int n = 0; n < rank; n++)
 		ldos_dims[n] = dims[n];
 	ldos_dims[rank] = resolution;
+
+	double limits[2];
+	limits[0] = u_lim;
+	limits[1] = l_lim;
+	const int LIMITS_RANK = 1;
+	hsize_t limits_dims[1];
+	limits_dims[0] = 2;
 
 	try{
 		stringstream ss;
@@ -325,6 +332,11 @@ void FileWriter::writeLDOS(double *ldos, int rank, int *dims, int resolution, st
 		DataSpace dataspace = DataSpace(rank+1, ldos_dims);
 		DataSet dataset = DataSet(file.createDataSet(name, PredType::IEEE_F64BE, dataspace));
 		dataset.write(ldos, PredType::NATIVE_DOUBLE);
+		dataspace.close();
+
+		dataspace = DataSpace(LIMITS_RANK, limits_dims);
+		Attribute attribute = dataset.createAttribute("UpLowLimits", PredType::IEEE_F64BE, dataspace);
+		attribute.write(PredType::NATIVE_DOUBLE, limits);
 		dataspace.close();
 		dataset.close();
 
