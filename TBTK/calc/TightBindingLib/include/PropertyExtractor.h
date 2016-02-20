@@ -50,10 +50,10 @@ public:
 	 *  rather than being tied to the x, y, and z used as physical
 	 *  subindices.
 	 *
-	 *  @parameter ranges Speifies the number of elements for each
-	 *  subindex. Is ignored for indices specified with positive integers
-	 *  in the pattern, but is used to loop from 0 to the value in ranges
-	 *  for IDX_X, IDX_Y, IDX_Z, and IDX_SUM_ALL. Appropriate ranges
+	 *  @param ranges Speifies the number of elements for each subindex. Is
+	 *   ignored for indices specified with positive integer in the
+	 *  pattern, but is used to loop from 0 to the value in ranges for
+	 *  IDX_X, IDX_Y, IDX_Z, and IDX_SUM_ALL. Appropriate ranges
 	 *  corresponding to the two pattern examples above are
 	 *  {SIZE_X, 1, 1, NUM_SPINS} and {SIZE_X, 1, SIZE_Z, NUM_SPINS},
 	 *  respectively.
@@ -75,10 +75,10 @@ public:
 	 *  routine to create a one-, two-, or three-dimensional output, rather
 	 *  than being tied to the x, y, and z used as physical subindices.
 	 *
-	 *  @parameter ranges Speifies the number of elements for each
-	 *  subindex. Is ignored for indices specified with positive integers
-	 *  in the pattern, but is used to loop from 0 to the value in ranges
-	 *  for IDX_X, IDX_Y, IDX_Z, and IDX_SUM_ALL. Appropriate ranges
+	 *  @param ranges Speifies the number of elements for each subindex. Is
+	 *   ignored for indices specified with positive integers in the
+	 *  pattern, but is used to loop from 0 to the value in ranges for
+	 *  IDX_X, IDX_Y, IDX_Z, and IDX_SUM_ALL. Appropriate ranges
 	 *  corresponding to the two pattern examples above are
 	 *  {SIZE_X, 1, 1, NUM_SPINS} and {SIZE_X, 1, SIZE_Z, NUM_SPINS},
 	 *  respectively.
@@ -113,10 +113,10 @@ public:
 	 *  rather than being tied to the x, y, and z used as physical
 	 *  subindices.
 	 *
-	 *  @parameter ranges Speifies the number of elements for each
-	 *  subindex. Is ignored for indices specified with positive integers
-	 *  in the pattern, but is used to loop from 0 to the value in ranges
-	 *  for IDX_X, IDX_Y, IDX_Z, and IDX_SUM_ALL. Appropriate ranges
+	 *  @param ranges Speifies the number of elements for each subindex. Is
+	 *   ignored for indices specified with positive integers in the
+	 *  pattern, but is used to loop from 0 to the value in ranges for
+	 *  IDX_X, IDX_Y, IDX_Z, and IDX_SUM_ALL. Appropriate ranges
 	 *  corresponding to the two pattern examples above are
 	 *  {SIZE_X, 1, 1, NUM_SPINS} and {SIZE_X, 1, SIZE_Z, NUM_SPINS},
 	 *  respectively.
