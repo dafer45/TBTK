@@ -1,3 +1,11 @@
+# -*- encoding: utf-8 -*-
+
+## @package TBTKview
+#  @file plotDOS.py
+#  @brief Plot density
+#
+#  @author Kristofer Björnson
+
 import h5py
 import numpy
 import matplotlib.pyplot
@@ -8,13 +16,13 @@ import mpl_toolkits.mplot3d
 import sys
 
 if(len(sys.argv) != 2):
-	print "Error: Needs one argument for .hdf5-filename"
+	print "Error, the following arguments are needed: .hdf5-file"
 	exit(1)
 
 filename = sys.argv[1]
 
 file = h5py.File(filename, 'r');
-dataset = file['LDOS']
+dataset = file['Density']
 
 dimensions = dataset.shape
 print "Dimensions: " + str(dimensions)
@@ -32,6 +40,5 @@ ax = fig.gca(projection='3d')
 Z = dataset[:,:]
 ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap=matplotlib.cm.coolwarm, linewidth=0, antialiased=False)
 ax.set_zlim(numpy.min(Z), numpy.max(Z))
-#matplotlib.pyplot.show()
 
-fig.savefig('figures/LDOS.png')
+fig.savefig('figures/Density.png')
