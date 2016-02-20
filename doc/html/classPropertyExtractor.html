@@ -194,10 +194,10 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>save2D</b> (std::comp
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">pattern</td><td>Specifies the index pattern for which to calculate the density. For example, assume that the index scheme is {x, y, z, spin}. {ID_X, 5, 10, IDX_SUM_ALL} will calculate the density for each x along (y,z)=(5,10) by summing over spin. Similarly {ID_X, 5, IDX_Y, IDX_SUM_ALL} will return a two dimensional density for all x and z and y = 5. Note that IDX_X IDX_Y, and IDX_Z refers to the first, second, and third index used by the routine to create a one-, two-, or three-dimensional output, rather than being tied to the x, y, and z used as physical subindices.</td></tr>
+    <tr><td class="paramname">ranges</td><td>Speifies the number of elements for each subindex. Is ignored for indices specified with positive integer in the pattern, but is used to loop from 0 to the value in ranges for IDX_X, IDX_Y, IDX_Z, and IDX_SUM_ALL. Appropriate ranges corresponding to the two pattern examples above are {SIZE_X, 1, 1, NUM_SPINS} and {SIZE_X, 1, SIZE_Z, NUM_SPINS}, respectively.</td></tr>
   </table>
   </dd>
 </dl>
-<p>ranges Speifies the number of elements for each subindex. Is ignored for indices specified with positive integers in the pattern, but is used to loop from 0 to the value in ranges for IDX_X, IDX_Y, IDX_Z, and IDX_SUM_ALL. Appropriate ranges corresponding to the two pattern examples above are {SIZE_X, 1, 1, NUM_SPINS} and {SIZE_X, 1, SIZE_Z, NUM_SPINS}, respectively.</p>
 <dl class="section return"><dt>Returns</dt><dd>A density array with size equal to the number of points included by specified patter-range combination. </dd></dl>
 
 </div>
@@ -231,7 +231,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>save2D</b> (std::comp
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Calculate DOS. </p>
+<p>Calculate density of states. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">u_lim</td><td>Upper limit for energy interval. </td></tr>
@@ -267,14 +267,14 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>save2D</b> (std::comp
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Likely to change. Calculate magnetization.</p>
+<p>Calculate magnetization.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">pattern</td><td>Specifies the index pattern for which to calculate the magnetization. For example, assume that the index scheme is {x, y, z, spin}. {ID_X, 5, 10, IDX_SPIN} will calculate the magnetization for each x along (y,z)=(5,10). Similarly {ID_X, 5, IDX_Y, IDX_SPIN} will return a two dimensional magnetiation for all x and z and y = 5. Note that IDX_X, IDX_Y, and IDX_Z refers to the first, second, and third index used by the routine to create a one-, two-, or three-dimensional output, rather than being tied to the x, y, and z used as physical subindices.</td></tr>
+    <tr><td class="paramname">ranges</td><td>Speifies the number of elements for each subindex. Is ignored for indices specified with positive integers in the pattern, but is used to loop from 0 to the value in ranges for IDX_X, IDX_Y, IDX_Z, and IDX_SUM_ALL. Appropriate ranges corresponding to the two pattern examples above are {SIZE_X, 1, 1, NUM_SPINS} and {SIZE_X, 1, SIZE_Z, NUM_SPINS}, respectively.</td></tr>
   </table>
   </dd>
 </dl>
-<p>ranges Speifies the number of elements for each subindex. Is ignored for indices specified with positive integers in the pattern, but is used to loop from 0 to the value in ranges for IDX_X, IDX_Y, IDX_Z, and IDX_SUM_ALL. Appropriate ranges corresponding to the two pattern examples above are {SIZE_X, 1, 1, NUM_SPINS} and {SIZE_X, 1, SIZE_Z, NUM_SPINS}, respectively.</p>
 <dl class="section return"><dt>Returns</dt><dd>A magnetization array with size equal to four times the number of points included by specified patter-range combination. The four entries are <p class="formulaDsp">
 <img class="formulaDsp" alt="\[ \left[\begin{array}{cc} 0 &amp; 1\\ 2 &amp; 3 \end{array}\right] = \left[\begin{array}{cc} \langle c_{i\uparrow}^{\dagger}c_{i\uparrow}\rangle &amp; \langle c_{i\uparrow}^{\dagger}c_{i\downarrow}\rangle\\ \langle c_{i\downarrow}^{\dagger}c_{u\uparrow}\rangle &amp; \langle c_{i\downarrow}^{\dagger}c_{i\downarrow}\rangle \end{array}\right]. \]" src="form_15.png"/>
 </p>
@@ -323,14 +323,14 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>save2D</b> (std::comp
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Likely to change. Calculate spin-polarized local density of states.</p>
+<p>Calculate spin-polarized local density of states.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">pattern</td><td>Specifies the index pattern for which to calculate the spin-polarized LDOS. For example, assume that the index scheme is {x, y, z, spin}. {ID_X, 5, 10, IDX_SPIN} will calculate the spin-polarized LDOS for each x along (y,z)=(5,10). Similarly {ID_X, 5, IDX_Y, IDX_SPIN} will return a two dimensional spin-polarized LDOS for all x and z and y = 5. Note that IDX_X, IDX_Y, and IDX_Z refers to the first, second, and third index used by the routine to create a one-, two-, or three-dimensional output, rather than being tied to the x, y, and z used as physical subindices.</td></tr>
+    <tr><td class="paramname">ranges</td><td>Speifies the number of elements for each subindex. Is ignored for indices specified with positive integers in the pattern, but is used to loop from 0 to the value in ranges for IDX_X, IDX_Y, IDX_Z, and IDX_SUM_ALL. Appropriate ranges corresponding to the two pattern examples above are {SIZE_X, 1, 1, NUM_SPINS} and {SIZE_X, 1, SIZE_Z, NUM_SPINS}, respectively.</td></tr>
   </table>
   </dd>
 </dl>
-<p>ranges Speifies the number of elements for each subindex. Is ignored for indices specified with positive integers in the pattern, but is used to loop from 0 to the value in ranges for IDX_X, IDX_Y, IDX_Z, and IDX_SUM_ALL. Appropriate ranges corresponding to the two pattern examples above are {SIZE_X, 1, 1, NUM_SPINS} and {SIZE_X, 1, SIZE_Z, NUM_SPINS}, respectively.</p>
 <dl class="section return"><dt>Returns</dt><dd>A spin-polarized LDOS array with size equal to four times the number of points included by specified patter-range combination. The four entries are <p class="formulaDsp">
 <img class="formulaDsp" alt="\[ \left[\begin{array}{cc} 0 &amp; 1\\ 2 &amp; 3 \end{array}\right] = \left[\begin{array}{cc} \rho_{i\uparrow i\uparrow}(E) &amp; \rho_{i\uparrow i\downarrow}(E)\\ \rho_{i\downarrow i\uparrow}(E) &amp; \rho_{i\downarrow i\downarrow}(E)\\ \end{array}\right], \]" src="form_16.png"/>
 </p>
@@ -418,7 +418,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>save2D</b> (std::comp
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Feb 17 2016 12:02:11 for TBTK by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Feb 20 2016 15:57:22 for TBTK by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

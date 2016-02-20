@@ -7,5 +7,7 @@ var searchData=
   ['plotldos_2epy',['plotLDOS.py',['../plotLDOS_8py.html',1,'']]],
   ['plotmag_2epy',['plotMAG.py',['../plotMAG_8py.html',1,'']]],
   ['propertyextractor_2ecpp',['PropertyExtractor.cpp',['../PropertyExtractor_8cpp.html',1,'']]],
-  ['propertyextractor_2eh',['PropertyExtractor.h',['../PropertyExtractor_8h.html',1,'']]]
+  ['propertyextractor_2eh',['PropertyExtractor.h',['../PropertyExtractor_8h.html',1,'']]],
+  ['propertyextractorchebyshev_2ecpp',['PropertyExtractorChebyshev.cpp',['../PropertyExtractorChebyshev_8cpp.html',1,'']]],
+  ['propertyextractorchebyshev_2eh',['PropertyExtractorChebyshev.h',['../PropertyExtractorChebyshev_8h.html',1,'']]]
 ];

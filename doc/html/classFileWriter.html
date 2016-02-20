@@ -103,6 +103,8 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:ac8a50a023abf361b1b2389fa85d5e85b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a96f22e324da3dea9c470f765db74fd6f"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFileWriter.html#a96f22e324da3dea9c470f765db74fd6f">writeMAG</a> (std::complex&lt; double &gt; *mag, int rank, int *dims, std::string name=&quot;MAG&quot;, std::string path=&quot;/&quot;)</td></tr>
 <tr class="separator:a96f22e324da3dea9c470f765db74fd6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2d7cbf5a9233a0e7926bef8739be2907"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFileWriter.html#a2d7cbf5a9233a0e7926bef8739be2907">writeLDOS</a> (double *ldos, int rank, int *dims, int resolution, std::string name=&quot;LDOS&quot;, std::string path=&quot;/&quot;)</td></tr>
+<tr class="separator:a2d7cbf5a9233a0e7926bef8739be2907"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7e084bb2a93e776c9c8aee1a185c8abe"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFileWriter.html#a7e084bb2a93e776c9c8aee1a185c8abe">writeSP_LDOS</a> (std::complex&lt; double &gt; *sp_ldos, int rank, int *dims, double u_lim, double l_lim, int resolution, std::string name=&quot;SP_LDOS&quot;, std::string path=&quot;/&quot;)</td></tr>
 <tr class="separator:a7e084bb2a93e776c9c8aee1a185c8abe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad9f13c771edca149a3f696c9e982bb86"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFileWriter.html#ad9f13c771edca149a3f696c9e982bb86">write</a> (double *data, int rank, int *dims, std::string name, std::string path=&quot;/&quot;)</td></tr>
@@ -527,6 +529,65 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a2d7cbf5a9233a0e7926bef8739be2907"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void FileWriter::writeLDOS </td>
+          <td>(</td>
+          <td class="paramtype">double *&#160;</td>
+          <td class="paramname"><em>ldos</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>rank</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>dims</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>resolution</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>name</em> = <code>&quot;LDOS&quot;</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>path</em> = <code>&quot;/&quot;</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Write local density of states to file. </p>
+
+</div>
+</div>
 <a class="anchor" id="a96f22e324da3dea9c470f765db74fd6f"></a>
 <div class="memitem">
 <div class="memproto">
@@ -576,7 +637,7 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Likely to change. Write magnetization to file. </p>
+<p>Write magnetization to file. </p>
 
 </div>
 </div>
@@ -647,7 +708,7 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Likely to change. Write spin-polarized local density of states to file. </p>
+<p>Write spin-polarized local density of states to file. </p>
 
 </div>
 </div>
@@ -658,7 +719,7 @@ Static Public Member Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Feb 17 2016 12:02:11 for TBTK by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Feb 20 2016 15:57:22 for TBTK by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
