@@ -108,6 +108,44 @@ double* PropertyExtractorChebyshev::calculateDensity(Index pattern, Index ranges
 	return density;
 }
 
+complex<double>* PropertyExtractorChebyshev::calculateMAG(Index pattern, Index ranges){
+	hint = new int[1];
+	((int*)hint)[0] = -1;
+	for(unsigned int n = 0; n < pattern.indices.size(); n++){
+		if(pattern.indices.at(n) == IDX_SPIN){
+			((int*)hint)[0] = n;
+			pattern.indices.at(n) = 0;
+			ranges.indices.at(n) = 1;
+			break;
+		}
+	}
+	if(((int*)hint)[0] == -1){
+		cout << "Error in PropertyExtractorChebyshev::calculateMAG: No spin index indicated.\n";
+		delete [] (int*)hint;
+		return NULL;
+	}
+
+	for(unsigned int n = 0; n < pattern.indices.size(); n++){
+		if(pattern.indices.at(n) >= 0)
+			ranges.indices.at(n) = 1;
+	}
+
+	int magArraySize = 1;
+	for(unsigned int n = 0; n < ranges.indices.size(); n++){
+		if(pattern.indices.at(n) < IDX_SUM_ALL)
+			magArraySize *= ranges.indices.at(n);
+	}
+	complex<double> *mag = new complex<double>[4*magArraySize];
+	for(int n = 0; n < 4*magArraySize; n++)
+		mag[n] = 0.;
+
+	calculate(calculateMAGCallback, (void*)mag, pattern, ranges, 0, 1);
+
+	delete [] (int*)hint;
+
+	return mag;
+}
+
 double* PropertyExtractorChebyshev::calculateLDOS(Index pattern, Index ranges){
 	for(unsigned int n = 0; n < pattern.indices.size(); n++){
 		if(pattern.indices.at(n) >= 0)
@@ -169,10 +207,28 @@ complex<double>* PropertyExtractorChebyshev::calculateSP_LDOS(Index pattern, Ind
 void PropertyExtractorChebyshev::calculateDensityCallback(PropertyExtractorChebyshev *cb_this, void *density, const Index &index, int offset){
 	complex<double> *greensFunction = cb_this->calculateGreensFunction(index, index);
 
-	for(int e = 0; e < cb_this->energyResolution; e++)
+	for(int e = 0; e < cb_this->energyResolution/2; e++)
 		((double*)density)[e] -= imag(greensFunction[e])/M_PI;
 
 	delete [] greensFunction;
+}
+
+void PropertyExtractorChebyshev::calculateMAGCallback(PropertyExtractorChebyshev *cb_this, void *mag, const Index &index, int offset){
+	int spinIndex = ((int*)(cb_this->hint))[0];
+	Index to(index);
+	Index from(index);
+	complex<double> *greensFunction;
+
+	for(int n = 0; n < 4; n++){
+		to.indices.at(spinIndex) = n/2;		//up, up, down, down
+		from.indices.at(spinIndex) = n%2;	//up, down, up, down
+		greensFunction = cb_this->calculateGreensFunction(to, from);
+
+		for(int e = 0; e < cb_this->energyResolution/2; e++)
+			((complex<double>*)mag)[4*offset + n] += greensFunction[e];
+
+		delete [] greensFunction;
+	}
 }
 
 void PropertyExtractorChebyshev::calculateLDOSCallback(PropertyExtractorChebyshev *cb_this, void *ldos, const Index &index, int offset){
