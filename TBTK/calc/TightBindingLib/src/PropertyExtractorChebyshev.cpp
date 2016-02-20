@@ -208,7 +208,7 @@ void PropertyExtractorChebyshev::calculateDensityCallback(PropertyExtractorCheby
 	complex<double> *greensFunction = cb_this->calculateGreensFunction(index, index);
 
 	for(int e = 0; e < cb_this->energyResolution/2; e++)
-		((double*)density)[e] -= imag(greensFunction[e])/M_PI;
+		((double*)density)[offset] -= imag(greensFunction[e])/M_PI;
 
 	delete [] greensFunction;
 }

@@ -38,9 +38,13 @@ public:
 };
 
 inline void Index::print() const{
-	for(unsigned int n = 0; n < indices.size(); n++)
-		std::cout << indices.at(n) << " ";
-	std::cout << "\n";
+	std::cout << "{";
+	for(unsigned int n = 0; n < indices.size(); n++){
+		if(n != 0)
+			std::cout << ", ";
+		std::cout << indices.at(n);
+	}
+	std::cout << "}\n";
 }
 
 inline bool Index::equals(Index &index){
