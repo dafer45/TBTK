@@ -1,5 +1,5 @@
 /** @package TBTKtemp
- *  @file Templates/WireOnSuperconductor/src/main.cpp
+ *  @file main.cpp
  *  @brief Wire on superconductor using self-consistent diagonalization
  *  
  *  Self-consistent solution for superconducting order-parameter for a 2D

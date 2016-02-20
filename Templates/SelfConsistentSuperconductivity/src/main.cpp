@@ -1,5 +1,5 @@
 /** @package TBTKtemp
- *  @file Templates/SelfConsistenetSuperconductivity
+ *  @file main.cpp
  *  @brief Self-consistent superconductivity using diagonalization
  *
  *  Basic example of self-consistent superconducting order-parameter for a 2D

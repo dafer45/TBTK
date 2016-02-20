@@ -1,5 +1,5 @@
 /** @package TBTKtemp
- *  @file Templates/CarbonNanotube/src/main.cpp
+ *  @file main.cpp
  *  @brief Carbon nanotube using diagonalization
  *
  *  Basic example of diagonalization of a 2D tight-binding model with t = 1 and

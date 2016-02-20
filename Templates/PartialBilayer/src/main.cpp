@@ -1,5 +1,5 @@
 /** @package TBTKtemp
- *  @file Templates/PartialBilayer/src/main.cpp
+ *  @file main.cpp
  *  @brief Partial bilayer using diagonalization
  *
  *  Basic example of diagonalization of a 2D tight-binding model with t = 1 and

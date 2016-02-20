@@ -1,5 +1,5 @@
 /** @package TBTKtemp
- *  @file Templates/TopologicalInsulator3D
+ *  @file main.cpp
  *  @breif Calculating edge spectrum of a TI using Chebyshev expansion
  *
  *  Calculating the band structure at the surface of a 3D topological insulator
