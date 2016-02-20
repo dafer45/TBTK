@@ -23,10 +23,10 @@ filename = sys.argv[1]
 sigma = float(sys.argv[2])
 
 file = h5py.File(filename, 'r');
-dataset = file['SP_LDOS']
+dataset = file['LDOS']
 
 data_dimensions = dataset.shape
-physical_dimensions = len(data_dimensions) - 3 #Three last dimensions are for energy, spin components, and real/imaginary decomposition.
+physical_dimensions = len(data_dimensions) - 1 #Last dimensions are for energy.
 energy_resolution = data_dimensions[physical_dimensions];
 limits = dataset.attrs['UpLowLimits']
 print "Dimensions: " + str(physical_dimensions)
@@ -44,7 +44,7 @@ y = numpy.arange(limits[1], limits[0], (limits[0] - limits[1])/energy_resolution
 X, Y = numpy.meshgrid(x, y)
 
 fig = matplotlib.pyplot.figure()
-Z = dataset[:,:,0,0] + dataset[:,:,3,0]
+Z = dataset[:,:]
 sigma_discrete_units = sigma*energy_resolution/(limits[0] - limits[1])
 for xp in range(0, size_x):
 	Z[xp,:] = scipy.ndimage.filters.gaussian_filter1d(Z[xp,:], sigma_discrete_units)
