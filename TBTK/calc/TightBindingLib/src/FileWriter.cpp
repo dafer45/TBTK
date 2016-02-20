@@ -304,6 +304,46 @@ void FileWriter::writeMAG(complex<double> *mag, int rank, int *dims, string name
 	delete [] mag_decomposed;
 }
 
+void FileWriter::writeLDOS(double *ldos, int rank, int *dims, int resolution, string name, string path){
+	init();
+
+	hsize_t ldos_dims[rank+1];//Last dimension is for energy
+	for(int n = 0; n < rank; n++)
+		ldos_dims[n] = dims[n];
+	ldos_dims[rank] = resolution;
+
+	try{
+		stringstream ss;
+		ss << path;
+		if(path.back() != '/')
+			ss << "/";
+		ss << name;
+
+		Exception::dontPrint();
+		H5File file(filename, H5F_ACC_RDWR);
+
+		DataSpace dataspace = DataSpace(rank+1, ldos_dims);
+		DataSet dataset = DataSet(file.createDataSet(name, PredType::IEEE_F64BE, dataspace));
+		dataset.write(ldos, PredType::NATIVE_DOUBLE);
+		dataspace.close();
+		dataset.close();
+
+		file.close();
+	}
+	catch(FileIException error){
+		error.printError();
+		return;
+	}
+	catch(DataSetIException error){
+		error.printError();
+		return;
+	}
+	catch(DataSpaceIException error){
+		error.printError();
+		return;
+	}
+}
+
 /*void FileWriter::writeSP_LDOS(double *sp_ldos, int rank, int *dims, double u_lim, double l_lim, int resolution, string name, string path){
 	init();
 
@@ -378,7 +418,7 @@ void FileWriter::writeSP_LDOS(complex<double> *sp_ldos, int rank, int *dims, dou
 		sp_ldos_decomposed[2*n+0] = real(sp_ldos[n]);
 		sp_ldos_decomposed[2*n+1] = imag(sp_ldos[n]);
 	}
-	
+
 	sp_ldos_dims[rank+2] = 2;
 
 	double limits[2];

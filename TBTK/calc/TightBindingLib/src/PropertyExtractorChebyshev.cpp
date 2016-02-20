@@ -99,8 +99,8 @@ double* PropertyExtractorChebyshev::calculateLDOS(Index pattern, Index ranges){
 		if(pattern.indices.at(n) < IDX_SUM_ALL)
 			ldosArraySize *= ranges.indices.at(n);
 	}
-	double *ldos = new double[ldosArraySize];
-	for(int n = 0; n < ldosArraySize; n++)
+	double *ldos = new double[energyResolution*ldosArraySize];
+	for(int n = 0; n < energyResolution*ldosArraySize; n++)
 		ldos[n] = 0.;
 
 	calculate(calculateLDOSCallback, (void*)ldos, pattern, ranges, 0, 1);
@@ -135,8 +135,8 @@ complex<double>* PropertyExtractorChebyshev::calculateSP_LDOS(Index pattern, Ind
 		if(pattern.indices.at(n) < IDX_SUM_ALL)
 			sp_ldosArraySize *= ranges.indices.at(n);
 	}
-	complex<double> *sp_ldos = new complex<double>[4*sp_ldosArraySize];
-	for(int n = 0; n < 4*sp_ldosArraySize; n++)
+	complex<double> *sp_ldos = new complex<double>[4*energyResolution*sp_ldosArraySize];
+	for(int n = 0; n < 4*energyResolution*sp_ldosArraySize; n++)
 		sp_ldos[n] = 0.;
 
 	calculate(calculateSP_LDOSCallback, (void*)sp_ldos, pattern, ranges, 0, 1);
@@ -147,7 +147,9 @@ complex<double>* PropertyExtractorChebyshev::calculateSP_LDOS(Index pattern, Ind
 }
 
 void PropertyExtractorChebyshev::calculateLDOSCallback(PropertyExtractorChebyshev *cb_this, void *ldos, const Index &index, int offset){
+	cout << "1\n";
 	complex<double> *greensFunction = cb_this->calculateGreensFunction(index, index);
+	cout << "2\n";
 
 	for(int n = 0; n < cb_this->energyResolution; n++)
 		((double*)ldos)[cb_this->energyResolution*offset + n] -= imag(greensFunction[n])/M_PI;

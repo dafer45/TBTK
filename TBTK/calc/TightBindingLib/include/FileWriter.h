@@ -71,6 +71,16 @@ public:
 		std::string path = "/"
 	);*/
 
+	/** Write local density of states to file. */
+	static void writeLDOS(
+		double *ldos,
+		int rank,
+		int *dims,
+		int resolution,
+		std::string name = "LDOS",
+		std::string path = "/"
+	);
+
 	/** Likely to change. Write spin-polarized local density of states to file. */
 	static void writeSP_LDOS(
 		std::complex<double> *sp_ldos,
