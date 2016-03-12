@@ -16,7 +16,7 @@
 #include "Model.h"
 #include "FileWriter.h"
 #include "DiagonalizationSolver.h"
-#include "PropertyExtractor.h"
+#include "DPropertyExtractor.h"
 
 using namespace std;
 
@@ -206,7 +206,7 @@ int main(int argc, char **argv){
 	FileWriter::write(D_arg, D_RANK, dDims, "D_arg");
 
 	//Calculate and save magnetization
-	PropertyExtractor pe(&dSolver);
+	DPropertyExtractor pe(&dSolver);
 	complex<double> *mag = pe.calculateMAG({0, IDX_X, IDX_Y, IDX_SPIN},
 						{1, SIZE_X, SIZE_Y, 2});
 	const int MAG_RANK = 2;

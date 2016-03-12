@@ -12,7 +12,7 @@
 #include <complex>
 #include "Model.h"
 #include "FileWriter.h"
-#include "PropertyExtractor.h"
+#include "DPropertyExtractor.h"
 #include "DiagonalizationSolver.h"
 
 using namespace std;
@@ -58,7 +58,7 @@ int main(int argc, char **argv){
 	FileWriter::clear();
 
 	//Create PropertyExtractor
-	PropertyExtractor pe(&dSolver);
+	DPropertyExtractor pe(&dSolver);
 
 	//Extract eigenvalues and write these to file
 	double *ev = pe.getEV();

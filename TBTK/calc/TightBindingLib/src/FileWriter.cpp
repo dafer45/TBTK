@@ -4,7 +4,7 @@
  */
 
 #include "../include/FileWriter.h"
-#include "../include/PropertyExtractor.h"
+//#include "../include/PropertyExtractor.h"
 #include <string>
 #include <sstream>
 #include <iostream>
