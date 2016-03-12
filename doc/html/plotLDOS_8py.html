@@ -105,7 +105,7 @@ tuple&#160;</td><td class="memItemRight" valign="bottom"><b>plotLDOS.sigma</b> =
 tuple&#160;</td><td class="memItemRight" valign="bottom"><b>plotLDOS.file</b> = h5py.File(filename, 'r')</td></tr>
 <tr class="separator:af2c39323e74b51f13fa06d18f5bfbcee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a775e54a505bb43cbed17a898217b816d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a775e54a505bb43cbed17a898217b816d"></a>
-list&#160;</td><td class="memItemRight" valign="bottom"><b>plotLDOS.dataset</b> = file['SP_LDOS']</td></tr>
+list&#160;</td><td class="memItemRight" valign="bottom"><b>plotLDOS.dataset</b> = file['LDOS']</td></tr>
 <tr class="separator:a775e54a505bb43cbed17a898217b816d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aad2a7c59720e91caa8bff6817e2fb0a5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aad2a7c59720e91caa8bff6817e2fb0a5"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>plotLDOS.data_dimensions</b> = dataset.shape</td></tr>
@@ -135,7 +135,7 @@ tuple&#160;</td><td class="memItemRight" valign="bottom"><b>plotLDOS.y</b> = num
 tuple&#160;</td><td class="memItemRight" valign="bottom"><b>plotLDOS.fig</b> = matplotlib.pyplot.figure()</td></tr>
 <tr class="separator:ab2e3617738e0c310c55d18da53d5b167"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a40ee014ffb4de2b0ea23753481cb424e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a40ee014ffb4de2b0ea23753481cb424e"></a>
-list&#160;</td><td class="memItemRight" valign="bottom"><b>plotLDOS.Z</b> = dataset[:,:,0,0]</td></tr>
+list&#160;</td><td class="memItemRight" valign="bottom"><b>plotLDOS.Z</b> = dataset[:,:]</td></tr>
 <tr class="separator:a40ee014ffb4de2b0ea23753481cb424e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a433f8c25d95a0943ae9d525b76968911"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a433f8c25d95a0943ae9d525b76968911"></a>
 tuple&#160;</td><td class="memItemRight" valign="bottom"><b>plotLDOS.sigma_discrete_units</b> = sigma*energy_resolution/(limits[0] - limits[1])</td></tr>
@@ -150,7 +150,7 @@ tuple&#160;</td><td class="memItemRight" valign="bottom"><b>plotLDOS.ax</b> = fi
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Feb 20 2016 15:57:22 for TBTK by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Mar 12 2016 22:38:07 for TBTK by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
