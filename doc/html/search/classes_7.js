@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['propertyextractor',['PropertyExtractor',['../classPropertyExtractor.html',1,'']]],
-  ['propertyextractorchebyshev',['PropertyExtractorChebyshev',['../classPropertyExtractorChebyshev.html',1,'']]]
+  ['treenode',['TreeNode',['../classTreeNode.html',1,'']]]
 ];
