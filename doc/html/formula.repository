@@ -1,19 +1,16 @@
-\form#0:$ G_{ij}(E)$
-\form#1:$i$
+\form#0:$O(n)$
+\form#1:$ G_{ij}(E)$
 \form#2:$i = \textrm{to}$
 \form#3:$j = \textrm{from}$
-\form#4:$j$
-\form#5:$\times$
-\form#6:$O(n)$
-\form#7:$O(n^3)$
-\form#8:$n$
-\form#9:$x$
-\form#10:$\Psi_{n}(x)$
-\form#11:$a_{ij}$
-\form#12:$H = \sum_{ij}a_{ij}c_{i}^{dagger}c_{j}$
-\form#13:$H = \sum_{ij}a_{ij}c_{i}^{\dagger}c_{j}$
-\form#14:\[ \left[\begin{array}{cc} 0 & 1\\ 2 & 3 \end{array}\right] = \left[\begin{array}{cc} \langle c_{i\uparrow}^{\dagger}c_{i\uparrow} & \langle c_{i\uparrow}^{\dagger}c_{i\downarrow}\rangle\\ \langle c_{i\downarrow}^{\dagger}c_{u\uparrow} & \langle c_{i\downarrow}^{\dagger}c_{i\downarrow} \end{array}\right]. \]
-\form#15:\[ \left[\begin{array}{cc} 0 & 1\\ 2 & 3 \end{array}\right] = \left[\begin{array}{cc} \langle c_{i\uparrow}^{\dagger}c_{i\uparrow}\rangle & \langle c_{i\uparrow}^{\dagger}c_{i\downarrow}\rangle\\ \langle c_{i\downarrow}^{\dagger}c_{u\uparrow}\rangle & \langle c_{i\downarrow}^{\dagger}c_{i\downarrow}\rangle \end{array}\right]. \]
-\form#16:\[ \left[\begin{array}{cc} 0 & 1\\ 2 & 3 \end{array}\right] = \left[\begin{array}{cc} \rho_{i\uparrow i\uparrow}(E) & \rho_{i\uparrow i\downarrow}(E)\\ \rho_{i\downarrow i\uparrow}(E) & \rho_{i\downarrow i\downarrow}(E)\\ \end{array}\right], \]
-\form#17:\[ \rho_{i\sigma i\sigma'}(E) = \sum_{E_n}\langle\Psi_n|c_{i\sigma}^{\dagger}c_{i\sigma'}|\Psi_n\rangle . \]
-\form#18:\[ \rho_{i\sigma i\sigma'}(E) = \sum_{E_n}\langle\Psi_n|c_{i\sigma}^{\dagger}c_{i\sigma'}|\Psi_n\rangle\delta(E - E_n) . \]
+\form#4:$i$
+\form#5:$j$
+\form#6:$\times$
+\form#7:\[ \left[\begin{array}{cc} 0 & 1\\ 2 & 3 \end{array}\right] = \left[\begin{array}{cc} \langle c_{i\uparrow}^{\dagger}c_{i\uparrow}\rangle & \langle c_{i\uparrow}^{\dagger}c_{i\downarrow}\rangle\\ \langle c_{i\downarrow}^{\dagger}c_{u\uparrow}\rangle & \langle c_{i\downarrow}^{\dagger}c_{i\downarrow}\rangle \end{array}\right]. \]
+\form#8:\[ \left[\begin{array}{cc} 0 & 1\\ 2 & 3 \end{array}\right] = \left[\begin{array}{cc} \rho_{i\uparrow i\uparrow}(E) & \rho_{i\uparrow i\downarrow}(E)\\ \rho_{i\downarrow i\uparrow}(E) & \rho_{i\downarrow i\downarrow}(E)\\ \end{array}\right], \]
+\form#9:\[ \rho_{i\sigma i\sigma'}(E) = \sum_{E_n}\langle\Psi_n|c_{i\sigma}^{\dagger}c_{i\sigma'}|\Psi_n\rangle\delta(E - E_n) . \]
+\form#10:$O(n^3)$
+\form#11:$n$
+\form#12:$x$
+\form#13:$\Psi_{n}(x)$
+\form#14:$a_{ij}$
+\form#15:$H = \sum_{ij}a_{ij}c_{i}^{\dagger}c_{j}$

@@ -142,7 +142,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>generateGreensFunctio
 <tr class="separator:a0d05d515908ac419ca009a96d60a9f57"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>The <a class="el" href="classChebyshevSolver.html">ChebyshevSolver</a> can be used to calculate Green's function for a given <a class="el" href="classModel.html">Model</a>. The implementation is based on PhysRevLett.105.167006. The <a class="el" href="classChebyshevSolver.html">ChebyshevSolver</a> can be run on CPU, GPU, or a mixture of both. The calculation of Chebyshev coefficients scales as <img class="formulaInl" alt="$O(n)$" src="form_6.png"/> with each of the following: dimension of the Hilbert space and number of Chebyshev coefficients. The generation of Green's functions scales as <img class="formulaInl" alt="$O(n)$" src="form_6.png"/> with the following: Number of coefficients, energy resolution, and the number of Green's functions. </p>
+<div class="textblock"><p>The <a class="el" href="classChebyshevSolver.html">ChebyshevSolver</a> can be used to calculate Green's function for a given <a class="el" href="classModel.html">Model</a>. The implementation is based on PhysRevLett.105.167006. The <a class="el" href="classChebyshevSolver.html">ChebyshevSolver</a> can be run on CPU, GPU, or a mixture of both. The calculation of Chebyshev coefficients scales as <img class="formulaInl" alt="$O(n)$" src="form_0.png"/> with each of the following: dimension of the Hilbert space and number of Chebyshev coefficients. The generation of Green's functions scales as <img class="formulaInl" alt="$O(n)$" src="form_0.png"/> with the following: Number of coefficients, energy resolution, and the number of Green's functions. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="aa855a729f7fd22791d4c9ddebdbefff3"></a>
 <div class="memitem">
@@ -218,11 +218,11 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>generateGreensFunctio
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Calculates the Chebyshev coefficients for <img class="formulaInl" alt="$ G_{ij}(E)$" src="form_0.png"/>, where <img class="formulaInl" alt="$i = \textrm{to}$" src="form_2.png"/> and <img class="formulaInl" alt="$j = \textrm{from}$" src="form_3.png"/>. Runs on CPU. </p>
+<p>Calculates the Chebyshev coefficients for <img class="formulaInl" alt="$ G_{ij}(E)$" src="form_1.png"/>, where <img class="formulaInl" alt="$i = \textrm{to}$" src="form_2.png"/> and <img class="formulaInl" alt="$j = \textrm{from}$" src="form_3.png"/>. Runs on CPU. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">to</td><td>'To'-index, or <img class="formulaInl" alt="$i$" src="form_1.png"/>. </td></tr>
-    <tr><td class="paramname">from</td><td>'From'-index, or <img class="formulaInl" alt="$j$" src="form_4.png"/>. </td></tr>
+    <tr><td class="paramname">to</td><td>'To'-index, or <img class="formulaInl" alt="$i$" src="form_4.png"/>. </td></tr>
+    <tr><td class="paramname">from</td><td>'From'-index, or <img class="formulaInl" alt="$j$" src="form_5.png"/>. </td></tr>
     <tr><td class="paramname">coefficients</td><td>Pointer to array able to hold numCoefficients coefficients. </td></tr>
     <tr><td class="paramname">numCoefficients</td><td>Number of coefficients to calculate. </td></tr>
     <tr><td class="paramname">broadening</td><td>Broadening to use in convolusion of coefficients to remedy Gibb's osciallations. </td></tr>
@@ -273,12 +273,12 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>generateGreensFunctio
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Calculates the Chebyshev coefficients for <img class="formulaInl" alt="$ G_{ij}(E)$" src="form_0.png"/>, where <img class="formulaInl" alt="$i = \textrm{to}$" src="form_2.png"/> is a set of indices and <img class="formulaInl" alt="$j = \textrm{from}$" src="form_3.png"/>. Runs on GPU. </p>
+<p>Calculates the Chebyshev coefficients for <img class="formulaInl" alt="$ G_{ij}(E)$" src="form_1.png"/>, where <img class="formulaInl" alt="$i = \textrm{to}$" src="form_2.png"/> is a set of indices and <img class="formulaInl" alt="$j = \textrm{from}$" src="form_3.png"/>. Runs on GPU. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">to</td><td>vector of 'to'-indeces, or <img class="formulaInl" alt="$i$" src="form_1.png"/>'s. </td></tr>
-    <tr><td class="paramname">from</td><td>'From'-index, or <img class="formulaInl" alt="$j$" src="form_4.png"/>. </td></tr>
-    <tr><td class="paramname">coefficients</td><td>Pointer to array able to hold numCoefficients <img class="formulaInl" alt="$\times$" src="form_5.png"/>toIndeices.size() coefficients. </td></tr>
+    <tr><td class="paramname">to</td><td>vector of 'to'-indeces, or <img class="formulaInl" alt="$i$" src="form_4.png"/>'s. </td></tr>
+    <tr><td class="paramname">from</td><td>'From'-index, or <img class="formulaInl" alt="$j$" src="form_5.png"/>. </td></tr>
+    <tr><td class="paramname">coefficients</td><td>Pointer to array able to hold numCoefficients <img class="formulaInl" alt="$\times$" src="form_6.png"/>toIndeices.size() coefficients. </td></tr>
     <tr><td class="paramname">numCoefficients</td><td>Number of coefficients to calculate for each to-index. </td></tr>
     <tr><td class="paramname">broadening</td><td>Broadening to use in convolusion of coefficients to remedy Gibb's osciallations. </td></tr>
   </table>
@@ -328,11 +328,11 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>generateGreensFunctio
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Calculates the Chebyshev coefficients for <img class="formulaInl" alt="$ G_{ij}(E)$" src="form_0.png"/>, where <img class="formulaInl" alt="$i = \textrm{to}$" src="form_2.png"/> and <img class="formulaInl" alt="$j = \textrm{from}$" src="form_3.png"/>. Runs on GPU. </p>
+<p>Calculates the Chebyshev coefficients for <img class="formulaInl" alt="$ G_{ij}(E)$" src="form_1.png"/>, where <img class="formulaInl" alt="$i = \textrm{to}$" src="form_2.png"/> and <img class="formulaInl" alt="$j = \textrm{from}$" src="form_3.png"/>. Runs on GPU. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">to</td><td>'To'-index, or <img class="formulaInl" alt="$i$" src="form_1.png"/>. </td></tr>
-    <tr><td class="paramname">from</td><td>'From'-index, or <img class="formulaInl" alt="$j$" src="form_4.png"/>. </td></tr>
+    <tr><td class="paramname">to</td><td>'To'-index, or <img class="formulaInl" alt="$i$" src="form_4.png"/>. </td></tr>
+    <tr><td class="paramname">from</td><td>'From'-index, or <img class="formulaInl" alt="$j$" src="form_5.png"/>. </td></tr>
     <tr><td class="paramname">coefficients</td><td>Pointer to array able to hold numCoefficients coefficients. </td></tr>
     <tr><td class="paramname">numCoefficients</td><td>Number of coefficients to calculate. </td></tr>
     <tr><td class="paramname">broadening</td><td>Broadening to use in convolusion of coefficients to remedy Gibb's osciallations. </td></tr>
@@ -601,7 +601,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>generateGreensFunctio
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Mar 12 2016 22:38:07 for TBTK by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Mar 12 2016 22:43:29 for TBTK by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
