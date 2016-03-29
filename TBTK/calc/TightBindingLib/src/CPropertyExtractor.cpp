@@ -46,7 +46,7 @@ complex<double>* CPropertyExtractor::calculateGreensFunction(Index to, Index fro
 }
 
 complex<double>* CPropertyExtractor::calculateGreensFunctions(vector<Index> &to, Index from){
-	complex<double> *coefficients = new complex<double>[energyResolution*to.size()];
+	complex<double> *coefficients = new complex<double>[numCoefficients*to.size()];
 
 	if(useGPUToCalculateCoefficients){
 		cSolver->calculateCoefficientsGPU(to, from, coefficients, numCoefficients);
