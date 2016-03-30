@@ -45,18 +45,15 @@ void ChebyshevSolver::calculateCoefficients(Index to, Index from, complex<double
 
 	complex<double> *jIn1 = new complex<double>[amplitudeSet->getBasisSize()];
 	complex<double> *jIn2 = new complex<double>[amplitudeSet->getBasisSize()];
-//	complex<double> *jOut = new complex<double>[amplitudeSet->getBasisSize()];
 	complex<double> *jResult = new complex<double>[amplitudeSet->getBasisSize()];
 	complex<double> *jTemp = NULL;
 	for(int n = 0; n < amplitudeSet->getBasisSize(); n++){
 		jIn1[n] = 0.;
 		jIn2[n] = 0.;
-//		jOut[n] = 0.;
 		jResult[n] = 0.;
 	}
 	//Set up initial state (|j0>)
 	jIn1[fromBasisIndex] = 1.;
-//	jOut[toBasisIndex] = 1.;
 
 	coefficients[0] = jIn1[toBasisIndex];
 
@@ -129,15 +126,12 @@ void ChebyshevSolver::calculateCoefficients(Index to, Index from, complex<double
 
 	delete [] jIn1;
 	delete [] jIn2;
-//	delete [] jOut;
 	delete [] jResult;
 	delete [] hoppingAmplitudes;
 	delete [] toIndices;
 	delete [] fromIndices;
 
 	//Lorentzian convolution
-//	double epsilon = 0.001;
-//	double lambda = epsilon*numCoefficients;
 	double lambda = broadening*numCoefficients;
 	for(int n = 0; n < numCoefficients; n++)
 		coefficients[n] = coefficients[n]*sinh(lambda*(1 - n/(double)numCoefficients))/sinh(lambda);
@@ -157,18 +151,15 @@ void ChebyshevSolver::calculateCoefficientsWithCutoff(Index to, Index from, comp
 
 	complex<double> *jIn1 = new complex<double>[amplitudeSet->getBasisSize()];
 	complex<double> *jIn2 = new complex<double>[amplitudeSet->getBasisSize()];
-//	complex<double> *jOut = new complex<double>[amplitudeSet->getBasisSize()];
 	complex<double> *jResult = new complex<double>[amplitudeSet->getBasisSize()];
 	complex<double> *jTemp = NULL;
 	for(int n = 0; n < amplitudeSet->getBasisSize(); n++){
 		jIn1[n] = 0.;
 		jIn2[n] = 0.;
-//		jOut[n] = 0.;
 		jResult[n] = 0.;
 	}
 	//Set up initial state |j0>.
 	jIn1[fromBasisIndex] = 1.;
-//	jOut[toBasisIndex] = 1.;
 
 	coefficients[0] = jIn1[toBasisIndex];
 
@@ -280,14 +271,11 @@ void ChebyshevSolver::calculateCoefficientsWithCutoff(Index to, Index from, comp
 
 	delete [] jIn1;
 	delete [] jIn2;
-//	delete [] jOut;
 	delete [] jResult;
 	delete [] newlyReachedIndices;
 	delete [] everReachedIndices;
 
 	//Lorentzian convolution
-//	double epsilon = 0.001;
-//	double lambda = epsilon*numCoefficients;
 	double lambda = broadening*numCoefficients;
 	for(int n = 0; n < numCoefficients; n++)
 		coefficients[n] = coefficients[n]*sinh(lambda*(1 - n/(double)numCoefficients))/sinh(lambda);

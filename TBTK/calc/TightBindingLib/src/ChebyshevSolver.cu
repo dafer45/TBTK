@@ -78,10 +78,6 @@ void ChebyshevSolver::calculateCoefficientsGPU(vector<Index> &to, Index from, co
 	AmplitudeSet *amplitudeSet = &model->amplitudeSet;
 
 	int fromBasisIndex = amplitudeSet->getBasisIndex(from);
-/*	int toBasisIndices = new int[to.size()];
-	for(int n = 0; n < to.size(); n++)
-		toBasisIndices[n] = amplitudeSet->getBasisIndex(to.at(n));*/
-//	int toBasisIndex = amplitudeSet->getBasisIndex(to);
 	int *coefficientMap = new int[amplitudeSet->getBasisSize()];
 	for(int n = 0; n < amplitudeSet->getBasisSize(); n++)
 		coefficientMap[n] = -1;
@@ -90,7 +86,6 @@ void ChebyshevSolver::calculateCoefficientsGPU(vector<Index> &to, Index from, co
 
 	cout << "ChebyshevSolver::calculateCoefficientsGPU\n";
 	cout << "\tFrom Index: " << fromBasisIndex << "\n";
-//	cout << "\tTo Index: " << toBasisIndex << "\n";
 	cout << "\tBasis size: " << amplitudeSet->getBasisSize() << "\n";
 
 	complex<double> *jIn1 = new complex<double>[amplitudeSet->getBasisSize()];
@@ -106,9 +101,6 @@ void ChebyshevSolver::calculateCoefficientsGPU(vector<Index> &to, Index from, co
 	//Set up initial state (|j0>)
 	jIn1[fromBasisIndex] = 1.;
 
-//	coefficients[0] = jIn1[toBasisIndex];
-/*	for(int n = 0; n < to.size(); n++)
-		coefficients[n*numCoefficients] = jIn1[toBasisIndices[n]];*/
 	for(int n = 0; n < amplitudeSet->getBasisSize(); n++)
 		if(coefficientMap[n] != -1)
 			coefficients[coefficientMap[n]*numCoefficients] = jIn1[n];
@@ -297,8 +289,6 @@ void ChebyshevSolver::calculateCoefficientsGPU(vector<Index> &to, Index from, co
 	cudaFree(coefficientMap_device);
 
 	//Lorentzian convolution
-//	double epsilon = 0.001;
-//	double lambda = epsilon*numCoefficients;
 	double lambda = broadening*numCoefficients;
 	for(int n = 0; n < numCoefficients; n++)
 		for(int c = 0; c < to.size(); c++)
