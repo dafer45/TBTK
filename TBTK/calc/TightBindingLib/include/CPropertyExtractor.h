@@ -19,7 +19,9 @@ public:
 				int energyResolution,
 				bool useGPUToCalculateCoefficients,
 				bool useGPUToGenerateGreensFunctions,
-				bool useLookupTable = true);
+				bool useLookupTable = true,
+				double lowerBound = -1.,
+				double upperBound = 1.);
 
 	/** Destructor. */
 	~CPropertyExtractor();

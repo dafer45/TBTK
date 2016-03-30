@@ -292,11 +292,13 @@ void ChebyshevSolver::calculateCoefficientsWithCutoff(Index to, Index from, comp
 		coefficients[n] = coefficients[n]*sinh(lambda*(1 - n/(double)numCoefficients))/sinh(lambda);
 }
 
-void ChebyshevSolver::generateLookupTable(int numCoefficients, int energyResolution){
+void ChebyshevSolver::generateLookupTable(int numCoefficients, int energyResolution, double lowerBound, double upperBound){
 	if(isTalkative){
 		cout << "Generating lookup table\n";
 		cout << "\tNum coefficients: " << numCoefficients << "\n";
 		cout << "\tEnergy resolution: " << energyResolution << "\n";
+		cout << "\tLower bound: " << lowerBound << "\n";
+		cout << "\tUpper bound: " << upperBound << "\n";
 	}
 
 	if(generatingFunctionLookupTable != NULL){
@@ -321,13 +323,13 @@ void ChebyshevSolver::generateLookupTable(int numCoefficients, int energyResolut
 			denominator = 2.;
 
 		for(int e = 0; e < energyResolution; e++){
-			double E = -1 + 2.*e/(double)energyResolution;
+			double E = lowerBound + (upperBound - lowerBound)*e/(double)energyResolution;
 			generatingFunctionLookupTable[n][e] = (-2.*i/sqrt(1+DELTA - E*E))*exp(-i*((double)n)*acos(E))/denominator;
 		}
 	}
 }
 
-void ChebyshevSolver::generateGreensFunction(complex<double> *greensFunction, complex<double> *coefficients, int numCoefficients, int energyResolution){
+void ChebyshevSolver::generateGreensFunction(complex<double> *greensFunction, complex<double> *coefficients, int numCoefficients, int energyResolution, double lowerBound, double upperBound){
 	for(int e = 0; e < energyResolution; e++)
 		greensFunction[e] = 0.;
 
@@ -338,7 +340,7 @@ void ChebyshevSolver::generateGreensFunction(complex<double> *greensFunction, co
 			denominator = 2.;
 
 		for(int e = 0; e < energyResolution; e++){
-			double E = -1 + 2.*e/(double)energyResolution;
+			double E = lowerBound + (upperBound - lowerBound)*e/(double)energyResolution;
 			greensFunction[e] += (-2.*i/sqrt(1+DELTA - E*E))*coefficients[n]*exp(-i*((double)n)*acos(E))/denominator;
 		}
 	}

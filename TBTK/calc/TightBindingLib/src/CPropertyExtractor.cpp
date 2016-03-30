@@ -12,7 +12,9 @@ CPropertyExtractor::CPropertyExtractor(ChebyshevSolver *cSolver,
 					int energyResolution,
 					bool useGPUToCalculateCoefficients,
 					bool useGPUToGenerateGreensFunctions,
-					bool useLookupTable){
+					bool useLookupTable,
+					double lowerBound,
+					double upperBound){
 	this->cSolver = cSolver;
 	this->numCoefficients = numCoefficients;
 	this->energyResolution = energyResolution;
@@ -21,7 +23,7 @@ CPropertyExtractor::CPropertyExtractor(ChebyshevSolver *cSolver,
 	this->useLookupTable = useLookupTable;
 
 	if(useLookupTable){
-		cSolver->generateLookupTable(numCoefficients, energyResolution);
+		cSolver->generateLookupTable(numCoefficients, energyResolution, lowerBound, upperBound);
 		if(useGPUToGenerateGreensFunctions)
 			cSolver->loadLookupTableGPU();
 	}
