@@ -16,6 +16,7 @@ ChebyshevSolver::ChebyshevSolver(){
 	generatingFunctionLookupTable_device = NULL;
 	lookupTableNumCoefficients = 0;
 	lookupTableResolution = 0;
+	isTalkative = false;
 }
 
 ChebyshevSolver::~ChebyshevSolver(){
@@ -37,11 +38,13 @@ void ChebyshevSolver::calculateCoefficients(Index to, Index from, complex<double
 	int fromBasisIndex = amplitudeSet->getBasisIndex(from);
 	int toBasisIndex = amplitudeSet->getBasisIndex(to);
 
-	cout << "ChebyshevSolver::calculateCoefficients\n";
-	cout << "\tFrom Index: " << fromBasisIndex << "\n";
-	cout << "\tTo Index: " << toBasisIndex << "\n";
-	cout << "\tBasis size: " << amplitudeSet->getBasisSize() << "\n";
-	cout << "\tProgress (100 coefficients per dot): ";
+	if(isTalkative){
+		cout << "ChebyshevSolver::calculateCoefficients\n";
+		cout << "\tFrom Index: " << fromBasisIndex << "\n";
+		cout << "\tTo Index: " << toBasisIndex << "\n";
+		cout << "\tBasis size: " << amplitudeSet->getBasisSize() << "\n";
+		cout << "\tProgress (100 coefficients per dot): ";
+	}
 
 	complex<double> *jIn1 = new complex<double>[amplitudeSet->getBasisSize()];
 	complex<double> *jIn2 = new complex<double>[amplitudeSet->getBasisSize()];
@@ -118,10 +121,13 @@ void ChebyshevSolver::calculateCoefficients(Index to, Index from, complex<double
 		jResult = jTemp;
 
 		coefficients[n] = jIn1[toBasisIndex];
-		if(n%100 == 0)
-			cout << ".";
-		if(n%1000 == 0)
-			cout << " ";
+
+		if(isTalkative){
+			if(n%100 == 0)
+				cout << ".";
+			if(n%1000 == 0)
+				cout << " ";
+		}
 	}
 
 	delete [] jIn1;
@@ -143,11 +149,13 @@ void ChebyshevSolver::calculateCoefficientsWithCutoff(Index to, Index from, comp
 	int fromBasisIndex = amplitudeSet->getBasisIndex(from);
 	int toBasisIndex = amplitudeSet->getBasisIndex(to);
 
-	cout << "ChebyshevSolver::calculateCoefficients\n";
-	cout << "\tFrom Index: " << fromBasisIndex << "\n";
-	cout << "\tTo Index: " << toBasisIndex << "\n";
-	cout << "\tBasis size: " << amplitudeSet->getBasisSize() << "\n";
-	cout << "\tProgress (100 coefficients per dot): ";
+	if(isTalkative){
+		cout << "ChebyshevSolver::calculateCoefficients\n";
+		cout << "\tFrom Index: " << fromBasisIndex << "\n";
+		cout << "\tTo Index: " << toBasisIndex << "\n";
+		cout << "\tBasis size: " << amplitudeSet->getBasisSize() << "\n";
+		cout << "\tProgress (100 coefficients per dot): ";
+	}
 
 	complex<double> *jIn1 = new complex<double>[amplitudeSet->getBasisSize()];
 	complex<double> *jIn2 = new complex<double>[amplitudeSet->getBasisSize()];
@@ -257,16 +265,19 @@ void ChebyshevSolver::calculateCoefficientsWithCutoff(Index to, Index from, comp
 		jResult = jTemp;
 
 		coefficients[n] = jIn1[toBasisIndex];
-/*		if(n%100 == 0)
-			cout << n << "\t" << everReachedIndicesCounter
-				<< "\t" << everReachedIndicesCounter/(double)amplitudeSet->getBasisSize()
-				<< "\t" << abs(coefficients[n])
-//				<< "\t" << sqrt(abs(scalarProduct(jIn1, jIn1, amplitudeSet->getBasisSize())))
-				<< "\n";*/
-		if(n%100 == 0)
-			cout << ".";
-		if(n%1000 == 0)
-			cout << " ";
+
+		if(isTalkative){
+/*			if(n%100 == 0)
+				cout << n << "\t" << everReachedIndicesCounter
+					<< "\t" << everReachedIndicesCounter/(double)amplitudeSet->getBasisSize()
+					<< "\t" << abs(coefficients[n])
+//					<< "\t" << sqrt(abs(scalarProduct(jIn1, jIn1, amplitudeSet->getBasisSize())))
+					<< "\n";*/
+			if(n%100 == 0)
+				cout << ".";
+			if(n%1000 == 0)
+				cout << " ";
+		}
 	}
 
 	delete [] jIn1;
@@ -282,9 +293,11 @@ void ChebyshevSolver::calculateCoefficientsWithCutoff(Index to, Index from, comp
 }
 
 void ChebyshevSolver::generateLookupTable(int numCoefficients, int energyResolution){
-	cout << "Generating lookup table\n";
-	cout << "\tNum coefficients: " << numCoefficients << "\n";
-	cout << "\tEnergy resolution: " << energyResolution << "\n";
+	if(isTalkative){
+		cout << "Generating lookup table\n";
+		cout << "\tNum coefficients: " << numCoefficients << "\n";
+		cout << "\tEnergy resolution: " << energyResolution << "\n";
+	}
 
 	if(generatingFunctionLookupTable != NULL){
 		for(int n = 0; n < lookupTableNumCoefficients; n++)

@@ -84,9 +84,11 @@ void ChebyshevSolver::calculateCoefficientsGPU(vector<Index> &to, Index from, co
 	for(int n = 0; n < to.size(); n++)
 		coefficientMap[amplitudeSet->getBasisIndex(to.at(n))] = n;
 
-	cout << "ChebyshevSolver::calculateCoefficientsGPU\n";
-	cout << "\tFrom Index: " << fromBasisIndex << "\n";
-	cout << "\tBasis size: " << amplitudeSet->getBasisSize() << "\n";
+	if(isTalkative){
+		cout << "ChebyshevSolver::calculateCoefficientsGPU\n";
+		cout << "\tFrom Index: " << fromBasisIndex << "\n";
+		cout << "\tBasis size: " << amplitudeSet->getBasisSize() << "\n";
+	}
 
 	complex<double> *jIn1 = new complex<double>[amplitudeSet->getBasisSize()];
 	complex<double> *jIn2 = new complex<double>[amplitudeSet->getBasisSize()];
@@ -164,13 +166,15 @@ void ChebyshevSolver::calculateCoefficientsGPU(vector<Index> &to, Index from, co
 	totalMemoryRequirement += maxHoppingAmplitudes*amplitudeSet->getBasisSize()*sizeof(int);
 	totalMemoryRequirement += to.size()*numCoefficients*sizeof(complex<double>);
 	totalMemoryRequirement += amplitudeSet->getBasisSize()*sizeof(int);
-	cout << "\tCUDA memory requirement: ";
-	if(totalMemoryRequirement < 1024)
-		cout << totalMemoryRequirement/1024 << "B\n";
-	else if(totalMemoryRequirement < 1024*1024)
-		cout << totalMemoryRequirement/1024 << "KB\n";
-	else
-		cout << totalMemoryRequirement/1024/1024 << "MB\n";
+	if(isTalkative){
+		cout << "\tCUDA memory requirement: ";
+		if(totalMemoryRequirement < 1024)
+			cout << totalMemoryRequirement/1024 << "B\n";
+		else if(totalMemoryRequirement < 1024*1024)
+			cout << totalMemoryRequirement/1024 << "KB\n";
+		else
+			cout << totalMemoryRequirement/1024/1024 << "MB\n";
+	}
 
 	if(cudaMalloc((void**)&jIn1_device, amplitudeSet->getBasisSize()*sizeof(complex<double>)) != cudaSuccess)
 		{	cout << "\tMalloc error\n";	exit(1);	}
@@ -205,8 +209,10 @@ void ChebyshevSolver::calculateCoefficientsGPU(vector<Index> &to, Index from, co
 	//Calculate |j1>
 	int block_size = 1024;
 	int num_blocks = amplitudeSet->getBasisSize()/block_size + (amplitudeSet->getBasisSize()%block_size == 0 ? 0:1);
-	cout << "\tCUDA Block size: " << block_size << "\n";
-	cout << "\tCUDA Num blocks: " << num_blocks << "\n";
+	if(isTalkative){
+		cout << "\tCUDA Block size: " << block_size << "\n";
+		cout << "\tCUDA Num blocks: " << num_blocks << "\n";
+	}
 	multiplyMatrixAndVector <<< num_blocks, block_size>>> ((cuDoubleComplex*)jIn1_device,
 								(cuDoubleComplex*)jResult_device,
 								(cuDoubleComplex*)hoppingAmplitudes_device,
@@ -236,7 +242,9 @@ void ChebyshevSolver::calculateCoefficientsGPU(vector<Index> &to, Index from, co
 		hoppingAmplitudes[n] *= 2.;
 	cudaMemcpy(hoppingAmplitudes_device, hoppingAmplitudes, maxHoppingAmplitudes*amplitudeSet->getBasisSize()*sizeof(complex<double>), cudaMemcpyHostToDevice);
 
-	cout << "\tProgress (100 coefficients per dot): ";
+	if(isTalkative)
+		cout << "\tProgress (100 coefficients per dot): ";
+
 	//Iteratively calculate |jn> and corresponding Chebyshev coefficients.
 	for(int n = 2; n < numCoefficients; n++){
 		subtractVector <<< num_blocks, block_size >>> ((cuDoubleComplex*)jIn2_device,
@@ -261,12 +269,15 @@ void ChebyshevSolver::calculateCoefficientsGPU(vector<Index> &to, Index from, co
 		jIn1_device = jResult_device;
 		jResult_device = jTemp;
 
-		if(n%100 == 0)
-			cout << "." << flush;
-		if(n%1000 == 0)
-			cout << " " << flush;
+		if(isTalkative){
+			if(n%100 == 0)
+				cout << "." << flush;
+			if(n%1000 == 0)
+				cout << " " << flush;
+		}
 	}
-	cout << "\n";
+	if(isTalkative)
+		cout << "\n";
 
 	if(cudaMemcpy(coefficients, coefficients_device, to.size()*numCoefficients*sizeof(complex<double>), cudaMemcpyDeviceToHost) != cudaSuccess){
 		cout << "\tMemcpy error\n";
@@ -309,7 +320,9 @@ void calculateGreensFunction(cuDoubleComplex *greensFunction,
 }
 
 void ChebyshevSolver::loadLookupTableGPU(){
-	cout << "CheyshevSolver::loadLookupTableGPU\n";
+	if(isTalkative)
+		cout << "CheyshevSolver::loadLookupTableGPU\n";
+
 	if(generatingFunctionLookupTable == NULL){
 		cout << "\tError: Lookup table has not been generated.\n";
 		exit(1);
@@ -325,13 +338,16 @@ void ChebyshevSolver::loadLookupTableGPU(){
 			generatingFunctionLookupTable_host[n*lookupTableResolution + e] = generatingFunctionLookupTable[n][e];
 
 	int memoryRequirement = lookupTableNumCoefficients*lookupTableResolution*sizeof(complex<double>);
-	cout << "\tCUDA memory requirement: ";
-	if(memoryRequirement < 1024)
-		cout << memoryRequirement << "B";
-	else if(memoryRequirement < 1024*1024)
-		cout << memoryRequirement/1024 << "KB";
-	else
-		cout << memoryRequirement/1024/1024 << "MB";
+	if(isTalkative){
+		cout << "\tCUDA memory requirement: ";
+		if(memoryRequirement < 1024)
+			cout << memoryRequirement << "B";
+		else if(memoryRequirement < 1024*1024)
+			cout << memoryRequirement/1024 << "KB";
+		else
+			cout << memoryRequirement/1024/1024 << "MB";
+	}
+
 	if(cudaMalloc((void**)&generatingFunctionLookupTable_device, lookupTableNumCoefficients*lookupTableResolution*sizeof(complex<double>))  != cudaSuccess)
 		{	cout << "\tMalloc error\n";	exit(1);	}
 
@@ -342,7 +358,9 @@ void ChebyshevSolver::loadLookupTableGPU(){
 }
 
 void ChebyshevSolver::destroyLookupTableGPU(){
-	cout << "ChebyshevSolver::destroyLookupTableGPU\n";
+	if(isTalkative)
+		cout << "ChebyshevSolver::destroyLookupTableGPU\n";
+
 	if(generatingFunctionLookupTable_device == NULL){
 		cout << "Error: No lookup table loaded onto GPU.\n";
 		exit(1);
@@ -353,7 +371,9 @@ void ChebyshevSolver::destroyLookupTableGPU(){
 }
 
 void ChebyshevSolver::generateGreensFunctionGPU(complex<double> *greensFunction, complex<double> *coefficients){
-	cout << "ChebyshevSolver::generateGreensFunctionGPU\n";
+	if(isTalkative)
+		cout << "ChebyshevSolver::generateGreensFunctionGPU\n";
+
 	if(generatingFunctionLookupTable_device == NULL){
 		cout << "Error: No lookup table loaded onto GPU.\n";
 		exit(1);
@@ -377,8 +397,12 @@ void ChebyshevSolver::generateGreensFunctionGPU(complex<double> *greensFunction,
 
 	int block_size = 1024;
 	int num_blocks = lookupTableResolution/block_size + (lookupTableResolution%block_size == 0 ? 0:1);
-	cout << "\tCUDA Block size: " << block_size << "\n";
-	cout << "\tCUDA Num blocks: " << num_blocks << "\n";
+
+	if(isTalkative){
+		cout << "\tCUDA Block size: " << block_size << "\n";
+		cout << "\tCUDA Num blocks: " << num_blocks << "\n";
+	}
+
 	calculateGreensFunction <<< num_blocks, block_size>>> ((cuDoubleComplex*)greensFunction_device,
 								(cuDoubleComplex*)coefficients_device,
 								(cuDoubleComplex*)generatingFunctionLookupTable_device,

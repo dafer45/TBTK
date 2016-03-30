@@ -120,6 +120,8 @@ public:
 	 * in the call to ChebyshevSolver::generateLookupTable
 	 */
 	void generateGreensFunctionGPU(std::complex<double> *greensFunction, std::complex<double> *coefficients);
+
+	void setTalkative(bool isTalkative);
 private:
 	/** Model to wok on. */
 	Model *model;
@@ -138,6 +140,12 @@ private:
 	/** Energy resolution assumed in the generation of Green's functios
 	 *  using the lookup table. */
 	int lookupTableResolution;
+
+	bool isTalkative;
 };
+
+inline void ChebyshevSolver::setTalkative(bool isTalkative){
+	this->isTalkative = isTalkative;
+}
 
 #endif
