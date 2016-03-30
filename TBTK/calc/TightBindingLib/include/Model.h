@@ -55,9 +55,13 @@ public:
 	AmplitudeSet amplitudeSet;
 
 	void saveEV(std::string path = "./", std::string filename = "EV.dat");
+
+	void setTalkative(bool isTalkative);
 private:
 	int mode;
 	int numEigenstates;
+
+	bool isTalkative;
 };
 
 inline int Model::getBasisSize(){
@@ -66,6 +70,10 @@ inline int Model::getBasisSize(){
 
 inline int Model::getBasisIndex(Index index){
 	return amplitudeSet.getBasisIndex(index);
+}
+
+inline void Model::setTalkative(bool isTalkative){
+	this->isTalkative = isTalkative;
 }
 
 #endif

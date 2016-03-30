@@ -14,6 +14,8 @@ using namespace std;
 Model::Model(int mode, int numEigenstates){
 	this->mode = mode;
 	this->numEigenstates = numEigenstates;
+
+	isTalkative = true;
 }
 
 Model::~Model(){
@@ -28,10 +30,13 @@ void Model::addHAAndHC(HoppingAmplitude ha){
 }
 
 void Model::construct(){
-	cout << "Constructing system\n";
+	if(isTalkative)
+		cout << "Constructing system\n";
 
 	amplitudeSet.construct();
 
 	int basisSize = getBasisSize();
-	cout << "\tBasis size: " << basisSize << "\n";
+	
+	if(isTalkative)
+		cout << "\tBasis size: " << basisSize << "\n";
 }
