@@ -15,12 +15,24 @@
 namespace TBTK{
 namespace Util{
 
+/** A Timer for measuring execution times. A sequence of tick-tock calls will
+ *  meassure and print the time from tick to tock. Multiple timestamps can be
+ *  pushed onto the stack by repeated tick calls, and subsequent tock calls
+ *  will return the time between the most recent tick call and then pop it.
+ */
 class Timer{
 public:
+	/** Bush timestamp onto stack.
+	 *  @param tag Optional identifier tag that will be printed together
+	 *  with the elapsed time at subsequent tock call. */
 	static void tick(std::string tag = "");
+	/** Pop timestamp from stack and print elapsed time and identifier
+	 *  tag. */
 	static void tock();
 private:
+	/** Timestamp stack. */
 	static std::vector<std::chrono::time_point<std::chrono::high_resolution_clock>> timestamps;
+	/** Tag stack. */
 	static std::vector<std::string> tags;
 };
 
