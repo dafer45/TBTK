@@ -8,6 +8,8 @@
 
 using namespace std;
 
+namespace TBTK{
+
 HoppingAmplitude::HoppingAmplitude(Index fromIndex, Index toIndex, complex<double> amplitude) : fromIndex(fromIndex), toIndex(toIndex){
 	this->amplitude = amplitude;
 	this->amplitudeCallback = NULL;
@@ -47,3 +49,4 @@ void HoppingAmplitude::print(){
 	cout << "Amplitude:\t" << getAmplitude() << "\n";
 }
 
+};

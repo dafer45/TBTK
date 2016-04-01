@@ -11,6 +11,8 @@
 #include "Model.h"
 #include <complex>
 
+namespace TBTK{
+
 /** Solves a given model by Diagonalizing the Hamiltonian. The eigenvalues and
  *  eigenvectors can then either be directly extracted and used to calculate
  *  custom physical quantities, or the PropertyExtractor can be used to extract
@@ -111,6 +113,8 @@ inline const std::complex<double> DiagonalizationSolver::getAmplitude(int state,
 inline Model* DiagonalizationSolver::getModel(){
 	return model;
 }
+
+};
 
 #endif
 

@@ -7,6 +7,8 @@
 
 using namespace std;
 
+namespace TBTK{
+
 DiagonalizationSolver::DiagonalizationSolver(){
 	hamiltonian = NULL;
 	eigenValues = NULL;
@@ -154,3 +156,4 @@ void DiagonalizationSolver::solve(){
 	}*/
 }
 
+};

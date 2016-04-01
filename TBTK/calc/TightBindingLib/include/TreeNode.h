@@ -11,6 +11,8 @@
 #include <vector>
 #include "HoppingAmplitude.h"
 
+namespace TBTK{
+
 /** TreeNode structure used to build a tree for stroing @link HoppingAmplitude
  *   HoppingAmplitudes @endlink. Used by AmplitudeSet.*/
 class TreeNode{
@@ -108,6 +110,8 @@ private:
 	/** Returns (depth) first HoppingAmplitude as an example, in case of
 	 *  error while adding HoppingAmplitudes to the tree. */
 	HoppingAmplitude getFirstHA();
+};
+
 };
 
 #endif

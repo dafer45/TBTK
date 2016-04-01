@@ -8,6 +8,8 @@
 
 using namespace std;
 
+namespace TBTK{
+
 void AmplitudeSet::print(){
 	tree.print();
 }
@@ -68,3 +70,5 @@ void AmplitudeSet::tabulate(int **table, int *dims){
 		counter++;
 	}
 }
+
+};

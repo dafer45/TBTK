@@ -10,6 +10,8 @@
 
 using namespace std;
 
+namespace TBTK{
+
 clock_t start;
 void tick(){
 	start = clock();
@@ -140,7 +142,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(vector<Index> &to, Index from, co
 		int to = amplitudeSet->getBasisIndex(ha->toIndex);
 		int from = amplitudeSet->getBasisIndex(ha->fromIndex);
 
-		hoppingAmplitudes[maxHoppingAmplitudes*to + currentHoppingAmplitudes[to]] = ha->getAmplitude();
+		hoppingAmplitudes[maxHoppingAmplitudes*to + currentHoppingAmplitudes[to]] = ha->getAmplitude()/scaleFactor;
 		fromIndices[maxHoppingAmplitudes*to + currentHoppingAmplitudes[to]] = from;
 
 		currentHoppingAmplitudes[to]++;
@@ -415,3 +417,6 @@ void ChebyshevSolver::generateGreensFunctionGPU(complex<double> *greensFunction,
 	cudaFree(greensFunction_device);
 	cudaFree(coefficients_device);
 }
+
+};
+

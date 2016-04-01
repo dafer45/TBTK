@@ -9,9 +9,12 @@
 
 using namespace std;
 
+namespace TBTK{
+
 const complex<double> i(0, 1);
 
 ChebyshevSolver::ChebyshevSolver(){
+	scaleFactor = 1.;
 	generatingFunctionLookupTable = NULL;
 	generatingFunctionLookupTable_device = NULL;
 	lookupTableNumCoefficients = 0;
@@ -77,7 +80,7 @@ void ChebyshevSolver::calculateCoefficients(Index to, Index from, complex<double
 	while((ha = it.getHA())){
 		toIndices[counter] = amplitudeSet->getBasisIndex(ha->toIndex);
 		fromIndices[counter] = amplitudeSet->getBasisIndex(ha->fromIndex);
-		hoppingAmplitudes[counter] = ha->getAmplitude();
+		hoppingAmplitudes[counter] = ha->getAmplitude()/scaleFactor;
 
 		it.searchNextHA();
 		counter++;
@@ -172,6 +175,7 @@ void ChebyshevSolver::calculateCoefficientsWithCutoff(Index to, Index from, comp
 	coefficients[0] = jIn1[toBasisIndex];
 
 	HALinkedList haLinkedList(*amplitudeSet);
+	haLinkedList.rescaleAmplitudes(scaleFactor);
 	haLinkedList.addLinkedList(fromBasisIndex);
 
 	int *newlyReachedIndices = new int[amplitudeSet->getBasisSize()];
@@ -323,8 +327,8 @@ void ChebyshevSolver::generateLookupTable(int numCoefficients, int energyResolut
 			denominator = 2.;
 
 		for(int e = 0; e < energyResolution; e++){
-			double E = lowerBound + (upperBound - lowerBound)*e/(double)energyResolution;
-			generatingFunctionLookupTable[n][e] = (-2.*i/sqrt(1+DELTA - E*E))*exp(-i*((double)n)*acos(E))/denominator;
+			double E = (lowerBound + (upperBound - lowerBound)*e/(double)energyResolution)/scaleFactor;
+			generatingFunctionLookupTable[n][e] = (1/scaleFactor)*(-2.*i/sqrt(1+DELTA - E*E))*exp(-i*((double)n)*acos(E))/denominator;
 		}
 	}
 }
@@ -340,8 +344,8 @@ void ChebyshevSolver::generateGreensFunction(complex<double> *greensFunction, co
 			denominator = 2.;
 
 		for(int e = 0; e < energyResolution; e++){
-			double E = lowerBound + (upperBound - lowerBound)*e/(double)energyResolution;
-			greensFunction[e] += (-2.*i/sqrt(1+DELTA - E*E))*coefficients[n]*exp(-i*((double)n)*acos(E))/denominator;
+			double E = (lowerBound + (upperBound - lowerBound)*e/(double)energyResolution)/scaleFactor;
+			greensFunction[e] += (1/scaleFactor)*(-2.*i/sqrt(1+DELTA - E*E))*coefficients[n]*exp(-i*((double)n)*acos(E))/denominator;
 		}
 	}
 }
@@ -362,3 +366,5 @@ void ChebyshevSolver::generateGreensFunction(complex<double> *greensFunction, co
 		}
 	}
 }
+
+};

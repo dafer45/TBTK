@@ -12,6 +12,8 @@
 #include <fstream>
 #include <stdio.h>
 
+namespace TBTK{
+
 /** Writes data to a .hdf5-file. The default file name is TBTKResults.h5. Can
  *  be used to write custom n-dimensional arrays of data and parameters to
  *  datasets with custom names. It can also be used to write data such as
@@ -157,6 +159,8 @@ inline void FileWriter::clear(){
 	remove(filename.c_str());
 	isInitialized = false;
 }
+
+};
 
 #endif
 

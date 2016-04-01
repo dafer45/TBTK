@@ -5,6 +5,8 @@
 
 #include "../include/HALinkedList.h"
 
+namespace TBTK{
+
 HALinkedList::HALinkedList(AmplitudeSet &as){
 	AmplitudeSet::iterator it = as.getIterator();
 	HoppingAmplitude *ha;
@@ -87,3 +89,5 @@ void HALinkedList::addLinkedList(int from){
 		inMainList[from] = true;
 	}
 }
+
+};

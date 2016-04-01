@@ -7,6 +7,8 @@
 
 using namespace std;
 
+namespace TBTK{
+
 CPropertyExtractor::CPropertyExtractor(ChebyshevSolver *cSolver,
 					int numCoefficients,
 					int energyResolution,
@@ -292,3 +294,5 @@ void CPropertyExtractor::calculate(void (*callback)(CPropertyExtractor *cb_this,
 		}
 	}
 }
+
+};

@@ -16,6 +16,8 @@
 #include "AmplitudeSet.h"
 #include <complex>
 
+namespace TBTK{
+
 class HALink{
 public:
 	int from;
@@ -35,6 +37,7 @@ public:
 	HALink* getFirstMainLink();
 	HALink* getLinkArray();
 	int getLinkArraySize();
+	void rescaleAmplitudes(double scaleFactor);
 private:
 	int linkArraySize;
 
@@ -57,5 +60,13 @@ inline HALink* HALinkedList::getLinkArray(){
 inline int HALinkedList::getLinkArraySize(){
 	return linkArraySize;
 }
+
+inline void HALinkedList::rescaleAmplitudes(double scaleFactor){
+	for(int n = 0; n < linkArraySize; n++){
+		linkArray[n].amplitude /= scaleFactor;
+	}
+}
+
+};
 
 #endif

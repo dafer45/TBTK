@@ -10,6 +10,8 @@
 
 #include "ChebyshevSolver.h"
 
+namespace TBTK{
+
 /** Experimental class for extracting properties from a ChebyshevSolver. */
 class CPropertyExtractor{
 public:
@@ -205,6 +207,8 @@ private:
 	/** Hint used to pass information between calculate[Property] and
 	 * calculate[Property]Callback. */
 	void *hint;
+};
+
 };
 
 #endif

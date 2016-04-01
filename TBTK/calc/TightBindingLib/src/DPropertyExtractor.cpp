@@ -8,6 +8,8 @@
 
 using namespace std;
 
+namespace TBTK{
+
 complex<double> i(0,1);
 
 DPropertyExtractor::DPropertyExtractor(DiagonalizationSolver *dSolver){
@@ -585,3 +587,5 @@ void DPropertyExtractor::calculate(void (*callback)(DPropertyExtractor *cb_this,
 		}
 	}
 }
+
+};

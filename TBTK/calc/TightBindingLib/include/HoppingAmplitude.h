@@ -14,6 +14,8 @@
 #include <iostream>
 #include "Index.h"
 
+namespace TBTK{
+
 /** A hopping amplitude is a coefficeint \f$a_{ij}\f$ in a bilinear Hamiltonian
  *  \f$H = \sum_{ij}a_{ij}c_{i}^{\dagger}c_{j}\f$, where \f$i\f$ and \f$j\f$
  *  are reffered to using 'to' and 'from' respectively. The constructors can be
@@ -69,6 +71,8 @@ inline std::complex<double> HoppingAmplitude::getAmplitude(){
 	else
 		return amplitude;
 }
+
+};
 
 #endif
 

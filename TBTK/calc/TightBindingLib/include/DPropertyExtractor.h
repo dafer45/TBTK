@@ -10,6 +10,8 @@
 
 #include "DiagonalizationSolver.h"
 
+namespace TBTK{
+
 /** The DPropertyExtractor extracts common physical properties such as DOS,
  *  Density, LDOS, etc. from a DiagonalizationSolver. These can then be written
  *  to file using the FileWriter.*/
@@ -169,6 +171,8 @@ private:
 	/** Hint used to pass information between calculate[Property] and
 	 *  calculate[Property]Callback. */
 	void *hint;
+};
+
 };
 
 #endif

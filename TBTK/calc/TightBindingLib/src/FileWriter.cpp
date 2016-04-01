@@ -16,6 +16,8 @@
 
 using namespace std;
 
+namespace TBTK{
+
 bool FileWriter::isInitialized = false;
 string FileWriter::filename = "TBTKResults.h5";
 
@@ -605,3 +607,5 @@ void FileWriter::writeAttributes(double *attributes, string *attribute_names, in
 		return;
 	}
 }
+
+};

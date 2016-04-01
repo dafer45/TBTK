@@ -17,6 +17,7 @@
 #include "DiagonalizationSolver.h"
 
 using namespace std;
+using namespace TBTK;
 
 const complex<double> i(0, 1);
 

@@ -13,6 +13,8 @@
 #include "Model.h"
 #include <complex>
 
+namespace TBTK{
+
 /** The ChebyshevSolver can be used to calculate Green's function for a given
  *  Model. The implementation is based on PhysRevLett.105.167006. The
  *  ChebyshevSolver can be run on CPU, GPU, or a mixture of both. The
@@ -32,6 +34,9 @@ public:
 
 	/** Set model to work on. */
 	void setModel(Model *model);
+
+	/** Set scale factor. */
+	void setScaleFactor(double scaleFactor);
 
 	/** Calculates the Chebyshev coefficients for \f$ G_{ij}(E)\f$, where
 	 *  \f$i = \textrm{to}\f$ and \f$j = \textrm{from}\f$. Runs on CPU.
@@ -75,8 +80,10 @@ public:
 	/** Generate lokup table for quicker generation of multiple Green's
 	 *  functions. Required if evaluation is to be performed on GPU.
 	 *  @param numCoefficeints Number of coefficients used in Chebyshev
-	 *  @param lowerBound Lower bound, has to be larger or equal to -1
-	 *  @param upperBound Upper bound, has to be smaller or equal to 1
+	 *  @param lowerBound Lower bound, has to be larger or equal to
+	 *  -scaleFactor set by setScaleFactor (default value 1).
+	 *  @param upperBound Upper bound, has to be smaller or equal to
+	 *  scaleFactor setBy setScaleFactor (default value 1).
 	 *  expansion.*/
 	void generateLookupTable(int numCoefficeints, int energyResolution, double lowerBound = -1., double upperBound = 1.);
 
@@ -96,8 +103,10 @@ public:
 	 *  ChebyshevSolver::calculateCoefficients.
 	 *  @param numCoefficeints Number of coefficients in coefficients.
 	 *  @param energyResolution Number of elements in greensFunction.
-	 *  @param lowerBound Lower bound, has to be larger or equal to -1
-	 *  @param upperBound Upper bound, has to be smaller or equal to 1
+	 *  @param lowerBound Lower bound, has to be larger or equal to
+	 *  -scaleFactor set by setScaleFactor (default value 1).
+	 *  @param upperBound Upper bound, has to be smaller or equal to
+	 *  scaleFactor setBy setScaleFactor (default value 1).
 	 */
 	void generateGreensFunction(std::complex<double> *greensFunction, std::complex<double> *coefficients, int numCoefficients, int energyResolution, double lowerBound = -1., double upperBound = 1.);
 
@@ -127,8 +136,11 @@ public:
 
 	void setTalkative(bool isTalkative);
 private:
-	/** Model to wok on. */
+	/** Model to work on. */
 	Model *model;
+
+	/** Scale factor. */
+	double scaleFactor;
 
 	/** Pointer to lookup table used to speed up evaluation of multiple
 	 *  Green's functions. */
@@ -145,11 +157,19 @@ private:
 	 *  using the lookup table. */
 	int lookupTableResolution;
 
+	/** Flag indicating whether to write information to standar output or
+	 *  not. */
 	bool isTalkative;
 };
+
+inline void ChebyshevSolver::setScaleFactor(double scaleFactor){
+	this->scaleFactor = scaleFactor;
+}
 
 inline void ChebyshevSolver::setTalkative(bool isTalkative){
 	this->isTalkative = isTalkative;
 }
+
+};
 
 #endif

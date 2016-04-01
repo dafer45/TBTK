@@ -11,6 +11,8 @@
 
 using namespace std;
 
+namespace TBTK{
+
 Model::Model(int mode, int numEigenstates){
 	this->mode = mode;
 	this->numEigenstates = numEigenstates;
@@ -40,3 +42,5 @@ void Model::construct(){
 	if(isTalkative)
 		cout << "\tBasis size: " << basisSize << "\n";
 }
+
+};

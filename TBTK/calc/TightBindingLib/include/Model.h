@@ -13,6 +13,8 @@
 #include <string>
 #include <fstream>
 
+namespace TBTK{
+
 enum {IDX_SUM_ALL = -1, IDX_ALL = -1,
 	IDX_X = -2,
 	IDX_Y = -3,
@@ -61,6 +63,8 @@ private:
 	int mode;
 	int numEigenstates;
 
+	/** Flag indicating whether to write information to standard output or
+	 *  not. */
 	bool isTalkative;
 };
 
@@ -75,6 +79,8 @@ inline int Model::getBasisIndex(Index index){
 inline void Model::setTalkative(bool isTalkative){
 	this->isTalkative = isTalkative;
 }
+
+};
 
 #endif
 

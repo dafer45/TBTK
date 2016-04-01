@@ -13,6 +13,8 @@
 #include "TreeNode.h"
 #include <iostream>
 
+namespace TBTK{
+
 /** An AmplitudeSet is a container for @link HoppingAmplitude HoppingAmplitudes
  *  @endlink. The structure contains the root node for the tree structure in
  *  which the @link HoppingAmplitude HoppingAmplitudes @endlink are stored, as
@@ -114,5 +116,7 @@ inline int AmplitudeSet::getBasisSize(){
 inline void AmplitudeSet::construct(){
 	tree.generateBasisIndices();
 }
+
+};
 
 #endif

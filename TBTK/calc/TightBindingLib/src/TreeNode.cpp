@@ -8,6 +8,8 @@
 
 using namespace std;
 
+namespace TBTK{
+
 TreeNode::TreeNode(){
 	basisIndex = -1;
 	basisSize = -1;
@@ -239,3 +241,4 @@ HoppingAmplitude TreeNode::getFirstHA(){
 	return HoppingAmplitude({0, 0, 0}, {0, 0, 0}, 0);
 }
 
+};
