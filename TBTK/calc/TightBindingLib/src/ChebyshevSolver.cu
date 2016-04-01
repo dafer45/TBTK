@@ -12,15 +12,6 @@ using namespace std;
 
 namespace TBTK{
 
-clock_t start;
-void tick(){
-	start = clock();
-}
-
-double tock(){
-	return (1000*(clock() - start))/CLOCKS_PER_SEC;
-}
-
 __global__
 void multiplyMatrixAndVector(cuDoubleComplex *jIn,
 				cuDoubleComplex *jResult,
