@@ -209,6 +209,6 @@ private:
 	void *hint;
 };
 
-};
+};	//End of namespace TBTK
 
 #endif

@@ -156,4 +156,4 @@ void DiagonalizationSolver::solve(){
 	}*/
 }
 
-};
+};	//End of namespace TBTK

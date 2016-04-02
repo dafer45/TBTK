@@ -67,6 +67,6 @@ inline void HALinkedList::rescaleAmplitudes(double scaleFactor){
 	}
 }
 
-};
+};	//End of namespace TBTK
 
 #endif

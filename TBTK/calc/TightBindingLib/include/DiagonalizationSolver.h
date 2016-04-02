@@ -114,7 +114,7 @@ inline Model* DiagonalizationSolver::getModel(){
 	return model;
 }
 
-};
+};	//End of namespace TBTK
 
 #endif
 

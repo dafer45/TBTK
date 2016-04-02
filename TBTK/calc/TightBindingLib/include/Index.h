@@ -63,7 +63,6 @@ inline bool Index::equals(Index &index){
 	return true;
 }
 
-};
+};	//End of namespace TBTK
 
 #endif
-

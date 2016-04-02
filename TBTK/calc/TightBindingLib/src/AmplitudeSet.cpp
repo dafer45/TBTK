@@ -71,4 +71,4 @@ void AmplitudeSet::tabulate(int **table, int *dims){
 	}
 }
 
-};
+};	//End of namespace TBTK

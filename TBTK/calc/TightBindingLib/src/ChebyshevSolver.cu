@@ -409,5 +409,4 @@ void ChebyshevSolver::generateGreensFunctionGPU(complex<double> *greensFunction,
 	cudaFree(coefficients_device);
 }
 
-};
-
+};	//End of namespace TBTK

@@ -76,7 +76,7 @@ inline void Timer::tock(){
 	}
 }
 
-};
-};
+};	//End of namespace Util
+};	//End of namespace TBTK
 
 #endif

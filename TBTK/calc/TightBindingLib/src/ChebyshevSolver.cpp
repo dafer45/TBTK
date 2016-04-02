@@ -367,4 +367,4 @@ void ChebyshevSolver::generateGreensFunction(complex<double> *greensFunction, co
 	}
 }
 
-};
+};	//End of namespace TBTK

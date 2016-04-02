@@ -43,4 +43,4 @@ void Model::construct(){
 		cout << "\tBasis size: " << basisSize << "\n";
 }
 
-};
+};	//End of namespace TBTK

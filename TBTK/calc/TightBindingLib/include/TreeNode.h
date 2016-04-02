@@ -112,6 +112,6 @@ private:
 	HoppingAmplitude getFirstHA();
 };
 
-};
+};	//End of namespace TBTK
 
 #endif

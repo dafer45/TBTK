@@ -80,7 +80,7 @@ inline void Model::setTalkative(bool isTalkative){
 	this->isTalkative = isTalkative;
 }
 
-};
+};	//End of namespace TBTK
 
 #endif
 

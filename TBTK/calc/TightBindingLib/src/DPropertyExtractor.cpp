@@ -588,4 +588,4 @@ void DPropertyExtractor::calculate(void (*callback)(DPropertyExtractor *cb_this,
 	}
 }
 
-};
+};	//End of namespace TBTK

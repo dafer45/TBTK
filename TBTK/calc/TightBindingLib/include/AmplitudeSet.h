@@ -117,6 +117,6 @@ inline void AmplitudeSet::construct(){
 	tree.generateBasisIndices();
 }
 
-};
+};	//End of namespace TBTK
 
 #endif

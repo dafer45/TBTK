@@ -241,4 +241,4 @@ HoppingAmplitude TreeNode::getFirstHA(){
 	return HoppingAmplitude({0, 0, 0}, {0, 0, 0}, 0);
 }
 
-};
+};	//End of namespace TBTK

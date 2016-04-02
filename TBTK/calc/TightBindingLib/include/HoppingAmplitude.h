@@ -72,7 +72,7 @@ inline std::complex<double> HoppingAmplitude::getAmplitude(){
 		return amplitude;
 }
 
-};
+};	//End of namespace TBTK
 
 #endif
 

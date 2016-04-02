@@ -170,6 +170,6 @@ inline void ChebyshevSolver::setTalkative(bool isTalkative){
 	this->isTalkative = isTalkative;
 }
 
-};
+};	//End of namespace TBTK
 
 #endif

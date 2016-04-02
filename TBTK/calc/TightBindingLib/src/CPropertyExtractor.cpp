@@ -295,4 +295,4 @@ void CPropertyExtractor::calculate(void (*callback)(CPropertyExtractor *cb_this,
 	}
 }
 
-};
+};	//End of namespace TBTK

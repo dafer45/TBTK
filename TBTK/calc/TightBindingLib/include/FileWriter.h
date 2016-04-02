@@ -160,7 +160,7 @@ inline void FileWriter::clear(){
 	isInitialized = false;
 }
 
-};
+};	//End of namespace TBTK
 
 #endif
 

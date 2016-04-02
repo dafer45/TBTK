@@ -608,4 +608,4 @@ void FileWriter::writeAttributes(double *attributes, string *attribute_names, in
 	}
 }
 
-};
+};	//End of namespace TBTK

@@ -49,4 +49,4 @@ void HoppingAmplitude::print(){
 	cout << "Amplitude:\t" << getAmplitude() << "\n";
 }
 
-};
+};	//End of namespace TBTK
