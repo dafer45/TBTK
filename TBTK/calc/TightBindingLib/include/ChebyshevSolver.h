@@ -39,6 +39,20 @@ public:
 	void setScaleFactor(double scaleFactor);
 
 	/** Calculates the Chebyshev coefficients for \f$ G_{ij}(E)\f$, where
+	 *  \f$i = \textrm{to}\f$ is a set of indices and \f$j =
+	 *  \textrm{from}\f$. Runs on CPU.
+	 *  @param to vector of 'to'-indeces, or \f$i\f$'s.
+	 *  @param from 'From'-index, or \f$j\f$.
+	 *  @param coefficients Pointer to array able to hold
+	 *  numCoefficients\f$\times\f$toIndeices.size() coefficients.
+	 *  @param numCoefficients Number of coefficients to calculate for each
+	 *  to-index.
+	 *  @param broadening Broadening to use in convolusion of coefficients
+	 *  to remedy Gibb's osciallations.
+	 */
+	void calculateCoefficients(std::vector<Index> &to, Index from, std::complex<double> *coefficients, int numCoefficients, double broadening = 0.0001);
+
+	/** Calculates the Chebyshev coefficients for \f$ G_{ij}(E)\f$, where
 	 *  \f$i = \textrm{to}\f$ and \f$j = \textrm{from}\f$. Runs on CPU.
 	 *  @param to 'To'-index, or \f$i\f$.
 	 *  @param from 'From'-index, or \f$j\f$.

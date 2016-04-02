@@ -146,6 +146,126 @@ void ChebyshevSolver::calculateCoefficients(Index to, Index from, complex<double
 		coefficients[n] = coefficients[n]*sinh(lambda*(1 - n/(double)numCoefficients))/sinh(lambda);
 }
 
+void ChebyshevSolver::calculateCoefficients(vector<Index> &to, Index from, complex<double> *coefficients, int numCoefficients, double broadening){
+	AmplitudeSet *amplitudeSet = &model->amplitudeSet;
+
+	int fromBasisIndex = amplitudeSet->getBasisIndex(from);
+	int *coefficientMap = new int[amplitudeSet->getBasisSize()];
+	for(int n = 0; n < amplitudeSet->getBasisSize(); n++)
+		coefficientMap[n] = -1;
+	for(unsigned int n = 0; n < to.size(); n++)
+		coefficientMap[amplitudeSet->getBasisIndex(to.at(n))] = n;
+
+	if(isTalkative){
+		cout << "ChebyshevSolver::calculateCoefficients\n";
+		cout << "\tFrom Index: " << fromBasisIndex << "\n";
+		cout << "\tBasis size: " << amplitudeSet->getBasisSize() << "\n";
+		cout << "\tProgress (100 coefficients per dot): ";
+	}
+
+	complex<double> *jIn1 = new complex<double>[amplitudeSet->getBasisSize()];
+	complex<double> *jIn2 = new complex<double>[amplitudeSet->getBasisSize()];
+	complex<double> *jResult = new complex<double>[amplitudeSet->getBasisSize()];
+	complex<double> *jTemp = NULL;
+	for(int n = 0; n < amplitudeSet->getBasisSize(); n++){
+		jIn1[n] = 0.;
+		jIn2[n] = 0.;
+		jResult[n] = 0.;
+	}
+	//Set up initial state (|j0>)
+	jIn1[fromBasisIndex] = 1.;
+
+	for(int n = 0; n < amplitudeSet->getBasisSize(); n++)
+		if(coefficientMap[n] != -1)
+			coefficients[coefficientMap[n]*numCoefficients] = jIn1[n];
+
+	//Generate a fixed hopping amplitude and inde list, for speed.
+	AmplitudeSet::iterator it = amplitudeSet->getIterator();
+	HoppingAmplitude *ha;
+	int numHoppingAmplitudes = 0;
+	while((ha = it.getHA())){
+		numHoppingAmplitudes++;
+		it.searchNextHA();
+	}
+
+	complex<double> *hoppingAmplitudes = new complex<double>[numHoppingAmplitudes];
+	int *toIndices = new int[numHoppingAmplitudes];
+	int *fromIndices = new int[numHoppingAmplitudes];
+	it.reset();
+	int counter = 0;
+	while((ha = it.getHA())){
+		toIndices[counter] = amplitudeSet->getBasisIndex(ha->toIndex);
+		fromIndices[counter] = amplitudeSet->getBasisIndex(ha->fromIndex);
+		hoppingAmplitudes[counter] = ha->getAmplitude()/scaleFactor;
+
+		it.searchNextHA();
+		counter++;
+	}
+
+	//Calculate |j1>
+	for(int c = 0; c < amplitudeSet->getBasisSize(); c++)
+		jResult[c] = 0.;
+	for(int n = 0; n < numHoppingAmplitudes; n++){
+		int from = fromIndices[n];
+		int to = toIndices[n];
+
+		jResult[to] += hoppingAmplitudes[n]*jIn1[from];
+	}
+
+	jTemp = jIn2;
+	jIn2 = jIn1;
+	jIn1 = jResult;
+	jResult = jTemp;
+
+	for(int n = 0; n < amplitudeSet->getBasisSize(); n++)
+		if(coefficientMap[n] != -1)
+			coefficients[coefficientMap[n]*numCoefficients + 1] = jIn1[n];
+
+	//Multiply hopping amplitudes by factor two, to spped up calculation of 2H|j(n-1)> - |j(n-2)>.
+	for(int n = 0; n < numHoppingAmplitudes; n++)
+		hoppingAmplitudes[n] *= 2.;
+
+	//Iteratively calculate |jn> and corresponding Chebyshev coefficients.
+	for(int n = 2; n < numCoefficients; n++){
+		for(int c = 0; c < amplitudeSet->getBasisSize(); c++)
+			jResult[c] = -jIn2[c];
+		for(int c = 0; c < numHoppingAmplitudes; c++){
+			int from = fromIndices[c];
+			int to = toIndices[c];
+
+			jResult[to] += hoppingAmplitudes[c]*jIn1[from];
+		}
+
+		jTemp = jIn2;
+		jIn2 = jIn1;
+		jIn1 = jResult;
+		jResult = jTemp;
+
+		for(int c = 0; c < amplitudeSet->getBasisSize(); c++)
+			if(coefficientMap[c] != -1)
+				coefficients[coefficientMap[c]*numCoefficients + n] = jIn1[c];
+
+		if(isTalkative){
+			if(n%100 == 0)
+				cout << ".";
+			if(n%1000 == 0)
+				cout << " ";
+		}
+	}
+
+	delete [] jIn1;
+	delete [] jIn2;
+	delete [] jResult;
+	delete [] hoppingAmplitudes;
+	delete [] toIndices;
+	delete [] fromIndices;
+
+	//Lorentzian convolution
+	double lambda = broadening*numCoefficients;
+	for(int n = 0; n < numCoefficients; n++)
+		coefficients[n] = coefficients[n]*sinh(lambda*(1 - n/(double)numCoefficients))/sinh(lambda);
+}
+
 void ChebyshevSolver::calculateCoefficientsWithCutoff(Index to, Index from, complex<double> *coefficients, int numCoefficients, double componentCutoff, double broadening){
 	AmplitudeSet *amplitudeSet = &model->amplitudeSet;
 

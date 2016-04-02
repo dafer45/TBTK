@@ -38,8 +38,6 @@ CPropertyExtractor::CPropertyExtractor(ChebyshevSolver *cSolver,
 CPropertyExtractor::~CPropertyExtractor(){
 	if(useGPUToGenerateGreensFunctions)
 		cSolver->destroyLookupTableGPU();
-
-//	if(useLookupTable)
 }
 
 complex<double>* CPropertyExtractor::calculateGreensFunction(Index to, Index from){
@@ -56,8 +54,9 @@ complex<double>* CPropertyExtractor::calculateGreensFunctions(vector<Index> &to,
 		cSolver->calculateCoefficientsGPU(to, from, coefficients, numCoefficients);
 	}
 	else{
-		cout << "Error in PropertyExtractorChebyshev::calculateGreensFunctions: CPU generation of coefficients not yet supported.\n";
-		exit(1);
+		cSolver->calculateCoefficients(to, from, coefficients, numCoefficients);
+//		cout << "Error in PropertyExtractorChebyshev::calculateGreensFunctions: CPU generation of coefficients not yet supported.\n";
+//		exit(1);
 	}
 
 	complex<double> *greensFunction = new complex<double>[energyResolution*to.size()];
