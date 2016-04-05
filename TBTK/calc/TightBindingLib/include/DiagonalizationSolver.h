@@ -47,6 +47,10 @@ public:
 	/* Get eigenvectors. **/
 	const std::complex<double>* getEigenVectors();
 
+	/* Get eigenvectors. Same as getEigenVectors(), but with write access.
+	 *  Use with causion. **/
+	std::complex<double>* getEigenVectorsRW();
+
 	/** Get amplitude for given eigenvector \f$n\f$ and physical index
 	 * \f$x\f$: \f$\Psi_{n}(x)\f$.
 	 *  @param state Eigenstate number \f$n\f$.
@@ -103,6 +107,10 @@ inline const double* DiagonalizationSolver::getEigenValues(){
 }
 
 inline const std::complex<double>* DiagonalizationSolver::getEigenVectors(){
+	return eigenVectors;
+}
+
+inline std::complex<double>* DiagonalizationSolver::getEigenVectorsRW(){
 	return eigenVectors;
 }
 
