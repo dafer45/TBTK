@@ -44,6 +44,10 @@ public:
 	/** Get eigenvalues. */
 	const double* getEigenValues();
 
+	/** Get eigenvalues. Same as getEigenValues(), but with write access.
+	 *  Use with causion. */
+	double* getEigenValuesRW();
+
 	/* Get eigenvectors. **/
 	const std::complex<double>* getEigenVectors();
 
@@ -103,6 +107,10 @@ inline void DiagonalizationSolver::setMaxIterations(int maxIterations){
 }
 
 inline const double* DiagonalizationSolver::getEigenValues(){
+	return eigenValues;
+}
+
+inline double* DiagonalizationSolver::getEigenValuesRW(){
 	return eigenValues;
 }
 
