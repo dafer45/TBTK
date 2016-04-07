@@ -15,18 +15,42 @@ namespace TBTK{
 
 const complex<double> i(0, 1);
 
+vector<TimeEvolver*> TimeEvolver::timeEvolvers;
+vector<DiagonalizationSolver*> TimeEvolver::dSolvers;
+
 TimeEvolver::TimeEvolver(Model *model){
 	this->model = model;
-	this->scCallback = NULL;
+	this->callback = NULL;
 	numTimeSteps = 0;
 	dt = 0.01;
 	isAdiabatic = false;
+	currentTimeStep = -1;
+
+	dSolvers.push_back(&dSolver);
+	timeEvolvers.push_back(this);
 }
 
 TimeEvolver::~TimeEvolver(){
+	int timeEvolverIndex = -1;
+	for(unsigned int n = 0; n < timeEvolvers.size(); n++){
+		if(timeEvolvers.at(n) == this){
+			timeEvolverIndex = n;
+			break;
+		}
+	}
+
+	if(timeEvolverIndex != -1){
+		timeEvolvers.erase(timeEvolvers.begin() + timeEvolverIndex);
+		dSolvers.erase(dSolvers.begin() + timeEvolverIndex);
+	}
+	else{
+		cout << "Error in TimeEvolver::~TimeEvolver(): TimeEvolver not found.\n";
+		exit(1);
+	}
 }
 
 void TimeEvolver::run(){
+	currentTimeStep = -1;
 	dSolver.setModel(model);
 	dSolver.setSCCallback(scCallback);
 	dSolver.run();
@@ -37,7 +61,8 @@ void TimeEvolver::run(){
 	complex<double> *eigenVectors = dSolver.getEigenVectorsRW();
 	complex<double> *workspace = new complex<double>[basisSize*basisSize];
 	for(int t = 0; t < numTimeSteps; t++){
-		tsCallback();
+		currentTimeStep = t;
+		callback(this);
 
 		#pragma omp parallel for
 		for(int n = 0; n < basisSize*basisSize; n++)
@@ -81,9 +106,24 @@ void TimeEvolver::run(){
 			for(int c = 0; c < basisSize; c++)
 				eigenVectors[basisSize*n + c] /= normalizationFactor;
 		}
-
-		scCallback(&dSolver);
 	}
+}
+
+bool TimeEvolver::scCallback(DiagonalizationSolver *dSolver){
+	for(unsigned int n = 0; n < dSolvers.size(); n++){
+		if(dSolvers.at(n) == dSolver){
+			TimeEvolver *te = timeEvolvers.at(n);
+			if(te->callback != NULL)
+				return te->callback(te);
+			else
+				return true;	//No self-consistency set, so report that self-consistency has been reached.
+		}
+	}
+
+	cout << "Error in TimeEvolver::scCallback(): DiagonalizationSolver not found.\n";
+	exit(1);
+
+	return 0; //Never reached
 }
 
 };
