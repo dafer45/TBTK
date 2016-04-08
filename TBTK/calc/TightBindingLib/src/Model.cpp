@@ -13,10 +13,7 @@ using namespace std;
 
 namespace TBTK{
 
-Model::Model(int mode, int numEigenstates){
-	this->mode = mode;
-	this->numEigenstates = numEigenstates;
-
+Model::Model(){
 	isTalkative = true;
 }
 

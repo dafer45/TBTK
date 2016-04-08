@@ -27,10 +27,8 @@ enum {IDX_SUM_ALL = -1, IDX_ALL = -1,
  */
 class Model{
 public:
-	enum {MODE_ALL_EIGENVECTORS, MODE_SOME_EIGENVECTORS, MODE_CHEBYSHEV};
-
 	/** Constructor. */
-	Model(int mode = MODE_ALL_EIGENVECTORS, int numEigenstates = 0);
+	Model();
 
 	/** Destructor. */
 	~Model();
@@ -60,8 +58,8 @@ public:
 
 	void setTalkative(bool isTalkative);
 private:
-	int mode;
-	int numEigenstates;
+/*	int mode;
+	int numEigenstates;*/
 
 	/** Flag indicating whether to write information to standard output or
 	 *  not. */
