@@ -50,6 +50,12 @@ public:
 	 *  HoppingAmplitudes @endlink should be added after this call. */
 	void construct();
 
+	/** Set temperature. */
+	void setTemperature(double temperature);
+
+	/** Get temperature. */
+	double getTemperature();
+
 	/** AmplitudeSet containing @link HoppingAmplitude HoppingAmplitudes
 	 *  @endlink.*/
 	AmplitudeSet amplitudeSet;
@@ -58,8 +64,8 @@ public:
 
 	void setTalkative(bool isTalkative);
 private:
-/*	int mode;
-	int numEigenstates;*/
+	/** Temperature. */
+	double temperature;
 
 	/** Flag indicating whether to write information to standard output or
 	 *  not. */
@@ -72,6 +78,14 @@ inline int Model::getBasisSize(){
 
 inline int Model::getBasisIndex(Index index){
 	return amplitudeSet.getBasisIndex(index);
+}
+
+inline void Model::setTemperature(double temperature){
+	this->temperature = temperature;
+}
+
+inline double Model::getTemperature(){
+	return temperature;
 }
 
 inline void Model::setTalkative(bool isTalkative){
