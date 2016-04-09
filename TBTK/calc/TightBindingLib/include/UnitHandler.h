@@ -79,6 +79,23 @@ public:
 	/** Set energy scale. */
 	static void setEnergyScale(double scale);
 
+	/** Convert temperature to the currently set units, assuming that the
+	 *  input temperature is meassured with the scale set by
+	 *  setTemperatureScale(). */
+	static double convertTemperature(double temperature);
+
+	/** Convert time to the currently set units, assuming that the input
+	 *  time is meassured with the scale set by setTimeScale(). */
+	static double convertTime(double time);
+
+	/** Convert length to the currently set units, assuming that the input
+	 *  length is meassured with the scale set by setLengthScale(). */
+	static double convertLength(double length);
+
+	/** Convert energy to the currently set units, assuming that the input
+	 *  ebergy is meassured with the scale set by setEnergyScale(). */
+	static double convertEnergy(double energy);
+
 	/** Get temperature unit string
 	 *
 	 * @return string representation of the currently set temperature unit.
@@ -102,7 +119,7 @@ public:
 
 	/** Get Planck constant unit string
 	 *
-	 * @retrun string representation of the unit for the Planck constant.
+	 * @return string representation of the unit for the Planck constant.
 	 */
 	static std::string getHBARUnitString();
 
@@ -170,6 +187,22 @@ private:
 	 * unit energy in the default unit (eV). */
 	static double getEnergyConversionFactor();
 };
+
+inline double UnitHandler::convertTemperature(double temperature){
+	return temperature*temperatureScale;
+}
+
+inline double UnitHandler::convertTime(double time){
+	return time*timeScale;
+}
+
+inline double UnitHandler::convertLength(double length){
+	return length*lengthScale;
+}
+
+inline double UnitHandler::convertEnergy(double energy){
+	return energy*energyScale;
+}
 
 };
 
