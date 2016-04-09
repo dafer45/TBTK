@@ -25,20 +25,34 @@ double UnitHandler::lengthScale = 1.;
 double UnitHandler::energyScale = 1.;
 
 void UnitHandler::setTemperatureUnit(TemperatureUnit unit){
+	double oldConversionFactor = getTemperatureConversionFactor();
 	temperatureUnit = unit;
+	double newConversionFactor = getTemperatureConversionFactor();
+	temperatureScale *= newConversionFactor/oldConversionFactor;
+
 	updateK_b();
 }
 
 void UnitHandler::setTimeUnit(TimeUnit unit){
+	double oldConversionFactor = getTimeConversionFactor();	
 	timeUnit = unit;
+	double newConversionFactor = getTimeConversionFactor();
+	timeScale *= newConversionFactor/oldConversionFactor;
 }
 
 void UnitHandler::setLengthUnit(LengthUnit unit){
+	double oldConversionFactor = getLengthConversionFactor();
 	lengthUnit = unit;
+	double newConversionFactor = getLengthConversionFactor();
+	lengthScale *= newConversionFactor/oldConversionFactor;
 }
 
 void UnitHandler::setEnergyUnit(EnergyUnit unit){
+	double oldConversionFactor = getEnergyConversionFactor();
 	energyUnit = unit;
+	double newConversionFactor = getEnergyConversionFactor();
+	energyScale *= newConversionFactor/oldConversionFactor;
+
 	updateHbar();
 	updateK_b();
 }
