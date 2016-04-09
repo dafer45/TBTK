@@ -35,8 +35,14 @@ public:
 	/** Set model to work on. */
 	void setModel(Model *model);
 
+	/** Get model. */
+	Model* getModel();
+
 	/** Set scale factor. */
 	void setScaleFactor(double scaleFactor);
+
+	/** Get scale factor. */
+	double getScaleFactor();
 
 	/** Calculates the Chebyshev coefficients for \f$ G_{ij}(E)\f$, where
 	 *  \f$i = \textrm{to}\f$ is a set of indices and \f$j =
@@ -176,8 +182,16 @@ private:
 	bool isTalkative;
 };
 
+inline Model* ChebyshevSolver::getModel(){
+	return model;
+}
+
 inline void ChebyshevSolver::setScaleFactor(double scaleFactor){
 	this->scaleFactor = scaleFactor;
+}
+
+inline double ChebyshevSolver::getScaleFactor(){
+	return scaleFactor;
 }
 
 inline void ChebyshevSolver::setTalkative(bool isTalkative){

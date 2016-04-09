@@ -56,6 +56,12 @@ public:
 	/** Get temperature. */
 	double getTemperature();
 
+	/** Set Fermi level. */
+	void setFermiLevel(double fermiLevel);
+
+	/** Get Fermi level. */
+	double getFermiLevel();
+
 	/** AmplitudeSet containing @link HoppingAmplitude HoppingAmplitudes
 	 *  @endlink.*/
 	AmplitudeSet amplitudeSet;
@@ -66,6 +72,9 @@ public:
 private:
 	/** Temperature. */
 	double temperature;
+
+	/** Fermi level. */
+	double fermiLevel;
 
 	/** Flag indicating whether to write information to standard output or
 	 *  not. */
@@ -86,6 +95,14 @@ inline void Model::setTemperature(double temperature){
 
 inline double Model::getTemperature(){
 	return temperature;
+}
+
+inline void Model::setFermiLevel(double fermiLevel){
+	this->fermiLevel = fermiLevel;
+}
+
+inline double Model::getFermiLevel(){
+	return fermiLevel;
 }
 
 inline void Model::setTalkative(bool isTalkative){

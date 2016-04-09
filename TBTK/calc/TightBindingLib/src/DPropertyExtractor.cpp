@@ -4,6 +4,7 @@
  */
 
 #include "../include/DPropertyExtractor.h"
+#include "../include/Functions.h"
 #include <iostream>
 
 using namespace std;
@@ -412,10 +413,13 @@ complex<double>* DPropertyExtractor::calculateSP_LDOS(Index pattern, Index range
 void DPropertyExtractor::calculateDensityCallback(DPropertyExtractor *cb_this, void* density, const Index &index, int offset){
 	const double *eigen_values = cb_this->dSolver->getEigenValues();
 	for(int n = 0; n < cb_this->dSolver->getModel()->getBasisSize(); n++){
-		if(eigen_values[n] < 0){
-			complex<double> u = cb_this->dSolver->getAmplitude(n, index);
-			((double*)density)[offset] += pow(abs(u), 2);
-		}
+		double weight = Functions::fermiDiracDistribution(eigen_values[n],
+									cb_this->dSolver->getModel()->getFermiLevel(),
+									cb_this->dSolver->getModel()->getTemperature());
+
+		complex<double> u = cb_this->dSolver->getAmplitude(n, index);
+
+		((double*)density)[offset] += pow(abs(u), 2)*weight;
 	}
 }
 
@@ -448,15 +452,17 @@ void DPropertyExtractor::calculateMAGCallback(DPropertyExtractor *cb_this, void 
 	index_u.indices.at(spin_index) = 0;
 	index_d.indices.at(spin_index) = 1;
 	for(int n = 0; n < cb_this->dSolver->getModel()->getBasisSize(); n++){
-		if(eigen_values[n] < 0){
-			complex<double> u_u = cb_this->dSolver->getAmplitude(n, index_u);
-			complex<double> u_d = cb_this->dSolver->getAmplitude(n, index_d);
+		double weight = Functions::fermiDiracDistribution(eigen_values[n],
+									cb_this->dSolver->getModel()->getFermiLevel(),
+									cb_this->dSolver->getModel()->getTemperature());
 
-			((complex<double>*)mag)[4*offset + 0] += conj(u_u)*u_u;
-			((complex<double>*)mag)[4*offset + 1] += conj(u_u)*u_d;
-			((complex<double>*)mag)[4*offset + 2] += conj(u_d)*u_u;
-			((complex<double>*)mag)[4*offset + 3] += conj(u_d)*u_d;
-		}
+		complex<double> u_u = cb_this->dSolver->getAmplitude(n, index_u);
+		complex<double> u_d = cb_this->dSolver->getAmplitude(n, index_d);
+
+		((complex<double>*)mag)[4*offset + 0] += conj(u_u)*u_u*weight;
+		((complex<double>*)mag)[4*offset + 1] += conj(u_u)*u_d*weight;
+		((complex<double>*)mag)[4*offset + 2] += conj(u_d)*u_u*weight;
+		((complex<double>*)mag)[4*offset + 3] += conj(u_d)*u_d*weight;
 	}
 }
 

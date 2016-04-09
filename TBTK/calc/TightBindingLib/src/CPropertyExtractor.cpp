@@ -4,6 +4,7 @@
  */
 
 #include "../include/CPropertyExtractor.h"
+#include "../include/Functions.h"
 
 using namespace std;
 
@@ -210,8 +211,13 @@ complex<double>* CPropertyExtractor::calculateSP_LDOS(Index pattern, Index range
 void CPropertyExtractor::calculateDensityCallback(CPropertyExtractor *cb_this, void *density, const Index &index, int offset){
 	complex<double> *greensFunction = cb_this->calculateGreensFunction(index, index);
 
-	for(int e = 0; e < cb_this->energyResolution/2; e++)
-		((double*)density)[offset] -= imag(greensFunction[e])/M_PI;
+	for(int e = 0; e < cb_this->energyResolution; e++){
+		double weight = Functions::fermiDiracDistribution((2.*e/(double)cb_this->energyResolution - 1.)*cb_this->cSolver->getScaleFactor(),
+									cb_this->cSolver->getModel()->getFermiLevel(),
+									cb_this->cSolver->getModel()->getTemperature());
+
+		((double*)density)[offset] -= weight*imag(greensFunction[e])/M_PI;
+	}
 
 	delete [] greensFunction;
 }
@@ -227,8 +233,13 @@ void CPropertyExtractor::calculateMAGCallback(CPropertyExtractor *cb_this, void 
 		from.indices.at(spinIndex) = n%2;	//up, down, up, down
 		greensFunction = cb_this->calculateGreensFunction(to, from);
 
-		for(int e = 0; e < cb_this->energyResolution/2; e++)
-			((complex<double>*)mag)[4*offset + n] += greensFunction[e];
+		for(int e = 0; e < cb_this->energyResolution; e++){
+			double weight = Functions::fermiDiracDistribution((2.*e/(double)cb_this->energyResolution - 1.)*cb_this->cSolver->getScaleFactor(),
+										cb_this->cSolver->getModel()->getFermiLevel(),
+										cb_this->cSolver->getModel()->getTemperature());
+
+			((complex<double>*)mag)[4*offset + n] += weight*greensFunction[e];
+		}
 
 		delete [] greensFunction;
 	}

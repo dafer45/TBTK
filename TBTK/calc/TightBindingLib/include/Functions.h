@@ -21,11 +21,15 @@ private:
 };
 
 inline double Functions::fermiDiracDistribution(double energy, double mu, double temperature){
-	return 1./(exp(energy - mu)/(UnitHandler::getK_b()*temperature) + 1);
+	double e = UnitHandler::convertEnergy(energy - mu);
+	double t = UnitHandler::convertTemperature(temperature);
+	return 1./(exp(e/(UnitHandler::getK_b()*t)) + 1.);
 }
 
 inline double Functions::boseEinsteinDistribution(double energy, double mu, double temperature){
-	return 1./(exp(energy - mu)/(UnitHandler::getK_b()*temperature) - 1);
+	double e = UnitHandler::convertEnergy(energy - mu);
+	double t = UnitHandler::convertTemperature(temperature);
+	return 1./(exp(e/(UnitHandler::getK_b()*t)) - 1.);
 }
 
 };	//End of namespace TBTK
