@@ -38,6 +38,8 @@ void UnitHandler::setTimeUnit(TimeUnit unit){
 	timeUnit = unit;
 	double newConversionFactor = getTimeConversionFactor();
 	timeScale *= newConversionFactor/oldConversionFactor;
+
+	updateHbar();
 }
 
 void UnitHandler::setLengthUnit(LengthUnit unit){
@@ -149,7 +151,7 @@ string UnitHandler::getEnergyUnitString(){
 
 string UnitHandler::getHBARUnitString(){
 	stringstream ss;
-	ss << getEnergyUnitString() << getTimeUnitString();;
+	ss << getEnergyUnitString() << getTimeUnitString();
 
 	return ss.str();
 }
