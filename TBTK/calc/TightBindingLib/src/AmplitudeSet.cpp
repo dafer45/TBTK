@@ -1,4 +1,4 @@
-/** @file AmplitudeSet.c
+/** @file AmplitudeSet.cpp
  *
  *  @author Kristofer Björnson
  */
