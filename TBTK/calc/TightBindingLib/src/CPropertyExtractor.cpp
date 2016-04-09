@@ -210,11 +210,20 @@ complex<double>* CPropertyExtractor::calculateSP_LDOS(Index pattern, Index range
 
 void CPropertyExtractor::calculateDensityCallback(CPropertyExtractor *cb_this, void *density, const Index &index, int offset){
 	complex<double> *greensFunction = cb_this->calculateGreensFunction(index, index);
+	Model::Statistics statistics = cb_this->cSolver->getModel()->getStatistics();
 
 	for(int e = 0; e < cb_this->energyResolution; e++){
-		double weight = Functions::fermiDiracDistribution((2.*e/(double)cb_this->energyResolution - 1.)*cb_this->cSolver->getScaleFactor(),
+		double weight;
+		if(statistics == Model::Statistics::FermiDirac){
+			weight = Functions::fermiDiracDistribution((2.*e/(double)cb_this->energyResolution - 1.)*cb_this->cSolver->getScaleFactor(),
 									cb_this->cSolver->getModel()->getFermiLevel(),
 									cb_this->cSolver->getModel()->getTemperature());
+		}
+		else{
+			weight = Functions::boseEinsteinDistribution((2.*e/(double)cb_this->energyResolution - 1.)*cb_this->cSolver->getScaleFactor(),
+									cb_this->cSolver->getModel()->getFermiLevel(),
+									cb_this->cSolver->getModel()->getTemperature());
+		}
 
 		((double*)density)[offset] -= weight*imag(greensFunction[e])/M_PI;
 	}
@@ -227,6 +236,7 @@ void CPropertyExtractor::calculateMAGCallback(CPropertyExtractor *cb_this, void 
 	Index to(index);
 	Index from(index);
 	complex<double> *greensFunction;
+	Model::Statistics statistics = cb_this->cSolver->getModel()->getStatistics();
 
 	for(int n = 0; n < 4; n++){
 		to.indices.at(spinIndex) = n/2;		//up, up, down, down
@@ -234,9 +244,17 @@ void CPropertyExtractor::calculateMAGCallback(CPropertyExtractor *cb_this, void 
 		greensFunction = cb_this->calculateGreensFunction(to, from);
 
 		for(int e = 0; e < cb_this->energyResolution; e++){
-			double weight = Functions::fermiDiracDistribution((2.*e/(double)cb_this->energyResolution - 1.)*cb_this->cSolver->getScaleFactor(),
+			double weight;
+			if(statistics == Model::Statistics::FermiDirac){
+				weight = Functions::fermiDiracDistribution((2.*e/(double)cb_this->energyResolution - 1.)*cb_this->cSolver->getScaleFactor(),
 										cb_this->cSolver->getModel()->getFermiLevel(),
 										cb_this->cSolver->getModel()->getTemperature());
+			}
+			else{
+				weight = Functions::boseEinsteinDistribution((2.*e/(double)cb_this->energyResolution - 1.)*cb_this->cSolver->getScaleFactor(),
+										cb_this->cSolver->getModel()->getFermiLevel(),
+										cb_this->cSolver->getModel()->getTemperature());
+			}
 
 			((complex<double>*)mag)[4*offset + n] += weight*greensFunction[e];
 		}

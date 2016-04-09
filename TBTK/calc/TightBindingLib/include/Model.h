@@ -66,6 +66,15 @@ public:
 	 *  @endlink.*/
 	AmplitudeSet amplitudeSet;
 
+	/** Enums for Fermi-Dirac and Bose-Einstein statistics. */
+	enum Statistics {FermiDirac, BoseEinstein};
+
+	/** Set statistics. */
+	void setStatistics(Statistics statistics);
+
+	/** Get statistics. */
+	Statistics getStatistics();
+
 	void saveEV(std::string path = "./", std::string filename = "EV.dat");
 
 	void setTalkative(bool isTalkative);
@@ -75,6 +84,9 @@ private:
 
 	/** Fermi level. */
 	double fermiLevel;
+
+	/** Statistics (Fermi-Dirac or Bose-Einstein). */
+	Statistics statistics;
 
 	/** Flag indicating whether to write information to standard output or
 	 *  not. */
@@ -103,6 +115,14 @@ inline void Model::setFermiLevel(double fermiLevel){
 
 inline double Model::getFermiLevel(){
 	return fermiLevel;
+}
+
+inline void Model::setStatistics(Statistics statistics){
+	this->statistics = statistics;
+}
+
+inline Model::Statistics Model::getStatistics(){
+	return statistics;
 }
 
 inline void Model::setTalkative(bool isTalkative){

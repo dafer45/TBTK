@@ -412,10 +412,19 @@ complex<double>* DPropertyExtractor::calculateSP_LDOS(Index pattern, Index range
 
 void DPropertyExtractor::calculateDensityCallback(DPropertyExtractor *cb_this, void* density, const Index &index, int offset){
 	const double *eigen_values = cb_this->dSolver->getEigenValues();
+	Model::Statistics statistics = cb_this->dSolver->getModel()->getStatistics();
 	for(int n = 0; n < cb_this->dSolver->getModel()->getBasisSize(); n++){
-		double weight = Functions::fermiDiracDistribution(eigen_values[n],
+		double weight;
+		if(statistics == Model::Statistics::FermiDirac){
+			weight = Functions::fermiDiracDistribution(eigen_values[n],
 									cb_this->dSolver->getModel()->getFermiLevel(),
 									cb_this->dSolver->getModel()->getTemperature());
+		}
+		else{
+			weight = Functions::boseEinsteinDistribution(eigen_values[n],
+									cb_this->dSolver->getModel()->getFermiLevel(),
+									cb_this->dSolver->getModel()->getTemperature());
+		}
 
 		complex<double> u = cb_this->dSolver->getAmplitude(n, index);
 
@@ -445,6 +454,7 @@ void DPropertyExtractor::calculateDensityCallback(DPropertyExtractor *cb_this, v
 
 void DPropertyExtractor::calculateMAGCallback(DPropertyExtractor *cb_this, void *mag, const Index &index, int offset){
 	const double *eigen_values = cb_this->dSolver->getEigenValues();
+	Model::Statistics statistics = cb_this->dSolver->getModel()->getStatistics();
 
 	int spin_index = ((int*)cb_this->hint)[0];
 	Index index_u(index);
@@ -452,9 +462,17 @@ void DPropertyExtractor::calculateMAGCallback(DPropertyExtractor *cb_this, void 
 	index_u.indices.at(spin_index) = 0;
 	index_d.indices.at(spin_index) = 1;
 	for(int n = 0; n < cb_this->dSolver->getModel()->getBasisSize(); n++){
-		double weight = Functions::fermiDiracDistribution(eigen_values[n],
+		double weight;
+		if(statistics == Model::Statistics::FermiDirac){
+			weight = Functions::fermiDiracDistribution(eigen_values[n],
 									cb_this->dSolver->getModel()->getFermiLevel(),
 									cb_this->dSolver->getModel()->getTemperature());
+		}
+		else{
+			weight = Functions::boseEinsteinDistribution(eigen_values[n],
+									cb_this->dSolver->getModel()->getFermiLevel(),
+									cb_this->dSolver->getModel()->getTemperature());
+		}
 
 		complex<double> u_u = cb_this->dSolver->getAmplitude(n, index_u);
 		complex<double> u_d = cb_this->dSolver->getAmplitude(n, index_d);
