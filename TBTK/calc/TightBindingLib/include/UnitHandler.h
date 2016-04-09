@@ -49,11 +49,11 @@ public:
 	 *	J - Joule */
 	enum EnergyUnit{GeV, MeV, keV, eV, meV, ueV, J};
 
-	/** Planck constant in the currently set units. */
-	static double hbar;
+	/** Get the Planck constant in the currently set units. */
+	static double getHbar();
 
-	/** Boltzmann constant in the currently set units. */
-	static double k_b;
+	/** Get the Boltzmann constant in the currently set units. */
+	static double getK_b();
 
 	/** Set temperature unit. */
 	static void setTemperatureUnit(TemperatureUnit unit);
@@ -135,6 +135,12 @@ private:
 	/** Boltzmann constant in default units (eV/K). */
 	static constexpr double K_B	= 8.6173324e-5;
 
+	/** Planck constant in the currently set units. */
+	static double hbar;
+
+	/** Boltzmann constant in the currently set units. */
+	static double k_b;
+
 	/** Conversion factor from eV to J. */
 	static constexpr double J_per_eV	= 1.602176565e-19;
 
@@ -187,6 +193,14 @@ private:
 	 * unit energy in the default unit (eV). */
 	static double getEnergyConversionFactor();
 };
+
+inline double UnitHandler::getHbar(){
+	return hbar;
+}
+
+inline double UnitHandler::getK_b(){
+	return k_b;
+}
 
 inline double UnitHandler::convertTemperature(double temperature){
 	return temperature*temperatureScale;
