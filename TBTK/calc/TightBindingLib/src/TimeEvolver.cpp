@@ -95,7 +95,7 @@ void TimeEvolver::run(){
 
 		#pragma omp parallel for
 		for(int n = 0; n < basisSize*basisSize; n++){
-			eigenVectors[n] -= i*workspace[n]*UnitHandler::convertTime(dt)/UnitHandler::getHbar();
+			eigenVectors[n] -= i*workspace[n]*UnitHandler::convertTimeNtB(dt)/UnitHandler::getHbar();
 		}
 
 		#pragma omp parallel for

@@ -18,35 +18,43 @@
 namespace TBTK{
 
 /** The UnitHandler handles conversion between the 'natural units' used in the
- *  calculations and standard units. The base quantities are Temperature, time,
- *  length, energy, and charge, and the default units are Kelvin (K), second
- *  (s), meter (m), electron Volt (eV), and Coulomb (C).
+ *  calculations and standard 'base units'. The base quantities are
+ *  Temperature, time, length, energy, and charge, and the default units are
+ *  Kelvin (K), second (s), meter (m), electron Volt (eV), and Coulomb (C).
  *
- *  The current units can be changed with setXXXUnit(), where \f XXX \in
+ *  The current base units can be changed with setXXXUnit(), where \f XXX \in
  *  \{Temperature, Time, Length, Energy, Charge\}\f, and subsequent calls will
  *  take input paramaters and return output parameters in corresponding units.
  *
  *  The functions setXXXScale() can be used to specify the scale of the 'ruler'
- *  with which parameters in the calculation are meassured. For example:
+ *  with which parameters in the calculation are meassured. This sets the
+ *  scale which relates the natrual units to the base units. For example:
  *
  *  UnitHandler::setEnergyUnits(UnitHandler::EnergyUnit:meV);
  *  UnitHandler::setEnergyScale(1.47);
  *
- *  Here the energy unit is first set to meV, and the scale subsequently set to
- *  1.47meV. An energy parameter with value 1.0 will therefore be interpreted as
- *  having the physical value 1.47meV whenever a multiplication with a physical
- *  constant is required to generate a unitless number.
+ *  Here the energy base unit is first set to meV, and the scale subsequently
+ *  set to 1.47meV. The natural unit 1.0, now corresponds to the base unit
+ *  1.47meV. An energy parameter with value 1.0 will therefore be
+ *  interpreted as having the physical value 1.47meV whenever a multiplication
+ *  with a physical constant is required to generate a unitless number.
  *
  *  Note that the order of the above calls are important. Setting the energy
  *  scale to 1.47 while the default energy unit eV is used and then changing to
- *  meV as units will result in the scale becoming 1.47eV = 1470meV. */
+ *  meV as units will result in the scale becoming 1.47eV = 1470meV.
+ *
+ *  In addition to base units and natural units, there are also derived units.
+ *  These are used to convert to and from units not included among the base
+ *  units, such as kg for mass. That a u unit is derived means that it can be
+ *  expressed in terms of the already existing base units. For example: kg =
+ *  eVs^2/m^2. */
 class UnitHandler{
 public:
-	/** Temperature units:
+	/** Temperature units (base unit):
 	 *	K - Kelvin */
 	enum class TemperatureUnit {K};
 
-	/* Time units:
+	/* Time units (base unit):
 	 *	s - second
 	 *	ms - millisecond
 	 *	us - microsecond
@@ -56,7 +64,7 @@ public:
 	 *	as - attosecond */
 	enum class TimeUnit {s, ms, us, ns, ps, fs, as};
 
-	/** Distance units:
+	/** Length units (base unit):
 	 *	m - meter
 	 *	mm - millimeter
 	 *	um - micrometer
@@ -67,7 +75,7 @@ public:
 	 *	Ao - Angstrom */
 	enum class LengthUnit{m, mm, um, nm, pm, fm, am, Ao};
 
-	/** Energy units:
+	/** Energy units (base unit):
 	 *	GeV - gigaelectron Volt
 	 *	MeV - megaelectron Volt
 	 *	keV - kiloelectron Volt
@@ -77,9 +85,21 @@ public:
 	 *	J - Joule */
 	enum class EnergyUnit{GeV, MeV, keV, eV, meV, ueV, J};
 
-	/** Charge units:
+	/** Charge units (base unit):
 	 *	C - Coulomb */
 	enum class ChargeUnit{C};
+
+	/** Mass units (derived unit):
+	 *	kg - kilogram
+	 *	g - gram
+	 *	mg - milligram
+	 *	ug - microgram
+	 *	ng - nanogram
+	 *	pg - picogram
+	 *	fg - femtogram
+	 *	ag - attogram
+	 *	u - atomic mass */
+	enum class MassUnit{kg, g, mg, ug, ng, pg, fg, ag, u};
 
 	/** Get the Planck constant in the currently set units. */
 	static double getHbar();
@@ -135,26 +155,47 @@ public:
 	/** Set charge scale. */
 	static void setChargeScale(double scale);
 
-	/** Convert temperature to the currently set units, assuming that the
-	 *  input temperature is meassured with the scale set by
-	 *  setTemperatureScale(). */
-	static double convertTemperature(double temperature);
+	/** Convert temperature from natural units to base units. */
+	static double convertTemperatureNtB(double temperature);
 
-	/** Convert time to the currently set units, assuming that the input
-	 *  time is meassured with the scale set by setTimeScale(). */
-	static double convertTime(double time);
+	/** Convert time to from natural units to base units. */
+	static double convertTimeNtB(double time);
 
-	/** Convert length to the currently set units, assuming that the input
-	 *  length is meassured with the scale set by setLengthScale(). */
-	static double convertLength(double length);
+	/** Convert length from natural units to base units. */
+	static double convertLengthNtB(double length);
 
-	/** Convert energy to the currently set units, assuming that the input
-	 *  energy is meassured with the scale set by setEnergyScale(). */
-	static double convertEnergy(double energy);
+	/** Convert energy from natural units to base units */
+	static double convertEnergyNtB(double energy);
 
-	/** Convert charge to the currently set units, assuming that the input
-	 *  charge is meassured with the scale set by setEnergyScale(). */
-	static double convertCharge(double charge);
+	/** Convert charge from natural units to base units. */
+	static double convertChargeNtB(double charge);
+
+	/** Convert temperature from base units to natural units. */
+	static double convertTemperatureBtN(double temperature);
+
+	/** Convert time from base units to natural units. */
+	static double convertTimeBtN(double time);
+
+	/** Convert length from base units to natural units. */
+	static double convertLengthBtN(double length);
+
+	/** Convert energy from base units to natural units. */
+	static double convertEnergyBtN(double energy);
+
+	/** Convert charge from base units to natural units. */
+	static double convertChargeBtN(double charge);
+
+	/** Convert mass from derived units to base units. */
+	static double convertMassDtB(double mass, MassUnit unit);
+
+	/** Convert mass from base units to derived units. */
+	static double convertMassBtD(double mass, MassUnit unit);
+
+	/** Convert mass from derived units to natural units. */
+	static double convertMassDtN(double mass, MassUnit unit);
+
+	/** Convert mass from natural units to derived units. */
+	static double convertMassNtD(double mass, MassUnit unit);
 
 	/** Get temperature unit string
 	 *
@@ -280,6 +321,18 @@ private:
 	/** Conversion factor from eV to J. */
 	static constexpr double eV_per_J	= 1./J_per_eV;
 
+	/** Conversion factor from eVs^2/m^2 to kg. */
+	static constexpr double kg_per_baseMass = 1.602176565e-19;
+
+	/** Conversion factor from kg to eVs^2/m^2. */
+	static constexpr double baseMass_per_kg = 1./kg_per_baseMass;
+
+	/** Conversion factor from eVs^2/m^2 to u. */
+	static constexpr double u_per_baseMass = 9.31494095e8/(C*C);
+
+	/** Conversion factor from u to eVs^2/m^2. */
+	static constexpr double baseMass_per_u = 1./u_per_baseMass;
+
 	/** Currently set temperature unit. */
 	static TemperatureUnit temperatureUnit;
 
@@ -353,6 +406,10 @@ private:
 	/** Returns the number of unit charges in the currently set unit per
 	 * unit charge in the default unit (C). */
 	static double getChargeConversionFactor();
+
+	/** Returns the number of unit masses in the input unit per unit mass
+	 *  in the default unit (eVs^2/m^2). */
+	static double getMassConversionFactor(MassUnit unit);
 };
 
 inline double UnitHandler::getHbar(){
@@ -387,24 +444,44 @@ inline double UnitHandler::getMu_n(){
 	return mu_n;
 }
 
-inline double UnitHandler::convertTemperature(double temperature){
+inline double UnitHandler::convertTemperatureNtB(double temperature){
 	return temperature*temperatureScale;
 }
 
-inline double UnitHandler::convertTime(double time){
+inline double UnitHandler::convertTimeNtB(double time){
 	return time*timeScale;
 }
 
-inline double UnitHandler::convertLength(double length){
+inline double UnitHandler::convertLengthNtB(double length){
 	return length*lengthScale;
 }
 
-inline double UnitHandler::convertEnergy(double energy){
+inline double UnitHandler::convertEnergyNtB(double energy){
 	return energy*energyScale;
 }
 
-inline double UnitHandler::convertCharge(double charge){
+inline double UnitHandler::convertChargeNtB(double charge){
 	return charge*chargeScale;
+}
+
+inline double UnitHandler::convertTemperatureBtN(double temperature){
+	return temperature/temperatureScale;
+}
+
+inline double UnitHandler::convertTimeBtN(double time){
+	return time/timeScale;
+}
+
+inline double UnitHandler::convertLengthBtN(double length){
+	return length/lengthScale;
+}
+
+inline double UnitHandler::convertEnergyBtN(double energy){
+	return energy/energyScale;
+}
+
+inline double UnitHandler::convertChargeBtN(double charge){
+	return charge/chargeScale;
 }
 
 };

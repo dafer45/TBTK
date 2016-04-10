@@ -111,6 +111,38 @@ void UnitHandler::setChargeScale(double scale){
 	chargeScale = scale;
 }
 
+double UnitHandler::convertMassDtB(double mass, MassUnit unit){
+	double massInDefaultBaseUnits = mass/getMassConversionFactor(unit);
+	double cfE = getEnergyConversionFactor();
+	double cfT = getTimeConversionFactor();
+	double cfL = getLengthConversionFactor();
+	return massInDefaultBaseUnits*cfE*cfT*cfT/(cfL*cfL);
+}
+
+double UnitHandler::convertMassBtD(double mass, MassUnit unit){
+	double cfE = getEnergyConversionFactor();
+	double cfT = getTimeConversionFactor();
+	double cfL = getLengthConversionFactor();
+	double massInDefaultBaseUnits = mass*cfL*cfL/(cfE*cfT*cfT);
+	return massInDefaultBaseUnits*getMassConversionFactor(unit);
+}
+
+double UnitHandler::convertMassDtN(double mass, MassUnit unit){
+	double massInDefaultBaseUnits = mass/getMassConversionFactor(unit);
+	double cfE = getEnergyConversionFactor()/energyScale;
+	double cfT = getTimeConversionFactor()/timeScale;
+	double cfL = getLengthConversionFactor()/lengthScale;
+	return massInDefaultBaseUnits*cfE*cfT*cfT/(cfL*cfL);
+}
+
+double UnitHandler::convertMassNtD(double mass, MassUnit unit){
+	double cfE = getEnergyConversionFactor()*energyScale;
+	double cfT = getTimeConversionFactor()*timeScale;
+	double cfL = getLengthConversionFactor()*lengthScale;
+	double massInDefaultBaseUnits = mass*cfL*cfL/(cfE*cfT*cfT);
+	return massInDefaultBaseUnits*getMassConversionFactor(unit);
+}
+
 string UnitHandler::getTemperatureUnitString(){
 	switch(temperatureUnit){
 		case TemperatureUnit::K:
@@ -386,6 +418,27 @@ double UnitHandler::getChargeConversionFactor(){
 			return 1.;
 		default:	//Should never happen, hard error generated for quick bug detection
 			cout << "Error in UnitHandler::getChargeConversionFactor(): Unknown unit - " << static_cast<int>(chargeUnit);
+			exit(1);
+			return 0.;	//Never happens
+	}
+}
+
+double UnitHandler::getMassConversionFactor(MassUnit unit){
+	switch(unit){
+		case MassUnit::kg:
+			return kg_per_baseMass;
+		case MassUnit::g:
+			return kg_per_baseMass*1e3;
+		case MassUnit::mg:
+			return kg_per_baseMass*1e6;
+		case MassUnit::ug:
+			return kg_per_baseMass*1e9;
+		case MassUnit::ng:
+			return kg_per_baseMass*1e12;
+		case MassUnit::u:
+			return u_per_baseMass;
+		default:	//Should never happen, hard error generated for quick bug detection
+			cout << "Error in UnitHandler::getMassConversionFactor(): Unknown unit - " << static_cast<int>(unit);
 			exit(1);
 			return 0.;	//Never happens
 	}

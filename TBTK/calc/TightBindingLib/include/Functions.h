@@ -10,6 +10,7 @@
 
 #include "UnitHandler.h"
 #include <math.h>
+#include <iostream>
 
 namespace TBTK{
 
@@ -24,15 +25,33 @@ private:
 };
 
 inline double Functions::fermiDiracDistribution(double energy, double mu, double temperature){
-	double e = UnitHandler::convertEnergy(energy - mu);
-	double t = UnitHandler::convertTemperature(temperature);
-	return 1./(exp(e/(UnitHandler::getK_b()*t)) + 1.);
+	double e = UnitHandler::convertEnergyNtB(energy - mu);
+	double t = UnitHandler::convertTemperatureNtB(temperature);
+	if(t != 0.){
+		return 1./(exp(e/(UnitHandler::getK_b()*t)) + 1.);
+	}
+	else{
+		if(e < 0.)
+			return 1.;
+		else if(e == 0.)
+			return 0.5;
+		else
+			return 0.;
+	}
 }
 
 inline double Functions::boseEinsteinDistribution(double energy, double mu, double temperature){
-	double e = UnitHandler::convertEnergy(energy - mu);
-	double t = UnitHandler::convertTemperature(temperature);
-	return 1./(exp(e/(UnitHandler::getK_b()*t)) - 1.);
+	double e = UnitHandler::convertEnergyNtB(energy - mu);
+	double t = UnitHandler::convertTemperatureNtB(temperature);
+
+	if(t != 0.){
+		return 1./(exp(e/(UnitHandler::getK_b()*t)) - 1.);
+	}
+	else{
+		std::cout << "Error in Functions::boseEinsteinDistribution(): "
+				<< "Bose-Einstein distribution not well behaved at T=0. Please use\n";
+		exit(1);
+	}
 }
 
 };	//End of namespace TBTK
