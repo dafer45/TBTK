@@ -15,7 +15,10 @@ namespace TBTK{
 
 class Functions{
 public:
+	/** Fermi-Dirac distribution. */
 	static double fermiDiracDistribution(double energy, double mu, double temperature);
+
+	/** Bose-Einstein distribution. */
 	static double boseEinsteinDistribution(double energy, double mu, double temperature);
 private:
 };

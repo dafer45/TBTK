@@ -11,18 +11,23 @@ using namespace std;
 
 namespace TBTK{
 
-double UnitHandler::hbar = HBAR;
-double UnitHandler::k_b = K_B;
+double UnitHandler::hbar	= HBAR;
+double UnitHandler::k_b		= K_B;
+double UnitHandler::e		= E;
+double UnitHandler::c		= C;
+double UnitHandler::m_e		= M_E;
 
 UnitHandler::TemperatureUnit 	UnitHandler::temperatureUnit	= UnitHandler::TemperatureUnit::K;
 UnitHandler::TimeUnit 		UnitHandler::timeUnit		= UnitHandler::TimeUnit::s;
 UnitHandler::LengthUnit		UnitHandler::lengthUnit		= UnitHandler::LengthUnit::m;
 UnitHandler::EnergyUnit		UnitHandler::energyUnit		= UnitHandler::EnergyUnit::eV;
+UnitHandler::ChargeUnit		UnitHandler::chargeUnit		= UnitHandler::ChargeUnit::C;
 
-double UnitHandler::temperatureScale = 1.;
-double UnitHandler::timeScale = 1.;
-double UnitHandler::lengthScale = 1.;
-double UnitHandler::energyScale = 1.;
+double UnitHandler::temperatureScale	= 1.;
+double UnitHandler::timeScale		= 1.;
+double UnitHandler::lengthScale		= 1.;
+double UnitHandler::energyScale		= 1.;
+double UnitHandler::chargeScale		= 1.;
 
 void UnitHandler::setTemperatureUnit(TemperatureUnit unit){
 	double oldConversionFactor = getTemperatureConversionFactor();
@@ -40,6 +45,8 @@ void UnitHandler::setTimeUnit(TimeUnit unit){
 	timeScale *= newConversionFactor/oldConversionFactor;
 
 	updateHbar();
+	updateC();
+	updateM_e();
 }
 
 void UnitHandler::setLengthUnit(LengthUnit unit){
@@ -47,6 +54,9 @@ void UnitHandler::setLengthUnit(LengthUnit unit){
 	lengthUnit = unit;
 	double newConversionFactor = getLengthConversionFactor();
 	lengthScale *= newConversionFactor/oldConversionFactor;
+
+	updateC();
+	updateM_e();
 }
 
 void UnitHandler::setEnergyUnit(EnergyUnit unit){
@@ -57,6 +67,16 @@ void UnitHandler::setEnergyUnit(EnergyUnit unit){
 
 	updateHbar();
 	updateK_b();
+	updateM_e();
+}
+
+void UnitHandler::setChargeUnit(ChargeUnit unit){
+	double oldConversionFactor = getChargeConversionFactor();
+	chargeUnit = unit;
+	double newConversionFactor = getChargeConversionFactor();
+	chargeScale *= newConversionFactor/oldConversionFactor;
+
+	updateE();
 }
 
 void UnitHandler::setTemperatureScale(double scale){
@@ -73,6 +93,10 @@ void UnitHandler::setLengthScale(double scale){
 
 void UnitHandler::setEnergyScale(double scale){
 	energyScale = scale;
+}
+
+void UnitHandler::setChargeScale(double scale){
+	chargeScale = scale;
 }
 
 string UnitHandler::getTemperatureUnitString(){
@@ -149,6 +173,15 @@ string UnitHandler::getEnergyUnitString(){
 	};
 }
 
+string UnitHandler::getChargeUnitString(){
+	switch(chargeUnit){
+		case ChargeUnit::C:
+			return "C";
+		default:
+			return "Unknown unit";
+	}
+}
+
 string UnitHandler::getHBARUnitString(){
 	stringstream ss;
 	ss << getEnergyUnitString() << getTimeUnitString();
@@ -159,6 +192,24 @@ string UnitHandler::getHBARUnitString(){
 string UnitHandler::getK_BUnitString(){
 	stringstream ss;
 	ss << getEnergyUnitString() << "/" << getTemperatureUnitString();
+
+	return ss.str();
+}
+
+string UnitHandler::getEUnitString(){
+	return getChargeUnitString();
+}
+
+string UnitHandler::getCUnitString(){
+	stringstream ss;
+	ss << getLengthUnitString() << getLengthUnitString() << "/" << getTimeUnitString() << getTimeUnitString();
+
+	return ss.str();
+}
+
+string UnitHandler::getM_eUnitString(){
+	stringstream ss;
+	ss << getEnergyUnitString() << getTimeUnitString() << getTimeUnitString() << "/" << getLengthUnitString() << getLengthUnitString();
 
 	return ss.str();
 }
@@ -175,12 +226,30 @@ void UnitHandler::updateK_b(){
 	k_b /= getTemperatureConversionFactor();
 }
 
+void UnitHandler::updateE(){
+	e = E;
+	e *= getChargeConversionFactor();
+}
+
+void UnitHandler::updateC(){
+	c = C;
+	c *= getLengthConversionFactor()*getLengthConversionFactor();
+	c /= getTimeConversionFactor()*getTimeConversionFactor();
+}
+
+void UnitHandler::updateM_e(){
+	m_e = M_E;
+	m_e *= getEnergyConversionFactor();
+	m_e *= getTimeConversionFactor()*getTimeConversionFactor();
+	m_e /= getLengthConversionFactor()*getLengthConversionFactor();
+}
+
 double UnitHandler::getTemperatureConversionFactor(){
 	switch(temperatureUnit){
 		case TemperatureUnit::K:	//Reference scale
 			return 1.;
 		default:	//Should never happen, hard error generated for quick bug detection
-			cout << "Error in UnitHandler::getTemperatureConversionUnit(): Unknown unit - " << temperatureUnit;
+			cout << "Error in UnitHandler::getTemperatureConversionUnit(): Unknown unit - " << static_cast<int>(temperatureUnit);
 			exit(1);
 			return 0.;	//Never happens
 	}
@@ -203,7 +272,7 @@ double UnitHandler::getTimeConversionFactor(){
 		case TimeUnit::as:
 			return 1e18;
 		default:	//Should never happen, hard error generated for quick bug detection
-			cout << "Error in UnitHandler::getTimeConversionFactor(): Unknown unit - " << temperatureUnit;
+			cout << "Error in UnitHandler::getTimeConversionFactor(): Unknown unit - " << static_cast<int>(timeUnit);
 			exit(1);
 			return 0.;	//Never happens
 	}
@@ -228,7 +297,7 @@ double UnitHandler::getLengthConversionFactor(){
 		case LengthUnit::Ao:
 			return 1e10;
 		default:	//Should never happen, hard error generated for quick bug detection
-			cout << "Error in UnitHandler::getLengthConversionFactor(): Unknown unit - " << temperatureUnit;
+			cout << "Error in UnitHandler::getLengthConversionFactor(): Unknown unit - " << static_cast<int>(lengthUnit);
 			exit(1);
 			return 0.;	//Never happens
 	}
@@ -251,7 +320,18 @@ double UnitHandler::getEnergyConversionFactor(){
 		case EnergyUnit::J:
 			return J_per_eV;
 		default:	//Should never happen, hard error generated for quick bug detection
-			cout << "Error in UnitHandler::getEnergyConversionFactor(): Unknown unit - " << temperatureUnit;
+			cout << "Error in UnitHandler::getEnergyConversionFactor(): Unknown unit - " << static_cast<int>(energyUnit);
+			exit(1);
+			return 0.;	//Never happens
+	}
+}
+
+double UnitHandler::getChargeConversionFactor(){
+	switch(chargeUnit){
+		case ChargeUnit::C:
+			return 1.;
+		default:	//Should never happen, hard error generated for quick bug detection
+			cout << "Error in UnitHandler::getChargeConversionFactor(): Unknown unit - " << static_cast<int>(chargeUnit);
 			exit(1);
 			return 0.;	//Never happens
 	}
