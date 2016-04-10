@@ -1,8 +1,10 @@
 var searchData=
 [
-  ['add',['add',['../classTreeNode.html#a1bfa6c57fd992aea4224be8ad2a0495e',1,'TreeNode']]],
-  ['addha',['addHA',['../classAmplitudeSet.html#a9f3363bbf44b31e2b13a7bfdc89bdf63',1,'AmplitudeSet::addHA()'],['../classModel.html#a8cb91ef6d2bd91ac7d482c2143a9f78b',1,'Model::addHA()']]],
-  ['addhaandhc',['addHAAndHC',['../classAmplitudeSet.html#a4ea219d96ed6c7392b9274b652ff60d0',1,'AmplitudeSet::addHAAndHC()'],['../classModel.html#aeb9cab2f8954216547f61b1e6d5c66da',1,'Model::addHAAndHC()']]],
-  ['amplitudeset',['AmplitudeSet',['../classAmplitudeSet.html',1,'AmplitudeSet'],['../classModel.html#a62b93f23ebd3256dd21d5a73ecedd954',1,'Model::amplitudeSet()'],['../classAmplitudeSet_1_1iterator.html#ae70b5dd831c81374a337bb6c4439c498',1,'AmplitudeSet::iterator::AmplitudeSet()']]],
+  ['add',['add',['../classTBTK_1_1TreeNode.html#ac02efe4d7fad6df18e61f2a14b218556',1,'TBTK::TreeNode']]],
+  ['addha',['addHA',['../classTBTK_1_1AmplitudeSet.html#a893965e14e5840e03024efc5b4674777',1,'TBTK::AmplitudeSet::addHA()'],['../classTBTK_1_1Model.html#a415ef7116901e745bfebcc4a7838f28a',1,'TBTK::Model::addHA()']]],
+  ['addhaandhc',['addHAAndHC',['../classTBTK_1_1AmplitudeSet.html#a7eb8145b44894664aa0bfea99bab4b73',1,'TBTK::AmplitudeSet::addHAAndHC()'],['../classTBTK_1_1Model.html#aafc44e33ff6a9556915680bfa7d9cafd',1,'TBTK::Model::addHAAndHC()']]],
+  ['amplitudeset',['AmplitudeSet',['../classTBTK_1_1AmplitudeSet.html',1,'TBTK']]],
+  ['amplitudeset',['AmplitudeSet',['../classTBTK_1_1AmplitudeSet_1_1iterator.html#ae70b5dd831c81374a337bb6c4439c498',1,'TBTK::AmplitudeSet::iterator::AmplitudeSet()'],['../classTBTK_1_1Model.html#a66e39a57ba6c07493be097136e5076f4',1,'TBTK::Model::amplitudeSet()']]],
+  ['amplitudeset_2ecpp',['AmplitudeSet.cpp',['../AmplitudeSet_8cpp.html',1,'']]],
   ['amplitudeset_2eh',['AmplitudeSet.h',['../AmplitudeSet_8h.html',1,'']]]
 ];

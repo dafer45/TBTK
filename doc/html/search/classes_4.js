@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['halink',['HALink',['../classHALink.html',1,'']]],
-  ['halinkedlist',['HALinkedList',['../classHALinkedList.html',1,'']]],
-  ['hoppingamplitude',['HoppingAmplitude',['../classHoppingAmplitude.html',1,'']]]
+  ['halink',['HALink',['../classTBTK_1_1HALink.html',1,'TBTK']]],
+  ['halinkedlist',['HALinkedList',['../classTBTK_1_1HALinkedList.html',1,'TBTK']]],
+  ['hoppingamplitude',['HoppingAmplitude',['../classTBTK_1_1HoppingAmplitude.html',1,'TBTK']]]
 ];

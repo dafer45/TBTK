@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['amplitudeset',['amplitudeSet',['../classModel.html#a62b93f23ebd3256dd21d5a73ecedd954',1,'Model']]]
+  ['amplitudeset',['amplitudeSet',['../classTBTK_1_1Model.html#a66e39a57ba6c07493be097136e5076f4',1,'TBTK::Model']]]
 ];

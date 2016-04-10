@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['reset',['reset',['../classAmplitudeSet_1_1iterator.html#aae8c7d98c7266f37f16d1154c9197513',1,'AmplitudeSet::iterator::reset()'],['../classTreeNode_1_1iterator.html#ab2bb6c642f43d238889d9a26e877fe6e',1,'TreeNode::iterator::reset()']]],
-  ['run',['run',['../classDiagonalizationSolver.html#ab3f84d060cf751d789e0095540eee178',1,'DiagonalizationSolver']]]
+  ['print',['print',['../classTBTK_1_1AmplitudeSet.html#ae7cb09c868733b39cc583566d3b2f1e3',1,'TBTK::AmplitudeSet::print()'],['../classTBTK_1_1HoppingAmplitude.html#a4e8ad0bcb17806a3e961e47c62793834',1,'TBTK::HoppingAmplitude::print()'],['../classTBTK_1_1Index.html#a8023e6954a665f9e41b485fbde7b7360',1,'TBTK::Index::print()'],['../classTBTK_1_1TreeNode.html#a50a1d92699f371fe8367a2bac0976943',1,'TBTK::TreeNode::print()']]]
 ];

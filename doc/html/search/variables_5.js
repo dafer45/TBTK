@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['indices',['indices',['../classIndex.html#a283c272eea6621b0271643dc4940473b',1,'Index']]]
+  ['indices',['indices',['../classTBTK_1_1Index.html#ab439268383b0d76383f4dde64586f6d8',1,'TBTK::Index']]]
 ];

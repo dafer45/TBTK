@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['index',['Index',['../classIndex.html',1,'']]],
-  ['iterator',['iterator',['../classTreeNode_1_1iterator.html',1,'TreeNode']]],
-  ['iterator',['iterator',['../classAmplitudeSet_1_1iterator.html',1,'AmplitudeSet']]]
+  ['index',['Index',['../classTBTK_1_1Index.html',1,'TBTK']]],
+  ['iterator',['iterator',['../classTBTK_1_1TreeNode_1_1iterator.html',1,'TBTK::TreeNode']]],
+  ['iterator',['iterator',['../classTBTK_1_1AmplitudeSet_1_1iterator.html',1,'TBTK::AmplitudeSet']]]
 ];

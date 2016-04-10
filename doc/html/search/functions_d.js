@@ -1,5 +1,29 @@
 var searchData=
 [
-  ['tabulate',['tabulate',['../classAmplitudeSet.html#a1765ea0988fc021bb5a3d5fb06541ae5',1,'AmplitudeSet']]],
-  ['treenode',['TreeNode',['../classTreeNode.html#a984a98d5ccf7ef1f5a18094c6821f35d',1,'TreeNode']]]
+  ['saveev',['saveEV',['../classTBTK_1_1DPropertyExtractor.html#abea42c175158a06cef75749abcf30727',1,'TBTK::DPropertyExtractor']]],
+  ['searchnextha',['searchNextHA',['../classTBTK_1_1AmplitudeSet_1_1iterator.html#ab4b8c8abe927bd4461828e39ded79da1',1,'TBTK::AmplitudeSet::iterator::searchNextHA()'],['../classTBTK_1_1TreeNode_1_1iterator.html#a5df1c645f5cb8503e168f2bd4f68d148',1,'TBTK::TreeNode::iterator::searchNextHA()']]],
+  ['setadiabatic',['setAdiabatic',['../classTBTK_1_1TimeEvolver.html#a5418f905a681197d97017a67ebcc7046',1,'TBTK::TimeEvolver']]],
+  ['setcallback',['setCallback',['../classTBTK_1_1TimeEvolver.html#a231cf5b59e942ff5fa0474f075da1476',1,'TBTK::TimeEvolver']]],
+  ['setchargescale',['setChargeScale',['../classTBTK_1_1UnitHandler.html#a525c633c08d5296b5cbf4d2473fa680f',1,'TBTK::UnitHandler']]],
+  ['setchargeunit',['setChargeUnit',['../classTBTK_1_1UnitHandler.html#a466cc8d2afb80f7c78d4beddf222f52e',1,'TBTK::UnitHandler']]],
+  ['setenergyscale',['setEnergyScale',['../classTBTK_1_1UnitHandler.html#aa8fb4ff6f0ccca45ba9c6f85e875634c',1,'TBTK::UnitHandler']]],
+  ['setenergyunit',['setEnergyUnit',['../classTBTK_1_1UnitHandler.html#a11600b2297ff4f15fdbe3f1f740f9ef7',1,'TBTK::UnitHandler']]],
+  ['setfermilevel',['setFermiLevel',['../classTBTK_1_1Model.html#a1e07fcda34e73548c67818ee0267a0db',1,'TBTK::Model']]],
+  ['setfilename',['setFileName',['../classTBTK_1_1FileWriter.html#aba3636497d0f339c5a57dd1c862253f3',1,'TBTK::FileWriter']]],
+  ['setlengthscale',['setLengthScale',['../classTBTK_1_1UnitHandler.html#a50baf329f686ac8729f7d3c95d319b96',1,'TBTK::UnitHandler']]],
+  ['setlengthunit',['setLengthUnit',['../classTBTK_1_1UnitHandler.html#a7b9826eb0146db08bd35afb6cf4f93cb',1,'TBTK::UnitHandler']]],
+  ['setmaxiterations',['setMaxIterations',['../classTBTK_1_1DiagonalizationSolver.html#ae23a98f17a38e88e0a1d4c422c0f4d62',1,'TBTK::DiagonalizationSolver']]],
+  ['setmaxsciterations',['setMaxSCIterations',['../classTBTK_1_1TimeEvolver.html#aa7a2ad2b621b685819feef999ac88939',1,'TBTK::TimeEvolver']]],
+  ['setmodel',['setModel',['../classTBTK_1_1ChebyshevSolver.html#aa2a9b168b987b1cb4c465984bd363fcf',1,'TBTK::ChebyshevSolver::setModel()'],['../classTBTK_1_1DiagonalizationSolver.html#a4c35dd2672b5965f17967d64bb0ffcc1',1,'TBTK::DiagonalizationSolver::setModel()']]],
+  ['setnumtimesteps',['setNumTimeSteps',['../classTBTK_1_1TimeEvolver.html#ac2543df4d5edae46ff90eaa095a1c9be',1,'TBTK::TimeEvolver']]],
+  ['setorthogonalitycheckinterval',['setOrthogonalityCheckInterval',['../classTBTK_1_1TimeEvolver.html#a310cab96fb34992cc0458e6d5fd66162',1,'TBTK::TimeEvolver']]],
+  ['setscalefactor',['setScaleFactor',['../classTBTK_1_1ChebyshevSolver.html#a0f52ad9031427046d26eecc9e256d865',1,'TBTK::ChebyshevSolver']]],
+  ['setsccallback',['setSCCallback',['../classTBTK_1_1DiagonalizationSolver.html#a6e68ad016da94c594926ea5c8d5da422',1,'TBTK::DiagonalizationSolver']]],
+  ['setstatistics',['setStatistics',['../classTBTK_1_1Model.html#ab51e98bb29701815451b0722095f23e9',1,'TBTK::Model']]],
+  ['settemperature',['setTemperature',['../classTBTK_1_1Model.html#afed11742b99de95b3a8b01ac2aad5b06',1,'TBTK::Model']]],
+  ['settemperaturescale',['setTemperatureScale',['../classTBTK_1_1UnitHandler.html#a05ed026a4241763fe565cdfc5ce9a879',1,'TBTK::UnitHandler']]],
+  ['settemperatureunit',['setTemperatureUnit',['../classTBTK_1_1UnitHandler.html#a314864a0d2b3afe52ea70049fa370a4d',1,'TBTK::UnitHandler']]],
+  ['settimescale',['setTimeScale',['../classTBTK_1_1UnitHandler.html#affc1354d819abd22a0ea6e54a0205ced',1,'TBTK::UnitHandler']]],
+  ['settimestep',['setTimeStep',['../classTBTK_1_1TimeEvolver.html#aa9389369493f2d86a51fe8ac08dc0864',1,'TBTK::TimeEvolver']]],
+  ['settimeunit',['setTimeUnit',['../classTBTK_1_1UnitHandler.html#a7b4e0b21f2cbec8a0229c4f5153b72eb',1,'TBTK::UnitHandler']]]
 ];

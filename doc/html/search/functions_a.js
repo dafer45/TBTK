@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['print',['print',['../classAmplitudeSet.html#a89a088812ecce2f61b027a112c2db7ca',1,'AmplitudeSet::print()'],['../classHoppingAmplitude.html#a678d38a75cdaafacca26ef6c6fa4686f',1,'HoppingAmplitude::print()'],['../classIndex.html#aac39d5b368829303fa923d58b069bb89',1,'Index::print()'],['../classTreeNode.html#a500af6fa087c64015ddce813f0480eea',1,'TreeNode::print()']]]
+  ['model',['Model',['../classTBTK_1_1Model.html#aae83d5a252250e85b8973a5502c8aed0',1,'TBTK::Model']]]
 ];

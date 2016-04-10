@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['basisindex',['basisIndex',['../classTreeNode.html#a144510d089c203f572e06c7e6812d6d3',1,'TreeNode']]],
-  ['basissize',['basisSize',['../classTreeNode.html#af9ef5955abc6930de12808612715a4e8',1,'TreeNode']]]
+  ['basisindex',['basisIndex',['../classTBTK_1_1TreeNode.html#a9b6e1e537b754127c93c2c2fc5a4ebbd',1,'TBTK::TreeNode']]],
+  ['basissize',['basisSize',['../classTBTK_1_1TreeNode.html#a6e8de87c0e836b17f24291d53aac842b',1,'TBTK::TreeNode']]]
 ];

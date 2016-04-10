@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['amplitudeset',['AmplitudeSet',['../classAmplitudeSet.html',1,'']]]
+  ['amplitudeset',['AmplitudeSet',['../classTBTK_1_1AmplitudeSet.html',1,'TBTK']]]
 ];

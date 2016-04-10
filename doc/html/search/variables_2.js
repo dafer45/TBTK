@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['children',['children',['../classTreeNode.html#a69beb4f87daacdd0d955c232a2e34531',1,'TreeNode']]],
-  ['currenthoppingamplitude',['currentHoppingAmplitude',['../classTreeNode_1_1iterator.html#aea6c203a929327f6bae12692a0c0f4f2',1,'TreeNode::iterator']]],
-  ['currentindex',['currentIndex',['../classTreeNode_1_1iterator.html#a0648096ae5daa0167d0ed045d6567a28',1,'TreeNode::iterator']]]
+  ['children',['children',['../classTBTK_1_1TreeNode.html#a4c9917ba5f60e32c8bc427ee3e270a0a',1,'TBTK::TreeNode']]],
+  ['currenthoppingamplitude',['currentHoppingAmplitude',['../classTBTK_1_1TreeNode_1_1iterator.html#afa567eaf8aebcb99f52281bf4b9dcdd1',1,'TBTK::TreeNode::iterator']]],
+  ['currentindex',['currentIndex',['../classTBTK_1_1TreeNode_1_1iterator.html#aa3b7cde105b7fac9a34f13793a596dfc',1,'TBTK::TreeNode::iterator']]]
 ];

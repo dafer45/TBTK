@@ -1,9 +1,10 @@
 var searchData=
 [
-  ['index',['Index',['../classIndex.html',1,'Index'],['../classIndex.html#ab197098d4a8b43871db27572b2a411d0',1,'Index::Index(std::initializer_list&lt; int &gt; i)'],['../classIndex.html#ada4d061dc13487cc2acc00822296f54b',1,'Index::Index(std::vector&lt; int &gt; i)'],['../classIndex.html#a446a25e643985529e92e5082eeb260a6',1,'Index::Index(const Index &amp;index)']]],
+  ['index',['Index',['../classTBTK_1_1Index.html',1,'TBTK']]],
+  ['index',['Index',['../classTBTK_1_1Index.html#a2f7432465b75efc9027c4eb533b9a455',1,'TBTK::Index::Index(std::initializer_list&lt; int &gt; i)'],['../classTBTK_1_1Index.html#a237372e142499e53ab39e311601b2964',1,'TBTK::Index::Index(std::vector&lt; int &gt; i)'],['../classTBTK_1_1Index.html#ac3d2dde0bb9c0e88ded49f6094d387ca',1,'TBTK::Index::Index(const Index &amp;index)']]],
   ['index_2eh',['Index.h',['../Index_8h.html',1,'']]],
-  ['indices',['indices',['../classIndex.html#a283c272eea6621b0271643dc4940473b',1,'Index']]],
-  ['iterator',['iterator',['../classAmplitudeSet_1_1iterator.html',1,'AmplitudeSet']]],
-  ['iterator',['iterator',['../classTreeNode_1_1iterator.html',1,'TreeNode']]],
-  ['iterator',['iterator',['../classTreeNode_1_1iterator.html#a8f3fdf96c85c5b89b5930d830445be1d',1,'TreeNode::iterator']]]
+  ['indices',['indices',['../classTBTK_1_1Index.html#ab439268383b0d76383f4dde64586f6d8',1,'TBTK::Index']]],
+  ['iterator',['iterator',['../classTBTK_1_1AmplitudeSet_1_1iterator.html',1,'TBTK::AmplitudeSet']]],
+  ['iterator',['iterator',['../classTBTK_1_1TreeNode_1_1iterator.html#a36df66d62e118b7cbda8c15d99105952',1,'TBTK::TreeNode::iterator']]],
+  ['iterator',['iterator',['../classTBTK_1_1TreeNode_1_1iterator.html',1,'TBTK::TreeNode']]]
 ];

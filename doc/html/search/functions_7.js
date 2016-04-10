@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['index',['Index',['../classIndex.html#ab197098d4a8b43871db27572b2a411d0',1,'Index::Index(std::initializer_list&lt; int &gt; i)'],['../classIndex.html#ada4d061dc13487cc2acc00822296f54b',1,'Index::Index(std::vector&lt; int &gt; i)'],['../classIndex.html#a446a25e643985529e92e5082eeb260a6',1,'Index::Index(const Index &amp;index)']]],
-  ['iterator',['iterator',['../classTreeNode_1_1iterator.html#a8f3fdf96c85c5b89b5930d830445be1d',1,'TreeNode::iterator']]]
+  ['hoppingamplitude',['HoppingAmplitude',['../classTBTK_1_1HoppingAmplitude.html#a62919c284fc24d025e473c9afb4da0c8',1,'TBTK::HoppingAmplitude::HoppingAmplitude(Index fromIndex, Index toIndex, std::complex&lt; double &gt; amplitude)'],['../classTBTK_1_1HoppingAmplitude.html#a3e0e21187b890246af700fc973a929b0',1,'TBTK::HoppingAmplitude::HoppingAmplitude(Index fromIndex, Index toIndex, std::complex&lt; double &gt;(*amplitudeCallback)(Index, Index))'],['../classTBTK_1_1HoppingAmplitude.html#ac93e6f3127a66e16628e869a849daa50',1,'TBTK::HoppingAmplitude::HoppingAmplitude(std::complex&lt; double &gt; amplitude, Index toIndex, Index fromIndex)'],['../classTBTK_1_1HoppingAmplitude.html#a2290a5413c419ce7b1a75fc940ef4a99',1,'TBTK::HoppingAmplitude::HoppingAmplitude(std::complex&lt; double &gt;(*amplitudeCallback)(Index, Index), Index toIndex, Index fromIndex)']]]
 ];

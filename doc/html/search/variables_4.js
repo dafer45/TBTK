@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['hoppingamplitudes',['hoppingAmplitudes',['../classTreeNode.html#a74b42b74c8e481b4964fb63791e4d06c',1,'TreeNode']]]
+  ['hoppingamplitudes',['hoppingAmplitudes',['../classTBTK_1_1TreeNode.html#ae07faf1ad24e4f01bc278e3f6b1106ab',1,'TBTK::TreeNode']]]
 ];
