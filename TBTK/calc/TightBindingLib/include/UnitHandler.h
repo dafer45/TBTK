@@ -17,7 +17,11 @@
 
 namespace TBTK{
 
-/** The UnitHandler handles conversion between the 'natural units' used in the
+/** !!! Note: Numerica values are picked from Wikipedia, and have not yet been
+ *  checked agains an authoritative source. Some values that should be the same
+ *  are even known to differ in some of the least significant digits. !!!
+ *
+ *  The UnitHandler handles conversion between the 'natural units' used in the
  *  calculations and standard 'base units'. The base quantities are
  *  Temperature, time, length, energy, and charge, and the default units are
  *  Kelvin (K), second (s), meter (m), electron Volt (eV), and Coulomb (C).
@@ -100,6 +104,21 @@ public:
 	 *	ag - attogram
 	 *	u - atomic mass */
 	enum class MassUnit{kg, g, mg, ug, ng, pg, fg, ag, u};
+
+	/** Magnetic unit (derived unit):
+	 *	MT - megatesla
+	 *	kT - kilotesla
+	 *	T - Tesla
+	 *	mT - millitesla
+	 *	uT - microtesla
+	 *	nT - nanotesla
+	 *	GG - gigagauss
+	 *	MG - megagauss
+	 *	kG - kilogauss
+	 *	G - Gauss
+	 *	mG - milligauss
+	 *	uG - microgauss */
+	enum class MagneticFieldUnit{MT, kT, T, mT, uT, nT, GG, MG, kG, G, mG, uG};
 
 	/** Get the Planck constant in the currently set units. */
 	static double getHbar();
@@ -196,6 +215,18 @@ public:
 
 	/** Convert mass from natural units to derived units. */
 	static double convertMassNtD(double mass, MassUnit unit);
+
+	/** Convert magnetic field from derived units to base units. */
+	static double convertMagneticFieldDtB(double field, MagneticFieldUnit unit);
+
+	/** Convert magnetic field from base units to derived units. */
+	static double convertMagneticFieldBtD(double field, MagneticFieldUnit unit);
+
+	/** Convert magnetic field from derived units to natural units. */
+	static double convertMagneticFieldDtN(double field, MagneticFieldUnit unit);
+
+	/** Convert magnetic field from natural units to derived units. */
+	static double convertMagneticFieldNtD(double field, MagneticFieldUnit unit);
 
 	/** Get temperature unit string
 	 *
@@ -333,6 +364,12 @@ private:
 	/** Conversion factor from u to eVs^2/m^2. */
 	static constexpr double baseMass_per_u = 1./u_per_baseMass;
 
+	/** Conversion factor from eVs/Cm^2 to T. */
+	static constexpr double T_per_baseMagneticField = 1.602176565e-19;
+
+	/** Conversion factor from T to eVs/Cm^2. */
+	static constexpr double baseMagneticField_per_T = 1./T_per_baseMagneticField;
+
 	/** Currently set temperature unit. */
 	static TemperatureUnit temperatureUnit;
 
@@ -410,6 +447,11 @@ private:
 	/** Returns the number of unit masses in the input unit per unit mass
 	 *  in the default unit (eVs^2/m^2). */
 	static double getMassConversionFactor(MassUnit unit);
+
+	/** Returns the amount of unit magnetic field strength in the input
+	 *  unit per unit magnetic field strength in the default unit
+	 *  (eVs/Cm^2). */
+	static double getMagneticFieldConversionFactor(MagneticFieldUnit unit);
 };
 
 inline double UnitHandler::getHbar(){

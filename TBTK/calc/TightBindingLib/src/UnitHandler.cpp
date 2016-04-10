@@ -143,6 +143,42 @@ double UnitHandler::convertMassNtD(double mass, MassUnit unit){
 	return massInDefaultBaseUnits*getMassConversionFactor(unit);
 }
 
+double UnitHandler::convertMagneticFieldDtB(double field, MagneticFieldUnit unit){
+	double magneticFieldInDefaultBaseUnits = field/getMagneticFieldConversionFactor(unit);
+	double cfE = getEnergyConversionFactor();
+	double cfT = getTimeConversionFactor();
+	double cfC = getChargeConversionFactor();
+	double cfL = getLengthConversionFactor();
+	return magneticFieldInDefaultBaseUnits*cfE*cfT/(cfC*cfL*cfL);
+}
+
+double UnitHandler::convertMagneticFieldBtD(double field, MagneticFieldUnit unit){
+	double cfE = getEnergyConversionFactor();
+	double cfT = getTimeConversionFactor();
+	double cfC = getChargeConversionFactor();
+	double cfL = getLengthConversionFactor();
+	double magneticFieldInDefaultBaseUnits = field*cfC*cfL*cfL/(cfE*cfT);
+	return magneticFieldInDefaultBaseUnits*getMagneticFieldConversionFactor(unit);
+}
+
+double UnitHandler::convertMagneticFieldDtN(double field, MagneticFieldUnit unit){
+	double magneticFieldInDefaultBaseUnits = field/getMagneticFieldConversionFactor(unit);
+	double cfE = getEnergyConversionFactor()/energyScale;
+	double cfT = getTimeConversionFactor()/timeScale;
+	double cfC = getChargeConversionFactor()/chargeScale;
+	double cfL = getLengthConversionFactor()/lengthScale;
+	return magneticFieldInDefaultBaseUnits*cfE*cfT/(cfC*cfL*cfL);
+}
+
+double UnitHandler::convertMagneticFieldNtD(double field, MagneticFieldUnit unit){
+	double cfE = getEnergyConversionFactor()/energyScale;
+	double cfT = getTimeConversionFactor()/timeScale;
+	double cfC = getChargeConversionFactor()/chargeScale;
+	double cfL = getLengthConversionFactor()/lengthScale;
+	double magneticFieldInDefaultBaseUnits = field*cfC*cfL*cfL/(cfE*cfT);
+	return magneticFieldInDefaultBaseUnits*getMagneticFieldConversionFactor(unit);
+}
+
 string UnitHandler::getTemperatureUnitString(){
 	switch(temperatureUnit){
 		case TemperatureUnit::K:
@@ -439,6 +475,39 @@ double UnitHandler::getMassConversionFactor(MassUnit unit){
 			return u_per_baseMass;
 		default:	//Should never happen, hard error generated for quick bug detection
 			cout << "Error in UnitHandler::getMassConversionFactor(): Unknown unit - " << static_cast<int>(unit);
+			exit(1);
+			return 0.;	//Never happens
+	}
+}
+
+double UnitHandler::getMagneticFieldConversionFactor(MagneticFieldUnit unit){
+	switch(unit){
+		case MagneticFieldUnit::MT:
+			return T_per_baseMagneticField*1e-6;
+		case MagneticFieldUnit::kT:
+			return T_per_baseMagneticField*1e-3;
+		case MagneticFieldUnit::T:
+			return T_per_baseMagneticField;
+		case MagneticFieldUnit::mT:
+			return T_per_baseMagneticField*1e3;
+		case MagneticFieldUnit::uT:
+			return T_per_baseMagneticField*1e6;
+		case MagneticFieldUnit::nT:
+			return T_per_baseMagneticField*1e9;
+		case MagneticFieldUnit::GG:
+			return T_per_baseMagneticField*1e-5;
+		case MagneticFieldUnit::MG:
+			return T_per_baseMagneticField*1e-2;
+		case MagneticFieldUnit::kG:
+			return T_per_baseMagneticField*10.;
+		case MagneticFieldUnit::G:
+			return T_per_baseMagneticField*1e4;	//10^4G = 1T
+		case MagneticFieldUnit::mG:
+			return T_per_baseMagneticField*1e7;
+		case MagneticFieldUnit::uG:
+			return T_per_baseMagneticField*1e10;
+		default:	//Should never happen, hard error generated for quick bug detection
+			cout << "Error in UnitHandler::getMagneticFieldConversionFactor(): Unknown unit - " << static_cast<int>(unit);
 			exit(1);
 			return 0.;	//Never happens
 	}
