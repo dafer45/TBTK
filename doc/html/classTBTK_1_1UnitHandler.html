@@ -277,7 +277,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:a10f83b6af0ef2c2a2b38689dab3152ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>, and subsequent calls will take input paramaters and return output parameters in corresponding units.</p>
+<div class="textblock"><p>!!! Note: Numerica values are picked from Wikipedia, and have not yet been checked agains an authoritative source. Some values that should be the same are even known to differ in some of the least significant digits. !!!</p>
+<p>The <a class="el" href="classTBTK_1_1UnitHandler.html">UnitHandler</a> handles conversion between the 'natural units' used in the calculations and standard 'base units'. The base quantities are Temperature, time, length, energy, and charge, and the default units are Kelvin (K), second (s), meter (m), electron Volt (eV), and Coulomb (C).</p>
+<p>The current base units can be changed with setXXXUnit(), where <img class="formulaInl" alt="$ XXX \in \{Temperature, Time, Length, Energy, Charge\}$" src="form_16.png"/>, and subsequent calls will take input paramaters and return output parameters in corresponding units.</p>
 <p>The functions setXXXScale() can be used to specify the scale of the 'ruler' with which parameters in the calculation are meassured. This sets the scale which relates the natrual units to the base units. For example:</p>
 <p>UnitHandler::setEnergyUnits(UnitHandler::EnergyUnit:meV); <a class="el" href="classTBTK_1_1UnitHandler.html#aa8fb4ff6f0ccca45ba9c6f85e875634c">UnitHandler::setEnergyScale</a>(1.47);</p>
 <p>Here the energy base unit is first set to meV, and the scale subsequently set to 1.47meV. The natural unit 1.0, now corresponds to the base unit 1.47meV. An energy parameter with value 1.0 will therefore be interpreted as having the physical value 1.47meV whenever a multiplication with a physical constant is required to generate a unitless number.</p>
@@ -1715,7 +1717,7 @@ Static Public Member Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Apr 11 2016 00:04:34 for TBTK by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Apr 11 2016 00:09:18 for TBTK by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
