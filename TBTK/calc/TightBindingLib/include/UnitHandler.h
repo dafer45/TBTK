@@ -17,6 +17,29 @@
 
 namespace TBTK{
 
+/** The UnitHandler handles conversion between the 'natural units' used in the
+ *  calculations and standard units. The base quantities are Temperature, time,
+ *  length, energy, and charge, and the default units are Kelvin (K), second
+ *  (s), meter (m), electron Volt (eV), and Coulomb (C).
+ *
+ *  The current units can be changed with setXXXUnit(), where \f XXX \in
+ *  \{Temperature, Time, Length, Energy, Charge\}\f, and subsequent calls will
+ *  take input paramaters and return output parameters in corresponding units.
+ *
+ *  The functions setXXXScale() can be used to specify the scale of the 'ruler'
+ *  with which parameters in the calculation are meassured. For example:
+ *
+ *  UnitHandler::setEnergyUnits(UnitHandler::EnergyUnit:meV);
+ *  UnitHandler::setEnergyScale(1.47);
+ *
+ *  Here the energy unit is first set to meV, and the scale subsequently set to
+ *  1.47meV. An energy parameter with value 1.0 will therefore be interpreted as
+ *  having the physical value 1.47meV whenever a multiplication with a physical
+ *  constant is required to generate a unitless number.
+ *
+ *  Note that the order of the above calls are important. Setting the energy
+ *  scale to 1.47 while the default energy unit eV is used and then changing to
+ *  meV as units will result in the scale becoming 1.47eV = 1470meV. */
 class UnitHandler{
 public:
 	/** Temperature units:
@@ -72,6 +95,15 @@ public:
 
 	/** Get the electron mass in the currently set units. */
 	static double getM_e();
+
+	/** Get the proton mass in the currently set units. */
+	static double getM_p();
+
+	/** Get the Bohr magneton in the currently set units. */
+	static double getMu_b();
+
+	/** Get the nuclear magneton in the currently set units. */
+	static double getMu_n();
 
 	/** Set temperature unit. */
 	static void setTemperatureUnit(TemperatureUnit unit);
@@ -178,6 +210,21 @@ public:
 	 *
 	 *  @return string representation of the unit for the electron mass. */
 	static std::string getM_eUnitString();
+
+	/** Get proton mass unit string.
+	 *
+	 *  @return string representation of the unit for the proton mass. */
+	static std::string getM_pUnitString();
+
+	/** Get Bohr magneton unit string.
+	 *
+	 *  @return string representation of the unit for the Bohr magneton. */
+	static std::string getMu_bUnitString();
+
+	/** Get nuclear magneton unit string.
+	 *
+	 *  @return string representation of the unit for the nuclear magneton. */
+	static std::string getMu_nUnitString();
 private:
 	/** Planck constant in default units (eVs). */
 	static constexpr double HBAR	= 6.582119514e-16;
@@ -194,6 +241,15 @@ private:
 	/** Electron mass in default units (eVs^2/m^2). */
 	static constexpr double M_E	= 5.109989461e5/(C*C);
 
+	/** Proton mass in default units (eVs^2/m^2). */
+	static constexpr double M_P	= 9.38272046e8/(C*C);
+
+	/** Bohr magneton in default units (Cm^2/s^2). */
+	static constexpr double MU_B	= E*HBAR/(2.*M_E);
+
+	/** Nuclear magneton in default units (Cm^2/s^2). */
+	static constexpr double MU_N	= E*HBAR/(2*M_P);
+
 	/** Planck constant in the currently set units. */
 	static double hbar;
 
@@ -208,6 +264,15 @@ private:
 
 	/** Electron mass in the currently set units. */
 	static double m_e;
+
+	/** Electron mass in the currently set units. */
+	static double m_p;
+
+	/** Bohr magneton in the currently set units. */
+	static double mu_b;
+
+	/** Nuclear magneton in the currently set units. */
+	static double mu_n;
 
 	/** Conversion factor from eV to J. */
 	static constexpr double J_per_eV	= 1.602176565e-19;
@@ -260,6 +325,15 @@ private:
 	/** Update electron mass. To be called at change of units. */
 	static void updateM_e();
 
+	/** Update proton mass. To be called at change of units. */
+	static void updateM_p();
+
+	/** Update Bohr magneton. To be called at change of units. */
+	static void updateMu_b();
+
+	/** Update nuclear magneton. To be called at change of units. */
+	static void updateMu_n();
+
 	/** Returns the number of degrees in the currently set unit per degree
 	 *  in default unit (K). */
 	static double getTemperatureConversionFactor();
@@ -299,6 +373,18 @@ inline double UnitHandler::getC(){
 
 inline double UnitHandler::getM_e(){
 	return m_e;
+}
+
+inline double UnitHandler::getM_p(){
+	return m_p;
+}
+
+inline double UnitHandler::getMu_b(){
+	return mu_b;
+}
+
+inline double UnitHandler::getMu_n(){
+	return mu_n;
 }
 
 inline double UnitHandler::convertTemperature(double temperature){

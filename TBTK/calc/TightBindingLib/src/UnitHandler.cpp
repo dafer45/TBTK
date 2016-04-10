@@ -16,6 +16,9 @@ double UnitHandler::k_b		= K_B;
 double UnitHandler::e		= E;
 double UnitHandler::c		= C;
 double UnitHandler::m_e		= M_E;
+double UnitHandler::m_p		= M_P;
+double UnitHandler::mu_b	= MU_B;
+double UnitHandler::mu_n	= MU_N;
 
 UnitHandler::TemperatureUnit 	UnitHandler::temperatureUnit	= UnitHandler::TemperatureUnit::K;
 UnitHandler::TimeUnit 		UnitHandler::timeUnit		= UnitHandler::TimeUnit::s;
@@ -47,6 +50,9 @@ void UnitHandler::setTimeUnit(TimeUnit unit){
 	updateHbar();
 	updateC();
 	updateM_e();
+	updateM_p();
+	updateMu_b();
+	updateMu_n();
 }
 
 void UnitHandler::setLengthUnit(LengthUnit unit){
@@ -57,6 +63,9 @@ void UnitHandler::setLengthUnit(LengthUnit unit){
 
 	updateC();
 	updateM_e();
+	updateM_p();
+	updateMu_b();
+	updateMu_n();
 }
 
 void UnitHandler::setEnergyUnit(EnergyUnit unit){
@@ -68,6 +77,7 @@ void UnitHandler::setEnergyUnit(EnergyUnit unit){
 	updateHbar();
 	updateK_b();
 	updateM_e();
+	updateM_p();
 }
 
 void UnitHandler::setChargeUnit(ChargeUnit unit){
@@ -77,6 +87,8 @@ void UnitHandler::setChargeUnit(ChargeUnit unit){
 	chargeScale *= newConversionFactor/oldConversionFactor;
 
 	updateE();
+	updateMu_b();
+	updateMu_n();
 }
 
 void UnitHandler::setTemperatureScale(double scale){
@@ -214,6 +226,27 @@ string UnitHandler::getM_eUnitString(){
 	return ss.str();
 }
 
+string UnitHandler::getM_pUnitString(){
+	stringstream ss;
+	ss << getEnergyUnitString() << getTimeUnitString() << getTimeUnitString() << "/" << getLengthUnitString() << getLengthUnitString();
+
+	return ss.str();
+}
+
+string UnitHandler::getMu_bUnitString(){
+	stringstream ss;
+	ss << getChargeUnitString() << getLengthUnitString() << getLengthUnitString() << "/" << getTimeUnitString() << getTimeUnitString();
+
+	return ss.str();
+}
+
+string UnitHandler::getMu_nUnitString(){
+	stringstream ss;
+	ss << getChargeUnitString() << getLengthUnitString() << getLengthUnitString() << "/" << getTimeUnitString() << getTimeUnitString();
+
+	return ss.str();
+}
+
 void UnitHandler::updateHbar(){
 	hbar = HBAR;
 	hbar *= getEnergyConversionFactor();
@@ -242,6 +275,27 @@ void UnitHandler::updateM_e(){
 	m_e *= getEnergyConversionFactor();
 	m_e *= getTimeConversionFactor()*getTimeConversionFactor();
 	m_e /= getLengthConversionFactor()*getLengthConversionFactor();
+}
+
+void UnitHandler::updateM_p(){
+	m_p = M_P;
+	m_p *= getEnergyConversionFactor();
+	m_p *= getTimeConversionFactor()*getTimeConversionFactor();
+	m_p /= getLengthConversionFactor()*getLengthConversionFactor();
+}
+
+void UnitHandler::updateMu_b(){
+	mu_b = MU_B;
+	mu_b *= getChargeConversionFactor();
+	mu_b *= getLengthConversionFactor()*getLengthConversionFactor();
+	mu_b /= getTimeConversionFactor()*getTimeConversionFactor();
+}
+
+void UnitHandler::updateMu_n(){
+	mu_n = MU_N;
+	mu_n *= getChargeConversionFactor();
+	mu_n *= getLengthConversionFactor()*getLengthConversionFactor();
+	mu_n /= getTimeConversionFactor()*getTimeConversionFactor();
 }
 
 double UnitHandler::getTemperatureConversionFactor(){
