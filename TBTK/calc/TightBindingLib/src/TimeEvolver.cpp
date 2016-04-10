@@ -25,6 +25,8 @@ TimeEvolver::TimeEvolver(Model *model){
 	dt = 0.01;
 	isAdiabatic = false;
 	currentTimeStep = -1;
+	orthogonalityError = 0.;
+	orthogonalityCheckInterval = 0;
 
 	dSolvers.push_back(&dSolver);
 	timeEvolvers.push_back(this);
@@ -93,7 +95,7 @@ void TimeEvolver::run(){
 
 		#pragma omp parallel for
 		for(int n = 0; n < basisSize*basisSize; n++){
-			eigenVectors[n] -= i*workspace[n]*dt;
+			eigenVectors[n] -= i*workspace[n]*UnitHandler::convertTime(dt)/UnitHandler::getHbar();
 		}
 
 		#pragma omp parallel for
@@ -106,6 +108,9 @@ void TimeEvolver::run(){
 			for(int c = 0; c < basisSize; c++)
 				eigenVectors[basisSize*n + c] /= normalizationFactor;
 		}
+
+		if(orthogonalityCheckInterval != 0 && t%orthogonalityCheckInterval == 0)
+			calculateOrthogonalityError();
 	}
 }
 
@@ -124,6 +129,30 @@ bool TimeEvolver::scCallback(DiagonalizationSolver *dSolver){
 	exit(1);
 
 	return 0; //Never reached
+}
+
+void TimeEvolver::calculateOrthogonalityError(){
+	int basisSize = model->getBasisSize();
+	complex<double> *eigenVectors = dSolver.getEigenVectorsRW();
+
+	double maxOverlap = 0;
+	for(int i = 0; i < basisSize; i++){
+		for(int j = 0; j < basisSize; j++){
+			if(i == j)
+				continue;
+
+			complex<double> overlap;
+			for(int k = 0; k < basisSize; k++){
+				overlap += conj(eigenVectors[basisSize*i + k])*eigenVectors[basisSize*j + k];
+			}
+
+			if(abs(overlap) > maxOverlap)
+				maxOverlap = abs(overlap);
+		}
+	}
+
+	if(maxOverlap > orthogonalityError)
+		orthogonalityError = maxOverlap;
 }
 
 };

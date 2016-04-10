@@ -11,6 +11,7 @@
 
 #include "Model.h"
 #include "DiagonalizationSolver.h"
+#include "UnitHandler.h"
 #include <vector>
 
 namespace TBTK{
@@ -51,6 +52,14 @@ public:
 	/** Get current time step. Returns -1 while in the self-consistent
 	 *  loop. */
 	int getCurrentTimeStep();
+
+	/** Set number of time steps between orthogonality checks. Zero
+	 *  corresponds to no checks. The orthogonality check is
+	 *  computationally heavy O(n^3). */
+	void setOrthogonalityCheckInterval(int orthogonalityCheckInterval);
+
+	/** Get orthogonalityError. */
+	double getOrthogonalityError();
 private:
 	/** Model to work on. */
 	Model *model;
@@ -93,6 +102,17 @@ private:
 	 *  static callback-function is therefore used in order to redirect the
 	 *  call to the correct TimeEvolver*/
 	static bool scCallback(DiagonalizationSolver *dSolver);
+
+	/** Parameter calculated during time steping to check for failure to
+	 *  keep basis orthogonal. */
+	double orthogonalityError;
+
+	/** Number of time steps between the orthogonalityErro should be
+	 *  updated. Zero corresponds to no check. */
+	int orthogonalityCheckInterval;
+
+	/** Calculate orthogonality error. */
+	void calculateOrthogonalityError();
 };
 
 inline void TimeEvolver::setCallback(bool (*callback)(TimeEvolver *timeEvolver)){
@@ -121,6 +141,14 @@ inline DiagonalizationSolver* TimeEvolver::getDiagonalizationSolver(){
 
 inline int TimeEvolver::getCurrentTimeStep(){
 	return currentTimeStep;
+}
+
+inline void TimeEvolver::setOrthogonalityCheckInterval(int orthogonalityCheckInterval){
+	this->orthogonalityCheckInterval = orthogonalityCheckInterval;
+}
+
+inline double TimeEvolver::getOrthogonalityError(){
+	return orthogonalityError;
 }
 
 }; //End of namespace TBTK
