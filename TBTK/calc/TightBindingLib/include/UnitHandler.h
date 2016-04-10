@@ -26,8 +26,8 @@ namespace TBTK{
  *  Temperature, time, length, energy, and charge, and the default units are
  *  Kelvin (K), second (s), meter (m), electron Volt (eV), and Coulomb (C).
  *
- *  The current base units can be changed with setXXXUnit(), where \f XXX \in
- *  \{Temperature, Time, Length, Energy, Charge\}\f, and subsequent calls will
+ *  The current base units can be changed with setXXXUnit(), where \f$ XXX \in
+ *  \{Temperature, Time, Length, Energy, Charge\}\f$, and subsequent calls will
  *  take input paramaters and return output parameters in corresponding units.
  *
  *  The functions setXXXScale() can be used to specify the scale of the 'ruler'
