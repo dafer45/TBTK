@@ -254,6 +254,18 @@ public:
 	 *  @return string representation of the currently set charge unit. */
 	static std::string getChargeUnitString();
 
+	/** Get mass unit string.
+	 *
+	 *  @return string representation of the derived mass unit in terms of
+	 *  the currently set base units. */
+	static std::string getMassUnitString();
+
+	/** Get mass unit string.
+	 *
+	 *  @return string representation of the derived magnetic field unit in
+	 *  terms of the currently set base units. */
+	static std::string getMagneticFieldUnitString();
+
 	/** Get Planck constant unit string
 	 *
 	 *  @return string representation of the unit for the Planck constant.
@@ -316,10 +328,10 @@ private:
 	/** Proton mass in default units (eVs^2/m^2). */
 	static constexpr double M_P	= 9.38272046e8/(C*C);
 
-	/** Bohr magneton in default units (Cm^2/s^2). */
+	/** Bohr magneton in default units (Cm^2/s). */
 	static constexpr double MU_B	= E*HBAR/(2.*M_E);
 
-	/** Nuclear magneton in default units (Cm^2/s^2). */
+	/** Nuclear magneton in default units (Cm^2/s). */
 	static constexpr double MU_N	= E*HBAR/(2*M_P);
 
 	/** Planck constant in the currently set units. */

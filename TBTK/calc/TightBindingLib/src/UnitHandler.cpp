@@ -262,6 +262,20 @@ string UnitHandler::getChargeUnitString(){
 	}
 }
 
+string UnitHandler::getMassUnitString(){
+	stringstream ss;
+	ss << getEnergyUnitString() << getTimeUnitString() << "^2" << "/" << getLengthUnitString() << "^2";
+
+	return ss.str();
+}
+
+string UnitHandler::getMagneticFieldUnitString(){
+	stringstream ss;
+	ss << getEnergyUnitString() << getTimeUnitString() << "/" << getChargeUnitString() << getLengthUnitString() << "^2";
+
+	return ss.str();
+}
+
 string UnitHandler::getHBARUnitString(){
 	stringstream ss;
 	ss << getEnergyUnitString() << getTimeUnitString();
@@ -282,35 +296,35 @@ string UnitHandler::getEUnitString(){
 
 string UnitHandler::getCUnitString(){
 	stringstream ss;
-	ss << getLengthUnitString() << getLengthUnitString() << "/" << getTimeUnitString() << getTimeUnitString();
+	ss << getLengthUnitString() << "^2" << "/" << getTimeUnitString() << "^2";
 
 	return ss.str();
 }
 
 string UnitHandler::getM_eUnitString(){
 	stringstream ss;
-	ss << getEnergyUnitString() << getTimeUnitString() << getTimeUnitString() << "/" << getLengthUnitString() << getLengthUnitString();
+	ss << getEnergyUnitString() << getTimeUnitString() << "^2" << "/" << getLengthUnitString() << "^2";
 
 	return ss.str();
 }
 
 string UnitHandler::getM_pUnitString(){
 	stringstream ss;
-	ss << getEnergyUnitString() << getTimeUnitString() << getTimeUnitString() << "/" << getLengthUnitString() << getLengthUnitString();
+	ss << getEnergyUnitString() << getTimeUnitString() << "^2" << "/" << getLengthUnitString() << "^2";
 
 	return ss.str();
 }
 
 string UnitHandler::getMu_bUnitString(){
 	stringstream ss;
-	ss << getChargeUnitString() << getLengthUnitString() << getLengthUnitString() << "/" << getTimeUnitString() << getTimeUnitString();
+	ss << getChargeUnitString() << getLengthUnitString() << "^2" << "/" << getTimeUnitString();
 
 	return ss.str();
 }
 
 string UnitHandler::getMu_nUnitString(){
 	stringstream ss;
-	ss << getChargeUnitString() << getLengthUnitString() << getLengthUnitString() << "/" << getTimeUnitString() << getTimeUnitString();
+	ss << getChargeUnitString() << getLengthUnitString() << "^2" << "/" << getTimeUnitString();
 
 	return ss.str();
 }
@@ -356,14 +370,14 @@ void UnitHandler::updateMu_b(){
 	mu_b = MU_B;
 	mu_b *= getChargeConversionFactor();
 	mu_b *= getLengthConversionFactor()*getLengthConversionFactor();
-	mu_b /= getTimeConversionFactor()*getTimeConversionFactor();
+	mu_b /= getTimeConversionFactor();
 }
 
 void UnitHandler::updateMu_n(){
 	mu_n = MU_N;
 	mu_n *= getChargeConversionFactor();
 	mu_n *= getLengthConversionFactor()*getLengthConversionFactor();
-	mu_n /= getTimeConversionFactor()*getTimeConversionFactor();
+	mu_n /= getTimeConversionFactor();
 }
 
 double UnitHandler::getTemperatureConversionFactor(){
