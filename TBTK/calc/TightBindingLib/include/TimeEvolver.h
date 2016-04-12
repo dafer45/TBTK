@@ -52,22 +52,29 @@ public:
 	 *  determines the number of particles in each time step. */
 	void setNumberOfParticles(int numberOfParticles);
 
+	/** Get number of particles. */
+	int getNumberOfParticles();
+
 	/** Fix particle number. If set to true, the number of particles remain
 	 *  the same throughout the calculation. */
 	void fixParticleNumber(bool particleNumberIsFixed);
 
+	/** Get occupancy of state. */
+	double getOccupancy(int state);
+
 	/** May change. Set whether the energies should be updated or not. */
-	void setAdiabatic(bool isAdiabatic);
+//	void setAdiabatic(bool isAdiabatic);
 
 	/** Get the DiagonalizationSolver, which contains the eigenvectors,
 	 *  energies, etc. */
 	DiagonalizationSolver *getDiagonalizationSolver();
 
 	/** Get eigenvalues. */
-	const double* getEigenValues();
+//	const double* getEigenValues();
+	double getEigenValue(int state);
 
 	/** Get eigenvectors. */
-	const std::complex<double>* getEigenVectors();
+//	const std::complex<double>* getEigenVectors();
 
 	/** Get amplitude for given eigenvector \f$n\fn and physical index
 	 *  \f$x\f$: \Psi_{n}(x).
@@ -77,6 +84,16 @@ public:
 
 	/** Get model. */
 	Model* getModel();
+
+	/** Decay modes:
+	 *	None - The states continuously connected to the originally
+	 *		occupied states at t=0 are occupied.
+	 *	Instantly - The instantaneous ground state is allways occupied.
+	 */
+	enum class DecayMode{None, Instantly, Interpolate};
+
+	/** Set decay mode. */
+	void setDecayMode(DecayMode decayMode);
 
 	/** Get current time step. Returns -1 while in the self-consistent
 	 *  loop. */
@@ -104,6 +121,12 @@ private:
 	/** Pointer to array containing eigenvectors. */
 	std::complex<double> *eigenVectors;
 
+	/** Pointer to eigenvector pointers. Array used to to index into
+	 *  eigenVectors array, avoids the need to sort eigenVectors according
+	 *  to energy. eigenVectorsMap is sorted instead, and should be used to
+	 *  access eigenVectors. */
+	std::complex<double> **eigenVectorsMap;
+
 	/** Pointer to array storing occupation numbers. */
 	double* occupancy;
 
@@ -113,6 +136,9 @@ private:
 	/** Flag indicating whether or not the number of particles is fixed or
 	 *  not. */
 	bool particleNumberIsFixed;
+
+	/** Decay mode. */
+	DecayMode decayMode;
 
 	/** Callback that is called at each iteration of the self-consistent
 	 *  and time iteration loop. */
@@ -126,7 +152,7 @@ private:
 
 	/** May change. Flag indicating whether energies should be updated or
 	 *  not. */
-	bool isAdiabatic;
+//	bool isAdiabatic;
 
 	/** Current time step. */
 	int currentTimeStep;
@@ -147,6 +173,23 @@ private:
 	 *  static callback-function is therefore used in order to redirect the
 	 *  call to the correct TimeEvolver*/
 	static bool scCallback(DiagonalizationSolver *dSolver);
+
+	/** Member function to call when diagonalization is finished. Called by
+	 *  scCallback(). */
+	void onDiagonalizationFinished();
+
+	/** Sort eigenvalues, eigenVectorsMap, and occupancy according to
+	 *  energy (eigenvalues). */
+	void sort();
+
+	/** Update occupancy. */
+	void updateOccupancy();
+
+	/** Execute instantaneous decay. */
+	void decayInstantly();
+
+	/** Experimental: Execute interpolated decay. */
+	void decayInterpolate();
 
 	/** Parameter calculated during time steping to check for failure to
 	 *  keep basis orthogonal. */
@@ -180,32 +223,41 @@ inline void TimeEvolver::setNumberOfParticles(int numberOfParticles){
 	this->numberOfParticles = numberOfParticles;
 }
 
+inline int TimeEvolver::getNumberOfParticles(){
+	return numberOfParticles;
+}
+
 inline void TimeEvolver::fixParticleNumber(bool particleNumberIsFixed){
 	this->particleNumberIsFixed = particleNumberIsFixed;
 }
 
-inline void TimeEvolver::setAdiabatic(bool isAdiabatic){
+/*inline void TimeEvolver::setAdiabatic(bool isAdiabatic){
 	this->isAdiabatic = isAdiabatic;
-}
+}*/
 
 inline DiagonalizationSolver* TimeEvolver::getDiagonalizationSolver(){
 	return &dSolver;
 }
 
-inline const double* TimeEvolver::getEigenValues(){
-	return eigenValues;
+inline double TimeEvolver::getEigenValue(int state){
+	return eigenValues[state];
 }
 
-inline const std::complex<double>* TimeEvolver::getEigenVectors(){
-	return eigenVectors;
+inline double TimeEvolver::getOccupancy(int state){
+	return occupancy[state];
 }
 
 inline const std::complex<double> TimeEvolver::getAmplitude(int state, const Index &index){
-	return eigenVectors[model->getBasisSize()*state + model->getBasisIndex(index)];
+	return eigenVectorsMap[state][model->getBasisIndex(index)];
+//	return eigenVectors[model->getBasisSize()*state + model->getBasisIndex(index)];
 }
 
 inline Model* TimeEvolver::getModel(){
 	return model;
+}
+
+inline void TimeEvolver::setDecayMode(DecayMode decayMode){
+	this->decayMode = decayMode;
 }
 
 inline int TimeEvolver::getCurrentTimeStep(){
