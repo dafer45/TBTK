@@ -20,7 +20,12 @@ vector<DiagonalizationSolver*> TimeEvolver::dSolvers;
 
 TimeEvolver::TimeEvolver(Model *model){
 	this->model = model;
-	this->callback = NULL;
+	eigenValues = NULL;
+	eigenVectors = NULL;
+	occupancy = NULL;
+	numberOfParticles = -1;
+	particleNumberIsFixed = true;
+	callback = NULL;
 	numTimeSteps = 0;
 	dt = 0.01;
 	isAdiabatic = false;
@@ -59,8 +64,23 @@ void TimeEvolver::run(){
 
 	int basisSize = model->getBasisSize();
 
-	double *eigenValues = dSolver.getEigenValuesRW();
-	complex<double> *eigenVectors = dSolver.getEigenVectorsRW();
+	eigenValues = dSolver.getEigenValuesRW();
+	eigenVectors = dSolver.getEigenVectorsRW();
+	occupancy = new double[basisSize];
+	for(int n = 0; n < basisSize; n++){
+		if(numberOfParticles < 0){
+			if(eigenValues[n] < 0)
+				occupancy[n] = 1.;
+			else
+				occupancy[n] = 0.;
+		}
+		else{
+			if(n < numberOfParticles)
+				occupancy[n] = 1.;
+			else
+				occupancy[n] = 0.;
+		}
+	}
 	complex<double> *workspace = new complex<double>[basisSize*basisSize];
 	for(int t = 0; t < numTimeSteps; t++){
 		currentTimeStep = t;
