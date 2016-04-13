@@ -7,6 +7,11 @@
 #include <sstream>
 #include <iostream>
 
+#ifdef M_E	//Avoid name clash with math.h macro M_E
+	#define M_E_temp M_E
+	#undef M_E
+#endif
+
 using namespace std;
 
 namespace TBTK{
@@ -20,6 +25,8 @@ double UnitHandler::m_e		= M_E;
 double UnitHandler::m_p		= M_P;
 double UnitHandler::mu_b	= MU_B;
 double UnitHandler::mu_n	= MU_N;
+double UnitHandler::mu_0	= MU_0;
+double UnitHandler::epsilon_0	= EPSILON_0;
 
 UnitHandler::TemperatureUnit 	UnitHandler::temperatureUnit	= UnitHandler::TemperatureUnit::K;
 UnitHandler::TimeUnit 		UnitHandler::timeUnit		= UnitHandler::TimeUnit::s;
@@ -56,6 +63,7 @@ void UnitHandler::setTimeUnit(TimeUnit unit){
 	updateM_p();
 	updateMu_b();
 	updateMu_n();
+	updateMu_0();
 }
 
 void UnitHandler::setLengthUnit(LengthUnit unit){
@@ -69,6 +77,8 @@ void UnitHandler::setLengthUnit(LengthUnit unit){
 	updateM_p();
 	updateMu_b();
 	updateMu_n();
+	updateMu_0();
+	updateEpsilon_0();
 }
 
 void UnitHandler::setEnergyUnit(EnergyUnit unit){
@@ -81,6 +91,8 @@ void UnitHandler::setEnergyUnit(EnergyUnit unit){
 	updateK_b();
 	updateM_e();
 	updateM_p();
+	updateMu_0();
+	updateEpsilon_0();
 }
 
 void UnitHandler::setChargeUnit(ChargeUnit unit){
@@ -92,6 +104,8 @@ void UnitHandler::setChargeUnit(ChargeUnit unit){
 	updateE();
 	updateMu_b();
 	updateMu_n();
+	updateMu_0();
+	updateEpsilon_0();
 }
 
 void UnitHandler::setCountUnit(CountUnit unit){
@@ -360,6 +374,20 @@ string UnitHandler::getMu_nUnitString(){
 	return ss.str();
 }
 
+string UnitHandler::getMu_0UnitString(){
+	stringstream ss;
+	ss << getEnergyUnitString() << getTimeUnitString() << "^2" << "/" << getChargeUnitString() << "^2" << getLengthUnitString();
+
+	return ss.str();
+}
+
+string UnitHandler::getEpsilon_0UnitString(){
+	stringstream ss;
+	ss << getChargeUnitString() << "^2" << "/" << getEnergyUnitString() << getLengthUnitString();
+
+	return ss.str();
+}
+
 void UnitHandler::updateHbar(){
 	hbar = HBAR;
 	hbar *= getEnergyConversionFactor();
@@ -414,6 +442,21 @@ void UnitHandler::updateMu_n(){
 	mu_n *= getChargeConversionFactor();
 	mu_n *= getLengthConversionFactor()*getLengthConversionFactor();
 	mu_n /= getTimeConversionFactor();
+}
+
+void UnitHandler::updateMu_0(){
+	mu_0 = MU_0;
+	mu_0 *= getEnergyConversionFactor();
+	mu_0 *= getTimeConversionFactor()*getTimeConversionFactor();
+	mu_0 /= getChargeConversionFactor();
+	mu_0 /= getLengthConversionFactor();
+}
+
+void UnitHandler::updateEpsilon_0(){
+	epsilon_0 = EPSILON_0;
+	epsilon_0 *= getChargeConversionFactor()*getChargeConversionFactor();
+	epsilon_0 /= getEnergyConversionFactor();
+	epsilon_0 /= getLengthConversionFactor();
 }
 
 double UnitHandler::getTemperatureConversionFactor(){
@@ -577,3 +620,8 @@ double UnitHandler::getMagneticFieldConversionFactor(MagneticFieldUnit unit){
 }
 
 };
+
+#ifdef M_E_temp
+	#define M_E M_E_temp
+	#undef M_E_temp
+#endif

@@ -9,6 +9,7 @@
 #define COM_DAFER45_TBTK_UNIT_HANDLER
 
 #include <string>
+#include <math.h>
 
 #ifdef M_E	//Avoid name clash with math.h macro M_E
 	#define M_E_temp M_E
@@ -153,6 +154,12 @@ public:
 
 	/** Get the nuclear magneton in the currently set units. */
 	static double getMu_n();
+
+	/** Get the vacuum permeability in the currently set units. */
+	static double getMu_0();
+
+	/** Get the vacuum permittivity in the currently set units. */
+	static double getEpsilon_0();
 
 	/** Set temperature unit. */
 	static void setTemperatureUnit(TemperatureUnit unit);
@@ -341,6 +348,18 @@ public:
 	 *
 	 *  @return string representation of the unit for the nuclear magneton. */
 	static std::string getMu_nUnitString();
+
+	/** Get vacuum permeability unit string.
+	 *
+	 *  @return string representation of the unit for the vacuum
+	 *  permeability. */
+	static std::string getMu_0UnitString();
+
+	/** Get vacuum permittivity unit string
+	 *
+	 *  @return string representation of the unit for the vacuum
+	 *  permittivity. */
+	static std::string getEpsilon_0UnitString();
 private:
 	/** Planck constant in default units (eVs). */
 	static constexpr double HBAR	= 6.582119514e-16;
@@ -369,6 +388,12 @@ private:
 	/** Nuclear magneton in default units (Cm^2/s). */
 	static constexpr double MU_N	= E*HBAR/(2*M_P);
 
+	/** Vacuum permeability in default units (eVs^2/C^2m). */
+	static constexpr double MU_0 = 4*M_PI*10e-7/1.602176565e-19;
+
+	/** Vacuum permittivity in default units (C^2/eVm). */
+	static constexpr double EPSILON_0 = 8.854187817620e-12*1.602176565e-19;
+
 	/** Planck constant in the currently set units. */
 	static double hbar;
 
@@ -395,6 +420,12 @@ private:
 
 	/** Nuclear magneton in the currently set units. */
 	static double mu_n;
+
+	/** Vacuum permeability in the currently set units. */
+	static double mu_0;
+
+	/** Vacuum permittivity in the currently set units. */
+	static double epsilon_0;
 
 	/** Conversion factor from eV to J. */
 	static constexpr double J_per_eV	= 1.602176565e-19;
@@ -483,6 +514,12 @@ private:
 	/** Update nuclear magneton. To be called at change of units. */
 	static void updateMu_n();
 
+	/** Update vacuum permeability. To be called at change of units. */
+	static void updateMu_0();
+
+	/** Update vacuum permittivity. To be called at change of units. */
+	static void updateEpsilon_0();
+
 	/** Returns the number of degrees in the currently set unit per degree
 	 *  in default unit (K). */
 	static double getTemperatureConversionFactor();
@@ -551,6 +588,14 @@ inline double UnitHandler::getMu_b(){
 
 inline double UnitHandler::getMu_n(){
 	return mu_n;
+}
+
+inline double UnitHandler::getMu_0(){
+	return mu_0;
+}
+
+inline double UnitHandler::getEpsilon_0(){
+	return epsilon_0;
 }
 
 inline double UnitHandler::convertTemperatureNtB(double temperature){
