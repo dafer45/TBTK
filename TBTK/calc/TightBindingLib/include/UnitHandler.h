@@ -57,9 +57,13 @@ namespace TBTK{
  *  eVs^2/m^2. */
 class UnitHandler{
 public:
-	/** Temperature units (base unit):
-	 *	K - Kelvin */
-	enum class TemperatureUnit {K};
+	/** Temperature units (base unit):<br/>
+	 *	kK - kilokelvin<br/>
+	 *	K - Kelvin<br/>
+	 *	mK - millikelvin<br/>
+	 *	uK - microkelvin<br/>
+	 *	nK - nanokelvin*/
+	enum class TemperatureUnit {kK, K, mK, uK, nK};
 
 	/* Time units (base unit):<br/>
 	 *	s - second<br/>
@@ -93,8 +97,20 @@ public:
 	enum class EnergyUnit{GeV, MeV, keV, eV, meV, ueV, J};
 
 	/** Charge units (base unit):<br/>
-	 *	C - Coulomb */
-	enum class ChargeUnit{C};
+	 *	kC - kilocoulomb<br/>
+	 *	C - Coulomb<br/>
+	 *	mC - millicoulomb<br/>
+	 *	uC - microcoulomb<br/>
+	 *	nC - nanocoulomb<br/>
+	 *	pC - picocoulomb<br/>
+	 *	fC - femtocoulomb<br/>
+	 *	aC - attocoulomb<br/>
+	 *	Te - terrae<br/>
+	 *	Ge - gigae<br/>
+	 *	Me - megae<br/>
+	 *	ke - kiloe<br/>
+	 *	e - e (elementary charge) */
+	enum class ChargeUnit{kC, C, mC, uC, nC, pC, fC, aC, Te, Ge, Me, ke, e};
 
 	/** Count unit (base unit):
 	 *	pcs - pieces
@@ -389,7 +405,7 @@ private:
 	static constexpr double MU_N	= E*HBAR/(2*M_P);
 
 	/** Vacuum permeability in default units (eVs^2/C^2m). */
-	static constexpr double MU_0 = 4*M_PI*10e-7/1.602176565e-19;
+	static constexpr double MU_0 = 4*M_PI*1e-7/1.602176565e-19;
 
 	/** Vacuum permittivity in default units (C^2/eVm). */
 	static constexpr double EPSILON_0 = 8.854187817620e-12*1.602176565e-19;

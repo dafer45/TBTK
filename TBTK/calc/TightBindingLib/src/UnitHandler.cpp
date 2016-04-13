@@ -211,8 +211,16 @@ double UnitHandler::convertMagneticFieldNtD(double field, MagneticFieldUnit unit
 
 string UnitHandler::getTemperatureUnitString(){
 	switch(temperatureUnit){
+		case TemperatureUnit::kK:
+			return "kK";
 		case TemperatureUnit::K:
 			return "K";
+		case TemperatureUnit::mK:
+			return "mK";
+		case TemperatureUnit::uK:
+			return "uK";
+		case TemperatureUnit::nK:
+			return "nK";
 		default:
 			return "Unknown unit";
 	};
@@ -285,8 +293,32 @@ string UnitHandler::getEnergyUnitString(){
 
 string UnitHandler::getChargeUnitString(){
 	switch(chargeUnit){
+		case ChargeUnit::kC:
+			return "kC";
 		case ChargeUnit::C:
 			return "C";
+		case ChargeUnit::mC:
+			return "mC";
+		case ChargeUnit::uC:
+			return "uC";
+		case ChargeUnit::nC:
+			return "nC";
+		case ChargeUnit::pC:
+			return "pC";
+		case ChargeUnit::fC:
+			return "fC";
+		case ChargeUnit::aC:
+			return "aC";
+		case ChargeUnit::Te:
+			return "Te";
+		case ChargeUnit::Ge:
+			return "Ge";
+		case ChargeUnit::Me:
+			return "Me";
+		case ChargeUnit::ke:
+			return "ke";
+		case ChargeUnit::e:
+			return "e";
 		default:
 			return "Unknown unit";
 	}
@@ -448,7 +480,7 @@ void UnitHandler::updateMu_0(){
 	mu_0 = MU_0;
 	mu_0 *= getEnergyConversionFactor();
 	mu_0 *= getTimeConversionFactor()*getTimeConversionFactor();
-	mu_0 /= getChargeConversionFactor();
+	mu_0 /= getChargeConversionFactor()*getChargeConversionFactor();
 	mu_0 /= getLengthConversionFactor();
 }
 
@@ -461,8 +493,16 @@ void UnitHandler::updateEpsilon_0(){
 
 double UnitHandler::getTemperatureConversionFactor(){
 	switch(temperatureUnit){
+		case TemperatureUnit::kK:	//1e-3 kK per K
+			return 1e-3;
 		case TemperatureUnit::K:	//Reference scale
 			return 1.;
+		case TemperatureUnit::mK:
+			return 1e3;
+		case TemperatureUnit::uK:
+			return 1e6;
+		case TemperatureUnit::nK:
+			return 1e9;
 		default:	//Should never happen, hard error generated for quick bug detection
 			cout << "Error in UnitHandler::getTemperatureConversionUnit(): Unknown unit - " << static_cast<int>(temperatureUnit);
 			exit(1);
@@ -543,8 +583,32 @@ double UnitHandler::getEnergyConversionFactor(){
 
 double UnitHandler::getChargeConversionFactor(){
 	switch(chargeUnit){
-		case ChargeUnit::C:
+		case ChargeUnit::kC:	//1e-3 kC per C
+			return 1e-3;
+		case ChargeUnit::C:	//Reference scale
 			return 1.;
+		case ChargeUnit::mC:
+			return 1e3;
+		case ChargeUnit::uC:
+			return 1e6;
+		case ChargeUnit::nC:
+			return 1e9;
+		case ChargeUnit::pC:
+			return 1e12;
+		case ChargeUnit::fC:
+			return 1e15;
+		case ChargeUnit::aC:
+			return 1e18;
+		case ChargeUnit::Te:
+			return 1e-12/E;
+		case ChargeUnit::Ge:
+			return 1e-9/E;
+		case ChargeUnit::Me:
+			return 13-6/E;
+		case ChargeUnit::ke:
+			return 1e-3/E;
+		case ChargeUnit::e:
+			return 1./E;
 		default:	//Should never happen, hard error generated for quick bug detection
 			cout << "Error in UnitHandler::getChargeConversionFactor(): Unknown unit - " << static_cast<int>(chargeUnit);
 			exit(1);
