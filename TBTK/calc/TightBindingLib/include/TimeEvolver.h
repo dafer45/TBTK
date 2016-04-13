@@ -87,8 +87,13 @@ public:
 
 	/** Decay modes:
 	 *	None - The states continuously connected to the originally
-	 *		occupied states at t=0 are occupied.
+	 *		occupied states at t=0 are occupied.<br/>
 	 *	Instantly - The instantaneous ground state is allways occupied.
+	 *	Interpolate - Experimental: The occupation of each state below
+	 *		the Fermi level is increased by a constant factor until
+	 *		it reaches 1, while every state above the Fermi lvel is
+	 *		decreased by the same constant factor until it reaches
+	 *		0.
 	 */
 	enum class DecayMode{None, Instantly, Interpolate};
 

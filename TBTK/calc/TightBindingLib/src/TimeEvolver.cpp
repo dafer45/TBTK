@@ -252,12 +252,12 @@ void TimeEvolver::decayInterpolate(){
 	else{
 		for(int n = 0; n < basisSize; n++){
 			if(eigenValues[n] < model->getFermiLevel()){
-				occupancy[n] += 0.01;
+				occupancy[n] += 0.00000001;
 				if(occupancy[n] > 1)
 					occupancy[n] = 1.;
 			}
 			else{
-				occupancy[n] -= 0.01;
+				occupancy[n] -= 0.00000001;
 				if(occupancy[n] < 0)
 					occupancy[n] = 0.;
 			}
