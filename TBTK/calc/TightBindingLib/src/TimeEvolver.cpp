@@ -30,7 +30,6 @@ TimeEvolver::TimeEvolver(Model *model){
 	callback = NULL;
 	numTimeSteps = 0;
 	dt = 0.01;
-//	isAdiabatic = false;
 	currentTimeStep = -1;
 	orthogonalityError = 0.;
 	orthogonalityCheckInterval = 0;
@@ -97,16 +96,14 @@ void TimeEvolver::run(){
 			it.searchNextHA();
 		}
 
-//		if(isAdiabatic){
-			#pragma omp parallel for
-			for(int n = 0; n < basisSize; n++){
-				double energy = 0.;
-				for(int c = 0; c < basisSize; c++){
-					energy += real(conj(eigenVectorsMap[n][c])*dPsi[basisSize*n + c]);
-				}
-				eigenValues[n] = energy;
+		#pragma omp parallel for
+		for(int n = 0; n < basisSize; n++){
+			double energy = 0.;
+			for(int c = 0; c < basisSize; c++){
+				energy += real(conj(eigenVectorsMap[n][c])*dPsi[basisSize*n + c]);
 			}
-//		}
+			eigenValues[n] = energy;
+		}
 
 		#pragma omp parallel for
 		for(int n = 0; n < basisSize; n++){

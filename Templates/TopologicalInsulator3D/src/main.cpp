@@ -99,7 +99,7 @@ int main(int argc, char **argv){
 	ChebyshevSolver cSolver;
 	cSolver.setModel(&model);
 
-	//Generate lookup table for quicker evaluation of Green's functions.	
+	//Generate lookup table for quicker evaluation of Green's functions.
 	cSolver.generateLookupTable(NUM_COEFFICIENTS, ENERGY_RESOLUTION);
 	//Load lookup table to GPU. Remove this if evaluation on cpu is preffered.
 	cSolver.loadLookupTableGPU();

@@ -62,19 +62,12 @@ public:
 	/** Get occupancy of state. */
 	double getOccupancy(int state);
 
-	/** May change. Set whether the energies should be updated or not. */
-//	void setAdiabatic(bool isAdiabatic);
-
 	/** Get the DiagonalizationSolver, which contains the eigenvectors,
 	 *  energies, etc. */
 	DiagonalizationSolver *getDiagonalizationSolver();
 
-	/** Get eigenvalues. */
-//	const double* getEigenValues();
+	/** Get eigenvalue. */
 	double getEigenValue(int state);
-
-	/** Get eigenvectors. */
-//	const std::complex<double>* getEigenVectors();
 
 	/** Get amplitude for given eigenvector \f$n\fn and physical index
 	 *  \f$x\f$: \Psi_{n}(x).
@@ -155,10 +148,6 @@ private:
 	/** Size of time step. */
 	double dt;
 
-	/** May change. Flag indicating whether energies should be updated or
-	 *  not. */
-//	bool isAdiabatic;
-
 	/** Current time step. */
 	int currentTimeStep;
 
@@ -236,10 +225,6 @@ inline void TimeEvolver::fixParticleNumber(bool particleNumberIsFixed){
 	this->particleNumberIsFixed = particleNumberIsFixed;
 }
 
-/*inline void TimeEvolver::setAdiabatic(bool isAdiabatic){
-	this->isAdiabatic = isAdiabatic;
-}*/
-
 inline DiagonalizationSolver* TimeEvolver::getDiagonalizationSolver(){
 	return &dSolver;
 }
@@ -254,7 +239,6 @@ inline double TimeEvolver::getOccupancy(int state){
 
 inline const std::complex<double> TimeEvolver::getAmplitude(int state, const Index &index){
 	return eigenVectorsMap[state][model->getBasisIndex(index)];
-//	return eigenVectors[model->getBasisSize()*state + model->getBasisIndex(index)];
 }
 
 inline Model* TimeEvolver::getModel(){
