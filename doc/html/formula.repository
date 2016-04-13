@@ -15,3 +15,4 @@
 \form#14:$a_{ij}$
 \form#15:$H = \sum_{ij}a_{ij}c_{i}^{\dagger}c_{j}$
 \form#16:$ XXX \in \{Temperature, Time, Length, Energy, Charge\}$
+\form#17:$ XXX \in \{Temperature, Time, Length, Energy, Charge, Count\}$

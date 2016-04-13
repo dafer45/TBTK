@@ -124,9 +124,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <span class="keywordtype">double</span> <a class="code" href="classTBTK_1_1Model.html#a7749ea976f81f31546e229f2519b80a0">getTemperature</a>();</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classTBTK_1_1Model.html#a1e07fcda34e73548c67818ee0267a0db">setFermiLevel</a>(<span class="keywordtype">double</span> fermiLevel);</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classTBTK_1_1Model.html#a908dad78cb78ab7bbcc6c154d9e9328b">setChemicalPotential</a>(<span class="keywordtype">double</span> chemicalPotential);</div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <span class="keywordtype">double</span> <a class="code" href="classTBTK_1_1Model.html#ab46cd94ebef3aa8475da8cade76392cb">getFermiLevel</a>();</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <span class="keywordtype">double</span> <a class="code" href="classTBTK_1_1Model.html#aab89918a640ae09f620033f603bf4a74">getChemicalPotential</a>();</div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;</div>
 <div class="line"><a name="l00067"></a><span class="lineno"><a class="line" href="classTBTK_1_1Model.html#a66e39a57ba6c07493be097136e5076f4">   67</a></span>&#160;    <a class="code" href="classTBTK_1_1AmplitudeSet.html">AmplitudeSet</a> <a class="code" href="classTBTK_1_1Model.html#a66e39a57ba6c07493be097136e5076f4">amplitudeSet</a>;</div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;</div>
@@ -142,7 +142,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;<span class="keyword">private</span>:</div>
 <div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    <span class="keywordtype">double</span> temperature;</div>
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    <span class="keywordtype">double</span> fermiLevel;</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    <span class="keywordtype">double</span> chemicalPotential;</div>
 <div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;</div>
 <div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    <a class="code" href="classTBTK_1_1Model.html#add42cc0ef7f8e7834d56dca6c54d865d">Statistics</a> statistics;</div>
 <div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;</div>
@@ -165,12 +165,12 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    <span class="keywordflow">return</span> temperature;</div>
 <div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;}</div>
 <div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;</div>
-<div class="line"><a name="l00112"></a><span class="lineno"><a class="line" href="classTBTK_1_1Model.html#a1e07fcda34e73548c67818ee0267a0db">  112</a></span>&#160;<span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code" href="classTBTK_1_1Model.html#a1e07fcda34e73548c67818ee0267a0db">Model::setFermiLevel</a>(<span class="keywordtype">double</span> fermiLevel){</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    this-&gt;fermiLevel = fermiLevel;</div>
+<div class="line"><a name="l00112"></a><span class="lineno"><a class="line" href="classTBTK_1_1Model.html#a908dad78cb78ab7bbcc6c154d9e9328b">  112</a></span>&#160;<span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code" href="classTBTK_1_1Model.html#a908dad78cb78ab7bbcc6c154d9e9328b">Model::setChemicalPotential</a>(<span class="keywordtype">double</span> chemicalPotential){</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    this-&gt;chemicalPotential = chemicalPotential;</div>
 <div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;}</div>
 <div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;</div>
-<div class="line"><a name="l00116"></a><span class="lineno"><a class="line" href="classTBTK_1_1Model.html#ab46cd94ebef3aa8475da8cade76392cb">  116</a></span>&#160;<span class="keyword">inline</span> <span class="keywordtype">double</span> <a class="code" href="classTBTK_1_1Model.html#ab46cd94ebef3aa8475da8cade76392cb">Model::getFermiLevel</a>(){</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    <span class="keywordflow">return</span> fermiLevel;</div>
+<div class="line"><a name="l00116"></a><span class="lineno"><a class="line" href="classTBTK_1_1Model.html#aab89918a640ae09f620033f603bf4a74">  116</a></span>&#160;<span class="keyword">inline</span> <span class="keywordtype">double</span> <a class="code" href="classTBTK_1_1Model.html#aab89918a640ae09f620033f603bf4a74">Model::getChemicalPotential</a>(){</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    <span class="keywordflow">return</span> chemicalPotential;</div>
 <div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;}</div>
 <div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;</div>
 <div class="line"><a name="l00120"></a><span class="lineno"><a class="line" href="classTBTK_1_1Model.html#ab51e98bb29701815451b0722095f23e9">  120</a></span>&#160;<span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code" href="classTBTK_1_1Model.html#ab51e98bb29701815451b0722095f23e9">Model::setStatistics</a>(<a class="code" href="classTBTK_1_1Model.html#add42cc0ef7f8e7834d56dca6c54d865d">Statistics</a> statistics){</div>
@@ -191,12 +191,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;<span class="preprocessor"></span></div>
 <div class="ttc" id="classTBTK_1_1Model_html_a116ab041650093d78c5a29e2ae2f15fc"><div class="ttname"><a href="classTBTK_1_1Model.html#a116ab041650093d78c5a29e2ae2f15fc">TBTK::Model::~Model</a></div><div class="ttdeci">~Model()</div><div class="ttdef"><b>Definition:</b> Model.cpp:22</div></div>
 <div class="ttc" id="classTBTK_1_1Model_html_a66e39a57ba6c07493be097136e5076f4"><div class="ttname"><a href="classTBTK_1_1Model.html#a66e39a57ba6c07493be097136e5076f4">TBTK::Model::amplitudeSet</a></div><div class="ttdeci">AmplitudeSet amplitudeSet</div><div class="ttdef"><b>Definition:</b> Model.h:67</div></div>
-<div class="ttc" id="classTBTK_1_1Model_html_a1e07fcda34e73548c67818ee0267a0db"><div class="ttname"><a href="classTBTK_1_1Model.html#a1e07fcda34e73548c67818ee0267a0db">TBTK::Model::setFermiLevel</a></div><div class="ttdeci">void setFermiLevel(double fermiLevel)</div><div class="ttdef"><b>Definition:</b> Model.h:112</div></div>
 <div class="ttc" id="classTBTK_1_1Model_html_aafc44e33ff6a9556915680bfa7d9cafd"><div class="ttname"><a href="classTBTK_1_1Model.html#aafc44e33ff6a9556915680bfa7d9cafd">TBTK::Model::addHAAndHC</a></div><div class="ttdeci">void addHAAndHC(HoppingAmplitude ha)</div><div class="ttdef"><b>Definition:</b> Model.cpp:29</div></div>
+<div class="ttc" id="classTBTK_1_1Model_html_aab89918a640ae09f620033f603bf4a74"><div class="ttname"><a href="classTBTK_1_1Model.html#aab89918a640ae09f620033f603bf4a74">TBTK::Model::getChemicalPotential</a></div><div class="ttdeci">double getChemicalPotential()</div><div class="ttdef"><b>Definition:</b> Model.h:116</div></div>
 <div class="ttc" id="classTBTK_1_1Model_html_ab71fef6c5b6823b926e3bc8775c4b7ff"><div class="ttname"><a href="classTBTK_1_1Model.html#ab71fef6c5b6823b926e3bc8775c4b7ff">TBTK::Model::getStatistics</a></div><div class="ttdeci">Statistics getStatistics()</div><div class="ttdef"><b>Definition:</b> Model.h:124</div></div>
 <div class="ttc" id="classTBTK_1_1Model_html_add42cc0ef7f8e7834d56dca6c54d865d"><div class="ttname"><a href="classTBTK_1_1Model.html#add42cc0ef7f8e7834d56dca6c54d865d">TBTK::Model::Statistics</a></div><div class="ttdeci">Statistics</div><div class="ttdef"><b>Definition:</b> Model.h:70</div></div>
 <div class="ttc" id="classTBTK_1_1Model_html_ab51e98bb29701815451b0722095f23e9"><div class="ttname"><a href="classTBTK_1_1Model.html#ab51e98bb29701815451b0722095f23e9">TBTK::Model::setStatistics</a></div><div class="ttdeci">void setStatistics(Statistics statistics)</div><div class="ttdef"><b>Definition:</b> Model.h:120</div></div>
-<div class="ttc" id="classTBTK_1_1Model_html_ab46cd94ebef3aa8475da8cade76392cb"><div class="ttname"><a href="classTBTK_1_1Model.html#ab46cd94ebef3aa8475da8cade76392cb">TBTK::Model::getFermiLevel</a></div><div class="ttdeci">double getFermiLevel()</div><div class="ttdef"><b>Definition:</b> Model.h:116</div></div>
 <div class="ttc" id="classTBTK_1_1Model_html_a7a8e7ee0fdf194a070c6ac2068d8c17c"><div class="ttname"><a href="classTBTK_1_1Model.html#a7a8e7ee0fdf194a070c6ac2068d8c17c">TBTK::Model::construct</a></div><div class="ttdeci">void construct()</div><div class="ttdef"><b>Definition:</b> Model.cpp:33</div></div>
 <div class="ttc" id="classTBTK_1_1Model_html_aae83d5a252250e85b8973a5502c8aed0"><div class="ttname"><a href="classTBTK_1_1Model.html#aae83d5a252250e85b8973a5502c8aed0">TBTK::Model::Model</a></div><div class="ttdeci">Model()</div><div class="ttdef"><b>Definition:</b> Model.cpp:16</div></div>
 <div class="ttc" id="classTBTK_1_1HoppingAmplitude_html"><div class="ttname"><a href="classTBTK_1_1HoppingAmplitude.html">TBTK::HoppingAmplitude</a></div><div class="ttdef"><b>Definition:</b> HoppingAmplitude.h:27</div></div>
@@ -209,12 +208,13 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="ttc" id="classTBTK_1_1Model_html_a6cc656f763f939acde332687197b7316"><div class="ttname"><a href="classTBTK_1_1Model.html#a6cc656f763f939acde332687197b7316">TBTK::Model::getBasisIndex</a></div><div class="ttdeci">int getBasisIndex(Index index)</div><div class="ttdef"><b>Definition:</b> Model.h:100</div></div>
 <div class="ttc" id="classTBTK_1_1Model_html_a7749ea976f81f31546e229f2519b80a0"><div class="ttname"><a href="classTBTK_1_1Model.html#a7749ea976f81f31546e229f2519b80a0">TBTK::Model::getTemperature</a></div><div class="ttdeci">double getTemperature()</div><div class="ttdef"><b>Definition:</b> Model.h:108</div></div>
 <div class="ttc" id="classTBTK_1_1Model_html"><div class="ttname"><a href="classTBTK_1_1Model.html">TBTK::Model</a></div><div class="ttdef"><b>Definition:</b> Model.h:28</div></div>
+<div class="ttc" id="classTBTK_1_1Model_html_a908dad78cb78ab7bbcc6c154d9e9328b"><div class="ttname"><a href="classTBTK_1_1Model.html#a908dad78cb78ab7bbcc6c154d9e9328b">TBTK::Model::setChemicalPotential</a></div><div class="ttdeci">void setChemicalPotential(double chemicalPotential)</div><div class="ttdef"><b>Definition:</b> Model.h:112</div></div>
 <div class="ttc" id="classTBTK_1_1AmplitudeSet_html"><div class="ttname"><a href="classTBTK_1_1AmplitudeSet.html">TBTK::AmplitudeSet</a></div><div class="ttdef"><b>Definition:</b> AmplitudeSet.h:27</div></div>
 <div class="ttc" id="classTBTK_1_1Model_html_afed11742b99de95b3a8b01ac2aad5b06"><div class="ttname"><a href="classTBTK_1_1Model.html#afed11742b99de95b3a8b01ac2aad5b06">TBTK::Model::setTemperature</a></div><div class="ttdeci">void setTemperature(double temperature)</div><div class="ttdef"><b>Definition:</b> Model.h:104</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Apr 11 2016 00:09:18 for TBTK by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Apr 13 2016 18:04:25 for TBTK by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

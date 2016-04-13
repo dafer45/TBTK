@@ -98,7 +98,14 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:a08db7e6766ae964adbf1f70c2b87a442"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTBTK_1_1UnitHandler.html#a08db7e6766ae964adbf1f70c2b87a442">TemperatureUnit</a> { <b>K</b>
+<tr class="memitem:a08db7e6766ae964adbf1f70c2b87a442"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTBTK_1_1UnitHandler.html#a08db7e6766ae964adbf1f70c2b87a442">TemperatureUnit</a> { <br/>
+&#160;&#160;<b>kK</b>, 
+<b>K</b>, 
+<b>mK</b>, 
+<b>uK</b>, 
+<br/>
+&#160;&#160;<b>nK</b>
+<br/>
  }</td></tr>
 <tr class="separator:a08db7e6766ae964adbf1f70c2b87a442"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a410c9331fcf7dc3d2d75ed144fb93623"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><b>TimeUnit</b> { <br/>
@@ -138,9 +145,30 @@ Public Types</h2></td></tr>
 <br/>
  }</td></tr>
 <tr class="separator:a11db2605e01827f9ae296860e9bf58b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6f082034cb0f24fdac1ca1d66c0f90e2"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTBTK_1_1UnitHandler.html#a6f082034cb0f24fdac1ca1d66c0f90e2">ChargeUnit</a> { <b>C</b>
+<tr class="memitem:a6f082034cb0f24fdac1ca1d66c0f90e2"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTBTK_1_1UnitHandler.html#a6f082034cb0f24fdac1ca1d66c0f90e2">ChargeUnit</a> { <br/>
+&#160;&#160;<b>kC</b>, 
+<b>C</b>, 
+<b>mC</b>, 
+<b>uC</b>, 
+<br/>
+&#160;&#160;<b>nC</b>, 
+<b>pC</b>, 
+<b>fC</b>, 
+<b>aC</b>, 
+<br/>
+&#160;&#160;<b>Te</b>, 
+<b>Ge</b>, 
+<b>Me</b>, 
+<b>ke</b>, 
+<br/>
+&#160;&#160;<b>e</b>
+<br/>
  }</td></tr>
 <tr class="separator:a6f082034cb0f24fdac1ca1d66c0f90e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a805251aed3556a4f585dc16a25d8afa0"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTBTK_1_1UnitHandler.html#a805251aed3556a4f585dc16a25d8afa0">CountUnit</a> { <b>pcs</b>, 
+<b>mol</b>
+ }</td></tr>
+<tr class="separator:a805251aed3556a4f585dc16a25d8afa0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a876e0ab1dbc6cfcac55c72fb599b242a"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTBTK_1_1UnitHandler.html#a876e0ab1dbc6cfcac55c72fb599b242a">MassUnit</a> { <br/>
 &#160;&#160;<b>kg</b>, 
 <b>g</b>, 
@@ -185,6 +213,8 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:ae91b5840414617ab5e5376b4c30c5eaf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9675373eb047f9fa50833a4b35339ad7"><td class="memItemLeft" align="right" valign="top">static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTBTK_1_1UnitHandler.html#a9675373eb047f9fa50833a4b35339ad7">getC</a> ()</td></tr>
 <tr class="separator:a9675373eb047f9fa50833a4b35339ad7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a85d3412cd3a53a1476ee61a862ad893b"><td class="memItemLeft" align="right" valign="top">static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTBTK_1_1UnitHandler.html#a85d3412cd3a53a1476ee61a862ad893b">getN_a</a> ()</td></tr>
+<tr class="separator:a85d3412cd3a53a1476ee61a862ad893b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ada04b1d1e6e4b231ed318c954a55022e"><td class="memItemLeft" align="right" valign="top">static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTBTK_1_1UnitHandler.html#ada04b1d1e6e4b231ed318c954a55022e">getM_e</a> ()</td></tr>
 <tr class="separator:ada04b1d1e6e4b231ed318c954a55022e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4d4a72d833140ae6abbdd7da0ef4df8b"><td class="memItemLeft" align="right" valign="top">static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTBTK_1_1UnitHandler.html#a4d4a72d833140ae6abbdd7da0ef4df8b">getM_p</a> ()</td></tr>
@@ -193,6 +223,10 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:a94f7b1d1d803336dad7f886b2e1812a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6db7d6863c057a05f77ac34d312137ee"><td class="memItemLeft" align="right" valign="top">static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTBTK_1_1UnitHandler.html#a6db7d6863c057a05f77ac34d312137ee">getMu_n</a> ()</td></tr>
 <tr class="separator:a6db7d6863c057a05f77ac34d312137ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a164ce96708e84f74cf445001dbef1a29"><td class="memItemLeft" align="right" valign="top">static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTBTK_1_1UnitHandler.html#a164ce96708e84f74cf445001dbef1a29">getMu_0</a> ()</td></tr>
+<tr class="separator:a164ce96708e84f74cf445001dbef1a29"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeec5537652f68e6499163822d66c92fa"><td class="memItemLeft" align="right" valign="top">static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTBTK_1_1UnitHandler.html#aeec5537652f68e6499163822d66c92fa">getEpsilon_0</a> ()</td></tr>
+<tr class="separator:aeec5537652f68e6499163822d66c92fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a314864a0d2b3afe52ea70049fa370a4d"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTBTK_1_1UnitHandler.html#a314864a0d2b3afe52ea70049fa370a4d">setTemperatureUnit</a> (<a class="el" href="classTBTK_1_1UnitHandler.html#a08db7e6766ae964adbf1f70c2b87a442">TemperatureUnit</a> unit)</td></tr>
 <tr class="separator:a314864a0d2b3afe52ea70049fa370a4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7b4e0b21f2cbec8a0229c4f5153b72eb"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTBTK_1_1UnitHandler.html#a7b4e0b21f2cbec8a0229c4f5153b72eb">setTimeUnit</a> (TimeUnit unit)</td></tr>
@@ -203,6 +237,8 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:a11600b2297ff4f15fdbe3f1f740f9ef7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a466cc8d2afb80f7c78d4beddf222f52e"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTBTK_1_1UnitHandler.html#a466cc8d2afb80f7c78d4beddf222f52e">setChargeUnit</a> (<a class="el" href="classTBTK_1_1UnitHandler.html#a6f082034cb0f24fdac1ca1d66c0f90e2">ChargeUnit</a> unit)</td></tr>
 <tr class="separator:a466cc8d2afb80f7c78d4beddf222f52e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa87f6e797ae6840081c54d27fce6ed29"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTBTK_1_1UnitHandler.html#aa87f6e797ae6840081c54d27fce6ed29">setCountUnit</a> (<a class="el" href="classTBTK_1_1UnitHandler.html#a805251aed3556a4f585dc16a25d8afa0">CountUnit</a> unit)</td></tr>
+<tr class="separator:aa87f6e797ae6840081c54d27fce6ed29"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a05ed026a4241763fe565cdfc5ce9a879"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTBTK_1_1UnitHandler.html#a05ed026a4241763fe565cdfc5ce9a879">setTemperatureScale</a> (double scale)</td></tr>
 <tr class="separator:a05ed026a4241763fe565cdfc5ce9a879"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:affc1354d819abd22a0ea6e54a0205ced"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTBTK_1_1UnitHandler.html#affc1354d819abd22a0ea6e54a0205ced">setTimeScale</a> (double scale)</td></tr>
@@ -213,6 +249,8 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:aa8fb4ff6f0ccca45ba9c6f85e875634c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a525c633c08d5296b5cbf4d2473fa680f"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTBTK_1_1UnitHandler.html#a525c633c08d5296b5cbf4d2473fa680f">setChargeScale</a> (double scale)</td></tr>
 <tr class="separator:a525c633c08d5296b5cbf4d2473fa680f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e2be7d4033ed6bae33c62739b5effb9"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTBTK_1_1UnitHandler.html#a8e2be7d4033ed6bae33c62739b5effb9">setCountScale</a> (double scale)</td></tr>
+<tr class="separator:a8e2be7d4033ed6bae33c62739b5effb9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9a42d30fb1a71456158024ca432b8804"><td class="memItemLeft" align="right" valign="top">static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTBTK_1_1UnitHandler.html#a9a42d30fb1a71456158024ca432b8804">convertTemperatureNtB</a> (double temperature)</td></tr>
 <tr class="separator:a9a42d30fb1a71456158024ca432b8804"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0249017cd2774a1cf99133d339a21739"><td class="memItemLeft" align="right" valign="top">static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTBTK_1_1UnitHandler.html#a0249017cd2774a1cf99133d339a21739">convertTimeNtB</a> (double time)</td></tr>
@@ -223,6 +261,8 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:a953486508529bc7a1121aa2d15f9ae4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9b6c8905d44c43aab7a62f469c86be30"><td class="memItemLeft" align="right" valign="top">static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTBTK_1_1UnitHandler.html#a9b6c8905d44c43aab7a62f469c86be30">convertChargeNtB</a> (double charge)</td></tr>
 <tr class="separator:a9b6c8905d44c43aab7a62f469c86be30"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af51d72f75a0248a3e1a1ecd052c40319"><td class="memItemLeft" align="right" valign="top">static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTBTK_1_1UnitHandler.html#af51d72f75a0248a3e1a1ecd052c40319">convertCountNtB</a> (double count)</td></tr>
+<tr class="separator:af51d72f75a0248a3e1a1ecd052c40319"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a683102c23ad8de1f64168d4a22459129"><td class="memItemLeft" align="right" valign="top">static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTBTK_1_1UnitHandler.html#a683102c23ad8de1f64168d4a22459129">convertTemperatureBtN</a> (double temperature)</td></tr>
 <tr class="separator:a683102c23ad8de1f64168d4a22459129"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5fc68711c3b752a71eccea9e87780dd0"><td class="memItemLeft" align="right" valign="top">static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTBTK_1_1UnitHandler.html#a5fc68711c3b752a71eccea9e87780dd0">convertTimeBtN</a> (double time)</td></tr>
@@ -233,6 +273,8 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:a399a089d80efd877b9b330fd4d827f7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a20f8e0e0c713f1996a796c783d75800a"><td class="memItemLeft" align="right" valign="top">static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTBTK_1_1UnitHandler.html#a20f8e0e0c713f1996a796c783d75800a">convertChargeBtN</a> (double charge)</td></tr>
 <tr class="separator:a20f8e0e0c713f1996a796c783d75800a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a94369c85a6ae122b83dc65bebc5d3596"><td class="memItemLeft" align="right" valign="top">static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTBTK_1_1UnitHandler.html#a94369c85a6ae122b83dc65bebc5d3596">convertCountBtN</a> (double count)</td></tr>
+<tr class="separator:a94369c85a6ae122b83dc65bebc5d3596"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a24d16682bdb3282b79fadbd6015b1b95"><td class="memItemLeft" align="right" valign="top">static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTBTK_1_1UnitHandler.html#a24d16682bdb3282b79fadbd6015b1b95">convertMassDtB</a> (double mass, <a class="el" href="classTBTK_1_1UnitHandler.html#a876e0ab1dbc6cfcac55c72fb599b242a">MassUnit</a> unit)</td></tr>
 <tr class="separator:a24d16682bdb3282b79fadbd6015b1b95"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2af0df6146b7a8b716061c54f4f60847"><td class="memItemLeft" align="right" valign="top">static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTBTK_1_1UnitHandler.html#a2af0df6146b7a8b716061c54f4f60847">convertMassBtD</a> (double mass, <a class="el" href="classTBTK_1_1UnitHandler.html#a876e0ab1dbc6cfcac55c72fb599b242a">MassUnit</a> unit)</td></tr>
@@ -259,6 +301,12 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:ae23c5234482b6cf777f540fd3e36b69f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1d9ec18bfb4f42e28289dee474d5ee4f"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTBTK_1_1UnitHandler.html#a1d9ec18bfb4f42e28289dee474d5ee4f">getChargeUnitString</a> ()</td></tr>
 <tr class="separator:a1d9ec18bfb4f42e28289dee474d5ee4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7f03feef7a7e1efc3a5e1f98bf463634"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTBTK_1_1UnitHandler.html#a7f03feef7a7e1efc3a5e1f98bf463634">getCountUnitString</a> ()</td></tr>
+<tr class="separator:a7f03feef7a7e1efc3a5e1f98bf463634"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a806800237e118cb6cdeac3022c78eb5d"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTBTK_1_1UnitHandler.html#a806800237e118cb6cdeac3022c78eb5d">getMassUnitString</a> ()</td></tr>
+<tr class="separator:a806800237e118cb6cdeac3022c78eb5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaba4983f3d11547efffeab051c17a787"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTBTK_1_1UnitHandler.html#aaba4983f3d11547efffeab051c17a787">getMagneticFieldUnitString</a> ()</td></tr>
+<tr class="separator:aaba4983f3d11547efffeab051c17a787"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a889af7b0b5163e607f9ece153e0fd90f"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTBTK_1_1UnitHandler.html#a889af7b0b5163e607f9ece153e0fd90f">getHBARUnitString</a> ()</td></tr>
 <tr class="separator:a889af7b0b5163e607f9ece153e0fd90f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7aac8bfe7c433a66582eeb00cbb28a0a"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTBTK_1_1UnitHandler.html#a7aac8bfe7c433a66582eeb00cbb28a0a">getK_BUnitString</a> ()</td></tr>
@@ -267,6 +315,8 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:ae5eec32df7bc88ae06ccbeb63179afdc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6e2a00c8db9a7a5810fdbd0303839776"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTBTK_1_1UnitHandler.html#a6e2a00c8db9a7a5810fdbd0303839776">getCUnitString</a> ()</td></tr>
 <tr class="separator:a6e2a00c8db9a7a5810fdbd0303839776"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab28f55c4b04a9515688a9d0bf6bed982"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTBTK_1_1UnitHandler.html#ab28f55c4b04a9515688a9d0bf6bed982">getN_aUnitString</a> ()</td></tr>
+<tr class="separator:ab28f55c4b04a9515688a9d0bf6bed982"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab96583508eec353a3ff82f74af6a4ca2"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTBTK_1_1UnitHandler.html#ab96583508eec353a3ff82f74af6a4ca2">getM_eUnitString</a> ()</td></tr>
 <tr class="separator:ab96583508eec353a3ff82f74af6a4ca2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4f45fe78b940f5a5aad1f7380a23c542"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTBTK_1_1UnitHandler.html#a4f45fe78b940f5a5aad1f7380a23c542">getM_pUnitString</a> ()</td></tr>
@@ -275,11 +325,15 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:a58e501d089c77cc96cbecb011b98623d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a10f83b6af0ef2c2a2b38689dab3152ef"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTBTK_1_1UnitHandler.html#a10f83b6af0ef2c2a2b38689dab3152ef">getMu_nUnitString</a> ()</td></tr>
 <tr class="separator:a10f83b6af0ef2c2a2b38689dab3152ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adcbd8e48b39527e9894e1b34418c74cb"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTBTK_1_1UnitHandler.html#adcbd8e48b39527e9894e1b34418c74cb">getMu_0UnitString</a> ()</td></tr>
+<tr class="separator:adcbd8e48b39527e9894e1b34418c74cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acf88f9d5ac8aab2e86e9067d94c26d55"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTBTK_1_1UnitHandler.html#acf88f9d5ac8aab2e86e9067d94c26d55">getEpsilon_0UnitString</a> ()</td></tr>
+<tr class="separator:acf88f9d5ac8aab2e86e9067d94c26d55"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>!!! Note: Numerica values are picked from Wikipedia, and have not yet been checked agains an authoritative source. Some values that should be the same are even known to differ in some of the least significant digits. !!!</p>
-<p>The <a class="el" href="classTBTK_1_1UnitHandler.html">UnitHandler</a> handles conversion between the 'natural units' used in the calculations and standard 'base units'. The base quantities are Temperature, time, length, energy, and charge, and the default units are Kelvin (K), second (s), meter (m), electron Volt (eV), and Coulomb (C).</p>
-<p>The current base units can be changed with setXXXUnit(), where <img class="formulaInl" alt="$ XXX \in \{Temperature, Time, Length, Energy, Charge\}$" src="form_16.png"/>, and subsequent calls will take input paramaters and return output parameters in corresponding units.</p>
+<p>The <a class="el" href="classTBTK_1_1UnitHandler.html">UnitHandler</a> handles conversion between the 'natural units' used in the calculations and standard 'base units'. The base quantities are Temperature, time, length, energy, charge, and count, and the default units are Kelvin (K), second (s), meter (m), electron Volt (eV), Coulomb (C), and pieces (pcs).</p>
+<p>The current base units can be changed with setXXXUnit(), where <img class="formulaInl" alt="$ XXX \in \{Temperature, Time, Length, Energy, Charge, Count\}$" src="form_17.png"/>, and subsequent calls will take input paramaters and return output parameters in corresponding units.</p>
 <p>The functions setXXXScale() can be used to specify the scale of the 'ruler' with which parameters in the calculation are meassured. This sets the scale which relates the natrual units to the base units. For example:</p>
 <p>UnitHandler::setEnergyUnits(UnitHandler::EnergyUnit:meV); <a class="el" href="classTBTK_1_1UnitHandler.html#aa8fb4ff6f0ccca45ba9c6f85e875634c">UnitHandler::setEnergyScale</a>(1.47);</p>
 <p>Here the energy base unit is first set to meV, and the scale subsequently set to 1.47meV. The natural unit 1.0, now corresponds to the base unit 1.47meV. An energy parameter with value 1.0 will therefore be interpreted as having the physical value 1.47meV whenever a multiplication with a physical constant is required to generate a unitless number.</p>
@@ -303,7 +357,41 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Charge units (base unit): C - Coulomb </p>
+<p>Charge units (base unit):<br/>
+ kC - kilocoulomb<br/>
+ C - Coulomb<br/>
+ mC - millicoulomb<br/>
+ uC - microcoulomb<br/>
+ nC - nanocoulomb<br/>
+ pC - picocoulomb<br/>
+ fC - femtocoulomb<br/>
+ aC - attocoulomb<br/>
+ Te - terrae<br/>
+ Ge - gigae<br/>
+ Me - megae<br/>
+ ke - kiloe<br/>
+ e - e (elementary charge) </p>
+
+</div>
+</div>
+<a class="anchor" id="a805251aed3556a4f585dc16a25d8afa0"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="classTBTK_1_1UnitHandler.html#a805251aed3556a4f585dc16a25d8afa0">TBTK::UnitHandler::CountUnit</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Count unit (base unit): pcs - pieces mol - Mole </p>
 
 </div>
 </div>
@@ -324,7 +412,14 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Energy units (base unit): GeV - gigaelectron Volt MeV - megaelectron Volt keV - kiloelectron Volt eV - electron Volt meV - millielectron Volt ueV - microelectron Volt J - Joule </p>
+<p>Energy units (base unit):<br/>
+ GeV - gigaelectron Volt<br/>
+ MeV - megaelectron Volt<br/>
+ keV - kiloelectron Volt<br/>
+ eV - electron Volt<br/>
+ meV - millielectron Volt<br/>
+ ueV - microelectron Volt<br/>
+ J - Joule </p>
 
 </div>
 </div>
@@ -345,7 +440,15 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Length units (base unit): m - meter mm - millimeter um - micrometer nm - nanometer pm - picometer fm - femtometer am - attometer Ao - Angstrom </p>
+<p>Length units (base unit):<br/>
+ m - meter<br/>
+ mm - millimeter<br/>
+ um - micrometer<br/>
+ nm - nanometer<br/>
+ pm - picometer<br/>
+ fm - femtometer<br/>
+ am - attometer<br/>
+ Ao - Angstrom </p>
 
 </div>
 </div>
@@ -366,7 +469,19 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Magnetic unit (derived unit): MT - megatesla kT - kilotesla T - Tesla mT - millitesla uT - microtesla nT - nanotesla GG - gigagauss MG - megagauss kG - kilogauss G - Gauss mG - milligauss uG - microgauss </p>
+<p>Magnetic unit (derived unit):<br/>
+ MT - megatesla<br/>
+ kT - kilotesla<br/>
+ T - Tesla<br/>
+ mT - millitesla<br/>
+ uT - microtesla<br/>
+ nT - nanotesla<br/>
+ GG - gigagauss<br/>
+ MG - megagauss<br/>
+ kG - kilogauss<br/>
+ G - Gauss<br/>
+ mG - milligauss<br/>
+ uG - microgauss </p>
 
 </div>
 </div>
@@ -387,7 +502,16 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Mass units (derived unit): kg - kilogram g - gram mg - milligram ug - microgram ng - nanogram pg - picogram fg - femtogram ag - attogram u - atomic mass </p>
+<p>Mass units (derived unit):<br/>
+ kg - kilogram<br/>
+ g - gram<br/>
+ mg - milligram<br/>
+ ug - microgram<br/>
+ ng - nanogram<br/>
+ pg - picogram<br/>
+ fg - femtogram<br/>
+ ag - attogram<br/>
+ u - atomic mass </p>
 
 </div>
 </div>
@@ -408,7 +532,12 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Temperature units (base unit): K - Kelvin </p>
+<p>Temperature units (base unit):<br/>
+ kK - kilokelvin<br/>
+ K - Kelvin<br/>
+ mK - millikelvin<br/>
+ uK - microkelvin<br/>
+ nK - nanokelvin </p>
 
 </div>
 </div>
@@ -460,6 +589,56 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <p>Convert charge from natural units to base units. </p>
+
+</div>
+</div>
+<a class="anchor" id="a94369c85a6ae122b83dc65bebc5d3596"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double TBTK::UnitHandler::convertCountBtN </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>count</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Convert count from base units to natural units. </p>
+
+</div>
+</div>
+<a class="anchor" id="af51d72f75a0248a3e1a1ecd052c40319"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double TBTK::UnitHandler::convertCountNtB </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>count</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Conver counting from natural units to base units. </p>
 
 </div>
 </div>
@@ -992,6 +1171,31 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a7f03feef7a7e1efc3a5e1f98bf463634"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">string TBTK::UnitHandler::getCountUnitString </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Get count unit string</p>
+<dl class="section return"><dt>Returns</dt><dd>string representation of the current set count unit. </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="a6e2a00c8db9a7a5810fdbd0303839776"></a>
 <div class="memitem">
 <div class="memproto">
@@ -1063,6 +1267,55 @@ Static Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Get energy unit string</p>
 <dl class="section return"><dt>Returns</dt><dd>string representation of the currently set energy unit. </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="aeec5537652f68e6499163822d66c92fa"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double TBTK::UnitHandler::getEpsilon_0 </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Get the vacuum permittivity in the currently set units. </p>
+
+</div>
+</div>
+<a class="anchor" id="acf88f9d5ac8aab2e86e9067d94c26d55"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">string TBTK::UnitHandler::getEpsilon_0UnitString </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Get vacuum permittivity unit string</p>
+<dl class="section return"><dt>Returns</dt><dd>string representation of the unit for the vacuum permittivity. </dd></dl>
 
 </div>
 </div>
@@ -1312,6 +1565,105 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="aaba4983f3d11547efffeab051c17a787"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">string TBTK::UnitHandler::getMagneticFieldUnitString </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Get mass unit string.</p>
+<dl class="section return"><dt>Returns</dt><dd>string representation of the derived magnetic field unit in terms of the currently set base units. </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a806800237e118cb6cdeac3022c78eb5d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">string TBTK::UnitHandler::getMassUnitString </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Get mass unit string.</p>
+<dl class="section return"><dt>Returns</dt><dd>string representation of the derived mass unit in terms of the currently set base units. </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a164ce96708e84f74cf445001dbef1a29"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double TBTK::UnitHandler::getMu_0 </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Get the vacuum permeability in the currently set units. </p>
+
+</div>
+</div>
+<a class="anchor" id="adcbd8e48b39527e9894e1b34418c74cb"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">string TBTK::UnitHandler::getMu_0UnitString </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Get vacuum permeability unit string.</p>
+<dl class="section return"><dt>Returns</dt><dd>string representation of the unit for the vacuum permeability. </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="a94f7b1d1d803336dad7f886b2e1812a6"></a>
 <div class="memitem">
 <div class="memproto">
@@ -1407,6 +1759,55 @@ Static Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Get nuclear magneton unit string.</p>
 <dl class="section return"><dt>Returns</dt><dd>string representation of the unit for the nuclear magneton. </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a85d3412cd3a53a1476ee61a862ad893b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double TBTK::UnitHandler::getN_a </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Get Avogadros number in the currently set units. </p>
+
+</div>
+</div>
+<a class="anchor" id="ab28f55c4b04a9515688a9d0bf6bed982"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">string TBTK::UnitHandler::getN_aUnitString </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>GetAvogadros number unit string.</p>
+<dl class="section return"><dt>Returns</dt><dd>string representation of the unit for Avogadros number. </dd></dl>
 
 </div>
 </div>
@@ -1507,6 +1908,56 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <p>Set charge unit. </p>
+
+</div>
+</div>
+<a class="anchor" id="a8e2be7d4033ed6bae33c62739b5effb9"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void TBTK::UnitHandler::setCountScale </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>scale</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Set count unit. </p>
+
+</div>
+</div>
+<a class="anchor" id="aa87f6e797ae6840081c54d27fce6ed29"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void TBTK::UnitHandler::setCountUnit </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classTBTK_1_1UnitHandler.html#a805251aed3556a4f585dc16a25d8afa0">CountUnit</a>&#160;</td>
+          <td class="paramname"><em>unit</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Set counting unit. </p>
 
 </div>
 </div>
@@ -1717,7 +2168,7 @@ Static Public Member Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Apr 11 2016 00:09:18 for TBTK by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Apr 13 2016 18:04:25 for TBTK by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

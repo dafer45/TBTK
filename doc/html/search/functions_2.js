@@ -15,6 +15,8 @@ var searchData=
   ['construct',['construct',['../classTBTK_1_1AmplitudeSet.html#a40c60ebdfb6371cea28e180f32a40b74',1,'TBTK::AmplitudeSet::construct()'],['../classTBTK_1_1Model.html#a7a8e7ee0fdf194a070c6ac2068d8c17c',1,'TBTK::Model::construct()']]],
   ['convertchargebtn',['convertChargeBtN',['../classTBTK_1_1UnitHandler.html#a20f8e0e0c713f1996a796c783d75800a',1,'TBTK::UnitHandler']]],
   ['convertchargentb',['convertChargeNtB',['../classTBTK_1_1UnitHandler.html#a9b6c8905d44c43aab7a62f469c86be30',1,'TBTK::UnitHandler']]],
+  ['convertcountbtn',['convertCountBtN',['../classTBTK_1_1UnitHandler.html#a94369c85a6ae122b83dc65bebc5d3596',1,'TBTK::UnitHandler']]],
+  ['convertcountntb',['convertCountNtB',['../classTBTK_1_1UnitHandler.html#af51d72f75a0248a3e1a1ecd052c40319',1,'TBTK::UnitHandler']]],
   ['convertenergybtn',['convertEnergyBtN',['../classTBTK_1_1UnitHandler.html#a399a089d80efd877b9b330fd4d827f7d',1,'TBTK::UnitHandler']]],
   ['convertenergyntb',['convertEnergyNtB',['../classTBTK_1_1UnitHandler.html#a953486508529bc7a1121aa2d15f9ae4d',1,'TBTK::UnitHandler']]],
   ['convertlengthbtn',['convertLengthBtN',['../classTBTK_1_1UnitHandler.html#a23c1013d64c1a9275ab554dfb77f0e2a',1,'TBTK::UnitHandler']]],
