@@ -23,12 +23,14 @@ namespace TBTK{
  *
  *  The UnitHandler handles conversion between the 'natural units' used in the
  *  calculations and standard 'base units'. The base quantities are
- *  Temperature, time, length, energy, and charge, and the default units are
- *  Kelvin (K), second (s), meter (m), electron Volt (eV), and Coulomb (C).
+ *  Temperature, time, length, energy, charge, and count, and the default
+ *  units are Kelvin (K), second (s), meter (m), electron Volt (eV),
+ *  Coulomb (C), and pieces (pcs).
  *
  *  The current base units can be changed with setXXXUnit(), where \f$ XXX \in
- *  \{Temperature, Time, Length, Energy, Charge\}\f$, and subsequent calls will
- *  take input paramaters and return output parameters in corresponding units.
+ *  \{Temperature, Time, Length, Energy, Charge, Count\}\f$, and subsequent
+ *  calls will take input paramaters and return output parameters in
+ *  corresponding units.
  *
  *  The functions setXXXScale() can be used to specify the scale of the 'ruler'
  *  with which parameters in the calculation are meassured. This sets the
@@ -93,6 +95,11 @@ public:
 	 *	C - Coulomb */
 	enum class ChargeUnit{C};
 
+	/** Count unit (base unit):
+	 *	pcs - pieces
+	 *	mol - Mole */
+	enum class CountUnit{pcs, mol};
+
 	/** Mass units (derived unit):<br/>
 	 *	kg - kilogram<br/>
 	 *	g - gram<br/>
@@ -132,6 +139,9 @@ public:
 	/** Get the speed of light in the curently set units. */
 	static double getC();
 
+	/** Get Avogadros number in the currently set units. */
+	static double getN_a();
+
 	/** Get the electron mass in the currently set units. */
 	static double getM_e();
 
@@ -159,6 +169,9 @@ public:
 	/** Set charge unit. */
 	static void setChargeUnit(ChargeUnit unit);
 
+	/** Set counting unit. */
+	static void setCountUnit(CountUnit unit);
+
 	/** Set temperature scale. */
 	static void setTemperatureScale(double scale);
 
@@ -173,6 +186,9 @@ public:
 
 	/** Set charge scale. */
 	static void setChargeScale(double scale);
+
+	/** Set count unit. */
+	static void setCountScale(double scale);
 
 	/** Convert temperature from natural units to base units. */
 	static double convertTemperatureNtB(double temperature);
@@ -189,6 +205,9 @@ public:
 	/** Convert charge from natural units to base units. */
 	static double convertChargeNtB(double charge);
 
+	/** Conver counting from natural units to base units. */
+	static double convertCountNtB(double count);
+
 	/** Convert temperature from base units to natural units. */
 	static double convertTemperatureBtN(double temperature);
 
@@ -203,6 +222,9 @@ public:
 
 	/** Convert charge from base units to natural units. */
 	static double convertChargeBtN(double charge);
+
+	/** Convert count from base units to natural units. */
+	static double convertCountBtN(double count);
 
 	/** Convert mass from derived units to base units. */
 	static double convertMassDtB(double mass, MassUnit unit);
@@ -254,6 +276,11 @@ public:
 	 *  @return string representation of the currently set charge unit. */
 	static std::string getChargeUnitString();
 
+	/** Get count unit string
+	 *
+	 * @return string representation of the current set count unit. */
+	static std::string getCountUnitString();
+
 	/** Get mass unit string.
 	 *
 	 *  @return string representation of the derived mass unit in terms of
@@ -290,6 +317,11 @@ public:
 	 */
 	static std::string getCUnitString();
 
+	/** GetAvogadros number unit string.
+	 *
+	 *  @return string representation of the unit for Avogadros number. */
+	static std::string getN_aUnitString();
+
 	/** Get electron mass unit string.
 	 *
 	 *  @return string representation of the unit for the electron mass. */
@@ -322,6 +354,9 @@ private:
 	/** Speed of light in default units (m/s). */
 	static constexpr double C	= 2.99792458e8;
 
+	/** Avogadros number in default units (pcs). */
+	static constexpr double N_A = 6.022140857e23;
+
 	/** Electron mass in default units (eVs^2/m^2). */
 	static constexpr double M_E	= 5.109989461e5/(C*C);
 
@@ -345,6 +380,9 @@ private:
 
 	/** Speed of light in the currently set units. */
 	static double c;
+
+	/** Avogadros number in the currently set units. */
+	static double n_a;
 
 	/** Electron mass in the currently set units. */
 	static double m_e;
@@ -397,6 +435,9 @@ private:
 	/** Currently set charge unit. */
 	static ChargeUnit chargeUnit;
 
+	/**Currently set count unit. */
+	static CountUnit countUnit;
+
 	/** Currently set temperature scale. */
 	static double temperatureScale;
 
@@ -412,6 +453,9 @@ private:
 	/** Currently set charge scale. */
 	static double chargeScale;
 
+	/** Currently set count scale. */
+	static double countScale;
+
 	/** Update Planck constant. To be called at change of units. */
 	static void updateHbar();
 
@@ -423,6 +467,9 @@ private:
 
 	/** Update speed of light. To be called at change of units. */
 	static void updateC();
+
+	/** Update Avogadros number. To be called at change of units. */
+	static void updateN_a();
 
 	/** Update electron mass. To be called at change of units. */
 	static void updateM_e();
@@ -449,12 +496,16 @@ private:
 	static double getLengthConversionFactor();
 
 	/** Returns the number of unit energies in the currently set unit per
-	 * unit energy in the default unit (eV). */
+	 *  unit energy in the default unit (eV). */
 	static double getEnergyConversionFactor();
 
 	/** Returns the number of unit charges in the currently set unit per
-	 * unit charge in the default unit (C). */
+	 *  unit charge in the default unit (C). */
 	static double getChargeConversionFactor();
+
+	/** Returns the number of unit counts in the the currently set unit per
+	 *  unit count in the default unit (pcs). */
+	static double getCountConversionFactor();
 
 	/** Returns the number of unit masses in the input unit per unit mass
 	 *  in the default unit (eVs^2/m^2). */
@@ -480,6 +531,10 @@ inline double UnitHandler::getE(){
 
 inline double UnitHandler::getC(){
 	return c;
+}
+
+inline double UnitHandler::getN_a(){
+	return n_a;
 }
 
 inline double UnitHandler::getM_e(){
@@ -518,6 +573,10 @@ inline double UnitHandler::convertChargeNtB(double charge){
 	return charge*chargeScale;
 }
 
+inline double UnitHandler::convertCountNtB(double count){
+	return count*countScale;
+}
+
 inline double UnitHandler::convertTemperatureBtN(double temperature){
 	return temperature/temperatureScale;
 }
@@ -536,6 +595,10 @@ inline double UnitHandler::convertEnergyBtN(double energy){
 
 inline double UnitHandler::convertChargeBtN(double charge){
 	return charge/chargeScale;
+}
+
+inline double UnitHandler::convertCountBtN(double count){
+	return count/countScale;
 }
 
 };

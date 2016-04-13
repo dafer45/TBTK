@@ -15,6 +15,7 @@ double UnitHandler::hbar	= HBAR;
 double UnitHandler::k_b		= K_B;
 double UnitHandler::e		= E;
 double UnitHandler::c		= C;
+double UnitHandler::n_a		= N_A;
 double UnitHandler::m_e		= M_E;
 double UnitHandler::m_p		= M_P;
 double UnitHandler::mu_b	= MU_B;
@@ -25,12 +26,14 @@ UnitHandler::TimeUnit 		UnitHandler::timeUnit		= UnitHandler::TimeUnit::s;
 UnitHandler::LengthUnit		UnitHandler::lengthUnit		= UnitHandler::LengthUnit::m;
 UnitHandler::EnergyUnit		UnitHandler::energyUnit		= UnitHandler::EnergyUnit::eV;
 UnitHandler::ChargeUnit		UnitHandler::chargeUnit		= UnitHandler::ChargeUnit::C;
+UnitHandler::CountUnit		UnitHandler::countUnit		= UnitHandler::CountUnit::pcs;
 
 double UnitHandler::temperatureScale	= 1.;
 double UnitHandler::timeScale		= 1.;
 double UnitHandler::lengthScale		= 1.;
 double UnitHandler::energyScale		= 1.;
 double UnitHandler::chargeScale		= 1.;
+double UnitHandler::countScale		= 1.;
 
 void UnitHandler::setTemperatureUnit(TemperatureUnit unit){
 	double oldConversionFactor = getTemperatureConversionFactor();
@@ -91,6 +94,15 @@ void UnitHandler::setChargeUnit(ChargeUnit unit){
 	updateMu_n();
 }
 
+void UnitHandler::setCountUnit(CountUnit unit){
+	double oldConversionFactor = getCountConversionFactor();
+	countUnit = unit;
+	double newConversionFactor = getCountConversionFactor();
+	countScale *= newConversionFactor/oldConversionFactor;
+
+	updateN_a();
+}
+
 void UnitHandler::setTemperatureScale(double scale){
 	temperatureScale = scale;
 }
@@ -109,6 +121,10 @@ void UnitHandler::setEnergyScale(double scale){
 
 void UnitHandler::setChargeScale(double scale){
 	chargeScale = scale;
+}
+
+void UnitHandler::setCountScale(double scale){
+	countScale = scale;
 }
 
 double UnitHandler::convertMassDtB(double mass, MassUnit unit){
@@ -262,6 +278,17 @@ string UnitHandler::getChargeUnitString(){
 	}
 }
 
+string UnitHandler::getCountUnitString(){
+	switch(countUnit){
+		case CountUnit::pcs:
+			return "pcs";
+		case CountUnit::mol:
+			return "mol";
+		default:
+			return "Unkown unit";
+	}
+}
+
 string UnitHandler::getMassUnitString(){
 	stringstream ss;
 	ss << getEnergyUnitString() << getTimeUnitString() << "^2" << "/" << getLengthUnitString() << "^2";
@@ -299,6 +326,10 @@ string UnitHandler::getCUnitString(){
 	ss << getLengthUnitString() << "^2" << "/" << getTimeUnitString() << "^2";
 
 	return ss.str();
+}
+
+string UnitHandler::getN_aUnitString(){
+	return getCountUnitString();
 }
 
 string UnitHandler::getM_eUnitString(){
@@ -350,6 +381,11 @@ void UnitHandler::updateC(){
 	c = C;
 	c *= getLengthConversionFactor()*getLengthConversionFactor();
 	c /= getTimeConversionFactor()*getTimeConversionFactor();
+}
+
+void UnitHandler::updateN_a(){
+	n_a = N_A;
+	n_a *= getCountConversionFactor();
 }
 
 void UnitHandler::updateM_e(){
@@ -468,6 +504,19 @@ double UnitHandler::getChargeConversionFactor(){
 			return 1.;
 		default:	//Should never happen, hard error generated for quick bug detection
 			cout << "Error in UnitHandler::getChargeConversionFactor(): Unknown unit - " << static_cast<int>(chargeUnit);
+			exit(1);
+			return 0.;	//Never happens
+	}
+}
+
+double UnitHandler::getCountConversionFactor(){
+	switch(countUnit){
+		case CountUnit::pcs:
+			return 1.;	//Reference scale
+		case CountUnit::mol:	//1/N_A mol per pcs
+			return 1./N_A;
+		default:	//Should never happen, hard error generated for quick bug detection
+			cout << "Error in UnitHandler::getCountConversionFactor(): Unknown unit - " << static_cast<int>(countUnit);
 			exit(1);
 			return 0.;	//Never happens
 	}
