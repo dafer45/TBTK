@@ -417,12 +417,12 @@ void DPropertyExtractor::calculateDensityCallback(DPropertyExtractor *cb_this, v
 		double weight;
 		if(statistics == Model::Statistics::FermiDirac){
 			weight = Functions::fermiDiracDistribution(eigen_values[n],
-									cb_this->dSolver->getModel()->getFermiLevel(),
+									cb_this->dSolver->getModel()->getChemicalPotential(),
 									cb_this->dSolver->getModel()->getTemperature());
 		}
 		else{
 			weight = Functions::boseEinsteinDistribution(eigen_values[n],
-									cb_this->dSolver->getModel()->getFermiLevel(),
+									cb_this->dSolver->getModel()->getChemicalPotential(),
 									cb_this->dSolver->getModel()->getTemperature());
 		}
 
@@ -465,12 +465,12 @@ void DPropertyExtractor::calculateMAGCallback(DPropertyExtractor *cb_this, void 
 		double weight;
 		if(statistics == Model::Statistics::FermiDirac){
 			weight = Functions::fermiDiracDistribution(eigen_values[n],
-									cb_this->dSolver->getModel()->getFermiLevel(),
+									cb_this->dSolver->getModel()->getChemicalPotential(),
 									cb_this->dSolver->getModel()->getTemperature());
 		}
 		else{
 			weight = Functions::boseEinsteinDistribution(eigen_values[n],
-									cb_this->dSolver->getModel()->getFermiLevel(),
+									cb_this->dSolver->getModel()->getChemicalPotential(),
 									cb_this->dSolver->getModel()->getTemperature());
 		}
 

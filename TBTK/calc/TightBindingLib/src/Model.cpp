@@ -15,7 +15,7 @@ namespace TBTK{
 
 Model::Model(){
 	temperature = 0.;
-	fermiLevel = 0.;
+	chemicalPotential = 0.;
 	isTalkative = true;
 }
 

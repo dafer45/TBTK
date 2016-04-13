@@ -69,7 +69,7 @@ void TimeEvolver::run(){
 	if(numberOfParticles < 0){
 		for(int n = 0; n < basisSize; n++){
 			numberOfParticles++;
-			if(eigenValues[n] >= model->getFermiLevel())
+			if(eigenValues[n] >= model->getChemicalPotential())
 				break;
 		}
 	}
@@ -164,7 +164,7 @@ void TimeEvolver::onDiagonalizationFinished(){
 
 	for(int n = 0; n < model->getBasisSize(); n++){
 		if(numberOfParticles < 0){
-			if(eigenValues[n] < model->getFermiLevel())
+			if(eigenValues[n] < model->getChemicalPotential())
 				occupancy[n] = 1.;
 			else
 				occupancy[n] = 0.;
@@ -229,7 +229,7 @@ void TimeEvolver::decayInstantly(){
 	else{
 		numberOfParticles = 0;
 		for(int n = 0; n < basisSize; n++){
-			if(eigenValues[n] < model->getFermiLevel()){
+			if(eigenValues[n] < model->getChemicalPotential()){
 				occupancy[n] = 1.;
 				numberOfParticles++;
 			}
@@ -248,7 +248,7 @@ void TimeEvolver::decayInterpolate(){
 	}
 	else{
 		for(int n = 0; n < basisSize; n++){
-			if(eigenValues[n] < model->getFermiLevel()){
+			if(eigenValues[n] < model->getChemicalPotential()){
 				occupancy[n] += 0.00000001;
 				if(occupancy[n] > 1)
 					occupancy[n] = 1.;

@@ -56,11 +56,11 @@ public:
 	/** Get temperature. */
 	double getTemperature();
 
-	/** Set Fermi level. */
-	void setFermiLevel(double fermiLevel);
+	/** Set chemical potential. */
+	void setChemicalPotential(double chemicalPotential);
 
-	/** Get Fermi level. */
-	double getFermiLevel();
+	/** Get chemical potential. */
+	double getChemicalPotential();
 
 	/** AmplitudeSet containing @link HoppingAmplitude HoppingAmplitudes
 	 *  @endlink.*/
@@ -82,8 +82,8 @@ private:
 	/** Temperature. */
 	double temperature;
 
-	/** Fermi level. */
-	double fermiLevel;
+	/** Chemical potential. */
+	double chemicalPotential;
 
 	/** Statistics (Fermi-Dirac or Bose-Einstein). */
 	Statistics statistics;
@@ -109,12 +109,12 @@ inline double Model::getTemperature(){
 	return temperature;
 }
 
-inline void Model::setFermiLevel(double fermiLevel){
-	this->fermiLevel = fermiLevel;
+inline void Model::setChemicalPotential(double chemicalPotential){
+	this->chemicalPotential = chemicalPotential;
 }
 
-inline double Model::getFermiLevel(){
-	return fermiLevel;
+inline double Model::getChemicalPotential(){
+	return chemicalPotential;
 }
 
 inline void Model::setStatistics(Statistics statistics){
