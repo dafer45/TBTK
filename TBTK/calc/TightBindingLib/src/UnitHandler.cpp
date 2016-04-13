@@ -439,8 +439,8 @@ void UnitHandler::updateE(){
 
 void UnitHandler::updateC(){
 	c = C;
-	c *= getLengthConversionFactor()*getLengthConversionFactor();
-	c /= getTimeConversionFactor()*getTimeConversionFactor();
+	c *= getLengthConversionFactor();
+	c /= getTimeConversionFactor();
 }
 
 void UnitHandler::updateN_a(){
