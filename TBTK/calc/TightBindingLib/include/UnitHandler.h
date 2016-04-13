@@ -58,65 +58,65 @@ public:
 	 *	K - Kelvin */
 	enum class TemperatureUnit {K};
 
-	/* Time units (base unit):
-	 *	s - second
-	 *	ms - millisecond
-	 *	us - microsecond
-	 *	ns - nanosecond
-	 *	ps - picosecond
-	 *	fs - femtosecond
+	/* Time units (base unit):<br/>
+	 *	s - second<br/>
+	 *	ms - millisecond<br/>
+	 *	us - microsecond<br/>
+	 *	ns - nanosecond<br/>
+	 *	ps - picosecond<br/>
+	 *	fs - femtosecond<br/>
 	 *	as - attosecond */
 	enum class TimeUnit {s, ms, us, ns, ps, fs, as};
 
-	/** Length units (base unit):
-	 *	m - meter
-	 *	mm - millimeter
-	 *	um - micrometer
-	 *	nm - nanometer
-	 *	pm - picometer
-	 *	fm - femtometer
-	 *	am - attometer
+	/** Length units (base unit):<br/>
+	 *	m - meter<br/>
+	 *	mm - millimeter<br/>
+	 *	um - micrometer<br/>
+	 *	nm - nanometer<br/>
+	 *	pm - picometer<br/>
+	 *	fm - femtometer<br/>
+	 *	am - attometer<br/>
 	 *	Ao - Angstrom */
 	enum class LengthUnit{m, mm, um, nm, pm, fm, am, Ao};
 
-	/** Energy units (base unit):
-	 *	GeV - gigaelectron Volt
-	 *	MeV - megaelectron Volt
-	 *	keV - kiloelectron Volt
-	 *	eV - electron Volt
-	 *	meV - millielectron Volt
-	 *	ueV - microelectron Volt
+	/** Energy units (base unit):<br/>
+	 *	GeV - gigaelectron Volt<br/>
+	 *	MeV - megaelectron Volt<br/>
+	 *	keV - kiloelectron Volt<br/>
+	 *	eV - electron Volt<br/>
+	 *	meV - millielectron Volt<br/>
+	 *	ueV - microelectron Volt<br/>
 	 *	J - Joule */
 	enum class EnergyUnit{GeV, MeV, keV, eV, meV, ueV, J};
 
-	/** Charge units (base unit):
+	/** Charge units (base unit):<br/>
 	 *	C - Coulomb */
 	enum class ChargeUnit{C};
 
-	/** Mass units (derived unit):
-	 *	kg - kilogram
-	 *	g - gram
-	 *	mg - milligram
-	 *	ug - microgram
-	 *	ng - nanogram
-	 *	pg - picogram
-	 *	fg - femtogram
-	 *	ag - attogram
+	/** Mass units (derived unit):<br/>
+	 *	kg - kilogram<br/>
+	 *	g - gram<br/>
+	 *	mg - milligram<br/>
+	 *	ug - microgram<br/>
+	 *	ng - nanogram<br/>
+	 *	pg - picogram<br/>
+	 *	fg - femtogram<br/>
+	 *	ag - attogram<br/>
 	 *	u - atomic mass */
 	enum class MassUnit{kg, g, mg, ug, ng, pg, fg, ag, u};
 
-	/** Magnetic unit (derived unit):
-	 *	MT - megatesla
-	 *	kT - kilotesla
-	 *	T - Tesla
-	 *	mT - millitesla
-	 *	uT - microtesla
-	 *	nT - nanotesla
-	 *	GG - gigagauss
-	 *	MG - megagauss
-	 *	kG - kilogauss
-	 *	G - Gauss
-	 *	mG - milligauss
+	/** Magnetic unit (derived unit):<br/>
+	 *	MT - megatesla<br/>
+	 *	kT - kilotesla<br/>
+	 *	T - Tesla<br/>
+	 *	mT - millitesla<br/>
+	 *	uT - microtesla<br/>
+	 *	nT - nanotesla<br/>
+	 *	GG - gigagauss<br/>
+	 *	MG - megagauss<br/>
+	 *	kG - kilogauss<br/>
+	 *	G - Gauss<br/>
+	 *	mG - milligauss<br/>
 	 *	uG - microgauss */
 	enum class MagneticFieldUnit{MT, kT, T, mT, uT, nT, GG, MG, kG, G, mG, uG};
 
