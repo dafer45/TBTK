@@ -336,6 +336,9 @@ void ChebyshevSolver::calculateCoefficientsGPU(vector<Index> &to, Index from, co
 			coefficients[n + c*numCoefficients] = coefficients[n + c*numCoefficients]*sinh(lambda*(1 - n/(double)numCoefficients))/sinh(lambda);
 }
 
+/** !!!Experimental!!!
+ *  Applying damping factor.
+ */
 void ChebyshevSolver::calculateCoefficientsGPU(vector<Index> &to, Index from, complex<double> *coefficients, int numCoefficients, complex<double> *damping, double broadening){
 	AmplitudeSet *amplitudeSet = &model->amplitudeSet;
 
