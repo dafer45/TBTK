@@ -31,7 +31,7 @@ void TreeNode::add(HoppingAmplitude ha){
 	add(ha, 0);
 }
 
-void TreeNode::add(HoppingAmplitude ha, unsigned int subindex){
+void TreeNode::add(HoppingAmplitude &ha, unsigned int subindex){
 	if(subindex < ha.fromIndex.indices.size()){
 		//If the current subindex is not the last, the HoppingAmplitude
 		//is propagated to the next node level.

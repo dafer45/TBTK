@@ -22,13 +22,13 @@ Model::Model(){
 Model::~Model(){
 }
 
-void Model::addHA(HoppingAmplitude ha){
+/*void Model::addHA(HoppingAmplitude ha){
 	amplitudeSet.addHA(ha);
 }
 
 void Model::addHAAndHC(HoppingAmplitude ha){
 	amplitudeSet.addHAAndHC(ha);
-}
+}*/
 
 void Model::construct(){
 	if(isTalkative)

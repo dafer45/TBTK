@@ -93,6 +93,14 @@ private:
 	bool isTalkative;
 };
 
+inline void Model::addHA(HoppingAmplitude ha){
+	amplitudeSet.addHA(ha);
+}
+
+inline void Model::addHAAndHC(HoppingAmplitude ha){
+	amplitudeSet.addHAAndHC(ha);
+}
+
 inline int Model::getBasisSize(){
 	return amplitudeSet.getBasisSize();
 }

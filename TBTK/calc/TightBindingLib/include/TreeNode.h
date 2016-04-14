@@ -89,7 +89,7 @@ public:
 private:
 	/** Add HoppingAmplitude. Is called by the public TreeNode::add and is
 	 *  called recursively. */
-	void add(HoppingAmplitude ha, unsigned int subindex);
+	void add(HoppingAmplitude &ha, unsigned int subindex);
 
 	/** Get HoppingAmpilitudes. Is called by the public TreeNode::getHAs
 	 *  and is called recursively. */
