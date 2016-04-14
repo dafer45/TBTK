@@ -94,6 +94,22 @@ public:
 	 */
 	void calculateCoefficientsGPU(Index to, Index from, std::complex<double> *coefficients, int numCoefficients, double broadening = 0.0001);
 
+	/** !!!Exprimental!!!
+	 *  Calculates the Chebyshev coefficients for \f$ G_{ij}(E)\f$, where
+	 *  \f$i = \textrm{to}\f$ is a set of indices and \f$j =
+	 *  \textrm{from}\f$. Runs on GPU. Applies a damping mask, which can be
+	 *  used to use absorbing boundary conditions.
+	 *  @param to vector of 'to'-indeces, or \f$i\f$'s.
+	 *  @param from 'From'-index, or \f$j\f$.
+	 *  @param coefficients Pointer to array able to hold
+	 *  @param damping Pointer to array containing damping
+	 *  numCoefficients\f$\times\f$toIndeices.size() coefficients.
+	 *  @param numCoefficients Number of coefficients to calculate for each
+	 *  to-index.
+	 *  @param broadening Broadening to use in convolusion of coefficients
+	 *  to remedy Gibb's osciallations. */
+	void calculateCoefficientsGPU(std::vector<Index> &to, Index from, std::complex<double> *coefficients, int numCoefficients, std::complex<double> *damping, double broadening = 0.0001);
+
 	/** Experimental. */
 	void calculateCoefficientsWithCutoff(Index to, Index from, std::complex<double> *coefficients, int numCoefficients, double componentCutoff, double broadening = 0.0001);
 
