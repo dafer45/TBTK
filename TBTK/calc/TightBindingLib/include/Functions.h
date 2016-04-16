@@ -28,7 +28,7 @@ inline double Functions::fermiDiracDistribution(double energy, double mu, double
 	double e = UnitHandler::convertEnergyNtB(energy - mu);
 	double t = UnitHandler::convertTemperatureNtB(temperature);
 	if(t != 0.){
-		return 1./(exp(e/(UnitHandler::getK_b()*t)) + 1.);
+		return 1./(exp(e/(UnitHandler::getK_bB()*t)) + 1.);
 	}
 	else{
 		if(e < 0.)
@@ -45,7 +45,7 @@ inline double Functions::boseEinsteinDistribution(double energy, double mu, doub
 	double t = UnitHandler::convertTemperatureNtB(temperature);
 
 	if(t != 0.){
-		return 1./(exp(e/(UnitHandler::getK_b()*t)) - 1.);
+		return 1./(exp(e/(UnitHandler::getK_bB()*t)) - 1.);
 	}
 	else{
 		std::cout << "Error in Functions::boseEinsteinDistribution(): "

@@ -153,6 +153,7 @@ private:
 
 inline void FileWriter::setFileName(std::string filename){
 	FileWriter::filename = filename;
+	isInitialized = false;
 }
 
 inline void FileWriter::clear(){

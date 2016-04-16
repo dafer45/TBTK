@@ -144,38 +144,71 @@ public:
 	 *	uG - microgauss */
 	enum class MagneticFieldUnit{MT, kT, T, mT, uT, nT, GG, MG, kG, G, mG, uG};
 
-	/** Get the Planck constant in the currently set units. */
-	static double getHbar();
+	/** Get the Planck constant in the currently set base units. */
+	static double getHbarB();
 
-	/** Get the Boltzmann constant in the currently set units. */
-	static double getK_b();
+	/** Get the Planck constant in the currently set natural units. */
+	static double getHbarN();
 
-	/** Get the elementary charge in the currently set units. */
-	static double getE();
+	/** Get the Boltzmann constant in the currently set base units. */
+	static double getK_bB();
 
-	/** Get the speed of light in the curently set units. */
-	static double getC();
+	/** Get the Boltzmann constant in the currently set natural units. */
+	static double getK_bN();
 
-	/** Get Avogadros number in the currently set units. */
-	static double getN_a();
+	/** Get the elementary charge in the currently set base units. */
+	static double getEB();
 
-	/** Get the electron mass in the currently set units. */
-	static double getM_e();
+	/** Get the elementary charge in the currently set natural units. */
+	static double getEN();
 
-	/** Get the proton mass in the currently set units. */
-	static double getM_p();
+	/** Get the speed of light in the curently set base units. */
+	static double getCB();
 
-	/** Get the Bohr magneton in the currently set units. */
-	static double getMu_b();
+	/** Get the speed of light in the curently set natural units. */
+	static double getCN();
 
-	/** Get the nuclear magneton in the currently set units. */
-	static double getMu_n();
+	/** Get Avogadros number in the currently set base units. */
+	static double getN_aB();
 
-	/** Get the vacuum permeability in the currently set units. */
-	static double getMu_0();
+	/** Get Avogadros number in the currently set natural units. */
+	static double getN_aN();
 
-	/** Get the vacuum permittivity in the currently set units. */
-	static double getEpsilon_0();
+	/** Get the electron mass in the currently set base units. */
+	static double getM_eB();
+
+	/** Get the electron mass in the currently set natural units. */
+	static double getM_eN();
+
+	/** Get the proton mass in the currently set base units. */
+	static double getM_pB();
+
+	/** Get the proton mass in the currently set natural units. */
+	static double getM_pN();
+
+	/** Get the Bohr magneton in the currently set base units. */
+	static double getMu_bB();
+
+	/** Get the Bohr magneton in the currently set natural units. */
+	static double getMu_bN();
+
+	/** Get the nuclear magneton in the currently set base units. */
+	static double getMu_nB();
+
+	/** Get the nuclear magneton in the currently set natural units. */
+	static double getMu_nN();
+
+	/** Get the vacuum permeability in the currently set base units. */
+	static double getMu_0B();
+
+	/** Get the vacuum permeability in the currently set natural units. */
+	static double getMu_0N();
+
+	/** Get the vacuum permittivity in the currently set base units. */
+	static double getEpsilon_0B();
+
+	/** Get the vacuum permittivity in the currently set natural units. */
+	static double getEpsilon_0N();
 
 	/** Set temperature unit. */
 	static void setTemperatureUnit(TemperatureUnit unit);
@@ -570,48 +603,92 @@ private:
 	static double getMagneticFieldConversionFactor(MagneticFieldUnit unit);
 };
 
-inline double UnitHandler::getHbar(){
+inline double UnitHandler::getHbarB(){
 	return hbar;
 }
 
-inline double UnitHandler::getK_b(){
+inline double UnitHandler::getHbarN(){
+	return hbar/(energyScale*timeScale);
+}
+
+inline double UnitHandler::getK_bB(){
 	return k_b;
 }
 
-inline double UnitHandler::getE(){
+inline double UnitHandler::getK_bN(){
+	return k_b*temperatureScale/energyScale;
+}
+
+inline double UnitHandler::getEB(){
 	return e;
 }
 
-inline double UnitHandler::getC(){
+inline double UnitHandler::getEN(){
+	return e/chargeScale;
+}
+
+inline double UnitHandler::getCB(){
 	return c;
 }
 
-inline double UnitHandler::getN_a(){
+inline double UnitHandler::getCN(){
+	return c*timeScale/lengthScale;
+}
+
+inline double UnitHandler::getN_aB(){
 	return n_a;
 }
 
-inline double UnitHandler::getM_e(){
+inline double UnitHandler::getN_aN(){
+	return n_a/countScale;
+}
+
+inline double UnitHandler::getM_eB(){
 	return m_e;
 }
 
-inline double UnitHandler::getM_p(){
+inline double UnitHandler::getM_eN(){
+	return m_e*lengthScale*lengthScale/(energyScale*timeScale*timeScale);
+}
+
+inline double UnitHandler::getM_pB(){
 	return m_p;
 }
 
-inline double UnitHandler::getMu_b(){
+inline double UnitHandler::getM_pN(){
+	return m_p*lengthScale*lengthScale/(energyScale*timeScale*timeScale);
+}
+
+inline double UnitHandler::getMu_bB(){
 	return mu_b;
 }
 
-inline double UnitHandler::getMu_n(){
+inline double UnitHandler::getMu_bN(){
+	return mu_b*timeScale/(chargeScale*lengthScale*lengthScale);
+}
+
+inline double UnitHandler::getMu_nB(){
 	return mu_n;
 }
 
-inline double UnitHandler::getMu_0(){
+inline double UnitHandler::getMu_nN(){
+	return mu_n*timeScale/(chargeScale*lengthScale*lengthScale);
+}
+
+inline double UnitHandler::getMu_0B(){
 	return mu_0;
 }
 
-inline double UnitHandler::getEpsilon_0(){
+inline double UnitHandler::getMu_0N(){
+	return mu_0*chargeScale*chargeScale*lengthScale/(energyScale*timeScale*timeScale);
+}
+
+inline double UnitHandler::getEpsilon_0B(){
 	return epsilon_0;
+}
+
+inline double UnitHandler::getEpsilon_0N(){
+	return epsilon_0*energyScale*lengthScale/(chargeScale*chargeScale);
 }
 
 inline double UnitHandler::convertTemperatureNtB(double temperature){
