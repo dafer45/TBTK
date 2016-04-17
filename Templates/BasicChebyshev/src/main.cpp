@@ -32,8 +32,8 @@ int main(int argc, char **argv){
 	//Parameters. The SCALE_FACOTR is required for restricting the energy
 	//spectrum to the interval [-1,1].
 	const double SCALE_FACTOR = 5.;
-	complex<double> mu = -1.0/SCALE_FACTOR;
-	complex<double> t = 1.0/SCALE_FACTOR;
+	complex<double> mu = -1.0;
+	complex<double> t = 1.0;
 
 	//Create model and set up hopping parameters
 	Model model;
@@ -62,6 +62,7 @@ int main(int argc, char **argv){
 	//Setup ChebyshevSolver
 	ChebyshevSolver cSolver;
 	cSolver.setModel(&model);
+	cSolver.setScaleFactor(SCALE_FACTOR);
 
 	//Generate lookup table for quicker evaluation of Green's functions.
 	cSolver.generateLookupTable(NUM_COEFFICIENTS, ENERGY_RESOLUTION);
