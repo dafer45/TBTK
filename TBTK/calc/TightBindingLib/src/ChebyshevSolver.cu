@@ -616,11 +616,11 @@ void ChebyshevSolver::loadLookupTableGPU(){
 	if(isTalkative){
 		cout << "\tCUDA memory requirement: ";
 		if(memoryRequirement < 1024)
-			cout << memoryRequirement << "B";
+			cout << memoryRequirement << "B\n";
 		else if(memoryRequirement < 1024*1024)
-			cout << memoryRequirement/1024 << "KB";
+			cout << memoryRequirement/1024 << "KB\n";
 		else
-			cout << memoryRequirement/1024/1024 << "MB";
+			cout << memoryRequirement/1024/1024 << "MB\n";
 	}
 
 	if(cudaMalloc((void**)&generatingFunctionLookupTable_device, lookupTableNumCoefficients*lookupTableResolution*sizeof(complex<double>))  != cudaSuccess)
