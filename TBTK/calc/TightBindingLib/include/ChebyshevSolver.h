@@ -44,12 +44,6 @@ public:
 	/** Get scale factor. */
 	double getScaleFactor();
 
-	/** Set damping mask. The damping mask will be used as prefactor in the
-	 *  modified Chebyshev expansion used for implementing absorbing
-	 *  boundary conditions. If set to NULL (default), no damping term will
-	 *  be applied.*/
-	void setDamping(std::complex<double> *damping);
-
 	/** Calculates the Chebyshev coefficients for \f$ G_{ij}(E)\f$, where
 	 *  \f$i = \textrm{to}\f$ is a set of indices and \f$j =
 	 *  \textrm{from}\f$. Runs on CPU.
@@ -175,6 +169,25 @@ public:
 	 * in the call to ChebyshevSolver::generateLookupTable
 	 */
 	void generateGreensFunctionGPU(std::complex<double> *greensFunction, std::complex<double> *coefficients);
+
+	/** Damping potential based on J. Chem. Phys. 117, 9552 (2002).
+	 *
+	 *  @param distanceToEdge Distance from edge to the point at which to
+	 *  calculate the damping factor.
+	 *  @param boundarySize Size of the boundary region.
+	 *  @param b Tuning parameter for optimizing the potential
+	 *  @param c Tuning parameter for optimizing the potential
+	 *
+	 *  @return exp(-gamma), where gamma = 0 in the interior, infty outside
+	 *  the edge, and determined by the function described in J. Chem.
+	 *  Phys. 117, 9552 (2002), inside the boundary region. */
+	std::complex<double> getMonolopoulosABCDamping(double distanceToEdge, double boundarySize, double e = 1., double c = 2.62);
+
+	/** Set damping mask. The damping mask will be used as prefactor in the
+	 *  modified Chebyshev expansion used for implementing absorbing
+	 *  boundary conditions. If set to NULL (default), no damping term will
+	 *  be applied.*/
+	void setDamping(std::complex<double> *damping);
 
 	void setTalkative(bool isTalkative);
 private:

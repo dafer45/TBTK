@@ -6,6 +6,7 @@
 #include "../include/ChebyshevSolver.h"
 #include <math.h>
 #include "../include/HALinkedList.h"
+#include "../include/UnitHandler.h"
 
 using namespace std;
 
@@ -522,6 +523,23 @@ void ChebyshevSolver::generateGreensFunction(complex<double> *greensFunction, co
 			}
 		}
 	}
+}
+
+complex<double> ChebyshevSolver::getMonolopoulosABCDamping(double distanceToBoundary, double boundarySize, double e, double c){
+	complex<double> gamma = 0.;
+
+	if(distanceToBoundary < 0){
+		return 0.;
+	}
+	else if(distanceToBoundary < boundarySize){
+		double hbar = UnitHandler::getHbarN();
+		double m = UnitHandler::getM_eN();
+		double y = c*(boundarySize - distanceToBoundary)/boundarySize;
+		double f = 4./pow(c-y, 2) + 4./pow(c+y, 2) - 8./pow(c, 2);
+		gamma = asinh(e*(pow(hbar, 2)/(2*m))*pow(2*M_PI/boundarySize, 2)*(f/scaleFactor));
+	}
+
+	return exp(-gamma);
 }
 
 };	//End of namespace TBTK
