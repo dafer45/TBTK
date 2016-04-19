@@ -44,6 +44,12 @@ public:
 	/** Get scale factor. */
 	double getScaleFactor();
 
+	/** Set damping mask. The damping mask will be used as prefactor in the
+	 *  modified Chebyshev expansion used for implementing absorbing
+	 *  boundary conditions. If set to NULL (default), no damping term will
+	 *  be applied.*/
+	void setDamping(std::complex<double> *damping);
+
 	/** Calculates the Chebyshev coefficients for \f$ G_{ij}(E)\f$, where
 	 *  \f$i = \textrm{to}\f$ is a set of indices and \f$j =
 	 *  \textrm{from}\f$. Runs on CPU.
@@ -178,6 +184,9 @@ private:
 	/** Scale factor. */
 	double scaleFactor;
 
+	/** Damping mask. */
+	std::complex<double> *damping;
+
 	/** Pointer to lookup table used to speed up evaluation of multiple
 	 *  Green's functions. */
 	std::complex<double> **generatingFunctionLookupTable;
@@ -208,6 +217,10 @@ inline void ChebyshevSolver::setScaleFactor(double scaleFactor){
 
 inline double ChebyshevSolver::getScaleFactor(){
 	return scaleFactor;
+}
+
+inline void ChebyshevSolver::setDamping(std::complex<double> *damping){
+	this->damping = damping;
 }
 
 inline void ChebyshevSolver::setTalkative(bool isTalkative){

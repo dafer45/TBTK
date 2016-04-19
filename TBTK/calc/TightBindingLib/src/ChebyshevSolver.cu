@@ -37,7 +37,7 @@ void multiplyMatrixAndVector(cuDoubleComplex *jIn,
 /** !!!Experimental!!!
  *  Applying damping factor.
  */
-__global__
+/*__global__
 void multiplyMatrixAndVector(cuDoubleComplex *jIn,
 				cuDoubleComplex *jResult,
 				cuDoubleComplex *damping,
@@ -56,7 +56,7 @@ void multiplyMatrixAndVector(cuDoubleComplex *jIn,
 
 	if(to < basisSize && coefficientMap[to] != -1)
 		coefficients[coefficientMap[to]*numCoefficients + currentCoefficient] = jResult[to];
-}
+}*/
 
 __global__
 void subtractVector(cuDoubleComplex *jIn2, cuDoubleComplex *jResult, int basisSize){
@@ -69,13 +69,20 @@ void subtractVector(cuDoubleComplex *jIn2, cuDoubleComplex *jResult, int basisSi
  *  Applying damping factor.
  */
 __global__
-void subtractVector(cuDoubleComplex *jIn2, cuDoubleComplex *jResult, cuDoubleComplex *damping, int basisSize){
+/*void subtractVector(cuDoubleComplex *jIn2, cuDoubleComplex *jResult, cuDoubleComplex *damping, int basisSize){
 	int idx = blockIdx.x*blockDim.x + threadIdx.x;
 	if(idx < basisSize){
 		jResult[idx] = make_cuDoubleComplex(-cuCreal(jIn2[idx]), -cuCimag(jIn2[idx]));
 		jResult[idx] = cuCmul(damping[idx], jResult[idx]);
 		jResult[idx] = cuCmul(damping[idx], jResult[idx]);
 	}
+}*/
+
+__global__
+void applyDamping(cuDoubleComplex *jResult, cuDoubleComplex *damping, int basisSize){
+	int idx = blockIdx.x*blockDim.x + threadIdx.x;
+	if(idx < basisSize)
+		jResult[idx] = cuCmul(damping[idx], jResult[idx]);
 }
 
 void debugCUDA(complex<double> *jIn1_device, complex<double> *jIn2_device, complex<double> *jResult_device, int basisSize){
@@ -118,6 +125,11 @@ void ChebyshevSolver::calculateCoefficientsGPU(vector<Index> &to, Index from, co
 		cout << "ChebyshevSolver::calculateCoefficientsGPU\n";
 		cout << "\tFrom Index: " << fromBasisIndex << "\n";
 		cout << "\tBasis size: " << amplitudeSet->getBasisSize() << "\n";
+		cout << "\tUsing damping: ";
+		if(damping != NULL)
+			cout << "Yes\n";
+		else
+			cout << "No\n";
 	}
 
 	complex<double> *jIn1 = new complex<double>[amplitudeSet->getBasisSize()];
@@ -188,6 +200,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(vector<Index> &to, Index from, co
 	int *fromIndices_device;
 	complex<double> *coefficients_device;
 	int *coefficientMap_device;
+	complex<double> *damping_device = NULL;
 
 	int totalMemoryRequirement = amplitudeSet->getBasisSize()*sizeof(complex<double>);
 	totalMemoryRequirement += amplitudeSet->getBasisSize()*sizeof(complex<double>);
@@ -196,6 +209,8 @@ void ChebyshevSolver::calculateCoefficientsGPU(vector<Index> &to, Index from, co
 	totalMemoryRequirement += maxHoppingAmplitudes*amplitudeSet->getBasisSize()*sizeof(int);
 	totalMemoryRequirement += to.size()*numCoefficients*sizeof(complex<double>);
 	totalMemoryRequirement += amplitudeSet->getBasisSize()*sizeof(int);
+	if(damping != NULL)
+		totalMemoryRequirement += amplitudeSet->getBasisSize()*sizeof(complex<double>);
 	if(isTalkative){
 		cout << "\tCUDA memory requirement: ";
 		if(totalMemoryRequirement < 1024)
@@ -220,6 +235,10 @@ void ChebyshevSolver::calculateCoefficientsGPU(vector<Index> &to, Index from, co
 		{	cout << "\tMalloc error: coefficients_device\n";	exit(1);	}
 	if(cudaMalloc((void**)&coefficientMap_device, amplitudeSet->getBasisSize()*sizeof(int)) != cudaSuccess)
 		{	cout << "\tMalloc error: coefficientMap_device\n";	exit(1);	}
+	if(damping != NULL){
+		if(cudaMalloc((void**)&damping_device, amplitudeSet->getBasisSize()*sizeof(complex<double>)) != cudaSuccess)
+			{	cout << "\tMalloc error: damping_device\n";	exit(1);	}
+	}
 
 	if(cudaMemcpy(jIn1_device, jIn1, amplitudeSet->getBasisSize()*sizeof(complex<double>), cudaMemcpyHostToDevice) != cudaSuccess)
 		{	cout << "\tMemcpy error: jIn1\n";		exit(1);	}
@@ -235,6 +254,10 @@ void ChebyshevSolver::calculateCoefficientsGPU(vector<Index> &to, Index from, co
 		{	cout << "\tMemcpy error: coefficients\n";	exit(1);	}
 	if(cudaMemcpy(coefficientMap_device, coefficientMap, amplitudeSet->getBasisSize()*sizeof(int), cudaMemcpyHostToDevice) != cudaSuccess)
 		{	cout << "\tMemcpy error: coefficientMap\n";	exit(1);	}
+	if(damping != NULL){
+		if(cudaMemcpy(damping_device, damping, amplitudeSet->getBasisSize()*sizeof(complex<double>), cudaMemcpyHostToDevice) != cudaSuccess)
+			{	cout << "\tMemcpy error: damping\n";	exit(1);	}
+	}
 
 	//Calculate |j1>
 	int block_size = 1024;
@@ -261,6 +284,19 @@ void ChebyshevSolver::calculateCoefficientsGPU(vector<Index> &to, Index from, co
 		cout << "\tCUDA Num blocks: " << num_blocks << "\n";
 		exit(1);
 	}
+	if(damping != NULL){
+		applyDamping <<< num_blocks, block_size>>> ((cuDoubleComplex*)jResult_device,
+								(cuDoubleComplex*)damping_device,
+								amplitudeSet->getBasisSize());
+		cudaError_t code = cudaGetLastError();
+		if(code != cudaSuccess){
+			cout << "\tDamping error\n";
+			cout << "\t" << cudaGetErrorString(code) << "\n";
+			cout << "\tCUDA Block size: " << block_size << "\n";
+			cout << "\tCUDA Num blocks: " << num_blocks << "\n";
+			exit(1);
+		}
+	}
 
 	jTemp = jIn2_device;
 	jIn2_device = jIn1_device;
@@ -282,6 +318,13 @@ void ChebyshevSolver::calculateCoefficientsGPU(vector<Index> &to, Index from, co
 								amplitudeSet->getBasisSize());
 		if(cudaGetLastError() != cudaSuccess){	cout << "Subtraction error\n";	exit(1);	}
 
+		if(damping != NULL){
+			applyDamping <<< num_blocks, block_size >>> ((cuDoubleComplex*)jResult_device,
+									(cuDoubleComplex*)damping_device,
+									amplitudeSet->getBasisSize());
+			if(cudaGetLastError() != cudaSuccess){	cout << "Damping error\n";	exit(1);	}
+		}
+
 		multiplyMatrixAndVector <<< num_blocks, block_size>>> ((cuDoubleComplex*)jIn1_device,
 									(cuDoubleComplex*)jResult_device,
 									(cuDoubleComplex*)hoppingAmplitudes_device,
@@ -293,6 +336,13 @@ void ChebyshevSolver::calculateCoefficientsGPU(vector<Index> &to, Index from, co
 									coefficientMap_device,
 									numCoefficients);
 		if(cudaGetLastError() != cudaSuccess){	cout << "Matrix vector multiplication error 2\n";	exit(1);	}
+
+		if(damping != NULL){
+			applyDamping <<< num_blocks, block_size >>> ((cuDoubleComplex*)jResult_device,
+									(cuDoubleComplex*)damping_device,
+									amplitudeSet->getBasisSize());
+			if(cudaGetLastError() != cudaSuccess){	cout << "Damping error\n";	exit(1);	}
+		}
 
 		jTemp = jIn2_device;
 		jIn2_device = jIn1_device;
@@ -328,6 +378,8 @@ void ChebyshevSolver::calculateCoefficientsGPU(vector<Index> &to, Index from, co
 	cudaFree(fromIndices_device);
 	cudaFree(coefficients_device);
 	cudaFree(coefficientMap_device);
+	if(damping != NULL)
+		cudaFree(damping_device);
 
 	//Lorentzian convolution
 	double lambda = broadening*numCoefficients;
@@ -339,7 +391,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(vector<Index> &to, Index from, co
 /** !!!Experimental!!!
  *  Applying damping factor.
  */
-void ChebyshevSolver::calculateCoefficientsGPU(vector<Index> &to, Index from, complex<double> *coefficients, int numCoefficients, complex<double> *damping, double broadening){
+/*void ChebyshevSolver::calculateCoefficientsGPU(vector<Index> &to, Index from, complex<double> *coefficients, int numCoefficients, complex<double> *damping, double broadening){
 	AmplitudeSet *amplitudeSet = &model->amplitudeSet;
 
 	int fromBasisIndex = amplitudeSet->getBasisIndex(from);
@@ -579,7 +631,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(vector<Index> &to, Index from, co
 	for(int n = 0; n < numCoefficients; n++)
 		for(int c = 0; c < to.size(); c++)
 			coefficients[n + c*numCoefficients] = coefficients[n + c*numCoefficients]*sinh(lambda*(1 - n/(double)numCoefficients))/sinh(lambda);
-}
+}*/
 
 __global__
 void calculateGreensFunction(cuDoubleComplex *greensFunction,

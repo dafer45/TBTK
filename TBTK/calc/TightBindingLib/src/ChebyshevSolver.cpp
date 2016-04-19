@@ -15,6 +15,7 @@ const complex<double> i(0, 1);
 
 ChebyshevSolver::ChebyshevSolver(){
 	scaleFactor = 1.;
+	damping = NULL;
 	generatingFunctionLookupTable = NULL;
 	generatingFunctionLookupTable_device = NULL;
 	lookupTableNumCoefficients = 0;
@@ -96,6 +97,11 @@ void ChebyshevSolver::calculateCoefficients(Index to, Index from, complex<double
 		jResult[to] += hoppingAmplitudes[n]*jIn1[from];
 	}
 
+	if(damping != NULL){
+		for(int n = 0; n < amplitudeSet->getBasisSize(); n++)
+			jResult[n] *= damping[n];
+	}
+
 	jTemp = jIn2;
 	jIn2 = jIn1;
 	jIn1 = jResult;
@@ -111,11 +117,22 @@ void ChebyshevSolver::calculateCoefficients(Index to, Index from, complex<double
 	for(int n = 2; n < numCoefficients; n++){
 		for(int c = 0; c < amplitudeSet->getBasisSize(); c++)
 			jResult[c] = -jIn2[c];
+
+		if(damping != NULL){
+			for(int c = 0; c < amplitudeSet->getBasisSize(); c++)
+				jResult[c] *= damping[c];
+		}
+
 		for(int c = 0; c < numHoppingAmplitudes; c++){
 			int from = fromIndices[c];
 			int to = toIndices[c];
 
 			jResult[to] += hoppingAmplitudes[c]*jIn1[from];
+		}
+
+		if(damping != NULL){
+			for(int c = 0; c < amplitudeSet->getBasisSize(); c++)
+				jResult[c] *= damping[c];
 		}
 
 		jTemp = jIn2;
@@ -127,11 +144,13 @@ void ChebyshevSolver::calculateCoefficients(Index to, Index from, complex<double
 
 		if(isTalkative){
 			if(n%100 == 0)
-				cout << ".";
+				cout << "." << flush;
 			if(n%1000 == 0)
-				cout << " ";
+				cout << " " << flush;
 		}
 	}
+	if(isTalkative)
+		cout << "\n";
 
 	delete [] jIn1;
 	delete [] jIn2;
@@ -212,6 +231,11 @@ void ChebyshevSolver::calculateCoefficients(vector<Index> &to, Index from, compl
 		jResult[to] += hoppingAmplitudes[n]*jIn1[from];
 	}
 
+	if(damping != NULL){
+		for(int c = 0; c < amplitudeSet->getBasisSize(); c++)
+			jResult[c] *= damping[c];
+	}
+
 	jTemp = jIn2;
 	jIn2 = jIn1;
 	jIn1 = jResult;
@@ -229,11 +253,22 @@ void ChebyshevSolver::calculateCoefficients(vector<Index> &to, Index from, compl
 	for(int n = 2; n < numCoefficients; n++){
 		for(int c = 0; c < amplitudeSet->getBasisSize(); c++)
 			jResult[c] = -jIn2[c];
+
+		if(damping != NULL){
+			for(int c = 0; c < amplitudeSet->getBasisSize(); c++)
+				jResult[c] *= damping[c];
+		}
+
 		for(int c = 0; c < numHoppingAmplitudes; c++){
 			int from = fromIndices[c];
 			int to = toIndices[c];
 
 			jResult[to] += hoppingAmplitudes[c]*jIn1[from];
+		}
+
+		if(damping != NULL){
+			for(int c = 0; c < amplitudeSet->getBasisSize(); c++)
+				jResult[c] *= damping[c];
 		}
 
 		jTemp = jIn2;
@@ -247,11 +282,13 @@ void ChebyshevSolver::calculateCoefficients(vector<Index> &to, Index from, compl
 
 		if(isTalkative){
 			if(n%100 == 0)
-				cout << ".";
+				cout << "." << flush;
 			if(n%1000 == 0)
-				cout << " ";
+				cout << " " << flush;
 		}
 	}
+	if(isTalkative)
+		cout << "\n";
 
 	delete [] jIn1;
 	delete [] jIn2;
