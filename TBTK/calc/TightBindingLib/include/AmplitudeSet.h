@@ -54,10 +54,10 @@ public:
 
 	/** Iterator for iterating through @link HoppingAmplitude
 	 *  HoppingAmplitudes @endlink. */
-	class iterator{
+	class Iterator{
 	public:
 		/** Destructor. */
-		~iterator();
+		~Iterator();
 
 		/** Reset iterator. */
 		void reset();
@@ -73,15 +73,15 @@ public:
 
 		/** Private constructor. Limits the ability to construct the
 		 *  iterator to the AmplitudeSet. */
-		iterator(TreeNode *tree);
+		Iterator(TreeNode *tree);
 
 		/** TreeNode iterator. Implements the actual iteration. */
-		TreeNode::iterator* it;
+		TreeNode::Iterator* it;
 	};
 
 	/** Returns an iterator for iterating through @link HoppingAmplitude
 	 *  HoppingAmplitudes @endlink. */
-	AmplitudeSet::iterator getIterator();
+	AmplitudeSet::Iterator getIterator();
 
 	/** Print tree structure. Mainly for debuging. */
 	void print();

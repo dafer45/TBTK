@@ -66,7 +66,7 @@ void ChebyshevSolver::calculateCoefficients(Index to, Index from, complex<double
 	coefficients[0] = jIn1[toBasisIndex];
 
 	//Generate a fixed hopping amplitude and inde list, for speed.
-	AmplitudeSet::iterator it = amplitudeSet->getIterator();
+	AmplitudeSet::Iterator it = amplitudeSet->getIterator();
 	HoppingAmplitude *ha;
 	int numHoppingAmplitudes = 0;
 	while((ha = it.getHA())){
@@ -200,7 +200,7 @@ void ChebyshevSolver::calculateCoefficients(vector<Index> &to, Index from, compl
 			coefficients[coefficientMap[n]*numCoefficients] = jIn1[n];
 
 	//Generate a fixed hopping amplitude and inde list, for speed.
-	AmplitudeSet::iterator it = amplitudeSet->getIterator();
+	AmplitudeSet::Iterator it = amplitudeSet->getIterator();
 	HoppingAmplitude *ha;
 	int numHoppingAmplitudes = 0;
 	while((ha = it.getHA())){

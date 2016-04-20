@@ -75,7 +75,7 @@ void DiagonalizationSolver::update(){
 	for(int n = 0; n < (basisSize*(basisSize+1))/2; n++)
 		hamiltonian[n] = 0.;
 
-	AmplitudeSet::iterator it = model->amplitudeSet.getIterator();
+	AmplitudeSet::Iterator it = model->amplitudeSet.getIterator();
 	HoppingAmplitude *ha;
 	while((ha = it.getHA())){
 		int from = model->amplitudeSet.getBasisIndex(ha->fromIndex);

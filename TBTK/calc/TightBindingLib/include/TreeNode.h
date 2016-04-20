@@ -55,7 +55,7 @@ public:
 
 	/** Iterator for iterating through @link HoppingAmplitude
 	 *  HoppingAmplitudes @endlink stored in the tree structure. */
-	class iterator{
+	class Iterator{
 	public:
 		/** Root node to iterate from. */
 		TreeNode* tree;
@@ -68,7 +68,7 @@ public:
 		int currentHoppingAmplitude;
 
 		/** Constructor. */
-		iterator(TreeNode *tree);
+		Iterator(TreeNode *tree);
 
 		/** Reset iterator. */
 		void reset();
@@ -80,12 +80,12 @@ public:
 		HoppingAmplitude* getHA();
 	private:
 		/** Search after next HoppingAmplitude. Is used by
-		 *  TreeNode::iterator::searchNext and called recursively. */
+		 *  TreeNode::Iterator::searchNext and called recursively. */
 		bool searchNext(TreeNode *treeNode, unsigned int subindex);
 	};
 
-	/** Returns iterator initialized to point at first HoppingAmplitude. */
-	iterator begin();
+	/** Returns Iterator initialized to point at first HoppingAmplitude. */
+	Iterator begin();
 private:
 	/** Add HoppingAmplitude. Is called by the public TreeNode::add and is
 	 *  called recursively. */

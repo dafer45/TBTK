@@ -113,7 +113,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(vector<Index> &to, Index from, co
 			coefficients[coefficientMap[n]*numCoefficients] = jIn1[n];
 
 	//Generate a fixed hopping amplitude and index list, for speed.
-	AmplitudeSet::iterator it = amplitudeSet->getIterator();
+	AmplitudeSet::Iterator it = amplitudeSet->getIterator();
 	HoppingAmplitude *ha;
 	int *numHoppingAmplitudes = new int[amplitudeSet->getBasisSize()];
 	for(int n = 0; n < amplitudeSet->getBasisSize(); n++)

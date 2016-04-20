@@ -8,7 +8,7 @@
 namespace TBTK{
 
 HALinkedList::HALinkedList(AmplitudeSet &as){
-	AmplitudeSet::iterator it = as.getIterator();
+	AmplitudeSet::Iterator it = as.getIterator();
 	HoppingAmplitude *ha;
 	int numHoppingAmplitudes = 0;
 	while((ha = it.getHA())){

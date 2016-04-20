@@ -14,32 +14,32 @@ void AmplitudeSet::print(){
 	tree.print();
 }
 
-AmplitudeSet::iterator AmplitudeSet::getIterator(){
-	return AmplitudeSet::iterator(&tree);
+AmplitudeSet::Iterator AmplitudeSet::getIterator(){
+	return AmplitudeSet::Iterator(&tree);
 }
 
-AmplitudeSet::iterator::iterator(TreeNode* tree){
-	it = new TreeNode::iterator(tree);
+AmplitudeSet::Iterator::Iterator(TreeNode* tree){
+	it = new TreeNode::Iterator(tree);
 }
 
-AmplitudeSet::iterator::~iterator(){
+AmplitudeSet::Iterator::~Iterator(){
 	delete it;
 }
 
-void AmplitudeSet::iterator::reset(){
+void AmplitudeSet::Iterator::reset(){
 	it->reset();
 }
 
-void AmplitudeSet::iterator::searchNextHA(){
+void AmplitudeSet::Iterator::searchNextHA(){
 	it->searchNextHA();
 }
 
-HoppingAmplitude* AmplitudeSet::iterator::getHA(){
+HoppingAmplitude* AmplitudeSet::Iterator::getHA(){
 	return it->getHA();
 }
 
 void AmplitudeSet::tabulate(int **table, int *dims){
-	iterator it = getIterator();
+	Iterator it = getIterator();
 	HoppingAmplitude *ha;
 	int numHA = 0;
 	int maxIndexSize = 0;

@@ -83,7 +83,7 @@ void TimeEvolver::run(){
 		for(int n = 0; n < basisSize*basisSize; n++)
 			dPsi[n] = 0.;
 
-		AmplitudeSet::iterator it = model->amplitudeSet.getIterator();
+		AmplitudeSet::Iterator it = model->amplitudeSet.getIterator();
 		HoppingAmplitude *ha;
 		while((ha = it.getHA())){
 			int fromIndex = model->amplitudeSet.getBasisIndex(ha->fromIndex);

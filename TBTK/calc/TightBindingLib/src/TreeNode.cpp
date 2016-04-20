@@ -158,25 +158,25 @@ int TreeNode::generateBasisIndices(int i){
 	return i;
 }
 
-TreeNode::iterator::iterator(TreeNode *tree){
+TreeNode::Iterator::Iterator(TreeNode *tree){
 	this->tree = tree;
 	currentIndex.push_back(0);
 	currentHoppingAmplitude = -1;
 	searchNext(tree, 0);
 }
 
-void TreeNode::iterator::reset(){
+void TreeNode::Iterator::reset(){
 	currentIndex.clear();
 	currentIndex.push_back(0);
 	currentHoppingAmplitude = -1;
 	searchNext(tree, 0);
 }
 
-void TreeNode::iterator::searchNextHA(){
+void TreeNode::Iterator::searchNextHA(){
 	searchNext(tree, 0);
 }
 
-bool TreeNode::iterator::searchNext(TreeNode *treeNode, unsigned int subindex){
+bool TreeNode::Iterator::searchNext(TreeNode *treeNode, unsigned int subindex){
 	if(subindex+1 == currentIndex.size()){
 		if(currentHoppingAmplitude != -1){
 			currentHoppingAmplitude++;
@@ -212,7 +212,7 @@ bool TreeNode::iterator::searchNext(TreeNode *treeNode, unsigned int subindex){
 	return false;
 }
 
-HoppingAmplitude* TreeNode::iterator::getHA(){
+HoppingAmplitude* TreeNode::Iterator::getHA(){
 	if(currentIndex.at(0) == (int)tree->children.size()){
 		return NULL;
 	}
@@ -224,8 +224,8 @@ HoppingAmplitude* TreeNode::iterator::getHA(){
 	return &tn->hoppingAmplitudes.at(currentHoppingAmplitude);
 }
 
-TreeNode::iterator TreeNode::begin(){
-	return iterator(this);
+TreeNode::Iterator TreeNode::begin(){
+	return Iterator(this);
 }
 
 HoppingAmplitude TreeNode::getFirstHA(){
