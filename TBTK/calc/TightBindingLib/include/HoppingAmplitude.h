@@ -67,7 +67,7 @@ private:
 
 inline std::complex<double> HoppingAmplitude::getAmplitude(){
 	if(amplitudeCallback)
-		return amplitudeCallback(fromIndex, toIndex);
+		return amplitudeCallback(toIndex, fromIndex);
 	else
 		return amplitude;
 }
