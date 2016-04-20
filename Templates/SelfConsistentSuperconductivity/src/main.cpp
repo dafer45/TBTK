@@ -88,7 +88,7 @@ bool scCallback(DiagonalizationSolver *dSolver){
 //Callback function responsible for determining the value of the order
 //parameter D_{to,from}c_{to}c_{from} where to and from are indices of the form
 //(x, y, spin).
-complex<double> fD(Index from, Index to){
+complex<double> fD(Index to, Index from){
 	//Obtain indices
 	int x = from.indices.at(0);
 	int y = from.indices.at(1);
