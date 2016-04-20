@@ -27,7 +27,7 @@ namespace TBTK{
 class AmplitudeSet{
 public:
 	/** Root node for the tree structure in which HoppingAmplitudes are
-	 *  stored*/
+	 *  stored. */
 	TreeNode tree;
 
 	/** Add a single HoppingAmplitude. */

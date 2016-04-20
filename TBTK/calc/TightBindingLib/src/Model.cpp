@@ -16,6 +16,7 @@ namespace TBTK{
 Model::Model(){
 	temperature = 0.;
 	chemicalPotential = 0.;
+	statistics = Statistics::FermiDirac;
 	isTalkative = true;
 }
 
