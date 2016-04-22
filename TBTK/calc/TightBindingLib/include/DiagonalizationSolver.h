@@ -48,12 +48,15 @@ public:
 	 *  Use with causion. */
 	double* getEigenValuesRW();
 
-	/* Get eigenvectors. **/
+	/** Get eigenvectors. **/
 	const std::complex<double>* getEigenVectors();
 
-	/* Get eigenvectors. Same as getEigenVectors(), but with write access.
+	/** Get eigenvectors. Same as getEigenVectors(), but with write access.
 	 *  Use with causion. **/
 	std::complex<double>* getEigenVectorsRW();
+
+	/** Get eigenvalue. */
+	const double getEigenValue(int state);
 
 	/** Get amplitude for given eigenvector \f$n\f$ and physical index
 	 * \f$x\f$: \f$\Psi_{n}(x)\f$.
@@ -124,6 +127,10 @@ inline std::complex<double>* DiagonalizationSolver::getEigenVectorsRW(){
 
 inline const std::complex<double> DiagonalizationSolver::getAmplitude(int state, const Index &index){
 	return eigenVectors[model->getBasisSize()*state + model->getBasisIndex(index)];
+}
+
+inline const double DiagonalizationSolver::getEigenValue(int state){
+	return eigenValues[state];
 }
 
 inline Model* DiagonalizationSolver::getModel(){
