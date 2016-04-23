@@ -36,11 +36,11 @@ public:
 	double getEigenValue(int state);
 
 	/** Calculate density of states.
-	 *  @param u_lim Upper limit for energy interval.
 	 *  @param l_lim Lower limit for energy interval.
+	 *  @param u_lim Upper limit for energy interval.
 	 *  @param resolution Number of points used between l_lim and u_lim.
 	 *  @return An array with size resolution. */
-	double* calculateDOS(double u_lim, double l_lim, int resolution);
+	double* calculateDOS(double l_lim, double u_lim, int resolution);
 
 	/** Calculate density.
 	 *
@@ -145,7 +145,7 @@ public:
 	 *      \rho_{i\sigma i\sigma'}(E) = \sum_{E_n}\langle\Psi_n|c_{i\sigma}^{\dagger}c_{i\sigma'}|\Psi_n\rangle\delta(E - E_n) .
 	 *  \f]
 	 */
-	std::complex<double>* calculateSP_LDOS(Index pattern, Index ranges, double u_lim, double l_lim, int resolution);
+	std::complex<double>* calculateSP_LDOS(Index pattern, Index ranges, double l_lim, double u_lim, int resolution);
 //	double* calculateSP_LDOS(Index pattern, Index ranges, double u_lim, double l_lim, int resolution);
 
 	void save(int *memory, int size, int columns, std::string filename, std::string path = "./");

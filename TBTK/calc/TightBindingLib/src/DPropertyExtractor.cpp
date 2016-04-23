@@ -198,7 +198,7 @@ double* DPropertyExtractor::getEigenValues(){
 	return ev;
 }
 
-double* DPropertyExtractor::calculateDOS(double u_lim, double l_lim, int resolution){
+double* DPropertyExtractor::calculateDOS(double l_lim, double u_lim, int resolution){
 	const double *ev = dSolver->getEigenValues();
 
 	double *dos = new double[resolution];
@@ -306,7 +306,7 @@ complex<double>* DPropertyExtractor::calculateMAG(Index pattern, Index ranges){
 	return mag;
 }
 
-/*double* DPropertyExtractor::calculateSP_LDOS(Index pattern, Index ranges, double u_lim, double l_lim, int resolution){
+/*double* DPropertyExtractor::calculateSP_LDOS(Index pattern, Index ranges, double l_lim, double u_lim, int resolution){
 	//hint[0] is an array of doubles, hint[1] is an array of ints
 	//hint[0][0]: u_lim
 	//hint[0][1]: l_lim
@@ -358,7 +358,7 @@ complex<double>* DPropertyExtractor::calculateMAG(Index pattern, Index ranges){
 	return sp_ldos;
 }*/
 
-complex<double>* DPropertyExtractor::calculateSP_LDOS(Index pattern, Index ranges, double u_lim, double l_lim, int resolution){
+complex<double>* DPropertyExtractor::calculateSP_LDOS(Index pattern, Index ranges, double l_lim, double u_lim, int resolution){
 	//hint[0] is an array of doubles, hint[1] is an array of ints
 	//hint[0][0]: u_lim
 	//hint[0][1]: l_lim

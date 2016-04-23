@@ -31,7 +31,7 @@ public:
 	);
 
 	/** Write eigenvalues to file. */
-	static void writeEV(
+	static void writeEigenValues(
 		double *ev,
 		int size,
 		std::string name = "EV",
@@ -41,8 +41,8 @@ public:
 	/** Write density of states to file. */
 	static void writeDOS(
 		double *ev,
-		double u_lim,
 		double l_lim,
+		double u_lim,
 		int resolution,
 		std::string name = "DOS",
 		std::string path = "/"
@@ -78,8 +78,8 @@ public:
 		double *ldos,
 		int rank,
 		int *dims,
-		double u_lim,
 		double l_lim,
+		double u_lim,
 		int resolution,
 		std::string name = "LDOS",
 		std::string path = "/"
@@ -90,8 +90,8 @@ public:
 		std::complex<double> *sp_ldos,
 		int rank,
 		int *dims,
-		double u_lim,
 		double l_lim,
+		double u_lim,
 		int resolution,
 		std::string name = "SP_LDOS",
 		std::string path = "/"

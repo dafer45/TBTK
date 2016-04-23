@@ -71,16 +71,16 @@ int main(int argc, char **argv){
 	DPropertyExtractor pe(&dSolver);
 
 	//Extract eigenvalues and write these to file
-	double *ev = pe.getEV();
-	FileWriter::writeEV(ev, model.getBasisSize());
+	double *ev = pe.getEigenValues();
+	FileWriter::writeEigenValues(ev, model.getBasisSize());
 	delete [] ev;
 
 	//Extract DOS and write to file
 	const double UPPER_LIMIT = 5.;
 	const double LOWER_LIMIT = -5.;
 	const int RESOLUTION = 1000;
-	double *dos = pe.calculateDOS(UPPER_LIMIT, LOWER_LIMIT, RESOLUTION);
-	FileWriter::writeDOS(dos, UPPER_LIMIT, LOWER_LIMIT, RESOLUTION);
+	double *dos = pe.calculateDOS(LOWER_LIMIT, UPPER_LIMIT, RESOLUTION);
+	FileWriter::writeDOS(dos, LOWER_LIMIT, UPPER_LIMIT, RESOLUTION);
 	delete [] dos;
 
 	return 0;
