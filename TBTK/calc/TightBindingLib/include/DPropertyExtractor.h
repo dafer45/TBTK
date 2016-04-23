@@ -24,13 +24,16 @@ public:
 	~DPropertyExtractor();
 
 	/** Legacy. */
-	void saveEV(std::string path = "./", std::string filename = "EV.dat");
+	void saveEigenValues(std::string path = "./", std::string filename = "EV.dat");
 
 	/** Experimental. Extracts a tabulated version of the AmplitudeSet. */
 	void getTabulatedAmplitudeSet(int **table, int *dims);
 
 	/** Get eigenvalues. */
-	double* getEV();
+	double* getEigenValues();
+
+	/** Get eigenvalue. */
+	double getEigenValue(int state);
 
 	/** Calculate density of states.
 	 *  @param u_lim Upper limit for energy interval.
@@ -172,6 +175,10 @@ private:
 	 *  calculate[Property]Callback. */
 	void *hint;
 };
+
+inline double DPropertyExtractor::getEigenValue(int state){
+	return dSolver->getEigenValue(state);
+}
 
 };	//End of namespace TBTK
 

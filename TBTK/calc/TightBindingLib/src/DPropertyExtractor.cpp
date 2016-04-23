@@ -173,7 +173,7 @@ void DPropertyExtractor::save2D(complex<double> *memory, int size_x, int size_y,
 	fout.close();
 }
 
-void DPropertyExtractor::saveEV(string path, string filename){
+void DPropertyExtractor::saveEigenValues(string path, string filename){
 	stringstream ss;
 	ss << path;
 	if(path.back() != '/')
@@ -191,7 +191,7 @@ void DPropertyExtractor::getTabulatedAmplitudeSet(int **table, int *dims){
 	dSolver->getModel()->amplitudeSet.tabulate(table, dims);
 }
 
-double* DPropertyExtractor::getEV(){
+double* DPropertyExtractor::getEigenValues(){
 	double *ev = new double[dSolver->getModel()->getBasisSize()];
 	for(int n = 0; n < dSolver->getModel()->getBasisSize(); n++)
 		ev[n] = dSolver->getEigenValues()[n];
