@@ -11,9 +11,9 @@
 #include <iostream>
 #include <complex>
 #include "Model.h"
-#include "FileWriter.h"
-#include "DPropertyExtractor.h"
 #include "DiagonalizationSolver.h"
+#include "DPropertyExtractor.h"
+#include "FileWriter.h"
 
 using namespace std;
 using namespace TBTK;
