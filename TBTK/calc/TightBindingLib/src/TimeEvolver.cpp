@@ -212,6 +212,7 @@ void TimeEvolver::updateOccupancy(){
 			break;
 		case DecayMode::Custom:
 			decayHandler->decay(this, occupancy, eigenValues, eigenVectorsMap);
+			break;
 		default:	//Should never happen. Hard error generated for quick bug detection.
 			cout << "Error in TimeEvolver::updateOccupancy(): Unkown DecayMode - " << static_cast<int>(decayMode);
 			exit(1);
