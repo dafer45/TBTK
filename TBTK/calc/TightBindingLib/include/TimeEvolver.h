@@ -87,11 +87,23 @@ public:
 	 *		it reaches 1, while every state above the Fermi lvel is
 	 *		decreased by the same constant factor until it reaches
 	 *		0.
+	 *	Custom - Experimental: Uses a TimeEvolver::DecayHandler to
+	 *		handle the decay. A decay handler has to be specified as
+	 *		well using setDecayHandler().
 	 */
-	enum class DecayMode{None, Instantly, Interpolate};
+	enum class DecayMode{None, Instantly, Interpolate, Custom};
 
 	/** Set decay mode. */
 	void setDecayMode(DecayMode decayMode);
+
+	class DecayHandler{
+	public:
+		virtual void decay(TimeEvolver *timeEvolver, double *occupancy, double *eigenValues, std::complex<double> *eigenVectors);
+	private:
+	};
+
+	/** Set DecayHandler. */
+	void setDecayHandler(DecayHandler *decayHandler);
 
 	/** Get current time step. Returns -1 while in the self-consistent
 	 *  loop. */
@@ -137,6 +149,9 @@ private:
 
 	/** Decay mode. */
 	DecayMode decayMode;
+
+	/** DecayHandler. */
+	DecayHandler *decayHandler;
 
 	/** Callback that is called at each iteration of the self-consistent
 	 *  and time iteration loop. */
@@ -247,6 +262,10 @@ inline Model* TimeEvolver::getModel(){
 
 inline void TimeEvolver::setDecayMode(DecayMode decayMode){
 	this->decayMode = decayMode;
+}
+
+inline void TimeEvolver::setDecayHandler(DecayHandler *decayHandler){
+	this->decayHandler = decayHandler;
 }
 
 inline int TimeEvolver::getCurrentTimeStep(){

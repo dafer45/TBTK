@@ -40,7 +40,7 @@ public:
 
 	/** Write density of states to file. */
 	static void writeDOS(
-		double *ev,
+		double *dos,
 		double l_lim,
 		double u_lim,
 		int resolution,
