@@ -98,7 +98,7 @@ public:
 
 	class DecayHandler{
 	public:
-		virtual void decay(TimeEvolver *timeEvolver, double *occupancy, double *eigenValues, std::complex<double> *eigenVectors);
+		virtual void decay(TimeEvolver *timeEvolver, double *occupancy, double *eigenValues, std::complex<double> *eigenVectors) = 0;
 	private:
 	};
 
