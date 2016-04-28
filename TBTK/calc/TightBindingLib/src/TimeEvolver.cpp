@@ -210,6 +210,8 @@ void TimeEvolver::updateOccupancy(){
 		case DecayMode::Interpolate:
 			decayInterpolate();
 			break;
+		case DecayMode::Custom:
+			decayHandler->decay(this, occupancy, eigenValues, eigenVectorsMap);
 		default:	//Should never happen. Hard error generated for quick bug detection.
 			cout << "Error in TimeEvolver::updateOccupancy(): Unkown DecayMode - " << static_cast<int>(decayMode);
 			exit(1);
