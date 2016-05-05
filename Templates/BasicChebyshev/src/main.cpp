@@ -84,7 +84,8 @@ int main(int argc, char **argv){
 				SCALE_FACTOR);
 
 	//Extract local density of states and write to file
-	double *ldos = pe.calculateLDOS({IDX_X, SIZE_Y/2, IDX_SUM_ALL}, {SIZE_Y, 1, 2});
+	double *ldos = pe.calculateLDOS({IDX_X, SIZE_Y/2, IDX_SUM_ALL},
+					{SIZE_X, 1, 2});
 	const int RANK = 1;
 	int dims[RANK] = {SIZE_X};
 	FileWriter::writeLDOS(ldos,
