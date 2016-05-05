@@ -11,12 +11,11 @@
  *  @author Kristofer Björnson
  */
 
-#include <iostream>
 #include <complex>
 #include "Model.h"
-#include "FileWriter.h"
 #include "ChebyshevSolver.h"
 #include "CPropertyExtractor.h"
+#include "FileWriter.h"
 
 using namespace std;
 using namespace TBTK;

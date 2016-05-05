@@ -8,7 +8,6 @@
  *  @author Kristofer Björnson
  */
 
-#include <iostream>
 #include <complex>
 #include "Model.h"
 #include "DiagonalizationSolver.h"
