@@ -24,15 +24,16 @@ using namespace TBTK;
 const complex<double> i(0, 1);
 
 int main(int argc, char **argv){
+	//Chebyshev expansion parameters.
+	const int NUM_COEFFICIENTS = 5000;
+	const int ENERGY_RESOLUTION = 10000;
+	const double SCALE_FACTOR = 5.;
+
 	//Lattice size
 	const int SIZE_X = 20;
 	const int SIZE_Y = 20;
-	const int NUM_COEFFICIENTS = 5000;
-	const int ENERGY_RESOLUTION = 10000;
 
-	//Parameters. The SCALE_FACOTR is required for restricting the energy
-	//spectrum to the interval [-1,1].
-	const double SCALE_FACTOR = 5.;
+	//Model parameters.
 	complex<double> mu = -1.0;
 	complex<double> t = 1.0;
 
