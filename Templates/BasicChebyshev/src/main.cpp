@@ -23,11 +23,6 @@ using namespace TBTK;
 const complex<double> i(0, 1);
 
 int main(int argc, char **argv){
-	//Chebyshev expansion parameters.
-	const int NUM_COEFFICIENTS = 5000;
-	const int ENERGY_RESOLUTION = 10000;
-	const double SCALE_FACTOR = 5.;
-
 	//Lattice size
 	const int SIZE_X = 40;
 	const int SIZE_Y = 40;
@@ -55,6 +50,11 @@ int main(int argc, char **argv){
 
 	//Construct model
 	model.construct();
+
+	//Chebyshev expansion parameters.
+	const int NUM_COEFFICIENTS = 5000;
+	const int ENERGY_RESOLUTION = 10000;
+	const double SCALE_FACTOR = 5.;
 
 	//Setup ChebyshevSolver
 	ChebyshevSolver cSolver;
