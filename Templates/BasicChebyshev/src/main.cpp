@@ -56,14 +56,14 @@ int main(int argc, char **argv){
 	//Construct model
 	model.construct();
 
-	//Set filename and remove any file already in the folder
-	FileWriter::setFileName("TBTKResults.h5");
-	FileWriter::clear();
-
 	//Setup ChebyshevSolver
 	ChebyshevSolver cSolver;
 	cSolver.setModel(&model);
 	cSolver.setScaleFactor(SCALE_FACTOR);
+
+	//Set filename and remove any file already in the folder
+	FileWriter::setFileName("TBTKResults.h5");
+	FileWriter::clear();
 
 	//Create PropertyExtractor. The parameter are in order: The
 	//ChebyshevSolver, number of expansion coefficients used in the
