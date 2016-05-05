@@ -16,6 +16,7 @@
 #include "Model.h"
 #include "FileWriter.h"
 #include "ChebyshevSolver.h"
+#include "CPropertyExtractor.h"
 
 using namespace std;
 using namespace TBTK;
@@ -64,64 +65,35 @@ int main(int argc, char **argv){
 	cSolver.setModel(&model);
 	cSolver.setScaleFactor(SCALE_FACTOR);
 
-	//Generate lookup table for quicker evaluation of Green's functions.
-	cSolver.generateLookupTable(NUM_COEFFICIENTS, ENERGY_RESOLUTION);
-	//Load lookup table to GPU. Remove this if evaluation on cpu is preffered.
-	cSolver.loadLookupTableGPU();
+	//Create PropertyExtractor. The parameter are in order: The
+	//ChebyshevSolver, number of expansion coefficients used in the
+	//Cebyshev expansion, energy resolution with which the Green's function
+	// is evaluated, whether calculate expansion functions using a GPU or
+	//not, whether to evaluate the Green's function using a GPU or not,
+	//whether to use a lookup table for the Green's function or not
+	//(required if the Green's function is evaluated on a GPU), and the
+	//lower and upper bound between which the Green's function is evaluated
+	//(has to be inside the interval [-SCALE_FACTOR, SCALE_FACTOR]).
+	CPropertyExtractor pe(&cSolver,
+				NUM_COEFFICIENTS,
+				ENERGY_RESOLUTION,
+				false,
+				false,
+				true,
+				-SCALE_FACTOR,
+				SCALE_FACTOR);
 
-	//Calculate and save LDOS on site (x, SIZE_Y/2) for x \in [0, SIZE_Y-1]
-	for(int x = 0; x < SIZE_X; x++){
-		//Calculate Chebyshev coefficients for
-		//G_{\uparrow\uparrow}(x,SIZE_Y/2) and
-		//G_{\downarrow\downarrow}(x, SIZE_Y/2). Remove GPU from
-		//function name to run on cpu instead.
-		complex<double> *cCoefficientsU = new complex<double>[NUM_COEFFICIENTS];
-		complex<double> *cCoefficientsD = new complex<double>[NUM_COEFFICIENTS];
-		cSolver.calculateCoefficientsGPU({x, SIZE_Y/2, 0},
-							{x, SIZE_Y/2, 0},
-							cCoefficientsU,
-							NUM_COEFFICIENTS);
-		cSolver.calculateCoefficientsGPU({x, SIZE_Y/2, 1},
-							{x, SIZE_Y/2, 1},
-							cCoefficientsD,
-							NUM_COEFFICIENTS);
-
-		//Generate Green's function. Remove GPU from function name to
-		//run on cpu instead.
-		complex<double> *greensFunctionU = new complex<double>[ENERGY_RESOLUTION];
-		complex<double> *greensFunctionD = new complex<double>[ENERGY_RESOLUTION];
-		cSolver.generateGreensFunctionGPU(greensFunctionU, cCoefficientsU);
-		cSolver.generateGreensFunctionGPU(greensFunctionD, cCoefficientsD);
-
-		//Calculate LDOS
-		double *ldos = new double[ENERGY_RESOLUTION];
-		for(int n = 0; n < ENERGY_RESOLUTION; n++)
-			ldos[n] = -imag(greensFunctionU[n] + greensFunctionD[n])/M_PI;
-
-		//Save LDOS at x to LDOS_x
-		const int LDOS_RANK = 1;
-		int ldosDims[LDOS_RANK];
-		ldosDims[0] = ENERGY_RESOLUTION;
-		stringstream ss;
-		ss.str("");
-		ss << "LDOS_" << x;
-		FileWriter::write(ldos, LDOS_RANK, ldosDims, ss.str().c_str());
-
-		//Free allocated memory. Note that allocation and deallocation
-		//of these arrays can be moved outside of the loop for
-		//optimization. They are continusly reallocated inside the loop
-		//in this example to make the example clearer by keeping
-		//variable definitions close to their usage point.
-		delete [] cCoefficientsU;
-		delete [] cCoefficientsD;
-		delete [] greensFunctionU;
-		delete [] greensFunctionD;
-		delete [] ldos;
-	}
-
-	//Free lookup table from GPU. Remove this if evaluation on cpu is
-	//preffered.
-	cSolver.destroyLookupTableGPU();
+	//Extract local density of states and write to file
+	double *ldos = pe.calculateLDOS({IDX_X, SIZE_Y/2, IDX_SUM_ALL}, {SIZE_Y, 1, 2});
+	const int RANK = 1;
+	int dims[RANK] = {SIZE_X};
+	FileWriter::writeLDOS(ldos,
+				RANK,
+				dims,
+				-SCALE_FACTOR,
+				SCALE_FACTOR,
+				ENERGY_RESOLUTION);
+	delete [] ldos;
 
 	return 0;
 }
