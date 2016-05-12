@@ -491,24 +491,38 @@ void ChebyshevSolver::generateLookupTable(int numCoefficients, int energyResolut
 	}
 }
 
-void ChebyshevSolver::generateGreensFunction(complex<double> *greensFunction, complex<double> *coefficients, int numCoefficients, int energyResolution, double lowerBound, double upperBound){
+void ChebyshevSolver::generateGreensFunction(complex<double> *greensFunction, complex<double> *coefficients, int numCoefficients, int energyResolution, double lowerBound, double upperBound, GreensFunctionType type){
 	for(int e = 0; e < energyResolution; e++)
 		greensFunction[e] = 0.;
 
 	const double DELTA = 0.0001;
-	for(int n = 0; n < numCoefficients; n++){
-		double denominator = 1.;
-		if(n == 0)
-			denominator = 2.;
+	if(type == GreensFunctionType::Advanced){
+		for(int n = 0; n < numCoefficients; n++){
+			double denominator = 1.;
+			if(n == 0)
+				denominator = 2.;
 
-		for(int e = 0; e < energyResolution; e++){
-			double E = (lowerBound + (upperBound - lowerBound)*e/(double)energyResolution)/scaleFactor;
-			greensFunction[e] += (1/scaleFactor)*(-2.*i/sqrt(1+DELTA - E*E))*coefficients[n]*exp(-i*((double)n)*acos(E))/denominator;
+			for(int e = 0; e < energyResolution; e++){
+				double E = (lowerBound + (upperBound - lowerBound)*e/(double)energyResolution)/scaleFactor;
+				greensFunction[e] += coefficients[n]*(1/scaleFactor)*(-2.*i/sqrt(1+DELTA - E*E))*exp(-i*((double)n)*acos(E))/denominator;
+			}
+		}
+	}
+	else{
+		for(int n = 0; n < numCoefficients; n++){
+			double denominator = 1.;
+			if(n == 0)
+				denominator = 2.;
+
+			for(int e = 0; e < energyResolution; e++){
+				double E = (lowerBound + (upperBound - lowerBound)*e/(double)energyResolution)/scaleFactor;
+				greensFunction[e] += coefficients[n]*conj((1/scaleFactor)*(-2.*i/sqrt(1+DELTA - E*E))*exp(-i*((double)n)*acos(E))/denominator);
+			}
 		}
 	}
 }
 
-void ChebyshevSolver::generateGreensFunction(complex<double> *greensFunction, complex<double> *coefficients){
+void ChebyshevSolver::generateGreensFunction(complex<double> *greensFunction, complex<double> *coefficients, GreensFunctionType type){
 	if(generatingFunctionLookupTable == NULL){
 		cout << "Error in ChebyshevSolver::generateGreensFunction: Lookup table has not been generated.";
 		exit(1);
@@ -517,9 +531,18 @@ void ChebyshevSolver::generateGreensFunction(complex<double> *greensFunction, co
 		for(int e = 0; e < lookupTableResolution; e++)
 			greensFunction[e] = 0.;
 
-		for(int n = 0; n < lookupTableNumCoefficients; n++){
-			for(int e = 0; e < lookupTableResolution; e++){
-				greensFunction[e] += generatingFunctionLookupTable[n][e]*coefficients[n];
+		if(type == GreensFunctionType::Advanced){
+			for(int n = 0; n < lookupTableNumCoefficients; n++){
+				for(int e = 0; e < lookupTableResolution; e++){
+					greensFunction[e] += generatingFunctionLookupTable[n][e]*coefficients[n];
+				}
+			}
+		}
+		else{
+			for(int n = 0; n < lookupTableNumCoefficients; n++){
+				for(int e = 0; e < lookupTableResolution; e++){
+					greensFunction[e] += coefficients[n]*conj(generatingFunctionLookupTable[n][e]);
+				}
 			}
 		}
 	}

@@ -29,10 +29,14 @@ public:
 	~CPropertyExtractor();
 
 	/** Calculate Green's function. */
-	std::complex<double>* calculateGreensFunction(Index to, Index from);
+	std::complex<double>* calculateGreensFunction(Index to,
+							Index from,
+							ChebyshevSolver::GreensFunctionType type = ChebyshevSolver::GreensFunctionType::Advanced);
 
 	/** Calculate Green's function for a range of 'to'-indices. */
-	std::complex<double>* calculateGreensFunctions(std::vector<Index> &to, Index from);
+	std::complex<double>* calculateGreensFunctions(std::vector<Index> &to,
+							Index from,
+							ChebyshevSolver::GreensFunctionType type = ChebyshevSolver::GreensFunctionType::Advanced);
 
 	/** !!!Not tested!!! Calculate density.
 	 *
@@ -171,6 +175,14 @@ private:
 
 	/** Energy resolution of the Green's function. */
 	int energyResolution;
+
+	/** Lower bound for the evaluation of the Green's function and derived
+	 *  properties. */
+	double lowerBound;
+
+	/** Upper bound for the evaluation of the Green's function and derived
+	 *  properties. */
+	double upperBound;
 
 	/** Flag indicating whether a lookup table is used or not. */
 	bool useLookupTable;

@@ -415,12 +415,17 @@ void ChebyshevSolver::destroyLookupTableGPU(){
 	generatingFunctionLookupTable_device = NULL;
 }
 
-void ChebyshevSolver::generateGreensFunctionGPU(complex<double> *greensFunction, complex<double> *coefficients){
+void ChebyshevSolver::generateGreensFunctionGPU(complex<double> *greensFunction, complex<double> *coefficients, GreensFunctionType type){
 	if(isTalkative)
 		cout << "ChebyshevSolver::generateGreensFunctionGPU\n";
 
 	if(generatingFunctionLookupTable_device == NULL){
 		cout << "Error: No lookup table loaded onto GPU.\n";
+		exit(1);
+	}
+
+	if(type == GreensFunctionType::Retarded){
+		cout << "Error: Evaluation of retarded Green's function on GPU is not yet implemented. Use CPU evaluation instead.\n";
 		exit(1);
 	}
 

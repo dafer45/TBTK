@@ -21,6 +21,8 @@ CPropertyExtractor::CPropertyExtractor(ChebyshevSolver *cSolver,
 	this->cSolver = cSolver;
 	this->numCoefficients = numCoefficients;
 	this->energyResolution = energyResolution;
+	this->lowerBound = lowerBound;
+	this->upperBound = upperBound;
 	this->useGPUToCalculateCoefficients = useGPUToCalculateCoefficients;
 	this->useGPUToGenerateGreensFunctions = useGPUToGenerateGreensFunctions;
 	this->useLookupTable = useLookupTable;
@@ -41,14 +43,14 @@ CPropertyExtractor::~CPropertyExtractor(){
 		cSolver->destroyLookupTableGPU();
 }
 
-complex<double>* CPropertyExtractor::calculateGreensFunction(Index to, Index from){
+complex<double>* CPropertyExtractor::calculateGreensFunction(Index to, Index from, ChebyshevSolver::GreensFunctionType type){
 	vector<Index> toIndices;
 	toIndices.push_back(to);
 
-	return calculateGreensFunctions(toIndices, from);
+	return calculateGreensFunctions(toIndices, from, type);
 }
 
-complex<double>* CPropertyExtractor::calculateGreensFunctions(vector<Index> &to, Index from){
+complex<double>* CPropertyExtractor::calculateGreensFunctions(vector<Index> &to, Index from, ChebyshevSolver::GreensFunctionType type){
 	complex<double> *coefficients = new complex<double>[numCoefficients*to.size()];
 
 	if(useGPUToCalculateCoefficients){
@@ -65,7 +67,8 @@ complex<double>* CPropertyExtractor::calculateGreensFunctions(vector<Index> &to,
 	if(useGPUToGenerateGreensFunctions){
 		for(unsigned int n = 0; n < to.size(); n++){
 			cSolver->generateGreensFunctionGPU(greensFunction,
-								&(coefficients[n*numCoefficients]));
+								&(coefficients[n*numCoefficients]),
+								type);
 		}
 	}
 	else{
@@ -73,7 +76,8 @@ complex<double>* CPropertyExtractor::calculateGreensFunctions(vector<Index> &to,
 			#pragma omp parallel for
 			for(unsigned int n = 0; n < to.size(); n++){
 				cSolver->generateGreensFunction(greensFunction,
-								&(coefficients[n*numCoefficients]));
+								&(coefficients[n*numCoefficients]),
+								type);
 			}
 		}
 		else{
@@ -82,7 +86,10 @@ complex<double>* CPropertyExtractor::calculateGreensFunctions(vector<Index> &to,
 				cSolver->generateGreensFunction(greensFunction,
 								&(coefficients[n*numCoefficients]),
 								numCoefficients,
-								energyResolution);
+								energyResolution,
+								lowerBound,
+								upperBound,
+								type);
 			}
 		}
 	}
