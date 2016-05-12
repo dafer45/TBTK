@@ -424,8 +424,8 @@ void ChebyshevSolver::generateGreensFunctionGPU(complex<double> *greensFunction,
 		exit(1);
 	}
 
-	if(type == GreensFunctionType::Retarded){
-		cout << "Error: Evaluation of retarded Green's function on GPU is not yet implemented. Use CPU evaluation instead.\n";
+	if(type != GreensFunctionType::Advanced){
+		cout << "Error: Only evaluation of advanced Green's function is implemented for GPU so far. Use CPU evaluation instead.\n";
 		exit(1);
 	}
 

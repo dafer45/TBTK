@@ -508,7 +508,7 @@ void ChebyshevSolver::generateGreensFunction(complex<double> *greensFunction, co
 			}
 		}
 	}
-	else{
+	else if(type == GreensFunctionType::Retarded){
 		for(int n = 0; n < numCoefficients; n++){
 			double denominator = 1.;
 			if(n == 0)
@@ -519,6 +519,34 @@ void ChebyshevSolver::generateGreensFunction(complex<double> *greensFunction, co
 				greensFunction[e] += coefficients[n]*conj((1/scaleFactor)*(-2.*i/sqrt(1+DELTA - E*E))*exp(-i*((double)n)*acos(E))/denominator);
 			}
 		}
+	}
+	else if(type == GreensFunctionType::Principal){
+		for(int n = 0; n < numCoefficients; n++){
+			double denominator = 1.;
+			if(n == 0)
+				denominator = 2.;
+
+			for(int e = 0; e < energyResolution; e++){
+				double E = (lowerBound + (upperBound - lowerBound)*e/(double)energyResolution)/scaleFactor;
+				greensFunction[e] += coefficients[n]*real((1/scaleFactor)*(-2.*i/sqrt(1+DELTA - E*E))*exp(-i*((double)n)*acos(E))/denominator);
+			}
+		}
+	}
+	else if(type == GreensFunctionType::NonPrincipal){
+		for(int n = 0; n < numCoefficients; n++){
+			double denominator = 1.;
+			if(n == 0)
+				denominator = 2.;
+
+			for(int e = 0; e < energyResolution; e++){
+				double E = (lowerBound + (upperBound - lowerBound)*e/(double)energyResolution)/scaleFactor;
+				greensFunction[e] += coefficients[n]*imag((1/scaleFactor)*(-2.*i/sqrt(1+DELTA - E*E))*exp(-i*((double)n)*acos(E))/denominator);
+			}
+		}
+	}
+	else{
+		cout << "Error in ChebyshevSolver::generateGreensFunction: Unknown GreensFunctionType\n";
+		exit(1);
 	}
 }
 
@@ -538,10 +566,24 @@ void ChebyshevSolver::generateGreensFunction(complex<double> *greensFunction, co
 				}
 			}
 		}
-		else{
+		else if(type == GreensFunctionType::Retarded){
 			for(int n = 0; n < lookupTableNumCoefficients; n++){
 				for(int e = 0; e < lookupTableResolution; e++){
 					greensFunction[e] += coefficients[n]*conj(generatingFunctionLookupTable[n][e]);
+				}
+			}
+		}
+		else if(type == GreensFunctionType::Principal){
+			for(int n = 0; n < lookupTableNumCoefficients; n++){
+				for(int e = 0; e < lookupTableResolution; e++){
+					greensFunction[e] += coefficients[n]*real(generatingFunctionLookupTable[n][e]);
+				}
+			}
+		}
+		else if(type == GreensFunctionType::NonPrincipal){
+			for(int n = 0; n < lookupTableNumCoefficients; n++){
+				for(int e = 0; e < lookupTableResolution; e++){
+					greensFunction[e] += coefficients[n]*imag(generatingFunctionLookupTable[n][e]);
 				}
 			}
 		}
