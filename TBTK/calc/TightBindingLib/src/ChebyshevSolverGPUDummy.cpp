@@ -30,9 +30,16 @@ void ChebyshevSolver::destroyLookupTableGPU(){
 	exit(1);
 }
 
-void ChebyshevSolver::generateGreensFunctionGPU(complex<double> *greensFunction, complex<double> *coefficients){
+void ChebyshevSolver::generateGreensFunctionGPU(complex<double> *greensFunction, complex<double> *coefficients, ChebyshevSolver::GreensFunctionType type){
 	cout << "Error in ChebyshevSolver::generateGreensFunctionGPU: GPU Not supported.\n";
 	exit(1);
+}
+
+void ChebyshevSolver::createDeviceTableGPU(){
+	numDevices = 0;
+}
+
+void ChebyshevSolver::destroyDeviceTableGPU(){
 }
 
 };	//End of namespace TBTK

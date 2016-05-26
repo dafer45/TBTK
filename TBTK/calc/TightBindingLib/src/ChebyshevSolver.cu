@@ -75,6 +75,11 @@ void ChebyshevSolver::calculateCoefficientsGPU(Index to, Index from, complex<dou
 }
 
 void ChebyshevSolver::calculateCoefficientsGPU(vector<Index> &to, Index from, complex<double> *coefficients, int numCoefficients, double broadening){
+	int device = allocateDeviceGPU();
+
+	if(cudaSetDevice(device) != cudaSuccess)
+		{	cout << "\tSet device error: " << device << "\n";	exit(1);	}
+
 	AmplitudeSet *amplitudeSet = &model->amplitudeSet;
 
 	int fromBasisIndex = amplitudeSet->getBasisIndex(from);
@@ -344,6 +349,8 @@ void ChebyshevSolver::calculateCoefficientsGPU(vector<Index> &to, Index from, co
 	if(damping != NULL)
 		cudaFree(damping_device);
 
+	freeDeviceGPU(device);
+
 	//Lorentzian convolution
 	double lambda = broadening*numCoefficients;
 	for(int n = 0; n < numCoefficients; n++)
@@ -393,11 +400,18 @@ void ChebyshevSolver::loadLookupTableGPU(){
 			cout << memoryRequirement/1024/1024 << "MB\n";
 	}
 
-	if(cudaMalloc((void**)&generatingFunctionLookupTable_device, lookupTableNumCoefficients*lookupTableResolution*sizeof(complex<double>))  != cudaSuccess)
-		{	cout << "\tMalloc error: generatingFunctionLookupTable_device\n";	exit(1);	}
+	generatingFunctionLookupTable_device = new complex<double>**[numDevices];
 
-	if(cudaMemcpy(generatingFunctionLookupTable_device, generatingFunctionLookupTable_host, lookupTableNumCoefficients*lookupTableResolution*sizeof(complex<double>), cudaMemcpyHostToDevice) != cudaSuccess)
-		{	cout << "\tMemcpy error: generatingFunctionLookupTable_device\n";	exit(1);	}
+	for(int n = 0; n < numDevices; n++){
+		if(cudaSetDevice(n) != cudaSuccess)
+			{	cout << "\tSet device error: " << n << "\n";	exit(1);	}
+
+		if(cudaMalloc((void**)&generatingFunctionLookupTable_device[n], lookupTableNumCoefficients*lookupTableResolution*sizeof(complex<double>))  != cudaSuccess)
+			{	cout << "\tMalloc error: generatingFunctionLookupTable_device\n";	exit(1);	}
+
+		if(cudaMemcpy(generatingFunctionLookupTable_device[n], generatingFunctionLookupTable_host, lookupTableNumCoefficients*lookupTableResolution*sizeof(complex<double>), cudaMemcpyHostToDevice) != cudaSuccess)
+			{	cout << "\tMemcpy error: generatingFunctionLookupTable_device\n";	exit(1);	}
+	}
 
 	delete [] generatingFunctionLookupTable_host;
 }
@@ -411,11 +425,20 @@ void ChebyshevSolver::destroyLookupTableGPU(){
 		exit(1);
 	}
 
-	cudaFree(generatingFunctionLookupTable_device);
+	for(int n = 0; n < numDevices; n++){
+		cudaFree(generatingFunctionLookupTable_device[n]);
+	}
+
+	delete [] generatingFunctionLookupTable_device;
 	generatingFunctionLookupTable_device = NULL;
 }
 
 void ChebyshevSolver::generateGreensFunctionGPU(complex<double> *greensFunction, complex<double> *coefficients, GreensFunctionType type){
+	int device = allocateDeviceGPU();
+
+	if(cudaSetDevice(device) != cudaSuccess)
+		{	cout << "\tSet device error: " << device << "\n";	exit(1);	}
+
 	if(isTalkative)
 		cout << "ChebyshevSolver::generateGreensFunctionGPU\n";
 
@@ -455,7 +478,7 @@ void ChebyshevSolver::generateGreensFunctionGPU(complex<double> *greensFunction,
 
 	calculateGreensFunction <<< num_blocks, block_size>>> ((cuDoubleComplex*)greensFunction_device,
 								(cuDoubleComplex*)coefficients_device,
-								(cuDoubleComplex*)generatingFunctionLookupTable_device,
+								(cuDoubleComplex*)generatingFunctionLookupTable_device[device],
 								lookupTableNumCoefficients,
 								lookupTableResolution);
 
@@ -464,6 +487,58 @@ void ChebyshevSolver::generateGreensFunctionGPU(complex<double> *greensFunction,
 
 	cudaFree(greensFunction_device);
 	cudaFree(coefficients_device);
+
+	freeDeviceGPU(device);
+}
+
+void ChebyshevSolver::createDeviceTableGPU(){
+	cudaGetDeviceCount(&numDevices);
+
+	cout << "Num devices: " << numDevices << "\n";
+
+	if(numDevices > 0){
+		busyDevices = new bool[numDevices];
+		for(int n = 0; n < numDevices; n++)
+			busyDevices[n] = false;
+	}
+}
+
+void ChebyshevSolver::destroyDeviceTableGPU(){
+	if(numDevices > 0)
+		delete [] busyDevices;
+}
+
+int ChebyshevSolver::allocateDeviceGPU(){
+	int device = 0;
+	bool done = false;
+	while(!done){
+		omp_set_lock(&busyDevicesLock);
+		#pragma omp flush
+		{
+			for(int n = 0; n < numDevices; n++){
+				if(!busyDevices[n]){
+					device = n;
+					busyDevices[n] = true;
+					done = true;
+					break;
+				}
+			}
+		}
+		#pragma omp flush
+		omp_unset_lock(&busyDevicesLock);
+	}
+
+	return device;
+}
+
+void ChebyshevSolver::freeDeviceGPU(int device){
+	omp_set_lock(&busyDevicesLock);
+	#pragma omp flush
+	{
+		busyDevices[device] = false;
+	}
+	#pragma omp flush
+	omp_unset_lock(&busyDevicesLock);
 }
 
 };	//End of namespace TBTK
