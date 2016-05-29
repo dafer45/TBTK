@@ -50,6 +50,18 @@ public:
 	 *  HoppingAmplitudes @endlink should be added after this call. */
 	void construct();
 
+	/** Construct Hamiltonian on COO format. */
+	void constructCOO();
+
+	/** Destruct Hamiltonian on COO format. */
+	void destructCOO();
+
+	/** To be called when HoppingAmplitudes need to be reevaluated. This is
+	 *  required if the AmplitudeSet in addition to its standard storage
+	 *  format also utilizes a more effective format such as COO format and
+	 *  some HoppingAmplitudes are evaluated through the use of callbacks. */
+	void reconstructCOO();
+
 	/** Set temperature. */
 	void setTemperature(double temperature);
 
@@ -107,6 +119,19 @@ inline int Model::getBasisSize(){
 
 inline int Model::getBasisIndex(Index index){
 	return amplitudeSet.getBasisIndex(index);
+}
+
+inline void Model::constructCOO(){
+	amplitudeSet.sort();
+	amplitudeSet.constructCOO();
+}
+
+inline void Model::destructCOO(){
+	amplitudeSet.destructCOO();
+}
+
+inline void Model::reconstructCOO(){
+	amplitudeSet.reconstructCOO();
 }
 
 inline void Model::setTemperature(double temperature){

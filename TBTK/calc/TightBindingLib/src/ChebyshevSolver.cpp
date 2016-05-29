@@ -65,6 +65,7 @@ ChebyshevSolver::~ChebyshevSolver(){
 
 void ChebyshevSolver::setModel(Model *model){
 	this->model = model;
+	model->amplitudeSet.sort();	//Required for GPU evaluation
 }
 
 void ChebyshevSolver::calculateCoefficients(Index to, Index from, complex<double> *coefficients, int numCoefficients, double broadening){

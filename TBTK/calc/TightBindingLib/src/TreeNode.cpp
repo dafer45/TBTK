@@ -5,6 +5,7 @@
 
 #include "../include/TreeNode.h"
 #include <iostream>
+#include <algorithm>
 
 using namespace std;
 
@@ -156,6 +157,32 @@ int TreeNode::generateBasisIndices(int i){
 	}
 
 	return i;
+}
+
+class SortHelperClass{
+public:
+	static TreeNode *rootNode;
+	inline bool operator() (const HoppingAmplitude& ha1, const HoppingAmplitude& ha2){
+		int basisIndex1 = rootNode->getBasisIndex(ha1.toIndex);
+		int basisIndex2 = rootNode->getBasisIndex(ha2.toIndex);
+		if(basisIndex1 < basisIndex2)
+			return true;
+		else
+			return false;
+	}
+};
+
+TreeNode *SortHelperClass::rootNode = NULL;
+
+void TreeNode::sort(TreeNode *rootNode){
+	if(hoppingAmplitudes.size() != 0){
+		SortHelperClass::rootNode = rootNode;
+		std::sort(hoppingAmplitudes.begin(), hoppingAmplitudes.end(), SortHelperClass());
+	}
+	else if(children.size() != 0){
+		for(unsigned int n = 0; n < children.size(); n++)
+			children.at(n).sort(rootNode);
+	}
 }
 
 TreeNode::Iterator::Iterator(TreeNode *tree){

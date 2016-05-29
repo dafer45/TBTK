@@ -30,6 +30,12 @@ public:
 	 *  stored. */
 	TreeNode tree;
 
+	/** Constructor. */
+	AmplitudeSet();
+
+	/** Destructor. */
+	~AmplitudeSet();
+
 	/** Add a single HoppingAmplitude. */
 	void addHA(HoppingAmplitude ha);
 
@@ -51,6 +57,36 @@ public:
 	/** Construct Hilbert space. No more @link HoppingAmplitude
 	 *  HoppingAmplitudes @endlink should be added after this call. */
 	void construct();
+
+	/** Sort HoppingAmplitudes. */
+	void sort();
+
+	/** Construct Hamiltonian on COO format. */
+	void constructCOO();
+
+	/** Destruct Hamiltonian on COO format. */
+	void destructCOO();
+
+	/** Reconstruct Hamiltonian on COO format. Only has any effect if a
+	 *  Hamiltonian on COO format already is constructed. Is necessary to
+	 *  reflect changes in the Hamiltonain due to changes in values
+	 *  returned by HoppingAmplitude-callback functions. The function is
+	 *  intended to be called by the Model whenever it is notified of
+	 *  possible changes in values returned by the callback-functions. */
+	void reconstructCOO();
+
+	/** Get number of matrix elements in the Hamiltonian corresponding to
+	 *  the AmplitudeSet. */
+	int getNumMatrixElements();
+
+	/** Get row indices on COO format. */
+	const int* getCOORowIndices();
+
+	/** Get col indices on COO format. */
+	const int* getCOOColIndices();
+
+	/** Get row indices on COO format. */
+	const std::complex<double>* getCOOValues();
 
 	/** Iterator for iterating through @link HoppingAmplitude
 	 *  HoppingAmplitudes @endlink. */
@@ -90,6 +126,23 @@ public:
 	 *  them possible to export. */
 	void tabulate(int **table, int *dims);
 private:
+	/** Flag indicating whether the AmplitudeSet have been constructed. */
+	bool isConstructed;
+
+	/** Flag indicating whether the AmplitudeSet have been sorted. */
+	bool isSorted;
+
+	/** Number of matrix elements in AmplitudeSet. */
+	int numMatrixElements;
+
+	/** COO format row indices. */
+	int *cooRowIndices;
+
+	/** COO format column indices. */
+	int *cooColIndices;
+
+	/** COO format values. */
+	std::complex<double> *cooValues;
 };
 
 inline void AmplitudeSet::addHA(HoppingAmplitude ha){
@@ -114,7 +167,37 @@ inline int AmplitudeSet::getBasisSize(){
 }
 
 inline void AmplitudeSet::construct(){
+	if(isConstructed){
+		std::cout << "Error in AmplitudeSet::construct(): AmplitudeSet is already constructed.\n";
+		exit(1);
+	}
+
 	tree.generateBasisIndices();
+	isConstructed = true;
+}
+
+inline void AmplitudeSet::sort(){
+	if(!isConstructed){
+		std::cout << "Error in AmplitudeSet::sort(): AmplitudeSet has to be constructed first.\n";
+		exit(1);
+	}
+
+	if(!isSorted){
+		tree.sort(&tree);
+		isSorted = true;
+	}
+}
+
+inline const int* AmplitudeSet::getCOORowIndices(){
+	return cooRowIndices;
+}
+
+inline const int* AmplitudeSet::getCOOColIndices(){
+	return cooColIndices;
+}
+
+inline const std::complex<double>* AmplitudeSet::getCOOValues(){
+	return cooValues;
 }
 
 };	//End of namespace TBTK

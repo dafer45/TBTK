@@ -8,35 +8,71 @@
 #include "../include/HALinkedList.h"
 #include <cuComplex.h>
 #include "../include/Util.h"
-#include <cusparse_v2.h>
 
 using namespace std;
 
 namespace TBTK{
 
-complex<double> minus_one(-1., 0.);
-complex<double> one(1., 0.);
-complex<double> two(2., 0.);
-complex<double> zero(0., 0.);
-complex<double> i(0., 1.);
-
-void cusparseSafe(cusparseStatus_t type, string message){
-	if(type != CUSPARSE_STATUS_SUCCESS){
-		cout << "\t" << message << "\n";
-		exit(1);
-	}
-}
-
 __global__
-void extractCoefficients(cuDoubleComplex *jResult,
+void multiplyMatrixAndVector(cuDoubleComplex *jIn,
+				cuDoubleComplex *jResult,
+				cuDoubleComplex *hoppingAmplitudes,
+				int *fromIndices,
+				int maxHoppingAmplitudes,
 				int basisSize,
 				cuDoubleComplex *coefficients,
 				int currentCoefficient,
 				int *coefficientMap,
 				int numCoefficients){
 	int to = blockIdx.x*blockDim.x + threadIdx.x;
+	if(to < basisSize)
+		for(int n = 0; n < maxHoppingAmplitudes; n++)
+			jResult[to] = cuCadd(jResult[to], cuCmul(hoppingAmplitudes[maxHoppingAmplitudes*to + n], jIn[fromIndices[maxHoppingAmplitudes*to + n]]));
+
+/*	if(to == coefficientIndex)
+		coefficients[currentCoefficient] = jResult[to];*/
 	if(to < basisSize && coefficientMap[to] != -1)
 		coefficients[coefficientMap[to]*numCoefficients + currentCoefficient] = jResult[to];
+}
+
+__global__
+void subtractVector(cuDoubleComplex *jIn2, cuDoubleComplex *jResult, int basisSize){
+	int idx = blockIdx.x*blockDim.x + threadIdx.x;
+	if(idx < basisSize)
+		jResult[idx] = make_cuDoubleComplex(-cuCreal(jIn2[idx]), -cuCimag(jIn2[idx]));
+}
+
+__global__
+void applyDamping(cuDoubleComplex *jResult, cuDoubleComplex *damping, int basisSize){
+	int idx = blockIdx.x*blockDim.x + threadIdx.x;
+	if(idx < basisSize)
+		jResult[idx] = cuCmul(damping[idx], jResult[idx]);
+}
+
+void debugCUDA(complex<double> *jIn1_device, complex<double> *jIn2_device, complex<double> *jResult_device, int basisSize){
+	complex<double> *jIn1 = new complex<double>[basisSize];
+	complex<double> *jIn2 = new complex<double>[basisSize];
+	complex<double> *jResult = new complex<double>[basisSize];
+	cudaMemcpy(jIn1, jIn1_device, basisSize*sizeof(complex<double>), cudaMemcpyDeviceToHost);
+	cudaMemcpy(jIn2, jIn2_device, basisSize*sizeof(complex<double>), cudaMemcpyDeviceToHost);
+	cudaMemcpy(jResult, jResult_device, basisSize*sizeof(complex<double>), cudaMemcpyDeviceToHost);
+	for(int n = 0; n < basisSize; n++)
+		cout << n << "\t" << jIn1[n] << "\t" << jIn2[n] << "\t" << jResult[n] << "\n";
+
+	delete [] jIn1;
+	delete [] jIn2;
+	delete [] jResult;
+}
+
+void debugNormal(complex<double> *jIn1, complex<double> *jIn2, complex<double> *jResult, int basisSize){
+	for(int n = 0; n < basisSize; n++)
+		cout << n << "\t" << jIn1[n] << "\t" << jIn2[n] << "\t" << jResult[n] << "\n";
+}
+
+void ChebyshevSolver::calculateCoefficientsGPU(Index to, Index from, complex<double> *coefficients, int numCoefficients, double broadening){
+	vector<Index> toVector;
+	toVector.push_back(to);
+	calculateCoefficientsGPU(toVector, from, coefficients, numCoefficients, broadening);
 }
 
 void ChebyshevSolver::calculateCoefficientsGPU(vector<Index> &to, Index from, complex<double> *coefficients, int numCoefficients, double broadening){
@@ -67,10 +103,12 @@ void ChebyshevSolver::calculateCoefficientsGPU(vector<Index> &to, Index from, co
 
 	complex<double> *jIn1 = new complex<double>[amplitudeSet->getBasisSize()];
 	complex<double> *jIn2 = new complex<double>[amplitudeSet->getBasisSize()];
+	complex<double> *jResult = new complex<double>[amplitudeSet->getBasisSize()];
 	complex<double> *jTemp = NULL;
 	for(int n = 0; n < amplitudeSet->getBasisSize(); n++){
 		jIn1[n] = 0.;
 		jIn2[n] = 0.;
+		jResult[n] = 0.;
 	}
 
 	//Set up initial state (|j0>)
@@ -80,28 +118,64 @@ void ChebyshevSolver::calculateCoefficientsGPU(vector<Index> &to, Index from, co
 		if(coefficientMap[n] != -1)
 			coefficients[coefficientMap[n]*numCoefficients] = jIn1[n];
 
-	const int numHoppingAmplitudes = amplitudeSet->getNumMatrixElements();
-	const int *cooHARowIndices_host = amplitudeSet->getCOORowIndices();
-	const int *cooHAColIndices_host = amplitudeSet->getCOOColIndices();
-	const complex<double> *cooHAValues_host = amplitudeSet->getCOOValues();
+	//Generate a fixed hopping amplitude and index list, for speed.
+	AmplitudeSet::Iterator it = amplitudeSet->getIterator();
+	HoppingAmplitude *ha;
+	int *numHoppingAmplitudes = new int[amplitudeSet->getBasisSize()];
+	for(int n = 0; n < amplitudeSet->getBasisSize(); n++)
+		numHoppingAmplitudes[n] = 0;
+	while((ha = it.getHA())){
+		numHoppingAmplitudes[amplitudeSet->getBasisIndex(ha->toIndex)]++;
+		it.searchNextHA();
+	}
+	int maxHoppingAmplitudes = 0;
+	for(int n = 0; n < amplitudeSet->getBasisSize(); n++)
+		if(numHoppingAmplitudes[n] > maxHoppingAmplitudes)
+			maxHoppingAmplitudes = numHoppingAmplitudes[n];
+
+	delete [] numHoppingAmplitudes;
+
+	int *currentHoppingAmplitudes = new int[amplitudeSet->getBasisSize()];
+	for(int n = 0; n < amplitudeSet->getBasisSize(); n++)
+		currentHoppingAmplitudes[n] = 0;
+
+	complex<double> *hoppingAmplitudes = new complex<double>[maxHoppingAmplitudes*amplitudeSet->getBasisSize()];
+	int *fromIndices = new int[maxHoppingAmplitudes*amplitudeSet->getBasisSize()];
+	for(int n = 0; n < maxHoppingAmplitudes*amplitudeSet->getBasisSize(); n++){
+		hoppingAmplitudes[n] = 0.;
+		fromIndices[n] = 0;
+	}
+
+	it.reset();
+	while((ha = it.getHA())){
+		int to = amplitudeSet->getBasisIndex(ha->toIndex);
+		int from = amplitudeSet->getBasisIndex(ha->fromIndex);
+
+		hoppingAmplitudes[maxHoppingAmplitudes*to + currentHoppingAmplitudes[to]] = ha->getAmplitude()/scaleFactor;
+		fromIndices[maxHoppingAmplitudes*to + currentHoppingAmplitudes[to]] = from;
+
+		currentHoppingAmplitudes[to]++;
+
+		it.searchNextHA();
+	}
+
+	delete [] currentHoppingAmplitudes;
 
 	//Initialize GPU
 	complex<double> *jIn1_device;
 	complex<double> *jIn2_device;
-	int *cooHARowIndices_device;
-	int *csrHARowIndices_device;
-	int *cooHAColIndices_device;
-	complex<double> *cooHAValues_device;
+	complex<double> *jResult_device;
+	complex<double> *hoppingAmplitudes_device;
+	int *fromIndices_device;
 	complex<double> *coefficients_device;
 	int *coefficientMap_device;
 	complex<double> *damping_device = NULL;
 
 	int totalMemoryRequirement = amplitudeSet->getBasisSize()*sizeof(complex<double>);
 	totalMemoryRequirement += amplitudeSet->getBasisSize()*sizeof(complex<double>);
-	totalMemoryRequirement += numHoppingAmplitudes*sizeof(int);
-	totalMemoryRequirement += amplitudeSet->getBasisSize()*sizeof(int);
-	totalMemoryRequirement += numHoppingAmplitudes*sizeof(int);
-	totalMemoryRequirement += numHoppingAmplitudes*sizeof(complex<double>);
+	totalMemoryRequirement += amplitudeSet->getBasisSize()*sizeof(complex<double>);
+	totalMemoryRequirement += maxHoppingAmplitudes*amplitudeSet->getBasisSize()*sizeof(complex<double>);
+	totalMemoryRequirement += maxHoppingAmplitudes*amplitudeSet->getBasisSize()*sizeof(int);
 	totalMemoryRequirement += to.size()*numCoefficients*sizeof(complex<double>);
 	totalMemoryRequirement += amplitudeSet->getBasisSize()*sizeof(int);
 	if(damping != NULL)
@@ -120,14 +194,12 @@ void ChebyshevSolver::calculateCoefficientsGPU(vector<Index> &to, Index from, co
 		{	cout << "\tMalloc error: jIn1_device\n";		exit(1);	}
 	if(cudaMalloc((void**)&jIn2_device, amplitudeSet->getBasisSize()*sizeof(complex<double>)) != cudaSuccess)
 		{	cout << "\tMalloc error: jIn2_device\n";		exit(1);	}
-	if(cudaMalloc((void**)&cooHARowIndices_device, numHoppingAmplitudes*sizeof(int)) != cudaSuccess)
-		{	cout << "\tMalloc error: cooHARowIndices_device\n";	exit(1);	}
-	if(cudaMalloc((void**)&csrHARowIndices_device, (amplitudeSet->getBasisSize()+1)*sizeof(int)) != cudaSuccess)
-		{	cout << "\tMalloc error: csrHARowIndices_device\n";	exit(1);	}
-	if(cudaMalloc((void**)&cooHAColIndices_device, numHoppingAmplitudes*sizeof(int)) != cudaSuccess)
-		{	cout << "\tMalloc error: cooHAColIndices_device\n";	exit(1);	}
-	if(cudaMalloc((void**)&cooHAValues_device, numHoppingAmplitudes*sizeof(complex<double>)) != cudaSuccess)
-		{	cout << "\tMalloc error: cooHAValues_device\n";		exit(1);	}
+	if(cudaMalloc((void**)&jResult_device, amplitudeSet->getBasisSize()*sizeof(complex<double>)) != cudaSuccess)
+		{	cout << "\tMalloc error: JResults_device\n";		exit(1);	}
+	if(cudaMalloc((void**)&hoppingAmplitudes_device, maxHoppingAmplitudes*amplitudeSet->getBasisSize()*sizeof(complex<double>)) != cudaSuccess)
+		{	cout << "\tMalloc error: hoppingAmplitudes_device\n";	exit(1);	}
+	if(cudaMalloc((void**)&fromIndices_device, maxHoppingAmplitudes*amplitudeSet->getBasisSize()*sizeof(int)) != cudaSuccess)
+		{	cout << "\tMalloc error: fromIndices_device\n";		exit(1);	}
 	if(cudaMalloc((void**)&coefficients_device, to.size()*numCoefficients*sizeof(complex<double>)) != cudaSuccess)
 		{	cout << "\tMalloc error: coefficients_device\n";	exit(1);	}
 	if(cudaMalloc((void**)&coefficientMap_device, amplitudeSet->getBasisSize()*sizeof(int)) != cudaSuccess)
@@ -141,12 +213,12 @@ void ChebyshevSolver::calculateCoefficientsGPU(vector<Index> &to, Index from, co
 		{	cout << "\tMemcpy error: jIn1\n";		exit(1);	}
 	if(cudaMemcpy(jIn2_device, jIn2, amplitudeSet->getBasisSize()*sizeof(complex<double>), cudaMemcpyHostToDevice) != cudaSuccess)
 		{	cout << "\tMemcpy error: jIn2\n";		exit(1);	}
-	if(cudaMemcpy(cooHARowIndices_device, cooHARowIndices_host, numHoppingAmplitudes*sizeof(int), cudaMemcpyHostToDevice) != cudaSuccess)
-		{	cout << "\tMemcpy error: cooHARowIndices\n";	exit(1);	}
-	if(cudaMemcpy(cooHAColIndices_device, cooHAColIndices_host, numHoppingAmplitudes*sizeof(int), cudaMemcpyHostToDevice) != cudaSuccess)
-		{	cout << "\tMemcpy error: cooHAColIndices\n";	exit(1);	}
-	if(cudaMemcpy(cooHAValues_device, cooHAValues_host, numHoppingAmplitudes*sizeof(complex<double>), cudaMemcpyHostToDevice) != cudaSuccess)
-		{	cout << "\tMemcpy error: cooHAValues\n";	exit(1);	}
+	if(cudaMemcpy(jResult_device, jResult, amplitudeSet->getBasisSize()*sizeof(complex<double>), cudaMemcpyHostToDevice) != cudaSuccess)
+		{	cout << "\tMemcpy error: jResult\n";		exit(1);	}
+	if(cudaMemcpy(hoppingAmplitudes_device, hoppingAmplitudes, maxHoppingAmplitudes*amplitudeSet->getBasisSize()*sizeof(complex<double>), cudaMemcpyHostToDevice) != cudaSuccess)
+		{	cout << "\tMemcpy error: hoppingAmplitudes\n";	exit(1);	}
+	if(cudaMemcpy(fromIndices_device, fromIndices, maxHoppingAmplitudes*amplitudeSet->getBasisSize()*sizeof(int), cudaMemcpyHostToDevice) != cudaSuccess)
+		{	cout << "\tMemcpy error: fromIndices\n";	exit(1);	}
 	if(cudaMemcpy(coefficients_device, coefficients, to.size()*numCoefficients*sizeof(complex<double>), cudaMemcpyHostToDevice) != cudaSuccess)
 		{	cout << "\tMemcpy error: coefficients\n";	exit(1);	}
 	if(cudaMemcpy(coefficientMap_device, coefficientMap, amplitudeSet->getBasisSize()*sizeof(int), cudaMemcpyHostToDevice) != cudaSuccess)
@@ -156,23 +228,6 @@ void ChebyshevSolver::calculateCoefficientsGPU(vector<Index> &to, Index from, co
 			{	cout << "\tMemcpy error: damping\n";	exit(1);	}
 	}
 
-	cusparseHandle_t handle = NULL;
-	cusparseSafe(cusparseCreate(&handle), "cuSPARSE create error");
-
-	cusparseMatDescr_t descr = NULL;
-	cusparseSafe(cusparseCreateMatDescr(&descr), "cuSPARSE create matrix descriptor error");
-
-	cusparseSafe(cusparseSetMatType(descr, CUSPARSE_MATRIX_TYPE_GENERAL), "cuSPARSE set matrix type error");
-	cusparseSafe(cusparseSetMatIndexBase(descr, CUSPARSE_INDEX_BASE_ZERO), "cuSPARSE set matrix index base error");
-
-	cusparseSafe(cusparseXcoo2csr(handle,
-					cooHARowIndices_device,
-					numHoppingAmplitudes,
-					amplitudeSet->getBasisSize(),
-					csrHARowIndices_device,
-					CUSPARSE_INDEX_BASE_ZERO),
-			"cuSPARSE COO to CSR error");
-
 	//Calculate |j1>
 	int block_size = 1024;
 	int num_blocks = amplitudeSet->getBasisSize()/block_size + (amplitudeSet->getBasisSize()%block_size == 0 ? 0:1);
@@ -180,64 +235,88 @@ void ChebyshevSolver::calculateCoefficientsGPU(vector<Index> &to, Index from, co
 		cout << "\tCUDA Block size: " << block_size << "\n";
 		cout << "\tCUDA Num blocks: " << num_blocks << "\n";
 	}
-
-	complex<double> multiplier = one/scaleFactor;
-	cusparseSafe(cusparseZcsrmv(handle,
-					CUSPARSE_OPERATION_NON_TRANSPOSE,
-					amplitudeSet->getBasisSize(),
-					amplitudeSet->getBasisSize(),
-					numHoppingAmplitudes,
-					(cuDoubleComplex*)&multiplier,
-					descr,
-					(cuDoubleComplex*)cooHAValues_device,
-					csrHARowIndices_device,
-					cooHAColIndices_device,
-					(cuDoubleComplex*)jIn1_device,
-					(cuDoubleComplex*)&zero,
-					(cuDoubleComplex*)jIn2_device),
-			"Matrix-vector multiplication error");
-
-	extractCoefficients <<< num_blocks, block_size >>> ((cuDoubleComplex*)jIn2_device,
+	multiplyMatrixAndVector <<< num_blocks, block_size>>> ((cuDoubleComplex*)jIn1_device,
+								(cuDoubleComplex*)jResult_device,
+								(cuDoubleComplex*)hoppingAmplitudes_device,
+								fromIndices_device,
+								maxHoppingAmplitudes,
 								amplitudeSet->getBasisSize(),
 								(cuDoubleComplex*)coefficients_device,
 								1,
 								coefficientMap_device,
 								numCoefficients);
+	cudaError_t code = cudaGetLastError();
+	if(code != cudaSuccess){
+		cout << "\tMatrix vector multiplication error 1\n";
+		cout << "\t" << cudaGetErrorString(code) << "\n";
+		cout << "\tCUDA Block size: " << block_size << "\n";
+		cout << "\tCUDA Num blocks: " << num_blocks << "\n";
+		exit(1);
+	}
+	if(damping != NULL){
+		applyDamping <<< num_blocks, block_size>>> ((cuDoubleComplex*)jResult_device,
+								(cuDoubleComplex*)damping_device,
+								amplitudeSet->getBasisSize());
+		cudaError_t code = cudaGetLastError();
+		if(code != cudaSuccess){
+			cout << "\tDamping error\n";
+			cout << "\t" << cudaGetErrorString(code) << "\n";
+			cout << "\tCUDA Block size: " << block_size << "\n";
+			cout << "\tCUDA Num blocks: " << num_blocks << "\n";
+			exit(1);
+		}
+	}
+
 	jTemp = jIn2_device;
 	jIn2_device = jIn1_device;
-	jIn1_device = jTemp;
+	jIn1_device = jResult_device;
+	jResult_device = jTemp;
+
+	//Multiply hopping amplitudes by factor two, to speed up calculation of 2H|j(n-1)> - |j(n-2)>.
+	for(int n = 0; n < maxHoppingAmplitudes*amplitudeSet->getBasisSize(); n++)
+		hoppingAmplitudes[n] *= 2.;
+	cudaMemcpy(hoppingAmplitudes_device, hoppingAmplitudes, maxHoppingAmplitudes*amplitudeSet->getBasisSize()*sizeof(complex<double>), cudaMemcpyHostToDevice);
 
 	if(isTalkative)
 		cout << "\tProgress (100 coefficients per dot): ";
 
 	//Iteratively calculate |jn> and corresponding Chebyshev coefficients.
 	for(int n = 2; n < numCoefficients; n++){
-		multiplier = two/scaleFactor;
-		cusparseSafe(cusparseZcsrmv(handle,
-						CUSPARSE_OPERATION_NON_TRANSPOSE,
-						amplitudeSet->getBasisSize(),
-						amplitudeSet->getBasisSize(),
-						numHoppingAmplitudes,
-						(cuDoubleComplex*)&multiplier,
-						descr,
-						(cuDoubleComplex*)cooHAValues_device,
-						csrHARowIndices_device,
-						cooHAColIndices_device,
-						(cuDoubleComplex*)jIn1_device,
-						(cuDoubleComplex*)&minus_one,
-						(cuDoubleComplex*)jIn2_device),
-				"Matrix-vector multiplication error");
+		subtractVector <<< num_blocks, block_size >>> ((cuDoubleComplex*)jIn2_device,
+								(cuDoubleComplex*)jResult_device,
+								amplitudeSet->getBasisSize());
+		if(cudaGetLastError() != cudaSuccess){	cout << "Subtraction error\n";	exit(1);	}
 
-		extractCoefficients <<< num_blocks, block_size >>> ((cuDoubleComplex*)jIn2_device,
+		if(damping != NULL){
+			applyDamping <<< num_blocks, block_size >>> ((cuDoubleComplex*)jResult_device,
+									(cuDoubleComplex*)damping_device,
+									amplitudeSet->getBasisSize());
+			if(cudaGetLastError() != cudaSuccess){	cout << "Damping error\n";	exit(1);	}
+		}
+
+		multiplyMatrixAndVector <<< num_blocks, block_size>>> ((cuDoubleComplex*)jIn1_device,
+									(cuDoubleComplex*)jResult_device,
+									(cuDoubleComplex*)hoppingAmplitudes_device,
+									fromIndices_device,
+									maxHoppingAmplitudes,
 									amplitudeSet->getBasisSize(),
 									(cuDoubleComplex*)coefficients_device,
 									n,
 									coefficientMap_device,
 									numCoefficients);
+		if(cudaGetLastError() != cudaSuccess){	cout << "Matrix vector multiplication error 2\n";	exit(1);	}
+
+		if(damping != NULL){
+			applyDamping <<< num_blocks, block_size >>> ((cuDoubleComplex*)jResult_device,
+									(cuDoubleComplex*)damping_device,
+									amplitudeSet->getBasisSize());
+			if(cudaGetLastError() != cudaSuccess){	cout << "Damping error\n";	exit(1);	}
+		}
 
 		jTemp = jIn2_device;
 		jIn2_device = jIn1_device;
-		jIn1_device = jTemp;
+		jIn1_device = jResult_device;
+		jResult_device = jTemp;
 
 		if(isTalkative){
 			if(n%100 == 0)
@@ -254,21 +333,18 @@ void ChebyshevSolver::calculateCoefficientsGPU(vector<Index> &to, Index from, co
 		exit(1);
 	}
 
-	cusparseSafe(cusparseDestroyMatDescr(descr), "cuSPARSE destroy matrix descriptor error");
-	descr = NULL;
-	cusparseSafe(cusparseDestroy(handle), "cuSPARSE destroy error");
-	handle = NULL;
-
 	delete [] jIn1;
 	delete [] jIn2;
+	delete [] jResult;
+	delete [] hoppingAmplitudes;
+	delete [] fromIndices;
 	delete [] coefficientMap;
 
 	cudaFree(jIn1_device);
 	cudaFree(jIn2_device);
-	cudaFree(cooHARowIndices_device);
-	cudaFree(csrHARowIndices_device);
-	cudaFree(cooHAColIndices_device);
-	cudaFree(cooHAValues_device);
+	cudaFree(jResult_device);
+	cudaFree(hoppingAmplitudes_device);
+	cudaFree(fromIndices_device);
 	cudaFree(coefficients_device);
 	cudaFree(coefficientMap_device);
 	if(damping != NULL)

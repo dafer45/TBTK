@@ -49,6 +49,9 @@ public:
 	 *   HoppingAmplitudes @endlink should be added after this call. */
 	void generateBasisIndices();
 
+	/** Sort HoppingAmplitudes in row order. */
+	void sort(TreeNode *rootNode);
+
 	/** Print @link HoppingAmplitude HoppingAmplitudes @endlink. Mainly for
 	 *  debuging purposes. */
 	void print();

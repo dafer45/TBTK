@@ -5,6 +5,7 @@
 
 #include "../include/CPropertyExtractor.h"
 #include "../include/Functions.h"
+#include "../include/Util.h"
 
 using namespace std;
 
