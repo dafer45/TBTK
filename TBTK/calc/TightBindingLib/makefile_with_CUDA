@@ -1,6 +1,6 @@
 CC = g++
 CFLAGS = -Wall -std=c++11 -fopenmp -O3
-NVCCFLAGS = -std=c++11 -O3
+NVCCFLAGS = -std=c++11 -O3 --compiler-options "-fopenmp"
 
 HOPPING_AMPLITUDE_SOURCE = src/HoppingAmplitude.cpp
 TREE_NODE_SOURCE = src/TreeNode.cpp
