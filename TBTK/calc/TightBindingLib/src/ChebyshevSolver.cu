@@ -39,6 +39,12 @@ void extractCoefficients(cuDoubleComplex *jResult,
 		coefficients[coefficientMap[to]*numCoefficients + currentCoefficient] = jResult[to];
 }
 
+void ChebyshevSolver::calculateCoefficientsGPU(Index to, Index from, complex<double> *coefficients, int numCoefficients, double broadening){
+	vector<Index> toVector;
+	toVector.push_back(to);
+	calculateCoefficientsGPU(toVector, from, coefficients, numCoefficients, broadening);
+}
+
 void ChebyshevSolver::calculateCoefficientsGPU(vector<Index> &to, Index from, complex<double> *coefficients, int numCoefficients, double broadening){
 	int device = allocateDeviceGPU();
 
