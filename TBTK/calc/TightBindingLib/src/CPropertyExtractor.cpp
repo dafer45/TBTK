@@ -217,7 +217,7 @@ complex<double>* CPropertyExtractor::calculateSP_LDOS(Index pattern, Index range
 }
 
 void CPropertyExtractor::calculateDensityCallback(CPropertyExtractor *cb_this, void *density, const Index &index, int offset){
-	complex<double> *greensFunction = cb_this->calculateGreensFunction(index, index);
+	complex<double> *greensFunction = cb_this->calculateGreensFunction(index, index, ChebyshevSolver::GreensFunctionType::NonPrincipal);
 	Model::Statistics statistics = cb_this->cSolver->getModel()->getStatistics();
 
 	for(int e = 0; e < cb_this->energyResolution; e++){
@@ -249,7 +249,7 @@ void CPropertyExtractor::calculateMAGCallback(CPropertyExtractor *cb_this, void 
 	for(int n = 0; n < 4; n++){
 		to.indices.at(spinIndex) = n/2;		//up, up, down, down
 		from.indices.at(spinIndex) = n%2;	//up, down, up, down
-		greensFunction = cb_this->calculateGreensFunction(to, from);
+		greensFunction = cb_this->calculateGreensFunction(to, from, ChebyshevSolver::GreensFunctionType::NonPrincipal);
 
 		for(int e = 0; e < cb_this->energyResolution; e++){
 			double weight;
@@ -272,7 +272,7 @@ void CPropertyExtractor::calculateMAGCallback(CPropertyExtractor *cb_this, void 
 }
 
 void CPropertyExtractor::calculateLDOSCallback(CPropertyExtractor *cb_this, void *ldos, const Index &index, int offset){
-	complex<double> *greensFunction = cb_this->calculateGreensFunction(index, index);
+	complex<double> *greensFunction = cb_this->calculateGreensFunction(index, index, ChebyshevSolver::GreensFunctionType::NonPrincipal);
 
 	for(int n = 0; n < cb_this->energyResolution; n++)
 		((double*)ldos)[cb_this->energyResolution*offset + n] -= imag(greensFunction[n])/M_PI;
@@ -289,7 +289,7 @@ void CPropertyExtractor::calculateSP_LDOSCallback(CPropertyExtractor *cb_this, v
 	for(int n = 0; n < 4; n++){
 		to.indices.at(spinIndex) = n/2;		//up, up, down, down
 		from.indices.at(spinIndex) = n%2;	//up, down, up, down
-		greensFunction = cb_this->calculateGreensFunction(to, from);
+		greensFunction = cb_this->calculateGreensFunction(to, from, ChebyshevSolver::GreensFunctionType::NonPrincipal);
 
 		for(int e = 0; e < cb_this->energyResolution; e++)
 			((complex<double>*)sp_ldos)[4*cb_this->energyResolution*offset + 4*e + n] = greensFunction[e];
