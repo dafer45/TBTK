@@ -31,12 +31,12 @@ public:
 	/** Calculate Green's function. */
 	std::complex<double>* calculateGreensFunction(Index to,
 							Index from,
-							ChebyshevSolver::GreensFunctionType type = ChebyshevSolver::GreensFunctionType::Advanced);
+							ChebyshevSolver::GreensFunctionType type = ChebyshevSolver::GreensFunctionType::Retarded);
 
 	/** Calculate Green's function for a range of 'to'-indices. */
 	std::complex<double>* calculateGreensFunctions(std::vector<Index> &to,
 							Index from,
-							ChebyshevSolver::GreensFunctionType type = ChebyshevSolver::GreensFunctionType::Advanced);
+							ChebyshevSolver::GreensFunctionType type = ChebyshevSolver::GreensFunctionType::Retarded);
 
 	/** !!!Not tested!!! Calculate density.
 	 *

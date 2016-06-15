@@ -527,7 +527,7 @@ void ChebyshevSolver::generateGreensFunction(complex<double> *greensFunction, co
 		greensFunction[e] = 0.;
 
 	const double DELTA = 0.0001;
-	if(type == GreensFunctionType::Advanced){
+	if(type == GreensFunctionType::Retarded){
 		for(int n = 0; n < numCoefficients; n++){
 			double denominator = 1.;
 			if(n == 0)
@@ -539,7 +539,7 @@ void ChebyshevSolver::generateGreensFunction(complex<double> *greensFunction, co
 			}
 		}
 	}
-	else if(type == GreensFunctionType::Retarded){
+	else if(type == GreensFunctionType::Advanced){
 		for(int n = 0; n < numCoefficients; n++){
 			double denominator = 1.;
 			if(n == 0)
@@ -590,14 +590,14 @@ void ChebyshevSolver::generateGreensFunction(complex<double> *greensFunction, co
 		for(int e = 0; e < lookupTableResolution; e++)
 			greensFunction[e] = 0.;
 
-		if(type == GreensFunctionType::Advanced){
+		if(type == GreensFunctionType::Retarded){
 			for(int n = 0; n < lookupTableNumCoefficients; n++){
 				for(int e = 0; e < lookupTableResolution; e++){
 					greensFunction[e] += generatingFunctionLookupTable[n][e]*coefficients[n];
 				}
 			}
 		}
-		else if(type == GreensFunctionType::Retarded){
+		else if(type == GreensFunctionType::Advanced){
 			for(int n = 0; n < lookupTableNumCoefficients; n++){
 				for(int e = 0; e < lookupTableResolution; e++){
 					greensFunction[e] += coefficients[n]*conj(generatingFunctionLookupTable[n][e]);
