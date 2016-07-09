@@ -35,6 +35,13 @@ public:
 	/** Get eigenvalue. */
 	double getEigenValue(int state);
 
+	/** Get amplitude for given eigenvector \f$n\f$ and physical index
+	 *  \f$x\f$: \f$\Psi_{n}(x)\f$.
+	 *  @param state Eigenstate number \f$n\f$
+	 *  @param index Physical index \f$x\f$.
+	 */
+	const std::complex<double> getAmplitude(int state, const Index &index);
+
 	/** Calculate density of states.
 	 *  @param l_lim Lower limit for energy interval.
 	 *  @param u_lim Upper limit for energy interval.
@@ -178,6 +185,10 @@ private:
 
 inline double DPropertyExtractor::getEigenValue(int state){
 	return dSolver->getEigenValue(state);
+}
+
+inline const std::complex<double> DPropertyExtractor::getAmplitude(int state, const Index &index){
+	return dSolver->getAmplitude(state, index);
 }
 
 };	//End of namespace TBTK
