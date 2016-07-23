@@ -161,8 +161,53 @@ void FileReader::readDOS(double **dos, double *l_lim, double *u_lim, int *resolu
 }
 
 void FileReader::readDensity(double **density, int *rank, int **dims, string name, string path){
-	cout << "Error in FileReader::readDensity: Not yet implemented.\n";
-	exit(1);
+	try{
+		stringstream ss;
+		ss << path;
+		if(path.back() != '/')
+			ss << "/";
+		ss << name;
+
+		Exception::dontPrint();
+		H5File file(filename, H5F_ACC_RDONLY);
+
+		DataSet dataset = file.openDataSet(name);
+		H5T_class_t typeClass = dataset.getTypeClass();
+		if(typeClass != H5T_FLOAT){
+			cout << "Error in FileReader::readDensity: Data type is not double.\n";
+			exit(1);
+		}
+
+		DataSpace dataspace = dataset.getSpace();
+		*rank = dataspace.getSimpleExtentNdims();
+
+		hsize_t *dims_internal = new hsize_t[*rank];
+		dataspace.getSimpleExtentDims(dims_internal, NULL);
+		*dims = new int[*rank];
+		for(int n = 0; n < *rank; n++)
+			(*dims)[n] = dims_internal[n];
+
+		delete [] dims_internal;
+
+		int size = 1;
+		for(int n = 0; n < *rank; n++)
+			size *= (*dims)[n];
+
+		*density = new double[size];
+		dataset.read(*density, PredType::NATIVE_DOUBLE, dataspace);
+	}
+	catch(FileIException error){
+		cout << "Error in FileReader::read: While reading " << name << "\n";
+		exit(1);
+	}
+	catch(DataSetIException error){
+		cout << "Error in FileReader::read: While reading " << name << "\n";
+		exit(1);
+	}
+	catch(DataSpaceIException error){
+		cout << "Error in FileReader::read: While reading " << name << "\n";
+		exit(1);
+	}
 
 /*	hsize_t density_dims[rank];
 	for(int n = 0; n < rank; n++)
