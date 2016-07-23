@@ -109,20 +109,6 @@ void FileReader::readEigenValues(double **ev, int *size, string name, string pat
 }
 
 void FileReader::readDOS(double **dos, double *l_lim, double *u_lim, int *resolution, string name, string path){
-	cout << "Error in FileReader::readDOS: Not yet implemented.\n";
-	exit(1);
-
-/*	const int DOS_RANK = 1;
-	hsize_t dos_dims[1];
-	dos_dims[0] = resolution;
-
-	double limits[2];
-	limits[0] = u_lim;
-	limits[1] = l_lim;
-	const int LIMITS_RANK = 1;
-	hsize_t limits_dims[1];
-	limits_dims[0] = 2;
-
 	try{
 		stringstream ss;
 		ss << path;
@@ -131,33 +117,43 @@ void FileReader::readDOS(double **dos, double *l_lim, double *u_lim, int *resolu
 		ss << name;
 
 		Exception::dontPrint();
-		H5File file(filename, H5F_ACC_RDWR);
+		H5File file(filename, H5F_ACC_RDONLY);
 
-		DataSpace dataspace = DataSpace(DOS_RANK, dos_dims);
-		DataSet dataset = DataSet(file.createDataSet(name, PredType::IEEE_F64BE, dataspace));
-		dataset.write(dos, PredType::NATIVE_DOUBLE);
-		dataspace.close();
+		DataSet dataset = file.openDataSet(name);
+		H5T_class_t typeClass = dataset.getTypeClass();
+		if(typeClass != H5T_FLOAT){
+			cout << "Error in FileReader::readDOS: Data type is not double.\n";
+			exit(1);
+		}
 
-		dataspace = DataSpace(LIMITS_RANK, limits_dims);
-		Attribute attribute = dataset.createAttribute("UpLowLimits", PredType::IEEE_F64BE, dataspace);
-		attribute.write(PredType::NATIVE_DOUBLE, limits);
-		dataspace.close();
-		dataset.close();
+		DataSpace dataspace = dataset.getSpace();
 
-		file.close();
+		
+		hsize_t dims_internal[1];
+		dataspace.getSimpleExtentDims(dims_internal, NULL);
+		*resolution = dims_internal[0];
+
+		*dos = new double[*resolution];
+		dataset.read(*dos, PredType::NATIVE_DOUBLE, dataspace);
+
+		Attribute attribute = dataset.openAttribute("UpLowLimits");
+		double limits[2];
+		attribute.read(PredType::NATIVE_DOUBLE, limits);
+		*u_lim = limits[0];
+		*l_lim = limits[1];
 	}
 	catch(FileIException error){
-		error.printError();
-		return;
+		cout << "Error in FileReader::read: While reading " << name << "\n";
+		exit(1);
 	}
 	catch(DataSetIException error){
-		error.printError();
-		return;
+		cout << "Error in FileReader::read: While reading " << name << "\n";
+		exit(1);
 	}
 	catch(DataSpaceIException error){
-		error.printError();
-		return;
-	}*/
+		cout << "Error in FileReader::read: While reading " << name << "\n";
+		exit(1);
+	}
 }
 
 void FileReader::readDensity(double **density, int *rank, int **dims, string name, string path){
@@ -208,40 +204,6 @@ void FileReader::readDensity(double **density, int *rank, int **dims, string nam
 		cout << "Error in FileReader::read: While reading " << name << "\n";
 		exit(1);
 	}
-
-/*	hsize_t density_dims[rank];
-	for(int n = 0; n < rank; n++)
-		density_dims[n] = dims[n];
-
-	try{
-		stringstream ss;
-		ss << path;
-		if(path.back() != '/')
-			ss << "/";
-		ss << name;
-
-		Exception::dontPrint();
-		H5File file(filename, H5F_ACC_RDWR);
-
-		DataSpace dataspace = DataSpace(rank, density_dims);
-		DataSet dataset = DataSet(file.createDataSet(name, PredType::IEEE_F64BE, dataspace));
-		dataset.write(density, PredType::NATIVE_DOUBLE);
-		dataspace.close();
-		dataset.close();
-		file.close();
-	}
-	catch(FileIException error){
-		error.printError();
-		return;
-	}
-	catch(DataSetIException error){
-		error.printError();
-		return;
-	}
-	catch(DataSpaceIException error){
-		error.printError();
-		return;
-	}*/
 }
 
 void FileReader::readMAG(complex<double> **mag, int *rank, int **dims, string name, string path){
