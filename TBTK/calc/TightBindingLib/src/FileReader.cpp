@@ -307,36 +307,6 @@ void FileReader::readLDOS(double **ldos, int *rank, int **dims, double *l_lim, d
 }
 
 void FileReader::readSP_LDOS(complex<double> **sp_ldos, int *rank, int **dims, double *l_lim, double *u_lim, int *resolution, string name, string path){
-	cout << "Error in FileReader::readSP_LDOS: Not yet implemented.\n";
-	exit(1);
-
-/*	const int NUM_MATRIX_ELEMENTS = 4;
-	hsize_t sp_ldos_dims[rank+2];//Three last dimensions are for energy, spin components, and real/imaginary decomposition.
-	for(int n = 0; n < rank; n++)
-		sp_ldos_dims[n] = dims[n];
-	sp_ldos_dims[rank] = resolution;
-	sp_ldos_dims[rank+1] = NUM_MATRIX_ELEMENTS;
-
-	int sp_ldos_size = 1;
-	for(int n = 0; n < rank+2; n++)
-		sp_ldos_size *= sp_ldos_dims[n];
-	double *sp_ldos_decomposed;
-	sp_ldos_decomposed = new double[2*sp_ldos_size];
-	for(int n = 0; n < sp_ldos_size; n++){
-		sp_ldos_decomposed[2*n+0] = real(sp_ldos[n]);
-		sp_ldos_decomposed[2*n+1] = imag(sp_ldos[n]);
-	}
-
-	sp_ldos_dims[rank+2] = 2;
-
-	double limits[2];
-	limits[0] = u_lim;
-	limits[1] = l_lim;
-	const int LIMITS_RANK = 1;
-	hsize_t limits_dims[1];
-	limits_dims[0] = 2;
-
-
 	try{
 		stringstream ss;
 		ss << path;
@@ -345,36 +315,58 @@ void FileReader::readSP_LDOS(complex<double> **sp_ldos, int *rank, int **dims, d
 		ss << name;
 
 		Exception::dontPrint();
-		H5File file(filename, H5F_ACC_RDWR);
+		H5File file(filename, H5F_ACC_RDONLY);
 
-		DataSpace dataspace = DataSpace(rank+3, sp_ldos_dims);
-		DataSet dataset = DataSet(file.createDataSet(name, PredType::IEEE_F64BE, dataspace));
-		dataset.write(sp_ldos_decomposed, PredType::NATIVE_DOUBLE);
-		dataspace.close();
+		DataSet dataset = file.openDataSet(name);
+		H5T_class_t typeClass = dataset.getTypeClass();
+		if(typeClass != H5T_FLOAT){
+			cout << "Error in FileReader::readSP_LDOS: Data type is not double.\n";
+			exit(1);
+		}
 
-		dataspace = DataSpace(LIMITS_RANK, limits_dims);
-		Attribute attribute = dataset.createAttribute("UpLowLimits", PredType::IEEE_F64BE, dataspace);
-		attribute.write(PredType::NATIVE_DOUBLE, limits);
-		dataspace.close();
-		dataset.close();
+		DataSpace dataspace = dataset.getSpace();
+		int rank_internal = dataspace.getSimpleExtentNdims();
+		*rank = rank_internal-3;//Three last dimensions are for energy, spin components, and real/imaginary decomposition.
 
-		file.close();
-		dataspace.close();
+		hsize_t *dims_internal = new hsize_t[rank_internal];
+		dataspace.getSimpleExtentDims(dims_internal, NULL);
+		*dims = new int[*rank];
+		for(int n = 0; n < rank_internal; n++)
+			(*dims)[n] = dims_internal[n];
+
+		int size = 1;
+		for(int n = 0; n < rank_internal; n++)
+			size *= dims_internal[n];
+
+		double *sp_ldos_internal = new double[size];
+		*sp_ldos = new complex<double>[size/2];
+		dataset.read(sp_ldos_internal, PredType::NATIVE_DOUBLE, dataspace);
+		for(int n = 0; n < size/2; n++)
+			(*sp_ldos)[n] = complex<double>(sp_ldos_internal[2*n+0], sp_ldos_internal[2*n+1]);
+
+		*resolution = dims_internal[rank_internal-3];
+
+		delete [] sp_ldos_internal;
+		delete [] dims_internal;
+
+		Attribute attribute = dataset.openAttribute("UpLowLimits");
+		double limits[2];
+		attribute.read(PredType::NATIVE_DOUBLE, limits);
+		*u_lim = limits[0];
+		*l_lim = limits[1];
 	}
 	catch(FileIException error){
-		error.printError();
-		return;
+		cout << "Error in FileReader::read: While reading " << name << "\n";
+		exit(1);
 	}
 	catch(DataSetIException error){
-		error.printError();
-		return;
+		cout << "Error in FileReader::read: While reading " << name << "\n";
+		exit(1);
 	}
 	catch(DataSpaceIException error){
-		error.printError();
-		return;
+		cout << "Error in FileReader::read: While reading " << name << "\n";
+		exit(1);
 	}
-
-	delete [] sp_ldos_decomposed;*/
 }
 
 void FileReader::read(double **data, int *rank, int **dims, string name, string path){
@@ -391,7 +383,7 @@ void FileReader::read(double **data, int *rank, int **dims, string name, string 
 		DataSet dataset = file.openDataSet(name);
 		H5T_class_t typeClass = dataset.getTypeClass();
 		if(typeClass != H5T_FLOAT){
-			cout << "Error in FileReader::read: Data type is no double.\n";
+			cout << "Error in FileReader::read: Data type is not double.\n";
 			exit(1);
 		}
 
@@ -400,7 +392,7 @@ void FileReader::read(double **data, int *rank, int **dims, string name, string 
 
 		hsize_t *dims_internal = new hsize_t[*rank];
 		dataspace.getSimpleExtentDims(dims_internal, NULL);
-		*dims = new int[*rank]; 
+		*dims = new int[*rank];
 		for(int n = 0; n < *rank; n++)
 			(*dims)[n] = dims_internal[n];
 		delete [] dims_internal;
