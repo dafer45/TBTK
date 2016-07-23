@@ -104,6 +104,7 @@ delete [] dos;
 <p>Currently the library can only be installed without modification if the computer has gcc 4.9 and nvcc 7.0 installed, and these can be loaded using "module load gcc/4.9" and "module load nvcc/7.0". If this is the case, type</p>
 
 <pre><code>git clone https://github.com/dafer45/TBTK
+cd TBTK
 source init_session.sh
 ./install.sh -CUDA
 </code></pre>
@@ -111,6 +112,7 @@ source init_session.sh
 <p>If CUDA is not available it is also possible to install the library without support for GPU by typing</p>
 
 <pre><code>git clone https://github.com/dafer45/TBTK
+cd TBTK
 source init_session.sh
 ./install.sh
 </code></pre>
