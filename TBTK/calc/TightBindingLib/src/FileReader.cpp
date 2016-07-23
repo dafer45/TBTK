@@ -69,13 +69,6 @@ void FileReader::readAmplitudeSet(AmplitudeSet **amplitudeSet, string name, stri
 }
 
 void FileReader::readEigenValues(double **ev, int *size, string name, string path){
-	cout << "Error in FileReader::readEigenValues: Not yet implemented.\n";
-	exit(1);
-
-/*	const int RANK = 1;
-	hsize_t dims[1];
-	dims[0] = size;
-
 	try{
 		stringstream ss;
 		ss << path;
@@ -84,28 +77,36 @@ void FileReader::readEigenValues(double **ev, int *size, string name, string pat
 		ss << name;
 
 		Exception::dontPrint();
-		H5File file(filename, H5F_ACC_RDWR);
+		H5File file(filename, H5F_ACC_RDONLY);
 
-		DataSpace dataspace = DataSpace(RANK, dims);
-		DataSet dataset = DataSet(file.createDataSet(name, PredType::IEEE_F64BE, dataspace));
-		dataset.write(ev, PredType::NATIVE_DOUBLE);
-		dataspace.close();
-		dataset.close();
+		DataSet dataset = file.openDataSet(name);
+		H5T_class_t typeClass = dataset.getTypeClass();
+		if(typeClass != H5T_FLOAT){
+			cout << "Error in FileReader::readEigenValues: Data type is not double.\n";
+			exit(1);
+		}
 
-		file.close();
+		DataSpace dataspace = dataset.getSpace();
+		
+		hsize_t dims_internal[1];
+		dataspace.getSimpleExtentDims(dims_internal, NULL);
+		*size = dims_internal[0];
+
+		*ev = new double[*size];
+		dataset.read(*ev, PredType::NATIVE_DOUBLE, dataspace);
 	}
 	catch(FileIException error){
-		error.printError();
-		return;
+		cout << "Error in FileReader::read: While reading " << name << "\n";
+		exit(1);
 	}
 	catch(DataSetIException error){
-		error.printError();
-		return;
+		cout << "Error in FileReader::read: While reading " << name << "\n";
+		exit(1);
 	}
 	catch(DataSpaceIException error){
-		error.printError();
-		return;
-	}*/
+		cout << "Error in FileReader::read: While reading " << name << "\n";
+		exit(1);
+	}
 }
 
 void FileReader::readDOS(double **dos, double *l_lim, double *u_lim, int *resolution, string name, string path){
@@ -127,7 +128,6 @@ void FileReader::readDOS(double **dos, double *l_lim, double *u_lim, int *resolu
 		}
 
 		DataSpace dataspace = dataset.getSpace();
-
 		
 		hsize_t dims_internal[1];
 		dataspace.getSimpleExtentDims(dims_internal, NULL);
