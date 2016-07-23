@@ -378,13 +378,6 @@ void FileReader::readSP_LDOS(complex<double> **sp_ldos, int *rank, int **dims, d
 }
 
 void FileReader::read(double **data, int *rank, int **dims, string name, string path){
-	cout << "Error in FileReader::read: Not yet implemented.\n";
-	exit(1);
-
-/*	hsize_t data_dims[rank];
-	for(int n = 0; n < rank; n++)
-		data_dims[n] = dims[n];
-
 	try{
 		stringstream ss;
 		ss << path;
@@ -393,28 +386,44 @@ void FileReader::read(double **data, int *rank, int **dims, string name, string 
 		ss << name;
 
 		Exception::dontPrint();
-		H5File file(filename, H5F_ACC_RDWR);
+		H5File file(filename, H5F_ACC_RDONLY);
 
-		DataSpace dataspace = DataSpace(rank, data_dims);
-		DataSet dataset = DataSet(file.createDataSet(name, PredType::IEEE_F64BE, dataspace));
-		dataset.write(data, PredType::NATIVE_DOUBLE);
-		dataspace.close();
+		DataSet dataset = file.openDataSet(name);
+		H5T_class_t typeClass = dataset.getTypeClass();
+		if(typeClass != H5T_FLOAT){
+			cout << "Error in FileReader::read: Data type is no double.\n";
+			exit(1);
+		}
 
-		dataset.close();
-		file.close();
+		DataSpace dataspace = dataset.getSpace();
+		*rank = dataspace.getSimpleExtentNdims();
+
+		hsize_t *dims_internal = new hsize_t[*rank];
+		dataspace.getSimpleExtentDims(dims_internal, NULL);
+		*dims = new int[*rank]; 
+		for(int n = 0; n < *rank; n++)
+			(*dims)[n] = dims_internal[n];
+		delete [] dims_internal;
+
+		int size = 1;
+		for(int n = 0; n < *rank; n++)
+			size *= (*dims)[n];
+
+		*data = new double[size];
+		dataset.read(*data, PredType::NATIVE_DOUBLE, dataspace);
 	}
 	catch(FileIException error){
-		error.printError();
-		return;
+		cout << "Error in FileReader::read: While reading " << name << "\n";
+		exit(1);
 	}
 	catch(DataSetIException error){
-		error.printError();
-		return;
+		cout << "Error in FileReader::read: While reading " << name << "\n";
+		exit(1);
 	}
 	catch(DataSpaceIException error){
-		error.printError();
-		return;
-	}*/
+		cout << "Error in FileReader::read: While reading " << name << "\n";
+		exit(1);
+	}
 }
 
 void FileReader::readAttributes(int **attributes, string **attribute_names, int *num, string name, string path){
