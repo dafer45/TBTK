@@ -200,26 +200,6 @@ void FileReader::readDensity(double **density, int *rank, int **dims, string nam
 }
 
 void FileReader::readMAG(complex<double> **mag, int *rank, int **dims, string name, string path){
-	cout << "Error in FileReader::readMAG: Not yet implemented.\n";
-	exit(1);
-
-/*	hsize_t mag_dims[rank+2];//Last two dimension for matrix elements and real/imaginary decomposition.
-	for(int n = 0; n < rank; n++)
-		mag_dims[n] = dims[n];
-	const int NUM_MATRIX_ELEMENTS = 4;
-	mag_dims[rank] = NUM_MATRIX_ELEMENTS;
-
-	int mag_size = 1;
-	for(int n = 0; n < rank+1; n++)
-		mag_size *= mag_dims[n];
-	double *mag_decomposed;
-	mag_decomposed = new double[2*mag_size];
-	for(int n = 0; n < mag_size; n++){
-		mag_decomposed[2*n+0] = real(mag[n]);
-		mag_decomposed[2*n+1] = imag(mag[n]);
-	}
-	mag_dims[rank+1] = 2;
-
 	try{
 		stringstream ss;
 		ss << path;
@@ -228,29 +208,50 @@ void FileReader::readMAG(complex<double> **mag, int *rank, int **dims, string na
 		ss << name;
 
 		Exception::dontPrint();
-		H5File file(filename, H5F_ACC_RDWR);
+		H5File file(filename, H5F_ACC_RDONLY);
 
-		DataSpace dataspace = DataSpace(rank+2, mag_dims);
-		DataSet dataset = DataSet(file.createDataSet(name, PredType::IEEE_F64BE, dataspace));
-		dataset.write(mag_decomposed, PredType::NATIVE_DOUBLE);
-		dataspace.close();
-		dataset.close();
-		file.close();
+		DataSet dataset = file.openDataSet(name);
+		H5T_class_t typeClass = dataset.getTypeClass();
+		if(typeClass != H5T_FLOAT){
+			cout << "Error in FileReader::readMAG: Data type is not double.\n";
+			exit(1);
+		}
+
+		DataSpace dataspace = dataset.getSpace();
+		int rank_internal = dataspace.getSimpleExtentNdims();
+		*rank = rank_internal-2;//Last two dimensions are for matrix elements and real/imaginary decomposition.
+
+		hsize_t *dims_internal = new hsize_t[rank_internal];
+		dataspace.getSimpleExtentDims(dims_internal, NULL);
+		*dims = new int[*rank];
+		for(int n = 0; n < rank_internal; n++)
+			(*dims)[n] = dims_internal[n];
+
+		int size = 1;
+		for(int n = 0; n < rank_internal; n++)
+			size *= dims_internal[n];
+
+		double *mag_internal = new double[size];
+		*mag = new complex<double>[size/2];
+		dataset.read(mag_internal, PredType::NATIVE_DOUBLE, dataspace);
+		for(int n = 0; n < size/2; n++)
+			(*mag)[n] = complex<double>(mag_internal[2*n+0], mag_internal[2*n+1]);
+
+		delete [] mag_internal;
+		delete [] dims_internal;
 	}
 	catch(FileIException error){
-		error.printError();
-		return;
+		cout << "Error in FileReader::read: While reading " << name << "\n";
+		exit(1);
 	}
 	catch(DataSetIException error){
-		error.printError();
-		return;
+		cout << "Error in FileReader::read: While reading " << name << "\n";
+		exit(1);
 	}
 	catch(DataSpaceIException error){
-		error.printError();
-		return;
+		cout << "Error in FileReader::read: While reading " << name << "\n";
+		exit(1);
 	}
-
-	delete [] mag_decomposed;*/
 }
 
 void FileReader::readLDOS(double **ldos, int *rank, int **dims, double *l_lim, double *u_lim, int *resolution, string name, string path){
