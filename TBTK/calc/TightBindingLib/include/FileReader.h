@@ -99,18 +99,18 @@ public:
 
 	/** Read custom attributes from file of type int. */
 	static void readAttributes(
-		int **attributes,
-		std::string **attribute_names,
-		int *num,
+		int *attributes,
+		std::string *attribute_names,
+		int num,
 		std::string name,
 		std::string path = "/"
 	);
 
 	/** Read custom attributes from file of type double. */
 	static void readAttributes(
-		double **attributes,
-		std::string **attribute_names,
-		int *num,
+		double *attributes,
+		std::string *attribute_names,
+		int num,
 		std::string name,
 		std::string path = "/"
 	);

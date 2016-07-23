@@ -426,14 +426,7 @@ void FileReader::read(double **data, int *rank, int **dims, string name, string 
 	}
 }
 
-void FileReader::readAttributes(int **attributes, string **attribute_names, int *num, string name, string path){
-	cout << "Error in FileReader::readAttributes: Not yet implemented.\n";
-	exit(1);
-
-/*	const int ATTRIBUTES_RANK = 1;
-	hsize_t limits_dims[1];
-	limits_dims[0] = 1;
-
+void FileReader::readAttributes(int *attributes, string *attribute_names, int num, string name, string path){
 	try{
 		stringstream ss;
 		ss << path;
@@ -442,42 +435,36 @@ void FileReader::readAttributes(int **attributes, string **attribute_names, int 
 		ss << name;
 
 		Exception::dontPrint();
-		H5File file(filename, H5F_ACC_RDWR);
+		H5File file(filename, H5F_ACC_RDONLY);
 
-		DataSpace dataspace = DataSpace(ATTRIBUTES_RANK, limits_dims);
-		DataSet dataset = DataSet(file.createDataSet(name, PredType::STD_I64BE, dataspace));
+		DataSet dataset = file.openDataSet(name);
+		DataSpace dataspace = dataset.getSpace();
+
 		for(int n = 0; n < num; n++){
-			Attribute attribute = dataset.createAttribute(attribute_names[n], PredType::STD_I64BE, dataspace);
-			attribute.write(PredType::NATIVE_INT, &(attributes[n]));
+			Attribute attribute = dataset.openAttribute(attribute_names[n]);
+			DataType type = attribute.getDataType();
+			if(!(type == PredType::STD_I64BE)){
+				cout << "Error in FileReader::readAttribues: The attribute '" << attribute_names[n] << "' is not of integer type.\n";
+				exit(1);
+			}
+			attribute.read(PredType::NATIVE_INT, &(attributes[n]));
 		}
-		dataspace.close();
-		dataset.close();
-
-		file.close();
-		dataspace.close();
 	}
 	catch(FileIException error){
-		error.printError();
-		return;
+		cout << "Error in FileReader::read: While reading " << name << "\n";
+		exit(1);
 	}
 	catch(DataSetIException error){
-		error.printError();
-		return;
+		cout << "Error in FileReader::read: While reading " << name << "\n";
+		exit(1);
 	}
 	catch(DataSpaceIException error){
-		error.printError();
-		return;
-	}*/
+		cout << "Error in FileReader::read: While reading " << name << "\n";
+		exit(1);
+	}
 }
 
-void FileReader::readAttributes(double **attributes, string **attribute_names, int *num, string name, string path){
-	cout << "Error in FileReader::readAttributes: Not yet implemented.\n";
-	exit(1);
-
-/*	const int ATTRIBUTES_RANK = 1;
-	hsize_t limits_dims[1];
-	limits_dims[0] = 1;
-
+void FileReader::readAttributes(double *attributes, string *attribute_names, int num, string name, string path){
 	try{
 		stringstream ss;
 		ss << path;
@@ -486,32 +473,33 @@ void FileReader::readAttributes(double **attributes, string **attribute_names, i
 		ss << name;
 
 		Exception::dontPrint();
-		H5File file(filename, H5F_ACC_RDWR);
+		H5File file(filename, H5F_ACC_RDONLY);
 
-		DataSpace dataspace = DataSpace(ATTRIBUTES_RANK, limits_dims);
-		DataSet dataset = DataSet(file.createDataSet(name, PredType::IEEE_F64BE, dataspace));
+		DataSet dataset = file.openDataSet(name);
+		DataSpace dataspace = dataset.getSpace();
+
 		for(int n = 0; n < num; n++){
-			Attribute attribute = dataset.createAttribute(attribute_names[n], PredType::IEEE_F64BE, dataspace);
-			attribute.write(PredType::NATIVE_DOUBLE, &(attributes[n]));
+			Attribute attribute = dataset.openAttribute(attribute_names[n]);
+			DataType type = attribute.getDataType();
+			if(!(type == PredType::IEEE_F64BE)){
+				cout << "Error in FileReader::readAttribues: The attribute '" << attribute_names[n] << "' is not of double type.\n";
+				exit(1);
+			}
+			attribute.read(PredType::NATIVE_DOUBLE, &(attributes[n]));
 		}
-		dataspace.close();
-		dataset.close();
-
-		file.close();
-		dataspace.close();
 	}
 	catch(FileIException error){
-		error.printError();
-		return;
+		cout << "Error in FileReader::read: While reading " << name << "\n";
+		exit(1);
 	}
 	catch(DataSetIException error){
-		error.printError();
-		return;
+		cout << "Error in FileReader::read: While reading " << name << "\n";
+		exit(1);
 	}
 	catch(DataSpaceIException error){
-		error.printError();
-		return;
-	}*/
+		cout << "Error in FileReader::read: While reading " << name << "\n";
+		exit(1);
+	}
 }
 
 };	//End of namespace TBTK
