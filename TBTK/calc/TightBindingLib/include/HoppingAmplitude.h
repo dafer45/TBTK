@@ -62,7 +62,7 @@ private:
 
 	/** Callback function for runtime evaluation of amplitudes. Will be
 	 *  called if not NULL. */
-	std::complex<double> (*amplitudeCallback)(Index fromIndex, Index toIndex);
+	std::complex<double> (*amplitudeCallback)(Index toIndex, Index fromIndex);
 };
 
 inline std::complex<double> HoppingAmplitude::getAmplitude(){
