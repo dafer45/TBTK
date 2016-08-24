@@ -14,8 +14,38 @@ namespace Property{
 /** Container for density of states (DOS). */
 class Dos{
 public:
+	Dos(double lowerLimit, double upperLimit, int resolution);
+	~Dos();
+
+	int getLowerLimit();
+	int getUpperLimit();
+	int getResolution();
+	const double* getData();
 private:
+	double lowerLimit;
+	double upperLimit;
+	int resolution;
+	double *data;
+
+	friend class CPropertyExtractor;
+	friend class DPropertyExtractor;
 };
+
+inline double Dos::getLowerLimit(){
+	return lowerLimit;
+}
+
+inline double Dos::getUpperLimit(){
+	return upperLimit;
+}
+
+inline int Dos::getResolution(){
+	return resolution;
+}
+
+inline const double* Dos::getData(){
+	return data;
+}
 
 };	//End namespace Property
 };	//End namespace TBTK
