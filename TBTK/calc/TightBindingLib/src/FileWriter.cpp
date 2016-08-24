@@ -9,6 +9,7 @@
 #include <sstream>
 #include <iostream>
 #include <H5Cpp.h>
+#include <fstream>
 
 #ifndef H5_NO_NAMESPACE
 	using namespace H5;
@@ -606,6 +607,14 @@ void FileWriter::writeAttributes(double *attributes, string *attribute_names, in
 		error.printError();
 		return;
 	}
+}
+
+bool FileWriter::exists(){
+	ifstream fin(filename);
+	bool exists = fin.good();
+	fin.close();
+
+	return exists;
 }
 
 };	//End of namespace TBTK

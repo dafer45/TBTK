@@ -8,6 +8,7 @@
 #include <sstream>
 #include <iostream>
 #include <H5Cpp.h>
+#include <fstream>
 
 #ifndef H5_NO_NAMESPACE
 	using namespace H5;
@@ -500,6 +501,14 @@ void FileReader::readAttributes(double *attributes, string *attribute_names, int
 		cout << "Error in FileReader::read: While reading " << name << "\n";
 		exit(1);
 	}
+}
+
+bool FileReader::exists(){
+	ifstream fin(filename);
+	bool exists = fin.good();
+	fin.close();
+
+	return exists;
 }
 
 };	//End of namespace TBTK

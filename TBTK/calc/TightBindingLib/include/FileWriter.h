@@ -140,6 +140,9 @@ public:
 	/** Remove any file from the current folder with the file name set by
 	 *  FileWriter::setFileName*/
 	static void clear();
+
+	/** Returns true if current input file exists. */
+	static bool exists();
 private:
 	/** Is set to true if the file has been opened. */
 	static bool isInitialized;

@@ -17,8 +17,8 @@ public:
 	Dos(double lowerLimit, double upperLimit, int resolution);
 	~Dos();
 
-	int getLowerLimit();
-	int getUpperLimit();
+	double getLowerLimit();
+	double getUpperLimit();
 	int getResolution();
 	const double* getData();
 private:
