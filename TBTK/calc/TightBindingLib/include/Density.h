@@ -14,29 +14,51 @@ namespace Property{
 /** Container for density. */
 class Density{
 public:
-	Density(int rank, const int *dims);
+	/** Constructor. */
+	Density(int dimensions, const int *ranges);
+
+	/** Destructor. */
 	~Density();
 
-	int getRank();
-	const int* getDims();
+	/** Get the dimension of the density. */
+	int getDimensions();
+
+	/** Get the ranges for the dimensions of the density. */
+	const int* getRanges();
+
+	/** Get number of data elements. */
 	int getSize();
+
+	/** Get density data. */
 	const double* getData();
 private:
-	int rank;
-	int *dims;
+	/** Dimension of the density. */
+	int dimensions;
+
+	/** Ranges for the dimensions of the density. */
+	int *ranges;
+
+	/** Number of data elements. */
 	int size;
+
+	/** Actual data. */
 	double *data;
 
+	/** CPropertyExtractor is a friend class to allow it to write density
+	 *  data. */
 	friend class CPropertyExtractor;
+
+	/** DPropertyExtractor is a friend class to allow it to write density
+	 *  data. */
 	friend class DPropertyExtractor;
 };
 
-inline int Density::getRank(){
-	return rank;
+inline int Density::getDimensions(){
+	return dimensions;
 }
 
-inline const int* Density::getDims(){
-	return dims;
+inline const int* Density::getRanges(){
+	return ranges;
 }
 
 inline int Density::getSize(){

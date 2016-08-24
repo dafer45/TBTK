@@ -18,35 +18,70 @@ namespace Property{
  */
 class SpinPolarizedLdos{
 public:
-	SpinPolarizedLdos(int rank, const int *dims, double lowerLimit, double upperLimit, int resolution);
+	/** Constructor. */
+	SpinPolarizedLdos(int dimensions, const int *ranges, double lowerLimit, double upperLimit, int resolution);
+
+	/** Destructor. */
 	~SpinPolarizedLdos();
 
-	int getRank();
-	const int* getDims();
+	/** Get the dimension of the spin-polarized LDOS. (Excluding energy
+	 *  dimension) */
+	int getDimensions();
+
+	/** Get the ranges for the dimensions of the density. */
+	const int* getRanges();
+
+	/** Get lower limit for the energy. */
 	double getLowerLimit();
+
+	/** Get upper limit for the energy. */
 	double getUpperLimit();
+
+	/** Get energy resolution. (Number of energy intervals) */
 	int getResolution();
+
+	/** Get number of data elementes. */
 	int getSize();
+
+	/** Get spin-polarized LDOS data. */
 	const std::complex<double>* getData();
 private:
-	int rank;
-	int *dims;
+	/**Dimension of the density. (Excluding energy dimension) */
+	int dimensions;
+
+	/** Ranges for the dimensions of the spin-polarized LDOS*/
+	int *ranges;
+
+	/** Lower limit for the energy. */
 	double lowerLimit;
+
+	/** Upper limit for the energy. */
 	double upperLimit;
+
+	/** Energy resolution. (Number of energy intervals) */
 	int resolution;
+
+	/** Number of data elements. */
 	int size;
+
+	/** Actual data. */
 	std::complex<double> *data;
 
+	/** CPropertyExtractor is a friend class to allow it to write
+	 *  spin-polarized LDOS data. */
 	friend class CPropertyExtractor;
+
+	/** DPropertyExtractor is a friend class to allow it to write
+	 *  spin-polarized LDOS data. */
 	friend class DPropertyExtractor;
 };
 
-inline int SpinPolarizedLdos::getRank(){
-	return rank;
+inline int SpinPolarizedLdos::getDimensions(){
+	return dimensions;
 }
 
-inline const int* SpinPolarizedLdos::getDims(){
-	return dims;
+inline const int* SpinPolarizedLdos::getRanges(){
+	return ranges;
 }
 
 inline double SpinPolarizedLdos::getLowerLimit(){

@@ -14,16 +14,30 @@ namespace Property{
 /** Container for local density of states (LDOS). */
 class EigenValues{
 public:
+	/** Constructor. */
 	EigenValues(int size);
+
+	/** Destructor. */
 	~EigenValues();
 
+	/** Get number of eigen values. */
 	int getSize();
+
+	/** Get eigen values. */
 	const double* getData();
 private:
+	/** Number of elements in data. */
 	int size;
+
+	/** Actual data. */
 	double *data;
 
+	/** CPropertyExtractor is a friend class to allow it to write LDOS data
+	 */
 	friend class CPropertyExtractor;
+
+	/** DPropertyExtractor is a friend class to allow it to write LDOS data
+	 */
 	friend class DPropertyExtractor;
 };
 

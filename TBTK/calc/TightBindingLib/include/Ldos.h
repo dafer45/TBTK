@@ -14,35 +14,69 @@ namespace Property{
 /** Container for local density of states (LDOS). */
 class Ldos{
 public:
-	Ldos(int rank, const int *dims, double lowerLimit, double upperLimit, int resolution);
+	/** Constructor. */
+	Ldos(int dimensions, const int *ranges, double lowerLimit, double upperLimit, int resolution);
+
+	/** Destructor. */
 	~Ldos();
 
-	int getRank();
-	const int* getDims();
+	/** Get the dimension of the LDOS. (Excluding energy dimension). */
+	int getDimensions();
+
+	/** Get the ranges for the dimensions of the LDOS. */
+	const int* getRanges();
+
+	/** Get lower limit for the energy. */
 	double getLowerLimit();
+
+	/** Get upper limit for the energy. */
 	double getUpperLimit();
+
+	/** Get energy resolution. (Number of energy intervals) */
 	int getResolution();
+
+	/** Get the number of data elements. */
 	int getSize();
+
+	/** Get LDOS data. */
 	const double* getData();
 private:
-	int rank;
-	int *dims;
+	/** Dimension of the LDOS. */
+	int dimensions;
+
+	/** Ranges for the dimensions of the LDOS. */
+	int *ranges;
+
+	/** Lower limit for the energy. */
 	double lowerLimit;
+
+	/** Upper limit for the energy. */
 	double upperLimit;
+
+	/** Energy resolution. (Number of energy intervals). */
 	int resolution;
+
+	/** Number of data elements. */
 	int size;
+
+	/** Actual data. */
 	double *data;
 
+	/** CPropertyExtractor is a friend class to allow it to write LDOS data
+	 */
 	friend class CPropertyExtractor;
+
+	/** DPropertyExtractor is a friend class to allow it to write LDOS data
+	 */
 	friend class DPropertyExtractor;
 };
 
-inline int Ldos::getRank(){
-	return rank;
+inline int Ldos::getDimensions(){
+	return dimensions;
 }
 
-inline const int* Ldos::getDims(){
-	return dims;
+inline const int* Ldos::getRanges(){
+	return ranges;
 }
 
 inline double Ldos::getLowerLimit(){

@@ -8,15 +8,15 @@
 namespace TBTK{
 namespace Property{
 
-Density::Density(int rank, const int *dims){
-	this->rank = rank;
-	this->dims = new int[rank];
-	for(int n = 0; n < rank; n++)
-		this->dims[n] = dims[n];
+Density::Density(int dimensions, const int *ranges){
+	this->dimensions = dimensions;
+	this->ranges = new int[dimensions];
+	for(int n = 0; n < dimensions; n++)
+		this->ranges[n] = ranges[n];
 
 	size = 1;
-	for(int n = 0; n < rank; n++)
-		size *= dims[n];
+	for(int n = 0; n < dimensions; n++)
+		size *= ranges[n];
 
 	data = new double[size];
 	for(int n = 0; n < size; n++)
@@ -24,7 +24,7 @@ Density::Density(int rank, const int *dims){
 }
 
 Density::~Density(){
-	delete [] this->dims;
+	delete [] this->ranges;
 	delete [] this->data;
 }
 

@@ -10,15 +10,15 @@ using namespace std;
 namespace TBTK{
 namespace Property{
 
-Magnetization::Magnetization(int rank, const int* dims){
-	this->rank = rank;
-	this->dims = new int[rank];
-	for(int n = 0; n < rank; n++)
-		this->dims[n] = dims[n];
+Magnetization::Magnetization(int dimensions, const int* ranges){
+	this->dimensions = dimensions;
+	this->ranges = new int[dimensions];
+	for(int n = 0; n < dimensions; n++)
+		this->ranges[n] = ranges[n];
 
 	size = 4;
-	for(int n = 0; n < rank; n++)
-		size *= dims[n];
+	for(int n = 0; n < dimensions; n++)
+		size *= ranges[n];
 
 	data = new complex<double>[size];
 	for(int n = 0; n < size; n++)
@@ -26,7 +26,7 @@ Magnetization::Magnetization(int rank, const int* dims){
 }
 
 Magnetization::~Magnetization(){
-	delete [] dims;
+	delete [] ranges;
 	delete [] data;
 }
 

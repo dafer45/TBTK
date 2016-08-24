@@ -8,19 +8,19 @@
 namespace TBTK{
 namespace Property{
 
-Ldos::Ldos(int rank, const int *dims, double lowerLimit, double upperLimit, int resolution){
-	this->rank = rank;
-	this->dims = new int[rank];
-	for(int n = 0; n < rank; n++)
-		this->dims[n] = dims[n];
+Ldos::Ldos(int dimensions, const int *ranges, double lowerLimit, double upperLimit, int resolution){
+	this->dimensions = dimensions;
+	this->ranges = new int[dimensions];
+	for(int n = 0; n < dimensions; n++)
+		this->ranges[n] = ranges[n];
 
 	this->lowerLimit = lowerLimit;
 	this->upperLimit = upperLimit;
 	this->resolution = resolution;
 
 	size = resolution;
-	for(int n = 0; n < rank; n++)
-		size *= dims[n];
+	for(int n = 0; n < dimensions; n++)
+		size *= ranges[n];
 
 	data = new double[size];
 	for(int n = 0; n < size; n++)
@@ -28,7 +28,7 @@ Ldos::Ldos(int rank, const int *dims, double lowerLimit, double upperLimit, int 
 }
 
 Ldos::~Ldos(){
-	delete [] dims;
+	delete [] ranges;
 	delete [] data;
 }
 

@@ -14,20 +14,42 @@ namespace Property{
 /** Container for density of states (DOS). */
 class Dos{
 public:
+	/** Constructor. */
 	Dos(double lowerLimit, double upperLimit, int resolution);
+
+	/** Destructor. */
 	~Dos();
 
+	/** Get lower limit for the energy. */
 	double getLowerLimit();
+
+	/** Get upper limit for the energy. */
 	double getUpperLimit();
+
+	/** Get energy resolution. (Number of energy intervals) */
 	int getResolution();
+
+	/** Get DOS data. */
 	const double* getData();
 private:
+	/** Lower limit for the energy. */
 	double lowerLimit;
+
+	/** Upper limit for the energy. */
 	double upperLimit;
+
+	/** Energy resolution. (Number of energy intervals) */
 	int resolution;
+
+	/** Actual data. */
 	double *data;
 
+	/** CPropertyExtractor is a friend class to allow it to write DOS data
+	 */
 	friend class CPropertyExtractor;
+
+	/** DPropertyExtractor is a friend class to allow it to write DOS data
+	 */
 	friend class DPropertyExtractor;
 };
 

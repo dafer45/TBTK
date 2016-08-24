@@ -10,19 +10,19 @@ using namespace std;
 namespace TBTK{
 namespace Property{
 
-SpinPolarizedLdos::SpinPolarizedLdos(int rank, const int *dims, double lowerLimit, double upperLimit, int resolution){
-	this->rank = rank;
-	this->dims = new int[rank];
-	for(int n = 0; n < rank; n++)
-		this->dims[n] = dims[n];
+SpinPolarizedLdos::SpinPolarizedLdos(int dimensions, const int *ranges, double lowerLimit, double upperLimit, int resolution){
+	this->dimensions = dimensions;
+	this->ranges = new int[dimensions];
+	for(int n = 0; n < dimensions; n++)
+		this->ranges[n] = ranges[n];
 
 	this->lowerLimit = lowerLimit;
 	this->upperLimit = upperLimit;
 	this->resolution = resolution;
 
 	size = 4*resolution;
-	for(int n = 0; n < rank; n++)
-		size *= dims[n];
+	for(int n = 0; n < dimensions; n++)
+		size *= ranges[n];
 
 	data = new complex<double>[size];
 	for(int n = 0; n < size; n++)
@@ -30,7 +30,7 @@ SpinPolarizedLdos::SpinPolarizedLdos(int rank, const int *dims, double lowerLimi
 }
 
 SpinPolarizedLdos::~SpinPolarizedLdos(){
-	delete [] dims;
+	delete [] ranges;
 	delete [] data;
 }
 

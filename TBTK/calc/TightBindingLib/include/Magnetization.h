@@ -16,29 +16,51 @@ namespace Property{
 /** Container for magnetization. */
 class Magnetization{
 public:
-	Magnetization(int rank, const int* dims);
+	/** Constructor. */
+	Magnetization(int dimensions, const int* ranges);
+
+	/** Destructor. */
 	~Magnetization();
 
-	int getRank();
-	const int* getDims();
+	/** Get the dimension of the magnetization. */
+	int getDimensions();
+
+	/** Get the ranges for the dimensions of the magnetization. */
+	const int* getRanges();
+
+	/** Get the number of data elements. */
 	int getSize();
+
+	/** Get magnetization data. */
 	const double* getData();
 private:
-	int rank;
-	int *dims;
+	/** Dimension of the magnetization. */
+	int dimensions;
+
+	/** Ranges for the dimensions of the magnetization. */
+	int *ranges;
+
+	/** Number of data elements. */
 	int size;
+
+	/** Actual data. */
 	std::complex<double> *data;
 
+	/** CPropertyExtractor is a friend class to allow it to write
+	 *  magnetiation data. */
 	friend class CPropertyExtractor;
+
+	/** DPropertyExtractor is a friend class to allow it to write
+	 *  magnetiation data. */
 	friend class DPropertyExtractor;
 };
 
-inline int Magnetization::getRank(){
-	return rank;
+inline int Magnetization::getDimensions(){
+	return dimensions;
 }
 
-inline const int* Magnetization::getDims(){
-	return dims;
+inline const int* Magnetization::getRanges(){
+	return ranges;
 }
 
 inline int Magnetization::getSize(){
