@@ -100,6 +100,35 @@ complex<double>* CPropertyExtractor::calculateGreensFunctions(vector<Index> &to,
 	return greensFunction;
 }
 
+complex<double> CPropertyExtractor::calculateExpectationValue(Index to, Index from){
+	const complex<double> i(0, 1);
+
+	complex<double> expectationValue = 0.;
+
+	complex<double> *greensFunction = calculateGreensFunction(to, from, ChebyshevSolver::GreensFunctionType::NonPrincipal);
+	Model::Statistics statistics = cSolver->getModel()->getStatistics();
+
+	for(int e = 0; e < energyResolution; e++){
+		double weight;
+		if(statistics == Model::Statistics::FermiDirac){
+			weight = Functions::fermiDiracDistribution((2.*e/(double)energyResolution - 1.)*cSolver->getScaleFactor(),
+									cSolver->getModel()->getChemicalPotential(),
+									cSolver->getModel()->getTemperature());
+		}
+		else{
+			weight = Functions::boseEinsteinDistribution((2.*e/(double)energyResolution - 1.)*cSolver->getScaleFactor(),
+									cSolver->getModel()->getChemicalPotential(),
+									cSolver->getModel()->getTemperature());
+		}
+
+		expectationValue += weight*conj(i*greensFunction[e]);
+	}
+
+	delete [] greensFunction;
+
+	return expectationValue;
+}
+
 double* CPropertyExtractor::calculateDensity(Index pattern, Index ranges){
 	for(unsigned int n = 0; n < pattern.indices.size(); n++){
 		if(pattern.indices.at(n) >= 0)

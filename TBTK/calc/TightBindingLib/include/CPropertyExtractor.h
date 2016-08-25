@@ -38,6 +38,9 @@ public:
 							Index from,
 							ChebyshevSolver::GreensFunctionType type = ChebyshevSolver::GreensFunctionType::Retarded);
 
+	/** Calculate expectation value. */
+	std::complex<double> calculateExpectationValue(Index to, Index from);
+
 	/** !!!Not tested!!! Calculate density.
 	 *
 	 *  @param pattern Specifies the index pattern for which to calculate
