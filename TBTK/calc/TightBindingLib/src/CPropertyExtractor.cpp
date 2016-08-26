@@ -122,7 +122,7 @@ complex<double> CPropertyExtractor::calculateExpectationValue(Index to, Index fr
 									cSolver->getModel()->getTemperature());
 		}
 
-		expectationValue += weight*conj(i*greensFunction[e])*dE;
+		expectationValue += weight*conj(i*greensFunction[e])*dE/M_PI;
 	}
 
 	delete [] greensFunction;
