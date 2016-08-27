@@ -212,9 +212,7 @@ int main(int argc, char **argv){
 	DPropertyExtractor pe(&dSolver);
 	Property::Magnetization *magnetization = pe.calculateMagnetization({0, IDX_X, IDX_Y, IDX_SPIN},
 										{1, SIZE_X, SIZE_Y, 2});
-	FileWriter::writeMAG(magnetization->getData(),
-				magnetization->getDimensions(),
-				magnetization->getRanges());
+	FileWriter::writeMagnetization(magnetization);
 	delete magnetization;
 
 	//Calculate and save spin-polarized local density of states
@@ -226,12 +224,7 @@ int main(int argc, char **argv){
 										SP_LDOS_UPPER_LIMIT,
 										SP_LDOS_LOWER_LIMIT,
 										SP_LDOS_RESOLUTION);
-	FileWriter::writeSP_LDOS(spLdos->getData(),
-					spLdos->getDimensions(),
-					spLdos->getRanges(),
-					spLdos->getLowerBound(),
-					spLdos->getUpperBound(),
-					spLdos->getResolution());
+	FileWriter::writeSpinPolarizedLDOS(spLdos);
 	delete spLdos;
 
 	return 0;

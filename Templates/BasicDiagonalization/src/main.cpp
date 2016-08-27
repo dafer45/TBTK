@@ -64,7 +64,7 @@ int main(int argc, char **argv){
 
 	//Extract eigenvalues and write these to file
 	Property::EigenValues *ev = pe.getEigenValues();
-	FileWriter::writeEigenValues(ev->getData(), ev->getSize());
+	FileWriter::writeEigenValues(ev);
 	delete ev;
 
 	//Extract DOS and write to file
@@ -72,7 +72,7 @@ int main(int argc, char **argv){
 	const double LOWER_LIMIT = -4.;
 	const int RESOLUTION = 1000;
 	Property::Dos *dos = pe.calculateDOS(LOWER_LIMIT, UPPER_LIMIT, RESOLUTION);
-	FileWriter::writeDOS(dos->getData(), LOWER_LIMIT, UPPER_LIMIT, RESOLUTION);
+	FileWriter::writeDOS(dos);
 	delete dos;
 
 	return 0;

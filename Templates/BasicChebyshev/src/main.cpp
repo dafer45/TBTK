@@ -89,12 +89,7 @@ int main(int argc, char **argv){
 						{SIZE_X, 1, 2});
 	const int RANK = 1;
 	int dims[RANK] = {SIZE_X};
-	FileWriter::writeLDOS(ldos->getData(),
-				RANK,
-				dims,
-				-SCALE_FACTOR,
-				SCALE_FACTOR,
-				ENERGY_RESOLUTION);
+	FileWriter::writeLDOS(ldos);
 	delete ldos;
 
 	return 0;
