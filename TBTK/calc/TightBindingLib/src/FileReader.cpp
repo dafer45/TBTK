@@ -69,7 +69,7 @@ void FileReader::readAmplitudeSet(AmplitudeSet **amplitudeSet, string name, stri
 	delete [] asTable;*/
 }
 
-void FileReader::readEigenValues(double **ev, int *size, string name, string path){
+/*void FileReader::readEigenValues(double **ev, int *size, string name, string path){
 	try{
 		stringstream ss;
 		ss << path;
@@ -108,9 +108,56 @@ void FileReader::readEigenValues(double **ev, int *size, string name, string pat
 		cout << "Error in FileReader::read: While reading " << name << "\n";
 		exit(1);
 	}
+}*/
+
+Property::EigenValues* FileReader::readEigenValues(string name, string path){
+	Property::EigenValues *eigenValues = NULL;
+	int size;
+
+	try{
+		stringstream ss;
+		ss << path;
+		if(path.back() != '/')
+			ss << "/";
+		ss << name;
+
+		Exception::dontPrint();
+		H5File file(filename, H5F_ACC_RDONLY);
+
+		DataSet dataset = file.openDataSet(name);
+		H5T_class_t typeClass = dataset.getTypeClass();
+		if(typeClass != H5T_FLOAT){
+			cout << "Error in FileReader::readEigenValues: Data type is not double.\n";
+			exit(1);
+		}
+
+		DataSpace dataspace = dataset.getSpace();
+		
+		hsize_t dims_internal[1];
+		dataspace.getSimpleExtentDims(dims_internal, NULL);
+		size = dims_internal[0];
+
+		eigenValues = new Property::EigenValues(size);
+
+		dataset.read(eigenValues->data, PredType::NATIVE_DOUBLE, dataspace);
+	}
+	catch(FileIException error){
+		cout << "Error in FileReader::read: While reading " << name << "\n";
+		exit(1);
+	}
+	catch(DataSetIException error){
+		cout << "Error in FileReader::read: While reading " << name << "\n";
+		exit(1);
+	}
+	catch(DataSpaceIException error){
+		cout << "Error in FileReader::read: While reading " << name << "\n";
+		exit(1);
+	}
+
+	return eigenValues;
 }
 
-void FileReader::readDOS(double **dos, double *l_lim, double *u_lim, int *resolution, string name, string path){
+/*void FileReader::readDOS(double **dos, double *l_lim, double *u_lim, int *resolution, string name, string path){
 	try{
 		stringstream ss;
 		ss << path;
@@ -155,9 +202,65 @@ void FileReader::readDOS(double **dos, double *l_lim, double *u_lim, int *resolu
 		cout << "Error in FileReader::read: While reading " << name << "\n";
 		exit(1);
 	}
+}*/
+
+Property::Dos* FileReader::readDOS(string name, string path){
+	Property::Dos *dos = NULL;
+	double lowerBound;
+	double upperBound;
+	int resolution;
+
+	try{
+		stringstream ss;
+		ss << path;
+		if(path.back() != '/')
+			ss << "/";
+		ss << name;
+
+		Exception::dontPrint();
+		H5File file(filename, H5F_ACC_RDONLY);
+
+		DataSet dataset = file.openDataSet(name);
+		H5T_class_t typeClass = dataset.getTypeClass();
+		if(typeClass != H5T_FLOAT){
+			cout << "Error in FileReader::readDOS: Data type is not double.\n";
+			exit(1);
+		}
+
+		DataSpace dataspace = dataset.getSpace();
+		
+		hsize_t dims_internal[1];
+		dataspace.getSimpleExtentDims(dims_internal, NULL);
+		resolution = dims_internal[0];
+
+		Attribute attribute = dataset.openAttribute("UpLowLimits");
+		double limits[2];
+		attribute.read(PredType::NATIVE_DOUBLE, limits);
+		upperBound = limits[0];
+		lowerBound = limits[1];
+
+		dos = new Property::Dos(lowerBound, upperBound, resolution);
+
+		dataset.read(dos->data, PredType::NATIVE_DOUBLE, dataspace);
+
+	}
+	catch(FileIException error){
+		cout << "Error in FileReader::read: While reading " << name << "\n";
+		exit(1);
+	}
+	catch(DataSetIException error){
+		cout << "Error in FileReader::read: While reading " << name << "\n";
+		exit(1);
+	}
+	catch(DataSpaceIException error){
+		cout << "Error in FileReader::read: While reading " << name << "\n";
+		exit(1);
+	}
+
+	return dos;
 }
 
-void FileReader::readDensity(double **density, int *rank, int **dims, string name, string path){
+/*void FileReader::readDensity(double **density, int *rank, int **dims, string name, string path){
 	try{
 		stringstream ss;
 		ss << path;
@@ -205,9 +308,62 @@ void FileReader::readDensity(double **density, int *rank, int **dims, string nam
 		cout << "Error in FileReader::read: While reading " << name << "\n";
 		exit(1);
 	}
+}*/
+
+Property::Density* FileReader::readDensity(string name, string path){
+	Property::Density *density = NULL;
+	int rank;
+	int *dims;
+
+	try{
+		stringstream ss;
+		ss << path;
+		if(path.back() != '/')
+			ss << "/";
+		ss << name;
+
+		Exception::dontPrint();
+		H5File file(filename, H5F_ACC_RDONLY);
+
+		DataSet dataset = file.openDataSet(name);
+		H5T_class_t typeClass = dataset.getTypeClass();
+		if(typeClass != H5T_FLOAT){
+			cout << "Error in FileReader::readDensity: Data type is not double.\n";
+			exit(1);
+		}
+
+		DataSpace dataspace = dataset.getSpace();
+		rank = dataspace.getSimpleExtentNdims();
+
+		hsize_t *dims_internal = new hsize_t[rank];
+		dataspace.getSimpleExtentDims(dims_internal, NULL);
+		dims = new int[rank];
+		for(int n = 0; n < rank; n++)
+			dims[n] = dims_internal[n];
+		delete [] dims_internal;
+
+		density = new Property::Density(rank, dims);
+		delete [] dims;
+
+		dataset.read(density->data, PredType::NATIVE_DOUBLE, dataspace);
+	}
+	catch(FileIException error){
+		cout << "Error in FileReader::read: While reading " << name << "\n";
+		exit(1);
+	}
+	catch(DataSetIException error){
+		cout << "Error in FileReader::read: While reading " << name << "\n";
+		exit(1);
+	}
+	catch(DataSpaceIException error){
+		cout << "Error in FileReader::read: While reading " << name << "\n";
+		exit(1);
+	}
+
+	return density;
 }
 
-void FileReader::readMAG(complex<double> **mag, int *rank, int **dims, string name, string path){
+/*void FileReader::readMAG(complex<double> **mag, int *rank, int **dims, string name, string path){
 	try{
 		stringstream ss;
 		ss << path;
@@ -260,9 +416,72 @@ void FileReader::readMAG(complex<double> **mag, int *rank, int **dims, string na
 		cout << "Error in FileReader::read: While reading " << name << "\n";
 		exit(1);
 	}
+}*/
+
+Property::Magnetization* FileReader::readMagnetization(string name, string path){
+	Property::Magnetization *magnetization = NULL;
+	int rank;
+	int *dims;
+
+	try{
+		stringstream ss;
+		ss << path;
+		if(path.back() != '/')
+			ss << "/";
+		ss << name;
+
+		Exception::dontPrint();
+		H5File file(filename, H5F_ACC_RDONLY);
+
+		DataSet dataset = file.openDataSet(name);
+		H5T_class_t typeClass = dataset.getTypeClass();
+		if(typeClass != H5T_FLOAT){
+			cout << "Error in FileReader::readMAG: Data type is not double.\n";
+			exit(1);
+		}
+
+		DataSpace dataspace = dataset.getSpace();
+		int rank_internal = dataspace.getSimpleExtentNdims();
+		rank = rank_internal-2;//Last two dimensions are for matrix elements and real/imaginary decomposition.
+
+		hsize_t *dims_internal = new hsize_t[rank_internal];
+		dataspace.getSimpleExtentDims(dims_internal, NULL);
+		dims = new int[rank];
+		for(int n = 0; n < rank; n++)
+			dims[n] = dims_internal[n];
+
+		magnetization = new Property::Magnetization(rank, dims);
+		delete [] dims;
+
+		int size = 1;
+		for(int n = 0; n < rank_internal; n++)
+			size *= dims_internal[n];
+
+		double *mag_internal = new double[size];
+		dataset.read(mag_internal, PredType::NATIVE_DOUBLE, dataspace);
+		for(int n = 0; n < size/2; n++)
+			magnetization->data[n] = complex<double>(mag_internal[2*n+0], mag_internal[2*n+1]);
+
+		delete [] mag_internal;
+		delete [] dims_internal;
+	}
+	catch(FileIException error){
+		cout << "Error in FileReader::read: While reading " << name << "\n";
+		exit(1);
+	}
+	catch(DataSetIException error){
+		cout << "Error in FileReader::read: While reading " << name << "\n";
+		exit(1);
+	}
+	catch(DataSpaceIException error){
+		cout << "Error in FileReader::read: While reading " << name << "\n";
+		exit(1);
+	}
+
+	return magnetization;
 }
 
-void FileReader::readLDOS(double **ldos, int *rank, int **dims, double *l_lim, double *u_lim, int *resolution, string name, string path){
+Property::Ldos* FileReader::readLDOS(string name, string path){
 	cout << "Error in FileReader::readLDOS: Not yet implemented.\n";
 	exit(1);
 
@@ -315,7 +534,7 @@ void FileReader::readLDOS(double **ldos, int *rank, int **dims, double *l_lim, d
 	}*/
 }
 
-void FileReader::readSP_LDOS(complex<double> **sp_ldos, int *rank, int **dims, double *l_lim, double *u_lim, int *resolution, string name, string path){
+/*void FileReader::readSP_LDOS(complex<double> **sp_ldos, int *rank, int **dims, double *l_lim, double *u_lim, int *resolution, string name, string path){
 	try{
 		stringstream ss;
 		ss << path;
@@ -376,6 +595,79 @@ void FileReader::readSP_LDOS(complex<double> **sp_ldos, int *rank, int **dims, d
 		cout << "Error in FileReader::read: While reading " << name << "\n";
 		exit(1);
 	}
+}*/
+
+Property::SpinPolarizedLdos* FileReader::readSpinPolarizedLDOS(string name, string path){
+	Property::SpinPolarizedLdos *spinPolarizedLdos = NULL;
+	int rank;
+	int *dims;
+	double lowerBound;
+	double upperBound;
+	int resolution;
+
+	try{
+		stringstream ss;
+		ss << path;
+		if(path.back() != '/')
+			ss << "/";
+		ss << name;
+
+		Exception::dontPrint();
+		H5File file(filename, H5F_ACC_RDONLY);
+
+		DataSet dataset = file.openDataSet(name);
+		H5T_class_t typeClass = dataset.getTypeClass();
+		if(typeClass != H5T_FLOAT){
+			cout << "Error in FileReader::readSP_LDOS: Data type is not double.\n";
+			exit(1);
+		}
+
+		DataSpace dataspace = dataset.getSpace();
+		int rank_internal = dataspace.getSimpleExtentNdims();
+		rank = rank_internal-3;//Three last dimensions are for energy, spin components, and real/imaginary decomposition.
+
+		hsize_t *dims_internal = new hsize_t[rank_internal];
+		dataspace.getSimpleExtentDims(dims_internal, NULL);
+		dims = new int[rank];
+		for(int n = 0; n < rank; n++)
+			dims[n] = dims_internal[n];
+		resolution = dims_internal[rank];
+
+		Attribute attribute = dataset.openAttribute("UpLowLimits");
+		double limits[2];
+		attribute.read(PredType::NATIVE_DOUBLE, limits);
+		upperBound = limits[0];
+		lowerBound = limits[1];
+
+		spinPolarizedLdos = new Property::SpinPolarizedLdos(rank, dims, lowerBound, upperBound, resolution);
+		delete [] dims;
+
+		int size = 1;
+		for(int n = 0; n < rank_internal; n++)
+			size *= dims_internal[n];
+
+		double *sp_ldos_internal = new double[size];
+		dataset.read(sp_ldos_internal, PredType::NATIVE_DOUBLE, dataspace);
+		for(int n = 0; n < size/2; n++)
+			spinPolarizedLdos->data[n] = complex<double>(sp_ldos_internal[2*n+0], sp_ldos_internal[2*n+1]);
+
+		delete [] sp_ldos_internal;
+		delete [] dims_internal;
+	}
+	catch(FileIException error){
+		cout << "Error in FileReader::read: While reading " << name << "\n";
+		exit(1);
+	}
+	catch(DataSetIException error){
+		cout << "Error in FileReader::read: While reading " << name << "\n";
+		exit(1);
+	}
+	catch(DataSpaceIException error){
+		cout << "Error in FileReader::read: While reading " << name << "\n";
+		exit(1);
+	}
+
+	return spinPolarizedLdos;
 }
 
 void FileReader::read(double **data, int *rank, int **dims, string name, string path){

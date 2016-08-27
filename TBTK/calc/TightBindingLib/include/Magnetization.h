@@ -13,6 +13,7 @@
 namespace TBTK{
 	class CPropertyExtractor;
 	class DPropertyExtractor;
+	class FileReader;
 namespace Property{
 
 /** Container for magnetization. */
@@ -25,16 +26,16 @@ public:
 	~Magnetization();
 
 	/** Get the dimension of the magnetization. */
-	int getDimensions();
+	int getDimensions() const;
 
 	/** Get the ranges for the dimensions of the magnetization. */
-	const int* getRanges();
+	const int* getRanges() const;
 
 	/** Get the number of data elements. */
-	int getSize();
+	int getSize() const;
 
 	/** Get magnetization data. */
-	const std::complex<double>* getData();
+	const std::complex<double>* getData() const;
 private:
 	/** Dimension of the magnetization. */
 	int dimensions;
@@ -55,21 +56,25 @@ private:
 	/** DPropertyExtractor is a friend class to allow it to write
 	 *  magnetiation data. */
 	friend class TBTK::DPropertyExtractor;
+
+	/** FileReader is a friend class to allow it to write magnetiation
+	 *  data. */
+	friend class TBTK::FileReader;
 };
 
-inline int Magnetization::getDimensions(){
+inline int Magnetization::getDimensions() const{
 	return dimensions;
 }
 
-inline const int* Magnetization::getRanges(){
+inline const int* Magnetization::getRanges() const{
 	return ranges;
 }
 
-inline int Magnetization::getSize(){
+inline int Magnetization::getSize() const{
 	return size;
 }
 
-inline const std::complex<double>* Magnetization::getData(){
+inline const std::complex<double>* Magnetization::getData() const{
 	return data;
 }
 

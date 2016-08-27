@@ -11,6 +11,7 @@
 namespace TBTK{
 	class CPropertyExtractor;
 	class DPropertyExtractor;
+	class FileReader;
 namespace Property{
 
 /** Container for local density of states (LDOS). */
@@ -23,10 +24,10 @@ public:
 	~EigenValues();
 
 	/** Get number of eigen values. */
-	int getSize();
+	int getSize() const;
 
 	/** Get eigen values. */
-	const double* getData();
+	const double* getData() const;
 private:
 	/** Number of elements in data. */
 	int size;
@@ -34,20 +35,24 @@ private:
 	/** Actual data. */
 	double *data;
 
-	/** CPropertyExtractor is a friend class to allow it to write LDOS data
-	 */
+	/** CPropertyExtractor is a friend class to allow it to write
+	 * EigenValues data. */
 	friend class TBTK::CPropertyExtractor;
 
-	/** DPropertyExtractor is a friend class to allow it to write LDOS data
-	 */
+	/** DPropertyExtractor is a friend class to allow it to write
+	 *  EigenValues data. */
 	friend class TBTK::DPropertyExtractor;
+
+	/** FileReader is a friend class to allow it to write
+	 *  EigenValues data. */
+	friend class TBTK::FileReader;
 };
 
-inline int EigenValues::getSize(){
+inline int EigenValues::getSize() const{
 	return size;
 }
 
-inline const double* EigenValues::getData(){
+inline const double* EigenValues::getData() const{
 	return data;
 }
 

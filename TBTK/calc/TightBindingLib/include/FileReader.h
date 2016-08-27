@@ -9,6 +9,12 @@
 #define COM_DAFER45_TBTK_FILE_READER
 
 #include "AmplitudeSet.h"
+#include "EigenValues.h"
+#include "Dos.h"
+#include "Density.h"
+#include "Magnetization.h"
+#include "Ldos.h"
+#include "SpinPolarizedLdos.h"
 #include <fstream>
 #include <stdio.h>
 
@@ -29,43 +35,59 @@ public:
 	);
 
 	/** Read eigenvalues from file. */
-	static void readEigenValues(
+/*	static void readEigenValues(
 		double **ev,
 		int *size,
+		std::string name = "EV",
+		std::string path = "/"
+	);*/
+	static Property::EigenValues* readEigenValues(
 		std::string name = "EV",
 		std::string path = "/"
 	);
 
 	/** Read density of states from file. */
-	static void readDOS(
+/*	static void readDOS(
 		double **dos,
 		double *l_lim,
 		double *u_lim,
 		int *resolution,
 		std::string name = "DOS",
 		std::string path = "/"
+	);*/
+	static Property::Dos* readDOS(
+		std::string name = "DOS",
+		std::string path = "/"
 	);
 
 	/** Read density from file. */
-	static void readDensity(
+/*	static void readDensity(
 		double **density,
 		int *rank,
 		int **dims,
 		std::string name = "Density",
 		std::string path = "/"
+	);*/
+	static Property::Density* readDensity(
+		std::string name = "Density",
+		std::string path = "/"
 	);
 
 	/** Read magnetization from file. */
-	static void readMAG(
+/*	static void readMAG(
 		std::complex<double> **mag,
 		int *rank,
 		int **dims,
 		std::string name = "MAG",
 		std::string path = "/"
+	);*/
+	static Property::Magnetization* readMagnetization(
+		std::string name = "MAG",
+		std::string path = "/"
 	);
 
 	/** Read local density of states from file. */
-	static void readLDOS(
+/*	static void readLDOS(
 		double **ldos,
 		int *rank,
 		int **dims,
@@ -74,16 +96,24 @@ public:
 		int *resolution,
 		std::string name = "LDOS",
 		std::string path = "/"
+	);*/
+	static Property::Ldos* readLDOS(
+		std::string name = "LDOS",
+		std::string path = "/"
 	);
 
 	/** Read spin-polarized local density of states from file. */
-	static void readSP_LDOS(
+/*	static void readSP_LDOS(
 		std::complex<double> **sp_ldos,
 		int *rank,
 		int **dims,
 		double *l_lim,
 		double *u_lim,
 		int *resolution,
+		std::string name = "SP_LDOS",
+		std::string path = "/"
+	);*/
+	static Property::SpinPolarizedLdos* readSpinPolarizedLDOS(
 		std::string name = "SP_LDOS",
 		std::string path = "/"
 	);

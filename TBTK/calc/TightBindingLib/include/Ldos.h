@@ -11,6 +11,7 @@
 namespace TBTK{
 	class CPropertyExtractor;
 	class DPropertyExtractor;
+	class FileReader;
 namespace Property{
 
 /** Container for local density of states (LDOS). */
@@ -23,25 +24,25 @@ public:
 	~Ldos();
 
 	/** Get the dimension of the LDOS. (Excluding energy dimension). */
-	int getDimensions();
+	int getDimensions() const;
 
 	/** Get the ranges for the dimensions of the LDOS. */
-	const int* getRanges();
+	const int* getRanges() const;
 
 	/** Get lower bound for the energy. */
-	double getLowerBound();
+	double getLowerBound() const;
 
 	/** Get upper bound for the energy. */
-	double getUpperBound();
+	double getUpperBound() const;
 
 	/** Get energy resolution. (Number of energy intervals) */
-	int getResolution();
+	int getResolution() const;
 
 	/** Get the number of data elements. */
-	int getSize();
+	int getSize() const;
 
 	/** Get LDOS data. */
-	const double* getData();
+	const double* getData() const;
 private:
 	/** Dimension of the LDOS. */
 	int dimensions;
@@ -64,40 +65,43 @@ private:
 	/** Actual data. */
 	double *data;
 
-	/** CPropertyExtractor is a friend class to allow it to write LDOS data
-	 */
+	/** CPropertyExtractor is a friend class to allow it to write LDOS
+	 *  data. */
 	friend class TBTK::CPropertyExtractor;
 
-	/** DPropertyExtractor is a friend class to allow it to write LDOS data
-	 */
+	/** DPropertyExtractor is a friend class to allow it to write LDOS
+	 * data. */
 	friend class TBTK::DPropertyExtractor;
+
+	/** FileReader is a friend class to allow it to write LDOS data. */
+	friend class TBTK::FileReader;
 };
 
-inline int Ldos::getDimensions(){
+inline int Ldos::getDimensions() const{
 	return dimensions;
 }
 
-inline const int* Ldos::getRanges(){
+inline const int* Ldos::getRanges() const{
 	return ranges;
 }
 
-inline double Ldos::getLowerBound(){
+inline double Ldos::getLowerBound() const{
 	return lowerBound;
 }
 
-inline double Ldos::getUpperBound(){
+inline double Ldos::getUpperBound() const{
 	return upperBound;
 }
 
-inline int Ldos::getResolution(){
+inline int Ldos::getResolution() const{
 	return resolution;
 }
 
-inline int Ldos::getSize(){
+inline int Ldos::getSize() const{
 	return size;
 }
 
-inline const double* Ldos::getData(){
+inline const double* Ldos::getData() const{
 	return data;
 }
 

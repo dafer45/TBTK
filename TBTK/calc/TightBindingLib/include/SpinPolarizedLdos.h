@@ -14,6 +14,7 @@
 namespace TBTK{
 	class CPropertyExtractor;
 	class DPropertyExtractor;
+	class FileReader;
 namespace Property{
 
 /** Container for spin-polarized local density of states (spin-polarized LDOS).
@@ -28,25 +29,25 @@ public:
 
 	/** Get the dimension of the spin-polarized LDOS. (Excluding energy
 	 *  dimension) */
-	int getDimensions();
+	int getDimensions() const;
 
 	/** Get the ranges for the dimensions of the density. */
-	const int* getRanges();
+	const int* getRanges() const;
 
 	/** Get lower bound for the energy. */
-	double getLowerBound();
+	double getLowerBound() const;
 
 	/** Get upper bound for the energy. */
-	double getUpperBound();
+	double getUpperBound() const;
 
 	/** Get energy resolution. (Number of energy intervals) */
-	int getResolution();
+	int getResolution() const;
 
 	/** Get number of data elementes. */
-	int getSize();
+	int getSize() const;
 
 	/** Get spin-polarized LDOS data. */
-	const std::complex<double>* getData();
+	const std::complex<double>* getData() const;
 private:
 	/**Dimension of the density. (Excluding energy dimension) */
 	int dimensions;
@@ -76,33 +77,37 @@ private:
 	/** DPropertyExtractor is a friend class to allow it to write
 	 *  spin-polarized LDOS data. */
 	friend class TBTK::DPropertyExtractor;
+
+	/** FileReader is a friend class to allow it to write spin-polarized
+	 *  LDOS data. */
+	friend class TBTK::FileReader;
 };
 
-inline int SpinPolarizedLdos::getDimensions(){
+inline int SpinPolarizedLdos::getDimensions() const{
 	return dimensions;
 }
 
-inline const int* SpinPolarizedLdos::getRanges(){
+inline const int* SpinPolarizedLdos::getRanges() const{
 	return ranges;
 }
 
-inline double SpinPolarizedLdos::getLowerBound(){
+inline double SpinPolarizedLdos::getLowerBound() const{
 	return lowerBound;
 }
 
-inline double SpinPolarizedLdos::getUpperBound(){
+inline double SpinPolarizedLdos::getUpperBound() const{
 	return upperBound;
 }
 
-inline int SpinPolarizedLdos::getResolution(){
+inline int SpinPolarizedLdos::getResolution() const{
 	return resolution;
 }
 
-inline int SpinPolarizedLdos::getSize(){
+inline int SpinPolarizedLdos::getSize() const{
 	return size;
 }
 
-inline const std::complex<double>* SpinPolarizedLdos::getData(){
+inline const std::complex<double>* SpinPolarizedLdos::getData() const{
 	return data;
 }
 

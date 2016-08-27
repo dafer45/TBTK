@@ -13,6 +13,8 @@ Dos::Dos(double lowerBound, double upperBound, int resolution){
 	this->upperBound = upperBound;
 	this->resolution = resolution;
 	data = new double[resolution];
+	for(int n = 0; n < resolution; n++)
+		data[n] = 0.;
 }
 
 Dos::~Dos(){

@@ -11,6 +11,7 @@
 namespace TBTK{
 	class CPropertyExtractor;
 	class DPropertyExtractor;
+	class FileReader;
 namespace Property{
 
 /** Container for density. */
@@ -23,16 +24,16 @@ public:
 	~Density();
 
 	/** Get the dimension of the density. */
-	int getDimensions();
+	int getDimensions() const;
 
 	/** Get the ranges for the dimensions of the density. */
-	const int* getRanges();
+	const int* getRanges() const;
 
 	/** Get number of data elements. */
-	int getSize();
+	int getSize() const;
 
 	/** Get density data. */
-	const double* getData();
+	const double* getData() const;
 private:
 	/** Dimension of the density. */
 	int dimensions;
@@ -53,21 +54,24 @@ private:
 	/** DPropertyExtractor is a friend class to allow it to write density
 	 *  data. */
 	friend class TBTK::DPropertyExtractor;
+
+	/** FileReader is a friend class to allow it to write density data. */
+	friend class TBTK::FileReader;
 };
 
-inline int Density::getDimensions(){
+inline int Density::getDimensions() const{
 	return dimensions;
 }
 
-inline const int* Density::getRanges(){
+inline const int* Density::getRanges() const{
 	return ranges;
 }
 
-inline int Density::getSize(){
+inline int Density::getSize() const{
 	return size;
 }
 
-inline const double* Density::getData(){
+inline const double* Density::getData() const{
 	return data;
 }
 

@@ -11,6 +11,7 @@
 namespace TBTK{
 	class CPropertyExtractor;
 	class DPropertyExtractor;
+	class FileReader;
 namespace Property{
 
 /** Container for density of states (DOS). */
@@ -23,16 +24,16 @@ public:
 	~Dos();
 
 	/** Get lower bound for the energy. */
-	double getLowerBound();
+	double getLowerBound() const;
 
 	/** Get upper bound for the energy. */
-	double getUpperBound();
+	double getUpperBound() const;
 
 	/** Get energy resolution. (Number of energy intervals) */
-	int getResolution();
+	int getResolution() const;
 
 	/** Get DOS data. */
-	const double* getData();
+	const double* getData() const;
 private:
 	/** Lower bound for the energy. */
 	double lowerBound;
@@ -53,21 +54,24 @@ private:
 	/** DPropertyExtractor is a friend class to allow it to write DOS data
 	 */
 	friend class TBTK::DPropertyExtractor;
+
+	/** FileReader is a friend class to allow it to write DOS data. */
+	friend class TBTK::FileReader;
 };
 
-inline double Dos::getLowerBound(){
+inline double Dos::getLowerBound() const{
 	return lowerBound;
 }
 
-inline double Dos::getUpperBound(){
+inline double Dos::getUpperBound() const{
 	return upperBound;
 }
 
-inline int Dos::getResolution(){
+inline int Dos::getResolution() const{
 	return resolution;
 }
 
-inline const double* Dos::getData(){
+inline const double* Dos::getData() const{
 	return data;
 }
 

@@ -9,6 +9,12 @@
 #define COM_DAFER45_TBTK_FILE_WRITER
 
 #include "AmplitudeSet.h"
+#include "EigenValues.h"
+#include "Dos.h"
+#include "Density.h"
+#include "Magnetization.h"
+#include "Ldos.h"
+#include "SpinPolarizedLdos.h"
 #include <fstream>
 #include <stdio.h>
 
@@ -31,50 +37,63 @@ public:
 	);
 
 	/** Write eigenvalues to file. */
-	static void writeEigenValues(
+/*	static void writeEigenValues(
 		const double *ev,
 		int size,
+		std::string name = "EV",
+		std::string path = "/"
+	);*/
+	static void writeEigenValues(
+		const Property::EigenValues *ev,
 		std::string name = "EV",
 		std::string path = "/"
 	);
 
 	/** Write density of states to file. */
-	static void writeDOS(
+/*	static void writeDOS(
 		const double *dos,
 		double l_lim,
 		double u_lim,
 		int resolution,
 		std::string name = "DOS",
 		std::string path = "/"
+	);*/
+	static void writeDOS(
+		const Property::Dos *dos,
+		std::string name = "DOS",
+		std::string path = "/"
 	);
 
 	/** Write density to file. */
-	static void writeDensity(
+/*	static void writeDensity(
 		const double *density,
 		int rank,
 		const int *dims,
 		std::string name = "Density",
 		std::string path = "/"
+	);*/
+	static void writeDensity(
+		const Property::Density *density,
+		std::string name = "Density",
+		std::string path = "/"
 	);
 
 	/** Write magnetization to file. */
-	static void writeMAG(
+/*	static void writeMAG(
 		const std::complex<double> *mag,
 		int rank,
 		const int *dims,
 		std::string name = "MAG",
 		std::string path = "/"
-	);
-/*	static void writeMAG(
-		double *mag,
-		int rank,
-		int *dims,
-		std::string name = "MAG",
-		std::string path = "/"
 	);*/
+	static void writeMagnetization(
+		const Property::Magnetization *magnetization,
+		std::string name = "Magnetization",
+		std::string path = "/"
+	);
 
 	/** Write local density of states to file. */
-	static void writeLDOS(
+/*	static void writeLDOS(
 		const double *ldos,
 		int rank,
 		const int *dims,
@@ -83,10 +102,15 @@ public:
 		int resolution,
 		std::string name = "LDOS",
 		std::string path = "/"
+	);*/
+	static void writeLDOS(
+		const Property::Ldos *ldos,
+		std::string name = "LDOS",
+		std::string path = "/"
 	);
 
 	/** Write spin-polarized local density of states to file. */
-	static void writeSP_LDOS(
+/*	static void writeSP_LDOS(
 		const std::complex<double> *sp_ldos,
 		int rank,
 		const int *dims,
@@ -95,17 +119,12 @@ public:
 		int resolution,
 		std::string name = "SP_LDOS",
 		std::string path = "/"
-	);
-/*	static void writeSP_LDOS(
-		double *sp_ldos,
-		int rank,
-		int *dims,
-		double u_lim,
-		double l_lim,
-		int resolution,
+	);*/
+	static void writeSpinPolarizedLDOS(
+		const Property::SpinPolarizedLdos *spinPolarizedLdos,
 		std::string name = "SP_LDOS",
 		std::string path = "/"
-	);*/
+	);
 
 	/** Write custom n-dimensional arrays to file of type double. */
 	static void write(
