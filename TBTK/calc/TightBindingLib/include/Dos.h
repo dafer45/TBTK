@@ -9,6 +9,8 @@
 #define COM_DAFER45_TBTK_DOS
 
 namespace TBTK{
+	class CPropertyExtractor;
+	class DPropertyExtractor;
 namespace Property{
 
 /** Container for density of states (DOS). */
@@ -46,11 +48,11 @@ private:
 
 	/** CPropertyExtractor is a friend class to allow it to write DOS data
 	 */
-	friend class CPropertyExtractor;
+	friend class TBTK::CPropertyExtractor;
 
 	/** DPropertyExtractor is a friend class to allow it to write DOS data
 	 */
-	friend class DPropertyExtractor;
+	friend class TBTK::DPropertyExtractor;
 };
 
 inline double Dos::getLowerLimit(){

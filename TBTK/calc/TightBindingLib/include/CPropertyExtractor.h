@@ -9,6 +9,10 @@
 #define COM_DAFER45_TBTK_C_PROPERTY_EXTRACTOR
 
 #include "ChebyshevSolver.h"
+#include "Density.h"
+#include "Magnetization.h"
+#include "Ldos.h"
+#include "SpinPolarizedLdos.h"
 
 namespace TBTK{
 
@@ -65,7 +69,8 @@ public:
 	 *  @return A density array with size equal to the number of points
 	 *  included by specified patter-range combination.
 	 */
-	double *calculateDensity(Index pattern, Index ranges);
+//	double* calculateDensity(Index pattern, Index ranges);
+	Property::Density* calculateDensity(Index pattern, Index ranges);
 
 	/** !!!Not tested!!! Calculate magnetization.
 	 *
@@ -101,7 +106,8 @@ public:
 	 *	\end{array}\right].
 	 *  \f]
 	 */
-	std::complex<double>* calculateMAG(Index pattern, Index ranges);
+//	std::complex<double>* calculateMAG(Index pattern, Index ranges);
+	Property::Magnetization* calculateMagnetization(Index pattern, Index ranges);
 
 	/** !!!Not tested!!!. Calculate local density of states.
 	 *
@@ -126,7 +132,8 @@ public:
 	 *  @return A density array with size equal to the number of points
 	 *  included by specified patter-range combination.
 	 */
-	double *calculateLDOS(Index pattern, Index ranges);
+//	double *calculateLDOS(Index pattern, Index ranges);
+	Property::Ldos* calculateLDOS(Index pattern, Index ranges);
 
 	/** !!!Not tested!!!. Calculate spin-polarized local density of states.
 	 *
@@ -168,7 +175,8 @@ public:
 	 *	\rho_{i\sigma i\sigma'}(E) = \sum_{E_n}\langle\Psi_n|c_{i\sigma}^{\dagger}c_{i\sigma'}|\Psi_n\rangle\delta(E - E_n) .
 	 *  \f]
 	 */
-	std::complex<double> *calculateSP_LDOS(Index pattern, Index ranges);
+//	std::complex<double> *calculateSP_LDOS(Index pattern, Index ranges);
+	Property::SpinPolarizedLdos* calculateSpinPolarizedLDOS(Index pattern, Index ranges);
 private:
 	/** ChebyshevSolver to work on. */
 	ChebyshevSolver *cSolver;
@@ -222,6 +230,13 @@ private:
 	/** Hint used to pass information between calculate[Property] and
 	 * calculate[Property]Callback. */
 	void *hint;
+
+	/** Ensure that range indices are on compliant format. (Set range to
+	 *  one for indices with non-negative pattern value.) */
+	void ensureCompliantRanges(const Index &pattern, Index &ranges);
+
+	/** Extract ranges for loop indices. */
+	void getLoopRanges(const Index &pattern, const Index &ranges, int *lDimensions, int **lRanges);
 };
 
 };	//End of namespace TBTK

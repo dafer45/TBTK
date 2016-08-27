@@ -10,14 +10,14 @@ using namespace std;
 namespace TBTK{
 namespace Property{
 
-SpinPolarizedLdos::SpinPolarizedLdos(int dimensions, const int *ranges, double lowerLimit, double upperLimit, int resolution){
+SpinPolarizedLdos::SpinPolarizedLdos(int dimensions, const int *ranges, double lowerBound, double upperBound, int resolution){
 	this->dimensions = dimensions;
 	this->ranges = new int[dimensions];
 	for(int n = 0; n < dimensions; n++)
 		this->ranges[n] = ranges[n];
 
-	this->lowerLimit = lowerLimit;
-	this->upperLimit = upperLimit;
+	this->lowerBound = lowerBound;
+	this->upperBound = upperBound;
 	this->resolution = resolution;
 
 	size = 4*resolution;

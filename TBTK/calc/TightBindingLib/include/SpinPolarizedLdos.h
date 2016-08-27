@@ -12,6 +12,8 @@
 #include <complex>
 
 namespace TBTK{
+	class CPropertyExtractor;
+	class DPropertyExtractor;
 namespace Property{
 
 /** Container for spin-polarized local density of states (spin-polarized LDOS).
@@ -19,7 +21,7 @@ namespace Property{
 class SpinPolarizedLdos{
 public:
 	/** Constructor. */
-	SpinPolarizedLdos(int dimensions, const int *ranges, double lowerLimit, double upperLimit, int resolution);
+	SpinPolarizedLdos(int dimensions, const int *ranges, double lowerBound, double upperBound, int resolution);
 
 	/** Destructor. */
 	~SpinPolarizedLdos();
@@ -31,11 +33,11 @@ public:
 	/** Get the ranges for the dimensions of the density. */
 	const int* getRanges();
 
-	/** Get lower limit for the energy. */
-	double getLowerLimit();
+	/** Get lower bound for the energy. */
+	double getLowerBound();
 
-	/** Get upper limit for the energy. */
-	double getUpperLimit();
+	/** Get upper bound for the energy. */
+	double getUpperBound();
 
 	/** Get energy resolution. (Number of energy intervals) */
 	int getResolution();
@@ -52,11 +54,11 @@ private:
 	/** Ranges for the dimensions of the spin-polarized LDOS*/
 	int *ranges;
 
-	/** Lower limit for the energy. */
-	double lowerLimit;
+	/** Lower bound for the energy. */
+	double lowerBound;
 
-	/** Upper limit for the energy. */
-	double upperLimit;
+	/** Upper bound for the energy. */
+	double upperBound;
 
 	/** Energy resolution. (Number of energy intervals) */
 	int resolution;
@@ -69,11 +71,11 @@ private:
 
 	/** CPropertyExtractor is a friend class to allow it to write
 	 *  spin-polarized LDOS data. */
-	friend class CPropertyExtractor;
+	friend class TBTK::CPropertyExtractor;
 
 	/** DPropertyExtractor is a friend class to allow it to write
 	 *  spin-polarized LDOS data. */
-	friend class DPropertyExtractor;
+	friend class TBTK::DPropertyExtractor;
 };
 
 inline int SpinPolarizedLdos::getDimensions(){
@@ -84,12 +86,12 @@ inline const int* SpinPolarizedLdos::getRanges(){
 	return ranges;
 }
 
-inline double SpinPolarizedLdos::getLowerLimit(){
-	return lowerLimit;
+inline double SpinPolarizedLdos::getLowerBound(){
+	return lowerBound;
 }
 
-inline double SpinPolarizedLdos::getUpperLimit(){
-	return upperLimit;
+inline double SpinPolarizedLdos::getUpperBound(){
+	return upperBound;
 }
 
 inline int SpinPolarizedLdos::getResolution(){

@@ -9,6 +9,11 @@
 #define COM_DAFER45_TBTK_D_PROPERTY_EXTRACTOR
 
 #include "DiagonalizationSolver.h"
+#include "EigenValues.h"
+#include "Dos.h"
+#include "Density.h"
+#include "Magnetization.h"
+#include "SpinPolarizedLdos.h"
 
 namespace TBTK{
 
@@ -30,7 +35,8 @@ public:
 	void getTabulatedAmplitudeSet(int **table, int *dims);
 
 	/** Get eigenvalues. */
-	double* getEigenValues();
+//	double* getEigenValues();
+	Property::EigenValues* getEigenValues();
 
 	/** Get eigenvalue. */
 	double getEigenValue(int state);
@@ -47,7 +53,8 @@ public:
 	 *  @param u_lim Upper limit for energy interval.
 	 *  @param resolution Number of points used between l_lim and u_lim.
 	 *  @return An array with size resolution. */
-	double* calculateDOS(double l_lim, double u_lim, int resolution);
+//	double* calculateDOS(double l_lim, double u_lim, int resolution);
+	Property::Dos* calculateDOS(double l_lim, double u_lim, int resolution);
 
 	/** Calculate density.
 	 *
@@ -73,7 +80,8 @@ public:
 	 *  @return A density array with size equal to the number of points
 	 *  included by specified patter-range combination.
 	 */
-	double* calculateDensity(Index pattern, Index ranges);
+//	double* calculateDensity(Index pattern, Index ranges);
+	Property::Density* calculateDensity(Index pattern, Index ranges);
 
 	/** Calculate magnetization.
 	 *
@@ -109,8 +117,9 @@ public:
 	 *      \end{array}\right].
 	 *  \f]
 	 */
-	std::complex<double>* calculateMAG(Index pattern, Index ranges);
 //	double* calculateMAG(Index pattern, Index ranges);
+//	std::complex<double>* calculateMAG(Index pattern, Index ranges);
+	Property::Magnetization* calculateMagnetization(Index pattern, Index ranges);
 
 	/** Calculate spin-polarized local density of states.
 	 *
@@ -152,8 +161,9 @@ public:
 	 *      \rho_{i\sigma i\sigma'}(E) = \sum_{E_n}\langle\Psi_n|c_{i\sigma}^{\dagger}c_{i\sigma'}|\Psi_n\rangle\delta(E - E_n) .
 	 *  \f]
 	 */
-	std::complex<double>* calculateSP_LDOS(Index pattern, Index ranges, double l_lim, double u_lim, int resolution);
 //	double* calculateSP_LDOS(Index pattern, Index ranges, double u_lim, double l_lim, int resolution);
+//	std::complex<double>* calculateSP_LDOS(Index pattern, Index ranges, double l_lim, double u_lim, int resolution);
+	Property::SpinPolarizedLdos* calculateSpinPolarizedLDOS(Index pattern, Index ranges, double l_lim, double u_lim, int resolution);
 
 	void save(int *memory, int size, int columns, std::string filename, std::string path = "./");
 	void save(double *memory, int size, int columns, std::string filename, std::string path = "./");
@@ -181,6 +191,13 @@ private:
 	/** Hint used to pass information between calculate[Property] and
 	 *  calculate[Property]Callback. */
 	void *hint;
+
+	/** Ensure that range indices are on compliant format. (Set range to
+	 *  one for indices with non-negative pattern value.) */
+	void ensureCompliantRanges(const Index &pattern, Index &ranges);
+
+	/** Extract ranges for loop indices. */
+	void getLoopRanges(const Index &pattern, const Index &ranges, int *lDimensions, int **lRanges);
 };
 
 inline double DPropertyExtractor::getEigenValue(int state){

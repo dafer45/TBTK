@@ -11,6 +11,8 @@
 #include <complex>
 
 namespace TBTK{
+	class CPropertyExtractor;
+	class DPropertyExtractor;
 namespace Property{
 
 /** Container for magnetization. */
@@ -48,11 +50,11 @@ private:
 
 	/** CPropertyExtractor is a friend class to allow it to write
 	 *  magnetiation data. */
-	friend class CPropertyExtractor;
+	friend class TBTK::CPropertyExtractor;
 
 	/** DPropertyExtractor is a friend class to allow it to write
 	 *  magnetiation data. */
-	friend class DPropertyExtractor;
+	friend class TBTK::DPropertyExtractor;
 };
 
 inline int Magnetization::getDimensions(){

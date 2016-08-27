@@ -130,7 +130,7 @@ complex<double> CPropertyExtractor::calculateExpectationValue(Index to, Index fr
 	return expectationValue;
 }
 
-double* CPropertyExtractor::calculateDensity(Index pattern, Index ranges){
+/*double* CPropertyExtractor::calculateDensity(Index pattern, Index ranges){
 	for(unsigned int n = 0; n < pattern.indices.size(); n++){
 		if(pattern.indices.at(n) >= 0)
 			ranges.indices.at(n) = 1;
@@ -148,9 +148,22 @@ double* CPropertyExtractor::calculateDensity(Index pattern, Index ranges){
 	calculate(calculateDensityCallback, (void*)density, pattern, ranges, 0, 1);
 
 	return density;
+}*/
+
+Property::Density* CPropertyExtractor::calculateDensity(Index pattern, Index ranges){
+	ensureCompliantRanges(pattern, ranges);
+
+	int lDimensions = 0;
+	int *lRanges;
+	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
+	Property::Density *density = new Property::Density(lDimensions, lRanges);
+
+	calculate(calculateDensityCallback, (void*)density->data, pattern, ranges, 0, 1);
+
+	return density;
 }
 
-complex<double>* CPropertyExtractor::calculateMAG(Index pattern, Index ranges){
+/*complex<double>* CPropertyExtractor::calculateMAG(Index pattern, Index ranges){
 	hint = new int[1];
 	((int*)hint)[0] = -1;
 	for(unsigned int n = 0; n < pattern.indices.size(); n++){
@@ -186,9 +199,40 @@ complex<double>* CPropertyExtractor::calculateMAG(Index pattern, Index ranges){
 	delete [] (int*)hint;
 
 	return mag;
+}*/
+
+Property::Magnetization* CPropertyExtractor::calculateMagnetization(Index pattern, Index ranges){
+	hint = new int[1];
+	((int*)hint)[0] = -1;
+	for(unsigned int n = 0; n < pattern.indices.size(); n++){
+		if(pattern.indices.at(n) == IDX_SPIN){
+			((int*)hint)[0] = n;
+			pattern.indices.at(n) = 0;
+			ranges.indices.at(n) = 1;
+			break;
+		}
+	}
+	if(((int*)hint)[0] == -1){
+		cout << "Error in PropertyExtractorChebyshev::calculateMAG: No spin index indicated.\n";
+		delete [] (int*)hint;
+		return NULL;
+	}
+
+	ensureCompliantRanges(pattern, ranges);
+
+	int lDimensions;
+	int *lRanges;
+	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
+	Property::Magnetization *magnetization = new Property::Magnetization(lDimensions, lRanges);
+
+	calculate(calculateMAGCallback, (void*)magnetization->data, pattern, ranges, 0, 1);
+
+	delete [] (int*)hint;
+
+	return magnetization;
 }
 
-double* CPropertyExtractor::calculateLDOS(Index pattern, Index ranges){
+/*double* CPropertyExtractor::calculateLDOS(Index pattern, Index ranges){
 	for(unsigned int n = 0; n < pattern.indices.size(); n++){
 		if(pattern.indices.at(n) >= 0)
 			ranges.indices.at(n) = 1;
@@ -206,9 +250,22 @@ double* CPropertyExtractor::calculateLDOS(Index pattern, Index ranges){
 	calculate(calculateLDOSCallback, (void*)ldos, pattern, ranges, 0, 1);
 
 	return ldos;
+}*/
+
+Property::Ldos* CPropertyExtractor::calculateLDOS(Index pattern, Index ranges){
+	ensureCompliantRanges(pattern, ranges);
+
+	int lDimensions;
+	int *lRanges;
+	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
+	Property::Ldos *ldos = new Property::Ldos(lDimensions, lRanges, lowerBound, upperBound, energyResolution);
+
+	calculate(calculateLDOSCallback, (void*)ldos->data, pattern, ranges, 0, 1);
+
+	return ldos;
 }
 
-complex<double>* CPropertyExtractor::calculateSP_LDOS(Index pattern, Index ranges){
+/*complex<double>* CPropertyExtractor::calculateSP_LDOS(Index pattern, Index ranges){
 	hint = new int[1];
 	((int*)hint)[0] = -1;
 	for(unsigned int n = 0; n < pattern.indices.size(); n++){
@@ -244,6 +301,37 @@ complex<double>* CPropertyExtractor::calculateSP_LDOS(Index pattern, Index range
 	delete [] (int*)hint;
 
 	return sp_ldos;
+}*/
+
+Property::SpinPolarizedLdos* CPropertyExtractor::calculateSpinPolarizedLDOS(Index pattern, Index ranges){
+	hint = new int[1];
+	((int*)hint)[0] = -1;
+	for(unsigned int n = 0; n < pattern.indices.size(); n++){
+		if(pattern.indices.at(n) == IDX_SPIN){
+			((int*)hint)[0] = n;
+			pattern.indices.at(n) = 0;
+			ranges.indices.at(n) = 1;
+			break;
+		}
+	}
+	if(((int*)hint)[0] == -1){
+		cout << "Error in PropertyExtractorChebyshev::calculateSP_LDOS: No spin index indicated.\n";
+		delete [] (int*)hint;
+		return NULL;
+	}
+
+	ensureCompliantRanges(pattern, ranges);
+
+	int lDimensions;
+	int *lRanges;
+	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
+	Property::SpinPolarizedLdos *spinPolarizedLdos = new Property::SpinPolarizedLdos(lDimensions, lRanges, lowerBound, upperBound, energyResolution);
+
+	calculate(calculateSP_LDOSCallback, (void*)spinPolarizedLdos->data, pattern, ranges, 0, 1);
+
+	delete [] (int*)hint;
+
+	return spinPolarizedLdos;
 }
 
 void CPropertyExtractor::calculateDensityCallback(CPropertyExtractor *cb_this, void *density, const Index &index, int offset){
@@ -362,6 +450,28 @@ void CPropertyExtractor::calculate(void (*callback)(CPropertyExtractor *cb_this,
 			if(!isSumIndex)
 				currentOffset += offsetMultiplier;
 		}
+	}
+}
+
+void CPropertyExtractor::ensureCompliantRanges(const Index &pattern, Index &ranges){
+	for(unsigned int n = 0; n < pattern.indices.size(); n++){
+		if(pattern.indices.at(n) >= 0)
+			ranges.indices.at(n) = 1;
+	}
+}
+
+void CPropertyExtractor::getLoopRanges(const Index &pattern, const Index &ranges, int *lDimensions, int **lRanges){
+	*lDimensions = 0;
+	for(unsigned int n = 0; n < ranges.indices.size(); n++){
+		if(pattern.indices.at(n) < IDX_SUM_ALL)
+			(*lDimensions)++;
+	}
+
+	(*lRanges) = new int[*lDimensions];
+	int counter = 0;
+	for(unsigned int n = 0; n < ranges.indices.size(); n++){
+		if(pattern.indices.at(n) < IDX_SUM_ALL)
+			(*lRanges)[counter++] = ranges.indices.at(n);
 	}
 }
 

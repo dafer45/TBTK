@@ -9,6 +9,8 @@
 #define COM_DAFER45_TBTK_EIGEN_VALUES
 
 namespace TBTK{
+	class CPropertyExtractor;
+	class DPropertyExtractor;
 namespace Property{
 
 /** Container for local density of states (LDOS). */
@@ -34,11 +36,11 @@ private:
 
 	/** CPropertyExtractor is a friend class to allow it to write LDOS data
 	 */
-	friend class CPropertyExtractor;
+	friend class TBTK::CPropertyExtractor;
 
 	/** DPropertyExtractor is a friend class to allow it to write LDOS data
 	 */
-	friend class DPropertyExtractor;
+	friend class TBTK::DPropertyExtractor;
 };
 
 inline int EigenValues::getSize(){

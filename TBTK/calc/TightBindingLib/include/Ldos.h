@@ -9,13 +9,15 @@
 #define COM_DAFER45_TBTK_LDOS
 
 namespace TBTK{
+	class CPropertyExtractor;
+	class DPropertyExtractor;
 namespace Property{
 
 /** Container for local density of states (LDOS). */
 class Ldos{
 public:
 	/** Constructor. */
-	Ldos(int dimensions, const int *ranges, double lowerLimit, double upperLimit, int resolution);
+	Ldos(int dimensions, const int *ranges, double lowerBound, double upperBound, int resolution);
 
 	/** Destructor. */
 	~Ldos();
@@ -26,11 +28,11 @@ public:
 	/** Get the ranges for the dimensions of the LDOS. */
 	const int* getRanges();
 
-	/** Get lower limit for the energy. */
-	double getLowerLimit();
+	/** Get lower bound for the energy. */
+	double getLowerBound();
 
-	/** Get upper limit for the energy. */
-	double getUpperLimit();
+	/** Get upper bound for the energy. */
+	double getUpperBound();
 
 	/** Get energy resolution. (Number of energy intervals) */
 	int getResolution();
@@ -47,11 +49,11 @@ private:
 	/** Ranges for the dimensions of the LDOS. */
 	int *ranges;
 
-	/** Lower limit for the energy. */
-	double lowerLimit;
+	/** Lower bound for the energy. */
+	double lowerBound;
 
-	/** Upper limit for the energy. */
-	double upperLimit;
+	/** Upper bound for the energy. */
+	double upperBound;
 
 	/** Energy resolution. (Number of energy intervals). */
 	int resolution;
@@ -64,11 +66,11 @@ private:
 
 	/** CPropertyExtractor is a friend class to allow it to write LDOS data
 	 */
-	friend class CPropertyExtractor;
+	friend class TBTK::CPropertyExtractor;
 
 	/** DPropertyExtractor is a friend class to allow it to write LDOS data
 	 */
-	friend class DPropertyExtractor;
+	friend class TBTK::DPropertyExtractor;
 };
 
 inline int Ldos::getDimensions(){
@@ -79,12 +81,12 @@ inline const int* Ldos::getRanges(){
 	return ranges;
 }
 
-inline double Ldos::getLowerLimit(){
-	return lowerLimit;
+inline double Ldos::getLowerBound(){
+	return lowerBound;
 }
 
-inline double Ldos::getUpperLimit(){
-	return upperLimit;
+inline double Ldos::getUpperBound(){
+	return upperBound;
 }
 
 inline int Ldos::getResolution(){
