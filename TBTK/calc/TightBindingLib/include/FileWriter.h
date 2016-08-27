@@ -52,7 +52,7 @@ public:
 	static void writeDensity(
 		const double *density,
 		int rank,
-		int *dims,
+		const int *dims,
 		std::string name = "Density",
 		std::string path = "/"
 	);
@@ -61,7 +61,7 @@ public:
 	static void writeMAG(
 		const std::complex<double> *mag,
 		int rank,
-		int *dims,
+		const int *dims,
 		std::string name = "MAG",
 		std::string path = "/"
 	);
@@ -77,7 +77,7 @@ public:
 	static void writeLDOS(
 		const double *ldos,
 		int rank,
-		int *dims,
+		const int *dims,
 		double l_lim,
 		double u_lim,
 		int resolution,
@@ -89,7 +89,7 @@ public:
 	static void writeSP_LDOS(
 		const std::complex<double> *sp_ldos,
 		int rank,
-		int *dims,
+		const int *dims,
 		double l_lim,
 		double u_lim,
 		int resolution,
@@ -111,7 +111,7 @@ public:
 	static void write(
 		const double *data,
 		int rank,
-		int *dims,
+		const int *dims,
 		std::string name,
 		std::string path = "/"
 	);
@@ -119,7 +119,7 @@ public:
 	/**Write custom attributes to file of type int. */
 	static void writeAttributes(
 		const int *attributes,
-		std::string *attribute_names,
+		const std::string *attribute_names,
 		int num,
 		std::string name,
 		std::string path = "/"
@@ -128,7 +128,7 @@ public:
 	/** Write custom attributes to file of type double. */
 	static void writeAttributes(
 		const double *attributes,
-		std::string *attribute_names,
+		const std::string *attribute_names,
 		int num,
 		std::string name,
 		std::string path = "/"

@@ -8,9 +8,9 @@
 namespace TBTK{
 namespace Property{
 
-Dos::Dos(double lowerLimit, double upperLimit, int resolution){
-	this->lowerLimit = lowerLimit;
-	this->upperLimit = upperLimit;
+Dos::Dos(double lowerBound, double upperBound, int resolution){
+	this->lowerBound = lowerBound;
+	this->upperBound = upperBound;
 	this->resolution = resolution;
 	data = new double[resolution];
 }

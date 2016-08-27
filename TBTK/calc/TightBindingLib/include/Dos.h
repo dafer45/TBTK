@@ -17,16 +17,16 @@ namespace Property{
 class Dos{
 public:
 	/** Constructor. */
-	Dos(double lowerLimit, double upperLimit, int resolution);
+	Dos(double lowerBound, double upperBound, int resolution);
 
 	/** Destructor. */
 	~Dos();
 
-	/** Get lower limit for the energy. */
-	double getLowerLimit();
+	/** Get lower bound for the energy. */
+	double getLowerBound();
 
-	/** Get upper limit for the energy. */
-	double getUpperLimit();
+	/** Get upper bound for the energy. */
+	double getUpperBound();
 
 	/** Get energy resolution. (Number of energy intervals) */
 	int getResolution();
@@ -34,11 +34,11 @@ public:
 	/** Get DOS data. */
 	const double* getData();
 private:
-	/** Lower limit for the energy. */
-	double lowerLimit;
+	/** Lower bound for the energy. */
+	double lowerBound;
 
-	/** Upper limit for the energy. */
-	double upperLimit;
+	/** Upper bound for the energy. */
+	double upperBound;
 
 	/** Energy resolution. (Number of energy intervals) */
 	int resolution;
@@ -55,12 +55,12 @@ private:
 	friend class TBTK::DPropertyExtractor;
 };
 
-inline double Dos::getLowerLimit(){
-	return lowerLimit;
+inline double Dos::getLowerBound(){
+	return lowerBound;
 }
 
-inline double Dos::getUpperLimit(){
-	return upperLimit;
+inline double Dos::getUpperBound(){
+	return upperBound;
 }
 
 inline int Dos::getResolution(){

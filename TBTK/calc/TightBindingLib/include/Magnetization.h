@@ -34,7 +34,7 @@ public:
 	int getSize();
 
 	/** Get magnetization data. */
-	const double* getData();
+	const std::complex<double>* getData();
 private:
 	/** Dimension of the magnetization. */
 	int dimensions;
@@ -67,6 +67,10 @@ inline const int* Magnetization::getRanges(){
 
 inline int Magnetization::getSize(){
 	return size;
+}
+
+inline const std::complex<double>* Magnetization::getData(){
+	return data;
 }
 
 };	//End namespace Property
