@@ -86,7 +86,7 @@ void FileWriter::writeAmplitudeSet(AmplitudeSet *amplitudeSet, string name, stri
 	delete [] asTable;
 }
 
-void FileWriter::writeEigenValues(double *ev, int size, string name, string path){
+void FileWriter::writeEigenValues(const double *ev, int size, string name, string path){
 	init();
 
 	const int RANK = 1;
@@ -125,7 +125,7 @@ void FileWriter::writeEigenValues(double *ev, int size, string name, string path
 	}
 }
 
-void FileWriter::writeDOS(double *dos, double l_lim, double u_lim, int resolution, string name, string path){
+void FileWriter::writeDOS(const double *dos, double l_lim, double u_lim, int resolution, string name, string path){
 	init();
 
 	const int DOS_RANK = 1;
@@ -176,7 +176,7 @@ void FileWriter::writeDOS(double *dos, double l_lim, double u_lim, int resolutio
 	}
 }
 
-void FileWriter::writeDensity(double *density, int rank, int *dims, string name, string path){
+void FileWriter::writeDensity(const double *density, int rank, int *dims, string name, string path){
 	init();
 
 	hsize_t density_dims[rank];
@@ -254,7 +254,7 @@ void FileWriter::writeDensity(double *density, int rank, int *dims, string name,
 	}
 }*/
 
-void FileWriter::writeMAG(complex<double> *mag, int rank, int *dims, string name, string path){
+void FileWriter::writeMAG(const complex<double> *mag, int rank, int *dims, string name, string path){
 	init();
 
 	hsize_t mag_dims[rank+2];//Last two dimension for matrix elements and real/imaginary decomposition.
@@ -307,7 +307,7 @@ void FileWriter::writeMAG(complex<double> *mag, int rank, int *dims, string name
 	delete [] mag_decomposed;
 }
 
-void FileWriter::writeLDOS(double *ldos, int rank, int *dims, double l_lim, double u_lim, int resolution, string name, string path){
+void FileWriter::writeLDOS(const double *ldos, int rank, int *dims, double l_lim, double u_lim, int resolution, string name, string path){
 	init();
 
 	hsize_t ldos_dims[rank+1];//Last dimension is for energy
@@ -414,7 +414,7 @@ void FileWriter::writeLDOS(double *ldos, int rank, int *dims, double l_lim, doub
 	}
 }*/
 
-void FileWriter::writeSP_LDOS(complex<double> *sp_ldos, int rank, int *dims, double l_lim, double u_lim, int resolution, string name, string path){
+void FileWriter::writeSP_LDOS(const complex<double> *sp_ldos, int rank, int *dims, double l_lim, double u_lim, int resolution, string name, string path){
 	init();
 
 	const int NUM_MATRIX_ELEMENTS = 4;
@@ -484,7 +484,7 @@ void FileWriter::writeSP_LDOS(complex<double> *sp_ldos, int rank, int *dims, dou
 	delete [] sp_ldos_decomposed;
 }
 
-void FileWriter::write(double *data, int rank, int *dims, string name, string path){
+void FileWriter::write(const double *data, int rank, int *dims, string name, string path){
 	init();
 
 	hsize_t data_dims[rank];
@@ -523,7 +523,7 @@ void FileWriter::write(double *data, int rank, int *dims, string name, string pa
 	}
 }
 
-void FileWriter::writeAttributes(int *attributes, string *attribute_names, int num, string name, string path){
+void FileWriter::writeAttributes(const int *attributes, string *attribute_names, int num, string name, string path){
 	init();
 
 	const int ATTRIBUTES_RANK = 1;
@@ -566,7 +566,7 @@ void FileWriter::writeAttributes(int *attributes, string *attribute_names, int n
 	}
 }
 
-void FileWriter::writeAttributes(double *attributes, string *attribute_names, int num, string name, string path){
+void FileWriter::writeAttributes(const double *attributes, string *attribute_names, int num, string name, string path){
 	init();
 
 	const int ATTRIBUTES_RANK = 1;

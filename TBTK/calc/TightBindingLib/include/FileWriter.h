@@ -32,7 +32,7 @@ public:
 
 	/** Write eigenvalues to file. */
 	static void writeEigenValues(
-		double *ev,
+		const double *ev,
 		int size,
 		std::string name = "EV",
 		std::string path = "/"
@@ -40,7 +40,7 @@ public:
 
 	/** Write density of states to file. */
 	static void writeDOS(
-		double *dos,
+		const double *dos,
 		double l_lim,
 		double u_lim,
 		int resolution,
@@ -50,7 +50,7 @@ public:
 
 	/** Write density to file. */
 	static void writeDensity(
-		double *density,
+		const double *density,
 		int rank,
 		int *dims,
 		std::string name = "Density",
@@ -59,7 +59,7 @@ public:
 
 	/** Write magnetization to file. */
 	static void writeMAG(
-		std::complex<double> *mag,
+		const std::complex<double> *mag,
 		int rank,
 		int *dims,
 		std::string name = "MAG",
@@ -75,7 +75,7 @@ public:
 
 	/** Write local density of states to file. */
 	static void writeLDOS(
-		double *ldos,
+		const double *ldos,
 		int rank,
 		int *dims,
 		double l_lim,
@@ -87,7 +87,7 @@ public:
 
 	/** Write spin-polarized local density of states to file. */
 	static void writeSP_LDOS(
-		std::complex<double> *sp_ldos,
+		const std::complex<double> *sp_ldos,
 		int rank,
 		int *dims,
 		double l_lim,
@@ -109,7 +109,7 @@ public:
 
 	/** Write custom n-dimensional arrays to file of type double. */
 	static void write(
-		double *data,
+		const double *data,
 		int rank,
 		int *dims,
 		std::string name,
@@ -118,7 +118,7 @@ public:
 
 	/**Write custom attributes to file of type int. */
 	static void writeAttributes(
-		int *attributes,
+		const int *attributes,
 		std::string *attribute_names,
 		int num,
 		std::string name,
@@ -127,7 +127,7 @@ public:
 
 	/** Write custom attributes to file of type double. */
 	static void writeAttributes(
-		double *attributes,
+		const double *attributes,
 		std::string *attribute_names,
 		int num,
 		std::string name,
