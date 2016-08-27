@@ -20,7 +20,7 @@ DPropertyExtractor::DPropertyExtractor(DiagonalizationSolver *dSolver){
 DPropertyExtractor::~DPropertyExtractor(){
 }
 
-void DPropertyExtractor::save(int *memory, int rows, int columns, string filename, string path){
+/*void DPropertyExtractor::save(int *memory, int rows, int columns, string filename, string path){
 	if(memory == NULL){
 		cout << "Error in PropertyExtractor::save: memory is NULL.\n";
 		return;
@@ -171,7 +171,7 @@ void DPropertyExtractor::save2D(complex<double> *memory, int size_x, int size_y,
 		fout << "\n";
 	}
 	fout.close();
-}
+}*/
 
 void DPropertyExtractor::saveEigenValues(string path, string filename){
 	stringstream ss;

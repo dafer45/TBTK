@@ -165,12 +165,12 @@ public:
 //	std::complex<double>* calculateSP_LDOS(Index pattern, Index ranges, double l_lim, double u_lim, int resolution);
 	Property::SpinPolarizedLdos* calculateSpinPolarizedLDOS(Index pattern, Index ranges, double l_lim, double u_lim, int resolution);
 
-	void save(int *memory, int size, int columns, std::string filename, std::string path = "./");
+/*	void save(int *memory, int size, int columns, std::string filename, std::string path = "./");
 	void save(double *memory, int size, int columns, std::string filename, std::string path = "./");
 	void save(std::complex<double> *memory, int size, int columns, std::string filename, std::string path = "./");
 	void save2D(int *memory, int size_x, int size_y, int columns, std::string filename, std::string path = "./");
 	void save2D(double *memory, int size_x, int size_y, int columns, std::string filename, std::string path = "./");
-	void save2D(std::complex<double> *memory, int size_x, int size_y, int columns, std::string filename, std::string path = "./");
+	void save2D(std::complex<double> *memory, int size_x, int size_y, int columns, std::string filename, std::string path = "./");*/
 private:
 	/** Loops over range indices and calls the appropriate callback
 	 *  function to calculate the correct quantity. */
