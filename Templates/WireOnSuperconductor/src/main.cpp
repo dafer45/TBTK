@@ -17,6 +17,8 @@
 #include "FileWriter.h"
 #include "DiagonalizationSolver.h"
 #include "DPropertyExtractor.h"
+#include "Magnetization.h"
+#include "SpinPolarizedLdos.h"
 
 using namespace std;
 using namespace TBTK;
@@ -208,34 +210,29 @@ int main(int argc, char **argv){
 
 	//Calculate and save magnetization
 	DPropertyExtractor pe(&dSolver);
-	complex<double> *mag = pe.calculateMAG({0, IDX_X, IDX_Y, IDX_SPIN},
-						{1, SIZE_X, SIZE_Y, 2});
-	const int MAG_RANK = 2;
-	int mag_dims[MAG_RANK];
-	mag_dims[0] = SIZE_X;
-	mag_dims[1] = SIZE_Y;
-	FileWriter::writeMAG(mag, MAG_RANK, mag_dims);
-	delete [] mag;
+	Property::Magnetization *magnetization = pe.calculateMagnetization({0, IDX_X, IDX_Y, IDX_SPIN},
+										{1, SIZE_X, SIZE_Y, 2});
+	FileWriter::writeMAG(magnetization->getData(),
+				magnetization->getDimensions(),
+				magnetization->getRanges());
+	delete magnetization;
 
 	//Calculate and save spin-polarized local density of states
 	const int SP_LDOS_UPPER_LIMIT = 2.;
 	const int SP_LDOS_LOWER_LIMIT = -2.;
 	const int SP_LDOS_RESOLUTION = 1000;
-	complex<double> *sp_ldos = pe.calculateSP_LDOS({0, IDX_X, SIZE_Y/2, IDX_SPIN},
-							{1, SIZE_X, 1, 2},
-							SP_LDOS_UPPER_LIMIT,
-							SP_LDOS_LOWER_LIMIT,
-							SP_LDOS_RESOLUTION);
-	const int SP_LDOS_RANK = 1;
-	int sp_ldos_dims[SP_LDOS_RANK];
-	sp_ldos_dims[0] = SIZE_X;
-	FileWriter::writeSP_LDOS(sp_ldos,
-					SP_LDOS_RANK,
-					sp_ldos_dims,
-					SP_LDOS_UPPER_LIMIT,
-					SP_LDOS_LOWER_LIMIT,
-					SP_LDOS_RESOLUTION);
-	delete [] sp_ldos;
+	Property::SpinPolarizedLdos *spLdos = pe.calculateSpinPolarizedLDOS({0, IDX_X, SIZE_Y/2, IDX_SPIN},
+										{1, SIZE_X, 1, 2},
+										SP_LDOS_UPPER_LIMIT,
+										SP_LDOS_LOWER_LIMIT,
+										SP_LDOS_RESOLUTION);
+	FileWriter::writeSP_LDOS(spLdos->getData(),
+					spLdos->getDimensions(),
+					spLdos->getRanges(),
+					spLdos->getLowerBound(),
+					spLdos->getUpperBound(),
+					spLdos->getResolution());
+	delete spLdos;
 
 	return 0;
 }

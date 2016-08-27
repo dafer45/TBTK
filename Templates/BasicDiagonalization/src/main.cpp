@@ -13,6 +13,8 @@
 #include "DiagonalizationSolver.h"
 #include "DPropertyExtractor.h"
 #include "FileWriter.h"
+#include "EigenValues.h"
+#include "Dos.h"
 
 using namespace std;
 using namespace TBTK;
@@ -61,17 +63,17 @@ int main(int argc, char **argv){
 	DPropertyExtractor pe(&dSolver);
 
 	//Extract eigenvalues and write these to file
-	double *ev = pe.getEigenValues();
-	FileWriter::writeEigenValues(ev, model.getBasisSize());
-	delete [] ev;
+	Property::EigenValues *ev = pe.getEigenValues();
+	FileWriter::writeEigenValues(ev->getData(), ev->getSize());
+	delete ev;
 
 	//Extract DOS and write to file
 	const double UPPER_LIMIT = 6.;
 	const double LOWER_LIMIT = -4.;
 	const int RESOLUTION = 1000;
-	double *dos = pe.calculateDOS(LOWER_LIMIT, UPPER_LIMIT, RESOLUTION);
-	FileWriter::writeDOS(dos, LOWER_LIMIT, UPPER_LIMIT, RESOLUTION);
-	delete [] dos;
+	Property::Dos *dos = pe.calculateDOS(LOWER_LIMIT, UPPER_LIMIT, RESOLUTION);
+	FileWriter::writeDOS(dos->getData(), LOWER_LIMIT, UPPER_LIMIT, RESOLUTION);
+	delete dos;
 
 	return 0;
 }
