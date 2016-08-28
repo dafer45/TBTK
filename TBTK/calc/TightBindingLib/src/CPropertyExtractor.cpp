@@ -112,12 +112,12 @@ complex<double> CPropertyExtractor::calculateExpectationValue(Index to, Index fr
 	for(int e = 0; e < energyResolution; e++){
 		double weight;
 		if(statistics == Model::Statistics::FermiDirac){
-			weight = Functions::fermiDiracDistribution((e/(double)energyResolution - 1.)*(upperBound - lowerBound),
+			weight = Functions::fermiDiracDistribution(lowerBound + (e/(double)energyResolution)*(upperBound - lowerBound),
 									cSolver->getModel()->getChemicalPotential(),
 									cSolver->getModel()->getTemperature());
 		}
 		else{
-			weight = Functions::boseEinsteinDistribution((e/(double)energyResolution - 1.)*(upperBound - lowerBound),
+			weight = Functions::boseEinsteinDistribution(lowerBound + (e/(double)energyResolution)*(upperBound - lowerBound),
 									cSolver->getModel()->getChemicalPotential(),
 									cSolver->getModel()->getTemperature());
 		}
@@ -342,12 +342,12 @@ void CPropertyExtractor::calculateDensityCallback(CPropertyExtractor *cb_this, v
 	for(int e = 0; e < cb_this->energyResolution; e++){
 		double weight;
 		if(statistics == Model::Statistics::FermiDirac){
-			weight = Functions::fermiDiracDistribution((e/(double)cb_this->energyResolution - 1.)*(cb_this->upperBound - cb_this->lowerBound),
+			weight = Functions::fermiDiracDistribution(cb_this->lowerBound + (e/(double)cb_this->energyResolution)*(cb_this->upperBound - cb_this->lowerBound),
 									cb_this->cSolver->getModel()->getChemicalPotential(),
 									cb_this->cSolver->getModel()->getTemperature());
 		}
 		else{
-			weight = Functions::boseEinsteinDistribution((e/(double)cb_this->energyResolution - 1.)*(cb_this->upperBound - cb_this->lowerBound),
+			weight = Functions::boseEinsteinDistribution(cb_this->lowerBound + (e/(double)cb_this->energyResolution)*(cb_this->upperBound - cb_this->lowerBound),
 									cb_this->cSolver->getModel()->getChemicalPotential(),
 									cb_this->cSolver->getModel()->getTemperature());
 		}
@@ -374,12 +374,12 @@ void CPropertyExtractor::calculateMAGCallback(CPropertyExtractor *cb_this, void 
 		for(int e = 0; e < cb_this->energyResolution; e++){
 			double weight;
 			if(statistics == Model::Statistics::FermiDirac){
-				weight = Functions::fermiDiracDistribution((e/(double)cb_this->energyResolution - 1.)*(cb_this->upperBound - cb_this->lowerBound),
+				weight = Functions::fermiDiracDistribution(cb_this->lowerBound + (e/(double)cb_this->energyResolution)*(cb_this->upperBound - cb_this->lowerBound),
 										cb_this->cSolver->getModel()->getChemicalPotential(),
 										cb_this->cSolver->getModel()->getTemperature());
 			}
 			else{
-				weight = Functions::boseEinsteinDistribution((e/(double)cb_this->energyResolution - 1.)*(cb_this->upperBound - cb_this->lowerBound),
+				weight = Functions::boseEinsteinDistribution(cb_this->lowerBound + (e/(double)cb_this->energyResolution)*(cb_this->upperBound - cb_this->lowerBound),
 										cb_this->cSolver->getModel()->getChemicalPotential(),
 										cb_this->cSolver->getModel()->getTemperature());
 			}
