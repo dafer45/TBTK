@@ -28,7 +28,7 @@ Geometry::~Geometry(){
 		delete [] specifiers;
 }
 
-void Geometry::addPoint(const Index &index, const double *coordinates, const int *specifiers){
+void Geometry::setCoordinates(const Index &index, const double *coordinates, const int *specifiers){
 	int basisIndex = parentModel->getBasisIndex(index);
 	for(int n = 0; n < dimensions; n++)
 		this->coordinates[dimensions*basisIndex] = coordinates[n];
@@ -40,6 +40,19 @@ void Geometry::addPoint(const Index &index, const double *coordinates, const int
 		cout << "Error in Geometry::addPoint: Geometry requires " << numSpecifiers << " specfiers.\n";
 		exit(1);
 	}
+}
+
+double Geometry::getDistance(const Index &index1, const Index &index2){
+	int basisIndex1 = parentModel->getBasisIndex(index1);
+	int basisIndex2 = parentModel->getBasisIndex(index2);
+
+	double distanceSquared = 0.;
+	for(int n = 0; n < dimensions; n++){
+		double difference = coordinates[dimensions*basisIndex1 + n] - coordinates[dimensions*basisIndex2 + n];
+		distanceSquared += difference*difference;
+	}
+
+	return sqrt(distanceSquared);
 }
 
 };	//End of namespace TBTK
