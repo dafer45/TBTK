@@ -14,7 +14,7 @@
 #include "DPropertyExtractor.h"
 #include "FileWriter.h"
 #include "EigenValues.h"
-#include "Dos.h"
+#include "DOS.h"
 
 using namespace std;
 using namespace TBTK;
@@ -71,7 +71,7 @@ int main(int argc, char **argv){
 	const double UPPER_LIMIT = 6.;
 	const double LOWER_LIMIT = -4.;
 	const int RESOLUTION = 1000;
-	Property::Dos *dos = pe.calculateDOS(LOWER_LIMIT, UPPER_LIMIT, RESOLUTION);
+	Property::DOS *dos = pe.calculateDOS(LOWER_LIMIT, UPPER_LIMIT, RESOLUTION);
 	FileWriter::writeDOS(dos);
 	delete dos;
 
