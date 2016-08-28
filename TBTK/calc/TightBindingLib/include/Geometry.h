@@ -9,6 +9,7 @@
 #define COM_DAFER45_TBTK_GEOMETRY
 
 #include "Model.h"
+#include <initializer_list>
 
 namespace TBTK{
 
@@ -21,7 +22,7 @@ public:
 	~Geometry();
 
 	/** Add a coordinate (and specifiers) for an index. */
-	void setCoordinates(const Index &index, const double *coordinates, const int *specifiers = NULL);
+	void setCoordinates(const Index &index, std::initializer_list<double> coordinates, std::initializer_list<int> specifiers = {});
 
 	/** Get dimensions. */
 	int getDimensions();

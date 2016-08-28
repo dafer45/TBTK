@@ -28,16 +28,25 @@ Geometry::~Geometry(){
 		delete [] specifiers;
 }
 
-void Geometry::setCoordinates(const Index &index, const double *coordinates, const int *specifiers){
+void Geometry::setCoordinates(const Index &index, std::initializer_list<double> coordinates, std::initializer_list<int> specifiers){
 	int basisIndex = parentModel->getBasisIndex(index);
-	for(int n = 0; n < dimensions; n++)
-		this->coordinates[dimensions*basisIndex] = coordinates[n];
-	if(specifiers != NULL){
-		for(int n = 0; n < numSpecifiers; n++)
-			this->specifiers[numSpecifiers*basisIndex + n] = specifiers[n];
+	if(coordinates.size() == (unsigned int)dimensions){
+		for(int n = 0; n < dimensions; n++)
+			this->coordinates[dimensions*basisIndex + n] = *(coordinates.begin() + n);
+//			this->coordinates[dimensions*basisIndex] = coordinates[n];
 	}
-	else if(numSpecifiers != 0){
-		cout << "Error in Geometry::addPoint: Geometry requires " << numSpecifiers << " specfiers.\n";
+	else{
+		cout << "Error in Geometry::setCoordinates: Geometry requires " << dimensions << " coordinates, but " << coordinates.size() << " were supplied.\n";
+		exit(1);
+	}
+	
+	if(specifiers.size() == (unsigned int)numSpecifiers){
+		for(int n = 0; n < numSpecifiers; n++)
+			this->specifiers[numSpecifiers*basisIndex + n] = *(specifiers.begin() + n);
+//			this->specifiers[numSpecifiers*basisIndex + n] = specifiers[n];
+	}
+	else{
+		cout << "Error in Geometry::addPoint: Geometry requires " << numSpecifiers << " specfiers, but " << specifiers.size() << " were supplied.\n";
 		exit(1);
 	}
 }
