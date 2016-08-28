@@ -9,6 +9,7 @@
 #define COM_DAFER45_TBTK_INDEX
 
 #include <iostream>
+#include <vector>
 
 namespace TBTK{
 
