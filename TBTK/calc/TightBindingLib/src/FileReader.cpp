@@ -204,8 +204,8 @@ Property::EigenValues* FileReader::readEigenValues(string name, string path){
 	}
 }*/
 
-Property::Dos* FileReader::readDOS(string name, string path){
-	Property::Dos *dos = NULL;
+Property::DOS* FileReader::readDOS(string name, string path){
+	Property::DOS *dos = NULL;
 	double lowerBound;
 	double upperBound;
 	int resolution;
@@ -239,7 +239,7 @@ Property::Dos* FileReader::readDOS(string name, string path){
 		upperBound = limits[0];
 		lowerBound = limits[1];
 
-		dos = new Property::Dos(lowerBound, upperBound, resolution);
+		dos = new Property::DOS(lowerBound, upperBound, resolution);
 
 		dataset.read(dos->data, PredType::NATIVE_DOUBLE, dataspace);
 
@@ -481,7 +481,7 @@ Property::Magnetization* FileReader::readMagnetization(string name, string path)
 	return magnetization;
 }
 
-Property::Ldos* FileReader::readLDOS(string name, string path){
+Property::LDOS* FileReader::readLDOS(string name, string path){
 	cout << "Error in FileReader::readLDOS: Not yet implemented.\n";
 	exit(1);
 
@@ -597,8 +597,8 @@ Property::Ldos* FileReader::readLDOS(string name, string path){
 	}
 }*/
 
-Property::SpinPolarizedLdos* FileReader::readSpinPolarizedLDOS(string name, string path){
-	Property::SpinPolarizedLdos *spinPolarizedLdos = NULL;
+Property::SpinPolarizedLDOS* FileReader::readSpinPolarizedLDOS(string name, string path){
+	Property::SpinPolarizedLDOS *spinPolarizedLDOS = NULL;
 	int rank;
 	int *dims;
 	double lowerBound;
@@ -639,7 +639,7 @@ Property::SpinPolarizedLdos* FileReader::readSpinPolarizedLDOS(string name, stri
 		upperBound = limits[0];
 		lowerBound = limits[1];
 
-		spinPolarizedLdos = new Property::SpinPolarizedLdos(rank, dims, lowerBound, upperBound, resolution);
+		spinPolarizedLDOS = new Property::SpinPolarizedLDOS(rank, dims, lowerBound, upperBound, resolution);
 		delete [] dims;
 
 		int size = 1;
@@ -649,7 +649,7 @@ Property::SpinPolarizedLdos* FileReader::readSpinPolarizedLDOS(string name, stri
 		double *sp_ldos_internal = new double[size];
 		dataset.read(sp_ldos_internal, PredType::NATIVE_DOUBLE, dataspace);
 		for(int n = 0; n < size/2; n++)
-			spinPolarizedLdos->data[n] = complex<double>(sp_ldos_internal[2*n+0], sp_ldos_internal[2*n+1]);
+			spinPolarizedLDOS->data[n] = complex<double>(sp_ldos_internal[2*n+0], sp_ldos_internal[2*n+1]);
 
 		delete [] sp_ldos_internal;
 		delete [] dims_internal;
@@ -667,7 +667,7 @@ Property::SpinPolarizedLdos* FileReader::readSpinPolarizedLDOS(string name, stri
 		exit(1);
 	}
 
-	return spinPolarizedLdos;
+	return spinPolarizedLDOS;
 }
 
 void FileReader::read(double **data, int *rank, int **dims, string name, string path){

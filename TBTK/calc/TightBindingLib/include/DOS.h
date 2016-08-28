@@ -1,5 +1,5 @@
 /** @package TBTKcalc
- *  @file Dos.h
+ *  @file DOS.h
  *  @brief Property container for density of states (DOS)
  *
  *  @author Kristofer Björnson
@@ -15,13 +15,13 @@ namespace TBTK{
 namespace Property{
 
 /** Container for density of states (DOS). */
-class Dos{
+class DOS{
 public:
 	/** Constructor. */
-	Dos(double lowerBound, double upperBound, int resolution);
+	DOS(double lowerBound, double upperBound, int resolution);
 
 	/** Destructor. */
-	~Dos();
+	~DOS();
 
 	/** Get lower bound for the energy. */
 	double getLowerBound() const;
@@ -59,19 +59,19 @@ private:
 	friend class TBTK::FileReader;
 };
 
-inline double Dos::getLowerBound() const{
+inline double DOS::getLowerBound() const{
 	return lowerBound;
 }
 
-inline double Dos::getUpperBound() const{
+inline double DOS::getUpperBound() const{
 	return upperBound;
 }
 
-inline int Dos::getResolution() const{
+inline int DOS::getResolution() const{
 	return resolution;
 }
 
-inline const double* Dos::getData() const{
+inline const double* DOS::getData() const{
 	return data;
 }
 

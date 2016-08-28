@@ -1,5 +1,5 @@
 /** @package TBTKcalc
- *  @file SpinPolarizedLdos.h
+ *  @file SpinPolarizedLDOS.h
  *  @brief Property container for spin-polarized local density of states
  *  (spin-polarized LDOS)
  *
@@ -19,13 +19,13 @@ namespace Property{
 
 /** Container for spin-polarized local density of states (spin-polarized LDOS).
  */
-class SpinPolarizedLdos{
+class SpinPolarizedLDOS{
 public:
 	/** Constructor. */
-	SpinPolarizedLdos(int dimensions, const int *ranges, double lowerBound, double upperBound, int resolution);
+	SpinPolarizedLDOS(int dimensions, const int *ranges, double lowerBound, double upperBound, int resolution);
 
 	/** Destructor. */
-	~SpinPolarizedLdos();
+	~SpinPolarizedLDOS();
 
 	/** Get the dimension of the spin-polarized LDOS. (Excluding energy
 	 *  dimension) */
@@ -83,31 +83,31 @@ private:
 	friend class TBTK::FileReader;
 };
 
-inline int SpinPolarizedLdos::getDimensions() const{
+inline int SpinPolarizedLDOS::getDimensions() const{
 	return dimensions;
 }
 
-inline const int* SpinPolarizedLdos::getRanges() const{
+inline const int* SpinPolarizedLDOS::getRanges() const{
 	return ranges;
 }
 
-inline double SpinPolarizedLdos::getLowerBound() const{
+inline double SpinPolarizedLDOS::getLowerBound() const{
 	return lowerBound;
 }
 
-inline double SpinPolarizedLdos::getUpperBound() const{
+inline double SpinPolarizedLDOS::getUpperBound() const{
 	return upperBound;
 }
 
-inline int SpinPolarizedLdos::getResolution() const{
+inline int SpinPolarizedLDOS::getResolution() const{
 	return resolution;
 }
 
-inline int SpinPolarizedLdos::getSize() const{
+inline int SpinPolarizedLDOS::getSize() const{
 	return size;
 }
 
-inline const std::complex<double>* SpinPolarizedLdos::getData() const{
+inline const std::complex<double>* SpinPolarizedLDOS::getData() const{
 	return data;
 }
 

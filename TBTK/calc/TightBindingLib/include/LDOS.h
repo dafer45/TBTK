@@ -1,5 +1,5 @@
 /** @package TBTKcalc
- *  @file Ldos.h
+ *  @file LDOS.h
  *  @brief Property container for local density of states (LDOS)
  *
  *  @author Kristofer Björnson
@@ -15,13 +15,13 @@ namespace TBTK{
 namespace Property{
 
 /** Container for local density of states (LDOS). */
-class Ldos{
+class LDOS{
 public:
 	/** Constructor. */
-	Ldos(int dimensions, const int *ranges, double lowerBound, double upperBound, int resolution);
+	LDOS(int dimensions, const int *ranges, double lowerBound, double upperBound, int resolution);
 
 	/** Destructor. */
-	~Ldos();
+	~LDOS();
 
 	/** Get the dimension of the LDOS. (Excluding energy dimension). */
 	int getDimensions() const;
@@ -77,31 +77,31 @@ private:
 	friend class TBTK::FileReader;
 };
 
-inline int Ldos::getDimensions() const{
+inline int LDOS::getDimensions() const{
 	return dimensions;
 }
 
-inline const int* Ldos::getRanges() const{
+inline const int* LDOS::getRanges() const{
 	return ranges;
 }
 
-inline double Ldos::getLowerBound() const{
+inline double LDOS::getLowerBound() const{
 	return lowerBound;
 }
 
-inline double Ldos::getUpperBound() const{
+inline double LDOS::getUpperBound() const{
 	return upperBound;
 }
 
-inline int Ldos::getResolution() const{
+inline int LDOS::getResolution() const{
 	return resolution;
 }
 
-inline int Ldos::getSize() const{
+inline int LDOS::getSize() const{
 	return size;
 }
 
-inline const double* Ldos::getData() const{
+inline const double* LDOS::getData() const{
 	return data;
 }
 

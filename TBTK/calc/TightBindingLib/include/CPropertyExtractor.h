@@ -11,8 +11,8 @@
 #include "ChebyshevSolver.h"
 #include "Density.h"
 #include "Magnetization.h"
-#include "Ldos.h"
-#include "SpinPolarizedLdos.h"
+#include "LDOS.h"
+#include "SpinPolarizedLDOS.h"
 
 namespace TBTK{
 
@@ -133,7 +133,7 @@ public:
 	 *  included by specified patter-range combination.
 	 */
 //	double *calculateLDOS(Index pattern, Index ranges);
-	Property::Ldos* calculateLDOS(Index pattern, Index ranges);
+	Property::LDOS* calculateLDOS(Index pattern, Index ranges);
 
 	/** !!!Not tested!!!. Calculate spin-polarized local density of states.
 	 *
@@ -176,7 +176,7 @@ public:
 	 *  \f]
 	 */
 //	std::complex<double> *calculateSP_LDOS(Index pattern, Index ranges);
-	Property::SpinPolarizedLdos* calculateSpinPolarizedLDOS(Index pattern, Index ranges);
+	Property::SpinPolarizedLDOS* calculateSpinPolarizedLDOS(Index pattern, Index ranges);
 private:
 	/** ChebyshevSolver to work on. */
 	ChebyshevSolver *cSolver;

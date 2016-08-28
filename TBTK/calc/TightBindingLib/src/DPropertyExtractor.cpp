@@ -225,10 +225,10 @@ Property::EigenValues* DPropertyExtractor::getEigenValues(){
 	return dos;
 }*/
 
-Property::Dos* DPropertyExtractor::calculateDOS(double lowerBound, double upperBound, int resolution){
+Property::DOS* DPropertyExtractor::calculateDOS(double lowerBound, double upperBound, int resolution){
 	const double *ev = dSolver->getEigenValues();
 
-	Property::Dos *dos = new Property::Dos(lowerBound, upperBound, resolution);
+	Property::DOS *dos = new Property::DOS(lowerBound, upperBound, resolution);
 	for(int n = 0; n < dSolver->getModel()->getBasisSize(); n++){
 		int e = (int)(((ev[n] - lowerBound)/(upperBound - lowerBound))*resolution);
 		if(e >= 0 && e < resolution){
@@ -391,7 +391,7 @@ Property::Magnetization* DPropertyExtractor::calculateMagnetization(Index patter
 	return sp_ldos;
 }*/
 
-Property::SpinPolarizedLdos* DPropertyExtractor::calculateSpinPolarizedLDOS(Index pattern, Index ranges, double lowerBound, double upperBound, int resolution){
+Property::SpinPolarizedLDOS* DPropertyExtractor::calculateSpinPolarizedLDOS(Index pattern, Index ranges, double lowerBound, double upperBound, int resolution){
 	//hint[0] is an array of doubles, hint[1] is an array of ints
 	//hint[0][0]: upperBound
 	//hint[0][1]: lowerBound
@@ -426,15 +426,15 @@ Property::SpinPolarizedLdos* DPropertyExtractor::calculateSpinPolarizedLDOS(Inde
 	int lDimensions;
 	int *lRanges;
 	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
-	Property::SpinPolarizedLdos *spinPolarizedLdos = new Property::SpinPolarizedLdos(lDimensions, lRanges, lowerBound, upperBound, resolution);
+	Property::SpinPolarizedLDOS *spinPolarizedLDOS = new Property::SpinPolarizedLDOS(lDimensions, lRanges, lowerBound, upperBound, resolution);
 
-	calculate(calculateSP_LDOSCallback, (void*)spinPolarizedLdos->data, pattern, ranges, 0, 1);
+	calculate(calculateSP_LDOSCallback, (void*)spinPolarizedLDOS->data, pattern, ranges, 0, 1);
 
 	delete [] ((double**)hint)[0];
 	delete [] ((int**)hint)[1];
 	delete [] (void**)hint;
 
-	return spinPolarizedLdos;
+	return spinPolarizedLDOS;
 }
 
 void DPropertyExtractor::calculateDensityCallback(DPropertyExtractor *cb_this, void* density, const Index &index, int offset){

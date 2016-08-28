@@ -252,13 +252,13 @@ Property::Magnetization* CPropertyExtractor::calculateMagnetization(Index patter
 	return ldos;
 }*/
 
-Property::Ldos* CPropertyExtractor::calculateLDOS(Index pattern, Index ranges){
+Property::LDOS* CPropertyExtractor::calculateLDOS(Index pattern, Index ranges){
 	ensureCompliantRanges(pattern, ranges);
 
 	int lDimensions;
 	int *lRanges;
 	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
-	Property::Ldos *ldos = new Property::Ldos(lDimensions, lRanges, lowerBound, upperBound, energyResolution);
+	Property::LDOS *ldos = new Property::LDOS(lDimensions, lRanges, lowerBound, upperBound, energyResolution);
 
 	calculate(calculateLDOSCallback, (void*)ldos->data, pattern, ranges, 0, 1);
 
@@ -303,7 +303,7 @@ Property::Ldos* CPropertyExtractor::calculateLDOS(Index pattern, Index ranges){
 	return sp_ldos;
 }*/
 
-Property::SpinPolarizedLdos* CPropertyExtractor::calculateSpinPolarizedLDOS(Index pattern, Index ranges){
+Property::SpinPolarizedLDOS* CPropertyExtractor::calculateSpinPolarizedLDOS(Index pattern, Index ranges){
 	hint = new int[1];
 	((int*)hint)[0] = -1;
 	for(unsigned int n = 0; n < pattern.indices.size(); n++){
@@ -325,13 +325,13 @@ Property::SpinPolarizedLdos* CPropertyExtractor::calculateSpinPolarizedLDOS(Inde
 	int lDimensions;
 	int *lRanges;
 	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
-	Property::SpinPolarizedLdos *spinPolarizedLdos = new Property::SpinPolarizedLdos(lDimensions, lRanges, lowerBound, upperBound, energyResolution);
+	Property::SpinPolarizedLDOS *spinPolarizedLDOS = new Property::SpinPolarizedLDOS(lDimensions, lRanges, lowerBound, upperBound, energyResolution);
 
-	calculate(calculateSP_LDOSCallback, (void*)spinPolarizedLdos->data, pattern, ranges, 0, 1);
+	calculate(calculateSP_LDOSCallback, (void*)spinPolarizedLDOS->data, pattern, ranges, 0, 1);
 
 	delete [] (int*)hint;
 
-	return spinPolarizedLdos;
+	return spinPolarizedLDOS;
 }
 
 void CPropertyExtractor::calculateDensityCallback(CPropertyExtractor *cb_this, void *density, const Index &index, int offset){

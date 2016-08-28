@@ -10,11 +10,11 @@
 
 #include "AmplitudeSet.h"
 #include "EigenValues.h"
-#include "Dos.h"
+#include "DOS.h"
 #include "Density.h"
 #include "Magnetization.h"
-#include "Ldos.h"
-#include "SpinPolarizedLdos.h"
+#include "LDOS.h"
+#include "SpinPolarizedLDOS.h"
 #include <fstream>
 #include <stdio.h>
 
@@ -42,7 +42,7 @@ public:
 		std::string path = "/"
 	);*/
 	static Property::EigenValues* readEigenValues(
-		std::string name = "EV",
+		std::string name = "EigenValues",
 		std::string path = "/"
 	);
 
@@ -55,7 +55,7 @@ public:
 		std::string name = "DOS",
 		std::string path = "/"
 	);*/
-	static Property::Dos* readDOS(
+	static Property::DOS* readDOS(
 		std::string name = "DOS",
 		std::string path = "/"
 	);
@@ -82,7 +82,7 @@ public:
 		std::string path = "/"
 	);*/
 	static Property::Magnetization* readMagnetization(
-		std::string name = "MAG",
+		std::string name = "Magnetization",
 		std::string path = "/"
 	);
 
@@ -97,7 +97,7 @@ public:
 		std::string name = "LDOS",
 		std::string path = "/"
 	);*/
-	static Property::Ldos* readLDOS(
+	static Property::LDOS* readLDOS(
 		std::string name = "LDOS",
 		std::string path = "/"
 	);
@@ -113,8 +113,8 @@ public:
 		std::string name = "SP_LDOS",
 		std::string path = "/"
 	);*/
-	static Property::SpinPolarizedLdos* readSpinPolarizedLDOS(
-		std::string name = "SP_LDOS",
+	static Property::SpinPolarizedLDOS* readSpinPolarizedLDOS(
+		std::string name = "SpinPolarizedLDOS",
 		std::string path = "/"
 	);
 

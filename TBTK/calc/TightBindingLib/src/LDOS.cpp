@@ -1,14 +1,14 @@
-/** @file Ldos.cpp
+/** @file LDOS.cpp
  *
  *  @author Kristofer Björnson
  */
 
-#include "../include/Ldos.h"
+#include "../include/LDOS.h"
 
 namespace TBTK{
 namespace Property{
 
-Ldos::Ldos(int dimensions, const int *ranges, double lowerBound, double upperBound, int resolution){
+LDOS::LDOS(int dimensions, const int *ranges, double lowerBound, double upperBound, int resolution){
 	this->dimensions = dimensions;
 	this->ranges = new int[dimensions];
 	for(int n = 0; n < dimensions; n++)
@@ -27,7 +27,7 @@ Ldos::Ldos(int dimensions, const int *ranges, double lowerBound, double upperBou
 		data[n] = 0.;
 }
 
-Ldos::~Ldos(){
+LDOS::~LDOS(){
 	delete [] ranges;
 	delete [] data;
 }

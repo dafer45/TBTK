@@ -1,14 +1,14 @@
-/** @file Dos.cpp
+/** @file DOS.cpp
  *
  *  @author Kristofer Björnson
  */
 
-#include "../include/Dos.h"
+#include "../include/DOS.h"
 
 namespace TBTK{
 namespace Property{
 
-Dos::Dos(double lowerBound, double upperBound, int resolution){
+DOS::DOS(double lowerBound, double upperBound, int resolution){
 	this->lowerBound = lowerBound;
 	this->upperBound = upperBound;
 	this->resolution = resolution;
@@ -17,7 +17,7 @@ Dos::Dos(double lowerBound, double upperBound, int resolution){
 		data[n] = 0.;
 }
 
-Dos::~Dos(){
+DOS::~DOS(){
 	delete [] data;
 }
 

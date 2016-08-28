@@ -10,10 +10,10 @@
 
 #include "DiagonalizationSolver.h"
 #include "EigenValues.h"
-#include "Dos.h"
+#include "DOS.h"
 #include "Density.h"
 #include "Magnetization.h"
-#include "SpinPolarizedLdos.h"
+#include "SpinPolarizedLDOS.h"
 
 namespace TBTK{
 
@@ -54,7 +54,7 @@ public:
 	 *  @param resolution Number of points used between l_lim and u_lim.
 	 *  @return An array with size resolution. */
 //	double* calculateDOS(double l_lim, double u_lim, int resolution);
-	Property::Dos* calculateDOS(double l_lim, double u_lim, int resolution);
+	Property::DOS* calculateDOS(double l_lim, double u_lim, int resolution);
 
 	/** Calculate density.
 	 *
@@ -163,7 +163,7 @@ public:
 	 */
 //	double* calculateSP_LDOS(Index pattern, Index ranges, double u_lim, double l_lim, int resolution);
 //	std::complex<double>* calculateSP_LDOS(Index pattern, Index ranges, double l_lim, double u_lim, int resolution);
-	Property::SpinPolarizedLdos* calculateSpinPolarizedLDOS(Index pattern, Index ranges, double l_lim, double u_lim, int resolution);
+	Property::SpinPolarizedLDOS* calculateSpinPolarizedLDOS(Index pattern, Index ranges, double l_lim, double u_lim, int resolution);
 
 /*	void save(int *memory, int size, int columns, std::string filename, std::string path = "./");
 	void save(double *memory, int size, int columns, std::string filename, std::string path = "./");

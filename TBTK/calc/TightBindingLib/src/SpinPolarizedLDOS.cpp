@@ -1,16 +1,16 @@
-/** @file SpinPolarizedLdos.h
+/** @file SpinPolarizedLDOS.h
  *
  *  @author Kristofer Björnson
  */
 
-#include "../include/SpinPolarizedLdos.h"
+#include "../include/SpinPolarizedLDOS.h"
 
 using namespace std;
 
 namespace TBTK{
 namespace Property{
 
-SpinPolarizedLdos::SpinPolarizedLdos(int dimensions, const int *ranges, double lowerBound, double upperBound, int resolution){
+SpinPolarizedLDOS::SpinPolarizedLDOS(int dimensions, const int *ranges, double lowerBound, double upperBound, int resolution){
 	this->dimensions = dimensions;
 	this->ranges = new int[dimensions];
 	for(int n = 0; n < dimensions; n++)
@@ -29,7 +29,7 @@ SpinPolarizedLdos::SpinPolarizedLdos(int dimensions, const int *ranges, double l
 		data[n] = 0.;
 }
 
-SpinPolarizedLdos::~SpinPolarizedLdos(){
+SpinPolarizedLDOS::~SpinPolarizedLDOS(){
 	delete [] ranges;
 	delete [] data;
 }

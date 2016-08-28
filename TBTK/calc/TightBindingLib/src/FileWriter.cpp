@@ -215,7 +215,7 @@ void FileWriter::writeEigenValues(const Property::EigenValues *ev, string name, 
 	}
 }*/
 
-void FileWriter::writeDOS(const Property::Dos *dos, string name, string path){
+void FileWriter::writeDOS(const Property::DOS *dos, string name, string path){
 	init();
 
 	const int DOS_RANK = 1;
@@ -507,7 +507,7 @@ void FileWriter::writeMagnetization(const Property::Magnetization *magnetization
 	}
 }*/
 
-void FileWriter::writeLDOS(const Property::Ldos *ldos, string name, string path){
+void FileWriter::writeLDOS(const Property::LDOS *ldos, string name, string path){
 	init();
 
 	int rank = ldos->getDimensions();
@@ -632,18 +632,18 @@ void FileWriter::writeLDOS(const Property::Ldos *ldos, string name, string path)
 	delete [] sp_ldos_decomposed;
 }*/
 
-void FileWriter::writeSpinPolarizedLDOS(const Property::SpinPolarizedLdos *spinPolarizedLdos, string name, string path){
+void FileWriter::writeSpinPolarizedLDOS(const Property::SpinPolarizedLDOS *spinPolarizedLDOS, string name, string path){
 	init();
 
-	int rank = spinPolarizedLdos->getDimensions();
-	const int *dims = spinPolarizedLdos->getRanges();
-	const complex<double> *data = spinPolarizedLdos->getData();
+	int rank = spinPolarizedLDOS->getDimensions();
+	const int *dims = spinPolarizedLDOS->getRanges();
+	const complex<double> *data = spinPolarizedLDOS->getData();
 
 	const int NUM_MATRIX_ELEMENTS = 4;
 	hsize_t sp_ldos_dims[rank+2];//Three last dimensions are for energy, spin components, and real/imaginary decomposition.
 	for(int n = 0; n < rank; n++)
 		sp_ldos_dims[n] = dims[n];
-	sp_ldos_dims[rank] = spinPolarizedLdos->getResolution();
+	sp_ldos_dims[rank] = spinPolarizedLDOS->getResolution();
 	sp_ldos_dims[rank+1] = NUM_MATRIX_ELEMENTS;
 
 	int sp_ldos_size = 1;
@@ -659,8 +659,8 @@ void FileWriter::writeSpinPolarizedLDOS(const Property::SpinPolarizedLdos *spinP
 	sp_ldos_dims[rank+2] = 2;
 
 	double limits[2];
-	limits[0] = spinPolarizedLdos->getUpperBound();
-	limits[1] = spinPolarizedLdos->getLowerBound();
+	limits[0] = spinPolarizedLDOS->getUpperBound();
+	limits[1] = spinPolarizedLDOS->getLowerBound();
 	const int LIMITS_RANK = 1;
 	hsize_t limits_dims[1];
 	limits_dims[0] = 2;
