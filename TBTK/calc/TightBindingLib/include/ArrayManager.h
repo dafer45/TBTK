@@ -1,12 +1,12 @@
 /** @package TBTKcalc
- *  @file ArrayManipulator.h
+ *  @file ArrayManiager.h
  *  @brief Provides methods for manipulation of arrays.
  *
  *  @author Kristofer Björnson
  */
 
-#ifndef COM_DAFER45_TBTK_ARRAY_MANIPULATOR
-#define COM_DAFER45_TBTK_ARRAY_MANIPULATOR
+#ifndef COM_DAFER45_TBTK_ARRAY_MANAGER
+#define COM_DAFER45_TBTK_ARRAY_MANAGER
 
 #include "Index.h"
 #include <iostream>
@@ -14,9 +14,14 @@
 namespace TBTK{
 namespace Util{
 
-/** A static class providing methods for manipulation of arrays. */
+/** A static class providing methods for manipulation of arrays. The class is
+ *  intended to provide methods that simplifies the creation and manipulation
+ *  of multi-dimensional arrays for non-critical applications. However, the
+ *  arrays are not optimal for heavy calculations, and algorithms critically
+ *  dependent on the size and access time of the arrays should not use the
+ *  ArrayManager or arrays returned from it. */
 template<typename T>
-class ArrayManipulator{
+class ArrayManager{
 public:
 	/** Allocate uninitialized array. */
 	static void* create(const Index &ranges);
@@ -56,7 +61,7 @@ private:
 };
 
 template<typename T>
-void* ArrayManipulator<T>::create(const Index &ranges){
+void* ArrayManager<T>::create(const Index &ranges){
 	void *result;
 
 	createRecursive(ranges, &result);
@@ -65,7 +70,7 @@ void* ArrayManipulator<T>::create(const Index &ranges){
 }
 
 template<typename T>
-void* ArrayManipulator<T>::createRecursive(Index ranges, void **result){
+void* ArrayManager<T>::createRecursive(Index ranges, void **result){
 	if(ranges.indices.size() == 1){
 		*((T**)result) = new T[ranges.indices.at(0)];
 	}
@@ -80,7 +85,7 @@ void* ArrayManipulator<T>::createRecursive(Index ranges, void **result){
 }
 
 template<typename T>
-void* ArrayManipulator<T>::create(const Index &ranges, T fill){
+void* ArrayManager<T>::create(const Index &ranges, T fill){
 	void *result;
 
 	createRecursive(ranges, &result, fill);
@@ -89,7 +94,7 @@ void* ArrayManipulator<T>::create(const Index &ranges, T fill){
 }
 
 template<typename T>
-void* ArrayManipulator<T>::createRecursive(Index ranges, void **result, T fill){
+void* ArrayManager<T>::createRecursive(Index ranges, void **result, T fill){
 	if(ranges.indices.size() == 1){
 		*((T**)result) = new T[ranges.indices.at(0)];
 		for(int n = 0; n < ranges.indices.at(0); n++)
@@ -106,12 +111,12 @@ void* ArrayManipulator<T>::createRecursive(Index ranges, void **result, T fill){
 }
 
 template<typename T>
-void ArrayManipulator<T>::destroy(void *array, const Index &ranges){
+void ArrayManager<T>::destroy(void *array, const Index &ranges){
 	destroyRecursive(array, ranges);
 }
 
 template<typename T>
-void ArrayManipulator<T>::destroyRecursive(void *array, Index ranges){
+void ArrayManager<T>::destroyRecursive(void *array, Index ranges){
 	if(ranges.indices.size() == 1){
 		delete [] (T*)array;
 	}
@@ -126,7 +131,7 @@ void ArrayManipulator<T>::destroyRecursive(void *array, Index ranges){
 }
 
 template<typename T>
-T* ArrayManipulator<T>::flatten(void *array, const Index &ranges){
+T* ArrayManager<T>::flatten(void *array, const Index &ranges){
 	int size = 1;
 	for(unsigned int n = 0; n < ranges.indices.size(); n++)
 		size *= ranges.indices.at(n);
@@ -139,7 +144,7 @@ T* ArrayManipulator<T>::flatten(void *array, const Index &ranges){
 }
 
 template<typename T>
-void ArrayManipulator<T>::flattenRecursive(void *array, Index ranges, T *result, int offset){
+void ArrayManager<T>::flattenRecursive(void *array, Index ranges, T *result, int offset){
 	if(ranges.indices.size() == 1){
 		for(int n = 0; n < ranges.indices.at(0); n++){
 			result[offset + n] = ((T*)array)[n];
@@ -158,7 +163,7 @@ void ArrayManipulator<T>::flattenRecursive(void *array, Index ranges, T *result,
 }
 
 template<typename T>
-void* ArrayManipulator<T>::unflatten(T *array, const Index &ranges){
+void* ArrayManager<T>::unflatten(T *array, const Index &ranges){
 	void *result;
 
 	unflattenRecursive(array, ranges, &result, 0);
@@ -167,7 +172,7 @@ void* ArrayManipulator<T>::unflatten(T *array, const Index &ranges){
 }
 
 template<typename T>
-void ArrayManipulator<T>::unflattenRecursive(T *array, Index ranges, void **result, int offset){
+void ArrayManager<T>::unflattenRecursive(T *array, Index ranges, void **result, int offset){
 	if(ranges.indices.size() == 1){
 		*((T**)result) = new T[ranges.indices.at(0)];
 		for(int n = 0; n < ranges.indices.at(0); n++)
@@ -188,12 +193,12 @@ void ArrayManipulator<T>::unflattenRecursive(T *array, Index ranges, void **resu
 }
 
 template<typename T>
-void ArrayManipulator<T>::print(void *array, const Index &ranges){
+void ArrayManager<T>::print(void *array, const Index &ranges){
 	printRecursive(array, ranges);
 }
 
 template<typename T>
-void ArrayManipulator<T>::printRecursive(void *array, Index ranges){
+void ArrayManager<T>::printRecursive(void *array, Index ranges){
 	if(ranges.indices.size() == 1){
 		for(int n = 0; n < ranges.indices.at(0); n++)
 			std::cout << ((T*)array)[n] << "\t";
