@@ -9,6 +9,7 @@
 #define COM_DAFER45_TBTK_ARRAY_MANIPULATOR
 
 #include "Index.h"
+#include <iostream>
 
 namespace TBTK{
 namespace Util{
@@ -17,17 +18,41 @@ namespace Util{
 template<typename T>
 class ArrayManipulator{
 public:
+	/** Allocate uninitialized array. */
 	static void* create(const Index &ranges);
+
+	/** Allocate initialized array. */
 	static void* create(const Index &ranges, T fill);
+
+	/** Deallocate array. */
 	static void destroy(void *array, const Index &ranges);
+
+	/** Flatten multi-dimensional array. */
 	static T* flatten(void *array, const Index &ranges);
+
+	/** Create multi-dimensional array from one-dimensional array. */
 	static void* unflatten(T *array, const Index &ranges);
+
+	/** Print array. */
+	static void print(void * array, const Index &ranges);
 private:
+	/** Recursive helper function for uninitialized create. */
 	static void* createRecursive(Index ranges, void **result);
+
+	/** Recursive helper function for initialized create. */
 	static void* createRecursive(Index ranges, void **result, T fill);
+
+	/** Recursive helper function for destroy. */
 	static void destroyRecursive(void *array, Index ranges);
+
+	/** Recursive helper function for flatten. */
 	static void flattenRecursive(void *array, Index ranges, T *result, int offset);
+
+	/** Recursive helper function for unflatten. */
 	static void unflattenRecursive(T *array, Index ranges, void **result, int offset);
+
+	/** Recursive helper function for print. */
+	static void printRecursive(void *array, Index ranges);
 };
 
 template<typename T>
@@ -162,8 +187,28 @@ void ArrayManipulator<T>::unflattenRecursive(T *array, Index ranges, void **resu
 	}
 }
 
+template<typename T>
+void ArrayManipulator<T>::print(void *array, const Index &ranges){
+	printRecursive(array, ranges);
+}
+
+template<typename T>
+void ArrayManipulator<T>::printRecursive(void *array, Index ranges){
+	if(ranges.indices.size() == 1){
+		for(int n = 0; n < ranges.indices.at(0); n++)
+			std::cout << ((T*)array)[n] << "\t";
+		std::cout << "\n";
+	}
+	else{
+		int currentRange = ranges.indices.at(0);
+		ranges.indices.erase(ranges.indices.begin());
+		for(int n = 0; n < currentRange; n++)
+			printRecursive(((void**)array)[n], ranges);
+		std::cout << "\n";
+	}
+}
+
 };	//End of namespace Util
 };	//End of namespace TBTK
 
 #endif
-
