@@ -33,7 +33,6 @@ void Geometry::setCoordinates(const Index &index, std::initializer_list<double> 
 	if(coordinates.size() == (unsigned int)dimensions){
 		for(int n = 0; n < dimensions; n++)
 			this->coordinates[dimensions*basisIndex + n] = *(coordinates.begin() + n);
-//			this->coordinates[dimensions*basisIndex] = coordinates[n];
 	}
 	else{
 		cout << "Error in Geometry::setCoordinates: Geometry requires " << dimensions << " coordinates, but " << coordinates.size() << " were supplied.\n";
@@ -43,7 +42,6 @@ void Geometry::setCoordinates(const Index &index, std::initializer_list<double> 
 	if(specifiers.size() == (unsigned int)numSpecifiers){
 		for(int n = 0; n < numSpecifiers; n++)
 			this->specifiers[numSpecifiers*basisIndex + n] = *(specifiers.begin() + n);
-//			this->specifiers[numSpecifiers*basisIndex + n] = specifiers[n];
 	}
 	else{
 		cout << "Error in Geometry::addPoint: Geometry requires " << numSpecifiers << " specfiers, but " << specifiers.size() << " were supplied.\n";
