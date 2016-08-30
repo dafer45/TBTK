@@ -58,6 +58,9 @@ public:
 	 *  HoppingAmplitudes @endlink should be added after this call. */
 	void construct();
 
+	/** Returns true if the Hilbert space basis has been constructed. */
+	bool getIsConstructed();
+
 	/** Sort HoppingAmplitudes. */
 	void sort();
 
@@ -174,6 +177,10 @@ inline void AmplitudeSet::construct(){
 
 	tree.generateBasisIndices();
 	isConstructed = true;
+}
+
+inline bool AmplitudeSet::getIsConstructed(){
+	return isConstructed;
 }
 
 inline void AmplitudeSet::sort(){

@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include "../include/Model.h"
+#include "../include/Geometry.h"
 #include <string>
 #include <fstream>
 #include <math.h>
@@ -17,6 +18,7 @@ Model::Model(){
 	temperature = 0.;
 	chemicalPotential = 0.;
 	statistics = Statistics::FermiDirac;
+	geometry = NULL;
 	isTalkative = true;
 }
 
@@ -41,6 +43,14 @@ void Model::construct(){
 	
 	if(isTalkative)
 		cout << "\tBasis size: " << basisSize << "\n";
+}
+
+void Model::createGeometry(int dimensions, int numSpecifiers){
+	if(getIsConstructed()){
+		cout << "Error in Model::createGeometry: Hilbert space basis has not been constructed yet.\n";
+		exit(1);
+	}
+	geometry = new Geometry(dimensions, numSpecifiers, this);
 }
 
 };	//End of namespace TBTK

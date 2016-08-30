@@ -15,6 +15,8 @@
 
 namespace TBTK{
 
+class Geometry;
+
 enum {IDX_SUM_ALL = -1, IDX_ALL = -1,
 	IDX_X = -2,
 	IDX_Y = -3,
@@ -49,6 +51,9 @@ public:
 	/** Construct Hilbert space. No more @link HoppingAmplitude
 	 *  HoppingAmplitudes @endlink should be added after this call. */
 	void construct();
+
+	/** Returns true if the Hilbert space basis has been constructed. */
+	bool getIsConstructed();
 
 	/** Construct Hamiltonian on COO format. */
 	void constructCOO();
@@ -87,6 +92,12 @@ public:
 	/** Get statistics. */
 	Statistics getStatistics();
 
+	/** Create geometry. */
+	void createGeometry(int dimensions, int numSpecifiers = 0);
+
+	/** Get geometry. */
+	Geometry* getGeometry();
+
 	void saveEV(std::string path = "./", std::string filename = "EV.dat");
 
 	void setTalkative(bool isTalkative);
@@ -99,6 +110,9 @@ private:
 
 	/** Statistics (Fermi-Dirac or Bose-Einstein). */
 	Statistics statistics;
+
+	/** Geometry. */
+	Geometry *geometry;
 
 	/** Flag indicating whether to write information to standard output or
 	 *  not. */
@@ -119,6 +133,10 @@ inline int Model::getBasisSize(){
 
 inline int Model::getBasisIndex(Index index){
 	return amplitudeSet.getBasisIndex(index);
+}
+
+inline bool Model::getIsConstructed(){
+	return amplitudeSet.getIsConstructed();
 }
 
 inline void Model::constructCOO(){
@@ -156,6 +174,10 @@ inline void Model::setStatistics(Statistics statistics){
 
 inline Model::Statistics Model::getStatistics(){
 	return statistics;
+}
+
+inline Geometry* Model::getGeometry(){
+	return geometry;
 }
 
 inline void Model::setTalkative(bool isTalkative){
