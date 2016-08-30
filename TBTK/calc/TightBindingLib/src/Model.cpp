@@ -23,6 +23,8 @@ Model::Model(){
 }
 
 Model::~Model(){
+	if(geometry != NULL)
+		delete geometry;
 }
 
 /*void Model::addHA(HoppingAmplitude ha){
