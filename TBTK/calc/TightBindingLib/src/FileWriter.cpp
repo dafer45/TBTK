@@ -42,9 +42,10 @@ void FileWriter::init(){
 void FileWriter::writeAmplitudeSet(AmplitudeSet *amplitudeSet, string name, string path){
 	init();
 
+	complex<double> *amplitudes;
 	int *asTable;
 	int i_dims[2];
-	amplitudeSet->tabulate(&asTable, i_dims);
+	amplitudeSet->tabulate(&amplitudes, &asTable, i_dims);
 //	PropertyExtractor::getTabulatedAmplitudeSet(&asTable, i_dims);
 
 	const int RANK = 2;
@@ -84,6 +85,70 @@ void FileWriter::writeAmplitudeSet(AmplitudeSet *amplitudeSet, string name, stri
 	}
 
 	delete [] asTable;
+}
+
+void FileWriter::writeGeometry(const Geometry *geometry, string name, string path){
+	init();
+
+	int dimensions = geometry->getDimensions();
+	int numSpecifiers = geometry->getNumSpecifiers();
+	const double* coordinates = geometry->getCoordinates();
+	const int* specifiers = geometry->getSpecifiers();
+	int basisSize = geometry->getBasisSize();
+
+	const int RANK = 2;
+	hsize_t dDims[RANK];
+	dDims[0] = basisSize;
+	dDims[1] = dimensions;
+	hsize_t sDims[RANK];
+	sDims[0] = basisSize;
+	sDims[1] = numSpecifiers;
+
+	try{
+		Exception::dontPrint();
+		H5File file(filename, H5F_ACC_RDWR);
+
+		stringstream ss;
+		ss << path;
+		if(path.back() != '/')
+			ss << "/";
+		ss << name << "Coordinates";
+
+		DataSpace dataspace = DataSpace(RANK, dDims);
+		DataSet dataset = DataSet(file.createDataSet(ss.str(), PredType::IEEE_F64BE, dataspace));
+		dataset.write(coordinates, PredType::NATIVE_DOUBLE);
+		dataset.close();
+		dataspace.close();
+
+		ss.str("");
+		ss << path;
+		if(path.back() != '/')
+			ss << "/";
+		ss << name << "Specifiers";
+
+		dataspace = DataSpace(RANK, sDims);
+		dataset = DataSet(file.createDataSet(ss.str(), PredType::STD_I32BE, dataspace));
+		dataset.write(specifiers, PredType::NATIVE_INT);
+		dataspace.close();
+		dataset.close();
+
+		file.close();
+	}
+	catch(FileIException error){
+		cout << "Error 1\n";
+		error.printError();
+		return;
+	}
+	catch(DataSetIException error){
+		cout << "Error 2\n";
+		error.printError();
+		return;
+	}
+	catch(DataSpaceIException error){
+		cout << "Error 3\n";
+		error.printError();
+		return;
+	}
 }
 
 /*void FileWriter::writeEigenValues(const double *ev, int size, string name, string path){

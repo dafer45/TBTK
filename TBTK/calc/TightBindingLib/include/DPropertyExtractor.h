@@ -15,6 +15,8 @@
 #include "Magnetization.h"
 #include "SpinPolarizedLDOS.h"
 
+#include <complex>
+
 namespace TBTK{
 
 /** The DPropertyExtractor extracts common physical properties such as DOS,
@@ -32,7 +34,7 @@ public:
 	void saveEigenValues(std::string path = "./", std::string filename = "EV.dat");
 
 	/** Experimental. Extracts a tabulated version of the AmplitudeSet. */
-	void getTabulatedAmplitudeSet(int **table, int *dims);
+	void getTabulatedAmplitudeSet(std::complex<double> **amplitudes, int **indices, int *dims);
 
 	/** Get eigenvalues. */
 //	double* getEigenValues();

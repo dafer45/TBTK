@@ -12,6 +12,7 @@
 #include <initializer_list>
 
 namespace TBTK{
+	class FileReader;
 
 class Geometry{
 public:
@@ -25,30 +26,39 @@ public:
 	void setCoordinates(const Index &index, std::initializer_list<double> coordinates, std::initializer_list<int> specifiers = {});
 
 	/** Get dimensions. */
-	int getDimensions();
+	int getDimensions() const;
 
 	/** Get number of specifiers. */
-	int getNumSpecifiers();
+	int getNumSpecifiers() const;
 
 	/** Get Coordinates using a physical index. */
-	const double* getCoordinates(const Index &index);
+	const double* getCoordinates(const Index &index) const;
 
 	/** Get coordinates using a Hilbert space index. */
-	const double* getCoordinates(int index);
+	const double* getCoordinates(int index) const;
+
+	/** Get all coordinates. */
+	const double* getCoordinates() const;
 
 	/** Get specifier using a physical index. */
-	int getSpecifier(const Index &index, int specifier);
+	int getSpecifier(const Index &index, int specifier) const;
 
 	/** Get specifier using a Hilbert space index. */
-	int getSpecifier(int index, int specifier);
+	int getSpecifier(int index, int specifier) const;
+
+	/** Get all specifiers. */
+	const int* getSpecifiers() const;
 
 	/** Get distance between positions corresponding to index1 and index2,
 	 *  using physical indices. */
-	double getDistance(const Index &index1, const Index &index2);
+	double getDistance(const Index &index1, const Index &index2) const;
 
 	/** Get distance between positions corresponding to index1 and index2,
 	 *  using physical indices. */
-	double getDistance(int index1, int index2);
+	double getDistance(int index1, int index2) const;
+
+	/** Get size of corresponding Hilbert space. */
+	int getBasisSize() const;
 private:
 	/** Number of spatial dimensions. */
 	int dimensions;
@@ -64,33 +74,44 @@ private:
 
 	/** The Model that the geometry corresponds to. */
 	Model *parentModel;
+
+	/** FileReader is a friend class to allow it to write Geometry data. */
+	friend class FileReader;
 };
 
-inline int Geometry::getDimensions(){
+inline int Geometry::getDimensions() const{
 	return dimensions;
 }
 
-inline int Geometry::getNumSpecifiers(){
+inline int Geometry::getNumSpecifiers() const{
 	return numSpecifiers;
 }
 
-inline const double* Geometry::getCoordinates(const Index &index){
+inline const double* Geometry::getCoordinates(const Index &index) const{
 	return &(coordinates[dimensions*parentModel->getBasisIndex(index)]);
 }
 
-inline const double* Geometry::getCoordinates(int index){
+inline const double* Geometry::getCoordinates(int index) const{
 	return &(coordinates[dimensions*index]);
 }
 
-inline int Geometry::getSpecifier(const Index &index, int specifier){
+inline const double* Geometry::getCoordinates() const{
+	return coordinates;
+}
+
+inline int Geometry::getSpecifier(const Index &index, int specifier) const{
 	return specifiers[numSpecifiers*parentModel->getBasisIndex(index) + specifier];
 }
 
-inline int Geometry::getSpecifier(int index, int specifier){
+inline int Geometry::getSpecifier(int index, int specifier) const{
 	return specifiers[numSpecifiers*index + specifier];
 }
 
-inline double Geometry::getDistance(int index1, int index2){
+inline const int* Geometry::getSpecifiers() const{
+	return specifiers;
+}
+
+inline double Geometry::getDistance(int index1, int index2) const{
 	double distanceSquared = 0.;
 	for(int n = 0; n < dimensions; n++){
 		double difference = coordinates[index1] - coordinates[index2];
@@ -98,6 +119,10 @@ inline double Geometry::getDistance(int index1, int index2){
 	}
 
 	return sqrt(distanceSquared);
+}
+
+inline int Geometry::getBasisSize() const{
+	return parentModel->getBasisSize();
 }
 
 };	//End of namespace TBTK

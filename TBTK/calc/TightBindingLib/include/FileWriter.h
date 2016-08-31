@@ -9,6 +9,7 @@
 #define COM_DAFER45_TBTK_FILE_WRITER
 
 #include "AmplitudeSet.h"
+#include "Geometry.h"
 #include "EigenValues.h"
 #include "DOS.h"
 #include "Density.h"
@@ -33,6 +34,12 @@ public:
 	static void writeAmplitudeSet(
 		AmplitudeSet *amplitudeSet,
 		std::string name = "AmplitudeSet",
+		std::string path = "/"
+	);
+
+	static void writeGeometry(
+		const Geometry *geometry,
+		std::string name = "Geometry",
 		std::string path = "/"
 	);
 

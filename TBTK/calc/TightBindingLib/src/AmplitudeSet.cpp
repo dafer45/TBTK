@@ -159,7 +159,7 @@ HoppingAmplitude* AmplitudeSet::Iterator::getHA(){
 	return it->getHA();
 }
 
-void AmplitudeSet::tabulate(int **table, int *dims){
+void AmplitudeSet::tabulate(complex<double> **amplitudes, int **table, int *dims){
 	Iterator it = getIterator();
 	HoppingAmplitude *ha;
 	int numHA = 0;
@@ -179,6 +179,7 @@ void AmplitudeSet::tabulate(int **table, int *dims){
 	(*table) = new int[dims[0]*dims[1]];
 	for(int n = 0; n < dims[0]*dims[1]; n++)
 		(*table)[n] = -1;
+	(*amplitudes) = new complex<double>[numHA];
 
 	it.reset();
 	int counter = 0;
@@ -187,6 +188,8 @@ void AmplitudeSet::tabulate(int **table, int *dims){
 			(*table)[dims[1]*counter+n] = ha->fromIndex.indices.at(n);
 		for(unsigned int n = 0; n < ha->toIndex.indices.size(); n++)
 			(*table)[dims[1]*counter+n+dims[1]/2] = ha->toIndex.indices.at(n);
+		(*amplitudes)[counter] = ha->getAmplitude();
+
 		it.searchNextHA();
 		counter++;
 	}

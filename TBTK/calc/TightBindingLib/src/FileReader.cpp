@@ -69,6 +69,81 @@ void FileReader::readAmplitudeSet(AmplitudeSet **amplitudeSet, string name, stri
 	delete [] asTable;*/
 }
 
+Geometry* FileReader::readGeometry(Model *model, string name, string path){
+	Geometry *geometry = NULL;
+
+	try{
+		Exception::dontPrint();
+		H5File file(filename, H5F_ACC_RDONLY);
+
+		stringstream ssC;
+		ssC << path;
+		if(path.back() != '/')
+			ssC << "/";
+		ssC << name << "Coordinates";
+
+		stringstream ssS;
+		ssS << path;
+		if(path.back() != '/')
+			ssS << "/";
+		ssS << name << "Specifiers";
+
+		DataSet datasetC = file.openDataSet(ssC.str());
+		H5T_class_t typeClassC = datasetC.getTypeClass();
+		if(typeClassC != H5T_FLOAT){
+			cout << "Error in FileReader::readGeometry: Coordinates data type is not double.\n";
+			exit(1);
+		}
+		DataSpace dataspaceC = datasetC.getSpace();
+
+		DataSet datasetS = file.openDataSet(ssS.str());
+		H5T_class_t typeClassS = datasetS.getTypeClass();
+		if(typeClassS != H5T_INTEGER){
+			cout << "Error in FileReader::readGeometry: Specifiers data type is not integer.\n";
+			exit(1);
+		}
+		DataSpace dataspaceS = datasetS.getSpace();
+
+		hsize_t dims_internalC[2];
+		dataspaceC.getSimpleExtentDims(dims_internalC, NULL);
+		int dimensions = dims_internalC[1];
+
+		hsize_t dims_internalS[2];
+		dataspaceS.getSimpleExtentDims(dims_internalS, NULL);
+		int numSpecifiers = dims_internalS[1];
+
+/*		Model *dummyModel = new Model();
+		for(int n = 0; n < basisSize; n++)
+			dummyModel->addHA(HoppingAmplitude(0, {n}, {n}));
+		dummyModel->construct();*/
+		geometry = new Geometry(dimensions, numSpecifiers, model);
+
+		datasetC.read(geometry->coordinates, PredType::NATIVE_DOUBLE, dataspaceC);
+		datasetS.read(geometry->specifiers, PredType::NATIVE_INT, dataspaceS);
+
+		datasetC.close();
+		dataspaceC.close();
+		datasetS.close();
+		dataspaceS.close();
+
+		file.close();
+	}
+	catch(FileIException error){
+		cout << "Error in FileReader::read: While reading " << name << "\n";
+		exit(1);
+	}
+	catch(DataSetIException error){
+		cout << "Error in FileReader::read: While reading " << name << "\n";
+		exit(1);
+	}
+	catch(DataSpaceIException error){
+		cout << "Error in FileReader::read: While reading " << name << "\n";
+		exit(1);
+	}	
+
+	return geometry;
+}
+
 /*void FileReader::readEigenValues(double **ev, int *size, string name, string path){
 	try{
 		stringstream ss;

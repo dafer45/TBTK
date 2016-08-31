@@ -49,7 +49,7 @@ void Geometry::setCoordinates(const Index &index, std::initializer_list<double> 
 	}
 }
 
-double Geometry::getDistance(const Index &index1, const Index &index2){
+double Geometry::getDistance(const Index &index1, const Index &index2) const{
 	int basisIndex1 = parentModel->getBasisIndex(index1);
 	int basisIndex2 = parentModel->getBasisIndex(index2);
 

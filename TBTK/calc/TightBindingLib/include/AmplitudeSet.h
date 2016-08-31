@@ -12,6 +12,7 @@
 #include "HoppingAmplitude.h"
 #include "TreeNode.h"
 #include <iostream>
+#include <complex>
 
 namespace TBTK{
 
@@ -127,7 +128,7 @@ public:
 
 	/** Tabulates @link HoppingAmplitude HoppingAmplitudes @endlink to make
 	 *  them possible to export. */
-	void tabulate(int **table, int *dims);
+	void tabulate(std::complex<double> **amplitudes, int **indies, int *dims);
 private:
 	/** Flag indicating whether the AmplitudeSet have been constructed. */
 	bool isConstructed;
