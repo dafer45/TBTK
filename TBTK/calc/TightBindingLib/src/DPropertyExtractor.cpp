@@ -187,8 +187,8 @@ void DPropertyExtractor::saveEigenValues(string path, string filename){
 	fout.close();
 }
 
-void DPropertyExtractor::getTabulatedAmplitudeSet(complex<double> **amplitudes, int **indices, int *dims){
-	dSolver->getModel()->amplitudeSet.tabulate(amplitudes, indices, dims);
+void DPropertyExtractor::getTabulatedAmplitudeSet(complex<double> **amplitudes, int **indices, int *numHoppingAmplitudes, int *maxIndexSize){
+	dSolver->getModel()->amplitudeSet.tabulate(amplitudes, indices, numHoppingAmplitudes, maxIndexSize);
 }
 
 /*double* DPropertyExtractor::getEigenValues(){

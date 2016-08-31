@@ -159,35 +159,34 @@ HoppingAmplitude* AmplitudeSet::Iterator::getHA(){
 	return it->getHA();
 }
 
-void AmplitudeSet::tabulate(complex<double> **amplitudes, int **table, int *dims){
+void AmplitudeSet::tabulate(complex<double> **amplitudes, int **table, int *numHoppingAmplitudes, int *maxIndexSize){
 	Iterator it = getIterator();
 	HoppingAmplitude *ha;
-	int numHA = 0;
-	int maxIndexSize = 0;
+	(*numHoppingAmplitudes) = 0;
+	(*maxIndexSize) = 0;
 	while((ha = it.getHA())){
-		numHA++;
+		(*numHoppingAmplitudes)++;
 
 		int indexSize = ha->fromIndex.indices.size();
-		if(indexSize > maxIndexSize)
-			maxIndexSize = indexSize;
+		if(indexSize > *maxIndexSize)
+			(*maxIndexSize) = indexSize;
 
 		it.searchNextHA();
 	}
 
-	dims[0] = numHA;
-	dims[1] = 2*maxIndexSize;
-	(*table) = new int[dims[0]*dims[1]];
-	for(int n = 0; n < dims[0]*dims[1]; n++)
+	int tableSize = (*numHoppingAmplitudes)*2*(*maxIndexSize);
+	(*table) = new int[tableSize];
+	for(int n = 0; n < tableSize; n++)
 		(*table)[n] = -1;
-	(*amplitudes) = new complex<double>[numHA];
+	(*amplitudes) = new complex<double>[(*numHoppingAmplitudes)];
 
 	it.reset();
 	int counter = 0;
 	while((ha = it.getHA())){
 		for(unsigned int n = 0; n < ha->fromIndex.indices.size(); n++)
-			(*table)[dims[1]*counter+n] = ha->fromIndex.indices.at(n);
+			(*table)[2*(*maxIndexSize)*counter+n] = ha->fromIndex.indices.at(n);
 		for(unsigned int n = 0; n < ha->toIndex.indices.size(); n++)
-			(*table)[dims[1]*counter+n+dims[1]/2] = ha->toIndex.indices.at(n);
+			(*table)[2*(*maxIndexSize)*counter+n+(*maxIndexSize)] = ha->toIndex.indices.at(n);
 		(*amplitudes)[counter] = ha->getAmplitude();
 
 		it.searchNextHA();

@@ -43,29 +43,45 @@ void FileWriter::writeAmplitudeSet(AmplitudeSet *amplitudeSet, string name, stri
 	init();
 
 	complex<double> *amplitudes;
-	int *asTable;
-	int i_dims[2];
-	amplitudeSet->tabulate(&amplitudes, &asTable, i_dims);
-//	PropertyExtractor::getTabulatedAmplitudeSet(&asTable, i_dims);
+	int *indices;
+	int numHoppingAmplitudes;
+	int maxIndexSize;
+	amplitudeSet->tabulate(&amplitudes, &indices, &numHoppingAmplitudes, &maxIndexSize);
 
-	const int RANK = 2;
-	hsize_t dims[RANK];
-	dims[0] = i_dims[0];
-	dims[1] = i_dims[1];
+	const int INDEX_RANK = 3;
+	hsize_t indexDims[INDEX_RANK];
+	indexDims[0] = numHoppingAmplitudes;
+	indexDims[1] = 2; //Two indices per HoppingAmplitude
+	indexDims[2] = maxIndexSize;
+	const int AMPLITUDE_RANK = 1;
+	hsize_t amplitudeDims[AMPLITUDE_RANK];
+	amplitudeDims[0] = 2*numHoppingAmplitudes;	//2 because data is complex<double> interpreted as 2*double
 
 	try{
+		Exception::dontPrint();
+		H5File file(filename, H5F_ACC_RDWR);
+
 		stringstream ss;
 		ss << path;
 		if(path.back() != '/')
 			ss << "/";
-		ss << name;
+		ss << name << "Indices";
 
-		Exception::dontPrint();
-		H5File file(filename, H5F_ACC_RDWR);
+		DataSpace dataspace = DataSpace(INDEX_RANK, indexDims);
+		DataSet dataset = DataSet(file.createDataSet(ss.str(), PredType::STD_I32BE, dataspace));
+		dataset.write(indices, PredType::NATIVE_INT);
+		dataspace.close();
+		dataset.close();
 
-		DataSpace dataspace = DataSpace(RANK, dims);
-		DataSet dataset = DataSet(file.createDataSet(name, PredType::STD_I32BE, dataspace));
-		dataset.write(asTable, PredType::NATIVE_INT);
+		ss.str("");
+		ss << path;
+		if(path.back() != '/')
+			ss << "/";
+		ss << name << "AmplitudesReal";
+
+		dataspace = DataSpace(AMPLITUDE_RANK, amplitudeDims);
+		dataset = DataSet(file.createDataSet(ss.str(), PredType::IEEE_F64BE, dataspace));
+		dataset.write(amplitudes, PredType::NATIVE_DOUBLE);
 		dataspace.close();
 		dataset.close();
 
@@ -84,7 +100,8 @@ void FileWriter::writeAmplitudeSet(AmplitudeSet *amplitudeSet, string name, stri
 		return;
 	}
 
-	delete [] asTable;
+	delete [] amplitudes;
+	delete [] indices;
 }
 
 void FileWriter::writeGeometry(const Geometry *geometry, string name, string path){

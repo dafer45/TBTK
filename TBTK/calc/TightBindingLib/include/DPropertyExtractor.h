@@ -34,7 +34,7 @@ public:
 	void saveEigenValues(std::string path = "./", std::string filename = "EV.dat");
 
 	/** Experimental. Extracts a tabulated version of the AmplitudeSet. */
-	void getTabulatedAmplitudeSet(std::complex<double> **amplitudes, int **indices, int *dims);
+	void getTabulatedAmplitudeSet(std::complex<double> **amplitudes, int **indices, int *numHoppingAmplitudes, int *maxIndexSize);
 
 	/** Get eigenvalues. */
 //	double* getEigenValues();
