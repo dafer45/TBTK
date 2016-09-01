@@ -21,52 +21,99 @@ namespace TBTK{
 bool FileReader::isInitialized = false;
 string FileReader::filename = "TBTKResults.h5";
 
-void FileReader::readAmplitudeSet(AmplitudeSet **amplitudeSet, string name, string path){
-	cout << "Error in FileReader::readAmplitudeSet: Not yet implemented.\n";
-	exit(1);
-
-/*	int *asTable;
-	int i_dims[2];
-	amplitudeSet->tabulate(&asTable, i_dims);
-//	PropertyExtractor::getTabulatedAmplitudeSet(&asTable, i_dims);
-
-	const int RANK = 2;
-	hsize_t dims[RANK];
-	dims[0] = i_dims[0];
-	dims[1] = i_dims[1];
+AmplitudeSet* FileReader::readAmplitudeSet(string name, string path){
+	AmplitudeSet *amplitudeSet = NULL;
 
 	try{
-		stringstream ss;
-		ss << path;
-		if(path.back() != '/')
-			ss << "/";
-		ss << name;
-
 		Exception::dontPrint();
-		H5File file(filename, H5F_ACC_RDWR);
+		H5File file(filename, H5F_ACC_RDONLY);
 
-		DataSpace dataspace = DataSpace(RANK, dims);
-		DataSet dataset = DataSet(file.createDataSet(name, PredType::STD_I32BE, dataspace));
-		dataset.write(asTable, PredType::NATIVE_INT);
-		dataspace.close();
-		dataset.close();
+		stringstream ssI;
+		ssI << path;
+		if(path.back() != '/')
+			ssI << "/";
+		ssI << name << "Indices";
 
+		stringstream ssA;
+		ssA << path;
+		if(path.back() != '/')
+			ssA << "/";
+		ssA << name << "Amplitudes";
+
+		DataSet datasetI = file.openDataSet(ssI.str());
+		H5T_class_t typeClassI = datasetI.getTypeClass();
+		if(typeClassI != H5T_INTEGER){
+			cout << "Error in FileReader::readAmplitudeSet: Indices data type is not integer.\n";
+			exit(1);
+		}
+		DataSpace dataspaceI = datasetI.getSpace();
+
+		DataSet datasetA = file.openDataSet(ssA.str());
+		H5T_class_t typeClassA = datasetA.getTypeClass();
+		if(typeClassA != H5T_FLOAT){
+			cout << "Error in FileReader::readAmplitudeSet: Amplitudes data type is not double.\n";
+			exit(1);
+		}
+		DataSpace dataspaceA = datasetA.getSpace();
+
+		hsize_t dims_internalI[3];
+		dataspaceI.getSimpleExtentDims(dims_internalI, NULL);
+		int numHoppingAmplitudes = dims_internalI[0];
+		int maxIndexSize = dims_internalI[2];
+
+		int *indices = new int[2*maxIndexSize*numHoppingAmplitudes];
+		complex<double> *amplitudes = new complex<double>[numHoppingAmplitudes];
+
+		cout << "8\n";
+		datasetI.read(indices, PredType::NATIVE_INT, dataspaceI);
+		datasetA.read(amplitudes, PredType::NATIVE_DOUBLE, dataspaceA);
+
+		cout << "9\n";
+		datasetI.close();
+		dataspaceI.close();
+		datasetA.close();
+		dataspaceA.close();
+
+		cout << "10\n";
 		file.close();
+
+		cout << "11\n";
+		amplitudeSet = new AmplitudeSet();
+		for(int n = 0; n < numHoppingAmplitudes; n++){
+			Index from({});
+			for(int c = 0; c < maxIndexSize; c++){
+				int i = indices[2*maxIndexSize*n + c];
+				if(i == -1)
+					break;
+				else
+					from.indices.push_back(i);
+			}
+			Index to({});
+			for(int c = 0; c < maxIndexSize; c++){
+				int i = indices[2*maxIndexSize*n + maxIndexSize + c];
+				if(i == -1)
+					break;
+				else
+					to.indices.push_back(i);
+			}
+
+			amplitudeSet->addHA(HoppingAmplitude(amplitudes[n], to, from));
+		}
 	}
 	catch(FileIException error){
-		cout << "Error in FileReader::getAmplitudeSet(): While reading " << filename << "\n";
+		cout << "Error in FileReader::read: While reading " << name << "\n";
 		exit(1);
 	}
 	catch(DataSetIException error){
-		cout << "Error in FileReader::getAmplitudeSet(): While reading " << filename << "\n";
+		cout << "Error in FileReader::read: While reading " << name << "\n";
 		exit(1);
 	}
 	catch(DataSpaceIException error){
-		cout << "Error in FileReader::getAmplitudeSet(): While reading " << filename << "\n";
+		cout << "Error in FileReader::read: While reading " << name << "\n";
 		exit(1);
 	}
 
-	delete [] asTable;*/
+	return amplitudeSet;
 }
 
 Geometry* FileReader::readGeometry(Model *model, string name, string path){
@@ -112,10 +159,6 @@ Geometry* FileReader::readGeometry(Model *model, string name, string path){
 		dataspaceS.getSimpleExtentDims(dims_internalS, NULL);
 		int numSpecifiers = dims_internalS[1];
 
-/*		Model *dummyModel = new Model();
-		for(int n = 0; n < basisSize; n++)
-			dummyModel->addHA(HoppingAmplitude(0, {n}, {n}));
-		dummyModel->construct();*/
 		geometry = new Geometry(dimensions, numSpecifiers, model);
 
 		datasetC.read(geometry->coordinates, PredType::NATIVE_DOUBLE, dataspaceC);
@@ -139,7 +182,7 @@ Geometry* FileReader::readGeometry(Model *model, string name, string path){
 	catch(DataSpaceIException error){
 		cout << "Error in FileReader::read: While reading " << name << "\n";
 		exit(1);
-	}	
+	}
 
 	return geometry;
 }

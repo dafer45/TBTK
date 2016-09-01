@@ -77,7 +77,7 @@ void FileWriter::writeAmplitudeSet(AmplitudeSet *amplitudeSet, string name, stri
 		ss << path;
 		if(path.back() != '/')
 			ss << "/";
-		ss << name << "AmplitudesReal";
+		ss << name << "Amplitudes";
 
 		dataspace = DataSpace(AMPLITUDE_RANK, amplitudeDims);
 		dataset = DataSet(file.createDataSet(ss.str(), PredType::IEEE_F64BE, dataspace));

@@ -29,8 +29,7 @@ namespace TBTK{
 class FileReader{
 public:
 	/** Experimental. Read AmplitudeSet from file. */
-	static void readAmplitudeSet(
-		AmplitudeSet **amplitudeSet,
+	static AmplitudeSet* readAmplitudeSet(
 		std::string name = "AmplitudeSet",
 		std::string path = "/"
 	);
