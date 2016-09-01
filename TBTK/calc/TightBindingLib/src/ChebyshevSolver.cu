@@ -51,7 +51,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(vector<Index> &to, Index from, co
 	if(cudaSetDevice(device) != cudaSuccess)
 		{	cout << "\tSet device error: " << device << "\n";	exit(1);	}
 
-	AmplitudeSet *amplitudeSet = &model->amplitudeSet;
+	AmplitudeSet *amplitudeSet = model->getAmplitudeSet();
 
 	int fromBasisIndex = amplitudeSet->getBasisIndex(from);
 	int *coefficientMap = new int[amplitudeSet->getBasisSize()];
