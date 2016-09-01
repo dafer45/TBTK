@@ -79,10 +79,6 @@ public:
 	/** Get chemical potential. */
 	double getChemicalPotential();
 
-	/** AmplitudeSet containing @link HoppingAmplitude HoppingAmplitudes
-	 *  @endlink.*/
-	AmplitudeSet amplitudeSet;
-
 	/** Enums for Fermi-Dirac and Bose-Einstein statistics. */
 	enum Statistics {FermiDirac, BoseEinstein};
 
@@ -91,6 +87,9 @@ public:
 
 	/** Get statistics. */
 	Statistics getStatistics();
+
+	/** Get amplitude set. */
+	AmplitudeSet* getAmplitudeSet();
 
 	/** Create geometry. */
 	void createGeometry(int dimensions, int numSpecifiers = 0);
@@ -111,6 +110,10 @@ private:
 	/** Statistics (Fermi-Dirac or Bose-Einstein). */
 	Statistics statistics;
 
+	/** AmplitudeSet containing @link HoppingAmplitude HoppingAmplitudes
+	 *  @endlink.*/
+	AmplitudeSet *amplitudeSet;
+
 	/** Geometry. */
 	Geometry *geometry;
 
@@ -120,36 +123,36 @@ private:
 };
 
 inline void Model::addHA(HoppingAmplitude ha){
-	amplitudeSet.addHA(ha);
+	amplitudeSet->addHA(ha);
 }
 
 inline void Model::addHAAndHC(HoppingAmplitude ha){
-	amplitudeSet.addHAAndHC(ha);
+	amplitudeSet->addHAAndHC(ha);
 }
 
 inline int Model::getBasisSize(){
-	return amplitudeSet.getBasisSize();
+	return amplitudeSet->getBasisSize();
 }
 
 inline int Model::getBasisIndex(Index index){
-	return amplitudeSet.getBasisIndex(index);
+	return amplitudeSet->getBasisIndex(index);
 }
 
 inline bool Model::getIsConstructed(){
-	return amplitudeSet.getIsConstructed();
+	return amplitudeSet->getIsConstructed();
 }
 
 inline void Model::constructCOO(){
-	amplitudeSet.sort();
-	amplitudeSet.constructCOO();
+	amplitudeSet->sort();
+	amplitudeSet->constructCOO();
 }
 
 inline void Model::destructCOO(){
-	amplitudeSet.destructCOO();
+	amplitudeSet->destructCOO();
 }
 
 inline void Model::reconstructCOO(){
-	amplitudeSet.reconstructCOO();
+	amplitudeSet->reconstructCOO();
 }
 
 inline void Model::setTemperature(double temperature){
@@ -174,6 +177,10 @@ inline void Model::setStatistics(Statistics statistics){
 
 inline Model::Statistics Model::getStatistics(){
 	return statistics;
+}
+
+inline AmplitudeSet* Model::getAmplitudeSet(){
+	return amplitudeSet;
 }
 
 inline Geometry* Model::getGeometry(){

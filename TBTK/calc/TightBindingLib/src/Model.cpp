@@ -18,11 +18,13 @@ Model::Model(){
 	temperature = 0.;
 	chemicalPotential = 0.;
 	statistics = Statistics::FermiDirac;
+	amplitudeSet = new AmplitudeSet();
 	geometry = NULL;
 	isTalkative = true;
 }
 
 Model::~Model(){
+	delete [] amplitudeSet;
 	if(geometry != NULL)
 		delete geometry;
 }
@@ -39,10 +41,10 @@ void Model::construct(){
 	if(isTalkative)
 		cout << "Constructing system\n";
 
-	amplitudeSet.construct();
+	amplitudeSet->construct();
 
 	int basisSize = getBasisSize();
-	
+
 	if(isTalkative)
 		cout << "\tBasis size: " << basisSize << "\n";
 }

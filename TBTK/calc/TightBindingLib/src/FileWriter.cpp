@@ -45,7 +45,7 @@ void FileWriter::writeModel(Model *model, string name, string path){
 	stringstream ss;
 	ss << name << "AmplitudeSet";
 
-	writeAmplitudeSet(&(model->amplitudeSet), ss.str(), path);
+	writeAmplitudeSet(model->getAmplitudeSet(), ss.str(), path);
 
 	ss.str("");
 	ss << name << "Geometry";

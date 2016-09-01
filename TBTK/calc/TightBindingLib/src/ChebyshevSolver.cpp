@@ -65,11 +65,11 @@ ChebyshevSolver::~ChebyshevSolver(){
 
 void ChebyshevSolver::setModel(Model *model){
 	this->model = model;
-	model->amplitudeSet.sort();	//Required for GPU evaluation
+	model->getAmplitudeSet()->sort();	//Required for GPU evaluation
 }
 
 void ChebyshevSolver::calculateCoefficients(Index to, Index from, complex<double> *coefficients, int numCoefficients, double broadening){
-	AmplitudeSet *amplitudeSet = &model->amplitudeSet;
+	AmplitudeSet *amplitudeSet = model->getAmplitudeSet();
 
 	int fromBasisIndex = amplitudeSet->getBasisIndex(from);
 	int toBasisIndex = amplitudeSet->getBasisIndex(to);
@@ -198,7 +198,7 @@ void ChebyshevSolver::calculateCoefficients(Index to, Index from, complex<double
 }
 
 void ChebyshevSolver::calculateCoefficients(vector<Index> &to, Index from, complex<double> *coefficients, int numCoefficients, double broadening){
-	AmplitudeSet *amplitudeSet = &model->amplitudeSet;
+	AmplitudeSet *amplitudeSet = model->getAmplitudeSet();
 
 	int fromBasisIndex = amplitudeSet->getBasisIndex(from);
 	int *coefficientMap = new int[amplitudeSet->getBasisSize()];
@@ -336,7 +336,7 @@ void ChebyshevSolver::calculateCoefficients(vector<Index> &to, Index from, compl
 }
 
 void ChebyshevSolver::calculateCoefficientsWithCutoff(Index to, Index from, complex<double> *coefficients, int numCoefficients, double componentCutoff, double broadening){
-	AmplitudeSet *amplitudeSet = &model->amplitudeSet;
+	AmplitudeSet *amplitudeSet = model->getAmplitudeSet();
 
 	int fromBasisIndex = amplitudeSet->getBasisIndex(from);
 	int toBasisIndex = amplitudeSet->getBasisIndex(to);

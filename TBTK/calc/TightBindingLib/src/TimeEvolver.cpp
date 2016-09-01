@@ -83,11 +83,11 @@ void TimeEvolver::run(){
 		for(int n = 0; n < basisSize*basisSize; n++)
 			dPsi[n] = 0.;
 
-		AmplitudeSet::Iterator it = model->amplitudeSet.getIterator();
+		AmplitudeSet::Iterator it = model->getAmplitudeSet()->getIterator();
 		HoppingAmplitude *ha;
 		while((ha = it.getHA())){
-			int fromIndex = model->amplitudeSet.getBasisIndex(ha->fromIndex);
-			int toIndex = model->amplitudeSet.getBasisIndex(ha->toIndex);
+			int fromIndex = model->getAmplitudeSet()->getBasisIndex(ha->fromIndex);
+			int toIndex = model->getAmplitudeSet()->getBasisIndex(ha->toIndex);
 			complex<double> amplitude = ha->getAmplitude();
 			#pragma omp parallel for
 			for(int n = 0; n < basisSize; n++){
