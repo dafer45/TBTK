@@ -97,9 +97,9 @@ bool scCallback(DiagonalizationSolver *dSolver){
 //(x, y, spin).
 complex<double> fD(Index to, Index from){
 	//Obtain indices
-	int x = from.indices.at(1);
-	int y = from.indices.at(2);
-	int s = from.indices.at(3);
+	int x = from.at(1);
+	int y = from.at(2);
+	int s = from.at(3);
 
 	//Return appropriate amplitude
 	switch(s){
