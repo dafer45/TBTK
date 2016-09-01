@@ -50,6 +50,21 @@ void FileWriter::writeModel(Model *model, string name, string path){
 	ss.str("");
 	ss << name << "Geometry";
 	writeGeometry(model->getGeometry(), ss.str(), path);
+
+
+	const int NUM_DOUBLE_ATTRIBUTES = 2;
+	ss.str("");
+	ss << name << "DoubleAttributes";
+	double doubleAttributes[NUM_DOUBLE_ATTRIBUTES] = {model->getTemperature(), model->getChemicalPotential()};
+	string doubleAttributeNames[NUM_DOUBLE_ATTRIBUTES] = {"Temperature", "ChemicalPotential"};
+	writeAttributes(doubleAttributes, doubleAttributeNames, NUM_DOUBLE_ATTRIBUTES, ss.str());
+
+	const int NUM_INT_ATTRIBUTES = 1;
+	ss.str("");
+	ss << name << "IntAttributes";
+	int intAttributes[NUM_INT_ATTRIBUTES] = {model->getStatistics()};
+	string intAttributeNames[NUM_INT_ATTRIBUTES] = {"Statistics"};
+	writeAttributes(intAttributes, intAttributeNames, NUM_INT_ATTRIBUTES, ss.str());
 }
 
 void FileWriter::writeAmplitudeSet(AmplitudeSet *amplitudeSet, string name, string path){

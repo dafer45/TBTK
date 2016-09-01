@@ -22,12 +22,37 @@ bool FileReader::isInitialized = false;
 string FileReader::filename = "TBTKResults.h5";
 
 Model* FileReader::readModel(string name, string path){
-	Model *model = NULL;
+	Model *model = new Model();
 
 	stringstream ss;
 	ss << name << "AmplitudeSet";
 
-//	readAmplitude();
+	delete model->amplitudeSet;
+	model->amplitudeSet = readAmplitudeSet(ss.str());
+	model->construct();
+
+	ss.str("");
+	ss << name << "Geometry";
+	model->geometry = readGeometry(model, ss.str());
+
+	const int NUM_DOUBLE_ATTRIBUTES = 2;
+	ss.str("");
+	ss << name << "DoubleAttributes";
+	double doubleAttributes[NUM_DOUBLE_ATTRIBUTES];
+	string doubleAttributeNames[NUM_DOUBLE_ATTRIBUTES] = {"Temperature", "ChemicalPotential"};
+	readAttributes(doubleAttributes, doubleAttributeNames, NUM_DOUBLE_ATTRIBUTES, ss.str());
+
+	model->setTemperature(doubleAttributes[0]);
+	model->setChemicalPotential(doubleAttributes[1]);
+
+	const int NUM_INT_ATTRIBUTES = 1;
+	ss.str("");
+	ss << name << "IntAttributes";
+	int intAttributes[NUM_INT_ATTRIBUTES];
+	string intAttributeNames[NUM_INT_ATTRIBUTES] = {"Statistics"};
+	readAttributes(intAttributes, intAttributeNames, NUM_INT_ATTRIBUTES, ss.str());
+
+	model->setStatistics(static_cast<Model::Statistics>(intAttributes[0]));
 
 	return model;
 }
@@ -75,11 +100,9 @@ AmplitudeSet* FileReader::readAmplitudeSet(string name, string path){
 		int *indices = new int[2*maxIndexSize*numHoppingAmplitudes];
 		complex<double> *amplitudes = new complex<double>[numHoppingAmplitudes];
 
-		cout << "8\n";
 		datasetI.read(indices, PredType::NATIVE_INT, dataspaceI);
 		datasetA.read(amplitudes, PredType::NATIVE_DOUBLE, dataspaceA);
 
-		cout << "9\n";
 		datasetI.close();
 		dataspaceI.close();
 		datasetA.close();
@@ -355,7 +378,7 @@ Property::DOS* FileReader::readDOS(string name, string path){
 		}
 
 		DataSpace dataspace = dataset.getSpace();
-		
+
 		hsize_t dims_internal[1];
 		dataspace.getSimpleExtentDims(dims_internal, NULL);
 		resolution = dims_internal[0];

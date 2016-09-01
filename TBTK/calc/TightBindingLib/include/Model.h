@@ -16,6 +16,7 @@
 namespace TBTK{
 
 class Geometry;
+class FileReader;
 
 enum {IDX_SUM_ALL = -1, IDX_ALL = -1,
 	IDX_X = -2,
@@ -80,7 +81,7 @@ public:
 	double getChemicalPotential();
 
 	/** Enums for Fermi-Dirac and Bose-Einstein statistics. */
-	enum Statistics {FermiDirac, BoseEinstein};
+	enum class Statistics {FermiDirac, BoseEinstein};
 
 	/** Set statistics. */
 	void setStatistics(Statistics statistics);
@@ -120,6 +121,9 @@ private:
 	/** Flag indicating whether to write information to standard output or
 	 *  not. */
 	bool isTalkative;
+
+	/** FileReader is a friend class to allow it to write Model data. */
+	friend class FileReader;
 };
 
 inline void Model::addHA(HoppingAmplitude ha){

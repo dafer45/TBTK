@@ -24,7 +24,7 @@ Model::Model(){
 }
 
 Model::~Model(){
-	delete [] amplitudeSet;
+	delete amplitudeSet;
 	if(geometry != NULL)
 		delete geometry;
 }
