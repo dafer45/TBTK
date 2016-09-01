@@ -62,7 +62,7 @@ void FileWriter::writeModel(Model *model, string name, string path){
 	const int NUM_INT_ATTRIBUTES = 1;
 	ss.str("");
 	ss << name << "IntAttributes";
-	int intAttributes[NUM_INT_ATTRIBUTES] = {model->getStatistics()};
+	int intAttributes[NUM_INT_ATTRIBUTES] = {static_cast<int>(model->getStatistics())};
 	string intAttributeNames[NUM_INT_ATTRIBUTES] = {"Statistics"};
 	writeAttributes(intAttributes, intAttributeNames, NUM_INT_ATTRIBUTES, ss.str());
 }
