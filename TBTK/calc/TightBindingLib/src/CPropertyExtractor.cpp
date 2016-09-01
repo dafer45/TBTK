@@ -204,11 +204,11 @@ Property::Density* CPropertyExtractor::calculateDensity(Index pattern, Index ran
 Property::Magnetization* CPropertyExtractor::calculateMagnetization(Index pattern, Index ranges){
 	hint = new int[1];
 	((int*)hint)[0] = -1;
-	for(unsigned int n = 0; n < pattern.indices.size(); n++){
-		if(pattern.indices.at(n) == IDX_SPIN){
+	for(unsigned int n = 0; n < pattern.size(); n++){
+		if(pattern.at(n) == IDX_SPIN){
 			((int*)hint)[0] = n;
-			pattern.indices.at(n) = 0;
-			ranges.indices.at(n) = 1;
+			pattern.at(n) = 0;
+			ranges.at(n) = 1;
 			break;
 		}
 	}
@@ -306,11 +306,11 @@ Property::LDOS* CPropertyExtractor::calculateLDOS(Index pattern, Index ranges){
 Property::SpinPolarizedLDOS* CPropertyExtractor::calculateSpinPolarizedLDOS(Index pattern, Index ranges){
 	hint = new int[1];
 	((int*)hint)[0] = -1;
-	for(unsigned int n = 0; n < pattern.indices.size(); n++){
-		if(pattern.indices.at(n) == IDX_SPIN){
+	for(unsigned int n = 0; n < pattern.size(); n++){
+		if(pattern.at(n) == IDX_SPIN){
 			((int*)hint)[0] = n;
-			pattern.indices.at(n) = 0;
-			ranges.indices.at(n) = 1;
+			pattern.at(n) = 0;
+			ranges.at(n) = 1;
 			break;
 		}
 	}
@@ -367,8 +367,8 @@ void CPropertyExtractor::calculateMAGCallback(CPropertyExtractor *cb_this, void 
 
 	const double dE = (cb_this->upperBound - cb_this->lowerBound)/cb_this->energyResolution;
 	for(int n = 0; n < 4; n++){
-		to.indices.at(spinIndex) = n/2;		//up, up, down, down
-		from.indices.at(spinIndex) = n%2;	//up, down, up, down
+		to.at(spinIndex) = n/2;		//up, up, down, down
+		from.at(spinIndex) = n%2;	//up, down, up, down
 		greensFunction = cb_this->calculateGreensFunction(to, from, ChebyshevSolver::GreensFunctionType::NonPrincipal);
 
 		for(int e = 0; e < cb_this->energyResolution; e++){
@@ -409,8 +409,8 @@ void CPropertyExtractor::calculateSP_LDOSCallback(CPropertyExtractor *cb_this, v
 
 	const double dE = (cb_this->upperBound - cb_this->lowerBound)/cb_this->energyResolution;
 	for(int n = 0; n < 4; n++){
-		to.indices.at(spinIndex) = n/2;		//up, up, down, down
-		from.indices.at(spinIndex) = n%2;	//up, down, up, down
+		to.at(spinIndex) = n/2;		//up, up, down, down
+		from.at(spinIndex) = n%2;	//up, down, up, down
 		greensFunction = cb_this->calculateGreensFunction(to, from, ChebyshevSolver::GreensFunctionType::NonPrincipal);
 
 		for(int e = 0; e < cb_this->energyResolution; e++)
@@ -422,9 +422,9 @@ void CPropertyExtractor::calculateSP_LDOSCallback(CPropertyExtractor *cb_this, v
 
 void CPropertyExtractor::calculate(void (*callback)(CPropertyExtractor *cb_this, void *memory, const Index &index, int offset),
 					void *memory, Index pattern, const Index &ranges, int currentOffset, int offsetMultiplier){
-	int currentSubindex = pattern.indices.size()-1;
+	int currentSubindex = pattern.size()-1;
 	for(; currentSubindex >= 0; currentSubindex--){
-		if(pattern.indices.at(currentSubindex) < 0)
+		if(pattern.at(currentSubindex) < 0)
 			break;
 	}
 
@@ -433,13 +433,13 @@ void CPropertyExtractor::calculate(void (*callback)(CPropertyExtractor *cb_this,
 	}
 	else{
 		int nextOffsetMultiplier = offsetMultiplier;
-		if(pattern.indices.at(currentSubindex) < IDX_SUM_ALL)
-			nextOffsetMultiplier *= ranges.indices.at(currentSubindex);
+		if(pattern.at(currentSubindex) < IDX_SUM_ALL)
+			nextOffsetMultiplier *= ranges.at(currentSubindex);
 		bool isSumIndex = false;
-		if(pattern.indices.at(currentSubindex) == IDX_SUM_ALL)
+		if(pattern.at(currentSubindex) == IDX_SUM_ALL)
 			isSumIndex = true;
-		for(int n = 0; n < ranges.indices.at(currentSubindex); n++){
-			pattern.indices.at(currentSubindex) = n;
+		for(int n = 0; n < ranges.at(currentSubindex); n++){
+			pattern.at(currentSubindex) = n;
 			calculate(callback,
 					memory,
 					pattern,
@@ -454,24 +454,24 @@ void CPropertyExtractor::calculate(void (*callback)(CPropertyExtractor *cb_this,
 }
 
 void CPropertyExtractor::ensureCompliantRanges(const Index &pattern, Index &ranges){
-	for(unsigned int n = 0; n < pattern.indices.size(); n++){
-		if(pattern.indices.at(n) >= 0)
-			ranges.indices.at(n) = 1;
+	for(unsigned int n = 0; n < pattern.size(); n++){
+		if(pattern.at(n) >= 0)
+			ranges.at(n) = 1;
 	}
 }
 
 void CPropertyExtractor::getLoopRanges(const Index &pattern, const Index &ranges, int *lDimensions, int **lRanges){
 	*lDimensions = 0;
-	for(unsigned int n = 0; n < ranges.indices.size(); n++){
-		if(pattern.indices.at(n) < IDX_SUM_ALL)
+	for(unsigned int n = 0; n < ranges.size(); n++){
+		if(pattern.at(n) < IDX_SUM_ALL)
 			(*lDimensions)++;
 	}
 
 	(*lRanges) = new int[*lDimensions];
 	int counter = 0;
-	for(unsigned int n = 0; n < ranges.indices.size(); n++){
-		if(pattern.indices.at(n) < IDX_SUM_ALL)
-			(*lRanges)[counter++] = ranges.indices.at(n);
+	for(unsigned int n = 0; n < ranges.size(); n++){
+		if(pattern.at(n) < IDX_SUM_ALL)
+			(*lRanges)[counter++] = ranges.at(n);
 	}
 }
 

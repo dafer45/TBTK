@@ -19,9 +19,6 @@ namespace TBTK{
  */
 class Index{
 public:
-	/** Subindex container. */
-	std::vector<int> indices;
-
 	/** Constructor. */
 	Index(std::initializer_list<int> i) : indices(i){};
 
@@ -35,9 +32,20 @@ public:
 	 * have the same number of subindices and all subindices are equal.
 	 * @param index Index to compare with. */
 	bool equals(Index &index);
+	/** Get subindex n. */
+	int& at(unsigned int n);
+
+	/** Get subindex n. Constant version. */
+	const int& at(unsigned int n) const;
+
+	/** Get size. */
+	unsigned int size() const;
 
 	/** Print index. Mainly for debuging. */
 	void print() const;
+private:
+	/** Subindex container. */
+	std::vector<int> indices;
 };
 
 inline void Index::print() const{
@@ -62,6 +70,18 @@ inline bool Index::equals(Index &index){
 	}
 
 	return true;
+}
+
+inline int& Index::at(unsigned int n){
+	return indices.at(n);
+}
+
+inline const int& Index::at(unsigned int n) const{
+	return indices.at(n);
+}
+
+inline unsigned int Index::size() const{
+	return indices.size();
 }
 
 };	//End of namespace TBTK

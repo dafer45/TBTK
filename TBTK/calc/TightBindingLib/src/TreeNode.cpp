@@ -33,12 +33,12 @@ void TreeNode::add(HoppingAmplitude ha){
 }
 
 void TreeNode::add(HoppingAmplitude &ha, unsigned int subindex){
-	if(subindex < ha.fromIndex.indices.size()){
+	if(subindex < ha.fromIndex.size()){
 		//If the current subindex is not the last, the HoppingAmplitude
 		//is propagated to the next node level.
 
 		//Get current subindex
-		int currentIndex = ha.fromIndex.indices.at(subindex);
+		int currentIndex = ha.fromIndex.at(subindex);
 		//If the subindex is bigger than the current number of child
 		//nodes, create empty nodes.
 		if(currentIndex >= (int)children.size()){
@@ -88,12 +88,12 @@ std::vector<HoppingAmplitude>* TreeNode::getHAs(Index index){
 }
 
 std::vector<HoppingAmplitude>* TreeNode::getHAs(Index index, unsigned int subindex){
-	if(subindex < index.indices.size()){
+	if(subindex < index.size()){
 		//If the current subindex is not the last, continue to the next
 		//node level.
 
 		//Get current subindex
-		int currentIndex = index.indices.at(subindex);
+		int currentIndex = index.at(subindex);
 		//Error detection:
 		//If the subindex is bigger than the current number of child
 		//nodes, an error has occured.
@@ -115,12 +115,12 @@ int TreeNode::getBasisIndex(const Index &index){
 }
 
 int TreeNode::getBasisIndex(const Index &index, unsigned int subindex){
-	if(subindex < index.indices.size()){
+	if(subindex < index.size()){
 		//If the current subindex is not the last, continue to the next
 		//node level.
 
 		//Get current subindex
-		int currentIndex = index.indices.at(subindex);
+		int currentIndex = index.at(subindex);
 		//Error detection:
 		//If the subindex is bigger than the current number of child
 		//nodes, an error has occured.

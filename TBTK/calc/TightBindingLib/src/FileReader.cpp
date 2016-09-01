@@ -89,21 +89,21 @@ AmplitudeSet* FileReader::readAmplitudeSet(string name, string path){
 
 		amplitudeSet = new AmplitudeSet();
 		for(int n = 0; n < numHoppingAmplitudes; n++){
-			Index from({});
+			vector<int> from;
 			for(int c = 0; c < maxIndexSize; c++){
 				int i = indices[2*maxIndexSize*n + c];
 				if(i == -1)
 					break;
 				else
-					from.indices.push_back(i);
+					from.push_back(i);
 			}
-			Index to({});
+			vector<int> to;
 			for(int c = 0; c < maxIndexSize; c++){
 				int i = indices[2*maxIndexSize*n + maxIndexSize + c];
 				if(i == -1)
 					break;
 				else
-					to.indices.push_back(i);
+					to.push_back(i);
 			}
 
 			amplitudeSet->addHA(HoppingAmplitude(amplitudes[n], to, from));

@@ -311,11 +311,11 @@ Property::Density* DPropertyExtractor::calculateDensity(Index pattern, Index ran
 Property::Magnetization* DPropertyExtractor::calculateMagnetization(Index pattern, Index ranges){
 	hint = new int[1];
 	((int*)hint)[0] = -1;
-	for(unsigned int n = 0; n < pattern.indices.size(); n++){
-		if(pattern.indices.at(n) == IDX_SPIN){
+	for(unsigned int n = 0; n < pattern.size(); n++){
+		if(pattern.at(n) == IDX_SPIN){
 			((int*)hint)[0] = n;
-			pattern.indices.at(n) = 0;
-			ranges.indices.at(n) = 1;
+			pattern.at(n) = 0;
+			ranges.at(n) = 1;
 			break;
 		}
 	}
@@ -405,11 +405,11 @@ Property::SpinPolarizedLDOS* DPropertyExtractor::calculateSpinPolarizedLDOS(Inde
 	((int**)hint)[1][0] = resolution;
 
 	((int**)hint)[1][1] = -1;
-	for(unsigned int n = 0; n < pattern.indices.size(); n++){
-		if(pattern.indices.at(n) == IDX_SPIN){
+	for(unsigned int n = 0; n < pattern.size(); n++){
+		if(pattern.at(n) == IDX_SPIN){
 			((int**)hint)[1][1] = n;
-			pattern.indices.at(n) = 0;
-			ranges.indices.at(n) = 1;
+			pattern.at(n) = 0;
+			ranges.at(n) = 1;
 			break;
 		}
 	}
@@ -466,8 +466,8 @@ void DPropertyExtractor::calculateMAGCallback(DPropertyExtractor *cb_this, void 
 	int spin_index = ((int*)cb_this->hint)[0];
 	Index index_u(index);
 	Index index_d(index);
-	index_u.indices.at(spin_index) = 0;
-	index_d.indices.at(spin_index) = 1;
+	index_u.at(spin_index) = 0;
+	index_d.at(spin_index) = 1;
 	for(int n = 0; n < cb_this->dSolver->getModel()->getBasisSize(); n++){
 		double weight;
 		if(statistics == Model::Statistics::FermiDirac){
@@ -503,8 +503,8 @@ void DPropertyExtractor::calculateSP_LDOSCallback(DPropertyExtractor *cb_this, v
 
 	Index index_u(index);
 	Index index_d(index);
-	index_u.indices.at(spin_index) = 0;
-	index_d.indices.at(spin_index) = 1;
+	index_u.at(spin_index) = 0;
+	index_d.at(spin_index) = 1;
 	for(int n = 0; n < cb_this->dSolver->getModel()->getBasisSize(); n++){
 		if(eigen_values[n] > l_lim && eigen_values[n] < u_lim){
 			complex<double> u_u = cb_this->dSolver->getAmplitude(n, index_u);
@@ -556,9 +556,9 @@ void DPropertyExtractor::calculateSP_LDOSCallback(DPropertyExtractor *cb_this, v
 
 void DPropertyExtractor::calculate(void (*callback)(DPropertyExtractor *cb_this, void *memory, const Index &index, int offset),
 			void *memory, Index pattern, const Index &ranges, int currentOffset, int offsetMultiplier){
-	int currentSubindex = pattern.indices.size()-1;
+	int currentSubindex = pattern.size()-1;
 	for(; currentSubindex >= 0; currentSubindex--){
-		if(pattern.indices.at(currentSubindex) < 0)
+		if(pattern.at(currentSubindex) < 0)
 			break;
 	}
 
@@ -567,13 +567,13 @@ void DPropertyExtractor::calculate(void (*callback)(DPropertyExtractor *cb_this,
 	}
 	else{
 		int nextOffsetMultiplier = offsetMultiplier;
-		if(pattern.indices.at(currentSubindex) < IDX_SUM_ALL)
-			nextOffsetMultiplier *= ranges.indices.at(currentSubindex);
+		if(pattern.at(currentSubindex) < IDX_SUM_ALL)
+			nextOffsetMultiplier *= ranges.at(currentSubindex);
 		bool isSumIndex = false;
-		if(pattern.indices.at(currentSubindex) == IDX_SUM_ALL)
+		if(pattern.at(currentSubindex) == IDX_SUM_ALL)
 			isSumIndex = true;
-		for(int n = 0; n < ranges.indices.at(currentSubindex); n++){
-			pattern.indices.at(currentSubindex) = n;
+		for(int n = 0; n < ranges.at(currentSubindex); n++){
+			pattern.at(currentSubindex) = n;
 			calculate(callback,
 					memory,
 					pattern,
@@ -588,24 +588,24 @@ void DPropertyExtractor::calculate(void (*callback)(DPropertyExtractor *cb_this,
 }
 
 void DPropertyExtractor::ensureCompliantRanges(const Index &pattern, Index &ranges){
-	for(unsigned int n = 0; n < pattern.indices.size(); n++){
-		if(pattern.indices.at(n) >= 0)
-			ranges.indices.at(n) = 1;
+	for(unsigned int n = 0; n < pattern.size(); n++){
+		if(pattern.at(n) >= 0)
+			ranges.at(n) = 1;
 	}
 }
 
 void DPropertyExtractor::getLoopRanges(const Index &pattern, const Index &ranges, int *lDimensions, int **lRanges){
 	*lDimensions = 0;
-	for(unsigned int n = 0; n < ranges.indices.size(); n++){
-		if(pattern.indices.at(n) < IDX_SUM_ALL)
+	for(unsigned int n = 0; n < ranges.size(); n++){
+		if(pattern.at(n) < IDX_SUM_ALL)
 			(*lDimensions)++;
 	}
 
 	(*lRanges) = new int[*lDimensions];
 	int counter = 0;
-	for(unsigned int n = 0; n < ranges.indices.size(); n++){
-		if(pattern.indices.at(n) < IDX_SUM_ALL)
-			(*lRanges)[counter++] = ranges.indices.at(n);
+	for(unsigned int n = 0; n < ranges.size(); n++){
+		if(pattern.at(n) < IDX_SUM_ALL)
+			(*lRanges)[counter++] = ranges.at(n);
 	}
 }
 

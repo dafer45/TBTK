@@ -167,7 +167,7 @@ void AmplitudeSet::tabulate(complex<double> **amplitudes, int **table, int *numH
 	while((ha = it.getHA())){
 		(*numHoppingAmplitudes)++;
 
-		int indexSize = ha->fromIndex.indices.size();
+		int indexSize = ha->fromIndex.size();
 		if(indexSize > *maxIndexSize)
 			(*maxIndexSize) = indexSize;
 
@@ -183,10 +183,10 @@ void AmplitudeSet::tabulate(complex<double> **amplitudes, int **table, int *numH
 	it.reset();
 	int counter = 0;
 	while((ha = it.getHA())){
-		for(unsigned int n = 0; n < ha->fromIndex.indices.size(); n++)
-			(*table)[2*(*maxIndexSize)*counter+n] = ha->fromIndex.indices.at(n);
-		for(unsigned int n = 0; n < ha->toIndex.indices.size(); n++)
-			(*table)[2*(*maxIndexSize)*counter+n+(*maxIndexSize)] = ha->toIndex.indices.at(n);
+		for(unsigned int n = 0; n < ha->fromIndex.size(); n++)
+			(*table)[2*(*maxIndexSize)*counter+n] = ha->fromIndex.at(n);
+		for(unsigned int n = 0; n < ha->toIndex.size(); n++)
+			(*table)[2*(*maxIndexSize)*counter+n+(*maxIndexSize)] = ha->toIndex.at(n);
 		(*amplitudes)[counter] = ha->getAmplitude();
 
 		it.searchNextHA();

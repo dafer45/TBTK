@@ -37,13 +37,13 @@ HoppingAmplitude HoppingAmplitude::getHermitianConjugate(){
 
 void HoppingAmplitude::print(){
 	cout << "From index:\t";
-	for(unsigned int n = 0; n < fromIndex.indices.size(); n++){
-		cout << fromIndex.indices.at(n) << " ";
+	for(unsigned int n = 0; n < fromIndex.size(); n++){
+		cout << fromIndex.at(n) << " ";
 	}
 	cout << "\n";
 	cout << "To index:\t";
-	for(unsigned int n = 0; n < toIndex.indices.size(); n++){
-		cout << toIndex.indices.at(n) << " ";
+	for(unsigned int n = 0; n < toIndex.size(); n++){
+		cout << toIndex.at(n) << " ";
 	}
 	cout << "\n";
 	cout << "Amplitude:\t" << getAmplitude() << "\n";
