@@ -21,6 +21,17 @@ namespace TBTK{
 bool FileReader::isInitialized = false;
 string FileReader::filename = "TBTKResults.h5";
 
+Model* FileReader::readModel(string name, string path){
+	Model *model = NULL;
+
+	stringstream ss;
+	ss << name << "AmplitudeSet";
+
+//	readAmplitude();
+
+	return model;
+}
+
 AmplitudeSet* FileReader::readAmplitudeSet(string name, string path){
 	AmplitudeSet *amplitudeSet = NULL;
 
@@ -74,10 +85,8 @@ AmplitudeSet* FileReader::readAmplitudeSet(string name, string path){
 		datasetA.close();
 		dataspaceA.close();
 
-		cout << "10\n";
 		file.close();
 
-		cout << "11\n";
 		amplitudeSet = new AmplitudeSet();
 		for(int n = 0; n < numHoppingAmplitudes; n++){
 			Index from({});

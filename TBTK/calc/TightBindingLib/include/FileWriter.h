@@ -31,6 +31,13 @@ namespace TBTK{
  */
 class FileWriter{
 public:
+	/** Write model to file. */
+	static void writeModel(
+		Model *model,
+		std::string name = "Model",
+		std::string path = "/"
+	);
+
 	/** Experimental. Write AmplitudeSet to file. */
 	static void writeAmplitudeSet(
 		AmplitudeSet *amplitudeSet,

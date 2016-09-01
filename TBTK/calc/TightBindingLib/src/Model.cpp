@@ -48,7 +48,7 @@ void Model::construct(){
 }
 
 void Model::createGeometry(int dimensions, int numSpecifiers){
-	if(getIsConstructed()){
+	if(!getIsConstructed()){
 		cout << "Error in Model::createGeometry: Hilbert space basis has not been constructed yet.\n";
 		exit(1);
 	}

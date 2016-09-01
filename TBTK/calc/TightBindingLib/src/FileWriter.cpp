@@ -39,6 +39,19 @@ void FileWriter::init(){
 	isInitialized = true;
 }
 
+void FileWriter::writeModel(Model *model, string name, string path){
+	init();
+
+	stringstream ss;
+	ss << name << "AmplitudeSet";
+
+	writeAmplitudeSet(&(model->amplitudeSet), ss.str(), path);
+
+	ss.str("");
+	ss << name << "Geometry";
+	writeGeometry(model->getGeometry(), ss.str(), path);
+}
+
 void FileWriter::writeAmplitudeSet(AmplitudeSet *amplitudeSet, string name, string path){
 	init();
 
@@ -88,16 +101,16 @@ void FileWriter::writeAmplitudeSet(AmplitudeSet *amplitudeSet, string name, stri
 		file.close();
 	}
 	catch(FileIException error){
-		error.printError();
-		return;
+		cout << "Error in FileWriter::writeAmplitudeSet: While writing to " << name << "\n";
+		exit(1);
 	}
 	catch(DataSetIException error){
-		error.printError();
-		return;
+		cout << "Error in FileWriter::writeAmplitudeSet: While writing to " << name << "\n";
+		exit(1);
 	}
 	catch(DataSpaceIException error){
-		error.printError();
-		return;
+		cout << "Error in FileWriter::writeAmplitudeSet: While writing to " << name << "\n";
+		exit(1);
 	}
 
 	delete [] amplitudes;
@@ -152,19 +165,16 @@ void FileWriter::writeGeometry(const Geometry *geometry, string name, string pat
 		file.close();
 	}
 	catch(FileIException error){
-		cout << "Error 1\n";
-		error.printError();
-		return;
+		cout << "Error in FileWriter::writeGeometry: While writing to " << name << "\n";
+		exit(1);
 	}
 	catch(DataSetIException error){
-		cout << "Error 2\n";
-		error.printError();
-		return;
+		cout << "Error in FileWriter::writeGeometry: While writing to " << name << "\n";
+		exit(1);
 	}
 	catch(DataSpaceIException error){
-		cout << "Error 3\n";
-		error.printError();
-		return;
+		cout << "Error in FileWriter::writeGeometry: While writing to " << name << "\n";
+		exit(1);
 	}
 }
 
@@ -233,16 +243,16 @@ void FileWriter::writeEigenValues(const Property::EigenValues *ev, string name, 
 		file.close();
 	}
 	catch(FileIException error){
-		error.printError();
-		return;
+		cout << "Error in FileWriter::writeEigenValues: While writing to " << name << "\n";
+		exit(1);
 	}
 	catch(DataSetIException error){
-		error.printError();
-		return;
+		cout << "Error in FileWriter::writeEigenValues: While writing to " << name << "\n";
+		exit(1);
 	}
 	catch(DataSpaceIException error){
-		error.printError();
-		return;
+		cout << "Error in FileWriter::writeEigenValues: While writing to " << name << "\n";
+		exit(1);
 	}
 }
 
@@ -335,16 +345,16 @@ void FileWriter::writeDOS(const Property::DOS *dos, string name, string path){
 		file.close();
 	}
 	catch(FileIException error){
-		error.printError();
-		return;
+		cout << "Error in FileWriter::writeDOS: While writing to " << name << "\n";
+		exit(1);
 	}
 	catch(DataSetIException error){
-		error.printError();
-		return;
+		cout << "Error in FileWriter::writeDOS: While writing to " << name << "\n";
+		exit(1);
 	}
 	catch(DataSpaceIException error){
-		error.printError();
-		return;
+		cout << "Error in FileWriter::writeDOS: While writing to " << name << "\n";
+		exit(1);
 	}
 }
 
@@ -414,16 +424,16 @@ void FileWriter::writeDensity(const Property::Density *density, string name, str
 		file.close();
 	}
 	catch(FileIException error){
-		error.printError();
-		return;
+		cout << "Error in FileWriter::writeDensity: While writing to " << name << "\n";
+		exit(1);
 	}
 	catch(DataSetIException error){
-		error.printError();
-		return;
+		cout << "Error in FileWriter::writeDensity: While writing to " << name << "\n";
+		exit(1);
 	}
 	catch(DataSpaceIException error){
-		error.printError();
-		return;
+		cout << "Error in FileWriter::writeDensity: While writing to " << name << "\n";
+		exit(1);
 	}
 }
 
@@ -522,16 +532,16 @@ void FileWriter::writeMagnetization(const Property::Magnetization *magnetization
 		file.close();
 	}
 	catch(FileIException error){
-		error.printError();
-		return;
+		cout << "Error in FileWriter::writeMagnetization: While writing to " << name << "\n";
+		exit(1);
 	}
 	catch(DataSetIException error){
-		error.printError();
-		return;
+		cout << "Error in FileWriter::writeMagnetization: While writing to " << name << "\n";
+		exit(1);
 	}
 	catch(DataSpaceIException error){
-		error.printError();
-		return;
+		cout << "Error in FileWriter::writeMagnetization: While writing to " << name << "\n";
+		exit(1);
 	}
 
 	delete [] mag_decomposed;
@@ -631,16 +641,16 @@ void FileWriter::writeLDOS(const Property::LDOS *ldos, string name, string path)
 		file.close();
 	}
 	catch(FileIException error){
-		error.printError();
-		return;
+		cout << "Error in FileWriter::writeLDOS: While writing to " << name << "\n";
+		exit(1);
 	}
 	catch(DataSetIException error){
-		error.printError();
-		return;
+		cout << "Error in FileWriter::writeLDOS: While writing to " << name << "\n";
+		exit(1);
 	}
 	catch(DataSpaceIException error){
-		error.printError();
-		return;
+		cout << "Error in FileWriter::writeLDOS: While writing to " << name << "\n";
+		exit(1);
 	}
 }
 
@@ -773,16 +783,16 @@ void FileWriter::writeSpinPolarizedLDOS(const Property::SpinPolarizedLDOS *spinP
 		dataspace.close();
 	}
 	catch(FileIException error){
-		error.printError();
-		return;
+		cout << "Error in FileWriter::writeSpinPolarizedLDOS: While writing to " << name << "\n";
+		exit(1);
 	}
 	catch(DataSetIException error){
-		error.printError();
-		return;
+		cout << "Error in FileWriter::writeSpinPolarizedLDOS: While writing to " << name << "\n";
+		exit(1);
 	}
 	catch(DataSpaceIException error){
-		error.printError();
-		return;
+		cout << "Error in FileWriter::writeSpinPolarizedLDOS: While writing to " << name << "\n";
+		exit(1);
 	}
 
 	delete [] sp_ldos_decomposed;
@@ -814,16 +824,16 @@ void FileWriter::write(const double *data, int rank, const int *dims, string nam
 		file.close();
 	}
 	catch(FileIException error){
-		error.printError();
-		return;
+		cout << "Error in FileWriter::write: While writing to " << name << "\n";
+		exit(1);
 	}
 	catch(DataSetIException error){
-		error.printError();
-		return;
+		cout << "Error in FileWriter::write: While writing to " << name << "\n";
+		exit(1);
 	}
 	catch(DataSpaceIException error){
-		error.printError();
-		return;
+		cout << "Error in FileWriter::write: While writing to " << name << "\n";
+		exit(1);
 	}
 }
 
@@ -857,16 +867,16 @@ void FileWriter::writeAttributes(const int *attributes, const string *attribute_
 		dataspace.close();
 	}
 	catch(FileIException error){
-		error.printError();
-		return;
+		cout << "Error in FileWriter::writeAttributes: While writing to " << name << "\n";
+		exit(1);
 	}
 	catch(DataSetIException error){
-		error.printError();
-		return;
+		cout << "Error in FileWriter::writeAttributes: While writing to " << name << "\n";
+		exit(1);
 	}
 	catch(DataSpaceIException error){
-		error.printError();
-		return;
+		cout << "Error in FileWriter::writeAttributes: While writing to " << name << "\n";
+		exit(1);
 	}
 }
 
@@ -900,16 +910,16 @@ void FileWriter::writeAttributes(const double *attributes, const string *attribu
 		dataspace.close();
 	}
 	catch(FileIException error){
-		error.printError();
-		return;
+		cout << "Error in FileWriter::writeAttributes: While writing to " << name << "\n";
+		exit(1);
 	}
 	catch(DataSetIException error){
-		error.printError();
-		return;
+		cout << "Error in FileWriter::writeAttributes: While writing to " << name << "\n";
+		exit(1);
 	}
 	catch(DataSpaceIException error){
-		error.printError();
-		return;
+		cout << "Error in FileWriter::writeAttributes: While writing to " << name << "\n";
+		exit(1);
 	}
 }
 

@@ -28,12 +28,19 @@ namespace TBTK{
  */
 class FileReader{
 public:
+	/** Read model from file. */
+	static Model* readModel(
+		std::string name = "Model",
+		std::string path = "/"
+	);
+
 	/** Experimental. Read AmplitudeSet from file. */
 	static AmplitudeSet* readAmplitudeSet(
 		std::string name = "AmplitudeSet",
 		std::string path = "/"
 	);
 
+	/** Read geometry from file. */
 	static Geometry* readGeometry(
 		Model *model,
 		std::string name = "Geometry",
