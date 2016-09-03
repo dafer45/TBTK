@@ -152,21 +152,25 @@ Geometry* FileReader::readGeometry(Model *model, string name, string path){
 	Geometry *geometry = NULL;
 
 	try{
+		cout << "1\n";
 		Exception::dontPrint();
 		H5File file(filename, H5F_ACC_RDONLY);
 
+		cout << "2\n";
 		stringstream ssC;
 		ssC << path;
 		if(path.back() != '/')
 			ssC << "/";
 		ssC << name << "Coordinates";
 
+		cout << "3\n";
 		stringstream ssS;
 		ssS << path;
 		if(path.back() != '/')
 			ssS << "/";
 		ssS << name << "Specifiers";
 
+		cout << "4\n";
 		DataSet datasetC = file.openDataSet(ssC.str());
 		H5T_class_t typeClassC = datasetC.getTypeClass();
 		if(typeClassC != H5T_FLOAT){
@@ -175,6 +179,7 @@ Geometry* FileReader::readGeometry(Model *model, string name, string path){
 		}
 		DataSpace dataspaceC = datasetC.getSpace();
 
+		cout << "5\n";
 		DataSet datasetS = file.openDataSet(ssS.str());
 		H5T_class_t typeClassS = datasetS.getTypeClass();
 		if(typeClassS != H5T_INTEGER){
@@ -183,25 +188,32 @@ Geometry* FileReader::readGeometry(Model *model, string name, string path){
 		}
 		DataSpace dataspaceS = datasetS.getSpace();
 
+		cout << "6\n";
 		hsize_t dims_internalC[2];
 		dataspaceC.getSimpleExtentDims(dims_internalC, NULL);
 		int dimensions = dims_internalC[1];
 
+		cout << "7\n";
 		hsize_t dims_internalS[2];
 		dataspaceS.getSimpleExtentDims(dims_internalS, NULL);
 		int numSpecifiers = dims_internalS[1];
 
+		cout << "8\n";
 		geometry = new Geometry(dimensions, numSpecifiers, model);
 
+		cout << "9\n";
 		datasetC.read(geometry->coordinates, PredType::NATIVE_DOUBLE, dataspaceC);
-		datasetS.read(geometry->specifiers, PredType::NATIVE_INT, dataspaceS);
+		if(numSpecifiers != 0)
+			datasetS.read(geometry->specifiers, PredType::NATIVE_INT, dataspaceS);
 
 		datasetC.close();
 		dataspaceC.close();
 		datasetS.close();
 		dataspaceS.close();
 
+		cout << "10\n";
 		file.close();
+		cout << "11\n";
 	}
 	catch(FileIException error){
 		cout << "Error in FileReader::read: While reading " << name << "\n";

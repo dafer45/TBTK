@@ -173,7 +173,13 @@ void FileWriter::writeGeometry(const Geometry *geometry, string name, string pat
 
 		dataspace = DataSpace(RANK, sDims);
 		dataset = DataSet(file.createDataSet(ss.str(), PredType::STD_I32BE, dataspace));
-		dataset.write(specifiers, PredType::NATIVE_INT);
+		if(numSpecifiers != 0){
+			dataset.write(specifiers, PredType::NATIVE_INT);
+		}
+		else{
+			int dummy[1];
+			dataset.write(dummy, PredType::NATIVE_INT);
+		}
 		dataspace.close();
 		dataset.close();
 
