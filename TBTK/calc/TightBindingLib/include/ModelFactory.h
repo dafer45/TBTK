@@ -19,7 +19,7 @@ namespace Util{
 
 class ModelFactory{
 public:
-	/** Create square lattice with two spins per sie and nearest neighbor
+	/** Create square lattice with two spins per site and nearest neighbor
 	 *  hopping amplitude t.
 	 *
 	 *  @param size List of ranges. {10}, {10, 20}, {10, 20, 30} creates a
@@ -35,8 +35,31 @@ public:
 		std::complex<double> t
 	);
 
+	/** Create hexagonal lattice with two spins per site and nearest neighbor
+	 *  hopping amplitude t. Unit cell conatins four atom such that the
+	 *  final lattice is rectangualrly shaped.
+	 *
+	 *  @param size List of ranges. {10, 20}, creates a hexagonal lattice
+	 *  with rectangular dimension 10x20.
+	 *
+	 *  @param periodic Specifies whether given dimension should have
+	 *  periodic boundary conditions or not.
+	 *
+	 *  @param t Nearest neighbor hopping amplitude. */
+	static Model* createHexagonalLattice(
+		std::initializer_list<int> size,
+		std::initializer_list<bool> periodic,
+		std::complex<double> t
+	);
+
 	/** Add geometry information to square lattice. */
 	static void addSquareGeometry(
+		Model *model,
+		std::initializer_list<int> size
+	);
+
+	/** Add geometry information to hexagonal lattice. */
+	static void addHexagonalGeometry(
 		Model *model,
 		std::initializer_list<int> size
 	);
