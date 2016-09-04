@@ -49,7 +49,8 @@ void FileWriter::writeModel(Model *model, string name, string path){
 
 	ss.str("");
 	ss << name << "Geometry";
-	writeGeometry(model->getGeometry(), ss.str(), path);
+	if(model->getGeometry() != NULL)
+		writeGeometry(model->getGeometry(), ss.str(), path);
 
 
 	const int NUM_DOUBLE_ATTRIBUTES = 2;

@@ -40,6 +40,9 @@ public:
 	/** Get all coordinates. */
 	const double* getCoordinates() const;
 
+	/** Translate all coordinates. */
+	void translate(std::initializer_list<double> translation);
+
 	/** Get specifier using a physical index. */
 	int getSpecifier(const Index &index, int specifier) const;
 
@@ -61,10 +64,10 @@ public:
 	int getBasisSize() const;
 private:
 	/** Number of spatial dimensions. */
-	int dimensions;
+	unsigned int dimensions;
 
 	/** Number of specifiers. */
-	int numSpecifiers;
+	unsigned int numSpecifiers;
 
 	/** Spatial dimensions. */
 	double *coordinates;
@@ -113,7 +116,7 @@ inline const int* Geometry::getSpecifiers() const{
 
 inline double Geometry::getDistance(int index1, int index2) const{
 	double distanceSquared = 0.;
-	for(int n = 0; n < dimensions; n++){
+	for(unsigned int n = 0; n < dimensions; n++){
 		double difference = coordinates[index1] - coordinates[index2];
 		distanceSquared += difference*difference;
 	}

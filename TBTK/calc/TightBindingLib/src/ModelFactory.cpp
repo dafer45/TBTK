@@ -4,6 +4,7 @@
  */
 
 #include "../include/ModelFactory.h"
+#include "../include/AmplitudeSet.h"
 
 using namespace std;
 
@@ -123,6 +124,84 @@ void ModelFactory::addHexagonalGeometry(
 			}
 		}
 	}
+}
+
+Model* ModelFactory::merge(
+	initializer_list<Model*> models)
+{
+	Model *model = new Model();
+	for(unsigned int n = 0; n < models.size(); n++){
+		Model *m = *(models.begin() + n);
+		AmplitudeSet::Iterator it = m->getAmplitudeSet()->getIterator();
+		HoppingAmplitude *ha;
+		while((ha = it.getHA())){
+			complex<double> amplitude = ha->getAmplitude();
+			Index from = ha->fromIndex;
+			Index to = ha->fromIndex;
+
+			vector<int> newFrom({(int)n});
+			for(unsigned int c = 0; c < from.size(); c++)
+				newFrom.push_back(from.at(c));
+
+			vector<int> newTo({(int)n});
+			for(unsigned int c = 0; c < to.size(); c++)
+				newTo.push_back(to.at(c));
+
+			model->addHA(HoppingAmplitude(amplitude, newTo, newFrom));
+
+			it.searchNextHA();
+		}
+	}
+
+	model->construct();
+
+	bool geometryExists = true;
+	for(unsigned int n = 0; n < models.size(); n++){
+		Model *m = *(models.begin() + n);
+		if(m->getGeometry() == NULL){
+			geometryExists = false;
+			cout << "Warning in ModelFactory::merge: Geometric data connot be merged because model " << n << " lacks geometric data.\n";
+			break;
+		}
+
+		if(m->getGeometry()->getDimensions() != 3){
+			geometryExists = false;
+			cout << "Warning in ModelFactory::merge: Geometric data connot be merged because model " << n << " has geometric of dimension " << m->getGeometry()->getDimensions() << ".\n";
+			break;
+		}
+
+		if(m->getGeometry()->getNumSpecifiers() != 0){
+			cout << "Warning in ModelFactory::merge: Specifiers ignored in model " << n << ".\n";
+		}
+	}
+
+	if(geometryExists){
+		model->createGeometry(3, 0);
+		Geometry *geometry = model->getGeometry();
+
+		for(unsigned int n = 0; n < models.size(); n++){
+			Model *m = *(models.begin() + n);
+			Geometry *g = m->getGeometry();
+			AmplitudeSet::Iterator it = m->getAmplitudeSet()->getIterator();
+			HoppingAmplitude *ha;
+			while((ha = it.getHA())){
+				Index from = ha->fromIndex;
+
+				vector<int> newFrom({(int)n});
+				for(unsigned int c = 0; c < from.size(); c++)
+					newFrom.push_back(from.at(c));
+
+				int basisIndex = m->getBasisIndex(ha->fromIndex);
+				const double *coordinates = g->getCoordinates(basisIndex);
+
+				geometry->setCoordinates(newFrom, {coordinates[0], coordinates[1], coordinates[2]});
+
+				it.searchNextHA();
+			}
+		}
+	}
+
+	return model;
 }
 
 void ModelFactory::createSquareLattice1D(

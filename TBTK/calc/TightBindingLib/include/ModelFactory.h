@@ -63,6 +63,11 @@ public:
 		Model *model,
 		std::initializer_list<int> size
 	);
+
+	/** Merge models. */
+	static Model* merge(
+		std::initializer_list<Model*> models
+	);
 private:
 	/** Helper function for createSquareLattice, for 1D. */
 	static void createSquareLattice1D(
