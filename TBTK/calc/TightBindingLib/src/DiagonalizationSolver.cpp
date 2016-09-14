@@ -126,6 +126,11 @@ void DiagonalizationSolver::solve(){
 		//Solve brop
 		zhpev_(&jobz, &uplo, &n, hamiltonian, eigenValues, eigenVectors, &n, work, rwork, &info);
 
+		if(info != 0){
+			cout << "Error in DiagonalizationSolver:solve(): Diagonalization routine zhpev exited with INFO=" << info << ". See LAPACK documentation for zhpev for further information.\n";
+			exit(1);
+		}
+
 		//Delete workspaces
 		delete [] work;
 		delete [] rwork;
