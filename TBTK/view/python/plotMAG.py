@@ -22,7 +22,7 @@ if(len(sys.argv) != 2):
 filename = sys.argv[1]
 
 file = h5py.File(filename, 'r');
-dataset = file['MAG']
+dataset = file['Magnetization']
 
 data_dimensions = dataset.shape
 physical_dimensions = len(data_dimensions) - 2 #Last two dimension for matrix elements and real/imaginary decomposition.

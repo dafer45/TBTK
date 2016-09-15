@@ -9,4 +9,4 @@ python ${TBTK_dir}/TBTK/view/python/plotMAG.py TBTKResults.h5
 
 #Plot spin-polarized local density of states for (theta,phi) = (0, 0), using
 #Gaussian smoothing with sigma = 0.02
-python ${TBTK_dir}/TBTK/view/python/plotSP_LDOS.py TBTKResults.h5 0 0 0.02
+#python ${TBTK_dir}/TBTK/view/python/plotSP_LDOS.py TBTKResults.h5 0 0 0.02

@@ -27,7 +27,7 @@ phi = float(sys.argv[3])
 sigma = float(sys.argv[4])
 
 file = h5py.File(filename, 'r');
-dataset = file['SP_LDOS']
+dataset = file['SpinPolarizedLDOS']
 
 data_dimensions = dataset.shape
 physical_dimensions = len(data_dimensions) - 3 #Three last dimensions are for energy, spin components, and real/imaginary decomposition.
