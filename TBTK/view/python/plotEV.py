@@ -15,5 +15,5 @@ if(len(sys.argv) != 2):
 	print "Error, the following arguments are needed: .hdf5-file"
 	exit(1)
 
-os.system("python " + os.environ['TBTK_dir'] + "/TBTK/view/python/plot1D.py " + sys.argv[1] + " EV")
+os.system("python " + os.environ['TBTK_dir'] + "/TBTK/view/python/plot1D.py " + sys.argv[1] + " EigenValues")
 
