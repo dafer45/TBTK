@@ -49,6 +49,12 @@ public:
 	/** Get specifier using a Hilbert space index. */
 	int getSpecifier(int index, int specifier) const;
 
+	/** Get all specifiers for given physical index. */
+	const int* getSpecifiers(const Index &index) const;
+
+	/** Get all speciferis for given Hilbert space index. */
+	const int* getSpecifiers(int index) const;
+
 	/** Get all specifiers. */
 	const int* getSpecifiers() const;
 
@@ -108,6 +114,14 @@ inline int Geometry::getSpecifier(const Index &index, int specifier) const{
 
 inline int Geometry::getSpecifier(int index, int specifier) const{
 	return specifiers[numSpecifiers*index + specifier];
+}
+
+inline const int* Geometry::getSpecifiers(const Index& index) const{
+	return &(specifiers[numSpecifiers*parentModel->getBasisIndex(index)]);
+}
+
+inline const int* Geometry::getSpecifiers(const int index) const{
+	return &(specifiers[numSpecifiers*index]);
 }
 
 inline const int* Geometry::getSpecifiers() const{
