@@ -31,7 +31,7 @@ public:
 	/** Compare this index with another index. Returns true if the indices
 	 * have the same number of subindices and all subindices are equal.
 	 * @param index Index to compare with. */
-	bool equals(Index &index);
+	bool equals(Index &index) const;
 	/** Get subindex n. */
 	int& at(unsigned int n);
 
@@ -66,7 +66,7 @@ inline void Index::print() const{
 	std::cout << "}\n";
 }
 
-inline bool Index::equals(Index &index){
+inline bool Index::equals(Index &index) const{
 	if(indices.size() == index.indices.size()){
 		for(unsigned int n = 0; n < indices.size(); n++){
 			if(indices.at(n) != index.indices.at(n))
