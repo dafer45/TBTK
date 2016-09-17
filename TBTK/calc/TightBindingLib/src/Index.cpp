@@ -1,0 +1,51 @@
+#include "../include/Index.h"
+
+#include <iostream>
+
+using namespace std;
+
+namespace TBTK{
+
+bool operator<(Index &i1, Index &i2){
+	int minNumIndices;
+	if(i1.size() < i2.size())
+		minNumIndices = i1.size();
+	else
+		minNumIndices = i2.size();
+
+	for(int n = 0; n < minNumIndices; n++){
+		if(i1.at(n) == i2.at(n))
+			continue;
+
+		if(i1.at(n) < i2.at(n))
+			return true;
+		else
+			return false;
+	}
+
+	cout << "Error in operator<(Index &i1, Index &i2): Comparison between indices of types mutually incompatible with the TreeNode structure.\n";
+	exit(1);
+}
+
+bool operator>(Index &i1, Index &i2){
+	int minNumIndices;
+	if(i1.size() < i2.size())
+		minNumIndices = i1.size();
+	else
+		minNumIndices = i2.size();
+
+	for(int n = 0; n < minNumIndices; n++){
+		if(i1.at(n) == i2.at(n))
+			continue;
+
+		if(i1.at(n) < i2.at(n))
+			return false;
+		else
+			return true;
+	}
+
+	cout << "Error in operator>(Index &i1, Index &i2): Comparison between indices of types mutually incompatible with the TreeNode structure.\n";
+	exit(1);
+}
+
+};

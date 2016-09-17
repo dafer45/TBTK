@@ -43,6 +43,14 @@ public:
 
 	/** Print index. Mainly for debuging. */
 	void print() const;
+
+	/** Comparison operator. Returns false if the TreeNode structure would
+	 *  generate a smaller Hilbert space index for i1 than for i2. */
+	friend bool operator<(const Index &i1, const Index &i2);
+
+	/** Comparison operator. Returns false if the TreeNode structure would
+	 *  generate a larger Hilbert space index for i1 than for i2. */
+	friend bool operator>(const Index &i1, const Index &i2);
 private:
 	/** Subindex container. */
 	std::vector<int> indices;
