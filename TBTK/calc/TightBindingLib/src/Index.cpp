@@ -6,7 +6,7 @@ using namespace std;
 
 namespace TBTK{
 
-bool operator<(Index &i1, Index &i2){
+bool operator<(const Index &i1, const Index &i2){
 	int minNumIndices;
 	if(i1.size() < i2.size())
 		minNumIndices = i1.size();
@@ -27,7 +27,7 @@ bool operator<(Index &i1, Index &i2){
 	exit(1);
 }
 
-bool operator>(Index &i1, Index &i2){
+bool operator>(const Index &i1, const Index &i2){
 	int minNumIndices;
 	if(i1.size() < i2.size())
 		minNumIndices = i1.size();
