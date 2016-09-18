@@ -1,3 +1,8 @@
+/** @file ArnoldiSolver.cpp
+ *
+ *  @author Kristofer Björnson
+ */
+
 /* Note: The ArnoldiSolver is based on the ARPACK driver zndrv2.f, which can
  * be found at EXAMPLES/COMPLEX/zndrv2.f in the ARPACK source tree. The main
  * loop closely resembles zndrv2.f.
@@ -288,9 +293,6 @@ void ArnoldiSolver::arnoldiLoop(){
 				//...
 			}
 
-/*			for(int n = 0; n < numEigenValues; n++)
-				cout << real(eigenValues[n]) << " ";
-			cout << "\n";*/
 			break;
 		}
 
@@ -377,10 +379,6 @@ void ArnoldiSolver::init(){
 
 	//Create vector
 	doublecomplex *valuesV = new doublecomplex[basisSize];
-/*	for(int n = 0; n < basisSize; n++){
-		valuesV[n].r = 1.0;
-		valuesV[n].i = 0.0;
-	}*/
 	vector = new SuperMatrix();
 	zCreate_Dense_Matrix(
 		vector,
