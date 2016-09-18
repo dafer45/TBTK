@@ -73,6 +73,9 @@ private:
 	/** Reomve comments from file. */
 	static void removeComments();
 
+	/** Remove initial whitespaces. */
+	static void removeInitialWhiteSpaces();
+
 	/** Read a parameter */
 	static int readParameter(std::string parameterName, std::string parentStructure);
 

@@ -36,6 +36,7 @@ Model* FileParser::readModel(string fileName){
 
 	readInput(fileName);
 	removeComments();
+	removeInitialWhiteSpaces();
 
 	readAmplitudes(model);
 
@@ -304,6 +305,54 @@ void FileParser::removeComments(){
 	ssin >> skipws;
 }
 
+void FileParser::removeInitialWhiteSpaces(){
+	stringstream sstemp;
+	ssin >> noskipws;
+
+	const int STATE_FIRST_NWS_CHARACTER_NOT_FOUND = 0;
+	const int STATE_FIRST_NWS_CHARACTER_FOUND = 1;
+	int state = STATE_FIRST_NWS_CHARACTER_NOT_FOUND;
+	char c;
+	while(ssin >> c){
+		switch(state){
+		case STATE_FIRST_NWS_CHARACTER_NOT_FOUND:
+			switch(c){
+			case ' ':
+				break;
+			case '\t':
+				break;
+			case '\n':
+				sstemp << c;
+				break;
+			default:
+				state = STATE_FIRST_NWS_CHARACTER_FOUND;
+				sstemp << c;
+				break;
+			}
+			break;
+		case STATE_FIRST_NWS_CHARACTER_FOUND:
+			switch(c){
+			case '\n':
+				state = STATE_FIRST_NWS_CHARACTER_NOT_FOUND;
+				sstemp << c;
+				break;
+			default:
+				sstemp << c;
+				break;
+			}
+			break;
+		default:
+			cout << "Error in FileParser::removeInitialWhiteSpaces(): Unknown state.\n";
+			exit(1);
+		}
+	}
+
+	ssin.str("");
+	ssin.clear();
+	ssin << sstemp.rdbuf();
+	ssin >> skipws;
+}
+
 void FileParser::readAmplitudes(Model *model){
 	AmplitudeMode amplitudeMode;
 	string line;
@@ -326,7 +375,7 @@ void FileParser::readAmplitudes(Model *model){
 	}
 
 	while(true){
-		if(ssin.peek() == '\n')
+		if(ssin.peek() == '\n' || ssin.peek() == EOF)
 			break;
 
 		HoppingAmplitude *ha = readHoppingAmplitude();
@@ -383,7 +432,7 @@ void FileParser::readGeometry(Model *model){
 	Geometry *geometry = model->getGeometry();
 
 	while(true){
-		if(ssin.peek() == '\n')
+		if(ssin.peek() == '\n' || ssin.peek() == EOF)
 			break;
 
 		vector<double> coordinates;
