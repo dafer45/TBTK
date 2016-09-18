@@ -1,3 +1,8 @@
+/** @file FileParser.cpp
+ *
+ *  @author Kristofer Björnson
+ */
+
 #include "../include/FileParser.h"
 #include "../include/Geometry.h"
 
@@ -293,7 +298,6 @@ void FileParser::removeComments(){
 		}
 	}
 
-//	cout << sstemp.rdbuf();
 	ssin.str("");
 	ssin.clear();
 	ssin << sstemp.rdbuf();
@@ -310,7 +314,6 @@ void FileParser::readAmplitudes(Model *model){
 		}
 
 		if(line.find("Amplitudes:") != string::npos){
-//			int mode = readAmplitudeMode();
 			int mode = readParameter("Mode", "Amplitude");
 			if(mode < 0 || mode > 1){
 				cout << "Error in FileParser::readAmplitudes(): Only Amplitude mode 0 and 1 supported.\n";
@@ -408,36 +411,6 @@ void FileParser::readGeometry(Model *model){
 		getline(ssin, line);
 	}
 }
-
-/*int FileParser::readAmplitudeMode(){
-	string line;
-
-	if(!getline(ssin, line)){
-		cout << "Error in FileParser::readAmplitudeMode(): Expected 'Mode' after 'Amplitudes:'.\n";
-		exit(1);
-	}
-
-	size_t position = line.find("Mode");
-	if(position == string::npos){
-		cout << "Error in FileParser::readAmplitudes(): Expected 'Mode' after 'Amplitudes:'.\n";
-		exit(1);
-	}
-	line = line.substr(position+4);
-
-	position = line.find("=");
-	if(position == string::npos){
-		cout << "Error in FileParser::readAmplitudes(): Expected '=' after";
-		exit(1);
-	}
-	line = line.substr(position+1);
-
-	stringstream ss;
-	ss << line;
-	int mode;
-	ss >> mode;
-
-	return mode;
-}*/
 
 int FileParser::readParameter(const string parameterName, const string parentStructure){
 	string line;
