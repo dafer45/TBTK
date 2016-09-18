@@ -571,7 +571,7 @@ void ChebyshevSolver::generateGreensFunction(complex<double> *greensFunction, co
 
 			for(int e = 0; e < energyResolution; e++){
 				double E = (lowerBound + (upperBound - lowerBound)*e/(double)energyResolution)/scaleFactor;
-				greensFunction[e] += coefficients[n]*i*imag((1/scaleFactor)*(-2.*i/sqrt(1+DELTA - E*E))*exp(-i*((double)n)*acos(E))/denominator);
+				greensFunction[e] -= coefficients[n]*i*imag((1/scaleFactor)*(-2.*i/sqrt(1+DELTA - E*E))*exp(-i*((double)n)*acos(E))/denominator);
 			}
 		}
 	}
@@ -614,7 +614,7 @@ void ChebyshevSolver::generateGreensFunction(complex<double> *greensFunction, co
 		else if(type == GreensFunctionType::NonPrincipal){
 			for(int n = 0; n < lookupTableNumCoefficients; n++){
 				for(int e = 0; e < lookupTableResolution; e++){
-					greensFunction[e] += coefficients[n]*i*imag(generatingFunctionLookupTable[n][e]);
+					greensFunction[e] -= coefficients[n]*i*imag(generatingFunctionLookupTable[n][e]);
 				}
 			}
 		}
