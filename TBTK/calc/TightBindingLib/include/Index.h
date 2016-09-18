@@ -32,6 +32,7 @@ public:
 	 * have the same number of subindices and all subindices are equal.
 	 * @param index Index to compare with. */
 	bool equals(const Index &index) const;
+
 	/** Get subindex n. */
 	int& at(unsigned int n);
 

@@ -387,12 +387,20 @@ void FileParser::readAmplitudes(Model *model){
 			model->addHA(*ha);
 			break;
 		case AmplitudeMode::ALL_EXCEPT_HC:
+		{
 			const Index &from = ha->fromIndex;
 			const Index &to = ha->toIndex;
 			if(from.equals(to))
 				model->addHA(*ha);
 			else
 				model->addHAAndHC(*ha);
+			break;
+		}
+		case AmplitudeMode::UNIT_CELL:
+			//To be implemented.
+			break;
+		case AmplitudeMode::UNIT_CELL_EXCEPT_HC:
+			//To be implemented.
 			break;
 		}
 

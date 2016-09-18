@@ -137,6 +137,65 @@ int TreeNode::getBasisIndex(const Index &index, unsigned int subindex){
 	}
 }
 
+Index TreeNode::getPhysicalIndex(int basisIndex){
+	if(basisIndex < 0 || basisIndex > this->basisSize){
+		cout << "Error in TreeNode::getPhysicalIndex(): Hilbert space index out of bound.";
+		exit(1);
+	}
+	vector<int> indices;
+
+	getPhysicalIndex(basisIndex, &indices);
+
+	return Index(indices);
+}
+
+void TreeNode::getPhysicalIndex(int basisIndex, vector<int> *indices){
+	if(this->basisIndex != -1)
+		return;
+
+	for(unsigned int n = 0; n < children.size(); n++){
+		int min = children.at(n).getMinIndex();
+		int max = children.at(n).getMaxIndex();
+
+		if(min == -1)
+			continue;
+
+		if(min <= basisIndex && basisIndex <= max){
+			indices->push_back(n);
+			children.at(n).getPhysicalIndex(basisIndex, indices);
+			break;
+		}
+	}
+}
+
+int TreeNode::getMinIndex(){
+	if(basisIndex != -1)
+		return basisIndex;
+
+	int min = -1;
+	for(unsigned int n = 0; n < children.size(); n++){
+		min = children.at(n).getMinIndex();
+		if(min != -1)
+			break;
+	}
+
+	return min;
+}
+
+int TreeNode::getMaxIndex(){
+	if(basisIndex != -1)
+		return basisIndex;
+
+	int max = -1;
+	for(int n = children.size()-1; n >= 0; n--){
+		max = children.at(n).getMaxIndex();
+		if(max != -1)
+			break;
+	}
+
+	return max;
+}
+
 void TreeNode::generateBasisIndices(){
 	basisSize = generateBasisIndices(0);
 }

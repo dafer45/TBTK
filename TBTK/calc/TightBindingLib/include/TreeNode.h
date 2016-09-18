@@ -45,6 +45,9 @@ public:
 	/** Get Hilbert space basis index for given physical index. */
 	int getBasisIndex(const Index &index);
 
+	/** Get physical index for given Hilbert space absis index. */
+	Index getPhysicalIndex(int basisIndex);
+
 	/** Generate Hilbert space indices. No more @link HoppingAmplitude
 	 *   HoppingAmplitudes @endlink should be added after this call. */
 	void generateBasisIndices();
@@ -101,6 +104,16 @@ private:
 	/** Get Hilbert space index for given physical index. Is called by the
 	 *  public TreeNode::getBasisIndex and is called recursively. */
 	int getBasisIndex(const Index &index, unsigned int subindex);
+
+	/** Get physical index for given Hilbert space index. Is called by the
+	 *  public TreeNode::getPhysicalIndex and is called recursively. */
+	void getPhysicalIndex(int basisIndex, std::vector<int> *indices);
+
+	/** Get minimum index on TreeNode. */
+	int getMinIndex();
+
+	/** Get max index on TreeNode. */
+	int getMaxIndex();
 
 	/** Generate Hilbert space indices. Is called by the public
 	 *  TreeNode::generateBasisIndices and is called recursively. */

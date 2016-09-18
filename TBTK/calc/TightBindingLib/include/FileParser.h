@@ -21,7 +21,12 @@ namespace TBTK{
 class FileParser{
 public:
 	/** Enum for indicating storage mode. */
-	enum class AmplitudeMode{ALL, ALL_EXCEPT_HC};
+	enum class AmplitudeMode{
+		ALL,
+		ALL_EXCEPT_HC,
+		UNIT_CELL,
+		UNIT_CELL_EXCEPT_HC
+	};
 
 	/** Write Model to file. */
 	static void writeModel(
