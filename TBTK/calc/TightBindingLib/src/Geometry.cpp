@@ -49,6 +49,27 @@ void Geometry::setCoordinates(const Index &index, std::initializer_list<double> 
 	}
 }
 
+void Geometry::setCoordinates(const Index &index, const std::vector<double> &coordinates, const std::vector<int> &specifiers){
+	int basisIndex = parentModel->getBasisIndex(index);
+	if(coordinates.size() == (unsigned int)dimensions){
+		for(unsigned int n = 0; n < dimensions; n++)
+			this->coordinates[dimensions*basisIndex + n] = *(coordinates.begin() + n);
+	}
+	else{
+		cout << "Error in Geometry::setCoordinates: Geometry requires " << dimensions << " coordinates, but " << coordinates.size() << " were supplied.\n";
+		exit(1);
+	}
+
+	if(specifiers.size() == (unsigned int)numSpecifiers){
+		for(unsigned int n = 0; n < numSpecifiers; n++)
+			this->specifiers[numSpecifiers*basisIndex + n] = *(specifiers.begin() + n);
+	}
+	else{
+		cout << "Error in Geometry::addPoint: Geometry requires " << numSpecifiers << " specfiers, but " << specifiers.size() << " were supplied.\n";
+		exit(1);
+	}
+}
+
 void Geometry::translate(initializer_list<double> translation){
 	if(translation.size() != dimensions){
 		cout << "Error in Geometry::translate: The number of dimensions of the translation vector (" << translation.size() << ") does not match the dimension of the geometry (" << dimensions << ").\n";
