@@ -32,6 +32,9 @@ public:
 	/** Index to jump to (create). */
 	Index toIndex;
 
+	/** Unit cell to jump to. */
+	Index *toUnitCell;
+
 	/** Constructor. */
 	HoppingAmplitude(Index fromIndex, Index toIndex, std::complex<double> amplitude);
 
@@ -47,6 +50,20 @@ public:
 	 *  value. The callback function has to be defined such that it returns
 	 * a value for the given indices when called at run time. */
 	HoppingAmplitude(std::complex<double> (*amplitudeCallback)(Index, Index), Index toIndex, Index fromIndex);
+
+	/** Constructor. Takes an additional parameter specifying which unit
+	 *  cell the toIndex belongs to. */
+	HoppingAmplitude(std::complex<double> amplitude, Index toIndex, Index fromIndex, Index toUnitCell);
+
+	/** Constructor. Takes a callback function rather than a paramater
+	 *  value. The callback function has to be defined such that it returns
+	 *  a value for the given indices when called at run time. Also takes
+	 *  an additional Index specifying which unit cell the toIndex belongs
+	 *  to. */
+	HoppingAmplitude(std::complex<double> (*amplitudeCallback)(Index, Index), Index toIndex, Index fromIndex, Index toUnitCell);
+
+	/** Copy constructor. */
+	HoppingAmplitude(const HoppingAmplitude &ha);
 
 	/** Get the Hermitian cojugate of the HoppingAmplitude. */
 	HoppingAmplitude getHermitianConjugate();
