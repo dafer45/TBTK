@@ -68,7 +68,13 @@ void ChebyshevSolver::setModel(Model *model){
 	model->getAmplitudeSet()->sort();	//Required for GPU evaluation
 }
 
-void ChebyshevSolver::calculateCoefficients(Index to, Index from, complex<double> *coefficients, int numCoefficients, double broadening){
+void ChebyshevSolver::calculateCoefficients(
+	Index to,
+	Index from,
+	complex<double> *coefficients,
+	int numCoefficients,
+	double broadening
+){
 	AmplitudeSet *amplitudeSet = model->getAmplitudeSet();
 
 	int fromBasisIndex = amplitudeSet->getBasisIndex(from);
@@ -197,7 +203,13 @@ void ChebyshevSolver::calculateCoefficients(Index to, Index from, complex<double
 		coefficients[n] = coefficients[n]*sinh(lambda*(1 - n/(double)numCoefficients))/sinh(lambda);
 }
 
-void ChebyshevSolver::calculateCoefficients(vector<Index> &to, Index from, complex<double> *coefficients, int numCoefficients, double broadening){
+void ChebyshevSolver::calculateCoefficients(
+	vector<Index> &to,
+	Index from,
+	complex<double> *coefficients,
+	int numCoefficients,
+	double broadening
+){
 	AmplitudeSet *amplitudeSet = model->getAmplitudeSet();
 
 	int fromBasisIndex = amplitudeSet->getBasisIndex(from);
@@ -335,7 +347,14 @@ void ChebyshevSolver::calculateCoefficients(vector<Index> &to, Index from, compl
 		coefficients[n] = coefficients[n]*sinh(lambda*(1 - n/(double)numCoefficients))/sinh(lambda);
 }
 
-void ChebyshevSolver::calculateCoefficientsWithCutoff(Index to, Index from, complex<double> *coefficients, int numCoefficients, double componentCutoff, double broadening){
+void ChebyshevSolver::calculateCoefficientsWithCutoff(
+	Index to,
+	Index from,
+	complex<double> *coefficients,
+	int numCoefficients,
+	double componentCutoff,
+	double broadening
+){
 	AmplitudeSet *amplitudeSet = model->getAmplitudeSet();
 
 	int fromBasisIndex = amplitudeSet->getBasisIndex(from);
@@ -485,7 +504,12 @@ void ChebyshevSolver::calculateCoefficientsWithCutoff(Index to, Index from, comp
 		coefficients[n] = coefficients[n]*sinh(lambda*(1 - n/(double)numCoefficients))/sinh(lambda);
 }
 
-void ChebyshevSolver::generateLookupTable(int numCoefficients, int energyResolution, double lowerBound, double upperBound){
+void ChebyshevSolver::generateLookupTable(
+	int numCoefficients,
+	int energyResolution,
+	double lowerBound,
+	double upperBound
+){
 	if(isTalkative){
 		cout << "Generating lookup table\n";
 		cout << "\tNum coefficients: " << numCoefficients << "\n";
@@ -522,7 +546,15 @@ void ChebyshevSolver::generateLookupTable(int numCoefficients, int energyResolut
 	}
 }
 
-void ChebyshevSolver::generateGreensFunction(complex<double> *greensFunction, complex<double> *coefficients, int numCoefficients, int energyResolution, double lowerBound, double upperBound, GreensFunctionType type){
+void ChebyshevSolver::generateGreensFunction(
+	complex<double> *greensFunction,
+	complex<double> *coefficients,
+	int numCoefficients,
+	int energyResolution,
+	double lowerBound,
+	double upperBound,
+	GreensFunctionType type
+){
 	for(int e = 0; e < energyResolution; e++)
 		greensFunction[e] = 0.;
 
@@ -581,7 +613,11 @@ void ChebyshevSolver::generateGreensFunction(complex<double> *greensFunction, co
 	}
 }
 
-void ChebyshevSolver::generateGreensFunction(complex<double> *greensFunction, complex<double> *coefficients, GreensFunctionType type){
+void ChebyshevSolver::generateGreensFunction(
+	complex<double> *greensFunction,
+	complex<double> *coefficients,
+	GreensFunctionType type
+){
 	if(generatingFunctionLookupTable == NULL){
 		cout << "Error in ChebyshevSolver::generateGreensFunction: Lookup table has not been generated.";
 		exit(1);
@@ -621,7 +657,12 @@ void ChebyshevSolver::generateGreensFunction(complex<double> *greensFunction, co
 	}
 }
 
-complex<double> ChebyshevSolver::getMonolopoulosABCDamping(double distanceToBoundary, double boundarySize, double e, double c){
+complex<double> ChebyshevSolver::getMonolopoulosABCDamping(
+	double distanceToBoundary,
+	double boundarySize,
+	double e,
+	double c
+){
 	complex<double> gamma = 0.;
 
 	if(distanceToBoundary < 0){

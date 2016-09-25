@@ -61,7 +61,10 @@ private:
 	static void write(const Index &index);
 
 	/** Write coordinates. Example: (0.1, 0.2, 0.3). */
-	static void writeCoordinates(const double *coordinates, int numCoordinates);
+	static void writeCoordinates(
+		const double *coordinates,
+		int numCoordinates
+	);
 
 	/** Write specifiers. Example: <1 3>. */
 	static void writeSpecifiers(const int *specifiers, int numSpecifiers);
@@ -82,7 +85,10 @@ private:
 	static void removeInitialWhiteSpaces();
 
 	/** Read a parameter */
-	static int readParameter(std::string parameterName, std::string parentStructure);
+	static int readParameter(
+		std::string parameterName,
+		std::string parentStructure
+	);
 
 	/** Read HoppingAmplitudes. */
 	static void readAmplitudes(Model *model);
@@ -97,10 +103,16 @@ private:
 	static Index* readIndex();
 
 	/** Read coordinates. Example (0.1, 0.2, 0.3). */
-	static void readCoordinates(std::vector<double> *coordinates, int dimensions);
+	static void readCoordinates(
+		std::vector<double> *coordinates,
+		int dimensions
+	);
 
 	/** Read specifiers. Example: <1 3>. */
-	static void readSpecifiers(std::vector<int> *specifiers, int numSpecifiers);
+	static void readSpecifiers(
+		std::vector<int> *specifiers,
+		int numSpecifiers
+	);
 
 	/** Read a complex<double>. */
 	static bool readComplex(std::complex<double> *c);

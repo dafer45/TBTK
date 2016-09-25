@@ -173,7 +173,10 @@ double UnitHandler::convertMassNtD(double mass, MassUnit unit){
 	return massInDefaultBaseUnits*getMassConversionFactor(unit);
 }
 
-double UnitHandler::convertMagneticFieldDtB(double field, MagneticFieldUnit unit){
+double UnitHandler::convertMagneticFieldDtB(
+	double field,
+	MagneticFieldUnit unit
+){
 	double magneticFieldInDefaultBaseUnits = field/getMagneticFieldConversionFactor(unit);
 	double cfE = getEnergyConversionFactor();
 	double cfT = getTimeConversionFactor();
@@ -182,7 +185,10 @@ double UnitHandler::convertMagneticFieldDtB(double field, MagneticFieldUnit unit
 	return magneticFieldInDefaultBaseUnits*cfE*cfT/(cfC*cfL*cfL);
 }
 
-double UnitHandler::convertMagneticFieldBtD(double field, MagneticFieldUnit unit){
+double UnitHandler::convertMagneticFieldBtD(
+	double field,
+	MagneticFieldUnit unit
+){
 	double cfE = getEnergyConversionFactor();
 	double cfT = getTimeConversionFactor();
 	double cfC = getChargeConversionFactor();
@@ -191,7 +197,10 @@ double UnitHandler::convertMagneticFieldBtD(double field, MagneticFieldUnit unit
 	return magneticFieldInDefaultBaseUnits*getMagneticFieldConversionFactor(unit);
 }
 
-double UnitHandler::convertMagneticFieldDtN(double field, MagneticFieldUnit unit){
+double UnitHandler::convertMagneticFieldDtN(
+	double field,
+	MagneticFieldUnit unit
+){
 	double magneticFieldInDefaultBaseUnits = field/getMagneticFieldConversionFactor(unit);
 	double cfE = getEnergyConversionFactor()/energyScale;
 	double cfT = getTimeConversionFactor()/timeScale;
@@ -200,7 +209,10 @@ double UnitHandler::convertMagneticFieldDtN(double field, MagneticFieldUnit unit
 	return magneticFieldInDefaultBaseUnits*cfE*cfT/(cfC*cfL*cfL);
 }
 
-double UnitHandler::convertMagneticFieldNtD(double field, MagneticFieldUnit unit){
+double UnitHandler::convertMagneticFieldNtD(
+	double field,
+	MagneticFieldUnit unit
+){
 	double cfE = getEnergyConversionFactor()/energyScale;
 	double cfT = getTimeConversionFactor()/timeScale;
 	double cfC = getChargeConversionFactor()/chargeScale;

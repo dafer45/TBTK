@@ -23,10 +23,18 @@ public:
 	~Geometry();
 
 	/** Add a coordinate (and specifiers) for an index. */
-	void setCoordinates(const Index &index, std::initializer_list<double> coordinates, std::initializer_list<int> specifiers = {});
+	void setCoordinates(
+		const Index &index,
+		std::initializer_list<double> coordinates,
+		std::initializer_list<int> specifiers = {}
+	);
 
 	/** Add a coordinate (and specifiers) for an index. */
-	void setCoordinates(const Index &index, const std::vector<double> &coordinates, const std::vector<int> &specifiers = {});
+	void setCoordinates(
+		const Index &index,
+		const std::vector<double> &coordinates,
+		const std::vector<int> &specifiers = {}
+	);
 
 	/** Get dimensions. */
 	int getDimensions() const;

@@ -11,14 +11,16 @@ using namespace std;
 
 namespace TBTK{
 
-CPropertyExtractor::CPropertyExtractor(ChebyshevSolver *cSolver,
-					int numCoefficients,
-					int energyResolution,
-					bool useGPUToCalculateCoefficients,
-					bool useGPUToGenerateGreensFunctions,
-					bool useLookupTable,
-					double lowerBound,
-					double upperBound){
+CPropertyExtractor::CPropertyExtractor(
+	ChebyshevSolver *cSolver,
+	int numCoefficients,
+	int energyResolution,
+	bool useGPUToCalculateCoefficients,
+	bool useGPUToGenerateGreensFunctions,
+	bool useLookupTable,
+	double lowerBound,
+	double upperBound
+){
 	this->cSolver = cSolver;
 	this->numCoefficients = numCoefficients;
 	this->energyResolution = energyResolution;
@@ -44,14 +46,22 @@ CPropertyExtractor::~CPropertyExtractor(){
 		cSolver->destroyLookupTableGPU();
 }
 
-complex<double>* CPropertyExtractor::calculateGreensFunction(Index to, Index from, ChebyshevSolver::GreensFunctionType type){
+complex<double>* CPropertyExtractor::calculateGreensFunction(
+	Index to,
+	Index from,
+	ChebyshevSolver::GreensFunctionType type
+){
 	vector<Index> toIndices;
 	toIndices.push_back(to);
 
 	return calculateGreensFunctions(toIndices, from, type);
 }
 
-complex<double>* CPropertyExtractor::calculateGreensFunctions(vector<Index> &to, Index from, ChebyshevSolver::GreensFunctionType type){
+complex<double>* CPropertyExtractor::calculateGreensFunctions(
+	vector<Index> &to,
+	Index from,
+	ChebyshevSolver::GreensFunctionType type
+){
 	complex<double> *coefficients = new complex<double>[numCoefficients*to.size()];
 
 	if(useGPUToCalculateCoefficients){
@@ -100,7 +110,10 @@ complex<double>* CPropertyExtractor::calculateGreensFunctions(vector<Index> &to,
 	return greensFunction;
 }
 
-complex<double> CPropertyExtractor::calculateExpectationValue(Index to, Index from){
+complex<double> CPropertyExtractor::calculateExpectationValue(
+	Index to,
+	Index from
+){
 	const complex<double> i(0, 1);
 
 	complex<double> expectationValue = 0.;
@@ -150,7 +163,10 @@ complex<double> CPropertyExtractor::calculateExpectationValue(Index to, Index fr
 	return density;
 }*/
 
-Property::Density* CPropertyExtractor::calculateDensity(Index pattern, Index ranges){
+Property::Density* CPropertyExtractor::calculateDensity(
+	Index pattern,
+	Index ranges
+){
 	ensureCompliantRanges(pattern, ranges);
 
 	int lDimensions = 0;
@@ -201,7 +217,10 @@ Property::Density* CPropertyExtractor::calculateDensity(Index pattern, Index ran
 	return mag;
 }*/
 
-Property::Magnetization* CPropertyExtractor::calculateMagnetization(Index pattern, Index ranges){
+Property::Magnetization* CPropertyExtractor::calculateMagnetization(
+	Index pattern,
+	Index ranges
+){
 	hint = new int[1];
 	((int*)hint)[0] = -1;
 	for(unsigned int n = 0; n < pattern.size(); n++){
@@ -303,7 +322,10 @@ Property::LDOS* CPropertyExtractor::calculateLDOS(Index pattern, Index ranges){
 	return sp_ldos;
 }*/
 
-Property::SpinPolarizedLDOS* CPropertyExtractor::calculateSpinPolarizedLDOS(Index pattern, Index ranges){
+Property::SpinPolarizedLDOS* CPropertyExtractor::calculateSpinPolarizedLDOS(
+	Index pattern,
+	Index ranges
+){
 	hint = new int[1];
 	((int*)hint)[0] = -1;
 	for(unsigned int n = 0; n < pattern.size(); n++){
@@ -334,7 +356,12 @@ Property::SpinPolarizedLDOS* CPropertyExtractor::calculateSpinPolarizedLDOS(Inde
 	return spinPolarizedLDOS;
 }
 
-void CPropertyExtractor::calculateDensityCallback(CPropertyExtractor *cb_this, void *density, const Index &index, int offset){
+void CPropertyExtractor::calculateDensityCallback(
+	CPropertyExtractor *cb_this,
+	void *density,
+	const Index &index,
+	int offset
+){
 	complex<double> *greensFunction = cb_this->calculateGreensFunction(index, index, ChebyshevSolver::GreensFunctionType::NonPrincipal);
 	Model::Statistics statistics = cb_this->cSolver->getModel()->getStatistics();
 
@@ -358,7 +385,12 @@ void CPropertyExtractor::calculateDensityCallback(CPropertyExtractor *cb_this, v
 	delete [] greensFunction;
 }
 
-void CPropertyExtractor::calculateMAGCallback(CPropertyExtractor *cb_this, void *mag, const Index &index, int offset){
+void CPropertyExtractor::calculateMAGCallback(
+	CPropertyExtractor *cb_this,
+	void *mag,
+	const Index &index,
+	int offset
+){
 	int spinIndex = ((int*)(cb_this->hint))[0];
 	Index to(index);
 	Index from(index);
@@ -391,7 +423,12 @@ void CPropertyExtractor::calculateMAGCallback(CPropertyExtractor *cb_this, void 
 	}
 }
 
-void CPropertyExtractor::calculateLDOSCallback(CPropertyExtractor *cb_this, void *ldos, const Index &index, int offset){
+void CPropertyExtractor::calculateLDOSCallback(
+	CPropertyExtractor *cb_this,
+	void *ldos,
+	const Index &index,
+	int offset
+){
 	complex<double> *greensFunction = cb_this->calculateGreensFunction(index, index, ChebyshevSolver::GreensFunctionType::NonPrincipal);
 
 	const double dE = (cb_this->upperBound - cb_this->lowerBound)/cb_this->energyResolution;
@@ -401,7 +438,12 @@ void CPropertyExtractor::calculateLDOSCallback(CPropertyExtractor *cb_this, void
 	delete [] greensFunction;
 }
 
-void CPropertyExtractor::calculateSP_LDOSCallback(CPropertyExtractor *cb_this, void *sp_ldos, const Index &index, int offset){
+void CPropertyExtractor::calculateSP_LDOSCallback(
+	CPropertyExtractor *cb_this,
+	void *sp_ldos,
+	const Index &index,
+	int offset
+){
 	int spinIndex = ((int*)(cb_this->hint))[0];
 	Index to(index);
 	Index from(index);
@@ -420,8 +462,19 @@ void CPropertyExtractor::calculateSP_LDOSCallback(CPropertyExtractor *cb_this, v
 	}
 }
 
-void CPropertyExtractor::calculate(void (*callback)(CPropertyExtractor *cb_this, void *memory, const Index &index, int offset),
-					void *memory, Index pattern, const Index &ranges, int currentOffset, int offsetMultiplier){
+void CPropertyExtractor::calculate(
+	void (*callback)(
+		CPropertyExtractor *cb_this,
+		void *memory,
+		const Index &index,
+		int offset
+	),
+	void *memory,
+	Index pattern,
+	const Index &ranges,
+	int currentOffset,
+	int offsetMultiplier
+){
 	int currentSubindex = pattern.size()-1;
 	for(; currentSubindex >= 0; currentSubindex--){
 		if(pattern.at(currentSubindex) < 0)
@@ -453,14 +506,22 @@ void CPropertyExtractor::calculate(void (*callback)(CPropertyExtractor *cb_this,
 	}
 }
 
-void CPropertyExtractor::ensureCompliantRanges(const Index &pattern, Index &ranges){
+void CPropertyExtractor::ensureCompliantRanges(
+	const Index &pattern,
+	Index &ranges
+){
 	for(unsigned int n = 0; n < pattern.size(); n++){
 		if(pattern.at(n) >= 0)
 			ranges.at(n) = 1;
 	}
 }
 
-void CPropertyExtractor::getLoopRanges(const Index &pattern, const Index &ranges, int *lDimensions, int **lRanges){
+void CPropertyExtractor::getLoopRanges(
+	const Index &pattern,
+	const Index &ranges,
+	int *lDimensions,
+	int **lRanges
+){
 	*lDimensions = 0;
 	for(unsigned int n = 0; n < ranges.size(); n++){
 		if(pattern.at(n) < IDX_SUM_ALL)

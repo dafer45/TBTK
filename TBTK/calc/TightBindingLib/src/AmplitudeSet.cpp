@@ -159,7 +159,12 @@ HoppingAmplitude* AmplitudeSet::Iterator::getHA(){
 	return it->getHA();
 }
 
-void AmplitudeSet::tabulate(complex<double> **amplitudes, int **table, int *numHoppingAmplitudes, int *maxIndexSize){
+void AmplitudeSet::tabulate(
+	complex<double> **amplitudes,
+	int **table,
+	int *numHoppingAmplitudes,
+	int *maxIndexSize
+){
 	Iterator it = getIterator();
 	HoppingAmplitude *ha;
 	(*numHoppingAmplitudes) = 0;

@@ -22,7 +22,13 @@ namespace Property{
 class SpinPolarizedLDOS{
 public:
 	/** Constructor. */
-	SpinPolarizedLDOS(int dimensions, const int *ranges, double lowerBound, double upperBound, int resolution);
+	SpinPolarizedLDOS(
+		int dimensions,
+		const int *ranges,
+		double lowerBound,
+		double upperBound,
+		int resolution
+	);
 
 	/** Destructor. */
 	~SpinPolarizedLDOS();

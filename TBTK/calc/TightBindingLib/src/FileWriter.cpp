@@ -68,7 +68,11 @@ void FileWriter::writeModel(Model *model, string name, string path){
 	writeAttributes(intAttributes, intAttributeNames, NUM_INT_ATTRIBUTES, ss.str());
 }
 
-void FileWriter::writeAmplitudeSet(AmplitudeSet *amplitudeSet, string name, string path){
+void FileWriter::writeAmplitudeSet(
+	AmplitudeSet *amplitudeSet,
+	string name,
+	string path
+){
 	init();
 
 	complex<double> *amplitudes;
@@ -133,7 +137,11 @@ void FileWriter::writeAmplitudeSet(AmplitudeSet *amplitudeSet, string name, stri
 	delete [] indices;
 }
 
-void FileWriter::writeGeometry(const Geometry *geometry, string name, string path){
+void FileWriter::writeGeometry(
+	const Geometry *geometry,
+	string name,
+	string path
+){
 	init();
 
 	int dimensions = geometry->getDimensions();
@@ -239,7 +247,11 @@ void FileWriter::writeGeometry(const Geometry *geometry, string name, string pat
 	}
 }*/
 
-void FileWriter::writeEigenValues(const Property::EigenValues *ev, string name, string path){
+void FileWriter::writeEigenValues(
+	const Property::EigenValues *ev,
+	string name,
+	string path
+){
 	init();
 
 	const int RANK = 1;
@@ -418,7 +430,11 @@ void FileWriter::writeDOS(const Property::DOS *dos, string name, string path){
 	}
 }*/
 
-void FileWriter::writeDensity(const Property::Density *density, string name, string path){
+void FileWriter::writeDensity(
+	const Property::Density *density,
+	string name,
+	string path
+){
 	init();
 
 	int rank = density->getDimensions();
@@ -512,7 +528,11 @@ void FileWriter::writeDensity(const Property::Density *density, string name, str
 	delete [] mag_decomposed;
 }*/
 
-void FileWriter::writeMagnetization(const Property::Magnetization *magnetization, string name, string path){
+void FileWriter::writeMagnetization(
+	const Property::Magnetization *magnetization,
+	string name,
+	string path
+){
 	init();
 
 	int rank = magnetization->getDimensions();
@@ -621,7 +641,11 @@ void FileWriter::writeMagnetization(const Property::Magnetization *magnetization
 	}
 }*/
 
-void FileWriter::writeLDOS(const Property::LDOS *ldos, string name, string path){
+void FileWriter::writeLDOS(
+	const Property::LDOS *ldos,
+	string name,
+	string path
+){
 	init();
 
 	int rank = ldos->getDimensions();
@@ -746,7 +770,11 @@ void FileWriter::writeLDOS(const Property::LDOS *ldos, string name, string path)
 	delete [] sp_ldos_decomposed;
 }*/
 
-void FileWriter::writeSpinPolarizedLDOS(const Property::SpinPolarizedLDOS *spinPolarizedLDOS, string name, string path){
+void FileWriter::writeSpinPolarizedLDOS(
+	const Property::SpinPolarizedLDOS *spinPolarizedLDOS,
+	string name,
+	string path
+){
 	init();
 
 	int rank = spinPolarizedLDOS->getDimensions();
@@ -820,7 +848,13 @@ void FileWriter::writeSpinPolarizedLDOS(const Property::SpinPolarizedLDOS *spinP
 	delete [] sp_ldos_decomposed;
 }
 
-void FileWriter::write(const double *data, int rank, const int *dims, string name, string path){
+void FileWriter::write(
+	const double *data,
+	int rank,
+	const int *dims,
+	string name,
+	string path
+){
 	init();
 
 	hsize_t data_dims[rank];
@@ -859,7 +893,13 @@ void FileWriter::write(const double *data, int rank, const int *dims, string nam
 	}
 }
 
-void FileWriter::writeAttributes(const int *attributes, const string *attribute_names, int num, string name, string path){
+void FileWriter::writeAttributes(
+	const int *attributes,
+	const string *attribute_names,
+	int num,
+	string name,
+	string path
+){
 	init();
 
 	const int ATTRIBUTES_RANK = 1;
@@ -902,7 +942,13 @@ void FileWriter::writeAttributes(const int *attributes, const string *attribute_
 	}
 }
 
-void FileWriter::writeAttributes(const double *attributes, const string *attribute_names, int num, string name, string path){
+void FileWriter::writeAttributes(
+	const double *attributes,
+	const string *attribute_names,
+	int num,
+	string name,
+	string path
+){
 	init();
 
 	const int ATTRIBUTES_RANK = 1;

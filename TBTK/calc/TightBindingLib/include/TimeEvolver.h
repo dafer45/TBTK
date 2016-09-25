@@ -98,7 +98,12 @@ public:
 
 	class DecayHandler{
 	public:
-		virtual void decay(TimeEvolver *timeEvolver, double *occupancy, double *eigenValues, std::complex<double> **eigenVectorsMap) = 0;
+		virtual void decay(
+			TimeEvolver *timeEvolver,
+			double *occupancy,
+			double *eigenValues,
+			std::complex<double> **eigenVectorsMap
+		) = 0;
 	private:
 	};
 
@@ -212,7 +217,9 @@ private:
 	void calculateOrthogonalityError();
 };
 
-inline void TimeEvolver::setCallback(bool (*callback)(TimeEvolver *timeEvolver)){
+inline void TimeEvolver::setCallback(
+	bool (*callback)(TimeEvolver *timeEvolver)
+){
 	this->callback = callback;
 }
 
@@ -252,7 +259,10 @@ inline double TimeEvolver::getOccupancy(int state){
 	return occupancy[state];
 }
 
-inline const std::complex<double> TimeEvolver::getAmplitude(int state, const Index &index){
+inline const std::complex<double> TimeEvolver::getAmplitude(
+	int state,
+	const Index &index
+){
 	return eigenVectorsMap[state][model->getBasisIndex(index)];
 }
 
@@ -272,7 +282,9 @@ inline int TimeEvolver::getCurrentTimeStep(){
 	return currentTimeStep;
 }
 
-inline void TimeEvolver::setOrthogonalityCheckInterval(int orthogonalityCheckInterval){
+inline void TimeEvolver::setOrthogonalityCheckInterval(
+	int orthogonalityCheckInterval
+){
 	this->orthogonalityCheckInterval = orthogonalityCheckInterval;
 }
 

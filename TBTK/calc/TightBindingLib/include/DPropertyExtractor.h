@@ -31,10 +31,18 @@ public:
 	~DPropertyExtractor();
 
 	/** Legacy. */
-	void saveEigenValues(std::string path = "./", std::string filename = "EV.dat");
+	void saveEigenValues(
+		std::string path = "./",
+		std::string filename = "EV.dat"
+	);
 
 	/** Experimental. Extracts a tabulated version of the AmplitudeSet. */
-	void getTabulatedAmplitudeSet(std::complex<double> **amplitudes, int **indices, int *numHoppingAmplitudes, int *maxIndexSize);
+	void getTabulatedAmplitudeSet(
+		std::complex<double> **amplitudes,
+		int **indices,
+		int *numHoppingAmplitudes,
+		int *maxIndexSize
+	);
 
 	/** Get eigenvalues. */
 //	double* getEigenValues();
@@ -56,7 +64,11 @@ public:
 	 *  @param resolution Number of points used between l_lim and u_lim.
 	 *  @return An array with size resolution. */
 //	double* calculateDOS(double l_lim, double u_lim, int resolution);
-	Property::DOS* calculateDOS(double l_lim, double u_lim, int resolution);
+	Property::DOS* calculateDOS(
+		double l_lim,
+		double u_lim,
+		int resolution
+	);
 
 	/** Calculate density.
 	 *
@@ -121,7 +133,10 @@ public:
 	 */
 //	double* calculateMAG(Index pattern, Index ranges);
 //	std::complex<double>* calculateMAG(Index pattern, Index ranges);
-	Property::Magnetization* calculateMagnetization(Index pattern, Index ranges);
+	Property::Magnetization* calculateMagnetization(
+		Index pattern,
+		Index ranges
+	);
 
 	/** Calculate spin-polarized local density of states.
 	 *
@@ -165,7 +180,13 @@ public:
 	 */
 //	double* calculateSP_LDOS(Index pattern, Index ranges, double u_lim, double l_lim, int resolution);
 //	std::complex<double>* calculateSP_LDOS(Index pattern, Index ranges, double l_lim, double u_lim, int resolution);
-	Property::SpinPolarizedLDOS* calculateSpinPolarizedLDOS(Index pattern, Index ranges, double l_lim, double u_lim, int resolution);
+	Property::SpinPolarizedLDOS* calculateSpinPolarizedLDOS(
+		Index pattern,
+		Index ranges,
+		double l_lim,
+		double u_lim,
+		int resolution
+	);
 
 /*	void save(int *memory, int size, int columns, std::string filename, std::string path = "./");
 	void save(double *memory, int size, int columns, std::string filename, std::string path = "./");
@@ -176,18 +197,46 @@ public:
 private:
 	/** Loops over range indices and calls the appropriate callback
 	 *  function to calculate the correct quantity. */
-	void calculate(void (*callback)(DPropertyExtractor *cb_this, void *memory, const Index &index, int offset),
-			void *memory, Index pattern, const Index &ranges, int currentOffset, int offsetMultiplier);
+	void calculate(
+		void (*callback)(
+			DPropertyExtractor *cb_this,
+			void *memory,
+			const Index &index,
+			int offset
+		),
+		void *memory,
+		Index pattern,
+		const Index &ranges,
+		int currentOffset,
+		int offsetMultiplier
+	);
 
 	/** Callback for calculating density. Used by calculateDensity. */
-	static void calculateDensityCallback(DPropertyExtractor *cb_this, void *density, const Index &index, int offset);
+	static void calculateDensityCallback(
+		DPropertyExtractor *cb_this,
+		void *density,
+		const Index &index,
+		int offset
+	);
+
 	/** Callback for calculating magnetization. Used by calculateMAG. */
-	static void calculateMAGCallback(DPropertyExtractor *cb_this, void *mag, const Index &index, int offset);
+	static void calculateMAGCallback(
+		DPropertyExtractor *cb_this,
+		void *mag,
+		const Index &index,
+		int offset
+	);
+
 	/** Callback for calculating spin-polarized local density of states.
 	 *  Used by calculateSP_LDOS. */
-	static void calculateSP_LDOSCallback(DPropertyExtractor *cb_this, void *sp_ldos, const Index &index, int offset);
+	static void calculateSP_LDOSCallback(
+		DPropertyExtractor *cb_this,
+		void *sp_ldos,
+		const Index &index,
+		int offset
+	);
 
-	/** DiagonalizationSolver to work on. */	
+	/** DiagonalizationSolver to work on. */
 	DiagonalizationSolver *dSolver;
 
 	/** Hint used to pass information between calculate[Property] and
@@ -199,14 +248,22 @@ private:
 	void ensureCompliantRanges(const Index &pattern, Index &ranges);
 
 	/** Extract ranges for loop indices. */
-	void getLoopRanges(const Index &pattern, const Index &ranges, int *lDimensions, int **lRanges);
+	void getLoopRanges(
+		const Index &pattern,
+		const Index &ranges,
+		int *lDimensions,
+		int **lRanges
+	);
 };
 
 inline double DPropertyExtractor::getEigenValue(int state){
 	return dSolver->getEigenValue(state);
 }
 
-inline const std::complex<double> DPropertyExtractor::getAmplitude(int state, const Index &index){
+inline const std::complex<double> DPropertyExtractor::getAmplitude(
+	int state,
+	const Index &index
+){
 	return dSolver->getAmplitude(state, index);
 }
 

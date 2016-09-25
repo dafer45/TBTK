@@ -10,12 +10,24 @@ using namespace std;
 
 namespace TBTK{
 
-void ChebyshevSolver::calculateCoefficientsGPU(Index to, Index from, complex<double> *coefficients, int numCoefficients, double broadening){
+void ChebyshevSolver::calculateCoefficientsGPU(
+	Index to,
+	Index from,
+	complex<double> *coefficients,
+	int numCoefficients,
+	double broadening
+){
 	cout << "Error in ChebyshevSolver::calculateCoefficientsGPU: GPU Not supported.\n";
 	exit(1);
 }
 
-void ChebyshevSolver::calculateCoefficientsGPU(vector<Index> &to, Index from, complex<double> *coefficients, int numCoefficients, double broadening){
+void ChebyshevSolver::calculateCoefficientsGPU(
+	vector<Index> &to,
+	Index from,
+	complex<double> *coefficients,
+	int numCoefficients,
+	double broadening
+){
 	cout << "Error in ChebyshevSolver::calculateCoefficientsGPU: GPU Not supported.\n";
 	exit(1);
 }
@@ -30,7 +42,11 @@ void ChebyshevSolver::destroyLookupTableGPU(){
 	exit(1);
 }
 
-void ChebyshevSolver::generateGreensFunctionGPU(complex<double> *greensFunction, complex<double> *coefficients, ChebyshevSolver::GreensFunctionType type){
+void ChebyshevSolver::generateGreensFunctionGPU(
+	complex<double> *greensFunction,
+	complex<double> *coefficients,
+	ChebyshevSolver::GreensFunctionType type
+){
 	cout << "Error in ChebyshevSolver::generateGreensFunctionGPU: GPU Not supported.\n";
 	exit(1);
 }

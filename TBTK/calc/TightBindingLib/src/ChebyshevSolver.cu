@@ -28,24 +28,38 @@ void cusparseSafe(cusparseStatus_t type, string message){
 }
 
 __global__
-void extractCoefficients(cuDoubleComplex *jResult,
-				int basisSize,
-				cuDoubleComplex *coefficients,
-				int currentCoefficient,
-				int *coefficientMap,
-				int numCoefficients){
+void extractCoefficients(
+	cuDoubleComplex *jResult,
+	int basisSize,
+	cuDoubleComplex *coefficients,
+	int currentCoefficient,
+	int *coefficientMap,
+	int numCoefficients
+){
 	int to = blockIdx.x*blockDim.x + threadIdx.x;
 	if(to < basisSize && coefficientMap[to] != -1)
 		coefficients[coefficientMap[to]*numCoefficients + currentCoefficient] = jResult[to];
 }
 
-void ChebyshevSolver::calculateCoefficientsGPU(Index to, Index from, complex<double> *coefficients, int numCoefficients, double broadening){
+void ChebyshevSolver::calculateCoefficientsGPU(
+	Index to,
+	Index from,
+	complex<double> *coefficients,
+	int numCoefficients,
+	double broadening
+){
 	vector<Index> toVector;
 	toVector.push_back(to);
 	calculateCoefficientsGPU(toVector, from, coefficients, numCoefficients, broadening);
 }
 
-void ChebyshevSolver::calculateCoefficientsGPU(vector<Index> &to, Index from, complex<double> *coefficients, int numCoefficients, double broadening){
+void ChebyshevSolver::calculateCoefficientsGPU(
+	vector<Index> &to,
+	Index from,
+	complex<double> *coefficients,
+	int numCoefficients,
+	double broadening
+){
 	int device = allocateDeviceGPU();
 
 	if(cudaSetDevice(device) != cudaSuccess)
@@ -290,11 +304,13 @@ void ChebyshevSolver::calculateCoefficientsGPU(vector<Index> &to, Index from, co
 }
 
 __global__
-void calculateGreensFunction(cuDoubleComplex *greensFunction,
-				cuDoubleComplex *coefficients,
-				cuDoubleComplex *lookupTable,
-				int numCoefficients,
-				int energyResolution){
+void calculateGreensFunction(
+	cuDoubleComplex *greensFunction,
+	cuDoubleComplex *coefficients,
+	cuDoubleComplex *lookupTable,
+	int numCoefficients,
+	int energyResolution
+){
 	int e = blockIdx.x*blockDim.x + threadIdx.x;
 	if(e < energyResolution)
 		for(int n = 0; n < numCoefficients; n++)
@@ -364,7 +380,11 @@ void ChebyshevSolver::destroyLookupTableGPU(){
 	generatingFunctionLookupTable_device = NULL;
 }
 
-void ChebyshevSolver::generateGreensFunctionGPU(complex<double> *greensFunction, complex<double> *coefficients, GreensFunctionType type){
+void ChebyshevSolver::generateGreensFunctionGPU(
+	complex<double> *greensFunction,
+	complex<double> *coefficients,
+	GreensFunctionType type
+){
 	int device = allocateDeviceGPU();
 
 	if(cudaSetDevice(device) != cudaSuccess)

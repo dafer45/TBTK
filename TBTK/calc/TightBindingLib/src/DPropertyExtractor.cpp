@@ -187,8 +187,18 @@ void DPropertyExtractor::saveEigenValues(string path, string filename){
 	fout.close();
 }
 
-void DPropertyExtractor::getTabulatedAmplitudeSet(complex<double> **amplitudes, int **indices, int *numHoppingAmplitudes, int *maxIndexSize){
-	dSolver->getModel()->getAmplitudeSet()->tabulate(amplitudes, indices, numHoppingAmplitudes, maxIndexSize);
+void DPropertyExtractor::getTabulatedAmplitudeSet(
+	complex<double> **amplitudes,
+	int **indices,
+	int *numHoppingAmplitudes,
+	int *maxIndexSize
+){
+	dSolver->getModel()->getAmplitudeSet()->tabulate(
+		amplitudes,
+		indices,
+		numHoppingAmplitudes,
+		maxIndexSize
+	);
 }
 
 /*double* DPropertyExtractor::getEigenValues(){
@@ -225,7 +235,11 @@ Property::EigenValues* DPropertyExtractor::getEigenValues(){
 	return dos;
 }*/
 
-Property::DOS* DPropertyExtractor::calculateDOS(double lowerBound, double upperBound, int resolution){
+Property::DOS* DPropertyExtractor::calculateDOS(
+	double lowerBound,
+	double upperBound,
+	int resolution
+){
 	const double *ev = dSolver->getEigenValues();
 
 	Property::DOS *dos = new Property::DOS(lowerBound, upperBound, resolution);
@@ -258,7 +272,10 @@ Property::DOS* DPropertyExtractor::calculateDOS(double lowerBound, double upperB
 	return density;
 }*/
 
-Property::Density* DPropertyExtractor::calculateDensity(Index pattern, Index ranges){
+Property::Density* DPropertyExtractor::calculateDensity(
+	Index pattern,
+	Index ranges
+){
 	ensureCompliantRanges(pattern, ranges);
 
 	int lDimensions;
@@ -308,7 +325,10 @@ Property::Density* DPropertyExtractor::calculateDensity(Index pattern, Index ran
 	return mag;
 }*/
 
-Property::Magnetization* DPropertyExtractor::calculateMagnetization(Index pattern, Index ranges){
+Property::Magnetization* DPropertyExtractor::calculateMagnetization(
+	Index pattern,
+	Index ranges
+){
 	hint = new int[1];
 	((int*)hint)[0] = -1;
 	for(unsigned int n = 0; n < pattern.size(); n++){
@@ -391,7 +411,13 @@ Property::Magnetization* DPropertyExtractor::calculateMagnetization(Index patter
 	return sp_ldos;
 }*/
 
-Property::SpinPolarizedLDOS* DPropertyExtractor::calculateSpinPolarizedLDOS(Index pattern, Index ranges, double lowerBound, double upperBound, int resolution){
+Property::SpinPolarizedLDOS* DPropertyExtractor::calculateSpinPolarizedLDOS(
+	Index pattern,
+	Index ranges,
+	double lowerBound,
+	double upperBound,
+	int resolution
+){
 	//hint[0] is an array of doubles, hint[1] is an array of ints
 	//hint[0][0]: upperBound
 	//hint[0][1]: lowerBound
@@ -437,7 +463,12 @@ Property::SpinPolarizedLDOS* DPropertyExtractor::calculateSpinPolarizedLDOS(Inde
 	return spinPolarizedLDOS;
 }
 
-void DPropertyExtractor::calculateDensityCallback(DPropertyExtractor *cb_this, void* density, const Index &index, int offset){
+void DPropertyExtractor::calculateDensityCallback(
+	DPropertyExtractor *cb_this,
+	void* density,
+	const Index &index,
+	int offset
+){
 	const double *eigen_values = cb_this->dSolver->getEigenValues();
 	Model::Statistics statistics = cb_this->dSolver->getModel()->getStatistics();
 	for(int n = 0; n < cb_this->dSolver->getModel()->getBasisSize(); n++){
@@ -459,7 +490,12 @@ void DPropertyExtractor::calculateDensityCallback(DPropertyExtractor *cb_this, v
 	}
 }
 
-void DPropertyExtractor::calculateMAGCallback(DPropertyExtractor *cb_this, void *mag, const Index &index, int offset){
+void DPropertyExtractor::calculateMAGCallback(
+	DPropertyExtractor *cb_this,
+	void *mag,
+	const Index &index,
+	int offset
+){
 	const double *eigen_values = cb_this->dSolver->getEigenValues();
 	Model::Statistics statistics = cb_this->dSolver->getModel()->getStatistics();
 
@@ -491,7 +527,12 @@ void DPropertyExtractor::calculateMAGCallback(DPropertyExtractor *cb_this, void 
 	}
 }
 
-void DPropertyExtractor::calculateSP_LDOSCallback(DPropertyExtractor *cb_this, void *sp_ldos, const Index &index, int offset){
+void DPropertyExtractor::calculateSP_LDOSCallback(
+	DPropertyExtractor *cb_this,
+	void *sp_ldos,
+	const Index &index,
+	int offset
+){
 	const double *eigen_values = cb_this->dSolver->getEigenValues();
 
 	double u_lim = ((double**)cb_this->hint)[0][0];
@@ -554,8 +595,19 @@ void DPropertyExtractor::calculateSP_LDOSCallback(DPropertyExtractor *cb_this, v
 	}
 }*/
 
-void DPropertyExtractor::calculate(void (*callback)(DPropertyExtractor *cb_this, void *memory, const Index &index, int offset),
-			void *memory, Index pattern, const Index &ranges, int currentOffset, int offsetMultiplier){
+void DPropertyExtractor::calculate(
+	void (*callback)(
+		DPropertyExtractor *cb_this,
+		void *memory,
+		const Index &index,
+		int offset
+	),
+	void *memory,
+	Index pattern,
+	const Index &ranges,
+	int currentOffset,
+	int offsetMultiplier
+){
 	int currentSubindex = pattern.size()-1;
 	for(; currentSubindex >= 0; currentSubindex--){
 		if(pattern.at(currentSubindex) < 0)
@@ -587,14 +639,22 @@ void DPropertyExtractor::calculate(void (*callback)(DPropertyExtractor *cb_this,
 	}
 }
 
-void DPropertyExtractor::ensureCompliantRanges(const Index &pattern, Index &ranges){
+void DPropertyExtractor::ensureCompliantRanges(
+	const Index &pattern,
+	Index &ranges
+){
 	for(unsigned int n = 0; n < pattern.size(); n++){
 		if(pattern.at(n) >= 0)
 			ranges.at(n) = 1;
 	}
 }
 
-void DPropertyExtractor::getLoopRanges(const Index &pattern, const Index &ranges, int *lDimensions, int **lRanges){
+void DPropertyExtractor::getLoopRanges(
+	const Index &pattern,
+	const Index &ranges,
+	int *lDimensions,
+	int **lRanges
+){
 	*lDimensions = 0;
 	for(unsigned int n = 0; n < ranges.size(); n++){
 		if(pattern.at(n) < IDX_SUM_ALL)

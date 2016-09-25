@@ -20,27 +20,33 @@ namespace TBTK{
 class CPropertyExtractor{
 public:
 	/** Constructor. */
-	CPropertyExtractor(ChebyshevSolver *cSolver,
-				int numCoefficients,
-				int energyResolution,
-				bool useGPUToCalculateCoefficients,
-				bool useGPUToGenerateGreensFunctions,
-				bool useLookupTable = true,
-				double lowerBound = -1.,
-				double upperBound = 1.);
+	CPropertyExtractor(
+		ChebyshevSolver *cSolver,
+		int numCoefficients,
+		int energyResolution,
+		bool useGPUToCalculateCoefficients,
+		bool useGPUToGenerateGreensFunctions,
+		bool useLookupTable = true,
+		double lowerBound = -1.,
+		double upperBound = 1.
+	);
 
 	/** Destructor. */
 	~CPropertyExtractor();
 
 	/** Calculate Green's function. */
-	std::complex<double>* calculateGreensFunction(Index to,
-							Index from,
-							ChebyshevSolver::GreensFunctionType type = ChebyshevSolver::GreensFunctionType::Retarded);
+	std::complex<double>* calculateGreensFunction(
+		Index to,
+		Index from,
+		ChebyshevSolver::GreensFunctionType type = ChebyshevSolver::GreensFunctionType::Retarded
+	);
 
 	/** Calculate Green's function for a range of 'to'-indices. */
-	std::complex<double>* calculateGreensFunctions(std::vector<Index> &to,
-							Index from,
-							ChebyshevSolver::GreensFunctionType type = ChebyshevSolver::GreensFunctionType::Retarded);
+	std::complex<double>* calculateGreensFunctions(
+		std::vector<Index> &to,
+		Index from,
+		ChebyshevSolver::GreensFunctionType type = ChebyshevSolver::GreensFunctionType::Retarded
+	);
 
 	/** Calculate expectation value. */
 	std::complex<double> calculateExpectationValue(Index to, Index from);
@@ -107,7 +113,10 @@ public:
 	 *  \f]
 	 */
 //	std::complex<double>* calculateMAG(Index pattern, Index ranges);
-	Property::Magnetization* calculateMagnetization(Index pattern, Index ranges);
+	Property::Magnetization* calculateMagnetization(
+		Index pattern,
+		Index ranges
+	);
 
 	/** !!!Not tested!!!. Calculate local density of states.
 	 *
@@ -176,7 +185,10 @@ public:
 	 *  \f]
 	 */
 //	std::complex<double> *calculateSP_LDOS(Index pattern, Index ranges);
-	Property::SpinPolarizedLDOS* calculateSpinPolarizedLDOS(Index pattern, Index ranges);
+	Property::SpinPolarizedLDOS* calculateSpinPolarizedLDOS(
+		Index pattern,
+		Index ranges
+	);
 private:
 	/** ChebyshevSolver to work on. */
 	ChebyshevSolver *cSolver;
@@ -208,24 +220,55 @@ private:
 
 	/** Loops over range indices and calls the appropriate callback
 	 *  function to calculate the correct quantity. */
-	void calculate(void (*callback)(CPropertyExtractor *cb_this, void *memory, const Index &index, int offset),
-			void *memory, Index pattern, const Index &ranges, int currentOffset, int offsetMultiplier);
+	void calculate(
+		void (*callback)(
+			CPropertyExtractor *cb_this,
+			void *memory,
+			const Index &index,
+			int offset
+		),
+		void *memory,
+		Index pattern,
+		const Index &ranges,
+		int currentOffset,
+		int offsetMultiplier
+	);
 
 	/** !!!Not tested!!! Callback for calculating density.
 	 *  Used by calculateDensity. */
-	static void calculateDensityCallback(CPropertyExtractor *cb_this, void *density, const Index &index, int offset);
+	static void calculateDensityCallback(
+		CPropertyExtractor *cb_this,
+		void *density,
+		const Index &index,
+		int offset
+	);
 
 	/** !!!Not tested!!! Callback for calculating magnetization.
 	 *  Used by calculateMAG. */
-	static void calculateMAGCallback(CPropertyExtractor *cb_this, void *density, const Index &index, int offset);
+	static void calculateMAGCallback(
+		CPropertyExtractor *cb_this,
+		void *density,
+		const Index &index,
+		int offset
+	);
 
 	/** !!!Not tested!!! Callback for calculating local density of states.
 	 *  Used by calculateLDOS. */
-	static void calculateLDOSCallback(CPropertyExtractor *cb_this, void *ldos, const Index &index, int offset);
+	static void calculateLDOSCallback(
+		CPropertyExtractor *cb_this,
+		void *ldos,
+		const Index &index,
+		int offset
+	);
 
 	/** !!!Not tested!!! Callback for calculating spin-polarized local
 	 *  density of states. Used by calculateSP_LDOS. */
-	static void calculateSP_LDOSCallback(CPropertyExtractor *cb_this, void *sp_ldos, const Index &index, int offset);
+	static void calculateSP_LDOSCallback(
+		CPropertyExtractor *cb_this,
+		void *sp_ldos,
+		const Index &index,
+		int offset
+	);
 
 	/** Hint used to pass information between calculate[Property] and
 	 * calculate[Property]Callback. */
@@ -236,7 +279,12 @@ private:
 	void ensureCompliantRanges(const Index &pattern, Index &ranges);
 
 	/** Extract ranges for loop indices. */
-	void getLoopRanges(const Index &pattern, const Index &ranges, int *lDimensions, int **lRanges);
+	void getLoopRanges(
+		const Index &pattern,
+		const Index &ranges,
+		int *lDimensions,
+		int **lRanges
+	);
 };
 
 };	//End of namespace TBTK

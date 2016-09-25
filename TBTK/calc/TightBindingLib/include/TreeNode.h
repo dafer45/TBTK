@@ -99,7 +99,10 @@ private:
 
 	/** Get HoppingAmpilitudes. Is called by the public TreeNode::getHAs
 	 *  and is called recursively. */
-	std::vector<HoppingAmplitude>* getHAs(Index index, unsigned int subindex);
+	std::vector<HoppingAmplitude>* getHAs(
+		Index index,
+		unsigned int subindex
+	);
 
 	/** Get Hilbert space index for given physical index. Is called by the
 	 *  public TreeNode::getBasisIndex and is called recursively. */

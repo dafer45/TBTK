@@ -8,7 +8,13 @@
 namespace TBTK{
 namespace Property{
 
-LDOS::LDOS(int dimensions, const int *ranges, double lowerBound, double upperBound, int resolution){
+LDOS::LDOS(
+	int dimensions,
+	const int *ranges,
+	double lowerBound,
+	double upperBound,
+	int resolution
+){
 	this->dimensions = dimensions;
 	this->ranges = new int[dimensions];
 	for(int n = 0; n < dimensions; n++)

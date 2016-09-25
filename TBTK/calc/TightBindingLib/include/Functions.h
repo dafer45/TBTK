@@ -17,14 +17,26 @@ namespace TBTK{
 class Functions{
 public:
 	/** Fermi-Dirac distribution. */
-	static double fermiDiracDistribution(double energy, double mu, double temperature);
+	static double fermiDiracDistribution(
+		double energy,
+		double mu,
+		double temperature
+	);
 
 	/** Bose-Einstein distribution. */
-	static double boseEinsteinDistribution(double energy, double mu, double temperature);
+	static double boseEinsteinDistribution(
+		double energy,
+		double mu,
+		double temperature
+	);
 private:
 };
 
-inline double Functions::fermiDiracDistribution(double energy, double mu, double temperature){
+inline double Functions::fermiDiracDistribution(
+	double energy,
+	double mu,
+	double temperature
+){
 	double e = UnitHandler::convertEnergyNtB(energy - mu);
 	double t = UnitHandler::convertTemperatureNtB(temperature);
 	if(t != 0.){
@@ -40,7 +52,11 @@ inline double Functions::fermiDiracDistribution(double energy, double mu, double
 	}
 }
 
-inline double Functions::boseEinsteinDistribution(double energy, double mu, double temperature){
+inline double Functions::boseEinsteinDistribution(
+	double energy,
+	double mu,
+	double temperature
+){
 	double e = UnitHandler::convertEnergyNtB(energy - mu);
 	double t = UnitHandler::convertTemperatureNtB(temperature);
 

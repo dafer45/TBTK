@@ -583,7 +583,10 @@ Property::Density* FileReader::readDensity(string name, string path){
 	}
 }*/
 
-Property::Magnetization* FileReader::readMagnetization(string name, string path){
+Property::Magnetization* FileReader::readMagnetization(
+	string name,
+	string path
+){
 	Property::Magnetization *magnetization = NULL;
 	int rank;
 	int *dims;
@@ -762,7 +765,10 @@ Property::LDOS* FileReader::readLDOS(string name, string path){
 	}
 }*/
 
-Property::SpinPolarizedLDOS* FileReader::readSpinPolarizedLDOS(string name, string path){
+Property::SpinPolarizedLDOS* FileReader::readSpinPolarizedLDOS(
+	string name,
+	string path
+){
 	Property::SpinPolarizedLDOS *spinPolarizedLDOS = NULL;
 	int rank;
 	int *dims;
@@ -835,7 +841,13 @@ Property::SpinPolarizedLDOS* FileReader::readSpinPolarizedLDOS(string name, stri
 	return spinPolarizedLDOS;
 }
 
-void FileReader::read(double **data, int *rank, int **dims, string name, string path){
+void FileReader::read(
+	double **data,
+	int *rank,
+	int **dims,
+	string name,
+	string path
+){
 	try{
 		stringstream ss;
 		ss << path;
@@ -884,7 +896,13 @@ void FileReader::read(double **data, int *rank, int **dims, string name, string 
 	}
 }
 
-void FileReader::readAttributes(int *attributes, string *attribute_names, int num, string name, string path){
+void FileReader::readAttributes(
+	int *attributes,
+	string *attribute_names,
+	int num,
+	string name,
+	string path
+){
 	try{
 		stringstream ss;
 		ss << path;
@@ -922,7 +940,13 @@ void FileReader::readAttributes(int *attributes, string *attribute_names, int nu
 	}
 }
 
-void FileReader::readAttributes(double *attributes, string *attribute_names, int num, string name, string path){
+void FileReader::readAttributes(
+	double *attributes,
+	string *attribute_names,
+	int num,
+	string name,
+	string path
+){
 	try{
 		stringstream ss;
 		ss << path;

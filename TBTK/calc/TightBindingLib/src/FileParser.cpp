@@ -18,7 +18,12 @@ namespace TBTK{
 ofstream FileParser::fout;
 stringstream FileParser::ssin;
 
-void FileParser::writeModel(Model *model, string fileName, AmplitudeMode amplitudeMode, string description){
+void FileParser::writeModel(
+	Model *model,
+	string fileName,
+	AmplitudeMode amplitudeMode,
+	string description
+){
 	openOutput(fileName);
 
 	writeDescription(description);
@@ -98,7 +103,10 @@ void FileParser::write(const Index &index){
 	fout << ss.str();
 }
 
-void FileParser::writeCoordinates(const double *coordinates, int numCoordinates){
+void FileParser::writeCoordinates(
+	const double *coordinates,
+	int numCoordinates
+){
 	stringstream ss;
 	ss << "(";
 	for(int n = 0; n < numCoordinates; n++){
@@ -469,7 +477,10 @@ void FileParser::readGeometry(Model *model){
 	}
 }
 
-int FileParser::readParameter(const string parameterName, const string parentStructure){
+int FileParser::readParameter(
+	const string parameterName,
+	const string parentStructure
+){
 	string line;
 
 	if(!getline(ssin, line)){

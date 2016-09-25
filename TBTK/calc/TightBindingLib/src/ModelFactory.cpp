@@ -14,8 +14,8 @@ namespace Util{
 Model* ModelFactory::createSquareLattice(
 	initializer_list<int> size,
 	initializer_list<bool> periodic,
-	complex<double> t)
-{
+	complex<double> t
+){
 	Model *model = new Model();
 
 	if(size.size() != periodic.size()){
@@ -44,8 +44,8 @@ Model* ModelFactory::createSquareLattice(
 Model* ModelFactory::createHexagonalLattice(
 	initializer_list<int> size,
 	initializer_list<bool> periodic,
-	complex<double> t)
-{
+	complex<double> t
+){
 	Model *model = new Model();
 
 	if(size.size() != periodic.size()){
@@ -83,8 +83,8 @@ Model* ModelFactory::createHexagonalLattice(
 
 void ModelFactory::addSquareGeometry(
 	Model *model,
-	std::initializer_list<int> size)
-{
+	std::initializer_list<int> size
+){
 	switch(size.size()){
 	case 1:
 		addSquareGeometry1D(model, size);
@@ -103,8 +103,8 @@ void ModelFactory::addSquareGeometry(
 
 void ModelFactory::addHexagonalGeometry(
 	Model *model,
-	std::initializer_list<int> size)
-{
+	std::initializer_list<int> size
+){
 	if(size.size() != 2){
 		cout << "Error in ModelFactory::addSquareGeometry: Only 1-3 dimensions supported, but " << size.size() << " dimensions requested.\n";
 		exit(1);
@@ -127,8 +127,8 @@ void ModelFactory::addHexagonalGeometry(
 }
 
 Model* ModelFactory::merge(
-	initializer_list<Model*> models)
-{
+	initializer_list<Model*> models
+){
 	Model *model = new Model();
 	for(unsigned int n = 0; n < models.size(); n++){
 		Model *m = *(models.begin() + n);
@@ -208,8 +208,8 @@ void ModelFactory::createSquareLattice1D(
 	Model *model,
 	initializer_list<int> size,
 	initializer_list<bool> periodic,
-	complex<double> t)
-{
+	complex<double> t
+){
 	int sizeX = *size.begin();
 	bool periodicX = *periodic.begin();
 	for(int x = 0; x < sizeX; x++){
@@ -224,8 +224,8 @@ void ModelFactory::createSquareLattice2D(
 	Model *model,
 	initializer_list<int> size,
 	initializer_list<bool> periodic,
-	complex<double> t)
-{
+	complex<double> t
+){
 	int sizeX = *size.begin();
 	int sizeY = *(size.begin() + 1);
 	bool periodicX = *periodic.begin();
@@ -246,8 +246,8 @@ void ModelFactory::createSquareLattice3D(
 	Model *model,
 	initializer_list<int> size,
 	initializer_list<bool> periodic,
-	complex<double> t)
-{
+	complex<double> t
+){
 	int sizeX = *size.begin();
 	int sizeY = *(size.begin() + 1);
 	int sizeZ = *(size.begin() + 2);
@@ -272,8 +272,8 @@ void ModelFactory::createSquareLattice3D(
 
 void ModelFactory::addSquareGeometry1D(
 	Model *model,
-	initializer_list<int> size)
-{
+	initializer_list<int> size
+){
 	model->createGeometry(3, 0);
 	Geometry *geometry = model->getGeometry();
 	int sizeX = *size.begin();
@@ -284,8 +284,8 @@ void ModelFactory::addSquareGeometry1D(
 
 void ModelFactory::addSquareGeometry2D(
 	Model *model,
-	initializer_list<int> size)
-{
+	initializer_list<int> size
+){
 	model->createGeometry(3, 0);
 	Geometry *geometry = model->getGeometry();
 	int sizeX = *size.begin();
@@ -298,8 +298,8 @@ void ModelFactory::addSquareGeometry2D(
 
 void ModelFactory::addSquareGeometry3D(
 	Model *model,
-	initializer_list<int> size)
-{
+	initializer_list<int> size
+){
 	model->createGeometry(3, 0);
 	Geometry *geometry = model->getGeometry();
 	int sizeX = *size.begin();

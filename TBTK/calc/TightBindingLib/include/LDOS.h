@@ -18,7 +18,13 @@ namespace Property{
 class LDOS{
 public:
 	/** Constructor. */
-	LDOS(int dimensions, const int *ranges, double lowerBound, double upperBound, int resolution);
+	LDOS(
+		int dimensions,
+		const int *ranges,
+		double lowerBound,
+		double upperBound,
+		int resolution
+	);
 
 	/** Destructor. */
 	~LDOS();

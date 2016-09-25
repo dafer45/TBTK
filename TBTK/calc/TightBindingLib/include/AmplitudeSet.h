@@ -128,7 +128,12 @@ public:
 
 	/** Tabulates @link HoppingAmplitude HoppingAmplitudes @endlink to make
 	 *  them possible to export. */
-	void tabulate(std::complex<double> **amplitudes, int **indices, int *numHoppingAmplitudes, int *maxIndexSize);
+	void tabulate(
+		std::complex<double> **amplitudes,
+		int **indices,
+		int *numHoppingAmplitudes,
+		int *maxIndexSize
+	);
 private:
 	/** Flag indicating whether the AmplitudeSet have been constructed. */
 	bool isConstructed;

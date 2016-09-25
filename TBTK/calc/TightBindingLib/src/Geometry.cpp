@@ -28,7 +28,11 @@ Geometry::~Geometry(){
 		delete [] specifiers;
 }
 
-void Geometry::setCoordinates(const Index &index, std::initializer_list<double> coordinates, std::initializer_list<int> specifiers){
+void Geometry::setCoordinates(
+	const Index &index,
+	std::initializer_list<double> coordinates,
+	std::initializer_list<int> specifiers
+){
 	int basisIndex = parentModel->getBasisIndex(index);
 	if(coordinates.size() == (unsigned int)dimensions){
 		for(unsigned int n = 0; n < dimensions; n++)
@@ -49,7 +53,11 @@ void Geometry::setCoordinates(const Index &index, std::initializer_list<double> 
 	}
 }
 
-void Geometry::setCoordinates(const Index &index, const std::vector<double> &coordinates, const std::vector<int> &specifiers){
+void Geometry::setCoordinates(
+	const Index &index,
+	const std::vector<double> &coordinates,
+	const std::vector<int> &specifiers
+){
 	int basisIndex = parentModel->getBasisIndex(index);
 	if(coordinates.size() == (unsigned int)dimensions){
 		for(unsigned int n = 0; n < dimensions; n++)

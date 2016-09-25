@@ -36,31 +36,57 @@ public:
 	Index *toUnitCell;
 
 	/** Constructor. */
-	HoppingAmplitude(Index fromIndex, Index toIndex, std::complex<double> amplitude);
+	HoppingAmplitude(
+		Index fromIndex,
+		Index toIndex,
+		std::complex<double> amplitude
+	);
 
 	/** Constructor. Takes a callback function rather than a paramater
 	 *  value. The callback function has to be defined such that it returns
 	 * a value for the given indices when called at run time. */
-	HoppingAmplitude(Index fromIndex, Index toIndex, std::complex<double> (*amplitudeCallback)(Index, Index));
+	HoppingAmplitude(
+		Index fromIndex,
+		Index toIndex,
+		std::complex<double> (*amplitudeCallback)(Index, Index)
+	);
 
 	/** Constructor. */
-	HoppingAmplitude(std::complex<double> amplitude, Index toIndex, Index fromIndex);
+	HoppingAmplitude(
+		std::complex<double> amplitude,
+		Index toIndex,
+		Index fromIndex
+	);
 
 	/** Constructor. Takes a callback function rather than a paramater
 	 *  value. The callback function has to be defined such that it returns
 	 * a value for the given indices when called at run time. */
-	HoppingAmplitude(std::complex<double> (*amplitudeCallback)(Index, Index), Index toIndex, Index fromIndex);
+	HoppingAmplitude(
+		std::complex<double> (*amplitudeCallback)(Index, Index),
+		Index toIndex,
+		Index fromIndex
+	);
 
 	/** Constructor. Takes an additional parameter specifying which unit
 	 *  cell the toIndex belongs to. */
-	HoppingAmplitude(std::complex<double> amplitude, Index toIndex, Index fromIndex, Index toUnitCell);
+	HoppingAmplitude(
+		std::complex<double> amplitude,
+		Index toIndex,
+		Index fromIndex,
+		Index toUnitCell
+	);
 
 	/** Constructor. Takes a callback function rather than a paramater
 	 *  value. The callback function has to be defined such that it returns
 	 *  a value for the given indices when called at run time. Also takes
 	 *  an additional Index specifying which unit cell the toIndex belongs
 	 *  to. */
-	HoppingAmplitude(std::complex<double> (*amplitudeCallback)(Index, Index), Index toIndex, Index fromIndex, Index toUnitCell);
+	HoppingAmplitude(
+		std::complex<double> (*amplitudeCallback)(Index, Index),
+		Index toIndex,
+		Index fromIndex,
+		Index toUnitCell
+	);
 
 	/** Copy constructor. */
 	HoppingAmplitude(const HoppingAmplitude &ha);
@@ -79,7 +105,10 @@ private:
 
 	/** Callback function for runtime evaluation of amplitudes. Will be
 	 *  called if not NULL. */
-	std::complex<double> (*amplitudeCallback)(Index toIndex, Index fromIndex);
+	std::complex<double> (*amplitudeCallback)(
+		Index toIndex,
+		Index fromIndex
+	);
 };
 
 inline std::complex<double> HoppingAmplitude::getAmplitude(){

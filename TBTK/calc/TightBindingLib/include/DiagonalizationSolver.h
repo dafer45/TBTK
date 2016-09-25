@@ -31,7 +31,11 @@ public:
 
 	/** Set self-consistency callback. If set to NULL or never called, the
 	 *  self-consistency loop will not be run. */
-	void setSCCallback(bool (*scCallback)(DiagonalizationSolver *diagonalizationSolver));
+	void setSCCallback(
+		bool (*scCallback)(
+			DiagonalizationSolver *diagonalizationSolver
+		)
+	);
 
 	/** Set maximum number of iterations for the self-consistency loop. */
 	void setMaxIterations(int maxIterations);
@@ -101,7 +105,11 @@ inline void DiagonalizationSolver::setModel(Model *model){
 	this->model = model;
 }
 
-inline void DiagonalizationSolver::setSCCallback(bool (*scCallback)(DiagonalizationSolver *diagonalizationSolver)){
+inline void DiagonalizationSolver::setSCCallback(
+	bool (*scCallback)(
+		DiagonalizationSolver *diagonalizationSolver
+	)
+){
 	this->scCallback = scCallback;
 }
 
@@ -125,7 +133,10 @@ inline std::complex<double>* DiagonalizationSolver::getEigenVectorsRW(){
 	return eigenVectors;
 }
 
-inline const std::complex<double> DiagonalizationSolver::getAmplitude(int state, const Index &index){
+inline const std::complex<double> DiagonalizationSolver::getAmplitude(
+	int state,
+	const Index &index
+){
 	return eigenVectors[model->getBasisSize()*state + model->getBasisIndex(index)];
 }
 

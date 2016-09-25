@@ -110,7 +110,9 @@ public:
 	 *	Me - megae<br/>
 	 *	ke - kiloe<br/>
 	 *	e - e (elementary charge) */
-	enum class ChargeUnit{kC, C, mC, uC, nC, pC, fC, aC, Te, Ge, Me, ke, e};
+	enum class ChargeUnit{
+		kC, C, mC, uC, nC, pC, fC, aC, Te, Ge, Me, ke, e
+	};
 
 	/** Count unit (base unit):
 	 *	pcs - pieces
@@ -142,7 +144,9 @@ public:
 	 *	G - Gauss<br/>
 	 *	mG - milligauss<br/>
 	 *	uG - microgauss */
-	enum class MagneticFieldUnit{MT, kT, T, mT, uT, nT, GG, MG, kG, G, mG, uG};
+	enum class MagneticFieldUnit{
+		MT, kT, T, mT, uT, nT, GG, MG, kG, G, mG, uG
+	};
 
 	/** Get the Planck constant in the currently set base units. */
 	static double getHbarB();
@@ -295,16 +299,28 @@ public:
 	static double convertMassNtD(double mass, MassUnit unit);
 
 	/** Convert magnetic field from derived units to base units. */
-	static double convertMagneticFieldDtB(double field, MagneticFieldUnit unit);
+	static double convertMagneticFieldDtB(
+		double field,
+		MagneticFieldUnit unit
+	);
 
 	/** Convert magnetic field from base units to derived units. */
-	static double convertMagneticFieldBtD(double field, MagneticFieldUnit unit);
+	static double convertMagneticFieldBtD(
+		double field,
+		MagneticFieldUnit unit
+	);
 
 	/** Convert magnetic field from derived units to natural units. */
-	static double convertMagneticFieldDtN(double field, MagneticFieldUnit unit);
+	static double convertMagneticFieldDtN(
+		double field,
+		MagneticFieldUnit unit
+	);
 
 	/** Convert magnetic field from natural units to derived units. */
-	static double convertMagneticFieldNtD(double field, MagneticFieldUnit unit);
+	static double convertMagneticFieldNtD(
+		double field,
+		MagneticFieldUnit unit
+	);
 
 	/** Get temperature unit string
 	 *
