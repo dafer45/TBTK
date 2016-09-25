@@ -42,6 +42,12 @@ public:
 	/** Get size. */
 	unsigned int size() const;
 
+	/** Removes and returns the first subindex. */
+	int popFront();
+
+	/** Removes and returns the last subindex. */
+	int popBack();
+
 	/** Print index. Mainly for debuging. */
 	void print() const;
 
@@ -91,6 +97,20 @@ inline const int& Index::at(unsigned int n) const{
 
 inline unsigned int Index::size() const{
 	return indices.size();
+}
+
+inline int Index::popFront(){
+	int first = indices.at(0);
+	indices.erase(indices.begin());
+
+	return first;
+}
+
+inline int Index::popBack(){
+	int last = indices.back();
+	indices.pop_back();
+
+	return last;
 }
 
 };	//End of namespace TBTK
