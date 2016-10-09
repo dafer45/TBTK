@@ -9,6 +9,7 @@
 #define COM_DAFER45_TBTK_FILE_PARSER
 
 #include "Model.h"
+#include "ParameterSet.h"
 
 #include <string>
 #include <fstream>
@@ -38,6 +39,9 @@ public:
 
 	/** Read Model from file. */
 	static Model* readModel(std::string fileName);
+
+	/** Read ParameterSet from file. */
+	static Util::ParameterSet* readParameterSet(std::string fileName);
 private:
 	/** Open output stream. */
 	static void openOutput(std::string fileName);

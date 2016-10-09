@@ -52,6 +52,90 @@ Model* FileParser::readModel(string fileName){
 	return model;
 }
 
+Util::ParameterSet* FileParser::readParameterSet(std::string fileName){
+	Util::ParameterSet *parameterSet = new Util::ParameterSet();
+
+	readInput(fileName);
+	removeComments();
+	removeInitialWhiteSpaces();
+
+	cout << "Hey!\n";
+	while(true){
+		string line;
+
+		if(ssin.peek() == EOF)
+			break;
+		if(ssin.peek() == '\n'){
+			getline(ssin, line);
+			continue;
+		}
+
+		string type;
+		ssin >> type;
+		if(type.compare("int") == 0){
+			string name;
+			ssin >> name;
+			char equalitySign;
+			ssin >> equalitySign;
+			if(equalitySign != '='){
+				cout << "Error in FileParser::readParameterSet(): Expected '=' but found '" << equalitySign << "'.\n";
+				exit(1);
+			}
+			int value;
+			ssin >> value;
+			parameterSet->addInt(name, value);
+		}
+		else if(type.compare("double") == 0){
+			string name;
+			ssin >> name;
+			char equalitySign;
+			ssin >> equalitySign;
+			if(equalitySign != '='){
+				cout << "Error in FileParser::readParameterSet(): Expected '=' but found '" << equalitySign << "'.\n";
+				exit(1);
+			}
+			double value;
+			ssin >> value;
+			parameterSet->addDouble(name, value);
+		}
+		else if(type.compare("complex") == 0){
+			string name;
+			ssin >> name;
+			char equalitySign;
+			ssin >> equalitySign;
+			if(equalitySign != '='){
+				cout << "Error in FileParser::readParameterSet(): Expected '=' but found '" << equalitySign << "'.\n";
+				exit(1);
+			}
+			complex<double> value;
+			ssin >> value;
+			parameterSet->addComplex(name, value);
+		}
+		else{
+			cout << "Error in FilePArser::readParametersSet(): Expected type but found '" << type << "'.\n";
+			exit(1);
+		}
+/*		if(!getline(ssin, line)){
+//			cout << "Error in FileParser::readAmplitudes(): Reached end of file while searching for 'Amplitudes:'.\n";
+			exit(1);
+		}
+
+		unsigned int pos = line.find();
+		if(line.find("Amplitudes:") != string::npos){
+			int mode = readParameter("Mode", "Amplitude");
+			if(mode < 0 || mode > 1){
+				cout << "Error in FileParser::readAmplitudes(): Only Amplitude mode 0 and 1 supported.\n";
+				exit(1);
+			}
+			amplitudeMode = static_cast<AmplitudeMode>(mode);
+
+			break;
+		}*/
+	}
+
+	return parameterSet;
+}
+
 void FileParser::openOutput(string fileName){
 	fout.open(fileName);
 }
