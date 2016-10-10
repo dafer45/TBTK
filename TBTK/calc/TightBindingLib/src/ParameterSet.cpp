@@ -120,5 +120,35 @@ complex<double> ParameterSet::getComplexValue(int n){
 	return get<1>(complexParams.at(n));
 }
 
+bool ParameterSet::intExists(string name){
+	for(unsigned int n = 0; n < intParams.size(); n++){
+		if((get<0>(intParams.at(n))).compare(name) == 0){
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool ParameterSet::doubleExists(string name){
+	for(unsigned int n = 0; n < doubleParams.size(); n++){
+		if((get<0>(doubleParams.at(n))).compare(name) == 0){
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool ParameterSet::complexExists(string name){
+	for(unsigned int n = 0; n < complexParams.size(); n++){
+		if((get<0>(complexParams.at(n))).compare(name) == 0){
+			return true;
+		}
+	}
+
+	return false;
+}
+
 };	//End of namespace Util
 };	//End of namespace TBTK

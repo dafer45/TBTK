@@ -68,6 +68,15 @@ public:
 
 	/** Get complex value. */
 	std::complex<double> getComplexValue(int n);
+
+	/** Returns true if an integer parameter with given name exists. */
+	bool intExists(std::string name);
+
+	/** Returns true if a double parameter with given name exists. */
+	bool doubleExists(std::string name);
+
+	/** Returns true if a complex parameter with given name exists. */
+	bool complexExists(std::string name);
 private:
 	/** Integer parameters. */
 	std::vector<std::tuple<std::string, int>> intParams;
