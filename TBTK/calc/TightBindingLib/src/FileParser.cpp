@@ -59,7 +59,6 @@ Util::ParameterSet* FileParser::readParameterSet(std::string fileName){
 	removeComments();
 	removeInitialWhiteSpaces();
 
-	cout << "Hey!\n";
 	while(true){
 		string line;
 

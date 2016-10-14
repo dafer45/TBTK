@@ -4,9 +4,11 @@
  */
 
 #include "../include/ChebyshevSolver.h"
-#include <math.h>
 #include "../include/HALinkedList.h"
 #include "../include/UnitHandler.h"
+#include "../include/TBTKMacros.h"
+
+#include <math.h>
 
 using namespace std;
 
@@ -25,6 +27,7 @@ ChebyshevSolver::StaticConstructor::StaticConstructor(){
 }
 
 ChebyshevSolver::ChebyshevSolver(){
+	model = NULL;
 	scaleFactor = 1.;
 	damping = NULL;
 	generatingFunctionLookupTable = NULL;
@@ -75,6 +78,25 @@ void ChebyshevSolver::calculateCoefficients(
 	int numCoefficients,
 	double broadening
 ){
+	TBTKAssert(
+		model != NULL,
+		"ChebyshevSolver::calculateCoefficients()",
+		"Model not set.",
+		"Use ChebyshevSolver::setModel() to set model."
+	);
+	TBTKAssert(
+		scaleFactor > 0,
+		"ChebyshevSolver::calculateCoefficients()",
+		"Scale factor must be larger than zero.",
+		"Use ChebyshevSolver::setScaleFactor() to set scale factor."
+	);
+	TBTKAssert(
+		numCoefficients > 0,
+		"ChebyshevSolver::calculateCoefficients()",
+		"numCoefficients has to be larger than 0.",
+		""
+	);
+
 	AmplitudeSet *amplitudeSet = model->getAmplitudeSet();
 
 	int fromBasisIndex = amplitudeSet->getBasisIndex(from);
@@ -210,6 +232,25 @@ void ChebyshevSolver::calculateCoefficients(
 	int numCoefficients,
 	double broadening
 ){
+	TBTKAssert(
+		model != NULL,
+		"ChebyshevSolver::calculateCoefficients()",
+		"Model not set.",
+		"Use ChebyshevSolver::setModel() to set model."
+	);
+	TBTKAssert(
+		scaleFactor > 0,
+		"ChebyshevSolver::calculateCoefficients()",
+		"Scale factor must be larger than zero.",
+		"Use ChebyshevSolver::setScaleFactor() to set scale factor."
+	);
+	TBTKAssert(
+		numCoefficients > 0,
+		"ChebyshevSolver::calculateCoefficients()",
+		"numCoefficients has to be larger than 0.",
+		""
+	);
+
 	AmplitudeSet *amplitudeSet = model->getAmplitudeSet();
 
 	int fromBasisIndex = amplitudeSet->getBasisIndex(from);
@@ -355,6 +396,25 @@ void ChebyshevSolver::calculateCoefficientsWithCutoff(
 	double componentCutoff,
 	double broadening
 ){
+	TBTKAssert(
+		model != NULL,
+		"ChebyshevSolver::calculateCoefficientsWithCutoff()",
+		"Model not set.",
+		"Use ChebyshevSolver::setModel() to set model."
+	);
+	TBTKAssert(
+		scaleFactor > 0,
+		"ChebyshevSolver::calculateCoefficientsWithCutoff()",
+		"Scale factor must be larger than zero.",
+		"Use ChebyshevSolver::setScaleFactor() to set scale factor."
+	);
+	TBTKAssert(
+		numCoefficients > 0,
+		"ChebyshevSolver::calculateCoefficientsWithCutoff()",
+		"numCoefficients has to be larger than 0.",
+		""
+	);
+
 	AmplitudeSet *amplitudeSet = model->getAmplitudeSet();
 
 	int fromBasisIndex = amplitudeSet->getBasisIndex(from);
@@ -510,6 +570,38 @@ void ChebyshevSolver::generateLookupTable(
 	double lowerBound,
 	double upperBound
 ){
+	TBTKAssert(
+		numCoefficients > 0,
+		"ChebyshevSolver::generateLookupTable()",
+		"numCoefficients has to be larger than 0.",
+		""
+	);
+	TBTKAssert(
+		energyResolution > 0,
+		"ChebyshevSolver::generateLookupTable()",
+		"energyResolution has to be larger than 0.",
+		""
+	);
+	cout << lowerBound << " " << upperBound << "\n";
+	TBTKAssert(
+		lowerBound < upperBound,
+		"ChebyshevSolver::generateLookupTable()",
+		"lowerBound has to be smaller than upperBound.",
+		""
+	);
+	TBTKAssert(
+		lowerBound >= -scaleFactor,
+		"ChebyshevSolver::generateLookupTable()",
+		"lowerBound has to be larger than -scaleFactor.",
+		"Use ChebyshevSolver::setScaleFactor to set a larger scale factor."
+	);
+	TBTKAssert(
+		upperBound <= scaleFactor,
+		"ChebyshevSolver::generateLookupTable()",
+		"upperBound has to be smaller than scaleFactor.",
+		"Use ChebyshevSolver::setScaleFactor to set a larger scale factor."
+	);
+
 	if(isTalkative){
 		cout << "Generating lookup table\n";
 		cout << "\tNum coefficients: " << numCoefficients << "\n";
@@ -555,6 +647,37 @@ void ChebyshevSolver::generateGreensFunction(
 	double upperBound,
 	GreensFunctionType type
 ){
+	TBTKAssert(
+		numCoefficients > 0,
+		"ChebyshevSolver::generateLookupTable()",
+		"numCoefficients has to be larger than 0.",
+		""
+	);
+	TBTKAssert(
+		energyResolution > 0,
+		"ChebyshevSolver::generateLookupTable()",
+		"energyResolution has to be larger than 0.",
+		""
+	);
+	TBTKAssert(
+		lowerBound < upperBound,
+		"ChebyshevSolver::generateLookupTable()",
+		"lowerBound has to be smaller than upperBound.",
+		""
+	);
+	TBTKAssert(
+		lowerBound > -scaleFactor,
+		"ChebyshevSolver::generateLookupTable()",
+		"lowerBound has to be larger than -scaleFactor.",
+		"Use ChebyshevSolver::setScaleFactor to set a larger scale factor."
+	);
+	TBTKAssert(
+		upperBound < scaleFactor,
+		"ChebyshevSolver::generateLookupTable()",
+		"upperBound has to be smaller than scaleFactor.",
+		"Use ChebyshevSolver::setScaleFactor to set a larger scale factor."
+	);
+
 	for(int e = 0; e < energyResolution; e++)
 		greensFunction[e] = 0.;
 

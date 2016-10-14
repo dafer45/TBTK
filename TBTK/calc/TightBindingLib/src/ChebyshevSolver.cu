@@ -4,10 +4,13 @@
  */
 
 #include "../include/ChebyshevSolver.h"
-#include <math.h>
 #include "../include/HALinkedList.h"
-#include <cuComplex.h>
 #include "../include/Util.h"
+#include "../include/TBTKMacros.h"
+
+#include <math.h>
+
+#include <cuComplex.h>
 #include <cusparse_v2.h>
 
 using namespace std;
@@ -60,6 +63,25 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 	int numCoefficients,
 	double broadening
 ){
+	TBTKAssert(
+		model != NULL,
+		"ChebyshevSolver::calculateCoefficientsGPU()",
+		"Model not set",
+		"Use ChebyshevSolver::setModel() to set model."
+	);
+	TBTKAssert(
+		scaleFactor > 0,
+		"ChebyshevSolver::calculateCoefficientsGPU()",
+		"Scale factor must be larger than zero.",
+		"Use ChebyshevSolver::setScaleFactor() to set scale factor."
+	);
+	TBTKAssert(
+		numCoefficients > 0,
+		"ChebyshevSolver::calculateCoefficients()",
+		"numCoefficients has to be larger than zero.",
+		""
+	);
+
 	int device = allocateDeviceGPU();
 
 	if(cudaSetDevice(device) != cudaSuccess)
