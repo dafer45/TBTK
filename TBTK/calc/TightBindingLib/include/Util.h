@@ -26,12 +26,14 @@ public:
 	 *  @param tag Optional identifier tag that will be printed together
 	 *  with the elapsed time at subsequent tock call. */
 	static void tick(std::string tag = "");
+
 	/** Pop timestamp from stack and print elapsed time and identifier
 	 *  tag. */
 	static void tock();
 private:
 	/** Timestamp stack. */
 	static std::vector<std::chrono::time_point<std::chrono::high_resolution_clock>> timestamps;
+
 	/** Tag stack. */
 	static std::vector<std::string> tags;
 };
