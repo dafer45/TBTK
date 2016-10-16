@@ -4,12 +4,15 @@
  */
 
 #include "../include/DiagonalizationSolver.h"
+#include "../include/TBTKMacros.h"
 
 using namespace std;
 
 namespace TBTK{
 
 DiagonalizationSolver::DiagonalizationSolver(){
+	model = NULL;
+
 	hamiltonian = NULL;
 	eigenValues = NULL;
 	eigenVectors = NULL;
@@ -28,6 +31,13 @@ DiagonalizationSolver::~DiagonalizationSolver(){
 }
 
 void DiagonalizationSolver::run(){
+	TBTKAssert(
+		model != NULL,
+		"DiagonalizationSolver::run()",
+		"Model not set.",
+		"Use DiagonalizationSolver::setModel() to set model."
+	);
+
 	int iterationCounter = 0;
 	init();
 

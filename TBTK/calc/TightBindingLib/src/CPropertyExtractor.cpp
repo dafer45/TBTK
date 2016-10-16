@@ -6,6 +6,7 @@
 #include "../include/CPropertyExtractor.h"
 #include "../include/Functions.h"
 #include "../include/Util.h"
+#include "../include/TBTKMacros.h"
 
 using namespace std;
 
@@ -21,6 +22,43 @@ CPropertyExtractor::CPropertyExtractor(
 	double lowerBound,
 	double upperBound
 ){
+	TBTKAssert(
+		cSolver != NULL,
+		"CPropertyExtractor::CPropertyExtractor()",
+		"Argument cSolver cannot be NULL.",
+		""
+	);
+	TBTKAssert(
+		numCoefficients > 0,
+		"CPropertyExtractor::CPropertyExtractor()",
+		"Argument numCoefficients has to be a positive number.",
+		""
+	);
+	TBTKAssert(
+		energyResolution > 0,
+		"CPropertyExtractor::CPropertyExtractor()",
+		"Argument energyResolution has to be a positive number.",
+		""
+	);
+	TBTKAssert(
+		lowerBound < upperBound,
+		"CPropertyExtractor::CPropertyExtractor()",
+		"Argument lowerBound has to be smaller than argument upperBound.",
+		""
+	);
+	TBTKAssert(
+		lowerBound >= -cSolver->getScaleFactor(),
+		"CPropertyExtractor::CPropertyExtractor()",
+		"Argument lowerBound has to be larger than -cSolver->getScaleFactor().",
+		"Use ChebyshevSolver::setScaleFactor() to set a larger scale factor."
+	);
+	TBTKAssert(
+		upperBound <= cSolver->getScaleFactor(),
+		"CPropertyExtractor::CPropertyExtractor()",
+		"Argument upperBound has to be smaller than cSolver->getScaleFactor().",
+		"Use ChebyshevSolver::setScaleFactor() to set a larger scale factor."
+	);
+
 	this->cSolver = cSolver;
 	this->numCoefficients = numCoefficients;
 	this->energyResolution = energyResolution;
