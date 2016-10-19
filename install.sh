@@ -18,3 +18,8 @@ done
 
 cd TBTK/calc/TightBindingLib/
 	make
+	cd ../../..
+
+cd Tools
+	bash build.sh
+	cd ..

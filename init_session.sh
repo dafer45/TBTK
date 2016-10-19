@@ -11,3 +11,11 @@ else
 	LD_LIBRARY_PATH+=:${TBTK_dir}/hdf5/hdf5-build/hdf5/lib;
 fi
 export LD_LIBRARY_PATH
+
+if [ -z "$PATH" ]
+then
+	PATH=${TBTK_dir}/Tools/bin;
+else
+	PATH+=:${TBTK_dir}/Tools/bin;
+fi
+export PATH
