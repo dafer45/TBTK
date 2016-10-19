@@ -19,7 +19,6 @@ omp_lock_t GPUResourceManager::busyDevicesLock;
 
 GPUResourceManager::StaticConstructor GPUResourceManager::staticConstructor;
 GPUResourceManager::StaticConstructor::StaticConstructor(){
-	cout << "Static constructor\n";
 	numDevices = 0;
 	busyDevices = NULL;
 	omp_init_lock(&busyDevicesLock);

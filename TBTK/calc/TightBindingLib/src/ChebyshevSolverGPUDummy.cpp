@@ -51,11 +51,11 @@ void ChebyshevSolver::generateGreensFunctionGPU(
 	exit(1);
 }
 
-void ChebyshevSolver::createDeviceTableGPU(){
+/*void ChebyshevSolver::createDeviceTableGPU(){
 	numDevices = 0;
 }
 
 void ChebyshevSolver::destroyDeviceTableGPU(){
-}
+}*/
 
 };	//End of namespace TBTK
