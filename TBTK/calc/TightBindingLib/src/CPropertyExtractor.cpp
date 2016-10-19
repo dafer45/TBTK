@@ -7,6 +7,7 @@
 #include "../include/Functions.h"
 #include "../include/Util.h"
 #include "../include/TBTKMacros.h"
+#include "../include/Streams.h"
 
 using namespace std;
 
@@ -74,7 +75,7 @@ CPropertyExtractor::CPropertyExtractor(
 			cSolver->loadLookupTableGPU();
 	}
 	else if(useGPUToGenerateGreensFunctions){
-		cout << "Error in PropertyExtractorChebyshev: useLookupTable cannot be false if useGPUToGenerateGreensFunction is true.\n";
+		Util::Streams::err << "Error in PropertyExtractorChebyshev: useLookupTable cannot be false if useGPUToGenerateGreensFunction is true.\n";
 		exit(1);
 	}
 }
@@ -107,8 +108,6 @@ complex<double>* CPropertyExtractor::calculateGreensFunctions(
 	}
 	else{
 		cSolver->calculateCoefficients(to, from, coefficients, numCoefficients);
-//		cout << "Error in PropertyExtractorChebyshev::calculateGreensFunctions: CPU generation of coefficients not yet supported.\n";
-//		exit(1);
 	}
 
 	complex<double> *greensFunction = new complex<double>[energyResolution*to.size()];
@@ -217,44 +216,6 @@ Property::Density* CPropertyExtractor::calculateDensity(
 	return density;
 }
 
-/*complex<double>* CPropertyExtractor::calculateMAG(Index pattern, Index ranges){
-	hint = new int[1];
-	((int*)hint)[0] = -1;
-	for(unsigned int n = 0; n < pattern.indices.size(); n++){
-		if(pattern.indices.at(n) == IDX_SPIN){
-			((int*)hint)[0] = n;
-			pattern.indices.at(n) = 0;
-			ranges.indices.at(n) = 1;
-			break;
-		}
-	}
-	if(((int*)hint)[0] == -1){
-		cout << "Error in PropertyExtractorChebyshev::calculateMAG: No spin index indicated.\n";
-		delete [] (int*)hint;
-		return NULL;
-	}
-
-	for(unsigned int n = 0; n < pattern.indices.size(); n++){
-		if(pattern.indices.at(n) >= 0)
-			ranges.indices.at(n) = 1;
-	}
-
-	int magArraySize = 1;
-	for(unsigned int n = 0; n < ranges.indices.size(); n++){
-		if(pattern.indices.at(n) < IDX_SUM_ALL)
-			magArraySize *= ranges.indices.at(n);
-	}
-	complex<double> *mag = new complex<double>[4*magArraySize];
-	for(int n = 0; n < 4*magArraySize; n++)
-		mag[n] = 0.;
-
-	calculate(calculateMAGCallback, (void*)mag, pattern, ranges, 0, 1);
-
-	delete [] (int*)hint;
-
-	return mag;
-}*/
-
 Property::Magnetization* CPropertyExtractor::calculateMagnetization(
 	Index pattern,
 	Index ranges
@@ -270,7 +231,7 @@ Property::Magnetization* CPropertyExtractor::calculateMagnetization(
 		}
 	}
 	if(((int*)hint)[0] == -1){
-		cout << "Error in PropertyExtractorChebyshev::calculateMAG: No spin index indicated.\n";
+		Util::Streams::err << "Error in PropertyExtractorChebyshev::calculateMAG: No spin index indicated.\n";
 		delete [] (int*)hint;
 		return NULL;
 	}
@@ -322,44 +283,6 @@ Property::LDOS* CPropertyExtractor::calculateLDOS(Index pattern, Index ranges){
 	return ldos;
 }
 
-/*complex<double>* CPropertyExtractor::calculateSP_LDOS(Index pattern, Index ranges){
-	hint = new int[1];
-	((int*)hint)[0] = -1;
-	for(unsigned int n = 0; n < pattern.indices.size(); n++){
-		if(pattern.indices.at(n) == IDX_SPIN){
-			((int*)hint)[0] = n;
-			pattern.indices.at(n) = 0;
-			ranges.indices.at(n) = 1;
-			break;
-		}
-	}
-	if(((int*)hint)[0] == -1){
-		cout << "Error in PropertyExtractorChebyshev::calculateSP_LDOS: No spin index indicated.\n";
-		delete [] (int*)hint;
-		return NULL;
-	}
-
-	for(unsigned int n = 0; n < pattern.indices.size(); n++){
-		if(pattern.indices.at(n) >= 0)
-			ranges.indices.at(n) = 1;
-	}
-
-	int sp_ldosArraySize = 1;
-	for(unsigned int n = 0; n < ranges.indices.size(); n++){
-		if(pattern.indices.at(n) < IDX_SUM_ALL)
-			sp_ldosArraySize *= ranges.indices.at(n);
-	}
-	complex<double> *sp_ldos = new complex<double>[4*energyResolution*sp_ldosArraySize];
-	for(int n = 0; n < 4*energyResolution*sp_ldosArraySize; n++)
-		sp_ldos[n] = 0.;
-
-	calculate(calculateSP_LDOSCallback, (void*)sp_ldos, pattern, ranges, 0, 1);
-
-	delete [] (int*)hint;
-
-	return sp_ldos;
-}*/
-
 Property::SpinPolarizedLDOS* CPropertyExtractor::calculateSpinPolarizedLDOS(
 	Index pattern,
 	Index ranges
@@ -375,7 +298,7 @@ Property::SpinPolarizedLDOS* CPropertyExtractor::calculateSpinPolarizedLDOS(
 		}
 	}
 	if(((int*)hint)[0] == -1){
-		cout << "Error in PropertyExtractorChebyshev::calculateSP_LDOS: No spin index indicated.\n";
+		Util::Streams::err << "Error in PropertyExtractorChebyshev::calculateSP_LDOS: No spin index indicated.\n";
 		delete [] (int*)hint;
 		return NULL;
 	}

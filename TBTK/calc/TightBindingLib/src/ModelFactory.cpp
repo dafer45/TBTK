@@ -5,8 +5,8 @@
 
 #include "../include/ModelFactory.h"
 #include "../include/AmplitudeSet.h"
-
-#include <iostream>
+#include "../include/Streams.h"
+#include "../include/TBTKMacros.h"
 
 using namespace std;
 
@@ -20,10 +20,12 @@ Model* ModelFactory::createSquareLattice(
 ){
 	Model *model = new Model();
 
-	if(size.size() != periodic.size()){
-		cout << "Error in ModelFactory::createSquareLattice: size and periodic have different dimensions.\n";
-		exit(1);
-	}
+	TBTKAssert(
+		size.size() == periodic.size(),
+		"ModelFactory::createSquareLattice()",
+		"Argument 'size' and argument 'periodic' have different dimensions.",
+		""
+	);
 
 	switch(size.size()){
 	case 1:
@@ -36,7 +38,7 @@ Model* ModelFactory::createSquareLattice(
 		createSquareLattice3D(model, size, periodic, t);
 		break;
 	default:
-		cout << "Error in ModelFactory::createSquareLattice: Only 1-3 dimensions supported, but " << size.size() << " dimensions requested.\n";
+		Util::Streams::err << "Error in ModelFactory::createSquareLattice: Only 1-3 dimensions supported, but " << size.size() << " dimensions requested.\n";
 		exit(1);
 	}
 
@@ -50,15 +52,19 @@ Model* ModelFactory::createHexagonalLattice(
 ){
 	Model *model = new Model();
 
-	if(size.size() != periodic.size()){
-		cout << "Error in ModelFactory::createHexagonalLattice: size and periodic have different dimensions.\n";
-		exit(1);
-	}
+	TBTKAssert(
+		size.size() == periodic.size(),
+		"ModelFactory::createHexagonalLattice()",
+		"Argument 'size' and argument 'periodic' have different dimensions.",
+		""
+	);
 
-	if(size.size() != 2){
-		cout << "Error in ModelFactory::createHexagonalLattice: Only 2 dimensions supported, but " << size.size() << " dimensions requested.\n";
-		exit(1);
-	}
+	TBTKAssert(
+		size.size() == 2,
+		"ModelFactory::createHexagonalLattice():",
+		"Only 2 dimensions supported, but " << size.size() << " dimensions requested.",
+		""
+	);
 
 	int sizeX = *size.begin();
 	int sizeY = *(size.begin() + 1);
@@ -98,7 +104,7 @@ void ModelFactory::addSquareGeometry(
 		addSquareGeometry3D(model, size);
 		break;
 	default:
-		cout << "Error in ModelFactory::addSquareGeometry: Only 1-3 dimensions supported, but " << size.size() << " dimensions requested.\n";
+		Util::Streams::err << "Error in ModelFactory::addSquareGeometry: Only 1-3 dimensions supported, but " << size.size() << " dimensions requested.\n";
 		exit(1);
 	}
 }
@@ -108,7 +114,7 @@ void ModelFactory::addHexagonalGeometry(
 	std::initializer_list<int> size
 ){
 	if(size.size() != 2){
-		cout << "Error in ModelFactory::addSquareGeometry: Only 1-3 dimensions supported, but " << size.size() << " dimensions requested.\n";
+		Util::Streams::err << "Error in ModelFactory::addSquareGeometry: Only 1-3 dimensions supported, but " << size.size() << " dimensions requested.\n";
 		exit(1);
 	}
 
@@ -162,18 +168,18 @@ Model* ModelFactory::merge(
 		Model *m = *(models.begin() + n);
 		if(m->getGeometry() == NULL){
 			geometryExists = false;
-			cout << "Warning in ModelFactory::merge: Geometric data connot be merged because model " << n << " lacks geometric data.\n";
+			Util::Streams::out << "Warning in ModelFactory::merge: Geometric data connot be merged because model " << n << " lacks geometric data.\n";
 			break;
 		}
 
 		if(m->getGeometry()->getDimensions() != 3){
 			geometryExists = false;
-			cout << "Warning in ModelFactory::merge: Geometric data connot be merged because model " << n << " has geometric of dimension " << m->getGeometry()->getDimensions() << ".\n";
+			Util::Streams::out << "Warning in ModelFactory::merge: Geometric data connot be merged because model " << n << " has geometric of dimension " << m->getGeometry()->getDimensions() << ".\n";
 			break;
 		}
 
 		if(m->getGeometry()->getNumSpecifiers() != 0){
-			cout << "Warning in ModelFactory::merge: Specifiers ignored in model " << n << ".\n";
+			Util::Streams::out << "Warning in ModelFactory::merge: Specifiers ignored in model " << n << ".\n";
 		}
 	}
 

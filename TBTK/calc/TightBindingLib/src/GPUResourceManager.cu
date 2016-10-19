@@ -4,8 +4,7 @@
  */
 
 #include "../include/GPUResourceManager.h"
-
-#include <iostream>
+#include "../include/Streams.h"
 
 using namespace std;
 
@@ -14,7 +13,7 @@ namespace TBTK{
 void GPUResourceManager::createDeviceTable(){
 	cudaGetDeviceCount(&numDevices);
 
-	cout << "Num GPU devices: " << numDevices << "\n";
+	Util::Streams::out << "Num GPU devices: " << numDevices << "\n";
 
 	if(numDevices > 0){
 		busyDevices = new bool[numDevices];

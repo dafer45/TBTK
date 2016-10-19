@@ -15,6 +15,8 @@
 
 #include "slu_zdefs.h"
 
+#include <iostream>
+
 using namespace std;
 
 namespace TBTK{

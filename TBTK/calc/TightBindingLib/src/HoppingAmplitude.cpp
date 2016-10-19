@@ -4,7 +4,7 @@
  */
 
 #include "../include/HoppingAmplitude.h"
-#include <iostream>
+#include "../include/Streams.h"
 
 using namespace std;
 
@@ -111,17 +111,17 @@ HoppingAmplitude HoppingAmplitude::getHermitianConjugate(){
 }
 
 void HoppingAmplitude::print(){
-	cout << "From index:\t";
+	Util::Streams::out << "From index:\t";
 	for(unsigned int n = 0; n < fromIndex.size(); n++){
-		cout << fromIndex.at(n) << " ";
+		Util::Streams::out << fromIndex.at(n) << " ";
 	}
-	cout << "\n";
-	cout << "To index:\t";
+	Util::Streams::out << "\n";
+	Util::Streams::out << "To index:\t";
 	for(unsigned int n = 0; n < toIndex.size(); n++){
-		cout << toIndex.at(n) << " ";
+		Util::Streams::out << toIndex.at(n) << " ";
 	}
-	cout << "\n";
-	cout << "Amplitude:\t" << getAmplitude() << "\n";
+	Util::Streams::out << "\n";
+	Util::Streams::out << "Amplitude:\t" << getAmplitude() << "\n";
 }
 
 };	//End of namespace TBTK

@@ -5,7 +5,7 @@
 
 #include "../include/DPropertyExtractor.h"
 #include "../include/Functions.h"
-#include <iostream>
+#include "../include/Streams.h"
 
 using namespace std;
 
@@ -19,159 +19,6 @@ DPropertyExtractor::DPropertyExtractor(DiagonalizationSolver *dSolver){
 
 DPropertyExtractor::~DPropertyExtractor(){
 }
-
-/*void DPropertyExtractor::save(int *memory, int rows, int columns, string filename, string path){
-	if(memory == NULL){
-		cout << "Error in PropertyExtractor::save: memory is NULL.\n";
-		return;
-	}
-
-	stringstream ss;
-	ss << path;
-	if(path.back() != '/')
-		ss << '/';
-	ss << filename;
-	ofstream fout;
-	fout.open(ss.str().c_str());
-	for(int r = 0; r < rows; r++){
-		for(int c = 0; c < columns; c++){
-			if(c != 0)
-				fout << "\t";
-			fout << memory[columns*r + c];
-		}
-		fout << "\n";
-	}
-	fout.close();
-}
-
-void DPropertyExtractor::save(double *memory, int rows, int columns, string filename, string path){
-	if(memory == NULL){
-		cout << "Error in PropertyExtractor::save: memory is NULL.\n";
-		return;
-	}
-
-	stringstream ss;
-	ss << path;
-	if(path.back() != '/')
-		ss << '/';
-	ss << filename;
-	ofstream fout;
-	fout.open(ss.str().c_str());
-	for(int r = 0; r < rows; r++){
-		for(int c = 0; c < columns; c++){
-			if(c != 0)
-				fout << "\t";
-			fout << memory[columns*r + c];
-		}
-		fout << "\n";
-	}
-	fout.close();
-}
-
-void DPropertyExtractor::save(complex<double> *memory, int rows, int columns, string filename, string path){
-	if(memory == NULL){
-		cout << "Error in PropertyExtractor::save: memory is NULL.\n";
-		return;
-	}
-
-	stringstream ss;
-	ss << path;
-	if(path.back() != '/')
-		ss << '/';
-	ss << filename;
-	ofstream fout;
-	fout.open(ss.str().c_str());
-	for(int r = 0; r < rows; r++){
-		for(int c = 0; c < columns; c++){
-			if(c != 0)
-				fout << "\t";
-			fout << abs(memory[columns*r + c]) << " " << arg(memory[columns*r + c]);
-		}
-		fout << "\n";
-	}
-	fout.close();
-}
-
-void DPropertyExtractor::save2D(int *memory, int size_x, int size_y, int columns, string filename, string path){
-	if(memory == NULL){
-		cout << "Error in PropertyExtractor::save2D: memory is NULL.\n";
-		return;
-	}
-
-	stringstream ss;
-	ss << path;
-	if(path.back() != '/')
-		ss << '/';
-	ss << filename;
-	ofstream fout;
-	fout.open(ss.str().c_str());
-	for(int y = 0; y < size_y; y++){
-		for(int x = 0; x < size_x; x++){
-			for(int c = 0; c < columns; c++){
-				if(c != 0)
-					fout << "\t";
-				fout << memory[columns*(x + size_x*y) + c];
-			}
-			fout << "\n";
-		}
-		fout << "\n";
-	}
-	fout.close();
-}
-
-void DPropertyExtractor::save2D(double *memory, int size_x, int size_y, int columns, string filename, string path){
-	if(memory == NULL){
-		cout << "Error in PropertyExtractor::save2D: memory is NULL.\n";
-		return;
-	}
-
-	stringstream ss;
-	ss << path;
-	if(path.back() != '/')
-		ss << '/';
-	ss << filename;
-	ofstream fout;
-	fout.open(ss.str().c_str());
-	for(int y = 0; y < size_y; y++){
-		for(int x = 0; x < size_x; x++){
-			for(int c = 0; c < columns; c++){
-				if(c != 0)
-					fout << "\t";
-				fout << memory[columns*(x + size_x*y) + c];
-			}
-			fout << "\n";
-		}
-		fout << "\n";
-	}
-	fout.close();
-}
-
-void DPropertyExtractor::save2D(complex<double> *memory, int size_x, int size_y, int columns, string filename, string path){
-	if(memory == NULL){
-		cout << "Error in PropertyExtractor::save2D: memory is NULL.\n";
-		return;
-	}
-
-	stringstream ss;
-	ss << path;
-	if(path.back() != '/')
-		ss << '/';
-	ss << filename;
-	ofstream fout;
-	fout.open(ss.str().c_str());
-	for(int y = 0; y < size_y; y++){
-		for(int x = 0; x < size_x; x++){
-			for(int c = 0; c < columns; c++){
-				if(c != 0)
-					fout << "\t";
-				fout << abs(memory[columns*(x + size_x*y) + c]) << " " << arg(memory[columns*(x + size_x*y) + c]);
-			}
-			fout << "\n";
-		}
-		fout << "\n";
-	}
-	fout.close();
-}*/
 
 void DPropertyExtractor::saveEigenValues(string path, string filename){
 	stringstream ss;
@@ -201,13 +48,6 @@ void DPropertyExtractor::getTabulatedAmplitudeSet(
 	);
 }
 
-/*double* DPropertyExtractor::getEigenValues(){
-	double *ev = new double[dSolver->getModel()->getBasisSize()];
-	for(int n = 0; n < dSolver->getModel()->getBasisSize(); n++)
-		ev[n] = dSolver->getEigenValues()[n];
-	return ev;
-}*/
-
 Property::EigenValues* DPropertyExtractor::getEigenValues(){
 	int size = dSolver->getModel()->getBasisSize();
 	const double *ev = dSolver->getEigenValues();
@@ -218,22 +58,6 @@ Property::EigenValues* DPropertyExtractor::getEigenValues(){
 
 	return eigenValues;
 }
-
-/*double* DPropertyExtractor::calculateDOS(double l_lim, double u_lim, int resolution){
-	const double *ev = dSolver->getEigenValues();
-
-	double *dos = new double[resolution];
-	for(int n = 0; n < resolution; n++)
-		dos[n] = 0.;
-	for(int n = 0; n < dSolver->getModel()->getBasisSize(); n++){
-		int e = (int)(((ev[n] - l_lim)/(u_lim - l_lim))*resolution);
-		if(e >= 0 && e < resolution){
-			dos[e] += 1.;
-		}
-	}
-
-	return dos;
-}*/
 
 Property::DOS* DPropertyExtractor::calculateDOS(
 	double lowerBound,
@@ -253,25 +77,6 @@ Property::DOS* DPropertyExtractor::calculateDOS(
 	return dos;
 }
 
-/*double* DPropertyExtractor::calculateDensity(Index pattern, Index ranges){
-	for(unsigned int n = 0; n < pattern.indices.size(); n++){
-		if(pattern.indices.at(n) >= 0)
-			ranges.indices.at(n) = 1;
-	}
-
-	int densityArraySize = 1;
-	for(unsigned int n = 0; n < ranges.indices.size(); n++){
-		if(pattern.indices.at(n) < IDX_SUM_ALL)
-			densityArraySize *= ranges.indices.at(n);
-	}
-	double *density = new double[densityArraySize];
-	for(int n = 0; n < densityArraySize; n++)
-		density[n] = 0.;
-	calculate(calculateDensityCallback, (void*)density, pattern, ranges, 0, 1);
-
-	return density;
-}*/
-
 Property::Density* DPropertyExtractor::calculateDensity(
 	Index pattern,
 	Index ranges
@@ -288,43 +93,6 @@ Property::Density* DPropertyExtractor::calculateDensity(
 	return density;
 }
 
-/*complex<double>* DPropertyExtractor::calculateMAG(Index pattern, Index ranges){
-	hint = new int[1];
-	((int*)hint)[0] = -1;
-	for(unsigned int n = 0; n < pattern.indices.size(); n++){
-		if(pattern.indices.at(n) == IDX_SPIN){
-			((int*)hint)[0] = n;
-			pattern.indices.at(n) = 0;
-			ranges.indices.at(n) = 1;
-			break;
-		}
-	}
-	if(((int*)hint)[0] == -1){
-		cout << "Error in PropertyExtractor::calculateMAG: No spin index indicated.\n";
-		delete [] (int*)hint;
-		return NULL;
-	}
-
-	for(unsigned int n = 0; n < pattern.indices.size(); n++){
-		if(pattern.indices.at(n) >= 0)
-			ranges.indices.at(n) = 1;
-	}
-
-	int magArraySize = 1;
-	for(unsigned int n = 0; n < ranges.indices.size(); n++){
-		if(pattern.indices.at(n) < IDX_SUM_ALL)
-			magArraySize *= ranges.indices.at(n);
-	}
-	complex<double> *mag = new complex<double>[4*magArraySize];
-	for(int n = 0; n < 4*magArraySize; n++)
-		mag[n] = 0;
-	calculate(calculateMAGCallback, (void*)mag, pattern, ranges, 0, 1);
-
-	delete [] (int*)hint;
-
-	return mag;
-}*/
-
 Property::Magnetization* DPropertyExtractor::calculateMagnetization(
 	Index pattern,
 	Index ranges
@@ -340,7 +108,7 @@ Property::Magnetization* DPropertyExtractor::calculateMagnetization(
 		}
 	}
 	if(((int*)hint)[0] == -1){
-		cout << "Error in PropertyExtractor::calculateMAG: No spin index indicated.\n";
+		Util::Streams::err << "Error in PropertyExtractor::calculateMAG: No spin index indicated.\n";
 		delete [] (int*)hint;
 		return NULL;
 	}
@@ -358,58 +126,6 @@ Property::Magnetization* DPropertyExtractor::calculateMagnetization(
 
 	return magnetization;
 }
-
-/*complex<double>* DPropertyExtractor::calculateSP_LDOS(Index pattern, Index ranges, double l_lim, double u_lim, int resolution){
-	//hint[0] is an array of doubles, hint[1] is an array of ints
-	//hint[0][0]: u_lim
-	//hint[0][1]: l_lim
-	//hint[1][0]: resolution
-	//hint[1][1]: spin_index
-	hint = new void*[2];
-	((double**)hint)[0] = new double[2];
-	((int**)hint)[1] = new int[2];
-	((double**)hint)[0][0] = u_lim;
-	((double**)hint)[0][1] = l_lim;
-	((int**)hint)[1][0] = resolution;
-
-	((int**)hint)[1][1] = -1;
-	for(unsigned int n = 0; n < pattern.indices.size(); n++){
-		if(pattern.indices.at(n) == IDX_SPIN){
-			((int**)hint)[1][1] = n;
-			pattern.indices.at(n) = 0;
-			ranges.indices.at(n) = 1;
-			break;
-		}
-	}
-	if(((int**)hint)[1][1] == -1){
-		cout << "Error in PropertyExtractor::calculateSP_LDOS_E: No spin index indicated.\n";
-		delete [] ((double**)hint)[0];
-		delete [] ((int**)hint)[1];
-		delete [] (void**)hint;
-		return NULL;
-	}
-
-	for(unsigned int n = 0; n < pattern.indices.size(); n++){
-		if(pattern.indices.at(n) >= 0)
-			ranges.indices.at(n) = 1;
-	}
-
-	int sp_ldosArraySize = 1;
-	for(unsigned int n = 0; n < ranges.indices.size(); n++){
-		if(pattern.indices.at(n) < IDX_SUM_ALL)
-			sp_ldosArraySize *= ranges.indices.at(n);
-	}
-	complex<double> *sp_ldos = new complex<double>[4*resolution*sp_ldosArraySize];
-	for(int n = 0; n < 4*resolution*sp_ldosArraySize; n++)
-		sp_ldos[n] = 0;
-	calculate(calculateSP_LDOSCallback, (void*)sp_ldos, pattern, ranges, 0, 1);
-
-	delete [] ((double**)hint)[0];
-	delete [] ((int**)hint)[1];
-	delete [] (void**)hint;
-
-	return sp_ldos;
-}*/
 
 Property::SpinPolarizedLDOS* DPropertyExtractor::calculateSpinPolarizedLDOS(
 	Index pattern,
@@ -440,7 +156,7 @@ Property::SpinPolarizedLDOS* DPropertyExtractor::calculateSpinPolarizedLDOS(
 		}
 	}
 	if(((int**)hint)[1][1] == -1){
-		cout << "Error in PropertyExtractor::calculateSP_LDOS_E: No spin index indicated.\n";
+		Util::Streams::err << "Error in PropertyExtractor::calculateSP_LDOS_E: No spin index indicated.\n";
 		delete [] ((double**)hint)[0];
 		delete [] ((int**)hint)[1];
 		delete [] (void**)hint;
@@ -561,39 +277,6 @@ void DPropertyExtractor::calculateSP_LDOSCallback(
 		}
 	}
 }
-
-/*void DPropertyExtractor::calculate(void (*callback)(DPropertyExtractor *cb_this, void *memory, const Index &index, int offset),
-			void *memory, Index pattern, const Index &ranges, int currentOffset, int offsetMultiplier){
-	unsigned int currentSubindex = 0;
-	for(; currentSubindex < pattern.indices.size(); currentSubindex++){
-		if(pattern.indices.at(currentSubindex) < 0)
-			break;
-	}
-
-	if(currentSubindex == pattern.indices.size()){
-		callback(this, memory, pattern, currentOffset);
-	}
-	else{
-		int nextOffsetMultiplier = offsetMultiplier;
-		if(pattern.indices.at(currentSubindex) < IDX_SUM_ALL)
-			nextOffsetMultiplier *= ranges.indices.at(currentSubindex);
-		bool isSumIndex = false;
-		if(pattern.indices.at(currentSubindex) == IDX_SUM_ALL)
-			isSumIndex = true;
-		for(int n = 0; n < ranges.indices.at(currentSubindex); n++){
-			pattern.indices.at(currentSubindex) = n;
-			calculate(callback,
-					memory,
-					pattern,
-					ranges,
-					currentOffset,
-					nextOffsetMultiplier
-			);
-			if(!isSumIndex)
-				currentOffset += offsetMultiplier;
-		}
-	}
-}*/
 
 void DPropertyExtractor::calculate(
 	void (*callback)(

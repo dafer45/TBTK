@@ -6,8 +6,6 @@
 #include "../include/GPUResourceManager.h"
 #include "../include/TBTKMacros.h"
 
-#include <iostream>
-
 using namespace std;
 
 namespace TBTK{

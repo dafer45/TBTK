@@ -1,6 +1,5 @@
 #include "../include/Index.h"
-
-#include <iostream>
+#include "../include/Streams.h"
 
 using namespace std;
 
@@ -23,7 +22,7 @@ bool operator<(const Index &i1, const Index &i2){
 			return false;
 	}
 
-	cout << "Error in operator<(Index &i1, Index &i2): Comparison between indices of types mutually incompatible with the TreeNode structure.\n";
+	Util::Streams::err << "Error in operator<(Index &i1, Index &i2): Comparison between indices of types mutually incompatible with the TreeNode structure.\n";
 	exit(1);
 }
 
@@ -44,7 +43,7 @@ bool operator>(const Index &i1, const Index &i2){
 			return true;
 	}
 
-	cout << "Error in operator>(Index &i1, Index &i2): Comparison between indices of types mutually incompatible with the TreeNode structure.\n";
+	Util::Streams::err << "Error in operator>(Index &i1, Index &i2): Comparison between indices of types mutually incompatible with the TreeNode structure.\n";
 	exit(1);
 }
 

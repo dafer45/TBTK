@@ -7,7 +7,6 @@
 #include "../include/Geometry.h"
 #include "../include/Streams.h"
 
-#include <iostream>
 #include <string>
 #include <fstream>
 #include <math.h>
@@ -41,7 +40,7 @@ void Model::addHAAndHC(HoppingAmplitude ha){
 
 void Model::construct(){
 	if(isTalkative)
-		Util::Streams::out << "Constructing system (!)\n";
+		Util::Streams::out << "Constructing system\n";
 
 	amplitudeSet->construct();
 

@@ -4,7 +4,7 @@
  */
 
 #include "../include/Geometry.h"
-#include <iostream>
+#include "../include/Streams.h"
 
 using namespace std;
 
@@ -39,7 +39,7 @@ void Geometry::setCoordinates(
 			this->coordinates[dimensions*basisIndex + n] = *(coordinates.begin() + n);
 	}
 	else{
-		cout << "Error in Geometry::setCoordinates: Geometry requires " << dimensions << " coordinates, but " << coordinates.size() << " were supplied.\n";
+		Util::Streams::err << "Error in Geometry::setCoordinates: Geometry requires " << dimensions << " coordinates, but " << coordinates.size() << " were supplied.\n";
 		exit(1);
 	}
 
@@ -48,7 +48,7 @@ void Geometry::setCoordinates(
 			this->specifiers[numSpecifiers*basisIndex + n] = *(specifiers.begin() + n);
 	}
 	else{
-		cout << "Error in Geometry::addPoint: Geometry requires " << numSpecifiers << " specfiers, but " << specifiers.size() << " were supplied.\n";
+		Util::Streams::out << "Error in Geometry::addPoint: Geometry requires " << numSpecifiers << " specfiers, but " << specifiers.size() << " were supplied.\n";
 		exit(1);
 	}
 }
@@ -64,7 +64,7 @@ void Geometry::setCoordinates(
 			this->coordinates[dimensions*basisIndex + n] = *(coordinates.begin() + n);
 	}
 	else{
-		cout << "Error in Geometry::setCoordinates: Geometry requires " << dimensions << " coordinates, but " << coordinates.size() << " were supplied.\n";
+		Util::Streams::out << "Error in Geometry::setCoordinates: Geometry requires " << dimensions << " coordinates, but " << coordinates.size() << " were supplied.\n";
 		exit(1);
 	}
 
@@ -73,14 +73,14 @@ void Geometry::setCoordinates(
 			this->specifiers[numSpecifiers*basisIndex + n] = *(specifiers.begin() + n);
 	}
 	else{
-		cout << "Error in Geometry::addPoint: Geometry requires " << numSpecifiers << " specfiers, but " << specifiers.size() << " were supplied.\n";
+		Util::Streams::out << "Error in Geometry::addPoint: Geometry requires " << numSpecifiers << " specfiers, but " << specifiers.size() << " were supplied.\n";
 		exit(1);
 	}
 }
 
 void Geometry::translate(initializer_list<double> translation){
 	if(translation.size() != dimensions){
-		cout << "Error in Geometry::translate: The number of dimensions of the translation vector (" << translation.size() << ") does not match the dimension of the geometry (" << dimensions << ").\n";
+		Util::Streams::out << "Error in Geometry::translate: The number of dimensions of the translation vector (" << translation.size() << ") does not match the dimension of the geometry (" << dimensions << ").\n";
 		exit(1);
 	}
 

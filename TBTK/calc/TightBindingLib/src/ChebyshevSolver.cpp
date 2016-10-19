@@ -7,9 +7,9 @@
 #include "../include/HALinkedList.h"
 #include "../include/UnitHandler.h"
 #include "../include/TBTKMacros.h"
+#include "../include/Streams.h"
 
 #include <math.h>
-#include <iostream>
 
 using namespace std;
 
@@ -104,11 +104,11 @@ void ChebyshevSolver::calculateCoefficients(
 	int toBasisIndex = amplitudeSet->getBasisIndex(to);
 
 	if(isTalkative){
-		cout << "ChebyshevSolver::calculateCoefficients\n";
-		cout << "\tFrom Index: " << fromBasisIndex << "\n";
-		cout << "\tTo Index: " << toBasisIndex << "\n";
-		cout << "\tBasis size: " << amplitudeSet->getBasisSize() << "\n";
-		cout << "\tProgress (100 coefficients per dot): ";
+		Util::Streams::out << "ChebyshevSolver::calculateCoefficients\n";
+		Util::Streams::out << "\tFrom Index: " << fromBasisIndex << "\n";
+		Util::Streams::out << "\tTo Index: " << toBasisIndex << "\n";
+		Util::Streams::out << "\tBasis size: " << amplitudeSet->getBasisSize() << "\n";
+		Util::Streams::out << "\tProgress (100 coefficients per dot): ";
 	}
 
 	complex<double> *jIn1 = new complex<double>[amplitudeSet->getBasisSize()];
@@ -205,13 +205,13 @@ void ChebyshevSolver::calculateCoefficients(
 
 		if(isTalkative){
 			if(n%100 == 0)
-				cout << "." << flush;
+				Util::Streams::out << "." << flush;
 			if(n%1000 == 0)
-				cout << " " << flush;
+				Util::Streams::out << " " << flush;
 		}
 	}
 	if(isTalkative)
-		cout << "\n";
+		Util::Streams::out << "\n";
 
 	delete [] jIn1;
 	delete [] jIn2;
@@ -262,10 +262,10 @@ void ChebyshevSolver::calculateCoefficients(
 		coefficientMap[amplitudeSet->getBasisIndex(to.at(n))] = n;
 
 	if(isTalkative){
-		cout << "ChebyshevSolver::calculateCoefficients\n";
-		cout << "\tFrom Index: " << fromBasisIndex << "\n";
-		cout << "\tBasis size: " << amplitudeSet->getBasisSize() << "\n";
-		cout << "\tProgress (100 coefficients per dot): ";
+		Util::Streams::out << "ChebyshevSolver::calculateCoefficients\n";
+		Util::Streams::out << "\tFrom Index: " << fromBasisIndex << "\n";
+		Util::Streams::out << "\tBasis size: " << amplitudeSet->getBasisSize() << "\n";
+		Util::Streams::out << "\tProgress (100 coefficients per dot): ";
 	}
 
 	complex<double> *jIn1 = new complex<double>[amplitudeSet->getBasisSize()];
@@ -368,13 +368,13 @@ void ChebyshevSolver::calculateCoefficients(
 
 		if(isTalkative){
 			if(n%100 == 0)
-				cout << "." << flush;
+				Util::Streams::out << "." << flush;
 			if(n%1000 == 0)
-				cout << " " << flush;
+				Util::Streams::out << " " << flush;
 		}
 	}
 	if(isTalkative)
-		cout << "\n";
+		Util::Streams::out << "\n";
 
 	delete [] jIn1;
 	delete [] jIn2;
@@ -422,11 +422,11 @@ void ChebyshevSolver::calculateCoefficientsWithCutoff(
 	int toBasisIndex = amplitudeSet->getBasisIndex(to);
 
 	if(isTalkative){
-		cout << "ChebyshevSolver::calculateCoefficients\n";
-		cout << "\tFrom Index: " << fromBasisIndex << "\n";
-		cout << "\tTo Index: " << toBasisIndex << "\n";
-		cout << "\tBasis size: " << amplitudeSet->getBasisSize() << "\n";
-		cout << "\tProgress (100 coefficients per dot): ";
+		Util::Streams::out << "ChebyshevSolver::calculateCoefficients\n";
+		Util::Streams::out << "\tFrom Index: " << fromBasisIndex << "\n";
+		Util::Streams::out << "\tTo Index: " << toBasisIndex << "\n";
+		Util::Streams::out << "\tBasis size: " << amplitudeSet->getBasisSize() << "\n";
+		Util::Streams::out << "\tProgress (100 coefficients per dot): ";
 	}
 
 	complex<double> *jIn1 = new complex<double>[amplitudeSet->getBasisSize()];
@@ -540,16 +540,10 @@ void ChebyshevSolver::calculateCoefficientsWithCutoff(
 		coefficients[n] = jIn1[toBasisIndex];
 
 		if(isTalkative){
-/*			if(n%100 == 0)
-				cout << n << "\t" << everReachedIndicesCounter
-					<< "\t" << everReachedIndicesCounter/(double)amplitudeSet->getBasisSize()
-					<< "\t" << abs(coefficients[n])
-//					<< "\t" << sqrt(abs(scalarProduct(jIn1, jIn1, amplitudeSet->getBasisSize())))
-					<< "\n";*/
 			if(n%100 == 0)
-				cout << ".";
+				Util::Streams::out << ".";
 			if(n%1000 == 0)
-				cout << " ";
+				Util::Streams::out << " ";
 		}
 	}
 
@@ -583,7 +577,6 @@ void ChebyshevSolver::generateLookupTable(
 		"energyResolution has to be larger than 0.",
 		""
 	);
-	cout << lowerBound << " " << upperBound << "\n";
 	TBTKAssert(
 		lowerBound < upperBound,
 		"ChebyshevSolver::generateLookupTable()",
@@ -604,11 +597,11 @@ void ChebyshevSolver::generateLookupTable(
 	);
 
 	if(isTalkative){
-		cout << "Generating lookup table\n";
-		cout << "\tNum coefficients: " << numCoefficients << "\n";
-		cout << "\tEnergy resolution: " << energyResolution << "\n";
-		cout << "\tLower bound: " << lowerBound << "\n";
-		cout << "\tUpper bound: " << upperBound << "\n";
+		Util::Streams::out << "Generating lookup table\n";
+		Util::Streams::out << "\tNum coefficients: " << numCoefficients << "\n";
+		Util::Streams::out << "\tEnergy resolution: " << energyResolution << "\n";
+		Util::Streams::out << "\tLower bound: " << lowerBound << "\n";
+		Util::Streams::out << "\tUpper bound: " << upperBound << "\n";
 	}
 
 	if(generatingFunctionLookupTable != NULL){
@@ -732,7 +725,7 @@ void ChebyshevSolver::generateGreensFunction(
 		}
 	}
 	else{
-		cout << "Error in ChebyshevSolver::generateGreensFunction: Unknown GreensFunctionType\n";
+		Util::Streams::err << "Error in ChebyshevSolver::generateGreensFunction: Unknown GreensFunctionType\n";
 		exit(1);
 	}
 }
@@ -742,40 +735,41 @@ void ChebyshevSolver::generateGreensFunction(
 	complex<double> *coefficients,
 	GreensFunctionType type
 ){
-	if(generatingFunctionLookupTable == NULL){
-		cout << "Error in ChebyshevSolver::generateGreensFunction: Lookup table has not been generated.";
-		exit(1);
-	}
-	else{
-		for(int e = 0; e < lookupTableResolution; e++)
-			greensFunction[e] = 0.;
+	TBTKAssert(
+		generatingFunctionLookupTable != NULL,
+		"ChebyshevSolver::generateGreensFunction()",
+		"Lookup table has not been generated.",
+		"Use ChebyshevSolver::generateLookupTable() to generate lookup table."
+	);
 
-		if(type == GreensFunctionType::Retarded){
-			for(int n = 0; n < lookupTableNumCoefficients; n++){
-				for(int e = 0; e < lookupTableResolution; e++){
-					greensFunction[e] += generatingFunctionLookupTable[n][e]*coefficients[n];
-				}
+	for(int e = 0; e < lookupTableResolution; e++)
+		greensFunction[e] = 0.;
+
+	if(type == GreensFunctionType::Retarded){
+		for(int n = 0; n < lookupTableNumCoefficients; n++){
+			for(int e = 0; e < lookupTableResolution; e++){
+				greensFunction[e] += generatingFunctionLookupTable[n][e]*coefficients[n];
 			}
 		}
-		else if(type == GreensFunctionType::Advanced){
-			for(int n = 0; n < lookupTableNumCoefficients; n++){
-				for(int e = 0; e < lookupTableResolution; e++){
-					greensFunction[e] += coefficients[n]*conj(generatingFunctionLookupTable[n][e]);
-				}
+	}
+	else if(type == GreensFunctionType::Advanced){
+		for(int n = 0; n < lookupTableNumCoefficients; n++){
+			for(int e = 0; e < lookupTableResolution; e++){
+				greensFunction[e] += coefficients[n]*conj(generatingFunctionLookupTable[n][e]);
 			}
 		}
-		else if(type == GreensFunctionType::Principal){
-			for(int n = 0; n < lookupTableNumCoefficients; n++){
-				for(int e = 0; e < lookupTableResolution; e++){
-					greensFunction[e] += -coefficients[n]*real(generatingFunctionLookupTable[n][e]);
-				}
+	}
+	else if(type == GreensFunctionType::Principal){
+		for(int n = 0; n < lookupTableNumCoefficients; n++){
+			for(int e = 0; e < lookupTableResolution; e++){
+				greensFunction[e] += -coefficients[n]*real(generatingFunctionLookupTable[n][e]);
 			}
 		}
-		else if(type == GreensFunctionType::NonPrincipal){
-			for(int n = 0; n < lookupTableNumCoefficients; n++){
-				for(int e = 0; e < lookupTableResolution; e++){
-					greensFunction[e] -= coefficients[n]*i*imag(generatingFunctionLookupTable[n][e]);
-				}
+	}
+	else if(type == GreensFunctionType::NonPrincipal){
+		for(int n = 0; n < lookupTableNumCoefficients; n++){
+			for(int e = 0; e < lookupTableResolution; e++){
+				greensFunction[e] -= coefficients[n]*i*imag(generatingFunctionLookupTable[n][e]);
 			}
 		}
 	}

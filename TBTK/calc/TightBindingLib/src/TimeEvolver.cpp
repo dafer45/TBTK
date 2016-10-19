@@ -6,8 +6,9 @@
 #include "../include/TimeEvolver.h"
 #include "../include/AmplitudeSet.h"
 #include "../include/Util.h"
+#include "../include/Streams.h"
+#include "../include/TBTKMacros.h"
 
-#include <iostream>
 #include <complex>
 #include <math.h>
 
@@ -54,7 +55,7 @@ TimeEvolver::~TimeEvolver(){
 		dSolvers.erase(dSolvers.begin() + timeEvolverIndex);
 	}
 	else{
-		cout << "Error in TimeEvolver::~TimeEvolver(): TimeEvolver not found.\n";
+		Util::Streams::err << "Error in TimeEvolver::~TimeEvolver(): TimeEvolver not found.\n";
 		exit(1);
 	}
 }
@@ -147,7 +148,7 @@ bool TimeEvolver::scCallback(DiagonalizationSolver *dSolver){
 		}
 	}
 
-	cout << "Error in TimeEvolver::scCallback(): DiagonalizationSolver not found.\n";
+	Util::Streams::err << "Error in TimeEvolver::scCallback(): DiagonalizationSolver not found.\n";
 	exit(1);
 
 	return 0; //Never reached
@@ -216,7 +217,7 @@ void TimeEvolver::updateOccupancy(){
 			decayHandler->decay(this, occupancy, eigenValues, eigenVectorsMap);
 			break;
 		default:	//Should never happen. Hard error generated for quick bug detection.
-			cout << "Error in TimeEvolver::updateOccupancy(): Unkown DecayMode - " << static_cast<int>(decayMode);
+			Util::Streams::err << "Error in TimeEvolver::updateOccupancy(): Unkown DecayMode - " << static_cast<int>(decayMode);
 			exit(1);
 	}
 }
@@ -246,23 +247,25 @@ void TimeEvolver::decayInstantly(){
 }
 
 void TimeEvolver::decayInterpolate(){
+	TBTKAssert(
+		!particleNumberIsFixed,
+		"TimeEvolver::decayInterpolate()",
+		"Fixed particle number not supported.",
+		"Use TimeEvolver::fixParticleNumber(false) to set non fixed particle number."
+	);
+
 	int basisSize = model->getBasisSize();
-	if(particleNumberIsFixed){
-		cout << "Error in TimeEvolver::decayInterpolate(): Fixed particle number not supported.\n";
-		exit(1);
-	}
-	else{
-		for(int n = 0; n < basisSize; n++){
-			if(eigenValues[n] < model->getChemicalPotential()){
-				occupancy[n] += 0.00000001;
-				if(occupancy[n] > 1)
-					occupancy[n] = 1.;
-			}
-			else{
-				occupancy[n] -= 0.00000001;
-				if(occupancy[n] < 0)
-					occupancy[n] = 0.;
-			}
+
+	for(int n = 0; n < basisSize; n++){
+		if(eigenValues[n] < model->getChemicalPotential()){
+			occupancy[n] += 0.00000001;
+			if(occupancy[n] > 1)
+				occupancy[n] = 1.;
+		}
+		else{
+			occupancy[n] -= 0.00000001;
+			if(occupancy[n] < 0)
+				occupancy[n] = 0.;
 		}
 	}
 }

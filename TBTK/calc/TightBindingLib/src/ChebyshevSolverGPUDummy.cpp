@@ -5,6 +5,7 @@
  */
 
 #include "../include/ChebyshevSolver.h"
+#include "../include/Streams.h"
 
 #include <iostream>
 
@@ -19,7 +20,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 	int numCoefficients,
 	double broadening
 ){
-	cout << "Error in ChebyshevSolver::calculateCoefficientsGPU: GPU Not supported.\n";
+	Util::Streams::err << "Error in ChebyshevSolver::calculateCoefficientsGPU: GPU Not supported.\n";
 	exit(1);
 }
 
@@ -30,17 +31,17 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 	int numCoefficients,
 	double broadening
 ){
-	cout << "Error in ChebyshevSolver::calculateCoefficientsGPU: GPU Not supported.\n";
+	Util::Streams::err << "Error in ChebyshevSolver::calculateCoefficientsGPU: GPU Not supported.\n";
 	exit(1);
 }
 
 void ChebyshevSolver::loadLookupTableGPU(){
-	cout << "Error in ChebyshevSolver::loadLookupTableGPU: GPU Not supported.\n";
+	Util::Streams::err << "Error in ChebyshevSolver::loadLookupTableGPU: GPU Not supported.\n";
 	exit(1);
 }
 
 void ChebyshevSolver::destroyLookupTableGPU(){
-	cout << "Error in ChebyshevSolver::destroyLookupTableGPU: GPU Not supported.\n";
+	Util::Streams::err << "Error in ChebyshevSolver::destroyLookupTableGPU: GPU Not supported.\n";
 	exit(1);
 }
 
@@ -49,7 +50,7 @@ void ChebyshevSolver::generateGreensFunctionGPU(
 	complex<double> *coefficients,
 	ChebyshevSolver::GreensFunctionType type
 ){
-	cout << "Error in ChebyshevSolver::generateGreensFunctionGPU: GPU Not supported.\n";
+	Util::Streams::err << "Error in ChebyshevSolver::generateGreensFunctionGPU: GPU Not supported.\n";
 	exit(1);
 }
 

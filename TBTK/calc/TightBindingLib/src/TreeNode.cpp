@@ -4,7 +4,9 @@
  */
 
 #include "../include/TreeNode.h"
-#include <iostream>
+#include "../include/Streams.h"
+#include "../include/TBTKMacros.h"
+
 #include <algorithm>
 
 using namespace std;
@@ -22,8 +24,8 @@ void TreeNode::print(){
 
 void TreeNode::print(unsigned int subindex){
 	for(unsigned int n = 0; n < subindex; n++)
-		std::cout << "\t";
-	std::cout << basisIndex << ":" << hoppingAmplitudes.size() << "\n";
+		Util::Streams::out << "\t";
+	Util::Streams::out << basisIndex << ":" << hoppingAmplitudes.size() << "\n";
 	for(unsigned int n = 0; n < children.size(); n++)
 		children.at(n).print(subindex + 1);
 }
@@ -54,7 +56,7 @@ void TreeNode::add(HoppingAmplitude &ha, unsigned int subindex){
 		//only allowed if the HoppingAmplitudes differ in one of their
 		//common indices.
 		if(hoppingAmplitudes.size() != 0){
-			std::cout << "Error, incompatible amplitudes1:\n";
+			Util::Streams::err << "Error, incompatible amplitudes1:\n";
 			ha.print();
 			hoppingAmplitudes.at(0).print();
 			exit(0);
@@ -73,7 +75,7 @@ void TreeNode::add(HoppingAmplitude &ha, unsigned int subindex){
 		//if the HoppingAmplitudes differ in one of their common
 		//indices.
 		if(children.size() != 0){
-			std::cout << "Error, incompatible amplitudes2:\n";
+			Util::Streams::err << "Error, incompatible amplitudes2:\n";
 			ha.print();
 			getFirstHA().print();
 			exit(0);
@@ -98,8 +100,9 @@ std::vector<HoppingAmplitude>* TreeNode::getHAs(Index index, unsigned int subind
 		//If the subindex is bigger than the current number of child
 		//nodes, an error has occured.
 		if(currentIndex >= (int)children.size()){
-			cout << "Error, index out of bound: ";
+			Util::Streams::err << "Error, index out of bound: ";
 			index.print();
+			exit(1);
 		}
 		//Continue to the next node level.
 		return children.at(currentIndex).getHAs(index, subindex+1);
@@ -125,8 +128,9 @@ int TreeNode::getBasisIndex(const Index &index, unsigned int subindex){
 		//If the subindex is bigger than the current number of child
 		//nodes, an error has occured.
 		if(currentIndex >= (int)children.size()){
-			cout << "Error, index out of bound: ";
+			Util::Streams::err << "Error, index out of bound: ";
 			index.print();
+			exit(1);
 		}
 		//Continue to the next node level.
 		return children.at(currentIndex).getBasisIndex(index, subindex+1);
@@ -138,12 +142,14 @@ int TreeNode::getBasisIndex(const Index &index, unsigned int subindex){
 }
 
 Index TreeNode::getPhysicalIndex(int basisIndex){
-	if(basisIndex < 0 || basisIndex > this->basisSize){
-		cout << "Error in TreeNode::getPhysicalIndex(): Hilbert space index out of bound.";
-		exit(1);
-	}
-	vector<int> indices;
+	TBTKAssert(
+		basisIndex >= 0 && basisIndex < this->basisSize,
+		"TreeNode::getPhysicalIndex()",
+		"Hilbert space index out of bound.",
+		""
+	);
 
+	vector<int> indices;
 	getPhysicalIndex(basisIndex, &indices);
 
 	return Index(indices);

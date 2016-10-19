@@ -4,8 +4,9 @@
  */
 
 #include "../include/UnitHandler.h"
+#include "../include/Streams.h"
+
 #include <sstream>
-#include <iostream>
 
 #ifdef M_E	//Avoid name clash with math.h macro M_E
 	#define M_E_temp M_E
@@ -516,9 +517,8 @@ double UnitHandler::getTemperatureConversionFactor(){
 		case TemperatureUnit::nK:
 			return 1e9;
 		default:	//Should never happen, hard error generated for quick bug detection
-			cout << "Error in UnitHandler::getTemperatureConversionUnit(): Unknown unit - " << static_cast<int>(temperatureUnit);
+			Util::Streams::err << "Error in UnitHandler::getTemperatureConversionUnit(): Unknown unit - " << static_cast<int>(temperatureUnit);
 			exit(1);
-			return 0.;	//Never happens
 	}
 }
 
@@ -539,9 +539,8 @@ double UnitHandler::getTimeConversionFactor(){
 		case TimeUnit::as:
 			return 1e18;
 		default:	//Should never happen, hard error generated for quick bug detection
-			cout << "Error in UnitHandler::getTimeConversionFactor(): Unknown unit - " << static_cast<int>(timeUnit);
+			Util::Streams::err << "Error in UnitHandler::getTimeConversionFactor(): Unknown unit - " << static_cast<int>(timeUnit);
 			exit(1);
-			return 0.;	//Never happens
 	}
 }
 
@@ -564,9 +563,8 @@ double UnitHandler::getLengthConversionFactor(){
 		case LengthUnit::Ao:
 			return 1e10;
 		default:	//Should never happen, hard error generated for quick bug detection
-			cout << "Error in UnitHandler::getLengthConversionFactor(): Unknown unit - " << static_cast<int>(lengthUnit);
+			Util::Streams::err << "Error in UnitHandler::getLengthConversionFactor(): Unknown unit - " << static_cast<int>(lengthUnit);
 			exit(1);
-			return 0.;	//Never happens
 	}
 }
 
@@ -587,9 +585,8 @@ double UnitHandler::getEnergyConversionFactor(){
 		case EnergyUnit::J:
 			return J_per_eV;
 		default:	//Should never happen, hard error generated for quick bug detection
-			cout << "Error in UnitHandler::getEnergyConversionFactor(): Unknown unit - " << static_cast<int>(energyUnit);
+			Util::Streams::err << "Error in UnitHandler::getEnergyConversionFactor(): Unknown unit - " << static_cast<int>(energyUnit);
 			exit(1);
-			return 0.;	//Never happens
 	}
 }
 
@@ -622,9 +619,8 @@ double UnitHandler::getChargeConversionFactor(){
 		case ChargeUnit::e:
 			return 1./E;
 		default:	//Should never happen, hard error generated for quick bug detection
-			cout << "Error in UnitHandler::getChargeConversionFactor(): Unknown unit - " << static_cast<int>(chargeUnit);
+			Util::Streams::err << "Error in UnitHandler::getChargeConversionFactor(): Unknown unit - " << static_cast<int>(chargeUnit);
 			exit(1);
-			return 0.;	//Never happens
 	}
 }
 
@@ -635,9 +631,8 @@ double UnitHandler::getCountConversionFactor(){
 		case CountUnit::mol:	//1/N_A mol per pcs
 			return 1./N_A;
 		default:	//Should never happen, hard error generated for quick bug detection
-			cout << "Error in UnitHandler::getCountConversionFactor(): Unknown unit - " << static_cast<int>(countUnit);
+			Util::Streams::err << "Error in UnitHandler::getCountConversionFactor(): Unknown unit - " << static_cast<int>(countUnit);
 			exit(1);
-			return 0.;	//Never happens
 	}
 }
 
@@ -656,9 +651,8 @@ double UnitHandler::getMassConversionFactor(MassUnit unit){
 		case MassUnit::u:
 			return u_per_baseMass;
 		default:	//Should never happen, hard error generated for quick bug detection
-			cout << "Error in UnitHandler::getMassConversionFactor(): Unknown unit - " << static_cast<int>(unit);
+			Util::Streams::err << "Error in UnitHandler::getMassConversionFactor(): Unknown unit - " << static_cast<int>(unit);
 			exit(1);
-			return 0.;	//Never happens
 	}
 }
 
@@ -689,9 +683,8 @@ double UnitHandler::getMagneticFieldConversionFactor(MagneticFieldUnit unit){
 		case MagneticFieldUnit::uG:
 			return T_per_baseMagneticField*1e10;
 		default:	//Should never happen, hard error generated for quick bug detection
-			cout << "Error in UnitHandler::getMagneticFieldConversionFactor(): Unknown unit - " << static_cast<int>(unit);
+			Util::Streams::err << "Error in UnitHandler::getMagneticFieldConversionFactor(): Unknown unit - " << static_cast<int>(unit);
 			exit(1);
-			return 0.;	//Never happens
 	}
 }
 

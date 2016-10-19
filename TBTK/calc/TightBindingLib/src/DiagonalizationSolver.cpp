@@ -5,8 +5,8 @@
 
 #include "../include/DiagonalizationSolver.h"
 #include "../include/TBTKMacros.h"
-
-#include <iostream>
+#include "../include/Streams.h"
+#include "../include/TBTKMacros.h"
 
 using namespace std;
 
@@ -43,13 +43,13 @@ void DiagonalizationSolver::run(){
 	int iterationCounter = 0;
 	init();
 
-	cout << "Running DiagonalizationSolver\n";
+	Util::Streams::out << "Running DiagonalizationSolver\n";
 	while(iterationCounter++ < maxIterations){
 		if(iterationCounter%10 == 1)
-			cout << " ";
+			Util::Streams::out << " ";
 		if(iterationCounter%50 == 1)
-			cout << "\n";
-		cout << "." << flush;
+			Util::Streams::out << "\n";
+		Util::Streams::out << "." << flush;
 
 		solve();
 
@@ -63,16 +63,16 @@ void DiagonalizationSolver::run(){
 			break;
 		}
 	}
-	cout << "\n";
+	Util::Streams::out << "\n";
 }
 
 void DiagonalizationSolver::init(){
-	cout << "Initializing DiagonalizationSolver\n";
+	Util::Streams::out << "Initializing DiagonalizationSolver\n";
 
 //	model->amplitudeSet.construct();
 
 	int basisSize = model->getBasisSize();
-	cout << "\tBasis size: " << basisSize << "\n";
+	Util::Streams::out << "\tBasis size: " << basisSize << "\n";
 
 	hamiltonian = new complex<double>[(basisSize*(basisSize+1))/2];
 	eigenValues = new double[basisSize];
@@ -139,10 +139,12 @@ void DiagonalizationSolver::solve(){
 		//Solve brop
 		zhpev_(&jobz, &uplo, &n, hamiltonian, eigenValues, eigenVectors, &n, work, rwork, &info);
 
-		if(info != 0){
-			cout << "Error in DiagonalizationSolver:solve(): Diagonalization routine zhpev exited with INFO=" << info << ". See LAPACK documentation for zhpev for further information.\n";
-			exit(1);
-		}
+		TBTKAssert(
+			info == 0,
+			"DiagonalizationSolver:solve()",
+			"Diagonalization routine zhpev exited with INFO=" + to_string(info) + ".",
+			"See LAPACK documentation for zhpev for further information."
+		);
 
 		//Delete workspaces
 		delete [] work;
