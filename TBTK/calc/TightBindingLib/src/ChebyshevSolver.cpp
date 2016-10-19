@@ -16,7 +16,7 @@ namespace TBTK{
 
 const complex<double> i(0, 1);
 
-int ChebyshevSolver::numChebyshevSolvers = 0;
+/*int ChebyshevSolver::numChebyshevSolvers = 0;
 int ChebyshevSolver::numDevices = 0;
 bool *ChebyshevSolver::busyDevices = NULL;
 omp_lock_t ChebyshevSolver::busyDevicesLock;
@@ -24,7 +24,7 @@ ChebyshevSolver::StaticConstructor ChebyshevSolver::staticConstructor;
 
 ChebyshevSolver::StaticConstructor::StaticConstructor(){
 	omp_init_lock(&ChebyshevSolver::busyDevicesLock);
-}
+}*/
 
 ChebyshevSolver::ChebyshevSolver(){
 	model = NULL;
@@ -36,7 +36,7 @@ ChebyshevSolver::ChebyshevSolver(){
 	lookupTableResolution = 0;
 	isTalkative = false;
 
-	omp_set_lock(&busyDevicesLock);
+/*	omp_set_lock(&busyDevicesLock);
 	#pragma omp flush
 	{
 		if(numChebyshevSolvers == 0)
@@ -44,7 +44,7 @@ ChebyshevSolver::ChebyshevSolver(){
 		numChebyshevSolvers++;
 	}
 	#pragma omp flush
-	omp_unset_lock(&busyDevicesLock);
+	omp_unset_lock(&busyDevicesLock);*/
 }
 
 ChebyshevSolver::~ChebyshevSolver(){
@@ -55,7 +55,7 @@ ChebyshevSolver::~ChebyshevSolver(){
 		delete [] generatingFunctionLookupTable;
 	}
 
-	omp_set_lock(&busyDevicesLock);
+/*	omp_set_lock(&busyDevicesLock);
 	#pragma omp flush
 	{
 		numChebyshevSolvers--;
@@ -63,7 +63,7 @@ ChebyshevSolver::~ChebyshevSolver(){
 			destroyDeviceTableGPU();
 	}
 	#pragma omp flush
-	omp_unset_lock(&busyDevicesLock);
+	omp_unset_lock(&busyDevicesLock);*/
 }
 
 void ChebyshevSolver::setModel(Model *model){

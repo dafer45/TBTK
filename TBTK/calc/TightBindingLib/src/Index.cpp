@@ -48,4 +48,13 @@ bool operator>(const Index &i1, const Index &i2){
 	exit(1);
 }
 
+Index Index::getUnitRange(){
+	Index unitRange = *this;
+
+	for(unsigned int n = 0; n < size(); n++)
+		unitRange.at(n) = 1;
+
+	return unitRange;
+}
+
 };

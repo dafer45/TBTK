@@ -7,6 +7,7 @@
 #include "../include/HALinkedList.h"
 #include "../include/Util.h"
 #include "../include/TBTKMacros.h"
+#include "../include/GPUResourceManager.h"
 
 #include <math.h>
 
@@ -82,7 +83,8 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 		""
 	);
 
-	int device = allocateDeviceGPU();
+//	int device = allocateDeviceGPU();
+	int device = GPUResourceManager::allocateDevice();
 
 	if(cudaSetDevice(device) != cudaSuccess)
 		{	cout << "\tSet device error: " << device << "\n";	exit(1);	}
@@ -316,7 +318,8 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 	if(damping != NULL)
 		cudaFree(damping_device);
 
-	freeDeviceGPU(device);
+//	freeDeviceGPU(device);
+	GPUResourceManager::freeDevice(device);
 
 	//Lorentzian convolution
 	double lambda = broadening*numCoefficients;
@@ -369,9 +372,11 @@ void ChebyshevSolver::loadLookupTableGPU(){
 			cout << memoryRequirement/1024/1024 << "MB\n";
 	}
 
-	generatingFunctionLookupTable_device = new complex<double>**[numDevices];
+//	generatingFunctionLookupTable_device = new complex<double>**[numDevices];
+	generatingFunctionLookupTable_device = new complex<double>**[GPUResourceManager::getNumDevices()];
 
-	for(int n = 0; n < numDevices; n++){
+//	for(int n = 0; n < numDevices; n++){
+	for(int n = 0; n < GPUResourceManager::getNumDevices(); n++){
 		if(cudaSetDevice(n) != cudaSuccess)
 			{	cout << "\tSet device error: " << n << "\n";	exit(1);	}
 
@@ -394,7 +399,8 @@ void ChebyshevSolver::destroyLookupTableGPU(){
 		exit(1);
 	}
 
-	for(int n = 0; n < numDevices; n++){
+//	for(int n = 0; n < numDevices; n++){
+	for(int n = 0; n < GPUResourceManager::getNumDevices(); n++){
 		cudaFree(generatingFunctionLookupTable_device[n]);
 	}
 
@@ -407,7 +413,8 @@ void ChebyshevSolver::generateGreensFunctionGPU(
 	complex<double> *coefficients,
 	GreensFunctionType type
 ){
-	int device = allocateDeviceGPU();
+//	int device = allocateDeviceGPU();
+	int device = GPUResourceManager::allocateDevice();
 
 	if(cudaSetDevice(device) != cudaSuccess)
 		{	cout << "\tSet device error: " << device << "\n";	exit(1);	}
@@ -461,10 +468,11 @@ void ChebyshevSolver::generateGreensFunctionGPU(
 	cudaFree(greensFunction_device);
 	cudaFree(coefficients_device);
 
-	freeDeviceGPU(device);
+//	freeDeviceGPU(device);
+	GPUResourceManager::freeDevice(device);
 }
 
-void ChebyshevSolver::createDeviceTableGPU(){
+/*void ChebyshevSolver::createDeviceTableGPU(){
 	cudaGetDeviceCount(&numDevices);
 
 	cout << "Num GPU devices: " << numDevices << "\n";
@@ -512,6 +520,6 @@ void ChebyshevSolver::freeDeviceGPU(int device){
 	}
 	#pragma omp flush
 	omp_unset_lock(&busyDevicesLock);
-}
+}*/
 
 };	//End of namespace TBTK

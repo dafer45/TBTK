@@ -48,6 +48,10 @@ public:
 	/** Removes and returns the last subindex. */
 	int popBack();
 
+	/** Returns an index with the same number or subindices, and each
+	 *  subindex set to 1. */
+	Index getUnitRange();
+
 	/** Print index. Mainly for debuging. */
 	void print() const;
 

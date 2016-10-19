@@ -271,35 +271,35 @@ private:
 
 	/** Number of ChebyshevSolvers created. Needed for resource management.
 	 */
-	static int numChebyshevSolvers;
+//	static int numChebyshevSolvers;
 
 	/** Number of GPU devices. */
-	static int numDevices;
+//	static int numDevices;
 
 	/** Used to indicate busy devices. */
-	static bool *busyDevices;
+//	static bool *busyDevices;
 
 	/** Lock for busy device table operations. */
-	static omp_lock_t busyDevicesLock;
+//	static omp_lock_t busyDevicesLock;
 
 	/** Create device table for GPU. */
-	static void createDeviceTableGPU();
+//	static void createDeviceTableGPU();
 
 	/** Destroy device table for GPU. */
-	static void destroyDeviceTableGPU();
+//	static void destroyDeviceTableGPU();
 
 	/** Allocate GPU device. */
-	static int allocateDeviceGPU();
+//	static int allocateDeviceGPU();
 
 	/** Free GPU device. */
-	static void freeDeviceGPU(int device);
+//	static void freeDeviceGPU(int device);
 
 	/** Static constructor for initializing the static variable
 	 *  busyDeviceLock. */
-	static class StaticConstructor{
+/*	static class StaticConstructor{
 	public:
 		StaticConstructor();
-	} staticConstructor;
+	} staticConstructor;*/
 };
 
 inline Model* ChebyshevSolver::getModel(){
