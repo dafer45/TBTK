@@ -17,6 +17,15 @@ DOS::DOS(double lowerBound, double upperBound, int resolution){
 		data[n] = 0.;
 }
 
+DOS::DOS(double lowerBound, double upperBound, int resolution, const double *data){
+	this->lowerBound = lowerBound;
+	this->upperBound = upperBound;
+	this->resolution = resolution;
+	this->data = new double[resolution];
+	for(int n = 0; n < resolution; n++)
+		this->data[n] = data[n];
+}
+
 DOS::~DOS(){
 	delete [] data;
 }

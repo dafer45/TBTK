@@ -20,6 +20,9 @@ public:
 	/** Constructor. */
 	DOS(double lowerBound, double upperBound, int resolution);
 
+	/** Constructor. */
+	DOS(double lowerBound, double upperBound, int resolution, const double *data);
+
 	/** Destructor. */
 	~DOS();
 
