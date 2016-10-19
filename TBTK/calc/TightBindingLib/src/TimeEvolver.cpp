@@ -6,6 +6,8 @@
 #include "../include/TimeEvolver.h"
 #include "../include/AmplitudeSet.h"
 #include "../include/Util.h"
+
+#include <iostream>
 #include <complex>
 #include <math.h>
 

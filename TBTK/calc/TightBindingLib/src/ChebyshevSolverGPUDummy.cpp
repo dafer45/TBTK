@@ -6,6 +6,8 @@
 
 #include "../include/ChebyshevSolver.h"
 
+#include <iostream>
+
 using namespace std;
 
 namespace TBTK{

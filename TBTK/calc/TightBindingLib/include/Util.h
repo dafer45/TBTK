@@ -8,7 +8,8 @@
 #ifndef COM_DAFER45_TBTK_UTIL
 #define COM_DAFER45_TBTK_UTIL
 
-#include <iostream>
+#include "Streams.h"
+
 #include <vector>
 #include <chrono>
 
@@ -58,23 +59,23 @@ inline void Timer::tock(){
 		int microseconds = (std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count())%1000;
 		int nanoseconds = (std::chrono::duration_cast<std::chrono::nanoseconds>(stop - start).count())%1000;
 
-		std::cout << "(" << timestamps.size() << ") ";
+		Streams::out << "(" << timestamps.size() << ") ";
 		if(hours > 0)
-			std::cout << hours << "h ";
+			Streams::out << hours << "h ";
 		if(hours > 0 || minutes > 0)
-			std::cout << minutes << "m ";
+			Streams::out << minutes << "m ";
 		if(hours > 0 || minutes > 0 || seconds > 0)
-			std::cout << seconds << "s ";
+			Streams::out << seconds << "s ";
 		if(hours > 0 || minutes > 0 || seconds > 0 || milliseconds > 0)
-			std::cout << milliseconds << "ms ";
+			Streams::out << milliseconds << "ms ";
 		if(hours > 0 || minutes > 0 || seconds > 0 || milliseconds > 0 || microseconds > 0)
-			std::cout << microseconds << "us ";
+			Streams::out << microseconds << "us ";
 		if(hours > 0 || minutes > 0 || seconds > 0 || milliseconds > 0 || microseconds > 0 || nanoseconds > 0)
-			std::cout << nanoseconds << "ns ";
-		std::cout << "\t" << tag << "\n";
+			Streams::out << nanoseconds << "ns ";
+		Streams::out << "\t" << tag << "\n";
 	}
 	else{
-		std::cout << "Error in Time::tock(): No corresponding tick call made.\n";
+		Streams::out << "Error in Time::tock(): No corresponding tick call made.\n";
 	}
 }
 

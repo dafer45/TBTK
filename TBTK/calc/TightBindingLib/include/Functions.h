@@ -9,8 +9,9 @@
 #define COM_DAFER45_TBTK_FUNCTIONS
 
 #include "UnitHandler.h"
+#include "Streams.h"
+
 #include <math.h>
-#include <iostream>
 
 namespace TBTK{
 
@@ -64,8 +65,9 @@ inline double Functions::boseEinsteinDistribution(
 		return 1./(exp(e/(UnitHandler::getK_bB()*t)) - 1.);
 	}
 	else{
-		std::cout << "Error in Functions::boseEinsteinDistribution(): "
-				<< "Bose-Einstein distribution not well behaved at T=0. Please use\n";
+		Util::Streams::err
+			<< "Error in Functions::boseEinsteinDistribution(): "
+			<< "Bose-Einstein distribution not well behaved at T=0. Please use\n";
 		exit(1);
 	}
 }

@@ -14,6 +14,8 @@
 #include "LDOS.h"
 #include "SpinPolarizedLDOS.h"
 
+#include <iostream>
+
 namespace TBTK{
 
 /** Experimental class for extracting properties from a ChebyshevSolver. */

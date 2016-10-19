@@ -6,6 +6,8 @@
 #include "../include/ModelFactory.h"
 #include "../include/AmplitudeSet.h"
 
+#include <iostream>
+
 using namespace std;
 
 namespace TBTK{

@@ -8,11 +8,11 @@
 #ifndef COM_DAFER45_TBTK_HOPPING_AMPLITUDE
 #define COM_DAFER45_TBTK_HOPPING_AMPLITUDE
 
+#include "Index.h"
+
 #include <complex>
 #include <initializer_list>
 #include <vector>
-#include <iostream>
-#include "Index.h"
 
 namespace TBTK{
 

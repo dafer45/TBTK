@@ -3,9 +3,11 @@
  *  @author Kristofer Björnson
  */
 
-#include <iostream>
 #include "../include/Model.h"
 #include "../include/Geometry.h"
+#include "../include/Streams.h"
+
+#include <iostream>
 #include <string>
 #include <fstream>
 #include <math.h>
@@ -39,19 +41,19 @@ void Model::addHAAndHC(HoppingAmplitude ha){
 
 void Model::construct(){
 	if(isTalkative)
-		cout << "Constructing system\n";
+		Util::Streams::out << "Constructing system (!)\n";
 
 	amplitudeSet->construct();
 
 	int basisSize = getBasisSize();
 
 	if(isTalkative)
-		cout << "\tBasis size: " << basisSize << "\n";
+		Util::Streams::out << "\tBasis size: " << basisSize << "\n";
 }
 
 void Model::createGeometry(int dimensions, int numSpecifiers){
 	if(!getIsConstructed()){
-		cout << "Error in Model::createGeometry: Hilbert space basis has not been constructed yet.\n";
+		Util::Streams::err << "Error in Model::createGeometry: Hilbert space basis has not been constructed yet.\n";
 		exit(1);
 	}
 	geometry = new Geometry(dimensions, numSpecifiers, this);

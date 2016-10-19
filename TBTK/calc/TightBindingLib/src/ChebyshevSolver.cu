@@ -9,10 +9,11 @@
 #include "../include/TBTKMacros.h"
 #include "../include/GPUResourceManager.h"
 
-#include <math.h>
-
 #include <cuComplex.h>
 #include <cusparse_v2.h>
+
+#include <math.h>
+#include <iostream>
 
 using namespace std;
 

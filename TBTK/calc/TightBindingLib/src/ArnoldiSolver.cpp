@@ -11,10 +11,9 @@
  * information about parameters. */
 
 #include "../include/ArnoldiSolver.h"
+#include "../include/Streams.h"
 
 #include "slu_zdefs.h"
-
-#include <iostream>
 
 using namespace std;
 
@@ -123,11 +122,13 @@ extern "C" void zneupd_(
 );
 
 void ArnoldiSolver::run(){
-	cout << "Running ArnoldiSovler.\n";
-	if(model == NULL){
-		cout << "Error in ArnoldiSolver::run(): No model set.\n";
-		exit(1);
-	}
+	Util::Streams::out << "Running ArnoldiSovler.\n";
+	TBTKAssert(
+		model != NULL,
+		"ArnoldiSolver::run()",
+		"No model set.",
+		"Use ArnoldSolver::setModel() to set model."
+	);
 
 	init();
 	arnoldiLoop();

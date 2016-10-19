@@ -9,7 +9,7 @@
 #define COM_DAFER45_TBTK_ARRAY_MANAGER
 
 #include "Index.h"
-#include <iostream>
+#include "Streams.h"
 
 namespace TBTK{
 namespace Util{
@@ -206,16 +206,15 @@ template<typename T>
 void ArrayManager<T>::printRecursive(void *array, Index ranges){
 	if(ranges.size() == 1){
 		for(int n = 0; n < ranges.at(0); n++)
-			std::cout << ((T*)array)[n] << "\t";
-		std::cout << "\n";
+			Util::Streams::out << ((T*)array)[n] << "\t";
+		Util::Streams::out << "\n";
 	}
 	else{
 		int currentRange = ranges.at(0);
-//		ranges.erase(ranges.begin());
 		ranges.popFront();
 		for(int n = 0; n < currentRange; n++)
 			printRecursive(((void**)array)[n], ranges);
-		std::cout << "\n";
+		Util::Streams::out << "\n";
 	}
 }
 

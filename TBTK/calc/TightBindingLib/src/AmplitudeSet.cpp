@@ -4,7 +4,7 @@
  */
 
 #include "../include/AmplitudeSet.h"
-#include <iostream>
+#include "../include/TBTKMacros.h"
 
 using namespace std;
 
@@ -30,23 +30,29 @@ AmplitudeSet::~AmplitudeSet(){
 }
 
 int AmplitudeSet::getNumMatrixElements(){
-	if(numMatrixElements == -1){
-		cout << "Error in AmplitudeSet::getNumMatrixElements(): COO format not constructed.\n";
-		exit(1);
-	}
+	TBTKAssert(
+		numMatrixElements != -1,
+		"AmplitudeSet::getNumMatrixElements()",
+		"COO format not constructed.",
+		"Use Model::constructCOO() to construct COO format."
+	);
 
 	return numMatrixElements;
 }
 
 void AmplitudeSet::constructCOO(){
-	if(!isSorted){
-		cout << "Error in AmplitudeSet::constructCOO(): Amplitude not sorted.\n";
-		exit(1);
-	}
-	if(numMatrixElements != -1){
-		cout << "Error in AmplitudeSet::constructCOO(): Hamiltonain on COO format already constructed.\n";
-		exit(1);
-	}
+	TBTKAssert(
+		isSorted,
+		"AmplitudeSet::constructCOO()",
+		"Amplitudes not sorted.",
+		""
+	);
+	TBTKAssert(
+		numMatrixElements == -1,
+		"AmplitudeSet::constructCOO()",
+		"Hamiltonain on COO format already constructed.",
+		""
+	);
 
 	//Count number of matrix elements
 	AmplitudeSet::Iterator it = getIterator();

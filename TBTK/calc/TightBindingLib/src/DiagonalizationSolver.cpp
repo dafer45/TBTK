@@ -6,6 +6,8 @@
 #include "../include/DiagonalizationSolver.h"
 #include "../include/TBTKMacros.h"
 
+#include <iostream>
+
 using namespace std;
 
 namespace TBTK{

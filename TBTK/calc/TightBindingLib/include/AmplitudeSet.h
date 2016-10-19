@@ -8,10 +8,11 @@
 #ifndef COM_DAFER45_TBTK_AMPLITUDE_SET
 #define COM_DAFER45_TBTK_AMPLITUDE_SET
 
-#include <vector>
 #include "HoppingAmplitude.h"
 #include "TreeNode.h"
-#include <iostream>
+#include "Streams.h"
+
+#include <vector>
 #include <complex>
 
 namespace TBTK{
@@ -177,7 +178,7 @@ inline int AmplitudeSet::getBasisSize(){
 
 inline void AmplitudeSet::construct(){
 	if(isConstructed){
-		std::cout << "Error in AmplitudeSet::construct(): AmplitudeSet is already constructed.\n";
+		Util::Streams::err << "Error in AmplitudeSet::construct(): AmplitudeSet is already constructed.\n";
 		exit(1);
 	}
 
@@ -191,7 +192,7 @@ inline bool AmplitudeSet::getIsConstructed(){
 
 inline void AmplitudeSet::sort(){
 	if(!isConstructed){
-		std::cout << "Error in AmplitudeSet::sort(): AmplitudeSet has to be constructed first.\n";
+		Util::Streams::err << "Error in AmplitudeSet::sort(): AmplitudeSet has to be constructed first.\n";
 		exit(1);
 	}
 

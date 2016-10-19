@@ -8,7 +8,8 @@
 #ifndef COM_DAFER45_TBTK_INDEX
 #define COM_DAFER45_TBTK_INDEX
 
-#include <iostream>
+#include "Streams.h"
+
 #include <vector>
 
 namespace TBTK{
@@ -68,13 +69,13 @@ private:
 };
 
 inline void Index::print() const{
-	std::cout << "{";
+	Util::Streams::out << "{";
 	for(unsigned int n = 0; n < indices.size(); n++){
 		if(n != 0)
-			std::cout << ", ";
-		std::cout << indices.at(n);
+			Util::Streams::out << ", ";
+		Util::Streams::out << indices.at(n);
 	}
-	std::cout << "}\n";
+	Util::Streams::out << "}\n";
 }
 
 inline bool Index::equals(const Index &index) const{
