@@ -21,5 +21,5 @@ cd TBTK/calc/TightBindingLib/
 	cd ../../..
 
 cd Tools
-	bash build.sh
+	./build.sh
 	cd ..
