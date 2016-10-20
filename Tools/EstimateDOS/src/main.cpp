@@ -18,6 +18,7 @@
 #include "FileWriter.h"
 #include "Util.h"
 #include "GPUResourceManager.h"
+#include "Streams.h"
 
 #include <complex>
 #include <fstream>
@@ -29,15 +30,17 @@ using namespace std;
 using namespace TBTK;
 
 const complex<double> i(0, 1);
-int NUM_SAMPLES = 100;
-int SCALE_FACTOR = 20;
-int NUM_COEFFICIENTS = 5000;
-int ENERGY_RESOLUTION = 10000;
-
 int main(int argc, char **argv){
-	int isTalkative	= false;
-	int forceGPU	= false;
-	int forceCPU = false;
+/*	Util::Streams::muteOut();
+	Util::Streams::muteLog();*/
+
+	int isTalkative		= false;
+	int forceGPU		= false;
+	int forceCPU		= false;
+	int numSamples		= 100;
+	int scaleFactor		= 20;
+	int numCoefficients	= 5000;
+	int energyResolution	= 10000;
 
 	while(true){
 		static struct option long_options[] = {
@@ -58,7 +61,6 @@ int main(int argc, char **argv){
 		if(c == -1)
 			break;
 
-		cout << (char)c << "\n";
 		switch(c){
 		case 0:
 			//If the option sets a flag, do nothing.
@@ -70,16 +72,16 @@ int main(int argc, char **argv){
 			cout << "\n";
 			break;
 		case 's':
-			SCALE_FACTOR = atof(optarg);
+			scaleFactor = atof(optarg);
 			break;
 		case 'c':
-			NUM_COEFFICIENTS = atoi(optarg);
+			numCoefficients = atoi(optarg);
 			break;
 		case 'r':
-			ENERGY_RESOLUTION = atoi(optarg);
+			energyResolution = atoi(optarg);
 			break;
 		case 'S':
-			NUM_SAMPLES = atoi(optarg);
+			numSamples = atoi(optarg);
 			break;
 		default:
 			cout << "Error: Unknown argument.\n";
@@ -94,15 +96,18 @@ int main(int argc, char **argv){
 	}
 	string fileName = argv[optind];
 
+//	if(!isTalkative)
+//		
+
 	//Use GPU if devices
 	bool useGPU;
-	if(GPUResourceManager::getNumDevices() > 0)
+	if(GPUResourceManager::getInstance().getNumDevices() > 0)
 		useGPU = true;
 	else
 		useGPU = false;
 
 	if(forceGPU && forceCPU){
-		cout << "Error: useCPU and useGPU cannot be simultaneously specified.\n";
+		Util::Streams::err << "Error: --use-cpu and --use-gpu cannot be simultaneously specified.\n";
 		exit(1);
 	}
 	if(forceGPU)
@@ -119,27 +124,27 @@ int main(int argc, char **argv){
 	//Setup ChebyshevSolver and corresponding PropertyExtractor
 	ChebyshevSolver cSolver;
 	cSolver.setModel(model);
-	cSolver.setScaleFactor(SCALE_FACTOR);
+	cSolver.setScaleFactor(scaleFactor);
 
 	CPropertyExtractor pe(
 		&cSolver,
-		NUM_COEFFICIENTS,
-		ENERGY_RESOLUTION,
+		numCoefficients,
+		energyResolution,
 		useGPU,
 		false,
 		true,
-		-SCALE_FACTOR,
-		SCALE_FACTOR
+		-scaleFactor,
+		scaleFactor
 	);
 
 	//Initialize randomization and dos
 	srand(time(NULL));
-	double dosData[ENERGY_RESOLUTION];
-	for(int n = 0; n < ENERGY_RESOLUTION; n++)
+	double *dosData = new double[energyResolution];
+	for(int n = 0; n < energyResolution; n++)
 		dosData[n] = 0.;
 
 	//Main loop: Repeatedly calculate LDOS for random sites
-	for(int n = 0; n < NUM_SAMPLES; n++){
+	for(int n = 0; n < numSamples; n++){
 		//Print progress
 		cout << "." << flush;
 		if(n%10 == 9)
@@ -159,8 +164,8 @@ int main(int argc, char **argv){
 
 		//Add calculated LDOS to total DOS
 		const double *data = ldos->getData();
-		for(int e = 0; e < ENERGY_RESOLUTION; e++)
-			dosData[e] += data[e]/(double)NUM_SAMPLES;
+		for(int e = 0; e < energyResolution; e++)
+			dosData[e] += data[e]/(double)numSamples;
 
 		//Free memory
 		delete ldos;
@@ -169,8 +174,10 @@ int main(int argc, char **argv){
 	cout << "\n";
 
 	//Write DOS to file
-	Property::DOS dos(-SCALE_FACTOR, SCALE_FACTOR, ENERGY_RESOLUTION, dosData);
+	Property::DOS dos(-scaleFactor, scaleFactor, energyResolution, dosData);
 	FileWriter::writeDOS(&dos);
+
+	delete [] dosData;
 
 	return 0;
 }
