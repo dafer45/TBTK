@@ -45,14 +45,20 @@ private:
 	/** Fork buffer. */
 	class ForkBuffer : public std::streambuf{
 	public:
+		/** Constructor. */
 		ForkBuffer(
 			std::basic_ostream<char, std::char_traits<char>> *ostream1,
 			std::basic_ostream<char, std::char_traits<char>> *ostream2
 		);
 	private:
+		/** First output stream. */
 		std::basic_ostream<char, std::char_traits<char>> *ostream1;
+
+		/** Second output stream. */
 		std::basic_ostream<char, std::char_traits<char>> *ostream2;
 
+		/** Implements std::streambuf::overflow().
+		 *  Writes char to ostream1 and ostream2. */
 		int overflow(int c);
 	};
 
