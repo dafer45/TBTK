@@ -15,37 +15,40 @@ namespace TBTK{
 class GPUResourceManager{
 public:
 	/** Get number of GPU devices. */
-	static int getNumDevices();
+	int getNumDevices();
 
 	/** Allocate GPU device. */
-	static int allocateDevice();
+	int allocateDevice();
 
 	/** Free GPU device. */
-	static void freeDevice(int device);
+	void freeDevice(int device);
+
+	/** Get singleton instance. */
+	static GPUResourceManager& getInstance();
 private:
 	/** Constructor. */
 	GPUResourceManager();
 
-	/** Static constructor. */
-	static class StaticConstructor{
-	public:
-		StaticConstructor();
-	} staticConstructor;
+	/** Delete copy constructor. */
+	GPUResourceManager(const GPUResourceManager &gpuResourceManager) = delete;
+
+	/** Delete operator=. */
+	GPUResourceManager& operator=(const GPUResourceManager &gpuResourceManager) = delete;
 
 	/** Number of GPU devices. */
-	static int numDevices;
+	int numDevices;
 
 	/** Used to indicate busy devices. */
-	static bool *busyDevices;
+	bool *busyDevices;
 
 	/** Lock for busy device table operations. */
-	static omp_lock_t busyDevicesLock;
+	omp_lock_t busyDevicesLock;
 
 	/** Create device table. */
-	static void createDeviceTable();
+	void createDeviceTable();
 
 	/** Destroy device table. */
-	static void destroyDeviceTable();
+	void destroyDeviceTable();
 };
 
 inline int GPUResourceManager::getNumDevices(){

@@ -10,18 +10,18 @@ using namespace std;
 
 namespace TBTK{
 
-int GPUResourceManager::numDevices;
-bool *GPUResourceManager::busyDevices;
-omp_lock_t GPUResourceManager::busyDevicesLock;
-
-
-GPUResourceManager::StaticConstructor GPUResourceManager::staticConstructor;
-GPUResourceManager::StaticConstructor::StaticConstructor(){
+GPUResourceManager::GPUResourceManager(){
 	numDevices = 0;
 	busyDevices = NULL;
 	omp_init_lock(&busyDevicesLock);
 
 	createDeviceTable();
+}
+
+GPUResourceManager& GPUResourceManager::getInstance(){
+	static GPUResourceManager instance;
+
+	return instance;
 }
 
 int GPUResourceManager::allocateDevice(){

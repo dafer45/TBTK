@@ -85,7 +85,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 	);
 
 //	int device = allocateDeviceGPU();
-	int device = GPUResourceManager::allocateDevice();
+	int device = GPUResourceManager::getInstance().allocateDevice();
 
 	if(cudaSetDevice(device) != cudaSuccess)
 		{	Util::Streams::err << "\tSet device error: " << device << "\n";	exit(1);	}
@@ -320,7 +320,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 		cudaFree(damping_device);
 
 //	freeDeviceGPU(device);
-	GPUResourceManager::freeDevice(device);
+	GPUResourceManager::getInstance().freeDevice(device);
 
 	//Lorentzian convolution
 	double lambda = broadening*numCoefficients;
@@ -378,10 +378,10 @@ void ChebyshevSolver::loadLookupTableGPU(){
 	}
 
 //	generatingFunctionLookupTable_device = new complex<double>**[numDevices];
-	generatingFunctionLookupTable_device = new complex<double>**[GPUResourceManager::getNumDevices()];
+	generatingFunctionLookupTable_device = new complex<double>**[GPUResourceManager::getInstance().getNumDevices()];
 
 //	for(int n = 0; n < numDevices; n++){
-	for(int n = 0; n < GPUResourceManager::getNumDevices(); n++){
+	for(int n = 0; n < GPUResourceManager::getInstance().getNumDevices(); n++){
 		if(cudaSetDevice(n) != cudaSuccess)
 			{	Util::Streams::err << "\tSet device error: " << n << "\n";	exit(1);	}
 
@@ -407,7 +407,7 @@ void ChebyshevSolver::destroyLookupTableGPU(){
 	);
 
 //	for(int n = 0; n < numDevices; n++){
-	for(int n = 0; n < GPUResourceManager::getNumDevices(); n++){
+	for(int n = 0; n < GPUResourceManager::getInstance().getNumDevices(); n++){
 		cudaFree(generatingFunctionLookupTable_device[n]);
 	}
 
@@ -421,7 +421,7 @@ void ChebyshevSolver::generateGreensFunctionGPU(
 	GreensFunctionType type
 ){
 //	int device = allocateDeviceGPU();
-	int device = GPUResourceManager::allocateDevice();
+	int device = GPUResourceManager::getInstance().allocateDevice();
 
 	if(cudaSetDevice(device) != cudaSuccess)
 		{	Util::Streams::err << "\tSet device error: " << device << "\n";	exit(1);	}
@@ -479,7 +479,7 @@ void ChebyshevSolver::generateGreensFunctionGPU(
 	cudaFree(coefficients_device);
 
 //	freeDeviceGPU(device);
-	GPUResourceManager::freeDevice(device);
+	GPUResourceManager::getInstance().freeDevice(device);
 }
 
 /*void ChebyshevSolver::createDeviceTableGPU(){
