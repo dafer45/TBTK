@@ -50,10 +50,10 @@ public:
 	std::complex<double> getComplex(std::string name) const;
 
 	/** Get string parameter. */
-	int getString(std::string name) const;
+	std::string getString(std::string name) const;
 
     /** Get boolean parameter. */
-	int getBool(std::string name) const;
+	bool getBool(std::string name) const;
 
 	/** Get number of integer parameters. */
 	int getNumInt() const;

@@ -141,7 +141,7 @@ int ParameterSet::getNumComplex() const {
 	return complexParams.size();
 }
 
-int ParameterSet::getStringInt() const {
+int ParameterSet::getNumString() const {
 	return stringParams.size();
 }
 
