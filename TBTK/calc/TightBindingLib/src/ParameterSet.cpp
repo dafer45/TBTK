@@ -166,7 +166,7 @@ std::string ParameterSet::getStringName(int n) const {
 }
 
 std::string ParameterSet::getBoolName(int n) const {
-	return get<0>(intParams.at(n));
+	return get<0>(boolParams.at(n));
 }
 
 int ParameterSet::getIntValue(int n) const {
