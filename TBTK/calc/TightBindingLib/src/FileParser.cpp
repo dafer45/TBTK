@@ -1,6 +1,7 @@
 /** @file FileParser.cpp
  *
  *  @author Kristofer Björnson
+ *  @author Andreas Theiler
  */
 
 #include "../include/FileParser.h"
@@ -110,8 +111,37 @@ Util::ParameterSet* FileParser::readParameterSet(std::string fileName){
 			ssin >> value;
 			parameterSet->addComplex(name, value);
 		}
+		else if(type.compare("string") == 0){
+			string name;
+			ssin >> name;
+			char equalitySign;
+			ssin >> equalitySign;
+			if(equalitySign != '='){
+				cout << "Error in FileParser::readParameterSet(): Expected '=' but found '" << equalitySign << "'.\n";
+				exit(1);
+			}
+			string value;
+            getline(ssin, value);
+            int first = value.find_first_not_of(" \t");
+            int last = value.find_last_not_of(" \t");
+            value = value.substr(first, last - first + 1);
+			parameterSet->addString(name, value);
+		}
+        else if(type.compare("bool") == 0){
+			string name;
+			ssin >> name;
+			char equalitySign;
+			ssin >> equalitySign;
+			if(equalitySign != '='){
+				cout << "Error in FileParser::readParameterSet(): Expected '=' but found '" << equalitySign << "'.\n";
+				exit(1);
+			}
+			bool value;
+			ssin >> value;
+			parameterSet->addBool(name, value);
+		}
 		else{
-			cout << "Error in FilePArser::readParametersSet(): Expected type but found '" << type << "'.\n";
+			cout << "Error in FileParser::readParametersSet(): Expected type but found '" << type << "'.\n";
 			exit(1);
 		}
 /*		if(!getline(ssin, line)){

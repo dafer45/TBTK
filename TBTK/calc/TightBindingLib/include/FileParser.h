@@ -3,6 +3,7 @@
  *  @brief Reads and writes Model from and to text files.
  *
  *  @author Kristofer Björnson
+ *  @author Andreas Theiler
  */
 
 #ifndef COM_DAFER45_TBTK_FILE_PARSER
