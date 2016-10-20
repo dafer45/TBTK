@@ -100,6 +100,267 @@ ostream& Streams::DynamicOstream::operator<<(const char *chars){
 	return (*streamPointer << chars);
 }
 
+/*Streams::DefaultOutStream::DefaultOutStream(){
+}
+
+ostream& Streams::DefaultOutStream::operator<<(bool val){
+	Streams::log << val;
+	return (cout << val);
+}
+
+ostream& Streams::DefaultOutStream::operator<<(short val){
+	Streams::log << val;
+	return (cout << val);
+}
+
+ostream& Streams::DefaultOutStream::operator<<(unsigned short val){
+	Streams::log << val;
+	return (cout << val);
+}
+
+ostream& Streams::DefaultOutStream::operator<<(int val){
+	Streams::log << val;
+	return (cout << val);
+}
+
+ostream& Streams::DefaultOutStream::operator<<(unsigned int val){
+	Streams::log << val;
+	return (cout << val);
+}
+
+ostream& Streams::DefaultOutStream::operator<<(long val){
+	Streams::log << val;
+	return (cout << val);
+}
+
+ostream& Streams::DefaultOutStream::operator<<(unsigned long val){
+	Streams::log << val;
+	return (cout << val);
+}
+
+ostream& Streams::DefaultOutStream::operator<<(long long val){
+	Streams::log << val;
+	return (cout << val);
+}
+
+ostream& Streams::DefaultOutStream::operator<<(unsigned long long val){
+	Streams::log << val;
+	return (cout << val);
+}
+
+ostream& Streams::DefaultOutStream::operator<<(float val){
+	Streams::log << val;
+	return (cout << val);
+}
+
+ostream& Streams::DefaultOutStream::operator<<(double val){
+	Streams::log << val;
+	return (cout << val);
+}
+
+ostream& Streams::DefaultOutStream::operator<<(long double val){
+	Streams::log << val;
+	return (cout << val);
+}
+
+ostream& Streams::DefaultOutStream::operator<<(void* val){
+	Streams::log << val;
+	return (cout << val);
+}
+
+ostream& Streams::DefaultOutStream::operator<<(streambuf *sb){
+	Streams::log << sb;
+	return (cout << sb);
+}
+
+ostream& Streams::DefaultOutStream::operator<<(ostream& (*pf)(ostream&)){
+	Streams::log << pf;
+	return (cout << pf);
+}
+
+ostream& Streams::DefaultOutStream::operator<<(ios& (*pf)(ios&)){
+	Streams::log << pf;
+	return (cout << pf);
+}
+
+ostream& Streams::DefaultOutStream::operator<<(ios_base& (*pf)(ios_base&)){
+	Streams::log << pf;
+	return (cout << pf);
+}
+
+ostream& Streams::DefaultOutStream::operator<<(const char *chars){
+	Streams::log << chars;
+	return (cout << chars);
+}
+
+Streams::DefaultLogStream::DefaultLogStream(string filename) : fstream(filename){
+}
+
+ostream& Streams::DefaultLogStream::operator<<(bool val){
+	return fstream::operator<<(val);
+}
+
+ostream& Streams::DefaultLogStream::operator<<(short val){
+	return fstream::operator<<(val);
+}
+
+ostream& Streams::DefaultLogStream::operator<<(unsigned short val){
+	return fstream::operator<<(val);
+}
+
+ostream& Streams::DefaultLogStream::operator<<(int val){
+	return fstream::operator<<(val);
+}
+
+ostream& Streams::DefaultLogStream::operator<<(unsigned int val){
+	return fstream::operator<<(val);
+}
+
+ostream& Streams::DefaultLogStream::operator<<(long val){
+	return fstream::operator<<(val);
+}
+
+ostream& Streams::DefaultLogStream::operator<<(unsigned long val){
+	return fstream::operator<<(val);
+}
+
+ostream& Streams::DefaultLogStream::operator<<(long long val){
+	return fstream::operator<<(val);
+}
+
+ostream& Streams::DefaultLogStream::operator<<(unsigned long long val){
+	return fstream::operator<<(val);
+}
+
+ostream& Streams::DefaultLogStream::operator<<(float val){
+	return fstream::operator<<(val);
+}
+
+ostream& Streams::DefaultLogStream::operator<<(double val){
+	return fstream::operator<<(val);
+}
+
+ostream& Streams::DefaultLogStream::operator<<(long double val){
+	return fstream::operator<<(val);
+}
+
+ostream& Streams::DefaultLogStream::operator<<(void* val){
+	return fstream::operator<<(val);
+}
+
+ostream& Streams::DefaultLogStream::operator<<(streambuf *sb){
+	return fstream::operator<<(sb);
+}
+
+ostream& Streams::DefaultLogStream::operator<<(ostream& (*pf)(ostream&)){
+	return fstream::operator<<(pf);
+}
+
+ostream& Streams::DefaultLogStream::operator<<(ios& (*pf)(ios&)){
+	return fstream::operator<<(pf);
+}
+
+ostream& Streams::DefaultLogStream::operator<<(ios_base& (*pf)(ios_base&)){
+	return fstream::operator<<(pf);
+}
+
+ostream& Streams::DefaultLogStream::operator<<(const char *chars){
+	return fstream::operator<<(chars);
+}
+
+Streams::DefaultErrStream::DefaultErrStream(){
+}
+
+ostream& Streams::DefaultErrStream::operator<<(bool val){
+	Streams::log << val;
+	return (cout << val);
+}
+
+ostream& Streams::DefaultErrStream::operator<<(short val){
+	Streams::log << val;
+	return (cout << val);
+}
+
+ostream& Streams::DefaultErrStream::operator<<(unsigned short val){
+	Streams::log << val;
+	return (cout << val);
+}
+
+ostream& Streams::DefaultErrStream::operator<<(int val){
+	Streams::log << val;
+	return (cout << val);
+}
+
+ostream& Streams::DefaultErrStream::operator<<(unsigned int val){
+	Streams::log << val;
+	return (cout << val);
+}
+
+ostream& Streams::DefaultErrStream::operator<<(long val){
+	Streams::log << val;
+	return (cout << val);
+}
+
+ostream& Streams::DefaultErrStream::operator<<(unsigned long val){
+	Streams::log << val;
+	return (cout << val);
+}
+
+ostream& Streams::DefaultErrStream::operator<<(long long val){
+	Streams::log << val;
+	return (cout << val);
+}
+
+ostream& Streams::DefaultErrStream::operator<<(unsigned long long val){
+	Streams::log << val;
+	return (cout << val);
+}
+
+ostream& Streams::DefaultErrStream::operator<<(float val){
+	Streams::log << val;
+	return (cout << val);
+}
+
+ostream& Streams::DefaultErrStream::operator<<(double val){
+	Streams::log << val;
+	return (cout << val);
+}
+
+ostream& Streams::DefaultErrStream::operator<<(long double val){
+	Streams::log << val;
+	return (cout << val);
+}
+
+ostream& Streams::DefaultErrStream::operator<<(void* val){
+	Streams::log << val;
+	return (cout << val);
+}
+
+ostream& Streams::DefaultErrStream::operator<<(streambuf *sb){
+	Streams::log << sb;
+	return (cout << sb);
+}
+
+ostream& Streams::DefaultErrStream::operator<<(ostream& (*pf)(ostream&)){
+	Streams::log << pf;
+	return (cout << pf);
+}
+
+ostream& Streams::DefaultErrStream::operator<<(ios& (*pf)(ios&)){
+	Streams::log << pf;
+	return (cout << pf);
+}
+
+ostream& Streams::DefaultErrStream::operator<<(ios_base& (*pf)(ios_base&)){
+	Streams::log << pf;
+	return (cout << pf);
+}
+
+ostream& Streams::DefaultErrStream::operator<<(const char *chars){
+	Streams::log << chars;
+	return (cout << chars);
+}*/
+
 int Streams::NullBuffer::overflow(int c){
 	return c;
 }
