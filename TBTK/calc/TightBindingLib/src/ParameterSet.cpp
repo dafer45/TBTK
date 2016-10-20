@@ -5,8 +5,8 @@
  */
 
 #include "../include/ParameterSet.h"
-
-#include <iostream>
+#include "../include/TBTKMacros.h"
+#include "../include/Streams.h"
 
 using namespace std;
 
@@ -21,10 +21,12 @@ ParameterSet::~ParameterSet(){
 
 void ParameterSet::addInt(std::string name, int value){
 	for(unsigned int n = 0; n < intParams.size(); n++){
-		if((get<0>(intParams.at(n))).compare(name) == 0){
-			cout << "Error in ParameterSet::addInt(): Multiple definition of parameter '" << name << "'.\n";
-			exit(1);
-		}
+		TBTKAssert(
+			(get<0>(intParams.at(n))).compare(name) != 0,
+			"Error in ParameterSet::addInt()",
+			"Multiple definitions of parameter '" << name << "'.",
+			""
+		);
 	}
 
 	intParams.push_back(make_tuple(name, value));
@@ -32,10 +34,12 @@ void ParameterSet::addInt(std::string name, int value){
 
 void ParameterSet::addDouble(std::string name, double value){
 	for(unsigned int n = 0; n < doubleParams.size(); n++){
-		if((get<0>(doubleParams.at(n))).compare(name) == 0){
-			cout << "Error in ParameterSet::addDouble(): Multiple definition of parameter '" << name << "'.\n";
-			exit(1);
-		}
+		TBTKAssert(
+			(get<0>(doubleParams.at(n))).compare(name) != 0,
+			"ParameterSet::addDouble()",
+			"Multiple definitions of parameter '" << name << "'.",
+			""
+		);
 	}
 
 	doubleParams.push_back(make_tuple(name, value));
@@ -43,10 +47,12 @@ void ParameterSet::addDouble(std::string name, double value){
 
 void ParameterSet::addComplex(std::string name, complex<double> value){
 	for(unsigned int n = 0; n < complexParams.size(); n++){
-		if((get<0>(complexParams.at(n))).compare(name) == 0){
-			cout << "Error in ParameterSet::addComplex(): Multiple definition of parameter '" << name << "'.\n";
-			exit(1);
-		}
+		TBTKAssert(
+			(get<0>(complexParams.at(n))).compare(name) != 0,
+			"ParameterSet::addComplex()",
+			"Multiple definitions of parameter '" << name << "'.",
+			""
+		);
 	}
 
 	complexParams.push_back(make_tuple(name, value));
@@ -54,10 +60,12 @@ void ParameterSet::addComplex(std::string name, complex<double> value){
 
 void ParameterSet::addString(std::string name, std::string value){
 	for(unsigned int n = 0; n < stringParams.size(); n++){
-		if((get<0>(stringParams.at(n))).compare(name) == 0){
-			cout << "Error in ParameterSet::addString(): Multiple definition of parameter '" << name << "'.\n";
-			exit(1);
-		}
+		TBTKAssert(
+			(get<0>(stringParams.at(n))).compare(name) != 0,
+			"ParameterSet::addString()",
+			"Multiple definitions of parameter '" << name << "'.",
+			""
+		);
 	}
 
 	stringParams.push_back(make_tuple(name, value));
@@ -65,10 +73,12 @@ void ParameterSet::addString(std::string name, std::string value){
 
 void ParameterSet::addBool(std::string name, bool value){
 	for(unsigned int n = 0; n < boolParams.size(); n++){
-		if((get<0>(boolParams.at(n))).compare(name) == 0){
-			cout << "Error in ParameterSet::addBool(): Multiple definition of parameter '" << name << "'.\n";
-			exit(1);
-		}
+		TBTKAssert(
+			(get<0>(boolParams.at(n))).compare(name) != 0,
+			"ParameterSet::addBool()",
+			"Multiple definitions of parameter '" << name << "'.",
+			""
+		);
 	}
 
 	boolParams.push_back(make_tuple(name, value));
@@ -81,7 +91,7 @@ int ParameterSet::getInt(string name) const {
 		}
 	}
 
-	cout << "Error in ParameterSet::getInt(): Parameter '" << name << "' not defined.\n";
+	Util::Streams::err << "Error in ParameterSet::getInt(): Parameter '" << name << "' not defined.\n";
 	exit(1);
 }
 
@@ -92,7 +102,7 @@ double ParameterSet::getDouble(string name) const {
 		}
 	}
 
-	cout << "Error in ParameterSet::getDouble(): Parameter '" << name << "' not defined.\n";
+	Util::Streams::err << "Error in ParameterSet::getDouble(): Parameter '" << name << "' not defined.\n";
 	exit(1);
 }
 
@@ -103,7 +113,7 @@ complex<double> ParameterSet::getComplex(string name) const {
 		}
 	}
 
-	cout << "Error in ParameterSet::getComplex(): Parameter '" << name << "' not defined.\n";
+	Util::Streams::err << "Error in ParameterSet::getComplex(): Parameter '" << name << "' not defined.\n";
 	exit(1);
 }
 
@@ -114,7 +124,7 @@ string ParameterSet::getString(string name) const {
 		}
 	}
 
-	cout << "Error in ParameterSet::getString(): Parameter '" << name << "' not defined.\n";
+	Util::Streams::err << "Error in ParameterSet::getString(): Parameter '" << name << "' not defined.\n";
 	exit(1);
 }
 
@@ -125,7 +135,7 @@ bool ParameterSet::getBool(string name) const {
 		}
 	}
 
-	cout << "Error in ParameterSet::getBool(): Parameter '" << name << "' not defined.\n";
+	Util::Streams::err << "Error in ParameterSet::getBool(): Parameter '" << name << "' not defined.\n";
 	exit(1);
 }
 

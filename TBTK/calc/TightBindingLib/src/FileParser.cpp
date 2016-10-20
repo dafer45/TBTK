@@ -6,6 +6,8 @@
 
 #include "../include/FileParser.h"
 #include "../include/Geometry.h"
+#include "../include/TBTKMacros.h"
+#include "../include/Streams.h"
 
 #include <fstream>
 #include <iomanip>
@@ -77,10 +79,12 @@ Util::ParameterSet* FileParser::readParameterSet(std::string fileName){
 			ssin >> name;
 			char equalitySign;
 			ssin >> equalitySign;
-			if(equalitySign != '='){
-				cout << "Error in FileParser::readParameterSet(): Expected '=' but found '" << equalitySign << "'.\n";
-				exit(1);
-			}
+			TBTKAssert(
+				equalitySign == '=',
+				"FileParser::readParameterSet()",
+				"Expected '=' but found '" << equalitySign << "'.",
+				""
+			);
 			int value;
 			ssin >> value;
 			parameterSet->addInt(name, value);
@@ -90,10 +94,12 @@ Util::ParameterSet* FileParser::readParameterSet(std::string fileName){
 			ssin >> name;
 			char equalitySign;
 			ssin >> equalitySign;
-			if(equalitySign != '='){
-				cout << "Error in FileParser::readParameterSet(): Expected '=' but found '" << equalitySign << "'.\n";
-				exit(1);
-			}
+			TBTKAssert(
+				equalitySign == '=',
+				"FileParser::readParameterSet()",
+				"Expected '=' but found '" << equalitySign << "'.",
+				""
+			);
 			double value;
 			ssin >> value;
 			parameterSet->addDouble(name, value);
@@ -103,10 +109,12 @@ Util::ParameterSet* FileParser::readParameterSet(std::string fileName){
 			ssin >> name;
 			char equalitySign;
 			ssin >> equalitySign;
-			if(equalitySign != '='){
-				cout << "Error in FileParser::readParameterSet(): Expected '=' but found '" << equalitySign << "'.\n";
-				exit(1);
-			}
+			TBTKAssert(
+				equalitySign == '=',
+				"FileParser::readParameterSet()",
+				"Expected '=' but found '" << equalitySign << "'.",
+				""
+			);
 			complex<double> value;
 			ssin >> value;
 			parameterSet->addComplex(name, value);
@@ -116,36 +124,40 @@ Util::ParameterSet* FileParser::readParameterSet(std::string fileName){
 			ssin >> name;
 			char equalitySign;
 			ssin >> equalitySign;
-			if(equalitySign != '='){
-				cout << "Error in FileParser::readParameterSet(): Expected '=' but found '" << equalitySign << "'.\n";
-				exit(1);
-			}
+			TBTKAssert(
+				equalitySign == '=',
+				"FileParser::readParameterSet()",
+				"Expected '=' but found '" << equalitySign << "'.",
+				""
+			);
 			string value;
-            getline(ssin, value);
-            int first = value.find_first_not_of(" \t");
-            int last = value.find_last_not_of(" \t");
-            value = value.substr(first, last - first + 1);
+			getline(ssin, value);
+			int first = value.find_first_not_of(" \t");
+			int last = value.find_last_not_of(" \t");
+			value = value.substr(first, last - first + 1);
 			parameterSet->addString(name, value);
 		}
-        else if(type.compare("bool") == 0){
+		else if(type.compare("bool") == 0){
 			string name;
 			ssin >> name;
 			char equalitySign;
 			ssin >> equalitySign;
-			if(equalitySign != '='){
-				cout << "Error in FileParser::readParameterSet(): Expected '=' but found '" << equalitySign << "'.\n";
-				exit(1);
-			}
+			TBTKAssert(
+				equalitySign == '=',
+				"FileParser::readParameterSet()",
+				"Expected '=' but found '" << equalitySign << "'.",
+				""
+			);
 			bool value;
 			ssin >> value;
 			parameterSet->addBool(name, value);
 		}
 		else{
-			cout << "Error in FileParser::readParametersSet(): Expected type but found '" << type << "'.\n";
+			Util::Streams::err << "Error in FileParser::readParametersSet(): Expected type but found '" + type + "'.\n";
 			exit(1);
 		}
 /*		if(!getline(ssin, line)){
-//			cout << "Error in FileParser::readAmplitudes(): Reached end of file while searching for 'Amplitudes:'.\n";
+//			Util::Streams::err << "Error in FileParser::readAmplitudes(): Reached end of file while searching for 'Amplitudes:'.\n";
 			exit(1);
 		}
 
@@ -153,7 +165,7 @@ Util::ParameterSet* FileParser::readParameterSet(std::string fileName){
 		if(line.find("Amplitudes:") != string::npos){
 			int mode = readParameter("Mode", "Amplitude");
 			if(mode < 0 || mode > 1){
-				cout << "Error in FileParser::readAmplitudes(): Only Amplitude mode 0 and 1 supported.\n";
+				Util::Streams::err << "Error in FileParser::readAmplitudes(): Only Amplitude mode 0 and 1 supported.\n";
 				exit(1);
 			}
 			amplitudeMode = static_cast<AmplitudeMode>(mode);
@@ -176,10 +188,12 @@ void FileParser::closeOutput(){
 void FileParser::readInput(string fileName){
 	fstream fin;
 	fin.open(fileName);
-	if(!fin){
-		cout << "Error in FileParser::readInput(): Unable to open '" << fileName << "'.\n";
-		exit(1);
-	}
+	TBTKAssert(
+		fin,
+		"FileParser::readInput()",
+		"Unable to open '" + fileName + "'.",
+		""
+	);
 
 	ssin << fin.rdbuf();
 
@@ -301,7 +315,7 @@ void FileParser::writeAmplitudes(Model *model, AmplitudeMode amplitudeMode){
 			break;
 		}
 		default:
-			cout << "Eror in FileParser::writeAmplitudes: Unsupported amplitudeMode (" << static_cast<int>(amplitudeMode) << ").\n";
+			Util::Streams::err << "Eror in FileParser::writeAmplitudes: Unsupported amplitudeMode (" << static_cast<int>(amplitudeMode) << ").";
 			exit(1);
 		}
 
@@ -415,7 +429,7 @@ void FileParser::removeComments(){
 			}
 			break;
 		default:
-			cout << "Error in FileParser::removeComments(): Unknown state.\n";
+			Util::Streams::err << "Error in FileParser::removeComments(): Unknown state.";
 			exit(1);
 		}
 	}
@@ -463,7 +477,7 @@ void FileParser::removeInitialWhiteSpaces(){
 			}
 			break;
 		default:
-			cout << "Error in FileParser::removeInitialWhiteSpaces(): Unknown state.\n";
+			Util::Streams::err << "Error in FileParser::removeInitialWhiteSpaces(): Unknown state.";
 			exit(1);
 		}
 	}
@@ -478,15 +492,17 @@ void FileParser::readAmplitudes(Model *model){
 	AmplitudeMode amplitudeMode;
 	string line;
 	while(true){
-		if(!getline(ssin, line)){
-			cout << "Error in FileParser::readAmplitudes(): Reached end of file while searching for 'Amplitudes:'.\n";
-			exit(1);
-		}
+		TBTKAssert(
+			getline(ssin, line),
+			"FileParser::readAmplitudes()",
+			"Reached end of file while searching for 'Amplitudes:'.",
+			""
+		);
 
 		if(line.find("Amplitudes:") != string::npos){
 			int mode = readParameter("Mode", "Amplitude");
 			if(mode < 0 || mode > 1){
-				cout << "Error in FileParser::readAmplitudes(): Only Amplitude mode 0 and 1 supported.\n";
+				Util::Streams::err << "Error in FileParser::readAmplitudes(): Only Amplitude mode 0 and 1 supported.\n";
 				exit(1);
 			}
 			amplitudeMode = static_cast<AmplitudeMode>(mode);
@@ -539,9 +555,9 @@ void FileParser::readGeometry(Model *model){
 	string line;
 	while(true){
 		if(!getline(ssin, line)){
-			cout << "Warning in FileParser::readAmplitudes(): Reached end of file while searching for 'Geometry:'.\n";
-			cout << "\tNo Geometry loaded.\n";
-			cout << "\tAdd 'Geometry: None' after amplitude list to disable warning.\n";
+			Util::Streams::log << "Warning in FileParser::readAmplitudes(): Reached end of file while searching for 'Geometry:'.\n";
+			Util::Streams::log << "\tNo Geometry loaded.\n";
+			Util::Streams::log << "\tAdd 'Geometry: None' after amplitude list to disable warning.\n";
 			return;
 		}
 
@@ -551,7 +567,7 @@ void FileParser::readGeometry(Model *model){
 
 			dimensions = readParameter("Dimensions", "Geometry");
 			numSpecifiers = readParameter("Num specifiers", "Geometry");
-			cout << dimensions << " " << numSpecifiers << "\n";
+			Util::Streams::out << dimensions << " " << numSpecifiers << "\n";
 
 			break;
 		}
@@ -596,23 +612,29 @@ int FileParser::readParameter(
 ){
 	string line;
 
-	if(!getline(ssin, line)){
-		cout << "Error in FileParser::readParameter(): Expected parameter '" << parameterName << "' for structure '" << parentStructure << "'.\n";
-		exit(1);
-	}
+	TBTKAssert(
+		getline(ssin, line),
+		"FileParser::readParameter()",
+		"Expected parameter '" << parameterName << "' for structure '" << parentStructure << "'.",
+		""
+	);
 
 	size_t position = line.find(parameterName);
-	if(position == string::npos){
-		cout << "Error in FileParser::readAmplitudes(): Expected parameter '" << parameterName << "' for structure '" << parentStructure << "'.\n";
-		exit(1);
-	}
+	TBTKAssert(
+		position != string::npos,
+		"FileParser::readAmplitudes()",
+		"Expected parameter '" << parameterName << "' for structure '" << parentStructure << "'.",
+		""
+	);
 	line = line.substr(position+4);
 
 	position = line.find("=");
-	if(position == string::npos){
-		cout << "Error in FileParser::readAmplitudes(): Expected '=' after " << parameterName << ".\n";
-		exit(1);
-	}
+	TBTKAssert(
+		position != string::npos,
+		"FileParser::readAmplitudes()",
+		"Expected '=' after " << parameterName << ".",
+		""
+	);
 	line = line.substr(position+1);
 
 	stringstream ss;
@@ -629,16 +651,20 @@ HoppingAmplitude* FileParser::readHoppingAmplitude(){
 		return NULL;
 
 	Index *to = readIndex();
-	if(to == NULL){
-		cout << "Error in FileParser::readHoppingAmplitude(): Faile to read index.\n";
-		exit(1);
-	}
+	TBTKAssert(
+		to != NULL,
+		"FileParser::readHoppingAmplitude()",
+		"Faile to read index.",
+		""
+	);
 
 	Index *from = readIndex();
-	if(to == NULL){
-		cout << "Error in FileParser::readHoppingAmplitude(): Faile to read index.\n";
-		exit(1);
-	}
+	TBTKAssert(
+		to != NULL,
+		"FileParser::readHoppingAmplitude()",
+		"Faile to read index.",
+		""
+	);
 
 	HoppingAmplitude *ha = new HoppingAmplitude(amplitude, *to, *from);
 	delete to;
@@ -650,10 +676,12 @@ HoppingAmplitude* FileParser::readHoppingAmplitude(){
 Index* FileParser::readIndex(){
 	char c;
 	ssin >> c;
-	if(c != '['){
-		cout << "Error in FileParser::readIndex(): Expected '[', found '" << c << "'.\n";
-		exit(1);
-	}
+	TBTKAssert(
+		c == '[',
+		"FileParser::readIndex()",
+		"Expected '[', found '" << c << "'.",
+		""
+	);
 
 	vector<int> indices;
 	while(true){
@@ -671,10 +699,12 @@ Index* FileParser::readIndex(){
 void FileParser::readCoordinates(vector<double> *coordinates, int dimensions){
 	char c;
 	ssin >> c;
-	if(c != '('){
-		cout << "Error in FileParser::readCoordinates(): Expected '[', found '" << c << "'.\n";
-		exit(1);
-	}
+	TBTKAssert(
+		c == '(',
+		"FileParser::readCoordinates()",
+		"Expected '[', found '" << c << "'.",
+		""
+	);
 
 	while(true){
 		double d;
@@ -684,19 +714,23 @@ void FileParser::readCoordinates(vector<double> *coordinates, int dimensions){
 			break;
 	}
 
-	if(dimensions != (int)coordinates->size()){
-		cout << "Error in FileParser::readCoordinates(): Expected " << dimensions << " coordinates, found " << coordinates->size() << ".\n";
-		exit(1);
-	}
+	TBTKAssert(
+		dimensions == (int)coordinates->size(),
+		"FileParser::readCoordinates()",
+		"Expected " << dimensions << " coordinates, found " << coordinates->size() << ".",
+		""
+	);
 }
 
 void FileParser::readSpecifiers(vector<int> *specifiers, int numSpecifiers){
 	char c;
 	ssin >> c;
-	if(c != '<'){
-		cout << "Error in FileParser::readSpecifiers(): Expected '<', found '" << c << "'.\n";
-		exit(1);
-	}
+	TBTKAssert(
+		c == '<',
+		"FileParser::readSpecifiers()",
+		"Expected '<', found '" << c << "'.",
+		""
+	);
 
 	while(true){
 		int i;
@@ -706,10 +740,12 @@ void FileParser::readSpecifiers(vector<int> *specifiers, int numSpecifiers){
 			break;
 	}
 
-	if(numSpecifiers != (int)specifiers->size()){
-		cout << "Error in FileParser::readSpecifiers(): Expected " << numSpecifiers << " specifiers, found " << specifiers->size() << ".\n";
-		exit(1);
-	}
+	TBTKAssert(
+		numSpecifiers == (int)specifiers->size(),
+		"FileParser::readSpecifiers()",
+		"Expected " << numSpecifiers << " specifiers, found " << specifiers->size() << ".",
+		""
+	);
 }
 
 bool FileParser::readComplex(complex<double> *c){
@@ -728,10 +764,12 @@ bool FileParser::readComplex(complex<double> *c){
 
 bool FileParser::readDouble(double *d, char endChar){
 	string word;
-	if(!(ssin >> word)){
-		cout << "Error in FileParser::readDouble(): Reached end of file while trying to read floating point number.\n";
-		exit(1);
-	}
+	TBTKAssert(
+		(ssin >> word),
+		"FileParser::readDouble()",
+		"Reached end of file while trying to read floating point number.",
+		""
+	);
 
 	//Pointer to first char after number. Used to indicate whether word is a number or not.
 	char *p;
@@ -739,20 +777,24 @@ bool FileParser::readDouble(double *d, char endChar){
 	*d = strtod(word.c_str(), &p);
 	if(*p == endChar)
 		return 1;
-	if(*p){
-		cout << "Error in FileParser::readDouble(): Expected floating point, found '" << word << "'.\n";
-		exit(1);
-	}
+	TBTKAssert(
+		*p == 0,
+		"FileParser::readDouble()",
+		"Expected floating point, found '" << word << "'.",
+		""
+	);
 
 	return 0;
 }
 
 bool FileParser::readInt(int *i, char endChar){
 	string word;
-	if(!(ssin >> word)){
-		cout << "Error in FileParser::readInt(): Reached end of file while trying to read integer.\n";
-		exit(1);
-	}
+	TBTKAssert(
+		(ssin >> word),
+		"FileParser::readInt()",
+		"Reached end of file while trying to read integer.",
+		""
+	);
 
 	//Pointer to first char after number. Used to indicate whether word is a number or not.
 	char *p;
@@ -760,10 +802,12 @@ bool FileParser::readInt(int *i, char endChar){
 	*i = strtol(word.c_str(), &p, 10);
 	if(*p == endChar)
 		return 1;
-	if(*p){
-		cout << "Error in FileParser::readInt(): Expected integer, found '" << word << "'.\n";
-		exit(1);
-	}
+	TBTKAssert(
+		*p == 0,
+		"FileParser::readInt()",
+		"Expected integer, found '" << word << "'.",
+		""
+	);
 
 	return 0;
 }

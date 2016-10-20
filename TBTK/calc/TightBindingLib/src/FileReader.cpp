@@ -4,9 +4,11 @@
  */
 
 #include "../include/FileReader.h"
+#include "../include/TBTKMacros.h"
+#include "../include/Streams.h"
+
 #include <string>
 #include <sstream>
-#include <iostream>
 #include <H5Cpp.h>
 #include <fstream>
 
@@ -78,18 +80,22 @@ AmplitudeSet* FileReader::readAmplitudeSet(string name, string path){
 
 		DataSet datasetI = file.openDataSet(ssI.str());
 		H5T_class_t typeClassI = datasetI.getTypeClass();
-		if(typeClassI != H5T_INTEGER){
-			cout << "Error in FileReader::readAmplitudeSet: Indices data type is not integer.\n";
-			exit(1);
-		}
+		TBTKAssert(
+			typeClassI == H5T_INTEGER,
+			"FileReader::readAmplitudeSet()",
+			"Indices data type is not integer.",
+			""
+		);
 		DataSpace dataspaceI = datasetI.getSpace();
 
 		DataSet datasetA = file.openDataSet(ssA.str());
 		H5T_class_t typeClassA = datasetA.getTypeClass();
-		if(typeClassA != H5T_FLOAT){
-			cout << "Error in FileReader::readAmplitudeSet: Amplitudes data type is not double.\n";
-			exit(1);
-		}
+		TBTKAssert(
+			typeClassA == H5T_FLOAT,
+			"FileReader::readAmplitudeSet()",
+			"Amplitudes data type is not double.",
+			""
+		);
 		DataSpace dataspaceA = datasetA.getSpace();
 
 		hsize_t dims_internalI[3];
@@ -133,15 +139,15 @@ AmplitudeSet* FileReader::readAmplitudeSet(string name, string path){
 		}
 	}
 	catch(FileIException error){
-		cout << "Error in FileReader::read: While reading " << name << "\n";
+		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
 		exit(1);
 	}
 	catch(DataSetIException error){
-		cout << "Error in FileReader::read: While reading " << name << "\n";
+		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
 		exit(1);
 	}
 	catch(DataSpaceIException error){
-		cout << "Error in FileReader::read: While reading " << name << "\n";
+		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
 		exit(1);
 	}
 
@@ -175,10 +181,12 @@ Geometry* FileReader::readGeometry(Model *model, string name, string path){
 			return NULL;
 		}
 		H5T_class_t typeClassC = datasetC.getTypeClass();
-		if(typeClassC != H5T_FLOAT){
-			cout << "Error in FileReader::readGeometry: Coordinates data type is not double.\n";
-			exit(1);
-		}
+		TBTKAssert(
+			typeClassC == H5T_FLOAT,
+			"FileReader::readGeometry()",
+			"Coordinates data type is not double.",
+			""
+		);
 		DataSpace dataspaceC = datasetC.getSpace();
 
 		DataSet datasetS;
@@ -191,10 +199,12 @@ Geometry* FileReader::readGeometry(Model *model, string name, string path){
 			return NULL;
 		}
 		H5T_class_t typeClassS = datasetS.getTypeClass();
-		if(typeClassS != H5T_INTEGER){
-			cout << "Error in FileReader::readGeometry: Specifiers data type is not integer.\n";
-			exit(1);
-		}
+		TBTKAssert(
+			typeClassS == H5T_INTEGER,
+			"FileReader::readGeometry()",
+			"Specifiers data type is not integer.",
+			""
+		);
 		DataSpace dataspaceS = datasetS.getSpace();
 
 		hsize_t dims_internalC[2];
@@ -219,61 +229,20 @@ Geometry* FileReader::readGeometry(Model *model, string name, string path){
 		file.close();
 	}
 	catch(FileIException error){
-		cout << "Error in FileReader::read: While reading " << name << "\n";
+		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
 		exit(1);
 	}
 	catch(DataSetIException error){
-		cout << "Error in FileReader::read: While reading " << name << "\n";
+		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
 		exit(1);
 	}
 	catch(DataSpaceIException error){
-		cout << "Error in FileReader::read: While reading " << name << "\n";
+		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
 		exit(1);
 	}
 
 	return geometry;
 }
-
-/*void FileReader::readEigenValues(double **ev, int *size, string name, string path){
-	try{
-		stringstream ss;
-		ss << path;
-		if(path.back() != '/')
-			ss << "/";
-		ss << name;
-
-		Exception::dontPrint();
-		H5File file(filename, H5F_ACC_RDONLY);
-
-		DataSet dataset = file.openDataSet(name);
-		H5T_class_t typeClass = dataset.getTypeClass();
-		if(typeClass != H5T_FLOAT){
-			cout << "Error in FileReader::readEigenValues: Data type is not double.\n";
-			exit(1);
-		}
-
-		DataSpace dataspace = dataset.getSpace();
-		
-		hsize_t dims_internal[1];
-		dataspace.getSimpleExtentDims(dims_internal, NULL);
-		*size = dims_internal[0];
-
-		*ev = new double[*size];
-		dataset.read(*ev, PredType::NATIVE_DOUBLE, dataspace);
-	}
-	catch(FileIException error){
-		cout << "Error in FileReader::read: While reading " << name << "\n";
-		exit(1);
-	}
-	catch(DataSetIException error){
-		cout << "Error in FileReader::read: While reading " << name << "\n";
-		exit(1);
-	}
-	catch(DataSpaceIException error){
-		cout << "Error in FileReader::read: While reading " << name << "\n";
-		exit(1);
-	}
-}*/
 
 Property::EigenValues* FileReader::readEigenValues(string name, string path){
 	Property::EigenValues *eigenValues = NULL;
@@ -291,13 +260,15 @@ Property::EigenValues* FileReader::readEigenValues(string name, string path){
 
 		DataSet dataset = file.openDataSet(name);
 		H5T_class_t typeClass = dataset.getTypeClass();
-		if(typeClass != H5T_FLOAT){
-			cout << "Error in FileReader::readEigenValues: Data type is not double.\n";
-			exit(1);
-		}
+		TBTKAssert(
+			typeClass == H5T_FLOAT,
+			"FileReader::readEigenValues()",
+			"Data type is not double.",
+			""
+		);
 
 		DataSpace dataspace = dataset.getSpace();
-		
+
 		hsize_t dims_internal[1];
 		dataspace.getSimpleExtentDims(dims_internal, NULL);
 		size = dims_internal[0];
@@ -307,67 +278,20 @@ Property::EigenValues* FileReader::readEigenValues(string name, string path){
 		dataset.read(eigenValues->data, PredType::NATIVE_DOUBLE, dataspace);
 	}
 	catch(FileIException error){
-		cout << "Error in FileReader::read: While reading " << name << "\n";
+		Util::Streams::err << "FileReader::read: While reading " << name << "\n";
 		exit(1);
 	}
 	catch(DataSetIException error){
-		cout << "Error in FileReader::read: While reading " << name << "\n";
+		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
 		exit(1);
 	}
 	catch(DataSpaceIException error){
-		cout << "Error in FileReader::read: While reading " << name << "\n";
+		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
 		exit(1);
 	}
 
 	return eigenValues;
 }
-
-/*void FileReader::readDOS(double **dos, double *l_lim, double *u_lim, int *resolution, string name, string path){
-	try{
-		stringstream ss;
-		ss << path;
-		if(path.back() != '/')
-			ss << "/";
-		ss << name;
-
-		Exception::dontPrint();
-		H5File file(filename, H5F_ACC_RDONLY);
-
-		DataSet dataset = file.openDataSet(name);
-		H5T_class_t typeClass = dataset.getTypeClass();
-		if(typeClass != H5T_FLOAT){
-			cout << "Error in FileReader::readDOS: Data type is not double.\n";
-			exit(1);
-		}
-
-		DataSpace dataspace = dataset.getSpace();
-		
-		hsize_t dims_internal[1];
-		dataspace.getSimpleExtentDims(dims_internal, NULL);
-		*resolution = dims_internal[0];
-
-		*dos = new double[*resolution];
-		dataset.read(*dos, PredType::NATIVE_DOUBLE, dataspace);
-
-		Attribute attribute = dataset.openAttribute("UpLowLimits");
-		double limits[2];
-		attribute.read(PredType::NATIVE_DOUBLE, limits);
-		*u_lim = limits[0];
-		*l_lim = limits[1];
-	}
-	catch(FileIException error){
-		cout << "Error in FileReader::read: While reading " << name << "\n";
-		exit(1);
-	}
-	catch(DataSetIException error){
-		cout << "Error in FileReader::read: While reading " << name << "\n";
-		exit(1);
-	}
-	catch(DataSpaceIException error){
-		cout << "Error in FileReader::read: While reading " << name << "\n";
-		exit(1);
-	}
-}*/
 
 Property::DOS* FileReader::readDOS(string name, string path){
 	Property::DOS *dos = NULL;
@@ -387,10 +311,12 @@ Property::DOS* FileReader::readDOS(string name, string path){
 
 		DataSet dataset = file.openDataSet(name);
 		H5T_class_t typeClass = dataset.getTypeClass();
-		if(typeClass != H5T_FLOAT){
-			cout << "Error in FileReader::readDOS: Data type is not double.\n";
-			exit(1);
-		}
+		TBTKAssert(
+			typeClass == H5T_FLOAT,
+			"FileReader::readDOS()",
+			"Data type is not double.",
+			""
+		);
 
 		DataSpace dataspace = dataset.getSpace();
 
@@ -410,70 +336,20 @@ Property::DOS* FileReader::readDOS(string name, string path){
 
 	}
 	catch(FileIException error){
-		cout << "Error in FileReader::read: While reading " << name << "\n";
+		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
 		exit(1);
 	}
 	catch(DataSetIException error){
-		cout << "Error in FileReader::read: While reading " << name << "\n";
+		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
 		exit(1);
 	}
 	catch(DataSpaceIException error){
-		cout << "Error in FileReader::read: While reading " << name << "\n";
+		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
 		exit(1);
 	}
 
 	return dos;
 }
-
-/*void FileReader::readDensity(double **density, int *rank, int **dims, string name, string path){
-	try{
-		stringstream ss;
-		ss << path;
-		if(path.back() != '/')
-			ss << "/";
-		ss << name;
-
-		Exception::dontPrint();
-		H5File file(filename, H5F_ACC_RDONLY);
-
-		DataSet dataset = file.openDataSet(name);
-		H5T_class_t typeClass = dataset.getTypeClass();
-		if(typeClass != H5T_FLOAT){
-			cout << "Error in FileReader::readDensity: Data type is not double.\n";
-			exit(1);
-		}
-
-		DataSpace dataspace = dataset.getSpace();
-		*rank = dataspace.getSimpleExtentNdims();
-
-		hsize_t *dims_internal = new hsize_t[*rank];
-		dataspace.getSimpleExtentDims(dims_internal, NULL);
-		*dims = new int[*rank];
-		for(int n = 0; n < *rank; n++)
-			(*dims)[n] = dims_internal[n];
-
-		delete [] dims_internal;
-
-		int size = 1;
-		for(int n = 0; n < *rank; n++)
-			size *= (*dims)[n];
-
-		*density = new double[size];
-		dataset.read(*density, PredType::NATIVE_DOUBLE, dataspace);
-	}
-	catch(FileIException error){
-		cout << "Error in FileReader::read: While reading " << name << "\n";
-		exit(1);
-	}
-	catch(DataSetIException error){
-		cout << "Error in FileReader::read: While reading " << name << "\n";
-		exit(1);
-	}
-	catch(DataSpaceIException error){
-		cout << "Error in FileReader::read: While reading " << name << "\n";
-		exit(1);
-	}
-}*/
 
 Property::Density* FileReader::readDensity(string name, string path){
 	Property::Density *density = NULL;
@@ -492,10 +368,12 @@ Property::Density* FileReader::readDensity(string name, string path){
 
 		DataSet dataset = file.openDataSet(name);
 		H5T_class_t typeClass = dataset.getTypeClass();
-		if(typeClass != H5T_FLOAT){
-			cout << "Error in FileReader::readDensity: Data type is not double.\n";
-			exit(1);
-		}
+		TBTKAssert(
+			typeClass == H5T_FLOAT,
+			"FileReader::readDensity()",
+			"Data type is not double.",
+			""
+		);
 
 		DataSpace dataspace = dataset.getSpace();
 		rank = dataspace.getSimpleExtentNdims();
@@ -513,75 +391,20 @@ Property::Density* FileReader::readDensity(string name, string path){
 		dataset.read(density->data, PredType::NATIVE_DOUBLE, dataspace);
 	}
 	catch(FileIException error){
-		cout << "Error in FileReader::read: While reading " << name << "\n";
+		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
 		exit(1);
 	}
 	catch(DataSetIException error){
-		cout << "Error in FileReader::read: While reading " << name << "\n";
+		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
 		exit(1);
 	}
 	catch(DataSpaceIException error){
-		cout << "Error in FileReader::read: While reading " << name << "\n";
+		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
 		exit(1);
 	}
 
 	return density;
 }
-
-/*void FileReader::readMAG(complex<double> **mag, int *rank, int **dims, string name, string path){
-	try{
-		stringstream ss;
-		ss << path;
-		if(path.back() != '/')
-			ss << "/";
-		ss << name;
-
-		Exception::dontPrint();
-		H5File file(filename, H5F_ACC_RDONLY);
-
-		DataSet dataset = file.openDataSet(name);
-		H5T_class_t typeClass = dataset.getTypeClass();
-		if(typeClass != H5T_FLOAT){
-			cout << "Error in FileReader::readMAG: Data type is not double.\n";
-			exit(1);
-		}
-
-		DataSpace dataspace = dataset.getSpace();
-		int rank_internal = dataspace.getSimpleExtentNdims();
-		*rank = rank_internal-2;//Last two dimensions are for matrix elements and real/imaginary decomposition.
-
-		hsize_t *dims_internal = new hsize_t[rank_internal];
-		dataspace.getSimpleExtentDims(dims_internal, NULL);
-		*dims = new int[*rank];
-		for(int n = 0; n < rank_internal; n++)
-			(*dims)[n] = dims_internal[n];
-
-		int size = 1;
-		for(int n = 0; n < rank_internal; n++)
-			size *= dims_internal[n];
-
-		double *mag_internal = new double[size];
-		*mag = new complex<double>[size/2];
-		dataset.read(mag_internal, PredType::NATIVE_DOUBLE, dataspace);
-		for(int n = 0; n < size/2; n++)
-			(*mag)[n] = complex<double>(mag_internal[2*n+0], mag_internal[2*n+1]);
-
-		delete [] mag_internal;
-		delete [] dims_internal;
-	}
-	catch(FileIException error){
-		cout << "Error in FileReader::read: While reading " << name << "\n";
-		exit(1);
-	}
-	catch(DataSetIException error){
-		cout << "Error in FileReader::read: While reading " << name << "\n";
-		exit(1);
-	}
-	catch(DataSpaceIException error){
-		cout << "Error in FileReader::read: While reading " << name << "\n";
-		exit(1);
-	}
-}*/
 
 Property::Magnetization* FileReader::readMagnetization(
 	string name,
@@ -603,10 +426,12 @@ Property::Magnetization* FileReader::readMagnetization(
 
 		DataSet dataset = file.openDataSet(name);
 		H5T_class_t typeClass = dataset.getTypeClass();
-		if(typeClass != H5T_FLOAT){
-			cout << "Error in FileReader::readMAG: Data type is not double.\n";
-			exit(1);
-		}
+		TBTKAssert(
+			typeClass == H5T_FLOAT,
+			"FileReader::readMAG()",
+			"Data type is not double.",
+			""
+		);
 
 		DataSpace dataspace = dataset.getSpace();
 		int rank_internal = dataspace.getSimpleExtentNdims();
@@ -634,15 +459,15 @@ Property::Magnetization* FileReader::readMagnetization(
 		delete [] dims_internal;
 	}
 	catch(FileIException error){
-		cout << "Error in FileReader::read: While reading " << name << "\n";
+		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
 		exit(1);
 	}
 	catch(DataSetIException error){
-		cout << "Error in FileReader::read: While reading " << name << "\n";
+		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
 		exit(1);
 	}
 	catch(DataSpaceIException error){
-		cout << "Error in FileReader::read: While reading " << name << "\n";
+		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
 		exit(1);
 	}
 
@@ -650,7 +475,7 @@ Property::Magnetization* FileReader::readMagnetization(
 }
 
 Property::LDOS* FileReader::readLDOS(string name, string path){
-	cout << "Error in FileReader::readLDOS: Not yet implemented.\n";
+	Util::Streams::err << "Error in FileReader::readLDOS: Not yet implemented.\n";
 	exit(1);
 
 /*	hsize_t ldos_dims[rank+1];//Last dimension is for energy
@@ -702,69 +527,6 @@ Property::LDOS* FileReader::readLDOS(string name, string path){
 	}*/
 }
 
-/*void FileReader::readSP_LDOS(complex<double> **sp_ldos, int *rank, int **dims, double *l_lim, double *u_lim, int *resolution, string name, string path){
-	try{
-		stringstream ss;
-		ss << path;
-		if(path.back() != '/')
-			ss << "/";
-		ss << name;
-
-		Exception::dontPrint();
-		H5File file(filename, H5F_ACC_RDONLY);
-
-		DataSet dataset = file.openDataSet(name);
-		H5T_class_t typeClass = dataset.getTypeClass();
-		if(typeClass != H5T_FLOAT){
-			cout << "Error in FileReader::readSP_LDOS: Data type is not double.\n";
-			exit(1);
-		}
-
-		DataSpace dataspace = dataset.getSpace();
-		int rank_internal = dataspace.getSimpleExtentNdims();
-		*rank = rank_internal-3;//Three last dimensions are for energy, spin components, and real/imaginary decomposition.
-
-		hsize_t *dims_internal = new hsize_t[rank_internal];
-		dataspace.getSimpleExtentDims(dims_internal, NULL);
-		*dims = new int[*rank];
-		for(int n = 0; n < rank_internal; n++)
-			(*dims)[n] = dims_internal[n];
-
-		int size = 1;
-		for(int n = 0; n < rank_internal; n++)
-			size *= dims_internal[n];
-
-		double *sp_ldos_internal = new double[size];
-		*sp_ldos = new complex<double>[size/2];
-		dataset.read(sp_ldos_internal, PredType::NATIVE_DOUBLE, dataspace);
-		for(int n = 0; n < size/2; n++)
-			(*sp_ldos)[n] = complex<double>(sp_ldos_internal[2*n+0], sp_ldos_internal[2*n+1]);
-
-		*resolution = dims_internal[rank_internal-3];
-
-		delete [] sp_ldos_internal;
-		delete [] dims_internal;
-
-		Attribute attribute = dataset.openAttribute("UpLowLimits");
-		double limits[2];
-		attribute.read(PredType::NATIVE_DOUBLE, limits);
-		*u_lim = limits[0];
-		*l_lim = limits[1];
-	}
-	catch(FileIException error){
-		cout << "Error in FileReader::read: While reading " << name << "\n";
-		exit(1);
-	}
-	catch(DataSetIException error){
-		cout << "Error in FileReader::read: While reading " << name << "\n";
-		exit(1);
-	}
-	catch(DataSpaceIException error){
-		cout << "Error in FileReader::read: While reading " << name << "\n";
-		exit(1);
-	}
-}*/
-
 Property::SpinPolarizedLDOS* FileReader::readSpinPolarizedLDOS(
 	string name,
 	string path
@@ -788,10 +550,12 @@ Property::SpinPolarizedLDOS* FileReader::readSpinPolarizedLDOS(
 
 		DataSet dataset = file.openDataSet(name);
 		H5T_class_t typeClass = dataset.getTypeClass();
-		if(typeClass != H5T_FLOAT){
-			cout << "Error in FileReader::readSP_LDOS: Data type is not double.\n";
-			exit(1);
-		}
+		TBTKAssert(
+			typeClass == H5T_FLOAT,
+			"FileReader::readSpinPolarizedLDOS()",
+			"Data type is not double.",
+			""
+		);
 
 		DataSpace dataspace = dataset.getSpace();
 		int rank_internal = dataspace.getSimpleExtentNdims();
@@ -826,15 +590,15 @@ Property::SpinPolarizedLDOS* FileReader::readSpinPolarizedLDOS(
 		delete [] dims_internal;
 	}
 	catch(FileIException error){
-		cout << "Error in FileReader::read: While reading " << name << "\n";
+		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
 		exit(1);
 	}
 	catch(DataSetIException error){
-		cout << "Error in FileReader::read: While reading " << name << "\n";
+		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
 		exit(1);
 	}
 	catch(DataSpaceIException error){
-		cout << "Error in FileReader::read: While reading " << name << "\n";
+		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
 		exit(1);
 	}
 
@@ -860,10 +624,12 @@ void FileReader::read(
 
 		DataSet dataset = file.openDataSet(name);
 		H5T_class_t typeClass = dataset.getTypeClass();
-		if(typeClass != H5T_FLOAT){
-			cout << "Error in FileReader::read: Data type is not double.\n";
-			exit(1);
-		}
+		TBTKAssert(
+			typeClass == H5T_FLOAT,
+			"FileReader::read()",
+			"Data type is not double.",
+			""
+		);
 
 		DataSpace dataspace = dataset.getSpace();
 		*rank = dataspace.getSimpleExtentNdims();
@@ -883,15 +649,15 @@ void FileReader::read(
 		dataset.read(*data, PredType::NATIVE_DOUBLE, dataspace);
 	}
 	catch(FileIException error){
-		cout << "Error in FileReader::read: While reading " << name << "\n";
+		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
 		exit(1);
 	}
 	catch(DataSetIException error){
-		cout << "Error in FileReader::read: While reading " << name << "\n";
+		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
 		exit(1);
 	}
 	catch(DataSpaceIException error){
-		cout << "Error in FileReader::read: While reading " << name << "\n";
+		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
 		exit(1);
 	}
 }
@@ -919,23 +685,25 @@ void FileReader::readAttributes(
 		for(int n = 0; n < num; n++){
 			Attribute attribute = dataset.openAttribute(attribute_names[n]);
 			DataType type = attribute.getDataType();
-			if(!(type == PredType::STD_I64BE)){
-				cout << "Error in FileReader::readAttribues: The attribute '" << attribute_names[n] << "' is not of integer type.\n";
-				exit(1);
-			}
+			TBTKAssert(
+				type == PredType::STD_I64BE,
+				"FileReader::readAttribues()",
+				"The attribute '" << attribute_names[n] << "' is not of integer type.",
+				""
+			);
 			attribute.read(PredType::NATIVE_INT, &(attributes[n]));
 		}
 	}
 	catch(FileIException error){
-		cout << "Error in FileReader::read: While reading " << name << "\n";
+		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
 		exit(1);
 	}
 	catch(DataSetIException error){
-		cout << "Error in FileReader::read: While reading " << name << "\n";
+		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
 		exit(1);
 	}
 	catch(DataSpaceIException error){
-		cout << "Error in FileReader::read: While reading " << name << "\n";
+		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
 		exit(1);
 	}
 }
@@ -963,23 +731,25 @@ void FileReader::readAttributes(
 		for(int n = 0; n < num; n++){
 			Attribute attribute = dataset.openAttribute(attribute_names[n]);
 			DataType type = attribute.getDataType();
-			if(!(type == PredType::IEEE_F64BE)){
-				cout << "Error in FileReader::readAttribues: The attribute '" << attribute_names[n] << "' is not of double type.\n";
-				exit(1);
-			}
+			TBTKAssert(
+				type == PredType::IEEE_F64BE,
+				"FileReader::readAttribues()",
+				"The attribute '" << attribute_names[n] << "' is not of double type.",
+				""
+			);
 			attribute.read(PredType::NATIVE_DOUBLE, &(attributes[n]));
 		}
 	}
 	catch(FileIException error){
-		cout << "Error in FileReader::read: While reading " << name << "\n";
+		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
 		exit(1);
 	}
 	catch(DataSetIException error){
-		cout << "Error in FileReader::read: While reading " << name << "\n";
+		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
 		exit(1);
 	}
 	catch(DataSpaceIException error){
-		cout << "Error in FileReader::read: While reading " << name << "\n";
+		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
 		exit(1);
 	}
 }

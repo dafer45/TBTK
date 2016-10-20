@@ -22,17 +22,17 @@ int Streams::NullBuffer::overflow(int c){
 	return c;
 }
 
-/*void Streams::muteOut(){
-	out.setStream(&null);
+void Streams::muteOut(){
+	out.rdbuf(&nullBuffer);
 }
 
 void Streams::muteLog(){
-	log.setStream(&null);
+	log.rdbuf(&nullBuffer);
 }
 
 void Streams::muteErr(){
-	err.setStream(&null);
-}*/
+	err.rdbuf(&nullBuffer);
+}
 
 Streams::ForkBuffer::ForkBuffer(basic_ostream<char, char_traits<char>> *ostream1, basic_ostream<char, char_traits<char>> *ostream2) :
 	ostream1(ostream1),
