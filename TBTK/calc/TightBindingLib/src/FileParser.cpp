@@ -141,7 +141,7 @@ Util::ParameterSet* FileParser::readParameterSet(std::string fileName){
 			parameterSet->addBool(name, value);
 		}
 		else{
-			cout << "Error in FilePArser::readParametersSet(): Expected type but found '" << type << "'.\n";
+			cout << "Error in FileParser::readParametersSet(): Expected type but found '" << type << "'.\n";
 			exit(1);
 		}
 /*		if(!getline(ssin, line)){
