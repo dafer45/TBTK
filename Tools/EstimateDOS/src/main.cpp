@@ -33,11 +33,16 @@ const complex<double> i(0, 1);
 int main(int argc, char **argv){
 /*	Util::Streams::muteOut();
 	Util::Streams::muteLog();*/
+	ofstream fout;
+	fout.rdbuf()->pubsetbuf(0, 0);
+	fout.open("TBTKLog");
+	fout << "Hey!\n";
+	Util::Streams::log.rdbuf(fout.rdbuf());
 
 	int isTalkative		= false;
 	int forceGPU		= false;
 	int forceCPU		= false;
-	int numSamples		= 100;
+	int numSamples		= 1;
 	int scaleFactor		= 20;
 	int numCoefficients	= 5000;
 	int energyResolution	= 10000;
@@ -179,5 +184,8 @@ int main(int argc, char **argv){
 
 	delete [] dosData;
 
+/*	fout.flush();
+	fout.close();*/
+	fout.close();
 	return 0;
 }
