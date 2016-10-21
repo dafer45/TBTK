@@ -12,6 +12,7 @@
 		if(std::strcmp(hint, "") != 0)	\
 			TBTK::Util::Streams::err << "\tHint: " << hint << "\n";	\
 		TBTK::Util::Streams::err << "\tWhere: " << __FILE__ << ", " << __LINE__ << "\n";	\
+		Util::Streams::closeLog();	\
 		exit(1);	\
 	}
 

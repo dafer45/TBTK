@@ -28,6 +28,7 @@ complex<double> i(0., 1.);
 void cusparseSafe(cusparseStatus_t type, string message){
 	if(type != CUSPARSE_STATUS_SUCCESS){
 		Util::Streams::err << "\t" << message << "\n";
+		Util::Streams::closeLog();
 		exit(1);
 	}
 }
@@ -88,7 +89,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 	int device = GPUResourceManager::getInstance().allocateDevice();
 
 	if(cudaSetDevice(device) != cudaSuccess)
-		{	Util::Streams::err << "\tSet device error: " << device << "\n";	exit(1);	}
+		{	Util::Streams::err << "\tSet device error: " << device << "\n";	Util::Streams::closeLog();	exit(1);	}
 
 	AmplitudeSet *amplitudeSet = model->getAmplitudeSet();
 
@@ -162,43 +163,43 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 	}
 
 	if(cudaMalloc((void**)&jIn1_device, amplitudeSet->getBasisSize()*sizeof(complex<double>)) != cudaSuccess)
-		{	Util::Streams::err << "\tMalloc error: jIn1_device\n";		exit(1);	}
+		{	Util::Streams::err << "\tMalloc error: jIn1_device\n";		Util::Streams::closeLog();	exit(1);	}
 	if(cudaMalloc((void**)&jIn2_device, amplitudeSet->getBasisSize()*sizeof(complex<double>)) != cudaSuccess)
-		{	Util::Streams::err << "\tMalloc error: jIn2_device\n";		exit(1);	}
+		{	Util::Streams::err << "\tMalloc error: jIn2_device\n";		Util::Streams::closeLog();	exit(1);	}
 	if(cudaMalloc((void**)&cooHARowIndices_device, numHoppingAmplitudes*sizeof(int)) != cudaSuccess)
-		{	Util::Streams::err << "\tMalloc error: cooHARowIndices_device\n";	exit(1);	}
+		{	Util::Streams::err << "\tMalloc error: cooHARowIndices_device\n";	Util::Streams::closeLog();	exit(1);	}
 	if(cudaMalloc((void**)&csrHARowIndices_device, (amplitudeSet->getBasisSize()+1)*sizeof(int)) != cudaSuccess)
-		{	Util::Streams::err << "\tMalloc error: csrHARowIndices_device\n";	exit(1);	}
+		{	Util::Streams::err << "\tMalloc error: csrHARowIndices_device\n";	Util::Streams::closeLog();	exit(1);	}
 	if(cudaMalloc((void**)&cooHAColIndices_device, numHoppingAmplitudes*sizeof(int)) != cudaSuccess)
-		{	Util::Streams::err << "\tMalloc error: cooHAColIndices_device\n";	exit(1);	}
+		{	Util::Streams::err << "\tMalloc error: cooHAColIndices_device\n";	Util::Streams::closeLog();	exit(1);	}
 	if(cudaMalloc((void**)&cooHAValues_device, numHoppingAmplitudes*sizeof(complex<double>)) != cudaSuccess)
-		{	Util::Streams::err << "\tMalloc error: cooHAValues_device\n";		exit(1);	}
+		{	Util::Streams::err << "\tMalloc error: cooHAValues_device\n";		Util::Streams::closeLog();	exit(1);	}
 	if(cudaMalloc((void**)&coefficients_device, to.size()*numCoefficients*sizeof(complex<double>)) != cudaSuccess)
-		{	Util::Streams::err << "\tMalloc error: coefficients_device\n";	exit(1);	}
+		{	Util::Streams::err << "\tMalloc error: coefficients_device\n";	Util::Streams::closeLog();	exit(1);	}
 	if(cudaMalloc((void**)&coefficientMap_device, amplitudeSet->getBasisSize()*sizeof(int)) != cudaSuccess)
-		{	Util::Streams::err << "\tMalloc error: coefficientMap_device\n";	exit(1);	}
+		{	Util::Streams::err << "\tMalloc error: coefficientMap_device\n";	Util::Streams::closeLog();	exit(1);	}
 	if(damping != NULL){
 		if(cudaMalloc((void**)&damping_device, amplitudeSet->getBasisSize()*sizeof(complex<double>)) != cudaSuccess)
-			{	Util::Streams::err << "\tMalloc error: damping_device\n";	exit(1);	}
+			{	Util::Streams::err << "\tMalloc error: damping_device\n";	Util::Streams::closeLog();	exit(1);	}
 	}
 
 	if(cudaMemcpy(jIn1_device, jIn1, amplitudeSet->getBasisSize()*sizeof(complex<double>), cudaMemcpyHostToDevice) != cudaSuccess)
-		{	Util::Streams::err << "\tMemcpy error: jIn1\n";		exit(1);	}
+		{	Util::Streams::err << "\tMemcpy error: jIn1\n";		Util::Streams::closeLog();	exit(1);	}
 	if(cudaMemcpy(jIn2_device, jIn2, amplitudeSet->getBasisSize()*sizeof(complex<double>), cudaMemcpyHostToDevice) != cudaSuccess)
-		{	Util::Streams::err << "\tMemcpy error: jIn2\n";		exit(1);	}
+		{	Util::Streams::err << "\tMemcpy error: jIn2\n";		Util::Streams::closeLog();	exit(1);	}
 	if(cudaMemcpy(cooHARowIndices_device, cooHARowIndices_host, numHoppingAmplitudes*sizeof(int), cudaMemcpyHostToDevice) != cudaSuccess)
-		{	Util::Streams::err << "\tMemcpy error: cooHARowIndices\n";	exit(1);	}
+		{	Util::Streams::err << "\tMemcpy error: cooHARowIndices\n";	Util::Streams::closeLog();	exit(1);	}
 	if(cudaMemcpy(cooHAColIndices_device, cooHAColIndices_host, numHoppingAmplitudes*sizeof(int), cudaMemcpyHostToDevice) != cudaSuccess)
-		{	Util::Streams::err << "\tMemcpy error: cooHAColIndices\n";	exit(1);	}
+		{	Util::Streams::err << "\tMemcpy error: cooHAColIndices\n";	Util::Streams::closeLog();	exit(1);	}
 	if(cudaMemcpy(cooHAValues_device, cooHAValues_host, numHoppingAmplitudes*sizeof(complex<double>), cudaMemcpyHostToDevice) != cudaSuccess)
-		{	Util::Streams::err << "\tMemcpy error: cooHAValues\n";	exit(1);	}
+		{	Util::Streams::err << "\tMemcpy error: cooHAValues\n";	Util::Streams::closeLog();	exit(1);	}
 	if(cudaMemcpy(coefficients_device, coefficients, to.size()*numCoefficients*sizeof(complex<double>), cudaMemcpyHostToDevice) != cudaSuccess)
-		{	Util::Streams::err << "\tMemcpy error: coefficients\n";	exit(1);	}
+		{	Util::Streams::err << "\tMemcpy error: coefficients\n";	Util::Streams::closeLog();	exit(1);	}
 	if(cudaMemcpy(coefficientMap_device, coefficientMap, amplitudeSet->getBasisSize()*sizeof(int), cudaMemcpyHostToDevice) != cudaSuccess)
-		{	Util::Streams::err << "\tMemcpy error: coefficientMap\n";	exit(1);	}
+		{	Util::Streams::err << "\tMemcpy error: coefficientMap\n";	Util::Streams::closeLog();	exit(1);	}
 	if(damping != NULL){
 		if(cudaMemcpy(damping_device, damping, amplitudeSet->getBasisSize()*sizeof(complex<double>), cudaMemcpyHostToDevice) != cudaSuccess)
-			{	Util::Streams::err << "\tMemcpy error: damping\n";	exit(1);	}
+			{	Util::Streams::err << "\tMemcpy error: damping\n";	Util::Streams::closeLog();	exit(1);	}
 	}
 
 	cusparseHandle_t handle = NULL;
@@ -296,6 +297,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 
 	if(cudaMemcpy(coefficients, coefficients_device, to.size()*numCoefficients*sizeof(complex<double>), cudaMemcpyDeviceToHost) != cudaSuccess){
 		Util::Streams::err << "\tMemcpy error: coefficients\n";
+		Util::Streams::closeLog();
 		exit(1);
 	}
 
@@ -383,13 +385,13 @@ void ChebyshevSolver::loadLookupTableGPU(){
 //	for(int n = 0; n < numDevices; n++){
 	for(int n = 0; n < GPUResourceManager::getInstance().getNumDevices(); n++){
 		if(cudaSetDevice(n) != cudaSuccess)
-			{	Util::Streams::err << "\tSet device error: " << n << "\n";	exit(1);	}
+			{	Util::Streams::err << "\tSet device error: " << n << "\n";	Util::Streams::closeLog();	exit(1);	}
 
 		if(cudaMalloc((void**)&generatingFunctionLookupTable_device[n], lookupTableNumCoefficients*lookupTableResolution*sizeof(complex<double>))  != cudaSuccess)
-			{	Util::Streams::err << "\tMalloc error: generatingFunctionLookupTable_device\n";	exit(1);	}
+			{	Util::Streams::err << "\tMalloc error: generatingFunctionLookupTable_device\n";	Util::Streams::closeLog();	exit(1);	}
 
 		if(cudaMemcpy(generatingFunctionLookupTable_device[n], generatingFunctionLookupTable_host, lookupTableNumCoefficients*lookupTableResolution*sizeof(complex<double>), cudaMemcpyHostToDevice) != cudaSuccess)
-			{	Util::Streams::err << "\tMemcpy error: generatingFunctionLookupTable_device\n";	exit(1);	}
+			{	Util::Streams::err << "\tMemcpy error: generatingFunctionLookupTable_device\n";	Util::Streams::closeLog();	exit(1);	}
 	}
 
 	delete [] generatingFunctionLookupTable_host;
@@ -424,7 +426,7 @@ void ChebyshevSolver::generateGreensFunctionGPU(
 	int device = GPUResourceManager::getInstance().allocateDevice();
 
 	if(cudaSetDevice(device) != cudaSuccess)
-		{	Util::Streams::err << "\tSet device error: " << device << "\n";	exit(1);	}
+		{	Util::Streams::err << "\tSet device error: " << device << "\n";	Util::Streams::closeLog();	exit(1);	}
 
 	if(isTalkative)
 		Util::Streams::out << "ChebyshevSolver::generateGreensFunctionGPU\n";
@@ -449,14 +451,14 @@ void ChebyshevSolver::generateGreensFunctionGPU(
 	complex<double> *coefficients_device;
 
 	if(cudaMalloc((void**)&greensFunction_device, lookupTableResolution*sizeof(complex<double>))  != cudaSuccess)
-		{	Util::Streams::err << "\tMalloc error: greensFunction_device\n";	exit(1);	}
+		{	Util::Streams::err << "\tMalloc error: greensFunction_device\n";	Util::Streams::closeLog();	exit(1);	}
 	if(cudaMalloc((void**)&coefficients_device, lookupTableNumCoefficients*sizeof(complex<double>))  != cudaSuccess)
-		{	Util::Streams::err << "\tMalloc error: coefficients_device\n";	exit(1);	}
+		{	Util::Streams::err << "\tMalloc error: coefficients_device\n";	Util::Streams::closeLog();	exit(1);	}
 
 	if(cudaMemcpy(greensFunction_device, greensFunction, lookupTableResolution*sizeof(complex<double>), cudaMemcpyHostToDevice) != cudaSuccess)
-		{	Util::Streams::err << "\tMemcpy error: greensFunction\n";	exit(1);	}
+		{	Util::Streams::err << "\tMemcpy error: greensFunction\n";	Util::Streams::closeLog();	exit(1);	}
 	if(cudaMemcpy(coefficients_device, coefficients, lookupTableNumCoefficients*sizeof(complex<double>), cudaMemcpyHostToDevice) != cudaSuccess)
-		{	Util::Streams::err << "\tMemcpy error: coefficients\n";	exit(1);	}
+		{	Util::Streams::err << "\tMemcpy error: coefficients\n";	Util::Streams::closeLog();	exit(1);	}
 
 	int block_size = 1024;
 	int num_blocks = lookupTableResolution/block_size + (lookupTableResolution%block_size == 0 ? 0:1);
@@ -473,7 +475,7 @@ void ChebyshevSolver::generateGreensFunctionGPU(
 								lookupTableResolution);
 
 	if(cudaMemcpy(greensFunction, greensFunction_device, lookupTableResolution*sizeof(complex<double>), cudaMemcpyDeviceToHost) != cudaSuccess)
-		{	Util::Streams::err << "\tMemcpy error: greensFunction_device\n";	exit(1);	}
+		{	Util::Streams::err << "\tMemcpy error: greensFunction_device\n";	Util::Streams::closeLog();	exit(1);	}
 
 	cudaFree(greensFunction_device);
 	cudaFree(coefficients_device);
