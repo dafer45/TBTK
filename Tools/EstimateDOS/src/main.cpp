@@ -31,13 +31,11 @@ using namespace TBTK;
 
 const complex<double> i(0, 1);
 int main(int argc, char **argv){
-	Util::Streams::muteOut();
-	Util::Streams::muteLog();
-
-	int isTalkative		= false;
+	Util::Streams::openLog();
+	int isVerbose		= false;
 	int forceGPU		= false;
 	int forceCPU		= false;
-	int numSamples		= 1;
+	int numSamples		= 100;
 	int scaleFactor		= 20;
 	int numCoefficients	= 5000;
 	int energyResolution	= 10000;
@@ -45,7 +43,7 @@ int main(int argc, char **argv){
 	while(true){
 		static struct option long_options[] = {
 			//Sets flags.
-			{"verbose",		no_argument,		&isTalkative,	1},
+			{"verbose",		no_argument,		&isVerbose,	1},
 			{"use-gpu",		no_argument,		&forceGPU,	1},
 			{"use-cpu",		no_argument,		&forceCPU,	1},
 			//Does not set flags.
@@ -89,15 +87,18 @@ int main(int argc, char **argv){
 		}
 	}
 
+	//Supress output if not verbose
+	if(!isVerbose){
+		Util::Streams::setStdMuteOut();
+		Util::Streams::setStdMuteErr();
+	}
+
 	//Get input file name
 	if(argc != optind+1){
 		cout << "Input file missing.\n";
 		exit(1);
 	}
 	string fileName = argv[optind];
-
-//	if(!isTalkative)
-//		
 
 	//Use GPU if devices
 	bool useGPU;
@@ -179,5 +180,6 @@ int main(int argc, char **argv){
 
 	delete [] dosData;
 
+	Util::Streams::closeLog();
 	return 0;
 }

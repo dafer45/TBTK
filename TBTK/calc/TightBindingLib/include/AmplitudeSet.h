@@ -179,6 +179,7 @@ inline int AmplitudeSet::getBasisSize(){
 inline void AmplitudeSet::construct(){
 	if(isConstructed){
 		Util::Streams::err << "Error in AmplitudeSet::construct(): AmplitudeSet is already constructed.\n";
+		Util::Streams::closeLog();
 		exit(1);
 	}
 
@@ -193,6 +194,7 @@ inline bool AmplitudeSet::getIsConstructed(){
 inline void AmplitudeSet::sort(){
 	if(!isConstructed){
 		Util::Streams::err << "Error in AmplitudeSet::sort(): AmplitudeSet has to be constructed first.\n";
+		Util::Streams::closeLog();
 		exit(1);
 	}
 

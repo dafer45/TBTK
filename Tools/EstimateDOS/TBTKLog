@@ -1,0 +1,6 @@
+Num GPU devices: 1
+Constructing system
+	Basis size: 154
+Warning in FileParser::readAmplitudes(): Reached end of file while searching for 'Geometry:'.
+	No Geometry loaded.
+	Add 'Geometry: None' after amplitude list to disable warning.

@@ -68,6 +68,7 @@ inline double Functions::boseEinsteinDistribution(
 		Util::Streams::err
 			<< "Error in Functions::boseEinsteinDistribution(): "
 			<< "Bose-Einstein distribution not well behaved at T=0. Please use\n";
+		Util::Streams::closeLog();
 		exit(1);
 	}
 }

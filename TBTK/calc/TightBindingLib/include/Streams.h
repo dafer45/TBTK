@@ -28,13 +28,16 @@ public:
 	static std::ostream err;
 
 	/** Mute output stream. */
-	static void muteOut();
-
-	/** Mute log stream. */
-	static void muteLog();
+	static void setStdMuteOut();
 
 	/** Mute error stream. */
-	static void muteErr();
+	static void setStdMuteErr();
+
+	/** Open log. */
+	static void openLog(std::string filename = "TBTKLog");
+
+	/** Close log. */
+	static void closeLog();
 private:
 	/** Null buffer for muting. */
 	static class NullBuffer : public std::streambuf{
@@ -50,12 +53,38 @@ private:
 			std::basic_ostream<char, std::char_traits<char>> *ostream1,
 			std::basic_ostream<char, std::char_traits<char>> *ostream2
 		);
-	private:
-		/** First output stream. */
-		std::basic_ostream<char, std::char_traits<char>> *ostream1;
 
-		/** Second output stream. */
-		std::basic_ostream<char, std::char_traits<char>> *ostream2;
+		/** Mute stream n. */
+		void mute(int n, bool isMute);
+	private:
+		/** Output streams. */
+		std::basic_ostream<char, std::char_traits<char>> *ostreams[2];
+
+		/** Flag indicating whether corresponding ostream is muted. */
+		bool isMute[2];
+
+		/** Implements std::streambuf::overflow().
+		 *  Writes char to ostream1 and ostream2. */
+		int overflow(int c);
+	};
+
+	/** LogBuffer. */
+	class LogBuffer : public std::streambuf{
+	public:
+		/** Constructor. */
+		LogBuffer();
+
+		/** Destructor. */
+		~LogBuffer();
+
+		/** Set file output stream. */
+		void open(std::string fileName);
+
+		/** Close file output stream. */
+		void close();
+	private:
+		/** File output stream. */
+		std::ofstream fout;
 
 		/** Implements std::streambuf::overflow().
 		 *  Writes char to ostream1 and ostream2. */
@@ -64,6 +93,18 @@ private:
 
 	/** Null stream for muting. */
 	static std::ostream null;
+
+	/** Standard output buffer. */
+	static ForkBuffer stdOutBuffer;
+
+	/** Standard log buffer. */
+	static LogBuffer stdLogBuffer;
+
+	/** Standard error buffer. */
+	static ForkBuffer stdErrBuffer;
+
+	/** Log file. */
+	static std::ofstream logFile;
 };
 
 };	//End of namespace Util
