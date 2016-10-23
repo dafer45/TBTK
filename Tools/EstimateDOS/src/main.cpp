@@ -82,22 +82,25 @@ int main(int argc, char **argv){
 			numSamples = atoi(optarg);
 			break;
 		default:
-			cout << "Error: Unknown argument.\n";
-			exit(1);
+			TBTKExit(
+				"EstimateDOS",
+				"Unknown argument.",
+				""
+			);
 		}
 	}
 
 	//Supress output if not verbose
-	if(!isVerbose){
+	if(!isVerbose)
 		Util::Streams::setStdMuteOut();
-		Util::Streams::setStdMuteErr();
-	}
 
 	//Get input file name
-	if(argc != optind+1){
-		cout << "Input file missing.\n";
-		exit(1);
-	}
+	TBTKAssert(
+		argc == optind+1,
+		"EstimateDOS",
+		"Input file missing.",
+		""
+	);
 	string fileName = argv[optind];
 
 	//Use GPU if devices
@@ -107,10 +110,12 @@ int main(int argc, char **argv){
 	else
 		useGPU = false;
 
-	if(forceGPU && forceCPU){
-		Util::Streams::err << "Error: --use-cpu and --use-gpu cannot be simultaneously specified.\n";
-		exit(1);
-	}
+	TBTKAssert(
+		!(forceGPU && forceCPU),
+		"EstimateDOS",
+		"--use-cpu and --use-gpu cannot be simultaneously specified.",
+		""
+	);
 	if(forceGPU)
 		useGPU = true;
 	if(forceCPU)
