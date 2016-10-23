@@ -4,8 +4,8 @@
  *  @author Kristofer Björnson
  */
 
-#include "../include/ChebyshevSolver.h"
-#include "../include/Streams.h"
+#include "../../include/ChebyshevSolver.h"
+#include "../../include/Streams.h"
 
 #include <iostream>
 
