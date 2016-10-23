@@ -18,11 +18,13 @@ source init_session.sh
 #############
 # Update TBTK
 #############
+After pulling the latest version of TBTK, execute the following command from the TBTK root folder to update the library:  
 ./update.sh
 
 ####################
 # Initialize session
 ####################
+Each time a new terminal session is opened, execute the following command from the TBTK root folder:  
 source init_session.sh
 
 #########
