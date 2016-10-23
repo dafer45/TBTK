@@ -75,7 +75,7 @@ void Streams::ForkBuffer::mute(int n, bool isMute){
 
 int Streams::ForkBuffer::overflow(int c){
 	for(int n = 0; n < 2; n++)
-		if(ostreams[n])
+		if(ostreams[n] && !isMute[n])
 			*(ostreams[n]) << (char)c;
 
 	return c;
