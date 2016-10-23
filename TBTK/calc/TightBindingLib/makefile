@@ -1,6 +1,6 @@
 CC = g++
 CFLAGS = -Wall -std=c++11 -fopenmp -O3
-NVCCFLAGS = -D_FORCE_INLINES -std=c++11 -O3 --compiler-options "-fopenmp"
+NVCCFLAGS = -std=c++11 -O3 --compiler-options "-fopenmp"
 
 INDEX_SOURCE = src/Index.cpp
 HOPPING_AMPLITUDE_SOURCE = src/HoppingAmplitude.cpp
