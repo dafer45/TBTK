@@ -3,12 +3,12 @@
  *  @author Kristofer Björnson
  */
 
-#include "../include/ChebyshevSolver.h"
-#include "../include/HALinkedList.h"
-#include "../include/Util.h"
-#include "../include/TBTKMacros.h"
-#include "../include/GPUResourceManager.h"
-#include "../include/Streams.h"
+#include "../../include/ChebyshevSolver.h"
+#include "../../include/HALinkedList.h"
+#include "../../include/Util.h"
+#include "../../include/TBTKMacros.h"
+#include "../../include/GPUResourceManager.h"
+#include "../../include/Streams.h"
 
 #include <cuComplex.h>
 #include <cusparse_v2.h>

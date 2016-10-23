@@ -4,8 +4,8 @@
  *  @author Kristofer Björnson
  */
 
-#include "../include/ChebyshevSolver.h"
-#include "../include/Streams.h"
+#include "../../include/ChebyshevSolver.h"
+#include "../../include/Streams.h"
 
 #include <iostream>
 
@@ -21,6 +21,8 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 	double broadening
 ){
 	Util::Streams::err << "Error in ChebyshevSolver::calculateCoefficientsGPU: GPU Not supported.\n";
+	if(Util::Streams::logIsOpen())
+		Util::Streams::closeLog();
 	exit(1);
 }
 
@@ -32,16 +34,22 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 	double broadening
 ){
 	Util::Streams::err << "Error in ChebyshevSolver::calculateCoefficientsGPU: GPU Not supported.\n";
+	if(Util::Streams::logIsOpen())
+		Util::Streams::closeLog();
 	exit(1);
 }
 
 void ChebyshevSolver::loadLookupTableGPU(){
 	Util::Streams::err << "Error in ChebyshevSolver::loadLookupTableGPU: GPU Not supported.\n";
+	if(Util::Streams::logIsOpen())
+		Util::Streams::closeLog();
 	exit(1);
 }
 
 void ChebyshevSolver::destroyLookupTableGPU(){
 	Util::Streams::err << "Error in ChebyshevSolver::destroyLookupTableGPU: GPU Not supported.\n";
+	if(Util::Streams::logIsOpen())
+		Util::Streams::closeLog();
 	exit(1);
 }
 
@@ -51,6 +59,8 @@ void ChebyshevSolver::generateGreensFunctionGPU(
 	ChebyshevSolver::GreensFunctionType type
 ){
 	Util::Streams::err << "Error in ChebyshevSolver::generateGreensFunctionGPU: GPU Not supported.\n";
+	if(Util::Streams::logIsOpen())
+		Util::Streams::closeLog();
 	exit(1);
 }
 

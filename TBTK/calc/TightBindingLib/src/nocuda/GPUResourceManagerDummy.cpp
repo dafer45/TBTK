@@ -3,7 +3,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "../include/GPUResourceManager.h"
+#include "../../include/GPUResourceManager.h"
 
 namespace TBTK{
 

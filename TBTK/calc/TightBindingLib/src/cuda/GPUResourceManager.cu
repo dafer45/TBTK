@@ -3,8 +3,8 @@
  *  @author Kristofer Björnson
  */
 
-#include "../include/GPUResourceManager.h"
-#include "../include/Streams.h"
+#include "../../include/GPUResourceManager.h"
+#include "../../include/Streams.h"
 
 using namespace std;
 

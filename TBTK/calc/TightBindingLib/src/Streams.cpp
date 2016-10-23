@@ -52,6 +52,10 @@ void Streams::closeLog(){
 	stdLogBuffer.close();
 }
 
+bool Streams::logIsOpen(){
+	return stdLogBuffer.isOpen();
+}
+
 Streams::ForkBuffer::ForkBuffer(
 	basic_ostream<char,
 	char_traits<char>> *ostream1,
@@ -100,6 +104,10 @@ void Streams::LogBuffer::close(){
 		Util::Streams::err << "Error in Util::Streams::LogBuffer::closeFile(): No log file is open.\n";
 		exit(1);
 	}
+}
+
+bool Streams::LogBuffer::isOpen(){
+	return fout.is_open();
 }
 
 int Streams::LogBuffer::overflow(int c){
