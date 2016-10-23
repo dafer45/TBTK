@@ -25,15 +25,6 @@ complex<double> two(2., 0.);
 complex<double> zero(0., 0.);
 complex<double> i(0., 1.);
 
-void cusparseSafe(cusparseStatus_t type, string message){
-	TBTKAssert(
-		type == CUSPARSE_STATUS_SUCCESS,
-		"cusparseSafe",
-		message,
-		""
-	);
-}
-
 __global__
 void extractCoefficients(
 	cuDoubleComplex *jResult,
@@ -343,21 +334,53 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 	}
 
 	cusparseHandle_t handle = NULL;
-	cusparseSafe(cusparseCreate(&handle), "cuSPARSE create error");
+	TBTKAssert(
+		cusparseCreate(&handle) == CUSPARSE_STATUS_SUCCESS,
+		"ChebyshevSolver::calculateCoefficientsGPU()",
+		"cuSPARSE create error.",
+		""
+	);
 
 	cusparseMatDescr_t descr = NULL;
-	cusparseSafe(cusparseCreateMatDescr(&descr), "cuSPARSE create matrix descriptor error");
+	TBTKAssert(
+		cusparseCreateMatDescr(&descr) == CUSPARSE_STATUS_SUCCESS,
+		"ChebyshevSolver::calculateCoefficientsGPU()",
+		"cuSPARSE create matrix descriptor error.",
+		""
+	);
 
-	cusparseSafe(cusparseSetMatType(descr, CUSPARSE_MATRIX_TYPE_GENERAL), "cuSPARSE set matrix type error");
-	cusparseSafe(cusparseSetMatIndexBase(descr, CUSPARSE_INDEX_BASE_ZERO), "cuSPARSE set matrix index base error");
+	TBTKAssert(
+		cusparseSetMatType(
+			descr,
+			CUSPARSE_MATRIX_TYPE_GENERAL
+		) == CUSPARSE_STATUS_SUCCESS,
+		"ChebyshevSolver::calculateCoefficientsGPU()",
+		"cuSPARSE set matrix type error.",
+		""
+	);
+	TBTKAssert(
+		cusparseSetMatIndexBase(
+			descr,
+			CUSPARSE_INDEX_BASE_ZERO
+		) == CUSPARSE_STATUS_SUCCESS,
+		"ChebyshevSolver::calculateCoefficientsGPU()",
+		"cuSPARSE set matrix index base error.",
+		""
+	);
 
-	cusparseSafe(cusparseXcoo2csr(handle,
-					cooHARowIndices_device,
-					numHoppingAmplitudes,
-					amplitudeSet->getBasisSize(),
-					csrHARowIndices_device,
-					CUSPARSE_INDEX_BASE_ZERO),
-			"cuSPARSE COO to CSR error");
+	TBTKAssert(
+		cusparseXcoo2csr(
+			handle,
+			cooHARowIndices_device,
+			numHoppingAmplitudes,
+			amplitudeSet->getBasisSize(),
+			csrHARowIndices_device,
+			CUSPARSE_INDEX_BASE_ZERO
+		) == CUSPARSE_STATUS_SUCCESS,
+		"ChebyshevSolver::calculateCoefficientsGPU()",
+		"cuSPARSE COO to CSR error.",
+		""
+	);
 
 	//Calculate |j1>
 	int block_size = 1024;
@@ -368,20 +391,26 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 	}
 
 	complex<double> multiplier = one/scaleFactor;
-	cusparseSafe(cusparseZcsrmv(handle,
-					CUSPARSE_OPERATION_NON_TRANSPOSE,
-					amplitudeSet->getBasisSize(),
-					amplitudeSet->getBasisSize(),
-					numHoppingAmplitudes,
-					(cuDoubleComplex*)&multiplier,
-					descr,
-					(cuDoubleComplex*)cooHAValues_device,
-					csrHARowIndices_device,
-					cooHAColIndices_device,
-					(cuDoubleComplex*)jIn1_device,
-					(cuDoubleComplex*)&zero,
-					(cuDoubleComplex*)jIn2_device),
-			"Matrix-vector multiplication error");
+	TBTKAssert(
+		cusparseZcsrmv(
+			handle,
+			CUSPARSE_OPERATION_NON_TRANSPOSE,
+			amplitudeSet->getBasisSize(),
+			amplitudeSet->getBasisSize(),
+			numHoppingAmplitudes,
+			(cuDoubleComplex*)&multiplier,
+			descr,
+			(cuDoubleComplex*)cooHAValues_device,
+			csrHARowIndices_device,
+			cooHAColIndices_device,
+			(cuDoubleComplex*)jIn1_device,
+			(cuDoubleComplex*)&zero,
+			(cuDoubleComplex*)jIn2_device
+		) == CUSPARSE_STATUS_SUCCESS,
+		"ChebyshevSolver::calculateCoefficentsGPU()",
+		"Matrix-vector multiplication error.",
+		""
+	);
 
 	extractCoefficients <<< num_blocks, block_size >>> ((cuDoubleComplex*)jIn2_device,
 								amplitudeSet->getBasisSize(),
@@ -399,20 +428,26 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 	//Iteratively calculate |jn> and corresponding Chebyshev coefficients.
 	for(int n = 2; n < numCoefficients; n++){
 		multiplier = two/scaleFactor;
-		cusparseSafe(cusparseZcsrmv(handle,
-						CUSPARSE_OPERATION_NON_TRANSPOSE,
-						amplitudeSet->getBasisSize(),
-						amplitudeSet->getBasisSize(),
-						numHoppingAmplitudes,
-						(cuDoubleComplex*)&multiplier,
-						descr,
-						(cuDoubleComplex*)cooHAValues_device,
-						csrHARowIndices_device,
-						cooHAColIndices_device,
-						(cuDoubleComplex*)jIn1_device,
-						(cuDoubleComplex*)&minus_one,
-						(cuDoubleComplex*)jIn2_device),
-				"Matrix-vector multiplication error");
+		TBTKAssert(
+			cusparseZcsrmv(
+				handle,
+				CUSPARSE_OPERATION_NON_TRANSPOSE,
+				amplitudeSet->getBasisSize(),
+				amplitudeSet->getBasisSize(),
+				numHoppingAmplitudes,
+				(cuDoubleComplex*)&multiplier,
+				descr,
+				(cuDoubleComplex*)cooHAValues_device,
+				csrHARowIndices_device,
+				cooHAColIndices_device,
+				(cuDoubleComplex*)jIn1_device,
+				(cuDoubleComplex*)&minus_one,
+				(cuDoubleComplex*)jIn2_device
+			) == CUSPARSE_STATUS_SUCCESS,
+			"ChebyshevSolver::calculateCoefficientsGPU()",
+			"Matrix-vector multiplication error.",
+			""
+		);
 
 		extractCoefficients <<< num_blocks, block_size >>> ((cuDoubleComplex*)jIn2_device,
 									amplitudeSet->getBasisSize(),
@@ -447,9 +482,20 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 		""
 	);
 
-	cusparseSafe(cusparseDestroyMatDescr(descr), "cuSPARSE destroy matrix descriptor error");
+	TBTKAssert(
+		cusparseDestroyMatDescr(descr) == CUSPARSE_STATUS_SUCCESS,
+		"ChebyshevSolver::calculateCoefficientsGPU()",
+		"cuSPARSE destroy matrix descriptor error.",
+		""
+	);
 	descr = NULL;
-	cusparseSafe(cusparseDestroy(handle), "cuSPARSE destroy error");
+
+	TBTKAssert(
+		cusparseDestroy(handle) == CUSPARSE_STATUS_SUCCESS,
+		"ChebyshevSolver::calculateCoefficientsGPU()",
+		"cuSPARSE destroy error.",
+		""
+	);
 	handle = NULL;
 
 	delete [] jIn1;
