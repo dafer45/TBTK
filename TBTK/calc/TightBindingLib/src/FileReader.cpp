@@ -139,16 +139,25 @@ AmplitudeSet* FileReader::readAmplitudeSet(string name, string path){
 		}
 	}
 	catch(FileIException error){
-		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileReader::read()",
+			"While reading " << name << ".",
+			""
+		);
 	}
 	catch(DataSetIException error){
-		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileReader::read()",
+			"While reading " << name << ".",
+			""
+		);
 	}
 	catch(DataSpaceIException error){
-		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileReader::read()",
+			"While reading " << name << ".",
+			""
+		);
 	}
 
 	return amplitudeSet;
@@ -229,16 +238,25 @@ Geometry* FileReader::readGeometry(Model *model, string name, string path){
 		file.close();
 	}
 	catch(FileIException error){
-		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileReader::read()",
+			"While reading " << name << ".",
+			""
+		);
 	}
 	catch(DataSetIException error){
-		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileReader::read()",
+			"While reading " << name << ".",
+			""
+		);
 	}
 	catch(DataSpaceIException error){
-		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileReader::read()",
+			"While reading " << name << ".",
+			""
+		);
 	}
 
 	return geometry;
@@ -278,16 +296,25 @@ Property::EigenValues* FileReader::readEigenValues(string name, string path){
 		dataset.read(eigenValues->data, PredType::NATIVE_DOUBLE, dataspace);
 	}
 	catch(FileIException error){
-		Util::Streams::err << "FileReader::read: While reading " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileReader::read()",
+			"While reading " << name << "\n",
+			""
+		);
 	}
 	catch(DataSetIException error){
-		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileReader::read()",
+			"While reading " << name << ".",
+			""
+		);
 	}
 	catch(DataSpaceIException error){
-		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileReader::read()",
+			"While reading " << name << ".",
+			""
+		);
 	}
 
 	return eigenValues;
@@ -336,16 +363,25 @@ Property::DOS* FileReader::readDOS(string name, string path){
 
 	}
 	catch(FileIException error){
-		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileReader::read()",
+			"While reading " << name << ".",
+			""
+		);
 	}
 	catch(DataSetIException error){
-		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileReader::read()",
+			"While reading " << name << ".",
+			""
+		);
 	}
 	catch(DataSpaceIException error){
-		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileReader::read()",
+			"While reading " << name << ".",
+			""
+		);
 	}
 
 	return dos;
@@ -391,16 +427,25 @@ Property::Density* FileReader::readDensity(string name, string path){
 		dataset.read(density->data, PredType::NATIVE_DOUBLE, dataspace);
 	}
 	catch(FileIException error){
-		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileReader::read()",
+			"While reading " << name << ",",
+			""
+		);
 	}
 	catch(DataSetIException error){
-		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileReader::read()",
+			"While reading " << name << ".",
+			""
+		);
 	}
 	catch(DataSpaceIException error){
-		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileReader::read()",
+			"While reading " << name << ".",
+			""
+		);
 	}
 
 	return density;
@@ -459,24 +504,36 @@ Property::Magnetization* FileReader::readMagnetization(
 		delete [] dims_internal;
 	}
 	catch(FileIException error){
-		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileReader::read()",
+			"While reading " << name << ".",
+			""
+		);
 	}
 	catch(DataSetIException error){
-		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileReader::read()",
+			"While reading " << name << ".",
+			""
+		);
 	}
 	catch(DataSpaceIException error){
-		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileReader::read()",
+			"While reading " << name << ".",
+			""
+		);
 	}
 
 	return magnetization;
 }
 
 Property::LDOS* FileReader::readLDOS(string name, string path){
-	Util::Streams::err << "Error in FileReader::readLDOS: Not yet implemented.\n";
-	exit(1);
+	TBTKExit(
+		"FileReader::readLDOS()",
+		"Not yet implemented.",
+		""
+	);
 
 /*	hsize_t ldos_dims[rank+1];//Last dimension is for energy
 	for(int n = 0; n < rank; n++)
@@ -590,16 +647,25 @@ Property::SpinPolarizedLDOS* FileReader::readSpinPolarizedLDOS(
 		delete [] dims_internal;
 	}
 	catch(FileIException error){
-		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileReader::read()",
+			"While reading " << name << ".",
+			""
+		);
 	}
 	catch(DataSetIException error){
-		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileReader::read()",
+			"While reading " << name << ".",
+			""
+		);
 	}
 	catch(DataSpaceIException error){
-		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileReader::read()",
+			"While reading " << name << ".",
+			""
+		);
 	}
 
 	return spinPolarizedLDOS;
@@ -649,16 +715,25 @@ void FileReader::read(
 		dataset.read(*data, PredType::NATIVE_DOUBLE, dataspace);
 	}
 	catch(FileIException error){
-		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileReader::read()",
+			"While reading " << name << ".",
+			""
+		);
 	}
 	catch(DataSetIException error){
-		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileReader::read()",
+			"While reading " << name << ".",
+			""
+		);
 	}
 	catch(DataSpaceIException error){
-		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileReader::read()",
+			"While reading " << name << ".",
+			""
+		);
 	}
 }
 
@@ -695,16 +770,25 @@ void FileReader::readAttributes(
 		}
 	}
 	catch(FileIException error){
-		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileReader::read()",
+			"While reading " << name << ".",
+			""
+		);
 	}
 	catch(DataSetIException error){
-		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileReader::read()",
+			"While reading " << name << ".",
+			""
+		);
 	}
 	catch(DataSpaceIException error){
-		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileReader::read()",
+			"While reading " << name << ".",
+			""
+		);
 	}
 }
 
@@ -741,16 +825,25 @@ void FileReader::readAttributes(
 		}
 	}
 	catch(FileIException error){
-		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileReader::read()",
+			"While reading " << name << ".",
+			""
+		);
 	}
 	catch(DataSetIException error){
-		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileReader::read()",
+			"While reading " << name << ".",
+			""
+		);
 	}
 	catch(DataSpaceIException error){
-		Util::Streams::err << "Error in FileReader::read: While reading " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileReader::read()",
+			"While reading " << name << ".",
+			""
+		);
 	}
 }
 

@@ -75,8 +75,11 @@ CPropertyExtractor::CPropertyExtractor(
 			cSolver->loadLookupTableGPU();
 	}
 	else if(useGPUToGenerateGreensFunctions){
-		Util::Streams::err << "Error in PropertyExtractorChebyshev: useLookupTable cannot be false if useGPUToGenerateGreensFunction is true.\n";
-		exit(1);
+		TBTKExit(
+			"CPropertyExtractor::CPropertyExtractor()",
+			"Argument 'useLookupTable' cannot be false if argument 'useGPUToGenerateGreensFunction' is true.",
+			""
+		);
 	}
 }
 

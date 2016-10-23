@@ -10,6 +10,7 @@
 
 #include "UnitHandler.h"
 #include "Streams.h"
+#include "TBTKMacros.h"
 
 #include <math.h>
 
@@ -65,11 +66,11 @@ inline double Functions::boseEinsteinDistribution(
 		return 1./(exp(e/(UnitHandler::getK_bB()*t)) - 1.);
 	}
 	else{
-		Util::Streams::err
-			<< "Error in Functions::boseEinsteinDistribution(): "
-			<< "Bose-Einstein distribution not well behaved at T=0. Please use\n";
-		Util::Streams::closeLog();
-		exit(1);
+		TBTKExit(
+			"Functions::boseEinsteinDistribution()",
+			"Bose-Einstein distribution not well behaved at T=0.",
+			"Use Model::setTemperature() to set a non-zero temperature."
+		);
 	}
 }
 
