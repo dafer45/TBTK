@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/50950512.svg)](https://zenodo.org/badge/latestdoi/50950512)
+
 Welcome to the Tight Binding Toolkit - TBTK
 
 For an introduction to the library, see http://dafer45.github.io/TBTK
