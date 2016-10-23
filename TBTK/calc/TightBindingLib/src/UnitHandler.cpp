@@ -5,6 +5,7 @@
 
 #include "../include/UnitHandler.h"
 #include "../include/Streams.h"
+#include "../include/TBTKMacros.h"
 
 #include <sstream>
 
@@ -517,8 +518,11 @@ double UnitHandler::getTemperatureConversionFactor(){
 		case TemperatureUnit::nK:
 			return 1e9;
 		default:	//Should never happen, hard error generated for quick bug detection
-			Util::Streams::err << "Error in UnitHandler::getTemperatureConversionUnit(): Unknown unit - " << static_cast<int>(temperatureUnit);
-			exit(1);
+			TBTKExit(
+				"UnitHandler::getTemperatureConversionUnit()",
+				"Unknown unit - " << static_cast<int>(temperatureUnit) << ".",
+				""
+			);
 	}
 }
 
@@ -539,8 +543,11 @@ double UnitHandler::getTimeConversionFactor(){
 		case TimeUnit::as:
 			return 1e18;
 		default:	//Should never happen, hard error generated for quick bug detection
-			Util::Streams::err << "Error in UnitHandler::getTimeConversionFactor(): Unknown unit - " << static_cast<int>(timeUnit);
-			exit(1);
+			TBTKExit(
+				"UnitHandler::getTimeConversionFactor()",
+				"Unknown unit - " << static_cast<int>(timeUnit) << ".",
+				""
+			);
 	}
 }
 
@@ -563,8 +570,11 @@ double UnitHandler::getLengthConversionFactor(){
 		case LengthUnit::Ao:
 			return 1e10;
 		default:	//Should never happen, hard error generated for quick bug detection
-			Util::Streams::err << "Error in UnitHandler::getLengthConversionFactor(): Unknown unit - " << static_cast<int>(lengthUnit);
-			exit(1);
+			TBTKExit(
+				"UnitHandler::getLengthConversionFactor()",
+				"Unknown unit - " << static_cast<int>(lengthUnit) << ".",
+				""
+			);
 	}
 }
 
@@ -585,8 +595,11 @@ double UnitHandler::getEnergyConversionFactor(){
 		case EnergyUnit::J:
 			return J_per_eV;
 		default:	//Should never happen, hard error generated for quick bug detection
-			Util::Streams::err << "Error in UnitHandler::getEnergyConversionFactor(): Unknown unit - " << static_cast<int>(energyUnit);
-			exit(1);
+			TBTKExit(
+				"UnitHandler::getEnergyConversionFactor()",
+				"Unknown unit - " << static_cast<int>(energyUnit) << ".",
+				""
+			);
 	}
 }
 
@@ -619,8 +632,11 @@ double UnitHandler::getChargeConversionFactor(){
 		case ChargeUnit::e:
 			return 1./E;
 		default:	//Should never happen, hard error generated for quick bug detection
-			Util::Streams::err << "Error in UnitHandler::getChargeConversionFactor(): Unknown unit - " << static_cast<int>(chargeUnit);
-			exit(1);
+			TBTKExit(
+				"UnitHandler::getChargeConversionFactor()",
+				"Unknown unit - " << static_cast<int>(chargeUnit) << ".",
+				""
+			);
 	}
 }
 
@@ -631,8 +647,11 @@ double UnitHandler::getCountConversionFactor(){
 		case CountUnit::mol:	//1/N_A mol per pcs
 			return 1./N_A;
 		default:	//Should never happen, hard error generated for quick bug detection
-			Util::Streams::err << "Error in UnitHandler::getCountConversionFactor(): Unknown unit - " << static_cast<int>(countUnit);
-			exit(1);
+			TBTKExit(
+				"UnitHandler::getCountConversionFactor()",
+				"Unknown unit - " << static_cast<int>(countUnit) << ".",
+				""
+			);
 	}
 }
 
@@ -651,8 +670,11 @@ double UnitHandler::getMassConversionFactor(MassUnit unit){
 		case MassUnit::u:
 			return u_per_baseMass;
 		default:	//Should never happen, hard error generated for quick bug detection
-			Util::Streams::err << "Error in UnitHandler::getMassConversionFactor(): Unknown unit - " << static_cast<int>(unit);
-			exit(1);
+			TBTKExit(
+				"UnitHandler::getMassConversionFactor()",
+				"Unknown unit - " << static_cast<int>(unit) << ".",
+				""
+			);
 	}
 }
 
@@ -683,8 +705,11 @@ double UnitHandler::getMagneticFieldConversionFactor(MagneticFieldUnit unit){
 		case MagneticFieldUnit::uG:
 			return T_per_baseMagneticField*1e10;
 		default:	//Should never happen, hard error generated for quick bug detection
-			Util::Streams::err << "Error in UnitHandler::getMagneticFieldConversionFactor(): Unknown unit - " << static_cast<int>(unit);
-			exit(1);
+			TBTKExit(
+				"UnitHandler::getMagneticFieldConversionFactor()",
+				"Unknown unit - " << static_cast<int>(unit) << ".",
+				""
+			);
 	}
 }
 

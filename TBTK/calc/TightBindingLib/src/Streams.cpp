@@ -88,6 +88,9 @@ Streams::LogBuffer::~LogBuffer(){
 }
 
 void Streams::LogBuffer::open(std::string fileName){
+	//Do not use TBTKExit or TBTKAssert here. These rely on Streams for
+	//output. cerr is used to ensure proper error messages also in the case
+	//that Streams fail.
 	if(fout.is_open()){
 		cerr << "Error in Util::Streams::LogBuffer::openFile(): Log file already open." << endl;
 		exit(1);
@@ -97,6 +100,9 @@ void Streams::LogBuffer::open(std::string fileName){
 };
 
 void Streams::LogBuffer::close(){
+	//Do not use TBTKExit or TBTKAssert here. These rely on Streams for
+	//output. cerr is used to ensure proper error messages also in the case
+	//that Streams fail.
 	if(fout.is_open()){
 		fout.close();
 	}

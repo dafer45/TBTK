@@ -56,10 +56,10 @@ void TreeNode::add(HoppingAmplitude &ha, unsigned int subindex){
 		//only allowed if the HoppingAmplitudes differ in one of their
 		//common indices.
 		if(hoppingAmplitudes.size() != 0){
-			Util::Streams::err << "Error, incompatible amplitudes1:\n";
+			Util::Streams::err << "Error, incompatible amplitudes:";
 			ha.print();
 			hoppingAmplitudes.at(0).print();
-			exit(0);
+			exit(1);
 		}
 		//Propagate to the next node level.
 		children.at(currentIndex).add(ha, subindex+1);
@@ -75,10 +75,10 @@ void TreeNode::add(HoppingAmplitude &ha, unsigned int subindex){
 		//if the HoppingAmplitudes differ in one of their common
 		//indices.
 		if(children.size() != 0){
-			Util::Streams::err << "Error, incompatible amplitudes2:\n";
+			Util::Streams::err << "Error, incompatible amplitudes:\n";
 			ha.print();
 			getFirstHA().print();
-			exit(0);
+			exit(1);
 		}
 		//Add HoppingAmplitude to node.
 		hoppingAmplitudes.push_back(ha);

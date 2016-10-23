@@ -6,6 +6,7 @@
 #include "../include/Model.h"
 #include "../include/Geometry.h"
 #include "../include/Streams.h"
+#include "../include/TBTKMacros.h"
 
 #include <string>
 #include <fstream>
@@ -51,10 +52,13 @@ void Model::construct(){
 }
 
 void Model::createGeometry(int dimensions, int numSpecifiers){
-	if(!getIsConstructed()){
-		Util::Streams::err << "Error in Model::createGeometry: Hilbert space basis has not been constructed yet.\n";
-		exit(1);
-	}
+	TBTKAssert(
+		getIsConstructed(),
+		"Model::createGeometry()",
+		"Hilbert space basis has not been constructed yet.",
+		""
+	);
+
 	geometry = new Geometry(dimensions, numSpecifiers, this);
 }
 

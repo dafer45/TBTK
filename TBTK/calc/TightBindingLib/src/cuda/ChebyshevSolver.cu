@@ -26,11 +26,12 @@ complex<double> zero(0., 0.);
 complex<double> i(0., 1.);
 
 void cusparseSafe(cusparseStatus_t type, string message){
-	if(type != CUSPARSE_STATUS_SUCCESS){
-		Util::Streams::err << "\t" << message << "\n";
-		Util::Streams::closeLog();
-		exit(1);
-	}
+	TBTKAssert(
+		type == CUSPARSE_STATUS_SUCCESS,
+		"cusparseSafe",
+		message,
+		""
+	);
 }
 
 __global__
