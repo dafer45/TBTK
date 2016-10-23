@@ -38,6 +38,9 @@ public:
 
 	/** Close log. */
 	static void closeLog();
+
+	/** Returns true if the standard log file is open. */
+	static bool logIsOpen();
 private:
 	/** Null buffer for muting. */
 	static class NullBuffer : public std::streambuf{
@@ -82,6 +85,9 @@ private:
 
 		/** Close file output stream. */
 		void close();
+
+		/** Returns true if log file is open. */
+		bool isOpen();
 	private:
 		/** File output stream. */
 		std::ofstream fout;
