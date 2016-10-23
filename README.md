@@ -33,7 +33,7 @@ TBTK is free to use under the Appache 2.0 license (see the file 'License'). Plea
 ######
 # Cite
 ######
-To cite TBTK, mention TBTK in the text and cite the doi for this project.
-[![DOI](https://zenodo.org/badge/50950512.svg)](https://zenodo.org/badge/latestdoi/50950512)
+To cite TBTK, mention TBTK in the text and cite the doi for this project.  
+[![DOI](https://zenodo.org/badge/50950512.svg)](https://zenodo.org/badge/latestdoi/50950512)  
 (Click the doi label and see 'Cite as' for detailed citation string.)
 
