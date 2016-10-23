@@ -136,16 +136,25 @@ void FileWriter::writeAmplitudeSet(
 		file.close();
 	}
 	catch(FileIException error){
-		cout << "Error in FileWriter::writeAmplitudeSet: While writing to " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileWriter::writeAmplitudeSet()",
+			"While writing to " << name << ".",
+			""
+		);
 	}
 	catch(DataSetIException error){
-		cout << "Error in FileWriter::writeAmplitudeSet: While writing to " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileWriter::writeAmplitudeSet()",
+			"While writing to " << name << ".",
+			""
+		);
 	}
 	catch(DataSpaceIException error){
-		cout << "Error in FileWriter::writeAmplitudeSet: While writing to " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileWriter::writeAmplitudeSet()",
+			"While writing to " << name << ".",
+			""
+		);
 	}
 
 	delete [] amplitudes;
@@ -210,16 +219,25 @@ void FileWriter::writeGeometry(
 		file.close();
 	}
 	catch(FileIException error){
-		cout << "Error in FileWriter::writeGeometry: While writing to " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileWriter::writeGeometry()",
+			"While writing to " << name << ".",
+			""
+		);
 	}
 	catch(DataSetIException error){
-		cout << "Error in FileWriter::writeGeometry: While writing to " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileWriter::writeGeometry()",
+			"While writing to " << name << ".",
+			""
+		);
 	}
 	catch(DataSpaceIException error){
-		cout << "Error in FileWriter::writeGeometry: While writing to " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileWriter::writeGeometry()",
+			"While writing to " << name << ".",
+			""
+		);
 	}
 }
 
@@ -292,16 +310,25 @@ void FileWriter::writeEigenValues(
 		file.close();
 	}
 	catch(FileIException error){
-		cout << "Error in FileWriter::writeEigenValues: While writing to " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileWriter::writeEigenValues()",
+			"While writing to " << name << ".",
+			""
+		);
 	}
 	catch(DataSetIException error){
-		cout << "Error in FileWriter::writeEigenValues: While writing to " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileWriter::writeEigenValues()",
+			"While writing to " << name << ".",
+			""
+		);
 	}
 	catch(DataSpaceIException error){
-		cout << "Error in FileWriter::writeEigenValues: While writing to " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileWriter::writeEigenValues()",
+			"While writing to " << name << ".",
+			""
+		);
 	}
 }
 
@@ -394,16 +421,25 @@ void FileWriter::writeDOS(const Property::DOS *dos, string name, string path){
 		file.close();
 	}
 	catch(FileIException error){
-		cout << "Error in FileWriter::writeDOS: While writing to " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileWriter::writeDOS()",
+			"While writing to " << name << ".",
+			""
+		);
 	}
 	catch(DataSetIException error){
-		cout << "Error in FileWriter::writeDOS: While writing to " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileWriter::writeDOS()",
+			"While writing to " << name << ".",
+			""
+		);
 	}
 	catch(DataSpaceIException error){
-		cout << "Error in FileWriter::writeDOS: While writing to " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileWriter::writeDOS()",
+			"While writing to " << name << ".",
+			""
+		);
 	}
 }
 
@@ -477,16 +513,25 @@ void FileWriter::writeDensity(
 		file.close();
 	}
 	catch(FileIException error){
-		cout << "Error in FileWriter::writeDensity: While writing to " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileWriter::writeDensity()",
+			"While writing to " << name << ".",
+			""
+		);
 	}
 	catch(DataSetIException error){
-		cout << "Error in FileWriter::writeDensity: While writing to " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileWriter::writeDensity()",
+			"While writing to " << name << ".",
+			""
+		);
 	}
 	catch(DataSpaceIException error){
-		cout << "Error in FileWriter::writeDensity: While writing to " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileWriter::writeDensity()",
+			"While writing to " << name << ".",
+			""
+		);
 	}
 }
 
@@ -589,16 +634,25 @@ void FileWriter::writeMagnetization(
 		file.close();
 	}
 	catch(FileIException error){
-		cout << "Error in FileWriter::writeMagnetization: While writing to " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileWriter::writeMagnetization()",
+			"While writing to " << name << ".",
+			""
+		);
 	}
 	catch(DataSetIException error){
-		cout << "Error in FileWriter::writeMagnetization: While writing to " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileWriter::writeMagnetization()",
+			"While writing to " << name << ".",
+			""
+		);
 	}
 	catch(DataSpaceIException error){
-		cout << "Error in FileWriter::writeMagnetization: While writing to " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileWriter::writeMagnetization()",
+			"While writing to " << name << ".",
+			""
+		);
 	}
 
 	delete [] mag_decomposed;
@@ -702,16 +756,25 @@ void FileWriter::writeLDOS(
 		file.close();
 	}
 	catch(FileIException error){
-		cout << "Error in FileWriter::writeLDOS: While writing to " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileWriter::writeLDOS()",
+			"While writing to " << name << ".",
+			""
+		);
 	}
 	catch(DataSetIException error){
-		cout << "Error in FileWriter::writeLDOS: While writing to " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileWriter::writeLDOS()",
+			"While writing to " << name << ".",
+			""
+		);
 	}
 	catch(DataSpaceIException error){
-		cout << "Error in FileWriter::writeLDOS: While writing to " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileWriter::writeLDOS()",
+			"While writing to " << name << ".",
+			""
+		);
 	}
 }
 
@@ -848,16 +911,25 @@ void FileWriter::writeSpinPolarizedLDOS(
 		dataspace.close();
 	}
 	catch(FileIException error){
-		cout << "Error in FileWriter::writeSpinPolarizedLDOS: While writing to " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileWriter::writeSpinPolarizedLDOS()",
+			"While writing to " << name << ".",
+			""
+		);
 	}
 	catch(DataSetIException error){
-		cout << "Error in FileWriter::writeSpinPolarizedLDOS: While writing to " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileWriter::writeSpinPolarizedLDOS()",
+			"While writing to " << name << ".",
+			""
+		);
 	}
 	catch(DataSpaceIException error){
-		cout << "Error in FileWriter::writeSpinPolarizedLDOS: While writing to " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileWriter::writeSpinPolarizedLDOS()",
+			"While writing to " << name << ".",
+			""
+		);
 	}
 
 	delete [] sp_ldos_decomposed;
@@ -895,16 +967,25 @@ void FileWriter::write(
 		file.close();
 	}
 	catch(FileIException error){
-		cout << "Error in FileWriter::write: While writing to " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileWriter::write()",
+			"While writing to " << name << ".",
+			""
+		);
 	}
 	catch(DataSetIException error){
-		cout << "Error in FileWriter::write: While writing to " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileWriter::write()",
+			"While writing to " << name << ".",
+			""
+		);
 	}
 	catch(DataSpaceIException error){
-		cout << "Error in FileWriter::write: While writing to " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileWriter::write()",
+			"While writing to " << name << ".",
+			""
+		);
 	}
 }
 
@@ -944,16 +1025,25 @@ void FileWriter::writeAttributes(
 		dataspace.close();
 	}
 	catch(FileIException error){
-		cout << "Error in FileWriter::writeAttributes: While writing to " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileWriter::writeAttributes()",
+			"While writing to " << name << "",
+			""
+		);
 	}
 	catch(DataSetIException error){
-		cout << "Error in FileWriter::writeAttributes: While writing to " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileWriter::writeAttributes()",
+			"While writing to " << name << ".",
+			""
+		);
 	}
 	catch(DataSpaceIException error){
-		cout << "Error in FileWriter::writeAttributes: While writing to " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileWriter::writeAttributes()",
+			"While writing to " << name << ".",
+			""
+		);
 	}
 }
 
@@ -993,16 +1083,25 @@ void FileWriter::writeAttributes(
 		dataspace.close();
 	}
 	catch(FileIException error){
-		cout << "Error in FileWriter::writeAttributes: While writing to " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileWriter::writeAttributes()",
+			"While writing to " << name << ".",
+			""
+		);
 	}
 	catch(DataSetIException error){
-		cout << "Error in FileWriter::writeAttributes: While writing to " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileWriter::writeAttributes()",
+			"While writing to " << name << ".",
+			""
+		);
 	}
 	catch(DataSpaceIException error){
-		cout << "Error in FileWriter::writeAttributes: While writing to " << name << "\n";
-		exit(1);
+		TBTKExit(
+			"FileWriter::writeAttributes()",
+			"While writing to " << name << ".",
+			""
+		);
 	}
 }
 
