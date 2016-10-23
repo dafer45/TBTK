@@ -91,8 +91,11 @@ int ParameterSet::getInt(string name) const {
 		}
 	}
 
-	Util::Streams::err << "Error in ParameterSet::getInt(): Parameter '" << name << "' not defined.\n";
-	exit(1);
+	TBTKExit(
+		"ParameterSet::getInt()",
+		"Parameter '" << name << "' not defined.",
+		""
+	);
 }
 
 double ParameterSet::getDouble(string name) const {
@@ -102,8 +105,11 @@ double ParameterSet::getDouble(string name) const {
 		}
 	}
 
-	Util::Streams::err << "Error in ParameterSet::getDouble(): Parameter '" << name << "' not defined.\n";
-	exit(1);
+	TBTKExit(
+		"ParameterSet::getDouble()",
+		"Parameter '" << name << "' not defined.",
+		""
+	);
 }
 
 complex<double> ParameterSet::getComplex(string name) const {
@@ -113,8 +119,11 @@ complex<double> ParameterSet::getComplex(string name) const {
 		}
 	}
 
-	Util::Streams::err << "Error in ParameterSet::getComplex(): Parameter '" << name << "' not defined.\n";
-	exit(1);
+	TBTKExit(
+		"ParameterSet::getComplex()",
+		"Parameter '" << name << "' not defined.",
+		""
+	);
 }
 
 string ParameterSet::getString(string name) const {
@@ -124,8 +133,11 @@ string ParameterSet::getString(string name) const {
 		}
 	}
 
-	Util::Streams::err << "Error in ParameterSet::getString(): Parameter '" << name << "' not defined.\n";
-	exit(1);
+	TBTKExit(
+		"ParameterSet::getString()",
+		"Parameter '" << name << "' not defined.",
+		""
+	);
 }
 
 bool ParameterSet::getBool(string name) const {
@@ -135,8 +147,11 @@ bool ParameterSet::getBool(string name) const {
 		}
 	}
 
-	Util::Streams::err << "Error in ParameterSet::getBool(): Parameter '" << name << "' not defined.\n";
-	exit(1);
+	TBTKExit(
+		"ParameterSet::getBool()",
+		"Parameter '" << name << "' not defined.",
+		""
+	);
 }
 
 int ParameterSet::getNumInt() const {

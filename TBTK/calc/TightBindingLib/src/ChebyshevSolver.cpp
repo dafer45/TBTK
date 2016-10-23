@@ -726,9 +726,11 @@ void ChebyshevSolver::generateGreensFunction(
 		}
 	}
 	else{
-		Util::Streams::err << "Error in ChebyshevSolver::generateGreensFunction: Unknown GreensFunctionType\n";
-		Util::Streams::closeLog();
-		exit(1);
+		TBTKExit(
+			"ChebyshevSolver::generateGreensFunction()",
+			"Unknown GreensFunctionType",
+			""
+		);
 	}
 }
 

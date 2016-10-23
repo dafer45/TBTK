@@ -5,6 +5,7 @@
 
 #include "../include/Geometry.h"
 #include "../include/Streams.h"
+#include "../include/TBTKMacros.h"
 
 using namespace std;
 
@@ -39,8 +40,11 @@ void Geometry::setCoordinates(
 			this->coordinates[dimensions*basisIndex + n] = *(coordinates.begin() + n);
 	}
 	else{
-		Util::Streams::err << "Error in Geometry::setCoordinates: Geometry requires " << dimensions << " coordinates, but " << coordinates.size() << " were supplied.\n";
-		exit(1);
+		TBTKExit(
+			"Geometry::setCoordinates()",
+			"Geometry requires " << dimensions << " coordinates, but " << coordinates.size() << " were supplied.",
+			""
+		);
 	}
 
 	if(specifiers.size() == (unsigned int)numSpecifiers){
@@ -48,8 +52,11 @@ void Geometry::setCoordinates(
 			this->specifiers[numSpecifiers*basisIndex + n] = *(specifiers.begin() + n);
 	}
 	else{
-		Util::Streams::out << "Error in Geometry::addPoint: Geometry requires " << numSpecifiers << " specfiers, but " << specifiers.size() << " were supplied.\n";
-		exit(1);
+		TBTKExit(
+			"Geometry::addPoint()",
+			"Geometry requires " << numSpecifiers << " specfiers, but " << specifiers.size() << " were supplied.",
+			""
+		);
 	}
 }
 
@@ -64,8 +71,11 @@ void Geometry::setCoordinates(
 			this->coordinates[dimensions*basisIndex + n] = *(coordinates.begin() + n);
 	}
 	else{
-		Util::Streams::out << "Error in Geometry::setCoordinates: Geometry requires " << dimensions << " coordinates, but " << coordinates.size() << " were supplied.\n";
-		exit(1);
+		TBTKExit(
+			"Geometry::setCoordinates()",
+			"Geometry requires " << dimensions << " coordinates, but " << coordinates.size() << " were supplied.",
+			""
+		);
 	}
 
 	if(specifiers.size() == (unsigned int)numSpecifiers){
@@ -73,15 +83,21 @@ void Geometry::setCoordinates(
 			this->specifiers[numSpecifiers*basisIndex + n] = *(specifiers.begin() + n);
 	}
 	else{
-		Util::Streams::out << "Error in Geometry::addPoint: Geometry requires " << numSpecifiers << " specfiers, but " << specifiers.size() << " were supplied.\n";
-		exit(1);
+		TBTKExit(
+			"Geometry::addPoint()",
+			"Geometry requires " << numSpecifiers << " specfiers, but " << specifiers.size() << " were supplied.",
+			""
+		);
 	}
 }
 
 void Geometry::translate(initializer_list<double> translation){
 	if(translation.size() != dimensions){
-		Util::Streams::out << "Error in Geometry::translate: The number of dimensions of the translation vector (" << translation.size() << ") does not match the dimension of the geometry (" << dimensions << ").\n";
-		exit(1);
+		TBTKExit(
+			"Geometry::translate()",
+			"The number of dimensions of the translation vector (" << translation.size() << ") does not match the dimension of the geometry (" << dimensions << ").",
+			""
+		);
 	}
 
 	for(int n = 0; n < parentModel->getBasisSize(); n++){

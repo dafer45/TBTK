@@ -16,4 +16,13 @@
 		exit(1);	\
 	}
 
+#define TBTKExit(function, message, hint)	\
+	TBTK::Util::Streams::err << "Error in " << function << "\n";	\
+	TBTK::Util::Streams::err << "\t" << message << "\n";	\
+	if(std::strcmp(hint, "") != 0)	\
+		TBTK::Util::Streams::err << "\tHint: " << hint << "\n";	\
+	TBTK::Util::Streams::err << "\tWhere: " << __FILE__ << ", " << __LINE__ << "\n";	\
+	Util::Streams::closeLog();	\
+	exit(1);
+
 #endif

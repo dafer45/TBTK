@@ -20,10 +20,11 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 	int numCoefficients,
 	double broadening
 ){
-	Util::Streams::err << "Error in ChebyshevSolver::calculateCoefficientsGPU: GPU Not supported.\n";
-	if(Util::Streams::logIsOpen())
-		Util::Streams::closeLog();
-	exit(1);
+	TBTKExit(
+		"ChebyshevSolver::calculateCoefficientsGPU()",
+		"GPU Not supported.",
+		"Install with GPU support or use CPU version."
+	);
 }
 
 void ChebyshevSolver::calculateCoefficientsGPU(
@@ -33,24 +34,27 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 	int numCoefficients,
 	double broadening
 ){
-	Util::Streams::err << "Error in ChebyshevSolver::calculateCoefficientsGPU: GPU Not supported.\n";
-	if(Util::Streams::logIsOpen())
-		Util::Streams::closeLog();
-	exit(1);
+	TBTKExit(
+		"ChebyshevSolver::calculateCoefficientsGPU()",
+		"GPU Not supported.",
+		"Install with GPU support or use CPU version."
+	);
 }
 
 void ChebyshevSolver::loadLookupTableGPU(){
-	Util::Streams::err << "Error in ChebyshevSolver::loadLookupTableGPU: GPU Not supported.\n";
-	if(Util::Streams::logIsOpen())
-		Util::Streams::closeLog();
-	exit(1);
+	TBTKExit(
+		"ChebyshevSolver::loadLookupTableGPU()",
+		"GPU Not supported.",
+		"Install with GPU support or use CPU version."
+	);
 }
 
 void ChebyshevSolver::destroyLookupTableGPU(){
-	Util::Streams::err << "Error in ChebyshevSolver::destroyLookupTableGPU: GPU Not supported.\n";
-	if(Util::Streams::logIsOpen())
-		Util::Streams::closeLog();
-	exit(1);
+	TBTKExit(
+		"ChebyshevSolver::destroyLookupTableGPU()",
+		"GPU Not supported.",
+		"Install with GPU support or use CPU version."
+	);
 }
 
 void ChebyshevSolver::generateGreensFunctionGPU(
@@ -58,10 +62,11 @@ void ChebyshevSolver::generateGreensFunctionGPU(
 	complex<double> *coefficients,
 	ChebyshevSolver::GreensFunctionType type
 ){
-	Util::Streams::err << "Error in ChebyshevSolver::generateGreensFunctionGPU: GPU Not supported.\n";
-	if(Util::Streams::logIsOpen())
-		Util::Streams::closeLog();
-	exit(1);
+	TBTKExit(
+		"ChebyshevSolver::generateGreensFunctionGPU()",
+		"GPU Not supported.",
+		"Install with GPU support or use CPU version."
+	);
 }
 
 /*void ChebyshevSolver::createDeviceTableGPU(){

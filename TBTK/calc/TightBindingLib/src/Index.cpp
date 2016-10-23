@@ -1,5 +1,6 @@
 #include "../include/Index.h"
 #include "../include/Streams.h"
+#include "../include/TBTKMacros.h"
 
 using namespace std;
 
@@ -22,8 +23,11 @@ bool operator<(const Index &i1, const Index &i2){
 			return false;
 	}
 
-	Util::Streams::err << "Error in operator<(Index &i1, Index &i2): Comparison between indices of types mutually incompatible with the TreeNode structure.\n";
-	exit(1);
+	TBTKExit(
+		"operator<(Index &i1, Index &i2)",
+		"Comparison between indices of types mutually incompatible with the TreeNode structure.",
+		""
+	);
 }
 
 bool operator>(const Index &i1, const Index &i2){
@@ -43,8 +47,11 @@ bool operator>(const Index &i1, const Index &i2){
 			return true;
 	}
 
-	Util::Streams::err << "Error in operator>(Index &i1, Index &i2): Comparison between indices of types mutually incompatible with the TreeNode structure.\n";
-	exit(1);
+	TBTKExit(
+		"operator>(Index &i1, Index &i2)",
+		"Comparison between indices of types mutually incompatible with the TreeNode structure.",
+		""
+	);
 }
 
 Index Index::getUnitRange(){

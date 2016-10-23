@@ -55,8 +55,11 @@ TimeEvolver::~TimeEvolver(){
 		dSolvers.erase(dSolvers.begin() + timeEvolverIndex);
 	}
 	else{
-		Util::Streams::err << "Error in TimeEvolver::~TimeEvolver(): TimeEvolver not found.\n";
-		exit(1);
+		TBTKExit(
+			"TimeEvolver::~TimeEvolver()",
+			"TimeEvolver not found.",
+			""
+		);
 	}
 }
 
@@ -148,8 +151,11 @@ bool TimeEvolver::scCallback(DiagonalizationSolver *dSolver){
 		}
 	}
 
-	Util::Streams::err << "Error in TimeEvolver::scCallback(): DiagonalizationSolver not found.\n";
-	exit(1);
+	TBTKExit(
+		"TimeEvolver::scCallback()",
+		"DiagonalizationSolver not found.",
+		""
+	);
 
 	return 0; //Never reached
 }
@@ -217,8 +223,11 @@ void TimeEvolver::updateOccupancy(){
 			decayHandler->decay(this, occupancy, eigenValues, eigenVectorsMap);
 			break;
 		default:	//Should never happen. Hard error generated for quick bug detection.
-			Util::Streams::err << "Error in TimeEvolver::updateOccupancy(): Unkown DecayMode - " << static_cast<int>(decayMode);
-			exit(1);
+			TBTKExit(
+				"TimeEvolver::updateOccupancy()",
+				"Unkown DecayMode - " << static_cast<int>(decayMode) << ".",
+				""
+			);
 	}
 }
 

@@ -153,20 +153,29 @@ Util::ParameterSet* FileParser::readParameterSet(std::string fileName){
 			parameterSet->addBool(name, value);
 		}
 		else{
-			Util::Streams::err << "Error in FileParser::readParametersSet(): Expected type but found '" + type + "'.\n";
-			exit(1);
+			TBTKExit(
+				"FileParser::readParametersSet()",
+				"Expected type but found '" + type + "'.",
+				""
+			);
 		}
 /*		if(!getline(ssin, line)){
-//			Util::Streams::err << "Error in FileParser::readAmplitudes(): Reached end of file while searching for 'Amplitudes:'.\n";
-			exit(1);
+//			TBTKExit(
+				"FileParser::readAmplitudes()",
+				"Reached end of file while searching for 'Amplitudes:'.",
+				""
+			);
 		}
 
 		unsigned int pos = line.find();
 		if(line.find("Amplitudes:") != string::npos){
 			int mode = readParameter("Mode", "Amplitude");
 			if(mode < 0 || mode > 1){
-				Util::Streams::err << "Error in FileParser::readAmplitudes(): Only Amplitude mode 0 and 1 supported.\n";
-				exit(1);
+				TBTKExit(
+					"FileParser::readAmplitudes()",
+					"Only Amplitude mode 0 and 1 supported.",
+					""
+				);
 			}
 			amplitudeMode = static_cast<AmplitudeMode>(mode);
 
@@ -315,8 +324,11 @@ void FileParser::writeAmplitudes(Model *model, AmplitudeMode amplitudeMode){
 			break;
 		}
 		default:
-			Util::Streams::err << "Eror in FileParser::writeAmplitudes: Unsupported amplitudeMode (" << static_cast<int>(amplitudeMode) << ").";
-			exit(1);
+			TBTKExit(
+				"FileParser::writeAmplitudes()",
+				"Unsupported amplitudeMode (" << static_cast<int>(amplitudeMode) << ").",
+				""
+			);
 		}
 
 		it.searchNextHA();
@@ -429,8 +441,11 @@ void FileParser::removeComments(){
 			}
 			break;
 		default:
-			Util::Streams::err << "Error in FileParser::removeComments(): Unknown state.";
-			exit(1);
+			TBTKExit(
+				"FileParser::removeComments()",
+				"Unknown state.",
+				""
+			);
 		}
 	}
 
@@ -477,8 +492,11 @@ void FileParser::removeInitialWhiteSpaces(){
 			}
 			break;
 		default:
-			Util::Streams::err << "Error in FileParser::removeInitialWhiteSpaces(): Unknown state.";
-			exit(1);
+			TBTKExit(
+				"FileParser::removeInitialWhiteSpaces()",
+				"Unknown state.",
+				""
+			);
 		}
 	}
 
@@ -502,8 +520,11 @@ void FileParser::readAmplitudes(Model *model){
 		if(line.find("Amplitudes:") != string::npos){
 			int mode = readParameter("Mode", "Amplitude");
 			if(mode < 0 || mode > 1){
-				Util::Streams::err << "Error in FileParser::readAmplitudes(): Only Amplitude mode 0 and 1 supported.\n";
-				exit(1);
+				TBTKExit(
+					"FileParser::readAmplitudes()",
+					"Only Amplitude mode 0 and 1 supported.",
+					""
+				);
 			}
 			amplitudeMode = static_cast<AmplitudeMode>(mode);
 

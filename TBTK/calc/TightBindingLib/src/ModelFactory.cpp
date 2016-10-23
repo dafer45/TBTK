@@ -38,8 +38,11 @@ Model* ModelFactory::createSquareLattice(
 		createSquareLattice3D(model, size, periodic, t);
 		break;
 	default:
-		Util::Streams::err << "Error in ModelFactory::createSquareLattice: Only 1-3 dimensions supported, but " << size.size() << " dimensions requested.\n";
-		exit(1);
+		TBTKExit(
+			"ModelFactory::createSquareLattice()",
+			"Only 1-3 dimensions supported, but " << size.size() << " dimensions requested.",
+			""
+		);
 	}
 
 	return model;
@@ -104,8 +107,11 @@ void ModelFactory::addSquareGeometry(
 		addSquareGeometry3D(model, size);
 		break;
 	default:
-		Util::Streams::err << "Error in ModelFactory::addSquareGeometry: Only 1-3 dimensions supported, but " << size.size() << " dimensions requested.\n";
-		exit(1);
+		TBTKExit(
+			"ModelFactory::addSquareGeometry()",
+			"Only 1-3 dimensions supported, but " << size.size() << " dimensions requested.",
+			""
+		);
 	}
 }
 
@@ -114,8 +120,11 @@ void ModelFactory::addHexagonalGeometry(
 	std::initializer_list<int> size
 ){
 	if(size.size() != 2){
-		Util::Streams::err << "Error in ModelFactory::addSquareGeometry: Only 1-3 dimensions supported, but " << size.size() << " dimensions requested.\n";
-		exit(1);
+		TBTKExit(
+			"ModelFactory::addSquareGeometry()",
+			"Only 1-3 dimensions supported, but " << size.size() << " dimensions requested.",
+			""
+		);
 	}
 
 	model->createGeometry(3, 0);
