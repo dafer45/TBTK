@@ -1113,4 +1113,92 @@ bool FileWriter::exists(){
 	return exists;
 }
 
+void FileWriter::writeParameterSet(
+    const Util::ParameterSet *parameterSet,
+    std::string name,
+    std::string path
+){
+	init();
+
+	const int ATTRIBUTES_RANK = 1;
+	hsize_t limits_dims[1];
+	limits_dims[0] = 1;
+
+	try{
+		stringstream ss;
+		ss << path;
+		if(path.back() != '/')
+			ss << "/";
+		ss << name;
+
+		Exception::dontPrint();
+		H5File file(filename, H5F_ACC_RDWR);
+
+		DataSpace dataspace = DataSpace(ATTRIBUTES_RANK, limits_dims);
+		DataSet dataset = DataSet(file.createDataSet(name, PredType::IEEE_F64BE, dataspace));
+
+		for(int n = 0; n < parameterSet->getNumInt(); n++){
+			Attribute attribute = dataset.createAttribute(parameterSet->getIntName(n), PredType::IEEE_F64BE, dataspace);
+			int value = parameterSet->getIntValue(n);
+			attribute.write(PredType::NATIVE_INT, &value);
+		}
+
+        for(int n = 0; n < parameterSet->getNumDouble(); n++){
+			Attribute attribute = dataset.createAttribute(parameterSet->getDoubleName(n), PredType::IEEE_F64BE, dataspace);
+			double value = parameterSet->getDoubleValue(n);
+			attribute.write(PredType::NATIVE_DOUBLE, &value);
+		}
+
+        for(int n = 0; n < parameterSet->getNumComplex(); n++){
+			Attribute attribute = dataset.createAttribute(parameterSet->getComplexName(n) + "_Abs", PredType::IEEE_F64BE, dataspace);
+			double value = abs(parameterSet->getDoubleValue(n));
+			attribute.write(PredType::NATIVE_DOUBLE, &value);
+
+            attribute = dataset.createAttribute(parameterSet->getComplexName(n) + "_Arg", PredType::IEEE_F64BE, dataspace);
+			value = arg(parameterSet->getDoubleValue(n));
+			attribute.write(PredType::NATIVE_DOUBLE, &value);
+		}
+
+        for(int n = 0; n < parameterSet->getNumString(); n++){
+			Attribute attribute = dataset.createAttribute(parameterSet->getStringName(n), PredType::IEEE_F64BE, dataspace);
+			string value = parameterSet->getStringValue(n);
+			attribute.write(PredType::NATIVE_SCHAR, &value);
+		}
+
+        for(int n = 0; n < parameterSet->getNumBool(); n++){
+			Attribute attribute = dataset.createAttribute(parameterSet->getBoolName(n), PredType::IEEE_F64BE, dataspace);
+			int value = parameterSet->getBoolValue(n);
+			attribute.write(PredType::NATIVE_INT, &value);
+		}
+
+
+		dataspace.close();
+		dataset.close();
+
+		file.close();
+		dataspace.close();
+	}
+	catch(FileIException error){
+		TBTKExit(
+			"FileWriter::writeAttributes()",
+			"While writing to " << name << ".",
+			""
+		);
+	}
+	catch(DataSetIException error){
+		TBTKExit(
+			"FileWriter::writeAttributes()",
+			"While writing to " << name << ".",
+			""
+		);
+	}
+	catch(DataSpaceIException error){
+		TBTKExit(
+			"FileWriter::writeAttributes()",
+			"While writing to " << name << ".",
+			""
+		);
+	}
+}
+
 };	//End of namespace TBTK

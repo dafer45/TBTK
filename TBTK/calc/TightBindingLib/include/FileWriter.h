@@ -32,6 +32,7 @@
 #include "Magnetization.h"
 #include "LDOS.h"
 #include "SpinPolarizedLDOS.h"
+#include "ParameterSet.h"
 #include <fstream>
 #include <stdio.h>
 
@@ -182,6 +183,13 @@ public:
 		std::string name,
 		std::string path = "/"
 	);
+
+    /** Write Util::ParamterSet to file.*/
+    static void writeParameterSet(
+        const Util::ParameterSet *parameterSet,
+        std::string name = "ParameterSet",
+        std::string path = "/"
+    );
 
 	/** Set output file name. Default is TBTKResults.h5. */
 	static void setFileName(std::string filename);
