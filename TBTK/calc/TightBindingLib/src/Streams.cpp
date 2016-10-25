@@ -115,7 +115,6 @@ void Streams::LogBuffer::open(std::string fileName){
 };
 
 void Streams::LogBuffer::close(){
-	cerr << "Closing log.";
 	if(fout.is_open()){
 		fout << flush;
 		fout.close();
