@@ -1175,36 +1175,32 @@ void FileWriter::writeParameterSet(
 			int value = parameterSet->getIntValue(n);
 			attribute.write(PredType::NATIVE_INT, &value);
 		}
-
         for(int n = 0; n < parameterSet->getNumDouble(); n++){
 			Attribute attribute = dataset.createAttribute(parameterSet->getDoubleName(n), PredType::IEEE_F64BE, dataspace);
 			double value = parameterSet->getDoubleValue(n);
 			attribute.write(PredType::NATIVE_DOUBLE, &value);
 		}
-
         for(int n = 0; n < parameterSet->getNumComplex(); n++){
-			Attribute attribute = dataset.createAttribute(parameterSet->getComplexName(n) + "_Abs", PredType::IEEE_F64BE, dataspace);
-			double value = abs(parameterSet->getDoubleValue(n));
+			Attribute attribute = dataset.createAttribute(parameterSet->getComplexName(n).append("_Abs"), PredType::IEEE_F64BE, dataspace);
+			double value = abs(parameterSet->getComplexValue(n));
 			attribute.write(PredType::NATIVE_DOUBLE, &value);
 
             attribute = dataset.createAttribute(parameterSet->getComplexName(n) + "_Arg", PredType::IEEE_F64BE, dataspace);
-			value = arg(parameterSet->getDoubleValue(n));
+			value = arg(parameterSet->getComplexValue(n));
 			attribute.write(PredType::NATIVE_DOUBLE, &value);
 		}
-
         for(int n = 0; n < parameterSet->getNumString(); n++){
-			Attribute attribute = dataset.createAttribute(parameterSet->getStringName(n), PredType::IEEE_F64BE, dataspace);
 			string value = parameterSet->getStringValue(n);
-			attribute.write(PredType::NATIVE_SCHAR, &value);
+            StrType strDataType(PredType::C_S1, value.length());
+            const H5std_string strWriteBuf(value);
+            Attribute attribute = dataset.createAttribute(parameterSet->getStringName(n), strDataType, dataspace);
+			attribute.write(strDataType, strWriteBuf);
 		}
-
         for(int n = 0; n < parameterSet->getNumBool(); n++){
 			Attribute attribute = dataset.createAttribute(parameterSet->getBoolName(n), PredType::IEEE_F64BE, dataspace);
 			int value = parameterSet->getBoolValue(n);
 			attribute.write(PredType::NATIVE_INT, &value);
 		}
-
-
 		dataspace.close();
 		dataset.close();
 
@@ -1213,21 +1209,21 @@ void FileWriter::writeParameterSet(
 	}
 	catch(FileIException error){
 		TBTKExit(
-			"FileWriter::writeAttributes()",
+			"FileWriter::writeParameterSet()",
 			"While writing to " << name << ".",
 			""
 		);
 	}
 	catch(DataSetIException error){
 		TBTKExit(
-			"FileWriter::writeAttributes()",
+			"FileWriter::writeParameterSet()",
 			"While writing to " << name << ".",
 			""
 		);
 	}
 	catch(DataSpaceIException error){
 		TBTKExit(
-			"FileWriter::writeAttributes()",
+			"FileWriter::writeParameterSet()",
 			"While writing to " << name << ".",
 			""
 		);
