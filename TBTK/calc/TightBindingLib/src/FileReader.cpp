@@ -27,6 +27,12 @@
 #include <H5Cpp.h>
 #include <fstream>
 
+
+#include <iostream> //TODO remove after debugging
+#include <string>
+#include <memory>
+
+
 #ifndef H5_NO_NAMESPACE
 	using namespace H5;
 #endif
@@ -890,6 +896,179 @@ void FileReader::readAttributes(
 			""
 		);
 	}
+}
+
+//herr_t
+//attr_info(hid_t loc_id, const char *name, void *opdata)
+//{
+//    hid_t attr, atype, aspace;  /* Attribute, datatype, dataspace identifiers */
+//    char    *string_out=NULL;
+//    int   rank;
+//    hsize_t sdim[64];
+//    herr_t ret;
+//    int i, j ;
+//    size_t size, totsize;
+//    size_t npoints;             /* Number of elements in the array attribute. */
+//    int point_out;
+//    float *float_array;         /* Pointer to the array attribute. */
+//    H5S_class_t  classt;
+//
+//    /* avoid warnings */
+//    opdata = opdata;
+//
+//    /*  Open the attribute using its name.  */
+//    attr = H5Aopen_name(loc_id, name);
+//
+//    /*  Display attribute name.  */
+//    printf("\nName : ");
+//    puts(name);
+//
+//    /* Get attribute datatype, dataspace, rank, and dimensions.  */
+//    atype  = H5Aget_type(attr);
+//    aspace = H5Aget_space(attr);
+//    rank = H5Sget_simple_extent_ndims(aspace);
+//    ret = H5Sget_simple_extent_dims(aspace, sdim, NULL);
+//
+//    /* Get dataspace type */
+//    classt = H5Sget_simple_extent_type (aspace);
+//    printf ("H5Sget_simple_extent_type (aspace) returns: %i\n", classt);
+//
+//    /* Display rank and dimension sizes for the array attribute.  */
+//    if(rank > 0) {
+//       printf("Rank : %d \n", rank);
+//       printf("Dimension sizes : ");
+//       for (i=0; i< rank; i++) printf("%d ", (int)sdim[i]);
+//       printf("\n");
+//    }
+//
+//    if (H5T_INTEGER == H5Tget_class(atype)) {
+//       printf("Type : INTEGER \n");
+//       ret  = H5Aread(attr, atype, &point_out);
+//       printf("The value of the attribute \"Integer attribute\" is %d \n",
+//               point_out);
+//    }
+//
+//    if (H5T_FLOAT == H5Tget_class(atype)) {
+//       printf("Type : FLOAT \n");
+//       npoints = H5Sget_simple_extent_npoints(aspace);
+//       float_array = (float *)malloc(sizeof(float)*(int)npoints);
+//       ret = H5Aread(attr, atype, float_array);
+//       printf("Values : ");
+//       for( i = 0; i < (int)npoints; i++) printf("%f ", float_array[i]);
+//       printf("\n");
+//       free(float_array);
+//    }
+//
+//    if (H5T_STRING == H5Tget_class (atype)) {
+//      printf ("Type: STRING \n");
+//      size = H5Tget_size (atype);
+//      printf ("Size of Each String is: %i\n", size);
+//      totsize = size*sdim[0]*sdim[1];
+//      string_out = reinterpret_cast<char*>(calloc (totsize, sizeof(char)));
+//      ret = H5Aread(attr, atype, string_out);
+//      printf("The value of the attribute with index 2 is:\n");
+//      j=0;
+//      for (i=0; i<totsize; i++) {
+//        printf ("%c", string_out[i]);
+//        if (j==3) {
+//          printf(" ");
+//          j=0;
+//        }
+//        else j++;
+//      }
+//      printf ("\n");
+//    }
+//
+//    ret = H5Tclose(atype);
+//    ret = H5Sclose(aspace);
+//    ret = H5Aclose(attr);
+//
+//    return 0;
+//}
+
+
+Util::ParameterSet* FileReader::readParameterSet(
+    string name,
+	string path
+){
+	try{
+		stringstream ss;
+		ss << path;
+		if(path.back() != '/')
+			ss << "/";
+		ss << name;
+
+		Exception::dontPrint();
+
+        unique_ptr<Util::ParameterSet> ps( new Util::ParameterSet );
+
+//        unsigned int num = getNumAttributes(filename, name + "Int");
+
+        H5File file(filename, H5F_ACC_RDONLY);
+		DataSet dataset = file.openDataSet(name + "Int");
+		DataSpace dataspace = dataset.getSpace();
+
+        unsigned int num = dataset.getNumAttrs();
+
+		for(unsigned int n = 0; n < num; n++){
+			Attribute attribute = dataset.openAttribute(n);
+
+			DataType type = attribute.getDataType();
+			TBTKAssert(
+				type == PredType::STD_I64BE,
+				"FileReader::readAttribues()",
+				"The attribute '" << "TODO" << "' is not of integer type.",
+				""
+			);
+			int value;
+			string nameAttribute;
+			attribute.read(PredType::NATIVE_INT, &value);
+			nameAttribute = attribute.getName();
+			cout << nameAttribute << endl;
+			ps->addInt(nameAttribute, value);
+		}
+		return ps.get();
+	}
+	catch(FileIException error){
+		Util::Streams::log << error.getCDetailMsg() << "\n";
+		TBTKExit(
+			"FileReader::read()",
+			"While reading " << name << ".",
+			""
+		);
+	}
+	catch(DataSetIException error){
+		Util::Streams::log << error.getCDetailMsg() << "\n";
+		TBTKExit(
+			"FileReader::read()",
+			"While reading " << name << ".",
+			""
+		);
+	}
+	catch(DataSpaceIException error){
+		Util::Streams::log << error.getCDetailMsg() << "\n";
+		TBTKExit(
+			"FileReader::read()",
+			"While reading " << name << ".",
+			""
+		);
+	}
+}
+
+int FileReader::getNumAttributes(string fileName, string dataSetName){
+    hid_t file = H5Fopen(fileName.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
+    hid_t dataset = H5Dopen(file, dataSetName.c_str(), H5P_DEFAULT);
+    H5O_info_t info;
+    if(!H5Oget_info(dataset, &info))
+    {
+        H5Dclose(dataset);
+        H5Fclose(file);
+        return info.num_attrs;
+    }
+    else
+    {
+        throw DataSetIException("FileReader::getNumAttributes", "H5Oget_info failed");
+    }
 }
 
 bool FileReader::exists(){

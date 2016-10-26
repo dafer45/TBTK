@@ -31,6 +31,7 @@
 #include "Magnetization.h"
 #include "LDOS.h"
 #include "SpinPolarizedLDOS.h"
+#include "ParameterSet.h"
 #include <fstream>
 #include <stdio.h>
 
@@ -146,6 +147,12 @@ public:
 		std::string path = "/"
 	);
 
+    /** Read Util::ParameterSet from file. */
+	static Util::ParameterSet* readParameterSet(
+        std::string name = "ParameterSet",
+		std::string path = "/"
+    );
+
 	/** Read custom n-dimensional arrays from file of type double. */
 	static void read(
 		double **data,
@@ -188,6 +195,10 @@ private:
 
 	/** File name of file to read from. */
 	static std::string filename;
+
+	/** Returns number of attributes in a Dataset. */
+    //uses c hdf5 library, should be updated as soon as c++ functionality is available.
+	static int getNumAttributes(std::string filename, std::string dataSetName);
 };
 
 inline void FileReader::setFileName(std::string filename){

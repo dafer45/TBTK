@@ -1168,27 +1168,30 @@ void FileWriter::writeParameterSet(
 		H5File file(filename, H5F_ACC_RDWR);
 
 		DataSpace dataspace = DataSpace(ATTRIBUTES_RANK, limits_dims);
-		DataSet dataset = DataSet(file.createDataSet(name, PredType::IEEE_F64BE, dataspace));
+		DataSet dataset = DataSet(file.createDataSet(name + "Int", PredType::STD_I64BE, dataspace));
 
 		for(int n = 0; n < parameterSet->getNumInt(); n++){
-			Attribute attribute = dataset.createAttribute(parameterSet->getIntName(n), PredType::IEEE_F64BE, dataspace);
+			Attribute attribute = dataset.createAttribute(parameterSet->getIntName(n), PredType::STD_I64BE, dataspace);
 			int value = parameterSet->getIntValue(n);
 			attribute.write(PredType::NATIVE_INT, &value);
 		}
+		dataset = DataSet(file.createDataSet(name + "Double", PredType::IEEE_F64BE, dataspace));
         for(int n = 0; n < parameterSet->getNumDouble(); n++){
 			Attribute attribute = dataset.createAttribute(parameterSet->getDoubleName(n), PredType::IEEE_F64BE, dataspace);
 			double value = parameterSet->getDoubleValue(n);
 			attribute.write(PredType::NATIVE_DOUBLE, &value);
 		}
+		dataset = DataSet(file.createDataSet(name + "Complex", PredType::IEEE_F64BE, dataspace));
         for(int n = 0; n < parameterSet->getNumComplex(); n++){
-			Attribute attribute = dataset.createAttribute(parameterSet->getComplexName(n).append("_Abs"), PredType::IEEE_F64BE, dataspace);
-			double value = abs(parameterSet->getComplexValue(n));
+			Attribute attribute = dataset.createAttribute(parameterSet->getComplexName(n) + "_real", PredType::IEEE_F64BE, dataspace);
+			double value = real(parameterSet->getComplexValue(n));
 			attribute.write(PredType::NATIVE_DOUBLE, &value);
 
-            attribute = dataset.createAttribute(parameterSet->getComplexName(n) + "_Arg", PredType::IEEE_F64BE, dataspace);
-			value = arg(parameterSet->getComplexValue(n));
+            attribute = dataset.createAttribute(parameterSet->getComplexName(n) + "_img", PredType::IEEE_F64BE, dataspace);
+			value = imag(parameterSet->getComplexValue(n));
 			attribute.write(PredType::NATIVE_DOUBLE, &value);
 		}
+		dataset = DataSet(file.createDataSet(name + "String", PredType::PredType::C_S1, dataspace));
         for(int n = 0; n < parameterSet->getNumString(); n++){
 			string value = parameterSet->getStringValue(n);
             StrType strDataType(PredType::C_S1, value.length());
@@ -1196,8 +1199,9 @@ void FileWriter::writeParameterSet(
             Attribute attribute = dataset.createAttribute(parameterSet->getStringName(n), strDataType, dataspace);
 			attribute.write(strDataType, strWriteBuf);
 		}
+		dataset = DataSet(file.createDataSet(name + "Bool", PredType::STD_I64BE, dataspace));
         for(int n = 0; n < parameterSet->getNumBool(); n++){
-			Attribute attribute = dataset.createAttribute(parameterSet->getBoolName(n), PredType::IEEE_F64BE, dataspace);
+			Attribute attribute = dataset.createAttribute(parameterSet->getBoolName(n), PredType::STD_I64BE, dataspace);
 			int value = parameterSet->getBoolValue(n);
 			attribute.write(PredType::NATIVE_INT, &value);
 		}
