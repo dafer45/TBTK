@@ -1184,7 +1184,7 @@ void FileWriter::writeParameterSet(
 		}
 
 		hsize_t dimension = 2;
-        ArrayType dataTypeComplex(H5::PredType::IEEE_F64BE, 1, &dimension);
+        ArrayType dataTypeComplex(PredType::NATIVE_DOUBLE, 1, &dimension);
 		dataset = DataSet(file.createDataSet(name + "Complex", PredType::IEEE_F64BE, dataspace));
         for(int n = 0; n < parameterSet->getNumComplex(); n++){
 			Attribute attribute = dataset.createAttribute(parameterSet->getComplexName(n), dataTypeComplex, dataspace);

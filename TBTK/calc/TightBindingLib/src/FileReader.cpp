@@ -1059,7 +1059,7 @@ Util::ParameterSet* FileReader::readParameterSet(
             string nameAttribute;
 			nameAttribute = attribute.getName();
 			hsize_t dimension = 2;
-			ArrayType dataTypeComplex(H5::PredType::IEEE_F64BE, 1, &dimension);
+			ArrayType dataTypeComplex(PredType::NATIVE_DOUBLE, 1, &dimension);
 
 			TBTKAssert(
 				type == dataTypeComplex,
