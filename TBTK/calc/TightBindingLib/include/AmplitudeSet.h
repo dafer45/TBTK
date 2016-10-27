@@ -54,18 +54,24 @@ public:
 	/** Destructor. */
 	~AmplitudeSet();
 
-	/** Add a single HoppingAmplitude. */
+	/** Add a single HoppingAmplitude.
+	 *
+	 *  @param ha HoppingAMplitude to add. */
 	void addHA(HoppingAmplitude ha);
 
-	/** Add a HoppingAmplitude and its Hermitian conjugate. */
+	/** Add a HoppingAmplitude and its Hermitian conjugate.
+	 *
+	 *  @param HoppingAmplitude to add. */
 	void addHAAndHC(HoppingAmplitude ha);
 
 	/** Get all @link HoppingAmplitude HoppingAmplitudes @endlink with
 	 * given 'from'-index.
+	 *
 	 *  @param index 'From'-index to get HoppingAmplitudes for. */
 	std::vector<HoppingAmplitude>* getHAs(Index index);
 
 	/** Get Hilbert space index corresponding to given 'from'-index.
+	 *
 	 *  @param index 'From'-index to get Hilbert space index for. */
 	int getBasisIndex(const Index &index);
 
@@ -144,7 +150,29 @@ public:
 	void print();
 
 	/** Tabulates @link HoppingAmplitude HoppingAmplitudes @endlink to make
-	 *  them possible to export. */
+	 *  them possible to export.
+	 *
+	 *  @param amplitudes
+	 *	Pointer to amplitude table pointer. Memory will be allocated
+	 *	and has to be freed by the user. The array will contain all the
+	 *	HoppingAmplitude values when the function returns.
+	 *  @param table
+	 *	Pointer to index table pointer. Memory will be allocated and
+	 *	has to be freed by the user. The array will contain the 'to'-
+	 *	and 'from'-indices for the corresponding HoppingAmplitude
+	 *	values in amplitudes. The values are stored sequentially using
+	 *	the format [to0] [padding] [from0] [padding] [to1] ..., where
+	 *	the padding is added to align 'to'- and 'from'-indices in
+	 *	memory in case multiple index sizes are encounterd. The number
+	 *	of padding elements will be zero for indices of size
+	 *	maxIndexSize and the padding value is -1. The total array size
+	 *	is 2*numHoppingAmplitudes*maxIndexSize.
+	 *  @param numHoppingAmplitudes
+	 *	Pointer to int that will contain the number of
+	 *	HoppingAMplitudes when the function returns.
+	 *  @param maxIndexSize
+	 *	Pointer to int that will contain the maximum number of
+	 *	subindices encountered. */
 	void tabulate(
 		std::complex<double> **amplitudes,
 		int **indices,
