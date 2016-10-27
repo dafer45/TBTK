@@ -42,7 +42,7 @@ Zenodo. http://doi.org/10.5281/zenodo.162730
 
 ####If you use the ChebyshevSolver to produce results, please also cite the following references  
 A. Weiße, G. Wellein, A. Alvermann, and H. Fehske,  
-Rev. Mod. Phys. 78, 275,
+Rev. Mod. Phys. 78, 275 (2006).
 
 L. Covaci, F. M. Peeters, and M. Berciu,  
 Phys. Rev. Lett. 105, 167006 (2010).
