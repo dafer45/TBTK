@@ -16,6 +16,7 @@
 /** @file FileWriter.cpp
  *
  *  @author Kristofer Björnson
+ *  @author Andreas Theiler
  */
 
 #include "../include/FileReader.h"
@@ -26,11 +27,7 @@
 #include <sstream>
 #include <H5Cpp.h>
 #include <fstream>
-
-
-#include <iostream> //TODO remove after debugging
 #include <string>
-#include <memory>
 
 
 #ifndef H5_NO_NAMESPACE
@@ -1000,13 +997,12 @@ Util::ParameterSet* FileReader::readParameterSet(
 
 		Exception::dontPrint();
 
-        unique_ptr<Util::ParameterSet> ps( new Util::ParameterSet );
+        Util::ParameterSet *ps = new Util::ParameterSet();
 
 //        unsigned int num = getNumAttributes(filename, name + "Int");
 
         H5File file(filename, H5F_ACC_RDONLY);
 		DataSet dataset = file.openDataSet(name + "Int");
-		DataSpace dataspace = dataset.getSpace();
 
         unsigned int num = dataset.getNumAttrs();
 
@@ -1014,20 +1010,97 @@ Util::ParameterSet* FileReader::readParameterSet(
 			Attribute attribute = dataset.openAttribute(n);
 
 			DataType type = attribute.getDataType();
+            string nameAttribute;
+			nameAttribute = attribute.getName();
+
 			TBTKAssert(
 				type == PredType::STD_I64BE,
 				"FileReader::readAttribues()",
-				"The attribute '" << "TODO" << "' is not of integer type.",
+				"The attribute '" << nameAttribute << "' is not of integer type.",
 				""
 			);
 			int value;
-			string nameAttribute;
 			attribute.read(PredType::NATIVE_INT, &value);
-			nameAttribute = attribute.getName();
-			cout << nameAttribute << endl;
 			ps->addInt(nameAttribute, value);
 		}
-		return ps.get();
+
+        dataset = file.openDataSet(name + "Double");
+        num = dataset.getNumAttrs();
+
+		for(unsigned int n = 0; n < num; n++){
+			Attribute attribute = dataset.openAttribute(n);
+
+			DataType type = attribute.getDataType();
+            string nameAttribute;
+			nameAttribute = attribute.getName();
+
+			TBTKAssert(
+				type == PredType::IEEE_F64BE,
+				"FileReader::readAttribues()",
+				"The attribute '" << nameAttribute << "' is not of double type.",
+				""
+			);
+			double value;
+			attribute.read(PredType::NATIVE_DOUBLE, &value);
+			ps->addDouble(nameAttribute, value);
+		}
+
+        dataset = file.openDataSet(name + "Complex");
+        num = dataset.getNumAttrs();
+        complex<double> complexValue = 0;
+        complex<double> realOne(1,0);
+        complex<double> i(0,1);
+
+		for(unsigned int n = 0; n < num; n++){
+			Attribute attribute = dataset.openAttribute(n);
+
+			DataType type = attribute.getDataType();
+            string nameAttribute;
+			nameAttribute = attribute.getName();
+
+			TBTKAssert(
+				type == PredType::IEEE_F64BE,
+				"FileReader::readAttribues()",
+				"The attribute '" << nameAttribute << "' is not of complex type.",
+				""
+			);
+			double value;
+			attribute.read(PredType::NATIVE_DOUBLE, &value);
+
+            if(n%2)
+            {
+                complexValue += value*i;
+                ps->addComplex(nameAttribute.erase(nameAttribute.size()-3), complexValue);
+                complexValue = 0;
+            }
+            else
+            {
+                complexValue += value*realOne;
+            }
+		}
+
+        dataset = file.openDataSet(name + "String");
+        num = dataset.getNumAttrs();
+
+		for(unsigned int n = 0; n < num; n++){
+			Attribute attribute = dataset.openAttribute(n);
+
+			DataType type = attribute.getDataType();
+            string nameAttribute = attribute.getName();
+			unsigned int memLength = attribute.getInMemDataSize();
+			StrType strDataType(PredType::C_S1, memLength);
+
+			TBTKAssert(
+				type == strDataType,
+				"FileReader::readParameterSet()",
+				"The attribute '" << nameAttribute << "' is not of string type.",
+				""
+			);
+			string value;
+			attribute.read(type, value);
+			ps->addString(nameAttribute, value);
+		}
+		return ps;
 	}
 	catch(FileIException error){
 		Util::Streams::log << error.getCDetailMsg() << "\n";
@@ -1053,22 +1126,6 @@ Util::ParameterSet* FileReader::readParameterSet(
 			""
 		);
 	}
-}
-
-int FileReader::getNumAttributes(string fileName, string dataSetName){
-    hid_t file = H5Fopen(fileName.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
-    hid_t dataset = H5Dopen(file, dataSetName.c_str(), H5P_DEFAULT);
-    H5O_info_t info;
-    if(!H5Oget_info(dataset, &info))
-    {
-        H5Dclose(dataset);
-        H5Fclose(file);
-        return info.num_attrs;
-    }
-    else
-    {
-        throw DataSetIException("FileReader::getNumAttributes", "H5Oget_info failed");
-    }
 }
 
 bool FileReader::exists(){

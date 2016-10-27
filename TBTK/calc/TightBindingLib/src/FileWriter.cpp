@@ -16,6 +16,7 @@
 /** @file FileWriter.cpp
  *
  *  @author Kristofer Björnson
+ *  @author Andreas Theiler
  */
 
 #include "../include/FileWriter.h"
@@ -1183,11 +1184,11 @@ void FileWriter::writeParameterSet(
 		}
 		dataset = DataSet(file.createDataSet(name + "Complex", PredType::IEEE_F64BE, dataspace));
         for(int n = 0; n < parameterSet->getNumComplex(); n++){
-			Attribute attribute = dataset.createAttribute(parameterSet->getComplexName(n) + "_real", PredType::IEEE_F64BE, dataspace);
+			Attribute attribute = dataset.createAttribute(parameterSet->getComplexName(n) + "Real", PredType::IEEE_F64BE, dataspace);
 			double value = real(parameterSet->getComplexValue(n));
 			attribute.write(PredType::NATIVE_DOUBLE, &value);
 
-            attribute = dataset.createAttribute(parameterSet->getComplexName(n) + "_img", PredType::IEEE_F64BE, dataspace);
+            attribute = dataset.createAttribute(parameterSet->getComplexName(n) + "Img", PredType::IEEE_F64BE, dataspace);
 			value = imag(parameterSet->getComplexValue(n));
 			attribute.write(PredType::NATIVE_DOUBLE, &value);
 		}

@@ -18,6 +18,7 @@
  *  @brief Reads data from file
  *
  *  @author Kristofer Björnson
+ *  @author Andreas Theiler
  */
 
 #ifndef COM_DAFER45_TBTK_FILE_READER
@@ -195,10 +196,6 @@ private:
 
 	/** File name of file to read from. */
 	static std::string filename;
-
-	/** Returns number of attributes in a Dataset. */
-    //uses c hdf5 library, should be updated as soon as c++ functionality is available.
-	static int getNumAttributes(std::string filename, std::string dataSetName);
 };
 
 inline void FileReader::setFileName(std::string filename){
