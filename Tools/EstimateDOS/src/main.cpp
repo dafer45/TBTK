@@ -15,7 +15,7 @@
 
 /** @package TBTKTools
  *  @file main.cpp
- *  @brief Estimates the DOS using random smapling of LDOS.
+ *  @brief Estimates the DOS using random sampling of LDOS.
  *
  *  Reads model from text file and estimates the DOS using the
  *  ChebyshevSolver.
@@ -199,6 +199,7 @@ int main(int argc, char **argv){
 	FileWriter::writeDOS(&dos);
 
 	delete [] dosData;
+	delete model;
 
 	Util::Streams::closeLog();
 	return 0;
