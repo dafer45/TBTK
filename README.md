@@ -37,7 +37,8 @@ TBTK is free to use under the Appache 2.0 license (see the file 'License'). Plea
 ######
 ####To cite TBTK, mention TBTK in the text and cite the DOI for this project.  
 [![DOI](https://zenodo.org/badge/50950512.svg)](https://zenodo.org/badge/latestdoi/50950512)  
-(Click the DOI-label and see 'Cite as' for detailed citation information.)
+Kristofer Björnson, & glaurung24. (2016). dafer45/TBTK: Initial release [Data set].  
+Zenodo. http://doi.org/10.5281/zenodo.162730
 
 ####If you use the ChebyshevSolver to produce results, please also cite the following references  
 A. Weiße, G. Wellein, A. Alvermann, and H. Fehske,  
