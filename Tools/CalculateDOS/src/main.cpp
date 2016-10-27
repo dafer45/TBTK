@@ -50,8 +50,8 @@ int main(int argc, char **argv){
 	int energyResolution		= 10000;
 	bool useDefaultLowerBound	= true;
 	bool useDefaultUpperBound	= true;
-	double lowerBound		= -10;
-	double upperBound		= 10;
+	double lowerBound		= -1.;
+	double upperBound		= 1.;
 
 	while(true){
 		static struct option long_options[] = {
@@ -65,7 +65,7 @@ int main(int argc, char **argv){
 		};
 
 		int option_index = 0;
-		int c = getopt_long(argc, argv, "s:c:r:S:", long_options, &option_index);
+		int c = getopt_long(argc, argv, "l:u:r:", long_options, &option_index);
 		if(c == -1)
 			break;
 
