@@ -1095,6 +1095,27 @@ Util::ParameterSet* FileReader::readParameterSet(
 			attribute.read(type, value);
 			ps->addString(nameAttribute, value);
 		}
+		dataset = file.openDataSet(name + "Bool");
+
+        num = dataset.getNumAttrs();
+
+		for(unsigned int n = 0; n < num; n++){
+			Attribute attribute = dataset.openAttribute(n);
+
+			DataType type = attribute.getDataType();
+            string nameAttribute;
+			nameAttribute = attribute.getName();
+
+			TBTKAssert(
+				type == PredType::STD_I64BE,
+				"FileReader::readParameterSet()",
+				"The attribute '" << nameAttribute << "' is not of bool type.",
+				""
+			);
+			int value;
+			attribute.read(PredType::NATIVE_INT, &value);
+			ps->addBool(nameAttribute, value);
+		}
 		return ps;
 	}
 	catch(FileIException error){
