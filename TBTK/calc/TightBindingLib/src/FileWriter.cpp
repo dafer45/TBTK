@@ -1182,15 +1182,15 @@ void FileWriter::writeParameterSet(
 			double value = parameterSet->getDoubleValue(n);
 			attribute.write(PredType::NATIVE_DOUBLE, &value);
 		}
+
+		hsize_t dimension = 2;
+        ArrayType dataTypeComplex(H5::PredType::IEEE_F64BE, 1, &dimension);
 		dataset = DataSet(file.createDataSet(name + "Complex", PredType::IEEE_F64BE, dataspace));
         for(int n = 0; n < parameterSet->getNumComplex(); n++){
-			Attribute attribute = dataset.createAttribute(parameterSet->getComplexName(n) + "Real", PredType::IEEE_F64BE, dataspace);
-			double value = real(parameterSet->getComplexValue(n));
-			attribute.write(PredType::NATIVE_DOUBLE, &value);
-
-            attribute = dataset.createAttribute(parameterSet->getComplexName(n) + "Img", PredType::IEEE_F64BE, dataspace);
-			value = imag(parameterSet->getComplexValue(n));
-			attribute.write(PredType::NATIVE_DOUBLE, &value);
+			Attribute attribute = dataset.createAttribute(parameterSet->getComplexName(n), dataTypeComplex, dataspace);
+			complex<double> valueComplex = parameterSet->getComplexValue(n);
+			double value[2] = {real(valueComplex), imag(valueComplex)};
+			attribute.write(dataTypeComplex, value);
 		}
 		dataset = DataSet(file.createDataSet(name + "String", PredType::PredType::C_S1, dataspace));
         for(int n = 0; n < parameterSet->getNumString(); n++){

@@ -29,6 +29,8 @@
 #include <fstream>
 #include <string>
 
+#include <iostream> //TODO remove after debugging
+
 
 #ifndef H5_NO_NAMESPACE
 	using namespace H5;
@@ -1015,7 +1017,7 @@ Util::ParameterSet* FileReader::readParameterSet(
 
 			TBTKAssert(
 				type == PredType::STD_I64BE,
-				"FileReader::readAttribues()",
+				"FileReader::readParameterSet()",
 				"The attribute '" << nameAttribute << "' is not of integer type.",
 				""
 			);
@@ -1036,7 +1038,7 @@ Util::ParameterSet* FileReader::readParameterSet(
 
 			TBTKAssert(
 				type == PredType::IEEE_F64BE,
-				"FileReader::readAttribues()",
+				"FileReader::readParameterSet()",
 				"The attribute '" << nameAttribute << "' is not of double type.",
 				""
 			);
@@ -1047,8 +1049,7 @@ Util::ParameterSet* FileReader::readParameterSet(
 
         dataset = file.openDataSet(name + "Complex");
         num = dataset.getNumAttrs();
-        complex<double> complexValue = 0;
-        complex<double> realOne(1,0);
+        complex<double> one(1,0);
         complex<double> i(0,1);
 
 		for(unsigned int n = 0; n < num; n++){
@@ -1057,26 +1058,20 @@ Util::ParameterSet* FileReader::readParameterSet(
 			DataType type = attribute.getDataType();
             string nameAttribute;
 			nameAttribute = attribute.getName();
+			hsize_t dimension = 2;
+			ArrayType dataTypeComplex(H5::PredType::IEEE_F64BE, 1, &dimension);
 
 			TBTKAssert(
-				type == PredType::IEEE_F64BE,
-				"FileReader::readAttribues()",
+				type == dataTypeComplex,
+				"FileReader::readParameterSet()",
 				"The attribute '" << nameAttribute << "' is not of complex type.",
 				""
 			);
-			double value;
-			attribute.read(PredType::NATIVE_DOUBLE, &value);
-
-            if(n%2)
-            {
-                complexValue += value*i;
-                ps->addComplex(nameAttribute.erase(nameAttribute.size()-3), complexValue);
-                complexValue = 0;
-            }
-            else
-            {
-                complexValue += value*realOne;
-            }
+			double value[2];
+			attribute.read(dataTypeComplex, value);
+            complex<double> complexValue = value[0]*one;
+            complexValue += value[1]*i;
+            ps->addComplex(nameAttribute, complexValue);
 		}
 
         dataset = file.openDataSet(name + "String");
