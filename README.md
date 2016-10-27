@@ -39,3 +39,9 @@ To cite TBTK, mention TBTK in the text and cite the doi for this project.
 [![DOI](https://zenodo.org/badge/50950512.svg)](https://zenodo.org/badge/latestdoi/50950512)  
 (Click the doi label and see 'Cite as' for detailed citation information.)
 
+If you use the ChebyshevSolver to produce results, please also cite the following references  
+A. Weiße, G. Wellein, A. Alvermann, and H. Fehske,  
+Rev. Mod. Phys. 78, 275,
+
+L. Covaci, F. M. Peeters, and M. Berciu,  
+Phys. Rev. Lett. 105, 167006 (2010).
