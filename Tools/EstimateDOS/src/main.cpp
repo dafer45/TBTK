@@ -45,6 +45,9 @@ using namespace std;
 using namespace TBTK;
 
 const complex<double> i(0, 1);
+
+Index* getIndexPattern(string patternString);
+
 int main(int argc, char **argv){
 	Util::Streams::openLog();
 	int isVerbose		= false;
@@ -54,6 +57,7 @@ int main(int argc, char **argv){
 	int scaleFactor		= 20;
 	int numCoefficients	= 5000;
 	int energyResolution	= 10000;
+	Index *pattern		= NULL;
 
 	while(true){
 		static struct option long_options[] = {
@@ -66,11 +70,12 @@ int main(int argc, char **argv){
 			{"coefficients",	required_argument,	0,		'c'},
 			{"energy-resolution",	required_argument,	0,		'r'},
 			{"samples",		required_argument,	0,		'S'},
+			{"index-pattern",	required_argument,	0,		'i'},
 			{0,			0,			0,		0}
 		};
 
 		int option_index = 0;
-		int c = getopt_long(argc, argv, "s:c:r:S:", long_options, &option_index);
+		int c = getopt_long(argc, argv, "s:c:r:S:i:", long_options, &option_index);
 		if(c == -1)
 			break;
 
@@ -95,6 +100,9 @@ int main(int argc, char **argv){
 			break;
 		case 'S':
 			numSamples = atoi(optarg);
+			break;
+		case 'i':
+			pattern = getIndexPattern(optarg);
 			break;
 		default:
 			TBTKExit(
@@ -166,16 +174,17 @@ int main(int argc, char **argv){
 
 	//Main loop: Repeatedly calculate LDOS for random sites
 	for(int n = 0; n < numSamples; n++){
-		//Print progress
-		cout << "." << flush;
-		if(n%10 == 9)
-			cout << " ";
-		if(n%50 == 49)
-			cout << "\n";
-
 		//Get new random index
 		int b = rand()%model->getBasisSize();
 		Index index = model->getAmplitudeSet()->tree.getPhysicalIndex(b);
+
+		//Ensure index conforms to index pattern
+		if(pattern != NULL){
+			if(!pattern->equals(index, true)){
+				n--;
+				continue;
+			}
+		}
 
 		//Calculate LDOS
 		Property::LDOS *ldos = pe.calculateLDOS(
@@ -191,6 +200,12 @@ int main(int argc, char **argv){
 		//Free memory
 		delete ldos;
 
+		//Print progress
+		cout << "." << flush;
+		if(n%10 == 9)
+			cout << " ";
+		if(n%50 == 49)
+			cout << "\n";
 	}
 	cout << "\n";
 
@@ -203,4 +218,115 @@ int main(int argc, char **argv){
 
 	Util::Streams::closeLog();
 	return 0;
+}
+
+Index* getIndexPattern(string patternString){
+	TBTKAssert(
+		patternString[0] == '{',
+		"EstimateDOS",
+		"Expected '{' while reading index pattern, found '" << patternString[0] << "'.",
+		"Specify index pattern using the format \"{X, X, X}\"."
+	);
+
+	vector<int> patternVector;
+	unsigned int numSeparators = 0;
+	bool parsingNumeric = false;
+	int numeric = 0;
+	for(unsigned int n = 1; n < patternString.size(); n++){
+		switch(patternString[n]){
+		case '*':
+			TBTKAssert(
+				patternVector.size() == numSeparators,
+				"EstimateDOS",
+				"Expected ',' while reading index, found '*'.",
+				"Specify index pattern using the format \"{X, X, X}\"."
+			);
+			TBTKAssert(
+				!parsingNumeric,
+				"EstimateDOS",
+				"Found '*' while parsing numeric value.",
+				"Specify index pattern using the format \"{X, X, X}\"."
+			);
+
+			patternVector.push_back(IDX_ALL);
+			break;
+		case '0':
+		case '1':
+		case '2':
+		case '3':
+		case '4':
+		case '5':
+		case '6':
+		case '7':
+		case '8':
+		case '9':
+		{
+			const int ASCII_OFFSET = 48;
+			numeric = 10*numeric + (int)patternString[n] - ASCII_OFFSET;
+			parsingNumeric = true;
+			break;
+		}
+		case ' ':
+			if(parsingNumeric){
+				TBTKAssert(
+					patternVector.size() == numSeparators,
+					"EstimateDOS",
+					"Expected ',' while reading index, found '*'.",
+					"Specify index pattern using the format \"{X, X, X}\"."
+				);
+
+				patternVector.push_back(numeric);
+				numeric = 0;
+				parsingNumeric = false;
+			}
+			break;
+		case ',':
+			if(parsingNumeric){
+				TBTKAssert(
+					patternVector.size() == numSeparators,
+					"EstimateDOS",
+					"Expected ',' while reading index, found '*'.",
+					"Specify index pattern using the format \"{X, X, X}\"."
+				);
+
+				patternVector.push_back(numeric);
+				numeric = 0;
+				parsingNumeric = false;
+			}
+			numSeparators++;
+			break;
+		case '}':
+			if(parsingNumeric){
+				TBTKAssert(
+					patternVector.size() == numSeparators,
+					"EstimateDOS",
+					"Expected ',' while reading index, found '*'.",
+					"Specify index pattern using the format \"{X, X, X}\"."
+				);
+
+				patternVector.push_back(numeric);
+				numeric = 0;
+				parsingNumeric = false;
+			}
+			n = patternString.size();
+			break;
+		default:
+			TBTKExit(
+					"EstimateDOS",
+					"Found '" << "while parsing the interior of the index pattern.",
+					"Specify index pattern using the format \"{X, X, X}\"."
+			);
+			break;
+		}
+	}
+
+	TBTKAssert(
+		patternString[patternString.size()-1] == '}',
+		"EstimateDOS",
+		"Expected '}' while reading index pattern, found '" << patternString[patternString.size()-1] << "'.",
+		"Specify index pattern using the format \"{X, X, X}\"."
+	);
+
+	Index *pattern = new Index(patternVector);
+	return pattern;
 }

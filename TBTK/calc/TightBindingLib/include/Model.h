@@ -33,14 +33,6 @@ namespace TBTK{
 class Geometry;
 class FileReader;
 
-enum {
-	IDX_SUM_ALL = -1, IDX_ALL = -1,
-	IDX_X = -2,
-	IDX_Y = -3,
-	IDX_Z = -4,
-	IDX_SPIN = -5
-};
-
 /** The Model conatins all information about the Hamiltonian. It is currently a
  *  wrapper for AmplitudeSet, but can in the future come to be extended with
  *  further properties.

@@ -29,6 +29,14 @@
 
 namespace TBTK{
 
+enum {
+	IDX_SUM_ALL = -1, IDX_ALL = -1,
+	IDX_X = -2,
+	IDX_Y = -3,
+	IDX_Z = -4,
+	IDX_SPIN = -5
+};
+
 /** Flexible physical index for indexing arbitrary models. Each index can
  *  contain an arbitrary number of subindices. For example {x, y, spin},
  *  {x, y, z, orbital, spin}, and {subsystem, x, y, z, orbital, spin}.
@@ -46,8 +54,9 @@ public:
 
 	/** Compare this index with another index. Returns true if the indices
 	 * have the same number of subindices and all subindices are equal.
-	 * @param index Index to compare with. */
-	bool equals(const Index &index) const;
+	 * @param index Index to compare with.
+	 * @param allowWildcard IDX_ALL is interpreted as wildcard. */
+	bool equals(const Index &index, bool allowWildcard = false) const;
 
 	/** Get subindex n. */
 	int& at(unsigned int n);
@@ -93,11 +102,22 @@ inline void Index::print() const{
 	Util::Streams::out << "}\n";
 }
 
-inline bool Index::equals(const Index &index) const{
+inline bool Index::equals(const Index &index, bool allowWildcard) const{
 	if(indices.size() == index.indices.size()){
 		for(unsigned int n = 0; n < indices.size(); n++){
-			if(indices.at(n) != index.indices.at(n))
-				return false;
+			if(indices.at(n) != index.indices.at(n)){
+				if(!allowWildcard)
+					return false;
+				else{
+					if(
+						indices.at(n) == IDX_ALL ||
+						index.indices.at(n) == IDX_ALL
+					)
+						continue;
+					else
+						return false;
+				}
+			}
 		}
 	}
 	else{

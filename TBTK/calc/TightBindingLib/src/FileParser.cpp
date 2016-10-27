@@ -603,7 +603,6 @@ void FileParser::readGeometry(Model *model){
 
 			dimensions = readParameter("Dimensions", "Geometry");
 			numSpecifiers = readParameter("Num specifiers", "Geometry");
-			Util::Streams::out << dimensions << " " << numSpecifiers << "\n";
 
 			break;
 		}
