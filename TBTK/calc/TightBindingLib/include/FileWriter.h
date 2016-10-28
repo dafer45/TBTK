@@ -18,6 +18,7 @@
  *  @brief Writes data to file
  *
  *  @author Kristofer Björnson
+ *  @author Andreas Theiler
  */
 
 #ifndef COM_DAFER45_TBTK_FILE_WRITER

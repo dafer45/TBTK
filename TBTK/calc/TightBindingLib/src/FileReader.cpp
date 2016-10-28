@@ -29,8 +29,6 @@
 #include <fstream>
 #include <string>
 
-#include <iostream> //TODO remove after debugging
-
 
 #ifndef H5_NO_NAMESPACE
 	using namespace H5;
@@ -1001,16 +999,12 @@ Util::ParameterSet* FileReader::readParameterSet(
 
         Util::ParameterSet *ps = new Util::ParameterSet();
 
-//        unsigned int num = getNumAttributes(filename, name + "Int");
-
         H5File file(filename, H5F_ACC_RDONLY);
 		DataSet dataset = file.openDataSet(name + "Int");
-
         unsigned int num = dataset.getNumAttrs();
 
 		for(unsigned int n = 0; n < num; n++){
 			Attribute attribute = dataset.openAttribute(n);
-
 			DataType type = attribute.getDataType();
             string nameAttribute;
 			nameAttribute = attribute.getName();
@@ -1031,7 +1025,6 @@ Util::ParameterSet* FileReader::readParameterSet(
 
 		for(unsigned int n = 0; n < num; n++){
 			Attribute attribute = dataset.openAttribute(n);
-
 			DataType type = attribute.getDataType();
             string nameAttribute;
 			nameAttribute = attribute.getName();
@@ -1049,16 +1042,15 @@ Util::ParameterSet* FileReader::readParameterSet(
 
         dataset = file.openDataSet(name + "Complex");
         num = dataset.getNumAttrs();
-        complex<double> one(1,0);
-        complex<double> i(0,1);
+        const complex<double> one(1,0);
+        const complex<double> i(0,1);
 
 		for(unsigned int n = 0; n < num; n++){
 			Attribute attribute = dataset.openAttribute(n);
-
 			DataType type = attribute.getDataType();
             string nameAttribute;
 			nameAttribute = attribute.getName();
-			hsize_t dimension = 2;
+			const hsize_t dimension = 2;
 			ArrayType dataTypeComplex(PredType::NATIVE_DOUBLE, 1, &dimension);
 
 			TBTKAssert(
@@ -1079,7 +1071,6 @@ Util::ParameterSet* FileReader::readParameterSet(
 
 		for(unsigned int n = 0; n < num; n++){
 			Attribute attribute = dataset.openAttribute(n);
-
 			DataType type = attribute.getDataType();
             string nameAttribute = attribute.getName();
 			unsigned int memLength = attribute.getInMemDataSize();
@@ -1095,13 +1086,12 @@ Util::ParameterSet* FileReader::readParameterSet(
 			attribute.read(type, value);
 			ps->addString(nameAttribute, value);
 		}
-		dataset = file.openDataSet(name + "Bool");
 
+		dataset = file.openDataSet(name + "Bool");
         num = dataset.getNumAttrs();
 
 		for(unsigned int n = 0; n < num; n++){
 			Attribute attribute = dataset.openAttribute(n);
-
 			DataType type = attribute.getDataType();
             string nameAttribute;
 			nameAttribute = attribute.getName();
