@@ -35,7 +35,6 @@ HoppingAmplitude::HoppingAmplitude(
 {
 	this->amplitude = amplitude;
 	this->amplitudeCallback = NULL;
-	this->toUnitCell = NULL;
 };
 
 HoppingAmplitude::HoppingAmplitude(
@@ -47,7 +46,6 @@ HoppingAmplitude::HoppingAmplitude(
 	toIndex(toIndex)
 {
 	this->amplitudeCallback = amplitudeCallback;
-	this->toUnitCell = NULL;
 };
 
 HoppingAmplitude::HoppingAmplitude(
@@ -60,7 +58,6 @@ HoppingAmplitude::HoppingAmplitude(
 {
 	this->amplitude = amplitude;
 	this->amplitudeCallback = NULL;
-	this->toUnitCell = NULL;
 };
 
 HoppingAmplitude::HoppingAmplitude(
@@ -72,7 +69,6 @@ HoppingAmplitude::HoppingAmplitude(
 	toIndex(toIndex)
 {
 	this->amplitudeCallback = amplitudeCallback;
-	this->toUnitCell = NULL;
 };
 
 HoppingAmplitude::HoppingAmplitude(
@@ -85,7 +81,6 @@ HoppingAmplitude::HoppingAmplitude(
 	toIndex(toIndex)
 {
 	amplitudeCallback = NULL;
-	this->toUnitCell = new Index(toUnitCell);
 }
 
 HoppingAmplitude::HoppingAmplitude(
@@ -98,7 +93,6 @@ HoppingAmplitude::HoppingAmplitude(
 	toIndex(toIndex)
 {
 	this->amplitudeCallback = amplitudeCallback;
-	this->toUnitCell = new Index(toUnitCell);
 }
 
 HoppingAmplitude::HoppingAmplitude(
@@ -109,13 +103,6 @@ HoppingAmplitude::HoppingAmplitude(
 {
 	amplitude = ha.amplitude;
 	this->amplitudeCallback = ha.amplitudeCallback;
-
-	if(ha.toUnitCell != NULL){
-		this->toUnitCell = new Index(*ha.toUnitCell);
-	}
-	else{
-		this->toUnitCell = NULL;
-	}
 }
 
 HoppingAmplitude HoppingAmplitude::getHermitianConjugate(){

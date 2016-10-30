@@ -31,6 +31,7 @@ namespace TBTK{
 TreeNode::TreeNode(){
 	basisIndex = -1;
 	basisSize = -1;
+	isPotentialBlockSeparator = true;
 }
 
 void TreeNode::print(){
@@ -76,6 +77,11 @@ void TreeNode::add(HoppingAmplitude &ha, unsigned int subindex){
 			hoppingAmplitudes.at(0).print();
 			exit(1);
 		}
+		//Ensure isPotentialBlockSeparator is set to false in case the
+		//'toIndex' and the 'fromIndex' differs in the subindex
+		//corresponding to this TreeNode level.
+		if(currentIndex != ha.toIndex.at(subindex))
+			isPotentialBlockSeparator = false;
 		//Propagate to the next node level.
 		children.at(currentIndex).add(ha, subindex+1);
 	}

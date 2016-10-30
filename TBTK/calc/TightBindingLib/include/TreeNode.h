@@ -108,6 +108,24 @@ public:
 	/** Returns Iterator initialized to point at first HoppingAmplitude. */
 	Iterator begin();
 private:
+	/** Flag indicating whether all HoppingAmplitudes passed to this nodes
+	 *  child nodes have the same 'to' and 'from' subindex in the position
+	 *  corresponding this node level. Is set to true when the node is
+	 *  constructed, and is set to false as soon as a HoppingAmplitude with
+	 *  differing 'to' and 'from' subindices is encountered.
+	 *
+	 *  If a node and all its parents has isPotentialBlockSeparator set to
+	 *  true, the child nodes correspond to independent blocks.
+	 *
+	 *  A node that has isPotentialBlockSeparator set to true, but for
+	 *  which at least one parent has it set to false, may or may not be a
+	 *  block separating node depending on the rest of the tree. It is in
+	 *  such cases possible that a reordering of the subindices can lead to
+	 *  a better exploitation of the block structure.
+	 *
+	 *  For leaf nodes the value is irrelevant. */
+	bool isPotentialBlockSeparator;
+
 	/** Add HoppingAmplitude. Is called by the public TreeNode::add and is
 	 *  called recursively. */
 	void add(HoppingAmplitude &ha, unsigned int subindex);

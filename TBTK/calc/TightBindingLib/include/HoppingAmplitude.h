@@ -47,9 +47,6 @@ public:
 	/** Index to jump to (create). */
 	Index toIndex;
 
-	/** Unit cell to jump to. */
-	Index *toUnitCell;
-
 	/** Constructor. */
 	HoppingAmplitude(
 		Index fromIndex,
