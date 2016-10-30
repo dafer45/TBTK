@@ -23,35 +23,41 @@
 #ifndef COM_DAFER45_TBTK_UNIT_CELL
 #define COM_DAFER45_TBTK_UNIT_CELL
 
-#include "AbstractState.h"
+#include "StateSet.h"
 
 namespace TBTK{
 
-class UnitCell{
+class UnitCell : public StateSet{
 public:
 	/** Constructor. */
-	UnitCell();
+	UnitCell(std::initializer_list<std::initializer_list<double>> latticeVectors);
 
 	/** Destructor. */
 	~UnitCell();
 
-	/** Add state. Note: The UnitCell assumes ownership of the pointers and
-	 *  will delete them when it is destroyed. */
-	void addState(AbstractState *state);
+	/** Get number of lattice vectors. */
+	int getNumLatticeVectors() const;
 
-	/** Get states. */
-	const std::vector<AbstractState*> getStates() const;
+	/** Get lattice vector. */
+	const std::vector<double>& getLatticeVector(int n) const;
+
+	/** Get lattice vectors. */
+	const std::vector<std::vector<double>>& getLatticeVectors() const;
 private:
-	/** Pointers to states. */
-	std::vector<AbstractState*> states;
+	/** Lattice vectors. */
+	std::vector<std::vector<double>> latticeVectors;
 };
 
-inline void UnitCell::addState(AbstractState *state){
-	states.push_back(state);
+inline int UnitCell::getNumLatticeVectors() const{
+	return latticeVectors.size();
 }
 
-inline const std::vector<AbstractState*> UnitCell::getStates() const{
-	return states;
+inline const std::vector<double>& UnitCell::getLatticeVector(int n) const{
+	return latticeVectors.at(n);
+}
+
+inline const std::vector<std::vector<double>>& UnitCell::getLatticeVectors() const{
+	return latticeVectors;
 }
 
 };	//End of namespace TBTK

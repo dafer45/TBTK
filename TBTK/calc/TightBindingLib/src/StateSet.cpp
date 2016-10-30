@@ -13,19 +13,23 @@
  * limitations under the License.
  */
 
-/** @file DefaultOperator.cpp
+/** @file UnitCell.cpp
  *
  *  @author Kristofer Björnson
  */
 
-#include "../include/DefaultOperator.h"
+#include "../include/StateSet.h"
+
+using namespace std;
 
 namespace TBTK{
 
-DefaultOperator::DefaultOperator() : AbstractOperator(AbstractOperator::OperatorID::Default){
+StateSet::StateSet(){
 }
 
-DefaultOperator::~DefaultOperator(){
+StateSet::~StateSet(){
+	for(unsigned int n = 0; n < states.size(); n++)
+		delete states.at(n);
 }
 
 };	//End of namespace TBTK

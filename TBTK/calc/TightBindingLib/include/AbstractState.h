@@ -62,7 +62,7 @@ public:
 	 *  respectively, and o is an operator. */
 	virtual std::complex<double> getMatrixElement(
 		const AbstractState &ket,
-		const AbstractOperator &o
+		const AbstractOperator &o = DefaultOperator()
 	) const = 0;
 
 	/** Get state identifier. */

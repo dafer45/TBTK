@@ -25,6 +25,8 @@
 
 #include "Model.h"
 #include "Geometry.h"
+#include "StateSet.h"
+#include "UnitCell.h"
 
 #include <initializer_list>
 #include <complex>
@@ -65,6 +67,35 @@ public:
 		std::initializer_list<int> size,
 		std::initializer_list<bool> periodic,
 		std::complex<double> t
+	);
+
+	/** Create a model from a StateSet. */
+	static Model* createModel(
+		const StateSet &stateSet,
+		const AbstractOperator &o = DefaultOperator()
+	);
+
+	/** Create a model from a UnitCell.
+	 *
+	 *  @param unitCell Unit cell to repeat.
+	 *  @param size Number of unit cells in the final lattice. For example
+	 *	{SIZE_X, SIZE_Y, SIZE_Z} results in a model consisting of
+	 *	SIZE_XxSIZE_YxSIZE_Z unit cells.
+	 *  @param periodic Specifies whether a given dimension should have
+	 *	periodic boundary conditions or not.
+	 *  @param includedCells a boolean array indicating which unit cells to
+	 *	include in the final lattice. The array should be one
+	 *	dimensional with the layout
+	 *	includeedCell[x*SIZE_Y*SIZE_Z + y*SIZE_Z + z] (TBTK
+	 *	conventional layout with trailing indices most closly packed).
+	 *	If NULL is passed, every unit cell is included.
+	 * @param o Operator to calculate matrix elements for. */
+	static Model* createModel(
+		const UnitCell &unitCell,
+		std::initializer_list<int> size,
+		std::initializer_list<bool> periodic,
+		const bool *includedCells = NULL,
+		const AbstractOperator &o = DefaultOperator()
 	);
 
 	/** Add geometry information to square lattice. */

@@ -107,6 +107,78 @@ Model* ModelFactory::createHexagonalLattice(
 	return model;
 }
 
+Model* ModelFactory::createModel(
+	const StateSet &stateSet,
+	const AbstractOperator &o
+){
+	Model *model = new Model();
+
+	const vector<AbstractState*> states = stateSet.getStates();
+	for(unsigned int from = 0; from < states.size(); from++){
+		AbstractState *ket = states.at(from);
+		for(unsigned int to = 0; to < states.size(); to++){
+			AbstractState *bra = states.at(to);
+
+			complex<double> amplitude = ket->getMatrixElement(*bra);
+			if(amplitude != 0.)
+				model->addHA(HoppingAmplitude(amplitude, {(int)to}, {(int)from}));
+		}
+	}
+
+	unsigned int numCoordinates = states.at(0)->getCoordinates().size();
+	for(unsigned int n = 1; n < states.size(); n++){
+		TBTKAssert(
+			states.at(n)->getCoordinates().size() == numCoordinates,
+			"ModelFactory::createModel()",
+			"Incompatible coordinate dimensions. First state has "
+				<< numCoordinates
+				<< " coordinates, while state " << n << " has "
+				<< states.at(n)->getCoordinates().size() << " coordinates.",
+			""
+		);
+	}
+
+	unsigned int numSpecifiers = states.at(0)->getSpecifiers().size();
+	for(unsigned int n = 1; n < states.size(); n++){
+		TBTKAssert(
+			states.at(n)->getSpecifiers().size() == numSpecifiers,
+			"ModelFactory::createModel()",
+			"Incompatible number of specifiers. First state has "
+				<< numSpecifiers
+				<< " specifiers, while state " << n << " has "
+				<< states.at(n)->getSpecifiers().size() << " specifiers.",
+			""
+		);
+	}
+
+	model->construct();
+	model->createGeometry(numCoordinates, numSpecifiers);
+	Geometry *geometry = model->getGeometry();
+	for(unsigned int n = 0; n < states.size(); n++){
+		geometry->setCoordinates(
+			{(int)n},
+			states.at(n)->getCoordinates(),
+			states.at(n)->getSpecifiers()
+		);
+	}
+
+	return model;
+}
+
+Model* ModelFactory::createModel(
+	const UnitCell &unitCell,
+	initializer_list<int> size,
+	initializer_list<bool> periodic,
+	const bool *includedCells,
+	const AbstractOperator &o
+){
+	Model *model = new Model();
+
+	TBTKNotYetImplemented("ModelFactor::createModel()");
+
+	return model;
+}
+
 void ModelFactory::addSquareGeometry(
 	Model *model,
 	std::initializer_list<int> size

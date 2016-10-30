@@ -19,17 +19,37 @@
  */
 
 #include "../include/UnitCell.h"
+#include "../include/TBTKMacros.h"
 
 using namespace std;
 
 namespace TBTK{
 
-UnitCell::UnitCell(){
+UnitCell::UnitCell(initializer_list<initializer_list<double>> latticeVectors){
+	unsigned int numCoordinates = latticeVectors.begin()->size();
+	for(unsigned int n = 1; n < latticeVectors.size(); n++){
+		TBTKAssert(
+			(latticeVectors.begin()+n)->size() == numCoordinates,
+			"UnitCell::UnitCell()",
+			"Incmopatible coordinate dimensions. The first lattice"
+			<< "vector has " << numCoordinates << " coordinates, "
+			<< "while lattice vector " << n << " has "
+			<< (latticeVectors.begin()+n)->size()
+			<< " coordinates.",
+			""
+		);
+	}
+
+	for(unsigned int n = 0; n < latticeVectors.size(); n++){
+		this->latticeVectors.push_back(vector<double>());
+
+		const initializer_list<double> *latticeVector = (latticeVectors.begin() + n);
+		for(unsigned int c = 0; c < latticeVector->size(); c++)
+			this->latticeVectors.at(n).push_back(*(latticeVector->begin()+c));
+	}
 }
 
 UnitCell::~UnitCell(){
-	for(unsigned int n = 0; n < states.size(); n++)
-		delete states.at(n);
 }
 
 };	//End of namespace TBTK

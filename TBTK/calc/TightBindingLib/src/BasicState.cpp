@@ -48,7 +48,7 @@ void BasicState::addMatrixElement(
 	const Index &braIndex,
 	const Index &braUnitCell
 ){
-	overlaps.push_back(make_tuple(matrixElement, braIndex, braUnitCell));
+	matrixElements.push_back(make_tuple(matrixElement, braIndex, braUnitCell));
 }
 
 complex<double> BasicState::getOverlap(const AbstractState &bra) const{
@@ -59,12 +59,13 @@ complex<double> BasicState::getOverlap(const AbstractState &bra) const{
 		"The bra state has to be a BasicState."
 	);
 
-	for(unsigned int n = 0; n < overlaps.size(); n++)
-		if(index.equals(
-			get<1>(overlaps.at(n))) &&
-			unitCell.equals(get<2>(overlaps.at(n)))
+	for(unsigned int n = 0; n < overlaps.size(); n++){
+		if(
+			((BasicState&)bra).index.equals(get<1>(overlaps.at(n))) &&
+			((BasicState&)bra).unitCell.equals(get<2>(overlaps.at(n)))
 		)
 			return get<0>(overlaps.at(n));
+	}
 
 	return 0.;
 }
@@ -80,12 +81,13 @@ complex<double> BasicState::getMatrixElement(
 		"The bra state has to be a BasicState."
 	);
 
-	for(unsigned int n = 0; n < matrixElements.size(); n++)
+	for(unsigned int n = 0; n < matrixElements.size(); n++){
 		if(
-			index.equals(get<1>(matrixElements.at(n))) &&
-			unitCell.equals(get<2>(matrixElements.at(n)))
+			((BasicState&)bra).index.equals(get<1>(matrixElements.at(n))) &&
+			((BasicState&)bra).unitCell.equals(get<2>(matrixElements.at(n)))
 		)
-			return get<0>(overlaps.at(n));
+			return get<0>(matrixElements.at(n));
+	}
 
 	return 0.;
 }
