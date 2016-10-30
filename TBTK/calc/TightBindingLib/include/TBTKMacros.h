@@ -49,4 +49,12 @@
 		Util::Streams::closeLog();	\
 	exit(1);
 
+#define TBTKNotYetImplemented(function)	\
+	TBTK::Util::Streams::err << "Error in " << function << "\n";	\
+	TBTK::Util::Streams::err << "\tNot yet implemented.\n";	\
+	TBTK::Util::Streams::err << "\tWhere: " << __FILE__ << ", " << __LINE__ << "\n";	\
+	if(Util::Streams::logIsOpen())	\
+		Util::Streams::closeLog();	\
+	exit(1);
+
 #endif
