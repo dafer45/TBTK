@@ -132,7 +132,7 @@ const TreeNode* TreeNode::getSubTree(const Index &subspace, unsigned int subinde
 	}
 
 	if((unsigned int)subspace.at(subindex) < children.size()){
-		return children.at(subspace.at(subindex).getSubTree(subspace, subindex+1);
+		return children.at(subspace.at(subindex)).getSubTree(subspace, subindex+1);
 	}
 	else{
 		TBTKExit(
