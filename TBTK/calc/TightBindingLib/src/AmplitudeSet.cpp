@@ -44,7 +44,7 @@ AmplitudeSet::~AmplitudeSet(){
 		delete [] cooValues;
 }
 
-int AmplitudeSet::getNumMatrixElements(){
+int AmplitudeSet::getNumMatrixElements() const{
 	TBTKAssert(
 		numMatrixElements != -1,
 		"AmplitudeSet::getNumMatrixElements()",
@@ -71,7 +71,7 @@ void AmplitudeSet::constructCOO(){
 
 	//Count number of matrix elements
 	AmplitudeSet::Iterator it = getIterator();
-	HoppingAmplitude *ha;
+	const HoppingAmplitude *ha;
 	numMatrixElements = 0;
 	int currentCol = -1;
 	int currentRow = -1;
@@ -156,11 +156,11 @@ void AmplitudeSet::print(){
 	tree.print();
 }
 
-AmplitudeSet::Iterator AmplitudeSet::getIterator(){
+AmplitudeSet::Iterator AmplitudeSet::getIterator() const{
 	return AmplitudeSet::Iterator(&tree);
 }
 
-AmplitudeSet::Iterator::Iterator(TreeNode* tree){
+AmplitudeSet::Iterator::Iterator(const TreeNode* tree){
 	it = new TreeNode::Iterator(tree);
 }
 
@@ -176,7 +176,7 @@ void AmplitudeSet::Iterator::searchNextHA(){
 	it->searchNextHA();
 }
 
-HoppingAmplitude* AmplitudeSet::Iterator::getHA(){
+const HoppingAmplitude* AmplitudeSet::Iterator::getHA() const{
 	return it->getHA();
 }
 
@@ -185,9 +185,9 @@ void AmplitudeSet::tabulate(
 	int **table,
 	int *numHoppingAmplitudes,
 	int *maxIndexSize
-){
+) const{
 	Iterator it = getIterator();
-	HoppingAmplitude *ha;
+	const HoppingAmplitude *ha;
 	(*numHoppingAmplitudes) = 0;
 	(*maxIndexSize) = 0;
 	while((ha = it.getHA())){

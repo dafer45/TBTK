@@ -143,7 +143,7 @@ void ChebyshevSolver::calculateCoefficients(
 
 	//Generate a fixed hopping amplitude and inde list, for speed.
 	AmplitudeSet::Iterator it = amplitudeSet->getIterator();
-	HoppingAmplitude *ha;
+	const HoppingAmplitude *ha;
 	int numHoppingAmplitudes = 0;
 	while((ha = it.getHA())){
 		numHoppingAmplitudes++;
@@ -302,7 +302,7 @@ void ChebyshevSolver::calculateCoefficients(
 
 	//Generate a fixed hopping amplitude and inde list, for speed.
 	AmplitudeSet::Iterator it = amplitudeSet->getIterator();
-	HoppingAmplitude *ha;
+	const HoppingAmplitude *ha;
 	int numHoppingAmplitudes = 0;
 	while((ha = it.getHA())){
 		numHoppingAmplitudes++;

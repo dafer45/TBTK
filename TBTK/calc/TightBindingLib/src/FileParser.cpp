@@ -313,7 +313,7 @@ void FileParser::writeAmplitudes(Model *model, AmplitudeMode amplitudeMode){
 	fout << left << setw(30) << "Mode" << "= " << static_cast<int>(amplitudeMode) << "\n";
 
 	AmplitudeSet::Iterator it = model->getAmplitudeSet()->getIterator();
-	HoppingAmplitude *ha;
+	const HoppingAmplitude *ha;
 	while((ha = it.getHA())){
 		switch(amplitudeMode){
 		case AmplitudeMode::ALL:
@@ -367,11 +367,11 @@ void FileParser::writeGeometry(Model *model){
 	fout << left << setw(30) << "Num specifiers" << "= " << numSpecifiers << "\n";
 
 	AmplitudeSet::Iterator it = model->getAmplitudeSet()->getIterator();
-	HoppingAmplitude *ha;
+	const HoppingAmplitude *ha;
 	Index dummyIndex({-1});
 	Index &prevIndex = dummyIndex;//Start with dummy index
 	while((ha = it.getHA())){
-		Index &index = ha->fromIndex;
+		const Index &index = ha->fromIndex;
 		if(!index.equals(prevIndex)){
 			const double *coordinates = geometry->getCoordinates(index);
 			const int *specifiers = geometry->getSpecifiers(index);

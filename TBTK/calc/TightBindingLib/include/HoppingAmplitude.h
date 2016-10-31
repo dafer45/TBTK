@@ -104,13 +104,13 @@ public:
 	HoppingAmplitude(const HoppingAmplitude &ha);
 
 	/** Get the Hermitian cojugate of the HoppingAmplitude. */
-	HoppingAmplitude getHermitianConjugate();
+	HoppingAmplitude getHermitianConjugate() const;
 
 	/** Print HoppingAmplitude. Mainly for debugging. */
 	void print();
 
 	/** Get the amplitude value \f$a_{ij}\f$. */
-	std::complex<double> getAmplitude();
+	std::complex<double> getAmplitude() const;
 private:
 	/** Amplitude \f$a_{ij}\f$. Will be used if amplitudeCallback is NULL. */
 	std::complex<double> amplitude;
@@ -123,7 +123,7 @@ private:
 	);
 };
 
-inline std::complex<double> HoppingAmplitude::getAmplitude(){
+inline std::complex<double> HoppingAmplitude::getAmplitude() const{
 	if(amplitudeCallback)
 		return amplitudeCallback(toIndex, fromIndex);
 	else
