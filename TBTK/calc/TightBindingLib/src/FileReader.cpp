@@ -16,6 +16,7 @@
 /** @file FileWriter.cpp
  *
  *  @author Kristofer Björnson
+ *  @author Andreas Theiler
  */
 
 #include "../include/FileReader.h"
@@ -865,6 +866,155 @@ void FileReader::readAttributes(
 			);
 			attribute.read(PredType::NATIVE_DOUBLE, &(attributes[n]));
 		}
+	}
+	catch(FileIException error){
+		Util::Streams::log << error.getCDetailMsg() << "\n";
+		TBTKExit(
+			"FileReader::read()",
+			"While reading " << name << ".",
+			""
+		);
+	}
+	catch(DataSetIException error){
+		Util::Streams::log << error.getCDetailMsg() << "\n";
+		TBTKExit(
+			"FileReader::read()",
+			"While reading " << name << ".",
+			""
+		);
+	}
+	catch(DataSpaceIException error){
+		Util::Streams::log << error.getCDetailMsg() << "\n";
+		TBTKExit(
+			"FileReader::read()",
+			"While reading " << name << ".",
+			""
+		);
+	}
+}
+
+Util::ParameterSet* FileReader::readParameterSet(
+	string name,
+	string path
+){
+	try{
+		stringstream ss;
+		ss << path;
+		if(path.back() != '/')
+			ss << "/";
+		ss << name;
+
+		Exception::dontPrint();
+		Util::ParameterSet *ps = new Util::ParameterSet();
+
+		H5File file(filename, H5F_ACC_RDONLY);
+		DataSet dataset = file.openDataSet(name + "Int");
+		unsigned int numAttributes = dataset.getNumAttrs();
+
+		for(unsigned int n = 0; n < numAttributes; n++){
+			Attribute attribute = dataset.openAttribute(n);
+			DataType type = attribute.getDataType();
+			string attributeName;
+			attributeName = attribute.getName();
+
+			TBTKAssert(
+				type == PredType::STD_I64BE,
+				"FileReader::readParameterSet()",
+				"The attribute '" << attributeName << "' is not of integer type.",
+				""
+			);
+			int value;
+			attribute.read(PredType::NATIVE_INT, &value);
+			ps->addInt(attributeName, value);
+		}
+
+		dataset = file.openDataSet(name + "Double");
+		numAttributes = dataset.getNumAttrs();
+
+		for(unsigned int n = 0; n < numAttributes; n++){
+			Attribute attribute = dataset.openAttribute(n);
+			DataType type = attribute.getDataType();
+			string attributeName;
+			attributeName = attribute.getName();
+
+			TBTKAssert(
+				type == PredType::IEEE_F64BE,
+				"FileReader::readParameterSet()",
+				"The attribute '" << attributeName << "' is not of double type.",
+				""
+			);
+			double value;
+			attribute.read(PredType::NATIVE_DOUBLE, &value);
+			ps->addDouble(attributeName, value);
+		}
+
+		dataset = file.openDataSet(name + "Complex");
+		numAttributes = dataset.getNumAttrs();
+		const complex<double> i(0,1);
+
+		for(unsigned int n = 0; n < numAttributes; n++){
+			Attribute attribute = dataset.openAttribute(n);
+			DataType type = attribute.getDataType();
+			string attributeName;
+			attributeName = attribute.getName();
+			const int COMPLEX_RANK = 1;
+			const hsize_t complex_dims[COMPLEX_RANK] = {2};
+			ArrayType complexDataType(PredType::NATIVE_DOUBLE, COMPLEX_RANK, complex_dims);
+			
+			TBTKAssert(
+				type == complexDataType,
+				"FileReader::readParameterSet()",
+				"The attribute '" << attributeName << "' is not of complex type.",
+				""
+			);
+			double value[2];
+			attribute.read(complexDataType, value);
+			complex<double> complexValue = value[0];
+			complexValue += value[1]*i;
+			ps->addComplex(attributeName, complexValue);
+		}
+
+		dataset = file.openDataSet(name + "String");
+		numAttributes = dataset.getNumAttrs();
+
+		for(unsigned int n = 0; n < numAttributes; n++){
+			Attribute attribute = dataset.openAttribute(n);
+			DataType type = attribute.getDataType();
+			string attributeName = attribute.getName();
+			unsigned int memLength = attribute.getInMemDataSize();
+			StrType strDataType(PredType::C_S1, memLength);
+
+			TBTKAssert(
+				type == strDataType,
+				"FileReader::readParameterSet()",
+				"The attribute '" << attributeName << "' is not of string type.",
+				""
+			);
+			string value;
+			attribute.read(type, value);
+			ps->addString(attributeName, value);
+		}
+
+		dataset = file.openDataSet(name + "Bool");
+		numAttributes = dataset.getNumAttrs();
+
+		for(unsigned int n = 0; n < numAttributes; n++){
+			Attribute attribute = dataset.openAttribute(n);
+			DataType type = attribute.getDataType();
+			string attributeName;
+			attributeName = attribute.getName();
+
+			TBTKAssert(
+				type == PredType::STD_I64BE,
+				"FileReader::readParameterSet()",
+				"The attribute '" << attributeName << "' is not of bool type.",
+				""
+			);
+			int value;
+			attribute.read(PredType::NATIVE_INT, &value);
+			ps->addBool(attributeName, value);
+		}
+		return ps;
 	}
 	catch(FileIException error){
 		Util::Streams::log << error.getCDetailMsg() << "\n";

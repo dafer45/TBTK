@@ -18,6 +18,7 @@
  *  @brief Reads data from file
  *
  *  @author Kristofer Björnson
+ *  @author Andreas Theiler
  */
 
 #ifndef COM_DAFER45_TBTK_FILE_READER
@@ -31,6 +32,7 @@
 #include "Magnetization.h"
 #include "LDOS.h"
 #include "SpinPolarizedLDOS.h"
+#include "ParameterSet.h"
 #include <fstream>
 #include <stdio.h>
 
@@ -143,6 +145,12 @@ public:
 	);*/
 	static Property::SpinPolarizedLDOS* readSpinPolarizedLDOS(
 		std::string name = "SpinPolarizedLDOS",
+		std::string path = "/"
+	);
+
+	/** Read Util::ParameterSet from file. */
+	static Util::ParameterSet* readParameterSet(
+		std::string name = "ParameterSet",
 		std::string path = "/"
 	);
 
