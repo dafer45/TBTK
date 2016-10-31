@@ -170,7 +170,7 @@ void ArrayManager<T>::flattenRecursive(void *array, Index ranges, T *result, int
 	}
 	else{
 		int offsetMultiplier = 1;
-		for(int n = 1; n < ranges.size(); n++)
+		for(unsigned int n = 1; n < ranges.size(); n++)
 			offsetMultiplier *= ranges.at(n);
 
 		int currentRange = ranges.at(0);

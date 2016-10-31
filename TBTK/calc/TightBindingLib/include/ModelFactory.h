@@ -139,6 +139,33 @@ private:
 		std::complex<double> t
 	);
 
+	/** Helper function for createModel, for 1D.*/
+	static Model* createModel1D(
+		const UnitCell &unitCell,
+		std::initializer_list<int> size,
+		std::initializer_list<bool> periodic,
+		const bool *includedCells,
+		const AbstractOperator &o
+	);
+
+	/** Helper function for createModel, for 2D.*/
+	static Model* createModel2D(
+		const UnitCell &unitCell,
+		std::initializer_list<int> size,
+		std::initializer_list<bool> periodic,
+		const bool *includedCells,
+		const AbstractOperator &o
+	);
+
+	/** Helper function for createModel, for 3D.*/
+	static Model* createModel3D(
+		const UnitCell &unitCell,
+		std::initializer_list<int> size,
+		std::initializer_list<bool> periodic,
+		const bool *includedCells,
+		const AbstractOperator &o
+	);
+
 	/** Helper function for addSquareGeometry, for 1D. */
 	static void addSquareGeometry1D(
 		Model *model,

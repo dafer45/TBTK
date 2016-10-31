@@ -174,7 +174,48 @@ Model* ModelFactory::createModel(
 ){
 	Model *model = new Model();
 
-	TBTKNotYetImplemented("ModelFactor::createModel()");
+	TBTKAssert(
+		size.size() > 0,
+		"ModelFactory::createModel()",
+		"The argument 'size' must have at least one component.",
+		""
+	);
+	TBTKAssert(
+		unitCell.getLatticeVectors().size() == size.size(),
+		"ModelFactory::createModel()",
+		"The number of lattice vectors in the unit cell must agree with the number of components in the argument 'size'.",
+		""
+	);
+	TBTKAssert(
+		unitCell.getLatticeVectors().at(0).size() >= size.size(),
+		"ModelFactory::createModel()",
+		"The lattice vectors must at least have the same dimension as the number of components in the argument 'size'",
+		""
+	);
+	TBTKAssert(
+		size.size() >= periodic.size(),
+		"ModelFactory::createModel()",
+		"The arguments 'size' and 'periodic' must have the same number of components.",
+		""
+	);
+
+	switch(size.size()){
+	case 1:
+		createModel1D(unitCell, size, periodic, includedCells, o);
+		break;
+	case 2:
+		createModel2D(unitCell, size, periodic, includedCells, o);
+		break;
+	case 3:
+		createModel3D(unitCell, size, periodic, includedCells, o);
+		break;
+	default:
+		TBTKExit(
+			"ModelFactory::createModel()",
+			"Only 1-3 dimensions supported, but " << size.size() << " dimensions requested.",
+			""
+		);
+	}
 
 	return model;
 }
@@ -372,6 +413,36 @@ void ModelFactory::createSquareLattice3D(
 			}
 		}
 	}
+}
+
+Model* ModelFactory::createModel1D(
+	const UnitCell &unitCell,
+	initializer_list<int> size,
+	initializer_list<bool> periodic,
+	const bool *includedCells,
+	const AbstractOperator &o
+){
+	TBTKNotYetImplemented("ModelFactory::createModel1D()");
+}
+
+Model* ModelFactory::createModel2D(
+	const UnitCell &unitCell,
+	initializer_list<int> size,
+	initializer_list<bool> periodic,
+	const bool *includedCells,
+	const AbstractOperator &o
+){
+	TBTKNotYetImplemented("ModelFactory::createModel2D()");
+}
+
+Model* ModelFactory::createModel3D(
+	const UnitCell &unitCell,
+	initializer_list<int> size,
+	initializer_list<bool> periodic,
+	const bool *includedCells,
+	const AbstractOperator &o
+){
+	TBTKNotYetImplemented("ModelFactory::createModel3D()");
 }
 
 void ModelFactory::addSquareGeometry1D(
