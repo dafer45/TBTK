@@ -1,4 +1,4 @@
-/* Copyright 2016 Kristofer Björnson
+/* Copyright 2016 Kristofer Björnson and Andreas Theiler
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,13 @@
 /** @file FileWriter.cpp
  *
  *  @author Kristofer Björnson
+ *  @author Andreas Theiler
  */
 
 #include "../include/FileWriter.h"
 //#include "../include/PropertyExtractor.h"
 #include <string>
 #include <sstream>
-#include <iostream>
 #include <H5Cpp.h>
 #include <fstream>
 
@@ -1144,6 +1144,100 @@ bool FileWriter::exists(){
 	fin.close();
 
 	return exists;
+}
+
+void FileWriter::writeParameterSet(
+	const Util::ParameterSet *parameterSet,
+	std::string name,
+	std::string path
+){
+	init();
+
+	const int ATTRIBUTES_RANK = 0;
+	const hsize_t *attribute_dims = NULL;
+
+	try{
+		stringstream ss;
+		ss << path;
+		if(path.back() != '/')
+			ss << "/";
+		ss << name;
+
+		Exception::dontPrint();
+		H5File file(filename, H5F_ACC_RDWR);
+
+		DataSpace dataspace = DataSpace(ATTRIBUTES_RANK, attribute_dims);
+		DataSet dataset = DataSet(file.createDataSet(name + "Int", PredType::STD_I64BE, dataspace));
+
+		for(int n = 0; n < parameterSet->getNumInt(); n++){
+			Attribute attribute = dataset.createAttribute(parameterSet->getIntName(n), PredType::STD_I64BE, dataspace);
+			int value = parameterSet->getIntValue(n);
+			attribute.write(PredType::NATIVE_INT, &value);
+		}
+
+		dataset = DataSet(file.createDataSet(name + "Double", PredType::IEEE_F64BE, dataspace));
+
+		for(int n = 0; n < parameterSet->getNumDouble(); n++){
+			Attribute attribute = dataset.createAttribute(parameterSet->getDoubleName(n), PredType::IEEE_F64BE, dataspace);
+			double value = parameterSet->getDoubleValue(n);
+			attribute.write(PredType::NATIVE_DOUBLE, &value);
+		}
+
+		const int COMPLEX_RANK = 1;
+		const hsize_t complex_dims[COMPLEX_RANK] = {2};
+		ArrayType complexDataType(PredType::NATIVE_DOUBLE, COMPLEX_RANK, complex_dims);
+		dataset = DataSet(file.createDataSet(name + "Complex", PredType::IEEE_F64BE, dataspace));
+
+		for(int n = 0; n < parameterSet->getNumComplex(); n++){
+			Attribute attribute = dataset.createAttribute(parameterSet->getComplexName(n), complexDataType, dataspace);
+			complex<double> complexValue = parameterSet->getComplexValue(n);
+			double value[2] = {real(complexValue), imag(complexValue)};
+			attribute.write(complexDataType, value);
+		}
+
+		dataset = DataSet(file.createDataSet(name + "String", PredType::PredType::C_S1, dataspace));
+
+		for(int n = 0; n < parameterSet->getNumString(); n++){
+			string value = parameterSet->getStringValue(n);
+			StrType strDataType(PredType::C_S1, value.length());
+			const H5std_string strWriteBuf(value);
+			Attribute attribute = dataset.createAttribute(parameterSet->getStringName(n), strDataType, dataspace);
+			attribute.write(strDataType, strWriteBuf);
+		}
+
+		dataset = DataSet(file.createDataSet(name + "Bool", PredType::STD_I64BE, dataspace));
+
+		for(int n = 0; n < parameterSet->getNumBool(); n++){
+			Attribute attribute = dataset.createAttribute(parameterSet->getBoolName(n), PredType::STD_I64BE, dataspace);
+			int value = parameterSet->getBoolValue(n);
+			attribute.write(PredType::NATIVE_INT, &value);
+		}
+
+		dataspace.close();
+		dataset.close();
+		file.close();
+	}
+	catch(FileIException error){
+		TBTKExit(
+			"FileWriter::writeParameterSet()",
+			"While writing to " << name << ".",
+			""
+		);
+	}
+	catch(DataSetIException error){
+		TBTKExit(
+			"FileWriter::writeParameterSet()",
+			"While writing to " << name << ".",
+			""
+		);
+	}
+	catch(DataSpaceIException error){
+		TBTKExit(
+			"FileWriter::writeParameterSet()",
+			"While writing to " << name << ".",
+			""
+		);
+	}
 }
 
 };	//End of namespace TBTK

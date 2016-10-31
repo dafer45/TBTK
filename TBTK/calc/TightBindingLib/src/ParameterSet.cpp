@@ -34,7 +34,7 @@ ParameterSet::ParameterSet(){
 ParameterSet::~ParameterSet(){
 }
 
-void ParameterSet::addInt(std::string name, int value){
+void ParameterSet::addInt(string name, int value){
 	for(unsigned int n = 0; n < intParams.size(); n++){
 		TBTKAssert(
 			(get<0>(intParams.at(n))).compare(name) != 0,
@@ -47,7 +47,7 @@ void ParameterSet::addInt(std::string name, int value){
 	intParams.push_back(make_tuple(name, value));
 }
 
-void ParameterSet::addDouble(std::string name, double value){
+void ParameterSet::addDouble(string name, double value){
 	for(unsigned int n = 0; n < doubleParams.size(); n++){
 		TBTKAssert(
 			(get<0>(doubleParams.at(n))).compare(name) != 0,
@@ -60,7 +60,7 @@ void ParameterSet::addDouble(std::string name, double value){
 	doubleParams.push_back(make_tuple(name, value));
 }
 
-void ParameterSet::addComplex(std::string name, complex<double> value){
+void ParameterSet::addComplex(string name, complex<double> value){
 	for(unsigned int n = 0; n < complexParams.size(); n++){
 		TBTKAssert(
 			(get<0>(complexParams.at(n))).compare(name) != 0,
@@ -73,7 +73,7 @@ void ParameterSet::addComplex(std::string name, complex<double> value){
 	complexParams.push_back(make_tuple(name, value));
 }
 
-void ParameterSet::addString(std::string name, std::string value){
+void ParameterSet::addString(string name, std::string value){
 	for(unsigned int n = 0; n < stringParams.size(); n++){
 		TBTKAssert(
 			(get<0>(stringParams.at(n))).compare(name) != 0,
@@ -86,7 +86,7 @@ void ParameterSet::addString(std::string name, std::string value){
 	stringParams.push_back(make_tuple(name, value));
 }
 
-void ParameterSet::addBool(std::string name, bool value){
+void ParameterSet::addBool(string name, bool value){
 	for(unsigned int n = 0; n < boolParams.size(); n++){
 		TBTKAssert(
 			(get<0>(boolParams.at(n))).compare(name) != 0,
