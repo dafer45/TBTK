@@ -27,11 +27,6 @@
 #include <sstream>
 #include <H5Cpp.h>
 #include <fstream>
-<<<<<<< HEAD
-=======
-#include <string>
-
->>>>>>> 41c6ede857ef9b2763dab206ddbd5607d0bbeb72
 
 #ifndef H5_NO_NAMESPACE
 	using namespace H5;
