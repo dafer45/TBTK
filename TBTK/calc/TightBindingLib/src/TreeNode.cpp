@@ -291,37 +291,86 @@ void TreeNode::Iterator::searchNextHA(){
 
 bool TreeNode::Iterator::searchNext(TreeNode *treeNode, unsigned int subindex){
 	if(subindex+1 == currentIndex.size()){
+		//If the node level corresponding to the current index is
+		//reached, try to execute leaf node actions.
+
 		if(currentHoppingAmplitude != -1){
+			//The iterator is in the process of iterating over
+			//HoppingAmplitudes on this leaf node. Try to iterate further.
+
 			currentHoppingAmplitude++;
 			if(currentHoppingAmplitude == (int)treeNode->hoppingAmplitudes.size()){
+				//Last HoppingAmplitude already reached. Reset
+				//currentHoppingAmplitude and return false to
+				//indicate that no more HoppingAMplitudes exist
+				//on this node.
 				currentHoppingAmplitude = -1;
 				return false;
 			}
 			else{
+				//Return true to indicate that the next
+				//HoppingAmplitude succesfully has been found.
 				return true;
 			}
 		}
+
+		//We are here guaranteed that the iterator is not currently in
+		//a state where it is iterating over HoppingAmplitudes on this
+		//node.
+
 		if(treeNode->children.size() == 0){
+			//The node has no children and is therefore either a
+			//leaf node with HoppingAmplitudes stored on it, or an
+			//empty dummy node.
+
 			if(treeNode->hoppingAmplitudes.size() != 0){
+				//There are HoppingAMplitudes on this node,
+				//initialize the iterator to start iterating
+				//over these. Return true to indicate that a
+				//HoppingAmplitude was found.
 				currentHoppingAmplitude = 0;
 				return true;
 			}
 			else{
+				//The node is an empty dymmy node. Return false
+				//to indicate that no more HoppingAmplitudes
+				//exist on this node.
 				return false;
 			}
 		}
 	}
+
+	//We are here guaranteed that this is not a leaf or dummy node. We know
+	//this because either the tests inside the previous if-statements
+	//failed, or we are iterating through children that already have been
+	//visited on an earlier call to searchNext if the outer if-statement
+	//itself failed.
+
+	//Perform depth first search for the next HoppingAmplitude. Starts from
+	//the child node reffered to by currentIndex.
 	unsigned int n = currentIndex.at(subindex);
 	while(n < treeNode->children.size()){
-		if(subindex+1 == currentIndex.size())
+		if(subindex+1 == currentIndex.size()){
+			//The deepest point visited so far on this branch has
+			//been reached. Initialize the depth first search for
+			//child n to start from child n's zeroth child.
 			currentIndex.push_back(0);
+		}
 		if(searchNext(&treeNode->children.at(n), subindex+1)){
+			//Depth first search on child n succeded at finding a
+			//HoppingAmplitude. Return true to indicate success.
 			return true;
 		}
+		//Child n does not have any more HoppingAmplitudes. Pop
+		//the subindex corresponding to child n's node level and
+		//increment the subindex corresponding to this node level to
+		//prepare for depth first search of child n+1.
 		currentIndex.pop_back();
 		n = ++currentIndex.back();
 	}
 
+	//Return false to indicate that no more HoppingAmplitudes could be
+	//found on this node.
 	return false;
 }
 
