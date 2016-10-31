@@ -146,6 +146,12 @@ public:
 	 *  HoppingAmplitudes @endlink. */
 	AmplitudeSet::Iterator getIterator() const;
 
+	/** Returns an iterator for iterating through @link HoppingAmplitude
+	 *  HoppingAmplitudes @endlink. The iterator is restricted to the
+	 *  subspace for which the 'from'-index starts with the indices in
+	 *  the argument 'subspace'. */
+	AmplitudeSet::Iterator getIterator(const Index &subspace) const;
+
 	/** Print tree structure. Mainly for debuging. */
 	void print();
 

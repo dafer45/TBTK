@@ -160,6 +160,10 @@ AmplitudeSet::Iterator AmplitudeSet::getIterator() const{
 	return AmplitudeSet::Iterator(&tree);
 }
 
+AmplitudeSet::Iterator AmplitudeSet::getIterator(const Index &subspace) const{
+	return AmplitudeSet::Iterator(tree.getSubTree(subspace));
+}
+
 AmplitudeSet::Iterator::Iterator(const TreeNode* tree){
 	it = new TreeNode::Iterator(tree);
 }
