@@ -114,7 +114,7 @@ const TreeNode* TreeNode::getSubTree(const Index &subspace) const{
 		if(subspace.at(n) < 0){
 			TBTKExit(
 				"TreeNode::getSubTree()",
-				"Invalid subspace index",
+				"Invalid subspace index '" << subspace.toString() << "'.",
 				"Subspace indices cannot have negative subindices."
 			);
 		}
@@ -124,9 +124,8 @@ const TreeNode* TreeNode::getSubTree(const Index &subspace) const{
 }
 
 const TreeNode* TreeNode::getSubTree(const Index &subspace, unsigned int subindex) const{
-	TBTKNotYetImplemented("TreeNode::getSubTree()");
-	if(subindex+1 == subspace.size()){
-		//Node reached
+	if(subindex == subspace.size()){
+		//Correct node reached
 
 		return this;
 	}
@@ -137,10 +136,9 @@ const TreeNode* TreeNode::getSubTree(const Index &subspace, unsigned int subinde
 	else{
 		TBTKExit(
 			"TreeNode::getSubTree()",
-			"Subspace index dos not exist.",
+			"Subspace index '" << subspace.toString() << "' does not exist.",
 			""
 		);
-		subspace.print();
 	}
 }
 
