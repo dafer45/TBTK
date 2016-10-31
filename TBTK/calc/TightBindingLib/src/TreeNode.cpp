@@ -107,9 +107,6 @@ void TreeNode::add(HoppingAmplitude &ha, unsigned int subindex){
 }
 
 const TreeNode* TreeNode::getSubTree(const Index &subspace) const{
-	if(subspace.equals({}))
-		return this;
-
 	for(unsigned int n = 0; n < subspace.size(); n++){
 		if(subspace.at(n) < 0){
 			TBTKExit(
@@ -139,6 +136,41 @@ const TreeNode* TreeNode::getSubTree(const Index &subspace, unsigned int subinde
 			"Subspace index '" << subspace.toString() << "' does not exist.",
 			""
 		);
+	}
+}
+
+bool TreeNode::isProperSubspace(const Index &subspace){
+	for(unsigned int n = 0; n < subspace.size(); n++){
+		if(subspace.at(n) < 0){
+			TBTKExit(
+				"TreeNode::getSubTree()",
+				"Invalid subspace index '" << subspace.toString() << "'.",
+				"Subspace indices cannot have negative subindices."
+			);
+		}
+	}
+
+	return isProperSubspace(subspace, 0);
+}
+
+bool TreeNode::isProperSubspace(const Index &subspace, unsigned int subindex){
+	if(subindex == subspace.size())
+		return isPotentialBlockSeparator;
+
+	if(isPotentialBlockSeparator){
+		if((unsigned int)subspace.at(subindex) < children.size()){
+			return isProperSubspace(subspace, subindex+1);
+		}
+		else{
+			TBTKExit(
+				"TreeNode::isProperSubspace()",
+				"Subspace index '" <<subspace.toString() << "' does not exist.",
+				""
+			);
+		}
+	}
+	else{
+		return false;
 	}
 }
 

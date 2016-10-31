@@ -56,6 +56,11 @@ public:
 	/** Get sub tree. */
 	const TreeNode* getSubTree(const Index &subspace) const;
 
+	/** Returns true if the subspace is a proper subsapce. That is, if the
+	 *  corresponding subtree only contains HoppingAmplitudes that connects
+	 *  sistes within the subtree. */
+	bool isProperSubspace(const Index &subspace);
+
 	/** Get all @link HoppingAmplitude HoppingAmplitudes @endlink with
 	 *  given 'from'-index. */
 	const std::vector<HoppingAmplitude>* getHAs(Index index) const;
@@ -133,11 +138,16 @@ private:
 	 *  called recursively. */
 	void add(HoppingAmplitude &ha, unsigned int subindex);
 
-	/** Get sub tree. */
+	/** Get sub tree. Is called by TreeNode::getSubTree and is called
+	 *  recursively. */
 	const TreeNode* getSubTree(
 		const Index &subspace,
 		unsigned int subindex
 	) const;
+
+	/** Returns true if the subspace is a proper subsapce. Is called by
+	 *  TreeNode::isProperSubspace and is called recursively. */
+	bool isProperSubspace(const Index &subspace, unsigned int subindex);
 
 	/** Get HoppingAmpilitudes. Is called by the public TreeNode::getHAs
 	 *  and is called recursively. */
