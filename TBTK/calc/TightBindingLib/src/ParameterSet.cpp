@@ -99,6 +99,73 @@ void ParameterSet::addBool(std::string name, bool value){
 	boolParams.push_back(make_tuple(name, value));
 }
 
+
+void ParameterSet::setInt(std::string name, int value){
+	for(unsigned int n = 0; n < intParams.size(); n++){
+		if( (get<0>(intParams.at(n))).compare(name) != 0){
+			get<1>(intParams.at(n)) = value;
+			return;
+		}
+	}
+	TBTKExit("Error in ParameterSet::setInt()",
+		"Parameter '" << name << "' not found.",
+		""
+	);
+}
+
+void ParameterSet::setDouble(std::string name, double value){
+	for(unsigned int n = 0; n < doubleParams.size(); n++){
+		if( (get<0>(doubleParams.at(n))).compare(name) != 0){
+			get<1>(doubleParams.at(n)) = value;
+			return;
+		}
+	}
+	TBTKExit("Error in ParameterSet::setDouble()",
+		"Parameter '" << name << "' not found.",
+		""
+	);
+}
+
+
+void ParameterSet::setComplex(std::string name, std::complex<double> value){
+	for(unsigned int n = 0; n < complexParams.size(); n++){
+		if( (get<0>(complexParams.at(n))).compare(name) != 0){
+			get<1>(complexParams.at(n)) = value;
+			return;
+		}
+	}
+	TBTKExit("Error in ParameterSet::setComplex()",
+		"Parameter '" << name << "' not found.",
+		""
+	);
+}
+
+void ParameterSet::setString(std::string name, std::string value){
+	for(unsigned int n = 0; n < stringParams.size(); n++){
+		if( (get<0>(stringParams.at(n))).compare(name) != 0){
+			get<1>(stringParams.at(n)) = value;
+			return;
+		}
+	}
+	TBTKExit("Error in ParameterSet::setString()",
+		"Parameter '" << name << "' not found.",
+		""
+	);
+}
+
+void ParameterSet::setBool(std::string name, bool value){
+	for(unsigned int n = 0; n < boolParams.size(); n++){
+		if( (get<0>(boolParams.at(n))).compare(name) != 0){
+			get<1>(boolParams.at(n)) = value;
+			return;
+		}
+	}
+	TBTKExit("Error in ParameterSet::setBool()",
+		"Parameter '" << name << "' not found.",
+		""
+	);
+}
+
 int ParameterSet::getInt(string name) const {
 	for(unsigned int n = 0; n < intParams.size(); n++){
 		if((get<0>(intParams.at(n))).compare(name) == 0){
