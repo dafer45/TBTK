@@ -1154,7 +1154,7 @@ void FileWriter::writeParameterSet(
 	init();
 
 	const int ATTRIBUTES_RANK = 0;
-	const hsize_t *attribute_dims = nullptr;
+	const hsize_t *attribute_dims = NULL;
 
 	try{
 		stringstream ss;
