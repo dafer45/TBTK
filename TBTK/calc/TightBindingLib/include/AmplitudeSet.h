@@ -78,6 +78,11 @@ public:
 	/** Get size of Hilbert space. */
 	int getBasisSize() const;
 
+	/** Returns true if the subspace is a proper subspace. That is, if all
+	 *  indices starting with the indices in 'subspace' only are connected
+	 *  to other indices with the same initial subspace indices. */
+	bool isProperSubspace(const Index &subspace);
+
 	/** Construct Hilbert space. No more @link HoppingAmplitude
 	 *  HoppingAmplitudes @endlink should be added after this call. */
 	void construct();
@@ -224,6 +229,10 @@ inline int AmplitudeSet::getBasisIndex(const Index &index) const{
 
 inline int AmplitudeSet::getBasisSize() const{
 	return tree.basisSize;
+}
+
+inline bool AmplitudeSet::isProperSubspace(const Index &subspace){
+	return tree.isProperSubspace(subspace);
 }
 
 inline void AmplitudeSet::construct(){
