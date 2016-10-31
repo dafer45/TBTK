@@ -27,10 +27,6 @@
 #include <sstream>
 #include <H5Cpp.h>
 #include <fstream>
-#include <string>
-
-#include <iostream> //TODO remove after debugging
-
 
 #ifndef H5_NO_NAMESPACE
 	using namespace H5;
@@ -897,97 +893,8 @@ void FileReader::readAttributes(
 	}
 }
 
-//herr_t
-//attr_info(hid_t loc_id, const char *name, void *opdata)
-//{
-//    hid_t attr, atype, aspace;  /* Attribute, datatype, dataspace identifiers */
-//    char    *string_out=NULL;
-//    int   rank;
-//    hsize_t sdim[64];
-//    herr_t ret;
-//    int i, j ;
-//    size_t size, totsize;
-//    size_t npoints;             /* Number of elements in the array attribute. */
-//    int point_out;
-//    float *float_array;         /* Pointer to the array attribute. */
-//    H5S_class_t  classt;
-//
-//    /* avoid warnings */
-//    opdata = opdata;
-//
-//    /*  Open the attribute using its name.  */
-//    attr = H5Aopen_name(loc_id, name);
-//
-//    /*  Display attribute name.  */
-//    printf("\nName : ");
-//    puts(name);
-//
-//    /* Get attribute datatype, dataspace, rank, and dimensions.  */
-//    atype  = H5Aget_type(attr);
-//    aspace = H5Aget_space(attr);
-//    rank = H5Sget_simple_extent_ndims(aspace);
-//    ret = H5Sget_simple_extent_dims(aspace, sdim, NULL);
-//
-//    /* Get dataspace type */
-//    classt = H5Sget_simple_extent_type (aspace);
-//    printf ("H5Sget_simple_extent_type (aspace) returns: %i\n", classt);
-//
-//    /* Display rank and dimension sizes for the array attribute.  */
-//    if(rank > 0) {
-//       printf("Rank : %d \n", rank);
-//       printf("Dimension sizes : ");
-//       for (i=0; i< rank; i++) printf("%d ", (int)sdim[i]);
-//       printf("\n");
-//    }
-//
-//    if (H5T_INTEGER == H5Tget_class(atype)) {
-//       printf("Type : INTEGER \n");
-//       ret  = H5Aread(attr, atype, &point_out);
-//       printf("The value of the attribute \"Integer attribute\" is %d \n",
-//               point_out);
-//    }
-//
-//    if (H5T_FLOAT == H5Tget_class(atype)) {
-//       printf("Type : FLOAT \n");
-//       npoints = H5Sget_simple_extent_npoints(aspace);
-//       float_array = (float *)malloc(sizeof(float)*(int)npoints);
-//       ret = H5Aread(attr, atype, float_array);
-//       printf("Values : ");
-//       for( i = 0; i < (int)npoints; i++) printf("%f ", float_array[i]);
-//       printf("\n");
-//       free(float_array);
-//    }
-//
-//    if (H5T_STRING == H5Tget_class (atype)) {
-//      printf ("Type: STRING \n");
-//      size = H5Tget_size (atype);
-//      printf ("Size of Each String is: %i\n", size);
-//      totsize = size*sdim[0]*sdim[1];
-//      string_out = reinterpret_cast<char*>(calloc (totsize, sizeof(char)));
-//      ret = H5Aread(attr, atype, string_out);
-//      printf("The value of the attribute with index 2 is:\n");
-//      j=0;
-//      for (i=0; i<totsize; i++) {
-//        printf ("%c", string_out[i]);
-//        if (j==3) {
-//          printf(" ");
-//          j=0;
-//        }
-//        else j++;
-//      }
-//      printf ("\n");
-//    }
-//
-//    ret = H5Tclose(atype);
-//    ret = H5Sclose(aspace);
-//    ret = H5Aclose(attr);
-//
-//    return 0;
-//}
-
-
 Util::ParameterSet* FileReader::readParameterSet(
-    string name,
+	string name,
 	string path
 ){
 	try{
@@ -998,123 +905,114 @@ Util::ParameterSet* FileReader::readParameterSet(
 		ss << name;
 
 		Exception::dontPrint();
+		Util::ParameterSet *ps = new Util::ParameterSet();
 
-        Util::ParameterSet *ps = new Util::ParameterSet();
-
-//        unsigned int num = getNumAttributes(filename, name + "Int");
-
-        H5File file(filename, H5F_ACC_RDONLY);
+		H5File file(filename, H5F_ACC_RDONLY);
 		DataSet dataset = file.openDataSet(name + "Int");
+		unsigned int numAttributes = dataset.getNumAttrs();
 
-        unsigned int num = dataset.getNumAttrs();
-
-		for(unsigned int n = 0; n < num; n++){
+		for(unsigned int n = 0; n < numAttributes; n++){
 			Attribute attribute = dataset.openAttribute(n);
-
 			DataType type = attribute.getDataType();
-            string nameAttribute;
-			nameAttribute = attribute.getName();
+			string attributeName;
+			attributeName = attribute.getName();
 
 			TBTKAssert(
 				type == PredType::STD_I64BE,
 				"FileReader::readParameterSet()",
-				"The attribute '" << nameAttribute << "' is not of integer type.",
+				"The attribute '" << attributeName << "' is not of integer type.",
 				""
 			);
 			int value;
 			attribute.read(PredType::NATIVE_INT, &value);
-			ps->addInt(nameAttribute, value);
+			ps->addInt(attributeName, value);
 		}
 
         dataset = file.openDataSet(name + "Double");
-        num = dataset.getNumAttrs();
+        numAttributes = dataset.getNumAttrs();
 
-		for(unsigned int n = 0; n < num; n++){
+		for(unsigned int n = 0; n < numAttributes; n++){
 			Attribute attribute = dataset.openAttribute(n);
-
 			DataType type = attribute.getDataType();
-            string nameAttribute;
-			nameAttribute = attribute.getName();
+			string attributeName;
+			attributeName = attribute.getName();
 
 			TBTKAssert(
 				type == PredType::IEEE_F64BE,
 				"FileReader::readParameterSet()",
-				"The attribute '" << nameAttribute << "' is not of double type.",
+				"The attribute '" << attributeName << "' is not of double type.",
 				""
 			);
 			double value;
 			attribute.read(PredType::NATIVE_DOUBLE, &value);
-			ps->addDouble(nameAttribute, value);
+			ps->addDouble(attributeName, value);
 		}
 
-        dataset = file.openDataSet(name + "Complex");
-        num = dataset.getNumAttrs();
-        complex<double> one(1,0);
-        complex<double> i(0,1);
+		dataset = file.openDataSet(name + "Complex");
+		numAttributes = dataset.getNumAttrs();
+		const complex<double> i(0,1);
 
-		for(unsigned int n = 0; n < num; n++){
+		for(unsigned int n = 0; n < numAttributes; n++){
 			Attribute attribute = dataset.openAttribute(n);
-
 			DataType type = attribute.getDataType();
-            string nameAttribute;
-			nameAttribute = attribute.getName();
-			hsize_t dimension = 2;
-			ArrayType dataTypeComplex(PredType::NATIVE_DOUBLE, 1, &dimension);
+            string attributeName;
+			attributeName = attribute.getName();
+			const int COMPLEX_RANK = 1;
+			const hsize_t complex_dims[COMPLEX_RANK] = {2};
+			ArrayType complexDataType(PredType::NATIVE_DOUBLE, COMPLEX_RANK, complex_dims);
 
 			TBTKAssert(
-				type == dataTypeComplex,
+				type == complexDataType,
 				"FileReader::readParameterSet()",
-				"The attribute '" << nameAttribute << "' is not of complex type.",
+				"The attribute '" << attributeName << "' is not of complex type.",
 				""
 			);
 			double value[2];
-			attribute.read(dataTypeComplex, value);
-            complex<double> complexValue = value[0]*one;
-            complexValue += value[1]*i;
-            ps->addComplex(nameAttribute, complexValue);
+			attribute.read(complexDataType, value);
+			complex<double> complexValue = value[0];
+			complexValue += value[1]*i;
+			ps->addComplex(attributeName, complexValue);
 		}
 
-        dataset = file.openDataSet(name + "String");
-        num = dataset.getNumAttrs();
+		dataset = file.openDataSet(name + "String");
+		numAttributes = dataset.getNumAttrs();
 
-		for(unsigned int n = 0; n < num; n++){
+		for(unsigned int n = 0; n < numAttributes; n++){
 			Attribute attribute = dataset.openAttribute(n);
-
 			DataType type = attribute.getDataType();
-            string nameAttribute = attribute.getName();
+			string attributeName = attribute.getName();
 			unsigned int memLength = attribute.getInMemDataSize();
 			StrType strDataType(PredType::C_S1, memLength);
 
 			TBTKAssert(
 				type == strDataType,
 				"FileReader::readParameterSet()",
-				"The attribute '" << nameAttribute << "' is not of string type.",
+				"The attribute '" << attributeName << "' is not of string type.",
 				""
 			);
 			string value;
 			attribute.read(type, value);
-			ps->addString(nameAttribute, value);
+			ps->addString(attributeName, value);
 		}
+
 		dataset = file.openDataSet(name + "Bool");
+		numAttributes = dataset.getNumAttrs();
 
-        num = dataset.getNumAttrs();
-
-		for(unsigned int n = 0; n < num; n++){
+		for(unsigned int n = 0; n < numAttributes; n++){
 			Attribute attribute = dataset.openAttribute(n);
-
 			DataType type = attribute.getDataType();
-            string nameAttribute;
-			nameAttribute = attribute.getName();
+			string attributeName;
+			attributeName = attribute.getName();
 
 			TBTKAssert(
 				type == PredType::STD_I64BE,
 				"FileReader::readParameterSet()",
-				"The attribute '" << nameAttribute << "' is not of bool type.",
+				"The attribute '" << attributeName << "' is not of bool type.",
 				""
 			);
 			int value;
 			attribute.read(PredType::NATIVE_INT, &value);
-			ps->addBool(nameAttribute, value);
+			ps->addBool(attributeName, value);
 		}
 		return ps;
 	}

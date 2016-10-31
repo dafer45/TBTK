@@ -23,7 +23,6 @@
 //#include "../include/PropertyExtractor.h"
 #include <string>
 #include <sstream>
-#include <iostream>
 #include <H5Cpp.h>
 #include <fstream>
 
@@ -1154,9 +1153,8 @@ void FileWriter::writeParameterSet(
 ){
 	init();
 
-	const int ATTRIBUTES_RANK = 1;
-	hsize_t limits_dims[1];
-	limits_dims[0] = 1;
+	const int ATTRIBUTES_RANK = 0;
+	const hsize_t *attribute_dims = nullptr;
 
 	try{
 		stringstream ss;
@@ -1168,7 +1166,7 @@ void FileWriter::writeParameterSet(
 		Exception::dontPrint();
 		H5File file(filename, H5F_ACC_RDWR);
 
-		DataSpace dataspace = DataSpace(ATTRIBUTES_RANK, limits_dims);
+		DataSpace dataspace = DataSpace(ATTRIBUTES_RANK, attribute_dims);
 		DataSet dataset = DataSet(file.createDataSet(name + "Int", PredType::STD_I64BE, dataspace));
 
 		for(int n = 0; n < parameterSet->getNumInt(); n++){
@@ -1176,41 +1174,48 @@ void FileWriter::writeParameterSet(
 			int value = parameterSet->getIntValue(n);
 			attribute.write(PredType::NATIVE_INT, &value);
 		}
+
 		dataset = DataSet(file.createDataSet(name + "Double", PredType::IEEE_F64BE, dataspace));
-        for(int n = 0; n < parameterSet->getNumDouble(); n++){
+
+		for(int n = 0; n < parameterSet->getNumDouble(); n++){
 			Attribute attribute = dataset.createAttribute(parameterSet->getDoubleName(n), PredType::IEEE_F64BE, dataspace);
 			double value = parameterSet->getDoubleValue(n);
 			attribute.write(PredType::NATIVE_DOUBLE, &value);
 		}
 
-		hsize_t dimension = 2;
-        ArrayType dataTypeComplex(PredType::NATIVE_DOUBLE, 1, &dimension);
+		const int COMPLEX_RANK = 1;
+		const hsize_t complex_dims[COMPLEX_RANK] = {2};
+		ArrayType complexDataType(PredType::NATIVE_DOUBLE, COMPLEX_RANK, complex_dims);
 		dataset = DataSet(file.createDataSet(name + "Complex", PredType::IEEE_F64BE, dataspace));
-        for(int n = 0; n < parameterSet->getNumComplex(); n++){
-			Attribute attribute = dataset.createAttribute(parameterSet->getComplexName(n), dataTypeComplex, dataspace);
-			complex<double> valueComplex = parameterSet->getComplexValue(n);
-			double value[2] = {real(valueComplex), imag(valueComplex)};
-			attribute.write(dataTypeComplex, value);
+
+		for(int n = 0; n < parameterSet->getNumComplex(); n++){
+			Attribute attribute = dataset.createAttribute(parameterSet->getComplexName(n), complexDataType, dataspace);
+			complex<double> complexValue = parameterSet->getComplexValue(n);
+			double value[2] = {real(complexValue), imag(complexValue)};
+			attribute.write(complexDataType, value);
 		}
+
 		dataset = DataSet(file.createDataSet(name + "String", PredType::PredType::C_S1, dataspace));
-        for(int n = 0; n < parameterSet->getNumString(); n++){
+
+		for(int n = 0; n < parameterSet->getNumString(); n++){
 			string value = parameterSet->getStringValue(n);
-            StrType strDataType(PredType::C_S1, value.length());
-            const H5std_string strWriteBuf(value);
-            Attribute attribute = dataset.createAttribute(parameterSet->getStringName(n), strDataType, dataspace);
+			StrType strDataType(PredType::C_S1, value.length());
+			const H5std_string strWriteBuf(value);
+			Attribute attribute = dataset.createAttribute(parameterSet->getStringName(n), strDataType, dataspace);
 			attribute.write(strDataType, strWriteBuf);
 		}
+
 		dataset = DataSet(file.createDataSet(name + "Bool", PredType::STD_I64BE, dataspace));
-        for(int n = 0; n < parameterSet->getNumBool(); n++){
+
+		for(int n = 0; n < parameterSet->getNumBool(); n++){
 			Attribute attribute = dataset.createAttribute(parameterSet->getBoolName(n), PredType::STD_I64BE, dataspace);
 			int value = parameterSet->getBoolValue(n);
 			attribute.write(PredType::NATIVE_INT, &value);
 		}
+
 		dataspace.close();
 		dataset.close();
-
 		file.close();
-		dataspace.close();
 	}
 	catch(FileIException error){
 		TBTKExit(

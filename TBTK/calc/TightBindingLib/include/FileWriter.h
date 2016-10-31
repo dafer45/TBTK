@@ -18,6 +18,7 @@
  *  @brief Writes data to file
  *
  *  @author Kristofer Björnson
+ *  @author Andreas Theiler
  */
 
 #ifndef COM_DAFER45_TBTK_FILE_WRITER
@@ -184,12 +185,12 @@ public:
 		std::string path = "/"
 	);
 
-    /** Write Util::ParamterSet to file.*/
-    static void writeParameterSet(
-        const Util::ParameterSet *parameterSet,
-        std::string name = "ParameterSet",
-        std::string path = "/"
-    );
+	/** Write Util::ParamterSet to file.*/
+	static void writeParameterSet(
+		const Util::ParameterSet *parameterSet,
+		std::string name = "ParameterSet",
+		std::string path = "/"
+	);
 
 	/** Set output file name. Default is TBTKResults.h5. */
 	static void setFileName(std::string filename);

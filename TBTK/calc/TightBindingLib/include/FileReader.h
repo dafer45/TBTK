@@ -148,11 +148,11 @@ public:
 		std::string path = "/"
 	);
 
-    /** Read Util::ParameterSet from file. */
+	/** Read Util::ParameterSet from file. */
 	static Util::ParameterSet* readParameterSet(
-        std::string name = "ParameterSet",
+		std::string name = "ParameterSet",
 		std::string path = "/"
-    );
+	);
 
 	/** Read custom n-dimensional arrays from file of type double. */
 	static void read(
