@@ -1147,9 +1147,9 @@ bool FileWriter::exists(){
 }
 
 void FileWriter::writeParameterSet(
-    const Util::ParameterSet *parameterSet,
-    std::string name,
-    std::string path
+	const Util::ParameterSet *parameterSet,
+	std::string name,
+	std::string path
 ){
 	init();
 

@@ -912,21 +912,11 @@ Util::ParameterSet* FileReader::readParameterSet(
 		Exception::dontPrint();
 		Util::ParameterSet *ps = new Util::ParameterSet();
 
-<<<<<<< HEAD
 		H5File file(filename, H5F_ACC_RDONLY);
 		DataSet dataset = file.openDataSet(name + "Int");
 		unsigned int numAttributes = dataset.getNumAttrs();
 
 		for(unsigned int n = 0; n < numAttributes; n++){
-=======
-        Util::ParameterSet *ps = new Util::ParameterSet();
-
-        H5File file(filename, H5F_ACC_RDONLY);
-		DataSet dataset = file.openDataSet(name + "Int");
-        unsigned int num = dataset.getNumAttrs();
-
-		for(unsigned int n = 0; n < num; n++){
->>>>>>> 41c6ede857ef9b2763dab206ddbd5607d0bbeb72
 			Attribute attribute = dataset.openAttribute(n);
 			DataType type = attribute.getDataType();
 			string attributeName;
@@ -943,8 +933,8 @@ Util::ParameterSet* FileReader::readParameterSet(
 			ps->addInt(attributeName, value);
 		}
 
-        dataset = file.openDataSet(name + "Double");
-        numAttributes = dataset.getNumAttrs();
+		dataset = file.openDataSet(name + "Double");
+		numAttributes = dataset.getNumAttrs();
 
 		for(unsigned int n = 0; n < numAttributes; n++){
 			Attribute attribute = dataset.openAttribute(n);
@@ -963,33 +953,19 @@ Util::ParameterSet* FileReader::readParameterSet(
 			ps->addDouble(attributeName, value);
 		}
 
-<<<<<<< HEAD
 		dataset = file.openDataSet(name + "Complex");
 		numAttributes = dataset.getNumAttrs();
 		const complex<double> i(0,1);
-=======
-        dataset = file.openDataSet(name + "Complex");
-        num = dataset.getNumAttrs();
-        const complex<double> one(1,0);
-        const complex<double> i(0,1);
->>>>>>> 41c6ede857ef9b2763dab206ddbd5607d0bbeb72
 
 		for(unsigned int n = 0; n < numAttributes; n++){
 			Attribute attribute = dataset.openAttribute(n);
 			DataType type = attribute.getDataType();
-<<<<<<< HEAD
-            string attributeName;
+			string attributeName;
 			attributeName = attribute.getName();
 			const int COMPLEX_RANK = 1;
 			const hsize_t complex_dims[COMPLEX_RANK] = {2};
 			ArrayType complexDataType(PredType::NATIVE_DOUBLE, COMPLEX_RANK, complex_dims);
-=======
-            string nameAttribute;
-			nameAttribute = attribute.getName();
-			const hsize_t dimension = 2;
-			ArrayType dataTypeComplex(PredType::NATIVE_DOUBLE, 1, &dimension);
->>>>>>> 41c6ede857ef9b2763dab206ddbd5607d0bbeb72
-
+			
 			TBTKAssert(
 				type == complexDataType,
 				"FileReader::readParameterSet()",
@@ -1025,11 +1001,7 @@ Util::ParameterSet* FileReader::readParameterSet(
 		}
 
 		dataset = file.openDataSet(name + "Bool");
-<<<<<<< HEAD
 		numAttributes = dataset.getNumAttrs();
-=======
-        num = dataset.getNumAttrs();
->>>>>>> 41c6ede857ef9b2763dab206ddbd5607d0bbeb72
 
 		for(unsigned int n = 0; n < numAttributes; n++){
 			Attribute attribute = dataset.openAttribute(n);
