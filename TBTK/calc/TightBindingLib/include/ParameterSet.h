@@ -67,7 +67,7 @@ public:
 	/** Get string parameter. */
 	std::string getString(std::string name) const;
 
-    /** Get boolean parameter. */
+	/** Get boolean parameter. */
 	bool getBool(std::string name) const;
 
 	/** Get number of integer parameters. */
@@ -124,10 +124,10 @@ public:
 	/** Returns true if a complex parameter with given name exists. */
 	bool complexExists(std::string name) const;
 
-    /** Returns true if an string parameter with given name exists. */
+	/** Returns true if an string parameter with given name exists. */
 	bool stringExists(std::string name) const;
 
-    /** Returns true if an boolean parameter with given name exists. */
+	/** Returns true if an boolean parameter with given name exists. */
 	bool boolExists(std::string name) const;
 private:
 	/** Integer parameters. */
@@ -139,10 +139,10 @@ private:
 	/** Complex parameters. */
 	std::vector<std::tuple<std::string, std::complex<double>>> complexParams;
 
-    /** String parameters. */
+	/** String parameters. */
 	std::vector<std::tuple<std::string, std::string>> stringParams;
 
-    /** Boolean parameters. */
+	/** Boolean parameters. */
 	std::vector<std::tuple<std::string, bool>> boolParams;
 };
 

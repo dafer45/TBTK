@@ -57,6 +57,12 @@ public:
 	/** Read Model from file. */
 	static Model* readModel(std::string fileName);
 
+	/** Write ParameterSet to file. */
+	static void writeParameterSet(
+		const Util::ParameterSet *parameterSet,
+		std::string fileName
+	);
+
 	/** Read ParameterSet from file. */
 	static Util::ParameterSet* readParameterSet(std::string fileName);
 private:
