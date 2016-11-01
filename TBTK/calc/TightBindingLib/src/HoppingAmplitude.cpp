@@ -105,7 +105,7 @@ HoppingAmplitude::HoppingAmplitude(
 	this->amplitudeCallback = ha.amplitudeCallback;
 }
 
-HoppingAmplitude HoppingAmplitude::getHermitianConjugate(){
+HoppingAmplitude HoppingAmplitude::getHermitianConjugate() const{
 	if(amplitudeCallback)
 		return HoppingAmplitude(toIndex, fromIndex, amplitudeCallback);
 	else

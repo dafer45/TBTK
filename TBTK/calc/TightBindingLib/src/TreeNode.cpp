@@ -106,11 +106,79 @@ void TreeNode::add(HoppingAmplitude &ha, unsigned int subindex){
 	}
 }
 
-std::vector<HoppingAmplitude>* TreeNode::getHAs(Index index){
+const TreeNode* TreeNode::getSubTree(const Index &subspace) const{
+	for(unsigned int n = 0; n < subspace.size(); n++){
+		if(subspace.at(n) < 0){
+			TBTKExit(
+				"TreeNode::getSubTree()",
+				"Invalid subspace index '" << subspace.toString() << "'.",
+				"Subspace indices cannot have negative subindices."
+			);
+		}
+	}
+
+	return getSubTree(subspace, 0);
+}
+
+const TreeNode* TreeNode::getSubTree(const Index &subspace, unsigned int subindex) const{
+	if(subindex == subspace.size()){
+		//Correct node reached
+
+		return this;
+	}
+
+	if((unsigned int)subspace.at(subindex) < children.size()){
+		return children.at(subspace.at(subindex)).getSubTree(subspace, subindex+1);
+	}
+	else{
+		TBTKExit(
+			"TreeNode::getSubTree()",
+			"Subspace index '" << subspace.toString() << "' does not exist.",
+			""
+		);
+	}
+}
+
+bool TreeNode::isProperSubspace(const Index &subspace){
+	for(unsigned int n = 0; n < subspace.size(); n++){
+		if(subspace.at(n) < 0){
+			TBTKExit(
+				"TreeNode::getSubTree()",
+				"Invalid subspace index '" << subspace.toString() << "'.",
+				"Subspace indices cannot have negative subindices."
+			);
+		}
+	}
+
+	return isProperSubspace(subspace, 0);
+}
+
+bool TreeNode::isProperSubspace(const Index &subspace, unsigned int subindex){
+	if(subindex == subspace.size())
+		return isPotentialBlockSeparator;
+
+	if(isPotentialBlockSeparator){
+		if((unsigned int)subspace.at(subindex) < children.size()){
+			return isProperSubspace(subspace, subindex+1);
+		}
+		else{
+			TBTKExit(
+				"TreeNode::isProperSubspace()",
+				"Subspace index '" <<subspace.toString() << "' does not exist.",
+				""
+			);
+		}
+	}
+	else{
+		return false;
+	}
+}
+
+const std::vector<HoppingAmplitude>* TreeNode::getHAs(Index index) const{
 	return getHAs(index, 0);
 }
 
-std::vector<HoppingAmplitude>* TreeNode::getHAs(Index index, unsigned int subindex){
+const std::vector<HoppingAmplitude>* TreeNode::getHAs(Index index, unsigned int subindex) const{
 	if(subindex < index.size()){
 		//If the current subindex is not the last, continue to the next
 		//node level.
@@ -134,11 +202,11 @@ std::vector<HoppingAmplitude>* TreeNode::getHAs(Index index, unsigned int subind
 	}
 }
 
-int TreeNode::getBasisIndex(const Index &index){
+int TreeNode::getBasisIndex(const Index &index) const{
 	return getBasisIndex(index, 0);
 }
 
-int TreeNode::getBasisIndex(const Index &index, unsigned int subindex){
+int TreeNode::getBasisIndex(const Index &index, unsigned int subindex) const{
 	if(subindex < index.size()){
 		//If the current subindex is not the last, continue to the next
 		//node level.
@@ -162,7 +230,7 @@ int TreeNode::getBasisIndex(const Index &index, unsigned int subindex){
 	}
 }
 
-Index TreeNode::getPhysicalIndex(int basisIndex){
+Index TreeNode::getPhysicalIndex(int basisIndex) const{
 	TBTKAssert(
 		basisIndex >= 0 && basisIndex < this->basisSize,
 		"TreeNode::getPhysicalIndex()",
@@ -176,7 +244,7 @@ Index TreeNode::getPhysicalIndex(int basisIndex){
 	return Index(indices);
 }
 
-void TreeNode::getPhysicalIndex(int basisIndex, vector<int> *indices){
+void TreeNode::getPhysicalIndex(int basisIndex, vector<int> *indices) const{
 	if(this->basisIndex != -1)
 		return;
 
@@ -195,7 +263,7 @@ void TreeNode::getPhysicalIndex(int basisIndex, vector<int> *indices){
 	}
 }
 
-int TreeNode::getMinIndex(){
+int TreeNode::getMinIndex() const{
 	if(basisIndex != -1)
 		return basisIndex;
 
@@ -209,7 +277,7 @@ int TreeNode::getMinIndex(){
 	return min;
 }
 
-int TreeNode::getMaxIndex(){
+int TreeNode::getMaxIndex() const{
 	if(basisIndex != -1)
 		return basisIndex;
 
@@ -271,7 +339,7 @@ void TreeNode::sort(TreeNode *rootNode){
 	}
 }
 
-TreeNode::Iterator::Iterator(TreeNode *tree){
+TreeNode::Iterator::Iterator(const TreeNode *tree){
 	this->tree = tree;
 	currentIndex.push_back(0);
 	currentHoppingAmplitude = -1;
@@ -289,7 +357,7 @@ void TreeNode::Iterator::searchNextHA(){
 	searchNext(tree, 0);
 }
 
-bool TreeNode::Iterator::searchNext(TreeNode *treeNode, unsigned int subindex){
+bool TreeNode::Iterator::searchNext(const TreeNode *treeNode, unsigned int subindex){
 	if(subindex+1 == currentIndex.size()){
 		//If the node level corresponding to the current index is
 		//reached, try to execute leaf node actions.
@@ -374,11 +442,11 @@ bool TreeNode::Iterator::searchNext(TreeNode *treeNode, unsigned int subindex){
 	return false;
 }
 
-HoppingAmplitude* TreeNode::Iterator::getHA(){
+const HoppingAmplitude* TreeNode::Iterator::getHA() const{
 	if(currentIndex.at(0) == (int)tree->children.size()){
 		return NULL;
 	}
-	TreeNode *tn = this->tree;
+	const TreeNode *tn = this->tree;
 	for(unsigned int n = 0; n < currentIndex.size()-1; n++){
 		tn = &tn->children.at(currentIndex.at(n));
 	}
@@ -390,7 +458,7 @@ TreeNode::Iterator TreeNode::begin(){
 	return Iterator(this);
 }
 
-HoppingAmplitude TreeNode::getFirstHA(){
+HoppingAmplitude TreeNode::getFirstHA() const{
 	if(children.size() == 0)
 		return hoppingAmplitudes.at(0);
 

@@ -53,15 +53,23 @@ public:
 	/** Add a HoppingAmplitude. */
 	void add(HoppingAmplitude ha);
 
+	/** Get sub tree. */
+	const TreeNode* getSubTree(const Index &subspace) const;
+
+	/** Returns true if the subspace is a proper subsapce. That is, if the
+	 *  corresponding subtree only contains HoppingAmplitudes that connects
+	 *  sistes within the subtree. */
+	bool isProperSubspace(const Index &subspace);
+
 	/** Get all @link HoppingAmplitude HoppingAmplitudes @endlink with
 	 *  given 'from'-index. */
-	std::vector<HoppingAmplitude>* getHAs(Index index);
+	const std::vector<HoppingAmplitude>* getHAs(Index index) const;
 
 	/** Get Hilbert space basis index for given physical index. */
-	int getBasisIndex(const Index &index);
+	int getBasisIndex(const Index &index) const;
 
 	/** Get physical index for given Hilbert space absis index. */
-	Index getPhysicalIndex(int basisIndex);
+	Index getPhysicalIndex(int basisIndex) const;
 
 	/** Generate Hilbert space indices. No more @link HoppingAmplitude
 	 *   HoppingAmplitudes @endlink should be added after this call. */
@@ -79,7 +87,7 @@ public:
 	class Iterator{
 	public:
 		/** Root node to iterate from. */
-		TreeNode* tree;
+		const TreeNode* tree;
 
 		/** Current index at which the iterator points at. */
 		std::vector<int> currentIndex;
@@ -89,7 +97,7 @@ public:
 		int currentHoppingAmplitude;
 
 		/** Constructor. */
-		Iterator(TreeNode *tree);
+		Iterator(const TreeNode *tree);
 
 		/** Reset iterator. */
 		void reset();
@@ -98,11 +106,11 @@ public:
 		void searchNextHA();
 
 		/** Get HoppingAmplitude currently pointed at. */
-		HoppingAmplitude* getHA();
+		const HoppingAmplitude* getHA() const;
 	private:
 		/** Search after next HoppingAmplitude. Is used by
 		 *  TreeNode::Iterator::searchNext and called recursively. */
-		bool searchNext(TreeNode *treeNode, unsigned int subindex);
+		bool searchNext(const TreeNode *treeNode, unsigned int subindex);
 	};
 
 	/** Returns Iterator initialized to point at first HoppingAmplitude. */
@@ -130,26 +138,37 @@ private:
 	 *  called recursively. */
 	void add(HoppingAmplitude &ha, unsigned int subindex);
 
+	/** Get sub tree. Is called by TreeNode::getSubTree and is called
+	 *  recursively. */
+	const TreeNode* getSubTree(
+		const Index &subspace,
+		unsigned int subindex
+	) const;
+
+	/** Returns true if the subspace is a proper subsapce. Is called by
+	 *  TreeNode::isProperSubspace and is called recursively. */
+	bool isProperSubspace(const Index &subspace, unsigned int subindex);
+
 	/** Get HoppingAmpilitudes. Is called by the public TreeNode::getHAs
 	 *  and is called recursively. */
-	std::vector<HoppingAmplitude>* getHAs(
+	const std::vector<HoppingAmplitude>* getHAs(
 		Index index,
 		unsigned int subindex
-	);
+	) const;
 
 	/** Get Hilbert space index for given physical index. Is called by the
 	 *  public TreeNode::getBasisIndex and is called recursively. */
-	int getBasisIndex(const Index &index, unsigned int subindex);
+	int getBasisIndex(const Index &index, unsigned int subindex) const;
 
 	/** Get physical index for given Hilbert space index. Is called by the
 	 *  public TreeNode::getPhysicalIndex and is called recursively. */
-	void getPhysicalIndex(int basisIndex, std::vector<int> *indices);
+	void getPhysicalIndex(int basisIndex, std::vector<int> *indices) const;
 
 	/** Get minimum index on TreeNode. */
-	int getMinIndex();
+	int getMinIndex() const;
 
 	/** Get max index on TreeNode. */
-	int getMaxIndex();
+	int getMaxIndex() const;
 
 	/** Generate Hilbert space indices. Is called by the public
 	 *  TreeNode::generateBasisIndices and is called recursively. */
@@ -161,7 +180,7 @@ private:
 
 	/** Returns (depth) first HoppingAmplitude as an example, in case of
 	 *  error while adding HoppingAmplitudes to the tree. */
-	HoppingAmplitude getFirstHA();
+	HoppingAmplitude getFirstHA() const;
 };
 
 };	//End of namespace TBTK

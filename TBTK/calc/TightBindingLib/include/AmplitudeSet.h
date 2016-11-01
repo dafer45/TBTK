@@ -68,22 +68,27 @@ public:
 	 * given 'from'-index.
 	 *
 	 *  @param index 'From'-index to get HoppingAmplitudes for. */
-	std::vector<HoppingAmplitude>* getHAs(Index index);
+	const std::vector<HoppingAmplitude>* getHAs(Index index) const;
 
 	/** Get Hilbert space index corresponding to given 'from'-index.
 	 *
 	 *  @param index 'From'-index to get Hilbert space index for. */
-	int getBasisIndex(const Index &index);
+	int getBasisIndex(const Index &index) const;
 
 	/** Get size of Hilbert space. */
-	int getBasisSize();
+	int getBasisSize() const;
+
+	/** Returns true if the subspace is a proper subspace. That is, if all
+	 *  indices starting with the indices in 'subspace' only are connected
+	 *  to other indices with the same initial subspace indices. */
+	bool isProperSubspace(const Index &subspace);
 
 	/** Construct Hilbert space. No more @link HoppingAmplitude
 	 *  HoppingAmplitudes @endlink should be added after this call. */
 	void construct();
 
 	/** Returns true if the Hilbert space basis has been constructed. */
-	bool getIsConstructed();
+	bool getIsConstructed() const;
 
 	/** Sort HoppingAmplitudes. */
 	void sort();
@@ -104,16 +109,16 @@ public:
 
 	/** Get number of matrix elements in the Hamiltonian corresponding to
 	 *  the AmplitudeSet. */
-	int getNumMatrixElements();
+	int getNumMatrixElements() const;
 
 	/** Get row indices on COO format. */
-	const int* getCOORowIndices();
+	const int* getCOORowIndices() const;
 
 	/** Get col indices on COO format. */
-	const int* getCOOColIndices();
+	const int* getCOOColIndices() const;
 
 	/** Get row indices on COO format. */
-	const std::complex<double>* getCOOValues();
+	const std::complex<double>* getCOOValues() const;
 
 	/** Iterator for iterating through @link HoppingAmplitude
 	 *  HoppingAmplitudes @endlink. */
@@ -129,14 +134,14 @@ public:
 		void searchNextHA();
 
 		/** Get current HoppingAmplitude. */
-		HoppingAmplitude* getHA();
+		const HoppingAmplitude* getHA() const;
 	private:
 		/** The iterator can only be constructed by the AmplitudeSet. */
 		friend class AmplitudeSet;
 
 		/** Private constructor. Limits the ability to construct the
 		 *  iterator to the AmplitudeSet. */
-		Iterator(TreeNode *tree);
+		Iterator(const TreeNode *tree);
 
 		/** TreeNode iterator. Implements the actual iteration. */
 		TreeNode::Iterator* it;
@@ -144,7 +149,13 @@ public:
 
 	/** Returns an iterator for iterating through @link HoppingAmplitude
 	 *  HoppingAmplitudes @endlink. */
-	AmplitudeSet::Iterator getIterator();
+	AmplitudeSet::Iterator getIterator() const;
+
+	/** Returns an iterator for iterating through @link HoppingAmplitude
+	 *  HoppingAmplitudes @endlink. The iterator is restricted to the
+	 *  subspace for which the 'from'-index starts with the indices in
+	 *  the argument 'subspace'. */
+	AmplitudeSet::Iterator getIterator(const Index &subspace) const;
 
 	/** Print tree structure. Mainly for debuging. */
 	void print();
@@ -178,7 +189,7 @@ public:
 		int **indices,
 		int *numHoppingAmplitudes,
 		int *maxIndexSize
-	);
+	) const;
 private:
 	/** Flag indicating whether the AmplitudeSet have been constructed. */
 	bool isConstructed;
@@ -208,16 +219,20 @@ inline void AmplitudeSet::addHAAndHC(HoppingAmplitude ha){
 	tree.add(ha.getHermitianConjugate());
 }
 
-inline std::vector<HoppingAmplitude>* AmplitudeSet::getHAs(Index index){
+inline const std::vector<HoppingAmplitude>* AmplitudeSet::getHAs(Index index) const{
 	return tree.getHAs(index);
 }
 
-inline int AmplitudeSet::getBasisIndex(const Index &index){
+inline int AmplitudeSet::getBasisIndex(const Index &index) const{
 	return tree.getBasisIndex(index);
 }
 
-inline int AmplitudeSet::getBasisSize(){
+inline int AmplitudeSet::getBasisSize() const{
 	return tree.basisSize;
+}
+
+inline bool AmplitudeSet::isProperSubspace(const Index &subspace){
+	return tree.isProperSubspace(subspace);
 }
 
 inline void AmplitudeSet::construct(){
@@ -232,7 +247,7 @@ inline void AmplitudeSet::construct(){
 	isConstructed = true;
 }
 
-inline bool AmplitudeSet::getIsConstructed(){
+inline bool AmplitudeSet::getIsConstructed() const{
 	return isConstructed;
 }
 
@@ -250,15 +265,15 @@ inline void AmplitudeSet::sort(){
 	}
 }
 
-inline const int* AmplitudeSet::getCOORowIndices(){
+inline const int* AmplitudeSet::getCOORowIndices() const{
 	return cooRowIndices;
 }
 
-inline const int* AmplitudeSet::getCOOColIndices(){
+inline const int* AmplitudeSet::getCOOColIndices() const{
 	return cooColIndices;
 }
 
-inline const std::complex<double>* AmplitudeSet::getCOOValues(){
+inline const std::complex<double>* AmplitudeSet::getCOOValues() const{
 	return cooValues;
 }
 

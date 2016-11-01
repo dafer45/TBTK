@@ -105,7 +105,7 @@ void TimeEvolver::run(){
 			dPsi[n] = 0.;
 
 		AmplitudeSet::Iterator it = model->getAmplitudeSet()->getIterator();
-		HoppingAmplitude *ha;
+		const HoppingAmplitude *ha;
 		while((ha = it.getHA())){
 			int fromIndex = model->getAmplitudeSet()->getBasisIndex(ha->fromIndex);
 			int toIndex = model->getAmplitudeSet()->getBasisIndex(ha->toIndex);

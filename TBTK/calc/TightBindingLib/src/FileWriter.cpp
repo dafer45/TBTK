@@ -1,4 +1,4 @@
-/* Copyright 2016 Kristofer Björnson
+/* Copyright 2016 Kristofer Björnson and Andreas Theiler
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1154,7 +1154,7 @@ void FileWriter::writeParameterSet(
 	init();
 
 	const int ATTRIBUTES_RANK = 0;
-	const hsize_t *attribute_dims = nullptr;
+	const hsize_t *attribute_dims = NULL;
 
 	try{
 		stringstream ss;

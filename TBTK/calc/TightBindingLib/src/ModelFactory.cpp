@@ -237,7 +237,7 @@ Model* ModelFactory::merge(
 	for(unsigned int n = 0; n < models.size(); n++){
 		Model *m = *(models.begin() + n);
 		AmplitudeSet::Iterator it = m->getAmplitudeSet()->getIterator();
-		HoppingAmplitude *ha;
+		const HoppingAmplitude *ha;
 		while((ha = it.getHA())){
 			complex<double> amplitude = ha->getAmplitude();
 			Index from = ha->fromIndex;
@@ -287,7 +287,7 @@ Model* ModelFactory::merge(
 			Model *m = *(models.begin() + n);
 			Geometry *g = m->getGeometry();
 			AmplitudeSet::Iterator it = m->getAmplitudeSet()->getIterator();
-			HoppingAmplitude *ha;
+			const HoppingAmplitude *ha;
 			while((ha = it.getHA())){
 				Index from = ha->fromIndex;
 

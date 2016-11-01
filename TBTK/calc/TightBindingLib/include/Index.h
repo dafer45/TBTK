@@ -80,6 +80,9 @@ public:
 	/** Print index. Mainly for debuging. */
 	void print() const;
 
+	/** Print index. Mainly for debuging. */
+	std::string toString() const;
+
 	/** Comparison operator. Returns false if the TreeNode structure would
 	 *  generate a smaller Hilbert space index for i1 than for i2. */
 	friend bool operator<(const Index &i1, const Index &i2);
@@ -100,6 +103,18 @@ inline void Index::print() const{
 		Util::Streams::out << indices.at(n);
 	}
 	Util::Streams::out << "}\n";
+}
+
+inline std::string Index::toString() const{
+	std::string str = "{";
+	for(unsigned int n = 0; n < indices.size(); n++){
+		if(n != 0)
+			str += ", ";
+		str += std::to_string(indices.at(n));
+	}
+	str += "}";
+
+	return str;
 }
 
 inline bool Index::equals(const Index &index, bool allowWildcard) const{
