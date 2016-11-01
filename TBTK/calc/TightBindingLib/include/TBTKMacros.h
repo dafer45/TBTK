@@ -26,12 +26,15 @@
 #include "Streams.h"
 
 #include <cstring>
+#include <sstream>
 
 #define TBTKAssert(expression, function, message, hint)	\
 	if(!(expression)){	\
 		TBTK::Util::Streams::err << "Error in " << function << "\n";	\
 		TBTK::Util::Streams::err << "\t" << message << "\n";	\
-		if(std::strcmp(hint, "") != 0)	\
+		std::stringstream hintStream;	\
+		hintStream << hint;	\
+		if(std::strcmp(hintStream.str().c_str(), "") != 0)	\
 			TBTK::Util::Streams::err << "\tHint: " << hint << "\n";	\
 		TBTK::Util::Streams::err << "\tWhere: " << __FILE__ << ", " << __LINE__ << "\n";	\
 		if(Util::Streams::logIsOpen())	\
@@ -42,7 +45,9 @@
 #define TBTKExit(function, message, hint)	\
 	TBTK::Util::Streams::err << "Error in " << function << "\n";	\
 	TBTK::Util::Streams::err << "\t" << message << "\n";	\
-	if(std::strcmp(hint, "") != 0)	\
+	std::stringstream hintStream;	\
+	hintStream << hint;	\
+	if(std::strcmp(hintStream.str().c_str(), "") != 0)	\
 		TBTK::Util::Streams::err << "\tHint: " << hint << "\n";	\
 	TBTK::Util::Streams::err << "\tWhere: " << __FILE__ << ", " << __LINE__ << "\n";	\
 	if(Util::Streams::logIsOpen())	\
