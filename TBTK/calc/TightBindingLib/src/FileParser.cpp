@@ -70,7 +70,37 @@ Model* FileParser::readModel(string fileName){
 	return model;
 }
 
-Util::ParameterSet* FileParser::readParameterSet(std::string fileName){
+void FileParser::writeParameterSet(
+	const Util::ParameterSet *parameterSet,
+	string filename
+){
+	ofstream fout(filename);
+
+	for(int n = 0; n < parameterSet->getNumInt(); n++){
+		fout << "int\t" << parameterSet->getIntName(n) << "\t= "
+			<< parameterSet->getIntValue(n) << "\n";
+	}
+	for(int n = 0; n < parameterSet->getNumDouble(); n++){
+		fout << "double\t" << parameterSet->getDoubleName(n) << "\t= "
+			<< parameterSet->getDoubleValue(n) << "\n";
+	}
+	for(int n = 0; n < parameterSet->getNumComplex(); n++){
+		fout << "complex\t" << parameterSet->getComplexName(n) << "\t= "
+			<< parameterSet->getComplexValue(n) << "\n";
+	}
+	for(int n = 0; n < parameterSet->getNumString(); n++){
+		fout << "string\t" << parameterSet->getStringName(n) << "\t= "
+			<< parameterSet->getStringValue(n) << "\n";
+	}
+	for(int n = 0; n < parameterSet->getNumBool(); n++){
+		fout << "bool\t" << parameterSet->getBoolName(n) << "\t= "
+			<< parameterSet->getBoolValue(n) << "\n";
+	}
+
+	fout.close();
+}
+
+Util::ParameterSet* FileParser::readParameterSet(string fileName){
 	Util::ParameterSet *parameterSet = new Util::ParameterSet();
 
 	readInput(fileName);
