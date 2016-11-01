@@ -54,6 +54,21 @@ public:
 
 	/** Add boolean parameter. */
 	void addBool(std::string name, bool value);
+	
+	/** Change integer parameter. */
+	void setInt(std::string name, int value);
+
+	/** Change double parameter. */
+	void setDouble(std::string name, double value);
+
+	/** Change complex parameter. */
+	void setComplex(std::string name, std::complex<double> value);
+
+	/** Change string parameter. */
+	void setString(std::string name, std::string value);
+
+	/** Change boolean parameter. */
+	void setBool(std::string name, bool value);
 
 	/** Get integer parameter. */
 	int getInt(std::string name) const;
