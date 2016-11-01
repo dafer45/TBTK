@@ -54,7 +54,7 @@ public:
 
 	/** Add boolean parameter. */
 	void addBool(std::string name, bool value);
-	
+
 	/** Change integer parameter. */
 	void setInt(std::string name, int value);
 
