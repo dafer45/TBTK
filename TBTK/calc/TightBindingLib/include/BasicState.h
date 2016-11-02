@@ -35,23 +35,26 @@ namespace TBTK{
 class BasicState : public AbstractState{
 public:
 	/** Constructor. */
-	BasicState(const Index &index, const Index &unitCell = {});
+	BasicState(const Index &index, const Index &unitCellIndex = {});
 
 	/** Destructor. */
 	virtual ~BasicState();
+
+	/** Implements AbstracState::clone(). */
+	virtual BasicState* clone() const;
 
 	/** Add overlap. */
 	void addOverlap(
 		std::complex<double> overlap,
 		const Index &braIndex,
-		const Index &braUnitCell = {}
+		const Index &braRelativeUnitCell = {}
 	);
 
 	/** Add matrix element. */
 	void addMatrixElement(
 		std::complex<double> matrixElement,
 		const Index &bra,
-		const Index &braUnitCell = {}
+		const Index &braRelativeUnitCell = {}
 	);
 
 	/** Implements AbstractState::getOverlapWith(). */
@@ -63,12 +66,6 @@ public:
 		const AbstractOperator &o = DefaultOperator()
 	) const;
 private:
-	/** Intra cell index of state. */
-	Index index;
-
-	/** Unit cell of index. */
-	Index unitCell;
-
 	/** Overlaps between the ket corresponding to this state and the bras
 	 *  index by the indices. The first index in the tuple is the intra
 	 *  cell index, while the second index is the unit cell index */

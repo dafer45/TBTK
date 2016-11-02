@@ -40,6 +40,9 @@ public:
 
 	/** Add lattice point to the lattice. */
 	void addLatticePoint(const Index &latticePoint);
+
+	/** Genearates a state set from the Lattice. */
+	StateSet* generateStateSet();
 private:
 	/** Unit cell that is to be replicated throughout the lattice. */
 	UnitCell *unitCell;

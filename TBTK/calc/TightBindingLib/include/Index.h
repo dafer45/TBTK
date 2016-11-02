@@ -52,6 +52,10 @@ public:
 	/** Copy constructor. */
 	Index(const Index &index) : indices(index.indices){};
 
+	/** Constructor. Concatenates two indices into one total index of the
+	 *  form {head, tail}. */
+	Index(const Index &head, const Index &tail);
+
 	/** Compare this index with another index. Returns true if the indices
 	 * have the same number of subindices and all subindices are equal.
 	 * @param index Index to compare with.
@@ -66,6 +70,9 @@ public:
 
 	/** Get size. */
 	unsigned int size() const;
+
+	/** Push subindex at the back of the index. */
+	void push_back(int subindex);
 
 	/** Removes and returns the first subindex. */
 	int popFront();
@@ -152,6 +159,10 @@ inline const int& Index::at(unsigned int n) const{
 
 inline unsigned int Index::size() const{
 	return indices.size();
+}
+
+inline void Index::push_back(int subindex){
+	indices.push_back(subindex);
 }
 
 inline int Index::popFront(){

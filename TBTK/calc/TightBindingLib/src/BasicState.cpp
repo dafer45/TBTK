@@ -25,30 +25,36 @@ using namespace std;
 
 namespace TBTK{
 
-BasicState::BasicState(const Index &index, const Index &unitCell) :
-	AbstractState(AbstractState::StateID::Basic),
-	index(index),
-	unitCell(unitCell)
+BasicState::BasicState(const Index &index, const Index &unitCellIndex) :
+	AbstractState(AbstractState::StateID::Basic)
 {
+	setIndex(index);
+	setContainer(unitCellIndex);
 }
 
 BasicState::~BasicState(){
 }
 
+BasicState* BasicState::clone() const{
+	BasicState* clonedState = new BasicState(*this);
+
+	return clonedState;
+}
+
 void BasicState::addOverlap(
 	complex<double> overlap,
 	const Index &braIndex,
-	const Index &braUnitCell
+	const Index &braRelativeUnitCell
 ){
-	overlaps.push_back(make_tuple(overlap, braIndex, braUnitCell));
+	overlaps.push_back(make_tuple(overlap, braIndex, braRelativeUnitCell));
 }
 
 void BasicState::addMatrixElement(
 	complex<double> matrixElement,
 	const Index &braIndex,
-	const Index &braUnitCell
+	const Index &braRelativeUnitCell
 ){
-	matrixElements.push_back(make_tuple(matrixElement, braIndex, braUnitCell));
+	matrixElements.push_back(make_tuple(matrixElement, braIndex, braRelativeUnitCell));
 }
 
 complex<double> BasicState::getOverlap(const AbstractState &bra) const{
@@ -60,11 +66,50 @@ complex<double> BasicState::getOverlap(const AbstractState &bra) const{
 	);
 
 	for(unsigned int n = 0; n < overlaps.size(); n++){
+		const Index &braIndex = bra.getIndex();
+		const Index &ketIndex = get<1>(overlaps.at(n));
+		const Index &braUnitCell = bra.getContainer();
+		const Index &ketRelativeUnitCell = get<2>(overlaps.at(n));
+
+		TBTKAssert(
+			braIndex.size() == ketIndex.size(),
+			"BasicState::getOverlap()",
+			"Incompatible indices for <bra| and |ket>. <bra| has"
+			<< " index '" << braIndex.toString() << "', while"
+			<< " |ket> has index '"
+			<< ketIndex.toString() << "'.",
+			""
+		);
+		TBTKAssert(
+			braUnitCell.size() == ketRelativeUnitCell.size(),
+			"BasicState::getOverlap()",
+			"Incompatible unit cell indices for <bra| and |ket>."
+			<< " <bra| has unit cell index '"
+			<< braUnitCell.toString() << "', while ket has"
+			<< " relative unit cell index '"
+			<< ketRelativeUnitCell.toString() << "'.",
+			""
+		);
+		TBTKAssert(
+			getContainer().size() == ketRelativeUnitCell.size(),
+			"BasicState::getOverlap()",
+			"Incompatible unit cell indices for <bra| and |ket>."
+			<< " <bra| has unit cell index '"
+			<< braUnitCell.toString() << ", while |ket> has unit"
+			<< " cell index '" << getContainer().toString()
+			<< "'.",
+			""
+		);
+
+		Index ketAbsoluteUnitCell({});
+		for(unsigned int c = 0; c < braUnitCell.size(); c++)
+			ketAbsoluteUnitCell.push_back(getContainer().at(c) + ketRelativeUnitCell.at(c));
 		if(
-			((BasicState&)bra).index.equals(get<1>(overlaps.at(n))) &&
-			((BasicState&)bra).unitCell.equals(get<2>(overlaps.at(n)))
+			braIndex.equals(ketIndex) &&
+			braUnitCell.equals(ketAbsoluteUnitCell)
 		)
-			return get<0>(overlaps.at(n));
+
+		return get<0>(overlaps.at(n));
 	}
 
 	return 0.;
@@ -82,11 +127,50 @@ complex<double> BasicState::getMatrixElement(
 	);
 
 	for(unsigned int n = 0; n < matrixElements.size(); n++){
+		const Index &braIndex = bra.getIndex();
+		const Index &ketIndex = get<1>(matrixElements.at(n));
+		const Index &braUnitCell = bra.getContainer();
+		const Index &ketRelativeUnitCell = get<2>(matrixElements.at(n));
+
+		TBTKAssert(
+			braIndex.size() == ketIndex.size(),
+			"BasicState::getMatrixElements()",
+			"Incompatible indices for <bra| and |ket>. <bra| has"
+			<< " index '" << braIndex.toString() << "', while"
+			<< " |ket> has index '"
+			<< ketIndex.toString() << "'.",
+			""
+		);
+		TBTKAssert(
+			braUnitCell.size() == ketRelativeUnitCell.size(),
+			"BasicState::getMatrixElements()",
+			"Incompatible unit cell indices for <bra| and |ket>."
+			<< " <bra| has unit cell index '"
+			<< braUnitCell.toString() << "', while ket has"
+			<< " relative unit cell index '"
+			<< ketRelativeUnitCell.toString() << "'.",
+			""
+		);
+		TBTKAssert(
+			getContainer().size() == ketRelativeUnitCell.size(),
+			"BasicState::getMatrixElements()",
+			"Incompatible unit cell indices for <bra| and |ket>."
+			<< " <bra| has unit cell index '"
+			<< braUnitCell.toString() << ", while |ket> has unit"
+			<< " cell index '" << getContainer().toString()
+			<< "'.",
+			""
+		);
+
+		Index ketAbsoluteUnitCell({});
+		for(unsigned int c = 0; c < braUnitCell.size(); c++)
+			ketAbsoluteUnitCell.push_back(getContainer().at(c) + ketRelativeUnitCell.at(c));
 		if(
-			((BasicState&)bra).index.equals(get<1>(matrixElements.at(n))) &&
-			((BasicState&)bra).unitCell.equals(get<2>(matrixElements.at(n)))
+			braIndex.equals(ketIndex) &&
+			braUnitCell.equals(ketAbsoluteUnitCell)
 		)
-			return get<0>(matrixElements.at(n));
+
+		return get<0>(matrixElements.at(n));
 	}
 
 	return 0.;

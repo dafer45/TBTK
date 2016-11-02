@@ -120,8 +120,21 @@ Model* ModelFactory::createModel(
 			AbstractState *bra = states.at(to);
 
 			complex<double> amplitude = ket->getMatrixElement(*bra);
-			if(amplitude != 0.)
-				model->addHA(HoppingAmplitude(amplitude, {(int)to}, {(int)from}));
+			if(amplitude != 0.){
+				model->addHA(
+					HoppingAmplitude(
+						amplitude,
+						Index(
+							bra->getContainer(),
+							bra->getIndex()
+						),
+						Index(
+							ket->getContainer(),
+							ket->getIndex()
+						)
+					)
+				);
+			}
 		}
 	}
 
@@ -156,7 +169,10 @@ Model* ModelFactory::createModel(
 	Geometry *geometry = model->getGeometry();
 	for(unsigned int n = 0; n < states.size(); n++){
 		geometry->setCoordinates(
-			{(int)n},
+			Index(
+				states.at(n)->getContainer(),
+				states.at(n)->getIndex()
+			),
 			states.at(n)->getCoordinates(),
 			states.at(n)->getSpecifiers()
 		);

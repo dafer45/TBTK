@@ -24,7 +24,7 @@ using namespace std;
 
 namespace TBTK{
 
-AbstractState::AbstractState(StateID stateID){
+AbstractState::AbstractState(StateID stateID) : index({}), container({}){
 	this->stateID = stateID;
 }
 
@@ -37,7 +37,19 @@ void AbstractState::setCoordinates(initializer_list<double> coordinates){
 		this->coordinates.push_back(*(coordinates.begin()+n));
 }
 
+void AbstractState::setCoordinates(const vector<double> &coordinates){
+	this->coordinates.clear();
+	for(unsigned int n = 0; n < coordinates.size(); n++)
+		this->coordinates.push_back(*(coordinates.begin()+n));
+}
+
 void AbstractState::setSpecifiers(initializer_list<int> specifiers){
+	this->specifiers.clear();
+	for(unsigned int n = 0; n < specifiers.size(); n++)
+		this->specifiers.push_back(*(specifiers.begin()+n));
+}
+
+void AbstractState::setSpecifiers(const vector<int> &specifiers){
 	this->specifiers.clear();
 	for(unsigned int n = 0; n < specifiers.size(); n++)
 		this->specifiers.push_back(*(specifiers.begin()+n));

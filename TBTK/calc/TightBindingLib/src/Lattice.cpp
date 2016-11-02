@@ -43,4 +43,68 @@ void Lattice::addLatticePoint(const Index &latticePoint){
 	latticePoints.push_back(latticePoint);
 }
 
+StateSet* Lattice::generateStateSet(){
+	StateSet *stateSet = new StateSet();
+
+	const vector<vector<double>> latticeVectors = unitCell->getLatticeVectors();
+	const vector<AbstractState*> states = unitCell->getStates();
+
+	for(unsigned int l = 0; l < latticePoints.size(); l++){
+		const Index &latticePoint = latticePoints.at(l);
+
+		for(unsigned int s = 0; s < states.size(); s++){
+			AbstractState *state = states.at(s)->clone();
+
+			const vector<double> &coordinates = state->getCoordinates();
+
+			int coordinateDimension = coordinates.size();
+			int numLatticeVectors = latticeVectors.size();
+			int latticeVectorDimension = latticeVectors.at(0).size();
+
+			TBTKAssert(
+				coordinateDimension >= numLatticeVectors,
+				"Lattice::generateStateSet()",
+				"Incompatible state and lattice vector"
+				<< " dimension. The state has dimension "
+				<< coordinateDimension << ", while"
+				<< " the number of lattice vectors are "
+				<< numLatticeVectors << ".",
+				"The State has to have at least the same"
+				<< " number of dimensions as the number of"
+				<< " lattice vectors."
+			);
+			TBTKAssert(
+				coordinateDimension >= latticeVectorDimension,
+				"Lattice::generateStateSet()",
+				"Incompatible state and lattice vector"
+				<< " dimension. The state has dimension "
+				<< coordinates.size() << ", while"
+				<< " the lattice vectors have dimension "
+				<< latticeVectorDimension << ".",
+				"The State has to have at least the same"
+				<< " number of dimensions as the lattice"
+				<< " vectors."
+			);
+
+			vector<double> position;
+			for(int c = 0; c < coordinateDimension; c++)
+				position.push_back(coordinates.at(c));
+
+			for(int v = 0; v < numLatticeVectors; v++){
+				const vector<double> &latticeVector = latticeVectors.at(v);
+				for(int c = 0; c < latticeVectorDimension; c++){
+					position.at(c) += latticeVector.at(c)*latticePoint.at(c);
+				}
+			}
+
+			state->setCoordinates(position);
+			state->setContainer(latticePoint);
+
+			stateSet->addState(state);
+		}
+	}
+
+	return stateSet;
+}
+
 };	//End of namespace TBTK

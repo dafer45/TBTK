@@ -25,6 +25,7 @@
 
 #include "AbstractOperator.h"
 #include "DefaultOperator.h"
+#include "Index.h"
 
 #include <complex>
 #include <vector>
@@ -50,6 +51,9 @@ public:
 	/** Destructor. */
 	virtual ~AbstractState();
 
+	/** Returns a pointer to a clone of the State. */
+	virtual AbstractState* clone() const = 0;
+
 	/** Pure virtual overlap function. Returns the value of the operation
 	 *  \f[\langle\Psi_1|\Psi_2\rangle\f], where \f[\Psi_1\f] and
 	 *  \f[\Psi_2\f] are the argument bra and the object itself,
@@ -71,14 +75,32 @@ public:
 	/** Set coordinates. */
 	void setCoordinates(std::initializer_list<double> coordinates);
 
+	/** Set coordinates. */
+	void setCoordinates(const std::vector<double> &coordinates);
+
 	/** Set specifiers. */
 	void setSpecifiers(std::initializer_list<int> specifiers);
+
+	/** Set specifiers. */
+	void setSpecifiers(const std::vector<int> &specifiers);
+
+	/** Set index. */
+	void setIndex(const Index &index);
+
+	/** Set container. (For example a unit cell index.) */
+	void setContainer(const Index &container);
 
 	/** Get coordinates. */
 	const std::vector<double>& getCoordinates() const;
 
 	/** Get specifiers. */
 	const std::vector<int>& getSpecifiers() const;
+
+	/** Get index. */
+	const Index& getIndex() const;
+
+	/** Get container. */
+	const Index& getContainer() const;
 private:
 	/** State identifier. */
 	StateID stateID;
@@ -88,10 +110,25 @@ private:
 
 	/** Specifiers such as orbital number, spin-species, etc. */
 	std::vector<int> specifiers;
+
+	/** Index of the state. */
+	Index index;
+
+	/** Index specifiyng the container of the state. For example, a unit
+	 *  cell index. */
+	Index container;
 };
 
 inline AbstractState::StateID AbstractState::getStateID() const{
 	return stateID;
+}
+
+inline void AbstractState::setIndex(const Index& index){
+	this->index = index;
+}
+
+inline void AbstractState::setContainer(const Index& container){
+	this->container = container;
 }
 
 inline const std::vector<double>& AbstractState::getCoordinates() const{
@@ -100,6 +137,14 @@ inline const std::vector<double>& AbstractState::getCoordinates() const{
 
 inline const std::vector<int>& AbstractState::getSpecifiers() const{
 	return specifiers;
+}
+
+inline const Index& AbstractState::getIndex() const{
+	return index;
+}
+
+inline const Index& AbstractState::getContainer() const{
+	return container;
 }
 
 };	//End of namespace TBTK

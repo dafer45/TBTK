@@ -25,6 +25,13 @@ using namespace std;
 
 namespace TBTK{
 
+Index::Index(const Index &head, const Index &tail){
+	for(unsigned int n = 0; n < head.size(); n++)
+		indices.push_back(head.at(n));
+	for(unsigned int n = 0; n < tail.size(); n++)
+		indices.push_back(tail.at(n));
+}
+
 bool operator<(const Index &i1, const Index &i2){
 	int minNumIndices;
 	if(i1.size() < i2.size())
