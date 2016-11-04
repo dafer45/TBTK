@@ -30,7 +30,7 @@ namespace TBTK{
 class StateTreeNode{
 public:
 	/** Constructor. */
-	StateTreeNode();
+	StateTreeNode(std::initializer_list<double> center, double size, int maxDepth = 10);
 
 	/** Destructor. */
 	~StateTreeNode();
@@ -45,15 +45,22 @@ public:
 	double getRadius() const;
 private:
 	/** Child nodes. */
-	StateTreeNode *treeNodes[2];
+	std::vector<StateTreeNode*> stateTreeNodes;
 
-	AbstractState *state;
+	std::vector<AbstractState*> states;
 
 	/** Ceneter of container. */
 	std::vector<double> center;
 
-	/** Radius of container. */
-	double radius;
+	/** Half side length of container. */
+	double halfSize;
+
+	/** Maximum number of child node generations. */
+	int maxDepth;
+
+	/** Number of cells the space is partitioned into. Is allways 2^d,
+	 *  where d is the dimension of the space. */
+	const int numSpacePartitions;
 
 	/** Add state. Is called by StateTreeNode::add() and is called
 	 *  recursively. */

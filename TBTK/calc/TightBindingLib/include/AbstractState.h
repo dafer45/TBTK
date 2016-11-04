@@ -30,6 +30,7 @@
 #include <complex>
 #include <vector>
 #include <initializer_list>
+#include <limits>
 
 namespace TBTK{
 
@@ -90,6 +91,9 @@ public:
 	/** Set container. (For example a unit cell index.) */
 	void setContainer(const Index &container);
 
+	/** Set radial extent. */
+	void setExtent(double extent);
+
 	/** Get coordinates. */
 	const std::vector<double>& getCoordinates() const;
 
@@ -101,6 +105,12 @@ public:
 
 	/** Get container. */
 	const Index& getContainer() const;
+
+	/** Get radial extent. */
+	double getExtent() const;
+
+	/** Returns true if the state has finite extent. */
+	bool hasFiniteExtent() const;
 private:
 	/** State identifier. */
 	StateID stateID;
@@ -117,6 +127,9 @@ private:
 	/** Index specifiyng the container of the state. For example, a unit
 	 *  cell index. */
 	Index container;
+
+	/** Spatial radial extent of the state. */
+	double extent;
 };
 
 inline AbstractState::StateID AbstractState::getStateID() const{
@@ -129,6 +142,10 @@ inline void AbstractState::setIndex(const Index& index){
 
 inline void AbstractState::setContainer(const Index& container){
 	this->container = container;
+}
+
+inline void AbstractState::setExtent(double extent){
+	this->extent = extent;
 }
 
 inline const std::vector<double>& AbstractState::getCoordinates() const{
@@ -145,6 +162,17 @@ inline const Index& AbstractState::getIndex() const{
 
 inline const Index& AbstractState::getContainer() const{
 	return container;
+}
+
+inline double AbstractState::getExtent() const{
+	return extent;
+}
+
+inline bool AbstractState::hasFiniteExtent() const{
+	if(std::numeric_limits<double>::has_infinity)
+		return (extent == std::numeric_limits<double>::infinity());
+	else
+		return (extent == std::numeric_limits<double>::max());
 }
 
 };	//End of namespace TBTK

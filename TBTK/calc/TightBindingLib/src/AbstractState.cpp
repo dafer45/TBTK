@@ -20,12 +20,19 @@
 
 #include "../include/AbstractState.h"
 
+#include <limits>
+
 using namespace std;
 
 namespace TBTK{
 
 AbstractState::AbstractState(StateID stateID) : index({}), container({}){
 	this->stateID = stateID;
+
+	if(numeric_limits<double>::has_infinity)
+		extent = numeric_limits<double>::infinity();
+	else
+		extent = numeric_limits<double>::max();
 }
 
 AbstractState::~AbstractState(){
