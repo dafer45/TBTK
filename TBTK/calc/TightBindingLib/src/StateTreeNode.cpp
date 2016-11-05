@@ -161,4 +161,30 @@ bool StateTreeNode::addRecursive(AbstractState *state){
 	return true;
 }
 
+vector<const AbstractState*>* StateTreeNode::getOverlappingStates(
+	initializer_list<double> coordinates,
+	double extent
+){
+	vector<double> coordinatesVector;
+	for(unsigned int n = 0; n < coordinates.size(); n++)
+		coordinatesVector.push_back(*(coordinates.begin() + n));
+
+	vector<const AbstractState*> *overlappingStates = new vector<const AbstractState*>();
+
+	getOverlappingStatesRecursive(overlappingStates, coordinatesVector, extent);
+
+	return overlappingStates;
+}
+
+vector<const AbstractState*>* StateTreeNode::getOverlappingStates(
+	vector<double> coordinates,
+	double extent
+){
+	vector<const AbstractState*> *overlappingStates = new vector<const AbstractState*>();
+
+	getOverlappingStatesRecursive(overlappingStates, coordinates, extent);
+
+	return overlappingStates;
+}
+
 };	//End of namespace TBTK

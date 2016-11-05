@@ -41,6 +41,20 @@ public:
 	/** Add state. Does not assume ownership of the state. */
 	void add(AbstractState *state);
 
+	/** Get all state that have a finite overlap with the region centered
+	 *  at 'coordinates', and with extent 'extent'. */
+	std::vector<const AbstractState*>* getOverlappingStates(
+		std::initializer_list<double> coordinates,
+		double extent
+	);
+
+	/** Get all state that have a finite overlap with the region centered
+	 *  at 'coordinates', and with extent 'extent'. */
+	std::vector<const AbstractState*>* getOverlappingStates(
+		std::vector<double> coordinates,
+		double extent
+	);
+
 	/** Get center coorindates. */
 	const std::vector<double>& getCoordinates() const;
 
@@ -71,6 +85,15 @@ private:
  	 *  @return True if the state was succesfully added to the node or one
 	 *	of its children. */
 	bool addRecursive(AbstractState* state);
+
+	/** Get all state that have a finite overlap with the region centered
+	 *  at 'coordinates', and with extent 'extent'. Is called by
+	 *  StateTreeNode::getOverlappingStates() and is called recursively. */
+	void getOverlappingStatesRecursive(
+		std::vector<const AbstractState*>* overlappingStates,
+		std::vector<double> coordinates,
+		double extent
+	);
 };
 
 };	//End namespace TBTK
