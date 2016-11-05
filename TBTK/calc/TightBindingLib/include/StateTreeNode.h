@@ -30,7 +30,10 @@ namespace TBTK{
 class StateTreeNode{
 public:
 	/** Constructor. */
-	StateTreeNode(std::initializer_list<double> center, double size, int maxDepth = 10);
+	StateTreeNode(std::initializer_list<double> center, double halfSize, int maxDepth = 10);
+
+	/** Constructor. */
+	StateTreeNode(std::vector<double> center, double halfSize, int maxDepth = 10);
 
 	/** Destructor. */
 	~StateTreeNode();
@@ -63,8 +66,11 @@ private:
 	const int numSpacePartitions;
 
 	/** Add state. Is called by StateTreeNode::add() and is called
-	 *  recursively. */
-	AbstractState* addRecursive(AbstractState* state);
+	 *  recursively.
+	 *
+ 	 *  @return True if the state was succesfully added to the node or one
+	 *	of its children. */
+	bool addRecursive(AbstractState* state);
 };
 
 };	//End namespace TBTK

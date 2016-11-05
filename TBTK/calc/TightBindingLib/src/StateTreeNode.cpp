@@ -31,9 +31,16 @@ namespace TBTK{
 StateTreeNode::StateTreeNode(initializer_list<double> center, double halfSize, int maxDepth) :
 	numSpacePartitions(pow(2, center.size()))
 {
-	for(int n = 0; n < numSpacePartitions; n++)
-		stateTreeNodes.push_back(NULL);
+	for(unsigned int n = 0; n < center.size(); n++)
+		this->center.push_back(*(center.begin() + n));
 
+	this->halfSize = halfSize;
+	this->maxDepth = maxDepth;
+}
+
+StateTreeNode::StateTreeNode(vector<double> center, double halfSize, int maxDepth) :
+	numSpacePartitions(pow(2, center.size()))
+{
 	for(unsigned int n = 0; n < center.size(); n++)
 		this->center.push_back(*(center.begin() + n));
 
@@ -89,20 +96,69 @@ void StateTreeNode::add(AbstractState *state){
 	}
 }
 
-AbstractState* StateTreeNode::addRecursive(AbstractState *state){
-	TBTKNotYetImplemented("StateTreeNode::addRecursive()");
+bool StateTreeNode::addRecursive(AbstractState *state){
+//	TBTKNotYetImplemented("StateTreeNode::addRecursive()");
 
-/*	if(!state->hasFiniteExtent()){
+	//Add the state as high up in the tree structure as possible if it is a
+	//non-local state.
+	if(!state->hasFiniteExtent()){
 		states.push_back(state);
 
 		return true;
 	}
 
-	vector<double> relativeCoordinate;
-	for(int 
-	if(state->getExtent() + > halfSize*/
+	//Get coordinate of the state relative to the center of the current
+	//space partition.
+	vector<double> relativeCoordinates;
+	const vector<double> &stateCoordinates = state->getCoordinates();
+	for(unsigned int n = 0; n < center.size(); n++)
+		relativeCoordinates.push_back(stateCoordinates.at(n) - center.at(n));
 
-	return NULL;
+	//Find the largest relative coordinate.
+	double largestRelativeCoordinate = 0.;
+	for(unsigned int n = 0; n < relativeCoordinates.size(); n++){
+		if(largestRelativeCoordinate < relativeCoordinates.at(n))
+			largestRelativeCoordinate = relativeCoordinates.at(n);
+	}
+
+	//If the largest relative coordinate plus the states extent is larger
+	//than the partitions half size, the state is not fully contained in
+	//the partition. Therefore return false to indicate that the state
+	//cannot be added to this partition.
+	if(largestRelativeCoordinate + state->getExtent() > halfSize)
+		return false;
+
+	//If the maximum number of allowed chilld node generations from this
+	//node is zero, add the state to this node.
+	if(maxDepth == 0){
+		states.push_back(state);
+
+		return true;
+	}
+
+	//Create child nodes if they do not already exist.
+	if(stateTreeNodes.size() == 0){
+		for(int n = 0; n < numSpacePartitions; n++){
+			vector<double> subCenter;
+			for(unsigned int c = 0; c < center.size(); c++){
+				subCenter.push_back(center.at(c) + ((n/(1 << c))%2 - 1/2.)*halfSize/2.);
+			}
+
+			stateTreeNodes.push_back(new StateTreeNode(subCenter, halfSize/2, maxDepth-1));
+		}
+	}
+
+	//Try to add the state to one of the child nodes.
+	for(unsigned int n = 0; n < stateTreeNodes.size(); n++){
+		if(stateTreeNodes.at(n)->addRecursive(state))
+			return true;
+	}
+
+	//State was not added to any of the child nodes, so add it to this
+	//node.
+	states.push_back(state);
+
+	return true;
 }
 
 };	//End of namespace TBTK

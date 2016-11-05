@@ -170,9 +170,9 @@ inline double AbstractState::getExtent() const{
 
 inline bool AbstractState::hasFiniteExtent() const{
 	if(std::numeric_limits<double>::has_infinity)
-		return (extent == std::numeric_limits<double>::infinity());
+		return !(extent == std::numeric_limits<double>::infinity());
 	else
-		return (extent == std::numeric_limits<double>::max());
+		return !(extent == std::numeric_limits<double>::max());
 }
 
 };	//End of namespace TBTK
