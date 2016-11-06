@@ -40,7 +40,7 @@ public:
 	void addState(AbstractState *state);
 
 	/** Get states. */
-	const std::vector<AbstractState*> getStates() const;
+	const std::vector<AbstractState*>& getStates() const;
 private:
 	/** Pointers to states. */
 	std::vector<AbstractState*> states;
@@ -50,7 +50,7 @@ inline void StateSet::addState(AbstractState *state){
 	states.push_back(state);
 }
 
-inline const std::vector<AbstractState*> StateSet::getStates() const{
+inline const std::vector<AbstractState*>& StateSet::getStates() const{
 	return states;
 }
 

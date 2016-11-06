@@ -24,16 +24,31 @@
 #define COM_DAFER45_TBTK_STATE_TREE_NODE
 
 #include "AbstractState.h"
+#include "StateSet.h"
 
 namespace TBTK{
 
 class StateTreeNode{
 public:
 	/** Constructor. */
-	StateTreeNode(std::initializer_list<double> center, double halfSize, int maxDepth = 10);
+	StateTreeNode(
+		std::initializer_list<double> center,
+		double halfSize,
+		int maxDepth = 10
+	);
 
 	/** Constructor. */
-	StateTreeNode(std::vector<double> center, double halfSize, int maxDepth = 10);
+	StateTreeNode(
+		std::vector<double> center,
+		double halfSize,
+		int maxDepth = 10
+	);
+
+	/** Constructor. */
+	StateTreeNode(
+		const StateSet &stateSet,
+		int maxDepth = 10
+	);
 
 	/** Destructor. */
 	~StateTreeNode();
@@ -46,14 +61,14 @@ public:
 	std::vector<const AbstractState*>* getOverlappingStates(
 		std::initializer_list<double> coordinates,
 		double extent
-	);
+	) const;
 
 	/** Get all state that have a finite overlap with the region centered
 	 *  at 'coordinates', and with extent 'extent'. */
 	std::vector<const AbstractState*>* getOverlappingStates(
 		std::vector<double> coordinates,
 		double extent
-	);
+	) const;
 
 	/** Get center coorindates. */
 	const std::vector<double>& getCoordinates() const;
@@ -93,7 +108,7 @@ private:
 		std::vector<const AbstractState*>* overlappingStates,
 		std::vector<double> coordinates,
 		double extent
-	);
+	) const;
 };
 
 };	//End namespace TBTK

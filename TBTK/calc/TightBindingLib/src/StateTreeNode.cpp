@@ -28,7 +28,11 @@ using namespace std;
 
 namespace TBTK{
 
-StateTreeNode::StateTreeNode(initializer_list<double> center, double halfSize, int maxDepth) :
+StateTreeNode::StateTreeNode(
+	initializer_list<double> center,
+	double halfSize,
+	int maxDepth
+) :
 	numSpacePartitions(pow(2, center.size()))
 {
 	for(unsigned int n = 0; n < center.size(); n++)
@@ -38,7 +42,11 @@ StateTreeNode::StateTreeNode(initializer_list<double> center, double halfSize, i
 	this->maxDepth = maxDepth;
 }
 
-StateTreeNode::StateTreeNode(vector<double> center, double halfSize, int maxDepth) :
+StateTreeNode::StateTreeNode(
+	vector<double> center,
+	double halfSize,
+	int maxDepth
+) :
 	numSpacePartitions(pow(2, center.size()))
 {
 	for(unsigned int n = 0; n < center.size(); n++)
@@ -46,6 +54,66 @@ StateTreeNode::StateTreeNode(vector<double> center, double halfSize, int maxDept
 
 	this->halfSize = halfSize;
 	this->maxDepth = maxDepth;
+}
+
+StateTreeNode::StateTreeNode(
+	const StateSet &stateSet,
+	int maxDepth
+) :
+	numSpacePartitions(pow(2, center.size()))
+{
+	const vector<AbstractState*> &states = stateSet.getStates();
+	unsigned int numCoordinates = states.at(0)->getCoordinates().size();
+	for(unsigned int n = 1; n < states.size(); n++){
+		TBTKAssert(
+			numCoordinates = states.at(n)->getCoordinates().size(),
+			"StateTreeNode::StateTreeNode()",
+			"Unable to handle StateSets containing states with different dimensions.",
+			""
+		);
+	}
+
+	vector<double> min;
+	vector<double> max;
+	unsigned int n = 0;
+	for(; n < states.size(); n++){
+		if(states.at(n)->hasFiniteExtent()){
+			for(unsigned int c = 0; c < numCoordinates; c++){
+				min.push_back(states.at(n)->getCoordinates().at(c) - states.at(n)->getExtent());
+				max.push_back(states.at(n)->getCoordinates().at(c) + states.at(n)->getExtent());
+			}
+			break;
+		}
+	}
+	if(n == states.size()){
+		for(unsigned int c = 0; c < states.at(0)->getCoordinates().size(); c++){
+			min.push_back(0);
+			max.push_back(0);
+		}
+	}
+	for(; n < states.size(); n++){
+		if(!states.at(n)->hasFiniteExtent())
+			continue;
+
+		for(unsigned int c = 0; c < numCoordinates; c++){
+			if(min.at(c) > states.at(n)->getCoordinates().at(c) - states.at(n)->getExtent())
+				min.at(c) = states.at(n)->getCoordinates().at(c) - states.at(n)->getExtent();
+			if(max.at(c) < states.at(n)->getCoordinates().at(c) + states.at(n)->getExtent())
+				max.at(c) = states.at(n)->getCoordinates().at(c) + states.at(n)->getExtent();
+		}
+	}
+
+	halfSize = 0.;
+	for(unsigned int n = 0; n < numCoordinates; n++){
+		center.push_back((min.at(n) + max.at(n))/2.);
+		if(halfSize < (max.at(n) - min.at(n))/2.)
+			halfSize = (max.at(n) - min.at(n))/2.;
+	}
+
+	this->maxDepth = maxDepth;
+
+	for(unsigned int n = 0; n < states.size(); n++)
+		add(states.at(n));
 }
 
 StateTreeNode::~StateTreeNode(){
@@ -97,8 +165,6 @@ void StateTreeNode::add(AbstractState *state){
 }
 
 bool StateTreeNode::addRecursive(AbstractState *state){
-//	TBTKNotYetImplemented("StateTreeNode::addRecursive()");
-
 	//Add the state as high up in the tree structure as possible if it is a
 	//non-local state.
 	if(!state->hasFiniteExtent()){
@@ -117,8 +183,8 @@ bool StateTreeNode::addRecursive(AbstractState *state){
 	//Find the largest relative coordinate.
 	double largestRelativeCoordinate = 0.;
 	for(unsigned int n = 0; n < relativeCoordinates.size(); n++){
-		if(largestRelativeCoordinate < relativeCoordinates.at(n))
-			largestRelativeCoordinate = relativeCoordinates.at(n);
+		if(largestRelativeCoordinate < abs(relativeCoordinates.at(n)))
+			largestRelativeCoordinate = abs(relativeCoordinates.at(n));
 	}
 
 	//If the largest relative coordinate plus the states extent is larger
@@ -141,10 +207,10 @@ bool StateTreeNode::addRecursive(AbstractState *state){
 		for(int n = 0; n < numSpacePartitions; n++){
 			vector<double> subCenter;
 			for(unsigned int c = 0; c < center.size(); c++){
-				subCenter.push_back(center.at(c) + ((n/(1 << c))%2 - 1/2.)*halfSize/2.);
+				subCenter.push_back(center.at(c) + ((n/(1 << c))%2 - 1/2.)*halfSize);
 			}
 
-			stateTreeNodes.push_back(new StateTreeNode(subCenter, halfSize/2, maxDepth-1));
+			stateTreeNodes.push_back(new StateTreeNode(subCenter, halfSize/2., maxDepth-1));
 		}
 	}
 
@@ -164,14 +230,28 @@ bool StateTreeNode::addRecursive(AbstractState *state){
 vector<const AbstractState*>* StateTreeNode::getOverlappingStates(
 	initializer_list<double> coordinates,
 	double extent
-){
+) const{
+	TBTKAssert(
+		coordinates.size() == center.size(),
+		"StateTreeNode::getOverlappingStates",
+		"Incompatible dimenstions. The StateTreeNode stores states"
+		<< " with dimension '" << center.size() << "', but the"
+		<< " argument 'coordinates' has dimension '"
+		<< coordinates.size() << "'.",
+		""
+	);
+
 	vector<double> coordinatesVector;
 	for(unsigned int n = 0; n < coordinates.size(); n++)
 		coordinatesVector.push_back(*(coordinates.begin() + n));
 
 	vector<const AbstractState*> *overlappingStates = new vector<const AbstractState*>();
 
-	getOverlappingStatesRecursive(overlappingStates, coordinatesVector, extent);
+	getOverlappingStatesRecursive(
+		overlappingStates,
+		coordinatesVector,
+		extent
+	);
 
 	return overlappingStates;
 }
@@ -179,12 +259,64 @@ vector<const AbstractState*>* StateTreeNode::getOverlappingStates(
 vector<const AbstractState*>* StateTreeNode::getOverlappingStates(
 	vector<double> coordinates,
 	double extent
-){
+) const{
+	TBTKAssert(
+		coordinates.size() == center.size(),
+		"StateTreeNode::getOverlappingStates",
+		"Incompatible dimenstions. The StateTreeNode stores states"
+		<< " with dimension '" << center.size() << ", but the argument"
+		<< " 'coordinates' has dimension '" << coordinates.size()
+		<< " was encountered.",
+		""
+	);
+
 	vector<const AbstractState*> *overlappingStates = new vector<const AbstractState*>();
 
 	getOverlappingStatesRecursive(overlappingStates, coordinates, extent);
 
 	return overlappingStates;
+}
+
+void StateTreeNode::getOverlappingStatesRecursive(
+	vector<const AbstractState*> *overlappingStates,
+	vector<double> coordinates,
+	double extent
+) const{
+	//Get distance from the center of the current space partition
+	double distance = 0.;
+	for(unsigned int n = 0; n < center.size(); n++)
+		distance += pow(coordinates.at(n) - center.at(n), 2);
+	distance = sqrt(distance);
+
+	//If the distance from the center is larger than the half diagonal of
+	//the partition plus the extent, the state is not overlapping with this
+	//partition. The half diagonal is given by
+	//sqrt(spaceDimension*halfSize^2)
+	if(distance > sqrt(center.size()*pow(halfSize, 2)) + extent)
+		return;
+
+	//Add states on this node if they overlap with the sphere centered at
+	//'coordinates' and with radius 'extent'.
+	for(unsigned int n = 0; n < states.size(); n++){
+		const vector<double> & stateCoordinates = states.at(n)->getCoordinates();
+
+		double distance = 0.;
+		for(unsigned int n = 0; n < coordinates.size(); n++)
+			distance += pow(coordinates.at(n) - stateCoordinates.at(n), 2);
+		distance = sqrt(distance);
+
+		if(distance < extent + states.at(n)->getExtent())
+			overlappingStates->push_back(states.at(n));
+	}
+
+	//Add relevant states from child nodes.
+	for(unsigned int n = 0; n < stateTreeNodes.size(); n++){
+		stateTreeNodes.at(n)->getOverlappingStatesRecursive(
+			overlappingStates,
+			coordinates,
+			extent
+		);
+	}
 }
 
 };	//End of namespace TBTK

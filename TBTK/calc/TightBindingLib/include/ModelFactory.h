@@ -26,6 +26,7 @@
 #include "Model.h"
 #include "Geometry.h"
 #include "StateSet.h"
+#include "StateTreeNode.h"
 #include "UnitCell.h"
 
 #include <initializer_list>
@@ -72,6 +73,13 @@ public:
 	/** Create a model from a StateSet. */
 	static Model* createModel(
 		const StateSet &stateSet,
+		const AbstractOperator &o = DefaultOperator()
+	);
+
+	/** Create a model from a StateTreeNode. */
+	static Model* createModel(
+		const StateSet &stateSet,
+		const StateTreeNode &stateTreeNode,
 		const AbstractOperator &o = DefaultOperator()
 	);
 
