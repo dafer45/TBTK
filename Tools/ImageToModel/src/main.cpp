@@ -166,7 +166,7 @@ UnitCell* setupUnitCell(UnitCellType unitCellType){
 			{0.,	0.,	1.}
 		});
 		BasicState *state = new BasicState({0},	{0, 0, 0});
-		state->addMatrixElement(0.,	{0},	{0,	0,	0});
+		state->addMatrixElement(1e-10,	{0},	{0,	0,	0});	//Addition of an infinitesimal amplitude ensures that disconnected particles are added to the Model.
 		state->addMatrixElement(-1.0,	{0},	{-1,	0,	0});
 		state->addMatrixElement(-1.0,	{0},	{1,	0,	0});
 		state->addMatrixElement(-1.0,	{0},	{0,	-1,	0});
