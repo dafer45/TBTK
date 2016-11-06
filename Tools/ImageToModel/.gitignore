@@ -1,0 +1,4 @@
+#Ignore TBTKResults.h5 in this folder
+TBTKResults.h5
+TBTKLog
+ModelFile
