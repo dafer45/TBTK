@@ -28,6 +28,13 @@
 
 namespace TBTK{
 
+/** The StateTreeNode is a node in a tree that contains pointers to
+ *  AbstractStates. In particular, the StateTreeNode is constructed to allow
+ *  for quick access of all States with a spatial overlap with a specified
+ *  region. States with infinite extent overlaps with every region. The tree is
+ *  not a container of the States themselves and only serves the purpose of
+ *  allowing for quick access of states. As such, its destructor does not
+ *  delete the states. */
 class StateTreeNode{
 public:
 	/** Constructor. */
@@ -47,7 +54,8 @@ public:
 	/** Constructor. */
 	StateTreeNode(
 		const StateSet &stateSet,
-		int maxDepth = 10
+		int maxDepth = 10,
+		double centerShiftMultiplier = 3.14	//Best choice of default number not known. Small integers and common ratios and trancendentals are probably all bad choices.
 	);
 
 	/** Destructor. */
@@ -86,6 +94,13 @@ private:
 
 	/** Half side length of container. */
 	double halfSize;
+
+	/** Constant used to enlarge regions for which comparison is ot be
+	 *  perforemed. If not used, comparison operations for marginally
+	 *  contained states can fail. For example, a state centered at the
+	 *  origin and with radius R, can fail to be included in the
+	 *  rectangluar volume centered at the origin and with half size R. */
+	static constexpr double ROUNDOFF_MARGIN_MULTIPLIER = 1.01;
 
 	/** Maximum number of child node generations. */
 	int maxDepth;

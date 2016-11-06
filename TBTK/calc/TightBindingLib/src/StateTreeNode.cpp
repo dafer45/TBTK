@@ -21,6 +21,7 @@
 #include "../include/StateTreeNode.h"
 #include "../include/TBTKMacros.h"
 #include "../include/Index.h"
+#include "../include/Util.h"
 
 #include <limits>
 
@@ -58,12 +59,14 @@ StateTreeNode::StateTreeNode(
 
 StateTreeNode::StateTreeNode(
 	const StateSet &stateSet,
-	int maxDepth
+	int maxDepth,
+	double centerShiftMultiplier
 ) :
-	numSpacePartitions(pow(2, center.size()))
+	numSpacePartitions(pow(2, stateSet.getStates().at(0)->getCoordinates().size()))
 {
 	const vector<AbstractState*> &states = stateSet.getStates();
 	unsigned int numCoordinates = states.at(0)->getCoordinates().size();
+
 	for(unsigned int n = 1; n < states.size(); n++){
 		TBTKAssert(
 			numCoordinates = states.at(n)->getCoordinates().size(),
@@ -73,24 +76,32 @@ StateTreeNode::StateTreeNode(
 		);
 	}
 
+	//Find bounding box.
 	vector<double> min;
 	vector<double> max;
+	double maxFiniteExtent = 0.;
 	unsigned int n = 0;
+	//Find first state with finite extent and initialize min and max such
+	//that the state is contained inside the corresponding rectangle.
 	for(; n < states.size(); n++){
 		if(states.at(n)->hasFiniteExtent()){
 			for(unsigned int c = 0; c < numCoordinates; c++){
 				min.push_back(states.at(n)->getCoordinates().at(c) - states.at(n)->getExtent());
 				max.push_back(states.at(n)->getCoordinates().at(c) + states.at(n)->getExtent());
 			}
+			maxFiniteExtent = states.at(n)->getExtent();
 			break;
 		}
 	}
+	//If all state have infinite extent, create a dummy box of zero extent.
 	if(n == states.size()){
 		for(unsigned int c = 0; c < states.at(0)->getCoordinates().size(); c++){
 			min.push_back(0);
 			max.push_back(0);
 		}
 	}
+	//Loop over all remaining states and update min and max so that every
+	//state is contained in the corresponding rectangle.
 	for(; n < states.size(); n++){
 		if(!states.at(n)->hasFiniteExtent())
 			continue;
@@ -101,8 +112,22 @@ StateTreeNode::StateTreeNode(
 			if(max.at(c) < states.at(n)->getCoordinates().at(c) + states.at(n)->getExtent())
 				max.at(c) = states.at(n)->getCoordinates().at(c) + states.at(n)->getExtent();
 		}
+
+		if(maxFiniteExtent < states.at(n)->getExtent())
+			maxFiniteExtent = states.at(n)->getExtent();
 	}
 
+	//Enlarge and shift box to avoid problems with high level partition
+	//boundaries cutting through states. This would be particularly
+	//problematic if the states for example have three dimensional
+	//coordinates, but are contained in a plane. Without shifting the box,
+	//the first partition boundary would cut every state and thereby every
+	//state would be added to the root node. By adding 2*maxFiniteExtent
+	//plus a small number, such cases are avoided.
+	for(unsigned int n = 0; n < max.size(); n++)
+		max.at(n) += centerShiftMultiplier*maxFiniteExtent;
+
+	//Calculate center nad halfSize of the bounding box.
 	halfSize = 0.;
 	for(unsigned int n = 0; n < numCoordinates; n++){
 		center.push_back((min.at(n) + max.at(n))/2.);
@@ -191,7 +216,7 @@ bool StateTreeNode::addRecursive(AbstractState *state){
 	//than the partitions half size, the state is not fully contained in
 	//the partition. Therefore return false to indicate that the state
 	//cannot be added to this partition.
-	if(largestRelativeCoordinate + state->getExtent() > halfSize)
+	if(largestRelativeCoordinate + state->getExtent() > halfSize*ROUNDOFF_MARGIN_MULTIPLIER)
 		return false;
 
 	//If the maximum number of allowed chilld node generations from this
@@ -206,9 +231,8 @@ bool StateTreeNode::addRecursive(AbstractState *state){
 	if(stateTreeNodes.size() == 0){
 		for(int n = 0; n < numSpacePartitions; n++){
 			vector<double> subCenter;
-			for(unsigned int c = 0; c < center.size(); c++){
+			for(unsigned int c = 0; c < center.size(); c++)
 				subCenter.push_back(center.at(c) + ((n/(1 << c))%2 - 1/2.)*halfSize);
-			}
 
 			stateTreeNodes.push_back(new StateTreeNode(subCenter, halfSize/2., maxDepth-1));
 		}
@@ -223,6 +247,24 @@ bool StateTreeNode::addRecursive(AbstractState *state){
 	//State was not added to any of the child nodes, so add it to this
 	//node.
 	states.push_back(state);
+
+	stringstream centerStr;
+	centerStr << "{";
+	for(unsigned int n = 0; n < center.size(); n++){
+		if(n != 0)
+			centerStr << ", ";
+		centerStr << center.at(n);
+	}
+	centerStr << "}";
+
+	stringstream stateStr;
+	stateStr << "{";
+	for(unsigned int n = 0; n < stateCoordinates.size(); n++){
+		if(n != 0)
+			stateStr << ", ";
+		stateStr << stateCoordinates.at(n);
+	}
+	stateStr << "}";
 
 	return true;
 }
@@ -298,14 +340,14 @@ void StateTreeNode::getOverlappingStatesRecursive(
 	//Add states on this node if they overlap with the sphere centered at
 	//'coordinates' and with radius 'extent'.
 	for(unsigned int n = 0; n < states.size(); n++){
-		const vector<double> & stateCoordinates = states.at(n)->getCoordinates();
+		const vector<double> &stateCoordinates = states.at(n)->getCoordinates();
 
 		double distance = 0.;
 		for(unsigned int n = 0; n < coordinates.size(); n++)
 			distance += pow(coordinates.at(n) - stateCoordinates.at(n), 2);
 		distance = sqrt(distance);
 
-		if(distance < extent + states.at(n)->getExtent())
+		if(distance <= extent + states.at(n)->getExtent())
 			overlappingStates->push_back(states.at(n));
 	}
 
