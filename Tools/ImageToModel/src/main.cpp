@@ -44,29 +44,30 @@ using namespace TBTK;
 
 complex<double> i(0, 1.);
 
-enum UnitCellType{Qubic, BCC, FCC};
+enum UnitCellType{Cubic, BCC, FCC, Diamond};
 
 UnitCell* setupUnitCell(UnitCellType unitCellType);
 
 int main(int argc, char **argv){
 	int isVerbose = false;
 	int depth = 1;
-	UnitCellType unitCellType = UnitCellType::Qubic;
+	UnitCellType unitCellType = UnitCellType::Cubic;
 
 	while(true){
 		static struct option long_options[] = {
 			//Sets flags.
 			{"verbose",	no_argument,		&isVerbose,	1},
 			//Does not set flags.
-			{"depth",	required_argument,	0,		'd'},
-			{"qubic",	no_argument,		0,		'q'},
+			{"depth",	required_argument,	0,		'D'},
+			{"cubic",	no_argument,		0,		'c'},
 			{"bcc",		no_argument,		0,		'b'},
 			{"fcc",		no_argument,		0,		'f'},
+			{"diamond",	no_argument,		0,		'd'},
 			{0,		0,			0,		0}
 		};
 
 		int option_index = 0;
-		int c = getopt_long(argc, argv, "s:b:f:", long_options, &option_index);
+		int c = getopt_long(argc, argv, "D:c:b:f:d:", long_options, &option_index);
                 if(c == -1)
 			break;
 
@@ -80,17 +81,20 @@ int main(int argc, char **argv){
 				cout << " with argument " << optarg;
 			cout << "\n";
 			break;
-		case 'd':
+		case 'D':
 			depth = atoi(optarg);
 			break;
-		case 'q':
-			unitCellType = UnitCellType::Qubic;
+		case 'c':
+			unitCellType = UnitCellType::Cubic;
 			break;
 		case 'b':
 			unitCellType = UnitCellType::BCC;
 			break;
 		case 'f':
 			unitCellType = UnitCellType::FCC;
+			break;
+		case 'd':
+			unitCellType = UnitCellType::Diamond;
 			break;
 		default:
 			TBTKExit(
@@ -158,7 +162,7 @@ int main(int argc, char **argv){
 UnitCell* setupUnitCell(UnitCellType unitCellType){
 	UnitCell *unitCell;
 	switch(unitCellType){
-	case UnitCellType::Qubic:
+	case UnitCellType::Cubic:
 	{
 		unitCell = new UnitCell({
 			{1.,	0.,	0.},
@@ -222,24 +226,24 @@ UnitCell* setupUnitCell(UnitCellType unitCellType){
 	case UnitCellType::FCC:
 	{
 		unitCell = new UnitCell({
-			{2/sqrt(2.),    0,              0},
-			{0,             2/sqrt(2.),     0},
-			{0,             0,              2/sqrt(2.)}
+			{2/sqrt(2.),	0,		0},
+			{0,		2/sqrt(2.),	0},
+			{0,		0,		2/sqrt(2.)}
 		});
 
 		BasicState *state = new BasicState({0}, {0, 0, 0});
-		state->addMatrixElement(-1.0,   {1},    {0,     0,      0});
-		state->addMatrixElement(-1.0,   {2},    {0,     0,      0});
-		state->addMatrixElement(-1.0,   {3},    {0,     0,      0});
-		state->addMatrixElement(-1.0,   {1},    {-1,    0,      0});
-		state->addMatrixElement(-1.0,   {2},    {-1,    0,      0});
-		state->addMatrixElement(-1.0,   {1},    {0,     -1,     0});
-		state->addMatrixElement(-1.0,   {3},    {0,     -1,     0});
-		state->addMatrixElement(-1.0,   {1},    {-1,    -1,     0});
-		state->addMatrixElement(-1.0,   {2},    {0,     0,      -1});
-		state->addMatrixElement(-1.0,   {3},    {0,     0,      -1});
-		state->addMatrixElement(-1.0,   {2},    {-1,    0,      -1});
-		state->addMatrixElement(-1.0,   {3},    {0,     -1,     -1});
+		state->addMatrixElement(-1.0,	{1},	{0,	0,	0});
+		state->addMatrixElement(-1.0,	{2},	{0,	0,	0});
+		state->addMatrixElement(-1.0,	{3},	{0,	0,	0});
+		state->addMatrixElement(-1.0,	{1},	{-1,	0,	0});
+		state->addMatrixElement(-1.0,	{2},	{-1,	0,	0});
+		state->addMatrixElement(-1.0,	{1},	{0,	-1,	0});
+		state->addMatrixElement(-1.0,	{3},	{0,	-1,	0});
+		state->addMatrixElement(-1.0,	{1},	{-1,	-1,	0});
+		state->addMatrixElement(-1.0,	{2},	{0,	0,	-1});
+		state->addMatrixElement(-1.0,	{3},	{0,	0,	-1});
+		state->addMatrixElement(-1.0,	{2},	{-1,	0,	-1});
+		state->addMatrixElement(-1.0,	{3},	{0,	-1,	-1});
 		state->setCoordinates({0., 0., 0.});
 		state->setSpecifiers({0, 0});
 		state->setExtent(2.);
@@ -247,10 +251,10 @@ UnitCell* setupUnitCell(UnitCellType unitCellType){
 		unitCell->addState(state);
 
 		state = new BasicState({1});
-		state->addMatrixElement(-1.0,   {0},    {0,     0,      0});
-		state->addMatrixElement(-1.0,   {0},    {1,     0,      0});
-		state->addMatrixElement(-1.0,   {0},    {0,     1,      0});
-		state->addMatrixElement(-1.0,   {0},    {1,     1,      0});
+		state->addMatrixElement(-1.0,   {0},	{0,	0,	0});
+		state->addMatrixElement(-1.0,   {0},	{1,	0,	0});
+		state->addMatrixElement(-1.0,   {0},	{0,	1,	0});
+		state->addMatrixElement(-1.0,	{0},	{1,	1,	0});
 		state->setCoordinates({1/sqrt(2.), 1/sqrt(2.), 0.});
 		state->setSpecifiers({1, 0});
 		state->setExtent(2.);
@@ -268,12 +272,110 @@ UnitCell* setupUnitCell(UnitCellType unitCellType){
 		unitCell->addState(state);
 
 		state = new BasicState({3});
-		state->addMatrixElement(-1.0,   {0},    {0,     0,      0});
-		state->addMatrixElement(-1.0,   {0},    {0,     1,      0});
-		state->addMatrixElement(-1.0,   {0},    {0,     0,      1});
-		state->addMatrixElement(-1.0,   {0},    {0,     1,      1});
+		state->addMatrixElement(-1.0,	{0},	{0,	0,	0});
+		state->addMatrixElement(-1.0,	{0},	{0,	1,	0});
+		state->addMatrixElement(-1.0,	{0},	{0,	0,	1});
+		state->addMatrixElement(-1.0,	{0},	{0,	1,	1});
 		state->setCoordinates({0., 1/sqrt(2.), 1/sqrt(2.)});
 		state->setSpecifiers({1, 0});
+		state->setExtent(2.);
+
+		unitCell->addState(state);
+
+		break;
+	}
+	case UnitCellType::Diamond:
+	{
+		unitCell = new UnitCell({
+			{4/sqrt(3.),	0,		0},
+			{0,		4/sqrt(3.),	0},
+			{0,		0,		4/sqrt(3.)}
+		});
+
+		BasicState *state = new BasicState({0}, {0, 0, 0});
+		state->addMatrixElement(-1.0,	{4},	{0,	0,	0});
+		state->addMatrixElement(-1.0,	{5},	{-1,	-1,	0});
+		state->addMatrixElement(-1.0,	{6},	{-1,	0,	-1});
+		state->addMatrixElement(-1.0,	{7},	{0,	-1,	-1});
+		state->setCoordinates({0., 0., 0.});
+		state->setSpecifiers({0, 0});
+		state->setExtent(2.);
+
+		unitCell->addState(state);
+
+		state = new BasicState({1});
+		state->addMatrixElement(-1.0,	{4},	{0,	0,	0});
+		state->addMatrixElement(-1.0,	{5},	{0,	0,	0});
+		state->addMatrixElement(-1.0,	{6},	{0,	0,	-1});
+		state->addMatrixElement(-1.0,	{7},	{0,	0,	-1});
+		state->setCoordinates({2/sqrt(3.), 2/sqrt(3.), 0.});
+		state->setSpecifiers({1, 0});
+		state->setExtent(2.);
+
+		unitCell->addState(state);
+
+		state = new BasicState({2});
+		state->addMatrixElement(-1.0,	{4},	{0,	0,	0});
+		state->addMatrixElement(-1.0,	{6},	{0,	0,	0});
+		state->addMatrixElement(-1.0,	{5},	{0,	-1,	0});
+		state->addMatrixElement(-1.0,	{7},	{0,	-1,	0});
+		state->setCoordinates({2/sqrt(3.), 0., 2/sqrt(3.)});
+		state->setSpecifiers({2, 0});
+		state->setExtent(2.);
+
+		unitCell->addState(state);
+
+		state = new BasicState({3});
+		state->addMatrixElement(-1.0,	{4},	{0,	0,	0});
+		state->addMatrixElement(-1.0,	{7},	{0,	0,	0});
+		state->addMatrixElement(-1.0,	{5},	{-1,	0,	0});
+		state->addMatrixElement(-1.0,	{6},	{-1,	0,	0});
+		state->setCoordinates({0., 2/sqrt(3.), 2/sqrt(3.)});
+		state->setSpecifiers({3, 0});
+		state->setExtent(2.);
+
+		unitCell->addState(state);
+
+		state = new BasicState({4});
+		state->addMatrixElement(-1.0,	{0},	{0,	0,	0});
+		state->addMatrixElement(-1.0,	{1},	{0,	0,	0});
+		state->addMatrixElement(-1.0,	{2},	{0,	0,	0});
+		state->addMatrixElement(-1.0,	{3},	{0,	0,	0});
+		state->setCoordinates({1/sqrt(3), 1/sqrt(3.), 1/sqrt(3.)});
+		state->setSpecifiers({4, 0});
+		state->setExtent(2.);
+
+		unitCell->addState(state);
+
+		state = new BasicState({5});
+		state->addMatrixElement(-1.0,	{1},	{0,	0,	0});
+		state->addMatrixElement(-1.0,	{3},	{1,	0,	0});
+		state->addMatrixElement(-1.0,	{2},	{0,	1,	0});
+		state->addMatrixElement(-1.0,	{0},	{1,	1,	0});
+		state->setCoordinates({sqrt(3.), sqrt(3.), 1/sqrt(3.)});
+		state->setSpecifiers({5, 0});
+		state->setExtent(2.);
+
+		unitCell->addState(state);
+
+		state = new BasicState({6});
+		state->addMatrixElement(-1.0,	{2},	{0,	0,	0});
+		state->addMatrixElement(-1.0,	{3},	{1,	0,	0});
+		state->addMatrixElement(-1.0,	{1},	{0,	0,	1});
+		state->addMatrixElement(-1.0,	{0},	{1,	0,	1});
+		state->setCoordinates({sqrt(3.), 1/sqrt(3.), sqrt(3.)});
+		state->setSpecifiers({6, 0});
+		state->setExtent(2.);
+
+		unitCell->addState(state);
+
+		state = new BasicState({7});
+		state->addMatrixElement(-1.0,	{3},	{0,	0,	0});
+		state->addMatrixElement(-1.0,	{2},	{0,	1,	0});
+		state->addMatrixElement(-1.0,	{1},	{0,	0,	1});
+		state->addMatrixElement(-1.0,	{0},	{0,	1,	1});
+		state->setCoordinates({1/sqrt(3.), sqrt(3.), sqrt(3.)});
+		state->setSpecifiers({7, 0});
 		state->setExtent(2.);
 
 		unitCell->addState(state);
@@ -283,7 +385,7 @@ UnitCell* setupUnitCell(UnitCellType unitCellType){
 	default:
 		TBTKExit(
 			"ImageToModel",
-			"Choose unit cell not yet implemented.",
+			"Choosen unit cell not yet implemented.",
 			""
 		);
 		break;
