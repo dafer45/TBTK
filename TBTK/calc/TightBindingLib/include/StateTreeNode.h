@@ -95,12 +95,9 @@ private:
 	/** Half side length of container. */
 	double halfSize;
 
-	/** Constant used to enlarge regions for which comparison is ot be
-	 *  perforemed. If not used, comparison operations for marginally
-	 *  contained states can fail. For example, a state centered at the
-	 *  origin and with radius R, can fail to be included in the
-	 *  rectangluar volume centered at the origin and with half size R. */
-	static constexpr double ROUNDOFF_MARGIN_MULTIPLIER = 1.01;
+	/** Constant used to give the partitions a margin. If not used,
+	 *  comparison operations for marginally contained states can fail. */
+	static constexpr double ROUNDOFF_MARGIN_MULTIPLIER = 0.99;
 
 	/** Maximum number of child node generations. */
 	int maxDepth;

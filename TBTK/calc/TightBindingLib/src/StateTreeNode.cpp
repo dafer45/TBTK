@@ -122,10 +122,11 @@ StateTreeNode::StateTreeNode(
 	//problematic if the states for example have three dimensional
 	//coordinates, but are contained in a plane. Without shifting the box,
 	//the first partition boundary would cut every state and thereby every
-	//state would be added to the root node. By adding 2*maxFiniteExtent
-	//plus a small number, such cases are avoided.
+	//state would be added to the root node.
 	for(unsigned int n = 0; n < max.size(); n++)
 		max.at(n) += centerShiftMultiplier*maxFiniteExtent;
+	for(unsigned int n = 0; n < min.size(); n++)
+		min.at(n) -= 2.*(max.at(n) - min.at(n))*(1 - ROUNDOFF_MARGIN_MULTIPLIER);
 
 	//Calculate center nad halfSize of the bounding box.
 	halfSize = 0.;
@@ -215,7 +216,10 @@ bool StateTreeNode::addRecursive(AbstractState *state){
 	//If the largest relative coordinate plus the states extent is larger
 	//than the partitions half size, the state is not fully contained in
 	//the partition. Therefore return false to indicate that the state
-	//cannot be added to this partition.
+	//cannot be added to this partition. The actual comparission is made to
+	//a slightly region in order to ensure that rounding error don't allow
+	//the state to be added here, but fail to be extracted when a similar
+	//check is made.
 	if(largestRelativeCoordinate + state->getExtent() > halfSize*ROUNDOFF_MARGIN_MULTIPLIER)
 		return false;
 
