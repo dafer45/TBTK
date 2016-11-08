@@ -26,25 +26,64 @@ using namespace std;
 
 namespace TBTK{
 
-ReciprocalLattice::ReciprocalLattice(UnitCell *unitCell){
+ReciprocalLattice::ReciprocalLattice(UnitCell *unitCell, initializer_list<int> size){
 	this->unitCell = unitCell;
 
 	const vector<vector<double>> latticeVectors = unitCell->getLatticeVectors();
 
+	TBTKAssert(
+		size.size() == latticeVectors.size(),
+		"ReciprocalLattice::ReciprocalLattice()",
+		"Incompatible dimensions. The number of lattice vectors in the"
+		<< " UnitCell must be the same as the number of components in"
+		<< " size. The number of lattice vectors are "
+		<< latticeVectors.size() << ", while the number of components"
+		<< " of size are " << size.size() << ".",
+		""
+	);
+
+	for(unsigned int n = 0; n < size.size(); n++)
+		this->size.push_back(*(size.begin() + n));
+
 	switch(latticeVectors.size()){
 	case 1:
 	{
-		TBTKExit(
-			"ReciprocalLattice::ReciprocalLatice()",
-			"Support for one-dimensional lattices not yet implemented",
-			""
+		TBTKAssert(
+			latticeVectors.at(0).size() == 1
+			|| latticeVectors.at(0).size() == 2
+			|| latticeVectors.at(0).size() == 3,
+			"ReciprocalLattice::ReciprocalLattice()",
+			"Lattice vector dimension not supported.",
+			"Only one-, two-, and three-dimensional lattice"
+			<< " vectors are supported for UnitCells with one"
+			<< " lattice vector. The supplied UnitCell has a"
+			<< " lattice vector with "
+			<< latticeVectors.at(0).size() << " dimensions."
 		);
-		break;
+
+		vector<double> paddedLatticeVector;
+		unsigned int c = 0;
+		for(; c < latticeVectors.at(0).size(); c++)
+			paddedLatticeVector.push_back(latticeVectors.at(0).at(c));
+		for(; c < 3; c++)
+			paddedLatticeVector.push_back(latticeVectors.at(0).at(c));
+
+		Vector3d v(paddedLatticeVector);
+
+		Vector3d r = 2.*M_PI*v/Vector3d::dotProduct(v, v);
+
+		reciprocalLatticeVectors.push_back(vector<double>());
+		reciprocalLatticeVectors.at(0).push_back(r.x);
+		if(latticeVectors.at(0).size() > 1)
+			reciprocalLatticeVectors.at(0).push_back(r.y);
+		if(latticeVectors.at(0).size() > 2)
+			reciprocalLatticeVectors.at(0).push_back(r.z);
 	}
 	case 2:
 	{
 		TBTKAssert(
-			latticeVectors.at(0).size() == 2 || latticeVectors.at(0).size() == 3,
+			latticeVectors.at(0).size() == 2
+			|| latticeVectors.at(0).size() == 3,
 			"ReciprocalLattice::ReciprocalLattice()",
 			"Lattice vector dimension not supported.",
 			"Only two- and three-dimensional lattice vectors are"

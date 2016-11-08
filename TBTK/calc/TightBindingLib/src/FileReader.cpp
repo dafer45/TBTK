@@ -960,7 +960,7 @@ Util::ParameterSet* FileReader::readParameterSet(
 			const int COMPLEX_RANK = 1;
 			const hsize_t complex_dims[COMPLEX_RANK] = {2};
 			ArrayType complexDataType(PredType::NATIVE_DOUBLE, COMPLEX_RANK, complex_dims);
-			
+
 			TBTKAssert(
 				type == complexDataType,
 				"FileReader::readParameterSet()",

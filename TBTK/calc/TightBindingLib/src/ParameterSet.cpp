@@ -107,7 +107,7 @@ void ParameterSet::setInt(std::string name, int value){
 			return;
 		}
 	}
-	
+
 	TBTKExit("Error in ParameterSet::setInt()",
 		"Parameter '" << name << "' not found.",
 		""
@@ -121,7 +121,7 @@ void ParameterSet::setDouble(std::string name, double value){
 			return;
 		}
 	}
-	
+
 	TBTKExit("Error in ParameterSet::setDouble()",
 		"Parameter '" << name << "' not found.",
 		""
@@ -136,7 +136,7 @@ void ParameterSet::setComplex(std::string name, std::complex<double> value){
 			return;
 		}
 	}
-	
+
 	TBTKExit("Error in ParameterSet::setComplex()",
 		"Parameter '" << name << "' not found.",
 		""
@@ -150,7 +150,7 @@ void ParameterSet::setString(std::string name, std::string value){
 			return;
 		}
 	}
-	
+
 	TBTKExit("Error in ParameterSet::setString()",
 		"Parameter '" << name << "' not found.",
 		""
@@ -164,7 +164,7 @@ void ParameterSet::setBool(std::string name, bool value){
 			return;
 		}
 	}
-	
+
 	TBTKExit("Error in ParameterSet::setBool()",
 		"Parameter '" << name << "' not found.",
 		""

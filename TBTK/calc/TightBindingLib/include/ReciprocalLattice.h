@@ -34,7 +34,7 @@ namespace TBTK{
 class ReciprocalLattice{
 public:
 	/** Constructor. */
-	ReciprocalLattice(UnitCell *unitCell);
+	ReciprocalLattice(UnitCell *unitCell, std::initializer_list<int> size);
 
 	/** Destructor. */
 	~ReciprocalLattice();
@@ -50,6 +50,10 @@ private:
 
 	/** Reciprocal lattice vectors. */
 	std::vector<std::vector<double>> reciprocalLatticeVectors;
+
+	/** Size of the corresponding real space lattice, or equivalently, the
+	 *  size of the k-points mesh. */
+	std::vector<int> size;
 };
 
 inline const std::vector<std::vector<double>>& ReciprocalLattice::getReciprocalLatticeVectors() const{
