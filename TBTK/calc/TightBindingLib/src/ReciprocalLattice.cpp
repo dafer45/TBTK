@@ -26,7 +26,32 @@ using namespace std;
 namespace TBTK{
 
 ReciprocalLattice::ReciprocalLattice(UnitCell *unitCell){
+	TBTKNotYetImplemented("ReciprocalLattice::ReciprocalLattice()");
 	this->unitCell = unitCell;
+
+	const vector<vector<double>> latticeVectors = unitCell->getLatticeVectors();
+
+	switch(latticeVectors.size()){
+	case 3:
+		TBTKAssert(
+			latticeVectors.at(0).size() == 3,
+			"ReciprocalLattice::ReciprocalLattice()",
+			"Lattice vector dimension not supported.",
+			"Only three-dimensional lattice vectors are supported"
+			<< " for UnitCells with thee lattice vectors. The"
+			<< " supplied UnitCell has " << latticeVectors.at(0).size()
+			<< " dimensions."
+		);
+	default:
+		TBTKExit(
+			"ReciprocalLattice::ReciprocalLattice()",
+			"Unit cell dimension not supported.",
+			"Only UnitCells with 1-3 lattice vectors are"
+			<< " supported, but the supplied UnitCell has "
+			<< latticeVectors.size() << " lattice vectors."
+		);
+		break;
+	}
 }
 
 ReciprocalLattice::~ReciprocalLattice(){

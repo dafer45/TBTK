@@ -44,6 +44,9 @@ public:
 private:
 	/** Unit cell used to create reciprocal Model. */
 	UnitCell *unitCell;
+
+	/** Reciprocal lattice vectors. */
+	std::vector<std::vector<double>> reciprocalLatticeVectors;
 };
 
 };	//End of namespace TBTK
