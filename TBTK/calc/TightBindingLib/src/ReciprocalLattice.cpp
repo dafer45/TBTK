@@ -20,28 +20,94 @@
 
 #include "../include/ReciprocalLattice.h"
 #include "../include/TBTKMacros.h"
+#include "../include/Vector3d.h"
 
 using namespace std;
 
 namespace TBTK{
 
 ReciprocalLattice::ReciprocalLattice(UnitCell *unitCell){
-	TBTKNotYetImplemented("ReciprocalLattice::ReciprocalLattice()");
 	this->unitCell = unitCell;
 
 	const vector<vector<double>> latticeVectors = unitCell->getLatticeVectors();
 
 	switch(latticeVectors.size()){
+	case 1:
+	{
+		TBTKExit(
+			"ReciprocalLattice::ReciprocalLatice()",
+			"Support for one-dimensional lattices not yet implemented",
+			""
+		);
+		break;
+	}
+	case 2:
+	{
+		TBTKAssert(
+			latticeVectors.at(0).size() == 2 || latticeVectors.at(0).size() == 3,
+			"ReciprocalLattice::ReciprocalLattice()",
+			"Lattice vector dimension not supported.",
+			"Only two- and three-dimensional lattice vectors are"
+			<< " supported for UnitCells with two lattice"
+			<< " vectors. The supplied UnitCell has lattice"
+			<< " vectors with " << latticeVectors.at(0).size()
+			<< " dimensions."
+		);
+
+		vector<vector<double>> paddedLatticeVectors;
+		for(unsigned int n = 0; n < 2; n++){
+			paddedLatticeVectors.push_back(vector<double>());
+
+			for(unsigned int c = 0; c < latticeVectors.at(n).size(); c++)
+				paddedLatticeVectors.at(n).push_back(latticeVectors.at(n).at(c));
+			if(latticeVectors.at(n).size() == 2)
+				paddedLatticeVectors.at(n).push_back(0.);
+		}
+
+		Vector3d v[3];
+		for(unsigned int n = 0; n < 2; n++)
+			v[n] = Vector3d(paddedLatticeVectors.at(n));
+		v[2] = v[0]*v[1];
+
+		Vector3d r[2];
+		for(unsigned int n = 0; n < 2; n++)
+			r[n] = 2.*M_PI*v[n+1]*v[(n+2)%3]/Vector3d::dotProduct(v[n], v[n+1]*v[(n+2)%3]);
+
+		for(unsigned int n = 0; n < 2; n++){
+			reciprocalLatticeVectors.push_back(vector<double>());
+			reciprocalLatticeVectors.at(n).push_back(r[n].x);
+			reciprocalLatticeVectors.at(n).push_back(r[n].y);
+			if(latticeVectors.at(0).size() == 3)
+				reciprocalLatticeVectors.at(n).push_back(r[n].z);
+		}
+
+		break;
+	}
 	case 3:
+	{
 		TBTKAssert(
 			latticeVectors.at(0).size() == 3,
 			"ReciprocalLattice::ReciprocalLattice()",
 			"Lattice vector dimension not supported.",
 			"Only three-dimensional lattice vectors are supported"
-			<< " for UnitCells with thee lattice vectors. The"
-			<< " supplied UnitCell has " << latticeVectors.at(0).size()
-			<< " dimensions."
+			<< " for UnitCells with three lattice vectors. The"
+			<< " supplied UnitCell has lattice vectors with "
+			<< latticeVectors.at(0).size() << " dimensions."
 		);
+
+		Vector3d v[3];
+		for(unsigned int n = 0; n < 3; n++)
+			v[n] = Vector3d(latticeVectors.at(n));
+
+		Vector3d r[3];
+		for(unsigned int n = 0; n < 3; n++)
+			r[n] = 2.*M_PI*v[(n+1)%3]*v[(n+2)%3]/(Vector3d::dotProduct(v[n], v[(n+1)%3]*v[(n+2)%3]));
+
+		for(unsigned int n = 0; n < 3; n++)
+			reciprocalLatticeVectors.push_back(r[n].getStdVector());
+
+		break;
+	}
 	default:
 		TBTKExit(
 			"ReciprocalLattice::ReciprocalLattice()",
@@ -57,7 +123,7 @@ ReciprocalLattice::ReciprocalLattice(UnitCell *unitCell){
 ReciprocalLattice::~ReciprocalLattice(){
 }
 
-Model* ReciprocalLattice::generateModel(initializer_list<double> momentum){
+Model* ReciprocalLattice::generateModel(initializer_list<double> momentum) const{
 	TBTKNotYetImplemented("ReciprocalLattice::generateModel()");
 	Model *model = new Model();
 

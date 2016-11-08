@@ -40,7 +40,10 @@ public:
 	~ReciprocalLattice();
 
 	/** Genearates a Model for give momentum. */
-	Model* generateModel(std::initializer_list<double> momentum);
+	Model* generateModel(std::initializer_list<double> momentum) const;
+
+	/** Get reciprocal lattice vectors. */
+	const std::vector<std::vector<double>>& getReciprocalLatticeVectors() const;
 private:
 	/** Unit cell used to create reciprocal Model. */
 	UnitCell *unitCell;
@@ -48,6 +51,10 @@ private:
 	/** Reciprocal lattice vectors. */
 	std::vector<std::vector<double>> reciprocalLatticeVectors;
 };
+
+inline const std::vector<std::vector<double>>& ReciprocalLattice::getReciprocalLatticeVectors() const{
+	return reciprocalLatticeVectors;
+}
 
 };	//End of namespace TBTK
 

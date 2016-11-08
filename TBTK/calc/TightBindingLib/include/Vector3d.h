@@ -25,6 +25,7 @@
 
 #include <initializer_list>
 #include <vector>
+#include <math.h>
 
 namespace TBTK{
 
@@ -32,13 +33,13 @@ namespace TBTK{
 class Vector3d{
 public:
 	/** x-component. */
-	int x;
+	double x;
 
 	/** y-component. */
-	int y;
+	double y;
 
 	/** z-component. */
-	int z;
+	double z;
 
 	/** Constructor. */
 	Vector3d();
@@ -60,14 +61,29 @@ public:
 
 	/** Multiplication operator (cross product). */
 	const Vector3d operator*(const Vector3d &rhs) const;
+
+	/** Multiplication operator (vector*scalar). */
+	const Vector3d operator*(double rhs);
+
+	/** Multiplication operator (scalar*vector). */
+	friend const Vector3d operator*(double lhs, const Vector3d &rhs);
+
+	/** Division operator. */
+	const Vector3d operator/(double rhs) const;
+
+	/** Dot product. */
+	static double dotProduct(const Vector3d &lhs, const Vector3d &rhs);
+
+	/** Get a std::vector<double> representation of the vector. */
+	const std::vector<double> getStdVector() const;
 };
 
 inline const Vector3d Vector3d::operator+(const Vector3d &rhs) const{
 	Vector3d result;
 
-	result.x = this->x + rhs.x;
-	result.y = this->y + rhs.y;
-	result.z = this->z + rhs.z;
+	result.x = x + rhs.x;
+	result.y = y + rhs.y;
+	result.z = z + rhs.z;
 
 	return result;
 }
@@ -75,9 +91,9 @@ inline const Vector3d Vector3d::operator+(const Vector3d &rhs) const{
 inline const Vector3d Vector3d::operator-(const Vector3d &rhs) const{
 	Vector3d result;
 
-	result.x = this->x - rhs.x;
-	result.y = this->y - rhs.y;
-	result.z = this->z - rhs.z;
+	result.x = x - rhs.x;
+	result.y = y - rhs.y;
+	result.z = z - rhs.z;
 
 	return result;
 }
@@ -85,9 +101,53 @@ inline const Vector3d Vector3d::operator-(const Vector3d &rhs) const{
 inline const Vector3d Vector3d::operator*(const Vector3d &rhs) const{
 	Vector3d result;
 
-	result.x = this->y*rhs.z - this->z*rhs.y;
-	result.y = this->z*rhs.x - this->x*rhs.z;
-	result.z = this->x*rhs.y - this->y*rhs.x;
+	result.x = y*rhs.z - z*rhs.y;
+	result.y = z*rhs.x - x*rhs.z;
+	result.z = x*rhs.y - y*rhs.x;
+
+	return result;
+}
+
+inline const Vector3d Vector3d::operator*(double rhs){
+	Vector3d result;
+
+	result.x = x*rhs;
+	result.y = y*rhs;
+	result.z = z*rhs;
+
+	return result;
+}
+
+inline const Vector3d operator*(double lhs, Vector3d &rhs){
+	Vector3d result;
+
+	result.x = lhs*rhs.x;
+	result.y = lhs*rhs.y;
+	result.z = lhs*rhs.z;
+
+	return result;
+}
+
+inline const Vector3d Vector3d::operator/(double rhs) const{
+	Vector3d result;
+
+	result.x = x/rhs;
+	result.y = y/rhs;
+	result.z = z/rhs;
+
+	return result;
+}
+
+inline double Vector3d::dotProduct(const Vector3d &lhs, const Vector3d &rhs){
+	return lhs.x*rhs.x + lhs.y*rhs.y + lhs.z*rhs.z;
+}
+
+inline const std::vector<double> Vector3d::getStdVector() const{
+	std::vector<double> result;
+
+	result.push_back(x);
+	result.push_back(y);
+	result.push_back(z);
 
 	return result;
 }
