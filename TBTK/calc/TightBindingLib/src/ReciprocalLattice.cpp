@@ -45,9 +45,12 @@ ReciprocalLattice::ReciprocalLattice(UnitCell *unitCell, initializer_list<int> s
 	for(unsigned int n = 0; n < size.size(); n++)
 		this->size.push_back(*(size.begin() + n));
 
+	//Calculate reciprocal lattice vectors
 	switch(latticeVectors.size()){
 	case 1:
 	{
+		//1D real space lattice to 1D reciprocal lattice vectors.
+
 		TBTKAssert(
 			latticeVectors.at(0).size() == 1
 			|| latticeVectors.at(0).size() == 2
@@ -61,6 +64,10 @@ ReciprocalLattice::ReciprocalLattice(UnitCell *unitCell, initializer_list<int> s
 			<< latticeVectors.at(0).size() << " dimensions."
 		);
 
+		//Ensure that the lattice vectors are represented by
+		//three-dimensional vectors during the calculation. Will be
+		//restored to original dimensionallity at the end of this
+		//code block.
 		vector<double> paddedLatticeVector;
 		unsigned int c = 0;
 		for(; c < latticeVectors.at(0).size(); c++)
@@ -68,10 +75,15 @@ ReciprocalLattice::ReciprocalLattice(UnitCell *unitCell, initializer_list<int> s
 		for(; c < 3; c++)
 			paddedLatticeVector.push_back(latticeVectors.at(0).at(c));
 
+		//Real space lattice vectors on Vector3d format.
 		Vector3d v(paddedLatticeVector);
 
+		//Calculate reciprocal lattice vectors on Vector3d format.
 		Vector3d r = 2.*M_PI*v/Vector3d::dotProduct(v, v);
 
+		//Convert reciprocal lattice vectors on Vector3d format back to
+		//vector<double> with the same number of components as the
+		//original lattice vectors.
 		reciprocalLatticeVectors.push_back(vector<double>());
 		reciprocalLatticeVectors.at(0).push_back(r.x);
 		if(latticeVectors.at(0).size() > 1)
@@ -81,6 +93,8 @@ ReciprocalLattice::ReciprocalLattice(UnitCell *unitCell, initializer_list<int> s
 	}
 	case 2:
 	{
+		//2D real space lattice to 2D reciprocal lattice vectors.
+
 		TBTKAssert(
 			latticeVectors.at(0).size() == 2
 			|| latticeVectors.at(0).size() == 3,
@@ -93,6 +107,10 @@ ReciprocalLattice::ReciprocalLattice(UnitCell *unitCell, initializer_list<int> s
 			<< " dimensions."
 		);
 
+		//Ensure that the lattice vectors are represented by
+		//three-dimensional vectors during the calculation. Will be
+		//restored to original dimensionallity at the end of this
+		//code block.
 		vector<vector<double>> paddedLatticeVectors;
 		for(unsigned int n = 0; n < 2; n++){
 			paddedLatticeVectors.push_back(vector<double>());
@@ -103,15 +121,22 @@ ReciprocalLattice::ReciprocalLattice(UnitCell *unitCell, initializer_list<int> s
 				paddedLatticeVectors.at(n).push_back(0.);
 		}
 
+		//Real space lattice vectors on Vector3d format. v[2] is
+		//created to simplyfy the math by making the calculation
+		//similar to the one for three-dimensional UnitCells.
 		Vector3d v[3];
 		for(unsigned int n = 0; n < 2; n++)
 			v[n] = Vector3d(paddedLatticeVectors.at(n));
 		v[2] = v[0]*v[1];
 
+		//Calculate reciprocal lattice vectors on Vector3d format.
 		Vector3d r[2];
 		for(unsigned int n = 0; n < 2; n++)
 			r[n] = 2.*M_PI*v[n+1]*v[(n+2)%3]/Vector3d::dotProduct(v[n], v[n+1]*v[(n+2)%3]);
 
+		//Convert reciprocal lattice vectors on Vector3d format back to
+		//vector<double> with the same number of components as the
+		//original lattice vectors.
 		for(unsigned int n = 0; n < 2; n++){
 			reciprocalLatticeVectors.push_back(vector<double>());
 			reciprocalLatticeVectors.at(n).push_back(r[n].x);
@@ -124,6 +149,8 @@ ReciprocalLattice::ReciprocalLattice(UnitCell *unitCell, initializer_list<int> s
 	}
 	case 3:
 	{
+		//3D real space lattice to 3D reciprocal lattice vectors.
+
 		TBTKAssert(
 			latticeVectors.at(0).size() == 3,
 			"ReciprocalLattice::ReciprocalLattice()",
@@ -134,19 +161,46 @@ ReciprocalLattice::ReciprocalLattice(UnitCell *unitCell, initializer_list<int> s
 			<< latticeVectors.at(0).size() << " dimensions."
 		);
 
+		//Real space lattice vectors on Vector3d format. v[2] is
+		//created to simplyfy the math by making the calculation
+		//similar to the one for three-dimensional UnitCells.
 		Vector3d v[3];
 		for(unsigned int n = 0; n < 3; n++)
 			v[n] = Vector3d(latticeVectors.at(n));
 
+		//Calculate reciprocal lattice vectors on Vector3d format.
 		Vector3d r[3];
 		for(unsigned int n = 0; n < 3; n++)
 			r[n] = 2.*M_PI*v[(n+1)%3]*v[(n+2)%3]/(Vector3d::dotProduct(v[n], v[(n+1)%3]*v[(n+2)%3]));
 
+		//Convert reciprocal lattice vectors on Vector3d format back to
+		//vector<double>.
 		for(unsigned int n = 0; n < 3; n++)
 			reciprocalLatticeVectors.push_back(r[n].getStdVector());
 
 		break;
 	}
+	default:
+		TBTKExit(
+			"ReciprocalLattice::ReciprocalLattice()",
+			"Unit cell dimension not supported.",
+			"Only UnitCells with 1-3 lattice vectors are"
+			<< " supported, but the supplied UnitCell has "
+			<< latticeVectors.size() << " lattice vectors."
+		);
+		break;
+	}
+
+	switch(latticeVectors.size()){
+	case 1:
+		TBTKNotYetImplemented("ReciprocalLattice::ReciprocalLattice()");
+		break;
+	case 2:
+		TBTKNotYetImplemented("ReciprocalLattice::ReciprocalLattice()");
+		break;
+	case 3:
+		TBTKNotYetImplemented("ReciprocalLattice::ReciprocalLattice()");
+		break;
 	default:
 		TBTKExit(
 			"ReciprocalLattice::ReciprocalLattice()",
