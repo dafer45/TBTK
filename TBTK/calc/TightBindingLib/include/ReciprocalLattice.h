@@ -42,7 +42,7 @@ namespace TBTK{
  *  where R and R' are UnitCell-indices and i and i' are intra
  *  UnitCell-indices. Expanding the operators in the momentum basis we have
  *  \f[
- *	H = \sum_{RkiR'k'i'}a_{RiR'i'}c_{ki}^{\dagger}c_{k'i'}e^{i(k\cdot R . k'\cdot R')}.
+ *	H = \sum_{RkiR'k'i'}a_{RiR'i'}c_{ki}^{\dagger}c_{k'i'}e^{i(k\cdot R - k'\cdot R')}.
  *  \f]
  *  Now assuming translational invaraince, such that the coefficients only
  *  depend on the relative UnitCell positions, we can write
@@ -67,7 +67,7 @@ namespace TBTK{
 class ReciprocalLattice{
 public:
 	/** Constructor. */
-	ReciprocalLattice(UnitCell *unitCell, std::initializer_list<int> size);
+	ReciprocalLattice(UnitCell *unitCell/*, std::initializer_list<int> size*/);
 
 	/** Destructor. */
 	~ReciprocalLattice();
@@ -101,7 +101,7 @@ private:
 
 	/** Size of the corresponding real space lattice, or equivalently, the
 	 *  size of the k-points mesh. */
-	std::vector<int> size;
+//	std::vector<int> size;
 
 	/** Constant used to provide a margin that protects from roundoff
 	 *  errors. */

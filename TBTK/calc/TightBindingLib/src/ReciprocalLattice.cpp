@@ -31,8 +31,8 @@ using namespace std;
 namespace TBTK{
 
 ReciprocalLattice::ReciprocalLattice(
-	UnitCell *unitCell,
-	initializer_list<int> size
+	UnitCell *unitCell/*,
+	initializer_list<int> size*/
 ){
 	this->unitCell = unitCell;
 	this->realSpaceEnvironment = NULL;
@@ -41,7 +41,7 @@ ReciprocalLattice::ReciprocalLattice(
 
 	const vector<vector<double>> latticeVectors = unitCell->getLatticeVectors();
 
-	TBTKAssert(
+/*	TBTKAssert(
 		size.size() == latticeVectors.size(),
 		"ReciprocalLattice::ReciprocalLattice()",
 		"Incompatible dimensions. The number of lattice vectors in the"
@@ -53,7 +53,7 @@ ReciprocalLattice::ReciprocalLattice(
 	);
 
 	for(unsigned int n = 0; n < size.size(); n++)
-		this->size.push_back(*(size.begin() + n));
+		this->size.push_back(*(size.begin() + n));*/
 
 	//Calculate reciprocal lattice vectors
 	switch(latticeVectors.size()){
@@ -344,7 +344,8 @@ Model* ReciprocalLattice::generateModel(initializer_list<double> momentum) const
 						distance = sqrt(distance);
 
 						//Perform sum.
-						amplitude += bras->at(n)->getMatrixElement(*referenceKet)*exp(i*2.*M_PI*(*momentum.begin())*distance/(double)size.at(0));
+//						amplitude += bras->at(n)->getMatrixElement(*referenceKet)*exp(i*2.*M_PI*(*momentum.begin())*distance/(double)size.at(0));
+						amplitude += bras->at(n)->getMatrixElement(*referenceKet)*exp(i*(*momentum.begin())*distance);
 					}
 				}
 
