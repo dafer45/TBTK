@@ -30,7 +30,7 @@ namespace TBTK{
 class UnitCell : public StateSet{
 public:
 	/** Constructor. */
-	UnitCell(std::initializer_list<std::initializer_list<double>> latticeVectors);
+	UnitCell(std::initializer_list<std::initializer_list<double>> latticeVectors, bool isOwner = true);
 
 	/** Destructor. */
 	~UnitCell();

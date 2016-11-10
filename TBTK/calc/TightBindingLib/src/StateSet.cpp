@@ -24,12 +24,14 @@ using namespace std;
 
 namespace TBTK{
 
-StateSet::StateSet(){
+StateSet::StateSet(bool isOwner){
+	this->isOwner = isOwner;
 }
 
 StateSet::~StateSet(){
-	for(unsigned int n = 0; n < states.size(); n++)
-		delete states.at(n);
+	if(isOwner)
+		for(unsigned int n = 0; n < states.size(); n++)
+			delete states.at(n);
 }
 
 };	//End of namespace TBTK

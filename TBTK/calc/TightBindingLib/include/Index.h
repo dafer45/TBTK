@@ -84,6 +84,10 @@ public:
 	 *  subindex set to 1. */
 	Index getUnitRange();
 
+	/** Returns an Index containing the subindices from position 'first' to
+	 *  'last'. */
+	Index getSubIndex(int first, int last);
+
 	/** Print index. Mainly for debuging. */
 	void print() const;
 

@@ -92,9 +92,8 @@ StateSet* Lattice::generateStateSet(){
 
 			for(int v = 0; v < numLatticeVectors; v++){
 				const vector<double> &latticeVector = latticeVectors.at(v);
-				for(int c = 0; c < latticeVectorDimension; c++){
-					position.at(c) += latticeVector.at(c)*latticePoint.at(c);
-				}
+				for(int c = 0; c < latticeVectorDimension; c++)
+					position.at(c) += latticeVector.at(c)*latticePoint.at(v);
 			}
 
 			state->setCoordinates(position);

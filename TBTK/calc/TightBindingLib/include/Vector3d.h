@@ -71,6 +71,9 @@ public:
 	/** Division operator. */
 	const Vector3d operator/(double rhs) const;
 
+	/** Norm. */
+	double norm() const;
+
 	/** Dot product. */
 	static double dotProduct(const Vector3d &lhs, const Vector3d &rhs);
 
@@ -136,6 +139,10 @@ inline const Vector3d Vector3d::operator/(double rhs) const{
 	result.z = z/rhs;
 
 	return result;
+}
+
+inline double Vector3d::norm() const{
+	return sqrt(x*x + y*y + z*z);
 }
 
 inline double Vector3d::dotProduct(const Vector3d &lhs, const Vector3d &rhs){

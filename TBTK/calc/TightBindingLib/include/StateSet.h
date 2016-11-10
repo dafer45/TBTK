@@ -29,8 +29,12 @@ namespace TBTK{
 
 class StateSet{
 public:
-	/** Constructor. */
-	StateSet();
+	/** Constructor.
+	 *
+	 *  @param isOwner Flag indicating whether the StateSet is considered
+	 *  to be an owner of the states or not. If it is an owner, states
+	 *  added to it will be delete when the StateSet is destructed. */
+	StateSet(bool isOwner = true);
 
 	/** Destructor. */
 	~StateSet();
@@ -44,6 +48,9 @@ public:
 private:
 	/** Pointers to states. */
 	std::vector<AbstractState*> states;
+
+	/** Flag indicate whether the StateSet owns the states or not. */
+	bool isOwner;
 };
 
 inline void StateSet::addState(AbstractState *state){

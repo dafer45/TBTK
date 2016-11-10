@@ -25,7 +25,12 @@ using namespace std;
 
 namespace TBTK{
 
-UnitCell::UnitCell(initializer_list<initializer_list<double>> latticeVectors){
+UnitCell::UnitCell(
+	initializer_list<initializer_list<double>> latticeVectors,
+	bool isOwner
+) :
+	StateSet(isOwner)
+{
 	unsigned int numCoordinates = latticeVectors.begin()->size();
 	for(unsigned int n = 1; n < latticeVectors.size(); n++){
 		TBTKAssert(

@@ -89,4 +89,12 @@ Index Index::getUnitRange(){
 	return unitRange;
 }
 
+Index Index::getSubIndex(int first, int last){
+	vector<int> newSubindices;
+	for(int n = first; n <= last; n++)
+		newSubindices.push_back(indices.at(n));
+
+	return Index(newSubindices);
+}
+
 };
