@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['lengthunit',['LengthUnit',['../classTBTK_1_1UnitHandler.html#af28f43ff86fffbdcd767d821991b90ec',1,'TBTK::UnitHandler']]]
+  ['energyunit',['EnergyUnit',['../classTBTK_1_1UnitHandler.html#a11db2605e01827f9ae296860e9bf58b7',1,'TBTK::UnitHandler']]]
 ];

@@ -1,10 +1,12 @@
 var searchData=
 [
-  ['_7echebyshevsolver',['~ChebyshevSolver',['../classTBTK_1_1ChebyshevSolver.html#ae6393fbd35e2b311951fddd690d2fab3',1,'TBTK::ChebyshevSolver']]],
-  ['_7ecpropertyextractor',['~CPropertyExtractor',['../classTBTK_1_1CPropertyExtractor.html#ac4e95915835771840e6da513ad22bc05',1,'TBTK::CPropertyExtractor']]],
-  ['_7ediagonalizationsolver',['~DiagonalizationSolver',['../classTBTK_1_1DiagonalizationSolver.html#a4fcb11ef3097e02cca3618b7b9d29525',1,'TBTK::DiagonalizationSolver']]],
-  ['_7edpropertyextractor',['~DPropertyExtractor',['../classTBTK_1_1DPropertyExtractor.html#a1d30917caeb9186f9f11a1ac5f659668',1,'TBTK::DPropertyExtractor']]],
-  ['_7eiterator',['~iterator',['../classTBTK_1_1AmplitudeSet_1_1iterator.html#a6e9b9fe5e7b6876eacf2501f11eb29ef',1,'TBTK::AmplitudeSet::iterator']]],
-  ['_7emodel',['~Model',['../classTBTK_1_1Model.html#a116ab041650093d78c5a29e2ae2f15fc',1,'TBTK::Model']]],
-  ['_7etimeevolver',['~TimeEvolver',['../classTBTK_1_1TimeEvolver.html#ac799898fbf94ea68e183a2e15ec6c9cb',1,'TBTK::TimeEvolver']]]
+  ['unflatten',['unflatten',['../classTBTK_1_1Util_1_1ArrayManager.html#a35b8caf9dfb6cd93b478625aa7b70302',1,'TBTK::Util::ArrayManager']]],
+  ['unitcell',['UnitCell',['../classTBTK_1_1UnitCell.html',1,'TBTK']]],
+  ['unitcell',['UnitCell',['../classTBTK_1_1UnitCell.html#ab11cbf4a4ee23b1e5c03fbb77ff3ee45',1,'TBTK::UnitCell']]],
+  ['unitcell_2ecpp',['UnitCell.cpp',['../UnitCell_8cpp.html',1,'']]],
+  ['unitcell_2eh',['UnitCell.h',['../UnitCell_8h.html',1,'']]],
+  ['unithandler',['UnitHandler',['../classTBTK_1_1UnitHandler.html',1,'TBTK']]],
+  ['unithandler_2ecpp',['UnitHandler.cpp',['../UnitHandler_8cpp.html',1,'']]],
+  ['unithandler_2eh',['UnitHandler.h',['../UnitHandler_8h.html',1,'']]],
+  ['util_2eh',['Util.h',['../Util_8h.html',1,'']]]
 ];

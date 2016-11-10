@@ -1,6 +1,4 @@
 var searchData=
 [
-  ['halink',['HALink',['../classTBTK_1_1HALink.html',1,'TBTK']]],
-  ['halinkedlist',['HALinkedList',['../classTBTK_1_1HALinkedList.html',1,'TBTK']]],
-  ['hoppingamplitude',['HoppingAmplitude',['../classTBTK_1_1HoppingAmplitude.html',1,'TBTK']]]
+  ['eigenvalues',['EigenValues',['../classTBTK_1_1Property_1_1EigenValues.html',1,'TBTK::Property']]]
 ];

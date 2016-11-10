@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['model',['Model',['../classTBTK_1_1Model.html',1,'TBTK']]]
+  ['geometry',['Geometry',['../classTBTK_1_1Geometry.html',1,'TBTK']]],
+  ['gpuresourcemanager',['GPUResourceManager',['../classTBTK_1_1GPUResourceManager.html',1,'TBTK']]]
 ];

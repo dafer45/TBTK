@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['diagonalizationsolver',['DiagonalizationSolver',['../classTBTK_1_1DiagonalizationSolver.html',1,'TBTK']]],
-  ['dpropertyextractor',['DPropertyExtractor',['../classTBTK_1_1DPropertyExtractor.html',1,'TBTK']]]
+  ['chebyshevsolver',['ChebyshevSolver',['../classTBTK_1_1ChebyshevSolver.html',1,'TBTK']]],
+  ['cpropertyextractor',['CPropertyExtractor',['../classTBTK_1_1CPropertyExtractor.html',1,'TBTK']]]
 ];

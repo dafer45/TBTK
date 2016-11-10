@@ -1,18 +1,28 @@
-\form#0:$O(n)$
-\form#1:$ G_{ij}(E)$
-\form#2:$i = \textrm{to}$
-\form#3:$j = \textrm{from}$
-\form#4:$i$
-\form#5:$j$
-\form#6:$\times$
-\form#7:\[ \left[\begin{array}{cc} 0 & 1\\ 2 & 3 \end{array}\right] = \left[\begin{array}{cc} \langle c_{i\uparrow}^{\dagger}c_{i\uparrow}\rangle & \langle c_{i\uparrow}^{\dagger}c_{i\downarrow}\rangle\\ \langle c_{i\downarrow}^{\dagger}c_{u\uparrow}\rangle & \langle c_{i\downarrow}^{\dagger}c_{i\downarrow}\rangle \end{array}\right]. \]
-\form#8:\[ \left[\begin{array}{cc} 0 & 1\\ 2 & 3 \end{array}\right] = \left[\begin{array}{cc} \rho_{i\uparrow i\uparrow}(E) & \rho_{i\uparrow i\downarrow}(E)\\ \rho_{i\downarrow i\uparrow}(E) & \rho_{i\downarrow i\downarrow}(E)\\ \end{array}\right], \]
-\form#9:\[ \rho_{i\sigma i\sigma'}(E) = \sum_{E_n}\langle\Psi_n|c_{i\sigma}^{\dagger}c_{i\sigma'}|\Psi_n\rangle\delta(E - E_n) . \]
-\form#10:$O(n^3)$
-\form#11:$n$
-\form#12:$x$
-\form#13:$\Psi_{n}(x)$
-\form#14:$a_{ij}$
-\form#15:$H = \sum_{ij}a_{ij}c_{i}^{\dagger}c_{j}$
-\form#16:$ XXX \in \{Temperature, Time, Length, Energy, Charge\}$
-\form#17:$ XXX \in \{Temperature, Time, Length, Energy, Charge, Count\}$
+\form#0:\[\langle\Psi_1|\Psi_2\rangle\]
+\form#1:\[\Psi_1\]
+\form#2:\[\Psi_2\]
+\form#3:\[\langle\Psi_1|o|\Psi_2\rangle\]
+\form#4:$O(n)$
+\form#5:$ G_{ij}(E)$
+\form#6:$i = \textrm{to}$
+\form#7:$j = \textrm{from}$
+\form#8:$i$
+\form#9:$j$
+\form#10:$\times$
+\form#11:\[ \left[\begin{array}{cc} 0 & 1\\ 2 & 3 \end{array}\right] = \left[\begin{array}{cc} \langle c_{i\uparrow}^{\dagger}c_{i\uparrow}\rangle & \langle c_{i\uparrow}^{\dagger}c_{i\downarrow}\rangle\\ \langle c_{i\downarrow}^{\dagger}c_{u\uparrow}\rangle & \langle c_{i\downarrow}^{\dagger}c_{i\downarrow}\rangle \end{array}\right]. \]
+\form#12:\[ \left[\begin{array}{cc} 0 & 1\\ 2 & 3 \end{array}\right] = \left[\begin{array}{cc} \rho_{i\uparrow i\uparrow}(E) & \rho_{i\uparrow i\downarrow}(E)\\ \rho_{i\downarrow i\uparrow}(E) & \rho_{i\downarrow i\downarrow}(E)\\ \end{array}\right], \]
+\form#13:\[ \rho_{i\sigma i\sigma'}(E) = \sum_{E_n}\langle\Psi_n|c_{i\sigma}^{\dagger}c_{i\sigma'}|\Psi_n\rangle\delta(E - E_n) . \]
+\form#14:$O(n^3)$
+\form#15:$n$
+\form#16:$x$
+\form#17:$\Psi_{n}(x)$
+\form#18:$a_{ij}$
+\form#19:$H = \sum_{ij}a_{ij}c_{i}^{\dagger}c_{j}$
+\form#20:\[ H = \sum_{RiR'i'}a_{RiR'i'}c_{Ri'}^{\dagger}c_{R'i'}, \]
+\form#21:\[ H = \sum_{RkiR'k'i'}a_{RiR'i'}c_{ki}^{\dagger}c_{k'i'}e^{i(k\cdot R . k'\cdot R')}. \]
+\form#22:\[ H = \sum_{\bar{R}kiR'k'i'}a_{\bar{R}i0i'}c_{ki}^{\dagger}c_{k'i'}e^{ik\cdot\bar{R}}e^{i(k-k')\cdot R'}, \]
+\form#23:\[\bar{R} = R - R'\]
+\form#24:\[ H = \sum_{kik'i'}\left(\sum_{\bar{R}}a_{\bar{R}i0i'}e^{ik\cdot\bar{R}}\right)c_{ki}^{\dagger}c_{k'i'}. \]
+\form#25:\[ a_{kik'i'} = \sum_{\bar{R}}a_{\bar{R}i0i'}e^{ik\cdot\bar{R}}. \]
+\form#26:\[\bar{R}\]
+\form#27:$ XXX \in \{Temperature, Time, Length, Energy, Charge, Count\}$

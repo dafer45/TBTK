@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['indices',['indices',['../classTBTK_1_1Index.html#ab439268383b0d76383f4dde64586f6d8',1,'TBTK::Index']]]
+  ['log',['log',['../classTBTK_1_1Util_1_1Streams.html#a2c2405a6305c2a4cb5e25ffb47635d09',1,'TBTK::Util::Streams']]]
 ];
