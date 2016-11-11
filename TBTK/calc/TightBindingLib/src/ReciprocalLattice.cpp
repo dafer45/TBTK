@@ -114,412 +114,265 @@ Model* ReciprocalLattice::generateModel(initializer_list<double> momentum) const
 void ReciprocalLattice::setupReciprocalLatticeVectors(const UnitCell *unitCell){
 	const vector<vector<double>> latticeVectors = unitCell->getLatticeVectors();
 
-	switch(latticeVectors.size()){
-	case 1:
-	{
-		//1D real space lattice to 1D reciprocal lattice vectors.
+	TBTKAssert(
+		latticeVectors.at(0).size() == latticeVectors.size(),
+		"ReciprocalLattice::ReciprocalLattice()",
+		"Lattice vector dimension not supported.",
+		"The number of lattice vectors must agree with the number of"
+		<< " components of each individual lattice vector. The"
+		<< " supplied UnitCell has " << latticeVectors.size()
+		<< " lattice vectors with " << latticeVectors.at(0).size()
+		<< " components each."
+	);
 
-		TBTKAssert(
-			latticeVectors.at(0).size() == 1,
-			"ReciprocalLattice::ReciprocalLattice()",
-			"Lattice vector dimension not supported.",
-			"Only one-, two-, and three-dimensional lattice"
-			<< " vectors are supported for UnitCells with one"
-			<< " lattice vector. The supplied UnitCell has a"
-			<< " lattice vector with "
-			<< latticeVectors.at(0).size() << " dimensions."
-		);
-
-		//Ensure that the lattice vectors are represented by
-		//three-dimensional vectors during the calculation. Will be
-		//restored to original dimensionallity at the end of this
-		//code block.
-		vector<double> paddedLatticeVector;
+	//Ensure that the lattice vectors are represented by three-dimensional
+	//vectors during the calculation. Will be restored to original
+	//dimensionallity at the end of this function.
+	vector<vector<double>> paddedLatticeVectors;
+	for(unsigned int n = 0; n < latticeVectors.size(); n++){
+		paddedLatticeVectors.push_back(vector<double>());
 		unsigned int c = 0;
 		for(; c < latticeVectors.at(0).size(); c++)
-			paddedLatticeVector.push_back(latticeVectors.at(0).at(c));
+			paddedLatticeVectors.at(n).push_back(latticeVectors.at(n).at(c));
 		for(; c < 3; c++)
-			paddedLatticeVector.push_back(0);
-
-		//Real space lattice vectors on Vector3d format.
-		Vector3d v(paddedLatticeVector);
-
-		//Calculate reciprocal lattice vectors on Vector3d format.
-		Vector3d r = 2.*M_PI*v/Vector3d::dotProduct(v, v);
-
-		//Convert reciprocal lattice vectors on Vector3d format back to
-		//vector<double> with the same number of components as the
-		//original lattice vectors.
-		reciprocalLatticeVectors.push_back(vector<double>());
-		reciprocalLatticeVectors.at(0).push_back(r.x);
-		if(latticeVectors.at(0).size() > 1)
-			reciprocalLatticeVectors.at(0).push_back(r.y);
-		if(latticeVectors.at(0).size() > 2)
-			reciprocalLatticeVectors.at(0).push_back(r.z);
-
-		break;
+			paddedLatticeVectors.at(n).push_back(0);
 	}
+
+	//Real space lattice vectors on Vector3d format. If the number of
+	//lattice vectors is smaller than 3, v[1] and v[2] are created to
+	//simplyfy the math, making the calculation the same as for the
+	//three-dimensional UnitCells.
+	Vector3d v[3];
+	for(unsigned int n = 0; n < latticeVectors.size(); n++)
+		v[n] = Vector3d(paddedLatticeVectors.at(n));
+	switch(latticeVectors.size()){
+	case 1:
+		v[1] = Vector3d({0, 1, 0});
+		v[2] = Vector3d({0, 0, 1});
+		break;
 	case 2:
-	{
-		//2D real space lattice to 2D reciprocal lattice vectors.
-
-		TBTKAssert(
-			latticeVectors.at(0).size() == 2,
-			"ReciprocalLattice::ReciprocalLattice()",
-			"Lattice vector dimension not supported.",
-			"Only two- and three-dimensional lattice vectors are"
-			<< " supported for UnitCells with two lattice"
-			<< " vectors. The supplied UnitCell has lattice"
-			<< " vectors with " << latticeVectors.at(0).size()
-			<< " dimensions."
-		);
-
-		//Ensure that the lattice vectors are represented by
-		//three-dimensional vectors during the calculation. Will be
-		//restored to original dimensionallity at the end of this
-		//code block.
-		vector<vector<double>> paddedLatticeVectors;
-		for(unsigned int n = 0; n < 2; n++){
-			paddedLatticeVectors.push_back(vector<double>());
-
-			for(unsigned int c = 0; c < latticeVectors.at(n).size(); c++)
-				paddedLatticeVectors.at(n).push_back(latticeVectors.at(n).at(c));
-			if(latticeVectors.at(n).size() == 2)
-				paddedLatticeVectors.at(n).push_back(0.);
-		}
-
-		//Real space lattice vectors on Vector3d format. v[2] is
-		//created to simplyfy the math by making the calculation
-		//similar to the one for three-dimensional UnitCells.
-		Vector3d v[3];
-		for(unsigned int n = 0; n < 2; n++)
-			v[n] = Vector3d(paddedLatticeVectors.at(n));
-		v[2] = v[0]*v[1];
-
-		//Calculate reciprocal lattice vectors on Vector3d format.
-		Vector3d r[2];
-		for(unsigned int n = 0; n < 2; n++)
-			r[n] = 2.*M_PI*v[n+1]*v[(n+2)%3]/Vector3d::dotProduct(v[n], v[n+1]*v[(n+2)%3]);
-
-		//Convert reciprocal lattice vectors on Vector3d format back to
-		//vector<double> with the same number of components as the
-		//original lattice vectors.
-		for(unsigned int n = 0; n < 2; n++){
-			reciprocalLatticeVectors.push_back(vector<double>());
-			reciprocalLatticeVectors.at(n).push_back(r[n].x);
-			reciprocalLatticeVectors.at(n).push_back(r[n].y);
-			if(latticeVectors.at(0).size() == 3)
-				reciprocalLatticeVectors.at(n).push_back(r[n].z);
-		}
-
+		v[2] = Vector3d({0, 0, 1});
 		break;
-	}
 	case 3:
-	{
-		//3D real space lattice to 3D reciprocal lattice vectors.
-
-		TBTKAssert(
-			latticeVectors.at(0).size() == 3,
-			"ReciprocalLattice::ReciprocalLattice()",
-			"Lattice vector dimension not supported.",
-			"Only three-dimensional lattice vectors are supported"
-			<< " for UnitCells with three lattice vectors. The"
-			<< " supplied UnitCell has lattice vectors with "
-			<< latticeVectors.at(0).size() << " dimensions."
-		);
-
-		//Real space lattice vectors on Vector3d format. v[2] is
-		//created to simplyfy the math by making the calculation
-		//similar to the one for three-dimensional UnitCells.
-		Vector3d v[3];
-		for(unsigned int n = 0; n < 3; n++)
-			v[n] = Vector3d(latticeVectors.at(n));
-
-		//Calculate reciprocal lattice vectors on Vector3d format.
-		Vector3d r[3];
-		for(unsigned int n = 0; n < 3; n++)
-			r[n] = 2.*M_PI*v[(n+1)%3]*v[(n+2)%3]/(Vector3d::dotProduct(v[n], v[(n+1)%3]*v[(n+2)%3]));
-
-		//Convert reciprocal lattice vectors on Vector3d format back to
-		//vector<double>.
-		for(unsigned int n = 0; n < 3; n++)
-			reciprocalLatticeVectors.push_back(r[n].getStdVector());
-
 		break;
-	}
 	default:
 		TBTKExit(
-			"ReciprocalLattice::ReciprocalLattice()",
+			"ReciprocalLattice::setupReciprocalLatticeVectors()",
 			"Unit cell dimension not supported.",
 			"Only UnitCells with 1-3 lattice vectors are"
 			<< " supported, but the supplied UnitCell has "
 			<< latticeVectors.size() << " lattice vectors."
 		);
 		break;
+	}
+
+	//Calculate reciprocal lattice vectors on Vector3d format.
+	Vector3d r[3];
+	for(unsigned int n = 0; n < 3; n++)
+		r[n] = 2.*M_PI*v[(n+1)%3]*v[(n+2)%3]/(Vector3d::dotProduct(v[n], v[(n+1)%3]*v[(n+2)%3]));
+
+	//Convert reciprocal lattice vectors on Vector3d format back to
+	//vector<double>.
+	for(unsigned int n = 0; n < latticeVectors.size(); n++){
+		reciprocalLatticeVectors.push_back(vector<double>());
+		reciprocalLatticeVectors.at(n).push_back(r[n].x);
+		if(latticeVectors.size() > 1)
+			reciprocalLatticeVectors.at(n).push_back(r[n].y);
+		if(latticeVectors.size() > 2)
+			reciprocalLatticeVectors.at(n).push_back(r[n].z);
 	}
 }
 
 void ReciprocalLattice::setupRealSpaceEnvironment(const UnitCell *unitCell){
 	const vector<vector<double>> latticeVectors = unitCell->getLatticeVectors();
 
-	switch(latticeVectors.size()){
-	case 1:
-	{
-		//Ensure that the lattice vectors are represented by
-		//three-dimensional vectors during the calculation.
-		vector<double> paddedLatticeVector;
+	//Ensure that the lattice vectors are represented by three-dimensional
+	//vectors during the calculation.
+	vector<vector<double>> paddedLatticeVectors;
+	for(unsigned int n = 0; n < latticeVectors.size(); n++){
+		paddedLatticeVectors.push_back(vector<double>());
 		unsigned int c = 0;
 		for(; c < latticeVectors.at(0).size(); c++)
-			paddedLatticeVector.push_back(latticeVectors.at(0).at(c));
+			paddedLatticeVectors.at(n).push_back(latticeVectors.at(n).at(c));
 		for(; c < 3; c++)
-			paddedLatticeVector.push_back(0);
-
-		//Real space lattice vectors on Vector3d format.
-		Vector3d v(paddedLatticeVector);
-
-		//Maximum distance from the origin to any point contained in
-		//the UnitCell.
-		double maxDistanceFromOrigin = v.norm();
-
-		//Find maximum extent.
-		const vector<AbstractState*> &states = unitCell->getStates();
-		double maxExtent = 0.;
-		for(unsigned int n = 0; n < states.size(); n++){
-			TBTKAssert(
-				states.at(n)->getExtent() != numeric_limits<double>::infinity()
-				&& states.at(n)->getExtent() != numeric_limits<double>::max(),
-				"ReciprocalLattice::ReciprocalLattice()",
-				"Encountered state with infinite extent, but"
-				<< " only states with finite extent"
-				<< " supported.",
-				"Use AbstractState::setExtent() to set the"
-				<< " extent of each state in the UnitCell."
-			);
-
-			if(maxExtent < states.at(n)->getExtent())
-				maxExtent = states.at(n)->getExtent();
-		}
-
-		//Radius of a sphere centered at the origin, which is large
-		//enough that all states that have an extent that overlapps
-		//with the states in the unit cell are centered inside the
-		//sphere.
-		double enclosingRadius = (2.*maxExtent + maxDistanceFromOrigin)*ROUNDOFF_MARGIN_MULTIPLIER;
-
-		//Calculate number of UnitCells needed to cover the enclosing
-		//sphere and Index shift required to ensure that all UnitCells
-		//have positive indices.
-		int realSpaceLatticeHalfSize = (int)(enclosingRadius/v.norm()) + 1;
-
-		//Create a lattice for the real space environment.
-		Lattice realSpaceEnvironmentLattice(unitCell);
-		for(int n = 0; n < 2*realSpaceLatticeHalfSize+1; n++)
-			realSpaceEnvironmentLattice.addLatticePoint({n});
-
-		//Create StateSet for the real space environment.
-		realSpaceEnvironment = realSpaceEnvironmentLattice.generateStateSet();
-
-		//Create StateTreeNode for quick access of states in
-		//realSpaceEnvironment.
-		realSpaceEnvironmentStateTree = new StateTreeNode(*realSpaceEnvironment);
-
-		//Extract states contained in the refrence cell. That is, the
-		//cell containg all the states that will be used as kets.
-		realSpaceReferenceCell = new StateSet(false);
-		const vector<AbstractState*> &referenceStates = realSpaceEnvironment->getStates();
-		for(unsigned int n = 0; n < referenceStates.size(); n++)
-			if(referenceStates.at(n)->getContainer().equals({realSpaceLatticeHalfSize}))
-				realSpaceReferenceCell->addState(referenceStates.at(n));
-
-		break;
+			paddedLatticeVectors.at(n).push_back(0);
 	}
+
+	//Real space lattice vectors on Vector3d format. If the number of
+	//lattice vectors is smaller than 3, v[1] and v[2] are created to
+	//simplyfy the math, making the calculation the same as for the
+	//three-dimensional UnitCells.
+	Vector3d v[3];
+	for(unsigned int n = 0; n < latticeVectors.size(); n++)
+		v[n] = Vector3d(paddedLatticeVectors.at(n));
+	switch(latticeVectors.size()){
+	case 1:
+		v[1] = Vector3d({0, 1, 0});
+		v[2] = Vector3d({0, 0, 1});
+		break;
 	case 2:
-	{
-		//Ensure that the lattice vectors are represented by
-		//three-dimensional vectors during the calculation. Will be
-		//restored to original dimensionallity at the end of this
-		//code block.
-		vector<vector<double>> paddedLatticeVectors;
-		for(unsigned int n = 0; n < 2; n++){
-			paddedLatticeVectors.push_back(vector<double>());
-
-			for(unsigned int c = 0; c < latticeVectors.at(n).size(); c++)
-				paddedLatticeVectors.at(n).push_back(latticeVectors.at(n).at(c));
-			if(latticeVectors.at(n).size() == 2)
-				paddedLatticeVectors.at(n).push_back(0.);
-		}
-
-		//Real space lattice vectors on Vector3d format.
-		Vector3d v[3];
-		for(int n = 0; n < 2; n++)
-			v[n] = Vector3d(paddedLatticeVectors.at(n));
-		v[2] = v[0]*v[1];
-
-		//Maximum distance from the origin to any point contained in
-		//the UnitCell. Occurs at one of the corners of the
-		//parallelepiped spanned by the lattice vectors.
-		double maxDistanceFromOrigin = 0.;
-		for(int n = 1; n < 4; n++){
-			Vector3d w = (n%2)*v[0] + ((n/2)%2)*v[1];
-			if(w.norm() > maxDistanceFromOrigin)
-				maxDistanceFromOrigin = w.norm();
-		}
-
-		//Find maximum extent.
-		const vector<AbstractState*> &states = unitCell->getStates();
-		double maxExtent = 0.;
-		for(unsigned int n = 0; n < states.size(); n++){
-			TBTKAssert(
-				states.at(n)->getExtent() != numeric_limits<double>::infinity()
-				&& states.at(n)->getExtent() != numeric_limits<double>::max(),
-				"ReciprocalLattice::ReciprocalLattice()",
-				"Encountered state with infinite extent, but"
-				<< " only states with finite extent"
-				<< " supported.",
-				"Use AbstractState::setExtent() to set the"
-				<< " extent of each state in the UnitCell."
-			);
-
-			if(maxExtent < states.at(n)->getExtent())
-				maxExtent = states.at(n)->getExtent();
-		}
-
-		//Radius of a sphere centered at the origin, which is large
-		//enough that all states that have an extent that overlapps
-		//with the states in the unit cell are centered inside the
-		//sphere.
-		double enclosingRadius = (2.*maxExtent + maxDistanceFromOrigin)*ROUNDOFF_MARGIN_MULTIPLIER;
-
-		//Calculate number of UnitCells needed to cover the enclosing
-		//sphere and Index shift required to ensure that all UnitCells
-		//have positive indices.
-		int realSpaceLatticeHalfSize[2];
-		for(int n = 0; n < 2; n++){
-			Vector3d normal = v[(n+1)%3]*v[(n+2)%3];
-			normal = normal/normal.norm();
-			double perpendicularLength = Vector3d::dotProduct(v[n], normal);
-			realSpaceLatticeHalfSize[n] = (int)(enclosingRadius/perpendicularLength) + 1;
-		}
-
-		//Create a lattice for the real space environment.
-		Lattice realSpaceEnvironmentLattice(unitCell);
-		for(int x = 0; x < 2*realSpaceLatticeHalfSize[0]+1; x++)
-			for(int y = 0; y < 2*realSpaceLatticeHalfSize[1]+1; y++)
-				realSpaceEnvironmentLattice.addLatticePoint({x, y});
-
-		//Create StateSet for the real space environment.
-		realSpaceEnvironment = realSpaceEnvironmentLattice.generateStateSet();
-
-		//Create StateTreeNode for quick access of states in
-		//realSpaceEnvironment.
-		realSpaceEnvironmentStateTree = new StateTreeNode(*realSpaceEnvironment);
-
-		//Extract states contained in the refrence cell. That is, the
-		//cell containg all the states that will be used as kets.
-		realSpaceReferenceCell = new StateSet(false);
-		const vector<AbstractState*> &referenceStates = realSpaceEnvironment->getStates();
-		for(unsigned int n = 0; n < referenceStates.size(); n++){
-			if(referenceStates.at(n)->getContainer().equals({
-				realSpaceLatticeHalfSize[0],
-				realSpaceLatticeHalfSize[1]})
-			){
-				realSpaceReferenceCell->addState(referenceStates.at(n));
-			}
-		}
+		v[2] = Vector3d({0, 0, 1});
 		break;
-	}
 	case 3:
-	{
-		//Real space lattice vectors on Vector3d format.
-		Vector3d v[3];
-		for(int n = 0; n < 3; n++)
-			v[n] = Vector3d(latticeVectors.at(n));
-
-		//Maximum distance from the origin to any point contained in
-		//the UnitCell. Occurs at one of the corners of the
-		//parallelepiped spanned by the lattice vectors.
-		double maxDistanceFromOrigin = 0.;
-		for(int n = 1; n < 8; n++){
-			Vector3d w = (n%2)*v[0] + ((n/2)%2)*v[1] + ((n/4)%2)*v[2];
-			if(w.norm() > maxDistanceFromOrigin)
-				maxDistanceFromOrigin = w.norm();
-		}
-
-		//Find maximum extent.
-		const vector<AbstractState*> &states = unitCell->getStates();
-		double maxExtent = 0.;
-		for(unsigned int n = 0; n < states.size(); n++){
-			TBTKAssert(
-				states.at(n)->getExtent() != numeric_limits<double>::infinity()
-				&& states.at(n)->getExtent() != numeric_limits<double>::max(),
-				"ReciprocalLattice::ReciprocalLattice()",
-				"Encountered state with infinite extent, but"
-				<< " only states with finite extent"
-				<< " supported.",
-				"Use AbstractState::setExtent() to set the"
-				<< " extent of each state in the UnitCell."
-			);
-
-			if(maxExtent < states.at(n)->getExtent())
-				maxExtent = states.at(n)->getExtent();
-		}
-
-		//Radius of a sphere centered at the origin, which is large
-		//enough that all states that have an extent that overlapps
-		//with the states in the unit cell are centered inside the
-		//sphere.
-		double enclosingRadius = (2.*maxExtent + maxDistanceFromOrigin)*ROUNDOFF_MARGIN_MULTIPLIER;
-
-		//Calculate number of UnitCells needed to cover the enclosing
-		//sphere and Index shift required to ensure that all UnitCells
-		//have positive indices.
-		int realSpaceLatticeHalfSize[3];
-		for(int n = 0; n < 3; n++){
-			Vector3d normal = v[(n+1)%3]*v[(n+2)%3];
-			normal = normal/normal.norm();
-			double perpendicularLength = Vector3d::dotProduct(v[n], normal);
-			realSpaceLatticeHalfSize[n] = (int)(enclosingRadius/perpendicularLength) + 1;
-		}
-
-		//Create a lattice for the real space environment.
-		Lattice realSpaceEnvironmentLattice(unitCell);
-		for(int x = 0; x < 2*realSpaceLatticeHalfSize[0]+1; x++)
-			for(int y = 0; y < 2*realSpaceLatticeHalfSize[1]+1; y++)
-				for(int z = 0; z < 2*realSpaceLatticeHalfSize[2]+1; z++)
-					realSpaceEnvironmentLattice.addLatticePoint({x, y, z});
-
-		//Create StateSet for the real space environment.
-		realSpaceEnvironment = realSpaceEnvironmentLattice.generateStateSet();
-
-		//Create StateTreeNode for quick access of states in
-		//realSpaceEnvironment.
-		realSpaceEnvironmentStateTree = new StateTreeNode(*realSpaceEnvironment);
-
-		//Extract states contained in the refrence cell. That is, the
-		//cell containg all the states that will be used as kets.
-		realSpaceReferenceCell = new StateSet(false);
-		const vector<AbstractState*> &referenceStates = realSpaceEnvironment->getStates();
-		for(unsigned int n = 0; n < referenceStates.size(); n++){
-			if(referenceStates.at(n)->getContainer().equals({
-				realSpaceLatticeHalfSize[0],
-				realSpaceLatticeHalfSize[1],
-				realSpaceLatticeHalfSize[2]})
-			){
-				realSpaceReferenceCell->addState(referenceStates.at(n));
-			}
-		}
-
 		break;
-	}
 	default:
 		TBTKExit(
-			"ReciprocalLattice::ReciprocalLattice()",
+			"ReciprocalLattice::setupReciprocalLatticeVectors()",
 			"Unit cell dimension not supported.",
 			"Only UnitCells with 1-3 lattice vectors are"
 			<< " supported, but the supplied UnitCell has "
 			<< latticeVectors.size() << " lattice vectors."
 		);
 		break;
+	}
+
+	//Maximum distance from the origin to any point contained in the
+	//UnitCell. Occurs at one of the corners of the parallelepiped spanned
+	//by the lattice vectors. (1 << latticeVectors.size()) evaluates to the
+	//number of corners 2, 4, and 8 for 1, 2, and 3 lattice vectors,
+	//respectively.
+	double maxDistanceFromOrigin = 0.;
+	for(int n = 1; n < (1 << latticeVectors.size()); n++){
+		Vector3d w;
+		switch(latticeVectors.size()){
+		case 1:
+			w = (n%2)*v[0];
+			break;
+		case 2:
+			w = (n%2)*v[0] + ((n/2)%2)*v[1];
+			break;
+		case 3:
+			w = (n%2)*v[0] + ((n/2)%2)*v[1] + ((n/4)%2)*v[2];
+			break;
+		default:
+			TBTKExit(
+				"ReciprocalLattice::setupReciprocalLatticeVectors()",
+				"Unit cell dimension not supported.",
+				"Only UnitCells with 1-3 lattice vectors are"
+				<< " supported, but the supplied UnitCell has "
+				<< latticeVectors.size() << " lattice vectors."
+			);
+			break;
+		}
+		if(w.norm() > maxDistanceFromOrigin)
+			maxDistanceFromOrigin = w.norm();
+	}
+
+	//Find maximum extent.
+	const vector<AbstractState*> &states = unitCell->getStates();
+	double maxExtent = 0.;
+	for(unsigned int n = 0; n < states.size(); n++){
+		TBTKAssert(
+			states.at(n)->getExtent() != numeric_limits<double>::infinity()
+			&& states.at(n)->getExtent() != numeric_limits<double>::max(),
+			"ReciprocalLattice::ReciprocalLattice()",
+			"Encountered state with infinite extent, but"
+			<< " only states with finite extent"
+			<< " supported.",
+			"Use AbstractState::setExtent() to set the"
+			<< " extent of each state in the UnitCell."
+		);
+
+		if(maxExtent < states.at(n)->getExtent())
+			maxExtent = states.at(n)->getExtent();
+	}
+
+	//Radius of a sphere centered at the origin, which is large
+	//enough that all states that have an extent that overlapps
+	//with the states in the unit cell are centered inside the
+	//sphere.
+	double enclosingRadius = (2.*maxExtent + maxDistanceFromOrigin)*ROUNDOFF_MARGIN_MULTIPLIER;
+
+	//Calculate number of UnitCells needed to cover the enclosing
+	//sphere and Index shift required to ensure that all UnitCells
+	//have positive indices.
+	int realSpaceLatticeHalfSize[3];
+	for(int n = 0; n < 3; n++){
+		Vector3d normal = v[(n+1)%3]*v[(n+2)%3];
+		normal = normal/normal.norm();
+		double perpendicularLength = Vector3d::dotProduct(v[n], normal);
+		realSpaceLatticeHalfSize[n] = (int)(enclosingRadius/perpendicularLength) + 1;
+	}
+
+	//Create a lattice for the real space environment.
+	Lattice realSpaceEnvironmentLattice(unitCell);
+	switch(latticeVectors.size()){
+	case 1:
+		for(int x = 0; x < 2*realSpaceLatticeHalfSize[0]+1; x++)
+			realSpaceEnvironmentLattice.addLatticePoint({x});
+		break;
+	case 2:
+		for(int x = 0; x < 2*realSpaceLatticeHalfSize[0]+1; x++)
+			for(int y = 0; y < 2*realSpaceLatticeHalfSize[1]+1; y++)
+				realSpaceEnvironmentLattice.addLatticePoint({x, y});
+		break;
+	case 3:
+		for(int x = 0; x < 2*realSpaceLatticeHalfSize[0]+1; x++)
+			for(int y = 0; y < 2*realSpaceLatticeHalfSize[1]+1; y++)
+				for(int z = 0; z < 2*realSpaceLatticeHalfSize[2]+1; z++)
+					realSpaceEnvironmentLattice.addLatticePoint({x, y, z});
+		break;
+	default:
+		TBTKExit(
+			"ReciprocalLattice::setupReciprocalLatticeVectors()",
+			"Unit cell dimension not supported.",
+			"Only UnitCells with 1-3 lattice vectors are"
+			<< " supported, but the supplied UnitCell has "
+			<< latticeVectors.size() << " lattice vectors."
+		);
+		break;
+	}
+
+	//Create StateSet for the real space environment.
+	realSpaceEnvironment = realSpaceEnvironmentLattice.generateStateSet();
+
+	//Create StateTreeNode for quick access of states in
+	//realSpaceEnvironment.
+	realSpaceEnvironmentStateTree = new StateTreeNode(*realSpaceEnvironment);
+
+	//Extract states contained in the refrence cell. That is, the
+	//cell containg all the states that will be used as kets.
+	realSpaceReferenceCell = new StateSet(false);
+	const vector<AbstractState*> &referenceStates = realSpaceEnvironment->getStates();
+	for(unsigned int n = 0; n < referenceStates.size(); n++){
+		switch(latticeVectors.size()){
+		case 1:
+			if(referenceStates.at(n)->getContainer().equals({
+					realSpaceLatticeHalfSize[0]
+				})
+			){
+				realSpaceReferenceCell->addState(referenceStates.at(n));
+			}
+			break;
+		case 2:
+			if(referenceStates.at(n)->getContainer().equals({
+					realSpaceLatticeHalfSize[0],
+					realSpaceLatticeHalfSize[1]
+				})
+			){
+				realSpaceReferenceCell->addState(referenceStates.at(n));
+			}
+			break;
+		case 3:
+			if(referenceStates.at(n)->getContainer().equals({
+					realSpaceLatticeHalfSize[0],
+					realSpaceLatticeHalfSize[1],
+					realSpaceLatticeHalfSize[2]
+				})
+			){
+				realSpaceReferenceCell->addState(referenceStates.at(n));
+			}
+			break;
+		default:
+			TBTKExit(
+				"ReciprocalLattice::setupReciprocalLatticeVectors()",
+				"Unit cell dimension not supported.",
+				"Only UnitCells with 1-3 lattice vectors are"
+				<< " supported, but the supplied UnitCell has "
+				<< latticeVectors.size() << " lattice vectors."
+			);
+			break;
+		}
 	}
 }
 
