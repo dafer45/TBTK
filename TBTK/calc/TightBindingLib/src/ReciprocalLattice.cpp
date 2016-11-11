@@ -41,20 +41,6 @@ ReciprocalLattice::ReciprocalLattice(
 
 	const vector<vector<double>> latticeVectors = unitCell->getLatticeVectors();
 
-/*	TBTKAssert(
-		size.size() == latticeVectors.size(),
-		"ReciprocalLattice::ReciprocalLattice()",
-		"Incompatible dimensions. The number of lattice vectors in the"
-		<< " UnitCell must be the same as the number of components in"
-		<< " size. The number of lattice vectors are "
-		<< latticeVectors.size() << ", while the number of components"
-		<< " of size are " << size.size() << ".",
-		""
-	);
-
-	for(unsigned int n = 0; n < size.size(); n++)
-		this->size.push_back(*(size.begin() + n));*/
-
 	//Calculate reciprocal lattice vectors
 	switch(latticeVectors.size()){
 	case 1:
@@ -63,8 +49,8 @@ ReciprocalLattice::ReciprocalLattice(
 
 		TBTKAssert(
 			latticeVectors.at(0).size() == 1
-/*			|| latticeVectors.at(0).size() == 2
-			|| latticeVectors.at(0).size() == 3*/,
+			|| latticeVectors.at(0).size() == 2
+			|| latticeVectors.at(0).size() == 3,
 			"ReciprocalLattice::ReciprocalLattice()",
 			"Lattice vector dimension not supported.",
 			"Only one-, two-, and three-dimensional lattice"
@@ -109,7 +95,7 @@ ReciprocalLattice::ReciprocalLattice(
 
 		TBTKAssert(
 			latticeVectors.at(0).size() == 2
-/*			|| latticeVectors.at(0).size() == 3*/,
+			|| latticeVectors.at(0).size() == 3,
 			"ReciprocalLattice::ReciprocalLattice()",
 			"Lattice vector dimension not supported.",
 			"Only two- and three-dimensional lattice vectors are"
@@ -251,7 +237,6 @@ ReciprocalLattice::ReciprocalLattice(
 		//sphere and Index shift required to ensure that all UnitCells
 		//have positive indices.
 		int realSpaceLatticeHalfSize = (int)(enclosingRadius/v.norm()) + 1;
-//		Index realSpaceCenterIndex({realSpaceLatticeHalfSize});
 
 		//Create a lattice for the real space environment.
 		Lattice realSpaceEnvironmentLattice(unitCell);
@@ -280,8 +265,6 @@ ReciprocalLattice::ReciprocalLattice(
 		break;
 	case 3:
 	{
-//		TBTKNotYetImplemented("ReciprocalLattice::ReciprocalLattice()");
-
 		//Real space lattice vectors on Vector3d format.
 		Vector3d v[3];
 		for(int n = 0; n < 3; n++)
@@ -332,7 +315,6 @@ ReciprocalLattice::ReciprocalLattice(
 			double perpendicularLength = Vector3d::dotProduct(v[n], normal);
 			realSpaceLatticeHalfSize[n] = (int)(enclosingRadius/perpendicularLength) + 1;
 		}
-//		Index realSpaceCenterIndex();
 
 		//Create a lattice for the real space environment.
 		Lattice realSpaceEnvironmentLattice(unitCell);
@@ -387,129 +369,58 @@ ReciprocalLattice::~ReciprocalLattice(){
 Model* ReciprocalLattice::generateModel(initializer_list<double> momentum) const{
 	Model *model = new Model();
 
-	switch(reciprocalLatticeVectors.size()){
-	case 1:
-		for(unsigned int from = 0; from < realSpaceReferenceCell->getStates().size(); from++){
-			//Get reference ket.
-			const AbstractState *referenceKet = realSpaceReferenceCell->getStates().at(from);
+	TBTKAssert(
+		momentum.size() == reciprocalLatticeVectors.at(0).size(),
+		"ReciprocalLattice::ReciprocalLattice()",
+		"Incompatible dimensions. The number of components of momentum"
+		<< " must be the same as the number of components of the"
+		<< " lattice vectors in the UnitCell. The the number of"
+		<< " components of the momentum are " << momentum.size() << ","
+		<< " while the number of components for the latticeVectors"
+		<< " are " << reciprocalLatticeVectors.at(0).size() << ".",
+		""
+	);
 
-			for(unsigned int to = 0; to < realSpaceReferenceCell->getStates().size(); to++){
-				//Get reference bra and its Index.
-				const AbstractState *referenceBra = realSpaceReferenceCell->getStates().at(to);
-				Index referenceBraIndex(referenceBra->getIndex());
+	for(unsigned int from = 0; from < realSpaceReferenceCell->getStates().size(); from++){
+		//Get reference ket.
+		const AbstractState *referenceKet = realSpaceReferenceCell->getStates().at(from);
 
-				//Get all bras that have a possible overlap
-				//with the reference ket.
-				const vector<const AbstractState*> *bras = realSpaceEnvironmentStateTree->getOverlappingStates(
-					referenceKet->getCoordinates(),
-					referenceKet->getExtent()
-				);
+		for(unsigned int to = 0; to < realSpaceReferenceCell->getStates().size(); to++){
+			//Get reference bra and its Index.
+			const AbstractState *referenceBra = realSpaceReferenceCell->getStates().at(to);
+			Index referenceBraIndex(referenceBra->getIndex());
 
-				//Calculate momentum space amplitude
-				complex<double> amplitude = 0.;
-				for(unsigned int n = 0; n < bras->size(); n++){
-					//Loop over all states that have a
-					//possible finite overlap with the
-					//reference ket.
-					const AbstractState *bra = bras->at(n);
-					if(bra->getIndex().equals(referenceBraIndex)){
-						//Only states with the same
-						//Index as the reference ket
-						//contributes to the amplitude.
+			//Get all bras that have a possible overlap with the
+			//reference ket.
+			const vector<const AbstractState*> *bras = realSpaceEnvironmentStateTree->getOverlappingStates(
+				referenceKet->getCoordinates(),
+				referenceKet->getExtent()
+			);
 
-						static const complex<double> i(0., 1.);
+			//Calculate momentum space amplitude
+			complex<double> amplitude = 0.;
+			for(unsigned int n = 0; n < bras->size(); n++){
+				//Loop over all states that have a possible
+				//finite overlap with the reference ket.
+				const AbstractState *bra = bras->at(n);
+				if(bra->getIndex().equals(referenceBraIndex)){
+					//Only states with the same Index as
+					//the reference ket contributes to the
+					//amplitude.
 
-						//Calculate distance between
-						//the reference state and the
-						//current bra state.
-/*						double distance = 0;
-						for(unsigned int c = 0; c < bra->getCoordinates().size(); c++)
-							distance += pow(bra->getCoordinates().at(c) - referenceKet->getCoordinates().at(c), 2);
-						distance = sqrt(distance);
-						Util::Streams::out << distance << "\t" << bra->getContainer().at(0) << "\n";*/
-
-//						bra->getContainer();
-
-						//Perform sum.
-//						amplitude += bras->at(n)->getMatrixElement(*referenceKet)*exp(i*2.*M_PI*(*momentum.begin())*distance/(double)size.at(0));
-//						amplitude += bras->at(n)->getMatrixElement(*referenceKet)*exp(i*(*momentum.begin())*distance);
-						amplitude += bras->at(n)->getMatrixElement(*referenceKet)*exp(i*(*momentum.begin())*(double)(bra->getCoordinates().at(0) - referenceBra->getCoordinates().at(0)));
-					}
+					static const complex<double> i(0., 1.);
+					complex<double> exponent = 0.;
+					for(unsigned int c = 0; c < momentum.size(); c++)
+						exponent += i*(*(momentum.begin() + c))*(bra->getCoordinates().at(c) - referenceBra->getCoordinates().at(c));
+					amplitude += bras->at(n)->getMatrixElement(*referenceKet)*exp(exponent);
 				}
-
-				//Add HoppingAmplitude to Hamiltonian, unless
-				//the maplitude is exactly zero.
-				if(amplitude != 0.)
-					model->addHA(HoppingAmplitude(amplitude, referenceBraIndex, referenceKet->getIndex()));
 			}
+
+			//Add HoppingAmplitude to Hamiltonian, unless the
+			//amplitude is exactly zero.
+//			if(amplitude != 0.)
+				model->addHA(HoppingAmplitude(amplitude, referenceBraIndex, referenceKet->getIndex()));
 		}
-		break;
-	case 2:
-		TBTKNotYetImplemented("ReciprocalLattice::generateModel()");
-		break;
-	case 3:
-//		TBTKNotYetImplemented("ReciprocalLattice::generateModel()");
-		for(unsigned int from = 0; from < realSpaceReferenceCell->getStates().size(); from++){
-			//Get reference ket.
-			const AbstractState *referenceKet = realSpaceReferenceCell->getStates().at(from);
-
-			for(unsigned int to = 0; to < realSpaceReferenceCell->getStates().size(); to++){
-				//Get reference bra and its Index.
-				const AbstractState *referenceBra = realSpaceReferenceCell->getStates().at(to);
-				Index referenceBraIndex(referenceBra->getIndex());
-
-				//Get all bras that have a possible overlap
-				//with the reference ket.
-				const vector<const AbstractState*> *bras = realSpaceEnvironmentStateTree->getOverlappingStates(
-					referenceKet->getCoordinates(),
-					referenceKet->getExtent()
-				);
-
-				//Calculate momentum space amplitude
-				complex<double> amplitude = 0.;
-				for(unsigned int n = 0; n < bras->size(); n++){
-					//Loop over all states that have a
-					//possible finite overlap with the
-					//reference ket.
-					const AbstractState *bra = bras->at(n);
-					if(bra->getIndex().equals(referenceBraIndex)){
-						//Only states with the same
-						//Index as the reference ket
-						//contributes to the amplitude.
-
-						static const complex<double> i(0., 1.);
-
-						//Calculate distance between
-						//the reference state and the
-						//current bra state.
-/*						double distance[3] = {0., 0., 0.};
-						for(unsigned int c = 0; c < bra->getCoordinates().size(); c++)
-							distance += pow(bra->getCoordinates().at(c) - referenceKet->getCoordinates().at(c), 2);
-						distance = sqrt(distance);*/
-
-						//Perform sum.
-						amplitude += bras->at(n)->getMatrixElement(*referenceKet)*exp(i*(
-							(*(momentum.begin() + 0))*(bra->getCoordinates().at(0) - referenceBra->getCoordinates().at(0))
-							+ (*(momentum.begin() + 1))*(bra->getCoordinates().at(1) - referenceBra->getCoordinates().at(1))
-							+ (*(momentum.begin() + 2))*(bra->getCoordinates().at(2) - referenceBra->getCoordinates().at(2))
-						));
-					}
-				}
-
-				//Add HoppingAmplitude to Hamiltonian, unless
-				//the maplitude is exactly zero.
-				if(amplitude != 0.)
-					model->addHA(HoppingAmplitude(amplitude, referenceBraIndex, referenceKet->getIndex()));
-			}
-		}
-		break;
-	default:
-		TBTKExit(
-			"ReciprocalLattice::generateModel()",
-			"This should never happen.",
-			"Notify the developer of this bug."
-		);
-		break;
 	}
 
 	return model;
