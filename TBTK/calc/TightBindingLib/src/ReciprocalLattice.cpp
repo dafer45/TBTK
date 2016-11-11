@@ -63,8 +63,8 @@ ReciprocalLattice::ReciprocalLattice(
 
 		TBTKAssert(
 			latticeVectors.at(0).size() == 1
-			|| latticeVectors.at(0).size() == 2
-			|| latticeVectors.at(0).size() == 3,
+/*			|| latticeVectors.at(0).size() == 2
+			|| latticeVectors.at(0).size() == 3*/,
 			"ReciprocalLattice::ReciprocalLattice()",
 			"Lattice vector dimension not supported.",
 			"Only one-, two-, and three-dimensional lattice"
@@ -109,7 +109,7 @@ ReciprocalLattice::ReciprocalLattice(
 
 		TBTKAssert(
 			latticeVectors.at(0).size() == 2
-			|| latticeVectors.at(0).size() == 3,
+/*			|| latticeVectors.at(0).size() == 3*/,
 			"ReciprocalLattice::ReciprocalLattice()",
 			"Lattice vector dimension not supported.",
 			"Only two- and three-dimensional lattice vectors are"
@@ -218,6 +218,8 @@ ReciprocalLattice::ReciprocalLattice(
 		//Real space lattice vectors on Vector3d format.
 		Vector3d v(paddedLatticeVector);
 
+		//Maximum distance from the origin to any point contained in
+		//the UnitCell.
 		double maxDistanceFromOrigin = v.norm();
 
 		//Find maximum extent.
@@ -249,7 +251,7 @@ ReciprocalLattice::ReciprocalLattice(
 		//sphere and Index shift required to ensure that all UnitCells
 		//have positive indices.
 		int realSpaceLatticeHalfSize = (int)(enclosingRadius/v.norm()) + 1;
-		Index realSpaceCenterIndex({realSpaceLatticeHalfSize});
+//		Index realSpaceCenterIndex({realSpaceLatticeHalfSize});
 
 		//Create a lattice for the real space environment.
 		Lattice realSpaceEnvironmentLattice(unitCell);
@@ -277,8 +279,90 @@ ReciprocalLattice::ReciprocalLattice(
 		TBTKNotYetImplemented("ReciprocalLattice::ReciprocalLattice()");
 		break;
 	case 3:
-		TBTKNotYetImplemented("ReciprocalLattice::ReciprocalLattice()");
+	{
+//		TBTKNotYetImplemented("ReciprocalLattice::ReciprocalLattice()");
+
+		//Real space lattice vectors on Vector3d format.
+		Vector3d v[3];
+		for(int n = 0; n < 3; n++)
+			v[n] = Vector3d(latticeVectors.at(n));
+
+		//Maximum distance from the origin to any point contained in
+		//the UnitCell. Occurs at one of the corners of the
+		//parallelepiped spanned by the lattice vectors.
+		double maxDistanceFromOrigin = 0.;
+		for(int n = 1; n < 8; n++){
+			Vector3d w = (n%2)*v[0] + ((n/2)%2)*v[1] + ((n/4)%2)*v[2];
+			if(w.norm() > maxDistanceFromOrigin)
+				maxDistanceFromOrigin = w.norm();
+		}
+
+		//Find maximum extent.
+		const vector<AbstractState*> &states = unitCell->getStates();
+		double maxExtent = 0.;
+		for(unsigned int n = 0; n < states.size(); n++){
+			TBTKAssert(
+				states.at(n)->getExtent() != numeric_limits<double>::infinity()
+				&& states.at(n)->getExtent() != numeric_limits<double>::max(),
+				"ReciprocalLattice::ReciprocalLattice()",
+				"Encountered state with infinite extent, but"
+				<< " only states with finite extent"
+				<< " supported.",
+				"Use AbstractState::setExtent() to set the"
+				<< " extent of each state in the UnitCell."
+			);
+
+			if(maxExtent < states.at(n)->getExtent())
+				maxExtent = states.at(n)->getExtent();
+		}
+
+		//Radius of a sphere centered at the origin, which is large
+		//enough that all states that have an extent that overlapps
+		//with the states in the unit cell are centered inside the
+		//sphere.
+		double enclosingRadius = (2.*maxExtent + maxDistanceFromOrigin)*ROUNDOFF_MARGIN_MULTIPLIER;
+
+		//Calculate number of UnitCells needed to cover the enclosing
+		//sphere and Index shift required to ensure that all UnitCells
+		//have positive indices.
+		int realSpaceLatticeHalfSize[3];
+		for(int n = 0; n < 3; n++){
+			Vector3d normal = v[(n+1)%3]*v[(n+2)%3];
+			normal = normal/normal.norm();
+			double perpendicularLength = Vector3d::dotProduct(v[n], normal);
+			realSpaceLatticeHalfSize[n] = (int)(enclosingRadius/perpendicularLength) + 1;
+		}
+//		Index realSpaceCenterIndex();
+
+		//Create a lattice for the real space environment.
+		Lattice realSpaceEnvironmentLattice(unitCell);
+		for(int x = 0; x < 2*realSpaceLatticeHalfSize[0]+1; x++)
+			for(int y = 0; y < 2*realSpaceLatticeHalfSize[1]+1; y++)
+				for(int z = 0; z < 2*realSpaceLatticeHalfSize[2]+1; z++)
+					realSpaceEnvironmentLattice.addLatticePoint({x, y, z});
+
+		//Create StateSet for the real space environment.
+		realSpaceEnvironment = realSpaceEnvironmentLattice.generateStateSet();
+
+		//Create StateTreeNode for quick access of states in
+		//realSpaceEnvironment.
+		realSpaceEnvironmentStateTree = new StateTreeNode(*realSpaceEnvironment);
+
+		//Extract states contained in the refrence cell. That is, the
+		//cell containg all the states that will be used as kets.
+		realSpaceReferenceCell = new StateSet(false);
+		const vector<AbstractState*> &referenceStates = realSpaceEnvironment->getStates();
+		for(unsigned int n = 0; n < referenceStates.size(); n++)
+			if(referenceStates.at(n)->getContainer().equals({
+				realSpaceLatticeHalfSize[0],
+				realSpaceLatticeHalfSize[1],
+				realSpaceLatticeHalfSize[2]})
+			){
+				realSpaceReferenceCell->addState(referenceStates.at(n));
+			}
+
 		break;
+	}
 	default:
 		TBTKExit(
 			"ReciprocalLattice::ReciprocalLattice()",
@@ -338,14 +422,18 @@ Model* ReciprocalLattice::generateModel(initializer_list<double> momentum) const
 						//Calculate distance between
 						//the reference state and the
 						//current bra state.
-						double distance = 0;
+/*						double distance = 0;
 						for(unsigned int c = 0; c < bra->getCoordinates().size(); c++)
 							distance += pow(bra->getCoordinates().at(c) - referenceKet->getCoordinates().at(c), 2);
 						distance = sqrt(distance);
+						Util::Streams::out << distance << "\t" << bra->getContainer().at(0) << "\n";*/
+
+//						bra->getContainer();
 
 						//Perform sum.
 //						amplitude += bras->at(n)->getMatrixElement(*referenceKet)*exp(i*2.*M_PI*(*momentum.begin())*distance/(double)size.at(0));
-						amplitude += bras->at(n)->getMatrixElement(*referenceKet)*exp(i*(*momentum.begin())*distance);
+//						amplitude += bras->at(n)->getMatrixElement(*referenceKet)*exp(i*(*momentum.begin())*distance);
+						amplitude += bras->at(n)->getMatrixElement(*referenceKet)*exp(i*(*momentum.begin())*(double)(bra->getCoordinates().at(0) - referenceBra->getCoordinates().at(0)));
 					}
 				}
 
@@ -360,7 +448,60 @@ Model* ReciprocalLattice::generateModel(initializer_list<double> momentum) const
 		TBTKNotYetImplemented("ReciprocalLattice::generateModel()");
 		break;
 	case 3:
-		TBTKNotYetImplemented("ReciprocalLattice::generateModel()");
+//		TBTKNotYetImplemented("ReciprocalLattice::generateModel()");
+		for(unsigned int from = 0; from < realSpaceReferenceCell->getStates().size(); from++){
+			//Get reference ket.
+			const AbstractState *referenceKet = realSpaceReferenceCell->getStates().at(from);
+
+			for(unsigned int to = 0; to < realSpaceReferenceCell->getStates().size(); to++){
+				//Get reference bra and its Index.
+				const AbstractState *referenceBra = realSpaceReferenceCell->getStates().at(to);
+				Index referenceBraIndex(referenceBra->getIndex());
+
+				//Get all bras that have a possible overlap
+				//with the reference ket.
+				const vector<const AbstractState*> *bras = realSpaceEnvironmentStateTree->getOverlappingStates(
+					referenceKet->getCoordinates(),
+					referenceKet->getExtent()
+				);
+
+				//Calculate momentum space amplitude
+				complex<double> amplitude = 0.;
+				for(unsigned int n = 0; n < bras->size(); n++){
+					//Loop over all states that have a
+					//possible finite overlap with the
+					//reference ket.
+					const AbstractState *bra = bras->at(n);
+					if(bra->getIndex().equals(referenceBraIndex)){
+						//Only states with the same
+						//Index as the reference ket
+						//contributes to the amplitude.
+
+						static const complex<double> i(0., 1.);
+
+						//Calculate distance between
+						//the reference state and the
+						//current bra state.
+/*						double distance[3] = {0., 0., 0.};
+						for(unsigned int c = 0; c < bra->getCoordinates().size(); c++)
+							distance += pow(bra->getCoordinates().at(c) - referenceKet->getCoordinates().at(c), 2);
+						distance = sqrt(distance);*/
+
+						//Perform sum.
+						amplitude += bras->at(n)->getMatrixElement(*referenceKet)*exp(i*(
+							(*(momentum.begin() + 0))*(bra->getCoordinates().at(0) - referenceBra->getCoordinates().at(0))
+							+ (*(momentum.begin() + 1))*(bra->getCoordinates().at(1) - referenceBra->getCoordinates().at(1))
+							+ (*(momentum.begin() + 2))*(bra->getCoordinates().at(2) - referenceBra->getCoordinates().at(2))
+						));
+					}
+				}
+
+				//Add HoppingAmplitude to Hamiltonian, unless
+				//the maplitude is exactly zero.
+				if(amplitude != 0.)
+					model->addHA(HoppingAmplitude(amplitude, referenceBraIndex, referenceKet->getIndex()));
+			}
+		}
 		break;
 	default:
 		TBTKExit(
