@@ -31,8 +31,7 @@ using namespace std;
 namespace TBTK{
 
 ReciprocalLattice::ReciprocalLattice(
-	UnitCell *unitCell/*,
-	initializer_list<int> size*/
+	UnitCell *unitCell
 ){
 	this->unitCell = unitCell;
 	this->realSpaceEnvironment = NULL;
@@ -121,9 +120,7 @@ void ReciprocalLattice::setupReciprocalLatticeVectors(const UnitCell *unitCell){
 		//1D real space lattice to 1D reciprocal lattice vectors.
 
 		TBTKAssert(
-			latticeVectors.at(0).size() == 1
-/*			|| latticeVectors.at(0).size() == 2
-			|| latticeVectors.at(0).size() == 3*/,
+			latticeVectors.at(0).size() == 1,
 			"ReciprocalLattice::ReciprocalLattice()",
 			"Lattice vector dimension not supported.",
 			"Only one-, two-, and three-dimensional lattice"
@@ -167,8 +164,7 @@ void ReciprocalLattice::setupReciprocalLatticeVectors(const UnitCell *unitCell){
 		//2D real space lattice to 2D reciprocal lattice vectors.
 
 		TBTKAssert(
-			latticeVectors.at(0).size() == 2
-/*			|| latticeVectors.at(0).size() == 3*/,
+			latticeVectors.at(0).size() == 2,
 			"ReciprocalLattice::ReciprocalLattice()",
 			"Lattice vector dimension not supported.",
 			"Only two- and three-dimensional lattice vectors are"
