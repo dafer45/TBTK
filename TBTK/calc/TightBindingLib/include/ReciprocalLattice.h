@@ -99,13 +99,15 @@ private:
 	/** Reciprocal lattice vectors. */
 	std::vector<std::vector<double>> reciprocalLatticeVectors;
 
-	/** Size of the corresponding real space lattice, or equivalently, the
-	 *  size of the k-points mesh. */
-//	std::vector<int> size;
-
 	/** Constant used to provide a margin that protects from roundoff
 	 *  errors. */
 	static constexpr double ROUNDOFF_MARGIN_MULTIPLIER = 1.01;
+
+	/** Setup reciprocal lattice vectors. */
+	void setupReciprocalLatticeVectors(const UnitCell *unitCell);
+
+	/** Setup real space environment. */
+	void setupRealSpaceEnvironment(const UnitCell *unitCell);
 };
 
 inline const std::vector<std::vector<double>>& ReciprocalLattice::getReciprocalLatticeVectors() const{

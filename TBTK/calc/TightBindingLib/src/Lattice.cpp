@@ -25,7 +25,7 @@ using namespace std;
 
 namespace TBTK{
 
-Lattice::Lattice(UnitCell *unitCell){
+Lattice::Lattice(const UnitCell *unitCell){
 	this->unitCell = unitCell;
 }
 

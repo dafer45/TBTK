@@ -33,7 +33,7 @@ namespace TBTK{
 class Lattice{
 public:
 	/** Constructor. */
-	Lattice(UnitCell *unitCell);
+	Lattice(const UnitCell *unitCell);
 
 	/** Destructor. */
 	~Lattice();
@@ -45,7 +45,7 @@ public:
 	StateSet* generateStateSet();
 private:
 	/** Unit cell that is to be replicated throughout the lattice. */
-	UnitCell *unitCell;
+	const UnitCell *unitCell;
 
 	/** Lattice points that are included in the lattice. */
 	std::vector<Index> latticePoints;
