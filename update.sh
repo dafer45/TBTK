@@ -1,9 +1,9 @@
 #!/bin/bash -l
 
-cd TBTK/calc/TightBindingLib/
+cd Lib/
 	make clean
 	make
-	cd ../../..
+	cd ..
 
 cd Tools
 	./build.sh

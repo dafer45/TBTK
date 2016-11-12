@@ -4,21 +4,21 @@ cd hdf5
 	bash fetchAndBuild.sh
 	cd ..
 
-cp TBTK/calc/TightBindingLib/makefile_without_CUDA TBTK/calc/TightBindingLib/makefile
+cp Lib/makefile_without_CUDA Lib/makefile
 while [[ $# > 0 ]]
 do
 	key=$1
 	case $key in
 		-CUDA)
-			cp TBTK/calc/TightBindingLib/makefile_with_CUDA TBTK/calc/TightBindingLib/makefile
+			cp Lib/makefile_with_CUDA Lib/makefile
 			shift
 		;;
 	esac
 done
 
-cd TBTK/calc/TightBindingLib/
+cd Lib/
 	make
-	cd ../../..
+	cd ..
 
 cd Tools
 	./build.sh
