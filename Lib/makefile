@@ -1,228 +1,184 @@
-CC = g++
-CFLAGS = -Wall -std=c++11 -fopenmp -O3
-NVCCFLAGS = -std=c++11 -O3 --compiler-options "-fopenmp"
+# Copyright 2016 Anna Sinelnikova and Kristofer Björnson
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 
-INDEX_SOURCE = src/Index.cpp
-HOPPING_AMPLITUDE_SOURCE = src/HoppingAmplitude.cpp
-TREE_NODE_SOURCE = src/TreeNode.cpp
-AMPLITUDE_SET_SOURCE = src/AmplitudeSet.cpp
-MODEL_SOURCE = src/Model.cpp
-D_PROPERTY_EXTRACTOR_SOURCE = src/DPropertyExtractor.cpp
-C_PROPERTY_EXTRACTOR_SOURCE = src/CPropertyExtractor.cpp
-FILE_WRITER_SOURCE = src/FileWriter.cpp
-FILE_READER_SOURCE = src/FileReader.cpp
-FILE_PARSER_SOURCE = src/FileParser.cpp
-HA_LINKED_LIST_SOURCE = src/HALinkedList.cpp
-CHEBYSHEV_SOLVER_SOURCE = src/ChebyshevSolver.cpp
-CHEBYSHEV_SOLVER_CUDA_SOURCE = src/cuda/ChebyshevSolver.cu
-DIAGONALIZATION_SOLVER_SOURCE = src/DiagonalizationSolver.cpp
-TIME_EVOLVER_SOURCE = src/TimeEvolver.cpp
-UNIT_HANDLER_SOURCE = src/UnitHandler.cpp
-FUNCTIONS_SOURCE = src/Functions.cpp
-UTIL_SOURCE = src/Util.cpp
-DENSITY_SOURCE = src/Density.cpp
-DOS_SOURCE = src/DOS.cpp
-EIGEN_VALUES_SOURCE = src/EigenValues.cpp
-LDOS_SOURCE = src/LDOS.cpp
-MAGNETIZATION_SOURCE = src/Magnetization.cpp
-SPIN_POLARIZED_LDOS_SOURCE = src/SpinPolarizedLDOS.cpp
-GEOMETRY_SOURCE = src/Geometry.cpp
-MODEL_FACTORY_SOURCE = src/ModelFactory.cpp
-PARAMETER_SET_SOURCE = src/ParameterSet.cpp
-GPU_RESOURCE_MANAGER_SOURCE = src/GPUResourceManager.cpp
-GPU_RESOURCE_MANAGER_CUDA_SOURCE = src/cuda/GPUResourceManager.cu
-STREAMS_SOURCE = src/Streams.cpp
-SOURCES = $(INDEX_SOURCE)
-SOURCES += $(HOPPING_AMPLITUDE_SOURCE)
-SOURCES += $(TREE_NODE_SOURCE)
-SOURCES += $(AMPLITUDE_SET_SOURCE)
-SOURCES += $(MODEL_SOURCE)
-SOURCES += $(D_PROPERTY_EXTRACTOR_SOURCE)
-SOURCES += $(C_PROPERTY_EXTRACTOR_SOURCE)
-SOURCES += $(FILE_WRITER_SOURCE)
-SOURCES += $(FILE_READER_SOURCE)
-SOURCES += $(FILE_PARSER_SOURCE)
-SOURCES += $(HA_LINKED_LIST_SOURCE)
-SOURCES += $(CHEBYSHEV_SOLVER_SOURCE)
-SOURCES += $(CHEBYSHEV_SOLVER_CUDA_SOURCE)
-SOURCES += $(DIAGONALIZATION_SOLVER_SOURCE)
-SOURCES += $(TIME_EVOLVER_SOURCE)
-SOURCES += $(UNIT_HANDLER_SOURCE)
-SOURCES += $(FUNCTIOS_SOURCE)
-SOURCES += $(UTIL_SOURCE)
-SOURCES += $(DENSITY_SOURCE)
-SOURCES += $(DOS_SOURCE)
-SOURCES += $(EIGEN_VALUES_SOURCE)
-SOURCES += $(LDOS_SOURCE)
-SOURCES += $(MAGNETIZATION_SOURCE)
-SOURCES += $(SPIN_POLARIZED_LDOS_SOURCE)
-SOURCES += $(GEOMETRY_SOURCE)
-SOURCES += $(MODEL_FACTORY_SOURCE)
-SOURCES += $(PARAMETER_SET_SOURCE)
-SOURCES += $(GPU_RESOURCE_MANAGER_SOURCE)
-SOURCES += $(GPU_RESOURCE_MANAGER_CUDA_SOURCE)
-SOURCES += $(STREAMS_SOURCE)
+## @file Makefile
+## @brief ...
+##
+## Run $make list_of_objects to see
+## the rule for compilation only onle file.
+##
+## @author Anna Sinelnikova
+## @author Kristofer Björnson
+##
+## @cond
 
-INDEX_OBJECT = build/Index.o
-HOPPING_AMPLITUDE_OBJECT = build/HoppingAmplitude.o
-TREE_NODE_OBJECT = build/TreeNode.o
-AMPLITUDE_SET_OBJECT = build/AmplitudeSet.o
-MODEL_OBJECT = build/Model.o
-D_PROPERTY_EXTRACTOR_OBJECT = build/DPropertyExtractor.o
-C_PROPERTY_EXTRACTOR_OBJECT = build/CPropertyExtractor.o
-FILE_WRITER_OBJECT = build/FileWriter.o
-FILE_READER_OBJECT = build/FileReader.o
-FILE_PARSER_OBJECT = build/FileParser.o
-HA_LINKED_LIST_OBJECT = build/HALinkedList.o
-CHEBYSHEV_SOLVER_OBJECT = build/ChebyshevSolver.o
-CHEBYSHEV_SOLVER_CUDA_OBJECT = build/ChebyshevSolverCUDA.o
-DIAGONALIZATION_SOLVER_OBJECT = build/DiagonalizationSolver.o
-TIME_EVOLVER_OBJECT = build/TimeEvolver.o
-UNIT_HANDLER_OBJECT = build/UnitHandler.o
-FUNCTIONS_OBJECT = build/Functions.o
-UTIL_OBJECT = build/Util.o
-DENSITY_OBJECT = build/Density.o
-DOS_OBJECT = build/DOS.o
-EIGEN_VALUES_OBJECT = build/EigenValues.o
-LDOS_OBJECT = build/LDOS.o
-MAGNETIZATION_OBJECT = build/Magnetization.o
-SPIN_POLARIZED_LDOS_OBJECT = build/SpinPolarizedLDOS.o
-GEOMETRY_OBJECT = build/Geometry.o
-MODEL_FACTORY_OBJECT = build/ModelFactory.o
-PARAMETER_SET_OBJECT = build/ParameterSet.o
-GPU_RESOURCE_MANAGER_OBJECT = build/GPUResourceManager.o
-GPU_RESOURCE_MANAGER_CUDA_OBJECT = build/cudaGPUResourceManager.o
-STREAMS_OBJECT = build/Streams.o
-OBJECTS = $(INDEX_OBJECT)
-OBJECTS += $(HOPPING_AMPLITUDE_OBJECT)
-OBJECTS += $(TREE_NODE_OBJECT)
-OBJECTS += $(AMPLITUDE_SET_OBJECT)
-OBJECTS += $(MODEL_OBJECT)
-OBJECTS += $(D_PROPERTY_EXTRACTOR_OBJECT)
-OBJECTS += $(C_PROPERTY_EXTRACTOR_OBJECT)
-OBJECTS += $(FILE_WRITER_OBJECT)
-OBJECTS += $(FILE_READER_OBJECT)
-OBJECTS += $(FILE_PARSER_OBJECT)
-OBJECTS += $(HA_LINKED_LIST_OBJECT)
-OBJECTS += $(CHEBYSHEV_SOLVER_OBJECT)
-OBJECTS += $(CHEBYSHEV_SOLVER_CUDA_OBJECT)
-OBJECTS += $(DIAGONALIZATION_SOLVER_OBJECT)
-OBJECTS += $(TIME_EVOLVER_OBJECT)
-OBJECTS += $(UNIT_HANDLER_OBJECT)
-OBJECTS += $(FUNCTIONS_OBJECT)
-OBJECTS += $(UTIL_OBJECT)
-OBJECTS += $(DENSITY_OBJECT)
-OBJECTS += $(DOS_OBJECT)
-OBJECTS += $(EIGEN_VALUES_OBJECT)
-OBJECTS += $(LDOS_OBJECT)
-OBJECTS += $(MAGNETIZATION_OBJECT)
-OBJECTS += $(SPIN_POLARIZED_LDOS_OBJECT)
-OBJECTS += $(GEOMETRY_OBJECT)
-OBJECTS += $(MODEL_FACTORY_OBJECT)
-OBJECTS += $(PARAMETER_SET_OBJECT)
-OBJECTS += $(GPU_RESOURCE_MANAGER_OBJECT)
-OBJECTS += $(GPU_RESOURCE_MANAGER_CUDA_OBJECT)
-OBJECTS += $(STREAMS_OBJECT)
+# Main compiler
+CC:= g++
 
-TIGHT_BINDING_LIB_STATIC = build/libTightBinding.a
+# CUDA compiler
+NVCC:= nvcc
+
+# Compiler flags
+CFLAGS:= -std=c++11 -Wall -fopenmp -O3
+
+# CUDA compiler flags
+NVCCFLAGS:= -D_FORCE_INLINES -std=c++11 --compiler-options "-fopenmp"
+
+# Libraries (can also include path to these libraries as -L/SOME_PATH)
+LIB:= -lm
+
+#
+CUDA_LIB:=
+
+# Optimization (-O3 or -O2)
+OPT:= -O3
+
+# Optimization (-O3 or -O2)
+NVCCOPT:= -O3
+
+# Directory for executables
+BIN_DIR:= .
+
+# Name for exectutable
+STATIC_LIB = build/libTBTK.a
+
+# Root directories for .h files
+INC_DIR = include/
+INC_DIR += $(TBTK_dir)/hdf5/hdf5-build/hdf5/include/
+INC_DIR += $(TBTK_dir)/hdf5/hdf5-1.8.16/include/
+
+# Main source directory
+SRC_DIR:= src
+
+# CUDA source directory
+CUDA_SRC_DIR:= src/cuda
+
+#No CUDA source directory
+NOCUDA_SRC_DIR:= src/nocuda
+
+# Directory for Objects
+OBJ_DIR:= build
 
 
-all: $(TIGHT_BINDING_LIB_STATIC)
+#---------------------No need to change the following!-------------------
 
-$(TIGHT_BINDING_LIB_STATIC): $(OBJECTS)
-	ar rcs $(TIGHT_BINDING_LIB_STATIC) $(OBJECTS)
+# Include files are needed fot Includes
+INC_FILES :=  $(wildcard $(INC_DIR)/*.h))
 
-$(INDEX_OBJECT): $(INDEX_SOURCE)
-	$(CC) $(CFLAGS) -c $(INDEX_SOURCE) -o $(INDEX_OBJECT)
+# All include directories are needed for Includes
+INC_DIRS:= $(dir $(INC_FILES))
 
-$(HOPPING_AMPLITUDE_OBJECT): $(HOPPING_AMPLITUDE_SOURCE)
-	$(CC) $(CFLAGS) -c $(HOPPING_AMPLITUDE_SOURCE) -o $(HOPPING_AMPLITUDE_OBJECT)
+# Includes: -I ...
+LDLIBS:=$(addprefix -I, $(INC_DIRS))
 
-$(TREE_NODE_OBJECT): $(TREE_NODE_SOURCE)
-	$(CC) $(CFLAGS) -c $(TREE_NODE_SOURCE) -o $(TREE_NODE_OBJECT)
+# Source files
+SRC :=  $(wildcard $(SRC_DIR)/*.cpp)
 
-$(AMPLITUDE_SET_OBJECT): $(AMPLITUDE_SET_SOURCE)
-	$(CC) $(CFLAGS) -c $(AMPLITUDE_SET_SOURCE) -o $(AMPLITUDE_SET_OBJECT)
+# CUDA source files
+CUDA_SRC := $(wildcard $(CUDA_SRC_DIR)/*.cu)
 
-$(MODEL_OBJECT): $(MODEL_SOURCE)
-	$(CC) $(CFLAGS) -c $(MODEL_SOURCE) -o $(MODEL_OBJECT)
+# No CUDA source files
+NOCUDA_SRC := $(wildcard $(NOCUDA_SRC_DIR)/*.cpp)
 
-$(D_PROPERTY_EXTRACTOR_OBJECT): $(D_PROPERTY_EXTRACTOR_SOURCE)
-	$(CC) $(CFLAGS) -c $(D_PROPERTY_EXTRACTOR_SOURCE) -o $(D_PROPERTY_EXTRACTOR_OBJECT)
+# Object files
+OBJ := $(addprefix $(OBJ_DIR)/, $(notdir $(SRC:.cpp=.o)))
 
-$(C_PROPERTY_EXTRACTOR_OBJECT): $(C_PROPERTY_EXTRACTOR_SOURCE)
-	$(CC) $(CFLAGS) -c $(C_PROPERTY_EXTRACTOR_SOURCE) -o $(C_PROPERTY_EXTRACTOR_OBJECT)
+# CUDA object files
+CUDA_OBJ := $(addprefix $(OBJ_DIR)/, $(addprefix cuda, $(notdir $(CUDA_SRC:.cu=.o))))
 
-$(FILE_WRITER_OBJECT): $(FILE_WRITER_SOURCE)
-	$(CC) $(CFLAGS) -I$(TBTK_dir)/hdf5/hdf5-build/hdf5/include -I$(TBTK_dir)/hdf5/hdf5-1.8.16/include -c $(FILE_WRITER_SOURCE) -o $(FILE_WRITER_OBJECT)
+# CUDA object files
+NOCUDA_OBJ := $(addprefix $(OBJ_DIR)/, $(addprefix nocuda, $(notdir $(NOCUDA_SRC:.cpp=.o))))
 
-$(FILE_READER_OBJECT): $(FILE_READER_SOURCE)
-	$(CC) $(CFLAGS) -I$(TBTK_dir)/hdf5/hdf5-build/hdf5/include -I$(TBTK_dir)/hdf5/hdf5-1.8.16/include -c $(FILE_READER_SOURCE) -o $(FILE_READER_OBJECT)
+#All object files
+ALL_OBJ := $(OBJ) $(CUDA_OBJ)
 
-$(FILE_PARSER_OBJECT): $(FILE_PARSER_SOURCE)
-	$(CC) $(CFLAGS) -I$(TBTK_dir)/hdf5/hdf5-build/hdf5/include -I$(TBTK_dir)/hdf5/hdf5-1.8.16/include -c $(FILE_PARSER_SOURCE) -o $(FILE_PARSER_OBJECT)
+# File names of objects without directory name
+OBJ_PURE := $(notdir $(OBJ))
 
-$(HA_LINKED_LIST_OBJECT): $(HA_LINKED_LIST_SOURCE)
-	$(CC) $(CFLAGS) -c $(HA_LINKED_LIST_SOURCE) -o $(HA_LINKED_LIST_OBJECT)
+# CUDA file names of objects without directory name
+CUDA_OBJ_PURE := $(notdir $(CUDA_OBJ))
 
-$(CHEBYSHEV_SOLVER_OBJECT): $(CHEBYSHEV_SOLVER_SOURCE)
-	$(CC) $(CFLAGS) -c $(CHEBYSHEV_SOLVER_SOURCE) -o $(CHEBYSHEV_SOLVER_OBJECT)
+# CUDA file names of objects without directory name
+NOCUDA_OBJ_PURE := $(notdir $(NOCUDA_OBJ))
 
-$(CHEBYSHEV_SOLVER_CUDA_OBJECT): $(CHEBYSHEV_SOLVER_CUDA_SOURCE)
-	nvcc $(NVCCFLAGS) -c $(CHEBYSHEV_SOLVER_CUDA_SOURCE) -o $(CHEBYSHEV_SOLVER_CUDA_OBJECT)
+all: $(STATIC_LIB)
 
-$(DIAGONALIZATION_SOLVER_OBJECT): $(DIAGONALIZATION_SOLVER_SOURCE)
-	$(CC) $(CFLAGS) -c $(DIAGONALIZATION_SOLVER_SOURCE) -o $(DIAGONALIZATION_SOLVER_OBJECT)
+# Linking
+$(STATIC_LIB): $(OBJ) $(CUDA_OBJ)
+	@echo "Linking: " $(notdir $(STATIC_LIB))
+	@ar rcs $(STATIC_LIB) $(OBJ) $(CUDA_OBJ)
 
-$(TIME_EVOLVER_OBJECT): $(TIME_EVOLVER_SOURCE)
-	$(CC) $(CFLAGS) -c $(TIME_EVOLVER_SOURCE) -o $(TIME_EVOLVER_OBJECT)
+cuda: $(OBJ) $(CUDA_OBJ)
+	@echo "Linking: " $(notdir $(STATIC_LIB))
+	@ar rcs $(STATIC_LIB) $(OBJ) $(CUDA_OBJ)
 
-$(UNIT_HANDLER_OBJECT): $(UNIT_HANDLER_SOURCE)
-	$(CC) $(CFLAGS) -c $(UNIT_HANDLER_SOURCE) -o $(UNIT_HANDLER_OBJECT)
+nocuda: $(OBJ) $(NOCUDA_OBJ)
+	@echo "Linking: " $(notdir $(STATIC_LIB))
+	@ar rcs $(STATIC_LIB) $(OBJ) $(NOCUDA_OBJ)
 
-$(FUNCTIONS_OBJECT): $(FUNCTIONS_SOURCE)
-	$(CC) $(CFLAGS) -c $(FUNCTIONS_SOURCE) -o $(FUNCTIONS_OBJECT)
+# Compilation rule
+define app_compile_template
+ $(1)_OBJ = $$(addprefix $$(OBJ_DIR)/, $$(notdir $$(patsubst %.cpp, %.o, $(1))))
 
-$(UTIL_OBJECT): $(UTIL_SOURCE)
-	$(CC) $(CFLAGS) -c $(UTIL_SOURCE) -o $(UTIL_OBJECT)
+$$($(1)_OBJ): $(1)
+	@echo "Compiling: $(1)"
+	@$$(CC) $$(CFLAGS) $$(OPT) -c $(1) -o $$($(1)_OBJ) $$(LDLIBS)
+endef
 
-$(DENSITY_OBJECT): $(DENSITY_SOURCE)
-	$(CC) $(CFLAGS) -c $(DENSITY_SOURCE) -o $(DENSITY_OBJECT)
+# CUDA compilation rule
+define cuda_app_compile_template
+ $(1)_OBJ = $$(addprefix $$(OBJ_DIR)/, $$(addprefix cuda, $$(notdir $$(patsubst %.cu, %.o, $(1)))))
 
-$(DOS_OBJECT): $(DOS_SOURCE)
-	$(CC) $(CFLAGS) -c $(DOS_SOURCE) -o $(DOS_OBJECT)
+$$($(1)_OBJ): $(1)
+	@echo "Compiling: $(1)"
+	@$$(NVCC) $$(NVCCFLAGS) $$(NVCCOPT) -c $(1) -o $$($(1)_OBJ) $$(LDLIBS)
+endef
 
-$(EIGEN_VALUES_OBJECT): $(EIGEN_VALUES_SOURCE)
-	$(CC) $(CFLAGS) -c $(EIGEN_VALUES_SOURCE) -o $(EIGEN_VALUES_OBJECT)
+# No CUDA compilation rule
+define nocuda_app_compile_template
+ $(1)_OBJ = $$(addprefix $$(OBJ_DIR)/, $$(addprefix nocuda, $$(notdir $$(patsubst %.cpp, %.o, $(1)))))
 
-$(LDOS_OBJECT): $(LDOS_SOURCE)
-	$(CC) $(CFLAGS) -c $(LDOS_SOURCE) -o $(LDOS_OBJECT)
+$$($(1)_OBJ): $(1)
+	@echo "Compiling: $(1)"
+	@$$(CC) $$(CFLAGS) $$(OPT) -c $(1) -o $$($(1)_OBJ) $$(LDLIBS)
+endef
 
-$(MAGNETIZATION_OBJECT): $(MAGNETIZATION_SOURCE)
-	$(CC) $(CFLAGS) -c $(MAGNETIZATION_SOURCE) -o $(MAGNETIZATION_OBJECT)
+# Compile
+$(foreach app, $(SRC), $(eval $(call app_compile_template,$(app))))
 
-$(SPIN_POLARIZED_LDOS_OBJECT): $(SPIN_POLARIZED_LDOS_SOURCE)
-	$(CC) $(CFLAGS) -c $(SPIN_POLARIZED_LDOS_SOURCE) -o $(SPIN_POLARIZED_LDOS_OBJECT)
+# CUDA compile
+$(foreach app, $(CUDA_SRC), $(eval $(call cuda_app_compile_template,$(app))))
 
-$(GEOMETRY_OBJECT): $(GEOMETRY_SOURCE)
-	$(CC) $(CFLAGS) -c $(GEOMETRY_SOURCE) -o $(GEOMETRY_OBJECT)
+# No CUDA compile
+$(foreach app, $(NOCUDA_SRC), $(eval $(call nocuda_app_compile_template,$(app))))
 
-$(MODEL_FACTORY_OBJECT): $(MODEL_FACTORY_SOURCE)
-	$(CC) $(CFLAGS) -c $(MODEL_FACTORY_SOURCE) -o $(MODEL_FACTORY_OBJECT)
-
-$(PARAMETER_SET_OBJECT): $(PARAMETER_SET_SOURCE)
-	$(CC) $(CFLAGS) -c $(PARAMETER_SET_SOURCE) -o $(PARAMETER_SET_OBJECT)
-
-$(GPU_RESOURCE_MANAGER_OBJECT): $(GPU_RESOURCE_MANAGER_SOURCE)
-	$(CC) $(CFLAGS) -c $(GPU_RESOURCE_MANAGER_SOURCE) -o $(GPU_RESOURCE_MANAGER_OBJECT)
-
-$(GPU_RESOURCE_MANAGER_CUDA_OBJECT): $(GPU_RESOURCE_MANAGER_CUDA_SOURCE)
-	nvcc $(NVCCFLAGS) -c $(GPU_RESOURCE_MANAGER_CUDA_SOURCE) -o $(GPU_RESOURCE_MANAGER_CUDA_OBJECT)
-
-$(STREAMS_OBJECT): $(STREAMS_SOURCE)
-	$(CC) $(CFLAGS) -c $(STREAMS_SOURCE) -o $(STREAMS_OBJECT)
-
-
+# Cleaning
 clean:
-	rm -r build/*
+	@echo "Cleaning: build/"
+	@rm -r build/*
+
+list_of_objects:
+	@echo $(OBJ)
+
+# For debugging makefile
+print:
+	@echo $(SRC)
+	@echo $(CUDA_SRC)
+	@echo $(LDLIBS)
+#	@echo $(OBJ)
+#	@echo $(addprefix ./build/, $(notdir $(patsubst %.cpp, %.o, $(SRC))))
+
+## @endconf
 
