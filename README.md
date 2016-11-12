@@ -12,7 +12,7 @@ Without CUDA (gpu)
 ./install.sh```
 
 With CUDA (gpu)  
-```source init_session.sh  
+```source init_session.sh
 ./install -CUDA```
 
 #############
@@ -20,7 +20,7 @@ With CUDA (gpu)
 #############
 After pulling the latest version of TBTK, execute the following command from the TBTK root folder to update the library:
 
-Without CUDA (gpu)  
+Without CUDA (gpu)
 ```./update.sh```
 
 With CUDA (gpu)  
