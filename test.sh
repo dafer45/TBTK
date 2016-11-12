@@ -1,6 +1,8 @@
 #!/bin/bash -le
 
-printf "\nRunning test\n"
+echo "#################"
+echo "# Running tests #"
+echo "#################"
 templates=(BasicChebyshev
 		BasicDiagonalization
 		CarbonNanotube
@@ -9,7 +11,7 @@ templates=(BasicChebyshev
 		SelfConsistentSuperconductivity
 		SelfConsistentSuperconductivityChebyshev
 		SelfConsistentSuperconductivityChebyshevWithRestrictedEnvironment
-		TopologicalInsulator3D
+#		TopologicalInsulator3D
 		WireOnSuperconductor
 		)
 
@@ -17,10 +19,9 @@ cd Templates
 	for i in ${templates[@]}
 	do
 		cd $i
-			printf "\nCompiling "${i}"\n"
 			make
 		cd ..
 	done
 cd ..
 
-printf "\nAll templates successfully compiled\n\n"
+printf "\nAll templates successfully built.\n\n"
