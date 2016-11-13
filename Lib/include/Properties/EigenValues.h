@@ -35,6 +35,9 @@ public:
 	/** Constructor. */
 	EigenValues(int size);
 
+	/** Constructor. */
+	EigenValues(int size, const double *data);
+
 	/** Destructor. */
 	~EigenValues();
 

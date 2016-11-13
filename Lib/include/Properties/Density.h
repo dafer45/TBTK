@@ -35,6 +35,9 @@ public:
 	/** Constructor. */
 	Density(int dimensions, const int *ranges);
 
+	/** Constructor. */
+	Density(int dimensions, const int *ranges, const double *data);
+
 	/** Destructor. */
 	~Density();
 

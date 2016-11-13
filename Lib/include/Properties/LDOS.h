@@ -41,6 +41,16 @@ public:
 		int resolution
 	);
 
+	/** Constructor. */
+	LDOS(
+		int dimensions,
+		const int *ranges,
+		double lowerBound,
+		double upperBound,
+		int resolution,
+		const double *data
+	);
+
 	/** Destructor. */
 	~LDOS();
 

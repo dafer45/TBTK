@@ -28,6 +28,13 @@ EigenValues::EigenValues(int size){
 	data = new double[size];
 }
 
+EigenValues::EigenValues(int size, const double *data){
+	this->size = size;
+	this->data = new double[size];
+	for(int n = 0; n < size; n++)
+		this->data[n] = data[n];
+}
+
 EigenValues::~EigenValues(){
 	delete [] data;
 }

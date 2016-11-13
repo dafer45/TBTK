@@ -45,6 +45,16 @@ public:
 		int resolution
 	);
 
+	/** Constructor. */
+	SpinPolarizedLDOS(
+		int dimensions,
+		const int *ranges,
+		double lowerBound,
+		double upperBound,
+		int resolution,
+		const double *data
+	);
+
 	/** Destructor. */
 	~SpinPolarizedLDOS();
 

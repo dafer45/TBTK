@@ -37,6 +37,9 @@ public:
 	/** Constructor. */
 	Magnetization(int dimensions, const int* ranges);
 
+	/** Constructor. */
+	Magnetization(int dimensions, const int* ranges, const double *data);
+
 	/** Destructor. */
 	~Magnetization();
 

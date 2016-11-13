@@ -38,6 +38,21 @@ Density::Density(int dimensions, const int *ranges){
 		data[n] = 0.;
 }
 
+Density::Density(int dimensions, const int *ranges, const double *data){
+	this->dimensions = dimensions;
+	this->ranges = new int[dimensions];
+	for(int n = 0; n < dimensions; n++)
+		this->ranges[n] = ranges[n];
+
+	size = 1;
+	for(int n = 0; n < dimensions; n++)
+		size *= ranges[n];
+
+	this->data = new double[size];
+	for(int n = 0; n < size; n++)
+		this->data[n] = data[n];
+}
+
 Density::~Density(){
 	delete [] this->ranges;
 	delete [] this->data;
