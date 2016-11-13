@@ -13,12 +13,12 @@
  * limitations under the License.
  */
 
-/** @file Util.h
+/** @file Timer.h
  *
  *  @author Kristofer Björnson
  */
 
-#include "Util.h"
+#include "Timer.h"
 
 using namespace std;
 

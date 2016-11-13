@@ -20,7 +20,6 @@
 
 #include "TimeEvolver.h"
 #include "AmplitudeSet.h"
-#include "Util.h"
 #include "Streams.h"
 #include "TBTKMacros.h"
 

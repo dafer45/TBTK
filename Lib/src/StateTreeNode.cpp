@@ -21,7 +21,6 @@
 #include "StateTreeNode.h"
 #include "TBTKMacros.h"
 #include "Index.h"
-#include "Util.h"
 
 #include <limits>
 

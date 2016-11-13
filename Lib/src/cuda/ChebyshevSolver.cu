@@ -20,7 +20,6 @@
 
 #include "ChebyshevSolver.h"
 #include "HALinkedList.h"
-#include "Util.h"
 #include "TBTKMacros.h"
 #include "GPUResourceManager.h"
 #include "Streams.h"

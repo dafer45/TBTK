@@ -22,7 +22,6 @@
 #include "AmplitudeSet.h"
 #include "Streams.h"
 #include "TBTKMacros.h"
-#include "Util.h"
 
 using namespace std;
 

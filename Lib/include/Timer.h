@@ -14,14 +14,14 @@
  */
 
 /** @package TBTKcalc
- *  @file Util.h
- *  @brief Utilities
+ *  @file Timer.h
+ *  @brief Timer class providing stacked tick and tock functions.
  *
  *  @author Kristofer Björnson
  */
 
-#ifndef COM_DAFER45_TBTK_UTIL
-#define COM_DAFER45_TBTK_UTIL
+#ifndef COM_DAFER45_TBTK_TIMER
+#define COM_DAFER45_TBTK_TIMER
 
 #include "Streams.h"
 
