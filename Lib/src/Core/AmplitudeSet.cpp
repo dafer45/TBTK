@@ -18,8 +18,8 @@
  *  @author Kristofer Björnson
  */
 
-#include "../include/AmplitudeSet.h"
-#include "../include/TBTKMacros.h"
+#include "AmplitudeSet.h"
+#include "TBTKMacros.h"
 
 using namespace std;
 

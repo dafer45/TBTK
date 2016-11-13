@@ -55,12 +55,24 @@ BIN_DIR:= .
 STATIC_LIB = build/libTBTK.a
 
 # Root directories for .h files
-INC_DIR = include/
+INC_DIR = include/Builders/
+INC_DIR += include/Core/
+INC_DIR += include/Properties/
+INC_DIR += include/PropertyExtractors/
+INC_DIR += include/Solvers/
+INC_DIR += include/StatesAndOperators/
+INC_DIR += include/Utilities/
 INC_DIR += $(TBTK_dir)/hdf5/hdf5-build/hdf5/include/
 INC_DIR += $(TBTK_dir)/hdf5/hdf5-1.8.16/include/
 
 # Main source directory
-SRC_DIR:= src
+SRC_DIR = src/Builders
+SRC_DIR += src/Core
+SRC_DIR += src/Properties
+SRC_DIR += src/PropertyExtractors
+SRC_DIR += src/Solvers
+SRC_DIR += src/StatesAndOperators
+SRC_DIR += src/Utilities
 
 # CUDA source directory
 CUDA_SRC_DIR:= src/cuda
@@ -84,7 +96,8 @@ INC_DIRS:= $(dir $(INC_FILES))
 LDLIBS:=$(addprefix -I, $(INC_DIRS))
 
 # Source files
-SRC :=  $(wildcard $(SRC_DIR)/*.cpp)
+#SRC :=  $(wildcard $(SRC_DIR)/*.cpp)
+SRC :=  $(foreach srcDir, $(SRC_DIR), $(wildcard $(srcDir)/*.cpp))
 
 # CUDA source files
 CUDA_SRC := $(wildcard $(CUDA_SRC_DIR)/*.cu)
@@ -174,9 +187,11 @@ list_of_objects:
 
 # For debugging makefile
 print:
+	@echo $(SRC_DIR)
 	@echo $(SRC)
 	@echo $(CUDA_SRC)
 	@echo $(LDLIBS)
+	@echo INC_DIR
 #	@echo $(OBJ)
 #	@echo $(addprefix ./build/, $(notdir $(patsubst %.cpp, %.o, $(SRC))))
 

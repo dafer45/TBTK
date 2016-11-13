@@ -6,10 +6,16 @@ export TBTK_dir
 
 if [ -z "$CPLUS_INCLUDE_PATH" ]
 then
-	CPLUS_INCLUDE_PATH=${TBTK_dir}/Lib/include;
+	CPLUS_INCLUDE_PATH=${TBTK_dir}/Lib/include/Builders;
 else
-	CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include;
+	CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/Builders;
 fi
+CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/Core;
+CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/Properties;
+CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/PropertyExtractors;
+CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/Solvers;
+CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/StatesAndOperators;
+CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/Utilities;
 export CPLUS_INCLUDE_PATH
 
 if [ -z "$LIBRARY_PATH" ]
