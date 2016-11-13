@@ -36,7 +36,7 @@
 #include "ChebyshevSolver.h"
 #include "CPropertyExtractor.h"
 #include <chrono>
-#include "Util.h"
+#include "Timer.h"
 
 using namespace std;
 using namespace TBTK;
@@ -171,8 +171,8 @@ double scLoop(double radius){
 	while(counter++ < MAX_ITERATIONS){
 		//Time each step (Not essential, but useful because the
 		//calculation takes some time). See corresponding call
-		//to Util::Timer:tock() at the end of the loop.
-		Util::Timer::tick("Self-consistency iteration");
+		//to Timer:tock() at the end of the loop.
+		Timer::tick("Self-consistency iteration");
 
 		//Clear the order parameter
 		for(int x = 0; x < SIZE_X; x++){
@@ -226,9 +226,9 @@ double scLoop(double radius){
 			}
 		}
 
-		//Output time since Util::Timer:tick()-call at the beginning of
+		//Output time since Timer:tick()-call at the beginning of
 		// the iteration.
-		Util::Timer::tock();
+		Timer::tock();
 
 		//Exit the self-consistency loop depending on whether the
 		//result has converged or not

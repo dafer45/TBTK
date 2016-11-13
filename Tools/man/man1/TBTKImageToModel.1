@@ -1,0 +1,64 @@
+.\" Process this file with
+.\" grof -man -Tascii TBTKCalculateDOS.1
+.\"
+.TH TBTKCalculateDOS 1 "November 2016" TBTK "User Manuals"
+.SH NAME
+TBTKCalculateDOS \- Generates a model from a gray scale image.
+.SH SYNOPSIS
+.B TBTKCalcuateDOS [--verbose] [--depth
+.I value
+.B ] [--cubic] [--bcc] [--fcc] [--diamond]
+.I file
+.SH DESCRIPTION
+.B TBTKCalculateDOS
+Generates a model from a gray scale image. Each pixel is turned into a pile of
+unit cells, where the gray shade determines the stack height. The unit cell can
+be choosen to contain states organized in Cubic, BCC, FCC, or diamond
+configurations within the unit cell. By default a two-dimensional model is
+generated for which each non-black pixel is represented by a single state.
+.SH OPTIONS
+.IP --verbose
+Print progress to stdout.
+.IP "--depth value"
+Number of gray shades. The stack height is given by floor((pixelValue + 1/2.)*255/value).
+.IP "--cubic"
+Use cubic unit cell.
+.IP "--bcc"
+Use BCC unit cell.
+.IP "--fcc"
+Use FCC unit cell.
+.IP "--diamond"
+Use diamond unit cell.
+.SH FILES
+.SH ENVIRONMENT
+.SH DIAGNOSTICS
+The following diagnostics may be issued by stderr:
+
+Unknown argument
+.RS
+Unable to recognize one or more input arguments.
+.RE
+Input file missing
+.RS
+Input file missing.
+.RE
+Unable to open file 'filename'
+.RS
+Unable to open file
+.SH AUTHOR
+Kristofer Björnson (dafer45@hotmail.com)
+.SH "SEE ALSO"
+.SH COPYRIGHT AND LICENSE
+Copyright 2016 Kristofer Björnson
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.

@@ -31,7 +31,7 @@
 #include "CPropertyExtractor.h"
 #include "DOS.h"
 #include "FileWriter.h"
-#include "Util.h"
+#include "Timer.h"
 #include "GPUResourceManager.h"
 #include "Streams.h"
 
@@ -49,7 +49,7 @@ const complex<double> i(0, 1);
 Index* getIndexPattern(string patternString);
 
 int main(int argc, char **argv){
-	Util::Streams::openLog();
+	Streams::openLog();
 	int isVerbose		= false;
 	int forceGPU		= false;
 	int forceCPU		= false;
@@ -84,10 +84,10 @@ int main(int argc, char **argv){
 			//If the option sets a flag, do nothing.
 			if(long_options[option_index].flag != 0)
 				break;
-			Util::Streams::err << "option " << long_options[option_index].name;
+			Streams::err << "option " << long_options[option_index].name;
 			if(optarg)
-				Util::Streams::err << " with argument " << optarg;
-			Util::Streams::err << "\n";
+				Streams::err << " with argument " << optarg;
+			Streams::err << "\n";
 			break;
 		case 's':
 			scaleFactor = atof(optarg);
@@ -115,7 +115,7 @@ int main(int argc, char **argv){
 
 	//Supress output if not verbose
 	if(!isVerbose)
-		Util::Streams::setStdMuteOut();
+		Streams::setStdMuteOut();
 
 	//Get input file name
 	TBTKAssert(
@@ -216,7 +216,7 @@ int main(int argc, char **argv){
 	delete [] dosData;
 	delete model;
 
-	Util::Streams::closeLog();
+	Streams::closeLog();
 	return 0;
 }
 

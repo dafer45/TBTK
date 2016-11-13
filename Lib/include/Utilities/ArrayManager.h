@@ -220,15 +220,15 @@ template<typename T>
 void ArrayManager<T>::printRecursive(void *array, Index ranges){
 	if(ranges.size() == 1){
 		for(int n = 0; n < ranges.at(0); n++)
-			Util::Streams::out << ((T*)array)[n] << "\t";
-		Util::Streams::out << "\n";
+			Streams::out << ((T*)array)[n] << "\t";
+		Streams::out << "\n";
 	}
 	else{
 		int currentRange = ranges.at(0);
 		ranges.popFront();
 		for(int n = 0; n < currentRange; n++)
 			printRecursive(((void**)array)[n], ranges);
-		Util::Streams::out << "\n";
+		Streams::out << "\n";
 	}
 }
 

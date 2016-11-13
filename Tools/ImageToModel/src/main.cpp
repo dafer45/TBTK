@@ -25,7 +25,7 @@
 #include "ModelFactory.h"
 #include "FileParser.h"
 #include "FileWriter.h"
-#include "Util.h"
+#include "Timer.h"
 #include "ArrayManager.h"
 #include "Lattice.h"
 
@@ -76,10 +76,10 @@ int main(int argc, char **argv){
 			//If the option sets a flag, do nothing.
 			if(long_options[option_index].flag != 0)
 				break;
-			cout << "option " << long_options[option_index].name;
+			Streams::err << "option " << long_options[option_index].name;
 			if(optarg)
-				cout << " with argument " << optarg;
-			cout << "\n";
+				Streams::err << " with argument " << optarg;
+			Streams::err << "\n";
 			break;
 		case 'D':
 			depth = atoi(optarg);
@@ -107,7 +107,7 @@ int main(int argc, char **argv){
 
 	//Supress output if not verbose
 	if(!isVerbose)
-		Util::Streams::setStdMuteOut();
+		Streams::setStdMuteOut();
 
 	//Get input file name
 	TBTKAssert(
@@ -123,7 +123,7 @@ int main(int argc, char **argv){
 	Mat image;
 	image = imread(fileName, CV_LOAD_IMAGE_COLOR);
 	if(!image.data){
-		cout << "Unable to open file '" << fileName << "'.";
+		Streams::err << "Unable to open file '" << fileName << "'.";
 		exit(1);
 	}
 
@@ -131,22 +131,15 @@ int main(int argc, char **argv){
 	const int SIZE_Y = image.cols;
 	const int SIZE_Z = depth;
 	Lattice lattice(unitCell);
-	int counter = 0;
-	for(int x = 0; x < SIZE_X; x++){
-		for(int y = 0; y < SIZE_Y; y++){
-			for(int z = 0; z < SIZE_Z; z++){
-				if(image.at<Vec3b>(x, y).val[0] > (z+ 1/2.)*255/(double)depth){
+	for(int x = 0; x < SIZE_X; x++)
+		for(int y = 0; y < SIZE_Y; y++)
+			for(int z = 0; z < SIZE_Z; z++)
+				if(image.at<Vec3b>(x, y).val[0] > (z+ 1/2.)*255/(double)depth)
 					lattice.addLatticePoint({x, y, z});
-					counter++;
-				}
-			}
-		}
-	}
-	cout << counter << "\n";
 
 	StateSet *stateSet = lattice.generateStateSet();
 	StateTreeNode stateTreeNode(*stateSet);
-	Model *model = Util::ModelFactory::createModel(*stateSet, stateTreeNode);
+	Model *model = ModelFactory::createModel(*stateSet, stateTreeNode);
 
 	FileParser::writeModel(
 		model,
