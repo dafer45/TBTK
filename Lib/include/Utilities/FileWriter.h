@@ -185,9 +185,9 @@ public:
 		std::string path = "/"
 	);
 
-	/** Write Util::ParamterSet to file.*/
+	/** Write ParamterSet to file.*/
 	static void writeParameterSet(
-		const Util::ParameterSet *parameterSet,
+		const ParameterSet *parameterSet,
 		std::string name = "ParameterSet",
 		std::string path = "/"
 	);

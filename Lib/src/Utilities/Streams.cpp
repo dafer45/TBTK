@@ -26,7 +26,6 @@
 using namespace std;
 
 namespace TBTK{
-namespace Util{
 
 //ostream Streams::out(new ForkBuffer(&cout, &Streams::log));
 //stream Streams::log(&nullBuffer);
@@ -107,7 +106,7 @@ void Streams::LogBuffer::open(std::string fileName){
 		//Do not use TBTKExit or TBTKAssert here. These rely on Streams
 		//for output. cerr is used to ensure proper error messages also
 		//in the case that Streams fail.
-		cerr << "Error in Util::Streams::LogBuffer::openFile(): Log file already open." << endl;
+		cerr << "Error in Streams::LogBuffer::openFile(): Log file already open." << endl;
 		exit(1);
 	}
 
@@ -123,7 +122,7 @@ void Streams::LogBuffer::close(){
 		//Do not use TBTKExit or TBTKAssert here. These rely on Streams
 		//for output. cerr is used to ensure proper error messages also
 		//in the case that Streams fail.
-		Util::Streams::err << "Error in Util::Streams::LogBuffer::closeFile(): No log file is open.\n";
+		Streams::err << "Error in Streams::LogBuffer::closeFile(): No log file is open.\n";
 		exit(1);
 	}
 }
@@ -138,5 +137,4 @@ int Streams::LogBuffer::overflow(int c){
 	return c;
 }
 
-};	//End of namespace Util
 };	//End of namespace TBTK

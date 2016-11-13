@@ -30,36 +30,36 @@
 
 #define TBTKAssert(expression, function, message, hint)	\
 	if(!(expression)){	\
-		TBTK::Util::Streams::err << "Error in " << function << "\n";	\
-		TBTK::Util::Streams::err << "\t" << message << "\n";	\
+		TBTK::Streams::err << "Error in " << function << "\n";	\
+		TBTK::Streams::err << "\t" << message << "\n";	\
 		std::stringstream hintStream;	\
 		hintStream << hint;	\
 		if(std::strcmp(hintStream.str().c_str(), "") != 0)	\
-			TBTK::Util::Streams::err << "\tHint: " << hint << "\n";	\
-		TBTK::Util::Streams::err << "\tWhere: " << __FILE__ << ", " << __LINE__ << "\n";	\
-		if(Util::Streams::logIsOpen())	\
-			Util::Streams::closeLog();	\
+			TBTK::Streams::err << "\tHint: " << hint << "\n";	\
+		TBTK::Streams::err << "\tWhere: " << __FILE__ << ", " << __LINE__ << "\n";	\
+		if(TBTK::Streams::logIsOpen())	\
+			TBTK::Streams::closeLog();	\
 		exit(1);	\
 	}
 
 #define TBTKExit(function, message, hint)	\
-	TBTK::Util::Streams::err << "Error in " << function << "\n";	\
-	TBTK::Util::Streams::err << "\t" << message << "\n";	\
+	TBTK::Streams::err << "Error in " << function << "\n";	\
+	TBTK::Streams::err << "\t" << message << "\n";	\
 	std::stringstream hintStream;	\
 	hintStream << hint;	\
 	if(std::strcmp(hintStream.str().c_str(), "") != 0)	\
-		TBTK::Util::Streams::err << "\tHint: " << hint << "\n";	\
-	TBTK::Util::Streams::err << "\tWhere: " << __FILE__ << ", " << __LINE__ << "\n";	\
-	if(Util::Streams::logIsOpen())	\
-		Util::Streams::closeLog();	\
+		TBTK::Streams::err << "\tHint: " << hint << "\n";	\
+	TBTK::Streams::err << "\tWhere: " << __FILE__ << ", " << __LINE__ << "\n";	\
+	if(TBTK::Streams::logIsOpen())	\
+		TBTK::Streams::closeLog();	\
 	exit(1);
 
 #define TBTKNotYetImplemented(function)	\
-	TBTK::Util::Streams::err << "Error in " << function << "\n";	\
-	TBTK::Util::Streams::err << "\tNot yet implemented.\n";	\
-	TBTK::Util::Streams::err << "\tWhere: " << __FILE__ << ", " << __LINE__ << "\n";	\
-	if(Util::Streams::logIsOpen())	\
-		Util::Streams::closeLog();	\
+	TBTK::Streams::err << "Error in " << function << "\n";	\
+	TBTK::Streams::err << "\tNot yet implemented.\n";	\
+	TBTK::Streams::err << "\tWhere: " << __FILE__ << ", " << __LINE__ << "\n";	\
+	if(TBTK::Streams::logIsOpen())	\
+		TBTK::Streams::closeLog();	\
 	exit(1);
 
 #endif

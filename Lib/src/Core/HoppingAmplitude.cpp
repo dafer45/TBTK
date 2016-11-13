@@ -113,17 +113,17 @@ HoppingAmplitude HoppingAmplitude::getHermitianConjugate() const{
 }
 
 void HoppingAmplitude::print(){
-	Util::Streams::out << "From index:\t";
+	Streams::out << "From index:\t";
 	for(unsigned int n = 0; n < fromIndex.size(); n++){
-		Util::Streams::out << fromIndex.at(n) << " ";
+		Streams::out << fromIndex.at(n) << " ";
 	}
-	Util::Streams::out << "\n";
-	Util::Streams::out << "To index:\t";
+	Streams::out << "\n";
+	Streams::out << "To index:\t";
 	for(unsigned int n = 0; n < toIndex.size(); n++){
-		Util::Streams::out << toIndex.at(n) << " ";
+		Streams::out << toIndex.at(n) << " ";
 	}
-	Util::Streams::out << "\n";
-	Util::Streams::out << "Amplitude:\t" << getAmplitude() << "\n";
+	Streams::out << "\n";
+	Streams::out << "Amplitude:\t" << getAmplitude() << "\n";
 }
 
 };	//End of namespace TBTK

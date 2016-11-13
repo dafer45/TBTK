@@ -29,7 +29,6 @@
 #include <vector>
 
 namespace TBTK{
-namespace Util{
 
 class Streams{
 public:
@@ -128,7 +127,6 @@ private:
 	static std::ofstream logFile;
 };
 
-};	//End of namespace Util
 };	//End of namespace TBTK
 
 #endif

@@ -30,7 +30,6 @@
 #include <complex>
 
 namespace TBTK{
-namespace Util{
 
 class ParameterSet{
 public:
@@ -161,7 +160,6 @@ private:
 	std::vector<std::tuple<std::string, bool>> boolParams;
 };
 
-};	//End of namespace Util
 };	//End of namespace TBTK
 
 #endif

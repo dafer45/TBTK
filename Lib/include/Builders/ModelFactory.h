@@ -33,7 +33,6 @@
 #include <complex>
 
 namespace TBTK{
-namespace Util{
 
 class ModelFactory{
 public:
@@ -193,7 +192,6 @@ private:
 	);
 };
 
-};	//End of namespace Util
 };	//End of namespace TBTK
 
 #endif

@@ -123,7 +123,7 @@ Property::Magnetization* DPropertyExtractor::calculateMagnetization(
 		}
 	}
 	if(((int*)hint)[0] == -1){
-		Util::Streams::err << "Error in PropertyExtractor::calculateMAG: No spin index indicated.\n";
+		Streams::err << "Error in PropertyExtractor::calculateMAG: No spin index indicated.\n";
 		delete [] (int*)hint;
 		return NULL;
 	}
@@ -171,7 +171,7 @@ Property::SpinPolarizedLDOS* DPropertyExtractor::calculateSpinPolarizedLDOS(
 		}
 	}
 	if(((int**)hint)[1][1] == -1){
-		Util::Streams::err << "Error in PropertyExtractor::calculateSP_LDOS_E: No spin index indicated.\n";
+		Streams::err << "Error in PropertyExtractor::calculateSP_LDOS_E: No spin index indicated.\n";
 		delete [] ((double**)hint)[0];
 		delete [] ((int**)hint)[1];
 		delete [] (void**)hint;

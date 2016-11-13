@@ -107,13 +107,13 @@ private:
 };
 
 inline void Index::print() const{
-	Util::Streams::out << "{";
+	Streams::out << "{";
 	for(unsigned int n = 0; n < indices.size(); n++){
 		if(n != 0)
-			Util::Streams::out << ", ";
-		Util::Streams::out << indices.at(n);
+			Streams::out << ", ";
+		Streams::out << indices.at(n);
 	}
-	Util::Streams::out << "}\n";
+	Streams::out << "}\n";
 }
 
 inline std::string Index::toString() const{

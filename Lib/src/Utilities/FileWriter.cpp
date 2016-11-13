@@ -136,7 +136,7 @@ void FileWriter::writeAmplitudeSet(
 		file.close();
 	}
 	catch(FileIException error){
-		Util::Streams::log << error.getCDetailMsg() << "\n";
+		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::writeAmplitudeSet()",
 			"While writing to " << name << ".",
@@ -144,7 +144,7 @@ void FileWriter::writeAmplitudeSet(
 		);
 	}
 	catch(DataSetIException error){
-		Util::Streams::log << error.getCDetailMsg() << "\n";
+		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::writeAmplitudeSet()",
 			"While writing to " << name << ".",
@@ -152,7 +152,7 @@ void FileWriter::writeAmplitudeSet(
 		);
 	}
 	catch(DataSpaceIException error){
-		Util::Streams::log << error.getCDetailMsg() << "\n";
+		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::writeAmplitudeSet()",
 			"While writing to " << name << ".",
@@ -222,7 +222,7 @@ void FileWriter::writeGeometry(
 		file.close();
 	}
 	catch(FileIException error){
-		Util::Streams::log << error.getCDetailMsg() << "\n";
+		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::writeGeometry()",
 			"While writing to " << name << ".",
@@ -230,7 +230,7 @@ void FileWriter::writeGeometry(
 		);
 	}
 	catch(DataSetIException error){
-		Util::Streams::log << error.getCDetailMsg() << "\n";
+		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::writeGeometry()",
 			"While writing to " << name << ".",
@@ -238,7 +238,7 @@ void FileWriter::writeGeometry(
 		);
 	}
 	catch(DataSpaceIException error){
-		Util::Streams::log << error.getCDetailMsg() << "\n";
+		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::writeGeometry()",
 			"While writing to " << name << ".",
@@ -316,7 +316,7 @@ void FileWriter::writeEigenValues(
 		file.close();
 	}
 	catch(FileIException error){
-		Util::Streams::log << error.getCDetailMsg() << "\n";
+		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::writeEigenValues()",
 			"While writing to " << name << ".",
@@ -324,7 +324,7 @@ void FileWriter::writeEigenValues(
 		);
 	}
 	catch(DataSetIException error){
-		Util::Streams::log << error.getCDetailMsg() << "\n";
+		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::writeEigenValues()",
 			"While writing to " << name << ".",
@@ -332,7 +332,7 @@ void FileWriter::writeEigenValues(
 		);
 	}
 	catch(DataSpaceIException error){
-		Util::Streams::log << error.getCDetailMsg() << "\n";
+		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::writeEigenValues()",
 			"While writing to " << name << ".",
@@ -430,7 +430,7 @@ void FileWriter::writeDOS(const Property::DOS *dos, string name, string path){
 		file.close();
 	}
 	catch(FileIException error){
-		Util::Streams::log << error.getCDetailMsg() << "\n";
+		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::writeDOS()",
 			"While writing to " << name << ".",
@@ -438,7 +438,7 @@ void FileWriter::writeDOS(const Property::DOS *dos, string name, string path){
 		);
 	}
 	catch(DataSetIException error){
-		Util::Streams::log << error.getCDetailMsg() << "\n";
+		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::writeDOS()",
 			"While writing to " << name << ".",
@@ -446,7 +446,7 @@ void FileWriter::writeDOS(const Property::DOS *dos, string name, string path){
 		);
 	}
 	catch(DataSpaceIException error){
-		Util::Streams::log << error.getCDetailMsg() << "\n";
+		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::writeDOS()",
 			"While writing to " << name << ".",
@@ -525,7 +525,7 @@ void FileWriter::writeDensity(
 		file.close();
 	}
 	catch(FileIException error){
-		Util::Streams::log << error.getCDetailMsg() << "\n";
+		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::writeDensity()",
 			"While writing to " << name << ".",
@@ -533,7 +533,7 @@ void FileWriter::writeDensity(
 		);
 	}
 	catch(DataSetIException error){
-		Util::Streams::log << error.getCDetailMsg() << "\n";
+		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::writeDensity()",
 			"While writing to " << name << ".",
@@ -541,7 +541,7 @@ void FileWriter::writeDensity(
 		);
 	}
 	catch(DataSpaceIException error){
-		Util::Streams::log << error.getCDetailMsg() << "\n";
+		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::writeDensity()",
 			"While writing to " << name << ".",
@@ -649,7 +649,7 @@ void FileWriter::writeMagnetization(
 		file.close();
 	}
 	catch(FileIException error){
-		Util::Streams::log << error.getCDetailMsg() << "\n";
+		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::writeMagnetization()",
 			"While writing to " << name << ".",
@@ -657,7 +657,7 @@ void FileWriter::writeMagnetization(
 		);
 	}
 	catch(DataSetIException error){
-		Util::Streams::log << error.getCDetailMsg() << "\n";
+		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::writeMagnetization()",
 			"While writing to " << name << ".",
@@ -665,7 +665,7 @@ void FileWriter::writeMagnetization(
 		);
 	}
 	catch(DataSpaceIException error){
-		Util::Streams::log << error.getCDetailMsg() << "\n";
+		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::writeMagnetization()",
 			"While writing to " << name << ".",
@@ -774,7 +774,7 @@ void FileWriter::writeLDOS(
 		file.close();
 	}
 	catch(FileIException error){
-		Util::Streams::log << error.getCDetailMsg() << "\n";
+		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::writeLDOS()",
 			"While writing to " << name << ".",
@@ -782,7 +782,7 @@ void FileWriter::writeLDOS(
 		);
 	}
 	catch(DataSetIException error){
-		Util::Streams::log << error.getCDetailMsg() << "\n";
+		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::writeLDOS()",
 			"While writing to " << name << ".",
@@ -790,7 +790,7 @@ void FileWriter::writeLDOS(
 		);
 	}
 	catch(DataSpaceIException error){
-		Util::Streams::log << error.getCDetailMsg() << "\n";
+		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::writeLDOS()",
 			"While writing to " << name << ".",
@@ -932,7 +932,7 @@ void FileWriter::writeSpinPolarizedLDOS(
 		dataspace.close();
 	}
 	catch(FileIException error){
-		Util::Streams::log << error.getCDetailMsg() << "\n";
+		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::writeSpinPolarizedLDOS()",
 			"While writing to " << name << ".",
@@ -940,7 +940,7 @@ void FileWriter::writeSpinPolarizedLDOS(
 		);
 	}
 	catch(DataSetIException error){
-		Util::Streams::log << error.getCDetailMsg() << "\n";
+		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::writeSpinPolarizedLDOS()",
 			"While writing to " << name << ".",
@@ -948,7 +948,7 @@ void FileWriter::writeSpinPolarizedLDOS(
 		);
 	}
 	catch(DataSpaceIException error){
-		Util::Streams::log << error.getCDetailMsg() << "\n";
+		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::writeSpinPolarizedLDOS()",
 			"While writing to " << name << ".",
@@ -991,7 +991,7 @@ void FileWriter::write(
 		file.close();
 	}
 	catch(FileIException error){
-		Util::Streams::log << error.getCDetailMsg() << "\n";
+		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::write()",
 			"While writing to " << name << ".",
@@ -999,7 +999,7 @@ void FileWriter::write(
 		);
 	}
 	catch(DataSetIException error){
-		Util::Streams::log << error.getCDetailMsg() << "\n";
+		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::write()",
 			"While writing to " << name << ".",
@@ -1007,7 +1007,7 @@ void FileWriter::write(
 		);
 	}
 	catch(DataSpaceIException error){
-		Util::Streams::log << error.getCDetailMsg() << "\n";
+		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::write()",
 			"While writing to " << name << ".",
@@ -1052,7 +1052,7 @@ void FileWriter::writeAttributes(
 		dataspace.close();
 	}
 	catch(FileIException error){
-		Util::Streams::log << error.getCDetailMsg() << "\n";
+		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::writeAttributes()",
 			"While writing to " << name << "",
@@ -1060,7 +1060,7 @@ void FileWriter::writeAttributes(
 		);
 	}
 	catch(DataSetIException error){
-		Util::Streams::log << error.getCDetailMsg() << "\n";
+		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::writeAttributes()",
 			"While writing to " << name << ".",
@@ -1068,7 +1068,7 @@ void FileWriter::writeAttributes(
 		);
 	}
 	catch(DataSpaceIException error){
-		Util::Streams::log << error.getCDetailMsg() << "\n";
+		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::writeAttributes()",
 			"While writing to " << name << ".",
@@ -1113,7 +1113,7 @@ void FileWriter::writeAttributes(
 		dataspace.close();
 	}
 	catch(FileIException error){
-		Util::Streams::log << error.getCDetailMsg() << "\n";
+		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::writeAttributes()",
 			"While writing to " << name << ".",
@@ -1121,7 +1121,7 @@ void FileWriter::writeAttributes(
 		);
 	}
 	catch(DataSetIException error){
-		Util::Streams::log << error.getCDetailMsg() << "\n";
+		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::writeAttributes()",
 			"While writing to " << name << ".",
@@ -1129,7 +1129,7 @@ void FileWriter::writeAttributes(
 		);
 	}
 	catch(DataSpaceIException error){
-		Util::Streams::log << error.getCDetailMsg() << "\n";
+		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::writeAttributes()",
 			"While writing to " << name << ".",
@@ -1147,7 +1147,7 @@ bool FileWriter::exists(){
 }
 
 void FileWriter::writeParameterSet(
-	const Util::ParameterSet *parameterSet,
+	const ParameterSet *parameterSet,
 	std::string name,
 	std::string path
 ){

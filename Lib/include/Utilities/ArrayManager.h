@@ -27,7 +27,6 @@
 #include "Streams.h"
 
 namespace TBTK{
-namespace Util{
 
 /** A static class providing methods for manipulation of arrays. The class is
  *  intended to provide methods that simplifies the creation and manipulation
@@ -233,7 +232,6 @@ void ArrayManager<T>::printRecursive(void *array, Index ranges){
 	}
 }
 
-};	//End of namespace Util
 };	//End of namespace TBTK
 
 #endif

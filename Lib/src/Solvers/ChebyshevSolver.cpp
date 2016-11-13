@@ -120,11 +120,11 @@ void ChebyshevSolver::calculateCoefficients(
 	int toBasisIndex = amplitudeSet->getBasisIndex(to);
 
 	if(isTalkative){
-		Util::Streams::out << "ChebyshevSolver::calculateCoefficients\n";
-		Util::Streams::out << "\tFrom Index: " << fromBasisIndex << "\n";
-		Util::Streams::out << "\tTo Index: " << toBasisIndex << "\n";
-		Util::Streams::out << "\tBasis size: " << amplitudeSet->getBasisSize() << "\n";
-		Util::Streams::out << "\tProgress (100 coefficients per dot): ";
+		Streams::out << "ChebyshevSolver::calculateCoefficients\n";
+		Streams::out << "\tFrom Index: " << fromBasisIndex << "\n";
+		Streams::out << "\tTo Index: " << toBasisIndex << "\n";
+		Streams::out << "\tBasis size: " << amplitudeSet->getBasisSize() << "\n";
+		Streams::out << "\tProgress (100 coefficients per dot): ";
 	}
 
 	complex<double> *jIn1 = new complex<double>[amplitudeSet->getBasisSize()];
@@ -221,13 +221,13 @@ void ChebyshevSolver::calculateCoefficients(
 
 		if(isTalkative){
 			if(n%100 == 0)
-				Util::Streams::out << "." << flush;
+				Streams::out << "." << flush;
 			if(n%1000 == 0)
-				Util::Streams::out << " " << flush;
+				Streams::out << " " << flush;
 		}
 	}
 	if(isTalkative)
-		Util::Streams::out << "\n";
+		Streams::out << "\n";
 
 	delete [] jIn1;
 	delete [] jIn2;
@@ -278,10 +278,10 @@ void ChebyshevSolver::calculateCoefficients(
 		coefficientMap[amplitudeSet->getBasisIndex(to.at(n))] = n;
 
 	if(isTalkative){
-		Util::Streams::out << "ChebyshevSolver::calculateCoefficients\n";
-		Util::Streams::out << "\tFrom Index: " << fromBasisIndex << "\n";
-		Util::Streams::out << "\tBasis size: " << amplitudeSet->getBasisSize() << "\n";
-		Util::Streams::out << "\tProgress (100 coefficients per dot): ";
+		Streams::out << "ChebyshevSolver::calculateCoefficients\n";
+		Streams::out << "\tFrom Index: " << fromBasisIndex << "\n";
+		Streams::out << "\tBasis size: " << amplitudeSet->getBasisSize() << "\n";
+		Streams::out << "\tProgress (100 coefficients per dot): ";
 	}
 
 	complex<double> *jIn1 = new complex<double>[amplitudeSet->getBasisSize()];
@@ -384,13 +384,13 @@ void ChebyshevSolver::calculateCoefficients(
 
 		if(isTalkative){
 			if(n%100 == 0)
-				Util::Streams::out << "." << flush;
+				Streams::out << "." << flush;
 			if(n%1000 == 0)
-				Util::Streams::out << " " << flush;
+				Streams::out << " " << flush;
 		}
 	}
 	if(isTalkative)
-		Util::Streams::out << "\n";
+		Streams::out << "\n";
 
 	delete [] jIn1;
 	delete [] jIn2;
@@ -438,11 +438,11 @@ void ChebyshevSolver::calculateCoefficientsWithCutoff(
 	int toBasisIndex = amplitudeSet->getBasisIndex(to);
 
 	if(isTalkative){
-		Util::Streams::out << "ChebyshevSolver::calculateCoefficients\n";
-		Util::Streams::out << "\tFrom Index: " << fromBasisIndex << "\n";
-		Util::Streams::out << "\tTo Index: " << toBasisIndex << "\n";
-		Util::Streams::out << "\tBasis size: " << amplitudeSet->getBasisSize() << "\n";
-		Util::Streams::out << "\tProgress (100 coefficients per dot): ";
+		Streams::out << "ChebyshevSolver::calculateCoefficients\n";
+		Streams::out << "\tFrom Index: " << fromBasisIndex << "\n";
+		Streams::out << "\tTo Index: " << toBasisIndex << "\n";
+		Streams::out << "\tBasis size: " << amplitudeSet->getBasisSize() << "\n";
+		Streams::out << "\tProgress (100 coefficients per dot): ";
 	}
 
 	complex<double> *jIn1 = new complex<double>[amplitudeSet->getBasisSize()];
@@ -557,9 +557,9 @@ void ChebyshevSolver::calculateCoefficientsWithCutoff(
 
 		if(isTalkative){
 			if(n%100 == 0)
-				Util::Streams::out << ".";
+				Streams::out << ".";
 			if(n%1000 == 0)
-				Util::Streams::out << " ";
+				Streams::out << " ";
 		}
 	}
 
@@ -613,11 +613,11 @@ void ChebyshevSolver::generateLookupTable(
 	);
 
 	if(isTalkative){
-		Util::Streams::out << "Generating lookup table\n";
-		Util::Streams::out << "\tNum coefficients: " << numCoefficients << "\n";
-		Util::Streams::out << "\tEnergy resolution: " << energyResolution << "\n";
-		Util::Streams::out << "\tLower bound: " << lowerBound << "\n";
-		Util::Streams::out << "\tUpper bound: " << upperBound << "\n";
+		Streams::out << "Generating lookup table\n";
+		Streams::out << "\tNum coefficients: " << numCoefficients << "\n";
+		Streams::out << "\tEnergy resolution: " << energyResolution << "\n";
+		Streams::out << "\tLower bound: " << lowerBound << "\n";
+		Streams::out << "\tUpper bound: " << upperBound << "\n";
 	}
 
 	if(generatingFunctionLookupTable != NULL){

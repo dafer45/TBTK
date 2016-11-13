@@ -26,7 +26,6 @@
 using namespace std;
 
 namespace TBTK{
-namespace Util{
 
 Model* ModelFactory::createSquareLattice(
 	initializer_list<int> size,
@@ -400,18 +399,18 @@ Model* ModelFactory::merge(
 		Model *m = *(models.begin() + n);
 		if(m->getGeometry() == NULL){
 			geometryExists = false;
-			Util::Streams::out << "Warning in ModelFactory::merge: Geometric data connot be merged because model " << n << " lacks geometric data.\n";
+			Streams::out << "Warning in ModelFactory::merge: Geometric data connot be merged because model " << n << " lacks geometric data.\n";
 			break;
 		}
 
 		if(m->getGeometry()->getDimensions() != 3){
 			geometryExists = false;
-			Util::Streams::out << "Warning in ModelFactory::merge: Geometric data connot be merged because model " << n << " has geometric of dimension " << m->getGeometry()->getDimensions() << ".\n";
+			Streams::out << "Warning in ModelFactory::merge: Geometric data connot be merged because model " << n << " has geometric of dimension " << m->getGeometry()->getDimensions() << ".\n";
 			break;
 		}
 
 		if(m->getGeometry()->getNumSpecifiers() != 0){
-			Util::Streams::out << "Warning in ModelFactory::merge: Specifiers ignored in model " << n << ".\n";
+			Streams::out << "Warning in ModelFactory::merge: Specifiers ignored in model " << n << ".\n";
 		}
 	}
 
@@ -582,5 +581,4 @@ void ModelFactory::addSquareGeometry3D(
 					geometry->setCoordinates({x, y, z, s},	{1.*x, 1.*y, 1.*z});
 }
 
-};	//End of namespace Util
 };	//End of namespace TBTK

@@ -29,7 +29,6 @@
 #include <chrono>
 
 namespace TBTK{
-namespace Util{
 
 /** A Timer for measuring execution times. A sequence of tick-tock calls will
  *  meassure and print the time from tick to tock. Multiple timestamps can be
@@ -94,7 +93,6 @@ inline void Timer::tock(){
 	}
 }
 
-};	//End of namespace Util
 };	//End of namespace TBTK
 
 #endif

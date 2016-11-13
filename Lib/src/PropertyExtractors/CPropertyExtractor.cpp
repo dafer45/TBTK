@@ -248,7 +248,7 @@ Property::Magnetization* CPropertyExtractor::calculateMagnetization(
 		}
 	}
 	if(((int*)hint)[0] == -1){
-		Util::Streams::err << "Error in PropertyExtractorChebyshev::calculateMAG: No spin index indicated.\n";
+		Streams::err << "Error in PropertyExtractorChebyshev::calculateMAG: No spin index indicated.\n";
 		delete [] (int*)hint;
 		return NULL;
 	}
@@ -315,7 +315,7 @@ Property::SpinPolarizedLDOS* CPropertyExtractor::calculateSpinPolarizedLDOS(
 		}
 	}
 	if(((int*)hint)[0] == -1){
-		Util::Streams::err << "Error in PropertyExtractorChebyshev::calculateSP_LDOS: No spin index indicated.\n";
+		Streams::err << "Error in PropertyExtractorChebyshev::calculateSP_LDOS: No spin index indicated.\n";
 		delete [] (int*)hint;
 		return NULL;
 	}

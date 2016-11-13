@@ -26,7 +26,6 @@
 using namespace std;
 
 namespace TBTK{
-namespace Util{
 
 ParameterSet::ParameterSet(){
 }
@@ -351,5 +350,4 @@ bool ParameterSet::boolExists(string name) const {
 	return false;
 }
 
-};	//End of namespace Util
 };	//End of namespace TBTK

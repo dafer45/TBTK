@@ -71,7 +71,7 @@ Model* FileParser::readModel(string fileName){
 }
 
 void FileParser::writeParameterSet(
-	const Util::ParameterSet *parameterSet,
+	const ParameterSet *parameterSet,
 	string filename
 ){
 	ofstream fout(filename);
@@ -100,8 +100,8 @@ void FileParser::writeParameterSet(
 	fout.close();
 }
 
-Util::ParameterSet* FileParser::readParameterSet(string fileName){
-	Util::ParameterSet *parameterSet = new Util::ParameterSet();
+ParameterSet* FileParser::readParameterSet(string fileName){
+	ParameterSet *parameterSet = new ParameterSet();
 
 	readInput(fileName);
 	removeComments();
@@ -621,9 +621,9 @@ void FileParser::readGeometry(Model *model){
 	string line;
 	while(true){
 		if(!getline(ssin, line)){
-			Util::Streams::log << "Warning in FileParser::readAmplitudes(): Reached end of file while searching for 'Geometry:'.\n";
-			Util::Streams::log << "\tNo Geometry loaded.\n";
-			Util::Streams::log << "\tAdd 'Geometry: None' after amplitude list to disable warning.\n";
+			Streams::log << "Warning in FileParser::readAmplitudes(): Reached end of file while searching for 'Geometry:'.\n";
+			Streams::log << "\tNo Geometry loaded.\n";
+			Streams::log << "\tAdd 'Geometry: None' after amplitude list to disable warning.\n";
 			return;
 		}
 

@@ -148,8 +148,8 @@ public:
 		std::string path = "/"
 	);
 
-	/** Read Util::ParameterSet from file. */
-	static Util::ParameterSet* readParameterSet(
+	/** Read ParameterSet from file. */
+	static ParameterSet* readParameterSet(
 		std::string name = "ParameterSet",
 		std::string path = "/"
 	);

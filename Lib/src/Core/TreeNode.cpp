@@ -40,8 +40,8 @@ void TreeNode::print(){
 
 void TreeNode::print(unsigned int subindex){
 	for(unsigned int n = 0; n < subindex; n++)
-		Util::Streams::out << "\t";
-	Util::Streams::out << basisIndex << ":" << hoppingAmplitudes.size() << "\n";
+		Streams::out << "\t";
+	Streams::out << basisIndex << ":" << hoppingAmplitudes.size() << "\n";
 	for(unsigned int n = 0; n < children.size(); n++)
 		children.at(n).print(subindex + 1);
 }
@@ -72,7 +72,7 @@ void TreeNode::add(HoppingAmplitude &ha, unsigned int subindex){
 		//only allowed if the HoppingAmplitudes differ in one of their
 		//common indices.
 		if(hoppingAmplitudes.size() != 0){
-			Util::Streams::err << "Error, incompatible amplitudes:";
+			Streams::err << "Error, incompatible amplitudes:";
 			ha.print();
 			hoppingAmplitudes.at(0).print();
 			exit(1);
@@ -96,7 +96,7 @@ void TreeNode::add(HoppingAmplitude &ha, unsigned int subindex){
 		//if the HoppingAmplitudes differ in one of their common
 		//indices.
 		if(children.size() != 0){
-			Util::Streams::err << "Error, incompatible amplitudes:\n";
+			Streams::err << "Error, incompatible amplitudes:\n";
 			ha.print();
 			getFirstHA().print();
 			exit(1);
@@ -189,7 +189,7 @@ const std::vector<HoppingAmplitude>* TreeNode::getHAs(Index index, unsigned int 
 		//If the subindex is bigger than the current number of child
 		//nodes, an error has occured.
 		if(currentIndex >= (int)children.size()){
-			Util::Streams::err << "Error, index out of bound: ";
+			Streams::err << "Error, index out of bound: ";
 			index.print();
 			exit(1);
 		}
@@ -217,7 +217,7 @@ int TreeNode::getBasisIndex(const Index &index, unsigned int subindex) const{
 		//If the subindex is bigger than the current number of child
 		//nodes, an error has occured.
 		if(currentIndex >= (int)children.size()){
-			Util::Streams::err << "Error, index out of bound: ";
+			Streams::err << "Error, index out of bound: ";
 			index.print();
 			exit(1);
 		}

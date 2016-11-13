@@ -56,14 +56,14 @@ void Model::addHAAndHC(HoppingAmplitude ha){
 
 void Model::construct(){
 	if(isTalkative)
-		Util::Streams::out << "Constructing system\n";
+		Streams::out << "Constructing system\n";
 
 	amplitudeSet->construct();
 
 	int basisSize = getBasisSize();
 
 	if(isTalkative)
-		Util::Streams::out << "\tBasis size: " << basisSize << "\n";
+		Streams::out << "\tBasis size: " << basisSize << "\n";
 }
 
 void Model::createGeometry(int dimensions, int numSpecifiers){
