@@ -25,16 +25,22 @@ source init_session.sh
 After pulling the latest version of TBTK, execute the following command from the TBTK root folder to update the library:
 
 Without CUDA (gpu)
-```./update.sh```
+```bash
+./update.sh
+```
 
 With CUDA (gpu)  
-```./update.sh -CUDA```
+```bash
+./update.sh -CUDA
+```
 
 ####################
 # Initialize session
 ####################
 Each time a new terminal session is opened, execute the following command from the TBTK root folder:  
-```source init_session.sh```
+```bash
+source init_session.sh
+```
 
 #########
 # License
