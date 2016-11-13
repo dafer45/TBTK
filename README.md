@@ -82,6 +82,13 @@ Depends on the external libraries ARPACK and SuperLU.
 #### TBTKImageToModel
 Depends on the external library openCV.
 
+### Visualization
+#### TBTKVisualizer
+Depends on the external library OGRE.
+
 ### Templates
 #### TopologicalInsulator3D
-Depends on the external library fftw3
+Depends on the external library fftw3.
+
+If you are interested in installing one or several of these features already
+now, please contact the developer at kristofer.bjornson@physics.uu.se for further instructions.
