@@ -4,6 +4,9 @@ module load cuda/7.0
 TBTK_dir=$PWD
 export TBTK_dir
 
+#################
+# Include paths #
+#################
 if [ -z "$CPLUS_INCLUDE_PATH" ]
 then
 	CPLUS_INCLUDE_PATH=${TBTK_dir}/Lib/include/Builders;
@@ -18,6 +21,9 @@ CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/StatesAndOperators;
 CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/Utilities;
 export CPLUS_INCLUDE_PATH
 
+#########################
+# Build time link paths #
+#########################
 if [ -z "$LIBRARY_PATH" ]
 then
 	LIBRARY_PATH=${TBTK_dir}/Lib/build;
@@ -26,6 +32,9 @@ else
 fi
 export LIBRARY_PATH
 
+#######################
+# Run time link paths #
+#######################
 if [ -z "$LD_LIBRARY_PATH" ]
 then
 	LD_LIBRARY_PATH=${TBTK_dir}/hdf5/hdf5-build/hdf5/lib;
@@ -36,20 +45,21 @@ else
 fi
 export LD_LIBRARY_PATH
 
+################
+# Binary paths #
+################
 if [ -z "$PATH" ]
 then
 	PATH=${TBTK_dir}/Tools/bin;
-	PATH+=:${TBTK_dir}/Visualization/python;
 else
 	PATH+=:${TBTK_dir}/Tools/bin;
-	PATH+=:${TBTK_dir}/Visualization/python;
 fi
+PATH+=:${TBTK_dir}/Visualization/python;
+PATH+=:${TBTK_dir}/Visualization/Visualizer_build/dist/bin
 export PATH
 
-#if [ -z "$MANPATH" ]
-#then
-#	MANPATH=${TBTK_dir}/Tools/man;
-#else
-	MANPATH+=:${TBTK_dir}/Tools/man;
-#fi
+##################
+# Man page paths #
+##################
+MANPATH+=:${TBTK_dir}/Tools/man;
 export MANPATH
