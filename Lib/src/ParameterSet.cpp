@@ -19,9 +19,9 @@
  *  @author Andreas Theiler
  */
 
-#include "../include/ParameterSet.h"
-#include "../include/TBTKMacros.h"
-#include "../include/Streams.h"
+#include "ParameterSet.h"
+#include "TBTKMacros.h"
+#include "Streams.h"
 
 using namespace std;
 

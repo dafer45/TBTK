@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "../include/StateSet.h"
+#include "StateSet.h"
 
 using namespace std;
 

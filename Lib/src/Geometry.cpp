@@ -18,9 +18,9 @@
  *  @author Kristofer Björnson
  */
 
-#include "../include/Geometry.h"
-#include "../include/Streams.h"
-#include "../include/TBTKMacros.h"
+#include "Geometry.h"
+#include "Streams.h"
+#include "TBTKMacros.h"
 
 using namespace std;
 

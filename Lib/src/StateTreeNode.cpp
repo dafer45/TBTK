@@ -18,10 +18,10 @@
  *  @author Kristofer Björnson
  */
 
-#include "../include/StateTreeNode.h"
-#include "../include/TBTKMacros.h"
-#include "../include/Index.h"
-#include "../include/Util.h"
+#include "StateTreeNode.h"
+#include "TBTKMacros.h"
+#include "Index.h"
+#include "Util.h"
 
 #include <limits>
 

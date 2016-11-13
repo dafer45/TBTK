@@ -18,8 +18,8 @@
  *  @author Kristofer Björnson
  */
 
-#include "../include/BasicState.h"
-#include "../include/TBTKMacros.h"
+#include "BasicState.h"
+#include "TBTKMacros.h"
 
 using namespace std;
 

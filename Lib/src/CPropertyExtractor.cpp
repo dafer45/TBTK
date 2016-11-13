@@ -18,11 +18,11 @@
  *  @author Kristofer Björnson
  */
 
-#include "../include/CPropertyExtractor.h"
-#include "../include/Functions.h"
-#include "../include/Util.h"
-#include "../include/TBTKMacros.h"
-#include "../include/Streams.h"
+#include "CPropertyExtractor.h"
+#include "Functions.h"
+#include "Util.h"
+#include "TBTKMacros.h"
+#include "Streams.h"
 
 using namespace std;
 

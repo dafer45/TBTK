@@ -18,10 +18,10 @@
  *  @author Kristofer Björnson
  */
 
-#include "../include/Model.h"
-#include "../include/Geometry.h"
-#include "../include/Streams.h"
-#include "../include/TBTKMacros.h"
+#include "Model.h"
+#include "Geometry.h"
+#include "Streams.h"
+#include "TBTKMacros.h"
 
 #include <string>
 #include <fstream>

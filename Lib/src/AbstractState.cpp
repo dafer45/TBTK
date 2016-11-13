@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "../include/AbstractState.h"
+#include "AbstractState.h"
 
 using namespace std;
 

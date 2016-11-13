@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "../include/LDOS.h"
+#include "LDOS.h"
 
 namespace TBTK{
 namespace Property{

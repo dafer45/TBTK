@@ -18,10 +18,10 @@
  *  @author Kristofer Björnson
  */
 
-#include "../include/ReciprocalLattice.h"
-#include "../include/TBTKMacros.h"
-#include "../include/Vector3d.h"
-#include "../include/Lattice.h"
+#include "ReciprocalLattice.h"
+#include "TBTKMacros.h"
+#include "Vector3d.h"
+#include "Lattice.h"
 
 #include <limits>
 #include <typeinfo>

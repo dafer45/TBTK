@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "../include/Util.h"
+#include "Util.h"
 
 using namespace std;
 

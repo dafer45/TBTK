@@ -19,9 +19,9 @@
  *  @author Andreas Theiler
  */
 
-#include "../include/FileReader.h"
-#include "../include/TBTKMacros.h"
-#include "../include/Streams.h"
+#include "FileReader.h"
+#include "TBTKMacros.h"
+#include "Streams.h"
 
 #include <string>
 #include <sstream>

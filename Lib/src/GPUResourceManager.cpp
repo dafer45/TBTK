@@ -18,8 +18,8 @@
  *  @author Kristofer Björnson
  */
 
-#include "../include/GPUResourceManager.h"
-#include "../include/TBTKMacros.h"
+#include "GPUResourceManager.h"
+#include "TBTKMacros.h"
 
 using namespace std;
 

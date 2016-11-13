@@ -18,9 +18,9 @@
  *  @author Kristofer Björnson
  */
 
-#include "../include/DPropertyExtractor.h"
-#include "../include/Functions.h"
-#include "../include/Streams.h"
+#include "DPropertyExtractor.h"
+#include "Functions.h"
+#include "Streams.h"
 
 using namespace std;
 

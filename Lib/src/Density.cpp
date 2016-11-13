@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "../include/Density.h"
+#include "Density.h"
 
 namespace TBTK{
 namespace Property{

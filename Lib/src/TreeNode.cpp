@@ -18,9 +18,9 @@
  *  @author Kristofer Björnson
  */
 
-#include "../include/TreeNode.h"
-#include "../include/Streams.h"
-#include "../include/TBTKMacros.h"
+#include "TreeNode.h"
+#include "Streams.h"
+#include "TBTKMacros.h"
 
 #include <algorithm>
 

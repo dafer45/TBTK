@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
 */
 
-#include "../include/EigenValues.h"
+#include "EigenValues.h"
 
 namespace TBTK{
 namespace Property{

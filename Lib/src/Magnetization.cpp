@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "../include/Magnetization.h"
+#include "Magnetization.h"
 
 using namespace std;
 

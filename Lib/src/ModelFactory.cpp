@@ -18,11 +18,11 @@
  *  @author Kristofer Björnson
  */
 
-#include "../include/ModelFactory.h"
-#include "../include/AmplitudeSet.h"
-#include "../include/Streams.h"
-#include "../include/TBTKMacros.h"
-#include "../include/Util.h"
+#include "ModelFactory.h"
+#include "AmplitudeSet.h"
+#include "Streams.h"
+#include "TBTKMacros.h"
+#include "Util.h"
 
 using namespace std;
 

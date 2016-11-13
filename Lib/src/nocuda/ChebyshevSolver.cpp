@@ -19,8 +19,8 @@
  *  @author Kristofer Björnson
  */
 
-#include "../../include/ChebyshevSolver.h"
-#include "../../include/Streams.h"
+#include "ChebyshevSolver.h"
+#include "Streams.h"
 
 #include <iostream>
 

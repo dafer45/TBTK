@@ -18,10 +18,10 @@
  *  @author Kristofer Björnson
  */
 
-#include "../include/DiagonalizationSolver.h"
-#include "../include/TBTKMacros.h"
-#include "../include/Streams.h"
-#include "../include/TBTKMacros.h"
+#include "DiagonalizationSolver.h"
+#include "TBTKMacros.h"
+#include "Streams.h"
+#include "TBTKMacros.h"
 
 using namespace std;
 

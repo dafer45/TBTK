@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "../include/DOS.h"
+#include "DOS.h"
 
 namespace TBTK{
 namespace Property{

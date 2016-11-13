@@ -18,8 +18,8 @@
  *  @author Kristofer Björnson
  */
 
-#include "../include/HoppingAmplitude.h"
-#include "../include/Streams.h"
+#include "HoppingAmplitude.h"
+#include "Streams.h"
 
 using namespace std;
 

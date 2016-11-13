@@ -17,9 +17,9 @@
  *  @author Kristofer Björnson
  */
 
-#include "../include/Index.h"
-#include "../include/Streams.h"
-#include "../include/TBTKMacros.h"
+#include "Index.h"
+#include "Streams.h"
+#include "TBTKMacros.h"
 
 using namespace std;
 

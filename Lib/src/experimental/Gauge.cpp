@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "../include/Gauge.h"
+#include "Gauge.h"
 
 Gauge::Gauge(Model *model){
 }

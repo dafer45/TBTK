@@ -18,11 +18,11 @@
  *  @author Kristofer Björnson
  */
 
-#include "../include/TimeEvolver.h"
-#include "../include/AmplitudeSet.h"
-#include "../include/Util.h"
-#include "../include/Streams.h"
-#include "../include/TBTKMacros.h"
+#include "TimeEvolver.h"
+#include "AmplitudeSet.h"
+#include "Util.h"
+#include "Streams.h"
+#include "TBTKMacros.h"
 
 #include <complex>
 #include <math.h>

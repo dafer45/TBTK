@@ -25,8 +25,8 @@
  * See http://www.caam.rice.edu/software/ARPACK/UG/node138.html for more
  * information about parameters. */
 
-#include "../include/ArnoldiSolver.h"
-#include "../include/Streams.h"
+#include "ArnoldiSolver.h"
+#include "Streams.h"
 
 #include "slu_zdefs.h"
 

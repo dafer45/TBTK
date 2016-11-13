@@ -19,8 +19,8 @@
  *  @author Andreas Theiler
  */
 
-#include "../include/FileWriter.h"
-//#include "../include/PropertyExtractor.h"
+#include "FileWriter.h"
+
 #include <string>
 #include <sstream>
 #include <H5Cpp.h>

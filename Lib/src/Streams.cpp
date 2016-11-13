@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "../include/Streams.h"
+#include "Streams.h"
 
 #include <iostream>
 #include <fstream>

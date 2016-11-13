@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "../include/SpinPolarizedLDOS.h"
+#include "SpinPolarizedLDOS.h"
 
 using namespace std;
 
