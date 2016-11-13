@@ -78,20 +78,20 @@ dSolver.run();
 FileWriter::setFileName("TBTKResults.h5");
 FileWriter::clear();
 
-//Create PropertyExtractor
-PropertyExtractor pe(&amp;dSolver);
+//Create DPropertyExtractor
+DPropertyExtractor pe(&amp;dSolver);
 
 //Extract eigenvalues and write these to file
-double *ev = pe.getEV();
-FileWriter::writeEV(ev, model.getBasisSize());
+Property::EigenValues *ev = pe.getEigenValues();
+FileWriter::writeEigenValues(ev);
 delete [] ev;
 
 //Extract DOS and write to file
 const double UPPER_LIMIT = 6.;
 const double LOWER_LIMIT = -4.;
 const int RESOLUTION = 1000;
-double *dos = pe.calculateDOS(UPPER_LIMIT, LOWER_LIMIT, RESOLUTION);
-FileWriter::writeDOS(dos, UPPER_LIMIT, LOWER_LIMIT, RESOLUTION);
+Property::DOS *dos = pe.calculateDOS(UPPER_LIMIT, LOWER_LIMIT, RESOLUTION);
+FileWriter::writeDOS(dos);
 delete [] dos;
 </code></pre>
 
@@ -123,6 +123,13 @@ source init_session.sh
 <a id="update" class="anchor" href="#update" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Update</h2>
 
 <p>To update to the latest version of the library, type</p>
+
+<pre><code>git pull
+source init_session.sh
+./update.sh -CUDA
+</code></pre>
+
+<p>To update the library without CUDA support, type</p>
 
 <pre><code>git pull
 source init_session.sh
