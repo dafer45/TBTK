@@ -39,3 +39,11 @@ else
 	PATH+=:${TBTK_dir}/Visualization/python;
 fi
 export PATH
+
+#if [ -z "$MANPATH" ]
+#then
+#	MANPATH=${TBTK_dir}/Tools/man;
+#else
+	MANPATH+=:${TBTK_dir}/Tools/man;
+#fi
+export MANPATH

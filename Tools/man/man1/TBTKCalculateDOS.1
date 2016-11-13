@@ -1,0 +1,45 @@
+.\" Process this file with
+.\" grof -man -Tascii TBTKCalculateDOS.1
+.\"
+.TH TBTKCalculateDOS 1 "November 2016" TBTK "User Manuals"
+.SH NAME
+TBTKCalculateDOS \- Calculates the density of states (DOS) for a given model file.
+.SH SYNOPSIS
+.B TBTKCalcuateDOS [--verbose] [--lower-bound
+.I value
+.B ] [--upper-bound
+.I value
+.B ] [--energy-resolution
+.I value
+.B ]
+.I file
+.SH DESCRIPTION
+.B TBTKCalculateDOS
+Calculates the density of states (DOS) for a given model file. By default the
+DOS is calculated over the full range from the smallest to the largest
+eigenvalue, using an energy resolution of 10000 points.
+.SH OPTIONS
+.IP --verbose
+Print progress to stdout.
+.IP "--lower-bound value"
+Set lower bound of DOS.
+.IP "--upper-bound value"
+Set upper bound of DOS.
+.IP "--energy-resolution"
+Set number of energy points used to calculate DOS.
+.SH FILES
+.SH ENVIRONMENT
+.SH DIAGNOSTICS
+The following diagnostics may be issued by stderr:
+
+Unknown argument
+.RS
+Unable to recognize one or more input arguments.
+.RE
+Input file missing
+.RS
+Input file missing.
+.SH AUTHOR
+Kristofer Björnson (dafer45@hotmail.com)
+.SH "SEE ALSO"
+
