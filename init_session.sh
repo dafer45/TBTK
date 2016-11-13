@@ -33,9 +33,9 @@ export LD_LIBRARY_PATH
 if [ -z "$PATH" ]
 then
 	PATH=${TBTK_dir}/Tools/bin;
-	PATH+=:${TBTK_dir}/View/python;
+	PATH+=:${TBTK_dir}/Visualization/python;
 else
 	PATH+=:${TBTK_dir}/Tools/bin;
-	PATH+=:${TBTK_dir}/View/python;
+	PATH+=:${TBTK_dir}/Visualization/python;
 fi
 export PATH

@@ -1,8 +1,9 @@
+#!/usr/bin/env python
 # -*- encoding: utf-8 -*-
 
 ## @package TBTKview
-#  @file plot2D.py
-#  @brief Plot surface
+#  @file plotDOS.py
+#  @brief Plot density
 #
 #  @author Kristofer Björnson
 
@@ -15,15 +16,14 @@ import scipy.ndimage.filters
 import mpl_toolkits.mplot3d
 import sys
 
-if(len(sys.argv) != 3):
-	print "Error, the following arguments are needed: .hdf5-file, dataset name"
+if(len(sys.argv) != 2):
+	print "Error, the following arguments are needed: .hdf5-file"
 	exit(1)
 
 filename = sys.argv[1]
-dataset_name = sys.argv[2]
 
 file = h5py.File(filename, 'r');
-dataset = file[dataset_name]
+dataset = file['Density']
 
 dimensions = dataset.shape
 print "Dimensions: " + str(dimensions)
@@ -39,11 +39,7 @@ fig = matplotlib.pyplot.figure()
 ax = fig.gca(projection='3d')
 
 Z = dataset[:,:]
-ax.plot_surface(X.transpose(), Y.transpose(), Z, rstride=1, cstride=1, cmap=matplotlib.cm.coolwarm, linewidth=0, antialiased=False)
+ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap=matplotlib.cm.coolwarm, linewidth=0, antialiased=False)
 ax.set_zlim(numpy.min(Z), numpy.max(Z))
-ax.set_xlabel('x');
-ax.set_ylabel('y');
-ax.set_zlabel(dataset_name);
 
-fig.savefig('figures/' + dataset_name + '.png')
-
+fig.savefig('figures/Density.png')
