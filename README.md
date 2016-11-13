@@ -22,7 +22,8 @@ source init_session.sh
 #############
 # Update TBTK
 #############
-After pulling the latest version of TBTK, execute the following command from the TBTK root folder to update the library:
+After pulling the latest version of TBTK, execute the following command from
+the TBTK root folder to update the library:
 
 Without CUDA (gpu)
 ```bash
@@ -37,7 +38,8 @@ With CUDA (gpu)
 ####################
 # Initialize session
 ####################
-Each time a new terminal session is opened, execute the following command from the TBTK root folder:  
+Each time a new terminal session is opened, execute the following command from
+the TBTK root folder:  
 ```bash
 source init_session.sh
 ```
@@ -45,7 +47,8 @@ source init_session.sh
 #########
 # License
 #########
-TBTK is free to use under the Appache 2.0 license (see the file 'License'). Please give attribution in accordance with the 'Cite' section below.
+TBTK is free to use under the Appache 2.0 license (see the file 'License').
+Please give attribution in accordance with the 'Cite' section below.
 
 ######
 # Cite
@@ -55,9 +58,30 @@ TBTK is free to use under the Appache 2.0 license (see the file 'License'). Plea
 Kristofer Björnson, & glaurung24. (2016). dafer45/TBTK: Initial release [Data set].  
 Zenodo. http://doi.org/10.5281/zenodo.162730
 
-####If you use the ChebyshevSolver to produce results, please also cite the following references  
+####If you use the ChebyshevSolver to produce results, please also cite the
+following references  
 A. Weiße, G. Wellein, A. Alvermann, and H. Fehske,  
 Rev. Mod. Phys. 78, 275 (2006).
 
 L. Covaci, F. M. Peeters, and M. Berciu,  
 Phys. Rev. Lett. 105, 167006 (2010).
+
+#####################
+# Additional features
+#####################
+Due to their dependence on external libraries, certain TBTK features are not
+installed by default. These are intended to eventually make it into the default
+installation, but currently has to be configured manually to work. The current
+components that do not work by default, and the corresponding reasons are
+listed below:
+### Library
+#### ArnoldiSolver
+Depends on the external libraries ARPACK and SuperLU.
+
+### Tools
+#### TBTKImageToModel
+Depends on the external library openCV.
+
+### Templates
+#### TopologicalInsulator3D
+Depends on the external library fftw3
