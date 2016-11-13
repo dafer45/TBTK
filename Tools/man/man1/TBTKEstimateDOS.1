@@ -1,0 +1,77 @@
+.\" Process this file with
+.\" grof -man -Tascii TBTKCalculateDOS.1
+.\"
+.TH TBTKEstimateDOS 1 "November 2016" TBTK "User Manuals"
+.SH NAME
+TBTKEstimateDOS \- Estimates the density of states (DOS) for a given model file by sampling the local density of states (LDOS).
+.SH SYNOPSIS
+.B TBTKCalcuateDOS [--verbose] [--use-gpu] [--use-cpu] [--scale-factor
+.I value
+.B ] [--coefficients
+.I value
+.B ] [--energy-resolution
+.I value
+.B ] [--samples
+.I value
+.B ] [--index-pattern
+.I {10, *, 2, ...}
+.I file
+.SH DESCRIPTION
+.B TBTKCalculateDOS
+Calculates the density of states (DOS) for a given model file by sampling the
+local density of states (LDOS). The calculation is carried out using the
+Chebyshev expansion of the Green's function. By default the DOS is estimated
+using 100 sample points, 5000 Chebyshev coefficients, 10000 energy points, and
+a scale factor of 20.
+.SH OPTIONS
+.IP --verbose
+Print progress to stdout.
+.IP --use-gpu
+Use GPU to calculate the Chebyshev coefficients.
+.IP --use-cpu
+Use CPU to calculate the Chebyshev coefficients.
+.IP "--scale-factor value"
+Scale factor used in the Chebyshev expansion. Must be larger than the absolute
+value of the largest eigenvalue.
+.IP "--coefficients value"
+Number of coefficients used in the Chebyshev expansion.
+.IP "--energy-resolution value"
+Number of energy points used to estimate the DOS.
+.IP "--samples value"
+Number of sample points used to calculate the DOS.
+.IP "--index-patter {10, *, 2, ...}"
+Index pattern used to estimate the DOS. Only indices agreeing with the
+specified index-pattern will be included in the estimate. The '*'-symbol can be
+used as a wildcard.
+.SH FILES
+.SH ENVIRONMENT
+.SH "COMMON ISSUES"
+Output contains 'nan'
+.RS
+Ensure that the scale factor is large enough.
+.SH DIAGNOSTICS
+The following diagnostics may be issued by stderr:
+
+Unknown argument
+.RS
+Unable to recognize one or more input arguments.
+.RE
+Input file missing
+.RS
+Input file missing.
+.RE
+--use-cpu and --use-gpu cannot be simultaneously specified.
+.RS
+Accepts at most one of the flags to be specified.
+.RE
+Expected 'symbol' while reading index pattern, found 'symbol'.
+.RS
+Incorrect index pattern specified.
+.RE
+Found 'symbol' while parsing...
+.RS
+Incorrect index pattern specified.
+.SH AUTHOR
+Kristofer Björnson (dafer45@hotmail.com)
+.SH "SEE ALSO"
+.BR TBTKCalculateDOS (1)

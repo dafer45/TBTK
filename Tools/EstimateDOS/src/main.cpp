@@ -84,10 +84,10 @@ int main(int argc, char **argv){
 			//If the option sets a flag, do nothing.
 			if(long_options[option_index].flag != 0)
 				break;
-			cout << "option " << long_options[option_index].name;
+			Util::Streams::err << "option " << long_options[option_index].name;
 			if(optarg)
-				cout << " with argument " << optarg;
-			cout << "\n";
+				Util::Streams::err << " with argument " << optarg;
+			Util::Streams::err << "\n";
 			break;
 		case 's':
 			scaleFactor = atof(optarg);
@@ -313,7 +313,7 @@ Index* getIndexPattern(string patternString){
 		default:
 			TBTKExit(
 					"EstimateDOS",
-					"Found '" << "while parsing the interior of the index pattern.",
+					"Found '" << patternString[n] << "' while parsing the interior of the index pattern.",
 					"Specify index pattern using the format \"{X, X, X}\"."
 			);
 			break;
