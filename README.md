@@ -76,19 +76,19 @@ components that do not work by default, and the corresponding reasons are
 listed below:
 ### Library
 #### ArnoldiSolver
-Depends on the external libraries ARPACK and SuperLU.
+Depends on the external libraries ARPACK (http://www.caam.rice.edu/software/ARPACK/) and SuperLU (http://crd-legacy.lbl.gov/~xiaoye/SuperLU/).
 
 ### Tools
 #### TBTKImageToModel
-Depends on the external library openCV.
+Depends on the external library openCV (http://opencv.org/).
 
 ### Visualization
 #### TBTKVisualizer
-Depends on the external library OGRE.
+Depends on the external library OGRE (http://www.ogre3d.org/).
 
 ### Templates
 #### TopologicalInsulator3D
-Depends on the external library fftw3.
+Depends on the external library FFTW (http://www.fftw.org/).
 
 If you are interested in installing one or several of these features already
 now, please contact the developer at kristofer.bjornson@physics.uu.se for further instructions.
