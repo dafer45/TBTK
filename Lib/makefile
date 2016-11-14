@@ -62,6 +62,7 @@ INC_DIR += include/PropertyExtractors/
 INC_DIR += include/Solvers/
 INC_DIR += include/StatesAndOperators/
 INC_DIR += include/Utilities/
+INC_DIR += include/Uncategorized/
 INC_DIR += $(TBTK_dir)/hdf5/hdf5-build/hdf5/include/
 INC_DIR += $(TBTK_dir)/hdf5/hdf5-1.8.16/include/
 
@@ -73,6 +74,7 @@ SRC_DIR += src/PropertyExtractors
 SRC_DIR += src/Solvers
 SRC_DIR += src/StatesAndOperators
 SRC_DIR += src/Utilities
+SRC_DIR += src/Uncategorized
 
 # CUDA source directory
 CUDA_SRC_DIR:= src/cuda
