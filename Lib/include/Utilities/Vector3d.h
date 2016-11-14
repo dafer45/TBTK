@@ -121,7 +121,7 @@ inline const Vector3d Vector3d::operator*(double rhs){
 	return result;
 }
 
-inline const Vector3d operator*(double lhs, Vector3d &rhs){
+inline const Vector3d operator*(double lhs, const Vector3d &rhs){
 	Vector3d result;
 
 	result.x = lhs*rhs.x;

@@ -106,6 +106,66 @@ void Geometry::setCoordinates(
 	}
 }
 
+void Geometry::setCoordinates(
+	int basisIndex,
+	std::initializer_list<double> coordinates,
+	std::initializer_list<int> specifiers
+){
+	if(coordinates.size() == (unsigned int)dimensions){
+		for(unsigned int n = 0; n < dimensions; n++)
+			this->coordinates[dimensions*basisIndex + n] = *(coordinates.begin() + n);
+	}
+	else{
+		TBTKExit(
+			"Geometry::setCoordinates()",
+			"Geometry requires " << dimensions << " coordinates, but " << coordinates.size() << " were supplied.",
+			""
+		);
+	}
+
+	if(specifiers.size() == (unsigned int)numSpecifiers){
+		for(unsigned int n = 0; n < numSpecifiers; n++)
+			this->specifiers[numSpecifiers*basisIndex + n] = *(specifiers.begin() + n);
+	}
+	else{
+		TBTKExit(
+			"Geometry::addPoint()",
+			"Geometry requires " << numSpecifiers << " specfiers, but " << specifiers.size() << " were supplied.",
+			""
+		);
+	}
+}
+
+void Geometry::setCoordinates(
+	int basisIndex,
+	const std::vector<double> &coordinates,
+	const std::vector<int> &specifiers
+){
+	if(coordinates.size() == (unsigned int)dimensions){
+		for(unsigned int n = 0; n < dimensions; n++)
+			this->coordinates[dimensions*basisIndex + n] = *(coordinates.begin() + n);
+	}
+	else{
+		TBTKExit(
+			"Geometry::setCoordinates()",
+			"Geometry requires " << dimensions << " coordinates, but " << coordinates.size() << " were supplied.",
+			""
+		);
+	}
+
+	if(specifiers.size() == (unsigned int)numSpecifiers){
+		for(unsigned int n = 0; n < numSpecifiers; n++)
+			this->specifiers[numSpecifiers*basisIndex + n] = *(specifiers.begin() + n);
+	}
+	else{
+		TBTKExit(
+			"Geometry::addPoint()",
+			"Geometry requires " << numSpecifiers << " specfiers, but " << specifiers.size() << " were supplied.",
+			""
+		);
+	}
+}
+
 void Geometry::translate(initializer_list<double> translation){
 	if(translation.size() != dimensions){
 		TBTKExit(

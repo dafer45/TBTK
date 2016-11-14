@@ -56,7 +56,6 @@ else
 	PATH+=:${TBTK_dir}/Tools/bin;
 fi
 PATH+=:${TBTK_dir}/Visualization/python;
-PATH+=:${TBTK_dir}/Visualization/Visualizer_build/dist/bin
 export PATH
 
 ##################

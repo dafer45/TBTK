@@ -14,8 +14,8 @@
  */
 
 /** @package TBTKcalc
- *  @file WignerSeitzCell.h
- *  @brief Wigner-Seitz cell.
+ *  @file ParallelepipedCell.h
+ *  @brief Parallelepiped cell.
  *
  *  @author Kristofer Björnson
  */
@@ -31,22 +31,33 @@
 
 namespace TBTK{
 
-/** Wigner-Seitz cell. */
-class WignerSeitzCell{
+/** Parallelepiped cell. */
+class ParallelepipedCell{
 public:
 	/** Constructor. */
-	WignerSeitzCell(std::initializer_list<std::initializer_list<double>> basisVectors);
+	ParallelepipedCell(std::initializer_list<std::initializer_list<double>> basisVectors);
 
 	/** Constructor. */
-	WignerSeitzCell(const std::vector<std::vector<double>> &basisVectors);
+	ParallelepipedCell(const std::vector<std::vector<double>> &basisVectors);
 
 	/** Destructor. */
-	~WignerSeitzCell();
+	~ParallelepipedCell();
 
-	/** Returns the index of the Wigner-Seitz cell corresponding to the
+	/** Returns the index of the parallelepiped cell corresponding to the
 	 *  given coordinate. */
 	Index getCellIndex(
 		std::initializer_list<double> coordinate
+	) const;
+
+	/** Returns an equispaced mesh covering the parallelepiped cell, using
+	 *  numMeshPoints mesh points along the corresponding directions. For
+	 *  odd values, the mesh contains the points given by
+	 *  "m*basisVector_n/numMeshPoints_n + other vectors", where m is an
+	 *  integer, and n is a basis vector index. For even values, the mesh
+	 *  contains the points given by
+	 *  "(m+1/2)*basisVectors_n/numMeshPoints_n + other vectors". */
+	std::vector<std::vector<double>> getMesh(
+		std::initializer_list<unsigned int> numMeshPoints
 	) const;
 private:
 	/** Lattice dimension. */

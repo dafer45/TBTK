@@ -51,6 +51,20 @@ public:
 		const std::vector<int> &specifiers = {}
 	);
 
+	/** Add a coordinate (and specifiers) for a Hilbert space index. */
+	void setCoordinates(
+		int basisIndex,
+		std::initializer_list<double> coordinates,
+		std::initializer_list<int> specifiers = {}
+	);
+
+	/** Add a coordinate (and specifiers) for a Hilbert space index. */
+	void setCoordinates(
+		int basisIndex,
+		const std::vector<double> &coordinates,
+		const std::vector<int> &specifiers = {}
+	);
+
 	/** Get dimensions. */
 	int getDimensions() const;
 

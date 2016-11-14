@@ -13,26 +13,26 @@
  * limitations under the License.
  */
 
-/** @file WignerSeitzCell.cpp
+/** @file ParallelepipedCell.cpp
  *
  *  @author Kristofer Björnson
  */
 
-#include "WignerSeitzCell.h"
+#include "ParallelepipedCell.h"
 #include "TBTKMacros.h"
 
 using namespace std;
 
 namespace TBTK{
 
-WignerSeitzCell::WignerSeitzCell(initializer_list<initializer_list<double>> basisVectors){
+ParallelepipedCell::ParallelepipedCell(initializer_list<initializer_list<double>> basisVectors){
 	this->dimensions = basisVectors.size();
 
 	TBTKAssert(
 		dimensions == 1
 		|| dimensions == 2
 		|| dimensions == 3,
-		"WignerSeitzCell::WignerSeitzCell()",
+		"ParallelepipedCell::ParallelepipedCell()",
 		"Basis dimension not supported.",
 		"Only 1-3 basis vectors are supported, but "
 		<< basisVectors.size() << " basis vectors supplied."
@@ -41,7 +41,7 @@ WignerSeitzCell::WignerSeitzCell(initializer_list<initializer_list<double>> basi
 	for(unsigned int n = 0; n < dimensions; n++){
 		TBTKAssert(
 			(basisVectors.begin() + n)->size() == dimensions,
-			"WignerSeitzCell::WignerSeitzCell()",
+			"ParallelepipedCell::ParallelepipedCell()",
 			"Incompatible dimensions.",
 			"The number of basis vectors must agree with the number"
 			<< " of components of the basis vectors. The number of"
@@ -82,14 +82,14 @@ WignerSeitzCell::WignerSeitzCell(initializer_list<initializer_list<double>> basi
 	}
 }
 
-WignerSeitzCell::WignerSeitzCell(const vector<vector<double>> &basisVectors){
+ParallelepipedCell::ParallelepipedCell(const vector<vector<double>> &basisVectors){
 	this->dimensions = basisVectors.size();
 
 	TBTKAssert(
 		dimensions == 1
 		|| dimensions == 2
 		|| dimensions == 3,
-		"WignerSeitzCell::WignerSeitzCell()",
+		"ParallelepipedCell::ParallelepipedCell()",
 		"Basis dimension not supported.",
 		"Only 1-3 basis vectors are supported, but "
 		<< basisVectors.size() << " basis vectors supplied."
@@ -98,7 +98,7 @@ WignerSeitzCell::WignerSeitzCell(const vector<vector<double>> &basisVectors){
 	for(unsigned int n = 0; n < dimensions; n++){
 		TBTKAssert(
 			basisVectors.at(n).size() == dimensions,
-			"WignerSeitzCell::WignerSeitzCell()",
+			"ParallelepipedCell::ParallelepipedCell()",
 			"Incompatible dimensions.",
 			"The number of basis vectors must agree with the number"
 			<< " of components of the basis vectors. The number of"
@@ -139,16 +139,16 @@ WignerSeitzCell::WignerSeitzCell(const vector<vector<double>> &basisVectors){
 	}
 }
 
-WignerSeitzCell::~WignerSeitzCell(){
+ParallelepipedCell::~ParallelepipedCell(){
 }
 
-Index WignerSeitzCell::getCellIndex(initializer_list<double> coordinates) const{
+Index ParallelepipedCell::getCellIndex(initializer_list<double> coordinates) const{
 	TBTKAssert(
 		coordinates.size() == dimensions,
-		"WignerSeitzCell::getCellIndex()",
+		"ParallelepipedCell::getCellIndex()",
 		"Incompatible dimensions.",
 		"The number of coordinate components must agree with the"
-		<< " dimension of the Wigner-Seitz cell. The Weigner-Seitz"
+		<< " dimension of the parallelepiped cell. The parallelepiped"
 		<< " cell has " << dimensions << " dimensions, but coordinate"
 		<< " with " << coordinates.size() << " components supplied."
 	);
@@ -178,7 +178,7 @@ Index WignerSeitzCell::getCellIndex(initializer_list<double> coordinates) const{
 		break;
 	default:
 		TBTKExit(
-			"WignerSeitzCell::WignerSeitzCell()",
+			"ParallelepipedCell::getCellIndex()",
 			"This should never happen.",
 			"Notify the developer about this bug."
 		);
@@ -198,6 +198,78 @@ Index WignerSeitzCell::getCellIndex(initializer_list<double> coordinates) const{
 	}
 
 	return cellIndex;
+}
+
+vector<vector<double>> ParallelepipedCell::getMesh(
+	initializer_list<unsigned int> numMeshPoints
+) const{
+	TBTKAssert(
+		numMeshPoints.size() == dimensions,
+		"ParallelepipedCell::getMesh()",
+		"Incompatible diemsnions.",
+		"The argument 'numMeshPoints' must have the same number of"
+		<< " components as the dimension of the parallelepiped cell."
+		<< " The parallelepiped cell has dimension " << dimensions
+		<< ", while numMeshPoints have " << numMeshPoints.size()
+		<< " components."
+	);
+
+	vector<vector<double>> mesh;
+
+	unsigned int nmp[3];
+	nmp[0] = *(numMeshPoints.begin() + 0);
+	if(numMeshPoints.size() > 1)
+		nmp[1] = *(numMeshPoints.begin() + 1);
+	else
+		nmp[1] = 1;
+	if(numMeshPoints.size() > 2)
+		nmp[2] = *(numMeshPoints.begin() + 2);
+	else
+		nmp[2] = 1;
+
+	for(unsigned int x = 0; x < *(numMeshPoints.begin() + 0); x++){
+		Vector3d v0;
+		if(nmp[0]%2 == 0)
+			v0 = ((int)x - (int)(nmp[0]/2) + 1/2.)*basisVectors.at(0)/nmp[0];
+		else
+			v0 = ((int)x - (int)(nmp[0]/2))*basisVectors.at(0)/nmp[0];
+
+		for(unsigned int y = 0; y < nmp[1]; y++){
+			Vector3d v1;
+			if(nmp[1]%2 == 0)
+				v1 = ((int)y - (int)(nmp[1]/2) + 1/2.)*basisVectors.at(1)/nmp[1];
+			else
+				v1 = ((int)y - (int)(nmp[1]/2))*basisVectors.at(1)/nmp[1];
+
+			for(unsigned int z = 0; z < nmp[2]; z++){
+				Vector3d v2;
+				if(nmp[2]%2 == 0)
+					v2 = ((int)z - (int)(nmp[2]/2) + 1/2.)*basisVectors.at(2)/nmp[2];
+				else
+					v2 = ((int)z - (int)(nmp[2]/2))*basisVectors.at(2)/nmp[2];
+
+				if(numMeshPoints.size() == 1){
+					mesh.push_back({v0.x});
+					Streams::out << v0.x << "\n";
+				}
+				else if(numMeshPoints.size() == 2){
+					mesh.push_back({
+						(v0 + v1).x,
+						(v0 + v1).y
+					});
+				}
+				else if(numMeshPoints.size() == 3){
+					mesh.push_back({
+						(v0 + v1 + v2).x,
+						(v0 + v1 + v2).y,
+						(v0 + v1 + v2).z
+					});
+				}
+			}
+		}
+	}
+
+	return mesh;
 }
 
 };	//End of namespace TBTK
