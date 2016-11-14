@@ -20,8 +20,8 @@
  *  @author Kristofer Björnson
  */
 
-#ifndef COM_DAFER45_TBTK_WIGNER_SEITZ_CELL
-#define COM_DAFER45_TBTK_WIGNER_SEITZ_CELL
+#ifndef COM_DAFER45_TBTK_PARALLELEPIPED_CELL
+#define COM_DAFER45_TBTK_PARALLELEPIPED_CELL
 
 #include "Vector3d.h"
 #include "Index.h"

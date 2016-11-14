@@ -227,7 +227,7 @@ vector<vector<double>> ParallelepipedCell::getMesh(
 	else
 		nmp[2] = 1;
 
-	for(unsigned int x = 0; x < *(numMeshPoints.begin() + 0); x++){
+	for(unsigned int x = 0; x < nmp[0]; x++){
 		Vector3d v0;
 		if(nmp[0]%2 == 0)
 			v0 = ((int)x - (int)(nmp[0]/2) + 1/2.)*basisVectors.at(0)/nmp[0];
