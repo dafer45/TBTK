@@ -25,7 +25,7 @@
 
 #include <initializer_list>
 #include <vector>
-#include <math.h>
+#include <cmath>
 
 namespace TBTK{
 

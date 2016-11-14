@@ -24,6 +24,7 @@
 #define COM_DAFER45_TBTK_WIGNER_SEITZ_CELL
 
 #include "Vector3d.h"
+#include "Index.h"
 
 #include <vector>
 #include <initializer_list>
@@ -34,6 +35,9 @@ namespace TBTK{
 class WignerSeitzCell{
 public:
 	/** Constructor. */
+	WignerSeitzCell(std::initializer_list<std::initializer_list<double>> basisVectors);
+
+	/** Constructor. */
 	WignerSeitzCell(const std::vector<std::vector<double>> &basisVectors);
 
 	/** Destructor. */
@@ -41,7 +45,7 @@ public:
 
 	/** Returns the index of the Wigner-Seitz cell corresponding to the
 	 *  given coordinate. */
-	std::vector<double> getCellIndex(
+	Index getCellIndex(
 		std::initializer_list<double> coordinate
 	) const;
 private:

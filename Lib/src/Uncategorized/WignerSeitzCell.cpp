@@ -25,6 +25,63 @@ using namespace std;
 
 namespace TBTK{
 
+WignerSeitzCell::WignerSeitzCell(initializer_list<initializer_list<double>> basisVectors){
+	this->dimensions = basisVectors.size();
+
+	TBTKAssert(
+		dimensions == 1
+		|| dimensions == 2
+		|| dimensions == 3,
+		"WignerSeitzCell::WignerSeitzCell()",
+		"Basis dimension not supported.",
+		"Only 1-3 basis vectors are supported, but "
+		<< basisVectors.size() << " basis vectors supplied."
+	);
+
+	for(unsigned int n = 0; n < dimensions; n++){
+		TBTKAssert(
+			(basisVectors.begin() + n)->size() == dimensions,
+			"WignerSeitzCell::WignerSeitzCell()",
+			"Incompatible dimensions.",
+			"The number of basis vectors must agree with the number"
+			<< " of components of the basis vectors. The number of"
+			<< " basis vectors are '" << dimensions << "',"
+			<< " but encountered basis vector with '"
+			<< (basisVectors.begin() + n)->size() << "' components."
+		);
+
+		vector<double> paddedBasisVector;
+		for(unsigned int c = 0; c < dimensions; c++)
+			paddedBasisVector.push_back(*((basisVectors.begin() + n)->begin() + c));
+		for(unsigned int c = dimensions; c < 3; c++)
+			paddedBasisVector.push_back(0.);
+
+		this->basisVectors.push_back(Vector3d(paddedBasisVector));
+	}
+	for(unsigned int n = dimensions; n < 3; n++){
+		vector<double> vector;
+		for(unsigned int c = 0; c < 3; c++){
+			if(c == n)
+				vector.push_back(1.);
+			else
+				vector.push_back(0.);
+		}
+
+		this->basisVectors.push_back(Vector3d(vector));
+	}
+
+	for(unsigned int n = 0; n < 3; n++){
+		const Vector3d &v0 = this->basisVectors.at(n);
+		const Vector3d &v1 = this->basisVectors.at((n+1)%3);
+		const Vector3d &v2 = this->basisVectors.at((n+2)%3);
+
+		Vector3d normal = v1*v2;
+		normal = normal/Vector3d::dotProduct(normal, v0);
+
+		reciprocalNormals.push_back(normal);
+	}
+}
+
 WignerSeitzCell::WignerSeitzCell(const vector<vector<double>> &basisVectors){
 	this->dimensions = basisVectors.size();
 
@@ -45,7 +102,7 @@ WignerSeitzCell::WignerSeitzCell(const vector<vector<double>> &basisVectors){
 			"Incompatible dimensions.",
 			"The number of basis vectors must agree with the number"
 			<< " of components of the basis vectors. The number of"
-			<< "basis vectors are '" << dimensions << "',"
+			<< " basis vectors are '" << dimensions << "',"
 			<< " but encountered basis vector with '"
 			<< basisVectors.at(n).size() << "' components."
 		);
@@ -82,7 +139,10 @@ WignerSeitzCell::WignerSeitzCell(const vector<vector<double>> &basisVectors){
 	}
 }
 
-vector<double> WignerSeitzCell::getCellIndex(initializer_list<double> coordinates) const{
+WignerSeitzCell::~WignerSeitzCell(){
+}
+
+Index WignerSeitzCell::getCellIndex(initializer_list<double> coordinates) const{
 	TBTKAssert(
 		coordinates.size() == dimensions,
 		"WignerSeitzCell::getCellIndex()",
@@ -125,9 +185,17 @@ vector<double> WignerSeitzCell::getCellIndex(initializer_list<double> coordinate
 		break;
 	}
 
-	vector<double> cellIndex;
-	for(int n = 0; n < 3; n++)
-		cellIndex.push_back(Vector3d::dotProduct(coordinateVector, reciprocalNormals.at(n)));
+	Index cellIndex({});
+	for(unsigned int n = 0; n < dimensions; n++){
+		double v = Vector3d::dotProduct(
+			coordinateVector,
+			reciprocalNormals.at(n)
+		);
+		if(v > 0)
+			cellIndex.push_back((int)(v + 1/2.));
+		else
+			cellIndex.push_back((int)(v - 1/2.));
+	}
 
 	return cellIndex;
 }

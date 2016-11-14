@@ -19,6 +19,7 @@ CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/PropertyExtractors;
 CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/Solvers;
 CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/StatesAndOperators;
 CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/Utilities;
+CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/Uncategorized;
 export CPLUS_INCLUDE_PATH
 
 #########################
