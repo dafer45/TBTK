@@ -59,17 +59,32 @@ public:
 	/** Subtraction operator. */
 	const Vector3d operator-(const Vector3d &rhs) const;
 
+	/** Inversion operator. */
+	const Vector3d operator-() const;
+
 	/** Multiplication operator (cross product). */
 	const Vector3d operator*(const Vector3d &rhs) const;
 
 	/** Multiplication operator (vector*scalar). */
-	const Vector3d operator*(double rhs);
+	const Vector3d operator*(double rhs) const;
 
 	/** Multiplication operator (scalar*vector). */
 	friend const Vector3d operator*(double lhs, const Vector3d &rhs);
 
 	/** Division operator. */
 	const Vector3d operator/(double rhs) const;
+
+	/** Returns a unit vector pointing in the same direction as the
+	 *  original vector. */
+	const Vector3d unit() const;
+
+	/** Returns a vector tha is the component of the vector that is
+	 *  perpendicular to the argument. */
+	const Vector3d perpendicular(const Vector3d &v) const;
+
+	/** Returns a vector that is the component of the vector that is
+	 *  parallel to the argument. */
+	const Vector3d parallel(const Vector3d &v) const;
 
 	/** Norm. */
 	double norm() const;
@@ -101,6 +116,16 @@ inline const Vector3d Vector3d::operator-(const Vector3d &rhs) const{
 	return result;
 }
 
+inline const Vector3d Vector3d::operator-() const{
+	Vector3d result;
+
+	result.x = -x;
+	result.y = -y;
+	result.z = -z;
+
+	return result;
+}
+
 inline const Vector3d Vector3d::operator*(const Vector3d &rhs) const{
 	Vector3d result;
 
@@ -111,7 +136,7 @@ inline const Vector3d Vector3d::operator*(const Vector3d &rhs) const{
 	return result;
 }
 
-inline const Vector3d Vector3d::operator*(double rhs){
+inline const Vector3d Vector3d::operator*(double rhs) const{
 	Vector3d result;
 
 	result.x = x*rhs;
@@ -139,6 +164,18 @@ inline const Vector3d Vector3d::operator/(double rhs) const{
 	result.z = z/rhs;
 
 	return result;
+}
+
+inline const Vector3d Vector3d::unit() const{
+	return (*this)/norm();
+}
+
+inline const Vector3d Vector3d::perpendicular(const Vector3d &v) const{
+	return *this - dotProduct(*this, v.unit())*v.unit();
+}
+
+inline const Vector3d Vector3d::parallel(const Vector3d &v) const{
+	return dotProduct(*this, v.unit())*v.unit();
 }
 
 inline double Vector3d::norm() const{
