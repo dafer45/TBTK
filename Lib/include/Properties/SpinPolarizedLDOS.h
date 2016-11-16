@@ -52,7 +52,7 @@ public:
 		double lowerBound,
 		double upperBound,
 		int resolution,
-		const double *data
+		const std::complex<double> *data
 	);
 
 	/** Destructor. */

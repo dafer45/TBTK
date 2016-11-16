@@ -123,8 +123,6 @@ WignerSeitzCell::~WignerSeitzCell(){
 vector<vector<double>> WignerSeitzCell::getMesh(
 	initializer_list<unsigned int> numMeshPoints
 ) const{
-	TBTKNotYetImplemented("WignerSeitzCell::getMesh()");
-
 	TBTKAssert(
 		numMeshPoints.size() == dimensions,
 		"ParallelepipedCell::getMesh()",
@@ -164,10 +162,10 @@ vector<vector<double>> WignerSeitzCell::getMesh(
 		additionalCorners.push_back(basisVectors.at(0) - basisVectors.at(2));
 		additionalCorners.push_back(basisVectors.at(1) + basisVectors.at(2));
 		additionalCorners.push_back(basisVectors.at(1) - basisVectors.at(2));
-		additionalCorners.push_back(basisVectors.at(1) + basisVectors.at(2) + basisVectors.at(3));
-		additionalCorners.push_back(basisVectors.at(1) + basisVectors.at(2) - basisVectors.at(3));
-		additionalCorners.push_back(basisVectors.at(1) - basisVectors.at(2) + basisVectors.at(3));
-		additionalCorners.push_back(basisVectors.at(1) - basisVectors.at(2) - basisVectors.at(3));
+		additionalCorners.push_back(basisVectors.at(0) + basisVectors.at(1) + basisVectors.at(2));
+		additionalCorners.push_back(basisVectors.at(0) + basisVectors.at(1) - basisVectors.at(2));
+		additionalCorners.push_back(basisVectors.at(0) - basisVectors.at(1) + basisVectors.at(2));
+		additionalCorners.push_back(basisVectors.at(0) - basisVectors.at(1) - basisVectors.at(2));
 		break;
 	default:
 		TBTKExit(
@@ -181,16 +179,18 @@ vector<vector<double>> WignerSeitzCell::getMesh(
 	for(unsigned int x = 0; x < nmp[0]; x++){
 		Vector3d v0;
 		if(nmp[0]%2 == 0)
-			v0 = ((int)x - (int)(nmp[0]/2) + 1/2.)*basisVectors.at(0)/nmp[0];
+			v0 = ((int)x - (int)(nmp[0]/2) + 1/2.)*basisVectors.at(0)/(nmp[0]-1);
 		else
-			v0 = ((int)x - (int)(nmp[0]/2))*basisVectors.at(0)/nmp[0];
+			v0 = ((int)x - (int)(nmp[0]/2))*basisVectors.at(0)/(nmp[0]-1);
 
 		Vector3d perpToB1 = v0.perpendicular(basisVectors.at(1));
 		Vector3d shiftY = (perpToB1*(v0.norm())/Vector3d::dotProduct(perpToB1, v0.unit())).perpendicular(basisVectors.at(0));
+		if(nmp[0]%2 == 1 && x == nmp[0]/2)
+			shiftY = Vector3d({0.,	0.,	0.});
 
 		for(unsigned int y = 0; y < nmp[1]; y++){
 			Vector3d perpToB0 = basisVectors.at(1).perpendicular(basisVectors.at(0));
-			Vector3d stepY = (perpToB0/Vector3d::dotProduct(basisVectors.at(1).unit(), perpToB0.unit()))/nmp[1];
+			Vector3d stepY = (perpToB0/Vector3d::dotProduct(basisVectors.at(1).unit(), perpToB0.unit()))/(nmp[1]-1);
 
 			Vector3d v1;
 			if(nmp[1]%2 == 0)
@@ -198,16 +198,18 @@ vector<vector<double>> WignerSeitzCell::getMesh(
 			else
 				v1 = ((int)y - (int)(nmp[1]/2))*stepY + shiftY;
 
-//			Vector3d shiftZ =;
+			Vector3d perpToB2 = (v0+v1).perpendicular(basisVectors.at(2));
+			Vector3d shiftZ = (perpToB2*((v0+v1).norm())/Vector3d::dotProduct(perpToB2, (v0+v1).unit())).parallel(basisVectors.at(0)*basisVectors.at(1));
 
 			for(unsigned int z = 0; z < nmp[2]; z++){
-//				Vector3d stepZ =;
+				Vector3d perpToB01 = basisVectors.at(2).parallel(basisVectors.at(0)*basisVectors.at(1));
+				Vector3d stepZ = (perpToB01/Vector3d::dotProduct(basisVectors.at(2).unit(), perpToB01.unit()))/nmp[2];
 
 				Vector3d v2;
 				if(nmp[2]%2 == 0)
-					v2 = ((int)z - (int)(nmp[2]/2) + 1/2.)*basisVectors.at(2)/nmp[2];
+					v2 = ((int)z - (int)(nmp[2]/2) + 1/2.)*stepZ + shiftZ*0;
 				else
-					v2 = ((int)z - (int)(nmp[2]/2))*basisVectors.at(2)/nmp[2];
+					v2 = ((int)z - (int)(nmp[2]/2))*stepZ + shiftZ*0;
 
 				bool isContainedByAllPlanes = true;
 				for(unsigned int n = 0; n < additionalCorners.size(); n++){

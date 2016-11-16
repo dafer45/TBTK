@@ -56,7 +56,7 @@ SpinPolarizedLDOS::SpinPolarizedLDOS(
 	double lowerBound,
 	double upperBound,
 	int resolution,
-	const double *data
+	const complex<double> *data
 ){
 	this->dimensions = dimensions;
 	this->ranges = new int[dimensions];
