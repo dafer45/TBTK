@@ -92,6 +92,42 @@ Property::DOS* DPropertyExtractor::calculateDOS(
 	return dos;
 }
 
+complex<double> DPropertyExtractor::calculateExpectationValue(
+	Index to,
+	Index from
+){
+	const complex<double> i(0, 1);
+
+	complex<double> expectationValue = 0.;
+
+	Model::Statistics statistics = dSolver->getModel()->getStatistics();
+
+	for(int n = 0; n < dSolver->getModel()->getBasisSize(); n++){
+		double weight;
+		if(statistics == Model::Statistics::FermiDirac){
+			weight = Functions::fermiDiracDistribution(
+				dSolver->getEigenValue(n),
+				dSolver->getModel()->getChemicalPotential(),
+				dSolver->getModel()->getTemperature()
+			);
+		}
+		else{
+			weight = Functions::boseEinsteinDistribution(
+				dSolver->getEigenValue(n),
+				dSolver->getModel()->getChemicalPotential(),
+				dSolver->getModel()->getTemperature()
+			);
+		}
+
+		complex<double> u_to = dSolver->getAmplitude(n, to);
+		complex<double> u_from = dSolver->getAmplitude(n, from);
+
+		expectationValue += weight*conj(u_to)*u_from;
+	}
+
+	return expectationValue;
+}
+
 Property::Density* DPropertyExtractor::calculateDensity(
 	Index pattern,
 	Index ranges

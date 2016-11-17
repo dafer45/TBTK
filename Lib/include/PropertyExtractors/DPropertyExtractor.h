@@ -85,6 +85,9 @@ public:
 		int resolution
 	);
 
+	/** Calculate expectation value. */
+	std::complex<double> calculateExpectationValue(Index to, Index from);
+
 	/** Calculate density.
 	 *
 	 *  @param pattern Specifies the index pattern for which to calculate
