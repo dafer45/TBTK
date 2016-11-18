@@ -28,6 +28,7 @@
 #include "DOS.h"
 #include "Density.h"
 #include "Magnetization.h"
+#include "LDOS.h"
 #include "SpinPolarizedLDOS.h"
 
 #include <complex>
@@ -156,6 +157,37 @@ public:
 		Index ranges
 	);
 
+	/** Calculate local density of states.
+	 *
+	 *  @param pattern Specifies the index pattern for which to calculate
+         *  the LDOS. For example, assume that the index scheme is
+         *  {x, y, z, spin}. {ID_X, 5, 10, IDX_SUM_ALL} will calculate the
+         *  LDOS for each x along (y,z)=(5,10) by summing over spin. Similarly
+         *  {ID_X, 5, IDX_Y, IDX_SUM_ALL} will return a two dimensional LDOS
+         *  for all x and z and y = 5. Note that IDX_X, IDX_Y, and IDX_Z refers
+         *  to the first, second, and third index used by the routine to create
+         *  a one-, two-, or three-dimensional output, rather than being tied
+         *  to the x, y, and z used as physical subindices.
+         *
+         *  @param ranges Speifies the number of elements for each subindex. Is
+         *  ignored for indices specified with positive integers in the
+         *  pattern, but is used to loop from 0 to the value in ranges for
+         *  IDX_X, IDX_Y, IDX_Z, and IDX_SUM_ALL. Appropriate ranges
+         *  corresponding to the two pattern examples above are
+         *  {SIZE_X, 1, 1, NUM_SPINS} and {SIZE_X, 1, SIZE_Z, NUM_SPINS},
+         *  respectively.
+         *
+         *  @return A density array with size equal to the number of points
+         *  included by specified patter-range combination.
+	 */
+	Property::LDOS* calculateLDOS(
+		Index pattern,
+		Index ranges,
+		double lowerBound,
+		double upperBound,
+		int resolution
+	);
+
 	/** Calculate spin-polarized local density of states.
 	 *
 	 *  @param pattern Specifies the index pattern for which to calculate
@@ -241,6 +273,15 @@ private:
 	static void calculateMAGCallback(
 		DPropertyExtractor *cb_this,
 		void *mag,
+		const Index &index,
+		int offset
+	);
+
+	/** Calback for callculating local density of states. Used by
+	 *  calculateLDOS. */
+	static void calculateLDOSCallback(
+		DPropertyExtractor *cb_this,
+		void *ldos,
 		const Index &index,
 		int offset
 	);

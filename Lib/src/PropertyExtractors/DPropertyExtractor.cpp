@@ -178,6 +178,37 @@ Property::Magnetization* DPropertyExtractor::calculateMagnetization(
 	return magnetization;
 }
 
+Property::LDOS* DPropertyExtractor::calculateLDOS(
+	Index pattern,
+	Index ranges,
+	double lowerBound,
+	double upperBound,
+	int resolution
+){
+	//hint[0] is an array of doubles, hint[1] is an array of ints
+	//hint[0][0]: upperBound
+	//hint[0][1]: lowerBound
+	//hint[1][0]: resolution
+	//hint[1][1]: spin_index
+	hint = new void*[2];
+	((double**)hint)[0] = new double[2];
+	((int**)hint)[1] = new int[1];
+	((double**)hint)[0][0] = upperBound;
+	((double**)hint)[0][1] = lowerBound;
+	((int**)hint)[1][0] = resolution;
+
+	ensureCompliantRanges(pattern, ranges);
+
+	int lDimensions;
+	int *lRanges;
+	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
+	Property::LDOS *ldos = new Property::LDOS(lDimensions, lRanges, lowerBound, upperBound, resolution);
+
+	calculate(calculateLDOSCallback, (void*)ldos->data, pattern, ranges, 0, 1);
+
+	return ldos;
+}
+
 Property::SpinPolarizedLDOS* DPropertyExtractor::calculateSpinPolarizedLDOS(
 	Index pattern,
 	Index ranges,
@@ -291,6 +322,32 @@ void DPropertyExtractor::calculateMAGCallback(
 		((complex<double>*)mag)[4*offset + 1] += conj(u_u)*u_d*weight;
 		((complex<double>*)mag)[4*offset + 2] += conj(u_d)*u_u*weight;
 		((complex<double>*)mag)[4*offset + 3] += conj(u_d)*u_d*weight;
+	}
+}
+
+void DPropertyExtractor::calculateLDOSCallback(
+	DPropertyExtractor *cb_this,
+	void *ldos,
+	const Index &index,
+	int offset
+){
+	const double *eigen_values = cb_this->dSolver->getEigenValues();
+
+	double u_lim = ((double**)cb_this->hint)[0][0];
+	double l_lim = ((double**)cb_this->hint)[0][1];
+	int resolution = ((int**)cb_this->hint)[1][0];
+
+	double step_size = (u_lim - l_lim)/(double)resolution;
+
+	for(int n = 0; n < cb_this->dSolver->getModel()->getBasisSize(); n++){
+		if(eigen_values[n] > l_lim && eigen_values[n] < u_lim){
+			complex<double> u = cb_this->dSolver->getAmplitude(n, index);
+
+			int e = (int)((eigen_values[n] - l_lim)/step_size);
+			if(e >= resolution)
+				e = resolution-1;
+			((double*)ldos)[resolution*offset + e] += real(conj(u)*u);
+		}
 	}
 }
 
