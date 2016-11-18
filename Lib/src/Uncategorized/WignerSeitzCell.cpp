@@ -241,7 +241,6 @@ vector<vector<double>> WignerSeitzCell::getMesh(
 
 				bool isContainedByAllPlanes = true;
 				for(unsigned int n = 0; n < additionalCorners.size(); n++){
-					constexpr double ROUNDOFF_MARGIN_MULTIPLIER = 1.000001;
 					if(abs(Vector3d::dotProduct(v0 + v1 + v2, additionalCorners.at(n).unit())/additionalCorners.at(n).norm()) > ROUNDOFF_MARGIN_MULTIPLIER*1/2.)
 						isContainedByAllPlanes = false;
 				}

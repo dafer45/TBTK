@@ -34,6 +34,17 @@ namespace TBTK{
 /** Wigner-Seitz cell. */
 class WignerSeitzCell{
 public:
+	/** Enum used to indicate whether the mesh should be nodal or interior.
+	 *  A nodal mesh is a mesh resulting from dividing a Wigner-Seitz cell
+	 *  into equispaced elements and identifying the mesh with the nodal
+	 *  grid points. An interior mesh is a mesh that results from a similar
+	 *  division but where the mesh is identified with the central point of
+	 *  the line/area/volume elements of the grid. Note that interior
+	 *  points never fall on the bounding surface of the Wigner-Seitz cell,
+	 *  while nodal points does. Such boundary terms are included in the
+	 *  nodal mesh. */
+	enum class MeshType {Nodal, Interior};
+
 	/** Constructor. */
 	WignerSeitzCell(std::initializer_list<std::initializer_list<double>> basisVectors);
 
@@ -59,9 +70,14 @@ private:
 
 	/** Basis vectors stored as three Vector3d. For lower dimensions the
 	 *  vectors are padded with zeros to create three-dimensional vectors
-	 *  and additional vectors along the extra dimensions are setup to unify
-	 *  the calculations for all dimensions between 1-3. */
+	 *  and additional vectors along the extra dimensions are setup to
+	 *  unify the calculations for all dimensions between 1-3. */
 	std::vector<Vector3d> basisVectors;
+
+	/** Constant used to give a margin to the Wigner-Seitz cell. If not
+	 *  used, boundary terms could be included or not included basen on
+	 *  numerical fluctuations. */
+	static constexpr double ROUNDOFF_MARGIN_MULTIPLIER = 1.000001;
 };
 
 };	//End namespace TBTK
