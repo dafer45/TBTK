@@ -121,7 +121,8 @@ WignerSeitzCell::~WignerSeitzCell(){
 }
 
 vector<vector<double>> WignerSeitzCell::getMesh(
-	initializer_list<unsigned int> numMeshPoints
+	initializer_list<unsigned int> numMeshPoints,
+	MeshType meshType
 ) const{
 	TBTKAssert(
 		numMeshPoints.size() == dimensions,
@@ -241,8 +242,15 @@ vector<vector<double>> WignerSeitzCell::getMesh(
 
 				bool isContainedByAllPlanes = true;
 				for(unsigned int n = 0; n < additionalCorners.size(); n++){
-					if(abs(Vector3d::dotProduct(v0 + v1 + v2, additionalCorners.at(n).unit())/additionalCorners.at(n).norm()) > ROUNDOFF_MARGIN_MULTIPLIER*1/2.)
+/*					double additionalProjection = Vector3d::dotProduct(v0 + v1 + v2, additionalCorners.at(n).unit())/additionalCorners.at(n).norm();
+					if(additionalProjection > 1.000001/2. || additionalProjection < -0.999999/2.){
 						isContainedByAllPlanes = false;
+						break;
+					}*/
+					if(abs(Vector3d::dotProduct(v0 + v1 + v2, additionalCorners.at(n).unit())/additionalCorners.at(n).norm()) > ROUNDOFF_MARGIN_MULTIPLIER*1/2.){
+						isContainedByAllPlanes = false;
+						break;
+					}
 				}
 				if(!isContainedByAllPlanes)
 					continue;

@@ -62,7 +62,8 @@ public:
 	 *  contains the points given by
 	 *  "(m+1/2)*basisVectors_n/numMeshPoints_n + other vectors". */
 	std::vector<std::vector<double>> getMesh(
-		std::initializer_list<unsigned int> numMeshPoints
+		std::initializer_list<unsigned int> numMeshPoints,
+		MeshType meshType
 	) const;
 private:
 	/** Lattice dimension. */
