@@ -24,7 +24,7 @@
 using namespace std;
 
 namespace TBTK{
-namespace Lattices{
+namespace Lattice{
 
 BravaisLattice::BravaisLattice(){
 }
@@ -84,5 +84,5 @@ void BravaisLattice::setAdditionalSites(const vector<vector<double>> &additional
 	}
 }
 
-};	//End of namespace Lattices
+};	//End of namespace Lattice
 };	//End of namespace TBTK

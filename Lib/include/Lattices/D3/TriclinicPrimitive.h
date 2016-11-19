@@ -14,40 +14,48 @@
  */
 
 /** @package TBTKcalc
- *  @file MonoclinicPrimitive.h
- *  @brief Monoclinic primitive Bravais lattices.
+ *  @file TriclinicPrimitive.h
+ *  @brief Triclinic primitive Bravais lattices.
  *
  *  @author Kristofer Björnson
  */
 
-#ifndef COM_DAFER45_TBTK_MONOCLINIC_PRIMITIVE
-#define COM_DAFER45_TBTK_MONOCLINIC_PRIMITIVE
+#ifndef COM_DAFER45_TBTK_TRICLINIC_PRIMITIVE
+#define COM_DAFER45_TBTK_TRICLINIC_PRIMITIVE
 
 #include "BravaisLattice.h"
 
 namespace TBTK{
-namespace Lattices{
+namespace Lattice{
+namespace D3{
 
-/** Monoclinic primitive Bravais lattice.
+/** Triclinic primitive Bravais lattice.
  *
- *  Dimensions:		2
+ *  Dimensions:		3
  *  side1Length:	arbitrary
  *  side2Length:	arbitrary
- *  angle12:		arbitrary */
-class MonoclinicPrimitive : public BravaisLattice{
+ *  side3Length:	arbitrary
+ *  angle12:		arbitrary
+ *  angle13:		arbitrary
+ *  angle23:		arbitrary */
+class TriclinicPrimitive : public BravaisLattice{
 public:
 	/** Constructor. */
-	MonoclinicPrimitive(
+	TriclinicPrimitive(
 		double side1Length,
 		double side2Length,
-		double angle12
+		double side3Length,
+		double angle12,
+		double angle13,
+		double angle23
 	);
 
 	/** Destructor. */
-	~MonoclinicPrimitive();
+	~TriclinicPrimitive();
 };
 
-};	//End of namespace Lattices
+};	//End of namespace D3
+};	//End of namespace Lattice
 };	//End of namespace TBTK
 
 #endif

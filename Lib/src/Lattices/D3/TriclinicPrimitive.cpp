@@ -13,40 +13,61 @@
  * limitations under the License.
  */
 
-/** @file MonoclinicPrimitive.cpp
+/** @file TriclinicPrimitive.cpp
  *
  *  @author Kristofer Björnson
  */
 
-#include "MonoclinicPrimitive.h"
+#include "TriclinicPrimitive.h"
+#include "Vector3d.h"
+#include "TBTKMacros.h"
 
 #include <cmath>
 
 using namespace std;
 
 namespace TBTK{
-namespace Lattices{
+namespace Lattice{
+namespace D3{
 
-MonoclinicPrimitive::MonoclinicPrimitive(
+TriclinicPrimitive::TriclinicPrimitive(
 	double side1Length,
 	double side2Length,
-	double angle12
+	double side3Length,
+	double angle12,
+	double angle13,
+	double angle23
 ){
 	vector<vector<double>> latticeVectors;
 
 	latticeVectors.push_back(vector<double>());
 	latticeVectors.at(0).push_back(side1Length);
 	latticeVectors.at(0).push_back(0.);
+	latticeVectors.at(0).push_back(0.);
 
 	latticeVectors.push_back(vector<double>());
 	latticeVectors.at(1).push_back(side2Length*cos(angle12));
 	latticeVectors.at(1).push_back(side2Length*sin(angle12));
+	latticeVectors.at(1).push_back(0.);
+
+	Vector3d comp1 = Vector3d(latticeVectors.at(0)).unit()*cos(angle13);
+	Vector3d comp2 = Vector3d(latticeVectors.at(1)).unit()*cos(angle23);
+	TBTKAssert(
+		(comp1 + comp2).norm() < 1,
+		"TriclinicPrimitive::TriclinicPrimitive()",
+		"Incompatible lattice angles. It is impossible to simultaneously satisfy the given angles (angle12=" << angle12 << ", angle13=" << angle13 << ", angle23=" << angle23 << ").",
+		""
+	);
+	Vector3d comp3 = Vector3d(latticeVectors.at(0)).unit()*Vector3d(latticeVectors.at(1)).unit()*sqrt(1 - pow((comp1+comp2).norm(), 2));
+
+	latticeVectors.push_back((comp1+comp2+comp3).getStdVector());
 
 	setLatticeVectors(latticeVectors);
 }
 
-MonoclinicPrimitive::~MonoclinicPrimitive(){
+TriclinicPrimitive::~TriclinicPrimitive(){
 }
 
-};	//End of namespace Lattices
+};	//End of namespace D3
+};	//End of namespace Lattice
 };	//End of namespace TBTK

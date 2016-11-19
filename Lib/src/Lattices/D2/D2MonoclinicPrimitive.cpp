@@ -13,27 +13,42 @@
  * limitations under the License.
  */
 
-/** @file TetragonalPrimitive.cpp
+/** @file MonoclinicPrimitive.cpp
  *
  *  @author Kristofer Björnson
  */
 
-#include "TetragonalPrimitive.h"
+#include "D2MonoclinicPrimitive.h"
 
 #include <cmath>
 
 using namespace std;
 
 namespace TBTK{
-namespace Lattices{
+namespace Lattice{
+namespace D2{
 
-TetragonalPrimitive::TetragonalPrimitive(double side1Length) :
-	OrthorhombicPrimitive(side1Length, side1Length)
-{
+MonoclinicPrimitive::MonoclinicPrimitive(
+	double side1Length,
+	double side2Length,
+	double angle12
+){
+	vector<vector<double>> latticeVectors;
+
+	latticeVectors.push_back(vector<double>());
+	latticeVectors.at(0).push_back(side1Length);
+	latticeVectors.at(0).push_back(0.);
+
+	latticeVectors.push_back(vector<double>());
+	latticeVectors.at(1).push_back(side2Length*cos(angle12));
+	latticeVectors.at(1).push_back(side2Length*sin(angle12));
+
+	setLatticeVectors(latticeVectors);
 }
 
-TetragonalPrimitive::~TetragonalPrimitive(){
+MonoclinicPrimitive::~MonoclinicPrimitive(){
 }
 
-};	//End of namespace Lattices
+};	//End of namespace D2
+};	//End of namespace Lattice
 };	//End of namespace TBTK

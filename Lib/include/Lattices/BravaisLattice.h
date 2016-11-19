@@ -26,7 +26,7 @@
 #include <vector>
 
 namespace TBTK{
-namespace Lattices{
+namespace Lattice{
 
 class BravaisLattice{
 public:
@@ -91,7 +91,7 @@ inline const std::vector<std::vector<double>>& BravaisLattice::getAdditionalSite
 	return additionalSites;
 }
 
-};	//End of namespace Lattices
+};	//End of namespace Lattice
 };	//End of namespace TBTK
 
 #endif

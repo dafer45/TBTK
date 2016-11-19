@@ -14,46 +14,40 @@
  */
 
 /** @package TBTKcalc
- *  @file TriclinicPrimitive.h
- *  @brief Triclinic primitive Bravais lattices.
+ *  @file TetragonalPrimitive.h
+ *  @brief Tetragonal primitive Bravais lattices.
  *
  *  @author Kristofer Björnson
  */
 
-#ifndef COM_DAFER45_TBTK_TRICLINIC_PRIMITIVE
-#define COM_DAFER45_TBTK_TRICLINIC_PRIMITIVE
+#ifndef COM_DAFER45_TBTK_TETRAGONAL_PRIMITIVE
+#define COM_DAFER45_TBTK_TETRAGONAL_PRIMITIVE
 
-#include "BravaisLattice.h"
+#include "D2OrthorhombicPrimitive.h"
 
 namespace TBTK{
-namespace Lattices{
+namespace Lattice{
+namespace D2{
 
-/** Triclinic primitive Bravais lattice.
+/** Tetragonal primitive Bravais lattice.
  *
- *  Dimensions:		3
+ *  Dimensions:		2
  *  side1Length:	arbitrary
- *  side2Length:	arbitrary
- *  side3Length:	arbitrary
- *  angle12:		arbitrary
- *  angle13:		arbitrary
- *  angle23:		arbitrary */
-class TriclinicPrimitive : public BravaisLattice{
+ *  side2Length:	side1Length
+ *  angle12:		pi/2 */
+class TetragonalPrimitive : public OrthorhombicPrimitive{
 public:
 	/** Constructor. */
-	TriclinicPrimitive(
-		double side1Length,
-		double side2Length,
-		double side3Length,
-		double angle12,
-		double angle13,
-		double angle23
+	TetragonalPrimitive(
+		double side1Length
 	);
 
 	/** Destructor. */
-	~TriclinicPrimitive();
+	~TetragonalPrimitive();
 };
 
-};	//End of namespace Lattices
+};	//End of namespace D2
+};	//End of namespace Lattice
 };	//End of namespace TBTK
 
 #endif

@@ -18,25 +18,33 @@
  *  @author Kristofer Björnson
  */
 
-#include "OrthorhombicPrimitive.h"
+#include "OrthorhombicCentered.h"
 
 #include <cmath>
 
 using namespace std;
 
 namespace TBTK{
-namespace Lattices{
+namespace Lattice{
+namespace D2{
 
-OrthorhombicPrimitive::OrthorhombicPrimitive(
+OrthorhombicCentered::OrthorhombicCentered(
 	double side1Length,
 	double side2Length
 ) :
-	MonoclinicPrimitive(side1Length, side2Length, M_PI/2)
+	OrthorhombicPrimitive(side1Length, side2Length)
 {
+	vector<vector<double>> additionalSites;
+	additionalSites.push_back(vector<double>());
+	additionalSites.at(0).push_back(side1Length/2.);
+	additionalSites.at(0).push_back(side2Length/2.);
+
+	setAdditionalSites(additionalSites);
 }
 
-OrthorhombicPrimitive::~OrthorhombicPrimitive(){
+OrthorhombicCentered::~OrthorhombicCentered(){
 }
 
-};	//End of namespace Lattices
+};	//End of namespace D2
+};	//End of namespace Lattice
 };	//End of namespace TBTK

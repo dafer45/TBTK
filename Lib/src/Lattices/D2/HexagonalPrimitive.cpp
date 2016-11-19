@@ -13,40 +13,29 @@
  * limitations under the License.
  */
 
-/** @package TBTKcalc
- *  @file OrthorhombicPrimitive.h
- *  @brief Orthorhombic primitive Bravais lattices.
+/** @file HexagonalPrimitive.cpp
  *
  *  @author Kristofer Björnson
  */
 
-#ifndef COM_DAFER45_TBTK_ORTHORHOMBIC_PRIMITIVE
-#define COM_DAFER45_TBTK_ORTHORHOMBIC_PRIMITIVE
+#include "HexagonalPrimitive.h"
 
-#include "MonoclinicPrimitive.h"
+#include <cmath>
+
+using namespace std;
 
 namespace TBTK{
-namespace Lattices{
+namespace Lattice{
+namespace D2{
 
-/** Orthorhombic primitiver Bravais lattice.
- *
- *  Dimensions:		2
- *  side1Length:	arbitrary
- *  side2Length:	arbitrary
- *  angle12:		pi/2 */
-class OrthorhombicPrimitive : public MonoclinicPrimitive{
-public:
-	/** Constructor. */
-	OrthorhombicPrimitive(
-		double side1Length,
-		double side2Length
-	);
+HexagonalPrimitive::HexagonalPrimitive(double side1Length) :
+	MonoclinicPrimitive(side1Length, side1Length, 2.*M_PI/3.)
+{
+}
 
-	/** Destructor. */
-	~OrthorhombicPrimitive();
-};
+HexagonalPrimitive::~HexagonalPrimitive(){
+}
 
-};	//End of namespace Lattices
+};	//End of namespace D2
+};	//End of namespace Lattice
 };	//End of namespace TBTK
-
-#endif

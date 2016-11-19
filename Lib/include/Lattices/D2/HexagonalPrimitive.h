@@ -14,39 +14,40 @@
  */
 
 /** @package TBTKcalc
- *  @file OrthorhombicCentered.h
- *  @brief Orthorhombic centered Bravais lattices.
+ *  @file HexagonalPrimitive.h
+ *  @brief Hexagonal primitive Bravais lattices.
  *
  *  @author Kristofer Björnson
  */
 
-#ifndef COM_DAFER45_TBTK_ORTHORHOMBIC_CENTERED
-#define COM_DAFER45_TBTK_ORTHORHOMBIC_CENTERED
+#ifndef COM_DAFER45_TBTK_HEXAGONAL_PRIMITIVE
+#define COM_DAFER45_TBTK_HEXAGONAL_PRIMITIVE
 
-#include "OrthorhombicPrimitive.h"
+#include "D2MonoclinicPrimitive.h"
 
 namespace TBTK{
-namespace Lattices{
+namespace Lattice{
+namespace D2{
 
-/** Orthorhombic centered Bravais lattice.
+/** Hexagonal primitive Bravais lattice.
  *
  *  Dimensions:		2
  *  side1Length:	arbitrary
- *  side2Length:	arbitrary
- *  angle12:		pi/2 */
-class OrthorhombicCentered : public OrthorhombicPrimitive{
+ *  side2Length:	side1Length
+ *  angle12:		2*pi/3 */
+class HexagonalPrimitive : public MonoclinicPrimitive{
 public:
 	/** Constructor. */
-	OrthorhombicCentered(
-		double side1Length,
-		double side2Length
+	HexagonalPrimitive(
+		double side1Length
 	);
 
 	/** Destructor. */
-	~OrthorhombicCentered();
+	~HexagonalPrimitive();
 };
 
-};	//End of namespace Lattices
+};	//End of namespace D2
+};	//End of namespace Lattice
 };	//End of namespace TBTK
 
 #endif

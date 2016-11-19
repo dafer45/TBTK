@@ -13,36 +13,42 @@
  * limitations under the License.
  */
 
-/** @file OrthorhombicPrimitive.cpp
+/** @package TBTKcalc
+ *  @file OrthorhombicCentered.h
+ *  @brief Orthorhombic centered Bravais lattices.
  *
  *  @author Kristofer Björnson
  */
 
-#include "OrthorhombicCentered.h"
+#ifndef COM_DAFER45_TBTK_ORTHORHOMBIC_CENTERED
+#define COM_DAFER45_TBTK_ORTHORHOMBIC_CENTERED
 
-#include <cmath>
-
-using namespace std;
+#include "D2OrthorhombicPrimitive.h"
 
 namespace TBTK{
-namespace Lattices{
+namespace Lattice{
+namespace D2{
 
-OrthorhombicCentered::OrthorhombicCentered(
-	double side1Length,
-	double side2Length
-) :
-	OrthorhombicPrimitive(side1Length, side2Length)
-{
-	vector<vector<double>> additionalSites;
-	additionalSites.push_back(vector<double>());
-	additionalSites.at(0).push_back(side1Length/2.);
-	additionalSites.at(0).push_back(side2Length/2.);
+/** Orthorhombic centered Bravais lattice.
+ *
+ *  Dimensions:		2
+ *  side1Length:	arbitrary
+ *  side2Length:	arbitrary
+ *  angle12:		pi/2 */
+class OrthorhombicCentered : public OrthorhombicPrimitive{
+public:
+	/** Constructor. */
+	OrthorhombicCentered(
+		double side1Length,
+		double side2Length
+	);
 
-	setAdditionalSites(additionalSites);
-}
+	/** Destructor. */
+	~OrthorhombicCentered();
+};
 
-OrthorhombicCentered::~OrthorhombicCentered(){
-}
-
-};	//End of namespace Lattices
+};	//End of namespace D2
+};	//End of namespace Lattice
 };	//End of namespace TBTK
+
+#endif

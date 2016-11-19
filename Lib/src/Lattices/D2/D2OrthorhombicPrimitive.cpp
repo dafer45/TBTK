@@ -13,27 +13,32 @@
  * limitations under the License.
  */
 
-/** @file HexagonalPrimitive.cpp
+/** @file OrthorhombicPrimitive.cpp
  *
  *  @author Kristofer Björnson
  */
 
-#include "HexagonalPrimitive.h"
+#include "D2OrthorhombicPrimitive.h"
 
 #include <cmath>
 
 using namespace std;
 
 namespace TBTK{
-namespace Lattices{
+namespace Lattice{
+namespace D2{
 
-HexagonalPrimitive::HexagonalPrimitive(double side1Length) :
-	MonoclinicPrimitive(side1Length, side1Length, 2.*M_PI/3.)
+OrthorhombicPrimitive::OrthorhombicPrimitive(
+	double side1Length,
+	double side2Length
+) :
+	MonoclinicPrimitive(side1Length, side2Length, M_PI/2)
 {
 }
 
-HexagonalPrimitive::~HexagonalPrimitive(){
+OrthorhombicPrimitive::~OrthorhombicPrimitive(){
 }
 
-};	//End of namespace Lattices
+};	//End of namespace D2
+};	//End of namespace Lattice
 };	//End of namespace TBTK
