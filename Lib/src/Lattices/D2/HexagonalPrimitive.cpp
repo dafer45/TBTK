@@ -28,8 +28,8 @@ namespace TBTK{
 namespace Lattice{
 namespace D2{
 
-HexagonalPrimitive::HexagonalPrimitive(double side1Length) :
-	MonoclinicPrimitive(side1Length, side1Length, 2.*M_PI/3.)
+HexagonalPrimitive::HexagonalPrimitive(double side0Length) :
+	MonoclinicPrimitive(side0Length, side0Length, 2.*M_PI/3.)
 {
 }
 

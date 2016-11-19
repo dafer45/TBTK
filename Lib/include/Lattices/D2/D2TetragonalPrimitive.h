@@ -32,14 +32,14 @@ namespace D2{
 /** Tetragonal primitive Bravais lattice.
  *
  *  Dimensions:		2
- *  side1Length:	arbitrary
- *  side2Length:	side1Length
- *  angle12:		pi/2 */
+ *  side0Length:	arbitrary
+ *  side1Length:	side1Length
+ *  angle01:		pi/2 */
 class TetragonalPrimitive : public OrthorhombicPrimitive{
 public:
 	/** Constructor. */
 	TetragonalPrimitive(
-		double side1Length
+		double side0Length
 	);
 
 	/** Destructor. */

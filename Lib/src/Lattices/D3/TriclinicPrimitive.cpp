@@ -31,31 +31,31 @@ namespace Lattice{
 namespace D3{
 
 TriclinicPrimitive::TriclinicPrimitive(
+	double side0Length,
 	double side1Length,
 	double side2Length,
-	double side3Length,
-	double angle12,
-	double angle13,
-	double angle23
+	double angle01,
+	double angle02,
+	double angle12
 ){
 	vector<vector<double>> latticeVectors;
 
 	latticeVectors.push_back(vector<double>());
-	latticeVectors.at(0).push_back(side1Length);
+	latticeVectors.at(0).push_back(side0Length);
 	latticeVectors.at(0).push_back(0.);
 	latticeVectors.at(0).push_back(0.);
 
 	latticeVectors.push_back(vector<double>());
-	latticeVectors.at(1).push_back(side2Length*cos(angle12));
-	latticeVectors.at(1).push_back(side2Length*sin(angle12));
+	latticeVectors.at(1).push_back(side1Length*cos(angle01));
+	latticeVectors.at(1).push_back(side1Length*sin(angle01));
 	latticeVectors.at(1).push_back(0.);
 
-	Vector3d comp1 = Vector3d(latticeVectors.at(0)).unit()*cos(angle13);
-	Vector3d comp2 = Vector3d(latticeVectors.at(1)).unit()*cos(angle23);
+	Vector3d comp1 = Vector3d(latticeVectors.at(0)).unit()*cos(angle02);
+	Vector3d comp2 = Vector3d(latticeVectors.at(1)).unit()*cos(angle12);
 	TBTKAssert(
 		(comp1 + comp2).norm() < 1,
 		"TriclinicPrimitive::TriclinicPrimitive()",
-		"Incompatible lattice angles. It is impossible to simultaneously satisfy the given angles (angle12=" << angle12 << ", angle13=" << angle13 << ", angle23=" << angle23 << ").",
+		"Incompatible lattice angles. It is impossible to simultaneously satisfy the given angles (angle01=" << angle01 << ", angle02=" << angle02 << ", angle12=" << angle12 << ").",
 		""
 	);
 	Vector3d comp3 = Vector3d(latticeVectors.at(0)).unit()*Vector3d(latticeVectors.at(1)).unit()*sqrt(1 - pow((comp1+comp2).norm(), 2));

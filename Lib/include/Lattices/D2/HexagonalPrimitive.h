@@ -32,14 +32,14 @@ namespace D2{
 /** Hexagonal primitive Bravais lattice.
  *
  *  Dimensions:		2
- *  side1Length:	arbitrary
- *  side2Length:	side1Length
- *  angle12:		2*pi/3 */
+ *  side0Length:	arbitrary
+ *  side1Length:	side1Length
+ *  angle01:		2*pi/3 */
 class HexagonalPrimitive : public MonoclinicPrimitive{
 public:
 	/** Constructor. */
 	HexagonalPrimitive(
-		double side1Length
+		double side0Length
 	);
 
 	/** Destructor. */

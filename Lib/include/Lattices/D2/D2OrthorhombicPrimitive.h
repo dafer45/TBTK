@@ -32,15 +32,15 @@ namespace D2{
 /** Orthorhombic primitiver Bravais lattice.
  *
  *  Dimensions:		2
+ *  side0Length:	arbitrary
  *  side1Length:	arbitrary
- *  side2Length:	arbitrary
- *  angle12:		pi/2 */
+ *  angle01:		pi/2 */
 class OrthorhombicPrimitive : public MonoclinicPrimitive{
 public:
 	/** Constructor. */
 	OrthorhombicPrimitive(
-		double side1Length,
-		double side2Length
+		double side0Length,
+		double side1Length
 	);
 
 	/** Destructor. */

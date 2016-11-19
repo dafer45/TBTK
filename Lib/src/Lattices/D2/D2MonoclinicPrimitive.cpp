@@ -29,19 +29,19 @@ namespace Lattice{
 namespace D2{
 
 MonoclinicPrimitive::MonoclinicPrimitive(
+	double side0Length,
 	double side1Length,
-	double side2Length,
-	double angle12
+	double angle01
 ){
 	vector<vector<double>> latticeVectors;
 
 	latticeVectors.push_back(vector<double>());
-	latticeVectors.at(0).push_back(side1Length);
+	latticeVectors.at(0).push_back(side0Length);
 	latticeVectors.at(0).push_back(0.);
 
 	latticeVectors.push_back(vector<double>());
-	latticeVectors.at(1).push_back(side2Length*cos(angle12));
-	latticeVectors.at(1).push_back(side2Length*sin(angle12));
+	latticeVectors.at(1).push_back(side1Length*cos(angle01));
+	latticeVectors.at(1).push_back(side1Length*sin(angle01));
 
 	setLatticeVectors(latticeVectors);
 }

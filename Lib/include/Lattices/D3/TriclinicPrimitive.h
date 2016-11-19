@@ -32,22 +32,22 @@ namespace D3{
 /** Triclinic primitive Bravais lattice.
  *
  *  Dimensions:		3
+ *  side0Length:	arbitrary
  *  side1Length:	arbitrary
  *  side2Length:	arbitrary
- *  side3Length:	arbitrary
- *  angle12:		arbitrary
- *  angle13:		arbitrary
- *  angle23:		arbitrary */
+ *  angle01:		arbitrary
+ *  angle02:		arbitrary
+ *  angle12:		arbitrary */
 class TriclinicPrimitive : public BravaisLattice{
 public:
 	/** Constructor. */
 	TriclinicPrimitive(
+		double side0Length,
 		double side1Length,
 		double side2Length,
-		double side3Length,
-		double angle12,
-		double angle13,
-		double angle23
+		double angle01,
+		double angle02,
+		double angle12
 	);
 
 	/** Destructor. */

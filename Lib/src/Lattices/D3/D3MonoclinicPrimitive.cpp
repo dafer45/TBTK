@@ -13,17 +13,43 @@
  * limitations under the License.
  */
 
-/** @package TBTKcalc
- *  @file MonoclinicPrimitive.h
- *  @brief Two- and three-dimensional monoclinic primitive Bravais lattices.
+/** @file D3MonoclinicPrimitive.cpp
  *
  *  @author Kristofer Björnson
  */
 
-#ifndef COM_DAFER45_TBTK_MONOCLINIC_PRIMITIVE
-#define COM_DAFER45_TBTK_MONOCLINIC_PRIMITIVE
-
-#include "D2MonoclinicPrimitive.h"
 #include "D3MonoclinicPrimitive.h"
+#include "Vector3d.h"
+#include "TBTKMacros.h"
 
-#endif
+#include <cmath>
+
+using namespace std;
+
+namespace TBTK{
+namespace Lattice{
+namespace D3{
+
+MonoclinicPrimitive::MonoclinicPrimitive(
+	double side0Length,
+	double side1Length,
+	double side2Length,
+	double angle12
+) :
+	TriclinicPrimitive(
+		side0Length,
+		side1Length,
+		side2Length,
+		M_PI/2.,
+		M_PI/2.,
+		angle12
+	)
+{
+}
+
+MonoclinicPrimitive::~MonoclinicPrimitive(){
+}
+
+};	//End of namespace D3
+};	//End of namespace Lattice
+};	//End of namespace TBTK

@@ -32,16 +32,16 @@ namespace D2{
 /** Monoclinic primitive Bravais lattice.
  *
  *  Dimensions:		2
+ *  side0Length:	arbitrary
  *  side1Length:	arbitrary
- *  side2Length:	arbitrary
- *  angle12:		arbitrary */
+ *  angle01:		arbitrary */
 class MonoclinicPrimitive : public BravaisLattice{
 public:
 	/** Constructor. */
 	MonoclinicPrimitive(
+		double side0Length,
 		double side1Length,
-		double side2Length,
-		double angle12
+		double angle01
 	);
 
 	/** Destructor. */

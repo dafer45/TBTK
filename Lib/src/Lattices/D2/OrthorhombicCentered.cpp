@@ -29,15 +29,15 @@ namespace Lattice{
 namespace D2{
 
 OrthorhombicCentered::OrthorhombicCentered(
-	double side1Length,
-	double side2Length
+	double side0Length,
+	double side1Length
 ) :
-	OrthorhombicPrimitive(side1Length, side2Length)
+	OrthorhombicPrimitive(side0Length, side1Length)
 {
 	vector<vector<double>> additionalSites;
 	additionalSites.push_back(vector<double>());
+	additionalSites.at(0).push_back(side0Length/2.);
 	additionalSites.at(0).push_back(side1Length/2.);
-	additionalSites.at(0).push_back(side2Length/2.);
 
 	setAdditionalSites(additionalSites);
 }

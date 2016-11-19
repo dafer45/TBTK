@@ -28,8 +28,8 @@ namespace TBTK{
 namespace Lattice{
 namespace D2{
 
-TetragonalPrimitive::TetragonalPrimitive(double side1Length) :
-	OrthorhombicPrimitive(side1Length, side1Length)
+TetragonalPrimitive::TetragonalPrimitive(double side0Length) :
+	OrthorhombicPrimitive(side0Length, side0Length)
 {
 }
 
