@@ -13,12 +13,12 @@
  * limitations under the License.
  */
 
-/** @file HexagonalPrimitive.cpp
+/** @file D2HexagonalPrimitive.cpp
  *
  *  @author Kristofer Björnson
  */
 
-#include "HexagonalPrimitive.h"
+#include "D2HexagonalPrimitive.h"
 
 #include <cmath>
 

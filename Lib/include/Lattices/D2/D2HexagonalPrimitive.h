@@ -14,14 +14,14 @@
  */
 
 /** @package TBTKcalc
- *  @file HexagonalPrimitive.h
+ *  @file D2HexagonalPrimitive.h
  *  @brief Hexagonal primitive Bravais lattices.
  *
  *  @author Kristofer Björnson
  */
 
-#ifndef COM_DAFER45_TBTK_HEXAGONAL_PRIMITIVE
-#define COM_DAFER45_TBTK_HEXAGONAL_PRIMITIVE
+#ifndef COM_DAFER45_TBTK_D2_HEXAGONAL_PRIMITIVE
+#define COM_DAFER45_TBTK_D2_HEXAGONAL_PRIMITIVE
 
 #include "D2MonoclinicPrimitive.h"
 
