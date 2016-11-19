@@ -14,40 +14,39 @@
  */
 
 /** @package TBTKcalc
- *  @file D3TetragonalPrimitive.h
- *  @brief Tetragonal primitive Bravais lattices.
+ *  @file CubicPrimitive.h
+ *  @brief Cubic primitive Bravais lattices.
  *
  *  @author Kristofer Björnson
  */
 
-#ifndef COM_DAFER45_TBTK_D3_TETRAGONAL_PRIMITIVE
-#define COM_DAFER45_TBTK_D3_TETRAGONAL_PRIMITIVE
+#ifndef COM_DAFER45_TBTK_D3_CUBIC_PRIMITIVE
+#define COM_DAFER45_TBTK_D3_CUBIC_PRIMITIVE
 
-#include "OrthorhombicPrimitive.h"
+#include "D3TetragonalPrimitive.h"
 
 namespace TBTK{
 namespace Lattice{
 namespace D3{
 
-/** Tetragonal primitive Bravais lattice.
+/** Cubic primitive Bravais lattice.
  *
  *  Dimensions:		3
  *  side0Length:	arbitrary
  *  side1Length:	side0Length
- *  side2Length:	arbitrary
+ *  side2Length:	side0Length
  *  angle01:		pi/2
  *  angle02:		pi/2
  *  angle12:		pi/2 */
-class TetragonalPrimitive : public OrthorhombicPrimitive{
+class CubicPrimitive : public TetragonalPrimitive{
 public:
 	/** Constructor. */
-	TetragonalPrimitive(
-		double side0Length,
-		double side2Length
+	CubicPrimitive(
+		double side0Length
 	);
 
 	/** Destructor. */
-	~TetragonalPrimitive();
+	~CubicPrimitive();
 };
 
 };	//End of namespace D3

@@ -13,45 +13,42 @@
  * limitations under the License.
  */
 
-/** @package TBTKcalc
- *  @file D3TetragonalPrimitive.h
- *  @brief Tetragonal primitive Bravais lattices.
+/** @file CubicFaceCentered.cpp
  *
  *  @author Kristofer Björnson
  */
 
-#ifndef COM_DAFER45_TBTK_D3_TETRAGONAL_PRIMITIVE
-#define COM_DAFER45_TBTK_D3_TETRAGONAL_PRIMITIVE
+#include "CubicFaceCentered.h"
+#include "Vector3d.h"
 
-#include "OrthorhombicPrimitive.h"
+using namespace std;
 
 namespace TBTK{
 namespace Lattice{
 namespace D3{
 
-/** Tetragonal primitive Bravais lattice.
- *
- *  Dimensions:		3
- *  side0Length:	arbitrary
- *  side1Length:	side0Length
- *  side2Length:	arbitrary
- *  angle01:		pi/2
- *  angle02:		pi/2
- *  angle12:		pi/2 */
-class TetragonalPrimitive : public OrthorhombicPrimitive{
-public:
-	/** Constructor. */
-	TetragonalPrimitive(
-		double side0Length,
-		double side2Length
-	);
+CubicFaceCentered::CubicFaceCentered(double side0Length) :
+	CubicPrimitive(
+		side0Length
+	)
+{
+	const vector<vector<double>> &latticeVectors = getLatticeVectors();
 
-	/** Destructor. */
-	~TetragonalPrimitive();
-};
+	Vector3d v0(latticeVectors.at(0));
+	Vector3d v1(latticeVectors.at(1));
+	Vector3d v2(latticeVectors.at(2));
+
+	vector<vector<double>> additionalSites;
+	additionalSites.push_back(((v0 + v1)/2.).getStdVector());
+	additionalSites.push_back(((v0 + v2)/2.).getStdVector());
+	additionalSites.push_back(((v1 + v2)/2.).getStdVector());
+
+	setAdditionalSites(additionalSites);
+}
+
+CubicFaceCentered::~CubicFaceCentered(){
+}
 
 };	//End of namespace D3
 };	//End of namespace Lattice
 };	//End of namespace TBTK
-
-#endif

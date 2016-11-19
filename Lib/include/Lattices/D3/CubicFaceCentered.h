@@ -14,40 +14,44 @@
  */
 
 /** @package TBTKcalc
- *  @file D3TetragonalPrimitive.h
- *  @brief Tetragonal primitive Bravais lattices.
+ *  @file CubicFaceCentered.h
+ *  @brief Cubic face-centered Bravais lattices.
  *
  *  @author Kristofer Björnson
  */
 
-#ifndef COM_DAFER45_TBTK_D3_TETRAGONAL_PRIMITIVE
-#define COM_DAFER45_TBTK_D3_TETRAGONAL_PRIMITIVE
+#ifndef COM_DAFER45_TBTK_D3_CUBIC_FACE_CENTERED
+#define COM_DAFER45_TBTK_D3_CUBIC_FACE_CENTERED
 
-#include "OrthorhombicPrimitive.h"
+#include "CubicPrimitive.h"
 
 namespace TBTK{
 namespace Lattice{
 namespace D3{
 
-/** Tetragonal primitive Bravais lattice.
+/** Cubic face-centered Bravais lattice.
  *
  *  Dimensions:		3
  *  side0Length:	arbitrary
  *  side1Length:	side0Length
- *  side2Length:	arbitrary
+ *  side2Length:	side0Length
  *  angle01:		pi/2
  *  angle02:		pi/2
- *  angle12:		pi/2 */
-class TetragonalPrimitive : public OrthorhombicPrimitive{
+ *  angle12:		pi/2
+ *
+ *  Additional sites:
+ *  (side0Length0/2,	side1Length/2,	0)
+ *  (side0Length0/2,	0,		side2Length/2)
+ *  (0,			side1Length/2,	side2Length/2) */
+class CubicFaceCentered : public CubicPrimitive{
 public:
 	/** Constructor. */
-	TetragonalPrimitive(
-		double side0Length,
-		double side2Length
+	CubicFaceCentered(
+		double side0Length
 	);
 
 	/** Destructor. */
-	~TetragonalPrimitive();
+	~CubicFaceCentered();
 };
 
 };	//End of namespace D3
