@@ -48,13 +48,25 @@ OrthorhombicFaceCentered::OrthorhombicFaceCentered(
 
 	vector<vector<double>> additionalSites;
 	additionalSites.push_back(((v0 + v1)/2.).getStdVector());
-	additionalSites.push_back(((v0 + v2)/2.).getStdVector());
 	additionalSites.push_back(((v1 + v2)/2.).getStdVector());
+	additionalSites.push_back(((v2 + v0)/2.).getStdVector());
 
 	setAdditionalSites(additionalSites);
 }
 
 OrthorhombicFaceCentered::~OrthorhombicFaceCentered(){
+}
+
+void OrthorhombicFaceCentered::makePrimitive(){
+	const vector<vector<double>> &additionalSites = getAdditionalSites();
+
+	vector<vector<double>> newLatticeVectors;
+	newLatticeVectors.push_back(additionalSites.at(0));
+	newLatticeVectors.push_back(additionalSites.at(1));
+	newLatticeVectors.push_back(additionalSites.at(2));
+
+	setLatticeVectors(newLatticeVectors);
+	setAdditionalSites(vector<vector<double>>());
 }
 
 };	//End of namespace D3

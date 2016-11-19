@@ -47,6 +47,29 @@ CubicBodyCentered::CubicBodyCentered(double side0Length) :
 CubicBodyCentered::~CubicBodyCentered(){
 }
 
+void CubicBodyCentered::makePrimitive(){
+	const vector<vector<double>> &additionalSites = getAdditionalSites();
+	const vector<vector<double>> &latticeVectors = getLatticeVectors();
+
+	Vector3d v0(latticeVectors.at(0));
+	Vector3d v1(latticeVectors.at(1));
+	Vector3d v2(latticeVectors.at(2));
+
+	Vector3d a0(additionalSites.at(0));
+
+	Vector3d newV0 = a0 - v1;
+	Vector3d newV1 = a0 - v2;
+	Vector3d newV2 = a0 - v0;
+
+	vector<vector<double>> newLatticeVectors;
+	newLatticeVectors.push_back(newV0.getStdVector());
+	newLatticeVectors.push_back(newV1.getStdVector());
+	newLatticeVectors.push_back(newV2.getStdVector());
+
+	setLatticeVectors(newLatticeVectors);
+	setAdditionalSites(vector<vector<double>>());
+}
+
 };	//End of namespace D3
 };	//End of namespace Lattice
 };	//End of namespace TBTK

@@ -19,6 +19,7 @@
  */
 
 #include "OrthorhombicCentered.h"
+#include "Streams.h"
 
 #include <cmath>
 
@@ -43,6 +44,25 @@ OrthorhombicCentered::OrthorhombicCentered(
 }
 
 OrthorhombicCentered::~OrthorhombicCentered(){
+}
+
+void OrthorhombicCentered::makePrimitive(){
+	const vector<vector<double>> &additionalSites = getAdditionalSites();
+	const vector<vector<double>> &latticeVectors = getLatticeVectors();
+
+	vector<vector<double>> newLatticeVectors;
+	newLatticeVectors.push_back(vector<double>());
+	newLatticeVectors.push_back(vector<double>());
+
+	newLatticeVectors.at(0).push_back(additionalSites.at(0).at(0));
+	newLatticeVectors.at(0).push_back(additionalSites.at(0).at(1));
+
+	newLatticeVectors.at(1).push_back(additionalSites.at(0).at(0) - latticeVectors.at(0).at(0));
+	newLatticeVectors.at(1).push_back(additionalSites.at(0).at(1) - latticeVectors.at(0).at(1));
+
+	setLatticeVectors(newLatticeVectors);
+
+	setAdditionalSites(vector<vector<double>>());
 }
 
 };	//End of namespace D2

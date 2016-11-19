@@ -51,6 +51,9 @@ public:
 
 	/** Destructor. */
 	~TetragonalBodyCentered();
+
+	/** Overrides BravaisLattice:makePrimitive(). */
+	virtual void makePrimitive();
 };
 
 };	//End of namespace D3

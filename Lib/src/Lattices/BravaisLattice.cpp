@@ -32,6 +32,15 @@ BravaisLattice::BravaisLattice(){
 BravaisLattice::~BravaisLattice(){
 }
 
+void BravaisLattice::makePrimitive(){
+	TBTKAssert(
+		additionalSites.size() == 0,
+		"BravaisLattice::makePrimitive()",
+		"Conversion to primitive cell not implemented.",
+		"Request a proper implmentation from the developer."
+	);
+}
+
 void BravaisLattice::setLatticeVectors(const vector<vector<double>> &latticeVectors){
 	this->latticeVectors.clear();
 	for(unsigned int n = 0; n < latticeVectors.size(); n++){
@@ -71,16 +80,6 @@ void BravaisLattice::setAdditionalSites(const vector<vector<double>> &additional
 		this->additionalSites.push_back(vector<double>());
 		for(unsigned int c = 0; c < additionalSites.at(n).size(); c++)
 			this->additionalSites.at(n).push_back(additionalSites.at(n).at(c));
-	}
-
-	for(unsigned int n = 0; n < this->additionalSites.size(); n++){
-		Streams::out << "{";
-		for(unsigned int c = 0; c < this->additionalSites.at(n).size(); c++){
-			if(c != 0)
-				Streams::out << ", ";
-			Streams::out << this->additionalSites.at(n).at(c);
-		}
-		Streams::out << "}\n";
 	}
 }
 

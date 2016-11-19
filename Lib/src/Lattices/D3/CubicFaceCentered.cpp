@@ -49,6 +49,18 @@ CubicFaceCentered::CubicFaceCentered(double side0Length) :
 CubicFaceCentered::~CubicFaceCentered(){
 }
 
+void CubicFaceCentered::makePrimitive(){
+	const vector<vector<double>> &additionalSites = getAdditionalSites();
+
+	vector<vector<double>> newLatticeVectors;
+	newLatticeVectors.push_back(additionalSites.at(0));
+	newLatticeVectors.push_back(additionalSites.at(1));
+	newLatticeVectors.push_back(additionalSites.at(2));
+
+	setLatticeVectors(newLatticeVectors);
+	setAdditionalSites(vector<vector<double>>());
+}
+
 };	//End of namespace D3
 };	//End of namespace Lattice
 };	//End of namespace TBTK

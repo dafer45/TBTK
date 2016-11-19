@@ -53,6 +53,10 @@ public:
 
 	/** Get additional sites. */
 	const std::vector<std::vector<double>>& getAdditionalSites() const;
+
+	/** Converts the basis vectors to ensure that they span primitive
+	 *  cells. */
+	virtual void makePrimitive();
 protected:
 	/** Set lattice vectors. */
 	void setLatticeVectors(const std::vector<std::vector<double>> &latticeVectors);

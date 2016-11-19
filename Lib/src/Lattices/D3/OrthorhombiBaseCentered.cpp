@@ -20,6 +20,7 @@
 
 #include "OrthorhombicBaseCentered.h"
 #include "Vector3d.h"
+#include "Streams.h"
 
 #include <cmath>
 
@@ -52,6 +53,24 @@ OrthorhombicBaseCentered::OrthorhombicBaseCentered(
 }
 
 OrthorhombicBaseCentered::~OrthorhombicBaseCentered(){
+}
+
+void OrthorhombicBaseCentered::makePrimitive(){
+	const vector<vector<double>> &additionalSites = getAdditionalSites();
+	const vector<vector<double>> &latticeVectors = getLatticeVectors();
+
+	Vector3d v0(latticeVectors.at(0));
+
+	Vector3d newV0(additionalSites.at(0));
+	Vector3d newV1 = newV0 - v0;
+
+	vector<vector<double>> newLatticeVectors;
+	newLatticeVectors.push_back(newV0.getStdVector());
+	newLatticeVectors.push_back(newV1.getStdVector());
+	newLatticeVectors.push_back(latticeVectors.at(2));
+
+	setLatticeVectors(newLatticeVectors);
+	setAdditionalSites(vector<vector<double>>());
 }
 
 };	//End of namespace D3

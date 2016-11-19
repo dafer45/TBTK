@@ -54,6 +54,9 @@ public:
 
 	/** Destructor. */
 	~OrthorhombicFaceCentered();
+
+	/** Overrides BravaisLattice::makePrimitive(). */
+	virtual void makePrimitive();
 };
 
 };	//End of namespace D3
