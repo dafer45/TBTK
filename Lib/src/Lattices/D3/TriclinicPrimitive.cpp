@@ -58,7 +58,7 @@ TriclinicPrimitive::TriclinicPrimitive(
 		"Incompatible lattice angles. It is impossible to simultaneously satisfy the given angles (angle01=" << angle01 << ", angle02=" << angle02 << ", angle12=" << angle12 << ").",
 		""
 	);
-	Vector3d comp3 = Vector3d(latticeVectors.at(0)).unit()*Vector3d(latticeVectors.at(1)).unit()*sqrt(1 - pow((comp1+comp2).norm(), 2));
+	Vector3d comp3 = side2Length*Vector3d(latticeVectors.at(0)).unit()*Vector3d(latticeVectors.at(1)).unit()*sqrt(1 - pow((comp1+comp2).norm(), 2));
 
 	latticeVectors.push_back((comp1+comp2+comp3).getStdVector());
 

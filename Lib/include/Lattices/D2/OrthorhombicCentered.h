@@ -34,7 +34,10 @@ namespace D2{
  *  Dimensions:		2
  *  side0Length:	arbitrary
  *  side1Length:	arbitrary
- *  angle01:		pi/2 */
+ *  angle01:		pi/2
+ *
+ *  Additional sites:
+ *  (side0Length/2, side1Length/2) */
 class OrthorhombicCentered : public OrthorhombicPrimitive{
 public:
 	/** Constructor. */

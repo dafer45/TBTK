@@ -13,49 +13,46 @@
  * limitations under the License.
  */
 
-/** @file MonoclinicBaseCentered.cpp
+/** @package TBTKcalc
+ *  @file D3OrthorhombicPrimitive.h
+ *  @brief Orthorhombic primitive Bravais lattices.
  *
  *  @author Kristofer Björnson
  */
 
-#include "MonoclinicBaseCentered.h"
-#include "Vector3d.h"
+#ifndef COM_DAFER45_TBTK_D3_ORTHORHOMBIC_PRIMITIVE
+#define COM_DAFER45_TBTK_D3_ORTHORHOMBIC_PRIMITIVE
 
-#include <cmath>
-
-using namespace std;
+#include "TriclinicPrimitive.h"
 
 namespace TBTK{
 namespace Lattice{
 namespace D3{
 
-MonoclinicBaseCentered::MonoclinicBaseCentered(
-	double side1Length,
-	double side2Length,
-	double side3Length,
-	double angle23
-) :
-	MonoclinicPrimitive(
-		side1Length,
-		side2Length,
-		side3Length,
-		angle23
-	)
-{
-	const vector<vector<double>> &latticeVectors = getLatticeVectors();
+/** Orthorhombic primitive Bravais lattice.
+ *
+ *  Dimensions:		3
+ *  side0Length:	arbitrary
+ *  side1Length:	arbitrary
+ *  side2Length:	arbitrary
+ *  angle01:		pi/2
+ *  angle02:		pi/2
+ *  angle12:		pi/2 */
+class OrthorhombicPrimitive : public TriclinicPrimitive{
+public:
+	/** Constructor. */
+	OrthorhombicPrimitive(
+		double side0Length,
+		double side1Length,
+		double side2Length
+	);
 
-	Vector3d v0(latticeVectors.at(0));
-	Vector3d v1(latticeVectors.at(1));
-
-	vector<vector<double>> additionalSites;
-	additionalSites.push_back(((v0 + v1)/2.).getStdVector());
-
-	setAdditionalSites(additionalSites);
-}
-
-MonoclinicBaseCentered::~MonoclinicBaseCentered(){
-}
+	/** Destructor. */
+	~OrthorhombicPrimitive();
+};
 
 };	//End of namespace D3
 };	//End of namespace Lattice
 };	//End of namespace TBTK
+
+#endif

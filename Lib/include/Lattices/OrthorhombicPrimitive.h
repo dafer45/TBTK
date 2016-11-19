@@ -24,5 +24,6 @@
 #define COM_DAFER45_TBTK_ORTHORHOMBIC_PRIMITIVE
 
 #include "D2OrthorhombicPrimitive.h"
+#include "D3OrthorhombicPrimitive.h"
 
 #endif

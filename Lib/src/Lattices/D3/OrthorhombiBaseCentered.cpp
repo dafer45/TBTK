@@ -13,12 +13,12 @@
  * limitations under the License.
  */
 
-/** @file MonoclinicBaseCentered.cpp
+/** @file OrthorhombicBaseCentered.cpp
  *
  *  @author Kristofer Björnson
  */
 
-#include "MonoclinicBaseCentered.h"
+#include "OrthorhombicBaseCentered.h"
 #include "Vector3d.h"
 
 #include <cmath>
@@ -29,17 +29,15 @@ namespace TBTK{
 namespace Lattice{
 namespace D3{
 
-MonoclinicBaseCentered::MonoclinicBaseCentered(
+OrthorhombicBaseCentered::OrthorhombicBaseCentered(
+	double side0Length,
 	double side1Length,
-	double side2Length,
-	double side3Length,
-	double angle23
+	double side2Length
 ) :
-	MonoclinicPrimitive(
+	OrthorhombicPrimitive(
+		side0Length,
 		side1Length,
-		side2Length,
-		side3Length,
-		angle23
+		side2Length
 	)
 {
 	const vector<vector<double>> &latticeVectors = getLatticeVectors();
@@ -53,7 +51,7 @@ MonoclinicBaseCentered::MonoclinicBaseCentered(
 	setAdditionalSites(additionalSites);
 }
 
-MonoclinicBaseCentered::~MonoclinicBaseCentered(){
+OrthorhombicBaseCentered::~OrthorhombicBaseCentered(){
 }
 
 };	//End of namespace D3
