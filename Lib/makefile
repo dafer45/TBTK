@@ -57,6 +57,7 @@ STATIC_LIB = build/libTBTK.a
 # Root directories for .h files
 INC_DIR = include/Builders/
 INC_DIR += include/Core/
+INC_DIR += include/Lattices/
 INC_DIR += include/Properties/
 INC_DIR += include/PropertyExtractors/
 INC_DIR += include/Solvers/
@@ -69,6 +70,7 @@ INC_DIR += $(TBTK_dir)/hdf5/hdf5-1.8.16/include/
 # Main source directory
 SRC_DIR = src/Builders
 SRC_DIR += src/Core
+SRC_DIR += src/Lattices
 SRC_DIR += src/Properties
 SRC_DIR += src/PropertyExtractors
 SRC_DIR += src/Solvers

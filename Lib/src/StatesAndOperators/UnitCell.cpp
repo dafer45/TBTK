@@ -54,6 +54,35 @@ UnitCell::UnitCell(
 	}
 }
 
+UnitCell::UnitCell(
+	const vector<vector<double>> &latticeVectors,
+	bool isOwner
+) :
+	StateSet(isOwner)
+{
+	unsigned int numCoordinates = latticeVectors.at(0).size();
+	for(unsigned int n = 1; n < latticeVectors.size(); n++){
+		TBTKAssert(
+			latticeVectors.at(n).size() == numCoordinates,
+			"UnitCell::UnitCell()",
+			"Incmopatible coordinate dimensions. The first lattice"
+			<< "vector has " << numCoordinates << " coordinates, "
+			<< "while lattice vector " << n << " has "
+			<< latticeVectors.at(n).size()
+			<< " coordinates.",
+			""
+		);
+	}
+
+	for(unsigned int n = 0; n < latticeVectors.size(); n++){
+		this->latticeVectors.push_back(vector<double>());
+
+		const vector<double> &latticeVector = latticeVectors.at(n);
+		for(unsigned int c = 0; c < latticeVector.size(); c++)
+			this->latticeVectors.at(n).push_back(latticeVector.at(c));
+	}
+}
+
 UnitCell::~UnitCell(){
 }
 

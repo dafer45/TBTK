@@ -68,7 +68,7 @@ StateTreeNode::StateTreeNode(
 
 	for(unsigned int n = 1; n < states.size(); n++){
 		TBTKAssert(
-			numCoordinates = states.at(n)->getCoordinates().size(),
+			numCoordinates == states.at(n)->getCoordinates().size(),
 			"StateTreeNode::StateTreeNode()",
 			"Unable to handle StateSets containing states with different dimensions.",
 			""
@@ -149,9 +149,9 @@ void StateTreeNode::add(AbstractState *state){
 		state->getCoordinates().size() == center.size(),
 		"StateTreeNode::add()",
 		"Incompatible dimenstions. The StateTreeNode has stores states"
-		<< " with dimension '" << center.size() << ", but a state with"
-		<< " dimension '" << state->getCoordinates().size() << " was"
-		<< " encountered.",
+		<< " with dimension '" << center.size() << "', but a state"
+		<< " with dimension '" << state->getCoordinates().size() << "'"
+		<< " was encountered.",
 		""
 	);
 
