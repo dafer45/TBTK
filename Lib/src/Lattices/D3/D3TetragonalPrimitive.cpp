@@ -13,14 +13,12 @@
  * limitations under the License.
  */
 
-/** @file D3OrthorhombicPrimitive.cpp
+/** @file D3TetragonalPrimitive.cpp
  *
  *  @author Kristofer Björnson
  */
 
-#include "D3OrthorhombicPrimitive.h"
-
-#include <cmath>
+#include "D3TetragonalPrimitive.h"
 
 using namespace std;
 
@@ -28,23 +26,19 @@ namespace TBTK{
 namespace Lattice{
 namespace D3{
 
-OrthorhombicPrimitive::OrthorhombicPrimitive(
+TetragonalPrimitive::TetragonalPrimitive(
 	double side0Length,
-	double side1Length,
 	double side2Length
 ) :
-	TriclinicPrimitive(
+	OrthorhombicPrimitive(
 		side0Length,
-		side1Length,
-		side2Length,
-		M_PI/2.,
-		M_PI/2.,
-		M_PI/2.
+		side0Length,
+		side2Length
 	)
 {
 }
 
-OrthorhombicPrimitive::~OrthorhombicPrimitive(){
+TetragonalPrimitive::~TetragonalPrimitive(){
 }
 
 };	//End of namespace D3

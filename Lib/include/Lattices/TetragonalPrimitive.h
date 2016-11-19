@@ -24,5 +24,6 @@
 #define COM_DAFER45_TBTK_TETRAGONAL_PRIMITIVE
 
 #include "D2TetragonalPrimitive.h"
+#include "D3TetragonalPrimitive.h"
 
 #endif

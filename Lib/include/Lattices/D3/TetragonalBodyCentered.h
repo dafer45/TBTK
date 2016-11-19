@@ -13,40 +13,48 @@
  * limitations under the License.
  */
 
-/** @file D3OrthorhombicPrimitive.cpp
+/** @package TBTKcalc
+ *  @file TetragonalBodyCentered.h
+ *  @brief Tetragonal body-centered Bravais lattices.
  *
  *  @author Kristofer Björnson
  */
 
-#include "D3OrthorhombicPrimitive.h"
+#ifndef COM_DAFER45_TBTK_D3_TETRAGONAL_BODY_CENTERED
+#define COM_DAFER45_TBTK_D3_TETRAGONAL_BODY_CENTERED
 
-#include <cmath>
-
-using namespace std;
+#include "D3TetragonalPrimitive.h"
 
 namespace TBTK{
 namespace Lattice{
 namespace D3{
 
-OrthorhombicPrimitive::OrthorhombicPrimitive(
-	double side0Length,
-	double side1Length,
-	double side2Length
-) :
-	TriclinicPrimitive(
-		side0Length,
-		side1Length,
-		side2Length,
-		M_PI/2.,
-		M_PI/2.,
-		M_PI/2.
-	)
-{
-}
+/** Tetragonal body-centered Bravais lattice.
+ *
+ *  Dimensions:		3
+ *  side0Length:	arbitrary
+ *  side1Length:	side1Length
+ *  side2Length:	arbitrary
+ *  angle01:		pi/2
+ *  angle02:		pi/2
+ *  angle12:		pi/2
+ *
+ *  Additional sites:
+ *  (side0Length/2,	side1Length/2,	side2Length/2) */
+class TetragonalBodyCentered : public TetragonalPrimitive{
+public:
+	/** Constructor. */
+	TetragonalBodyCentered(
+		double side0Length,
+		double side2Length
+	);
 
-OrthorhombicPrimitive::~OrthorhombicPrimitive(){
-}
+	/** Destructor. */
+	~TetragonalBodyCentered();
+};
 
 };	//End of namespace D3
 };	//End of namespace Lattice
 };	//End of namespace TBTK
+
+#endif
