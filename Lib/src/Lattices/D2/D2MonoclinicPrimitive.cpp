@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-/** @file MonoclinicPrimitive.cpp
+/** @file D2MonoclinicPrimitive.cpp
  *
  *  @author Kristofer Björnson
  */

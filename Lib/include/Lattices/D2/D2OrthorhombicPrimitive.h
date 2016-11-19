@@ -14,14 +14,14 @@
  */
 
 /** @package TBTKcalc
- *  @file OrthorhombicPrimitive.h
+ *  @file D2OrthorhombicPrimitive.h
  *  @brief Orthorhombic primitive Bravais lattices.
  *
  *  @author Kristofer Björnson
  */
 
-#ifndef COM_DAFER45_TBTK_ORTHORHOMBIC_PRIMITIVE
-#define COM_DAFER45_TBTK_ORTHORHOMBIC_PRIMITIVE
+#ifndef COM_DAFER45_TBTK_D2_ORTHORHOMBIC_PRIMITIVE
+#define COM_DAFER45_TBTK_D2_ORTHORHOMBIC_PRIMITIVE
 
 #include "D2MonoclinicPrimitive.h"
 

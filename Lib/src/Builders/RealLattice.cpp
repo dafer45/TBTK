@@ -13,29 +13,29 @@
  * limitations under the License.
  */
 
-/** @file Lattice.cpp
+/** @file RealLattice.cpp
  *
  *  @author Kristofer Björnson
  */
 
-#include "Lattice.h"
+#include "RealLattice.h"
 #include "TBTKMacros.h"
 
 using namespace std;
 
 namespace TBTK{
 
-Lattice::Lattice(const UnitCell *unitCell){
+RealLattice::RealLattice(const UnitCell *unitCell){
 	this->unitCell = unitCell;
 }
 
-Lattice::~Lattice(){
+RealLattice::~RealLattice(){
 }
 
-void Lattice::addLatticePoint(const Index &latticePoint){
+void RealLattice::addLatticePoint(const Index &latticePoint){
 	TBTKAssert(
 		latticePoint.size() == unitCell->getLatticeVectors().size(),
-		"Lattice::addLaticePoint()",
+		"RealLattice::addLaticePoint()",
 		"Incompatible lattice dimensions. The lattice point has to have the same dimensionality as the UnitCell.",
 		"The UnitCell has " << unitCell->getLatticeVectors().size() << " lattice vectors, but the argument 'latticeVector' has " << to_string(latticePoint.size()) << " componentes."
 	);
@@ -43,7 +43,7 @@ void Lattice::addLatticePoint(const Index &latticePoint){
 	latticePoints.push_back(latticePoint);
 }
 
-StateSet* Lattice::generateStateSet(){
+StateSet* RealLattice::generateStateSet(){
 	StateSet *stateSet = new StateSet();
 
 	const vector<vector<double>> latticeVectors = unitCell->getLatticeVectors();
@@ -63,7 +63,7 @@ StateSet* Lattice::generateStateSet(){
 
 			TBTKAssert(
 				coordinateDimension >= numLatticeVectors,
-				"Lattice::generateStateSet()",
+				"RealLattice::generateStateSet()",
 				"Incompatible state and lattice vector"
 				<< " dimension. The state has dimension "
 				<< coordinateDimension << ", while"
@@ -75,7 +75,7 @@ StateSet* Lattice::generateStateSet(){
 			);
 			TBTKAssert(
 				coordinateDimension >= latticeVectorDimension,
-				"Lattice::generateStateSet()",
+				"RealLattice::generateStateSet()",
 				"Incompatible state and lattice vector"
 				<< " dimension. The state has dimension "
 				<< coordinates.size() << ", while"

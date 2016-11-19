@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-/** @file TetragonalPrimitive.cpp
+/** @file D2TetragonalPrimitive.cpp
  *
  *  @author Kristofer Björnson
  */

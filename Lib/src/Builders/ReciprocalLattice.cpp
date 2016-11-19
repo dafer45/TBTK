@@ -21,7 +21,7 @@
 #include "ReciprocalLattice.h"
 #include "TBTKMacros.h"
 #include "Vector3d.h"
-#include "Lattice.h"
+#include "RealLattice.h"
 
 #include <limits>
 #include <typeinfo>
@@ -295,7 +295,7 @@ void ReciprocalLattice::setupRealSpaceEnvironment(const UnitCell *unitCell){
 	}
 
 	//Create a lattice for the real space environment.
-	Lattice realSpaceEnvironmentLattice(unitCell);
+	RealLattice realSpaceEnvironmentLattice(unitCell);
 	switch(latticeVectors.size()){
 	case 1:
 		for(int x = 0; x < 2*realSpaceLatticeHalfSize[0]+1; x++)

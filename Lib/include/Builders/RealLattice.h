@@ -14,14 +14,14 @@
  */
 
 /** @package TBTKcalc
- *  @file Lattice.h
- *  @brief A Lattice allows for repeated replication of UnitCells.
+ *  @file RealLattice.h
+ *  @brief A RealLattice allows for repeated replication of UnitCells.
  *
  *  @author Kristofer Björnson
  */
 
-#ifndef COM_DAFER45_TBTK_LATTICE
-#define COM_DAFER45_TBTK_LATTICE
+#ifndef COM_DAFER45_TBTK_REAL_LATTICE
+#define COM_DAFER45_TBTK_REAL_LATTICE
 
 #include "UnitCell.h"
 #include "Index.h"
@@ -30,18 +30,18 @@
 
 namespace TBTK{
 
-class Lattice{
+class RealLattice{
 public:
 	/** Constructor. */
-	Lattice(const UnitCell *unitCell);
+	RealLattice(const UnitCell *unitCell);
 
 	/** Destructor. */
-	~Lattice();
+	~RealLattice();
 
 	/** Add lattice point to the lattice. */
 	void addLatticePoint(const Index &latticePoint);
 
-	/** Genearates a state set from the Lattice. */
+	/** Genearates a state set from the RealLattice. */
 	StateSet* generateStateSet();
 private:
 	/** Unit cell that is to be replicated throughout the lattice. */

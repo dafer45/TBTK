@@ -13,32 +13,16 @@
  * limitations under the License.
  */
 
-/** @file D2OrthorhombicPrimitive.cpp
+/** @package TBTKcalc
+ *  @file MonoclinicPrimitive.h
+ *  @brief Two- and three-dimensional monoclinic primitive Bravais lattices.
  *
  *  @author Kristofer Björnson
  */
 
-#include "D2OrthorhombicPrimitive.h"
+#ifndef COM_DAFER45_TBTK_MONOCLINIC_PRIMITIVE
+#define COM_DAFER45_TBTK_MONOCLINIC_PRIMITIVE
 
-#include <cmath>
+#include "D2MonoclinicPrimitive.h"
 
-using namespace std;
-
-namespace TBTK{
-namespace Lattice{
-namespace D2{
-
-OrthorhombicPrimitive::OrthorhombicPrimitive(
-	double side1Length,
-	double side2Length
-) :
-	MonoclinicPrimitive(side1Length, side2Length, M_PI/2)
-{
-}
-
-OrthorhombicPrimitive::~OrthorhombicPrimitive(){
-}
-
-};	//End of namespace D2
-};	//End of namespace Lattice
-};	//End of namespace TBTK
+#endif

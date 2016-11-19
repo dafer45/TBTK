@@ -27,7 +27,7 @@
 #include "FileWriter.h"
 #include "Timer.h"
 #include "ArrayManager.h"
-#include "Lattice.h"
+#include "RealLattice.h"
 
 #include <iostream>
 #include <iomanip>
@@ -130,14 +130,14 @@ int main(int argc, char **argv){
 	const int SIZE_X = image.rows;
 	const int SIZE_Y = image.cols;
 	const int SIZE_Z = depth;
-	Lattice lattice(unitCell);
+	RealLattice realLattice(unitCell);
 	for(int x = 0; x < SIZE_X; x++)
 		for(int y = 0; y < SIZE_Y; y++)
 			for(int z = 0; z < SIZE_Z; z++)
 				if(image.at<Vec3b>(x, y).val[0] > (z+ 1/2.)*255/(double)depth)
-					lattice.addLatticePoint({x, y, z});
+					realLattice.addLatticePoint({x, y, z});
 
-	StateSet *stateSet = lattice.generateStateSet();
+	StateSet *stateSet = realLattice.generateStateSet();
 	StateTreeNode stateTreeNode(*stateSet);
 	Model *model = ModelFactory::createModel(*stateSet, stateTreeNode);
 

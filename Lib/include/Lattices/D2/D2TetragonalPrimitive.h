@@ -14,14 +14,14 @@
  */
 
 /** @package TBTKcalc
- *  @file TetragonalPrimitive.h
+ *  @file D2TetragonalPrimitive.h
  *  @brief Tetragonal primitive Bravais lattices.
  *
  *  @author Kristofer Björnson
  */
 
-#ifndef COM_DAFER45_TBTK_TETRAGONAL_PRIMITIVE
-#define COM_DAFER45_TBTK_TETRAGONAL_PRIMITIVE
+#ifndef COM_DAFER45_TBTK_D2_TETRAGONAL_PRIMITIVE
+#define COM_DAFER45_TBTK_D2_TETRAGONAL_PRIMITIVE
 
 #include "D2OrthorhombicPrimitive.h"
 

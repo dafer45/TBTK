@@ -14,14 +14,14 @@
  */
 
 /** @package TBTKcalc
- *  @file MonoclinicPrimitive.h
+ *  @file D2MonoclinicPrimitive.h
  *  @brief Monoclinic primitive Bravais lattices.
  *
  *  @author Kristofer Björnson
  */
 
-#ifndef COM_DAFER45_TBTK_MONOCLINIC_PRIMITIVE
-#define COM_DAFER45_TBTK_MONOCLINIC_PRIMITIVE
+#ifndef COM_DAFER45_TBTK_D2_MONOCLINIC_PRIMITIVE
+#define COM_DAFER45_TBTK_D2_MONOCLINIC_PRIMITIVE
 
 #include "BravaisLattice.h"
 
