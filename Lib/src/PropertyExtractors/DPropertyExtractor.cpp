@@ -26,7 +26,9 @@ using namespace std;
 
 namespace TBTK{
 
-complex<double> i(0,1);
+namespace{
+	complex<double> i(0,1);
+}
 
 DPropertyExtractor::DPropertyExtractor(DiagonalizationSolver *dSolver){
 	this->dSolver = dSolver;

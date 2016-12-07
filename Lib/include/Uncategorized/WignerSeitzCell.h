@@ -54,6 +54,9 @@ public:
 	/** Destructor. */
 	~WignerSeitzCell();
 
+	/** Get number of dimensions. */
+	unsigned int getNumDimensions() const;
+
 	/** Returns an equispaced mesh covering the Wigner-Seitz cell, using
 	 *  numMeshPoints mesh points along the corresponding directions. For
 	 *  odd values, the mesh contains the points given by
@@ -67,7 +70,7 @@ public:
 	) const;
 private:
 	/** Lattice dimension. */
-	unsigned dimensions;
+	unsigned int dimensions;
 
 	/** Basis vectors stored as three Vector3d. For lower dimensions the
 	 *  vectors are padded with zeros to create three-dimensional vectors
@@ -80,6 +83,10 @@ private:
 	 *  numerical fluctuations. */
 	static constexpr double ROUNDOFF_MARGIN_MULTIPLIER = 1.000001;
 };
+
+inline unsigned int WignerSeitzCell::getNumDimensions() const{
+	return dimensions;
+}
 
 };	//End namespace TBTK
 

@@ -20,8 +20,8 @@
  *  @author Kristofer Björnson
  */
 
-#ifndef COM_DAFER45_TBTK_VECTOR
-#define COM_DAFER45_TBTK_VECTOR
+#ifndef COM_DAFER45_TBTK_VECTOR_3D
+#define COM_DAFER45_TBTK_VECTOR_3D
 
 #include <initializer_list>
 #include <vector>
@@ -29,7 +29,6 @@
 
 namespace TBTK{
 
-/** Container for density of states (DOS). */
 class Vector3d{
 public:
 	/** x-component. */

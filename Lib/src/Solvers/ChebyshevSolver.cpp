@@ -31,7 +31,9 @@ using namespace std;
 
 namespace TBTK{
 
-const complex<double> i(0, 1);
+namespace{
+	const complex<double> i(0, 1);
+}
 
 /*int ChebyshevSolver::numChebyshevSolvers = 0;
 int ChebyshevSolver::numDevices = 0;
