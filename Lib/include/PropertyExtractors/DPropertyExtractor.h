@@ -23,6 +23,7 @@
 #ifndef COM_DAFER45_TBTK_D_PROPERTY_EXTRACTOR
 #define COM_DAFER45_TBTK_D_PROPERTY_EXTRACTOR
 
+#include "PropertyExtractor.h"
 #include "DiagonalizationSolver.h"
 #include "EigenValues.h"
 #include "DOS.h"
@@ -38,7 +39,7 @@ namespace TBTK{
 /** The DPropertyExtractor extracts common physical properties such as DOS,
  *  Density, LDOS, etc. from a DiagonalizationSolver. These can then be written
  *  to file using the FileWriter.*/
-class DPropertyExtractor{
+class DPropertyExtractor : public PropertyExtractor{
 public:
 	/** Constructor. */
 	DPropertyExtractor(DiagonalizationSolver *dSolver);
@@ -247,7 +248,7 @@ public:
 private:
 	/** Loops over range indices and calls the appropriate callback
 	 *  function to calculate the correct quantity. */
-	void calculate(
+/*	void calculate(
 		void (*callback)(
 			DPropertyExtractor *cb_this,
 			void *memory,
@@ -259,11 +260,11 @@ private:
 		const Index &ranges,
 		int currentOffset,
 		int offsetMultiplier
-	);
+	);*/
 
 	/** Callback for calculating density. Used by calculateDensity. */
 	static void calculateDensityCallback(
-		DPropertyExtractor *cb_this,
+		PropertyExtractor *cb_this,
 		void *density,
 		const Index &index,
 		int offset
@@ -271,7 +272,7 @@ private:
 
 	/** Callback for calculating magnetization. Used by calculateMAG. */
 	static void calculateMAGCallback(
-		DPropertyExtractor *cb_this,
+		PropertyExtractor *cb_this,
 		void *mag,
 		const Index &index,
 		int offset
@@ -280,7 +281,7 @@ private:
 	/** Calback for callculating local density of states. Used by
 	 *  calculateLDOS. */
 	static void calculateLDOSCallback(
-		DPropertyExtractor *cb_this,
+		PropertyExtractor *cb_this,
 		void *ldos,
 		const Index &index,
 		int offset
@@ -289,7 +290,7 @@ private:
 	/** Callback for calculating spin-polarized local density of states.
 	 *  Used by calculateSP_LDOS. */
 	static void calculateSP_LDOSCallback(
-		DPropertyExtractor *cb_this,
+		PropertyExtractor *cb_this,
 		void *sp_ldos,
 		const Index &index,
 		int offset
@@ -300,19 +301,19 @@ private:
 
 	/** Hint used to pass information between calculate[Property] and
 	 *  calculate[Property]Callback. */
-	void *hint;
+//	void *hint;
 
 	/** Ensure that range indices are on compliant format. (Set range to
 	 *  one for indices with non-negative pattern value.) */
-	void ensureCompliantRanges(const Index &pattern, Index &ranges);
+//	void ensureCompliantRanges(const Index &pattern, Index &ranges);
 
 	/** Extract ranges for loop indices. */
-	void getLoopRanges(
+/*	void getLoopRanges(
 		const Index &pattern,
 		const Index &ranges,
 		int *lDimensions,
 		int **lRanges
-	);
+	);*/
 };
 
 inline double DPropertyExtractor::getEigenValue(int state){

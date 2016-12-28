@@ -23,6 +23,7 @@
 #ifndef COM_DAFER45_TBTK_C_PROPERTY_EXTRACTOR
 #define COM_DAFER45_TBTK_C_PROPERTY_EXTRACTOR
 
+#include "PropertyExtractor.h"
 #include "ChebyshevSolver.h"
 #include "Density.h"
 #include "Magnetization.h"
@@ -34,7 +35,7 @@
 namespace TBTK{
 
 /** Experimental class for extracting properties from a ChebyshevSolver. */
-class CPropertyExtractor{
+class CPropertyExtractor : public PropertyExtractor{
 public:
 	/** Constructor. */
 	CPropertyExtractor(
@@ -237,7 +238,7 @@ private:
 
 	/** Loops over range indices and calls the appropriate callback
 	 *  function to calculate the correct quantity. */
-	void calculate(
+/*	void calculate(
 		void (*callback)(
 			CPropertyExtractor *cb_this,
 			void *memory,
@@ -249,12 +250,12 @@ private:
 		const Index &ranges,
 		int currentOffset,
 		int offsetMultiplier
-	);
+	);*/
 
 	/** !!!Not tested!!! Callback for calculating density.
 	 *  Used by calculateDensity. */
 	static void calculateDensityCallback(
-		CPropertyExtractor *cb_this,
+		PropertyExtractor *cb_this,
 		void *density,
 		const Index &index,
 		int offset
@@ -263,7 +264,7 @@ private:
 	/** !!!Not tested!!! Callback for calculating magnetization.
 	 *  Used by calculateMAG. */
 	static void calculateMAGCallback(
-		CPropertyExtractor *cb_this,
+		PropertyExtractor *cb_this,
 		void *density,
 		const Index &index,
 		int offset
@@ -272,7 +273,7 @@ private:
 	/** !!!Not tested!!! Callback for calculating local density of states.
 	 *  Used by calculateLDOS. */
 	static void calculateLDOSCallback(
-		CPropertyExtractor *cb_this,
+		PropertyExtractor *cb_this,
 		void *ldos,
 		const Index &index,
 		int offset
@@ -281,7 +282,7 @@ private:
 	/** !!!Not tested!!! Callback for calculating spin-polarized local
 	 *  density of states. Used by calculateSP_LDOS. */
 	static void calculateSP_LDOSCallback(
-		CPropertyExtractor *cb_this,
+		PropertyExtractor *cb_this,
 		void *sp_ldos,
 		const Index &index,
 		int offset
@@ -289,19 +290,19 @@ private:
 
 	/** Hint used to pass information between calculate[Property] and
 	 * calculate[Property]Callback. */
-	void *hint;
+//	void *hint;
 
 	/** Ensure that range indices are on compliant format. (Set range to
 	 *  one for indices with non-negative pattern value.) */
-	void ensureCompliantRanges(const Index &pattern, Index &ranges);
+//	void ensureCompliantRanges(const Index &pattern, Index &ranges);
 
 	/** Extract ranges for loop indices. */
-	void getLoopRanges(
+/*	void getLoopRanges(
 		const Index &pattern,
 		const Index &ranges,
 		int *lDimensions,
 		int **lRanges
-	);
+	);*/
 };
 
 };	//End of namespace TBTK

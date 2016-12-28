@@ -264,61 +264,65 @@ Property::SpinPolarizedLDOS* DPropertyExtractor::calculateSpinPolarizedLDOS(
 }
 
 void DPropertyExtractor::calculateDensityCallback(
-	DPropertyExtractor *cb_this,
+	PropertyExtractor *cb_this,
 	void* density,
 	const Index &index,
 	int offset
 ){
-	const double *eigen_values = cb_this->dSolver->getEigenValues();
-	Model::Statistics statistics = cb_this->dSolver->getModel()->getStatistics();
-	for(int n = 0; n < cb_this->dSolver->getModel()->getBasisSize(); n++){
+	DPropertyExtractor *pe = (DPropertyExtractor*)cb_this;
+
+	const double *eigen_values = pe->dSolver->getEigenValues();
+	Model::Statistics statistics = pe->dSolver->getModel()->getStatistics();
+	for(int n = 0; n < pe->dSolver->getModel()->getBasisSize(); n++){
 		double weight;
 		if(statistics == Model::Statistics::FermiDirac){
 			weight = Functions::fermiDiracDistribution(eigen_values[n],
-									cb_this->dSolver->getModel()->getChemicalPotential(),
-									cb_this->dSolver->getModel()->getTemperature());
+									pe->dSolver->getModel()->getChemicalPotential(),
+									pe->dSolver->getModel()->getTemperature());
 		}
 		else{
 			weight = Functions::boseEinsteinDistribution(eigen_values[n],
-									cb_this->dSolver->getModel()->getChemicalPotential(),
-									cb_this->dSolver->getModel()->getTemperature());
+									pe->dSolver->getModel()->getChemicalPotential(),
+									pe->dSolver->getModel()->getTemperature());
 		}
 
-		complex<double> u = cb_this->dSolver->getAmplitude(n, index);
+		complex<double> u = pe->dSolver->getAmplitude(n, index);
 
 		((double*)density)[offset] += pow(abs(u), 2)*weight;
 	}
 }
 
 void DPropertyExtractor::calculateMAGCallback(
-	DPropertyExtractor *cb_this,
+	PropertyExtractor *cb_this,
 	void *mag,
 	const Index &index,
 	int offset
 ){
-	const double *eigen_values = cb_this->dSolver->getEigenValues();
-	Model::Statistics statistics = cb_this->dSolver->getModel()->getStatistics();
+	DPropertyExtractor *pe = (DPropertyExtractor*)cb_this;
 
-	int spin_index = ((int*)cb_this->hint)[0];
+	const double *eigen_values = pe->dSolver->getEigenValues();
+	Model::Statistics statistics = pe->dSolver->getModel()->getStatistics();
+
+	int spin_index = ((int*)pe->hint)[0];
 	Index index_u(index);
 	Index index_d(index);
 	index_u.at(spin_index) = 0;
 	index_d.at(spin_index) = 1;
-	for(int n = 0; n < cb_this->dSolver->getModel()->getBasisSize(); n++){
+	for(int n = 0; n < pe->dSolver->getModel()->getBasisSize(); n++){
 		double weight;
 		if(statistics == Model::Statistics::FermiDirac){
 			weight = Functions::fermiDiracDistribution(eigen_values[n],
-									cb_this->dSolver->getModel()->getChemicalPotential(),
-									cb_this->dSolver->getModel()->getTemperature());
+									pe->dSolver->getModel()->getChemicalPotential(),
+									pe->dSolver->getModel()->getTemperature());
 		}
 		else{
 			weight = Functions::boseEinsteinDistribution(eigen_values[n],
-									cb_this->dSolver->getModel()->getChemicalPotential(),
-									cb_this->dSolver->getModel()->getTemperature());
+									pe->dSolver->getModel()->getChemicalPotential(),
+									pe->dSolver->getModel()->getTemperature());
 		}
 
-		complex<double> u_u = cb_this->dSolver->getAmplitude(n, index_u);
-		complex<double> u_d = cb_this->dSolver->getAmplitude(n, index_d);
+		complex<double> u_u = pe->dSolver->getAmplitude(n, index_u);
+		complex<double> u_d = pe->dSolver->getAmplitude(n, index_d);
 
 		((complex<double>*)mag)[4*offset + 0] += conj(u_u)*u_u*weight;
 		((complex<double>*)mag)[4*offset + 1] += conj(u_u)*u_d*weight;
@@ -328,22 +332,24 @@ void DPropertyExtractor::calculateMAGCallback(
 }
 
 void DPropertyExtractor::calculateLDOSCallback(
-	DPropertyExtractor *cb_this,
+	PropertyExtractor *cb_this,
 	void *ldos,
 	const Index &index,
 	int offset
 ){
-	const double *eigen_values = cb_this->dSolver->getEigenValues();
+	DPropertyExtractor *pe = (DPropertyExtractor*)cb_this;
 
-	double u_lim = ((double**)cb_this->hint)[0][0];
-	double l_lim = ((double**)cb_this->hint)[0][1];
-	int resolution = ((int**)cb_this->hint)[1][0];
+	const double *eigen_values = pe->dSolver->getEigenValues();
+
+	double u_lim = ((double**)pe->hint)[0][0];
+	double l_lim = ((double**)pe->hint)[0][1];
+	int resolution = ((int**)pe->hint)[1][0];
 
 	double step_size = (u_lim - l_lim)/(double)resolution;
 
-	for(int n = 0; n < cb_this->dSolver->getModel()->getBasisSize(); n++){
+	for(int n = 0; n < pe->dSolver->getModel()->getBasisSize(); n++){
 		if(eigen_values[n] > l_lim && eigen_values[n] < u_lim){
-			complex<double> u = cb_this->dSolver->getAmplitude(n, index);
+			complex<double> u = pe->dSolver->getAmplitude(n, index);
 
 			int e = (int)((eigen_values[n] - l_lim)/step_size);
 			if(e >= resolution)
@@ -354,17 +360,19 @@ void DPropertyExtractor::calculateLDOSCallback(
 }
 
 void DPropertyExtractor::calculateSP_LDOSCallback(
-	DPropertyExtractor *cb_this,
+	PropertyExtractor *cb_this,
 	void *sp_ldos,
 	const Index &index,
 	int offset
 ){
-	const double *eigen_values = cb_this->dSolver->getEigenValues();
+	DPropertyExtractor *pe = (DPropertyExtractor*)cb_this;
 
-	double u_lim = ((double**)cb_this->hint)[0][0];
-	double l_lim = ((double**)cb_this->hint)[0][1];
-	int resolution = ((int**)cb_this->hint)[1][0];
-	int spin_index = ((int**)cb_this->hint)[1][1];
+	const double *eigen_values = pe->dSolver->getEigenValues();
+
+	double u_lim = ((double**)pe->hint)[0][0];
+	double l_lim = ((double**)pe->hint)[0][1];
+	int resolution = ((int**)pe->hint)[1][0];
+	int spin_index = ((int**)pe->hint)[1][1];
 
 	double step_size = (u_lim - l_lim)/(double)resolution;
 
@@ -372,10 +380,10 @@ void DPropertyExtractor::calculateSP_LDOSCallback(
 	Index index_d(index);
 	index_u.at(spin_index) = 0;
 	index_d.at(spin_index) = 1;
-	for(int n = 0; n < cb_this->dSolver->getModel()->getBasisSize(); n++){
+	for(int n = 0; n < pe->dSolver->getModel()->getBasisSize(); n++){
 		if(eigen_values[n] > l_lim && eigen_values[n] < u_lim){
-			complex<double> u_u = cb_this->dSolver->getAmplitude(n, index_u);
-			complex<double> u_d = cb_this->dSolver->getAmplitude(n, index_d);
+			complex<double> u_u = pe->dSolver->getAmplitude(n, index_u);
+			complex<double> u_d = pe->dSolver->getAmplitude(n, index_d);
 
 			int e = (int)((eigen_values[n] - l_lim)/step_size);
 			if(e >= resolution)
@@ -388,7 +396,7 @@ void DPropertyExtractor::calculateSP_LDOSCallback(
 	}
 }
 
-void DPropertyExtractor::calculate(
+/*void DPropertyExtractor::calculate(
 	void (*callback)(
 		DPropertyExtractor *cb_this,
 		void *memory,
@@ -460,6 +468,6 @@ void DPropertyExtractor::getLoopRanges(
 		if(pattern.at(n) < IDX_SUM_ALL)
 			(*lRanges)[counter++] = ranges.at(n);
 	}
-}
+}*/
 
 };	//End of namespace TBTK

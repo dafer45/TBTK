@@ -335,26 +335,28 @@ Property::SpinPolarizedLDOS* CPropertyExtractor::calculateSpinPolarizedLDOS(
 }
 
 void CPropertyExtractor::calculateDensityCallback(
-	CPropertyExtractor *cb_this,
+	PropertyExtractor *cb_this,
 	void *density,
 	const Index &index,
 	int offset
 ){
-	complex<double> *greensFunction = cb_this->calculateGreensFunction(index, index, ChebyshevSolver::GreensFunctionType::NonPrincipal);
-	Model::Statistics statistics = cb_this->cSolver->getModel()->getStatistics();
+	CPropertyExtractor *pe = (CPropertyExtractor*)cb_this;
 
-	const double dE = (cb_this->upperBound - cb_this->lowerBound)/cb_this->energyResolution;
-	for(int e = 0; e < cb_this->energyResolution; e++){
+	complex<double> *greensFunction = pe->calculateGreensFunction(index, index, ChebyshevSolver::GreensFunctionType::NonPrincipal);
+	Model::Statistics statistics = pe->cSolver->getModel()->getStatistics();
+
+	const double dE = (pe->upperBound - pe->lowerBound)/pe->energyResolution;
+	for(int e = 0; e < pe->energyResolution; e++){
 		double weight;
 		if(statistics == Model::Statistics::FermiDirac){
-			weight = Functions::fermiDiracDistribution(cb_this->lowerBound + (e/(double)cb_this->energyResolution)*(cb_this->upperBound - cb_this->lowerBound),
-									cb_this->cSolver->getModel()->getChemicalPotential(),
-									cb_this->cSolver->getModel()->getTemperature());
+			weight = Functions::fermiDiracDistribution(pe->lowerBound + (e/(double)pe->energyResolution)*(pe->upperBound - pe->lowerBound),
+									pe->cSolver->getModel()->getChemicalPotential(),
+									pe->cSolver->getModel()->getTemperature());
 		}
 		else{
-			weight = Functions::boseEinsteinDistribution(cb_this->lowerBound + (e/(double)cb_this->energyResolution)*(cb_this->upperBound - cb_this->lowerBound),
-									cb_this->cSolver->getModel()->getChemicalPotential(),
-									cb_this->cSolver->getModel()->getTemperature());
+			weight = Functions::boseEinsteinDistribution(pe->lowerBound + (e/(double)pe->energyResolution)*(pe->upperBound - pe->lowerBound),
+									pe->cSolver->getModel()->getChemicalPotential(),
+									pe->cSolver->getModel()->getTemperature());
 		}
 
 		((double*)density)[offset] += weight*imag(greensFunction[e])/M_PI*dE;
@@ -364,34 +366,36 @@ void CPropertyExtractor::calculateDensityCallback(
 }
 
 void CPropertyExtractor::calculateMAGCallback(
-	CPropertyExtractor *cb_this,
+	PropertyExtractor *cb_this,
 	void *mag,
 	const Index &index,
 	int offset
 ){
-	int spinIndex = ((int*)(cb_this->hint))[0];
+	CPropertyExtractor *pe = (CPropertyExtractor*)cb_this;
+
+	int spinIndex = ((int*)(pe->hint))[0];
 	Index to(index);
 	Index from(index);
 	complex<double> *greensFunction;
-	Model::Statistics statistics = cb_this->cSolver->getModel()->getStatistics();
+	Model::Statistics statistics = pe->cSolver->getModel()->getStatistics();
 
-	const double dE = (cb_this->upperBound - cb_this->lowerBound)/cb_this->energyResolution;
+	const double dE = (pe->upperBound - pe->lowerBound)/pe->energyResolution;
 	for(int n = 0; n < 4; n++){
 		to.at(spinIndex) = n/2;		//up, up, down, down
 		from.at(spinIndex) = n%2;	//up, down, up, down
-		greensFunction = cb_this->calculateGreensFunction(to, from, ChebyshevSolver::GreensFunctionType::NonPrincipal);
+		greensFunction = pe->calculateGreensFunction(to, from, ChebyshevSolver::GreensFunctionType::NonPrincipal);
 
-		for(int e = 0; e < cb_this->energyResolution; e++){
+		for(int e = 0; e < pe->energyResolution; e++){
 			double weight;
 			if(statistics == Model::Statistics::FermiDirac){
-				weight = Functions::fermiDiracDistribution(cb_this->lowerBound + (e/(double)cb_this->energyResolution)*(cb_this->upperBound - cb_this->lowerBound),
-										cb_this->cSolver->getModel()->getChemicalPotential(),
-										cb_this->cSolver->getModel()->getTemperature());
+				weight = Functions::fermiDiracDistribution(pe->lowerBound + (e/(double)pe->energyResolution)*(pe->upperBound - pe->lowerBound),
+										pe->cSolver->getModel()->getChemicalPotential(),
+										pe->cSolver->getModel()->getTemperature());
 			}
 			else{
-				weight = Functions::boseEinsteinDistribution(cb_this->lowerBound + (e/(double)cb_this->energyResolution)*(cb_this->upperBound - cb_this->lowerBound),
-										cb_this->cSolver->getModel()->getChemicalPotential(),
-										cb_this->cSolver->getModel()->getTemperature());
+				weight = Functions::boseEinsteinDistribution(pe->lowerBound + (e/(double)pe->energyResolution)*(pe->upperBound - pe->lowerBound),
+										pe->cSolver->getModel()->getChemicalPotential(),
+										pe->cSolver->getModel()->getTemperature());
 			}
 
 			((complex<double>*)mag)[4*offset + n] += weight*imag(greensFunction[e])/M_PI*dE;
@@ -402,45 +406,49 @@ void CPropertyExtractor::calculateMAGCallback(
 }
 
 void CPropertyExtractor::calculateLDOSCallback(
-	CPropertyExtractor *cb_this,
+	PropertyExtractor *cb_this,
 	void *ldos,
 	const Index &index,
 	int offset
 ){
-	complex<double> *greensFunction = cb_this->calculateGreensFunction(index, index, ChebyshevSolver::GreensFunctionType::NonPrincipal);
+	CPropertyExtractor *pe = (CPropertyExtractor*)cb_this;
 
-	const double dE = (cb_this->upperBound - cb_this->lowerBound)/cb_this->energyResolution;
-	for(int n = 0; n < cb_this->energyResolution; n++)
-		((double*)ldos)[cb_this->energyResolution*offset + n] += imag(greensFunction[n])/M_PI*dE;
+	complex<double> *greensFunction = pe->calculateGreensFunction(index, index, ChebyshevSolver::GreensFunctionType::NonPrincipal);
+
+	const double dE = (pe->upperBound - pe->lowerBound)/pe->energyResolution;
+	for(int n = 0; n < pe->energyResolution; n++)
+		((double*)ldos)[pe->energyResolution*offset + n] += imag(greensFunction[n])/M_PI*dE;
 
 	delete [] greensFunction;
 }
 
 void CPropertyExtractor::calculateSP_LDOSCallback(
-	CPropertyExtractor *cb_this,
+	PropertyExtractor *cb_this,
 	void *sp_ldos,
 	const Index &index,
 	int offset
 ){
-	int spinIndex = ((int*)(cb_this->hint))[0];
+	CPropertyExtractor *pe = (CPropertyExtractor*)cb_this;
+
+	int spinIndex = ((int*)(pe->hint))[0];
 	Index to(index);
 	Index from(index);
 	complex<double> *greensFunction;
 
-	const double dE = (cb_this->upperBound - cb_this->lowerBound)/cb_this->energyResolution;
+	const double dE = (pe->upperBound - pe->lowerBound)/pe->energyResolution;
 	for(int n = 0; n < 4; n++){
 		to.at(spinIndex) = n/2;		//up, up, down, down
 		from.at(spinIndex) = n%2;	//up, down, up, down
-		greensFunction = cb_this->calculateGreensFunction(to, from, ChebyshevSolver::GreensFunctionType::NonPrincipal);
+		greensFunction = pe->calculateGreensFunction(to, from, ChebyshevSolver::GreensFunctionType::NonPrincipal);
 
-		for(int e = 0; e < cb_this->energyResolution; e++)
-			((complex<double>*)sp_ldos)[4*cb_this->energyResolution*offset + 4*e + n] += imag(greensFunction[e])/M_PI*dE;
+		for(int e = 0; e < pe->energyResolution; e++)
+			((complex<double>*)sp_ldos)[4*pe->energyResolution*offset + 4*e + n] += imag(greensFunction[e])/M_PI*dE;
 
 		delete [] greensFunction;
 	}
 }
 
-void CPropertyExtractor::calculate(
+/*void CPropertyExtractor::calculate(
 	void (*callback)(
 		CPropertyExtractor *cb_this,
 		void *memory,
@@ -512,6 +520,6 @@ void CPropertyExtractor::getLoopRanges(
 		if(pattern.at(n) < IDX_SUM_ALL)
 			(*lRanges)[counter++] = ranges.at(n);
 	}
-}
+}*/
 
 };	//End of namespace TBTK
