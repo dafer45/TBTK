@@ -90,14 +90,14 @@ int main(int argc, char **argv){
 	//(required if the Green's function is evaluated on a GPU), and the
 	//lower and upper bound between which the Green's function is evaluated
 	//(has to be inside the interval [-SCALE_FACTOR, SCALE_FACTOR]).
-	CPropertyExtractor pe(&cSolver,
-				NUM_COEFFICIENTS,
-				ENERGY_RESOLUTION,
-				false,
-				false,
-				true,
-				-SCALE_FACTOR,
-				SCALE_FACTOR);
+	CPropertyExtractor pe(
+		&cSolver,
+		NUM_COEFFICIENTS,
+		false,
+		false,
+		true
+	);
+	pe.setEnergyWindow(-SCALE_FACTOR, SCALE_FACTOR, ENERGY_RESOLUTION);
 
 	//Extract local density of states and write to file
 	Property::LDOS *ldos = pe.calculateLDOS({IDX_X, SIZE_Y/2, IDX_SUM_ALL},

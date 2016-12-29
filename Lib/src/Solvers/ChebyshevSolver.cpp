@@ -650,6 +650,21 @@ void ChebyshevSolver::generateLookupTable(
 	}
 }
 
+void ChebyshevSolver::destroyLookupTable(){
+	TBTKAssert(
+		generatingFunctionLookupTable != NULL,
+		"ChebyshevSolver::destroyLookupTable()",
+		"No lookup table generated.",
+		""
+	);
+	for(int n = 0; n < lookupTableNumCoefficients; n++)
+		delete [] generatingFunctionLookupTable[n];
+
+	delete [] generatingFunctionLookupTable;
+
+	generatingFunctionLookupTable = NULL;
+}
+
 void ChebyshevSolver::generateGreensFunction(
 	complex<double> *greensFunction,
 	complex<double> *coefficients,

@@ -30,12 +30,9 @@ namespace TBTK{
 CPropertyExtractor::CPropertyExtractor(
 	ChebyshevSolver *cSolver,
 	int numCoefficients,
-	int energyResolution,
 	bool useGPUToCalculateCoefficients,
 	bool useGPUToGenerateGreensFunctions,
-	bool useLookupTable,
-	double lowerBound,
-	double upperBound
+	bool useLookupTable
 ){
 	TBTKAssert(
 		cSolver != NULL,
@@ -84,9 +81,9 @@ CPropertyExtractor::CPropertyExtractor(
 	this->useLookupTable = useLookupTable;
 
 	setEnergyWindow(
-		lowerBound,
-		upperBound,
-		energyResolution
+		-cSolver->getScaleFactor(),
+		cSolver->getScaleFactor(),
+		ENERGY_RESOLUTION
 	);
 
 }
@@ -102,23 +99,15 @@ void CPropertyExtractor::setEnergyWindow(
 	int energyResolution
 ){
 	PropertyExtractor::setEnergyWindow(
-		energyResolution,
 		lowerBound,
-		upperBound
+		upperBound,
+		energyResolution
 	);
 
-	if(useLookupTable){
-		cSolver->generateLookupTable(numCoefficients, energyResolution, lowerBound, upperBound);
-		if(useGPUToGenerateGreensFunctions)
-			cSolver->loadLookupTableGPU();
-	}
-	else if(useGPUToGenerateGreensFunctions){
-		TBTKExit(
-			"CPropertyExtractor::CPropertyExtractor()",
-			"Argument 'useLookupTable' cannot be false if argument 'useGPUToGenerateGreensFunction' is true.",
-			""
-		);
-	}
+	if(cSolver->getLookupTableIsLoadedGPU())
+		cSolver->destroyLookupTableGPU();
+	if(cSolver->getLookupTableIsGenerated())
+		cSolver->destroyLookupTable();
 }
 
 complex<double>* CPropertyExtractor::calculateGreensFunction(
@@ -137,6 +126,8 @@ complex<double>* CPropertyExtractor::calculateGreensFunctions(
 	Index from,
 	ChebyshevSolver::GreensFunctionType type
 ){
+	ensureLookupTableIsReady();
+
 	complex<double> *coefficients = new complex<double>[numCoefficients*to.size()];
 
 	if(useGPUToCalculateCoefficients){
@@ -464,6 +455,22 @@ void CPropertyExtractor::calculateSP_LDOSCallback(
 			((complex<double>*)sp_ldos)[4*pe->energyResolution*offset + 4*e + n] += imag(greensFunction[e])/M_PI*dE;
 
 		delete [] greensFunction;
+	}
+}
+
+void CPropertyExtractor::ensureLookupTableIsReady(){
+	if(useLookupTable){
+		if(!cSolver->getLookupTableIsGenerated())
+			cSolver->generateLookupTable(numCoefficients, energyResolution, lowerBound, upperBound);
+		if(useGPUToGenerateGreensFunctions && !cSolver->getLookupTableIsLoadedGPU())
+			cSolver->loadLookupTableGPU();
+	}
+	else if(useGPUToGenerateGreensFunctions){
+		TBTKExit(
+			"CPropertyExtractor::CPropertyExtractor()",
+			"Argument 'useLookupTable' cannot be false if argument 'useGPUToGenerateGreensFunction' is true.",
+			""
+		);
 	}
 }
 

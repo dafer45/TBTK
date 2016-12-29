@@ -151,6 +151,7 @@ Model* setupModel(int center_x, int center_y, double radius){
 
 	//Construct model
 	model->construct();
+	model->constructCOO();
 
 	return model;
 }
@@ -163,7 +164,18 @@ double scLoop(double radius){
 	//with a width twice the Debye frequency.
 	ChebyshevSolver cSolver;
 	cSolver.setScaleFactor(SCALE_FACTOR);
-	CPropertyExtractor pe(&cSolver, NUM_COEFFICIENTS, ENERGY_RESOLUTION, true, true, true, -DEBYE_FREQUENCY, DEBYE_FREQUENCY);
+	CPropertyExtractor pe(
+		&cSolver,
+		NUM_COEFFICIENTS,
+		true,
+		false,
+		true
+	);
+	pe.setEnergyWindow(
+		-DEBYE_FREQUENCY,
+		DEBYE_FREQUENCY,
+		ENERGY_RESOLUTION
+	);
 
 	//Self-consistency loop
 	int counter = 0;

@@ -41,12 +41,9 @@ public:
 	CPropertyExtractor(
 		ChebyshevSolver *cSolver,
 		int numCoefficients,
-		int energyResolution,
 		bool useGPUToCalculateCoefficients,
 		bool useGPUToGenerateGreensFunctions,
-		bool useLookupTable = true,
-		double lowerBound = -1.,
-		double upperBound = 1.
+		bool useLookupTable = true
 	);
 
 	/** Destructor. */
@@ -173,6 +170,9 @@ private:
 		const Index &index,
 		int offset
 	);
+
+	/** Ensure that the lookup table is in a ready state. */
+	void ensureLookupTableIsReady();
 
 	/** Hint used to pass information between calculate[Property] and
 	 * calculate[Property]Callback. */

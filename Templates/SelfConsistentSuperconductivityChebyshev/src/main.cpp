@@ -73,11 +73,24 @@ bool scLoop(ChebyshevSolver *cSolver){
 	//coefficients and Green's function, and using lookup table. The
 	//Green's function is only calculated in an energy interval around E=0
 	//with a width twice of the Debye frequency.
-	CPropertyExtractor pe(cSolver, NUM_COEFFICIENTS, ENERGY_RESOLUTION, true, true, true, -DEBYE_FREQUENCY, DEBYE_FREQUENCY);
+	CPropertyExtractor pe(
+		cSolver,
+		NUM_COEFFICIENTS,
+		true,
+		true,
+		true
+	);
+	pe.setEnergyWindow(
+		-DEBYE_FREQUENCY,
+		DEBYE_FREQUENCY,
+		ENERGY_RESOLUTION
+	);
 
 	//Self-consistency loop
 	int counter = 0;
 	while(counter++ < MAX_ITERATIONS){
+		cSolver->getModel()->reconstructCOO();
+
 		//Clear the order parameter
 		for(int x = 0; x < SIZE_X; x++){
 			for(int y = 0; y < SIZE_Y; y++){
@@ -196,6 +209,7 @@ int main(int argc, char **argv){
 
 	//Construct model
 	model.construct();
+	model.constructCOO();
 
 	//Initialize D
 	initD();
