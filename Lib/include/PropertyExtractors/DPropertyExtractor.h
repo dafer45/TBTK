@@ -70,20 +70,11 @@ public:
 	/** Get amplitude for given eigenvector \f$n\f$ and physical index
 	 *  \f$x\f$: \f$\Psi_{n}(x)\f$.
 	 *  @param state Eigenstate number \f$n\f$
-	 *  @param index Physical index \f$x\f$.
-	 */
+	 *  @param index Physical index \f$x\f$. */
 	const std::complex<double> getAmplitude(int state, const Index &index);
 
-	/** Calculate density of states.
-	 *  @param l_lim Lower limit for energy interval.
-	 *  @param u_lim Upper limit for energy interval.
-	 *  @param resolution Number of points used between l_lim and u_lim.
-	 *  @return An array with size resolution. */
-	Property::DOS* calculateDOS(
-/*		double l_lim,
-		double u_lim,
-		int resolution*/
-	);
+	/** Overrides PropertyExtractor::calculateDOS(). */
+	Property::DOS* calculateDOS();
 
 	/** Calculate expectation value. */
 	std::complex<double> calculateExpectationValue(Index to, Index from);
