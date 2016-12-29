@@ -145,7 +145,7 @@ int main(int argc, char **argv){
 	complex<double> mu = -1.0;
 	complex<double> t_ss = 1.0;
 	complex<double> t_mm = 0.75;
-	complex<double> t_sm = 0.9;	
+	complex<double> t_sm = 0.9;
 	complex<double> V_z = 0.5;
 
 	//Create model
@@ -225,20 +225,28 @@ int main(int argc, char **argv){
 
 	//Calculate and save magnetization
 	DPropertyExtractor pe(&dSolver);
-	Property::Magnetization *magnetization = pe.calculateMagnetization({0, IDX_X, IDX_Y, IDX_SPIN},
-										{1, SIZE_X, SIZE_Y, 2});
+
+	const int SP_LDOS_LOWER_BOUND = -2.;
+	const int SP_LDOS_UPPER_BOUND = 2.;
+	const int SP_LDOS_RESOLUTION = 1000;
+	pe.setEnergyWindow(
+		SP_LDOS_LOWER_BOUND,
+		SP_LDOS_UPPER_BOUND,
+		SP_LDOS_RESOLUTION
+	);
+
+	Property::Magnetization *magnetization = pe.calculateMagnetization(
+		{0, IDX_X, IDX_Y, IDX_SPIN},
+		{1, SIZE_X, SIZE_Y, 2}
+	);
 	FileWriter::writeMagnetization(magnetization);
 	delete magnetization;
 
 	//Calculate and save spin-polarized local density of states
-	const int SP_LDOS_UPPER_LIMIT = 2.;
-	const int SP_LDOS_LOWER_LIMIT = -2.;
-	const int SP_LDOS_RESOLUTION = 1000;
-	Property::SpinPolarizedLDOS *spLdos = pe.calculateSpinPolarizedLDOS({0, IDX_X, SIZE_Y/2, IDX_SPIN},
-										{1, SIZE_X, 1, 2},
-										SP_LDOS_UPPER_LIMIT,
-										SP_LDOS_LOWER_LIMIT,
-										SP_LDOS_RESOLUTION);
+	Property::SpinPolarizedLDOS *spLdos = pe.calculateSpinPolarizedLDOS(
+		{0, IDX_X, SIZE_Y/2, IDX_SPIN},
+		{1, SIZE_X, 1, 2}
+	);
 	FileWriter::writeSpinPolarizedLDOS(spLdos);
 	delete spLdos;
 

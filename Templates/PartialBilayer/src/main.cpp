@@ -99,16 +99,19 @@ int main(int argc, char **argv){
 	//Create PropertyExtractor
 	DPropertyExtractor pe(&dSolver);
 
+	//Setup energy window
+	const double LOWER_BOUND = -5.;
+	const double UPPER_BOUND = 7.;
+	const int RESOLUTION = 1000;
+	pe.setEnergyWindow(LOWER_BOUND, UPPER_BOUND, RESOLUTION);
+
 	//Extract eigenvalues and write these to file
 	Property::EigenValues *ev = pe.getEigenValues();
 	FileWriter::writeEigenValues(ev);
 	delete ev;
 
 	//Extract DOS and write to file
-	const double UPPER_LIMIT = 7.;
-	const double LOWER_LIMIT = -5.;
-	const int RESOLUTION = 1000;
-	Property::DOS *dos = pe.calculateDOS(LOWER_LIMIT, UPPER_LIMIT, RESOLUTION);
+	Property::DOS *dos = pe.calculateDOS();
 	FileWriter::writeDOS(dos);
 	delete dos;
 

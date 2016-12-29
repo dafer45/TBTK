@@ -19,7 +19,7 @@
  */
 
 #include "PropertyExtractor.h"
-#include "Streams.h"
+#include "TBTKMacros.h"
 
 using namespace std;
 
@@ -29,10 +29,87 @@ namespace{
 	complex<double> i(0,1);
 }
 
-PropertyExtractor::PropertyExtractor(){
+PropertyExtractor::PropertyExtractor(
+){
+	this->energyResolution = ENERGY_RESOLUTION;
+	this->lowerBound = LOWER_BOUND;
+	this->upperBound = UPPER_BOUND;
 }
 
 PropertyExtractor::~PropertyExtractor(){
+}
+
+void PropertyExtractor::setEnergyWindow(
+	double lowerBound,
+	double upperBound,
+	int energyResolution
+){
+	this->energyResolution = energyResolution;
+	this->lowerBound = lowerBound;
+	this->upperBound = upperBound;
+}
+
+Property::Density* PropertyExtractor::calculateDensity(
+	Index pattern,
+	Index ranges
+){
+	TBTKExit(
+		"PropertyExtractor::calculateDensity()",
+		"The chosen property extractor does not support this function call.",
+		"See the API for list of supported calls."
+	);
+}
+
+Property::Magnetization* PropertyExtractor::calculateMagnetization(
+	Index pattern,
+	Index ranges
+){
+	TBTKExit(
+		"PropertyExtractor::calculateMagnetization()",
+		"The chosen property extractor does not support this function call.",
+		"See the API for list of supported calls."
+	);
+}
+
+Property::LDOS* PropertyExtractor::calculateLDOS(
+	Index pattern,
+	Index ranges
+){
+	TBTKExit(
+		"PropertyExtractor::calculateLDOS()",
+		"The chosen property extractor does not support this function call.",
+		"See the API for list of supported calls."
+	);
+}
+
+Property::SpinPolarizedLDOS* PropertyExtractor::calculateSpinPolarizedLDOS(
+	Index pattern,
+	Index ranges
+){
+	TBTKExit(
+		"PropertyExtractor::calculateSpinPolarizedLDOS()",
+		"The chosen property extractor does not support this function call.",
+		"See the API for list of supported calls."
+	);
+}
+
+complex<double> PropertyExtractor::calculateExpectationValue(
+	Index to,
+	Index from
+){
+	TBTKExit(
+		"PropertyExtractor::calculateExpectationValue()",
+		"The chosen property extractor does not support this function call.",
+		"See the API for list of supported calls."
+	);
+}
+
+Property::DOS* PropertyExtractor::calculateDOS(){
+	TBTKExit(
+		"PropertyExtractor::calculateDOS()",
+		"The chosen property extractor does not support this function call.",
+		"See the API for list of supported calls."
+	);
 }
 
 void PropertyExtractor::calculate(

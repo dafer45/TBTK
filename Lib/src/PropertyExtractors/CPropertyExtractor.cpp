@@ -76,12 +76,36 @@ CPropertyExtractor::CPropertyExtractor(
 
 	this->cSolver = cSolver;
 	this->numCoefficients = numCoefficients;
-	this->energyResolution = energyResolution;
-	this->lowerBound = lowerBound;
-	this->upperBound = upperBound;
+//	this->energyResolution = energyResolution;
+//	this->lowerBound = lowerBound;
+//	this->upperBound = upperBound;
 	this->useGPUToCalculateCoefficients = useGPUToCalculateCoefficients;
 	this->useGPUToGenerateGreensFunctions = useGPUToGenerateGreensFunctions;
 	this->useLookupTable = useLookupTable;
+
+	setEnergyWindow(
+		lowerBound,
+		upperBound,
+		energyResolution
+	);
+
+}
+
+CPropertyExtractor::~CPropertyExtractor(){
+	if(useGPUToGenerateGreensFunctions)
+		cSolver->destroyLookupTableGPU();
+}
+
+void CPropertyExtractor::setEnergyWindow(
+	double lowerBound,
+	double upperBound,
+	int energyResolution
+){
+	PropertyExtractor::setEnergyWindow(
+		energyResolution,
+		lowerBound,
+		upperBound
+	);
 
 	if(useLookupTable){
 		cSolver->generateLookupTable(numCoefficients, energyResolution, lowerBound, upperBound);
@@ -95,11 +119,6 @@ CPropertyExtractor::CPropertyExtractor(
 			""
 		);
 	}
-}
-
-CPropertyExtractor::~CPropertyExtractor(){
-	if(useGPUToGenerateGreensFunctions)
-		cSolver->destroyLookupTableGPU();
 }
 
 complex<double>* CPropertyExtractor::calculateGreensFunction(

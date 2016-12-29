@@ -76,17 +76,13 @@ Property::EigenValues* DPropertyExtractor::getEigenValues(){
 	return eigenValues;
 }
 
-Property::DOS* DPropertyExtractor::calculateDOS(
-	double lowerBound,
-	double upperBound,
-	int resolution
-){
+Property::DOS* DPropertyExtractor::calculateDOS(){
 	const double *ev = dSolver->getEigenValues();
 
-	Property::DOS *dos = new Property::DOS(lowerBound, upperBound, resolution);
+	Property::DOS *dos = new Property::DOS(lowerBound, upperBound, energyResolution);
 	for(int n = 0; n < dSolver->getModel()->getBasisSize(); n++){
-		int e = (int)(((ev[n] - lowerBound)/(upperBound - lowerBound))*resolution);
-		if(e >= 0 && e < resolution){
+		int e = (int)(((ev[n] - lowerBound)/(upperBound - lowerBound))*energyResolution);
+		if(e >= 0 && e < energyResolution){
 			dos->data[e] += 1.;
 		}
 	}
@@ -182,10 +178,7 @@ Property::Magnetization* DPropertyExtractor::calculateMagnetization(
 
 Property::LDOS* DPropertyExtractor::calculateLDOS(
 	Index pattern,
-	Index ranges,
-	double lowerBound,
-	double upperBound,
-	int resolution
+	Index ranges
 ){
 	//hint[0] is an array of doubles, hint[1] is an array of ints
 	//hint[0][0]: upperBound
@@ -197,14 +190,14 @@ Property::LDOS* DPropertyExtractor::calculateLDOS(
 	((int**)hint)[1] = new int[1];
 	((double**)hint)[0][0] = upperBound;
 	((double**)hint)[0][1] = lowerBound;
-	((int**)hint)[1][0] = resolution;
+	((int**)hint)[1][0] = energyResolution;
 
 	ensureCompliantRanges(pattern, ranges);
 
 	int lDimensions;
 	int *lRanges;
 	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
-	Property::LDOS *ldos = new Property::LDOS(lDimensions, lRanges, lowerBound, upperBound, resolution);
+	Property::LDOS *ldos = new Property::LDOS(lDimensions, lRanges, lowerBound, upperBound, energyResolution);
 
 	calculate(calculateLDOSCallback, (void*)ldos->data, pattern, ranges, 0, 1);
 
@@ -213,10 +206,7 @@ Property::LDOS* DPropertyExtractor::calculateLDOS(
 
 Property::SpinPolarizedLDOS* DPropertyExtractor::calculateSpinPolarizedLDOS(
 	Index pattern,
-	Index ranges,
-	double lowerBound,
-	double upperBound,
-	int resolution
+	Index ranges
 ){
 	//hint[0] is an array of doubles, hint[1] is an array of ints
 	//hint[0][0]: upperBound
@@ -228,7 +218,7 @@ Property::SpinPolarizedLDOS* DPropertyExtractor::calculateSpinPolarizedLDOS(
 	((int**)hint)[1] = new int[2];
 	((double**)hint)[0][0] = upperBound;
 	((double**)hint)[0][1] = lowerBound;
-	((int**)hint)[1][0] = resolution;
+	((int**)hint)[1][0] = energyResolution;
 
 	((int**)hint)[1][1] = -1;
 	for(unsigned int n = 0; n < pattern.size(); n++){
@@ -252,7 +242,7 @@ Property::SpinPolarizedLDOS* DPropertyExtractor::calculateSpinPolarizedLDOS(
 	int lDimensions;
 	int *lRanges;
 	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
-	Property::SpinPolarizedLDOS *spinPolarizedLDOS = new Property::SpinPolarizedLDOS(lDimensions, lRanges, lowerBound, upperBound, resolution);
+	Property::SpinPolarizedLDOS *spinPolarizedLDOS = new Property::SpinPolarizedLDOS(lDimensions, lRanges, lowerBound, upperBound, energyResolution);
 
 	calculate(calculateSP_LDOSCallback, (void*)spinPolarizedLDOS->data, pattern, ranges, 0, 1);
 

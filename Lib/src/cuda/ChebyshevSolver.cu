@@ -562,12 +562,14 @@ void ChebyshevSolver::loadLookupTableGPU(){
 		"Lookup table has not been generated.",
 		"Call ChebyshevSolver::generateLokupTable() to generate lookup table."
 	);
-	TBTKAssert(
+	if(generatingFunctionLookupTable_device != NULL)
+		destroyLookupTableGPU();
+/*	TBTKAssert(
 		generatingFunctionLookupTable_device == NULL,
 		"ChebyshevSolver::loadLookupTableGPU()",
 		"Lookup table already loaded.",
 		""
-	);
+	);*/
 
 	complex<double> *generatingFunctionLookupTable_host = new complex<double>[lookupTableNumCoefficients*lookupTableResolution];
 	for(int n = 0; n < lookupTableNumCoefficients; n++)
