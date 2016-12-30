@@ -48,6 +48,9 @@ public:
 	/** Set the number of eigenvalues to calculate. */
 	void setNumEigenValues(int numEigenValues);
 
+	/** Get number of eigenvalues. */
+	int getNumEigenValues() const;
+
 	/** Set the number of Lanczos vectors to use. (Dimension of the Krylov
 	 *  space). */
 	void setNumLanczosVectors(int numLanczosVectors);
@@ -61,6 +64,9 @@ public:
 
 	/** Run the implicitly restarted Arnoldi algorithm. */
 	void run();
+
+	/** Get eigenValues. */
+	const std::complex<double>* getEigenValues() const;
 private:
 	/** Model to work on. */
 	Model *model;
@@ -146,6 +152,10 @@ inline void ArnoldiSolver::setNumEigenValues(int numEigenValues){
 	this->numEigenValues = numEigenValues;
 }
 
+inline int ArnoldiSolver::getNumEigenValues() const{
+	return numEigenValues;
+}
+
 inline void ArnoldiSolver::setNumLanczosVectors(int numLanczosVectors){
 	this->numLanczosVectors = numLanczosVectors;
 }
@@ -156,6 +166,10 @@ inline void ArnoldiSolver::setTolerance(double tolerance){
 
 inline void ArnoldiSolver::setMaxIterations(int maxIterations){
 	this->maxIterations = maxIterations;
+}
+
+inline const std::complex<double>* ArnoldiSolver::getEigenValues() const{
+	return eigenValues;
 }
 
 };	//End of namesapce TBTK

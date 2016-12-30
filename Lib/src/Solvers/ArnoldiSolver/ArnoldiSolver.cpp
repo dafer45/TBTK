@@ -151,14 +151,20 @@ void ArnoldiSolver::run(){
 }
 
 void ArnoldiSolver::arnoldiLoop(){
-	if(numEigenValues <= 0){
-		cout << "Error in ArnoldiSolver::arnoldiLoop(): The number of eigenvalues must be larger than 0.\n";
-		exit(1);
-	}
-	if(numLanczosVectors < numEigenValues + 2){
-		cout << "Error in ArnoldiSolver::arnoldiLoop(): The number of Lanczos vectors must be at least two larger than the number of eigenvalues (" << numEigenValues << ").\n";
-		exit(1);
-	}
+	TBTKAssert(
+		numEigenValues > 0,
+		"ArnoldiSolver::arnoldiLoop()",
+		"The number of eigenvalues must be larger than 0.",
+		""
+	);
+	TBTKAssert(
+		numLanczosVectors >= numEigenValues + 2,
+		"ArnoldiSolver::arnoldiLoop()",
+		"The number of Lanczos vectors must be at least two larger"
+		<< " than the number of eigenvalues (" << numEigenValues
+		<< ").",
+		""
+	);
 
 	int basisSize = model->getBasisSize();
 
@@ -203,16 +209,18 @@ void ArnoldiSolver::arnoldiLoop(){
 	//Main loop ()
 	int counter = 0;
 	while(true){
-		cout << "." << flush;
+		Streams::out << "." << flush;
 		if(counter%10 == 9)
-			cout << " ";
+			Streams::out << " ";
 		if(counter%50 == 49)
-			cout << "\n";
+			Streams::out << "\n";
 
-		if(counter++ > maxIterations){
-			cout << "Error in ArnoldiSolver::arnoldiLoop(): Maximum number of iterations reached.\n";
-			exit(1);
-		}
+		TBTKAssert(
+			counter++ <= maxIterations,
+			"ArnoldiSolver::arnoldiLoop()",
+			"Maximum number of iterations reached.",
+			""
+		);
 
 		//Calculate one more Lanczos vector
 		znaupd_(
@@ -258,59 +266,60 @@ void ArnoldiSolver::arnoldiLoop(){
 			continue;
 		}
 
-		if(info < 0){
-			cout << "Error with _naupd, info = " << info << ". Check the documentation in _naupd.";
+		TBTKAssert(
+			info >= 0,
+			"ArnoldiSolver::arnoldiLoop()",
+			"Error with _naupd, info = " << info << ".",
+			"Check the documentation in _naupd."
+		);
+
+		//A = Compute numberOfEigenValues Ritz vectors
+		char howMany = 'A';
+		//Error message
+		int ierr;
+		//Convert flag from bool to int
+		int calculateEigenVectorsBool = calculateEigenVectors;
+
+		//Extract eigenvalues and eigenvectors
+		zneupd_(
+			&calculateEigenVectorsBool,
+			&howMany,
+			select,
+			eigenValues,
+			eigenVectors,
+			&basisSize,
+			&sigma,
+			workev,
+			bmat,
+			&basisSize,
+			which,
+			&numEigenValues,
+			&tolerance,
+			residuals,
+			&numLanczosVectors,
+			lanczosVectors,
+			&basisSize,
+			iparam,
+			ipntr,
+			workd,
+			workl,
+			&worklSize,
+			rwork,
+			&ierr
+		);
+
+		if(ierr != 0){
+			cout << "Error with _neupd, info = " << ierr << ". Check the documentation of _neupd.";
 			exit(1);
 		}
 		else{
-			//A = Compute numberOfEigenValues Ritz vectors
-			char howMany = 'A';
-			//Error message
-			int ierr;
-			//Convert flag from bool to int
-			int calculateEigenVectorsBool = calculateEigenVectors;
-
-			//Extract eigenvalues and eigenvectors
-			zneupd_(
-				&calculateEigenVectorsBool,
-				&howMany,
-				select,
-				eigenValues,
-				eigenVectors,
-				&basisSize,
-				&sigma,
-				workev,
-				bmat,
-				&basisSize,
-				which,
-				&numEigenValues,
-				&tolerance,
-				residuals,
-				&numLanczosVectors,
-				lanczosVectors,
-				&basisSize,
-				iparam,
-				ipntr,
-				workd,
-				workl,
-				&worklSize,
-				rwork,
-				&ierr
-			);
-
-			if(ierr != 0){
-				cout << "Error with _neupd, info = " << ierr << ". Check the documentation of _neupd.";
-				exit(1);
-			}
-			else{
-				double numAccurateEigenValues = iparam[4];	//With respect to tolerance
-				cout << "Number of accurately converged eigenvalues: " << numAccurateEigenValues << "\n";
-				//Calculate |Ax - lambda*x| here
-				//...
-			}
-
-			break;
+			double numAccurateEigenValues = iparam[4];	//With respect to tolerance
+			cout << "Number of accurately converged eigenvalues: " << numAccurateEigenValues << "\n";
+			//Calculate |Ax - lambda*x| here
+			//...
 		}
+
+		break;
 
 		if(info == 1){
 			cout << "Warning: Maximum number of iterations reached.\n";
@@ -320,7 +329,7 @@ void ArnoldiSolver::arnoldiLoop(){
 			cout << "Warning: No shifts could be applied during implicit Arnoldi update. Try increasing numEigenValues.\n";
 		}
 	}
-	cout << "\n";
+	Streams::out << "\n";
 
 	//Free memory
 	delete [] lanczosVectors;

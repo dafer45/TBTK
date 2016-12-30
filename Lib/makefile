@@ -89,7 +89,8 @@ CUDA_SRC_DIR:= src/cuda
 NOCUDA_SRC_DIR:= src/nocuda
 
 #ArnoldiSolver source directory
-ARNOLDI_SRC_DIR:= src/Solvers/ArnoldiSolver
+ARNOLDI_SRC_DIR = src/Solvers/ArnoldiSolver
+ARNOLDI_SRC_DIR += src/PropertyExtractors/APropertyExtractor
 
 # Directory for Objects
 OBJ_DIR:= build
@@ -117,7 +118,7 @@ CUDA_SRC := $(wildcard $(CUDA_SRC_DIR)/*.cu)
 NOCUDA_SRC := $(wildcard $(NOCUDA_SRC_DIR)/*.cpp)
 
 # ArnoldiSolver source files
-ARNOLDI_SRC := $(wildcard $(ARNOLDI_SRC_DIR)/*.cpp)
+ARNOLDI_SRC := $(foreach srcDir, $(ARNOLDI_SRC_DIR), $(wildcard $(srcDir)/*.cpp))
 
 # Object files
 OBJ := $(addprefix $(OBJ_DIR)/, $(notdir $(SRC:.cpp=.o)))
@@ -229,6 +230,7 @@ print:
 	@echo $(CUDA_SRC)
 	@echo $(LDLIBS)
 	@echo INC_DIR
+	@echo $(ARNOLDI_SRC_DIR)
 	@echo $(ARNOLDI_SRC)
 	@echo $(ARNOLDI_OBJ)
 #	@echo $(OBJ)

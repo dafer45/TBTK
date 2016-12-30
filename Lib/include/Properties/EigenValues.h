@@ -24,6 +24,7 @@
 #define COM_DAFER45_TBTK_EIGEN_VALUES
 
 namespace TBTK{
+	class APropertyExtractor;
 	class CPropertyExtractor;
 	class DPropertyExtractor;
 	class FileReader;
@@ -52,6 +53,10 @@ private:
 
 	/** Actual data. */
 	double *data;
+
+	/** APropertyExtractor is a friend class to allow it to write
+	 * EigenValues data. */
+	friend class TBTK::APropertyExtractor;
 
 	/** CPropertyExtractor is a friend class to allow it to write
 	 * EigenValues data. */
