@@ -78,7 +78,7 @@ listed below:
 #### ArnoldiSolver
 Depends on the external libraries ARPACK (http://www.caam.rice.edu/software/ARPACK/) and SuperLU (http://crd-legacy.lbl.gov/~xiaoye/SuperLU/).
 
-Given that ARPACK and SuperLU are installed, and the include and library paths are appropriately setup, the ArnoldiSolver can be compiled by executing the following command from TBTK/Lib/.
+Given that ARPACK and SuperLU are installed, the ArnoldiSolver can be compiled by executing the following command from TBTK/Lib/.
 ```bash
 make arnoldi
 ```
