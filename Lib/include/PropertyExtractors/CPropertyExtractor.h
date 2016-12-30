@@ -50,7 +50,7 @@ public:
 	~CPropertyExtractor();
 
 	/** Overrides PropertyExtractor::setEnergyWindow(). */
-	void setEnergyWindow(
+	virtual void setEnergyWindow(
 		double lowerBound,
 		double upperBound,
 		int energyResolution
@@ -71,22 +71,22 @@ public:
 	);
 
 	/** Overrides PropertyExtractor::calculateExpectationValue(). */
-	std::complex<double> calculateExpectationValue(Index to, Index from);
+	virtual std::complex<double> calculateExpectationValue(Index to, Index from);
 
 	/** Overrides PropertyExtractor::calculateDensity(). */
-	Property::Density* calculateDensity(Index pattern, Index ranges);
+	virtual Property::Density* calculateDensity(Index pattern, Index ranges);
 
 	/** Overrides PropertyExtractor::calculateMagnetization(). */
-	Property::Magnetization* calculateMagnetization(
+	virtual Property::Magnetization* calculateMagnetization(
 		Index pattern,
 		Index ranges
 	);
 
 	/** Overrides PropertyExtractor::calculateLDOS(). */
-	Property::LDOS* calculateLDOS(Index pattern, Index ranges);
+	virtual Property::LDOS* calculateLDOS(Index pattern, Index ranges);
 
 	/** Overrides PropertyExtractor::calculateSpinPolarizedLDOS(). */
-	Property::SpinPolarizedLDOS* calculateSpinPolarizedLDOS(
+	virtual Property::SpinPolarizedLDOS* calculateSpinPolarizedLDOS(
 		Index pattern,
 		Index ranges
 	);
@@ -96,17 +96,6 @@ private:
 
 	/** Number of Chebyshev coefficients used in the expansion. */
 	int numCoefficients;
-
-	/** Energy resolution of the Green's function. */
-//	int energyResolution;
-
-	/** Lower bound for the evaluation of the Green's function and derived
-	 *  properties. */
-//	double lowerBound;
-
-	/** Upper bound for the evaluation of the Green's function and derived
-	 *  properties. */
-//	double upperBound;
 
 	/** Flag indicating whether a lookup table is used or not. */
 	bool useLookupTable;
@@ -118,22 +107,6 @@ private:
 	/** Flag indicating whether the GPU should be used to generate Green's
 	 *  functions. */
 	bool useGPUToGenerateGreensFunctions;
-
-	/** Loops over range indices and calls the appropriate callback
-	 *  function to calculate the correct quantity. */
-/*	void calculate(
-		void (*callback)(
-			CPropertyExtractor *cb_this,
-			void *memory,
-			const Index &index,
-			int offset
-		),
-		void *memory,
-		Index pattern,
-		const Index &ranges,
-		int currentOffset,
-		int offsetMultiplier
-	);*/
 
 	/** !!!Not tested!!! Callback for calculating density.
 	 *  Used by calculateDensity. */
@@ -173,22 +146,6 @@ private:
 
 	/** Ensure that the lookup table is in a ready state. */
 	void ensureLookupTableIsReady();
-
-	/** Hint used to pass information between calculate[Property] and
-	 * calculate[Property]Callback. */
-//	void *hint;
-
-	/** Ensure that range indices are on compliant format. (Set range to
-	 *  one for indices with non-negative pattern value.) */
-//	void ensureCompliantRanges(const Index &pattern, Index &ranges);
-
-	/** Extract ranges for loop indices. */
-/*	void getLoopRanges(
-		const Index &pattern,
-		const Index &ranges,
-		int *lDimensions,
-		int **lRanges
-	);*/
 };
 
 };	//End of namespace TBTK

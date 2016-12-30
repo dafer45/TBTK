@@ -74,48 +74,32 @@ public:
 	const std::complex<double> getAmplitude(int state, const Index &index);
 
 	/** Overrides PropertyExtractor::calculateDOS(). */
-	Property::DOS* calculateDOS();
+	virtual Property::DOS* calculateDOS();
 
 	/** Calculate expectation value. */
-	std::complex<double> calculateExpectationValue(Index to, Index from);
+	virtual std::complex<double> calculateExpectationValue(Index to, Index from);
 
 	/** Overrides PropertyExtractor::calculateDensity(). */
-	Property::Density* calculateDensity(Index pattern, Index ranges);
+	virtual Property::Density* calculateDensity(Index pattern, Index ranges);
 
 	/** Overrides PropertyExtractor::calculateMagnetization(). */
-	Property::Magnetization* calculateMagnetization(
+	virtual Property::Magnetization* calculateMagnetization(
 		Index pattern,
 		Index ranges
 	);
 
 	/** Overrides PropertyExtractor::calculateLDOS(). */
-	Property::LDOS* calculateLDOS(
+	virtual Property::LDOS* calculateLDOS(
 		Index pattern,
 		Index ranges
 	);
 
 	/** Overrides PropertyExtractor::calculateSpinPolarizedLDOS(). */
-	Property::SpinPolarizedLDOS* calculateSpinPolarizedLDOS(
+	virtual Property::SpinPolarizedLDOS* calculateSpinPolarizedLDOS(
 		Index pattern,
 		Index ranges
 	);
 private:
-	/** Loops over range indices and calls the appropriate callback
-	 *  function to calculate the correct quantity. */
-/*	void calculate(
-		void (*callback)(
-			DPropertyExtractor *cb_this,
-			void *memory,
-			const Index &index,
-			int offset
-		),
-		void *memory,
-		Index pattern,
-		const Index &ranges,
-		int currentOffset,
-		int offsetMultiplier
-	);*/
-
 	/** Callback for calculating density. Used by calculateDensity. */
 	static void calculateDensityCallback(
 		PropertyExtractor *cb_this,
@@ -152,22 +136,6 @@ private:
 
 	/** DiagonalizationSolver to work on. */
 	DiagonalizationSolver *dSolver;
-
-	/** Hint used to pass information between calculate[Property] and
-	 *  calculate[Property]Callback. */
-//	void *hint;
-
-	/** Ensure that range indices are on compliant format. (Set range to
-	 *  one for indices with non-negative pattern value.) */
-//	void ensureCompliantRanges(const Index &pattern, Index &ranges);
-
-	/** Extract ranges for loop indices. */
-/*	void getLoopRanges(
-		const Index &pattern,
-		const Index &ranges,
-		int *lDimensions,
-		int **lRanges
-	);*/
 };
 
 inline double DPropertyExtractor::getEigenValue(int state){
