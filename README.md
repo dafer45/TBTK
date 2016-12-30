@@ -78,6 +78,11 @@ listed below:
 #### ArnoldiSolver
 Depends on the external libraries ARPACK (http://www.caam.rice.edu/software/ARPACK/) and SuperLU (http://crd-legacy.lbl.gov/~xiaoye/SuperLU/).
 
+Given that ARPACK and SuperLU are installed, and the include and library paths are appropriately setup, the ArnoldiSolver can be compiled by executing the following command fro TBTK/Lib/
+```bash
+make arnoldi
+```
+
 ### Tools
 #### TBTKImageToModel
 Depends on the external library openCV (http://opencv.org/).

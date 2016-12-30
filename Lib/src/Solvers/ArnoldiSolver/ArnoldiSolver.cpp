@@ -25,10 +25,8 @@
  * See http://www.caam.rice.edu/software/ARPACK/UG/node138.html for more
  * information about parameters. */
 
-#include "ArnoldiSolver.h"
+#include "../../../include/Solvers/ArnoldiSolver/ArnoldiSolver.h"
 #include "Streams.h"
-
-#include "slu_zdefs.h"
 
 #include <iostream>
 
@@ -139,7 +137,7 @@ extern "C" void zneupd_(
 );
 
 void ArnoldiSolver::run(){
-	Util::Streams::out << "Running ArnoldiSovler.\n";
+	Streams::out << "Running ArnoldiSovler.\n";
 	TBTKAssert(
 		model != NULL,
 		"ArnoldiSolver::run()",

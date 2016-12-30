@@ -88,6 +88,9 @@ CUDA_SRC_DIR:= src/cuda
 #No CUDA source directory
 NOCUDA_SRC_DIR:= src/nocuda
 
+#ArnoldiSolver source directory
+ARNOLDI_SRC_DIR:= src/Solvers/ArnoldiSolver
+
 # Directory for Objects
 OBJ_DIR:= build
 
@@ -113,6 +116,9 @@ CUDA_SRC := $(wildcard $(CUDA_SRC_DIR)/*.cu)
 # No CUDA source files
 NOCUDA_SRC := $(wildcard $(NOCUDA_SRC_DIR)/*.cpp)
 
+# ArnoldiSolver source files
+ARNOLDI_SRC := $(wildcard $(ARNOLDI_SRC_DIR)/*.cpp)
+
 # Object files
 OBJ := $(addprefix $(OBJ_DIR)/, $(notdir $(SRC:.cpp=.o)))
 
@@ -121,6 +127,9 @@ CUDA_OBJ := $(addprefix $(OBJ_DIR)/, $(addprefix cuda, $(notdir $(CUDA_SRC:.cu=.
 
 # CUDA object files
 NOCUDA_OBJ := $(addprefix $(OBJ_DIR)/, $(addprefix nocuda, $(notdir $(NOCUDA_SRC:.cpp=.o))))
+
+# ArnoldiSolver object files
+ARNOLDI_OBJ := $(addprefix $(OBJ_DIR)/, $(notdir $(ARNOLDI_SRC:.cpp=.o)))
 
 #All object files
 ALL_OBJ := $(OBJ) $(CUDA_OBJ)
@@ -133,6 +142,9 @@ CUDA_OBJ_PURE := $(notdir $(CUDA_OBJ))
 
 # CUDA file names of objects without directory name
 NOCUDA_OBJ_PURE := $(notdir $(NOCUDA_OBJ))
+
+# ArnoldiSolver file name of object without directory name
+ARNOLDI_OBJ_PURE := $(notdir $(ARNOLDI_OBJ))
 
 all: $(STATIC_LIB)
 
@@ -148,6 +160,11 @@ cuda: $(OBJ) $(CUDA_OBJ)
 nocuda: $(OBJ) $(NOCUDA_OBJ)
 	@echo "Linking: " $(notdir $(STATIC_LIB))
 	@ar rcs $(STATIC_LIB) $(OBJ) $(NOCUDA_OBJ)
+
+arnoldi: $(ARNOLDI_OBJ)
+	@echo "Linking: " $(notdir $(STATIC_LIB))
+	@echo $(ARNOLDI_OBJ)
+	@ar rcs $(STATIC_LIB) $(ARNOLDI_OBJ)
 
 # Compilation rule
 define app_compile_template
@@ -176,6 +193,15 @@ $$($(1)_OBJ): $(1)
 	@$$(CC) $$(CFLAGS) $$(OPT) -c $(1) -o $$($(1)_OBJ) $$(LDLIBS)
 endef
 
+# ArnoldiSolver compilation rule
+define arnoldi_app_compile_template
+ $(1)_OBJ = $$(addprefix $$(OBJ_DIR)/, $$(notdir $$(patsubst %.cpp, %.o, $(1))))
+
+$$($(1)_OBJ): $(1)
+	@echo "Compiling: $(1)"
+	@$$(CC) $$(CFLAGS) $$(OPT) -c $(1) -o $$($(1)_OBJ) $$(LDLIBS)
+endef
+
 # Compile
 $(foreach app, $(SRC), $(eval $(call app_compile_template,$(app))))
 
@@ -184,6 +210,9 @@ $(foreach app, $(CUDA_SRC), $(eval $(call cuda_app_compile_template,$(app))))
 
 # No CUDA compile
 $(foreach app, $(NOCUDA_SRC), $(eval $(call nocuda_app_compile_template,$(app))))
+
+# ArnoldiSolver compile
+$(foreach app, $(ARNOLDI_SRC), $(eval $(call arnoldi_app_compile_template,$(app))))
 
 # Cleaning
 clean:
@@ -200,6 +229,8 @@ print:
 	@echo $(CUDA_SRC)
 	@echo $(LDLIBS)
 	@echo INC_DIR
+	@echo $(ARNOLDI_SRC)
+	@echo $(ARNOLDI_OBJ)
 #	@echo $(OBJ)
 #	@echo $(addprefix ./build/, $(notdir $(patsubst %.cpp, %.o, $(SRC))))
 
