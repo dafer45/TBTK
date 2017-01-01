@@ -24,6 +24,7 @@
 #define COM_DAFER45_TBTK_LDOS
 
 namespace TBTK{
+	class APropertyExtractor;
 	class CPropertyExtractor;
 	class DPropertyExtractor;
 	class FileReader;
@@ -95,6 +96,10 @@ private:
 
 	/** Actual data. */
 	double *data;
+
+	/** APropertyExtractor is a friend class to allow it to write LDOS
+	 *  data. */
+	friend class TBTK::APropertyExtractor;
 
 	/** CPropertyExtractor is a friend class to allow it to write LDOS
 	 *  data. */

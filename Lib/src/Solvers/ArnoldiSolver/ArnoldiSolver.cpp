@@ -27,6 +27,7 @@
 
 #include "../../../include/Solvers/ArnoldiSolver/ArnoldiSolver.h"
 #include "Streams.h"
+#include "TBTKMacros.h"
 
 #include <iostream>
 
@@ -147,7 +148,7 @@ void ArnoldiSolver::run(){
 
 	init();
 	arnoldiLoop();
-
+	sort();
 }
 
 void ArnoldiSolver::arnoldiLoop(){
@@ -200,10 +201,12 @@ void ArnoldiSolver::arnoldiLoop(){
 	complex<double> *workd = new complex<double>[3*basisSize];
 	complex<double> *workl = new complex<double>[worklSize];
 	double *rwork = new double[basisSize];
-	int *select = new int[numEigenValues];	//Need to be allocated, but not initialized as long as howMany = 'A' in call to zneupd_
+//	int *select = new int[numEigenValues];	//Need to be allocated, but not initialized as long as howMany = 'A' in call to zneupd_
+	int *select = new int[numLanczosVectors];	//Need to be allocated, but not initialized as long as howMany = 'A' in call to zneupd_
 	eigenValues = new complex<double>[numEigenValues];
 	if(calculateEigenVectors)
-		eigenVectors = new complex<double>[numEigenValues+1];
+		eigenVectors = new complex<double>[numEigenValues*model->getBasisSize()];
+//		eigenVectors = new complex<double>[(numEigenValues+1)*model->getBasisSize()];
 	complex<double> *workev = new complex<double>[2*numLanczosVectors];
 
 	//Main loop ()
@@ -309,12 +312,12 @@ void ArnoldiSolver::arnoldiLoop(){
 		);
 
 		if(ierr != 0){
-			cout << "Error with _neupd, info = " << ierr << ". Check the documentation of _neupd.";
+			Streams::err << "\nError with _neupd, info = " << ierr << ". Check the documentation of _neupd.";
 			exit(1);
 		}
 		else{
 			double numAccurateEigenValues = iparam[4];	//With respect to tolerance
-			cout << "Number of accurately converged eigenvalues: " << numAccurateEigenValues << "\n";
+			Streams::out << "\nNumber of accurately converged eigenvalues: " << numAccurateEigenValues << "\n";
 			//Calculate |Ax - lambda*x| here
 			//...
 		}
@@ -322,11 +325,11 @@ void ArnoldiSolver::arnoldiLoop(){
 		break;
 
 		if(info == 1){
-			cout << "Warning: Maximum number of iterations reached.\n";
+			Streams::log << "Warning: Maximum number of iterations reached.\n";
 			break;
 		}
 		else if(info == 3){
-			cout << "Warning: No shifts could be applied during implicit Arnoldi update. Try increasing numEigenValues.\n";
+			Streams::log << "Warning: No shifts could be applied during implicit Arnoldi update. Try increasing numEigenValues.\n";
 		}
 	}
 	Streams::out << "\n";
@@ -347,10 +350,16 @@ void ArnoldiSolver::init(){
 	const int *cooRowIndices = model->getAmplitudeSet()->getCOORowIndices();
 	const int *cooColIndices = model->getAmplitudeSet()->getCOOColIndices();
 	const complex<double> *cooValues = model->getAmplitudeSet()->getCOOValues();
-	if(cooRowIndices == NULL || cooColIndices == NULL){
+	TBTKAssert(
+		cooRowIndices != NULL && cooColIndices != NULL,
+		"ArnoldiSolver::init()",
+		"COO format not constructed.",
+		"Use Model::constructCOO() to construct COO format."
+	);
+/*	if(cooRowIndices == NULL || cooColIndices == NULL){
 		cout << "Error in ArnoldiSolver::init(): Amplitude COO storage has to be constructed first.\n";
 		exit(1);
-	}
+	}*/
 
 	//Copy rowIndices (Note that COO is on row major order. Therefore
 	//columns and rows are interchanged and values complex conjugated.)
@@ -468,13 +477,115 @@ void ArnoldiSolver::performLUFactorization(){
 	);
 
 	if(info != 0){
-		cout << "Error in ArnoldiSolver::performLUFactorization(): zgstrf returned with info = " << info << ".\n";
-		exit(1);
+		if(info < 0){
+			TBTKExit(
+				"ArnoldiSolver:performLUFactorization()",
+				"zgstrf returned with info = " << info << ".",
+				"Contact developer, argument " << -info << " to zgstrf has invalid value."
+			);
+		}
+		else{
+			if(info <= hamiltonianCP.ncol){
+				TBTKExit(
+					"ArnoldiSolver:performLUFactorization()",
+					"LU factorization is exactly signular. Element U(" << info << ", " << info << ") is zero.",
+					"Try adding a small perturbation to the Hamiltonian."
+				);
+			}
+			else{
+				TBTKExit(
+					"ArnoldiSolver:performLUFactorization()",
+					"Memory allocation error.",
+					""
+				);
+			}
+		}
 	}
 
 	delete [] etree;
 	Destroy_CompCol_Permuted(&hamiltonianCP);
 }
 
-};	//End of namespace TBTK
+void ArnoldiSolver::sort(){
+	complex<double> *workspace = new complex<double>[numEigenValues];
+	for(int n = 0; n < numEigenValues; n++)
+		workspace[n] = eigenValues[n];
 
+	int *order = new int[numEigenValues];
+	int *orderWorkspace = new int[numEigenValues];
+	for(int n = 0; n < numEigenValues; n++){
+		order[n] = n;
+		orderWorkspace[n] = n;
+	}
+
+	mergeSortSplit(
+		workspace,
+		eigenValues,
+		orderWorkspace,
+		order,
+		0,
+		numEigenValues
+	);
+
+	if(calculateEigenVectors){
+		complex<double> *eigenVectorsWorkspace = new complex<double>[numEigenValues*model->getBasisSize()];
+		for(int n = 0; n < numEigenValues*model->getBasisSize(); n++)
+			eigenVectorsWorkspace[n] = eigenVectors[n];
+
+		for(int n = 0; n < numEigenValues; n++)
+			for(int c = 0; c < model->getBasisSize(); c++)
+				eigenVectors[n*model->getBasisSize() + c] = eigenVectorsWorkspace[order[n]*model->getBasisSize() + c];
+
+		delete [] eigenVectorsWorkspace;
+	}
+
+	delete [] order;
+	delete [] orderWorkspace;
+	delete [] workspace;
+}
+
+void ArnoldiSolver::mergeSortSplit(
+	complex<double> *dataIn,
+	complex<double> *dataOut,
+	int *orderIn,
+	int *orderOut,
+	int first,
+	int end
+){
+	if(end - first < 2)
+		return;
+
+	int middle = (end + first)/2;
+
+	mergeSortSplit(dataOut, dataIn, orderOut, orderIn, first, middle);
+	mergeSortSplit(dataOut, dataIn, orderOut, orderIn, middle, end);
+
+	mergeSortMerge(dataIn, dataOut, orderIn, orderOut, first, middle, end);
+}
+
+void ArnoldiSolver::mergeSortMerge(
+	complex<double> *dataIn,
+	complex<double> *dataOut,
+	int *orderIn,
+	int *orderOut,
+	int first,
+	int middle,
+	int end
+){
+	int i = first;
+	int j = middle;
+	for(int k = first; k < end; k++){
+		if(i < middle && (j >= end || real(dataIn[i]) <= real(dataIn[j]))){
+			dataOut[k] = dataIn[i];
+			orderOut[k] = orderIn[i];
+			i++;
+		}
+		else{
+			dataOut[k] = dataIn[j];
+			orderOut[k] = orderIn[j];
+			j++;
+		}
+	}
+}
+
+};	//End of namespace TBTK

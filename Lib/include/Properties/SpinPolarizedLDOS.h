@@ -27,6 +27,7 @@
 #include <complex>
 
 namespace TBTK{
+	class APropertyExtractor;
 	class CPropertyExtractor;
 	class DPropertyExtractor;
 	class FileReader;
@@ -100,6 +101,10 @@ private:
 
 	/** Actual data. */
 	std::complex<double> *data;
+
+	/** APropertyExtractor is a friend class to allow it to write
+	 *  spin-polarized LDOS data. */
+	friend class TBTK::APropertyExtractor;
 
 	/** CPropertyExtractor is a friend class to allow it to write
 	 *  spin-polarized LDOS data. */

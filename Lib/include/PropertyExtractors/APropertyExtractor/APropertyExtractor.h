@@ -55,22 +55,22 @@ public:
 	 *  \f$x\f$: \f$\Psi_{n}(x)\f$.
 	 *  @param state Eigenstate number \f$n\f$
 	 *  @param index Physical index \f$x\f$. */
-//	const std::complex<double> getAmplitude(int state, const Index &index);
+	const std::complex<double> getAmplitude(int state, const Index &index);
 
 	/** Overrides PropertyExtractor::calculateDOS(). */
-//	virtual Property::DOS* calculateDOS();
+	virtual Property::DOS* calculateDOS();
 
 	/** Overrides PropertyExtractor::calculateLDOS(). */
-/*	virtual Property::LDOS* calculateLDOS(
+	virtual Property::LDOS* calculateLDOS(
 		Index pattern,
 		Index ranges
-	);*/
+	);
 
 	/** Overrides PropertyExtractor::calculateSpinPolarizedLDOS(). */
-/*	virtual Property::SpinPolarizedLDOS* calculateSpinPolarizedLDOS(
+	virtual Property::SpinPolarizedLDOS* calculateSpinPolarizedLDOS(
 		Index pattern,
 		Index ranges
-	);*/
+	);
 private:
 	/** Calback for callculating local density of states. Used by
 	 *  calculateLDOS. */
@@ -83,7 +83,7 @@ private:
 
 	/** Callback for calculating spin-polarized local density of states.
 	 *  Used by calculateSP_LDOS. */
-	static void calculateSP_LDOSCallback(
+	static void calculateSpinPolarizedLDOSCallback(
 		PropertyExtractor *cb_this,
 		void *sp_ldos,
 		const Index &index,
@@ -94,16 +94,16 @@ private:
 	ArnoldiSolver *aSolver;
 };
 
-/*inline double DPropertyExtractor::getEigenValue(int state){
-	return dSolver->getEigenValue(state);
+inline double APropertyExtractor::getEigenValue(int state){
+	return aSolver->getEigenValue(state);
 }
 
-inline const std::complex<double> DPropertyExtractor::getAmplitude(
+inline const std::complex<double> APropertyExtractor::getAmplitude(
 	int state,
 	const Index &index
 ){
-	return dSolver->getAmplitude(state, index);
-}*/
+	return aSolver->getAmplitude(state, index);
+}
 
 };	//End of namespace TBTK
 

@@ -24,6 +24,7 @@
 #define COM_DAFER45_TBTK_DOS
 
 namespace TBTK{
+	class APropertyExtractor;
 	class CPropertyExtractor;
 	class DPropertyExtractor;
 	class FileReader;
@@ -64,6 +65,10 @@ private:
 
 	/** Actual data. */
 	double *data;
+
+	/** CPropertyExtractor is a friend class to allow it to write DOS data
+	 */
+	friend class TBTK::APropertyExtractor;
 
 	/** CPropertyExtractor is a friend class to allow it to write DOS data
 	 */

@@ -45,11 +45,20 @@ public:
 	/** Set Model to work on. */
 	void setModel(Model *model);
 
+	/** Get model. */
+	Model* getModel();
+
 	/** Set the number of eigenvalues to calculate. */
 	void setNumEigenValues(int numEigenValues);
 
 	/** Get number of eigenvalues. */
 	int getNumEigenValues() const;
+
+	/** Set wether eigen vectors should be calculated. */
+	void setCalculateEigenVectors(bool calculateEigenVectors);
+
+	/** Get wether eigen vectors are calculated or not. */
+	bool getCalculateEigenVectors() const;
 
 	/** Set the number of Lanczos vectors to use. (Dimension of the Krylov
 	 *  space). */
@@ -67,6 +76,15 @@ public:
 
 	/** Get eigenValues. */
 	const std::complex<double>* getEigenValues() const;
+
+	/** Get eigen value. */
+	const double getEigenValue(int state) const;
+
+	/** Get amplitude for given eigen vector \f$n\f$ and physical index
+	 *  \f$x\f$: \f$\Psi_{n}(x)\f$.
+	 *  @param state Eigen state number \f$n\f$.
+	 *  @param index Physical index \f$\f$. */
+	const std::complex<double> getAmplitude(int state, const Index &index);
 private:
 	/** Model to work on. */
 	Model *model;
@@ -142,10 +160,39 @@ private:
 
 	/** Run implicitly restarted Arnoldi loop. (Arnoldi routine). */
 	void arnoldiLoop();
+
+	/** Sort eigen values and eigen vectors in accending order according to
+	 *  the real part of the eigen values. */
+	void sort();
+
+	/** Merge sort helper function for ArnoldiSolver::sort(). */
+	void mergeSortSplit(
+		std::complex<double> *dataIn,
+		std::complex<double> *dataOut,
+		int *orderIn,
+		int *orderOut,
+		int first,
+		int end
+	);
+
+	/** Merge sort helper function for ArnoldiSolver::sort(). */
+	void mergeSortMerge(
+		std::complex<double> *dataIn,
+		std::complex<double> *dataOut,
+		int *orderIn,
+		int *orderOut,
+		int first,
+		int middle,
+		int end
+	);
 };
 
 inline void ArnoldiSolver::setModel(Model *model){
 	this->model = model;
+}
+
+inline Model* ArnoldiSolver::getModel(){
+	return model;
 }
 
 inline void ArnoldiSolver::setNumEigenValues(int numEigenValues){
@@ -154,6 +201,14 @@ inline void ArnoldiSolver::setNumEigenValues(int numEigenValues){
 
 inline int ArnoldiSolver::getNumEigenValues() const{
 	return numEigenValues;
+}
+
+inline void ArnoldiSolver::setCalculateEigenVectors(bool calculateEigenVectors){
+	this->calculateEigenVectors = calculateEigenVectors;
+}
+
+inline bool ArnoldiSolver::getCalculateEigenVectors() const{
+	return calculateEigenVectors;
 }
 
 inline void ArnoldiSolver::setNumLanczosVectors(int numLanczosVectors){
@@ -170,6 +225,17 @@ inline void ArnoldiSolver::setMaxIterations(int maxIterations){
 
 inline const std::complex<double>* ArnoldiSolver::getEigenValues() const{
 	return eigenValues;
+}
+
+inline const double ArnoldiSolver::getEigenValue(int state) const{
+	return real(eigenValues[state]);
+}
+
+inline const std::complex<double> ArnoldiSolver::getAmplitude(
+	int state,
+	const Index &index
+){
+	return eigenVectors[model->getBasisSize()*state + model->getBasisIndex(index)];
 }
 
 };	//End of namesapce TBTK
