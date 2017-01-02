@@ -356,10 +356,6 @@ void ArnoldiSolver::init(){
 		"COO format not constructed.",
 		"Use Model::constructCOO() to construct COO format."
 	);
-/*	if(cooRowIndices == NULL || cooColIndices == NULL){
-		cout << "Error in ArnoldiSolver::init(): Amplitude COO storage has to be constructed first.\n";
-		exit(1);
-	}*/
 
 	//Copy rowIndices (Note that COO is on row major order. Therefore
 	//columns and rows are interchanged and values complex conjugated.)
@@ -383,6 +379,25 @@ void ArnoldiSolver::init(){
 		}
 	}
 	colPointersH[basisSize] = numMatrixElements;
+
+	//Apply shift to diagonal elements
+	currentColumn = -1;
+	int nextDiagonalElement = 0;
+	for(int n = 0; n < numMatrixElements; n++){
+		if(cooRowIndices[n] > currentColumn){
+			currentColumn = cooRowIndices[n];
+		}
+
+		TBTKAssert(
+			nextDiagonalElement <= currentColumn,
+			"ArnoldiSolver::init()",
+			"Missing diagonal hopping amplitude in the Hamiltonian.",
+			"The ArnoldiSolver requires all diagonal entries to be set even if they are zero. Use Model::addHA() to add HoppingAmplitudes for all diagonal terms."
+		);
+
+		if(cooColIndices[n] == currentColumn)
+			valuesH[n].r -= shift;
+	}
 
 	//Create Hamiltonian
 	hamiltonian = new SuperMatrix;

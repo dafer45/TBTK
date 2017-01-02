@@ -66,6 +66,13 @@ Property::LDOS* APropertyExtractor::calculateLDOS(
 	Index pattern,
 	Index ranges
 ){
+	TBTKAssert(
+		aSolver->getCalculateEigenVectors(),
+		"APropertyExtractor::calculateLDOS()",
+		"Eigen vectors not calculated.",
+		"Use ArnoldiSolver::setCalculateEigenVectors() to ensure eigen vectors are calculated."
+	);
+
 	//hint[0] is an array of doubles, hint[1] is an array of ints
 	//hint[0][0]: upperBound
 	//hint[0][1]: lowerBound
@@ -107,6 +114,13 @@ Property::SpinPolarizedLDOS* APropertyExtractor::calculateSpinPolarizedLDOS(
 	Index pattern,
 	Index ranges
 ){
+	TBTKAssert(
+		aSolver->getCalculateEigenVectors(),
+		"APropertyExtractor::calculateSpinPolarizedLDOS()",
+		"Eigen vectors not calculated.",
+		"Use ArnoldiSolver::setCalculateEigenVectors() to ensure eigen vectors are calculated."
+	);
+
 	//hint[0] is an array of doubles, hint[1] is an array of ints
 	//hint[0][0]: upperBound
 	//hint[0][1]: lowerBound

@@ -71,6 +71,9 @@ public:
 	 *  algorithm. */
 	void setMaxIterations(int maxIterations);
 
+	/** Set shift. */
+	void setCentralValue(double centralValue);
+
 	/** Run the implicitly restarted Arnoldi algorithm. */
 	void run();
 
@@ -221,6 +224,10 @@ inline void ArnoldiSolver::setTolerance(double tolerance){
 
 inline void ArnoldiSolver::setMaxIterations(int maxIterations){
 	this->maxIterations = maxIterations;
+}
+
+inline void ArnoldiSolver::setCentralValue(double centralValue){
+	shift = centralValue;
 }
 
 inline const std::complex<double>* ArnoldiSolver::getEigenValues() const{
