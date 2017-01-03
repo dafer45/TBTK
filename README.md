@@ -76,7 +76,7 @@ components that do not work by default, and the corresponding reasons are
 listed below:
 ### Library
 #### ArnoldiSolver
-Depends on the external libraries ARPACK (http://www.caam.rice.edu/software/ARPACK/) and SuperLU (http://crd-legacy.lbl.gov/~xiaoye/SuperLU/).
+Depends on the external libraries ARPACK (http://www.caam.rice.edu/software/ARPACK/) and SuperLU v5.2.1 (http://crd-legacy.lbl.gov/~xiaoye/SuperLU/).
 
 Given that ARPACK and SuperLU are installed, the ArnoldiSolver can be compiled by executing the following command from TBTK/Lib/.
 ```bash

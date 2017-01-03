@@ -143,12 +143,13 @@ void PropertyExtractor::calculate(
 			isSumIndex = true;
 		for(int n = 0; n < ranges.at(currentSubindex); n++){
 			pattern.at(currentSubindex) = n;
-			calculate(callback,
-					memory,
-					pattern,
-					ranges,
-					currentOffset,
-					nextOffsetMultiplier
+			calculate(
+				callback,
+				memory,
+				pattern,
+				ranges,
+				currentOffset,
+				nextOffsetMultiplier
 			);
 			if(!isSumIndex)
 				currentOffset += offsetMultiplier;

@@ -43,11 +43,11 @@ const complex<double> i(0, 1);
 int main(int argc, char **argv){
 	Timer::tick("Full calculation");
 	//Lattice size
-	const int SIZE_X = 40;
-	const int SIZE_Y = 40;
+	const int SIZE_X = 80;
+	const int SIZE_Y = 80;
 
 	//Parameters
-	complex<double> mu = -1.0;
+	complex<double> mu = -1.0 + 0.0000001;
 	complex<double> t = 1.0;
 	complex<double> J = 0.25;
 
@@ -73,8 +73,8 @@ int main(int argc, char **argv){
 	model.constructCOO();
 
 	//Setup and run DiagonalizationSolver
-	const int NUM_EIGEN_VALUES = 800;
-	const int NUM_LANCZOS_VECTORS = 1600;
+	const int NUM_EIGEN_VALUES = 1600;
+	const int NUM_LANCZOS_VECTORS = 3200;
 	int MAX_ITERATIONS = 4000;
 	ArnoldiSolver aSolver;
 	aSolver.setModel(&model);
@@ -93,8 +93,8 @@ int main(int argc, char **argv){
 	APropertyExtractor pe(&aSolver);
 
 	//Setup energy window
-	const double UPPER_BOUND = 3.;
-	const double LOWER_BOUND = -1.;
+	const double UPPER_BOUND = 1.25;
+	const double LOWER_BOUND = 0.75;
 	const int RESOLUTION = 1000;
 	pe.setEnergyWindow(LOWER_BOUND, UPPER_BOUND, RESOLUTION);
 
