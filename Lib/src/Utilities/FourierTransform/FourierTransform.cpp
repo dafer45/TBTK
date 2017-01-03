@@ -53,8 +53,8 @@ void FourierTransform::transform(
 	int sign
 ){
 	fftw_plan plan = fftw_plan_dft_2d(
-		sizeX,
 		sizeY,
+		sizeX,
 		reinterpret_cast<fftw_complex*>(in),
 		reinterpret_cast<fftw_complex*>(out),
 		sign,
@@ -62,6 +62,9 @@ void FourierTransform::transform(
 	);
 	fftw_execute(plan);
 	fftw_destroy_plan(plan);
+
+	for(int n = 0; n < sizeX*sizeY; n++)
+		out[n] /= sqrt(sizeX*sizeY);
 }
 
 void FourierTransform::transform(
@@ -73,7 +76,7 @@ void FourierTransform::transform(
 	int sign
 ){
 	fftw_plan plan = fftw_plan_dft_3d(
-		sizeX,
+		sizeZ,
 		sizeY,
 		sizeZ,
 		reinterpret_cast<fftw_complex*>(in),
@@ -83,6 +86,9 @@ void FourierTransform::transform(
 	);
 	fftw_execute(plan);
 	fftw_destroy_plan(plan);
+
+	for(int n = 0; n < sizeX*sizeY*sizeZ; n++)
+		out[n] /= sqrt(sizeX*sizeY*sizeZ);
 }
 
 };
