@@ -82,6 +82,13 @@ Given that ARPACK and SuperLU are installed, the ArnoldiSolver can be compiled b
 ```bash
 make arnoldi
 ```
+#### FourierTransform
+Depends on the external library FFTW v3 (http://www.fftw.org/).
+
+Given that FFTW is installed, the FourierTransform can be compiled by executing the following command from TBTK/Lib/.
+```bash
+make fourier
+```
 
 ### Tools
 #### TBTKImageToModel
