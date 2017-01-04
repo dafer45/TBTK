@@ -23,14 +23,14 @@
 #ifndef COM_DAFER45_TBTK_MODEL_FACTORY
 #define COM_DAFER45_TBTK_MODEL_FACTORY
 
-#include "Model.h"
 #include "Geometry.h"
+#include "Model.h"
 #include "StateSet.h"
 #include "StateTreeNode.h"
 #include "UnitCell.h"
 
-#include <initializer_list>
 #include <complex>
+#include <initializer_list>
 
 namespace TBTK{
 

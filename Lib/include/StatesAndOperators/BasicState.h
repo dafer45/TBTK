@@ -24,8 +24,8 @@
 #define COM_DAFER45_TBTK_BASIC_STATE
 
 #include "AbstractState.h"
-#include "Index.h"
 #include "DefaultOperator.h"
+#include "Index.h"
 
 #include <complex>
 #include <tuple>

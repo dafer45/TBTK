@@ -23,10 +23,11 @@
 #ifndef COM_DAFER45_TBTK_MODEL
 #define COM_DAFER45_TBTK_MODEL
 
-#include <complex>
 #include "AmplitudeSet.h"
-#include <string>
+
+#include <complex>
 #include <fstream>
+#include <string>
 
 namespace TBTK{
 

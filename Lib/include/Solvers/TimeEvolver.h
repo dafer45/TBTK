@@ -24,11 +24,12 @@
 #ifndef COM_DAFER45_TBTK_TIME_EVOLVER
 #define COM_DAFER45_TBTK_TIME_EVOLVER
 
-#include "Model.h"
 #include "DiagonalizationSolver.h"
+#include "Model.h"
 #include "UnitHandler.h"
-#include <vector>
+
 #include <complex>
+#include <vector>
 
 namespace TBTK{
 

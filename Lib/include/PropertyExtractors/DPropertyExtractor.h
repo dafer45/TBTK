@@ -23,13 +23,13 @@
 #ifndef COM_DAFER45_TBTK_D_PROPERTY_EXTRACTOR
 #define COM_DAFER45_TBTK_D_PROPERTY_EXTRACTOR
 
-#include "PropertyExtractor.h"
 #include "DiagonalizationSolver.h"
-#include "EigenValues.h"
 #include "DOS.h"
 #include "Density.h"
-#include "Magnetization.h"
+#include "EigenValues.h"
 #include "LDOS.h"
+#include "Magnetization.h"
+#include "PropertyExtractor.h"
 #include "SpinPolarizedLDOS.h"
 
 #include <complex>

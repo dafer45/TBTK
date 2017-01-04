@@ -23,8 +23,9 @@
 #ifndef COM_DAFER45_TBTK_TREE_NODE
 #define COM_DAFER45_TBTK_TREE_NODE
 
-#include <vector>
 #include "HoppingAmplitude.h"
+
+#include <vector>
 
 namespace TBTK{
 

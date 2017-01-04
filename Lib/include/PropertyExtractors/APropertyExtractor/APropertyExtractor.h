@@ -23,11 +23,11 @@
 #ifndef COM_DAFER45_TBTK_A_PROPERTY_EXTRACTOR
 #define COM_DAFER45_TBTK_A_PROPERTY_EXTRACTOR
 
-#include "PropertyExtractor.h"
 #include "../../Solvers/ArnoldiSolver/ArnoldiSolver.h"
-#include "EigenValues.h"
 #include "DOS.h"
+#include "EigenValues.h"
 #include "LDOS.h"
+#include "PropertyExtractor.h"
 #include "SpinPolarizedLDOS.h"
 
 #include <complex>

@@ -19,8 +19,8 @@
  */
 
 #include "HexagonalRhombohedralDiagonal.h"
-#include "Vector3d.h"
 #include "Streams.h"
+#include "Vector3d.h"
 
 #include <cmath>
 

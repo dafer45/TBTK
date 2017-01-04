@@ -24,12 +24,12 @@
 #ifndef COM_DAFER45_TBTK_RECIPROCAL_LATTICE
 #define COM_DAFER45_TBTK_RECIPROCAL_LATTICE
 
-#include "UnitCell.h"
 #include "Model.h"
 #include "StateTreeNode.h"
+#include "UnitCell.h"
 
-#include <vector>
 #include <initializer_list>
+#include <vector>
 
 namespace TBTK{
 

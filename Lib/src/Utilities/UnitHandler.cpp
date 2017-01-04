@@ -18,9 +18,9 @@
  *  @author Kristofer Björnson
  */
 
-#include "UnitHandler.h"
 #include "Streams.h"
 #include "TBTKMacros.h"
+#include "UnitHandler.h"
 
 #include <sstream>
 

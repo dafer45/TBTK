@@ -23,8 +23,8 @@
 #ifndef COM_DAFER45_TBTK_REAL_LATTICE
 #define COM_DAFER45_TBTK_REAL_LATTICE
 
-#include "UnitCell.h"
 #include "Index.h"
+#include "UnitCell.h"
 
 #include <vector>
 

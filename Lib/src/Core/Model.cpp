@@ -18,14 +18,14 @@
  *  @author Kristofer Björnson
  */
 
-#include "Model.h"
 #include "Geometry.h"
+#include "Model.h"
 #include "Streams.h"
 #include "TBTKMacros.h"
 
-#include <string>
 #include <fstream>
 #include <math.h>
+#include <string>
 
 using namespace std;
 

@@ -18,9 +18,9 @@
  *  @author Kristofer Björnson
  */
 
+#include "TBTKMacros.h"
 #include "TriclinicPrimitive.h"
 #include "Vector3d.h"
-#include "TBTKMacros.h"
 
 #include <cmath>
 

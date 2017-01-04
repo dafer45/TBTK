@@ -20,13 +20,14 @@
  */
 
 #include "FileReader.h"
-#include "TBTKMacros.h"
 #include "Streams.h"
+#include "TBTKMacros.h"
 
-#include <string>
-#include <sstream>
 #include <H5Cpp.h>
+
 #include <fstream>
+#include <sstream>
+#include <string>
 
 #ifndef H5_NO_NAMESPACE
 	using namespace H5;

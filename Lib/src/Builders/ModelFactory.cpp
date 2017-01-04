@@ -18,8 +18,8 @@
  *  @author Kristofer Björnson
  */
 
-#include "ModelFactory.h"
 #include "AmplitudeSet.h"
+#include "ModelFactory.h"
 #include "Streams.h"
 #include "TBTKMacros.h"
 

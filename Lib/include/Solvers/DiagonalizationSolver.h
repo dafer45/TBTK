@@ -24,6 +24,7 @@
 #define COM_DAFER45_TBTK_DIAGONALIZATION_SOLVER
 
 #include "Model.h"
+
 #include <complex>
 
 namespace TBTK{

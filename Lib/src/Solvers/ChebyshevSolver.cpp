@@ -20,12 +20,12 @@
 
 #include "ChebyshevSolver.h"
 #include "HALinkedList.h"
-#include "UnitHandler.h"
-#include "TBTKMacros.h"
 #include "Streams.h"
+#include "TBTKMacros.h"
+#include "UnitHandler.h"
 
-#include <math.h>
 #include <iostream>
+#include <math.h>
 
 using namespace std;
 

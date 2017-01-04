@@ -23,12 +23,12 @@
 #ifndef COM_DAFER45_TBTK_PROPERTY_EXTRACTOR
 #define COM_DAFER45_TBTK_PROPERTY_EXTRACTOR
 
-#include "Index.h"
 #include "Density.h"
-#include "Magnetization.h"
-#include "LDOS.h"
-#include "SpinPolarizedLDOS.h"
 #include "DOS.h"
+#include "Index.h"
+#include "LDOS.h"
+#include "Magnetization.h"
+#include "SpinPolarizedLDOS.h"
 
 #include <complex>
 

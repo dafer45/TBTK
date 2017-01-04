@@ -24,6 +24,7 @@
 #define COM_DAFER45_TBTK_GEOMETRY
 
 #include "Model.h"
+
 #include <initializer_list>
 
 namespace TBTK{

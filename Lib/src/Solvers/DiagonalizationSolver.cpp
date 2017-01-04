@@ -19,7 +19,6 @@
  */
 
 #include "DiagonalizationSolver.h"
-#include "TBTKMacros.h"
 #include "Streams.h"
 #include "TBTKMacros.h"
 

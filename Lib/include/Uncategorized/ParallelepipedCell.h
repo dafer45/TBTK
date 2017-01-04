@@ -23,11 +23,11 @@
 #ifndef COM_DAFER45_TBTK_PARALLELEPIPED_CELL
 #define COM_DAFER45_TBTK_PARALLELEPIPED_CELL
 
-#include "Vector3d.h"
 #include "Index.h"
+#include "Vector3d.h"
 
-#include <vector>
 #include <initializer_list>
+#include <vector>
 
 namespace TBTK{
 

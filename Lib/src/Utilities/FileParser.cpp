@@ -21,8 +21,8 @@
 
 #include "FileParser.h"
 #include "Geometry.h"
-#include "TBTKMacros.h"
 #include "Streams.h"
+#include "TBTKMacros.h"
 
 #include <fstream>
 #include <iomanip>

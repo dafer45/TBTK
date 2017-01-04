@@ -24,12 +24,12 @@
 #define COM_DAFER45_TBTK_AMPLITUDE_SET
 
 #include "HoppingAmplitude.h"
-#include "TreeNode.h"
 #include "Streams.h"
 #include "TBTKMacros.h"
+#include "TreeNode.h"
 
-#include <vector>
 #include <complex>
+#include <vector>
 
 namespace TBTK{
 

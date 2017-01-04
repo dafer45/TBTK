@@ -19,10 +19,10 @@
  */
 
 #include "ChebyshevSolver.h"
-#include "HALinkedList.h"
-#include "TBTKMacros.h"
 #include "GPUResourceManager.h"
+#include "HALinkedList.h"
 #include "Streams.h"
+#include "TBTKMacros.h"
 
 #include <cuComplex.h>
 #include <cusparse_v2.h>

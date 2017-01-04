@@ -19,8 +19,8 @@
  */
 
 #include "D3MonoclinicPrimitive.h"
-#include "Vector3d.h"
 #include "TBTKMacros.h"
+#include "Vector3d.h"
 
 #include <cmath>
 

@@ -28,9 +28,9 @@
 #include "Index.h"
 
 #include <complex>
-#include <vector>
 #include <initializer_list>
 #include <limits>
+#include <vector>
 
 namespace TBTK{
 

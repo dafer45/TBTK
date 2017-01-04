@@ -23,11 +23,11 @@
 #ifndef COM_DAFER45_TBTK_C_PROPERTY_EXTRACTOR
 #define COM_DAFER45_TBTK_C_PROPERTY_EXTRACTOR
 
-#include "PropertyExtractor.h"
 #include "ChebyshevSolver.h"
 #include "Density.h"
-#include "Magnetization.h"
 #include "LDOS.h"
+#include "Magnetization.h"
+#include "PropertyExtractor.h"
 #include "SpinPolarizedLDOS.h"
 
 #include <iostream>

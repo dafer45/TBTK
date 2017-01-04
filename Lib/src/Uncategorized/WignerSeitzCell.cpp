@@ -18,8 +18,8 @@
  *  @author Kristofer Björnson
  */
 
-#include "WignerSeitzCell.h"
 #include "TBTKMacros.h"
+#include "WignerSeitzCell.h"
 
 using namespace std;
 

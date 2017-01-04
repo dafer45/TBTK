@@ -18,9 +18,9 @@
  *  @author Kristofer Björnson
  */
 
+#include "Index.h"
 #include "StateTreeNode.h"
 #include "TBTKMacros.h"
-#include "Index.h"
 
 #include <limits>
 
