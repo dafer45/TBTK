@@ -31,6 +31,7 @@
 #include "Density.h"
 #include "Magnetization.h"
 #include "LDOS.h"
+#include "SpectralFunction.h"
 #include "SpinPolarizedLDOS.h"
 #include "ParameterSet.h"
 #include <fstream>
@@ -65,84 +66,42 @@ public:
 	);
 
 	/** Read eigenvalues from file. */
-/*	static void readEigenValues(
-		double **ev,
-		int *size,
-		std::string name = "EV",
-		std::string path = "/"
-	);*/
 	static Property::EigenValues* readEigenValues(
 		std::string name = "EigenValues",
 		std::string path = "/"
 	);
 
 	/** Read density of states from file. */
-/*	static void readDOS(
-		double **dos,
-		double *l_lim,
-		double *u_lim,
-		int *resolution,
-		std::string name = "DOS",
-		std::string path = "/"
-	);*/
 	static Property::DOS* readDOS(
 		std::string name = "DOS",
 		std::string path = "/"
 	);
 
 	/** Read density from file. */
-/*	static void readDensity(
-		double **density,
-		int *rank,
-		int **dims,
-		std::string name = "Density",
-		std::string path = "/"
-	);*/
 	static Property::Density* readDensity(
 		std::string name = "Density",
 		std::string path = "/"
 	);
 
 	/** Read magnetization from file. */
-/*	static void readMAG(
-		std::complex<double> **mag,
-		int *rank,
-		int **dims,
-		std::string name = "MAG",
-		std::string path = "/"
-	);*/
 	static Property::Magnetization* readMagnetization(
 		std::string name = "Magnetization",
 		std::string path = "/"
 	);
 
 	/** Read local density of states from file. */
-/*	static void readLDOS(
-		double **ldos,
-		int *rank,
-		int **dims,
-		double *l_lim,
-		double *u_lim,
-		int *resolution,
-		std::string name = "LDOS",
-		std::string path = "/"
-	);*/
 	static Property::LDOS* readLDOS(
 		std::string name = "LDOS",
 		std::string path = "/"
 	);
 
-	/** Read spin-polarized local density of states from file. */
-/*	static void readSP_LDOS(
-		std::complex<double> **sp_ldos,
-		int *rank,
-		int **dims,
-		double *l_lim,
-		double *u_lim,
-		int *resolution,
-		std::string name = "SP_LDOS",
+	/** Read spectral function from file. */
+	static Property::SpectralFunction* readSpectralFunction(
+		std::string name = "SpectralFunction",
 		std::string path = "/"
-	);*/
+	);
+
+	/** Read spin-polarized local density of states from file. */
 	static Property::SpinPolarizedLDOS* readSpinPolarizedLDOS(
 		std::string name = "SpinPolarizedLDOS",
 		std::string path = "/"
@@ -197,6 +156,13 @@ private:
 	/** File name of file to read from. */
 	static std::string filename;
 };
+
+inline Property::SpectralFunction* FileReader::readSpectralFunction(
+	std::string name,
+	std::string path
+){
+	return reinterpret_cast<Property::SpectralFunction*>(readLDOS(name, path));
+}
 
 inline void FileReader::setFileName(std::string filename){
 	FileReader::filename = filename;

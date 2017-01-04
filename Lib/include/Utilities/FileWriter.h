@@ -32,6 +32,7 @@
 #include "Density.h"
 #include "Magnetization.h"
 #include "LDOS.h"
+#include "SpectralFunction.h"
 #include "SpinPolarizedLDOS.h"
 #include "ParameterSet.h"
 #include <fstream>
@@ -69,12 +70,6 @@ public:
 	);
 
 	/** Write eigenvalues to file. */
-/*	static void writeEigenValues(
-		const double *ev,
-		int size,
-		std::string name = "EV",
-		std::string path = "/"
-	);*/
 	static void writeEigenValues(
 		const Property::EigenValues *ev,
 		std::string name = "EigenValues",
@@ -82,14 +77,6 @@ public:
 	);
 
 	/** Write density of states to file. */
-/*	static void writeDOS(
-		const double *dos,
-		double l_lim,
-		double u_lim,
-		int resolution,
-		std::string name = "DOS",
-		std::string path = "/"
-	);*/
 	static void writeDOS(
 		const Property::DOS *dos,
 		std::string name = "DOS",
@@ -97,13 +84,6 @@ public:
 	);
 
 	/** Write density to file. */
-/*	static void writeDensity(
-		const double *density,
-		int rank,
-		const int *dims,
-		std::string name = "Density",
-		std::string path = "/"
-	);*/
 	static void writeDensity(
 		const Property::Density *density,
 		std::string name = "Density",
@@ -111,13 +91,6 @@ public:
 	);
 
 	/** Write magnetization to file. */
-/*	static void writeMAG(
-		const std::complex<double> *mag,
-		int rank,
-		const int *dims,
-		std::string name = "MAG",
-		std::string path = "/"
-	);*/
 	static void writeMagnetization(
 		const Property::Magnetization *magnetization,
 		std::string name = "Magnetization",
@@ -125,33 +98,20 @@ public:
 	);
 
 	/** Write local density of states to file. */
-/*	static void writeLDOS(
-		const double *ldos,
-		int rank,
-		const int *dims,
-		double l_lim,
-		double u_lim,
-		int resolution,
-		std::string name = "LDOS",
-		std::string path = "/"
-	);*/
 	static void writeLDOS(
 		const Property::LDOS *ldos,
 		std::string name = "LDOS",
 		std::string path = "/"
 	);
 
-	/** Write spin-polarized local density of states to file. */
-/*	static void writeSP_LDOS(
-		const std::complex<double> *sp_ldos,
-		int rank,
-		const int *dims,
-		double l_lim,
-		double u_lim,
-		int resolution,
-		std::string name = "SP_LDOS",
+	/** Write spectral function to file. */
+	static void writeSpectralFunction(
+		const Property::SpectralFunction *spectralFunction,
+		std::string name = "SpectralFunction",
 		std::string path = "/"
-	);*/
+	);
+
+	/** Write spin-polarized local density of states to file. */
 	static void writeSpinPolarizedLDOS(
 		const Property::SpinPolarizedLDOS *spinPolarizedLDOS,
 		std::string name = "SpinPolarizedLDOS",
@@ -211,6 +171,14 @@ private:
 	/** File name of file to write to. */
 	static std::string filename;
 };
+
+inline void FileWriter::writeSpectralFunction(
+		const Property::SpectralFunction *spectralFunction,
+		std::string name,
+		std::string path
+){
+	writeLDOS(spectralFunction, name, path);
+}
 
 inline void FileWriter::setFileName(std::string filename){
 	FileWriter::filename = filename;
