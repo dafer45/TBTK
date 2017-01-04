@@ -99,6 +99,9 @@ Depends on the external library openCV (http://opencv.org/).
 Depends on the external library OGRE (http://www.ogre3d.org/).
 
 ### Templates
+#### BasicArnoldi
+Depends on the library component ArnoldiSolver to have been compiled (see above).
+
 #### TopologicalInsulator3D
 Depends on the external library FFTW (http://www.fftw.org/).
 
