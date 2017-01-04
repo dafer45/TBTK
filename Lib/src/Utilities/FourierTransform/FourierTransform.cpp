@@ -53,8 +53,8 @@ void FourierTransform::transform(
 	int sign
 ){
 	fftw_plan plan = fftw_plan_dft_2d(
-		sizeY,
 		sizeX,
+		sizeY,
 		reinterpret_cast<fftw_complex*>(in),
 		reinterpret_cast<fftw_complex*>(out),
 		sign,
@@ -76,7 +76,7 @@ void FourierTransform::transform(
 	int sign
 ){
 	fftw_plan plan = fftw_plan_dft_3d(
-		sizeZ,
+		sizeX,
 		sizeY,
 		sizeZ,
 		reinterpret_cast<fftw_complex*>(in),
