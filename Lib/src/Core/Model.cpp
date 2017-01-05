@@ -46,14 +46,6 @@ Model::~Model(){
 		delete geometry;
 }
 
-/*void Model::addHA(HoppingAmplitude ha){
-	amplitudeSet.addHA(ha);
-}
-
-void Model::addHAAndHC(HoppingAmplitude ha){
-	amplitudeSet.addHAAndHC(ha);
-}*/
-
 void Model::construct(){
 	if(isTalkative)
 		Streams::out << "Constructing system\n";
