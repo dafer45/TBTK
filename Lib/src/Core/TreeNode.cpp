@@ -80,7 +80,7 @@ void TreeNode::add(HoppingAmplitude &ha, unsigned int subindex){
 		//Ensure isPotentialBlockSeparator is set to false in case the
 		//'toIndex' and the 'fromIndex' differs in the subindex
 		//corresponding to this TreeNode level.
-		if(currentIndex != ha.toIndex.at(subindex))
+		if(ha.toIndex.size() <= subindex || currentIndex != ha.toIndex.at(subindex))
 			isPotentialBlockSeparator = false;
 		//Propagate to the next node level.
 		children.at(currentIndex).add(ha, subindex+1);

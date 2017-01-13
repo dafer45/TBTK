@@ -15,12 +15,16 @@ import matplotlib.cm
 import scipy.ndimage.filters
 import mpl_toolkits.mplot3d
 import sys
+import math
+import cmath
 
-if(len(sys.argv) != 2):
-	print "Error: Needs one argument for .hdf5-filename"
+if(len(sys.argv) != 4):
+	print "Error: Needs one argument for .hdf5-filename, theta, phi"
 	exit(1)
 
 filename = sys.argv[1]
+theta = float(sys.argv[2])
+phi = float(sys.argv[3])
 
 file = h5py.File(filename, 'r');
 dataset = file['Magnetization']
@@ -46,8 +50,14 @@ Z=numpy.zeros((size_x, size_y))
 for xp in range(0,size_x):
 	for yp in range(0, size_y):
 		uu = dataset[xp,yp,0,0] + 1j*dataset[xp,yp,0,1]
+		ud = dataset[xp,yp,1,0] + 1j*dataset[xp,yp,1,1]
+		du = dataset[xp,yp,2,0] + 1j*dataset[xp,yp,2,1]
 		dd = dataset[xp,yp,3,0] + 1j*dataset[xp,yp,3,1]
-		Z[xp,yp] = numpy.real(uu - dd)
+		Z[xp,yp] = numpy.real( \
+			+ (ud + du)*math.sin(theta)*math.cos(phi) \
+			- 1j*(ud - du)*math.sin(theta)*math.sin(phi) \
+			+ (uu-dd)*math.cos(theta) \
+		)
 
 fig = matplotlib.pyplot.figure()
 ax = fig.gca(projection='3d')

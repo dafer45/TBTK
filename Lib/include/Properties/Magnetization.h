@@ -38,7 +38,11 @@ public:
 	Magnetization(int dimensions, const int* ranges);
 
 	/** Constructor. */
-	Magnetization(int dimensions, const int* ranges, const double *data);
+	Magnetization(
+		int dimensions,
+		const int* ranges,
+		const std::complex<double> *data
+	);
 
 	/** Destructor. */
 	~Magnetization();

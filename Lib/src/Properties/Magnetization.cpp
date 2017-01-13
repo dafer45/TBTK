@@ -43,7 +43,7 @@ Magnetization::Magnetization(int dimensions, const int* ranges){
 Magnetization::Magnetization(
 	int dimensions,
 	const int* ranges,
-	const double *data
+	const complex<double> *data
 ){
 	this->dimensions = dimensions;
 	this->ranges = new int[dimensions];
