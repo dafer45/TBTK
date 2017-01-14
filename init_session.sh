@@ -18,6 +18,7 @@ CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/Lattices;
 CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/Lattices/D2;
 CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/Lattices/D3;
 CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/LinearAlgebra;
+CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/ManyBody;
 CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/Properties;
 CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/PropertyExtractors;
 CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/Solvers;
