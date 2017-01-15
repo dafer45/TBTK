@@ -53,6 +53,15 @@ public:
 	/** Subtraction operator. */
 	const BitRegister operator-(const BitRegister &rhs) const;
 
+	/** Less than operator. */
+	bool operator<(const BitRegister &rhs) const;
+
+	/** Greater than operator. */
+	bool operator>(const BitRegister &rhs) const;
+
+	/** Comparison operator. */
+	bool operator==(const BitRegister &rhs) const;
+
 	/** += operator. */
 	void operator+=(const BitRegister &rhs);
 
@@ -73,6 +82,9 @@ public:
 
 	/** Assignment operator. */
 	void operator=(const BitRegister &rhs);
+
+	/** Assignment operator. */
+	void operator=(unsigned int rhs);
 
 	/** Left bitshift operator. */
 	BitRegister operator<<(unsigned int rhs) const;
@@ -121,23 +133,45 @@ private:
 };
 
 inline const BitRegister BitRegister::operator|(const BitRegister &rhs) const{
-	return values | rhs.values;
+	BitRegister result;
+	result.values = values | rhs.values;
+	return result;
 }
 
 inline const BitRegister BitRegister::operator&(const BitRegister &rhs) const{
-	return values & rhs.values;
+	BitRegister result;
+	result.values = values & rhs.values;
+	return result;
 }
 
 inline const BitRegister BitRegister::operator^(const BitRegister &rhs) const{
-	return values * rhs.values;
+	BitRegister result;
+	result.values = values^rhs.values;
+	return result;
 }
 
 inline const BitRegister BitRegister::operator+(const BitRegister &rhs) const{
-	return values + rhs.values;
+	BitRegister result;
+	result.values = values + rhs.values;
+	return result;
 }
 
 inline const BitRegister BitRegister::operator-(const BitRegister &rhs) const{
-	return values - rhs.values;
+	BitRegister result;
+	result.values = values - rhs.values;
+	return result;
+}
+
+inline bool BitRegister::operator<(const BitRegister &rhs) const{
+	return values < rhs.values;
+}
+
+inline bool BitRegister::operator>(const BitRegister &rhs) const{
+	return values > rhs.values;
+}
+
+inline bool BitRegister::operator==(const BitRegister &rhs) const{
+	return values == rhs.values;
 }
 
 inline void BitRegister::operator+=(const BitRegister &rhs){
@@ -174,15 +208,19 @@ inline void BitRegister::operator=(const BitRegister &rhs){
 	values = rhs.values;
 }
 
+inline void BitRegister::operator=(unsigned int rhs){
+	values = rhs;
+}
+
 inline BitRegister BitRegister::operator<<(unsigned int rhs) const{
 	BitRegister result;
-	values << rhs;
+	result.values = values << rhs;
 	return result;
 }
 
 inline BitRegister BitRegister::operator>>(unsigned int rhs) const{
 	BitRegister result;
-	values >> rhs;
+	result.values = values >> rhs;
 	return result;
 }
 

@@ -66,6 +66,15 @@ public:
 		const ExtensiveBitRegister &rhs
 	) const;
 
+	/** Less than operator. */
+	bool operator<(const ExtensiveBitRegister &rhs) const;
+
+	/** Greater than operator. */
+	bool operator>(const ExtensiveBitRegister &rhs) const;
+
+	/** Comparison operator. */
+	bool operator==(const ExtensiveBitRegister &rhs) const;
+
 	/** += operator. */
 	void operator+=(const ExtensiveBitRegister &rhs);
 
@@ -140,7 +149,6 @@ private:
 inline const ExtensiveBitRegister ExtensiveBitRegister::operator|(
 	const ExtensiveBitRegister &rhs
 ) const{
-	Streams::out << size << "\t" << rhs.size << "\n";
 	TBTKAssert(
 		size == rhs.size,
 		"ExtensiveBitRegister::operator|()",
@@ -231,6 +239,43 @@ inline const ExtensiveBitRegister ExtensiveBitRegister::operator-(
 	}
 
 	return result;
+}
+
+inline bool ExtensiveBitRegister::operator<(
+	const ExtensiveBitRegister &rhs
+) const{
+	for(int n = size-1; n >= 0; n--){
+		if(values[n] < rhs.values[n])
+			return true;
+		if(values[n] > rhs.values[n])
+			return false;
+	}
+
+	return false;
+}
+
+inline bool ExtensiveBitRegister::operator>(
+	const ExtensiveBitRegister &rhs
+) const{
+	for(int n = size-1; n >= 0; n--){
+		if(values[n] > rhs.values[n])
+			return true;
+		if(values[n] < rhs.values[n])
+			return false;
+	}
+
+	return false;
+}
+
+inline bool ExtensiveBitRegister::operator==(
+	const ExtensiveBitRegister &rhs
+) const{
+	for(int n = 0; n < size; n++){
+		if(values[n] != rhs.values[n])
+			return false;
+	}
+
+	return true;
 }
 
 inline void ExtensiveBitRegister::operator+=(const ExtensiveBitRegister &rhs){
@@ -338,7 +383,12 @@ inline ExtensiveBitRegister ExtensiveBitRegister::operator<<(unsigned int rhs) c
 			result.values[n] = result.values[n-1];
 		result.values[0] = 0;
 	}
-	else{
+	else if(rhs == 8*sizeof(unsigned int)){
+		for(int n = size-1; n > 0; n--)
+			result.values[n] = result.values[n-1];
+		result.values[0] = 0;
+	}
+	else if(rhs != 0){
 		for(int n = size-1; n >= 0; n--){
 			result.values[n] = result.values[n] << rhs;
 			if(n > 0)
@@ -358,7 +408,7 @@ inline ExtensiveBitRegister ExtensiveBitRegister::operator>>(unsigned int rhs) c
 			result.values[n] = result.values[n+1];
 		result.values[size-1] = 0;
 	}
-	else{
+	else if(rhs != 0){
 		for(int n = 0; n < size; n++){
 			result.values[n] = result.values[n] >> rhs;
 			if(n < size-1)
@@ -373,6 +423,7 @@ inline void ExtensiveBitRegister::print() const{
 	for(unsigned int n = size; n > 0; n--){
 		for(int c = 8*sizeof(unsigned int)-1; c >= 0; c--)
 			Streams::out << (0x1 & (values[n-1] >> c));
+		Streams::out << " ";
 	}
 	Streams::out << "\n";
 }
@@ -401,6 +452,10 @@ inline void ExtensiveBitRegister::clear(){
 
 inline int ExtensiveBitRegister::getNumBits(){
 	return size*8*sizeof(unsigned int);
+}
+
+inline bool ExtensiveBitRegister::getMostSignificantBit() const{
+	return values[size-1] & MOST_SIGNIFICANT_BIT_MASK;
 }
 
 inline void ExtensiveBitRegister::setMostSignificantBit(){

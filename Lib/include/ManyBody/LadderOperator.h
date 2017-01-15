@@ -1,6 +1,8 @@
 #ifndef COM_DAFER45_TBTK_LADDER_OPERATOR
 #define COM_DAFER45_TBTK_LADDER_OPERATOR
 
+#include "FockState.h"
+
 namespace TBTK{
 
 template<typename T>
@@ -73,8 +75,9 @@ LadderOperator<T>::LadderOperator(
 			leastSignificantBit.setBit(n, 0);
 	}
 
-	stateMask.print();
-	leastSignificantBit.print();
+	this->maxOccupation = maxOccupation;
+	this->maxOccupation = (this->maxOccupation << numBitsPerState*state);
+	this->maxOccupation.print();
 }
 
 template<typename T>
@@ -95,10 +98,16 @@ template<typename T>
 FockState<T>& LadderOperator<T>::operator*(FockState<T> &rhs) const{
 	switch(type){
 	case Type::Creation:
+		if((rhs.bitRegister & stateMask) == maxOccupation){
+			rhs.bitRegister.setMostSignificantBit();
+			break;
+		}
 		rhs.bitRegister += leastSignificantBit;
+/*		if(!(rhs.bitRegister & stateMask).toBool() || (rhs.bitRegister & stateMask) > maxOccupation)
+			rhs.bitRegister.setMostSignificantBit();*/
 		break;
 	case Type::Annihilation:
-		if((rhs.bitRegister & stateMask).toBool()){
+		if(!(rhs.bitRegister & stateMask).toBool()){
 			rhs.bitRegister.setMostSignificantBit();
 			break;
 		}
