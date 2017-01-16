@@ -158,12 +158,14 @@ int main(int argc, char **argv){
 	CPropertyExtractor pe(
 		&cSolver,
 		numCoefficients,
-		energyResolution,
 		useGPU,
 		false,
-		true,
+		true
+	);
+	pe.setEnergyWindow(
 		-scaleFactor,
-		scaleFactor
+		scaleFactor,
+		energyResolution
 	);
 
 	//Initialize randomization and dos

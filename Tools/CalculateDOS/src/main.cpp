@@ -123,6 +123,11 @@ int main(int argc, char **argv){
 	dSolver.setModel(model);
 	dSolver.run();
 	DPropertyExtractor pe(&dSolver);
+	pe.setEnergyWindow(
+		lowerBound,
+		upperBound,
+		energyResolution
+	);
 
 	//Setup default bounds
 	if(useDefaultLowerBound)
@@ -136,7 +141,7 @@ int main(int argc, char **argv){
 		upperBound += energyRange/20.;
 
 	//Write DOS to file
-	Property::DOS *dos = pe.calculateDOS(lowerBound, upperBound, energyResolution);
+	Property::DOS *dos = pe.calculateDOS();
 	FileWriter::writeDOS(dos);
 	delete dos;
 
