@@ -468,7 +468,7 @@ HoppingAmplitude TreeNode::getFirstHA() const{
 	}
 
 	//Sould never happen. Line added to avoid compiler warnings.
-	return HoppingAmplitude({0, 0, 0}, {0, 0, 0}, 0);
+	return HoppingAmplitude(0, {0, 0, 0}, {0, 0, 0});
 }
 
 };	//End of namespace TBTK

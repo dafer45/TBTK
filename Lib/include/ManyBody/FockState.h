@@ -34,18 +34,30 @@ public:
 	/** Constructor. */
 	FockState(unsigned int exponentialDimension);
 
+	/** Copy constructor. */
+	FockState(const FockState &fockState);
+
 	/** Destructor. */
 	~FockState();
 
 	/** Returns true if the vector is the state is the null vector. */
 	bool isNull() const;
 
+	/** Get number of particles. */
+	unsigned int getNumFermions() const;
+
 	/** Print. */
 	void print() const;
 private:
+	/** Allow operators to operate immediately on the internal storage. */
 	friend class LadderOperator<BIT_REGISTER>;
 
+	/** Bit register used to store occupation numbers. */
 	BIT_REGISTER bitRegister;
+
+	/** Prefactor containing the sign and amplitude of the state a|psi>.
+	 *  For efficiency sign(a)a^2 is stored rather than a. */
+	int prefactor;
 };
 
 template<typename BIT_REGISTER>
@@ -54,6 +66,15 @@ FockState<BIT_REGISTER>::FockState(unsigned int exponentialDimension
 	bitRegister(exponentialDimension+1)
 {
 	bitRegister.clear();
+	prefactor = 1;
+}
+
+template<typename BIT_REGISTER>
+FockState<BIT_REGISTER>::FockState(const FockState &fockState
+) :
+	bitRegister(fockState.bitRegister)
+{
+	prefactor = fockState.prefactor;
 }
 
 template<typename BIT_REGISTER>
@@ -66,8 +87,19 @@ bool FockState<BIT_REGISTER>::isNull() const{
 }
 
 template<typename BIT_REGISTER>
+unsigned int FockState<BIT_REGISTER>::getNumFermions() const{
+	return bitRegister.getNumOneBits();
+}
+
+template<typename BIT_REGISTER>
 void FockState<BIT_REGISTER>::print() const{
-	bitRegister.print();
+	Streams::out << "|";
+	for(int n = bitRegister.getNumBits()-1; n >= 0; n--){
+		Streams::out << bitRegister.getBit(n);
+		if(n%8 == 0 && n != 0)
+			Streams::out << " ";
+	}
+	Streams::out << ">\n";
 }
 
 };	//End of namespace TBTK

@@ -122,7 +122,7 @@ public:
 	void print() const;
 
 	/** Return the number of bits in the register. */
-	int getNumBits();
+	int getNumBits() const;
 
 	/** Return the most significant bit. */
 	bool getMostSignificantBit() const;
@@ -450,7 +450,7 @@ inline void ExtensiveBitRegister::clear(){
 		values[n] = 0;
 }
 
-inline int ExtensiveBitRegister::getNumBits(){
+inline int ExtensiveBitRegister::getNumBits() const{
 	return size*8*sizeof(unsigned int);
 }
 

@@ -9,7 +9,7 @@
 
 namespace TBTK{
 
-template<typename T>
+template<typename BIT_REGISTER>
 class FockSpace{
 public:
 	/** Constructor. */
@@ -23,20 +23,20 @@ public:
 	~FockSpace();
 
 	/** Get operators. */
-	LadderOperator<T>** getOperators() const;
+	LadderOperator<BIT_REGISTER>** getOperators() const;
 
 	/** Get the vacuum state. */
-	FockState<T> getVacuumState() const;
+	FockState<BIT_REGISTER> getVacuumState() const;
 private:
 	/** Particle number. If positive, only the Fock space is restricted to
 	 *  the subsapce with numParticle particles. If numParticles is
 	 *  negative, the Fock space is restricted to the subspace with up to
 	 *  -numParticles particles. */
-	unsigned int numParticles;
+//	unsigned int numParticles;
 
 	/** Maximum number of particles per state. Is 1 for fermions, and
 	 *  |numParticles| for bosons. */
-	unsigned int maxParticlesPerState;
+//	unsigned int maxParticlesPerState;
 
 	/** Number of bits needed to encode all states. */
 	unsigned int exponentialDimension;
@@ -44,11 +44,14 @@ private:
 	/** AmplitudeSet holding the single particle representation. */
 	AmplitudeSet *amplitudeSet;
 
-	/** Template state used to create new states. */
-	FockState<T> *templateState;
+	/** Vacuum state used as template when creating new states. */
+	FockState<BIT_REGISTER> *vacuumState;
 
 	/** Operators. */
-	LadderOperator<T> **operators;
+	LadderOperator<BIT_REGISTER> **operators;
+
+	/** Fock state hash callback. */
+	unsigned int hashCallback(const FockState<BIT_REGISTER> &fockState);
 };
 
 template<>
@@ -57,9 +60,10 @@ FockSpace<BitRegister>::FockSpace(
 	Model::Statistics statistics,
 	int numParticles
 ){
-	this->numParticles = numParticles;
+//	this->numParticles = numParticles;
 	this->amplitudeSet = amplitudeSet;
 
+	unsigned int maxParticlesPerState;
 	switch(statistics){
 	case Model::Statistics::FermiDirac:
 		maxParticlesPerState = 1;
@@ -88,7 +92,7 @@ FockSpace<BitRegister>::FockSpace(
 		"Use ExtensiveBitRegister instead."
 	);
 
-	templateState = new FockState<BitRegister>(BitRegister().getNumBits());
+	vacuumState = new FockState<BitRegister>(BitRegister().getNumBits());
 
 	operators = new LadderOperator<BitRegister>*[amplitudeSet->getBasisSize()];
 	for(int n = 0; n < amplitudeSet->getBasisSize(); n++){
@@ -98,14 +102,14 @@ FockSpace<BitRegister>::FockSpace(
 				n,
 				numBitsPerState,
 				maxParticlesPerState,
-				*templateState
+				*vacuumState
 			),
 			LadderOperator<BitRegister>(
 				LadderOperator<BitRegister>::Type::Annihilation,
 				n,
 				numBitsPerState,
 				maxParticlesPerState,
-				*templateState
+				*vacuumState
 			)
 		};
 	}
@@ -117,9 +121,10 @@ FockSpace<ExtensiveBitRegister>::FockSpace(
 	Model::Statistics statistics,
 	int numParticles
 ){
-	this->numParticles = numParticles;
+//	this->numParticles = numParticles;
 	this->amplitudeSet = amplitudeSet;
 
+	unsigned int maxParticlesPerState;
 	switch(statistics){
 	case Model::Statistics::FermiDirac:
 		maxParticlesPerState = 1;
@@ -141,7 +146,7 @@ FockSpace<ExtensiveBitRegister>::FockSpace(
 
 	exponentialDimension = numBitsPerState*amplitudeSet->getBasisSize();
 
-	templateState = new FockState<ExtensiveBitRegister>(
+	vacuumState = new FockState<ExtensiveBitRegister>(
 		exponentialDimension + 1
 	);
 
@@ -153,35 +158,34 @@ FockSpace<ExtensiveBitRegister>::FockSpace(
 				n,
 				numBitsPerState,
 				maxParticlesPerState,
-				*templateState
+				*vacuumState
 			),
 			LadderOperator<ExtensiveBitRegister>(
 				LadderOperator<ExtensiveBitRegister>::Type::Annihilation,
 				n,
 				numBitsPerState,
 				maxParticlesPerState,
-				*templateState
+				*vacuumState
 			)
 		};
 	}
 }
 
-template<typename T>
-FockSpace<T>::~FockSpace(){
+template<typename BIT_REGISTER>
+FockSpace<BIT_REGISTER>::~FockSpace(){
 	for(int n = 0; n < amplitudeSet->getBasisSize(); n++)
 		delete [] operators[n];
 	delete [] operators;
 }
 
-template<typename T>
-LadderOperator<T>** FockSpace<T>::getOperators() const{
+template<typename BIT_REGISTER>
+LadderOperator<BIT_REGISTER>** FockSpace<BIT_REGISTER>::getOperators() const{
 	return operators;
 }
 
-template<typename T>
-FockState<T> FockSpace<T>::getVacuumState() const{
-	return FockState<T>(exponentialDimension + 1);
-//	return templateState.cloneStructure().clear();
+template<typename BIT_REGISTER>
+FockState<BIT_REGISTER> FockSpace<BIT_REGISTER>::getVacuumState() const{
+	return *vacuumState;
 }
 
 };	//End of namespace TBTK

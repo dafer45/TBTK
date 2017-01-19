@@ -25,7 +25,7 @@ using namespace std;
 
 namespace TBTK{
 
-HoppingAmplitude::HoppingAmplitude(
+/*HoppingAmplitude::HoppingAmplitude(
 	Index fromIndex,
 	Index toIndex,
 	complex<double> amplitude
@@ -46,7 +46,7 @@ HoppingAmplitude::HoppingAmplitude(
 	toIndex(toIndex)
 {
 	this->amplitudeCallback = amplitudeCallback;
-};
+};*/
 
 HoppingAmplitude::HoppingAmplitude(
 	complex<double> amplitude,
@@ -71,7 +71,7 @@ HoppingAmplitude::HoppingAmplitude(
 	this->amplitudeCallback = amplitudeCallback;
 };
 
-HoppingAmplitude::HoppingAmplitude(
+/*HoppingAmplitude::HoppingAmplitude(
 	complex<double> amplitude,
 	Index toIndex,
 	Index fromIndex,
@@ -93,7 +93,7 @@ HoppingAmplitude::HoppingAmplitude(
 	toIndex(toIndex)
 {
 	this->amplitudeCallback = amplitudeCallback;
-}
+}*/
 
 HoppingAmplitude::HoppingAmplitude(
 	const HoppingAmplitude &ha
@@ -106,10 +106,14 @@ HoppingAmplitude::HoppingAmplitude(
 }
 
 HoppingAmplitude HoppingAmplitude::getHermitianConjugate() const{
-	if(amplitudeCallback)
+/*	if(amplitudeCallback)
 		return HoppingAmplitude(toIndex, fromIndex, amplitudeCallback);
 	else
-		return HoppingAmplitude(toIndex, fromIndex, conj(amplitude));
+		return HoppingAmplitude(toIndex, fromIndex, conj(amplitude));*/
+	if(amplitudeCallback)
+		return HoppingAmplitude(amplitudeCallback, fromIndex, toIndex);
+	else
+		return HoppingAmplitude(conj(amplitude), fromIndex, toIndex);
 }
 
 void HoppingAmplitude::print(){

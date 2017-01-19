@@ -5,7 +5,7 @@
 
 namespace TBTK{
 
-template<typename T>
+template<typename BIT_REGISTER>
 class LadderOperator{
 public:
 	/** Operator type. */
@@ -17,7 +17,7 @@ public:
 		unsigned int state,
 		unsigned int numBitsPerState,
 		unsigned int maxOccupation,
-		const FockState<T> &templateState
+		const FockState<BIT_REGISTER> &templateState
 	);
 
 	/** Destructor. */
@@ -30,7 +30,7 @@ public:
 	unsigned int getState() const;
 
 	/** Multiplication operator. */
-	FockState<T>& operator*(FockState<T> &rhs) const;
+	FockState<BIT_REGISTER>& operator*(FockState<BIT_REGISTER> &rhs) const;
 private:
 	/** Operator type. */
 	Type type;
@@ -39,22 +39,22 @@ private:
 	unsigned int state;
 
 	/** State mask. */
-	T stateMask;
+	BIT_REGISTER stateMask;
 
 	/** Least significant bit. */
-	T leastSignificantBit;
+	BIT_REGISTER leastSignificantBit;
 
 	/** State corresponding to maximum number of occupied particles. */
-	T maxOccupation;
+	BIT_REGISTER maxOccupation;
 };
 
-template<typename T>
-LadderOperator<T>::LadderOperator(
+template<typename BIT_REGISTER>
+LadderOperator<BIT_REGISTER>::LadderOperator(
 	Type type,
 	unsigned int state,
 	unsigned int numBitsPerState,
 	unsigned int maxOccupation,
-	const FockState<T> &templateState
+	const FockState<BIT_REGISTER> &templateState
 ) :
 	stateMask(templateState.bitRegister),
 	leastSignificantBit(templateState.bitRegister),
@@ -77,25 +77,26 @@ LadderOperator<T>::LadderOperator(
 
 	this->maxOccupation = maxOccupation;
 	this->maxOccupation = (this->maxOccupation << numBitsPerState*state);
-	this->maxOccupation.print();
 }
 
-template<typename T>
-LadderOperator<T>::~LadderOperator(){
+template<typename BIT_REGISTER>
+LadderOperator<BIT_REGISTER>::~LadderOperator(){
 }
 
-template<typename T>
-typename LadderOperator<T>::Type LadderOperator<T>::getType() const{
+template<typename BIT_REGISTER>
+typename LadderOperator<BIT_REGISTER>::Type LadderOperator<BIT_REGISTER>::getType() const{
 	return type;
 }
 
-template<typename T>
-unsigned int LadderOperator<T>::getState() const{
+template<typename BIT_REGISTER>
+unsigned int LadderOperator<BIT_REGISTER>::getState() const{
 	return state;
 }
 
-template<typename T>
-FockState<T>& LadderOperator<T>::operator*(FockState<T> &rhs) const{
+template<typename BIT_REGISTER>
+FockState<BIT_REGISTER>& LadderOperator<BIT_REGISTER>::operator*(
+	FockState<BIT_REGISTER> &rhs
+) const{
 	switch(type){
 	case Type::Creation:
 		if((rhs.bitRegister & stateMask) == maxOccupation){
