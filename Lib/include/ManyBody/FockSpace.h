@@ -4,6 +4,7 @@
 #include "AmplitudeSet.h"
 #include "BitRegister.h"
 #include "ExtensiveBitRegister.h"
+#include "FockState.h"
 #include "LadderOperator.h"
 #include "Model.h"
 
@@ -27,6 +28,9 @@ public:
 
 	/** Get the vacuum state. */
 	FockState<BIT_REGISTER> getVacuumState() const;
+
+	/** Returns the number of fermions in the state. */
+	unsigned int getNumFermions(const FockState<BIT_REGISTER> &fockState) const;
 private:
 	/** Particle number. If positive, only the Fock space is restricted to
 	 *  the subsapce with numParticle particles. If numParticles is
@@ -37,6 +41,8 @@ private:
 	/** Maximum number of particles per state. Is 1 for fermions, and
 	 *  |numParticles| for bosons. */
 //	unsigned int maxParticlesPerState;
+
+	Model::Statistics statistics;
 
 	/** Number of bits needed to encode all states. */
 	unsigned int exponentialDimension;
@@ -51,7 +57,7 @@ private:
 	LadderOperator<BIT_REGISTER> **operators;
 
 	/** Fock state hash callback. */
-	unsigned int hashCallback(const FockState<BIT_REGISTER> &fockState);
+	unsigned int hashCallback(const FockState<BIT_REGISTER> &fockState) const;
 };
 
 template<>
@@ -62,6 +68,7 @@ FockSpace<BitRegister>::FockSpace(
 ){
 //	this->numParticles = numParticles;
 	this->amplitudeSet = amplitudeSet;
+	this->statistics = statistics;
 
 	unsigned int maxParticlesPerState;
 	switch(statistics){
@@ -123,6 +130,7 @@ FockSpace<ExtensiveBitRegister>::FockSpace(
 ){
 //	this->numParticles = numParticles;
 	this->amplitudeSet = amplitudeSet;
+	this->statistics = statistics;
 
 	unsigned int maxParticlesPerState;
 	switch(statistics){
@@ -186,6 +194,22 @@ LadderOperator<BIT_REGISTER>** FockSpace<BIT_REGISTER>::getOperators() const{
 template<typename BIT_REGISTER>
 FockState<BIT_REGISTER> FockSpace<BIT_REGISTER>::getVacuumState() const{
 	return *vacuumState;
+}
+
+template<typename BIT_REGISTER>
+unsigned int FockSpace<BIT_REGISTER>::getNumFermions(const FockState<BIT_REGISTER> &fockState) const{
+	switch(statistics){
+	case Model::Statistics::FermiDirac:
+		return fockState.bitRegister.getNumOneBits();
+	case Model::Statistics::BoseEinstein:
+		return 0;
+	default:
+		TBTKExit(
+			"FockSpace<BIT_REGISTER>::getNumFermions()",
+			"This should never happen.",
+			"Contact the developer."
+		);
+	}
 }
 
 };	//End of namespace TBTK

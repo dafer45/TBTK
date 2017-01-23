@@ -26,6 +26,9 @@
 namespace TBTK{
 
 template<typename BIT_REGISTER>
+class FockSpace;
+
+template<typename BIT_REGISTER>
 class LadderOperator;
 
 template<typename BIT_REGISTER>
@@ -44,11 +47,14 @@ public:
 	bool isNull() const;
 
 	/** Get number of particles. */
-	unsigned int getNumFermions() const;
+//	unsigned int getNumFermions() const;
 
 	/** Print. */
 	void print() const;
 private:
+	/** Allow the FockSpace to immediatly access the internal storage. */
+	friend class FockSpace<BIT_REGISTER>;
+
 	/** Allow operators to operate immediately on the internal storage. */
 	friend class LadderOperator<BIT_REGISTER>;
 
@@ -86,10 +92,10 @@ bool FockState<BIT_REGISTER>::isNull() const{
 	return bitRegister.getMostSignificantBit();
 }
 
-template<typename BIT_REGISTER>
+/*template<typename BIT_REGISTER>
 unsigned int FockState<BIT_REGISTER>::getNumFermions() const{
 	return bitRegister.getNumOneBits();
-}
+}*/
 
 template<typename BIT_REGISTER>
 void FockState<BIT_REGISTER>::print() const{
