@@ -1,5 +1,24 @@
-module load gcc/4.9
-module load cuda/7.0
+#########################################################
+# Check that gcc 4.9.0 or above is the current compiler #
+#########################################################
+gcc_version="$(gcc -dumpversion)"
+gcc_required_version="4.9.0"
+if [ "$(printf "$gcc_required_version\n$gcc_version" | sort -V | head -n1)" == "$gcc_version" ] && [ "$gcc_version" != "$gcc_required_version" ]; then
+        echo "Error: Unable to detect gcc compiler with minimum version 4.9."
+        return
+fi
+
+###########################################
+# Print warning if nvcc is not availalbe. #
+###########################################
+if hash nvcc 2>/dev/null; then
+	:
+else
+        echo "Warning: No nvcc compiler found. CUDA not supported."
+fi
+
+#module load gcc/4.9
+#module load cuda/7.0
 
 TBTK_dir=$PWD
 export TBTK_dir
