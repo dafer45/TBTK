@@ -1,0 +1,32 @@
+#!/bin/bash
+
+newProjectName=$1
+if [ -z "$newProjectName" ]
+then
+	echo "Error: Missing project name (first argument)"
+	exit
+fi
+
+templateProjectName=$2
+templateProjectPath=$TBTK_dir/Templates
+if [ -z "$templateProjectName" ]
+then
+	templateProjectName=EmtpyProject
+	templateProjectPath+=/EmptyProject
+else
+	if [ -d "$templateProjectPath/$templateProjectName" ]
+	then
+		templateProjectPath+=/$templateProjectName
+	else
+		echo "Error: No template project with the name '$templateProjectName' exists."
+		exit
+	fi
+fi
+
+if [ -d "$newProjectName" ]
+then
+	echo "Error: A folder with the name 'newProjectName' already exists."
+else
+	cp -r $templateProjectPath $newProjectName
+	echo "Created new project '$newProjectName' from the template '$templateProjectName'."
+fi

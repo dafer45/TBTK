@@ -1,6 +1,6 @@
-#########################################################
-# Check that gcc 4.9.0 or above is the current compiler #
-#########################################################
+##########################################################
+# Check that gcc 4.9.0 or above is the current compiler. #
+##########################################################
 gcc_version="$(gcc -dumpversion)"
 gcc_required_version="4.9.0"
 if [ "$(printf "$gcc_required_version\n$gcc_version" | sort -V | head -n1)" == "$gcc_version" ] && [ "$gcc_version" != "$gcc_required_version" ]; then
@@ -8,9 +8,9 @@ if [ "$(printf "$gcc_required_version\n$gcc_version" | sort -V | head -n1)" == "
         return
 fi
 
-###########################################
-# Print warning if nvcc is not availalbe. #
-###########################################
+####################################################################
+# Check wether nvcc is available and print warning message if not. #
+####################################################################
 if hash nvcc 2>/dev/null; then
 	:
 else
