@@ -1,0 +1,83 @@
+.\" Process this file with
+.\" grof -man -Tascii TBTKCreateProject.1
+.\"
+.TH TBTKCreateProject 1 "January 2017" TBTK "User Manual"
+.SH NAME
+TBTKCreateProject \- Creates a new project.
+.SH SYNOPSIS
+.B TBTKCreate
+.I projectName
+.B [
+.I templateName
+.B ]
+.SH DESCRIPTION
+.B TBTKCreateProject
+Creates a new project by copying one of the template projects into the current
+directory.
+.SH OPTIONS
+.IP "projectName"
+The name of the new project folder.
+.IP "templateName"
+Optional name of the project to copy. Available options are:
+.br
+.RS 14
+BasicArnoldi
+.br
+BasicChebyshev
+.br
+BasicDiagonalization
+.br
+BasicFourierTransform
+.br
+CarbonNanotube
+.br
+EmptyProject (default choice)
+.br
+HexagonalLattice
+.br
+PartialBilayer
+.br
+SelfConsistentSuperconductivity
+.br
+SelfConsistentSuperconductivityChebyshev
+.br
+SelfConsistentSuperconductivityChebyshevWithRestrictedEnvironment
+.br
+TopologicalInsulator3D
+.br
+WireOnSuperconductor
+.RE
+.SH FILES
+.SH ENVIRONMENT
+.SH DIAGNOSTICS
+The following diagnostics may be issued by stderr:
+
+Error: Missing project name (first argument)
+.RS
+The first paramater, the name of the new project, was not specified.
+.RE
+Error: No template project with the name '...' exists.
+.RS
+The second argument does not agree with any of the available template project
+names.
+.RE
+Error: A folder with the name '...' already exists.
+.RS
+Unable to create a new project because a folder with the same name already
+exists.
+.SH AUTHOR
+Kristofer Björnson (dafer45@hotmail.com)
+.SH COPYRIGHT AND LICENSE
+Copyright 2016 Kristofer Björnson
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
