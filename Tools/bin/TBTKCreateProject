@@ -25,7 +25,7 @@ fi
 
 if [ -d "$newProjectName" ]
 then
-	echo "Error: A folder with the name 'newProjectName' already exists."
+	echo "Error: A folder with the name '$newProjectName' already exists."
 else
 	cp -r $templateProjectPath $newProjectName
 	echo "Created new project '$newProjectName' from the template '$templateProjectName'."
