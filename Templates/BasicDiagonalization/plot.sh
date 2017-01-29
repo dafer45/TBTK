@@ -4,4 +4,4 @@
 TBTKPlotDOS.py TBTKResults.h5 0.15
 
 #Plot eigenvalues
-TBTKPlotEV.py TBTKResults.h5
+TBTKPlotEigenValues.py TBTKResults.h5

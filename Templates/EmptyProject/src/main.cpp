@@ -22,7 +22,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "Model.h"
+#include "Streams.h"
 
 #include <complex>
 

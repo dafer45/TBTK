@@ -23,13 +23,14 @@
  *  @author Kristofer Björnson
  */
 
-#include <complex>
-#include "Model.h"
+#include "DOS.h"
 #include "DiagonalizationSolver.h"
 #include "DPropertyExtractor.h"
-#include "FileWriter.h"
 #include "EigenValues.h"
-#include "DOS.h"
+#include "FileWriter.h"
+#include "Model.h"
+
+#include <complex>
 
 using namespace std;
 using namespace TBTK;

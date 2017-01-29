@@ -2,7 +2,7 @@
 # -*- encoding: utf-8 -*-
 
 ## @package TBTKview
-#  @file plotEV.py
+#  @file plotEigenValues.py
 #  @brief Plot eigenvalues
 #
 #  @author Kristofer Björnson
