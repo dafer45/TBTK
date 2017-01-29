@@ -26,12 +26,13 @@
  *  @author Kristofer Björnson
  */
 
-#include <complex>
-#include "Model.h"
 #include "ChebyshevSolver.h"
 #include "CPropertyExtractor.h"
 #include "FileWriter.h"
 #include "LDOS.h"
+#include "Model.h"
+
+#include <complex>
 
 using namespace std;
 using namespace TBTK;

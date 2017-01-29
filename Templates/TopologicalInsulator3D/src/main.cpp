@@ -27,14 +27,16 @@
  *  @author Kristofer Björnson
  */
 
-#include <iostream>
-#include <complex>
 #include "AmplitudeSet.h"
-#include "Model.h"
-#include "FileWriter.h"
 #include "ChebyshevSolver.h"
-#include <vector>
+#include "FileWriter.h"
+#include "Model.h"
+
 #include <fftw3.h>
+
+#include <complex>
+#include <iostream>
+#include <vector>
 
 using namespace std;
 using namespace TBTK;

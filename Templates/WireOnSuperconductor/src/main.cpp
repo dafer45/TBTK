@@ -26,14 +26,15 @@
  *  @author Kristofer Björnson
  */
 
-#include <iostream>
-#include <complex>
-#include "Model.h"
-#include "FileWriter.h"
 #include "DiagonalizationSolver.h"
 #include "DPropertyExtractor.h"
+#include "FileWriter.h"
 #include "Magnetization.h"
+#include "Model.h"
 #include "SpinPolarizedLDOS.h"
+
+#include <complex>
+#include <iostream>
 
 using namespace std;
 using namespace TBTK;

@@ -23,13 +23,13 @@
  *  @author Kristofer Björnson
  */
 
-#include "Model.h"
 #include "ArnoldiSolver/ArnoldiSolver.h"
 #include "APropertyExtractor/APropertyExtractor.h"
-#include "FileWriter.h"
-#include "EigenValues.h"
 #include "DOS.h"
+#include "EigenValues.h"
+#include "FileWriter.h"
 #include "LDOS.h"
+#include "Model.h"
 #include "SpinPolarizedLDOS.h"
 #include "Timer.h"
 

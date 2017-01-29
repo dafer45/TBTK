@@ -22,8 +22,8 @@
  *  @author Kristofer Björnson
  */
 
-#include "FourierTransform/FourierTransform.h"
 #include "FileWriter.h"
+#include "FourierTransform/FourierTransform.h"
 
 #include <iostream>
 #include <math.h>

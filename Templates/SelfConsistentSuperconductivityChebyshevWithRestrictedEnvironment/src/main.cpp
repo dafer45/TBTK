@@ -29,14 +29,15 @@
  *  @author Kristofer Björnson
  */
 
-#include <iostream>
-#include <complex>
-#include "Model.h"
-#include "FileWriter.h"
 #include "ChebyshevSolver.h"
 #include "CPropertyExtractor.h"
-#include <chrono>
+#include "FileWriter.h"
+#include "Model.h"
 #include "Timer.h"
+
+#include <chrono>
+#include <complex>
+#include <iostream>
 
 using namespace std;
 using namespace TBTK;
