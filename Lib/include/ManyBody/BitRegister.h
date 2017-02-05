@@ -98,6 +98,12 @@ public:
 	/** Get bit value. */
 	bool getBit(unsigned int position) const;
 
+	/** Set values as unsigned int. */
+	void setValues(unsigned int values);
+
+	/** Get values as unsigned int. */
+	unsigned int getValues() const;
+
 	/** Returns a bool that is false if all bits are zero, and true
 	 *  otherwise. */
 	bool toBool() const;
@@ -127,6 +133,9 @@ public:
 	 *  ensure the interface is similar with the interface for
 	 *  ExtensiveBitRegister.) */
 	BitRegister cloneStructure() const;
+
+	/** Return the value as an unsigned int. */
+	unsigned int getAsUnsignedInt() const;
 private:
 	/** Value. */
 	unsigned int values;
@@ -240,6 +249,14 @@ inline void BitRegister::setBit(unsigned int position, bool value){
 
 inline bool BitRegister::getBit(unsigned int position) const{
 	return (0x1 & (values >> position));
+}
+
+inline void BitRegister::setValues(unsigned int values){
+	this->values = values;
+}
+
+inline unsigned int BitRegister::getValues() const{
+	return values;
 }
 
 inline bool BitRegister::toBool() const{

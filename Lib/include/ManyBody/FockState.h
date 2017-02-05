@@ -46,6 +46,12 @@ public:
 	/** Returns true if the vector is the state is the null vector. */
 	bool isNull() const;
 
+	/** Returns the BIT_REGISTER. */
+	const BIT_REGISTER& getBitRegister() const;
+
+	/** Returns the BIT_REGISTER. */
+	BIT_REGISTER& getBitRegister();
+
 	/** Get number of particles. */
 //	unsigned int getNumFermions() const;
 
@@ -92,6 +98,16 @@ bool FockState<BIT_REGISTER>::isNull() const{
 	return bitRegister.getMostSignificantBit();
 }
 
+template<typename BIT_REGISTER>
+const BIT_REGISTER& FockState<BIT_REGISTER>::getBitRegister() const{
+	return bitRegister;
+}
+
+template<typename BIT_REGISTER>
+BIT_REGISTER& FockState<BIT_REGISTER>::getBitRegister(){
+	return bitRegister;
+}
+
 /*template<typename BIT_REGISTER>
 unsigned int FockState<BIT_REGISTER>::getNumFermions() const{
 	return bitRegister.getNumOneBits();
@@ -99,7 +115,7 @@ unsigned int FockState<BIT_REGISTER>::getNumFermions() const{
 
 template<typename BIT_REGISTER>
 void FockState<BIT_REGISTER>::print() const{
-	Streams::out << "|";
+	Streams::out << prefactor << "|";
 	for(int n = bitRegister.getNumBits()-1; n >= 0; n--){
 		Streams::out << bitRegister.getBit(n);
 		if(n%8 == 0 && n != 0)

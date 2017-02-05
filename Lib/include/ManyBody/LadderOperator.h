@@ -2,6 +2,7 @@
 #define COM_DAFER45_TBTK_LADDER_OPERATOR
 
 #include "FockState.h"
+#include "Model.h"
 
 namespace TBTK{
 
@@ -14,10 +15,12 @@ public:
 	/** Constructor. */
 	LadderOperator(
 		Type type,
+		Model::Statistics statistics,
 		unsigned int state,
 		unsigned int numBitsPerState,
 		unsigned int maxOccupation,
-		const FockState<BIT_REGISTER> &templateState
+		const FockState<BIT_REGISTER> &templateState,
+		const BIT_REGISTER &fermionMask
 	);
 
 	/** Destructor. */
@@ -35,6 +38,9 @@ private:
 	/** Operator type. */
 	Type type;
 
+	/** Operator statistics. */
+	Model::Statistics statistics;
+
 	/** Single-particle state index. */
 	unsigned int state;
 
@@ -46,21 +52,29 @@ private:
 
 	/** State corresponding to maximum number of occupied particles. */
 	BIT_REGISTER maxOccupation;
+
+	/** Mask for singeling out those fermions that have a higher bit index
+	 *  than the state corresponding to this opperator. */
+	BIT_REGISTER moreSignificantFermionMask;
 };
 
 template<typename BIT_REGISTER>
 LadderOperator<BIT_REGISTER>::LadderOperator(
 	Type type,
+	Model::Statistics statistics,
 	unsigned int state,
 	unsigned int numBitsPerState,
 	unsigned int maxOccupation,
-	const FockState<BIT_REGISTER> &templateState
+	const FockState<BIT_REGISTER> &templateState,
+	const BIT_REGISTER &fermionMask
 ) :
 	stateMask(templateState.bitRegister),
 	leastSignificantBit(templateState.bitRegister),
-	maxOccupation(templateState.bitRegister)
+	maxOccupation(templateState.bitRegister),
+	moreSignificantFermionMask(fermionMask)
 {
 	this->type = type;
+	this->statistics = statistics;
 	this->state = state;
 
 	for(int n = 0; n < stateMask.getNumBits(); n++){
@@ -77,6 +91,13 @@ LadderOperator<BIT_REGISTER>::LadderOperator(
 
 	this->maxOccupation = maxOccupation;
 	this->maxOccupation = (this->maxOccupation << numBitsPerState*state);
+
+	for(int n = 0; n < moreSignificantFermionMask.getNumBits(); n++){
+		this->moreSignificantFermionMask.setBit(n, false);
+		if(leastSignificantBit.getBit(n))
+			break;
+	}
+	moreSignificantFermionMask.print();
 }
 
 template<typename BIT_REGISTER>
@@ -104,8 +125,8 @@ FockState<BIT_REGISTER>& LadderOperator<BIT_REGISTER>::operator*(
 			break;
 		}
 		rhs.bitRegister += leastSignificantBit;
-/*		if(!(rhs.bitRegister & stateMask).toBool() || (rhs.bitRegister & stateMask) > maxOccupation)
-			rhs.bitRegister.setMostSignificantBit();*/
+//		if(!(rhs.bitRegister & stateMask).toBool() || (rhs.bitRegister & stateMask) > maxOccupation)
+//			rhs.bitRegister.setMostSignificantBit();
 		break;
 	case Type::Annihilation:
 		if(!(rhs.bitRegister & stateMask).toBool()){
@@ -116,7 +137,21 @@ FockState<BIT_REGISTER>& LadderOperator<BIT_REGISTER>::operator*(
 		break;
 	default:
 		TBTKExit(
-			"LadderOperator<T>::operator*()",
+			"LadderOperator<BIT_REGISTER>::operator*()",
+			"This should never happen.",
+			"Contact the developer."
+		);
+	}
+
+	switch(statistics){
+	case Model::Statistics::FermiDirac:
+		rhs.prefactor *= pow(-1, (rhs.bitRegister & moreSignificantFermionMask).getNumOneBits());
+		break;
+	case Model::Statistics::BoseEinstein:
+		break;
+	default:
+		TBTKExit(
+			"LadderOperator<BIT_REGISTER>::operator*()",
 			"This should never happen.",
 			"Contact the developer."
 		);
