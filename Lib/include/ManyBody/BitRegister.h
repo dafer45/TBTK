@@ -115,7 +115,7 @@ public:
 	void print() const;
 
 	/** Returns the number of bits in the register. */
-	int getNumBits() const;
+	unsigned int getNumBits() const;
 
 	/** Returns the number of bits that are one. */
 	unsigned int getNumOneBits() const;
@@ -267,7 +267,7 @@ inline void BitRegister::clear(){
 	values = 0;
 }
 
-inline int BitRegister::getNumBits() const{
+inline unsigned int BitRegister::getNumBits() const{
 	return 8*sizeof(values);
 }
 

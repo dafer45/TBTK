@@ -36,6 +36,9 @@ public:
 	/** Destructor. */
 	~FockStateMap();
 
+	/** Get many-body Hilbert space size. */
+	virtual unsigned int getBasisSize() const = 0;
+
 	/** Get many-body Hilbert space index for corresponding FockState. */
 	virtual unsigned int getBasisIndex(
 		const FockState<BIT_REGISTER> &fockState

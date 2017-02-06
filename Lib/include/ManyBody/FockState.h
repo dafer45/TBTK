@@ -23,6 +23,8 @@
 #ifndef COM_DAFER45_TBTK_FOCK_STATE
 #define COM_DAFER45_TBTK_FOCK_STATE
 
+#include "Streams.h"
+
 namespace TBTK{
 
 template<typename BIT_REGISTER>

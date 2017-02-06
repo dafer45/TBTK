@@ -24,6 +24,8 @@
 #define COM_DAFER45_TBTK_DEFAULT_FOCK_STATE_MAP
 
 #include "FockStateMap.h"
+#include "BitRegister.h"
+#include "ExtensiveBitRegister.h"
 
 namespace TBTK{
 
@@ -35,6 +37,9 @@ public:
 
 	/** Destructor. */
 	~DefaultFockStateMap();
+
+	/** Get many-body Hilbert space size. */
+	virtual unsigned int getBasisSize() const;
 
 	/** Get many-body Hilbert space index for corresponding FockState. */
 	virtual unsigned int getBasisIndex(const FockState<BIT_REGISTER> &fockState) const;
@@ -56,44 +61,9 @@ template<typename BIT_REGISTER>
 DefaultFockStateMap<BIT_REGISTER>::~DefaultFockStateMap(){
 }
 
-template<>
-unsigned int DefaultFockStateMap<BitRegister>::getBasisIndex(
-	const FockState<BitRegister> &fockState
-) const{
-	const BitRegister& bitRegister = fockState.getBitRegister();
-	return bitRegister.getValues();
-}
-
-template<>
-unsigned int DefaultFockStateMap<ExtensiveBitRegister>::getBasisIndex(
-	const FockState<ExtensiveBitRegister> &fockState
-) const{
-	TBTKExit(
-		"DefaultFockStateMap<ExtensiveBitRegister>::getBasisIndex()",
-		"Function not supported for ExtensiveBitRegister.",
-		"Use BitRegister instead, or change StateMap."
-	);
-}
-
-template<>
-FockState<BitRegister> DefaultFockStateMap<BitRegister>::getFockState(
-	unsigned int state
-) const{
-	FockState<BitRegister> result(getExponentialDimension()+1);
-	result.getBitRegister().setValues(state);
-
-	return result;
-}
-
-template<>
-FockState<ExtensiveBitRegister> DefaultFockStateMap<ExtensiveBitRegister>::getFockState(
-	unsigned int state
-) const{
-	TBTKExit(
-		"DefaultFockStateMap<ExtensiveBitRegister>::getFockState()",
-		"Function not supported for ExtensiveBitRegister.",
-		"Use BitRegister instead, or change StateMap."
-	);
+template<typename BIT_REGISTER>
+unsigned int DefaultFockStateMap<BIT_REGISTER>::getBasisSize() const{
+	return pow(2, FockStateMap<BIT_REGISTER>::getExponentialDimension());
 }
 
 };	//End of namespace TBTK
