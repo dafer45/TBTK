@@ -63,7 +63,7 @@ DefaultFockStateMap<BIT_REGISTER>::~DefaultFockStateMap(){
 
 template<typename BIT_REGISTER>
 unsigned int DefaultFockStateMap<BIT_REGISTER>::getBasisSize() const{
-	return pow(2, FockStateMap<BIT_REGISTER>::getExponentialDimension());
+	return (1 << FockStateMap<BIT_REGISTER>::getExponentialDimension());
 }
 
 };	//End of namespace TBTK

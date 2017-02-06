@@ -320,7 +320,7 @@ FockState<BIT_REGISTER> FockSpace<BIT_REGISTER>::getFockState(unsigned int state
 
 template<typename BIT_REGISTER>
 unsigned int FockSpace<BIT_REGISTER>::getBasisSize() const{
-	fockStateMap->getBasisSize();
+	return fockStateMap->getBasisSize();
 }
 
 };	//End of namespace TBTK
