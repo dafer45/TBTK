@@ -29,7 +29,6 @@ FockSpace<BitRegister>::FockSpace(
         Model::Statistics statistics,
         int numParticles
 ){
-	Streams::out << "Constructing FockSpace\n";
 	this->amplitudeSet = amplitudeSet;
 	this->statistics = statistics;
 

@@ -43,8 +43,6 @@ void ExactDiagonalizationSolver::run(){
 void ExactDiagonalizationSolver::setupManyBodyModel(){
 	const int NUM_PARTICLES = 1;
 
-	Streams::out << "Model size: " << model->getBasisSize() << "\n";
-
 	FockSpace<BitRegister> fockSpace(
 		model->getAmplitudeSet(),
 		model->getStatistics(),
