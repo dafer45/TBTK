@@ -54,6 +54,9 @@ public:
 	/** Returns the BIT_REGISTER. */
 	BIT_REGISTER& getBitRegister();
 
+	/** Get prefactor. */
+	int getPrefactor() const;
+
 	/** Get number of particles. */
 //	unsigned int getNumFermions() const;
 
@@ -108,6 +111,11 @@ const BIT_REGISTER& FockState<BIT_REGISTER>::getBitRegister() const{
 template<typename BIT_REGISTER>
 BIT_REGISTER& FockState<BIT_REGISTER>::getBitRegister(){
 	return bitRegister;
+}
+
+template<typename BIT_REGISTER>
+int FockState<BIT_REGISTER>::getPrefactor() const{
+	return prefactor;
 }
 
 /*template<typename BIT_REGISTER>

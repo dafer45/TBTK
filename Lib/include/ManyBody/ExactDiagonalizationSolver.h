@@ -28,6 +28,10 @@ private:
 
 	/** Setup many-body mapping. */
 	void setupManyBodyModel();
+
+	/** Setup many-body model. */
+	template<typename BIT_REGISTER>
+	void setupManyBodyModel();
 };
 
 };	//End of namespace TBTK

@@ -32,6 +32,7 @@
 #include "Model.h"
 #include "FockStateMap.h"
 #include "DefaultFockStateMap.h"
+#include "LookupTableFockStateMap.h"
 
 namespace TBTK{
 
@@ -59,18 +60,21 @@ public:
 		const FockState<BIT_REGISTER> &fockState
 	) const;
 
+	/** Create FockSpaceMap. */
+	FockStateMap<BIT_REGISTER>* createFockSpaceMap(int numParticles) const;
+
 	/** Returns the many-body Hilbert space index corresponding to the
 	 *  given FockState. */
-	unsigned int getBasisIndex(
+/*	unsigned int getBasisIndex(
 		const FockState<BIT_REGISTER> &fockState
-	) const;
+	) const;*/
 
 	/** Returns the FockState corresponding to the given many-body Hilbert
 	 *  space index. */
-	FockState<BIT_REGISTER> getFockState(unsigned int state) const;
+//	FockState<BIT_REGISTER> getFockState(unsigned int state) const;
 
 	/** Get the many-body Hilbert space size. */
-	unsigned int getBasisSize() const;
+//	unsigned int getBasisSize() const;
 private:
 	/** Particle number. If positive, only the Fock space is restricted to
 	 *  the subsapce with numParticle particles. If numParticles is
@@ -106,175 +110,6 @@ private:
 	FockStateMap<BIT_REGISTER> *fockStateMap;
 };
 
-/*template<>
-FockSpace<BitRegister>::FockSpace(
-	AmplitudeSet *amplitudeSet,
-	Model::Statistics statistics,
-	int numParticles
-){
-//	this->numParticles = numParticles;
-	this->amplitudeSet = amplitudeSet;
-	this->statistics = statistics;
-
-	unsigned int maxParticlesPerState;
-	switch(statistics){
-	case Model::Statistics::FermiDirac:
-		maxParticlesPerState = 1;
-		break;
-	case Model::Statistics::BoseEinstein:
-		maxParticlesPerState = abs(numParticles);
-		break;
-	default:
-		TBTKExit(
-			"FockSpace::FockSpace()",
-			"Unknown statistics.",
-			"This should never happen, contact the developer."
-		);
-	}
-
-	int numBitsPerState = 0;
-	for(int n = maxParticlesPerState; n != 0; n /= 2)
-		numBitsPerState++;
-
-	exponentialDimension = numBitsPerState*amplitudeSet->getBasisSize();
-
-	TBTKAssert(
-		exponentialDimension < BitRegister().getNumBits(),
-		"FockSpace::FockSpace()",
-		"The Hilbert space is too big to be contained in a BitRegister.",
-		"Use ExtensiveBitRegister instead."
-	);
-
-	vacuumState = new FockState<BitRegister>(BitRegister().getNumBits());
-
-	BitRegister fermionMask;
-	fermionMask.clear();
-	switch(statistics){
-	case Model::Statistics::FermiDirac:
-		for(int n = 0; n < exponentialDimension; n++)
-			fermionMask.setBit(n, true);
-		break;
-	case Model::Statistics::BoseEinstein:
-		break;
-	default:
-		TBTKExit(
-			"FockSpace::FockSpace()",
-			"Unknown statistics.",
-			"This should never happen, contact the developer."
-		);
-	}
-
-	operators = new LadderOperator<BitRegister>*[amplitudeSet->getBasisSize()];
-	for(int n = 0; n < amplitudeSet->getBasisSize(); n++){
-		operators[n] = new LadderOperator<BitRegister>[2]{
-			LadderOperator<BitRegister>(
-				LadderOperator<BitRegister>::Type::Creation,
-				statistics,
-				n,
-				numBitsPerState,
-				maxParticlesPerState,
-				*vacuumState,
-				fermionMask
-			),
-			LadderOperator<BitRegister>(
-				LadderOperator<BitRegister>::Type::Annihilation,
-				statistics,
-				n,
-				numBitsPerState,
-				maxParticlesPerState,
-				*vacuumState,
-				fermionMask
-			)
-		};
-	}
-
-	fockStateMap = new DefaultFockStateMap<BitRegister>(
-		exponentialDimension
-	);
-}
-
-template<>
-FockSpace<ExtensiveBitRegister>::FockSpace(
-	AmplitudeSet *amplitudeSet,
-	Model::Statistics statistics,
-	int numParticles
-){
-//	this->numParticles = numParticles;
-	this->amplitudeSet = amplitudeSet;
-	this->statistics = statistics;
-
-	unsigned int maxParticlesPerState;
-	switch(statistics){
-	case Model::Statistics::FermiDirac:
-		maxParticlesPerState = 1;
-		break;
-	case Model::Statistics::BoseEinstein:
-		maxParticlesPerState = abs(numParticles);
-		break;
-	default:
-		TBTKExit(
-			"FockSpace::FockSpace()",
-			"Unknown statistics.",
-			"This should never happen, contact the developer."
-		);
-	}
-
-	int numBitsPerState = 0;
-	for(int n = maxParticlesPerState; n != 0; n /= 2)
-		numBitsPerState++;
-
-	exponentialDimension = numBitsPerState*amplitudeSet->getBasisSize();
-
-	vacuumState = new FockState<ExtensiveBitRegister>(
-		exponentialDimension + 1
-	);
-
-	ExtensiveBitRegister fermionMask(exponentialDimension+1);
-	fermionMask.clear();
-	switch(statistics){
-	case Model::Statistics::FermiDirac:
-		for(int n = 0; n < exponentialDimension; n++)
-			fermionMask.setBit(n, true);
-		break;
-	case Model::Statistics::BoseEinstein:
-		break;
-	default:
-		TBTKExit(
-			"FockSpace::FockSpace()",
-			"Unknown statistics.",
-			"This should never happen, contact the developer."
-		);
-	}
-
-	operators = new LadderOperator<ExtensiveBitRegister>*[amplitudeSet->getBasisSize()];
-	for(int n = 0; n < amplitudeSet->getBasisSize(); n++){
-		operators[n] = new LadderOperator<ExtensiveBitRegister>[2]{
-			LadderOperator<ExtensiveBitRegister>(
-				LadderOperator<ExtensiveBitRegister>::Type::Creation,
-				statistics,
-				n,
-				numBitsPerState,
-				maxParticlesPerState,
-				*vacuumState,
-				fermionMask
-			),
-			LadderOperator<ExtensiveBitRegister>(
-				LadderOperator<ExtensiveBitRegister>::Type::Annihilation,
-				statistics,
-				n,
-				numBitsPerState,
-				maxParticlesPerState,
-				*vacuumState,
-				fermionMask
-			)
-		};
-	}
-
-	fockStateMap = new DefaultFockStateMap<ExtensiveBitRegister>(
-		exponentialDimension
-	);
-}*/
-
 template<typename BIT_REGISTER>
 FockSpace<BIT_REGISTER>::~FockSpace(){
 	for(int n = 0; n < amplitudeSet->getBasisSize(); n++)
@@ -309,6 +144,32 @@ unsigned int FockSpace<BIT_REGISTER>::getNumFermions(const FockState<BIT_REGISTE
 }
 
 template<typename BIT_REGISTER>
+FockStateMap<BIT_REGISTER>* FockSpace<BIT_REGISTER>::createFockSpaceMap(int numParticles) const{
+	if(numParticles < 0){
+		DefaultFockStateMap<BIT_REGISTER> *fockStateMap = new DefaultFockStateMap<BIT_REGISTER>(
+			exponentialDimension
+		);
+
+		return fockStateMap;
+	}
+	else{
+		LookupTableFockStateMap<BIT_REGISTER> *fockStateMap = new LookupTableFockStateMap<BIT_REGISTER>(
+			exponentialDimension
+		);
+
+		FockState<BIT_REGISTER> fockState = getVacuumState();
+		for(unsigned int n = 0; n < (unsigned int)(1 << exponentialDimension); n++){
+			if(fockState.getBitRegister().getNumOneBits() == (unsigned int)numParticles)
+				fockStateMap->addState(fockState);
+
+			fockState.getBitRegister()++;
+		}
+
+		return fockStateMap;
+	}
+}
+
+/*template<typename BIT_REGISTER>
 unsigned int FockSpace<BIT_REGISTER>::getBasisIndex(const FockState<BIT_REGISTER> &fockState) const{
 	return fockStateMap->getBasisIndex(fockState);
 }
@@ -321,7 +182,7 @@ FockState<BIT_REGISTER> FockSpace<BIT_REGISTER>::getFockState(unsigned int state
 template<typename BIT_REGISTER>
 unsigned int FockSpace<BIT_REGISTER>::getBasisSize() const{
 	return fockStateMap->getBasisSize();
-}
+}*/
 
 };	//End of namespace TBTK
 

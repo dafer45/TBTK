@@ -19,7 +19,9 @@
  */
 
 
+#include "DefaultFockStateMap.h"
 #include "FockSpace.h"
+#include "LookupTableFockStateMap.h"
 
 namespace TBTK{
 
@@ -104,9 +106,24 @@ FockSpace<BitRegister>::FockSpace(
 		};
 	}
 
-	fockStateMap = new DefaultFockStateMap<BitRegister>(
-	exponentialDimension
-	);
+/*	if(numParticles < 0){
+		fockStateMap = new DefaultFockStateMap<BitRegister>(
+			exponentialDimension
+		);
+	}
+	else{
+		fockStateMap = new LookupTableFockStateMap<BitRegister>(
+			exponentialDimension
+		);
+
+		FockState<BitRegister> fockState = getVacuumState();
+		for(unsigned int n = 0; n < (unsigned int)(1 << exponentialDimension); n++){
+			if(fockState.getBitRegister().getNumOneBits() == (unsigned int)numParticles)
+				((LookupTableFockStateMap<BitRegister>*)fockStateMap)->addState(fockState);
+
+			fockState.getBitRegister()++;
+		}
+	}*/
 }
 
 template<>
@@ -185,9 +202,9 @@ FockSpace<ExtensiveBitRegister>::FockSpace(
 		};
 	}
 
-	fockStateMap = new DefaultFockStateMap<ExtensiveBitRegister>(
+/*	fockStateMap = new DefaultFockStateMap<ExtensiveBitRegister>(
 		exponentialDimension
-	);
+	);*/
 }
 
 };	//End of namespace TBTK

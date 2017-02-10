@@ -124,6 +124,9 @@ public:
 	/** Return the number of bits in the register. */
 	unsigned int getNumBits() const;
 
+	/** Returns the number of bits that are one. */
+	unsigned int getNumOneBits() const;
+
 	/** Return the most significant bit. */
 	bool getMostSignificantBit() const;
 
@@ -452,6 +455,21 @@ inline void ExtensiveBitRegister::clear(){
 
 inline unsigned int ExtensiveBitRegister::getNumBits() const{
 	return size*8*sizeof(unsigned int);
+}
+
+inline unsigned int ExtensiveBitRegister::getNumOneBits() const{
+	unsigned int numOnes = 0;
+	for(int n = 0; n < size; n++){
+		unsigned int x = values[n];
+		x = x - ((x >> 1) & 0x55555555);
+		x = (x & 0x33333333) + ((x >> 2) & 0x33333333);
+		x = (x & 0x0F0F0F0F) + ((x >> 4) & 0x0F0F0F0F);
+		x = x + (x >> 8);
+		x = x + (x >> 16);
+		numOnes += (x & 0x0000003F);
+	}
+
+	return numOnes;
 }
 
 inline bool ExtensiveBitRegister::getMostSignificantBit() const{
