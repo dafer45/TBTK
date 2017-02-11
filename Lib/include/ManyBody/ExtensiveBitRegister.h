@@ -115,6 +115,10 @@ public:
 	 *  otherwise. */
 	bool toBool() const;
 
+	/** Returns an unsigned int containing the least significant bits in
+	the register. */
+	unsigned int toUnsignedInt() const;
+
 	/** Clear register. */
 	void clear();
 
@@ -446,6 +450,10 @@ inline bool ExtensiveBitRegister::toBool() const{
 			return true;
 
 	return false;
+}
+
+inline unsigned int ExtensiveBitRegister::toUnsignedInt() const{
+	return values[0];
 }
 
 inline void ExtensiveBitRegister::clear(){

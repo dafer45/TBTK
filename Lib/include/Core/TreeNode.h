@@ -76,6 +76,9 @@ public:
 	 *   HoppingAmplitudes @endlink should be added after this call. */
 	void generateBasisIndices();
 
+	/** Generate a list of indices satisfying the specified pattern. */
+	std::vector<Index> getIndexList(const Index &pattern);
+
 	/** Sort HoppingAmplitudes in row order. */
 	void sort(TreeNode *rootNode);
 

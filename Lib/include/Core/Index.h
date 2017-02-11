@@ -88,6 +88,10 @@ public:
 	 *  'last'. */
 	Index getSubIndex(int first, int last);
 
+	/** Returns true if the Index is a pattern index. That is, if it
+	 *  contains a negative subindex. */
+	bool isPatternIndex() const;
+
 	/** Print index. Mainly for debuging. */
 	void print() const;
 
@@ -181,6 +185,14 @@ inline int Index::popBack(){
 	indices.pop_back();
 
 	return last;
+}
+
+inline bool Index::isPatternIndex() const{
+	for(unsigned int n = 0; n < indices.size(); n++)
+		if(indices.at(n) < 0)
+			return true;
+
+	return false;
 }
 
 };	//End of namespace TBTK

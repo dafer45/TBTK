@@ -90,6 +90,9 @@ public:
 	/** Returns true if the Hilbert space basis has been constructed. */
 	bool getIsConstructed() const;
 
+	/** Generate a list of indices satisfying the specified pattern. */
+	std::vector<Index> getIndexList(const Index &pattern);
+
 	/** Sort HoppingAmplitudes. */
 	void sort();
 
@@ -249,6 +252,10 @@ inline void AmplitudeSet::construct(){
 
 inline bool AmplitudeSet::getIsConstructed() const{
 	return isConstructed;
+}
+
+inline std::vector<Index> AmplitudeSet::getIndexList(const Index &pattern){
+	return tree.getIndexList(pattern);
 }
 
 inline void AmplitudeSet::sort(){

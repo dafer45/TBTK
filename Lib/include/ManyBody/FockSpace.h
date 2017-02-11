@@ -31,8 +31,8 @@
 #include "LadderOperator.h"
 #include "Model.h"
 #include "FockStateMap.h"
-#include "DefaultFockStateMap.h"
-#include "LookupTableFockStateMap.h"
+#include "DefaultMap.h"
+#include "LookupTableMap.h"
 
 namespace TBTK{
 
@@ -60,8 +60,24 @@ public:
 		const FockState<BIT_REGISTER> &fockState
 	) const;
 
+	/** Get number of particles in the single particle state with given
+	 *  index for the given FockState. */
+	unsigned int getNumParticles(
+		const FockState<BIT_REGISTER> &fockState,
+		const Index &index
+	) const;
+
+	/** Get number of particles in the single particle states that
+	 *  satisfies the given index pattern for the given FockState. */
+	unsigned int getSumParticles(
+		const FockState<BIT_REGISTER> &fockState,
+		const Index &pattern
+	) const;
+
 	/** Create FockSpaceMap. */
-	FockStateMap<BIT_REGISTER>* createFockSpaceMap(int numParticles) const;
+	FockStateMap::FockStateMap<BIT_REGISTER>* createFockSpaceMap(
+		int numParticles
+	) const;
 
 	/** Returns the many-body Hilbert space index corresponding to the
 	 *  given FockState. */
@@ -107,7 +123,7 @@ private:
 
 	/** Fock state map for mapping FockStates to many-body Hilbert space
 	 *  indices, and vice versa. */
-	FockStateMap<BIT_REGISTER> *fockStateMap;
+	FockStateMap::FockStateMap<BIT_REGISTER> *fockStateMap;
 };
 
 template<typename BIT_REGISTER>
@@ -144,16 +160,47 @@ unsigned int FockSpace<BIT_REGISTER>::getNumFermions(const FockState<BIT_REGISTE
 }
 
 template<typename BIT_REGISTER>
-FockStateMap<BIT_REGISTER>* FockSpace<BIT_REGISTER>::createFockSpaceMap(int numParticles) const{
+unsigned int FockSpace<BIT_REGISTER>::getNumParticles(
+	const FockState<BIT_REGISTER> &fockState,
+	const Index &index
+) const{
+	return operators[amplitudeSet->getBasisIndex(index)][0].getNumParticles(fockState);
+}
+
+template<typename BIT_REGISTER>
+unsigned int FockSpace<BIT_REGISTER>::getSumParticles(
+	const FockState<BIT_REGISTER> &fockState,
+	const Index &pattern
+) const{
+	if(pattern.isPatternIndex()){
+		std::vector<Index> indexList = amplitudeSet->getIndexList(pattern);
+
+		unsigned int numParticles = 0;
+		for(unsigned int n = 0; n < indexList.size(); n++){
+			numParticles += getNumParticles(
+				fockState,
+				indexList.at(n)
+			);
+		}
+
+		return numParticles;
+	}
+	else{
+		return getNumParticles(fockState, pattern);
+	}
+}
+
+template<typename BIT_REGISTER>
+FockStateMap::FockStateMap<BIT_REGISTER>* FockSpace<BIT_REGISTER>::createFockSpaceMap(int numParticles) const{
 	if(numParticles < 0){
-		DefaultFockStateMap<BIT_REGISTER> *fockStateMap = new DefaultFockStateMap<BIT_REGISTER>(
+		FockStateMap::DefaultMap<BIT_REGISTER> *fockStateMap = new FockStateMap::DefaultMap<BIT_REGISTER>(
 			exponentialDimension
 		);
 
 		return fockStateMap;
 	}
 	else{
-		LookupTableFockStateMap<BIT_REGISTER> *fockStateMap = new LookupTableFockStateMap<BIT_REGISTER>(
+		FockStateMap::LookupTableMap<BIT_REGISTER> *fockStateMap = new FockStateMap::LookupTableMap<BIT_REGISTER>(
 			exponentialDimension
 		);
 

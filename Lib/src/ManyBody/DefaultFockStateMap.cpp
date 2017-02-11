@@ -18,12 +18,13 @@
  *  @author Kristofer Björnson
  */
 
-#include "DefaultFockStateMap.h"
+#include "DefaultMap.h"
 
 namespace TBTK{
+namespace FockStateMap{
 
 template<>
-unsigned int DefaultFockStateMap<BitRegister>::getBasisIndex(
+unsigned int DefaultMap<BitRegister>::getBasisIndex(
 	const FockState<BitRegister> &fockState
 ) const{
 	const BitRegister& bitRegister = fockState.getBitRegister();
@@ -31,7 +32,7 @@ unsigned int DefaultFockStateMap<BitRegister>::getBasisIndex(
 }
 
 template<>
-unsigned int DefaultFockStateMap<ExtensiveBitRegister>::getBasisIndex(
+unsigned int DefaultMap<ExtensiveBitRegister>::getBasisIndex(
 	const FockState<ExtensiveBitRegister> &fockState
 ) const{
 	TBTKExit(
@@ -42,7 +43,7 @@ unsigned int DefaultFockStateMap<ExtensiveBitRegister>::getBasisIndex(
 }
 
 template<>
-FockState<BitRegister> DefaultFockStateMap<BitRegister>::getFockState(
+FockState<BitRegister> DefaultMap<BitRegister>::getFockState(
 	unsigned int state
 ) const{
 	FockState<BitRegister> result(getExponentialDimension()+1);
@@ -52,7 +53,7 @@ FockState<BitRegister> DefaultFockStateMap<BitRegister>::getFockState(
 }
 
 template<>
-FockState<ExtensiveBitRegister> DefaultFockStateMap<ExtensiveBitRegister>::getFockState(
+FockState<ExtensiveBitRegister> DefaultMap<ExtensiveBitRegister>::getFockState(
 	unsigned int state
 ) const{
 	TBTKExit(
@@ -62,4 +63,5 @@ FockState<ExtensiveBitRegister> DefaultFockStateMap<ExtensiveBitRegister>::getFo
 	);
 }
 
+};	//End of namesapce FockStateMap
 };	//End of namespace TBTK

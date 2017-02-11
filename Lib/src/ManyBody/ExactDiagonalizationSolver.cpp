@@ -37,7 +37,7 @@ void ExactDiagonalizationSolver::setupManyBodyModel<BitRegister>(){
 	);
 
 	LadderOperator<BitRegister> **operators = fockSpace.getOperators();
-	FockStateMap<BitRegister> *fockStateMap = fockSpace.createFockSpaceMap(NUM_PARTICLES);
+	FockStateMap::FockStateMap<BitRegister> *fockStateMap = fockSpace.createFockSpaceMap(NUM_PARTICLES);
 
 	for(unsigned int n = 0; n < fockStateMap->getBasisSize(); n++){
 		Streams::out << n << ":\t";
@@ -172,7 +172,7 @@ void ExactDiagonalizationSolver::setupManyBodyModel<ExtensiveBitRegister>(){
 	);
 
 	LadderOperator<ExtensiveBitRegister> **operators = fockSpace.getOperators();
-	FockStateMap<ExtensiveBitRegister> *fockStateMap = fockSpace.createFockSpaceMap(NUM_PARTICLES);
+	FockStateMap::FockStateMap<ExtensiveBitRegister> *fockStateMap = fockSpace.createFockSpaceMap(NUM_PARTICLES);
 
 	manyBodyModel = new Model();
 	for(unsigned int n = 0; n < fockStateMap->getBasisSize(); n++){

@@ -27,25 +27,35 @@
 #include "FockState.h"
 
 namespace TBTK{
+namespace FockStateRule{
 
+template<typename BIT_REGISTER>
 class FockStateRule{
 public:
 	/** Constructor */
 	FockStateRule();
 
 	/** Destructor. */
-	~FockStateRult();
+	~FockStateRule();
 
 	/** Check whether a given FockState fullfills the rule with respect to
 	 *  a particular FockSpace. */
-	template<typename BIT_REGISTER>
-	virtual bool isFullfilled(
+	virtual bool isFulfilled(
 		const FockSpace<BIT_REGISTER> &fockSpace,
 		const FockState<BIT_REGISTER> &fockState
 	) = 0;
 private:
 };
 
+template<typename BIT_REGISTER>
+FockStateRule<BIT_REGISTER>::FockStateRule(){
+}
+
+template<typename BIT_REGISTER>
+FockStateRule<BIT_REGISTER>::~FockStateRule(){
+}
+
+};	//End of namespace FockSpaceRule
 };	//End of namespace TBTK
 
 #endif

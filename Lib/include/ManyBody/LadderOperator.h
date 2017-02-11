@@ -32,6 +32,11 @@ public:
 	/** Get associated single-particle state. */
 	unsigned int getState() const;
 
+	/** Get number of particles in the associated state. */
+	unsigned int getNumParticles(
+		const FockState<BIT_REGISTER> &fockState
+	) const;
+
 	/** Multiplication operator. */
 	FockState<BIT_REGISTER>& operator*(FockState<BIT_REGISTER> &rhs) const;
 private:
@@ -49,6 +54,9 @@ private:
 
 	/** Least significant bit. */
 	BIT_REGISTER leastSignificantBit;
+
+	/** Index of least significant bit. */
+	unsigned int leastSignificantBitIndex;
 
 	/** State corresponding to maximum number of occupied particles. */
 	BIT_REGISTER maxOccupation;
@@ -77,8 +85,10 @@ LadderOperator<BIT_REGISTER>::LadderOperator(
 	this->statistics = statistics;
 	this->state = state;
 
+	leastSignificantBitIndex = state*numBitsPerState;
+
 	for(int n = 0; n < stateMask.getNumBits(); n++){
-		if(n >= state*numBitsPerState && n < (state+1)*numBitsPerState)
+/*		if(n >= state*numBitsPerState && n < (state+1)*numBitsPerState)
 			stateMask.setBit(n, 1);
 		else
 			stateMask.setBit(n, 0);
@@ -86,11 +96,21 @@ LadderOperator<BIT_REGISTER>::LadderOperator(
 		if(n == state*numBitsPerState)
 			leastSignificantBit.setBit(n, 1);
 		else
+			leastSignificantBit.setBit(n, 0);*/
+		if(n >= leastSignificantBitIndex && n < leastSignificantBitIndex + numBitsPerState)
+			stateMask.setBit(n, 1);
+		else
+			stateMask.setBit(n, 0);
+
+		if(n == leastSignificantBitIndex)
+			leastSignificantBit.setBit(n, 1);
+		else
 			leastSignificantBit.setBit(n, 0);
 	}
 
 	this->maxOccupation = maxOccupation;
-	this->maxOccupation = (this->maxOccupation << numBitsPerState*state);
+//	this->maxOccupation = (this->maxOccupation << numBitsPerState*state);
+	this->maxOccupation = (this->maxOccupation << leastSignificantBitIndex);
 
 	for(int n = 0; n < moreSignificantFermionMask.getNumBits(); n++){
 		this->moreSignificantFermionMask.setBit(n, false);
@@ -112,6 +132,13 @@ typename LadderOperator<BIT_REGISTER>::Type LadderOperator<BIT_REGISTER>::getTyp
 template<typename BIT_REGISTER>
 unsigned int LadderOperator<BIT_REGISTER>::getState() const{
 	return state;
+}
+
+template<typename BIT_REGISTER>
+unsigned int LadderOperator<BIT_REGISTER>::getNumParticles(
+	const FockState<BIT_REGISTER> &fockState
+) const{
+	return ((fockState.getBitRegister() & stateMask) >> leastSignificantBitIndex).toUnsignedInt();
 }
 
 template<typename BIT_REGISTER>

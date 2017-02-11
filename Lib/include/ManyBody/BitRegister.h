@@ -108,6 +108,9 @@ public:
 	 *  otherwise. */
 	bool toBool() const;
 
+	/** Returns an unsigned int containing the least significant bits. */
+	unsigned int toUnsignedInt() const;
+
 	/** Clear register. */
 	void clear();
 
@@ -260,6 +263,10 @@ inline unsigned int BitRegister::getValues() const{
 }
 
 inline bool BitRegister::toBool() const{
+	return values;
+}
+
+inline unsigned int BitRegister::toUnsignedInt() const{
 	return values;
 }
 

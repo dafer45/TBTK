@@ -34,6 +34,27 @@ TreeNode::TreeNode(){
 	isPotentialBlockSeparator = true;
 }
 
+vector<Index> TreeNode::getIndexList(const Index &pattern){
+	vector<Index> indexList;
+
+	Iterator it = begin();
+	const HoppingAmplitude *ha;
+	while((ha = it.getHA())){
+		if(ha->fromIndex.equals(pattern, true)){
+			if(
+				indexList.size() == 0
+				|| !indexList.back().equals(ha->fromIndex, false)
+			){
+				indexList.push_back(ha->fromIndex);
+			}
+		}
+
+		it.searchNextHA();
+	}
+
+	return indexList;
+}
+
 void TreeNode::print(){
 	print(0);
 }
