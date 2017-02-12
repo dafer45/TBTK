@@ -23,6 +23,7 @@
 #ifndef COM_DAFER45_TBTK_SUM_RULE
 #define COM_DAFER45_TBTK_SUM_RULE
 
+#include "FockSpace.h"
 #include "FockStateRule.h"
 #include "Index.h"
 
@@ -32,8 +33,7 @@
 namespace TBTK{
 namespace FockStateRule{
 
-template<typename BIT_REGISTER>
-class SumRule : public FockStateRule<BIT_REGISTER>{
+class SumRule : public FockStateRule{
 public:
 	/** Constructor */
 	SumRule(
@@ -48,14 +48,24 @@ public:
 	);
 
 	/** Destructor. */
-	~SumRule();
+	virtual ~SumRule();
+
+	/** Clone SumRule. */
+	virtual SumRule* clone() const;
 
 	/** Check whether a given FockState fullfills the rule with respect to
 	 *  a particular FockSpace. */
-	virtual bool isFulfilled(
-		const FockSpace<BIT_REGISTER> &fockSpace,
-		const FockState<BIT_REGISTER> &fockState
-	);
+	virtual bool isSatisfied(
+		const FockSpace<BitRegister> &fockSpace,
+		const FockState<BitRegister> &fockState
+	) const;
+
+	/** Check whether a given FockState fullfills the rule with respect to
+	 *  a particular FockSpace. */
+	virtual bool isSatisfied(
+		const FockSpace<ExtensiveBitRegister> &fockSpace,
+		const FockState<ExtensiveBitRegister> &fockState
+	) const;
 private:
 	/** Indices to sum over. */
 	std::vector<Index> stateIndices;
@@ -64,45 +74,6 @@ private:
 	 *  stored in stateIndices are required to sum up to. */
 	unsigned int numParticles;
 };
-
-template<typename BIT_REGISTER>
-SumRule<BIT_REGISTER>::SumRule(
-	std::initializer_list<Index> stateIndices,
-	unsigned int numParticles
-){
-	for(unsigned int n = 0; n < stateIndices.size(); n++)
-		this->stateIndices.push_back(*(stateIndices.begin()+n));
-
-	this->numParticles = numParticles;
-}
-
-template<typename BIT_REGISTER>
-SumRule<BIT_REGISTER>::SumRule(
-	std::vector<Index> stateIndices,
-	unsigned int numParticles
-){
-	for(unsigned int n = 0; n < stateIndices.size(); n++)
-		this->stateIndices.push_back(*(stateIndices.begin()+n));
-
-	this->numParticles = numParticles;
-}
-
-template<typename BIT_REGISTER>
-SumRule<BIT_REGISTER>::~SumRule(
-){
-}
-
-template<typename BIT_REGISTER>
-bool SumRule<BIT_REGISTER>::isFulfilled(
-	const FockSpace<BIT_REGISTER> &fockSpace,
-	const FockState<BIT_REGISTER> &fockState
-){
-	unsigned int counter = 0;
-	for(unsigned int n = 0; n < stateIndices.size(); n++)
-		counter += fockSpace.getSumParticles(fockState, stateIndices.at(n));
-
-	return (counter == numParticles);
-}
 
 };	//End of namespace FockStateRule
 };	//End of namespace TBTK

@@ -14,52 +14,69 @@
  */
 
 /** @package TBTKcalc
- *  @file FockStateRule.h
- *  @brief FockStateRule.
+ *  @file DifferenceRule.h
+ *  @brief DifferenceRule.
  *
  *  @author Kristofer Björnson
  */
 
-#ifndef COM_DAFER45_TBTK_FOCK_STATE_RULE
-#define COM_DAFER45_TBTK_FOCK_STATE_RULE
+#ifndef COM_DAFER45_TBTK_DIFFERENCE_RULE
+#define COM_DAFER45_TBTK_DIFFERENCE_RULE
 
-#include "FockState.h"
-#include "BitRegister.h"
-#include "ExtensiveBitRegister.h"
+#include "FockStateRule.h"
+#include "Index.h"
 
 namespace TBTK{
-	template<typename BIT_REGISTER>
-	class FockSpace;
 namespace FockStateRule{
 
-class FockStateRule{
+class DifferenceRule : public FockStateRule{
 public:
 	/** Constructor */
-	FockStateRule();
+	DifferenceRule(
+		std::initializer_list<Index> addStateIndices,
+		std::initializer_list<Index> subtractStateIndices,
+		int difference
+	);
+
+	/** Constructor */
+	DifferenceRule(
+		std::vector<Index> addStateIndices,
+		std::vector<Index> subtractStateIndices,
+		int difference
+	);
 
 	/** Destructor. */
-	virtual ~FockStateRule();
+	virtual ~DifferenceRule();
 
-	/** Clone FockStateRule. */
-	virtual FockStateRule* clone() const = 0;
+	/** Clone DifferenceRule. */
+	virtual DifferenceRule* clone() const;
 
 	/** Check whether a given FockState fullfills the rule with respect to
 	 *  a particular FockSpace. */
 	virtual bool isSatisfied(
 		const FockSpace<BitRegister> &fockSpace,
 		const FockState<BitRegister> &fockState
-	) const = 0;
+	) const;
 
 	/** Check whether a given FockState fullfills the rule with respect to
 	 *  a particular FockSpace. */
 	virtual bool isSatisfied(
 		const FockSpace<ExtensiveBitRegister> &fockSpace,
 		const FockState<ExtensiveBitRegister> &fockState
-	) const = 0;
+	) const;
 private:
+	/** Indices to add. */
+	std::vector<Index> addStateIndices;
+
+	/** Indices to subtract. */
+	std::vector<Index> subtractStateIndices;
+
+	/** Number of particles that the states corresponding to the indices
+	 *  stored in stateIndices are required to sum up to. */
+	int difference;
 };
 
-};	//End of namespace FockSpaceRule
+};	//End of namespace FockStateRule
 };	//End of namespace TBTK
 
 #endif

@@ -27,20 +27,20 @@ namespace TBTK{
 
 template<>
 FockSpace<BitRegister>::FockSpace(
-        AmplitudeSet *amplitudeSet,
-        Model::Statistics statistics,
-        int numParticles
+	AmplitudeSet *amplitudeSet,
+	Model::Statistics statistics,
+	unsigned int maxParticlesPerState
 ){
 	this->amplitudeSet = amplitudeSet;
 	this->statistics = statistics;
 
-	unsigned int maxParticlesPerState;
+//	unsigned int maxParticlesPerState;
 	switch(statistics){
 	case Model::Statistics::FermiDirac:
 		maxParticlesPerState = 1;
 		break;
 	case Model::Statistics::BoseEinstein:
-		maxParticlesPerState = abs(numParticles);
+		maxParticlesPerState = maxParticlesPerState;
 		break;
 	default:
 		TBTKExit(
@@ -130,18 +130,18 @@ template<>
 FockSpace<ExtensiveBitRegister>::FockSpace(
         AmplitudeSet *amplitudeSet,
         Model::Statistics statistics,
-        int numParticles
+        unsigned int maxParticlesPerState
 ){
 	this->amplitudeSet = amplitudeSet;
 	this->statistics = statistics;
 
-	unsigned int maxParticlesPerState;
+//	unsigned int maxParticlesPerState;
 	switch(statistics){
 	case Model::Statistics::FermiDirac:
 		maxParticlesPerState = 1;
 		break;
 	case Model::Statistics::BoseEinstein:
-		maxParticlesPerState = abs(numParticles);
+		maxParticlesPerState = maxParticlesPerState;
 		break;
 	default:
 		TBTKExit(

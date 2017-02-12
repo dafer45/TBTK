@@ -79,6 +79,7 @@ SRC_DIR += src/Lattices
 SRC_DIR += src/Lattices/D2
 SRC_DIR += src/Lattices/D3
 SRC_DIR += src/ManyBody
+SRC_DIR += src/ManyBody/FockStateRule
 SRC_DIR += src/Properties
 SRC_DIR += src/PropertyExtractors
 SRC_DIR += src/Solvers

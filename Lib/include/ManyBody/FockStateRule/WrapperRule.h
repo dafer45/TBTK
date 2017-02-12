@@ -14,49 +14,52 @@
  */
 
 /** @package TBTKcalc
- *  @file FockStateRule.h
- *  @brief FockStateRule.
+ *  @file WrapperRule.h
+ *  @brief WrapperRule.
  *
  *  @author Kristofer Björnson
  */
 
-#ifndef COM_DAFER45_TBTK_FOCK_STATE_RULE
-#define COM_DAFER45_TBTK_FOCK_STATE_RULE
+#ifndef COM_DAFER45_TBTK_WRAPPER_RULE
+#define COM_DAFER45_TBTK_WRAPPER_RULE
 
-#include "FockState.h"
-#include "BitRegister.h"
-#include "ExtensiveBitRegister.h"
+#include "FockStateRule.h"
 
 namespace TBTK{
-	template<typename BIT_REGISTER>
-	class FockSpace;
 namespace FockStateRule{
 
-class FockStateRule{
+class WrapperRule{
 public:
 	/** Constructor */
-	FockStateRule();
+	WrapperRule(const FockStateRule &fockStateRule);
+
+	/** Copy constructor */
+	WrapperRule(const WrapperRule &wrapperRule);
 
 	/** Destructor. */
-	virtual ~FockStateRule();
+	virtual ~WrapperRule();
 
-	/** Clone FockStateRule. */
-	virtual FockStateRule* clone() const = 0;
+	/** Clone WrapperRule. */
+	virtual WrapperRule* clone() const;
+
+	/** Asignment operator. */
+	WrapperRule& operator=(const WrapperRule &wrapperRule);
 
 	/** Check whether a given FockState fullfills the rule with respect to
 	 *  a particular FockSpace. */
 	virtual bool isSatisfied(
 		const FockSpace<BitRegister> &fockSpace,
 		const FockState<BitRegister> &fockState
-	) const = 0;
+	) const;
 
 	/** Check whether a given FockState fullfills the rule with respect to
 	 *  a particular FockSpace. */
 	virtual bool isSatisfied(
 		const FockSpace<ExtensiveBitRegister> &fockSpace,
 		const FockState<ExtensiveBitRegister> &fockState
-	) const = 0;
+	) const;
 private:
+	FockStateRule *fockStateRule;
 };
 
 };	//End of namespace FockSpaceRule

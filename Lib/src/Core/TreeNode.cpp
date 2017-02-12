@@ -93,7 +93,7 @@ void TreeNode::add(HoppingAmplitude &ha, unsigned int subindex){
 		//only allowed if the HoppingAmplitudes differ in one of their
 		//common indices.
 		if(hoppingAmplitudes.size() != 0){
-			Streams::err << "Error, incompatible amplitudes:";
+			Streams::err << "Error, incompatible amplitudes:\n";
 			ha.print();
 			hoppingAmplitudes.at(0).print();
 			exit(1);
