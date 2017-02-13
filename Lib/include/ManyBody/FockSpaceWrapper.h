@@ -32,14 +32,31 @@ namespace TBTK{
 
 class FockSpaceWrapper{
 public:
-	/** Constructor. */
+	/** Constructor. The FockSpaceWrapper assumes ownership of the
+	 *  FockSpace and will destroy it at destrucion. */
 	FockSpaceWrapper(FockSpace<BitRegister> *fockSpace);
 
-	/** Constructor. */
+	/** Constructor. The FockSpaceWrapper assumes ownership of the
+	 *  FockSpace and will destroy it at destrucion. */
 	FockSpaceWrapper(FockSpace<ExtensiveBitRegister> *fockSpace);
 
 	/** Destructor. */
 	~FockSpaceWrapper();
+
+	/** Returns true if the wrapped FockState is of type BitRegister. */
+	bool wrapsBitRegister();
+
+	/** Returns true if the wrapped FockState is of type
+	 *  ExtensiveBitRegister. */
+	bool wrapsExtensiveBitRegister();
+
+	/** Returns a pointer to the FockState<BitRegister> contained by the
+	 *  wrapper. */
+	FockSpace<BitRegister>* getFockSpaceBitRegister();
+
+	/** Returns a pointer to the FockState<ExtensiveBitRegister> contained
+	 *  by the wrapper. */
+	FockSpace<ExtensiveBitRegister>* getFockSpaceExtensiveBitRegister();
 private:
 	/** Pointer to FockSpace using BitRegsiter. */
 	FockSpace<BitRegister> *brFockSpace;
@@ -47,6 +64,28 @@ private:
 	/** Pointer to FockSpace using ExtensiveBitRegister. */
 	FockSpace<ExtensiveBitRegister> *ebrFockSpace;
 };
+
+inline bool FockSpaceWrapper::wrapsBitRegister(){
+	if(brFockSpace != NULL)
+		return true;
+	else
+		return false;
+}
+
+inline bool FockSpaceWrapper::wrapsExtensiveBitRegister(){
+	if(ebrFockSpace != NULL)
+		return true;
+	else
+		return false;
+}
+
+inline FockSpace<BitRegister>* FockSpaceWrapper::getFockSpaceBitRegister(){
+	return brFockSpace;
+}
+
+inline FockSpace<ExtensiveBitRegister>* FockSpaceWrapper::getFockSpaceExtensiveBitRegister(){
+	return ebrFockSpace;
+}
 
 };	//End of namespace TBTK
 
