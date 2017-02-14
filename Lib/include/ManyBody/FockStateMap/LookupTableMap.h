@@ -37,7 +37,7 @@ public:
 	LookupTableMap(unsigned int exponentialDimension);
 
 	/** Destructor. */
-	~LookupTableMap();
+	virtual ~LookupTableMap();
 
 	/** Get many-body Hilbert space size. */
 	virtual unsigned int getBasisSize() const;

@@ -19,25 +19,36 @@
  */
 
 #include "FockSpaceWrapper.h"
+#include "Streams.h"
+
+using namespace std;
 
 namespace TBTK{
 
-FockSpaceWrapper::FockSpaceWrapper(FockSpace<BitRegister> *fockSpace){
-	brFockSpace = fockSpace;
-	ebrFockSpace = NULL;
+FockSpaceWrapper::FockSpaceWrapper(FockSpace<BitRegister> *fockSpace
+) :
+	brFockSpace(fockSpace),
+	ebrFockSpace(NULL)
+{
+/*	brFockSpace = make_shared<FockSpace<BitRegister>>(fockSpace);
+	ebrFockSpace = make_shared<FockSpace<ExtensiveBitRegister>>(NULL);*/
 }
 
-FockSpaceWrapper::FockSpaceWrapper(FockSpace<ExtensiveBitRegister> *fockSpace){
-	brFockSpace = NULL;
-	ebrFockSpace = fockSpace;
+FockSpaceWrapper::FockSpaceWrapper(FockSpace<ExtensiveBitRegister> *fockSpace
+) :
+	brFockSpace(NULL),
+	ebrFockSpace(fockSpace)
+{
+/*	brFockSpace = make_shared<FockSpace<BitRegister>>(NULL);
+	ebrFockSpace = make_shared<FockSpace<ExtensiveBitRegister>>(fockSpace);*/
 }
 
 FockSpaceWrapper::~FockSpaceWrapper(){
-	if(brFockSpace != NULL)
+/*	if(brFockSpace != NULL)
 		delete brFockSpace;
 
 	if(ebrFockSpace != NULL)
-		delete ebrFockSpace;
+		delete ebrFockSpace;*/
 }
 
 };	//End of namespace TBTK

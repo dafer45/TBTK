@@ -37,7 +37,7 @@ public:
 	DefaultMap(unsigned int exponentialDimension);
 
 	/** Destructor. */
-	~DefaultMap();
+	virtual ~DefaultMap();
 
 	/** Get many-body Hilbert space size. */
 	virtual unsigned int getBasisSize() const;

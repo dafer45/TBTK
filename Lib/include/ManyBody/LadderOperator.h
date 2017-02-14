@@ -117,7 +117,6 @@ LadderOperator<BIT_REGISTER>::LadderOperator(
 		if(leastSignificantBit.getBit(n))
 			break;
 	}
-	moreSignificantFermionMask.print();
 }
 
 template<typename BIT_REGISTER>

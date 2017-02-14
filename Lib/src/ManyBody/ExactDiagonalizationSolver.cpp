@@ -7,6 +7,7 @@
 #include "SumRule.h"
 #include "DifferenceRule.h"
 #include "WrapperRule.h"
+#include "Timer.h"
 
 using namespace std;
 
@@ -14,54 +15,52 @@ namespace TBTK{
 
 ExactDiagonalizationSolver::ExactDiagonalizationSolver(
 	Model *singleParticleModel,
-	InteractionAmplitudeSet *interactionAmplitudeSet
-){
+	InteractionAmplitudeSet *interactionAmplitudeSet,
+	FockSpaceWrapper fockSpaceWrapper
+) :
+	fockSpaceWrapper(fockSpaceWrapper)
+{
 	this->singleParticleModel = singleParticleModel;
 	this->interactionAmplitudeSet = interactionAmplitudeSet;
 }
 
 ExactDiagonalizationSolver::~ExactDiagonalizationSolver(){
-	for(unsigned int n = 0; n < manyBodyModels.size(); n++)
-		delete manyBodyModels.at(n);
 }
 
 unsigned int ExactDiagonalizationSolver::addSubspace(initializer_list<const FockStateRule::WrapperRule> rules){
-	unsigned int numSubspaces = subspaceRules.size();
+	unsigned int numSubspaces = subspaceContexts.size();
 
-	subspaceRules.push_back(vector<FockStateRule::WrapperRule>());
-	for(unsigned int n = 0; n < rules.size(); n++)
-		subspaceRules.at(numSubspaces).push_back(*(rules.begin()+n));
-
-	manyBodyModels.push_back(NULL);
+	subspaceContexts.push_back(SubspaceContext(rules));
 
 	return numSubspaces;
 }
 
 void ExactDiagonalizationSolver::run(unsigned int subspace){
-	setupManyBodyModel(subspace);
+	SubspaceContext subspaceContext = subspaceContexts.at(subspace);
+	if(subspaceContext.manyBodyModel == NULL){
+		setupManyBodyModel(subspace);
+		subspaceContext.dSolver = new DiagonalizationSolver();
+		subspaceContext.dSolver->setModel(subspaceContext.manyBodyModel);
+//		subspaceContext.dSolver->run();
+
+/*		DPropertyExtractor pe(subspaceContext.dSolver);
+		pe.setEnergyWindow(-10., 10., 1000);
+		Property::DOS *dos = pe.calculateDOS();
+		FileWriter::writeDOS(dos);
+		delete dos;*/
+	}
 }
 
 template<>
 void ExactDiagonalizationSolver::setupManyBodyModel<BitRegister>(unsigned int subspace){
-	const int NUM_PARTICLES = singleParticleModel->getBasisSize()/2;
-
-	FockSpace<BitRegister> fockSpace(
-		singleParticleModel->getAmplitudeSet(),
-		singleParticleModel->getStatistics(),
-		NUM_PARTICLES
+	FockSpace<BitRegister> *fockSpace = fockSpaceWrapper.getFockSpaceBitRegister();
+	LadderOperator<BitRegister> **operators = fockSpace->getOperators();
+	SubspaceContext subspaceContext = subspaceContexts.at(subspace);
+	FockStateMap::FockStateMap<BitRegister> *fockStateMap = fockSpace->createFockSpaceMap(
+		subspaceContext.rules
 	);
 
-	LadderOperator<BitRegister> **operators = fockSpace.getOperators();
-	FockStateMap::FockStateMap<BitRegister> *fockStateMap = fockSpace.createFockSpaceMap(
-		subspaceRules.at(subspace)
-	);
-
-	for(unsigned int n = 0; n < fockStateMap->getBasisSize(); n++){
-		Streams::out << n << ":\t";
-		fockStateMap->getFockState(n).print();
-	}
-
-	manyBodyModels.at(subspace) = new Model();
+	subspaceContext.manyBodyModel = new Model();
 	for(unsigned int n = 0; n < fockStateMap->getBasisSize(); n++){
 		AmplitudeSet::Iterator it = singleParticleModel->getAmplitudeSet()->getIterator();
 		const HoppingAmplitude *ha;
@@ -81,12 +80,11 @@ void ExactDiagonalizationSolver::setupManyBodyModel<BitRegister>(unsigned int su
 
 			int to = fockStateMap->getBasisIndex(fockState);
 
-			manyBodyModels.at(subspace)->addHA(HoppingAmplitude(
+			subspaceContext.manyBodyModel->addHA(HoppingAmplitude(
 				ha->getAmplitude()*(double)fockState.getPrefactor(),
 				{to},
 				{from}
 			));
-//			Streams::out << ha->getAmplitude()*(double)fockState.getPrefactor() << "\t" << to << "\t" << from << "\n";
 		}
 
 		for(unsigned int c = 0; c < interactionAmplitudeSet->getNumInteractionAmplitudes(); c++){
@@ -113,87 +111,28 @@ void ExactDiagonalizationSolver::setupManyBodyModel<BitRegister>(unsigned int su
 
 			int to = fockStateMap->getBasisIndex(fockState);
 
-			manyBodyModels.at(subspace)->addHA(HoppingAmplitude(
+			subspaceContext.manyBodyModel->addHA(HoppingAmplitude(
 				ia.getAmplitude()*(double)fockState.getPrefactor(),
 				{to},
 				{from}
 			));
-//			Streams::out << ia.getAmplitude()*(double)fockState.getPrefactor() << "\t" << to << "\t" << from << "\n";
 		}
 	}
-	manyBodyModels.at(subspace)->construct();
+	subspaceContext.manyBodyModel->construct();
 
-	DiagonalizationSolver dSolver;
-	dSolver.setModel(manyBodyModels.at(subspace));
-	dSolver.run();
-
-/*	double dosData[1000];
-	for(int n = 0; n < 1000; n++)
-		dosData[n] = 0;
-
-	const double *eigenValues = dSolver.getEigenValues();
-	for(int n = 0; n < manyBodyModel->getBasisSize(); n++){
-		FockState<BitRegister> fockState = fockStateMap->getFockState(n);
-
-		operators[0][1]*fockState;
-		if(fockState.isNull())
-			continue;
-		operators[0][0]*fockState;
-		if(fockState.isNull())
-			continue;
-
-		for(int c = 0; c < manyBodyModel->getBasisSize(); c++){
-			double energy = eigenValues[c];
-			int i = ((energy+10)/20.)*1000;
-			if(i >= 0 && i < 1000){
-				dosData[i] += pow(abs(dSolver.getAmplitude(c, {n})), 2);
-			}
-		}
-	}
-
-	Property::DOS *dos = new Property::DOS(-10, 10, 1000, dosData);
-	FileWriter::writeDOS(dos);
-	delete dos;*/
-
-	DPropertyExtractor pe(&dSolver);
-	pe.setEnergyWindow(-10, 10, 1000);
-
-	Property::DOS *dos = pe.calculateDOS();
-	FileWriter::writeDOS(dos);
-	delete dos;
-
-	Property::EigenValues *ev = pe.getEigenValues();
-	FileWriter::writeEigenValues(ev);
-	delete ev;
-
-/*	const double *eigenValues = dSolver.getEigenValues();
-	for(int n = 0; n < manyBodyModel->getBasisSize(); n++){
-		if(eigenValues[n] > -1.5 && eigenValues[n] < -0.5){
-			for(int c = 0; c < manyBodyModel->getBasisSize(); c++){
-				Streams::out << dSolver.getAmplitude(n, {c}) << "\n";
-			}
-
-			Streams::out << "\n";
-		}
-	}*/
+	delete fockStateMap;
 }
 
 template<>
 void ExactDiagonalizationSolver::setupManyBodyModel<ExtensiveBitRegister>(unsigned int subspace){
-	const int NUM_PARTICLES = 1;
-
-	FockSpace<ExtensiveBitRegister> fockSpace(
-		singleParticleModel->getAmplitudeSet(),
-		singleParticleModel->getStatistics(),
-		NUM_PARTICLES
+	FockSpace<ExtensiveBitRegister> *fockSpace = fockSpaceWrapper.getFockSpaceExtensiveBitRegister();
+	LadderOperator<ExtensiveBitRegister> **operators = fockSpace->getOperators();
+	SubspaceContext subspaceContext = subspaceContexts.at(subspace);
+	FockStateMap::FockStateMap<ExtensiveBitRegister> *fockStateMap = fockSpace->createFockSpaceMap(
+		subspaceContext.rules
 	);
 
-	LadderOperator<ExtensiveBitRegister> **operators = fockSpace.getOperators();
-	FockStateMap::FockStateMap<ExtensiveBitRegister> *fockStateMap = fockSpace.createFockSpaceMap(
-		subspaceRules.at(subspace)
-	);
-
-	manyBodyModels.at(subspace) = new Model();
+	subspaceContext.manyBodyModel = new Model();
 	for(unsigned int n = 0; n < fockStateMap->getBasisSize(); n++){
 		AmplitudeSet::Iterator it = singleParticleModel->getAmplitudeSet()->getIterator();
 		const HoppingAmplitude *ha;
@@ -213,7 +152,7 @@ void ExactDiagonalizationSolver::setupManyBodyModel<ExtensiveBitRegister>(unsign
 
 			int to = fockStateMap->getBasisIndex(fockState);
 
-			manyBodyModels.at(subspace)->addHA(HoppingAmplitude(
+			subspaceContext.manyBodyModel->addHA(HoppingAmplitude(
 				ha->getAmplitude()*(double)fockState.getPrefactor(),
 				{to},
 				{from}
@@ -244,21 +183,40 @@ void ExactDiagonalizationSolver::setupManyBodyModel<ExtensiveBitRegister>(unsign
 
 			int to = fockStateMap->getBasisIndex(fockState);
 
-			manyBodyModels.at(subspace)->addHA(HoppingAmplitude(
+			subspaceContext.manyBodyModel->addHA(HoppingAmplitude(
 				ia.getAmplitude()*(double)fockState.getPrefactor(),
 				{to},
 				{from}
 			));
 		}
 	}
-	manyBodyModels.at(subspace)->construct();
+	subspaceContext.manyBodyModel->construct();
+
+	delete fockStateMap;
 }
 
 void ExactDiagonalizationSolver::setupManyBodyModel(unsigned int subspace){
-	if(singleParticleModel->getBasisSize() < 32)
+	if(fockSpaceWrapper.wrapsBitRegister())
 		setupManyBodyModel<BitRegister>(subspace);
 	else
 		setupManyBodyModel<ExtensiveBitRegister>(subspace);
+}
+
+ExactDiagonalizationSolver::SubspaceContext::SubspaceContext(
+	initializer_list<const FockStateRule::WrapperRule> rules
+){
+	for(unsigned int n = 0; n < rules.size(); n++)
+		this->rules.push_back(*(rules.begin()+n));
+
+	manyBodyModel = NULL;
+	dSolver = NULL;
+}
+
+ExactDiagonalizationSolver::SubspaceContext::~SubspaceContext(){
+	if(manyBodyModel != NULL)
+		delete manyBodyModel;
+	if(dSolver != NULL)
+		delete dSolver;
 }
 
 };	//End of namespace TBTK

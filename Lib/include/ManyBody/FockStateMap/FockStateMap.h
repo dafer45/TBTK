@@ -35,7 +35,7 @@ public:
 	FockStateMap(unsigned int exponentialDimension);
 
 	/** Destructor. */
-	~FockStateMap();
+	virtual ~FockStateMap();
 
 	/** Get many-body Hilbert space size. */
 	virtual unsigned int getBasisSize() const = 0;

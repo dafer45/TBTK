@@ -28,6 +28,8 @@
 #include "ExtensiveBitRegister.h"
 #include "FockSpace.h"
 
+#include <memory>
+
 namespace TBTK{
 
 class FockSpaceWrapper{
@@ -59,32 +61,32 @@ public:
 	FockSpace<ExtensiveBitRegister>* getFockSpaceExtensiveBitRegister();
 private:
 	/** Pointer to FockSpace using BitRegsiter. */
-	FockSpace<BitRegister> *brFockSpace;
+	std::shared_ptr<FockSpace<BitRegister>> brFockSpace;
 
 	/** Pointer to FockSpace using ExtensiveBitRegister. */
-	FockSpace<ExtensiveBitRegister> *ebrFockSpace;
+	std::shared_ptr<FockSpace<ExtensiveBitRegister>> ebrFockSpace;
 };
 
 inline bool FockSpaceWrapper::wrapsBitRegister(){
-	if(brFockSpace != NULL)
+	if(brFockSpace.get() != NULL)
 		return true;
 	else
 		return false;
 }
 
 inline bool FockSpaceWrapper::wrapsExtensiveBitRegister(){
-	if(ebrFockSpace != NULL)
+	if(ebrFockSpace.get() != NULL)
 		return true;
 	else
 		return false;
 }
 
 inline FockSpace<BitRegister>* FockSpaceWrapper::getFockSpaceBitRegister(){
-	return brFockSpace;
+	return brFockSpace.get();
 }
 
 inline FockSpace<ExtensiveBitRegister>* FockSpaceWrapper::getFockSpaceExtensiveBitRegister(){
-	return ebrFockSpace;
+	return ebrFockSpace.get();
 }
 
 };	//End of namespace TBTK
