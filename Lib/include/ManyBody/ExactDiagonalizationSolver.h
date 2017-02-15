@@ -28,6 +28,23 @@ public:
 
 	/** Run calculation. */
 	void run(unsigned int subspace);
+
+	/** Get eigen values. */
+	const double* getEigenValues(unsigned int subspace);
+
+	/** Get eigen value. */
+	const double getEigenValue(unsigned int subspace, int state);
+
+	/** Get amplitude for a given eigenvector \f$n\f$ and physical index
+	 *  \f$x\f$: \f$\Psi_{n}(x)\f$
+	 *  @param subspace Subspace identifier.
+	 *  @param state Eigenstate number.
+	 *  @param index Physical index \f$x\fx. */
+	const std::complex<double> getAmplitude(
+		unsigned int subspace,
+		int state,
+		const Index &index
+	);
 private:
 	/** Model to work on. */
 	Model *singleParticleModel;
@@ -64,15 +81,6 @@ private:
 	/** Subspace contexts. */
 	std::vector<SubspaceContext> subspaceContexts;
 
-	/** Rules for constructing subspaces. */
-//	std::vector<std::vector<FockStateRule::WrapperRule>> subspaceRules;
-
-	/** Many-body model. */
-//	std::vector<Model*> manyBodyModels;
-
-	/** Many-body model. */
-//	std::vector<DiagonalizationSolver*> solvers;
-
 	/** Setup many-body mapping. */
 	void setupManyBodyModel(unsigned int subspace);
 
@@ -80,6 +88,28 @@ private:
 	template<typename BIT_REGISTER>
 	void setupManyBodyModel(unsigned int subspace);
 };
+
+inline const double* ExactDiagonalizationSolver::getEigenValues(unsigned int subspace){
+	return subspaceContexts.at(subspace).dSolver->getEigenValues();
+}
+
+inline const double ExactDiagonalizationSolver::getEigenValue(
+	unsigned int subspace,
+	int state
+){
+	return subspaceContexts.at(subspace).dSolver->getEigenValue(state);
+}
+
+inline const std::complex<double> ExactDiagonalizationSolver::getAmplitude(
+	unsigned int subspace,
+	int state,
+	const Index &index
+){
+	return subspaceContexts.at(subspace).dSolver->getAmplitude(
+		state,
+		index
+	);
+}
 
 };	//End of namespace TBTK
 

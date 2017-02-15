@@ -76,23 +76,23 @@ public:
 		const Index &pattern
 	) const;
 
-	/** Create FockSpaceMap. */
-	FockStateMap::FockStateMap<BIT_REGISTER>* createFockSpaceMap(
+	/** Create FockStateMap. */
+	FockStateMap::FockStateMap<BIT_REGISTER>* createFockStateMap(
 		int numParticles
 	) const;
 
-	/** Create FockSpaceMap. */
-	FockStateMap::FockStateMap<BIT_REGISTER>* createFockSpaceMap(
+	/** Create FockStateMap. */
+	FockStateMap::FockStateMap<BIT_REGISTER>* createFockStateMap(
 		const FockStateRule::FockStateRule &rule
 	) const;
 
-	/** Create FockSpaceMap. */
-	FockStateMap::FockStateMap<BIT_REGISTER>* createFockSpaceMap(
+	/** Create FockStateMap. */
+	FockStateMap::FockStateMap<BIT_REGISTER>* createFockStateMap(
 		std::initializer_list<const FockStateRule::WrapperRule> rules
 	) const;
 
-	/** Create FockSpaceMap. */
-	FockStateMap::FockStateMap<BIT_REGISTER>* createFockSpaceMap(
+	/** Create FockStateMap. */
+	FockStateMap::FockStateMap<BIT_REGISTER>* createFockStateMap(
 		std::vector<FockStateRule::WrapperRule> rules
 	) const;
 
@@ -208,7 +208,7 @@ unsigned int FockSpace<BIT_REGISTER>::getSumParticles(
 }
 
 template<typename BIT_REGISTER>
-FockStateMap::FockStateMap<BIT_REGISTER>* FockSpace<BIT_REGISTER>::createFockSpaceMap(int numParticles) const{
+FockStateMap::FockStateMap<BIT_REGISTER>* FockSpace<BIT_REGISTER>::createFockStateMap(int numParticles) const{
 	if(numParticles < 0){
 		FockStateMap::DefaultMap<BIT_REGISTER> *fockStateMap = new FockStateMap::DefaultMap<BIT_REGISTER>(
 			exponentialDimension
@@ -234,7 +234,7 @@ FockStateMap::FockStateMap<BIT_REGISTER>* FockSpace<BIT_REGISTER>::createFockSpa
 }
 
 template<typename BIT_REGISTER>
-FockStateMap::FockStateMap<BIT_REGISTER>* FockSpace<BIT_REGISTER>::createFockSpaceMap(const FockStateRule::FockStateRule &rule) const{
+FockStateMap::FockStateMap<BIT_REGISTER>* FockSpace<BIT_REGISTER>::createFockStateMap(const FockStateRule::FockStateRule &rule) const{
 	FockStateMap::LookupTableMap<BIT_REGISTER> *fockStateMap = new FockStateMap::LookupTableMap<BIT_REGISTER>(
 		exponentialDimension
 	);
@@ -251,7 +251,7 @@ FockStateMap::FockStateMap<BIT_REGISTER>* FockSpace<BIT_REGISTER>::createFockSpa
 }
 
 template<typename BIT_REGISTER>
-FockStateMap::FockStateMap<BIT_REGISTER>* FockSpace<BIT_REGISTER>::createFockSpaceMap(
+FockStateMap::FockStateMap<BIT_REGISTER>* FockSpace<BIT_REGISTER>::createFockStateMap(
 	std::initializer_list<const FockStateRule::WrapperRule> rules
 ) const{
 	FockStateMap::LookupTableMap<BIT_REGISTER> *fockStateMap = new FockStateMap::LookupTableMap<BIT_REGISTER>(
@@ -287,7 +287,7 @@ FockStateMap::FockStateMap<BIT_REGISTER>* FockSpace<BIT_REGISTER>::createFockSpa
 }
 
 template<typename BIT_REGISTER>
-FockStateMap::FockStateMap<BIT_REGISTER>* FockSpace<BIT_REGISTER>::createFockSpaceMap(
+FockStateMap::FockStateMap<BIT_REGISTER>* FockSpace<BIT_REGISTER>::createFockStateMap(
 	std::vector<FockStateRule::WrapperRule> rules
 ) const{
 	FockStateMap::LookupTableMap<BIT_REGISTER> *fockStateMap = new FockStateMap::LookupTableMap<BIT_REGISTER>(

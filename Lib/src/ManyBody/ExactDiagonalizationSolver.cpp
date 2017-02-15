@@ -36,12 +36,12 @@ unsigned int ExactDiagonalizationSolver::addSubspace(initializer_list<const Fock
 }
 
 void ExactDiagonalizationSolver::run(unsigned int subspace){
-	SubspaceContext subspaceContext = subspaceContexts.at(subspace);
+	SubspaceContext &subspaceContext = subspaceContexts.at(subspace);
 	if(subspaceContext.manyBodyModel == NULL){
 		setupManyBodyModel(subspace);
 		subspaceContext.dSolver = new DiagonalizationSolver();
 		subspaceContext.dSolver->setModel(subspaceContext.manyBodyModel);
-//		subspaceContext.dSolver->run();
+		subspaceContext.dSolver->run();
 
 /*		DPropertyExtractor pe(subspaceContext.dSolver);
 		pe.setEnergyWindow(-10., 10., 1000);
@@ -55,8 +55,8 @@ template<>
 void ExactDiagonalizationSolver::setupManyBodyModel<BitRegister>(unsigned int subspace){
 	FockSpace<BitRegister> *fockSpace = fockSpaceWrapper.getFockSpaceBitRegister();
 	LadderOperator<BitRegister> **operators = fockSpace->getOperators();
-	SubspaceContext subspaceContext = subspaceContexts.at(subspace);
-	FockStateMap::FockStateMap<BitRegister> *fockStateMap = fockSpace->createFockSpaceMap(
+	SubspaceContext &subspaceContext = subspaceContexts.at(subspace);
+	FockStateMap::FockStateMap<BitRegister> *fockStateMap = fockSpace->createFockStateMap(
 		subspaceContext.rules
 	);
 
@@ -127,8 +127,8 @@ template<>
 void ExactDiagonalizationSolver::setupManyBodyModel<ExtensiveBitRegister>(unsigned int subspace){
 	FockSpace<ExtensiveBitRegister> *fockSpace = fockSpaceWrapper.getFockSpaceExtensiveBitRegister();
 	LadderOperator<ExtensiveBitRegister> **operators = fockSpace->getOperators();
-	SubspaceContext subspaceContext = subspaceContexts.at(subspace);
-	FockStateMap::FockStateMap<ExtensiveBitRegister> *fockStateMap = fockSpace->createFockSpaceMap(
+	SubspaceContext &subspaceContext = subspaceContexts.at(subspace);
+	FockStateMap::FockStateMap<ExtensiveBitRegister> *fockStateMap = fockSpace->createFockStateMap(
 		subspaceContext.rules
 	);
 
