@@ -96,6 +96,9 @@ public:
 		std::vector<FockStateRule::WrapperRule> rules
 	) const;
 
+	/** Get amplitude set. */
+	const AmplitudeSet* getAmplitudeSet() const;
+
 	/** Returns the many-body Hilbert space index corresponding to the
 	 *  given FockState. */
 /*	unsigned int getBasisIndex(
@@ -320,6 +323,11 @@ FockStateMap::FockStateMap<BIT_REGISTER>* FockSpace<BIT_REGISTER>::createFockSta
 	}
 
 	return fockStateMap;
+}
+
+template<typename BIT_REGISTER>
+const AmplitudeSet* FockSpace<BIT_REGISTER>::getAmplitudeSet() const{
+	return amplitudeSet;
 }
 
 /*template<typename BIT_REGISTER>

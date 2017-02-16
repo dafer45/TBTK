@@ -14,36 +14,37 @@
  */
 
 /** @package TBTKcalc
- *  @file FockSpaceWrapper.h
- *  @brief Fock space wrapper.
+ *  @file ManyBodyContext.h
+ *  @brief Many-body context.
  *
  *  @author Kristofer Björnson
  */
 
 
-#ifndef COM_DAFER45_TBTK_FOCK_SPACE_WRAPPER
-#define COM_DAFER45_TBTK_FOCK_SPACE_WRAPPER
+#ifndef COM_DAFER45_TBTK_MANY_BODY_CONTEXT
+#define COM_DAFER45_TBTK_MANY_BODY_CONTEXT
 
 #include "BitRegister.h"
 #include "ExtensiveBitRegister.h"
 #include "FockSpace.h"
+#include "InteractionAmplitudeSet.h"
 
 #include <memory>
 
 namespace TBTK{
 
-class FockSpaceWrapper{
+class ManyBodyContext{
 public:
-	/** Constructor. The FockSpaceWrapper assumes ownership of the
+	/** Constructor. The ManyBodyContext assumes ownership of the
 	 *  FockSpace and will destroy it at destrucion. */
-	FockSpaceWrapper(FockSpace<BitRegister> *fockSpace);
+	ManyBodyContext(FockSpace<BitRegister> *fockSpace);
 
-	/** Constructor. The FockSpaceWrapper assumes ownership of the
+	/** Constructor. The ManyBodyContext assumes ownership of the
 	 *  FockSpace and will destroy it at destrucion. */
-	FockSpaceWrapper(FockSpace<ExtensiveBitRegister> *fockSpace);
+	ManyBodyContext(FockSpace<ExtensiveBitRegister> *fockSpace);
 
 	/** Destructor. */
-	~FockSpaceWrapper();
+	~ManyBodyContext();
 
 	/** Returns true if the wrapped FockState is of type BitRegister. */
 	bool wrapsBitRegister();
@@ -59,34 +60,47 @@ public:
 	/** Returns a pointer to the FockState<ExtensiveBitRegister> contained
 	 *  by the wrapper. */
 	FockSpace<ExtensiveBitRegister>* getFockSpaceExtensiveBitRegister();
+
+	/** Add rule that restricts the Fock space. */
+	void addRule(const FockStateRule::WrapperRule rule);
 private:
 	/** Pointer to FockSpace using BitRegsiter. */
 	std::shared_ptr<FockSpace<BitRegister>> brFockSpace;
 
 	/** Pointer to FockSpace using ExtensiveBitRegister. */
 	std::shared_ptr<FockSpace<ExtensiveBitRegister>> ebrFockSpace;
+
+	/** Rules specifying the relevant subspace. */
+	std::vector<FockStateRule::WrapperRule> rules;
+
+	/** Interaction amplitude set. */
+	InteractionAmplitudeSet interactionAmplitudeSet;
 };
 
-inline bool FockSpaceWrapper::wrapsBitRegister(){
+inline bool ManyBodyContext::wrapsBitRegister(){
 	if(brFockSpace.get() != NULL)
 		return true;
 	else
 		return false;
 }
 
-inline bool FockSpaceWrapper::wrapsExtensiveBitRegister(){
+inline bool ManyBodyContext::wrapsExtensiveBitRegister(){
 	if(ebrFockSpace.get() != NULL)
 		return true;
 	else
 		return false;
 }
 
-inline FockSpace<BitRegister>* FockSpaceWrapper::getFockSpaceBitRegister(){
+inline FockSpace<BitRegister>* ManyBodyContext::getFockSpaceBitRegister(){
 	return brFockSpace.get();
 }
 
-inline FockSpace<ExtensiveBitRegister>* FockSpaceWrapper::getFockSpaceExtensiveBitRegister(){
+inline FockSpace<ExtensiveBitRegister>* ManyBodyContext::getFockSpaceExtensiveBitRegister(){
 	return ebrFockSpace.get();
+}
+
+inline void ManyBodyContext::addRule(const FockStateRule::WrapperRule rule){
+	rules.push_back(rule);
 }
 
 };	//End of namespace TBTK

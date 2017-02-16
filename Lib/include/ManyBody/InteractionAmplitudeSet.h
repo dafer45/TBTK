@@ -11,7 +11,7 @@ namespace TBTK{
 class InteractionAmplitudeSet{
 public:
 	/** Constructor. */
-	InteractionAmplitudeSet(AmplitudeSet *amplitudeSet);
+	InteractionAmplitudeSet(const AmplitudeSet *amplitudeSet);
 
 	/** Destructor. */
 	~InteractionAmplitudeSet();
@@ -28,7 +28,7 @@ public:
 	) const;
 private:
 	/** Single-particle AmplitudeSet. */
-	AmplitudeSet *amplitudeSet;
+	const AmplitudeSet *amplitudeSet;
 
 	/** Interaction amplitudes. */
 	std::vector<InteractionAmplitude> interactionAmplitudes;

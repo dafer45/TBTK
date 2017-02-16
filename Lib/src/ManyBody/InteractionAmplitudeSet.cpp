@@ -4,7 +4,7 @@ using namespace std;
 
 namespace TBTK{
 
-InteractionAmplitudeSet::InteractionAmplitudeSet(AmplitudeSet *amplitudeSet){
+InteractionAmplitudeSet::InteractionAmplitudeSet(const AmplitudeSet *amplitudeSet){
 	this->amplitudeSet = amplitudeSet;
 }
 

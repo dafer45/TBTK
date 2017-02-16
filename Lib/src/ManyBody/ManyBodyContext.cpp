@@ -13,37 +13,39 @@
  * limitations under the License.
  */
 
-/** @file FockSpaceWrapper.cpp
+/** @file ManyBodyContext.cpp
  *
  *  @author Kristofer Björnson
  */
 
-#include "FockSpaceWrapper.h"
+#include "ManyBodyContext.h"
 #include "Streams.h"
 
 using namespace std;
 
 namespace TBTK{
 
-FockSpaceWrapper::FockSpaceWrapper(FockSpace<BitRegister> *fockSpace
+ManyBodyContext::ManyBodyContext(FockSpace<BitRegister> *fockSpace
 ) :
 	brFockSpace(fockSpace),
-	ebrFockSpace(NULL)
+	ebrFockSpace(NULL),
+	interactionAmplitudeSet(fockSpace->getAmplitudeSet())
 {
 /*	brFockSpace = make_shared<FockSpace<BitRegister>>(fockSpace);
 	ebrFockSpace = make_shared<FockSpace<ExtensiveBitRegister>>(NULL);*/
 }
 
-FockSpaceWrapper::FockSpaceWrapper(FockSpace<ExtensiveBitRegister> *fockSpace
+ManyBodyContext::ManyBodyContext(FockSpace<ExtensiveBitRegister> *fockSpace
 ) :
 	brFockSpace(NULL),
-	ebrFockSpace(fockSpace)
+	ebrFockSpace(fockSpace),
+	interactionAmplitudeSet(fockSpace->getAmplitudeSet())
 {
 /*	brFockSpace = make_shared<FockSpace<BitRegister>>(NULL);
 	ebrFockSpace = make_shared<FockSpace<ExtensiveBitRegister>>(fockSpace);*/
 }
 
-FockSpaceWrapper::~FockSpaceWrapper(){
+ManyBodyContext::~ManyBodyContext(){
 /*	if(brFockSpace != NULL)
 		delete brFockSpace;
 

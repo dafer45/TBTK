@@ -16,9 +16,9 @@ namespace TBTK{
 ExactDiagonalizationSolver::ExactDiagonalizationSolver(
 	Model *singleParticleModel,
 	InteractionAmplitudeSet *interactionAmplitudeSet,
-	FockSpaceWrapper fockSpaceWrapper
+	ManyBodyContext manyBodyContext
 ) :
-	fockSpaceWrapper(fockSpaceWrapper)
+	manyBodyContext(manyBodyContext)
 {
 	this->singleParticleModel = singleParticleModel;
 	this->interactionAmplitudeSet = interactionAmplitudeSet;
@@ -53,7 +53,7 @@ void ExactDiagonalizationSolver::run(unsigned int subspace){
 
 template<>
 void ExactDiagonalizationSolver::setupManyBodyModel<BitRegister>(unsigned int subspace){
-	FockSpace<BitRegister> *fockSpace = fockSpaceWrapper.getFockSpaceBitRegister();
+	FockSpace<BitRegister> *fockSpace = manyBodyContext.getFockSpaceBitRegister();
 	LadderOperator<BitRegister> **operators = fockSpace->getOperators();
 	SubspaceContext &subspaceContext = subspaceContexts.at(subspace);
 	FockStateMap::FockStateMap<BitRegister> *fockStateMap = fockSpace->createFockStateMap(
@@ -125,7 +125,7 @@ void ExactDiagonalizationSolver::setupManyBodyModel<BitRegister>(unsigned int su
 
 template<>
 void ExactDiagonalizationSolver::setupManyBodyModel<ExtensiveBitRegister>(unsigned int subspace){
-	FockSpace<ExtensiveBitRegister> *fockSpace = fockSpaceWrapper.getFockSpaceExtensiveBitRegister();
+	FockSpace<ExtensiveBitRegister> *fockSpace = manyBodyContext.getFockSpaceExtensiveBitRegister();
 	LadderOperator<ExtensiveBitRegister> **operators = fockSpace->getOperators();
 	SubspaceContext &subspaceContext = subspaceContexts.at(subspace);
 	FockStateMap::FockStateMap<ExtensiveBitRegister> *fockStateMap = fockSpace->createFockStateMap(
@@ -196,7 +196,7 @@ void ExactDiagonalizationSolver::setupManyBodyModel<ExtensiveBitRegister>(unsign
 }
 
 void ExactDiagonalizationSolver::setupManyBodyModel(unsigned int subspace){
-	if(fockSpaceWrapper.wrapsBitRegister())
+	if(manyBodyContext.wrapsBitRegister())
 		setupManyBodyModel<BitRegister>(subspace);
 	else
 		setupManyBodyModel<ExtensiveBitRegister>(subspace);

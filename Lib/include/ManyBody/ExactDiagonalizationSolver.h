@@ -4,7 +4,7 @@
 #include "DiagonalizationSolver.h"
 #include "InteractionAmplitudeSet.h"
 #include "Model.h"
-#include "FockSpaceWrapper.h"
+#include "ManyBodyContext.h"
 #include "WrapperRule.h"
 
 #include <initializer_list>
@@ -17,7 +17,7 @@ public:
 	ExactDiagonalizationSolver(
 		Model *singleParticleModel,
 		InteractionAmplitudeSet *interactionAmplitudeSet,
-		FockSpaceWrapper fockSpaceWrapper
+		ManyBodyContext manyBodyContext
 	);
 
 	/** Destructor. */
@@ -52,8 +52,8 @@ private:
 	/** Interaction amplitude set. */
 	InteractionAmplitudeSet *interactionAmplitudeSet;
 
-	/** Fock space wrapper. */
-	FockSpaceWrapper fockSpaceWrapper;
+	/** Many-bodu context.. */
+	ManyBodyContext manyBodyContext;
 
 	/** Subspace context containing rules, a many-body model, and a
 	 *  diagonalization solver for a specific subspace. */
