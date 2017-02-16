@@ -179,7 +179,7 @@ void MainApplication::loadGeometry(){
 //	double atomRadius = 0.038;
 	double atomRadius = 0.01;
 
-	TBTK::AmplitudeSet::Iterator it = model->getAmplitudeSet()->getIterator();
+	TBTK::HoppingAmplitudeSet::Iterator it = model->getHoppingAmplitudeSet()->getIterator();
 	const TBTK::HoppingAmplitude *ha;
 	int counter = 0;
 	while((ha = it.getHA())){

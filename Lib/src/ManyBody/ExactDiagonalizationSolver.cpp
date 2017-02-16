@@ -62,7 +62,7 @@ void ExactDiagonalizationSolver::setupManyBodyModel<BitRegister>(unsigned int su
 
 	subspaceContext.manyBodyModel = new Model();
 	for(unsigned int n = 0; n < fockStateMap->getBasisSize(); n++){
-		AmplitudeSet::Iterator it = singleParticleModel->getAmplitudeSet()->getIterator();
+		HoppingAmplitudeSet::Iterator it = singleParticleModel->getHoppingAmplitudeSet()->getIterator();
 		const HoppingAmplitude *ha;
 		while((ha = it.getHA())){
 			it.searchNextHA();
@@ -134,7 +134,7 @@ void ExactDiagonalizationSolver::setupManyBodyModel<ExtensiveBitRegister>(unsign
 
 	subspaceContext.manyBodyModel = new Model();
 	for(unsigned int n = 0; n < fockStateMap->getBasisSize(); n++){
-		AmplitudeSet::Iterator it = singleParticleModel->getAmplitudeSet()->getIterator();
+		HoppingAmplitudeSet::Iterator it = singleParticleModel->getHoppingAmplitudeSet()->getIterator();
 		const HoppingAmplitude *ha;
 		while((ha = it.getHA())){
 			it.searchNextHA();

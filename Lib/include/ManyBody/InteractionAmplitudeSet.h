@@ -1,7 +1,7 @@
 #ifndef COM_DAFER45_TBTK_INTERACTION_AMPLITUDE_SET
 #define COM_DAFER45_TBTK_INTERACTION_AMPLITUDE_SET
 
-#include "AmplitudeSet.h"
+#include "HoppingAmplitudeSet.h"
 #include "InteractionAmplitude.h"
 
 #include <complex>
@@ -11,7 +11,7 @@ namespace TBTK{
 class InteractionAmplitudeSet{
 public:
 	/** Constructor. */
-	InteractionAmplitudeSet(const AmplitudeSet *amplitudeSet);
+	InteractionAmplitudeSet(const HoppingAmplitudeSet *hoppingAmplitudeSet);
 
 	/** Destructor. */
 	~InteractionAmplitudeSet();
@@ -27,8 +27,8 @@ public:
 		unsigned int n
 	) const;
 private:
-	/** Single-particle AmplitudeSet. */
-	const AmplitudeSet *amplitudeSet;
+	/** Single-particle HoppingAmplitudeSet. */
+	const HoppingAmplitudeSet *hoppingAmplitudeSet;
 
 	/** Interaction amplitudes. */
 	std::vector<InteractionAmplitude> interactionAmplitudes;

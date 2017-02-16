@@ -44,10 +44,10 @@ Model* FileReader::readModel(string name, string path){
 	Model *model = new Model();
 
 	stringstream ss;
-	ss << name << "AmplitudeSet";
+	ss << name << "HoppingAmplitudeSet";
 
-	delete model->amplitudeSet;
-	model->amplitudeSet = readAmplitudeSet(ss.str());
+	delete model->hoppingAmplitudeSet;
+	model->hoppingAmplitudeSet = readHoppingAmplitudeSet(ss.str());
 	model->construct();
 
 	ss.str("");
@@ -76,8 +76,11 @@ Model* FileReader::readModel(string name, string path){
 	return model;
 }
 
-AmplitudeSet* FileReader::readAmplitudeSet(string name, string path){
-	AmplitudeSet *amplitudeSet = NULL;
+HoppingAmplitudeSet* FileReader::readHoppingAmplitudeSet(
+	string name,
+	string path
+){
+	HoppingAmplitudeSet *hoppingAmplitudeSet = NULL;
 
 	try{
 		Exception::dontPrint();
@@ -99,7 +102,7 @@ AmplitudeSet* FileReader::readAmplitudeSet(string name, string path){
 		H5T_class_t typeClassI = datasetI.getTypeClass();
 		TBTKAssert(
 			typeClassI == H5T_INTEGER,
-			"FileReader::readAmplitudeSet()",
+			"FileReader::readHoppingAmplitudeSet()",
 			"Indices data type is not integer.",
 			""
 		);
@@ -109,7 +112,7 @@ AmplitudeSet* FileReader::readAmplitudeSet(string name, string path){
 		H5T_class_t typeClassA = datasetA.getTypeClass();
 		TBTKAssert(
 			typeClassA == H5T_FLOAT,
-			"FileReader::readAmplitudeSet()",
+			"FileReader::readHoppingAmplitudeSet()",
 			"Amplitudes data type is not double.",
 			""
 		);
@@ -133,7 +136,7 @@ AmplitudeSet* FileReader::readAmplitudeSet(string name, string path){
 
 		file.close();
 
-		amplitudeSet = new AmplitudeSet();
+		hoppingAmplitudeSet = new HoppingAmplitudeSet();
 		for(int n = 0; n < numHoppingAmplitudes; n++){
 			vector<int> from;
 			for(int c = 0; c < maxIndexSize; c++){
@@ -152,7 +155,7 @@ AmplitudeSet* FileReader::readAmplitudeSet(string name, string path){
 					to.push_back(i);
 			}
 
-			amplitudeSet->addHA(HoppingAmplitude(amplitudes[n], to, from));
+			hoppingAmplitudeSet->addHA(HoppingAmplitude(amplitudes[n], to, from));
 		}
 	}
 	catch(FileIException error){
@@ -180,7 +183,7 @@ AmplitudeSet* FileReader::readAmplitudeSet(string name, string path){
 		);
 	}
 
-	return amplitudeSet;
+	return hoppingAmplitudeSet;
 }
 
 Geometry* FileReader::readGeometry(Model *model, string name, string path){

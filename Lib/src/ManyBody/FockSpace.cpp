@@ -27,11 +27,11 @@ namespace TBTK{
 
 template<>
 FockSpace<BitRegister>::FockSpace(
-	AmplitudeSet *amplitudeSet,
+	HoppingAmplitudeSet *hoppingAmplitudeSet,
 	Model::Statistics statistics,
 	unsigned int maxParticlesPerState
 ){
-	this->amplitudeSet = amplitudeSet;
+	this->hoppingAmplitudeSet = hoppingAmplitudeSet;
 	this->statistics = statistics;
 
 //	unsigned int maxParticlesPerState;
@@ -54,7 +54,7 @@ FockSpace<BitRegister>::FockSpace(
 	for(int n = maxParticlesPerState; n != 0; n /= 2)
 		numBitsPerState++;
 
-	exponentialDimension = numBitsPerState*amplitudeSet->getBasisSize();
+	exponentialDimension = numBitsPerState*hoppingAmplitudeSet->getBasisSize();
 
 	TBTKAssert(
 		exponentialDimension < BitRegister().getNumBits(),
@@ -82,8 +82,8 @@ FockSpace<BitRegister>::FockSpace(
 		);
 	}
 
-	operators = new LadderOperator<BitRegister>*[amplitudeSet->getBasisSize()];
-	for(int n = 0; n < amplitudeSet->getBasisSize(); n++){
+	operators = new LadderOperator<BitRegister>*[hoppingAmplitudeSet->getBasisSize()];
+	for(int n = 0; n < hoppingAmplitudeSet->getBasisSize(); n++){
 		operators[n] = new LadderOperator<BitRegister>[2]{
 			LadderOperator<BitRegister>(
 				LadderOperator<BitRegister>::Type::Creation,
@@ -128,11 +128,11 @@ FockSpace<BitRegister>::FockSpace(
 
 template<>
 FockSpace<ExtensiveBitRegister>::FockSpace(
-        AmplitudeSet *amplitudeSet,
+        HoppingAmplitudeSet *hoppingAmplitudeSet,
         Model::Statistics statistics,
         unsigned int maxParticlesPerState
 ){
-	this->amplitudeSet = amplitudeSet;
+	this->hoppingAmplitudeSet = hoppingAmplitudeSet;
 	this->statistics = statistics;
 
 //	unsigned int maxParticlesPerState;
@@ -155,7 +155,7 @@ FockSpace<ExtensiveBitRegister>::FockSpace(
 	for(int n = maxParticlesPerState; n != 0; n /= 2)
 		numBitsPerState++;
 
-	exponentialDimension = numBitsPerState*amplitudeSet->getBasisSize();
+	exponentialDimension = numBitsPerState*hoppingAmplitudeSet->getBasisSize();
 
 	vacuumState = new FockState<ExtensiveBitRegister>(
 		exponentialDimension + 1
@@ -178,8 +178,8 @@ FockSpace<ExtensiveBitRegister>::FockSpace(
 		);
 	}
 
-	operators = new LadderOperator<ExtensiveBitRegister>*[amplitudeSet->getBasisSize()];
-	for(int n = 0; n < amplitudeSet->getBasisSize(); n++){
+	operators = new LadderOperator<ExtensiveBitRegister>*[hoppingAmplitudeSet->getBasisSize()];
+	for(int n = 0; n < hoppingAmplitudeSet->getBasisSize(); n++){
 		operators[n] = new LadderOperator<ExtensiveBitRegister>[2]{
 			LadderOperator<ExtensiveBitRegister>(
 				LadderOperator<ExtensiveBitRegister>::Type::Creation,

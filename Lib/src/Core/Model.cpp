@@ -35,13 +35,13 @@ Model::Model(){
 	temperature = 0.;
 	chemicalPotential = 0.;
 	statistics = Statistics::FermiDirac;
-	amplitudeSet = new AmplitudeSet();
+	hoppingAmplitudeSet = new HoppingAmplitudeSet();
 	geometry = NULL;
 	isTalkative = true;
 }
 
 Model::~Model(){
-	delete amplitudeSet;
+	delete hoppingAmplitudeSet;
 	if(geometry != NULL)
 		delete geometry;
 }
@@ -50,7 +50,7 @@ void Model::construct(){
 	if(isTalkative)
 		Streams::out << "Constructing system\n";
 
-	amplitudeSet->construct();
+	hoppingAmplitudeSet->construct();
 
 	int basisSize = getBasisSize();
 

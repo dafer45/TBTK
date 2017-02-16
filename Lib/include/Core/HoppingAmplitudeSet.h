@@ -14,14 +14,14 @@
  */
 
 /** @package TBTKcalc
- *  @file AmplitudeSet.h
+ *  @file HoppingAmplitudeSet.h
  *  @brief HoppingAmplitude container
  *
  *  @author Kristofer Björnson
  */
 
-#ifndef COM_DAFER45_TBTK_AMPLITUDE_SET
-#define COM_DAFER45_TBTK_AMPLITUDE_SET
+#ifndef COM_DAFER45_TBTK_HOPPING_AMPLITUDE_SET
+#define COM_DAFER45_TBTK_HOPPING_AMPLITUDE_SET
 
 #include "HoppingAmplitude.h"
 #include "Streams.h"
@@ -33,26 +33,26 @@
 
 namespace TBTK{
 
-/** An AmplitudeSet is a container for @link HoppingAmplitude HoppingAmplitudes
- *  @endlink. The structure contains the root node for the tree structure in
- *  which the @link HoppingAmplitude HoppingAmplitudes @endlink are stored, as
- *  well as functions for adding and accessing HoppingAmplitudes. Once all
- *  @link HoppingAmplitude HoppingAmplitudes @endlink have been added to the
- *  AmplitudeSet, the construct method has to be called in order to construct
- *  an appropriate Hilbert space. The AmplitudeSet is most importantly used by
- *  the Model to store the Hamiltonian.
- */
-class AmplitudeSet{
+/** A HoppingAmplitudeSet is a container for @link HoppingAmplitude
+ *  HoppingAmplitudes @endlink. The structure contains the root node for the
+ *  tree structure in which the @link HoppingAmplitude HoppingAmplitudes
+ *  @endlink are stored, as well as functions for adding and accessing
+ *  HoppingAmplitudes. Once all @link HoppingAmplitude HoppingAmplitudes
+ *  @endlink have been added to the HoppingAmplitudeSet, the construct method
+ *  has to be called in order to construct an appropriate Hilbert space. The
+ *  HoppingAmplitudeSet is most importantly used by the Model to store the
+ *  Hamiltonian. */
+class HoppingAmplitudeSet{
 public:
 	/** Root node for the tree structure in which HoppingAmplitudes are
 	 *  stored. */
 	TreeNode tree;
 
 	/** Constructor. */
-	AmplitudeSet();
+	HoppingAmplitudeSet();
 
 	/** Destructor. */
-	~AmplitudeSet();
+	~HoppingAmplitudeSet();
 
 	/** Add a single HoppingAmplitude.
 	 *
@@ -111,7 +111,7 @@ public:
 	void reconstructCOO();
 
 	/** Get number of matrix elements in the Hamiltonian corresponding to
-	 *  the AmplitudeSet. */
+	 *  the HoppingAmplitudeSet. */
 	int getNumMatrixElements() const;
 
 	/** Get row indices on COO format. */
@@ -139,11 +139,12 @@ public:
 		/** Get current HoppingAmplitude. */
 		const HoppingAmplitude* getHA() const;
 	private:
-		/** The iterator can only be constructed by the AmplitudeSet. */
-		friend class AmplitudeSet;
+		/** The iterator can only be constructed by the
+		 *  HoppingAmplitudeSet. */
+		friend class HoppingAmplitudeSet;
 
 		/** Private constructor. Limits the ability to construct the
-		 *  iterator to the AmplitudeSet. */
+		 *  iterator to the HoppingAmplitudeSet. */
 		Iterator(const TreeNode *tree);
 
 		/** TreeNode iterator. Implements the actual iteration. */
@@ -152,13 +153,13 @@ public:
 
 	/** Returns an iterator for iterating through @link HoppingAmplitude
 	 *  HoppingAmplitudes @endlink. */
-	AmplitudeSet::Iterator getIterator() const;
+	HoppingAmplitudeSet::Iterator getIterator() const;
 
 	/** Returns an iterator for iterating through @link HoppingAmplitude
 	 *  HoppingAmplitudes @endlink. The iterator is restricted to the
 	 *  subspace for which the 'from'-index starts with the indices in
 	 *  the argument 'subspace'. */
-	AmplitudeSet::Iterator getIterator(const Index &subspace) const;
+	HoppingAmplitudeSet::Iterator getIterator(const Index &subspace) const;
 
 	/** Print tree structure. Mainly for debuging. */
 	void print();
@@ -194,13 +195,15 @@ public:
 		int *maxIndexSize
 	) const;
 private:
-	/** Flag indicating whether the AmplitudeSet have been constructed. */
+	/** Flag indicating whether the HoppingAmplitudeSet have been
+	 *  constructed. */
 	bool isConstructed;
 
-	/** Flag indicating whether the AmplitudeSet have been sorted. */
+	/** Flag indicating whether the HoppingAmplitudeSet have been sorted.
+	 */
 	bool isSorted;
 
-	/** Number of matrix elements in AmplitudeSet. */
+	/** Number of matrix elements in HoppingAmplitudeSet. */
 	int numMatrixElements;
 
 	/** COO format row indices. */
@@ -213,36 +216,38 @@ private:
 	std::complex<double> *cooValues;
 };
 
-inline void AmplitudeSet::addHA(HoppingAmplitude ha){
+inline void HoppingAmplitudeSet::addHA(HoppingAmplitude ha){
 	tree.add(ha);
 }
 
-inline void AmplitudeSet::addHAAndHC(HoppingAmplitude ha){
+inline void HoppingAmplitudeSet::addHAAndHC(HoppingAmplitude ha){
 	tree.add(ha);
 	tree.add(ha.getHermitianConjugate());
 }
 
-inline const std::vector<HoppingAmplitude>* AmplitudeSet::getHAs(Index index) const{
+inline const std::vector<HoppingAmplitude>* HoppingAmplitudeSet::getHAs(
+	Index index
+) const{
 	return tree.getHAs(index);
 }
 
-inline int AmplitudeSet::getBasisIndex(const Index &index) const{
+inline int HoppingAmplitudeSet::getBasisIndex(const Index &index) const{
 	return tree.getBasisIndex(index);
 }
 
-inline int AmplitudeSet::getBasisSize() const{
+inline int HoppingAmplitudeSet::getBasisSize() const{
 	return tree.basisSize;
 }
 
-inline bool AmplitudeSet::isProperSubspace(const Index &subspace){
+inline bool HoppingAmplitudeSet::isProperSubspace(const Index &subspace){
 	return tree.isProperSubspace(subspace);
 }
 
-inline void AmplitudeSet::construct(){
+inline void HoppingAmplitudeSet::construct(){
 	TBTKAssert(
 		!isConstructed,
-		"AmplitudeSet::construct()",
-		"AmplitudeSet is already constructed.",
+		"HoppingAmplitudeSet::construct()",
+		"HoppingAmplitudeSet is already constructed.",
 		""
 	);
 
@@ -250,19 +255,21 @@ inline void AmplitudeSet::construct(){
 	isConstructed = true;
 }
 
-inline bool AmplitudeSet::getIsConstructed() const{
+inline bool HoppingAmplitudeSet::getIsConstructed() const{
 	return isConstructed;
 }
 
-inline std::vector<Index> AmplitudeSet::getIndexList(const Index &pattern){
+inline std::vector<Index> HoppingAmplitudeSet::getIndexList(
+	const Index &pattern
+){
 	return tree.getIndexList(pattern);
 }
 
-inline void AmplitudeSet::sort(){
+inline void HoppingAmplitudeSet::sort(){
 	TBTKAssert(
 		isConstructed,
-		"AmplitudeSet::sort()",
-		"AmplitudeSet has to be constructed first.",
+		"HoppingAmplitudeSet::sort()",
+		"HoppingAmplitudeSet has to be constructed first.",
 		""
 	);
 
@@ -272,15 +279,15 @@ inline void AmplitudeSet::sort(){
 	}
 }
 
-inline const int* AmplitudeSet::getCOORowIndices() const{
+inline const int* HoppingAmplitudeSet::getCOORowIndices() const{
 	return cooRowIndices;
 }
 
-inline const int* AmplitudeSet::getCOOColIndices() const{
+inline const int* HoppingAmplitudeSet::getCOOColIndices() const{
 	return cooColIndices;
 }
 
-inline const std::complex<double>* AmplitudeSet::getCOOValues() const{
+inline const std::complex<double>* HoppingAmplitudeSet::getCOOValues() const{
 	return cooValues;
 }
 

@@ -22,8 +22,8 @@
 
 namespace TBTK{
 
-HALinkedList::HALinkedList(AmplitudeSet &as){
-	AmplitudeSet::Iterator it = as.getIterator();
+HALinkedList::HALinkedList(HoppingAmplitudeSet &as){
+	HoppingAmplitudeSet::Iterator it = as.getIterator();
 	const HoppingAmplitude *ha;
 	int numHoppingAmplitudes = 0;
 	while((ha = it.getHA())){

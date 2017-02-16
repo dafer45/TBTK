@@ -24,7 +24,7 @@
 #ifndef COM_DAFER45_TBTK_FILE_READER
 #define COM_DAFER45_TBTK_FILE_READER
 
-#include "AmplitudeSet.h"
+#include "HoppingAmplitudeSet.h"
 #include "Geometry.h"
 #include "EigenValues.h"
 #include "DOS.h"
@@ -52,9 +52,9 @@ public:
 		std::string path = "/"
 	);
 
-	/** Experimental. Read AmplitudeSet from file. */
-	static AmplitudeSet* readAmplitudeSet(
-		std::string name = "AmplitudeSet",
+	/** Experimental. Read HoppingAmplitudeSet from file. */
+	static HoppingAmplitudeSet* readHoppingAmplitudeSet(
+		std::string name = "HoppingAmplitudeSet",
 		std::string path = "/"
 	);
 

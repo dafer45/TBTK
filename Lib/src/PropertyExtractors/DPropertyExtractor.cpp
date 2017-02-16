@@ -51,13 +51,13 @@ void DPropertyExtractor::saveEigenValues(string path, string filename){
 	fout.close();
 }
 
-void DPropertyExtractor::getTabulatedAmplitudeSet(
+void DPropertyExtractor::getTabulatedHoppingAmplitudeSet(
 	complex<double> **amplitudes,
 	int **indices,
 	int *numHoppingAmplitudes,
 	int *maxIndexSize
 ){
-	dSolver->getModel()->getAmplitudeSet()->tabulate(
+	dSolver->getModel()->getHoppingAmplitudeSet()->tabulate(
 		amplitudes,
 		indices,
 		numHoppingAmplitudes,

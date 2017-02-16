@@ -13,19 +13,19 @@
  * limitations under the License.
  */
 
-/** @file AmplitudeSet.cpp
+/** @file HoppingAmplitudeSet.cpp
  *
  *  @author Kristofer Björnson
  */
 
-#include "AmplitudeSet.h"
+#include "HoppingAmplitudeSet.h"
 #include "TBTKMacros.h"
 
 using namespace std;
 
 namespace TBTK{
 
-AmplitudeSet::AmplitudeSet(){
+HoppingAmplitudeSet::HoppingAmplitudeSet(){
 	isConstructed = false;
 	isSorted = false;
 	numMatrixElements = -1;
@@ -35,7 +35,7 @@ AmplitudeSet::AmplitudeSet(){
 	cooValues = NULL;
 }
 
-AmplitudeSet::~AmplitudeSet(){
+HoppingAmplitudeSet::~HoppingAmplitudeSet(){
 	if(cooRowIndices != NULL)
 		delete [] cooRowIndices;
 	if(cooColIndices != NULL)
@@ -44,10 +44,10 @@ AmplitudeSet::~AmplitudeSet(){
 		delete [] cooValues;
 }
 
-int AmplitudeSet::getNumMatrixElements() const{
+int HoppingAmplitudeSet::getNumMatrixElements() const{
 	TBTKAssert(
 		numMatrixElements != -1,
-		"AmplitudeSet::getNumMatrixElements()",
+		"HoppingAmplitudeSet::getNumMatrixElements()",
 		"COO format not constructed.",
 		"Use Model::constructCOO() to construct COO format."
 	);
@@ -55,22 +55,22 @@ int AmplitudeSet::getNumMatrixElements() const{
 	return numMatrixElements;
 }
 
-void AmplitudeSet::constructCOO(){
+void HoppingAmplitudeSet::constructCOO(){
 	TBTKAssert(
 		isSorted,
-		"AmplitudeSet::constructCOO()",
+		"HoppingAmplitudeSet::constructCOO()",
 		"Amplitudes not sorted.",
 		""
 	);
 	TBTKAssert(
 		numMatrixElements == -1,
-		"AmplitudeSet::constructCOO()",
+		"HoppingAmplitudeSet::constructCOO()",
 		"Hamiltonain on COO format already constructed.",
 		""
 	);
 
 	//Count number of matrix elements
-	AmplitudeSet::Iterator it = getIterator();
+	HoppingAmplitudeSet::Iterator it = getIterator();
 	const HoppingAmplitude *ha;
 	numMatrixElements = 0;
 	int currentCol = -1;
@@ -112,11 +112,11 @@ void AmplitudeSet::constructCOO(){
 			currentRow = row;
 			currentMatrixElement++;
 
-			//Note: The sorted AmplitudeSet is in ordered column
-			//major order, while the COO format is in row major
-			//order. The Hermitian conjugat eis therefore taken
-			//here. (That is, conjugate and intercahnge of rows and
-			// columns is intentional)
+			//Note: The sorted HoppingAmplitudeSet is in ordered
+			//column major order, while the COO format is in row
+			//major order. The Hermitian conjugat eis therefore
+			//taken here. (That is, conjugate and intercahnge of
+			//rows and columns is intentional)
 			cooRowIndices[currentMatrixElement] = col;
 			cooColIndices[currentMatrixElement] = row;
 			cooValues[currentMatrixElement] = conj(amplitude);
@@ -129,7 +129,7 @@ void AmplitudeSet::constructCOO(){
 	}
 }
 
-void AmplitudeSet::destructCOO(){
+void HoppingAmplitudeSet::destructCOO(){
 	numMatrixElements = -1;
 	if(cooRowIndices != NULL){
 		delete [] cooRowIndices;
@@ -145,46 +145,48 @@ void AmplitudeSet::destructCOO(){
 	}
 }
 
-void AmplitudeSet::reconstructCOO(){
+void HoppingAmplitudeSet::reconstructCOO(){
 	if(numMatrixElements != -1){
 		destructCOO();
 		constructCOO();
 	}
 }
 
-void AmplitudeSet::print(){
+void HoppingAmplitudeSet::print(){
 	tree.print();
 }
 
-AmplitudeSet::Iterator AmplitudeSet::getIterator() const{
-	return AmplitudeSet::Iterator(&tree);
+HoppingAmplitudeSet::Iterator HoppingAmplitudeSet::getIterator() const{
+	return HoppingAmplitudeSet::Iterator(&tree);
 }
 
-AmplitudeSet::Iterator AmplitudeSet::getIterator(const Index &subspace) const{
-	return AmplitudeSet::Iterator(tree.getSubTree(subspace));
+HoppingAmplitudeSet::Iterator HoppingAmplitudeSet::getIterator(
+	const Index &subspace
+) const{
+	return HoppingAmplitudeSet::Iterator(tree.getSubTree(subspace));
 }
 
-AmplitudeSet::Iterator::Iterator(const TreeNode* tree){
+HoppingAmplitudeSet::Iterator::Iterator(const TreeNode* tree){
 	it = new TreeNode::Iterator(tree);
 }
 
-AmplitudeSet::Iterator::~Iterator(){
+HoppingAmplitudeSet::Iterator::~Iterator(){
 	delete it;
 }
 
-void AmplitudeSet::Iterator::reset(){
+void HoppingAmplitudeSet::Iterator::reset(){
 	it->reset();
 }
 
-void AmplitudeSet::Iterator::searchNextHA(){
+void HoppingAmplitudeSet::Iterator::searchNextHA(){
 	it->searchNextHA();
 }
 
-const HoppingAmplitude* AmplitudeSet::Iterator::getHA() const{
+const HoppingAmplitude* HoppingAmplitudeSet::Iterator::getHA() const{
 	return it->getHA();
 }
 
-void AmplitudeSet::tabulate(
+void HoppingAmplitudeSet::tabulate(
 	complex<double> **amplitudes,
 	int **table,
 	int *numHoppingAmplitudes,

@@ -24,7 +24,7 @@
 #ifndef COM_DAFER45_TBTK_FOCK_SPACE
 #define COM_DAFER45_TBTK_FOCK_SPACE
 
-#include "AmplitudeSet.h"
+#include "HoppingAmplitudeSet.h"
 #include "BitRegister.h"
 #include "ExtensiveBitRegister.h"
 #include "FockState.h"
@@ -43,7 +43,7 @@ class FockSpace{
 public:
 	/** Constructor. */
 	FockSpace(
-		AmplitudeSet *amplitudeSet,
+		HoppingAmplitudeSet *hoppingAmplitudeSet,
 		Model::Statistics statistics,
 		unsigned int maxParticlesPerState
 	);
@@ -97,7 +97,7 @@ public:
 	) const;
 
 	/** Get amplitude set. */
-	const AmplitudeSet* getAmplitudeSet() const;
+	const HoppingAmplitudeSet* getHoppingAmplitudeSet() const;
 
 	/** Returns the many-body Hilbert space index corresponding to the
 	 *  given FockState. */
@@ -127,8 +127,8 @@ private:
 	/** Number of bits needed to encode all states. */
 	unsigned int exponentialDimension;
 
-	/** AmplitudeSet holding the single particle representation. */
-	AmplitudeSet *amplitudeSet;
+	/** HoppingAmplitudeSet holding the single particle representation. */
+	HoppingAmplitudeSet *hoppingAmplitudeSet;
 
 	/** Vacuum state used as template when creating new states. */
 	FockState<BIT_REGISTER> *vacuumState;
@@ -148,7 +148,7 @@ private:
 
 template<typename BIT_REGISTER>
 FockSpace<BIT_REGISTER>::~FockSpace(){
-	for(int n = 0; n < amplitudeSet->getBasisSize(); n++)
+	for(int n = 0; n < hoppingAmplitudeSet->getBasisSize(); n++)
 		delete [] operators[n];
 	delete [] operators;
 }
@@ -184,7 +184,7 @@ unsigned int FockSpace<BIT_REGISTER>::getNumParticles(
 	const FockState<BIT_REGISTER> &fockState,
 	const Index &index
 ) const{
-	return operators[amplitudeSet->getBasisIndex(index)][0].getNumParticles(fockState);
+	return operators[hoppingAmplitudeSet->getBasisIndex(index)][0].getNumParticles(fockState);
 }
 
 template<typename BIT_REGISTER>
@@ -193,7 +193,7 @@ unsigned int FockSpace<BIT_REGISTER>::getSumParticles(
 	const Index &pattern
 ) const{
 	if(pattern.isPatternIndex()){
-		std::vector<Index> indexList = amplitudeSet->getIndexList(pattern);
+		std::vector<Index> indexList = hoppingAmplitudeSet->getIndexList(pattern);
 
 		unsigned int numParticles = 0;
 		for(unsigned int n = 0; n < indexList.size(); n++){
@@ -326,8 +326,8 @@ FockStateMap::FockStateMap<BIT_REGISTER>* FockSpace<BIT_REGISTER>::createFockSta
 }
 
 template<typename BIT_REGISTER>
-const AmplitudeSet* FockSpace<BIT_REGISTER>::getAmplitudeSet() const{
-	return amplitudeSet;
+const HoppingAmplitudeSet* FockSpace<BIT_REGISTER>::getHoppingAmplitudeSet() const{
+	return hoppingAmplitudeSet;
 }
 
 /*template<typename BIT_REGISTER>

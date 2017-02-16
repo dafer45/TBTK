@@ -53,8 +53,9 @@ public:
 		std::string filename = "EV.dat"
 	);
 
-	/** Experimental. Extracts a tabulated version of the AmplitudeSet. */
-	void getTabulatedAmplitudeSet(
+	/** Experimental. Extracts a tabulated version of the
+	 *  HoppingAmplitudeSet. */
+	void getTabulatedHoppingAmplitudeSet(
 		std::complex<double> **amplitudes,
 		int **indices,
 		int *numHoppingAmplitudes,

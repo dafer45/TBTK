@@ -178,7 +178,7 @@ int main(int argc, char **argv){
 	for(int n = 0; n < numSamples; n++){
 		//Get new random index
 		int b = rand()%model->getBasisSize();
-		Index index = model->getAmplitudeSet()->tree.getPhysicalIndex(b);
+		Index index = model->getHoppingAmplitudeSet()->tree.getPhysicalIndex(b);
 
 		//Ensure index conforms to index pattern
 		if(pattern != NULL){

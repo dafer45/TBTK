@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "AmplitudeSet.h"
+#include "HoppingAmplitudeSet.h"
 #include "Streams.h"
 #include "TBTKMacros.h"
 #include "TimeEvolver.h"
@@ -103,11 +103,11 @@ void TimeEvolver::run(){
 		for(int n = 0; n < basisSize*basisSize; n++)
 			dPsi[n] = 0.;
 
-		AmplitudeSet::Iterator it = model->getAmplitudeSet()->getIterator();
+		HoppingAmplitudeSet::Iterator it = model->getHoppingAmplitudeSet()->getIterator();
 		const HoppingAmplitude *ha;
 		while((ha = it.getHA())){
-			int fromIndex = model->getAmplitudeSet()->getBasisIndex(ha->fromIndex);
-			int toIndex = model->getAmplitudeSet()->getBasisIndex(ha->toIndex);
+			int fromIndex = model->getHoppingAmplitudeSet()->getBasisIndex(ha->fromIndex);
+			int toIndex = model->getHoppingAmplitudeSet()->getBasisIndex(ha->toIndex);
 			complex<double> amplitude = ha->getAmplitude();
 			#pragma omp parallel for
 			for(int n = 0; n < basisSize; n++){

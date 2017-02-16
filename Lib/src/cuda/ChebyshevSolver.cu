@@ -101,19 +101,19 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 		""
 	);
 
-	AmplitudeSet *amplitudeSet = model->getAmplitudeSet();
+	HoppingAmplitudeSet *hoppingAmplitudeSet = model->getHoppingAmplitudeSet();
 
-	int fromBasisIndex = amplitudeSet->getBasisIndex(from);
-	int *coefficientMap = new int[amplitudeSet->getBasisSize()];
-	for(int n = 0; n < amplitudeSet->getBasisSize(); n++)
+	int fromBasisIndex = hoppingAmplitudeSet->getBasisIndex(from);
+	int *coefficientMap = new int[hoppingAmplitudeSet->getBasisSize()];
+	for(int n = 0; n < hoppingAmplitudeSet->getBasisSize(); n++)
 		coefficientMap[n] = -1;
 	for(int n = 0; n < to.size(); n++)
-		coefficientMap[amplitudeSet->getBasisIndex(to.at(n))] = n;
+		coefficientMap[hoppingAmplitudeSet->getBasisIndex(to.at(n))] = n;
 
 	if(isTalkative){
 		Streams::out << "ChebyshevSolver::calculateCoefficientsGPU\n";
 		Streams::out << "\tFrom Index: " << fromBasisIndex << "\n";
-		Streams::out << "\tBasis size: " << amplitudeSet->getBasisSize() << "\n";
+		Streams::out << "\tBasis size: " << hoppingAmplitudeSet->getBasisSize() << "\n";
 		Streams::out << "\tUsing damping: ";
 		if(damping != NULL)
 			Streams::out << "Yes\n";
@@ -121,10 +121,10 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 			Streams::out << "No\n";
 	}
 
-	complex<double> *jIn1 = new complex<double>[amplitudeSet->getBasisSize()];
-	complex<double> *jIn2 = new complex<double>[amplitudeSet->getBasisSize()];
+	complex<double> *jIn1 = new complex<double>[hoppingAmplitudeSet->getBasisSize()];
+	complex<double> *jIn2 = new complex<double>[hoppingAmplitudeSet->getBasisSize()];
 	complex<double> *jTemp = NULL;
-	for(int n = 0; n < amplitudeSet->getBasisSize(); n++){
+	for(int n = 0; n < hoppingAmplitudeSet->getBasisSize(); n++){
 		jIn1[n] = 0.;
 		jIn2[n] = 0.;
 	}
@@ -132,14 +132,14 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 	//Set up initial state (|j0>)
 	jIn1[fromBasisIndex] = 1.;
 
-	for(int n = 0; n < amplitudeSet->getBasisSize(); n++)
+	for(int n = 0; n < hoppingAmplitudeSet->getBasisSize(); n++)
 		if(coefficientMap[n] != -1)
 			coefficients[coefficientMap[n]*numCoefficients] = jIn1[n];
 
-	const int numHoppingAmplitudes = amplitudeSet->getNumMatrixElements();
-	const int *cooHARowIndices_host = amplitudeSet->getCOORowIndices();
-	const int *cooHAColIndices_host = amplitudeSet->getCOOColIndices();
-	const complex<double> *cooHAValues_host = amplitudeSet->getCOOValues();
+	const int numHoppingAmplitudes = hoppingAmplitudeSet->getNumMatrixElements();
+	const int *cooHARowIndices_host = hoppingAmplitudeSet->getCOORowIndices();
+	const int *cooHAColIndices_host = hoppingAmplitudeSet->getCOOColIndices();
+	const complex<double> *cooHAValues_host = hoppingAmplitudeSet->getCOOValues();
 
 	//Initialize GPU
 	complex<double> *jIn1_device;
@@ -152,16 +152,16 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 	int *coefficientMap_device;
 	complex<double> *damping_device = NULL;
 
-	int totalMemoryRequirement = amplitudeSet->getBasisSize()*sizeof(complex<double>);
-	totalMemoryRequirement += amplitudeSet->getBasisSize()*sizeof(complex<double>);
+	int totalMemoryRequirement = hoppingAmplitudeSet->getBasisSize()*sizeof(complex<double>);
+	totalMemoryRequirement += hoppingAmplitudeSet->getBasisSize()*sizeof(complex<double>);
 	totalMemoryRequirement += numHoppingAmplitudes*sizeof(int);
-	totalMemoryRequirement += amplitudeSet->getBasisSize()*sizeof(int);
+	totalMemoryRequirement += hoppingAmplitudeSet->getBasisSize()*sizeof(int);
 	totalMemoryRequirement += numHoppingAmplitudes*sizeof(int);
 	totalMemoryRequirement += numHoppingAmplitudes*sizeof(complex<double>);
 	totalMemoryRequirement += to.size()*numCoefficients*sizeof(complex<double>);
-	totalMemoryRequirement += amplitudeSet->getBasisSize()*sizeof(int);
+	totalMemoryRequirement += hoppingAmplitudeSet->getBasisSize()*sizeof(int);
 	if(damping != NULL)
-		totalMemoryRequirement += amplitudeSet->getBasisSize()*sizeof(complex<double>);
+		totalMemoryRequirement += hoppingAmplitudeSet->getBasisSize()*sizeof(complex<double>);
 	if(isTalkative){
 		Streams::out << "\tCUDA memory requirement: ";
 		if(totalMemoryRequirement < 1024)
@@ -175,7 +175,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 	TBTKAssert(
 		cudaMalloc(
 			(void**)&jIn1_device,
-			amplitudeSet->getBasisSize()*sizeof(complex<double>)
+			hoppingAmplitudeSet->getBasisSize()*sizeof(complex<double>)
 		) == cudaSuccess,
 		"ChebyshevSOlver::calculateCoefficientsGPU()",
 		"CUDA malloc error while allocating jIn1_device.",
@@ -184,7 +184,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 	TBTKAssert(
 		cudaMalloc(
 			(void**)&jIn2_device,
-			amplitudeSet->getBasisSize()*sizeof(complex<double>)
+			hoppingAmplitudeSet->getBasisSize()*sizeof(complex<double>)
 		) == cudaSuccess,
 		"ChebyshevSolver::calculateCoefficientsGPU()",
 		"CUDA malloc error while allocating jIn2_device.",
@@ -202,7 +202,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 	TBTKAssert(
 		cudaMalloc(
 			(void**)&csrHARowIndices_device,
-			(amplitudeSet->getBasisSize()+1)*sizeof(int)
+			(hoppingAmplitudeSet->getBasisSize()+1)*sizeof(int)
 		) == cudaSuccess,
 		"ChebyshevSolver::calculateCoefficientsGPU()",
 		"CUDA malloc error while allocating csrHARowIndices_device.",
@@ -238,7 +238,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 	TBTKAssert(
 		cudaMalloc(
 			(void**)&coefficientMap_device,
-			amplitudeSet->getBasisSize()*sizeof(int)
+			hoppingAmplitudeSet->getBasisSize()*sizeof(int)
 		) == cudaSuccess,
 		"ChebyshevSolver::calculateCoefficientsGPU()",
 		"CUDA malloc error while allocating coefficientMap_device.",
@@ -248,7 +248,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 		TBTKAssert(
 			cudaMalloc(
 				(void**)&damping_device,
-				amplitudeSet->getBasisSize()*sizeof(complex<double>)
+				hoppingAmplitudeSet->getBasisSize()*sizeof(complex<double>)
 			) == cudaSuccess,
 			"ChebyshevSolver::calculateCoefficientsGPU()",
 			"CUDA malloc error while allocating damping_device.",
@@ -260,7 +260,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 		cudaMemcpy(
 			jIn1_device,
 			jIn1,
-			amplitudeSet->getBasisSize()*sizeof(complex<double>),
+			hoppingAmplitudeSet->getBasisSize()*sizeof(complex<double>),
 			cudaMemcpyHostToDevice
 		) == cudaSuccess,
 		"ChebyshevSolver::calculateCoefficientsGPU()",
@@ -271,7 +271,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 		cudaMemcpy(
 			jIn2_device,
 			jIn2,
-			amplitudeSet->getBasisSize()*sizeof(complex<double>),
+			hoppingAmplitudeSet->getBasisSize()*sizeof(complex<double>),
 			cudaMemcpyHostToDevice
 		) == cudaSuccess,
 		"ChebyshevSolver::calculateCoefficientsGPU()",
@@ -326,7 +326,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 		cudaMemcpy(
 			coefficientMap_device,
 			coefficientMap,
-			amplitudeSet->getBasisSize()*sizeof(int),
+			hoppingAmplitudeSet->getBasisSize()*sizeof(int),
 			cudaMemcpyHostToDevice
 		) == cudaSuccess,
 		"ChebyshevSolver::calculateCoefficientsGPU()",
@@ -338,7 +338,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 			cudaMemcpy(
 				damping_device,
 				damping,
-				amplitudeSet->getBasisSize()*sizeof(complex<double>),
+				hoppingAmplitudeSet->getBasisSize()*sizeof(complex<double>),
 				cudaMemcpyHostToDevice
 			) == cudaSuccess,
 			"ChebyshevSolver::calculateCoefficientsGPU()",
@@ -387,7 +387,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 			handle,
 			cooHARowIndices_device,
 			numHoppingAmplitudes,
-			amplitudeSet->getBasisSize(),
+			hoppingAmplitudeSet->getBasisSize(),
 			csrHARowIndices_device,
 			CUSPARSE_INDEX_BASE_ZERO
 		) == CUSPARSE_STATUS_SUCCESS,
@@ -398,7 +398,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 
 	//Calculate |j1>
 	int block_size = 1024;
-	int num_blocks = amplitudeSet->getBasisSize()/block_size + (amplitudeSet->getBasisSize()%block_size == 0 ? 0:1);
+	int num_blocks = hoppingAmplitudeSet->getBasisSize()/block_size + (hoppingAmplitudeSet->getBasisSize()%block_size == 0 ? 0:1);
 	if(isTalkative){
 		Streams::out << "\tCUDA Block size: " << block_size << "\n";
 		Streams::out << "\tCUDA Num blocks: " << num_blocks << "\n";
@@ -409,8 +409,8 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 		cusparseZcsrmv(
 			handle,
 			CUSPARSE_OPERATION_NON_TRANSPOSE,
-			amplitudeSet->getBasisSize(),
-			amplitudeSet->getBasisSize(),
+			hoppingAmplitudeSet->getBasisSize(),
+			hoppingAmplitudeSet->getBasisSize(),
 			numHoppingAmplitudes,
 			(cuDoubleComplex*)&multiplier,
 			descr,
@@ -427,7 +427,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 	);
 
 	extractCoefficients <<< num_blocks, block_size >>> ((cuDoubleComplex*)jIn2_device,
-								amplitudeSet->getBasisSize(),
+								hoppingAmplitudeSet->getBasisSize(),
 								(cuDoubleComplex*)coefficients_device,
 								1,
 								coefficientMap_device,
@@ -446,8 +446,8 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 			cusparseZcsrmv(
 				handle,
 				CUSPARSE_OPERATION_NON_TRANSPOSE,
-				amplitudeSet->getBasisSize(),
-				amplitudeSet->getBasisSize(),
+				hoppingAmplitudeSet->getBasisSize(),
+				hoppingAmplitudeSet->getBasisSize(),
 				numHoppingAmplitudes,
 				(cuDoubleComplex*)&multiplier,
 				descr,
@@ -464,7 +464,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 		);
 
 		extractCoefficients <<< num_blocks, block_size >>> ((cuDoubleComplex*)jIn2_device,
-									amplitudeSet->getBasisSize(),
+									hoppingAmplitudeSet->getBasisSize(),
 									(cuDoubleComplex*)coefficients_device,
 									n,
 									coefficientMap_device,

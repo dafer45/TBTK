@@ -29,7 +29,7 @@ ManyBodyContext::ManyBodyContext(FockSpace<BitRegister> *fockSpace
 ) :
 	brFockSpace(fockSpace),
 	ebrFockSpace(NULL),
-	interactionAmplitudeSet(fockSpace->getAmplitudeSet())
+	interactionAmplitudeSet(fockSpace->getHoppingAmplitudeSet())
 {
 /*	brFockSpace = make_shared<FockSpace<BitRegister>>(fockSpace);
 	ebrFockSpace = make_shared<FockSpace<ExtensiveBitRegister>>(NULL);*/
@@ -39,7 +39,7 @@ ManyBodyContext::ManyBodyContext(FockSpace<ExtensiveBitRegister> *fockSpace
 ) :
 	brFockSpace(NULL),
 	ebrFockSpace(fockSpace),
-	interactionAmplitudeSet(fockSpace->getAmplitudeSet())
+	interactionAmplitudeSet(fockSpace->getHoppingAmplitudeSet())
 {
 /*	brFockSpace = make_shared<FockSpace<BitRegister>>(NULL);
 	ebrFockSpace = make_shared<FockSpace<ExtensiveBitRegister>>(fockSpace);*/

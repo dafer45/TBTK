@@ -28,7 +28,7 @@
 #ifndef COM_DAFER45_TBTK_HA_LINKED_LIST
 #define COM_DAFER45_TBTK_HA_LINKED_LIST
 
-#include "AmplitudeSet.h"
+#include "HoppingAmplitudeSet.h"
 #include <complex>
 
 namespace TBTK{
@@ -45,7 +45,7 @@ public:
 
 class HALinkedList{
 public:
-	HALinkedList(AmplitudeSet &as);
+	HALinkedList(HoppingAmplitudeSet &as);
 	~HALinkedList();
 
 	void addLinkedList(int from);

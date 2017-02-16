@@ -23,7 +23,7 @@
 #ifndef COM_DAFER45_TBTK_MODEL
 #define COM_DAFER45_TBTK_MODEL
 
-#include "AmplitudeSet.h"
+#include "HoppingAmplitudeSet.h"
 
 #include <complex>
 #include <fstream>
@@ -35,8 +35,8 @@ class Geometry;
 class FileReader;
 
 /** The Model conatins all information about the Hamiltonian. It is currently a
- *  wrapper for AmplitudeSet, but can in the future come to be extended with
- *  further properties.
+ *  wrapper for HoppingAmplitudeSet, but can in the future come to be extended
+ *  with further properties.
  */
 class Model{
 public:
@@ -73,9 +73,10 @@ public:
 	void destructCOO();
 
 	/** To be called when HoppingAmplitudes need to be reevaluated. This is
-	 *  required if the AmplitudeSet in addition to its standard storage
-	 *  format also utilizes a more effective format such as COO format and
-	 *  some HoppingAmplitudes are evaluated through the use of callbacks. */
+	 *  required if the HoppingAmplitudeSet in addition to its standard
+	 *  storage format also utilizes a more effective format such as COO
+	 *  format and some HoppingAmplitudes are evaluated through the use of
+	 *  callbacks. */
 	void reconstructCOO();
 
 	/** Set temperature. */
@@ -100,7 +101,7 @@ public:
 	Statistics getStatistics();
 
 	/** Get amplitude set. */
-	AmplitudeSet* getAmplitudeSet();
+	HoppingAmplitudeSet* getHoppingAmplitudeSet();
 
 	/** Create geometry. */
 	void createGeometry(int dimensions, int numSpecifiers = 0);
@@ -121,9 +122,9 @@ private:
 	/** Statistics (Fermi-Dirac or Bose-Einstein). */
 	Statistics statistics;
 
-	/** AmplitudeSet containing @link HoppingAmplitude HoppingAmplitudes
-	 *  @endlink.*/
-	AmplitudeSet *amplitudeSet;
+	/** HoppingAmplitudeSet containing @link HoppingAmplitude
+	 *  HoppingAmplitudes @endlink.*/
+	HoppingAmplitudeSet *hoppingAmplitudeSet;
 
 	/** Geometry. */
 	Geometry *geometry;
@@ -137,36 +138,36 @@ private:
 };
 
 inline void Model::addHA(HoppingAmplitude ha){
-	amplitudeSet->addHA(ha);
+	hoppingAmplitudeSet->addHA(ha);
 }
 
 inline void Model::addHAAndHC(HoppingAmplitude ha){
-	amplitudeSet->addHAAndHC(ha);
+	hoppingAmplitudeSet->addHAAndHC(ha);
 }
 
 inline int Model::getBasisSize(){
-	return amplitudeSet->getBasisSize();
+	return hoppingAmplitudeSet->getBasisSize();
 }
 
 inline int Model::getBasisIndex(Index index){
-	return amplitudeSet->getBasisIndex(index);
+	return hoppingAmplitudeSet->getBasisIndex(index);
 }
 
 inline bool Model::getIsConstructed(){
-	return amplitudeSet->getIsConstructed();
+	return hoppingAmplitudeSet->getIsConstructed();
 }
 
 inline void Model::constructCOO(){
-	amplitudeSet->sort();
-	amplitudeSet->constructCOO();
+	hoppingAmplitudeSet->sort();
+	hoppingAmplitudeSet->constructCOO();
 }
 
 inline void Model::destructCOO(){
-	amplitudeSet->destructCOO();
+	hoppingAmplitudeSet->destructCOO();
 }
 
 inline void Model::reconstructCOO(){
-	amplitudeSet->reconstructCOO();
+	hoppingAmplitudeSet->reconstructCOO();
 }
 
 inline void Model::setTemperature(double temperature){
@@ -193,8 +194,8 @@ inline Model::Statistics Model::getStatistics(){
 	return statistics;
 }
 
-inline AmplitudeSet* Model::getAmplitudeSet(){
-	return amplitudeSet;
+inline HoppingAmplitudeSet* Model::getHoppingAmplitudeSet(){
+	return hoppingAmplitudeSet;
 }
 
 inline Geometry* Model::getGeometry(){

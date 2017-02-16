@@ -59,9 +59,9 @@ void FileWriter::writeModel(Model *model, string name, string path){
 	init();
 
 	stringstream ss;
-	ss << name << "AmplitudeSet";
+	ss << name << "HoppingAmplitudeSet";
 
-	writeAmplitudeSet(model->getAmplitudeSet(), ss.str(), path);
+	writeHoppingAmplitudeSet(model->getHoppingAmplitudeSet(), ss.str(), path);
 
 	ss.str("");
 	ss << name << "Geometry";
@@ -84,8 +84,8 @@ void FileWriter::writeModel(Model *model, string name, string path){
 	writeAttributes(intAttributes, intAttributeNames, NUM_INT_ATTRIBUTES, ss.str());
 }
 
-void FileWriter::writeAmplitudeSet(
-	AmplitudeSet *amplitudeSet,
+void FileWriter::writeHoppingAmplitudeSet(
+	HoppingAmplitudeSet *hoppingAmplitudeSet,
 	string name,
 	string path
 ){
@@ -95,7 +95,7 @@ void FileWriter::writeAmplitudeSet(
 	int *indices;
 	int numHoppingAmplitudes;
 	int maxIndexSize;
-	amplitudeSet->tabulate(&amplitudes, &indices, &numHoppingAmplitudes, &maxIndexSize);
+	hoppingAmplitudeSet->tabulate(&amplitudes, &indices, &numHoppingAmplitudes, &maxIndexSize);
 
 	const int INDEX_RANK = 3;
 	hsize_t indexDims[INDEX_RANK];
@@ -139,7 +139,7 @@ void FileWriter::writeAmplitudeSet(
 	catch(FileIException error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
-			"FileWriter::writeAmplitudeSet()",
+			"FileWriter::writeHoppingAmplitudeSet()",
 			"While writing to " << name << ".",
 			""
 		);
@@ -147,7 +147,7 @@ void FileWriter::writeAmplitudeSet(
 	catch(DataSetIException error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
-			"FileWriter::writeAmplitudeSet()",
+			"FileWriter::writeHoppingAmplitudeSet()",
 			"While writing to " << name << ".",
 			""
 		);
@@ -155,7 +155,7 @@ void FileWriter::writeAmplitudeSet(
 	catch(DataSpaceIException error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
-			"FileWriter::writeAmplitudeSet()",
+			"FileWriter::writeHoppingAmplitudeSet()",
 			"While writing to " << name << ".",
 			""
 		);

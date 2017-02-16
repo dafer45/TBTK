@@ -25,7 +25,7 @@
 #define COM_DAFER45_TBTK_FILE_WRITER
 
 #include "Model.h"
-#include "AmplitudeSet.h"
+#include "HoppingAmplitudeSet.h"
 #include "Geometry.h"
 #include "EigenValues.h"
 #include "DOS.h"
@@ -56,10 +56,10 @@ public:
 		std::string path = "/"
 	);
 
-	/** Experimental. Write AmplitudeSet to file. */
-	static void writeAmplitudeSet(
-		AmplitudeSet *amplitudeSet,
-		std::string name = "AmplitudeSet",
+	/** Experimental. Write HoppingAmplitudeSet to file. */
+	static void writeHoppingAmplitudeSet(
+		HoppingAmplitudeSet *hoppingAmplitudeSet,
+		std::string name = "HoppingAmplitudeSet",
 		std::string path = "/"
 	);
 
