@@ -35,18 +35,11 @@ void ExactDiagonalizationSolver::run(unsigned int subspace){
 		subspaceContext.dSolver = new DiagonalizationSolver();
 		subspaceContext.dSolver->setModel(subspaceContext.manyBodyModel);
 		subspaceContext.dSolver->run();
-
-/*		DPropertyExtractor pe(subspaceContext.dSolver);
-		pe.setEnergyWindow(-10., 10., 1000);
-		Property::DOS *dos = pe.calculateDOS();
-		FileWriter::writeDOS(dos);
-		delete dos;*/
 	}
 }
 
 template<>
 void ExactDiagonalizationSolver::setupManyBodyModel<BitRegister>(unsigned int subspace){
-//	FockSpace<BitRegister> *fockSpace = manyBodyContext.getFockSpaceBitRegister();
 	FockSpace<BitRegister> *fockSpace = model->getManyBodyContext()->getFockSpaceBitRegister();
 	LadderOperator<BitRegister> **operators = fockSpace->getOperators();
 	SubspaceContext &subspaceContext = subspaceContexts.at(subspace);
@@ -81,13 +74,11 @@ void ExactDiagonalizationSolver::setupManyBodyModel<BitRegister>(unsigned int su
 			));
 		}
 
-//		for(unsigned int c = 0; c < interactionAmplitudeSet->getNumInteractionAmplitudes(); c++){
 		for(unsigned int c = 0; c < model->getManyBodyContext()->getInteractionAmplitudeSet()->getNumInteractionAmplitudes(); c++){
 			FockState<BitRegister> fockState = fockStateMap->getFockState(n);
 
 			int from = fockStateMap->getBasisIndex(fockState);
 
-//			InteractionAmplitude ia = interactionAmplitudeSet->getInteractionAmplitude(c);
 			InteractionAmplitude ia = model->getManyBodyContext()->getInteractionAmplitudeSet()->getInteractionAmplitude(c);
 			for(int k =  ia.getNumAnnihilationOperators() - 1; k >= 0; k--){
 				operators[model->getBasisIndex(ia.getAnnihilationOperatorIndex(k))][1]*fockState;
@@ -121,7 +112,6 @@ void ExactDiagonalizationSolver::setupManyBodyModel<BitRegister>(unsigned int su
 
 template<>
 void ExactDiagonalizationSolver::setupManyBodyModel<ExtensiveBitRegister>(unsigned int subspace){
-//	FockSpace<ExtensiveBitRegister> *fockSpace = manyBodyContext.getFockSpaceExtensiveBitRegister();
 	FockSpace<ExtensiveBitRegister> *fockSpace = model->getManyBodyContext()->getFockSpaceExtensiveBitRegister();
 	LadderOperator<ExtensiveBitRegister> **operators = fockSpace->getOperators();
 	SubspaceContext &subspaceContext = subspaceContexts.at(subspace);
@@ -156,13 +146,11 @@ void ExactDiagonalizationSolver::setupManyBodyModel<ExtensiveBitRegister>(unsign
 			));
 		}
 
-//		for(unsigned int c = 0; c < interactionAmplitudeSet->getNumInteractionAmplitudes(); c++){
 		for(unsigned int c = 0; c < model->getManyBodyContext()->getInteractionAmplitudeSet()->getNumInteractionAmplitudes(); c++){
 			FockState<ExtensiveBitRegister> fockState = fockStateMap->getFockState(n);
 
 			int from = fockStateMap->getBasisIndex(fockState);
 
-//			InteractionAmplitude ia = interactionAmplitudeSet->getInteractionAmplitude(c);
 			InteractionAmplitude ia = model->getManyBodyContext()->getInteractionAmplitudeSet()->getInteractionAmplitude(c);
 			for(int k =  ia.getNumAnnihilationOperators() - 1; k >= 0; k--){
 				operators[model->getBasisIndex(ia.getAnnihilationOperatorIndex(k))][1]*fockState;
@@ -195,8 +183,6 @@ void ExactDiagonalizationSolver::setupManyBodyModel<ExtensiveBitRegister>(unsign
 }
 
 void ExactDiagonalizationSolver::setupManyBodyModel(unsigned int subspace){
-	model->getManyBodyContext();
-//	if(manyBodyContext.wrapsBitRegister())
 	if(model->getManyBodyContext()->wrapsBitRegister())
 		setupManyBodyModel<BitRegister>(subspace);
 	else
