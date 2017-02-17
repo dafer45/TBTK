@@ -33,7 +33,7 @@
 #include "HoppingAmplitudeSet.h"
 #include "LadderOperator.h"
 #include "LookupTableMap.h"
-#include "Model.h"
+//#include "Model.h"
 #include "Statistics.h"
 #include "WrapperRule.h"
 
@@ -44,7 +44,7 @@ class FockSpace{
 public:
 	/** Constructor. */
 	FockSpace(
-		HoppingAmplitudeSet *hoppingAmplitudeSet,
+		const HoppingAmplitudeSet *hoppingAmplitudeSet,
 		Statistics statistics,
 		unsigned int maxParticlesPerState
 	);
@@ -129,7 +129,7 @@ private:
 	unsigned int exponentialDimension;
 
 	/** HoppingAmplitudeSet holding the single particle representation. */
-	HoppingAmplitudeSet *hoppingAmplitudeSet;
+	const HoppingAmplitudeSet *hoppingAmplitudeSet;
 
 	/** Vacuum state used as template when creating new states. */
 	FockState<BIT_REGISTER> *vacuumState;

@@ -91,7 +91,7 @@ public:
 	bool getIsConstructed() const;
 
 	/** Generate a list of indices satisfying the specified pattern. */
-	std::vector<Index> getIndexList(const Index &pattern);
+	std::vector<Index> getIndexList(const Index &pattern) const;
 
 	/** Sort HoppingAmplitudes. */
 	void sort();
@@ -261,7 +261,7 @@ inline bool HoppingAmplitudeSet::getIsConstructed() const{
 
 inline std::vector<Index> HoppingAmplitudeSet::getIndexList(
 	const Index &pattern
-){
+) const{
 	return tree.getIndexList(pattern);
 }
 

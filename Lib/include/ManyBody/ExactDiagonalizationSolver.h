@@ -15,9 +15,7 @@ class ExactDiagonalizationSolver{
 public:
 	/** Constructor. */
 	ExactDiagonalizationSolver(
-		Model *singleParticleModel,
-		InteractionAmplitudeSet *interactionAmplitudeSet,
-		ManyBodyContext manyBodyContext
+		Model *model
 	);
 
 	/** Destructor. */
@@ -47,13 +45,7 @@ public:
 	);
 private:
 	/** Model to work on. */
-	Model *singleParticleModel;
-
-	/** Interaction amplitude set. */
-	InteractionAmplitudeSet *interactionAmplitudeSet;
-
-	/** Many-bodu context.. */
-	ManyBodyContext manyBodyContext;
+	Model *model;
 
 	/** Subspace context containing rules, a many-body model, and a
 	 *  diagonalization solver for a specific subspace. */

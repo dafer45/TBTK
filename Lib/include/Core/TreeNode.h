@@ -77,7 +77,7 @@ public:
 	void generateBasisIndices();
 
 	/** Generate a list of indices satisfying the specified pattern. */
-	std::vector<Index> getIndexList(const Index &pattern);
+	std::vector<Index> getIndexList(const Index &pattern) const;
 
 	/** Sort HoppingAmplitudes in row order. */
 	void sort(TreeNode *rootNode);
@@ -118,7 +118,7 @@ public:
 	};
 
 	/** Returns Iterator initialized to point at first HoppingAmplitude. */
-	Iterator begin();
+	Iterator begin() const;
 private:
 	/** Flag indicating whether all HoppingAmplitudes passed to this nodes
 	 *  child nodes have the same 'to' and 'from' subindex in the position

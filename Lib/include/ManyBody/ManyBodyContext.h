@@ -28,6 +28,7 @@
 #include "ExtensiveBitRegister.h"
 #include "FockSpace.h"
 #include "InteractionAmplitudeSet.h"
+#include "SingleParticleContext.h"
 
 #include <memory>
 
@@ -37,11 +38,12 @@ class ManyBodyContext{
 public:
 	/** Constructor. The ManyBodyContext assumes ownership of the
 	 *  FockSpace and will destroy it at destrucion. */
-	ManyBodyContext(FockSpace<BitRegister> *fockSpace);
+//	ManyBodyContext(FockSpace<BitRegister> *fockSpace);
+	ManyBodyContext(const SingleParticleContext *singleParticleContext);
 
 	/** Constructor. The ManyBodyContext assumes ownership of the
 	 *  FockSpace and will destroy it at destrucion. */
-	ManyBodyContext(FockSpace<ExtensiveBitRegister> *fockSpace);
+//	ManyBodyContext(FockSpace<ExtensiveBitRegister> *fockSpace);
 
 	/** Destructor. */
 	~ManyBodyContext();
@@ -63,6 +65,12 @@ public:
 
 	/** Add rule that restricts the Fock space. */
 	void addRule(const FockStateRule::WrapperRule rule);
+
+	/** Add InteractionAmplitude. */
+	void addIA(InteractionAmplitude ia);
+
+	/** Get InteractionAmplitudeSet. */
+	const InteractionAmplitudeSet* getInteractionAmplitudeSet() const;
 private:
 	/** Pointer to FockSpace using BitRegsiter. */
 	std::shared_ptr<FockSpace<BitRegister>> brFockSpace;
@@ -74,7 +82,7 @@ private:
 	std::vector<FockStateRule::WrapperRule> rules;
 
 	/** Interaction amplitude set. */
-	InteractionAmplitudeSet interactionAmplitudeSet;
+	std::shared_ptr<InteractionAmplitudeSet> interactionAmplitudeSet;
 };
 
 inline bool ManyBodyContext::wrapsBitRegister(){
@@ -101,6 +109,14 @@ inline FockSpace<ExtensiveBitRegister>* ManyBodyContext::getFockSpaceExtensiveBi
 
 inline void ManyBodyContext::addRule(const FockStateRule::WrapperRule rule){
 	rules.push_back(rule);
+}
+
+inline void ManyBodyContext::addIA(InteractionAmplitude ia){
+	interactionAmplitudeSet.get()->addIA(ia);
+}
+
+inline const InteractionAmplitudeSet* ManyBodyContext::getInteractionAmplitudeSet() const{
+	return interactionAmplitudeSet.get();
 }
 
 };	//End of namespace TBTK

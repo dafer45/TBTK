@@ -34,17 +34,24 @@ namespace TBTK{
 Model::Model(){
 	temperature = 0.;
 	chemicalPotential = 0.;
+
+	singleParticleContext = new SingleParticleContext();
+	manyBodyContext = NULL;
+
 	isTalkative = true;
 }
 
 Model::~Model(){
+	delete singleParticleContext;
+	if(manyBodyContext != NULL)
+		delete manyBodyContext;
 }
 
 void Model::construct(){
 	if(isTalkative)
 		Streams::out << "Constructing system\n";
 
-	singleParticleContext.construct();
+	singleParticleContext->construct();
 
 	int basisSize = getBasisSize();
 

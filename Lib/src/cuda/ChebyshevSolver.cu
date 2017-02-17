@@ -101,7 +101,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 		""
 	);
 
-	HoppingAmplitudeSet *hoppingAmplitudeSet = model->getHoppingAmplitudeSet();
+	const HoppingAmplitudeSet *hoppingAmplitudeSet = model->getHoppingAmplitudeSet();
 
 	int fromBasisIndex = hoppingAmplitudeSet->getBasisIndex(from);
 	int *coefficientMap = new int[hoppingAmplitudeSet->getBasisSize()];

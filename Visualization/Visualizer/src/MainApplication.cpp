@@ -16,6 +16,7 @@
 #include "Model.h"
 #include "Geometry.h"
 #include "HoppingAmplitude.h"
+#include "Streams.h"
 
 #include <sstream>
 

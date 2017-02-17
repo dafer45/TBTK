@@ -2,6 +2,7 @@
 
 cd Visualizer_build
 	cmake ../Visualizer/
+	make clean
 	make
 	cd ..
 

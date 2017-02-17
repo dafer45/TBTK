@@ -2,7 +2,7 @@
 #define COM_DAFER45_TBTK_LADDER_OPERATOR
 
 #include "FockState.h"
-#include "Model.h"
+//#include "Model.h"
 #include "Statistics.h"
 
 namespace TBTK{

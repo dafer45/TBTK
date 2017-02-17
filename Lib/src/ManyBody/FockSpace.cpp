@@ -27,7 +27,7 @@ namespace TBTK{
 
 template<>
 FockSpace<BitRegister>::FockSpace(
-	HoppingAmplitudeSet *hoppingAmplitudeSet,
+	const HoppingAmplitudeSet *hoppingAmplitudeSet,
 	Statistics statistics,
 	unsigned int maxParticlesPerState
 ){
@@ -128,9 +128,9 @@ FockSpace<BitRegister>::FockSpace(
 
 template<>
 FockSpace<ExtensiveBitRegister>::FockSpace(
-        HoppingAmplitudeSet *hoppingAmplitudeSet,
-        Statistics statistics,
-        unsigned int maxParticlesPerState
+	const HoppingAmplitudeSet *hoppingAmplitudeSet,
+	Statistics statistics,
+	unsigned int maxParticlesPerState
 ){
 	this->hoppingAmplitudeSet = hoppingAmplitudeSet;
 	this->statistics = statistics;

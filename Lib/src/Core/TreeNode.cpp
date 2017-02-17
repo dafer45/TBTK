@@ -34,7 +34,7 @@ TreeNode::TreeNode(){
 	isPotentialBlockSeparator = true;
 }
 
-vector<Index> TreeNode::getIndexList(const Index &pattern){
+vector<Index> TreeNode::getIndexList(const Index &pattern) const{
 	vector<Index> indexList;
 
 	Iterator it = begin();
@@ -475,7 +475,7 @@ const HoppingAmplitude* TreeNode::Iterator::getHA() const{
 	return &tn->hoppingAmplitudes.at(currentHoppingAmplitude);
 }
 
-TreeNode::Iterator TreeNode::begin(){
+TreeNode::Iterator TreeNode::begin() const{
 	return Iterator(this);
 }
 

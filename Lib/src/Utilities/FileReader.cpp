@@ -46,13 +46,13 @@ Model* FileReader::readModel(string name, string path){
 	stringstream ss;
 	ss << name << "HoppingAmplitudeSet";
 
-	delete model->singleParticleContext.hoppingAmplitudeSet;
-	model->singleParticleContext.hoppingAmplitudeSet = readHoppingAmplitudeSet(ss.str());
+	delete model->singleParticleContext->hoppingAmplitudeSet;
+	model->singleParticleContext->hoppingAmplitudeSet = readHoppingAmplitudeSet(ss.str());
 	model->construct();
 
 	ss.str("");
 	ss << name << "Geometry";
-	model->singleParticleContext.geometry = readGeometry(model, ss.str());
+	model->singleParticleContext->geometry = readGeometry(model, ss.str());
 
 	const int NUM_DOUBLE_ATTRIBUTES = 2;
 	ss.str("");

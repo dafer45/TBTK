@@ -85,7 +85,7 @@ void FileWriter::writeModel(Model *model, string name, string path){
 }
 
 void FileWriter::writeHoppingAmplitudeSet(
-	HoppingAmplitudeSet *hoppingAmplitudeSet,
+	const HoppingAmplitudeSet *hoppingAmplitudeSet,
 	string name,
 	string path
 ){

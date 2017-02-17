@@ -87,7 +87,8 @@ ChebyshevSolver::~ChebyshevSolver(){
 
 void ChebyshevSolver::setModel(Model *model){
 	this->model = model;
-	model->getHoppingAmplitudeSet()->sort();	//Required for GPU evaluation
+//	model->getHoppingAmplitudeSet()->sort();	//Required for GPU evaluation
+	model->sortHoppingAmplitudes();	//Required for GPU evaluation
 }
 
 void ChebyshevSolver::calculateCoefficients(
@@ -116,7 +117,7 @@ void ChebyshevSolver::calculateCoefficients(
 		""
 	);
 
-	HoppingAmplitudeSet *hoppingAmplitudeSet = model->getHoppingAmplitudeSet();
+	const HoppingAmplitudeSet *hoppingAmplitudeSet = model->getHoppingAmplitudeSet();
 
 	int fromBasisIndex = hoppingAmplitudeSet->getBasisIndex(from);
 	int toBasisIndex = hoppingAmplitudeSet->getBasisIndex(to);
@@ -270,7 +271,7 @@ void ChebyshevSolver::calculateCoefficients(
 		""
 	);
 
-	HoppingAmplitudeSet *hoppingAmplitudeSet = model->getHoppingAmplitudeSet();
+	const HoppingAmplitudeSet *hoppingAmplitudeSet = model->getHoppingAmplitudeSet();
 
 	int fromBasisIndex = hoppingAmplitudeSet->getBasisIndex(from);
 	int *coefficientMap = new int[hoppingAmplitudeSet->getBasisSize()];
@@ -434,7 +435,7 @@ void ChebyshevSolver::calculateCoefficientsWithCutoff(
 		""
 	);
 
-	HoppingAmplitudeSet *hoppingAmplitudeSet = model->getHoppingAmplitudeSet();
+	const HoppingAmplitudeSet *hoppingAmplitudeSet = model->getHoppingAmplitudeSet();
 
 	int fromBasisIndex = hoppingAmplitudeSet->getBasisIndex(from);
 	int toBasisIndex = hoppingAmplitudeSet->getBasisIndex(to);

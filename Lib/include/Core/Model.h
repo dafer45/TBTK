@@ -26,6 +26,7 @@
 #include "Geometry.h"
 #include "HoppingAmplitudeSet.h"
 #include "SingleParticleContext.h"
+#include "ManyBodyContext.h"
 #include "Statistics.h"
 
 #include <complex>
@@ -68,6 +69,9 @@ public:
 	/** Returns true if the Hilbert space basis has been constructed. */
 	bool getIsConstructed();
 
+	/** Sort HoppingAmplitudes. */
+	void sortHoppingAmplitudes();
+
 	/** Construct Hamiltonian on COO format. */
 	void constructCOO();
 
@@ -100,13 +104,19 @@ public:
 	Statistics getStatistics();
 
 	/** Get amplitude set. */
-	HoppingAmplitudeSet* getHoppingAmplitudeSet();
+	const HoppingAmplitudeSet* getHoppingAmplitudeSet() const;
 
 	/** Create geometry. */
 	void createGeometry(int dimensions, int numSpecifiers = 0);
 
 	/** Get geometry. */
 	Geometry* getGeometry();
+
+	/** Create ManyBodyContext. */
+	void createManyBodyContext();
+
+	/** Get ManyBodyContext. */
+	ManyBodyContext* getManyBodyContext();
 
 	void saveEV(std::string path = "./", std::string filename = "EV.dat");
 
@@ -119,7 +129,10 @@ private:
 	double chemicalPotential;
 
 	/** Single particle context. */
-	SingleParticleContext singleParticleContext;
+	SingleParticleContext *singleParticleContext;
+
+	/** Many-body context. */
+	ManyBodyContext *manyBodyContext;
 
 	/** Flag indicating whether to write information to standard output or
 	 *  not. */
@@ -130,35 +143,39 @@ private:
 };
 
 inline void Model::addHA(HoppingAmplitude ha){
-	singleParticleContext.addHA(ha);
+	singleParticleContext->addHA(ha);
 }
 
 inline void Model::addHAAndHC(HoppingAmplitude ha){
-	singleParticleContext.addHAAndHC(ha);
+	singleParticleContext->addHAAndHC(ha);
 }
 
 inline int Model::getBasisSize(){
-	return singleParticleContext.getBasisSize();
+	return singleParticleContext->getBasisSize();
 }
 
 inline int Model::getBasisIndex(Index index){
-	return singleParticleContext.getBasisIndex(index);
+	return singleParticleContext->getBasisIndex(index);
 }
 
 inline bool Model::getIsConstructed(){
-	return singleParticleContext.getIsConstructed();
+	return singleParticleContext->getIsConstructed();
+}
+
+inline void Model::sortHoppingAmplitudes(){
+	singleParticleContext->sortHoppingAmplitudes();
 }
 
 inline void Model::constructCOO(){
-	singleParticleContext.constructCOO();
+	singleParticleContext->constructCOO();
 }
 
 inline void Model::destructCOO(){
-	singleParticleContext.destructCOO();
+	singleParticleContext->destructCOO();
 }
 
 inline void Model::reconstructCOO(){
-	singleParticleContext.reconstructCOO();
+	singleParticleContext->reconstructCOO();
 }
 
 inline void Model::setTemperature(double temperature){
@@ -178,23 +195,31 @@ inline double Model::getChemicalPotential(){
 }
 
 inline void Model::setStatistics(Statistics statistics){
-	singleParticleContext.setStatistics(statistics);
+	singleParticleContext->setStatistics(statistics);
 }
 
 inline Statistics Model::getStatistics(){
-	return singleParticleContext.getStatistics();
+	return singleParticleContext->getStatistics();
 }
 
-inline HoppingAmplitudeSet* Model::getHoppingAmplitudeSet(){
-	return singleParticleContext.getHoppingAmplitudeSet();
+inline const HoppingAmplitudeSet* Model::getHoppingAmplitudeSet() const{
+	return singleParticleContext->getHoppingAmplitudeSet();
 }
 
 inline void Model::createGeometry(int dimensions, int numSpecifiers){
-	singleParticleContext.createGeometry(dimensions, numSpecifiers);
+	singleParticleContext->createGeometry(dimensions, numSpecifiers);
 }
 
 inline Geometry* Model::getGeometry(){
-	return singleParticleContext.getGeometry();
+	return singleParticleContext->getGeometry();
+}
+
+inline void Model::createManyBodyContext(){
+	manyBodyContext = new ManyBodyContext(singleParticleContext);
+}
+
+inline ManyBodyContext* Model::getManyBodyContext(){
+	return manyBodyContext;
 }
 
 inline void Model::setTalkative(bool isTalkative){

@@ -58,7 +58,7 @@ public:
 
 	/** Experimental. Write HoppingAmplitudeSet to file. */
 	static void writeHoppingAmplitudeSet(
-		HoppingAmplitudeSet *hoppingAmplitudeSet,
+		const HoppingAmplitudeSet *hoppingAmplitudeSet,
 		std::string name = "HoppingAmplitudeSet",
 		std::string path = "/"
 	);

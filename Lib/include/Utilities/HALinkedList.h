@@ -45,7 +45,7 @@ public:
 
 class HALinkedList{
 public:
-	HALinkedList(HoppingAmplitudeSet &as);
+	HALinkedList(const HoppingAmplitudeSet &as);
 	~HALinkedList();
 
 	void addLinkedList(int from);

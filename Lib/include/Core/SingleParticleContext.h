@@ -53,17 +53,20 @@ public:
 
 	/** Get Hilbert space index corresponding to given 'from'-index.
 	 *  @param index 'from'-index to get Hilbert space index for. */
-	int getBasisIndex(Index index);
+	int getBasisIndex(Index index) const;
 
 	/** Get size of Hilbert space. */
-	int getBasisSize();
+	int getBasisSize() const;
 
 	/** Construct Hilbert space. No more @link HoppingAmplitude
 	 *  HoppingAmplitudes @endlink should be added after this call. */
 	void construct();
 
+	/*** Sort HoppingAmplitudes. */
+	void sortHoppingAmplitudes();
+
 	/** Returns true if the Hilbert space basis has been constructed. */
-	bool getIsConstructed();
+	bool getIsConstructed() const;
 
 	/** Construct Hamiltonian on COO format. */
 	void constructCOO();
@@ -79,7 +82,7 @@ public:
 	void reconstructCOO();
 
 	/** Get HoppingAMplitudeSet. */
-	HoppingAmplitudeSet* getHoppingAmplitudeSet();
+	const HoppingAmplitudeSet* getHoppingAmplitudeSet() const;
 
 	/** Create Geometry. */
 	void createGeometry(int dimensions, int numSpecifiers = 0);
@@ -117,16 +120,20 @@ inline void SingleParticleContext::addHAAndHC(HoppingAmplitude ha){
 	hoppingAmplitudeSet->addHAAndHC(ha);
 }
 
-inline int SingleParticleContext::getBasisIndex(Index index){
+inline int SingleParticleContext::getBasisIndex(Index index) const{
 	return hoppingAmplitudeSet->getBasisIndex(index);
 }
 
-inline int SingleParticleContext::getBasisSize(){
+inline int SingleParticleContext::getBasisSize() const{
 	return hoppingAmplitudeSet->getBasisSize();
 }
 
-inline bool SingleParticleContext::getIsConstructed(){
+inline bool SingleParticleContext::getIsConstructed() const{
 	return hoppingAmplitudeSet->getIsConstructed();
+}
+
+inline void SingleParticleContext::sortHoppingAmplitudes(){
+	hoppingAmplitudeSet->sort();
 }
 
 inline void SingleParticleContext::constructCOO(){
@@ -142,7 +149,7 @@ inline void SingleParticleContext::reconstructCOO(){
 	hoppingAmplitudeSet->reconstructCOO();
 }
 
-inline HoppingAmplitudeSet* SingleParticleContext::getHoppingAmplitudeSet(){
+inline const HoppingAmplitudeSet* SingleParticleContext::getHoppingAmplitudeSet() const{
 	return hoppingAmplitudeSet;
 }
 
