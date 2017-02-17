@@ -3,6 +3,7 @@
 
 #include "FockState.h"
 #include "Model.h"
+#include "Statistics.h"
 
 namespace TBTK{
 
@@ -15,7 +16,7 @@ public:
 	/** Constructor. */
 	LadderOperator(
 		Type type,
-		Model::Statistics statistics,
+		Statistics statistics,
 		unsigned int state,
 		unsigned int numBitsPerState,
 		unsigned int maxOccupation,
@@ -44,7 +45,7 @@ private:
 	Type type;
 
 	/** Operator statistics. */
-	Model::Statistics statistics;
+	Statistics statistics;
 
 	/** Single-particle state index. */
 	unsigned int state;
@@ -69,7 +70,7 @@ private:
 template<typename BIT_REGISTER>
 LadderOperator<BIT_REGISTER>::LadderOperator(
 	Type type,
-	Model::Statistics statistics,
+	Statistics statistics,
 	unsigned int state,
 	unsigned int numBitsPerState,
 	unsigned int maxOccupation,
@@ -170,10 +171,10 @@ FockState<BIT_REGISTER>& LadderOperator<BIT_REGISTER>::operator*(
 	}
 
 	switch(statistics){
-	case Model::Statistics::FermiDirac:
+	case Statistics::FermiDirac:
 		rhs.prefactor *= pow(-1, (rhs.bitRegister & moreSignificantFermionMask).getNumOneBits());
 		break;
-	case Model::Statistics::BoseEinstein:
+	case Statistics::BoseEinstein:
 		break;
 	default:
 		TBTKExit(

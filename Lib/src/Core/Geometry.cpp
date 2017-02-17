@@ -26,14 +26,14 @@ using namespace std;
 
 namespace TBTK{
 
-Geometry::Geometry(int dimensions, int numSpecifiers, Model *parentModel){
+Geometry::Geometry(int dimensions, int numSpecifiers, const HoppingAmplitudeSet *hoppingAmplitudeSet){
 	this->dimensions = dimensions;
 	this->numSpecifiers = numSpecifiers;
-	this->parentModel = parentModel;
+	this->hoppingAmplitudeSet = hoppingAmplitudeSet;
 
-	coordinates = new double[dimensions*parentModel->getBasisSize()];
+	coordinates = new double[dimensions*hoppingAmplitudeSet->getBasisSize()];
 	if(numSpecifiers != 0)
-		specifiers = new int[numSpecifiers*parentModel->getBasisSize()];
+		specifiers = new int[numSpecifiers*hoppingAmplitudeSet->getBasisSize()];
 	else
 		specifiers = NULL;
 }
@@ -49,7 +49,7 @@ void Geometry::setCoordinates(
 	std::initializer_list<double> coordinates,
 	std::initializer_list<int> specifiers
 ){
-	int basisIndex = parentModel->getBasisIndex(index);
+	int basisIndex = hoppingAmplitudeSet->getBasisIndex(index);
 	if(coordinates.size() == (unsigned int)dimensions){
 		for(unsigned int n = 0; n < dimensions; n++)
 			this->coordinates[dimensions*basisIndex + n] = *(coordinates.begin() + n);
@@ -80,7 +80,7 @@ void Geometry::setCoordinates(
 	const std::vector<double> &coordinates,
 	const std::vector<int> &specifiers
 ){
-	int basisIndex = parentModel->getBasisIndex(index);
+	int basisIndex = hoppingAmplitudeSet->getBasisIndex(index);
 	if(coordinates.size() == (unsigned int)dimensions){
 		for(unsigned int n = 0; n < dimensions; n++)
 			this->coordinates[dimensions*basisIndex + n] = *(coordinates.begin() + n);
@@ -175,7 +175,7 @@ void Geometry::translate(initializer_list<double> translation){
 		);
 	}
 
-	for(int n = 0; n < parentModel->getBasisSize(); n++){
+	for(int n = 0; n < hoppingAmplitudeSet->getBasisSize(); n++){
 		for(unsigned int c = 0; c < dimensions; c++){
 			coordinates[n*dimensions + c] += *(translation.begin() + c);
 		}
@@ -183,8 +183,8 @@ void Geometry::translate(initializer_list<double> translation){
 }
 
 double Geometry::getDistance(const Index &index1, const Index &index2) const{
-	int basisIndex1 = parentModel->getBasisIndex(index1);
-	int basisIndex2 = parentModel->getBasisIndex(index2);
+	int basisIndex1 = hoppingAmplitudeSet->getBasisIndex(index1);
+	int basisIndex2 = hoppingAmplitudeSet->getBasisIndex(index2);
 
 	double distanceSquared = 0.;
 	for(unsigned int n = 0; n < dimensions; n++){

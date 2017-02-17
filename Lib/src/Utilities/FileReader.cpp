@@ -46,13 +46,13 @@ Model* FileReader::readModel(string name, string path){
 	stringstream ss;
 	ss << name << "HoppingAmplitudeSet";
 
-	delete model->hoppingAmplitudeSet;
-	model->hoppingAmplitudeSet = readHoppingAmplitudeSet(ss.str());
+	delete model->singleParticleContext.hoppingAmplitudeSet;
+	model->singleParticleContext.hoppingAmplitudeSet = readHoppingAmplitudeSet(ss.str());
 	model->construct();
 
 	ss.str("");
 	ss << name << "Geometry";
-	model->geometry = readGeometry(model, ss.str());
+	model->singleParticleContext.geometry = readGeometry(model, ss.str());
 
 	const int NUM_DOUBLE_ATTRIBUTES = 2;
 	ss.str("");
@@ -71,7 +71,7 @@ Model* FileReader::readModel(string name, string path){
 	string intAttributeNames[NUM_INT_ATTRIBUTES] = {"Statistics"};
 	readAttributes(intAttributes, intAttributeNames, NUM_INT_ATTRIBUTES, ss.str());
 
-	model->setStatistics(static_cast<Model::Statistics>(intAttributes[0]));
+	model->setStatistics(static_cast<Statistics>(intAttributes[0]));
 
 	return model;
 }
@@ -247,7 +247,7 @@ Geometry* FileReader::readGeometry(Model *model, string name, string path){
 		dataspaceS.getSimpleExtentDims(dims_internalS, NULL);
 		int numSpecifiers = dims_internalS[1];
 
-		geometry = new Geometry(dimensions, numSpecifiers, model);
+		geometry = new Geometry(dimensions, numSpecifiers, model->getHoppingAmplitudeSet());
 
 		datasetC.read(geometry->coordinates, PredType::NATIVE_DOUBLE, dataspaceC);
 		if(numSpecifiers != 0)

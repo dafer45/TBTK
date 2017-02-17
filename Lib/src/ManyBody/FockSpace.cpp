@@ -28,7 +28,7 @@ namespace TBTK{
 template<>
 FockSpace<BitRegister>::FockSpace(
 	HoppingAmplitudeSet *hoppingAmplitudeSet,
-	Model::Statistics statistics,
+	Statistics statistics,
 	unsigned int maxParticlesPerState
 ){
 	this->hoppingAmplitudeSet = hoppingAmplitudeSet;
@@ -36,10 +36,10 @@ FockSpace<BitRegister>::FockSpace(
 
 //	unsigned int maxParticlesPerState;
 	switch(statistics){
-	case Model::Statistics::FermiDirac:
+	case Statistics::FermiDirac:
 		maxParticlesPerState = 1;
 		break;
-	case Model::Statistics::BoseEinstein:
+	case Statistics::BoseEinstein:
 		maxParticlesPerState = maxParticlesPerState;
 		break;
 	default:
@@ -68,11 +68,11 @@ FockSpace<BitRegister>::FockSpace(
 	BitRegister fermionMask;
 	fermionMask.clear();
 	switch(statistics){
-	case Model::Statistics::FermiDirac:
+	case Statistics::FermiDirac:
 		for(unsigned int n = 0; n < exponentialDimension; n++)
 			fermionMask.setBit(n, true);
 		break;
-	case Model::Statistics::BoseEinstein:
+	case Statistics::BoseEinstein:
 		break;
 	default:
 		TBTKExit(
@@ -129,7 +129,7 @@ FockSpace<BitRegister>::FockSpace(
 template<>
 FockSpace<ExtensiveBitRegister>::FockSpace(
         HoppingAmplitudeSet *hoppingAmplitudeSet,
-        Model::Statistics statistics,
+        Statistics statistics,
         unsigned int maxParticlesPerState
 ){
 	this->hoppingAmplitudeSet = hoppingAmplitudeSet;
@@ -137,10 +137,10 @@ FockSpace<ExtensiveBitRegister>::FockSpace(
 
 //	unsigned int maxParticlesPerState;
 	switch(statistics){
-	case Model::Statistics::FermiDirac:
+	case Statistics::FermiDirac:
 		maxParticlesPerState = 1;
 		break;
-	case Model::Statistics::BoseEinstein:
+	case Statistics::BoseEinstein:
 		maxParticlesPerState = maxParticlesPerState;
 		break;
 	default:
@@ -164,11 +164,11 @@ FockSpace<ExtensiveBitRegister>::FockSpace(
 	ExtensiveBitRegister fermionMask(exponentialDimension+1);
 	fermionMask.clear();
 	switch(statistics){
-	case Model::Statistics::FermiDirac:
+	case Statistics::FermiDirac:
 		for(unsigned int n = 0; n < exponentialDimension; n++)
 			fermionMask.setBit(n, true);
 		break;
-	case Model::Statistics::BoseEinstein:
+	case Statistics::BoseEinstein:
 		break;
 	default:
 		TBTKExit(

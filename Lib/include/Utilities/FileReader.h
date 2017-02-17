@@ -30,6 +30,7 @@
 #include "DOS.h"
 #include "Density.h"
 #include "Magnetization.h"
+#include "Model.h"
 #include "LDOS.h"
 #include "SpectralFunction.h"
 #include "SpinPolarizedLDOS.h"

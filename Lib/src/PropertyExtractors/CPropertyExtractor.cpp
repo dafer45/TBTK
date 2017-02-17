@@ -183,12 +183,12 @@ complex<double> CPropertyExtractor::calculateExpectationValue(
 	complex<double> expectationValue = 0.;
 
 	complex<double> *greensFunction = calculateGreensFunction(to, from, ChebyshevSolver::GreensFunctionType::NonPrincipal);
-	Model::Statistics statistics = cSolver->getModel()->getStatistics();
+	Statistics statistics = cSolver->getModel()->getStatistics();
 
 	const double dE = (upperBound - lowerBound)/energyResolution;
 	for(int e = 0; e < energyResolution; e++){
 		double weight;
-		if(statistics == Model::Statistics::FermiDirac){
+		if(statistics == Statistics::FermiDirac){
 			weight = Functions::fermiDiracDistribution(lowerBound + (e/(double)energyResolution)*(upperBound - lowerBound),
 									cSolver->getModel()->getChemicalPotential(),
 									cSolver->getModel()->getTemperature());
@@ -353,12 +353,12 @@ void CPropertyExtractor::calculateDensityCallback(
 	CPropertyExtractor *pe = (CPropertyExtractor*)cb_this;
 
 	complex<double> *greensFunction = pe->calculateGreensFunction(index, index, ChebyshevSolver::GreensFunctionType::NonPrincipal);
-	Model::Statistics statistics = pe->cSolver->getModel()->getStatistics();
+	Statistics statistics = pe->cSolver->getModel()->getStatistics();
 
 	const double dE = (pe->upperBound - pe->lowerBound)/pe->energyResolution;
 	for(int e = 0; e < pe->energyResolution; e++){
 		double weight;
-		if(statistics == Model::Statistics::FermiDirac){
+		if(statistics == Statistics::FermiDirac){
 			weight = Functions::fermiDiracDistribution(pe->lowerBound + (e/(double)pe->energyResolution)*(pe->upperBound - pe->lowerBound),
 									pe->cSolver->getModel()->getChemicalPotential(),
 									pe->cSolver->getModel()->getTemperature());
@@ -387,7 +387,7 @@ void CPropertyExtractor::calculateMAGCallback(
 	Index to(index);
 	Index from(index);
 	complex<double> *greensFunction;
-	Model::Statistics statistics = pe->cSolver->getModel()->getStatistics();
+	Statistics statistics = pe->cSolver->getModel()->getStatistics();
 
 	const double dE = (pe->upperBound - pe->lowerBound)/pe->energyResolution;
 	for(int n = 0; n < 4; n++){
@@ -397,7 +397,7 @@ void CPropertyExtractor::calculateMAGCallback(
 
 		for(int e = 0; e < pe->energyResolution; e++){
 			double weight;
-			if(statistics == Model::Statistics::FermiDirac){
+			if(statistics == Statistics::FermiDirac){
 				weight = Functions::fermiDiracDistribution(pe->lowerBound + (e/(double)pe->energyResolution)*(pe->upperBound - pe->lowerBound),
 										pe->cSolver->getModel()->getChemicalPotential(),
 										pe->cSolver->getModel()->getTemperature());

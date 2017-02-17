@@ -34,39 +34,22 @@ namespace TBTK{
 Model::Model(){
 	temperature = 0.;
 	chemicalPotential = 0.;
-	statistics = Statistics::FermiDirac;
-	hoppingAmplitudeSet = new HoppingAmplitudeSet();
-	geometry = NULL;
 	isTalkative = true;
 }
 
 Model::~Model(){
-	delete hoppingAmplitudeSet;
-	if(geometry != NULL)
-		delete geometry;
 }
 
 void Model::construct(){
 	if(isTalkative)
 		Streams::out << "Constructing system\n";
 
-	hoppingAmplitudeSet->construct();
+	singleParticleContext.construct();
 
 	int basisSize = getBasisSize();
 
 	if(isTalkative)
 		Streams::out << "\tBasis size: " << basisSize << "\n";
-}
-
-void Model::createGeometry(int dimensions, int numSpecifiers){
-	TBTKAssert(
-		getIsConstructed(),
-		"Model::createGeometry()",
-		"Hilbert space basis has not been constructed yet.",
-		""
-	);
-
-	geometry = new Geometry(dimensions, numSpecifiers, this);
 }
 
 };	//End of namespace TBTK

@@ -23,7 +23,8 @@
 #ifndef COM_DAFER45_TBTK_GEOMETRY
 #define COM_DAFER45_TBTK_GEOMETRY
 
-#include "Model.h"
+//#include "Model.h"
+#include "HoppingAmplitudeSet.h"
 
 #include <initializer_list>
 
@@ -33,7 +34,11 @@ namespace TBTK{
 class Geometry{
 public:
 	/** Constructor. */
-	Geometry(int dimensions, int numSpecifiers, Model *parentModel);
+	Geometry(
+		int dimensions,
+		int numSpecifiers,
+		const HoppingAmplitudeSet *hoppingAmplitudeSet
+	);
 
 	/** Destructor. */
 	~Geometry();
@@ -122,8 +127,8 @@ private:
 	/** Specifiers such as orbital number, spin-species, etc. */
 	int *specifiers;
 
-	/** The Model that the geometry corresponds to. */
-	Model *parentModel;
+	/** The HoppingAmplitudeSet that the geometry corresponds to. */
+	const HoppingAmplitudeSet *hoppingAmplitudeSet;
 
 	/** FileReader is a friend class to allow it to write Geometry data. */
 	friend class FileReader;
@@ -138,7 +143,7 @@ inline int Geometry::getNumSpecifiers() const{
 }
 
 inline const double* Geometry::getCoordinates(const Index &index) const{
-	return &(coordinates[dimensions*parentModel->getBasisIndex(index)]);
+	return &(coordinates[dimensions*hoppingAmplitudeSet->getBasisIndex(index)]);
 }
 
 inline const double* Geometry::getCoordinates(int index) const{
@@ -150,7 +155,7 @@ inline const double* Geometry::getCoordinates() const{
 }
 
 inline int Geometry::getSpecifier(const Index &index, int specifier) const{
-	return specifiers[numSpecifiers*parentModel->getBasisIndex(index) + specifier];
+	return specifiers[numSpecifiers*hoppingAmplitudeSet->getBasisIndex(index) + specifier];
 }
 
 inline int Geometry::getSpecifier(int index, int specifier) const{
@@ -158,7 +163,7 @@ inline int Geometry::getSpecifier(int index, int specifier) const{
 }
 
 inline const int* Geometry::getSpecifiers(const Index& index) const{
-	return &(specifiers[numSpecifiers*parentModel->getBasisIndex(index)]);
+	return &(specifiers[numSpecifiers*hoppingAmplitudeSet->getBasisIndex(index)]);
 }
 
 inline const int* Geometry::getSpecifiers(const int index) const{
@@ -180,7 +185,7 @@ inline double Geometry::getDistance(int index1, int index2) const{
 }
 
 inline int Geometry::getBasisSize() const{
-	return parentModel->getBasisSize();
+	return hoppingAmplitudeSet->getBasisSize();
 }
 
 };	//End of namespace TBTK

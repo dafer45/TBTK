@@ -23,7 +23,10 @@
 #ifndef COM_DAFER45_TBTK_MODEL
 #define COM_DAFER45_TBTK_MODEL
 
+#include "Geometry.h"
 #include "HoppingAmplitudeSet.h"
+#include "SingleParticleContext.h"
+#include "Statistics.h"
 
 #include <complex>
 #include <fstream>
@@ -31,7 +34,6 @@
 
 namespace TBTK{
 
-class Geometry;
 class FileReader;
 
 /** The Model conatins all information about the Hamiltonian. It is currently a
@@ -91,9 +93,6 @@ public:
 	/** Get chemical potential. */
 	double getChemicalPotential();
 
-	/** Enums for Fermi-Dirac and Bose-Einstein statistics. */
-	enum class Statistics {FermiDirac, BoseEinstein};
-
 	/** Set statistics. */
 	void setStatistics(Statistics statistics);
 
@@ -119,15 +118,8 @@ private:
 	/** Chemical potential. */
 	double chemicalPotential;
 
-	/** Statistics (Fermi-Dirac or Bose-Einstein). */
-	Statistics statistics;
-
-	/** HoppingAmplitudeSet containing @link HoppingAmplitude
-	 *  HoppingAmplitudes @endlink.*/
-	HoppingAmplitudeSet *hoppingAmplitudeSet;
-
-	/** Geometry. */
-	Geometry *geometry;
+	/** Single particle context. */
+	SingleParticleContext singleParticleContext;
 
 	/** Flag indicating whether to write information to standard output or
 	 *  not. */
@@ -138,36 +130,35 @@ private:
 };
 
 inline void Model::addHA(HoppingAmplitude ha){
-	hoppingAmplitudeSet->addHA(ha);
+	singleParticleContext.addHA(ha);
 }
 
 inline void Model::addHAAndHC(HoppingAmplitude ha){
-	hoppingAmplitudeSet->addHAAndHC(ha);
+	singleParticleContext.addHAAndHC(ha);
 }
 
 inline int Model::getBasisSize(){
-	return hoppingAmplitudeSet->getBasisSize();
+	return singleParticleContext.getBasisSize();
 }
 
 inline int Model::getBasisIndex(Index index){
-	return hoppingAmplitudeSet->getBasisIndex(index);
+	return singleParticleContext.getBasisIndex(index);
 }
 
 inline bool Model::getIsConstructed(){
-	return hoppingAmplitudeSet->getIsConstructed();
+	return singleParticleContext.getIsConstructed();
 }
 
 inline void Model::constructCOO(){
-	hoppingAmplitudeSet->sort();
-	hoppingAmplitudeSet->constructCOO();
+	singleParticleContext.constructCOO();
 }
 
 inline void Model::destructCOO(){
-	hoppingAmplitudeSet->destructCOO();
+	singleParticleContext.destructCOO();
 }
 
 inline void Model::reconstructCOO(){
-	hoppingAmplitudeSet->reconstructCOO();
+	singleParticleContext.reconstructCOO();
 }
 
 inline void Model::setTemperature(double temperature){
@@ -187,19 +178,23 @@ inline double Model::getChemicalPotential(){
 }
 
 inline void Model::setStatistics(Statistics statistics){
-	this->statistics = statistics;
+	singleParticleContext.setStatistics(statistics);
 }
 
-inline Model::Statistics Model::getStatistics(){
-	return statistics;
+inline Statistics Model::getStatistics(){
+	return singleParticleContext.getStatistics();
 }
 
 inline HoppingAmplitudeSet* Model::getHoppingAmplitudeSet(){
-	return hoppingAmplitudeSet;
+	return singleParticleContext.getHoppingAmplitudeSet();
+}
+
+inline void Model::createGeometry(int dimensions, int numSpecifiers){
+	singleParticleContext.createGeometry(dimensions, numSpecifiers);
 }
 
 inline Geometry* Model::getGeometry(){
-	return geometry;
+	return singleParticleContext.getGeometry();
 }
 
 inline void Model::setTalkative(bool isTalkative){
@@ -209,4 +204,3 @@ inline void Model::setTalkative(bool isTalkative){
 };	//End of namespace TBTK
 
 #endif
-

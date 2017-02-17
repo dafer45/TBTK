@@ -24,16 +24,17 @@
 #ifndef COM_DAFER45_TBTK_FOCK_SPACE
 #define COM_DAFER45_TBTK_FOCK_SPACE
 
-#include "HoppingAmplitudeSet.h"
 #include "BitRegister.h"
+#include "DefaultMap.h"
 #include "ExtensiveBitRegister.h"
 #include "FockState.h"
-#include "FockStateRule.h"
-#include "LadderOperator.h"
-#include "Model.h"
 #include "FockStateMap.h"
-#include "DefaultMap.h"
+#include "FockStateRule.h"
+#include "HoppingAmplitudeSet.h"
+#include "LadderOperator.h"
 #include "LookupTableMap.h"
+#include "Model.h"
+#include "Statistics.h"
 #include "WrapperRule.h"
 
 namespace TBTK{
@@ -44,7 +45,7 @@ public:
 	/** Constructor. */
 	FockSpace(
 		HoppingAmplitudeSet *hoppingAmplitudeSet,
-		Model::Statistics statistics,
+		Statistics statistics,
 		unsigned int maxParticlesPerState
 	);
 
@@ -122,7 +123,7 @@ private:
 	 *  |numParticles| for bosons. */
 //	unsigned int maxParticlesPerState;
 
-	Model::Statistics statistics;
+	Statistics statistics;
 
 	/** Number of bits needed to encode all states. */
 	unsigned int exponentialDimension;
@@ -166,9 +167,9 @@ FockState<BIT_REGISTER> FockSpace<BIT_REGISTER>::getVacuumState() const{
 template<typename BIT_REGISTER>
 unsigned int FockSpace<BIT_REGISTER>::getNumFermions(const FockState<BIT_REGISTER> &fockState) const{
 	switch(statistics){
-	case Model::Statistics::FermiDirac:
+	case Statistics::FermiDirac:
 		return fockState.bitRegister.getNumOneBits();
-	case Model::Statistics::BoseEinstein:
+	case Statistics::BoseEinstein:
 		return 0;
 	default:
 		TBTKExit(

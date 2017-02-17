@@ -98,11 +98,11 @@ complex<double> DPropertyExtractor::calculateExpectationValue(
 
 	complex<double> expectationValue = 0.;
 
-	Model::Statistics statistics = dSolver->getModel()->getStatistics();
+	Statistics statistics = dSolver->getModel()->getStatistics();
 
 	for(int n = 0; n < dSolver->getModel()->getBasisSize(); n++){
 		double weight;
-		if(statistics == Model::Statistics::FermiDirac){
+		if(statistics == Statistics::FermiDirac){
 			weight = Functions::fermiDiracDistribution(
 				dSolver->getEigenValue(n),
 				dSolver->getModel()->getChemicalPotential(),
@@ -262,10 +262,10 @@ void DPropertyExtractor::calculateDensityCallback(
 	DPropertyExtractor *pe = (DPropertyExtractor*)cb_this;
 
 	const double *eigen_values = pe->dSolver->getEigenValues();
-	Model::Statistics statistics = pe->dSolver->getModel()->getStatistics();
+	Statistics statistics = pe->dSolver->getModel()->getStatistics();
 	for(int n = 0; n < pe->dSolver->getModel()->getBasisSize(); n++){
 		double weight;
-		if(statistics == Model::Statistics::FermiDirac){
+		if(statistics == Statistics::FermiDirac){
 			weight = Functions::fermiDiracDistribution(eigen_values[n],
 									pe->dSolver->getModel()->getChemicalPotential(),
 									pe->dSolver->getModel()->getTemperature());
@@ -291,7 +291,7 @@ void DPropertyExtractor::calculateMAGCallback(
 	DPropertyExtractor *pe = (DPropertyExtractor*)cb_this;
 
 	const double *eigen_values = pe->dSolver->getEigenValues();
-	Model::Statistics statistics = pe->dSolver->getModel()->getStatistics();
+	Statistics statistics = pe->dSolver->getModel()->getStatistics();
 
 	int spin_index = ((int*)pe->hint)[0];
 	Index index_u(index);
@@ -300,7 +300,7 @@ void DPropertyExtractor::calculateMAGCallback(
 	index_d.at(spin_index) = 1;
 	for(int n = 0; n < pe->dSolver->getModel()->getBasisSize(); n++){
 		double weight;
-		if(statistics == Model::Statistics::FermiDirac){
+		if(statistics == Statistics::FermiDirac){
 			weight = Functions::fermiDiracDistribution(eigen_values[n],
 									pe->dSolver->getModel()->getChemicalPotential(),
 									pe->dSolver->getModel()->getTemperature());
