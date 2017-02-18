@@ -23,6 +23,7 @@
 #ifndef COM_DAFER45_TBTK_ED_PROPERTY_EXTRACTOR
 #define COM_DAFER45_TBTK_ED_PROPERTY_EXTRACTOR
 
+#include "ChebyshevSolver.h"
 #include "ExactDiagonalizationSolver.h"
 #include "PropertyExtractor.h"
 
@@ -37,6 +38,13 @@ public:
 
 	/** Destructor. */
 	~EDPropertyExtractor();
+
+	/** Calculate Green's function. */
+	std::complex<double>* calculateGreensFunction(
+		Index to,
+		Index from,
+		ChebyshevSolver::GreensFunctionType type = ChebyshevSolver::GreensFunctionType::Retarded
+	);
 private:
 	/** DiagonalizationSolver to work on. */
 	ExactDiagonalizationSolver *edSolver;

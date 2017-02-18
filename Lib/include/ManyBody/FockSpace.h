@@ -30,6 +30,7 @@
 #include "FockState.h"
 #include "FockStateMap.h"
 #include "FockStateRule.h"
+#include "FockStateRuleSet.h"
 #include "HoppingAmplitudeSet.h"
 #include "LadderOperator.h"
 #include "LookupTableMap.h"
@@ -95,6 +96,11 @@ public:
 	/** Create FockStateMap. */
 	FockStateMap::FockStateMap<BIT_REGISTER>* createFockStateMap(
 		std::vector<FockStateRule::WrapperRule> rules
+	) const;
+
+	/** Create FockStateMap. */
+	FockStateMap::FockStateMap<BIT_REGISTER>* createFockStateMap(
+		const FockStateRuleSet &rules
 	) const;
 
 	/** Get amplitude set. */
@@ -239,7 +245,7 @@ FockStateMap::FockStateMap<BIT_REGISTER>* FockSpace<BIT_REGISTER>::createFockSta
 
 template<typename BIT_REGISTER>
 FockStateMap::FockStateMap<BIT_REGISTER>* FockSpace<BIT_REGISTER>::createFockStateMap(const FockStateRule::FockStateRule &rule) const{
-	FockStateMap::LookupTableMap<BIT_REGISTER> *fockStateMap = new FockStateMap::LookupTableMap<BIT_REGISTER>(
+/*	FockStateMap::LookupTableMap<BIT_REGISTER> *fockStateMap = new FockStateMap::LookupTableMap<BIT_REGISTER>(
 		exponentialDimension
 	);
 
@@ -251,14 +257,18 @@ FockStateMap::FockStateMap<BIT_REGISTER>* FockSpace<BIT_REGISTER>::createFockSta
 		fockState.getBitRegister()++;
 	}
 
-	return fockStateMap;
+	return fockStateMap;*/
+
+	FockStateRuleSet fockStateRuleSet;
+	fockStateRuleSet.addFockStateRule(rule);
+	return createFockStateMap(fockStateRuleSet);
 }
 
 template<typename BIT_REGISTER>
 FockStateMap::FockStateMap<BIT_REGISTER>* FockSpace<BIT_REGISTER>::createFockStateMap(
 	std::initializer_list<const FockStateRule::WrapperRule> rules
 ) const{
-	FockStateMap::LookupTableMap<BIT_REGISTER> *fockStateMap = new FockStateMap::LookupTableMap<BIT_REGISTER>(
+/*	FockStateMap::LookupTableMap<BIT_REGISTER> *fockStateMap = new FockStateMap::LookupTableMap<BIT_REGISTER>(
 		exponentialDimension
 	);
 
@@ -287,14 +297,19 @@ FockStateMap::FockStateMap<BIT_REGISTER>* FockSpace<BIT_REGISTER>::createFockSta
 		}
 	}
 
-	return fockStateMap;
+	return fockStateMap;*/
+
+	FockStateRuleSet fockStateRuleSet;
+	for(unsigned int n = 0; n < rules.size(); n++)
+		fockStateRuleSet.addFockStateRule(*(rules.begin()+n));
+	return createFockStateMap(fockStateRuleSet);
 }
 
 template<typename BIT_REGISTER>
 FockStateMap::FockStateMap<BIT_REGISTER>* FockSpace<BIT_REGISTER>::createFockStateMap(
 	std::vector<FockStateRule::WrapperRule> rules
 ) const{
-	FockStateMap::LookupTableMap<BIT_REGISTER> *fockStateMap = new FockStateMap::LookupTableMap<BIT_REGISTER>(
+/*	FockStateMap::LookupTableMap<BIT_REGISTER> *fockStateMap = new FockStateMap::LookupTableMap<BIT_REGISTER>(
 		exponentialDimension
 	);
 
@@ -317,6 +332,39 @@ FockStateMap::FockStateMap<BIT_REGISTER>* FockSpace<BIT_REGISTER>::createFockSta
 			}
 
 			if(satisfiesAllRules)
+				fockStateMap->addState(fockState);
+
+			fockState.getBitRegister()++;
+		}
+	}
+
+	return fockStateMap;*/
+
+	FockStateRuleSet fockStateRuleSet;
+	for(unsigned int n = 0; n < rules.size(); n++)
+		fockStateRuleSet.addFockStateRule(rules.at(n));
+	return createFockStateMap(fockStateRuleSet);
+}
+
+template<typename BIT_REGISTER>
+FockStateMap::FockStateMap<BIT_REGISTER>* FockSpace<BIT_REGISTER>::createFockStateMap(
+	const FockStateRuleSet &rules
+) const{
+	FockStateMap::LookupTableMap<BIT_REGISTER> *fockStateMap = new FockStateMap::LookupTableMap<BIT_REGISTER>(
+		exponentialDimension
+	);
+
+	if(rules.getSize() == 0){
+		FockStateMap::DefaultMap<BIT_REGISTER> *fockStateMap = new FockStateMap::DefaultMap<BIT_REGISTER>(
+			exponentialDimension
+		);
+
+		return fockStateMap;
+	}
+	else{
+		FockState<BIT_REGISTER> fockState = getVacuumState();
+		for(unsigned int n = 0; n < (unsigned int)(1 << exponentialDimension); n++){
+			if(rules.isSatisfied(*this, fockState))
 				fockStateMap->addState(fockState);
 
 			fockState.getBitRegister()++;

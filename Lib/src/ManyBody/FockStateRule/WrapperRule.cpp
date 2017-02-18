@@ -26,11 +26,17 @@ namespace FockStateRule{
 
 WrapperRule::WrapperRule(
 	const FockStateRule &fockStateRule
-){
+) :
+	FockStateRule(FockStateRuleID::WrapperRule)
+{
 	this->fockStateRule = fockStateRule.clone();
 }
 
-WrapperRule::WrapperRule(const WrapperRule &wrapperRule){
+WrapperRule::WrapperRule(
+	const WrapperRule &wrapperRule
+) :
+	FockStateRule(FockStateRuleID::WrapperRule)
+{
 	this->fockStateRule = (FockStateRule*)wrapperRule.clone();
 }
 
@@ -60,6 +66,12 @@ bool WrapperRule::isSatisfied(
 	const FockState<ExtensiveBitRegister> &fockState
 ) const{
 	return fockStateRule->isSatisfied(fockSpace, fockState);
+}
+
+bool WrapperRule::operator==(const FockStateRule& rhs) const{
+	//Note the order is important here. If rhs is moved to the left, an
+	//infinite recursion will occur if the rhs is a WrapperRule.
+	return (rhs == *fockStateRule);
 }
 
 };	//End of namespace FockSpaceRule

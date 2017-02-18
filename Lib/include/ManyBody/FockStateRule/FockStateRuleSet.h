@@ -14,71 +14,71 @@
  */
 
 /** @package TBTKcalc
- *  @file FockStateSumRule.h
- *  @brief FockStateSumRule.
+ *  @file FockStateRuleSet.h
+ *  @brief FockStateRuleSet.
  *
  *  @author Kristofer Björnson
  */
 
-#ifndef COM_DAFER45_TBTK_SUM_RULE
-#define COM_DAFER45_TBTK_SUM_RULE
+#ifndef COM_DAFER45_TBTK_FOCK_STATE_RULE_SET
+#define COM_DAFER45_TBTK_FOCK_STATE_RULE_SET
 
-#include "FockSpace.h"
 #include "FockStateRule.h"
-#include "Index.h"
+#include "WrapperRule.h"
 
-#include <initializer_list>
 #include <vector>
 
 namespace TBTK{
-namespace FockStateRule{
 
-class SumRule : public FockStateRule{
+class FockStateRuleSet{
 public:
 	/** Constructor */
-	SumRule(
-		std::initializer_list<Index> stateIndices,
-		unsigned int numParticles
-	);
-
-	/** Constructor */
-	SumRule(
-		std::vector<Index> stateIndices,
-		unsigned int numParticles
-	);
+	FockStateRuleSet();
 
 	/** Destructor. */
-	virtual ~SumRule();
-
-	/** Clone SumRule. */
-	virtual SumRule* clone() const;
+	~FockStateRuleSet();
 
 	/** Check whether a given FockState fullfills the rule with respect to
 	 *  a particular FockSpace. */
-	virtual bool isSatisfied(
+	bool isSatisfied(
 		const FockSpace<BitRegister> &fockSpace,
 		const FockState<BitRegister> &fockState
 	) const;
 
 	/** Check whether a given FockState fullfills the rule with respect to
 	 *  a particular FockSpace. */
-	virtual bool isSatisfied(
+	bool isSatisfied(
 		const FockSpace<ExtensiveBitRegister> &fockSpace,
 		const FockState<ExtensiveBitRegister> &fockState
 	) const;
 
-	/** Comparison operator. */
-	virtual bool operator==(const FockStateRule &rhs) const;
-private:
-	/** Indices to sum over. */
-	std::vector<Index> stateIndices;
+	/** Add FockStateRule. */
+	void addFockStateRule(const FockStateRule::WrapperRule &fockStateRule);
 
-	/** Number of particles that the states corresponding to the indices
-	 *  stored in stateIndices are required to sum up to. */
-	unsigned int numParticles;
+	/** Get size. */
+	unsigned int getSize() const;
+
+	/** Comparison operator. */
+	bool operator==(const FockStateRuleSet &rhs) const;
+private:
+	/** FockStateRules. */
+	std::vector<FockStateRule::WrapperRule> fockStateRules;
 };
 
-};	//End of namespace FockStateRule
+inline void FockStateRuleSet::addFockStateRule(
+	const FockStateRule::WrapperRule &fockStateRule
+){
+	for(unsigned int n = 0; n < fockStateRules.size(); n++)
+		if(fockStateRules.at(n) == fockStateRule)
+			return;
+
+	fockStateRules.push_back(fockStateRule);
+}
+
+inline unsigned int FockStateRuleSet::getSize() const{
+	return fockStateRules.size();
+}
+
 };	//End of namespace TBTK
 
 #endif

@@ -27,6 +27,7 @@
 #include "BitRegister.h"
 #include "ExtensiveBitRegister.h"
 #include "FockSpace.h"
+#include "FockStateRuleSet.h"
 #include "InteractionAmplitudeSet.h"
 #include "SingleParticleContext.h"
 
@@ -71,6 +72,9 @@ public:
 
 	/** Get InteractionAmplitudeSet. */
 	const InteractionAmplitudeSet* getInteractionAmplitudeSet() const;
+
+	/** Get FockStateRules. */
+	const FockStateRuleSet& getFockStateRuleSet() const;
 private:
 	/** Pointer to FockSpace using BitRegsiter. */
 	std::shared_ptr<FockSpace<BitRegister>> brFockSpace;
@@ -79,7 +83,8 @@ private:
 	std::shared_ptr<FockSpace<ExtensiveBitRegister>> ebrFockSpace;
 
 	/** Rules specifying the relevant subspace. */
-	std::vector<FockStateRule::WrapperRule> rules;
+//	std::vector<FockStateRule::WrapperRule> fockStateRules;
+	FockStateRuleSet fockStateRuleSet;
 
 	/** Interaction amplitude set. */
 	std::shared_ptr<InteractionAmplitudeSet> interactionAmplitudeSet;
@@ -108,7 +113,8 @@ inline FockSpace<ExtensiveBitRegister>* ManyBodyContext::getFockSpaceExtensiveBi
 }
 
 inline void ManyBodyContext::addRule(const FockStateRule::WrapperRule rule){
-	rules.push_back(rule);
+//	fockStateRules.push_back(rule);
+	fockStateRuleSet.addFockStateRule(rule);
 }
 
 inline void ManyBodyContext::addIA(InteractionAmplitude ia){
@@ -117,6 +123,11 @@ inline void ManyBodyContext::addIA(InteractionAmplitude ia){
 
 inline const InteractionAmplitudeSet* ManyBodyContext::getInteractionAmplitudeSet() const{
 	return interactionAmplitudeSet.get();
+}
+
+inline const FockStateRuleSet& ManyBodyContext::getFockStateRuleSet() const{
+//	return fockStateRules;
+	return fockStateRuleSet;
 }
 
 };	//End of namespace TBTK

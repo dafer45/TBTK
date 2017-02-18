@@ -64,6 +64,9 @@ public:
 		const FockSpace<ExtensiveBitRegister> &fockSpace,
 		const FockState<ExtensiveBitRegister> &fockState
 	) const;
+
+	/** Comparison operator. */
+	virtual bool operator==(const FockStateRule &rhs) const;
 private:
 	/** Indices to add. */
 	std::vector<Index> addStateIndices;

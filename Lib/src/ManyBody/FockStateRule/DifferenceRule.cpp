@@ -28,7 +28,9 @@ DifferenceRule::DifferenceRule(
 	std::initializer_list<Index> addStateIndices,
 	std::initializer_list<Index> subtractStateIndices,
 	int difference
-){
+) :
+	FockStateRule(FockStateRuleID::DifferenceRule)
+{
 	for(unsigned int n = 0; n < addStateIndices.size(); n++)
 		this->addStateIndices.push_back(*(addStateIndices.begin()+n));
 
@@ -42,7 +44,9 @@ DifferenceRule::DifferenceRule(
 	std::vector<Index> addStateIndices,
 	std::vector<Index> subtractStateIndices,
 	int difference
-){
+) :
+	FockStateRule(FockStateRuleID::DifferenceRule)
+{
 	for(unsigned int n = 0; n < addStateIndices.size(); n++)
 		this->addStateIndices.push_back(*(addStateIndices.begin()+n));
 
@@ -90,6 +94,36 @@ bool DifferenceRule::isSatisfied(
 		counter -= fockSpace.getSumParticles(fockState, subtractStateIndices.at(n));
 
 	return (counter == difference);
+}
+
+bool DifferenceRule::operator==(const FockStateRule &rhs) const{
+	switch(rhs.getFockStateRuleID()){
+	case FockStateRuleID::WrapperRule:
+		//The order is important. Infinite recurison will occur if rhs
+		//is on the right.
+		return (rhs == *this);
+	case FockStateRuleID::DifferenceRule:
+		if(addStateIndices.size() != ((const DifferenceRule&)rhs).addStateIndices.size())
+			return false;
+
+		if(subtractStateIndices.size() != ((const DifferenceRule&)rhs).subtractStateIndices.size())
+			return false;
+
+		if(difference != ((const DifferenceRule&)rhs).difference)
+			return false;
+
+		for(unsigned int n = 0; n < addStateIndices.size(); n++)
+			if(!addStateIndices.at(n).equals(((const DifferenceRule&)rhs).addStateIndices.at(n), true))
+				return false;
+
+		for(unsigned int n = 0; n < subtractStateIndices.size(); n++)
+			if(!subtractStateIndices.at(n).equals(((const DifferenceRule&)rhs).subtractStateIndices.at(n), true))
+				return false;
+
+		return true;
+	default:
+		return false;
+	}
 }
 
 };	//End of namespace FockStateRule

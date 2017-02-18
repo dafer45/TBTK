@@ -2,6 +2,7 @@
 #define COM_DAFER45_TBTK_EXACT_DIAGONALIZATION_SOLVER
 
 #include "DiagonalizationSolver.h"
+#include "FockStateRuleSet.h"
 #include "InteractionAmplitudeSet.h"
 #include "Model.h"
 #include "ManyBodyContext.h"
@@ -24,6 +25,12 @@ public:
 	/** Add FockStateRule. */
 	unsigned int addSubspace(std::initializer_list<const FockStateRule::WrapperRule> rules);
 
+	/** Add FockStateRule. */
+	unsigned int addSubspace(std::vector<FockStateRule::WrapperRule> rules);
+
+	/** Add FockStateRule. */
+	unsigned int addSubspace(const FockStateRuleSet &rules);
+
 	/** Run calculation. */
 	void run(unsigned int subspace);
 
@@ -43,6 +50,9 @@ public:
 		int state,
 		const Index &index
 	);
+
+	/** Get Model. */
+	Model* getModel();
 private:
 	/** Model to work on. */
 	Model *model;
@@ -56,11 +66,22 @@ private:
 			std::initializer_list<const FockStateRule::WrapperRule> rules
 		);
 
+		/** Constructor. */
+		SubspaceContext(
+			std::vector<FockStateRule::WrapperRule> rules
+		);
+
+		/** Constructor. */
+		SubspaceContext(
+			const FockStateRuleSet &rules
+		);
+
 		/** Destructor. */
 		~SubspaceContext();
 
 		/** Subspace rules. */
-		std::vector<FockStateRule::WrapperRule> rules;
+//		std::vector<FockStateRule::WrapperRule> rules;
+		FockStateRuleSet fockStateRuleSet;
 
 		/** Pointer to many-body model. */
 		Model *manyBodyModel;
@@ -101,6 +122,10 @@ inline const std::complex<double> ExactDiagonalizationSolver::getAmplitude(
 		state,
 		index
 	);
+}
+
+inline Model* ExactDiagonalizationSolver::getModel(){
+	return model;
 }
 
 };	//End of namespace TBTK

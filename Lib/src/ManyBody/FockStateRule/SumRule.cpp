@@ -26,7 +26,9 @@ namespace FockStateRule{
 SumRule::SumRule(
 	std::initializer_list<Index> stateIndices,
 	unsigned int numParticles
-){
+) :
+	FockStateRule(FockStateRuleID::SumRule)
+{
 	for(unsigned int n = 0; n < stateIndices.size(); n++)
 		this->stateIndices.push_back(*(stateIndices.begin()+n));
 
@@ -36,7 +38,9 @@ SumRule::SumRule(
 SumRule::SumRule(
 	std::vector<Index> stateIndices,
 	unsigned int numParticles
-){
+) :
+	FockStateRule(FockStateRuleID::SumRule)
+{
 	for(unsigned int n = 0; n < stateIndices.size(); n++)
 		this->stateIndices.push_back(*(stateIndices.begin()+n));
 
@@ -71,6 +75,29 @@ bool SumRule::isSatisfied(
 		counter += fockSpace.getSumParticles(fockState, stateIndices.at(n));
 
 	return (counter == numParticles);
+}
+
+bool SumRule::operator==(const FockStateRule &rhs) const{
+	switch(rhs.getFockStateRuleID()){
+	case FockStateRuleID::WrapperRule:
+		//The order is important. Infinite recursion will occur if rhs
+		//is on the right.
+		return (rhs == *this);
+	case FockStateRuleID::SumRule:
+		if(numParticles != ((const SumRule&)rhs).numParticles)
+			return false;
+
+		if(stateIndices.size() != ((const SumRule&)rhs).stateIndices.size())
+			return false;
+
+		for(unsigned int n = 0; n < stateIndices.size(); n++)
+			if(!stateIndices.at(n).equals(((const SumRule&)rhs).stateIndices.at(n)))
+				return false;
+
+		return true;
+	default:
+		return false;
+	}
 }
 
 };	//End of namespace FockStateRule

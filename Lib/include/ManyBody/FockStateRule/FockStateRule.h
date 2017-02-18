@@ -28,14 +28,28 @@
 #include "ExtensiveBitRegister.h"
 
 namespace TBTK{
-	template<typename BIT_REGISTER>
-	class FockSpace;
+
+template<typename BIT_REGISTER>
+class FockSpace;
+
 namespace FockStateRule{
 
 class FockStateRule{
 public:
+	/** List of FockStateRule identifiers. Official supported
+	 *  FockStateRules are given unique identifiers. FockStateRules not
+	 *  (yet) supported should make sure they use an identifier that does
+	 *  not clash with the officially supported ones [ideally a large
+	 *  random looking number (magic number) to also minimize accidental
+	 *  clashes with other FockStateRules that are not (yet) supported]. */
+	enum class FockStateRuleID {
+		WrapperRule = 0,
+		SumRule = 1,
+		DifferenceRule = 2
+	};
+
 	/** Constructor */
-	FockStateRule();
+	FockStateRule(FockStateRuleID fockStateRuleID);
 
 	/** Destructor. */
 	virtual ~FockStateRule();
@@ -56,8 +70,20 @@ public:
 		const FockSpace<ExtensiveBitRegister> &fockSpace,
 		const FockState<ExtensiveBitRegister> &fockState
 	) const = 0;
+
+	/** Comparison operator. */
+	virtual bool operator==(const FockStateRule &rhs) const = 0;
+
+	/** Get FockStateRule identifier. */
+	FockStateRuleID getFockStateRuleID() const;
 private:
+	/** FockStateRule identifier. */
+	FockStateRuleID fockStateRuleID;
 };
+
+inline FockStateRule::FockStateRuleID FockStateRule::getFockStateRuleID() const{
+	return fockStateRuleID;
+}
 
 };	//End of namespace FockSpaceRule
 };	//End of namespace TBTK

@@ -23,7 +23,8 @@
 namespace TBTK{
 namespace FockStateRule{
 
-FockStateRule::FockStateRule(){
+FockStateRule::FockStateRule(FockStateRuleID fockStateRuleID){
+	this->fockStateRuleID = fockStateRuleID;
 }
 
 FockStateRule::~FockStateRule(){

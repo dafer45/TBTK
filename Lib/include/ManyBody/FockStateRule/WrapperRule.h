@@ -28,7 +28,7 @@
 namespace TBTK{
 namespace FockStateRule{
 
-class WrapperRule{
+class WrapperRule : public FockStateRule{
 public:
 	/** Constructor */
 	WrapperRule(const FockStateRule &fockStateRule);
@@ -58,6 +58,9 @@ public:
 		const FockSpace<ExtensiveBitRegister> &fockSpace,
 		const FockState<ExtensiveBitRegister> &fockState
 	) const;
+
+	/** Comparison operator. */
+	virtual bool operator==(const FockStateRule &rhs) const;
 private:
 	FockStateRule *fockStateRule;
 };
