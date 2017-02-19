@@ -105,30 +105,8 @@ public:
 
 	/** Get amplitude set. */
 	const HoppingAmplitudeSet* getHoppingAmplitudeSet() const;
-
-	/** Returns the many-body Hilbert space index corresponding to the
-	 *  given FockState. */
-/*	unsigned int getBasisIndex(
-		const FockState<BIT_REGISTER> &fockState
-	) const;*/
-
-	/** Returns the FockState corresponding to the given many-body Hilbert
-	 *  space index. */
-//	FockState<BIT_REGISTER> getFockState(unsigned int state) const;
-
-	/** Get the many-body Hilbert space size. */
-//	unsigned int getBasisSize() const;
 private:
-	/** Particle number. If positive, only the Fock space is restricted to
-	 *  the subsapce with numParticle particles. If numParticles is
-	 *  negative, the Fock space is restricted to the subspace with up to
-	 *  -numParticles particles. */
-//	unsigned int numParticles;
-
-	/** Maximum number of particles per state. Is 1 for fermions, and
-	 *  |numParticles| for bosons. */
-//	unsigned int maxParticlesPerState;
-
+	/** Statistics. */
 	Statistics statistics;
 
 	/** Number of bits needed to encode all states. */
@@ -245,20 +223,6 @@ FockStateMap::FockStateMap<BIT_REGISTER>* FockSpace<BIT_REGISTER>::createFockSta
 
 template<typename BIT_REGISTER>
 FockStateMap::FockStateMap<BIT_REGISTER>* FockSpace<BIT_REGISTER>::createFockStateMap(const FockStateRule::FockStateRule &rule) const{
-/*	FockStateMap::LookupTableMap<BIT_REGISTER> *fockStateMap = new FockStateMap::LookupTableMap<BIT_REGISTER>(
-		exponentialDimension
-	);
-
-	FockState<BIT_REGISTER> fockState = getVacuumState();
-	for(unsigned int n = 0; n < (unsigned int)(1 << exponentialDimension); n++){
-		if(rule.isSatisfied(*this, fockState))
-			fockStateMap->addState(fockState);
-
-		fockState.getBitRegister()++;
-	}
-
-	return fockStateMap;*/
-
 	FockStateRuleSet fockStateRuleSet;
 	fockStateRuleSet.addFockStateRule(rule);
 	return createFockStateMap(fockStateRuleSet);
@@ -268,37 +232,6 @@ template<typename BIT_REGISTER>
 FockStateMap::FockStateMap<BIT_REGISTER>* FockSpace<BIT_REGISTER>::createFockStateMap(
 	std::initializer_list<const FockStateRule::WrapperRule> rules
 ) const{
-/*	FockStateMap::LookupTableMap<BIT_REGISTER> *fockStateMap = new FockStateMap::LookupTableMap<BIT_REGISTER>(
-		exponentialDimension
-	);
-
-	if(rules.size() == 0){
-		FockStateMap::DefaultMap<BIT_REGISTER> *fockStateMap = new FockStateMap::DefaultMap<BIT_REGISTER>(
-			exponentialDimension
-		);
-
-		return fockStateMap;
-	}
-	else{
-		FockState<BIT_REGISTER> fockState = getVacuumState();
-		for(unsigned int n = 0; n < (unsigned int)(1 << exponentialDimension); n++){
-			bool satisfiesAllRules = true;
-			for(unsigned int c = 0; c < rules.size(); c++){
-				if(!(rules.begin()+c)->isSatisfied(*this, fockState)){
-					satisfiesAllRules = false;
-					break;
-				}
-			}
-
-			if(satisfiesAllRules)
-				fockStateMap->addState(fockState);
-
-			fockState.getBitRegister()++;
-		}
-	}
-
-	return fockStateMap;*/
-
 	FockStateRuleSet fockStateRuleSet;
 	for(unsigned int n = 0; n < rules.size(); n++)
 		fockStateRuleSet.addFockStateRule(*(rules.begin()+n));
@@ -309,37 +242,6 @@ template<typename BIT_REGISTER>
 FockStateMap::FockStateMap<BIT_REGISTER>* FockSpace<BIT_REGISTER>::createFockStateMap(
 	std::vector<FockStateRule::WrapperRule> rules
 ) const{
-/*	FockStateMap::LookupTableMap<BIT_REGISTER> *fockStateMap = new FockStateMap::LookupTableMap<BIT_REGISTER>(
-		exponentialDimension
-	);
-
-	if(rules.size() == 0){
-		FockStateMap::DefaultMap<BIT_REGISTER> *fockStateMap = new FockStateMap::DefaultMap<BIT_REGISTER>(
-			exponentialDimension
-		);
-
-		return fockStateMap;
-	}
-	else{
-		FockState<BIT_REGISTER> fockState = getVacuumState();
-		for(unsigned int n = 0; n < (unsigned int)(1 << exponentialDimension); n++){
-			bool satisfiesAllRules = true;
-			for(unsigned int c = 0; c < rules.size(); c++){
-				if(!rules.at(c).isSatisfied(*this, fockState)){
-					satisfiesAllRules = false;
-					break;
-				}
-			}
-
-			if(satisfiesAllRules)
-				fockStateMap->addState(fockState);
-
-			fockState.getBitRegister()++;
-		}
-	}
-
-	return fockStateMap;*/
-
 	FockStateRuleSet fockStateRuleSet;
 	for(unsigned int n = 0; n < rules.size(); n++)
 		fockStateRuleSet.addFockStateRule(rules.at(n));
@@ -378,21 +280,6 @@ template<typename BIT_REGISTER>
 const HoppingAmplitudeSet* FockSpace<BIT_REGISTER>::getHoppingAmplitudeSet() const{
 	return hoppingAmplitudeSet;
 }
-
-/*template<typename BIT_REGISTER>
-unsigned int FockSpace<BIT_REGISTER>::getBasisIndex(const FockState<BIT_REGISTER> &fockState) const{
-	return fockStateMap->getBasisIndex(fockState);
-}
-
-template<typename BIT_REGISTER>
-FockState<BIT_REGISTER> FockSpace<BIT_REGISTER>::getFockState(unsigned int state) const{
-	return fockStateMap->getFockState(state);
-}
-
-template<typename BIT_REGISTER>
-unsigned int FockSpace<BIT_REGISTER>::getBasisSize() const{
-	return fockStateMap->getBasisSize();
-}*/
 
 };	//End of namespace TBTK
 
