@@ -2,7 +2,7 @@
 #define COM_DAFER45_TBTK_LADDER_OPERATOR
 
 #include "FockState.h"
-//#include "Model.h"
+#include "HoppingAmplitudeSet.h"
 #include "Statistics.h"
 
 namespace TBTK{
@@ -17,6 +17,7 @@ public:
 	LadderOperator(
 		Type type,
 		Statistics statistics,
+		const HoppingAmplitudeSet *hoppingAmplitudeSet,
 		unsigned int state,
 		unsigned int numBitsPerState,
 		unsigned int maxOccupation,
@@ -29,6 +30,9 @@ public:
 
 	/** Get type. */
 	Type getType() const;
+
+	/** Get physical Index of associated single-particle state. */
+	const Index getPhysicalIndex() const;
 
 	/** Get associated single-particle state. */
 	unsigned int getState() const;
@@ -46,6 +50,9 @@ private:
 
 	/** Operator statistics. */
 	Statistics statistics;
+
+	/** Pointer to the corresponding HoppingAmplitudeSet. */
+	const HoppingAmplitudeSet *hoppingAmplitudeSet;
 
 	/** Single-particle state index. */
 	unsigned int state;
@@ -71,6 +78,7 @@ template<typename BIT_REGISTER>
 LadderOperator<BIT_REGISTER>::LadderOperator(
 	Type type,
 	Statistics statistics,
+	const HoppingAmplitudeSet *hoppingAmplitudeSet,
 	unsigned int state,
 	unsigned int numBitsPerState,
 	unsigned int maxOccupation,
@@ -84,6 +92,7 @@ LadderOperator<BIT_REGISTER>::LadderOperator(
 {
 	this->type = type;
 	this->statistics = statistics;
+	this->hoppingAmplitudeSet = hoppingAmplitudeSet;
 	this->state = state;
 
 	leastSignificantBitIndex = state*numBitsPerState;
@@ -127,6 +136,11 @@ LadderOperator<BIT_REGISTER>::~LadderOperator(){
 template<typename BIT_REGISTER>
 typename LadderOperator<BIT_REGISTER>::Type LadderOperator<BIT_REGISTER>::getType() const{
 	return type;
+}
+
+template<typename BIT_REGISTER>
+const Index LadderOperator<BIT_REGISTER>::getPhysicalIndex() const{
+	return hoppingAmplitudeSet->getPhysicalIndex(state);
 }
 
 template<typename BIT_REGISTER>

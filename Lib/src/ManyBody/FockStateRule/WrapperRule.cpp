@@ -1,4 +1,4 @@
-	/* Copyright 2016 Kristofer Björnson
+/* Copyright 2017 Kristofer Björnson
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

@@ -42,6 +42,16 @@ public:
 	/** Clone WrapperRule. */
 	virtual WrapperRule* clone() const;
 
+	/** Implements FockStateRule::createNewRule(). */
+	virtual WrapperRule createNewRule(
+		const LadderOperator<BitRegister> &ladderOperator
+	) const;
+
+	/** Implements FockStateRule::createNewRule(). */
+	virtual WrapperRule createNewRule(
+		const LadderOperator<ExtensiveBitRegister> &ladderOperator
+	) const;
+
 	/** Asignment operator. */
 	WrapperRule& operator=(const WrapperRule &wrapperRule);
 
@@ -64,6 +74,34 @@ public:
 private:
 	FockStateRule *fockStateRule;
 };
+
+inline WrapperRule WrapperRule::createNewRule(
+	const LadderOperator<BitRegister> &ladderOperator
+) const{
+	return WrapperRule(fockStateRule->createNewRule(ladderOperator));
+}
+
+inline WrapperRule WrapperRule::createNewRule(
+	const LadderOperator<ExtensiveBitRegister> &ladderOperator
+) const{
+	return WrapperRule(fockStateRule->createNewRule(ladderOperator));
+}
+
+//Note: Declared in FockStateRule.h
+inline WrapperRule operator*(
+	const LadderOperator<BitRegister> &ladderOperator,
+	const FockStateRule &fockStateRule
+){
+	return fockStateRule.createNewRule(ladderOperator);
+}
+
+//Note: Declared in FockStateRule.h
+inline WrapperRule operator*(
+	const LadderOperator<ExtensiveBitRegister> &ladderOperator,
+	const FockStateRule &fockStateRule
+){
+	return fockStateRule.createNewRule(ladderOperator);
+}
 
 };	//End of namespace FockSpaceRule
 };	//End of namespace TBTK

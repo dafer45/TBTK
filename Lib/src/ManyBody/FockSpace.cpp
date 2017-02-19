@@ -88,6 +88,7 @@ FockSpace<BitRegister>::FockSpace(
 			LadderOperator<BitRegister>(
 				LadderOperator<BitRegister>::Type::Creation,
 				statistics,
+				hoppingAmplitudeSet,
 				n,
 				numBitsPerState,
 				maxParticlesPerState,
@@ -97,6 +98,7 @@ FockSpace<BitRegister>::FockSpace(
 			LadderOperator<BitRegister>(
 				LadderOperator<BitRegister>::Type::Annihilation,
 				statistics,
+				hoppingAmplitudeSet,
 				n,
 				numBitsPerState,
 				maxParticlesPerState,
@@ -184,6 +186,7 @@ FockSpace<ExtensiveBitRegister>::FockSpace(
 			LadderOperator<ExtensiveBitRegister>(
 				LadderOperator<ExtensiveBitRegister>::Type::Creation,
 				statistics,
+				hoppingAmplitudeSet,
 				n,
 				numBitsPerState,
 				maxParticlesPerState,
@@ -193,6 +196,7 @@ FockSpace<ExtensiveBitRegister>::FockSpace(
 			LadderOperator<ExtensiveBitRegister>(
 				LadderOperator<ExtensiveBitRegister>::Type::Annihilation,
 				statistics,
+				hoppingAmplitudeSet,
 				n,
 				numBitsPerState,
 				maxParticlesPerState,

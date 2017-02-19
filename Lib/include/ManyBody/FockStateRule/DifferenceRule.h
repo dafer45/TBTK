@@ -51,6 +51,16 @@ public:
 	/** Clone DifferenceRule. */
 	virtual DifferenceRule* clone() const;
 
+	/** Implements FockStateRule::createNewRule(). */
+	virtual WrapperRule createNewRule(
+		const LadderOperator<BitRegister> &ladderOperator
+	) const;
+
+	/** Implements FockStateRule::createNewRule(). */
+	virtual WrapperRule createNewRule(
+		const LadderOperator<ExtensiveBitRegister> &ladderOperator
+	) const;
+
 	/** Check whether a given FockState fullfills the rule with respect to
 	 *  a particular FockSpace. */
 	virtual bool isSatisfied(

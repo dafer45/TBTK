@@ -21,6 +21,10 @@
 #include "DifferenceRule.h"
 #include "FockSpace.h"
 
+#include <algorithm>
+
+using namespace std;
+
 namespace TBTK{
 namespace FockStateRule{
 
@@ -34,8 +38,15 @@ DifferenceRule::DifferenceRule(
 	for(unsigned int n = 0; n < addStateIndices.size(); n++)
 		this->addStateIndices.push_back(*(addStateIndices.begin()+n));
 
+	sort(this->addStateIndices.begin(), this->addStateIndices.end());
+
 	for(unsigned int n = 0; n < subtractStateIndices.size(); n++)
 		this->subtractStateIndices.push_back(*(subtractStateIndices.begin()+n));
+
+	sort(
+		this->subtractStateIndices.begin(),
+		this->subtractStateIndices.end()
+	);
 
 	this->difference = difference;
 }
@@ -50,8 +61,15 @@ DifferenceRule::DifferenceRule(
 	for(unsigned int n = 0; n < addStateIndices.size(); n++)
 		this->addStateIndices.push_back(*(addStateIndices.begin()+n));
 
+	sort(this->addStateIndices.begin(), this->addStateIndices.end());
+
 	for(unsigned int n = 0; n < subtractStateIndices.size(); n++)
 		this->subtractStateIndices.push_back(*(subtractStateIndices.begin()+n));
+
+	sort(
+		this->subtractStateIndices.begin(),
+		this->subtractStateIndices.end()
+	);
 
 	this->difference = difference;
 }
@@ -65,6 +83,68 @@ DifferenceRule* DifferenceRule::clone() const{
 		addStateIndices,
 		subtractStateIndices,
 		difference
+	);
+}
+
+WrapperRule DifferenceRule::createNewRule(
+	const LadderOperator<BitRegister> &ladderOperator
+) const{
+	Index stateIndex = ladderOperator.getPhysicalIndex();
+	LadderOperator<BitRegister>::Type type = ladderOperator.getType();
+
+	int difference = this->difference;
+
+	int sign;
+	if(type == LadderOperator<BitRegister>::Type::Creation)
+		sign = 1;
+	else
+		sign = -1;
+
+	for(unsigned int n = 0; n < addStateIndices.size(); n++)
+		if(addStateIndices.at(n).equals(stateIndex, true))
+			difference += sign;
+
+	for(unsigned int n = 0; n < subtractStateIndices.size(); n++)
+		if(subtractStateIndices.at(n).equals(stateIndex, true))
+			difference -= sign;
+
+	return WrapperRule(
+		DifferenceRule(
+			addStateIndices,
+			subtractStateIndices,
+			difference
+		)
+	);
+}
+
+WrapperRule DifferenceRule::createNewRule(
+	const LadderOperator<ExtensiveBitRegister> &ladderOperator
+) const{
+	Index stateIndex = ladderOperator.getPhysicalIndex();
+	LadderOperator<ExtensiveBitRegister>::Type type = ladderOperator.getType();
+
+	int difference = this->difference;
+
+	int sign;
+	if(type == LadderOperator<ExtensiveBitRegister>::Type::Creation)
+		sign = 1;
+	else
+		sign = -1;
+
+	for(unsigned int n = 0; n < addStateIndices.size(); n++)
+		if(addStateIndices.at(n).equals(stateIndex, true))
+			difference += sign;
+
+	for(unsigned int n = 0; n < subtractStateIndices.size(); n++)
+		if(subtractStateIndices.at(n).equals(stateIndex, true))
+			difference -= sign;
+
+	return WrapperRule(
+		DifferenceRule(
+			addStateIndices,
+			subtractStateIndices,
+			difference
+		)
 	);
 }
 

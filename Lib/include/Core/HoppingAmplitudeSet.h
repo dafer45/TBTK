@@ -75,6 +75,9 @@ public:
 	 *  @param index 'From'-index to get Hilbert space index for. */
 	int getBasisIndex(const Index &index) const;
 
+	/** Get Physical index for given Hilbert space basis index. */
+	Index getPhysicalIndex(int basisIndex) const;
+
 	/** Get size of Hilbert space. */
 	int getBasisSize() const;
 
@@ -233,6 +236,10 @@ inline const std::vector<HoppingAmplitude>* HoppingAmplitudeSet::getHAs(
 
 inline int HoppingAmplitudeSet::getBasisIndex(const Index &index) const{
 	return tree.getBasisIndex(index);
+}
+
+inline Index HoppingAmplitudeSet::getPhysicalIndex(int basisIndex) const{
+	return tree.getPhysicalIndex(basisIndex);
 }
 
 inline int HoppingAmplitudeSet::getBasisSize() const{

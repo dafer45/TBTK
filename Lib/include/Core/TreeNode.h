@@ -69,7 +69,7 @@ public:
 	/** Get Hilbert space basis index for given physical index. */
 	int getBasisIndex(const Index &index) const;
 
-	/** Get physical index for given Hilbert space absis index. */
+	/** Get physical index for given Hilbert space basis index. */
 	Index getPhysicalIndex(int basisIndex) const;
 
 	/** Generate Hilbert space indices. No more @link HoppingAmplitude

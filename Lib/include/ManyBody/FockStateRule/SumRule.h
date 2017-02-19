@@ -38,13 +38,13 @@ public:
 	/** Constructor */
 	SumRule(
 		std::initializer_list<Index> stateIndices,
-		unsigned int numParticles
+		int numParticles
 	);
 
 	/** Constructor */
 	SumRule(
 		std::vector<Index> stateIndices,
-		unsigned int numParticles
+		int numParticles
 	);
 
 	/** Destructor. */
@@ -52,6 +52,16 @@ public:
 
 	/** Clone SumRule. */
 	virtual SumRule* clone() const;
+
+	/** Implements FockStateRule::createNewRule(). */
+	virtual WrapperRule createNewRule(
+		const LadderOperator<BitRegister> &ladderOperator
+	) const;
+
+	/** Implements FockStateRule::createNewRule(). */
+	virtual WrapperRule createNewRule(
+		const LadderOperator<ExtensiveBitRegister> &ladderOperator
+	) const;
 
 	/** Check whether a given FockState fullfills the rule with respect to
 	 *  a particular FockSpace. */
@@ -75,7 +85,7 @@ private:
 
 	/** Number of particles that the states corresponding to the indices
 	 *  stored in stateIndices are required to sum up to. */
-	unsigned int numParticles;
+	int numParticles;
 };
 
 };	//End of namespace FockStateRule

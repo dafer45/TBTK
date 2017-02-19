@@ -26,6 +26,7 @@
 #include "FockState.h"
 #include "BitRegister.h"
 #include "ExtensiveBitRegister.h"
+#include "LadderOperator.h"
 
 namespace TBTK{
 
@@ -33,6 +34,8 @@ template<typename BIT_REGISTER>
 class FockSpace;
 
 namespace FockStateRule{
+
+class WrapperRule;
 
 class FockStateRule{
 public:
@@ -57,6 +60,18 @@ public:
 	/** Clone FockStateRule. */
 	virtual FockStateRule* clone() const = 0;
 
+	/** Create a new rule that describes the space the state is in after
+	 *  the given ladder operator has been applied to the state. */
+	virtual WrapperRule createNewRule(
+		const LadderOperator<BitRegister> &ladderOperator
+	) const = 0;
+
+	/** Create a new rule that describes the space the state is in after
+	 *  the given ladder operator has been applied to the state. */
+	virtual WrapperRule createNewRule(
+		const LadderOperator<ExtensiveBitRegister> &ladderOperator
+	) const = 0;
+
 	/** Check whether a given FockState fullfills the rule with respect to
 	 *  a particular FockSpace. */
 	virtual bool isSatisfied(
@@ -74,6 +89,28 @@ public:
 	/** Comparison operator. */
 	virtual bool operator==(const FockStateRule &rhs) const = 0;
 
+	/** Multiplication operator between a LadderOperator and a
+	 *  FockStateRule. Alternative notation for
+	 *  FockStateRule::createNewRule().
+	 *
+	 * Note: Implemented in Wrapper.h to await complete definition of
+	 * WrapperRule. */
+	friend WrapperRule operator*(
+		const LadderOperator<BitRegister> &ladderOperator,
+		const FockStateRule &fockStateRule
+	);
+
+	/** Multiplication operator between a LadderOperator and a
+	 *  FockStateRule. Alternative notation for
+	 *  FockStateRule::createNewRule().
+	 *
+	 * Note: Implemented in Wrapper.h to await complete definition of
+	 * WrapperRule. */
+	friend WrapperRule operator*(
+		const LadderOperator<ExtensiveBitRegister> &ladderOperator,
+		const FockStateRule &fockStateRule
+	);
+
 	/** Get FockStateRule identifier. */
 	FockStateRuleID getFockStateRuleID() const;
 private:
@@ -84,6 +121,13 @@ private:
 inline FockStateRule::FockStateRuleID FockStateRule::getFockStateRuleID() const{
 	return fockStateRuleID;
 }
+
+/*inline WrapperRule operator*(
+	const LadderOperator<BitRegister> &ladderOperator,
+	const FockStateRule &fockStateRule
+){
+	return fockStateRule.createNewRule(ladderOperator);
+}*/
 
 };	//End of namespace FockSpaceRule
 };	//End of namespace TBTK

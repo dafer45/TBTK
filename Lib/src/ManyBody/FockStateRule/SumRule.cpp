@@ -20,29 +20,37 @@
 
 #include "SumRule.h"
 
+#include <algorithm>
+
+using namespace std;
+
 namespace TBTK{
 namespace FockStateRule{
 
 SumRule::SumRule(
 	std::initializer_list<Index> stateIndices,
-	unsigned int numParticles
+	int numParticles
 ) :
 	FockStateRule(FockStateRuleID::SumRule)
 {
 	for(unsigned int n = 0; n < stateIndices.size(); n++)
 		this->stateIndices.push_back(*(stateIndices.begin()+n));
+
+	sort(this->stateIndices.begin(), this->stateIndices.end());
 
 	this->numParticles = numParticles;
 }
 
 SumRule::SumRule(
 	std::vector<Index> stateIndices,
-	unsigned int numParticles
+	int numParticles
 ) :
 	FockStateRule(FockStateRuleID::SumRule)
 {
 	for(unsigned int n = 0; n < stateIndices.size(); n++)
 		this->stateIndices.push_back(*(stateIndices.begin()+n));
+
+	sort(this->stateIndices.begin(), this->stateIndices.end());
 
 	this->numParticles = numParticles;
 }
@@ -55,11 +63,53 @@ SumRule* SumRule::clone() const{
 	return new SumRule(stateIndices, numParticles);
 }
 
+WrapperRule SumRule::createNewRule(
+	const LadderOperator<BitRegister> &ladderOperator
+) const{
+	Index stateIndex = ladderOperator.getPhysicalIndex();
+	LadderOperator<BitRegister>::Type type = ladderOperator.getType();
+
+	int numParticles = this->numParticles;
+
+	int sign = 0;
+	if(type == LadderOperator<BitRegister>::Type::Creation)
+		sign = 1;
+	else
+		sign = -1;
+
+	for(unsigned int n = 0; n < stateIndices.size(); n++)
+		if(stateIndices.at(n).equals(stateIndex, true))
+			numParticles += sign;
+
+	return WrapperRule(SumRule(stateIndices, numParticles));
+}
+
+WrapperRule SumRule::createNewRule(
+	const LadderOperator<ExtensiveBitRegister> &ladderOperator
+) const{
+	Index stateIndex = ladderOperator.getPhysicalIndex();
+	LadderOperator<ExtensiveBitRegister>::Type type = ladderOperator.getType();
+
+	int numParticles = this->numParticles;
+
+	int sign = 0;
+	if(type == LadderOperator<ExtensiveBitRegister>::Type::Creation)
+		sign = 1;
+	else
+		sign = -1;
+
+	for(unsigned int n = 0; n < stateIndices.size(); n++)
+		if(stateIndices.at(n).equals(stateIndex, true))
+			numParticles += sign;
+
+	return WrapperRule(SumRule(stateIndices, numParticles));
+}
+
 bool SumRule::isSatisfied(
 	const FockSpace<BitRegister> &fockSpace,
 	const FockState<BitRegister> &fockState
 ) const{
-	unsigned int counter = 0;
+	int counter = 0;
 	for(unsigned int n = 0; n < stateIndices.size(); n++)
 		counter += fockSpace.getSumParticles(fockState, stateIndices.at(n));
 
@@ -70,7 +120,7 @@ bool SumRule::isSatisfied(
 	const FockSpace<ExtensiveBitRegister> &fockSpace,
 	const FockState<ExtensiveBitRegister> &fockState
 ) const{
-	unsigned int counter = 0;
+	int counter = 0;
 	for(unsigned int n = 0; n < stateIndices.size(); n++)
 		counter += fockSpace.getSumParticles(fockState, stateIndices.at(n));
 
