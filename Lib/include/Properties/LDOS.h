@@ -27,6 +27,7 @@ namespace TBTK{
 	class APropertyExtractor;
 	class CPropertyExtractor;
 	class DPropertyExtractor;
+	class EDPropertyExtractor;
 	class FileReader;
 namespace Property{
 
@@ -108,6 +109,10 @@ private:
 	/** DPropertyExtractor is a friend class to allow it to write LDOS
 	 * data. */
 	friend class TBTK::DPropertyExtractor;
+
+	/** EDPropertyExtractor is a friend class to allow it to write LDOS
+	 * data. */
+	friend class TBTK::EDPropertyExtractor;
 
 	/** FileReader is a friend class to allow it to write LDOS data. */
 	friend class TBTK::FileReader;

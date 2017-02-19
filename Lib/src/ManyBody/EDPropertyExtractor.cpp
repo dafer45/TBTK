@@ -18,6 +18,57 @@ complex<double>* EDPropertyExtractor::calculateGreensFunction(
 	Index from,
 	ChebyshevSolver::GreensFunctionType type
 ){
+	switch(type){
+	case ChebyshevSolver::GreensFunctionType::Principal:
+	{
+		complex<double> *greensFunctionA = calculateGreensFunction(
+			to,
+			from,
+			ChebyshevSolver::GreensFunctionType::Advanced
+		);
+
+		complex<double> *greensFunctionR = calculateGreensFunction(
+			to,
+			from,
+			ChebyshevSolver::GreensFunctionType::Retarded
+		);
+
+		complex<double> *greensFunction = new complex<double>[energyResolution];
+		for(int n = 0; n < energyResolution; n++)
+			greensFunction[n] = (greensFunctionA[n] + greensFunctionR[n])/2.;
+
+		delete [] greensFunctionA;
+		delete [] greensFunctionR;
+
+		return greensFunction;
+	}
+	case ChebyshevSolver::GreensFunctionType::NonPrincipal:
+	{
+		complex<double> *greensFunctionA = calculateGreensFunction(
+			to,
+			from,
+			ChebyshevSolver::GreensFunctionType::Advanced
+		);
+
+		complex<double> *greensFunctionR = calculateGreensFunction(
+			to,
+			from,
+			ChebyshevSolver::GreensFunctionType::Retarded
+		);
+
+		complex<double> *greensFunction = new complex<double>[energyResolution];
+		for(int n = 0; n < energyResolution; n++)
+			greensFunction[n] = (greensFunctionA[n] - greensFunctionR[n])/2.;
+
+		delete [] greensFunctionA;
+		delete [] greensFunctionR;
+
+		return greensFunction;
+	}
+	default:
+		break;
+	}
+
 	ManyBodyContext *manyBodyContext = edSolver->getModel()->getManyBodyContext();
 
 	const FockStateRuleSet ruleSet0 = manyBodyContext->getFockStateRuleSet();
@@ -83,7 +134,7 @@ complex<double>* EDPropertyExtractor::calculateGreensFunction(
 				complex<double> a0 = edSolver->getAmplitude(subspaceID0, 0, {(int)c});
 				complex<double> a1 = edSolver->getAmplitude(subspaceID1, n, {(int)subspace1Index});
 
-				amplitude0 += conj(a1)*a0;
+				amplitude0 += conj(a1)*a0*(double)psi.getPrefactor();
 			}
 			complex<double> amplitude1 = 0.;
 			for(unsigned int c = 0; c < fockStateMap1->getBasisSize(); c++){
@@ -97,12 +148,12 @@ complex<double>* EDPropertyExtractor::calculateGreensFunction(
 				complex<double> a0 = edSolver->getAmplitude(subspaceID1, n, {(int)c});
 				complex<double> a1 = edSolver->getAmplitude(subspaceID0, 0, {(int)subspace0Index});
 
-				amplitude1 += conj(a1)*a0;
+				amplitude1 += conj(a1)*a0*(double)psi.getPrefactor();
 			}
 
 			int e = energyResolution*((-lowerBound + energySign*(E - groundStateEnergy))/(upperBound - lowerBound));
 			if(e >= 0 && e < energyResolution)
-				greensFunction[e] += conj(amplitude1)*amplitude0;
+				greensFunction[e] += amplitude1*amplitude0;
 		}
 
 		for(int n = 0; n < energyResolution; n++)
@@ -169,7 +220,7 @@ complex<double>* EDPropertyExtractor::calculateGreensFunction(
 				complex<double> a0 = edSolver->getAmplitude(subspaceID0, 0, {(int)c});
 				complex<double> a1 = edSolver->getAmplitude(subspaceID1, n, {(int)subspace1Index});
 
-				amplitude0 += conj(a1)*a0;
+				amplitude0 += conj(a1)*a0*(double)psi.getPrefactor();
 			}
 			complex<double> amplitude1 = 0.;
 			for(unsigned int c = 0; c < fockStateMap1->getBasisSize(); c++){
@@ -183,12 +234,12 @@ complex<double>* EDPropertyExtractor::calculateGreensFunction(
 				complex<double> a0 = edSolver->getAmplitude(subspaceID1, n, {(int)c});
 				complex<double> a1 = edSolver->getAmplitude(subspaceID0, 0, {(int)subspace0Index});
 
-				amplitude1 += conj(a1)*a0;
+				amplitude1 += conj(a1)*a0*(double)psi.getPrefactor();
 			}
 
 			int e = energyResolution*((-lowerBound + energySign*(E - groundStateEnergy))/(upperBound - lowerBound));
 			if(e >= 0 && e < energyResolution)
-				greensFunction[e] += conj(amplitude1)*amplitude0;
+				greensFunction[e] += amplitude1*amplitude0;
 		}
 
 		for(int n = 0; n < energyResolution; n++)
@@ -202,6 +253,225 @@ complex<double>* EDPropertyExtractor::calculateGreensFunction(
 			"Unknown BitRegister type.",
 			""
 		);
+	}
+}
+
+complex<double> EDPropertyExtractor::calculateExpectationValue(
+	Index to,
+	Index from
+){
+	TBTKNotYetImplemented("EDPropertyExtractor::calculateExpectationValue()");
+}
+
+Property::Density* EDPropertyExtractor::calculateDensity(
+	Index pattern,
+	Index ranges
+){
+	ensureCompliantRanges(pattern, ranges);
+
+	int lDimensions = 0;
+	int *lRanges;
+	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
+	Property::Density *density = new Property::Density(lDimensions, lRanges);
+
+	calculate(calculateDensityCallback, (void*)density->data, pattern, ranges, 0, 1);
+
+	return density;
+}
+
+Property::Magnetization* EDPropertyExtractor::calculateMagnetization(
+	Index pattern,
+	Index ranges
+){
+	hint = new int[1];
+	((int*)hint)[0] = -1;
+	for(unsigned int n = 0; n < pattern.size(); n++){
+		if(pattern.at(n) == IDX_SPIN){
+			((int*)hint)[0] = n;
+			pattern.at(n) = 0;
+			ranges.at(n) = 1;
+			break;
+		}
+	}
+	if(((int*)hint)[0] == -1){
+		delete [] (int*)hint;
+		TBTKExit(
+			"EDPropertyExtractor::calculateMagnetization()",
+			"No spin index found.",
+			"Use IDX_SPIN to indicate position of spin index."
+		);
+	}
+
+	ensureCompliantRanges(pattern, ranges);
+
+	int lDimensions;
+	int *lRanges;
+	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
+	Property::Magnetization *magnetization = new Property::Magnetization(
+		lDimensions,
+		lRanges
+	);
+
+	calculate(
+		calculateMagnetizationCallback,
+		(void*)magnetization->data,
+		pattern,
+		ranges,
+		0,
+		1
+	);
+
+	delete [] (int*)hint;
+
+	return magnetization;
+}
+
+Property::LDOS* EDPropertyExtractor::calculateLDOS(
+	Index pattern,
+	Index ranges
+){
+	ensureCompliantRanges(pattern, ranges);
+
+	int lDimensions;
+	int *lRanges;
+	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
+	Property::LDOS *ldos = new Property::LDOS(
+		lDimensions,
+		lRanges,
+		lowerBound,
+		upperBound,
+		energyResolution
+	);
+
+	calculate(
+		calculateLDOSCallback,
+		(void*)ldos->data,
+		pattern,
+		ranges,
+		0,
+		1
+	);
+
+	return ldos;
+}
+
+Property::SpinPolarizedLDOS* EDPropertyExtractor::calculateSpinPolarizedLDOS(
+	Index pattern,
+	Index ranges
+){
+	hint = new int[1];
+	((int*)hint)[0] = -1;
+	for(unsigned int n = 0; n < pattern.size(); n++){
+		if(pattern.at(n) == IDX_SPIN){
+			((int*)hint)[0] = n;
+			pattern.at(n) = 0;
+			ranges.at(n) = 1;
+			break;
+		}
+	}
+	if(((int*)hint)[0] == -1){
+		delete [] (int*)hint;
+		TBTKExit(
+			"EDPropertyExtractor::calculateSpinPolarizedLDOS()",
+			"No spin index found.",
+			"Use IDX_SPIN to indicate position of spin index."
+		);
+	}
+
+	ensureCompliantRanges(pattern, ranges);
+
+	int lDimensions;
+	int *lRanges;
+	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
+	Property::SpinPolarizedLDOS *spinPolarizedLDOS = new Property::SpinPolarizedLDOS(
+		lDimensions,
+		lRanges,
+		lowerBound,
+		upperBound,
+		energyResolution
+	);
+
+	calculate(
+		calculateSpinPolarizedLDOSCallback,
+		(void*)spinPolarizedLDOS->data,
+		pattern,
+		ranges,
+		0,
+		1
+	);
+
+	delete [] (int*) hint;
+
+	return spinPolarizedLDOS;
+}
+
+void EDPropertyExtractor::calculateDensityCallback(
+	PropertyExtractor *cb_this,
+	void *density,
+	const Index &index,
+	int offset
+){
+	TBTKNotYetImplemented("EDPropertyExtractor::calculateDensityCallback()");
+}
+
+void EDPropertyExtractor::calculateMagnetizationCallback(
+	PropertyExtractor *cb_this,
+	void *magnetization,
+	const Index &index,
+	int offset
+){
+	TBTKNotYetImplemented("EDPropertyExtractor::calculateMagnetizationCallback()");
+}
+
+void EDPropertyExtractor::calculateLDOSCallback(
+	PropertyExtractor *cb_this,
+	void *ldos,
+	const Index &index,
+	int offset
+){
+	EDPropertyExtractor *pe = (EDPropertyExtractor*)cb_this;
+
+	complex<double> *greensFunction = pe->calculateGreensFunction(
+		index,
+		index,
+		ChebyshevSolver::GreensFunctionType::NonPrincipal
+	);
+
+	const double dE = (pe->upperBound - pe->lowerBound)/pe->energyResolution;
+	for(int n = 0; n < pe->energyResolution; n++)
+		((double*)ldos)[pe->energyResolution*offset + n] += imag(greensFunction[n])/M_PI*dE;
+
+	delete [] greensFunction;
+}
+
+void EDPropertyExtractor::calculateSpinPolarizedLDOSCallback(
+	PropertyExtractor *cb_this,
+	void *spinPolarizedLDOS,
+	const Index &index,
+	int offset
+){
+	EDPropertyExtractor *pe = (EDPropertyExtractor*)cb_this;
+
+	int spinIndex = ((int*)(pe->hint))[0];
+	Index to(index);
+	Index from(index);
+	complex<double> *greensFunction;
+
+	const double dE = (pe->upperBound - pe->lowerBound)/pe->energyResolution;
+	for(unsigned int n = 0; n < 4; n++){
+		to.at(spinIndex) = n/2;
+		from.at(spinIndex) = n%2;
+
+		greensFunction = pe->calculateGreensFunction(
+			to,
+			from,
+			ChebyshevSolver::GreensFunctionType::NonPrincipal
+		);
+
+		for(int e = 0; e < pe->energyResolution; e++)
+			((complex<double>*)spinPolarizedLDOS)[4*pe->energyResolution*offset + 4*e + n] += imag(greensFunction[e])/M_PI*dE;
+
+		delete [] greensFunction;
 	}
 }
 

@@ -71,10 +71,16 @@ public:
 	);
 
 	/** Overrides PropertyExtractor::calculateExpectationValue(). */
-	virtual std::complex<double> calculateExpectationValue(Index to, Index from);
+	virtual std::complex<double> calculateExpectationValue(
+		Index to,
+		Index from
+	);
 
 	/** Overrides PropertyExtractor::calculateDensity(). */
-	virtual Property::Density* calculateDensity(Index pattern, Index ranges);
+	virtual Property::Density* calculateDensity(
+		Index pattern,
+		Index ranges
+	);
 
 	/** Overrides PropertyExtractor::calculateMagnetization(). */
 	virtual Property::Magnetization* calculateMagnetization(
