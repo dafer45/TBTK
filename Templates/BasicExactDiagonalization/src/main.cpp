@@ -94,13 +94,13 @@ int main(int argc, char **argv){
 
 	//Add rules determining what Fock space subspace the ground state
 	//belongs to.
-	manyBodyContext->addRule(	//Half-filling
+	manyBodyContext->addFockStateRule(		//Half-filling
 		FockStateRule::SumRule(
 			{{IDX_ALL, IDX_ALL, IDX_ALL}},	//Add all states
 			SIZE_X*SIZE_Y			//Total number of particles
 		)
 	);
-	manyBodyContext->addRule(	//Total spin = 0
+	manyBodyContext->addFockStateRule(		//Total spin = 0
 		FockStateRule::DifferenceRule(
 			{{IDX_ALL, IDX_ALL, 0}},	//Add up spins
 			{{IDX_ALL, IDX_ALL, 1}},	//Subtract down spins

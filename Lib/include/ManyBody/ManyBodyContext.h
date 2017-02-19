@@ -65,7 +65,7 @@ public:
 	FockSpace<ExtensiveBitRegister>* getFockSpaceExtensiveBitRegister();
 
 	/** Add rule that restricts the Fock space. */
-	void addRule(const FockStateRule::WrapperRule rule);
+	void addFockStateRule(const FockStateRule::WrapperRule rule);
 
 	/** Add InteractionAmplitude. */
 	void addIA(InteractionAmplitude ia);
@@ -112,8 +112,7 @@ inline FockSpace<ExtensiveBitRegister>* ManyBodyContext::getFockSpaceExtensiveBi
 	return ebrFockSpace.get();
 }
 
-inline void ManyBodyContext::addRule(const FockStateRule::WrapperRule rule){
-//	fockStateRules.push_back(rule);
+inline void ManyBodyContext::addFockStateRule(const FockStateRule::WrapperRule rule){
 	fockStateRuleSet.addFockStateRule(rule);
 }
 
@@ -126,7 +125,6 @@ inline const InteractionAmplitudeSet* ManyBodyContext::getInteractionAmplitudeSe
 }
 
 inline const FockStateRuleSet& ManyBodyContext::getFockStateRuleSet() const{
-//	return fockStateRules;
 	return fockStateRuleSet;
 }
 
