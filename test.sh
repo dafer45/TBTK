@@ -5,6 +5,7 @@ echo "# Running tests #"
 echo "#################"
 templates=(BasicChebyshev
 		BasicDiagonalization
+		BasicExactDiagonalization
 		CarbonNanotube
 		HexagonalLattice
 		PartialBilayer
