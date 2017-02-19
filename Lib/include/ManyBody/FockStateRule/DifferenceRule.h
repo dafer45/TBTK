@@ -77,6 +77,9 @@ public:
 
 	/** Comparison operator. */
 	virtual bool operator==(const FockStateRule &rhs) const;
+
+	/** Implements FockStateRule::print(). */
+	virtual void print() const;
 private:
 	/** Indices to add. */
 	std::vector<Index> addStateIndices;

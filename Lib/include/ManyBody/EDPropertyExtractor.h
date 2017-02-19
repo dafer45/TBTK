@@ -45,6 +45,9 @@ public:
 		Index from,
 		ChebyshevSolver::GreensFunctionType type = ChebyshevSolver::GreensFunctionType::Retarded
 	);
+
+	/**Overrider PropertyExtractor::calculateExpectationValue(). */
+	virtual std::complex<double> calculateExpectationValue(Index to, Index from);
 private:
 	/** DiagonalizationSolver to work on. */
 	ExactDiagonalizationSolver *edSolver;

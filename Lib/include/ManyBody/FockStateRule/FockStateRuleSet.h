@@ -60,6 +60,27 @@ public:
 
 	/** Comparison operator. */
 	bool operator==(const FockStateRuleSet &rhs) const;
+
+	/** Multiplication operator between a LadderOperator and a
+	 *  FockStateRuleSet. Creates a new FockStateRuleSet containing the
+	 *  FockStateRules that results from applying the operator to each
+	 *  FockStateRule in the current FockStateRuleSet. */
+	friend FockStateRuleSet operator*(
+		const LadderOperator<BitRegister> &ladderOperator,
+		const FockStateRuleSet &fockStateRuleSet
+	);
+
+	/** Multiplication operator between a LadderOperator and a
+	 *  FockStateRuleSet. Creates a new FockStateRuleSet containing the
+	 *  FockStateRules that results from applying the operator to each
+	 *  FockStateRule in the current FockStateRuleSet. */
+	friend FockStateRuleSet operator*(
+		const LadderOperator<ExtensiveBitRegister> &ladderOperator,
+		const FockStateRuleSet &fockStateRuleSet
+	);
+
+	/** Print FockStateRuleSet. */
+	void print() const;
 private:
 	/** FockStateRules. */
 	std::vector<FockStateRule::WrapperRule> fockStateRules;
@@ -77,6 +98,39 @@ inline void FockStateRuleSet::addFockStateRule(
 
 inline unsigned int FockStateRuleSet::getSize() const{
 	return fockStateRules.size();
+}
+
+inline FockStateRuleSet operator*(
+	const LadderOperator<BitRegister> &ladderOperator,
+	const FockStateRuleSet &fockStateRuleSet
+){
+	FockStateRuleSet newRuleSet;
+	for(unsigned int n = 0; n < fockStateRuleSet.fockStateRules.size(); n++)
+		newRuleSet.addFockStateRule(ladderOperator*fockStateRuleSet.fockStateRules.at(n));
+
+	return newRuleSet;
+}
+
+inline FockStateRuleSet operator*(
+	const LadderOperator<ExtensiveBitRegister> &ladderOperator,
+	const FockStateRuleSet &fockStateRuleSet
+){
+	FockStateRuleSet newRuleSet;
+	for(unsigned int n = 0; n < fockStateRuleSet.fockStateRules.size(); n++)
+		newRuleSet.addFockStateRule(ladderOperator*fockStateRuleSet.fockStateRules.at(n));
+
+	return newRuleSet;
+}
+
+inline void FockStateRuleSet::print() const{
+	Streams::out << "FockStateRuleSet{\n";
+	for(unsigned int n = 0; n < fockStateRules.size(); n++){
+		if(n > 0)
+			Streams::out << ",\n";
+		Streams::out << "\t";
+		fockStateRules.at(n).print();
+	}
+	Streams::out << "\n}\n";
 }
 
 };	//End of namespace TBTK

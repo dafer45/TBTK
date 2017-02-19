@@ -206,5 +206,23 @@ bool DifferenceRule::operator==(const FockStateRule &rhs) const{
 	}
 }
 
+void DifferenceRule::print() const{
+	Streams::out << "Sum(";
+	for(unsigned int n = 0; n < addStateIndices.size(); n++){
+		if(n > 0)
+			Streams::out << ", ";
+
+		addStateIndices.at(n).print();
+	}
+	Streams::out << ") - Sum(";
+	for(unsigned int n = 0; n < subtractStateIndices.size(); n++){
+		if(n > 0)
+			Streams::out << ", ";
+
+		subtractStateIndices.at(n).print();
+	}
+	Streams::out << ") = " << difference;
+}
+
 };	//End of namespace FockStateRule
 };	//End of namespace TBTK

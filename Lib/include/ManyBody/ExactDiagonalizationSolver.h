@@ -84,10 +84,12 @@ private:
 		FockStateRuleSet fockStateRuleSet;
 
 		/** Pointer to many-body model. */
-		Model *manyBodyModel;
+//		Model *manyBodyModel;
+		std::shared_ptr<Model> manyBodyModel;
 
 		/** Pointer to diagonalization solver. */
-		DiagonalizationSolver *dSolver;
+//		DiagonalizationSolver *dSolver;
+		std::shared_ptr<DiagonalizationSolver> dSolver;
 	private:
 	};
 

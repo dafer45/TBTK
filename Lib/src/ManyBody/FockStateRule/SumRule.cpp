@@ -150,5 +150,15 @@ bool SumRule::operator==(const FockStateRule &rhs) const{
 	}
 }
 
+void SumRule::print() const{
+	Streams::out << "Sum(";
+	for(unsigned int n = 0; n < stateIndices.size(); n++){
+		if(n > 0)
+			Streams::out << ", ";
+		Streams::out << stateIndices.at(n).toString();
+	}
+	Streams::out << ") = " << numParticles;
+}
+
 };	//End of namespace FockStateRule
 };	//End of namespace TBTK

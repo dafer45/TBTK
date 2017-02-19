@@ -113,6 +113,9 @@ public:
 
 	/** Get FockStateRule identifier. */
 	FockStateRuleID getFockStateRuleID() const;
+
+	/** Print FockStateRule. */
+	virtual void print() const = 0;
 private:
 	/** FockStateRule identifier. */
 	FockStateRuleID fockStateRuleID;
@@ -121,13 +124,6 @@ private:
 inline FockStateRule::FockStateRuleID FockStateRule::getFockStateRuleID() const{
 	return fockStateRuleID;
 }
-
-/*inline WrapperRule operator*(
-	const LadderOperator<BitRegister> &ladderOperator,
-	const FockStateRule &fockStateRule
-){
-	return fockStateRule.createNewRule(ladderOperator);
-}*/
 
 };	//End of namespace FockSpaceRule
 };	//End of namespace TBTK

@@ -71,6 +71,9 @@ public:
 
 	/** Comparison operator. */
 	virtual bool operator==(const FockStateRule &rhs) const;
+
+	/** Implements FockStateRile::print(). */
+	virtual void print() const;
 private:
 	FockStateRule *fockStateRule;
 };
@@ -85,6 +88,10 @@ inline WrapperRule WrapperRule::createNewRule(
 	const LadderOperator<ExtensiveBitRegister> &ladderOperator
 ) const{
 	return WrapperRule(fockStateRule->createNewRule(ladderOperator));
+}
+
+inline void WrapperRule::print() const{
+	fockStateRule->print();
 }
 
 //Note: Declared in FockStateRule.h
