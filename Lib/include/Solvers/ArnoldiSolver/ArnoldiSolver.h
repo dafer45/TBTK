@@ -48,6 +48,22 @@ public:
 	/** Get model. */
 	Model* getModel();
 
+	/** Enum class describing the different modes of operation.
+	 *
+	 *  Normal:
+	 *      Lanczos like iteration for finding extreme eigenvalues and
+	 *      corresponding eigen vectors.
+	 *
+	 *  ShiftAndInvert:
+	 *      Shift and invert iteration for finding eigen values around a
+	 *      given value and the corresponding eigen vectors. */
+	enum class Mode {Normal, ShiftAndInvert};
+
+	/** Set mode of operation. */
+	void setMode(Mode mode);
+
+	/** Get mode of operation. */
+
 	/** Set the number of eigenvalues to calculate. */
 	void setNumEigenValues(int numEigenValues);
 
@@ -91,6 +107,9 @@ public:
 private:
 	/** Model to work on. */
 	Model *model;
+
+	/** Mode of operation. */
+	Mode mode;
 
 	/** Number of eigenvalues to calculate (Arnoldi variable). */
 	int numEigenValues;
@@ -155,14 +174,24 @@ private:
 	/** Status for LU decomposition. (SuperLU variable). */
 	SuperLUStat_t *stat;
 
-	/** Initialize solver. Setting up SuperLU. (SuperLU routine). */
-	void init();
+	/** Initialize solver for normal mode. Setting up SuperLU. (SuperLU
+	 *  routine). */
+	void initNormal();
+
+	/** Initialize solver for shift and invert mode. Setting up SuperLU.
+	 *  (SuperLU routine). */
+	void initShiftAndInvert();
 
 	/** Perform LU decomposition of Hamiltonian. (SuperLU routine). */
 	void performLUFactorization();
 
-	/** Run implicitly restarted Arnoldi loop. (Arnoldi routine). */
-	void arnoldiLoop();
+	/** Run implicitly restarted Arnoldi loop using normal mode. (Arnoldi
+	 *  routine). */
+	void arnoldiLoopNormal();
+
+	/** Run implicitly restarted Arnoldi loop using shift and invert mode.
+	 *  (Arnoldi routine). */
+	void arnoldiLoopShiftAndInvert();
 
 	/** Sort eigen values and eigen vectors in accending order according to
 	 *  the real part of the eigen values. */
@@ -189,6 +218,10 @@ private:
 		int end
 	);
 };
+
+inline void ArnoldiSolver::setMode(Mode mode){
+	this->mode = mode;
+}
 
 inline void ArnoldiSolver::setModel(Model *model){
 	this->model = model;

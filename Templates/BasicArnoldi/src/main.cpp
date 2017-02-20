@@ -77,6 +77,7 @@ int main(int argc, char **argv){
 	const int NUM_LANCZOS_VECTORS = 3200;
 	int MAX_ITERATIONS = 4000;
 	ArnoldiSolver aSolver;
+	aSolver.setMode(ArnoldiSolver::Mode::ShiftAndInvert);
 	aSolver.setModel(&model);
 	aSolver.setCentralValue(1.0);
 	aSolver.setNumEigenValues(NUM_EIGEN_VALUES);
