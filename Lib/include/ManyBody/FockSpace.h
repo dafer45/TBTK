@@ -264,6 +264,18 @@ FockStateMap::FockStateMap<BIT_REGISTER>* FockSpace<BIT_REGISTER>::createFockSta
 		return fockStateMap;
 	}
 	else{
+		if(exponentialDimension > 31){
+			//See comment bellow
+			TBTKExit(
+				"FockSpace::createFockStateMap()",
+				"FockSpaces with more than 31 states not yet supported using lookup table.",
+				""
+			);
+		}
+
+		//This loop is very slow for large exponential dimension and a
+		//better method should be implemented that can take advantage
+		//of the FockStateRules more directly.
 		FockState<BIT_REGISTER> fockState = getVacuumState();
 		for(unsigned int n = 0; n < (unsigned int)(1 << exponentialDimension); n++){
 			if(rules.isSatisfied(*this, fockState))

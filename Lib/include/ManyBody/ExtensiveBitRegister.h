@@ -277,7 +277,7 @@ inline bool ExtensiveBitRegister::operator>(
 inline bool ExtensiveBitRegister::operator==(
 	const ExtensiveBitRegister &rhs
 ) const{
-	for(int n = 0; n < size; n++){
+	for(unsigned int n = 0; n < size; n++){
 		if(values[n] != rhs.values[n])
 			return false;
 	}
@@ -411,12 +411,12 @@ inline ExtensiveBitRegister ExtensiveBitRegister::operator>>(unsigned int rhs) c
 	if(rhs > 8*sizeof(unsigned int)){
 		result = result >> (rhs - 8*sizeof(unsigned int));
 
-		for(int n = 0; n < size-1; n++)
+		for(unsigned int n = 0; n < size-1; n++)
 			result.values[n] = result.values[n+1];
 		result.values[size-1] = 0;
 	}
 	else if(rhs != 0){
-		for(int n = 0; n < size; n++){
+		for(unsigned int n = 0; n < size; n++){
 			result.values[n] = result.values[n] >> rhs;
 			if(n < size-1)
 				result.values[n] |= result.values[n+1] << (8*sizeof(unsigned int) - rhs);
@@ -445,7 +445,7 @@ inline bool ExtensiveBitRegister::getBit(unsigned int position) const{
 }
 
 inline bool ExtensiveBitRegister::toBool() const{
-	for(int n = 0; n < size; n++)
+	for(unsigned int n = 0; n < size; n++)
 		if(values)
 			return true;
 
@@ -467,7 +467,7 @@ inline unsigned int ExtensiveBitRegister::getNumBits() const{
 
 inline unsigned int ExtensiveBitRegister::getNumOneBits() const{
 	unsigned int numOnes = 0;
-	for(int n = 0; n < size; n++){
+	for(unsigned int n = 0; n < size; n++){
 		unsigned int x = values[n];
 		x = x - ((x >> 1) & 0x55555555);
 		x = (x & 0x33333333) + ((x >> 2) & 0x33333333);

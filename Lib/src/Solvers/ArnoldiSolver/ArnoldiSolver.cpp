@@ -188,7 +188,7 @@ void ArnoldiSolver::arnoldiLoop(){
 	iparam[0] = 1;
 	//Maximum number of Arnoldi iterations
 	iparam[2] = maxIterations;
-	//Use mode 3 of ZNAUPD
+	//Use mode 3 of ZNAUPD	(shift and invert)
 	iparam[6] = 3;
 
 	//Integer "pointer" used by ARPACK to index into workd
@@ -346,10 +346,10 @@ void ArnoldiSolver::arnoldiLoop(){
 void ArnoldiSolver::init(){
 	//Get matrix representation on COO format
 	int basisSize = model->getBasisSize();
-	int numMatrixElements = model->getAmplitudeSet()->getNumMatrixElements();
-	const int *cooRowIndices = model->getAmplitudeSet()->getCOORowIndices();
-	const int *cooColIndices = model->getAmplitudeSet()->getCOOColIndices();
-	const complex<double> *cooValues = model->getAmplitudeSet()->getCOOValues();
+	int numMatrixElements = model->getHoppingAmplitudeSet()->getNumMatrixElements();
+	const int *cooRowIndices = model->getHoppingAmplitudeSet()->getCOORowIndices();
+	const int *cooColIndices = model->getHoppingAmplitudeSet()->getCOOColIndices();
+	const complex<double> *cooValues = model->getHoppingAmplitudeSet()->getCOOValues();
 	TBTKAssert(
 		cooRowIndices != NULL && cooColIndices != NULL,
 		"ArnoldiSolver::init()",
