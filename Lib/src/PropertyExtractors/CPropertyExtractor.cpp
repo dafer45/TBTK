@@ -25,6 +25,8 @@
 
 using namespace std;
 
+static complex<double> i(0, 1);
+
 namespace TBTK{
 
 CPropertyExtractor::CPropertyExtractor(
@@ -408,7 +410,7 @@ void CPropertyExtractor::calculateMAGCallback(
 										pe->cSolver->getModel()->getTemperature());
 			}
 
-			((complex<double>*)mag)[4*offset + n] += weight*imag(greensFunction[e])/M_PI*dE;
+			((complex<double>*)mag)[4*offset + n] += weight*(-i)*greensFunction[e]/M_PI*dE;
 		}
 
 		delete [] greensFunction;
@@ -452,7 +454,8 @@ void CPropertyExtractor::calculateSP_LDOSCallback(
 		greensFunction = pe->calculateGreensFunction(to, from, ChebyshevSolver::GreensFunctionType::NonPrincipal);
 
 		for(int e = 0; e < pe->energyResolution; e++)
-			((complex<double>*)sp_ldos)[4*pe->energyResolution*offset + 4*e + n] += imag(greensFunction[e])/M_PI*dE;
+			((complex<double>*)sp_ldos)[4*pe->energyResolution*offset + 4*e + n] += -i*greensFunction[e]/M_PI*dE;
+//			((complex<double>*)sp_ldos)[4*pe->energyResolution*offset + 4*e + n] += imag(greensFunction[e])/M_PI*dE;
 
 		delete [] greensFunction;
 	}
