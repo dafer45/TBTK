@@ -97,7 +97,7 @@ LadderOperator<BIT_REGISTER>::LadderOperator(
 
 	leastSignificantBitIndex = state*numBitsPerState;
 
-	for(int n = 0; n < stateMask.getNumBits(); n++){
+	for(unsigned int n = 0; n < stateMask.getNumBits(); n++){
 		if(n >= leastSignificantBitIndex && n < leastSignificantBitIndex + numBitsPerState)
 			stateMask.setBit(n, 1);
 		else
@@ -112,7 +112,7 @@ LadderOperator<BIT_REGISTER>::LadderOperator(
 	this->maxOccupation = maxOccupation;
 	this->maxOccupation = (this->maxOccupation << leastSignificantBitIndex);
 
-	for(int n = 0; n < moreSignificantFermionMask.getNumBits(); n++){
+	for(unsigned int n = 0; n < moreSignificantFermionMask.getNumBits(); n++){
 		this->moreSignificantFermionMask.setBit(n, false);
 		if(leastSignificantBit.getBit(n))
 			break;
