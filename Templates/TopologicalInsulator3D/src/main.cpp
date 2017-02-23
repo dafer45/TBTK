@@ -29,6 +29,7 @@
 
 #include "ChebyshevSolver.h"
 #include "FileWriter.h"
+#include "GreensFunction.h"
 #include "HoppingAmplitudeSet.h"
 #include "Model.h"
 
@@ -45,9 +46,9 @@ const complex<double> i(0, 1);
 
 int main(int argc, char **argv){
 	//Parameters
-	const int SIZE_X = 100;
-	const int SIZE_Y = 100;
-	const int SIZE_Z = 100;
+	const int SIZE_X = 25;
+	const int SIZE_Y = 25;
+	const int SIZE_Z = 25;
 	const double SCALE_FACTOR = 15.;
 
 	complex<double> mu = -1.0/SCALE_FACTOR;
@@ -107,6 +108,7 @@ int main(int argc, char **argv){
 
 	//Construct model
 	model.construct();
+	model.constructCOO();
 
 	//Set filename and remove any file already in the folder
 	FileWriter::setFileName("TBTKResults.h5");
@@ -196,14 +198,16 @@ int main(int argc, char **argv){
 
 	//Generate Green's functions. Remove GPU from function name to run on
 	//cpu instead.
-	complex<double> *greensFunctionU[SIZE_X*SIZE_Y];
-	complex<double> *greensFunctionD[SIZE_X*SIZE_Y];
+	Property::GreensFunction *greensFunctionU[SIZE_X*SIZE_Y];
+	Property::GreensFunction *greensFunctionD[SIZE_X*SIZE_Y];
 	for(int x = 0; x < SIZE_X; x++){
 		for(int y = 0; y < SIZE_Y; y++){
-			greensFunctionU[x + y*SIZE_X] = new complex<double>[ENERGY_RESOLUTION];
-			greensFunctionD[x + y*SIZE_X] = new complex<double>[ENERGY_RESOLUTION];
-			cSolver.generateGreensFunctionGPU(greensFunctionU[x + y*SIZE_X], &(cCoefficientsU[(x + y*SIZE_X)*NUM_COEFFICIENTS]));
-			cSolver.generateGreensFunctionGPU(greensFunctionD[x + y*SIZE_X], &(cCoefficientsD[(x + y*SIZE_X)*NUM_COEFFICIENTS]));
+			greensFunctionU[x + y*SIZE_X] = cSolver.generateGreensFunctionGPU(
+				&(cCoefficientsU[(x + y*SIZE_X)*NUM_COEFFICIENTS])
+			);
+			greensFunctionD[x + y*SIZE_X] = cSolver.generateGreensFunctionGPU(
+				&(cCoefficientsD[(x + y*SIZE_X)*NUM_COEFFICIENTS])
+			);
 		}
 	}
 
@@ -212,8 +216,10 @@ int main(int argc, char **argv){
 	for(int x = 0; x < SIZE_X; x++){
 		for(int y = 0; y < SIZE_Y; y++){
 			spectralFunction[x][y] = new double[ENERGY_RESOLUTION];
+			const complex<double> *greensFunctionUData = greensFunctionU[x + y*SIZE_X]->getArrayData();
+			const complex<double> *greensFunctionDData = greensFunctionD[x + y*SIZE_X]->getArrayData();
 			for(int n = 0; n < ENERGY_RESOLUTION; n++)
-				spectralFunction[x][y][n] = -imag(greensFunctionU[x + y*SIZE_X][n] + greensFunctionD[x + y*SIZE_X][n])/M_PI;
+				spectralFunction[x][y][n] = -imag(greensFunctionUData[n] + greensFunctionDData[n])/M_PI;
 		}
 	}
 
@@ -237,8 +243,8 @@ int main(int argc, char **argv){
 	delete [] cCoefficientsD;
 	for(int x = 0; x < SIZE_X; x++){
 		for(int y = 0; y < SIZE_Y; y++){
-			delete [] greensFunctionU[x + y*SIZE_X];
-			delete [] greensFunctionD[x + y*SIZE_X];
+			delete greensFunctionU[x + y*SIZE_X];
+			delete greensFunctionD[x + y*SIZE_X];
 			delete [] spectralFunction[x][y];
 		}
 	}
