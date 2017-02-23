@@ -27,9 +27,9 @@
  *  @author Kristofer Björnson
  */
 
-#include "AmplitudeSet.h"
 #include "ChebyshevSolver.h"
 #include "FileWriter.h"
+#include "HoppingAmplitudeSet.h"
 #include "Model.h"
 
 #include <fftw3.h>

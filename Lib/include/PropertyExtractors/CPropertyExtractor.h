@@ -25,6 +25,7 @@
 
 #include "ChebyshevSolver.h"
 #include "Density.h"
+#include "GreensFunction.h"
 #include "LDOS.h"
 #include "Magnetization.h"
 #include "PropertyExtractor.h"
@@ -57,17 +58,17 @@ public:
 	);
 
 	/** Calculate Green's function. */
-	std::complex<double>* calculateGreensFunction(
+	Property::GreensFunction* calculateGreensFunction(
 		Index to,
 		Index from,
-		ChebyshevSolver::GreensFunctionType type = ChebyshevSolver::GreensFunctionType::Retarded
+		Property::GreensFunction::Type type = Property::GreensFunction::Type::Retarded
 	);
 
 	/** Calculate Green's function for a range of 'to'-indices. */
-	std::complex<double>* calculateGreensFunctions(
+	Property::GreensFunction** calculateGreensFunctions(
 		std::vector<Index> &to,
 		Index from,
-		ChebyshevSolver::GreensFunctionType type = ChebyshevSolver::GreensFunctionType::Retarded
+		Property::GreensFunction::Type type = Property::GreensFunction::Type::Retarded
 	);
 
 	/** Overrides PropertyExtractor::calculateExpectationValue(). */

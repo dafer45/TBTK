@@ -13,55 +13,83 @@ EDPropertyExtractor::EDPropertyExtractor(ExactDiagonalizationSolver *edSolver){
 EDPropertyExtractor::~EDPropertyExtractor(){
 }
 
-complex<double>* EDPropertyExtractor::calculateGreensFunction(
+Property::GreensFunction* EDPropertyExtractor::calculateGreensFunction(
 	Index to,
 	Index from,
-	ChebyshevSolver::GreensFunctionType type
+	Property::GreensFunction::Type type
 ){
 	switch(type){
-	case ChebyshevSolver::GreensFunctionType::Principal:
+	case Property::GreensFunction::Type::Principal:
 	{
-		complex<double> *greensFunctionA = calculateGreensFunction(
+		Property::GreensFunction *greensFunctionA = calculateGreensFunction(
 			to,
 			from,
-			ChebyshevSolver::GreensFunctionType::Advanced
+			Property::GreensFunction::Type::Advanced
 		);
 
-		complex<double> *greensFunctionR = calculateGreensFunction(
+		Property::GreensFunction *greensFunctionR = calculateGreensFunction(
 			to,
 			from,
-			ChebyshevSolver::GreensFunctionType::Retarded
+			Property::GreensFunction::Type::Retarded
 		);
 
-		complex<double> *greensFunction = new complex<double>[energyResolution];
+		const complex<double> *greensFunctionAData = greensFunctionA->getArrayData();
+		const complex<double> *greensFunctionRData = greensFunctionR->getArrayData();
+
+		complex<double> *greensFunctionData = new complex<double>[energyResolution];
 		for(int n = 0; n < energyResolution; n++)
-			greensFunction[n] = (greensFunctionA[n] + greensFunctionR[n])/2.;
+			greensFunctionData[n] = (greensFunctionAData[n] + greensFunctionRData[n])/2.;
 
-		delete [] greensFunctionA;
-		delete [] greensFunctionR;
+		delete greensFunctionA;
+		delete greensFunctionR;
+
+		Property::GreensFunction *greensFunction = new Property::GreensFunction(
+			type,
+			Property::GreensFunction::Format::Array,
+			lowerBound,
+			upperBound,
+			energyResolution,
+			greensFunctionData
+		);
+
+		delete [] greensFunctionData;
 
 		return greensFunction;
 	}
-	case ChebyshevSolver::GreensFunctionType::NonPrincipal:
+	case Property::GreensFunction::Type::NonPrincipal:
 	{
-		complex<double> *greensFunctionA = calculateGreensFunction(
+		Property::GreensFunction *greensFunctionA = calculateGreensFunction(
 			to,
 			from,
-			ChebyshevSolver::GreensFunctionType::Advanced
+			Property::GreensFunction::Type::Advanced
 		);
 
-		complex<double> *greensFunctionR = calculateGreensFunction(
+		Property::GreensFunction *greensFunctionR = calculateGreensFunction(
 			to,
 			from,
-			ChebyshevSolver::GreensFunctionType::Retarded
+			Property::GreensFunction::Type::Retarded
 		);
 
-		complex<double> *greensFunction = new complex<double>[energyResolution];
+		const complex<double> *greensFunctionAData = greensFunctionA->getArrayData();
+		const complex<double> *greensFunctionRData = greensFunctionR->getArrayData();
+
+		complex<double> *greensFunctionData = new complex<double>[energyResolution];
 		for(int n = 0; n < energyResolution; n++)
-			greensFunction[n] = (greensFunctionA[n] - greensFunctionR[n])/2.;
+			greensFunctionData[n] = (greensFunctionAData[n] - greensFunctionRData[n])/2.;
 
-		delete [] greensFunctionA;
-		delete [] greensFunctionR;
+		delete greensFunctionA;
+		delete greensFunctionR;
+
+		Property::GreensFunction *greensFunction = new Property::GreensFunction(
+			type,
+			Property::GreensFunction::Format::Array,
+			lowerBound,
+			upperBound,
+			energyResolution,
+			greensFunctionData
+		);
+
+		delete [] greensFunctionData;
 
 		return greensFunction;
 	}
@@ -83,12 +111,12 @@ complex<double>* EDPropertyExtractor::calculateGreensFunction(
 		LadderOperator<BitRegister> *toOperator;
 		double energySign = 0;
 		switch(type){
-		case ChebyshevSolver::GreensFunctionType::Retarded:
+		case Property::GreensFunction::Type::Retarded:
 			fromOperator = &operators[hoppingAmplitudeSet->getBasisIndex(from)][0];
 			toOperator = &operators[hoppingAmplitudeSet->getBasisIndex(to)][1];
 			energySign = 1.;
 			break;
-		case ChebyshevSolver::GreensFunctionType::Advanced:
+		case Property::GreensFunction::Type::Advanced:
 			fromOperator = &operators[hoppingAmplitudeSet->getBasisIndex(from)][1];
 			toOperator = &operators[hoppingAmplitudeSet->getBasisIndex(to)][0];
 			energySign = -1.;
@@ -114,9 +142,9 @@ complex<double>* EDPropertyExtractor::calculateGreensFunction(
 			ruleSet1
 		);
 
-		complex<double> *greensFunction = new complex<double>[energyResolution];
+		complex<double> *greensFunctionData = new complex<double>[energyResolution];
 		for(int n = 0; n < energyResolution; n++)
-			greensFunction[n] = 0;
+			greensFunctionData[n] = 0;
 
 		double groundStateEnergy = edSolver->getEigenValue(subspaceID0, 0);
 		for(unsigned int n = 0; n < fockStateMap1->getBasisSize(); n++){
@@ -153,11 +181,22 @@ complex<double>* EDPropertyExtractor::calculateGreensFunction(
 
 			int e = energyResolution*((-lowerBound + energySign*(E - groundStateEnergy))/(upperBound - lowerBound));
 			if(e >= 0 && e < energyResolution)
-				greensFunction[e] += amplitude1*amplitude0;
+				greensFunctionData[e] += amplitude1*amplitude0;
 		}
 
 		for(int n = 0; n < energyResolution; n++)
-			greensFunction[n] *= -i;
+			greensFunctionData[n] *= -i;
+
+		Property::GreensFunction *greensFunction = new Property::GreensFunction(
+			type,
+			Property::GreensFunction::Format::Array,
+			lowerBound,
+			upperBound,
+			energyResolution,
+			greensFunctionData
+		);
+
+		delete [] greensFunctionData;
 
 		return greensFunction;
 	}
@@ -169,12 +208,12 @@ complex<double>* EDPropertyExtractor::calculateGreensFunction(
 		LadderOperator<ExtensiveBitRegister> *toOperator;
 		double energySign = 0;
 		switch(type){
-		case ChebyshevSolver::GreensFunctionType::Retarded:
+		case Property::GreensFunction::Type::Retarded:
 			fromOperator = &operators[hoppingAmplitudeSet->getBasisIndex(from)][0];
 			toOperator = &operators[hoppingAmplitudeSet->getBasisIndex(to)][1];
 			energySign = 1.;
 			break;
-		case ChebyshevSolver::GreensFunctionType::Advanced:
+		case Property::GreensFunction::Type::Advanced:
 			fromOperator = &operators[hoppingAmplitudeSet->getBasisIndex(from)][1];
 			toOperator = &operators[hoppingAmplitudeSet->getBasisIndex(to)][0];
 			energySign = -1.;
@@ -200,9 +239,9 @@ complex<double>* EDPropertyExtractor::calculateGreensFunction(
 			ruleSet1
 		);
 
-		complex<double> *greensFunction = new complex<double>[energyResolution];
+		complex<double> *greensFunctionData = new complex<double>[energyResolution];
 		for(int n = 0; n < energyResolution; n++)
-			greensFunction[n] = 0;
+			greensFunctionData[n] = 0;
 
 		double groundStateEnergy = edSolver->getEigenValue(subspaceID0, 0);
 		for(unsigned int n = 0; n < fockStateMap1->getBasisSize(); n++){
@@ -239,11 +278,22 @@ complex<double>* EDPropertyExtractor::calculateGreensFunction(
 
 			int e = energyResolution*((-lowerBound + energySign*(E - groundStateEnergy))/(upperBound - lowerBound));
 			if(e >= 0 && e < energyResolution)
-				greensFunction[e] += amplitude1*amplitude0;
+				greensFunctionData[e] += amplitude1*amplitude0;
 		}
 
 		for(int n = 0; n < energyResolution; n++)
-			greensFunction[n] *= -i;
+			greensFunctionData[n] *= -i;
+
+		Property::GreensFunction *greensFunction = new Property::GreensFunction(
+			type,
+			Property::GreensFunction::Format::Array,
+			lowerBound,
+			upperBound,
+			energyResolution,
+			greensFunctionData
+		);
+
+		delete [] greensFunctionData;
 
 		return greensFunction;
 	}
@@ -431,17 +481,18 @@ void EDPropertyExtractor::calculateLDOSCallback(
 ){
 	EDPropertyExtractor *pe = (EDPropertyExtractor*)cb_this;
 
-	complex<double> *greensFunction = pe->calculateGreensFunction(
+	Property::GreensFunction *greensFunction = pe->calculateGreensFunction(
 		index,
 		index,
-		ChebyshevSolver::GreensFunctionType::NonPrincipal
+		Property::GreensFunction::Type::NonPrincipal
 	);
+	const complex<double> *greensFunctionData = greensFunction->getArrayData();
 
 	const double dE = (pe->upperBound - pe->lowerBound)/pe->energyResolution;
 	for(int n = 0; n < pe->energyResolution; n++)
-		((double*)ldos)[pe->energyResolution*offset + n] += imag(greensFunction[n])/M_PI*dE;
+		((double*)ldos)[pe->energyResolution*offset + n] += imag(greensFunctionData[n])/M_PI*dE;
 
-	delete [] greensFunction;
+	delete greensFunction;
 }
 
 void EDPropertyExtractor::calculateSpinPolarizedLDOSCallback(
@@ -455,23 +506,23 @@ void EDPropertyExtractor::calculateSpinPolarizedLDOSCallback(
 	int spinIndex = ((int*)(pe->hint))[0];
 	Index to(index);
 	Index from(index);
-	complex<double> *greensFunction;
 
 	const double dE = (pe->upperBound - pe->lowerBound)/pe->energyResolution;
 	for(unsigned int n = 0; n < 4; n++){
 		to.at(spinIndex) = n/2;
 		from.at(spinIndex) = n%2;
 
-		greensFunction = pe->calculateGreensFunction(
+		Property::GreensFunction *greensFunction = pe->calculateGreensFunction(
 			to,
 			from,
-			ChebyshevSolver::GreensFunctionType::NonPrincipal
+			Property::GreensFunction::Type::NonPrincipal
 		);
+		const complex<double> *greensFunctionData = greensFunction->getArrayData();
 
 		for(int e = 0; e < pe->energyResolution; e++)
-			((complex<double>*)spinPolarizedLDOS)[4*pe->energyResolution*offset + 4*e + n] += imag(greensFunction[e])/M_PI*dE;
+			((complex<double>*)spinPolarizedLDOS)[4*pe->energyResolution*offset + 4*e + n] += imag(greensFunctionData[e])/M_PI*dE;
 
-		delete [] greensFunction;
+		delete greensFunction;
 	}
 }
 

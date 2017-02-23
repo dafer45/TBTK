@@ -32,6 +32,7 @@
 #include "ChebyshevSolver.h"
 #include "CPropertyExtractor.h"
 #include "FileWriter.h"
+#include "GreensFunction.h"
 #include "Model.h"
 #include "Timer.h"
 
@@ -202,7 +203,11 @@ double scLoop(double radius){
 				cSolver.setModel(model);
 
 				//Calculate anomalous Green's function
-				complex<double> *greensFunction = pe.calculateGreensFunction({x, y, 3}, {x, y, 0});
+				Property::GreensFunction *greensFunction = pe.calculateGreensFunction(
+					{x, y, 3},
+					{x, y, 0}
+				);
+				const complex<double> *greensFunctionData = greensFunction->getArrayData();
 
 				//Free memory occupied by local model
 				delete model;
@@ -210,11 +215,11 @@ double scLoop(double radius){
 				//Calculate order parameter
 				for(int n = 0; n < ENERGY_RESOLUTION/2; n++){
 					const double dE = 2.*DEBYE_FREQUENCY/(double)ENERGY_RESOLUTION;
-					D[(dCounter+1)%2][x][y] -= V_sc*i*greensFunction[n]*dE/M_PI;
+					D[(dCounter+1)%2][x][y] -= V_sc*i*greensFunctionData[n]*dE/M_PI;
 				}
 
 				//Free memory used for Green's function
-				delete [] greensFunction;
+				delete greensFunction;
 
 				//Mix old and new order parameter
 				D[(dCounter+1)%2][x][y] = (1 - SC_WEIGHT_FACTOR)*D[(dCounter+1)%2][x][y] + SC_WEIGHT_FACTOR*D[dCounter][x][y];

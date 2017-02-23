@@ -35,16 +35,6 @@ namespace{
 	const complex<double> i(0, 1);
 }
 
-/*int ChebyshevSolver::numChebyshevSolvers = 0;
-int ChebyshevSolver::numDevices = 0;
-bool *ChebyshevSolver::busyDevices = NULL;
-omp_lock_t ChebyshevSolver::busyDevicesLock;
-ChebyshevSolver::StaticConstructor ChebyshevSolver::staticConstructor;
-
-ChebyshevSolver::StaticConstructor::StaticConstructor(){
-	omp_init_lock(&ChebyshevSolver::busyDevicesLock);
-}*/
-
 ChebyshevSolver::ChebyshevSolver(){
 	model = NULL;
 	scaleFactor = 1.;
@@ -53,17 +43,9 @@ ChebyshevSolver::ChebyshevSolver(){
 	generatingFunctionLookupTable_device = NULL;
 	lookupTableNumCoefficients = 0;
 	lookupTableResolution = 0;
+	lookupTableLowerBound = 0.;
+	lookupTableUpperBound = 0.;
 	isTalkative = false;
-
-/*	omp_set_lock(&busyDevicesLock);
-	#pragma omp flush
-	{
-		if(numChebyshevSolvers == 0)
-			createDeviceTableGPU();
-		numChebyshevSolvers++;
-	}
-	#pragma omp flush
-	omp_unset_lock(&busyDevicesLock);*/
 }
 
 ChebyshevSolver::~ChebyshevSolver(){
@@ -73,21 +55,10 @@ ChebyshevSolver::~ChebyshevSolver(){
 
 		delete [] generatingFunctionLookupTable;
 	}
-
-/*	omp_set_lock(&busyDevicesLock);
-	#pragma omp flush
-	{
-		numChebyshevSolvers--;
-		if(numChebyshevSolvers == 0)
-			destroyDeviceTableGPU();
-	}
-	#pragma omp flush
-	omp_unset_lock(&busyDevicesLock);*/
 }
 
 void ChebyshevSolver::setModel(Model *model){
 	this->model = model;
-//	model->getHoppingAmplitudeSet()->sort();	//Required for GPU evaluation
 	model->sortHoppingAmplitudes();	//Required for GPU evaluation
 }
 
@@ -632,6 +603,8 @@ void ChebyshevSolver::generateLookupTable(
 
 	lookupTableNumCoefficients = numCoefficients;
 	lookupTableResolution = energyResolution;
+	lookupTableLowerBound = lowerBound;
+	lookupTableUpperBound = upperBound;
 
 	generatingFunctionLookupTable = new complex<double>*[numCoefficients];
 	for(int n = 0; n < numCoefficients; n++)
@@ -666,14 +639,13 @@ void ChebyshevSolver::destroyLookupTable(){
 	generatingFunctionLookupTable = NULL;
 }
 
-void ChebyshevSolver::generateGreensFunction(
-	complex<double> *greensFunction,
+Property::GreensFunction* ChebyshevSolver::generateGreensFunction(
 	complex<double> *coefficients,
 	int numCoefficients,
 	int energyResolution,
 	double lowerBound,
 	double upperBound,
-	GreensFunctionType type
+	Property::GreensFunction::Type type
 ){
 	TBTKAssert(
 		numCoefficients > 0,
@@ -706,11 +678,12 @@ void ChebyshevSolver::generateGreensFunction(
 		"Use ChebyshevSolver::setScaleFactor to set a larger scale factor."
 	);
 
+	complex<double> *greensFunctionData = new complex<double>[energyResolution];
 	for(int e = 0; e < energyResolution; e++)
-		greensFunction[e] = 0.;
+		greensFunctionData[e] = 0.;
 
 	const double DELTA = 0.0001;
-	if(type == GreensFunctionType::Retarded){
+	if(type == Property::GreensFunction::Type::Retarded){
 		for(int n = 0; n < numCoefficients; n++){
 			double denominator = 1.;
 			if(n == 0)
@@ -718,11 +691,11 @@ void ChebyshevSolver::generateGreensFunction(
 
 			for(int e = 0; e < energyResolution; e++){
 				double E = (lowerBound + (upperBound - lowerBound)*e/(double)energyResolution)/scaleFactor;
-				greensFunction[e] += coefficients[n]*(1/scaleFactor)*(-2.*i/sqrt(1+DELTA - E*E))*exp(-i*((double)n)*acos(E))/denominator;
+				greensFunctionData[e] += coefficients[n]*(1/scaleFactor)*(-2.*i/sqrt(1+DELTA - E*E))*exp(-i*((double)n)*acos(E))/denominator;
 			}
 		}
 	}
-	else if(type == GreensFunctionType::Advanced){
+	else if(type == Property::GreensFunction::Type::Advanced){
 		for(int n = 0; n < numCoefficients; n++){
 			double denominator = 1.;
 			if(n == 0)
@@ -730,11 +703,11 @@ void ChebyshevSolver::generateGreensFunction(
 
 			for(int e = 0; e < energyResolution; e++){
 				double E = (lowerBound + (upperBound - lowerBound)*e/(double)energyResolution)/scaleFactor;
-				greensFunction[e] += coefficients[n]*conj((1/scaleFactor)*(-2.*i/sqrt(1+DELTA - E*E))*exp(-i*((double)n)*acos(E))/denominator);
+				greensFunctionData[e] += coefficients[n]*conj((1/scaleFactor)*(-2.*i/sqrt(1+DELTA - E*E))*exp(-i*((double)n)*acos(E))/denominator);
 			}
 		}
 	}
-	else if(type == GreensFunctionType::Principal){
+	else if(type == Property::GreensFunction::Type::Principal){
 		for(int n = 0; n < numCoefficients; n++){
 			double denominator = 1.;
 			if(n == 0)
@@ -742,11 +715,11 @@ void ChebyshevSolver::generateGreensFunction(
 
 			for(int e = 0; e < energyResolution; e++){
 				double E = (lowerBound + (upperBound - lowerBound)*e/(double)energyResolution)/scaleFactor;
-				greensFunction[e] += -coefficients[n]*real((1/scaleFactor)*(-2.*i/sqrt(1+DELTA - E*E))*exp(-i*((double)n)*acos(E))/denominator);
+				greensFunctionData[e] += -coefficients[n]*real((1/scaleFactor)*(-2.*i/sqrt(1+DELTA - E*E))*exp(-i*((double)n)*acos(E))/denominator);
 			}
 		}
 	}
-	else if(type == GreensFunctionType::NonPrincipal){
+	else if(type == Property::GreensFunction::Type::NonPrincipal){
 		for(int n = 0; n < numCoefficients; n++){
 			double denominator = 1.;
 			if(n == 0)
@@ -754,7 +727,7 @@ void ChebyshevSolver::generateGreensFunction(
 
 			for(int e = 0; e < energyResolution; e++){
 				double E = (lowerBound + (upperBound - lowerBound)*e/(double)energyResolution)/scaleFactor;
-				greensFunction[e] -= coefficients[n]*i*imag((1/scaleFactor)*(-2.*i/sqrt(1+DELTA - E*E))*exp(-i*((double)n)*acos(E))/denominator);
+				greensFunctionData[e] -= coefficients[n]*i*imag((1/scaleFactor)*(-2.*i/sqrt(1+DELTA - E*E))*exp(-i*((double)n)*acos(E))/denominator);
 			}
 		}
 	}
@@ -765,12 +738,23 @@ void ChebyshevSolver::generateGreensFunction(
 			""
 		);
 	}
+
+	Property::GreensFunction *greensFunction = new Property::GreensFunction(
+		type,
+		Property::GreensFunction::Format::Array,
+		lowerBound,
+		upperBound,
+		energyResolution,
+		greensFunctionData
+	);
+	delete [] greensFunctionData;
+
+	return greensFunction;
 }
 
-void ChebyshevSolver::generateGreensFunction(
-	complex<double> *greensFunction,
+Property::GreensFunction* ChebyshevSolver::generateGreensFunction(
 	complex<double> *coefficients,
-	GreensFunctionType type
+	Property::GreensFunction::Type type
 ){
 	TBTKAssert(
 		generatingFunctionLookupTable != NULL,
@@ -779,37 +763,50 @@ void ChebyshevSolver::generateGreensFunction(
 		"Use ChebyshevSolver::generateLookupTable() to generate lookup table."
 	);
 
+	complex<double> *greensFunctionData = new complex<double>[lookupTableResolution];
 	for(int e = 0; e < lookupTableResolution; e++)
-		greensFunction[e] = 0.;
+		greensFunctionData[e] = 0.;
 
-	if(type == GreensFunctionType::Retarded){
+	if(type == Property::GreensFunction::Type::Retarded){
 		for(int n = 0; n < lookupTableNumCoefficients; n++){
 			for(int e = 0; e < lookupTableResolution; e++){
-				greensFunction[e] += generatingFunctionLookupTable[n][e]*coefficients[n];
+				greensFunctionData[e] += generatingFunctionLookupTable[n][e]*coefficients[n];
 			}
 		}
 	}
-	else if(type == GreensFunctionType::Advanced){
+	else if(type == Property::GreensFunction::Type::Advanced){
 		for(int n = 0; n < lookupTableNumCoefficients; n++){
 			for(int e = 0; e < lookupTableResolution; e++){
-				greensFunction[e] += coefficients[n]*conj(generatingFunctionLookupTable[n][e]);
+				greensFunctionData[e] += coefficients[n]*conj(generatingFunctionLookupTable[n][e]);
 			}
 		}
 	}
-	else if(type == GreensFunctionType::Principal){
+	else if(type == Property::GreensFunction::Type::Principal){
 		for(int n = 0; n < lookupTableNumCoefficients; n++){
 			for(int e = 0; e < lookupTableResolution; e++){
-				greensFunction[e] += -coefficients[n]*real(generatingFunctionLookupTable[n][e]);
+				greensFunctionData[e] += -coefficients[n]*real(generatingFunctionLookupTable[n][e]);
 			}
 		}
 	}
-	else if(type == GreensFunctionType::NonPrincipal){
+	else if(type == Property::GreensFunction::Type::NonPrincipal){
 		for(int n = 0; n < lookupTableNumCoefficients; n++){
 			for(int e = 0; e < lookupTableResolution; e++){
-				greensFunction[e] -= coefficients[n]*i*imag(generatingFunctionLookupTable[n][e]);
+				greensFunctionData[e] -= coefficients[n]*i*imag(generatingFunctionLookupTable[n][e]);
 			}
 		}
 	}
+
+	Property::GreensFunction *greensFunction = new Property::GreensFunction(
+		type,
+		Property::GreensFunction::Format::Array,
+		lookupTableLowerBound,
+		lookupTableUpperBound,
+		lookupTableResolution,
+		greensFunctionData
+	);
+	delete [] greensFunctionData;
+
+	return greensFunction;
 }
 
 complex<double> ChebyshevSolver::getMonolopoulosABCDamping(

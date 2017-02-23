@@ -75,9 +75,6 @@ CPropertyExtractor::CPropertyExtractor(
 
 	this->cSolver = cSolver;
 	this->numCoefficients = numCoefficients;
-//	this->energyResolution = energyResolution;
-//	this->lowerBound = lowerBound;
-//	this->upperBound = upperBound;
 	this->useGPUToCalculateCoefficients = useGPUToCalculateCoefficients;
 	this->useGPUToGenerateGreensFunctions = useGPUToGenerateGreensFunctions;
 	this->useLookupTable = useLookupTable;
@@ -112,21 +109,25 @@ void CPropertyExtractor::setEnergyWindow(
 		cSolver->destroyLookupTable();
 }
 
-complex<double>* CPropertyExtractor::calculateGreensFunction(
+Property::GreensFunction* CPropertyExtractor::calculateGreensFunction(
 	Index to,
 	Index from,
-	ChebyshevSolver::GreensFunctionType type
+	Property::GreensFunction::Type type
 ){
 	vector<Index> toIndices;
 	toIndices.push_back(to);
 
-	return calculateGreensFunctions(toIndices, from, type);
+	Property::GreensFunction **greensFunctions = calculateGreensFunctions(toIndices, from, type);
+	Property::GreensFunction *greensFunction = greensFunctions[0];
+	delete [] greensFunctions;
+
+	return greensFunction;
 }
 
-complex<double>* CPropertyExtractor::calculateGreensFunctions(
+Property::GreensFunction** CPropertyExtractor::calculateGreensFunctions(
 	vector<Index> &to,
 	Index from,
-	ChebyshevSolver::GreensFunctionType type
+	Property::GreensFunction::Type type
 ){
 	ensureLookupTableIsReady();
 
@@ -139,41 +140,44 @@ complex<double>* CPropertyExtractor::calculateGreensFunctions(
 		cSolver->calculateCoefficients(to, from, coefficients, numCoefficients);
 	}
 
-	complex<double> *greensFunction = new complex<double>[energyResolution*to.size()];
+	Property::GreensFunction **greensFunctions = new Property::GreensFunction*[to.size()];
 
 	if(useGPUToGenerateGreensFunctions){
 		for(unsigned int n = 0; n < to.size(); n++){
-			cSolver->generateGreensFunctionGPU(greensFunction,
-								&(coefficients[n*numCoefficients]),
-								type);
+			greensFunctions[n] = cSolver->generateGreensFunctionGPU(
+				&(coefficients[n*numCoefficients]),
+				type
+			);
 		}
 	}
 	else{
 		if(useLookupTable){
 			#pragma omp parallel for
 			for(unsigned int n = 0; n < to.size(); n++){
-				cSolver->generateGreensFunction(greensFunction,
-								&(coefficients[n*numCoefficients]),
-								type);
+				greensFunctions[n] = cSolver->generateGreensFunction(
+					&(coefficients[n*numCoefficients]),
+					type
+				);
 			}
 		}
 		else{
 			#pragma omp parallel for
 			for(unsigned int n = 0; n < to.size(); n++){
-				cSolver->generateGreensFunction(greensFunction,
-								&(coefficients[n*numCoefficients]),
-								numCoefficients,
-								energyResolution,
-								lowerBound,
-								upperBound,
-								type);
+				greensFunctions[n] = cSolver->generateGreensFunction(
+					&(coefficients[n*numCoefficients]),
+					numCoefficients,
+					energyResolution,
+					lowerBound,
+					upperBound,
+					type
+				);
 			}
 		}
 	}
 
 	delete [] coefficients;
 
-	return greensFunction;
+	return greensFunctions;
 }
 
 complex<double> CPropertyExtractor::calculateExpectationValue(
@@ -184,50 +188,40 @@ complex<double> CPropertyExtractor::calculateExpectationValue(
 
 	complex<double> expectationValue = 0.;
 
-	complex<double> *greensFunction = calculateGreensFunction(to, from, ChebyshevSolver::GreensFunctionType::NonPrincipal);
+	Property::GreensFunction *greensFunction = calculateGreensFunction(
+		to,
+		from,
+		Property::GreensFunction::Type::NonPrincipal
+	);
+	const complex<double> *greensFunctionData = greensFunction->getArrayData();
+
 	Statistics statistics = cSolver->getModel()->getStatistics();
 
 	const double dE = (upperBound - lowerBound)/energyResolution;
 	for(int e = 0; e < energyResolution; e++){
 		double weight;
 		if(statistics == Statistics::FermiDirac){
-			weight = Functions::fermiDiracDistribution(lowerBound + (e/(double)energyResolution)*(upperBound - lowerBound),
-									cSolver->getModel()->getChemicalPotential(),
-									cSolver->getModel()->getTemperature());
+			weight = Functions::fermiDiracDistribution(
+				lowerBound + (e/(double)energyResolution)*(upperBound - lowerBound),
+				cSolver->getModel()->getChemicalPotential(),
+				cSolver->getModel()->getTemperature()
+			);
 		}
 		else{
-			weight = Functions::boseEinsteinDistribution(lowerBound + (e/(double)energyResolution)*(upperBound - lowerBound),
-									cSolver->getModel()->getChemicalPotential(),
-									cSolver->getModel()->getTemperature());
+			weight = Functions::boseEinsteinDistribution(
+				lowerBound + (e/(double)energyResolution)*(upperBound - lowerBound),
+				cSolver->getModel()->getChemicalPotential(),
+				cSolver->getModel()->getTemperature()
+			);
 		}
 
-		expectationValue -= weight*conj(i*greensFunction[e])*dE/M_PI;
+		expectationValue -= weight*conj(i*greensFunctionData[e])*dE/M_PI;
 	}
 
-	delete [] greensFunction;
+	delete greensFunction;
 
 	return expectationValue;
 }
-
-/*double* CPropertyExtractor::calculateDensity(Index pattern, Index ranges){
-	for(unsigned int n = 0; n < pattern.indices.size(); n++){
-		if(pattern.indices.at(n) >= 0)
-			ranges.indices.at(n) = 1;
-	}
-
-	int densityArraySize = 1;
-	for(unsigned int n = 0; n < ranges.indices.size(); n++){
-		if(pattern.indices.at(n) < IDX_SUM_ALL)
-			densityArraySize *= ranges.indices.at(n);
-	}
-	double *density = new double[densityArraySize];
-	for(int n = 0; n < densityArraySize; n++)
-		density[n] = 0.;
-
-	calculate(calculateDensityCallback, (void*)density, pattern, ranges, 0, 1);
-
-	return density;
-}*/
 
 Property::Density* CPropertyExtractor::calculateDensity(
 	Index pattern,
@@ -278,26 +272,6 @@ Property::Magnetization* CPropertyExtractor::calculateMagnetization(
 
 	return magnetization;
 }
-
-/*double* CPropertyExtractor::calculateLDOS(Index pattern, Index ranges){
-	for(unsigned int n = 0; n < pattern.indices.size(); n++){
-		if(pattern.indices.at(n) >= 0)
-			ranges.indices.at(n) = 1;
-	}
-
-	int ldosArraySize = 1.;
-	for(unsigned int n = 0; n < ranges.indices.size(); n++){
-		if(pattern.indices.at(n) < IDX_SUM_ALL)
-			ldosArraySize *= ranges.indices.at(n);
-	}
-	double *ldos = new double[energyResolution*ldosArraySize];
-	for(int n = 0; n < energyResolution*ldosArraySize; n++)
-		ldos[n] = 0.;
-
-	calculate(calculateLDOSCallback, (void*)ldos, pattern, ranges, 0, 1);
-
-	return ldos;
-}*/
 
 Property::LDOS* CPropertyExtractor::calculateLDOS(Index pattern, Index ranges){
 	ensureCompliantRanges(pattern, ranges);
@@ -354,27 +328,37 @@ void CPropertyExtractor::calculateDensityCallback(
 ){
 	CPropertyExtractor *pe = (CPropertyExtractor*)cb_this;
 
-	complex<double> *greensFunction = pe->calculateGreensFunction(index, index, ChebyshevSolver::GreensFunctionType::NonPrincipal);
+	Property::GreensFunction *greensFunction = pe->calculateGreensFunction(
+		index,
+		index,
+		Property::GreensFunction::Type::NonPrincipal
+	);
+	const complex<double> *greensFunctionData = greensFunction->getArrayData();
+
 	Statistics statistics = pe->cSolver->getModel()->getStatistics();
 
 	const double dE = (pe->upperBound - pe->lowerBound)/pe->energyResolution;
 	for(int e = 0; e < pe->energyResolution; e++){
 		double weight;
 		if(statistics == Statistics::FermiDirac){
-			weight = Functions::fermiDiracDistribution(pe->lowerBound + (e/(double)pe->energyResolution)*(pe->upperBound - pe->lowerBound),
-									pe->cSolver->getModel()->getChemicalPotential(),
-									pe->cSolver->getModel()->getTemperature());
+			weight = Functions::fermiDiracDistribution(
+				pe->lowerBound + (e/(double)pe->energyResolution)*(pe->upperBound - pe->lowerBound),
+				pe->cSolver->getModel()->getChemicalPotential(),
+				pe->cSolver->getModel()->getTemperature()
+			);
 		}
 		else{
-			weight = Functions::boseEinsteinDistribution(pe->lowerBound + (e/(double)pe->energyResolution)*(pe->upperBound - pe->lowerBound),
-									pe->cSolver->getModel()->getChemicalPotential(),
-									pe->cSolver->getModel()->getTemperature());
+			weight = Functions::boseEinsteinDistribution(
+				pe->lowerBound + (e/(double)pe->energyResolution)*(pe->upperBound - pe->lowerBound),
+				pe->cSolver->getModel()->getChemicalPotential(),
+				pe->cSolver->getModel()->getTemperature()
+			);
 		}
 
-		((double*)density)[offset] += weight*imag(greensFunction[e])/M_PI*dE;
+		((double*)density)[offset] += weight*imag(greensFunctionData[e])/M_PI*dE;
 	}
 
-	delete [] greensFunction;
+	delete greensFunction;
 }
 
 void CPropertyExtractor::calculateMAGCallback(
@@ -388,32 +372,40 @@ void CPropertyExtractor::calculateMAGCallback(
 	int spinIndex = ((int*)(pe->hint))[0];
 	Index to(index);
 	Index from(index);
-	complex<double> *greensFunction;
 	Statistics statistics = pe->cSolver->getModel()->getStatistics();
 
 	const double dE = (pe->upperBound - pe->lowerBound)/pe->energyResolution;
 	for(int n = 0; n < 4; n++){
 		to.at(spinIndex) = n/2;		//up, up, down, down
 		from.at(spinIndex) = n%2;	//up, down, up, down
-		greensFunction = pe->calculateGreensFunction(to, from, ChebyshevSolver::GreensFunctionType::NonPrincipal);
+		Property::GreensFunction *greensFunction = pe->calculateGreensFunction(
+			to,
+			from,
+			Property::GreensFunction::Type::NonPrincipal
+		);
+		const complex<double> *greensFunctionData = greensFunction->getArrayData();
 
 		for(int e = 0; e < pe->energyResolution; e++){
 			double weight;
 			if(statistics == Statistics::FermiDirac){
-				weight = Functions::fermiDiracDistribution(pe->lowerBound + (e/(double)pe->energyResolution)*(pe->upperBound - pe->lowerBound),
-										pe->cSolver->getModel()->getChemicalPotential(),
-										pe->cSolver->getModel()->getTemperature());
+				weight = Functions::fermiDiracDistribution(
+					pe->lowerBound + (e/(double)pe->energyResolution)*(pe->upperBound - pe->lowerBound),
+					pe->cSolver->getModel()->getChemicalPotential(),
+					pe->cSolver->getModel()->getTemperature()
+				);
 			}
 			else{
-				weight = Functions::boseEinsteinDistribution(pe->lowerBound + (e/(double)pe->energyResolution)*(pe->upperBound - pe->lowerBound),
-										pe->cSolver->getModel()->getChemicalPotential(),
-										pe->cSolver->getModel()->getTemperature());
+				weight = Functions::boseEinsteinDistribution(
+					pe->lowerBound + (e/(double)pe->energyResolution)*(pe->upperBound - pe->lowerBound),
+					pe->cSolver->getModel()->getChemicalPotential(),
+					pe->cSolver->getModel()->getTemperature()
+				);
 			}
 
-			((complex<double>*)mag)[4*offset + n] += weight*(-i)*greensFunction[e]/M_PI*dE;
+			((complex<double>*)mag)[4*offset + n] += weight*(-i)*greensFunctionData[e]/M_PI*dE;
 		}
 
-		delete [] greensFunction;
+		delete greensFunction;
 	}
 }
 
@@ -425,13 +417,18 @@ void CPropertyExtractor::calculateLDOSCallback(
 ){
 	CPropertyExtractor *pe = (CPropertyExtractor*)cb_this;
 
-	complex<double> *greensFunction = pe->calculateGreensFunction(index, index, ChebyshevSolver::GreensFunctionType::NonPrincipal);
+	Property::GreensFunction *greensFunction = pe->calculateGreensFunction(
+		index,
+		index,
+		Property::GreensFunction::Type::NonPrincipal
+	);
+	const complex<double> *greensFunctionData = greensFunction->getArrayData();
 
 	const double dE = (pe->upperBound - pe->lowerBound)/pe->energyResolution;
 	for(int n = 0; n < pe->energyResolution; n++)
-		((double*)ldos)[pe->energyResolution*offset + n] += imag(greensFunction[n])/M_PI*dE;
+		((double*)ldos)[pe->energyResolution*offset + n] += imag(greensFunctionData[n])/M_PI*dE;
 
-	delete [] greensFunction;
+	delete greensFunction;
 }
 
 void CPropertyExtractor::calculateSP_LDOSCallback(
@@ -445,19 +442,22 @@ void CPropertyExtractor::calculateSP_LDOSCallback(
 	int spinIndex = ((int*)(pe->hint))[0];
 	Index to(index);
 	Index from(index);
-	complex<double> *greensFunction;
 
 	const double dE = (pe->upperBound - pe->lowerBound)/pe->energyResolution;
 	for(int n = 0; n < 4; n++){
 		to.at(spinIndex) = n/2;		//up, up, down, down
 		from.at(spinIndex) = n%2;	//up, down, up, down
-		greensFunction = pe->calculateGreensFunction(to, from, ChebyshevSolver::GreensFunctionType::NonPrincipal);
+		Property::GreensFunction *greensFunction = pe->calculateGreensFunction(
+			to,
+			from,
+			Property::GreensFunction::Type::NonPrincipal
+		);
+		const complex<double> *greensFunctionData = greensFunction->getArrayData();
 
 		for(int e = 0; e < pe->energyResolution; e++)
-			((complex<double>*)sp_ldos)[4*pe->energyResolution*offset + 4*e + n] += -i*greensFunction[e]/M_PI*dE;
-//			((complex<double>*)sp_ldos)[4*pe->energyResolution*offset + 4*e + n] += imag(greensFunction[e])/M_PI*dE;
+			((complex<double>*)sp_ldos)[4*pe->energyResolution*offset + 4*e + n] += -i*greensFunctionData[e]/M_PI*dE;
 
-		delete [] greensFunction;
+		delete greensFunction;
 	}
 }
 
@@ -476,79 +476,5 @@ void CPropertyExtractor::ensureLookupTableIsReady(){
 		);
 	}
 }
-
-/*void CPropertyExtractor::calculate(
-	void (*callback)(
-		CPropertyExtractor *cb_this,
-		void *memory,
-		const Index &index,
-		int offset
-	),
-	void *memory,
-	Index pattern,
-	const Index &ranges,
-	int currentOffset,
-	int offsetMultiplier
-){
-	int currentSubindex = pattern.size()-1;
-	for(; currentSubindex >= 0; currentSubindex--){
-		if(pattern.at(currentSubindex) < 0)
-			break;
-	}
-
-	if(currentSubindex == -1){
-		callback(this, memory, pattern, currentOffset);
-	}
-	else{
-		int nextOffsetMultiplier = offsetMultiplier;
-		if(pattern.at(currentSubindex) < IDX_SUM_ALL)
-			nextOffsetMultiplier *= ranges.at(currentSubindex);
-		bool isSumIndex = false;
-		if(pattern.at(currentSubindex) == IDX_SUM_ALL)
-			isSumIndex = true;
-		for(int n = 0; n < ranges.at(currentSubindex); n++){
-			pattern.at(currentSubindex) = n;
-			calculate(callback,
-					memory,
-					pattern,
-					ranges,
-					currentOffset,
-					nextOffsetMultiplier
-			);
-			if(!isSumIndex)
-				currentOffset += offsetMultiplier;
-		}
-	}
-}
-
-void CPropertyExtractor::ensureCompliantRanges(
-	const Index &pattern,
-	Index &ranges
-){
-	for(unsigned int n = 0; n < pattern.size(); n++){
-		if(pattern.at(n) >= 0)
-			ranges.at(n) = 1;
-	}
-}
-
-void CPropertyExtractor::getLoopRanges(
-	const Index &pattern,
-	const Index &ranges,
-	int *lDimensions,
-	int **lRanges
-){
-	*lDimensions = 0;
-	for(unsigned int n = 0; n < ranges.size(); n++){
-		if(pattern.at(n) < IDX_SUM_ALL)
-			(*lDimensions)++;
-	}
-
-	(*lRanges) = new int[*lDimensions];
-	int counter = 0;
-	for(unsigned int n = 0; n < ranges.size(); n++){
-		if(pattern.at(n) < IDX_SUM_ALL)
-			(*lRanges)[counter++] = ranges.at(n);
-	}
-}*/
 
 };	//End of namespace TBTK

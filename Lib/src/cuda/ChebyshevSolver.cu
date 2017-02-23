@@ -91,7 +91,6 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 		""
 	);
 
-//	int device = allocateDeviceGPU();
 	int device = GPUResourceManager::getInstance().allocateDevice();
 
 	TBTKAssert(
@@ -527,7 +526,6 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 	if(damping != NULL)
 		cudaFree(damping_device);
 
-//	freeDeviceGPU(device);
 	GPUResourceManager::getInstance().freeDevice(device);
 
 	//Lorentzian convolution
@@ -549,7 +547,6 @@ void calculateGreensFunction(
 	if(e < energyResolution)
 		for(int n = 0; n < numCoefficients; n++)
 			greensFunction[e] = cuCadd(greensFunction[e], cuCmul(lookupTable[n*energyResolution + e], coefficients[n]));
-//			greensFunction[e] += lookupTable[n*energyResolution + e]*coefficients[n];
 }
 
 void ChebyshevSolver::loadLookupTableGPU(){
@@ -564,12 +561,6 @@ void ChebyshevSolver::loadLookupTableGPU(){
 	);
 	if(generatingFunctionLookupTable_device != NULL)
 		destroyLookupTableGPU();
-/*	TBTKAssert(
-		generatingFunctionLookupTable_device == NULL,
-		"ChebyshevSolver::loadLookupTableGPU()",
-		"Lookup table already loaded.",
-		""
-	);*/
 
 	complex<double> *generatingFunctionLookupTable_host = new complex<double>[lookupTableNumCoefficients*lookupTableResolution];
 	for(int n = 0; n < lookupTableNumCoefficients; n++)
@@ -587,10 +578,8 @@ void ChebyshevSolver::loadLookupTableGPU(){
 			Streams::out << memoryRequirement/1024/1024 << "MB\n";
 	}
 
-//	generatingFunctionLookupTable_device = new complex<double>**[numDevices];
 	generatingFunctionLookupTable_device = new complex<double>**[GPUResourceManager::getInstance().getNumDevices()];
 
-//	for(int n = 0; n < numDevices; n++){
 	for(int n = 0; n < GPUResourceManager::getInstance().getNumDevices(); n++){
 		TBTKAssert(
 			cudaSetDevice(n) == cudaSuccess,
@@ -636,7 +625,6 @@ void ChebyshevSolver::destroyLookupTableGPU(){
 		""
 	);
 
-//	for(int n = 0; n < numDevices; n++){
 	for(int n = 0; n < GPUResourceManager::getInstance().getNumDevices(); n++){
 		cudaFree(generatingFunctionLookupTable_device[n]);
 	}
@@ -645,12 +633,10 @@ void ChebyshevSolver::destroyLookupTableGPU(){
 	generatingFunctionLookupTable_device = NULL;
 }
 
-void ChebyshevSolver::generateGreensFunctionGPU(
-	complex<double> *greensFunction,
+Property::GreensFunction* ChebyshevSolver::generateGreensFunctionGPU(
 	complex<double> *coefficients,
-	GreensFunctionType type
+	Property::GreensFunction::Type type
 ){
-//	int device = allocateDeviceGPU();
 	int device = GPUResourceManager::getInstance().allocateDevice();
 
 	TBTKAssert(
@@ -670,21 +656,23 @@ void ChebyshevSolver::generateGreensFunctionGPU(
 		""
 	);
 	TBTKAssert(
-		type == GreensFunctionType::Retarded,
+		type == Property::GreensFunction::Type::Retarded,
 		"ChebyshevSolver::generateGreensFunctionGPU()",
 		"Only evaluation of retarded Green's function is implemented for GPU so far.",
 		"Use CPU evaluation instead."
 	);
 
-	for(int e = 0; e < lookupTableResolution; e++)
-		greensFunction[e] = 0.;
+	complex<double> *greensFunctionData = new complex<double>[lookupTableResolution];
 
-	complex<double> *greensFunction_device;
+	for(int e = 0; e < lookupTableResolution; e++)
+		greensFunctionData[e] = 0.;
+
+	complex<double> *greensFunctionData_device;
 	complex<double> *coefficients_device;
 
 	TBTKAssert(
 		cudaMalloc(
-			(void**)&greensFunction_device,
+			(void**)&greensFunctionData_device,
 			lookupTableResolution*sizeof(complex<double>)
 		)  == cudaSuccess,
 		"ChebyshevSolver::generateGreensFunctionGPU()",
@@ -703,13 +691,13 @@ void ChebyshevSolver::generateGreensFunctionGPU(
 
 	TBTKAssert(
 		cudaMemcpy(
-			greensFunction_device,
-			greensFunction,
+			greensFunctionData_device,
+			greensFunctionData,
 			lookupTableResolution*sizeof(complex<double>),
 			cudaMemcpyHostToDevice
 		) == cudaSuccess,
 		"ChebyshevSolver::generateGreensFunctionGPU()",
-		"CUDA memcpy error while copying greensFunction.",
+		"CUDA memcpy error while copying greensFunctionData.",
 		""
 	);
 	TBTKAssert(
@@ -732,16 +720,18 @@ void ChebyshevSolver::generateGreensFunctionGPU(
 		Streams::out << "\tCUDA Num blocks: " << num_blocks << "\n";
 	}
 
-	calculateGreensFunction <<< num_blocks, block_size>>> ((cuDoubleComplex*)greensFunction_device,
-								(cuDoubleComplex*)coefficients_device,
-								(cuDoubleComplex*)generatingFunctionLookupTable_device[device],
-								lookupTableNumCoefficients,
-								lookupTableResolution);
+	calculateGreensFunction <<< num_blocks, block_size>>> (
+		(cuDoubleComplex*)greensFunctionData_device,
+		(cuDoubleComplex*)coefficients_device,
+		(cuDoubleComplex*)generatingFunctionLookupTable_device[device],
+		lookupTableNumCoefficients,
+		lookupTableResolution
+	);
 
 	TBTKAssert(
 		cudaMemcpy(
-			greensFunction,
-			greensFunction_device,
+			greensFunctionData,
+			greensFunctionData_device,
 			lookupTableResolution*sizeof(complex<double>),
 			cudaMemcpyDeviceToHost
 		) == cudaSuccess,
@@ -750,61 +740,22 @@ void ChebyshevSolver::generateGreensFunctionGPU(
 		""
 	);
 
-	cudaFree(greensFunction_device);
+	cudaFree(greensFunctionData_device);
 	cudaFree(coefficients_device);
 
-//	freeDeviceGPU(device);
 	GPUResourceManager::getInstance().freeDevice(device);
+
+	Property::GreensFunction *greensFunction = new Property::GreensFunction(
+		type,
+		Property::GreensFunction::Format::Array,
+		lookupTableLowerBound,
+		lookupTableUpperBound,
+		lookupTableResolution,
+		greensFunctionData
+	);
+	delete [] greensFunctionData;
+
+	return greensFunction;
 }
-
-/*void ChebyshevSolver::createDeviceTableGPU(){
-	cudaGetDeviceCount(&numDevices);
-
-	Streams::out << "Num GPU devices: " << numDevices << "\n";
-
-	if(numDevices > 0){
-		busyDevices = new bool[numDevices];
-		for(int n = 0; n < numDevices; n++)
-			busyDevices[n] = false;
-	}
-}
-
-void ChebyshevSolver::destroyDeviceTableGPU(){
-	if(numDevices > 0)
-		delete [] busyDevices;
-}
-
-int ChebyshevSolver::allocateDeviceGPU(){
-	int device = 0;
-	bool done = false;
-	while(!done){
-		omp_set_lock(&busyDevicesLock);
-		#pragma omp flush
-		{
-			for(int n = 0; n < numDevices; n++){
-				if(!busyDevices[n]){
-					device = n;
-					busyDevices[n] = true;
-					done = true;
-					break;
-				}
-			}
-		}
-		#pragma omp flush
-		omp_unset_lock(&busyDevicesLock);
-	}
-
-	return device;
-}
-
-void ChebyshevSolver::freeDeviceGPU(int device){
-	omp_set_lock(&busyDevicesLock);
-	#pragma omp flush
-	{
-		busyDevices[device] = false;
-	}
-	#pragma omp flush
-	omp_unset_lock(&busyDevicesLock);
-}*/
 
 };	//End of namespace TBTK
