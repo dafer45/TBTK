@@ -109,6 +109,18 @@ public:
 
 	/** Get pole amplitude. (For Format::PoleFormat). */
 	std::complex<double> getPoleAmplitude(unsigned int n) const;
+
+	/** Function call operator. */
+	std::complex<double> operator()(double E) const;
+
+	/** Function call operator. */
+	std::complex<double> operator()(std::complex<double> E) const;
+
+	/** Addition operator. (For Format::Poles). */
+	GreensFunction operator+(const GreensFunction& rhs) const;
+
+	/** Addition operator. (For Format::Poles). */
+	GreensFunction operator-(const GreensFunction& rhs) const;
 private:
 	/** Green's function type. */
 	Type type;
@@ -201,6 +213,74 @@ inline std::complex<double> GreensFunction::getPoleAmplitude(
 	unsigned int n
 ) const{
 	return storage.poleFormat.amplitudes[n];
+}
+
+inline GreensFunction GreensFunction::operator+(const GreensFunction& rhs) const{
+	TBTKAssert(
+		format == Format::Poles && rhs.format == Format::Poles,
+		"GreensFunction::operator+()",
+		"Unsupported Green's function format.",
+		"Only two Green's functions with format Format::Poles can be added."
+	);
+
+	TBTKAssert(
+		type == rhs.type,
+		"GreensFunction::operator+()",
+		"Incompatible Green's function types",
+		"Only addition of Green's function of the same type supported yet."
+	);
+
+	Property::GreensFunction newGreensFunction(
+		type,
+		format,
+		storage.poleFormat.numPoles + rhs.storage.poleFormat.numPoles
+	);
+
+	for(unsigned int n = 0; n < storage.poleFormat.numPoles; n++){
+		newGreensFunction.storage.poleFormat.positions[n] = storage.poleFormat.positions[n];
+		newGreensFunction.storage.poleFormat.amplitudes[n] = storage.poleFormat.amplitudes[n];
+	}
+
+	for(unsigned int n = 0; n < rhs.storage.poleFormat.numPoles; n++){
+		newGreensFunction.storage.poleFormat.positions[n + storage.poleFormat.numPoles] = rhs.storage.poleFormat.positions[n];
+		newGreensFunction.storage.poleFormat.amplitudes[n + storage.poleFormat.numPoles] = rhs.storage.poleFormat.amplitudes[n];
+	}
+
+	return newGreensFunction;
+}
+
+inline GreensFunction GreensFunction::operator-(const GreensFunction& rhs) const{
+	TBTKAssert(
+		format == Format::Poles && rhs.format == Format::Poles,
+		"GreensFunction::operator+()",
+		"Unsupported Green's function format.",
+		"Only two Green's functions with format Format::Poles can be added."
+	);
+
+	TBTKAssert(
+		type == rhs.type,
+		"GreensFunction::operator+()",
+		"Incompatible Green's function types",
+		"Only addition of Green's function of the same type supported yet."
+	);
+
+	Property::GreensFunction newGreensFunction(
+		type,
+		format,
+		storage.poleFormat.numPoles + rhs.storage.poleFormat.numPoles
+	);
+
+	for(unsigned int n = 0; n < storage.poleFormat.numPoles; n++){
+		newGreensFunction.storage.poleFormat.positions[n] = storage.poleFormat.positions[n];
+		newGreensFunction.storage.poleFormat.amplitudes[n] = storage.poleFormat.amplitudes[n];
+	}
+
+	for(unsigned int n = 0; n < rhs.storage.poleFormat.numPoles; n++){
+		newGreensFunction.storage.poleFormat.positions[n + storage.poleFormat.numPoles] = rhs.storage.poleFormat.positions[n];
+		newGreensFunction.storage.poleFormat.amplitudes[n + storage.poleFormat.numPoles] = -rhs.storage.poleFormat.amplitudes[n];
+	}
+
+	return newGreensFunction;
 }
 
 };	//End namespace Property

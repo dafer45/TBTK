@@ -136,5 +136,36 @@ GreensFunction::~GreensFunction(){
 	}
 }
 
+complex<double> GreensFunction::operator()(double E) const{
+	switch(format){
+	case Format::Array:
+	{
+		int e = (int)((E - storage.arrayFormat.lowerBound)/(storage.arrayFormat.upperBound - storage.arrayFormat.lowerBound)*(double)storage.arrayFormat.resolution);
+		TBTKAssert(
+			e >= 0 && e < (int)storage.arrayFormat.resolution,
+			"GreensFunction::operator()",
+			"Out of bound access for Green's function of format Format::Array.",
+			"Use Format::Poles or only access values inside the bounds."
+		);
+
+		return storage.arrayFormat.data[e];
+	}
+	case Format::Poles:
+	{
+		complex<double> value = 0.;
+		for(unsigned int n = 0; n < storage.poleFormat.numPoles; n++)
+			value += storage.poleFormat.amplitudes[n]/(E - storage.poleFormat.positions[n]);
+
+		return value;
+	}
+	default:
+		TBTKExit(
+			"GreensFunction::operator()",
+			"Unknown Green's function format.",
+			"This should never happen, contact the developer."
+		);
+	}
+}
+
 };	//End of namespace Property
 };	//End of namespace TBTK
