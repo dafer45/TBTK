@@ -23,6 +23,8 @@
 #ifndef COM_DAFER45_TBTK_GREENS_FUNCTION
 #define COM_DAFER45_TBTK_GREENS_FUNCTION
 
+#include "TBTKMacros.h"
+
 #include <complex>
 #include <vector>
 
@@ -41,7 +43,8 @@ public:
 		Advanced,
 		Retarded,
 		Principal,
-		NonPrincipal
+		NonPrincipal,
+		FreePole
 	};
 
 	/** Enum class for specifying storage format. */
@@ -85,6 +88,9 @@ public:
 		std::complex<double> *amplitudes
 	);
 
+	/** Copy constructor. */
+	GreensFunction(const GreensFunction &greensFunction);
+
 	/** Destructor. */
 	~GreensFunction();
 
@@ -110,6 +116,9 @@ public:
 	/** Get pole amplitude. (For Format::PoleFormat). */
 	std::complex<double> getPoleAmplitude(unsigned int n) const;
 
+	/** Assignment operator. */
+	const GreensFunction& operator=(const GreensFunction &rhs);
+
 	/** Function call operator. */
 	std::complex<double> operator()(double E) const;
 
@@ -121,6 +130,20 @@ public:
 
 	/** Addition operator. (For Format::Poles). */
 	GreensFunction operator-(const GreensFunction& rhs) const;
+
+	/** Multiplication operator. */
+	GreensFunction operator*(std::complex<double> rhs) const;
+
+	/** Multiplication operator. */
+	friend GreensFunction operator*(std::complex<double> lhs, const GreensFunction& rhs);
+
+	/** Division operator. */
+	GreensFunction operator/(std::complex<double> rhs) const;
+
+	/** Set epsilon for use in the denumerator of the Green's function.
+	 *  Used when the Green's function is of type Type::Poles and format
+	 *  Format::Retarded or Format::Advanced. */
+	static void setEpsilon(double epsilon);
 private:
 	/** Green's function type. */
 	Type type;
@@ -166,6 +189,13 @@ private:
 
 	/** Actuall storage. */
 	Storage storage;
+
+	/** Default epsilon for use in the denumerator of the Green's function.
+	 */
+	static constexpr double DEFAULT_EPSILON = 0.00001;
+
+	/** Epsilon for use in the denumerator of the Green's function. */
+	static double EPSILON;
 
 	/** CPropertyExtractor is a friend class to allow it to write
 	 *  GreensFunction data. */
@@ -215,41 +245,40 @@ inline std::complex<double> GreensFunction::getPoleAmplitude(
 	return storage.poleFormat.amplitudes[n];
 }
 
-inline GreensFunction GreensFunction::operator+(const GreensFunction& rhs) const{
-	TBTKAssert(
-		format == Format::Poles && rhs.format == Format::Poles,
-		"GreensFunction::operator+()",
-		"Unsupported Green's function format.",
-		"Only two Green's functions with format Format::Poles can be added."
-	);
-
-	TBTKAssert(
-		type == rhs.type,
-		"GreensFunction::operator+()",
-		"Incompatible Green's function types",
-		"Only addition of Green's function of the same type supported yet."
-	);
-
-	Property::GreensFunction newGreensFunction(
-		type,
-		format,
-		storage.poleFormat.numPoles + rhs.storage.poleFormat.numPoles
-	);
-
-	for(unsigned int n = 0; n < storage.poleFormat.numPoles; n++){
-		newGreensFunction.storage.poleFormat.positions[n] = storage.poleFormat.positions[n];
-		newGreensFunction.storage.poleFormat.amplitudes[n] = storage.poleFormat.amplitudes[n];
+inline const GreensFunction& GreensFunction::operator=(
+	const GreensFunction &rhs
+){
+	type = rhs.type;
+	format = rhs.format;
+	switch(format){
+	case Format::Array:
+		storage.arrayFormat.lowerBound = rhs.storage.arrayFormat.lowerBound;
+		storage.arrayFormat.upperBound = rhs.storage.arrayFormat.upperBound;
+		storage.arrayFormat.resolution = rhs.storage.arrayFormat.resolution;
+		for(unsigned int n = 0; n < storage.arrayFormat.resolution; n++)
+			storage.arrayFormat.data[n] = rhs.storage.arrayFormat.data[n];
+		break;
+	case Format::Poles:
+		storage.poleFormat.numPoles = rhs.storage.poleFormat.numPoles;
+		storage.poleFormat.positions = new std::complex<double>[storage.poleFormat.numPoles];
+		storage.poleFormat.amplitudes = new std::complex<double>[storage.poleFormat.numPoles];
+		for(unsigned int n = 0; n < storage.poleFormat.numPoles; n++){
+			storage.poleFormat.positions[n] = rhs.storage.poleFormat.positions[n];
+			storage.poleFormat.amplitudes[n] = rhs.storage.poleFormat.amplitudes[n];
+		}
+		break;
+	default:
+		TBTKExit(
+			"GreensFunction::operator()",
+			"Unknown Green's function format.",
+			"This should never happen, contact the developer."
+		);
 	}
-
-	for(unsigned int n = 0; n < rhs.storage.poleFormat.numPoles; n++){
-		newGreensFunction.storage.poleFormat.positions[n + storage.poleFormat.numPoles] = rhs.storage.poleFormat.positions[n];
-		newGreensFunction.storage.poleFormat.amplitudes[n + storage.poleFormat.numPoles] = rhs.storage.poleFormat.amplitudes[n];
-	}
-
-	return newGreensFunction;
 }
 
-inline GreensFunction GreensFunction::operator-(const GreensFunction& rhs) const{
+inline GreensFunction GreensFunction::operator+(
+	const GreensFunction& rhs
+) const{
 	TBTKAssert(
 		format == Format::Poles && rhs.format == Format::Poles,
 		"GreensFunction::operator+()",
@@ -257,30 +286,304 @@ inline GreensFunction GreensFunction::operator-(const GreensFunction& rhs) const
 		"Only two Green's functions with format Format::Poles can be added."
 	);
 
+	if(type == rhs.type){
+		Property::GreensFunction newGreensFunction(
+			type,
+			format,
+			storage.poleFormat.numPoles + rhs.storage.poleFormat.numPoles
+		);
+
+		for(unsigned int n = 0; n < storage.poleFormat.numPoles; n++){
+			newGreensFunction.storage.poleFormat.positions[n] = storage.poleFormat.positions[n];
+			newGreensFunction.storage.poleFormat.amplitudes[n] = storage.poleFormat.amplitudes[n];
+		}
+
+		for(unsigned int n = 0; n < rhs.storage.poleFormat.numPoles; n++){
+			newGreensFunction.storage.poleFormat.positions[n + storage.poleFormat.numPoles] = rhs.storage.poleFormat.positions[n];
+			newGreensFunction.storage.poleFormat.amplitudes[n + storage.poleFormat.numPoles] = rhs.storage.poleFormat.amplitudes[n];
+		}
+
+		return newGreensFunction;
+	}
+	else{
+		Property::GreensFunction newGreensFunction(
+			Type::FreePole,
+			Format::Poles,
+			storage.poleFormat.numPoles + rhs.storage.poleFormat.numPoles
+		);
+
+		double epsilon;
+		double rhsEpsilon;
+		switch(type){
+		case Type::Retarded:
+			epsilon = EPSILON;
+			break;
+		case Type::Advanced:
+			epsilon = -EPSILON;
+			break;
+		case Type::FreePole:
+			epsilon = 0.;
+			break;
+		default:
+			TBTKExit(
+				"GreensFunction::operator+()",
+				"Unsupported Green's function type.",
+				"This should never happen, contact the developer."
+			);
+		}
+		switch(rhs.type){
+		case Type::Retarded:
+			rhsEpsilon = EPSILON;
+			break;
+		case Type::Advanced:
+			rhsEpsilon = -EPSILON;
+			break;
+		case Type::FreePole:
+			rhsEpsilon = 0.;
+			break;
+		default:
+			TBTKExit(
+				"GreensFunction::operator+()",
+				"Unsupported Green's function type.",
+				"This should never happen, contact the developer."
+			);
+		}
+
+		std::complex<double> i(0, 1);
+		for(unsigned int n = 0; n < storage.poleFormat.numPoles; n++){
+			newGreensFunction.storage.poleFormat.positions[n] = storage.poleFormat.positions[n] - i*epsilon;
+			newGreensFunction.storage.poleFormat.amplitudes[n] = storage.poleFormat.amplitudes[n];
+		}
+
+		for(unsigned int n = 0; n < rhs.storage.poleFormat.numPoles; n++){
+			newGreensFunction.storage.poleFormat.positions[n + storage.poleFormat.numPoles] = rhs.storage.poleFormat.positions[n] - i*epsilon;
+			newGreensFunction.storage.poleFormat.amplitudes[n + storage.poleFormat.numPoles] = rhs.storage.poleFormat.amplitudes[n];
+		}
+
+		return newGreensFunction;
+	}
+}
+
+inline GreensFunction GreensFunction::operator-(
+	const GreensFunction& rhs
+) const{
 	TBTKAssert(
-		type == rhs.type,
-		"GreensFunction::operator+()",
-		"Incompatible Green's function types",
-		"Only addition of Green's function of the same type supported yet."
+		format == Format::Poles && rhs.format == Format::Poles,
+		"GreensFunction::operator-()",
+		"Unsupported Green's function format.",
+		"Only two Green's functions with format Format::Poles can be subtracted."
 	);
 
-	Property::GreensFunction newGreensFunction(
-		type,
-		format,
-		storage.poleFormat.numPoles + rhs.storage.poleFormat.numPoles
-	);
+	if(type == rhs.type){
+		Property::GreensFunction newGreensFunction(
+			type,
+			format,
+			storage.poleFormat.numPoles + rhs.storage.poleFormat.numPoles
+		);
 
-	for(unsigned int n = 0; n < storage.poleFormat.numPoles; n++){
-		newGreensFunction.storage.poleFormat.positions[n] = storage.poleFormat.positions[n];
-		newGreensFunction.storage.poleFormat.amplitudes[n] = storage.poleFormat.amplitudes[n];
+		for(unsigned int n = 0; n < storage.poleFormat.numPoles; n++){
+			newGreensFunction.storage.poleFormat.positions[n] = storage.poleFormat.positions[n];
+			newGreensFunction.storage.poleFormat.amplitudes[n] = storage.poleFormat.amplitudes[n];
+		}
+
+		for(unsigned int n = 0; n < rhs.storage.poleFormat.numPoles; n++){
+			newGreensFunction.storage.poleFormat.positions[n + storage.poleFormat.numPoles] = rhs.storage.poleFormat.positions[n];
+			newGreensFunction.storage.poleFormat.amplitudes[n + storage.poleFormat.numPoles] = -rhs.storage.poleFormat.amplitudes[n];
+		}
+
+		return newGreensFunction;
 	}
+	else{
+		Property::GreensFunction newGreensFunction(
+			Type::FreePole,
+			Format::Poles,
+			storage.poleFormat.numPoles + rhs.storage.poleFormat.numPoles
+		);
 
-	for(unsigned int n = 0; n < rhs.storage.poleFormat.numPoles; n++){
-		newGreensFunction.storage.poleFormat.positions[n + storage.poleFormat.numPoles] = rhs.storage.poleFormat.positions[n];
-		newGreensFunction.storage.poleFormat.amplitudes[n + storage.poleFormat.numPoles] = -rhs.storage.poleFormat.amplitudes[n];
+		double epsilon;
+		double rhsEpsilon;
+		switch(type){
+		case Type::Retarded:
+			epsilon = EPSILON;
+			break;
+		case Type::Advanced:
+			epsilon = -EPSILON;
+			break;
+		case Type::FreePole:
+			epsilon = 0.;
+			break;
+		default:
+			TBTKExit(
+				"GreensFunction::operator-()",
+				"Unsupported Green's function type.",
+				"This should never happen, contact the developer."
+			);
+		}
+		switch(rhs.type){
+		case Type::Retarded:
+			rhsEpsilon = EPSILON;
+			break;
+		case Type::Advanced:
+			rhsEpsilon = -EPSILON;
+			break;
+		case Type::FreePole:
+			rhsEpsilon = 0.;
+			break;
+		default:
+			TBTKExit(
+				"GreensFunction::operator-()",
+				"Unsupported Green's function type.",
+				"This should never happen, contact the developer."
+			);
+		}
+
+		std::complex<double> i(0, 1);
+		for(unsigned int n = 0; n < storage.poleFormat.numPoles; n++){
+			newGreensFunction.storage.poleFormat.positions[n] = storage.poleFormat.positions[n] - i*epsilon;
+			newGreensFunction.storage.poleFormat.amplitudes[n] = storage.poleFormat.amplitudes[n];
+		}
+
+		for(unsigned int n = 0; n < rhs.storage.poleFormat.numPoles; n++){
+			newGreensFunction.storage.poleFormat.positions[n + storage.poleFormat.numPoles] = rhs.storage.poleFormat.positions[n] - i*epsilon;
+			newGreensFunction.storage.poleFormat.amplitudes[n + storage.poleFormat.numPoles] = -rhs.storage.poleFormat.amplitudes[n];
+		}
+
+		return newGreensFunction;
 	}
+}
 
-	return newGreensFunction;
+inline GreensFunction GreensFunction::operator*(
+	std::complex<double> rhs
+) const{
+	switch(format){
+	case Format::Array:
+	{
+		GreensFunction newGreensFunction(
+			type,
+			format,
+			storage.arrayFormat.lowerBound,
+			storage.arrayFormat.upperBound,
+			storage.arrayFormat.resolution
+		);
+
+		for(unsigned int n = 0; n < storage.arrayFormat.resolution; n++)
+			newGreensFunction.storage.arrayFormat.data[n] = rhs*storage.arrayFormat.data[n];
+
+		return newGreensFunction;
+	}
+	case Format::Poles:
+	{
+		GreensFunction newGreensFunction(
+			type,
+			format,
+			storage.poleFormat.numPoles
+		);
+
+		for(unsigned int n = 0; n < storage.poleFormat.numPoles; n++){
+			newGreensFunction.storage.poleFormat.positions[n] = storage.poleFormat.positions[n];
+			newGreensFunction.storage.poleFormat.amplitudes[n] = rhs*storage.poleFormat.amplitudes[n];
+		}
+
+		return newGreensFunction;
+	}
+	default:
+		TBTKExit(
+			"GreensFunction::operator*()",
+			"Unknown Green's function format.",
+			"This should never happen, contact the developer."
+		);
+	}
+}
+
+inline GreensFunction operator*(
+	std::complex<double> lhs,
+	const GreensFunction &rhs
+){
+	switch(rhs.format){
+	case GreensFunction::Format::Array:
+	{
+		GreensFunction newGreensFunction(
+			rhs.type,
+			rhs.format,
+			rhs.storage.arrayFormat.lowerBound,
+			rhs.storage.arrayFormat.upperBound,
+			rhs.storage.arrayFormat.resolution
+		);
+
+		for(unsigned int n = 0; n < rhs.storage.arrayFormat.resolution; n++)
+			newGreensFunction.storage.arrayFormat.data[n] = lhs*rhs.storage.arrayFormat.data[n];
+
+		return newGreensFunction;
+	}
+	case GreensFunction::Format::Poles:
+	{
+		GreensFunction newGreensFunction(
+			rhs.type,
+			rhs.format,
+			rhs.storage.poleFormat.numPoles
+		);
+
+		for(unsigned int n = 0; n < rhs.storage.poleFormat.numPoles; n++){
+			newGreensFunction.storage.poleFormat.positions[n] = rhs.storage.poleFormat.positions[n];
+			newGreensFunction.storage.poleFormat.amplitudes[n] = lhs*rhs.storage.poleFormat.amplitudes[n];
+		}
+
+		return newGreensFunction;
+	}
+	default:
+		TBTKExit(
+			"GreensFunction::operator*()",
+			"Unknown Green's function format.",
+			"This should never happen, contact the developer."
+		);
+	}
+}
+
+inline GreensFunction GreensFunction::operator/(
+	std::complex<double> rhs
+) const{
+	switch(format){
+	case Format::Array:
+	{
+		GreensFunction newGreensFunction(
+			type,
+			format,
+			storage.arrayFormat.lowerBound,
+			storage.arrayFormat.upperBound,
+			storage.arrayFormat.resolution
+		);
+
+		for(unsigned int n = 0; n < storage.arrayFormat.resolution; n++)
+			newGreensFunction.storage.arrayFormat.data[n] = storage.arrayFormat.data[n]/rhs;
+
+		return newGreensFunction;
+	}
+	case Format::Poles:
+	{
+		GreensFunction newGreensFunction(
+			type,
+			format,
+			storage.poleFormat.numPoles
+		);
+
+		for(unsigned int n = 0; n < storage.poleFormat.numPoles; n++){
+			newGreensFunction.storage.poleFormat.positions[n] = storage.poleFormat.positions[n];
+			newGreensFunction.storage.poleFormat.amplitudes[n] = storage.poleFormat.amplitudes[n]/rhs;
+		}
+
+		return newGreensFunction;
+	}
+	default:
+		TBTKExit(
+			"GreensFunction::operator*()",
+			"Unknown Green's function format.",
+			"This should never happen, contact the developer."
+		);
+	}
+}
+
+inline void GreensFunction::setEpsilon(double epsilon){
+	EPSILON = epsilon;
 }
 
 };	//End namespace Property
