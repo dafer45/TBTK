@@ -56,13 +56,13 @@ public:
 
 	/** Add a single HoppingAmplitude.
 	 *
-	 *  @param ha HoppingAMplitude to add. */
-	void addHA(HoppingAmplitude ha);
+	 *  @param ha HoppingAmplitude to add. */
+	void addHoppingAmplitude(HoppingAmplitude ha);
 
 	/** Add a HoppingAmplitude and its Hermitian conjugate.
 	 *
 	 *  @param HoppingAmplitude to add. */
-	void addHAAndHC(HoppingAmplitude ha);
+	void addHoppingAmplitudeAndHermitianConjugate(HoppingAmplitude ha);
 
 	/** Get all @link HoppingAmplitude HoppingAmplitudes @endlink with
 	 * given 'from'-index.
@@ -219,11 +219,13 @@ private:
 	std::complex<double> *cooValues;
 };
 
-inline void HoppingAmplitudeSet::addHA(HoppingAmplitude ha){
+inline void HoppingAmplitudeSet::addHoppingAmplitude(HoppingAmplitude ha){
 	tree.add(ha);
 }
 
-inline void HoppingAmplitudeSet::addHAAndHC(HoppingAmplitude ha){
+inline void HoppingAmplitudeSet::addHoppingAmplitudeAndHermitianConjugate(
+	HoppingAmplitude ha
+){
 	tree.add(ha);
 	tree.add(ha.getHermitianConjugate());
 }

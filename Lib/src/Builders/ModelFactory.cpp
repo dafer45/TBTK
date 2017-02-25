@@ -90,14 +90,15 @@ Model* ModelFactory::createHexagonalLattice(
 	for(int x = 0; x < sizeX; x++){
 		for(int y = 0; y < sizeY; y++){
 			for(int s = 0; s < 2; s++){
-				model->addHAAndHC(HoppingAmplitude(t, {x, y, 1, s},	{x, y, 0, s}));
-				model->addHAAndHC(HoppingAmplitude(t, {x, y, 2, s},	{x, y, 1, s}));
-				model->addHAAndHC(HoppingAmplitude(t, {x, y, 3, s},	{x, y, 2, s}));
-				if(periodicX || x+1 < sizeX)
-					model->addHAAndHC(HoppingAmplitude(t,	{(x+1)%sizeX, y, 0, s},	{x, y, 3, s}));
+				*model << HoppingAmplitude(t, {x, y, 1, s},	{x, y, 0, s}) + HC;
+				*model << HoppingAmplitude(t, {x, y, 2, s},	{x, y, 1, s}) + HC;
+				*model << HoppingAmplitude(t, {x, y, 3, s},	{x, y, 2, s}) + HC;
+				if(periodicX || x+1 < sizeX){
+					*model << HoppingAmplitude(t,	{(x+1)%sizeX, y, 0, s},	{x, y, 3, s}) + HC;
+				}
 				if(periodicY || y+1 < sizeY){
-					model->addHAAndHC(HoppingAmplitude(t,	{x, (y+1)%sizeY, 0, s},	{x, y, 1, s}));
-					model->addHAAndHC(HoppingAmplitude(t,	{x, (y+1)%sizeY, 3, s},	{x, y, 2, s}));
+					*model << HoppingAmplitude(t,	{x, (y+1)%sizeY, 0, s},	{x, y, 1, s}) + HC;
+					*model << HoppingAmplitude(t,	{x, (y+1)%sizeY, 3, s},	{x, y, 2, s}) + HC;
 				}
 			}
 		}
@@ -120,17 +121,15 @@ Model* ModelFactory::createModel(
 
 			complex<double> amplitude = ket->getMatrixElement(*bra);
 			if(amplitude != 0.){
-				model->addHA(
-					HoppingAmplitude(
-						amplitude,
-						Index(
-							bra->getContainer(),
-							bra->getIndex()
-						),
-						Index(
-							ket->getContainer(),
-							ket->getIndex()
-						)
+				*model << HoppingAmplitude(
+					amplitude,
+					Index(
+						bra->getContainer(),
+						bra->getIndex()
+					),
+					Index(
+						ket->getContainer(),
+						ket->getIndex()
 					)
 				);
 			}
@@ -197,17 +196,15 @@ Model* ModelFactory::createModel(
 
 			complex<double> amplitude = ket->getMatrixElement(*bra);
 			if(amplitude != 0.){
-				model->addHA(
-					HoppingAmplitude(
-						amplitude,
-						Index(
-							bra->getContainer(),
-							bra->getIndex()
-						),
-						Index(
-							ket->getContainer(),
-							ket->getIndex()
-						)
+				*model << HoppingAmplitude(
+					amplitude,
+					Index(
+						bra->getContainer(),
+						bra->getIndex()
+					),
+					Index(
+						ket->getContainer(),
+						ket->getIndex()
 					)
 				);
 			}
@@ -386,7 +383,7 @@ Model* ModelFactory::merge(
 			for(unsigned int c = 0; c < to.size(); c++)
 				newTo.push_back(to.at(c));
 
-			model->addHA(HoppingAmplitude(amplitude, newTo, newFrom));
+			*model << HoppingAmplitude(amplitude, newTo, newFrom);
 
 			it.searchNextHA();
 		}
@@ -454,7 +451,7 @@ void ModelFactory::createSquareLattice1D(
 	for(int x = 0; x < sizeX; x++){
 		for(int s = 0; s < 2; s++){
 			if(periodicX || x+1 < sizeX)
-				model->addHAAndHC(HoppingAmplitude(t,	{(x+1)%sizeX, s},	{x, s}));
+				*model << HoppingAmplitude(t,	{(x+1)%sizeX, s},	{x, s}) + HC;
 		}
 	}
 }
@@ -473,9 +470,9 @@ void ModelFactory::createSquareLattice2D(
 		for(int y = 0; y < sizeY; y++){
 			for(int s = 0; s < 2; s++){
 				if(periodicX || x+1 < sizeX)
-					model->addHAAndHC(HoppingAmplitude(t,	{(x+1)%sizeX, y, s},	{x, y, s}));
+					*model << HoppingAmplitude(t,	{(x+1)%sizeX, y, s},	{x, y, s}) + HC;
 				if(periodicY || y+1 < sizeY)
-					model->addHAAndHC(HoppingAmplitude(t,	{x, (y+1)%sizeY, s},	{x, y, s}));
+					*model << HoppingAmplitude(t,	{x, (y+1)%sizeY, s},	{x, y, s}) + HC;
 			}
 		}
 	}
@@ -498,11 +495,11 @@ void ModelFactory::createSquareLattice3D(
 			for(int z = 0; z < sizeZ; z++){
 				for(int s = 0; s < 2; s++){
 					if(periodicX || x+1 < sizeX)
-						model->addHAAndHC(HoppingAmplitude(t,	{(x+1)%sizeX, y, z, s},	{x, y, z, s}));
+						*model << HoppingAmplitude(t,	{(x+1)%sizeX, y, z, s},	{x, y, z, s}) + HC;
 					if(periodicY || y+1 < sizeY)
-						model->addHAAndHC(HoppingAmplitude(t,	{x, (y+1)%sizeY, z, s},	{x, y, z, s}));
+						*model << HoppingAmplitude(t,	{x, (y+1)%sizeY, z, s},	{x, y, z, s}) + HC;
 					if(periodicZ || z+1 < sizeZ)
-						model->addHAAndHC(HoppingAmplitude(t,	{x, y, (z+1)&sizeZ, s},	{x, y, z, s}));
+						*model << HoppingAmplitude(t,	{x, y, (z+1)&sizeZ, s},	{x, y, z, s}) + HC;
 				}
 			}
 		}

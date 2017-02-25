@@ -104,7 +104,8 @@ Model* ReciprocalLattice::generateModel(initializer_list<double> momentum) const
 			//Add HoppingAmplitude to Hamiltonian, unless the
 			//amplitude is exactly zero.
 //			if(amplitude != 0.)
-				model->addHA(HoppingAmplitude(amplitude, referenceBraIndex, referenceKet->getIndex()));
+//				model->addHA(HoppingAmplitude(amplitude, referenceBraIndex, referenceKet->getIndex()));
+				*model << HoppingAmplitude(amplitude, referenceBraIndex, referenceKet->getIndex());
 		}
 	}
 

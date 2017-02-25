@@ -587,16 +587,16 @@ void FileParser::readAmplitudes(Model *model){
 
 		switch(amplitudeMode){
 		case AmplitudeMode::ALL:
-			model->addHA(*ha);
+			*model << *ha;
 			break;
 		case AmplitudeMode::ALL_EXCEPT_HC:
 		{
 			const Index &from = ha->fromIndex;
 			const Index &to = ha->toIndex;
 			if(from.equals(to))
-				model->addHA(*ha);
+				*model << *ha;
 			else
-				model->addHAAndHC(*ha);
+				*model << *ha + HC;
 			break;
 		}
 		case AmplitudeMode::UNIT_CELL:

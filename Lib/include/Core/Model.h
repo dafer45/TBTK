@@ -51,10 +51,10 @@ public:
 	~Model();
 
 	/** Add a HoppingAmplitude. */
-	void addHA(HoppingAmplitude ha);
+	void addHoppingAmplitude(HoppingAmplitude ha);
 
 	/** Add a HoppingAmplitude and its Hermitian conjugate. */
-	void addHAAndHC(HoppingAmplitude ha);
+	void addHoppingAmplitudeAndHermitianConjugate(HoppingAmplitude ha);
 
 	/** Get Hilbert space index corresponding to given 'from'-index.
 	 *  @param index 'From'-index to get Hilbert space index for. */
@@ -149,12 +149,14 @@ private:
 	friend class FileReader;
 };
 
-inline void Model::addHA(HoppingAmplitude ha){
-	singleParticleContext->addHA(ha);
+inline void Model::addHoppingAmplitude(HoppingAmplitude ha){
+	singleParticleContext->addHoppingAmplitude(ha);
 }
 
-inline void Model::addHAAndHC(HoppingAmplitude ha){
-	singleParticleContext->addHAAndHC(ha);
+inline void Model::addHoppingAmplitudeAndHermitianConjugate(
+	HoppingAmplitude ha
+){
+	singleParticleContext->addHoppingAmplitudeAndHermitianConjugate(ha);
 }
 
 inline int Model::getBasisSize(){
@@ -234,12 +236,12 @@ inline void Model::setTalkative(bool isTalkative){
 }
 
 inline Model& Model::operator<<(const HoppingAmplitude &hoppingAmplitude){
-	addHA(hoppingAmplitude);
+	addHoppingAmplitude(hoppingAmplitude);
 }
 
 inline Model& Model::operator<<(const std::tuple<HoppingAmplitude, HoppingAmplitude> &hoppingAmplitudes){
-	addHA(std::get<0>(hoppingAmplitudes));
-	addHA(std::get<1>(hoppingAmplitudes));
+	addHoppingAmplitude(std::get<0>(hoppingAmplitudes));
+	addHoppingAmplitude(std::get<1>(hoppingAmplitudes));
 }
 
 };	//End of namespace TBTK
