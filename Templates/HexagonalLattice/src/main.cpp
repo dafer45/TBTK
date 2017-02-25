@@ -16,7 +16,7 @@
 /** @package TBTKtemp
  *  @file main.cpp
  *  @brief Hexagonal lattice using diagonalization
- *  
+ *
  *  Basic example of diagonalization of a 2D tight-binding model with t = 1 and
  *  mu = 0. Hexagonal lattice with edges, four sites per unit cell, and 10x10
  *  unit cells.
@@ -54,20 +54,21 @@ int main(int argc, char **argv){
 		for(int y = 0; y < SIZE_Y; y++){
 			for(int s = 0; s < 2; s++){
 				//Add hopping amplitudes corresponding to chemical potential
-				model.addHA(HoppingAmplitude(-mu,	{x, y, 0, s},	{x, y, 0, s}));
-				model.addHA(HoppingAmplitude(-mu,	{x, y, 1, s},	{x, y, 1, s}));
-				model.addHA(HoppingAmplitude(-mu,	{x, y, 2, s},	{x, y, 2, s}));
-				model.addHA(HoppingAmplitude(-mu,	{x, y, 3, s},	{x, y, 3, s}));
+				model << HoppingAmplitude(-mu,	{x, y, 0, s},	{x, y, 0, s}) + HC;
+				model << HoppingAmplitude(-mu,	{x, y, 1, s},	{x, y, 1, s}) + HC;
+				model << HoppingAmplitude(-mu,	{x, y, 2, s},	{x, y, 2, s}) + HC;
+				model << HoppingAmplitude(-mu,	{x, y, 3, s},	{x, y, 3, s}) + HC;
 
 				//Add hopping parameters corresponding to t
-				model.addHAAndHC(HoppingAmplitude(-t,	{x, y, 1, s},	{x, y, 0, s}));
-				model.addHAAndHC(HoppingAmplitude(-t,	{x, y, 2, s},	{x, y, 1, s}));
-				model.addHAAndHC(HoppingAmplitude(-t,	{x, y, 3, s},	{x, y, 2, s}));
-				if(x+1 < SIZE_X)
-					model.addHAAndHC(HoppingAmplitude(-t,	{(x+1)%SIZE_X, y, 0, s},	{x, y, 3, s}));
+				model << HoppingAmplitude(-t,		{x, y, 1, s},			{x, y, 0, s}) + HC;
+				model << HoppingAmplitude(-t,		{x, y, 2, s},			{x, y, 1, s}) + HC;
+				model << HoppingAmplitude(-t,		{x, y, 3, s},			{x, y, 2, s}) + HC;
+				if(x+1 < SIZE_X){
+					model << HoppingAmplitude(-t,	{(x+1)%SIZE_X, y, 0, s},	{x, y, 3, s}) + HC;
+				}
 				if(y+1 < SIZE_Y){
-					model.addHAAndHC(HoppingAmplitude(-t,	{x, (y+1)%SIZE_Y, 0, s},	{x, y, 1, s}));
-					model.addHAAndHC(HoppingAmplitude(-t,	{x, (y+1)%SIZE_Y, 3, s},	{x, y, 2, s}));
+					model << HoppingAmplitude(-t,	{x, (y+1)%SIZE_Y, 0, s},	{x, y, 1, s}) + HC;
+					model << HoppingAmplitude(-t,	{x, (y+1)%SIZE_Y, 3, s},	{x, y, 2, s}) + HC;
 				}
 			}
 		}

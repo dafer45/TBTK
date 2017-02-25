@@ -27,9 +27,12 @@
 
 #include <complex>
 #include <initializer_list>
+#include <tuple>
 #include <vector>
 
 namespace TBTK{
+
+enum HermitianConjugate {HC};
 
 /** A hopping amplitude is a coefficeint \f$a_{ij}\f$ in a bilinear Hamiltonian
  *  \f$H = \sum_{ij}a_{ij}c_{i}^{\dagger}c_{j}\f$, where \f$i\f$ and \f$j\f$
@@ -111,6 +114,9 @@ public:
 
 	/** Get the amplitude value \f$a_{ij}\f$. */
 	std::complex<double> getAmplitude() const;
+
+	/** Addition operator. */
+	std::tuple<HoppingAmplitude, HoppingAmplitude> operator+(const HermitianConjugate hc);
 private:
 	/** Amplitude \f$a_{ij}\f$. Will be used if amplitudeCallback is NULL. */
 	std::complex<double> amplitude;
@@ -130,7 +136,12 @@ inline std::complex<double> HoppingAmplitude::getAmplitude() const{
 		return amplitude;
 }
 
+inline std::tuple<HoppingAmplitude, HoppingAmplitude> HoppingAmplitude::operator+(
+	HermitianConjugate hc
+){
+	return std::make_tuple(*this, this->getHermitianConjugate());
+}
+
 };	//End of namespace TBTK
 
 #endif
-

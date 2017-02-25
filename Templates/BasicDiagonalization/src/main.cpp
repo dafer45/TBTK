@@ -52,13 +52,27 @@ int main(int argc, char **argv){
 		for(int y = 0; y < SIZE_Y; y++){
 			for(int s = 0; s < 2; s++){
 				//Add hopping amplitudes corresponding to chemical potential
-				model.addHA(HoppingAmplitude(-mu,	{x, y, s},	{x, y, s}));
+				model << HoppingAmplitude(
+					-mu,
+					{x, y, s},
+					{x, y, s}
+				);
 
 				//Add hopping parameters corresponding to t
-				if(x+1 < SIZE_X)
-					model.addHAAndHC(HoppingAmplitude(-t,	{(x+1)%SIZE_X, y, s},	{x, y, s}));
-				if(y+1 < SIZE_Y)
-					model.addHAAndHC(HoppingAmplitude(-t,	{x, (y+1)%SIZE_Y, s},	{x, y, s}));
+				if(x+1 < SIZE_X){
+					model << HoppingAmplitude(
+						-t,
+						{(x+1)%SIZE_X,	y,	s},
+						{x,		y,	s}
+					) + HC;
+				}
+				if(y+1 < SIZE_Y){
+					model << HoppingAmplitude(
+						-t,
+						{x,	(y+1)%SIZE_Y,	s},
+						{x,	y,		s}
+					) + HC;
+				}
 			}
 		}
 	}

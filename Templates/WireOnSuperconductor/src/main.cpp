@@ -156,19 +156,19 @@ int main(int argc, char **argv){
 		for(int y = 0; y < SIZE_Y; y++){
 			for(int s = 0; s < 2; s++){
 				//Add hopping amplitudes corresponding to chemical potential
-				model.addHA(HoppingAmplitude(-mu,	{0, x, y, s},	{0, x, y, s}));
-				model.addHA(HoppingAmplitude(mu,	{0, x, y, s+2},	{0, x, y, s+2}));
+				model << HoppingAmplitude(-mu,	{0, x, y, s},	{0, x, y, s});
+				model << HoppingAmplitude(mu,	{0, x, y, s+2},	{0, x, y, s+2});
 
 				//Add hopping parameters corresponding to t_ss
 				if(x+1 < SIZE_X){
-					model.addHAAndHC(HoppingAmplitude(-t_ss,	{0, (x+1)%SIZE_X, y, s},		{0, x, y, s}));
-					model.addHAAndHC(HoppingAmplitude(t_ss,		{0, (x+1)%SIZE_X, y, s+2},	{0, x, y, s+2}));
+					model << HoppingAmplitude(-t_ss,	{0, (x+1)%SIZE_X, y, s},	{0, x, y, s}) + HC;
+					model << HoppingAmplitude(t_ss,		{0, (x+1)%SIZE_X, y, s+2},	{0, x, y, s+2}) + HC;
 				}
 				if(y+1 < SIZE_Y){
-					model.addHAAndHC(HoppingAmplitude(-t_ss,	{0, x, (y+1)%SIZE_Y, s},		{0, x, y, s}));
-					model.addHAAndHC(HoppingAmplitude(t_ss,		{0, x, (y+1)%SIZE_Y, s+2},	{0, x, y, s+2}));
+					model << HoppingAmplitude(-t_ss,	{0, x, (y+1)%SIZE_Y, s},	{0, x, y, s}) + HC;
+					model << HoppingAmplitude(t_ss,		{0, x, (y+1)%SIZE_Y, s+2},	{0, x, y, s+2}) + HC;
 				}
-				model.addHAAndHC(HoppingAmplitude(fD,	{0, x, y, 3-s},	{0, x, y, s}));
+				model << HoppingAmplitude(fD,	{0, x, y, 3-s},	{0, x, y, s}) + HC;
 			}
 		}
 	}
@@ -176,18 +176,18 @@ int main(int argc, char **argv){
 	for(int x = 0; x < SIZE_X/2; x++){
 		for(int s = 0; s < 2; s++){
 			//Add hopping amplitudes corresponding to Zeeman term
-			model.addHA(HoppingAmplitude(-2.*V_z*(s-1/2.),	{1, x, s},		{1, x, s}));
-			model.addHA(HoppingAmplitude(2.*V_z*(s-1/2.),	{1, x, s+2},	{1, x, s+2}));
+			model << HoppingAmplitude(-2.*V_z*(s-1/2.),	{1, x, s},	{1, x, s});
+			model << HoppingAmplitude(2.*V_z*(s-1/2.),	{1, x, s+2},	{1, x, s+2});
 
 			//Add hopping amplitudes corresponding to t_mm
 			if(x+1 < SIZE_X/2){
-				model.addHAAndHC(HoppingAmplitude(-t_mm,	{1, x+1, s},	{1, x, s}));
-				model.addHAAndHC(HoppingAmplitude(t_mm,		{1, x+1, s},	{1, x, s+2}));
+				model << HoppingAmplitude(-t_mm,	{1, x+1, s},	{1, x, s}) + HC;
+				model << HoppingAmplitude(t_mm,		{1, x+1, s},	{1, x, s+2}) + HC;
 			}
 
 			//Add hopping amplitudes corresponding to t_ms
-			model.addHAAndHC(HoppingAmplitude(-t_sm,	{0, x+SIZE_X/4, SIZE_Y/2, s},	{1, x, s}));
-			model.addHAAndHC(HoppingAmplitude(t_sm,		{0, x+SIZE_X/4, SIZE_Y/2, s+2},	{1, x, s+2}));
+			model << HoppingAmplitude(-t_sm,	{0, x+SIZE_X/4, SIZE_Y/2, s},	{1, x, s}) + HC;
+			model << HoppingAmplitude(t_sm,		{0, x+SIZE_X/4, SIZE_Y/2, s+2},	{1, x, s+2}) + HC;
 		}
 	}
 

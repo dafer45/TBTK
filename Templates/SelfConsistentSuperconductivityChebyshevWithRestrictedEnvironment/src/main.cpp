@@ -123,8 +123,8 @@ Model* setupModel(int center_x, int center_y, double radius){
 
 			for(int s = 0; s < 2; s++){
 				//Add hopping amplitudes corresponding to chemical potential
-				model->addHA(HoppingAmplitude(-mu,	{x, y, s},		{x, y, s}));
-				model->addHA(HoppingAmplitude(mu,	{x, y, s+2},	{x, y, s+2}));
+				*model << HoppingAmplitude(-mu,	{x, y, s},	{x, y, s});
+				*model << HoppingAmplitude(mu,	{x, y, s+2},	{x, y, s+2});
 
 				//Add hopping amplitudes corresponding to t.
 				//Outer if-statements guards against the
@@ -133,20 +133,20 @@ Model* setupModel(int center_x, int center_y, double radius){
 				//'radius'.
 				if((x+1 - center_x)*(x+1 - center_x) + (y - center_y)*(y - center_y) <= radius*radius){
 					if(x+1 < SIZE_X){
-						model->addHAAndHC(HoppingAmplitude(-t,	{(x+1)%SIZE_X, y, s},	{x, y, s}));
-						model->addHAAndHC(HoppingAmplitude(t,	{(x+1)%SIZE_X, y, s+2},	{x, y, s+2}));
+						*model << HoppingAmplitude(-t,	{(x+1)%SIZE_X, y, s},	{x, y, s}) + HC;
+						*model << HoppingAmplitude(t,	{(x+1)%SIZE_X, y, s+2},	{x, y, s+2}) + HC;
 					}
 				}
 				if((x - center_x)*(x - center_x) + (y+1 - center_y)*(y+1 - center_y) <= radius*radius){
 					if(y+1 < SIZE_Y){
-						model->addHAAndHC(HoppingAmplitude(-t,	{x, (y+1)%SIZE_Y, s},	{x, y, s}));
-						model->addHAAndHC(HoppingAmplitude(t,	{x, (y+1)%SIZE_Y, s+2},	{x, y, s+2}));
+						*model << HoppingAmplitude(-t,	{x, (y+1)%SIZE_Y, s},	{x, y, s}) + HC;
+						*model << HoppingAmplitude(t,	{x, (y+1)%SIZE_Y, s+2},	{x, y, s+2}) + HC;
 					}
 				}
 
 				//Add hopping amplitudes corresponding to the
 				//superconducting order parameter.
-				model->addHAAndHC(HoppingAmplitude(fD,	{x, y, 3-s},	{x, y, s}));
+				*model << HoppingAmplitude(fD,	{x, y, 3-s},	{x, y, s}) + HC;
 			}
 		}
 	}

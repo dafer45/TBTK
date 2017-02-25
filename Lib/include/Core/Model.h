@@ -32,6 +32,7 @@
 #include <complex>
 #include <fstream>
 #include <string>
+#include <tuple>
 
 namespace TBTK{
 
@@ -121,6 +122,12 @@ public:
 	void saveEV(std::string path = "./", std::string filename = "EV.dat");
 
 	void setTalkative(bool isTalkative);
+
+	/** Operator<<. */
+	Model& operator<<(const HoppingAmplitude& hoppingAmplitude);
+
+	/** Operator<<. */
+	Model& operator<<(const std::tuple<HoppingAmplitude, HoppingAmplitude> &hoppingAmplitudes);
 private:
 	/** Temperature. */
 	double temperature;
@@ -224,6 +231,15 @@ inline ManyBodyContext* Model::getManyBodyContext(){
 
 inline void Model::setTalkative(bool isTalkative){
 	this->isTalkative = isTalkative;
+}
+
+inline Model& Model::operator<<(const HoppingAmplitude &hoppingAmplitude){
+	addHA(hoppingAmplitude);
+}
+
+inline Model& Model::operator<<(const std::tuple<HoppingAmplitude, HoppingAmplitude> &hoppingAmplitudes){
+	addHA(std::get<0>(hoppingAmplitudes));
+	addHA(std::get<1>(hoppingAmplitudes));
 }
 
 };	//End of namespace TBTK
