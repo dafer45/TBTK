@@ -27,6 +27,7 @@
 #include "DOS.h"
 #include "Density.h"
 #include "EigenValues.h"
+#include "GreensFunction.h"
 #include "LDOS.h"
 #include "Magnetization.h"
 #include "PropertyExtractor.h"
@@ -73,6 +74,13 @@ public:
 	 *  @param state Eigenstate number \f$n\f$
 	 *  @param index Physical index \f$x\f$. */
 	const std::complex<double> getAmplitude(int state, const Index &index);
+
+	/** Calculate Green's function. */
+	Property::GreensFunction* calculateGreensFunction(
+		Index to,
+		Index from,
+		Property::GreensFunction::Type type = Property::GreensFunction::Type::Retarded
+	);
 
 	/** Overrides PropertyExtractor::calculateDOS(). */
 	virtual Property::DOS* calculateDOS();

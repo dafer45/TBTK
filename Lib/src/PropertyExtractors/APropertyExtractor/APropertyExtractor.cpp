@@ -48,6 +48,38 @@ Property::EigenValues* APropertyExtractor::getEigenValues(){
 	return eigenValues;
 }
 
+Property::GreensFunction* APropertyExtractor::calculateGreensFunction(
+	Index to,
+	Index from,
+	Property::GreensFunction::Type type
+){
+	unsigned int numPoles = aSolver->getModel()->getBasisSize();
+
+	complex<double> *positions = new complex<double>[numPoles];
+	complex<double> *amplitudes = new complex<double>[numPoles];
+	for(int n = 0; n < aSolver->getNumEigenValues(); n++){
+		positions[n] = aSolver->getEigenValue(n);
+
+		complex<double> uTo = aSolver->getAmplitude(n, to);
+		complex<double> uFrom = aSolver->getAmplitude(n, from);
+
+		amplitudes[n] = uTo*conj(uFrom);
+	}
+
+	Property::GreensFunction *greensFunction = new Property::GreensFunction(
+		type,
+		Property::GreensFunction::Format::Poles,
+		numPoles,
+		positions,
+		amplitudes
+	);
+
+	delete [] positions;
+	delete [] amplitudes;
+
+	return greensFunction;
+}
+
 Property::DOS* APropertyExtractor::calculateDOS(){
 	const complex<double> *ev = aSolver->getEigenValues();
 
