@@ -398,7 +398,7 @@ inline GreensFunction GreensFunction::operator+(
 		}
 
 		for(unsigned int n = 0; n < rhs.storage.poleFormat.numPoles; n++){
-			newGreensFunction.storage.poleFormat.positions[n + storage.poleFormat.numPoles] = rhs.storage.poleFormat.positions[n] - i*epsilon;
+			newGreensFunction.storage.poleFormat.positions[n + storage.poleFormat.numPoles] = rhs.storage.poleFormat.positions[n] - i*rhsEpsilon;
 			newGreensFunction.storage.poleFormat.amplitudes[n + storage.poleFormat.numPoles] = rhs.storage.poleFormat.amplitudes[n];
 		}
 
@@ -486,7 +486,7 @@ inline GreensFunction GreensFunction::operator-(
 		}
 
 		for(unsigned int n = 0; n < rhs.storage.poleFormat.numPoles; n++){
-			newGreensFunction.storage.poleFormat.positions[n + storage.poleFormat.numPoles] = rhs.storage.poleFormat.positions[n] - i*epsilon;
+			newGreensFunction.storage.poleFormat.positions[n + storage.poleFormat.numPoles] = rhs.storage.poleFormat.positions[n] - i*rhsEpsilon;
 			newGreensFunction.storage.poleFormat.amplitudes[n + storage.poleFormat.numPoles] = -rhs.storage.poleFormat.amplitudes[n];
 		}
 

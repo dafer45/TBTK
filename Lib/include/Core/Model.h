@@ -244,11 +244,15 @@ inline void Model::setTalkative(bool isTalkative){
 
 inline Model& Model::operator<<(const HoppingAmplitude &hoppingAmplitude){
 	addHoppingAmplitude(hoppingAmplitude);
+
+	return *this;
 }
 
 inline Model& Model::operator<<(const std::tuple<HoppingAmplitude, HoppingAmplitude> &hoppingAmplitudes){
 	addHoppingAmplitude(std::get<0>(hoppingAmplitudes));
 	addHoppingAmplitude(std::get<1>(hoppingAmplitudes));
+
+	return *this;
 }
 
 };	//End of namespace TBTK
