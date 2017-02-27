@@ -51,69 +51,69 @@ class FileWriter{
 public:
 	/** Write model to file. */
 	static void writeModel(
-		Model *model,
+		const Model &model,
 		std::string name = "Model",
 		std::string path = "/"
 	);
 
 	/** Experimental. Write HoppingAmplitudeSet to file. */
 	static void writeHoppingAmplitudeSet(
-		const HoppingAmplitudeSet *hoppingAmplitudeSet,
+		const HoppingAmplitudeSet &hoppingAmplitudeSet,
 		std::string name = "HoppingAmplitudeSet",
 		std::string path = "/"
 	);
 
 	static void writeGeometry(
-		const Geometry *geometry,
+		const Geometry &geometry,
 		std::string name = "Geometry",
 		std::string path = "/"
 	);
 
 	/** Write eigenvalues to file. */
 	static void writeEigenValues(
-		const Property::EigenValues *ev,
+		const Property::EigenValues &ev,
 		std::string name = "EigenValues",
 		std::string path = "/"
 	);
 
 	/** Write density of states to file. */
 	static void writeDOS(
-		const Property::DOS *dos,
+		const Property::DOS &dos,
 		std::string name = "DOS",
 		std::string path = "/"
 	);
 
 	/** Write density to file. */
 	static void writeDensity(
-		const Property::Density *density,
+		const Property::Density &density,
 		std::string name = "Density",
 		std::string path = "/"
 	);
 
 	/** Write magnetization to file. */
 	static void writeMagnetization(
-		const Property::Magnetization *magnetization,
+		const Property::Magnetization &magnetization,
 		std::string name = "Magnetization",
 		std::string path = "/"
 	);
 
 	/** Write local density of states to file. */
 	static void writeLDOS(
-		const Property::LDOS *ldos,
+		const Property::LDOS &ldos,
 		std::string name = "LDOS",
 		std::string path = "/"
 	);
 
 	/** Write spectral function to file. */
 	static void writeSpectralFunction(
-		const Property::SpectralFunction *spectralFunction,
+		const Property::SpectralFunction &spectralFunction,
 		std::string name = "SpectralFunction",
 		std::string path = "/"
 	);
 
 	/** Write spin-polarized local density of states to file. */
 	static void writeSpinPolarizedLDOS(
-		const Property::SpinPolarizedLDOS *spinPolarizedLDOS,
+		const Property::SpinPolarizedLDOS &spinPolarizedLDOS,
 		std::string name = "SpinPolarizedLDOS",
 		std::string path = "/"
 	);
@@ -173,7 +173,7 @@ private:
 };
 
 inline void FileWriter::writeSpectralFunction(
-		const Property::SpectralFunction *spectralFunction,
+		const Property::SpectralFunction &spectralFunction,
 		std::string name,
 		std::string path
 ){

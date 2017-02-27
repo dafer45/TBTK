@@ -90,19 +90,19 @@ public:
 	void setTemperature(double temperature);
 
 	/** Get temperature. */
-	double getTemperature();
+	double getTemperature() const;
 
 	/** Set chemical potential. */
 	void setChemicalPotential(double chemicalPotential);
 
 	/** Get chemical potential. */
-	double getChemicalPotential();
+	double getChemicalPotential() const;
 
 	/** Set statistics. */
 	void setStatistics(Statistics statistics);
 
 	/** Get statistics. */
-	Statistics getStatistics();
+	Statistics getStatistics() const;
 
 	/** Get amplitude set. */
 	const HoppingAmplitudeSet* getHoppingAmplitudeSet() const;
@@ -112,6 +112,9 @@ public:
 
 	/** Get geometry. */
 	Geometry* getGeometry();
+
+	/** Get geometry. */
+	const Geometry* getGeometry() const;
 
 	/** Create ManyBodyContext. */
 	void createManyBodyContext();
@@ -191,7 +194,7 @@ inline void Model::setTemperature(double temperature){
 	this->temperature = temperature;
 }
 
-inline double Model::getTemperature(){
+inline double Model::getTemperature() const{
 	return temperature;
 }
 
@@ -199,7 +202,7 @@ inline void Model::setChemicalPotential(double chemicalPotential){
 	this->chemicalPotential = chemicalPotential;
 }
 
-inline double Model::getChemicalPotential(){
+inline double Model::getChemicalPotential() const{
 	return chemicalPotential;
 }
 
@@ -207,7 +210,7 @@ inline void Model::setStatistics(Statistics statistics){
 	singleParticleContext->setStatistics(statistics);
 }
 
-inline Statistics Model::getStatistics(){
+inline Statistics Model::getStatistics() const{
 	return singleParticleContext->getStatistics();
 }
 
@@ -220,6 +223,10 @@ inline void Model::createGeometry(int dimensions, int numSpecifiers){
 }
 
 inline Geometry* Model::getGeometry(){
+	return singleParticleContext->getGeometry();
+}
+
+inline const Geometry* Model::getGeometry() const{
 	return singleParticleContext->getGeometry();
 }
 

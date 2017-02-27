@@ -39,6 +39,12 @@ public:
 	/** Constructor. */
 	EigenValues(int size, const double *data);
 
+	/** Copy constructor. */
+	EigenValues(const EigenValues &eigenValues);
+
+	/** Move constructor. */
+	EigenValues(EigenValues &&eigenValues);
+
 	/** Destructor. */
 	~EigenValues();
 
@@ -47,6 +53,12 @@ public:
 
 	/** Get eigen values. */
 	const double* getData() const;
+
+	/** Assignment operator. */
+	EigenValues& operator=(const EigenValues &rhs);
+
+	/** Move assignment operator. */
+	EigenValues& operator=(EigenValues &&rhs);
 private:
 	/** Number of elements in data. */
 	int size;

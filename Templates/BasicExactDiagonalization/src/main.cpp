@@ -133,10 +133,9 @@ int main(int argc, char **argv){
 	pe.setEnergyWindow(LOWER_BOUND, UPPER_BOUND, ENERGY_RESOLUTION);
 
 	//Calculate LDOS and write to file.
-	Property::LDOS *ldos = pe.calculateLDOS(
+	Property::LDOS ldos = pe.calculateLDOS(
 		{IDX_X, 0, IDX_SUM_ALL},
 		{SIZE_X, SIZE_Y, 2}
 	);
 	FileWriter::writeLDOS(ldos);
-	delete ldos;
 }

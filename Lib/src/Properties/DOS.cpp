@@ -19,6 +19,7 @@
  */
 
 #include "DOS.h"
+#include "Streams.h"
 
 namespace TBTK{
 namespace Property{
@@ -41,8 +42,49 @@ DOS::DOS(double lowerBound, double upperBound, int resolution, const double *dat
 		this->data[n] = data[n];
 }
 
+DOS::DOS(const DOS &dos){
+	lowerBound = dos.lowerBound;
+	upperBound = dos.upperBound;
+	resolution = dos.resolution;
+	data = new double[resolution];
+	for(int n = 0; n < resolution; n++)
+		data[n] = dos.data[n];
+}
+
+DOS::DOS(DOS &&dos){
+	lowerBound = dos.lowerBound;
+	upperBound = dos.upperBound;
+	resolution = dos.resolution;
+	data = dos.data;
+	dos.data = nullptr;
+}
+
 DOS::~DOS(){
-	delete [] data;
+	if(data != nullptr)
+		delete [] data;
+}
+
+DOS& DOS::operator=(const DOS &rhs){
+	lowerBound = rhs.lowerBound;
+	upperBound = rhs.upperBound;
+	resolution = rhs.resolution;
+	data = new double[resolution];
+	for(int n = 0; n < resolution; n++)
+		data[n] = rhs.data[n];
+
+	return *this;
+}
+
+DOS& DOS::operator=(DOS &&rhs){
+	if(this != &rhs){
+		lowerBound = rhs.lowerBound;
+		upperBound = rhs.upperBound;
+		resolution = rhs.resolution;
+		data = rhs.data;
+		rhs.data = nullptr;
+	}
+
+	return *this;
 }
 
 };	//End of namespace Property

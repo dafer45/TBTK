@@ -147,7 +147,7 @@ int main(int argc, char **argv){
 		FileParser::AmplitudeMode::ALL,
 		""
 	);
-	FileWriter::writeModel(model);
+	FileWriter::writeModel(*model);
 
 	return 0;
 }

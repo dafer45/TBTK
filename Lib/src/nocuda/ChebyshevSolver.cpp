@@ -72,10 +72,9 @@ void ChebyshevSolver::destroyLookupTableGPU(){
 	);
 }
 
-void ChebyshevSolver::generateGreensFunctionGPU(
-	complex<double> *greensFunction,
+Property::GreensFunction* ChebyshevSolver::generateGreensFunctionGPU(
 	complex<double> *coefficients,
-	ChebyshevSolver::GreensFunctionType type
+	Property::GreensFunction::Type type
 ){
 	TBTKExit(
 		"ChebyshevSolver::generateGreensFunctionGPU()",

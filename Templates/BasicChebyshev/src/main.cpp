@@ -115,12 +115,11 @@ int main(int argc, char **argv){
 	pe.setEnergyWindow(-SCALE_FACTOR, SCALE_FACTOR, ENERGY_RESOLUTION);
 
 	//Extract local density of states and write to file
-	Property::LDOS *ldos = pe.calculateLDOS({IDX_X, SIZE_Y/2, IDX_SUM_ALL},
+	Property::LDOS ldos = pe.calculateLDOS({IDX_X, SIZE_Y/2, IDX_SUM_ALL},
 						{SIZE_X, 1, 2});
 	const int RANK = 1;
 	int dims[RANK] = {SIZE_X};
 	FileWriter::writeLDOS(ldos);
-	delete ldos;
 
 	return 0;
 }

@@ -59,9 +59,65 @@ Magnetization::Magnetization(
 		this->data[n] = data[n];
 }
 
+Magnetization::Magnetization(const Magnetization &magnetization){
+	dimensions = magnetization.dimensions;
+	ranges = new int[dimensions];
+	for(int n = 0; n < dimensions; n++)
+		ranges[n] = magnetization.ranges[n];
+
+	size = magnetization.size;
+
+	data = new complex<double>[size];
+	for(int n = 0; n < size; n++)
+		data[n] = magnetization.data[n];
+}
+
+Magnetization::Magnetization(Magnetization &&magnetization){
+	dimensions = magnetization.dimensions;
+	ranges = magnetization.ranges;
+	magnetization.ranges = nullptr;
+
+	size = magnetization.size;
+
+	data = magnetization.data;
+	magnetization.data = nullptr;
+}
+
 Magnetization::~Magnetization(){
-	delete [] ranges;
-	delete [] data;
+	if(ranges != nullptr)
+		delete [] ranges;
+	if(data != nullptr)
+		delete [] data;
+}
+
+Magnetization& Magnetization::operator=(const Magnetization &rhs){
+	dimensions = rhs.dimensions;
+	ranges = new int[dimensions];
+	for(int n = 0; n < dimensions; n++)
+		ranges[n] = rhs.ranges[n];
+
+	size = rhs.size;
+
+	data = new complex<double>[size];
+	for(int n = 0; n < size; n++)
+		data[n] = rhs.data[n];
+
+	return *this;
+}
+
+Magnetization& Magnetization::operator=(Magnetization &&rhs){
+	if(this != &rhs){
+		dimensions = rhs.dimensions;
+		ranges = rhs.ranges;
+		rhs.ranges = nullptr;
+
+		size = rhs.size;
+
+		data = rhs.data;
+		rhs.data = nullptr;
+	}
+
+	return *this;
 }
 
 };	//End of namespace Property

@@ -39,6 +39,12 @@ public:
 	/** Constructor. */
 	Density(int dimensions, const int *ranges, const double *data);
 
+	/** Copy constructor. */
+	Density(const Density &density);
+
+	/** Move constructor. */
+	Density(Density &&density);
+
 	/** Destructor. */
 	~Density();
 
@@ -53,6 +59,12 @@ public:
 
 	/** Get density data. */
 	const double* getData() const;
+
+	/** Assignment operator. */
+	Density& operator=(const Density &rhs);
+
+	/** Move assignment operator. */
+	Density& operator=(Density &&rhs);
 private:
 	/** Dimension of the density. */
 	int dimensions;

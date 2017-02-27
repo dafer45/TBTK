@@ -64,7 +64,7 @@ public:
 	);
 
 	/** Get eigenvalues. */
-	Property::EigenValues* getEigenValues();
+	Property::EigenValues getEigenValues();
 
 	/** Get eigenvalue. */
 	double getEigenValue(int state);
@@ -83,28 +83,28 @@ public:
 	);
 
 	/** Overrides PropertyExtractor::calculateDOS(). */
-	virtual Property::DOS* calculateDOS();
+	virtual Property::DOS calculateDOS();
 
 	/** Calculate expectation value. */
 	virtual std::complex<double> calculateExpectationValue(Index to, Index from);
 
 	/** Overrides PropertyExtractor::calculateDensity(). */
-	virtual Property::Density* calculateDensity(Index pattern, Index ranges);
+	virtual Property::Density calculateDensity(Index pattern, Index ranges);
 
 	/** Overrides PropertyExtractor::calculateMagnetization(). */
-	virtual Property::Magnetization* calculateMagnetization(
+	virtual Property::Magnetization calculateMagnetization(
 		Index pattern,
 		Index ranges
 	);
 
 	/** Overrides PropertyExtractor::calculateLDOS(). */
-	virtual Property::LDOS* calculateLDOS(
+	virtual Property::LDOS calculateLDOS(
 		Index pattern,
 		Index ranges
 	);
 
 	/** Overrides PropertyExtractor::calculateSpinPolarizedLDOS(). */
-	virtual Property::SpinPolarizedLDOS* calculateSpinPolarizedLDOS(
+	virtual Property::SpinPolarizedLDOS calculateSpinPolarizedLDOS(
 		Index pattern,
 		Index ranges
 	);

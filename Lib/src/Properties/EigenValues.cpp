@@ -35,8 +35,41 @@ EigenValues::EigenValues(int size, const double *data){
 		this->data[n] = data[n];
 }
 
+EigenValues::EigenValues(const EigenValues &eigenValues){
+	size = eigenValues.size;
+	data = new double[size];
+	for(int n = 0; n < size; n++)
+		data[n] = eigenValues.data[n];
+}
+
+EigenValues::EigenValues(EigenValues &&eigenValues){
+	size = eigenValues.size;
+	data = eigenValues.data;
+	eigenValues.data = nullptr;
+}
+
 EigenValues::~EigenValues(){
-	delete [] data;
+	if(data != nullptr)
+		delete [] data;
+}
+
+EigenValues& EigenValues::operator=(const EigenValues &rhs){
+	size = rhs.size;
+	data = new double[size];
+	for(int n = 0; n < size; n++)
+		data[n] = rhs.data[n];
+
+	return *this;
+}
+
+EigenValues& EigenValues::operator=(EigenValues &&rhs){
+	if(this != &rhs){
+		size = rhs.size;
+		data = rhs.data;
+		rhs.data = nullptr;
+	}
+
+	return *this;
 }
 
 };	//End of namespace Property

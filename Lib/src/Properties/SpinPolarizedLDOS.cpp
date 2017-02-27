@@ -76,9 +76,85 @@ SpinPolarizedLDOS::SpinPolarizedLDOS(
 		this->data[n] = data[n];
 }
 
+SpinPolarizedLDOS::SpinPolarizedLDOS(
+	const SpinPolarizedLDOS &spinPolarizedLDOS
+){
+	dimensions = spinPolarizedLDOS.dimensions;
+	ranges = new int[dimensions];
+	for(int n = 0; n < dimensions; n++)
+		ranges[n] = spinPolarizedLDOS.ranges[n];
+
+	lowerBound = spinPolarizedLDOS.lowerBound;
+	upperBound = spinPolarizedLDOS.upperBound;
+	resolution = spinPolarizedLDOS.resolution;
+
+	size = spinPolarizedLDOS.size;
+
+	data = new complex<double>[size];
+	for(int n = 0; n < size; n++)
+		data[n] = spinPolarizedLDOS.data[n];
+}
+
+SpinPolarizedLDOS::SpinPolarizedLDOS(
+	SpinPolarizedLDOS &&spinPolarizedLDOS
+){
+	dimensions = spinPolarizedLDOS.dimensions;
+	ranges = spinPolarizedLDOS.ranges;
+	spinPolarizedLDOS.ranges = nullptr;
+
+	lowerBound = spinPolarizedLDOS.lowerBound;
+	upperBound = spinPolarizedLDOS.upperBound;
+	resolution = spinPolarizedLDOS.resolution;
+
+	size = spinPolarizedLDOS.size;
+
+	data = spinPolarizedLDOS.data;
+	spinPolarizedLDOS.data = nullptr;
+}
+
 SpinPolarizedLDOS::~SpinPolarizedLDOS(){
-	delete [] ranges;
-	delete [] data;
+	if(ranges != nullptr)
+		delete [] ranges;
+	if(data != nullptr)
+		delete [] data;
+}
+
+SpinPolarizedLDOS& SpinPolarizedLDOS::operator=(const SpinPolarizedLDOS &rhs){
+	dimensions = rhs.dimensions;
+	ranges = new int[dimensions];
+	for(int n = 0; n < dimensions; n++)
+		ranges[n] = rhs.ranges[n];
+
+	lowerBound = rhs.lowerBound;
+	upperBound = rhs.upperBound;
+	resolution = rhs.resolution;
+
+	size = rhs.size;
+
+	data = new complex<double>[size];
+	for(int n = 0; n < size; n++)
+		data[n] = rhs.data[n];
+
+	return *this;
+}
+
+SpinPolarizedLDOS& SpinPolarizedLDOS::operator=(SpinPolarizedLDOS &&rhs){
+	if(this != &rhs){
+		dimensions = rhs.dimensions;
+		ranges = rhs.ranges;
+		rhs.ranges = nullptr;
+
+		lowerBound = rhs.lowerBound;
+		upperBound = rhs.upperBound;
+		resolution = rhs.resolution;
+
+		size = rhs.size;
+
+		data = rhs.data;
+		rhs.data = nullptr;
+	}
+
+	return *this;
 }
 
 };	//End of namespace Property

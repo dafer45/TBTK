@@ -49,8 +49,20 @@ public:
 		const double *data
 	);
 
+	/** Copy constructor. */
+	SpectralFunction(const SpectralFunction &spectralFunction);
+
+	/** Move constructor. */
+	SpectralFunction(SpectralFunction &&spectralFunction);
+
 	/** Destructor. */
 	~SpectralFunction();
+
+	/** Assignment operator. */
+	SpectralFunction& operator=(const SpectralFunction &rhs);
+
+	/** Move assignment operator. */
+	SpectralFunction& operator=(SpectralFunction &&rhs);
 private:
 };
 

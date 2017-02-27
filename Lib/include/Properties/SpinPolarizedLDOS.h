@@ -57,6 +57,12 @@ public:
 		const std::complex<double> *data
 	);
 
+	/** Copy constructor. */
+	SpinPolarizedLDOS(const SpinPolarizedLDOS &spinPolarizedLDOS);
+
+	/** Move constructor. */
+	SpinPolarizedLDOS(SpinPolarizedLDOS &&spinPolarizedLDOS);
+
 	/** Destructor. */
 	~SpinPolarizedLDOS();
 
@@ -81,6 +87,12 @@ public:
 
 	/** Get spin-polarized LDOS data. */
 	const std::complex<double>* getData() const;
+
+	/** Assignment operator. */
+	SpinPolarizedLDOS& operator=(const SpinPolarizedLDOS &rhs);
+
+	/** Move assignment operator. */
+	SpinPolarizedLDOS& operator=(SpinPolarizedLDOS &&rhs);
 private:
 	/**Dimension of the density. (Excluding energy dimension) */
 	int dimensions;

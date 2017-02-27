@@ -47,7 +47,7 @@ public:
 	~APropertyExtractor();
 
 	/** Get eigenvalues. */
-	Property::EigenValues* getEigenValues();
+	Property::EigenValues getEigenValues();
 
 	/** Get eigenvalue. */
 	double getEigenValue(int state);
@@ -66,16 +66,16 @@ public:
 	);
 
 	/** Overrides PropertyExtractor::calculateDOS(). */
-	virtual Property::DOS* calculateDOS();
+	virtual Property::DOS calculateDOS();
 
 	/** Overrides PropertyExtractor::calculateLDOS(). */
-	virtual Property::LDOS* calculateLDOS(
+	virtual Property::LDOS calculateLDOS(
 		Index pattern,
 		Index ranges
 	);
 
 	/** Overrides PropertyExtractor::calculateSpinPolarizedLDOS(). */
-	virtual Property::SpinPolarizedLDOS* calculateSpinPolarizedLDOS(
+	virtual Property::SpinPolarizedLDOS calculateSpinPolarizedLDOS(
 		Index pattern,
 		Index ranges
 	);

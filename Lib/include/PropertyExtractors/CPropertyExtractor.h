@@ -78,22 +78,22 @@ public:
 	);
 
 	/** Overrides PropertyExtractor::calculateDensity(). */
-	virtual Property::Density* calculateDensity(
+	virtual Property::Density calculateDensity(
 		Index pattern,
 		Index ranges
 	);
 
 	/** Overrides PropertyExtractor::calculateMagnetization(). */
-	virtual Property::Magnetization* calculateMagnetization(
+	virtual Property::Magnetization calculateMagnetization(
 		Index pattern,
 		Index ranges
 	);
 
 	/** Overrides PropertyExtractor::calculateLDOS(). */
-	virtual Property::LDOS* calculateLDOS(Index pattern, Index ranges);
+	virtual Property::LDOS calculateLDOS(Index pattern, Index ranges);
 
 	/** Overrides PropertyExtractor::calculateSpinPolarizedLDOS(). */
-	virtual Property::SpinPolarizedLDOS* calculateSpinPolarizedLDOS(
+	virtual Property::SpinPolarizedLDOS calculateSpinPolarizedLDOS(
 		Index pattern,
 		Index ranges
 	);

@@ -236,20 +236,18 @@ int main(int argc, char **argv){
 		SP_LDOS_RESOLUTION
 	);
 
-	Property::Magnetization *magnetization = pe.calculateMagnetization(
+	Property::Magnetization magnetization = pe.calculateMagnetization(
 		{0, IDX_X, IDX_Y, IDX_SPIN},
 		{1, SIZE_X, SIZE_Y, 2}
 	);
 	FileWriter::writeMagnetization(magnetization);
-	delete magnetization;
 
 	//Calculate and save spin-polarized local density of states
-	Property::SpinPolarizedLDOS *spLdos = pe.calculateSpinPolarizedLDOS(
+	Property::SpinPolarizedLDOS spLdos = pe.calculateSpinPolarizedLDOS(
 		{0, IDX_X, SIZE_Y/2, IDX_SPIN},
 		{1, SIZE_X, 1, 2}
 	);
 	FileWriter::writeSpinPolarizedLDOS(spLdos);
-	delete spLdos;
 
 	return 0;
 }

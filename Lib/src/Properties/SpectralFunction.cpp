@@ -20,6 +20,8 @@
 
 #include "SpectralFunction.h"
 
+#include <utility>
+
 namespace TBTK{
 namespace Property{
 
@@ -42,7 +44,31 @@ SpectralFunction::SpectralFunction(
 ) : LDOS(dimensions, ranges, lowerBound, upperBound, resolution, data){
 }
 
+SpectralFunction::SpectralFunction(
+	const SpectralFunction &spectralFunction
+) :
+	LDOS(spectralFunction)
+{
+}
+
+SpectralFunction::SpectralFunction(
+	SpectralFunction &&spectralFunction
+) :
+	LDOS(std::move(spectralFunction))
+{
+}
+
 SpectralFunction::~SpectralFunction(){
+}
+
+SpectralFunction& SpectralFunction::operator=(const SpectralFunction &rhs){
+	LDOS::operator=(rhs);
+	return *this;
+}
+
+SpectralFunction& SpectralFunction::operator=(SpectralFunction &&rhs){
+	LDOS::operator=(std::move(rhs));
+	return *this;
 }
 
 };	//End of namespace Property

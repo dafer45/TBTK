@@ -76,7 +76,7 @@ public:
 	 *  @return A density array with size equal to the number of points
 	 *  included by specified patter-range combination.
 	 */
-	virtual Property::Density* calculateDensity(Index pattern, Index ranges);
+	virtual Property::Density calculateDensity(Index pattern, Index ranges);
 
 	/** Calculate magnetization.
 	 *
@@ -112,7 +112,7 @@ public:
 	 *      \end{array}\right].
 	 *  \f]
 	 */
-	virtual Property::Magnetization* calculateMagnetization(
+	virtual Property::Magnetization calculateMagnetization(
 		Index pattern,
 		Index ranges
 	);
@@ -140,7 +140,7 @@ public:
 	 *  @return A density array with size equal to the number of points
 	 *  included by specified patter-range combination.
 	 */
-	virtual Property::LDOS* calculateLDOS(Index pattern, Index ranges);
+	virtual Property::LDOS calculateLDOS(Index pattern, Index ranges);
 
 	/** Calculate spin-polarized local density of states.
 	 *
@@ -182,7 +182,7 @@ public:
 	 *      \rho_{i\sigma i\sigma'}(E) = \sum_{E_n}\langle\Psi_n|c_{i\sigma}^{\dagger}c_{i\sigma'}|\Psi_n\rangle\delta(E - E_n) .
 	 *  \f]
 	 */
-	virtual Property::SpinPolarizedLDOS* calculateSpinPolarizedLDOS(
+	virtual Property::SpinPolarizedLDOS calculateSpinPolarizedLDOS(
 		Index pattern,
 		Index ranges
 	);
@@ -194,7 +194,7 @@ public:
 	);
 
 	/** Calculate density of states. */
-	virtual Property::DOS* calculateDOS();
+	virtual Property::DOS calculateDOS();
 protected:
 	/** Default energy resolution. */
 	static constexpr int ENERGY_RESOLUTION = 1000;

@@ -44,6 +44,12 @@ public:
 		const double *data
 	);
 
+	/** Copy constructor. */
+	DOS(const DOS &dos);
+
+	/** Move constructor. */
+	DOS(DOS &&dos);
+
 	/** Destructor. */
 	~DOS();
 
@@ -58,6 +64,12 @@ public:
 
 	/** Get DOS data. */
 	const double* getData() const;
+
+	/** Assignment operator. */
+	DOS& operator=(const DOS &dos);
+
+	/** Move assignment operator. */
+	DOS& operator=(DOS &&dos);
 private:
 	/** Lower bound for the energy. */
 	double lowerBound;

@@ -223,7 +223,7 @@ complex<double> CPropertyExtractor::calculateExpectationValue(
 	return expectationValue;
 }
 
-Property::Density* CPropertyExtractor::calculateDensity(
+Property::Density CPropertyExtractor::calculateDensity(
 	Index pattern,
 	Index ranges
 ){
@@ -232,14 +232,21 @@ Property::Density* CPropertyExtractor::calculateDensity(
 	int lDimensions = 0;
 	int *lRanges;
 	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
-	Property::Density *density = new Property::Density(lDimensions, lRanges);
+	Property::Density density(lDimensions, lRanges);
 
-	calculate(calculateDensityCallback, (void*)density->data, pattern, ranges, 0, 1);
+	calculate(
+		calculateDensityCallback,
+		(void*)density.data,
+		pattern,
+		ranges,
+		0,
+		1
+	);
 
 	return density;
 }
 
-Property::Magnetization* CPropertyExtractor::calculateMagnetization(
+Property::Magnetization CPropertyExtractor::calculateMagnetization(
 	Index pattern,
 	Index ranges
 ){
@@ -254,9 +261,12 @@ Property::Magnetization* CPropertyExtractor::calculateMagnetization(
 		}
 	}
 	if(((int*)hint)[0] == -1){
-		Streams::err << "Error in PropertyExtractorChebyshev::calculateMAG: No spin index indicated.\n";
 		delete [] (int*)hint;
-		return NULL;
+		TBTKExit(
+			"CPropertyExtractor::calculateMagnetization()",
+			"No spin index indicated.",
+			"Use IDX_SPIN to indicate the position of the spin index."
+		);
 	}
 
 	ensureCompliantRanges(pattern, ranges);
@@ -264,29 +274,49 @@ Property::Magnetization* CPropertyExtractor::calculateMagnetization(
 	int lDimensions;
 	int *lRanges;
 	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
-	Property::Magnetization *magnetization = new Property::Magnetization(lDimensions, lRanges);
+	Property::Magnetization magnetization(lDimensions, lRanges);
 
-	calculate(calculateMAGCallback, (void*)magnetization->data, pattern, ranges, 0, 1);
+	calculate(
+		calculateMAGCallback,
+		(void*)magnetization.data,
+		pattern,
+		ranges,
+		0,
+		1
+	);
 
 	delete [] (int*)hint;
 
 	return magnetization;
 }
 
-Property::LDOS* CPropertyExtractor::calculateLDOS(Index pattern, Index ranges){
+Property::LDOS CPropertyExtractor::calculateLDOS(Index pattern, Index ranges){
 	ensureCompliantRanges(pattern, ranges);
 
 	int lDimensions;
 	int *lRanges;
 	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
-	Property::LDOS *ldos = new Property::LDOS(lDimensions, lRanges, lowerBound, upperBound, energyResolution);
+	Property::LDOS ldos(
+		lDimensions,
+		lRanges,
+		lowerBound,
+		upperBound,
+		energyResolution
+	);
 
-	calculate(calculateLDOSCallback, (void*)ldos->data, pattern, ranges, 0, 1);
+	calculate(
+		calculateLDOSCallback,
+		(void*)ldos.data,
+		pattern,
+		ranges,
+		0,
+		1
+	);
 
 	return ldos;
 }
 
-Property::SpinPolarizedLDOS* CPropertyExtractor::calculateSpinPolarizedLDOS(
+Property::SpinPolarizedLDOS CPropertyExtractor::calculateSpinPolarizedLDOS(
 	Index pattern,
 	Index ranges
 ){
@@ -301,9 +331,12 @@ Property::SpinPolarizedLDOS* CPropertyExtractor::calculateSpinPolarizedLDOS(
 		}
 	}
 	if(((int*)hint)[0] == -1){
-		Streams::err << "Error in PropertyExtractorChebyshev::calculateSP_LDOS: No spin index indicated.\n";
 		delete [] (int*)hint;
-		return NULL;
+		TBTKExit(
+			"CPropertyExtractor::calculateSpinPolarizedLDOS()",
+			"No spin index indicated.",
+			"Use IDX_SPIN to indicate the position of the spin index."
+		);
 	}
 
 	ensureCompliantRanges(pattern, ranges);
@@ -311,9 +344,22 @@ Property::SpinPolarizedLDOS* CPropertyExtractor::calculateSpinPolarizedLDOS(
 	int lDimensions;
 	int *lRanges;
 	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
-	Property::SpinPolarizedLDOS *spinPolarizedLDOS = new Property::SpinPolarizedLDOS(lDimensions, lRanges, lowerBound, upperBound, energyResolution);
+	Property::SpinPolarizedLDOS spinPolarizedLDOS(
+		lDimensions,
+		lRanges,
+		lowerBound,
+		upperBound,
+		energyResolution
+	);
 
-	calculate(calculateSP_LDOSCallback, (void*)spinPolarizedLDOS->data, pattern, ranges, 0, 1);
+	calculate(
+		calculateSP_LDOSCallback,
+		(void*)spinPolarizedLDOS.data,
+		pattern,
+		ranges,
+		0,
+		1
+	);
 
 	delete [] (int*)hint;
 

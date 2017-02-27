@@ -45,6 +45,12 @@ public:
 		const std::complex<double> *data
 	);
 
+	/** Copy constructor. */
+	Magnetization(const Magnetization &magnetization);
+
+	/** Move constructor. */
+	Magnetization(Magnetization &&magnetization);
+
 	/** Destructor. */
 	~Magnetization();
 
@@ -59,6 +65,12 @@ public:
 
 	/** Get magnetization data. */
 	const std::complex<double>* getData() const;
+
+	/** Assignment operator. */
+	Magnetization& operator=(const Magnetization &magnetization);
+
+	/** Move assignment operator. */
+	Magnetization& operator=(Magnetization &&magnetization);
 private:
 	/** Dimension of the magnetization. */
 	int dimensions;

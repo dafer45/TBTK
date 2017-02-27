@@ -53,6 +53,12 @@ public:
 		const double *data
 	);
 
+	/** Copy constructor. */
+	LDOS(const LDOS &ldos);
+
+	/** Move constructor. */
+	LDOS(LDOS &&ldos);
+
 	/** Destructor. */
 	~LDOS();
 
@@ -76,6 +82,12 @@ public:
 
 	/** Get LDOS data. */
 	const double* getData() const;
+
+	/** Assignment operator. */
+	LDOS& operator=(const LDOS &ldos);
+
+	/** Move assignment operator. */
+	LDOS& operator=(LDOS &&ldos);
 private:
 	/** Dimension of the LDOS. */
 	int dimensions;

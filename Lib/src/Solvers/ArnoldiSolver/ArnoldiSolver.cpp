@@ -149,12 +149,10 @@ void ArnoldiSolver::run(){
 
 	switch(mode){
 	case Mode::Normal:
-		Streams::out << "1\n";
 		initNormal();
 		arnoldiLoopNormal();
 		break;
 	case Mode::ShiftAndInvert:
-		Streams::out << "2\n";
 		initShiftAndInvert();
 		arnoldiLoopShiftAndInvert();
 		break;

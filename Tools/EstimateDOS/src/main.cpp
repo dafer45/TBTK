@@ -189,18 +189,15 @@ int main(int argc, char **argv){
 		}
 
 		//Calculate LDOS
-		Property::LDOS *ldos = pe.calculateLDOS(
+		Property::LDOS ldos = pe.calculateLDOS(
 			index,
 			index.getUnitRange()
 		);
 
 		//Add calculated LDOS to total DOS
-		const double *data = ldos->getData();
+		const double *data = ldos.getData();
 		for(int e = 0; e < energyResolution; e++)
 			dosData[e] += data[e]/(double)numSamples;
-
-		//Free memory
-		delete ldos;
 
 		//Print progress
 		cout << "." << flush;
@@ -213,7 +210,7 @@ int main(int argc, char **argv){
 
 	//Write DOS to file
 	Property::DOS dos(-scaleFactor, scaleFactor, energyResolution, dosData);
-	FileWriter::writeDOS(&dos);
+	FileWriter::writeDOS(dos);
 
 	delete [] dosData;
 	delete model;

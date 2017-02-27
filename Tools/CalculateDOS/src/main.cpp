@@ -141,9 +141,8 @@ int main(int argc, char **argv){
 		upperBound += energyRange/20.;
 
 	//Write DOS to file
-	Property::DOS *dos = pe.calculateDOS();
+	Property::DOS dos = pe.calculateDOS();
 	FileWriter::writeDOS(dos);
-	delete dos;
 
 	delete model;
 

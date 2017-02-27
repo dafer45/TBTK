@@ -55,37 +55,37 @@ void FileWriter::init(){
 	isInitialized = true;
 }
 
-void FileWriter::writeModel(Model *model, string name, string path){
+void FileWriter::writeModel(const Model &model, string name, string path){
 	init();
 
 	stringstream ss;
 	ss << name << "HoppingAmplitudeSet";
 
-	writeHoppingAmplitudeSet(model->getHoppingAmplitudeSet(), ss.str(), path);
+	writeHoppingAmplitudeSet(*model.getHoppingAmplitudeSet(), ss.str(), path);
 
 	ss.str("");
 	ss << name << "Geometry";
-	if(model->getGeometry() != NULL)
-		writeGeometry(model->getGeometry(), ss.str(), path);
+	if(model.getGeometry() != NULL)
+		writeGeometry(*model.getGeometry(), ss.str(), path);
 
 
 	const int NUM_DOUBLE_ATTRIBUTES = 2;
 	ss.str("");
 	ss << name << "DoubleAttributes";
-	double doubleAttributes[NUM_DOUBLE_ATTRIBUTES] = {model->getTemperature(), model->getChemicalPotential()};
+	double doubleAttributes[NUM_DOUBLE_ATTRIBUTES] = {model.getTemperature(), model.getChemicalPotential()};
 	string doubleAttributeNames[NUM_DOUBLE_ATTRIBUTES] = {"Temperature", "ChemicalPotential"};
 	writeAttributes(doubleAttributes, doubleAttributeNames, NUM_DOUBLE_ATTRIBUTES, ss.str());
 
 	const int NUM_INT_ATTRIBUTES = 1;
 	ss.str("");
 	ss << name << "IntAttributes";
-	int intAttributes[NUM_INT_ATTRIBUTES] = {static_cast<int>(model->getStatistics())};
+	int intAttributes[NUM_INT_ATTRIBUTES] = {static_cast<int>(model.getStatistics())};
 	string intAttributeNames[NUM_INT_ATTRIBUTES] = {"Statistics"};
 	writeAttributes(intAttributes, intAttributeNames, NUM_INT_ATTRIBUTES, ss.str());
 }
 
 void FileWriter::writeHoppingAmplitudeSet(
-	const HoppingAmplitudeSet *hoppingAmplitudeSet,
+	const HoppingAmplitudeSet &hoppingAmplitudeSet,
 	string name,
 	string path
 ){
@@ -95,7 +95,7 @@ void FileWriter::writeHoppingAmplitudeSet(
 	int *indices;
 	int numHoppingAmplitudes;
 	int maxIndexSize;
-	hoppingAmplitudeSet->tabulate(&amplitudes, &indices, &numHoppingAmplitudes, &maxIndexSize);
+	hoppingAmplitudeSet.tabulate(&amplitudes, &indices, &numHoppingAmplitudes, &maxIndexSize);
 
 	const int INDEX_RANK = 3;
 	hsize_t indexDims[INDEX_RANK];
@@ -166,17 +166,17 @@ void FileWriter::writeHoppingAmplitudeSet(
 }
 
 void FileWriter::writeGeometry(
-	const Geometry *geometry,
+	const Geometry &geometry,
 	string name,
 	string path
 ){
 	init();
 
-	int dimensions = geometry->getDimensions();
-	int numSpecifiers = geometry->getNumSpecifiers();
-	const double* coordinates = geometry->getCoordinates();
-	const int* specifiers = geometry->getSpecifiers();
-	int basisSize = geometry->getBasisSize();
+	int dimensions = geometry.getDimensions();
+	int numSpecifiers = geometry.getNumSpecifiers();
+	const double* coordinates = geometry.getCoordinates();
+	const int* specifiers = geometry.getSpecifiers();
+	int basisSize = geometry.getBasisSize();
 
 	const int RANK = 2;
 	hsize_t dDims[RANK];
@@ -248,47 +248,8 @@ void FileWriter::writeGeometry(
 	}
 }
 
-/*void FileWriter::writeEigenValues(const double *ev, int size, string name, string path){
-	init();
-
-	const int RANK = 1;
-	hsize_t dims[1];
-	dims[0] = size;
-
-	try{
-		stringstream ss;
-		ss << path;
-		if(path.back() != '/')
-			ss << "/";
-		ss << name;
-
-		Exception::dontPrint();
-		H5File file(filename, H5F_ACC_RDWR);
-
-		DataSpace dataspace = DataSpace(RANK, dims);
-		DataSet dataset = DataSet(file.createDataSet(name, PredType::IEEE_F64BE, dataspace));
-		dataset.write(ev, PredType::NATIVE_DOUBLE);
-		dataspace.close();
-		dataset.close();
-
-		file.close();
-	}
-	catch(FileIException error){
-		error.printError();
-		return;
-	}
-	catch(DataSetIException error){
-		error.printError();
-		return;
-	}
-	catch(DataSpaceIException error){
-		error.printError();
-		return;
-	}
-}*/
-
 void FileWriter::writeEigenValues(
-	const Property::EigenValues *ev,
+	const Property::EigenValues &ev,
 	string name,
 	string path
 ){
@@ -296,7 +257,7 @@ void FileWriter::writeEigenValues(
 
 	const int RANK = 1;
 	hsize_t dims[1];
-	dims[0] = ev->getSize();
+	dims[0] = ev.getSize();
 
 	try{
 		stringstream ss;
@@ -310,7 +271,7 @@ void FileWriter::writeEigenValues(
 
 		DataSpace dataspace = DataSpace(RANK, dims);
 		DataSet dataset = DataSet(file.createDataSet(name, PredType::IEEE_F64BE, dataspace));
-		dataset.write(ev->getData(), PredType::NATIVE_DOUBLE);
+		dataset.write(ev.getData(), PredType::NATIVE_DOUBLE);
 		dataspace.close();
 		dataset.close();
 
@@ -342,16 +303,16 @@ void FileWriter::writeEigenValues(
 	}
 }
 
-/*void FileWriter::writeDOS(const double *dos, double l_lim, double u_lim, int resolution, string name, string path){
+void FileWriter::writeDOS(const Property::DOS &dos, string name, string path){
 	init();
 
 	const int DOS_RANK = 1;
 	hsize_t dos_dims[1];
-	dos_dims[0] = resolution;
+	dos_dims[0] = dos.getResolution();
 
 	double limits[2];
-	limits[0] = u_lim;
-	limits[1] = l_lim;
+	limits[0] = dos.getUpperBound();
+	limits[1] = dos.getLowerBound();
 	const int LIMITS_RANK = 1;
 	hsize_t limits_dims[1];
 	limits_dims[0] = 2;
@@ -368,58 +329,7 @@ void FileWriter::writeEigenValues(
 
 		DataSpace dataspace = DataSpace(DOS_RANK, dos_dims);
 		DataSet dataset = DataSet(file.createDataSet(name, PredType::IEEE_F64BE, dataspace));
-		dataset.write(dos, PredType::NATIVE_DOUBLE);
-		dataspace.close();
-
-		dataspace = DataSpace(LIMITS_RANK, limits_dims);
-		Attribute attribute = dataset.createAttribute("UpLowLimits", PredType::IEEE_F64BE, dataspace);
-		attribute.write(PredType::NATIVE_DOUBLE, limits);
-		dataspace.close();
-		dataset.close();
-
-		file.close();
-	}
-	catch(FileIException error){
-		error.printError();
-		return;
-	}
-	catch(DataSetIException error){
-		error.printError();
-		return;
-	}
-	catch(DataSpaceIException error){
-		error.printError();
-		return;
-	}
-}*/
-
-void FileWriter::writeDOS(const Property::DOS *dos, string name, string path){
-	init();
-
-	const int DOS_RANK = 1;
-	hsize_t dos_dims[1];
-	dos_dims[0] = dos->getResolution();
-
-	double limits[2];
-	limits[0] = dos->getUpperBound();
-	limits[1] = dos->getLowerBound();
-	const int LIMITS_RANK = 1;
-	hsize_t limits_dims[1];
-	limits_dims[0] = 2;
-
-	try{
-		stringstream ss;
-		ss << path;
-		if(path.back() != '/')
-			ss << "/";
-		ss << name;
-
-		Exception::dontPrint();
-		H5File file(filename, H5F_ACC_RDWR);
-
-		DataSpace dataspace = DataSpace(DOS_RANK, dos_dims);
-		DataSet dataset = DataSet(file.createDataSet(name, PredType::IEEE_F64BE, dataspace));
-		dataset.write(dos->getData(), PredType::NATIVE_DOUBLE);
+		dataset.write(dos.getData(), PredType::NATIVE_DOUBLE);
 		dataspace.close();
 
 		dataspace = DataSpace(LIMITS_RANK, limits_dims);
@@ -455,54 +365,16 @@ void FileWriter::writeDOS(const Property::DOS *dos, string name, string path){
 		);
 	}
 }
-
-/*void FileWriter::writeDensity(const double *density, int rank, const int *dims, string name, string path){
-	init();
-
-	hsize_t density_dims[rank];
-	for(int n = 0; n < rank; n++)
-		density_dims[n] = dims[n];
-
-	try{
-		stringstream ss;
-		ss << path;
-		if(path.back() != '/')
-			ss << "/";
-		ss << name;
-
-		Exception::dontPrint();
-		H5File file(filename, H5F_ACC_RDWR);
-
-		DataSpace dataspace = DataSpace(rank, density_dims);
-		DataSet dataset = DataSet(file.createDataSet(name, PredType::IEEE_F64BE, dataspace));
-		dataset.write(density, PredType::NATIVE_DOUBLE);
-		dataspace.close();
-		dataset.close();
-		file.close();
-	}
-	catch(FileIException error){
-		error.printError();
-		return;
-	}
-	catch(DataSetIException error){
-		error.printError();
-		return;
-	}
-	catch(DataSpaceIException error){
-		error.printError();
-		return;
-	}
-}*/
 
 void FileWriter::writeDensity(
-	const Property::Density *density,
+	const Property::Density &density,
 	string name,
 	string path
 ){
 	init();
 
-	int rank = density->getDimensions();
-	const int *dims = density->getRanges();
+	int rank = density.getDimensions();
+	const int *dims = density.getRanges();
 
 	hsize_t density_dims[rank];
 	for(int n = 0; n < rank; n++)
@@ -520,7 +392,7 @@ void FileWriter::writeDensity(
 
 		DataSpace dataspace = DataSpace(rank, density_dims);
 		DataSet dataset = DataSet(file.createDataSet(name, PredType::IEEE_F64BE, dataspace));
-		dataset.write(density->getData(), PredType::NATIVE_DOUBLE);
+		dataset.write(density.getData(), PredType::NATIVE_DOUBLE);
 		dataspace.close();
 		dataset.close();
 		file.close();
@@ -551,69 +423,16 @@ void FileWriter::writeDensity(
 	}
 }
 
-/*void FileWriter::writeMAG(const complex<double> *mag, int rank, const int *dims, string name, string path){
-	init();
-
-	hsize_t mag_dims[rank+2];//Last two dimension for matrix elements and real/imaginary decomposition.
-	for(int n = 0; n < rank; n++)
-		mag_dims[n] = dims[n];
-	const int NUM_MATRIX_ELEMENTS = 4;
-	mag_dims[rank] = NUM_MATRIX_ELEMENTS;
-
-	int mag_size = 1;
-	for(int n = 0; n < rank+1; n++)
-		mag_size *= mag_dims[n];
-	double *mag_decomposed;
-	mag_decomposed = new double[2*mag_size];
-	for(int n = 0; n < mag_size; n++){
-		mag_decomposed[2*n+0] = real(mag[n]);
-		mag_decomposed[2*n+1] = imag(mag[n]);
-	}
-	mag_dims[rank+1] = 2;
-
-	try{
-		stringstream ss;
-		ss << path;
-		if(path.back() != '/')
-			ss << "/";
-		ss << name;
-
-		Exception::dontPrint();
-		H5File file(filename, H5F_ACC_RDWR);
-
-		DataSpace dataspace = DataSpace(rank+2, mag_dims);
-		DataSet dataset = DataSet(file.createDataSet(name, PredType::IEEE_F64BE, dataspace));
-		dataset.write(mag_decomposed, PredType::NATIVE_DOUBLE);
-		dataspace.close();
-		dataset.close();
-		file.close();
-	}
-	catch(FileIException error){
-		error.printError();
-		return;
-	}
-	catch(DataSetIException error){
-		error.printError();
-		return;
-	}
-	catch(DataSpaceIException error){
-		error.printError();
-		return;
-	}
-
-	delete [] mag_decomposed;
-}*/
-
 void FileWriter::writeMagnetization(
-	const Property::Magnetization *magnetization,
+	const Property::Magnetization &magnetization,
 	string name,
 	string path
 ){
 	init();
 
-	int rank = magnetization->getDimensions();
-	const int *dims = magnetization->getRanges();
-	const complex<double> *data = magnetization->getData();
+	int rank = magnetization.getDimensions();
+	const int *dims = magnetization.getRanges();
+	const complex<double> *data = magnetization.getData();
 
 	hsize_t mag_dims[rank+2];//Last two dimension for matrix elements and real/imaginary decomposition.
 	for(int n = 0; n < rank; n++)
@@ -677,76 +496,24 @@ void FileWriter::writeMagnetization(
 	delete [] mag_decomposed;
 }
 
-/*void FileWriter::writeLDOS(const double *ldos, int rank, const int *dims, double l_lim, double u_lim, int resolution, string name, string path){
-	init();
-
-	hsize_t ldos_dims[rank+1];//Last dimension is for energy
-	for(int n = 0; n < rank; n++)
-		ldos_dims[n] = dims[n];
-	ldos_dims[rank] = resolution;
-
-	double limits[2];
-	limits[0] = u_lim;
-	limits[1] = l_lim;
-	const int LIMITS_RANK = 1;
-	hsize_t limits_dims[1];
-	limits_dims[0] = 2;
-
-	try{
-		stringstream ss;
-		ss << path;
-		if(path.back() != '/')
-			ss << "/";
-		ss << name;
-
-		Exception::dontPrint();
-		H5File file(filename, H5F_ACC_RDWR);
-
-		DataSpace dataspace = DataSpace(rank+1, ldos_dims);
-		DataSet dataset = DataSet(file.createDataSet(name, PredType::IEEE_F64BE, dataspace));
-		dataset.write(ldos, PredType::NATIVE_DOUBLE);
-		dataspace.close();
-
-		dataspace = DataSpace(LIMITS_RANK, limits_dims);
-		Attribute attribute = dataset.createAttribute("UpLowLimits", PredType::IEEE_F64BE, dataspace);
-		attribute.write(PredType::NATIVE_DOUBLE, limits);
-		dataspace.close();
-		dataset.close();
-
-		file.close();
-	}
-	catch(FileIException error){
-		error.printError();
-		return;
-	}
-	catch(DataSetIException error){
-		error.printError();
-		return;
-	}
-	catch(DataSpaceIException error){
-		error.printError();
-		return;
-	}
-}*/
-
 void FileWriter::writeLDOS(
-	const Property::LDOS *ldos,
+	const Property::LDOS &ldos,
 	string name,
 	string path
 ){
 	init();
 
-	int rank = ldos->getDimensions();
-	const int *dims = ldos->getRanges();
+	int rank = ldos.getDimensions();
+	const int *dims = ldos.getRanges();
 
 	hsize_t ldos_dims[rank+1];//Last dimension is for energy
 	for(int n = 0; n < rank; n++)
 		ldos_dims[n] = dims[n];
-	ldos_dims[rank] = ldos->getResolution();
+	ldos_dims[rank] = ldos.getResolution();
 
 	double limits[2];
-	limits[0] = ldos->getUpperBound();
-	limits[1] = ldos->getLowerBound();
+	limits[0] = ldos.getUpperBound();
+	limits[1] = ldos.getLowerBound();
 	const int LIMITS_RANK = 1;
 	hsize_t limits_dims[1];
 	limits_dims[0] = 2;
@@ -763,7 +530,7 @@ void FileWriter::writeLDOS(
 
 		DataSpace dataspace = DataSpace(rank+1, ldos_dims);
 		DataSet dataset = DataSet(file.createDataSet(name, PredType::IEEE_F64BE, dataspace));
-		dataset.write(ldos->getData(), PredType::NATIVE_DOUBLE);
+		dataset.write(ldos.getData(), PredType::NATIVE_DOUBLE);
 		dataspace.close();
 
 		dataspace = DataSpace(LIMITS_RANK, limits_dims);
@@ -800,92 +567,22 @@ void FileWriter::writeLDOS(
 	}
 }
 
-/*void FileWriter::writeSP_LDOS(const complex<double> *sp_ldos, int rank, const int *dims, double l_lim, double u_lim, int resolution, string name, string path){
-	init();
-
-	const int NUM_MATRIX_ELEMENTS = 4;
-	hsize_t sp_ldos_dims[rank+2];//Three last dimensions are for energy, spin components, and real/imaginary decomposition.
-	for(int n = 0; n < rank; n++)
-		sp_ldos_dims[n] = dims[n];
-	sp_ldos_dims[rank] = resolution;
-	sp_ldos_dims[rank+1] = NUM_MATRIX_ELEMENTS;
-
-	int sp_ldos_size = 1;
-	for(int n = 0; n < rank+2; n++)
-		sp_ldos_size *= sp_ldos_dims[n];
-	double *sp_ldos_decomposed;
-	sp_ldos_decomposed = new double[2*sp_ldos_size];
-	for(int n = 0; n < sp_ldos_size; n++){
-		sp_ldos_decomposed[2*n+0] = real(sp_ldos[n]);
-		sp_ldos_decomposed[2*n+1] = imag(sp_ldos[n]);
-	}
-
-	sp_ldos_dims[rank+2] = 2;
-
-	double limits[2];
-	limits[0] = u_lim;
-	limits[1] = l_lim;
-	const int LIMITS_RANK = 1;
-	hsize_t limits_dims[1];
-	limits_dims[0] = 2;
-
-
-	try{
-		stringstream ss;
-		ss << path;
-		if(path.back() != '/')
-			ss << "/";
-		ss << name;
-
-		Exception::dontPrint();
-		H5File file(filename, H5F_ACC_RDWR);
-
-		DataSpace dataspace = DataSpace(rank+3, sp_ldos_dims);
-		DataSet dataset = DataSet(file.createDataSet(name, PredType::IEEE_F64BE, dataspace));
-		dataset.write(sp_ldos_decomposed, PredType::NATIVE_DOUBLE);
-		dataspace.close();
-
-		dataspace = DataSpace(LIMITS_RANK, limits_dims);
-		Attribute attribute = dataset.createAttribute("UpLowLimits", PredType::IEEE_F64BE, dataspace);
-		attribute.write(PredType::NATIVE_DOUBLE, limits);
-		dataspace.close();
-		dataset.close();
-
-		file.close();
-		dataspace.close();
-	}
-	catch(FileIException error){
-		error.printError();
-		return;
-	}
-	catch(DataSetIException error){
-		error.printError();
-		return;
-	}
-	catch(DataSpaceIException error){
-		error.printError();
-		return;
-	}
-
-	delete [] sp_ldos_decomposed;
-}*/
-
 void FileWriter::writeSpinPolarizedLDOS(
-	const Property::SpinPolarizedLDOS *spinPolarizedLDOS,
+	const Property::SpinPolarizedLDOS &spinPolarizedLDOS,
 	string name,
 	string path
 ){
 	init();
 
-	int rank = spinPolarizedLDOS->getDimensions();
-	const int *dims = spinPolarizedLDOS->getRanges();
-	const complex<double> *data = spinPolarizedLDOS->getData();
+	int rank = spinPolarizedLDOS.getDimensions();
+	const int *dims = spinPolarizedLDOS.getRanges();
+	const complex<double> *data = spinPolarizedLDOS.getData();
 
 	const int NUM_MATRIX_ELEMENTS = 4;
 	hsize_t sp_ldos_dims[rank+2];//Three last dimensions are for energy, spin components, and real/imaginary decomposition.
 	for(int n = 0; n < rank; n++)
 		sp_ldos_dims[n] = dims[n];
-	sp_ldos_dims[rank] = spinPolarizedLDOS->getResolution();
+	sp_ldos_dims[rank] = spinPolarizedLDOS.getResolution();
 	sp_ldos_dims[rank+1] = NUM_MATRIX_ELEMENTS;
 
 	int sp_ldos_size = 1;
@@ -901,8 +598,8 @@ void FileWriter::writeSpinPolarizedLDOS(
 	sp_ldos_dims[rank+2] = 2;
 
 	double limits[2];
-	limits[0] = spinPolarizedLDOS->getUpperBound();
-	limits[1] = spinPolarizedLDOS->getLowerBound();
+	limits[0] = spinPolarizedLDOS.getUpperBound();
+	limits[1] = spinPolarizedLDOS.getLowerBound();
 	const int LIMITS_RANK = 1;
 	hsize_t limits_dims[1];
 	limits_dims[0] = 2;

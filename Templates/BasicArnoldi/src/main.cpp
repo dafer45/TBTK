@@ -114,30 +114,26 @@ int main(int argc, char **argv){
 	pe.setEnergyWindow(LOWER_BOUND, UPPER_BOUND, RESOLUTION);
 
 	//Extract eigenvalues and write these to file
-	Property::EigenValues *ev = pe.getEigenValues();
+	Property::EigenValues ev = pe.getEigenValues();
 	FileWriter::writeEigenValues(ev);
-	delete ev;
 
 	//Extract DOS and write to file
-	Property::DOS *dos = pe.calculateDOS();
+	Property::DOS dos = pe.calculateDOS();
 	FileWriter::writeDOS(dos);
-	delete dos;
 
 	//Extract LDOS and write to file
-	Property::LDOS *ldos = pe.calculateLDOS(
+	Property::LDOS ldos = pe.calculateLDOS(
 		{IDX_X,		SIZE_Y/2,	IDX_SUM_ALL},
 		{SIZE_X,	1,		2}
 	);
 	FileWriter::writeLDOS(ldos);
-	delete ldos;
 
 	//Extract spin-polarized LDOS and write to file
-	Property::SpinPolarizedLDOS *spLdos = pe.calculateSpinPolarizedLDOS(
+	Property::SpinPolarizedLDOS spLdos = pe.calculateSpinPolarizedLDOS(
 		{IDX_X,		SIZE_Y/2,	IDX_SPIN},
 		{SIZE_X,	1,		2}
 	);
 	FileWriter::writeSpinPolarizedLDOS(spLdos);
-	delete spLdos;
 
 	Timer::tock();
 

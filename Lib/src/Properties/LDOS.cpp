@@ -74,9 +74,81 @@ LDOS::LDOS(
 		this->data[n] = data[n];
 }
 
+LDOS::LDOS(const LDOS &ldos){
+	dimensions = ldos.dimensions;
+	ranges = new int[dimensions];
+	for(int n = 0; n < dimensions; n++)
+		ranges[n] = ldos.ranges[n];
+
+	lowerBound = ldos.lowerBound;
+	upperBound = ldos.upperBound;
+	resolution = ldos.resolution;
+
+	size = ldos.size;
+
+	data = new double[size];
+	for(int n = 0; n < size; n++)
+		data[n] = ldos.data[n];
+}
+
+LDOS::LDOS(LDOS &&ldos){
+	dimensions = ldos.dimensions;
+	ranges = ldos.ranges;
+	ldos.ranges = nullptr;
+
+	lowerBound = ldos.lowerBound;
+	upperBound = ldos.upperBound;
+	resolution = ldos.resolution;
+
+	size = ldos.size;
+
+	data = ldos.data;
+	ldos.data = nullptr;
+}
+
 LDOS::~LDOS(){
-	delete [] ranges;
-	delete [] data;
+	if(ranges != nullptr)
+		delete [] ranges;
+	if(data != nullptr)
+		delete [] data;
+}
+
+LDOS& LDOS::operator=(const LDOS &rhs){
+	dimensions = rhs.dimensions;
+	ranges = new int[dimensions];
+	for(int n = 0; n < dimensions; n++)
+		ranges[n] = rhs.ranges[n];
+
+	lowerBound = rhs.lowerBound;
+	upperBound = rhs.upperBound;
+	resolution = rhs.resolution;
+
+	size = rhs.size;
+
+	data = new double[size];
+	for(int n = 0; n < size; n++)
+		data[n] = rhs.data[n];
+
+	return *this;
+}
+
+LDOS& LDOS::operator=(LDOS &&rhs){
+	if(this != &rhs){
+		dimensions = rhs.dimensions;
+		ranges = rhs.ranges;
+		rhs.ranges = nullptr;
+
+		lowerBound = rhs.lowerBound;
+		upperBound = rhs.upperBound;
+		resolution = rhs.resolution;
+
+		size = rhs.size;
+
+		data = rhs.data;
+		rhs.data = nullptr;
+	}
+
+	return *this;
 }
 
 };	//End of namespace Property

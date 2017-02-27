@@ -96,14 +96,12 @@ int main(int argc, char **argv){
 	pe.setEnergyWindow(LOWER_BOUND, UPPER_BOUND, RESOLUTION);
 
 	//Extract eigenvalues and write these to file
-	Property::EigenValues *ev = pe.getEigenValues();
+	Property::EigenValues ev = pe.getEigenValues();
 	FileWriter::writeEigenValues(ev);
-	delete ev;
 
 	//Extract DOS and write to file
-	Property::DOS *dos = pe.calculateDOS();
+	Property::DOS dos = pe.calculateDOS();
 	FileWriter::writeDOS(dos);
-	delete dos;
 
 	return 0;
 }

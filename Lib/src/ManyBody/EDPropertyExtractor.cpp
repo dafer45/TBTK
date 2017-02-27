@@ -313,7 +313,7 @@ complex<double> EDPropertyExtractor::calculateExpectationValue(
 	TBTKNotYetImplemented("EDPropertyExtractor::calculateExpectationValue()");
 }
 
-Property::Density* EDPropertyExtractor::calculateDensity(
+Property::Density EDPropertyExtractor::calculateDensity(
 	Index pattern,
 	Index ranges
 ){
@@ -322,14 +322,14 @@ Property::Density* EDPropertyExtractor::calculateDensity(
 	int lDimensions = 0;
 	int *lRanges;
 	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
-	Property::Density *density = new Property::Density(lDimensions, lRanges);
+	Property::Density density(lDimensions, lRanges);
 
-	calculate(calculateDensityCallback, (void*)density->data, pattern, ranges, 0, 1);
+	calculate(calculateDensityCallback, (void*)density.data, pattern, ranges, 0, 1);
 
 	return density;
 }
 
-Property::Magnetization* EDPropertyExtractor::calculateMagnetization(
+Property::Magnetization EDPropertyExtractor::calculateMagnetization(
 	Index pattern,
 	Index ranges
 ){
@@ -357,14 +357,11 @@ Property::Magnetization* EDPropertyExtractor::calculateMagnetization(
 	int lDimensions;
 	int *lRanges;
 	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
-	Property::Magnetization *magnetization = new Property::Magnetization(
-		lDimensions,
-		lRanges
-	);
+	Property::Magnetization magnetization(lDimensions, lRanges);
 
 	calculate(
 		calculateMagnetizationCallback,
-		(void*)magnetization->data,
+		(void*)magnetization.data,
 		pattern,
 		ranges,
 		0,
@@ -376,7 +373,7 @@ Property::Magnetization* EDPropertyExtractor::calculateMagnetization(
 	return magnetization;
 }
 
-Property::LDOS* EDPropertyExtractor::calculateLDOS(
+Property::LDOS EDPropertyExtractor::calculateLDOS(
 	Index pattern,
 	Index ranges
 ){
@@ -385,7 +382,7 @@ Property::LDOS* EDPropertyExtractor::calculateLDOS(
 	int lDimensions;
 	int *lRanges;
 	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
-	Property::LDOS *ldos = new Property::LDOS(
+	Property::LDOS ldos(
 		lDimensions,
 		lRanges,
 		lowerBound,
@@ -395,7 +392,7 @@ Property::LDOS* EDPropertyExtractor::calculateLDOS(
 
 	calculate(
 		calculateLDOSCallback,
-		(void*)ldos->data,
+		(void*)ldos.data,
 		pattern,
 		ranges,
 		0,
@@ -405,7 +402,7 @@ Property::LDOS* EDPropertyExtractor::calculateLDOS(
 	return ldos;
 }
 
-Property::SpinPolarizedLDOS* EDPropertyExtractor::calculateSpinPolarizedLDOS(
+Property::SpinPolarizedLDOS EDPropertyExtractor::calculateSpinPolarizedLDOS(
 	Index pattern,
 	Index ranges
 ){
@@ -433,7 +430,7 @@ Property::SpinPolarizedLDOS* EDPropertyExtractor::calculateSpinPolarizedLDOS(
 	int lDimensions;
 	int *lRanges;
 	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
-	Property::SpinPolarizedLDOS *spinPolarizedLDOS = new Property::SpinPolarizedLDOS(
+	Property::SpinPolarizedLDOS spinPolarizedLDOS(
 		lDimensions,
 		lRanges,
 		lowerBound,
@@ -443,7 +440,7 @@ Property::SpinPolarizedLDOS* EDPropertyExtractor::calculateSpinPolarizedLDOS(
 
 	calculate(
 		calculateSpinPolarizedLDOSCallback,
-		(void*)spinPolarizedLDOS->data,
+		(void*)spinPolarizedLDOS.data,
 		pattern,
 		ranges,
 		0,

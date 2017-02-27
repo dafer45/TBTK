@@ -49,7 +49,7 @@ void PropertyExtractor::setEnergyWindow(
 	this->upperBound = upperBound;
 }
 
-Property::Density* PropertyExtractor::calculateDensity(
+Property::Density PropertyExtractor::calculateDensity(
 	Index pattern,
 	Index ranges
 ){
@@ -60,7 +60,7 @@ Property::Density* PropertyExtractor::calculateDensity(
 	);
 }
 
-Property::Magnetization* PropertyExtractor::calculateMagnetization(
+Property::Magnetization PropertyExtractor::calculateMagnetization(
 	Index pattern,
 	Index ranges
 ){
@@ -71,7 +71,7 @@ Property::Magnetization* PropertyExtractor::calculateMagnetization(
 	);
 }
 
-Property::LDOS* PropertyExtractor::calculateLDOS(
+Property::LDOS PropertyExtractor::calculateLDOS(
 	Index pattern,
 	Index ranges
 ){
@@ -82,7 +82,7 @@ Property::LDOS* PropertyExtractor::calculateLDOS(
 	);
 }
 
-Property::SpinPolarizedLDOS* PropertyExtractor::calculateSpinPolarizedLDOS(
+Property::SpinPolarizedLDOS PropertyExtractor::calculateSpinPolarizedLDOS(
 	Index pattern,
 	Index ranges
 ){
@@ -104,7 +104,7 @@ complex<double> PropertyExtractor::calculateExpectationValue(
 	);
 }
 
-Property::DOS* PropertyExtractor::calculateDOS(){
+Property::DOS PropertyExtractor::calculateDOS(){
 	TBTKExit(
 		"PropertyExtractor::calculateDOS()",
 		"The chosen property extractor does not support this function call.",

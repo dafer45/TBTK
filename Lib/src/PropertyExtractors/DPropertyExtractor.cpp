@@ -65,13 +65,13 @@ void DPropertyExtractor::getTabulatedHoppingAmplitudeSet(
 	);
 }
 
-Property::EigenValues* DPropertyExtractor::getEigenValues(){
+Property::EigenValues DPropertyExtractor::getEigenValues(){
 	int size = dSolver->getModel()->getBasisSize();
 	const double *ev = dSolver->getEigenValues();
 
-	Property::EigenValues *eigenValues = new Property::EigenValues(size);
+	Property::EigenValues eigenValues(size);
 	for(int n = 0; n < size; n++)
-		eigenValues->data[n] = ev[n];
+		eigenValues.data[n] = ev[n];
 
 	return eigenValues;
 }
@@ -108,14 +108,16 @@ Property::GreensFunction* DPropertyExtractor::calculateGreensFunction(
 	return greensFunction;
 }
 
-Property::DOS* DPropertyExtractor::calculateDOS(){
+Property::DOS DPropertyExtractor::calculateDOS(){
 	const double *ev = dSolver->getEigenValues();
 
-	Property::DOS *dos = new Property::DOS(lowerBound, upperBound, energyResolution);
+//	Property::DOS *dos = new Property::DOS(lowerBound, upperBound, energyResolution);
+	Property::DOS dos(lowerBound, upperBound, energyResolution);
 	for(int n = 0; n < dSolver->getModel()->getBasisSize(); n++){
 		int e = (int)(((ev[n] - lowerBound)/(upperBound - lowerBound))*energyResolution);
 		if(e >= 0 && e < energyResolution){
-			dos->data[e] += 1.;
+//			dos->data[e] += 1.;
+			dos.data[e] += 1.;
 		}
 	}
 
@@ -158,7 +160,7 @@ complex<double> DPropertyExtractor::calculateExpectationValue(
 	return expectationValue;
 }
 
-Property::Density* DPropertyExtractor::calculateDensity(
+Property::Density DPropertyExtractor::calculateDensity(
 	Index pattern,
 	Index ranges
 ){
@@ -167,14 +169,14 @@ Property::Density* DPropertyExtractor::calculateDensity(
 	int lDimensions;
 	int *lRanges;
 	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
-	Property::Density *density = new Property::Density(lDimensions, lRanges);
+	Property::Density density(lDimensions, lRanges);
 
-	calculate(calculateDensityCallback, (void*)density->data, pattern, ranges, 0, 1);
+	calculate(calculateDensityCallback, (void*)density.data, pattern, ranges, 0, 1);
 
 	return density;
 }
 
-Property::Magnetization* DPropertyExtractor::calculateMagnetization(
+Property::Magnetization DPropertyExtractor::calculateMagnetization(
 	Index pattern,
 	Index ranges
 ){
@@ -189,9 +191,12 @@ Property::Magnetization* DPropertyExtractor::calculateMagnetization(
 		}
 	}
 	if(((int*)hint)[0] == -1){
-		Streams::err << "Error in PropertyExtractor::calculateMAG: No spin index indicated.\n";
 		delete [] (int*)hint;
-		return NULL;
+		TBTKExit(
+			"DPropertyExtractor::calculateMagnetization()",
+			"No spin index indiceated.",
+			"Used IDX_SPIN to indicate the position of the spin index."
+		);
 	}
 
 	ensureCompliantRanges(pattern, ranges);
@@ -199,16 +204,16 @@ Property::Magnetization* DPropertyExtractor::calculateMagnetization(
 	int lDimensions;
 	int *lRanges;
 	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
-	Property::Magnetization *magnetization = new Property::Magnetization(lDimensions, lRanges);
+	Property::Magnetization magnetization(lDimensions, lRanges);
 
-	calculate(calculateMAGCallback, (void*)magnetization->data, pattern, ranges, 0, 1);
+	calculate(calculateMAGCallback, (void*)magnetization.data, pattern, ranges, 0, 1);
 
 	delete [] (int*)hint;
 
 	return magnetization;
 }
 
-Property::LDOS* DPropertyExtractor::calculateLDOS(
+Property::LDOS DPropertyExtractor::calculateLDOS(
 	Index pattern,
 	Index ranges
 ){
@@ -229,14 +234,20 @@ Property::LDOS* DPropertyExtractor::calculateLDOS(
 	int lDimensions;
 	int *lRanges;
 	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
-	Property::LDOS *ldos = new Property::LDOS(lDimensions, lRanges, lowerBound, upperBound, energyResolution);
+	Property::LDOS ldos(
+		lDimensions,
+		lRanges,
+		lowerBound,
+		upperBound,
+		energyResolution
+	);
 
-	calculate(calculateLDOSCallback, (void*)ldos->data, pattern, ranges, 0, 1);
+	calculate(calculateLDOSCallback, (void*)ldos.data, pattern, ranges, 0, 1);
 
 	return ldos;
 }
 
-Property::SpinPolarizedLDOS* DPropertyExtractor::calculateSpinPolarizedLDOS(
+Property::SpinPolarizedLDOS DPropertyExtractor::calculateSpinPolarizedLDOS(
 	Index pattern,
 	Index ranges
 ){
@@ -262,11 +273,14 @@ Property::SpinPolarizedLDOS* DPropertyExtractor::calculateSpinPolarizedLDOS(
 		}
 	}
 	if(((int**)hint)[1][1] == -1){
-		Streams::err << "Error in PropertyExtractor::calculateSP_LDOS_E: No spin index indicated.\n";
 		delete [] ((double**)hint)[0];
 		delete [] ((int**)hint)[1];
 		delete [] (void**)hint;
-		return NULL;
+		TBTKExit(
+			"DPropertyExtractor::calculateSpinPolarizedLDOS()",
+			"No spin index indicated.",
+			"Used IDX_SPIN to indicate the position of the spin index."
+		);
 	}
 
 	ensureCompliantRanges(pattern, ranges);
@@ -274,9 +288,15 @@ Property::SpinPolarizedLDOS* DPropertyExtractor::calculateSpinPolarizedLDOS(
 	int lDimensions;
 	int *lRanges;
 	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
-	Property::SpinPolarizedLDOS *spinPolarizedLDOS = new Property::SpinPolarizedLDOS(lDimensions, lRanges, lowerBound, upperBound, energyResolution);
+	Property::SpinPolarizedLDOS spinPolarizedLDOS(
+		lDimensions,
+		lRanges,
+		lowerBound,
+		upperBound,
+		energyResolution
+	);
 
-	calculate(calculateSP_LDOSCallback, (void*)spinPolarizedLDOS->data, pattern, ranges, 0, 1);
+	calculate(calculateSP_LDOSCallback, (void*)spinPolarizedLDOS.data, pattern, ranges, 0, 1);
 
 	delete [] ((double**)hint)[0];
 	delete [] ((int**)hint)[1];
