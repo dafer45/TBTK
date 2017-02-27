@@ -167,6 +167,7 @@ GreensFunction::GreensFunction(const GreensFunction &greensFunction){
 		storage.arrayFormat.lowerBound = greensFunction.storage.arrayFormat.lowerBound;
 		storage.arrayFormat.upperBound = greensFunction.storage.arrayFormat.upperBound;
 		storage.arrayFormat.resolution = greensFunction.storage.arrayFormat.resolution;
+		storage.arrayFormat.data = new complex<double>[storage.arrayFormat.resolution];
 		for(unsigned int n = 0; n < storage.arrayFormat.resolution; n++)
 			storage.arrayFormat.data[n] = greensFunction.storage.arrayFormat.data[n];
 		break;
@@ -188,12 +189,43 @@ GreensFunction::GreensFunction(const GreensFunction &greensFunction){
 	}
 }
 
+GreensFunction::GreensFunction(GreensFunction &&greensFunction){
+	type = greensFunction.type;
+	format = greensFunction.format;
+	switch(format){
+	case Format::Array:
+		storage.arrayFormat.lowerBound = greensFunction.storage.arrayFormat.lowerBound;
+		storage.arrayFormat.upperBound = greensFunction.storage.arrayFormat.upperBound;
+		storage.arrayFormat.resolution = greensFunction.storage.arrayFormat.resolution;
+		storage.arrayFormat.data = greensFunction.storage.arrayFormat.data;
+		greensFunction.storage.arrayFormat.data = nullptr;
+		break;
+	case Format::Poles:
+		storage.poleFormat.numPoles = greensFunction.storage.poleFormat.numPoles;
+		storage.poleFormat.positions = greensFunction.storage.poleFormat.positions;
+		greensFunction.storage.poleFormat.positions = nullptr;
+		storage.poleFormat.amplitudes = greensFunction.storage.poleFormat.amplitudes;
+		greensFunction.storage.poleFormat.amplitudes = nullptr;
+		break;
+	default:
+		TBTKExit(
+			"GreensFunction::operator()",
+			"Unknown Green's function format.",
+			"This should never happen, contact the developer."
+		);
+	}
+}
+
 GreensFunction::~GreensFunction(){
-	if(format == Format::Array)
-		delete [] storage.arrayFormat.data;
+	if(format == Format::Array){
+		if(storage.arrayFormat.data != nullptr)
+			delete [] storage.arrayFormat.data;
+	}
 	if(format == Format::Poles){
-		delete [] storage.poleFormat.positions;
-		delete [] storage.poleFormat.amplitudes;
+		if(storage.poleFormat.positions != nullptr)
+			delete [] storage.poleFormat.positions;
+		if(storage.poleFormat.amplitudes != nullptr)
+			delete [] storage.poleFormat.amplitudes;
 	}
 }
 

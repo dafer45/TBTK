@@ -91,6 +91,9 @@ public:
 	/** Copy constructor. */
 	GreensFunction(const GreensFunction &greensFunction);
 
+	/** Move constructor. */
+	GreensFunction(GreensFunction &&greensFunction);
+
 	/** Destructor. */
 	~GreensFunction();
 
@@ -118,6 +121,9 @@ public:
 
 	/** Assignment operator. */
 	const GreensFunction& operator=(const GreensFunction &rhs);
+
+	/** Move assignment operator. */
+	const GreensFunction& operator=(GreensFunction &&rhs);
 
 	/** Function call operator. */
 	std::complex<double> operator()(double E) const;
@@ -255,6 +261,7 @@ inline const GreensFunction& GreensFunction::operator=(
 		storage.arrayFormat.lowerBound = rhs.storage.arrayFormat.lowerBound;
 		storage.arrayFormat.upperBound = rhs.storage.arrayFormat.upperBound;
 		storage.arrayFormat.resolution = rhs.storage.arrayFormat.resolution;
+		storage.arrayFormat.data = new std::complex<double>[storage.arrayFormat.resolution];
 		for(unsigned int n = 0; n < storage.arrayFormat.resolution; n++)
 			storage.arrayFormat.data[n] = rhs.storage.arrayFormat.data[n];
 		break;
@@ -274,6 +281,41 @@ inline const GreensFunction& GreensFunction::operator=(
 			"This should never happen, contact the developer."
 		);
 	}
+
+	return *this;
+}
+
+inline const GreensFunction& GreensFunction::operator=(
+	GreensFunction &&rhs
+){
+	if(this != &rhs){
+		type = rhs.type;
+		format = rhs.format;
+		switch(format){
+		case Format::Array:
+			storage.arrayFormat.lowerBound = rhs.storage.arrayFormat.lowerBound;
+			storage.arrayFormat.upperBound = rhs.storage.arrayFormat.upperBound;
+			storage.arrayFormat.resolution = rhs.storage.arrayFormat.resolution;
+			storage.arrayFormat.data = rhs.storage.arrayFormat.data;
+			rhs.storage.arrayFormat.data = nullptr;
+			break;
+		case Format::Poles:
+			storage.poleFormat.numPoles = rhs.storage.poleFormat.numPoles;
+			storage.poleFormat.positions = rhs.storage.poleFormat.positions;
+			rhs.storage.poleFormat.positions = nullptr;
+			storage.poleFormat.amplitudes = rhs.storage.poleFormat.amplitudes;
+			rhs.storage.poleFormat.amplitudes = nullptr;
+			break;
+		default:
+			TBTKExit(
+				"GreensFunction::operator()",
+				"Unknown Green's function format.",
+				"This should never happen, contact the developer."
+			);
+		}
+	}
+
+	return *this;
 }
 
 inline GreensFunction GreensFunction::operator+(
