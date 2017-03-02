@@ -27,7 +27,7 @@ using namespace std;
 namespace TBTK{
 
 DiagonalizationSolver::DiagonalizationSolver(){
-	model = NULL;
+//	model = NULL;
 
 	hamiltonian = NULL;
 	eigenValues = NULL;
@@ -48,7 +48,7 @@ DiagonalizationSolver::~DiagonalizationSolver(){
 
 void DiagonalizationSolver::run(){
 	TBTKAssert(
-		model != NULL,
+		getModel() != NULL,
 		"DiagonalizationSolver::run()",
 		"Model not set.",
 		"Use DiagonalizationSolver::setModel() to set model."
@@ -85,7 +85,7 @@ void DiagonalizationSolver::init(){
 
 //	model->amplitudeSet.construct();
 
-	int basisSize = model->getBasisSize();
+	int basisSize = getModel()->getBasisSize();
 	Streams::out << "\tBasis size: " << basisSize << "\n";
 
 	hamiltonian = new complex<double>[(basisSize*(basisSize+1))/2];
@@ -96,16 +96,16 @@ void DiagonalizationSolver::init(){
 }
 
 void DiagonalizationSolver::update(){
-	int basisSize = model->getBasisSize();
+	int basisSize = getModel()->getBasisSize();
 
 	for(int n = 0; n < (basisSize*(basisSize+1))/2; n++)
 		hamiltonian[n] = 0.;
 
-	HoppingAmplitudeSet::Iterator it = model->getHoppingAmplitudeSet()->getIterator();
+	HoppingAmplitudeSet::Iterator it = getModel()->getHoppingAmplitudeSet()->getIterator();
 	const HoppingAmplitude *ha;
 	while((ha = it.getHA())){
-		int from = model->getHoppingAmplitudeSet()->getBasisIndex(ha->fromIndex);
-		int to = model->getHoppingAmplitudeSet()->getBasisIndex(ha->toIndex);
+		int from = getModel()->getHoppingAmplitudeSet()->getBasisIndex(ha->fromIndex);
+		int to = getModel()->getHoppingAmplitudeSet()->getBasisIndex(ha->toIndex);
 		if(from >= to)
 			hamiltonian[to + (from*(from+1))/2] += ha->getAmplitude();
 
@@ -145,7 +145,7 @@ void DiagonalizationSolver::solve(){
 		//Setup zhpev to calculate...
 		char jobz = 'V';		//...eigenvalues and eigenvectors...
 		char uplo = 'U';		//...for an upper triangular...
-		int n = model->getBasisSize();	//...nxn-matrix.
+		int n = getModel()->getBasisSize();	//...nxn-matrix.
 		//Initialize workspaces
 		complex<double> *work = new complex<double>[(2*n-1)];
 		double *rwork = new double[3*n-2];

@@ -24,6 +24,7 @@
 #define COM_DAFER45_ARNOLDI_SOLVER
 
 #include "Model.h"
+#include "Solver.h"
 
 #include "slu_zdefs.h"
 
@@ -34,19 +35,19 @@ namespace TBTK{
 /** The ArnoldiSolver can be used to calculate a few eigenvalues and
  *  eigenvectors around a given energy.
  */
-class ArnoldiSolver{
+class ArnoldiSolver : public Solver{
 public:
 	/** Constructor. */
 	ArnoldiSolver();
 
 	/** Destructor. */
-	~ArnoldiSolver();
+	virtual ~ArnoldiSolver();
 
 	/** Set Model to work on. */
-	void setModel(Model *model);
+//	void setModel(Model *model);
 
 	/** Get model. */
-	Model* getModel();
+//	Model* getModel();
 
 	/** Enum class describing the different modes of operation.
 	 *
@@ -106,7 +107,7 @@ public:
 	const std::complex<double> getAmplitude(int state, const Index &index);
 private:
 	/** Model to work on. */
-	Model *model;
+//	Model *model;
 
 	/** Mode of operation. */
 	Mode mode;
@@ -223,13 +224,13 @@ inline void ArnoldiSolver::setMode(Mode mode){
 	this->mode = mode;
 }
 
-inline void ArnoldiSolver::setModel(Model *model){
+/*inline void ArnoldiSolver::setModel(Model *model){
 	this->model = model;
 }
 
 inline Model* ArnoldiSolver::getModel(){
 	return model;
-}
+}*/
 
 inline void ArnoldiSolver::setNumEigenValues(int numEigenValues){
 	this->numEigenValues = numEigenValues;
@@ -275,7 +276,7 @@ inline const std::complex<double> ArnoldiSolver::getAmplitude(
 	int state,
 	const Index &index
 ){
-	return eigenVectors[model->getBasisSize()*state + model->getBasisIndex(index)];
+	return eigenVectors[getModel()->getBasisSize()*state + getModel()->getBasisIndex(index)];
 }
 
 };	//End of namesapce TBTK

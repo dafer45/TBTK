@@ -35,8 +35,8 @@ const complex<double> i(0, 1);
 vector<TimeEvolver*> TimeEvolver::timeEvolvers;
 vector<DiagonalizationSolver*> TimeEvolver::dSolvers;
 
-TimeEvolver::TimeEvolver(Model *model){
-	this->model = model;
+TimeEvolver::TimeEvolver(/*Model *model*/){
+//	this->model = model;
 	eigenValues = NULL;
 	eigenVectors = NULL;
 	eigenVectorsMap = NULL;
@@ -78,18 +78,18 @@ TimeEvolver::~TimeEvolver(){
 }
 
 void TimeEvolver::run(){
-	int basisSize = model->getBasisSize();
+	int basisSize = getModel()->getBasisSize();
 	occupancy = new double[basisSize];
 
 	currentTimeStep = -1;
-	dSolver.setModel(model);
+	dSolver.setModel(getModel());
 	dSolver.setSCCallback(scCallback);
 	dSolver.run();
 
 	if(numberOfParticles < 0){
 		for(int n = 0; n < basisSize; n++){
 			numberOfParticles++;
-			if(eigenValues[n] >= model->getChemicalPotential())
+			if(eigenValues[n] >= getModel()->getChemicalPotential())
 				break;
 		}
 	}
@@ -103,11 +103,11 @@ void TimeEvolver::run(){
 		for(int n = 0; n < basisSize*basisSize; n++)
 			dPsi[n] = 0.;
 
-		HoppingAmplitudeSet::Iterator it = model->getHoppingAmplitudeSet()->getIterator();
+		HoppingAmplitudeSet::Iterator it = getModel()->getHoppingAmplitudeSet()->getIterator();
 		const HoppingAmplitude *ha;
 		while((ha = it.getHA())){
-			int fromIndex = model->getHoppingAmplitudeSet()->getBasisIndex(ha->fromIndex);
-			int toIndex = model->getHoppingAmplitudeSet()->getBasisIndex(ha->toIndex);
+			int fromIndex = getModel()->getHoppingAmplitudeSet()->getBasisIndex(ha->fromIndex);
+			int toIndex = getModel()->getHoppingAmplitudeSet()->getBasisIndex(ha->toIndex);
 			complex<double> amplitude = ha->getAmplitude();
 			#pragma omp parallel for
 			for(int n = 0; n < basisSize; n++){
@@ -179,15 +179,15 @@ void TimeEvolver::onDiagonalizationFinished(){
 	eigenVectors = dSolver.getEigenVectorsRW();
 
 	if(eigenVectorsMap == NULL){
-		int basisSize = model->getBasisSize();
+		int basisSize = getModel()->getBasisSize();
 		eigenVectorsMap = new complex<double>*[basisSize];
 		for(int n = 0; n < basisSize; n++)
 			eigenVectorsMap[n] = &(eigenVectors[n*basisSize]);
 	}
 
-	for(int n = 0; n < model->getBasisSize(); n++){
+	for(int n = 0; n < getModel()->getBasisSize(); n++){
 		if(numberOfParticles < 0){
-			if(eigenValues[n] < model->getChemicalPotential())
+			if(eigenValues[n] < getModel()->getChemicalPotential())
 				occupancy[n] = 1.;
 			else
 				occupancy[n] = 0.;
@@ -202,7 +202,7 @@ void TimeEvolver::onDiagonalizationFinished(){
 }
 
 void TimeEvolver::sort(){
-	int basisSize = model->getBasisSize();
+	int basisSize = getModel()->getBasisSize();
 
 	for(int m = 0; m < basisSize; m++){
 		for(int n = m+1; n < basisSize; n++){
@@ -246,7 +246,7 @@ void TimeEvolver::updateOccupancy(){
 }
 
 void TimeEvolver::decayInstantly(){
-	int basisSize = model->getBasisSize();
+	int basisSize = getModel()->getBasisSize();
 	if(particleNumberIsFixed){
 		for(int n = 0; n < basisSize; n++){
 			if(n < numberOfParticles)
@@ -258,7 +258,7 @@ void TimeEvolver::decayInstantly(){
 	else{
 		numberOfParticles = 0;
 		for(int n = 0; n < basisSize; n++){
-			if(eigenValues[n] < model->getChemicalPotential()){
+			if(eigenValues[n] < getModel()->getChemicalPotential()){
 				occupancy[n] = 1.;
 				numberOfParticles++;
 			}
@@ -277,10 +277,10 @@ void TimeEvolver::decayInterpolate(){
 		"Use TimeEvolver::fixParticleNumber(false) to set non fixed particle number."
 	);
 
-	int basisSize = model->getBasisSize();
+	int basisSize = getModel()->getBasisSize();
 
 	for(int n = 0; n < basisSize; n++){
-		if(eigenValues[n] < model->getChemicalPotential()){
+		if(eigenValues[n] < getModel()->getChemicalPotential()){
 			occupancy[n] += 0.00000001;
 			if(occupancy[n] > 1)
 				occupancy[n] = 1.;
@@ -294,7 +294,7 @@ void TimeEvolver::decayInterpolate(){
 }
 
 void TimeEvolver::calculateOrthogonalityError(){
-	int basisSize = model->getBasisSize();
+	int basisSize = getModel()->getBasisSize();
 	complex<double> *eigenVectors = dSolver.getEigenVectorsRW();
 
 	double maxOverlap = 0;

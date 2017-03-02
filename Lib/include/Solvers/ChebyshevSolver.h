@@ -27,6 +27,7 @@
 
 #include "GreensFunction.h"
 #include "Model.h"
+#include "Solver.h"
 
 #include <complex>
 #include <omp.h>
@@ -42,19 +43,19 @@ namespace TBTK{
  *  the following: Number of coefficients, energy resolution, and the number of
  *  Green's functions.
  */
-class ChebyshevSolver{
+class ChebyshevSolver : public Solver{
 public:
 	/** Constructor. */
 	ChebyshevSolver();
 
 	/** Destructor. */
-	~ChebyshevSolver();
+	virtual ~ChebyshevSolver();
 
 	/** Set model to work on. */
-	void setModel(Model *model);
+//	void setModel(Model *model);
 
 	/** Get model. */
-	Model* getModel();
+//	Model* getModel();
 
 	/** Set scale factor. */
 	void setScaleFactor(double scaleFactor);
@@ -257,7 +258,7 @@ public:
 	void setTalkative(bool isTalkative);
 private:
 	/** Model to work on. */
-	Model *model;
+//	Model *model;
 
 	/** Scale factor. */
 	double scaleFactor;
@@ -291,9 +292,9 @@ private:
 	bool isTalkative;
 };
 
-inline Model* ChebyshevSolver::getModel(){
+/*inline Model* ChebyshevSolver::getModel(){
 	return model;
-}
+}*/
 
 inline void ChebyshevSolver::setScaleFactor(double scaleFactor){
 	this->scaleFactor = scaleFactor;

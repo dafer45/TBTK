@@ -24,6 +24,7 @@
 #define COM_DAFER45_TBTK_DIAGONALIZATION_SOLVER
 
 #include "Model.h"
+#include "Solver.h"
 
 #include <complex>
 
@@ -34,16 +35,16 @@ namespace TBTK{
  *  custom physical quantities, or the PropertyExtractor can be used to extract
  *  common properties. Scales as \f$O(n^3)\f$ with the dimension of the Hilbert
  *  space. */
-class DiagonalizationSolver{
+class DiagonalizationSolver : public Solver{
 public:
 	/** Constructor */
 	DiagonalizationSolver();
 
 	/** Destructor. */
-	~DiagonalizationSolver();
+	virtual ~DiagonalizationSolver();
 
 	/** Set model to work on. */
-	void setModel(Model *model);
+//	void setModel(Model *model);
 
 	/** Set self-consistency callback. If set to NULL or never called, the
 	 *  self-consistency loop will not be run. */
@@ -86,10 +87,10 @@ public:
 	const std::complex<double> getAmplitude(int state, const Index &index);
 
 	/** Get model. */
-	Model *getModel();
+//	Model *getModel();
 private:
 	/** Model to work on. */
-	Model *model;
+//	Model *model;
 
 	/** pointer to array containing Hamiltonian. */
 	std::complex<double> *hamiltonian;
@@ -117,9 +118,9 @@ private:
 	void solve();
 };
 
-inline void DiagonalizationSolver::setModel(Model *model){
+/*inline void DiagonalizationSolver::setModel(Model *model){
 	this->model = model;
-}
+}*/
 
 inline void DiagonalizationSolver::setSCCallback(
 	bool (*scCallback)(
@@ -153,16 +154,16 @@ inline const std::complex<double> DiagonalizationSolver::getAmplitude(
 	int state,
 	const Index &index
 ){
-	return eigenVectors[model->getBasisSize()*state + model->getBasisIndex(index)];
+	return eigenVectors[getModel()->getBasisSize()*state + getModel()->getBasisIndex(index)];
 }
 
 inline const double DiagonalizationSolver::getEigenValue(int state){
 	return eigenValues[state];
 }
 
-inline Model* DiagonalizationSolver::getModel(){
+/*inline Model* DiagonalizationSolver::getModel(){
 	return model;
-}
+}*/
 
 };	//End of namespace TBTK
 

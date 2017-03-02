@@ -6,21 +6,22 @@
 #include "InteractionAmplitudeSet.h"
 #include "Model.h"
 #include "ManyBodyContext.h"
+#include "Solver.h"
 #include "WrapperRule.h"
 
 #include <initializer_list>
 
 namespace TBTK{
 
-class ExactDiagonalizationSolver{
+class ExactDiagonalizationSolver : public Solver{
 public:
 	/** Constructor. */
 	ExactDiagonalizationSolver(
-		Model *model
+//		Model *model
 	);
 
 	/** Destructor. */
-	~ExactDiagonalizationSolver();
+	virtual ~ExactDiagonalizationSolver();
 
 	/** Add FockStateRule. */
 	unsigned int addSubspace(std::initializer_list<const FockStateRule::WrapperRule> rules);
@@ -52,10 +53,10 @@ public:
 	);
 
 	/** Get Model. */
-	Model* getModel();
+//	Model* getModel();
 private:
 	/** Model to work on. */
-	Model *model;
+//	Model *model;
 
 	/** Subspace context containing rules, a many-body model, and a
 	 *  diagonalization solver for a specific subspace. */
@@ -126,9 +127,9 @@ inline const std::complex<double> ExactDiagonalizationSolver::getAmplitude(
 	);
 }
 
-inline Model* ExactDiagonalizationSolver::getModel(){
+/*inline Model* ExactDiagonalizationSolver::getModel(){
 	return model;
-}
+}*/
 
 };	//End of namespace TBTK
 
