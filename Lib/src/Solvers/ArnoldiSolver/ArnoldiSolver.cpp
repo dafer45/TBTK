@@ -37,7 +37,6 @@ namespace TBTK{
 
 ArnoldiSolver::ArnoldiSolver(){
 	mode = Mode::Normal;
-//	model = NULL;
 
 	//Arnoldi variables (ARPACK)
 	calculateEigenVectors = false;
@@ -182,7 +181,8 @@ void ArnoldiSolver::arnoldiLoopNormal(){
 		""
 	);
 
-	int basisSize = getModel()->getBasisSize();
+	Model *model = getModel();
+	int basisSize = model->getBasisSize();
 
 	//I = Standard eigenvalue problem Ax = lambda*x
 	char bmat[1] = {'I'};
@@ -220,7 +220,7 @@ void ArnoldiSolver::arnoldiLoopNormal(){
 	int *select = new int[numLanczosVectors];	//Need to be allocated, but not initialized as long as howMany = 'A' in call to zneupd_
 	eigenValues = new complex<double>[numEigenValues];
 	if(calculateEigenVectors)
-		eigenVectors = new complex<double>[numEigenValues*getModel()->getBasisSize()];
+		eigenVectors = new complex<double>[numEigenValues*model->getBasisSize()];
 //		eigenVectors = new complex<double>[(numEigenValues+1)*model->getBasisSize()];
 	complex<double> *workev = new complex<double>[2*numLanczosVectors];
 
@@ -266,10 +266,10 @@ void ArnoldiSolver::arnoldiLoopNormal(){
 			for(int n = 0; n < basisSize; n++)
 				workd[ipntr[1] + n] = 0.;
 
-			int numMatrixElements = getModel()->getHoppingAmplitudeSet()->getNumMatrixElements();
-			const int *cooRowIndices = getModel()->getHoppingAmplitudeSet()->getCOORowIndices();
-			const int *cooColIndices = getModel()->getHoppingAmplitudeSet()->getCOOColIndices();
-			const complex<double> *cooValues = getModel()->getHoppingAmplitudeSet()->getCOOValues();
+			int numMatrixElements = model->getHoppingAmplitudeSet()->getNumMatrixElements();
+			const int *cooRowIndices = model->getHoppingAmplitudeSet()->getCOORowIndices();
+			const int *cooColIndices = model->getHoppingAmplitudeSet()->getCOOColIndices();
+			const complex<double> *cooValues = model->getHoppingAmplitudeSet()->getCOOValues();
 			for(int n = 0; n < numMatrixElements; n++)
 				workd[ipntr[1] + cooRowIndices[n]] += cooValues[n]*workd[ipntr[0] + cooColIndices[n]];
 
@@ -366,7 +366,8 @@ void ArnoldiSolver::arnoldiLoopShiftAndInvert(){
 		""
 	);
 
-	int basisSize = getModel()->getBasisSize();
+	Model *model = getModel();
+	int basisSize = model->getBasisSize();
 
 	//I = Standard eigenvalue problem Ax = lambda*x
 	char bmat[1] = {'I'};
@@ -404,7 +405,7 @@ void ArnoldiSolver::arnoldiLoopShiftAndInvert(){
 	int *select = new int[numLanczosVectors];	//Need to be allocated, but not initialized as long as howMany = 'A' in call to zneupd_
 	eigenValues = new complex<double>[numEigenValues];
 	if(calculateEigenVectors)
-		eigenVectors = new complex<double>[numEigenValues*getModel()->getBasisSize()];
+		eigenVectors = new complex<double>[numEigenValues*model->getBasisSize()];
 //		eigenVectors = new complex<double>[(numEigenValues+1)*model->getBasisSize()];
 	complex<double> *workev = new complex<double>[2*numLanczosVectors];
 
@@ -544,8 +545,9 @@ void ArnoldiSolver::arnoldiLoopShiftAndInvert(){
 
 void ArnoldiSolver::initNormal(){
 	//Get matrix representation on COO format
-	const int *cooRowIndices = getModel()->getHoppingAmplitudeSet()->getCOORowIndices();
-	const int *cooColIndices = getModel()->getHoppingAmplitudeSet()->getCOOColIndices();
+	Model *model = getModel();
+	const int *cooRowIndices = model->getHoppingAmplitudeSet()->getCOORowIndices();
+	const int *cooColIndices = model->getHoppingAmplitudeSet()->getCOOColIndices();
 	TBTKAssert(
 		cooRowIndices != NULL && cooColIndices != NULL,
 		"ArnoldiSolver::initNormal()",
@@ -556,11 +558,12 @@ void ArnoldiSolver::initNormal(){
 
 void ArnoldiSolver::initShiftAndInvert(){
 	//Get matrix representation on COO format
-	int basisSize = getModel()->getBasisSize();
-	int numMatrixElements = getModel()->getHoppingAmplitudeSet()->getNumMatrixElements();
-	const int *cooRowIndices = getModel()->getHoppingAmplitudeSet()->getCOORowIndices();
-	const int *cooColIndices = getModel()->getHoppingAmplitudeSet()->getCOOColIndices();
-	const complex<double> *cooValues = getModel()->getHoppingAmplitudeSet()->getCOOValues();
+	Model *model = getModel();
+	int basisSize = model->getBasisSize();
+	int numMatrixElements = model->getHoppingAmplitudeSet()->getNumMatrixElements();
+	const int *cooRowIndices = model->getHoppingAmplitudeSet()->getCOORowIndices();
+	const int *cooColIndices = model->getHoppingAmplitudeSet()->getCOOColIndices();
+	const complex<double> *cooValues = model->getHoppingAmplitudeSet()->getCOOValues();
 	TBTKAssert(
 		cooRowIndices != NULL && cooColIndices != NULL,
 		"ArnoldiSolver::initShiftAndInvert()",
@@ -753,14 +756,15 @@ void ArnoldiSolver::sort(){
 		numEigenValues
 	);
 
+	Model *model = getModel();
 	if(calculateEigenVectors){
-		complex<double> *eigenVectorsWorkspace = new complex<double>[numEigenValues*getModel()->getBasisSize()];
-		for(int n = 0; n < numEigenValues*getModel()->getBasisSize(); n++)
+		complex<double> *eigenVectorsWorkspace = new complex<double>[numEigenValues*model->getBasisSize()];
+		for(int n = 0; n < numEigenValues*model->getBasisSize(); n++)
 			eigenVectorsWorkspace[n] = eigenVectors[n];
 
 		for(int n = 0; n < numEigenValues; n++)
-			for(int c = 0; c < getModel()->getBasisSize(); c++)
-				eigenVectors[n*getModel()->getBasisSize() + c] = eigenVectorsWorkspace[order[n]*getModel()->getBasisSize() + c];
+			for(int c = 0; c < model->getBasisSize(); c++)
+				eigenVectors[n*model->getBasisSize() + c] = eigenVectorsWorkspace[order[n]*model->getBasisSize() + c];
 
 		delete [] eigenVectorsWorkspace;
 	}

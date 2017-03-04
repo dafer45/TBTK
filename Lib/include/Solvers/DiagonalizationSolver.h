@@ -43,9 +43,6 @@ public:
 	/** Destructor. */
 	virtual ~DiagonalizationSolver();
 
-	/** Set model to work on. */
-//	void setModel(Model *model);
-
 	/** Set self-consistency callback. If set to NULL or never called, the
 	 *  self-consistency loop will not be run. */
 	void setSCCallback(
@@ -85,13 +82,7 @@ public:
 	 *  @param index Physical index \f$x\f$.
 	 */
 	const std::complex<double> getAmplitude(int state, const Index &index);
-
-	/** Get model. */
-//	Model *getModel();
 private:
-	/** Model to work on. */
-//	Model *model;
-
 	/** pointer to array containing Hamiltonian. */
 	std::complex<double> *hamiltonian;
 
@@ -117,10 +108,6 @@ private:
 	/** Diagonalizes the Hamiltonian. */
 	void solve();
 };
-
-/*inline void DiagonalizationSolver::setModel(Model *model){
-	this->model = model;
-}*/
 
 inline void DiagonalizationSolver::setSCCallback(
 	bool (*scCallback)(
@@ -154,18 +141,14 @@ inline const std::complex<double> DiagonalizationSolver::getAmplitude(
 	int state,
 	const Index &index
 ){
-	return eigenVectors[getModel()->getBasisSize()*state + getModel()->getBasisIndex(index)];
+	Model *model = getModel();
+	return eigenVectors[model->getBasisSize()*state + model->getBasisIndex(index)];
 }
 
 inline const double DiagonalizationSolver::getEigenValue(int state){
 	return eigenValues[state];
 }
 
-/*inline Model* DiagonalizationSolver::getModel(){
-	return model;
-}*/
-
 };	//End of namespace TBTK
 
 #endif
-

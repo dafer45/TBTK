@@ -27,8 +27,6 @@ using namespace std;
 namespace TBTK{
 
 DiagonalizationSolver::DiagonalizationSolver(){
-//	model = NULL;
-
 	hamiltonian = NULL;
 	eigenValues = NULL;
 	eigenVectors = NULL;
@@ -96,16 +94,17 @@ void DiagonalizationSolver::init(){
 }
 
 void DiagonalizationSolver::update(){
-	int basisSize = getModel()->getBasisSize();
+	Model *model = getModel();
+	int basisSize = model->getBasisSize();
 
 	for(int n = 0; n < (basisSize*(basisSize+1))/2; n++)
 		hamiltonian[n] = 0.;
 
-	HoppingAmplitudeSet::Iterator it = getModel()->getHoppingAmplitudeSet()->getIterator();
+	HoppingAmplitudeSet::Iterator it = model->getHoppingAmplitudeSet()->getIterator();
 	const HoppingAmplitude *ha;
 	while((ha = it.getHA())){
-		int from = getModel()->getHoppingAmplitudeSet()->getBasisIndex(ha->fromIndex);
-		int to = getModel()->getHoppingAmplitudeSet()->getBasisIndex(ha->toIndex);
+		int from = model->getHoppingAmplitudeSet()->getBasisIndex(ha->fromIndex);
+		int to = model->getHoppingAmplitudeSet()->getBasisIndex(ha->toIndex);
 		if(from >= to)
 			hamiltonian[to + (from*(from+1))/2] += ha->getAmplitude();
 

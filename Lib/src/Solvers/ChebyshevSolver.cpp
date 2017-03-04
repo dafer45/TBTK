@@ -36,7 +36,6 @@ namespace{
 }
 
 ChebyshevSolver::ChebyshevSolver(){
-//	model = NULL;
 	scaleFactor = 1.;
 	damping = NULL;
 	generatingFunctionLookupTable = NULL;
@@ -57,10 +56,10 @@ ChebyshevSolver::~ChebyshevSolver(){
 	}
 }
 
-/*void ChebyshevSolver::setModel(Model *model){
-	this->model = model;
+void ChebyshevSolver::setModel(Model *model){
+	Solver::setModel(model);
 	model->sortHoppingAmplitudes();	//Required for GPU evaluation
-}*/
+}
 
 void ChebyshevSolver::calculateCoefficients(
 	Index to,
@@ -69,8 +68,10 @@ void ChebyshevSolver::calculateCoefficients(
 	int numCoefficients,
 	double broadening
 ){
+	Model *model = getModel();
+
 	TBTKAssert(
-		getModel() != NULL,
+		model != NULL,
 		"ChebyshevSolver::calculateCoefficients()",
 		"Model not set.",
 		"Use ChebyshevSolver::setModel() to set model."
@@ -88,7 +89,7 @@ void ChebyshevSolver::calculateCoefficients(
 		""
 	);
 
-	const HoppingAmplitudeSet *hoppingAmplitudeSet = getModel()->getHoppingAmplitudeSet();
+	const HoppingAmplitudeSet *hoppingAmplitudeSet = model->getHoppingAmplitudeSet();
 
 	int fromBasisIndex = hoppingAmplitudeSet->getBasisIndex(from);
 	int toBasisIndex = hoppingAmplitudeSet->getBasisIndex(to);
@@ -223,8 +224,9 @@ void ChebyshevSolver::calculateCoefficients(
 	int numCoefficients,
 	double broadening
 ){
+	Model *model = getModel();
 	TBTKAssert(
-		getModel() != NULL,
+		model != NULL,
 		"ChebyshevSolver::calculateCoefficients()",
 		"Model not set.",
 		"Use ChebyshevSolver::setModel() to set model."
@@ -242,7 +244,7 @@ void ChebyshevSolver::calculateCoefficients(
 		""
 	);
 
-	const HoppingAmplitudeSet *hoppingAmplitudeSet = getModel()->getHoppingAmplitudeSet();
+	const HoppingAmplitudeSet *hoppingAmplitudeSet = model->getHoppingAmplitudeSet();
 
 	int fromBasisIndex = hoppingAmplitudeSet->getBasisIndex(from);
 	int *coefficientMap = new int[hoppingAmplitudeSet->getBasisSize()];
@@ -387,8 +389,10 @@ void ChebyshevSolver::calculateCoefficientsWithCutoff(
 	double componentCutoff,
 	double broadening
 ){
+	Model *model = getModel();
+
 	TBTKAssert(
-		getModel() != NULL,
+		model != NULL,
 		"ChebyshevSolver::calculateCoefficientsWithCutoff()",
 		"Model not set.",
 		"Use ChebyshevSolver::setModel() to set model."
@@ -406,7 +410,7 @@ void ChebyshevSolver::calculateCoefficientsWithCutoff(
 		""
 	);
 
-	const HoppingAmplitudeSet *hoppingAmplitudeSet = getModel()->getHoppingAmplitudeSet();
+	const HoppingAmplitudeSet *hoppingAmplitudeSet = model->getHoppingAmplitudeSet();
 
 	int fromBasisIndex = hoppingAmplitudeSet->getBasisIndex(from);
 	int toBasisIndex = hoppingAmplitudeSet->getBasisIndex(to);

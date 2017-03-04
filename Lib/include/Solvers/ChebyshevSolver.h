@@ -51,11 +51,8 @@ public:
 	/** Destructor. */
 	virtual ~ChebyshevSolver();
 
-	/** Set model to work on. */
-//	void setModel(Model *model);
-
-	/** Get model. */
-//	Model* getModel();
+	/** Overrides Solver::setModel(). */
+	virtual void setModel(Model *model);
 
 	/** Set scale factor. */
 	void setScaleFactor(double scaleFactor);
@@ -257,9 +254,6 @@ public:
 
 	void setTalkative(bool isTalkative);
 private:
-	/** Model to work on. */
-//	Model *model;
-
 	/** Scale factor. */
 	double scaleFactor;
 
@@ -291,10 +285,6 @@ private:
 	 *  not. */
 	bool isTalkative;
 };
-
-/*inline Model* ChebyshevSolver::getModel(){
-	return model;
-}*/
 
 inline void ChebyshevSolver::setScaleFactor(double scaleFactor){
 	this->scaleFactor = scaleFactor;

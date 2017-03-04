@@ -36,7 +36,7 @@ public:
 	virtual ~Solver();
 
 	/** Set model to work on. */
-	void setModel(Model *model);
+	virtual void setModel(Model *model);
 
 	/** Get model. */
 	Model* getModel();

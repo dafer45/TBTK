@@ -36,7 +36,7 @@ namespace TBTK{
 class TimeEvolver : public Solver{
 public:
 	/** Constructor. */
-	TimeEvolver(/*TBTK::Model *model*/);
+	TimeEvolver();
 
 	/** Destructor. */
 	virtual ~TimeEvolver();
@@ -91,9 +91,6 @@ public:
 	 *  @param index Physical index \f$x\f$. */
 	const std::complex<double> getAmplitude(int state, const Index &index);
 
-	/** Get model. */
-//	Model* getModel();
-
 	/** Decay modes:
 	 *	None - The states continuously connected to the originally
 	 *		occupied states at t=0 are occupied.<br/>
@@ -138,9 +135,6 @@ public:
 	/** Get orthogonalityError. */
 	double getOrthogonalityError();
 private:
-	/** Model to work on. */
-//	Model *model;
-
 	/** DiagonalizationSolver which is used to find the ground state, and
 	 *  which also acts as a container for the eigenvectors and energies
 	 *  during the time evolution. */
@@ -281,10 +275,6 @@ inline const std::complex<double> TimeEvolver::getAmplitude(
 ){
 	return eigenVectorsMap[state][getModel()->getBasisIndex(index)];
 }
-
-/*inline Model* TimeEvolver::getModel(){
-	return model;
-}*/
 
 inline void TimeEvolver::setDecayMode(DecayMode decayMode){
 	this->decayMode = decayMode;
