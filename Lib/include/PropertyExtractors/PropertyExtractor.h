@@ -76,7 +76,10 @@ public:
 	 *  @return A density array with size equal to the number of points
 	 *  included by specified patter-range combination.
 	 */
-	virtual Property::Density calculateDensity(Index pattern, Index ranges);
+	virtual Property::Density calculateDensity(
+		Index pattern,
+		Index ranges
+	);
 
 	/** Calculate magnetization.
 	 *

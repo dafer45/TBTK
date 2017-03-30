@@ -1,4 +1,4 @@
-/* Copyright 2016 Kristofer Björnson
+/* Copyright 2017 Kristofer Björnson
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,10 +44,13 @@ public:
 	void generateLinearMap();
 
 	/** Get linear index. */
-	int getLinearIndex(const Index &index) const;
+	int getLinearIndex(const Index &index, bool ignoreWildcards = false) const;
 
 	/** Get physical index. */
 	Index getPhysicalIndex(int linearIndex) const;
+
+	/** Get size. */
+	int getSize() const;
 private:
 	/** Child nodes.*/
 	std::vector<IndexTree> children;
@@ -55,6 +58,10 @@ private:
 	/** Flag indicating whether the given node corresponds to an index that
 	 *  is included in the set. */
 	bool indexIncluded;
+
+	/** Flag indicating whether the given node corresponds to a wildcard
+	 *  index. */
+	bool wildcardIndex;
 
 	/** Linear index. */
 	int linearIndex;
@@ -72,7 +79,11 @@ private:
 
 	/** Get linear index. Is called by the public IndexTree::getLinearIndex
 	 *  and is called recursively. */
-	int getLinearIndex(const Index &index, unsigned int subindex) const;
+	int getLinearIndex(
+		const Index &index,
+		unsigned int subindex,
+		bool ignoreWildcards
+	) const;
 
 	/** Get physical index. Is called by the public
 	 *  IndexTree::getPhysicalIndex and is called recursively. */
@@ -87,6 +98,10 @@ private:
 	/** Get maximum linear index of IndexTree. */
 	int getMaxIndex() const;
 };
+
+inline IndexTree::getSize() const{
+	return size;
+}
 
 }; //End of namesapce TBTK
 

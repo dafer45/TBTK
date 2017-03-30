@@ -1,4 +1,4 @@
-/* Copyright 2016 Kristofer Björnson
+/* Copyright 2017 Kristofer Björnson
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ namespace TBTK{
 
 IndexTree::IndexTree(){
 	indexIncluded = false;
+	wildcardIndex = false;
 	linearIndex = -1;
 	size = -1;
 }
@@ -44,13 +45,29 @@ void IndexTree::add(const Index &index, unsigned int subindex){
 
 		//Get current subindex
 		int currentIndex = index.at(subindex);
+
+		if(currentIndex < 0){
+			if(!wildcardIndex){
+				if(children.size() > 0){
+					Streams::err << "Error in IndexTree::add(). Tried to add index with wild card in subindex position for which non wild card indices already have been added:\n";
+					index.print();
+					exit(1);
+				}
+				wildcardIndex = true;
+			}
+			currentIndex = 0;
+		}
+		else if(wildcardIndex){
+			Streams::err << "Error in IndexTree::add(). Unable to add index because an index with a wild card in subindex position " << subindex << " already have been added:\n";
+			index.print();
+			exit(1);
+		}
+
 		//If the subindex is bigger than the current number of child
 		//nodes, create empty nodes.
-		if(currentIndex >= (int)children.size()){
-			for(int n = children.size(); n <= currentIndex; n++){
+		if(currentIndex >= (int)children.size())
+			for(int n = children.size(); n <= currentIndex; n++)
 				children.push_back(IndexTree());
-			}
-		}
 		//Error detection:
 		//If the current node has the indexIncluded flag set, another
 		//Index with fewer subindices than the current Index have
@@ -105,17 +122,35 @@ int IndexTree::generateLinearMap(int i){
 	return i;
 }
 
-int IndexTree::getLinearIndex(const Index &index) const{
-	return getLinearIndex(index, 0);
+int IndexTree::getLinearIndex(const Index &index, bool ignoreWildcards) const{
+	return getLinearIndex(index, 0, ignoreWildcards);
 }
 
-int IndexTree::getLinearIndex(const Index &index, unsigned int subindex) const{
+int IndexTree::getLinearIndex(const Index &index, unsigned int subindex, bool ignoreWildcards) const{
+	if(ignoreWildcards && wildcardIndex)
+		return children.at(0).getLinearIndex(index, subindex, ignoreWildcards);
+
 	if(subindex < index.size()){
 		//If the current subindex is not the last, continue to the next
 		//node level.
 
 		//Get current subindex
 		int currentIndex = index.at(subindex);
+		if(currentIndex < 0){
+			if(wildcardIndex){
+				currentIndex = 0;
+			}
+			else{
+				Streams::err << "Error in IndexTree::getLinearIndex. Subindex " << subindex << " should not be a wild card index:\n";
+				index.print();
+				exit(1);
+			}
+		}
+		else if(wildcardIndex){
+			Streams::err << "Error in IndexTree::getLinearIndex. Subindex " << subindex << " has to be a wild card index:\n";
+			index.print();
+			exit(1);
+		}
 		//Error detection:
 		//If the subindex is bigger than the current number of child
 		//nodes, an error has occured.
@@ -125,10 +160,10 @@ int IndexTree::getLinearIndex(const Index &index, unsigned int subindex) const{
 			exit(1);
 		}
 		//Continue to the next node level.
-		return children.at(currentIndex).getLinearIndex(index, subindex+1);
+		return children.at(currentIndex).getLinearIndex(index, subindex+1, ignoreWildcards);
 	}
 	else{
-		//If the current subindex is the last, return HoppingAmplitudes.
+		//If the current subindex is the last, return linear index.
 		if(indexIncluded){
 			return linearIndex;
 		}
@@ -166,7 +201,10 @@ void IndexTree::getPhysicalIndex(int linearIndex, vector<int> *indices) const{
 			continue;
 
 		if(min <= linearIndex && linearIndex <= max){
-			indices->push_back(n);
+			if(wildcardIndex)
+				indices->push_back(IDX_ALL);
+			else
+				indices->push_back(n);
 			children.at(n).getPhysicalIndex(linearIndex, indices);
 			break;
 		}
