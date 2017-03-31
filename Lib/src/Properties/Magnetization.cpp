@@ -25,18 +25,21 @@ using namespace std;
 namespace TBTK{
 namespace Property{
 
-Magnetization::Magnetization(int dimensions, const int* ranges){
-	this->dimensions = dimensions;
-	this->ranges = new int[dimensions];
+Magnetization::Magnetization(
+	int dimensions,
+	const int* ranges
+) :
+	indexDescriptor(IndexDescriptor::Format::Ranges)
+{
+	indexDescriptor.setDimensions(dimensions);
+	int *thisRanges = indexDescriptor.getRanges();
 	for(int n = 0; n < dimensions; n++)
-		this->ranges[n] = ranges[n];
+		thisRanges[n] = ranges[n];
 
-	size = 4;
-	for(int n = 0; n < dimensions; n++)
-		size *= ranges[n];
+	setSize(4*indexDescriptor.getSize());
 
-	data = new complex<double>[size];
-	for(int n = 0; n < size; n++)
+	complex<double> *data = getDataRW();
+	for(unsigned int n = 0; n < getSize(); n++)
 		data[n] = 0.;
 }
 
@@ -44,77 +47,51 @@ Magnetization::Magnetization(
 	int dimensions,
 	const int* ranges,
 	const complex<double> *data
-){
-	this->dimensions = dimensions;
-	this->ranges = new int[dimensions];
+) :
+	indexDescriptor(IndexDescriptor::Format::Ranges)
+{
+	indexDescriptor.setDimensions(dimensions);
+	int *thisRanges = indexDescriptor.getRanges();
 	for(int n = 0; n < dimensions; n++)
-		this->ranges[n] = ranges[n];
+		thisRanges[n] = ranges[n];
 
-	size = 4;
-	for(int n = 0; n < dimensions; n++)
-		size *= ranges[n];
+	setSize(4*indexDescriptor.getSize());
 
-	this->data = new complex<double>[size];
-	for(int n = 0; n < size; n++)
-		this->data[n] = data[n];
+	complex<double> *thisData = getDataRW();
+	for(unsigned int n = 0; n < getSize(); n++)
+		thisData[n] = data[n];
 }
 
-Magnetization::Magnetization(const Magnetization &magnetization){
-	dimensions = magnetization.dimensions;
-	ranges = new int[dimensions];
-	for(int n = 0; n < dimensions; n++)
-		ranges[n] = magnetization.ranges[n];
-
-	size = magnetization.size;
-
-	data = new complex<double>[size];
-	for(int n = 0; n < size; n++)
-		data[n] = magnetization.data[n];
+Magnetization::Magnetization(
+	const Magnetization &magnetization
+) :
+	AbstractProperty(magnetization),
+	indexDescriptor(magnetization.indexDescriptor)
+{
 }
 
-Magnetization::Magnetization(Magnetization &&magnetization){
-	dimensions = magnetization.dimensions;
-	ranges = magnetization.ranges;
-	magnetization.ranges = nullptr;
-
-	size = magnetization.size;
-
-	data = magnetization.data;
-	magnetization.data = nullptr;
+Magnetization::Magnetization(
+	Magnetization &&magnetization
+) :
+	AbstractProperty(std::move(magnetization)),
+	indexDescriptor(std::move(magnetization.indexDescriptor))
+{
 }
 
 Magnetization::~Magnetization(){
-	if(ranges != nullptr)
-		delete [] ranges;
-	if(data != nullptr)
-		delete [] data;
 }
 
 Magnetization& Magnetization::operator=(const Magnetization &rhs){
-	dimensions = rhs.dimensions;
-	ranges = new int[dimensions];
-	for(int n = 0; n < dimensions; n++)
-		ranges[n] = rhs.ranges[n];
-
-	size = rhs.size;
-
-	data = new complex<double>[size];
-	for(int n = 0; n < size; n++)
-		data[n] = rhs.data[n];
+	AbstractProperty::operator=(rhs);
+	indexDescriptor = rhs.indexDescriptor;
 
 	return *this;
 }
 
 Magnetization& Magnetization::operator=(Magnetization &&rhs){
 	if(this != &rhs){
-		dimensions = rhs.dimensions;
-		ranges = rhs.ranges;
-		rhs.ranges = nullptr;
-
-		size = rhs.size;
-
-		data = rhs.data;
-		rhs.data = nullptr;
+		AbstractProperty::operator=(std::move(rhs));
+		indexDescriptor = std::move(rhs.indexDescriptor);
 	}
 
 	return *this;

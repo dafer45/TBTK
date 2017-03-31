@@ -24,19 +24,17 @@
 #ifndef COM_DAFER45_TBTK_SPIN_POLARIZED_LDOS
 #define COM_DAFER45_TBTK_SPIN_POLARIZED_LDOS
 
+#include "AbstractProperty.h"
+#include "IndexDescriptor.h"
+
 #include <complex>
 
 namespace TBTK{
-	class APropertyExtractor;
-	class CPropertyExtractor;
-	class DPropertyExtractor;
-	class EDPropertyExtractor;
-	class FileReader;
 namespace Property{
 
 /** Container for spin-polarized local density of states (spin-polarized LDOS).
  */
-class SpinPolarizedLDOS{
+class SpinPolarizedLDOS : public AbstractProperty<std::complex<double>>{
 public:
 	/** Constructor. */
 	SpinPolarizedLDOS(
@@ -82,23 +80,14 @@ public:
 	/** Get energy resolution. (Number of energy intervals) */
 	int getResolution() const;
 
-	/** Get number of data elementes. */
-	int getSize() const;
-
-	/** Get spin-polarized LDOS data. */
-	const std::complex<double>* getData() const;
-
 	/** Assignment operator. */
 	SpinPolarizedLDOS& operator=(const SpinPolarizedLDOS &rhs);
 
 	/** Move assignment operator. */
 	SpinPolarizedLDOS& operator=(SpinPolarizedLDOS &&rhs);
 private:
-	/**Dimension of the density. (Excluding energy dimension) */
-	int dimensions;
-
-	/** Ranges for the dimensions of the spin-polarized LDOS*/
-	int *ranges;
+	/** IndexDescriptor describing the memory layout of the data. */
+	IndexDescriptor indexDescriptor;
 
 	/** Lower bound for the energy. */
 	double lowerBound;
@@ -108,40 +97,14 @@ private:
 
 	/** Energy resolution. (Number of energy intervals) */
 	int resolution;
-
-	/** Number of data elements. */
-	int size;
-
-	/** Actual data. */
-	std::complex<double> *data;
-
-	/** APropertyExtractor is a friend class to allow it to write
-	 *  spin-polarized LDOS data. */
-	friend class TBTK::APropertyExtractor;
-
-	/** CPropertyExtractor is a friend class to allow it to write
-	 *  spin-polarized LDOS data. */
-	friend class TBTK::CPropertyExtractor;
-
-	/** DPropertyExtractor is a friend class to allow it to write
-	 *  spin-polarized LDOS data. */
-	friend class TBTK::DPropertyExtractor;
-
-	/** EDPropertyExtractor is a friend class to allow it to write
-	 *  spin-polarized LDOS data. */
-	friend class TBTK::EDPropertyExtractor;
-
-	/** FileReader is a friend class to allow it to write spin-polarized
-	 *  LDOS data. */
-	friend class TBTK::FileReader;
 };
 
 inline int SpinPolarizedLDOS::getDimensions() const{
-	return dimensions;
+	return indexDescriptor.getDimensions();
 }
 
 inline const int* SpinPolarizedLDOS::getRanges() const{
-	return ranges;
+	return indexDescriptor.getRanges();
 }
 
 inline double SpinPolarizedLDOS::getLowerBound() const{
@@ -154,14 +117,6 @@ inline double SpinPolarizedLDOS::getUpperBound() const{
 
 inline int SpinPolarizedLDOS::getResolution() const{
 	return resolution;
-}
-
-inline int SpinPolarizedLDOS::getSize() const{
-	return size;
-}
-
-inline const std::complex<double>* SpinPolarizedLDOS::getData() const{
-	return data;
 }
 
 };	//End namespace Property

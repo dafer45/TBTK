@@ -24,50 +24,42 @@ namespace TBTK{
 namespace Property{
 
 EigenValues::EigenValues(int size){
-	this->size = size;
-	data = new double[size];
+	setSize(size);
 }
 
 EigenValues::EigenValues(int size, const double *data){
-	this->size = size;
-	this->data = new double[size];
+	setSize(size);
+	double *thisData = getDataRW();
 	for(int n = 0; n < size; n++)
-		this->data[n] = data[n];
+		thisData[n] = data[n];
 }
 
-EigenValues::EigenValues(const EigenValues &eigenValues){
-	size = eigenValues.size;
-	data = new double[size];
-	for(int n = 0; n < size; n++)
-		data[n] = eigenValues.data[n];
+EigenValues::EigenValues(
+	const EigenValues &eigenValues
+) :
+	AbstractProperty(eigenValues)
+{
 }
 
-EigenValues::EigenValues(EigenValues &&eigenValues){
-	size = eigenValues.size;
-	data = eigenValues.data;
-	eigenValues.data = nullptr;
+EigenValues::EigenValues(
+	EigenValues &&eigenValues
+) :
+	AbstractProperty(std::move(eigenValues))
+{
 }
 
 EigenValues::~EigenValues(){
-	if(data != nullptr)
-		delete [] data;
 }
 
 EigenValues& EigenValues::operator=(const EigenValues &rhs){
-	size = rhs.size;
-	data = new double[size];
-	for(int n = 0; n < size; n++)
-		data[n] = rhs.data[n];
+	AbstractProperty::operator=(rhs);
 
 	return *this;
 }
 
 EigenValues& EigenValues::operator=(EigenValues &&rhs){
-	if(this != &rhs){
-		size = rhs.size;
-		data = rhs.data;
-		rhs.data = nullptr;
-	}
+	if(this != &rhs)
+		AbstractProperty::operator=(std::move(rhs));
 
 	return *this;
 }

@@ -28,8 +28,9 @@ DOS::DOS(double lowerBound, double upperBound, int resolution){
 	this->lowerBound = lowerBound;
 	this->upperBound = upperBound;
 	this->resolution = resolution;
-	data = new double[resolution];
-	for(int n = 0; n < resolution; n++)
+	setSize(resolution);
+	double *data = getDataRW();
+	for(unsigned int n = 0; n < getSize(); n++)
 		data[n] = 0.;
 }
 
@@ -37,51 +38,50 @@ DOS::DOS(double lowerBound, double upperBound, int resolution, const double *dat
 	this->lowerBound = lowerBound;
 	this->upperBound = upperBound;
 	this->resolution = resolution;
-	this->data = new double[resolution];
-	for(int n = 0; n < resolution; n++)
-		this->data[n] = data[n];
+	setSize(resolution);
+	double *thisData = getDataRW();
+	for(unsigned int n = 0; n < getSize(); n++)
+		thisData[n] = data[n];
 }
 
-DOS::DOS(const DOS &dos){
+DOS::DOS(
+	const DOS &dos
+) :
+	AbstractProperty(dos)
+{
 	lowerBound = dos.lowerBound;
 	upperBound = dos.upperBound;
 	resolution = dos.resolution;
-	data = new double[resolution];
-	for(int n = 0; n < resolution; n++)
-		data[n] = dos.data[n];
 }
 
-DOS::DOS(DOS &&dos){
+DOS::DOS(
+	DOS &&dos
+) :
+	AbstractProperty(std::move(dos))
+{
 	lowerBound = dos.lowerBound;
 	upperBound = dos.upperBound;
 	resolution = dos.resolution;
-	data = dos.data;
-	dos.data = nullptr;
 }
 
 DOS::~DOS(){
-	if(data != nullptr)
-		delete [] data;
 }
 
 DOS& DOS::operator=(const DOS &rhs){
+	AbstractProperty::operator=(rhs);
 	lowerBound = rhs.lowerBound;
 	upperBound = rhs.upperBound;
 	resolution = rhs.resolution;
-	data = new double[resolution];
-	for(int n = 0; n < resolution; n++)
-		data[n] = rhs.data[n];
 
 	return *this;
 }
 
 DOS& DOS::operator=(DOS &&rhs){
 	if(this != &rhs){
+		AbstractProperty::operator=(std::move(rhs));
 		lowerBound = rhs.lowerBound;
 		upperBound = rhs.upperBound;
 		resolution = rhs.resolution;
-		data = rhs.data;
-		rhs.data = nullptr;
 	}
 
 	return *this;

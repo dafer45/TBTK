@@ -23,92 +23,71 @@
 namespace TBTK{
 namespace Property{
 
-Density::Density(int dimensions, const int *ranges){
-	this->dimensions = dimensions;
-	this->ranges = new int[dimensions];
+Density::Density(
+	int dimensions,
+	const int *ranges
+) : indexDescriptor(IndexDescriptor::Format::Ranges)
+{
+	indexDescriptor.setDimensions(dimensions);
+	int *thisRanges = indexDescriptor.getRanges();
 	for(int n = 0; n < dimensions; n++)
-		this->ranges[n] = ranges[n];
+		thisRanges[n] = ranges[n];
 
-	size = 1;
-	for(int n = 0; n < dimensions; n++)
-		size *= ranges[n];
+	setSize(indexDescriptor.getSize());
 
-	data = new double[size];
-	for(int n = 0; n < size; n++)
+	double *data = getDataRW();
+	for(unsigned int n = 0; n < getSize(); n++)
 		data[n] = 0.;
 }
 
-Density::Density(int dimensions, const int *ranges, const double *data){
-	this->dimensions = dimensions;
-	this->ranges = new int[dimensions];
+Density::Density(
+	int dimensions,
+	const int *ranges,
+	const double *data
+) : indexDescriptor(IndexDescriptor::Format::Ranges)
+{
+	indexDescriptor.setDimensions(dimensions);
+	int *thisRanges = indexDescriptor.getRanges();
 	for(int n = 0; n < dimensions; n++)
-		this->ranges[n] = ranges[n];
+		thisRanges[n] = ranges[n];
 
-	size = 1;
-	for(int n = 0; n < dimensions; n++)
-		size *= ranges[n];
+	setSize(indexDescriptor.getSize());
 
-	this->data = new double[size];
-	for(int n = 0; n < size; n++)
-		this->data[n] = data[n];
+	double *thisData = getDataRW();
+	for(unsigned int n = 0; n < getSize(); n++)
+		thisData[n] = data[n];
 }
 
-Density::Density(const Density &density){
-	dimensions = density.dimensions;
-	ranges = new int[dimensions];
-	for(int n = 0; n < dimensions; n++)
-		ranges[n] = density.ranges[n];
-
-	size = density.size;
-
-	data = new double[size];
-	for(int n = 0; n < size; n++)
-		data[n] = density.data[n];
+Density::Density(
+	const Density &density
+) :
+	AbstractProperty(density),
+	indexDescriptor(density.indexDescriptor)
+{
 }
 
-Density::Density(Density &&density){
-	dimensions = density.dimensions;
-	ranges = density.ranges;
-	density.ranges = nullptr;
-
-	size = density.size;
-
-	data = density.data;
-	density.data = nullptr;
+Density::Density(
+	Density &&density
+) :
+	AbstractProperty(std::move(density)),
+	indexDescriptor(std::move(density.indexDescriptor))
+{
 }
 
 Density::~Density(){
-	if(ranges != nullptr)
-		delete [] ranges;
-	if(data != nullptr)
-		delete [] data;
 }
 
 Density& Density::operator=(const Density &rhs){
-	dimensions = rhs.dimensions;
-	ranges = new int[dimensions];
-	for(int n = 0; n < dimensions; n++)
-		ranges[n] = rhs.ranges[n];
-
-	size = rhs.size;
-
-	data = new double[size];
-	for(int n = 0; n < size; n++)
-		data[n] = rhs.data[n];
+	AbstractProperty::operator=(rhs);
+	indexDescriptor = rhs.indexDescriptor;
 
 	return *this;
 }
 
 Density& Density::operator=(Density &&rhs){
 	if(this != &rhs){
-		dimensions = rhs.dimensions;
-		ranges = rhs.ranges;
-		rhs.ranges = nullptr;
-
-		size = rhs.size;
-
-		data = rhs.data;
-		rhs.data = nullptr;
+		AbstractProperty::operator=(std::move(rhs));
+		indexDescriptor = std::move(rhs.indexDescriptor);
 	}
 
 	return *this;

@@ -70,8 +70,9 @@ Property::EigenValues DPropertyExtractor::getEigenValues(){
 	const double *ev = dSolver->getEigenValues();
 
 	Property::EigenValues eigenValues(size);
+	double *data = eigenValues.getDataRW();
 	for(int n = 0; n < size; n++)
-		eigenValues.data[n] = ev[n];
+		data[n] = ev[n];
 
 	return eigenValues;
 }
@@ -113,11 +114,12 @@ Property::DOS DPropertyExtractor::calculateDOS(){
 
 //	Property::DOS *dos = new Property::DOS(lowerBound, upperBound, energyResolution);
 	Property::DOS dos(lowerBound, upperBound, energyResolution);
+	double *data = dos.getDataRW();
 	for(int n = 0; n < dSolver->getModel()->getBasisSize(); n++){
 		int e = (int)(((ev[n] - lowerBound)/(upperBound - lowerBound))*energyResolution);
 		if(e >= 0 && e < energyResolution){
 //			dos->data[e] += 1.;
-			dos.data[e] += 1.;
+			data[e] += 1.;
 		}
 	}
 
@@ -171,7 +173,7 @@ Property::Density DPropertyExtractor::calculateDensity(
 	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
 	Property::Density density(lDimensions, lRanges);
 
-	calculate(calculateDensityCallback, (void*)density.data, pattern, ranges, 0, 1);
+	calculate(calculateDensityCallback, /*(void*)density.data*/(void*)density.getDataRW(), pattern, ranges, 0, 1);
 
 	return density;
 }
@@ -206,7 +208,7 @@ Property::Magnetization DPropertyExtractor::calculateMagnetization(
 	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
 	Property::Magnetization magnetization(lDimensions, lRanges);
 
-	calculate(calculateMAGCallback, (void*)magnetization.data, pattern, ranges, 0, 1);
+	calculate(calculateMAGCallback, (void*)magnetization.getDataRW(), pattern, ranges, 0, 1);
 
 	delete [] (int*)hint;
 
@@ -242,7 +244,7 @@ Property::LDOS DPropertyExtractor::calculateLDOS(
 		energyResolution
 	);
 
-	calculate(calculateLDOSCallback, (void*)ldos.data, pattern, ranges, 0, 1);
+	calculate(calculateLDOSCallback, (void*)ldos.getDataRW(), pattern, ranges, 0, 1);
 
 	return ldos;
 }
@@ -296,7 +298,14 @@ Property::SpinPolarizedLDOS DPropertyExtractor::calculateSpinPolarizedLDOS(
 		energyResolution
 	);
 
-	calculate(calculateSP_LDOSCallback, (void*)spinPolarizedLDOS.data, pattern, ranges, 0, 1);
+	calculate(
+		calculateSP_LDOSCallback,
+		(void*)spinPolarizedLDOS.getDataRW(),
+		pattern,
+		ranges,
+		0,
+		1
+	);
 
 	delete [] ((double**)hint)[0];
 	delete [] ((int**)hint)[1];

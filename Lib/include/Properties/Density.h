@@ -23,15 +23,14 @@
 #ifndef COM_DAFER45_TBTK_DENSITY
 #define COM_DAFER45_TBTK_DENSITY
 
+#include "AbstractProperty.h"
+#include "IndexDescriptor.h"
+
 namespace TBTK{
-	class CPropertyExtractor;
-	class DPropertyExtractor;
-	class EDPropertyExtractor;
-	class FileReader;
 namespace Property{
 
 /** Container for density. */
-class Density{
+class Density : public AbstractProperty<double>{
 public:
 	/** Constructor. */
 	Density(int dimensions, const int *ranges);
@@ -54,60 +53,22 @@ public:
 	/** Get the ranges for the dimensions of the density. */
 	const int* getRanges() const;
 
-	/** Get number of data elements. */
-	int getSize() const;
-
-	/** Get density data. */
-	const double* getData() const;
-
 	/** Assignment operator. */
 	Density& operator=(const Density &rhs);
 
 	/** Move assignment operator. */
 	Density& operator=(Density &&rhs);
 private:
-	/** Dimension of the density. */
-	int dimensions;
-
-	/** Ranges for the dimensions of the density. */
-	int *ranges;
-
-	/** Number of data elements. */
-	int size;
-
-	/** Actual data. */
-	double *data;
-
-	/** CPropertyExtractor is a friend class to allow it to write density
-	 *  data. */
-	friend class TBTK::CPropertyExtractor;
-
-	/** DPropertyExtractor is a friend class to allow it to write density
-	 *  data. */
-	friend class TBTK::DPropertyExtractor;
-
-	/** EDPropertyExtractor is a friend class to allow it to write density
-	 *  data. */
-	friend class TBTK::EDPropertyExtractor;
-
-	/** FileReader is a friend class to allow it to write density data. */
-	friend class TBTK::FileReader;
+	/** IndexDescriptor describing the memory layout of the data. */
+	IndexDescriptor indexDescriptor;
 };
 
 inline int Density::getDimensions() const{
-	return dimensions;
+	return indexDescriptor.getDimensions();
 }
 
 inline const int* Density::getRanges() const{
-	return ranges;
-}
-
-inline int Density::getSize() const{
-	return size;
-}
-
-inline const double* Density::getData() const{
-	return data;
+	return indexDescriptor.getRanges();
 }
 
 };	//End namespace Property

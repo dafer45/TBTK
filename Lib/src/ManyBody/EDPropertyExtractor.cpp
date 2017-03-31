@@ -324,7 +324,7 @@ Property::Density EDPropertyExtractor::calculateDensity(
 	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
 	Property::Density density(lDimensions, lRanges);
 
-	calculate(calculateDensityCallback, (void*)density.data, pattern, ranges, 0, 1);
+	calculate(calculateDensityCallback, /*(void*)density.data*/(void*)density.getDataRW(), pattern, ranges, 0, 1);
 
 	return density;
 }
@@ -361,7 +361,7 @@ Property::Magnetization EDPropertyExtractor::calculateMagnetization(
 
 	calculate(
 		calculateMagnetizationCallback,
-		(void*)magnetization.data,
+		(void*)magnetization.getDataRW(),
 		pattern,
 		ranges,
 		0,
@@ -392,7 +392,7 @@ Property::LDOS EDPropertyExtractor::calculateLDOS(
 
 	calculate(
 		calculateLDOSCallback,
-		(void*)ldos.data,
+		(void*)ldos.getDataRW(),
 		pattern,
 		ranges,
 		0,
@@ -440,7 +440,7 @@ Property::SpinPolarizedLDOS EDPropertyExtractor::calculateSpinPolarizedLDOS(
 
 	calculate(
 		calculateSpinPolarizedLDOSCallback,
-		(void*)spinPolarizedLDOS.data,
+		(void*)spinPolarizedLDOS.getDataRW(),
 		pattern,
 		ranges,
 		0,

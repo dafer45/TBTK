@@ -23,17 +23,16 @@
 #ifndef COM_DAFER45_TBTK_MAGNETIZATION
 #define COM_DAFER45_TBTK_MAGNETIZATION
 
+#include "AbstractProperty.h"
+#include "IndexDescriptor.h"
+
 #include <complex>
 
 namespace TBTK{
-	class CPropertyExtractor;
-	class DPropertyExtractor;
-	class EDPropertyExtractor;
-	class FileReader;
 namespace Property{
 
 /** Container for magnetization. */
-class Magnetization{
+class Magnetization : public AbstractProperty<std::complex<double>>{
 public:
 	/** Constructor. */
 	Magnetization(int dimensions, const int* ranges);
@@ -60,61 +59,22 @@ public:
 	/** Get the ranges for the dimensions of the magnetization. */
 	const int* getRanges() const;
 
-	/** Get the number of data elements. */
-	int getSize() const;
-
-	/** Get magnetization data. */
-	const std::complex<double>* getData() const;
-
 	/** Assignment operator. */
 	Magnetization& operator=(const Magnetization &magnetization);
 
 	/** Move assignment operator. */
 	Magnetization& operator=(Magnetization &&magnetization);
 private:
-	/** Dimension of the magnetization. */
-	int dimensions;
-
-	/** Ranges for the dimensions of the magnetization. */
-	int *ranges;
-
-	/** Number of data elements. */
-	int size;
-
-	/** Actual data. */
-	std::complex<double> *data;
-
-	/** CPropertyExtractor is a friend class to allow it to write
-	 *  magnetiation data. */
-	friend class TBTK::CPropertyExtractor;
-
-	/** DPropertyExtractor is a friend class to allow it to write
-	 *  magnetiation data. */
-	friend class TBTK::DPropertyExtractor;
-
-	/** EDPropertyExtractor is a friend class to allow it to write
-	 *  magnetiation data. */
-	friend class TBTK::EDPropertyExtractor;
-
-	/** FileReader is a friend class to allow it to write magnetiation
-	 *  data. */
-	friend class TBTK::FileReader;
+	/** IndexDescriptor describing the memory layout of the data. */
+	IndexDescriptor indexDescriptor;
 };
 
 inline int Magnetization::getDimensions() const{
-	return dimensions;
+	return indexDescriptor.getDimensions();
 }
 
 inline const int* Magnetization::getRanges() const{
-	return ranges;
-}
-
-inline int Magnetization::getSize() const{
-	return size;
-}
-
-inline const std::complex<double>* Magnetization::getData() const{
-	return data;
+	return indexDescriptor.getRanges();
 }
 
 };	//End namespace Property

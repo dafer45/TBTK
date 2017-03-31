@@ -31,22 +31,22 @@ SpinPolarizedLDOS::SpinPolarizedLDOS(
 	double lowerBound,
 	double upperBound,
 	int resolution
-){
-	this->dimensions = dimensions;
-	this->ranges = new int[dimensions];
+) :
+	indexDescriptor(IndexDescriptor::Format::Ranges)
+{
+	indexDescriptor.setDimensions(dimensions);
+	int *thisRanges = indexDescriptor.getRanges();
 	for(int n = 0; n < dimensions; n++)
-		this->ranges[n] = ranges[n];
+		thisRanges[n] = ranges[n];
 
 	this->lowerBound = lowerBound;
 	this->upperBound = upperBound;
 	this->resolution = resolution;
 
-	size = 4*resolution;
-	for(int n = 0; n < dimensions; n++)
-		size *= ranges[n];
+	setSize(4*resolution*indexDescriptor.getSize());
 
-	data = new complex<double>[size];
-	for(int n = 0; n < size; n++)
+	complex<double> *data = getDataRW();
+	for(unsigned int n = 0; n < getSize(); n++)
 		data[n] = 0.;
 }
 
@@ -57,101 +57,68 @@ SpinPolarizedLDOS::SpinPolarizedLDOS(
 	double upperBound,
 	int resolution,
 	const complex<double> *data
-){
-	this->dimensions = dimensions;
-	this->ranges = new int[dimensions];
+) : indexDescriptor(IndexDescriptor::Format::Ranges)
+{
+	indexDescriptor.setDimensions(dimensions);
+	int *thisRanges = indexDescriptor.getRanges();
 	for(int n = 0; n < dimensions; n++)
-		this->ranges[n] = ranges[n];
+		thisRanges[n] = ranges[n];
 
 	this->lowerBound = lowerBound;
 	this->upperBound = upperBound;
 	this->resolution = resolution;
 
-	size = 4*resolution;
-	for(int n = 0; n < dimensions; n++)
-		size *= ranges[n];
+	setSize(4*resolution*indexDescriptor.getSize());
 
-	this->data = new complex<double>[size];
-	for(int n = 0; n < size; n++)
-		this->data[n] = data[n];
+	complex<double> *thisData = getDataRW();
+	for(unsigned int n = 0; n < getSize(); n++)
+		thisData[n] = data[n];
 }
 
 SpinPolarizedLDOS::SpinPolarizedLDOS(
 	const SpinPolarizedLDOS &spinPolarizedLDOS
-){
-	dimensions = spinPolarizedLDOS.dimensions;
-	ranges = new int[dimensions];
-	for(int n = 0; n < dimensions; n++)
-		ranges[n] = spinPolarizedLDOS.ranges[n];
-
+) :
+	AbstractProperty(spinPolarizedLDOS),
+	indexDescriptor(spinPolarizedLDOS.indexDescriptor)
+{
 	lowerBound = spinPolarizedLDOS.lowerBound;
 	upperBound = spinPolarizedLDOS.upperBound;
 	resolution = spinPolarizedLDOS.resolution;
-
-	size = spinPolarizedLDOS.size;
-
-	data = new complex<double>[size];
-	for(int n = 0; n < size; n++)
-		data[n] = spinPolarizedLDOS.data[n];
 }
 
 SpinPolarizedLDOS::SpinPolarizedLDOS(
 	SpinPolarizedLDOS &&spinPolarizedLDOS
-){
-	dimensions = spinPolarizedLDOS.dimensions;
-	ranges = spinPolarizedLDOS.ranges;
-	spinPolarizedLDOS.ranges = nullptr;
-
+) :
+	AbstractProperty(std::move(spinPolarizedLDOS)),
+	indexDescriptor(std::move(spinPolarizedLDOS.indexDescriptor))
+{
 	lowerBound = spinPolarizedLDOS.lowerBound;
 	upperBound = spinPolarizedLDOS.upperBound;
 	resolution = spinPolarizedLDOS.resolution;
-
-	size = spinPolarizedLDOS.size;
-
-	data = spinPolarizedLDOS.data;
-	spinPolarizedLDOS.data = nullptr;
 }
 
 SpinPolarizedLDOS::~SpinPolarizedLDOS(){
-	if(ranges != nullptr)
-		delete [] ranges;
-	if(data != nullptr)
-		delete [] data;
 }
 
 SpinPolarizedLDOS& SpinPolarizedLDOS::operator=(const SpinPolarizedLDOS &rhs){
-	dimensions = rhs.dimensions;
-	ranges = new int[dimensions];
-	for(int n = 0; n < dimensions; n++)
-		ranges[n] = rhs.ranges[n];
+	AbstractProperty::operator=(rhs);
+	indexDescriptor = rhs.indexDescriptor;
 
 	lowerBound = rhs.lowerBound;
 	upperBound = rhs.upperBound;
 	resolution = rhs.resolution;
-
-	size = rhs.size;
-
-	data = new complex<double>[size];
-	for(int n = 0; n < size; n++)
-		data[n] = rhs.data[n];
 
 	return *this;
 }
 
 SpinPolarizedLDOS& SpinPolarizedLDOS::operator=(SpinPolarizedLDOS &&rhs){
 	if(this != &rhs){
-		dimensions = rhs.dimensions;
-		ranges = rhs.ranges;
-		rhs.ranges = nullptr;
+		AbstractProperty::operator=(std::move(rhs));
+		indexDescriptor = std::move(rhs.indexDescriptor);
 
 		lowerBound = rhs.lowerBound;
 		upperBound = rhs.upperBound;
 		resolution = rhs.resolution;
-
-		size = rhs.size;
-
-		data = rhs.data;
-		rhs.data = nullptr;
 	}
 
 	return *this;

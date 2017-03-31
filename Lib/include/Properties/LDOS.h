@@ -23,16 +23,14 @@
 #ifndef COM_DAFER45_TBTK_LDOS
 #define COM_DAFER45_TBTK_LDOS
 
+#include "AbstractProperty.h"
+#include "IndexDescriptor.h"
+
 namespace TBTK{
-	class APropertyExtractor;
-	class CPropertyExtractor;
-	class DPropertyExtractor;
-	class EDPropertyExtractor;
-	class FileReader;
 namespace Property{
 
 /** Container for local density of states (LDOS). */
-class LDOS{
+class LDOS : public AbstractProperty<double>{
 public:
 	/** Constructor. */
 	LDOS(
@@ -77,23 +75,14 @@ public:
 	/** Get energy resolution. (Number of energy intervals) */
 	int getResolution() const;
 
-	/** Get the number of data elements. */
-	int getSize() const;
-
-	/** Get LDOS data. */
-	const double* getData() const;
-
 	/** Assignment operator. */
 	LDOS& operator=(const LDOS &ldos);
 
 	/** Move assignment operator. */
 	LDOS& operator=(LDOS &&ldos);
 private:
-	/** Dimension of the LDOS. */
-	int dimensions;
-
-	/** Ranges for the dimensions of the LDOS. */
-	int *ranges;
+	/** IndexDescriptor describing the memory layout of the data. */
+	IndexDescriptor indexDescriptor;
 
 	/** Lower bound for the energy. */
 	double lowerBound;
@@ -103,39 +92,14 @@ private:
 
 	/** Energy resolution. (Number of energy intervals). */
 	int resolution;
-
-	/** Number of data elements. */
-	int size;
-
-	/** Actual data. */
-	double *data;
-
-	/** APropertyExtractor is a friend class to allow it to write LDOS
-	 *  data. */
-	friend class TBTK::APropertyExtractor;
-
-	/** CPropertyExtractor is a friend class to allow it to write LDOS
-	 *  data. */
-	friend class TBTK::CPropertyExtractor;
-
-	/** DPropertyExtractor is a friend class to allow it to write LDOS
-	 * data. */
-	friend class TBTK::DPropertyExtractor;
-
-	/** EDPropertyExtractor is a friend class to allow it to write LDOS
-	 * data. */
-	friend class TBTK::EDPropertyExtractor;
-
-	/** FileReader is a friend class to allow it to write LDOS data. */
-	friend class TBTK::FileReader;
 };
 
 inline int LDOS::getDimensions() const{
-	return dimensions;
+	return indexDescriptor.getDimensions();
 }
 
 inline const int* LDOS::getRanges() const{
-	return ranges;
+	return indexDescriptor.getRanges();
 }
 
 inline double LDOS::getLowerBound() const{
@@ -148,14 +112,6 @@ inline double LDOS::getUpperBound() const{
 
 inline int LDOS::getResolution() const{
 	return resolution;
-}
-
-inline int LDOS::getSize() const{
-	return size;
-}
-
-inline const double* LDOS::getData() const{
-	return data;
 }
 
 };	//End namespace Property

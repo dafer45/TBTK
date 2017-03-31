@@ -236,7 +236,7 @@ Property::Density CPropertyExtractor::calculateDensity(
 
 	calculate(
 		calculateDensityCallback,
-		(void*)density.data,
+		/*(void*)density.data*/(void*)density.getDataRW(),
 		pattern,
 		ranges,
 		0,
@@ -278,7 +278,7 @@ Property::Magnetization CPropertyExtractor::calculateMagnetization(
 
 	calculate(
 		calculateMAGCallback,
-		(void*)magnetization.data,
+		(void*)magnetization.getDataRW(),
 		pattern,
 		ranges,
 		0,
@@ -306,7 +306,7 @@ Property::LDOS CPropertyExtractor::calculateLDOS(Index pattern, Index ranges){
 
 	calculate(
 		calculateLDOSCallback,
-		(void*)ldos.data,
+		(void*)ldos.getDataRW(),
 		pattern,
 		ranges,
 		0,
@@ -354,7 +354,7 @@ Property::SpinPolarizedLDOS CPropertyExtractor::calculateSpinPolarizedLDOS(
 
 	calculate(
 		calculateSP_LDOSCallback,
-		(void*)spinPolarizedLDOS.data,
+		(void*)spinPolarizedLDOS.getDataRW(),
 		pattern,
 		ranges,
 		0,

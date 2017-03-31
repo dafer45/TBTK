@@ -5,7 +5,7 @@ TBTKPlot2D.py TBTKResults.h5 D_abs
 TBTKPlot2D.py TBTKResults.h5 D_arg
 
 #Plot magnetization
-TBTKPlotMAG.py TBTKResults.h5
+TBTKPlotMagnetization.py TBTKResults.h5 0 0
 
 #Plot spin-polarized local density of states for (theta,phi) = (0, 0), using
 #Gaussian smoothing with sigma = 0.02

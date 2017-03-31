@@ -319,7 +319,7 @@ Property::EigenValues* FileReader::readEigenValues(string name, string path){
 
 		eigenValues = new Property::EigenValues(size);
 
-		dataset.read(eigenValues->data, PredType::NATIVE_DOUBLE, dataspace);
+		dataset.read(eigenValues->getDataRW(), PredType::NATIVE_DOUBLE, dataspace);
 	}
 	catch(FileIException error){
 		Streams::log << error.getCDetailMsg() << "\n";
@@ -388,7 +388,7 @@ Property::DOS* FileReader::readDOS(string name, string path){
 
 		dos = new Property::DOS(lowerBound, upperBound, resolution);
 
-		dataset.read(dos->data, PredType::NATIVE_DOUBLE, dataspace);
+		dataset.read(dos->getDataRW(), PredType::NATIVE_DOUBLE, dataspace);
 
 	}
 	catch(FileIException error){
@@ -456,7 +456,7 @@ Property::Density* FileReader::readDensity(string name, string path){
 		density = new Property::Density(rank, dims);
 		delete [] dims;
 
-		dataset.read(density->data, PredType::NATIVE_DOUBLE, dataspace);
+		dataset.read(/*density->data*/density->getDataRW(), PredType::NATIVE_DOUBLE, dataspace);
 	}
 	catch(FileIException error){
 		Streams::log << error.getCDetailMsg() << "\n";
@@ -532,8 +532,9 @@ Property::Magnetization* FileReader::readMagnetization(
 
 		double *mag_internal = new double[size];
 		dataset.read(mag_internal, PredType::NATIVE_DOUBLE, dataspace);
+		complex<double> *data = magnetization->getDataRW();
 		for(int n = 0; n < size/2; n++)
-			magnetization->data[n] = complex<double>(mag_internal[2*n+0], mag_internal[2*n+1]);
+			data[n] = complex<double>(mag_internal[2*n+0], mag_internal[2*n+1]);
 
 		delete [] mag_internal;
 		delete [] dims_internal;
@@ -678,8 +679,9 @@ Property::SpinPolarizedLDOS* FileReader::readSpinPolarizedLDOS(
 
 		double *sp_ldos_internal = new double[size];
 		dataset.read(sp_ldos_internal, PredType::NATIVE_DOUBLE, dataspace);
+		complex<double> *data = spinPolarizedLDOS->getDataRW();
 		for(int n = 0; n < size/2; n++)
-			spinPolarizedLDOS->data[n] = complex<double>(sp_ldos_internal[2*n+0], sp_ldos_internal[2*n+1]);
+			data[n] = complex<double>(sp_ldos_internal[2*n+0], sp_ldos_internal[2*n+1]);
 
 		delete [] sp_ldos_internal;
 		delete [] dims_internal;

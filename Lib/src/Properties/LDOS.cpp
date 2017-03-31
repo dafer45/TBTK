@@ -29,22 +29,21 @@ LDOS::LDOS(
 	double lowerBound,
 	double upperBound,
 	int resolution
-){
-	this->dimensions = dimensions;
-	this->ranges = new int[dimensions];
+) : indexDescriptor(IndexDescriptor::Format::Ranges)
+{
+	indexDescriptor.setDimensions(dimensions);
+	int *thisRanges = indexDescriptor.getRanges();
 	for(int n = 0; n < dimensions; n++)
-		this->ranges[n] = ranges[n];
+		thisRanges[n] = ranges[n];
 
 	this->lowerBound = lowerBound;
 	this->upperBound = upperBound;
 	this->resolution = resolution;
 
-	size = resolution;
-	for(int n = 0; n < dimensions; n++)
-		size *= ranges[n];
+	setSize(resolution*indexDescriptor.getSize());
 
-	data = new double[size];
-	for(int n = 0; n < size; n++)
+	double *data = getDataRW();
+	for(unsigned int n = 0; n < getSize(); n++)
 		data[n] = 0.;
 }
 
@@ -55,97 +54,67 @@ LDOS::LDOS(
 	double upperBound,
 	int resolution,
 	const double *data
-){
-	this->dimensions = dimensions;
-	this->ranges = new int[dimensions];
+) : indexDescriptor(IndexDescriptor::Format::Ranges){
+	indexDescriptor.setDimensions(dimensions);
+	int *thisRanges = indexDescriptor.getRanges();
 	for(int n = 0; n < dimensions; n++)
-		this->ranges[n] = ranges[n];
+		thisRanges[n] = ranges[n];
 
 	this->lowerBound = lowerBound;
 	this->upperBound = upperBound;
 	this->resolution = resolution;
 
-	size = resolution;
-	for(int n = 0; n < dimensions; n++)
-		size *= ranges[n];
+	setSize(resolution*indexDescriptor.getSize());
 
-	this->data = new double[size];
-	for(int n = 0; n < size; n++)
-		this->data[n] = data[n];
+	double *thisData = getDataRW();
+	for(unsigned int n = 0; n < getSize(); n++)
+		thisData[n] = data[n];
 }
 
-LDOS::LDOS(const LDOS &ldos){
-	dimensions = ldos.dimensions;
-	ranges = new int[dimensions];
-	for(int n = 0; n < dimensions; n++)
-		ranges[n] = ldos.ranges[n];
-
+LDOS::LDOS(
+	const LDOS &ldos
+) :
+	AbstractProperty(ldos),
+	indexDescriptor(ldos.indexDescriptor)
+{
 	lowerBound = ldos.lowerBound;
 	upperBound = ldos.upperBound;
 	resolution = ldos.resolution;
-
-	size = ldos.size;
-
-	data = new double[size];
-	for(int n = 0; n < size; n++)
-		data[n] = ldos.data[n];
 }
 
-LDOS::LDOS(LDOS &&ldos){
-	dimensions = ldos.dimensions;
-	ranges = ldos.ranges;
-	ldos.ranges = nullptr;
-
+LDOS::LDOS(
+	LDOS &&ldos
+) :
+	AbstractProperty(std::move(ldos)),
+	indexDescriptor(std::move(ldos.indexDescriptor))
+{
 	lowerBound = ldos.lowerBound;
 	upperBound = ldos.upperBound;
 	resolution = ldos.resolution;
-
-	size = ldos.size;
-
-	data = ldos.data;
-	ldos.data = nullptr;
 }
 
 LDOS::~LDOS(){
-	if(ranges != nullptr)
-		delete [] ranges;
-	if(data != nullptr)
-		delete [] data;
 }
 
 LDOS& LDOS::operator=(const LDOS &rhs){
-	dimensions = rhs.dimensions;
-	ranges = new int[dimensions];
-	for(int n = 0; n < dimensions; n++)
-		ranges[n] = rhs.ranges[n];
+	AbstractProperty::operator=(rhs);
+	indexDescriptor = rhs.indexDescriptor;
 
 	lowerBound = rhs.lowerBound;
 	upperBound = rhs.upperBound;
 	resolution = rhs.resolution;
-
-	size = rhs.size;
-
-	data = new double[size];
-	for(int n = 0; n < size; n++)
-		data[n] = rhs.data[n];
 
 	return *this;
 }
 
 LDOS& LDOS::operator=(LDOS &&rhs){
 	if(this != &rhs){
-		dimensions = rhs.dimensions;
-		ranges = rhs.ranges;
-		rhs.ranges = nullptr;
+		AbstractProperty::operator=(std::move(rhs));
+		indexDescriptor = std::move(rhs.indexDescriptor);
 
 		lowerBound = rhs.lowerBound;
 		upperBound = rhs.upperBound;
 		resolution = rhs.resolution;
-
-		size = rhs.size;
-
-		data = rhs.data;
-		rhs.data = nullptr;
 	}
 
 	return *this;

@@ -29,10 +29,6 @@
 #include <vector>
 
 namespace TBTK{
-	class APropertyExtractor;
-	class CPropertyExtractor;
-	class DPropertyExtractor;
-	class FileReader;
 namespace Property{
 
 /** Container for Green's function. */
@@ -202,21 +198,6 @@ private:
 
 	/** Epsilon for use in the denumerator of the Green's function. */
 	static double EPSILON;
-
-	/** CPropertyExtractor is a friend class to allow it to write
-	 *  GreensFunction data. */
-	friend class TBTK::APropertyExtractor;
-
-	/** CPropertyExtractor is a friend class to allow it to write
-	 *  GreensFunction data. */
-	friend class TBTK::CPropertyExtractor;
-
-	/** DPropertyExtractor is a friend class to allow it to write
-	 *  GreensFunction data. */
-	friend class TBTK::DPropertyExtractor;
-
-	/** FileReader is a friend class to allow it to write DOS data. */
-	friend class TBTK::FileReader;
 };
 
 inline double GreensFunction::getArrayLowerBound() const{
