@@ -26,51 +26,31 @@ namespace Property{
 Density::Density(
 	int dimensions,
 	const int *ranges
-) : indexDescriptor(IndexDescriptor::Format::Ranges)
+) :
+	AbstractProperty(dimensions, ranges, 1)
 {
-	indexDescriptor.setDimensions(dimensions);
-	int *thisRanges = indexDescriptor.getRanges();
-	for(int n = 0; n < dimensions; n++)
-		thisRanges[n] = ranges[n];
-
-	setSize(indexDescriptor.getSize());
-
-	double *data = getDataRW();
-	for(unsigned int n = 0; n < getSize(); n++)
-		data[n] = 0.;
 }
 
 Density::Density(
 	int dimensions,
 	const int *ranges,
 	const double *data
-) : indexDescriptor(IndexDescriptor::Format::Ranges)
+) :
+	AbstractProperty(dimensions, ranges, 1, data)
 {
-	indexDescriptor.setDimensions(dimensions);
-	int *thisRanges = indexDescriptor.getRanges();
-	for(int n = 0; n < dimensions; n++)
-		thisRanges[n] = ranges[n];
-
-	setSize(indexDescriptor.getSize());
-
-	double *thisData = getDataRW();
-	for(unsigned int n = 0; n < getSize(); n++)
-		thisData[n] = data[n];
 }
 
 Density::Density(
 	const Density &density
 ) :
-	AbstractProperty(density),
-	indexDescriptor(density.indexDescriptor)
+	AbstractProperty(density)
 {
 }
 
 Density::Density(
 	Density &&density
 ) :
-	AbstractProperty(std::move(density)),
-	indexDescriptor(std::move(density.indexDescriptor))
+	AbstractProperty(std::move(density))
 {
 }
 
@@ -79,7 +59,6 @@ Density::~Density(){
 
 Density& Density::operator=(const Density &rhs){
 	AbstractProperty::operator=(rhs);
-	indexDescriptor = rhs.indexDescriptor;
 
 	return *this;
 }
@@ -87,7 +66,6 @@ Density& Density::operator=(const Density &rhs){
 Density& Density::operator=(Density &&rhs){
 	if(this != &rhs){
 		AbstractProperty::operator=(std::move(rhs));
-		indexDescriptor = std::move(rhs.indexDescriptor);
 	}
 
 	return *this;

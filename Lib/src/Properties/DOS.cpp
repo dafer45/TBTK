@@ -24,24 +24,29 @@
 namespace TBTK{
 namespace Property{
 
-DOS::DOS(double lowerBound, double upperBound, int resolution){
+DOS::DOS(
+	double lowerBound,
+	double upperBound,
+	int resolution
+) :
+	AbstractProperty(resolution)
+{
 	this->lowerBound = lowerBound;
 	this->upperBound = upperBound;
 	this->resolution = resolution;
-	setSize(resolution);
-	double *data = getDataRW();
-	for(unsigned int n = 0; n < getSize(); n++)
-		data[n] = 0.;
 }
 
-DOS::DOS(double lowerBound, double upperBound, int resolution, const double *data){
+DOS::DOS(
+	double lowerBound,
+	double upperBound,
+	int resolution,
+	const double *data
+) :
+	AbstractProperty(resolution, data)
+{
 	this->lowerBound = lowerBound;
 	this->upperBound = upperBound;
 	this->resolution = resolution;
-	setSize(resolution);
-	double *thisData = getDataRW();
-	for(unsigned int n = 0; n < getSize(); n++)
-		thisData[n] = data[n];
 }
 
 DOS::DOS(

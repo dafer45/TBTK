@@ -32,22 +32,11 @@ SpinPolarizedLDOS::SpinPolarizedLDOS(
 	double upperBound,
 	int resolution
 ) :
-	indexDescriptor(IndexDescriptor::Format::Ranges)
+	AbstractProperty(dimensions, ranges, 4*resolution)
 {
-	indexDescriptor.setDimensions(dimensions);
-	int *thisRanges = indexDescriptor.getRanges();
-	for(int n = 0; n < dimensions; n++)
-		thisRanges[n] = ranges[n];
-
 	this->lowerBound = lowerBound;
 	this->upperBound = upperBound;
 	this->resolution = resolution;
-
-	setSize(4*resolution*indexDescriptor.getSize());
-
-	complex<double> *data = getDataRW();
-	for(unsigned int n = 0; n < getSize(); n++)
-		data[n] = 0.;
 }
 
 SpinPolarizedLDOS::SpinPolarizedLDOS(
@@ -57,29 +46,18 @@ SpinPolarizedLDOS::SpinPolarizedLDOS(
 	double upperBound,
 	int resolution,
 	const complex<double> *data
-) : indexDescriptor(IndexDescriptor::Format::Ranges)
+) :
+	AbstractProperty(dimensions, ranges, 4*resolution, data)
 {
-	indexDescriptor.setDimensions(dimensions);
-	int *thisRanges = indexDescriptor.getRanges();
-	for(int n = 0; n < dimensions; n++)
-		thisRanges[n] = ranges[n];
-
 	this->lowerBound = lowerBound;
 	this->upperBound = upperBound;
 	this->resolution = resolution;
-
-	setSize(4*resolution*indexDescriptor.getSize());
-
-	complex<double> *thisData = getDataRW();
-	for(unsigned int n = 0; n < getSize(); n++)
-		thisData[n] = data[n];
 }
 
 SpinPolarizedLDOS::SpinPolarizedLDOS(
 	const SpinPolarizedLDOS &spinPolarizedLDOS
 ) :
-	AbstractProperty(spinPolarizedLDOS),
-	indexDescriptor(spinPolarizedLDOS.indexDescriptor)
+	AbstractProperty(spinPolarizedLDOS)
 {
 	lowerBound = spinPolarizedLDOS.lowerBound;
 	upperBound = spinPolarizedLDOS.upperBound;
@@ -89,8 +67,7 @@ SpinPolarizedLDOS::SpinPolarizedLDOS(
 SpinPolarizedLDOS::SpinPolarizedLDOS(
 	SpinPolarizedLDOS &&spinPolarizedLDOS
 ) :
-	AbstractProperty(std::move(spinPolarizedLDOS)),
-	indexDescriptor(std::move(spinPolarizedLDOS.indexDescriptor))
+	AbstractProperty(std::move(spinPolarizedLDOS))
 {
 	lowerBound = spinPolarizedLDOS.lowerBound;
 	upperBound = spinPolarizedLDOS.upperBound;
@@ -102,7 +79,6 @@ SpinPolarizedLDOS::~SpinPolarizedLDOS(){
 
 SpinPolarizedLDOS& SpinPolarizedLDOS::operator=(const SpinPolarizedLDOS &rhs){
 	AbstractProperty::operator=(rhs);
-	indexDescriptor = rhs.indexDescriptor;
 
 	lowerBound = rhs.lowerBound;
 	upperBound = rhs.upperBound;
@@ -114,7 +90,6 @@ SpinPolarizedLDOS& SpinPolarizedLDOS::operator=(const SpinPolarizedLDOS &rhs){
 SpinPolarizedLDOS& SpinPolarizedLDOS::operator=(SpinPolarizedLDOS &&rhs){
 	if(this != &rhs){
 		AbstractProperty::operator=(std::move(rhs));
-		indexDescriptor = std::move(rhs.indexDescriptor);
 
 		lowerBound = rhs.lowerBound;
 		upperBound = rhs.upperBound;

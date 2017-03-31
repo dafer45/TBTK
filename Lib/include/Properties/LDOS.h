@@ -24,7 +24,7 @@
 #define COM_DAFER45_TBTK_LDOS
 
 #include "AbstractProperty.h"
-#include "IndexDescriptor.h"
+//#include "IndexDescriptor.h"
 
 namespace TBTK{
 namespace Property{
@@ -60,12 +60,6 @@ public:
 	/** Destructor. */
 	~LDOS();
 
-	/** Get the dimension of the LDOS. (Excluding energy dimension). */
-	int getDimensions() const;
-
-	/** Get the ranges for the dimensions of the LDOS. */
-	const int* getRanges() const;
-
 	/** Get lower bound for the energy. */
 	double getLowerBound() const;
 
@@ -81,9 +75,6 @@ public:
 	/** Move assignment operator. */
 	LDOS& operator=(LDOS &&ldos);
 private:
-	/** IndexDescriptor describing the memory layout of the data. */
-	IndexDescriptor indexDescriptor;
-
 	/** Lower bound for the energy. */
 	double lowerBound;
 
@@ -93,14 +84,6 @@ private:
 	/** Energy resolution. (Number of energy intervals). */
 	int resolution;
 };
-
-inline int LDOS::getDimensions() const{
-	return indexDescriptor.getDimensions();
-}
-
-inline const int* LDOS::getRanges() const{
-	return indexDescriptor.getRanges();
-}
 
 inline double LDOS::getLowerBound() const{
 	return lowerBound;

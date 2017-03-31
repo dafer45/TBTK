@@ -42,9 +42,38 @@ public:
 
 	/** Same as getData, but with write access. */
 	DataType* getDataRW();
+
+	/** Get the dimension of the data. */
+	unsigned int getDimensions() const;
+
+	/** Get the ranges for the dimensions of the density. */
+	const int* getRanges() const;
 protected:
 	/** Constructor. */
-	AbstractProperty();
+	AbstractProperty(
+		unsigned int blockSize
+	);
+
+	/** Constructor. */
+	AbstractProperty(
+		unsigned int blockSize,
+		const DataType *data
+	);
+
+	/** Constructor. */
+	AbstractProperty(
+		unsigned int dimensions,
+		const int *ranges,
+		unsigned int blockSize
+	);
+
+	/** Constructor. */
+	AbstractProperty(
+		unsigned int dimensions,
+		const int *ranges,
+		unsigned int blockSize,
+		const DataType *data
+	);
 
 	/** Copy constructor. */
 	AbstractProperty(const AbstractProperty &abstractProperty);
@@ -61,6 +90,9 @@ protected:
 	/** Destructor. */
 	~AbstractProperty();
 private:
+	/** IndexDescriptor describing the memory layout of the data. */
+	IndexDescriptor indexDescriptor;
+
 	/** Number of data elements. */
 	unsigned int size;
 
@@ -92,15 +124,85 @@ inline DataType* AbstractProperty<DataType>::getDataRW(){
 }
 
 template<typename DataType>
-AbstractProperty<DataType>::AbstractProperty(){
-	size = 0;
-	data = nullptr;
+inline unsigned int AbstractProperty<DataType>::getDimensions() const{
+	return indexDescriptor.getDimensions();
+}
+
+template<typename DataType>
+inline const int* AbstractProperty<DataType>::getRanges() const{
+	return indexDescriptor.getRanges();
+}
+
+template<typename DataType>
+AbstractProperty<DataType>::AbstractProperty(
+	unsigned int blockSize
+) :
+	indexDescriptor(IndexDescriptor::Format::None)
+{
+	size = blockSize;
+	data = new DataType[size];
+	for(unsigned int n = 0; n < size; n++)
+		data[n] = 0.;
+}
+
+template<typename DataType>
+AbstractProperty<DataType>::AbstractProperty(
+	unsigned int blockSize,
+	const DataType *data
+) :
+	indexDescriptor(IndexDescriptor::Format::None)
+{
+	size = blockSize;
+	this->data = new DataType[size];
+	for(unsigned int n = 0; n < size; n++)
+		this->data[n] = data[n];
+}
+
+template<typename DataType>
+AbstractProperty<DataType>::AbstractProperty(
+	unsigned int dimensions,
+	const int *ranges,
+	unsigned int blockSize
+) :
+	indexDescriptor(IndexDescriptor::Format::Ranges)
+{
+	indexDescriptor.setDimensions(dimensions);
+	int *thisRanges = indexDescriptor.getRanges();
+	for(unsigned int n = 0; n < dimensions; n++)
+		thisRanges[n] = ranges[n];
+
+	size = blockSize*indexDescriptor.getSize();
+	data = new DataType[size];
+	for(unsigned int n = 0; n < size; n++)
+		data[n] = 0.;
+}
+
+template<typename DataType>
+AbstractProperty<DataType>::AbstractProperty(
+	unsigned int dimensions,
+	const int *ranges,
+	unsigned int blockSize,
+	const DataType *data
+) :
+	indexDescriptor(IndexDescriptor::Format::Ranges)
+{
+	indexDescriptor.setDimensions(dimensions);
+	int *thisRanges = indexDescriptor.getRanges();
+	for(unsigned int n = 0; n < dimensions; n++)
+		thisRanges[n] = ranges[n];
+
+	size = blockSize*indexDescriptor.getSize();
+	this->data = new DataType[size];
+	for(unsigned int n = 0; n < size; n++)
+		this->data[n] = data[n];
 }
 
 template<typename DataType>
 AbstractProperty<DataType>::AbstractProperty(
 	const AbstractProperty &abstractProperty
-){
+) :
+	indexDescriptor(abstractProperty.indexDescriptor)
+{
 	size = abstractProperty.size;
 	if(abstractProperty.data == nullptr){
 		data = nullptr;
@@ -115,7 +217,9 @@ AbstractProperty<DataType>::AbstractProperty(
 template<typename DataType>
 AbstractProperty<DataType>::AbstractProperty(
 	AbstractProperty &&abstractProperty
-){
+) :
+	indexDescriptor(std::move(abstractProperty.indexDescriptor))
+{
 	size = abstractProperty.size;
 	if(abstractProperty.data == nullptr){
 		data = nullptr;
@@ -136,6 +240,8 @@ template<typename DataType>
 AbstractProperty<DataType>& AbstractProperty<DataType>::operator=(
 	const AbstractProperty &rhs
 ){
+	indexDescriptor = rhs.indexDescriptor;
+
 	size = rhs.size;
 	if(rhs.data == nullptr){
 		data = nullptr;
@@ -154,6 +260,8 @@ AbstractProperty<DataType>& AbstractProperty<DataType>::operator=(
 	AbstractProperty &&rhs
 ){
 	if(this != &rhs){
+		indexDescriptor = std::move(rhs.indexDescriptor);
+
 		size = rhs.size;
 		if(rhs.data == nullptr){
 			data = nullptr;

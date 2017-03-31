@@ -26,6 +26,8 @@ namespace TBTK{
 IndexDescriptor::IndexDescriptor(Format format){
 	this->format = format;
 	switch(format){
+	case Format::None:
+		break;
 	case Format::Ranges:
 		descriptor.rangeFormat.ranges = nullptr;
 		break;
@@ -44,6 +46,8 @@ IndexDescriptor::IndexDescriptor(Format format){
 IndexDescriptor::IndexDescriptor(const IndexDescriptor &indexDescriptor){
 	format = indexDescriptor.format;
 	switch(format){
+	case Format::None:
+		break;
 	case Format::Ranges:
 		descriptor.rangeFormat.dimensions = indexDescriptor.descriptor.rangeFormat.dimensions;
 		if(indexDescriptor.descriptor.rangeFormat.ranges == nullptr){
@@ -70,6 +74,8 @@ IndexDescriptor::IndexDescriptor(const IndexDescriptor &indexDescriptor){
 IndexDescriptor::IndexDescriptor(IndexDescriptor &&indexDescriptor){
 	format = indexDescriptor.format;
 	switch(format){
+	case Format::None:
+		break;
 	case Format::Ranges:
 		descriptor.rangeFormat.dimensions = indexDescriptor.descriptor.rangeFormat.dimensions;
 		if(indexDescriptor.descriptor.rangeFormat.ranges == nullptr){
@@ -95,6 +101,8 @@ IndexDescriptor::IndexDescriptor(IndexDescriptor &&indexDescriptor){
 
 IndexDescriptor::~IndexDescriptor(){
 	switch(format){
+	case Format::None:
+		break;
 	case Format::Ranges:
 		if(descriptor.rangeFormat.ranges != nullptr)
 			delete [] descriptor.rangeFormat.ranges;
@@ -115,6 +123,8 @@ IndexDescriptor::~IndexDescriptor(){
 IndexDescriptor& IndexDescriptor::operator=(const IndexDescriptor &rhs){
 	format = rhs.format;
 	switch(format){
+	case Format::None:
+		break;
 	case Format::Ranges:
 		descriptor.rangeFormat.dimensions = rhs.descriptor.rangeFormat.dimensions;
 		if(rhs.descriptor.rangeFormat.ranges == nullptr){
@@ -144,6 +154,8 @@ IndexDescriptor& IndexDescriptor::operator=(IndexDescriptor &&rhs){
 	if(this != &rhs){
 		format = rhs.format;
 		switch(format){
+		case Format::None:
+			break;
 		case Format::Ranges:
 			descriptor.rangeFormat.dimensions = rhs.descriptor.rangeFormat.dimensions;
 			if(rhs.descriptor.rangeFormat.ranges == nullptr){
@@ -172,6 +184,8 @@ IndexDescriptor& IndexDescriptor::operator=(IndexDescriptor &&rhs){
 
 unsigned int IndexDescriptor::getSize() const{
 	switch(format){
+	case Format::None:
+		return 1;
 	case Format::Ranges:
 	{
 		int size = 1;

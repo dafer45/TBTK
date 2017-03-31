@@ -24,7 +24,6 @@
 #define COM_DAFER45_TBTK_DENSITY
 
 #include "AbstractProperty.h"
-#include "IndexDescriptor.h"
 
 namespace TBTK{
 namespace Property{
@@ -47,29 +46,13 @@ public:
 	/** Destructor. */
 	~Density();
 
-	/** Get the dimension of the density. */
-	int getDimensions() const;
-
-	/** Get the ranges for the dimensions of the density. */
-	const int* getRanges() const;
-
 	/** Assignment operator. */
 	Density& operator=(const Density &rhs);
 
 	/** Move assignment operator. */
 	Density& operator=(Density &&rhs);
 private:
-	/** IndexDescriptor describing the memory layout of the data. */
-	IndexDescriptor indexDescriptor;
 };
-
-inline int Density::getDimensions() const{
-	return indexDescriptor.getDimensions();
-}
-
-inline const int* Density::getRanges() const{
-	return indexDescriptor.getRanges();
-}
 
 };	//End namespace Property
 };	//End namespace TBTK

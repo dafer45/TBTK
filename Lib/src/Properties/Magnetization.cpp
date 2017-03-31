@@ -29,18 +29,8 @@ Magnetization::Magnetization(
 	int dimensions,
 	const int* ranges
 ) :
-	indexDescriptor(IndexDescriptor::Format::Ranges)
+	AbstractProperty(dimensions, ranges, 4)
 {
-	indexDescriptor.setDimensions(dimensions);
-	int *thisRanges = indexDescriptor.getRanges();
-	for(int n = 0; n < dimensions; n++)
-		thisRanges[n] = ranges[n];
-
-	setSize(4*indexDescriptor.getSize());
-
-	complex<double> *data = getDataRW();
-	for(unsigned int n = 0; n < getSize(); n++)
-		data[n] = 0.;
 }
 
 Magnetization::Magnetization(
@@ -48,33 +38,21 @@ Magnetization::Magnetization(
 	const int* ranges,
 	const complex<double> *data
 ) :
-	indexDescriptor(IndexDescriptor::Format::Ranges)
+	AbstractProperty(dimensions, ranges, 4, data)
 {
-	indexDescriptor.setDimensions(dimensions);
-	int *thisRanges = indexDescriptor.getRanges();
-	for(int n = 0; n < dimensions; n++)
-		thisRanges[n] = ranges[n];
-
-	setSize(4*indexDescriptor.getSize());
-
-	complex<double> *thisData = getDataRW();
-	for(unsigned int n = 0; n < getSize(); n++)
-		thisData[n] = data[n];
 }
 
 Magnetization::Magnetization(
 	const Magnetization &magnetization
 ) :
-	AbstractProperty(magnetization),
-	indexDescriptor(magnetization.indexDescriptor)
+	AbstractProperty(magnetization)
 {
 }
 
 Magnetization::Magnetization(
 	Magnetization &&magnetization
 ) :
-	AbstractProperty(std::move(magnetization)),
-	indexDescriptor(std::move(magnetization.indexDescriptor))
+	AbstractProperty(std::move(magnetization))
 {
 }
 
@@ -83,16 +61,13 @@ Magnetization::~Magnetization(){
 
 Magnetization& Magnetization::operator=(const Magnetization &rhs){
 	AbstractProperty::operator=(rhs);
-	indexDescriptor = rhs.indexDescriptor;
 
 	return *this;
 }
 
 Magnetization& Magnetization::operator=(Magnetization &&rhs){
-	if(this != &rhs){
+	if(this != &rhs)
 		AbstractProperty::operator=(std::move(rhs));
-		indexDescriptor = std::move(rhs.indexDescriptor);
-	}
 
 	return *this;
 }

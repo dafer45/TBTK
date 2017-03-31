@@ -25,7 +25,7 @@
 #define COM_DAFER45_TBTK_SPIN_POLARIZED_LDOS
 
 #include "AbstractProperty.h"
-#include "IndexDescriptor.h"
+//#include "IndexDescriptor.h"
 
 #include <complex>
 
@@ -64,13 +64,6 @@ public:
 	/** Destructor. */
 	~SpinPolarizedLDOS();
 
-	/** Get the dimension of the spin-polarized LDOS. (Excluding energy
-	 *  dimension) */
-	int getDimensions() const;
-
-	/** Get the ranges for the dimensions of the density. */
-	const int* getRanges() const;
-
 	/** Get lower bound for the energy. */
 	double getLowerBound() const;
 
@@ -86,9 +79,6 @@ public:
 	/** Move assignment operator. */
 	SpinPolarizedLDOS& operator=(SpinPolarizedLDOS &&rhs);
 private:
-	/** IndexDescriptor describing the memory layout of the data. */
-	IndexDescriptor indexDescriptor;
-
 	/** Lower bound for the energy. */
 	double lowerBound;
 
@@ -98,14 +88,6 @@ private:
 	/** Energy resolution. (Number of energy intervals) */
 	int resolution;
 };
-
-inline int SpinPolarizedLDOS::getDimensions() const{
-	return indexDescriptor.getDimensions();
-}
-
-inline const int* SpinPolarizedLDOS::getRanges() const{
-	return indexDescriptor.getRanges();
-}
 
 inline double SpinPolarizedLDOS::getLowerBound() const{
 	return lowerBound;

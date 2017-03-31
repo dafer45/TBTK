@@ -29,22 +29,12 @@ LDOS::LDOS(
 	double lowerBound,
 	double upperBound,
 	int resolution
-) : indexDescriptor(IndexDescriptor::Format::Ranges)
+) :
+	AbstractProperty(dimensions, ranges, resolution)
 {
-	indexDescriptor.setDimensions(dimensions);
-	int *thisRanges = indexDescriptor.getRanges();
-	for(int n = 0; n < dimensions; n++)
-		thisRanges[n] = ranges[n];
-
 	this->lowerBound = lowerBound;
 	this->upperBound = upperBound;
 	this->resolution = resolution;
-
-	setSize(resolution*indexDescriptor.getSize());
-
-	double *data = getDataRW();
-	for(unsigned int n = 0; n < getSize(); n++)
-		data[n] = 0.;
 }
 
 LDOS::LDOS(
@@ -54,28 +44,18 @@ LDOS::LDOS(
 	double upperBound,
 	int resolution,
 	const double *data
-) : indexDescriptor(IndexDescriptor::Format::Ranges){
-	indexDescriptor.setDimensions(dimensions);
-	int *thisRanges = indexDescriptor.getRanges();
-	for(int n = 0; n < dimensions; n++)
-		thisRanges[n] = ranges[n];
-
+) :
+	AbstractProperty(dimensions, ranges, resolution, data)
+{
 	this->lowerBound = lowerBound;
 	this->upperBound = upperBound;
 	this->resolution = resolution;
-
-	setSize(resolution*indexDescriptor.getSize());
-
-	double *thisData = getDataRW();
-	for(unsigned int n = 0; n < getSize(); n++)
-		thisData[n] = data[n];
 }
 
 LDOS::LDOS(
 	const LDOS &ldos
 ) :
-	AbstractProperty(ldos),
-	indexDescriptor(ldos.indexDescriptor)
+	AbstractProperty(ldos)
 {
 	lowerBound = ldos.lowerBound;
 	upperBound = ldos.upperBound;
@@ -85,8 +65,7 @@ LDOS::LDOS(
 LDOS::LDOS(
 	LDOS &&ldos
 ) :
-	AbstractProperty(std::move(ldos)),
-	indexDescriptor(std::move(ldos.indexDescriptor))
+	AbstractProperty(std::move(ldos))
 {
 	lowerBound = ldos.lowerBound;
 	upperBound = ldos.upperBound;
@@ -98,7 +77,6 @@ LDOS::~LDOS(){
 
 LDOS& LDOS::operator=(const LDOS &rhs){
 	AbstractProperty::operator=(rhs);
-	indexDescriptor = rhs.indexDescriptor;
 
 	lowerBound = rhs.lowerBound;
 	upperBound = rhs.upperBound;
@@ -110,7 +88,6 @@ LDOS& LDOS::operator=(const LDOS &rhs){
 LDOS& LDOS::operator=(LDOS &&rhs){
 	if(this != &rhs){
 		AbstractProperty::operator=(std::move(rhs));
-		indexDescriptor = std::move(rhs.indexDescriptor);
 
 		lowerBound = rhs.lowerBound;
 		upperBound = rhs.upperBound;

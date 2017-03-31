@@ -31,7 +31,7 @@ namespace TBTK{
 class IndexDescriptor{
 public:
 	/** Enum class determining the storage format. */
-	enum class Format {Ranges, Custom};
+	enum class Format {None, Ranges, Custom};
 
 	/** Constructor. */
 	IndexDescriptor(Format format);
@@ -72,6 +72,10 @@ private:
 	/** Index descriptor format. */
 	Format format;
 
+	class NoneFormat{
+	public:
+	};
+
 	class RangeFormat{
 	public:
 		/** Number of dimensions. */
@@ -89,6 +93,7 @@ private:
 
 	/** Union of descriptor formats. */
 	union Descriptor{
+		NoneFormat noneFormat;
 		RangeFormat rangeFormat;
 		CustomFormat customFormat;
 	};

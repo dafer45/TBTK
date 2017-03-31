@@ -23,15 +23,19 @@
 namespace TBTK{
 namespace Property{
 
-EigenValues::EigenValues(int size){
-	setSize(size);
+EigenValues::EigenValues(
+	int size
+) :
+	AbstractProperty(size)
+{
 }
 
-EigenValues::EigenValues(int size, const double *data){
-	setSize(size);
-	double *thisData = getDataRW();
-	for(int n = 0; n < size; n++)
-		thisData[n] = data[n];
+EigenValues::EigenValues(
+	int size,
+	const double *data
+) :
+	AbstractProperty(size, data)
+{
 }
 
 EigenValues::EigenValues(

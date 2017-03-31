@@ -24,7 +24,6 @@
 #define COM_DAFER45_TBTK_MAGNETIZATION
 
 #include "AbstractProperty.h"
-#include "IndexDescriptor.h"
 
 #include <complex>
 
@@ -53,29 +52,13 @@ public:
 	/** Destructor. */
 	~Magnetization();
 
-	/** Get the dimension of the magnetization. */
-	int getDimensions() const;
-
-	/** Get the ranges for the dimensions of the magnetization. */
-	const int* getRanges() const;
-
 	/** Assignment operator. */
 	Magnetization& operator=(const Magnetization &magnetization);
 
 	/** Move assignment operator. */
 	Magnetization& operator=(Magnetization &&magnetization);
 private:
-	/** IndexDescriptor describing the memory layout of the data. */
-	IndexDescriptor indexDescriptor;
 };
-
-inline int Magnetization::getDimensions() const{
-	return indexDescriptor.getDimensions();
-}
-
-inline const int* Magnetization::getRanges() const{
-	return indexDescriptor.getRanges();
-}
 
 };	//End namespace Property
 };	//End namespace TBTK
