@@ -31,6 +31,9 @@ namespace Property{
 template<typename DataType>
 class AbstractProperty{
 public:
+	/** Get block size. */
+	unsigned int getBlockSize() const;
+
 	/** Set size. */
 	void setSize(unsigned int size);
 
@@ -93,12 +96,22 @@ private:
 	/** IndexDescriptor describing the memory layout of the data. */
 	IndexDescriptor indexDescriptor;
 
+	/** Size of a single block of data needed to describe a single point
+	 *  refered to by an index. In particular:
+	 *  indexDescriptor.size()*blockSize = size. */
+	unsigned int blockSize;
+
 	/** Number of data elements. */
 	unsigned int size;
 
 	/** Data. */
 	DataType *data;
 };
+
+template<typename DataType>
+inline unsigned int AbstractProperty<DataType>::getBlockSize() const{
+	return blockSize;
+}
 
 template<typename DataType>
 inline void AbstractProperty<DataType>::setSize(unsigned int size){
@@ -139,6 +152,8 @@ AbstractProperty<DataType>::AbstractProperty(
 ) :
 	indexDescriptor(IndexDescriptor::Format::None)
 {
+	this.blockSize = blockSize;
+
 	size = blockSize;
 	data = new DataType[size];
 	for(unsigned int n = 0; n < size; n++)
@@ -152,6 +167,8 @@ AbstractProperty<DataType>::AbstractProperty(
 ) :
 	indexDescriptor(IndexDescriptor::Format::None)
 {
+	this.blockSize = blockSize;
+
 	size = blockSize;
 	this->data = new DataType[size];
 	for(unsigned int n = 0; n < size; n++)
@@ -166,6 +183,8 @@ AbstractProperty<DataType>::AbstractProperty(
 ) :
 	indexDescriptor(IndexDescriptor::Format::Ranges)
 {
+	this.blockSize = blockSize;
+
 	indexDescriptor.setDimensions(dimensions);
 	int *thisRanges = indexDescriptor.getRanges();
 	for(unsigned int n = 0; n < dimensions; n++)
@@ -186,6 +205,8 @@ AbstractProperty<DataType>::AbstractProperty(
 ) :
 	indexDescriptor(IndexDescriptor::Format::Ranges)
 {
+	this.blockSize = blockSize;
+
 	indexDescriptor.setDimensions(dimensions);
 	int *thisRanges = indexDescriptor.getRanges();
 	for(unsigned int n = 0; n < dimensions; n++)
@@ -203,6 +224,8 @@ AbstractProperty<DataType>::AbstractProperty(
 ) :
 	indexDescriptor(abstractProperty.indexDescriptor)
 {
+	blockSize = abstractProperty.blockSize;
+
 	size = abstractProperty.size;
 	if(abstractProperty.data == nullptr){
 		data = nullptr;
@@ -220,6 +243,8 @@ AbstractProperty<DataType>::AbstractProperty(
 ) :
 	indexDescriptor(std::move(abstractProperty.indexDescriptor))
 {
+	blockSize = abstractProperty.blockSize;
+
 	size = abstractProperty.size;
 	if(abstractProperty.data == nullptr){
 		data = nullptr;
@@ -242,6 +267,8 @@ AbstractProperty<DataType>& AbstractProperty<DataType>::operator=(
 ){
 	indexDescriptor = rhs.indexDescriptor;
 
+	blockSize = rhs.blockSize;
+
 	size = rhs.size;
 	if(rhs.data == nullptr){
 		data = nullptr;
@@ -261,6 +288,8 @@ AbstractProperty<DataType>& AbstractProperty<DataType>::operator=(
 ){
 	if(this != &rhs){
 		indexDescriptor = std::move(rhs.indexDescriptor);
+
+		blockSize = rhs.blockSize;
 
 		size = rhs.size;
 		if(rhs.data == nullptr){
