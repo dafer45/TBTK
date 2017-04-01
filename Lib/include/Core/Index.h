@@ -30,11 +30,12 @@
 namespace TBTK{
 
 enum {
-	IDX_SUM_ALL = -1, IDX_ALL = -1,
-	IDX_X = -2,
-	IDX_Y = -3,
-	IDX_Z = -4,
-	IDX_SPIN = -5
+	IDX_ALL = -1,
+	IDX_SUM_ALL = -2,
+	IDX_X = -3,
+	IDX_Y = -4,
+	IDX_Z = -5,
+	IDX_SPIN = -6
 };
 
 /** Flexible physical index for indexing arbitrary models. Each index can

@@ -135,6 +135,13 @@ void PropertyExtractor::calculate(
 		callback(this, memory, pattern, currentOffset);
 	}
 	else{
+		TBTKAssert(
+			pattern.at(currentSubindex) != IDX_ALL,
+			"PropertyExtractor::calculate()",
+			"IDX_ALL found at subindex " << currentSubindex << ".",
+			"Did you mean IDX_SUM_ALL, IDX_X, IDX_Y, IDX_Z, or IDX_SPIN?"
+		);
+
 		int nextOffsetMultiplier = offsetMultiplier;
 		if(pattern.at(currentSubindex) < IDX_SUM_ALL)
 			nextOffsetMultiplier *= ranges.at(currentSubindex);

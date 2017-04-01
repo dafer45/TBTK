@@ -152,7 +152,7 @@ AbstractProperty<DataType>::AbstractProperty(
 ) :
 	indexDescriptor(IndexDescriptor::Format::None)
 {
-	this.blockSize = blockSize;
+	this->blockSize = blockSize;
 
 	size = blockSize;
 	data = new DataType[size];
@@ -167,7 +167,7 @@ AbstractProperty<DataType>::AbstractProperty(
 ) :
 	indexDescriptor(IndexDescriptor::Format::None)
 {
-	this.blockSize = blockSize;
+	this->blockSize = blockSize;
 
 	size = blockSize;
 	this->data = new DataType[size];
@@ -183,7 +183,7 @@ AbstractProperty<DataType>::AbstractProperty(
 ) :
 	indexDescriptor(IndexDescriptor::Format::Ranges)
 {
-	this.blockSize = blockSize;
+	this->blockSize = blockSize;
 
 	indexDescriptor.setDimensions(dimensions);
 	int *thisRanges = indexDescriptor.getRanges();
@@ -205,7 +205,7 @@ AbstractProperty<DataType>::AbstractProperty(
 ) :
 	indexDescriptor(IndexDescriptor::Format::Ranges)
 {
-	this.blockSize = blockSize;
+	this->blockSize = blockSize;
 
 	indexDescriptor.setDimensions(dimensions);
 	int *thisRanges = indexDescriptor.getRanges();
