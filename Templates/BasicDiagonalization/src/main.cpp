@@ -23,12 +23,16 @@
  *  @author Kristofer Björnson
  */
 
+#include "Density.h"
 #include "DOS.h"
 #include "DiagonalizationSolver.h"
 #include "DPropertyExtractor.h"
 #include "EigenValues.h"
 #include "FileWriter.h"
+#include "LDOS.h"
+#include "Magnetization.h"
 #include "Model.h"
+#include "SpinPolarizedLDOS.h"
 
 #include <complex>
 
@@ -98,13 +102,41 @@ int main(int argc, char **argv){
 	const int RESOLUTION = 1000;
 	pe.setEnergyWindow(LOWER_BOUND, UPPER_BOUND, RESOLUTION);
 
-	//Extract eigenvalues and write these to file
-	Property::EigenValues ev = pe.getEigenValues();
-	FileWriter::writeEigenValues(ev);
+	//Extract density and write to file
+	Property::Density density = pe.calculateDensity(
+		{IDX_X,		IDX_Y,	IDX_SUM_ALL},
+		{SIZE_X,	SIZE_Y,	2}
+	);
+	FileWriter::writeDensity(density);
 
 	//Extract DOS and write to file
 	Property::DOS dos = pe.calculateDOS();
 	FileWriter::writeDOS(dos);
+
+	//Extract eigen values and write these to file
+	Property::EigenValues ev = pe.getEigenValues();
+	FileWriter::writeEigenValues(ev);
+
+	//Extract LDOS and write to file
+	Property::LDOS ldos = pe.calculateLDOS(
+		{IDX_X,		SIZE_Y/2,	IDX_SPIN},
+		{SIZE_X,	1,		2}
+	);
+	FileWriter::writeLDOS(ldos);
+
+	//Extract Magnetization and write to file
+	Property::Magnetization magnetization = pe.calculateMagnetization(
+		{IDX_X,		IDX_Y,	IDX_SPIN},
+		{SIZE_X,	SIZE_Y,	2}
+	);
+	FileWriter::writeMagnetization(magnetization);
+
+	//Extract SpinPolarizedLDOS and write to file
+	Property::SpinPolarizedLDOS spinPolarizedLDOS = pe.calculateSpinPolarizedLDOS(
+		{IDX_X,		SIZE_Y/2,	IDX_SPIN},
+		{SIZE_X,	1,		2}
+	);
+	FileWriter::writeSpinPolarizedLDOS(spinPolarizedLDOS);
 
 	return 0;
 }
