@@ -43,6 +43,21 @@ Magnetization::Magnetization(
 }
 
 Magnetization::Magnetization(
+	const IndexTree &indexTree
+) :
+	AbstractProperty(indexTree, 4)
+{
+}
+
+Magnetization::Magnetization(
+	const IndexTree &indexTree,
+	const complex<double> *data
+) :
+	AbstractProperty(indexTree, 4, data)
+{
+}
+
+Magnetization::Magnetization(
 	const Magnetization &magnetization
 ) :
 	AbstractProperty(magnetization)

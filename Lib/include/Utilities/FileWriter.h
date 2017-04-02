@@ -69,6 +69,12 @@ public:
 		std::string path = "/"
 	);
 
+	static void writeIndexTree(
+		const IndexTree &indexTree,
+		std::string name = "IndexTree",
+		std::string path = "/"
+	);
+
 	/** Write eigenvalues to file. */
 	static void writeEigenValues(
 		const Property::EigenValues &ev,
@@ -121,6 +127,15 @@ public:
 	/** Write custom n-dimensional arrays to file of type double. */
 	static void write(
 		const double *data,
+		int rank,
+		const int *dims,
+		std::string name,
+		std::string path = "/"
+	);
+
+	/** Write custom n-dimensional arrays to file of type double. */
+	static void write(
+		const std::complex<double> *data,
 		int rank,
 		const int *dims,
 		std::string name,

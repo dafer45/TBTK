@@ -42,8 +42,9 @@ Property::EigenValues APropertyExtractor::getEigenValues(){
 	const complex<double> *ev = aSolver->getEigenValues();
 
 	Property::EigenValues eigenValues(size);
+	double *data = eigenValues.getDataRW();
 	for(int n = 0; n < size; n++)
-		eigenValues.data[n] = real(ev[n]);
+		data[n] = real(ev[n]);
 
 	return eigenValues;
 }
@@ -84,10 +85,11 @@ Property::DOS APropertyExtractor::calculateDOS(){
 	const complex<double> *ev = aSolver->getEigenValues();
 
 	Property::DOS dos(lowerBound, upperBound, energyResolution);
+	double *data = dos.getDataRW();
 	for(int n = 0; n < aSolver->getNumEigenValues(); n++){
 		int e = (int)(((real(ev[n]) - lowerBound)/(upperBound - lowerBound))*energyResolution);
 		if(e >= 0 && e < energyResolution){
-			dos.data[e] += 1.;
+			data[e] += 1.;
 		}
 	}
 
@@ -132,11 +134,64 @@ Property::LDOS APropertyExtractor::calculateLDOS(
 
 	calculate(
 		calculateLDOSCallback,
-		(void*)ldos.data,
+		(void*)ldos.getData(),
 		pattern,
 		ranges,
 		0,
 		1
+	);
+
+	return ldos;
+}
+
+Property::LDOS APropertyExtractor::calculateLDOS(
+	initializer_list<Index> patterns
+){
+	TBTKAssert(
+		aSolver->getCalculateEigenVectors(),
+		"APropertyExtractor::calculateLDOS()",
+		"Eigen vectors not calculated.",
+		"Use ArnoldiSolver::setCalculateEigenVectors() to ensure eigen vectors are calculated."
+	);
+
+	//hint[0] is an array of doubles, hint[1] is an array of ints
+	//hint[0][0]: upperBound
+	//hint[0][1]: lowerBound
+	//hint[1][0]: resolution
+	//hint[1][1]: spin_index
+	hint = new void*[2];
+	((double**)hint)[0] = new double[2];
+	((int**)hint)[1] = new int[1];
+	((double**)hint)[0][0] = upperBound;
+	((double**)hint)[0][1] = lowerBound;
+	((int**)hint)[1][0] = energyResolution;
+
+	IndexTree allIndices = generateIndexTree(
+		patterns,
+		*aSolver->getModel()->getHoppingAmplitudeSet(),
+		false,
+		true
+	);
+
+	IndexTree memoryLayout = generateIndexTree(
+		patterns,
+		*aSolver->getModel()->getHoppingAmplitudeSet(),
+		true,
+		true
+	);
+
+	Property::LDOS ldos(
+		memoryLayout,
+		lowerBound,
+		upperBound,
+		energyResolution
+	);
+
+	calculate(
+		calculateLDOSCallback,
+		allIndices,
+		memoryLayout,
+		ldos
 	);
 
 	return ldos;
@@ -200,11 +255,69 @@ Property::SpinPolarizedLDOS APropertyExtractor::calculateSpinPolarizedLDOS(
 
 	calculate(
 		calculateSpinPolarizedLDOSCallback,
-		(void*)spinPolarizedLDOS.data,
+		(void*)spinPolarizedLDOS.getDataRW(),
 		pattern,
 		ranges,
 		0,
 		1
+	);
+
+	delete [] ((double**)hint)[0];
+	delete [] ((int**)hint)[1];
+	delete [] (void**)hint;
+
+	return spinPolarizedLDOS;
+}
+
+Property::SpinPolarizedLDOS APropertyExtractor::calculateSpinPolarizedLDOS(
+	initializer_list<Index> patterns
+){
+	TBTKAssert(
+		aSolver->getCalculateEigenVectors(),
+		"APropertyExtractor::calculateSpinPolarizedLDOS()",
+		"Eigen vectors not calculated.",
+		"Use ArnoldiSolver::setCalculateEigenVectors() to ensure eigen vectors are calculated."
+	);
+
+	//hint[0] is an array of doubles, hint[1] is an array of ints
+	//hint[0][0]: upperBound
+	//hint[0][1]: lowerBound
+	//hint[1][0]: resolution
+	//hint[1][1]: spin_index
+	hint = new void*[2];
+	((double**)hint)[0] = new double[2];
+	((int**)hint)[1] = new int[2];
+	((double**)hint)[0][0] = upperBound;
+	((double**)hint)[0][1] = lowerBound;
+	((int**)hint)[1][0] = energyResolution;
+
+	IndexTree allIndices = generateIndexTree(
+		patterns,
+		*aSolver->getModel()->getHoppingAmplitudeSet(),
+		false,
+		true
+	);
+
+	IndexTree memoryLayout = generateIndexTree(
+		patterns,
+		*aSolver->getModel()->getHoppingAmplitudeSet(),
+		true,
+		true
+	);
+
+	Property::SpinPolarizedLDOS spinPolarizedLDOS(
+		memoryLayout,
+		lowerBound,
+		upperBound,
+		energyResolution
+	);
+
+	calculate(
+		calculateSpinPolarizedLDOSCallback,
+		allIndices,
+		memoryLayout,
+		spinPolarizedLDOS,
+		&(((int**)hint)[1][1])
 	);
 
 	delete [] ((double**)hint)[0];

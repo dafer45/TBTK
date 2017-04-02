@@ -27,6 +27,7 @@ namespace TBTK{
 IndexTree::IndexTree(){
 	indexIncluded = false;
 	wildcardIndex = false;
+	wildcardType = 0;
 	linearIndex = -1;
 	size = -1;
 }
@@ -49,16 +50,35 @@ void IndexTree::add(const Index &index, unsigned int subindex){
 		if(currentIndex < 0){
 			if(!wildcardIndex){
 				if(children.size() > 0){
-					Streams::err << "Error in IndexTree::add(). Tried to add index with wild card in subindex position for which non wild card indices already have been added:\n";
+					Streams::err
+						<< "Error in IndexTree::add(). "
+						<< "Tried to add index with "
+						<< "wild card in subindex "
+						<< "position for which non "
+						<< "wild card indices already "
+						<< "have been added:\n";
 					index.print();
 					exit(1);
 				}
 				wildcardIndex = true;
+				wildcardType = currentIndex;
+			}
+			if(currentIndex != wildcardType){
+				Streams::err << "Error in IndexTree::add(). "
+					<< "Tried to add index with wild card "
+					<< "in subindex position for which "
+					<< "wild card with different wild card"
+					<< " type already have been added:\n";
+				index.print();
+				exit(1);
 			}
 			currentIndex = 0;
 		}
 		else if(wildcardIndex){
-			Streams::err << "Error in IndexTree::add(). Unable to add index because an index with a wild card in subindex position " << subindex << " already have been added:\n";
+			Streams::err << "Error in IndexTree::add(). Unable to "
+				<< "add index because an index with a wild "
+				<< "card in subindex position " << subindex
+				<< " already have been added:\n";
 			index.print();
 			exit(1);
 		}
@@ -75,7 +95,9 @@ void IndexTree::add(const Index &index, unsigned int subindex){
 		//different number of subindices is only allowed if the Indices
 		//differ in one of their common indices.
 		if(indexIncluded){
-			Streams::err << "Error in IndexTree::add, index incompatible with previously added index at subindex " << subindex << ":\n";
+			Streams::err << "Error in IndexTree::add(), index "
+				<< "incompatible with previously added index "
+				<< "at subindex " << subindex << ":\n";
 			index.print();
 			exit(1);
 		}
@@ -92,7 +114,9 @@ void IndexTree::add(const Index &index, unsigned int subindex){
 		//if the HoppingAmplitudes differ in one of their common
 		//indices.
 		if(children.size() != 0){
-			Streams::err << "Error in IndexTree::add, index incompatible with previously added index at subindex " << subindex << ":\n";
+			Streams::err << "Error in IndexTree::add(), index "
+				<< "incompatible with previously added index "
+				<< "at subindex " << subindex << ":\n";
 			index.print();
 			exit(1);
 		}
@@ -122,13 +146,38 @@ int IndexTree::generateLinearMap(int i){
 	return i;
 }
 
-int IndexTree::getLinearIndex(const Index &index, bool ignoreWildcards) const{
+/*int IndexTree::getLinearIndex(const Index &index, bool ignoreWildcards) const{
 	return getLinearIndex(index, 0, ignoreWildcards);
+}*/
+
+int IndexTree::getLinearIndex(const Index &index, SearchMode searchMode) const{
+	return getLinearIndex(index, 0, searchMode);
 }
 
-int IndexTree::getLinearIndex(const Index &index, unsigned int subindex, bool ignoreWildcards) const{
-	if(ignoreWildcards && wildcardIndex)
-		return children.at(0).getLinearIndex(index, subindex, ignoreWildcards);
+int IndexTree::getLinearIndex(
+	const Index &index,
+	unsigned int subindex,
+	SearchMode searchMode
+//	bool ignoreWildcards
+) const{
+/*	if(ignoreWildcards && wildcardIndex)
+		return children.at(0).getLinearIndex(index, subindex, ignoreWildcards);*/
+	switch(searchMode){
+	case SearchMode::StrictMatch:
+		break;
+	case SearchMode::IgnoreWildcards:
+		if(wildcardIndex)
+			return children.at(0).getLinearIndex(index, subindex, searchMode);
+		break;
+	case SearchMode::MatchWildcards:
+		break;
+	default:
+		TBTKExit(
+			"IndexTree::getLinearIndex()",
+			"Unknown SearchMode.",
+			"This should never happen, contact the developer."
+		);
+	}
 
 	if(subindex < index.size()){
 		//If the current subindex is not the last, continue to the next
@@ -141,15 +190,25 @@ int IndexTree::getLinearIndex(const Index &index, unsigned int subindex, bool ig
 				currentIndex = 0;
 			}
 			else{
-				Streams::err << "Error in IndexTree::getLinearIndex. Subindex " << subindex << " should not be a wild card index:\n";
+				Streams::err << "Error in "
+					<< "IndexTree::getLinearIndex(). "
+					<< "Subindex " << subindex << " should"
+					<< " not be a wild card index:\n";
 				index.print();
 				exit(1);
 			}
 		}
 		else if(wildcardIndex){
-			Streams::err << "Error in IndexTree::getLinearIndex. Subindex " << subindex << " has to be a wild card index:\n";
-			index.print();
-			exit(1);
+			if(searchMode == SearchMode::MatchWildcards){
+				currentIndex = 0;
+			}
+			else{
+				Streams::err << "Error in IndexTree::getLinearIndex()."
+					<< " Subindex " << subindex << " has to be a "
+					<< "wild card index:\n";
+				index.print();
+				exit(1);
+			}
 		}
 		//Error detection:
 		//If the subindex is bigger than the current number of child
@@ -160,7 +219,12 @@ int IndexTree::getLinearIndex(const Index &index, unsigned int subindex, bool ig
 			exit(1);
 		}
 		//Continue to the next node level.
-		return children.at(currentIndex).getLinearIndex(index, subindex+1, ignoreWildcards);
+		return children.at(currentIndex).getLinearIndex(
+			index,
+			subindex+1,
+			searchMode
+//			ignoreWildcards
+		);
 	}
 	else{
 		//If the current subindex is the last, return linear index.
@@ -168,7 +232,8 @@ int IndexTree::getLinearIndex(const Index &index, unsigned int subindex, bool ig
 			return linearIndex;
 		}
 		else{
-			Streams::err << "Error, index not included in the IndexTree: ";
+			Streams::err << "Error, index not included in the "
+				<< "IndexTree: ";
 			index.print();
 			exit(1);
 		}
@@ -189,6 +254,21 @@ Index IndexTree::getPhysicalIndex(int linearIndex) const{
 	return Index(indices);
 }
 
+vector<unsigned int> IndexTree::getSubindicesMatching(
+	int i,
+	const Index &index,
+	SearchMode searchMode
+) const{
+	int linearIndex = getLinearIndex(index, searchMode);
+	Index physicalIndex = getPhysicalIndex(linearIndex);
+	vector<unsigned int> matches;
+	for(unsigned int n = 0; n < physicalIndex.size(); n++)
+		if(physicalIndex.at(n) == i)
+			matches.push_back(n);
+
+	return matches;
+}
+
 void IndexTree::getPhysicalIndex(int linearIndex, vector<int> *indices) const{
 	if(this->linearIndex != -1)
 		return;
@@ -202,7 +282,7 @@ void IndexTree::getPhysicalIndex(int linearIndex, vector<int> *indices) const{
 
 		if(min <= linearIndex && linearIndex <= max){
 			if(wildcardIndex)
-				indices->push_back(IDX_ALL);
+				indices->push_back(wildcardType);
 			else
 				indices->push_back(n);
 			children.at(n).getPhysicalIndex(linearIndex, indices);
@@ -239,4 +319,74 @@ int IndexTree::getMaxIndex() const{
 	return max;
 }
 
-};
+IndexTree::Iterator::Iterator(const IndexTree *indexTree){
+	this->indexTree = indexTree;
+	currentIndex.push_back(0);
+	skipNextIndex = false;
+	searchNext(this->indexTree, 0);
+}
+
+void IndexTree::Iterator::reset(){
+	currentIndex.clear();
+	currentIndex.push_back(0);
+	skipNextIndex = false;
+	searchNext(indexTree, 0);
+}
+
+void IndexTree::Iterator::searchNext(){
+	skipNextIndex = true;
+	searchNext(indexTree, 0);
+}
+
+bool IndexTree::Iterator::searchNext(
+	const IndexTree *indexTree,
+	unsigned int subindex
+){
+	if(indexTree->children.size() == 0){
+		if(indexTree->indexIncluded){
+			if(skipNextIndex)
+				skipNextIndex = false;
+			else
+				return true;
+		}
+	}
+
+	unsigned int  n = currentIndex.at(subindex);
+	while(n < indexTree->children.size()){
+		if(subindex+1 == currentIndex.size())
+			currentIndex.push_back(0);
+		if(searchNext(&indexTree->children.at(n), subindex+1))
+			return true;
+
+		currentIndex.pop_back();
+		n = ++currentIndex.back();
+	}
+
+	return false;
+}
+
+const Index* IndexTree::Iterator::getIndex() const{
+	if(currentIndex.at(0) == (int)indexTree->children.size())
+		return NULL;
+
+	Index *index = new Index({});
+
+	const IndexTree *indexTreeBranch = this->indexTree;
+	for(unsigned int n = 0; n < currentIndex.size()-1; n++){
+		if(indexTreeBranch->wildcardIndex)
+			index->push_back(indexTreeBranch->wildcardType);
+		else
+			index->push_back(currentIndex.at(n));
+
+		if(n < currentIndex.size()-1)
+			indexTreeBranch = &indexTreeBranch->children.at(currentIndex.at(n));
+	}
+
+	return index;
+}
+
+IndexTree::Iterator IndexTree::begin() const{
+	return Iterator(this);
+}
+
+};	//End of namespace TBTK

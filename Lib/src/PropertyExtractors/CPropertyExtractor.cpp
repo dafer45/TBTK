@@ -246,6 +246,35 @@ Property::Density CPropertyExtractor::calculateDensity(
 	return density;
 }
 
+Property::Density CPropertyExtractor::calculateDensity(
+	std::initializer_list<Index> patterns
+){
+	IndexTree allIndices = generateIndexTree(
+		patterns,
+		*cSolver->getModel()->getHoppingAmplitudeSet(),
+		false,
+		false
+	);
+
+	IndexTree memoryLayout = generateIndexTree(
+		patterns,
+		*cSolver->getModel()->getHoppingAmplitudeSet(),
+		true,
+		true
+	);
+
+	Property::Density density(memoryLayout);
+
+	calculate(
+		calculateDensityCallback,
+		allIndices,
+		memoryLayout,
+		density
+	);
+
+	return density;
+}
+
 Property::Magnetization CPropertyExtractor::calculateMagnetization(
 	Index pattern,
 	Index ranges
@@ -282,7 +311,40 @@ Property::Magnetization CPropertyExtractor::calculateMagnetization(
 		pattern,
 		ranges,
 		0,
-		1
+		/*1*/4
+	);
+
+	delete [] (int*)hint;
+
+	return magnetization;
+}
+
+Property::Magnetization CPropertyExtractor::calculateMagnetization(
+	std::initializer_list<Index> patterns
+){
+	IndexTree allIndices = generateIndexTree(
+		patterns,
+		*cSolver->getModel()->getHoppingAmplitudeSet(),
+		false,
+		true
+	);
+
+	IndexTree memoryLayout = generateIndexTree(
+		patterns,
+		*cSolver->getModel()->getHoppingAmplitudeSet(),
+		true,
+		true
+	);
+
+	Property::Magnetization magnetization(memoryLayout);
+
+	hint = new int[1];
+	calculate(
+		calculateMAGCallback,
+		allIndices,
+		memoryLayout,
+		magnetization,
+		(int*)hint
 	);
 
 	delete [] (int*)hint;
@@ -310,7 +372,41 @@ Property::LDOS CPropertyExtractor::calculateLDOS(Index pattern, Index ranges){
 		pattern,
 		ranges,
 		0,
-		1
+		/*1*/energyResolution
+	);
+
+	return ldos;
+}
+
+Property::LDOS CPropertyExtractor::calculateLDOS(
+	std::initializer_list<Index> patterns
+){
+	IndexTree allIndices = generateIndexTree(
+		patterns,
+		*cSolver->getModel()->getHoppingAmplitudeSet(),
+		false,
+		true
+	);
+
+	IndexTree memoryLayout = generateIndexTree(
+		patterns,
+		*cSolver->getModel()->getHoppingAmplitudeSet(),
+		true,
+		true
+	);
+
+	Property::LDOS ldos(
+		memoryLayout,
+		lowerBound,
+		upperBound,
+		energyResolution
+	);
+
+	calculate(
+		calculateLDOSCallback,
+		allIndices,
+		memoryLayout,
+		ldos
 	);
 
 	return ldos;
@@ -358,7 +454,46 @@ Property::SpinPolarizedLDOS CPropertyExtractor::calculateSpinPolarizedLDOS(
 		pattern,
 		ranges,
 		0,
-		1
+		/*1*/4*energyResolution
+	);
+
+	delete [] (int*)hint;
+
+	return spinPolarizedLDOS;
+}
+
+Property::SpinPolarizedLDOS CPropertyExtractor::calculateSpinPolarizedLDOS(
+	std::initializer_list<Index> patterns
+){
+	hint = new int[1];
+
+	IndexTree allIndices = generateIndexTree(
+		patterns,
+		*cSolver->getModel()->getHoppingAmplitudeSet(),
+		false,
+		true
+	);
+
+	IndexTree memoryLayout = generateIndexTree(
+		patterns,
+		*cSolver->getModel()->getHoppingAmplitudeSet(),
+		true,
+		true
+	);
+
+	Property::SpinPolarizedLDOS spinPolarizedLDOS(
+		memoryLayout,
+		lowerBound,
+		upperBound,
+		energyResolution
+	);
+
+	calculate(
+		calculateSP_LDOSCallback,
+		allIndices,
+		memoryLayout,
+		spinPolarizedLDOS,
+		(int*)hint
 	);
 
 	delete [] (int*)hint;
@@ -448,7 +583,7 @@ void CPropertyExtractor::calculateMAGCallback(
 				);
 			}
 
-			((complex<double>*)mag)[4*offset + n] += weight*(-i)*greensFunctionData[e]/M_PI*dE;
+			((complex<double>*)mag)[/*4**/offset + n] += weight*(-i)*greensFunctionData[e]/M_PI*dE;
 		}
 
 		delete greensFunction;
@@ -472,7 +607,7 @@ void CPropertyExtractor::calculateLDOSCallback(
 
 	const double dE = (pe->upperBound - pe->lowerBound)/pe->energyResolution;
 	for(int n = 0; n < pe->energyResolution; n++)
-		((double*)ldos)[pe->energyResolution*offset + n] += imag(greensFunctionData[n])/M_PI*dE;
+		((double*)ldos)[/*pe->energyResolution**/offset + n] += imag(greensFunctionData[n])/M_PI*dE;
 
 	delete greensFunction;
 }
@@ -501,7 +636,7 @@ void CPropertyExtractor::calculateSP_LDOSCallback(
 		const complex<double> *greensFunctionData = greensFunction->getArrayData();
 
 		for(int e = 0; e < pe->energyResolution; e++)
-			((complex<double>*)sp_ldos)[4*pe->energyResolution*offset + 4*e + n] += -i*greensFunctionData[e]/M_PI*dE;
+			((complex<double>*)sp_ldos)[/*4*pe->energyResolution**/offset + 4*e + n] += -i*greensFunctionData[e]/M_PI*dE;
 
 		delete greensFunction;
 	}

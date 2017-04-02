@@ -49,6 +49,23 @@ public:
 		const double *data
 	);
 
+	/** Constructor. */
+	SpectralFunction(
+		const IndexTree &indexTree,
+		double lowerBound,
+		double upperBound,
+		int resolution
+	);
+
+	/** Constructor. */
+	SpectralFunction(
+		const IndexTree &indexTree,
+		double lowerBound,
+		double upperBound,
+		int resolution,
+		const double *data
+	);
+
 	/** Copy constructor. */
 	SpectralFunction(const SpectralFunction &spectralFunction);
 

@@ -41,6 +41,21 @@ Density::Density(
 }
 
 Density::Density(
+	const IndexTree &indexTree
+) :
+	AbstractProperty(indexTree, 1)
+{
+}
+
+Density::Density(
+	const IndexTree &indexTree,
+	const double *data
+) :
+	AbstractProperty(indexTree, 1, data)
+{
+}
+
+Density::Density(
 	const Density &density
 ) :
 	AbstractProperty(density)

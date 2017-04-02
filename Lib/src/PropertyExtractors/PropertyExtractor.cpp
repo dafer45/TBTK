@@ -60,9 +60,29 @@ Property::Density PropertyExtractor::calculateDensity(
 	);
 }
 
+Property::Density PropertyExtractor::calculateDensity(
+	initializer_list<Index> patterns
+){
+	TBTKExit(
+		"PropertyExtractor::calculateDensity()",
+		"The chosen property extractor does not support this function call.",
+		"See the API for list of supported calls."
+	);
+}
+
 Property::Magnetization PropertyExtractor::calculateMagnetization(
 	Index pattern,
 	Index ranges
+){
+	TBTKExit(
+		"PropertyExtractor::calculateMagnetization()",
+		"The chosen property extractor does not support this function call.",
+		"See the API for list of supported calls."
+	);
+}
+
+Property::Magnetization PropertyExtractor::calculateMagnetization(
+	initializer_list<Index> patterns
 ){
 	TBTKExit(
 		"PropertyExtractor::calculateMagnetization()",
@@ -82,9 +102,29 @@ Property::LDOS PropertyExtractor::calculateLDOS(
 	);
 }
 
+Property::LDOS PropertyExtractor::calculateLDOS(
+	initializer_list<Index>	pattern
+){
+	TBTKExit(
+		"PropertyExtractor::calculateLDOS()",
+		"The chosen property extractor does not support this function call.",
+		"See the API for list of supported calls."
+	);
+}
+
 Property::SpinPolarizedLDOS PropertyExtractor::calculateSpinPolarizedLDOS(
 	Index pattern,
 	Index ranges
+){
+	TBTKExit(
+		"PropertyExtractor::calculateSpinPolarizedLDOS()",
+		"The chosen property extractor does not support this function call.",
+		"See the API for list of supported calls."
+	);
+}
+
+Property::SpinPolarizedLDOS PropertyExtractor::calculateSpinPolarizedLDOS(
+	initializer_list<Index> pattern
 ){
 	TBTKExit(
 		"PropertyExtractor::calculateSpinPolarizedLDOS()",
@@ -192,6 +232,57 @@ void PropertyExtractor::getLoopRanges(
 		if(pattern.at(n) < IDX_SUM_ALL)
 			(*lRanges)[counter++] = ranges.at(n);
 	}
+}
+
+IndexTree PropertyExtractor::generateIndexTree(
+	std::initializer_list<Index> patterns,
+	const HoppingAmplitudeSet &hoppingAmplitudeSet,
+	bool keepSumationWildcards,
+	bool keepSpinWildcards
+){
+	IndexTree indexTree;
+
+	for(unsigned int n = 0; n < patterns.size(); n++){
+		Index pattern = *(patterns.begin() + n);
+		for(unsigned int c = 0; c < pattern.size(); c++){
+			switch(pattern.at(c)){
+			case IDX_ALL:
+			case IDX_SUM_ALL:
+			case IDX_SPIN:
+				pattern.at(c) = IDX_ALL;
+				break;
+			default:
+				TBTKAssert(
+					pattern.at(c) >= 0,
+					"PropertyExtractor::generateIndexTree()",
+					"Subindex " << c << " of pattern " << n << " is invalid.",
+					"Must be non-negative, IDX_ALL, IDX_SUM_ALL, or IDX_SPIN."
+				);
+				break;
+			}
+			if(pattern.at(c) < 0)
+				pattern.at(c) = IDX_ALL;
+		}
+
+		vector<Index> indices = hoppingAmplitudeSet.getIndexList(
+			pattern
+		);
+		Index p = *(patterns.begin() + n);
+		for(unsigned int c = 0; c < indices.size(); c++){
+			for(unsigned int m = 0; m < p.size(); m++){
+				if(keepSumationWildcards && p.at(m) == IDX_SUM_ALL)
+					indices.at(c).at(m) = IDX_SUM_ALL;
+				if(keepSpinWildcards && p.at(m) == IDX_SPIN)
+					indices.at(c).at(m) = IDX_SPIN;
+			}
+		}
+		for(unsigned int c = 0; c < indices.size(); c++)
+			indexTree.add(indices.at(c));
+	}
+
+	indexTree.generateLinearMap();
+
+	return indexTree;
 }
 
 };	//End of namespace TBTK

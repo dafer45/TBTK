@@ -182,6 +182,17 @@ IndexDescriptor& IndexDescriptor::operator=(IndexDescriptor &&rhs){
 	return *this;
 }
 
+void IndexDescriptor::setIndexTree(const IndexTree &indexTree){
+	TBTKAssert(
+		format == Format::Custom,
+		"IndexDescriptor::setIndexTree()",
+		"The IndexDescriptor is not of the format Format::Custom.",
+		""
+	);
+
+	descriptor.customFormat.indexTree = new IndexTree(indexTree);
+}
+
 unsigned int IndexDescriptor::getSize() const{
 	switch(format){
 	case Format::None:

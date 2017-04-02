@@ -24,6 +24,7 @@
 #define COM_DAFER45_TBTK_DENSITY
 
 #include "AbstractProperty.h"
+#include "IndexTree.h"
 
 namespace TBTK{
 namespace Property{
@@ -36,6 +37,12 @@ public:
 
 	/** Constructor. */
 	Density(int dimensions, const int *ranges, const double *data);
+
+	/** Constructor. */
+	Density(const IndexTree &indexTree);
+
+	/** Constructor. */
+	Density(const IndexTree &indexTree, const double *data);
 
 	/** Copy constructor. */
 	Density(const Density &density);

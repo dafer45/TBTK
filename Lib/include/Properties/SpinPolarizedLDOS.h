@@ -55,6 +55,23 @@ public:
 		const std::complex<double> *data
 	);
 
+	/** Constructor. */
+	SpinPolarizedLDOS(
+		const IndexTree &indexTree,
+		double lowerBound,
+		double upperBound,
+		int resolution
+	);
+
+	/** Constructor. */
+	SpinPolarizedLDOS(
+		const IndexTree &indexTree,
+		double lowerBound,
+		double upperBound,
+		int resolution,
+		const std::complex<double> *data
+	);
+
 	/** Copy constructor. */
 	SpinPolarizedLDOS(const SpinPolarizedLDOS &spinPolarizedLDOS);
 

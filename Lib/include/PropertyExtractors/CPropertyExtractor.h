@@ -31,6 +31,7 @@
 #include "PropertyExtractor.h"
 #include "SpinPolarizedLDOS.h"
 
+#include <initializer_list>
 #include <iostream>
 
 namespace TBTK{
@@ -83,19 +84,39 @@ public:
 		Index ranges
 	);
 
+	/** Overrides PropertyExtractor::calculateDensity(). */
+	virtual Property::Density calculateDensity(
+		std::initializer_list<Index> patterns
+	);
+
 	/** Overrides PropertyExtractor::calculateMagnetization(). */
 	virtual Property::Magnetization calculateMagnetization(
 		Index pattern,
 		Index ranges
 	);
 
+	/** Overrides PropertyExtractor::calculateMagnetization(). */
+	virtual Property::Magnetization calculateMagnetization(
+		std::initializer_list<Index> patterns
+	);
+
 	/** Overrides PropertyExtractor::calculateLDOS(). */
 	virtual Property::LDOS calculateLDOS(Index pattern, Index ranges);
+
+	/** Overrides PropertyExtractor::calculateLDOS(). */
+	virtual Property::LDOS calculateLDOS(
+		std::initializer_list<Index> pattern
+	);
 
 	/** Overrides PropertyExtractor::calculateSpinPolarizedLDOS(). */
 	virtual Property::SpinPolarizedLDOS calculateSpinPolarizedLDOS(
 		Index pattern,
 		Index ranges
+	);
+
+	/** Overrides PropertyExtractor::calculateSpinPolarizedLDOS(). */
+	virtual Property::SpinPolarizedLDOS calculateSpinPolarizedLDOS(
+		std::initializer_list<Index> pattern
 	);
 private:
 	/** ChebyshevSolver to work on. */

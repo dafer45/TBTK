@@ -43,6 +43,15 @@ public:
 		const std::complex<double> *data
 	);
 
+	/** Constructor. */
+	Magnetization(const IndexTree &indexTree);
+
+	/** Constructor. */
+	Magnetization(
+		const IndexTree &indexTree,
+		const std::complex<double> *data
+	);
+
 	/** Copy constructor. */
 	Magnetization(const Magnetization &magnetization);
 

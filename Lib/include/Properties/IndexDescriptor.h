@@ -66,6 +66,15 @@ public:
 	/** Get ranges. */
 	const int* getRanges() const;
 
+	/** Set IndexTree. */
+	void setIndexTree(const IndexTree &indexTree);
+
+	/** Get IndexTree. */
+	const IndexTree& getIndexTree() const;
+
+	/** Get linear index. */
+	unsigned int getLinearIndex(const Index &index) const;
+
 	/** Get size. */
 	unsigned int getSize() const;
 private:
@@ -147,6 +156,31 @@ inline const int* IndexDescriptor::getRanges() const{
 		""
 	);
 	return descriptor.rangeFormat.ranges;
+}
+
+inline const IndexTree& IndexDescriptor::getIndexTree() const{
+	TBTKAssert(
+		format == Format::Custom,
+		"IndexDescriptor::getIndexTree()",
+		"The IndexDescriptor is not of the format Format::Custom.",
+		""
+	);
+
+	return *descriptor.customFormat.indexTree;
+}
+
+inline unsigned int IndexDescriptor::getLinearIndex(const Index &index) const{
+	TBTKAssert(
+		format == Format::Custom,
+		"IndexDescriptor::getOffset()",
+		"The IndexDescriptor is not of the format Format::Custom.",
+		""
+	);
+
+	return descriptor.customFormat.indexTree->getLinearIndex(
+		index,
+		IndexTree::SearchMode::MatchWildcards
+	);
 }
 
 };	//End namespace TBTK

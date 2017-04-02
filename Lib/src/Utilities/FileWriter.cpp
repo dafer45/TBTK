@@ -248,6 +248,70 @@ void FileWriter::writeGeometry(
 	}
 }
 
+void FileWriter::writeIndexTree(
+	const IndexTree &indexTree,
+	string name,
+	string path
+){
+	init();
+
+	std::vector<int> serializedIndices;
+	IndexTree::Iterator it = indexTree.begin();
+	const Index *index;
+	while((index = it.getIndex())){
+		serializedIndices.push_back(index->size());
+		for(unsigned int n = 0; n < index->size(); n++)
+			serializedIndices.push_back(index->at(n));
+
+		it.searchNext();
+	}
+
+	const int RANK = 1;
+	hsize_t dims[RANK] = {serializedIndices.size()};
+	try{
+		Exception::dontPrint();
+		H5File file(filename, H5F_ACC_RDWR);
+
+		stringstream ss;
+		ss << path;
+		if(path.back() != '/')
+			ss << "/";
+		ss << name;
+
+		DataSpace dataspace = DataSpace(RANK, dims);
+		DataSet dataset = DataSet(file.createDataSet(ss.str(), PredType::STD_I32BE, dataspace));
+		dataset.write(serializedIndices.data(), PredType::NATIVE_INT);
+		dataspace.close();
+		dataset.close();
+
+		file.close();
+	}
+	catch(FileIException error){
+		Streams::log << error.getCDetailMsg() << "\n";
+		TBTKExit(
+			"FileWriter::writeIndexTree()",
+			"While writing to " << name << ".",
+			""
+		);
+	}
+	catch(DataSetIException error){
+		Streams::log << error.getCDetailMsg() << "\n";
+		TBTKExit(
+			"FileWriter::writeIndexTree()",
+			"While writing to " << name << ".",
+			""
+		);
+	}
+	catch(DataSpaceIException error){
+		Streams::log << error.getCDetailMsg() << "\n";
+		TBTKExit(
+			"FileWriter::writeIndexTree()",
+			"While writing to " << name << ".",
+			""
+		);
+	}
+}
+
 void FileWriter::writeEigenValues(
 	const Property::EigenValues &ev,
 	string name,
@@ -373,52 +437,94 @@ void FileWriter::writeDensity(
 ){
 	init();
 
-	int rank = density.getDimensions();
-	const int *dims = density.getRanges();
+	int attributes[1];
+	attributes[0] = static_cast<int>(density.getFormat());
+	string attributeNames[1];
+	attributeNames[0] = "Format";
+	stringstream ss;
+	ss << name << "Attributes";
+	writeAttributes(
+		attributes,
+		attributeNames,
+		1,
+		ss.str(),
+		path
+	);
 
-	hsize_t density_dims[rank];
-	for(int n = 0; n < rank; n++)
-		density_dims[n] = dims[n];
+	switch(density.getFormat()){
+	case IndexDescriptor::Format::Ranges:
+	{
+		int rank = density.getDimensions();
+		const int *dims = density.getRanges();
 
-	try{
+		hsize_t density_dims[rank];
+		for(int n = 0; n < rank; n++)
+			density_dims[n] = dims[n];
+
+		try{
+			stringstream ss;
+			ss << path;
+			if(path.back() != '/')
+				ss << "/";
+			ss << name;
+
+			Exception::dontPrint();
+			H5File file(filename, H5F_ACC_RDWR);
+
+			DataSpace dataspace = DataSpace(rank, density_dims);
+			DataSet dataset = DataSet(file.createDataSet(name, PredType::IEEE_F64BE, dataspace));
+			dataset.write(density.getData(), PredType::NATIVE_DOUBLE);
+			dataspace.close();
+			dataset.close();
+			file.close();
+		}
+		catch(FileIException error){
+			Streams::log << error.getCDetailMsg() << "\n";
+			TBTKExit(
+				"FileWriter::writeDensity()",
+				"While writing to " << name << ".",
+				""
+			);
+		}
+		catch(DataSetIException error){
+			Streams::log << error.getCDetailMsg() << "\n";
+			TBTKExit(
+				"FileWriter::writeDensity()",
+				"While writing to " << name << ".",
+				""
+			);
+		}
+		catch(DataSpaceIException error){
+			Streams::log << error.getCDetailMsg() << "\n";
+			TBTKExit(
+				"FileWriter::writeDensity()",
+				"While writing to " << name << ".",
+				""
+			);
+		}
+		break;
+	}
+	case IndexDescriptor::Format::Custom:
+	{
 		stringstream ss;
-		ss << path;
-		if(path.back() != '/')
-			ss << "/";
-		ss << name;
-
-		Exception::dontPrint();
-		H5File file(filename, H5F_ACC_RDWR);
-
-		DataSpace dataspace = DataSpace(rank, density_dims);
-		DataSet dataset = DataSet(file.createDataSet(name, PredType::IEEE_F64BE, dataspace));
-		dataset.write(density.getData(), PredType::NATIVE_DOUBLE);
-		dataspace.close();
-		dataset.close();
-		file.close();
-	}
-	catch(FileIException error){
-		Streams::log << error.getCDetailMsg() << "\n";
-		TBTKExit(
-			"FileWriter::writeDensity()",
-			"While writing to " << name << ".",
-			""
+		ss << name << "IndexTree";
+		writeIndexTree(
+			density.getIndexDescriptor().getIndexTree(),
+			ss.str(),
+			path
 		);
+
+		const int RANK = 1;
+		int dims[RANK] = {(int)density.getSize()};
+		write(density.getData(), RANK, dims, name, path);
+
+		break;
 	}
-	catch(DataSetIException error){
-		Streams::log << error.getCDetailMsg() << "\n";
+	default:
 		TBTKExit(
 			"FileWriter::writeDensity()",
-			"While writing to " << name << ".",
-			""
-		);
-	}
-	catch(DataSpaceIException error){
-		Streams::log << error.getCDetailMsg() << "\n";
-		TBTKExit(
-			"FileWriter::writeDensity()",
-			"While writing to " << name << ".",
-			""
+			"Storage format not supported.",
+			"This should never happen, contact the developer."
 		);
 	}
 }
@@ -430,70 +536,113 @@ void FileWriter::writeMagnetization(
 ){
 	init();
 
-	int rank = magnetization.getDimensions();
-	const int *dims = magnetization.getRanges();
-	const complex<double> *data = magnetization.getData();
+	int attributes[1];
+	attributes[0] = static_cast<int>(magnetization.getFormat());
+	string attributeNames[1];
+	attributeNames[0] = "Format";
+	stringstream ss;
+	ss << name << "Attributes";
+	writeAttributes(
+		attributes,
+		attributeNames,
+		1,
+		ss.str(),
+		path
+	);
 
-	hsize_t mag_dims[rank+2];//Last two dimension for matrix elements and real/imaginary decomposition.
-	for(int n = 0; n < rank; n++)
-		mag_dims[n] = dims[n];
-	const int NUM_MATRIX_ELEMENTS = 4;
-	mag_dims[rank] = NUM_MATRIX_ELEMENTS;
+	switch(magnetization.getFormat()){
+	case IndexDescriptor::Format::Ranges:
+	{
+		int rank = magnetization.getDimensions();
+		const int *dims = magnetization.getRanges();
+		const complex<double> *data = magnetization.getData();
 
-	int mag_size = 1;
-	for(int n = 0; n < rank+1; n++)
-		mag_size *= mag_dims[n];
-	double *mag_decomposed;
-	mag_decomposed = new double[2*mag_size];
-	for(int n = 0; n < mag_size; n++){
-		mag_decomposed[2*n+0] = real(data[n]);
-		mag_decomposed[2*n+1] = imag(data[n]);
+		hsize_t mag_dims[rank+2];//Last two dimension for matrix elements and real/imaginary decomposition.
+		for(int n = 0; n < rank; n++)
+			mag_dims[n] = dims[n];
+		const int NUM_MATRIX_ELEMENTS = 4;
+		mag_dims[rank] = NUM_MATRIX_ELEMENTS;
+
+		int mag_size = 1;
+		for(int n = 0; n < rank+1; n++)
+			mag_size *= mag_dims[n];
+		double *mag_decomposed;
+		mag_decomposed = new double[2*mag_size];
+		for(int n = 0; n < mag_size; n++){
+			mag_decomposed[2*n+0] = real(data[n]);
+			mag_decomposed[2*n+1] = imag(data[n]);
+		}
+		mag_dims[rank+1] = 2;
+
+		try{
+			stringstream ss;
+			ss << path;
+			if(path.back() != '/')
+				ss << "/";
+			ss << name;
+
+			Exception::dontPrint();
+			H5File file(filename, H5F_ACC_RDWR);
+
+			DataSpace dataspace = DataSpace(rank+2, mag_dims);
+			DataSet dataset = DataSet(file.createDataSet(name, PredType::IEEE_F64BE, dataspace));
+			dataset.write(mag_decomposed, PredType::NATIVE_DOUBLE);
+			dataspace.close();
+			dataset.close();
+			file.close();
+		}
+		catch(FileIException error){
+			Streams::log << error.getCDetailMsg() << "\n";
+			TBTKExit(
+				"FileWriter::writeMagnetization()",
+				"While writing to " << name << ".",
+				""
+			);
+		}
+		catch(DataSetIException error){
+			Streams::log << error.getCDetailMsg() << "\n";
+			TBTKExit(
+				"FileWriter::writeMagnetization()",
+				"While writing to " << name << ".",
+				""
+			);
+		}
+		catch(DataSpaceIException error){
+			Streams::log << error.getCDetailMsg() << "\n";
+			TBTKExit(
+				"FileWriter::writeMagnetization()",
+				"While writing to " << name << ".",
+				""
+			);
+		}
+
+		delete [] mag_decomposed;
+
+		break;
 	}
-	mag_dims[rank+1] = 2;
-
-	try{
+	case IndexDescriptor::Format::Custom:
+	{
 		stringstream ss;
-		ss << path;
-		if(path.back() != '/')
-			ss << "/";
-		ss << name;
+		ss << name << "IndexTree";
+		writeIndexTree(
+			magnetization.getIndexDescriptor().getIndexTree(),
+			ss.str(),
+			path
+		);
 
-		Exception::dontPrint();
-		H5File file(filename, H5F_ACC_RDWR);
+		const int RANK = 1;
+		int dims[RANK] = {(int)magnetization.getSize()};
+		write(magnetization.getData(), RANK, dims, name, path);
 
-		DataSpace dataspace = DataSpace(rank+2, mag_dims);
-		DataSet dataset = DataSet(file.createDataSet(name, PredType::IEEE_F64BE, dataspace));
-		dataset.write(mag_decomposed, PredType::NATIVE_DOUBLE);
-		dataspace.close();
-		dataset.close();
-		file.close();
+		break;
 	}
-	catch(FileIException error){
-		Streams::log << error.getCDetailMsg() << "\n";
+	default:
 		TBTKExit(
 			"FileWriter::writeMagnetization()",
-			"While writing to " << name << ".",
-			""
+			"Storage format not supported.",
+			"This should never happen, contact the developer."
 		);
 	}
-	catch(DataSetIException error){
-		Streams::log << error.getCDetailMsg() << "\n";
-		TBTKExit(
-			"FileWriter::writeMagnetization()",
-			"While writing to " << name << ".",
-			""
-		);
-	}
-	catch(DataSpaceIException error){
-		Streams::log << error.getCDetailMsg() << "\n";
-		TBTKExit(
-			"FileWriter::writeMagnetization()",
-			"While writing to " << name << ".",
-			""
-		);
-	}
-
-	delete [] mag_decomposed;
 }
 
 void FileWriter::writeLDOS(
@@ -503,66 +652,127 @@ void FileWriter::writeLDOS(
 ){
 	init();
 
-	int rank = ldos.getDimensions();
-	const int *dims = ldos.getRanges();
+	int intAttributes[2];
+	intAttributes[0] = static_cast<int>(ldos.getFormat());
+	intAttributes[1] = ldos.getResolution();
+	string intAttributeNames[2];
+	intAttributeNames[0] = "Format";
+	intAttributeNames[1] = "Resolution";
+	stringstream ss;
+	ss << name << "IntAttributes";
+	writeAttributes(
+		intAttributes,
+		intAttributeNames,
+		2,
+		ss.str(),
+		path
+	);
 
-	hsize_t ldos_dims[rank+1];//Last dimension is for energy
-	for(int n = 0; n < rank; n++)
-		ldos_dims[n] = dims[n];
-	ldos_dims[rank] = ldos.getResolution();
+	double doubleAttributes[2];
+	doubleAttributes[0] = ldos.getLowerBound();
+	doubleAttributes[1] = ldos.getUpperBound();
+	string doubleAttributeNames[2];
+	doubleAttributeNames[0] = "LowerBound";
+	doubleAttributeNames[1] = "UpperBound";
+	ss.str("");
+	ss << name << "DoubleAttributes";
+	writeAttributes(
+		doubleAttributes,
+		doubleAttributeNames,
+		2,
+		ss.str(),
+		path
+	);
 
-	double limits[2];
-	limits[0] = ldos.getUpperBound();
-	limits[1] = ldos.getLowerBound();
-	const int LIMITS_RANK = 1;
-	hsize_t limits_dims[1];
-	limits_dims[0] = 2;
+	switch(ldos.getFormat()){
+	case IndexDescriptor::Format::Ranges:
+	{
+		int rank = ldos.getDimensions();
+		const int *dims = ldos.getRanges();
 
-	try{
+		hsize_t ldos_dims[rank+1];//Last dimension is for energy
+		for(int n = 0; n < rank; n++)
+			ldos_dims[n] = dims[n];
+		ldos_dims[rank] = ldos.getResolution();
+
+		double limits[2];
+		limits[0] = ldos.getUpperBound();
+		limits[1] = ldos.getLowerBound();
+		const int LIMITS_RANK = 1;
+		hsize_t limits_dims[1];
+		limits_dims[0] = 2;
+
+		try{
+			stringstream ss;
+			ss << path;
+			if(path.back() != '/')
+				ss << "/";
+			ss << name;
+
+			Exception::dontPrint();
+			H5File file(filename, H5F_ACC_RDWR);
+
+			DataSpace dataspace = DataSpace(rank+1, ldos_dims);
+			DataSet dataset = DataSet(file.createDataSet(name, PredType::IEEE_F64BE, dataspace));
+			dataset.write(ldos.getData(), PredType::NATIVE_DOUBLE);
+			dataspace.close();
+
+			dataspace = DataSpace(LIMITS_RANK, limits_dims);
+			Attribute attribute = dataset.createAttribute("UpLowLimits", PredType::IEEE_F64BE, dataspace);
+			attribute.write(PredType::NATIVE_DOUBLE, limits);
+			dataspace.close();
+			dataset.close();
+
+			file.close();
+		}
+		catch(FileIException error){
+			Streams::log << error.getCDetailMsg() << "\n";
+			TBTKExit(
+				"FileWriter::writeLDOS()",
+				"While writing to " << name << ".",
+				""
+			);
+		}
+		catch(DataSetIException error){
+			Streams::log << error.getCDetailMsg() << "\n";
+			TBTKExit(
+				"FileWriter::writeLDOS()",
+				"While writing to " << name << ".",
+				""
+			);
+		}
+		catch(DataSpaceIException error){
+			Streams::log << error.getCDetailMsg() << "\n";
+			TBTKExit(
+				"FileWriter::writeLDOS()",
+				"While writing to " << name << ".",
+				""
+			);
+		}
+
+		break;
+	}
+	case IndexDescriptor::Format::Custom:
+	{
 		stringstream ss;
-		ss << path;
-		if(path.back() != '/')
-			ss << "/";
-		ss << name;
-
-		Exception::dontPrint();
-		H5File file(filename, H5F_ACC_RDWR);
-
-		DataSpace dataspace = DataSpace(rank+1, ldos_dims);
-		DataSet dataset = DataSet(file.createDataSet(name, PredType::IEEE_F64BE, dataspace));
-		dataset.write(ldos.getData(), PredType::NATIVE_DOUBLE);
-		dataspace.close();
-
-		dataspace = DataSpace(LIMITS_RANK, limits_dims);
-		Attribute attribute = dataset.createAttribute("UpLowLimits", PredType::IEEE_F64BE, dataspace);
-		attribute.write(PredType::NATIVE_DOUBLE, limits);
-		dataspace.close();
-		dataset.close();
-
-		file.close();
-	}
-	catch(FileIException error){
-		Streams::log << error.getCDetailMsg() << "\n";
-		TBTKExit(
-			"FileWriter::writeLDOS()",
-			"While writing to " << name << ".",
-			""
+		ss << name << "IndexTree";
+		writeIndexTree(
+			ldos.getIndexDescriptor().getIndexTree(),
+			ss.str(),
+			path
 		);
+
+		const int RANK = 1;
+		int dims[RANK] = {(int)ldos.getSize()};
+		write(ldos.getData(), RANK, dims, name, path);
+
+		break;
 	}
-	catch(DataSetIException error){
-		Streams::log << error.getCDetailMsg() << "\n";
+	default:
 		TBTKExit(
 			"FileWriter::writeLDOS()",
-			"While writing to " << name << ".",
-			""
-		);
-	}
-	catch(DataSpaceIException error){
-		Streams::log << error.getCDetailMsg() << "\n";
-		TBTKExit(
-			"FileWriter::writeLDOS()",
-			"While writing to " << name << ".",
-			""
+			"Storage format not supported.",
+			"This should never happen, contact the developer."
 		);
 	}
 }
@@ -574,87 +784,147 @@ void FileWriter::writeSpinPolarizedLDOS(
 ){
 	init();
 
-	int rank = spinPolarizedLDOS.getDimensions();
-	const int *dims = spinPolarizedLDOS.getRanges();
-	const complex<double> *data = spinPolarizedLDOS.getData();
+	int intAttributes[2];
+	intAttributes[0] = static_cast<int>(spinPolarizedLDOS.getFormat());
+	intAttributes[1] = spinPolarizedLDOS.getResolution();
+	string intAttributeNames[2];
+	intAttributeNames[0] = "Format";
+	intAttributeNames[1] = "Resolution";
+	stringstream ss;
+	ss << name << "IntAttributes";
+	writeAttributes(
+		intAttributes,
+		intAttributeNames,
+		2,
+		ss.str(),
+		path
+	);
 
-	const int NUM_MATRIX_ELEMENTS = 4;
-	hsize_t sp_ldos_dims[rank+2];//Three last dimensions are for energy, spin components, and real/imaginary decomposition.
-	for(int n = 0; n < rank; n++)
-		sp_ldos_dims[n] = dims[n];
-	sp_ldos_dims[rank] = spinPolarizedLDOS.getResolution();
-	sp_ldos_dims[rank+1] = NUM_MATRIX_ELEMENTS;
+	double doubleAttributes[2];
+	doubleAttributes[0] = spinPolarizedLDOS.getLowerBound();
+	doubleAttributes[1] = spinPolarizedLDOS.getUpperBound();
+	string doubleAttributeNames[2];
+	doubleAttributeNames[0] = "LowerBound";
+	doubleAttributeNames[1] = "UpperBound";
+	ss.str("");
+	ss << name << "DoubleAttributes";
+	writeAttributes(
+		doubleAttributes,
+		doubleAttributeNames,
+		2,
+		ss.str(),
+		path
+	);
 
-	int sp_ldos_size = 1;
-	for(int n = 0; n < rank+2; n++)
-		sp_ldos_size *= sp_ldos_dims[n];
-	double *sp_ldos_decomposed;
-	sp_ldos_decomposed = new double[2*sp_ldos_size];
-	for(int n = 0; n < sp_ldos_size; n++){
-		sp_ldos_decomposed[2*n+0] = real(data[n]);
-		sp_ldos_decomposed[2*n+1] = imag(data[n]);
+	switch(spinPolarizedLDOS.getFormat()){
+	case IndexDescriptor::Format::Ranges:
+	{
+		int rank = spinPolarizedLDOS.getDimensions();
+		const int *dims = spinPolarizedLDOS.getRanges();
+		const complex<double> *data = spinPolarizedLDOS.getData();
+
+		const int NUM_MATRIX_ELEMENTS = 4;
+		hsize_t sp_ldos_dims[rank+2];//Three last dimensions are for energy, spin components, and real/imaginary decomposition.
+		for(int n = 0; n < rank; n++)
+			sp_ldos_dims[n] = dims[n];
+		sp_ldos_dims[rank] = spinPolarizedLDOS.getResolution();
+		sp_ldos_dims[rank+1] = NUM_MATRIX_ELEMENTS;
+
+		int sp_ldos_size = 1;
+		for(int n = 0; n < rank+2; n++)
+			sp_ldos_size *= sp_ldos_dims[n];
+		double *sp_ldos_decomposed;
+		sp_ldos_decomposed = new double[2*sp_ldos_size];
+		for(int n = 0; n < sp_ldos_size; n++){
+			sp_ldos_decomposed[2*n+0] = real(data[n]);
+			sp_ldos_decomposed[2*n+1] = imag(data[n]);
+		}
+
+		sp_ldos_dims[rank+2] = 2;
+
+		double limits[2];
+		limits[0] = spinPolarizedLDOS.getUpperBound();
+		limits[1] = spinPolarizedLDOS.getLowerBound();
+		const int LIMITS_RANK = 1;
+		hsize_t limits_dims[1];
+		limits_dims[0] = 2;
+
+		try{
+			stringstream ss;
+			ss << path;
+			if(path.back() != '/')
+				ss << "/";
+			ss << name;
+
+			Exception::dontPrint();
+			H5File file(filename, H5F_ACC_RDWR);
+
+			DataSpace dataspace = DataSpace(rank+3, sp_ldos_dims);
+			DataSet dataset = DataSet(file.createDataSet(name, PredType::IEEE_F64BE, dataspace));
+			dataset.write(sp_ldos_decomposed, PredType::NATIVE_DOUBLE);
+			dataspace.close();
+
+			dataspace = DataSpace(LIMITS_RANK, limits_dims);
+			Attribute attribute = dataset.createAttribute("UpLowLimits", PredType::IEEE_F64BE, dataspace);
+			attribute.write(PredType::NATIVE_DOUBLE, limits);
+			dataspace.close();
+			dataset.close();
+
+			file.close();
+			dataspace.close();
+		}
+		catch(FileIException error){
+			Streams::log << error.getCDetailMsg() << "\n";
+			TBTKExit(
+				"FileWriter::writeSpinPolarizedLDOS()",
+				"While writing to " << name << ".",
+				""
+			);
+		}
+		catch(DataSetIException error){
+			Streams::log << error.getCDetailMsg() << "\n";
+			TBTKExit(
+				"FileWriter::writeSpinPolarizedLDOS()",
+				"While writing to " << name << ".",
+				""
+			);
+		}
+		catch(DataSpaceIException error){
+			Streams::log << error.getCDetailMsg() << "\n";
+			TBTKExit(
+				"FileWriter::writeSpinPolarizedLDOS()",
+				"While writing to " << name << ".",
+				""
+			);
+		}
+
+		delete [] sp_ldos_decomposed;
+
+		break;
 	}
-
-	sp_ldos_dims[rank+2] = 2;
-
-	double limits[2];
-	limits[0] = spinPolarizedLDOS.getUpperBound();
-	limits[1] = spinPolarizedLDOS.getLowerBound();
-	const int LIMITS_RANK = 1;
-	hsize_t limits_dims[1];
-	limits_dims[0] = 2;
-
-
-	try{
+	case IndexDescriptor::Format::Custom:
+	{
 		stringstream ss;
-		ss << path;
-		if(path.back() != '/')
-			ss << "/";
-		ss << name;
+		ss << name << "IndexTree";
+		writeIndexTree(
+			spinPolarizedLDOS.getIndexDescriptor().getIndexTree(),
+			ss.str(),
+			path
+		);
 
-		Exception::dontPrint();
-		H5File file(filename, H5F_ACC_RDWR);
+		const int RANK = 1;
+		int dims[RANK] = {(int)spinPolarizedLDOS.getSize()};
+		write(spinPolarizedLDOS.getData(), RANK, dims, name, path);
 
-		DataSpace dataspace = DataSpace(rank+3, sp_ldos_dims);
-		DataSet dataset = DataSet(file.createDataSet(name, PredType::IEEE_F64BE, dataspace));
-		dataset.write(sp_ldos_decomposed, PredType::NATIVE_DOUBLE);
-		dataspace.close();
-
-		dataspace = DataSpace(LIMITS_RANK, limits_dims);
-		Attribute attribute = dataset.createAttribute("UpLowLimits", PredType::IEEE_F64BE, dataspace);
-		attribute.write(PredType::NATIVE_DOUBLE, limits);
-		dataspace.close();
-		dataset.close();
-
-		file.close();
-		dataspace.close();
+		break;
 	}
-	catch(FileIException error){
-		Streams::log << error.getCDetailMsg() << "\n";
+	default:
 		TBTKExit(
-			"FileWriter::writeSpinPolarizedLDOS()",
-			"While writing to " << name << ".",
-			""
+			"FileWriter::writeLDOS()",
+			"Storage format not supported.",
+			"This should never happen, contact the developer."
 		);
 	}
-	catch(DataSetIException error){
-		Streams::log << error.getCDetailMsg() << "\n";
-		TBTKExit(
-			"FileWriter::writeSpinPolarizedLDOS()",
-			"While writing to " << name << ".",
-			""
-		);
-	}
-	catch(DataSpaceIException error){
-		Streams::log << error.getCDetailMsg() << "\n";
-		TBTKExit(
-			"FileWriter::writeSpinPolarizedLDOS()",
-			"While writing to " << name << ".",
-			""
-		);
-	}
-
-	delete [] sp_ldos_decomposed;
 }
 
 void FileWriter::write(
@@ -712,6 +982,35 @@ void FileWriter::write(
 			""
 		);
 	}
+}
+
+void FileWriter::write(
+	const complex<double> *data,
+	int rank,
+	const int *dims,
+	string name,
+	string path
+){
+	unsigned int size = 1;
+	for(unsigned int n = 0; n < (unsigned int)rank; n++)
+		size *= dims[n];
+
+	double *realData = new double[size];
+	double *imagData = new double[size];
+	for(unsigned int n = 0; n < size; n++){
+		realData[n] = real(data[n]);
+		imagData[n] = imag(data[n]);
+	}
+
+	stringstream ss;
+	ss << name << "Real";
+	write(realData, rank, dims, ss.str(), path);
+	ss.str("");
+	ss << name << "Imag";
+	write(imagData, rank, dims, ss.str(), path);
+
+	delete [] realData;
+	delete [] imagData;
 }
 
 void FileWriter::writeAttributes(

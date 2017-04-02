@@ -288,6 +288,89 @@ Geometry* FileReader::readGeometry(Model *model, string name, string path){
 	return geometry;
 }
 
+IndexTree* FileReader::readIndexTree(string name, string path){
+	IndexTree *indexTree = NULL;
+
+	try{
+		Exception::dontPrint();
+		H5File file(filename, H5F_ACC_RDONLY);
+
+		stringstream ss;
+		ss << path;
+		if(path.back() != '/')
+			ss << "/";
+		ss << name;
+
+		DataSet dataset = file.openDataSet(ss.str());
+		H5T_class_t typeClass = dataset.getTypeClass();
+		TBTKAssert(
+			typeClass == H5T_INTEGER,
+			"FileReader::readIndexTree()",
+			"Indices data type is not integer.",
+			""
+		);
+		DataSpace dataspace = dataset.getSpace();
+
+		hsize_t dims_internal[1];
+		dataspace.getSimpleExtentDims(dims_internal, NULL);
+		unsigned int size = dims_internal[0];
+
+		int *serializedIndices = new int[size];
+
+		dataset.read(serializedIndices, PredType::NATIVE_INT, dataspace);
+
+		dataset.close();
+		dataspace.close();
+
+		file.close();
+
+		vector<Index> indices;
+		int subindicesLeft = 0;
+		for(unsigned int n = 0; n < size; n++){
+			if(subindicesLeft == 0){
+				indices.push_back(Index({}));
+				subindicesLeft = serializedIndices[n];
+			}
+			else{
+				subindicesLeft--;
+				indices.back().push_back(serializedIndices[n]);
+			}
+		}
+
+		indexTree = new IndexTree();
+		for(unsigned int n = 0; n < indices.size(); n++)
+			indexTree->add(indices.at(n));
+
+		indexTree->generateLinearMap();
+	}
+	catch(FileIException error){
+		Streams::log << error.getCDetailMsg() << "\n";
+		TBTKExit(
+			"FileReader::readIndexTree()",
+			"While reading " << name << ".",
+			""
+		);
+	}
+	catch(DataSetIException error){
+		Streams::log << error.getCDetailMsg() << "\n";
+		TBTKExit(
+			"FileReader::readIndexTree()",
+			"While reading " << name << ".",
+			""
+		);
+	}
+	catch(DataSpaceIException error){
+		Streams::log << error.getCDetailMsg() << "\n";
+		TBTKExit(
+			"FileReader::readIndexTree()",
+			"While reading " << name << ".",
+			""
+		);
+	}
+
+	return indexTree;
+}
+
 Property::EigenValues* FileReader::readEigenValues(string name, string path){
 	Property::EigenValues *eigenValues = NULL;
 	int size;
@@ -389,7 +472,6 @@ Property::DOS* FileReader::readDOS(string name, string path){
 		dos = new Property::DOS(lowerBound, upperBound, resolution);
 
 		dataset.read(dos->getDataRW(), PredType::NATIVE_DOUBLE, dataspace);
-
 	}
 	catch(FileIException error){
 		Streams::log << error.getCDetailMsg() << "\n";
@@ -421,65 +503,117 @@ Property::DOS* FileReader::readDOS(string name, string path){
 
 Property::Density* FileReader::readDensity(string name, string path){
 	Property::Density *density = NULL;
-	int rank;
-	int *dims;
 
-	try{
+	int attributes[1];
+	string attributeNames[1];
+	attributeNames[0] = "Format";
+	stringstream ss;
+	ss << name << "Attributes";
+	readAttributes(
+		attributes,
+		attributeNames,
+		1,
+		ss.str(),
+		path
+	);
+
+	IndexDescriptor::Format format = static_cast<IndexDescriptor::Format>(
+		attributes[0]
+	);
+
+	switch(format){
+	case IndexDescriptor::Format::Ranges:
+	{
+		int rank;
+		int *dims;
+
+		try{
+			stringstream ss;
+			ss << path;
+			if(path.back() != '/')
+				ss << "/";
+			ss << name;
+
+			Exception::dontPrint();
+			H5File file(filename, H5F_ACC_RDONLY);
+
+			DataSet dataset = file.openDataSet(name);
+			H5T_class_t typeClass = dataset.getTypeClass();
+			TBTKAssert(
+				typeClass == H5T_FLOAT,
+				"FileReader::readDensity()",
+				"Data type is not double.",
+				""
+			);
+
+			DataSpace dataspace = dataset.getSpace();
+			rank = dataspace.getSimpleExtentNdims();
+
+			hsize_t *dims_internal = new hsize_t[rank];
+			dataspace.getSimpleExtentDims(dims_internal, NULL);
+			dims = new int[rank];
+			for(int n = 0; n < rank; n++)
+				dims[n] = dims_internal[n];
+			delete [] dims_internal;
+
+			density = new Property::Density(rank, dims);
+			delete [] dims;
+
+			dataset.read(/*density->data*/density->getDataRW(), PredType::NATIVE_DOUBLE, dataspace);
+		}
+		catch(FileIException error){
+			Streams::log << error.getCDetailMsg() << "\n";
+			TBTKExit(
+				"FileReader::read()",
+				"While reading " << name << ",",
+				""
+			);
+		}
+		catch(DataSetIException error){
+			Streams::log << error.getCDetailMsg() << "\n";
+			TBTKExit(
+				"FileReader::read()",
+				"While reading " << name << ".",
+				""
+			);
+		}
+		catch(DataSpaceIException error){
+			Streams::log << error.getCDetailMsg() << "\n";
+			TBTKExit(
+				"FileReader::read()",
+				"While reading " << name << ".",
+				""
+			);
+		}
+
+		break;
+	}
+	case IndexDescriptor::Format::Custom:
+	{
 		stringstream ss;
-		ss << path;
-		if(path.back() != '/')
-			ss << "/";
-		ss << name;
-
-		Exception::dontPrint();
-		H5File file(filename, H5F_ACC_RDONLY);
-
-		DataSet dataset = file.openDataSet(name);
-		H5T_class_t typeClass = dataset.getTypeClass();
-		TBTKAssert(
-			typeClass == H5T_FLOAT,
-			"FileReader::readDensity()",
-			"Data type is not double.",
-			""
+		ss << name << "IndexTree";
+		IndexTree *indexTree = readIndexTree(
+			ss.str(),
+			path
 		);
 
-		DataSpace dataspace = dataset.getSpace();
-		rank = dataspace.getSimpleExtentNdims();
+		int rank;
+		int *dims;
+		double *data;
+		read(&data, &rank, &dims, name, path);
 
-		hsize_t *dims_internal = new hsize_t[rank];
-		dataspace.getSimpleExtentDims(dims_internal, NULL);
-		dims = new int[rank];
-		for(int n = 0; n < rank; n++)
-			dims[n] = dims_internal[n];
-		delete [] dims_internal;
+		density = new Property::Density(*indexTree, data);
 
-		density = new Property::Density(rank, dims);
 		delete [] dims;
+		delete [] data;
 
-		dataset.read(/*density->data*/density->getDataRW(), PredType::NATIVE_DOUBLE, dataspace);
+		break;
 	}
-	catch(FileIException error){
-		Streams::log << error.getCDetailMsg() << "\n";
+	default:
 		TBTKExit(
-			"FileReader::read()",
-			"While reading " << name << ",",
-			""
-		);
-	}
-	catch(DataSetIException error){
-		Streams::log << error.getCDetailMsg() << "\n";
-		TBTKExit(
-			"FileReader::read()",
-			"While reading " << name << ".",
-			""
-		);
-	}
-	catch(DataSpaceIException error){
-		Streams::log << error.getCDetailMsg() << "\n";
-		TBTKExit(
-			"FileReader::read()",
-			"While reading " << name << ".",
-			""
+			"FileReader::readDensity()",
+			"Storage format not supported.",
+			"This should never happen, contact the developer."
 		);
 	}
 
@@ -491,76 +625,128 @@ Property::Magnetization* FileReader::readMagnetization(
 	string path
 ){
 	Property::Magnetization *magnetization = NULL;
-	int rank;
-	int *dims;
 
-	try{
+	int attributes[1];
+	string attributeNames[1];
+	attributeNames[0] = "Format";
+	stringstream ss;
+	ss << name << "Attributes";
+	readAttributes(
+		attributes,
+		attributeNames,
+		1,
+		ss.str(),
+		path
+	);
+
+	IndexDescriptor::Format format = static_cast<IndexDescriptor::Format>(
+		attributes[0]
+	);
+
+	switch(format){
+	case IndexDescriptor::Format::Ranges:
+	{
+		int rank;
+		int *dims;
+
+		try{
+			stringstream ss;
+			ss << path;
+			if(path.back() != '/')
+				ss << "/";
+			ss << name;
+
+			Exception::dontPrint();
+			H5File file(filename, H5F_ACC_RDONLY);
+
+			DataSet dataset = file.openDataSet(name);
+			H5T_class_t typeClass = dataset.getTypeClass();
+			TBTKAssert(
+				typeClass == H5T_FLOAT,
+				"FileReader::readMAG()",
+				"Data type is not double.",
+				""
+			);
+
+			DataSpace dataspace = dataset.getSpace();
+			int rank_internal = dataspace.getSimpleExtentNdims();
+			rank = rank_internal-2;//Last two dimensions are for matrix elements and real/imaginary decomposition.
+
+			hsize_t *dims_internal = new hsize_t[rank_internal];
+			dataspace.getSimpleExtentDims(dims_internal, NULL);
+			dims = new int[rank];
+			for(int n = 0; n < rank; n++)
+				dims[n] = dims_internal[n];
+
+			magnetization = new Property::Magnetization(rank, dims);
+			delete [] dims;
+
+			int size = 1;
+			for(int n = 0; n < rank_internal; n++)
+				size *= dims_internal[n];
+
+			double *mag_internal = new double[size];
+			dataset.read(mag_internal, PredType::NATIVE_DOUBLE, dataspace);
+			complex<double> *data = magnetization->getDataRW();
+			for(int n = 0; n < size/2; n++)
+				data[n] = complex<double>(mag_internal[2*n+0], mag_internal[2*n+1]);
+
+			delete [] mag_internal;
+			delete [] dims_internal;
+		}
+		catch(FileIException error){
+			Streams::log << error.getCDetailMsg() << "\n";
+			TBTKExit(
+				"FileReader::read()",
+				"While reading " << name << ".",
+				""
+			);
+		}
+		catch(DataSetIException error){
+			Streams::log << error.getCDetailMsg() << "\n";
+			TBTKExit(
+				"FileReader::read()",
+				"While reading " << name << ".",
+				""
+			);
+		}
+		catch(DataSpaceIException error){
+			Streams::log << error.getCDetailMsg() << "\n";
+			TBTKExit(
+				"FileReader::read()",
+				"While reading " << name << ".",
+				""
+			);
+		}
+
+		break;
+	}
+	case IndexDescriptor::Format::Custom:
+	{
 		stringstream ss;
-		ss << path;
-		if(path.back() != '/')
-			ss << "/";
-		ss << name;
-
-		Exception::dontPrint();
-		H5File file(filename, H5F_ACC_RDONLY);
-
-		DataSet dataset = file.openDataSet(name);
-		H5T_class_t typeClass = dataset.getTypeClass();
-		TBTKAssert(
-			typeClass == H5T_FLOAT,
-			"FileReader::readMAG()",
-			"Data type is not double.",
-			""
+		ss << name << "IndexTree";
+		IndexTree *indexTree = readIndexTree(
+			ss.str(),
+			path
 		);
 
-		DataSpace dataspace = dataset.getSpace();
-		int rank_internal = dataspace.getSimpleExtentNdims();
-		rank = rank_internal-2;//Last two dimensions are for matrix elements and real/imaginary decomposition.
+		int rank;
+		int *dims;
+		complex<double> *data;
+		read(&data, &rank, &dims, name, path);
 
-		hsize_t *dims_internal = new hsize_t[rank_internal];
-		dataspace.getSimpleExtentDims(dims_internal, NULL);
-		dims = new int[rank];
-		for(int n = 0; n < rank; n++)
-			dims[n] = dims_internal[n];
+		magnetization = new Property::Magnetization(*indexTree, data);
 
-		magnetization = new Property::Magnetization(rank, dims);
 		delete [] dims;
+		delete [] data;
 
-		int size = 1;
-		for(int n = 0; n < rank_internal; n++)
-			size *= dims_internal[n];
-
-		double *mag_internal = new double[size];
-		dataset.read(mag_internal, PredType::NATIVE_DOUBLE, dataspace);
-		complex<double> *data = magnetization->getDataRW();
-		for(int n = 0; n < size/2; n++)
-			data[n] = complex<double>(mag_internal[2*n+0], mag_internal[2*n+1]);
-
-		delete [] mag_internal;
-		delete [] dims_internal;
+		break;
 	}
-	catch(FileIException error){
-		Streams::log << error.getCDetailMsg() << "\n";
+	default:
 		TBTKExit(
-			"FileReader::read()",
-			"While reading " << name << ".",
-			""
-		);
-	}
-	catch(DataSetIException error){
-		Streams::log << error.getCDetailMsg() << "\n";
-		TBTKExit(
-			"FileReader::read()",
-			"While reading " << name << ".",
-			""
-		);
-	}
-	catch(DataSpaceIException error){
-		Streams::log << error.getCDetailMsg() << "\n";
-		TBTKExit(
-			"FileReader::read()",
-			"While reading " << name << ".",
-			""
+			"FileReader::readMagnetization()",
+			"Storage format not supported.",
+			"This should never happen, contact the developer."
 		);
 	}
 
@@ -628,86 +814,159 @@ Property::SpinPolarizedLDOS* FileReader::readSpinPolarizedLDOS(
 	string path
 ){
 	Property::SpinPolarizedLDOS *spinPolarizedLDOS = NULL;
-	int rank;
-	int *dims;
-	double lowerBound;
-	double upperBound;
-	int resolution;
 
-	try{
+	int intAttributes[2];
+	string intAttributeNames[2];
+	intAttributeNames[0] = "Format";
+	intAttributeNames[1] = "Resolution";
+	stringstream ss;
+	ss << name << "IntAttributes";
+	readAttributes(
+		intAttributes,
+		intAttributeNames,
+		2,
+		ss.str(),
+		path
+	);
+
+	double doubleAttributes[2];
+	string doubleAttributeNames[2];
+	doubleAttributeNames[0] = "LowerBound";
+	doubleAttributeNames[1] = "UpperBound";
+	ss.str("");
+	ss << name << "DoubleAttributes";
+	readAttributes(
+		doubleAttributes,
+		doubleAttributeNames,
+		2,
+		ss.str(),
+		path
+	);
+
+	IndexDescriptor::Format format = static_cast<IndexDescriptor::Format>(
+		intAttributes[0]
+	);
+
+	switch(format){
+	case IndexDescriptor::Format::Ranges:
+	{
+		int rank;
+		int *dims;
+		double lowerBound;
+		double upperBound;
+		int resolution;
+
+		try{
+			stringstream ss;
+			ss << path;
+			if(path.back() != '/')
+				ss << "/";
+			ss << name;
+
+			Exception::dontPrint();
+			H5File file(filename, H5F_ACC_RDONLY);
+
+			DataSet dataset = file.openDataSet(name);
+			H5T_class_t typeClass = dataset.getTypeClass();
+			TBTKAssert(
+				typeClass == H5T_FLOAT,
+				"FileReader::readSpinPolarizedLDOS()",
+				"Data type is not double.",
+				""
+			);
+
+			DataSpace dataspace = dataset.getSpace();
+			int rank_internal = dataspace.getSimpleExtentNdims();
+			rank = rank_internal-3;//Three last dimensions are for energy, spin components, and real/imaginary decomposition.
+
+			hsize_t *dims_internal = new hsize_t[rank_internal];
+			dataspace.getSimpleExtentDims(dims_internal, NULL);
+			dims = new int[rank];
+			for(int n = 0; n < rank; n++)
+				dims[n] = dims_internal[n];
+			resolution = dims_internal[rank];
+
+			Attribute attribute = dataset.openAttribute("UpLowLimits");
+			double limits[2];
+			attribute.read(PredType::NATIVE_DOUBLE, limits);
+			upperBound = limits[0];
+			lowerBound = limits[1];
+
+			spinPolarizedLDOS = new Property::SpinPolarizedLDOS(rank, dims, lowerBound, upperBound, resolution);
+			delete [] dims;
+
+			int size = 1;
+			for(int n = 0; n < rank_internal; n++)
+				size *= dims_internal[n];
+
+			double *sp_ldos_internal = new double[size];
+			dataset.read(sp_ldos_internal, PredType::NATIVE_DOUBLE, dataspace);
+			complex<double> *data = spinPolarizedLDOS->getDataRW();
+			for(int n = 0; n < size/2; n++)
+				data[n] = complex<double>(sp_ldos_internal[2*n+0], sp_ldos_internal[2*n+1]);
+
+			delete [] sp_ldos_internal;
+			delete [] dims_internal;
+		}
+		catch(FileIException error){
+			Streams::log << error.getCDetailMsg() << "\n";
+			TBTKExit(
+				"FileReader::read()",
+				"While reading " << name << ".",
+				""
+			);
+		}
+		catch(DataSetIException error){
+			Streams::log << error.getCDetailMsg() << "\n";
+			TBTKExit(
+				"FileReader::read()",
+				"While reading " << name << ".",
+				""
+			);
+		}
+		catch(DataSpaceIException error){
+			Streams::log << error.getCDetailMsg() << "\n";
+			TBTKExit(
+				"FileReader::read()",
+				"While reading " << name << ".",
+				""
+			);
+		}
+
+		break;
+	}
+	case IndexDescriptor::Format::Custom:
+	{
 		stringstream ss;
-		ss << path;
-		if(path.back() != '/')
-			ss << "/";
-		ss << name;
-
-		Exception::dontPrint();
-		H5File file(filename, H5F_ACC_RDONLY);
-
-		DataSet dataset = file.openDataSet(name);
-		H5T_class_t typeClass = dataset.getTypeClass();
-		TBTKAssert(
-			typeClass == H5T_FLOAT,
-			"FileReader::readSpinPolarizedLDOS()",
-			"Data type is not double.",
-			""
+		ss << name << "IndexTree";
+		IndexTree *indexTree = readIndexTree(
+			ss.str(),
+			path
 		);
 
-		DataSpace dataspace = dataset.getSpace();
-		int rank_internal = dataspace.getSimpleExtentNdims();
-		rank = rank_internal-3;//Three last dimensions are for energy, spin components, and real/imaginary decomposition.
+		int rank;
+		int *dims;
+		complex<double> *data;
+		read(&data, &rank, &dims, name, path);
 
-		hsize_t *dims_internal = new hsize_t[rank_internal];
-		dataspace.getSimpleExtentDims(dims_internal, NULL);
-		dims = new int[rank];
-		for(int n = 0; n < rank; n++)
-			dims[n] = dims_internal[n];
-		resolution = dims_internal[rank];
+		spinPolarizedLDOS = new Property::SpinPolarizedLDOS(
+			*indexTree,
+			doubleAttributes[0],
+			doubleAttributes[1],
+			intAttributes[1],
+			data
+		);
 
-		Attribute attribute = dataset.openAttribute("UpLowLimits");
-		double limits[2];
-		attribute.read(PredType::NATIVE_DOUBLE, limits);
-		upperBound = limits[0];
-		lowerBound = limits[1];
-
-		spinPolarizedLDOS = new Property::SpinPolarizedLDOS(rank, dims, lowerBound, upperBound, resolution);
 		delete [] dims;
+		delete [] data;
 
-		int size = 1;
-		for(int n = 0; n < rank_internal; n++)
-			size *= dims_internal[n];
-
-		double *sp_ldos_internal = new double[size];
-		dataset.read(sp_ldos_internal, PredType::NATIVE_DOUBLE, dataspace);
-		complex<double> *data = spinPolarizedLDOS->getDataRW();
-		for(int n = 0; n < size/2; n++)
-			data[n] = complex<double>(sp_ldos_internal[2*n+0], sp_ldos_internal[2*n+1]);
-
-		delete [] sp_ldos_internal;
-		delete [] dims_internal;
+		break;
 	}
-	catch(FileIException error){
-		Streams::log << error.getCDetailMsg() << "\n";
+	default:
 		TBTKExit(
-			"FileReader::read()",
-			"While reading " << name << ".",
-			""
-		);
-	}
-	catch(DataSetIException error){
-		Streams::log << error.getCDetailMsg() << "\n";
-		TBTKExit(
-			"FileReader::read()",
-			"While reading " << name << ".",
-			""
-		);
-	}
-	catch(DataSpaceIException error){
-		Streams::log << error.getCDetailMsg() << "\n";
-		TBTKExit(
-			"FileReader::read()",
-			"While reading " << name << ".",
-			""
+			"FileReader::readSpinPolarizedLDOS()",
+			"Storage format not supported.",
+			"This should never happen, contact the developer."
 		);
 	}
 
@@ -781,6 +1040,62 @@ void FileReader::read(
 			""
 		);
 	}
+}
+
+void FileReader::read(
+	complex<double> **data,
+	int *rank,
+	int **dims,
+	string name,
+	string path
+){
+	double *realData;
+	double *imagData;
+	int realRank;
+	int imagRank;
+	int *realDims;
+	int *imagDims;
+
+	stringstream ss;
+	ss << name << "Real";
+	read(&realData, &realRank, &realDims, ss.str(), path);
+	ss.str("");
+	ss << name << "Imag";
+	read(&imagData, &imagRank, &imagDims, ss.str(), path);
+
+	TBTKAssert(
+		realRank == imagRank,
+		"FileReader::read()",
+		"While reading " << name << ": Incompatible ranks for real and imaginary data.",
+		""
+	);
+	for(int n = 0; n < realRank; n++){
+		TBTKAssert(
+			realDims[n] == imagDims[n],
+			"FileReader::read()",
+			"While reading " << name << ": Incompatible dimensions for real and imaginary data.",
+			""
+		);
+	}
+
+	*rank = realRank;
+
+	*dims = new int[*rank];
+	for(int n = 0; n < *rank; n++)
+		(*dims)[n] = realDims[n];
+
+	unsigned int size = 1;
+	for(int n = 0; n < *rank; n++)
+		size *= (*dims)[n];
+
+	*data = new complex<double>[size];
+	for(unsigned int n = 0; n < size; n++)
+		(*data)[n] = realData[n] + complex<double>(0, 1.)*imagData[n];
+
+	delete [] realData;
+	delete [] imagData;
+	delete [] realDims;
+	delete [] imagDims;
 }
 
 void FileReader::readAttributes(

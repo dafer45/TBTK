@@ -53,6 +53,33 @@ LDOS::LDOS(
 }
 
 LDOS::LDOS(
+	const IndexTree &indexTree,
+	double lowerBound,
+	double upperBound,
+	int resolution
+) :
+	AbstractProperty(indexTree, resolution)
+{
+	this->lowerBound = lowerBound;
+	this->upperBound = upperBound;
+	this->resolution = resolution;
+}
+
+LDOS::LDOS(
+	const IndexTree &indexTree,
+	double lowerBound,
+	double upperBound,
+	int resolution,
+	const double *data
+) :
+	AbstractProperty(indexTree, resolution, data)
+{
+	this->lowerBound = lowerBound;
+	this->upperBound = upperBound;
+	this->resolution = resolution;
+}
+
+LDOS::LDOS(
 	const LDOS &ldos
 ) :
 	AbstractProperty(ldos)

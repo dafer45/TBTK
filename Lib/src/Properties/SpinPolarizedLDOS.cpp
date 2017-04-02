@@ -55,6 +55,33 @@ SpinPolarizedLDOS::SpinPolarizedLDOS(
 }
 
 SpinPolarizedLDOS::SpinPolarizedLDOS(
+	const IndexTree &indexTree,
+	double lowerBound,
+	double upperBound,
+	int resolution,
+	const complex<double> *data
+) :
+	AbstractProperty(indexTree, 4*resolution, data)
+{
+	this->lowerBound = lowerBound;
+	this->upperBound = upperBound;
+	this->resolution = resolution;
+}
+
+SpinPolarizedLDOS::SpinPolarizedLDOS(
+	const IndexTree &indexTree,
+	double lowerBound,
+	double upperBound,
+	int resolution
+) :
+	AbstractProperty(indexTree, 4*resolution)
+{
+	this->lowerBound = lowerBound;
+	this->upperBound = upperBound;
+	this->resolution = resolution;
+}
+
+SpinPolarizedLDOS::SpinPolarizedLDOS(
 	const SpinPolarizedLDOS &spinPolarizedLDOS
 ) :
 	AbstractProperty(spinPolarizedLDOS)

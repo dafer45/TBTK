@@ -45,6 +45,23 @@ SpectralFunction::SpectralFunction(
 }
 
 SpectralFunction::SpectralFunction(
+	const IndexTree &indexTree,
+	double lowerBound,
+	double upperBound,
+	int resolution
+) : LDOS(indexTree, lowerBound, upperBound, resolution){
+}
+
+SpectralFunction::SpectralFunction(
+	const IndexTree &indexTree,
+	double lowerBound,
+	double upperBound,
+	int resolution,
+	const double *data
+) : LDOS(indexTree, lowerBound, upperBound, resolution, data){
+}
+
+SpectralFunction::SpectralFunction(
 	const SpectralFunction &spectralFunction
 ) :
 	LDOS(spectralFunction)

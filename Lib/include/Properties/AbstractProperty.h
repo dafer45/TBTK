@@ -51,6 +51,15 @@ public:
 
 	/** Get the ranges for the dimensions of the density. */
 	const int* getRanges() const;
+
+	/** Get the offset in memory for given Index. */
+	unsigned int getOffset(const Index &index) const;
+
+	/** Get IndexDescriptor. */
+	const IndexDescriptor& getIndexDescriptor() const;
+
+	/** Returns the storage format. */
+	IndexDescriptor::Format getFormat() const;
 protected:
 	/** Constructor. */
 	AbstractProperty(
@@ -78,20 +87,33 @@ protected:
 		const DataType *data
 	);
 
+	/** Constructor. */
+	AbstractProperty(
+		const IndexTree &indexTree,
+		unsigned int blockSize
+	);
+
+	/** Constructor. */
+	AbstractProperty(
+		const IndexTree &indexTree,
+		unsigned int blockSize,
+		const DataType *data
+	);
+
 	/** Copy constructor. */
 	AbstractProperty(const AbstractProperty &abstractProperty);
 
 	/** Move constructor. */
 	AbstractProperty(AbstractProperty &&abstractProperty);
 
+	/** Destructor. */
+	~AbstractProperty();
+
 	/** Assignment operator. */
 	AbstractProperty& operator=(const AbstractProperty &abstractProperty);
 
 	/** Move assignment operator. */
 	AbstractProperty& operator=(AbstractProperty &&abstractProperty);
-
-	/** Destructor. */
-	~AbstractProperty();
 private:
 	/** IndexDescriptor describing the memory layout of the data. */
 	IndexDescriptor indexDescriptor;
@@ -144,6 +166,23 @@ inline unsigned int AbstractProperty<DataType>::getDimensions() const{
 template<typename DataType>
 inline const int* AbstractProperty<DataType>::getRanges() const{
 	return indexDescriptor.getRanges();
+}
+
+template<typename DataType>
+inline unsigned int AbstractProperty<DataType>::getOffset(
+	const Index &index
+) const{
+	return blockSize*indexDescriptor.getLinearIndex(index);
+}
+
+template<typename DataType>
+inline const IndexDescriptor& AbstractProperty<DataType>::getIndexDescriptor() const{
+	return indexDescriptor;
+}
+
+template<typename DataType>
+inline IndexDescriptor::Format AbstractProperty<DataType>::getFormat() const{
+	return indexDescriptor.getFormat();
 }
 
 template<typename DataType>
@@ -211,6 +250,41 @@ AbstractProperty<DataType>::AbstractProperty(
 	int *thisRanges = indexDescriptor.getRanges();
 	for(unsigned int n = 0; n < dimensions; n++)
 		thisRanges[n] = ranges[n];
+
+	size = blockSize*indexDescriptor.getSize();
+	this->data = new DataType[size];
+	for(unsigned int n = 0; n < size; n++)
+		this->data[n] = data[n];
+}
+
+template<typename DataType>
+AbstractProperty<DataType>::AbstractProperty(
+	const IndexTree &indexTree,
+	unsigned int blockSize
+) :
+	indexDescriptor(IndexDescriptor::Format::Custom)
+{
+	this->blockSize = blockSize;
+
+	indexDescriptor.setIndexTree(indexTree);
+
+	size = blockSize*indexDescriptor.getSize();
+	data = new DataType[size];
+	for(unsigned int n = 0; n < size; n++)
+		data[n] = 0.;
+}
+
+template<typename DataType>
+AbstractProperty<DataType>::AbstractProperty(
+	const IndexTree &indexTree,
+	unsigned int blockSize,
+	const DataType *data
+) :
+	indexDescriptor(IndexDescriptor::Format::Custom)
+{
+	this->blockSize = blockSize;
+
+	indexDescriptor.setIndexTree(indexTree);
 
 	size = blockSize*indexDescriptor.getSize();
 	this->data = new DataType[size];

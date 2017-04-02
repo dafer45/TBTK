@@ -23,14 +23,17 @@
 #ifndef COM_DAFER45_TBTK_PROPERTY_EXTRACTOR
 #define COM_DAFER45_TBTK_PROPERTY_EXTRACTOR
 
+#include "AbstractProperty.h"
 #include "Density.h"
 #include "DOS.h"
+#include "HoppingAmplitudeSet.h"
 #include "Index.h"
 #include "LDOS.h"
 #include "Magnetization.h"
 #include "SpinPolarizedLDOS.h"
 
 #include <complex>
+#include <initializer_list>
 
 namespace TBTK{
 
@@ -81,6 +84,11 @@ public:
 		Index ranges
 	);
 
+	/** Calculate density. */
+	virtual Property::Density calculateDensity(
+		std::initializer_list<Index> patterns
+	);
+
 	/** Calculate magnetization.
 	 *
 	 *  @param pattern Specifies the index pattern for which to calculate
@@ -120,6 +128,11 @@ public:
 		Index ranges
 	);
 
+	/** Calculate Magnetization. */
+	virtual Property::Magnetization calculateMagnetization(
+		std::initializer_list<Index> patterns
+	);
+
 	/** Calculate local density of states.
 	 *
 	 *  @param pattern Specifies the index pattern for which to calculate
@@ -144,6 +157,11 @@ public:
 	 *  included by specified patter-range combination.
 	 */
 	virtual Property::LDOS calculateLDOS(Index pattern, Index ranges);
+
+	/** Calculate local density of states. */
+	virtual Property::LDOS calculateLDOS(
+		std::initializer_list<Index> patterns
+	);
 
 	/** Calculate spin-polarized local density of states.
 	 *
@@ -190,6 +208,11 @@ public:
 		Index ranges
 	);
 
+	/** Calculate spin-polarized local density of states. */
+	virtual Property::SpinPolarizedLDOS calculateSpinPolarizedLDOS(
+		std::initializer_list<Index> patterns
+	);
+
 	/** Calculate expectation value. */
 	virtual std::complex<double> calculateExpectationValue(
 		Index to,
@@ -233,6 +256,21 @@ protected:
 		int offsetMultiplier
 	);
 
+	/***/
+	template<typename DataType>
+	void calculate(
+		void (*callback)(
+			PropertyExtractor *cb_this,
+			void *memory,
+			const Index &index,
+			int offset
+		),
+		const IndexTree &allIndices,
+		const IndexTree &memoryLayout,
+		Property::AbstractProperty<DataType> &abstractProperty,
+		int *spinIndexHint = nullptr
+	);
+
 	/** Hint used to pass information between calculate[Property] and
 	 *  calculate[Property]Callback. */
 	void *hint;
@@ -248,7 +286,58 @@ protected:
 		int *lDimensions,
 		int **lRanges
 	);
+
+	/** Generate IndexTree. */
+	IndexTree generateIndexTree(
+		std::initializer_list<Index> patterns,
+		const HoppingAmplitudeSet &hoppingAmplitudeSet,
+		bool keepSumationWildcards,
+		bool keepSpinWildcards
+	);
 };
+
+template<typename DataType>
+void PropertyExtractor::calculate(
+	void (*callback)(
+		PropertyExtractor *cb_this,
+		void *memory,
+		const Index &index,
+		int offset
+	),
+	const IndexTree &allIndices,
+	const IndexTree &memoryLayout,
+	Property::AbstractProperty<DataType> &abstractProperty,
+	int *spinIndexHint
+){
+	IndexTree::Iterator it = allIndices.begin();
+	const Index *index;
+	int counter = 0;
+	while((index = it.getIndex())){
+		if(spinIndexHint != nullptr){
+			std::vector<unsigned int> spinIndices = memoryLayout.getSubindicesMatching(
+				IDX_SPIN,
+				*index,
+				IndexTree::SearchMode::MatchWildcards
+			);
+			TBTKAssert(
+				spinIndices.size() == 1,
+				"PropertyExtractor::calculate()",
+				"Zero or several spin indeces found.",
+				"Use IDX_SPIN once and only once per pattern to indicate spin index."
+			);
+			*spinIndexHint = spinIndices.at(0);
+		}
+
+		callback(
+			this,
+			abstractProperty.getDataRW(),
+			*index,
+			abstractProperty.getOffset(*index)
+		);
+
+		it.searchNext();
+	}
+}
 
 };	//End of namespace TBTK
 

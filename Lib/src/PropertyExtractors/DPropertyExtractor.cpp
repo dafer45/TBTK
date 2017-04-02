@@ -178,6 +178,35 @@ Property::Density DPropertyExtractor::calculateDensity(
 	return density;
 }
 
+Property::Density DPropertyExtractor::calculateDensity(
+	initializer_list<Index> patterns
+){
+	IndexTree allIndices = generateIndexTree(
+		patterns,
+		*dSolver->getModel()->getHoppingAmplitudeSet(),
+		false,
+		false
+	);
+
+	IndexTree memoryLayout = generateIndexTree(
+		patterns,
+		*dSolver->getModel()->getHoppingAmplitudeSet(),
+		true,
+		true
+	);
+
+	Property::Density density(memoryLayout);
+
+	calculate(
+		calculateDensityCallback,
+		allIndices,
+		memoryLayout,
+		density
+	);
+
+	return density;
+}
+
 Property::Magnetization DPropertyExtractor::calculateMagnetization(
 	Index pattern,
 	Index ranges
@@ -208,7 +237,40 @@ Property::Magnetization DPropertyExtractor::calculateMagnetization(
 	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
 	Property::Magnetization magnetization(lDimensions, lRanges);
 
-	calculate(calculateMAGCallback, (void*)magnetization.getDataRW(), pattern, ranges, 0, 1);
+	calculate(calculateMAGCallback, (void*)magnetization.getDataRW(), pattern, ranges, 0, /*1*/4);
+
+	delete [] (int*)hint;
+
+	return magnetization;
+}
+
+Property::Magnetization DPropertyExtractor::calculateMagnetization(
+	std::initializer_list<Index> patterns
+){
+	IndexTree allIndices = generateIndexTree(
+		patterns,
+		*dSolver->getModel()->getHoppingAmplitudeSet(),
+		false,
+		true
+	);
+
+	IndexTree memoryLayout = generateIndexTree(
+		patterns,
+		*dSolver->getModel()->getHoppingAmplitudeSet(),
+		true,
+		true
+	);
+
+	Property::Magnetization magnetization(memoryLayout);
+
+	hint = new int[1];
+	calculate(
+		calculateMAGCallback,
+		allIndices,
+		memoryLayout,
+		magnetization,
+		(int*)hint
+	);
 
 	delete [] (int*)hint;
 
@@ -244,7 +306,53 @@ Property::LDOS DPropertyExtractor::calculateLDOS(
 		energyResolution
 	);
 
-	calculate(calculateLDOSCallback, (void*)ldos.getDataRW(), pattern, ranges, 0, 1);
+	calculate(calculateLDOSCallback, (void*)ldos.getDataRW(), pattern, ranges, 0, /*1*/energyResolution);
+
+	return ldos;
+}
+
+Property::LDOS DPropertyExtractor::calculateLDOS(
+	std::initializer_list<Index> patterns
+){
+	//hint[0] is an array of doubles, hint[1] is an array of ints
+	//hint[0][0]: upperBound
+	//hint[0][1]: lowerBound
+	//hint[1][0]: resolution
+	//hint[1][1]: spin_index
+	hint = new void*[2];
+	((double**)hint)[0] = new double[2];
+	((int**)hint)[1] = new int[1];
+	((double**)hint)[0][0] = upperBound;
+	((double**)hint)[0][1] = lowerBound;
+	((int**)hint)[1][0] = energyResolution;
+
+	IndexTree allIndices = generateIndexTree(
+		patterns,
+		*dSolver->getModel()->getHoppingAmplitudeSet(),
+		false,
+		true
+	);
+
+	IndexTree memoryLayout = generateIndexTree(
+		patterns,
+		*dSolver->getModel()->getHoppingAmplitudeSet(),
+		true,
+		true
+	);
+
+	Property::LDOS ldos(
+		memoryLayout,
+		lowerBound,
+		upperBound,
+		energyResolution
+	);
+
+	calculate(
+		calculateLDOSCallback,
+		allIndices,
+		memoryLayout,
+		ldos
+	);
 
 	return ldos;
 }
@@ -304,7 +412,58 @@ Property::SpinPolarizedLDOS DPropertyExtractor::calculateSpinPolarizedLDOS(
 		pattern,
 		ranges,
 		0,
-		1
+		/*1*/4*energyResolution
+	);
+
+	delete [] ((double**)hint)[0];
+	delete [] ((int**)hint)[1];
+	delete [] (void**)hint;
+
+	return spinPolarizedLDOS;
+}
+
+Property::SpinPolarizedLDOS DPropertyExtractor::calculateSpinPolarizedLDOS(
+	std::initializer_list<Index> patterns
+){
+	//hint[0] is an array of doubles, hint[1] is an array of ints
+	//hint[0][0]: upperBound
+	//hint[0][1]: lowerBound
+	//hint[1][0]: resolution
+	//hint[1][1]: spin_index
+	hint = new void*[2];
+	((double**)hint)[0] = new double[2];
+	((int**)hint)[1] = new int[2];
+	((double**)hint)[0][0] = upperBound;
+	((double**)hint)[0][1] = lowerBound;
+	((int**)hint)[1][0] = energyResolution;
+
+	IndexTree allIndices = generateIndexTree(
+		patterns,
+		*dSolver->getModel()->getHoppingAmplitudeSet(),
+		false,
+		true
+	);
+
+	IndexTree memoryLayout = generateIndexTree(
+		patterns,
+		*dSolver->getModel()->getHoppingAmplitudeSet(),
+		true,
+		true
+	);
+
+	Property::SpinPolarizedLDOS spinPolarizedLDOS(
+		memoryLayout,
+		lowerBound,
+		upperBound,
+		energyResolution
+	);
+
+	calculate(
+		calculateSP_LDOSCallback,
+		allIndices,
+		memoryLayout,
+		spinPolarizedLDOS,
+		&(((int**)hint)[1][1])
 	);
 
 	delete [] ((double**)hint)[0];
@@ -375,10 +534,10 @@ void DPropertyExtractor::calculateMAGCallback(
 		complex<double> u_u = pe->dSolver->getAmplitude(n, index_u);
 		complex<double> u_d = pe->dSolver->getAmplitude(n, index_d);
 
-		((complex<double>*)mag)[4*offset + 0] += conj(u_u)*u_u*weight;
-		((complex<double>*)mag)[4*offset + 1] += conj(u_u)*u_d*weight;
-		((complex<double>*)mag)[4*offset + 2] += conj(u_d)*u_u*weight;
-		((complex<double>*)mag)[4*offset + 3] += conj(u_d)*u_d*weight;
+		((complex<double>*)mag)[/*4**/offset + 0] += conj(u_u)*u_u*weight;
+		((complex<double>*)mag)[/*4**/offset + 1] += conj(u_u)*u_d*weight;
+		((complex<double>*)mag)[/*4**/offset + 2] += conj(u_d)*u_u*weight;
+		((complex<double>*)mag)[/*4**/offset + 3] += conj(u_d)*u_d*weight;
 	}
 }
 
@@ -405,7 +564,7 @@ void DPropertyExtractor::calculateLDOSCallback(
 			int e = (int)((eigen_values[n] - l_lim)/step_size);
 			if(e >= resolution)
 				e = resolution-1;
-			((double*)ldos)[resolution*offset + e] += real(conj(u)*u);
+			((double*)ldos)[/*resolution**/offset + e] += real(conj(u)*u);
 		}
 	}
 }
@@ -439,10 +598,10 @@ void DPropertyExtractor::calculateSP_LDOSCallback(
 			int e = (int)((eigen_values[n] - l_lim)/step_size);
 			if(e >= resolution)
 				e = resolution-1;
-			((complex<double>*)sp_ldos)[4*resolution*offset + 4*e + 0] += conj(u_u)*u_u;
-			((complex<double>*)sp_ldos)[4*resolution*offset + 4*e + 1] += conj(u_u)*u_d;
-			((complex<double>*)sp_ldos)[4*resolution*offset + 4*e + 2] += conj(u_d)*u_u;
-			((complex<double>*)sp_ldos)[4*resolution*offset + 4*e + 3] += conj(u_d)*u_d;
+			((complex<double>*)sp_ldos)[/*4*resolution**/offset + 4*e + 0] += conj(u_u)*u_u;
+			((complex<double>*)sp_ldos)[/*4*resolution**/offset + 4*e + 1] += conj(u_u)*u_d;
+			((complex<double>*)sp_ldos)[/*4*resolution**/offset + 4*e + 2] += conj(u_d)*u_u;
+			((complex<double>*)sp_ldos)[/*4*resolution**/offset + 4*e + 3] += conj(u_d)*u_d;
 		}
 	}
 }

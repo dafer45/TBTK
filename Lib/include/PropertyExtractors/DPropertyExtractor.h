@@ -34,6 +34,7 @@
 #include "SpinPolarizedLDOS.h"
 
 #include <complex>
+#include <initializer_list>
 
 namespace TBTK{
 
@@ -86,15 +87,31 @@ public:
 	virtual Property::DOS calculateDOS();
 
 	/** Calculate expectation value. */
-	virtual std::complex<double> calculateExpectationValue(Index to, Index from);
+	virtual std::complex<double> calculateExpectationValue(
+		Index to,
+		Index from
+	);
 
 	/** Overrides PropertyExtractor::calculateDensity(). */
-	virtual Property::Density calculateDensity(Index pattern, Index ranges);
+	virtual Property::Density calculateDensity(
+		Index pattern,
+		Index ranges
+	);
+
+	/** Overrides PropertyExtractor::calculateDensity(). */
+	virtual Property::Density calculateDensity(
+		std::initializer_list<Index> patterns
+	);
 
 	/** Overrides PropertyExtractor::calculateMagnetization(). */
 	virtual Property::Magnetization calculateMagnetization(
 		Index pattern,
 		Index ranges
+	);
+
+	/** Overrides PropertyExtractor::calculateMagnetization(). */
+	virtual Property::Magnetization calculateMagnetization(
+		std::initializer_list<Index> patterns
 	);
 
 	/** Overrides PropertyExtractor::calculateLDOS(). */
@@ -103,10 +120,20 @@ public:
 		Index ranges
 	);
 
+	/** Overrides PropertyExtractor::calculateLDOS(). */
+	virtual Property::LDOS calculateLDOS(
+		std::initializer_list<Index> patterns
+	);
+
 	/** Overrides PropertyExtractor::calculateSpinPolarizedLDOS(). */
 	virtual Property::SpinPolarizedLDOS calculateSpinPolarizedLDOS(
 		Index pattern,
 		Index ranges
+	);
+
+	/** Overrides PropertyExtractor::calculateSpinPolarizedLDOS(). */
+	virtual Property::SpinPolarizedLDOS calculateSpinPolarizedLDOS(
+		std::initializer_list<Index> patterns
 	);
 private:
 	/** Callback for calculating density. Used by calculateDensity. */

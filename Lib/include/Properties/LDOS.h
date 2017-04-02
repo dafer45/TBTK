@@ -51,6 +51,23 @@ public:
 		const double *data
 	);
 
+	/** Constructor. */
+	LDOS(
+		const IndexTree &indexTree,
+		double lowerBound,
+		double upperBound,
+		int resolution
+	);
+
+	/** Constructor. */
+	LDOS(
+		const IndexTree &indexTree,
+		double lowerBound,
+		double upperBound,
+		int resolution,
+		const double *data
+	);
+
 	/** Copy constructor. */
 	LDOS(const LDOS &ldos);
 

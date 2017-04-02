@@ -32,6 +32,7 @@
 #include "SpinPolarizedLDOS.h"
 
 #include <complex>
+#include <initializer_list>
 
 namespace TBTK{
 
@@ -74,10 +75,20 @@ public:
 		Index ranges
 	);
 
+	/** Overrides PropertyExtractor::calculateLDOS(). */
+	virtual Property::LDOS calculateLDOS(
+		std::initializer_list<Index> patterns
+	);
+
 	/** Overrides PropertyExtractor::calculateSpinPolarizedLDOS(). */
 	virtual Property::SpinPolarizedLDOS calculateSpinPolarizedLDOS(
 		Index pattern,
 		Index ranges
+	);
+
+	/** Overrides PropertyExtractor::calculateSpinPolarizedLDOS(). */
+	virtual Property::SpinPolarizedLDOS calculateSpinPolarizedLDOS(
+		std::initializer_list<Index> patterns
 	);
 private:
 	/** Calback for callculating local density of states. Used by

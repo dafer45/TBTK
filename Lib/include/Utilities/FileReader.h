@@ -66,6 +66,12 @@ public:
 		std::string path = "/"
 	);
 
+	/** Read IndexTree from file. */
+	static IndexTree* readIndexTree(
+		std::string name = "IndexTree",
+		std::string path = "/"
+	);
+
 	/** Read eigenvalues from file. */
 	static Property::EigenValues* readEigenValues(
 		std::string name = "EigenValues",
@@ -117,6 +123,15 @@ public:
 	/** Read custom n-dimensional arrays from file of type double. */
 	static void read(
 		double **data,
+		int *rank,
+		int **dims,
+		std::string name,
+		std::string path = "/"
+	);
+
+	/** Read custom n-dimensional arrays from file of type double. */
+	static void read(
+		std::complex<double> **data,
 		int *rank,
 		int **dims,
 		std::string name,
