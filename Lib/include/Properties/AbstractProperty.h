@@ -60,6 +60,12 @@ public:
 
 	/** Returns the storage format. */
 	IndexDescriptor::Format getFormat() const;
+
+	/** Function call operator. */
+	DataType operator()(const Index &index, unsigned int offset = 0) const;
+
+	/** Function call operator. */
+	DataType operator()(unsigned int offset) const;
 protected:
 	/** Constructor. */
 	AbstractProperty(
@@ -183,6 +189,16 @@ inline const IndexDescriptor& AbstractProperty<DataType>::getIndexDescriptor() c
 template<typename DataType>
 inline IndexDescriptor::Format AbstractProperty<DataType>::getFormat() const{
 	return indexDescriptor.getFormat();
+}
+
+template<typename DataType>
+inline DataType AbstractProperty<DataType>::operator()(const Index &index, unsigned int offset) const{
+	return data[getOffset(index) + offset];
+}
+
+template<typename DataType>
+inline DataType AbstractProperty<DataType>::operator()(unsigned int offset) const{
+	return data[offset];
 }
 
 template<typename DataType>
