@@ -432,6 +432,82 @@ Property::EigenValues* FileReader::readEigenValues(string name, string path){
 	return eigenValues;
 }
 
+Property::WaveFunction* FileReader::readWaveFunction(string name, string path){
+	Property::WaveFunction *waveFunction = NULL;
+
+	int attributes[2];
+	string attributeNames[2];
+	attributeNames[0] = "Format";
+	attributeNames[1] = "NumStates";
+	stringstream ss;
+	ss << name << "Attributes";
+	readAttributes(
+		attributes,
+		attributeNames,
+		2,
+		ss.str(),
+		path
+	);
+
+	IndexDescriptor::Format format = static_cast<IndexDescriptor::Format>(
+		attributes[0]
+	);
+
+	switch(format){
+	case IndexDescriptor::Format::Custom:
+	{
+		stringstream ss;
+		ss << name << "IndexTree";
+		IndexTree *indexTree = readIndexTree(
+			ss.str(),
+			path
+		);
+
+		ss.str("");
+		ss << name << "States";
+		int *serializedStates;
+		int statesRank;
+		int *statesDims;
+		read(&serializedStates, &statesRank, &statesDims, ss.str(), path);
+		TBTKAssert(
+			statesRank == 1,
+			"FileReader::readWaveFunction()",
+			"Unable to read 'states'.",
+			"This should never happen, something is wrong with the input data."
+		);
+		vector<unsigned int> states;
+		for(int n = 0; n < statesDims[0]; n++)
+			states.push_back(serializedStates[n]);
+		delete [] serializedStates;
+		delete [] statesDims;
+
+		complex<double> *data;
+		int rank;
+		int *dims;
+		read(&data, &rank, &dims, name, path);
+
+		waveFunction = new Property::WaveFunction(
+			*indexTree,
+			states,
+			data
+		);
+
+		delete [] data;
+		delete [] dims;
+
+		break;
+	}
+	default:
+		TBTKExit(
+			"FileReader::readWaveFunction()",
+			"Storage format not supported.",
+			"This should never happen, contact the developer."
+		);
+	}
+
+	return waveFunction;
+}
+
 Property::DOS* FileReader::readDOS(string name, string path){
 	Property::DOS *dos = NULL;
 	double lowerBound;
@@ -971,6 +1047,75 @@ Property::SpinPolarizedLDOS* FileReader::readSpinPolarizedLDOS(
 	}
 
 	return spinPolarizedLDOS;
+}
+
+void FileReader::read(
+	int **data,
+	int *rank,
+	int **dims,
+	string name,
+	string path
+){
+	try{
+		stringstream ss;
+		ss << path;
+		if(path.back() != '/')
+			ss << "/";
+		ss << name;
+
+		Exception::dontPrint();
+		H5File file(filename, H5F_ACC_RDONLY);
+
+		DataSet dataset = file.openDataSet(name);
+		H5T_class_t typeClass = dataset.getTypeClass();
+		TBTKAssert(
+			typeClass == H5T_INTEGER,
+			"FileReader::read()",
+			"Data type is not int.",
+			""
+		);
+
+		DataSpace dataspace = dataset.getSpace();
+		*rank = dataspace.getSimpleExtentNdims();
+
+		hsize_t *dims_internal = new hsize_t[*rank];
+		dataspace.getSimpleExtentDims(dims_internal, NULL);
+		*dims = new int[*rank];
+		for(int n = 0; n < *rank; n++)
+			(*dims)[n] = dims_internal[n];
+		delete [] dims_internal;
+
+		int size = 1;
+		for(int n = 0; n < *rank; n++)
+			size *= (*dims)[n];
+
+		*data = new int[size];
+		dataset.read(*data, PredType::NATIVE_INT, dataspace);
+	}
+	catch(FileIException error){
+		Streams::log << error.getCDetailMsg() << "\n";
+		TBTKExit(
+			"FileReader::read()",
+			"While reading " << name << ".",
+			""
+		);
+	}
+	catch(DataSetIException error){
+		Streams::log << error.getCDetailMsg() << "\n";
+		TBTKExit(
+			"FileReader::read()",
+			"While reading " << name << ".",
+			""
+		);
+	}
+	catch(DataSpaceIException error){
+		Streams::log << error.getCDetailMsg() << "\n";
+		TBTKExit(
+			"FileReader::read()",
+			"While reading " << name << ".",
+			""
+		);
+	}
 }
 
 void FileReader::read(

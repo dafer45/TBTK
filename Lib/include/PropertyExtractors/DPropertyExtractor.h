@@ -32,6 +32,7 @@
 #include "Magnetization.h"
 #include "PropertyExtractor.h"
 #include "SpinPolarizedLDOS.h"
+#include "WaveFunction.h"
 
 #include <complex>
 #include <initializer_list>
@@ -75,6 +76,12 @@ public:
 	 *  @param state Eigenstate number \f$n\f$
 	 *  @param index Physical index \f$x\f$. */
 	const std::complex<double> getAmplitude(int state, const Index &index);
+
+	/** Calculate wave function. */
+	Property::WaveFunction calculateWaveFunction(
+		std::initializer_list<Index> patterns,
+		std::initializer_list<int> states
+	);
 
 	/** Calculate Green's function. */
 	Property::GreensFunction* calculateGreensFunction(
@@ -136,6 +143,15 @@ public:
 		std::initializer_list<Index> patterns
 	);
 private:
+	/** Callback for calculating the wave function. Used by
+	 *  calculateWaveFunction. */
+	static void calculateWaveFunctionCallback(
+		PropertyExtractor *cb_this,
+		void *waveFunction,
+		const Index &index,
+		int offset
+	);
+
 	/** Callback for calculating density. Used by calculateDensity. */
 	static void calculateDensityCallback(
 		PropertyExtractor *cb_this,

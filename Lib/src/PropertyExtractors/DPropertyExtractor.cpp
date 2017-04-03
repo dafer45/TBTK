@@ -77,6 +77,69 @@ Property::EigenValues DPropertyExtractor::getEigenValues(){
 	return eigenValues;
 }
 
+Property::WaveFunction DPropertyExtractor::calculateWaveFunction(
+	initializer_list<Index> patterns,
+	initializer_list<int> states
+){
+	IndexTree allIndices = generateIndexTree(
+		patterns,
+		*dSolver->getModel()->getHoppingAmplitudeSet(),
+		false,
+		false
+	);
+
+	IndexTree memoryLayout = generateIndexTree(
+		patterns,
+		*dSolver->getModel()->getHoppingAmplitudeSet(),
+		true,
+		true
+	);
+	Streams::out << "All indices:\t" << allIndices.getSize() << "\n";
+	Streams::out << "All memory layout:\t" << memoryLayout.getSize() << "\n";
+
+	vector<unsigned int> statesVector;
+	if(states.size() == 1){
+		if(*states.begin() == IDX_ALL){
+			for(int n = 0; n < dSolver->getModel()->getBasisSize(); n++)
+				statesVector.push_back(n);
+		}
+		else{
+			statesVector.push_back(*states.begin());
+		}
+	}
+	else{
+		for(unsigned int n = 0; n < states.size(); n++){
+			TBTKAssert(
+				*(states.begin() + n) >= 0,
+				"DPropertyExtractor::calculateWaveFunction()",
+				"Found unexpected index symbol.",
+				"Use only positive numbers or '{IDX_ALL}'"
+			);
+			statesVector.push_back(*(states.begin() + n));
+		}
+	}
+
+	Streams::out << "States size:\t" << states.size() << "\n";
+	Streams::out << "StatesVector size:\t" << statesVector.size() << "\n";
+
+
+	Property::WaveFunction waveFunction(memoryLayout, statesVector);
+
+	hint = new Property::WaveFunction*[1];
+	((Property::WaveFunction**)hint)[0] = &waveFunction;
+
+	calculate(
+		calculateWaveFunctionCallback,
+		allIndices,
+		memoryLayout,
+		waveFunction
+	);
+
+	delete [] (Property::WaveFunction**)hint;
+
+	return waveFunction;
+}
+
 Property::GreensFunction* DPropertyExtractor::calculateGreensFunction(
 	Index to,
 	Index from,
@@ -471,6 +534,19 @@ Property::SpinPolarizedLDOS DPropertyExtractor::calculateSpinPolarizedLDOS(
 	delete [] (void**)hint;
 
 	return spinPolarizedLDOS;
+}
+
+void DPropertyExtractor::calculateWaveFunctionCallback(
+	PropertyExtractor *cb_this,
+	void *waveFunction,
+	const Index &index,
+	int offset
+){
+	DPropertyExtractor *pe = (DPropertyExtractor*)cb_this;
+
+	const vector<unsigned int> states = ((Property::WaveFunction**)pe->hint)[0]->getStates();
+	for(unsigned int n = 0; n < states.size(); n++)
+		((complex<double>*)waveFunction)[offset + n] += pe->getAmplitude(states.at(n), index);
 }
 
 void DPropertyExtractor::calculateDensityCallback(

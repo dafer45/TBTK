@@ -367,6 +367,62 @@ void FileWriter::writeEigenValues(
 	}
 }
 
+void FileWriter::writeWaveFunction(
+	const Property::WaveFunction &waveFunction,
+	string name,
+	string path
+){
+	init();
+
+	int attributes[2];
+	attributes[0] = static_cast<int>(waveFunction.getFormat());
+	attributes[1] = static_cast<int>(waveFunction.getStates().size());
+	string attributeNames[2];
+	attributeNames[0] = "Format";
+	attributeNames[1] = "NumStates";
+	stringstream ss;
+	ss << name << "Attributes";
+	writeAttributes(
+		attributes,
+		attributeNames,
+		2,
+		ss.str(),
+		path
+	);
+
+	switch(waveFunction.getFormat()){
+	case IndexDescriptor::Format::Custom:
+	{
+		stringstream ss;
+		ss << name << "IndexTree";
+		writeIndexTree(
+			waveFunction.getIndexDescriptor().getIndexTree(),
+			ss.str(),
+			path
+		);
+
+		const vector<unsigned int> &states = waveFunction.getStates();
+		const int STATES_RANK = 1;
+		int statesDims[STATES_RANK] = {(int)states.size()};
+		ss.str("");
+		ss << name << "States";
+		write((int*)states.data(), STATES_RANK, statesDims, ss.str(), path);
+
+		const int RANK = 1;
+		int dims[RANK] = {(int)waveFunction.getSize()};
+		write(waveFunction.getData(), RANK, dims, name, path);
+
+		break;
+	}
+	default:
+		TBTKExit(
+			"FileWriter::writeWaveFunction()",
+			"Storage format not supported.",
+			"This should never happen, contact the developer."
+		);
+	}
+}
+
 void FileWriter::writeDOS(const Property::DOS &dos, string name, string path){
 	init();
 
@@ -923,6 +979,63 @@ void FileWriter::writeSpinPolarizedLDOS(
 			"FileWriter::writeLDOS()",
 			"Storage format not supported.",
 			"This should never happen, contact the developer."
+		);
+	}
+}
+
+void FileWriter::write(
+	const int *data,
+	int rank,
+	const int *dims,
+	string name,
+	string path
+){
+	init();
+
+	hsize_t data_dims[rank];
+	for(int n = 0; n < rank; n++)
+		data_dims[n] = dims[n];
+
+	try{
+		stringstream ss;
+		ss << path;
+		if(path.back() != '/')
+			ss << "/";
+		ss << name;
+
+		Exception::dontPrint();
+		H5File file(filename, H5F_ACC_RDWR);
+
+		DataSpace dataspace = DataSpace(rank, data_dims);
+		DataSet dataset = DataSet(file.createDataSet(name, PredType::STD_I32BE, dataspace));
+		dataset.write(data, PredType::NATIVE_INT);
+		dataspace.close();
+
+		dataset.close();
+		file.close();
+	}
+	catch(FileIException error){
+		Streams::log << error.getCDetailMsg() << "\n";
+		TBTKExit(
+			"FileWriter::write()",
+			"While writing to " << name << ".",
+			""
+		);
+	}
+	catch(DataSetIException error){
+		Streams::log << error.getCDetailMsg() << "\n";
+		TBTKExit(
+			"FileWriter::write()",
+			"While writing to " << name << ".",
+			""
+		);
+	}
+	catch(DataSpaceIException error){
+		Streams::log << error.getCDetailMsg() << "\n";
+		TBTKExit(
+			"FileWriter::write()",
+			"While writing to " << name << ".",
+			""
 		);
 	}
 }

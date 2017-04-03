@@ -62,10 +62,10 @@ public:
 	IndexDescriptor::Format getFormat() const;
 
 	/** Function call operator. */
-	DataType operator()(const Index &index, unsigned int offset = 0) const;
+	virtual DataType operator()(const Index &index, unsigned int offset = 0) const;
 
 	/** Function call operator. */
-	DataType operator()(unsigned int offset) const;
+	virtual DataType operator()(unsigned int offset) const;
 protected:
 	/** Constructor. */
 	AbstractProperty(

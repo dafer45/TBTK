@@ -35,6 +35,8 @@
 #include "SpectralFunction.h"
 #include "SpinPolarizedLDOS.h"
 #include "ParameterSet.h"
+#include "WaveFunction.h"
+
 #include <fstream>
 #include <stdio.h>
 
@@ -76,6 +78,12 @@ public:
 	static Property::EigenValues* readEigenValues(
 		std::string name = "EigenValues",
 		std::string path = "/"
+	);
+
+	/** Read WaveFunction from file. */
+	static Property::WaveFunction* readWaveFunction(
+		std::string name = "WaveFunction",
+		std::string pat = "/"
 	);
 
 	/** Read density of states from file. */
@@ -120,6 +128,15 @@ public:
 		std::string path = "/"
 	);
 
+	/** Read custom n-dimensional arrays from file of type int. */
+	static void read(
+		int **data,
+		int *rank,
+		int **dims,
+		std::string name,
+		std::string path = "/"
+	);
+
 	/** Read custom n-dimensional arrays from file of type double. */
 	static void read(
 		double **data,
@@ -129,7 +146,8 @@ public:
 		std::string path = "/"
 	);
 
-	/** Read custom n-dimensional arrays from file of type double. */
+	/** Read custom n-dimensional arrays from file of type complex<double>.
+	 */
 	static void read(
 		std::complex<double> **data,
 		int *rank,

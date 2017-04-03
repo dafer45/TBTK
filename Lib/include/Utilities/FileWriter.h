@@ -35,6 +35,7 @@
 #include "SpectralFunction.h"
 #include "SpinPolarizedLDOS.h"
 #include "ParameterSet.h"
+#include "WaveFunction.h"
 #include <fstream>
 #include <stdio.h>
 
@@ -82,6 +83,13 @@ public:
 		std::string path = "/"
 	);
 
+	/** Write wave function to file. */
+	static void writeWaveFunction(
+		const Property::WaveFunction &waveFunction,
+		std::string name = "WaveFunction",
+		std::string path = "/"
+	);
+
 	/** Write density of states to file. */
 	static void writeDOS(
 		const Property::DOS &dos,
@@ -124,6 +132,15 @@ public:
 		std::string path = "/"
 	);
 
+	/** Write custom n-dimensional arrays to file of type int. */
+	static void write(
+		const int *data,
+		int rank,
+		const int *dims,
+		std::string name,
+		std::string path = "/"
+	);
+
 	/** Write custom n-dimensional arrays to file of type double. */
 	static void write(
 		const double *data,
@@ -133,7 +150,8 @@ public:
 		std::string path = "/"
 	);
 
-	/** Write custom n-dimensional arrays to file of type double. */
+	/** Write custom n-dimensional arrays to file of type complex<double>.
+	 */
 	static void write(
 		const std::complex<double> *data,
 		int rank,

@@ -256,7 +256,9 @@ protected:
 		int offsetMultiplier
 	);
 
-	/***/
+	/** Loops over the indices satisfying the specified patterns and calls
+	 *  the appropriate callback function to calculate the correct
+	 *  quantity. */
 	template<typename DataType>
 	void calculate(
 		void (*callback)(
