@@ -186,6 +186,18 @@ const HoppingAmplitude* HoppingAmplitudeSet::Iterator::getHA() const{
 	return it->getHA();
 }
 
+int HoppingAmplitudeSet::Iterator::getMinBasisIndex() const{
+	return it->getMinBasisIndex();
+}
+
+int HoppingAmplitudeSet::Iterator::getMaxBasisIndex() const{
+	return it->getMaxBasisIndex();
+}
+
+int HoppingAmplitudeSet::Iterator::getNumBasisIndices() const{
+	return it->getNumBasisIndices();
+}
+
 void HoppingAmplitudeSet::tabulate(
 	complex<double> **amplitudes,
 	int **table,

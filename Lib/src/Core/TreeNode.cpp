@@ -533,6 +533,21 @@ const HoppingAmplitude* TreeNode::Iterator::getHA() const{
 	return &tn->hoppingAmplitudes.at(currentHoppingAmplitude);
 }
 
+int TreeNode::Iterator::getMinBasisIndex() const{
+	return tree->getMinIndex();
+}
+
+int TreeNode::Iterator::getMaxBasisIndex() const{
+	return tree->getMaxIndex();
+}
+
+int TreeNode::Iterator::getNumBasisIndices() const{
+	if(getMaxBasisIndex() == -1)
+		return 0;
+	else
+		return 1 + getMaxBasisIndex() - getMinBasisIndex();
+}
+
 TreeNode::Iterator TreeNode::begin() const{
 	return Iterator(this);
 }

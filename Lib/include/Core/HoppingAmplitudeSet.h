@@ -86,6 +86,9 @@ public:
 	 *  to other indices with the same initial subspace indices. */
 	bool isProperSubspace(const Index &subspace);
 
+	/** Returns and IndexTree containing all subspace indices. */
+	IndexTree getSubspaceIndices() const;
+
 	/** Construct Hilbert space. No more @link HoppingAmplitude
 	 *  HoppingAmplitudes @endlink should be added after this call. */
 	void construct();
@@ -141,6 +144,15 @@ public:
 
 		/** Get current HoppingAmplitude. */
 		const HoppingAmplitude* getHA() const;
+
+		/** Get minimum index. */
+		int getMinBasisIndex() const;
+
+		/** Get maximum index. */
+		int getMaxBasisIndex() const;
+
+		/** Get number of basis indices. */
+		int getNumBasisIndices() const;
 	private:
 		/** The iterator can only be constructed by the
 		 *  HoppingAmplitudeSet. */
@@ -250,6 +262,10 @@ inline int HoppingAmplitudeSet::getBasisSize() const{
 
 inline bool HoppingAmplitudeSet::isProperSubspace(const Index &subspace){
 	return tree.isProperSubspace(subspace);
+}
+
+inline IndexTree HoppingAmplitudeSet::getSubspaceIndices() const{
+	return tree.getSubspaceIndices();
 }
 
 inline void HoppingAmplitudeSet::construct(){

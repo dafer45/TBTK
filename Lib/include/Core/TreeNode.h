@@ -116,6 +116,15 @@ public:
 
 		/** Get HoppingAmplitude currently pointed at. */
 		const HoppingAmplitude* getHA() const;
+
+		/** Get minimum basis index. */
+		int getMinBasisIndex() const;
+
+		/** Get maximum basis index. */
+		int getMaxBasisIndex() const;
+
+		/** Get number of basis indices. */
+		int getNumBasisIndices() const;
 	private:
 		/** Search after next HoppingAmplitude. Is used by
 		 *  TreeNode::Iterator::searchNext and called recursively. */
