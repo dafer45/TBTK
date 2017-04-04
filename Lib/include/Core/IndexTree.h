@@ -163,7 +163,7 @@ private:
 	int getMaxIndex() const;
 };
 
-inline IndexTree::getSize() const{
+inline int IndexTree::getSize() const{
 	return size;
 }
 

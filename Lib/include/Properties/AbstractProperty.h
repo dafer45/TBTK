@@ -322,7 +322,7 @@ AbstractProperty<DataType>::AbstractProperty(
 	}
 	else{
 		data = new DataType[size];
-		for(int n = 0; n < size; n++)
+		for(unsigned int n = 0; n < size; n++)
 			data[n] = abstractProperty.data[n];
 	}
 }
@@ -365,7 +365,7 @@ AbstractProperty<DataType>& AbstractProperty<DataType>::operator=(
 	}
 	else{
 		data = new DataType[size];
-		for(int n = 0; n < size; n++)
+		for(unsigned int n = 0; n < size; n++)
 			data[n] = rhs.data[n];
 	}
 

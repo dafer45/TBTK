@@ -94,8 +94,6 @@ Property::WaveFunction DPropertyExtractor::calculateWaveFunction(
 		true,
 		true
 	);
-	Streams::out << "All indices:\t" << allIndices.getSize() << "\n";
-	Streams::out << "All memory layout:\t" << memoryLayout.getSize() << "\n";
 
 	vector<unsigned int> statesVector;
 	if(states.size() == 1){
@@ -104,6 +102,12 @@ Property::WaveFunction DPropertyExtractor::calculateWaveFunction(
 				statesVector.push_back(n);
 		}
 		else{
+			TBTKAssert(
+				*states.begin() >= 0,
+				"DPropertyExtractor::calculateWaveFunction()",
+				"Found unexpected index symbol.",
+				"Use only positive numbers or '{IDX_ALL}'"
+			);
 			statesVector.push_back(*states.begin());
 		}
 	}
@@ -118,10 +122,6 @@ Property::WaveFunction DPropertyExtractor::calculateWaveFunction(
 			statesVector.push_back(*(states.begin() + n));
 		}
 	}
-
-	Streams::out << "States size:\t" << states.size() << "\n";
-	Streams::out << "StatesVector size:\t" << statesVector.size() << "\n";
-
 
 	Property::WaveFunction waveFunction(memoryLayout, statesVector);
 

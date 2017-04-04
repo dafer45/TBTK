@@ -313,7 +313,7 @@ void PropertyExtractor::calculate(
 ){
 	IndexTree::Iterator it = allIndices.begin();
 	const Index *index;
-	int counter = 0;
+//	int counter = 0;
 	while((index = it.getIndex())){
 		if(spinIndexHint != nullptr){
 			std::vector<unsigned int> spinIndices = memoryLayout.getSubindicesMatching(

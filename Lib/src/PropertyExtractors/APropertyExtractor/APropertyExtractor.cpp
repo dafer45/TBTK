@@ -49,6 +49,69 @@ Property::EigenValues APropertyExtractor::getEigenValues(){
 	return eigenValues;
 }
 
+Property::WaveFunction APropertyExtractor::calculateWaveFunction(
+	initializer_list<Index> patterns,
+	initializer_list<int> states
+){
+	IndexTree allIndices = generateIndexTree(
+		patterns,
+		*aSolver->getModel()->getHoppingAmplitudeSet(),
+		false,
+		false
+	);
+
+	IndexTree memoryLayout = generateIndexTree(
+		patterns,
+		*aSolver->getModel()->getHoppingAmplitudeSet(),
+		true,
+		true
+	);
+
+	vector<unsigned int> statesVector;
+	if(states.size() == 1){
+		if(*states.begin() == IDX_ALL){
+			for(int n = 0; n < aSolver->getModel()->getBasisSize(); n++)
+				statesVector.push_back(n);
+		}
+		else{
+			TBTKAssert(
+				*states.begin() >= 0,
+				"APropertyExtractor::calculateWaveFunction()",
+				"Found unexpected index symbol.",
+				"Use only positive numbers or '{IDX_ALL}'"
+			);
+			statesVector.push_back(*states.begin());
+		}
+	}
+	else{
+		for(unsigned int n = 0; n < states.size(); n++){
+			TBTKAssert(
+				*(states.begin() + n) >= 0,
+				"APropertyExtractor::calculateWaveFunction()",
+				"Found unexpected index symbol.",
+				"Use only positive numbers or '{IDX_ALL}'"
+			);
+			statesVector.push_back(*(states.begin() + n));
+		}
+	}
+
+	Property::WaveFunction waveFunction(memoryLayout, statesVector);
+
+	hint = new Property::WaveFunction*[1];
+	((Property::WaveFunction**)hint)[0] = &waveFunction;
+
+	calculate(
+		calculateWaveFunctionCallback,
+		allIndices,
+		memoryLayout,
+		waveFunction
+	);
+
+	delete [] (Property::WaveFunction**)hint;
+
+	return waveFunction;
+}
+
 Property::GreensFunction* APropertyExtractor::calculateGreensFunction(
 	Index to,
 	Index from,
@@ -325,6 +388,19 @@ Property::SpinPolarizedLDOS APropertyExtractor::calculateSpinPolarizedLDOS(
 	delete [] (void**)hint;
 
 	return spinPolarizedLDOS;
+}
+
+void APropertyExtractor::calculateWaveFunctionCallback(
+	PropertyExtractor *cb_this,
+	void *waveFunction,
+	const Index &index,
+	int offset
+){
+	APropertyExtractor *pe = (APropertyExtractor*)cb_this;
+
+	const vector<unsigned int> states = ((Property::WaveFunction**)pe->hint)[0]->getStates();
+	for(unsigned int n = 0; n < states.size(); n++)
+		((complex<double>*)waveFunction)[offset + n] += pe->getAmplitude(states.at(n), index);
 }
 
 void APropertyExtractor::calculateLDOSCallback(

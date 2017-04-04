@@ -251,9 +251,13 @@ int main(int argc, char **argv){
 				}
 				else if(propertyName.compare("WaveFunction") == 0){
 					complex<double> amplitude = (*waveFunction)(indexTree.getPhysicalIndex(minDistanceIndex), waveFunctionState);
-					valueR = abs(amplitude)*arg(amplitude);
+					double absolute = abs(amplitude);
+					double argument = arg(amplitude);
+					if(argument < 0)
+						argument += 2*M_PI;
+					valueR = absolute*argument;
 					valueG = 0;
-					valueB = abs(amplitude)*abs(arg(amplitude) - 2*M_PI);
+					valueB = absolute*(2*M_PI - argument);
 				}
 				else{
 					TBTKExit(
@@ -289,9 +293,9 @@ int main(int argc, char **argv){
 	Mat image = Mat::zeros(height, width, CV_8UC3);
 	for(unsigned int x = 0; x < width; x++){
 		for(unsigned int y = 0; y < height; y++){
-			image.at<Vec3b>(y, x)[0] = 255*(canvas.at<Vec3f>(y, x)[0] - minValue)/(maxValue - minValue);
-			image.at<Vec3b>(y, x)[1] = 255*(canvas.at<Vec3f>(y, x)[1] - minValue)/(maxValue - minValue);
-			image.at<Vec3b>(y, x)[2] = 255*(canvas.at<Vec3f>(y, x)[2] - minValue)/(maxValue - minValue);
+			image.at<Vec3b>(y, x)[0] = 255*((canvas.at<Vec3f>(y, x)[0] - minValue)/(maxValue - minValue));
+			image.at<Vec3b>(y, x)[1] = 255*((canvas.at<Vec3f>(y, x)[1] - minValue)/(maxValue - minValue));
+			image.at<Vec3b>(y, x)[2] = 255*((canvas.at<Vec3f>(y, x)[2] - minValue)/(maxValue - minValue));
 		}
 	}
 
