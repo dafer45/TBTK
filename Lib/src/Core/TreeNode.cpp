@@ -195,6 +195,28 @@ bool TreeNode::isProperSubspace(const Index &subspace, unsigned int subindex){
 	}
 }
 
+IndexTree TreeNode::getSubspaceIndices() const{
+	IndexTree blockIndices;
+	if(isPotentialBlockSeparator)
+		getBlockIndices(blockIndices, Index({}));
+	blockIndices.generateLinearMap();
+
+	return blockIndices;
+}
+
+void TreeNode::getBlockIndices(IndexTree &blockIndices, Index index) const{
+	if(children.size() > 0 && isPotentialBlockSeparator){
+		for(unsigned int n = 0; n < children.size(); n++){
+			index.push_back(n);
+			children.at(n).getBlockIndices(blockIndices, index);
+			index.popBack();
+		}
+	}
+	else if(children.size() > 0 || basisIndex != -1){
+		blockIndices.add(index);
+	}
+}
+
 const std::vector<HoppingAmplitude>* TreeNode::getHAs(Index index) const{
 	return getHAs(index, 0);
 }
@@ -362,20 +384,46 @@ void TreeNode::sort(TreeNode *rootNode){
 
 TreeNode::Iterator::Iterator(const TreeNode *tree){
 	this->tree = tree;
-	currentIndex.push_back(0);
-	currentHoppingAmplitude = -1;
-	searchNext(tree, 0);
+	if(tree->children.size() == 0){
+		//Handle the special case when the data is stored on the head
+		//node. Can for example be the case when iterating over a
+		//single leaf node.
+		currentHoppingAmplitude = -1;
+		searchNext(tree, -1);
+	}
+	else{
+		currentIndex.push_back(0);
+		currentHoppingAmplitude = -1;
+		searchNext(tree, 0);
+	}
 }
 
 void TreeNode::Iterator::reset(){
 	currentIndex.clear();
-	currentIndex.push_back(0);
-	currentHoppingAmplitude = -1;
-	searchNext(tree, 0);
+	if(tree->children.size() == 0){
+		//Handle the special case when the data is stored on the head
+		//node. Can for example be the case when iterating over a
+		//single leaf node.
+		currentHoppingAmplitude = -1;
+		searchNext(tree, -1);
+	}
+	else{
+		currentIndex.push_back(0);
+		currentHoppingAmplitude = -1;
+		searchNext(tree, 0);
+	}
 }
 
 void TreeNode::Iterator::searchNextHA(){
-	searchNext(tree, 0);
+	if(tree->children.size() == 0){
+		//Handle the special case when the data is stored on the head
+		//node. Can for example be the case when iterating over a
+		//single leaf node.
+		searchNext(tree, -1);
+	}
+	else{
+		searchNext(tree, 0);
+	}
 }
 
 bool TreeNode::Iterator::searchNext(const TreeNode *treeNode, unsigned int subindex){
@@ -464,6 +512,16 @@ bool TreeNode::Iterator::searchNext(const TreeNode *treeNode, unsigned int subin
 }
 
 const HoppingAmplitude* TreeNode::Iterator::getHA() const{
+	if(currentIndex.size() == 0){
+		//Handle the special case when the data is stored on the head
+		//node. Can for example be the case when iterating over a
+		//single leaf node.
+		if(currentHoppingAmplitude == -1)
+			return NULL;
+		else
+			return &tree->hoppingAmplitudes.at(currentHoppingAmplitude);
+	}
+
 	if(currentIndex.at(0) == (int)tree->children.size()){
 		return NULL;
 	}

@@ -24,6 +24,7 @@
 #define COM_DAFER45_TBTK_TREE_NODE
 
 #include "HoppingAmplitude.h"
+#include "IndexTree.h"
 
 #include <vector>
 
@@ -54,13 +55,17 @@ public:
 	/** Add a HoppingAmplitude. */
 	void add(HoppingAmplitude ha);
 
-	/** Get sub tree. */
+	/** Get IndexTree containing the Indices that describe the subspace
+	 *  structure. */
 	const TreeNode* getSubTree(const Index &subspace) const;
 
 	/** Returns true if the subspace is a proper subsapce. That is, if the
 	 *  corresponding subtree only contains HoppingAmplitudes that connects
 	 *  sistes within the subtree. */
 	bool isProperSubspace(const Index &subspace);
+
+	/** Returns an IndexTree containing all subspace indices. */
+	IndexTree getSubspaceIndices() const;
 
 	/** Get all @link HoppingAmplitude HoppingAmplitudes @endlink with
 	 *  given 'from'-index. */
@@ -152,6 +157,11 @@ private:
 	/** Returns true if the subspace is a proper subsapce. Is called by
 	 *  TreeNode::isProperSubspace and is called recursively. */
 	bool isProperSubspace(const Index &subspace, unsigned int subindex);
+
+	/** Adds indices of all separate blocks below the current node to the
+	 *  indexTree. Is calleed by TreeNode::getBlockIndices() and is called
+	 *  recuresively. */
+	void getBlockIndices(IndexTree &blockIndices, Index index) const;
 
 	/** Get HoppingAmpilitudes. Is called by the public TreeNode::getHAs
 	 *  and is called recursively. */
