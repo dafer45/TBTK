@@ -86,6 +86,9 @@ Depends on the external library openCV (http://opencv.org/).
 #### TBTKVisualizer
 Depends on the external library OGRE (http://www.ogre3d.org/).
 
+#### TBTKRayTracePlotter
+Depends on the external library openCV (http://opencv.org/).
+
 ### Templates
 #### BasicArnoldi
 Depends on the library component ArnoldiSolver to have been compiled (see above).
