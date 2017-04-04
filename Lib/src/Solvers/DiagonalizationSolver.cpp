@@ -55,13 +55,16 @@ void DiagonalizationSolver::run(){
 	int iterationCounter = 0;
 	init();
 
-	Streams::out << "Running DiagonalizationSolver\n";
+	if(verbose)
+		Streams::out << "Running DiagonalizationSolver\n";
 	while(iterationCounter++ < maxIterations){
-		if(iterationCounter%10 == 1)
-			Streams::out << " ";
-		if(iterationCounter%50 == 1)
-			Streams::out << "\n";
-		Streams::out << "." << flush;
+		if(verbose){
+			if(iterationCounter%10 == 1)
+				Streams::out << " ";
+			if(iterationCounter%50 == 1)
+				Streams::out << "\n";
+			Streams::out << "." << flush;
+		}
 
 		solve();
 
@@ -75,16 +78,19 @@ void DiagonalizationSolver::run(){
 			break;
 		}
 	}
-	Streams::out << "\n";
+	if(verbose)
+		Streams::out << "\n";
 }
 
 void DiagonalizationSolver::init(){
-	Streams::out << "Initializing DiagonalizationSolver\n";
+	if(verbose)
+		Streams::out << "Initializing DiagonalizationSolver\n";
 
 //	model->amplitudeSet.construct();
 
 	int basisSize = getModel()->getBasisSize();
-	Streams::out << "\tBasis size: " << basisSize << "\n";
+	if(verbose)
+		Streams::out << "\tBasis size: " << basisSize << "\n";
 
 	hamiltonian = new complex<double>[(basisSize*(basisSize+1))/2];
 	eigenValues = new double[basisSize];

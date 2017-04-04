@@ -82,6 +82,9 @@ public:
 	 *  @param index Physical index \f$x\f$.
 	 */
 	const std::complex<double> getAmplitude(int state, const Index &index);
+
+	/** Set whether the DiagonalizationSolver is verbose. */
+	void setVerbose(bool verbose);
 private:
 	/** pointer to array containing Hamiltonian. */
 	std::complex<double> *hamiltonian;
@@ -94,6 +97,9 @@ private:
 
 	/** Maximum number of iterations in the self-consistency loop. */
 	int maxIterations;
+
+	/** Flag indicating whether the DiagonalizationSolver is verbose. */
+	bool verbose;
 
 	/** Callback function to call each time a diagonalization has been
 	 *  completed. */
@@ -147,6 +153,10 @@ inline const std::complex<double> DiagonalizationSolver::getAmplitude(
 
 inline const double DiagonalizationSolver::getEigenValue(int state){
 	return eigenValues[state];
+}
+
+inline void DiagonalizationSolver::setVerbose(bool verbose){
+	this->verbose = verbose;
 }
 
 };	//End of namespace TBTK

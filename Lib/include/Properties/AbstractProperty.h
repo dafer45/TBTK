@@ -113,7 +113,7 @@ protected:
 	AbstractProperty(AbstractProperty &&abstractProperty);
 
 	/** Destructor. */
-	~AbstractProperty();
+	virtual ~AbstractProperty();
 
 	/** Assignment operator. */
 	AbstractProperty& operator=(const AbstractProperty &abstractProperty);
