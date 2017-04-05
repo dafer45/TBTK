@@ -45,6 +45,9 @@ enum {
 class Index{
 public:
 	/** Constructor. */
+	Index(){};
+
+	/** Constructor. */
 	Index(std::initializer_list<int> i) : indices(i){};
 
 	/** Constructor. */

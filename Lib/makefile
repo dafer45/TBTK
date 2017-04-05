@@ -100,6 +100,9 @@ ARNOLDI_SRC_DIR += src/PropertyExtractors/APropertyExtractor
 #FourierTransform source directory
 FOURIER_TRANSFORM_SRC_DIR = src/Utilities/FourierTransform
 
+#RayTracer source directory
+RAY_TRACER_SRC_DIR = src/Utilities/RayTracer
+
 # Directory for Objects
 OBJ_DIR:= build
 
@@ -131,6 +134,9 @@ ARNOLDI_SRC := $(foreach srcDir, $(ARNOLDI_SRC_DIR), $(wildcard $(srcDir)/*.cpp)
 # FourierTransform source files
 FOURIER_TRANSFORM_SRC := $(foreach srcDir, $(FOURIER_TRANSFORM_SRC_DIR), $(wildcard $(srcDir)/*.cpp))
 
+# RayTracer source files
+RAY_TRACER_SRC := $(foreach srcDir, $(RAY_TRACER_SRC_DIR), $(wildcard $(srcDir)/*.cpp))
+
 # Object files
 OBJ := $(addprefix $(OBJ_DIR)/, $(notdir $(SRC:.cpp=.o)))
 
@@ -145,6 +151,9 @@ ARNOLDI_OBJ := $(addprefix $(OBJ_DIR)/, $(notdir $(ARNOLDI_SRC:.cpp=.o)))
 
 # FourierTransform object files
 FOURIER_TRANSFORM_OBJ := $(addprefix $(OBJ_DIR)/, $(notdir $(FOURIER_TRANSFORM_SRC:.cpp=.o)))
+
+# RayTracer object files
+RAY_TRACER_OBJ := $(addprefix $(OBJ_DIR)/, $(notdir $(RAY_TRACER_SRC:.cpp=.o)))
 
 #All object files
 ALL_OBJ := $(OBJ) $(CUDA_OBJ)
@@ -163,6 +172,9 @@ ARNOLDI_OBJ_PURE := $(notdir $(ARNOLDI_OBJ))
 
 # FourierTransform file name of object without directory name
 FOURIER_TRANSFORM_OBJ_PURE := $(notdir $(FOURIER_TRANSFORM_OBJ))
+
+# RayTracer file name of objects without directory name
+RAY_TRACER_OBJ_PURE := $(notdir $(RAY_TRACER_OBJ))
 
 all: $(STATIC_LIB)
 
@@ -188,6 +200,11 @@ fourier: $(FOURIER_TRANSFORM_OBJ)
 	@echo "Linking: " $(notdir $(STATIC_LIB))
 	@echo $(FOURIER_TRANSFORM_OBJ)
 	@ar rcs $(STATIC_LIB) $(FOURIER_TRANSFORM_OBJ)
+
+raytracer: $(RAY_TRACER_OBJ)
+	@echo "Linking: " $(notdir $(STATIC_LIB))
+	@echo $(RAY_TRACER_OBJ)
+	@ar rcs $(STATIC_LIB) $(RAY_TRACER_OBJ)
 
 # Compilation rule
 define app_compile_template
@@ -234,6 +251,15 @@ $$($(1)_OBJ): $(1)
 	@$$(CC) $$(CFLAGS) $$(OPT) -c $(1) -o $$($(1)_OBJ) $$(LDLIBS)
 endef
 
+# RayTracer compilation rule
+define ray_tracer_app_compile_template
+ $(1)_OBJ = $$(addprefix $$(OBJ_DIR)/, $$(notdir $$(patsubst %.cpp, %.o, $(1))))
+
+$$($(1)_OBJ): $(1)
+	@echo "Compiling: $(1)"
+	@$$(CC) $$(CFLAGS) $$(OPT) -c $(1) -o $$($(1)_OBJ) $$(LDLIBS)
+endef
+
 # Compile
 $(foreach app, $(SRC), $(eval $(call app_compile_template,$(app))))
 
@@ -248,6 +274,9 @@ $(foreach app, $(ARNOLDI_SRC), $(eval $(call arnoldi_app_compile_template,$(app)
 
 # FourierTransform compile
 $(foreach app, $(FOURIER_TRANSFORM_SRC), $(eval $(call fourier_transform_app_compile_template,$(app))))
+
+# RayTracer compile
+$(foreach app, $(RAY_TRACER_SRC), $(eval $(call ray_tracer_app_compile_template,$(app))))
 
 # Cleaning
 clean:
@@ -270,6 +299,8 @@ print:
 	@echo $(FOURIER_TRANSFORM_SRC_DIR)
 	@echo $(FOURIER_TRANSFORM_SRC)
 	@echo $(FOURIER_TRANSFORM_OBJ)
+	@echo $(RAY_TRACER_SRC)
+	@echo $(RAY_TRACER_OBJ)
 #	@echo $(OBJ)
 #	@echo $(addprefix ./build/, $(notdir $(patsubst %.cpp, %.o, $(SRC))))
 
