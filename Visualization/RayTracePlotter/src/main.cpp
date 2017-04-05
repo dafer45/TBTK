@@ -144,24 +144,29 @@ int main(int argc, char **argv){
 
 	Model *model = FileReader::readModel();
 	Property::Density *density = nullptr;
+	Property::Magnetization *magnetization = nullptr;
 	Property::WaveFunction *waveFunction = nullptr;
 	if(propertyName.compare("Density") == 0){
-		Streams::out << propertyName << "\n";
 		if(inputName.compare("") == 0)
 			density = FileReader::readDensity();
 		else
 			density = FileReader::readDensity(inputName);
 	}
-	else if(propertyName.compare("WaveFunction") == 0){
-		Streams::out << propertyName << "\n";
+	else if(propertyName.compare("Magnetization") == 0){
 		if(inputName.compare("") == 0){
-			Streams::out << "Default" << "\n";
-			waveFunction = FileReader::readWaveFunction();
+			magnetization = FileReader::readMagnetization();
 		}
 		else{
-			Streams::out << inputName << "\n";
-			waveFunction = FileReader::readWaveFunction(inputName);
+			magnetization = FileReader::readMagnetization(
+				inputName
+			);
 		}
+	}
+	else if(propertyName.compare("WaveFunction") == 0){
+		if(inputName.compare("") == 0)
+			waveFunction = FileReader::readWaveFunction();
+		else
+			waveFunction = FileReader::readWaveFunction(inputName);
 	}
 	else{
 		TBTKExit(
@@ -175,6 +180,9 @@ int main(int argc, char **argv){
 	const IndexDescriptor* indexDescriptor;
 	if(propertyName.compare("Density") == 0){
 		indexDescriptor = &density->getIndexDescriptor();
+	}
+	else if(propertyName.compare("Magnetization") == 0){
+		indexDescriptor = &magnetization->getIndexDescriptor();
 	}
 	else if(propertyName.compare("WaveFunction") == 0){
 		indexDescriptor = &waveFunction->getIndexDescriptor();
@@ -249,6 +257,29 @@ int main(int argc, char **argv){
 					valueG = (*density)(indexTree.getPhysicalIndex(minDistanceIndex));
 					valueB = (*density)(indexTree.getPhysicalIndex(minDistanceIndex));
 				}
+				else if(propertyName.compare("Magnetization") == 0){
+					//Calculate intersection point between
+					//the direction line and the sphere.
+					Vector3d objectCoordinate = coordinates.at(minDistanceIndex);
+					Vector3d v = objectCoordinate - cameraPosition;
+					double a = Vector3d::dotProduct(v, direction);
+					double b = Vector3d::dotProduct(v, v);
+					double lambda = a - sqrt(radius*radius + a*a - b);
+					Vector3d intersection = cameraPosition + lambda*direction;
+
+					Vector3d directionFromObject = (intersection - objectCoordinate).unit();
+
+					if(directionFromObject.z > 0){
+						valueR = 255*(5 + directionFromObject.z);
+						valueG = 0;
+						valueB = 0;
+					}
+					else{
+						valueR = 255*(5 + directionFromObject.z);
+						valueG = 255*(5 + directionFromObject.z);
+						valueB = 255*(5 + directionFromObject.z);
+					}
+				}
 				else if(propertyName.compare("WaveFunction") == 0){
 					complex<double> amplitude = (*waveFunction)(indexTree.getPhysicalIndex(minDistanceIndex), waveFunctionState);
 					double absolute = abs(amplitude);
@@ -268,9 +299,9 @@ int main(int argc, char **argv){
 				}
 			}
 
-			canvas.at<Vec3f>(y, x)[0] = valueR;
+			canvas.at<Vec3f>(y, x)[0] = valueB;
 			canvas.at<Vec3f>(y, x)[1] = valueG;
-			canvas.at<Vec3f>(y, x)[2] = valueB;
+			canvas.at<Vec3f>(y, x)[2] = valueR;
 		}
 	}
 
@@ -306,6 +337,9 @@ int main(int argc, char **argv){
 	}
 	else if(propertyName.compare("Density") == 0){
 		imwrite("figures/Density.png", image);
+	}
+	else if(propertyName.compare("Magnetization") == 0){
+		imwrite("figures/Magnetization.png", image);
 	}
 	else if(propertyName.compare("WaveFunction") == 0){
 		imwrite("figures/WaveFunction.png", image);

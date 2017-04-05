@@ -189,7 +189,7 @@ Property::DOS BPropertyExtractor::calculateDOS(){
 	return dos;
 }
 
-/*complex<double> DPropertyExtractor::calculateExpectationValue(
+complex<double> BPropertyExtractor::calculateExpectationValue(
 	Index to,
 	Index from
 ){
@@ -197,33 +197,33 @@ Property::DOS BPropertyExtractor::calculateDOS(){
 
 	complex<double> expectationValue = 0.;
 
-	Statistics statistics = dSolver->getModel()->getStatistics();
+	Statistics statistics = bSolver->getModel()->getStatistics();
 
-	for(int n = 0; n < dSolver->getModel()->getBasisSize(); n++){
+	for(int n = 0; n < bSolver->getModel()->getBasisSize(); n++){
 		double weight;
 		if(statistics == Statistics::FermiDirac){
 			weight = Functions::fermiDiracDistribution(
-				dSolver->getEigenValue(n),
-				dSolver->getModel()->getChemicalPotential(),
-				dSolver->getModel()->getTemperature()
+				bSolver->getEigenValue(n),
+				bSolver->getModel()->getChemicalPotential(),
+				bSolver->getModel()->getTemperature()
 			);
 		}
 		else{
 			weight = Functions::boseEinsteinDistribution(
-				dSolver->getEigenValue(n),
-				dSolver->getModel()->getChemicalPotential(),
-				dSolver->getModel()->getTemperature()
+				bSolver->getEigenValue(n),
+				bSolver->getModel()->getChemicalPotential(),
+				bSolver->getModel()->getTemperature()
 			);
 		}
 
-		complex<double> u_to = dSolver->getAmplitude(n, to);
-		complex<double> u_from = dSolver->getAmplitude(n, from);
+		complex<double> u_to = bSolver->getAmplitude(n, to);
+		complex<double> u_from = bSolver->getAmplitude(n, from);
 
 		expectationValue += weight*conj(u_to)*u_from;
 	}
 
 	return expectationValue;
-}*/
+}
 
 /*Property::Density DPropertyExtractor::calculateDensity(
 	Index pattern,
