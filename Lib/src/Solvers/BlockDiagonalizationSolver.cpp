@@ -22,6 +22,8 @@
 #include "Streams.h"
 #include "TBTKMacros.h"
 
+#include <iomanip>
+
 using namespace std;
 
 namespace TBTK{
@@ -30,7 +32,7 @@ BlockDiagonalizationSolver::BlockDiagonalizationSolver(){
 	hamiltonian = nullptr;
 	eigenValues = nullptr;
 	eigenVectors = nullptr;
-	blockStateMap = nullptr;
+	numBlocks = -1;
 
 	maxIterations = 50;
 	scCallback = nullptr;
@@ -44,8 +46,6 @@ BlockDiagonalizationSolver::~BlockDiagonalizationSolver(){
 		delete [] eigenValues;
 	if(eigenVectors != nullptr)
 		delete eigenVectors;
-	if(blockStateMap != nullptr)
-		delete [] blockStateMap;
 }
 
 void BlockDiagonalizationSolver::run(){
@@ -90,13 +90,15 @@ void BlockDiagonalizationSolver::init(){
 	if(verbose)
 		Streams::out << "Initializing BlockDiagonalizationSolver\n";
 
+	//Find number of blocks and number of states per block.
 	IndexTree blockIndices = getModel()->getHoppingAmplitudeSet()->getSubspaceIndices();
 	IndexTree::Iterator blockIterator = blockIndices.begin();
 	const Index *blockIndex;
-
-	//Find number of states per block.
-	vector<int> numStatesPerBlock;
+	numBlocks = 0;
+//	vector<int> numStatesPerBlock;
 	while((blockIndex = blockIterator.getIndex())){
+		numBlocks++;
+
 		HoppingAmplitudeSet::Iterator iterator = getModel()->getHoppingAmplitudeSet()->getIterator(
 			*blockIndex
 		);
@@ -104,6 +106,33 @@ void BlockDiagonalizationSolver::init(){
 
 		blockIterator.searchNext();
 	}
+
+	/** Calculate block sizes and blockOffsets. */
+	for(unsigned int n = 0; n < numStatesPerBlock.size(); n++){
+		unsigned int numStates = numStatesPerBlock.at(n);
+		blockSizes.push_back((numStates*(numStates+1))/2);
+		eigenVectorSizes.push_back(numStates*numStates);
+		if(n == 0){
+			blockOffsets.push_back(0);
+			eigenVectorOffsets.push_back(0);
+		}
+		else{
+			blockOffsets.push_back(
+				blockOffsets.at(n-1) + blockSizes.at(n-1)
+			);
+			eigenVectorOffsets.push_back(
+				eigenVectorOffsets.at(n-1) + eigenVectorSizes.at(n-1)
+			);
+		}
+	}
+
+/*	for(unsigned int n = 0; n < blockSizes.size(); n++){
+		Streams::out
+			<< blockSizes.at(n) << "\t"
+			<< blockOffsets.at(n) << "\t"
+			<< eigenVectorSizes.at(n) << "\t"
+			<< eigenVectorOffsets.at(n) << "\n";
+	}*/
 
 	//Calculate amount of memory required to store all the blocks of the
 	//Hamiltonian.
@@ -114,17 +143,21 @@ void BlockDiagonalizationSolver::init(){
 		eigenVectorsSize += numStatesPerBlock.at(n)*numStatesPerBlock.at(n);
 	}
 
-	//Setup map that maps a given state index to the correct block.
-	blockStateMap = new unsigned int[getModel()->getBasisSize()];
-	int blockCounter = 0;
-	int intraBlockCounter = 0;
+	//Setup maps that map a given state index to the correct block and vice
+	//versa.
+	unsigned int blockCounter = 0;
+	unsigned int intraBlockCounter = 0;
 	for(int n = 0; n < getModel()->getBasisSize(); n++){
 		if(intraBlockCounter >= numStatesPerBlock.at(blockCounter)){
 			intraBlockCounter = 0;
 			blockCounter++;
 		}
-		blockStateMap[n] = blockCounter;
-		Streams::out << n << ":\t" << blockCounter << "\n";
+
+		if(intraBlockCounter == 0)
+			blockToStateMap.push_back(n);
+
+
+		stateToBlockMap.push_back(blockCounter);
 		intraBlockCounter++;
 	}
 
@@ -186,21 +219,55 @@ void BlockDiagonalizationSolver::init(){
 
 void BlockDiagonalizationSolver::update(){
 	Model *model = getModel();
-	int basisSize = model->getBasisSize();
 
-	for(int n = 0; n < (basisSize*(basisSize+1))/2; n++)
-		hamiltonian[n] = 0.;
+	IndexTree blockIndices = getModel()->getHoppingAmplitudeSet()->getSubspaceIndices();
+	IndexTree::Iterator blockIterator = blockIndices.begin();
+	const Index *blockIndex;
+	unsigned int blockCounter = 0;
+	while((blockIndex = blockIterator.getIndex())){
+		HoppingAmplitudeSet::Iterator iterator = getModel()->getHoppingAmplitudeSet()->getIterator(
+			*blockIndex
+		);
+		int minBasisIndex = iterator.getMinBasisIndex();
+		const HoppingAmplitude *hoppingAmplitude;
+		while((hoppingAmplitude = iterator.getHA())){
+			int from = model->getHoppingAmplitudeSet()->getBasisIndex(
+				hoppingAmplitude->fromIndex
+			) - minBasisIndex;
+			int to = model->getHoppingAmplitudeSet()->getBasisIndex(
+				hoppingAmplitude->toIndex
+			) - minBasisIndex;
+			if(from >= to)
+				hamiltonian[blockOffsets.at(blockCounter) + to + (from*(from+1))/2] += hoppingAmplitude->getAmplitude();
 
-	HoppingAmplitudeSet::Iterator it = model->getHoppingAmplitudeSet()->getIterator();
-	const HoppingAmplitude *ha;
-	while((ha = it.getHA())){
-		int from = model->getHoppingAmplitudeSet()->getBasisIndex(ha->fromIndex);
-		int to = model->getHoppingAmplitudeSet()->getBasisIndex(ha->toIndex);
-		if(from >= to)
-			hamiltonian[to + (from*(from+1))/2] += ha->getAmplitude();
+			iterator.searchNextHA();
+		}
 
-		it.searchNextHA();
+		blockCounter++;
+		blockIterator.searchNext();
 	}
+
+/*	for(int b = 0; b < numBlocks; b++){
+		unsigned int row = 0;
+		unsigned int col = 0;
+		Streams::out << "Block number:\t" << b << "\n";
+		Streams::out << "Block offsets:\t" << blockOffsets.at(b) << "\n";
+		Streams::out << "Block size:\t" << blockSizes.at(b) << "\n";
+		for(unsigned int n = 0; n < blockSizes.at(b); n++){
+			Streams::out << setw(5) << setprecision(3) << real(hamiltonian[blockOffsets.at(b) + n]);
+			col++;
+			if(col == row+1){
+				while(col < numStatesPerBlock.at(b)){
+					Streams::out << setw(5) << ".";
+					col++;
+				}
+				Streams::out << "\n";
+				row++;
+				col = 0;
+			}
+		}
+		Streams::out << "\n\n";
+	}*/
 }
 
 //Lapack function for matrix diagonalization of triangular matrix.
@@ -232,27 +299,43 @@ extern "C" void zhbeb_(
 
 void BlockDiagonalizationSolver::solve(){
 	if(true){//Currently no support for banded matrices.
-		//Setup zhpev to calculate...
-		char jobz = 'V';		//...eigenvalues and eigenvectors...
-		char uplo = 'U';		//...for an upper triangular...
-		int n = getModel()->getBasisSize();	//...nxn-matrix.
-		//Initialize workspaces
-		complex<double> *work = new complex<double>[(2*n-1)];
-		double *rwork = new double[3*n-2];
-		int info;
-		//Solve brop
-		zhpev_(&jobz, &uplo, &n, hamiltonian, eigenValues, eigenVectors, &n, work, rwork, &info);
+		unsigned int eigenValuesOffset = 0;
+		for(int b = 0; b < numBlocks; b++){
+			//Setup zhpev to calculate...
+			char jobz = 'V';			//...eigenvalues and eigenvectors...
+			char uplo = 'U';			//...for an upper triangular...
+			int n = numStatesPerBlock.at(b);	//...nxn-matrix.
+			//Initialize workspaces
+			complex<double> *work = new complex<double>[(2*n-1)];
+			double *rwork = new double[3*n-2];
+			int info;
+			//Solve brop
+			zhpev_(
+				&jobz,
+				&uplo,
+				&n,
+				hamiltonian + blockOffsets.at(b),
+				eigenValues + eigenValuesOffset,
+				eigenVectors + eigenVectorOffsets.at(b),
+				&n,
+				work,
+				rwork,
+				&info
+			);
 
-		TBTKAssert(
-			info == 0,
-			"DiagonalizationSolver:solve()",
-			"Diagonalization routine zhpev exited with INFO=" + to_string(info) + ".",
-			"See LAPACK documentation for zhpev for further information."
-		);
+			TBTKAssert(
+				info == 0,
+				"DiagonalizationSolver:solve()",
+				"Diagonalization routine zhpev exited with INFO=" + to_string(info) + ".",
+				"See LAPACK documentation for zhpev for further information."
+			);
 
-		//Delete workspaces
-		delete [] work;
-		delete [] rwork;
+			//Delete workspaces
+			delete [] work;
+			delete [] rwork;
+
+			eigenValuesOffset += numStatesPerBlock.at(b);
+		}
 	}
 /*	else{
 		int kd;

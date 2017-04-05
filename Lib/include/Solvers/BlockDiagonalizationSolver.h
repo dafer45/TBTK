@@ -81,9 +81,29 @@ private:
 	/** Pointer to array containing eigenvectors. */
 	std::complex<double> *eigenVectors;
 
-	/** Pointer to array containing information about which block a given
-	 *  state belongs to. */
-	unsigned int *blockStateMap;
+	/** Number of states per block. */
+	std::vector<unsigned int> numStatesPerBlock;
+
+	/** Block indices for give state. */
+	std::vector<unsigned int> stateToBlockMap;
+
+	/** The first state index in given block. */
+	std::vector<unsigned int> blockToStateMap;
+
+	/** Block sizes. */
+	std::vector<unsigned int> blockSizes;
+
+	/** Block offsets. */
+	std::vector<unsigned int> blockOffsets;
+
+	/** Eigen vector sizes. */
+	std::vector<unsigned int> eigenVectorSizes;
+
+	/** Eigen vector offsets. */
+	std::vector<unsigned int> eigenVectorOffsets;
+
+	/** Number of blocks in the Hamiltonian. */
+	int numBlocks;
 
 	/** Maximum number of iterations in the self-consistency loop. */
 	int maxIterations;
@@ -122,7 +142,15 @@ inline const std::complex<double> BlockDiagonalizationSolver::getAmplitude(
 	const Index &index
 ){
 	Model *model = getModel();
-	return eigenVectors[model->getBasisSize()*state + model->getBasisIndex(index)];
+	unsigned int block = stateToBlockMap.at(state);
+	unsigned int offset = eigenVectorOffsets.at(block);
+	unsigned int linearIndex = model->getBasisIndex(index);
+	unsigned int firstStateInBlock = blockToStateMap.at(block);
+	unsigned int lastStateInBlock = firstStateInBlock + numStatesPerBlock.at(block)-1;
+	if(linearIndex >= firstStateInBlock && linearIndex <= lastStateInBlock)
+		return eigenVectors[offset + (linearIndex - firstStateInBlock)];
+	else
+		return 0;
 }
 
 inline const double BlockDiagonalizationSolver::getEigenValue(int state){
