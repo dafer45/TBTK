@@ -40,4 +40,16 @@ SpinMatrix& SpinMatrix::operator=(complex<double> value){
 	return *this;
 }
 
+double SpinMatrix::getDensity() const{
+	return abs(at(0, 0) + at(1, 1));
+}
+
+Vector3d SpinMatrix::getDirection() const{
+	return Vector3d({
+		real(at(0, 1) + at(1, 0)),
+		imag(at(0, 1) - at(1, 0)),
+		real(at(0, 0) - at(1, 1))
+	});
+}
+
 };	//End of namespace TBTK

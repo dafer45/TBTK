@@ -24,6 +24,7 @@
 #define COM_DAFER45_TBTK_SPIN_MATRIX
 
 #include "Matrix.h"
+#include "Vector3d.h"
 
 #include <complex>
 
@@ -40,6 +41,12 @@ public:
 	/** Assignment operator for assigning a single value to every element
 	 *  of the matrix. */
 	SpinMatrix& operator=(std::complex<double> value);
+
+	/** Get desnity. */
+	double getDensity() const;
+
+	/** Get spin direction. */
+	Vector3d getDirection() const;
 private:
 };
 

@@ -80,11 +80,27 @@ void RayTracer::plot(
 		[&magnetization](HitDescriptor &hitDescriptor) -> RayTracer::Color
 		{
 			Vector3d directionFromObject = hitDescriptor.getDirectionFromObject();
+			const SpinMatrix& spinMatrix = magnetization(
+				hitDescriptor.getIndex()
+			);
+			Vector3d spinDirection = spinMatrix.getDirection();
+			double projection = Vector3d::dotProduct(
+				directionFromObject,
+				spinDirection
+			);
+//			double density = spinMatrix.getDensity();
 
 			Color color;
-/*			color.r = density(hit);
-			color.g = density(hit);
-			color.b = density(hit);*/
+			if(projection > 0){
+				color.r = 255;
+				color.g = 0;
+				color.b = 0;
+			}
+			else{
+				color.r = 255;
+				color.g = 255;
+				color.b = 255;
+			}
 
 			return color;
 		}
