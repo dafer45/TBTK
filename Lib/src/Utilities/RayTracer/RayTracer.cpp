@@ -29,14 +29,6 @@ using namespace cv;
 namespace TBTK{
 
 RayTracer::RayTracer(){
-	cameraPosition = Vector3d({0, 0, 10});
-	focus = Vector3d({0, 0, 0});
-	up = Vector3d({0, 1, 0});
-
-	width = 600;
-	height = 400;
-
-	stateRadius = 0.5;
 }
 
 RayTracer::~RayTracer(){
@@ -85,7 +77,7 @@ void RayTracer::plot(
 	trace(
 		indexDescriptor,
 		model,
-		[&magnetization](const HitDescriptor &hitDescriptor) -> RayTracer::Color
+		[&magnetization](HitDescriptor &hitDescriptor) -> RayTracer::Color
 		{
 			Vector3d directionFromObject = hitDescriptor.getDirectionFromObject();
 
@@ -117,7 +109,7 @@ void RayTracer::plot(
 	trace(
 		indexDescriptor,
 		model,
-		[&waveFunction, state](const HitDescriptor &hitDescriptor) -> RayTracer::Color
+		[&waveFunction, state](HitDescriptor &hitDescriptor) -> RayTracer::Color
 		{
 			complex<double> amplitude = waveFunction(hitDescriptor.getIndex(), state);
 			double absolute = abs(amplitude);
@@ -137,9 +129,15 @@ void RayTracer::plot(
 void RayTracer::trace(
 	const IndexDescriptor &indexDescriptor,
 	const Model &model,
-	function<Color(const HitDescriptor &hitDescriptor)> &&lambdaColorPicker
-//	Color (*colorCallback)(const Index &hit)
+	function<Color(HitDescriptor &hitDescriptor)> &&lambdaColorPicker
 ){
+	const Vector3d &cameraPosition = renderContext.getCameraPosition();
+	const Vector3d &focus = renderContext.getFocus();
+	const Vector3d &up = renderContext.getUp();
+	double width = renderContext.getWidth();
+	double height = renderContext.getHeight();
+	double stateRadius = renderContext.getStateRadius();
+
 	Vector3d unitY = up.unit();
 	Vector3d unitX = ((focus - cameraPosition)*up).unit();
 	unitY = (unitX*(focus - cameraPosition)).unit();
@@ -176,11 +174,11 @@ void RayTracer::trace(
 			Vector3d target = focus
 				+ (scaleFactor*((double)x - width/2))*unitX
 				+ (scaleFactor*((double)y - height/2))*unitY;
-			Vector3d direction = (target - cameraPosition).unit();
+			Vector3d rayDirection = (target - cameraPosition).unit();
 
 			vector<unsigned int> hits;
 			for(unsigned int n = 0; n < coordinates.size(); n++)
-				if(((coordinates.at(n) - cameraPosition)*direction).norm() < stateRadius)
+				if(((coordinates.at(n) - cameraPosition)*rayDirection).norm() < stateRadius)
 					hits.push_back(n);
 
 			double valueR = 0.;
@@ -197,7 +195,10 @@ void RayTracer::trace(
 					}
 				}
 
-				HitDescriptor hitDescriptor;
+				HitDescriptor hitDescriptor(renderContext);
+				hitDescriptor.setRayDirection(
+					rayDirection
+				);
 				hitDescriptor.setIndex(
 					indexTree.getPhysicalIndex(
 						minDistanceIndex
@@ -205,9 +206,7 @@ void RayTracer::trace(
 				);
 				hitDescriptor.setCoordinate(
 					coordinates.at(
-						hits.at(
-							minDistanceIndex
-						)
+						minDistanceIndex
 					)
 				);
 				Color color = lambdaColorPicker(
@@ -246,11 +245,28 @@ void RayTracer::trace(
 	imwrite("figures/Density.png", image);
 }
 
-RayTracer::HitDescriptor::HitDescriptor(){
+RayTracer::RenderContext::RenderContext(){
+	cameraPosition = Vector3d({0, 0, 10});
+	focus = Vector3d({0, 0, 0});
+	up = Vector3d({0, 1, 0});
+
+	width = 600;
+	height = 400;
+
+	stateRadius = 0.5;
+}
+
+RayTracer::RenderContext::~RenderContext(){
+}
+
+RayTracer::HitDescriptor::HitDescriptor(const RenderContext &renderContext){
+	this->renderContext = &renderContext;
 	directionFromObject = nullptr;
 }
 
 RayTracer::HitDescriptor::HitDescriptor(const HitDescriptor &hitDescriptor){
+	renderContext = hitDescriptor.renderContext;
+
 	if(hitDescriptor.directionFromObject == nullptr){
 		directionFromObject = nullptr;
 	}
@@ -262,6 +278,8 @@ RayTracer::HitDescriptor::HitDescriptor(const HitDescriptor &hitDescriptor){
 }
 
 RayTracer::HitDescriptor::HitDescriptor(HitDescriptor &&hitDescriptor){
+	renderContext = hitDescriptor.renderContext;
+
 	if(hitDescriptor.directionFromObject == nullptr){
 		directionFromObject = nullptr;
 	}
@@ -279,6 +297,8 @@ RayTracer::HitDescriptor::~HitDescriptor(){
 RayTracer::HitDescriptor& RayTracer::HitDescriptor::operator=(
 	const HitDescriptor &rhs
 ){
+	renderContext = rhs.renderContext;
+
 	if(rhs.directionFromObject == nullptr)
 		directionFromObject = nullptr;
 	else
@@ -291,6 +311,8 @@ RayTracer::HitDescriptor& RayTracer::HitDescriptor::operator=(
 	HitDescriptor &&rhs
 ){
 	if(this != &rhs){
+		renderContext = rhs.renderContext;
+
 		if(rhs.directionFromObject == nullptr){
 			directionFromObject = nullptr;
 		}
@@ -303,12 +325,26 @@ RayTracer::HitDescriptor& RayTracer::HitDescriptor::operator=(
 	return *this;
 }
 
-const Vector3d& RayTracer::HitDescriptor::getDirectionFromObject() const{
+const Vector3d& RayTracer::HitDescriptor::getDirectionFromObject(){
 	if(directionFromObject != nullptr)
 		return *directionFromObject;
 
-/*	Vector3d v = objectCoordinate - cameraPosition;
-	double a = Vector3d::dotProduct(v, direction);*/
+	const Vector3d &cameraPosition = renderContext->getCameraPosition();
+//	const Vector3d &rayDirection = renderContext->getRayDirection();
+	double stateRadius = renderContext->getStateRadius();
+
+	//Here v is the vector from the object to the camera, t is the unit
+	//vector in the direction of the ray, and lamvda*t is the vector from
+	//the camera to the hit position.
+	Vector3d v = coordinate - cameraPosition;
+	double a = Vector3d::dotProduct(v, rayDirection);
+	double b = Vector3d::dotProduct(v, v);
+	double lambda = a - sqrt(stateRadius*stateRadius + a*a - b);
+	Vector3d hitPoint = cameraPosition + lambda*rayDirection;
+
+	directionFromObject = new Vector3d((hitPoint - coordinate).unit());
+
+	return *directionFromObject;
 }
 
 };	//End of namespace TBTK

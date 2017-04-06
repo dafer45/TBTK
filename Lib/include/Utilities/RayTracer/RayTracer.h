@@ -86,24 +86,6 @@ public:
 		unsigned int state
 	);
 private:
-	/** Camera position. */
-	Vector3d cameraPosition;
-
-	/** Focus. */
-	Vector3d focus;
-
-	/** Up vector. */
-	Vector3d up;
-
-	/** Viewport width. */
-	unsigned int width;
-
-	/** Viewport height. */
-	unsigned int height;
-
-	/** State radius. */
-	double stateRadius;
-
 	/** Class for encoding RGB colors. */
 	class Color{
 	public:
@@ -111,10 +93,85 @@ private:
 	};
 
 	/** */
+	class RenderContext{
+	public:
+		/** Constructor. */
+		RenderContext();
+
+		/** Destructor. */
+		~RenderContext();
+
+		/** Set camera position. */
+		void setCameraPosition(const Vector3d &cameraPosition);
+
+		/** Set camera position. */
+		void setCameraPosition(std::initializer_list<double> cameraPosition);
+
+		/** Get cameraPosition. */
+		const Vector3d& getCameraPosition() const;
+
+		/** Set focus. */
+		void setFocus(const Vector3d &focus);
+
+		/** Set camera focus. */
+		void setFocus(std::initializer_list<double> focus);
+
+		/** Get focus point. */
+		const Vector3d& getFocus() const;
+
+		/** Set up direction. */
+		void setUp(const Vector3d &up);
+
+		/** Set up direction. */
+		void setUp(std::initializer_list<double> up);
+
+		/** Get up direction. */
+		const Vector3d& getUp() const;
+
+		/** Set viewport width. */
+		void setWidth(unsigned int width);
+
+		/** Get viewport width. */
+		unsigned int getWidth() const;
+
+		/** Set viewport height. */
+		void setHeight(unsigned int height);
+
+		/** Get viewport height. */
+		unsigned int getHeight() const;
+
+		/** Set state radius. */
+		void setStateRadius(double stateRadius);
+
+		/** Get state radius. */
+		double getStateRadius() const;
+	private:
+		/** Camera position. */
+		Vector3d cameraPosition;
+
+		/** Focus point. */
+		Vector3d focus;
+
+		/** Up direction. */
+		Vector3d up;
+
+		/** Viewport width. */
+		double width;
+
+		/** Viewport height. */
+		double height;
+
+		/** State radius. */
+		double stateRadius;
+	};
+
+	RenderContext renderContext;
+
+	/** */
 	class HitDescriptor{
 	public:
 		/** Constructor. */
-		HitDescriptor();
+		HitDescriptor(const RenderContext &renderContext);
 
 		/** Copy construtor. */
 		HitDescriptor(const HitDescriptor &hitDescriptor);
@@ -150,8 +207,11 @@ private:
 		const Vector3d& getCoordinate() const;
 
 		/** Get directionFromObject. */
-		const Vector3d& getDirectionFromObject() const;
+		const Vector3d& getDirectionFromObject();
 	private:
+		/** Render context. */
+		const RenderContext *renderContext;
+
 		/** Ray direction. */
 		Vector3d rayDirection;
 
@@ -169,15 +229,43 @@ private:
 	void trace(
 		const IndexDescriptor &indexDescriptor,
 		const Model &model,
-		std::function<Color(const HitDescriptor &hitDescriptor)> &&lambdaColorPicker
+		std::function<Color(HitDescriptor &hitDescriptor)> &&lambdaColorPicker
 	);
 };
 
 inline void RayTracer::setCameraPosition(const Vector3d &cameraPosition){
-	this->cameraPosition = cameraPosition;
+	renderContext.setCameraPosition(cameraPosition);
 }
 
 inline void RayTracer::setCameraPosition(
+	std::initializer_list<double> cameraPosition
+){
+	renderContext.setCameraPosition(cameraPosition);
+}
+
+inline void RayTracer::setFocus(const Vector3d &focus){
+	renderContext.setFocus(focus);
+}
+
+inline void RayTracer::setFocus(std::initializer_list<double> focus){
+	renderContext.setFocus(focus);
+}
+
+inline void RayTracer::setUp(const Vector3d &up){
+	renderContext.setUp(up);
+}
+
+inline void RayTracer::setUp(std::initializer_list<double> up){
+	renderContext.setUp(up);
+}
+
+inline void RayTracer::RenderContext::setCameraPosition(
+	const Vector3d &cameraPosition
+){
+	this->cameraPosition = cameraPosition;
+}
+
+inline void RayTracer::RenderContext::setCameraPosition(
 	std::initializer_list<double> cameraPosition
 ){
 	TBTKAssert(
@@ -192,11 +280,15 @@ inline void RayTracer::setCameraPosition(
 	this->cameraPosition.z = *(cameraPosition.begin() + 2);
 }
 
-inline void RayTracer::setFocus(const Vector3d &focus){
+inline const Vector3d& RayTracer::RenderContext::getCameraPosition() const{
+	return cameraPosition;
+}
+
+inline void RayTracer::RenderContext::setFocus(const Vector3d &focus){
 	this->focus = focus;
 }
 
-inline void RayTracer::setFocus(
+inline void RayTracer::RenderContext::setFocus(
 	std::initializer_list<double> focus
 ){
 	TBTKAssert(
@@ -211,11 +303,15 @@ inline void RayTracer::setFocus(
 	this->focus.z = *(focus.begin() + 2);
 }
 
-inline void RayTracer::setUp(const Vector3d &up){
+inline const Vector3d& RayTracer::RenderContext::getFocus() const{
+	return focus;
+}
+
+inline void RayTracer::RenderContext::setUp(const Vector3d &up){
 	this->up = up;
 }
 
-inline void RayTracer::setUp(
+inline void RayTracer::RenderContext::setUp(
 	std::initializer_list<double> up
 ){
 	TBTKAssert(
@@ -230,19 +326,37 @@ inline void RayTracer::setUp(
 	this->up.z = *(up.begin() + 2);
 }
 
-inline void RayTracer::setWidth(unsigned int width){
+inline const Vector3d& RayTracer::RenderContext::getUp() const{
+	return up;
+}
+
+inline void RayTracer::RenderContext::setWidth(unsigned int width){
 	this->width = width;
 }
 
-inline void RayTracer::setHeight(unsigned int height){
+inline unsigned int RayTracer::RenderContext::getWidth() const{
+	return width;
+}
+
+inline void RayTracer::RenderContext::setHeight(unsigned int height){
 	this->height = height;
 }
 
-inline void RayTracer::setStateRadius(double stateRadius){
+inline unsigned int RayTracer::RenderContext::getHeight() const{
+	return height;
+}
+
+inline void RayTracer::RenderContext::setStateRadius(double stateRadius){
 	this->stateRadius = stateRadius;
 }
 
-inline void RayTracer::HitDescriptor::setRayDirection(const Vector3d &rayDirection){
+inline double RayTracer::RenderContext::getStateRadius() const{
+	return stateRadius;
+}
+
+inline void RayTracer::HitDescriptor::setRayDirection(
+	const Vector3d &rayDirection
+){
 	this->rayDirection = rayDirection;
 }
 
