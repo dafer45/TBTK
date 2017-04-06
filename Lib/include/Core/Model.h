@@ -58,7 +58,7 @@ public:
 
 	/** Get Hilbert space index corresponding to given 'from'-index.
 	 *  @param index 'From'-index to get Hilbert space index for. */
-	int getBasisIndex(Index index);
+	int getBasisIndex(Index index) const;
 
 	/** Get size of Hilbert space. */
 	int getBasisSize();
@@ -166,7 +166,7 @@ inline int Model::getBasisSize(){
 	return singleParticleContext->getBasisSize();
 }
 
-inline int Model::getBasisIndex(Index index){
+inline int Model::getBasisIndex(Index index) const{
 	return singleParticleContext->getBasisIndex(index);
 }
 

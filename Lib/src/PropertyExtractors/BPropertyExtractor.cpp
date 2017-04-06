@@ -559,7 +559,10 @@ void BPropertyExtractor::calculateDensityCallback(
 
 //	const double *eigen_values = pe->bSolver->getEigenValues();
 	Statistics statistics = pe->bSolver->getModel()->getStatistics();
-	for(int n = 0; n < pe->bSolver->getModel()->getBasisSize(); n++){
+	int firstStateInBlock = pe->bSolver->getFirstStateInBlock(index);
+	int lastStateInBlock = pe->bSolver->getLastStateInBlock(index);
+	for(int n = firstStateInBlock; n <= lastStateInBlock; n++){
+//	for(int n = 0; n < pe->bSolver->getModel()->getBasisSize(); n++){
 		double weight;
 		if(statistics == Statistics::FermiDirac){
 			weight = Functions::fermiDiracDistribution(
@@ -598,7 +601,10 @@ void BPropertyExtractor::calculateMagnetizationCallback(
 	Index index_d(index);
 	index_u.at(spin_index) = 0;
 	index_d.at(spin_index) = 1;
-	for(int n = 0; n < pe->bSolver->getModel()->getBasisSize(); n++){
+	int firstStateInBlock = pe->bSolver->getFirstStateInBlock(index);
+	int lastStateInBlock = pe->bSolver->getLastStateInBlock(index);
+	for(int n = firstStateInBlock; n <= lastStateInBlock; n++){
+//	for(int n = 0; n < pe->bSolver->getModel()->getBasisSize(); n++){
 		double weight;
 		if(statistics == Statistics::FermiDirac){
 			weight = Functions::fermiDiracDistribution(
@@ -645,7 +651,10 @@ void BPropertyExtractor::calculateLDOSCallback(
 
 	double step_size = (u_lim - l_lim)/(double)resolution;
 
-	for(int n = 0; n < pe->bSolver->getModel()->getBasisSize(); n++){
+	int firstStateInBlock = pe->bSolver->getFirstStateInBlock(index);
+	int lastStateInBlock = pe->bSolver->getLastStateInBlock(index);
+	for(int n = firstStateInBlock; n <= lastStateInBlock; n++){
+//	for(int n = 0; n < pe->bSolver->getModel()->getBasisSize(); n++){
 		double eigenValue = pe->bSolver->getEigenValue(n);
 		if(eigenValue > l_lim && eigenValue < u_lim){
 			complex<double> u = pe->bSolver->getAmplitude(n, index);
@@ -677,7 +686,10 @@ void BPropertyExtractor::calculateSP_LDOSCallback(
 	Index index_d(index);
 	index_u.at(spin_index) = 0;
 	index_d.at(spin_index) = 1;
-	for(int n = 0; n < pe->bSolver->getModel()->getBasisSize(); n++){
+	int firstStateInBlock = pe->bSolver->getFirstStateInBlock(index);
+	int lastStateInBlock = pe->bSolver->getLastStateInBlock(index);
+	for(int n = firstStateInBlock; n <= lastStateInBlock; n++){
+//	for(int n = 0; n < pe->bSolver->getModel()->getBasisSize(); n++){
 		double eigenValue = pe->bSolver->getEigenValue(n);
 		if(eigenValue > l_lim && eigenValue < u_lim){
 			complex<double> u_u = pe->bSolver->getAmplitude(n, index_u);

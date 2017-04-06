@@ -40,6 +40,9 @@ public:
 
 	/** Get model. */
 	Model* getModel();
+
+	/** Get model. */
+	const Model* getModel() const;
 private:
 	/** Model to work on. */
 	Model *model;
@@ -50,6 +53,10 @@ inline void Solver::setModel(Model *model){
 }
 
 inline Model* Solver::getModel(){
+	return model;
+}
+
+inline const Model* Solver::getModel() const{
 	return model;
 }
 

@@ -259,6 +259,10 @@ inline void RayTracer::setUp(std::initializer_list<double> up){
 	renderContext.setUp(up);
 }
 
+inline void RayTracer::setStateRadius(double stateRadius){
+	renderContext.setStateRadius(stateRadius);
+}
+
 inline void RayTracer::RenderContext::setCameraPosition(
 	const Vector3d &cameraPosition
 ){

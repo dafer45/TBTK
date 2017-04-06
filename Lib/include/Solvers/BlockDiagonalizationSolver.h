@@ -69,6 +69,12 @@ public:
 	 */
 	const std::complex<double> getAmplitude(int state, const Index &index);
 
+	/** Get first state in the block corresponding to the given index. */
+	unsigned int getFirstStateInBlock(const Index &index) const;
+
+	/** Get last state in the block corresponding to the given index. */
+	unsigned int getLastStateInBlock(const Index &index) const;
+
 	/** Set whether the DiagonalizationSolver is verbose. */
 	void setVerbose(bool verbose);
 private:
@@ -155,6 +161,22 @@ inline const std::complex<double> BlockDiagonalizationSolver::getAmplitude(
 
 inline const double BlockDiagonalizationSolver::getEigenValue(int state){
 	return eigenValues[state];
+}
+
+inline unsigned int BlockDiagonalizationSolver::getFirstStateInBlock(
+	const Index &index
+) const{
+	unsigned int linearIndex = getModel()->getBasisIndex(index);
+	unsigned int block = stateToBlockMap.at(linearIndex);
+	return blockToStateMap.at(block);
+}
+
+inline unsigned int BlockDiagonalizationSolver::getLastStateInBlock(
+	const Index &index
+) const{
+	unsigned int linearIndex = getModel()->getBasisIndex(index);
+	unsigned int block = stateToBlockMap.at(linearIndex);
+	return getFirstStateInBlock(index) + numStatesPerBlock.at(block)-1;
 }
 
 inline void BlockDiagonalizationSolver::setVerbose(bool verbose){
