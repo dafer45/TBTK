@@ -36,7 +36,7 @@ Magnetization::Magnetization(
 Magnetization::Magnetization(
 	int dimensions,
 	const int* ranges,
-	const complex<double> *data
+	const SpinMatrix *data
 ) :
 	AbstractProperty(dimensions, ranges, 4, data)
 {
@@ -51,7 +51,7 @@ Magnetization::Magnetization(
 
 Magnetization::Magnetization(
 	const IndexTree &indexTree,
-	const complex<double> *data
+	const SpinMatrix *data
 ) :
 	AbstractProperty(indexTree, 4, data)
 {

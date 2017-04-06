@@ -311,7 +311,7 @@ Property::Magnetization CPropertyExtractor::calculateMagnetization(
 		pattern,
 		ranges,
 		0,
-		/*1*/4
+		/*1*/ /*4*/1
 	);
 
 	delete [] (int*)hint;
@@ -583,7 +583,8 @@ void CPropertyExtractor::calculateMAGCallback(
 				);
 			}
 
-			((complex<double>*)mag)[/*4**/offset + n] += weight*(-i)*greensFunctionData[e]/M_PI*dE;
+//			((complex<double>*)mag)[/*4**/offset + n] += weight*(-i)*greensFunctionData[e]/M_PI*dE;
+			((SpinMatrix*)mag)[offset].at(n/2, n%2) += weight*(-i)*greensFunctionData[e]/M_PI*dE;
 		}
 
 		delete greensFunction;

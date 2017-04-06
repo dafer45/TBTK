@@ -175,13 +175,11 @@ Property::GreensFunction* DPropertyExtractor::calculateGreensFunction(
 Property::DOS DPropertyExtractor::calculateDOS(){
 	const double *ev = dSolver->getEigenValues();
 
-//	Property::DOS *dos = new Property::DOS(lowerBound, upperBound, energyResolution);
 	Property::DOS dos(lowerBound, upperBound, energyResolution);
 	double *data = dos.getDataRW();
 	for(int n = 0; n < dSolver->getModel()->getBasisSize(); n++){
 		int e = (int)(((ev[n] - lowerBound)/(upperBound - lowerBound))*energyResolution);
 		if(e >= 0 && e < energyResolution){
-//			dos->data[e] += 1.;
 			data[e] += 1.;
 		}
 	}
@@ -236,7 +234,7 @@ Property::Density DPropertyExtractor::calculateDensity(
 	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
 	Property::Density density(lDimensions, lRanges);
 
-	calculate(calculateDensityCallback, /*(void*)density.data*/(void*)density.getDataRW(), pattern, ranges, 0, 1);
+	calculate(calculateDensityCallback, (void*)density.getDataRW(), pattern, ranges, 0, 1);
 
 	return density;
 }
@@ -300,7 +298,14 @@ Property::Magnetization DPropertyExtractor::calculateMagnetization(
 	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
 	Property::Magnetization magnetization(lDimensions, lRanges);
 
-	calculate(calculateMAGCallback, (void*)magnetization.getDataRW(), pattern, ranges, 0, /*1*/4);
+	calculate(
+		calculateMAGCallback,
+		(void*)magnetization.getDataRW(),
+		pattern,
+		ranges,
+		0,
+		1
+	);
 
 	delete [] (int*)hint;
 
@@ -369,7 +374,7 @@ Property::LDOS DPropertyExtractor::calculateLDOS(
 		energyResolution
 	);
 
-	calculate(calculateLDOSCallback, (void*)ldos.getDataRW(), pattern, ranges, 0, /*1*/energyResolution);
+	calculate(calculateLDOSCallback, (void*)ldos.getDataRW(), pattern, ranges, 0, energyResolution);
 
 	return ldos;
 }
@@ -475,7 +480,7 @@ Property::SpinPolarizedLDOS DPropertyExtractor::calculateSpinPolarizedLDOS(
 		pattern,
 		ranges,
 		0,
-		/*1*/4*energyResolution
+		4*energyResolution
 	);
 
 	delete [] ((double**)hint)[0];
@@ -610,10 +615,10 @@ void DPropertyExtractor::calculateMAGCallback(
 		complex<double> u_u = pe->dSolver->getAmplitude(n, index_u);
 		complex<double> u_d = pe->dSolver->getAmplitude(n, index_d);
 
-		((complex<double>*)mag)[/*4**/offset + 0] += conj(u_u)*u_u*weight;
-		((complex<double>*)mag)[/*4**/offset + 1] += conj(u_u)*u_d*weight;
-		((complex<double>*)mag)[/*4**/offset + 2] += conj(u_d)*u_u*weight;
-		((complex<double>*)mag)[/*4**/offset + 3] += conj(u_d)*u_d*weight;
+		((SpinMatrix*)mag)[offset].at(0, 0) += conj(u_u)*u_u*weight;
+		((SpinMatrix*)mag)[offset].at(0, 1) += conj(u_u)*u_d*weight;
+		((SpinMatrix*)mag)[offset].at(1, 0) += conj(u_d)*u_u*weight;
+		((SpinMatrix*)mag)[offset].at(1, 1) += conj(u_d)*u_d*weight;
 	}
 }
 
@@ -640,7 +645,7 @@ void DPropertyExtractor::calculateLDOSCallback(
 			int e = (int)((eigen_values[n] - l_lim)/step_size);
 			if(e >= resolution)
 				e = resolution-1;
-			((double*)ldos)[/*resolution**/offset + e] += real(conj(u)*u);
+			((double*)ldos)[offset + e] += real(conj(u)*u);
 		}
 	}
 }
@@ -674,10 +679,10 @@ void DPropertyExtractor::calculateSP_LDOSCallback(
 			int e = (int)((eigen_values[n] - l_lim)/step_size);
 			if(e >= resolution)
 				e = resolution-1;
-			((complex<double>*)sp_ldos)[/*4*resolution**/offset + 4*e + 0] += conj(u_u)*u_u;
-			((complex<double>*)sp_ldos)[/*4*resolution**/offset + 4*e + 1] += conj(u_u)*u_d;
-			((complex<double>*)sp_ldos)[/*4*resolution**/offset + 4*e + 2] += conj(u_d)*u_u;
-			((complex<double>*)sp_ldos)[/*4*resolution**/offset + 4*e + 3] += conj(u_d)*u_d;
+			((complex<double>*)sp_ldos)[offset + 4*e + 0] += conj(u_u)*u_u;
+			((complex<double>*)sp_ldos)[offset + 4*e + 1] += conj(u_u)*u_d;
+			((complex<double>*)sp_ldos)[offset + 4*e + 2] += conj(u_d)*u_u;
+			((complex<double>*)sp_ldos)[offset + 4*e + 3] += conj(u_d)*u_d;
 		}
 	}
 }

@@ -763,9 +763,13 @@ Property::Magnetization* FileReader::readMagnetization(
 
 			double *mag_internal = new double[size];
 			dataset.read(mag_internal, PredType::NATIVE_DOUBLE, dataspace);
-			complex<double> *data = magnetization->getDataRW();
-			for(int n = 0; n < size/2; n++)
-				data[n] = complex<double>(mag_internal[2*n+0], mag_internal[2*n+1]);
+			SpinMatrix *data = magnetization->getDataRW();
+			for(int n = 0; n < size/8; n++){
+				data[n].at(0, 0) = complex<double>(mag_internal[8*n+0], mag_internal[8*n+1]);
+				data[n].at(0, 1) = complex<double>(mag_internal[8*n+2], mag_internal[8*n+3]);
+				data[n].at(1, 0) = complex<double>(mag_internal[8*n+4], mag_internal[8*n+5]);
+				data[n].at(1, 1) = complex<double>(mag_internal[8*n+6], mag_internal[8*n+7]);
+			}
 
 			delete [] mag_internal;
 			delete [] dims_internal;
@@ -808,13 +812,21 @@ Property::Magnetization* FileReader::readMagnetization(
 
 		int rank;
 		int *dims;
-		complex<double> *data;
-		read(&data, &rank, &dims, name, path);
+		complex<double> *data_internal;
+		read(&data_internal, &rank, &dims, name, path);
+
+		SpinMatrix *data = new SpinMatrix[dims[0]/4];
+		for(int n = 0; n < dims[0]/4; n++){
+			data[n].at(0, 0) = data_internal[4*n + 0];
+			data[n].at(0, 1) = data_internal[4*n + 1];
+			data[n].at(1, 0) = data_internal[4*n + 2];
+			data[n].at(1, 1) = data_internal[4*n + 3];
+		}
 
 		magnetization = new Property::Magnetization(*indexTree, data);
 
 		delete [] dims;
-		delete [] data;
+		delete [] data_internal;
 
 		break;
 	}

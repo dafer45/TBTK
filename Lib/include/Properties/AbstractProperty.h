@@ -46,6 +46,12 @@ public:
 	/** Same as getData, but with write access. */
 	DataType* getDataRW();
 
+	/** Get size in bytes. */
+	unsigned int getSizeInBytes() const;
+
+	/** Returns data on raw format. Intended for use in serialization. */
+	char* getRawData();
+
 	/** Get the dimension of the data. */
 	unsigned int getDimensions() const;
 
@@ -162,6 +168,16 @@ inline const DataType* AbstractProperty<DataType>::getData() const{
 template<typename DataType>
 inline DataType* AbstractProperty<DataType>::getDataRW(){
 	return data;
+}
+
+template<typename DataType>
+inline unsigned int AbstractProperty<DataType>::getSizeInBytes() const{
+	return size*sizeof(DataType);
+}
+
+template<typename DataType>
+inline char* AbstractProperty<DataType>::getRawData(){
+	return (char*)data;
 }
 
 template<typename DataType>

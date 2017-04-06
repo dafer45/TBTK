@@ -24,6 +24,7 @@
 #define COM_DAFER45_TBTK_MAGNETIZATION
 
 #include "AbstractProperty.h"
+#include "SpinMatrix.h"
 
 #include <complex>
 
@@ -31,7 +32,7 @@ namespace TBTK{
 namespace Property{
 
 /** Container for magnetization. */
-class Magnetization : public AbstractProperty<std::complex<double>>{
+class Magnetization : public AbstractProperty<SpinMatrix>{
 public:
 	/** Constructor. */
 	Magnetization(int dimensions, const int* ranges);
@@ -40,7 +41,7 @@ public:
 	Magnetization(
 		int dimensions,
 		const int* ranges,
-		const std::complex<double> *data
+		const SpinMatrix *data
 	);
 
 	/** Constructor. */
@@ -49,7 +50,7 @@ public:
 	/** Constructor. */
 	Magnetization(
 		const IndexTree &indexTree,
-		const std::complex<double> *data
+		const SpinMatrix *data
 	);
 
 	/** Copy constructor. */

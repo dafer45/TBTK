@@ -618,10 +618,14 @@ void BPropertyExtractor::calculateMagnetizationCallback(
 		complex<double> u_u = pe->bSolver->getAmplitude(n, index_u);
 		complex<double> u_d = pe->bSolver->getAmplitude(n, index_d);
 
-		((complex<double>*)mag)[offset + 0] += conj(u_u)*u_u*weight;
+/*		((complex<double>*)mag)[offset + 0] += conj(u_u)*u_u*weight;
 		((complex<double>*)mag)[offset + 1] += conj(u_u)*u_d*weight;
 		((complex<double>*)mag)[offset + 2] += conj(u_d)*u_u*weight;
-		((complex<double>*)mag)[offset + 3] += conj(u_d)*u_d*weight;
+		((complex<double>*)mag)[offset + 3] += conj(u_d)*u_d*weight;*/
+		((SpinMatrix*)mag)[offset].at(0, 0) += conj(u_u)*u_u*weight;
+		((SpinMatrix*)mag)[offset].at(0, 1) += conj(u_u)*u_d*weight;
+		((SpinMatrix*)mag)[offset].at(1, 0) += conj(u_d)*u_u*weight;
+		((SpinMatrix*)mag)[offset].at(1, 1) += conj(u_d)*u_d*weight;
 	}
 }
 

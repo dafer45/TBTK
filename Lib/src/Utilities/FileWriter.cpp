@@ -611,7 +611,7 @@ void FileWriter::writeMagnetization(
 	{
 		int rank = magnetization.getDimensions();
 		const int *dims = magnetization.getRanges();
-		const complex<double> *data = magnetization.getData();
+		const SpinMatrix *data = magnetization.getData();
 
 		hsize_t mag_dims[rank+2];//Last two dimension for matrix elements and real/imaginary decomposition.
 		for(int n = 0; n < rank; n++)
@@ -624,9 +624,15 @@ void FileWriter::writeMagnetization(
 			mag_size *= mag_dims[n];
 		double *mag_decomposed;
 		mag_decomposed = new double[2*mag_size];
-		for(int n = 0; n < mag_size; n++){
-			mag_decomposed[2*n+0] = real(data[n]);
-			mag_decomposed[2*n+1] = imag(data[n]);
+		for(int n = 0; n < mag_size/4; n++){
+			mag_decomposed[8*n+0] = real(data[n].at(0, 0));
+			mag_decomposed[8*n+1] = imag(data[n].at(0, 0));
+			mag_decomposed[8*n+2] = real(data[n].at(0, 1));
+			mag_decomposed[8*n+3] = imag(data[n].at(0, 1));
+			mag_decomposed[8*n+4] = real(data[n].at(1, 0));
+			mag_decomposed[8*n+5] = imag(data[n].at(1, 0));
+			mag_decomposed[8*n+6] = real(data[n].at(1, 1));
+			mag_decomposed[8*n+7] = imag(data[n].at(1, 1));
 		}
 		mag_dims[rank+1] = 2;
 
@@ -687,8 +693,17 @@ void FileWriter::writeMagnetization(
 		);
 
 		const int RANK = 1;
-		int dims[RANK] = {(int)magnetization.getSize()};
-		write(magnetization.getData(), RANK, dims, name, path);
+		int dims[RANK] = {4*(int)magnetization.getSize()};
+		const SpinMatrix *data = magnetization.getData();
+		complex<double> *data_internal = new complex<double>[dims[0]];
+		for(int n = 0; n < dims[0]/4; n++){
+			data_internal[4*n + 0] = data[n].at(0, 0);
+			data_internal[4*n + 1] = data[n].at(0, 1);
+			data_internal[4*n + 2] = data[n].at(1, 0);
+			data_internal[4*n + 3] = data[n].at(1, 1);
+		}
+
+		write(data_internal, RANK, dims, name, path);
 
 		break;
 	}
