@@ -322,7 +322,7 @@ Property::SpinPolarizedLDOS APropertyExtractor::calculateSpinPolarizedLDOS(
 		pattern,
 		ranges,
 		0,
-		1
+		energyResolution
 	);
 
 	delete [] ((double**)hint)[0];
@@ -460,10 +460,10 @@ void APropertyExtractor::calculateSpinPolarizedLDOSCallback(
 			int e = (int)((real(eigenValues[n]) - l_lim)/step_size);
 			if(e >= resolution)
 				e = resolution-1;
-			((complex<double>*)sp_ldos)[4*resolution*offset + 4*e + 0] += conj(u_u)*u_u;
-			((complex<double>*)sp_ldos)[4*resolution*offset + 4*e + 1] += conj(u_u)*u_d;
-			((complex<double>*)sp_ldos)[4*resolution*offset + 4*e + 2] += conj(u_d)*u_u;
-			((complex<double>*)sp_ldos)[4*resolution*offset + 4*e + 3] += conj(u_d)*u_d;
+			((SpinMatrix*)sp_ldos)[offset + e].at(0, 0) += conj(u_u)*u_u;
+			((SpinMatrix*)sp_ldos)[offset + e].at(0, 1) += conj(u_u)*u_d;
+			((SpinMatrix*)sp_ldos)[offset + e].at(1, 0) += conj(u_d)*u_u;
+			((SpinMatrix*)sp_ldos)[offset + e].at(1, 1) += conj(u_d)*u_d;
 		}
 	}
 }

@@ -25,7 +25,7 @@
 #define COM_DAFER45_TBTK_SPIN_POLARIZED_LDOS
 
 #include "AbstractProperty.h"
-//#include "IndexDescriptor.h"
+#include "SpinMatrix.h"
 
 #include <complex>
 
@@ -34,7 +34,7 @@ namespace Property{
 
 /** Container for spin-polarized local density of states (spin-polarized LDOS).
  */
-class SpinPolarizedLDOS : public AbstractProperty<std::complex<double>>{
+class SpinPolarizedLDOS : public AbstractProperty<SpinMatrix>{
 public:
 	/** Constructor. */
 	SpinPolarizedLDOS(
@@ -52,7 +52,7 @@ public:
 		double lowerBound,
 		double upperBound,
 		int resolution,
-		const std::complex<double> *data
+		const SpinMatrix *data
 	);
 
 	/** Constructor. */
@@ -69,7 +69,7 @@ public:
 		double lowerBound,
 		double upperBound,
 		int resolution,
-		const std::complex<double> *data
+		const SpinMatrix *data
 	);
 
 	/** Copy constructor. */

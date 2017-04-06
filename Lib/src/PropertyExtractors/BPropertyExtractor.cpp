@@ -666,8 +666,6 @@ void BPropertyExtractor::calculateSP_LDOSCallback(
 ){
 	BPropertyExtractor *pe = (BPropertyExtractor*)cb_this;
 
-//	const double *eigen_values = pe->bSolver->getEigenValues();
-
 	double u_lim = ((double**)pe->hint)[0][0];
 	double l_lim = ((double**)pe->hint)[0][1];
 	int resolution = ((int**)pe->hint)[1][0];
@@ -688,10 +686,10 @@ void BPropertyExtractor::calculateSP_LDOSCallback(
 			int e = (int)((eigenValue - l_lim)/step_size);
 			if(e >= resolution)
 				e = resolution-1;
-			((complex<double>*)sp_ldos)[offset + 4*e + 0] += conj(u_u)*u_u;
-			((complex<double>*)sp_ldos)[offset + 4*e + 1] += conj(u_u)*u_d;
-			((complex<double>*)sp_ldos)[offset + 4*e + 2] += conj(u_d)*u_u;
-			((complex<double>*)sp_ldos)[offset + 4*e + 3] += conj(u_d)*u_d;
+			((SpinMatrix*)sp_ldos)[offset + e].at(0, 0) += conj(u_u)*u_u;
+			((SpinMatrix*)sp_ldos)[offset + e].at(0, 1) += conj(u_u)*u_d;
+			((SpinMatrix*)sp_ldos)[offset + e].at(1, 0) += conj(u_d)*u_u;
+			((SpinMatrix*)sp_ldos)[offset + e].at(1, 1) += conj(u_d)*u_d;
 		}
 	}
 }

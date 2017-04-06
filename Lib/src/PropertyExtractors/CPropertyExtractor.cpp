@@ -454,7 +454,7 @@ Property::SpinPolarizedLDOS CPropertyExtractor::calculateSpinPolarizedLDOS(
 		pattern,
 		ranges,
 		0,
-		/*1*/4*energyResolution
+		energyResolution
 	);
 
 	delete [] (int*)hint;
@@ -608,7 +608,7 @@ void CPropertyExtractor::calculateLDOSCallback(
 
 	const double dE = (pe->upperBound - pe->lowerBound)/pe->energyResolution;
 	for(int n = 0; n < pe->energyResolution; n++)
-		((double*)ldos)[/*pe->energyResolution**/offset + n] += imag(greensFunctionData[n])/M_PI*dE;
+		((double*)ldos)[offset + n] += imag(greensFunctionData[n])/M_PI*dE;
 
 	delete greensFunction;
 }
@@ -637,7 +637,7 @@ void CPropertyExtractor::calculateSP_LDOSCallback(
 		const complex<double> *greensFunctionData = greensFunction->getArrayData();
 
 		for(int e = 0; e < pe->energyResolution; e++)
-			((complex<double>*)sp_ldos)[/*4*pe->energyResolution**/offset + 4*e + n] += -i*greensFunctionData[e]/M_PI*dE;
+			((SpinMatrix*)sp_ldos)[offset + e].at(n/2, n%2) += -i*greensFunctionData[e]/M_PI*dE;
 
 		delete greensFunction;
 	}

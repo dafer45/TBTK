@@ -892,7 +892,7 @@ void FileWriter::writeSpinPolarizedLDOS(
 	{
 		int rank = spinPolarizedLDOS.getDimensions();
 		const int *dims = spinPolarizedLDOS.getRanges();
-		const complex<double> *data = spinPolarizedLDOS.getData();
+		const SpinMatrix *data = spinPolarizedLDOS.getData();
 
 		const int NUM_MATRIX_ELEMENTS = 4;
 		hsize_t sp_ldos_dims[rank+2];//Three last dimensions are for energy, spin components, and real/imaginary decomposition.
@@ -906,9 +906,15 @@ void FileWriter::writeSpinPolarizedLDOS(
 			sp_ldos_size *= sp_ldos_dims[n];
 		double *sp_ldos_decomposed;
 		sp_ldos_decomposed = new double[2*sp_ldos_size];
-		for(int n = 0; n < sp_ldos_size; n++){
-			sp_ldos_decomposed[2*n+0] = real(data[n]);
-			sp_ldos_decomposed[2*n+1] = imag(data[n]);
+		for(int n = 0; n < sp_ldos_size/4; n++){
+			sp_ldos_decomposed[8*n+0] = real(data[n].at(0, 0));
+			sp_ldos_decomposed[8*n+1] = imag(data[n].at(0, 0));
+			sp_ldos_decomposed[8*n+2] = real(data[n].at(0, 1));
+			sp_ldos_decomposed[8*n+3] = imag(data[n].at(0, 1));
+			sp_ldos_decomposed[8*n+4] = real(data[n].at(1, 0));
+			sp_ldos_decomposed[8*n+5] = imag(data[n].at(1, 0));
+			sp_ldos_decomposed[8*n+6] = real(data[n].at(1, 1));
+			sp_ldos_decomposed[8*n+7] = imag(data[n].at(1, 1));
 		}
 
 		sp_ldos_dims[rank+2] = 2;
@@ -984,8 +990,17 @@ void FileWriter::writeSpinPolarizedLDOS(
 		);
 
 		const int RANK = 1;
-		int dims[RANK] = {(int)spinPolarizedLDOS.getSize()};
-		write(spinPolarizedLDOS.getData(), RANK, dims, name, path);
+		int dims[RANK] = {4*(int)spinPolarizedLDOS.getSize()};
+		const SpinMatrix *data = spinPolarizedLDOS.getData();
+		complex<double> *data_internal = new complex<double>[dims[0]];
+		for(int n = 0; n < dims[0]/4; n++){
+			data_internal[4*n + 0] = data[n].at(0, 0);
+			data_internal[4*n + 1] = data[n].at(0, 1);
+			data_internal[4*n + 2] = data[n].at(1, 0);
+			data_internal[4*n + 3] = data[n].at(1, 1);
+		}
+
+		write(data_internal, RANK, dims, name, path);
 
 		break;
 	}
