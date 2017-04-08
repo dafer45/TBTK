@@ -18,7 +18,9 @@
  *  @author Kristofer Björnson
  */
 
+#include "Plotter/Plotter.h"
 #include "../../../include/Utilities/RayTracer/RayTracer.h"
+#include "Smooth.h"
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -148,7 +150,9 @@ void RayTracer::plot(
 
 void RayTracer::interactivePlot(
 	const Model &model,
-	const Property::LDOS &ldos
+	const Property::LDOS &ldos,
+	double sigma,
+	unsigned int windowSize
 ){
 	const IndexDescriptor &indexDescriptor = ldos.getIndexDescriptor();
 	TBTKAssert(
@@ -172,7 +176,23 @@ void RayTracer::interactivePlot(
 
 			return color;
 		},
-		[&ldos](Mat &canvas, const Index &index){
+		[&ldos, sigma, windowSize](Mat &canvas, const Index &index){
+			vector<double> data;
+			index.print();
+			for(int n = 0; n < ldos.getResolution(); n++)
+				data.push_back(ldos(index, n));
+			Plotter plotter;
+			plotter.setCanvas(canvas);
+			if(sigma != 0){
+				double scaledSigma = sigma/(ldos.getUpperBound() - ldos.getLowerBound())*ldos.getResolution();
+				data = Smooth::gaussian(data, scaledSigma, windowSize);
+			}
+			plotter.plot(data);
+/*			for(unsigned int n = 0; n < 100; n++){
+				canvas.at<Vec3b>(100 + n, 100 + 2*n)[0] = 255;
+				canvas.at<Vec3b>(100 + n, 100 + 2*n)[1] = 0;
+				canvas.at<Vec3b>(100 + n, 100 + 2*n)[2] = 0;
+			}*/
 //			canvas
 		}
 	);
@@ -187,14 +207,14 @@ void RayTracer::trace(
 	const Vector3d &cameraPosition = renderContext.getCameraPosition();
 	const Vector3d &focus = renderContext.getFocus();
 	const Vector3d &up = renderContext.getUp();
-	double width = renderContext.getWidth();
-	double height = renderContext.getHeight();
+	unsigned int width = renderContext.getWidth();
+	unsigned int height = renderContext.getHeight();
 	double stateRadius = renderContext.getStateRadius();
 
 	Vector3d unitY = up.unit();
 	Vector3d unitX = ((focus - cameraPosition)*up).unit();
 	unitY = (unitX*(focus - cameraPosition)).unit();
-	double scaleFactor = (focus - cameraPosition).norm()/width;
+	double scaleFactor = (focus - cameraPosition).norm()/(double)width;
 
 	const Geometry *geometry = model.getGeometry();
 
@@ -222,11 +242,14 @@ void RayTracer::trace(
 	}
 
 	Mat canvas = Mat::zeros(height, width, CV_32FC3);
+	vector<HitDescriptor> **hitDescriptors = new vector<HitDescriptor>*[width];
+	for(unsigned int x = 0; x < width; x++)
+		hitDescriptors[x] = new vector<HitDescriptor>[height];
 	for(unsigned int x = 0; x < width; x++){
 		for(unsigned int y = 0; y < height; y++){
 			Vector3d target = focus
-				+ (scaleFactor*((double)x - width/2))*unitX
-				+ (scaleFactor*((double)y - height/2))*unitY;
+				+ (scaleFactor*((double)x - width/2.))*unitX
+				+ (scaleFactor*((double)y - height/2.))*unitY;
 			Vector3d rayDirection = (target - cameraPosition).unit();
 
 			vector<unsigned int> hits;
@@ -262,12 +285,21 @@ void RayTracer::trace(
 						minDistanceIndex
 					)
 				);
+
+				hitDescriptors[x][y].push_back(hitDescriptor);
+
 				Color color = lambdaColorPicker(
 					hitDescriptor
 				);
-				valueR = color.r;
-				valueG = color.g;
-				valueB = color.b;
+
+				Vector3d directionFromObject = hitDescriptor.getDirectionFromObject();
+				double lightProjection = Vector3d::dotProduct(
+					directionFromObject.unit(),
+					Vector3d({0, 0, 1})
+				);
+				valueR = color.r*(1 + 0.5*lightProjection);
+				valueG = color.g*(1 + 0.5*lightProjection);
+				valueB = color.b*(1 + 0.5*lightProjection);
 			}
 
 			canvas.at<Vec3f>(y, x)[0] = valueB;
@@ -283,33 +315,50 @@ void RayTracer::trace(
 			for(int n = 0; n < 3; n++){
 				if(canvas.at<Vec3f>(y, x)[n] < minValue)
 					minValue = canvas.at<Vec3f>(y, x)[n];
-				if(canvas.at<Vec3f>(y, x)[n] > minValue)
+				if(canvas.at<Vec3f>(y, x)[n] > maxValue)
 					maxValue = canvas.at<Vec3f>(y, x)[n];
 			}
 		}
 	}
 
 	Mat image = Mat::zeros(height, width, CV_8UC3);
-	for(unsigned int x = 0; x < width; x++)
-		for(unsigned int y = 0; y < height; y++)
-			for(unsigned int n = 0; n < 3; n++)
-				image.at<Vec3b>(y, x)[n] = 255*((canvas.at<Vec3f>(y, x)[n])/(maxValue - minValue));
+	for(unsigned int x = 0; x < width; x++){
+		for(unsigned int y = 0; y < height; y++){
+			for(unsigned int n = 0; n < 3; n++){
+				if(hitDescriptors[x][y].size() > 0)
+					image.at<Vec3b>(y, x)[n] = 255*((canvas.at<Vec3f>(y, x)[n] - minValue)/(maxValue - minValue));
+				else
+					image.at<Vec3b>(y, x)[n] = 0;
+			}
+		}
+	}
 
 	if(lambdaInteractive){
 		namedWindow("Traced image", WINDOW_AUTOSIZE);
 		namedWindow("Property window");
 		imshow("Traced image", image);
+		Mat propertyCanvas = Mat::zeros(400, 600, CV_8UC3);
 		TBTKAssert(
 			EventHandler::lock(
 				this,
-				[](
+				[&lambdaInteractive, &hitDescriptors, &propertyCanvas](
 					int event,
 					int x,
 					int y,
 					int flags,
 					void *userData
 				){
-					Streams::out << x << "\t" << y << "\n";
+					Plotter plotter;
+					plotter.setCanvas(propertyCanvas);
+/*					vector<double> data;
+					for(unsigned int n = 0; n < 100; n++)
+						data.push_back(cos(2*M_PI*n/50.));
+					plotter.plot(data);*/
+					if(hitDescriptors[x][y].size() > 0){
+						const Index& index = hitDescriptors[x][y].at(0).getIndex();
+						lambdaInteractive(propertyCanvas, index);
+					}
+					imshow("Property window", propertyCanvas);
 				}
 			),
 			"RayTracer::trace()",
@@ -326,6 +375,10 @@ void RayTracer::trace(
 	else{
 		imwrite("figures/Density.png", image);
 	}
+
+	for(unsigned int x = 0; x < width; x++)
+		delete [] hitDescriptors[x];
+	delete [] hitDescriptors;
 }
 
 RayTracer::RenderContext::RenderContext(){
@@ -347,8 +400,14 @@ RayTracer::HitDescriptor::HitDescriptor(const RenderContext &renderContext){
 	directionFromObject = nullptr;
 }
 
-RayTracer::HitDescriptor::HitDescriptor(const HitDescriptor &hitDescriptor){
-	renderContext = hitDescriptor.renderContext;
+RayTracer::HitDescriptor::HitDescriptor(
+	const HitDescriptor &hitDescriptor
+) :
+	renderContext(hitDescriptor.renderContext),
+	rayDirection(hitDescriptor.rayDirection),
+	index(hitDescriptor.index),
+	coordinate(hitDescriptor.coordinate)
+{
 
 	if(hitDescriptor.directionFromObject == nullptr){
 		directionFromObject = nullptr;
@@ -360,9 +419,14 @@ RayTracer::HitDescriptor::HitDescriptor(const HitDescriptor &hitDescriptor){
 	}
 }
 
-RayTracer::HitDescriptor::HitDescriptor(HitDescriptor &&hitDescriptor){
-	renderContext = hitDescriptor.renderContext;
-
+RayTracer::HitDescriptor::HitDescriptor(
+	HitDescriptor &&hitDescriptor
+) :
+	renderContext(std::move(hitDescriptor.renderContext)),
+	rayDirection(std::move(hitDescriptor.rayDirection)),
+	index(std::move(hitDescriptor.index)),
+	coordinate(std::move(hitDescriptor.coordinate))
+{
 	if(hitDescriptor.directionFromObject == nullptr){
 		directionFromObject = nullptr;
 	}
@@ -381,6 +445,9 @@ RayTracer::HitDescriptor& RayTracer::HitDescriptor::operator=(
 	const HitDescriptor &rhs
 ){
 	renderContext = rhs.renderContext;
+	rayDirection = rhs.rayDirection;
+	index = rhs.index;
+	coordinate = rhs.coordinate;
 
 	if(rhs.directionFromObject == nullptr)
 		directionFromObject = nullptr;
@@ -395,6 +462,9 @@ RayTracer::HitDescriptor& RayTracer::HitDescriptor::operator=(
 ){
 	if(this != &rhs){
 		renderContext = rhs.renderContext;
+		rayDirection = rhs.rayDirection;
+		index = rhs.index;
+		coordinate = rhs.coordinate;
 
 		if(rhs.directionFromObject == nullptr){
 			directionFromObject = nullptr;

@@ -48,6 +48,9 @@ public:
 	/** Set bounds. */
 	void setBounds(double minX, double maxX, double minY, double maxY);
 
+	/** Set canvas. */
+	void setCanvas(cv::Mat &canvas);
+
 	/** Plot data. */
 	void plot(std::vector<double> data);
 
@@ -95,6 +98,10 @@ inline void Plotter::setBounds(
 	this->maxX = maxX;
 	this->minY = minY;
 	this->maxY = maxY;
+}
+
+inline void Plotter::setCanvas(cv::Mat &canvas){
+	this->canvas = canvas;
 }
 
 inline cv::Point Plotter::getCVPoint(double x, double y) const{

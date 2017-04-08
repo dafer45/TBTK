@@ -93,7 +93,9 @@ public:
 	/** Interactive. */
 	void interactivePlot(
 		const Model &model,
-		const Property::LDOS &ldos
+		const Property::LDOS &ldos,
+		double sigma = 0,
+		unsigned int windowSize = 51
 	);
 private:
 	/** Class for encoding RGB colors. */
@@ -301,6 +303,14 @@ inline void RayTracer::setFocus(std::initializer_list<double> focus){
 
 inline void RayTracer::setUp(const Vector3d &up){
 	renderContext.setUp(up);
+}
+
+inline void RayTracer::setWidth(unsigned int width){
+	renderContext.setWidth(width);
+}
+
+inline void RayTracer::setHeight(unsigned int height){
+	renderContext.setHeight(height);
 }
 
 inline void RayTracer::setUp(std::initializer_list<double> up){
