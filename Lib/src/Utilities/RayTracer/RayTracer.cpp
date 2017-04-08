@@ -28,6 +28,10 @@ using namespace cv;
 
 namespace TBTK{
 
+bool RayTracer::EventHandler::isLocked = false;
+RayTracer *RayTracer::EventHandler::owner = nullptr;
+function<void(int event, int x, int y, int flags, void *userData)> &&RayTracer::EventHandler::lambdaOnMouseChange = {};
+
 RayTracer::RayTracer(){
 }
 
@@ -142,10 +146,43 @@ void RayTracer::plot(
 	);
 }
 
+void RayTracer::interactivePlot(
+	const Model &model,
+	const Property::LDOS &ldos
+){
+	const IndexDescriptor &indexDescriptor = ldos.getIndexDescriptor();
+	TBTKAssert(
+		indexDescriptor.getFormat() == IndexDescriptor::Format::Custom,
+		"RayTracer::plot()",
+		"Only storage format IndexDescriptor::Format::Custom supported.",
+		"Use calculateProperty(patterns) instead of "
+			<< "calculateProperty(pattern, ranges) when extracting"
+			<< " properties."
+	);
+
+	trace(
+		indexDescriptor,
+		model,
+		[](HitDescriptor &hitDescriptor) -> RayTracer::Color
+		{
+			Color color;
+			color.r = 255;
+			color.g = 255;
+			color.b = 255;
+
+			return color;
+		},
+		[&ldos](Mat &canvas, const Index &index){
+//			canvas
+		}
+	);
+}
+
 void RayTracer::trace(
 	const IndexDescriptor &indexDescriptor,
 	const Model &model,
-	function<Color(HitDescriptor &hitDescriptor)> &&lambdaColorPicker
+	function<Color(HitDescriptor &hitDescriptor)> &&lambdaColorPicker,
+	function<void(Mat &canvas, const Index &index)> &&lambdaInteractive
 ){
 	const Vector3d &cameraPosition = renderContext.getCameraPosition();
 	const Vector3d &focus = renderContext.getFocus();
@@ -258,7 +295,37 @@ void RayTracer::trace(
 			for(unsigned int n = 0; n < 3; n++)
 				image.at<Vec3b>(y, x)[n] = 255*((canvas.at<Vec3f>(y, x)[n])/(maxValue - minValue));
 
-	imwrite("figures/Density.png", image);
+	if(lambdaInteractive){
+		namedWindow("Traced image", WINDOW_AUTOSIZE);
+		namedWindow("Property window");
+		imshow("Traced image", image);
+		TBTKAssert(
+			EventHandler::lock(
+				this,
+				[](
+					int event,
+					int x,
+					int y,
+					int flags,
+					void *userData
+				){
+					Streams::out << x << "\t" << y << "\n";
+				}
+			),
+			"RayTracer::trace()",
+			"Unable to get lock from EventHandler.",
+			""
+		);
+		setMouseCallback(
+			"Traced image",
+			EventHandler::onMouseChange,
+			NULL
+		);
+		waitKey(0);
+	}
+	else{
+		imwrite("figures/Density.png", image);
+	}
 }
 
 RayTracer::RenderContext::RenderContext(){

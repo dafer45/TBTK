@@ -103,6 +103,9 @@ FOURIER_TRANSFORM_SRC_DIR = src/Utilities/FourierTransform
 #RayTracer source directory
 RAY_TRACER_SRC_DIR = src/Utilities/RayTracer
 
+#Plotter source directory
+PLOTTER_SRC_DIR = src/Utilities/Plotter
+
 # Directory for Objects
 OBJ_DIR:= build
 
@@ -137,6 +140,9 @@ FOURIER_TRANSFORM_SRC := $(foreach srcDir, $(FOURIER_TRANSFORM_SRC_DIR), $(wildc
 # RayTracer source files
 RAY_TRACER_SRC := $(foreach srcDir, $(RAY_TRACER_SRC_DIR), $(wildcard $(srcDir)/*.cpp))
 
+# Plotter source files
+PLOTTER_SRC := $(foreach srcDir, $(PLOTTER_SRC_DIR), $(wildcard $(srcDir)/*.cpp))
+
 # Object files
 OBJ := $(addprefix $(OBJ_DIR)/, $(notdir $(SRC:.cpp=.o)))
 
@@ -154,6 +160,9 @@ FOURIER_TRANSFORM_OBJ := $(addprefix $(OBJ_DIR)/, $(notdir $(FOURIER_TRANSFORM_S
 
 # RayTracer object files
 RAY_TRACER_OBJ := $(addprefix $(OBJ_DIR)/, $(notdir $(RAY_TRACER_SRC:.cpp=.o)))
+
+# Plotter object files
+PLOTTER_OBJ := $(addprefix $(OBJ_DIR)/, $(notdir $(PLOTTER_SRC:.cpp=.o)))
 
 #All object files
 ALL_OBJ := $(OBJ) $(CUDA_OBJ)
@@ -175,6 +184,9 @@ FOURIER_TRANSFORM_OBJ_PURE := $(notdir $(FOURIER_TRANSFORM_OBJ))
 
 # RayTracer file name of objects without directory name
 RAY_TRACER_OBJ_PURE := $(notdir $(RAY_TRACER_OBJ))
+
+# Plotter file name of objects without directory name
+PLOTTER_OBJ_PURE := $(notdir $(PLOTTER_OBJ))
 
 all: $(STATIC_LIB)
 
@@ -205,6 +217,11 @@ raytracer: $(RAY_TRACER_OBJ)
 	@echo "Linking: " $(notdir $(STATIC_LIB))
 	@echo $(RAY_TRACER_OBJ)
 	@ar rcs $(STATIC_LIB) $(RAY_TRACER_OBJ)
+
+plotter: $(PLOTTER_OBJ)
+	@echo "Linking: " $(notdir $(STATIC_LIB))
+	@echo $(PLOTTER_OBJ)
+	@ar rcs $(STATIC_LIB) $(PLOTTER_OBJ)
 
 # Compilation rule
 define app_compile_template
@@ -260,6 +277,15 @@ $$($(1)_OBJ): $(1)
 	@$$(CC) $$(CFLAGS) $$(OPT) -c $(1) -o $$($(1)_OBJ) $$(LDLIBS)
 endef
 
+# Plotter compilation rule
+define plotter_app_compile_template
+ $(1)_OBJ = $$(addprefix $$(OBJ_DIR)/, $$(notdir $$(patsubst %.cpp, %.o, $(1))))
+
+$$($(1)_OBJ): $(1)
+	@echo "Compiling: $(1)"
+	@$$(CC) $$(CFLAGS) $$(OPT) -c $(1) -o $$($(1)_OBJ) $$(LDLIBS)
+endef
+
 # Compile
 $(foreach app, $(SRC), $(eval $(call app_compile_template,$(app))))
 
@@ -277,6 +303,9 @@ $(foreach app, $(FOURIER_TRANSFORM_SRC), $(eval $(call fourier_transform_app_com
 
 # RayTracer compile
 $(foreach app, $(RAY_TRACER_SRC), $(eval $(call ray_tracer_app_compile_template,$(app))))
+
+# Plotter compile
+$(foreach app, $(PLOTTER_SRC), $(eval $(call plotter_app_compile_template,$(app))))
 
 # Cleaning
 clean:
@@ -301,6 +330,8 @@ print:
 	@echo $(FOURIER_TRANSFORM_OBJ)
 	@echo $(RAY_TRACER_SRC)
 	@echo $(RAY_TRACER_OBJ)
+	@echo $(PLOTTER_SRC)
+	@echo $(PLOTER_OBJ)
 #	@echo $(OBJ)
 #	@echo $(addprefix ./build/, $(notdir $(patsubst %.cpp, %.o, $(SRC))))
 

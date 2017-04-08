@@ -24,6 +24,7 @@
 #define COM_DAFER45_TBTK_RAY_TRACER
 
 #include "Density.h"
+#include "LDOS.h"
 #include "Magnetization.h"
 #include "Model.h"
 #include "WaveFunction.h"
@@ -32,6 +33,9 @@
 
 #include <functional>
 #include <initializer_list>
+
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
 
 namespace TBTK{
 
@@ -84,6 +88,12 @@ public:
 		const Model &model,
 		const Property::WaveFunction &waveFunction,
 		unsigned int state
+	);
+
+	/** Interactive. */
+	void interactivePlot(
+		const Model &model,
+		const Property::LDOS &ldos
 	);
 private:
 	/** Class for encoding RGB colors. */
@@ -229,8 +239,46 @@ private:
 	void trace(
 		const IndexDescriptor &indexDescriptor,
 		const Model &model,
-		std::function<Color(HitDescriptor &hitDescriptor)> &&lambdaColorPicker
+		std::function<Color(HitDescriptor &hitDescriptor)> &&lambdaColorPicker,
+		std::function<void(cv::Mat &canvas, const Index &index)> &&lambdaInteractive = {}
 	);
+
+	/** Event handler for the interactive mode. */
+	class EventHandler{
+	public:
+		/** Try to lock EventHandler. Returns true if successful. */
+		static bool lock(
+			RayTracer *owner,
+			std::function<void(
+				int event,
+				int x,
+				int y,
+				int flags,
+				void *userData
+			)> &&lambdaOnMouseChange
+		);
+
+		/** Unlock EventHandler. */
+		static bool unlock(const RayTracer *owner);
+
+		/** On mouse change callback. */
+		static void onMouseChange(
+			int event,
+			int x,
+			int y,
+			int flags,
+			void *userdata
+		);
+	private:
+		/** Flag indicating whether the EventHandler is locked. */
+		static bool isLocked;
+
+		/** Owner of the lock. */
+		static RayTracer *owner;
+
+		/** On mouse change lambda function. */
+		static std::function<void(int event, int x, int y, int flags, void *userData)> &&lambdaOnMouseChange;
+	};
 };
 
 inline void RayTracer::setCameraPosition(const Vector3d &cameraPosition){
@@ -382,6 +430,58 @@ inline void RayTracer::HitDescriptor::setCoordinate(const Vector3d coordinate){
 
 inline const Vector3d& RayTracer::HitDescriptor::getCoordinate() const{
 	return coordinate;
+}
+
+inline bool RayTracer::EventHandler::lock(
+	RayTracer *owner,
+	std::function<void(
+		int event,
+		int x,
+		int y,
+		int flags,
+		void *userData
+	)> &&lambdaOnMouseChange
+){
+	if(isLocked){
+		return false;
+	}
+	else{
+		isLocked = true;
+		EventHandler::owner = owner;
+		EventHandler::lambdaOnMouseChange = lambdaOnMouseChange;
+		return true;
+	}
+}
+
+inline bool RayTracer::EventHandler::unlock(const RayTracer *owner){
+	if(EventHandler::owner == owner){
+		EventHandler::owner = nullptr;
+		EventHandler::isLocked = false;
+		EventHandler::lambdaOnMouseChange = nullptr;
+		return true;
+	}
+	else{
+		return false;
+	}
+}
+
+inline void RayTracer::EventHandler::onMouseChange(
+	int event,
+	int x,
+	int y,
+	int flags,
+	void *userData
+){
+	if(lambdaOnMouseChange){
+		lambdaOnMouseChange(event, x, y, flags, userData);
+	}
+	else{
+		TBTKExit(
+			"RayTracer::EventHandler::onMouseChange()",
+			"lambdaOnMouseChange is nullptr.",
+			"This should never happen, contact the developer."
+		);
+	}
 }
 
 };	//End namespace TBTK
