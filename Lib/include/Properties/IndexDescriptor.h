@@ -77,6 +77,9 @@ public:
 
 	/** Get size. */
 	unsigned int getSize() const;
+
+	/** Returns true if the index descriptor contains the given index. */
+	bool contains(const Index &index) const;
 private:
 	/** Index descriptor format. */
 	Format format;
@@ -181,6 +184,28 @@ inline unsigned int IndexDescriptor::getLinearIndex(const Index &index) const{
 		index,
 		IndexTree::SearchMode::MatchWildcards
 	);
+}
+
+inline bool IndexDescriptor::contains(const Index &index) const{
+	TBTKAssert(
+		format == Format::Custom,
+		"IndexDescriptor::contains()",
+		"The IndexDescriptor is not of the format Format::Custom.",
+		""
+	);
+
+	if(
+		descriptor.customFormat.indexTree->getLinearIndex(
+			index,
+			IndexTree::SearchMode::StrictMatch,
+			true
+		) == -1
+	){
+		return false;
+	}
+	else{
+		return true;
+	}
 }
 
 };	//End namespace TBTK

@@ -50,8 +50,8 @@ public:
 	/** Get linear index. */
 	int getLinearIndex(
 		const Index &index,
-		SearchMode searchMode = SearchMode::StrictMatch
-//		bool ignoreWildcards = false
+		SearchMode searchMode = SearchMode::StrictMatch,
+		bool returnNegativeForMissingIndex = false
 	) const;
 
 	/** Get physical index. */
@@ -145,8 +145,8 @@ private:
 	int getLinearIndex(
 		const Index &index,
 		unsigned int subindex,
-		SearchMode searchMode
-//		bool ignoreWildcards
+		SearchMode searchMode,
+		bool returnNegativeForMissingIndex
 	) const;
 
 	/** Get physical index. Is called by the public

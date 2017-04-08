@@ -67,6 +67,9 @@ public:
 	/** Returns the storage format. */
 	IndexDescriptor::Format getFormat() const;
 
+	/** Returns true if the property contains data for the given index. */
+	bool contains(const Index &index) const;
+
 	/** Function call operator. */
 	virtual DataType operator()(const Index &index, unsigned int offset = 0) const;
 
@@ -205,6 +208,11 @@ inline const IndexDescriptor& AbstractProperty<DataType>::getIndexDescriptor() c
 template<typename DataType>
 inline IndexDescriptor::Format AbstractProperty<DataType>::getFormat() const{
 	return indexDescriptor.getFormat();
+}
+
+template<typename DataType>
+inline bool AbstractProperty<DataType>::contains(const Index &index) const{
+	return indexDescriptor.contains(index);
 }
 
 template<typename DataType>

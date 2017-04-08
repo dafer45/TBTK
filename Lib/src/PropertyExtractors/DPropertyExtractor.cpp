@@ -177,10 +177,11 @@ Property::DOS DPropertyExtractor::calculateDOS(){
 
 	Property::DOS dos(lowerBound, upperBound, energyResolution);
 	double *data = dos.getDataRW();
+	double dE = (upperBound - lowerBound)/energyResolution;
 	for(int n = 0; n < dSolver->getModel()->getBasisSize(); n++){
 		int e = (int)(((ev[n] - lowerBound)/(upperBound - lowerBound))*energyResolution);
 		if(e >= 0 && e < energyResolution){
-			data[e] += 1.;
+			data[e] += 1./dE;
 		}
 	}
 
@@ -638,6 +639,7 @@ void DPropertyExtractor::calculateLDOSCallback(
 
 	double step_size = (u_lim - l_lim)/(double)resolution;
 
+	double dE = (pe->upperBound - pe->lowerBound)/pe->energyResolution;
 	for(int n = 0; n < pe->dSolver->getModel()->getBasisSize(); n++){
 		if(eigen_values[n] > l_lim && eigen_values[n] < u_lim){
 			complex<double> u = pe->dSolver->getAmplitude(n, index);
@@ -645,7 +647,7 @@ void DPropertyExtractor::calculateLDOSCallback(
 			int e = (int)((eigen_values[n] - l_lim)/step_size);
 			if(e >= resolution)
 				e = resolution-1;
-			((double*)ldos)[offset + e] += real(conj(u)*u);
+			((double*)ldos)[offset + e] += real(conj(u)*u)/dE;
 		}
 	}
 }
@@ -671,6 +673,7 @@ void DPropertyExtractor::calculateSP_LDOSCallback(
 	Index index_d(index);
 	index_u.at(spin_index) = 0;
 	index_d.at(spin_index) = 1;
+	double dE = (pe->upperBound - pe->lowerBound)/pe->energyResolution;
 	for(int n = 0; n < pe->dSolver->getModel()->getBasisSize(); n++){
 		if(eigen_values[n] > l_lim && eigen_values[n] < u_lim){
 			complex<double> u_u = pe->dSolver->getAmplitude(n, index_u);
@@ -679,10 +682,10 @@ void DPropertyExtractor::calculateSP_LDOSCallback(
 			int e = (int)((eigen_values[n] - l_lim)/step_size);
 			if(e >= resolution)
 				e = resolution-1;
-			((SpinMatrix*)sp_ldos)[offset + e].at(0, 0) += conj(u_u)*u_u;
-			((SpinMatrix*)sp_ldos)[offset + e].at(0, 1) += conj(u_u)*u_d;
-			((SpinMatrix*)sp_ldos)[offset + e].at(1, 0) += conj(u_d)*u_u;
-			((SpinMatrix*)sp_ldos)[offset + e].at(1, 1) += conj(u_d)*u_d;
+			((SpinMatrix*)sp_ldos)[offset + e].at(0, 0) += conj(u_u)*u_u/dE;
+			((SpinMatrix*)sp_ldos)[offset + e].at(0, 1) += conj(u_u)*u_d/dE;
+			((SpinMatrix*)sp_ldos)[offset + e].at(1, 0) += conj(u_d)*u_u/dE;
+			((SpinMatrix*)sp_ldos)[offset + e].at(1, 1) += conj(u_d)*u_d/dE;
 		}
 	}
 }

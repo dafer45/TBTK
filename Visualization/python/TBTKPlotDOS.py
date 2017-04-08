@@ -32,9 +32,13 @@ print "Resolution: " + str(resolution)
 
 energies = numpy.linspace(limits[1], limits[0], resolution)
 sigma_discrete_units = sigma*resolution/(limits[0] - limits[1])
+dE = (limits[0] - limits[1])/resolution
+data = []
+for n in range(0, resolution):
+	data.append(dataset[n]*dE)
 
 fig = matplotlib.pyplot.figure()
-matplotlib.pyplot.plot(energies, scipy.ndimage.filters.gaussian_filter1d(dataset, sigma_discrete_units))
+matplotlib.pyplot.plot(energies, scipy.ndimage.filters.gaussian_filter1d(data, sigma_discrete_units))
 matplotlib.pyplot.xlabel('E');
 matplotlib.pyplot.ylabel('DOS');
 

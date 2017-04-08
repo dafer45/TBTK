@@ -27,6 +27,7 @@
 #include "Streams.h"
 #include "TBTKMacros.h"
 
+#include <string>
 #include <vector>
 
 #include <opencv2/core/core.hpp>
@@ -43,7 +44,12 @@ public:
 	~Plotter();
 
 	/** Set padding. */
-	void setPadding(double x, double y);
+	void setPadding(
+		double paddingLeft,
+		double paddingRight,
+		double paddingBottom,
+		double paddingTop
+	);
 
 	/** Set bounds. */
 	void setBounds(double minX, double maxX, double minY, double maxY);
@@ -52,13 +58,22 @@ public:
 	void setCanvas(cv::Mat &canvas);
 
 	/** Plot data. */
-	void plot(std::vector<double> data);
+	void plot(
+		const std::vector<double> &axis,
+		const std::vector<double> &data
+	);
+
+	/** Plot data. */
+	void plot(const std::vector<double> &data);
 
 	/** Plot density of states. */
 	void plot(const Property::DOS &dos);
+
+	/** Save canvas to file. */
+	void save(std::string filename) const;
 private:
 	/** Paddings. */
-	unsigned int paddingX, paddingY;
+	unsigned int paddingLeft, paddingRight, paddingBottom, paddingTop;
 
 	/** Bounds. */
 	double minX, maxX, minY, maxY;
@@ -71,9 +86,16 @@ private:
 	cv::Mat canvas;
 };
 
-inline void Plotter::setPadding(double paddingX, double paddingY){
-	this->paddingX = paddingX;
-	this->paddingY = paddingY;
+inline void Plotter::setPadding(
+	double paddingLeft,
+	double paddingRight,
+	double paddingBottom,
+	double paddingTop
+){
+	this->paddingLeft = paddingLeft;
+	this->paddingRight = paddingRight;
+	this->paddingBottom = paddingBottom;
+	this->paddingTop = paddingTop;
 }
 
 inline void Plotter::setBounds(
@@ -108,9 +130,13 @@ inline cv::Point Plotter::getCVPoint(double x, double y) const{
 	double width = maxX - minX;
 	double height = maxY - minY;
 	return cv::Point(
-		paddingX + (1 - 2*paddingX/(double)canvas.cols)*canvas.cols*(x - minX)/(double)width,
-		canvas.rows - 1 - (paddingY + (1 - 2*paddingY/(double)canvas.rows)*canvas.rows*(y - minY)/(double)height)
+		paddingLeft + (1 - (paddingLeft + paddingRight)/(double)canvas.cols)*canvas.cols*(x - minX)/(double)width,
+		canvas.rows - 1 - (paddingBottom + (1 - (paddingBottom + paddingTop)/(double)canvas.rows)*canvas.rows*(y - minY)/(double)height)
 	);
+}
+
+inline void Plotter::save(std::string filename) const{
+	imwrite(filename, canvas);
 }
 
 };	//End namespace TBTK

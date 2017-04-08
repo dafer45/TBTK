@@ -167,7 +167,7 @@ void RayTracer::interactivePlot(
 	trace(
 		indexDescriptor,
 		model,
-		[](HitDescriptor &hitDescriptor) -> RayTracer::Color
+		[&ldos](HitDescriptor &hitDescriptor) -> RayTracer::Color
 		{
 			Color color;
 			color.r = 255;
@@ -178,21 +178,45 @@ void RayTracer::interactivePlot(
 		},
 		[&ldos, sigma, windowSize](Mat &canvas, const Index &index){
 			vector<double> data;
-			for(int n = 0; n < ldos.getResolution(); n++)
+			vector<double> axis;
+			double lowerBound = ldos.getLowerBound();
+			double upperBound = ldos.getUpperBound();
+			unsigned int resolution = ldos.getResolution();
+			double dE = (upperBound - lowerBound)/resolution;
+			for(int n = 0; n < ldos.getResolution(); n++){
 				data.push_back(ldos(index, n));
+				axis.push_back(lowerBound + n*dE);
+			}
+
 			Plotter plotter;
 			plotter.setCanvas(canvas);
 			if(sigma != 0){
 				double scaledSigma = sigma/(ldos.getUpperBound() - ldos.getLowerBound())*ldos.getResolution();
 				data = Smooth::gaussian(data, scaledSigma, windowSize);
 			}
-			plotter.plot(data);
-/*			for(unsigned int n = 0; n < 100; n++){
-				canvas.at<Vec3b>(100 + n, 100 + 2*n)[0] = 255;
-				canvas.at<Vec3b>(100 + n, 100 + 2*n)[1] = 0;
-				canvas.at<Vec3b>(100 + n, 100 + 2*n)[2] = 0;
-			}*/
-//			canvas
+			plotter.plot(axis, data);
+
+			int baseLine;
+			Size size = getTextSize(
+				index.toString(),
+				FONT_HERSHEY_SIMPLEX,
+				0.5,
+				1,
+				&baseLine
+			);
+			putText(
+				canvas,
+				index.toString(),
+				Point(
+					canvas.cols - size.width - 10,
+					size.height + 10
+				),
+				FONT_HERSHEY_SIMPLEX,
+				0.5,
+				Scalar(0, 0, 0),
+				1,
+				true
+			);
 		}
 	);
 }

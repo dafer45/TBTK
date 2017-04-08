@@ -150,15 +150,24 @@ int IndexTree::generateLinearMap(int i){
 	return getLinearIndex(index, 0, ignoreWildcards);
 }*/
 
-int IndexTree::getLinearIndex(const Index &index, SearchMode searchMode) const{
-	return getLinearIndex(index, 0, searchMode);
+int IndexTree::getLinearIndex(
+	const Index &index,
+	SearchMode searchMode,
+	bool returnNegativeForMissingIndex
+) const{
+	return getLinearIndex(
+		index,
+		0,
+		searchMode,
+		returnNegativeForMissingIndex
+	);
 }
 
 int IndexTree::getLinearIndex(
 	const Index &index,
 	unsigned int subindex,
-	SearchMode searchMode
-//	bool ignoreWildcards
+	SearchMode searchMode,
+	bool returnNegativeForMissingIndex
 ) const{
 /*	if(ignoreWildcards && wildcardIndex)
 		return children.at(0).getLinearIndex(index, subindex, ignoreWildcards);*/
@@ -167,7 +176,12 @@ int IndexTree::getLinearIndex(
 		break;
 	case SearchMode::IgnoreWildcards:
 		if(wildcardIndex)
-			return children.at(0).getLinearIndex(index, subindex, searchMode);
+			return children.at(0).getLinearIndex(
+				index,
+				subindex,
+				searchMode,
+				returnNegativeForMissingIndex
+			);
 		break;
 	case SearchMode::MatchWildcards:
 		break;
@@ -222,14 +236,17 @@ int IndexTree::getLinearIndex(
 		return children.at(currentIndex).getLinearIndex(
 			index,
 			subindex+1,
-			searchMode
-//			ignoreWildcards
+			searchMode,
+			returnNegativeForMissingIndex
 		);
 	}
 	else{
 		//If the current subindex is the last, return linear index.
 		if(indexIncluded){
 			return linearIndex;
+		}
+		else if(returnNegativeForMissingIndex){
+			return -1;
 		}
 		else{
 			Streams::err << "Error, index not included in the "

@@ -129,7 +129,30 @@ inline std::string Index::toString() const{
 	for(unsigned int n = 0; n < indices.size(); n++){
 		if(n != 0)
 			str += ", ";
-		str += std::to_string(indices.at(n));
+		int subindex = indices.at(n);
+		switch(subindex){
+		case IDX_ALL:
+			str += "IDX_ALL";
+			break;
+		case IDX_SUM_ALL:
+			str += "IDX_SUM_ALL";
+			break;
+		case IDX_X:
+			str += "IDX_X";
+			break;
+		case IDX_Y:
+			str += "IDX_Y";
+			break;
+		case IDX_Z:
+			str += "IDX_Z";
+			break;
+		case IDX_SPIN:
+			str += "IDX_SPIN";
+			break;
+		default:
+			str += std::to_string(subindex);
+			break;
+		}
 	}
 	str += "}";
 
