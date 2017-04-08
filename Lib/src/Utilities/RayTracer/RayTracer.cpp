@@ -51,17 +51,17 @@ void RayTracer::plot(const Model& model, const Property::Density &density){
 			<< " properties."
 	);
 
-	trace(
+	render(
 		indexDescriptor,
 		model,
-		[&density](const HitDescriptor &hitDescriptor) -> RayTracer::Color
+		[&density](const HitDescriptor &hitDescriptor) -> RayTracer::Material
 		{
-			Color color;
-			color.r = density(hitDescriptor.getIndex());
-			color.g = density(hitDescriptor.getIndex());
-			color.b = density(hitDescriptor.getIndex());
+			Material material;
+			material.color.r = density(hitDescriptor.getIndex());
+			material.color.g = density(hitDescriptor.getIndex());
+			material.color.b = density(hitDescriptor.getIndex());
 
-			return color;
+			return material;
 		}
 	);
 }
@@ -80,10 +80,10 @@ void RayTracer::plot(
 			<< " properties."
 	);
 
-	trace(
+	render(
 		indexDescriptor,
 		model,
-		[&magnetization](HitDescriptor &hitDescriptor) -> RayTracer::Color
+		[&magnetization](HitDescriptor &hitDescriptor) -> RayTracer::Material
 		{
 			Vector3d directionFromObject = hitDescriptor.getDirectionFromObject();
 			const SpinMatrix& spinMatrix = magnetization(
@@ -96,19 +96,19 @@ void RayTracer::plot(
 			);
 //			double density = spinMatrix.getDensity();
 
-			Color color;
+			Material material;
 			if(projection > 0){
-				color.r = 255;
-				color.g = 0;
-				color.b = 0;
+				material.color.r = 255;
+				material.color.g = 0;
+				material.color.b = 0;
 			}
 			else{
-				color.r = 255;
-				color.g = 255;
-				color.b = 255;
+				material.color.r = 255;
+				material.color.g = 255;
+				material.color.b = 255;
 			}
 
-			return color;
+			return material;
 		}
 	);
 }
@@ -128,22 +128,23 @@ void RayTracer::plot(
 			<< " properties."
 	);
 
-	trace(
+	render(
 		indexDescriptor,
 		model,
-		[&waveFunction, state](HitDescriptor &hitDescriptor) -> RayTracer::Color
+		[&waveFunction, state](HitDescriptor &hitDescriptor) -> RayTracer::Material
 		{
 			complex<double> amplitude = waveFunction(hitDescriptor.getIndex(), state);
 			double absolute = abs(amplitude);
 			double argument = arg(amplitude);
 			if(argument < 0)
 				argument += 2*M_PI;
-			Color color;
-			color.r = absolute*(2*M_PI - argument);
-			color.g = 0;
-			color.b = absolute*argument;
 
-			return color;
+			Material material;
+			material.color.r = absolute*(2*M_PI - argument);
+			material.color.g = 0;
+			material.color.b = absolute*argument;
+
+			return material;
 		}
 	);
 }
@@ -164,17 +165,17 @@ void RayTracer::interactivePlot(
 			<< " properties."
 	);
 
-	trace(
+	render(
 		indexDescriptor,
 		model,
-		[&ldos](HitDescriptor &hitDescriptor) -> RayTracer::Color
+		[&ldos](HitDescriptor &hitDescriptor) -> RayTracer::Material
 		{
-			Color color;
-			color.r = 255;
-			color.g = 255;
-			color.b = 255;
+			Material material;
+			material.color.r = 255;
+			material.color.g = 255;
+			material.color.b = 255;
 
-			return color;
+			return material;
 		},
 		[&ldos, sigma, windowSize](Mat &canvas, const Index &index){
 			vector<double> data;
@@ -221,10 +222,10 @@ void RayTracer::interactivePlot(
 	);
 }
 
-void RayTracer::trace(
+void RayTracer::render(
 	const IndexDescriptor &indexDescriptor,
 	const Model &model,
-	function<Color(HitDescriptor &hitDescriptor)> &&lambdaColorPicker,
+	function<Material(HitDescriptor &hitDescriptor)> &&lambdaColorPicker,
 	function<void(Mat &canvas, const Index &index)> &&lambdaInteractive
 ){
 	const Vector3d &cameraPosition = renderContext.getCameraPosition();
@@ -232,7 +233,7 @@ void RayTracer::trace(
 	const Vector3d &up = renderContext.getUp();
 	unsigned int width = renderContext.getWidth();
 	unsigned int height = renderContext.getHeight();
-	double stateRadius = renderContext.getStateRadius();
+//	double stateRadius = renderContext.getStateRadius();
 
 	Vector3d unitY = up.unit();
 	Vector3d unitX = ((focus - cameraPosition)*up).unit();
@@ -275,59 +276,18 @@ void RayTracer::trace(
 				+ (scaleFactor*((double)y - height/2.))*unitY;
 			Vector3d rayDirection = (target - cameraPosition).unit();
 
-			vector<unsigned int> hits;
-			for(unsigned int n = 0; n < coordinates.size(); n++)
-				if(((coordinates.at(n) - cameraPosition)*rayDirection).norm() < stateRadius)
-					hits.push_back(n);
+			Color color = trace(
+				coordinates,
+				cameraPosition,
+				rayDirection,
+				indexTree,
+				hitDescriptors[x][y],
+				lambdaColorPicker
+			);
 
-			double valueR = 0.;
-			double valueG = 0.;
-			double valueB = 0.;
-			if(hits.size() > 0){
-				double minDistance = (coordinates.at(hits.at(0)) - cameraPosition).norm();
-				unsigned int minDistanceIndex = hits.at(0);
-				for(unsigned int n = 1; n < hits.size(); n++){
-					double distance = (coordinates.at(hits.at(n)) - cameraPosition).norm();
-					if(distance < minDistance){
-						minDistance = distance;
-						minDistanceIndex = hits.at(n);
-					}
-				}
-
-				HitDescriptor hitDescriptor(renderContext);
-				hitDescriptor.setRayDirection(
-					rayDirection
-				);
-				hitDescriptor.setIndex(
-					indexTree.getPhysicalIndex(
-						minDistanceIndex
-					)
-				);
-				hitDescriptor.setCoordinate(
-					coordinates.at(
-						minDistanceIndex
-					)
-				);
-
-				hitDescriptors[x][y].push_back(hitDescriptor);
-
-				Color color = lambdaColorPicker(
-					hitDescriptor
-				);
-
-				Vector3d directionFromObject = hitDescriptor.getDirectionFromObject();
-				double lightProjection = Vector3d::dotProduct(
-					directionFromObject.unit(),
-					Vector3d({0, 0, 1})
-				);
-				valueR = color.r*(1 + 0.5*lightProjection);
-				valueG = color.g*(1 + 0.5*lightProjection);
-				valueB = color.b*(1 + 0.5*lightProjection);
-			}
-
-			canvas.at<Vec3f>(height - 1 - y, x)[0] = valueB;
-			canvas.at<Vec3f>(height - 1 - y, x)[1] = valueG;
-			canvas.at<Vec3f>(height - 1 - y, x)[2] = valueR;
+			canvas.at<Vec3f>(height - 1 - y, x)[0] = color.b;
+			canvas.at<Vec3f>(height - 1 - y, x)[1] = color.g;
+			canvas.at<Vec3f>(height - 1 - y, x)[2] = color.r;
 		}
 	}
 
@@ -380,7 +340,7 @@ void RayTracer::trace(
 					imshow("Property window", propertyCanvas);
 				}
 			),
-			"RayTracer::trace()",
+			"RayTracer::render()",
 			"Unable to get lock from EventHandler.",
 			""
 		);
@@ -398,6 +358,82 @@ void RayTracer::trace(
 	for(unsigned int x = 0; x < width; x++)
 		delete [] hitDescriptors[x];
 	delete [] hitDescriptors;
+}
+
+RayTracer::Color RayTracer::trace(
+	const vector<Vector3d> &coordinates,
+	const Vector3d &raySource,
+	const Vector3d &rayDirection,
+	const IndexTree &indexTree,
+	vector<HitDescriptor> &hitDescriptors,
+	function<Material(HitDescriptor &hitDescriptor)> lambdaColorPicker
+){
+	double stateRadius = renderContext.getStateRadius();
+
+	vector<unsigned int> hits;
+	for(unsigned int n = 0; n < coordinates.size(); n++)
+		if(((coordinates.at(n) - raySource)*rayDirection).norm() < stateRadius)
+			hits.push_back(n);
+
+	Color color;
+	color.r = 0;
+	color.g = 0;
+	color.b = 0;
+	if(hits.size() > 0){
+		double minDistance = (coordinates.at(hits.at(0)) - raySource).norm();
+		unsigned int minDistanceIndex = hits.at(0);
+		for(unsigned int n = 1; n < hits.size(); n++){
+			double distance = (coordinates.at(hits.at(n)) - raySource).norm();
+			if(distance < minDistance){
+				minDistance = distance;
+				minDistanceIndex = hits.at(n);
+			}
+		}
+
+		HitDescriptor hitDescriptor(renderContext);
+		hitDescriptor.setRayDirection(
+			rayDirection
+		);
+		hitDescriptor.setIndex(
+			indexTree.getPhysicalIndex(
+				minDistanceIndex
+			)
+		);
+		hitDescriptor.setCoordinate(
+			coordinates.at(
+				minDistanceIndex
+			)
+		);
+
+		hitDescriptors.push_back(hitDescriptor);
+
+		Material material = lambdaColorPicker(
+			hitDescriptor
+		);
+
+		Vector3d directionFromObject = hitDescriptor.getDirectionFromObject();
+		double lightProjection = Vector3d::dotProduct(
+			directionFromObject.unit(),
+			Vector3d({0, 0, 1})
+		);
+		color.r = material.color.r*(material.ambient + material.diffusive*lightProjection);
+		color.g = material.color.g*(material.ambient + material.diffusive*lightProjection);
+		color.b = material.color.b*(material.ambient + material.diffusive*lightProjection);
+
+/*		TODO: Implement reflection.
+		if(levels != 0){
+			Color specularColor = trace(
+				coordinates,
+				impactPosition,
+				rayDirection,
+				indexTree,
+				hitDescriptors[x][y],
+				lambdaColorPicker
+			);
+		}*/
+	}
+
+	return color;
 }
 
 RayTracer::RenderContext::RenderContext(){

@@ -104,6 +104,25 @@ private:
 		double r, g, b;
 	};
 
+	/** Class for describing materials. */
+	class Material{
+	public:
+		/** Constructor. */
+		Material();
+
+		/** Color. */
+		Color color;
+
+		/** Light properties. */
+		double ambient, diffusive, emissive, specular;
+
+		/** Default material parameters. */
+		static constexpr double DEFAULT_AMBIENT = 1;
+		static constexpr double DEFAULT_DIFFUSIVE = 0.5;
+		static constexpr double DEFAULT_EMISSIVE = 0;
+		static constexpr double DEFAULT_SPECULAR = 0;
+	};
+
 	/** */
 	class RenderContext{
 	public:
@@ -238,11 +257,20 @@ private:
 	};
 
 	/** Perform ray tracing. */
-	void trace(
+	void render(
 		const IndexDescriptor &indexDescriptor,
 		const Model &model,
-		std::function<Color(HitDescriptor &hitDescriptor)> &&lambdaColorPicker,
+		std::function<Material(HitDescriptor &hitDescriptor)> &&lambdaColorPicker,
 		std::function<void(cv::Mat &canvas, const Index &index)> &&lambdaInteractive = {}
+	);
+
+	Color trace(
+		const std::vector<Vector3d> &coordinates,
+		const Vector3d &raySource,
+		const Vector3d &rayDirection,
+		const IndexTree &indexTree,
+		std::vector<HitDescriptor> &hitDescriptors,
+		std::function<Material(HitDescriptor &hitDescriptor)> lambdaColorPicker
 	);
 
 	/** Event handler for the interactive mode. */
@@ -319,6 +347,16 @@ inline void RayTracer::setUp(std::initializer_list<double> up){
 
 inline void RayTracer::setStateRadius(double stateRadius){
 	renderContext.setStateRadius(stateRadius);
+}
+
+inline RayTracer::Material::Material(){
+	color.r = 0;
+	color.g = 0;
+	color.b = 0;
+	ambient = DEFAULT_AMBIENT;
+	diffusive = DEFAULT_AMBIENT;
+	emissive = DEFAULT_EMISSIVE;
+	specular = DEFAULT_SPECULAR;
 }
 
 inline void RayTracer::RenderContext::setCameraPosition(
