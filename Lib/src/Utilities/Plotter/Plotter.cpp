@@ -96,10 +96,8 @@ void Plotter::plot(vector<double> data){
 
 void Plotter::plot(const Property::DOS &dos){
 	vector<double> data;
-	for(unsigned int n = 0; n < dos.getSize(); n++){
+	for(unsigned int n = 0; n < dos.getSize(); n++)
 		data.push_back(dos(n));
-		Streams::out << dos(n) << "\n";
-	}
 
 	plot(data);
 }

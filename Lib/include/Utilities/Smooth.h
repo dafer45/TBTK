@@ -76,10 +76,8 @@ inline std::vector<double> Smooth::gaussian(
 
 	double normalization = 0;
 	for(int n = -windowSize/2; n <= windowSize/2; n++){
-		Streams::out << "Normalization:\t" << normalization << "\n";
 		normalization += exp(-n*n/(2*sigma*sigma));
 	}
-	Streams::out << "Normalization:\t" << normalization << "\n";
 	normalization = 1/normalization;
 
 	std::vector<double> result;

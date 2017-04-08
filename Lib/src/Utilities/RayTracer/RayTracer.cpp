@@ -178,7 +178,6 @@ void RayTracer::interactivePlot(
 		},
 		[&ldos, sigma, windowSize](Mat &canvas, const Index &index){
 			vector<double> data;
-			index.print();
 			for(int n = 0; n < ldos.getResolution(); n++)
 				data.push_back(ldos(index, n));
 			Plotter plotter;
@@ -350,10 +349,6 @@ void RayTracer::trace(
 				){
 					Plotter plotter;
 					plotter.setCanvas(propertyCanvas);
-/*					vector<double> data;
-					for(unsigned int n = 0; n < 100; n++)
-						data.push_back(cos(2*M_PI*n/50.));
-					plotter.plot(data);*/
 					if(hitDescriptors[x][y].size() > 0){
 						const Index& index = hitDescriptors[x][y].at(0).getIndex();
 						lambdaInteractive(propertyCanvas, index);
