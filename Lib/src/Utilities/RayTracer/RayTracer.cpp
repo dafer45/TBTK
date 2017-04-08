@@ -325,9 +325,9 @@ void RayTracer::trace(
 				valueB = color.b*(1 + 0.5*lightProjection);
 			}
 
-			canvas.at<Vec3f>(y, x)[0] = valueB;
-			canvas.at<Vec3f>(y, x)[1] = valueG;
-			canvas.at<Vec3f>(y, x)[2] = valueR;
+			canvas.at<Vec3f>(height - 1 - y, x)[0] = valueB;
+			canvas.at<Vec3f>(height - 1 - y, x)[1] = valueG;
+			canvas.at<Vec3f>(height - 1 - y, x)[2] = valueR;
 		}
 	}
 
@@ -349,9 +349,9 @@ void RayTracer::trace(
 		for(unsigned int y = 0; y < height; y++){
 			for(unsigned int n = 0; n < 3; n++){
 				if(hitDescriptors[x][y].size() > 0)
-					image.at<Vec3b>(y, x)[n] = 255*((canvas.at<Vec3f>(y, x)[n] - minValue)/(maxValue - minValue));
+					image.at<Vec3b>(height - 1 - y, x)[n] = 255*((canvas.at<Vec3f>(height - 1 - y, x)[n] - minValue)/(maxValue - minValue));
 				else
-					image.at<Vec3b>(y, x)[n] = 0;
+					image.at<Vec3b>(height - 1 - y, x)[n] = 0;
 			}
 		}
 	}
@@ -364,7 +364,7 @@ void RayTracer::trace(
 		TBTKAssert(
 			EventHandler::lock(
 				this,
-				[&lambdaInteractive, &hitDescriptors, &propertyCanvas](
+				[&lambdaInteractive, &hitDescriptors, &propertyCanvas, height, width](
 					int event,
 					int x,
 					int y,
@@ -373,8 +373,8 @@ void RayTracer::trace(
 				){
 					Plotter plotter;
 					plotter.setCanvas(propertyCanvas);
-					if(hitDescriptors[x][y].size() > 0){
-						const Index& index = hitDescriptors[x][y].at(0).getIndex();
+					if(hitDescriptors[x][height - 1 - y].size() > 0){
+						const Index& index = hitDescriptors[x][height - 1 -y].at(0).getIndex();
 						lambdaInteractive(propertyCanvas, index);
 					}
 					imshow("Property window", propertyCanvas);
