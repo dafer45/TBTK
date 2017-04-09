@@ -19,6 +19,7 @@
  */
 
 #include "../../../include/Utilities/Plotter/Plotter.h"
+#include "Smooth.h"
 #include "Streams.h"
 
 #include <sstream>
@@ -36,16 +37,192 @@ Plotter::Plotter(){
 	paddingRight = 40;
 	paddingBottom = 30;
 	paddingTop = 20;
+
+	hold = false;
 }
 
 Plotter::~Plotter(){
 }
 
 void Plotter::plot(const vector<double> &axis, const vector<double> &data){
+	TBTKAssert(
+		axis.size() == data.size(),
+		"Plotter::plot()",
+		"Incompatible axis and data. Axis size is " << axis.size()
+			<< " while data size is " << data.size() << ".",
+		""
+	);
+
 	const unsigned int WIDTH = 600;
 	const unsigned int HEIGHT = 400;
 
-	double minX = axis.at(0);
+	if(!hold)
+		dataStorage.clear();
+
+	dataStorage.push_back(make_tuple(axis, data));
+
+	double minX = get<0>(dataStorage.at(0)).at(0);
+	double maxX = get<0>(dataStorage.at(0)).at(0);
+	double minY = get<1>(dataStorage.at(0)).at(0);
+	double maxY = get<1>(dataStorage.at(0)).at(0);
+	for(unsigned int n = 0; n < dataStorage.size(); n++){
+		const std::vector<double> axis = get<0>(dataStorage.at(n));
+		const std::vector<double> data = get<1>(dataStorage.at(n));
+		for(unsigned int c = 0; c < data.size(); c++){
+			if(axis.at(c) < minX)
+				minX = axis.at(c);
+			if(axis.at(c) > maxX)
+				maxX = axis.at(c);
+			if(data.at(c) < minY)
+				minY = data.at(c);
+			if(data.at(c) > maxY)
+				maxY = data.at(c);
+		}
+	}
+
+	setBounds(minX, maxX, minY, maxY);
+
+	canvas = Mat::zeros(HEIGHT, WIDTH, CV_8UC3);
+	rectangle(
+		canvas,
+		cvPoint(0, 0),
+		cvPoint(WIDTH-1, HEIGHT-1),
+		Scalar(255, 255, 255),
+		CV_FILLED,
+		8,
+		0
+	);
+	line(
+		canvas,
+		getCVPoint(minX, minY),
+		getCVPoint(maxX, minY),
+		Scalar(0, 0, 0),
+		2,
+		CV_AA
+	);
+	line(
+		canvas,
+		getCVPoint(minX, minY),
+		getCVPoint(minX, maxY),
+		Scalar(0, 0, 0),
+		2,
+		CV_AA
+	);
+	stringstream ss;
+	ss.precision(1);
+	ss << scientific << minX;
+	string minXString = ss.str();
+	ss.str("");
+	ss << scientific << maxX;
+	string maxXString = ss.str();
+	ss.str("");
+	ss << scientific << minY;
+	string minYString = ss.str();
+	ss.str("");
+	ss << scientific << maxY;
+	string maxYString = ss.str();
+	int minXStringBaseLine;
+	int maxXStringBaseLine;
+	int minYStringBaseLine;
+	int maxYStringBaseLine;
+	Size minXStringSize = getTextSize(
+		minXString,
+		FONT_HERSHEY_SIMPLEX,
+		0.5,
+		1,
+		&minXStringBaseLine
+	);
+	Size maxXStringSize = getTextSize(
+		maxXString,
+		FONT_HERSHEY_SIMPLEX,
+		0.5,
+		1,
+		&maxXStringBaseLine
+	);
+	Size minYStringSize = getTextSize(
+		minYString,
+		FONT_HERSHEY_SIMPLEX,
+		0.5,
+		1,
+		&minYStringBaseLine
+	);
+	Size maxYStringSize = getTextSize(
+		maxYString,
+		FONT_HERSHEY_SIMPLEX,
+		0.5,
+		1,
+		&maxYStringBaseLine
+	);
+
+	putText(
+		canvas,
+		minXString,
+		Point(
+			paddingLeft - minXStringSize.width/2,
+			canvas.rows - (paddingBottom - 1.5*minXStringSize.height)
+		),
+		FONT_HERSHEY_SIMPLEX,
+		0.5,
+		Scalar(0, 0, 0),
+		2,
+		false
+	);
+	putText(
+		canvas,
+		maxXString,
+		Point(
+			canvas.cols - (paddingRight + maxXStringSize.width/2),
+			canvas.rows - (paddingBottom - 1.5*maxXStringSize.height)
+		),
+		FONT_HERSHEY_SIMPLEX,
+		0.5,
+		Scalar(0, 0, 0),
+		2,
+		false
+	);
+	putText(
+		canvas,
+		minYString,
+		Point(
+			paddingLeft - minYStringSize.width - 10,
+			canvas.rows - paddingBottom
+		),
+		FONT_HERSHEY_SIMPLEX,
+		0.5,
+		Scalar(0, 0, 0),
+		2,
+		false
+	);
+	putText(
+		canvas,
+		maxYString,
+		Point(
+			paddingLeft - maxYStringSize.width - 10,
+			paddingTop + maxYStringSize.height
+		),
+		FONT_HERSHEY_SIMPLEX,
+		0.5,
+		Scalar(0, 0, 0),
+		2,
+		false
+	);
+
+	for(unsigned int n = 0; n < dataStorage.size(); n++){
+		const std::vector<double> axis = get<0>(dataStorage.at(n));
+		const std::vector<double> data = get<1>(dataStorage.at(n));
+		for(unsigned int c = 1; c < data.size(); c++){
+			line(
+				canvas,
+				getCVPoint(axis.at(c-1), data.at(c-1)),
+				getCVPoint(axis.at(c), data.at(c)),
+				Scalar(0, 0, 0),
+				1,
+				CV_AA
+			);
+		}
+	}
+
+/*	double minX = axis.at(0);
 	double maxX = axis.at(0);
 	double minY = data.at(0);
 	double maxY = data.at(0);
@@ -196,7 +373,7 @@ void Plotter::plot(const vector<double> &axis, const vector<double> &data){
 			1,
 			CV_AA
 		);
-	}
+	}*/
 }
 
 void Plotter::plot(const vector<double> &data){
@@ -207,12 +384,25 @@ void Plotter::plot(const vector<double> &data){
 	plot(axis, data);
 }
 
-void Plotter::plot(const Property::DOS &dos){
+void Plotter::plot(
+	const Property::DOS &dos,
+	double sigma,
+	unsigned int windowSize
+){
 	vector<double> data;
-	for(unsigned int n = 0; n < dos.getSize(); n++)
+	vector<double> axis;
+	double dE = (dos.getUpperBound() - dos.getLowerBound())/dos.getResolution();
+	for(unsigned int n = 0; n < dos.getSize(); n++){
+		axis.push_back(dos.getLowerBound() + n*dE);
 		data.push_back(dos(n));
+	}
 
-	plot(data);
+	if(sigma != 0){
+		double scaledSigma = sigma/(dos.getUpperBound() - dos.getLowerBound())*dos.getResolution();
+		data = Smooth::gaussian(data, scaledSigma, windowSize);
+	}
+
+	plot(axis, data);
 }
 
 };	//End of namespace TBTK

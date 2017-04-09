@@ -28,6 +28,7 @@
 #include "TBTKMacros.h"
 
 #include <string>
+#include <tuple>
 #include <vector>
 
 #include <opencv2/core/core.hpp>
@@ -67,7 +68,14 @@ public:
 	void plot(const std::vector<double> &data);
 
 	/** Plot density of states. */
-	void plot(const Property::DOS &dos);
+	void plot(
+		const Property::DOS &dos,
+		double sigma = 0,
+		unsigned int windowSize = 51
+	);
+
+	/** Set whether ot not data is plotted on top of old data. */
+	void setHold(bool hold);
 
 	/** Save canvas to file. */
 	void save(std::string filename) const;
@@ -77,6 +85,13 @@ private:
 
 	/** Bounds. */
 	double minX, maxX, minY, maxY;
+
+	/** Flag indicating whether data is ploted on top of previous data or
+	 *  not. */
+	bool hold;
+
+	/** Storage for ploted data. Used if holde is true. */
+	std::vector<std::tuple<std::vector<double>, std::vector<double>>> dataStorage;
 
 	/** Converts a coordinate to a cvPoint that can be used as canvas
 	 *  /coordinate. */
@@ -133,6 +148,10 @@ inline cv::Point Plotter::getCVPoint(double x, double y) const{
 		paddingLeft + (1 - (paddingLeft + paddingRight)/(double)canvas.cols)*canvas.cols*(x - minX)/(double)width,
 		canvas.rows - 1 - (paddingBottom + (1 - (paddingBottom + paddingTop)/(double)canvas.rows)*canvas.rows*(y - minY)/(double)height)
 	);
+}
+
+inline void Plotter::setHold(bool hold){
+	this->hold = hold;
 }
 
 inline void Plotter::save(std::string filename) const{
