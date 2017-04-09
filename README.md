@@ -61,7 +61,10 @@ Due to their dependence on external libraries, certain TBTK features are not
 installed by default. These are intended to eventually make it into the default
 installation, but currently has to be configured manually to work. The current
 components that do not work by default, and the corresponding reasons are
-listed below:
+listed below. If you are interested in installing one or several of these
+features already now, please contact the developer at
+kristofer.bjornson@physics.uu.se for further instructions.
+
 ### Library
 #### ArnoldiSolver
 Depends on the external libraries ARPACK (http://www.caam.rice.edu/software/ARPACK/) and SuperLU v5.2.1 (http://crd-legacy.lbl.gov/~xiaoye/SuperLU/).
@@ -118,6 +121,3 @@ Depends on the external library openCV (http://www.openCV.org/).
 
 #### TopologicalInsulator3D
 Depends on the external library FFTW (http://www.fftw.org/).
-
-If you are interested in installing one or several of these features already
-now, please contact the developer at kristofer.bjornson@physics.uu.se for further instructions.
