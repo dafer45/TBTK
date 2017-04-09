@@ -73,6 +73,12 @@ make arnoldi
 #### FourierTransform
 Depends on the external library FFTW v3 (http://www.fftw.org/).
 
+#### Plotter
+Depends on the external library openCV (http://www.opencv.org/).
+
+#### RayTracer
+Depends on the external library openCV (http://www.opencv.org/).
+
 Given that FFTW is installed, the FourierTransform can be compiled by executing the following command from TBTK/Lib/.
 ```bash
 make fourier
@@ -83,15 +89,21 @@ make fourier
 Depends on the external library openCV (http://opencv.org/).
 
 ### Visualization
-#### TBTKVisualizer
-Depends on the external library OGRE (http://www.ogre3d.org/).
-
 #### TBTKRayTracePlotter
 Depends on the external library openCV (http://opencv.org/).
+
+#### TBTKVisualizer
+Depends on the external library OGRE (http://www.ogre3d.org/).
 
 ### Templates
 #### BasicArnoldi
 Depends on the library component ArnoldiSolver to have been compiled (see above).
+
+#### RayTraceInteractive
+Depends on the external library openCV (http://www.openCV.org/).
+
+#### RayTracePlotter
+Depends on the external library openCV (http://www.openCV.org/).
 
 #### TopologicalInsulator3D
 Depends on the external library FFTW (http://www.fftw.org/).
