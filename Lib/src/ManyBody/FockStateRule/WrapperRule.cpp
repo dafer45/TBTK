@@ -48,8 +48,9 @@ WrapperRule* WrapperRule::clone() const{
 	return new WrapperRule(*fockStateRule);
 }
 
-WrapperRule& WrapperRule::operator=(const WrapperRule &wrapperRule){
-	this->fockStateRule = (FockStateRule*)wrapperRule.clone();
+WrapperRule& WrapperRule::operator=(const WrapperRule &rhs){
+	if(this != &rhs)
+		this->fockStateRule = (FockStateRule*)rhs.clone();
 
 	return *this;
 }

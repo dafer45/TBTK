@@ -136,9 +136,11 @@ WaveFunction::~WaveFunction(){
 }
 
 WaveFunction& WaveFunction::operator=(const WaveFunction &rhs){
-	AbstractProperty::operator=(rhs);
-	this->isContinuous = rhs.isContinuous;
-	states = rhs.states;
+	if(this != &rhs){
+		AbstractProperty::operator=(rhs);
+		this->isContinuous = rhs.isContinuous;
+		states = rhs.states;
+	}
 
 	return *this;
 }

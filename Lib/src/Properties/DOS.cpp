@@ -73,10 +73,12 @@ DOS::~DOS(){
 }
 
 DOS& DOS::operator=(const DOS &rhs){
-	AbstractProperty::operator=(rhs);
-	lowerBound = rhs.lowerBound;
-	upperBound = rhs.upperBound;
-	resolution = rhs.resolution;
+	if(this != &rhs){
+		AbstractProperty::operator=(rhs);
+		lowerBound = rhs.lowerBound;
+		upperBound = rhs.upperBound;
+		resolution = rhs.resolution;
+	}
 
 	return *this;
 }

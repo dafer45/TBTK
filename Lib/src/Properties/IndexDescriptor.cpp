@@ -121,30 +121,32 @@ IndexDescriptor::~IndexDescriptor(){
 }
 
 IndexDescriptor& IndexDescriptor::operator=(const IndexDescriptor &rhs){
-	format = rhs.format;
-	switch(format){
-	case Format::None:
-		break;
-	case Format::Ranges:
-		descriptor.rangeFormat.dimensions = rhs.descriptor.rangeFormat.dimensions;
-		if(rhs.descriptor.rangeFormat.ranges == nullptr){
-			descriptor.rangeFormat.ranges = nullptr;
+	if(this != &rhs){
+		format = rhs.format;
+		switch(format){
+		case Format::None:
+			break;
+		case Format::Ranges:
+			descriptor.rangeFormat.dimensions = rhs.descriptor.rangeFormat.dimensions;
+			if(rhs.descriptor.rangeFormat.ranges == nullptr){
+				descriptor.rangeFormat.ranges = nullptr;
+			}
+			else{
+				descriptor.rangeFormat.ranges = new int[descriptor.rangeFormat.dimensions];
+				for(unsigned int n = 0; n < descriptor.rangeFormat.dimensions; n++)
+					descriptor.rangeFormat.ranges[n] = rhs.descriptor.rangeFormat.ranges[n];
+			}
+			break;
+		case Format::Custom:
+			descriptor.customFormat.indexTree = new IndexTree(*rhs.descriptor.customFormat.indexTree);
+			break;
+		default:
+			TBTKExit(
+				"IndexDescriptor::operator=()",
+				"This should never happen.",
+				"Contact the developer."
+			);
 		}
-		else{
-			descriptor.rangeFormat.ranges = new int[descriptor.rangeFormat.dimensions];
-			for(unsigned int n = 0; n < descriptor.rangeFormat.dimensions; n++)
-				descriptor.rangeFormat.ranges[n] = rhs.descriptor.rangeFormat.ranges[n];
-		}
-		break;
-	case Format::Custom:
-		descriptor.customFormat.indexTree = new IndexTree(*rhs.descriptor.customFormat.indexTree);
-		break;
-	default:
-		TBTKExit(
-			"IndexDescriptor::operator=()",
-			"This should never happen.",
-			"Contact the developer."
-		);
 	}
 
 	return *this;

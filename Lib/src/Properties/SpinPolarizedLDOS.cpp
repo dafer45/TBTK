@@ -105,11 +105,13 @@ SpinPolarizedLDOS::~SpinPolarizedLDOS(){
 }
 
 SpinPolarizedLDOS& SpinPolarizedLDOS::operator=(const SpinPolarizedLDOS &rhs){
-	AbstractProperty::operator=(rhs);
+	if(this != &rhs){
+		AbstractProperty::operator=(rhs);
 
-	lowerBound = rhs.lowerBound;
-	upperBound = rhs.upperBound;
-	resolution = rhs.resolution;
+		lowerBound = rhs.lowerBound;
+		upperBound = rhs.upperBound;
+		resolution = rhs.resolution;
+	}
 
 	return *this;
 }

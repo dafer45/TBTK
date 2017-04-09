@@ -103,11 +103,13 @@ LDOS::~LDOS(){
 }
 
 LDOS& LDOS::operator=(const LDOS &rhs){
-	AbstractProperty::operator=(rhs);
+	if(this != &rhs){
+		AbstractProperty::operator=(rhs);
 
-	lowerBound = rhs.lowerBound;
-	upperBound = rhs.upperBound;
-	resolution = rhs.resolution;
+		lowerBound = rhs.lowerBound;
+		upperBound = rhs.upperBound;
+		resolution = rhs.resolution;
+	}
 
 	return *this;
 }

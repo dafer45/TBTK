@@ -74,6 +74,12 @@ public:
 	/** Set state radius. */
 	void setStateRadius(double stateRadius);
 
+	/** Set trace depth. */
+	void setTraceDepth(unsigned int traceDepth);
+
+	/** Get trace depth. */
+	unsigned int getTraceDepth() const;
+
 	/** Plot Density. */
 	void plot(const Model& model, const Property::Density &density);
 
@@ -120,7 +126,7 @@ private:
 		static constexpr double DEFAULT_AMBIENT = 1;
 		static constexpr double DEFAULT_DIFFUSIVE = 0.5;
 		static constexpr double DEFAULT_EMISSIVE = 0;
-		static constexpr double DEFAULT_SPECULAR = 0;
+		static constexpr double DEFAULT_SPECULAR = 0.1;
 	};
 
 	/** */
@@ -176,6 +182,12 @@ private:
 
 		/** Get state radius. */
 		double getStateRadius() const;
+
+		/** Set ray depth. */
+		void setTraceDepth(unsigned int traceDepth);
+
+		/*** Get ray depth. */
+		unsigned int getTraceDepth() const;
 	private:
 		/** Camera position. */
 		Vector3d cameraPosition;
@@ -194,6 +206,10 @@ private:
 
 		/** State radius. */
 		double stateRadius;
+
+		/** Maximum number of times a ray will be traced after having
+		 *  been deflected. */
+		unsigned int traceDepth;
 	};
 
 	RenderContext renderContext;
@@ -219,6 +235,12 @@ private:
 		/** Move assignment operator. */
 		HitDescriptor& operator=(HitDescriptor &&rhs);
 
+		/** Set ray source. */
+		void setRaySource(const Vector3d &raySource);
+
+		/** Get ray source. */
+		const Vector3d& getRaySource() const;
+
 		/** Set ray direction. */
 		void setRayDirection(const Vector3d &rayDirection);
 
@@ -239,9 +261,15 @@ private:
 
 		/** Get directionFromObject. */
 		const Vector3d& getDirectionFromObject();
+
+		/** Get impact position. */
+		const Vector3d& getImpactPosition();
 	private:
 		/** Render context. */
 		const RenderContext *renderContext;
+
+		/** Ray source. */
+		Vector3d raySource;
 
 		/** Ray direction. */
 		Vector3d rayDirection;
@@ -254,6 +282,9 @@ private:
 
 		/** Direction from object. */
 		Vector3d *directionFromObject;
+
+		/** Impact position. */
+		Vector3d *impactPosition;
 	};
 
 	/** Perform ray tracing. */
@@ -270,7 +301,8 @@ private:
 		const Vector3d &rayDirection,
 		const IndexTree &indexTree,
 		std::vector<HitDescriptor> &hitDescriptors,
-		std::function<Material(HitDescriptor &hitDescriptor)> lambdaColorPicker
+		std::function<Material(HitDescriptor &hitDescriptor)> lambdaColorPicker,
+		unsigned int depth = 0
 	);
 
 	/** Event handler for the interactive mode. */
@@ -347,6 +379,14 @@ inline void RayTracer::setUp(std::initializer_list<double> up){
 
 inline void RayTracer::setStateRadius(double stateRadius){
 	renderContext.setStateRadius(stateRadius);
+}
+
+inline void RayTracer::setTraceDepth(unsigned int traceDepth){
+	renderContext.setTraceDepth(traceDepth);
+}
+
+inline unsigned int RayTracer::getTraceDepth() const{
+	return renderContext.getTraceDepth();
 }
 
 inline RayTracer::Material::Material(){
@@ -452,6 +492,24 @@ inline void RayTracer::RenderContext::setStateRadius(double stateRadius){
 
 inline double RayTracer::RenderContext::getStateRadius() const{
 	return stateRadius;
+}
+
+inline void RayTracer::RenderContext::setTraceDepth(unsigned int traceDepth){
+	this->traceDepth = traceDepth;
+}
+
+inline unsigned int RayTracer::RenderContext::getTraceDepth() const{
+	return traceDepth;
+}
+
+inline void RayTracer::HitDescriptor::setRaySource(
+	const Vector3d &raySource
+){
+	this->raySource = raySource;
+}
+
+inline const Vector3d& RayTracer::HitDescriptor::getRaySource() const{
+	return this->raySource;
 }
 
 inline void RayTracer::HitDescriptor::setRayDirection(

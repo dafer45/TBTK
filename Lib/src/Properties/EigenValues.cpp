@@ -56,7 +56,8 @@ EigenValues::~EigenValues(){
 }
 
 EigenValues& EigenValues::operator=(const EigenValues &rhs){
-	AbstractProperty::operator=(rhs);
+	if(this != &rhs)
+		AbstractProperty::operator=(rhs);
 
 	return *this;
 }

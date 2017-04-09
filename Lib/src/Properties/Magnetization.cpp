@@ -75,7 +75,8 @@ Magnetization::~Magnetization(){
 }
 
 Magnetization& Magnetization::operator=(const Magnetization &rhs){
-	AbstractProperty::operator=(rhs);
+	if(this != &rhs)
+		AbstractProperty::operator=(rhs);
 
 	return *this;
 }

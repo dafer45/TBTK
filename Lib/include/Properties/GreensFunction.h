@@ -235,32 +235,34 @@ inline std::complex<double> GreensFunction::getPoleAmplitude(
 inline const GreensFunction& GreensFunction::operator=(
 	const GreensFunction &rhs
 ){
-	type = rhs.type;
-	format = rhs.format;
-	switch(format){
-	case Format::Array:
-		storage.arrayFormat.lowerBound = rhs.storage.arrayFormat.lowerBound;
-		storage.arrayFormat.upperBound = rhs.storage.arrayFormat.upperBound;
-		storage.arrayFormat.resolution = rhs.storage.arrayFormat.resolution;
-		storage.arrayFormat.data = new std::complex<double>[storage.arrayFormat.resolution];
-		for(unsigned int n = 0; n < storage.arrayFormat.resolution; n++)
-			storage.arrayFormat.data[n] = rhs.storage.arrayFormat.data[n];
-		break;
-	case Format::Poles:
-		storage.poleFormat.numPoles = rhs.storage.poleFormat.numPoles;
-		storage.poleFormat.positions = new std::complex<double>[storage.poleFormat.numPoles];
-		storage.poleFormat.amplitudes = new std::complex<double>[storage.poleFormat.numPoles];
-		for(unsigned int n = 0; n < storage.poleFormat.numPoles; n++){
-			storage.poleFormat.positions[n] = rhs.storage.poleFormat.positions[n];
-			storage.poleFormat.amplitudes[n] = rhs.storage.poleFormat.amplitudes[n];
+	if(this != &rhs){
+		type = rhs.type;
+		format = rhs.format;
+		switch(format){
+		case Format::Array:
+			storage.arrayFormat.lowerBound = rhs.storage.arrayFormat.lowerBound;
+			storage.arrayFormat.upperBound = rhs.storage.arrayFormat.upperBound;
+			storage.arrayFormat.resolution = rhs.storage.arrayFormat.resolution;
+			storage.arrayFormat.data = new std::complex<double>[storage.arrayFormat.resolution];
+			for(unsigned int n = 0; n < storage.arrayFormat.resolution; n++)
+				storage.arrayFormat.data[n] = rhs.storage.arrayFormat.data[n];
+			break;
+		case Format::Poles:
+			storage.poleFormat.numPoles = rhs.storage.poleFormat.numPoles;
+			storage.poleFormat.positions = new std::complex<double>[storage.poleFormat.numPoles];
+			storage.poleFormat.amplitudes = new std::complex<double>[storage.poleFormat.numPoles];
+			for(unsigned int n = 0; n < storage.poleFormat.numPoles; n++){
+				storage.poleFormat.positions[n] = rhs.storage.poleFormat.positions[n];
+				storage.poleFormat.amplitudes[n] = rhs.storage.poleFormat.amplitudes[n];
+			}
+			break;
+		default:
+			TBTKExit(
+				"GreensFunction::operator()",
+				"Unknown Green's function format.",
+				"This should never happen, contact the developer."
+			);
 		}
-		break;
-	default:
-		TBTKExit(
-			"GreensFunction::operator()",
-			"Unknown Green's function format.",
-			"This should never happen, contact the developer."
-		);
 	}
 
 	return *this;

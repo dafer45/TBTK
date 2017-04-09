@@ -233,7 +233,6 @@ void RayTracer::render(
 	const Vector3d &up = renderContext.getUp();
 	unsigned int width = renderContext.getWidth();
 	unsigned int height = renderContext.getHeight();
-//	double stateRadius = renderContext.getStateRadius();
 
 	Vector3d unitY = up.unit();
 	Vector3d unitX = ((focus - cameraPosition)*up).unit();
@@ -282,7 +281,8 @@ void RayTracer::render(
 				rayDirection,
 				indexTree,
 				hitDescriptors[x][y],
-				lambdaColorPicker
+				lambdaColorPicker,
+				renderContext.getTraceDepth()
 			);
 
 			canvas.at<Vec3f>(height - 1 - y, x)[0] = color.b;
@@ -366,14 +366,19 @@ RayTracer::Color RayTracer::trace(
 	const Vector3d &rayDirection,
 	const IndexTree &indexTree,
 	vector<HitDescriptor> &hitDescriptors,
-	function<Material(HitDescriptor &hitDescriptor)> lambdaColorPicker
+	function<Material(HitDescriptor &hitDescriptor)> lambdaColorPicker,
+	unsigned int depth
 ){
 	double stateRadius = renderContext.getStateRadius();
 
 	vector<unsigned int> hits;
 	for(unsigned int n = 0; n < coordinates.size(); n++)
-		if(((coordinates.at(n) - raySource)*rayDirection).norm() < stateRadius)
+		if(
+			((coordinates.at(n) - raySource)*rayDirection).norm() < stateRadius
+			&& Vector3d::dotProduct(coordinates.at(n) - raySource, rayDirection) > 0
+		){
 			hits.push_back(n);
+		}
 
 	Color color;
 	color.r = 0;
@@ -391,6 +396,7 @@ RayTracer::Color RayTracer::trace(
 		}
 
 		HitDescriptor hitDescriptor(renderContext);
+		hitDescriptor.setRaySource(raySource);
 		hitDescriptor.setRayDirection(
 			rayDirection
 		);
@@ -420,17 +426,27 @@ RayTracer::Color RayTracer::trace(
 		color.g = material.color.g*(material.ambient + material.diffusive*lightProjection);
 		color.b = material.color.b*(material.ambient + material.diffusive*lightProjection);
 
-/*		TODO: Implement reflection.
-		if(levels != 0){
+		hitDescriptor.getDirectionFromObject();
+		if(depth != 0){
+			vector<HitDescriptor> specularHitDescriptors;
+			const Vector3d &impactPosition = hitDescriptor.getImpactPosition();
+			Vector3d newDirection =	(rayDirection - 2*hitDescriptor.getDirectionFromObject()*Vector3d::dotProduct(
+				hitDescriptor.getDirectionFromObject(), rayDirection
+			)).unit();
 			Color specularColor = trace(
 				coordinates,
 				impactPosition,
-				rayDirection,
+				newDirection,
 				indexTree,
-				hitDescriptors[x][y],
-				lambdaColorPicker
+				specularHitDescriptors,
+				lambdaColorPicker,
+				depth - 1
 			);
-		}*/
+
+			color.r += material.specular*specularColor.r;
+			color.g += material.specular*specularColor.g;
+			color.b += material.specular*specularColor.b;
+		}
 	}
 
 	return color;
@@ -445,6 +461,7 @@ RayTracer::RenderContext::RenderContext(){
 	height = 400;
 
 	stateRadius = 0.5;
+	traceDepth = 0;
 }
 
 RayTracer::RenderContext::~RenderContext(){
@@ -453,6 +470,7 @@ RayTracer::RenderContext::~RenderContext(){
 RayTracer::HitDescriptor::HitDescriptor(const RenderContext &renderContext){
 	this->renderContext = &renderContext;
 	directionFromObject = nullptr;
+	impactPosition = nullptr;
 }
 
 RayTracer::HitDescriptor::HitDescriptor(
@@ -463,13 +481,21 @@ RayTracer::HitDescriptor::HitDescriptor(
 	index(hitDescriptor.index),
 	coordinate(hitDescriptor.coordinate)
 {
-
 	if(hitDescriptor.directionFromObject == nullptr){
 		directionFromObject = nullptr;
 	}
 	else{
 		directionFromObject = new Vector3d(
 			*hitDescriptor.directionFromObject
+		);
+	}
+
+	if(hitDescriptor.impactPosition == nullptr){
+		impactPosition = nullptr;
+	}
+	else{
+		impactPosition = new Vector3d(
+			*hitDescriptor.impactPosition
 		);
 	}
 }
@@ -489,25 +515,42 @@ RayTracer::HitDescriptor::HitDescriptor(
 		directionFromObject = hitDescriptor.directionFromObject;
 		hitDescriptor.directionFromObject = nullptr;
 	}
+
+	if(hitDescriptor.impactPosition == nullptr){
+		impactPosition = nullptr;
+	}
+	else{
+		impactPosition = hitDescriptor.impactPosition;
+		hitDescriptor.impactPosition = nullptr;
+	}
 }
 
 RayTracer::HitDescriptor::~HitDescriptor(){
 	if(directionFromObject != nullptr)
 		delete directionFromObject;
+	if(impactPosition != nullptr)
+		delete impactPosition;
 }
 
 RayTracer::HitDescriptor& RayTracer::HitDescriptor::operator=(
 	const HitDescriptor &rhs
 ){
-	renderContext = rhs.renderContext;
-	rayDirection = rhs.rayDirection;
-	index = rhs.index;
-	coordinate = rhs.coordinate;
+	if(this != &rhs){
+		renderContext = rhs.renderContext;
+		rayDirection = rhs.rayDirection;
+		index = rhs.index;
+		coordinate = rhs.coordinate;
 
-	if(rhs.directionFromObject == nullptr)
-		directionFromObject = nullptr;
-	else
-		directionFromObject = new Vector3d(*rhs.directionFromObject);
+		if(rhs.directionFromObject == nullptr)
+			directionFromObject = nullptr;
+		else
+			directionFromObject = new Vector3d(*rhs.directionFromObject);
+
+		if(rhs.impactPosition == nullptr)
+			impactPosition = nullptr;
+		else
+			impactPosition = new Vector3d(*rhs.impactPosition);
+	}
 
 	return *this;
 }
@@ -528,27 +571,44 @@ RayTracer::HitDescriptor& RayTracer::HitDescriptor::operator=(
 			directionFromObject = rhs.directionFromObject;
 			rhs.directionFromObject = nullptr;
 		}
+
+		if(rhs.impactPosition == nullptr){
+			impactPosition = nullptr;
+		}
+		else{
+			impactPosition = rhs.impactPosition;
+			rhs.impactPosition = nullptr;
+		}
 	}
 
 	return *this;
+}
+
+const Vector3d& RayTracer::HitDescriptor::getImpactPosition(){
+	if(impactPosition != nullptr)
+		return *impactPosition;
+
+	impactPosition = new Vector3d(
+		coordinate + renderContext->getStateRadius()*getDirectionFromObject()
+	);
+
+	return *impactPosition;
 }
 
 const Vector3d& RayTracer::HitDescriptor::getDirectionFromObject(){
 	if(directionFromObject != nullptr)
 		return *directionFromObject;
 
-	const Vector3d &cameraPosition = renderContext->getCameraPosition();
-//	const Vector3d &rayDirection = renderContext->getRayDirection();
 	double stateRadius = renderContext->getStateRadius();
 
 	//Here v is the vector from the object to the camera, t is the unit
 	//vector in the direction of the ray, and lamvda*t is the vector from
 	//the camera to the hit position.
-	Vector3d v = coordinate - cameraPosition;
+	Vector3d v = coordinate - raySource;
 	double a = Vector3d::dotProduct(v, rayDirection);
 	double b = Vector3d::dotProduct(v, v);
 	double lambda = a - sqrt(stateRadius*stateRadius + a*a - b);
-	Vector3d hitPoint = cameraPosition + lambda*rayDirection;
+	Vector3d hitPoint = raySource + lambda*rayDirection;
 
 	directionFromObject = new Vector3d((hitPoint - coordinate).unit());
 

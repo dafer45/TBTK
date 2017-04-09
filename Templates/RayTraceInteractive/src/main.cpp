@@ -112,16 +112,21 @@ int main(int argc, char **argv){
 
 	//Parameters used by the ray tracer to perform Gaussian smoothing on
 	//the LDOS data.
-	const double SIGMA = 0.1;
+	const double SIGMA = 0.15;
 	unsigned int WINDOW_SIZE = 101;
+
+	//Numbers of times a ray is deflected before the ray tracing is
+	//terminated.
+	unsigned int TRACE_DEPTH = 1;
 
 	//Setup and run RayTracer.
 	RayTracer rayTracer;
-	rayTracer.setCameraPosition({-SIZE_X, -SIZE_Y, 15});
+	rayTracer.setCameraPosition({-SIZE_X/2., -SIZE_Y/2., 7.5});
 	rayTracer.setUp({0, 0, 1});
 	rayTracer.setFocus({SIZE_X/2, SIZE_Y/2, 0});
 	rayTracer.setWidth(1200);
 	rayTracer.setHeight(800);
+	rayTracer.setTraceDepth(TRACE_DEPTH);
 	rayTracer.interactivePlot(model, ldos, SIGMA, WINDOW_SIZE);
 
 	return 0;

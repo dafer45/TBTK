@@ -220,7 +220,8 @@ inline const BitRegister BitRegister::operator--(int){
 }
 
 inline void BitRegister::operator=(const BitRegister &rhs){
-	values = rhs.values;
+	if(this != &rhs)
+		values = rhs.values;
 }
 
 inline void BitRegister::operator=(unsigned int rhs){

@@ -379,18 +379,20 @@ template<typename DataType>
 AbstractProperty<DataType>& AbstractProperty<DataType>::operator=(
 	const AbstractProperty &rhs
 ){
-	indexDescriptor = rhs.indexDescriptor;
+	if(this != &rhs){
+		indexDescriptor = rhs.indexDescriptor;
 
-	blockSize = rhs.blockSize;
+		blockSize = rhs.blockSize;
 
-	size = rhs.size;
-	if(rhs.data == nullptr){
-		data = nullptr;
-	}
-	else{
-		data = new DataType[size];
-		for(unsigned int n = 0; n < size; n++)
-			data[n] = rhs.data[n];
+		size = rhs.size;
+		if(rhs.data == nullptr){
+			data = nullptr;
+		}
+		else{
+			data = new DataType[size];
+			for(unsigned int n = 0; n < size; n++)
+				data[n] = rhs.data[n];
+		}
 	}
 
 	return *this;

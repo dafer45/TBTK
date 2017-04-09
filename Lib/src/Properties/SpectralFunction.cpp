@@ -79,12 +79,16 @@ SpectralFunction::~SpectralFunction(){
 }
 
 SpectralFunction& SpectralFunction::operator=(const SpectralFunction &rhs){
-	LDOS::operator=(rhs);
+	if(this != &rhs)
+		LDOS::operator=(rhs);
+
 	return *this;
 }
 
 SpectralFunction& SpectralFunction::operator=(SpectralFunction &&rhs){
-	LDOS::operator=(std::move(rhs));
+	if(this != &rhs)
+		LDOS::operator=(std::move(rhs));
+
 	return *this;
 }
 

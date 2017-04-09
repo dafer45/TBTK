@@ -73,15 +73,15 @@ Density::~Density(){
 }
 
 Density& Density::operator=(const Density &rhs){
-	AbstractProperty::operator=(rhs);
+	if(this != &rhs)
+		AbstractProperty::operator=(rhs);
 
 	return *this;
 }
 
 Density& Density::operator=(Density &&rhs){
-	if(this != &rhs){
+	if(this != &rhs)
 		AbstractProperty::operator=(std::move(rhs));
-	}
 
 	return *this;
 }
