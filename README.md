@@ -73,15 +73,26 @@ make arnoldi
 #### FourierTransform
 Depends on the external library FFTW v3 (http://www.fftw.org/).
 
+Given that FFTW is installed, the FourierTransform can be compiled by executing the following command from TBTK/Lib/.
+```bash
+make fourier
+```
+
 #### Plotter
 Depends on the external library openCV (http://www.opencv.org/).
+
+Given that openCV is installed, the Plotter can be compiled by executing the following command from TBTK/Lib/.
+```bash
+make plotter
+```
 
 #### RayTracer
 Depends on the external library openCV (http://www.opencv.org/).
 
-Given that FFTW is installed, the FourierTransform can be compiled by executing the following command from TBTK/Lib/.
+Given that openCV is installed, the RayTracer can be compiled by executing the following command from TBTK/Lib/.
 ```bash
-make fourier
+make plotter
+make raytracer
 ```
 
 ### Tools
