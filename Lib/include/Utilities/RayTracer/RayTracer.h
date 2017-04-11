@@ -41,11 +41,23 @@ namespace TBTK{
 
 class RayTracer{
 public:
-	/** COnstructor. */
+	/** Constructor. */
 	RayTracer();
+
+	/** Copy constructor. */
+	RayTracer(const RayTracer &rayTracer);
+
+	/** Move constructor. */
+	RayTracer(RayTracer &&rayTracer);
 
 	/** Destructor. */
 	~RayTracer();
+
+	/** Assignment operator. */
+	RayTracer& operator=(const RayTracer &rhs);
+
+	/** Move assignment operator. */
+	RayTracer& operator=(RayTracer &&rhs);
 
 	/** Set camera position. */
 	void setCameraPosition(const Vector3d &cameraPosition);
@@ -103,6 +115,9 @@ public:
 		double sigma = 0,
 		unsigned int windowSize = 51
 	);
+
+	/** Save result to file. */
+	void save(std::string filename);
 private:
 	/** Class for encoding RGB colors. */
 	class Color{
@@ -287,7 +302,49 @@ private:
 		Vector3d *impactPosition;
 	};
 
-	/** Perform ray tracing. */
+	class RenderResult{
+	public:
+		/** Constructor. */
+		RenderResult(unsigned int width, unsigned int height);
+
+		/** Copy constructor. */
+		RenderResult(const RenderResult &renderResult);
+
+		/** Move constructor. */
+		RenderResult(RenderResult &&renderResult);
+
+		/** Destructor. */
+		~RenderResult();
+
+		/** Assignment operator. */
+		RenderResult& operator=(const RenderResult &rhs);
+
+		/** Move assignment operator. */
+		RenderResult& operator=(RenderResult &&rhs);
+
+		/** Get canvas. */
+		cv::Mat& getCanvas();
+
+		/** Get canvas. */
+		const cv::Mat& getCanvas() const;
+
+		/** Get HitDescriptors. */
+		std::vector<HitDescriptor>** getHitDescriptors();
+	private:
+		/** Width and height of the canvas and hitDescriptors array. */
+		unsigned int width, height;
+
+		/** Canvas. */
+		cv::Mat canvas;
+
+		/** Array of HitDescriptors containing information about all the sites
+		 *  that were hit on each pixels during ray tracing.*/
+		std::vector<HitDescriptor> **hitDescriptors;
+	};
+
+	RenderResult *renderResult;
+
+	/** Run rendering procedure. */
 	void render(
 		const IndexDescriptor &indexDescriptor,
 		const Model &model,
@@ -295,6 +352,7 @@ private:
 		std::function<void(cv::Mat &canvas, const Index &index)> &&lambdaInteractive = {}
 	);
 
+	/** Trace a ray. */
 	Color trace(
 		const std::vector<Vector3d> &coordinates,
 		const Vector3d &raySource,
@@ -304,6 +362,9 @@ private:
 		std::function<Material(HitDescriptor &hitDescriptor)> lambdaColorPicker,
 		unsigned int depth = 0
 	);
+
+	/** Returns the canvas converted to char-type. */
+	cv::Mat getCharImage() const;
 
 	/** Event handler for the interactive mode. */
 	class EventHandler{
@@ -387,6 +448,38 @@ inline void RayTracer::setTraceDepth(unsigned int traceDepth){
 
 inline unsigned int RayTracer::getTraceDepth() const{
 	return renderContext.getTraceDepth();
+}
+
+/*inline RayTracer::RenderResult::RenderResult(
+	unsigned int width,
+	unsigned int height
+){
+	this->width = width;
+	this->height = height;
+
+	canvas = cv::Mat(height, width, CV_32FC3);
+
+	hitDescriptors = new std::vector<HitDescriptor>*[width];
+	for(unsigned int x = 0; x < width; x++)
+		hitDescriptors[x] = new std::vector<HitDescriptor>[height];
+}
+
+inline RayTracer::RenderResult::~RenderResult(){
+	for(unsigned int x = 0; x < width; x++)
+		delete [] hitDescriptors[x];
+	delete [] hitDescriptors;
+}*/
+
+inline cv::Mat& RayTracer::RenderResult::getCanvas(){
+	return canvas;
+}
+
+inline const cv::Mat& RayTracer::RenderResult::getCanvas() const{
+	return canvas;
+}
+
+inline std::vector<RayTracer::HitDescriptor>** RayTracer::RenderResult::getHitDescriptors(){
+	return hitDescriptors;
 }
 
 inline RayTracer::Material::Material(){

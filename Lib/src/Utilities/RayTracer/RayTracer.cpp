@@ -21,6 +21,7 @@
 #include "Plotter/Plotter.h"
 #include "../../../include/Utilities/RayTracer/RayTracer.h"
 #include "Smooth.h"
+#include "Streams.h"
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -35,9 +36,64 @@ RayTracer *RayTracer::EventHandler::owner = nullptr;
 function<void(int event, int x, int y, int flags, void *userData)> &&RayTracer::EventHandler::lambdaOnMouseChange = {};
 
 RayTracer::RayTracer(){
+	renderResult = nullptr;
+}
+
+RayTracer::RayTracer(
+	const RayTracer &rayTracer
+) :
+	renderContext(rayTracer.renderContext)
+{
+	if(rayTracer.renderResult == nullptr)
+		renderResult = nullptr;
+	else
+		renderResult = new RenderResult(*rayTracer.renderResult);
+}
+
+RayTracer::RayTracer(
+	RayTracer &&rayTracer
+) :
+	renderContext(std::move(rayTracer.renderContext))
+{
+	if(rayTracer.renderResult == nullptr){
+		renderResult = nullptr;
+	}
+	else{
+		renderResult = rayTracer.renderResult;
+		rayTracer.renderResult = nullptr;
+	}
 }
 
 RayTracer::~RayTracer(){
+	if(renderResult != nullptr)
+		delete renderResult;
+}
+
+RayTracer& RayTracer::operator=(const RayTracer &rhs){
+	if(this != &rhs){
+		renderContext = rhs.renderContext;
+		if(rhs.renderResult == nullptr)
+			renderResult = nullptr;
+		else
+			renderResult = new RenderResult(*rhs.renderResult);
+	}
+
+	return *this;
+}
+
+RayTracer& RayTracer::operator=(RayTracer &&rhs){
+	if(this != &rhs){
+		renderContext = std::move(rhs.renderContext);
+		if(rhs.renderResult == nullptr){
+			renderResult = nullptr;
+		}
+		else{
+			renderResult = rhs.renderResult;
+			rhs.renderResult = nullptr;
+		}
+	}
+
+	return *this;
 }
 
 void RayTracer::plot(const Model& model, const Property::Density &density){
@@ -264,10 +320,12 @@ void RayTracer::render(
 		iterator.searchNext();
 	}
 
-	Mat canvas = Mat::zeros(height, width, CV_32FC3);
-	vector<HitDescriptor> **hitDescriptors = new vector<HitDescriptor>*[width];
-	for(unsigned int x = 0; x < width; x++)
-		hitDescriptors[x] = new vector<HitDescriptor>[height];
+	if(renderResult != nullptr)
+		delete renderResult;
+	renderResult = new RenderResult(width, height);
+	Mat canvas = renderResult->getCanvas();
+	vector<HitDescriptor> **hitDescriptors = renderResult->getHitDescriptors();
+
 	for(unsigned int x = 0; x < width; x++){
 		for(unsigned int y = 0; y < height; y++){
 			Vector3d target = focus
@@ -291,34 +349,10 @@ void RayTracer::render(
 		}
 	}
 
-	double minValue = canvas.at<Vec3f>(0, 0)[0];
-	double maxValue = canvas.at<Vec3f>(0, 0)[0];
-	for(unsigned int x = 0; x < width; x++){
-		for(unsigned int y = 0; y < height; y++){
-			for(int n = 0; n < 3; n++){
-				if(canvas.at<Vec3f>(y, x)[n] < minValue)
-					minValue = canvas.at<Vec3f>(y, x)[n];
-				if(canvas.at<Vec3f>(y, x)[n] > maxValue)
-					maxValue = canvas.at<Vec3f>(y, x)[n];
-			}
-		}
-	}
-
-	Mat image = Mat::zeros(height, width, CV_8UC3);
-	for(unsigned int x = 0; x < width; x++){
-		for(unsigned int y = 0; y < height; y++){
-			for(unsigned int n = 0; n < 3; n++){
-				if(hitDescriptors[x][y].size() > 0)
-					image.at<Vec3b>(height - 1 - y, x)[n] = 255*((canvas.at<Vec3f>(height - 1 - y, x)[n] - minValue)/(maxValue - minValue));
-				else
-					image.at<Vec3b>(height - 1 - y, x)[n] = 0;
-			}
-		}
-	}
-
 	if(lambdaInteractive){
 		namedWindow("Traced image", WINDOW_AUTOSIZE);
 		namedWindow("Property window");
+		Mat image = getCharImage();
 		imshow("Traced image", image);
 		Mat propertyCanvas = Mat::zeros(400, 600, CV_8UC3);
 		TBTKAssert(
@@ -351,13 +385,6 @@ void RayTracer::render(
 		);
 		waitKey(0);
 	}
-	else{
-		imwrite("figures/Density.png", image);
-	}
-
-	for(unsigned int x = 0; x < width; x++)
-		delete [] hitDescriptors[x];
-	delete [] hitDescriptors;
 }
 
 RayTracer::Color RayTracer::trace(
@@ -450,6 +477,50 @@ RayTracer::Color RayTracer::trace(
 	}
 
 	return color;
+}
+
+Mat RayTracer::getCharImage() const{
+	TBTKAssert(
+		renderResult != nullptr,
+		"RayTracer::getCharImage()",
+		"Render result missing.",
+		"First render an image."
+	);
+
+	Mat &canvas = renderResult->getCanvas();
+
+	double minValue = canvas.at<Vec3f>(0, 0)[0];
+	double maxValue = canvas.at<Vec3f>(0, 0)[0];
+	for(int x = 0; x < canvas.cols; x++){
+		for(int y = 0; y < canvas.rows; y++){
+			for(int n = 0; n < 3; n++){
+				if(canvas.at<Vec3f>(y, x)[n] < minValue)
+					minValue = canvas.at<Vec3f>(y, x)[n];
+				if(canvas.at<Vec3f>(y, x)[n] > maxValue)
+					maxValue = canvas.at<Vec3f>(y, x)[n];
+			}
+		}
+	}
+
+	vector<HitDescriptor>** hitDescriptors = renderResult->getHitDescriptors();
+	Mat image = Mat::zeros(canvas.rows, canvas.cols, CV_8UC3);
+	for(int x = 0; x < canvas.cols; x++){
+		for(int y = 0; y < canvas.rows; y++){
+			for(unsigned int n = 0; n < 3; n++){
+				if(hitDescriptors[x][y].size() > 0)
+					image.at<Vec3b>(canvas.rows - 1 - y, x)[n] = 255*((canvas.at<Vec3f>(canvas.rows - 1 - y, x)[n] - minValue)/(maxValue - minValue));
+				else
+					image.at<Vec3b>(canvas.rows - 1 - y, x)[n] = 0;
+			}
+		}
+	}
+
+	return image;
+}
+
+void RayTracer::save(string filename){
+	Mat image = getCharImage();
+	imwrite(filename, image);
 }
 
 RayTracer::RenderContext::RenderContext(){
@@ -613,6 +684,91 @@ const Vector3d& RayTracer::HitDescriptor::getDirectionFromObject(){
 	directionFromObject = new Vector3d((hitPoint - coordinate).unit());
 
 	return *directionFromObject;
+}
+
+RayTracer::RenderResult::RenderResult(unsigned int width, unsigned int height){
+	this->width = width;
+	this->height = height;
+
+	canvas = Mat::zeros(height, width, CV_32FC3);
+
+	hitDescriptors = new vector<HitDescriptor>*[width];
+	for(unsigned int x = 0; x < width; x++)
+		hitDescriptors[x] = new vector<HitDescriptor>[height];
+}
+
+RayTracer::RenderResult::RenderResult(const RenderResult &renderResult){
+	width = renderResult.width;
+	height = renderResult.height;
+	canvas = renderResult.canvas.clone();
+
+	hitDescriptors = new vector<HitDescriptor>*[width];
+	for(unsigned int x = 0; x < width; x++){
+		hitDescriptors[x] = new vector<HitDescriptor>[height];
+		for(unsigned int y = 0; y < height; y++)
+			for(unsigned int n = 0; n < renderResult.hitDescriptors[x][y].size(); n++)
+				hitDescriptors[x][y].push_back(renderResult.hitDescriptors[x][y].at(n));
+	}
+}
+
+RayTracer::RenderResult::RenderResult(RenderResult &&renderResult){
+	width = renderResult.width;
+	height = renderResult.height;
+	//It may be possible to improve performance by removing .clone().
+	//However, it is not clear to me whether this would result in a memory
+	//leak or not. If openCV performs proper reference counting on the
+	//pointer type data of Mat, removing .clone() should be fine.
+	canvas = renderResult.canvas.clone();
+
+	hitDescriptors = renderResult.hitDescriptors;
+	renderResult.hitDescriptors = nullptr;
+}
+
+RayTracer::RenderResult::~RenderResult(){
+	if(hitDescriptors != nullptr){
+		for(unsigned int x = 0; x < width; x++)
+			delete [] hitDescriptors[x];
+		delete [] hitDescriptors;
+	}
+}
+
+RayTracer::RenderResult& RayTracer::RenderResult::operator=(
+	const RenderResult &rhs
+){
+	if(this != &rhs){
+		width = rhs.width;
+		height = rhs.height;
+		canvas = rhs.canvas.clone();
+
+		hitDescriptors = new vector<HitDescriptor>*[width];
+		for(unsigned int x = 0; x < width; x++){
+			hitDescriptors[x] = new vector<HitDescriptor>[height];
+			for(unsigned int y = 0; y < height; y++)
+				for(unsigned int n = 0; n < rhs.hitDescriptors[x][y].size(); n++)
+					hitDescriptors[x][y].push_back(rhs.hitDescriptors[x][y].at(n));
+		}
+	}
+
+	return *this;
+}
+
+RayTracer::RenderResult& RayTracer::RenderResult::operator=(
+	RenderResult &&rhs
+){
+	if(this != &rhs){
+		width = rhs.width;
+		height = rhs.height;
+		//It may be possible to improve performance by removing .clone().
+		//However, it is not clear to me whether this would result in a memory
+		//leak or not. If openCV performs proper reference counting on the
+		//pointer type data of Mat, removing .clone() should be fine.
+		canvas = rhs.canvas.clone();
+
+		hitDescriptors = rhs.hitDescriptors;
+		rhs.hitDescriptors = nullptr;
+	}
+
+	return *this;
 }
 
 };	//End of namespace TBTK
