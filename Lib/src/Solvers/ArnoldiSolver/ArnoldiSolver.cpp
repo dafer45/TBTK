@@ -262,16 +262,19 @@ void ArnoldiSolver::arnoldiLoopNormal(){
 		);
 
 		if(ido == -1 || ido == 1){
-			//Perform matrix multiplcation y = Ax, where x = workd[ipntr[0]] and y = workd[ipntr[1]]
+			//Perform matrix multiplcation y = Ax, where x =
+			//workd[ipntr[0]] and y = workd[ipntr[1]]. "-1" is for
+			//conversion between Fortran one based indices and c++
+			//zero based indices.
 			for(int n = 0; n < basisSize; n++)
-				workd[ipntr[1] + n] = 0.;
+				workd[(ipntr[1] - 1) + n] = 0.;
 
 			int numMatrixElements = model->getHoppingAmplitudeSet()->getNumMatrixElements();
 			const int *cooRowIndices = model->getHoppingAmplitudeSet()->getCOORowIndices();
 			const int *cooColIndices = model->getHoppingAmplitudeSet()->getCOOColIndices();
 			const complex<double> *cooValues = model->getHoppingAmplitudeSet()->getCOOValues();
 			for(int n = 0; n < numMatrixElements; n++)
-				workd[ipntr[1] + cooRowIndices[n]] += cooValues[n]*workd[ipntr[0] + cooColIndices[n]];
+				workd[(ipntr[1] - 1) + cooRowIndices[n]] += cooValues[n]*workd[(ipntr[0] - 1) + cooColIndices[n]];
 
 			continue;
 		}
@@ -447,9 +450,12 @@ void ArnoldiSolver::arnoldiLoopShiftAndInvert(){
 		);
 
 		if(ido == -1 || ido == 1){
-			//Solve x = (A - sigma*I)^{-1}b, where b = workd[ipntr[0]] and x = workd[ipntr[1]]
+			//Solve x = (A - sigma*I)^{-1}b, where b =
+			//workd[ipntr[0]] and x = workd[ipntr[1]]. "-1" is for
+			//conversion between Fortran one based indices and c++
+			//zero based indices.
 			for(int n = 0; n < basisSize; n++)
-				((complex<double>*)((DNformat*)vector->Store)->nzval)[n] = workd[ipntr[0] + n];
+				((complex<double>*)((DNformat*)vector->Store)->nzval)[n] = workd[(ipntr[0] - 1) + n];
 
 			trans_t transpose = NOTRANS;
 			zgstrs(
@@ -464,7 +470,7 @@ void ArnoldiSolver::arnoldiLoopShiftAndInvert(){
 			);
 
 			for(int n = 0; n < basisSize; n++)
-				workd[ipntr[1] + n] = ((complex<double>*)((DNformat*)vector->Store)->nzval)[n];
+				workd[(ipntr[1] - 1) + n] = ((complex<double>*)((DNformat*)vector->Store)->nzval)[n];
 
 			continue;
 		}
