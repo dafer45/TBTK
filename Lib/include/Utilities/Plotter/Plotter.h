@@ -53,7 +53,22 @@ public:
 	);
 
 	/** Set bounds. */
+	void setBoundsX(double minX, double maxX);
+
+	/** Set bounds. */
+	void setBoundsY(double minY, double maxY);
+
+	/** Set bounds. */
 	void setBounds(double minX, double maxX, double minY, double maxY);
+
+	/** Set auto scale. */
+	void setAutoScaleX(bool autoScaleX);
+
+	/** Set auto scale. */
+	void setAutoScaleY(bool autoScaleY);
+
+	/** Set auto scale. */
+	void setAutoScale(bool autoScale);
 
 	/** Set canvas. */
 	void setCanvas(cv::Mat &canvas);
@@ -77,6 +92,9 @@ public:
 	/** Set whether ot not data is plotted on top of old data. */
 	void setHold(bool hold);
 
+	/** Clear plot. */
+	void clear();
+
 	/** Save canvas to file. */
 	void save(std::string filename) const;
 private:
@@ -85,6 +103,9 @@ private:
 
 	/** Bounds. */
 	double minX, maxX, minY, maxY;
+
+	/** Flags indicating whether to auto scale along x and y direction. */
+	bool autoScaleX, autoScaleY;
 
 	/** Flag indicating whether data is ploted on top of previous data or
 	 *  not. */
@@ -113,28 +134,57 @@ inline void Plotter::setPadding(
 	this->paddingTop = paddingTop;
 }
 
+inline void Plotter::setBoundsX(
+	double minX,
+	double maxX
+){
+	TBTKAssert(
+		minX < maxX,
+		"Plotter::setBoundsX()",
+		"minX has to be smaller than maxX",
+		""
+	);
+	this->minX = minX;
+	this->maxX = maxX;
+	this->autoScaleX = false;
+}
+
+inline void Plotter::setBoundsY(
+	double minY,
+	double maxY
+){
+	TBTKAssert(
+		minY < maxY,
+		"Plotter::setBoundsY()",
+		"minY has to be smaller than maxY",
+		""
+	);
+	this->minY = minY;
+	this->maxY = maxY;
+	this->autoScaleY = false;
+}
+
 inline void Plotter::setBounds(
 	double minX,
 	double maxX,
 	double minY,
 	double maxY
 ){
-	TBTKAssert(
-		minX < maxX,
-		"Plotter::setBounds()",
-		"minX has to be smaller than maxX",
-		""
-	);
-	TBTKAssert(
-		minY < maxY,
-		"Plotter::setBounds()",
-		"minY has to be smaller than maxY",
-		""
-	);
-	this->minX = minX;
-	this->maxX = maxX;
-	this->minY = minY;
-	this->maxY = maxY;
+	setBoundsX(minX, maxX);
+	setBoundsY(minY, maxY);
+}
+
+inline void Plotter::setAutoScaleX(bool autoScaleX){
+	this->autoScaleX = autoScaleX;
+}
+
+inline void Plotter::setAutoScaleY(bool autoScaleY){
+	this->autoScaleY = autoScaleY;
+}
+
+inline void Plotter::setAutoScale(bool autoScale){
+	setAutoScaleX(autoScale);
+	setAutoScaleY(autoScale);
 }
 
 inline void Plotter::setCanvas(cv::Mat &canvas){
@@ -152,6 +202,10 @@ inline cv::Point Plotter::getCVPoint(double x, double y) const{
 
 inline void Plotter::setHold(bool hold){
 	this->hold = hold;
+}
+
+inline void Plotter::clear(){
+	this->dataStorage.clear();
 }
 
 inline void Plotter::save(std::string filename) const{

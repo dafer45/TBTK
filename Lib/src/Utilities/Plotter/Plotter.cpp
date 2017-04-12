@@ -38,6 +38,9 @@ Plotter::Plotter(){
 	paddingBottom = 30;
 	paddingTop = 20;
 
+	autoScaleX = true;
+	autoScaleY = true;
+
 	hold = false;
 }
 
@@ -61,26 +64,34 @@ void Plotter::plot(const vector<double> &axis, const vector<double> &data){
 
 	dataStorage.push_back(make_tuple(axis, data));
 
-	double minX = get<0>(dataStorage.at(0)).at(0);
-	double maxX = get<0>(dataStorage.at(0)).at(0);
-	double minY = get<1>(dataStorage.at(0)).at(0);
-	double maxY = get<1>(dataStorage.at(0)).at(0);
-	for(unsigned int n = 0; n < dataStorage.size(); n++){
-		const std::vector<double> axis = get<0>(dataStorage.at(n));
-		const std::vector<double> data = get<1>(dataStorage.at(n));
-		for(unsigned int c = 0; c < data.size(); c++){
-			if(axis.at(c) < minX)
-				minX = axis.at(c);
-			if(axis.at(c) > maxX)
-				maxX = axis.at(c);
-			if(data.at(c) < minY)
-				minY = data.at(c);
-			if(data.at(c) > maxY)
-				maxY = data.at(c);
+	if(autoScaleX){
+		minX = get<0>(dataStorage.at(0)).at(0);
+		maxX = get<0>(dataStorage.at(0)).at(0);
+		for(unsigned int n = 0; n < dataStorage.size(); n++){
+			const std::vector<double> axis = get<0>(dataStorage.at(n));
+			const std::vector<double> data = get<1>(dataStorage.at(n));
+			for(unsigned int c = 0; c < data.size(); c++){
+				if(axis.at(c) < minX)
+					minX = axis.at(c);
+				if(axis.at(c) > maxX)
+					maxX = axis.at(c);
+			}
 		}
 	}
-
-	setBounds(minX, maxX, minY, maxY);
+	if(autoScaleY){
+		minY = get<1>(dataStorage.at(0)).at(0);
+		maxY = get<1>(dataStorage.at(0)).at(0);
+		for(unsigned int n = 0; n < dataStorage.size(); n++){
+			const std::vector<double> axis = get<0>(dataStorage.at(n));
+			const std::vector<double> data = get<1>(dataStorage.at(n));
+			for(unsigned int c = 0; c < data.size(); c++){
+				if(data.at(c) < minY)
+					minY = data.at(c);
+				if(data.at(c) > maxY)
+					maxY = data.at(c);
+			}
+		}
+	}
 
 	canvas = Mat::zeros(HEIGHT, WIDTH, CV_8UC3);
 	rectangle(
@@ -211,169 +222,60 @@ void Plotter::plot(const vector<double> &axis, const vector<double> &data){
 		const std::vector<double> axis = get<0>(dataStorage.at(n));
 		const std::vector<double> data = get<1>(dataStorage.at(n));
 		for(unsigned int c = 1; c < data.size(); c++){
+			double x0 = axis.at(c-1);
+			double y0 = data.at(c-1);
+			double x1 = axis.at(c);
+			double y1 = data.at(c);
+
+			//Clip lines
+			if(x1 < x0){
+				double temp = x0;
+				x0 = x1;
+				x1 = temp;
+				temp = y0;
+				y0 = y1;
+				y1 = temp;
+			}
+			if(x0 < minX && x1 < minX)
+				continue;
+			if(x0 > maxX && x1 > maxX)
+				continue;
+			if(x0 < minX){
+				if(x1 - x0 != 0)
+					y0 += (minX - x0)*(y1 - y0)/(x1 - x0);
+				x0 = minX;
+			}
+			if(x1 > maxX){
+				if(x1 - x0 != 0)
+					y1 -= (x1 - maxX)*(y1 - y0)/(x1 - x0);
+				x1 = maxX;
+			}
+			if(y0 < minY && y1 < minY)
+				continue;
+			if(y0 > maxY && y1 > maxY)
+				continue;
+			if(y0 < minY){
+				if(y1 - y0 != 0)
+					x0 += (minY - y0)*(x1 - x0)/(y1 - y0);
+				y0 = minY;
+			}
+			if(y1 > maxY){
+				if(y1 - y0 != 0)
+					x1 -= (y1 - maxY)*(x1 - x0)/(y1 - y0);
+				y1 = maxY;
+			}
+
+			//Draw line
 			line(
 				canvas,
-				getCVPoint(axis.at(c-1), data.at(c-1)),
-				getCVPoint(axis.at(c), data.at(c)),
+				getCVPoint(x0, y0),
+				getCVPoint(x1, y1),
 				Scalar(0, 0, 0),
 				1,
 				CV_AA
 			);
 		}
 	}
-
-/*	double minX = axis.at(0);
-	double maxX = axis.at(0);
-	double minY = data.at(0);
-	double maxY = data.at(0);
-	for(unsigned int n = 0; n < data.size(); n++){
-		if(axis.at(n) < minX)
-			minX = axis.at(n);
-		if(axis.at(n) > maxX)
-			maxX = axis.at(n);
-		if(data.at(n) < minY)
-			minY = data.at(n);
-		if(data.at(n) > maxY)
-			maxY = data.at(n);
-	}
-
-	setBounds(minX, maxX, minY, maxY);
-
-	canvas = Mat::zeros(HEIGHT, WIDTH, CV_8UC3);
-	rectangle(
-		canvas,
-		cvPoint(0, 0),
-		cvPoint(WIDTH-1, HEIGHT-1),
-		Scalar(255, 255, 255),
-		CV_FILLED,
-		8,
-		0
-	);
-	line(
-		canvas,
-		getCVPoint(minX, minY),
-		getCVPoint(maxX, minY),
-		Scalar(0, 0, 0),
-		2,
-		CV_AA
-	);
-	line(
-		canvas,
-		getCVPoint(minX, minY),
-		getCVPoint(minX, maxY),
-		Scalar(0, 0, 0),
-		2,
-		CV_AA
-	);
-	stringstream ss;
-	ss.precision(1);
-	ss << scientific << minX;
-	string minXString = ss.str();
-	ss.str("");
-	ss << scientific << maxX;
-	string maxXString = ss.str();
-	ss.str("");
-	ss << scientific << minY;
-	string minYString = ss.str();
-	ss.str("");
-	ss << scientific << maxY;
-	string maxYString = ss.str();
-	int minXStringBaseLine;
-	int maxXStringBaseLine;
-	int minYStringBaseLine;
-	int maxYStringBaseLine;
-	Size minXStringSize = getTextSize(
-		minXString,
-		FONT_HERSHEY_SIMPLEX,
-		0.5,
-		1,
-		&minXStringBaseLine
-	);
-	Size maxXStringSize = getTextSize(
-		maxXString,
-		FONT_HERSHEY_SIMPLEX,
-		0.5,
-		1,
-		&maxXStringBaseLine
-	);
-	Size minYStringSize = getTextSize(
-		minYString,
-		FONT_HERSHEY_SIMPLEX,
-		0.5,
-		1,
-		&minYStringBaseLine
-	);
-	Size maxYStringSize = getTextSize(
-		maxYString,
-		FONT_HERSHEY_SIMPLEX,
-		0.5,
-		1,
-		&maxYStringBaseLine
-	);
-
-	putText(
-		canvas,
-		minXString,
-		Point(
-			paddingLeft - minXStringSize.width/2,
-			canvas.rows - (paddingBottom - 1.5*minXStringSize.height)
-		),
-		FONT_HERSHEY_SIMPLEX,
-		0.5,
-		Scalar(0, 0, 0),
-		2,
-		false
-	);
-	putText(
-		canvas,
-		maxXString,
-		Point(
-			canvas.cols - (paddingRight + maxXStringSize.width/2),
-			canvas.rows - (paddingBottom - 1.5*maxXStringSize.height)
-		),
-		FONT_HERSHEY_SIMPLEX,
-		0.5,
-		Scalar(0, 0, 0),
-		2,
-		false
-	);
-	putText(
-		canvas,
-		minYString,
-		Point(
-			paddingLeft - minYStringSize.width - 10,
-			canvas.rows - paddingBottom
-		),
-		FONT_HERSHEY_SIMPLEX,
-		0.5,
-		Scalar(0, 0, 0),
-		2,
-		false
-	);
-	putText(
-		canvas,
-		maxYString,
-		Point(
-			paddingLeft - maxYStringSize.width - 10,
-			paddingTop + maxYStringSize.height
-		),
-		FONT_HERSHEY_SIMPLEX,
-		0.5,
-		Scalar(0, 0, 0),
-		2,
-		false
-	);
-
-	for(unsigned int n = 1; n < data.size(); n++){
-		line(
-			canvas,
-			getCVPoint(axis.at(n-1), data.at(n-1)),
-			getCVPoint(axis.at(n), data.at(n)),
-			Scalar(0, 0, 0),
-			1,
-			CV_AA
-		);
-	}*/
 }
 
 void Plotter::plot(const vector<double> &data){
