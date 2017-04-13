@@ -103,6 +103,176 @@ void Plotter::plot(const vector<double> &axis, const vector<double> &data){
 		8,
 		0
 	);
+
+	for(unsigned int n = 0; n < dataStorage.size(); n++){
+		const std::vector<double> axis = get<0>(dataStorage.at(n));
+		const std::vector<double> data = get<1>(dataStorage.at(n));
+		for(unsigned int c = 1; c < data.size(); c++){
+			double x0 = axis.at(c-1);
+			double y0 = data.at(c-1);
+			double x1 = axis.at(c);
+			double y1 = data.at(c);
+
+			//Clip lines
+			if(x1 < x0){
+				double temp = x0;
+				x0 = x1;
+				x1 = temp;
+				temp = y0;
+				y0 = y1;
+				y1 = temp;
+			}
+			if(x0 < minX && x1 < minX)
+				continue;
+			if(x0 > maxX && x1 > maxX)
+				continue;
+			if(x0 < minX){
+				if(x1 - x0 != 0)
+					y0 += (minX - x0)*(y1 - y0)/(x1 - x0);
+				x0 = minX;
+			}
+			if(x1 > maxX){
+				if(x1 - x0 != 0)
+					y1 -= (x1 - maxX)*(y1 - y0)/(x1 - x0);
+				x1 = maxX;
+			}
+			if(y0 < minY && y1 < minY)
+				continue;
+			if(y0 > maxY && y1 > maxY)
+				continue;
+			if(y0 < minY){
+				if(y1 - y0 != 0)
+					x0 += (minY - y0)*(x1 - x0)/(y1 - y0);
+				y0 = minY;
+			}
+			if(y1 > maxY){
+				if(y1 - y0 != 0)
+					x1 -= (y1 - maxY)*(x1 - x0)/(y1 - y0);
+				y1 = maxY;
+			}
+
+			//Draw line
+			line(
+				canvas,
+				getCVPoint(x0, y0),
+				getCVPoint(x1, y1),
+				Scalar(0, 0, 0),
+				1,
+				CV_AA
+			);
+		}
+	}
+
+	drawAxes();
+}
+
+void Plotter::plot(const vector<double> &data){
+	vector<double> axis;
+	for(unsigned int n = 0; n < data.size(); n++)
+		axis.push_back(n);
+
+	plot(axis, data);
+}
+
+void Plotter::plot(
+	const Property::DOS &dos,
+	double sigma,
+	unsigned int windowSize
+){
+	vector<double> data;
+	vector<double> axis;
+	double dE = (dos.getUpperBound() - dos.getLowerBound())/dos.getResolution();
+	for(unsigned int n = 0; n < dos.getSize(); n++){
+		axis.push_back(dos.getLowerBound() + n*dE);
+		data.push_back(dos(n));
+	}
+
+	if(sigma != 0){
+		double scaledSigma = sigma/(dos.getUpperBound() - dos.getLowerBound())*dos.getResolution();
+		data = Smooth::gaussian(data, scaledSigma, windowSize);
+	}
+
+	plot(axis, data);
+}
+
+void Plotter::plot(
+	const vector<vector<double>> &data
+){
+	if(data.size() == 0)
+		return;
+	if(data[0].size() == 0)
+		return;
+
+	unsigned int sizeY = data[0].size();
+	for(unsigned int x = 1; x < data.size(); x++){
+		TBTKAssert(
+			data[x].size() == sizeY,
+			"Plotter:plot()",
+			"Incompatible array dimensions. 'data[0]' has "
+				<< sizeY << " elements, while 'data[" << x
+				<< "]' has " << data[x].size() << " elements.",
+			""
+		);
+	}
+	minX = 0;
+	maxX = data.size()-1;
+	minY = 0;
+	maxY = sizeY-1;
+
+	const unsigned int WIDTH = 600;
+	const unsigned int HEIGHT = 400;
+
+	canvas = Mat::zeros(HEIGHT, WIDTH, CV_8UC3);
+	rectangle(
+		canvas,
+		cvPoint(0, 0),
+		cvPoint(WIDTH-1, HEIGHT-1),
+		Scalar(255, 255, 255),
+		CV_FILLED,
+		8,
+		0
+	);
+
+	double minValue = data[0][0];
+	double maxValue = data[0][0];
+	for(unsigned int x = 0; x < data.size(); x++){
+		for(unsigned int y = 0; y < data[x].size(); y++){
+			if(data[x][y] < minValue)
+				minValue = data[x][y];
+			if(data[x][y] > maxValue)
+				maxValue = data[x][y];
+		}
+	}
+
+	for(unsigned int x = 0; x < data.size()-1; x++){
+		for(unsigned int y = 0; y < sizeY-1; y++){
+			double value00 = data[x][y];
+			double value01 = data[x][y+1];
+			double value10 = data[x+1][y];
+			double value11 = data[x+1][y+1];
+
+			Point p00 = getCVPoint(x, y);
+			Point p01 = getCVPoint(x, y+1);
+			Point p10 = getCVPoint(x+1, y);
+			for(int x = p00.x; x <= p10.x; x++){
+				for(int y = p00.y; y >= p01.y; y--){
+					double distanceX = (x-p00.x)/(double)(p10.x - p00.x);
+					double distanceY = (y-p00.y)/(double)(p01.y - p00.y);
+					double value0 = value00*(1 - distanceX) + value10*distanceX;
+					double value1 = value01*(1 - distanceX) + value11*distanceX;
+					double averagedValue = value0*(1 - distanceY) + value1*distanceY;
+					canvas.at<Vec3b>(y, x)[0] = 255;
+					canvas.at<Vec3b>(y, x)[1] = (255 - 255*(averagedValue - minValue)/(maxValue - minValue));
+					canvas.at<Vec3b>(y, x)[2] = (255 - 255*(averagedValue - minValue)/(maxValue - minValue));
+				}
+			}
+		}
+	}
+
+	drawAxes();
+}
+
+void Plotter::drawAxes(){
 	line(
 		canvas,
 		getCVPoint(minX, minY),
@@ -217,94 +387,6 @@ void Plotter::plot(const vector<double> &axis, const vector<double> &data){
 		2,
 		false
 	);
-
-	for(unsigned int n = 0; n < dataStorage.size(); n++){
-		const std::vector<double> axis = get<0>(dataStorage.at(n));
-		const std::vector<double> data = get<1>(dataStorage.at(n));
-		for(unsigned int c = 1; c < data.size(); c++){
-			double x0 = axis.at(c-1);
-			double y0 = data.at(c-1);
-			double x1 = axis.at(c);
-			double y1 = data.at(c);
-
-			//Clip lines
-			if(x1 < x0){
-				double temp = x0;
-				x0 = x1;
-				x1 = temp;
-				temp = y0;
-				y0 = y1;
-				y1 = temp;
-			}
-			if(x0 < minX && x1 < minX)
-				continue;
-			if(x0 > maxX && x1 > maxX)
-				continue;
-			if(x0 < minX){
-				if(x1 - x0 != 0)
-					y0 += (minX - x0)*(y1 - y0)/(x1 - x0);
-				x0 = minX;
-			}
-			if(x1 > maxX){
-				if(x1 - x0 != 0)
-					y1 -= (x1 - maxX)*(y1 - y0)/(x1 - x0);
-				x1 = maxX;
-			}
-			if(y0 < minY && y1 < minY)
-				continue;
-			if(y0 > maxY && y1 > maxY)
-				continue;
-			if(y0 < minY){
-				if(y1 - y0 != 0)
-					x0 += (minY - y0)*(x1 - x0)/(y1 - y0);
-				y0 = minY;
-			}
-			if(y1 > maxY){
-				if(y1 - y0 != 0)
-					x1 -= (y1 - maxY)*(x1 - x0)/(y1 - y0);
-				y1 = maxY;
-			}
-
-			//Draw line
-			line(
-				canvas,
-				getCVPoint(x0, y0),
-				getCVPoint(x1, y1),
-				Scalar(0, 0, 0),
-				1,
-				CV_AA
-			);
-		}
-	}
-}
-
-void Plotter::plot(const vector<double> &data){
-	vector<double> axis;
-	for(unsigned int n = 0; n < data.size(); n++)
-		axis.push_back(n);
-
-	plot(axis, data);
-}
-
-void Plotter::plot(
-	const Property::DOS &dos,
-	double sigma,
-	unsigned int windowSize
-){
-	vector<double> data;
-	vector<double> axis;
-	double dE = (dos.getUpperBound() - dos.getLowerBound())/dos.getResolution();
-	for(unsigned int n = 0; n < dos.getSize(); n++){
-		axis.push_back(dos.getLowerBound() + n*dE);
-		data.push_back(dos(n));
-	}
-
-	if(sigma != 0){
-		double scaledSigma = sigma/(dos.getUpperBound() - dos.getLowerBound())*dos.getResolution();
-		data = Smooth::gaussian(data, scaledSigma, windowSize);
-	}
-
-	plot(axis, data);
 }
 
 };	//End of namespace TBTK

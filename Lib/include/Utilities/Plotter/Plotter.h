@@ -89,6 +89,10 @@ public:
 		unsigned int windowSize = 51
 	);
 
+	void plot(
+		const std::vector<std::vector<double>> &data
+	);
+
 	/** Set whether ot not data is plotted on top of old data. */
 	void setHold(bool hold);
 
@@ -98,6 +102,9 @@ public:
 	/** Save canvas to file. */
 	void save(std::string filename) const;
 private:
+	/** Canvas. */
+	cv::Mat canvas;
+
 	/** Paddings. */
 	unsigned int paddingLeft, paddingRight, paddingBottom, paddingTop;
 
@@ -118,8 +125,8 @@ private:
 	 *  /coordinate. */
 	cv::Point getCVPoint(double x, double y) const;
 
-	/** Canvas. */
-	cv::Mat canvas;
+	/** Draw axes. */
+	void drawAxes();
 };
 
 inline void Plotter::setPadding(
