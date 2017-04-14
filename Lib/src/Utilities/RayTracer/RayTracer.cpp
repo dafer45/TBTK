@@ -383,7 +383,20 @@ void RayTracer::render(
 			EventHandler::onMouseChange,
 			NULL
 		);
-		waitKey(0);
+
+		bool done = false;
+		while(!done){
+			char key = waitKey(0);
+			switch(key){
+			case 'q':
+			case 27:	//ESC
+				done = true;
+				break;
+			default:
+				Streams::out << key << "\n";
+				break;
+			}
+		}
 	}
 }
 
