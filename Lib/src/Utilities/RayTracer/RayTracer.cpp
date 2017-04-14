@@ -389,6 +389,7 @@ void RayTracer::render(
 			char key = waitKey(0);
 			switch(key){
 			case 'q':
+			case 'Q':
 			case 27:	//ESC
 				done = true;
 				break;
