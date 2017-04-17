@@ -44,6 +44,12 @@ public:
 	/** Destructor. */
 	~Plotter();
 
+	/** Set width. */
+	void setWidth(unsigned int width);
+
+	/** Set height. */
+	void setHeight(unsigned int height);
+
 	/** Set padding. */
 	void setPadding(
 		double paddingLeft,
@@ -105,6 +111,9 @@ private:
 	/** Canvas. */
 	cv::Mat canvas;
 
+	/** Size of the resulting image. */
+	double width, height;
+
 	/** Paddings. */
 	unsigned int paddingLeft, paddingRight, paddingBottom, paddingTop;
 
@@ -128,6 +137,14 @@ private:
 	/** Draw axes. */
 	void drawAxes();
 };
+
+inline void Plotter::setWidth(unsigned int width){
+	this->width = width;
+}
+
+inline void Plotter::setHeight(unsigned int height){
+	this->height = height;
+}
 
 inline void Plotter::setPadding(
 	double paddingLeft,

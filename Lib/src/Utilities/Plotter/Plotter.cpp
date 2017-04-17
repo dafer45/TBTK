@@ -33,6 +33,9 @@ using namespace cv;
 namespace TBTK{
 
 Plotter::Plotter(){
+	width = 600;
+	height = 400;
+
 	paddingLeft = 100;
 	paddingRight = 40;
 	paddingBottom = 30;
@@ -56,8 +59,8 @@ void Plotter::plot(const vector<double> &axis, const vector<double> &data){
 		""
 	);
 
-	const unsigned int WIDTH = 600;
-	const unsigned int HEIGHT = 400;
+/*	const unsigned int WIDTH = 600;
+	const unsigned int HEIGHT = 400;*/
 
 	if(!hold)
 		dataStorage.clear();
@@ -93,11 +96,11 @@ void Plotter::plot(const vector<double> &axis, const vector<double> &data){
 		}
 	}
 
-	canvas = Mat::zeros(HEIGHT, WIDTH, CV_8UC3);
+	canvas = Mat::zeros(height, width, CV_8UC3);
 	rectangle(
 		canvas,
 		cvPoint(0, 0),
-		cvPoint(WIDTH-1, HEIGHT-1),
+		cvPoint(width-1, height-1),
 		Scalar(255, 255, 255),
 		CV_FILLED,
 		8,
@@ -219,14 +222,14 @@ void Plotter::plot(
 	minY = 0;
 	maxY = sizeY-1;
 
-	const unsigned int WIDTH = 600;
-	const unsigned int HEIGHT = 400;
+/*	const unsigned int WIDTH = 600;
+	const unsigned int HEIGHT = 400;*/
 
-	canvas = Mat::zeros(HEIGHT, WIDTH, CV_8UC3);
+	canvas = Mat::zeros(height, width, CV_8UC3);
 	rectangle(
 		canvas,
 		cvPoint(0, 0),
-		cvPoint(WIDTH-1, HEIGHT-1),
+		cvPoint(width-1, height-1),
 		Scalar(255, 255, 255),
 		CV_FILLED,
 		8,
