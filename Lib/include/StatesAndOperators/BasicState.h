@@ -66,15 +66,23 @@ public:
 		const AbstractOperator &o = DefaultOperator()
 	) const;
 private:
-	/** Overlaps between the ket corresponding to this state and the bras
-	 *  index by the indices. The first index in the tuple is the intra
-	 *  cell index, while the second index is the unit cell index */
-	std::vector<std::tuple<std::complex<double>, Index, Index>> overlaps;
+	class Storage{
+	public:
+		/** Reference counter. */
+		unsigned int referenceCounter;
 
-	/** Matrix elements between the ket corresponding to this state and the
-	 *  bras index by the indices. The first index in the tuple is the
-	 *  intra cell index, while the second index is the unit cell index */
-	std::vector<std::tuple<std::complex<double>, Index, Index>> matrixElements;
+		/** Overlaps between the ket corresponding to this state and the bras
+		 *  index by the indices. The first index in the tuple is the intra
+		 *  cell index, while the second index is the unit cell index */
+		std::vector<std::tuple<std::complex<double>, Index, Index>> overlaps;
+
+		/** Matrix elements between the ket corresponding to this state and the
+		 *  bras index by the indices. The first index in the tuple is the
+		 *  intra cell index, while the second index is the unit cell index */
+		std::vector<std::tuple<std::complex<double>, Index, Index>> matrixElements;
+	};
+
+	Storage *storage;
 };
 
 };	//End of namespace TBTK

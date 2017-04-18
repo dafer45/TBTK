@@ -30,13 +30,20 @@ BasicState::BasicState(const Index &index, const Index &unitCellIndex) :
 {
 	setIndex(index);
 	setContainer(unitCellIndex);
+
+	storage = new Storage;
+	storage->referenceCounter = 1;
 }
 
 BasicState::~BasicState(){
+	storage->referenceCounter--;
+	if(storage->referenceCounter == 0)
+		delete storage;
 }
 
 BasicState* BasicState::clone() const{
 	BasicState* clonedState = new BasicState(*this);
+	storage->referenceCounter++;
 
 	return clonedState;
 }
@@ -46,7 +53,7 @@ void BasicState::addOverlap(
 	const Index &braIndex,
 	const Index &braRelativeUnitCell
 ){
-	overlaps.push_back(make_tuple(overlap, braIndex, braRelativeUnitCell));
+	storage->overlaps.push_back(make_tuple(overlap, braIndex, braRelativeUnitCell));
 }
 
 void BasicState::addMatrixElement(
@@ -54,7 +61,7 @@ void BasicState::addMatrixElement(
 	const Index &braIndex,
 	const Index &braRelativeUnitCell
 ){
-	matrixElements.push_back(make_tuple(matrixElement, braIndex, braRelativeUnitCell));
+	storage->matrixElements.push_back(make_tuple(matrixElement, braIndex, braRelativeUnitCell));
 }
 
 complex<double> BasicState::getOverlap(const AbstractState &bra) const{
@@ -65,11 +72,11 @@ complex<double> BasicState::getOverlap(const AbstractState &bra) const{
 		"The bra state has to be a BasicState."
 	);
 
-	for(unsigned int n = 0; n < overlaps.size(); n++){
+	for(unsigned int n = 0; n < storage->overlaps.size(); n++){
 		const Index &braIndex = bra.getIndex();
-		const Index &ketIndex = get<1>(overlaps.at(n));
+		const Index &ketIndex = get<1>(storage->overlaps.at(n));
 		const Index &braUnitCell = bra.getContainer();
-		const Index &ketRelativeUnitCell = get<2>(overlaps.at(n));
+		const Index &ketRelativeUnitCell = get<2>(storage->overlaps.at(n));
 
 		TBTKAssert(
 			braIndex.size() == ketIndex.size(),
@@ -109,7 +116,7 @@ complex<double> BasicState::getOverlap(const AbstractState &bra) const{
 			braUnitCell.equals(ketAbsoluteUnitCell)
 		)
 
-		return get<0>(overlaps.at(n));
+		return get<0>(storage->overlaps.at(n));
 	}
 
 	return 0.;
@@ -126,11 +133,11 @@ complex<double> BasicState::getMatrixElement(
 		"The bra state has to be a BasicState."
 	);
 
-	for(unsigned int n = 0; n < matrixElements.size(); n++){
+	for(unsigned int n = 0; n < storage->matrixElements.size(); n++){
 		const Index &braIndex = bra.getIndex();
-		const Index &ketIndex = get<1>(matrixElements.at(n));
+		const Index &ketIndex = get<1>(storage->matrixElements.at(n));
 		const Index &braUnitCell = bra.getContainer();
-		const Index &ketRelativeUnitCell = get<2>(matrixElements.at(n));
+		const Index &ketRelativeUnitCell = get<2>(storage->matrixElements.at(n));
 
 		TBTKAssert(
 			braIndex.size() == ketIndex.size(),
@@ -170,7 +177,7 @@ complex<double> BasicState::getMatrixElement(
 			braUnitCell.equals(ketAbsoluteUnitCell)
 		)
 
-		return get<0>(matrixElements.at(n));
+		return get<0>(storage->matrixElements.at(n));
 	}
 
 	return 0.;
