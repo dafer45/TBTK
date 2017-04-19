@@ -28,6 +28,7 @@ IndexTree::IndexTree(){
 	indexIncluded = false;
 	wildcardIndex = false;
 	wildcardType = 0;
+	indexSeparator = false;
 	linearIndex = -1;
 	size = -1;
 }
@@ -46,6 +47,12 @@ void IndexTree::add(const Index &index, unsigned int subindex){
 
 		//Get current subindex
 		int currentIndex = index.at(subindex);
+
+		if(currentIndex == IDX_SEPARATOR){
+			indexSeparator = true;
+			add(index, subindex+1);
+			return;
+		}
 
 		if(currentIndex < 0){
 			if(!wildcardIndex){
@@ -290,6 +297,9 @@ void IndexTree::getPhysicalIndex(int linearIndex, vector<int> *indices) const{
 	if(this->linearIndex != -1)
 		return;
 
+	if(indexSeparator)
+		indices->push_back(IDX_SEPARATOR);
+
 	for(unsigned int n = 0; n < children.size(); n++){
 		int min = children.at(n).getMinIndex();
 		int max = children.at(n).getMaxIndex();
@@ -302,6 +312,7 @@ void IndexTree::getPhysicalIndex(int linearIndex, vector<int> *indices) const{
 				indices->push_back(wildcardType);
 			else
 				indices->push_back(n);
+
 			children.at(n).getPhysicalIndex(linearIndex, indices);
 			break;
 		}
@@ -386,7 +397,8 @@ const Index* IndexTree::Iterator::getIndex() const{
 	if(currentIndex.at(0) == (int)indexTree->children.size())
 		return NULL;
 
-	Index *index = new Index({});
+//	Index *index = new Index({});
+	Index *index = new Index();
 
 	const IndexTree *indexTreeBranch = this->indexTree;
 	for(unsigned int n = 0; n < currentIndex.size()-1; n++){

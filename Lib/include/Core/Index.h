@@ -35,7 +35,8 @@ enum {
 	IDX_X = -3,
 	IDX_Y = -4,
 	IDX_Z = -5,
-	IDX_SPIN = -6
+	IDX_SPIN = -6,
+	IDX_SEPARATOR = -7
 };
 
 /** Flexible physical index for indexing arbitrary models. Each index can
@@ -59,6 +60,14 @@ public:
 	/** Constructor. Concatenates two indices into one total index of the
 	 *  form {head, tail}. */
 	Index(const Index &head, const Index &tail);
+
+	/** Constructor. Concatenates a list of indices, adding IDX_SEPARATOR
+	 *  between every index. */
+	Index(std::initializer_list<std::initializer_list<int>> indexList);
+
+	/** Constructor. Concatenates a list of indices, adding IDX_SEPARATOR
+	 *  between every index. */
+	Index(const std::vector<std::vector<int>> &indexList);
 
 	/** Compare this index with another index. Returns true if the indices
 	 * have the same number of subindices and all subindices are equal.
@@ -126,10 +135,15 @@ inline void Index::print() const{
 
 inline std::string Index::toString() const{
 	std::string str = "{";
+	bool isFirstIndex = true;
 	for(unsigned int n = 0; n < indices.size(); n++){
-		if(n != 0)
-			str += ", ";
+/*		if(n != 0)
+			str += ", ";*/
 		int subindex = indices.at(n);
+		if(!isFirstIndex && subindex != IDX_SEPARATOR)
+			str += ", ";
+		else
+			isFirstIndex = false;
 		switch(subindex){
 		case IDX_ALL:
 			str += "IDX_ALL";
@@ -148,6 +162,10 @@ inline std::string Index::toString() const{
 			break;
 		case IDX_SPIN:
 			str += "IDX_SPIN";
+			break;
+		case IDX_SEPARATOR:
+			str += "}, {";
+			isFirstIndex = true;
 			break;
 		default:
 			str += std::to_string(subindex);

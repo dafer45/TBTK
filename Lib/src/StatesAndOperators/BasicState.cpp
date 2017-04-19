@@ -21,6 +21,8 @@
 #include "BasicState.h"
 #include "TBTKMacros.h"
 
+#include <algorithm>
+
 using namespace std;
 
 namespace TBTK{
@@ -32,18 +34,24 @@ BasicState::BasicState(const Index &index, const Index &unitCellIndex) :
 	setContainer(unitCellIndex);
 
 	storage = new Storage;
-	storage->referenceCounter = 1;
+/*	storage->referenceCounter = 1;
+	storage->overlapsIndexTree = nullptr;
+	storage->matrixElementsIndexTree = nullptr;*/
 }
 
 BasicState::~BasicState(){
-	storage->referenceCounter--;
-	if(storage->referenceCounter == 0)
+	if(storage->release())
 		delete storage;
+/*	storage->referenceCounter--;
+	if(storage->referenceCounter == 0){
+		delete storage;
+	}*/
 }
 
 BasicState* BasicState::clone() const{
 	BasicState* clonedState = new BasicState(*this);
-	storage->referenceCounter++;
+	storage->grab();
+//	storage->referenceCounter++;
 
 	return clonedState;
 }
@@ -53,6 +61,7 @@ void BasicState::addOverlap(
 	const Index &braIndex,
 	const Index &braRelativeUnitCell
 ){
+	storage->overlapsIsSorted = false;
 	storage->overlaps.push_back(make_tuple(overlap, braIndex, braRelativeUnitCell));
 }
 
@@ -61,6 +70,7 @@ void BasicState::addMatrixElement(
 	const Index &braIndex,
 	const Index &braRelativeUnitCell
 ){
+	storage->matrixElementsIsSorted = false;
 	storage->matrixElements.push_back(make_tuple(matrixElement, braIndex, braRelativeUnitCell));
 }
 
@@ -72,7 +82,47 @@ complex<double> BasicState::getOverlap(const AbstractState &bra) const{
 		"The bra state has to be a BasicState."
 	);
 
-	for(unsigned int n = 0; n < storage->overlaps.size(); n++){
+	if(!storage->overlapsIsSorted){
+		storage->sortOverlaps();
+	}
+
+	int min = 0;
+	int max = storage->overlaps.size()-1;
+	while(min <= max){
+		int m = (min + max)/2;
+
+		const Index &braIndex = bra.getIndex();
+		const Index &ketIndex = get<1>(storage->overlaps.at(m));
+		if(ketIndex < braIndex){
+			min = m + 1;
+			continue;
+		}
+		if(ketIndex > braIndex){
+			max = m - 1;
+			continue;
+		}
+
+		const Index &braUnitCell = bra.getContainer();
+		const Index &ketRelativeUnitCell = get<2>(storage->overlaps.at(m));
+		Index ketAbsoluteUnitCell;
+		for(unsigned int c = 0; c < braUnitCell.size(); c++)
+			ketAbsoluteUnitCell.push_back(getContainer().at(c) + ketRelativeUnitCell.at(c));
+
+		if(ketAbsoluteUnitCell < braUnitCell){
+			min = m + 1;
+			continue;
+		}
+		if(ketAbsoluteUnitCell > braUnitCell){
+			max = m - 1;
+			continue;
+		}
+
+		return get<0>(storage->overlaps.at(m));
+	}
+
+	return 0.;
+
+/*	for(unsigned int n = 0; n < storage->overlaps.size(); n++){
 		const Index &braIndex = bra.getIndex();
 		const Index &ketIndex = get<1>(storage->overlaps.at(n));
 		const Index &braUnitCell = bra.getContainer();
@@ -108,7 +158,8 @@ complex<double> BasicState::getOverlap(const AbstractState &bra) const{
 			""
 		);
 
-		Index ketAbsoluteUnitCell({});
+//		Index ketAbsoluteUnitCell({});
+		Index ketAbsoluteUnitCell;
 		for(unsigned int c = 0; c < braUnitCell.size(); c++)
 			ketAbsoluteUnitCell.push_back(getContainer().at(c) + ketRelativeUnitCell.at(c));
 		if(
@@ -119,7 +170,7 @@ complex<double> BasicState::getOverlap(const AbstractState &bra) const{
 		return get<0>(storage->overlaps.at(n));
 	}
 
-	return 0.;
+	return 0.;*/
 }
 
 complex<double> BasicState::getMatrixElement(
@@ -133,7 +184,47 @@ complex<double> BasicState::getMatrixElement(
 		"The bra state has to be a BasicState."
 	);
 
-	for(unsigned int n = 0; n < storage->matrixElements.size(); n++){
+	if(!storage->matrixElementsIsSorted){
+		storage->sortMatrixElements();
+	}
+
+	int min = 0;
+	int max = storage->matrixElements.size()-1;
+	while(min <= max){
+		int m = (min + max)/2;
+
+		const Index &braIndex = bra.getIndex();
+		const Index &ketIndex = get<1>(storage->matrixElements.at(m));
+		if(ketIndex < braIndex){
+			min = m + 1;
+			continue;
+		}
+		if(ketIndex > braIndex){
+			max = m - 1;
+			continue;
+		}
+
+		const Index &braUnitCell = bra.getContainer();
+		const Index &ketRelativeUnitCell = get<2>(storage->matrixElements.at(m));
+		Index ketAbsoluteUnitCell;
+		for(unsigned int c = 0; c < braUnitCell.size(); c++)
+			ketAbsoluteUnitCell.push_back(getContainer().at(c) + ketRelativeUnitCell.at(c));
+
+		if(ketAbsoluteUnitCell < braUnitCell){
+			min = m + 1;
+			continue;
+		}
+		if(ketAbsoluteUnitCell > braUnitCell){
+			max = m - 1;
+			continue;
+		}
+
+		return get<0>(storage->matrixElements.at(m));
+	}
+
+	return 0.;
+
+/*	for(unsigned int n = 0; n < storage->matrixElements.size(); n++){
 		const Index &braIndex = bra.getIndex();
 		const Index &ketIndex = get<1>(storage->matrixElements.at(n));
 		const Index &braUnitCell = bra.getContainer();
@@ -169,7 +260,8 @@ complex<double> BasicState::getMatrixElement(
 			""
 		);
 
-		Index ketAbsoluteUnitCell({});
+//		Index ketAbsoluteUnitCell({});
+		Index ketAbsoluteUnitCell;
 		for(unsigned int c = 0; c < braUnitCell.size(); c++)
 			ketAbsoluteUnitCell.push_back(getContainer().at(c) + ketRelativeUnitCell.at(c));
 		if(
@@ -180,7 +272,51 @@ complex<double> BasicState::getMatrixElement(
 		return get<0>(storage->matrixElements.at(n));
 	}
 
-	return 0.;
+	return 0.;*/
+}
+
+BasicState::Storage::Storage(){
+	referenceCounter = 1;
+	overlapsIsSorted = true;
+	matrixElementsIsSorted = true;
+//	overlapsIndexTree = nullptr;
+//	indexedOverlaps = nullptr;
+//	matrixElementsIndexTree = nullptr;
+//	indexedMatrixElements = nullptr;
+}
+
+BasicState::Storage::~Storage(){
+/*	if(overlapsIndexTree != nullptr)
+		delete overlapsIndexTree;
+	if(indexedOverlaps != nullptr)
+		delete indexedOverlaps;
+	if(matrixElementsIndexTree != nullptr)
+		delete matrixElementsIndexTree;
+	if(indexedMatrixElements != nullptr)
+		delete indexedMatrixElements;*/
+}
+
+class SortHelperClass{
+public:
+	inline bool operator()(const tuple<complex<double>, Index, Index> &overlap1, const tuple<complex<double>, Index, Index> &overlap2){
+		if(get<1>(overlap1) < get<1>(overlap2))
+			return true;
+		if(get<1>(overlap1) > get<1>(overlap2))
+			return false;
+		if(get<2>(overlap1) < get<2>(overlap2))
+			return true;
+		return false;
+	}
+};
+
+void BasicState::Storage::sortOverlaps(){
+	sort(overlaps.begin(), overlaps.end(), SortHelperClass());
+	overlapsIsSorted = true;
+}
+
+void BasicState::Storage::sortMatrixElements(){
+	sort(matrixElements.begin(), matrixElements.end(), SortHelperClass());
+	matrixElementsIsSorted = true;
 }
 
 };	//End of namespace TBTK

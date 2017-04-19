@@ -126,6 +126,11 @@ private:
 	 *  wildcradIndex = true. */
 	int wildcardType;
 
+	/** Flag indicating whether the given node is an Index-separator. I.e.,
+	 *  wheter the next node level corresponds to the first subindex of a
+	 *  new Index. */
+	bool indexSeparator;
+
 	/** Linear index. */
 	int linearIndex;
 

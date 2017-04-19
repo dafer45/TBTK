@@ -198,7 +198,8 @@ bool TreeNode::isProperSubspace(const Index &subspace, unsigned int subindex){
 IndexTree TreeNode::getSubspaceIndices() const{
 	IndexTree blockIndices;
 	if(isPotentialBlockSeparator)
-		getBlockIndices(blockIndices, Index({}));
+		getBlockIndices(blockIndices, Index());
+//		getBlockIndices(blockIndices, Index({}));
 	blockIndices.generateLinearMap();
 
 	return blockIndices;

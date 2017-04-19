@@ -328,7 +328,8 @@ IndexTree* FileReader::readIndexTree(string name, string path){
 		int subindicesLeft = 0;
 		for(unsigned int n = 0; n < size; n++){
 			if(subindicesLeft == 0){
-				indices.push_back(Index({}));
+//				indices.push_back(Index({}));
+				indices.push_back(Index());
 				subindicesLeft = serializedIndices[n];
 			}
 			else{

@@ -26,6 +26,7 @@
 #include "AbstractState.h"
 #include "DefaultOperator.h"
 #include "Index.h"
+#include "IndexTree.h"
 
 #include <complex>
 #include <tuple>
@@ -68,22 +69,76 @@ public:
 private:
 	class Storage{
 	public:
-		/** Reference counter. */
-		unsigned int referenceCounter;
+		/** Maximum number of elements for which linear search is
+		 *  performed to find overlaps and matrix elements. For larger
+		 *  number of elements, IndexTrees are used instead. */
+//		static constexpr unsigned int MAX_ELEMENTS_LINEAR_SEARCH = 50;
 
 		/** Overlaps between the ket corresponding to this state and the bras
 		 *  index by the indices. The first index in the tuple is the intra
 		 *  cell index, while the second index is the unit cell index */
 		std::vector<std::tuple<std::complex<double>, Index, Index>> overlaps;
 
+		/** Flag indicating whether overlaps is sorted. */
+		bool overlapsIsSorted;
+
+		/** IndexTree used to speed up lookup in overlaps. */
+//		IndexTree *overlapsIndexTree;
+
+		/** Storage used to lookup overlaps using overlapsIndexTree. */
+//		std::complex<double> *indexedOverlaps;
+
 		/** Matrix elements between the ket corresponding to this state and the
 		 *  bras index by the indices. The first index in the tuple is the
 		 *  intra cell index, while the second index is the unit cell index */
 		std::vector<std::tuple<std::complex<double>, Index, Index>> matrixElements;
+
+		/** Flag indicating whether matrixElements is sorted. */
+		bool matrixElementsIsSorted;
+
+		/** IndexTree used to speed up lookup in matrixElements. */
+//		IndexTree *matrixElementsIndexTree;
+
+		/** Storage used to lookup matrix elements using matrixElementsIndexTree. */
+//		std::complex<double> *indexedMatrixElements;
+
+		/** Constructor. */
+		Storage();
+
+		/** Destructor. */
+		~Storage();
+
+		/** Grab reference (increments the reference counter). */
+		void grab();
+
+		/** Release reference. If the function returns true, the caller
+		 *  should delete the Storage. */
+		bool release();
+
+		/** Sort overlaps. */
+		void sortOverlaps();
+
+		/** Sort matrix elements. */
+		void sortMatrixElements();
+	private:
+		/** Reference counter. */
+		unsigned int referenceCounter;
 	};
 
 	Storage *storage;
 };
+
+inline void BasicState::Storage::grab(){
+	referenceCounter++;
+}
+
+inline bool BasicState::Storage::release(){
+	referenceCounter--;
+	if(referenceCounter == 0)
+		return true;
+	else
+		return false;
+}
 
 };	//End of namespace TBTK
 

@@ -21,6 +21,8 @@
 #include "Streams.h"
 #include "TBTKMacros.h"
 
+#include <vector>
+
 using namespace std;
 
 namespace TBTK{
@@ -30,6 +32,26 @@ Index::Index(const Index &head, const Index &tail){
 		indices.push_back(head.at(n));
 	for(unsigned int n = 0; n < tail.size(); n++)
 		indices.push_back(tail.at(n));
+}
+
+Index::Index(initializer_list<initializer_list<int>> indexList){
+	Streams::out << "Initializer list constructor.\n";
+	for(unsigned int n = 0; n < indexList.size(); n++){
+		if(n > 0)
+			indices.push_back(IDX_SEPARATOR);
+		for(unsigned int c = 0; c < (indexList.begin()+n)->size(); c++)
+			indices.push_back(*((indexList.begin() + n)->begin() + c));
+	}
+}
+
+Index::Index(const vector<vector<int>> &indexList){
+	Streams::out << "Vector constructor.\n";
+	for(unsigned int n = 0; n < indexList.size(); n++){
+		if(n > 0)
+			indices.push_back(IDX_SEPARATOR);
+		for(unsigned int c = 0; c < indexList.at(n).size(); c++)
+			indices.push_back(indexList.at(n).at(c));
+	}
 }
 
 bool operator<(const Index &i1, const Index &i2){
@@ -48,6 +70,9 @@ bool operator<(const Index &i1, const Index &i2){
 		else
 			return false;
 	}
+
+	if(i1.size() == i2.size())
+		return false;
 
 	TBTKExit(
 		"operator<(Index &i1, Index &i2)",
@@ -72,6 +97,9 @@ bool operator>(const Index &i1, const Index &i2){
 		else
 			return true;
 	}
+
+	if(i1.size() == i2.size())
+		return false;
 
 	TBTKExit(
 		"operator>(Index &i1, Index &i2)",

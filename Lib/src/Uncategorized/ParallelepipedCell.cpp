@@ -185,7 +185,8 @@ Index ParallelepipedCell::getCellIndex(initializer_list<double> coordinates) con
 		break;
 	}
 
-	Index cellIndex({});
+//	Index cellIndex({});
+	Index cellIndex;
 	for(unsigned int n = 0; n < dimensions; n++){
 		double v = Vector3d::dotProduct(
 			coordinateVector,

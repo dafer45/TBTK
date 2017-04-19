@@ -77,7 +77,11 @@ Model* ReciprocalLattice::generateModel(initializer_list<double> momentum) const
 
 			//Get all bras that have a possible overlap with the
 			//reference ket.
-			const vector<const AbstractState*> *bras = realSpaceEnvironmentStateTree->getOverlappingStates(
+/*			const vector<const AbstractState*> *bras = realSpaceEnvironmentStateTree->getOverlappingStates(
+				referenceKet->getCoordinates(),
+				referenceKet->getExtent()
+			);*/
+			vector<const AbstractState*> *bras = realSpaceEnvironmentStateTree->getOverlappingStates(
 				referenceKet->getCoordinates(),
 				referenceKet->getExtent()
 			);
@@ -100,6 +104,8 @@ Model* ReciprocalLattice::generateModel(initializer_list<double> momentum) const
 					amplitude += bras->at(n)->getMatrixElement(*referenceKet)*exp(exponent);
 				}
 			}
+
+			delete bras;
 
 			//Add HoppingAmplitude to Hamiltonian, unless the
 			//amplitude is exactly zero.

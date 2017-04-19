@@ -24,7 +24,8 @@ using namespace std;
 
 namespace TBTK{
 
-AbstractState::AbstractState(StateID stateID) : index({}), container({}){
+//AbstractState::AbstractState(StateID stateID) : index({}), container({}){
+AbstractState::AbstractState(StateID stateID) : index(), container(){
 	this->stateID = stateID;
 
 	if(numeric_limits<double>::has_infinity)
