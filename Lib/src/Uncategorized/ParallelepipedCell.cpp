@@ -231,23 +231,23 @@ vector<vector<double>> ParallelepipedCell::getMesh(
 	for(unsigned int x = 0; x < nmp[0]; x++){
 		Vector3d v0;
 		if(nmp[0]%2 == 0)
-			v0 = ((int)x - (int)(nmp[0]/2) + 1/2.)*basisVectors.at(0)/nmp[0];
+			v0 = ((int)x - (int)(nmp[0]/2) + 1/2.)*basisVectors.at(0)/(nmp[0]-1);
 		else
-			v0 = ((int)x - (int)(nmp[0]/2))*basisVectors.at(0)/nmp[0];
+			v0 = ((int)x - (int)(nmp[0]/2))*basisVectors.at(0)/(nmp[0]-1);
 
 		for(unsigned int y = 0; y < nmp[1]; y++){
 			Vector3d v1;
 			if(nmp[1]%2 == 0)
-				v1 = ((int)y - (int)(nmp[1]/2) + 1/2.)*basisVectors.at(1)/nmp[1];
+				v1 = ((int)y - (int)(nmp[1]/2) + 1/2.)*basisVectors.at(1)/(nmp[1]-1);
 			else
-				v1 = ((int)y - (int)(nmp[1]/2))*basisVectors.at(1)/nmp[1];
+				v1 = ((int)y - (int)(nmp[1]/2))*basisVectors.at(1)/(nmp[1]-1);
 
 			for(unsigned int z = 0; z < nmp[2]; z++){
 				Vector3d v2;
 				if(nmp[2]%2 == 0)
-					v2 = ((int)z - (int)(nmp[2]/2) + 1/2.)*basisVectors.at(2)/nmp[2];
+					v2 = ((int)z - (int)(nmp[2]/2) + 1/2.)*basisVectors.at(2)/(nmp[2]-1);
 				else
-					v2 = ((int)z - (int)(nmp[2]/2))*basisVectors.at(2)/nmp[2];
+					v2 = ((int)z - (int)(nmp[2]/2))*basisVectors.at(2)/(nmp[2]-1);
 
 				if(numMeshPoints.size() == 1){
 					mesh.push_back({v0.x});
