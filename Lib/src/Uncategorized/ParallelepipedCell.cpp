@@ -142,7 +142,9 @@ ParallelepipedCell::ParallelepipedCell(const vector<vector<double>> &basisVector
 ParallelepipedCell::~ParallelepipedCell(){
 }
 
-Index ParallelepipedCell::getCellIndex(initializer_list<double> coordinates) const{
+Index ParallelepipedCell::getCellIndex(
+	const initializer_list<double> coordinates
+) const{
 	TBTKAssert(
 		coordinates.size() == dimensions,
 		"ParallelepipedCell::getCellIndex()",
@@ -196,6 +198,366 @@ Index ParallelepipedCell::getCellIndex(initializer_list<double> coordinates) con
 			cellIndex.push_back((int)(v + 1/2.));
 		else
 			cellIndex.push_back((int)(v - 1/2.));
+	}
+
+	return cellIndex;
+}
+
+Index ParallelepipedCell::getCellIndex(
+	const vector<double> &coordinates
+) const{
+	TBTKAssert(
+		coordinates.size() == dimensions,
+		"ParallelepipedCell::getCellIndex()",
+		"Incompatible dimensions.",
+		"The number of coordinate components must agree with the"
+		<< " dimension of the parallelepiped cell. The parallelepiped"
+		<< " cell has " << dimensions << " dimensions, but coordinate"
+		<< " with " << coordinates.size() << " components supplied."
+	);
+
+	Vector3d coordinateVector;
+	switch(coordinates.size()){
+	case 1:
+		coordinateVector = Vector3d({
+			coordinates.at(0),
+			0.,
+			0.
+		});
+		break;
+	case 2:
+		coordinateVector = Vector3d({
+			coordinates.at(0),
+			coordinates.at(1),
+			0.
+		});
+		break;
+	case 3:
+		coordinateVector = Vector3d({
+			coordinates.at(0),
+			coordinates.at(1),
+			coordinates.at(2)
+		});
+		break;
+	default:
+		TBTKExit(
+			"ParallelepipedCell::getCellIndex()",
+			"This should never happen.",
+			"Notify the developer about this bug."
+		);
+		break;
+	}
+
+	Index cellIndex;
+	for(unsigned int n = 0; n < dimensions; n++){
+		double v = Vector3d::dotProduct(
+			coordinateVector,
+			reciprocalNormals.at(n)
+		);
+		if(v > 0)
+			cellIndex.push_back((int)(v + 1/2.));
+		else
+			cellIndex.push_back((int)(v - 1/2.));
+	}
+
+	return cellIndex;
+}
+
+Index ParallelepipedCell::getCellIndex(
+	initializer_list<double> coordinates,
+	initializer_list<unsigned int> numMeshPoints
+) const{
+	TBTKAssert(
+		coordinates.size() == dimensions,
+		"ParallelepipedCell::getCellIndex()",
+		"Incompatible dimensions.",
+		"The number of coordinate components must agree with the"
+		<< " dimension of the parallelepiped cell. The parallelepiped"
+		<< " cell has " << dimensions << " dimensions, but coordinate"
+		<< " with " << coordinates.size() << " components supplied."
+	);
+	TBTKAssert(
+		coordinates.size() == numMeshPoints.size(),
+		"ParallelepipedCell::getCellIndex()",
+		"Incompatible dimensions.",
+		"The number of coordinate components must agree with the"
+		<< " number of mesh points. 'coordinate' has "
+		<< coordinates.size() << " components, while 'numMeshPoints'"
+		<< " have " << numMeshPoints.size() << " components."
+	);
+
+	Vector3d coordinateVector;
+	switch(coordinates.size()){
+	case 1:
+		coordinateVector = Vector3d({
+			*(coordinates.begin() + 0),
+			0.,
+			0.
+		});
+		break;
+	case 2:
+		coordinateVector = Vector3d({
+			*(coordinates.begin() + 0),
+			*(coordinates.begin() + 1),
+			0.
+		});
+		break;
+	case 3:
+		coordinateVector = Vector3d({
+			*(coordinates.begin() + 0),
+			*(coordinates.begin() + 1),
+			*(coordinates.begin() + 2)
+		});
+		break;
+	default:
+		TBTKExit(
+			"ParallelepipedCell::getCellIndex()",
+			"This should never happen.",
+			"Notify the developer about this bug."
+		);
+		break;
+	}
+
+	Index cellIndex;
+	for(unsigned int n = 0; n < dimensions; n++){
+		double v = Vector3d::dotProduct(
+			coordinateVector,
+			reciprocalNormals.at(n)
+		);
+		if((*(numMeshPoints.begin()+n))%2 == 0){
+			cellIndex.push_back((int)(v*(*(numMeshPoints.begin() + n)-1)));
+		}
+		else{
+			if(v > 0)
+				cellIndex.push_back((int)(v*(*(numMeshPoints.begin() + n)-1) + 1/2.));
+			else
+				cellIndex.push_back((int)(v*(*(numMeshPoints.begin() + n)-1) - 1/2.));
+		}
+	}
+
+	return cellIndex;
+}
+
+Index ParallelepipedCell::getCellIndex(
+	const vector<double> &coordinates,
+	initializer_list<unsigned int> numMeshPoints
+) const{
+	TBTKAssert(
+		coordinates.size() == dimensions,
+		"ParallelepipedCell::getCellIndex()",
+		"Incompatible dimensions.",
+		"The number of coordinate components must agree with the"
+		<< " dimension of the parallelepiped cell. The parallelepiped"
+		<< " cell has " << dimensions << " dimensions, but coordinate"
+		<< " with " << coordinates.size() << " components supplied."
+	);
+	TBTKAssert(
+		coordinates.size() == numMeshPoints.size(),
+		"ParallelepipedCell::getCellIndex()",
+		"Incompatible dimensions.",
+		"The number of coordinate components must agree with the"
+		<< " number of mesh points. 'coordinate' has "
+		<< coordinates.size() << " components, while 'numMeshPoints'"
+		<< " have " << numMeshPoints.size() << " components."
+	);
+
+	Vector3d coordinateVector;
+	switch(coordinates.size()){
+	case 1:
+		coordinateVector = Vector3d({
+			coordinates.at(0),
+			0.,
+			0.
+		});
+		break;
+	case 2:
+		coordinateVector = Vector3d({
+			coordinates.at(0),
+			coordinates.at(1),
+			0.
+		});
+		break;
+	case 3:
+		coordinateVector = Vector3d({
+			coordinates.at(0),
+			coordinates.at(1),
+			coordinates.at(2)
+		});
+		break;
+	default:
+		TBTKExit(
+			"ParallelepipedCell::getCellIndex()",
+			"This should never happen.",
+			"Notify the developer about this bug."
+		);
+		break;
+	}
+
+	Index cellIndex;
+	for(unsigned int n = 0; n < dimensions; n++){
+		double v = Vector3d::dotProduct(
+			coordinateVector,
+			reciprocalNormals.at(n)
+		);
+		if((*(numMeshPoints.begin()+n))%2 == 0){
+			cellIndex.push_back((int)(v*(*(numMeshPoints.begin() + n)-1)));
+		}
+		else{
+			if(v > 0)
+				cellIndex.push_back((int)(v*(*(numMeshPoints.begin() + n)-1) + 1/2.));
+			else
+				cellIndex.push_back((int)(v*(*(numMeshPoints.begin() + n)-1) - 1/2.));
+		}
+	}
+
+	return cellIndex;
+}
+
+Index ParallelepipedCell::getCellIndex(
+	initializer_list<double> coordinates,
+	const vector<unsigned int> &numMeshPoints
+) const{
+	TBTKAssert(
+		coordinates.size() == dimensions,
+		"ParallelepipedCell::getCellIndex()",
+		"Incompatible dimensions.",
+		"The number of coordinate components must agree with the"
+		<< " dimension of the parallelepiped cell. The parallelepiped"
+		<< " cell has " << dimensions << " dimensions, but coordinate"
+		<< " with " << coordinates.size() << " components supplied."
+	);
+	TBTKAssert(
+		coordinates.size() == numMeshPoints.size(),
+		"ParallelepipedCell::getCellIndex()",
+		"Incompatible dimensions.",
+		"The number of coordinate components must agree with the"
+		<< " number of mesh points. 'coordinate' has "
+		<< coordinates.size() << " components, while 'numMeshPoints'"
+		<< " have " << numMeshPoints.size() << " components."
+	);
+
+	Vector3d coordinateVector;
+	switch(coordinates.size()){
+	case 1:
+		coordinateVector = Vector3d({
+			*(coordinates.begin() + 0),
+			0.,
+			0.
+		});
+		break;
+	case 2:
+		coordinateVector = Vector3d({
+			*(coordinates.begin() + 0),
+			*(coordinates.begin() + 1),
+			0.
+		});
+		break;
+	case 3:
+		coordinateVector = Vector3d({
+			*(coordinates.begin() + 0),
+			*(coordinates.begin() + 1),
+			*(coordinates.begin() + 2)
+		});
+		break;
+	default:
+		TBTKExit(
+			"ParallelepipedCell::getCellIndex()",
+			"This should never happen.",
+			"Notify the developer about this bug."
+		);
+		break;
+	}
+
+	Index cellIndex;
+	for(unsigned int n = 0; n < dimensions; n++){
+		double v = Vector3d::dotProduct(
+			coordinateVector,
+			reciprocalNormals.at(n)
+		);
+		if((*(numMeshPoints.begin()+n))%2 == 0){
+			cellIndex.push_back((int)(v*(numMeshPoints.at(n)-1)));
+		}
+		else{
+			if(v > 0)
+				cellIndex.push_back((int)(v*(numMeshPoints.at(n)-1) + 1/2.));
+			else
+				cellIndex.push_back((int)(v*(numMeshPoints.at(n)-1) - 1/2.));
+		}
+	}
+
+	return cellIndex;
+}
+
+Index ParallelepipedCell::getCellIndex(
+	const vector<double> &coordinates,
+	const vector<unsigned int> &numMeshPoints
+) const{
+	TBTKAssert(
+		coordinates.size() == dimensions,
+		"ParallelepipedCell::getCellIndex()",
+		"Incompatible dimensions.",
+		"The number of coordinate components must agree with the"
+		<< " dimension of the parallelepiped cell. The parallelepiped"
+		<< " cell has " << dimensions << " dimensions, but coordinate"
+		<< " with " << coordinates.size() << " components supplied."
+	);
+	TBTKAssert(
+		coordinates.size() == numMeshPoints.size(),
+		"ParallelepipedCell::getCellIndex()",
+		"Incompatible dimensions.",
+		"The number of coordinate components must agree with the"
+		<< " number of mesh points. 'coordinate' has "
+		<< coordinates.size() << " components, while 'numMeshPoints'"
+		<< " have " << numMeshPoints.size() << " components."
+	);
+
+	Vector3d coordinateVector;
+	switch(coordinates.size()){
+	case 1:
+		coordinateVector = Vector3d({
+			coordinates.at(0),
+			0.,
+			0.
+		});
+		break;
+	case 2:
+		coordinateVector = Vector3d({
+			coordinates.at(0),
+			coordinates.at(1),
+			0.
+		});
+		break;
+	case 3:
+		coordinateVector = Vector3d({
+			coordinates.at(0),
+			coordinates.at(1),
+			coordinates.at(2)
+		});
+		break;
+	default:
+		TBTKExit(
+			"ParallelepipedCell::getCellIndex()",
+			"This should never happen.",
+			"Notify the developer about this bug."
+		);
+		break;
+	}
+
+	Index cellIndex;
+	for(unsigned int n = 0; n < dimensions; n++){
+		double v = Vector3d::dotProduct(
+			coordinateVector,
+			reciprocalNormals.at(n)
+		);
+		if((*(numMeshPoints.begin()+n))%2 == 0){
+			cellIndex.push_back((int)(v*(numMeshPoints.at(n)-1)));
+		}
+		else{
+			if(v > 0)
+				cellIndex.push_back((int)(v*(numMeshPoints.at(n)-1) + 1/2.));
+			else
+				cellIndex.push_back((int)(v*(numMeshPoints.at(n)-1) - 1/2.));
+		}
 	}
 
 	return cellIndex;

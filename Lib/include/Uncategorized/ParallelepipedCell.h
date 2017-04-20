@@ -49,6 +49,44 @@ public:
 		std::initializer_list<double> coordinate
 	) const;
 
+	/** Returns the index of the parallelepiped cell corresponding to the
+	 *  given coordinate. */
+	Index getCellIndex(
+		const std::vector<double> &coordinate
+	) const;
+
+	/** Returns the index of the parallelepiped cell corresponding to the
+	 *  given coordinate, where the parallelepiped has been subdivided into
+	 *  smaller cells specified by numMeshPoints. */
+	Index getCellIndex(
+		std::initializer_list<double> coordinate,
+		std::initializer_list<unsigned int> numMeshPoints
+	) const;
+
+	/** Returns the index of the parallelepiped cell corresponding to the
+	 *  given coordinate, where the parallelepiped has been subdivided into
+	 *  smaller cells specified by numMeshPoints. */
+	Index getCellIndex(
+		const std::vector<double> &coordinate,
+		std::initializer_list<unsigned int> numMeshPoints
+	) const;
+
+	/** Returns the index of the parallelepiped cell corresponding to the
+	 *  given coordinate, where the parallelepiped has been subdivided into
+	 *  smaller cells specified by numMeshPoints. */
+	Index getCellIndex(
+		std::initializer_list<double> coordinate,
+		const std::vector<unsigned int> &numMeshPoints
+	) const;
+
+	/** Returns the index of the parallelepiped cell corresponding to the
+	 *  given coordinate, where the parallelepiped has been subdivided into
+	 *  smaller cells specified by numMeshPoints. */
+	Index getCellIndex(
+		const std::vector<double> &coordinate,
+		const std::vector<unsigned int> &numMeshPoints
+	) const;
+
 	/** Returns an equispaced mesh covering the parallelepiped cell, using
 	 *  numMeshPoints mesh points along the corresponding directions. For
 	 *  odd values, the mesh contains the points given by
@@ -58,6 +96,17 @@ public:
 	 *  "(m+1/2)*basisVectors_n/numMeshPoints_n + other vectors". */
 	std::vector<std::vector<double>> getMesh(
 		std::initializer_list<unsigned int> numMeshPoints
+	) const;
+
+	/** Returns an equispaced mesh covering the parallelepiped cell, using
+	 *  numMeshPoints mesh points along the corresponding directions. For
+	 *  odd values, the mesh contains the points given by
+	 *  "m*basisVector_n/numMeshPoints_n + other vectors", where m is an
+	 *  integer, and n is a basis vector index. For even values, the mesh
+	 *  contains the points given by
+	 *  "(m+1/2)*basisVectors_n/numMeshPoints_n + other vectors". */
+	std::vector<std::vector<double>> getMesh(
+		std::vector<unsigned int> numMeshPoints
 	) const;
 private:
 	/** Lattice dimension. */
