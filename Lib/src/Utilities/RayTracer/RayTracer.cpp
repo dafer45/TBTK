@@ -107,9 +107,11 @@ void RayTracer::plot(const Model& model, const Property::Density &density){
 			<< " properties."
 	);
 
+	vector<FieldWrapper> emptyFields;
 	render(
 		indexDescriptor,
 		model,
+		emptyFields,
 		[&density](const HitDescriptor &hitDescriptor) -> RayTracer::Material
 		{
 			Material material;
@@ -136,9 +138,11 @@ void RayTracer::plot(
 			<< " properties."
 	);
 
+	vector<FieldWrapper> emptyFields;
 	render(
 		indexDescriptor,
 		model,
+		emptyFields,
 		[&magnetization](HitDescriptor &hitDescriptor) -> RayTracer::Material
 		{
 			Vector3d directionFromObject = hitDescriptor.getDirectionFromObject();
@@ -184,9 +188,11 @@ void RayTracer::plot(
 			<< " properties."
 	);
 
+	vector<FieldWrapper> emptyFields;
 	render(
 		indexDescriptor,
 		model,
+		emptyFields,
 		[&waveFunction, state](HitDescriptor &hitDescriptor) -> RayTracer::Material
 		{
 			complex<double> amplitude = waveFunction(hitDescriptor.getIndex(), state);
@@ -221,9 +227,11 @@ void RayTracer::interactivePlot(
 			<< " properties."
 	);
 
+	vector<FieldWrapper> emptyFields;
 	render(
 		indexDescriptor,
 		model,
+		emptyFields,
 		[&ldos](HitDescriptor &hitDescriptor) -> RayTracer::Material
 		{
 			Material material;
@@ -281,6 +289,7 @@ void RayTracer::interactivePlot(
 void RayTracer::render(
 	const IndexDescriptor &indexDescriptor,
 	const Model &model,
+	const vector<FieldWrapper> &fields,
 	function<Material(HitDescriptor &hitDescriptor)> &&lambdaColorPicker,
 	function<void(Mat &canvas, const Index &index)> &&lambdaInteractive
 ){
@@ -338,9 +347,10 @@ void RayTracer::render(
 				cameraPosition,
 				rayDirection,
 				indexTree,
+				fields,
 				hitDescriptors[x][y],
 				lambdaColorPicker,
-				renderContext.getTraceDepth()
+				renderContext.getNumDeflections()
 			);
 
 			canvas.at<Vec3f>(height - 1 - y, x)[0] = color.b;
@@ -406,9 +416,10 @@ RayTracer::Color RayTracer::trace(
 	const Vector3d &raySource,
 	const Vector3d &rayDirection,
 	const IndexTree &indexTree,
+	const vector<FieldWrapper> &fields,
 	vector<HitDescriptor> &hitDescriptors,
 	function<Material(HitDescriptor &hitDescriptor)> lambdaColorPicker,
-	unsigned int depth
+	unsigned int numDeflections
 ){
 	double stateRadius = renderContext.getStateRadius();
 
@@ -468,7 +479,7 @@ RayTracer::Color RayTracer::trace(
 		color.b = material.color.b*(material.ambient + material.diffusive*lightProjection);
 
 		hitDescriptor.getDirectionFromObject();
-		if(depth != 0){
+		if(numDeflections != 0){
 			vector<HitDescriptor> specularHitDescriptors;
 			const Vector3d &impactPosition = hitDescriptor.getImpactPosition();
 			Vector3d newDirection =	(rayDirection - 2*hitDescriptor.getDirectionFromObject()*Vector3d::dotProduct(
@@ -479,9 +490,10 @@ RayTracer::Color RayTracer::trace(
 				impactPosition,
 				newDirection,
 				indexTree,
+				fields,
 				specularHitDescriptors,
 				lambdaColorPicker,
-				depth - 1
+				numDeflections - 1
 			);
 
 			color.r += material.specular*specularColor.r;
@@ -546,7 +558,7 @@ RayTracer::RenderContext::RenderContext(){
 	height = 400;
 
 	stateRadius = 0.5;
-	traceDepth = 0;
+	numDeflections = 0;
 }
 
 RayTracer::RenderContext::~RenderContext(){

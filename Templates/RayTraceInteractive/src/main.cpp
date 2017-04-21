@@ -117,7 +117,7 @@ int main(int argc, char **argv){
 
 	//Numbers of times a ray is deflected before the ray tracing is
 	//terminated.
-	unsigned int TRACE_DEPTH = 1;
+	unsigned int NUM_DEFLECTIONS = 1;
 
 	//Setup and run RayTracer.
 	RayTracer rayTracer;
@@ -126,7 +126,7 @@ int main(int argc, char **argv){
 	rayTracer.setFocus({SIZE_X/2, SIZE_Y/2, 0});
 	rayTracer.setWidth(1200);
 	rayTracer.setHeight(800);
-	rayTracer.setTraceDepth(TRACE_DEPTH);
+	rayTracer.setNumDeflections(NUM_DEFLECTIONS);
 	rayTracer.interactivePlot(model, ldos, SIGMA, WINDOW_SIZE);
 
 	return 0;

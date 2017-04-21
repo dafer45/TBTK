@@ -24,6 +24,7 @@
 #define COM_DAFER45_TBTK_RAY_TRACER
 
 #include "Density.h"
+#include "FieldWrapper.h"
 #include "LDOS.h"
 #include "Magnetization.h"
 #include "Model.h"
@@ -86,11 +87,23 @@ public:
 	/** Set state radius. */
 	void setStateRadius(double stateRadius);
 
-	/** Set trace depth. */
-	void setTraceDepth(unsigned int traceDepth);
+	/** Set number of deflections. */
+	void setNumDeflections(unsigned int numDeflections);
 
-	/** Get trace depth. */
-	unsigned int getTraceDepth() const;
+	/** Get number of deflections. */
+	unsigned int getNumDeflections() const;
+
+	/** Set ray length. */
+	void setRayLength(double rayLength);
+
+	/** Get ray length. */
+	double getRayLength() const;
+
+	/** Set number of ray segments. */
+	void setNumRaySegments(unsigned int numRaySegments);
+
+	/** Get number of ray segments. */
+	unsigned int getNumRaySegments() const;
 
 	/** Plot Density. */
 	void plot(const Model& model, const Property::Density &density);
@@ -198,11 +211,23 @@ private:
 		/** Get state radius. */
 		double getStateRadius() const;
 
-		/** Set ray depth. */
-		void setTraceDepth(unsigned int traceDepth);
+		/** Set number of deflections. */
+		void setNumDeflections(unsigned int numDeflections);
 
-		/*** Get ray depth. */
-		unsigned int getTraceDepth() const;
+		/*** Get number of deflections. */
+		unsigned int getNumDeflections() const;
+
+		/** Set ray length. */
+		void setRayLength(double rayLength);
+
+		/** Get ray length. */
+		double getRayLength() const;
+
+		/** Set number of ray segments. */
+		void setNumRaySegments(unsigned int numRaySegments);
+
+		/** Get number of ray segments. */
+		unsigned int getNumRaySegments() const;
 	private:
 		/** Camera position. */
 		Vector3d cameraPosition;
@@ -224,7 +249,13 @@ private:
 
 		/** Maximum number of times a ray will be traced after having
 		 *  been deflected. */
-		unsigned int traceDepth;
+		unsigned int numDeflections;
+
+		/** Ray length used to trace fields. */
+		double rayLength;
+
+		/** Number of ray segments used when tracing fields. */
+		unsigned int numRaySegments;
 	};
 
 	RenderContext renderContext;
@@ -348,6 +379,7 @@ private:
 	void render(
 		const IndexDescriptor &indexDescriptor,
 		const Model &model,
+		const std::vector<FieldWrapper> &fields,
 		std::function<Material(HitDescriptor &hitDescriptor)> &&lambdaColorPicker,
 		std::function<void(cv::Mat &canvas, const Index &index)> &&lambdaInteractive = {}
 	);
@@ -358,9 +390,10 @@ private:
 		const Vector3d &raySource,
 		const Vector3d &rayDirection,
 		const IndexTree &indexTree,
+		const std::vector<FieldWrapper> &fields,
 		std::vector<HitDescriptor> &hitDescriptors,
 		std::function<Material(HitDescriptor &hitDescriptor)> lambdaColorPicker,
-		unsigned int depth = 0
+		unsigned int deflections = 0
 	);
 
 	/** Returns the canvas converted to char-type. */
@@ -442,12 +475,28 @@ inline void RayTracer::setStateRadius(double stateRadius){
 	renderContext.setStateRadius(stateRadius);
 }
 
-inline void RayTracer::setTraceDepth(unsigned int traceDepth){
-	renderContext.setTraceDepth(traceDepth);
+inline void RayTracer::setNumDeflections(unsigned int numDeflections){
+	renderContext.setNumDeflections(numDeflections);
 }
 
-inline unsigned int RayTracer::getTraceDepth() const{
-	return renderContext.getTraceDepth();
+inline unsigned int RayTracer::getNumDeflections() const{
+	return renderContext.getNumDeflections();
+}
+
+inline void RayTracer::setRayLength(double rayLength){
+	renderContext.setRayLength(rayLength);
+}
+
+inline double RayTracer::getRayLength() const{
+	return renderContext.getRayLength();
+}
+
+inline void RayTracer::setNumRaySegments(unsigned int numRaySegments){
+	renderContext.setNumRaySegments(numRaySegments);
+}
+
+inline unsigned int RayTracer::getNumRaySegments() const{
+	return renderContext.getNumRaySegments();
 }
 
 /*inline RayTracer::RenderResult::RenderResult(
@@ -587,12 +636,32 @@ inline double RayTracer::RenderContext::getStateRadius() const{
 	return stateRadius;
 }
 
-inline void RayTracer::RenderContext::setTraceDepth(unsigned int traceDepth){
-	this->traceDepth = traceDepth;
+inline void RayTracer::RenderContext::setNumDeflections(
+	unsigned int numDeflections
+){
+	this->numDeflections = numDeflections;
 }
 
-inline unsigned int RayTracer::RenderContext::getTraceDepth() const{
-	return traceDepth;
+inline unsigned int RayTracer::RenderContext::getNumDeflections() const{
+	return numDeflections;
+}
+
+inline void RayTracer::RenderContext::setRayLength(double rayLength){
+	this->rayLength = rayLength;
+}
+
+inline double RayTracer::RenderContext::getRayLength() const{
+	return rayLength;
+}
+
+inline void RayTracer::RenderContext::setNumRaySegments(
+	unsigned int numRaySegments
+){
+	this->numRaySegments = numRaySegments;
+}
+
+inline unsigned int RayTracer::RenderContext::getNumRaySegments() const{
+	return numRaySegments;
 }
 
 inline void RayTracer::HitDescriptor::setRaySource(
