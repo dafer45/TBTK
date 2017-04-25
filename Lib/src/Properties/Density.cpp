@@ -86,5 +86,25 @@ Density& Density::operator=(Density &&rhs){
 	return *this;
 }
 
+double Density::getMin() const{
+	const double *data = getData();
+	double min = data[0];
+	for(unsigned int n = 1; n < getSize(); n++)
+		if(data[n] < min)
+			min = data[n];
+
+	return min;
+}
+
+double Density::getMax() const{
+	const double *data = getData();
+	double max = data[0];
+	for(unsigned int n = 1; n < getSize(); n++)
+		if(data[n] > max)
+			max = data[n];
+
+	return max;
+}
+
 };	//End of namespace Property
 };	//End of namespace TBTK

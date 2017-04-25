@@ -84,6 +84,9 @@ public:
 	/** Get size. */
 	unsigned int size() const;
 
+	/** Reserves memory for the Index. */
+	void reserve(unsigned int size);
+
 	/** Push subindex at the back of the index. */
 	void push_back(int subindex);
 
@@ -118,7 +121,7 @@ public:
 	/** Comparison operator. Returns false if the TreeNode structure would
 	 *  generate a larger Hilbert space index for i1 than for i2. */
 	friend bool operator>(const Index &i1, const Index &i2);
-private:
+//private:
 	/** Subindex container. */
 	std::vector<int> indices;
 };
@@ -212,6 +215,10 @@ inline const int& Index::at(unsigned int n) const{
 
 inline unsigned int Index::size() const{
 	return indices.size();
+}
+
+inline void Index::reserve(unsigned int size){
+	indices.reserve(size);
 }
 
 inline void Index::push_back(int subindex){

@@ -189,6 +189,7 @@ Index ParallelepipedCell::getCellIndex(
 
 //	Index cellIndex({});
 	Index cellIndex;
+	cellIndex.reserve(dimensions);	//Optimization
 	for(unsigned int n = 0; n < dimensions; n++){
 		double v = Vector3d::dotProduct(
 			coordinateVector,
@@ -249,6 +250,7 @@ Index ParallelepipedCell::getCellIndex(
 	}
 
 	Index cellIndex;
+	cellIndex.reserve(dimensions);	//Optimization
 	for(unsigned int n = 0; n < dimensions; n++){
 		double v = Vector3d::dotProduct(
 			coordinateVector,

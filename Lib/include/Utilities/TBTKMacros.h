@@ -28,8 +28,25 @@
 #include <cstring>
 #include <sstream>
 
-#define TBTKAssert(expression, function, message, hint)	\
-	if(!(expression)){	\
+#ifdef TBTKOptimize
+	#define TBTKAssert(expression, function, message, hint)	;
+	#define TBTKExit(function, message, hint) exit(1);
+#else
+	#define TBTKAssert(expression, function, message, hint)	\
+		if(!(expression)){	\
+			TBTK::Streams::err << "Error in " << function << "\n";	\
+			TBTK::Streams::err << "\t" << message << "\n";	\
+			std::stringstream hintStream;	\
+			hintStream << hint;	\
+			if(std::strcmp(hintStream.str().c_str(), "") != 0)	\
+				TBTK::Streams::err << "\tHint: " << hint << "\n";	\
+			TBTK::Streams::err << "\tWhere: " << __FILE__ << ", " << __LINE__ << "\n";	\
+			if(TBTK::Streams::logIsOpen())	\
+				TBTK::Streams::closeLog();	\
+			exit(1);	\
+		}
+
+	#define TBTKExit(function, message, hint)	\
 		TBTK::Streams::err << "Error in " << function << "\n";	\
 		TBTK::Streams::err << "\t" << message << "\n";	\
 		std::stringstream hintStream;	\
@@ -39,20 +56,8 @@
 		TBTK::Streams::err << "\tWhere: " << __FILE__ << ", " << __LINE__ << "\n";	\
 		if(TBTK::Streams::logIsOpen())	\
 			TBTK::Streams::closeLog();	\
-		exit(1);	\
-	}
-
-#define TBTKExit(function, message, hint)	\
-	TBTK::Streams::err << "Error in " << function << "\n";	\
-	TBTK::Streams::err << "\t" << message << "\n";	\
-	std::stringstream hintStream;	\
-	hintStream << hint;	\
-	if(std::strcmp(hintStream.str().c_str(), "") != 0)	\
-		TBTK::Streams::err << "\tHint: " << hint << "\n";	\
-	TBTK::Streams::err << "\tWhere: " << __FILE__ << ", " << __LINE__ << "\n";	\
-	if(TBTK::Streams::logIsOpen())	\
-		TBTK::Streams::closeLog();	\
-	exit(1);
+		exit(1);
+#endif
 
 #define TBTKNotYetImplemented(function)	\
 	TBTK::Streams::err << "Error in " << function << "\n";	\

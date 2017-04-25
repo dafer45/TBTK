@@ -182,6 +182,45 @@ complex<double> WaveFunction::operator()(
 	}
 }
 
+double WaveFunction::getMinAbs() const{
+	const complex<double> *data = getData();
+	double min = abs(data[0]);
+	for(unsigned int n = 1; n < getSize(); n++)
+		if(abs(data[n]) < min)
+			min = abs(data[n]);
+
+	return min;
+}
+
+double WaveFunction::getMaxAbs() const{
+	const complex<double> *data = getData();
+	double max = abs(data[0]);
+	for(unsigned int n = 1; n < getSize(); n++)
+		if(abs(data[n]) > max)
+			max = abs(data[n]);
+
+	return max;
+}
+
+double WaveFunction::getMinArg() const{
+	const complex<double> *data = getData();
+	double min = arg(data[0]);
+	for(unsigned int n = 1; n < getSize(); n++)
+		if(arg(data[n]) < min)
+			min = arg(data[n]);
+
+	return min;
+}
+
+double WaveFunction::getMaxArg() const{
+	const complex<double> *data = getData();
+	double max = arg(data[0]);
+	for(unsigned int n = 1; n < getSize(); n++)
+		if(arg(data[n]) > max)
+			max = arg(data[n]);
+
+	return max;
+}
 
 };	//End of namespace Property
 };	//End of namespace TBTK

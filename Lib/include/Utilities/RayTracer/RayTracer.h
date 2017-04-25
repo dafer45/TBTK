@@ -121,6 +121,16 @@ public:
 		unsigned int state
 	);
 
+	/** Plot a field. */
+	void plot(
+		Field<std::complex<double>, double> &field
+	);
+
+	/** Plot fields. */
+	void plot(
+		const std::vector<const FieldWrapper*> &fields
+	);
+
 	/** Interactive. */
 	void interactivePlot(
 		const Model &model,
@@ -379,7 +389,7 @@ private:
 	void render(
 		const IndexDescriptor &indexDescriptor,
 		const Model &model,
-		const std::vector<FieldWrapper> &fields,
+		const std::vector<const FieldWrapper*> &fields,
 		std::function<Material(HitDescriptor &hitDescriptor)> &&lambdaColorPicker,
 		std::function<void(cv::Mat &canvas, const Index &index)> &&lambdaInteractive = {}
 	);
@@ -390,10 +400,17 @@ private:
 		const Vector3d &raySource,
 		const Vector3d &rayDirection,
 		const IndexTree &indexTree,
-		const std::vector<FieldWrapper> &fields,
+		const std::vector<const FieldWrapper*> &fields,
 		std::vector<HitDescriptor> &hitDescriptors,
 		std::function<Material(HitDescriptor &hitDescriptor)> lambdaColorPicker,
 		unsigned int deflections = 0
+	);
+
+	/** Trace a ray trough a set of fields. */
+	Color traceFields(
+		const std::vector<const FieldWrapper*> &fields,
+		const Vector3d &raySource,
+		const Vector3d &rayDirection
 	);
 
 	/** Returns the canvas converted to char-type. */

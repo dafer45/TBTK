@@ -58,6 +58,12 @@ public:
 
 	/** Move assignment operator. */
 	Density& operator=(Density &&rhs);
+
+	/** Get min value. */
+	double getMin() const;
+
+	/** Get max value. */
+	double getMax() const;
 private:
 };
 

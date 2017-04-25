@@ -89,6 +89,18 @@ public:
 		const Index &index,
 		unsigned int state
 	) const;
+
+	/** Get min absolute value. */
+	double getMinAbs() const;
+
+	/** Get max absolute value. */
+	double getMaxAbs() const;
+
+	/** Get min argument value. */
+	double getMinArg() const;
+
+	/** Get max argument value. */
+	double getMaxArg() const;
 private:
 	/** Flag indicating whether the state indices for a continuous set.
 	 *  Allows for quicker access. */

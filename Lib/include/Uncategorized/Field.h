@@ -33,6 +33,12 @@ class Field{
 public:
 	/** Returns the value of the field at the position specified by the argument. */
 	virtual const DataType& operator()(std::initializer_list<ArgumentType> argument) const = 0;
+
+	/** Get coordinates. */
+	virtual const std::vector<double>& getCoordinates() const = 0;
+
+	/** Get the radial extent of the field. */
+	virtual double getExtent() const = 0;
 private:
 };
 

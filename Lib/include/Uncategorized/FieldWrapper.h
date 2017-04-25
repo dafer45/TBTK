@@ -45,6 +45,24 @@ public:
 	/** Constructor. */
 	template<typename DataType, typename ArgumentType>
 	FieldWrapper(Field<DataType, ArgumentType> &field);
+
+	/** Get data type. */
+	DataType getDataType() const;
+
+	/** Get argument type. */
+	ArgumentType getArgumentType() const;
+
+	/** Function call operator wrapping Field::operator(). */
+	template<typename Data, typename Argument>
+	const Data& operator()(std::initializer_list<Argument> arguments) const;
+
+	/** Get coordinates. */
+	template<typename Data, typename Argument>
+	const std::vector<double>& getCoordinates() const;
+
+	/** Wrapping Field::getExtent(). */
+	template<typename Data, typename Argument>
+	double getExtent() const;
 private:
 	/** Pointer to field. */
 	void *field;
@@ -61,6 +79,31 @@ inline FieldWrapper::FieldWrapper(Field<std::complex<double>, double> &field){
 	this->field = &field;
 	dataType = DataType::ComplexDouble;
 	argumentType = ArgumentType::Double;
+}
+
+inline FieldWrapper::DataType FieldWrapper::getDataType() const{
+	return dataType;
+}
+
+inline FieldWrapper::ArgumentType FieldWrapper::getArgumentType() const{
+	return argumentType;
+}
+
+template<>
+inline const std::complex<double>& FieldWrapper::operator()<std::complex<double>, double>(
+	std::initializer_list<double> arguments
+) const{
+	return ((Field<std::complex<double>, double>*)field)->operator()(arguments);
+}
+
+template<>
+inline const std::vector<double>& FieldWrapper::getCoordinates<std::complex<double>, double>() const{
+	return ((Field<std::complex<double>, double>*)field)->getCoordinates();
+}
+
+template<>
+inline double FieldWrapper::getExtent<std::complex<double>, double>() const{
+	return ((Field<std::complex<double>, double>*)field)->getExtent();
 }
 
 };	//End namespace TBTK

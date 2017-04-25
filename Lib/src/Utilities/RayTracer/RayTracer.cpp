@@ -107,17 +107,20 @@ void RayTracer::plot(const Model& model, const Property::Density &density){
 			<< " properties."
 	);
 
-	vector<FieldWrapper> emptyFields;
+	double min = density.getMin();
+	double max = density.getMax();
+
+	vector<const FieldWrapper*> emptyFields;
 	render(
 		indexDescriptor,
 		model,
 		emptyFields,
-		[&density](const HitDescriptor &hitDescriptor) -> RayTracer::Material
+		[&density, min, max](const HitDescriptor &hitDescriptor) -> RayTracer::Material
 		{
 			Material material;
-			material.color.r = density(hitDescriptor.getIndex());
-			material.color.g = density(hitDescriptor.getIndex());
-			material.color.b = density(hitDescriptor.getIndex());
+			material.color.r = 255*(density(hitDescriptor.getIndex()) - min)/(max - min);
+			material.color.g = 255*(density(hitDescriptor.getIndex()) - min)/(max - min);
+			material.color.b = 255*(density(hitDescriptor.getIndex()) - min)/(max - min);
 
 			return material;
 		}
@@ -138,7 +141,7 @@ void RayTracer::plot(
 			<< " properties."
 	);
 
-	vector<FieldWrapper> emptyFields;
+	vector<const FieldWrapper*> emptyFields;
 	render(
 		indexDescriptor,
 		model,
@@ -188,25 +191,74 @@ void RayTracer::plot(
 			<< " properties."
 	);
 
-	vector<FieldWrapper> emptyFields;
+//	double minAbs = waveFunction.getMinAbs();
+	double maxAbs = waveFunction.getMaxAbs();
+
+	vector<const FieldWrapper*> emptyFields;
 	render(
 		indexDescriptor,
 		model,
 		emptyFields,
-		[&waveFunction, state](HitDescriptor &hitDescriptor) -> RayTracer::Material
+		[&waveFunction, state, maxAbs](HitDescriptor &hitDescriptor) -> RayTracer::Material
 		{
 			complex<double> amplitude = waveFunction(hitDescriptor.getIndex(), state);
 			double absolute = abs(amplitude);
+			absolute = absolute/maxAbs;
 			double argument = arg(amplitude);
 			if(argument < 0)
 				argument += 2*M_PI;
 
 			Material material;
-			material.color.r = absolute*(2*M_PI - argument);
+			material.color.r = 255*absolute*(2*M_PI - argument)/(2*M_PI);
 			material.color.g = 0;
-			material.color.b = absolute*argument;
+			material.color.b = 255*absolute*argument/(2*M_PI);
 
 			return material;
+		}
+	);
+}
+
+void RayTracer::plot(
+	Field<complex<double>, double> &field
+){
+	vector<const FieldWrapper*> fields;
+	fields.push_back(new FieldWrapper(field));
+
+	//Dummies
+	IndexDescriptor emptyIndexDescriptor(IndexDescriptor::Format::Custom);
+	Model emptyModel;
+	emptyModel.construct();
+
+	render(
+		emptyIndexDescriptor,
+		emptyModel,
+		fields,
+		[](HitDescriptor &hitDescriptor) -> RayTracer::Material
+		{
+			return Material();
+		}
+	);
+}
+
+void RayTracer::plot(
+	const vector<const FieldWrapper*> &fields
+){
+/*	vector<const FieldWrapper*> fields;
+	for(unsigned int n
+	fields.push_back(new FieldWrapper(field));*/
+
+	//Dummies
+	IndexDescriptor emptyIndexDescriptor(IndexDescriptor::Format::Custom);
+	Model emptyModel;
+	emptyModel.construct();
+
+	render(
+		emptyIndexDescriptor,
+		emptyModel,
+		fields,
+		[](HitDescriptor &hitDescriptor) -> RayTracer::Material
+		{
+			return Material();
 		}
 	);
 }
@@ -227,7 +279,7 @@ void RayTracer::interactivePlot(
 			<< " properties."
 	);
 
-	vector<FieldWrapper> emptyFields;
+	vector<const FieldWrapper*> emptyFields;
 	render(
 		indexDescriptor,
 		model,
@@ -289,23 +341,25 @@ void RayTracer::interactivePlot(
 void RayTracer::render(
 	const IndexDescriptor &indexDescriptor,
 	const Model &model,
-	const vector<FieldWrapper> &fields,
+	const vector<const FieldWrapper*> &fields,
 	function<Material(HitDescriptor &hitDescriptor)> &&lambdaColorPicker,
 	function<void(Mat &canvas, const Index &index)> &&lambdaInteractive
 ){
+	//Setup viewport.
 	const Vector3d &cameraPosition = renderContext.getCameraPosition();
 	const Vector3d &focus = renderContext.getFocus();
 	const Vector3d &up = renderContext.getUp();
 	unsigned int width = renderContext.getWidth();
 	unsigned int height = renderContext.getHeight();
-
 	Vector3d unitY = up.unit();
 	Vector3d unitX = ((focus - cameraPosition)*up).unit();
 	unitY = (unitX*(focus - cameraPosition)).unit();
 	double scaleFactor = (focus - cameraPosition).norm()/(double)width;
 
+	//Get geometry.
 	const Geometry *geometry = model.getGeometry();
 
+	//Setup IndexTree.
 	const IndexTree &indexTree = indexDescriptor.getIndexTree();
 	IndexTree::Iterator iterator = indexTree.begin();
 	const Index *index;
@@ -329,12 +383,14 @@ void RayTracer::render(
 		iterator.searchNext();
 	}
 
+	//Setup canvas and HitDescriptors.
 	if(renderResult != nullptr)
 		delete renderResult;
 	renderResult = new RenderResult(width, height);
 	Mat canvas = renderResult->getCanvas();
 	vector<HitDescriptor> **hitDescriptors = renderResult->getHitDescriptors();
 
+	//Render.
 	for(unsigned int x = 0; x < width; x++){
 		for(unsigned int y = 0; y < height; y++){
 			Vector3d target = focus
@@ -359,6 +415,7 @@ void RayTracer::render(
 		}
 	}
 
+	//Run interactive mode if lambdaInteractive is defined.
 	if(lambdaInteractive){
 		namedWindow("Traced image", WINDOW_AUTOSIZE);
 		namedWindow("Property window");
@@ -416,21 +473,24 @@ RayTracer::Color RayTracer::trace(
 	const Vector3d &raySource,
 	const Vector3d &rayDirection,
 	const IndexTree &indexTree,
-	const vector<FieldWrapper> &fields,
+	const vector<const FieldWrapper*> &fields,
 	vector<HitDescriptor> &hitDescriptors,
 	function<Material(HitDescriptor &hitDescriptor)> lambdaColorPicker,
 	unsigned int numDeflections
 ){
+	//Parameters.
 	double stateRadius = renderContext.getStateRadius();
 
+	//Trace ray and determine hit objects.
 	vector<unsigned int> hits;
-	for(unsigned int n = 0; n < coordinates.size(); n++)
+	for(unsigned int n = 0; n < coordinates.size(); n++){
 		if(
 			((coordinates.at(n) - raySource)*rayDirection).norm() < stateRadius
 			&& Vector3d::dotProduct(coordinates.at(n) - raySource, rayDirection) > 0
 		){
 			hits.push_back(n);
 		}
+	}
 
 	Color color;
 	color.r = 0;
@@ -462,8 +522,18 @@ RayTracer::Color RayTracer::trace(
 				minDistanceIndex
 			)
 		);
-
 		hitDescriptors.push_back(hitDescriptor);
+
+		if(fields.size() > 0){
+			Color fieldColor = traceFields(
+				fields,
+				raySource,
+				hitDescriptor.getImpactPosition()
+			);
+			color.r += fieldColor.r;
+			color.g += fieldColor.g;
+			color.b += fieldColor.b;
+		}
 
 		Material material = lambdaColorPicker(
 			hitDescriptor
@@ -474,9 +544,9 @@ RayTracer::Color RayTracer::trace(
 			directionFromObject.unit(),
 			Vector3d({0, 0, 1})
 		);
-		color.r = material.color.r*(material.ambient + material.diffusive*lightProjection);
-		color.g = material.color.g*(material.ambient + material.diffusive*lightProjection);
-		color.b = material.color.b*(material.ambient + material.diffusive*lightProjection);
+		color.r = material.color.r*(material.ambient + material.diffusive*lightProjection)/(material.ambient + material.diffusive);
+		color.g = material.color.g*(material.ambient + material.diffusive*lightProjection)/(material.ambient + material.diffusive);
+		color.b = material.color.b*(material.ambient + material.diffusive*lightProjection)/(material.ambient + material.diffusive);
 
 		hitDescriptor.getDirectionFromObject();
 		if(numDeflections != 0){
@@ -496,9 +566,74 @@ RayTracer::Color RayTracer::trace(
 				numDeflections - 1
 			);
 
-			color.r += material.specular*specularColor.r;
-			color.g += material.specular*specularColor.g;
-			color.b += material.specular*specularColor.b;
+			color.r = color.r*(1 - material.specular) + material.specular*specularColor.r;
+			color.g = color.g*(1 - material.specular) + material.specular*specularColor.g;
+			color.b = color.b*(1 - material.specular) + material.specular*specularColor.b;
+		}
+	}
+	else if(fields.size() > 0){
+		Color fieldColor = traceFields(
+			fields,
+			raySource,
+			raySource + rayDirection*renderContext.getRayLength()
+		);
+		color.r = fieldColor.r;
+		color.g = fieldColor.g;
+		color.b = fieldColor.b;
+	}
+
+	return color;
+}
+
+RayTracer::Color RayTracer::traceFields(
+	const vector<const FieldWrapper*> &fields,
+	const Vector3d &raySource,
+	const Vector3d &rayEnd
+){
+	Color color;
+	color.r = 0;
+	color.g = 0;
+	color.b = 0;
+
+	for(unsigned int n = 0; n < fields.size(); n++){
+		const FieldWrapper *field = fields.at(n);
+		FieldWrapper::DataType dataType = field->getDataType();
+		FieldWrapper::ArgumentType argumentType = field->getArgumentType();
+		TBTKAssert(
+			argumentType == FieldWrapper::ArgumentType::Double,
+			"RayTracer::traceField()",
+			"Unable to trace fields with the given argument type.",
+			""
+		);
+		switch(dataType){
+		case FieldWrapper::DataType::ComplexDouble:
+		{
+			Vector3d coordinates(field->getCoordinates<complex<double>, double>());
+			double extent = field->getExtent<complex<double>, double>();
+			Vector3d rayDirection = (rayEnd - raySource).unit();
+			if(((coordinates - raySource)*rayDirection).norm() < extent){
+				Vector3d v = raySource;
+				Vector3d dv = (rayEnd - raySource)/renderContext.getNumRaySegments();
+				double squaredExtent = extent*extent;
+				for(unsigned int n = 0; n < renderContext.getNumRaySegments(); n++){
+					v = v + dv;
+					if(Vector3d::dotProduct(v - coordinates, v - coordinates) > squaredExtent)
+						continue;
+					complex<double> amplitude = field->operator()<complex<double>, double>({v.x, v.y, v.z});
+					double value = amplitude.real()*amplitude.real() + amplitude.imag()*amplitude.imag();
+					color.r += value;
+					color.g += value;
+					color.b += value;
+				}
+			}
+			break;
+		}
+		default:
+			TBTKExit(
+				"RayTracer::traceField()",
+				"Unable to trace field with the given data type.",
+				""
+			);
 		}
 	}
 
@@ -533,10 +668,11 @@ Mat RayTracer::getCharImage() const{
 	for(int x = 0; x < canvas.cols; x++){
 		for(int y = 0; y < canvas.rows; y++){
 			for(unsigned int n = 0; n < 3; n++){
-				if(hitDescriptors[x][y].size() > 0)
-					image.at<Vec3b>(canvas.rows - 1 - y, x)[n] = 255*((canvas.at<Vec3f>(canvas.rows - 1 - y, x)[n] - minValue)/(maxValue - minValue));
-				else
-					image.at<Vec3b>(canvas.rows - 1 - y, x)[n] = 0;
+//				if(hitDescriptors[x][y].size() > 0)
+//					image.at<Vec3b>(canvas.rows - 1 - y, x)[n] = 255*((canvas.at<Vec3f>(canvas.rows - 1 - y, x)[n] - minValue)/(maxValue - minValue));
+//				else
+//					image.at<Vec3b>(canvas.rows - 1 - y, x)[n] = 0;
+					image.at<Vec3b>(canvas.rows - 1 - y, x)[n] = canvas.at<Vec3f>(canvas.rows - 1 - y, x)[n];
 			}
 		}
 	}
