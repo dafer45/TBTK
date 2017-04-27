@@ -621,9 +621,9 @@ RayTracer::Color RayTracer::traceFields(
 						continue;
 					complex<double> amplitude = field->operator()<complex<double>, double>({v.x, v.y, v.z});
 					double value = amplitude.real()*amplitude.real() + amplitude.imag()*amplitude.imag();
-					color.r += value;
-					color.g += value;
-					color.b += value;
+					color.r += value*100;
+					color.g += value*100;
+					color.b += value*100;
 				}
 			}
 			break;
