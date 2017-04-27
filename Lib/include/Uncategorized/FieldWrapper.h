@@ -54,15 +54,21 @@ public:
 
 	/** Function call operator wrapping Field::operator(). */
 	template<typename Data, typename Argument>
-	const Data& operator()(std::initializer_list<Argument> arguments) const;
+	Data operator()(std::initializer_list<Argument> arguments) const;
+
+	/** Returns true if the wrapped field is compact. */
+	template<typename Data, typename Argument>
+	bool getIsCompact() const;
 
 	/** Get coordinates. */
 	template<typename Data, typename Argument>
-	const std::vector<double>& getCoordinates() const;
+	const std::vector<Argument>& getCoordinates() const;
+//	const std::vector<double>& getCoordinates() const;
 
 	/** Wrapping Field::getExtent(). */
 	template<typename Data, typename Argument>
-	double getExtent() const;
+	Argument getExtent() const;
+//	double getExtent() const;
 private:
 	/** Pointer to field. */
 	void *field;
@@ -90,10 +96,15 @@ inline FieldWrapper::ArgumentType FieldWrapper::getArgumentType() const{
 }
 
 template<>
-inline const std::complex<double>& FieldWrapper::operator()<std::complex<double>, double>(
+inline std::complex<double> FieldWrapper::operator()<std::complex<double>, double>(
 	std::initializer_list<double> arguments
 ) const{
 	return ((Field<std::complex<double>, double>*)field)->operator()(arguments);
+}
+
+template<>
+inline bool FieldWrapper::getIsCompact<std::complex<double>, double>() const{
+	return ((Field<std::complex<double>, double>*)field)->getIsCompact();
 }
 
 template<>

@@ -23,9 +23,10 @@
 #ifndef COM_DAFER45_TBTK_VECTOR_3D
 #define COM_DAFER45_TBTK_VECTOR_3D
 
-#include <initializer_list>
-#include <vector>
 #include <cmath>
+#include <initializer_list>
+#include <ostream>
+#include <vector>
 
 namespace TBTK{
 
@@ -93,6 +94,9 @@ public:
 
 	/** Get a std::vector<double> representation of the vector. */
 	const std::vector<double> getStdVector() const;
+
+	/** operator<< for ostream. */
+	friend std::ostream& operator<<(std::ostream &stream, const Vector3d &v);
 };
 
 inline const Vector3d Vector3d::operator+(const Vector3d &rhs) const{
@@ -193,6 +197,12 @@ inline const std::vector<double> Vector3d::getStdVector() const{
 	result.push_back(z);
 
 	return result;
+}
+
+inline std::ostream& operator<<(std::ostream &stream, const Vector3d &v){
+	stream << "(" << v.x << ", " << v.y << ", " << v.z << ")";
+
+	return stream;
 }
 
 };	//End namespace TBTK

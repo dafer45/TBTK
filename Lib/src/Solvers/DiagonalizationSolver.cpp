@@ -33,6 +33,7 @@ DiagonalizationSolver::DiagonalizationSolver(){
 
 	maxIterations = 50;
 	scCallback = NULL;
+	verbose = true;
 }
 
 DiagonalizationSolver::~DiagonalizationSolver(){
