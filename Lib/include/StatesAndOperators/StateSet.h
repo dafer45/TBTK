@@ -45,6 +45,9 @@ public:
 
 	/** Get states. */
 	const std::vector<AbstractState*>& getStates() const;
+
+	/** Get number of states. */
+	unsigned int getNumStates() const;
 private:
 	/** Pointers to states. */
 	std::vector<AbstractState*> states;
@@ -59,6 +62,10 @@ inline void StateSet::addState(AbstractState *state){
 
 inline const std::vector<AbstractState*>& StateSet::getStates() const{
 	return states;
+}
+
+inline unsigned int StateSet::getNumStates() const{
+	return states.size();
 }
 
 };	//End of namespace TBTK
