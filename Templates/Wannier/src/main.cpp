@@ -17,7 +17,7 @@
  *  @file main.cpp
  *  @brief Wannier
  *
- *  Empty template project.
+ *  Demonstration of the WannierParser and ReciprocalLattice.
  *
  *  @author Kristofer Björnson
  */
