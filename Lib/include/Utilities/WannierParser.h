@@ -27,6 +27,7 @@
 #include "ParallelepipedArrayState.h"
 #include "ReciprocalLattice.h"
 
+#include <initializer_list>
 #include <string>
 #include <vector>
 
@@ -38,7 +39,14 @@ public:
 	UnitCell* parseMatrixElements(std::string filename);
 
 	/** Parse Wannier functions. */
-	std::vector<ParallelepipedArrayState*> parseWannierFunctions(std::string filename);
+	std::vector<ParallelepipedArrayState*> parseWannierFunctions(
+		std::string filename,
+		unsigned int resolutionX,
+		unsigned int resolutionY,
+		unsigned int resolutionZ,
+		unsigned int numStates,
+		std::initializer_list<std::initializer_list<double>> basisVectors
+	);
 
 	/** Get reciprocal lattice. */
 	ReciprocalLattice* getReciprocalLattice();

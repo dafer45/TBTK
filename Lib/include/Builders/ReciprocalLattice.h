@@ -80,6 +80,9 @@ public:
 
 	/** Get reciprocal lattice vectors. */
 	const std::vector<std::vector<double>>& getReciprocalLatticeVectors() const;
+
+	/** Get number of bands. */
+	unsigned int getNumBands() const;
 private:
 	/** Unit cell used to create reciprocal Model. */
 	UnitCell *unitCell;
@@ -115,6 +118,10 @@ private:
 
 inline const std::vector<std::vector<double>>& ReciprocalLattice::getReciprocalLatticeVectors() const{
 	return reciprocalLatticeVectors;
+}
+
+inline unsigned int ReciprocalLattice::getNumBands() const{
+	return unitCell->getNumStates();
 }
 
 };	//End of namespace TBTK

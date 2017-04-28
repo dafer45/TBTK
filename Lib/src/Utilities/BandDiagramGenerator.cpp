@@ -79,10 +79,10 @@ vector<vector<double>> BandDiagramGenerator::generateBandDiagram(
 			nesting.back().push_back(*((nestingVectors.begin() + n)->begin() + c));
 	}
 
-	const unsigned int NUM_ORBITALS = 5;
+	unsigned int numBands = reciprocalLattice->getNumBands();
 
 	vector<vector<double>> bandDiagram;
-	for(unsigned int n = 0; n < NUM_ORBITALS*nesting.size(); n++)
+	for(unsigned int n = 0; n < numBands*nesting.size(); n++)
 		bandDiagram.push_back(vector<double>());
 	for(unsigned int n = 1; n < kPoints.size(); n++){
 		const initializer_list<double> kPointStart = *(kPoints.begin() + n - 1);
@@ -119,8 +119,8 @@ vector<vector<double>> BandDiagramGenerator::generateBandDiagram(
 				solver.setModel(model);
 				solver.run();
 
-				for(unsigned int i = 0; i < NUM_ORBITALS; i++)
-					bandDiagram[i + NUM_ORBITALS*m].push_back(solver.getEigenValue(i));
+				for(unsigned int i = 0; i < numBands; i++)
+					bandDiagram[i + numBands*m].push_back(solver.getEigenValue(i));
 
 				delete model;
 				Timer::tock();

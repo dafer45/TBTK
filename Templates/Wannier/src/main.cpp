@@ -1,4 +1,4 @@
-/* Copyright 2016 Kristofer Björnson
+/* Copyright 2017 Kristofer Björnson
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
 
 /** @package TBTKtemp
  *  @file main.cpp
- *  @brief New project
+ *  @brief Wannier
  *
  *  Empty template project.
  *
@@ -45,19 +45,20 @@ const complex<double> i(0, 1);
 
 int main(int argc, char **argv){
 	TBTKAssert(
-		argc == 2,
+		argc == 3,
 		"main()",
-		"Need one input parameter (filename).",
+		"Need two input parameters. Filenames for matrix elements and Wannier functions.",
 		""
 	);
 	Timer::tick("Full calculation");
 	FileWriter::clear();
 
-	string filename = argv[1];
+	string filenameMatrixElements = argv[1];
+	string filenameWannierFunctions = argv[2];
 
-/*	Timer::tick("Parse");
+	Timer::tick("Parse");
 	WannierParser wannierParser;
-	UnitCell *unitCell = wannierParser.parseMatrixElements(filename);
+	UnitCell *unitCell = wannierParser.parseMatrixElements(filenameMatrixElements);
 	ReciprocalLattice *reciprocalLattice = new ReciprocalLattice(unitCell);
 	Timer::tock();
 
@@ -79,20 +80,29 @@ int main(int argc, char **argv){
 	plotter.setWidth(1200);
 	plotter.setHeight(800);
 	plotter.setHold(true);
-//	for(unsigned int n = 0; n < 2*wannierParser.getMatrixDimension(); n++){
 	for(unsigned int n = 0; n < 2*unitCell->getNumStates(); n++){
 		Streams::out << n << "\n";
 		plotter.plot(data1[n]);
 	}
-	plotter.save("figures/BandStructureA.png");*/
+	plotter.save("figures/BandStructureA.png");
 
-	WannierParser wannierParser;
-	vector<ParallelepipedArrayState*> ppaStates = wannierParser.parseWannierFunctions(filename);
+	vector<ParallelepipedArrayState*> ppaStates = wannierParser.parseWannierFunctions(
+		filenameWannierFunctions,
+		141,
+		141,
+		81,
+		10,
+		{
+			{7.0*7.46328,	0.0,		0.0},
+			{0.0,		7.0*7.46328,	0.0},
+			{0.0,		0.0,		0.8*33.302916}
+		}
+	);
 
-	unsigned int NUM_STATES = 10;
+	unsigned int numWannierFunctions = ppaStates.size();
 	Timer::tick("Ray tracing individual Wannier functions.");
 	#pragma omp parallel for
-	for(unsigned int n = 0; n < NUM_STATES; n++){
+	for(unsigned int n = 0; n < numWannierFunctions; n++){
 		RayTracer rayTracer;
 		rayTracer.setCameraPosition({25, -25, 25});
 		rayTracer.setUp({0, 0, 1});
@@ -129,7 +139,7 @@ int main(int argc, char **argv){
 	rayTracer.setWidth(120);
 	rayTracer.setHeight(80);
 	vector<const FieldWrapper*> fields;
-	for(unsigned int n = 0; n < NUM_STATES; n++){
+	for(unsigned int n = 0; n < numWannierFunctions; n++){
 		for(int x = -10; x <= 10; x++){
 			for(int y = -10; y <= 10; y++){
 				ParallelepipedArrayState *clone = ppaStates[n]->clone();

@@ -96,24 +96,21 @@ UnitCell* WannierParser::parseMatrixElements(string filename){
 	return unitCell;
 }
 
-vector<ParallelepipedArrayState*> WannierParser::parseWannierFunctions(string filename){
+vector<ParallelepipedArrayState*> WannierParser::parseWannierFunctions(
+	string filename,
+	unsigned int resolutionX,
+	unsigned int resolutionY,
+	unsigned int resolutionZ,
+	unsigned int numStates,
+	initializer_list<initializer_list<double>> basisVectors
+){
 	ifstream fin(filename);
 
-	unsigned int resolutionX = 141;
-	unsigned int resolutionY = 141;
-	unsigned int resolutionZ = 81;
-
-	const unsigned int NUM_STATES = 10;
-
 	vector<ParallelepipedArrayState*> ppaStates;
-	for(unsigned int n = 0; n < NUM_STATES; n++){
+	for(unsigned int n = 0; n < numStates; n++){
 		ppaStates.push_back(
 			new ParallelepipedArrayState(
-				{
-					{7.0*7.46328,	0.0,		0.0},
-					{0.0,		7.0*7.46328,	0.0},
-					{0.0,		0.0,		0.8*33.302916}
-				},
+				basisVectors,
 				{resolutionX, resolutionY, resolutionZ}
 			)
 		);
@@ -127,7 +124,7 @@ vector<ParallelepipedArrayState*> WannierParser::parseWannierFunctions(string fi
 		fin >> x;
 		fin >> y;
 		fin >> z;
-		for(unsigned int n = 0; n < NUM_STATES; n++){
+		for(unsigned int n = 0; n < numStates; n++){
 			complex<double> amplitude;
 			fin >> amplitude;
 			ppaStates[n]->setAmplitude(amplitude,	{x, y, z});
