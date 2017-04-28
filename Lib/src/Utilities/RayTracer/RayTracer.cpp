@@ -621,9 +621,9 @@ RayTracer::Color RayTracer::traceFields(
 						continue;
 					complex<double> amplitude = field->operator()<complex<double>, double>({v.x, v.y, v.z});
 					double value = amplitude.real()*amplitude.real() + amplitude.imag()*amplitude.imag();
-					color.r += value*100;
-					color.g += value*100;
-					color.b += value*100;
+					color.r += value*(255 - color.r);
+					color.g += value*(255 - color.g);
+					color.b += value*(255 - color.b);
 				}
 			}
 			break;
@@ -663,7 +663,7 @@ Mat RayTracer::getCharImage() const{
 		}
 	}
 
-	vector<HitDescriptor>** hitDescriptors = renderResult->getHitDescriptors();
+//	vector<HitDescriptor>** hitDescriptors = renderResult->getHitDescriptors();
 	Mat image = Mat::zeros(canvas.rows, canvas.cols, CV_8UC3);
 	for(int x = 0; x < canvas.cols; x++){
 		for(int y = 0; y < canvas.rows; y++){
