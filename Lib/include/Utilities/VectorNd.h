@@ -56,6 +56,12 @@ public:
 	/** Move assignment operator. */
 	VectorNd& operator=(VectorNd &&vectorNd);
 
+	/** Accessor operator. */
+	double& operator[](unsigned int n);
+
+	/** Accessor operator. */
+	const double& operator[](unsigned int n) const;
+
 	/** Addition operator. */
 	const VectorNd operator+(const VectorNd &rhs) const;
 
@@ -100,6 +106,14 @@ private:
 	/** Data. */
 	double *data;
 };
+
+inline double& VectorNd::operator[](unsigned int n){
+	return data[n];
+}
+
+inline const double& VectorNd::operator[](unsigned int n) const{
+	return data[n];
+}
 
 inline const VectorNd VectorNd::operator+(const VectorNd &rhs) const{
 	TBTKAssert(
