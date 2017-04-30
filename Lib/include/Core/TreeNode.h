@@ -25,6 +25,7 @@
 
 #include "HoppingAmplitude.h"
 #include "IndexTree.h"
+#include "Serializeable.h"
 
 #include <vector>
 
@@ -32,10 +33,14 @@ namespace TBTK{
 
 /** TreeNode structure used to build a tree for stroing @link HoppingAmplitude
  *   HoppingAmplitudes @endlink. Used by AmplitudeSet.*/
-class TreeNode{
+class TreeNode : public Serializeable{
 public:
 	/** Constructor. */
 	TreeNode();
+
+	/** Constructor. Constructs the TreeNode from a serialization string.
+	 */
+	TreeNode(const std::string &serialization, Mode mode);
 
 	/** Add a HoppingAmplitude. */
 	void add(HoppingAmplitude ha);
@@ -121,21 +126,15 @@ public:
 
 	/** Returns Iterator initialized to point at first HoppingAmplitude. */
 	Iterator begin() const;
+
+	/** Implements Serializeable::serialize. */
+	virtual std::string serialize(Mode mode) const;
 private:
 	/** Basis index for the Hamiltonian. */
 	int basisIndex;
 
 	/** Basis size of Hamiltonian. */
 	int basisSize;
-
-	/** HoppingAmplitudes stored on this node, should only be non-empty if
-	 *  the node is a leaf node. That is, if the node corresponds to a last
-	 *   subindex index. */
-	std::vector<HoppingAmplitude> hoppingAmplitudes;
-
-	/** Child nodes. Never non-empty at the same time as hoppingAmplitudes
-	*/
-	std::vector<TreeNode> children;
 
 	/** Flag indicating whether all HoppingAmplitudes passed to this nodes
 	 *  child nodes have the same 'to' and 'from' subindex in the position
@@ -154,6 +153,15 @@ private:
 	 *
 	 *  For leaf nodes the value is irrelevant. */
 	bool isPotentialBlockSeparator;
+
+	/** HoppingAmplitudes stored on this node, should only be non-empty if
+	 *  the node is a leaf node. That is, if the node corresponds to a last
+	 *   subindex index. */
+	std::vector<HoppingAmplitude> hoppingAmplitudes;
+
+	/** Child nodes. Never non-empty at the same time as hoppingAmplitudes
+	*/
+	std::vector<TreeNode> children;
 
 	/** Add HoppingAmplitude. Is called by the public TreeNode::add and is
 	 *  called recursively. */

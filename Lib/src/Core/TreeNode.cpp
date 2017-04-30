@@ -34,6 +34,74 @@ TreeNode::TreeNode(){
 	isPotentialBlockSeparator = true;
 }
 
+TreeNode::TreeNode(const string &serialization, Mode mode){
+	switch(mode){
+	case Mode::Debug:
+	{
+		TBTKAssert(
+			validate(serialization, "TreeNode", mode),
+			"TreeNode::TreeNode()",
+			"Unable to parse string as TreeNode '" << serialization
+			<< "'.",
+			""
+		);
+		string content = getContent(serialization, mode);
+
+		vector<string> elements = split(content, mode);
+
+		stringstream ss;
+		ss.str(elements.at(0));
+		ss >> basisIndex;
+		ss.str(elements.at(1));
+		ss >> basisSize;
+		ss.str(elements.at(2));
+		ss >> isPotentialBlockSeparator;
+
+		unsigned int counter = 3;
+		while(
+			counter < elements.size() &&
+			getID(
+				elements.at(counter),
+				mode
+			).compare("HoppingAmplitude") == 0
+		){
+			Streams::out << "HoppingAmplitude:\t" << elements.at(counter) << "\n";
+			hoppingAmplitudes.push_back(
+				HoppingAmplitude(
+					elements.at(counter),
+					mode
+				)
+			);
+			counter++;
+		}
+		for(unsigned int n = counter; n < elements.size(); n++){
+			Streams::out << "Element:\t" << elements.at(n) << "\n";
+			TBTKAssert(
+				getID(
+					elements.at(n),
+					mode
+				).compare("TreeNode") == 0,
+				"TreeNode::TreeNode()",
+				"Unable to parse string as TreeNode. Expected"
+				<< " 'TreeNode' but found '"
+				<< getID(elements.at(n), mode) << "'.",
+				""
+			)
+			Streams::out << "TreeNode:\t" << elements.at(n) << "\n";
+			children.push_back(TreeNode(elements.at(n), mode));
+		}
+
+		break;
+	}
+	default:
+		TBTKExit(
+			"TreeNode::TreeNode()",
+			"Only Serializeable::Mode::Debug is supported yet.",
+			""
+		);
+	}
+}
+
 vector<Index> TreeNode::getIndexList(const Index &pattern) const{
 	vector<Index> indexList;
 
@@ -388,6 +456,37 @@ void TreeNode::sort(TreeNode *rootNode){
 	else if(children.size() != 0){
 		for(unsigned int n = 0; n < children.size(); n++)
 			children.at(n).sort(rootNode);
+	}
+}
+
+string TreeNode::serialize(Mode mode) const{
+	switch(mode){
+	case Mode::Debug:
+	{
+		stringstream ss;
+		ss << "TreeNode(";
+		ss << Serializeable::serialize(basisIndex, mode);
+		ss << "," << Serializeable::serialize(basisSize, mode);
+		ss << "," << Serializeable::serialize(isPotentialBlockSeparator, mode);
+		for(unsigned int n = 0; n < hoppingAmplitudes.size(); n++){
+			ss << ",";
+			ss << hoppingAmplitudes.at(n).serialize(mode);
+		}
+		for(unsigned int n = 0; n < children.size(); n++){
+			ss << ",";
+			ss << children.at(n).serialize(mode);
+		}
+
+		ss << ")";
+
+		return ss.str();
+	}
+	default:
+		TBTKExit(
+			"TreeNode::serialize()",
+			"Only Serializeable::Mode::Debug is supported yet.",
+			""
+		);
 	}
 }
 

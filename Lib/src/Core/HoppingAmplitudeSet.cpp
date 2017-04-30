@@ -35,6 +35,75 @@ HoppingAmplitudeSet::HoppingAmplitudeSet(){
 	cooValues = NULL;
 }
 
+HoppingAmplitudeSet::HoppingAmplitudeSet(
+	const string &serialization,
+	Mode mode
+){
+	switch(mode){
+	case Mode::Debug:
+	{
+		TBTKAssert(
+			validate(serialization, "HoppingAmplitudeSet", mode),
+			"HoppingAmplitudeSet::HoppingAmplitudeSet()",
+			"Unable to parse string as HoppingAmplitudeSet '"
+			<< serialization << "'.",
+			""
+		);
+		string content = getContent(serialization, mode);
+
+		vector<string> elements = split(content, mode);
+
+		tree = TreeNode(elements.at(0), mode);
+		stringstream ss;
+		ss.str(elements.at(1));
+		ss >> isConstructed;
+		ss.clear();
+		ss.str(elements.at(2));
+		ss >> isSorted;
+		ss.clear();
+		ss.str(elements.at(3));
+		ss >> numMatrixElements;
+		if(numMatrixElements == 0){
+			cooRowIndices = nullptr;
+			cooColIndices = nullptr;
+			cooValues = nullptr;
+		}
+		else{
+			cooRowIndices = new int[numMatrixElements];
+			cooColIndices = new int[numMatrixElements];
+			cooValues = new complex<double>[numMatrixElements];
+			unsigned int counter = 4;
+			for(int n = 0; n < numMatrixElements; n++){
+				ss.clear();
+				ss.str(elements.at(counter));
+				ss >> cooRowIndices[n];
+				counter++;
+			}
+			for(int n = 0; n < numMatrixElements; n++){
+				ss.clear();
+				ss.str(elements.at(counter));
+				ss >> cooColIndices[n];
+				counter++;
+			}
+			for(int n = 0; n < numMatrixElements; n++){
+				ss.clear();
+				ss.str(elements.at(counter));
+				ss >> cooValues[n];
+				counter++;
+			}
+		}
+
+		break;
+	}
+	default:
+		TBTKExit(
+			"HoppingAmplitudeSet::HoppingAMplitudeSet()",
+			"Only Serializeable::Mode::Debug is supported yet.",
+			""
+		);
+	}
+}
+
 HoppingAmplitudeSet::~HoppingAmplitudeSet(){
 	if(cooRowIndices != NULL)
 		delete [] cooRowIndices;
@@ -168,6 +237,37 @@ HoppingAmplitudeSet::Iterator HoppingAmplitudeSet::getIterator(
 	const Index &subspace
 ) const{
 	return HoppingAmplitudeSet::Iterator(tree.getSubTree(subspace));
+}
+
+string HoppingAmplitudeSet::serialize(Mode mode) const{
+	switch(mode){
+	case Mode::Debug:
+	{
+		stringstream ss;
+		ss << "HoppingAmplitudeSet(";
+		ss << tree.serialize(mode);
+		ss << "," << Serializeable::serialize(isConstructed, mode);
+		ss << "," << Serializeable::serialize(isSorted, mode);
+		ss << "," << Serializeable::serialize(numMatrixElements, mode);
+		if(numMatrixElements != -1){
+			for(int n = 0; n < numMatrixElements; n++)
+				ss << "," << Serializeable::serialize(cooRowIndices[n], mode);
+			for(int n = 0; n < numMatrixElements; n++)
+				ss << "," << Serializeable::serialize(cooColIndices[n], mode);
+			for(int n = 0; n < numMatrixElements; n++)
+				ss << "," << Serializeable::serialize(cooValues[n], mode);
+		}
+		ss << ")";
+
+		return ss.str();
+	}
+	default:
+		TBTKExit(
+			"HoppingAmplitudeSet::serialize()",
+			"Only Serializeable::Mode::Debug is supported yet.",
+			""
+		);
+	}
 }
 
 HoppingAmplitudeSet::Iterator::Iterator(const TreeNode* tree){

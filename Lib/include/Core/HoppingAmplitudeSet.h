@@ -24,6 +24,7 @@
 #define COM_DAFER45_TBTK_HOPPING_AMPLITUDE_SET
 
 #include "HoppingAmplitude.h"
+#include "Serializeable.h"
 #include "Streams.h"
 #include "TBTKMacros.h"
 #include "TreeNode.h"
@@ -42,10 +43,14 @@ namespace TBTK{
  *  has to be called in order to construct an appropriate Hilbert space. The
  *  HoppingAmplitudeSet is most importantly used by the Model to store the
  *  Hamiltonian. */
-class HoppingAmplitudeSet{
+class HoppingAmplitudeSet : public Serializeable{
 public:
 	/** Constructor. */
 	HoppingAmplitudeSet();
+
+	/** Constructor. Constructs the HoppingAmplitudeSet from a
+	 *  serialization string. */
+	HoppingAmplitudeSet(const std::string &serializeation, Mode mode);
 
 	/** Destructor. */
 	~HoppingAmplitudeSet();
@@ -113,7 +118,8 @@ public:
 	void reconstructCOO();
 
 	/** Get number of matrix elements in the Hamiltonian corresponding to
-	 *  the HoppingAmplitudeSet. */
+	 *  the HoppingAmplitudeSet. Only used if COO format has been
+	 *  constructed. */
 	int getNumMatrixElements() const;
 
 	/** Get row indices on COO format. */
@@ -205,6 +211,9 @@ public:
 		int *numHoppingAmplitudes,
 		int *maxIndexSize
 	) const;
+
+	/** Implements Serializeable::serialize(). */
+	virtual std::string serialize(Mode mode) const;
 private:
 	/** Root node for the tree structure in which HoppingAmplitudes are
 	 *  stored. */
@@ -218,7 +227,8 @@ private:
 	 */
 	bool isSorted;
 
-	/** Number of matrix elements in HoppingAmplitudeSet. */
+	/** Number of matrix elements in HoppingAmplitudeSet. Is only used and
+	 *  if COO format has been constructed and is otherwise -1. */
 	int numMatrixElements;
 
 	/** COO format row indices. */

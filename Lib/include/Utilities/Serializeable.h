@@ -31,6 +31,11 @@
 
 namespace TBTK{
 
+//Forward declaration of classes that are pseudo-Serializable (that implements
+//the Serializeable interface non-virtually).
+class Index;
+class HoppingAmplitude;
+
 class Serializeable{
 public:
 	/** Serializeation modes. Note that debug is not guaranteed to be
@@ -39,7 +44,7 @@ public:
 
 	/** Serialize object. */
 	virtual std::string serialize(Mode mode) const = 0;
-
+protected:
 	/** Validate serialization string. */
 	static bool validate(
 		const std::string &serialization,
@@ -61,7 +66,10 @@ public:
 		const std::string &content,
 		Mode mode
 	);
-protected:
+
+	/** Serialize bool. */
+	static std::string serialize(bool b, Mode mode);
+
 	/** Serialize int. */
 	static std::string serialize(int i, Mode mode);
 
@@ -73,14 +81,38 @@ protected:
 
 	/** Serialize complex<double>. */
 	static std::string serialize(std::complex<double> c, Mode mode);
+
+	/** Friend classes (Classes that are psudo-Serializeable because they
+	 *  are so small and often used that a virtual function would have a
+	 *  non-negligible performance penalty). */
+	friend class Index;
+	friend class HoppingAmplitude;
 };
+
+inline std::string Serializeable::serialize(bool b, Mode mode){
+	switch(mode){
+	case Mode::Debug:
+	{
+		std::stringstream ss;
+		ss << b;
+
+		return ss.str();
+	}
+	default:
+		TBTKExit(
+			"Serializeable::serialize()",
+			"Only Mode::Debug is supported yet.",
+			""
+		);
+	}
+}
 
 inline std::string Serializeable::serialize(int i, Mode mode){
 	switch(mode){
 	case Mode::Debug:
 	{
 		std::stringstream ss;
-		ss << i << " ";
+		ss << i;
 
 		return ss.str();
 	}
@@ -98,7 +130,7 @@ inline std::string Serializeable::serialize(unsigned int u, Mode mode){
 	case Mode::Debug:
 	{
 		std::stringstream ss;
-		ss << u << " ";
+		ss << u;
 
 		return ss.str();
 	}
@@ -116,7 +148,7 @@ inline std::string Serializeable::serialize(double d, Mode mode){
 	case Mode::Debug:
 	{
 		std::stringstream ss;
-		ss << d << " ";
+		ss << d;
 
 		return ss.str();
 	}
@@ -134,7 +166,7 @@ inline std::string Serializeable::serialize(std::complex<double> c, Mode mode){
 	case Mode::Debug:
 	{
 		std::stringstream ss;
-		ss << c << " ";
+		ss << c;
 
 		return ss.str();
 	}

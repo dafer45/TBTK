@@ -75,7 +75,7 @@ public:
 	HoppingAmplitude getHermitianConjugate() const;
 
 	/** Print HoppingAmplitude. Mainly for debugging. */
-	void print();
+	void print() const;
 
 	/** Get the amplitude value \f$a_{ij}\f$. */
 	std::complex<double> getAmplitude() const;

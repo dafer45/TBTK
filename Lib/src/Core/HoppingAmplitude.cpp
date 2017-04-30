@@ -109,7 +109,7 @@ HoppingAmplitude HoppingAmplitude::getHermitianConjugate() const{
 		return HoppingAmplitude(conj(amplitude), fromIndex, toIndex);
 }
 
-void HoppingAmplitude::print(){
+void HoppingAmplitude::print() const{
 	Streams::out << "From index:\t";
 	for(unsigned int n = 0; n < fromIndex.size(); n++){
 		Streams::out << fromIndex.at(n) << " ";
@@ -137,7 +137,7 @@ string HoppingAmplitude::serialize(Serializeable::Mode mode) const{
 	{
 		stringstream ss;
 		ss << "HoppingAmplitude(";
-		ss << amplitude << ",";
+		ss << Serializeable::serialize(amplitude, mode) << ",";
 		ss << toIndex.serialize(mode) << "," << fromIndex.serialize(mode);
 		ss << ")";
 

@@ -23,21 +23,29 @@
 #ifndef COM_DAFER45_TBTK_GEOMETRY
 #define COM_DAFER45_TBTK_GEOMETRY
 
-//#include "Model.h"
 #include "HoppingAmplitudeSet.h"
+#include "Serializeable.h"
 
 #include <initializer_list>
 
 namespace TBTK{
 	class FileReader;
 
-class Geometry{
+class Geometry : public Serializeable{
 public:
 	/** Constructor. */
 	Geometry(
 		int dimensions,
 		int numSpecifiers,
 		const HoppingAmplitudeSet *hoppingAmplitudeSet
+	);
+
+	/** Constructor. Constructs the Geometry from a serialization string.
+	 */
+	Geometry(
+		const std::string &serialization,
+		Mode mode,
+		const HoppingAmplitudeSet &hoppingAmplitudeSet
 	);
 
 	/** Destructor. */
@@ -114,6 +122,9 @@ public:
 
 	/** Get size of corresponding Hilbert space. */
 	int getBasisSize() const;
+
+	/** Implements Serializeable::serialize. */
+	std::string serialize(Mode mode) const;
 private:
 	/** Number of spatial dimensions. */
 	unsigned int dimensions;

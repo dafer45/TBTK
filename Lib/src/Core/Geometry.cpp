@@ -26,7 +26,11 @@ using namespace std;
 
 namespace TBTK{
 
-Geometry::Geometry(int dimensions, int numSpecifiers, const HoppingAmplitudeSet *hoppingAmplitudeSet){
+Geometry::Geometry(
+	int dimensions,
+	int numSpecifiers,
+	const HoppingAmplitudeSet *hoppingAmplitudeSet
+){
 	this->dimensions = dimensions;
 	this->numSpecifiers = numSpecifiers;
 	this->hoppingAmplitudeSet = hoppingAmplitudeSet;
@@ -36,6 +40,73 @@ Geometry::Geometry(int dimensions, int numSpecifiers, const HoppingAmplitudeSet 
 		specifiers = new int[numSpecifiers*hoppingAmplitudeSet->getBasisSize()];
 	else
 		specifiers = NULL;
+}
+
+Geometry::Geometry(
+	const string &serialization,
+	Mode mode,
+	const HoppingAmplitudeSet &hoppingAmplitudeSet
+){
+	this->hoppingAmplitudeSet = &hoppingAmplitudeSet;
+
+	switch(mode){
+	case Mode::Debug:
+	{
+		TBTKAssert(
+			validate(serialization, "Geometry", mode),
+			"Geometry::Geometry()",
+			"Unable to parse string as Geometry '" << serialization
+			<< "'.",
+			""
+		);
+		string content = getContent(serialization, mode);
+
+		vector<string> elements = split(content, mode);
+
+		stringstream ss;
+		ss.str(elements.at(0));
+		ss >> dimensions;
+		ss.clear();
+		ss.str(elements.at(1));
+		ss >> numSpecifiers;
+		unsigned int counter = 2;
+		coordinates = new double[dimensions*hoppingAmplitudeSet.getBasisSize()];
+		for(
+			unsigned int n = 0;
+			n < dimensions*hoppingAmplitudeSet.getBasisSize();
+			n++
+		){
+			ss.clear();
+			ss.str(elements.at(counter));
+			ss >> coordinates[n];
+			counter++;
+		}
+		if(numSpecifiers > 0){
+			specifiers = new int[numSpecifiers*hoppingAmplitudeSet.getBasisSize()];
+			for(
+				unsigned int n = 0;
+				n < numSpecifiers*hoppingAmplitudeSet.getBasisSize();
+				n++
+			){
+				ss.clear();
+				ss.str(elements.at(counter));
+				ss >> specifiers[n];
+				counter++;
+			}
+		}
+		else{
+			specifiers = nullptr;
+		}
+
+		break;
+	}
+	default:
+		TBTKExit(
+			"Geometry::Geometry()",
+			"Only Serializeable::Mode:Debug is supported yet.",
+			""
+		);
+	}
 }
 
 Geometry::~Geometry(){
@@ -193,6 +264,41 @@ double Geometry::getDistance(const Index &index1, const Index &index2) const{
 	}
 
 	return sqrt(distanceSquared);
+}
+
+string Geometry::serialize(Mode mode) const{
+	switch(mode){
+	case Mode::Debug:
+	{
+		stringstream ss;
+		ss << "Geometry(";
+		ss << Serializeable::serialize(dimensions, mode);
+		ss << "," << Serializeable::serialize(numSpecifiers, mode);
+		for(
+			unsigned int n = 0;
+			n < dimensions*hoppingAmplitudeSet->getBasisSize();
+			n++
+		){
+			ss << "," << Serializeable::serialize(coordinates[n], mode);
+		}
+		for(
+			unsigned int n = 0;
+			n < numSpecifiers*hoppingAmplitudeSet->getBasisSize();
+			n++
+		){
+			ss << "," << Serializeable::serialize(specifiers[n], mode);
+		}
+		ss << ")";
+
+		return ss.str();
+	}
+	default:
+		TBTKExit(
+			"Geometry::Geometry()",
+			"Only Serializeable::Mode::Debug is supported yet.",
+			""
+		);
+	}
 }
 
 };	//End of namespace TBTK
