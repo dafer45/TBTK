@@ -54,6 +54,47 @@ Index::Index(const vector<vector<int>> &indexList){
 	}
 }
 
+Index::Index(const string &serialization, Serializeable::Mode mode){
+	switch(mode){
+	case Serializeable::Mode::Debug:
+	{
+		TBTKAssert(
+			Serializeable::validate(serialization, "Index", mode),
+			"Index::Index()",
+			"Unable to parse string as index '" << serialization
+			<< "'.",
+			""
+		);
+		string content = Serializeable::getContent(
+			serialization,
+			Serializeable::Mode::Debug
+		);
+
+		stringstream ss;
+		ss.str(content);
+		int subindex;
+		while((ss >> subindex)){
+			indices.push_back(subindex);
+			char c;
+			TBTKAssert(
+				!(ss >> c) || c == ',',
+			"Index::Index()",
+			"Unable to parse string as index '" << serialization
+			<< "'.",
+			""
+			);
+		}
+		break;
+	}
+	default:
+		TBTKExit(
+			"Index::Index()",
+			"Only Serializeable::Mode::Debug is supported yet.",
+			""
+		);
+	}
+}
+
 bool operator<(const Index &i1, const Index &i2){
 	int minNumIndices;
 	if(i1.size() < i2.size())
@@ -123,6 +164,30 @@ Index Index::getSubIndex(int first, int last){
 		newSubindices.push_back(indices.at(n));
 
 	return Index(newSubindices);
+}
+
+string Index::serialize(Serializeable::Mode mode) const{
+	switch(mode){
+	case Serializeable::Mode::Debug:
+	{
+		stringstream ss;
+		ss << "Index(";
+		for(unsigned int n = 0; n < indices.size(); n++){
+			if(n != 0)
+				ss << ",";
+			ss << indices.at(n);
+		}
+		ss << ")";
+
+		return ss.str();
+	}
+	default:
+		TBTKExit(
+			"Index::serialize()",
+			"Only Serializeable::Mode::Debug is supported yet.",
+			""
+		);
+	}
 }
 
 };

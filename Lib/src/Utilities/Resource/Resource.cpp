@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "Resource.h"
+#include "Resource/Resource.h"
 #include "TBTKMacros.h"
 
 #include <sstream>

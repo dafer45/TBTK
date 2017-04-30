@@ -24,6 +24,7 @@
 #define COM_DAFER45_TBTK_HOPPING_AMPLITUDE
 
 #include "Index.h"
+#include "Serializeable.h"
 
 #include <complex>
 #include <initializer_list>
@@ -51,22 +52,6 @@ public:
 	Index toIndex;
 
 	/** Constructor. */
-/*	HoppingAmplitude(
-		Index fromIndex,
-		Index toIndex,
-		std::complex<double> amplitude
-	);*/
-
-	/** Constructor. Takes a callback function rather than a paramater
-	 *  value. The callback function has to be defined such that it returns
-	 * a value for the given indices when called at run time. */
-/*	HoppingAmplitude(
-		Index fromIndex,
-		Index toIndex,
-		std::complex<double> (*amplitudeCallback)(Index, Index)
-	);*/
-
-	/** Constructor. */
 	HoppingAmplitude(
 		std::complex<double> amplitude,
 		Index toIndex,
@@ -81,30 +66,16 @@ public:
 		Index toIndex,
 		Index fromIndex
 	);
-
-	/** Constructor. Takes an additional parameter specifying which unit
-	 *  cell the toIndex belongs to. */
-/*	HoppingAmplitude(
-		std::complex<double> amplitude,
-		Index toIndex,
-		Index fromIndex,
-		Index toUnitCell
-	);*/
-
-	/** Constructor. Takes a callback function rather than a paramater
-	 *  value. The callback function has to be defined such that it returns
-	 *  a value for the given indices when called at run time. Also takes
-	 *  an additional Index specifying which unit cell the toIndex belongs
-	 *  to. */
-/*	HoppingAmplitude(
-		std::complex<double> (*amplitudeCallback)(Index, Index),
-		Index toIndex,
-		Index fromIndex,
-		Index toUnitCell
-	);*/
 
 	/** Copy constructor. */
 	HoppingAmplitude(const HoppingAmplitude &ha);
+
+	/** Constructor. Constructs the HoppingAmplitude from a serialization
+	 *  string. */
+	HoppingAmplitude(
+		const std::string &serializeation,
+		Serializeable::Mode mode
+	);
 
 	/** Get the Hermitian cojugate of the HoppingAmplitude. */
 	HoppingAmplitude getHermitianConjugate() const;
@@ -116,9 +87,17 @@ public:
 	std::complex<double> getAmplitude() const;
 
 	/** Addition operator. */
-	std::tuple<HoppingAmplitude, HoppingAmplitude> operator+(const HermitianConjugate hc);
+	std::tuple<HoppingAmplitude, HoppingAmplitude> operator+(
+		const HermitianConjugate hc
+	);
+
+	/** Serialize HoppingAmplitude. Note that HoppingAmplitude is
+	 *  pseudo-Serializeable in that it implements the Serializeable
+	 * interface, but does so non-virtually. */
+	std::string serialize(Serializeable::Mode mode) const;
 private:
-	/** Amplitude \f$a_{ij}\f$. Will be used if amplitudeCallback is NULL. */
+	/** Amplitude \f$a_{ij}\f$. Will be used if amplitudeCallback is NULL.
+	 */
 	std::complex<double> amplitude;
 
 	/** Callback function for runtime evaluation of amplitudes. Will be

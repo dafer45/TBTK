@@ -23,6 +23,7 @@
 #ifndef COM_DAFER45_TBTK_INDEX
 #define COM_DAFER45_TBTK_INDEX
 
+#include "Serializeable.h"
 #include "Streams.h"
 
 #include <vector>
@@ -68,6 +69,9 @@ public:
 	/** Constructor. Concatenates a list of indices, adding IDX_SEPARATOR
 	 *  between every index. */
 	Index(const std::vector<std::vector<int>> &indexList);
+
+	/** Constructor. Constructs the Index from a serialization string. */
+	Index(const std::string &serialization, Serializeable::Mode mode);
 
 	/** Compare this index with another index. Returns true if the indices
 	 * have the same number of subindices and all subindices are equal.
@@ -121,7 +125,12 @@ public:
 	/** Comparison operator. Returns false if the TreeNode structure would
 	 *  generate a larger Hilbert space index for i1 than for i2. */
 	friend bool operator>(const Index &i1, const Index &i2);
-//private:
+
+	/** Serialize Index. Note that Index is pseudo-Serializeable in that it
+	 *  implements the Serializeable interface, but does so non-virtually.
+	 */
+	std::string serialize(Serializeable::Mode mode) const;
+private:
 	/** Subindex container. */
 	std::vector<int> indices;
 };

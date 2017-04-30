@@ -106,6 +106,9 @@ RAY_TRACER_SRC_DIR = src/Utilities/RayTracer
 #Plotter source directory
 PLOTTER_SRC_DIR = src/Utilities/Plotter
 
+#Resource source directory
+RESOURCE_SRC_DIR = src/Utilities/Resource
+
 # Directory for Objects
 OBJ_DIR:= build
 
@@ -143,6 +146,9 @@ RAY_TRACER_SRC := $(foreach srcDir, $(RAY_TRACER_SRC_DIR), $(wildcard $(srcDir)/
 # Plotter source files
 PLOTTER_SRC := $(foreach srcDir, $(PLOTTER_SRC_DIR), $(wildcard $(srcDir)/*.cpp))
 
+# Resource source files
+RESOURCE_SRC := $(foreach srcDir, $(RESOURCE_SRC_DIR), $(wildcard $(srcDir)/*.cpp))
+
 # Object files
 OBJ := $(addprefix $(OBJ_DIR)/, $(notdir $(SRC:.cpp=.o)))
 
@@ -163,6 +169,9 @@ RAY_TRACER_OBJ := $(addprefix $(OBJ_DIR)/, $(notdir $(RAY_TRACER_SRC:.cpp=.o)))
 
 # Plotter object files
 PLOTTER_OBJ := $(addprefix $(OBJ_DIR)/, $(notdir $(PLOTTER_SRC:.cpp=.o)))
+
+# Resource object files
+RESOURCE_OBJ := $(addprefix $(OBJ_DIR)/, $(notdir $(RESOURCE_SRC:.cpp=.o)))
 
 #All object files
 ALL_OBJ := $(OBJ) $(CUDA_OBJ)
@@ -187,6 +196,9 @@ RAY_TRACER_OBJ_PURE := $(notdir $(RAY_TRACER_OBJ))
 
 # Plotter file name of objects without directory name
 PLOTTER_OBJ_PURE := $(notdir $(PLOTTER_OBJ))
+
+# Resource file name of objects without directory name
+RESOURCE_OBJ_PURE := $(notdir $(RESOURCE_OBJ))
 
 all: $(STATIC_LIB)
 
@@ -222,6 +234,11 @@ plotter: $(PLOTTER_OBJ)
 	@echo "Linking: " $(notdir $(STATIC_LIB))
 	@echo $(PLOTTER_OBJ)
 	@ar rcs $(STATIC_LIB) $(PLOTTER_OBJ)
+
+resource: $(RESOURCE_OBJ)
+	@echo "Linking: " $(notdir $(STATIC_LIB))
+	@echo $(RESOURCE_OBJ)
+	@ar rcs $(STATIC_LIB) $(RESOURCE_OBJ)
 
 # Compilation rule
 define app_compile_template
@@ -286,6 +303,15 @@ $$($(1)_OBJ): $(1)
 	@$$(CC) $$(CFLAGS) $$(OPT) -c $(1) -o $$($(1)_OBJ) $$(LDLIBS)
 endef
 
+# Resource compilation rule
+define resource_app_compile_template
+ $(1)_OBJ = $$(addprefix $$(OBJ_DIR)/, $$(notdir $$(patsubst %.cpp, %.o, $(1))))
+
+$$($(1)_OBJ): $(1)
+	@echo "Compiling: $(1)"
+	@$$(CC) $$(CFLAGS) $$(OPT) -c $(1) -o $$($(1)_OBJ) $$(LDLIBS)
+endef
+
 # Compile
 $(foreach app, $(SRC), $(eval $(call app_compile_template,$(app))))
 
@@ -306,6 +332,9 @@ $(foreach app, $(RAY_TRACER_SRC), $(eval $(call ray_tracer_app_compile_template,
 
 # Plotter compile
 $(foreach app, $(PLOTTER_SRC), $(eval $(call plotter_app_compile_template,$(app))))
+
+# Resource compile
+$(foreach app, $(RESOURCE_SRC), $(eval $(call resource_app_compile_template,$(app))))
 
 # Cleaning
 clean:
@@ -331,7 +360,9 @@ print:
 	@echo $(RAY_TRACER_SRC)
 	@echo $(RAY_TRACER_OBJ)
 	@echo $(PLOTTER_SRC)
-	@echo $(PLOTER_OBJ)
+	@echo $(PLOTTER_OBJ)
+	@echo $(RESOURCE_SRC)
+	@echo $(RESOURCE_OBJ)
 #	@echo $(OBJ)
 #	@echo $(addprefix ./build/, $(notdir $(patsubst %.cpp, %.o, $(SRC))))
 

@@ -21,33 +21,12 @@
 #include "HoppingAmplitude.h"
 #include "Streams.h"
 
+#include <sstream>
+
 using namespace std;
 
 namespace TBTK{
 
-/*HoppingAmplitude::HoppingAmplitude(
-	Index fromIndex,
-	Index toIndex,
-	complex<double> amplitude
-) :
-	fromIndex(fromIndex),
-	toIndex(toIndex)
-{
-	this->amplitude = amplitude;
-	this->amplitudeCallback = NULL;
-};
-
-HoppingAmplitude::HoppingAmplitude(
-	Index fromIndex,
-	Index toIndex,
-	complex<double> (*amplitudeCallback)(Index, Index)
-) :
-	fromIndex(fromIndex),
-	toIndex(toIndex)
-{
-	this->amplitudeCallback = amplitudeCallback;
-};*/
-
 HoppingAmplitude::HoppingAmplitude(
 	complex<double> amplitude,
 	Index toIndex,
@@ -70,30 +49,6 @@ HoppingAmplitude::HoppingAmplitude(
 {
 	this->amplitudeCallback = amplitudeCallback;
 };
-
-/*HoppingAmplitude::HoppingAmplitude(
-	complex<double> amplitude,
-	Index toIndex,
-	Index fromIndex,
-	Index toUnitCell
-) :
-	fromIndex(fromIndex),
-	toIndex(toIndex)
-{
-	amplitudeCallback = NULL;
-}
-
-HoppingAmplitude::HoppingAmplitude(
-	complex<double> (*amplitudeCallback)(Index, Index),
-	Index toIndex,
-	Index fromIndex,
-	Index toUnitCell
-) :
-	fromIndex(fromIndex),
-	toIndex(toIndex)
-{
-	this->amplitudeCallback = amplitudeCallback;
-}*/
 
 HoppingAmplitude::HoppingAmplitude(
 	const HoppingAmplitude &ha
@@ -105,11 +60,49 @@ HoppingAmplitude::HoppingAmplitude(
 	this->amplitudeCallback = ha.amplitudeCallback;
 }
 
+HoppingAmplitude::HoppingAmplitude(
+	const string &serialization,
+	Serializeable::Mode mode
+){
+	switch(mode){
+	case Serializeable::Mode::Debug:
+	{
+		TBTKAssert(
+			Serializeable::validate(
+				serialization,
+				"HoppingAmplitude",
+				mode
+			),
+			"HoppingAmplitude::HoppingAmplitude()",
+			"Unable to parse string as HoppingAmplitude '"
+			<< serialization << "'.",
+			""
+		);
+		string content = Serializeable::getContent(serialization, mode);
+
+		vector<string> elements = Serializeable::split(
+			content,
+			Serializeable::Mode::Debug
+		);
+
+		amplitudeCallback = nullptr;
+		stringstream ss;
+		ss.str(elements.at(0));
+		ss >> amplitude;
+		toIndex = Index(elements.at(1), mode);
+		fromIndex = Index(elements.at(2), mode);
+		break;
+	}
+	default:
+		TBTKExit(
+			"HoppingAmplitude::HoppingAmplitude()",
+			"Only Serializeable::Mode::Debug is supported yet.",
+			""
+		);
+	}
+}
+
 HoppingAmplitude HoppingAmplitude::getHermitianConjugate() const{
-/*	if(amplitudeCallback)
-		return HoppingAmplitude(toIndex, fromIndex, amplitudeCallback);
-	else
-		return HoppingAmplitude(toIndex, fromIndex, conj(amplitude));*/
 	if(amplitudeCallback)
 		return HoppingAmplitude(amplitudeCallback, fromIndex, toIndex);
 	else
@@ -128,6 +121,35 @@ void HoppingAmplitude::print(){
 	}
 	Streams::out << "\n";
 	Streams::out << "Amplitude:\t" << getAmplitude() << "\n";
+}
+
+string HoppingAmplitude::serialize(Serializeable::Mode mode) const{
+	TBTKAssert(
+		amplitudeCallback == nullptr,
+		"HoppingAmplitude::serialize()",
+		"Unable to serialize HoppingAmplitude that uses callback"
+		<< " value.",
+		""
+	);
+
+	switch(mode){
+	case Serializeable::Mode::Debug:
+	{
+		stringstream ss;
+		ss << "HoppingAmplitude(";
+		ss << amplitude << ",";
+		ss << toIndex.serialize(mode) << "," << fromIndex.serialize(mode);
+		ss << ")";
+
+		return ss.str();
+	}
+	default:
+		TBTKExit(
+			"HoppingAmplitude::serialize()",
+			"Only Serializeable::Mode::Debug is supported yet.",
+			""
+		);
+	}
 }
 
 };	//End of namespace TBTK
