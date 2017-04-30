@@ -27,6 +27,7 @@
 #include "HoppingAmplitudeSet.h"
 #include "SingleParticleContext.h"
 #include "ManyBodyContext.h"
+#include "Serializeable.h"
 #include "Statistics.h"
 
 #include <complex>
@@ -42,13 +43,29 @@ class FileReader;
  *  wrapper for HoppingAmplitudeSet, but can in the future come to be extended
  *  with further properties.
  */
-class Model{
+class Model : public Serializeable{
 public:
 	/** Constructor. */
 	Model();
 
+	/** Copy constructor. */
+	Model(const Model &model);
+
+	/** Move constructor. */
+	Model(Model &&model);
+
+	/** Constructor. Constructs the Model from a serialization string. Note
+	 *   that the ManyBodyContext is not yet serialized. */
+	Model(const std::string &serialization, Mode mode);
+
 	/** Destructor. */
-	~Model();
+	virtual ~Model();
+
+	/** Assignment operator. */
+	Model& operator=(const Model &model);
+
+	/** Move assignment operator. */
+	Model& operator=(Model &&model);
 
 	/** Add a HoppingAmplitude. */
 	void addHoppingAmplitude(HoppingAmplitude ha);
@@ -130,7 +147,13 @@ public:
 	Model& operator<<(const HoppingAmplitude& hoppingAmplitude);
 
 	/** Operator<<. */
-	Model& operator<<(const std::tuple<HoppingAmplitude, HoppingAmplitude> &hoppingAmplitudes);
+	Model& operator<<(
+		const std::tuple<HoppingAmplitude, HoppingAmplitude> &hoppingAmplitudes
+	);
+
+	/** Implements Serializeable::serialize(). Note that the
+	 *  ManyBodyContext is not yet serialized. */
+	std::string serialize(Mode mode) const;
 private:
 	/** Temperature. */
 	double temperature;

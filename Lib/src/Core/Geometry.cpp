@@ -39,7 +39,48 @@ Geometry::Geometry(
 	if(numSpecifiers != 0)
 		specifiers = new int[numSpecifiers*hoppingAmplitudeSet->getBasisSize()];
 	else
-		specifiers = NULL;
+		specifiers = nullptr;
+}
+
+Geometry::Geometry(const Geometry &geometry){
+	dimensions = geometry.dimensions;
+	numSpecifiers = geometry.numSpecifiers;
+	hoppingAmplitudeSet = geometry.hoppingAmplitudeSet;
+
+	coordinates = new double[dimensions*hoppingAmplitudeSet->getBasisSize()];
+	for(
+		unsigned int n = 0;
+		n < dimensions*hoppingAmplitudeSet->getBasisSize();
+		n++
+	){
+		coordinates[n] = geometry.coordinates[n];
+	}
+
+	if(numSpecifiers > 0){
+		specifiers = new int[dimensions*hoppingAmplitudeSet->getBasisSize()];
+		for(
+			unsigned int n = 0;
+			n < dimensions*hoppingAmplitudeSet->getBasisSize();
+			n++
+		){
+			specifiers[n] = geometry.specifiers[n];
+		}
+	}
+	else{
+		specifiers = nullptr;
+	}
+}
+
+Geometry::Geometry(Geometry &&geometry){
+	dimensions = geometry.dimensions;
+	numSpecifiers = geometry.numSpecifiers;
+	hoppingAmplitudeSet = geometry.hoppingAmplitudeSet;
+
+	coordinates = geometry.coordinates;
+	geometry.coordinates = nullptr;
+
+	specifiers = geometry.specifiers;
+	geometry.specifiers = nullptr;
 }
 
 Geometry::Geometry(
@@ -110,9 +151,59 @@ Geometry::Geometry(
 }
 
 Geometry::~Geometry(){
-	delete [] coordinates;
-	if(specifiers != NULL)
+	if(coordinates != nullptr)
+		delete [] coordinates;
+	if(specifiers != nullptr)
 		delete [] specifiers;
+}
+
+Geometry& Geometry::operator=(const Geometry &rhs){
+	if(this != &rhs){
+		dimensions = rhs.dimensions;
+		numSpecifiers = rhs.numSpecifiers;
+		hoppingAmplitudeSet = rhs.hoppingAmplitudeSet;
+
+		coordinates = new double[dimensions*hoppingAmplitudeSet->getBasisSize()];
+		for(
+			unsigned int n = 0;
+			n < dimensions*hoppingAmplitudeSet->getBasisSize();
+			n++
+		){
+			coordinates[n] = rhs.coordinates[n];
+		}
+
+		if(numSpecifiers > 0){
+			specifiers = new int[dimensions*hoppingAmplitudeSet->getBasisSize()];
+			for(
+				unsigned int n = 0;
+				n < dimensions*hoppingAmplitudeSet->getBasisSize();
+				n++
+			){
+				specifiers[n] = rhs.specifiers[n];
+			}
+		}
+		else{
+			specifiers = nullptr;
+		}
+	}
+
+	return *this;
+}
+
+Geometry& Geometry::operator=(Geometry &&rhs){
+	if(this != &rhs){
+		dimensions = rhs.dimensions;
+		numSpecifiers = rhs.numSpecifiers;
+		hoppingAmplitudeSet = rhs.hoppingAmplitudeSet;
+
+		coordinates = rhs.coordinates;
+		rhs.coordinates = nullptr;
+
+		specifiers = rhs.specifiers;
+		rhs.specifiers = nullptr;
+	}
+
+	return *this;
 }
 
 void Geometry::setCoordinates(

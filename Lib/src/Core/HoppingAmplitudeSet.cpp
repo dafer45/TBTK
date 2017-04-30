@@ -37,6 +37,49 @@ HoppingAmplitudeSet::HoppingAmplitudeSet(){
 }
 
 HoppingAmplitudeSet::HoppingAmplitudeSet(
+	const HoppingAmplitudeSet &hoppingAmplitudeSet
+){
+	tree = hoppingAmplitudeSet.tree;
+	isConstructed = hoppingAmplitudeSet.isConstructed;
+	isSorted = hoppingAmplitudeSet.isSorted;
+	numMatrixElements = hoppingAmplitudeSet.numMatrixElements;
+
+	if(numMatrixElements == -1){
+		cooRowIndices = nullptr;
+		cooColIndices = nullptr;
+		cooValues = nullptr;
+	}
+	else{
+		cooRowIndices = new int[numMatrixElements];
+		cooColIndices = new int[numMatrixElements];
+		cooValues = new complex<double>[numMatrixElements];
+		for(int n = 0; n < numMatrixElements; n++){
+			cooRowIndices[n] = hoppingAmplitudeSet.cooRowIndices[n];
+			cooColIndices[n] = hoppingAmplitudeSet.cooColIndices[n];
+			cooValues[n] = hoppingAmplitudeSet.cooValues[n];
+		}
+	}
+}
+
+HoppingAmplitudeSet::HoppingAmplitudeSet(
+	HoppingAmplitudeSet &&hoppingAmplitudeSet
+){
+	tree = hoppingAmplitudeSet.tree;
+	isConstructed = hoppingAmplitudeSet.isConstructed;
+	isSorted = hoppingAmplitudeSet.isSorted;
+	numMatrixElements = hoppingAmplitudeSet.numMatrixElements;
+
+	cooRowIndices = hoppingAmplitudeSet.cooRowIndices;
+	hoppingAmplitudeSet.cooRowIndices = nullptr;
+
+	cooColIndices = hoppingAmplitudeSet.cooColIndices;
+	hoppingAmplitudeSet.cooColIndices = nullptr;
+
+	cooValues = hoppingAmplitudeSet.cooValues;
+	hoppingAmplitudeSet.cooValues = nullptr;
+}
+
+HoppingAmplitudeSet::HoppingAmplitudeSet(
 	const string &serialization,
 	Mode mode
 ){
@@ -112,6 +155,55 @@ HoppingAmplitudeSet::~HoppingAmplitudeSet(){
 		delete [] cooColIndices;
 	if(cooValues != NULL)
 		delete [] cooValues;
+}
+
+HoppingAmplitudeSet& HoppingAmplitudeSet::operator=(
+	const HoppingAmplitudeSet &rhs
+){
+	if(this != &rhs){
+		tree = rhs.tree;
+		isConstructed = rhs.isConstructed;
+		isSorted = rhs.isSorted;
+		numMatrixElements = rhs.numMatrixElements;
+
+		if(numMatrixElements == -1){
+			cooRowIndices = nullptr;
+			cooColIndices = nullptr;
+			cooValues = nullptr;
+		}
+		else{
+			cooRowIndices = new int[numMatrixElements];
+			cooColIndices = new int[numMatrixElements];
+			cooValues = new complex<double>[numMatrixElements];
+			for(int n = 0; n < numMatrixElements; n++){
+				cooRowIndices[n] = rhs.cooRowIndices[n];
+				cooColIndices[n] = rhs.cooColIndices[n];
+				cooValues[n] = rhs.cooValues[n];
+			}
+		}
+	}
+
+	return *this;
+}
+
+HoppingAmplitudeSet& HoppingAmplitudeSet::operator=(HoppingAmplitudeSet &&rhs){
+	if(this != &rhs){
+		tree = rhs.tree;
+		isConstructed = rhs.isConstructed;
+		isSorted = rhs.isSorted;
+		numMatrixElements = rhs.numMatrixElements;
+
+		cooRowIndices = rhs.cooRowIndices;
+		rhs.cooRowIndices = nullptr;
+
+		cooColIndices = rhs.cooColIndices;
+		rhs.cooColIndices = nullptr;
+
+		cooValues = rhs.cooValues;
+		rhs.cooValues = nullptr;
+	}
+
+	return *this;
 }
 
 int HoppingAmplitudeSet::getNumMatrixElements() const{

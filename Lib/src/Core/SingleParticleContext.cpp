@@ -27,7 +27,36 @@ namespace TBTK{
 SingleParticleContext::SingleParticleContext(){
 	statistics = Statistics::FermiDirac;
 	hoppingAmplitudeSet = new HoppingAmplitudeSet();
-	geometry = NULL;
+	geometry = nullptr;
+}
+
+SingleParticleContext::SingleParticleContext(
+	const SingleParticleContext &singleParticleContext
+){
+	statistics = singleParticleContext.statistics;
+	hoppingAmplitudeSet = new HoppingAmplitudeSet(
+		*singleParticleContext.hoppingAmplitudeSet
+	);
+	if(singleParticleContext.geometry == nullptr){
+		geometry = nullptr;
+	}
+	else{
+		geometry = new Geometry(
+			*singleParticleContext.geometry
+		);
+	}
+}
+
+SingleParticleContext::SingleParticleContext(
+	SingleParticleContext &&singleParticleContext
+){
+	statistics = singleParticleContext.statistics;
+
+	hoppingAmplitudeSet = singleParticleContext.hoppingAmplitudeSet;
+	singleParticleContext.hoppingAmplitudeSet = nullptr;
+
+	geometry = singleParticleContext.geometry;
+	singleParticleContext.geometry = nullptr;
 }
 
 SingleParticleContext::SingleParticleContext(
@@ -67,9 +96,45 @@ SingleParticleContext::SingleParticleContext(
 }
 
 SingleParticleContext::~SingleParticleContext(){
-	delete hoppingAmplitudeSet;
-	if(geometry != NULL)
+	if(hoppingAmplitudeSet != nullptr)
+		delete hoppingAmplitudeSet;
+	if(geometry != nullptr)
 		delete geometry;
+}
+
+SingleParticleContext& SingleParticleContext::operator=(
+	const SingleParticleContext &rhs
+){
+	if(this != &rhs){
+		statistics = rhs.statistics;
+
+		hoppingAmplitudeSet = new HoppingAmplitudeSet(
+			*rhs.hoppingAmplitudeSet
+		);
+
+		if(rhs.geometry == nullptr)
+			geometry = nullptr;
+		else
+			geometry = new Geometry(*rhs.geometry);
+	}
+
+	return *this;
+}
+
+SingleParticleContext& SingleParticleContext::operator=(
+	SingleParticleContext &&rhs
+){
+	if(this != &rhs){
+		statistics = rhs.statistics;
+
+		hoppingAmplitudeSet = rhs.hoppingAmplitudeSet;
+		rhs.hoppingAmplitudeSet = nullptr;
+
+		geometry = rhs.geometry;
+		rhs.geometry = nullptr;
+	}
+
+	return *this;
 }
 
 void SingleParticleContext::construct(){

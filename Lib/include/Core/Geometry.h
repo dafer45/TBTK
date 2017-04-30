@@ -40,6 +40,12 @@ public:
 		const HoppingAmplitudeSet *hoppingAmplitudeSet
 	);
 
+	/** Copy constructor. */
+	Geometry(const Geometry &geometry);
+
+	/** Move constructor. */
+	Geometry(Geometry &&geometry);
+
 	/** Constructor. Constructs the Geometry from a serialization string.
 	 */
 	Geometry(
@@ -50,6 +56,12 @@ public:
 
 	/** Destructor. */
 	virtual ~Geometry();
+
+	/** Assignment operator. */
+	Geometry& operator=(const Geometry &rhs);
+
+	/** Move assignment operator. */
+	Geometry& operator=(Geometry &&rhs);
 
 	/** Add a coordinate (and specifiers) for an index. */
 	void setCoordinates(

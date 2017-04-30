@@ -37,12 +37,28 @@ public:
 	/** Constructor. */
 	SingleParticleContext();
 
+	/** Copy constructor. */
+	SingleParticleContext(
+		const SingleParticleContext &singleParticleContext
+	);
+
+	/** Move constructor. */
+	SingleParticleContext(
+		SingleParticleContext &&singleParticleContext
+	);
+
 	/** Constructor. Constructs the SingleParticleContext from a
 	 *  serializeation string. */
 	SingleParticleContext(const std::string &serialization, Mode mode);
 
 	/**Destructor. */
 	virtual ~SingleParticleContext();
+
+	/** Assignment operator. */
+	SingleParticleContext& operator=(const SingleParticleContext &rhs);
+
+	/** Move assignment operator. */
+	SingleParticleContext& operator=(SingleParticleContext &&rhs);
 
 	/** Set statistics. */
 	void setStatistics(Statistics statistics);

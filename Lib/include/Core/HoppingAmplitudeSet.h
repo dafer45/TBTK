@@ -48,12 +48,24 @@ public:
 	/** Constructor. */
 	HoppingAmplitudeSet();
 
+	/** Copy constructor. */
+	HoppingAmplitudeSet(const HoppingAmplitudeSet &hoppingAmplitudeSet);
+
+	/** Move constructor. */
+	HoppingAmplitudeSet(HoppingAmplitudeSet &&hoppingAmplitudeSet);
+
 	/** Constructor. Constructs the HoppingAmplitudeSet from a
 	 *  serialization string. */
 	HoppingAmplitudeSet(const std::string &serializeation, Mode mode);
 
 	/** Destructor. */
 	virtual ~HoppingAmplitudeSet();
+
+	/** Assignment operator. */
+	HoppingAmplitudeSet& operator=(const HoppingAmplitudeSet &rhs);
+
+	/** Move assignment operator. */
+	HoppingAmplitudeSet& operator=(HoppingAmplitudeSet &&rhs);
 
 	/** Add a single HoppingAmplitude.
 	 *

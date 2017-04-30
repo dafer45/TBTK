@@ -41,10 +41,114 @@ Model::Model(){
 	isTalkative = true;
 }
 
+Model::Model(const Model &model){
+	temperature = model.temperature;
+	chemicalPotential = model.chemicalPotential;
+
+	singleParticleContext = new SingleParticleContext(
+		*model.singleParticleContext
+	);
+	if(model.manyBodyContext == nullptr){
+		manyBodyContext = nullptr;
+	}
+	else{
+		manyBodyContext = new ManyBodyContext(
+			*model.manyBodyContext
+		);
+	}
+
+	isTalkative = model.isTalkative;
+}
+
+Model::Model(Model &&model){
+	temperature = model.temperature;
+	chemicalPotential = model.chemicalPotential;
+
+	singleParticleContext = model.singleParticleContext;
+	model.singleParticleContext = nullptr;
+	manyBodyContext = model.manyBodyContext;
+	model.manyBodyContext = nullptr;
+
+	isTalkative = model.isTalkative;
+}
+
+Model::Model(const string &serialization, Mode mode){
+	switch(mode){
+	case Mode::Debug:
+	{
+		TBTKAssert(
+			validate(serialization, "Model", mode),
+			"Model::Model()",
+			"Unable to parse string as Model '" << serialization
+			<< "'.",
+			""
+		);
+		string content = getContent(serialization, mode);
+
+		vector<string> elements = split(content, mode);
+
+		deserialize(elements.at(0), &temperature, mode);
+		deserialize(elements.at(1), &chemicalPotential, mode);
+		singleParticleContext = new SingleParticleContext(elements.at(2), mode);
+		deserialize(elements.at(3), &isTalkative, mode);
+
+		manyBodyContext = nullptr;
+
+		break;
+	}
+	default:
+		TBTKExit(
+			"Model::Model()",
+			"Only Serializeable::Mode::Debug is supported yet.",
+			""
+		);
+	}
+}
+
 Model::~Model(){
-	delete singleParticleContext;
-	if(manyBodyContext != NULL)
+	if(singleParticleContext != nullptr)
+		delete singleParticleContext;
+	if(manyBodyContext != nullptr)
 		delete manyBodyContext;
+}
+
+Model& Model::operator=(const Model &rhs){
+	if(this != &rhs){
+		temperature = rhs.temperature;
+		chemicalPotential = rhs.chemicalPotential;
+
+		singleParticleContext = new SingleParticleContext(
+			*rhs.singleParticleContext
+		);
+		if(rhs.manyBodyContext == nullptr){
+			manyBodyContext = nullptr;
+		}
+		else{
+			manyBodyContext = new ManyBodyContext(
+				*rhs.manyBodyContext
+			);
+		}
+
+		isTalkative = rhs.isTalkative;
+	}
+
+	return *this;
+}
+
+Model& Model::operator=(Model &&rhs){
+	if(this != &rhs){
+		temperature = rhs.temperature;
+		chemicalPotential = rhs.chemicalPotential;
+
+		singleParticleContext = rhs.singleParticleContext;
+		rhs.singleParticleContext = nullptr;
+		manyBodyContext = rhs.manyBodyContext;
+		rhs.manyBodyContext = nullptr;
+
+		isTalkative = rhs.isTalkative;
+	}
+
+	return *this;
 }
 
 void Model::construct(){
@@ -57,6 +161,29 @@ void Model::construct(){
 
 	if(isTalkative)
 		Streams::out << "\tBasis size: " << basisSize << "\n";
+}
+
+string Model::serialize(Mode mode) const{
+	switch(mode){
+	case Mode::Debug:
+	{
+		stringstream ss;
+		ss << "Model(";
+		ss << Serializeable::serialize(temperature, mode);
+		ss << "," << Serializeable::serialize(chemicalPotential, mode);
+		ss << "," << singleParticleContext->serialize(mode);
+		ss << "," << Serializeable::serialize(isTalkative, mode);
+		ss << ")";
+
+		return ss.str();
+	}
+	default:
+		TBTKExit(
+			"Model::serialize()",
+			"Only Serializeable::Mode::Debug is supported yet.",
+			""
+		);
+	}
 }
 
 };	//End of namespace TBTK
