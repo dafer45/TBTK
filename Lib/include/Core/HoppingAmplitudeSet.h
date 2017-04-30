@@ -44,10 +44,6 @@ namespace TBTK{
  *  Hamiltonian. */
 class HoppingAmplitudeSet{
 public:
-	/** Root node for the tree structure in which HoppingAmplitudes are
-	 *  stored. */
-	TreeNode tree;
-
 	/** Constructor. */
 	HoppingAmplitudeSet();
 
@@ -210,6 +206,10 @@ public:
 		int *maxIndexSize
 	) const;
 private:
+	/** Root node for the tree structure in which HoppingAmplitudes are
+	 *  stored. */
+	TreeNode tree;
+
 	/** Flag indicating whether the HoppingAmplitudeSet have been
 	 *  constructed. */
 	bool isConstructed;
