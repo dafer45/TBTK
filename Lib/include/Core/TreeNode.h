@@ -34,26 +34,14 @@ namespace TBTK{
  *   HoppingAmplitudes @endlink. Used by AmplitudeSet.*/
 class TreeNode{
 public:
-	/** Basis index for the Hamiltonian. */
-	int basisIndex;
-
-	/** Basis size of Hamiltonian. */
-	int basisSize;
-
-	/** HoppingAmplitudes stored on this node, should only be non-empty if
-	 *  the node is a leaf node. That is, if the node corresponds to a last
-	 *   subindex index. */
-	std::vector<HoppingAmplitude> hoppingAmplitudes;
-
-	/** Child nodes. Never non-empty at the same time as hoppingAmplitudes
-	*/
-	std::vector<TreeNode> children;
-
 	/** Constructor. */
 	TreeNode();
 
 	/** Add a HoppingAmplitude. */
 	void add(HoppingAmplitude ha);
+
+	/** Get basis size. */
+	int getBasisSize() const;
 
 	/** Get IndexTree containing the Indices that describe the subspace
 	 *  structure. */
@@ -134,6 +122,21 @@ public:
 	/** Returns Iterator initialized to point at first HoppingAmplitude. */
 	Iterator begin() const;
 private:
+	/** Basis index for the Hamiltonian. */
+	int basisIndex;
+
+	/** Basis size of Hamiltonian. */
+	int basisSize;
+
+	/** HoppingAmplitudes stored on this node, should only be non-empty if
+	 *  the node is a leaf node. That is, if the node corresponds to a last
+	 *   subindex index. */
+	std::vector<HoppingAmplitude> hoppingAmplitudes;
+
+	/** Child nodes. Never non-empty at the same time as hoppingAmplitudes
+	*/
+	std::vector<TreeNode> children;
+
 	/** Flag indicating whether all HoppingAmplitudes passed to this nodes
 	 *  child nodes have the same 'to' and 'from' subindex in the position
 	 *  corresponding this node level. Is set to true when the node is
@@ -205,6 +208,10 @@ private:
 	 *  error while adding HoppingAmplitudes to the tree. */
 	HoppingAmplitude getFirstHA() const;
 };
+
+inline int TreeNode::getBasisSize() const{
+	return basisSize;
+}
 
 };	//End of namespace TBTK
 

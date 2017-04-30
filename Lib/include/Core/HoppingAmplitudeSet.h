@@ -257,7 +257,8 @@ inline Index HoppingAmplitudeSet::getPhysicalIndex(int basisIndex) const{
 }
 
 inline int HoppingAmplitudeSet::getBasisSize() const{
-	return tree.basisSize;
+//	return tree.basisSize;
+	return tree.getBasisSize();
 }
 
 inline bool HoppingAmplitudeSet::isProperSubspace(const Index &subspace){
