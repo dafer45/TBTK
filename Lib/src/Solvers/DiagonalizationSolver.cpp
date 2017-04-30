@@ -110,8 +110,10 @@ void DiagonalizationSolver::update(){
 	HoppingAmplitudeSet::Iterator it = model->getHoppingAmplitudeSet()->getIterator();
 	const HoppingAmplitude *ha;
 	while((ha = it.getHA())){
-		int from = model->getHoppingAmplitudeSet()->getBasisIndex(ha->fromIndex);
-		int to = model->getHoppingAmplitudeSet()->getBasisIndex(ha->toIndex);
+/*		int from = model->getHoppingAmplitudeSet()->getBasisIndex(ha->fromIndex);
+		int to = model->getHoppingAmplitudeSet()->getBasisIndex(ha->toIndex);*/
+		int from = model->getHoppingAmplitudeSet()->getBasisIndex(ha->getFromIndex());
+		int to = model->getHoppingAmplitudeSet()->getBasisIndex(ha->getToIndex());
 		if(from >= to)
 			hamiltonian[to + (from*(from+1))/2] += ha->getAmplitude();
 

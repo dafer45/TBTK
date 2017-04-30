@@ -232,10 +232,12 @@ void BlockDiagonalizationSolver::update(){
 		const HoppingAmplitude *hoppingAmplitude;
 		while((hoppingAmplitude = iterator.getHA())){
 			int from = model->getHoppingAmplitudeSet()->getBasisIndex(
-				hoppingAmplitude->fromIndex
+//				hoppingAmplitude->fromIndex
+				hoppingAmplitude->getFromIndex()
 			) - minBasisIndex;
 			int to = model->getHoppingAmplitudeSet()->getBasisIndex(
-				hoppingAmplitude->toIndex
+//				hoppingAmplitude->toIndex
+				hoppingAmplitude->getToIndex()
 			) - minBasisIndex;
 			if(from >= to)
 				hamiltonian[blockOffsets.at(blockCounter) + to + (from*(from+1))/2] += hoppingAmplitude->getAmplitude();

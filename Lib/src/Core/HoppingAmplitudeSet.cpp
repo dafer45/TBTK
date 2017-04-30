@@ -76,8 +76,10 @@ void HoppingAmplitudeSet::constructCOO(){
 	int currentCol = -1;
 	int currentRow = -1;
 	while((ha = it.getHA())){
-		int col = getBasisIndex(ha->fromIndex);
-		int row = getBasisIndex(ha->toIndex);
+/*		int col = getBasisIndex(ha->fromIndex);
+		int row = getBasisIndex(ha->toIndex);*/
+		int col = getBasisIndex(ha->getFromIndex());
+		int row = getBasisIndex(ha->getToIndex());
 		if(col > currentCol){
 			currentCol = col;
 			currentRow = -1;
@@ -100,8 +102,10 @@ void HoppingAmplitudeSet::constructCOO(){
 	currentCol = -1;
 	currentRow = -1;
 	while((ha = it.getHA())){
-		int col = getBasisIndex(ha->fromIndex);
-		int row = getBasisIndex(ha->toIndex);
+/*		int col = getBasisIndex(ha->fromIndex);
+		int row = getBasisIndex(ha->toIndex);*/
+		int col = getBasisIndex(ha->getFromIndex());
+		int row = getBasisIndex(ha->getToIndex());
 		complex<double> amplitude = ha->getAmplitude();
 
 		if(col > currentCol){
@@ -211,7 +215,8 @@ void HoppingAmplitudeSet::tabulate(
 	while((ha = it.getHA())){
 		(*numHoppingAmplitudes)++;
 
-		int indexSize = ha->fromIndex.size();
+//		int indexSize = ha->fromIndex.size();
+		int indexSize = ha->getFromIndex().size();
 		if(indexSize > *maxIndexSize)
 			(*maxIndexSize) = indexSize;
 
@@ -227,10 +232,14 @@ void HoppingAmplitudeSet::tabulate(
 	it.reset();
 	int counter = 0;
 	while((ha = it.getHA())){
-		for(unsigned int n = 0; n < ha->fromIndex.size(); n++)
-			(*table)[2*(*maxIndexSize)*counter+n] = ha->fromIndex.at(n);
-		for(unsigned int n = 0; n < ha->toIndex.size(); n++)
-			(*table)[2*(*maxIndexSize)*counter+n+(*maxIndexSize)] = ha->toIndex.at(n);
+//		for(unsigned int n = 0; n < ha->fromIndex.size(); n++)
+		for(unsigned int n = 0; n < ha->getFromIndex().size(); n++)
+			(*table)[2*(*maxIndexSize)*counter+n] = ha->getFromIndex().at(n);
+//			(*table)[2*(*maxIndexSize)*counter+n] = ha->fromIndex.at(n);
+//		for(unsigned int n = 0; n < ha->toIndex.size(); n++)
+		for(unsigned int n = 0; n < ha->getToIndex().size(); n++)
+			(*table)[2*(*maxIndexSize)*counter+n+(*maxIndexSize)] = ha->getToIndex().at(n);
+//			(*table)[2*(*maxIndexSize)*counter+n+(*maxIndexSize)] = ha->toIndex.at(n);
 		(*amplitudes)[counter] = ha->getAmplitude();
 
 		it.searchNextHA();

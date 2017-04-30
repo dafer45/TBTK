@@ -372,8 +372,10 @@ Model* ModelFactory::merge(
 		const HoppingAmplitude *ha;
 		while((ha = it.getHA())){
 			complex<double> amplitude = ha->getAmplitude();
-			Index from = ha->fromIndex;
-			Index to = ha->fromIndex;
+/*			Index from = ha->fromIndex;
+			Index to = ha->fromIndex;*/
+			Index from = ha->getFromIndex();
+			Index to = ha->getToIndex();
 
 			vector<int> newFrom({(int)n});
 			for(unsigned int c = 0; c < from.size(); c++)
@@ -421,13 +423,15 @@ Model* ModelFactory::merge(
 			HoppingAmplitudeSet::Iterator it = m->getHoppingAmplitudeSet()->getIterator();
 			const HoppingAmplitude *ha;
 			while((ha = it.getHA())){
-				Index from = ha->fromIndex;
+//				Index from = ha->fromIndex;
+				Index from = ha->getFromIndex();
 
 				vector<int> newFrom({(int)n});
 				for(unsigned int c = 0; c < from.size(); c++)
 					newFrom.push_back(from.at(c));
 
-				int basisIndex = m->getBasisIndex(ha->fromIndex);
+//				int basisIndex = m->getBasisIndex(ha->fromIndex);
+				int basisIndex = m->getBasisIndex(ha->getFromIndex());
 				const double *coordinates = g->getCoordinates(basisIndex);
 
 				geometry->setCoordinates(newFrom, {coordinates[0], coordinates[1], coordinates[2]});

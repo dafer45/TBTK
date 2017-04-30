@@ -40,12 +40,15 @@ vector<Index> TreeNode::getIndexList(const Index &pattern) const{
 	Iterator it = begin();
 	const HoppingAmplitude *ha;
 	while((ha = it.getHA())){
-		if(ha->fromIndex.equals(pattern, true)){
+//		if(ha->fromIndex.equals(pattern, true)){
+		if(ha->getFromIndex().equals(pattern, true)){
 			if(
 				indexList.size() == 0
-				|| !indexList.back().equals(ha->fromIndex, false)
+				|| !indexList.back().equals(ha->getFromIndex(), false)
+//				|| !indexList.back().equals(ha->fromIndex, false)
 			){
-				indexList.push_back(ha->fromIndex);
+				indexList.push_back(ha->getFromIndex());
+//				indexList.push_back(ha->fromIndex);
 			}
 		}
 
@@ -72,12 +75,14 @@ void TreeNode::add(HoppingAmplitude ha){
 }
 
 void TreeNode::add(HoppingAmplitude &ha, unsigned int subindex){
-	if(subindex < ha.fromIndex.size()){
+//	if(subindex < ha.fromIndex.size()){
+	if(subindex < ha.getFromIndex().size()){
 		//If the current subindex is not the last, the HoppingAmplitude
 		//is propagated to the next node level.
 
 		//Get current subindex
-		int currentIndex = ha.fromIndex.at(subindex);
+//		int currentIndex = ha.fromIndex.at(subindex);
+		int currentIndex = ha.getFromIndex().at(subindex);
 		//If the subindex is bigger than the current number of child
 		//nodes, create empty nodes.
 		if(currentIndex >= (int)children.size()){
@@ -101,7 +106,8 @@ void TreeNode::add(HoppingAmplitude &ha, unsigned int subindex){
 		//Ensure isPotentialBlockSeparator is set to false in case the
 		//'toIndex' and the 'fromIndex' differs in the subindex
 		//corresponding to this TreeNode level.
-		if(ha.toIndex.size() <= subindex || currentIndex != ha.toIndex.at(subindex))
+//		if(ha.toIndex.size() <= subindex || currentIndex != ha.toIndex.at(subindex))
+		if(ha.getToIndex().size() <= subindex || currentIndex != ha.getToIndex().at(subindex))
 			isPotentialBlockSeparator = false;
 		//Propagate to the next node level.
 		children.at(currentIndex).add(ha, subindex+1);
@@ -361,8 +367,10 @@ class SortHelperClass{
 public:
 	static TreeNode *rootNode;
 	inline bool operator() (const HoppingAmplitude& ha1, const HoppingAmplitude& ha2){
-		int basisIndex1 = rootNode->getBasisIndex(ha1.toIndex);
-		int basisIndex2 = rootNode->getBasisIndex(ha2.toIndex);
+/*		int basisIndex1 = rootNode->getBasisIndex(ha1.toIndex);
+		int basisIndex2 = rootNode->getBasisIndex(ha2.toIndex);*/
+		int basisIndex1 = rootNode->getBasisIndex(ha1.getToIndex());
+		int basisIndex2 = rootNode->getBasisIndex(ha2.getToIndex());
 		if(basisIndex1 < basisIndex2)
 			return true;
 		else

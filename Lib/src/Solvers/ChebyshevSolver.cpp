@@ -131,8 +131,10 @@ void ChebyshevSolver::calculateCoefficients(
 	it.reset();
 	int counter = 0;
 	while((ha = it.getHA())){
-		toIndices[counter] = hoppingAmplitudeSet->getBasisIndex(ha->toIndex);
-		fromIndices[counter] = hoppingAmplitudeSet->getBasisIndex(ha->fromIndex);
+/*		toIndices[counter] = hoppingAmplitudeSet->getBasisIndex(ha->toIndex);
+		fromIndices[counter] = hoppingAmplitudeSet->getBasisIndex(ha->fromIndex);*/
+		toIndices[counter] = hoppingAmplitudeSet->getBasisIndex(ha->getToIndex());
+		fromIndices[counter] = hoppingAmplitudeSet->getBasisIndex(ha->getFromIndex());
 		hoppingAmplitudes[counter] = ha->getAmplitude()/scaleFactor;
 
 		it.searchNextHA();
@@ -291,8 +293,10 @@ void ChebyshevSolver::calculateCoefficients(
 	it.reset();
 	int counter = 0;
 	while((ha = it.getHA())){
-		toIndices[counter] = hoppingAmplitudeSet->getBasisIndex(ha->toIndex);
-		fromIndices[counter] = hoppingAmplitudeSet->getBasisIndex(ha->fromIndex);
+/*		toIndices[counter] = hoppingAmplitudeSet->getBasisIndex(ha->toIndex);
+		fromIndices[counter] = hoppingAmplitudeSet->getBasisIndex(ha->fromIndex);*/
+		toIndices[counter] = hoppingAmplitudeSet->getBasisIndex(ha->getToIndex());
+		fromIndices[counter] = hoppingAmplitudeSet->getBasisIndex(ha->getFromIndex());
 		hoppingAmplitudes[counter] = ha->getAmplitude()/scaleFactor;
 
 		it.searchNextHA();

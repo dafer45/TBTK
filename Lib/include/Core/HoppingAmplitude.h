@@ -45,12 +45,6 @@ enum HermitianConjugate {HC};
  */
 class HoppingAmplitude{
 public:
-	/** Index to jump from (annihilate). */
-	Index fromIndex;
-
-	/** Index to jump to (create). */
-	Index toIndex;
-
 	/** Constructor. */
 	HoppingAmplitude(
 		std::complex<double> amplitude,
@@ -91,6 +85,12 @@ public:
 		const HermitianConjugate hc
 	);
 
+	/** Get to index. */
+	const Index& getToIndex() const;
+
+	/** Get from index. */
+	const Index& getFromIndex() const;
+
 	/** Serialize HoppingAmplitude. Note that HoppingAmplitude is
 	 *  pseudo-Serializeable in that it implements the Serializeable
 	 * interface, but does so non-virtually. */
@@ -106,6 +106,13 @@ private:
 		Index toIndex,
 		Index fromIndex
 	);
+
+	/** Index to jump from (annihilate). */
+	Index fromIndex;
+
+	/** Index to jump to (create). */
+	Index toIndex;
+
 };
 
 inline std::complex<double> HoppingAmplitude::getAmplitude() const{
@@ -119,6 +126,14 @@ inline std::tuple<HoppingAmplitude, HoppingAmplitude> HoppingAmplitude::operator
 	HermitianConjugate hc
 ){
 	return std::make_tuple(*this, this->getHermitianConjugate());
+}
+
+inline const Index& HoppingAmplitude::getToIndex() const{
+	return toIndex;
+}
+
+inline const Index& HoppingAmplitude::getFromIndex() const{
+	return fromIndex;
 }
 
 };	//End of namespace TBTK

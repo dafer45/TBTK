@@ -76,10 +76,12 @@ void ExactDiagonalizationSolver::setupManyBodyModel<BitRegister>(unsigned int su
 
 			int from = fockStateMap->getBasisIndex(fockState);
 
-			operators[getModel()->getBasisIndex(ha->fromIndex)][1]*fockState;
+//			operators[getModel()->getBasisIndex(ha->fromIndex)][1]*fockState;
+			operators[getModel()->getBasisIndex(ha->getFromIndex())][1]*fockState;
 			if(fockState.isNull())
 				continue;
-			operators[getModel()->getBasisIndex(ha->toIndex)][0]*fockState;
+//			operators[getModel()->getBasisIndex(ha->toIndex)][0]*fockState;
+			operators[getModel()->getBasisIndex(ha->getToIndex())][0]*fockState;
 			if(fockState.isNull())
 				continue;
 
@@ -148,10 +150,12 @@ void ExactDiagonalizationSolver::setupManyBodyModel<ExtensiveBitRegister>(unsign
 
 			int from = fockStateMap->getBasisIndex(fockState);
 
-			operators[getModel()->getBasisIndex(ha->fromIndex)][1]*fockState;
+//			operators[getModel()->getBasisIndex(ha->fromIndex)][1]*fockState;
+			operators[getModel()->getBasisIndex(ha->getFromIndex())][1]*fockState;
 			if(fockState.isNull())
 				continue;
-			operators[getModel()->getBasisIndex(ha->toIndex)][0]*fockState;
+//			operators[getModel()->getBasisIndex(ha->toIndex)][0]*fockState;
+			operators[getModel()->getBasisIndex(ha->getToIndex())][0]*fockState;
 			if(fockState.isNull())
 				continue;
 

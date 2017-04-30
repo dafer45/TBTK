@@ -350,20 +350,26 @@ void FileParser::writeAmplitudes(Model *model, AmplitudeMode amplitudeMode){
 			fout << left << setw(30);
 			write(ha->getAmplitude());
 			fout << left << setw(20);
-			write(ha->toIndex);
-			write(ha->fromIndex);
+/*			write(ha->toIndex);
+			write(ha->fromIndex);*/
+			write(ha->getToIndex());
+			write(ha->getFromIndex());
 			writeLineBreaks(1);
 			break;
 		case AmplitudeMode::ALL_EXCEPT_HC:
 		{
-			int from = model->getBasisIndex(ha->fromIndex);
-			int to = model->getBasisIndex(ha->toIndex);
+/*			int from = model->getBasisIndex(ha->fromIndex);
+			int to = model->getBasisIndex(ha->toIndex);*/
+			int from = model->getBasisIndex(ha->getFromIndex());
+			int to = model->getBasisIndex(ha->getToIndex());
 			if(from <= to){
 				fout << left << setw(30);
 				write(ha->getAmplitude());
 				fout << setw(20);
-				write(ha->toIndex);
-				write(ha->fromIndex);
+/*				write(ha->toIndex);
+				write(ha->fromIndex);*/
+				write(ha->getToIndex());
+				write(ha->getFromIndex());
 				writeLineBreaks(1);
 			}
 			break;
@@ -401,7 +407,8 @@ void FileParser::writeGeometry(Model *model){
 	Index dummyIndex({-1});
 	Index &prevIndex = dummyIndex;//Start with dummy index
 	while((ha = it.getHA())){
-		const Index &index = ha->fromIndex;
+//		const Index &index = ha->fromIndex;
+		const Index &index = ha->getFromIndex();
 		if(!index.equals(prevIndex)){
 			const double *coordinates = geometry->getCoordinates(index);
 			const int *specifiers = geometry->getSpecifiers(index);
@@ -591,8 +598,10 @@ void FileParser::readAmplitudes(Model *model){
 			break;
 		case AmplitudeMode::ALL_EXCEPT_HC:
 		{
-			const Index &from = ha->fromIndex;
-			const Index &to = ha->toIndex;
+/*			const Index &from = ha->fromIndex;
+			const Index &to = ha->toIndex;*/
+			const Index &from = ha->getFromIndex();
+			const Index &to = ha->getToIndex();
 			if(from.equals(to))
 				*model << *ha;
 			else

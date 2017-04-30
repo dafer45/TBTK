@@ -42,8 +42,10 @@ HALinkedList::HALinkedList(const HoppingAmplitudeSet &as){
 	it.reset();
 	int counter = 0;
 	while((ha = it.getHA())){
-		linkArray[counter].from = as.getBasisIndex(ha->fromIndex);
-		linkArray[counter].to = as.getBasisIndex(ha->toIndex);
+/*		linkArray[counter].from = as.getBasisIndex(ha->fromIndex);
+		linkArray[counter].to = as.getBasisIndex(ha->toIndex);*/
+		linkArray[counter].from = as.getBasisIndex(ha->getFromIndex());
+		linkArray[counter].to = as.getBasisIndex(ha->getToIndex());
 		linkArray[counter].amplitude = ha->getAmplitude();
 		linkArray[counter].next1 = NULL;
 		linkArray[counter].next2 = NULL;
