@@ -52,8 +52,10 @@ TreeNode::TreeNode(const string &serialization, Mode mode){
 		stringstream ss;
 		ss.str(elements.at(0));
 		ss >> basisIndex;
+		ss.clear();
 		ss.str(elements.at(1));
 		ss >> basisSize;
+		ss.clear();
 		ss.str(elements.at(2));
 		ss >> isPotentialBlockSeparator;
 
@@ -65,7 +67,6 @@ TreeNode::TreeNode(const string &serialization, Mode mode){
 				mode
 			).compare("HoppingAmplitude") == 0
 		){
-			Streams::out << "HoppingAmplitude:\t" << elements.at(counter) << "\n";
 			hoppingAmplitudes.push_back(
 				HoppingAmplitude(
 					elements.at(counter),
@@ -75,7 +76,6 @@ TreeNode::TreeNode(const string &serialization, Mode mode){
 			counter++;
 		}
 		for(unsigned int n = counter; n < elements.size(); n++){
-			Streams::out << "Element:\t" << elements.at(n) << "\n";
 			TBTKAssert(
 				getID(
 					elements.at(n),
@@ -87,7 +87,6 @@ TreeNode::TreeNode(const string &serialization, Mode mode){
 				<< getID(elements.at(n), mode) << "'.",
 				""
 			)
-			Streams::out << "TreeNode:\t" << elements.at(n) << "\n";
 			children.push_back(TreeNode(elements.at(n), mode));
 		}
 
@@ -100,6 +99,9 @@ TreeNode::TreeNode(const string &serialization, Mode mode){
 			""
 		);
 	}
+}
+
+TreeNode::~TreeNode(){
 }
 
 vector<Index> TreeNode::getIndexList(const Index &pattern) const{

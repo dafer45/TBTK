@@ -30,6 +30,42 @@ SingleParticleContext::SingleParticleContext(){
 	geometry = NULL;
 }
 
+SingleParticleContext::SingleParticleContext(
+	const string &serialization,
+	Mode mode
+){
+	switch(mode){
+	case Mode::Debug:
+	{
+		TBTKAssert(
+			validate(serialization, "SingleParticleContext", mode),
+			"SingleParticleContext::SingleParticleContext()",
+			"Unable to parse string as SingleParticleContext '"
+			<< serialization << "'.",
+			""
+		);
+		string content = getContent(serialization, mode);
+
+		vector<string> elements = split(content, mode);
+
+		deserialize(elements.at(0), &statistics, mode);
+		hoppingAmplitudeSet = new HoppingAmplitudeSet(elements.at(1), mode);
+		if(elements.at(2).compare("null") == 0)
+			geometry = nullptr;
+		else
+			geometry = new Geometry(elements.at(2), mode, *hoppingAmplitudeSet);
+
+		break;
+	}
+	default:
+		TBTKExit(
+			"SingleParticleContext::SingleParticleContext()",
+			"Only Serializeable::Mode::Debug is supported yet.",
+			""
+		);
+	}
+}
+
 SingleParticleContext::~SingleParticleContext(){
 	delete hoppingAmplitudeSet;
 	if(geometry != NULL)
@@ -53,6 +89,31 @@ void SingleParticleContext::createGeometry(int dimensions, int numSpecifiers){
 		numSpecifiers,
 		hoppingAmplitudeSet
 	);
+}
+
+string SingleParticleContext::serialize(Mode mode) const{
+	switch(mode){
+	case Mode::Debug:
+	{
+		stringstream ss;
+		ss << "SingleParticleContext(";
+		ss << Serializeable::serialize(statistics, mode);
+		ss << "," << hoppingAmplitudeSet->serialize(mode);
+		if(geometry == nullptr)
+			ss << "," << "null";
+		else
+			ss << "," << geometry->serialize(mode);
+		ss << ")";
+
+		return ss.str();
+	}
+	default:
+		TBTKExit(
+			"SingleParticleContext::serialize()",
+			"Only Serializeable::Mode::Debugis supported yet.",
+			""
+		);
+	}
 }
 
 };	//End of namespace TBTK

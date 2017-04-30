@@ -42,6 +42,9 @@ public:
 	 */
 	TreeNode(const std::string &serialization, Mode mode);
 
+	/** Destructor. */
+	virtual ~TreeNode();
+
 	/** Add a HoppingAmplitude. */
 	void add(HoppingAmplitude ha);
 

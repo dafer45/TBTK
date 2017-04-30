@@ -19,6 +19,7 @@
  */
 
 #include "HoppingAmplitudeSet.h"
+#include "Streams.h"
 #include "TBTKMacros.h"
 
 using namespace std;
@@ -63,7 +64,7 @@ HoppingAmplitudeSet::HoppingAmplitudeSet(
 		ss.clear();
 		ss.str(elements.at(3));
 		ss >> numMatrixElements;
-		if(numMatrixElements == 0){
+		if(numMatrixElements == -1){
 			cooRowIndices = nullptr;
 			cooColIndices = nullptr;
 			cooValues = nullptr;

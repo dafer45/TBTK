@@ -53,7 +53,7 @@ public:
 	HoppingAmplitudeSet(const std::string &serializeation, Mode mode);
 
 	/** Destructor. */
-	~HoppingAmplitudeSet();
+	virtual ~HoppingAmplitudeSet();
 
 	/** Add a single HoppingAmplitude.
 	 *

@@ -25,19 +25,24 @@
 
 #include "Geometry.h"
 #include "HoppingAmplitudeSet.h"
+#include "Serializeable.h"
 #include "Statistics.h"
 
 namespace TBTK{
 
 class FileReader;
 
-class SingleParticleContext{
+class SingleParticleContext : public Serializeable{
 public:
 	/** Constructor. */
 	SingleParticleContext();
 
+	/** Constructor. Constructs the SingleParticleContext from a
+	 *  serializeation string. */
+	SingleParticleContext(const std::string &serialization, Mode mode);
+
 	/**Destructor. */
-	~SingleParticleContext();
+	virtual ~SingleParticleContext();
 
 	/** Set statistics. */
 	void setStatistics(Statistics statistics);
@@ -89,6 +94,9 @@ public:
 
 	/** Get Geometry. */
 	Geometry* getGeometry();
+
+	/** Implements Serializeable::serialize(). */
+	std::string serialize(Mode mode) const;
 private:
 	/** Statistics (Fermi-Dirac or Bose-Einstein).*/
 	Statistics statistics;

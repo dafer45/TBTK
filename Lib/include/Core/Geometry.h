@@ -49,7 +49,7 @@ public:
 	);
 
 	/** Destructor. */
-	~Geometry();
+	virtual ~Geometry();
 
 	/** Add a coordinate (and specifiers) for an index. */
 	void setCoordinates(
