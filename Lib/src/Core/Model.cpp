@@ -27,7 +27,10 @@
 #include <math.h>
 #include <string>
 
+#include "json.hpp"
+
 using namespace std;
+using namespace nlohmann;
 
 namespace TBTK{
 
@@ -93,6 +96,31 @@ Model::Model(const string &serialization, Mode mode){
 		deserialize(elements.at(3), &isTalkative, mode);
 
 		manyBodyContext = nullptr;
+
+		break;
+	}
+	case Mode::JSON:
+	{
+		try{
+			json j = json::parse(serialization);
+			temperature = j.at("temperature").get<double>();
+			chemicalPotential = j.at(
+				"chemicalPotential"
+			).get<double>();
+			singleParticleContext = new SingleParticleContext(
+				j.at("singleParticleContext").dump(),
+				mode
+			);
+			isTalkative = j.at("isTalkative").get<bool>();
+		}
+		catch(json::exception e){
+			TBTKExit(
+				"Model::Model()",
+				"Unable to parse string as Model '"
+				<< serialization << "'.",
+				""
+			);
+		}
 
 		break;
 	}
@@ -179,26 +207,16 @@ string Model::serialize(Mode mode) const{
 	}
 	case Mode::JSON:
 	{
-		stringstream ss;
-		ss << "{";
-		ss << "id:'Model'";
-		ss << "," << "temperature:" << Serializeable::serialize(
-			temperature,
-			mode
+		json j;
+		j["id"] = "Model";
+		j["temperature"] = temperature;
+		j["chemicalPotential"] = chemicalPotential;
+		j["singleParticleContext"] = json::parse(
+			singleParticleContext->serialize(mode)
 		);
-		ss << "," << "chemicalPotential:" << Serializeable::serialize(
-			chemicalPotential,
-			mode
-		);
-		ss << "," << "singleParticleContext:"
-			<< singleParticleContext->serialize(mode);
-		ss << "," << "isTalkative:" << Serializeable::serialize(
-			isTalkative,
-			mode
-		);
-		ss << "}";
+		j["isTalkative"] = isTalkative;
 
-		return ss.str();
+		return j.dump();
 	}
 	default:
 		TBTKExit(

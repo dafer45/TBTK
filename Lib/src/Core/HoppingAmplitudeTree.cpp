@@ -24,7 +24,10 @@
 
 #include <algorithm>
 
+#include "json.hpp"
+
 using namespace std;
+using namespace nlohmann;
 
 namespace TBTK{
 
@@ -38,16 +41,17 @@ HoppingAmplitudeTree::HoppingAmplitudeTree(
 	const string &serialization,
 	Mode mode
 ){
+	TBTKAssert(
+		validate(serialization, "HoppingAmplitudeTree", mode),
+		"HoppingAmplitudeTree::HoppingAmplitudeTree()",
+		"Unable to parse string as HoppingAmplitudeTree '"
+		<< serialization << "'.",
+		""
+	);
+
 	switch(mode){
 	case Mode::Debug:
 	{
-		TBTKAssert(
-			validate(serialization, "HoppingAmplitudeTree", mode),
-			"HoppingAmplitudeTree::HoppingAmplitudeTree()",
-			"Unable to parse string as HoppingAmplitudeTree '"
-			<< serialization << "'.",
-			""
-		);
 		string content = getContent(serialization, mode);
 
 		vector<string> elements = split(content, mode);
@@ -92,6 +96,57 @@ HoppingAmplitudeTree::HoppingAmplitudeTree(
 				""
 			)
 			children.push_back(HoppingAmplitudeTree(elements.at(n), mode));
+		}
+
+		break;
+	}
+	case Mode::JSON:
+	{
+		try{
+			json j = json::parse(serialization);
+			basisIndex = j.at("basisIndex").get<int>();
+			basisSize = j.at("basisSize").get<int>();
+			isPotentialBlockSeparator = j.at(
+				"isPotentialBlockSeparator"
+			).get<bool>();
+			try{
+/*				json has = j.at(
+					"hoppingAmplitudes"
+				).get<json::array>();*/
+				json has = j.at("hoppingAmplitudes");
+				for(json::iterator it = has.begin(); it != has.end(); ++it){
+					hoppingAmplitudes.push_back(
+						HoppingAmplitude(it->dump(), mode)
+					);
+				}
+			}
+			catch(json::exception e){
+				//It is valid to not have HoppingAmplitudes.
+			}
+
+			try{
+/*				json c = j.at(
+					"children"
+				).get<json>();*/
+				json c = j.at("children");
+				for(json::iterator it = c.begin(); it != c.end(); ++it){
+					children.push_back(
+						HoppingAmplitudeTree(it->dump(), mode)
+					);
+				}
+			}
+			catch(json::exception e){
+				//It is valid to not have children.
+			}
+		}
+		catch(json::exception e){
+			TBTKExit(
+				"HoppingAmplitudeTree::HoppingAmplitudeTree()",
+				"Unable to parse string as"
+				<< " HoppingAmplitudeTree '" << serialization
+				<< "'.",
+				""
+			);
 		}
 
 		break;
@@ -508,39 +563,31 @@ string HoppingAmplitudeTree::serialize(Mode mode) const{
 	}
 	case Mode::JSON:
 	{
-		stringstream ss;
-		ss << "{";
-		ss << "id:'HoppingAmplitudeTree'";
-		ss << "," << "basisIndex:" << Serializeable::serialize(
-			basisIndex,
-			mode
-		);
-		ss << "," << "basisSize:" << Serializeable::serialize(
-			basisSize,
-			mode
-		);
-		ss << "," << "isPotentialBlockSeparator"
-			<< Serializeable::serialize(
-				isPotentialBlockSeparator,
-				mode
-			);
-		ss << "," << "hoppingAmplitudes:[";
+		json j;
+		j["id"] = "HoppingAmplitudeTree";
+		j["basisIndex"] = basisIndex;
+		j["basisSize"] = basisSize;
+		j["isPotentialBlockSeparator"] = isPotentialBlockSeparator;
 		for(unsigned int n = 0; n < hoppingAmplitudes.size(); n++){
-			if(n != 0)
-				ss << ",";
-			ss << hoppingAmplitudes.at(n).serialize(mode);
+			j["hoppingAmplitudes"].push_back(
+				json::parse(
+					hoppingAmplitudes.at(n).serialize(
+						Serializeable::Mode::JSON
+					)
+				)
+			);
 		}
-		ss << "]";
-		ss << "," << "children:[";
 		for(unsigned int n = 0; n < children.size(); n++){
-			if(n != 0)
-				ss << ",";
-			ss << children.at(n).serialize(mode);
+			j["children"].push_back(
+				json::parse(
+					children.at(n).serialize(
+						Serializeable::Mode::JSON
+					)
+				)
+			);
 		}
-		ss << "]";
-		ss << "}";
 
-		return ss.str();
+		return j.dump();
 	}
 	default:
 		TBTKExit(

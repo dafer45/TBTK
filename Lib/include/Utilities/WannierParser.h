@@ -26,6 +26,7 @@
 #include "Model.h"
 #include "ParallelepipedArrayState.h"
 #include "ReciprocalLattice.h"
+#include "Resource/Resource.h"
 
 #include <initializer_list>
 #include <string>
@@ -36,11 +37,13 @@ namespace TBTK{
 class WannierParser{
 public:
 	/** Parse file. */
-	UnitCell* parseMatrixElements(std::string filename);
+//	UnitCell* parseMatrixElements(std::string filename);
+	UnitCell* parseMatrixElements(Resource &resource);
 
 	/** Parse Wannier functions. */
 	std::vector<ParallelepipedArrayState*> parseWannierFunctions(
-		std::string filename,
+//		std::string filename,
+		Resource &resource,
 		unsigned int resolutionX,
 		unsigned int resolutionY,
 		unsigned int resolutionZ,

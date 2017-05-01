@@ -23,7 +23,10 @@
 
 #include <sstream>
 
+#include "json.hpp"
+
 using namespace std;
+using namespace nlohmann;
 
 namespace TBTK{
 
@@ -64,20 +67,21 @@ HoppingAmplitude::HoppingAmplitude(
 	const string &serialization,
 	Serializeable::Mode mode
 ){
+	TBTKAssert(
+		Serializeable::validate(
+			serialization,
+			"HoppingAmplitude",
+			mode
+		),
+		"HoppingAmplitude::HoppingAmplitude()",
+		"Unable to parse string as HoppingAmplitude '"
+		<< serialization << "'.",
+		""
+	);
+
 	switch(mode){
 	case Serializeable::Mode::Debug:
 	{
-		TBTKAssert(
-			Serializeable::validate(
-				serialization,
-				"HoppingAmplitude",
-				mode
-			),
-			"HoppingAmplitude::HoppingAmplitude()",
-			"Unable to parse string as HoppingAmplitude '"
-			<< serialization << "'.",
-			""
-		);
 		string content = Serializeable::getContent(serialization, mode);
 
 		vector<string> elements = Serializeable::split(
@@ -86,11 +90,33 @@ HoppingAmplitude::HoppingAmplitude(
 		);
 
 		amplitudeCallback = nullptr;
+
 		stringstream ss;
 		ss.str(elements.at(0));
 		ss >> amplitude;
 		toIndex = Index(elements.at(1), mode);
 		fromIndex = Index(elements.at(2), mode);
+		break;
+	}
+	case Serializeable::Mode::JSON:
+	{
+		try{
+			amplitudeCallback = nullptr;
+
+			json j = json::parse(serialization);
+			Serializeable::deserialize(j["amplitude"].get<string>(), &amplitude, mode);
+			toIndex = Index(j["toIndex"].dump(), mode);
+			fromIndex = Index(j["fromIndex"].dump(), mode);
+		}
+		catch(json::exception e){
+			TBTKExit(
+				"HoppingAmplitude::HoppingAmplitude()",
+				"Unable to parse string as HoppingAmplitude '"
+				<< serialization << "'.",
+				""
+			);
+		}
+
 		break;
 	}
 	default:
@@ -145,7 +171,15 @@ string HoppingAmplitude::serialize(Serializeable::Mode mode) const{
 	}
 	case Serializeable::Mode::JSON:
 	{
-		stringstream ss;
+		json j;
+		j["id"] = "HoppingAmplitude";
+		j["amplitude"] = Serializeable::serialize(amplitude, mode);
+		j["toIndex"] = json::parse(toIndex.serialize(mode));
+		j["fromIndex"] = json::parse(fromIndex.serialize(mode));
+
+		return j.dump();
+
+/*		stringstream ss;
 		ss << "{";
 		ss << "id:'HoppingAmplitude'";
 		ss << "," << "amplitude:";
@@ -154,7 +188,7 @@ string HoppingAmplitude::serialize(Serializeable::Mode mode) const{
 		ss << "," << "from:" << fromIndex.serialize(mode);
 		ss << "}";
 
-		return ss.str();
+		return ss.str();*/
 	}
 	default:
 		TBTKExit(

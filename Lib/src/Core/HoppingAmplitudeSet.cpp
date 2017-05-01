@@ -22,7 +22,10 @@
 #include "Streams.h"
 #include "TBTKMacros.h"
 
+#include "json.hpp"
+
 using namespace std;
+using namespace nlohmann;
 
 namespace TBTK{
 
@@ -139,9 +142,104 @@ HoppingAmplitudeSet::HoppingAmplitudeSet(
 
 		break;
 	}
+	case Mode::JSON:
+	{
+		try{
+			json j = json::parse(serialization);
+			hoppingAmplitudeTree = HoppingAmplitudeTree(
+				j.at("hoppingAmplitudeTree").dump(),
+				mode
+			);
+			isConstructed = j.at("isConstructed").get<bool>();
+			isSorted = j.at("isSorted").get<bool>();
+			numMatrixElements = j.at("numMatrixElements").get<int>();
+			if(numMatrixElements == -1){
+				cooRowIndices = nullptr;
+				cooColIndices = nullptr;
+				cooValues = nullptr;
+			}
+			else{
+				json cri = j.at("cooRowIndices");
+				json cci = j.at("cooColIndices");
+				json cv = j.at("cooValues");
+				TBTKAssert(
+					distance(
+						cri.begin(),
+						cri.end()
+					) == numMatrixElements,
+					"HoppingAmplitudeSet::HoppingAmplitudeSet()",
+					"Incompatible array sizes."
+					<< " 'numMatrixElements' is "
+					<< numMatrixElements << " but"
+					<< " cooRowIndices has "
+					<< distance(cri.begin(), cri.end())
+					<< " elements.",
+					""
+				);
+				TBTKAssert(
+					distance(
+						cci.begin(),
+						cci.end()
+					) == numMatrixElements,
+					"HoppingAmplitudeSet::HoppingAmplitudeSet()",
+					"Incompatible array sizes."
+					<< " 'numMatrixElements' is "
+					<< numMatrixElements << " but"
+					<< " cooColIndices has "
+					<< distance(cci.begin(), cci.end())
+					<< " elements.",
+					""
+				);
+				TBTKAssert(
+					distance(
+						cv.begin(),
+						cv.end()
+					) == numMatrixElements,
+					"HoppingAmplitudeSet::HoppingAmplitudeSet()",
+					"Incompatible array sizes."
+					<< " 'numMatrixElements' is "
+					<< numMatrixElements << " but"
+					<< " cooValues "
+					<< distance(cv.begin(), cv.end())
+					<< " elements.",
+					""
+				);
+
+				cooRowIndices = new int[numMatrixElements];
+				cooColIndices = new int[numMatrixElements];
+				cooValues = new complex<double>[numMatrixElements];
+
+				unsigned int counter = 0;
+				for(json::iterator it = cri.begin(); it < cri.end(); ++it){
+					cooRowIndices[counter] = *it;
+					counter++;
+				}
+				counter = 0;
+				for(json::iterator it = cci.begin(); it < cci.end(); ++it){
+					cooColIndices[counter] = *it;
+					counter++;
+				}
+				counter = 0;
+				for(json::iterator it = cv.begin(); it < cv.end(); ++it){
+					deserialize(*it, &cooValues[counter], mode);
+					counter++;
+				}
+			}
+		}
+		catch(json::exception e){
+			TBTKExit(
+				"HoppingAmplitudeSet::HoppingAmplitudeSet()",
+				"Unable to parse string as HoppingAmplitudeSet"
+				<< " '" << serialization << "'.",
+				""
+			);
+		}
+
+		break;
+	}
 	default:
 		TBTKExit(
-			"HoppingAmplitudeSet::HoppingAMplitudeSet()",
+			"HoppingAmplitudeSet::HoppingAmplitudeSet()",
 			"Only Serializeable::Mode::Debug is supported yet.",
 			""
 		);
@@ -368,57 +466,28 @@ string HoppingAmplitudeSet::serialize(Mode mode) const{
 	}
 	case Mode::JSON:
 	{
-		stringstream ss;
-		ss << "{";
-		ss << "id:'HoppingAmplitudeSet'";
-		ss << "," << "hoppingAmplitudeTree:" << hoppingAmplitudeTree.serialize(mode);
-		ss << "," << "isConstructed:" << Serializeable::serialize(
-			isConstructed,
-			mode
+		json j;
+		j["id"] = "HoppingAmplitudeSet";
+		j["hoppingAmplitudeTree"] = json::parse(
+			hoppingAmplitudeTree.serialize(mode)
 		);
-		ss << "," << "isSorted:" << Serializeable::serialize(
-			isSorted,
-			mode
-		);
-		ss << "," << "numMatrixElements:" << Serializeable::serialize(
-			numMatrixElements,
-			mode
-		);
+		j["isConstructed"] = isConstructed;
+		j["isSorted"] = isSorted;
+		j["numMatrixElements"] = numMatrixElements;
 		if(numMatrixElements != -1){
-			ss << "," << "cooRowIndices:[";
 			for(int n = 0; n < numMatrixElements; n++){
-				if(n != 0)
-					ss << ",";
-				ss << Serializeable::serialize(
-					cooRowIndices[n],
-					mode
+				j["cooRowIndices"].push_back(cooRowIndices[n]);
+				j["cooColIndices"].push_back(cooColIndices[n]);
+				j["cooValues"].push_back(
+					Serializeable::serialize(
+						cooValues[n],
+						mode
+					)
 				);
 			}
-			ss << "]";
-			ss << "," << "cooColIndices:[";
-			for(int n = 0; n < numMatrixElements; n++){
-				if(n != 0)
-					ss << ",";
-				ss << Serializeable::serialize(
-					cooColIndices[n],
-					mode
-				);
-			}
-			ss << "]";
-			ss << "," << "cooValues:[";
-			for(int n = 0; n < numMatrixElements; n++){
-				if(n != 0)
-					ss << ",";
-				ss << Serializeable::serialize(
-					cooValues[n],
-					mode
-				);
-			}
-			ss << "]";
 		}
-		ss << "}";
 
-		return ss.str();
+		return j.dump();
 	}
 	default:
 		TBTKExit(

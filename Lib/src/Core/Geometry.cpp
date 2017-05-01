@@ -22,7 +22,10 @@
 #include "Streams.h"
 #include "TBTKMacros.h"
 
+#include "json.hpp"
+
 using namespace std;
+using namespace nlohmann;
 
 namespace TBTK{
 
@@ -137,6 +140,75 @@ Geometry::Geometry(
 		}
 		else{
 			specifiers = nullptr;
+		}
+
+		break;
+	}
+	case Mode::JSON:
+	{
+		try{
+			json j = json::parse(serialization);
+			dimensions = j.at("dimensions").get<int>();
+			numSpecifiers = j.at("numSpecifiers").get<int>();
+
+			json c = j.at("coordinates");
+			TBTKAssert(
+				distance(
+					c.begin(),
+					c.end()
+				) == dimensions*hoppingAmplitudeSet.getBasisSize(),
+				"Geoemtry::Geometry()",
+				"Incompatible array sizes. "
+				<< "'dimensions*hoppingAmplitudeSet.getBasisSize()'"
+				<< " is "
+				<< dimensions*hoppingAmplitudeSet.getBasisSize()
+				<< " but coordinates has "
+				<< distance(c.begin(), c.end())
+				<< " elements.",
+				""
+			);
+			coordinates = new double[dimensions*hoppingAmplitudeSet.getBasisSize()];
+			unsigned int counter = 0;
+			for(json::iterator it = c.begin(); it < c.end(); ++it){
+				coordinates[counter] = *it;
+				counter++;
+			}
+
+			if(numSpecifiers > 0){
+				json s = j.at("specifiers");
+				TBTKAssert(
+					distance(
+						s.begin(),
+						s.end()
+					) == numSpecifiers*hoppingAmplitudeSet.getBasisSize(),
+					"Geoemtry::Geometry()",
+					"Incompatible array sizes. "
+					<< "'numSpecifiers*hoppingAmplitudeSet.getBasisSize()'"
+					<< " is "
+					<< numSpecifiers*hoppingAmplitudeSet.getBasisSize()
+					<< " but specifiers has "
+					<< distance(s.begin(), s.end())
+					<< " elements.",
+					""
+				);
+				specifiers = new int[numSpecifiers*hoppingAmplitudeSet.getBasisSize()];
+				unsigned int counter = 0;
+				for(json::iterator it = s.begin(); it < s.end(); ++it){
+					specifiers[counter] = *it;
+					counter++;
+				}
+			}
+			else{
+				specifiers = nullptr;
+			}
+		}
+		catch(json::exception e){
+			TBTKExit(
+				"Geometry::Geometry()",
+				"Unable to parse string as Geoemtry '"
+				<< serialization << "'.",
+				""
+			);
 		}
 
 		break;
@@ -391,47 +463,28 @@ string Geometry::serialize(Mode mode) const{
 	}
 	case Mode::JSON:
 	{
-		stringstream ss;
-		ss << "{";
-		ss << "id:'Geometry'";
-		ss << "," << "dimensions:" << Serializeable::serialize(
-			dimensions,
-			mode
-		);
-		ss << "," << "numSpecifiers:" << Serializeable::serialize(
-			numSpecifiers,
-			mode
-		);
-		ss << "," << "coordinates:[";
+		json j;
+		j["id"] = "Geoemtry";
+		j["dimensions"] = dimensions;
+		j["numSpecifiers"] = numSpecifiers;
 		for(
 			unsigned int n = 0;
 			n < dimensions*hoppingAmplitudeSet->getBasisSize();
 			n++
 		){
-			if(n != 0)
-				ss << ",";
-			ss << Serializeable::serialize(coordinates[n], mode);
+			j["coordinates"].push_back(coordinates[n]);
 		}
-		ss << "]";
 		if(numSpecifiers > 0){
-			ss << "," << "specifiers:[";
 			for(
 				unsigned int n = 0;
-				n < dimensions*hoppingAmplitudeSet->getBasisSize();
+				n < numSpecifiers*hoppingAmplitudeSet->getBasisSize();
 				n++
 			){
-				if(n != 0)
-					ss << ",";
-				ss << Serializeable::serialize(
-					specifiers[n],
-					mode
-				);
+				j["specifiers"].push_back(specifiers[n]);
 			}
-			ss << "]";
 		}
-		ss << "}";
 
-		return ss.str();
+		return j.dump();
 	}
 	default:
 		TBTKExit(

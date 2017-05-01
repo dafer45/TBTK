@@ -21,7 +21,10 @@
 #include "Serializeable.h"
 #include "TBTKMacros.h"
 
+#include "json.hpp"
+
 using namespace std;
+using namespace nlohmann;
 
 namespace TBTK{
 
@@ -52,6 +55,19 @@ bool Serializeable::validate(
 		);*/
 
 		return true;
+	}
+	case Mode::JSON:
+	{
+		try{
+			json j = json::parse(serialization);
+			if(j.at("id").get<string>().compare(id) == 0)
+				return true;
+			else
+				return false;
+		}
+		catch(json::exception e){
+			return false;
+		}
 	}
 	default:
 		TBTKExit(

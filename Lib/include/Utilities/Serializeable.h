@@ -353,13 +353,32 @@ inline void Serializeable::deserialize(
 inline std::string Serializeable::serialize(Statistics statistics, Mode mode){
 	switch(mode){
 	case Mode::Debug:
-	case Mode::JSON:
 	{
 		std::stringstream ss;
 		switch(statistics){
 		case Statistics::FermiDirac:
 		case Statistics::BoseEinstein:
 			ss << static_cast<int>(statistics);
+			break;
+		default:
+			TBTKExit(
+				"Serializeable::serialize()",
+				"Unknown Statistics type '" << static_cast<int>(statistics) << "'",
+				"This should never happen, contact the developer."
+			);
+		}
+
+		return ss.str();
+	}
+	case Mode::JSON:
+	{
+		std::stringstream ss;
+		switch(statistics){
+		case Statistics::FermiDirac:
+			ss << "FermiDirac";
+			break;
+		case Statistics::BoseEinstein:
+			ss << "BoseEinstein";
 			break;
 		default:
 			TBTKExit(
@@ -387,7 +406,6 @@ inline void Serializeable::deserialize(
 ){
 	switch(mode){
 	case Mode::Debug:
-	case Mode::JSON:
 	{
 		std::stringstream ss;
 		ss.str(serialization);
@@ -407,7 +425,29 @@ inline void Serializeable::deserialize(
 				"The serialization string is either corrupted"
 				<< " or the the serialization was created with"
 				<< " a newer version of TBTK that supports"
-				<< " more Statistics."
+				<< " more types of Statistics."
+			);
+		}
+
+		break;
+	}
+	case Mode::JSON:
+	{
+		if(serialization.compare("FermiDirac") == 0){
+			*statistics = Statistics::FermiDirac;
+		}
+		else if(serialization.compare("BoseDirac") == 0){
+			*statistics = Statistics::BoseEinstein;
+		}
+		else{
+			TBTKExit(
+				"Serializeable::serialize()",
+				"Unknown Statistics type '" << serialization
+				<< "'",
+				"The serialization string is either corrupted"
+				<< " or the the serialization was created with"
+				<< " a newer version of TBTK that supports"
+				<< " more types of Statistics."
 			);
 		}
 

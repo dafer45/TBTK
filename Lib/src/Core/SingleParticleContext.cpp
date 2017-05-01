@@ -20,7 +20,10 @@
 
 #include "SingleParticleContext.h"
 
+#include "json.hpp"
+
 using namespace std;
+using namespace nlohmann;
 
 namespace TBTK{
 
@@ -83,6 +86,42 @@ SingleParticleContext::SingleParticleContext(
 			geometry = nullptr;
 		else
 			geometry = new Geometry(elements.at(2), mode, *hoppingAmplitudeSet);
+
+		break;
+	}
+	case Mode::JSON:
+	{
+		try{
+			json j = json::parse(serialization);
+			deserialize(
+				j.at("statistics").get<string>(),
+				&statistics,
+				mode
+			);
+			hoppingAmplitudeSet = new HoppingAmplitudeSet(
+				j.at("hoppingAmplitudeSet").dump(),
+				mode
+			);
+			try{
+				geometry = new Geometry(
+					j.at("geometry").dump(),
+					mode,
+					*hoppingAmplitudeSet
+				);
+			}
+			catch(json::exception e){
+				geometry = nullptr;
+			}
+		}
+		catch(json::exception e){
+			TBTKExit(
+				"SingleParticleContext::SingleParticleContext()",
+				"Unable to parse string as"
+				<< " SingleParticleContext '" << serialization
+				<< "'.",
+				""
+			);
+		}
 
 		break;
 	}
@@ -174,20 +213,16 @@ string SingleParticleContext::serialize(Mode mode) const{
 	}
 	case Mode::JSON:
 	{
-		stringstream ss;
-		ss << "{";
-		ss << "id:'SingleParticleContext'";
-		ss << "," << "statistics:" << Serializeable::serialize(
-			statistics,
-			mode
+		json j;
+		j["id"] = "SingleParticleContext";
+		j["statistics"] = Serializeable::serialize(statistics, mode);
+		j["hoppingAmplitudeSet"] = json::parse(
+			hoppingAmplitudeSet->serialize(mode)
 		);
-		ss << "," << "hoppingAmplitudeSet:"
-			<< hoppingAmplitudeSet->serialize(mode);
 		if(geometry != nullptr)
-			ss << "," << "geometry:" << geometry->serialize(mode);
-		ss << "}";
+			j["geometry"] = json::parse(geometry->serialize(mode));
 
-		return ss.str();
+		return j.dump();
 	}
 	default:
 		TBTKExit(

@@ -23,7 +23,10 @@
 
 #include <vector>
 
+#include "json.hpp"
+
 using namespace std;
+using namespace nlohmann;
 
 namespace TBTK{
 
@@ -84,6 +87,31 @@ Index::Index(const string &serialization, Serializeable::Mode mode){
 			""
 			);
 		}
+		break;
+	}
+	case Serializeable::Mode::JSON:
+	{
+		TBTKAssert(
+			Serializeable::validate(serialization, "Index", mode),
+			"Index::Index()",
+			"Unable to parse string as index '" << serialization
+			<< "'.",
+			""
+		);
+
+		try{
+			json j = json::parse(serialization);
+			indices = j.at("indices").get<vector<int>>();
+		}
+		catch(json::exception e){
+			TBTKExit(
+				"Index::Index()",
+				"Unable to parse string as index '"
+				<< serialization << "'.",
+				""
+			);
+		}
+
 		break;
 	}
 	default:
@@ -183,19 +211,11 @@ string Index::serialize(Serializeable::Mode mode) const{
 	}
 	case Serializeable::Mode::JSON:
 	{
-		stringstream ss;
-		ss << "{";
-		ss << "id:'Index'";
-		ss << "," << "indices:[";
-		for(unsigned int n = 0; n < indices.size(); n++){
-			if(n != 0)
-				ss << ",";
-			ss << Serializeable::serialize(indices.at(n), mode);
-		}
-		ss << "]";
-		ss << "}";
+		json j;
+		j["id"] = "Index";
+		j["indices"] = json(indices);
 
-		return ss.str();
+		return j.dump();
 	}
 	default:
 		TBTKExit(
