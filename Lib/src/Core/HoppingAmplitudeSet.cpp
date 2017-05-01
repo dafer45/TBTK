@@ -39,7 +39,7 @@ HoppingAmplitudeSet::HoppingAmplitudeSet(){
 HoppingAmplitudeSet::HoppingAmplitudeSet(
 	const HoppingAmplitudeSet &hoppingAmplitudeSet
 ){
-	tree = hoppingAmplitudeSet.tree;
+	hoppingAmplitudeTree = hoppingAmplitudeSet.hoppingAmplitudeTree;
 	isConstructed = hoppingAmplitudeSet.isConstructed;
 	isSorted = hoppingAmplitudeSet.isSorted;
 	numMatrixElements = hoppingAmplitudeSet.numMatrixElements;
@@ -64,7 +64,7 @@ HoppingAmplitudeSet::HoppingAmplitudeSet(
 HoppingAmplitudeSet::HoppingAmplitudeSet(
 	HoppingAmplitudeSet &&hoppingAmplitudeSet
 ){
-	tree = hoppingAmplitudeSet.tree;
+	hoppingAmplitudeTree = hoppingAmplitudeSet.hoppingAmplitudeTree;
 	isConstructed = hoppingAmplitudeSet.isConstructed;
 	isSorted = hoppingAmplitudeSet.isSorted;
 	numMatrixElements = hoppingAmplitudeSet.numMatrixElements;
@@ -97,7 +97,7 @@ HoppingAmplitudeSet::HoppingAmplitudeSet(
 
 		vector<string> elements = split(content, mode);
 
-		tree = TreeNode(elements.at(0), mode);
+		hoppingAmplitudeTree = HoppingAmplitudeTree(elements.at(0), mode);
 		stringstream ss;
 		ss.str(elements.at(1));
 		ss >> isConstructed;
@@ -161,7 +161,7 @@ HoppingAmplitudeSet& HoppingAmplitudeSet::operator=(
 	const HoppingAmplitudeSet &rhs
 ){
 	if(this != &rhs){
-		tree = rhs.tree;
+		hoppingAmplitudeTree = rhs.hoppingAmplitudeTree;
 		isConstructed = rhs.isConstructed;
 		isSorted = rhs.isSorted;
 		numMatrixElements = rhs.numMatrixElements;
@@ -188,7 +188,7 @@ HoppingAmplitudeSet& HoppingAmplitudeSet::operator=(
 
 HoppingAmplitudeSet& HoppingAmplitudeSet::operator=(HoppingAmplitudeSet &&rhs){
 	if(this != &rhs){
-		tree = rhs.tree;
+		hoppingAmplitudeTree = rhs.hoppingAmplitudeTree;
 		isConstructed = rhs.isConstructed;
 		isSorted = rhs.isSorted;
 		numMatrixElements = rhs.numMatrixElements;
@@ -319,17 +319,17 @@ void HoppingAmplitudeSet::reconstructCOO(){
 }
 
 void HoppingAmplitudeSet::print(){
-	tree.print();
+	hoppingAmplitudeTree.print();
 }
 
 HoppingAmplitudeSet::Iterator HoppingAmplitudeSet::getIterator() const{
-	return HoppingAmplitudeSet::Iterator(&tree);
+	return HoppingAmplitudeSet::Iterator(&hoppingAmplitudeTree);
 }
 
 HoppingAmplitudeSet::Iterator HoppingAmplitudeSet::getIterator(
 	const Index &subspace
 ) const{
-	return HoppingAmplitudeSet::Iterator(tree.getSubTree(subspace));
+	return HoppingAmplitudeSet::Iterator(hoppingAmplitudeTree.getSubTree(subspace));
 }
 
 string HoppingAmplitudeSet::serialize(Mode mode) const{
@@ -338,7 +338,7 @@ string HoppingAmplitudeSet::serialize(Mode mode) const{
 	{
 		stringstream ss;
 		ss << "HoppingAmplitudeSet(";
-		ss << tree.serialize(mode);
+		ss << hoppingAmplitudeTree.serialize(mode);
 		ss << "," << Serializeable::serialize(isConstructed, mode);
 		ss << "," << Serializeable::serialize(isSorted, mode);
 		ss << "," << Serializeable::serialize(numMatrixElements, mode);
@@ -371,7 +371,7 @@ string HoppingAmplitudeSet::serialize(Mode mode) const{
 		stringstream ss;
 		ss << "{";
 		ss << "id:'HoppingAmplitudeSet'";
-		ss << "," << "tree" << tree.serialize(mode);
+		ss << "," << "hoppingAmplitudeTree:" << hoppingAmplitudeTree.serialize(mode);
 		ss << "," << "isConstructed:" << Serializeable::serialize(
 			isConstructed,
 			mode
@@ -429,8 +429,8 @@ string HoppingAmplitudeSet::serialize(Mode mode) const{
 	}
 }
 
-HoppingAmplitudeSet::Iterator::Iterator(const TreeNode* tree){
-	it = new TreeNode::Iterator(tree);
+HoppingAmplitudeSet::Iterator::Iterator(const HoppingAmplitudeTree* hoppingAmplitudeTree){
+	it = new HoppingAmplitudeTree::Iterator(hoppingAmplitudeTree);
 }
 
 HoppingAmplitudeSet::Iterator::~Iterator(){

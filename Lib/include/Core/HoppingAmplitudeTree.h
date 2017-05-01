@@ -14,7 +14,7 @@
  */
 
 /** @package TBTKcalc
- *  @file TreeNode.h
+ *  @file HoppingAmplitudeTree.h
  *  @brief Node in tree used by AmplitudeSet to store @link HoppingAmplitude HoppingAmplitudes @endlink
  *
  *  @author Kristofer Björnson
@@ -31,19 +31,19 @@
 
 namespace TBTK{
 
-/** TreeNode structure used to build a tree for stroing @link HoppingAmplitude
- *   HoppingAmplitudes @endlink. Used by AmplitudeSet.*/
-class TreeNode : public Serializeable{
+/** HoppingAmplitudeTree is a tree structure used to build a tree for stroing
+ *  @link HoppingAmplitude HoppingAmplitudes @endlink. Used by AmplitudeSet.*/
+class HoppingAmplitudeTree : public Serializeable{
 public:
 	/** Constructor. */
-	TreeNode();
+	HoppingAmplitudeTree();
 
-	/** Constructor. Constructs the TreeNode from a serialization string.
-	 */
-	TreeNode(const std::string &serialization, Mode mode);
+	/** Constructor. Constructs the HoppingAmplitudeTree from a
+	 *  serialization string. */
+	HoppingAmplitudeTree(const std::string &serialization, Mode mode);
 
 	/** Destructor. */
-	virtual ~TreeNode();
+	virtual ~HoppingAmplitudeTree();
 
 	/** Add a HoppingAmplitude. */
 	void add(HoppingAmplitude ha);
@@ -53,7 +53,7 @@ public:
 
 	/** Get IndexTree containing the Indices that describe the subspace
 	 *  structure. */
-	const TreeNode* getSubTree(const Index &subspace) const;
+	const HoppingAmplitudeTree* getSubTree(const Index &subspace) const;
 
 	/** Returns true if the subspace is a proper subsapce. That is, if the
 	 *  corresponding subtree only contains HoppingAmplitudes that connects
@@ -81,7 +81,7 @@ public:
 	std::vector<Index> getIndexList(const Index &pattern) const;
 
 	/** Sort HoppingAmplitudes in row order. */
-	void sort(TreeNode *rootNode);
+	void sort(HoppingAmplitudeTree *rootNode);
 
 	/** Print @link HoppingAmplitude HoppingAmplitudes @endlink. Mainly for
 	 *  debuging purposes. */
@@ -92,7 +92,7 @@ public:
 	class Iterator{
 	public:
 		/** Root node to iterate from. */
-		const TreeNode* tree;
+		const HoppingAmplitudeTree* tree;
 
 		/** Current index at which the iterator points at. */
 		std::vector<int> currentIndex;
@@ -102,7 +102,7 @@ public:
 		int currentHoppingAmplitude;
 
 		/** Constructor. */
-		Iterator(const TreeNode *tree);
+		Iterator(const HoppingAmplitudeTree *tree);
 
 		/** Reset iterator. */
 		void reset();
@@ -123,8 +123,12 @@ public:
 		int getNumBasisIndices() const;
 	private:
 		/** Search after next HoppingAmplitude. Is used by
-		 *  TreeNode::Iterator::searchNext and called recursively. */
-		bool searchNext(const TreeNode *treeNode, unsigned int subindex);
+		 *  HoppingAmplitudeTree::Iterator::searchNext and called
+		 *  recursively. */
+		bool searchNext(
+			const HoppingAmplitudeTree *hoppingAmplitudeTree,
+			unsigned int subindex
+		);
 	};
 
 	/** Returns Iterator initialized to point at first HoppingAmplitude. */
@@ -164,55 +168,59 @@ private:
 
 	/** Child nodes. Never non-empty at the same time as hoppingAmplitudes
 	*/
-	std::vector<TreeNode> children;
+	std::vector<HoppingAmplitudeTree> children;
 
-	/** Add HoppingAmplitude. Is called by the public TreeNode::add and is
-	 *  called recursively. */
+	/** Add HoppingAmplitude. Is called by the public
+	 *  HoppingAmplitudeTree::add and is called recursively. */
 	void add(HoppingAmplitude &ha, unsigned int subindex);
 
-	/** Get sub tree. Is called by TreeNode::getSubTree and is called
-	 *  recursively. */
-	const TreeNode* getSubTree(
+	/** Get sub tree. Is called by HoppingAmplitudeTree::getSubTree and is
+	 *  called recursively. */
+	const HoppingAmplitudeTree* getSubTree(
 		const Index &subspace,
 		unsigned int subindex
 	) const;
 
 	/** Returns true if the subspace is a proper subsapce. Is called by
-	 *  TreeNode::isProperSubspace and is called recursively. */
+	 *  HoppingAmplitudeTree::isProperSubspace and is called recursively.
+	 */
 	bool isProperSubspace(const Index &subspace, unsigned int subindex);
 
 	/** Adds indices of all separate blocks below the current node to the
-	 *  indexTree. Is calleed by TreeNode::getBlockIndices() and is called
-	 *  recuresively. */
+	 *  indexTree. Is calleed by HoppingAmplitudeTree::getBlockIndices()
+	 *  and is called recuresively. */
 	void getBlockIndices(IndexTree &blockIndices, Index index) const;
 
-	/** Get HoppingAmpilitudes. Is called by the public TreeNode::getHAs
-	 *  and is called recursively. */
+	/** Get HoppingAmpilitudes. Is called by the public
+	 *  HoppingAmplitudeTree::getHAs and is called recursively. */
 	const std::vector<HoppingAmplitude>* getHAs(
 		Index index,
 		unsigned int subindex
 	) const;
 
 	/** Get Hilbert space index for given physical index. Is called by the
-	 *  public TreeNode::getBasisIndex and is called recursively. */
+	 *  public HoppingAmplitudeTree::getBasisIndex and is called recursively. */
 	int getBasisIndex(const Index &index, unsigned int subindex) const;
 
 	/** Get physical index for given Hilbert space index. Is called by the
-	 *  public TreeNode::getPhysicalIndex and is called recursively. */
+	 *  public HoppingAmplitudeTreee::getPhysicalIndex and is called
+	 *  recursively. */
 	void getPhysicalIndex(int basisIndex, std::vector<int> *indices) const;
 
-	/** Get minimum index on TreeNode. */
+	/** Get minimum index on HoppingAmplitudeTree. */
 	int getMinIndex() const;
 
-	/** Get max index on TreeNode. */
+	/** Get max index on HoppingAmplitudeTree. */
 	int getMaxIndex() const;
 
 	/** Generate Hilbert space indices. Is called by the public
-	 *  TreeNode::generateBasisIndices and is called recursively. */
+	 *  HoppingAmplitudeTree::generateBasisIndices and is called
+	 *  recursively. */
 	int generateBasisIndices(int i);
 
-	/** Print HoppingAmplitudes. Is called by the public TreeNode::print
-	 *  and is called recursively. Mainly for debuging purposes. */
+	/** Print HoppingAmplitudes. Is called by the public
+	 *  HoppingAmplitudeTree::print and is called recursively. Mainly for
+	 *  debuging purposes. */
 	void print(unsigned int subindex);
 
 	/** Returns (depth) first HoppingAmplitude as an example, in case of
@@ -220,7 +228,7 @@ private:
 	HoppingAmplitude getFirstHA() const;
 };
 
-inline int TreeNode::getBasisSize() const{
+inline int HoppingAmplitudeTree::getBasisSize() const{
 	return basisSize;
 }
 

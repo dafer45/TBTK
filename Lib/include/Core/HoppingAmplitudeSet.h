@@ -24,10 +24,11 @@
 #define COM_DAFER45_TBTK_HOPPING_AMPLITUDE_SET
 
 #include "HoppingAmplitude.h"
+#include "HoppingAmplitudeTree.h"
+#include "IndexTree.h"
 #include "Serializeable.h"
 #include "Streams.h"
 #include "TBTKMacros.h"
-#include "TreeNode.h"
 
 #include <complex>
 #include <vector>
@@ -174,10 +175,11 @@ public:
 
 		/** Private constructor. Limits the ability to construct the
 		 *  iterator to the HoppingAmplitudeSet. */
-		Iterator(const TreeNode *tree);
+		Iterator(const HoppingAmplitudeTree *hoppingAmplitudeTree);
 
-		/** TreeNode iterator. Implements the actual iteration. */
-		TreeNode::Iterator* it;
+		/** HoppingAmplitudeTree iterator. Implements the actual
+		 *  iteration. */
+		HoppingAmplitudeTree::Iterator* it;
 	};
 
 	/** Returns an iterator for iterating through @link HoppingAmplitude
@@ -229,7 +231,7 @@ public:
 private:
 	/** Root node for the tree structure in which HoppingAmplitudes are
 	 *  stored. */
-	TreeNode tree;
+	HoppingAmplitudeTree hoppingAmplitudeTree;
 
 	/** Flag indicating whether the HoppingAmplitudeSet have been
 	 *  constructed. */
@@ -254,41 +256,40 @@ private:
 };
 
 inline void HoppingAmplitudeSet::addHoppingAmplitude(HoppingAmplitude ha){
-	tree.add(ha);
+	hoppingAmplitudeTree.add(ha);
 }
 
 inline void HoppingAmplitudeSet::addHoppingAmplitudeAndHermitianConjugate(
 	HoppingAmplitude ha
 ){
-	tree.add(ha);
-	tree.add(ha.getHermitianConjugate());
+	hoppingAmplitudeTree.add(ha);
+	hoppingAmplitudeTree.add(ha.getHermitianConjugate());
 }
 
 inline const std::vector<HoppingAmplitude>* HoppingAmplitudeSet::getHAs(
 	Index index
 ) const{
-	return tree.getHAs(index);
+	return hoppingAmplitudeTree.getHAs(index);
 }
 
 inline int HoppingAmplitudeSet::getBasisIndex(const Index &index) const{
-	return tree.getBasisIndex(index);
+	return hoppingAmplitudeTree.getBasisIndex(index);
 }
 
 inline Index HoppingAmplitudeSet::getPhysicalIndex(int basisIndex) const{
-	return tree.getPhysicalIndex(basisIndex);
+	return hoppingAmplitudeTree.getPhysicalIndex(basisIndex);
 }
 
 inline int HoppingAmplitudeSet::getBasisSize() const{
-//	return tree.basisSize;
-	return tree.getBasisSize();
+	return hoppingAmplitudeTree.getBasisSize();
 }
 
 inline bool HoppingAmplitudeSet::isProperSubspace(const Index &subspace){
-	return tree.isProperSubspace(subspace);
+	return hoppingAmplitudeTree.isProperSubspace(subspace);
 }
 
 inline IndexTree HoppingAmplitudeSet::getSubspaceIndices() const{
-	return tree.getSubspaceIndices();
+	return hoppingAmplitudeTree.getSubspaceIndices();
 }
 
 inline void HoppingAmplitudeSet::construct(){
@@ -299,7 +300,7 @@ inline void HoppingAmplitudeSet::construct(){
 		""
 	);
 
-	tree.generateBasisIndices();
+	hoppingAmplitudeTree.generateBasisIndices();
 	isConstructed = true;
 }
 
@@ -310,7 +311,7 @@ inline bool HoppingAmplitudeSet::getIsConstructed() const{
 inline std::vector<Index> HoppingAmplitudeSet::getIndexList(
 	const Index &pattern
 ) const{
-	return tree.getIndexList(pattern);
+	return hoppingAmplitudeTree.getIndexList(pattern);
 }
 
 inline void HoppingAmplitudeSet::sort(){
@@ -322,7 +323,7 @@ inline void HoppingAmplitudeSet::sort(){
 	);
 
 	if(!isSorted){
-		tree.sort(&tree);
+		hoppingAmplitudeTree.sort(&hoppingAmplitudeTree);
 		isSorted = true;
 	}
 }
