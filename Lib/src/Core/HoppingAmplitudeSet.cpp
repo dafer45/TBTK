@@ -343,14 +343,80 @@ string HoppingAmplitudeSet::serialize(Mode mode) const{
 		ss << "," << Serializeable::serialize(isSorted, mode);
 		ss << "," << Serializeable::serialize(numMatrixElements, mode);
 		if(numMatrixElements != -1){
-			for(int n = 0; n < numMatrixElements; n++)
-				ss << "," << Serializeable::serialize(cooRowIndices[n], mode);
-			for(int n = 0; n < numMatrixElements; n++)
-				ss << "," << Serializeable::serialize(cooColIndices[n], mode);
-			for(int n = 0; n < numMatrixElements; n++)
-				ss << "," << Serializeable::serialize(cooValues[n], mode);
+			for(int n = 0; n < numMatrixElements; n++){
+				ss << "," << Serializeable::serialize(
+					cooRowIndices[n],
+					mode
+				);
+			}
+			for(int n = 0; n < numMatrixElements; n++){
+				ss << "," << Serializeable::serialize(
+					cooColIndices[n],
+					mode
+				);
+			}
+			for(int n = 0; n < numMatrixElements; n++){
+				ss << "," << Serializeable::serialize(
+					cooValues[n],
+					mode
+				);
+			}
 		}
 		ss << ")";
+
+		return ss.str();
+	}
+	case Mode::JSON:
+	{
+		stringstream ss;
+		ss << "{";
+		ss << "id:'HoppingAmplitudeSet'";
+		ss << "," << "tree" << tree.serialize(mode);
+		ss << "," << "isConstructed:" << Serializeable::serialize(
+			isConstructed,
+			mode
+		);
+		ss << "," << "isSorted:" << Serializeable::serialize(
+			isSorted,
+			mode
+		);
+		ss << "," << "numMatrixElements:" << Serializeable::serialize(
+			numMatrixElements,
+			mode
+		);
+		if(numMatrixElements != -1){
+			ss << "," << "cooRowIndices:[";
+			for(int n = 0; n < numMatrixElements; n++){
+				if(n != 0)
+					ss << ",";
+				ss << Serializeable::serialize(
+					cooRowIndices[n],
+					mode
+				);
+			}
+			ss << "]";
+			ss << "," << "cooColIndices:[";
+			for(int n = 0; n < numMatrixElements; n++){
+				if(n != 0)
+					ss << ",";
+				ss << Serializeable::serialize(
+					cooColIndices[n],
+					mode
+				);
+			}
+			ss << "]";
+			ss << "," << "cooValues:[";
+			for(int n = 0; n < numMatrixElements; n++){
+				if(n != 0)
+					ss << ",";
+				ss << Serializeable::serialize(
+					cooValues[n],
+					mode
+				);
+			}
+			ss << "]";
+		}
+		ss << "}";
 
 		return ss.str();
 	}

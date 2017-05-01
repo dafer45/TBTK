@@ -181,6 +181,22 @@ string Index::serialize(Serializeable::Mode mode) const{
 
 		return ss.str();
 	}
+	case Serializeable::Mode::JSON:
+	{
+		stringstream ss;
+		ss << "{";
+		ss << "id:'Index'";
+		ss << "," << "indices:[";
+		for(unsigned int n = 0; n < indices.size(); n++){
+			if(n != 0)
+				ss << ",";
+			ss << Serializeable::serialize(indices.at(n), mode);
+		}
+		ss << "]";
+		ss << "}";
+
+		return ss.str();
+	}
 	default:
 		TBTKExit(
 			"Index::serialize()",

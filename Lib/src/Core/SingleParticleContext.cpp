@@ -172,6 +172,23 @@ string SingleParticleContext::serialize(Mode mode) const{
 
 		return ss.str();
 	}
+	case Mode::JSON:
+	{
+		stringstream ss;
+		ss << "{";
+		ss << "id:'SingleParticleContext'";
+		ss << "," << "statistics:" << Serializeable::serialize(
+			statistics,
+			mode
+		);
+		ss << "," << "hoppingAmplitudeSet:"
+			<< hoppingAmplitudeSet->serialize(mode);
+		if(geometry != nullptr)
+			ss << "," << "geometry:" << geometry->serialize(mode);
+		ss << "}";
+
+		return ss.str();
+	}
 	default:
 		TBTKExit(
 			"SingleParticleContext::serialize()",

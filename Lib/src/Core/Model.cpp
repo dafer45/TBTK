@@ -177,6 +177,29 @@ string Model::serialize(Mode mode) const{
 
 		return ss.str();
 	}
+	case Mode::JSON:
+	{
+		stringstream ss;
+		ss << "{";
+		ss << "id:'Model'";
+		ss << "," << "temperature:" << Serializeable::serialize(
+			temperature,
+			mode
+		);
+		ss << "," << "chemicalPotential:" << Serializeable::serialize(
+			chemicalPotential,
+			mode
+		);
+		ss << "," << "singleParticleContext:"
+			<< singleParticleContext->serialize(mode);
+		ss << "," << "isTalkative:" << Serializeable::serialize(
+			isTalkative,
+			mode
+		);
+		ss << "}";
+
+		return ss.str();
+	}
 	default:
 		TBTKExit(
 			"Model::serialize()",

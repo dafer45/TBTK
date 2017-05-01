@@ -370,16 +370,66 @@ string Geometry::serialize(Mode mode) const{
 			n < dimensions*hoppingAmplitudeSet->getBasisSize();
 			n++
 		){
-			ss << "," << Serializeable::serialize(coordinates[n], mode);
+			ss << "," << Serializeable::serialize(
+				coordinates[n],
+				mode
+			);
 		}
 		for(
 			unsigned int n = 0;
 			n < numSpecifiers*hoppingAmplitudeSet->getBasisSize();
 			n++
 		){
-			ss << "," << Serializeable::serialize(specifiers[n], mode);
+			ss << "," << Serializeable::serialize(
+				specifiers[n],
+				mode
+			);
 		}
 		ss << ")";
+
+		return ss.str();
+	}
+	case Mode::JSON:
+	{
+		stringstream ss;
+		ss << "{";
+		ss << "id:'Geometry'";
+		ss << "," << "dimensions:" << Serializeable::serialize(
+			dimensions,
+			mode
+		);
+		ss << "," << "numSpecifiers:" << Serializeable::serialize(
+			numSpecifiers,
+			mode
+		);
+		ss << "," << "coordinates:[";
+		for(
+			unsigned int n = 0;
+			n < dimensions*hoppingAmplitudeSet->getBasisSize();
+			n++
+		){
+			if(n != 0)
+				ss << ",";
+			ss << Serializeable::serialize(coordinates[n], mode);
+		}
+		ss << "]";
+		if(numSpecifiers > 0){
+			ss << "," << "specifiers:[";
+			for(
+				unsigned int n = 0;
+				n < dimensions*hoppingAmplitudeSet->getBasisSize();
+				n++
+			){
+				if(n != 0)
+					ss << ",";
+				ss << Serializeable::serialize(
+					specifiers[n],
+					mode
+				);
+			}
+			ss << "]";
+		}
+		ss << "}";
 
 		return ss.str();
 	}

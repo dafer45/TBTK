@@ -143,6 +143,19 @@ string HoppingAmplitude::serialize(Serializeable::Mode mode) const{
 
 		return ss.str();
 	}
+	case Serializeable::Mode::JSON:
+	{
+		stringstream ss;
+		ss << "{";
+		ss << "id:'HoppingAmplitude'";
+		ss << "," << "amplitude:";
+		ss << amplitude;
+		ss << "," << "to:" << toIndex.serialize(mode);
+		ss << "," << "from:" << fromIndex.serialize(mode);
+		ss << "}";
+
+		return ss.str();
+	}
 	default:
 		TBTKExit(
 			"HoppingAmplitude::serialize()",

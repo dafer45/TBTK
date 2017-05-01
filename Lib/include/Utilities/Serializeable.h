@@ -138,6 +138,7 @@ protected:
 inline std::string Serializeable::serialize(bool b, Mode mode){
 	switch(mode){
 	case Mode::Debug:
+	case Mode::JSON:
 	{
 		std::stringstream ss;
 		ss << b;
@@ -160,6 +161,7 @@ inline void Serializeable::deserialize(
 ){
 	switch(mode){
 	case Mode::Debug:
+	case Mode::JSON:
 	{
 		std::stringstream ss;
 		ss.str(serialization);
@@ -179,6 +181,7 @@ inline void Serializeable::deserialize(
 inline std::string Serializeable::serialize(int i, Mode mode){
 	switch(mode){
 	case Mode::Debug:
+	case Mode::JSON:
 	{
 		std::stringstream ss;
 		ss << i;
@@ -201,6 +204,7 @@ inline void Serializeable::deserialize(
 ){
 	switch(mode){
 	case Mode::Debug:
+	case Mode::JSON:
 	{
 		std::stringstream ss;
 		ss.str(serialization);
@@ -220,6 +224,7 @@ inline void Serializeable::deserialize(
 inline std::string Serializeable::serialize(unsigned int u, Mode mode){
 	switch(mode){
 	case Mode::Debug:
+	case Mode::JSON:
 	{
 		std::stringstream ss;
 		ss << u;
@@ -242,6 +247,7 @@ inline void Serializeable::deserialize(
 ){
 	switch(mode){
 	case Mode::Debug:
+	case Mode::JSON:
 	{
 		std::stringstream ss;
 		ss.str(serialization);
@@ -261,6 +267,7 @@ inline void Serializeable::deserialize(
 inline std::string Serializeable::serialize(double d, Mode mode){
 	switch(mode){
 	case Mode::Debug:
+	case Mode::JSON:
 	{
 		std::stringstream ss;
 		ss << d;
@@ -283,6 +290,7 @@ inline void Serializeable::deserialize(
 ){
 	switch(mode){
 	case Mode::Debug:
+	case Mode::JSON:
 	{
 		std::stringstream ss;
 		ss.str(serialization);
@@ -302,6 +310,7 @@ inline void Serializeable::deserialize(
 inline std::string Serializeable::serialize(std::complex<double> c, Mode mode){
 	switch(mode){
 	case Mode::Debug:
+	case Mode::JSON:
 	{
 		std::stringstream ss;
 		ss << c;
@@ -324,6 +333,7 @@ inline void Serializeable::deserialize(
 ){
 	switch(mode){
 	case Mode::Debug:
+	case Mode::JSON:
 	{
 		std::stringstream ss;
 		ss.str(serialization);
@@ -343,6 +353,7 @@ inline void Serializeable::deserialize(
 inline std::string Serializeable::serialize(Statistics statistics, Mode mode){
 	switch(mode){
 	case Mode::Debug:
+	case Mode::JSON:
 	{
 		std::stringstream ss;
 		switch(statistics){
@@ -376,6 +387,7 @@ inline void Serializeable::deserialize(
 ){
 	switch(mode){
 	case Mode::Debug:
+	case Mode::JSON:
 	{
 		std::stringstream ss;
 		ss.str(serialization);

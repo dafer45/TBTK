@@ -55,7 +55,7 @@ public:
 	Model(Model &&model);
 
 	/** Constructor. Constructs the Model from a serialization string. Note
-	 *   that the ManyBodyContext is not yet serialized. */
+	 *  that the ManyBodyContext is not yet serialized. */
 	Model(const std::string &serialization, Mode mode);
 
 	/** Destructor. */

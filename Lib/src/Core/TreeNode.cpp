@@ -469,7 +469,10 @@ string TreeNode::serialize(Mode mode) const{
 		ss << "TreeNode(";
 		ss << Serializeable::serialize(basisIndex, mode);
 		ss << "," << Serializeable::serialize(basisSize, mode);
-		ss << "," << Serializeable::serialize(isPotentialBlockSeparator, mode);
+		ss << "," << Serializeable::serialize(
+			isPotentialBlockSeparator,
+			mode
+		);
 		for(unsigned int n = 0; n < hoppingAmplitudes.size(); n++){
 			ss << ",";
 			ss << hoppingAmplitudes.at(n).serialize(mode);
@@ -480,6 +483,42 @@ string TreeNode::serialize(Mode mode) const{
 		}
 
 		ss << ")";
+
+		return ss.str();
+	}
+	case Mode::JSON:
+	{
+		stringstream ss;
+		ss << "{";
+		ss << "id:'TreeNode'";
+		ss << "," << "basisIndex:" << Serializeable::serialize(
+			basisIndex,
+			mode
+		);
+		ss << "," << "basisSize:" << Serializeable::serialize(
+			basisSize,
+			mode
+		);
+		ss << "," << "isPotentialBlockSeparator"
+			<< Serializeable::serialize(
+				isPotentialBlockSeparator,
+				mode
+			);
+		ss << "," << "hoppingAmplitudes:[";
+		for(unsigned int n = 0; n < hoppingAmplitudes.size(); n++){
+			if(n != 0)
+				ss << ",";
+			ss << hoppingAmplitudes.at(n).serialize(mode);
+		}
+		ss << "]";
+		ss << "," << "children:[";
+		for(unsigned int n = 0; n < children.size(); n++){
+			if(n != 0)
+				ss << ",";
+			ss << children.at(n).serialize(mode);
+		}
+		ss << "]";
+		ss << "}";
 
 		return ss.str();
 	}
