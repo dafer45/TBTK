@@ -259,8 +259,8 @@ void FileWriter::writeIndexTree(
 	IndexTree::Iterator it = indexTree.begin();
 	const Index *index;
 	while((index = it.getIndex())){
-		serializedIndices.push_back(index->size());
-		for(unsigned int n = 0; n < index->size(); n++)
+		serializedIndices.push_back(index->getSize());
+		for(unsigned int n = 0; n < index->getSize(); n++)
 			serializedIndices.push_back(index->at(n));
 
 		it.searchNext();

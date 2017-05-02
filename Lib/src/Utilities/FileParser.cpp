@@ -274,7 +274,7 @@ void FileParser::write(complex<double> value){
 void FileParser::write(const Index &index){
 	stringstream ss;
 	ss << "[";
-	for(unsigned int n = 0; n < index.size(); n++){
+	for(unsigned int n = 0; n < index.getSize(); n++){
 		if(n != 0)
 			ss << " ";
 		ss << index.at(n);

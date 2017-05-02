@@ -78,6 +78,25 @@ bool Serializeable::validate(
 	}
 }
 
+bool Serializeable::hasID(const string &serialization, Mode mode){
+	switch(mode){
+	case Mode::Debug:
+	{
+		size_t position = serialization.find('(');
+		if(position == string::npos)
+			return false;
+		else
+			return true;
+	}
+	default:
+		TBTKExit(
+			"Serializeable::hasID()",
+			"Only Serializeable::Mode::Debug is supported yet.",
+			""
+		);
+	}
+}
+
 string Serializeable::getID(const string &serialization, Mode mode){
 	switch(mode){
 	case Mode::Debug:

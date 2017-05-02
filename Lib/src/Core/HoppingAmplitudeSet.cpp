@@ -544,7 +544,7 @@ void HoppingAmplitudeSet::tabulate(
 		(*numHoppingAmplitudes)++;
 
 //		int indexSize = ha->fromIndex.size();
-		int indexSize = ha->getFromIndex().size();
+		int indexSize = ha->getFromIndex().getSize();
 		if(indexSize > *maxIndexSize)
 			(*maxIndexSize) = indexSize;
 
@@ -561,11 +561,11 @@ void HoppingAmplitudeSet::tabulate(
 	int counter = 0;
 	while((ha = it.getHA())){
 //		for(unsigned int n = 0; n < ha->fromIndex.size(); n++)
-		for(unsigned int n = 0; n < ha->getFromIndex().size(); n++)
+		for(unsigned int n = 0; n < ha->getFromIndex().getSize(); n++)
 			(*table)[2*(*maxIndexSize)*counter+n] = ha->getFromIndex().at(n);
 //			(*table)[2*(*maxIndexSize)*counter+n] = ha->fromIndex.at(n);
 //		for(unsigned int n = 0; n < ha->toIndex.size(); n++)
-		for(unsigned int n = 0; n < ha->getToIndex().size(); n++)
+		for(unsigned int n = 0; n < ha->getToIndex().getSize(); n++)
 			(*table)[2*(*maxIndexSize)*counter+n+(*maxIndexSize)] = ha->getToIndex().at(n);
 //			(*table)[2*(*maxIndexSize)*counter+n+(*maxIndexSize)] = ha->toIndex.at(n);
 		(*amplitudes)[counter] = ha->getAmplitude();

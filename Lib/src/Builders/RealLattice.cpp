@@ -34,10 +34,10 @@ RealLattice::~RealLattice(){
 
 void RealLattice::addLatticePoint(const Index &latticePoint){
 	TBTKAssert(
-		latticePoint.size() == unitCell->getLatticeVectors().size(),
+		latticePoint.getSize() == unitCell->getLatticeVectors().size(),
 		"RealLattice::addLaticePoint()",
 		"Incompatible lattice dimensions. The lattice point has to have the same dimensionality as the UnitCell.",
-		"The UnitCell has " << unitCell->getLatticeVectors().size() << " lattice vectors, but the argument 'latticeVector' has " << to_string(latticePoint.size()) << " componentes."
+		"The UnitCell has " << unitCell->getLatticeVectors().size() << " lattice vectors, but the argument 'latticeVector' has " << to_string(latticePoint.getSize()) << " componentes."
 	);
 
 	latticePoints.push_back(latticePoint);

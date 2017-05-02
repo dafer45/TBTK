@@ -100,7 +100,7 @@ public:
 	 *  to other indices with the same initial subspace indices. */
 	bool isProperSubspace(const Index &subspace);
 
-	/** Returns and IndexTree containing all subspace indices. */
+	/** Returns an IndexTree containing all subspace indices. */
 	IndexTree getSubspaceIndices() const;
 
 	/** Construct Hilbert space. No more @link HoppingAmplitude

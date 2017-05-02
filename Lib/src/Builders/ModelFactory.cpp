@@ -378,11 +378,11 @@ Model* ModelFactory::merge(
 			Index to = ha->getToIndex();
 
 			vector<int> newFrom({(int)n});
-			for(unsigned int c = 0; c < from.size(); c++)
+			for(unsigned int c = 0; c < from.getSize(); c++)
 				newFrom.push_back(from.at(c));
 
 			vector<int> newTo({(int)n});
-			for(unsigned int c = 0; c < to.size(); c++)
+			for(unsigned int c = 0; c < to.getSize(); c++)
 				newTo.push_back(to.at(c));
 
 			*model << HoppingAmplitude(amplitude, newTo, newFrom);
@@ -427,7 +427,7 @@ Model* ModelFactory::merge(
 				Index from = ha->getFromIndex();
 
 				vector<int> newFrom({(int)n});
-				for(unsigned int c = 0; c < from.size(); c++)
+				for(unsigned int c = 0; c < from.getSize(); c++)
 					newFrom.push_back(from.at(c));
 
 //				int basisIndex = m->getBasisIndex(ha->fromIndex);

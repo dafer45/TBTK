@@ -20,7 +20,12 @@
 #include "IndexTree.h"
 #include "TBTKMacros.h"
 
+#include <sstream>
+
+#include "json.hpp"
+
 using namespace std;
+using namespace nlohmann;
 
 namespace TBTK{
 
@@ -33,6 +38,98 @@ IndexTree::IndexTree(){
 	size = -1;
 }
 
+IndexTree::IndexTree(const string &serialization, Mode mode){
+	TBTKAssert(
+		validate(serialization, "IndexTree", mode),
+		"IndexTree:IndexTree()",
+		"Unable to parse string as IndexTree '" << serialization
+		<< "'.",
+		""
+	);
+
+	switch(mode){
+	case Mode::Debug:
+	{
+		string content = getContent(serialization, mode);
+		vector<string> elements = split(content, mode);
+
+		unsigned int counter = 0;
+		while(
+			hasID(elements.at(counter), mode)
+			&& getID(
+				elements.at(counter), mode
+			).compare("IndexTree") == 0
+		){
+			children.push_back(
+				IndexTree(elements.at(counter), mode)
+			);
+			counter++;
+		}
+		if(counter == 0)
+			counter++;
+		stringstream ss;
+		ss.str(elements.at(counter++));
+		ss >> indexIncluded;
+		ss.clear();
+		ss.str(elements.at(counter++));
+		ss >> wildcardIndex;
+		ss.clear();
+		ss.str(elements.at(counter++));
+		ss >> wildcardType;
+		ss.clear();
+		ss.str(elements.at(counter++));
+		ss >> indexSeparator;
+		ss.clear();
+		ss.str(elements.at(counter++));
+		ss >> linearIndex;
+		ss.clear();
+		ss.str(elements.at(counter++));
+		ss >> size;
+
+		break;
+	}
+	case Mode::JSON:
+	{
+		try{
+			json j = json::parse(serialization);
+			try{
+				json c = j.at("children");
+				for(json::iterator it = c.begin(); it != c.end(); ++it){
+					children.push_back(
+						IndexTree(it->dump(), mode)
+					);
+				}
+			}
+			catch(json::exception e){
+				//It is valid to not have children.
+			}
+			indexIncluded = j.at("indexIncluded").get<bool>();
+			wildcardIndex = j.at("wildcardIndex").get<bool>();
+			wildcardType = j.at("wildcardType").get<int>();
+			indexSeparator = j.at("indexSeparator").get<bool>();
+			linearIndex = j.at("linearIndex").get<int>();
+			size = j.at("size").get<int>();
+		}
+		catch(json::exception e){
+			TBTKExit(
+				"IndexTree::IndexTree()",
+				"Unable to parse string as IndexTree '"
+				<< serialization << "'.",
+				""
+			);
+		}
+
+		break;
+	}
+	default:
+		TBTKExit(
+			"IndexTree::IndexTree()",
+			"Only Serializeable::Mode::Debug is supported yet.",
+			""
+		);
+	}
+}
+
 IndexTree::~IndexTree(){
 }
 
@@ -41,7 +138,7 @@ void IndexTree::add(const Index &index){
 }
 
 void IndexTree::add(const Index &index, unsigned int subindex){
-	if(subindex < index.size()){
+	if(subindex < index.getSize()){
 		//If the current subindex is not the last, the Index is
 		//propagated to the next node level.
 
@@ -200,7 +297,7 @@ int IndexTree::getLinearIndex(
 		);
 	}
 
-	if(subindex < index.size()){
+	if(subindex < index.getSize()){
 		//If the current subindex is not the last, continue to the next
 		//node level.
 
@@ -286,7 +383,7 @@ vector<unsigned int> IndexTree::getSubindicesMatching(
 	int linearIndex = getLinearIndex(index, searchMode);
 	Index physicalIndex = getPhysicalIndex(linearIndex);
 	vector<unsigned int> matches;
-	for(unsigned int n = 0; n < physicalIndex.size(); n++)
+	for(unsigned int n = 0; n < physicalIndex.getSize(); n++)
 		if(physicalIndex.at(n) == i)
 			matches.push_back(n);
 
@@ -345,6 +442,54 @@ int IndexTree::getMaxIndex() const{
 	}
 
 	return max;
+}
+
+string IndexTree::serialize(Mode mode) const{
+	switch(mode){
+	case Mode::Debug:
+	{
+		stringstream ss;
+		ss << "IndexTree(";
+		for(unsigned int n = 0; n < children.size(); n++){
+			if(n != 0)
+				ss << ",";
+			ss << children.at(n).serialize(mode);
+		}
+		ss << "," << Serializeable::serialize(indexIncluded, mode);
+		ss << "," << Serializeable::serialize(wildcardIndex, mode);
+		ss << "," << Serializeable::serialize(wildcardType, mode);
+		ss << "," << Serializeable::serialize(indexSeparator, mode);
+		ss << "," << Serializeable::serialize(linearIndex, mode);
+		ss << "," << Serializeable::serialize(size, mode);
+		ss << ")";
+
+		return ss.str();
+	}
+	case Mode::JSON:
+	{
+		json j;
+		j["id"] = "IndexTree";
+		for(unsigned int n = 0; n < children.size(); n++){
+			j["children"].push_back(
+				json::parse(children.at(n).serialize(mode))
+			);
+		}
+		j["indexIncluded"] = indexIncluded;
+		j["wildcardIndex"] = wildcardIndex;
+		j["wildcardType"] = wildcardType;
+		j["indexSeparator"] = indexSeparator;
+		j["linearIndex"] = linearIndex;
+		j["size"] = size;
+
+		return j.dump();
+	}
+	default:
+		TBTKExit(
+			"IndexTree:IndexTree()",
+			"Only Serializeable::Mode::Debug is supported yet.",
+			""
+		);
+	}
 }
 
 IndexTree::Iterator::Iterator(const IndexTree *indexTree){

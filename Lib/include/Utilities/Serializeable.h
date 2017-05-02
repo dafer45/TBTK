@@ -53,6 +53,9 @@ protected:
 		Mode mode
 	);
 
+	/** Returns true if the serialization string has an ID. */
+	static bool hasID(const std::string &serialization, Mode mode);
+
 	/** Get the ID of a serialization string. */
 	static std::string getID(const std::string &serialization, Mode mode);
 

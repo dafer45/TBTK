@@ -86,7 +86,7 @@ public:
 	const int& at(unsigned int n) const;
 
 	/** Get size. */
-	unsigned int size() const;
+	unsigned int getSize() const;
 
 	/** Reserves memory for the Index. */
 	void reserve(unsigned int size);
@@ -222,7 +222,7 @@ inline const int& Index::at(unsigned int n) const{
 	return indices.at(n);
 }
 
-inline unsigned int Index::size() const{
+inline unsigned int Index::getSize() const{
 	return indices.size();
 }
 

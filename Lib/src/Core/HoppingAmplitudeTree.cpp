@@ -205,7 +205,7 @@ void HoppingAmplitudeTree::add(HoppingAmplitude ha){
 
 void HoppingAmplitudeTree::add(HoppingAmplitude &ha, unsigned int subindex){
 //	if(subindex < ha.fromIndex.size()){
-	if(subindex < ha.getFromIndex().size()){
+	if(subindex < ha.getFromIndex().getSize()){
 		//If the current subindex is not the last, the HoppingAmplitude
 		//is propagated to the next node level.
 
@@ -236,7 +236,7 @@ void HoppingAmplitudeTree::add(HoppingAmplitude &ha, unsigned int subindex){
 		//'toIndex' and the 'fromIndex' differs in the subindex
 		//corresponding to this HoppingAmplitudeTree level.
 //		if(ha.toIndex.size() <= subindex || currentIndex != ha.toIndex.at(subindex))
-		if(ha.getToIndex().size() <= subindex || currentIndex != ha.getToIndex().at(subindex))
+		if(ha.getToIndex().getSize() <= subindex || currentIndex != ha.getToIndex().at(subindex))
 			isPotentialBlockSeparator = false;
 		//Propagate to the next node level.
 		children.at(currentIndex).add(ha, subindex+1);
@@ -265,7 +265,7 @@ void HoppingAmplitudeTree::add(HoppingAmplitude &ha, unsigned int subindex){
 const HoppingAmplitudeTree* HoppingAmplitudeTree::getSubTree(
 	const Index &subspace
 ) const{
-	for(unsigned int n = 0; n < subspace.size(); n++){
+	for(unsigned int n = 0; n < subspace.getSize(); n++){
 		if(subspace.at(n) < 0){
 			TBTKExit(
 				"HoppingAmplitudeTree::getSubTree()",
@@ -282,7 +282,7 @@ const HoppingAmplitudeTree* HoppingAmplitudeTree::getSubTree(
 	const Index &subspace,
 	unsigned int subindex
 ) const{
-	if(subindex == subspace.size()){
+	if(subindex == subspace.getSize()){
 		//Correct node reached
 
 		return this;
@@ -301,7 +301,7 @@ const HoppingAmplitudeTree* HoppingAmplitudeTree::getSubTree(
 }
 
 bool HoppingAmplitudeTree::isProperSubspace(const Index &subspace){
-	for(unsigned int n = 0; n < subspace.size(); n++){
+	for(unsigned int n = 0; n < subspace.getSize(); n++){
 		if(subspace.at(n) < 0){
 			TBTKExit(
 				"HoppingAmplitudeTree::getSubTree()",
@@ -315,7 +315,7 @@ bool HoppingAmplitudeTree::isProperSubspace(const Index &subspace){
 }
 
 bool HoppingAmplitudeTree::isProperSubspace(const Index &subspace, unsigned int subindex){
-	if(subindex == subspace.size())
+	if(subindex == subspace.getSize())
 		return isPotentialBlockSeparator;
 
 	if(isPotentialBlockSeparator){
@@ -371,7 +371,7 @@ const std::vector<HoppingAmplitude>* HoppingAmplitudeTree::getHAs(
 	Index index,
 	unsigned int subindex
 ) const{
-	if(subindex < index.size()){
+	if(subindex < index.getSize()){
 		//If the current subindex is not the last, continue to the next
 		//node level.
 
@@ -399,7 +399,7 @@ int HoppingAmplitudeTree::getBasisIndex(const Index &index) const{
 }
 
 int HoppingAmplitudeTree::getBasisIndex(const Index &index, unsigned int subindex) const{
-	if(subindex < index.size()){
+	if(subindex < index.getSize()){
 		//If the current subindex is not the last, continue to the next
 		//node level.
 

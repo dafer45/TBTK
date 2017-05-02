@@ -366,7 +366,7 @@ void RayTracer::render(
 	vector<Vector3d> coordinates;
 	while((index = iterator.getIndex())){
 		Index i = *index;
-		for(unsigned int n = 0; n < i.size(); n++)
+		for(unsigned int n = 0; n < i.getSize(); n++)
 			if(i.at(n) < 0)
 				i.at(n) = IDX_ALL;
 

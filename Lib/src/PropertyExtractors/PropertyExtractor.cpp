@@ -165,7 +165,7 @@ void PropertyExtractor::calculate(
 	int currentOffset,
 	int offsetMultiplier
 ){
-	int currentSubindex = pattern.size()-1;
+	int currentSubindex = pattern.getSize()-1;
 	for(; currentSubindex >= 0; currentSubindex--){
 		if(pattern.at(currentSubindex) < 0)
 			break;
@@ -208,7 +208,7 @@ void PropertyExtractor::ensureCompliantRanges(
 	const Index &pattern,
 	Index &ranges
 ){
-	for(unsigned int n = 0; n < pattern.size(); n++){
+	for(unsigned int n = 0; n < pattern.getSize(); n++){
 		if(pattern.at(n) >= 0)
 			ranges.at(n) = 1;
 	}
@@ -221,14 +221,14 @@ void PropertyExtractor::getLoopRanges(
 	int **lRanges
 ){
 	*lDimensions = 0;
-	for(unsigned int n = 0; n < ranges.size(); n++){
+	for(unsigned int n = 0; n < ranges.getSize(); n++){
 		if(pattern.at(n) < IDX_SUM_ALL)
 			(*lDimensions)++;
 	}
 
 	(*lRanges) = new int[*lDimensions];
 	int counter = 0;
-	for(unsigned int n = 0; n < ranges.size(); n++){
+	for(unsigned int n = 0; n < ranges.getSize(); n++){
 		if(pattern.at(n) < IDX_SUM_ALL)
 			(*lRanges)[counter++] = ranges.at(n);
 	}
@@ -244,7 +244,7 @@ IndexTree PropertyExtractor::generateIndexTree(
 
 	for(unsigned int n = 0; n < patterns.size(); n++){
 		Index pattern = *(patterns.begin() + n);
-		for(unsigned int c = 0; c < pattern.size(); c++){
+		for(unsigned int c = 0; c < pattern.getSize(); c++){
 			switch(pattern.at(c)){
 			case IDX_ALL:
 			case IDX_SUM_ALL:
@@ -269,7 +269,7 @@ IndexTree PropertyExtractor::generateIndexTree(
 		);
 		Index p = *(patterns.begin() + n);
 		for(unsigned int c = 0; c < indices.size(); c++){
-			for(unsigned int m = 0; m < p.size(); m++){
+			for(unsigned int m = 0; m < p.getSize(); m++){
 				if(keepSumationWildcards && p.at(m) == IDX_SUM_ALL)
 					indices.at(c).at(m) = IDX_SUM_ALL;
 				if(keepSpinWildcards && p.at(m) == IDX_SPIN)

@@ -275,7 +275,7 @@ Property::Magnetization DPropertyExtractor::calculateMagnetization(
 ){
 	hint = new int[1];
 	((int*)hint)[0] = -1;
-	for(unsigned int n = 0; n < pattern.size(); n++){
+	for(unsigned int n = 0; n < pattern.getSize(); n++){
 		if(pattern.at(n) == IDX_SPIN){
 			((int*)hint)[0] = n;
 			pattern.at(n) = 0;
@@ -443,7 +443,7 @@ Property::SpinPolarizedLDOS DPropertyExtractor::calculateSpinPolarizedLDOS(
 	((int**)hint)[1][0] = energyResolution;
 
 	((int**)hint)[1][1] = -1;
-	for(unsigned int n = 0; n < pattern.size(); n++){
+	for(unsigned int n = 0; n < pattern.getSize(); n++){
 		if(pattern.at(n) == IDX_SPIN){
 			((int**)hint)[1][1] = n;
 			pattern.at(n) = 0;

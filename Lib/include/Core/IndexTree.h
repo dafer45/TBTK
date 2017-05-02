@@ -24,18 +24,23 @@
 #define COM_DAFER45_TBTK_INDEX_TREE
 
 #include "Index.h"
+#include "Serializeable.h"
 
 #include <vector>
 
 namespace TBTK{
 
-class IndexTree{
+class IndexTree : public Serializeable{
 public:
 	/** Constructor. */
 	IndexTree();
 
+	/** Constructor. Constructs the IndexTree from a serialization string.
+	 */
+	IndexTree(const std::string &serialization, Mode mode);
+
 	/** Destructor. */
-	~IndexTree();
+	virtual ~IndexTree();
 
 	/** Add index. */
 	void add(const Index &index);
@@ -110,6 +115,9 @@ public:
 
 	/** Returns Iterator initialized to point at first Index. */
 	Iterator begin() const;
+
+	/** Implements Serializeable::serialize(). */
+	std::string serialize(Mode mode) const;
 private:
 	/** Child nodes.*/
 	std::vector<IndexTree> children;

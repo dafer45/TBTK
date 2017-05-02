@@ -105,7 +105,7 @@ complex<double> BasicState::getOverlap(const AbstractState &bra) const{
 		const Index &braUnitCell = bra.getContainer();
 		const Index &ketRelativeUnitCell = get<2>(storage->overlaps.at(m));
 		Index ketAbsoluteUnitCell;
-		for(unsigned int c = 0; c < braUnitCell.size(); c++)
+		for(unsigned int c = 0; c < braUnitCell.getSize(); c++)
 			ketAbsoluteUnitCell.push_back(getContainer().at(c) + ketRelativeUnitCell.at(c));
 
 		if(ketAbsoluteUnitCell < braUnitCell){
@@ -207,7 +207,7 @@ complex<double> BasicState::getMatrixElement(
 		const Index &braUnitCell = bra.getContainer();
 		const Index &ketRelativeUnitCell = get<2>(storage->matrixElements.at(m));
 		Index ketAbsoluteUnitCell;
-		for(unsigned int c = 0; c < braUnitCell.size(); c++)
+		for(unsigned int c = 0; c < braUnitCell.getSize(); c++)
 			ketAbsoluteUnitCell.push_back(getContainer().at(c) + ketRelativeUnitCell.at(c));
 
 		if(ketAbsoluteUnitCell < braUnitCell){

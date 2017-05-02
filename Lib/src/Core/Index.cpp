@@ -31,9 +31,9 @@ using namespace nlohmann;
 namespace TBTK{
 
 Index::Index(const Index &head, const Index &tail){
-	for(unsigned int n = 0; n < head.size(); n++)
+	for(unsigned int n = 0; n < head.getSize(); n++)
 		indices.push_back(head.at(n));
-	for(unsigned int n = 0; n < tail.size(); n++)
+	for(unsigned int n = 0; n < tail.getSize(); n++)
 		indices.push_back(tail.at(n));
 }
 
@@ -125,10 +125,10 @@ Index::Index(const string &serialization, Serializeable::Mode mode){
 
 bool operator<(const Index &i1, const Index &i2){
 	int minNumIndices;
-	if(i1.size() < i2.size())
-		minNumIndices = i1.size();
+	if(i1.getSize() < i2.getSize())
+		minNumIndices = i1.getSize();
 	else
-		minNumIndices = i2.size();
+		minNumIndices = i2.getSize();
 
 	for(int n = 0; n < minNumIndices; n++){
 		if(i1.at(n) == i2.at(n))
@@ -140,7 +140,7 @@ bool operator<(const Index &i1, const Index &i2){
 			return false;
 	}
 
-	if(i1.size() == i2.size())
+	if(i1.getSize() == i2.getSize())
 		return false;
 
 	TBTKExit(
@@ -152,10 +152,10 @@ bool operator<(const Index &i1, const Index &i2){
 
 bool operator>(const Index &i1, const Index &i2){
 	int minNumIndices;
-	if(i1.size() < i2.size())
-		minNumIndices = i1.size();
+	if(i1.getSize() < i2.getSize())
+		minNumIndices = i1.getSize();
 	else
-		minNumIndices = i2.size();
+		minNumIndices = i2.getSize();
 
 	for(int n = 0; n < minNumIndices; n++){
 		if(i1.at(n) == i2.at(n))
@@ -167,7 +167,7 @@ bool operator>(const Index &i1, const Index &i2){
 			return true;
 	}
 
-	if(i1.size() == i2.size())
+	if(i1.getSize() == i2.getSize())
 		return false;
 
 	TBTKExit(
@@ -180,7 +180,7 @@ bool operator>(const Index &i1, const Index &i2){
 Index Index::getUnitRange(){
 	Index unitRange = *this;
 
-	for(unsigned int n = 0; n < size(); n++)
+	for(unsigned int n = 0; n < getSize(); n++)
 		unitRange.at(n) = 1;
 
 	return unitRange;
