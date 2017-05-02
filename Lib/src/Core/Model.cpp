@@ -76,16 +76,17 @@ Model::Model(Model &&model){
 }
 
 Model::Model(const string &serialization, Mode mode){
+	TBTKAssert(
+		validate(serialization, "Model", mode),
+		"Model::Model()",
+		"Unable to parse string as Model '" << serialization
+		<< "'.",
+		""
+	);
+
 	switch(mode){
 	case Mode::Debug:
 	{
-		TBTKAssert(
-			validate(serialization, "Model", mode),
-			"Model::Model()",
-			"Unable to parse string as Model '" << serialization
-			<< "'.",
-			""
-		);
 		string content = getContent(serialization, mode);
 
 		vector<string> elements = split(content, mode);

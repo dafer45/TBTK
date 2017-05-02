@@ -93,16 +93,17 @@ Geometry::Geometry(
 ){
 	this->hoppingAmplitudeSet = &hoppingAmplitudeSet;
 
+	TBTKAssert(
+		validate(serialization, "Geometry", mode),
+		"Geometry::Geometry()",
+		"Unable to parse string as Geometry '" << serialization
+		<< "'.",
+		""
+	);
+
 	switch(mode){
 	case Mode::Debug:
 	{
-		TBTKAssert(
-			validate(serialization, "Geometry", mode),
-			"Geometry::Geometry()",
-			"Unable to parse string as Geometry '" << serialization
-			<< "'.",
-			""
-		);
 		string content = getContent(serialization, mode);
 
 		vector<string> elements = split(content, mode);
@@ -157,7 +158,7 @@ Geometry::Geometry(
 					c.begin(),
 					c.end()
 				) == dimensions*hoppingAmplitudeSet.getBasisSize(),
-				"Geoemtry::Geometry()",
+				"Geometry::Geometry()",
 				"Incompatible array sizes. "
 				<< "'dimensions*hoppingAmplitudeSet.getBasisSize()'"
 				<< " is "
@@ -181,7 +182,7 @@ Geometry::Geometry(
 						s.begin(),
 						s.end()
 					) == numSpecifiers*hoppingAmplitudeSet.getBasisSize(),
-					"Geoemtry::Geometry()",
+					"Geometry::Geometry()",
 					"Incompatible array sizes. "
 					<< "'numSpecifiers*hoppingAmplitudeSet.getBasisSize()'"
 					<< " is "
@@ -205,7 +206,7 @@ Geometry::Geometry(
 		catch(json::exception e){
 			TBTKExit(
 				"Geometry::Geometry()",
-				"Unable to parse string as Geoemtry '"
+				"Unable to parse string as Geometry '"
 				<< serialization << "'.",
 				""
 			);
@@ -464,7 +465,7 @@ string Geometry::serialize(Mode mode) const{
 	case Mode::JSON:
 	{
 		json j;
-		j["id"] = "Geoemtry";
+		j["id"] = "Geometry";
 		j["dimensions"] = dimensions;
 		j["numSpecifiers"] = numSpecifiers;
 		for(

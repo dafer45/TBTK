@@ -154,11 +154,6 @@ public:
 	/** Implements Serializeable::serialize(). Note that the
 	 *  ManyBodyContext is not yet serialized. */
 	std::string serialize(Mode mode) const;
-
-	/** <!!!temporary!!!>*/
-	void setSingleParticleContext(SingleParticleContext *spc) {	singleParticleContext = spc;	};
-	SingleParticleContext* getSingleParticleContext() {	return singleParticleContext;	};
-	/** </!!!temporary!!!>*/
 private:
 	/** Temperature. */
 	double temperature;

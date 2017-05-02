@@ -66,16 +66,17 @@ SingleParticleContext::SingleParticleContext(
 	const string &serialization,
 	Mode mode
 ){
+	TBTKAssert(
+		validate(serialization, "SingleParticleContext", mode),
+		"SingleParticleContext::SingleParticleContext()",
+		"Unable to parse string as SingleParticleContext '"
+		<< serialization << "'.",
+		""
+	);
+
 	switch(mode){
 	case Mode::Debug:
 	{
-		TBTKAssert(
-			validate(serialization, "SingleParticleContext", mode),
-			"SingleParticleContext::SingleParticleContext()",
-			"Unable to parse string as SingleParticleContext '"
-			<< serialization << "'.",
-			""
-		);
 		string content = getContent(serialization, mode);
 
 		vector<string> elements = split(content, mode);
