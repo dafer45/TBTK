@@ -26,6 +26,7 @@ export TBTK_dir
 #################
 # Include paths #
 #################
+# Native TBTK
 if [ -z "$CPLUS_INCLUDE_PATH" ]
 then
 	CPLUS_INCLUDE_PATH=${TBTK_dir}/Lib/include/Builders;
@@ -46,6 +47,8 @@ CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/Solvers;
 CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/StatesAndOperators;
 CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/Utilities;
 CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/Uncategorized;
+# Third party libraries
+CPLUS_INCLUDE_PATH+=:${TBTK_dir}/json;
 export CPLUS_INCLUDE_PATH
 
 #########################
