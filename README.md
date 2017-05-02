@@ -42,6 +42,17 @@ source init_session.sh
 TBTK is free to use under the Appache 2.0 license (see the file 'License').
 Please give attribution in accordance with the 'Cite' section below.
 
+## Third party licenses
+### json/json.hpp (for serialization)
+A thrid-party library hosted at https://github.com/nlohmann/json and is
+licensed under the MIT license.
+### HDF5 (for saving data)
+HDF5 is not distributed with TBTK, but is downloaded as part of the
+installation procedure. After installation HDF5's BSD-style License can be
+found in hdf5/hdf5-1.8.16/COPYING.
+
+
+
 # Cite
 #### To cite TBTK, mention TBTK in the text and cite the DOI for this project.  
 [![DOI](https://zenodo.org/badge/50950512.svg)](https://zenodo.org/badge/latestdoi/50950512)  
