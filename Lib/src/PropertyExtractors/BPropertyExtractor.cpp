@@ -66,7 +66,7 @@ void DPropertyExtractor::getTabulatedHoppingAmplitudeSet(
 }*/
 
 Property::EigenValues BPropertyExtractor::getEigenValues(){
-	int size = bSolver->getModel()->getBasisSize();
+	int size = bSolver->getModel().getBasisSize();
 //	const double *ev = bSolver->getEigenValues();
 
 	Property::EigenValues eigenValues(size);
@@ -84,14 +84,14 @@ Property::WaveFunction BPropertyExtractor::calculateWaveFunction(
 ){
 	IndexTree allIndices = generateIndexTree(
 		patterns,
-		*bSolver->getModel()->getHoppingAmplitudeSet(),
+		*bSolver->getModel().getHoppingAmplitudeSet(),
 		false,
 		false
 	);
 
 	IndexTree memoryLayout = generateIndexTree(
 		patterns,
-		*bSolver->getModel()->getHoppingAmplitudeSet(),
+		*bSolver->getModel().getHoppingAmplitudeSet(),
 		true,
 		true
 	);
@@ -99,7 +99,7 @@ Property::WaveFunction BPropertyExtractor::calculateWaveFunction(
 	vector<unsigned int> statesVector;
 	if(states.size() == 1){
 		if(*states.begin() == IDX_ALL){
-			for(int n = 0; n < bSolver->getModel()->getBasisSize(); n++)
+			for(int n = 0; n < bSolver->getModel().getBasisSize(); n++)
 				statesVector.push_back(n);
 		}
 		else{
@@ -146,11 +146,11 @@ Property::GreensFunction* BPropertyExtractor::calculateGreensFunction(
 	Index from,
 	Property::GreensFunction::Type type
 ){
-	unsigned int numPoles = bSolver->getModel()->getBasisSize();
+	unsigned int numPoles = bSolver->getModel().getBasisSize();
 
 	complex<double> *positions = new complex<double>[numPoles];
 	complex<double> *amplitudes = new complex<double>[numPoles];
-	for(int n = 0; n < bSolver->getModel()->getBasisSize(); n++){
+	for(int n = 0; n < bSolver->getModel().getBasisSize(); n++){
 		positions[n] = bSolver->getEigenValue(n);
 
 		complex<double> uTo = bSolver->getAmplitude(n, to);
@@ -179,7 +179,7 @@ Property::DOS BPropertyExtractor::calculateDOS(){
 	Property::DOS dos(lowerBound, upperBound, energyResolution);
 	double *data = dos.getDataRW();
 	double dE = (upperBound - lowerBound)/energyResolution;
-	for(int n = 0; n < bSolver->getModel()->getBasisSize(); n++){
+	for(int n = 0; n < bSolver->getModel().getBasisSize(); n++){
 		int e = (int)(((bSolver->getEigenValue(n) - lowerBound)/(upperBound - lowerBound))*energyResolution);
 //		int e = (int)(((ev[n] - lowerBound)/(upperBound - lowerBound))*energyResolution);
 		if(e >= 0 && e < energyResolution){
@@ -198,22 +198,22 @@ complex<double> BPropertyExtractor::calculateExpectationValue(
 
 	complex<double> expectationValue = 0.;
 
-	Statistics statistics = bSolver->getModel()->getStatistics();
+	Statistics statistics = bSolver->getModel().getStatistics();
 
-	for(int n = 0; n < bSolver->getModel()->getBasisSize(); n++){
+	for(int n = 0; n < bSolver->getModel().getBasisSize(); n++){
 		double weight;
 		if(statistics == Statistics::FermiDirac){
 			weight = Functions::fermiDiracDistribution(
 				bSolver->getEigenValue(n),
-				bSolver->getModel()->getChemicalPotential(),
-				bSolver->getModel()->getTemperature()
+				bSolver->getModel().getChemicalPotential(),
+				bSolver->getModel().getTemperature()
 			);
 		}
 		else{
 			weight = Functions::boseEinsteinDistribution(
 				bSolver->getEigenValue(n),
-				bSolver->getModel()->getChemicalPotential(),
-				bSolver->getModel()->getTemperature()
+				bSolver->getModel().getChemicalPotential(),
+				bSolver->getModel().getTemperature()
 			);
 		}
 
@@ -247,14 +247,14 @@ Property::Density BPropertyExtractor::calculateDensity(
 ){
 	IndexTree allIndices = generateIndexTree(
 		patterns,
-		*bSolver->getModel()->getHoppingAmplitudeSet(),
+		*bSolver->getModel().getHoppingAmplitudeSet(),
 		false,
 		false
 	);
 
 	IndexTree memoryLayout = generateIndexTree(
 		patterns,
-		*bSolver->getModel()->getHoppingAmplitudeSet(),
+		*bSolver->getModel().getHoppingAmplitudeSet(),
 		true,
 		true
 	);
@@ -313,14 +313,14 @@ Property::Magnetization BPropertyExtractor::calculateMagnetization(
 ){
 	IndexTree allIndices = generateIndexTree(
 		patterns,
-		*bSolver->getModel()->getHoppingAmplitudeSet(),
+		*bSolver->getModel().getHoppingAmplitudeSet(),
 		false,
 		true
 	);
 
 	IndexTree memoryLayout = generateIndexTree(
 		patterns,
-		*bSolver->getModel()->getHoppingAmplitudeSet(),
+		*bSolver->getModel().getHoppingAmplitudeSet(),
 		true,
 		true
 	);
@@ -392,14 +392,14 @@ Property::LDOS BPropertyExtractor::calculateLDOS(
 
 	IndexTree allIndices = generateIndexTree(
 		patterns,
-		*bSolver->getModel()->getHoppingAmplitudeSet(),
+		*bSolver->getModel().getHoppingAmplitudeSet(),
 		false,
 		true
 	);
 
 	IndexTree memoryLayout = generateIndexTree(
 		patterns,
-		*bSolver->getModel()->getHoppingAmplitudeSet(),
+		*bSolver->getModel().getHoppingAmplitudeSet(),
 		true,
 		true
 	);
@@ -503,14 +503,14 @@ Property::SpinPolarizedLDOS BPropertyExtractor::calculateSpinPolarizedLDOS(
 
 	IndexTree allIndices = generateIndexTree(
 		patterns,
-		*bSolver->getModel()->getHoppingAmplitudeSet(),
+		*bSolver->getModel().getHoppingAmplitudeSet(),
 		false,
 		true
 	);
 
 	IndexTree memoryLayout = generateIndexTree(
 		patterns,
-		*bSolver->getModel()->getHoppingAmplitudeSet(),
+		*bSolver->getModel().getHoppingAmplitudeSet(),
 		true,
 		true
 	);
@@ -559,7 +559,7 @@ void BPropertyExtractor::calculateDensityCallback(
 	BPropertyExtractor *pe = (BPropertyExtractor*)cb_this;
 
 //	const double *eigen_values = pe->bSolver->getEigenValues();
-	Statistics statistics = pe->bSolver->getModel()->getStatistics();
+	Statistics statistics = pe->bSolver->getModel().getStatistics();
 	int firstStateInBlock = pe->bSolver->getFirstStateInBlock(index);
 	int lastStateInBlock = pe->bSolver->getLastStateInBlock(index);
 	for(int n = firstStateInBlock; n <= lastStateInBlock; n++){
@@ -568,15 +568,15 @@ void BPropertyExtractor::calculateDensityCallback(
 		if(statistics == Statistics::FermiDirac){
 			weight = Functions::fermiDiracDistribution(
 				pe->bSolver->getEigenValue(n),
-				pe->bSolver->getModel()->getChemicalPotential(),
-				pe->bSolver->getModel()->getTemperature()
+				pe->bSolver->getModel().getChemicalPotential(),
+				pe->bSolver->getModel().getTemperature()
 			);
 		}
 		else{
 			weight = Functions::boseEinsteinDistribution(
 				pe->bSolver->getEigenValue(n),
-				pe->bSolver->getModel()->getChemicalPotential(),
-				pe->bSolver->getModel()->getTemperature()
+				pe->bSolver->getModel().getChemicalPotential(),
+				pe->bSolver->getModel().getTemperature()
 			);
 		}
 
@@ -595,7 +595,7 @@ void BPropertyExtractor::calculateMagnetizationCallback(
 	BPropertyExtractor *pe = (BPropertyExtractor*)cb_this;
 
 //	const double *eigen_values = pe->bSolver->getEigenValues();
-	Statistics statistics = pe->bSolver->getModel()->getStatistics();
+	Statistics statistics = pe->bSolver->getModel().getStatistics();
 
 	int spin_index = ((int*)pe->hint)[0];
 	Index index_u(index);
@@ -610,15 +610,15 @@ void BPropertyExtractor::calculateMagnetizationCallback(
 		if(statistics == Statistics::FermiDirac){
 			weight = Functions::fermiDiracDistribution(
 				pe->bSolver->getEigenValue(n),
-				pe->bSolver->getModel()->getChemicalPotential(),
-				pe->bSolver->getModel()->getTemperature()
+				pe->bSolver->getModel().getChemicalPotential(),
+				pe->bSolver->getModel().getTemperature()
 			);
 		}
 		else{
 			weight = Functions::boseEinsteinDistribution(
 				pe->bSolver->getEigenValue(n),
-				pe->bSolver->getModel()->getChemicalPotential(),
-				pe->bSolver->getModel()->getTemperature()
+				pe->bSolver->getModel().getChemicalPotential(),
+				pe->bSolver->getModel().getTemperature()
 			);
 		}
 

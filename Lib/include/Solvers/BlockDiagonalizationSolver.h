@@ -142,10 +142,10 @@ inline const std::complex<double> BlockDiagonalizationSolver::getAmplitude(
 	int state,
 	const Index &index
 ){
-	Model *model = getModel();
+	const Model &model = getModel();
 	unsigned int block = stateToBlockMap.at(state);
 	unsigned int offset = eigenVectorOffsets.at(block);
-	unsigned int linearIndex = model->getBasisIndex(index);
+	unsigned int linearIndex = model.getBasisIndex(index);
 	unsigned int firstStateInBlock = blockToStateMap.at(block);
 	unsigned int lastStateInBlock = firstStateInBlock + numStatesPerBlock.at(block)-1;
 	if(linearIndex >= firstStateInBlock && linearIndex <= lastStateInBlock)
@@ -161,7 +161,7 @@ inline const double BlockDiagonalizationSolver::getEigenValue(int state){
 inline unsigned int BlockDiagonalizationSolver::getFirstStateInBlock(
 	const Index &index
 ) const{
-	unsigned int linearIndex = getModel()->getBasisIndex(index);
+	unsigned int linearIndex = getModel().getBasisIndex(index);
 	unsigned int block = stateToBlockMap.at(linearIndex);
 	return blockToStateMap.at(block);
 }
@@ -169,7 +169,7 @@ inline unsigned int BlockDiagonalizationSolver::getFirstStateInBlock(
 inline unsigned int BlockDiagonalizationSolver::getLastStateInBlock(
 	const Index &index
 ) const{
-	unsigned int linearIndex = getModel()->getBasisIndex(index);
+	unsigned int linearIndex = getModel().getBasisIndex(index);
 	unsigned int block = stateToBlockMap.at(linearIndex);
 	return getFirstStateInBlock(index) + numStatesPerBlock.at(block)-1;
 }

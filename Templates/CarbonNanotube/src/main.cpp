@@ -77,7 +77,7 @@ int main(int argc, char **argv){
 
 	//Setup and run DiagonalizationSolver
 	DiagonalizationSolver dSolver;
-	dSolver.setModel(&model);
+	dSolver.setModel(model);
 	dSolver.run();
 
 	//Set filename and remove any file already in the folder

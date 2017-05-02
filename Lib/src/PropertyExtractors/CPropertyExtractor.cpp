@@ -195,7 +195,7 @@ complex<double> CPropertyExtractor::calculateExpectationValue(
 	);
 	const complex<double> *greensFunctionData = greensFunction->getArrayData();
 
-	Statistics statistics = cSolver->getModel()->getStatistics();
+	Statistics statistics = cSolver->getModel().getStatistics();
 
 	const double dE = (upperBound - lowerBound)/energyResolution;
 	for(int e = 0; e < energyResolution; e++){
@@ -203,15 +203,15 @@ complex<double> CPropertyExtractor::calculateExpectationValue(
 		if(statistics == Statistics::FermiDirac){
 			weight = Functions::fermiDiracDistribution(
 				lowerBound + (e/(double)energyResolution)*(upperBound - lowerBound),
-				cSolver->getModel()->getChemicalPotential(),
-				cSolver->getModel()->getTemperature()
+				cSolver->getModel().getChemicalPotential(),
+				cSolver->getModel().getTemperature()
 			);
 		}
 		else{
 			weight = Functions::boseEinsteinDistribution(
 				lowerBound + (e/(double)energyResolution)*(upperBound - lowerBound),
-				cSolver->getModel()->getChemicalPotential(),
-				cSolver->getModel()->getTemperature()
+				cSolver->getModel().getChemicalPotential(),
+				cSolver->getModel().getTemperature()
 			);
 		}
 
@@ -251,14 +251,14 @@ Property::Density CPropertyExtractor::calculateDensity(
 ){
 	IndexTree allIndices = generateIndexTree(
 		patterns,
-		*cSolver->getModel()->getHoppingAmplitudeSet(),
+		*cSolver->getModel().getHoppingAmplitudeSet(),
 		false,
 		false
 	);
 
 	IndexTree memoryLayout = generateIndexTree(
 		patterns,
-		*cSolver->getModel()->getHoppingAmplitudeSet(),
+		*cSolver->getModel().getHoppingAmplitudeSet(),
 		true,
 		true
 	);
@@ -324,14 +324,14 @@ Property::Magnetization CPropertyExtractor::calculateMagnetization(
 ){
 	IndexTree allIndices = generateIndexTree(
 		patterns,
-		*cSolver->getModel()->getHoppingAmplitudeSet(),
+		*cSolver->getModel().getHoppingAmplitudeSet(),
 		false,
 		true
 	);
 
 	IndexTree memoryLayout = generateIndexTree(
 		patterns,
-		*cSolver->getModel()->getHoppingAmplitudeSet(),
+		*cSolver->getModel().getHoppingAmplitudeSet(),
 		true,
 		true
 	);
@@ -383,14 +383,14 @@ Property::LDOS CPropertyExtractor::calculateLDOS(
 ){
 	IndexTree allIndices = generateIndexTree(
 		patterns,
-		*cSolver->getModel()->getHoppingAmplitudeSet(),
+		*cSolver->getModel().getHoppingAmplitudeSet(),
 		false,
 		true
 	);
 
 	IndexTree memoryLayout = generateIndexTree(
 		patterns,
-		*cSolver->getModel()->getHoppingAmplitudeSet(),
+		*cSolver->getModel().getHoppingAmplitudeSet(),
 		true,
 		true
 	);
@@ -469,14 +469,14 @@ Property::SpinPolarizedLDOS CPropertyExtractor::calculateSpinPolarizedLDOS(
 
 	IndexTree allIndices = generateIndexTree(
 		patterns,
-		*cSolver->getModel()->getHoppingAmplitudeSet(),
+		*cSolver->getModel().getHoppingAmplitudeSet(),
 		false,
 		true
 	);
 
 	IndexTree memoryLayout = generateIndexTree(
 		patterns,
-		*cSolver->getModel()->getHoppingAmplitudeSet(),
+		*cSolver->getModel().getHoppingAmplitudeSet(),
 		true,
 		true
 	);
@@ -516,7 +516,7 @@ void CPropertyExtractor::calculateDensityCallback(
 	);
 	const complex<double> *greensFunctionData = greensFunction->getArrayData();
 
-	Statistics statistics = pe->cSolver->getModel()->getStatistics();
+	Statistics statistics = pe->cSolver->getModel().getStatistics();
 
 	const double dE = (pe->upperBound - pe->lowerBound)/pe->energyResolution;
 	for(int e = 0; e < pe->energyResolution; e++){
@@ -524,15 +524,15 @@ void CPropertyExtractor::calculateDensityCallback(
 		if(statistics == Statistics::FermiDirac){
 			weight = Functions::fermiDiracDistribution(
 				pe->lowerBound + (e/(double)pe->energyResolution)*(pe->upperBound - pe->lowerBound),
-				pe->cSolver->getModel()->getChemicalPotential(),
-				pe->cSolver->getModel()->getTemperature()
+				pe->cSolver->getModel().getChemicalPotential(),
+				pe->cSolver->getModel().getTemperature()
 			);
 		}
 		else{
 			weight = Functions::boseEinsteinDistribution(
 				pe->lowerBound + (e/(double)pe->energyResolution)*(pe->upperBound - pe->lowerBound),
-				pe->cSolver->getModel()->getChemicalPotential(),
-				pe->cSolver->getModel()->getTemperature()
+				pe->cSolver->getModel().getChemicalPotential(),
+				pe->cSolver->getModel().getTemperature()
 			);
 		}
 
@@ -553,7 +553,7 @@ void CPropertyExtractor::calculateMAGCallback(
 	int spinIndex = ((int*)(pe->hint))[0];
 	Index to(index);
 	Index from(index);
-	Statistics statistics = pe->cSolver->getModel()->getStatistics();
+	Statistics statistics = pe->cSolver->getModel().getStatistics();
 
 	const double dE = (pe->upperBound - pe->lowerBound)/pe->energyResolution;
 	for(int n = 0; n < 4; n++){
@@ -571,15 +571,15 @@ void CPropertyExtractor::calculateMAGCallback(
 			if(statistics == Statistics::FermiDirac){
 				weight = Functions::fermiDiracDistribution(
 					pe->lowerBound + (e/(double)pe->energyResolution)*(pe->upperBound - pe->lowerBound),
-					pe->cSolver->getModel()->getChemicalPotential(),
-					pe->cSolver->getModel()->getTemperature()
+					pe->cSolver->getModel().getChemicalPotential(),
+					pe->cSolver->getModel().getTemperature()
 				);
 			}
 			else{
 				weight = Functions::boseEinsteinDistribution(
 					pe->lowerBound + (e/(double)pe->energyResolution)*(pe->upperBound - pe->lowerBound),
-					pe->cSolver->getModel()->getChemicalPotential(),
-					pe->cSolver->getModel()->getTemperature()
+					pe->cSolver->getModel().getChemicalPotential(),
+					pe->cSolver->getModel().getTemperature()
 				);
 			}
 

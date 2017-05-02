@@ -55,9 +55,9 @@ ChebyshevSolver::~ChebyshevSolver(){
 	}
 }
 
-void ChebyshevSolver::setModel(Model *model){
+void ChebyshevSolver::setModel(Model &model){
 	Solver::setModel(model);
-	model->sortHoppingAmplitudes();	//Required for GPU evaluation
+	model.sortHoppingAmplitudes();	//Required for GPU evaluation
 }
 
 void ChebyshevSolver::calculateCoefficients(
@@ -67,14 +67,14 @@ void ChebyshevSolver::calculateCoefficients(
 	int numCoefficients,
 	double broadening
 ){
-	Model *model = getModel();
+	const Model &model = getModel();
 
-	TBTKAssert(
+/*	TBTKAssert(
 		model != NULL,
 		"ChebyshevSolver::calculateCoefficients()",
 		"Model not set.",
 		"Use ChebyshevSolver::setModel() to set model."
-	);
+	);*/
 	TBTKAssert(
 		scaleFactor > 0,
 		"ChebyshevSolver::calculateCoefficients()",
@@ -88,7 +88,7 @@ void ChebyshevSolver::calculateCoefficients(
 		""
 	);
 
-	const HoppingAmplitudeSet *hoppingAmplitudeSet = model->getHoppingAmplitudeSet();
+	const HoppingAmplitudeSet *hoppingAmplitudeSet = model.getHoppingAmplitudeSet();
 
 	int fromBasisIndex = hoppingAmplitudeSet->getBasisIndex(from);
 	int toBasisIndex = hoppingAmplitudeSet->getBasisIndex(to);
@@ -225,13 +225,13 @@ void ChebyshevSolver::calculateCoefficients(
 	int numCoefficients,
 	double broadening
 ){
-	Model *model = getModel();
-	TBTKAssert(
+	const Model &model = getModel();
+/*	TBTKAssert(
 		model != NULL,
 		"ChebyshevSolver::calculateCoefficients()",
 		"Model not set.",
 		"Use ChebyshevSolver::setModel() to set model."
-	);
+	);*/
 	TBTKAssert(
 		scaleFactor > 0,
 		"ChebyshevSolver::calculateCoefficients()",
@@ -245,7 +245,7 @@ void ChebyshevSolver::calculateCoefficients(
 		""
 	);
 
-	const HoppingAmplitudeSet *hoppingAmplitudeSet = model->getHoppingAmplitudeSet();
+	const HoppingAmplitudeSet *hoppingAmplitudeSet = model.getHoppingAmplitudeSet();
 
 	int fromBasisIndex = hoppingAmplitudeSet->getBasisIndex(from);
 	int *coefficientMap = new int[hoppingAmplitudeSet->getBasisSize()];
@@ -392,14 +392,14 @@ void ChebyshevSolver::calculateCoefficientsWithCutoff(
 	double componentCutoff,
 	double broadening
 ){
-	Model *model = getModel();
+	const Model &model = getModel();
 
-	TBTKAssert(
+/*	TBTKAssert(
 		model != NULL,
 		"ChebyshevSolver::calculateCoefficientsWithCutoff()",
 		"Model not set.",
 		"Use ChebyshevSolver::setModel() to set model."
-	);
+	);*/
 	TBTKAssert(
 		scaleFactor > 0,
 		"ChebyshevSolver::calculateCoefficientsWithCutoff()",
@@ -413,7 +413,7 @@ void ChebyshevSolver::calculateCoefficientsWithCutoff(
 		""
 	);
 
-	const HoppingAmplitudeSet *hoppingAmplitudeSet = model->getHoppingAmplitudeSet();
+	const HoppingAmplitudeSet *hoppingAmplitudeSet = model.getHoppingAmplitudeSet();
 
 	int fromBasisIndex = hoppingAmplitudeSet->getBasisIndex(from);
 	int toBasisIndex = hoppingAmplitudeSet->getBasisIndex(to);

@@ -37,6 +37,7 @@
 #include "WannierParser.h"
 
 #include <complex>
+#include <iostream>
 
 using namespace std;
 using namespace TBTK;
@@ -50,15 +51,40 @@ int main(int argc, char **argv){
 		"Need two input parameters. Filenames for matrix elements and Wannier functions.",
 		""
 	);
+
+	bool done = false;
+	while(!done){
+		Streams::out << "This template will download data over the "
+			<< "internet. Are you sure you want to proceed? (y/n): ";
+		char answer;
+		cin >> answer;
+		cin.clear();
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		switch(answer){
+		case 'y':
+		case 'Y':
+			done = true;
+			break;
+		case 'n':
+		case 'N':
+			exit(0);
+		default:
+			break;
+		}
+	}
+	Streams::out << "OK\n";
+
 	Timer::tick("Full calculation");
 	FileWriter::clear();
 
 	string filenameMatrixElements = argv[1];
 	string filenameWannierFunctions = argv[2];
+	Resource resource1;
+	resource1.read(argv[1]);
 
 	Timer::tick("Parse");
 	WannierParser wannierParser;
-	UnitCell *unitCell = wannierParser.parseMatrixElements(filenameMatrixElements);
+	UnitCell *unitCell = wannierParser.parseMatrixElements(resource1);
 	ReciprocalLattice *reciprocalLattice = new ReciprocalLattice(unitCell);
 	Timer::tock();
 
@@ -86,8 +112,10 @@ int main(int argc, char **argv){
 	}
 	plotter.save("figures/BandStructureA.png");
 
+	Resource resource2;
+	resource2.read(argv[2]);
 	vector<ParallelepipedArrayState*> ppaStates = wannierParser.parseWannierFunctions(
-		filenameWannierFunctions,
+		resource2,
 		141,
 		141,
 		81,

@@ -36,28 +36,40 @@ public:
 	virtual ~Solver();
 
 	/** Set model to work on. */
-	virtual void setModel(Model *model);
+	virtual void setModel(Model &model);
 
 	/** Get model. */
-	Model* getModel();
+	Model& getModel();
 
 	/** Get model. */
-	const Model* getModel() const;
+	const Model& getModel() const;
 private:
 	/** Model to work on. */
 	Model *model;
 };
 
-inline void Solver::setModel(Model *model){
-	this->model = model;
+inline void Solver::setModel(Model &model){
+	this->model = &model;
 }
 
-inline Model* Solver::getModel(){
-	return model;
+inline Model& Solver::getModel(){
+	TBTKAssert(
+		model != nullptr,
+		"Solver::getModel()",
+		"Model not set.",
+		"Use Solver::setSolver() to set model."
+	);
+	return *model;
 }
 
-inline const Model* Solver::getModel() const{
-	return model;
+inline const Model& Solver::getModel() const{
+	TBTKAssert(
+		model != nullptr,
+		"Solver::getModel()",
+		"Model not set.",
+		"Use Solver::setSolver() to set model."
+	);
+	return *model;
 }
 
 };	//End of namespace TBTK

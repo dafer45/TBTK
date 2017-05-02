@@ -92,7 +92,7 @@ int main(int argc, char **argv){
 	int MAX_ITERATIONS = 4000;
 	ArnoldiSolver aSolver;
 	aSolver.setMode(ArnoldiSolver::Mode::ShiftAndInvert);
-	aSolver.setModel(&model);
+	aSolver.setModel(model);
 	aSolver.setCentralValue(1.0);
 	aSolver.setNumEigenValues(NUM_EIGEN_VALUES);
 	aSolver.setCalculateEigenVectors(true);

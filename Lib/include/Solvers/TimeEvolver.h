@@ -273,7 +273,7 @@ inline const std::complex<double> TimeEvolver::getAmplitude(
 	int state,
 	const Index &index
 ){
-	return eigenVectorsMap[state][getModel()->getBasisIndex(index)];
+	return eigenVectorsMap[state][getModel().getBasisIndex(index)];
 }
 
 inline void TimeEvolver::setDecayMode(DecayMode decayMode){

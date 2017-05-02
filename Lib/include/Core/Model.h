@@ -79,7 +79,7 @@ public:
 	int getBasisIndex(Index index) const;
 
 	/** Get size of Hilbert space. */
-	int getBasisSize();
+	int getBasisSize() const;
 
 	/** Construct Hilbert space. No more @link HoppingAmplitude
 	 *  HoppingAmplitudes @endlink should be added after this call. */
@@ -180,7 +180,7 @@ inline void Model::addHoppingAmplitudeAndHermitianConjugate(
 	singleParticleContext->addHoppingAmplitudeAndHermitianConjugate(ha);
 }
 
-inline int Model::getBasisSize(){
+inline int Model::getBasisSize() const{
 	return singleParticleContext->getBasisSize();
 }
 

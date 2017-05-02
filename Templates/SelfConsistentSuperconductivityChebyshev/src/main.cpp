@@ -91,7 +91,7 @@ bool scLoop(ChebyshevSolver *cSolver){
 	//Self-consistency loop
 	int counter = 0;
 	while(counter++ < MAX_ITERATIONS){
-		cSolver->getModel()->reconstructCOO();
+		cSolver->getModel().reconstructCOO();
 
 		//Clear the order parameter
 		for(int x = 0; x < SIZE_X; x++){
@@ -222,7 +222,7 @@ int main(int argc, char **argv){
 
 	//Setup ChebyshevSolver
 	ChebyshevSolver cSolver;
-	cSolver.setModel(&model);
+	cSolver.setModel(model);
 	cSolver.setScaleFactor(SCALE_FACTOR);
 
 	//Run self-consistency loop

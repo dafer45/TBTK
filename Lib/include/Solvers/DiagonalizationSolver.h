@@ -142,8 +142,8 @@ inline const std::complex<double> DiagonalizationSolver::getAmplitude(
 	int state,
 	const Index &index
 ){
-	Model *model = getModel();
-	return eigenVectors[model->getBasisSize()*state + model->getBasisIndex(index)];
+	const Model &model = getModel();
+	return eigenVectors[model.getBasisSize()*state + model.getBasisIndex(index)];
 }
 
 inline const double DiagonalizationSolver::getEigenValue(int state){

@@ -97,7 +97,7 @@ Property::GreensFunction* EDPropertyExtractor::calculateGreensFunction(
 		break;
 	}
 
-	ManyBodyContext *manyBodyContext = edSolver->getModel()->getManyBodyContext();
+	ManyBodyContext *manyBodyContext = edSolver->getModel().getManyBodyContext();
 
 	const FockStateRuleSet ruleSet0 = manyBodyContext->getFockStateRuleSet();
 	unsigned int subspaceID0 = edSolver->addSubspace(ruleSet0);

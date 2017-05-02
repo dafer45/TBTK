@@ -53,7 +53,7 @@ public:
 	virtual ~ChebyshevSolver();
 
 	/** Overrides Solver::setModel(). */
-	virtual void setModel(Model *model);
+	virtual void setModel(Model &model);
 
 	/** Set scale factor. */
 	void setScaleFactor(double scaleFactor);

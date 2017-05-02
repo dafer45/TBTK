@@ -259,8 +259,8 @@ inline const std::complex<double> ArnoldiSolver::getAmplitude(
 	int state,
 	const Index &index
 ){
-	Model *model = getModel();
-	return eigenVectors[model->getBasisSize()*state + model->getBasisIndex(index)];
+	const Model &model = getModel();
+	return eigenVectors[model.getBasisSize()*state + model.getBasisIndex(index)];
 }
 
 };	//End of namesapce TBTK

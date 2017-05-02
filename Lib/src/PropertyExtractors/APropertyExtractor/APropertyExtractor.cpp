@@ -55,14 +55,14 @@ Property::WaveFunction APropertyExtractor::calculateWaveFunction(
 ){
 	IndexTree allIndices = generateIndexTree(
 		patterns,
-		*aSolver->getModel()->getHoppingAmplitudeSet(),
+		*aSolver->getModel().getHoppingAmplitudeSet(),
 		false,
 		false
 	);
 
 	IndexTree memoryLayout = generateIndexTree(
 		patterns,
-		*aSolver->getModel()->getHoppingAmplitudeSet(),
+		*aSolver->getModel().getHoppingAmplitudeSet(),
 		true,
 		true
 	);
@@ -70,7 +70,7 @@ Property::WaveFunction APropertyExtractor::calculateWaveFunction(
 	vector<unsigned int> statesVector;
 	if(states.size() == 1){
 		if(*states.begin() == IDX_ALL){
-			for(int n = 0; n < aSolver->getModel()->getBasisSize(); n++)
+			for(int n = 0; n < aSolver->getModel().getBasisSize(); n++)
 				statesVector.push_back(n);
 		}
 		else{
@@ -117,7 +117,7 @@ Property::GreensFunction* APropertyExtractor::calculateGreensFunction(
 	Index from,
 	Property::GreensFunction::Type type
 ){
-	unsigned int numPoles = aSolver->getModel()->getBasisSize();
+	unsigned int numPoles = aSolver->getModel().getBasisSize();
 
 	complex<double> *positions = new complex<double>[numPoles];
 	complex<double> *amplitudes = new complex<double>[numPoles];
@@ -232,14 +232,14 @@ Property::LDOS APropertyExtractor::calculateLDOS(
 
 	IndexTree allIndices = generateIndexTree(
 		patterns,
-		*aSolver->getModel()->getHoppingAmplitudeSet(),
+		*aSolver->getModel().getHoppingAmplitudeSet(),
 		false,
 		true
 	);
 
 	IndexTree memoryLayout = generateIndexTree(
 		patterns,
-		*aSolver->getModel()->getHoppingAmplitudeSet(),
+		*aSolver->getModel().getHoppingAmplitudeSet(),
 		true,
 		true
 	);
@@ -357,14 +357,14 @@ Property::SpinPolarizedLDOS APropertyExtractor::calculateSpinPolarizedLDOS(
 
 	IndexTree allIndices = generateIndexTree(
 		patterns,
-		*aSolver->getModel()->getHoppingAmplitudeSet(),
+		*aSolver->getModel().getHoppingAmplitudeSet(),
 		false,
 		true
 	);
 
 	IndexTree memoryLayout = generateIndexTree(
 		patterns,
-		*aSolver->getModel()->getHoppingAmplitudeSet(),
+		*aSolver->getModel().getHoppingAmplitudeSet(),
 		true,
 		true
 	);

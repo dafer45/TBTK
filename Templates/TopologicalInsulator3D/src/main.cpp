@@ -116,7 +116,7 @@ int main(int argc, char **argv){
 
 	//Setup ChebyshevSolver
 	ChebyshevSolver cSolver;
-	cSolver.setModel(&model);
+	cSolver.setModel(model);
 
 	//Generate lookup table for quicker evaluation of Green's functions.
 	cSolver.generateLookupTable(NUM_COEFFICIENTS, ENERGY_RESOLUTION);

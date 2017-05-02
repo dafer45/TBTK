@@ -48,12 +48,12 @@ BlockDiagonalizationSolver::~BlockDiagonalizationSolver(){
 }
 
 void BlockDiagonalizationSolver::run(){
-	TBTKAssert(
+/*	TBTKAssert(
 		getModel() != NULL,
 		"DiagonalizationSolver::run()",
 		"Model not set.",
 		"Use DiagonalizationSolver::setModel() to set model."
-	);
+	);*/
 
 	int iterationCounter = 0;
 	init();
@@ -90,7 +90,7 @@ void BlockDiagonalizationSolver::init(){
 		Streams::out << "Initializing BlockDiagonalizationSolver\n";
 
 	//Find number of blocks and number of states per block.
-	IndexTree blockIndices = getModel()->getHoppingAmplitudeSet()->getSubspaceIndices();
+	IndexTree blockIndices = getModel().getHoppingAmplitudeSet()->getSubspaceIndices();
 	IndexTree::Iterator blockIterator = blockIndices.begin();
 	const Index *blockIndex;
 	numBlocks = 0;
@@ -98,7 +98,7 @@ void BlockDiagonalizationSolver::init(){
 	while((blockIndex = blockIterator.getIndex())){
 		numBlocks++;
 
-		HoppingAmplitudeSet::Iterator iterator = getModel()->getHoppingAmplitudeSet()->getIterator(
+		HoppingAmplitudeSet::Iterator iterator = getModel().getHoppingAmplitudeSet()->getIterator(
 			*blockIndex
 		);
 		numStatesPerBlock.push_back(iterator.getNumBasisIndices());
@@ -146,7 +146,7 @@ void BlockDiagonalizationSolver::init(){
 	//versa.
 	unsigned int blockCounter = 0;
 	unsigned int intraBlockCounter = 0;
-	for(int n = 0; n < getModel()->getBasisSize(); n++){
+	for(int n = 0; n < getModel().getBasisSize(); n++){
 		if(intraBlockCounter >= numStatesPerBlock.at(blockCounter)){
 			intraBlockCounter = 0;
 			blockCounter++;
@@ -168,7 +168,7 @@ void BlockDiagonalizationSolver::init(){
 			complex<double>
 		);
 
-		Streams::out << "\tBasis size: " << getModel()->getBasisSize()
+		Streams::out << "\tBasis size: " << getModel().getBasisSize()
 			<< "\n";
 		if(numBytesHamiltonian < 1024){
 			Streams::out << "\tHamiltonian size: "
@@ -210,31 +210,31 @@ void BlockDiagonalizationSolver::init(){
 	}
 
 	hamiltonian = new complex<double>[hamiltonianSize];
-	eigenValues = new double[getModel()->getBasisSize()];
+	eigenValues = new double[getModel().getBasisSize()];
 	eigenVectors = new complex<double>[eigenVectorsSize];
 
 	update();
 }
 
 void BlockDiagonalizationSolver::update(){
-	Model *model = getModel();
+	const Model &model = getModel();
 
-	IndexTree blockIndices = getModel()->getHoppingAmplitudeSet()->getSubspaceIndices();
+	IndexTree blockIndices = getModel().getHoppingAmplitudeSet()->getSubspaceIndices();
 	IndexTree::Iterator blockIterator = blockIndices.begin();
 	const Index *blockIndex;
 	unsigned int blockCounter = 0;
 	while((blockIndex = blockIterator.getIndex())){
-		HoppingAmplitudeSet::Iterator iterator = getModel()->getHoppingAmplitudeSet()->getIterator(
+		HoppingAmplitudeSet::Iterator iterator = getModel().getHoppingAmplitudeSet()->getIterator(
 			*blockIndex
 		);
 		int minBasisIndex = iterator.getMinBasisIndex();
 		const HoppingAmplitude *hoppingAmplitude;
 		while((hoppingAmplitude = iterator.getHA())){
-			int from = model->getHoppingAmplitudeSet()->getBasisIndex(
+			int from = model.getHoppingAmplitudeSet()->getBasisIndex(
 //				hoppingAmplitude->fromIndex
 				hoppingAmplitude->getFromIndex()
 			) - minBasisIndex;
-			int to = model->getHoppingAmplitudeSet()->getBasisIndex(
+			int to = model.getHoppingAmplitudeSet()->getBasisIndex(
 //				hoppingAmplitude->toIndex
 				hoppingAmplitude->getToIndex()
 			) - minBasisIndex;

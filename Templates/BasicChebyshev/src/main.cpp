@@ -89,7 +89,7 @@ int main(int argc, char **argv){
 
 	//Setup ChebyshevSolver
 	ChebyshevSolver cSolver;
-	cSolver.setModel(&model);
+	cSolver.setModel(model);
 	cSolver.setScaleFactor(SCALE_FACTOR);
 
 	//Set filename and remove any file already in the folder

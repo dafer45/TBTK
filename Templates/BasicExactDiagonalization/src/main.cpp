@@ -124,7 +124,7 @@ int main(int argc, char **argv){
 
 	//Create exact diagonalization solver. Notation will be simplified.
 	ExactDiagonalizationSolver edSolver;
-	edSolver.setModel(&model);
+	edSolver.setModel(model);
 
 	//Create and initialize EDPropertyExtractor.
 	EDPropertyExtractor pe(&edSolver);

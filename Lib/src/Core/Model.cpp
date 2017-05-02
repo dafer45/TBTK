@@ -108,6 +108,8 @@ Model::Model(const string &serialization, Mode mode) : Communicator(true){
 				j.at("singleParticleContext").dump(),
 				mode
 			);
+
+			manyBodyContext = nullptr;
 		}
 		catch(json::exception e){
 			TBTKExit(

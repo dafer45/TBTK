@@ -72,12 +72,12 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 	int numCoefficients,
 	double broadening
 ){
-	TBTKAssert(
+/*	TBTKAssert(
 		getModel() != NULL,
 		"ChebyshevSolver::calculateCoefficientsGPU()",
 		"Model not set",
 		"Use ChebyshevSolver::setModel() to set model."
-	);
+	);*/
 	TBTKAssert(
 		scaleFactor > 0,
 		"ChebyshevSolver::calculateCoefficientsGPU()",
@@ -100,7 +100,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 		""
 	);
 
-	const HoppingAmplitudeSet *hoppingAmplitudeSet = getModel()->getHoppingAmplitudeSet();
+	const HoppingAmplitudeSet *hoppingAmplitudeSet = getModel().getHoppingAmplitudeSet();
 
 	int fromBasisIndex = hoppingAmplitudeSet->getBasisIndex(from);
 	int *coefficientMap = new int[hoppingAmplitudeSet->getBasisSize()];

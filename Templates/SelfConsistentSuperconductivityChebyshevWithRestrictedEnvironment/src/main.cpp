@@ -113,7 +113,7 @@ Model* setupModel(int center_x, int center_y, double radius){
 
 	//Create model and set up hopping parameters
 	Model *model = new Model();
-	model->setTalkative(false);	//Limit the amount of text written to the output at model creation
+	model->setVerbose(false);	//Limit the amount of text written to the output at model creation
 	for(int x = 0; x < SIZE_X; x++){
 		for(int y = 0; y < SIZE_Y; y++){
 			//Exclude sites at a distance further than 'radius'
@@ -200,7 +200,7 @@ double scLoop(double radius){
 			for(int y = 0; y < SIZE_Y; y++){
 				//Setup local model
 				Model *model = setupModel(x, y, radius);
-				cSolver.setModel(model);
+				cSolver.setModel(*model);
 
 				//Calculate anomalous Green's function
 				Property::GreensFunction *greensFunction = pe.calculateGreensFunction(

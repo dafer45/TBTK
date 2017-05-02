@@ -100,7 +100,7 @@ int main(int argc, char **argv){
 
 	//Choose DiagonalizationSolver.
 	DiagonalizationSolver solver;
-	solver.setModel(&model);
+	solver.setModel(model);
 	solver.run();
 
 	//Setup PropertyExtractor and calculate LDOS.

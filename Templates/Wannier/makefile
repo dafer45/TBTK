@@ -17,7 +17,7 @@ LIBS = -lTBTK -lblas -llapack -lhdf5 -lhdf5_cpp
 ####################
 all:
 	@echo "Building..."
-	@$(CC) $(CFLAGS) src/main.cpp -I$(TBTK_dir)/hdf5/hdf5-build/include -L$(TBTK_dir)/hdf5/hdf5-build/hdf5/lib -o build/a.out $(LIBS) `pkg-config --libs opencv`
+	@$(CC) $(CFLAGS) src/main.cpp -I$(TBTK_dir)/hdf5/hdf5-build/include -L$(TBTK_dir)/hdf5/hdf5-build/hdf5/lib -o build/a.out $(LIBS) `pkg-config --libs opencv` -lcurl
 	@echo "Done"
 
 ################

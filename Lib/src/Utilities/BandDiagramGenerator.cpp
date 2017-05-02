@@ -116,7 +116,7 @@ vector<vector<double>> BandDiagramGenerator::generateBandDiagram(
 				model->construct();
 
 				DiagonalizationSolver solver;
-				solver.setModel(model);
+				solver.setModel(*model);
 				solver.run();
 
 				for(unsigned int i = 0; i < numBands; i++)
