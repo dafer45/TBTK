@@ -109,7 +109,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 	for(int n = 0; n < to.size(); n++)
 		coefficientMap[hoppingAmplitudeSet->getBasisIndex(to.at(n))] = n;
 
-	if(isTalkative){
+	if(getGlobalVerbose() && getVerbose()){
 		Streams::out << "ChebyshevSolver::calculateCoefficientsGPU\n";
 		Streams::out << "\tFrom Index: " << fromBasisIndex << "\n";
 		Streams::out << "\tBasis size: " << hoppingAmplitudeSet->getBasisSize() << "\n";
@@ -161,7 +161,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 	totalMemoryRequirement += hoppingAmplitudeSet->getBasisSize()*sizeof(int);
 	if(damping != NULL)
 		totalMemoryRequirement += hoppingAmplitudeSet->getBasisSize()*sizeof(complex<double>);
-	if(isTalkative){
+	if(getGlobalVerbose() && getVerbose()){
 		Streams::out << "\tCUDA memory requirement: ";
 		if(totalMemoryRequirement < 1024)
 			Streams::out << totalMemoryRequirement/1024 << "B\n";
@@ -398,7 +398,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 	//Calculate |j1>
 	int block_size = 1024;
 	int num_blocks = hoppingAmplitudeSet->getBasisSize()/block_size + (hoppingAmplitudeSet->getBasisSize()%block_size == 0 ? 0:1);
-	if(isTalkative){
+	if(getGlobalVerbose() && getVerbose()){
 		Streams::out << "\tCUDA Block size: " << block_size << "\n";
 		Streams::out << "\tCUDA Num blocks: " << num_blocks << "\n";
 	}
@@ -435,7 +435,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 	jIn2_device = jIn1_device;
 	jIn1_device = jTemp;
 
-	if(isTalkative)
+	if(getGlobalVerbose() && getVerbose())
 		Streams::out << "\tProgress (100 coefficients per dot): ";
 
 	//Iteratively calculate |jn> and corresponding Chebyshev coefficients.
@@ -473,14 +473,14 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 		jIn2_device = jIn1_device;
 		jIn1_device = jTemp;
 
-		if(isTalkative){
+		if(getGlobalVerbose() && getVerbose()){
 			if(n%100 == 0)
 				Streams::out << "." << flush;
 			if(n%1000 == 0)
 				Streams::out << " " << flush;
 		}
 	}
-	if(isTalkative)
+	if(getGlobalVerbose() && getVerbose())
 		Streams::out << "\n";
 
 	TBTKAssert(
@@ -550,7 +550,7 @@ void calculateGreensFunction(
 }
 
 void ChebyshevSolver::loadLookupTableGPU(){
-	if(isTalkative)
+	if(getGlobalVerbose() && getVerbose())
 		Streams::out << "CheyshevSolver::loadLookupTableGPU\n";
 
 	TBTKAssert(
@@ -568,7 +568,7 @@ void ChebyshevSolver::loadLookupTableGPU(){
 			generatingFunctionLookupTable_host[n*lookupTableResolution + e] = generatingFunctionLookupTable[n][e];
 
 	int memoryRequirement = lookupTableNumCoefficients*lookupTableResolution*sizeof(complex<double>);
-	if(isTalkative){
+	if(getGlobalVerbose() && getVerbose()){
 		Streams::out << "\tCUDA memory requirement: ";
 		if(memoryRequirement < 1024)
 			Streams::out << memoryRequirement << "B\n";
@@ -615,7 +615,7 @@ void ChebyshevSolver::loadLookupTableGPU(){
 }
 
 void ChebyshevSolver::destroyLookupTableGPU(){
-	if(isTalkative)
+	if(getGlobalVerbose() && getVerbose())
 		Streams::out << "ChebyshevSolver::destroyLookupTableGPU\n";
 
 	TBTKAssert(
@@ -646,7 +646,7 @@ Property::GreensFunction* ChebyshevSolver::generateGreensFunctionGPU(
 		""
 	);
 
-	if(isTalkative)
+	if(getGlobalVerbose() && getVerbose())
 		Streams::out << "ChebyshevSolver::generateGreensFunctionGPU\n";
 
 	TBTKAssert(
@@ -715,7 +715,7 @@ Property::GreensFunction* ChebyshevSolver::generateGreensFunctionGPU(
 	int block_size = 1024;
 	int num_blocks = lookupTableResolution/block_size + (lookupTableResolution%block_size == 0 ? 0:1);
 
-	if(isTalkative){
+	if(getGlobalVerbose() && getVerbose()){
 		Streams::out << "\tCUDA Block size: " << block_size << "\n";
 		Streams::out << "\tCUDA Num blocks: " << num_blocks << "\n";
 	}

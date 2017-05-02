@@ -26,14 +26,13 @@ using namespace std;
 
 namespace TBTK{
 
-DiagonalizationSolver::DiagonalizationSolver(){
+DiagonalizationSolver::DiagonalizationSolver() : Communicator(true){
 	hamiltonian = NULL;
 	eigenValues = NULL;
 	eigenVectors = NULL;
 
 	maxIterations = 50;
 	scCallback = NULL;
-	verbose = true;
 }
 
 DiagonalizationSolver::~DiagonalizationSolver(){
@@ -56,10 +55,10 @@ void DiagonalizationSolver::run(){
 	int iterationCounter = 0;
 	init();
 
-	if(verbose)
+	if(getGlobalVerbose() && getVerbose())
 		Streams::out << "Running DiagonalizationSolver\n";
 	while(iterationCounter++ < maxIterations){
-		if(verbose){
+		if(getGlobalVerbose() && getVerbose()){
 			if(iterationCounter%10 == 1)
 				Streams::out << " ";
 			if(iterationCounter%50 == 1)
@@ -79,18 +78,18 @@ void DiagonalizationSolver::run(){
 			break;
 		}
 	}
-	if(verbose)
+	if(getGlobalVerbose() && getVerbose())
 		Streams::out << "\n";
 }
 
 void DiagonalizationSolver::init(){
-	if(verbose)
+	if(getGlobalVerbose() && getVerbose())
 		Streams::out << "Initializing DiagonalizationSolver\n";
 
 //	model->amplitudeSet.construct();
 
 	int basisSize = getModel()->getBasisSize();
-	if(verbose)
+	if(getGlobalVerbose() && getVerbose())
 		Streams::out << "\tBasis size: " << basisSize << "\n";
 
 	hamiltonian = new complex<double>[(basisSize*(basisSize+1))/2];

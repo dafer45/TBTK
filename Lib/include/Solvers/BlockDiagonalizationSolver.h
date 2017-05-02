@@ -23,6 +23,7 @@
 #ifndef COM_DAFER45_TBTK_BLOCK_DIAGONALIZATION_SOLVER
 #define COM_DAFER45_TBTK_BLOCK_DIAGONALIZATION_SOLVER
 
+#include "Communicator.h"
 #include "Model.h"
 #include "Solver.h"
 
@@ -35,7 +36,7 @@ namespace TBTK{
  *  custom physical quantities, or the PropertyExtractor can be used to extract
  *  common properties. Scales as \f$O(n^3)\f$ with the dimension of the Hilbert
  *  space. */
-class BlockDiagonalizationSolver : public Solver{
+class BlockDiagonalizationSolver : public Solver, public Communicator{
 public:
 	/** Constructor */
 	BlockDiagonalizationSolver();
@@ -74,9 +75,6 @@ public:
 
 	/** Get last state in the block corresponding to the given index. */
 	unsigned int getLastStateInBlock(const Index &index) const;
-
-	/** Set whether the DiagonalizationSolver is verbose. */
-	void setVerbose(bool verbose);
 private:
 	/** pointer to array containing Hamiltonian. */
 	std::complex<double> *hamiltonian;
@@ -113,9 +111,6 @@ private:
 
 	/** Maximum number of iterations in the self-consistency loop. */
 	int maxIterations;
-
-	/** Flag indicating whether the DiagonalizationSolver is verbose. */
-	bool verbose;
 
 	/** Callback function to call each time a diagonalization has been
 	 *  completed. */
@@ -177,10 +172,6 @@ inline unsigned int BlockDiagonalizationSolver::getLastStateInBlock(
 	unsigned int linearIndex = getModel()->getBasisIndex(index);
 	unsigned int block = stateToBlockMap.at(linearIndex);
 	return getFirstStateInBlock(index) + numStatesPerBlock.at(block)-1;
-}
-
-inline void BlockDiagonalizationSolver::setVerbose(bool verbose){
-	this->verbose = verbose;
 }
 
 };	//End of namespace TBTK

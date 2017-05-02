@@ -23,6 +23,7 @@
 #ifndef COM_DAFER45_TBTK_MODEL
 #define COM_DAFER45_TBTK_MODEL
 
+#include "Communicator.h"
 #include "Geometry.h"
 #include "HoppingAmplitudeSet.h"
 #include "SingleParticleContext.h"
@@ -43,7 +44,7 @@ class FileReader;
  *  wrapper for HoppingAmplitudeSet, but can in the future come to be extended
  *  with further properties.
  */
-class Model : public Serializeable{
+class Model : public Serializeable, public Communicator{
 public:
 	/** Constructor. */
 	Model();
@@ -141,8 +142,6 @@ public:
 
 	void saveEV(std::string path = "./", std::string filename = "EV.dat");
 
-	void setTalkative(bool isTalkative);
-
 	/** Operator<<. */
 	Model& operator<<(const HoppingAmplitude& hoppingAmplitude);
 
@@ -166,10 +165,6 @@ private:
 
 	/** Many-body context. */
 	ManyBodyContext *manyBodyContext;
-
-	/** Flag indicating whether to write information to standard output or
-	 *  not. */
-	bool isTalkative;
 
 	/** FileReader is a friend class to allow it to write Model data. */
 	friend class FileReader;
@@ -259,10 +254,6 @@ inline void Model::createManyBodyContext(){
 
 inline ManyBodyContext* Model::getManyBodyContext(){
 	return manyBodyContext;
-}
-
-inline void Model::setTalkative(bool isTalkative){
-	this->isTalkative = isTalkative;
 }
 
 inline Model& Model::operator<<(const HoppingAmplitude &hoppingAmplitude){

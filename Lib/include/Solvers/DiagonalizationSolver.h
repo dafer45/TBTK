@@ -23,6 +23,7 @@
 #ifndef COM_DAFER45_TBTK_DIAGONALIZATION_SOLVER
 #define COM_DAFER45_TBTK_DIAGONALIZATION_SOLVER
 
+#include "Communicator.h"
 #include "Model.h"
 #include "Solver.h"
 
@@ -35,7 +36,7 @@ namespace TBTK{
  *  custom physical quantities, or the PropertyExtractor can be used to extract
  *  common properties. Scales as \f$O(n^3)\f$ with the dimension of the Hilbert
  *  space. */
-class DiagonalizationSolver : public Solver{
+class DiagonalizationSolver : public Solver, public Communicator{
 public:
 	/** Constructor */
 	DiagonalizationSolver();
@@ -82,9 +83,6 @@ public:
 	 *  @param index Physical index \f$x\f$.
 	 */
 	const std::complex<double> getAmplitude(int state, const Index &index);
-
-	/** Set whether the DiagonalizationSolver is verbose. */
-	void setVerbose(bool verbose);
 private:
 	/** pointer to array containing Hamiltonian. */
 	std::complex<double> *hamiltonian;
@@ -97,9 +95,6 @@ private:
 
 	/** Maximum number of iterations in the self-consistency loop. */
 	int maxIterations;
-
-	/** Flag indicating whether the DiagonalizationSolver is verbose. */
-	bool verbose;
 
 	/** Callback function to call each time a diagonalization has been
 	 *  completed. */
@@ -153,10 +148,6 @@ inline const std::complex<double> DiagonalizationSolver::getAmplitude(
 
 inline const double DiagonalizationSolver::getEigenValue(int state){
 	return eigenValues[state];
-}
-
-inline void DiagonalizationSolver::setVerbose(bool verbose){
-	this->verbose = verbose;
 }
 
 };	//End of namespace TBTK

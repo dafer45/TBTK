@@ -25,6 +25,7 @@
 #ifndef COM_DAFER45_TBTK_CHEBYSHEV_SOLVER
 #define COM_DAFER45_TBTK_CHEBYSHEV_SOLVER
 
+#include "Communicator.h"
 #include "GreensFunction.h"
 #include "Model.h"
 #include "Solver.h"
@@ -43,7 +44,7 @@ namespace TBTK{
  *  the following: Number of coefficients, energy resolution, and the number of
  *  Green's functions.
  */
-class ChebyshevSolver : public Solver{
+class ChebyshevSolver : public Solver, public Communicator{
 public:
 	/** Constructor. */
 	ChebyshevSolver();
@@ -251,8 +252,6 @@ public:
 	 *  boundary conditions. If set to NULL (default), no damping term will
 	 *  be applied.*/
 	void setDamping(std::complex<double> *damping);
-
-	void setTalkative(bool isTalkative);
 private:
 	/** Scale factor. */
 	double scaleFactor;
@@ -280,10 +279,6 @@ private:
 
 	/** Upper bound for energy used for the lookup table. */
 	double lookupTableUpperBound;
-
-	/** Flag indicating whether to write information to standar output or
-	 *  not. */
-	bool isTalkative;
 };
 
 inline void ChebyshevSolver::setScaleFactor(double scaleFactor){
@@ -310,10 +305,6 @@ inline bool ChebyshevSolver::getLookupTableIsLoadedGPU(){
 
 inline void ChebyshevSolver::setDamping(std::complex<double> *damping){
 	this->damping = damping;
-}
-
-inline void ChebyshevSolver::setTalkative(bool isTalkative){
-	this->isTalkative = isTalkative;
 }
 
 };	//End of namespace TBTK

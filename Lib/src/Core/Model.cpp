@@ -34,17 +34,15 @@ using namespace nlohmann;
 
 namespace TBTK{
 
-Model::Model(){
+Model::Model() : Communicator(true){
 	temperature = 0.;
 	chemicalPotential = 0.;
 
 	singleParticleContext = new SingleParticleContext();
 	manyBodyContext = NULL;
-
-	isTalkative = true;
 }
 
-Model::Model(const Model &model){
+Model::Model(const Model &model) : Communicator(model){
 	temperature = model.temperature;
 	chemicalPotential = model.chemicalPotential;
 
@@ -59,11 +57,9 @@ Model::Model(const Model &model){
 			*model.manyBodyContext
 		);
 	}
-
-	isTalkative = model.isTalkative;
 }
 
-Model::Model(Model &&model){
+Model::Model(Model &&model) : Communicator(std::move(model)){
 	temperature = model.temperature;
 	chemicalPotential = model.chemicalPotential;
 
@@ -71,11 +67,9 @@ Model::Model(Model &&model){
 	model.singleParticleContext = nullptr;
 	manyBodyContext = model.manyBodyContext;
 	model.manyBodyContext = nullptr;
-
-	isTalkative = model.isTalkative;
 }
 
-Model::Model(const string &serialization, Mode mode){
+Model::Model(const string &serialization, Mode mode) : Communicator(true){
 	TBTKAssert(
 		validate(serialization, "Model", mode),
 		"Model::Model()",
@@ -93,8 +87,10 @@ Model::Model(const string &serialization, Mode mode){
 
 		deserialize(elements.at(0), &temperature, mode);
 		deserialize(elements.at(1), &chemicalPotential, mode);
-		singleParticleContext = new SingleParticleContext(elements.at(2), mode);
-		deserialize(elements.at(3), &isTalkative, mode);
+		singleParticleContext = new SingleParticleContext(
+			elements.at(2),
+			mode
+		);
 
 		manyBodyContext = nullptr;
 
@@ -112,7 +108,6 @@ Model::Model(const string &serialization, Mode mode){
 				j.at("singleParticleContext").dump(),
 				mode
 			);
-			isTalkative = j.at("isTalkative").get<bool>();
 		}
 		catch(json::exception e){
 			TBTKExit(
@@ -157,8 +152,6 @@ Model& Model::operator=(const Model &rhs){
 				*rhs.manyBodyContext
 			);
 		}
-
-		isTalkative = rhs.isTalkative;
 	}
 
 	return *this;
@@ -173,22 +166,20 @@ Model& Model::operator=(Model &&rhs){
 		rhs.singleParticleContext = nullptr;
 		manyBodyContext = rhs.manyBodyContext;
 		rhs.manyBodyContext = nullptr;
-
-		isTalkative = rhs.isTalkative;
 	}
 
 	return *this;
 }
 
 void Model::construct(){
-	if(isTalkative)
+	if(getGlobalVerbose() && getVerbose())
 		Streams::out << "Constructing system\n";
 
 	singleParticleContext->construct();
 
 	int basisSize = getBasisSize();
 
-	if(isTalkative)
+	if(getGlobalVerbose() && getVerbose())
 		Streams::out << "\tBasis size: " << basisSize << "\n";
 }
 
@@ -201,7 +192,6 @@ string Model::serialize(Mode mode) const{
 		ss << Serializeable::serialize(temperature, mode);
 		ss << "," << Serializeable::serialize(chemicalPotential, mode);
 		ss << "," << singleParticleContext->serialize(mode);
-		ss << "," << Serializeable::serialize(isTalkative, mode);
 		ss << ")";
 
 		return ss.str();
@@ -215,7 +205,6 @@ string Model::serialize(Mode mode) const{
 		j["singleParticleContext"] = json::parse(
 			singleParticleContext->serialize(mode)
 		);
-		j["isTalkative"] = isTalkative;
 
 		return j.dump();
 	}

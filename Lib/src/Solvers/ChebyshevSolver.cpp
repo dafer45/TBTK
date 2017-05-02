@@ -35,7 +35,7 @@ namespace{
 	const complex<double> i(0, 1);
 }
 
-ChebyshevSolver::ChebyshevSolver(){
+ChebyshevSolver::ChebyshevSolver() : Communicator(false){
 	scaleFactor = 1.;
 	damping = NULL;
 	generatingFunctionLookupTable = NULL;
@@ -44,7 +44,6 @@ ChebyshevSolver::ChebyshevSolver(){
 	lookupTableResolution = 0;
 	lookupTableLowerBound = 0.;
 	lookupTableUpperBound = 0.;
-	isTalkative = false;
 }
 
 ChebyshevSolver::~ChebyshevSolver(){
@@ -94,7 +93,7 @@ void ChebyshevSolver::calculateCoefficients(
 	int fromBasisIndex = hoppingAmplitudeSet->getBasisIndex(from);
 	int toBasisIndex = hoppingAmplitudeSet->getBasisIndex(to);
 
-	if(isTalkative){
+	if(getGlobalVerbose() && getVerbose()){
 		Streams::out << "ChebyshevSolver::calculateCoefficients\n";
 		Streams::out << "\tFrom Index: " << fromBasisIndex << "\n";
 		Streams::out << "\tTo Index: " << toBasisIndex << "\n";
@@ -196,14 +195,14 @@ void ChebyshevSolver::calculateCoefficients(
 
 		coefficients[n] = jIn1[toBasisIndex];
 
-		if(isTalkative){
+		if(getGlobalVerbose() && getVerbose()){
 			if(n%100 == 0)
 				Streams::out << "." << flush;
 			if(n%1000 == 0)
 				Streams::out << " " << flush;
 		}
 	}
-	if(isTalkative)
+	if(getGlobalVerbose() && getVerbose())
 		Streams::out << "\n";
 
 	delete [] jIn1;
@@ -255,7 +254,7 @@ void ChebyshevSolver::calculateCoefficients(
 	for(unsigned int n = 0; n < to.size(); n++)
 		coefficientMap[hoppingAmplitudeSet->getBasisIndex(to.at(n))] = n;
 
-	if(isTalkative){
+	if(getGlobalVerbose() && getVerbose()){
 		Streams::out << "ChebyshevSolver::calculateCoefficients\n";
 		Streams::out << "\tFrom Index: " << fromBasisIndex << "\n";
 		Streams::out << "\tBasis size: " << hoppingAmplitudeSet->getBasisSize() << "\n";
@@ -362,14 +361,14 @@ void ChebyshevSolver::calculateCoefficients(
 			if(coefficientMap[c] != -1)
 				coefficients[coefficientMap[c]*numCoefficients + n] = jIn1[c];
 
-		if(isTalkative){
+		if(getGlobalVerbose() && getVerbose()){
 			if(n%100 == 0)
 				Streams::out << "." << flush;
 			if(n%1000 == 0)
 				Streams::out << " " << flush;
 		}
 	}
-	if(isTalkative)
+	if(getGlobalVerbose() && getVerbose())
 		Streams::out << "\n";
 
 	delete [] jIn1;
@@ -419,7 +418,7 @@ void ChebyshevSolver::calculateCoefficientsWithCutoff(
 	int fromBasisIndex = hoppingAmplitudeSet->getBasisIndex(from);
 	int toBasisIndex = hoppingAmplitudeSet->getBasisIndex(to);
 
-	if(isTalkative){
+	if(getGlobalVerbose() && getVerbose()){
 		Streams::out << "ChebyshevSolver::calculateCoefficients\n";
 		Streams::out << "\tFrom Index: " << fromBasisIndex << "\n";
 		Streams::out << "\tTo Index: " << toBasisIndex << "\n";
@@ -537,7 +536,7 @@ void ChebyshevSolver::calculateCoefficientsWithCutoff(
 
 		coefficients[n] = jIn1[toBasisIndex];
 
-		if(isTalkative){
+		if(getVerbose() && getGlobalVerbose()){
 			if(n%100 == 0)
 				Streams::out << ".";
 			if(n%1000 == 0)
@@ -594,7 +593,7 @@ void ChebyshevSolver::generateLookupTable(
 		"Use ChebyshevSolver::setScaleFactor to set a larger scale factor."
 	);
 
-	if(isTalkative){
+	if(getGlobalVerbose() && getVerbose()){
 		Streams::out << "Generating lookup table\n";
 		Streams::out << "\tNum coefficients: " << numCoefficients << "\n";
 		Streams::out << "\tEnergy resolution: " << energyResolution << "\n";

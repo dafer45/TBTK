@@ -28,7 +28,7 @@ using namespace std;
 
 namespace TBTK{
 
-BlockDiagonalizationSolver::BlockDiagonalizationSolver(){
+BlockDiagonalizationSolver::BlockDiagonalizationSolver() : Communicator(true){
 	hamiltonian = nullptr;
 	eigenValues = nullptr;
 	eigenVectors = nullptr;
@@ -36,7 +36,6 @@ BlockDiagonalizationSolver::BlockDiagonalizationSolver(){
 
 	maxIterations = 50;
 	scCallback = nullptr;
-	verbose = true;
 }
 
 BlockDiagonalizationSolver::~BlockDiagonalizationSolver(){
@@ -59,10 +58,10 @@ void BlockDiagonalizationSolver::run(){
 	int iterationCounter = 0;
 	init();
 
-	if(verbose)
+	if(getGlobalVerbose() && getVerbose())
 		Streams::out << "Running DiagonalizationSolver\n";
 	while(iterationCounter++ < maxIterations){
-		if(verbose){
+		if(getGlobalVerbose() && getVerbose()){
 			if(iterationCounter%10 == 1)
 				Streams::out << " ";
 			if(iterationCounter%50 == 1)
@@ -82,12 +81,12 @@ void BlockDiagonalizationSolver::run(){
 			break;
 		}
 	}
-	if(verbose)
+	if(getGlobalVerbose() && getVerbose())
 		Streams::out << "\n";
 }
 
 void BlockDiagonalizationSolver::init(){
-	if(verbose)
+	if(getGlobalVerbose() && getVerbose())
 		Streams::out << "Initializing BlockDiagonalizationSolver\n";
 
 	//Find number of blocks and number of states per block.
@@ -161,7 +160,7 @@ void BlockDiagonalizationSolver::init(){
 		intraBlockCounter++;
 	}
 
-	if(verbose){
+	if(getGlobalVerbose() && getVerbose()){
 		int numBytesHamiltonian = hamiltonianSize*sizeof(
 			complex<double>
 		);
