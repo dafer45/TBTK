@@ -152,7 +152,7 @@ int main(int argc, char **argv){
 
 	//Setup ChebyshevSolver and corresponding PropertyExtractor
 	ChebyshevSolver cSolver;
-	cSolver.setModel(model);
+	cSolver.setModel(*model);
 	cSolver.setScaleFactor(scaleFactor);
 
 	CPropertyExtractor pe(
@@ -178,7 +178,8 @@ int main(int argc, char **argv){
 	for(int n = 0; n < numSamples; n++){
 		//Get new random index
 		int b = rand()%model->getBasisSize();
-		Index index = model->getHoppingAmplitudeSet()->tree.getPhysicalIndex(b);
+//		Index index = model->getHoppingAmplitudeSet()->getHoppingAmplitudeTree().getPhysicalIndex(b);
+		Index index = model->getHoppingAmplitudeSet()->getPhysicalIndex(b);
 
 		//Ensure index conforms to index pattern
 		if(pattern != NULL){

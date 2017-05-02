@@ -120,7 +120,7 @@ int main(int argc, char **argv){
 
 	//Setup and run DiagonalizationSolver and corresponding PropertyExtractor
 	DiagonalizationSolver dSolver;
-	dSolver.setModel(model);
+	dSolver.setModel(*model);
 	dSolver.run();
 	DPropertyExtractor pe(&dSolver);
 	pe.setEnergyWindow(

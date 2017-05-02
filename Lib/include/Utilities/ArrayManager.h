@@ -85,7 +85,7 @@ void* ArrayManager<T>::create(const Index &ranges){
 
 template<typename T>
 void ArrayManager<T>::createRecursive(Index ranges, void **result){
-	if(ranges.size() == 1){
+	if(ranges.getSize() == 1){
 		*((T**)result) = new T[ranges.at(0)];
 	}
 	else{
@@ -110,7 +110,7 @@ void* ArrayManager<T>::create(const Index &ranges, T fill){
 
 template<typename T>
 void ArrayManager<T>::createRecursive(Index ranges, void **result, T fill){
-	if(ranges.size() == 1){
+	if(ranges.getSize() == 1){
 		*((T**)result) = new T[ranges.at(0)];
 		for(int n = 0; n < ranges.at(0); n++)
 			(*((T**)result))[n] = fill;
@@ -133,7 +133,7 @@ void ArrayManager<T>::destroy(void *array, const Index &ranges){
 
 template<typename T>
 void ArrayManager<T>::destroyRecursive(void *array, Index ranges){
-	if(ranges.size() == 1){
+	if(ranges.getSize() == 1){
 		delete [] (T*)array;
 	}
 	else{
@@ -150,7 +150,7 @@ void ArrayManager<T>::destroyRecursive(void *array, Index ranges){
 template<typename T>
 T* ArrayManager<T>::flatten(void *array, const Index &ranges){
 	int size = 1;
-	for(unsigned int n = 0; n < ranges.size(); n++)
+	for(unsigned int n = 0; n < ranges.getSize(); n++)
 		size *= ranges.at(n);
 
 	T *result = new T[size];
@@ -162,14 +162,14 @@ T* ArrayManager<T>::flatten(void *array, const Index &ranges){
 
 template<typename T>
 void ArrayManager<T>::flattenRecursive(void *array, Index ranges, T *result, int offset){
-	if(ranges.size() == 1){
+	if(ranges.getSize() == 1){
 		for(int n = 0; n < ranges.at(0); n++){
 			result[offset + n] = ((T*)array)[n];
 		}
 	}
 	else{
 		int offsetMultiplier = 1;
-		for(unsigned int n = 1; n < ranges.size(); n++)
+		for(unsigned int n = 1; n < ranges.getSize(); n++)
 			offsetMultiplier *= ranges.at(n);
 
 		int currentRange = ranges.at(0);
@@ -191,7 +191,7 @@ void* ArrayManager<T>::unflatten(T *array, const Index &ranges){
 
 template<typename T>
 void ArrayManager<T>::unflattenRecursive(T *array, Index ranges, void **result, int offset){
-	if(ranges.size() == 1){
+	if(ranges.getSize() == 1){
 		*((T**)result) = new T[ranges.at(0)];
 		for(int n = 0; n < ranges.at(0); n++)
 			(*((T**)result))[n] = array[offset + n];
@@ -200,7 +200,7 @@ void ArrayManager<T>::unflattenRecursive(T *array, Index ranges, void **result, 
 		*((void**)result) = new void*[ranges.at(0)];
 
 		int offsetMultiplier = 1;
-		for(int n = 1; n < ranges.size(); n++)
+		for(int n = 1; n < ranges.getSize(); n++)
 			offsetMultiplier *= ranges.at(n);
 
 		int currentRange = ranges.at(0);
@@ -218,7 +218,7 @@ void ArrayManager<T>::print(void *array, const Index &ranges){
 
 template<typename T>
 void ArrayManager<T>::printRecursive(void *array, Index ranges){
-	if(ranges.size() == 1){
+	if(ranges.getSize() == 1){
 		for(int n = 0; n < ranges.at(0); n++)
 			Streams::out << ((T*)array)[n] << "\t";
 		Streams::out << "\n";

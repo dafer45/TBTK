@@ -190,7 +190,7 @@ void MainApplication::loadGeometry(){
 		Ogre::SceneNode *node = geometryNode->createChildSceneNode();
 		node->attachObject(entity);
 
-		const double *coordinates = model->getGeometry()->getCoordinates(ha->fromIndex);
+		const double *coordinates = model->getGeometry()->getCoordinates(ha->getFromIndex());
 		switch(dimensions){
 		case 1:
 			node->setPosition(0, 0, coordinates[0]);
