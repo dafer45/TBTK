@@ -104,7 +104,7 @@ int main(int argc, char **argv){
 	solver.run();
 
 	//Setup PropertyExtractor and calculate LDOS.
-	DPropertyExtractor pe(&solver);
+	DPropertyExtractor pe(solver);
 	pe.setEnergyWindow(-10, 10, 1000);
 	Property::LDOS ldos = pe.calculateLDOS({
 		{IDX_ALL, IDX_ALL, IDX_SUM_ALL}

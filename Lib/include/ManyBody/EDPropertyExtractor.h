@@ -34,7 +34,7 @@ namespace TBTK{
 class EDPropertyExtractor : public PropertyExtractor{
 public:
 	/** Constructor. */
-	EDPropertyExtractor(ExactDiagonalizationSolver *edSolver);
+	EDPropertyExtractor(ExactDiagonalizationSolver &edSolver);
 
 	/** Destructor. */
 	~EDPropertyExtractor();

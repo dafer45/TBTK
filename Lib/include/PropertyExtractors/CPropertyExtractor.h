@@ -41,7 +41,7 @@ class CPropertyExtractor : public PropertyExtractor{
 public:
 	/** Constructor. */
 	CPropertyExtractor(
-		ChebyshevSolver *cSolver,
+		ChebyshevSolver &cSolver,
 		int numCoefficients,
 		bool useGPUToCalculateCoefficients,
 		bool useGPUToGenerateGreensFunctions,

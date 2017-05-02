@@ -225,7 +225,7 @@ int main(int argc, char **argv){
 	FileWriter::write(D_arg, D_RANK, dDims, "D_arg");
 
 	//Calculate and save magnetization
-	DPropertyExtractor pe(&dSolver);
+	DPropertyExtractor pe(dSolver);
 
 	const int SP_LDOS_LOWER_BOUND = -2.;
 	const int SP_LDOS_UPPER_BOUND = 2.;

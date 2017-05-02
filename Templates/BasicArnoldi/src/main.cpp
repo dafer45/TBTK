@@ -105,7 +105,7 @@ int main(int argc, char **argv){
 	FileWriter::clear();
 
 	//Create PropertyExtractor
-	APropertyExtractor pe(&aSolver);
+	APropertyExtractor pe(aSolver);
 
 	//Setup energy window
 	const double UPPER_BOUND = 1.25;

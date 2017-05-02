@@ -85,7 +85,7 @@ int main(int argc, char **argv){
 	FileWriter::clear();
 
 	//Create PropertyExtractor
-	DPropertyExtractor pe(&dSolver);
+	DPropertyExtractor pe(dSolver);
 
 	//Setup energy window
 	const double LOWER_BOUND = -5.;

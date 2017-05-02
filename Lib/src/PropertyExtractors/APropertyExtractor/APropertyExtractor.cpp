@@ -30,8 +30,8 @@ namespace{
 	complex<double> i(0,1);
 }
 
-APropertyExtractor::APropertyExtractor(ArnoldiSolver *aSolver){
-	this->aSolver = aSolver;
+APropertyExtractor::APropertyExtractor(ArnoldiSolver &aSolver){
+	this->aSolver = &aSolver;
 }
 
 APropertyExtractor::~APropertyExtractor(){

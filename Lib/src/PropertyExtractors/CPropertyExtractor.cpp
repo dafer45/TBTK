@@ -30,18 +30,18 @@ static complex<double> i(0, 1);
 namespace TBTK{
 
 CPropertyExtractor::CPropertyExtractor(
-	ChebyshevSolver *cSolver,
+	ChebyshevSolver &cSolver,
 	int numCoefficients,
 	bool useGPUToCalculateCoefficients,
 	bool useGPUToGenerateGreensFunctions,
 	bool useLookupTable
 ){
-	TBTKAssert(
+/*	TBTKAssert(
 		cSolver != NULL,
 		"CPropertyExtractor::CPropertyExtractor()",
 		"Argument cSolver cannot be NULL.",
 		""
-	);
+	);*/
 	TBTKAssert(
 		numCoefficients > 0,
 		"CPropertyExtractor::CPropertyExtractor()",
@@ -61,27 +61,27 @@ CPropertyExtractor::CPropertyExtractor(
 		""
 	);
 	TBTKAssert(
-		lowerBound >= -cSolver->getScaleFactor(),
+		lowerBound >= -cSolver.getScaleFactor(),
 		"CPropertyExtractor::CPropertyExtractor()",
 		"Argument lowerBound has to be larger than -cSolver->getScaleFactor().",
 		"Use ChebyshevSolver::setScaleFactor() to set a larger scale factor."
 	);
 	TBTKAssert(
-		upperBound <= cSolver->getScaleFactor(),
+		upperBound <= cSolver.getScaleFactor(),
 		"CPropertyExtractor::CPropertyExtractor()",
 		"Argument upperBound has to be smaller than cSolver->getScaleFactor().",
 		"Use ChebyshevSolver::setScaleFactor() to set a larger scale factor."
 	);
 
-	this->cSolver = cSolver;
+	this->cSolver = &cSolver;
 	this->numCoefficients = numCoefficients;
 	this->useGPUToCalculateCoefficients = useGPUToCalculateCoefficients;
 	this->useGPUToGenerateGreensFunctions = useGPUToGenerateGreensFunctions;
 	this->useLookupTable = useLookupTable;
 
 	setEnergyWindow(
-		-cSolver->getScaleFactor(),
-		cSolver->getScaleFactor(),
+		-cSolver.getScaleFactor(),
+		cSolver.getScaleFactor(),
 		ENERGY_RESOLUTION
 	);
 

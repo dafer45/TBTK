@@ -30,8 +30,8 @@ namespace{
 	complex<double> i(0,1);
 }
 
-DPropertyExtractor::DPropertyExtractor(DiagonalizationSolver *dSolver){
-	this->dSolver = dSolver;
+DPropertyExtractor::DPropertyExtractor(DiagonalizationSolver &dSolver){
+	this->dSolver = &dSolver;
 }
 
 DPropertyExtractor::~DPropertyExtractor(){

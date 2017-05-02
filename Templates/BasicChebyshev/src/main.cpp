@@ -106,7 +106,7 @@ int main(int argc, char **argv){
 	//lower and upper bound between which the Green's function is evaluated
 	//(has to be inside the interval [-SCALE_FACTOR, SCALE_FACTOR]).
 	CPropertyExtractor pe(
-		&cSolver,
+		cSolver,
 		NUM_COEFFICIENTS,
 		false,
 		false,

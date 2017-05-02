@@ -145,7 +145,7 @@ int main(int argc, char **argv){
 	FileWriter::writeModel(model);
 
 	//Create PropertyExtractor
-	DPropertyExtractor pe(&dSolver);
+	DPropertyExtractor pe(dSolver);
 
 	//Calculate Density
 	Property::Density density = pe.calculateDensity({

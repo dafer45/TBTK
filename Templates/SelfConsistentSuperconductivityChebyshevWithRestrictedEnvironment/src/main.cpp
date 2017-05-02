@@ -167,7 +167,7 @@ double scLoop(double radius){
 	ChebyshevSolver cSolver;
 	cSolver.setScaleFactor(SCALE_FACTOR);
 	CPropertyExtractor pe(
-		&cSolver,
+		cSolver,
 		NUM_COEFFICIENTS,
 		true,
 		false,

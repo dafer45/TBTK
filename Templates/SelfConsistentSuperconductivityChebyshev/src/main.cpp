@@ -76,7 +76,7 @@ bool scLoop(ChebyshevSolver *cSolver){
 	//Green's function is only calculated in an energy interval around E=0
 	//with a width twice of the Debye frequency.
 	CPropertyExtractor pe(
-		cSolver,
+		*cSolver,
 		NUM_COEFFICIENTS,
 		true,
 		true,

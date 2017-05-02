@@ -45,7 +45,7 @@ namespace TBTK{
 class BPropertyExtractor : public PropertyExtractor{
 public:
 	/** Constructor. */
-	BPropertyExtractor(BlockDiagonalizationSolver *bSolver);
+	BPropertyExtractor(BlockDiagonalizationSolver &bSolver);
 
 	/** Destructor. */
 	~BPropertyExtractor();

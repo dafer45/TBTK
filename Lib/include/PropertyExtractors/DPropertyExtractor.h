@@ -45,7 +45,7 @@ namespace TBTK{
 class DPropertyExtractor : public PropertyExtractor{
 public:
 	/** Constructor. */
-	DPropertyExtractor(DiagonalizationSolver *dSolver);
+	DPropertyExtractor(DiagonalizationSolver &dSolver);
 
 	/** Destructor. */
 	~DPropertyExtractor();

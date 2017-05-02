@@ -94,7 +94,7 @@ int main(int argc, char **argv){
 	FileWriter::clear();
 
 	//Create PropertyExtractor
-	DPropertyExtractor pe(&dSolver);
+	DPropertyExtractor pe(dSolver);
 
 	//Setup energy window
 	const double UPPER_BOUND = 6.;

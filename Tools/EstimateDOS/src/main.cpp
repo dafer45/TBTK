@@ -156,7 +156,7 @@ int main(int argc, char **argv){
 	cSolver.setScaleFactor(scaleFactor);
 
 	CPropertyExtractor pe(
-		&cSolver,
+		cSolver,
 		numCoefficients,
 		useGPU,
 		false,

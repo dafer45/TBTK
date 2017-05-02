@@ -127,7 +127,7 @@ int main(int argc, char **argv){
 	edSolver.setModel(model);
 
 	//Create and initialize EDPropertyExtractor.
-	EDPropertyExtractor pe(&edSolver);
+	EDPropertyExtractor pe(edSolver);
 	const int ENERGY_RESOLUTION = 1000;
 	double LOWER_BOUND = -6.;
 	double UPPER_BOUND = 6.;

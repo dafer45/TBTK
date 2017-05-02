@@ -43,7 +43,7 @@ namespace TBTK{
 class APropertyExtractor : public PropertyExtractor{
 public:
 	/** Constructor. */
-	APropertyExtractor(ArnoldiSolver *aSolver);
+	APropertyExtractor(ArnoldiSolver &aSolver);
 
 	/** Destructor. */
 	~APropertyExtractor();
