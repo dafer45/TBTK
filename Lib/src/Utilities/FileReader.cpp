@@ -844,12 +844,6 @@ Property::Magnetization* FileReader::readMagnetization(
 }
 
 Property::LDOS* FileReader::readLDOS(string name, string path){
-/*	TBTKExit(
-		"FileReader::readLDOS()",
-		"Not yet implemented.",
-		""
-	);*/
-
 	Property::LDOS *ldos;
 
 	int intAttributes[2];
@@ -1004,54 +998,6 @@ Property::LDOS* FileReader::readLDOS(string name, string path){
 	}
 
 	return ldos;
-
-/*	hsize_t ldos_dims[rank+1];//Last dimension is for energy
-	for(int n = 0; n < rank; n++)
-		ldos_dims[n] = dims[n];
-	ldos_dims[rank] = resolution;
-
-	double limits[2];
-	limits[0] = u_lim;
-	limits[1] = l_lim;
-	const int LIMITS_RANK = 1;
-	hsize_t limits_dims[1];
-	limits_dims[0] = 2;
-
-	try{
-		stringstream ss;
-		ss << path;
-		if(path.back() != '/')
-			ss << "/";
-		ss << name;
-
-		Exception::dontPrint();
-		H5File file(filename, H5F_ACC_RDWR);
-
-		DataSpace dataspace = DataSpace(rank+1, ldos_dims);
-		DataSet dataset = DataSet(file.createDataSet(name, PredType::IEEE_F64BE, dataspace));
-		dataset.write(ldos, PredType::NATIVE_DOUBLE);
-		dataspace.close();
-
-		dataspace = DataSpace(LIMITS_RANK, limits_dims);
-		Attribute attribute = dataset.createAttribute("UpLowLimits", PredType::IEEE_F64BE, dataspace);
-		attribute.write(PredType::NATIVE_DOUBLE, limits);
-		dataspace.close();
-		dataset.close();
-
-		file.close();
-	}
-	catch(FileIException error){
-		error.printError();
-		return;
-	}
-	catch(DataSetIException error){
-		error.printError();
-		return;
-	}
-	catch(DataSpaceIException error){
-		error.printError();
-		return;
-	}*/
 }
 
 Property::SpinPolarizedLDOS* FileReader::readSpinPolarizedLDOS(
