@@ -844,11 +844,166 @@ Property::Magnetization* FileReader::readMagnetization(
 }
 
 Property::LDOS* FileReader::readLDOS(string name, string path){
-	TBTKExit(
+/*	TBTKExit(
 		"FileReader::readLDOS()",
 		"Not yet implemented.",
 		""
+	);*/
+
+	Property::LDOS *ldos;
+
+	int intAttributes[2];
+	string intAttributeNames[2];
+	intAttributeNames[0] = "Format";
+	intAttributeNames[1] = "Resolution";
+	stringstream ss;
+	ss << name << "IntAttributes";
+	readAttributes(
+		intAttributes,
+		intAttributeNames,
+		2,
+		ss.str(),
+		path
 	);
+
+	double doubleAttributes[2];
+	string doubleAttributeNames[2];
+	doubleAttributeNames[0] = "LowerBound";
+	doubleAttributeNames[1] = "UpperBound";
+	ss.str("");
+	ss << name << "DoubleAttributes";
+	readAttributes(
+		doubleAttributes,
+		doubleAttributeNames,
+		2,
+		ss.str(),
+		path
+	);
+
+	IndexDescriptor::Format format = static_cast<IndexDescriptor::Format>(
+		intAttributes[0]
+	);
+
+	switch(format){
+	case IndexDescriptor::Format::Ranges:
+	{
+		int rank;
+		int *dims;
+
+		try{
+			stringstream ss;
+			ss << path;
+			if(path.back() != '/')
+				ss << "/";
+			ss << name;
+
+			Exception::dontPrint();
+			H5File file(filename, H5F_ACC_RDONLY);
+
+			DataSet dataset = file.openDataSet(name);
+			H5T_class_t typeClass = dataset.getTypeClass();
+			TBTKAssert(
+				typeClass == H5T_FLOAT,
+				"FileReader::readLDOS()",
+				"Data type is not double.",
+				""
+			);
+
+			DataSpace dataspace = dataset.getSpace();
+			int rank_internal = dataspace.getSimpleExtentNdims();
+			rank = rank_internal-1;//Last dimension is for energy.
+
+			hsize_t *dims_internal = new hsize_t[rank_internal];
+			dataspace.getSimpleExtentDims(dims_internal, NULL);
+			dims = new int[rank];
+			for(int n = 0; n < rank; n++)
+				dims[n] = dims_internal[n];
+
+			ldos = new Property::LDOS(
+				rank,
+				dims,
+				doubleAttributes[0],
+				doubleAttributes[1],
+				intAttributes[1]
+			);
+			delete [] dims;
+
+			int size = 1;
+			for(int n = 0; n < rank_internal; n++)
+				size *= dims_internal[n];
+
+			double *ldos_data = ldos->getDataRW();
+			dataset.read(
+				ldos_data,
+				PredType::NATIVE_DOUBLE,
+				dataspace
+			);
+
+			delete [] dims_internal;
+		}
+		catch(FileIException error){
+			Streams::log << error.getCDetailMsg() << "\n";
+			TBTKExit(
+				"FileReader::readLDOS()",
+				"While reading " << name << ".",
+				""
+			);
+		}
+		catch(DataSetIException error){
+			Streams::log << error.getCDetailMsg() << "\n";
+			TBTKExit(
+				"FileReader::readLDOS()",
+				"While reading " << name << ".",
+				""
+			);
+		}
+		catch(DataSpaceIException error){
+			Streams::log << error.getCDetailMsg() << "\n";
+			TBTKExit(
+				"FileReader::readLDOS()",
+				"While reading " << name << ".",
+				""
+			);
+		}
+
+		break;
+	}
+	case IndexDescriptor::Format::Custom:
+	{
+		stringstream ss;
+		ss << name << "IndexTree";
+		IndexTree *indexTree = readIndexTree(
+			ss.str(),
+			path
+		);
+
+		int rank;
+		int *dims;
+		double *data;
+		read(&data, &rank, &dims, name, path);
+
+		ldos = new Property::LDOS(
+			*indexTree,
+			doubleAttributes[0],
+			doubleAttributes[1],
+			intAttributes[1],
+			data
+		);
+
+		delete [] dims;
+		delete [] data;
+
+		break;
+	}
+	default:
+		TBTKExit(
+			"FileReader::readLDOS()",
+			"Storage format not supported.",
+			"This should never happen, contact the developer."
+		);
+	}
+
+	return ldos;
 
 /*	hsize_t ldos_dims[rank+1];//Last dimension is for energy
 	for(int n = 0; n < rank; n++)

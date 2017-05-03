@@ -119,7 +119,7 @@ int main(int argc, char **argv){
 
 	//Extract LDOS and write to file
 	Property::LDOS ldos = pe.calculateLDOS(
-		{IDX_X,		SIZE_Y/2,	IDX_SPIN},
+		{IDX_X,		SIZE_Y/2,	IDX_SUM_ALL},
 		{SIZE_X,	1,		2}
 	);
 	FileWriter::writeLDOS(ldos);
