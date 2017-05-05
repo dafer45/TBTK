@@ -109,6 +109,9 @@ PLOTTER_SRC_DIR = src/Utilities/Plotter
 #Resource source directory
 RESOURCE_SRC_DIR = src/Utilities/Resource
 
+#Canvas source directory
+CANVAS_SRC_DIR = src/Utilities/Canvas
+
 # Directory for Objects
 OBJ_DIR:= build
 
@@ -149,6 +152,9 @@ PLOTTER_SRC := $(foreach srcDir, $(PLOTTER_SRC_DIR), $(wildcard $(srcDir)/*.cpp)
 # Resource source files
 RESOURCE_SRC := $(foreach srcDir, $(RESOURCE_SRC_DIR), $(wildcard $(srcDir)/*.cpp))
 
+# Canvas source files
+CANVAS_SRC := $(foreach srcDir, $(CANVAS_SRC_DIR), $(wildcard $(srcDir)/*.cpp))
+
 # Object files
 OBJ := $(addprefix $(OBJ_DIR)/, $(notdir $(SRC:.cpp=.o)))
 
@@ -172,6 +178,9 @@ PLOTTER_OBJ := $(addprefix $(OBJ_DIR)/, $(notdir $(PLOTTER_SRC:.cpp=.o)))
 
 # Resource object files
 RESOURCE_OBJ := $(addprefix $(OBJ_DIR)/, $(notdir $(RESOURCE_SRC:.cpp=.o)))
+
+# Canvas object files
+CANVAS_OBJ := $(addprefix $(OBJ_DIR)/, $(notdir $(CANVAS_SRC:.cpp=.o)))
 
 #All object files
 ALL_OBJ := $(OBJ) $(CUDA_OBJ)
@@ -199,6 +208,9 @@ PLOTTER_OBJ_PURE := $(notdir $(PLOTTER_OBJ))
 
 # Resource file name of objects without directory name
 RESOURCE_OBJ_PURE := $(notdir $(RESOURCE_OBJ))
+
+# Canvas file name of objects without directory name
+CANVAS_OBJ_PURE := $(notdir $(CANVAS_OBJ))
 
 all: $(STATIC_LIB)
 
@@ -239,6 +251,11 @@ resource: $(RESOURCE_OBJ)
 	@echo "Linking: " $(notdir $(STATIC_LIB))
 	@echo $(RESOURCE_OBJ)
 	@ar rcs $(STATIC_LIB) $(RESOURCE_OBJ)
+
+canvas: $(CANVAS_OBJ)
+	@echo "Linking: " $(notdir $(STATIC_LIB))
+	@echo $(CANVAS_OBJ)
+	@ar rcs $(STATIC_LIB) $(CANVAS_OBJ)
 
 # Compilation rule
 define app_compile_template
@@ -312,6 +329,15 @@ $$($(1)_OBJ): $(1)
 	@$$(CC) $$(CFLAGS) $$(OPT) -c $(1) -o $$($(1)_OBJ) $$(LDLIBS)
 endef
 
+# Canvas compilation rule
+define canvas_app_compile_template
+ $(1)_OBJ = $$(addprefix $$(OBJ_DIR)/, $$(notdir $$(patsubst %.cpp, %.o, $(1))))
+
+$$($(1)_OBJ): $(1)
+	@echo "Compiling: $(1)"
+	@$$(CC) $$(CFLAGS) $$(OPT) -c $(1) -o $$($(1)_OBJ) $$(LDLIBS)
+endef
+
 # Compile
 $(foreach app, $(SRC), $(eval $(call app_compile_template,$(app))))
 
@@ -336,6 +362,9 @@ $(foreach app, $(PLOTTER_SRC), $(eval $(call plotter_app_compile_template,$(app)
 # Resource compile
 $(foreach app, $(RESOURCE_SRC), $(eval $(call resource_app_compile_template,$(app))))
 
+# Canvas compile
+$(foreach app, $(CANVAS_SRC), $(eval $(call canvas_app_compile_template,$(app))))
+
 # Cleaning
 clean:
 	@echo "Cleaning: build/"
@@ -359,10 +388,15 @@ print:
 	@echo $(FOURIER_TRANSFORM_OBJ)
 	@echo $(RAY_TRACER_SRC)
 	@echo $(RAY_TRACER_OBJ)
+	@echo $(PLOTTER_SRC_DIR)
 	@echo $(PLOTTER_SRC)
 	@echo $(PLOTTER_OBJ)
+	@echo $(RESOURCE_SRC_DIR)
 	@echo $(RESOURCE_SRC)
 	@echo $(RESOURCE_OBJ)
+	@echo $(CANVAS_SRC_DIR)
+	@echo $(CANVAS_SRC)
+	@echo $(CANVAS_OBJ)
 #	@echo $(OBJ)
 #	@echo $(addprefix ./build/, $(notdir $(patsubst %.cpp, %.o, $(SRC))))
 

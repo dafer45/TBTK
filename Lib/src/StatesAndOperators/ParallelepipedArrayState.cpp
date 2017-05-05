@@ -31,7 +31,7 @@ ParallelepipedArrayState::ParallelepipedArrayState(
 ) :
 	ArrayState(numMeshPoints),
 	Field(true),
-	parallelepiped(basisVectors)
+	parallelepiped(basisVectors, SpacePartition::MeshType::Nodal)
 {
 }
 
@@ -60,7 +60,7 @@ void ParallelepipedArrayState::setAmplitude(
 	std::initializer_list<double> coordinate
 ){
 	const std::vector<unsigned int> &resolution = getResolution();
-	Index index = parallelepiped.getCellIndex(coordinate, resolution);
+	Index index = parallelepiped.getMinorCellIndex(coordinate, resolution);
 	for(unsigned int n = 0; n < resolution.size(); n++)
 		index.at(n) += resolution.at(n)/2;
 	for(unsigned int n = 0; n < resolution.size(); n++){
@@ -105,7 +105,7 @@ const complex<double>& ParallelepipedArrayState::getAmplitude(
 		c.push_back(*(coordinate.begin() + n) - localCenter.at(n));
 
 	const std::vector<unsigned int> &resolution = getResolution();
-	Index index = parallelepiped.getCellIndex(c, resolution);
+	Index index = parallelepiped.getMinorCellIndex(c, resolution);
 	for(unsigned int n = 0; n < resolution.size(); n++)
 		index.at(n) += resolution.at(n)/2;
 	for(unsigned int n = 0; n < resolution.size(); n++){
@@ -138,7 +138,7 @@ const complex<double>& ParallelepipedArrayState::getAmplitude(
 		c.push_back(coordinate.at(n) - localCenter.at(n));
 
 	const std::vector<unsigned int> &resolution = getResolution();
-	Index index = parallelepiped.getCellIndex(c, resolution);
+	Index index = parallelepiped.getMinorCellIndex(c, resolution);
 	for(unsigned int n = 0; n < resolution.size(); n++)
 		index.at(n) += resolution.at(n)/2;
 	for(unsigned int n = 0; n < resolution.size(); n++){
