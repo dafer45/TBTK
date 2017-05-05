@@ -48,7 +48,7 @@ public:
 	);
 
 	/** Destructor. */
-	~WignerSeitzCell();
+	virtual ~WignerSeitzCell();
 
 	/** Implements SpacePartition::getCellIndex(). */
 	virtual Index getMajorCellIndex(

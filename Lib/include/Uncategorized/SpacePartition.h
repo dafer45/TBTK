@@ -58,7 +58,7 @@ public:
 	);
 
 	/** Destructor. */
-	~SpacePartition();
+	virtual ~SpacePartition();
 
 	/** Get number of dimensions. */
 	unsigned int getNumDimensions() const;

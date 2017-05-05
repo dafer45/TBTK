@@ -48,7 +48,7 @@ public:
 	);
 
 	/** Destructor. */
-	~ParallelepipedCell();
+	virtual ~ParallelepipedCell();
 
 	/** Implements SpacePartition::getMajorCellIndex(). */
 	virtual Index getMajorCellIndex(
