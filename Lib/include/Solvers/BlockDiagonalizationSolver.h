@@ -63,6 +63,11 @@ public:
 	/** Get eigenvalue. */
 	const double getEigenValue(int state);
 
+	/** Get eigenvalue for specific block. Note that in contrast to
+	 *  getEigenValue(int state), 'state' here is relative to the first
+	 *  state of the block. */
+	const double getEigenValue(const Index &blockIndex, int state);
+
 	/** Get amplitude for given eigenvector \f$n\f$ and physical index
 	 * \f$x\f$: \f$\Psi_{n}(x)\f$.
 	 *  @param state Eigenstate number \f$n\f$.
@@ -158,11 +163,23 @@ inline const double BlockDiagonalizationSolver::getEigenValue(int state){
 	return eigenValues[state];
 }
 
+inline const double BlockDiagonalizationSolver::getEigenValue(
+	const Index &blockIndex,
+	int state
+){
+	int offset = getModel().getHoppingAmplitudeSet()->getFirstIndexInBlock(
+		blockIndex
+	);
+
+	return eigenValues[state + offset];
+}
+
 inline unsigned int BlockDiagonalizationSolver::getFirstStateInBlock(
 	const Index &index
 ) const{
 	unsigned int linearIndex = getModel().getBasisIndex(index);
 	unsigned int block = stateToBlockMap.at(linearIndex);
+
 	return blockToStateMap.at(block);
 }
 
@@ -171,6 +188,7 @@ inline unsigned int BlockDiagonalizationSolver::getLastStateInBlock(
 ) const{
 	unsigned int linearIndex = getModel().getBasisIndex(index);
 	unsigned int block = stateToBlockMap.at(linearIndex);
+
 	return getFirstStateInBlock(index) + numStatesPerBlock.at(block)-1;
 }
 

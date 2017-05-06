@@ -58,10 +58,16 @@ public:
 	/** Returns true if the subspace is a proper subsapce. That is, if the
 	 *  corresponding subtree only contains HoppingAmplitudes that connects
 	 *  sistes within the subtree. */
-	bool isProperSubspace(const Index &subspace);
+	bool isProperSubspace(const Index &subspace) const;
 
 	/** Returns an IndexTree containing all subspace indices. */
 	IndexTree getSubspaceIndices() const;
+
+	/** Get first index in subspace. */
+	int getFirstIndexInSubspace(const Index &subspaceIndex) const;
+
+	/** Get last index in subspace. */
+	int getLastIndexInSubspace(const Index &subspaceIndex) const;
 
 	/** Get all @link HoppingAmplitude HoppingAmplitudes @endlink with
 	 *  given 'from'-index. */
@@ -184,7 +190,10 @@ private:
 	/** Returns true if the subspace is a proper subsapce. Is called by
 	 *  HoppingAmplitudeTree::isProperSubspace and is called recursively.
 	 */
-	bool isProperSubspace(const Index &subspace, unsigned int subindex);
+	bool isProperSubspace(
+		const Index &subspace,
+		unsigned int subindex
+	) const;
 
 	/** Adds indices of all separate blocks below the current node to the
 	 *  indexTree. Is calleed by HoppingAmplitudeTree::getBlockIndices()
@@ -230,6 +239,38 @@ private:
 
 inline int HoppingAmplitudeTree::getBasisSize() const{
 	return basisSize;
+}
+
+inline int HoppingAmplitudeTree::getFirstIndexInSubspace(
+	const Index &subspaceIndex
+) const{
+	TBTKAssert(
+		isProperSubspace(subspaceIndex),
+		"HoppingAmplitudeTree::getFirstIndexInSubspace()",
+		"The index " << subspaceIndex.toString() << " is not an Index"
+		<< " of a proper subspace.",
+		""
+	);
+
+	const HoppingAmplitudeTree *subspace = getSubTree(subspaceIndex);
+
+	return subspace->getMinIndex();
+}
+
+inline int HoppingAmplitudeTree::getLastIndexInSubspace(
+	const Index &subspaceIndex
+) const{
+	TBTKAssert(
+		isProperSubspace(subspaceIndex),
+		"HoppingAmplitudeTree::getLastIndexInSubspace()",
+		"The index " << subspaceIndex.toString() << " is not an Index"
+		<< " of a proper subspace.",
+		""
+	);
+
+	const HoppingAmplitudeTree *subspace = getSubTree(subspaceIndex);
+
+	return subspace->getMaxIndex();
 }
 
 };	//End of namespace TBTK

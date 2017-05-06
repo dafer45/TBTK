@@ -300,7 +300,7 @@ const HoppingAmplitudeTree* HoppingAmplitudeTree::getSubTree(
 	}
 }
 
-bool HoppingAmplitudeTree::isProperSubspace(const Index &subspace){
+bool HoppingAmplitudeTree::isProperSubspace(const Index &subspace) const{
 	for(unsigned int n = 0; n < subspace.getSize(); n++){
 		if(subspace.at(n) < 0){
 			TBTKExit(
@@ -314,7 +314,10 @@ bool HoppingAmplitudeTree::isProperSubspace(const Index &subspace){
 	return isProperSubspace(subspace, 0);
 }
 
-bool HoppingAmplitudeTree::isProperSubspace(const Index &subspace, unsigned int subindex){
+bool HoppingAmplitudeTree::isProperSubspace(
+	const Index &subspace,
+	unsigned int subindex
+) const{
 	if(subindex == subspace.getSize())
 		return isPotentialBlockSeparator;
 

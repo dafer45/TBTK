@@ -69,7 +69,10 @@ public:
 	Property::EigenValues getEigenValues();
 
 	/** Get eigenvalue. */
-	double getEigenValue(int state);
+	double getEigenValue(int state) const;
+
+	/** Get eigenvalue. */
+	double getEigenValue(const Index &blockIndex, int state) const;
 
 	/** Get amplitude for given eigenvector \f$n\f$ and physical index
 	 *  \f$x\f$: \f$\Psi_{n}(x)\f$.
@@ -190,8 +193,15 @@ private:
 	BlockDiagonalizationSolver *bSolver;
 };
 
-inline double BPropertyExtractor::getEigenValue(int state){
+inline double BPropertyExtractor::getEigenValue(int state) const{
 	return bSolver->getEigenValue(state);
+}
+
+inline double BPropertyExtractor::getEigenValue(
+	const Index &blockIndex,
+	int state
+) const{
+	return bSolver->getEigenValue(blockIndex, state);
 }
 
 inline const std::complex<double> BPropertyExtractor::getAmplitude(

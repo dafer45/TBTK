@@ -113,6 +113,12 @@ public:
 	/** Generate a list of indices satisfying the specified pattern. */
 	std::vector<Index> getIndexList(const Index &pattern) const;
 
+	/** Get first index in block. */
+	int getFirstIndexInBlock(const Index &blockIndex) const;
+
+	/** Get last index in block. */
+	int getLastIndexInBlock(const Index &blockIndex) const;
+
 	/** Sort HoppingAmplitudes. */
 	void sort();
 
@@ -312,6 +318,18 @@ inline std::vector<Index> HoppingAmplitudeSet::getIndexList(
 	const Index &pattern
 ) const{
 	return hoppingAmplitudeTree.getIndexList(pattern);
+}
+
+inline int HoppingAmplitudeSet::getFirstIndexInBlock(
+	const Index &blockIndex
+) const{
+	return hoppingAmplitudeTree.getFirstIndexInSubspace(blockIndex);
+}
+
+inline int HoppingAmplitudeSet::getLastIndexInBlock(
+	const Index &blockIndex
+) const{
+	return hoppingAmplitudeTree.getLastIndexInSubspace(blockIndex);
 }
 
 inline void HoppingAmplitudeSet::sort(){
