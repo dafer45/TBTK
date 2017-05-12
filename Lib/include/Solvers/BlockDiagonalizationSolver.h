@@ -26,6 +26,7 @@
 #include "Communicator.h"
 #include "Model.h"
 #include "Solver.h"
+#include "Timer.h"
 
 #include <complex>
 
@@ -74,6 +75,17 @@ public:
 	 *  @param index Physical index \f$x\f$.
 	 */
 	const std::complex<double> getAmplitude(int state, const Index &index);
+
+	/** Same as getAmplitude(int state, const Index &index), but the
+	 *  amplitude is accessed by first identifying the block using the
+	 *  blockIndex, then using 'state', which here is relative to the first
+	 *  state in the block, and finally accessing the amplitude
+	 *  {blockIndex, intraBlockIndex}. */
+	const std::complex<double> getAmplitude(
+		const Index &blockIndex,
+		int state,
+		const Index &intraBlockIndex
+	);
 
 	/** Get first state in the block corresponding to the given index. */
 	unsigned int getFirstStateInBlock(const Index &index) const;
@@ -159,6 +171,33 @@ inline const std::complex<double> BlockDiagonalizationSolver::getAmplitude(
 		return 0;
 }
 
+inline const std::complex<double> BlockDiagonalizationSolver::getAmplitude(
+	const Index &blockIndex,
+	int state,
+	const Index &intraBlockIndex
+){
+	int firstStateInBlock = getModel().getHoppingAmplitudeSet()->getFirstIndexInBlock(
+		blockIndex
+	);
+	unsigned int block = stateToBlockMap.at(firstStateInBlock);
+	TBTKAssert(
+		state >= 0 && state < numStatesPerBlock.at(block),
+		"BlockDiagonalizationSolver::getAmplitude()",
+		"Out of bound error. The block with block Index "
+		<< blockIndex.toString() << " has "
+		<< numStatesPerBlock.at(block) << " states, but state "
+		<< state << " was requested.",
+		""
+	);
+	unsigned int offset = eigenVectorOffsets.at(block) + state*numStatesPerBlock.at(block);
+	unsigned int linearIndex = getModel().getBasisIndex(
+		Index(blockIndex, intraBlockIndex)
+	);
+//	Streams::out << linearIndex << "\t" << Index(blockIndex, intraBlockIndex).toString() << "\n";
+
+	return eigenVectors[offset + (linearIndex - firstStateInBlock)];
+}
+
 inline const double BlockDiagonalizationSolver::getEigenValue(int state){
 	return eigenValues[state];
 }
@@ -171,7 +210,7 @@ inline const double BlockDiagonalizationSolver::getEigenValue(
 		blockIndex
 	);
 
-	return eigenValues[state + offset];
+	return eigenValues[offset + state];
 }
 
 inline unsigned int BlockDiagonalizationSolver::getFirstStateInBlock(

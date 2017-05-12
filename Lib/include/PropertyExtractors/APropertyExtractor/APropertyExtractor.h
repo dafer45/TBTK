@@ -46,7 +46,7 @@ public:
 	APropertyExtractor(ArnoldiSolver &aSolver);
 
 	/** Destructor. */
-	~APropertyExtractor();
+	virtual ~APropertyExtractor();
 
 	/** Get eigenvalues. */
 	Property::EigenValues getEigenValues();

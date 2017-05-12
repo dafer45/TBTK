@@ -48,7 +48,7 @@ public:
 	BPropertyExtractor(BlockDiagonalizationSolver &bSolver);
 
 	/** Destructor. */
-	~BPropertyExtractor();
+	virtual ~BPropertyExtractor();
 
 	/** Legacy. */
 /*	void saveEigenValues(
@@ -79,6 +79,13 @@ public:
 	 *  @param state Eigenstate number \f$n\f$
 	 *  @param index Physical index \f$x\f$. */
 	const std::complex<double> getAmplitude(int state, const Index &index);
+
+	/** Get amplitude. */
+	const std::complex<double> getAmplitude(
+		const Index &blockIndex,
+		int state,
+		const Index &intraBlockIndex
+	) const;
 
 	/** Calculate wave function. */
 	Property::WaveFunction calculateWaveFunction(
@@ -209,6 +216,14 @@ inline const std::complex<double> BPropertyExtractor::getAmplitude(
 	const Index &index
 ){
 	return bSolver->getAmplitude(state, index);
+}
+
+inline const std::complex<double> BPropertyExtractor::getAmplitude(
+	const Index &blockIndex,
+	int state,
+	const Index &intraBlockIndex
+) const{
+	return bSolver->getAmplitude(blockIndex, state, intraBlockIndex);
 }
 
 };	//End of namespace TBTK

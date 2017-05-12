@@ -31,14 +31,24 @@ using namespace nlohmann;
 namespace TBTK{
 
 Index::Index(const Index &head, const Index &tail){
-	for(unsigned int n = 0; n < head.getSize(); n++)
+	indices.reserve(head.getSize() + tail.getSize());
+	indices.insert(
+		indices.end(),
+		head.indices.begin(),
+		head.indices.end()
+	);
+	indices.insert(
+		indices.end(),
+		tail.indices.begin(),
+		tail.indices.end()
+	);
+/*	for(unsigned int n = 0; n < head.getSize(); n++)
 		indices.push_back(head.at(n));
 	for(unsigned int n = 0; n < tail.getSize(); n++)
-		indices.push_back(tail.at(n));
+		indices.push_back(tail.at(n));*/
 }
 
 Index::Index(initializer_list<initializer_list<int>> indexList){
-	Streams::out << "Initializer list constructor.\n";
 	for(unsigned int n = 0; n < indexList.size(); n++){
 		if(n > 0)
 			indices.push_back(IDX_SEPARATOR);
@@ -48,7 +58,6 @@ Index::Index(initializer_list<initializer_list<int>> indexList){
 }
 
 Index::Index(const vector<vector<int>> &indexList){
-	Streams::out << "Vector constructor.\n";
 	for(unsigned int n = 0; n < indexList.size(); n++){
 		if(n > 0)
 			indices.push_back(IDX_SEPARATOR);

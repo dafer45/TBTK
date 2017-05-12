@@ -46,7 +46,7 @@ public:
 	PropertyExtractor();
 
 	/** Destructor. */
-	~PropertyExtractor();
+	virtual ~PropertyExtractor();
 
 	/** Set the energy window used for energy dependent quantities. */
 	virtual void setEnergyWindow(

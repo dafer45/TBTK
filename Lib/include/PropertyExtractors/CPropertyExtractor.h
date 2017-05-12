@@ -49,7 +49,7 @@ public:
 	);
 
 	/** Destructor. */
-	~CPropertyExtractor();
+	virtual ~CPropertyExtractor();
 
 	/** Overrides PropertyExtractor::setEnergyWindow(). */
 	virtual void setEnergyWindow(

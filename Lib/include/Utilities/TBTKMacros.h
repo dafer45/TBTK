@@ -67,4 +67,6 @@
 		TBTK::Streams::closeLog();	\
 	exit(1);
 
+#define TBTKReadableCodeBlock(code) ;
+
 #endif

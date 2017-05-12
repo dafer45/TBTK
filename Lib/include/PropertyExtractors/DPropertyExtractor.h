@@ -48,7 +48,7 @@ public:
 	DPropertyExtractor(DiagonalizationSolver &dSolver);
 
 	/** Destructor. */
-	~DPropertyExtractor();
+	virtual ~DPropertyExtractor();
 
 	/** Legacy. */
 	void saveEigenValues(
