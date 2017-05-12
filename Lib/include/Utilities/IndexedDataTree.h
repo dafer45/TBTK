@@ -24,6 +24,7 @@
 #define COM_DAFER45_TBTK_INDEXED_DATA_TREE
 
 #include "Index.h"
+#include "TBTKMacros.h"
 
 namespace TBTK{
 
@@ -43,7 +44,7 @@ public:
 	bool get(Data &data, const Index &index) const;
 private:
 	/** Child nodes.*/
-	std::vector<IndexTree> children;
+	std::vector<IndexedDataTree> children;
 
 	/** Flag indicating whether the given node corresponds to an index that
 	 *  is included in the set. */
@@ -58,11 +59,11 @@ private:
 
 	/** Get indexed data. Is called by the public function
 	 *  IndexedDataTree::get() and is called recuresively. */
-	bool get(const Data &data, const Index& index, unsigned int subindex);
+	bool get(Data &data, const Index& index, unsigned int subindex) const;
 };
 
 template<typename Data>
-IndexedDataTree<Data>::IndexedDataType(){
+IndexedDataTree<Data>::IndexedDataTree(){
 	indexIncluded = false;
 }
 
@@ -96,7 +97,7 @@ void IndexedDataTree<Data>::add(
 			"IndexedDataTree::add()",
 			"Invalid Index. Negative indices not allowed, but the"
 			<< " index " << index.toString() << " have a negative"
-			<< " index in position " << subindex ".",
+			<< " index in position " << subindex << ".",
 			""
 		);
 
@@ -104,7 +105,7 @@ void IndexedDataTree<Data>::add(
 		//nodes, create empty nodes.
 		if(currentIndex >= children.size())
 			for(int n = children.size(); n <= currentIndex; n++)
-				children.push_back(IndexTree());
+				children.push_back(IndexedDataTree());
 		//Error detection:
 		//If the current node has the indexIncluded flag set, another
 		//Index with fewer subindices than the current Index have
@@ -149,12 +150,12 @@ void IndexedDataTree<Data>::add(
 }
 
 template<typename Data>
-void IndexedDataTree<Data>::get(Data &data, const Index &index) const{
+bool IndexedDataTree<Data>::get(Data &data, const Index &index) const{
 	return get(data, index, 0);
 }
 
 template<typename Data>
-void IndexedDataTree<Data>::get(
+bool IndexedDataTree<Data>::get(
 	Data &data,
 	const Index &index,
 	unsigned int subindex
@@ -164,25 +165,20 @@ void IndexedDataTree<Data>::get(
 		//node level.
 
 		//Get current subindex.
-		int currentIndex = indices.at(subindex);
+		int currentIndex = index.at(subindex);
 
 		TBTKAssert(
 			currentIndex >= 0,
 			"IndexedDataTree::add()",
 			"Invalid Index. Negative indices not allowed, but the"
 			<< " index " << index.toString() << " have a negative"
-			<< " index in position " << subindex ".",
+			<< " index in position " << subindex << ".",
 			""
 		);
 
-		TBTKAssert(
-			currentIndex < children.size(),
-			"IndexedDataTree::get()",
-			"Index out of bound. Subindex " << subindex << " in"
-			<< " Index " << index.toString() << " is out of"
-			<< " bounds.",
-			""
-		);
+		//Return false because the Index is not included.
+		if(currentIndex >= children.size())
+			return false;
 
 		return children.at(currentIndex).get(data, index, subindex+1);
 	}
