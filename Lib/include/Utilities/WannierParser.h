@@ -51,6 +51,11 @@ public:
 		std::initializer_list<std::initializer_list<double>> basisVectors
 	);
 
+	/** Parse WannierFunctions. */
+	std::vector<ParallelepipedArrayState*> parseWannierFunctions(
+		Resource &resource
+	);
+
 	/** Get reciprocal lattice. */
 	ReciprocalLattice* getReciprocalLattice();
 

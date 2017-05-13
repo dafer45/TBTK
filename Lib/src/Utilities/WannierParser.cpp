@@ -238,4 +238,248 @@ vector<ParallelepipedArrayState*> WannierParser::parseWannierFunctions(
 	return ppaStates;
 }
 
+vector<ParallelepipedArrayState*> WannierParser::parseWannierFunctions(
+	Resource &resource
+){
+	stringstream ssWithComments;
+	ssWithComments.str(resource.getData());
+	ssWithComments >> noskipws;
+
+	stringstream ss;
+	char c;
+	while(!(ssWithComments >> c).eof()){
+		if(c != '#'){
+			ss << c;
+		}
+		else{
+			string dummy;
+			getline(ssWithComments, dummy);
+			ss << "\n";
+		}
+	}
+
+	int dimGroup = -1;
+	double *primVec = nullptr;
+	double *convVec = nullptr;
+	double *primCoord = nullptr;
+
+	ParallelepipedArrayState *parallelepipedArrayState;
+	while(!(ss >> std::ws).eof()){
+		string command;
+		ss >> command;
+		if(command.compare("MOLECULE") == 0){
+		}
+		else if(command.compare("POLYMER") == 0){
+		}
+		else if(command.compare("SLAB") == 0){
+		}
+		else if(command.compare("CRYSTAL") == 0){
+		}
+		else if(command.compare("DIM-GROUP") == 0){
+			TBTKAssert(
+				dimGroup == -1,
+				"WannierParser::parseWannierFunction()",
+				"Multiple definitions of DIM-GROUP encountered.",
+				""
+			);
+			ss >> dimGroup;
+		}
+		else if(command.compare("PRIMVEC") == 0){
+			TBTKAssert(
+				primVec == nullptr,
+				"WannierParser::parseWannierFunction()",
+				"Multiple definitions of PRIMVEC encountered.",
+				""
+			);
+
+			primVec = new double[9];
+			for(unsigned int n = 0; n < 9; n++)
+				ss >> primVec[n];
+		}
+		else if(command.compare("CONVVEC") == 0){
+			TBTKAssert(
+				convVec == nullptr,
+				"WannierParser::parseWannierFunction()",
+				"Multiple definitions of CONVVEC encountered.",
+				""
+			);
+
+			convVec = new double[9];
+			for(unsigned int n = 0; n < 9; n++)
+				ss >> convVec[n];
+		}
+		else if(command.compare("PRIMCOORD") == 0){
+			TBTKAssert(
+				primCoord == nullptr,
+				"WannierParser::parseWannierFunction()",
+				"Multiple definitions of PRIMCOORD encountered.",
+				""
+			);
+
+			unsigned int numCoordinates;
+			ss >> numCoordinates;
+
+			//Hrow away the rest of the line.
+			string dummy;
+			getline(ss, dummy);
+//			ss >> dummy;
+
+			primCoord = new double[3*numCoordinates];
+			for(unsigned int n = 0; n < numCoordinates; n++){
+				string word;
+				ss >> word;
+				Streams::out << word << "\n";
+
+				//Check if word is a number.
+				char *p;
+				int i = strtol(word.c_str(), &p, 10);
+				Streams::out << "*p = " << *p << "\n";
+				if(*p == '\0'){
+					unsigned int atomNumber = i;
+//					ss >> atomNumber;
+					Streams::out << "Atom number:\t" << atomNumber << "\n";
+				}
+				else{
+					string atomType = word;
+//					ss >> atomType;
+					Streams::out << "Atom type:\t" << atomType << "\n";
+				}
+
+				for(unsigned int c = 0; c < 3; c++)
+					ss >> primCoord[3*n + c];
+
+				//Throw away the rest of the line.
+//				ss >> dummy;
+				getline(ss, dummy);
+				Streams::out << dummy << "\n";
+			}
+		}
+		else if(
+			command.compare("BEGIN_BLOCK_DATAGRID3D") == 0
+			|| command.compare("BEGIN_BLOCK_DATAGRID_3D") == 0
+		){
+			Streams::out << "Ey!\n";
+			string gridName;
+			ss >> gridName;
+
+			string beginGrid;
+			ss >> beginGrid;
+
+			unsigned int resolutionX, resolutionY, resolutionZ;
+			ss >> resolutionX;
+			ss >> resolutionY;
+			ss >> resolutionZ;
+
+			Vector3d origin;
+			ss >> origin.x;
+			ss >> origin.y;
+			ss >> origin.z;
+
+			Vector3d spanningVectors[3];
+			for(unsigned int n = 0; n < 3; n++){
+				ss >> spanningVectors[n].x;
+				ss >> spanningVectors[n].y;
+				ss >> spanningVectors[n].z;
+			}
+
+			Vector3d midPoint
+				= (spanningVectors[0]
+				+ spanningVectors[1]
+				+ spanningVectors[2])/2.;
+
+			Streams::out << "Resolution:\t" << resolutionX << "\t" << resolutionY << "\t" << resolutionZ << "\n";
+			Streams::out << "Origin:\t" << origin << "\n";
+			Streams::out << "Spanning vector 0:\t" << spanningVectors[0] << "\n";
+			Streams::out << "Spanning vector 1:\t" << spanningVectors[1] << "\n";
+			Streams::out << "Spanning vector 2:\t" << spanningVectors[2] << "\n";
+
+			parallelepipedArrayState = new ParallelepipedArrayState(
+				{
+					{
+						spanningVectors[0].x,
+						spanningVectors[0].y,
+						spanningVectors[0].z
+					},
+					{
+						spanningVectors[1].x,
+						spanningVectors[1].y,
+						spanningVectors[1].z
+					},
+					{
+						spanningVectors[2].x,
+						spanningVectors[2].y,
+						spanningVectors[2].z
+					}
+				},
+				{resolutionX, resolutionY, resolutionZ}
+			);
+			parallelepipedArrayState->setCoordinates({0, 0, 0});
+			parallelepipedArrayState->setExtent(8.);
+
+			for(unsigned int n = 0; n < resolutionX*resolutionY*resolutionZ; n++){
+				unsigned int x = n%resolutionX;
+				unsigned int y = (n/resolutionX)%resolutionY;
+				unsigned int z = n/(resolutionX*resolutionY);
+
+				double X
+					= -midPoint.x
+					+ (x/*+1/2.*/)*spanningVectors[0].x/resolutionX
+					+ (y/*+1/2.*/)*spanningVectors[1].x/resolutionX
+					+ (z/*+1/2.*/)*spanningVectors[2].x/resolutionX;
+				double Y
+					= -midPoint.y
+					+ (x/*+1/2.*/)*spanningVectors[0].y/resolutionY
+					+ (y/*+1/2.*/)*spanningVectors[1].y/resolutionY
+					+ (z/*+1/2.*/)*spanningVectors[2].y/resolutionY;
+				double Z
+					= -midPoint.z
+					+ (x/*+1/2.*/)*spanningVectors[0].z/resolutionZ
+					+ (y/*+1/2.*/)*spanningVectors[1].z/resolutionZ
+					+ (z/*+1/2.*/)*spanningVectors[2].z/resolutionZ;
+
+				complex<double> amplitude;
+				ss >> amplitude;
+
+				Streams::out << x << "\t" << y << "\t" << z << "\n";
+				parallelepipedArrayState->setAmplitude(
+					amplitude,
+					{X, Y, Z}
+				);
+			}
+
+			string endGrid;
+			ss >> endGrid;
+			TBTKAssert(
+				endGrid.substr(0, 4).compare("END_") == 0,
+				"WannierParser::parseWannierFunction()",
+				"Expected END_... but found " << endGrid << ".",
+				""
+			);
+
+			string endBlock;
+			ss >> endBlock;
+			TBTKAssert(
+				endBlock.compare("END_BLOCK_DATAGRID3D") == 0
+				|| endBlock.compare("END_BLOCK_DATAGRID_3D") == 0,
+				"WannierParser::parseWannierFunction()",
+				"Expected END_BLOCK_DATAGRID3D but found " << endBlock << ".",
+				""
+			);
+		}
+		else{
+			TBTKExit(
+				"WannierParser::parseWannierFunction()",
+				"Encountered unknown command '" << command
+				<< "' while parsing input.",
+				""
+			);
+		}
+	}
+
+	vector<ParallelepipedArrayState*> ppaStates;
+	ppaStates.push_back(parallelepipedArrayState);
+
+	return ppaStates;
+}
+
 };	//End of namespace TBTK

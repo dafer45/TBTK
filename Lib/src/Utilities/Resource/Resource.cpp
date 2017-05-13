@@ -68,6 +68,12 @@ void Resource::read(const string &uri){
 	size_t position = uri.find("://");
 	if(position == string::npos){
 		ifstream fin(uri);
+		TBTKAssert(
+			fin.is_open(),
+			"Resource::read()",
+			"Unable to open file '" << uri << "'.",
+			""
+		);
 		stringstream ss;
 		ss << fin.rdbuf();
 		data = ss.str();
