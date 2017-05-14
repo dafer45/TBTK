@@ -520,7 +520,8 @@ private:
 	static constexpr double baseMass_per_kg = 1./kg_per_baseMass;
 
 	/** Conversion factor from eVs^2/m^2 to u. */
-	static constexpr double u_per_baseMass = 9.31494095e8/(C*C);
+//	static constexpr double u_per_baseMass = 9.31494095e8/(C*C);
+	static constexpr double u_per_baseMass = (C*C)/9.31494095e8;
 
 	/** Conversion factor from u to eVs^2/m^2. */
 	static constexpr double baseMass_per_u = 1./u_per_baseMass;

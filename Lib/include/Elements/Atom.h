@@ -23,6 +23,8 @@
 #ifndef COM_DAFER45_TBTK_ATOM
 #define COM_DAFER45_TBTK_ATOM
 
+#include "UnitHandler.h"
+
 #include <string>
 
 namespace TBTK{
@@ -43,6 +45,9 @@ public:
 
 	/** Get name. */
 	std::string getName() const;
+
+	/** Get standard weight. */
+	double getStandardWeight() const;
 
 	/** Get Atom by number. */
 	static const Atom& getAtomByNumber(unsigned int atomicNumber);
@@ -305,6 +310,9 @@ private:
 	/** Names. */
 	static std::string names[];
 
+	/** Standard weight. */
+	static double standardWeights[];
+
 	/** Atoms. */
 	static Atom atoms[];
 };
@@ -319,6 +327,13 @@ inline std::string Atom::getSymbol() const{
 
 inline std::string Atom::getName() const{
 	return names[atomicNumber];
+}
+
+inline double Atom::getStandardWeight() const{
+	return UnitHandler::convertMassDtN(
+		standardWeights[atomicNumber],
+		UnitHandler::MassUnit::u
+	);
 }
 
 inline const Atom& Atom::getAtomByNumber(unsigned int atomicNumber){
