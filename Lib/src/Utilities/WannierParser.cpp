@@ -18,6 +18,7 @@
  *  @author Kristofer Björnson
  */
 
+#include "Atom.h"
 #include "BasicState.h"
 #include "FieldWrapper.h"
 #include "ParallelepipedCell.h"
@@ -335,14 +336,15 @@ vector<ParallelepipedArrayState*> WannierParser::parseWannierFunctions(
 				int i = strtol(word.c_str(), &p, 10);
 				Streams::out << "*p = " << *p << "\n";
 				if(*p == '\0'){
-					unsigned int atomNumber = i;
+					unsigned int atomicNumber = i;
 //					ss >> atomNumber;
-					Streams::out << "Atom number:\t" << atomNumber << "\n";
+					Streams::out << "Atomic number:\t" << atomicNumber << "\n";
 				}
 				else{
 					string atomType = word;
 //					ss >> atomType;
-					Streams::out << "Atom type:\t" << atomType << "\n";
+					Atom atom = Atom::getAtomBySymbol(word);
+					Streams::out << "Atom type:\t" << atomType << ", and number:\t" << atom.getAtomicNumber() << "\n";
 				}
 
 				for(unsigned int c = 0; c < 3; c++)

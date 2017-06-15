@@ -42,6 +42,12 @@ public:
 
 	/** Get data. */
 	bool get(Data &data, const Index &index) const;
+
+	/** Clear. */
+	void clear();
+
+	/** Get size in bytes. */
+	unsigned int getSizeInBytes() const;
 private:
 	/** Child nodes.*/
 	std::vector<IndexedDataTree> children;
@@ -195,6 +201,21 @@ bool IndexedDataTree<Data>::get(
 			return false;
 		}
 	}
+}
+
+template<typename Data>
+void IndexedDataTree<Data>::clear(){
+	indexIncluded = false;
+	children.clear();
+}
+
+template<typename Data>
+unsigned int IndexedDataTree<Data>::getSizeInBytes() const{
+	unsigned int size = sizeof(IndexedDataTree<Data>);
+	for(unsigned int n = 0; n < children.size(); n++)
+		size += children.at(n).getSizeInBytes();
+
+	return size;
 }
 
 }; //End of namesapce TBTK
