@@ -24,15 +24,25 @@
 #define COM_DAFER45_TBTK_INDEXED_DATA_TREE
 
 #include "Index.h"
+#include "Serializeable.h"
 #include "TBTKMacros.h"
+
+#include <complex>
+#include <sstream>
+
+#include "json.hpp"
 
 namespace TBTK{
 
 template<typename Data>
-class IndexedDataTree{
+class IndexedDataTree : public Serializeable{
 public:
 	/** Constructor. */
 	IndexedDataTree();
+
+	/** Constructor. Constructs the IndexedDataTree from a serialization
+	 *  string. */
+	IndexedDataTree(const std::string &serialization, Mode mode);
 
 	/** Destructor. */
 	virtual ~IndexedDataTree();
@@ -48,8 +58,11 @@ public:
 
 	/** Get size in bytes. */
 	unsigned int getSizeInBytes() const;
+
+	/** Serilaize. */
+	virtual std::string serialize(Mode mode) const;
 private:
-	/** Child nodes.*/
+	/** Child nodes. */
 	std::vector<IndexedDataTree> children;
 
 	/** Flag indicating whether the given node corresponds to an index that
@@ -71,6 +84,443 @@ private:
 template<typename Data>
 IndexedDataTree<Data>::IndexedDataTree(){
 	indexIncluded = false;
+}
+
+template<>
+inline IndexedDataTree<bool>::IndexedDataTree(
+	const std::string &serialization,
+	Mode mode
+){
+	TBTKAssert(
+		validate(serialization, "IndexedDataTree", mode),
+		"IndexedDataTree<bool>::IndexedDataTree()",
+		"Unable to parse string as IndexedDataTree<bool> '"
+		<< serialization << "'.",
+		""
+	);
+
+	switch(mode){
+	case Mode::JSON:
+	{
+		try{
+			nlohmann::json j = nlohmann::json::parse(
+				serialization
+			);
+			indexIncluded = j.at("indexIncluded").get<bool>();
+			data = j.at("data").get<bool>();
+			try{
+				nlohmann::json children = j.at("children");
+				for(
+					nlohmann::json::iterator it = children.begin();
+					it != children.end();
+					++it
+				){
+					this->children.push_back(
+						IndexedDataTree<bool>(
+							it->dump(),
+							mode
+						)
+					);
+				}
+			}
+			catch(nlohmann::json::exception e){
+				//It is valid to not have children.
+			}
+		}
+		catch(nlohmann::json::exception e){
+			TBTKExit(
+				"IndexedDataTree<bool>::IndexedDataTree()",
+				"Unable to parse string as"
+				<< " IndexedDataTree<bool> '"
+				<< serialization << "'.",
+				""
+			);
+		}
+
+		break;
+	}
+	default:
+		TBTKExit(
+			"IndexedDataTree<bool>::IndexedDataTree()",
+			"Only Serializeable::Mode::JSON is supported yet.",
+			""
+		);
+	}
+}
+
+template<>
+inline IndexedDataTree<char>::IndexedDataTree(
+	const std::string &serialization,
+	Mode mode
+){
+	TBTKAssert(
+		validate(serialization, "IndexedDataTree", mode),
+		"IndexedDataTree<char>::IndexedDataTree()",
+		"Unable to parse string as IndexedDataTree<char> '"
+		<< serialization << "'.",
+		""
+	);
+
+	switch(mode){
+	case Mode::JSON:
+	{
+		try{
+			nlohmann::json j = nlohmann::json::parse(
+				serialization
+			);
+			indexIncluded = j.at("indexIncluded").get<bool>();
+			data = j.at("data").get<char>();
+			try{
+				nlohmann::json children = j.at("children");
+				for(
+					nlohmann::json::iterator it = children.begin();
+					it != children.end();
+					++it
+				){
+					this->children.push_back(
+						IndexedDataTree<char>(
+							it->dump(),
+							mode
+						)
+					);
+				}
+			}
+			catch(nlohmann::json::exception e){
+				//It is valid to not have children.
+			}
+		}
+		catch(nlohmann::json::exception e){
+			TBTKExit(
+				"IndexedDataTree<char>::IndexedDataTree()",
+				"Unable to parse string as"
+				<< " IndexedDataTree<char> '"
+				<< serialization << "'.",
+				""
+			);
+		}
+
+		break;
+	}
+	default:
+		TBTKExit(
+			"IndexedDataTree<char>::IndexedDataTree()",
+			"Only Serializeable::Mode::JSON is supported yet.",
+			""
+		);
+	}
+}
+
+template<>
+inline IndexedDataTree<int>::IndexedDataTree(
+	const std::string &serialization,
+	Mode mode
+){
+	TBTKAssert(
+		validate(serialization, "IndexedDataTree", mode),
+		"IndexedDataTree<int>::IndexedDataTree()",
+		"Unable to parse string as IndexedDataTree<int> '"
+		<< serialization << "'.",
+		""
+	);
+
+	switch(mode){
+	case Mode::JSON:
+	{
+		try{
+			nlohmann::json j = nlohmann::json::parse(
+				serialization
+			);
+			indexIncluded = j.at("indexIncluded").get<bool>();
+			data = j.at("data").get<int>();
+			try{
+				nlohmann::json children = j.at("children");
+				for(
+					nlohmann::json::iterator it = children.begin();
+					it != children.end();
+					++it
+				){
+					this->children.push_back(
+						IndexedDataTree<int>(
+							it->dump(),
+							mode
+						)
+					);
+				}
+			}
+			catch(nlohmann::json::exception e){
+				//It is valid to not have children.
+			}
+		}
+		catch(nlohmann::json::exception e){
+			TBTKExit(
+				"IndexedDataTree<int>::IndexedDataTree()",
+				"Unable to parse string as"
+				<< " IndexedDataTree<int> '"
+				<< serialization << "'.",
+				""
+			);
+		}
+
+		break;
+	}
+	default:
+		TBTKExit(
+			"IndexedDataTree<int>::IndexedDataTree()",
+			"Only Serializeable::Mode::JSON is supported yet.",
+			""
+		);
+	}
+}
+
+template<>
+inline IndexedDataTree<float>::IndexedDataTree(
+	const std::string &serialization,
+	Mode mode
+){
+	TBTKAssert(
+		validate(serialization, "IndexedDataTree", mode),
+		"IndexedDataTree<float>::IndexedDataTree()",
+		"Unable to parse string as IndexedDataTree<float> '"
+		<< serialization << "'.",
+		""
+	);
+
+	switch(mode){
+	case Mode::JSON:
+	{
+		try{
+			nlohmann::json j = nlohmann::json::parse(
+				serialization
+			);
+			indexIncluded = j.at("indexIncluded").get<bool>();
+			data = j.at("data").get<float>();
+			try{
+				nlohmann::json children = j.at("children");
+				for(
+					nlohmann::json::iterator it = children.begin();
+					it != children.end();
+					++it
+				){
+					this->children.push_back(
+						IndexedDataTree<float>(
+							it->dump(),
+							mode
+						)
+					);
+				}
+			}
+			catch(nlohmann::json::exception e){
+				//It is valid to not have children.
+			}
+		}
+		catch(nlohmann::json::exception e){
+			TBTKExit(
+				"IndexedDataTree<float>::IndexedDataTree()",
+				"Unable to parse string as"
+				<< " IndexedDataTree<float> '"
+				<< serialization << "'.",
+				""
+			);
+		}
+
+		break;
+	}
+	default:
+		TBTKExit(
+			"IndexedDataTree<float>::IndexedDataTree()",
+			"Only Serializeable::Mode::JSON is supported yet.",
+			""
+		);
+	}
+}
+
+template<>
+inline IndexedDataTree<double>::IndexedDataTree(
+	const std::string &serialization,
+	Mode mode
+){
+	TBTKAssert(
+		validate(serialization, "IndexedDataTree", mode),
+		"IndexedDataTree<double>::IndexedDataTree()",
+		"Unable to parse string as IndexedDataTree<double> '"
+		<< serialization << "'.",
+		""
+	);
+
+	switch(mode){
+	case Mode::JSON:
+	{
+		try{
+			nlohmann::json j = nlohmann::json::parse(
+				serialization
+			);
+			indexIncluded = j.at("indexIncluded").get<bool>();
+			data = j.at("data").get<double>();
+			try{
+				nlohmann::json children = j.at("children");
+				for(
+					nlohmann::json::iterator it = children.begin();
+					it != children.end();
+					++it
+				){
+					this->children.push_back(
+						IndexedDataTree<double>(
+							it->dump(),
+							mode
+						)
+					);
+				}
+			}
+			catch(nlohmann::json::exception e){
+				//It is valid to not have children.
+			}
+		}
+		catch(nlohmann::json::exception e){
+			TBTKExit(
+				"IndexedDataTree<double>::IndexedDataTree()",
+				"Unable to parse string as"
+				<< " IndexedDataTree<double> '"
+				<< serialization << "'.",
+				""
+			);
+		}
+
+		break;
+	}
+	default:
+		TBTKExit(
+			"IndexedDataTree<double>::IndexedDataTree()",
+			"Only Serializeable::Mode::JSON is supported yet.",
+			""
+		);
+	}
+}
+
+template<>
+inline IndexedDataTree<std::complex<double>>::IndexedDataTree(
+	const std::string &serialization,
+	Mode mode
+){
+	TBTKAssert(
+		validate(serialization, "IndexedDataTree", mode),
+		"IndexedDataTree<std::complex<double>>::IndexedDataTree()",
+		"Unable to parse string as IndexedDataTree<std::complex<double>> '"
+		<< serialization << "'.",
+		""
+	);
+
+	switch(mode){
+	case Mode::JSON:
+	{
+		try{
+			nlohmann::json j = nlohmann::json::parse(
+				serialization
+			);
+			indexIncluded = j.at("indexIncluded").get<bool>();
+			std::string dataString = j.at("data").get<std::string>();
+			std::stringstream ss(dataString);
+			ss >> data;
+//			data = j.at("data").get<std::complex<double>>();
+			try{
+				nlohmann::json children = j.at("children");
+				for(
+					nlohmann::json::iterator it = children.begin();
+					it != children.end();
+					++it
+				){
+					this->children.push_back(
+						IndexedDataTree<std::complex<double>>(
+							it->dump(),
+							mode
+						)
+					);
+				}
+			}
+			catch(nlohmann::json::exception e){
+				//It is valid to not have children.
+			}
+		}
+		catch(nlohmann::json::exception e){
+			TBTKExit(
+				"IndexedDataTree<std::complex<double>>::IndexedDataTree()",
+				"Unable to parse string as"
+				<< " IndexedDataTree<std::complex<double>> '"
+				<< serialization << "'.",
+				""
+			);
+		}
+
+		break;
+	}
+	default:
+		TBTKExit(
+			"IndexedDataTree<std::complex<double>>::IndexedDataTree()",
+			"Only Serializeable::Mode::JSON is supported yet.",
+			""
+		);
+	}
+}
+
+template<typename Data>
+IndexedDataTree<Data>::IndexedDataTree(
+	const std::string &serialization,
+	Mode mode
+){
+	TBTKAssert(
+		validate(serialization, "IndexedDataTree", mode),
+		"IndexedDataTree<Data>::IndexedDataTree()",
+		"Unable to parse string as IndexedDataTree<Data> '"
+		<< serialization << "'.",
+		""
+	);
+
+	switch(mode){
+	case Mode::JSON:
+	{
+		try{
+			nlohmann::json j = nlohmann::json::parse(
+				serialization
+			);
+			indexIncluded = j.at("indexIncluded").get<bool>();
+			data = j.at("data").get<Data>();
+			try{
+				nlohmann::json children = j.at("children");
+				for(
+					nlohmann::json::iterator it = children.begin();
+					it != children.end();
+					++it
+				){
+					this->children.push_back(
+						IndexedDataTree<Data>(
+							it->dump(),
+							mode
+						)
+					);
+				}
+			}
+			catch(nlohmann::json::exception e){
+				//It is valid to not have children.
+			}
+		}
+		catch(nlohmann::json::exception e){
+			TBTKExit(
+				"IndexedDataTree<Data>::IndexedDataTree()",
+				"Unable to parse string as"
+				<< " IndexedDataTree<Data> '"
+				<< serialization << "'.",
+				""
+			);
+		}
+
+		break;
+	}
+	default:
+		TBTKExit(
+			"IndexedDataTree<Data>::IndexedDataTree()",
+			"Only Serializeable::Mode::JSON is supported yet.",
+			""
+		);
+	}
 }
 
 template<typename Data>
@@ -216,6 +666,204 @@ unsigned int IndexedDataTree<Data>::getSizeInBytes() const{
 		size += children.at(n).getSizeInBytes();
 
 	return size;
+}
+
+template<>
+inline std::string IndexedDataTree<bool>::serialize(Mode mode) const{
+	switch(mode){
+	case Mode::JSON:
+	{
+		nlohmann::json j;
+		j["id"] = "IndexedDataTree";
+		j["indexIncluded"] = indexIncluded;
+		j["data"] = data;
+		for(unsigned int n = 0; n < children.size(); n++){
+			j["children"].push_back(
+				nlohmann::json::parse(
+					children.at(n).serialize(mode)
+				)
+			);
+		}
+
+		return j.dump();
+	}
+	default:
+		TBTKExit(
+			"IndexedDataTree<Data>::serialize()",
+			"Only Serializeable::Mode::JSON is supported yet.",
+			""
+		);
+	}
+}
+
+template<>
+inline std::string IndexedDataTree<char>::serialize(Mode mode) const{
+	switch(mode){
+	case Mode::JSON:
+	{
+		nlohmann::json j;
+		j["id"] = "IndexedDataTree";
+		j["indexIncluded"] = indexIncluded;
+		j["data"] = data;
+		for(unsigned int n = 0; n < children.size(); n++){
+			j["children"].push_back(
+				nlohmann::json::parse(
+					children.at(n).serialize(mode)
+				)
+			);
+		}
+
+		return j.dump();
+	}
+	default:
+		TBTKExit(
+			"IndexedDataTree<Data>::serialize()",
+			"Only Serializeable::Mode::JSON is supported yet.",
+			""
+		);
+	}
+}
+
+template<>
+inline std::string IndexedDataTree<int>::serialize(Mode mode) const{
+	switch(mode){
+	case Mode::JSON:
+	{
+		nlohmann::json j;
+		j["id"] = "IndexedDataTree";
+		j["indexIncluded"] = indexIncluded;
+		j["data"] = data;
+		for(unsigned int n = 0; n < children.size(); n++){
+			j["children"].push_back(
+				nlohmann::json::parse(
+					children.at(n).serialize(mode)
+				)
+			);
+		}
+
+		return j.dump();
+	}
+	default:
+		TBTKExit(
+			"IndexedDataTree<Data>::serialize()",
+			"Only Serializeable::Mode::JSON is supported yet.",
+			""
+		);
+	}
+}
+
+template<>
+inline std::string IndexedDataTree<float>::serialize(Mode mode) const{
+	switch(mode){
+	case Mode::JSON:
+	{
+		nlohmann::json j;
+		j["id"] = "IndexedDataTree";
+		j["indexIncluded"] = indexIncluded;
+		j["data"] = data;
+		for(unsigned int n = 0; n < children.size(); n++){
+			j["children"].push_back(
+				nlohmann::json::parse(
+					children.at(n).serialize(mode)
+				)
+			);
+		}
+
+		return j.dump();
+	}
+	default:
+		TBTKExit(
+			"IndexedDataTree<Data>::serialize()",
+			"Only Serializeable::Mode::JSON is supported yet.",
+			""
+		);
+	}
+}
+
+template<>
+inline std::string IndexedDataTree<double>::serialize(Mode mode) const{
+	switch(mode){
+	case Mode::JSON:
+	{
+		nlohmann::json j;
+		j["id"] = "IndexedDataTree";
+		j["indexIncluded"] = indexIncluded;
+		j["data"] = data;
+		for(unsigned int n = 0; n < children.size(); n++){
+			j["children"].push_back(
+				nlohmann::json::parse(
+					children.at(n).serialize(mode)
+				)
+			);
+		}
+
+		return j.dump();
+	}
+	default:
+		TBTKExit(
+			"IndexedDataTree<Data>::serialize()",
+			"Only Serializeable::Mode::JSON is supported yet.",
+			""
+		);
+	}
+}
+
+template<>
+inline std::string IndexedDataTree<std::complex<double>>::serialize(Mode mode) const{
+	switch(mode){
+	case Mode::JSON:
+	{
+		nlohmann::json j;
+		j["id"] = "IndexedDataTree";
+		j["indexIncluded"] = indexIncluded;
+		std::stringstream ss;
+		ss << "(" << real(data) << "," << imag(data) << ")";
+		j["data"] = ss.str();
+		for(unsigned int n = 0; n < children.size(); n++){
+			j["children"].push_back(
+				nlohmann::json::parse(
+					children.at(n).serialize(mode)
+				)
+			);
+		}
+
+		return j.dump();
+	}
+	default:
+		TBTKExit(
+			"IndexedDataTree<Data>::serialize()",
+			"Only Serializeable::Mode::JSON is supported yet.",
+			""
+		);
+	}
+}
+
+template<typename Data>
+std::string IndexedDataTree<Data>::serialize(Mode mode) const{
+	switch(mode){
+	case Mode::JSON:
+	{
+		nlohmann::json j;
+		j["id"] = "IndexedDataTree";
+		j["indexIncluded"] = indexIncluded;
+		j["data"] = data;
+		for(unsigned int n = 0; n < children.size(); n++){
+			j["children"].push_back(
+				nlohmann::json::parse(
+					children.at(n).serialize(mode)
+				)
+			);
+		}
+
+		return j.dump();
+	}
+	default:
+		TBTKExit(
+			"IndexedDataTree<Data>::serialize()",
+			"Only Serializeable::Mode::JSON is supported yet.",
+			""
+		);
+	}
 }
 
 }; //End of namesapce TBTK
