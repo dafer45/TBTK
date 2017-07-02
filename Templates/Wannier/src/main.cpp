@@ -82,9 +82,9 @@ int main(int argc, char **argv){
 	Resource resource1;
 	resource1.read(argv[1]);
 
-	Timer::tick("Parse");
+//	Timer::tick("Parse");
 	WannierParser wannierParser;
-	UnitCell *unitCell = wannierParser.parseMatrixElements(resource1);
+/*	UnitCell *unitCell = wannierParser.parseMatrixElements(resource1);
 	ReciprocalLattice *reciprocalLattice = new ReciprocalLattice(unitCell);
 	Timer::tock();
 
@@ -110,11 +110,11 @@ int main(int argc, char **argv){
 		Streams::out << n << "\n";
 		plotter.plot(data1[n]);
 	}
-	plotter.save("figures/BandStructureA.png");
+	plotter.save("figures/BandStructureA.png");*/
 
 	Resource resource2;
 	resource2.read(argv[2]);
-	vector<ParallelepipedArrayState*> ppaStates = wannierParser.parseWannierFunctions(
+/*	vector<ParallelepipedArrayState*> ppaStates = wannierParser.parseWannierFunctions(
 		resource2,
 		141,
 		141,
@@ -125,6 +125,9 @@ int main(int argc, char **argv){
 			{0.0,		7.0*7.46328,	0.0},
 			{0.0,		0.0,		0.8*33.302916}
 		}
+	);*/
+	vector<ParallelepipedArrayState*> ppaStates = wannierParser.parseWannierFunctions(
+		resource2
 	);
 
 	unsigned int numWannierFunctions = ppaStates.size();
@@ -137,8 +140,8 @@ int main(int argc, char **argv){
 		rayTracer.setFocus({0, 0, 0});
 		rayTracer.setNumRaySegments(300);
 		rayTracer.setRayLength(80);
-		rayTracer.setWidth(120);
-		rayTracer.setHeight(80);
+		rayTracer.setWidth(600);
+		rayTracer.setHeight(400);
 
 		vector<const FieldWrapper*> fields;
 		for(int x = -10; x <= 10; x++){
