@@ -21,6 +21,13 @@
 #include "IndexDescriptor.h"
 #include "TBTKMacros.h"
 
+#include <string>
+
+#include "json.hpp"
+
+using namespace std;
+using namespace nlohmann;
+
 namespace TBTK{
 
 IndexDescriptor::IndexDescriptor(Format format){
@@ -95,6 +102,83 @@ IndexDescriptor::IndexDescriptor(IndexDescriptor &&indexDescriptor){
 			"IndexDescriptor::IndexDescriptor()",
 			"This should never happen.",
 			"Contact the developer."
+		);
+	}
+}
+
+IndexDescriptor::IndexDescriptor(const std::string &serialization, Mode mode){
+	TBTKAssert(
+		validate(serialization, "IndexDescriptor", mode),
+		"IndexDescriptor::IndexDescriptor()",
+		"Unable to parse string as IndexDescriptor '" << serialization
+		<< "'.",
+		""
+	);
+
+	switch(mode){
+	case Mode::JSON:
+		try{
+			json j = json::parse(serialization);
+			string formatString = j.at("format").get<string>();
+			if(formatString.compare("None") == 0){
+				format = Format::None;
+			}
+			else if(formatString.compare("Ranges") == 0){
+				format = Format::Ranges;
+
+				descriptor.rangeFormat.dimensions = j.at(
+					"dimensions"
+				).get<int>();
+
+				descriptor.rangeFormat.ranges = new int[
+					descriptor.rangeFormat.dimensions
+				];
+				json ranges = j.at("ranges");
+				unsigned int counter = 0;
+				for(
+					json::iterator it = ranges.begin();
+					it < ranges.end();
+					++it
+				){
+					descriptor.rangeFormat.ranges[counter] = *it;
+					counter++;
+				}
+			}
+			else if(formatString.compare("Custom") == 0){
+				format = Format::Custom;
+
+				descriptor.customFormat.indexTree = new IndexTree(
+					j.at("indexTree").dump(),
+					mode
+				);
+			}
+			else{
+				TBTKExit(
+					"IndexDescriptor::IndexDescriptor",
+					"Unknown Format '" << formatString
+					<< "'.",
+					"The serialization string is either"
+					<< " corrupted or the serialization"
+					<< " was created with a newer version"
+					<< " of TBTK that supports more"
+					<< " formats."
+				);
+			}
+		}
+		catch(json::exception e){
+			TBTKExit(
+				"IndexDescriptor::IndexDescriptor()",
+				"Unable to parse string as IndexDescriptor '"
+				<< serialization << "'.",
+				""
+			);
+		}
+		break;
+	default:
+		TBTKExit(
+			"IndexDescriptor::IndexDescriptor()",
+			"Only Serializeable::Mode::JSON is supported yet.",
+			""
 		);
 	}
 }
@@ -214,6 +298,56 @@ unsigned int IndexDescriptor::getSize() const{
 			"IndexDescriptor::operator=()",
 			"This should never happen.",
 			"Contact the developer."
+		);
+	}
+}
+
+std::string IndexDescriptor::serialize(Mode mode) const{
+	switch(mode){
+	case Mode::JSON:
+	{
+		json j;
+		j["id"] = "IndexDescriptor";
+		switch(format){
+		case Format::None:
+			j["format"] = "None";
+			break;
+		case Format::Ranges:
+			j["format"] = "Ranges";
+			j["dimensions"] = descriptor.rangeFormat.dimensions;
+			for(
+				unsigned int n = 0;
+				n < descriptor.rangeFormat.dimensions;
+				n++
+			){
+				j["ranges"].push_back(
+					descriptor.rangeFormat.ranges[n]
+				);
+			}
+			break;
+		case Format::Custom:
+			j["format"] = "Custom";
+			j["indexTree"] = json::parse(
+				descriptor.customFormat.indexTree->serialize(
+					mode
+				)
+			);
+			break;
+		default:
+			TBTKExit(
+				"IndexDescriptor::serialize()",
+				"Unknown Format.",
+				"This should never happen, contact the developer."
+			);
+		}
+
+		return j.dump();
+	}
+	default:
+		TBTKExit(
+			"IndexDescriptor::serialize()",
+			"Only Serializeable::Mode::JSON is supported yet.",
+			""
 		);
 	}
 }
