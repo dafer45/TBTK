@@ -20,6 +20,11 @@
 
 #include "LDOS.h"
 
+#include "json.hpp"
+
+using namespace std;
+using namespace nlohmann;
+
 namespace TBTK{
 namespace Property{
 
@@ -99,6 +104,53 @@ LDOS::LDOS(
 	resolution = ldos.resolution;
 }
 
+LDOS::LDOS(
+	const string &serialization,
+	Mode mode
+) :
+	AbstractProperty(
+		Serializeable::extract(
+			serialization,
+			mode,
+			"abstractProperty"
+		),
+		mode
+	)
+{
+	TBTKAssert(
+		validate(serialization, "LDOS", mode),
+		"LDOS::LDOS()",
+		"Unable to parse string as LDOS '" << serialization << "'.",
+		""
+	);
+
+	switch(mode){
+	case Mode::JSON:
+		try{
+			json j = json::parse(serialization);
+			lowerBound = j.at("lowerBound").get<double>();
+			upperBound = j.at("upperBound").get<double>();
+			resolution = j.at("resolution").get<int>();
+		}
+		catch(json::exception e){
+			TBTKExit(
+				"LDOS::LDOS()",
+				"Unable to parse string as LDOS '"
+				<< serialization << "'.",
+				""
+			);
+		}
+
+		break;
+	default:
+		TBTKExit(
+			"LDOS::LDOS()",
+			"Only Serializeable::Mode::JSON is supported yet.",
+			""
+		);
+	}
+}
+
 LDOS::~LDOS(){
 }
 
@@ -124,6 +176,30 @@ LDOS& LDOS::operator=(LDOS &&rhs){
 	}
 
 	return *this;
+}
+
+string LDOS::serialize(Mode mode) const{
+	switch(mode){
+	case Mode::JSON:
+	{
+		json j;
+		j["id"] = "LDOS";
+		j["lowerBound"] = lowerBound;
+		j["upperBound"] = upperBound;
+		j["resolution"] = resolution;
+		j["abstractProperty"] = json::parse(
+			AbstractProperty::serialize(mode)
+		);
+
+		return j.dump();
+	}
+	default:
+		TBTKExit(
+			"LDOS::serialize()",
+			"Onle Serializeable::Mode::JSON is supported yet.",
+			""
+		);
+	}
 }
 
 };	//End of namespace Property

@@ -59,6 +59,10 @@ public:
 	/** Move constructor. */
 	Magnetization(Magnetization &&magnetization);
 
+	/** Constructor. Constructs the Magnetization from a serialization
+	 *  string. */
+	Magnetization(const std::string &serialization, Mode mode);
+
 	/** Destructor. */
 	~Magnetization();
 
@@ -67,6 +71,9 @@ public:
 
 	/** Move assignment operator. */
 	Magnetization& operator=(Magnetization &&magnetization);
+
+	/** Overrides AbstractProperty::serialize(). */
+	std::string serialize(Mode mode) const;
 private:
 };
 

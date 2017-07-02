@@ -71,6 +71,10 @@ public:
 	/** Move constructor. */
 	WaveFunction(WaveFunction &&waveFunction);
 
+	/** Constructor. Constructs the WaveFunction from a serialization
+	 *  string. */
+	WaveFunction(const std::string &serialization, Mode mode);
+
 	/** Destructor. */
 	~WaveFunction();
 
@@ -101,6 +105,9 @@ public:
 
 	/** Get max argument value. */
 	double getMaxArg() const;
+
+	/** Overrides AbstractProperty::serialize(). */
+	virtual std::string serialize(Mode mode) const;
 private:
 	/** Flag indicating whether the state indices for a continuous set.
 	 *  Allows for quicker access. */

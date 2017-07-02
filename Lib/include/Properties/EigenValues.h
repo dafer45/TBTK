@@ -43,6 +43,10 @@ public:
 	/** Move constructor. */
 	EigenValues(EigenValues &&eigenValues);
 
+	/** Constructor. Constructs the EigenValues from a serialization
+	 *  string. */
+	EigenValues(const std::string &serialization, Mode mode);
+
 	/** Destructor. */
 	~EigenValues();
 
@@ -51,6 +55,9 @@ public:
 
 	/** Move assignment operator. */
 	EigenValues& operator=(EigenValues &&rhs);
+
+	/** Overrides AbstractProperty::serialize(). */
+	std::string serialize(Mode mode) const;
 private:
 };
 

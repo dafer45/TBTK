@@ -20,7 +20,10 @@
 
 #include "Magnetization.h"
 
+#include "json.hpp"
+
 using namespace std;
+using namespace nlohmann;
 
 namespace TBTK{
 namespace Property{
@@ -71,6 +74,28 @@ Magnetization::Magnetization(
 {
 }
 
+Magnetization::Magnetization(
+	const string &serialization,
+	Mode mode
+) :
+	AbstractProperty(
+		Serializeable::extract(
+			serialization,
+			mode,
+			"abstractProperty"
+		),
+		mode
+	)
+{
+	TBTKAssert(
+		validate(serialization, "Magnetization", mode)
+,		"Magnetization::Magnetization()",
+		"Unable to parse string as Magnetization '" << serialization
+		<< "'.",
+		""
+	);
+}
+
 Magnetization::~Magnetization(){
 }
 
@@ -86,6 +111,27 @@ Magnetization& Magnetization::operator=(Magnetization &&rhs){
 		AbstractProperty::operator=(std::move(rhs));
 
 	return *this;
+}
+
+string Magnetization::serialize(Mode mode) const{
+	switch(mode){
+	case Mode ::JSON:
+	{
+		json j;
+		j["id"] = "Magnetization";
+		j["abstractProperty"] = json::parse(
+			AbstractProperty::serialize(mode)
+		);
+
+		return j.dump();
+	}
+	default:
+		TBTKExit(
+			"Magnetization::serialize()",
+			"Only Serializeable::Mode::JSON is supported yet.",
+			""
+		);
+	}
 }
 
 };	//End of namespace Property

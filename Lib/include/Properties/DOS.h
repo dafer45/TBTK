@@ -48,6 +48,9 @@ public:
 	/** Move constructor. */
 	DOS(DOS &&dos);
 
+	/** Constructor. Constructs the DOS from a serialization string. */
+	DOS(const std::string &serialization, Mode mode);
+
 	/** Destructor. */
 	~DOS();
 
@@ -65,6 +68,9 @@ public:
 
 	/** Move assignment operator. */
 	DOS& operator=(DOS &&dos);
+
+	/** Overrides AbstractProperty::serialize(). */
+	virtual std::string serialize(Mode mode) const;
 private:
 	/** Lower bound for the energy. */
 	double lowerBound;

@@ -20,6 +20,11 @@
 
 #include "Density.h"
 
+#include "json.hpp"
+
+using namespace std;
+using namespace nlohmann;
+
 namespace TBTK{
 namespace Property{
 
@@ -69,6 +74,27 @@ Density::Density(
 {
 }
 
+Density::Density(
+	const string &serialization,
+	Mode mode
+) :
+	AbstractProperty(
+		Serializeable::extract(
+			serialization,
+			mode,
+			"abstractProperty"
+		),
+		mode
+	)
+{
+	TBTKAssert(
+		validate(serialization, "Density", mode),
+		"Density::Density()",
+		"Unable to parse string as Density '" << serialization << "'.",
+		""
+	);
+}
+
 Density::~Density(){
 }
 
@@ -104,6 +130,27 @@ double Density::getMax() const{
 			max = data[n];
 
 	return max;
+}
+
+string Density::serialize(Mode mode) const{
+	switch(mode){
+	case Mode::JSON:
+	{
+		json j;
+		j["id"] = "Density";
+		j["abstractProperty"] = json::parse(
+			AbstractProperty::serialize(mode)
+		);
+
+		return j.dump();
+	}
+	default:
+		TBTKExit(
+			"Density::serialize()",
+			"Only Serializeable::Mode::JSON is supported yet.",
+			""
+		);
+	}
 }
 
 };	//End of namespace Property

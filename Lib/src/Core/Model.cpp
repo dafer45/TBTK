@@ -73,8 +73,7 @@ Model::Model(const string &serialization, Mode mode) : Communicator(true){
 	TBTKAssert(
 		validate(serialization, "Model", mode),
 		"Model::Model()",
-		"Unable to parse string as Model '" << serialization
-		<< "'.",
+		"Unable to parse string as Model '" << serialization << "'.",
 		""
 	);
 

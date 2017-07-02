@@ -21,6 +21,11 @@
 #include "DOS.h"
 #include "Streams.h"
 
+#include "json.hpp"
+
+using namespace std;
+using namespace nlohmann;
+
 namespace TBTK{
 namespace Property{
 
@@ -69,6 +74,52 @@ DOS::DOS(
 	resolution = dos.resolution;
 }
 
+DOS::DOS(
+	const string &serialization, Mode mode
+) :
+	AbstractProperty(
+		Serializeable::extract(
+			serialization,
+			mode,
+			"abstractProperty"
+		),
+		mode
+	)
+{
+	TBTKAssert(
+		validate(serialization, "DOS", mode),
+		"DOS::DOS()",
+		"Unable to parse string as DOS '" << serialization << "'.",
+		""
+	);
+
+	switch(mode){
+	case Mode::JSON:
+		try{
+			json j = json::parse(serialization);
+			lowerBound = j.at("lowerBound").get<double>();
+			upperBound = j.at("upperBound").get<double>();
+			resolution = j.at("resolution").get<int>();
+		}
+		catch(json::exception e){
+			TBTKExit(
+				"DOS::DOS()",
+				"Unable to parse string as DOS '"
+				<< serialization << "'.",
+				""
+			);
+		}
+
+		break;
+	default:
+		TBTKExit(
+			"DOS::DOS()",
+			"Only Serializeable::Mode::JSON is supported yet.",
+			""
+		);
+	}
+}
+
 DOS::~DOS(){
 }
 
@@ -92,6 +143,30 @@ DOS& DOS::operator=(DOS &&rhs){
 	}
 
 	return *this;
+}
+
+string DOS::serialize(Mode mode) const{
+	switch(mode){
+	case Mode::JSON:
+	{
+		json j;
+		j["id"] = "DOS";
+		j["lowerBound"] = lowerBound;
+		j["upperBound"] = upperBound;
+		j["resolution"] = resolution;
+		j["abstractProperty"] = json::parse(
+			AbstractProperty::serialize(mode)
+		);
+
+		return j.dump();
+	}
+	default:
+		TBTKExit(
+			"DOS::serialize()",
+			"Only Serializeable::Mode::JSON is supported yet.",
+			""
+		);
+	}
 }
 
 };	//End of namespace Property

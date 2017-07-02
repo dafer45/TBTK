@@ -78,6 +78,10 @@ public:
 	/** Move constructor. */
 	SpinPolarizedLDOS(SpinPolarizedLDOS &&spinPolarizedLDOS);
 
+	/** Constructor. Construct the SpinPolarizedLDOS from a serialization
+	 *  string. */
+	SpinPolarizedLDOS(const std::string &serialization, Mode mode);
+
 	/** Destructor. */
 	~SpinPolarizedLDOS();
 
@@ -95,6 +99,9 @@ public:
 
 	/** Move assignment operator. */
 	SpinPolarizedLDOS& operator=(SpinPolarizedLDOS &&rhs);
+
+	/** Overrides AbstractProperty::serialize(). */
+	std::string serialize(Mode mode) const;
 private:
 	/** Lower bound for the energy. */
 	double lowerBound;

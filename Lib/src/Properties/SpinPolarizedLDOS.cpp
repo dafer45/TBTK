@@ -20,7 +20,10 @@
 
 #include "SpinPolarizedLDOS.h"
 
+#include "json.hpp"
+
 using namespace std;
+using namespace nlohmann;
 
 namespace TBTK{
 namespace Property{
@@ -101,6 +104,55 @@ SpinPolarizedLDOS::SpinPolarizedLDOS(
 	resolution = spinPolarizedLDOS.resolution;
 }
 
+SpinPolarizedLDOS::SpinPolarizedLDOS(
+	const string &serialization,
+	Mode mode
+) :
+	AbstractProperty(
+		Serializeable::extract(
+			serialization,
+			mode,
+			"abstractProperty"
+		),
+		mode
+	)
+{
+	TBTKAssert(
+		validate(serialization, "SpinPolarizedLDOS", mode),
+		"SpinPolarizedLDOS::SpinPolarizedLDOS()",
+		"Unable to parse string as SpinPolarizedLDOS '"
+		<< serialization << "'.",
+		""
+	);
+
+	switch(mode){
+	case Mode::JSON:
+		try{
+			json j = json::parse(serialization);
+			lowerBound = j.at("lowerBound").get<double>();
+			upperBound = j.at("upperBound").get<double>();
+			resolution = j.at("resolution").get<int>();
+		}
+		catch(json::exception e){
+			TBTKExit(
+				"SpinPolarizedLDOS::SpinPolarizedLDOS()",
+				"Unable to parse the string as"
+				" SpinPolarizedLDOS '" << serialization
+				<< "'.",
+				""
+			);
+		}
+
+		break;
+	default:
+		TBTKExit(
+			"SpinPolarizedLDOS::SpinPolarizedLDOS()",
+			"Only Serializeable::Mode::JSON is supported yet.",
+			""
+		);
+	}
+}
+
 SpinPolarizedLDOS::~SpinPolarizedLDOS(){
 }
 
@@ -126,6 +178,30 @@ SpinPolarizedLDOS& SpinPolarizedLDOS::operator=(SpinPolarizedLDOS &&rhs){
 	}
 
 	return *this;
+}
+
+string SpinPolarizedLDOS::serialize(Mode mode) const{
+	switch(mode){
+	case Mode::JSON:
+	{
+		json j;
+		j["id"] = "SpinPolarizedLDOS";
+		j["lowerBound"] = lowerBound;
+		j["upperBound"] = upperBound;
+		j["resolution"] = resolution;
+		j["abstractProperty"] = json::parse(
+			AbstractProperty::serialize(mode)
+		);
+
+		return j.dump();
+	}
+	default:
+		TBTKExit(
+			"SpinPolarizedLDOS::serialize()",
+			"Only Serializeable::Mode::JSON is supported yet.",
+			""
+		);
+	}
 }
 
 };	//End of namespace Property

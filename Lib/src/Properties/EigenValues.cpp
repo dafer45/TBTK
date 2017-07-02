@@ -20,6 +20,11 @@
 
 #include "EigenValues.h"
 
+#include "json.hpp"
+
+using namespace std;
+using namespace nlohmann;
+
 namespace TBTK{
 namespace Property{
 
@@ -52,6 +57,28 @@ EigenValues::EigenValues(
 {
 }
 
+EigenValues::EigenValues(
+	const string &serialization,
+	Mode mode
+) :
+	AbstractProperty(
+		Serializeable::extract(
+			serialization,
+			mode,
+			"abstractProperty"
+		),
+		mode
+	)
+{
+	TBTKAssert(
+		validate(serialization, "EigenValues", mode),
+		"EigenValues::EigenValues()",
+		"Unable to parse string as EigenValues '" << serialization
+		<< "'.",
+		""
+	);
+}
+
 EigenValues::~EigenValues(){
 }
 
@@ -67,6 +94,27 @@ EigenValues& EigenValues::operator=(EigenValues &&rhs){
 		AbstractProperty::operator=(std::move(rhs));
 
 	return *this;
+}
+
+string EigenValues::serialize(Mode mode) const{
+	switch(mode){
+	case Mode::JSON:
+	{
+		json j;
+		j["id"] = "EigenValues";
+		j["abstractProperty"] = json::parse(
+			AbstractProperty::serialize(mode)
+		);
+
+		return j.dump();
+	}
+	default:
+		TBTKExit(
+			"EigenValues::serialize()",
+			"Only Serializeable::Mode::JSON is supported yet.",
+			""
+		);
+	}
 }
 
 };	//End of namespace Property

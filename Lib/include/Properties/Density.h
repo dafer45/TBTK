@@ -31,7 +31,7 @@ namespace Property{
 
 /** Container for density. */
 class Density : public AbstractProperty<double>{
-public:
+public:	
 	/** Constructor. */
 	Density(int dimensions, const int *ranges);
 
@@ -50,6 +50,10 @@ public:
 	/** Move constructor. */
 	Density(Density &&density);
 
+	/** Constructor. Constructs the Density from a serializeation string.
+	 */
+	Density(const std::string &serialization, Mode mode);
+
 	/** Destructor. */
 	~Density();
 
@@ -64,6 +68,9 @@ public:
 
 	/** Get max value. */
 	double getMax() const;
+
+	/** Overrider AbstractProperty::serialize(). */
+	virtual std::string serialize(Mode mode) const;
 private:
 };
 

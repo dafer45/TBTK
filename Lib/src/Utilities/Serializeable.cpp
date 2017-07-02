@@ -203,4 +203,34 @@ vector<string> Serializeable::split(const string &content, Mode mode){
 	}
 }
 
+string Serializeable::extract(
+	const string &serialization,
+	Mode mode,
+	string component
+){
+	switch(mode){
+	case Mode::JSON:
+		try{
+			json j = json::parse(serialization);
+
+			return j.at(component).dump();
+		}
+		catch(json::exception e){
+			TBTKExit(
+				"Serializeable::extract()",
+				"Unable to extract '" << component << "' from"
+				<< " serialization string '" << serialization
+				<< "'.",
+				""
+			);
+		}
+	default:
+		TBTKExit(
+			"Serializeable::extract()",
+			"Only Serializeable::Mode::JSON is supported yet.",
+			""
+		);
+	}
+}
+
 };	//End of namespace TBTK

@@ -74,6 +74,9 @@ public:
 	/** Move constructor. */
 	LDOS(LDOS &&ldos);
 
+	/** Constructor. Construct the LDOS from a serialization string. */
+	LDOS(const std::string &serialization, Mode mode);
+
 	/** Destructor. */
 	~LDOS();
 
@@ -91,6 +94,9 @@ public:
 
 	/** Move assignment operator. */
 	LDOS& operator=(LDOS &&ldos);
+
+	/** Overrides AbstractProperty::serialize(). */
+	virtual std::string serialize(Mode mode) const;
 private:
 	/** Lower bound for the energy. */
 	double lowerBound;

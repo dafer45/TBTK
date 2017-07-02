@@ -131,6 +131,16 @@ protected:
 		Mode mode
 	);
 
+	/** Extracts a component of a serialization string, catching potential
+	 *  errors. In particular used to extract the serialization string for
+	 *  parents in the constructor of a child, because no try-catch block
+	 *  is possible to insert at this point. */
+	static std::string extract(
+		const std::string &serialization,
+		Mode mode,
+		std::string component
+	);
+
 	/** Friend classes (Classes that are psudo-Serializeable because they
 	 *  are so small and often used that a virtual function would have a
 	 *  non-negligible performance penalty). */

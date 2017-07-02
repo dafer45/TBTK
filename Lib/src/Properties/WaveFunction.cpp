@@ -20,7 +20,10 @@
 
 #include "WaveFunction.h"
 
+#include "json.hpp"
+
 using namespace std;
+using namespace nlohmann;
 
 namespace TBTK{
 namespace Property{
@@ -132,6 +135,55 @@ WaveFunction::WaveFunction(
 	this->isContinuous = waveFunction.isContinuous;
 }
 
+WaveFunction::WaveFunction(
+	const string &serialization,
+	Mode mode
+) :
+	AbstractProperty(
+		Serializeable::extract(
+			serialization,
+			mode,
+			"abstractProperty"
+		),
+		mode
+	)
+{
+	TBTKAssert(
+		validate(serialization, "WaveFunction", mode),
+		"WaveFunction::WaveFucntion()",
+		"Unable to parse string as WaveFunction '" << serialization
+		<< "'.",
+		""
+	);
+
+	switch(mode){
+	case Mode::JSON:
+		try{
+			json j = json::parse(serialization);
+			isContinuous = j.at("isContinuous").get<bool>();
+			json s = j.at("states");
+			for(json::iterator it = s.begin(); it < s.end(); ++it)
+				states.push_back(*it);
+		}
+		catch(json::exception e){
+			TBTKExit(
+				"WaveFunction::WaveFuntion()",
+				"Unable to parse string as WaveFunction '"
+				<< serialization << "'.",
+				""
+			);
+		}
+
+		break;
+	default:
+		TBTKExit(
+			"WaveFunction::WaveFunction()",
+			"Only Serializeable::Mode::JSON is supported yet.",
+			""
+		);
+	}
+}
+
 WaveFunction::~WaveFunction(){
 }
 
@@ -220,6 +272,30 @@ double WaveFunction::getMaxArg() const{
 			max = arg(data[n]);
 
 	return max;
+}
+
+string WaveFunction::serialize(Mode mode) const{
+	switch(mode){
+	case Mode::JSON:
+	{
+		json j;
+		j["id"] = "WaveFunction";
+		j["isContinuous"] = isContinuous;
+		for(unsigned int n = 0; n < states.size(); n++)
+			j["states"].push_back(states.at(n));
+		j["abstractProperty"] = json::parse(
+			AbstractProperty::serialize(mode)
+		);
+
+		return j.dump();
+	}
+	default:
+		TBTKExit(
+			"WaveFunction::serialize()",
+			"Only Serializeable::Mode::JSON is supported yet.",
+			""
+		);
+	}
 }
 
 };	//End of namespace Property
