@@ -79,6 +79,9 @@ public:
 	/** Set canvas. */
 	void setCanvas(cv::Mat &canvas);
 
+	/** Get canvas. */
+	const cv::Mat& getCanvas() const;
+
 	/** Plot data. */
 	void plot(
 		const std::vector<double> &axis,
@@ -213,6 +216,10 @@ inline void Plotter::setAutoScale(bool autoScale){
 
 inline void Plotter::setCanvas(cv::Mat &canvas){
 	this->canvas = canvas;
+}
+
+inline const cv::Mat& Plotter::getCanvas() const{
+	return canvas;
 }
 
 inline cv::Point Plotter::getCVPoint(double x, double y) const{
