@@ -80,6 +80,9 @@ public:
 
 	/** Move assignment operator. */
 	SpectralFunction& operator=(SpectralFunction &&rhs);
+
+	/** Overrider LDOS::serialize(). */
+	virtual std::string serialize(Mode mode) const;
 private:
 };
 

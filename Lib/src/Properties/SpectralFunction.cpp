@@ -22,6 +22,8 @@
 
 #include <utility>
 
+using namespace std;
+
 namespace TBTK{
 namespace Property{
 
@@ -90,6 +92,10 @@ SpectralFunction& SpectralFunction::operator=(SpectralFunction &&rhs){
 		LDOS::operator=(std::move(rhs));
 
 	return *this;
+}
+
+string SpectralFunction::serialize(Mode mode) const{
+	TBTKNotYetImplemented("SpectralFunction::serialize()");
 }
 
 };	//End of namespace Property
