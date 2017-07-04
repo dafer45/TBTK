@@ -88,6 +88,15 @@ bool Serializeable::hasID(const string &serialization, Mode mode){
 		else
 			return true;
 	}
+	case Mode::JSON:
+		try{
+			json j = json::parse(serialization);
+			j.at("id");
+			return true;
+		}
+		catch(json::exception e){
+			return false;
+		}
 	default:
 		TBTKExit(
 			"Serializeable::hasID()",
@@ -112,6 +121,19 @@ string Serializeable::getID(const string &serialization, Mode mode){
 
 		return serialization.substr(0, position);
 	}
+	case Mode::JSON:
+		try{
+			json j = json::parse(serialization);
+			return j.at("id");
+		}
+		catch(json::exception e){
+			TBTKExit(
+				"Serializeable::getID()",
+				"Unable to parse serialization string '"
+				<< serialization << "'.",
+				""
+			);
+		}
 	default:
 		TBTKExit(
 			"Serializeable::getID()",

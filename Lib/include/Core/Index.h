@@ -70,6 +70,9 @@ public:
 	 *  between every index. */
 	Index(const std::vector<std::vector<int>> &indexList);
 
+	/** Constructor. */
+	Index(const std::string &indexString);
+
 	/** Constructor. Constructs the Index from a serialization string. */
 	Index(const std::string &serialization, Serializeable::Mode mode);
 

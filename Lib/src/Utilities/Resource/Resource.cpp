@@ -35,7 +35,7 @@ Resource::Resource(){
 Resource::~Resource(){
 }
 
-int counter;
+static int counter;
 void Resource::write(const string &uri){
 	//If no "scheme://" is specified, write as normal file.
 	size_t position = uri.find("://");

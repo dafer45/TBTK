@@ -91,6 +91,9 @@ public:
 	/** Get from index. */
 	const Index& getFromIndex() const;
 
+	/** Get string representation of the HoppingAmplitude. */
+	std::string toString() const;
+
 	/** Serialize HoppingAmplitude. Note that HoppingAmplitude is
 	 *  pseudo-Serializeable in that it implements the Serializeable
 	 * interface, but does so non-virtually. */
@@ -134,6 +137,18 @@ inline const Index& HoppingAmplitude::getToIndex() const{
 
 inline const Index& HoppingAmplitude::getFromIndex() const{
 	return fromIndex;
+}
+
+inline std::string HoppingAmplitude::toString() const{
+	std::string str;
+	str += "("
+			+ std::to_string(real(amplitude))
+			+ ", " + std::to_string(imag(amplitude))
+		+ ")"
+		+ ", " + toIndex.toString()
+		+ ", " + fromIndex.toString();
+
+	return str;
 }
 
 };	//End of namespace TBTK

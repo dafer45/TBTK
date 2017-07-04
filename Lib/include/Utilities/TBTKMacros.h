@@ -27,9 +27,11 @@
 
 #include <cstring>
 #include <sstream>
+#include <string>
 
 #ifdef TBTKOptimize
 	#define TBTKAssert(expression, function, message, hint)	;
+	#define TBTKExceptionAssert(expression, exception);
 	#define TBTKExit(function, message, hint) exit(1);
 #else
 	#define TBTKAssert(expression, function, message, hint)	\
@@ -45,6 +47,10 @@
 				TBTK::Streams::closeLog();	\
 			exit(1);	\
 		}
+
+	#define TBTKExceptionAssert(expression, exception)	\
+		if(!(expression))	\
+			throw exception;
 
 	#define TBTKExit(function, message, hint)	\
 		TBTK::Streams::err << "Error in " << function << "\n";	\
@@ -68,5 +74,7 @@
 	exit(1);
 
 #define TBTKReadableCodeBlock(code) ;
+
+#define TBTKWhere std::string(__FILE__) + ", " + std::to_string(__LINE__)
 
 #endif

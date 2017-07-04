@@ -18,6 +18,7 @@
  */
 
 #include "Index.h"
+#include "IndexException.h"
 #include "Streams.h"
 #include "TBTKMacros.h"
 
@@ -66,6 +67,176 @@ Index::Index(const vector<vector<int>> &indexList){
 	}
 }
 
+Index::Index(const string &indexString){
+	TBTKExceptionAssert(
+		indexString[0] == '{',
+		IndexException(
+			"Index::Index()",
+			TBTKWhere,
+			string("Expected '{' while parsing index string,")
+			+ " found '" + indexString[0] + "'.",
+			"Specify index using the format \"{X, X, X}\"."
+		)
+	);
+
+	vector<int> indexVector;
+	unsigned int numSeparators = 0;
+	bool parsingNumeric = false;
+	int numeric = 0;
+	for(unsigned int n = 1; n < indexString.size(); n++){
+		switch(indexString[n]){
+		case '*':
+			TBTKExceptionAssert(
+				indexVector.size() == numSeparators,
+				IndexException(
+					"Index::Index()",
+					TBTKWhere,
+					string("Expected ',' while parsing")
+					+ " index string, found '*'.",
+					string("Specify index using the")
+					+ " format \"{X, X, X}\"."
+				)
+			);
+			TBTKExceptionAssert(
+				!parsingNumeric,
+				IndexException(
+					"Index::Index()",
+					TBTKWhere,
+					string("Found '*' while parsing")
+					+ " numeric value.",
+					string("Specify index using the")
+					+ " format \"{X, X, X}\"."
+				)
+			);
+
+			indexVector.push_back(IDX_ALL);
+			break;
+		case '0':
+		case '1':
+		case '2':
+		case '3':
+		case '4':
+		case '5':
+		case '6':
+		case '7':
+		case '8':
+		case '9':
+		{
+			TBTKExceptionAssert(
+				indexVector.size() == numSeparators,
+				IndexException(
+					"Index::Index()",
+					TBTKWhere,
+					string("Expected ',' or '}' while")
+					+ " parsing index string, found '"
+					+ indexString[n] + "'.",
+					string("Specify index using the")
+					+ " format \"{X, X, X}\"."
+				)
+			);
+			const int ASCII_OFFSET = 48;
+			numeric = 10*numeric + (int)indexString[n] - ASCII_OFFSET;
+			parsingNumeric = true;
+			break;
+		}
+		case ' ':
+			if(parsingNumeric){
+				TBTKExceptionAssert(
+					indexVector.size() == numSeparators,
+					IndexException(
+						"Index::Index()",
+						TBTKWhere,
+						string("Expected ',' while")
+						+ " parsing index string,"
+						+ " found ' '.",
+						string("Specify index using")
+						+ " the format \"{X, X, X}\"."
+					)
+				);
+
+				indexVector.push_back(numeric);
+				numeric = 0;
+				parsingNumeric = false;
+			}
+			break;
+		case ',':
+			if(parsingNumeric){
+				indexVector.push_back(numeric);
+				numeric = 0;
+				parsingNumeric = false;
+			}
+			TBTKExceptionAssert(
+				indexVector.size() == numSeparators+1,
+				IndexException(
+					"Index::Index()",
+					TBTKWhere,
+					string("Expected numeric or '}' while")
+					+ " parsing index string, found ','.",
+					string("Specify index using the")
+					+ " format \"{X, X, X}\"."
+				)
+			);
+			numSeparators++;
+			break;
+		case '}':
+			if(parsingNumeric){
+				TBTKExceptionAssert(
+					indexVector.size() == numSeparators,
+					IndexException(
+						"Index::Index()",
+						TBTKWhere,
+						string("Expected ',' while")
+						+ " parsing index string,"
+						+ " found '}'.",
+						string("Specify index using")
+						+ " the format \"{X, X, X}\"."
+					)
+				);
+
+				indexVector.push_back(numeric);
+				numeric = 0;
+				parsingNumeric = false;
+			}
+			TBTKExceptionAssert(
+				n == indexString.size()-1,
+				IndexException(
+					"Index::Index()",
+					TBTKWhere,
+					string("Found '}' before end of index")
+					+ " string.",
+					string("Specify index using the")
+					+ " format \"{X, X, X}\"."
+				)
+			);
+//			n = indexString.size();
+			break;
+		default:
+			throw IndexException(
+				"Index::Index()",
+				TBTKWhere,
+				string("Found '") + indexString[n] + "' while"
+				+ " parsing the interior of the index.",
+				"Specify index using the format \"{X, X, X}\"."
+			);
+		}
+	}
+
+	TBTKExceptionAssert(
+		indexString[indexString.size()-1] == '}',
+		IndexException(
+			"Index::Index()",
+			TBTKWhere,
+			string("Expected '}' while reading index string,")
+			+ " found '" + indexString[indexString.size()-1]
+			+ "'.",
+			"Specify index using the format \"{X, X, X}\"."
+		)
+	);
+
+	for(unsigned int n = 0; n < indexVector.size(); n++)
+		indices.push_back(indexVector.at(n));
+}
+
 Index::Index(const string &serialization, Serializeable::Mode mode){
 	switch(mode){
 	case Serializeable::Mode::Debug:
@@ -90,10 +261,10 @@ Index::Index(const string &serialization, Serializeable::Mode mode){
 			char c;
 			TBTKAssert(
 				!(ss >> c) || c == ',',
-			"Index::Index()",
-			"Unable to parse string as index '" << serialization
-			<< "'.",
-			""
+				"Index::Index()",
+				"Unable to parse string as index '" << serialization
+				<< "'.",
+				""
 			);
 		}
 		break;

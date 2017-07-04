@@ -17,6 +17,7 @@
  *  @author Kristofer Björnson
  */
 
+#include "IndexException.h"
 #include "IndexTree.h"
 #include "TBTKMacros.h"
 
@@ -353,10 +354,17 @@ int IndexTree::getLinearIndex(
 			return -1;
 		}
 		else{
-			Streams::err << "Error, index not included in the "
+			throw IndexException(
+				"IndexTree::getLinearIndex()",
+				TBTKWhere,
+				"Index not included in the IndexTree '"
+				+ index.toString() + "'.",
+				""
+			);
+/*			Streams::err << "Error, index not included in the "
 				<< "IndexTree: ";
 			index.print();
-			exit(1);
+			exit(1);*/
 		}
 	}
 }
