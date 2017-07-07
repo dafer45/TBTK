@@ -172,6 +172,22 @@ Model& Model::operator=(Model &&rhs){
 	return *this;
 }
 
+void Model::addModel(const Model &model, const Index &index){
+	HoppingAmplitudeSet::Iterator it = model.getHoppingAmplitudeSet()->getIterator();
+	const HoppingAmplitude *ha;
+	while((ha = it.getHA())){
+		addHoppingAmplitude(
+			HoppingAmplitude(
+				ha->getAmplitude(),
+				Index(index, ha->getToIndex()),
+				Index(index, ha->getFromIndex())
+			)
+		);
+
+		it.searchNextHA();
+	}
+}
+
 void Model::construct(){
 	if(getGlobalVerbose() && getVerbose())
 		Streams::out << "Constructing system\n";

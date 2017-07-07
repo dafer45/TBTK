@@ -34,6 +34,7 @@ else
 	CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/Builders;
 fi
 CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/Elements;
+CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/Exceptions;
 CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/Core;
 CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/Lattices;
 CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/Lattices/D2;

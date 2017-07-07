@@ -74,6 +74,9 @@ public:
 	/** Add a HoppingAmplitude and its Hermitian conjugate. */
 	void addHoppingAmplitudeAndHermitianConjugate(HoppingAmplitude ha);
 
+	/** Add a Model as a subsystem. */
+	void addModel(const Model &model, const Index &subsytemIndex);
+
 	/** Get Hilbert space index corresponding to given 'from'-index.
 	 *  @param index 'From'-index to get Hilbert space index for. */
 	int getBasisIndex(Index index) const;
