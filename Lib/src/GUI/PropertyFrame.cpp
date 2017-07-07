@@ -110,7 +110,6 @@ void PropertyFrame::onMenuFileOpen(wxCommandEvent &event){
 	);
 
 	if(openDialog->ShowModal() == wxID_OK){
-		Streams::out << "Chosen file:\t" << openDialog->GetPath() << "\n";
 		ifstream fin(openDialog->GetPath());
 		string serialization(istream_iterator<char>(fin), {});
 		if(
