@@ -116,6 +116,9 @@ RESOURCE_SRC_DIR = src/Utilities/Resource
 #Canvas source directory
 CANVAS_SRC_DIR = src/Utilities/Canvas
 
+#GUI source directory
+GUI_SRC_DIR = src/GUI
+
 # Directory for Objects
 OBJ_DIR:= build
 
@@ -159,6 +162,9 @@ RESOURCE_SRC := $(foreach srcDir, $(RESOURCE_SRC_DIR), $(wildcard $(srcDir)/*.cp
 # Canvas source files
 CANVAS_SRC := $(foreach srcDir, $(CANVAS_SRC_DIR), $(wildcard $(srcDir)/*.cpp))
 
+# GUI source files
+GUI_SRC := $(foreach srcDir, $(GUI_SRC_DIR), $(wildcard $(srcDir)/*.cpp))
+
 # Object files
 OBJ := $(addprefix $(OBJ_DIR)/, $(notdir $(SRC:.cpp=.o)))
 
@@ -183,8 +189,8 @@ PLOTTER_OBJ := $(addprefix $(OBJ_DIR)/, $(notdir $(PLOTTER_SRC:.cpp=.o)))
 # Resource object files
 RESOURCE_OBJ := $(addprefix $(OBJ_DIR)/, $(notdir $(RESOURCE_SRC:.cpp=.o)))
 
-# Canvas object files
-CANVAS_OBJ := $(addprefix $(OBJ_DIR)/, $(notdir $(CANVAS_SRC:.cpp=.o)))
+# GUI object files
+GUI_OBJ := $(addprefix $(OBJ_DIR)/, $(notdir $(GUI_SRC:.cpp=.o)))
 
 #All object files
 ALL_OBJ := $(OBJ) $(CUDA_OBJ)
@@ -213,8 +219,11 @@ PLOTTER_OBJ_PURE := $(notdir $(PLOTTER_OBJ))
 # Resource file name of objects without directory name
 RESOURCE_OBJ_PURE := $(notdir $(RESOURCE_OBJ))
 
-# Canvas file name of objects without directory name
-CANVAS_OBJ_PURE := $(notdir $(CANVAS_OBJ))
+# GUI file name of objects without directory name
+GUI_OBJ_PURE := $(notdir $(GUI_OBJ))
+
+# GUI additional compilation parameters
+GUI_ADDITIONAL_COMPILATION_PARAMETERS = `wx-config --cxxflags`
 
 all: $(STATIC_LIB)
 
@@ -256,10 +265,10 @@ resource: $(RESOURCE_OBJ)
 	@echo $(RESOURCE_OBJ)
 	@ar rcs $(STATIC_LIB) $(RESOURCE_OBJ)
 
-canvas: $(CANVAS_OBJ)
+gui: $(GUI_OBJ)
 	@echo "Linking: " $(notdir $(STATIC_LIB))
-	@echo $(CANVAS_OBJ)
-	@ar rcs $(STATIC_LIB) $(CANVAS_OBJ)
+	@echo $(GUI_OBJ)
+	@ar rcs $(STATIC_LIB) $(GUI_OBJ)
 
 # Compilation rule
 define app_compile_template
@@ -342,6 +351,15 @@ $$($(1)_OBJ): $(1)
 	@$$(CC) $$(CFLAGS) $$(OPT) -c $(1) -o $$($(1)_OBJ) $$(LDLIBS)
 endef
 
+# GUI compilation rule
+define gui_app_compile_template
+ $(1)_OBJ = $$(addprefix $$(OBJ_DIR)/, $$(notdir $$(patsubst %.cpp, %.o, $(1))))
+
+$$($(1)_OBJ): $(1)
+	@echo "Compiling: $(1)"
+	@$$(CC) $$(CFLAGS) $$(OPT) -c $(1) -o $$($(1)_OBJ) $$(LDLIBS) $$(GUI_ADDITIONAL_COMPILATION_PARAMETERS)
+endef
+
 # Compile
 $(foreach app, $(SRC), $(eval $(call app_compile_template,$(app))))
 
@@ -368,6 +386,9 @@ $(foreach app, $(RESOURCE_SRC), $(eval $(call resource_app_compile_template,$(ap
 
 # Canvas compile
 $(foreach app, $(CANVAS_SRC), $(eval $(call canvas_app_compile_template,$(app))))
+
+# GUI compile
+$(foreach app, $(GUI_SRC), $(eval $(call gui_app_compile_template,$(app))))
 
 # Cleaning
 clean:
@@ -401,6 +422,9 @@ print:
 	@echo $(CANVAS_SRC_DIR)
 	@echo $(CANVAS_SRC)
 	@echo $(CANVAS_OBJ)
+	@echo $(GUI_SRC_DIR)
+	@echo $(GUI_SRC)
+	@echo $(GUI_OBJ)
 #	@echo $(OBJ)
 #	@echo $(addprefix ./build/, $(notdir $(patsubst %.cpp, %.o, $(SRC))))
 
