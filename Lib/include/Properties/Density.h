@@ -31,7 +31,7 @@ namespace Property{
 
 /** Container for density. */
 class Density : public AbstractProperty<double>{
-public:	
+public:
 	/** Constructor. */
 	Density(int dimensions, const int *ranges);
 
