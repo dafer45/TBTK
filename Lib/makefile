@@ -119,6 +119,9 @@ CANVAS_SRC_DIR = src/Utilities/Canvas
 #GUI source directory
 GUI_SRC_DIR = src/GUI
 
+#DataManager source directory
+DATA_MANAGER_SRC_DIR = src/Utilities/DataManager
+
 # Directory for Objects
 OBJ_DIR:= build
 
@@ -165,6 +168,9 @@ CANVAS_SRC := $(foreach srcDir, $(CANVAS_SRC_DIR), $(wildcard $(srcDir)/*.cpp))
 # GUI source files
 GUI_SRC := $(foreach srcDir, $(GUI_SRC_DIR), $(wildcard $(srcDir)/*.cpp))
 
+# DataManager source files
+DATA_MANAGER_SRC := $(foreach srcDir, $(DATA_MANAGER_SRC_DIR), $(wildcard $(srcDir)/*.cpp))
+
 # Object files
 OBJ := $(addprefix $(OBJ_DIR)/, $(notdir $(SRC:.cpp=.o)))
 
@@ -191,6 +197,9 @@ RESOURCE_OBJ := $(addprefix $(OBJ_DIR)/, $(notdir $(RESOURCE_SRC:.cpp=.o)))
 
 # GUI object files
 GUI_OBJ := $(addprefix $(OBJ_DIR)/, $(notdir $(GUI_SRC:.cpp=.o)))
+
+# DataManager object files
+DATA_MANAGER_OBJ := $(addprefix $(OBJ_DIR)/, $(notdir $(DATA_MANAGER_SRC:.cpp=.o)))
 
 #All object files
 ALL_OBJ := $(OBJ) $(CUDA_OBJ)
@@ -221,6 +230,9 @@ RESOURCE_OBJ_PURE := $(notdir $(RESOURCE_OBJ))
 
 # GUI file name of objects without directory name
 GUI_OBJ_PURE := $(notdir $(GUI_OBJ))
+
+# DataManager file name of objects without directory name
+DATA_MANAGER_OBJ_PURE := $(notdir $(DATA_MANAGER_OBJ))
 
 # GUI additional compilation parameters
 GUI_ADDITIONAL_COMPILATION_PARAMETERS = `wx-config --cxxflags`
@@ -269,6 +281,11 @@ gui: $(GUI_OBJ)
 	@echo "Linking: " $(notdir $(STATIC_LIB))
 	@echo $(GUI_OBJ)
 	@ar rcs $(STATIC_LIB) $(GUI_OBJ)
+
+data_manager: $(DATA_MANAGER_OBJ)
+	@echo "Linking: " $(notdir $(STATIC_LIB))
+	@echo $(DATA_MANAGER_OBJ)
+	@ar rcs $(STATIC_LIB) $(DATA_MANAGER_OBJ)
 
 # Compilation rule
 define app_compile_template
@@ -360,6 +377,15 @@ $$($(1)_OBJ): $(1)
 	@$$(CC) $$(CFLAGS) $$(OPT) -c $(1) -o $$($(1)_OBJ) $$(LDLIBS) $$(GUI_ADDITIONAL_COMPILATION_PARAMETERS)
 endef
 
+# DataManager compilation rule
+define data_manager_app_compile_template
+ $(1)_OBJ = $$(addprefix $$(OBJ_DIR)/, $$(notdir $$(patsubst %.cpp, %.o, $(1))))
+
+$$($(1)_OBJ): $(1)
+	@echo "Compiling: $(1)"
+	@$$(CC) $$(CFLAGS) $$(OPT) -c $(1) -o $$($(1)_OBJ) $$(LDLIBS)
+endef
+
 # Compile
 $(foreach app, $(SRC), $(eval $(call app_compile_template,$(app))))
 
@@ -389,6 +415,9 @@ $(foreach app, $(CANVAS_SRC), $(eval $(call canvas_app_compile_template,$(app)))
 
 # GUI compile
 $(foreach app, $(GUI_SRC), $(eval $(call gui_app_compile_template,$(app))))
+
+# DataManager compile
+$(foreach app, $(DATA_MANAGER_SRC), $(eval $(call data_manager_app_compile_template,$(app))))
 
 # Cleaning
 clean:
@@ -425,6 +454,9 @@ print:
 	@echo $(GUI_SRC_DIR)
 	@echo $(GUI_SRC)
 	@echo $(GUI_OBJ)
+	@echo $(DATA_MANAGER_SRC_DIR)
+	@echo $(DATA_MANAGER_SRC)
+	@echo $(DATA_MANAGER_OBJ)
 #	@echo $(OBJ)
 #	@echo $(addprefix ./build/, $(notdir $(patsubst %.cpp, %.o, $(SRC))))
 
