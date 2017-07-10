@@ -170,7 +170,7 @@ public:
 	static double getHbarN();
 
 	/** Get the Boltzmann constant in the currently set base units. */
-	static double getK_bB();
+	static double getK_BB();
 
 	/** Get the Boltzmann constant in the currently set natural units. */
 	static double getK_bN();
@@ -643,11 +643,11 @@ inline double UnitHandler::getHbarN(){
 	return hbar/(energyScale*timeScale);
 }
 
-inline double UnitHandler::getK_bB(){
+inline double UnitHandler::getK_BB(){
 	return k_b;
 }
 
-inline double UnitHandler::getK_bN(){
+inline double UnitHandler::getK_BN(){
 	return k_b*temperatureScale/energyScale;
 }
 
