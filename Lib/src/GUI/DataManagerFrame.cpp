@@ -251,6 +251,9 @@ void DataManagerFrame::updateOpenWindows(){
 				);
 
 				ifstream fin(dataManager->getPath() + filename);
+				if(!fin)
+					break;
+
 				string serialization(istream_iterator<char>(fin), {});
 				string serializationID = Serializeable::getID(
 					serialization,
