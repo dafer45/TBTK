@@ -173,7 +173,7 @@ public:
 	static double getK_BB();
 
 	/** Get the Boltzmann constant in the currently set natural units. */
-	static double getK_bN();
+	static double getK_BN();
 
 	/** Get the elementary charge in the currently set base units. */
 	static double getEB();
@@ -478,7 +478,7 @@ private:
 	static double hbar;
 
 	/** Boltzmann constant in the currently set units. */
-	static double k_b;
+	static double k_B;
 
 	/** Elementary charge in the currently set units. */
 	static double e;
@@ -572,7 +572,7 @@ private:
 	static void updateHbar();
 
 	/** Update Boltzmann constant. To be called at change of units. */
-	static void updateK_b();
+	static void updateK_B();
 
 	/** Update elementary charge. To be called at change of units. */
 	static void updateE();
@@ -644,11 +644,11 @@ inline double UnitHandler::getHbarN(){
 }
 
 inline double UnitHandler::getK_BB(){
-	return k_b;
+	return k_B;
 }
 
 inline double UnitHandler::getK_BN(){
-	return k_b*temperatureScale/energyScale;
+	return k_B*temperatureScale/energyScale;
 }
 
 inline double UnitHandler::getEB(){

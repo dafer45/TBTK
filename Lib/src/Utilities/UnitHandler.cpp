@@ -34,7 +34,7 @@ using namespace std;
 namespace TBTK{
 
 double UnitHandler::hbar	= HBAR;
-double UnitHandler::k_b		= K_B;
+double UnitHandler::k_B		= K_B;
 double UnitHandler::e		= E;
 double UnitHandler::c		= C;
 double UnitHandler::n_a		= N_A;
@@ -65,7 +65,7 @@ void UnitHandler::setTemperatureUnit(TemperatureUnit unit){
 	double newConversionFactor = getTemperatureConversionFactor();
 	temperatureScale *= newConversionFactor/oldConversionFactor;
 
-	updateK_b();
+	updateK_B();
 }
 
 void UnitHandler::setTimeUnit(TimeUnit unit){
@@ -105,7 +105,7 @@ void UnitHandler::setEnergyUnit(EnergyUnit unit){
 	energyScale *= newConversionFactor/oldConversionFactor;
 
 	updateHbar();
-	updateK_b();
+	updateK_B();
 	updateM_e();
 	updateM_p();
 	updateMu_0();
@@ -455,10 +455,10 @@ void UnitHandler::updateHbar(){
 	hbar *= getTimeConversionFactor();
 }
 
-void UnitHandler::updateK_b(){
-	k_b = K_B;
-	k_b *= getEnergyConversionFactor();
-	k_b /= getTemperatureConversionFactor();
+void UnitHandler::updateK_B(){
+	k_B = K_B;
+	k_B *= getEnergyConversionFactor();
+	k_B /= getTemperatureConversionFactor();
 }
 
 void UnitHandler::updateE(){
