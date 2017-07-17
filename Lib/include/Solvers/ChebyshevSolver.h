@@ -78,7 +78,7 @@ public:
 		Index from,
 		std::complex<double> *coefficients,
 		int numCoefficients,
-		double broadening = 0.0001
+		double broadening = 0.000001
 	);
 
 	/** Calculates the Chebyshev coefficients for \f$ G_{ij}(E)\f$, where
@@ -95,7 +95,7 @@ public:
 		Index from,
 		std::complex<double> *coefficients,
 		int numCoefficients,
-		double broadening = 0.0001
+		double broadening = 0.000001
 	);
 
 	/** Calculates the Chebyshev coefficients for \f$ G_{ij}(E)\f$, where
@@ -115,7 +115,7 @@ public:
 		Index from,
 		std::complex<double> *coefficients,
 		int numCoefficients,
-		double broadening = 0.0001
+		double broadening = 0.000001
 	);
 
 	/** Calculates the Chebyshev coefficients for \f$ G_{ij}(E)\f$, where
@@ -132,7 +132,7 @@ public:
 		Index from,
 		std::complex<double> *coefficients,
 		int numCoefficients,
-		double broadening = 0.0001
+		double broadening = 0.000001
 	);
 
 	/** Experimental. */
@@ -142,7 +142,7 @@ public:
 		std::complex<double> *coefficients,
 		int numCoefficients,
 		double componentCutoff,
-		double broadening = 0.0001
+		double broadening = 0.000001
 	);
 
 	/** Generate lokup table for quicker generation of multiple Green's
