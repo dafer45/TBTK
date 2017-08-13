@@ -45,6 +45,8 @@ using namespace TBTK;
 const complex<double> i(0, 1);
 
 int main(int argc, char **argv){
+	TBTKNotYetImplemented("Templates/Wannier main()");
+
 	TBTKAssert(
 		argc == 3,
 		"main()",
