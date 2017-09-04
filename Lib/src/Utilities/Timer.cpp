@@ -26,5 +26,8 @@ namespace TBTK{
 
 vector<chrono::time_point<chrono::high_resolution_clock>> Timer::timestamps;
 vector<string> Timer::tags;
+vector<chrono::time_point<chrono::high_resolution_clock>> Timer::accumulatorTimestamps;
+vector<string> Timer::accumulatorTags;
+vector<long> Timer::accumulators;
 
 };	//End of namespace TBTK

@@ -24,9 +24,11 @@
 #define COM_DAFER45_TBTK_TIMER
 
 #include "Streams.h"
+#include "TBTKMacros.h"
 
-#include <vector>
 #include <chrono>
+#include <iomanip>
+#include <vector>
 
 namespace TBTK{
 
@@ -37,7 +39,7 @@ namespace TBTK{
  */
 class Timer{
 public:
-	/** Bush timestamp onto stack.
+	/** Push timestamp onto stack.
 	 *  @param tag Optional identifier tag that will be printed together
 	 *  with the elapsed time at subsequent tock call. */
 	static void tick(std::string tag = "");
@@ -45,12 +47,40 @@ public:
 	/** Pop timestamp from stack and print elapsed time and identifier
 	 *  tag. */
 	static void tock();
+
+	/** Create an accumulator that can be used to accumulate multiple time
+	 *  measurements. */
+	static unsigned int createAccumulator(const std::string &tag = "");
+
+	/** Initiate a time interval to be added to an accumulator. */
+	static void tick(unsigned int id);
+
+	/** Finalize a time interval add add it to an accumulator. */
+	static void tock(unsigned int id);
+
+	/** Reset accumulator. */
+	static void resetAccumulator(unsigned int id);
+
+	/** Reset all accumulators. */
+	static void resetAccumulators();
+
+	/** Print accumulators. */
+	static void printAccumulators();
 private:
 	/** Timestamp stack. */
 	static std::vector<std::chrono::time_point<std::chrono::high_resolution_clock>> timestamps;
 
 	/** Tag stack. */
 	static std::vector<std::string> tags;
+
+	/** Accumulator timestamps. */
+	static std::vector<std::chrono::time_point<std::chrono::high_resolution_clock>> accumulatorTimestamps;
+
+	/** Accumulator tags. */
+	static std::vector<std::string> accumulatorTags;
+
+	/** Accumulators. */
+	static std::vector<long> accumulators;
 };
 
 inline void Timer::tick(std::string tag){
@@ -90,6 +120,108 @@ inline void Timer::tock(){
 	}
 	else{
 		Streams::out << "Error in Time::tock(): No corresponding tick call made.\n";
+	}
+}
+
+inline unsigned int Timer::createAccumulator(const std::string &tag){
+	accumulatorTimestamps.push_back(
+		std::chrono::high_resolution_clock::now()
+	);
+	accumulatorTags.push_back(tag);
+	accumulators.push_back(0);
+
+	return accumulators.size() - 1;
+}
+
+inline void Timer::tick(unsigned int id){
+	TBTKAssert(
+		id < accumulators.size(),
+		"Timer::tick()",
+		"'id' is out of bounds.",
+		"Ensure that the id corresponds to a value returned by a"
+		<< " corresponding call to Timer::createAccumulator()."
+	);
+	accumulatorTimestamps[id] = std::chrono::high_resolution_clock::now();
+}
+
+inline void Timer::tock(unsigned int id){
+	TBTKAssert(
+		id < accumulators.size(),
+		"Timer::tock()",
+		"'id' is out of bounds.",
+		"Ensure that the id corresponds to a value returned by a"
+		<< " corresponding call to Timer::createAccumulator()."
+	);
+	std::chrono::time_point<std::chrono::high_resolution_clock> stop
+		= std::chrono::high_resolution_clock::now();
+	std::chrono::time_point<std::chrono::high_resolution_clock> start
+		= accumulatorTimestamps[id];
+
+	accumulators[id]
+		+= std::chrono::duration_cast<std::chrono::nanoseconds>(
+			stop - start
+		).count();
+}
+
+inline void Timer::resetAccumulator(unsigned int id){
+	TBTKAssert(
+		id < accumulators.size(),
+		"Timer::resetAccumulator()",
+		"'id' is out of bounds.",
+		"Ensure that the id corresponds to a value returned by a"
+		<< " corresponding call to Timer::createAccumulator()."
+	);
+
+	accumulators[id] = 0;
+}
+
+inline void Timer::resetAccumulators(){
+	for(unsigned int n = 0; n < accumulators.size(); n++)
+		accumulators[n] = 0;
+}
+
+inline void Timer::printAccumulators(){
+	for(unsigned int n = 0; n < accumulators.size(); n++){
+		long time = accumulators[n];
+
+		long hours = time/(60ll*60ll*1000ll*1000ll*1000ll);
+		long minutes = (time/(60ll*1000ll*1000ll*1000ll))%60ll;
+		long seconds = (time/(1000ll*1000ll*1000ll))%60ll;
+		long milliseconds = (time/(1000ll*1000ll))%1000ll;
+		long microseconds = (time/(1000ll))%1000ll;
+		long nanoseconds = time%1000ll;
+
+		const std::string &tag = accumulatorTags[n];
+
+		Streams::out << "============================== Accumulator table ==============================\n";
+		Streams::out << std::left << std::setw(10) << "ID" << std::setw(33) << "     Tag\n";
+		Streams::out << std::left << std::setw(10) << "[" + std::to_string(n) + "]" << std::right;
+		if(hours > 0)
+			Streams::out << std::setw(6) << std::to_string(hours) + "h";
+		else
+			Streams::out << std::setw(6) << " ";
+		if(hours > 0 || minutes > 0)
+			Streams::out << std::setw(5) << std::to_string(minutes) + "m";
+		else
+			Streams::out << std::setw(5) << " ";
+		if(hours > 0 || minutes > 0 || seconds > 0)
+			Streams::out << std::setw(4) << std::to_string(seconds) + "s";
+		else
+			Streams::out << std::setw(4) << " ";
+		if(hours > 0 || minutes > 0 || seconds > 0 || milliseconds > 0)
+			Streams::out << std::setw(6) << std::to_string(milliseconds) + "ms";
+		else
+			Streams::out << std::setw(6) << " ";
+		if(hours > 0 || minutes > 0 || seconds > 0 || milliseconds > 0 || microseconds > 0)
+			Streams::out << std::setw(6) << std::to_string(microseconds) + "us";
+		else
+			Streams::out << std::setw(6) << " ";
+		if(hours > 0 || minutes > 0 || seconds > 0 || milliseconds > 0 || microseconds > 0 || nanoseconds > 0)
+			Streams::out << std::setw(6) << std::to_string(nanoseconds) + "ns";
+		else
+			Streams::out << std::setw(6) << " ";
+		Streams::out << std::left << "     " << std::setw(100) << tag << "\n";
+		Streams::out << "===============================================================================\n";
 	}
 }
 
