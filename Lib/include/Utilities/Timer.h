@@ -181,6 +181,8 @@ inline void Timer::resetAccumulators(){
 }
 
 inline void Timer::printAccumulators(){
+	Streams::out << "============================== Accumulator table ==============================\n";
+	Streams::out << std::left << std::setw(10) << "ID" << std::setw(33) << "Time" << std::setw(100) << "     Tag" << "\n";
 	for(unsigned int n = 0; n < accumulators.size(); n++){
 		long time = accumulators[n];
 
@@ -193,8 +195,6 @@ inline void Timer::printAccumulators(){
 
 		const std::string &tag = accumulatorTags[n];
 
-		Streams::out << "============================== Accumulator table ==============================\n";
-		Streams::out << std::left << std::setw(10) << "ID" << std::setw(33) << "     Tag\n";
 		Streams::out << std::left << std::setw(10) << "[" + std::to_string(n) + "]" << std::right;
 		if(hours > 0)
 			Streams::out << std::setw(6) << std::to_string(hours) + "h";
@@ -221,8 +221,8 @@ inline void Timer::printAccumulators(){
 		else
 			Streams::out << std::setw(6) << " ";
 		Streams::out << std::left << "     " << std::setw(100) << tag << "\n";
-		Streams::out << "===============================================================================\n";
 	}
+	Streams::out << "===============================================================================\n";
 }
 
 };	//End of namespace TBTK
