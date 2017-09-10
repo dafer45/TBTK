@@ -96,6 +96,7 @@ int Streams::ForkBuffer::overflow(int c){
 }
 
 Streams::LogBuffer::LogBuffer(){
+	fout.rdbuf()->pubsetbuf(0, 0);
 }
 
 Streams::LogBuffer::~LogBuffer(){
