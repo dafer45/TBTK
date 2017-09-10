@@ -48,6 +48,7 @@ CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/ManyBody/FockStateRule;
 CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/Properties;
 CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/PropertyExtractors;
 CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/Solvers;
+CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/SpecializedSolvers;
 CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/StatesAndOperators;
 CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/Utilities;
 CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/Uncategorized;

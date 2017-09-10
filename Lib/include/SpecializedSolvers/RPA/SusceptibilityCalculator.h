@@ -1,0 +1,539 @@
+/* Copyright 2017 Kristofer Björnson
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/** @package TBTKcalc
+ *  @file SuscesptibilityCalculator.h
+ *  @brief Property container for density
+ *
+ *  @author Kristofer Björnson
+ */
+
+#ifndef COM_DAFER45_TBTK_SUSCEPTIBILITY_CALCULATOR
+#define COM_DAFER45_TBTK_SUSCEPTIBILITY_CALCULATOR
+
+#include "DualIndex.h"
+#include "IndexedDataTree.h"
+#include "InteractionAmplitude.h"
+#include "MomentumSpaceContext.h"
+#include "Resource/Resource.h"
+#include "SerializeableVector.h"
+
+#include <complex>
+
+#include <omp.h>
+
+namespace TBTK{
+
+class SusceptibilityCalculator{
+public:
+	/** Constructor. */
+	SusceptibilityCalculator(
+		const MomentumSpaceContext &momentumSpaceContext
+	);
+
+	/** Destructor. */
+	~SusceptibilityCalculator();
+
+	/** Precompute susceptibilities. Will calculate the susceptibility for
+	 *  all values using a parallel algorithm. Can speed up calculations if
+	 *  most of the susceptibilities are needed. */
+	void precompute(unsigned int numWorkers = 129);
+
+	const MomentumSpaceContext& getMomentumSpaceContext() const;
+
+	/** Set interaction amplitudes. */
+	void setInteractionAmplitudes(
+		const std::vector<InteractionAmplitude> &interactionAmplitudes
+	);
+
+	/** Generate lookup table for the k+q linear index. Can be called
+	 *  repeatedly, and the lookup table is only generated the first time.
+	 */
+	void generateKPlusQLookupTable();
+
+	/** Calculation modes. */
+	enum class Mode {Lindhard, Matsubara};
+
+	/** Enum class for indicating whether the energy is an arbitrary comlex
+	 *  number, or if it is restricted to the real or imaginary axis. */
+	enum class EnergyType {Real, Imaginary, Complex};
+
+	/** Set the mode used to calculate the susceptibility. */
+	void setSusceptibilityMode(Mode mode);
+
+	/** Get the mode used to calculate the susceptibility. */
+	Mode getSusceptibilityMode() const;
+
+	/** Set susceptibility energy type. */
+	void setSusceptibilityEnergyType(EnergyType energyType);
+
+	/** Get susceptibility energy type. */
+	EnergyType getSusceptibilityEnergyType() const;
+
+	/** Set the energies for which the susceptibility should be
+	 *  calculated. */
+	void setSusceptibilityEnergies(
+		const std::vector<std::complex<double>> &susceptibilityEnergies
+	);
+
+	/** Set to true if the susceptibility energies can be assumed
+	 *  to be inversion symmetric in the complex plane.
+	 *
+	 *  Important note:
+	 *  Only set this to true if the energies passed to
+	 *  setSusceptibilityEnergies() are on the form
+	 *  (-E_n, -E_{n-1}, ..., E_{n-1}, E_n). Setting this flag to
+	 *  true without fullfilling this condition will result in
+	 *  undefined behavior. */
+	void setSusceptibilityEnergiesAreInversionSymmetric(
+		bool susceptibilityEnergiesAreInversionSymmetric
+	);
+
+	/** Get whether the susceptibility energies are inversion
+	 *  symmetric. */
+	bool getSusceptibilityEnergiesAreInversionSymmetric() const;
+
+	/** Set to true if the susceptibility is known to only be
+	 *  evaluated at points away from poles. */
+	void setSusceptibilityIsSafeFromPoles(
+		bool susceptibilityIsSafeFromPoles
+	);
+
+	/** Get whether the susceptibility is known to only be
+	 *  evaluated at points away from poles. */
+	bool getSusceptibilityIsSafeFromPoles() const;
+
+	/** Save susceptibilities. */
+	void saveSusceptibilities(const std::string &filename) const;
+
+	/** Load susceptibilities. */
+	void loadSusceptibilities(const std::string &filename);
+private:
+	/** IndexedDataTree storing the bare susceptibilities. */
+	IndexedDataTree<SerializeableVector<std::complex<double>>> susceptibilityTree;
+
+	/** IndexedDataTree storing the RPA susceptibilities. */
+	IndexedDataTree<SerializeableVector<std::complex<double>>> rpaSusceptibilityTree;
+
+	/** IndexedDataTree storing the RPA charge susceptibility. */
+	IndexedDataTree<SerializeableVector<std::complex<double>>> rpaChargeSusceptibilityTree;
+
+	/** IndexedDataTree storing the RPA spin susceptibility. */
+	IndexedDataTree<SerializeableVector<std::complex<double>>> rpaSpinSusceptibilityTree;
+
+	/** Mode to use for calculating the susceptibility. */
+	Mode susceptibilityMode;
+
+	/** Energy type for the susceptibility. */
+	EnergyType susceptibilityEnergyType;
+
+	/** Energies to calculate the susceptibility for. */
+	std::vector<std::complex<double>> susceptibilityEnergies;
+
+	/** Flag indicating whether the the energies in
+	 *  susceptibilityEnergies are inversion symmetric in the
+	 *  complex plane. */
+	bool susceptibilityEnergiesAreInversionSymmetric;
+
+	/** Flag indicating whether the susceptibility is known to only
+	 *  be evaluated at points away from poles. */
+	bool susceptibilityIsSafeFromPoles;
+
+public:
+	/** Calculate the susceptibility. */
+	std::complex<double> calculateSusceptibility(
+		const std::vector<double> &k,
+		const std::vector<int> &orbitalIndices,
+		std::complex<double> energy,
+		Mode mode
+	);
+
+	/** Calculate the susceptibility. */
+	std::vector<std::complex<double>> calculateSusceptibility(
+		const DualIndex &kDual,
+		const std::vector<int> &orbitalIndices
+	);
+
+	/** Calculate the susceptibility. */
+	std::vector<std::complex<double>> calculateSusceptibility(
+		const std::vector<double> &k,
+		const std::vector<int> &orbitalIndices
+	);
+
+	/** Calculate RPA Susceptibility. */
+	std::vector<std::complex<double>> calculateRPASusceptibility(
+		const DualIndex &kDual,
+		const std::vector<int> &orbitalIndices
+	);
+
+	/** Calculate RPA Susceptibility. */
+	std::vector<std::complex<double>> calculateRPASusceptibility(
+		const std::vector<double> &k,
+		const std::vector<int> &orbitalIndices
+	);
+
+	/** Calculate charge RPA Susceptibility. */
+	std::vector<std::complex<double>> calculateChargeRPASusceptibility(
+		const DualIndex &kDual,
+		const std::vector<int> &orbitalIndices
+	);
+
+	/** Calculate charge RPA Susceptibility. */
+	std::vector<std::complex<double>> calculateChargeRPASusceptibility(
+		const std::vector<double> &k,
+		const std::vector<int> &orbitalIndices
+	);
+
+	/** Calculate spin RPA Susceptibility. */
+	std::vector<std::complex<double>> calculateSpinRPASusceptibility(
+		const DualIndex &kDual,
+		const std::vector<int> &orbitalIndices
+	);
+
+	/** Calculate spin RPA Susceptibility. */
+	std::vector<std::complex<double>> calculateSpinRPASusceptibility(
+		const std::vector<double> &k,
+		const std::vector<int> &orbitalIndices
+	);
+
+	/** Set U. */
+	void setU(std::complex<double> U);
+
+	/** Set Up. */
+	void setUp(std::complex<double> Up);
+
+	/** Set J. */
+	void setJ(std::complex<double> J);
+
+	/** Set Jp. */
+	void setJp(std::complex<double> Jp);
+private:
+	/** Momentum space context. */
+	const MomentumSpaceContext *momentumSpaceContext;
+
+	/** InteractionAmplitudes. */
+	std::vector<InteractionAmplitude> interactionAmplitudes;
+
+	/** Interaction amplitudes for charge susceptibility. */
+	std::vector<InteractionAmplitude> interactionAmplitudesCharge;
+
+	/** Interaction amplitudes for charge susceptibility. */
+	std::vector<InteractionAmplitude> interactionAmplitudesSpin;
+
+	/** Flag indicating whether the interaction amplitudes for charge- and
+	 *  spin-susceptibilities has been initialized. */
+	bool interactionAmplitudesAreGenerated;
+
+	/** Lookup table for calculating k+q. */
+	int *kPlusQLookupTable;
+
+	/** Fermi-Dirac distribution lookup table. */
+	double *fermiDiracLookupTable;
+
+	/** Flag indicating whether the SusceptibilityCalculator is
+	 *  initialized. */
+	bool isInitialized;
+
+	/** Flag indicating whether the SusceptibilityCalculator is a master.
+	 *  Masters owns resources shared between masters and slaves and is
+	 *  responsible for cleaning up. */
+	bool isMaster;
+
+	/** Get Susceptibility result Index. */
+	Index getSusceptibilityResultIndex(
+		const Index &kIndex,
+		const std::vector<int> &orbitalIndices
+	) const;
+
+	/** Calculate the susceptibility using the Lindhard function. */
+	std::complex<double> calculateSusceptibilityLindhard(
+		const std::vector<double> &k,
+		const std::vector<int> &orbitalIndices,
+		std::complex<double> energy
+	);
+
+	/** Calculate the susceptibility using the Lindhard function. */
+	template<bool useKPlusQLookupTable, bool isSafeFromPoles>
+	std::vector<std::complex<double>> calculateSusceptibilityLindhard(
+		const DualIndex &kDual,
+		const std::vector<int> &orbitalIndices
+	);
+
+	/** Calculate the susceptibility using the Matsubara sum. */
+	std::complex<double> calculateSusceptibilityMatsubara(
+		const std::vector<double> &k,
+		const std::vector<int> &orbitalIndices,
+		std::complex<double> energy
+	);
+
+	/** Calculate the susceptibility using the Matsubara sum. */
+	std::vector<std::complex<double>> calculateSusceptibilityMatsubara(
+		const DualIndex &kDual,
+		const std::vector<int> &orbitalIndices
+	);
+
+	/** Invert matix. */
+	void invertMatrix(std::complex<double> *matrix, unsigned int dimensions);
+
+	/** Multiply matrices. */
+	void multiplyMatrices(
+		std::complex<double> *matrix1,
+		std::complex<double> *matrix2,
+		std::complex<double> *result,
+		unsigned int dimensions
+	);
+
+	/** Returns the linear index for k+q. */
+	template<bool useKPlusQLookupTable>
+	int getKPlusQLinearIndex(
+		unsigned int meshIndex,
+		const std::vector<double> &k,
+		int kLinearIndex
+	) const;
+
+	/** Get polt times two Fermi functions for use in the Linhard
+	 *  function. */
+	std::complex<double> getPoleTimesTwoFermi(
+		std::complex<double> energy,
+		double e2,
+		double e1,
+		double chemicalPotential,
+		double temperature,
+		int kPlusQLinearIndex,
+		unsigned int meshPoint,
+		unsigned int state2,
+		unsigned int state1,
+		unsigned int numOrbitals
+	) const;
+
+	/** Cache susceptibility. */
+	void cacheSusceptibility(
+		const std::vector<std::complex<double>> &result,
+		const std::vector<double> &k,
+		const std::vector<int> &orbitalIndices,
+		const Index &kIndex,
+		const Index &resultIndex
+	);
+
+	/** RPA-susceptibility main algorithm. */
+	std::vector<std::vector<std::vector<std::complex<double>>>> rpaSusceptibilityMainAlgorithm(
+		const DualIndex &kDual,
+		const std::vector<int> &orbitalIndices,
+		const std::vector<InteractionAmplitude> &interactionAmpltiudes
+	);
+
+	/** Interaction parameters. */
+	std::complex<double> U, Up, J, Jp;
+
+	/** Generate chare- and spin-interaction amplitudes. Can be called
+	 *  multiple times and will only regenerate the interaction amplitudes
+	 *  when needed. */
+	void generateInteractionAmplitudes();
+
+	/** Lock used to prevent multiple threads from executing the main part
+	 *  of SusceptibilityCalculator::calculateSusceptibilityLindhard()
+	 *  simultaneously. */
+	omp_lock_t lindhardLock;
+};
+
+inline const MomentumSpaceContext& SusceptibilityCalculator::getMomentumSpaceContext(
+) const{
+	return *momentumSpaceContext;
+}
+
+inline void SusceptibilityCalculator::setInteractionAmplitudes(
+	const std::vector<InteractionAmplitude> &interactionAmplitudes
+){
+	this->interactionAmplitudes = interactionAmplitudes;
+
+	isInitialized = false;
+}
+
+inline Index SusceptibilityCalculator::getSusceptibilityResultIndex(
+	const Index &kIndex,
+	const std::vector<int> &orbitalIndices
+) const{
+	return Index(
+		kIndex,
+		{
+			orbitalIndices.at(0),
+			orbitalIndices.at(1),
+			orbitalIndices.at(2),
+			orbitalIndices.at(3)
+		}
+	);
+}
+
+inline void SusceptibilityCalculator::setSusceptibilityMode(
+	Mode mode
+){
+	susceptibilityMode = mode;
+}
+
+inline SusceptibilityCalculator::Mode SusceptibilityCalculator::getSusceptibilityMode(
+) const{
+	return susceptibilityMode;
+}
+
+inline void SusceptibilityCalculator::setSusceptibilityEnergyType(
+	EnergyType energyType
+){
+	susceptibilityEnergyType = energyType;
+}
+
+inline SusceptibilityCalculator::EnergyType SusceptibilityCalculator::getSusceptibilityEnergyType(
+) const{
+	return susceptibilityEnergyType;
+}
+
+inline void SusceptibilityCalculator::setSusceptibilityEnergies(
+	const std::vector<std::complex<double>> &susceptibilityEnergies
+){
+	this->susceptibilityEnergies = susceptibilityEnergies;
+	susceptibilityTree.clear();
+	rpaSusceptibilityTree.clear();
+	rpaChargeSusceptibilityTree.clear();
+	rpaSpinSusceptibilityTree.clear();
+}
+
+inline void SusceptibilityCalculator::setSusceptibilityEnergiesAreInversionSymmetric(
+	bool susceptibilityEnergiesAreInversionSymmetric
+){
+	this->susceptibilityEnergiesAreInversionSymmetric = susceptibilityEnergiesAreInversionSymmetric;
+}
+
+inline bool SusceptibilityCalculator::getSusceptibilityEnergiesAreInversionSymmetric(
+) const{
+	return susceptibilityEnergiesAreInversionSymmetric;
+}
+
+inline void SusceptibilityCalculator::setSusceptibilityIsSafeFromPoles(
+	bool susceptibilityIsSafeFromPoles
+){
+	this->susceptibilityIsSafeFromPoles = susceptibilityIsSafeFromPoles;
+}
+
+inline bool SusceptibilityCalculator::getSusceptibilityIsSafeFromPoles() const{
+	return susceptibilityIsSafeFromPoles;
+}
+
+inline void SusceptibilityCalculator::saveSusceptibilities(
+	const std::string &filename
+) const{
+	Resource resource;
+	resource.setData(
+		susceptibilityTree.serialize(Serializeable::Mode::JSON)
+	);
+	resource.write(filename);
+}
+
+inline void SusceptibilityCalculator::loadSusceptibilities(
+	const std::string &filename
+){
+	Resource resource;
+	resource.read(filename);
+	susceptibilityTree = IndexedDataTree<SerializeableVector<std::complex<double>>>(
+		resource.getData(),
+		Serializeable::Mode::JSON
+	);
+}
+
+inline std::vector<std::complex<double>> SusceptibilityCalculator::calculateSusceptibility(
+		const std::vector<double> &k,
+		const std::vector<int> &orbitalIndices
+){
+	return calculateSusceptibility(
+		DualIndex(
+			momentumSpaceContext->getKIndex(k),
+			k
+		),
+		orbitalIndices
+	);
+}
+
+inline std::vector<std::complex<double>> SusceptibilityCalculator::calculateRPASusceptibility(
+		const std::vector<double> &k,
+		const std::vector<int> &orbitalIndices
+){
+	return calculateRPASusceptibility(
+		DualIndex(
+			momentumSpaceContext->getKIndex(k),
+			k
+		),
+		orbitalIndices
+	);
+}
+
+inline std::vector<std::complex<double>> SusceptibilityCalculator::calculateChargeRPASusceptibility(
+		const std::vector<double> &k,
+		const std::vector<int> &orbitalIndices
+){
+	return calculateChargeRPASusceptibility(
+		DualIndex(
+			momentumSpaceContext->getKIndex(k),
+			k
+		),
+		orbitalIndices
+	);
+}
+
+inline std::vector<std::complex<double>> SusceptibilityCalculator::calculateSpinRPASusceptibility(
+		const std::vector<double> &k,
+		const std::vector<int> &orbitalIndices
+){
+	return calculateSpinRPASusceptibility(
+		DualIndex(
+			momentumSpaceContext->getKIndex(k),
+			k
+		),
+		orbitalIndices
+	);
+}
+
+inline void SusceptibilityCalculator::setU(std::complex<double> U){
+	this->U = U;
+	rpaSusceptibilityTree.clear();
+	rpaChargeSusceptibilityTree.clear();
+	rpaSpinSusceptibilityTree.clear();
+	interactionAmplitudesAreGenerated = false;
+}
+
+inline void SusceptibilityCalculator::setUp(std::complex<double> Up){
+	this->Up = Up;
+	rpaSusceptibilityTree.clear();
+	rpaChargeSusceptibilityTree.clear();
+	rpaSpinSusceptibilityTree.clear();
+	interactionAmplitudesAreGenerated = false;
+}
+
+inline void SusceptibilityCalculator::setJ(std::complex<double> J){
+	this->J = J;
+	rpaSusceptibilityTree.clear();
+	rpaChargeSusceptibilityTree.clear();
+	rpaSpinSusceptibilityTree.clear();
+	interactionAmplitudesAreGenerated = false;
+}
+
+inline void SusceptibilityCalculator::setJp(std::complex<double> Jp){
+	this->Jp = Jp;
+	rpaSusceptibilityTree.clear();
+	rpaChargeSusceptibilityTree.clear();
+	rpaSpinSusceptibilityTree.clear();
+	interactionAmplitudesAreGenerated = false;
+}
+
+};	//End of namespace TBTK
+
+#endif

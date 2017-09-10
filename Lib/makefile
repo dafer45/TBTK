@@ -122,6 +122,9 @@ GUI_SRC_DIR = src/GUI
 #DataManager source directory
 DATA_MANAGER_SRC_DIR = src/Utilities/DataManager
 
+#RPA source directory
+RPA_SRC_DIR = src/SpecializedSolvers/RPA
+
 # Directory for Objects
 OBJ_DIR:= build
 
@@ -171,6 +174,9 @@ GUI_SRC := $(foreach srcDir, $(GUI_SRC_DIR), $(wildcard $(srcDir)/*.cpp))
 # DataManager source files
 DATA_MANAGER_SRC := $(foreach srcDir, $(DATA_MANAGER_SRC_DIR), $(wildcard $(srcDir)/*.cpp))
 
+# RPA source files
+RPA_SRC := $(foreach srcDir, $(RPA_SRC_DIR), $(wildcard $(srcDir)/*.cpp))
+
 # Object files
 OBJ := $(addprefix $(OBJ_DIR)/, $(notdir $(SRC:.cpp=.o)))
 
@@ -200,6 +206,9 @@ GUI_OBJ := $(addprefix $(OBJ_DIR)/, $(notdir $(GUI_SRC:.cpp=.o)))
 
 # DataManager object files
 DATA_MANAGER_OBJ := $(addprefix $(OBJ_DIR)/, $(notdir $(DATA_MANAGER_SRC:.cpp=.o)))
+
+# RPA object files
+RPA_OBJ := $(addprefix $(OBJ_DIR)/, $(notdir $(RPA_SRC:.cpp=.o)))
 
 #All object files
 ALL_OBJ := $(OBJ) $(CUDA_OBJ)
@@ -233,6 +242,9 @@ GUI_OBJ_PURE := $(notdir $(GUI_OBJ))
 
 # DataManager file name of objects without directory name
 DATA_MANAGER_OBJ_PURE := $(notdir $(DATA_MANAGER_OBJ))
+
+# RPA file name of objects without directory name
+RPA_OBJ_PURE := $(notdir $(RPA_OBJ))
 
 # GUI additional compilation parameters
 GUI_ADDITIONAL_COMPILATION_PARAMETERS = `wx-config --cxxflags`
@@ -286,6 +298,11 @@ data_manager: $(DATA_MANAGER_OBJ)
 	@echo "Linking: " $(notdir $(STATIC_LIB))
 	@echo $(DATA_MANAGER_OBJ)
 	@ar rcs $(STATIC_LIB) $(DATA_MANAGER_OBJ)
+
+rpa: $(RPA_OBJ)
+	@echo "Linking: " $(notdir $(STATIC_LIB))
+	@echo $(RPA_OBJ)
+	@ar rcs $(STATIC_LIB) $(RPA_OBJ)
 
 # Compilation rule
 define app_compile_template
@@ -386,6 +403,15 @@ $$($(1)_OBJ): $(1)
 	@$$(CC) $$(CFLAGS) $$(OPT) -c $(1) -o $$($(1)_OBJ) $$(LDLIBS)
 endef
 
+# RPA compilation rule
+define rpa_app_compile_template
+ $(1)_OBJ = $$(addprefix $$(OBJ_DIR)/, $$(notdir $$(patsubst %.cpp, %.o, $(1))))
+
+$$($(1)_OBJ): $(1)
+	@echo "Compiling: $(1)"
+	@$$(CC) $$(CFLAGS) $$(OPT) -c $(1) -o $$($(1)_OBJ) $$(LDLIBS)
+endef
+
 # Compile
 $(foreach app, $(SRC), $(eval $(call app_compile_template,$(app))))
 
@@ -418,6 +444,9 @@ $(foreach app, $(GUI_SRC), $(eval $(call gui_app_compile_template,$(app))))
 
 # DataManager compile
 $(foreach app, $(DATA_MANAGER_SRC), $(eval $(call data_manager_app_compile_template,$(app))))
+
+# RPA compile
+$(foreach app, $(RPA_SRC), $(eval $(call rpa_app_compile_template,$(app))))
 
 # Cleaning
 clean:
@@ -457,6 +486,9 @@ print:
 	@echo $(DATA_MANAGER_SRC_DIR)
 	@echo $(DATA_MANAGER_SRC)
 	@echo $(DATA_MANAGER_OBJ)
+	@echo $(RPA_SRC_DIR)
+	@echo $(RPA_SRC)
+	@echo $(RPA_OBJ)
 #	@echo $(OBJ)
 #	@echo $(addprefix ./build/, $(notdir $(patsubst %.cpp, %.o, $(SRC))))
 
