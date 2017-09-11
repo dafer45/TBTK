@@ -172,14 +172,12 @@ vector<complex<double>> ZFactorCalculator::calculateZFactor(
 			orbital1 < numOrbitals;
 			orbital1++
 		){
-			Timer::tick();
 			zFactor[numOrbitals*orbital1 + orbital0] = -imag(
 				selfEnergyCalculator.calculateSelfEnergy(
 					k,
 					{(int)orbital0, (int)orbital1}
 				).at(0)
 			)/(M_PI*kT);
-			Timer::tock();
 		}
 	}
 	for(unsigned int n = 0; n < numOrbitals; n++)
