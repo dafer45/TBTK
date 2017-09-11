@@ -88,6 +88,9 @@ public:
 	/** Set Jp. */
 	void setJp(std::complex<double> Jp);
 
+	/** Precompute susceptibilities. */
+	void precomputeSusceptibilities(unsigned int numWorkers = 128);
+
 	/** Save susceptibilities. */
 	void saveSusceptibilities(const std::string &filename) const;
 
@@ -237,6 +240,12 @@ inline void SelfEnergyCalculator::setJp(std::complex<double> Jp){
 	selfEnergyTree.clear();
 	selfEnergyVertexTree.clear();
 	interactionAmplitudesAreGenerated = false;
+}
+
+inline void SelfEnergyCalculator::precomputeSusceptibilities(
+	unsigned int numWorkers
+){
+	susceptibilityCalculator.precompute(numWorkers);
 }
 
 inline void SelfEnergyCalculator::saveSusceptibilities(
