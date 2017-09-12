@@ -50,7 +50,11 @@ Plotter::Plotter(){
 Plotter::~Plotter(){
 }
 
-void Plotter::plot(const vector<double> &axis, const vector<double> &data){
+void Plotter::plot(
+	const vector<double> &axis,
+	const vector<double> &data,
+	const Decoration &decoration
+){
 	TBTKAssert(
 		axis.size() == data.size(),
 		"Plotter::plot()",
@@ -59,13 +63,14 @@ void Plotter::plot(const vector<double> &axis, const vector<double> &data){
 		""
 	);
 
-/*	const unsigned int WIDTH = 600;
-	const unsigned int HEIGHT = 400;*/
-
 	if(!hold)
 		dataStorage.clear();
 
-	dataStorage.push_back(make_tuple(axis, data));
+	Decoration modifiedDecoration = decoration;
+	if(decoration.color.size() != 3)
+		modifiedDecoration.color = {0, 0, 0};
+
+	dataStorage.push_back(make_tuple(axis, data, modifiedDecoration));
 
 	if(autoScaleX){
 		minX = get<0>(dataStorage.at(0)).at(0);
@@ -110,58 +115,101 @@ void Plotter::plot(const vector<double> &axis, const vector<double> &data){
 	for(unsigned int n = 0; n < dataStorage.size(); n++){
 		const std::vector<double> axis = get<0>(dataStorage.at(n));
 		const std::vector<double> data = get<1>(dataStorage.at(n));
-		for(unsigned int c = 1; c < data.size(); c++){
-			double x0 = axis.at(c-1);
-			double y0 = data.at(c-1);
-			double x1 = axis.at(c);
-			double y1 = data.at(c);
+		Decoration &decoration = get<2>(dataStorage.at(n));
+		Scalar color(
+			decoration.color[2],
+			decoration.color[1],
+			decoration.color[0]
+		);
 
-			//Clip lines
-			if(x1 < x0){
-				double temp = x0;
-				x0 = x1;
-				x1 = temp;
-				temp = y0;
-				y0 = y1;
-				y1 = temp;
-			}
-			if(x0 < minX && x1 < minX)
-				continue;
-			if(x0 > maxX && x1 > maxX)
-				continue;
-			if(x0 < minX){
-				if(x1 - x0 != 0)
-					y0 += (minX - x0)*(y1 - y0)/(x1 - x0);
-				x0 = minX;
-			}
-			if(x1 > maxX){
-				if(x1 - x0 != 0)
-					y1 -= (x1 - maxX)*(y1 - y0)/(x1 - x0);
-				x1 = maxX;
-			}
-			if(y0 < minY && y1 < minY)
-				continue;
-			if(y0 > maxY && y1 > maxY)
-				continue;
-			if(y0 < minY){
-				if(y1 - y0 != 0)
-					x0 += (minY - y0)*(x1 - x0)/(y1 - y0);
-				y0 = minY;
-			}
-			if(y1 > maxY){
-				if(y1 - y0 != 0)
-					x1 -= (y1 - maxY)*(x1 - x0)/(y1 - y0);
-				y1 = maxY;
-			}
+		switch(decoration.lineStyle){
+		case Decoration::LineStyle::Line:
+			for(unsigned int c = 1; c < data.size(); c++){
+				double x0 = axis.at(c-1);
+				double y0 = data.at(c-1);
+				double x1 = axis.at(c);
+				double y1 = data.at(c);
 
-			//Draw line
-			line(
-				canvas,
-				getCVPoint(x0, y0),
-				getCVPoint(x1, y1),
-				Scalar(0, 0, 0),
-				1,
-				CV_AA
+				//Clip lines
+				if(x1 < x0){
+					double temp = x0;
+					x0 = x1;
+					x1 = temp;
+					temp = y0;
+					y0 = y1;
+					y1 = temp;
+				}
+				if(x0 < minX && x1 < minX)
+					continue;
+				if(x0 > maxX && x1 > maxX)
+					continue;
+				if(x0 < minX){
+					if(x1 - x0 != 0)
+						y0 += (minX - x0)*(y1 - y0)/(x1 - x0);
+					x0 = minX;
+				}
+				if(x1 > maxX){
+					if(x1 - x0 != 0)
+						y1 -= (x1 - maxX)*(y1 - y0)/(x1 - x0);
+					x1 = maxX;
+				}
+				if(y0 < minY && y1 < minY)
+					continue;
+				if(y0 > maxY && y1 > maxY)
+					continue;
+				if(y0 < minY){
+					if(y1 - y0 != 0)
+						x0 += (minY - y0)*(x1 - x0)/(y1 - y0);
+					y0 = minY;
+				}
+				if(y1 > maxY){
+					if(y1 - y0 != 0)
+						x1 -= (y1 - maxY)*(x1 - x0)/(y1 - y0);
+					y1 = maxY;
+				}
+
+				//Draw line
+				line(
+					canvas,
+					getCVPoint(x0, y0),
+					getCVPoint(x1, y1),
+					color,
+					1,
+					CV_AA
+				);
+			}
+			break;
+		case Decoration::LineStyle::Point:
+			for(unsigned int c = 1; c < data.size(); c++){
+				double x = axis.at(c-1);
+				double y = data.at(c-1);
+
+				//Clip points
+				if(x < minX)
+					continue;
+				if(x > maxX)
+					continue;
+				if(y < minY)
+					continue;
+				if(y > maxY)
+					continue;
+
+				//Draw line
+				circle(
+					canvas,
+					getCVPoint(x, y),
+					5.,
+					color,
+					-1,
+					CV_AA
+				);
+			}
+			break;
+		default:
+			TBTKExit(
+				"Plotter::plot()",
+				"Unknown mode.",
+				"This should never happen, contact the developer."
 			);
 		}
 	}
@@ -169,12 +217,15 @@ void Plotter::plot(const vector<double> &axis, const vector<double> &data){
 	drawAxes();
 }
 
-void Plotter::plot(const vector<double> &data){
+void Plotter::plot(
+	const vector<double> &data,
+	const Decoration &decoration
+){
 	vector<double> axis;
 	for(unsigned int n = 0; n < data.size(); n++)
 		axis.push_back(n);
 
-	plot(axis, data);
+	plot(axis, data, decoration);
 }
 
 void Plotter::plot(
@@ -221,9 +272,6 @@ void Plotter::plot(
 	maxX = data.size()-1;
 	minY = 0;
 	maxY = sizeY-1;
-
-/*	const unsigned int WIDTH = 600;
-	const unsigned int HEIGHT = 400;*/
 
 	canvas = Mat::zeros(height, width, CV_8UC3);
 	rectangle(

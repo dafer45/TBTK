@@ -82,14 +82,48 @@ public:
 	/** Get canvas. */
 	const cv::Mat& getCanvas() const;
 
+	/** Class describing how to decorate the data with line style, color,
+	 *  etc. */
+	class Decoration{
+	public:
+		/** Enum class for describingthe line style. */
+		enum class LineStyle {Line, Point};
+
+		/** Constructor. */
+		Decoration(
+			const std::vector<unsigned char> &color,
+			LineStyle lineStyle
+		);
+
+		/** Destructor. */
+		~Decoration();
+	private:
+		/** Color. */
+		std::vector<unsigned char> color;
+
+		/** Line style. */
+		LineStyle lineStyle;
+
+		/** The Plotter have direct access to Decoration members. */
+		friend class Plotter;
+	};
+
 	/** Plot data. */
 	void plot(
 		const std::vector<double> &axis,
-		const std::vector<double> &data
+		const std::vector<double> &data,
+		const Decoration &decoration = Decoration(
+			{0, 0, 0}, Decoration::LineStyle::Line
+		)
 	);
 
 	/** Plot data. */
-	void plot(const std::vector<double> &data);
+	void plot(
+		const std::vector<double> &data,
+		const Decoration &decoration = Decoration(
+			{0, 0, 0}, Decoration::LineStyle::Line
+		)
+	);
 
 	/** Plot density of states. */
 	void plot(
@@ -131,7 +165,9 @@ private:
 	bool hold;
 
 	/** Storage for ploted data. Used if holde is true. */
-	std::vector<std::tuple<std::vector<double>, std::vector<double>>> dataStorage;
+	std::vector<
+		std::tuple<std::vector<double>, std::vector<double>, Decoration>
+	> dataStorage;
 
 	/** Converts a coordinate to a cvPoint that can be used as canvas
 	 *  /coordinate. */
@@ -241,6 +277,17 @@ inline void Plotter::clear(){
 
 inline void Plotter::save(std::string filename) const{
 	imwrite(filename, canvas);
+}
+
+inline Plotter::Decoration::Decoration(
+	const std::vector<unsigned char> &color,
+	LineStyle lineStyle
+){
+	this->color = color;
+	this->lineStyle = lineStyle;
+}
+
+inline Plotter::Decoration::~Decoration(){
 }
 
 };	//End namespace TBTK
