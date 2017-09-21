@@ -172,16 +172,22 @@ vector<complex<double>> ZFactorCalculator::calculateZFactor(
 			orbital1 < numOrbitals;
 			orbital1++
 		){
-			zFactor[numOrbitals*orbital1 + orbital0] = -imag(
+/*			zFactor[numOrbitals*orbital1 + orbital0] = -imag(
 				selfEnergyCalculator.calculateSelfEnergy(
 					k,
 					{(int)orbital0, (int)orbital1}
 				).at(0)
-			)/(M_PI*kT);
+			)/(M_PI*kT);*/
+			zFactor[numOrbitals*orbital1 + orbital0]
+				= -selfEnergyCalculator.calculateSelfEnergy(
+					k,
+					{(int)orbital0, (int)orbital1}
+				).at(0)/(M_PI*kT);
 		}
 	}
-	for(unsigned int n = 0; n < numOrbitals; n++)
-		zFactor[numOrbitals*n + n] += 1.;
+
+/*	for(unsigned int n = 0; n < numOrbitals; n++)
+		zFactor[numOrbitals*n + n] += 1.;*/
 
 	complex<double> *eigenVectors = new complex<double>[
 		numOrbitals*numOrbitals
@@ -214,6 +220,13 @@ vector<complex<double>> ZFactorCalculator::calculateZFactor(
 		zFactor,
 		numOrbitals
 	);
+
+	for(unsigned int n = 0; n < numOrbitals*numOrbitals; n++)
+		zFactor[n] = imag(zFactor[n]);
+
+	for(unsigned int n = 0; n < numOrbitals; n++)
+		zFactor[numOrbitals*n + n] += 1.;
+
 	invertMatrix(zFactor, numOrbitals);
 
 	vector<complex<double>> zFactors;

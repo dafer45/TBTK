@@ -1161,7 +1161,7 @@ void SusceptibilityCalculator::generateInteractionAmplitudes(){
 	for(int a = 0; a < (int)numOrbitals; a++){
 		interactionAmplitudesCharge.push_back(
 			InteractionAmplitude(
-				U,
+				2.*U,
 				{{a},	{a}},
 				{{a},	{a}}
 			)
@@ -1173,21 +1173,21 @@ void SusceptibilityCalculator::generateInteractionAmplitudes(){
 
 			interactionAmplitudesCharge.push_back(
 				InteractionAmplitude(
-					2.*Up - J,
+					4.*Up - 2.*J,
 					{{a},	{b}},
 					{{b},	{a}}
 				)
 			);
 			interactionAmplitudesCharge.push_back(
 				InteractionAmplitude(
-					-Up + 2.*J,
+					-2.*Up + 4.*J,
 					{{a},	{b}},
 					{{a},	{b}}
 				)
 			);
 			interactionAmplitudesCharge.push_back(
 				InteractionAmplitude(
-					Jp,
+					2.*Jp,
 					{{a},	{a}},
 					{{b},	{b}}
 				)
@@ -1199,7 +1199,7 @@ void SusceptibilityCalculator::generateInteractionAmplitudes(){
 	for(int a = 0; a < (int)numOrbitals; a++){
 		interactionAmplitudesSpin.push_back(
 			InteractionAmplitude(
-				-U,
+				-2.*U,
 				{{a},	{a}},
 				{{a},	{a}}
 			)
@@ -1211,21 +1211,21 @@ void SusceptibilityCalculator::generateInteractionAmplitudes(){
 
 			interactionAmplitudesSpin.push_back(
 				InteractionAmplitude(
-					-J,
+					-2.*J,
 					{{a},	{b}},
 					{{b},	{a}}
 				)
 			);
 			interactionAmplitudesSpin.push_back(
 				InteractionAmplitude(
-					-Up,
+					-2.*Up,
 					{{a},	{b}},
 					{{a},	{b}}
 				)
 			);
 			interactionAmplitudesSpin.push_back(
 				InteractionAmplitude(
-					-Jp,
+					-2.*Jp,
 					{{a},	{a}},
 					{{b},	{b}}
 				)

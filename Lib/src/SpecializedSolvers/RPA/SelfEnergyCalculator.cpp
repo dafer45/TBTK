@@ -442,8 +442,10 @@ vector<complex<double>> SelfEnergyCalculator::calculateSelfEnergyVertex(
 		int a1_i = incommingAmplitude.getAnnihilationOperatorIndex(1).at(0);
 
 		if(
+/*			a1_i != orbitalIndices.at(3)
+			|| c0_i != orbitalIndices.at(0)*/
 			a1_i != orbitalIndices.at(3)
-			|| c0_i != orbitalIndices.at(0)
+			|| c0_i != orbitalIndices.at(2)
 			|| abs(amplitude_i) < 1e-10
 		){
 			continue;
@@ -458,7 +460,9 @@ vector<complex<double>> SelfEnergyCalculator::calculateSelfEnergyVertex(
 			int a1_o = outgoingAmplitude.getAnnihilationOperatorIndex(1).at(0);
 
 			if(
-				a0_o != orbitalIndices.at(2)
+/*				a0_o != orbitalIndices.at(2)
+				|| c1_o != orbitalIndices.at(1)*/
+				a0_o != orbitalIndices.at(0)
 				|| c1_o != orbitalIndices.at(1)
 				|| abs(amplitude_o) < 1e-10
 			){
@@ -467,11 +471,13 @@ vector<complex<double>> SelfEnergyCalculator::calculateSelfEnergyVertex(
 
 			vector<complex<double>> chargeSusceptibility = susceptibilityCalculator.calculateChargeRPASusceptibility(
 				kDual,
-				{c1_i, a0_i, c0_o, a1_o}
+//				{c1_i, a0_i, c0_o, a1_o}
+				{c0_o, a1_o, c1_i, a0_i}
 			);
 			vector<complex<double>> spinSusceptibility = susceptibilityCalculator.calculateSpinRPASusceptibility(
 				kDual,
-				{c1_i, a0_i, c0_o, a1_o}
+//				{c1_i, a0_i, c0_o, a1_o}
+				{c0_o, a1_o, c1_i, a0_i}
 			);
 			for(
 				unsigned int n = 0;
@@ -481,7 +487,7 @@ vector<complex<double>> SelfEnergyCalculator::calculateSelfEnergyVertex(
 				selfEnergyVertex.at(n) += amplitude_i*amplitude_o*(
 					chargeSusceptibility.at(n)
 					+ spinSusceptibility.at(n)
-				)/2.;
+				)/4.;
 			}
 		}
 	}
@@ -496,8 +502,10 @@ vector<complex<double>> SelfEnergyCalculator::calculateSelfEnergyVertex(
 		int a1_i = incommingAmplitude.getAnnihilationOperatorIndex(1).at(0);
 
 		if(
+/*			a1_i != orbitalIndices.at(3)
+			|| c0_i != orbitalIndices.at(0)*/
 			a1_i != orbitalIndices.at(3)
-			|| c0_i != orbitalIndices.at(0)
+			|| c0_i != orbitalIndices.at(2)
 			|| abs(amplitude_i) < 1e-10
 		){
 			continue;
@@ -512,7 +520,9 @@ vector<complex<double>> SelfEnergyCalculator::calculateSelfEnergyVertex(
 			int a1_o = outgoingAmplitude.getAnnihilationOperatorIndex(1).at(0);
 
 			if(
-				a0_o != orbitalIndices.at(2)
+/*				a0_o != orbitalIndices.at(2)
+				|| c1_o != orbitalIndices.at(1)*/
+				a0_o != orbitalIndices.at(0)
 				|| c1_o != orbitalIndices.at(1)
 				|| abs(amplitude_o) < 1e-10
 			){
@@ -521,11 +531,13 @@ vector<complex<double>> SelfEnergyCalculator::calculateSelfEnergyVertex(
 
 			vector<complex<double>> chargeSusceptibility = susceptibilityCalculator.calculateChargeRPASusceptibility(
 				kDual,
-				{c1_i, a0_i, c0_o, a1_o}
+//				{c1_i, a0_i, c0_o, a1_o}
+				{c0_o, a1_o, c1_i, a0_i}
 			);
 			vector<complex<double>> spinSusceptibility = susceptibilityCalculator.calculateSpinRPASusceptibility(
 				kDual,
-				{c1_i, a0_i, c0_o, a1_o}
+//				{c1_i, a0_i, c0_o, a1_o}
+				{c0_o, a1_o, c1_i, a0_i}
 			);
 			for(
 				unsigned int n = 0;
@@ -535,7 +547,7 @@ vector<complex<double>> SelfEnergyCalculator::calculateSelfEnergyVertex(
 				selfEnergyVertex.at(n) += amplitude_i*amplitude_o*(
 					chargeSusceptibility.at(n)
 					+ spinSusceptibility.at(n)
-				)/2.;
+				)/4.;
 			}
 		}
 	}
@@ -550,8 +562,10 @@ vector<complex<double>> SelfEnergyCalculator::calculateSelfEnergyVertex(
 		int a1_i = incommingAmplitude.getAnnihilationOperatorIndex(1).at(0);
 
 		if(
+/*			a1_i != orbitalIndices.at(3)
+			|| c0_i != orbitalIndices.at(0)*/
 			a1_i != orbitalIndices.at(3)
-			|| c0_i != orbitalIndices.at(0)
+			|| c0_i != orbitalIndices.at(2)
 			|| abs(amplitude_i) < 1e-10
 		){
 			continue;
@@ -566,7 +580,9 @@ vector<complex<double>> SelfEnergyCalculator::calculateSelfEnergyVertex(
 			int a1_o = outgoingAmplitude.getAnnihilationOperatorIndex(1).at(0);
 
 			if(
-				a0_o != orbitalIndices.at(2)
+/*				a0_o != orbitalIndices.at(2)
+				|| c1_o != orbitalIndices.at(1)*/
+				a0_o != orbitalIndices.at(0)
 				|| c1_o != orbitalIndices.at(1)
 				|| abs(amplitude_o) < 1e-10
 			){
@@ -575,11 +591,13 @@ vector<complex<double>> SelfEnergyCalculator::calculateSelfEnergyVertex(
 
 			vector<complex<double>> chargeSusceptibility = susceptibilityCalculator.calculateChargeRPASusceptibility(
 				kDual,
-				{c1_i, a0_i, c0_o, a1_o}
+//				{c1_i, a0_i, c0_o, a1_o}
+				{c0_o, a1_o, c1_i, a0_i}
 			);
 			vector<complex<double>> spinSusceptibility = susceptibilityCalculator.calculateSpinRPASusceptibility(
 				kDual,
-				{c1_i, a0_i, c0_o, a1_o}
+//				{c1_i, a0_i, c0_o, a1_o}
+				{c0_o, a1_o, c1_i, a0_i}
 			);
 			for(
 				unsigned int n = 0;
@@ -589,7 +607,7 @@ vector<complex<double>> SelfEnergyCalculator::calculateSelfEnergyVertex(
 				selfEnergyVertex.at(n) += amplitude_i*amplitude_o*(
 					chargeSusceptibility.at(n)
 					- spinSusceptibility.at(n)
-				)/2.;
+				)/4.;
 			}
 		}
 	}
@@ -604,8 +622,10 @@ vector<complex<double>> SelfEnergyCalculator::calculateSelfEnergyVertex(
 		int a1_i = incommingAmplitude.getAnnihilationOperatorIndex(1).at(0);
 
 		if(
+/*			a1_i != orbitalIndices.at(3)
+			|| c0_i != orbitalIndices.at(0)*/
 			a1_i != orbitalIndices.at(3)
-			|| c0_i != orbitalIndices.at(0)
+			|| c0_i != orbitalIndices.at(2)
 			|| abs(amplitude_i) < 1e-10
 		){
 			continue;
@@ -620,7 +640,9 @@ vector<complex<double>> SelfEnergyCalculator::calculateSelfEnergyVertex(
 			int a1_o = outgoingAmplitude.getAnnihilationOperatorIndex(1).at(0);
 
 			if(
-				a0_o != orbitalIndices.at(2)
+/*				a0_o != orbitalIndices.at(2)
+				|| c1_o != orbitalIndices.at(1)*/
+				a0_o != orbitalIndices.at(0)
 				|| c1_o != orbitalIndices.at(1)
 				|| abs(amplitude_o) < 1e-10
 			){
@@ -629,11 +651,13 @@ vector<complex<double>> SelfEnergyCalculator::calculateSelfEnergyVertex(
 
 			vector<complex<double>> chargeSusceptibility = susceptibilityCalculator.calculateChargeRPASusceptibility(
 				kDual,
-				{c1_i, a0_i, c0_o, a1_o}
+//				{c1_i, a0_i, c0_o, a1_o}
+				{c0_o, a1_o, c1_i, a0_i}
 			);
 			vector<complex<double>> spinSusceptibility = susceptibilityCalculator.calculateSpinRPASusceptibility(
 				kDual,
-				{c1_i, a0_i, c0_o, a1_o}
+//				{c1_i, a0_i, c0_o, a1_o}
+				{c0_o, a1_o, c1_i, a0_i}
 			);
 			for(
 				unsigned int n = 0;
@@ -643,7 +667,7 @@ vector<complex<double>> SelfEnergyCalculator::calculateSelfEnergyVertex(
 				selfEnergyVertex.at(n) += amplitude_i*amplitude_o*(
 					chargeSusceptibility.at(n)
 					- spinSusceptibility.at(n)
-				)/2.;
+				)/4.;
 			}
 		}
 	}
@@ -658,8 +682,10 @@ vector<complex<double>> SelfEnergyCalculator::calculateSelfEnergyVertex(
 		int a1_i = incommingAmplitude.getAnnihilationOperatorIndex(1).at(0);
 
 		if(
+/*			a1_i != orbitalIndices.at(3)
+			|| c0_i != orbitalIndices.at(0)*/
 			a1_i != orbitalIndices.at(3)
-			|| c0_i != orbitalIndices.at(0)
+			|| c0_i != orbitalIndices.at(2)
 			|| abs(amplitude_i) < 1e-10
 		){
 			continue;
@@ -674,7 +700,9 @@ vector<complex<double>> SelfEnergyCalculator::calculateSelfEnergyVertex(
 			int a1_o = outgoingAmplitude.getAnnihilationOperatorIndex(1).at(0);
 
 			if(
-				a0_o != orbitalIndices.at(2)
+/*				a0_o != orbitalIndices.at(2)
+				|| c1_o != orbitalIndices.at(1)*/
+				a0_o != orbitalIndices.at(0)
 				|| c1_o != orbitalIndices.at(1)
 				|| abs(amplitude_o) < 1e-10
 			){
@@ -683,14 +711,15 @@ vector<complex<double>> SelfEnergyCalculator::calculateSelfEnergyVertex(
 
 			vector<complex<double>> spinSusceptibility = susceptibilityCalculator.calculateSpinRPASusceptibility(
 				kDual,
-				{c1_i, a0_i, c0_o, a1_o}
+//				{c1_i, a0_i, c0_o, a1_o}
+				{c0_o, a1_o, c1_i, a0_i}
 			);
 			for(
 				unsigned int n = 0;
 				n < numSummationEnergies;
 				n++
 			){
-				selfEnergyVertex.at(n) += amplitude_i*amplitude_o*spinSusceptibility.at(n);
+				selfEnergyVertex.at(n) += amplitude_i*amplitude_o*spinSusceptibility.at(n)/2.;
 			}
 		}
 	}
@@ -800,10 +829,14 @@ void SelfEnergyCalculator::selfEnergyMainLoop(
 				vector<complex<double>> selfEnergyVertex = calculateSelfEnergyVertex(
 					mesh.at(n),
 					{
-						(int)propagatorStart,
+/*						(int)propagatorStart,
 						orbitalIndices.at(1),
 						(int)propagatorEnd,
-						orbitalIndices.at(0)
+						orbitalIndices.at(0)*/
+						(int)propagatorEnd,
+						orbitalIndices.at(0),
+						(int)propagatorStart,
+						orbitalIndices.at(1)
 					}
 				);
 
