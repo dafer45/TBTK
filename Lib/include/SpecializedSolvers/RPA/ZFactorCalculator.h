@@ -27,7 +27,7 @@
 #include "BlockDiagonalizationSolver.h"
 #include "BPropertyExtractor.h"
 #include "IndexedDataTree.h"
-#include "SelfEnergyCalculator.h"
+#include "SlicedSelfEnergyCalculator.h"
 
 namespace TBTK{
 
@@ -77,7 +77,7 @@ public:
 	void loadSusceptibilities(const std::string &filename);
 private:
 	/** SusceptibilityCalculator. */
-	SelfEnergyCalculator selfEnergyCalculator;
+	SlicedSelfEnergyCalculator selfEnergyCalculator;
 
 	/** Number of summationEnergies. */
 	unsigned int numSummationEnergies;

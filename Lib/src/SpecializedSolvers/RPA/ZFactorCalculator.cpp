@@ -53,7 +53,7 @@ ZFactorCalculator::ZFactorCalculator(
 
 	//Setup self-energy energies
 	selfEnergyCalculator.setSelfEnergyEnergyType(
-		SelfEnergyCalculator::EnergyType::Imaginary
+		SlicedSelfEnergyCalculator::EnergyType::Imaginary
 	);
 	selfEnergyCalculator.setSelfEnergyEnergies({i*M_PI*kT});
 }
