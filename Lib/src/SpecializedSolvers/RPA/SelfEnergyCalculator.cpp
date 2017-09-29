@@ -20,7 +20,7 @@
 
 #include "Functions.h"
 #include "InteractionAmplitude.h"
-#include "RPA/SlicedSelfEnergyCalculator.h"
+#include "RPA/SelfEnergyCalculator.h"
 #include "UnitHandler.h"
 
 #include <complex>
@@ -32,7 +32,7 @@ const complex<double> i(0, 1);
 
 namespace TBTK{
 
-SlicedSelfEnergyCalculator::SlicedSelfEnergyCalculator(
+SelfEnergyCalculator::SelfEnergyCalculator(
 	const MomentumSpaceContext &momentumSpaceContext
 ) : susceptibilityCalculator(momentumSpaceContext){
 	isInitialized = false;
@@ -47,17 +47,17 @@ SlicedSelfEnergyCalculator::SlicedSelfEnergyCalculator(
 	interactionAmplitudesAreGenerated = false;
 }
 
-SlicedSelfEnergyCalculator::~SlicedSelfEnergyCalculator(){
+SelfEnergyCalculator::~SelfEnergyCalculator(){
 	if(kMinusQLookupTable != nullptr)
 		delete [] kMinusQLookupTable;
 }
 
-void SlicedSelfEnergyCalculator::init(){
+void SelfEnergyCalculator::init(){
 	TBTKAssert(
 		numSummationEnergies%2 == 1,
-		"SlicedSelfEnergyCalculator::int()",
+		"SelfEnergyCalculator::int()",
 		"The number of summation energies must be an odd number.",
-		"Use SlicedSelfEnergyCalculator::setNumSummationEnergies() to set"
+		"Use SelfEnergyCalculator::setNumSummationEnergies() to set"
 		<< " the number of summation energies."
 	);
 
@@ -73,34 +73,13 @@ void SlicedSelfEnergyCalculator::init(){
 	);
 	double kT = UnitHandler::getK_BB()*temperature;
 
-	TBTKAssert(
-		numSlices <= numSummationEnergies/2+1,
-		"SlicedSelfEnergyCalculator::init()",
-		"Invalid slicing.",
-		"Use SlicedSelfEnergyCalculator::setSummationEnergies with the"
-		<< " parameter 'numSlices' smaller or equal to"
-		<< " numSummationEnergies/2+1."
-	);
-	TBTKAssert(
-		slice < numSlices,
-		"SlicedSelfEnergyCalculator::init()",
-		"Invalid slicing.",
-		"Use SlicedSelfEnergyCalculator::setSummationEnergies with the"
-		<< " parameter 'slice' smaller than 'numSlices'."
-	);
-
 	//Initialize summation energies
 	for(
 		int n = -(int)numSummationEnergies/2;
 		n <= (int)numSummationEnergies/2;
 		n++
 	){
-		unsigned int currentSlice = (
-			numSlices*abs(n)
-		)/(numSummationEnergies/2+1);
-
-		if(currentSlice == slice)
-			summationEnergies.push_back(i*M_PI*2.*(double)(n)*kT);
+		summationEnergies.push_back(i*M_PI*2.*(double)(n)*kT);
 	}
 	susceptibilityCalculator.setSusceptibilityEnergies(summationEnergies);
 	susceptibilityCalculator.setSusceptibilityEnergyType(
@@ -115,7 +94,7 @@ void SlicedSelfEnergyCalculator::init(){
 	isInitialized = true;
 }
 
-void SlicedSelfEnergyCalculator::generateKMinusQLookupTable(){
+void SelfEnergyCalculator::generateKMinusQLookupTable(){
 	if(kMinusQLookupTable != nullptr)
 		return;
 
@@ -144,7 +123,7 @@ void SlicedSelfEnergyCalculator::generateKMinusQLookupTable(){
 		while(fin >> value){
 			TBTKAssert(
 				counter < mesh.size()*mesh.size(),
-				"SlicedSelfEnergyCalculator::generateKMinusQLookupTable()",
+				"SelfEnergyCalculator::generateKMinusQLookupTable()",
 				"Found cache file '" << cacheName << "',"
 				<< " but the cache is too large.",
 				"Clear the cache to recalculate"
@@ -157,7 +136,7 @@ void SlicedSelfEnergyCalculator::generateKMinusQLookupTable(){
 
 		TBTKAssert(
 			counter == mesh.size()*mesh.size(),
-			"SlicedSelfEnergyCalculator::generateKMinusQLookupTable()",
+			"SelfEnergyCalculator::generateKMinusQLookupTable()",
 			"Found cache file '" << cacheName << "',"
 			<< " but the cache is too small.",
 			"Clear the cache to recalculate kMinusQLookupTable."
@@ -206,7 +185,7 @@ void SlicedSelfEnergyCalculator::generateKMinusQLookupTable(){
 }
 
 template<>
-inline int SlicedSelfEnergyCalculator::getKMinusQLinearIndex<false>(
+inline int SelfEnergyCalculator::getKMinusQLinearIndex<false>(
 	unsigned int meshIndex,
 	const vector<double> &k,
 	int kLinearIndex
@@ -223,7 +202,7 @@ inline int SlicedSelfEnergyCalculator::getKMinusQLinearIndex<false>(
 }
 
 template<>
-inline int SlicedSelfEnergyCalculator::getKMinusQLinearIndex<true>(
+inline int SelfEnergyCalculator::getKMinusQLinearIndex<true>(
 	unsigned int meshIndex,
 	const vector<double> &k,
 	int kLinearIndex
@@ -256,7 +235,7 @@ extern "C" {
 	);
 }
 
-void SlicedSelfEnergyCalculator::invertMatrix(
+void SelfEnergyCalculator::invertMatrix(
 	complex<double> *matrix,
 	unsigned int dimensions
 ){
@@ -275,7 +254,7 @@ void SlicedSelfEnergyCalculator::invertMatrix(
 	delete [] work;
 }
 
-void SlicedSelfEnergyCalculator::multiplyMatrices(
+void SelfEnergyCalculator::multiplyMatrices(
 	complex<double> *matrix1,
 	complex<double> *matrix2,
 	complex<double> *result,
@@ -290,7 +269,7 @@ void SlicedSelfEnergyCalculator::multiplyMatrices(
 				result[dimensions*col + row] += matrix1[dimensions*n + row]*matrix2[dimensions*col + n];
 }
 
-void SlicedSelfEnergyCalculator::printMatrix(complex<double> *matrix, unsigned int dimension){
+void SelfEnergyCalculator::printMatrix(complex<double> *matrix, unsigned int dimension){
 	for(unsigned int r = 0; r < dimension; r++){
 		for(unsigned int c = 0; c < dimension; c++){
 			Streams::out << setw(20) << matrix[dimension*c + r];
@@ -300,7 +279,7 @@ void SlicedSelfEnergyCalculator::printMatrix(complex<double> *matrix, unsigned i
 	Streams::out << "\n";
 }
 
-void SlicedSelfEnergyCalculator::generateInteractionAmplitudes(){
+void SelfEnergyCalculator::generateInteractionAmplitudes(){
 	if(interactionAmplitudesAreGenerated)
 		return;
 
@@ -395,15 +374,15 @@ void SlicedSelfEnergyCalculator::generateInteractionAmplitudes(){
 	interactionAmplitudesAreGenerated = true;
 }
 
-vector<complex<double>> SlicedSelfEnergyCalculator::calculateSelfEnergyVertex(
+vector<complex<double>> SelfEnergyCalculator::calculateSelfEnergyVertex(
 	const vector<double> &k,
 	const vector<int> &orbitalIndices
 ){
 	TBTKAssert(
 		isInitialized,
-		"SlicedSelfEnergyCalculator::calculateSelfEnergyVertex()",
+		"SelfEnergyCalculator::calculateSelfEnergyVertex()",
 		"SelfEnergyCalculator not yet initialized.",
-		"Use SlicedSelfEnergyCalculator::init() to initialize the"
+		"Use SelfEnergyCalculator::init() to initialize the"
 		<< " SelfEnergyCalculator."
 	);
 	TBTKAssert(
@@ -753,15 +732,15 @@ vector<complex<double>> SlicedSelfEnergyCalculator::calculateSelfEnergyVertex(
 	return selfEnergyVertex;
 }
 
-vector<complex<double>> SlicedSelfEnergyCalculator::calculateSelfEnergy(
+vector<complex<double>> SelfEnergyCalculator::calculateSelfEnergy(
 	const vector<double> &k,
 	const vector<int> &orbitalIndices
 ){
 	TBTKAssert(
 		isInitialized,
-		"SlicedSelfEnergyCalculator::calculateSelfEnergy()",
+		"SelfEnergyCalculator::calculateSelfEnergy()",
 		"SelfEnergyCalculator not yet initialized.",
-		"Use SlicedSelfEnergyCalculator::init() to initialize the"
+		"Use SelfEnergyCalculator::init() to initialize the"
 		<< " SelfEnergyCalculator."
 	);
 	TBTKAssert(
@@ -808,7 +787,7 @@ vector<complex<double>> SlicedSelfEnergyCalculator::calculateSelfEnergy(
 	return result;
 }
 
-void SlicedSelfEnergyCalculator::selfEnergyMainLoop(
+void SelfEnergyCalculator::selfEnergyMainLoop(
 	const vector<double> &k,
 	const vector<int> &orbitalIndices,
 	vector<complex<double>> &result
