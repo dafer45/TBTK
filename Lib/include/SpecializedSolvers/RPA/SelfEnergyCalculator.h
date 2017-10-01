@@ -34,7 +34,10 @@ namespace TBTK{
 class SelfEnergyCalculator{
 public:
 	/** Constructor. */
-	SelfEnergyCalculator(const MomentumSpaceContext &momentumSpaceContext);
+	SelfEnergyCalculator(
+		const MomentumSpaceContext &momentumSpaceContext,
+		unsigned int numWorkers
+	);
 
 	/** Destructor. */
 	~SelfEnergyCalculator();
@@ -73,7 +76,8 @@ public:
 	/** Calculate self-energy vertex. */
 	std::vector<std::complex<double>> calculateSelfEnergyVertex(
 		const std::vector<double> &k,
-		const std::vector<int> &orbitalIndices
+		const std::vector<int> &orbitalIndices,
+		unsigned int worker
 	);
 
 	/** Set U. */
@@ -134,7 +138,7 @@ private:
 	IndexedDataTree<SerializeableVector<std::complex<double>>> selfEnergyTree;
 
 	/** IndexedDataTree storing the self-energy vertex. */
-	IndexedDataTree<SerializeableVector<std::complex<double>>> selfEnergyVertexTree;
+	SerializeableVector<IndexedDataTree<SerializeableVector<std::complex<double>>>> selfEnergyVertexTrees;
 
 	/** Invert matix. */
 	void invertMatrix(
@@ -207,7 +211,9 @@ inline void SelfEnergyCalculator::setSelfEnergyEnergies(
 ){
 	this->selfEnergyEnergies = selfEnergyEnergies;
 	selfEnergyTree.clear();
-	selfEnergyVertexTree.clear();
+
+	for(unsigned int n = 0; n < selfEnergyVertexTrees.size(); n++)
+		selfEnergyVertexTrees[n].clear();
 }
 
 inline void SelfEnergyCalculator::setU(std::complex<double> U){
@@ -217,7 +223,10 @@ inline void SelfEnergyCalculator::setU(std::complex<double> U){
 		susceptibilityCalculators[n]->setU(U);
 
 	selfEnergyTree.clear();
-	selfEnergyVertexTree.clear();
+
+	for(unsigned int n = 0; n < selfEnergyVertexTrees.size(); n++)
+		selfEnergyVertexTrees[n].clear();
+
 	interactionAmplitudesAreGenerated = false;
 }
 
@@ -228,7 +237,10 @@ inline void SelfEnergyCalculator::setUp(std::complex<double> Up){
 		susceptibilityCalculators[n]->setUp(Up);
 
 	selfEnergyTree.clear();
-	selfEnergyVertexTree.clear();
+
+	for(unsigned int n = 0; n < selfEnergyVertexTrees.size(); n++)
+		selfEnergyVertexTrees[n].clear();
+
 	interactionAmplitudesAreGenerated = false;
 }
 
@@ -239,7 +251,10 @@ inline void SelfEnergyCalculator::setJ(std::complex<double> J){
 		susceptibilityCalculators[n]->setJ(J);
 
 	selfEnergyTree.clear();
-	selfEnergyVertexTree.clear();
+
+	for(unsigned int n = 0; n < selfEnergyVertexTrees.size(); n++)
+		selfEnergyVertexTrees[n].clear();
+
 	interactionAmplitudesAreGenerated = false;
 }
 
@@ -250,7 +265,10 @@ inline void SelfEnergyCalculator::setJp(std::complex<double> Jp){
 		susceptibilityCalculators[n]->setJp(Jp);
 
 	selfEnergyTree.clear();
-	selfEnergyVertexTree.clear();
+
+	for(unsigned int n = 0; n < selfEnergyVertexTrees.size(); n++)
+		selfEnergyVertexTrees[n].clear();
+
 	interactionAmplitudesAreGenerated = false;
 }
 
@@ -263,6 +281,7 @@ inline void SelfEnergyCalculator::setJp(std::complex<double> Jp){
 inline void SelfEnergyCalculator::saveSusceptibilities(
 	const std::string &filename
 ) const{
+	unsigned int lastPos = filename.find_last_of('/');
 	std::string path;
 	std::string fname = filename;
 	if(lastPos != std::string::npos){
@@ -280,6 +299,7 @@ inline void SelfEnergyCalculator::saveSusceptibilities(
 inline void SelfEnergyCalculator::loadSusceptibilities(
 	const std::string &filename
 ){
+	unsigned int lastPos = filename.find_last_of('/');
 	std::string path;
 	std::string fname = filename;
 	if(lastPos != std::string::npos){

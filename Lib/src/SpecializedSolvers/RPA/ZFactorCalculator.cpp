@@ -33,7 +33,7 @@ namespace TBTK{
 
 ZFactorCalculator::ZFactorCalculator(
 	const MomentumSpaceContext &momentumSpaceContext
-) : selfEnergyCalculator(momentumSpaceContext){
+) : selfEnergyCalculator(momentumSpaceContext, 8){
 	isInitialized = false;
 
 	numSummationEnergies = 0;
@@ -323,7 +323,8 @@ vector<complex<double>> ZFactorCalculator::calculateZFactor2(
 								(int)incommingIndex,
 								(int)propagatorEnd,
 								(int)outgoingIndex
-							}
+							},
+							0
 						);
 
 						for(

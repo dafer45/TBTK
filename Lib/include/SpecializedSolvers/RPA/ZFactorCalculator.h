@@ -68,7 +68,7 @@ public:
 	void setJp(std::complex<double> Jp);
 
 	/** Precompute susceptibilities. */
-	void precomputeSusceptibilities(unsigned int numWorkers = 128);
+//	void precomputeSusceptibilities(unsigned int numWorkers = 128);
 
 	/** Save susceptibilities. */
 	void saveSusceptibilities(const std::string &filename) const;
@@ -135,11 +135,11 @@ inline void ZFactorCalculator::setJp(std::complex<double> Jp){
 	selfEnergyCalculator.setJp(Jp);
 }
 
-inline void ZFactorCalculator::precomputeSusceptibilities(
+/*inline void ZFactorCalculator::precomputeSusceptibilities(
 	unsigned int numWorkers
 ){
 	selfEnergyCalculator.precomputeSusceptibilities(numWorkers);
-}
+}*/
 
 inline void ZFactorCalculator::saveSusceptibilities(
 	const std::string &filename
