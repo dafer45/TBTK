@@ -263,13 +263,35 @@ inline void SelfEnergyCalculator::setJp(std::complex<double> Jp){
 inline void SelfEnergyCalculator::saveSusceptibilities(
 	const std::string &filename
 ) const{
-	susceptibilityCalculator.saveSusceptibilities(filename);
+	std::string path;
+	std::string fname = filename;
+	if(lastPos != std::string::npos){
+		path = filename.substr(0, lastPos+1);
+		fname = filename.substr(lastPos+1, filename.size());
+	}
+
+	for(unsigned int n = 0; n < susceptibilityCalculators.size(); n++){
+		susceptibilityCalculators[n]->saveSusceptibilities(
+                        path + "Slice" + std::to_string(n) + "_" + fname
+                );
+        }
 }
 
 inline void SelfEnergyCalculator::loadSusceptibilities(
 	const std::string &filename
 ){
-	susceptibilityCalculator.loadSusceptibilities(filename);
+	std::string path;
+	std::string fname = filename;
+	if(lastPos != std::string::npos){
+		path = filename.substr(0, lastPos+1);
+		fname = filename.substr(lastPos+1, filename.size());
+	}
+
+	for(unsigned int n = 0; n < susceptibilityCalculators.size(); n++){
+		susceptibilityCalculators[n]->loadSusceptibilities(
+                        path + "Slice" + std::to_string(n) + "_" + fname
+                );
+        }
 }
 
 };	//End of namespace TBTK
