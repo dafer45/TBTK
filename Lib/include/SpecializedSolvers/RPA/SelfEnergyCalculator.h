@@ -161,6 +161,7 @@ private:
 	);
 
 	/** Self-energy main loop. */
+	template<bool singleSelfEnergyEnergy>
 	void selfEnergyMainLoop(
 		const std::vector<double> &k,
 		const std::vector<int> &orbitalIndices,

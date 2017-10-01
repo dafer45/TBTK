@@ -816,7 +816,10 @@ vector<complex<double>> SelfEnergyCalculator::calculateSelfEnergy(
 	for(unsigned int n = 0; n < selfEnergyEnergies.size(); n++)
 		result.push_back(0);
 
-	selfEnergyMainLoop(k, orbitalIndices, result);
+	if(selfEnergyEnergies.size() == 1)
+		selfEnergyMainLoop<true>(k, orbitalIndices, result);
+	else
+		selfEnergyMainLoop<false>(k, orbitalIndices, result);
 
 	selfEnergyTree.add(
 		result,
@@ -826,6 +829,7 @@ vector<complex<double>> SelfEnergyCalculator::calculateSelfEnergy(
 	return result;
 }
 
+template<bool singleSelfEnergyEnergy>
 void SelfEnergyCalculator::selfEnergyMainLoop(
 	const vector<double> &k,
 	const vector<int> &orbitalIndices,
@@ -872,6 +876,7 @@ void SelfEnergyCalculator::selfEnergyMainLoop(
 				k,
 				kLinearIndex
 			);
+			int kMinusQMeshPoint = kMinusQLinearIndex/numOrbitals;
 
 			for(
 				unsigned int propagatorStart = 0;
@@ -886,14 +891,10 @@ void SelfEnergyCalculator::selfEnergyMainLoop(
 					vector<complex<double>> selfEnergyVertex = calculateSelfEnergyVertex(
 						mesh.at(n),
 						{
-/*							(int)propagatorStart,
-							orbitalIndices.at(1),
 							(int)propagatorEnd,
-							orbitalIndices.at(0)*/
-							(int)propagatorEnd,
-							orbitalIndices.at(0),
+							orbitalIndices[0],
 							(int)propagatorStart,
-							orbitalIndices.at(1)
+							orbitalIndices[1]
 						},
 						worker
 					);
@@ -907,32 +908,42 @@ void SelfEnergyCalculator::selfEnergyMainLoop(
 							kMinusQLinearIndex + state
 						);
 						complex<double> a0 = momentumSpaceContext.getAmplitude(
-							kMinusQLinearIndex/numOrbitals,
+							kMinusQMeshPoint,
 							state,
 							propagatorEnd
 						);
 						complex<double> a1 = momentumSpaceContext.getAmplitude(
-							kMinusQLinearIndex/numOrbitals,
+							kMinusQMeshPoint,
 							state,
 							propagatorStart
 						);
+
+						complex<double> greensFunctionNumerator = a0*conj(a1);
+						double relativeStateEnergy = e - model.getChemicalPotential();
 
 						for(
 							unsigned int e0 = 0;
 							e0 < numSummationEnergies;
 							e0++
 						){
-							for(
-								unsigned int e1 = 0;
-								e1 < selfEnergyEnergies.size();
-								e1++
-							){
-								results[worker].at(e1) += selfEnergyVertex.at(e0)*a0*conj(a1)/(
-									selfEnergyEnergies.at(e1)
-									+ summationEnergies.at(e0)
-									- e
-									+ model.getChemicalPotential()
+							complex<double> numerator = selfEnergyVertex[e0]*greensFunctionNumerator;
+							complex<double> E = summationEnergies[e0] - relativeStateEnergy;
+
+							if(singleSelfEnergyEnergy){
+								results[worker][0] += numerator/(
+									selfEnergyEnergies[0] + E
 								);
+							}
+							else{
+								for(
+									unsigned int e1 = 0;
+									e1 < selfEnergyEnergies.size();
+									e1++
+								){
+									results[worker][e1] += numerator/(
+										selfEnergyEnergies[e1] + E
+									);
+								}
 							}
 						}
 					}
