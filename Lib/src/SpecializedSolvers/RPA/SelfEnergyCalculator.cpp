@@ -952,11 +952,9 @@ void SelfEnergyCalculator::selfEnergyMainLoop(
 		}
 	}
 
-	for(unsigned int n = 0; n < susceptibilityCalculators.size(); n++){
-		for(unsigned int c = 0; c < result.size(); c++){
+	for(unsigned int n = 0; n < susceptibilityCalculators.size(); n++)
+		for(unsigned int c = 0; c < result.size(); c++)
 			result[c] += results[n][c];
-		}
-	}
 
 	//Calculate kT
 	double temperature = UnitHandler::convertTemperatureNtB(
