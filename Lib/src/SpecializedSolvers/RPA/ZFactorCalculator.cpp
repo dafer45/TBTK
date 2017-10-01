@@ -32,8 +32,9 @@ const complex<double> i(0, 1);
 namespace TBTK{
 
 ZFactorCalculator::ZFactorCalculator(
-	const MomentumSpaceContext &momentumSpaceContext
-) : selfEnergyCalculator(momentumSpaceContext, 8){
+	const MomentumSpaceContext &momentumSpaceContext,
+	unsigned int numWorkers
+) : selfEnergyCalculator(momentumSpaceContext, numWorkers){
 	isInitialized = false;
 
 	numSummationEnergies = 0;

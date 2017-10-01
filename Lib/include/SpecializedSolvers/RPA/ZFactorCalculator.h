@@ -34,7 +34,10 @@ namespace TBTK{
 class ZFactorCalculator{
 public:
 	/** Constructor. */
-	ZFactorCalculator(const MomentumSpaceContext &momentumSpaceContext);
+	ZFactorCalculator(
+		const MomentumSpaceContext &momentumSpaceContext,
+		unsigned int numWorkers = 1
+	);
 
 	/** Destructor. */
 	~ZFactorCalculator();
