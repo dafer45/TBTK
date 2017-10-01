@@ -1187,7 +1187,7 @@ vector<complex<double>> SusceptibilityCalculator::calculateRPASusceptibility(
 void SusceptibilityCalculator::generateInteractionAmplitudes(){
 	if(interactionAmplitudesAreGenerated)
 		return;
-	Streams::out << "Generating interaction amplitudes.\n";
+//	Streams::out << "Generating interaction amplitudes.\n";
 
 	interactionAmplitudesCharge.clear();
 	interactionAmplitudesSpin.clear();
