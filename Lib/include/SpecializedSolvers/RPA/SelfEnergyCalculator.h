@@ -89,7 +89,7 @@ public:
 	void setJp(std::complex<double> Jp);
 
 	/** Precompute susceptibilities. */
-	void precomputeSusceptibilities(unsigned int numWorkers = 128);
+//	void precomputeSusceptibilities(unsigned int numWorkers = 128);
 
 	/** Save susceptibilities. */
 	void saveSusceptibilities(const std::string &filename) const;
@@ -98,7 +98,7 @@ public:
 	void loadSusceptibilities(const std::string &filename);
 private:
 	/** SusceptibilityCalculator. */
-	SusceptibilityCalculator susceptibilityCalculator;
+	std::vector<SusceptibilityCalculator*> susceptibilityCalculators;
 
 	/** Lookup table for calculating k+q. */
 	int *kMinusQLookupTable;
@@ -182,7 +182,7 @@ private:
 
 inline const MomentumSpaceContext& SelfEnergyCalculator::getMomentumSpaceContext(
 ) const{
-	return susceptibilityCalculator.getMomentumSpaceContext();
+	return susceptibilityCalculators[0]->getMomentumSpaceContext();
 }
 
 inline void SelfEnergyCalculator::setNumSummationEnergies(
@@ -212,7 +212,10 @@ inline void SelfEnergyCalculator::setSelfEnergyEnergies(
 
 inline void SelfEnergyCalculator::setU(std::complex<double> U){
 	this->U = U;
-	susceptibilityCalculator.setU(U);
+
+	for(unsigned int n = 0; n < susceptibilityCalculators.size(); n++)
+		susceptibilityCalculators[n]->setU(U);
+
 	selfEnergyTree.clear();
 	selfEnergyVertexTree.clear();
 	interactionAmplitudesAreGenerated = false;
@@ -220,7 +223,10 @@ inline void SelfEnergyCalculator::setU(std::complex<double> U){
 
 inline void SelfEnergyCalculator::setUp(std::complex<double> Up){
 	this->Up = Up;
-	susceptibilityCalculator.setUp(Up);
+
+	for(unsigned int n = 0; n < susceptibilityCalculators.size(); n++)
+		susceptibilityCalculators[n]->setUp(Up);
+
 	selfEnergyTree.clear();
 	selfEnergyVertexTree.clear();
 	interactionAmplitudesAreGenerated = false;
@@ -228,7 +234,10 @@ inline void SelfEnergyCalculator::setUp(std::complex<double> Up){
 
 inline void SelfEnergyCalculator::setJ(std::complex<double> J){
 	this->J = J;
-	susceptibilityCalculator.setJ(J);
+
+	for(unsigned int n = 0; n < susceptibilityCalculators.size(); n++)
+		susceptibilityCalculators[n]->setJ(J);
+
 	selfEnergyTree.clear();
 	selfEnergyVertexTree.clear();
 	interactionAmplitudesAreGenerated = false;
@@ -236,17 +245,20 @@ inline void SelfEnergyCalculator::setJ(std::complex<double> J){
 
 inline void SelfEnergyCalculator::setJp(std::complex<double> Jp){
 	this->Jp = Jp;
-	susceptibilityCalculator.setJp(Jp);
+
+	for(unsigned int n = 0; n < susceptibilityCalculators.size(); n++)
+		susceptibilityCalculators[n]->setJp(Jp);
+
 	selfEnergyTree.clear();
 	selfEnergyVertexTree.clear();
 	interactionAmplitudesAreGenerated = false;
 }
 
-inline void SelfEnergyCalculator::precomputeSusceptibilities(
+/*inline void SelfEnergyCalculator::precomputeSusceptibilities(
 	unsigned int numWorkers
 ){
 	susceptibilityCalculator.precompute(numWorkers);
-}
+}*/
 
 inline void SelfEnergyCalculator::saveSusceptibilities(
 	const std::string &filename

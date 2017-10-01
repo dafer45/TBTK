@@ -46,6 +46,11 @@ public:
 	/** Destructor. */
 	~SusceptibilityCalculator();
 
+	/** Create slave SusceptibilityCalcuator. The slave reuses internal
+	 *  lookup tables used to speed up the calculations and should not be
+	 *  used after the generating master have been destructed. */
+	SusceptibilityCalculator* createSlave();
+
 	/** Precompute susceptibilities. Will calculate the susceptibility for
 	 *  all values using a parallel algorithm. Can speed up calculations if
 	 *  most of the susceptibilities are needed. */
@@ -250,6 +255,13 @@ private:
 	 *  Masters owns resources shared between masters and slaves and is
 	 *  responsible for cleaning up. */
 	bool isMaster;
+
+	/** Slave constructor. */
+	SusceptibilityCalculator(
+		const MomentumSpaceContext &momentumSpaceContext,
+		int *kPlusQLookupTable,
+		double *fermiDiracLookupTable
+	);
 
 	/** Get Susceptibility result Index. */
 	Index getSusceptibilityResultIndex(

@@ -67,11 +67,48 @@ SusceptibilityCalculator::SusceptibilityCalculator(
 	isMaster = true;
 }
 
+SusceptibilityCalculator::SusceptibilityCalculator(
+	const MomentumSpaceContext &momentumSpaceContext,
+	int *kPlusQLookupTable,
+	double *fermiDiracLookupTable
+){
+	this->momentumSpaceContext = &momentumSpaceContext;
+
+	U = 0.;
+	Up = 0.;
+	J = 0.;
+	Jp = 0.;
+
+	susceptibilityMode = Mode::Lindhard;
+	susceptibilityEnergyType = EnergyType::Complex;
+	susceptibilityEnergiesAreInversionSymmetric = false;
+	susceptibilityIsSafeFromPoles = false;
+
+	this->kPlusQLookupTable = kPlusQLookupTable;
+
+	this->fermiDiracLookupTable = fermiDiracLookupTable;
+
+	omp_init_lock(&lindhardLock);
+
+	interactionAmplitudesAreGenerated = false;
+
+	isInitialized = true;
+	isMaster = false;
+}
+
 SusceptibilityCalculator::~SusceptibilityCalculator(){
 	if(isMaster && kPlusQLookupTable != nullptr)
 		delete [] kPlusQLookupTable;
 	if(isMaster && fermiDiracLookupTable != nullptr)
 		delete [] fermiDiracLookupTable;
+}
+
+SusceptibilityCalculator* SusceptibilityCalculator::createSlave(){
+	return new SusceptibilityCalculator(
+		*momentumSpaceContext,
+		kPlusQLookupTable,
+		fermiDiracLookupTable
+	);
 }
 
 void SusceptibilityCalculator::precompute(unsigned int numWorkers){
