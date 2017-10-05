@@ -230,6 +230,18 @@ vector<complex<double>> ZFactorCalculator::calculateZFactor(
 
 	invertMatrix(zFactor, numOrbitals);
 
+	double offDiagonals = 0;
+	double diagonals = 0;
+	for(unsigned int r = 0; r < numOrbitals; r++){
+		for(unsigned int c = 0; c < numOrbitals; c++){
+			if(r == c)
+				diagonals += abs(zFactor[numOrbitals*r + c]);
+			else
+				offDiagonals += abs(zFactor[numOrbitals*r + c]);
+		}
+	}
+	Streams::out << "ZFactor off-diagonals over diagonals:\t" << offDiagonals/diagonals << "\n";
+
 	vector<complex<double>> zFactors;
 	for(unsigned int n = 0; n < numOrbitals; n++)
 		zFactors.push_back(zFactor[numOrbitals*n + n]);
@@ -416,18 +428,6 @@ vector<complex<double>> ZFactorCalculator::calculateZFactor2(
 		numOrbitals
 	);
 	invertMatrix(zFactor, numOrbitals);
-
-	double offDiagonals = 0;
-	double diagonals = 0;
-	for(unsigned int r = 0; r < numOrbitals; r++){
-		for(unsigned int c = 0; c < numOrbitals; c++){
-			if(r == c)
-				diagonals += abs(zFactor[numOrbitals*r + c]);
-			else
-				offDiagonals += abs(zFactor[numOrbitals*r + c]);
-		}
-	}
-	Streams::out << "ZFactor diagonals over diagonals:\t" << offDiagonals/diagonals << "\n";
 
 	vector<complex<double>> zFactors;
 	for(unsigned int n = 0; n < numOrbitals; n++)
