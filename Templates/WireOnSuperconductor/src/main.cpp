@@ -99,8 +99,6 @@ bool scCallback(DiagonalizationSolver *dSolver){
 		}
 	}
 
-	return true;
-
 	//Return true or false depending on whether the result has converged or not
 	if(maxError < CONVERGENCE_LIMIT)
 		return true;
