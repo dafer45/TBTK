@@ -225,11 +225,6 @@ vector<complex<double>> ZFactorCalculator::calculateZFactor(
 	for(unsigned int n = 0; n < numOrbitals*numOrbitals; n++)
 		zFactor[n] = imag(zFactor[n]);
 
-	for(unsigned int n = 0; n < numOrbitals; n++)
-		zFactor[numOrbitals*n + n] += 1.;
-
-	invertMatrix(zFactor, numOrbitals);
-
 	double offDiagonals = 0;
 	double diagonals = 0;
 	for(unsigned int r = 0; r < numOrbitals; r++){
@@ -240,7 +235,12 @@ vector<complex<double>> ZFactorCalculator::calculateZFactor(
 				offDiagonals += abs(zFactor[numOrbitals*r + c]);
 		}
 	}
-	Streams::out << "ZFactor off-diagonals over diagonals:\t" << offDiagonals/diagonals << "\n";
+	Streams::out << "Self-energy off-diagonals over diagonals:\t" << offDiagonals/diagonals << "\n";
+
+	for(unsigned int n = 0; n < numOrbitals; n++)
+		zFactor[numOrbitals*n + n] += 1.;
+
+	invertMatrix(zFactor, numOrbitals);
 
 	vector<complex<double>> zFactors;
 	for(unsigned int n = 0; n < numOrbitals; n++)
