@@ -1315,9 +1315,6 @@ vector<complex<double>> SusceptibilityCalculator::calculateChargeRPASusceptibili
 		interactionAmplitudesCharge
 	);
 
-	for(unsigned int n = 0; n < rpaSusceptibility.size(); n++)
-		rpaSusceptibility[n] /= 2.;
-
 	//Cache result
 	for(unsigned int orbital0 = 0; orbital0 < numOrbitals; orbital0++){
 		for(unsigned int orbital1 = 0; orbital1 < numOrbitals; orbital1++){
@@ -1424,9 +1421,6 @@ vector<complex<double>> SusceptibilityCalculator::calculateSpinRPASusceptibility
 		orbitalIndices,
 		interactionAmplitudesSpin
 	);
-
-	for(unsigned int n = 0; n < rpaSusceptibility.size(); n++)
-		rpaSusceptibility[n] /= 2.;
 
 	//Cache result
 	for(unsigned int orbital0 = 0; orbital0 < numOrbitals; orbital0++){
