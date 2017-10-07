@@ -1198,7 +1198,7 @@ void SusceptibilityCalculator::generateInteractionAmplitudes(){
 	for(int a = 0; a < (int)numOrbitals; a++){
 		interactionAmplitudesCharge.push_back(
 			InteractionAmplitude(
-				2.*U,
+				U,
 				{{a},	{a}},
 				{{a},	{a}}
 			)
@@ -1210,21 +1210,21 @@ void SusceptibilityCalculator::generateInteractionAmplitudes(){
 
 			interactionAmplitudesCharge.push_back(
 				InteractionAmplitude(
-					4.*Up - 2.*J,
+					2.*Up - J,
 					{{a},	{b}},
 					{{b},	{a}}
 				)
 			);
 			interactionAmplitudesCharge.push_back(
 				InteractionAmplitude(
-					-2.*Up + 4.*J,
+					-Up + 2.*J,
 					{{a},	{b}},
 					{{a},	{b}}
 				)
 			);
 			interactionAmplitudesCharge.push_back(
 				InteractionAmplitude(
-					2.*Jp,
+					Jp,
 					{{a},	{a}},
 					{{b},	{b}}
 				)
@@ -1236,7 +1236,7 @@ void SusceptibilityCalculator::generateInteractionAmplitudes(){
 	for(int a = 0; a < (int)numOrbitals; a++){
 		interactionAmplitudesSpin.push_back(
 			InteractionAmplitude(
-				-2.*U,
+				-U,
 				{{a},	{a}},
 				{{a},	{a}}
 			)
@@ -1248,21 +1248,21 @@ void SusceptibilityCalculator::generateInteractionAmplitudes(){
 
 			interactionAmplitudesSpin.push_back(
 				InteractionAmplitude(
-					-2.*J,
+					-J,
 					{{a},	{b}},
 					{{b},	{a}}
 				)
 			);
 			interactionAmplitudesSpin.push_back(
 				InteractionAmplitude(
-					-2.*Up,
+					-Up,
 					{{a},	{b}},
 					{{a},	{b}}
 				)
 			);
 			interactionAmplitudesSpin.push_back(
 				InteractionAmplitude(
-					-2.*Jp,
+					-Jp,
 					{{a},	{a}},
 					{{b},	{b}}
 				)
@@ -1314,6 +1314,9 @@ vector<complex<double>> SusceptibilityCalculator::calculateChargeRPASusceptibili
 		orbitalIndices,
 		interactionAmplitudesCharge
 	);
+
+	for(unsigned int n = 0; n < rpaSusceptibility.size(); n++)
+		rpaSusceptibility[n] /= 2.;
 
 	//Cache result
 	for(unsigned int orbital0 = 0; orbital0 < numOrbitals; orbital0++){
@@ -1421,6 +1424,9 @@ vector<complex<double>> SusceptibilityCalculator::calculateSpinRPASusceptibility
 		orbitalIndices,
 		interactionAmplitudesSpin
 	);
+
+	for(unsigned int n = 0; n < rpaSusceptibility.size(); n++)
+		rpaSusceptibility[n] /= 2.;
 
 	//Cache result
 	for(unsigned int orbital0 = 0; orbital0 < numOrbitals; orbital0++){

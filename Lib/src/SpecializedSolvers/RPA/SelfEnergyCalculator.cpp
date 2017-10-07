@@ -524,7 +524,7 @@ vector<complex<double>> SelfEnergyCalculator::calculateSelfEnergyVertex(
 				selfEnergyVertex.at(n) += amplitude_i*amplitude_o*(
 					chargeSusceptibility.at(n)
 					+ spinSusceptibility.at(n)
-				)/4.;
+				)/2.;
 			}
 		}
 	}
@@ -584,7 +584,7 @@ vector<complex<double>> SelfEnergyCalculator::calculateSelfEnergyVertex(
 				selfEnergyVertex.at(n) += amplitude_i*amplitude_o*(
 					chargeSusceptibility.at(n)
 					+ spinSusceptibility.at(n)
-				)/4.;
+				)/2.;
 			}
 		}
 	}
@@ -644,7 +644,7 @@ vector<complex<double>> SelfEnergyCalculator::calculateSelfEnergyVertex(
 				selfEnergyVertex.at(n) += amplitude_i*amplitude_o*(
 					chargeSusceptibility.at(n)
 					- spinSusceptibility.at(n)
-				)/4.;
+				)/2.;
 			}
 		}
 	}
@@ -704,7 +704,7 @@ vector<complex<double>> SelfEnergyCalculator::calculateSelfEnergyVertex(
 				selfEnergyVertex.at(n) += amplitude_i*amplitude_o*(
 					chargeSusceptibility.at(n)
 					- spinSusceptibility.at(n)
-				)/4.;
+				)/2.;
 			}
 		}
 	}
@@ -756,7 +756,7 @@ vector<complex<double>> SelfEnergyCalculator::calculateSelfEnergyVertex(
 				n < numSummationEnergies;
 				n++
 			){
-				selfEnergyVertex.at(n) += amplitude_i*amplitude_o*spinSusceptibility.at(n)/2.;
+				selfEnergyVertex.at(n) += amplitude_i*amplitude_o*spinSusceptibility.at(n);
 			}
 		}
 	}
