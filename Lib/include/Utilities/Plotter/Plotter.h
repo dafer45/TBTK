@@ -92,7 +92,8 @@ public:
 		/** Constructor. */
 		Decoration(
 			const std::vector<unsigned char> &color,
-			LineStyle lineStyle
+			LineStyle lineStyle,
+			unsigned int size = 1
 		);
 
 		/** Destructor. */
@@ -103,6 +104,9 @@ public:
 
 		/** Line style. */
 		LineStyle lineStyle;
+
+		/** Width. */
+		unsigned int size;
 
 		/** The Plotter have direct access to Decoration members. */
 		friend class Plotter;
@@ -281,10 +285,12 @@ inline void Plotter::save(std::string filename) const{
 
 inline Plotter::Decoration::Decoration(
 	const std::vector<unsigned char> &color,
-	LineStyle lineStyle
+	LineStyle lineStyle,
+	unsigned int size
 ){
 	this->color = color;
 	this->lineStyle = lineStyle;
+	this->size = size;
 }
 
 inline Plotter::Decoration::~Decoration(){

@@ -174,7 +174,7 @@ void Plotter::plot(
 					getCVPoint(x0, y0),
 					getCVPoint(x1, y1),
 					color,
-					1,
+					decoration.size,
 					CV_AA
 				);
 			}
@@ -198,7 +198,7 @@ void Plotter::plot(
 				circle(
 					canvas,
 					getCVPoint(x, y),
-					5.,
+					decoration.size,
 					color,
 					-1,
 					CV_AA
