@@ -23,6 +23,7 @@
 #ifndef COM_DAFER45_TBTK_ARRAY
 #define COM_DAFER45_TBTK_ARRAY
 
+#include "Index.h"
 #include "TBTKMacros.h"
 
 #include <vector>
@@ -35,14 +36,31 @@ public:
 	/** Constructor. */
 	Array(const std::vector<unsigned int> &ranges);
 
+	/** Copy constructor. */
+	Array(const Array &array);
+
+	/** Move constructor. */
+	Array(Array &&array);
+
 	/** Destructor. */
 	~Array();
+
+	/** Assignment operator. */
+	Array& operator=(const Array &rhs);
+
+	/** Move assignment operator. */
+	Array& operator=(Array &&rhs);
 
 	/** Array subscript operator. */
 	DataType& operator[](const std::initializer_list<unsigned int> &index);
 
 	/** Array subscript operator. */
-	const DataType& operator[](const std::initializer_list<unsigned int> &index) const;
+	const DataType& operator[](
+		const std::initializer_list<unsigned int> &index
+	) const;
+
+	/** Get slice. */
+	Array<DataType> getSlice(const std::vector<int> &index) const;
 private:
 	/** Data data. */
 	DataType *data;
@@ -52,6 +70,15 @@ private:
 
 	/** Ranges. */
 	std::vector<unsigned int> ranges;
+
+	/** Fill slice. */
+	void fillSlice(
+		Array &array,
+		const std::vector<int> &index,
+		unsigned int subindex,
+		unsigned int offsetSlice,
+		unsigned int offsetOriginal
+	) const;
 };
 
 template<typename DataType>
@@ -72,8 +99,51 @@ Array<DataType>::Array(const std::vector<unsigned int> &ranges){
 }
 
 template<typename DataType>
+Array<DataType>::Array(const Array &array){
+	ranges = array.ranges;
+	size = array.size;
+	data = new DataType[size];
+	for(unsigned int n = 0; n < size; n++)
+		data[n] = array.data[n];
+}
+
+template<typename DataType>
+Array<DataType>::Array(Array &&array){
+	ranges = std::move(array.ranges);
+	size = std::move(array.size);
+	data = array.data;
+	array.data = nullptr;
+}
+
+template<typename DataType>
 Array<DataType>::~Array(){
-	delete [] data;
+	if(data != nullptr)
+		delete [] data;
+}
+
+template<typename DataType>
+Array<DataType>& Array<DataType>::operator=(const Array &rhs){
+	if(this != &rhs){
+		ranges = rhs.ranges;
+		size = rhs.size;
+		data = new DataType[size];
+		for(unsigned int n = 0; n < size; n++)
+			data[n] = rhs.data[n];
+	}
+
+	return *this;
+}
+
+template<typename DataType>
+Array<DataType>& Array<DataType>::operator=(Array &&rhs){
+	if(this != &rhs){
+		ranges = std::move(rhs.ranges);
+		size = std::move(rhs.size);
+		data = rhs.data;
+		rhs.data = nullptr;
+	}
+
+	return *this;
 }
 
 template<typename DataType>
@@ -102,6 +172,93 @@ const DataType& Array<DataType>::operator[](
 	}
 
 	return data[idx];
+}
+
+template<typename DataType>
+Array<DataType> Array<DataType>::getSlice(const std::vector<int> &index) const{
+	Streams::out << ranges.size() << "\t" << index.size() << "\n";
+	TBTKAssert(
+		ranges.size() == index.size(),
+		"Array::getSlice()",
+		"Incompatible ranges.",
+		"'index' must have the same number of dimensions as 'ranges'."
+	);
+
+	std::vector<unsigned int> newRanges;
+	for(unsigned int n = 0; n < ranges.size(); n++){
+		TBTKAssert(
+			index[n] < (int)ranges[n],
+			"Array::getSlice()",
+			"'index' out of range.",
+			""
+		);
+		if(index[n] < 0){
+			TBTKAssert(
+				index[n] == IDX_ALL,
+				"Array::getSlice()",
+				"Invalid symbol.",
+				"'index' can only contain positive numbers or"
+				<< " 'IDX_ALL'."
+			);
+			newRanges.push_back(ranges[n]);
+		}
+	}
+
+	Array array(newRanges);
+
+	fillSlice(array, index, 0, 0, 0);
+
+	return array;
+}
+
+template<typename DataType>
+void Array<DataType>::fillSlice(
+	Array &array,
+	const std::vector<int> &index,
+	unsigned int subindex,
+	unsigned int offsetSlice,
+	unsigned int offsetOriginal
+) const{
+	if(subindex == index.size()-1){
+		if(index[subindex] == IDX_ALL){
+			for(unsigned int n = 0; n < ranges[subindex]; n++){
+				array.data[offsetSlice*ranges[subindex] + n]
+					= data[
+						offsetOriginal*ranges[subindex]
+						+ n
+					];
+			}
+		}
+		else{
+			array.data[offsetSlice] = data[
+				offsetOriginal*ranges[subindex]
+				+ index[subindex]
+			];
+		}
+	}
+	else{
+		if(index[subindex] == IDX_ALL){
+			for(unsigned int n = 0; n < ranges[subindex]; n++){
+				fillSlice(
+					array,
+					index,
+					subindex+1,
+					offsetSlice*ranges[subindex] + n,
+					offsetOriginal*ranges[subindex] + n
+				);
+			}
+		}
+		else{
+			fillSlice(
+				array,
+				index,
+				subindex+1,
+				offsetSlice,
+				offsetOriginal*ranges[subindex]
+					+ index[subindex]
+			);
+		}
+	}
 }
 
 }; //End of namesapce TBTK
