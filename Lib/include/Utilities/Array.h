@@ -61,6 +61,9 @@ public:
 
 	/** Get slice. */
 	Array<DataType> getSlice(const std::vector<int> &index) const;
+
+	/** Get ranges. */
+	const std::vector<unsigned int>& getRanges() const;
 private:
 	/** Data data. */
 	DataType *data;
@@ -259,6 +262,11 @@ void Array<DataType>::fillSlice(
 			);
 		}
 	}
+}
+
+template<typename DataType>
+const std::vector<unsigned int>& Array<DataType>::getRanges() const{
+	return ranges;
 }
 
 }; //End of namesapce TBTK

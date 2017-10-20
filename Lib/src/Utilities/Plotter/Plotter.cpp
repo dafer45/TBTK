@@ -323,6 +323,43 @@ void Plotter::plot(
 	drawAxes();
 }
 
+void Plotter::plot(
+	const Array<double> &data,
+	const Decoration &decoration
+){
+	const vector<unsigned int> &ranges = data.getRanges();
+	switch(ranges.size()){
+	case 1:
+	{
+		vector<double> d;
+		for(unsigned int n = 0; n < ranges[0]; n++)
+			d.push_back(data[{n}]);
+		plot(d, decoration);
+
+		break;
+	}
+	case 2:
+	{
+		vector<vector<double>> d;
+		for(unsigned int m = 0; m < ranges[0]; m++){
+			d.push_back(vector<double>());
+			for(unsigned int n = 0; n < ranges[1]; n++)
+				d[m].push_back(data[{m, n}]);
+		}
+		plot(d);
+
+		break;
+	}
+	default:
+		TBTKExit(
+			"Plotter:plot()",
+			"Array size not supported.",
+			"Only arrays with one or two dimensions can be"
+			<< " plotter."
+		);
+	}
+}
+
 void Plotter::drawAxes(){
 	line(
 		canvas,

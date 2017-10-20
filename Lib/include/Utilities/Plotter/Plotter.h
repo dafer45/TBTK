@@ -23,6 +23,7 @@
 #ifndef COM_DAFER45_TBTK_PLOTTER
 #define COM_DAFER45_TBTK_PLOTTER
 
+#include "Array.h"
 #include "DOS.h"
 #include "Streams.h"
 #include "TBTKMacros.h"
@@ -138,6 +139,14 @@ public:
 
 	void plot(
 		const std::vector<std::vector<double>> &data
+	);
+
+	/** Plot data. */
+	void plot(
+		const Array<double> &data,
+		const Decoration &decoration = Decoration(
+			{0, 0, 0}, Decoration::LineStyle::Line
+		)
 	);
 
 	/** Set whether ot not data is plotted on top of old data. */
