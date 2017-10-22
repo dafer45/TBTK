@@ -36,6 +36,9 @@ public:
 	/** Constructor. */
 	Array(const std::vector<unsigned int> &ranges);
 
+	/** Constructor. */
+	Array(const std::vector<unsigned int> &ranges, const DataType &fillValue);
+
 	/** Copy constructor. */
 	Array(const Array &array);
 
@@ -99,6 +102,29 @@ Array<DataType>::Array(const std::vector<unsigned int> &ranges){
 	}
 
 	data = new DataType[size];
+}
+
+template<typename DataType>
+Array<DataType>::Array(
+	const std::vector<unsigned int> &ranges,
+	const DataType &fillValue
+){
+	this->ranges = ranges;
+	size = 1;
+	for(unsigned int n = 0; n < ranges.size(); n++){
+		TBTKAssert(
+			ranges[n] > 0,
+			"Array::Array()",
+			"Invalid ranges.",
+			"'ranges' must only contain positive numbers."
+		);
+		size *= ranges[n];
+	}
+
+	data = new DataType[size];
+
+	for(unsigned int n = 0; n < size; n++)
+		data[n] = fillValue;
 }
 
 template<typename DataType>
@@ -179,7 +205,6 @@ const DataType& Array<DataType>::operator[](
 
 template<typename DataType>
 Array<DataType> Array<DataType>::getSlice(const std::vector<int> &index) const{
-	Streams::out << ranges.size() << "\t" << index.size() << "\n";
 	TBTKAssert(
 		ranges.size() == index.size(),
 		"Array::getSlice()",
