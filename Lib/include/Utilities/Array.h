@@ -176,7 +176,7 @@ Array<DataType>& Array<DataType>::operator=(Array &&rhs){
 }
 
 template<typename DataType>
-DataType& Array<DataType>::operator[](
+inline DataType& Array<DataType>::operator[](
 	const std::initializer_list<unsigned int> &index
 ){
 	unsigned int idx = 0;
@@ -190,7 +190,7 @@ DataType& Array<DataType>::operator[](
 }
 
 template<typename DataType>
-const DataType& Array<DataType>::operator[](
+inline const DataType& Array<DataType>::operator[](
 	const std::initializer_list<unsigned int> &index
 ) const{
 	unsigned int idx = 0;
@@ -290,7 +290,7 @@ void Array<DataType>::fillSlice(
 }
 
 template<typename DataType>
-const std::vector<unsigned int>& Array<DataType>::getRanges() const{
+inline const std::vector<unsigned int>& Array<DataType>::getRanges() const{
 	return ranges;
 }
 

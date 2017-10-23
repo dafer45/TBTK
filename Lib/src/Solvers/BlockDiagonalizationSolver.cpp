@@ -219,6 +219,12 @@ void BlockDiagonalizationSolver::init(){
 void BlockDiagonalizationSolver::update(){
 	const Model &model = getModel();
 
+	unsigned int hamiltonianSize = 0;
+	for(unsigned int n = 0; n < numStatesPerBlock.size(); n++)
+		hamiltonianSize += (numStatesPerBlock.at(n)*(numStatesPerBlock.at(n)+1))/2;
+	for(unsigned int n = 0; n < hamiltonianSize; n++)
+		hamiltonian[n] = 0.;
+
 	IndexTree blockIndices = getModel().getHoppingAmplitudeSet()->getSubspaceIndices();
 	IndexTree::Iterator blockIterator = blockIndices.begin();
 	const Index *blockIndex;
