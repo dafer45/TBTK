@@ -42,6 +42,12 @@ public:
 	 *  of the matrix. */
 	SpinMatrix& operator=(std::complex<double> value);
 
+	/** Addition equality operator. */
+	SpinMatrix& operator+=(const SpinMatrix &spinMatrix);
+
+	/** Addition equality operator. */
+	SpinMatrix& operator-=(const SpinMatrix &spinMatrix);
+
 	/** Get desnity. */
 	double getDensity() const;
 

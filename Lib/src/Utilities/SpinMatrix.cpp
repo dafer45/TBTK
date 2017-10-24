@@ -40,6 +40,26 @@ SpinMatrix& SpinMatrix::operator=(complex<double> value){
 	return *this;
 }
 
+SpinMatrix& SpinMatrix::operator+=(const SpinMatrix &spinMatrix){
+	for(unsigned int row = 0; row < getNumRows(); row++){
+		for(unsigned int col = 0; col < getNumCols(); col++){
+			at(row, col) += spinMatrix.at(row, col);
+		}
+	}
+
+	return *this;
+}
+
+SpinMatrix& SpinMatrix::operator-=(const SpinMatrix &spinMatrix){
+	for(unsigned int row = 0; row < getNumRows(); row++){
+		for(unsigned int col = 0; col < getNumCols(); col++){
+			at(row, col) -= spinMatrix.at(row, col);
+		}
+	}
+
+	return *this;
+}
+
 double SpinMatrix::getDensity() const{
 	return abs(at(0, 0) + at(1, 1));
 }
