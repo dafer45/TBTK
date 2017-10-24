@@ -129,6 +129,12 @@ public:
 	 *  generate a larger Hilbert space index for i1 than for i2. */
 	friend bool operator>(const Index &i1, const Index &i2);
 
+	/** Subscript operator. */
+	int& operator[](unsigned int subindex);
+
+	/** Subscript operator. */
+	const int& operator[](unsigned int subindex) const;
+
 	/** Serialize Index. Note that Index is pseudo-Serializeable in that it
 	 *  implements the Serializeable interface, but does so non-virtually.
 	 */
@@ -257,6 +263,14 @@ inline bool Index::isPatternIndex() const{
 			return true;
 
 	return false;
+}
+
+inline int& Index::operator[](unsigned int subindex){
+	return indices[subindex];
+}
+
+inline const int& Index::operator[](unsigned int subindex) const{
+	return indices[subindex];
 }
 
 };	//End of namespace TBTK
