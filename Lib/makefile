@@ -101,6 +101,9 @@ NOCUDA_SRC_DIR:= src/nocuda
 ARNOLDI_SRC_DIR = src/Solvers/ArnoldiSolver
 ARNOLDI_SRC_DIR += src/PropertyExtractors/APropertyExtractor
 
+#LinearEquationSolver source directory
+LINEAR_EQUATION_SRC_DIR = src/Solvers/LinearEquationSolver
+
 #FourierTransform source directory
 FOURIER_TRANSFORM_SRC_DIR = src/Utilities/FourierTransform
 
@@ -153,6 +156,9 @@ NOCUDA_SRC := $(wildcard $(NOCUDA_SRC_DIR)/*.cpp)
 # ArnoldiSolver source files
 ARNOLDI_SRC := $(foreach srcDir, $(ARNOLDI_SRC_DIR), $(wildcard $(srcDir)/*.cpp))
 
+# LinearEquationSolver source files
+LINEAR_EQUATION_SRC := $(foreach srcDir, $(LINEAR_EQUATION_SRC_DIR), $(wildcard $(srcDir)/*.cpp))
+
 # FourierTransform source files
 FOURIER_TRANSFORM_SRC := $(foreach srcDir, $(FOURIER_TRANSFORM_SRC_DIR), $(wildcard $(srcDir)/*.cpp))
 
@@ -189,6 +195,9 @@ NOCUDA_OBJ := $(addprefix $(OBJ_DIR)/, $(addprefix nocuda, $(notdir $(NOCUDA_SRC
 # ArnoldiSolver object files
 ARNOLDI_OBJ := $(addprefix $(OBJ_DIR)/, $(notdir $(ARNOLDI_SRC:.cpp=.o)))
 
+# LinearEquationSolver object files
+LINEAR_EQUATION_OBJ := $(addprefix $(OBJ_DIR)/, $(notdir $(LINEAR_EQUATION_SRC:.cpp=.o)))
+
 # FourierTransform object files
 FOURIER_TRANSFORM_OBJ := $(addprefix $(OBJ_DIR)/, $(notdir $(FOURIER_TRANSFORM_SRC:.cpp=.o)))
 
@@ -224,6 +233,9 @@ NOCUDA_OBJ_PURE := $(notdir $(NOCUDA_OBJ))
 
 # ArnoldiSolver file name of object without directory name
 ARNOLDI_OBJ_PURE := $(notdir $(ARNOLDI_OBJ))
+
+# LinearEquationSolver file name of object without directory name
+LINEAR_EQUATION_OBJ_PURE := $(notdir $(LINEAR_EQUATION_OBJ))
 
 # FourierTransform file name of object without directory name
 FOURIER_TRANSFORM_OBJ_PURE := $(notdir $(FOURIER_TRANSFORM_OBJ))
@@ -268,6 +280,11 @@ arnoldi: $(ARNOLDI_OBJ)
 	@echo "Linking: " $(notdir $(STATIC_LIB))
 	@echo $(ARNOLDI_OBJ)
 	@ar rcs $(STATIC_LIB) $(ARNOLDI_OBJ)
+
+linearequation: $(LINEAR_EQUATION_OBJ)
+	@echo "Linking: " $(notdir $(STATIC_LIB))
+	@echo $(LINEAR_EQUATION_OBJ)
+	@ar rcs $(STATIC_LIB) $(LINEAR_EQUATION_OBJ)
 
 fourier: $(FOURIER_TRANSFORM_OBJ)
 	@echo "Linking: " $(notdir $(STATIC_LIB))
@@ -333,6 +350,15 @@ endef
 
 # ArnoldiSolver compilation rule
 define arnoldi_app_compile_template
+ $(1)_OBJ = $$(addprefix $$(OBJ_DIR)/, $$(notdir $$(patsubst %.cpp, %.o, $(1))))
+
+$$($(1)_OBJ): $(1)
+	@echo "Compiling: $(1)"
+	@$$(CC) $$(CFLAGS) $$(OPT) -c $(1) -o $$($(1)_OBJ) $$(LDLIBS)
+endef
+
+# LinearEquationSolver compilation rule
+define linear_equation_app_compile_template
  $(1)_OBJ = $$(addprefix $$(OBJ_DIR)/, $$(notdir $$(patsubst %.cpp, %.o, $(1))))
 
 $$($(1)_OBJ): $(1)
@@ -424,6 +450,9 @@ $(foreach app, $(NOCUDA_SRC), $(eval $(call nocuda_app_compile_template,$(app)))
 # ArnoldiSolver compile
 $(foreach app, $(ARNOLDI_SRC), $(eval $(call arnoldi_app_compile_template,$(app))))
 
+# LinearEquationSolver compile
+$(foreach app, $(LINEAR_EQUATION_SRC), $(eval $(call linear_equation_app_compile_template,$(app))))
+
 # FourierTransform compile
 $(foreach app, $(FOURIER_TRANSFORM_SRC), $(eval $(call fourier_transform_app_compile_template,$(app))))
 
@@ -466,6 +495,9 @@ print:
 	@echo $(ARNOLDI_SRC_DIR)
 	@echo $(ARNOLDI_SRC)
 	@echo $(ARNOLDI_OBJ)
+	@echo $(LINEAR_EQUATION_SRC_DIR)
+	@echo $(LINEAR_EQUATION_SRC)
+	@echo $(LINEAR_EQUATION_OBJ)
 	@echo $(FOURIER_TRANSFORM_SRC_DIR)
 	@echo $(FOURIER_TRANSFORM_SRC)
 	@echo $(FOURIER_TRANSFORM_OBJ)
