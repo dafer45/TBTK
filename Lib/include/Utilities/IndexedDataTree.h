@@ -69,6 +69,11 @@ private:
 	 *  is included in the set. */
 	bool indexIncluded;
 
+	/** Flag indicating whether the given node is an Index-separator. I.e.,
+	 *  whether the next node level corresponds to the first subindex of a
+	 *  new Index. */
+	bool indexSeparator;
+
 	/** Data. */
 	Data data;
 
@@ -115,6 +120,11 @@ private:
 	/** Flag indicating whether the given node corresponds to an index that
 	 *  is included in the set. */
 	bool indexIncluded;
+
+	/** Flag indicating whether the given node is an Index-separator. I.e.,
+	 *  whether the next node level corresponds to the first subindex of a
+	 *  new Index. */
+	bool indexSeparator;
 
 	/** Data. */
 	Data data;
@@ -163,6 +173,11 @@ private:
 	 *  is included in the set. */
 	bool indexIncluded;
 
+	/** Flag indicating whether the given node is an Index-separator. I.e.,
+	 *  whether the next node level corresponds to the first subindex of a
+	 *  new Index. */
+	bool indexSeparator;
+
 	/** Data. */
 	Data data;
 
@@ -178,16 +193,19 @@ private:
 template<typename Data, bool isSerializeable>
 IndexedDataTree<Data, isSerializeable>::IndexedDataTree(){
 	indexIncluded = false;
+	indexSeparator = false;
 }
 
 template<typename Data>
 IndexedDataTree<Data, true>::IndexedDataTree(){
 	indexIncluded = false;
+	indexSeparator = false;
 }
 
 template<typename Data>
 IndexedDataTree<Data, false>::IndexedDataTree(){
 	indexIncluded = false;
+	indexSeparator = false;
 }
 
 template<>
@@ -211,6 +229,7 @@ inline IndexedDataTree<bool, false>::IndexedDataTree(
 				serialization
 			);
 			indexIncluded = j.at("indexIncluded").get<bool>();
+			indexSeparator = j.at("indexSeparator").get<bool>();
 			data = j.at("data").get<bool>();
 			try{
 				nlohmann::json children = j.at("children");
@@ -743,13 +762,55 @@ void IndexedDataTree<Data, isSerializeable>::add(
 		//Get current subindex
 		int currentIndex = index.at(subindex);
 
+		if(currentIndex == IDX_SEPARATOR){
+			if(children.size() == 0){
+				indexSeparator = true;
+			}
+			else{
+				TBTKAssert(
+					indexSeparator,
+					"IndexedDataTree:add()",
+					"Invalid index '" << index.toString()
+					<< "'. Another Index has already been"
+					<< " added to the tree that has a"
+					<< " conflicting index at the index"
+					<< " separator at subindex '"
+					<< subindex << "'.",
+					"Note that a separation point between"
+					<< " two indices counts as a subindex."
+				);
+			}
+
+			indexSeparator = false;
+			add(data, index, subindex+1);
+			indexSeparator = true;
+			return;
+		}
+		else{
+			TBTKAssert(
+				!indexSeparator,
+				"IndexedDataTree:add()",
+				"Invalid index '" << index.toString() << "'."
+				<< " Another Index has already been added to"
+				<< " the tree that has a conflicting index"
+				<< " separator at subindex '"
+				<< subindex << "'.",
+				"Note that a separation point between two"
+				<< " indices counts as a subindex."
+			);
+		}
+
 		TBTKAssert(
 			currentIndex >= 0,
 			"IndexedDataTree::add()",
 			"Invalid Index. Negative indices not allowed, but the"
-			<< " index " << index.toString() << " have a negative"
-			<< " index in position " << subindex << ".",
-			""
+			<< "index " << index.toString() << " have a negative"
+			<< " index" << " in position " << subindex << ".",
+			"Compound indices such as {{1, 2, 3}, {4, 5, 6}} are"
+			<< " separated by IDX_SEPARATOR with the value '"
+			<< IDX_SEPARATOR << "' and are" << " represented as {1"
+			<< ", 2, 3, " << IDX_SEPARATOR << ", 4, 5, 6}. This is"
+			<< " the only allowed instance of negative numbers."
 		);
 
 		//If the subindex is bigger than the current number of child
@@ -813,13 +874,55 @@ void IndexedDataTree<Data, true>::add(
 		//Get current subindex
 		int currentIndex = index.at(subindex);
 
+		if(currentIndex == IDX_SEPARATOR){
+			if(children.size() == 0){
+				indexSeparator = true;
+			}
+			else{
+				TBTKAssert(
+					indexSeparator,
+					"IndexedDataTree:add()",
+					"Invalid index '" << index.toString()
+					<< "'. Another Index has already been"
+					<< " added to the tree that has a"
+					<< " conflicting index at the index"
+					<< " separator at subindex '"
+					<< subindex << "'.",
+					"Note that a separation point between"
+					<< " two indices counts as a subindex."
+				);
+			}
+
+			indexSeparator = false;
+			add(data, index, subindex+1);
+			indexSeparator = true;
+			return;
+		}
+		else{
+			TBTKAssert(
+				!indexSeparator,
+				"IndexedDataTree:add()",
+				"Invalid index '" << index.toString() << "'."
+				<< " Another Index has already been added to"
+				<< " the tree that has a conflicting index"
+				<< " separator at subindex '"
+				<< subindex << "'.",
+				"Note that a separation point between two"
+				<< " indices counts as a subindex."
+			);
+		}
+
 		TBTKAssert(
 			currentIndex >= 0,
 			"IndexedDataTree::add()",
 			"Invalid Index. Negative indices not allowed, but the"
-			<< " index " << index.toString() << " have a negative"
-			<< " index in position " << subindex << ".",
-			""
+			<< "index " << index.toString() << " have a negative"
+			<< " index" << " in position " << subindex << ".",
+			"Compound indices such as {{1, 2, 3}, {4, 5, 6}} are"
+			<< " separated by IDX_SEPARATOR with the value '"
+			<< IDX_SEPARATOR << "' and are" << " represented as {1"
+			<< ", 2, 3, " << IDX_SEPARATOR << ", 4, 5, 6}. This is"
+			<< " the only allowed instance of negative numbers."
 		);
 
 		//If the subindex is bigger than the current number of child
@@ -883,13 +986,55 @@ void IndexedDataTree<Data, false>::add(
 		//Get current subindex
 		int currentIndex = index.at(subindex);
 
+		if(currentIndex == IDX_SEPARATOR){
+			if(children.size() == 0){
+				indexSeparator = true;
+			}
+			else{
+				TBTKAssert(
+					indexSeparator,
+					"IndexedDataTree:add()",
+					"Invalid index '" << index.toString()
+					<< "'. Another Index has already been"
+					<< " added to the tree that has a"
+					<< " conflicting index at the index"
+					<< " separator at subindex '"
+					<< subindex << "'.",
+					"Note that a separation point between"
+					<< " two indices counts as a subindex."
+				);
+			}
+
+			indexSeparator = false;
+			add(data, index, subindex+1);
+			indexSeparator = true;
+			return;
+		}
+		else{
+			TBTKAssert(
+				!indexSeparator,
+				"IndexedDataTree:add()",
+				"Invalid index '" << index.toString() << "'."
+				<< " Another Index has already been added to"
+				<< " the tree that has a conflicting index"
+				<< " separator at subindex '"
+				<< subindex << "'.",
+				"Note that a separation point between two"
+				<< " indices counts as a subindex."
+			);
+		}
+
 		TBTKAssert(
 			currentIndex >= 0,
 			"IndexedDataTree::add()",
 			"Invalid Index. Negative indices not allowed, but the"
-			<< " index " << index.toString() << " have a negative"
-			<< " index in position " << subindex << ".",
-			""
+			<< "index " << index.toString() << " have a negative"
+			<< " index" << " in position " << subindex << ".",
+			"Compound indices such as {{1, 2, 3}, {4, 5, 6}} are"
+			<< " separated by IDX_SEPARATOR with the value '"
+			<< IDX_SEPARATOR << "' and are" << " represented as {1"
+			<< ", 2, 3, " << IDX_SEPARATOR << ", 4, 5, 6}. This is"
+			<< " the only allowed instance of negative numbers."
 		);
 
 		//If the subindex is bigger than the current number of child
@@ -1011,13 +1156,33 @@ bool IndexedDataTree<Data, true>::get(
 		//Get current subindex.
 		int currentIndex = index.at(subindex);
 
+		if(currentIndex == IDX_SEPARATOR){
+			if(indexSeparator){
+				return get(data, index, subindex+1);
+			}
+			else{
+				TBTKExit(
+					"IndexedDataTree::get()",
+					"Invalid Index. Found IDX_SEPARATOR at"
+					<< " subindex '" << subindex << "',"
+					<< " but the node is not an index"
+					<< " separator.",
+					""
+				);
+			}
+		}
+
 		TBTKAssert(
 			currentIndex >= 0,
-			"IndexedDataTree::add()",
+			"IndexedDataTree::get()",
 			"Invalid Index. Negative indices not allowed, but the"
-			<< " index " << index.toString() << " have a negative"
-			<< " index in position " << subindex << ".",
-			""
+			<< "index " << index.toString() << " have a negative"
+			<< " index" << " in position " << subindex << ".",
+			"Compound indices such as {{1, 2, 3}, {4, 5, 6}} are"
+			<< " separated by IDX_SEPARATOR with the value '"
+			<< IDX_SEPARATOR << "' and are" << " represented as {1"
+			<< ", 2, 3, " << IDX_SEPARATOR << ", 4, 5, 6}. This is"
+			<< " the only allowed instance of negative numbers."
 		);
 
 		//Return false because the Index is not included.
@@ -1054,13 +1219,33 @@ bool IndexedDataTree<Data, false>::get(
 		//Get current subindex.
 		int currentIndex = index.at(subindex);
 
+		if(currentIndex == IDX_SEPARATOR){
+			if(indexSeparator){
+				return get(data, index, subindex+1);
+			}
+			else{
+				TBTKExit(
+					"IndexedDataTree::get()",
+					"Invalid Index. Found IDX_SEPARATOR at"
+					<< " subindex '" << subindex << "',"
+					<< " but the node is not an index"
+					<< " separator.",
+					""
+				);
+			}
+		}
+
 		TBTKAssert(
 			currentIndex >= 0,
-			"IndexedDataTree::add()",
+			"IndexedDataTree::get()",
 			"Invalid Index. Negative indices not allowed, but the"
-			<< " index " << index.toString() << " have a negative"
-			<< " index in position " << subindex << ".",
-			""
+			<< "index " << index.toString() << " have a negative"
+			<< " index" << " in position " << subindex << ".",
+			"Compound indices such as {{1, 2, 3}, {4, 5, 6}} are"
+			<< " separated by IDX_SEPARATOR with the value '"
+			<< IDX_SEPARATOR << "' and are" << " represented as {1"
+			<< ", 2, 3, " << IDX_SEPARATOR << ", 4, 5, 6}. This is"
+			<< " the only allowed instance of negative numbers."
 		);
 
 		//Return false because the Index is not included.
@@ -1137,6 +1322,7 @@ inline std::string IndexedDataTree<bool, false>::serialize(Mode mode) const{
 		nlohmann::json j;
 		j["id"] = "IndexedDataTree";
 		j["indexIncluded"] = indexIncluded;
+		j["indexSeparator"] = indexSeparator;
 		j["data"] = data;
 		for(unsigned int n = 0; n < children.size(); n++){
 			j["children"].push_back(
@@ -1165,6 +1351,7 @@ inline std::string IndexedDataTree<char, false>::serialize(Mode mode) const{
 		nlohmann::json j;
 		j["id"] = "IndexedDataTree";
 		j["indexIncluded"] = indexIncluded;
+		j["indexSeparator"] = indexSeparator;
 		j["data"] = data;
 		for(unsigned int n = 0; n < children.size(); n++){
 			j["children"].push_back(
@@ -1193,6 +1380,7 @@ inline std::string IndexedDataTree<int, false>::serialize(Mode mode) const{
 		nlohmann::json j;
 		j["id"] = "IndexedDataTree";
 		j["indexIncluded"] = indexIncluded;
+		j["indexSeparator"] = indexSeparator;
 		j["data"] = data;
 		for(unsigned int n = 0; n < children.size(); n++){
 			j["children"].push_back(
@@ -1221,6 +1409,7 @@ inline std::string IndexedDataTree<float, false>::serialize(Mode mode) const{
 		nlohmann::json j;
 		j["id"] = "IndexedDataTree";
 		j["indexIncluded"] = indexIncluded;
+		j["indexSeparator"] = indexSeparator;
 		j["data"] = data;
 		for(unsigned int n = 0; n < children.size(); n++){
 			j["children"].push_back(
@@ -1249,6 +1438,7 @@ inline std::string IndexedDataTree<double, false>::serialize(Mode mode) const{
 		nlohmann::json j;
 		j["id"] = "IndexedDataTree";
 		j["indexIncluded"] = indexIncluded;
+		j["indexSeparator"] = indexSeparator;
 		j["data"] = data;
 		for(unsigned int n = 0; n < children.size(); n++){
 			j["children"].push_back(
@@ -1277,6 +1467,7 @@ inline std::string IndexedDataTree<std::complex<double>, false>::serialize(Mode 
 		nlohmann::json j;
 		j["id"] = "IndexedDataTree";
 		j["indexIncluded"] = indexIncluded;
+		j["indexSeparator"] = indexSeparator;
 		std::stringstream ss;
 		ss << "(" << real(data) << "," << imag(data) << ")";
 		j["data"] = ss.str();
@@ -1307,6 +1498,7 @@ std::string IndexedDataTree<Data, true>::serialize(Mode mode) const{
 		nlohmann::json j;
 		j["id"] = "IndexedDataTree";
 		j["indexIncluded"] = indexIncluded;
+		j["indexSeparator"] = indexSeparator;
 		j["data"] = data.serialize(mode);
 		for(unsigned int n = 0; n < children.size(); n++){
 			j["children"].push_back(
@@ -1336,6 +1528,7 @@ std::string IndexedDataTree<Data, false>::serialize(Mode mode) const{
 		nlohmann::json j;
 		j["id"] = "IndexedDataTree";
 		j["indexIncluded"] = indexIncluded;
+		j["indexSeparator"] = indexSeparator;
 		j["data"] = data.serialize(mode);
 		for(unsigned int n = 0; n < children.size(); n++){
 			j["children"].push_back(
