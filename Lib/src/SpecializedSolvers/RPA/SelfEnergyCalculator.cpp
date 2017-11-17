@@ -258,7 +258,7 @@ extern "C" {
 		complex<double> *A,
 		int *lda,
 		int *ipiv,
-		double *work,
+		complex<double> *work,
 		int *lwork,
 		int *info
 	);
@@ -273,7 +273,7 @@ void SelfEnergyCalculator::invertMatrix(
 
 	int *ipiv = new int[min(numRows, numCols)];
 	int lwork = numCols*numCols;
-	double *work = new double[lwork];
+	complex<double> *work = new complex<double>[lwork];
 	int info;
 
 	zgetrf_(&numRows, &numCols, matrix, &numRows, ipiv, &info);
