@@ -155,6 +155,8 @@ Array<DataType>& Array<DataType>::operator=(const Array &rhs){
 	if(this != &rhs){
 		ranges = rhs.ranges;
 		size = rhs.size;
+		if(data != nullptr)
+			delete [] data;
 		data = new DataType[size];
 		for(unsigned int n = 0; n < size; n++)
 			data[n] = rhs.data[n];
@@ -168,6 +170,8 @@ Array<DataType>& Array<DataType>::operator=(Array &&rhs){
 	if(this != &rhs){
 		ranges = std::move(rhs.ranges);
 		size = std::move(rhs.size);
+		if(data != nullptr)
+			delete [] data;
 		data = rhs.data;
 		rhs.data = nullptr;
 	}

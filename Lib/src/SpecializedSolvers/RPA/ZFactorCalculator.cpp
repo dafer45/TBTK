@@ -190,8 +190,7 @@ vector<complex<double>> ZFactorCalculator::calculateZFactor(
 /*	for(unsigned int n = 0; n < numOrbitals; n++)
 		zFactor[numOrbitals*n + n] += 1.;*/
 
-	//<Temporary removed>
-/*	complex<double> *eigenVectors = new complex<double>[
+	complex<double> *eigenVectors = new complex<double>[
 		numOrbitals*numOrbitals
 	];
 	complex<double> *eigenVectorsHermitianConjugate = new complex<double>[
@@ -221,8 +220,7 @@ vector<complex<double>> ZFactorCalculator::calculateZFactor(
 		eigenVectorsHermitianConjugate,
 		zFactor,
 		numOrbitals
-	);*/
-	//</Temporary removed>
+	);
 
 	for(unsigned int n = 0; n < numOrbitals*numOrbitals; n++)
 		zFactor[n] = imag(zFactor[n]);
@@ -242,20 +240,16 @@ vector<complex<double>> ZFactorCalculator::calculateZFactor(
 	for(unsigned int n = 0; n < numOrbitals; n++)
 		zFactor[numOrbitals*n + n] += 1.;
 
-	//<Temporary removed>
-//	invertMatrix(zFactor, numOrbitals);
-	//</Temporary removed>
+	invertMatrix(zFactor, numOrbitals);
 
 	vector<complex<double>> zFactors;
 	for(unsigned int n = 0; n < numOrbitals; n++)
 		zFactors.push_back(zFactor[numOrbitals*n + n]);
 
 	delete [] zFactor;
-	//<Temporary removed>
-/*	delete [] zFactorWorkspace;
+	delete [] zFactorWorkspace;
 	delete [] eigenVectors;
-	delete [] eigenVectorsHermitianConjugate;*/
-	//</Temporary removed>
+	delete [] eigenVectorsHermitianConjugate;
 
 	return zFactors;
 }
