@@ -27,7 +27,7 @@
 #include "BlockDiagonalizationSolver.h"
 #include "BPropertyExtractor.h"
 #include "IndexedDataTree.h"
-#include "ElectronFluctuationVertexCalculator.h"
+#include "SusceptibilityCalculator.h"
 
 namespace TBTK{
 
@@ -79,11 +79,11 @@ public:
 	);
 
 	/** Calculate self-energy vertex. */
-/*	std::vector<std::complex<double>> calculateSelfEnergyVertex(
+	std::vector<std::complex<double>> calculateSelfEnergyVertex(
 		const std::vector<double> &k,
 		const std::vector<int> &orbitalIndices,
 		unsigned int worker
-	);*/
+	);
 
 	/** Set U. */
 	void setU(std::complex<double> U);
@@ -107,10 +107,7 @@ public:
 	void loadSusceptibilities(const std::string &filename);
 private:
 	/** SusceptibilityCalculator. */
-//	std::vector<SusceptibilityCalculator*> susceptibilityCalculators;
-
-	/** ElectronFluctuationVertexCalculator. */
-	std::vector<ElectronFluctuationVertexCalculator*> electronFluctuationVertexCalculators;
+	std::vector<SusceptibilityCalculator*> susceptibilityCalculators;
 
 	/** Lookup table for calculating k+q. */
 	int *kMinusQLookupTable;
@@ -146,27 +143,27 @@ private:
 	IndexedDataTree<SerializeableVector<std::complex<double>>> selfEnergyTree;
 
 	/** IndexedDataTree storing the self-energy vertex. */
-//	SerializeableVector<IndexedDataTree<SerializeableVector<std::complex<double>>>> selfEnergyVertexTrees;
+	SerializeableVector<IndexedDataTree<SerializeableVector<std::complex<double>>>> selfEnergyVertexTrees;
 
 	/** Invert matix. */
-/*	void invertMatrix(
+	void invertMatrix(
 		std::complex<double> *matrix,
 		unsigned int dimensions
-	);*/
+	);
 
 	/** Multiply matrices. */
-/*	void multiplyMatrices(
+	void multiplyMatrices(
 		std::complex<double> *matrix1,
 		std::complex<double> *matrix2,
 		std::complex<double> *result,
 		unsigned int dimensions
-	);*/
+	);
 
 	/** Print matrix. */
-/*	void printMatrix(
+	void printMatrix(
 		std::complex<double> *matrix,
 		unsigned int dimensions
-	);*/
+	);
 
 	/** Self-energy main loop. */
 	template<bool singleSelfEnergyEnergy>
@@ -180,22 +177,22 @@ private:
 	std::complex<double> U, Up, J, Jp;
 
 	/** Interaction amplitudes used to calculate the self-energy vertex. */
-/*	std::vector<InteractionAmplitude> u1;
+	std::vector<InteractionAmplitude> u1;
 	std::vector<InteractionAmplitude> u2;
-	std::vector<InteractionAmplitude> u3;*/
+	std::vector<InteractionAmplitude> u3;
 
 	/** Flag indicating whether the interaction amplitudes are initialized.
 	 */
-//	bool interactionAmplitudesAreGenerated;
+	bool interactionAmplitudesAreGenerated;
 
 	/** Generate interaction amplitudes. Can be called multiple times and
 	 *  will only regenerate the interaction amplitudes when needed. */
-//	void generateInteractionAmplitudes();
+	void generateInteractionAmplitudes();
 };
 
 inline const MomentumSpaceContext& SelfEnergyCalculator::getMomentumSpaceContext(
 ) const{
-	return electronFluctuationVertexCalculators[0]->getMomentumSpaceContext();
+	return susceptibilityCalculators[0]->getMomentumSpaceContext();
 }
 
 inline void SelfEnergyCalculator::setNumSummationEnergies(
@@ -221,92 +218,64 @@ inline void SelfEnergyCalculator::setSelfEnergyEnergies(
 	this->selfEnergyEnergies = selfEnergyEnergies;
 	selfEnergyTree.clear();
 
-//	for(unsigned int n = 0; n < selfEnergyVertexTrees.size(); n++)
-//		selfEnergyVertexTrees[n].clear();
+	for(unsigned int n = 0; n < selfEnergyVertexTrees.size(); n++)
+		selfEnergyVertexTrees[n].clear();
 }
 
 inline void SelfEnergyCalculator::setU(std::complex<double> U){
 	this->U = U;
 
-//	for(unsigned int n = 0; n < susceptibilityCalculators.size(); n++)
-//		susceptibilityCalculators[n]->setU(U);
-	for(
-		unsigned int n = 0;
-		n < electronFluctuationVertexCalculators.size();
-		n++
-	){
-		electronFluctuationVertexCalculators[n]->setU(U);
-	}
+	for(unsigned int n = 0; n < susceptibilityCalculators.size(); n++)
+		susceptibilityCalculators[n]->setU(U);
 
 	selfEnergyTree.clear();
 
-//	for(unsigned int n = 0; n < selfEnergyVertexTrees.size(); n++)
-//		selfEnergyVertexTrees[n].clear();
+	for(unsigned int n = 0; n < selfEnergyVertexTrees.size(); n++)
+		selfEnergyVertexTrees[n].clear();
 
-//	interactionAmplitudesAreGenerated = false;
+	interactionAmplitudesAreGenerated = false;
 }
 
 inline void SelfEnergyCalculator::setUp(std::complex<double> Up){
 	this->Up = Up;
 
-//	for(unsigned int n = 0; n < susceptibilityCalculators.size(); n++)
-//		susceptibilityCalculators[n]->setUp(Up);
-	for(
-		unsigned int n = 0;
-		n < electronFluctuationVertexCalculators.size();
-		n++
-	){
-		electronFluctuationVertexCalculators[n]->setUp(Up);
-	}
+	for(unsigned int n = 0; n < susceptibilityCalculators.size(); n++)
+		susceptibilityCalculators[n]->setUp(Up);
 
 	selfEnergyTree.clear();
 
-//	for(unsigned int n = 0; n < selfEnergyVertexTrees.size(); n++)
-//		selfEnergyVertexTrees[n].clear();
+	for(unsigned int n = 0; n < selfEnergyVertexTrees.size(); n++)
+		selfEnergyVertexTrees[n].clear();
 
-//	interactionAmplitudesAreGenerated = false;
+	interactionAmplitudesAreGenerated = false;
 }
 
 inline void SelfEnergyCalculator::setJ(std::complex<double> J){
 	this->J = J;
 
-//	for(unsigned int n = 0; n < susceptibilityCalculators.size(); n++)
-//		susceptibilityCalculators[n]->setJ(J);
-	for(
-		unsigned int n = 0;
-		n < electronFluctuationVertexCalculators.size();
-		n++
-	){
-		electronFluctuationVertexCalculators[n]->setJ(J);
-	}
+	for(unsigned int n = 0; n < susceptibilityCalculators.size(); n++)
+		susceptibilityCalculators[n]->setJ(J);
 
 	selfEnergyTree.clear();
 
-//	for(unsigned int n = 0; n < selfEnergyVertexTrees.size(); n++)
-//		selfEnergyVertexTrees[n].clear();
+	for(unsigned int n = 0; n < selfEnergyVertexTrees.size(); n++)
+		selfEnergyVertexTrees[n].clear();
 
-//	interactionAmplitudesAreGenerated = false;
+	interactionAmplitudesAreGenerated = false;
 }
 
 inline void SelfEnergyCalculator::setJp(std::complex<double> Jp){
 	this->Jp = Jp;
 
-//	for(unsigned int n = 0; n < susceptibilityCalculators.size(); n++)
-//		susceptibilityCalculators[n]->setJp(Jp);
-	for(
-		unsigned int n = 0;
-		n < electronFluctuationVertexCalculators.size();
-		n++
-	){
-		electronFluctuationVertexCalculators[n]->setJp(Jp);
-	}
+	for(unsigned int n = 0; n < susceptibilityCalculators.size(); n++)
+		susceptibilityCalculators[n]->setJp(Jp);
 
 	selfEnergyTree.clear();
 
-//	for(unsigned int n = 0; n < selfEnergyVertexTrees.size(); n++)
-//		selfEnergyVertexTrees[n].clear();
+	for(unsigned int n = 0; n < selfEnergyVertexTrees.size(); n++)
+		selfEnergyVertexTrees[n].clear();
 
-//	interactionAmplitudesAreGenerated = false;
+	interactionAmplitudesAreGenerated = false;
 }
 
 /*inline void SelfEnergyCalculator::precomputeSusceptibilities(
@@ -326,20 +295,11 @@ inline void SelfEnergyCalculator::saveSusceptibilities(
 		fname = filename.substr(lastPos+1, filename.size());
 	}
 
-/*	for(unsigned int n = 0; n < susceptibilityCalculators.size(); n++){
+	for(unsigned int n = 0; n < susceptibilityCalculators.size(); n++){
 		susceptibilityCalculators[n]->saveSusceptibilities(
                         path + "Slice" + std::to_string(n) + "_" + fname
                 );
-        }*/
-	for(
-		unsigned int n = 0;
-		n < electronFluctuationVertexCalculators.size();
-		n++
-	){
-		electronFluctuationVertexCalculators[n]->saveSusceptibilities(
-                        path + "Slice" + std::to_string(n) + "_" + fname
-		);
-	}
+        }
 }
 
 inline void SelfEnergyCalculator::loadSusceptibilities(
@@ -353,20 +313,11 @@ inline void SelfEnergyCalculator::loadSusceptibilities(
 		fname = filename.substr(lastPos+1, filename.size());
 	}
 
-/*	for(unsigned int n = 0; n < susceptibilityCalculators.size(); n++){
+	for(unsigned int n = 0; n < susceptibilityCalculators.size(); n++){
 		susceptibilityCalculators[n]->loadSusceptibilities(
                         path + "Slice" + std::to_string(n) + "_" + fname
                 );
-        }*/
-	for(
-		unsigned int n = 0;
-		n < electronFluctuationVertexCalculators.size();
-		n++
-	){
-		electronFluctuationVertexCalculators[n]->loadSusceptibilities(
-                        path + "Slice" + std::to_string(n) + "_" + fname
-		);
-	}
+        }
 }
 
 };	//End of namespace TBTK

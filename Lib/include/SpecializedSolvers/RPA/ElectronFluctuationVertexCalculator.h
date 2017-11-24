@@ -68,6 +68,21 @@ public:
 		const std::vector<std::complex<double>> &energies
 	);
 
+	/** Set to true if the energies can be assumed to be inversion
+	 *  symmetric in the complex plane.
+	 *
+	 *  Important note:
+	 *  Only set this to true if the energies passed to setEnergies() are
+	 *  on the form (-E_n, -E_{n-1}, ..., E_{n-1}, E_{n}. Setting this flag
+	 *  to true without fullfilling this condition will result in undefined
+	 *  behavior. */
+	void setEnergiesAreInversionSymmetric(
+		bool energiesAreInversionSymmetric
+	);
+
+	/** Get wheter the energies are inversion symmetric. */
+	bool getEnergiesAreInversionSymmetric() const;
+
 	/** Calculate self-energy vertex. */
 	std::vector<std::complex<double>> calculateSelfEnergyVertex(
 		const std::vector<double> &k,
@@ -85,6 +100,10 @@ public:
 
 	/** Set Jp. */
 	void setJp(std::complex<double> Jp);
+
+	/** Generate interaction amplitudes. Can be called multiple times and
+	 *  will only regenerate the interaction amplitudes when needed. */
+	void generateInteractionAmplitudes();
 
 	/** Save susceptibilities. */
 	void saveSusceptibilities(const std::string &filename) const;
@@ -167,10 +186,6 @@ private:
 	/** Flag indicating whether the interaction amplitudes are initialized.
 	 */
 	bool interactionAmplitudesAreGenerated;
-
-	/** Generate interaction amplitudes. Can be called multiple times and
-	 *  will only regenerate the interaction amplitudes when needed. */
-	void generateInteractionAmplitudes();
 };
 
 inline const MomentumSpaceContext& ElectronFluctuationVertexCalculator::getMomentumSpaceContext(
@@ -187,7 +202,30 @@ inline const MomentumSpaceContext& ElectronFluctuationVertexCalculator::getMomen
 inline void ElectronFluctuationVertexCalculator::setEnergyType(
 	EnergyType energyType
 ){
-	energyType = energyType;
+	this->energyType = energyType;
+	switch(energyType){
+	case EnergyType::Real:
+		susceptibilityCalculator->setSusceptibilityEnergyType(
+			SusceptibilityCalculator::EnergyType::Real
+		);
+		break;
+	case EnergyType::Imaginary:
+		susceptibilityCalculator->setSusceptibilityEnergyType(
+			SusceptibilityCalculator::EnergyType::Imaginary
+		);
+		break;
+	case EnergyType::Complex:
+		susceptibilityCalculator->setSusceptibilityEnergyType(
+			SusceptibilityCalculator::EnergyType::Complex
+		);
+		break;
+	default:
+		TBTKExit(
+			"ElectronFluctuationVertexCalculator::setEnergyType()",
+			"Unknown energy type.",
+			"This should never happen, contact the developer."
+		);
+	}
 }
 
 inline ElectronFluctuationVertexCalculator::EnergyType ElectronFluctuationVertexCalculator::getEnergyType(
@@ -200,6 +238,21 @@ inline void ElectronFluctuationVertexCalculator::setEnergies(
 ){
 	this->energies = energies;
 	vertexTree.clear();
+
+	susceptibilityCalculator->setSusceptibilityEnergies(energies);
+}
+
+inline void ElectronFluctuationVertexCalculator::setEnergiesAreInversionSymmetric(
+	bool energiesAreInversionSymmetric
+){
+	susceptibilityCalculator->setSusceptibilityEnergiesAreInversionSymmetric(
+		energiesAreInversionSymmetric
+	);
+}
+
+inline bool ElectronFluctuationVertexCalculator::getEnergiesAreInversionSymmetric(
+) const{
+	return susceptibilityCalculator->getSusceptibilityEnergiesAreInversionSymmetric();
 }
 
 inline void ElectronFluctuationVertexCalculator::setU(std::complex<double> U){
