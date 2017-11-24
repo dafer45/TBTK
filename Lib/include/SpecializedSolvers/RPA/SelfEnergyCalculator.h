@@ -73,6 +73,11 @@ public:
 		const std::vector<int> &orbitalIndices
 	);
 
+	/** Calculate self-energy self-consistently. */
+	std::vector<std::complex<double>> calculateSelfEnergySelfConsistently(
+		unsigned int numMatsubaraFrequencies
+	);
+
 	/** Calculate self-energy vertex. */
 	std::vector<std::complex<double>> calculateSelfEnergyVertex(
 		const std::vector<double> &k,

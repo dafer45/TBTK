@@ -829,6 +829,60 @@ vector<complex<double>> SelfEnergyCalculator::calculateSelfEnergy(
 	return result;
 }
 
+vector<complex<double>> SelfEnergyCalculator::calculateSelfEnergySelfConsistently(
+	unsigned int numMatsubaraFrequencies
+){
+	TBTKNotYetImplemented("SelfEnergyCalculator::calculateSelfEnergySelfConsistently");
+
+	TBTKAssert(
+		isInitialized,
+		"SelfEnergyCalculator::calculateSelfEnergySelfConsistently()",
+		"SelfEnergyCalculator not yet initialized.",
+		"Use SelfEnergyCalculator::init() to initialize the"
+		<< " SelfEnergyCalculator."
+	);
+
+	generateInteractionAmplitudes();
+
+	const MomentumSpaceContext &momentumSpaceContext = susceptibilityCalculators[0]->getMomentumSpaceContext();
+	const BrillouinZone &brillouinZone = momentumSpaceContext.getBrillouinZone();
+	const vector<unsigned int> &numMeshPoints = momentumSpaceContext.getNumMeshPoints();
+
+	//Calculate offset
+/*	Index kIndex = brillouinZone.getMinorCellIndex(
+		k,
+		numMeshPoints
+	);
+
+	Index resultIndex = Index(
+		kIndex,
+		{
+			orbitalIndices.at(0),
+			orbitalIndices.at(1)
+		}
+	);*/
+
+	SerializeableVector<complex<double>> result;
+/*	if(selfEnergyTree.get(result, resultIndex))
+		return result;
+
+	//Initialize results
+	for(unsigned int n = 0; n < selfEnergyEnergies.size(); n++)
+		result.push_back(0);
+
+	if(selfEnergyEnergies.size() == 1)
+		selfEnergyMainLoop<true>(k, orbitalIndices, result);
+	else
+		selfEnergyMainLoop<false>(k, orbitalIndices, result);
+
+	selfEnergyTree.add(
+		result,
+		resultIndex
+	);*/
+
+	return result;
+}
+
 template<bool singleSelfEnergyEnergy>
 void SelfEnergyCalculator::selfEnergyMainLoop(
 	const vector<double> &k,
