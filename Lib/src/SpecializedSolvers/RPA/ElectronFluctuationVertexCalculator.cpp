@@ -55,24 +55,30 @@ ElectronFluctuationVertexCalculator::ElectronFluctuationVertexCalculator(
 	isInitialized = true;
 }
 
+ElectronFluctuationVertexCalculator::ElectronFluctuationVertexCalculator(
+	SusceptibilityCalculator &susceptibilityCalculator
+){
+	U = 0.;
+	Up = 0.;
+	J = 0.;
+	Jp = 0.;
+
+	this->susceptibilityCalculator = susceptibilityCalculator.createSlave();
+
+	interactionAmplitudesAreGenerated = false;
+
+	isInitialized = true;
+}
+
 ElectronFluctuationVertexCalculator::~ElectronFluctuationVertexCalculator(){
 	if(susceptibilityCalculator != nullptr)
 		delete susceptibilityCalculator;
 }
 
 ElectronFluctuationVertexCalculator* ElectronFluctuationVertexCalculator::createSlave(){
-	U = 0.;
-	Up = 0.;
-	J = 0.;
-	Jp = 0.;
-
-	susceptibilityCalculator = susceptibilityCalculator->createSlave();
-
-	interactionAmplitudesAreGenerated = false;
-
-	isInitialized = true;
-
-	return this;
+	return new ElectronFluctuationVertexCalculator(
+		*susceptibilityCalculator
+	);
 }
 
 //void ElectronFluctuationVertexCalculator::init(){

@@ -186,6 +186,11 @@ private:
 	/** Flag indicating whether the interaction amplitudes are initialized.
 	 */
 	bool interactionAmplitudesAreGenerated;
+
+	/** Slave constructor. */
+	ElectronFluctuationVertexCalculator(
+		SusceptibilityCalculator &susceptibilityCalculator
+	);
 };
 
 inline const MomentumSpaceContext& ElectronFluctuationVertexCalculator::getMomentumSpaceContext(
