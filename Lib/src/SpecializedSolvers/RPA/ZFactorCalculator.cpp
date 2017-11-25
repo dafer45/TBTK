@@ -254,7 +254,7 @@ vector<complex<double>> ZFactorCalculator::calculateZFactor(
 	return zFactors;
 }
 
-vector<complex<double>> ZFactorCalculator::calculateZFactor2(
+/*vector<complex<double>> ZFactorCalculator::calculateZFactor2(
 	const vector<double> &k
 ){
 	TBTKAssert(
@@ -345,9 +345,9 @@ vector<complex<double>> ZFactorCalculator::calculateZFactor2(
 							state < numOrbitals;
 							state++
 						){
-/*							double e = energies[(kMinusQLinearIndex + basisSize + (int)state)%basisSize];
-							complex<double> a0 = amplitudes[numOrbitals*((kMinusQLinearIndex + basisSize + state)%basisSize) + propagatorIndex0];
-							complex<double> a1 = amplitudes[numOrbitals*((kMinusQLinearIndex + basisSize + state)%basisSize) + propagatorIndex1];*/
+//							double e = energies[(kMinusQLinearIndex + basisSize + (int)state)%basisSize];
+//							complex<double> a0 = amplitudes[numOrbitals*((kMinusQLinearIndex + basisSize + state)%basisSize) + propagatorIndex0];
+//							complex<double> a1 = amplitudes[numOrbitals*((kMinusQLinearIndex + basisSize + state)%basisSize) + propagatorIndex1];
 							double e = momentumSpaceContext.getEnergy(
 								kMinusQLinearIndex + state
 							);
@@ -379,10 +379,10 @@ vector<complex<double>> ZFactorCalculator::calculateZFactor2(
 								);
 							}
 
-/*							complex<double> prefactor = conj(a0)*a1*interactionAmplitude0.getAmplitude()*interactionAmplitude1.getAmplitude();
-							for(int j = 0; j < numMatsubaraFrequencies; j++){
-								matrix[numOrbitals*incommingIndex + outgoingIndex] += prefactor*susceptibility.at(j)/pow(context.susceptibilityEnergies.at(j) - e + model->getChemicalPotential(), 2);
-							}*/
+//							complex<double> prefactor = conj(a0)*a1*interactionAmplitude0.getAmplitude()*interactionAmplitude1.getAmplitude();
+//							for(int j = 0; j < numMatsubaraFrequencies; j++){
+//								matrix[numOrbitals*incommingIndex + outgoingIndex] += prefactor*susceptibility.at(j)/pow(context.susceptibilityEnergies.at(j) - e + model->getChemicalPotential(), 2);
+//							}
 						}
 					}
 				}
@@ -438,17 +438,17 @@ vector<complex<double>> ZFactorCalculator::calculateZFactor2(
 	delete [] eigenVectors;
 	delete [] eigenVectorsHermitianConjugate;
 
-/*	for(unsigned int n = 0; n < numOrbitals*numOrbitals; n++)
-		matrix[n] = -matrix[n]*kT/(double)mesh.size();
-	for(unsigned int n = 0; n < numOrbitals; n++)
-		matrix[n*numOrbitals + n] += 1.;
+//	for(unsigned int n = 0; n < numOrbitals*numOrbitals; n++)
+//		matrix[n] = -matrix[n]*kT/(double)mesh.size();
+//	for(unsigned int n = 0; n < numOrbitals; n++)
+//		matrix[n*numOrbitals + n] += 1.;
 
-	invertMatrix(matrix, numOrbitals);*/
+//	invertMatrix(matrix, numOrbitals);
 
 //	return abs(matrix[0]) + abs(matrix[1]) + abs(matrix[2]) + abs(matrix[3]);
 //	return abs(matrix[3]);
 	return zFactors;
-}
+}*/
 
 /*complex<double> SusceptibilityCalculator::calculateZFactor(
 	const vector<double> &k,

@@ -50,7 +50,7 @@ public:
 	const MomentumSpaceContext& getMomentumSpaceContext() const;
 
 	/** Initialize the SelfEnergyCalculator. */
-	void init();
+//	void init();
 
 	/** Enum class for indicating whether the energy is an arbitrary comlex
 	 *  number, or if it is restricted to the real or imaginary axis. */

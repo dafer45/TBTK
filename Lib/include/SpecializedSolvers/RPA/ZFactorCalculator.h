@@ -54,9 +54,9 @@ public:
 	);
 
 	/** Calculate Z-factor. */
-	std::vector<std::complex<double>> calculateZFactor2(
+/*	std::vector<std::complex<double>> calculateZFactor2(
 		const std::vector<double> &k
-	);
+	);*/
 
 	/** Set U. */
 	void setU(std::complex<double> U);

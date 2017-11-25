@@ -35,7 +35,6 @@ namespace TBTK{
 ElectronFluctuationVertexCalculator::ElectronFluctuationVertexCalculator(
 	const MomentumSpaceContext &momentumSpaceContext
 ){
-	isInitialized = false;
 
 //	kMinusQLookupTable = nullptr;
 
@@ -52,6 +51,8 @@ ElectronFluctuationVertexCalculator::ElectronFluctuationVertexCalculator(
 	}*/
 
 	interactionAmplitudesAreGenerated = false;
+
+	isInitialized = true;
 }
 
 ElectronFluctuationVertexCalculator::~ElectronFluctuationVertexCalculator(){
@@ -60,8 +61,6 @@ ElectronFluctuationVertexCalculator::~ElectronFluctuationVertexCalculator(){
 }
 
 ElectronFluctuationVertexCalculator* ElectronFluctuationVertexCalculator::createSlave(){
-	isInitialized = false;
-
 	U = 0.;
 	Up = 0.;
 	J = 0.;
@@ -71,10 +70,12 @@ ElectronFluctuationVertexCalculator* ElectronFluctuationVertexCalculator::create
 
 	interactionAmplitudesAreGenerated = false;
 
+	isInitialized = true;
+
 	return this;
 }
 
-void ElectronFluctuationVertexCalculator::init(){
+//void ElectronFluctuationVertexCalculator::init(){
 	//Calculate kT
 /*	double temperature = UnitHandler::convertTemperatureNtB(
 		susceptibilityCalculators[0]->getMomentumSpaceContext(
@@ -106,8 +107,8 @@ void ElectronFluctuationVertexCalculator::init(){
 	susceptibilityCalculator.precompute();
 	Timer::tock();*/
 
-	isInitialized = true;
-}
+//	isInitialized = true;
+//}
 
 void ElectronFluctuationVertexCalculator::generateInteractionAmplitudes(){
 	if(interactionAmplitudesAreGenerated)

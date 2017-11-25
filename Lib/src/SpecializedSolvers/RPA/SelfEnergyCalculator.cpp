@@ -1011,7 +1011,7 @@ void SelfEnergyCalculator::selfEnergyMainLoop(
 						worker
 					);*/
 					vector<complex<double>> selfEnergyVertex
-						= electronFluctuationVertexCalculators[n]->calculateSelfEnergyVertex(
+						= electronFluctuationVertexCalculators[worker]->calculateSelfEnergyVertex(
 							mesh.at(n),
 							{
 								(int)propagatorEnd,
