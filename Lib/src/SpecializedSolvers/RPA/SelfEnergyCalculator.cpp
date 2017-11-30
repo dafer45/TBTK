@@ -52,14 +52,6 @@ SelfEnergyCalculator::SelfEnergyCalculator(
 	J = 0.;
 	Jp = 0.;
 
-/*	susceptibilityCalculators.push_back(
-		new SusceptibilityCalculator(momentumSpaceContext)
-	);
-	for(unsigned int n = 1; n < numWorkers; n++){
-		susceptibilityCalculators.push_back(
-			susceptibilityCalculators[0]->createSlave()
-		);
-	}*/
 	electronFluctuationVertexCalculators.push_back(
 		new ElectronFluctuationVertexCalculator(momentumSpaceContext)
 	);
@@ -68,14 +60,6 @@ SelfEnergyCalculator::SelfEnergyCalculator(
 			electronFluctuationVertexCalculators[0]->createSlave()
 		);
 	}
-
-/*	for(unsigned int n = 0; n < numWorkers; n++){
-		selfEnergyVertexTrees.push_back(
-			IndexedDataTree<SerializeableVector<complex<double>>>()
-		);
-	}*/
-
-//	interactionAmplitudesAreGenerated = false;
 }
 
 SelfEnergyCalculator::~SelfEnergyCalculator(){
@@ -98,10 +82,6 @@ void SelfEnergyCalculator::init(){
 	}
 
 	//Calculate kT
-/*	double temperature = UnitHandler::convertTemperatureNtB(
-		susceptibilityCalculators[0]->getMomentumSpaceContext(
-		).getModel().getTemperature()
-	);*/
 	double temperature = UnitHandler::convertTemperatureNtB(
 		electronFluctuationVertexCalculators[0]->getMomentumSpaceContext(
 		).getModel().getTemperature()
@@ -116,17 +96,6 @@ void SelfEnergyCalculator::init(){
 	){
 		summationEnergies.push_back(i*M_PI*2.*(double)(n)*kT);
 	}
-/*	for(unsigned int n = 0; n < susceptibilityCalculators.size(); n++){
-		susceptibilityCalculators[n]->setSusceptibilityEnergies(
-			summationEnergies
-		);
-		susceptibilityCalculators[n]->setSusceptibilityEnergyType(
-			SusceptibilityCalculator::EnergyType::Imaginary
-		);
-		susceptibilityCalculators[n]->setSusceptibilityEnergiesAreInversionSymmetric(
-			true
-		);
-	}*/
 	for(unsigned int n = 0; n < electronFluctuationVertexCalculators.size(); n++){
 		electronFluctuationVertexCalculators[n]->setEnergies(
 			summationEnergies
@@ -139,10 +108,6 @@ void SelfEnergyCalculator::init(){
 		);
 	}
 
-/*	Timer::tick("Precompute");
-	susceptibilityCalculator.precompute();
-	Timer::tock();*/
-
 	isInitialized = true;
 }
 
@@ -151,7 +116,6 @@ void SelfEnergyCalculator::generateKMinusQLookupTable(){
 		return;
 
 	Timer::tick("Calculate k-q lookup table.");
-//	const MomentumSpaceContext &momentumSpaceContext = susceptibilityCalculators[0]->getMomentumSpaceContext();
 	const MomentumSpaceContext &momentumSpaceContext = electronFluctuationVertexCalculators[0]->getMomentumSpaceContext();
 	const vector<vector<double>> &mesh = momentumSpaceContext.getMesh();
 	const vector<unsigned int> &numMeshPoints = momentumSpaceContext.getNumMeshPoints();
@@ -243,7 +207,6 @@ inline int SelfEnergyCalculator::getKMinusQLinearIndex<false>(
 	const vector<double> &k,
 	int kLinearIndex
 ) const{
-//	const MomentumSpaceContext &momentumSpaceContext = susceptibilityCalculators[0]->getMomentumSpaceContext();
 	const MomentumSpaceContext &momentumSpaceContext = electronFluctuationVertexCalculators[0]->getMomentumSpaceContext();
 	const vector<vector<double>> &mesh = momentumSpaceContext.getMesh();
 	Index kMinusQIndex = momentumSpaceContext.getBrillouinZone().getMinorCellIndex(
@@ -261,7 +224,6 @@ inline int SelfEnergyCalculator::getKMinusQLinearIndex<true>(
 	const vector<double> &k,
 	int kLinearIndex
 ) const{
-//	const MomentumSpaceContext &momentumSpaceContext = susceptibilityCalculators[0]->getMomentumSpaceContext();
 	const MomentumSpaceContext &momentumSpaceContext = electronFluctuationVertexCalculators[0]->getMomentumSpaceContext();
 	const vector<vector<double>> &mesh = momentumSpaceContext.getMesh();
 	unsigned int numOrbitals = momentumSpaceContext.getNumOrbitals();
@@ -269,531 +231,6 @@ inline int SelfEnergyCalculator::getKMinusQLinearIndex<true>(
 		meshIndex*mesh.size() + kLinearIndex/numOrbitals
 	];
 }
-
-/*extern "C" {
-	void zgetrf_(
-		int* M,
-		int *N,
-		complex<double> *A,
-		int *lda,
-		int *ipiv,
-		int *info
-	);
-	void zgetri_(
-		int *N,
-		complex<double> *A,
-		int *lda,
-		int *ipiv,
-		complex<double> *work,
-		int *lwork,
-		int *info
-	);
-}
-
-void SelfEnergyCalculator::invertMatrix(
-	complex<double> *matrix,
-	unsigned int dimensions
-){
-	int numRows = dimensions;
-	int numCols = dimensions;
-
-	int *ipiv = new int[min(numRows, numCols)];
-	int lwork = numCols*numCols;
-	complex<double> *work = new complex<double>[lwork];
-	int info;
-
-	zgetrf_(&numRows, &numCols, matrix, &numRows, ipiv, &info);
-	zgetri_(&numRows, matrix, &numRows, ipiv, work, &lwork, &info);
-
-	delete [] ipiv;
-	delete [] work;
-}
-
-void SelfEnergyCalculator::multiplyMatrices(
-	complex<double> *matrix1,
-	complex<double> *matrix2,
-	complex<double> *result,
-	unsigned int dimensions
-){
-	for(unsigned int n = 0; n < dimensions*dimensions; n++)
-		result[n] = 0.;
-
-	for(unsigned int row = 0; row < dimensions; row++)
-		for(unsigned int col = 0; col < dimensions; col++)
-			for(unsigned int n = 0; n < dimensions; n++)
-				result[dimensions*col + row] += matrix1[dimensions*n + row]*matrix2[dimensions*col + n];
-}
-
-void SelfEnergyCalculator::printMatrix(complex<double> *matrix, unsigned int dimension){
-	for(unsigned int r = 0; r < dimension; r++){
-		for(unsigned int c = 0; c < dimension; c++){
-			Streams::out << setw(20) << matrix[dimension*c + r];
-		}
-		Streams::out << "\n";
-	}
-	Streams::out << "\n";
-}*/
-
-/*void SelfEnergyCalculator::generateInteractionAmplitudes(){
-	if(interactionAmplitudesAreGenerated)
-		return;
-
-	u1.clear();
-	u2.clear();
-	u3.clear();
-
-	const MomentumSpaceContext &momentumSpaceContext = susceptibilityCalculators[0]->getMomentumSpaceContext();
-	unsigned int numOrbitals = momentumSpaceContext.getNumOrbitals();
-
-	for(int a = 0; a < (int)numOrbitals; a++){
-		u2.push_back(
-			InteractionAmplitude(
-				U,
-				{{a},	{a}},
-				{{a},	{a}}
-			)
-		);
-		u3.push_back(
-			InteractionAmplitude(
-				-U,
-				{{a},	{a}},
-				{{a},	{a}}
-			)
-		);
-
-		for(int b = 0; b < (int)numOrbitals; b++){
-			if(a == b)
-				continue;
-
-			u1.push_back(
-				InteractionAmplitude(
-					Up - J,
-					{{a},	{b}},
-					{{b},	{a}}
-				)
-			);
-			u2.push_back(
-				InteractionAmplitude(
-					Up,
-					{{a},	{b}},
-					{{b},	{a}}
-				)
-			);
-			u3.push_back(
-				InteractionAmplitude(
-					-J,
-					{{a},	{b}},
-					{{b},	{a}}
-				)
-			);
-
-			u1.push_back(
-				InteractionAmplitude(
-					J - Up,
-					{{a},	{b}},
-					{{a},	{b}}
-				)
-			);
-			u2.push_back(
-				InteractionAmplitude(
-					J,
-					{{a},	{b}},
-					{{a},	{b}}
-				)
-			);
-			u3.push_back(
-				InteractionAmplitude(
-					-Up,
-					{{a},	{b}},
-					{{a},	{b}}
-				)
-			);
-
-			u2.push_back(
-				InteractionAmplitude(
-					Jp,
-					{{a},	{a}},
-					{{b},	{b}}
-				)
-			);
-			u3.push_back(
-				InteractionAmplitude(
-					-Jp,
-					{{a},	{a}},
-					{{b},	{b}}
-				)
-			);
-		}
-	}
-
-	interactionAmplitudesAreGenerated = true;
-}*/
-
-/*vector<complex<double>> SelfEnergyCalculator::calculateSelfEnergyVertex(
-	const vector<double> &k,
-	const vector<int> &orbitalIndices,
-	unsigned int worker
-){
-	TBTKAssert(
-		isInitialized,
-		"SelfEnergyCalculator::calculateSelfEnergyVertex()",
-		"SelfEnergyCalculator not yet initialized.",
-		"Use SelfEnergyCalculator::init() to initialize the"
-		<< " SelfEnergyCalculator."
-	);
-	TBTKAssert(
-		orbitalIndices.size() == 4,
-		"calculateSelfEnergyVertex()",
-		"Two orbital indices required but " << orbitalIndices.size()
-		<< " supplied.",
-		""
-	);
-	TBTKAssert(
-		worker < selfEnergyVertexTrees.size(),
-		"SelfEnergyCalculator::calculateSelfEnergyVertex()",
-		"'worker' must be smaller than 'numWorkers' specified in the"
-		" constructor (defult value for 'numWorkers' is 1).",
-		""
-	);
-
-	const MomentumSpaceContext &momentumSpaceContext = susceptibilityCalculators[0]->getMomentumSpaceContext();
-	const BrillouinZone &brillouinZone = momentumSpaceContext.getBrillouinZone();
-	const vector<unsigned int> &numMeshPoints = momentumSpaceContext.getNumMeshPoints();
-
-	//Calculate offset
-	Index kIndex = brillouinZone.getMinorCellIndex(
-		k,
-		numMeshPoints
-	);
-
-	Index resultIndex = Index(
-		kIndex,
-		{
-			orbitalIndices.at(0),
-			orbitalIndices.at(1),
-			orbitalIndices.at(2),
-			orbitalIndices.at(3)
-		}
-	);
-
-	SerializeableVector<complex<double>> result;
-	if(selfEnergyVertexTrees[worker].get(result, resultIndex))
-		return result;
-
-
-	DualIndex kDual(kIndex, k);
-
-//	generateInteractionAmplitudes();
-
-	vector<complex<double>> selfEnergyVertex;
-	selfEnergyVertex.reserve(numSummationEnergies);
-	for(
-		unsigned int n = 0;
-		n < numSummationEnergies;
-		n++
-	){
-		selfEnergyVertex.push_back(0.);
-	}
-
-	//U_1*\chi_1*U_1
-	for(unsigned int in = 0; in < u1.size(); in++){
-		const InteractionAmplitude &incommingAmplitude = u1.at(in);
-		complex<double> amplitude_i = incommingAmplitude.getAmplitude();
-		int c0_i = incommingAmplitude.getCreationOperatorIndex(0).at(0);
-		int c1_i = incommingAmplitude.getCreationOperatorIndex(1).at(0);
-		int a0_i = incommingAmplitude.getAnnihilationOperatorIndex(0).at(0);
-		int a1_i = incommingAmplitude.getAnnihilationOperatorIndex(1).at(0);
-
-		if(
-//			a1_i != orbitalIndices.at(3)
-//			|| c0_i != orbitalIndices.at(0)
-			a1_i != orbitalIndices.at(3)
-			|| c0_i != orbitalIndices.at(2)
-			|| abs(amplitude_i) < 1e-10
-		){
-			continue;
-		}
-
-		for(unsigned int out = 0; out < u1.size(); out++){
-			const InteractionAmplitude &outgoingAmplitude = u1.at(out);
-			complex<double> amplitude_o = outgoingAmplitude.getAmplitude();
-			int c0_o = outgoingAmplitude.getCreationOperatorIndex(0).at(0);
-			int c1_o = outgoingAmplitude.getCreationOperatorIndex(1).at(0);
-			int a0_o = outgoingAmplitude.getAnnihilationOperatorIndex(0).at(0);
-			int a1_o = outgoingAmplitude.getAnnihilationOperatorIndex(1).at(0);
-
-			if(
-//				a0_o != orbitalIndices.at(2)
-//				|| c1_o != orbitalIndices.at(1)
-				a0_o != orbitalIndices.at(0)
-				|| c1_o != orbitalIndices.at(1)
-				|| abs(amplitude_o) < 1e-10
-			){
-				continue;
-			}
-
-			vector<complex<double>> chargeSusceptibility = susceptibilityCalculators[worker]->calculateChargeRPASusceptibility(
-				kDual,
-//				{c1_i, a0_i, c0_o, a1_o}
-				{c0_o, a1_o, c1_i, a0_i}
-			);
-			vector<complex<double>> spinSusceptibility = susceptibilityCalculators[worker]->calculateSpinRPASusceptibility(
-				kDual,
-//				{c1_i, a0_i, c0_o, a1_o}
-				{c0_o, a1_o, c1_i, a0_i}
-			);
-			for(
-				unsigned int n = 0;
-				n < numSummationEnergies;
-				n++
-			){
-				selfEnergyVertex.at(n) += amplitude_i*amplitude_o*(
-					chargeSusceptibility.at(n)
-					+ spinSusceptibility.at(n)
-				)/2.;
-			}
-		}
-	}
-
-	//U_2*\chi_1*U_2
-	for(unsigned int in = 0; in < u2.size(); in++){
-		const InteractionAmplitude &incommingAmplitude = u2.at(in);
-		complex<double> amplitude_i = incommingAmplitude.getAmplitude();
-		int c0_i = incommingAmplitude.getCreationOperatorIndex(0).at(0);
-		int c1_i = incommingAmplitude.getCreationOperatorIndex(1).at(0);
-		int a0_i = incommingAmplitude.getAnnihilationOperatorIndex(0).at(0);
-		int a1_i = incommingAmplitude.getAnnihilationOperatorIndex(1).at(0);
-
-		if(
-//			a1_i != orbitalIndices.at(3)
-//			|| c0_i != orbitalIndices.at(0)
-			a1_i != orbitalIndices.at(3)
-			|| c0_i != orbitalIndices.at(2)
-			|| abs(amplitude_i) < 1e-10
-		){
-			continue;
-		}
-
-		for(unsigned int out = 0; out < u2.size(); out++){
-			const InteractionAmplitude &outgoingAmplitude = u2.at(out);
-			complex<double> amplitude_o = outgoingAmplitude.getAmplitude();
-			int c0_o = outgoingAmplitude.getCreationOperatorIndex(0).at(0);
-			int c1_o = outgoingAmplitude.getCreationOperatorIndex(1).at(0);
-			int a0_o = outgoingAmplitude.getAnnihilationOperatorIndex(0).at(0);
-			int a1_o = outgoingAmplitude.getAnnihilationOperatorIndex(1).at(0);
-
-			if(
-//				a0_o != orbitalIndices.at(2)
-//				|| c1_o != orbitalIndices.at(1)
-				a0_o != orbitalIndices.at(0)
-				|| c1_o != orbitalIndices.at(1)
-				|| abs(amplitude_o) < 1e-10
-			){
-				continue;
-			}
-
-			vector<complex<double>> chargeSusceptibility = susceptibilityCalculators[worker]->calculateChargeRPASusceptibility(
-				kDual,
-//				{c1_i, a0_i, c0_o, a1_o}
-				{c0_o, a1_o, c1_i, a0_i}
-			);
-			vector<complex<double>> spinSusceptibility = susceptibilityCalculators[worker]->calculateSpinRPASusceptibility(
-				kDual,
-//				{c1_i, a0_i, c0_o, a1_o}
-				{c0_o, a1_o, c1_i, a0_i}
-			);
-			for(
-				unsigned int n = 0;
-				n < numSummationEnergies;
-				n++
-			){
-				selfEnergyVertex.at(n) += amplitude_i*amplitude_o*(
-					chargeSusceptibility.at(n)
-					+ spinSusceptibility.at(n)
-				)/2.;
-			}
-		}
-	}
-
-	//U_1*\chi_2*U_2
-	for(unsigned int in = 0; in < u1.size(); in++){
-		const InteractionAmplitude &incommingAmplitude = u1.at(in);
-		complex<double> amplitude_i = incommingAmplitude.getAmplitude();
-		int c0_i = incommingAmplitude.getCreationOperatorIndex(0).at(0);
-		int c1_i = incommingAmplitude.getCreationOperatorIndex(1).at(0);
-		int a0_i = incommingAmplitude.getAnnihilationOperatorIndex(0).at(0);
-		int a1_i = incommingAmplitude.getAnnihilationOperatorIndex(1).at(0);
-
-		if(
-//			a1_i != orbitalIndices.at(3)
-//			|| c0_i != orbitalIndices.at(0)
-			a1_i != orbitalIndices.at(3)
-			|| c0_i != orbitalIndices.at(2)
-			|| abs(amplitude_i) < 1e-10
-		){
-			continue;
-		}
-
-		for(unsigned int out = 0; out < u2.size(); out++){
-			const InteractionAmplitude &outgoingAmplitude = u2.at(out);
-			complex<double> amplitude_o = outgoingAmplitude.getAmplitude();
-			int c0_o = outgoingAmplitude.getCreationOperatorIndex(0).at(0);
-			int c1_o = outgoingAmplitude.getCreationOperatorIndex(1).at(0);
-			int a0_o = outgoingAmplitude.getAnnihilationOperatorIndex(0).at(0);
-			int a1_o = outgoingAmplitude.getAnnihilationOperatorIndex(1).at(0);
-
-			if(
-//				a0_o != orbitalIndices.at(2)
-//				|| c1_o != orbitalIndices.at(1)
-				a0_o != orbitalIndices.at(0)
-				|| c1_o != orbitalIndices.at(1)
-				|| abs(amplitude_o) < 1e-10
-			){
-				continue;
-			}
-
-			vector<complex<double>> chargeSusceptibility = susceptibilityCalculators[worker]->calculateChargeRPASusceptibility(
-				kDual,
-//				{c1_i, a0_i, c0_o, a1_o}
-				{c0_o, a1_o, c1_i, a0_i}
-			);
-			vector<complex<double>> spinSusceptibility = susceptibilityCalculators[worker]->calculateSpinRPASusceptibility(
-				kDual,
-//				{c1_i, a0_i, c0_o, a1_o}
-				{c0_o, a1_o, c1_i, a0_i}
-			);
-			for(
-				unsigned int n = 0;
-				n < numSummationEnergies;
-				n++
-			){
-				selfEnergyVertex.at(n) += amplitude_i*amplitude_o*(
-					chargeSusceptibility.at(n)
-					- spinSusceptibility.at(n)
-				)/2.;
-			}
-		}
-	}
-
-	//U_2*\chi_2*U_1
-	for(unsigned int in = 0; in < u2.size(); in++){
-		const InteractionAmplitude &incommingAmplitude = u2.at(in);
-		complex<double> amplitude_i = incommingAmplitude.getAmplitude();
-		int c0_i = incommingAmplitude.getCreationOperatorIndex(0).at(0);
-		int c1_i = incommingAmplitude.getCreationOperatorIndex(1).at(0);
-		int a0_i = incommingAmplitude.getAnnihilationOperatorIndex(0).at(0);
-		int a1_i = incommingAmplitude.getAnnihilationOperatorIndex(1).at(0);
-
-		if(
-//			a1_i != orbitalIndices.at(3)
-//			|| c0_i != orbitalIndices.at(0)
-			a1_i != orbitalIndices.at(3)
-			|| c0_i != orbitalIndices.at(2)
-			|| abs(amplitude_i) < 1e-10
-		){
-			continue;
-		}
-
-		for(unsigned int out = 0; out < u1.size(); out++){
-			const InteractionAmplitude &outgoingAmplitude = u1.at(out);
-			complex<double> amplitude_o = outgoingAmplitude.getAmplitude();
-			int c0_o = outgoingAmplitude.getCreationOperatorIndex(0).at(0);
-			int c1_o = outgoingAmplitude.getCreationOperatorIndex(1).at(0);
-			int a0_o = outgoingAmplitude.getAnnihilationOperatorIndex(0).at(0);
-			int a1_o = outgoingAmplitude.getAnnihilationOperatorIndex(1).at(0);
-
-			if(
-//				a0_o != orbitalIndices.at(2)
-//				|| c1_o != orbitalIndices.at(1)
-				a0_o != orbitalIndices.at(0)
-				|| c1_o != orbitalIndices.at(1)
-				|| abs(amplitude_o) < 1e-10
-			){
-				continue;
-			}
-
-			vector<complex<double>> chargeSusceptibility = susceptibilityCalculators[worker]->calculateChargeRPASusceptibility(
-				kDual,
-//				{c1_i, a0_i, c0_o, a1_o}
-				{c0_o, a1_o, c1_i, a0_i}
-			);
-			vector<complex<double>> spinSusceptibility = susceptibilityCalculators[worker]->calculateSpinRPASusceptibility(
-				kDual,
-//				{c1_i, a0_i, c0_o, a1_o}
-				{c0_o, a1_o, c1_i, a0_i}
-			);
-			for(
-				unsigned int n = 0;
-				n < numSummationEnergies;
-				n++
-			){
-				selfEnergyVertex.at(n) += amplitude_i*amplitude_o*(
-					chargeSusceptibility.at(n)
-					- spinSusceptibility.at(n)
-				)/2.;
-			}
-		}
-	}
-
-	//U_3*\chi_3*U_3
-	for(unsigned int in = 0; in < u3.size(); in++){
-		const InteractionAmplitude &incommingAmplitude = u3.at(in);
-		complex<double> amplitude_i = incommingAmplitude.getAmplitude();
-		int c0_i = incommingAmplitude.getCreationOperatorIndex(0).at(0);
-		int c1_i = incommingAmplitude.getCreationOperatorIndex(1).at(0);
-		int a0_i = incommingAmplitude.getAnnihilationOperatorIndex(0).at(0);
-		int a1_i = incommingAmplitude.getAnnihilationOperatorIndex(1).at(0);
-
-		if(
-//			a1_i != orbitalIndices.at(3)
-//			|| c0_i != orbitalIndices.at(0)
-			a1_i != orbitalIndices.at(3)
-			|| c0_i != orbitalIndices.at(2)
-			|| abs(amplitude_i) < 1e-10
-		){
-			continue;
-		}
-
-		for(unsigned int out = 0; out < u3.size(); out++){
-			const InteractionAmplitude &outgoingAmplitude = u3.at(out);
-			complex<double> amplitude_o = outgoingAmplitude.getAmplitude();
-			int c0_o = outgoingAmplitude.getCreationOperatorIndex(0).at(0);
-			int c1_o = outgoingAmplitude.getCreationOperatorIndex(1).at(0);
-			int a0_o = outgoingAmplitude.getAnnihilationOperatorIndex(0).at(0);
-			int a1_o = outgoingAmplitude.getAnnihilationOperatorIndex(1).at(0);
-
-			if(
-//				a0_o != orbitalIndices.at(2)
-//				|| c1_o != orbitalIndices.at(1)
-				a0_o != orbitalIndices.at(0)
-				|| c1_o != orbitalIndices.at(1)
-				|| abs(amplitude_o) < 1e-10
-			){
-				continue;
-			}
-
-			vector<complex<double>> spinSusceptibility = susceptibilityCalculators[worker]->calculateSpinRPASusceptibility(
-				kDual,
-//				{c1_i, a0_i, c0_o, a1_o}
-				{c0_o, a1_o, c1_i, a0_i}
-			);
-			for(
-				unsigned int n = 0;
-				n < numSummationEnergies;
-				n++
-			){
-				selfEnergyVertex.at(n) += amplitude_i*amplitude_o*spinSusceptibility.at(n);
-			}
-		}
-	}
-
-	selfEnergyVertexTrees[worker].add(
-		selfEnergyVertex,
-		resultIndex
-	);
-
-	return selfEnergyVertex;
-}*/
 
 vector<complex<double>> SelfEnergyCalculator::calculateSelfEnergy(
 	const vector<double> &k,
@@ -814,7 +251,6 @@ vector<complex<double>> SelfEnergyCalculator::calculateSelfEnergy(
 		""
 	);
 
-//	generateInteractionAmplitudes();
 	for(
 		unsigned int n = 0;
 		n < electronFluctuationVertexCalculators.size();
@@ -823,7 +259,6 @@ vector<complex<double>> SelfEnergyCalculator::calculateSelfEnergy(
 		electronFluctuationVertexCalculators[n]->generateInteractionAmplitudes();
 	}
 
-//	const MomentumSpaceContext &momentumSpaceContext = susceptibilityCalculators[0]->getMomentumSpaceContext();
 	const MomentumSpaceContext &momentumSpaceContext = electronFluctuationVertexCalculators[0]->getMomentumSpaceContext();
 	const BrillouinZone &brillouinZone = momentumSpaceContext.getBrillouinZone();
 	const vector<unsigned int> &numMeshPoints = momentumSpaceContext.getNumMeshPoints();
@@ -876,7 +311,6 @@ vector<complex<double>> SelfEnergyCalculator::calculateSelfEnergySelfConsistentl
 		<< " SelfEnergyCalculator."
 	);
 
-//	generateInteractionAmplitudes();
 	for(
 		unsigned int n = 0;
 		n < electronFluctuationVertexCalculators.size();
@@ -885,7 +319,6 @@ vector<complex<double>> SelfEnergyCalculator::calculateSelfEnergySelfConsistentl
 		electronFluctuationVertexCalculators[n]->generateInteractionAmplitudes();
 	}
 
-//	const MomentumSpaceContext &momentumSpaceContext = susceptibilityCalculators[0]->getMomentumSpaceContext();
 	const MomentumSpaceContext &momentumSpaceContext = electronFluctuationVertexCalculators[0]->getMomentumSpaceContext();
 	const BrillouinZone &brillouinZone = momentumSpaceContext.getBrillouinZone();
 	const vector<unsigned int> &numMeshPoints = momentumSpaceContext.getNumMeshPoints();
@@ -933,7 +366,6 @@ void SelfEnergyCalculator::selfEnergyMainLoop(
 ){
 	generateKMinusQLookupTable();
 
-//	const MomentumSpaceContext &momentumSpaceContext = susceptibilityCalculators[0]->getMomentumSpaceContext();
 	const MomentumSpaceContext &momentumSpaceContext = electronFluctuationVertexCalculators[0]->getMomentumSpaceContext();
 	const Model &model = momentumSpaceContext.getModel();
 	const vector<vector<double>> &mesh = momentumSpaceContext.getMesh();
@@ -948,13 +380,6 @@ void SelfEnergyCalculator::selfEnergyMainLoop(
 	);
 
 	vector<vector<complex<double>>> results;
-/*	results.reserve(susceptibilityCalculators.size());
-	for(unsigned int n = 0; n < susceptibilityCalculators.size(); n++){
-		results.push_back(vector<complex<double>>());
-		results[n].reserve(results.size());
-		for(unsigned int c = 0; c < result.size(); c++)
-			results[n].push_back(0);
-	}*/
 	results.reserve(electronFluctuationVertexCalculators.size());
 	for(
 		unsigned int n = 0;
@@ -969,19 +394,14 @@ void SelfEnergyCalculator::selfEnergyMainLoop(
 
 	//Main loop
 	#pragma omp parallel for default(none) shared(mesh, kLinearIndex, k, numOrbitals, orbitalIndices, momentumSpaceContext, model, results)
-//	for(unsigned int worker = 0; worker < susceptibilityCalculators.size(); worker++){
 	for(unsigned int worker = 0; worker < electronFluctuationVertexCalculators.size(); worker++){
-//		unsigned int blockSize = mesh.size()/susceptibilityCalculators.size();
 		unsigned int blockSize = mesh.size()/electronFluctuationVertexCalculators.size();
 		unsigned int begin = worker*blockSize;
 		unsigned int end = (worker+1)*blockSize;
-/*		if(worker == susceptibilityCalculators.size()-1)
-			end = mesh.size();*/
 		if(worker == electronFluctuationVertexCalculators.size()-1)
 			end = mesh.size();
 
 		for(unsigned int n = begin; n < end; n++){
-//		for(unsigned int n = 0; n < mesh.size(); n++){
 			//Get linear index corresponding to k-q
 			int kMinusQLinearIndex = getKMinusQLinearIndex<true>(
 				n,
@@ -1000,16 +420,6 @@ void SelfEnergyCalculator::selfEnergyMainLoop(
 					propagatorEnd < numOrbitals;
 					propagatorEnd++
 				){
-/*					vector<complex<double>> selfEnergyVertex = calculateSelfEnergyVertex(
-						mesh.at(n),
-						{
-							(int)propagatorEnd,
-							orbitalIndices[0],
-							(int)propagatorStart,
-							orbitalIndices[1]
-						},
-						worker
-					);*/
 					vector<complex<double>> selfEnergyVertex
 						= electronFluctuationVertexCalculators[worker]->calculateSelfEnergyVertex(
 							mesh.at(n),
@@ -1074,18 +484,11 @@ void SelfEnergyCalculator::selfEnergyMainLoop(
 		}
 	}
 
-/*	for(unsigned int n = 0; n < susceptibilityCalculators.size(); n++)
-		for(unsigned int c = 0; c < result.size(); c++)
-			result[c] += results[n][c];*/
 	for(unsigned int n = 0; n < electronFluctuationVertexCalculators.size(); n++)
 		for(unsigned int c = 0; c < result.size(); c++)
 			result[c] += results[n][c];
 
 	//Calculate kT
-/*	double temperature = UnitHandler::convertTemperatureNtB(
-		susceptibilityCalculators[0]->getMomentumSpaceContext(
-		).getModel().getTemperature()
-	);*/
 	double temperature = UnitHandler::convertTemperatureNtB(
 		electronFluctuationVertexCalculators[0]->getMomentumSpaceContext(
 		).getModel().getTemperature()

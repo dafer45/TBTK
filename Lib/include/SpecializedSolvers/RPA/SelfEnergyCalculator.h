@@ -78,13 +78,6 @@ public:
 		unsigned int numMatsubaraFrequencies
 	);
 
-	/** Calculate self-energy vertex. */
-/*	std::vector<std::complex<double>> calculateSelfEnergyVertex(
-		const std::vector<double> &k,
-		const std::vector<int> &orbitalIndices,
-		unsigned int worker
-	);*/
-
 	/** Set U. */
 	void setU(std::complex<double> U);
 
@@ -106,9 +99,6 @@ public:
 	/** Load susceptibilities. */
 	void loadSusceptibilities(const std::string &filename);
 private:
-	/** SusceptibilityCalculator. */
-//	std::vector<SusceptibilityCalculator*> susceptibilityCalculators;
-
 	/** ElectronFluctuationVertexCalculator. */
 	std::vector<ElectronFluctuationVertexCalculator*> electronFluctuationVertexCalculators;
 
@@ -145,29 +135,6 @@ private:
 	/** IndexedDataTree storing the self-energy. */
 	IndexedDataTree<SerializeableVector<std::complex<double>>> selfEnergyTree;
 
-	/** IndexedDataTree storing the self-energy vertex. */
-//	SerializeableVector<IndexedDataTree<SerializeableVector<std::complex<double>>>> selfEnergyVertexTrees;
-
-	/** Invert matix. */
-/*	void invertMatrix(
-		std::complex<double> *matrix,
-		unsigned int dimensions
-	);*/
-
-	/** Multiply matrices. */
-/*	void multiplyMatrices(
-		std::complex<double> *matrix1,
-		std::complex<double> *matrix2,
-		std::complex<double> *result,
-		unsigned int dimensions
-	);*/
-
-	/** Print matrix. */
-/*	void printMatrix(
-		std::complex<double> *matrix,
-		unsigned int dimensions
-	);*/
-
 	/** Self-energy main loop. */
 	template<bool singleSelfEnergyEnergy>
 	void selfEnergyMainLoop(
@@ -178,19 +145,6 @@ private:
 
 	/** Interaction parameters. */
 	std::complex<double> U, Up, J, Jp;
-
-	/** Interaction amplitudes used to calculate the self-energy vertex. */
-/*	std::vector<InteractionAmplitude> u1;
-	std::vector<InteractionAmplitude> u2;
-	std::vector<InteractionAmplitude> u3;*/
-
-	/** Flag indicating whether the interaction amplitudes are initialized.
-	 */
-//	bool interactionAmplitudesAreGenerated;
-
-	/** Generate interaction amplitudes. Can be called multiple times and
-	 *  will only regenerate the interaction amplitudes when needed. */
-//	void generateInteractionAmplitudes();
 };
 
 inline const MomentumSpaceContext& SelfEnergyCalculator::getMomentumSpaceContext(
@@ -220,16 +174,11 @@ inline void SelfEnergyCalculator::setSelfEnergyEnergies(
 ){
 	this->selfEnergyEnergies = selfEnergyEnergies;
 	selfEnergyTree.clear();
-
-//	for(unsigned int n = 0; n < selfEnergyVertexTrees.size(); n++)
-//		selfEnergyVertexTrees[n].clear();
 }
 
 inline void SelfEnergyCalculator::setU(std::complex<double> U){
 	this->U = U;
 
-//	for(unsigned int n = 0; n < susceptibilityCalculators.size(); n++)
-//		susceptibilityCalculators[n]->setU(U);
 	for(
 		unsigned int n = 0;
 		n < electronFluctuationVertexCalculators.size();
@@ -239,18 +188,11 @@ inline void SelfEnergyCalculator::setU(std::complex<double> U){
 	}
 
 	selfEnergyTree.clear();
-
-//	for(unsigned int n = 0; n < selfEnergyVertexTrees.size(); n++)
-//		selfEnergyVertexTrees[n].clear();
-
-//	interactionAmplitudesAreGenerated = false;
 }
 
 inline void SelfEnergyCalculator::setUp(std::complex<double> Up){
 	this->Up = Up;
 
-//	for(unsigned int n = 0; n < susceptibilityCalculators.size(); n++)
-//		susceptibilityCalculators[n]->setUp(Up);
 	for(
 		unsigned int n = 0;
 		n < electronFluctuationVertexCalculators.size();
@@ -260,18 +202,11 @@ inline void SelfEnergyCalculator::setUp(std::complex<double> Up){
 	}
 
 	selfEnergyTree.clear();
-
-//	for(unsigned int n = 0; n < selfEnergyVertexTrees.size(); n++)
-//		selfEnergyVertexTrees[n].clear();
-
-//	interactionAmplitudesAreGenerated = false;
 }
 
 inline void SelfEnergyCalculator::setJ(std::complex<double> J){
 	this->J = J;
 
-//	for(unsigned int n = 0; n < susceptibilityCalculators.size(); n++)
-//		susceptibilityCalculators[n]->setJ(J);
 	for(
 		unsigned int n = 0;
 		n < electronFluctuationVertexCalculators.size();
@@ -281,18 +216,11 @@ inline void SelfEnergyCalculator::setJ(std::complex<double> J){
 	}
 
 	selfEnergyTree.clear();
-
-//	for(unsigned int n = 0; n < selfEnergyVertexTrees.size(); n++)
-//		selfEnergyVertexTrees[n].clear();
-
-//	interactionAmplitudesAreGenerated = false;
 }
 
 inline void SelfEnergyCalculator::setJp(std::complex<double> Jp){
 	this->Jp = Jp;
 
-//	for(unsigned int n = 0; n < susceptibilityCalculators.size(); n++)
-//		susceptibilityCalculators[n]->setJp(Jp);
 	for(
 		unsigned int n = 0;
 		n < electronFluctuationVertexCalculators.size();
@@ -302,11 +230,6 @@ inline void SelfEnergyCalculator::setJp(std::complex<double> Jp){
 	}
 
 	selfEnergyTree.clear();
-
-//	for(unsigned int n = 0; n < selfEnergyVertexTrees.size(); n++)
-//		selfEnergyVertexTrees[n].clear();
-
-//	interactionAmplitudesAreGenerated = false;
 }
 
 /*inline void SelfEnergyCalculator::precomputeSusceptibilities(
@@ -326,11 +249,6 @@ inline void SelfEnergyCalculator::saveSusceptibilities(
 		fname = filename.substr(lastPos+1, filename.size());
 	}
 
-/*	for(unsigned int n = 0; n < susceptibilityCalculators.size(); n++){
-		susceptibilityCalculators[n]->saveSusceptibilities(
-                        path + "Slice" + std::to_string(n) + "_" + fname
-                );
-        }*/
 	for(
 		unsigned int n = 0;
 		n < electronFluctuationVertexCalculators.size();
@@ -353,11 +271,6 @@ inline void SelfEnergyCalculator::loadSusceptibilities(
 		fname = filename.substr(lastPos+1, filename.size());
 	}
 
-/*	for(unsigned int n = 0; n < susceptibilityCalculators.size(); n++){
-		susceptibilityCalculators[n]->loadSusceptibilities(
-                        path + "Slice" + std::to_string(n) + "_" + fname
-                );
-        }*/
 	for(
 		unsigned int n = 0;
 		n < electronFluctuationVertexCalculators.size();

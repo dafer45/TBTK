@@ -49,9 +49,6 @@ public:
 	/** Get momentum cpsace context. */
 	const MomentumSpaceContext& getMomentumSpaceContext() const;
 
-	/** Initialize the SelfEnergyCalculator. */
-//	void init();
-
 	/** Enum class for indicating whether the energy is an arbitrary comlex
 	 *  number, or if it is restricted to the real or imaginary axis. */
 	enum class EnergyType {Real, Imaginary, Complex};
@@ -114,27 +111,6 @@ private:
 	/** SusceptibilityCalculator. */
 	SusceptibilityCalculator *susceptibilityCalculator;
 
-	/** Lookup table for calculating k+q. */
-//	int *kMinusQLookupTable;
-
-	/** Generate lookup table for the k-q linear index. Can be called
-	 *  repeatedly, and the lookup table is only generated once. */
-//	void generateKMinusQLookupTable();
-
-	/** Returns the linear index for k+q. */
-/*	template<bool useKPlusKLookupTable>
-	int getKMinusQLinearIndex(
-		unsigned int meshIndex,
-		const std::vector<double> &k,
-		int kLinearIndex
-	) const;*/
-
-	/** Number of energies to sum over. */
-//	unsigned int numSummationEnergies;
-
-	/** Energies to sum over. */
-//	std::vector<std::complex<double>> summationEnergies;
-
 	/** Energy type. */
 	EnergyType energyType;
 
@@ -146,34 +122,6 @@ private:
 
 	/** IndexedDataTree storing the vertex. */
 	IndexedDataTree<SerializeableVector<std::complex<double>>> vertexTree;
-
-	/** Invert matix. */
-/*	void invertMatrix(
-		std::complex<double> *matrix,
-		unsigned int dimensions
-	);*/
-
-	/** Multiply matrices. */
-/*	void multiplyMatrices(
-		std::complex<double> *matrix1,
-		std::complex<double> *matrix2,
-		std::complex<double> *result,
-		unsigned int dimensions
-	);*/
-
-	/** Print matrix. */
-/*	void printMatrix(
-		std::complex<double> *matrix,
-		unsigned int dimensions
-	);*/
-
-	/** Self-energy main loop. */
-/*	template<bool singleSelfEnergyEnergy>
-	void selfEnergyMainLoop(
-		const std::vector<double> &k,
-		const std::vector<int> &orbitalIndices,
-		std::vector<std::complex<double>> &result
-	);*/
 
 	/** Interaction parameters. */
 	std::complex<double> U, Up, J, Jp;
@@ -197,12 +145,6 @@ inline const MomentumSpaceContext& ElectronFluctuationVertexCalculator::getMomen
 ) const{
 	return susceptibilityCalculator->getMomentumSpaceContext();
 }
-
-/*inline void SelfEnergyCalculator::setNumSummationEnergies(
-	unsigned int numSummationEnergies
-){
-	this->numSummationEnergies = numSummationEnergies;
-}*/
 
 inline void ElectronFluctuationVertexCalculator::setEnergyType(
 	EnergyType energyType
@@ -287,12 +229,6 @@ inline void ElectronFluctuationVertexCalculator::setJp(std::complex<double> Jp){
 	vertexTree.clear();
 	interactionAmplitudesAreGenerated = false;
 }
-
-/*inline void SelfEnergyCalculator::precomputeSusceptibilities(
-	unsigned int numWorkers
-){
-	susceptibilityCalculator.precompute(numWorkers);
-}*/
 
 inline void ElectronFluctuationVertexCalculator::saveSusceptibilities(
 	const std::string &filename

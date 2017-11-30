@@ -35,20 +35,12 @@ namespace TBTK{
 ElectronFluctuationVertexCalculator::ElectronFluctuationVertexCalculator(
 	const MomentumSpaceContext &momentumSpaceContext
 ){
-
-//	kMinusQLookupTable = nullptr;
-
 	U = 0.;
 	Up = 0.;
 	J = 0.;
 	Jp = 0.;
 
 	susceptibilityCalculator = new SusceptibilityCalculator(momentumSpaceContext);
-/*	for(unsigned int n = 1; n < numWorkers; n++){
-		susceptibilityCalculators.push_back(
-			susceptibilityCalculators[0]->createSlave()
-		);
-	}*/
 
 	interactionAmplitudesAreGenerated = false;
 
@@ -80,41 +72,6 @@ ElectronFluctuationVertexCalculator* ElectronFluctuationVertexCalculator::create
 		*susceptibilityCalculator
 	);
 }
-
-//void ElectronFluctuationVertexCalculator::init(){
-	//Calculate kT
-/*	double temperature = UnitHandler::convertTemperatureNtB(
-		susceptibilityCalculators[0]->getMomentumSpaceContext(
-		).getModel().getTemperature()
-	);
-	double kT = UnitHandler::getK_BB()*temperature;
-
-	//Initialize summation energies
-	for(
-		int n = -(int)numSummationEnergies/2;
-		n <= (int)numSummationEnergies/2;
-		n++
-	){
-		summationEnergies.push_back(i*M_PI*2.*(double)(n)*kT);
-	}
-	for(unsigned int n = 0; n < susceptibilityCalculators.size(); n++){
-		susceptibilityCalculators[n]->setSusceptibilityEnergies(
-			summationEnergies
-		);
-		susceptibilityCalculators[n]->setSusceptibilityEnergyType(
-			SusceptibilityCalculator::EnergyType::Imaginary
-		);
-		susceptibilityCalculators[n]->setSusceptibilityEnergiesAreInversionSymmetric(
-			true
-		);
-	}*/
-
-/*	Timer::tick("Precompute");
-	susceptibilityCalculator.precompute();
-	Timer::tock();*/
-
-//	isInitialized = true;
-//}
 
 void ElectronFluctuationVertexCalculator::generateInteractionAmplitudes(){
 	if(interactionAmplitudesAreGenerated)
@@ -256,8 +213,6 @@ vector<complex<double>> ElectronFluctuationVertexCalculator::calculateSelfEnergy
 
 	DualIndex kDual(kIndex, k);
 
-//	generateInteractionAmplitudes();
-
 	vector<complex<double>> selfEnergyVertex;
 	selfEnergyVertex.reserve(energies.size());
 	for(
@@ -278,8 +233,6 @@ vector<complex<double>> ElectronFluctuationVertexCalculator::calculateSelfEnergy
 		int a1_i = incommingAmplitude.getAnnihilationOperatorIndex(1).at(0);
 
 		if(
-/*			a1_i != orbitalIndices.at(3)
-			|| c0_i != orbitalIndices.at(0)*/
 			a1_i != orbitalIndices.at(3)
 			|| c0_i != orbitalIndices.at(2)
 			|| abs(amplitude_i) < 1e-10
@@ -296,8 +249,6 @@ vector<complex<double>> ElectronFluctuationVertexCalculator::calculateSelfEnergy
 			int a1_o = outgoingAmplitude.getAnnihilationOperatorIndex(1).at(0);
 
 			if(
-/*				a0_o != orbitalIndices.at(2)
-				|| c1_o != orbitalIndices.at(1)*/
 				a0_o != orbitalIndices.at(0)
 				|| c1_o != orbitalIndices.at(1)
 				|| abs(amplitude_o) < 1e-10
@@ -307,12 +258,10 @@ vector<complex<double>> ElectronFluctuationVertexCalculator::calculateSelfEnergy
 
 			vector<complex<double>> chargeSusceptibility = susceptibilityCalculator->calculateChargeRPASusceptibility(
 				kDual,
-//				{c1_i, a0_i, c0_o, a1_o}
 				{c0_o, a1_o, c1_i, a0_i}
 			);
 			vector<complex<double>> spinSusceptibility = susceptibilityCalculator->calculateSpinRPASusceptibility(
 				kDual,
-//				{c1_i, a0_i, c0_o, a1_o}
 				{c0_o, a1_o, c1_i, a0_i}
 			);
 			for(
@@ -338,8 +287,6 @@ vector<complex<double>> ElectronFluctuationVertexCalculator::calculateSelfEnergy
 		int a1_i = incommingAmplitude.getAnnihilationOperatorIndex(1).at(0);
 
 		if(
-/*			a1_i != orbitalIndices.at(3)
-			|| c0_i != orbitalIndices.at(0)*/
 			a1_i != orbitalIndices.at(3)
 			|| c0_i != orbitalIndices.at(2)
 			|| abs(amplitude_i) < 1e-10
@@ -356,8 +303,6 @@ vector<complex<double>> ElectronFluctuationVertexCalculator::calculateSelfEnergy
 			int a1_o = outgoingAmplitude.getAnnihilationOperatorIndex(1).at(0);
 
 			if(
-/*				a0_o != orbitalIndices.at(2)
-				|| c1_o != orbitalIndices.at(1)*/
 				a0_o != orbitalIndices.at(0)
 				|| c1_o != orbitalIndices.at(1)
 				|| abs(amplitude_o) < 1e-10
@@ -367,12 +312,10 @@ vector<complex<double>> ElectronFluctuationVertexCalculator::calculateSelfEnergy
 
 			vector<complex<double>> chargeSusceptibility = susceptibilityCalculator->calculateChargeRPASusceptibility(
 				kDual,
-//				{c1_i, a0_i, c0_o, a1_o}
 				{c0_o, a1_o, c1_i, a0_i}
 			);
 			vector<complex<double>> spinSusceptibility = susceptibilityCalculator->calculateSpinRPASusceptibility(
 				kDual,
-//				{c1_i, a0_i, c0_o, a1_o}
 				{c0_o, a1_o, c1_i, a0_i}
 			);
 			for(
@@ -398,8 +341,6 @@ vector<complex<double>> ElectronFluctuationVertexCalculator::calculateSelfEnergy
 		int a1_i = incommingAmplitude.getAnnihilationOperatorIndex(1).at(0);
 
 		if(
-/*			a1_i != orbitalIndices.at(3)
-			|| c0_i != orbitalIndices.at(0)*/
 			a1_i != orbitalIndices.at(3)
 			|| c0_i != orbitalIndices.at(2)
 			|| abs(amplitude_i) < 1e-10
@@ -416,8 +357,6 @@ vector<complex<double>> ElectronFluctuationVertexCalculator::calculateSelfEnergy
 			int a1_o = outgoingAmplitude.getAnnihilationOperatorIndex(1).at(0);
 
 			if(
-/*				a0_o != orbitalIndices.at(2)
-				|| c1_o != orbitalIndices.at(1)*/
 				a0_o != orbitalIndices.at(0)
 				|| c1_o != orbitalIndices.at(1)
 				|| abs(amplitude_o) < 1e-10
@@ -427,12 +366,10 @@ vector<complex<double>> ElectronFluctuationVertexCalculator::calculateSelfEnergy
 
 			vector<complex<double>> chargeSusceptibility = susceptibilityCalculator->calculateChargeRPASusceptibility(
 				kDual,
-//				{c1_i, a0_i, c0_o, a1_o}
 				{c0_o, a1_o, c1_i, a0_i}
 			);
 			vector<complex<double>> spinSusceptibility = susceptibilityCalculator->calculateSpinRPASusceptibility(
 				kDual,
-//				{c1_i, a0_i, c0_o, a1_o}
 				{c0_o, a1_o, c1_i, a0_i}
 			);
 			for(
@@ -458,8 +395,6 @@ vector<complex<double>> ElectronFluctuationVertexCalculator::calculateSelfEnergy
 		int a1_i = incommingAmplitude.getAnnihilationOperatorIndex(1).at(0);
 
 		if(
-/*			a1_i != orbitalIndices.at(3)
-			|| c0_i != orbitalIndices.at(0)*/
 			a1_i != orbitalIndices.at(3)
 			|| c0_i != orbitalIndices.at(2)
 			|| abs(amplitude_i) < 1e-10
@@ -476,8 +411,6 @@ vector<complex<double>> ElectronFluctuationVertexCalculator::calculateSelfEnergy
 			int a1_o = outgoingAmplitude.getAnnihilationOperatorIndex(1).at(0);
 
 			if(
-/*				a0_o != orbitalIndices.at(2)
-				|| c1_o != orbitalIndices.at(1)*/
 				a0_o != orbitalIndices.at(0)
 				|| c1_o != orbitalIndices.at(1)
 				|| abs(amplitude_o) < 1e-10
@@ -487,12 +420,10 @@ vector<complex<double>> ElectronFluctuationVertexCalculator::calculateSelfEnergy
 
 			vector<complex<double>> chargeSusceptibility = susceptibilityCalculator->calculateChargeRPASusceptibility(
 				kDual,
-//				{c1_i, a0_i, c0_o, a1_o}
 				{c0_o, a1_o, c1_i, a0_i}
 			);
 			vector<complex<double>> spinSusceptibility = susceptibilityCalculator->calculateSpinRPASusceptibility(
 				kDual,
-//				{c1_i, a0_i, c0_o, a1_o}
 				{c0_o, a1_o, c1_i, a0_i}
 			);
 			for(
@@ -518,8 +449,6 @@ vector<complex<double>> ElectronFluctuationVertexCalculator::calculateSelfEnergy
 		int a1_i = incommingAmplitude.getAnnihilationOperatorIndex(1).at(0);
 
 		if(
-/*			a1_i != orbitalIndices.at(3)
-			|| c0_i != orbitalIndices.at(0)*/
 			a1_i != orbitalIndices.at(3)
 			|| c0_i != orbitalIndices.at(2)
 			|| abs(amplitude_i) < 1e-10
@@ -536,8 +465,6 @@ vector<complex<double>> ElectronFluctuationVertexCalculator::calculateSelfEnergy
 			int a1_o = outgoingAmplitude.getAnnihilationOperatorIndex(1).at(0);
 
 			if(
-/*				a0_o != orbitalIndices.at(2)
-				|| c1_o != orbitalIndices.at(1)*/
 				a0_o != orbitalIndices.at(0)
 				|| c1_o != orbitalIndices.at(1)
 				|| abs(amplitude_o) < 1e-10
@@ -547,7 +474,6 @@ vector<complex<double>> ElectronFluctuationVertexCalculator::calculateSelfEnergy
 
 			vector<complex<double>> spinSusceptibility = susceptibilityCalculator->calculateSpinRPASusceptibility(
 				kDual,
-//				{c1_i, a0_i, c0_o, a1_o}
 				{c0_o, a1_o, c1_i, a0_i}
 			);
 			for(
