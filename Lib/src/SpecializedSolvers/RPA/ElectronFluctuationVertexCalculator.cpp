@@ -40,7 +40,7 @@ ElectronFluctuationVertexCalculator::ElectronFluctuationVertexCalculator(
 	J = 0.;
 	Jp = 0.;
 
-	susceptibilityCalculator = new SusceptibilityCalculator(momentumSpaceContext);
+	rpaSusceptibilityCalculator = new RPASusceptibilityCalculator(momentumSpaceContext);
 
 	interactionAmplitudesAreGenerated = false;
 
@@ -48,14 +48,14 @@ ElectronFluctuationVertexCalculator::ElectronFluctuationVertexCalculator(
 }
 
 ElectronFluctuationVertexCalculator::ElectronFluctuationVertexCalculator(
-	SusceptibilityCalculator &susceptibilityCalculator
+	RPASusceptibilityCalculator &rpaSusceptibilityCalculator
 ){
 	U = 0.;
 	Up = 0.;
 	J = 0.;
 	Jp = 0.;
 
-	this->susceptibilityCalculator = susceptibilityCalculator.createSlave();
+	this->rpaSusceptibilityCalculator = rpaSusceptibilityCalculator.createSlave();
 
 	interactionAmplitudesAreGenerated = false;
 
@@ -63,13 +63,13 @@ ElectronFluctuationVertexCalculator::ElectronFluctuationVertexCalculator(
 }
 
 ElectronFluctuationVertexCalculator::~ElectronFluctuationVertexCalculator(){
-	if(susceptibilityCalculator != nullptr)
-		delete susceptibilityCalculator;
+	if(rpaSusceptibilityCalculator != nullptr)
+		delete rpaSusceptibilityCalculator;
 }
 
 ElectronFluctuationVertexCalculator* ElectronFluctuationVertexCalculator::createSlave(){
 	return new ElectronFluctuationVertexCalculator(
-		*susceptibilityCalculator
+		*rpaSusceptibilityCalculator
 	);
 }
 
@@ -81,7 +81,7 @@ void ElectronFluctuationVertexCalculator::generateInteractionAmplitudes(){
 	u2.clear();
 	u3.clear();
 
-	const MomentumSpaceContext &momentumSpaceContext = susceptibilityCalculator->getMomentumSpaceContext();
+	const MomentumSpaceContext &momentumSpaceContext = rpaSusceptibilityCalculator->getMomentumSpaceContext();
 	unsigned int numOrbitals = momentumSpaceContext.getNumOrbitals();
 
 	for(int a = 0; a < (int)numOrbitals; a++){
@@ -187,7 +187,7 @@ vector<complex<double>> ElectronFluctuationVertexCalculator::calculateSelfEnergy
 		""
 	);
 
-	const MomentumSpaceContext &momentumSpaceContext = susceptibilityCalculator->getMomentumSpaceContext();
+	const MomentumSpaceContext &momentumSpaceContext = rpaSusceptibilityCalculator->getMomentumSpaceContext();
 	const BrillouinZone &brillouinZone = momentumSpaceContext.getBrillouinZone();
 	const vector<unsigned int> &numMeshPoints = momentumSpaceContext.getNumMeshPoints();
 
@@ -256,11 +256,11 @@ vector<complex<double>> ElectronFluctuationVertexCalculator::calculateSelfEnergy
 				continue;
 			}
 
-			vector<complex<double>> chargeSusceptibility = susceptibilityCalculator->calculateChargeRPASusceptibility(
+			vector<complex<double>> chargeSusceptibility = rpaSusceptibilityCalculator->calculateChargeRPASusceptibility(
 				kDual,
 				{c0_o, a1_o, c1_i, a0_i}
 			);
-			vector<complex<double>> spinSusceptibility = susceptibilityCalculator->calculateSpinRPASusceptibility(
+			vector<complex<double>> spinSusceptibility = rpaSusceptibilityCalculator->calculateSpinRPASusceptibility(
 				kDual,
 				{c0_o, a1_o, c1_i, a0_i}
 			);
@@ -310,11 +310,11 @@ vector<complex<double>> ElectronFluctuationVertexCalculator::calculateSelfEnergy
 				continue;
 			}
 
-			vector<complex<double>> chargeSusceptibility = susceptibilityCalculator->calculateChargeRPASusceptibility(
+			vector<complex<double>> chargeSusceptibility = rpaSusceptibilityCalculator->calculateChargeRPASusceptibility(
 				kDual,
 				{c0_o, a1_o, c1_i, a0_i}
 			);
-			vector<complex<double>> spinSusceptibility = susceptibilityCalculator->calculateSpinRPASusceptibility(
+			vector<complex<double>> spinSusceptibility = rpaSusceptibilityCalculator->calculateSpinRPASusceptibility(
 				kDual,
 				{c0_o, a1_o, c1_i, a0_i}
 			);
@@ -364,11 +364,11 @@ vector<complex<double>> ElectronFluctuationVertexCalculator::calculateSelfEnergy
 				continue;
 			}
 
-			vector<complex<double>> chargeSusceptibility = susceptibilityCalculator->calculateChargeRPASusceptibility(
+			vector<complex<double>> chargeSusceptibility = rpaSusceptibilityCalculator->calculateChargeRPASusceptibility(
 				kDual,
 				{c0_o, a1_o, c1_i, a0_i}
 			);
-			vector<complex<double>> spinSusceptibility = susceptibilityCalculator->calculateSpinRPASusceptibility(
+			vector<complex<double>> spinSusceptibility = rpaSusceptibilityCalculator->calculateSpinRPASusceptibility(
 				kDual,
 				{c0_o, a1_o, c1_i, a0_i}
 			);
@@ -418,11 +418,11 @@ vector<complex<double>> ElectronFluctuationVertexCalculator::calculateSelfEnergy
 				continue;
 			}
 
-			vector<complex<double>> chargeSusceptibility = susceptibilityCalculator->calculateChargeRPASusceptibility(
+			vector<complex<double>> chargeSusceptibility = rpaSusceptibilityCalculator->calculateChargeRPASusceptibility(
 				kDual,
 				{c0_o, a1_o, c1_i, a0_i}
 			);
-			vector<complex<double>> spinSusceptibility = susceptibilityCalculator->calculateSpinRPASusceptibility(
+			vector<complex<double>> spinSusceptibility = rpaSusceptibilityCalculator->calculateSpinRPASusceptibility(
 				kDual,
 				{c0_o, a1_o, c1_i, a0_i}
 			);
@@ -472,7 +472,7 @@ vector<complex<double>> ElectronFluctuationVertexCalculator::calculateSelfEnergy
 				continue;
 			}
 
-			vector<complex<double>> spinSusceptibility = susceptibilityCalculator->calculateSpinRPASusceptibility(
+			vector<complex<double>> spinSusceptibility = rpaSusceptibilityCalculator->calculateSpinRPASusceptibility(
 				kDual,
 				{c0_o, a1_o, c1_i, a0_i}
 			);

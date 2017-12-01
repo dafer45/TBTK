@@ -36,10 +36,10 @@ SusceptibilityCalculator::SusceptibilityCalculator(
 ){
 	this->momentumSpaceContext = &momentumSpaceContext;
 
-/*	U = 0.;
+	U = 0.;
 	Up = 0.;
 	J = 0.;
-	Jp = 0.;*/
+	Jp = 0.;
 
 	susceptibilityMode = Mode::Lindhard;
 	energyType = EnergyType::Complex;
@@ -61,7 +61,7 @@ SusceptibilityCalculator::SusceptibilityCalculator(
 
 	omp_init_lock(&lindhardLock);
 
-//	interactionAmplitudesAreGenerated = false;
+	interactionAmplitudesAreGenerated = false;
 
 	isInitialized = true;
 	isMaster = true;
@@ -74,10 +74,10 @@ SusceptibilityCalculator::SusceptibilityCalculator(
 ){
 	this->momentumSpaceContext = &momentumSpaceContext;
 
-/*	U = 0.;
+	U = 0.;
 	Up = 0.;
 	J = 0.;
-	Jp = 0.;*/
+	Jp = 0.;
 
 	susceptibilityMode = Mode::Lindhard;
 	energyType = EnergyType::Complex;
@@ -90,7 +90,7 @@ SusceptibilityCalculator::SusceptibilityCalculator(
 
 	omp_init_lock(&lindhardLock);
 
-//	interactionAmplitudesAreGenerated = false;
+	interactionAmplitudesAreGenerated = false;
 
 	isInitialized = true;
 	isMaster = false;
@@ -919,7 +919,7 @@ vector<complex<double>> SusceptibilityCalculator::calculateSusceptibilityMatsuba
 	);
 }
 
-/*extern "C" {
+extern "C" {
 	void zgetrf_(
 		int* M,
 		int *N,
@@ -1485,6 +1485,6 @@ vector<complex<double>> SusceptibilityCalculator::calculateSpinRPASusceptibility
 	result = rpaSusceptibility[orbitalIndices[2]][orbitalIndices[3]];
 
 	return result;
-}*/
+}
 
 }	//End of namesapce TBTK

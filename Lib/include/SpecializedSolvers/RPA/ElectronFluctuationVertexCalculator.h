@@ -27,7 +27,7 @@
 #include "BlockDiagonalizationSolver.h"
 #include "BPropertyExtractor.h"
 #include "IndexedDataTree.h"
-#include "SusceptibilityCalculator.h"
+#include "RPASusceptibilityCalculator.h"
 
 namespace TBTK{
 
@@ -109,7 +109,7 @@ public:
 	void loadSusceptibilities(const std::string &filename);
 private:
 	/** SusceptibilityCalculator. */
-	SusceptibilityCalculator *susceptibilityCalculator;
+	RPASusceptibilityCalculator *rpaSusceptibilityCalculator;
 
 	/** Energy type. */
 	EnergyType energyType;
@@ -137,13 +137,13 @@ private:
 
 	/** Slave constructor. */
 	ElectronFluctuationVertexCalculator(
-		SusceptibilityCalculator &susceptibilityCalculator
+		RPASusceptibilityCalculator &rpaSusceptibilityCalculator
 	);
 };
 
 inline const MomentumSpaceContext& ElectronFluctuationVertexCalculator::getMomentumSpaceContext(
 ) const{
-	return susceptibilityCalculator->getMomentumSpaceContext();
+	return rpaSusceptibilityCalculator->getMomentumSpaceContext();
 }
 
 inline void ElectronFluctuationVertexCalculator::setEnergyType(
@@ -152,18 +152,18 @@ inline void ElectronFluctuationVertexCalculator::setEnergyType(
 	this->energyType = energyType;
 	switch(energyType){
 	case EnergyType::Real:
-		susceptibilityCalculator->setEnergyType(
-			SusceptibilityCalculator::EnergyType::Real
+		rpaSusceptibilityCalculator->setEnergyType(
+			RPASusceptibilityCalculator::EnergyType::Real
 		);
 		break;
 	case EnergyType::Imaginary:
-		susceptibilityCalculator->setEnergyType(
-			SusceptibilityCalculator::EnergyType::Imaginary
+		rpaSusceptibilityCalculator->setEnergyType(
+			RPASusceptibilityCalculator::EnergyType::Imaginary
 		);
 		break;
 	case EnergyType::Complex:
-		susceptibilityCalculator->setEnergyType(
-			SusceptibilityCalculator::EnergyType::Complex
+		rpaSusceptibilityCalculator->setEnergyType(
+			RPASusceptibilityCalculator::EnergyType::Complex
 		);
 		break;
 	default:
@@ -186,46 +186,46 @@ inline void ElectronFluctuationVertexCalculator::setEnergies(
 	this->energies = energies;
 	vertexTree.clear();
 
-	susceptibilityCalculator->setSusceptibilityEnergies(energies);
+	rpaSusceptibilityCalculator->setSusceptibilityEnergies(energies);
 }
 
 inline void ElectronFluctuationVertexCalculator::setEnergiesAreInversionSymmetric(
 	bool energiesAreInversionSymmetric
 ){
-	susceptibilityCalculator->setSusceptibilityEnergiesAreInversionSymmetric(
+	rpaSusceptibilityCalculator->setSusceptibilityEnergiesAreInversionSymmetric(
 		energiesAreInversionSymmetric
 	);
 }
 
 inline bool ElectronFluctuationVertexCalculator::getEnergiesAreInversionSymmetric(
 ) const{
-	return susceptibilityCalculator->getSusceptibilityEnergiesAreInversionSymmetric();
+	return rpaSusceptibilityCalculator->getSusceptibilityEnergiesAreInversionSymmetric();
 }
 
 inline void ElectronFluctuationVertexCalculator::setU(std::complex<double> U){
 	this->U = U;
-	susceptibilityCalculator->setU(U);
+	rpaSusceptibilityCalculator->setU(U);
 	vertexTree.clear();
 	interactionAmplitudesAreGenerated = false;
 }
 
 inline void ElectronFluctuationVertexCalculator::setUp(std::complex<double> Up){
 	this->Up = Up;
-	susceptibilityCalculator->setUp(Up);
+	rpaSusceptibilityCalculator->setUp(Up);
 	vertexTree.clear();
 	interactionAmplitudesAreGenerated = false;
 }
 
 inline void ElectronFluctuationVertexCalculator::setJ(std::complex<double> J){
 	this->J = J;
-	susceptibilityCalculator->setJ(J);
+	rpaSusceptibilityCalculator->setJ(J);
 	vertexTree.clear();
 	interactionAmplitudesAreGenerated = false;
 }
 
 inline void ElectronFluctuationVertexCalculator::setJp(std::complex<double> Jp){
 	this->Jp = Jp;
-	susceptibilityCalculator->setJp(Jp);
+	rpaSusceptibilityCalculator->setJp(Jp);
 	vertexTree.clear();
 	interactionAmplitudesAreGenerated = false;
 }
@@ -233,13 +233,13 @@ inline void ElectronFluctuationVertexCalculator::setJp(std::complex<double> Jp){
 inline void ElectronFluctuationVertexCalculator::saveSusceptibilities(
 	const std::string &filename
 ) const{
-	susceptibilityCalculator->saveSusceptibilities(filename);
+	rpaSusceptibilityCalculator->saveSusceptibilities(filename);
 }
 
 inline void ElectronFluctuationVertexCalculator::loadSusceptibilities(
 	const std::string &filename
 ){
-	susceptibilityCalculator->loadSusceptibilities(filename);
+	rpaSusceptibilityCalculator->loadSusceptibilities(filename);
 }
 
 };	//End of namespace TBTK
