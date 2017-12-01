@@ -53,9 +53,9 @@ ZFactorCalculator::ZFactorCalculator(
 	double kT = UnitHandler::getK_BB()*temperature;
 
 	//Setup self-energy energies
-	selfEnergyCalculator.setSelfEnergyEnergyType(
+/*	selfEnergyCalculator.setEnergyType(
 		SelfEnergyCalculator::EnergyType::Imaginary
-	);
+	);*/
 	selfEnergyCalculator.setSelfEnergyEnergies({i*M_PI*kT});
 }
 

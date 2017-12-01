@@ -42,7 +42,7 @@ SusceptibilityCalculator::SusceptibilityCalculator(
 	Jp = 0.;
 
 	susceptibilityMode = Mode::Lindhard;
-	susceptibilityEnergyType = EnergyType::Complex;
+	energyType = EnergyType::Complex;
 	susceptibilityEnergiesAreInversionSymmetric = false;
 	susceptibilityIsSafeFromPoles = false;
 
@@ -80,7 +80,7 @@ SusceptibilityCalculator::SusceptibilityCalculator(
 	Jp = 0.;
 
 	susceptibilityMode = Mode::Lindhard;
-	susceptibilityEnergyType = EnergyType::Complex;
+	energyType = EnergyType::Complex;
 	susceptibilityEnergiesAreInversionSymmetric = false;
 	susceptibilityIsSafeFromPoles = false;
 
@@ -126,8 +126,8 @@ void SusceptibilityCalculator::precompute(unsigned int numWorkers){
 		susceptibilityCalculators[n]->setSusceptibilityEnergies(
 			susceptibilityEnergies
 		);
-		susceptibilityCalculators[n]->setSusceptibilityEnergyType(
-			susceptibilityEnergyType
+		susceptibilityCalculators[n]->setEnergyType(
+			energyType
 		);
 		susceptibilityCalculators[n]->setSusceptibilityEnergiesAreInversionSymmetric(
 			susceptibilityEnergiesAreInversionSymmetric
@@ -526,7 +526,7 @@ void SusceptibilityCalculator::cacheSusceptibility(
 	//<Needs proper checking>
 	//Use symmetries to extend result to other entries.
 	if(
-		getSusceptibilityEnergyType() == EnergyType::Imaginary
+		getEnergyType() == EnergyType::Imaginary
 		&& getSusceptibilityEnergiesAreInversionSymmetric()
 	){
 		vector<complex<double>> reversedResult;
@@ -1341,7 +1341,7 @@ vector<complex<double>> SusceptibilityCalculator::calculateChargeRPASusceptibili
 
 			//Use symmetries to extend result to other entries.
 			if(
-				getSusceptibilityEnergyType() == EnergyType::Imaginary
+				getEnergyType() == EnergyType::Imaginary
 				&& getSusceptibilityEnergiesAreInversionSymmetric()
 			){
 				vector<complex<double>> conjugatedResult;
@@ -1448,7 +1448,7 @@ vector<complex<double>> SusceptibilityCalculator::calculateSpinRPASusceptibility
 
 			//Use symmetries to extend result to other entries.
 			if(
-				getSusceptibilityEnergyType() == EnergyType::Imaginary
+				getEnergyType() == EnergyType::Imaginary
 				&& getSusceptibilityEnergiesAreInversionSymmetric()
 			){
 				vector<complex<double>> conjugatedResult;

@@ -152,17 +152,17 @@ inline void ElectronFluctuationVertexCalculator::setEnergyType(
 	this->energyType = energyType;
 	switch(energyType){
 	case EnergyType::Real:
-		susceptibilityCalculator->setSusceptibilityEnergyType(
+		susceptibilityCalculator->setEnergyType(
 			SusceptibilityCalculator::EnergyType::Real
 		);
 		break;
 	case EnergyType::Imaginary:
-		susceptibilityCalculator->setSusceptibilityEnergyType(
+		susceptibilityCalculator->setEnergyType(
 			SusceptibilityCalculator::EnergyType::Imaginary
 		);
 		break;
 	case EnergyType::Complex:
-		susceptibilityCalculator->setSusceptibilityEnergyType(
+		susceptibilityCalculator->setEnergyType(
 			SusceptibilityCalculator::EnergyType::Complex
 		);
 		break;

@@ -81,11 +81,11 @@ public:
 	/** Get the mode used to calculate the susceptibility. */
 	Mode getSusceptibilityMode() const;
 
-	/** Set susceptibility energy type. */
-	void setSusceptibilityEnergyType(EnergyType energyType);
+	/** Set energy type. */
+	void setEnergyType(EnergyType energyType);
 
-	/** Get susceptibility energy type. */
-	EnergyType getSusceptibilityEnergyType() const;
+	/** Get energy type. */
+	EnergyType getEnergyType() const;
 
 	/** Set the energies for which the susceptibility should be
 	 *  calculated. */
@@ -142,7 +142,7 @@ private:
 	Mode susceptibilityMode;
 
 	/** Energy type for the susceptibility. */
-	EnergyType susceptibilityEnergyType;
+	EnergyType energyType;
 
 	/** Energies to calculate the susceptibility for. */
 	std::vector<std::complex<double>> susceptibilityEnergies;
@@ -399,15 +399,15 @@ inline SusceptibilityCalculator::Mode SusceptibilityCalculator::getSusceptibilit
 	return susceptibilityMode;
 }
 
-inline void SusceptibilityCalculator::setSusceptibilityEnergyType(
+inline void SusceptibilityCalculator::setEnergyType(
 	EnergyType energyType
 ){
-	susceptibilityEnergyType = energyType;
+	this->energyType = energyType;
 }
 
-inline SusceptibilityCalculator::EnergyType SusceptibilityCalculator::getSusceptibilityEnergyType(
+inline SusceptibilityCalculator::EnergyType SusceptibilityCalculator::getEnergyType(
 ) const{
-	return susceptibilityEnergyType;
+	return energyType;
 }
 
 inline void SusceptibilityCalculator::setSusceptibilityEnergies(

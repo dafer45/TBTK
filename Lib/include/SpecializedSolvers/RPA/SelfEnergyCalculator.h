@@ -50,16 +50,16 @@ public:
 
 	/** Enum class for indicating whether the energy is an arbitrary comlex
 	 *  number, or if it is restricted to the real or imaginary axis. */
-	enum class EnergyType {Real, Imaginary, Complex};
+//	enum class EnergyType {Real, Imaginary, Complex};
 
 	/** Set number of energies. */
 	void setNumSummationEnergies(unsigned int numSummationEnergies);
 
-	/** Set self-energy energy type. */
-	void setSelfEnergyEnergyType(EnergyType energyType);
+	/** Set energy type. */
+//	void setEnergyType(EnergyType energyType);
 
 	/** Get self-energy energy type. */
-	EnergyType getSelfEnergyEnergyType() const;
+//	EnergyType getEnergyType() const;
 
 	/** Set the energies for which the self-energy should be
 	 *  calculated. */
@@ -124,7 +124,7 @@ private:
 	std::vector<std::complex<double>> summationEnergies;
 
 	/** Energy type for the slef-energy. */
-	EnergyType selfEnergyEnergyType;
+//	EnergyType energyType;
 
 	/** Energies to calculate the self-energy for. */
 	std::vector<std::complex<double>> selfEnergyEnergies;
@@ -158,16 +158,16 @@ inline void SelfEnergyCalculator::setNumSummationEnergies(
 	this->numSummationEnergies = numSummationEnergies;
 }
 
-inline void SelfEnergyCalculator::setSelfEnergyEnergyType(
+/*inline void SelfEnergyCalculator::setEnergyType(
 	EnergyType energyType
 ){
-	selfEnergyEnergyType = energyType;
-}
+	this->energyType = energyType;
+}*/
 
-inline SelfEnergyCalculator::EnergyType SelfEnergyCalculator::getSelfEnergyEnergyType(
+/*inline SelfEnergyCalculator::EnergyType SelfEnergyCalculator::getEnergyType(
 ) const{
-	return selfEnergyEnergyType;
-}
+	return energyType;
+}*/
 
 inline void SelfEnergyCalculator::setSelfEnergyEnergies(
 	const std::vector<std::complex<double>> &selfEnergyEnergies
