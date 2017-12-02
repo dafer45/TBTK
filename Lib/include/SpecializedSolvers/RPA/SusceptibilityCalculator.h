@@ -58,11 +58,6 @@ public:
 
 	const MomentumSpaceContext& getMomentumSpaceContext() const;
 
-	/** Set interaction amplitudes. */
-	void setInteractionAmplitudes(
-		const std::vector<InteractionAmplitude> &interactionAmplitudes
-	);
-
 	/** Generate lookup table for the k+q linear index. Can be called
 	 *  repeatedly, and the lookup table is only generated the first time.
 	 */
@@ -76,10 +71,10 @@ public:
 	enum class EnergyType {Real, Imaginary, Complex};
 
 	/** Set the mode used to calculate the susceptibility. */
-	void setSusceptibilityMode(Mode mode);
+	void setMode(Mode mode);
 
 	/** Get the mode used to calculate the susceptibility. */
-	Mode getSusceptibilityMode() const;
+	Mode getMode() const;
 
 	/** Set energy type. */
 	void setEnergyType(EnergyType energyType);
@@ -89,8 +84,8 @@ public:
 
 	/** Set the energies for which the susceptibility should be
 	 *  calculated. */
-	void setSusceptibilityEnergies(
-		const std::vector<std::complex<double>> &susceptibilityEnergies
+	void setEnergies(
+		const std::vector<std::complex<double>> &energies
 	);
 
 	/** Set to true if the susceptibility energies can be assumed
@@ -102,13 +97,13 @@ public:
 	 *  (-E_n, -E_{n-1}, ..., E_{n-1}, E_n). Setting this flag to
 	 *  true without fullfilling this condition will result in
 	 *  undefined behavior. */
-	void setSusceptibilityEnergiesAreInversionSymmetric(
-		bool susceptibilityEnergiesAreInversionSymmetric
+	void setEnergiesAreInversionSymmetric(
+		bool energiesAreInversionSymmetric
 	);
 
 	/** Get whether the susceptibility energies are inversion
 	 *  symmetric. */
-	bool getSusceptibilityEnergiesAreInversionSymmetric() const;
+	bool getEnergiesAreInversionSymmetric() const;
 
 	/** Set to true if the susceptibility is known to only be
 	 *  evaluated at points away from poles. */
@@ -130,23 +125,22 @@ private:
 	IndexedDataTree<SerializeableVector<std::complex<double>>> susceptibilityTree;
 
 	/** Mode to use for calculating the susceptibility. */
-	Mode susceptibilityMode;
+	Mode mode;
 
 	/** Energy type for the susceptibility. */
 	EnergyType energyType;
 
 	/** Energies to calculate the susceptibility for. */
-	std::vector<std::complex<double>> susceptibilityEnergies;
+	std::vector<std::complex<double>> energies;
 
 	/** Flag indicating whether the the energies in
 	 *  susceptibilityEnergies are inversion symmetric in the
 	 *  complex plane. */
-	bool susceptibilityEnergiesAreInversionSymmetric;
+	bool energiesAreInversionSymmetric;
 
 	/** Flag indicating whether the susceptibility is known to only
 	 *  be evaluated at points away from poles. */
 	bool susceptibilityIsSafeFromPoles;
-
 public:
 	/** Calculate the susceptibility. */
 	std::complex<double> calculateSusceptibility(
@@ -284,15 +278,15 @@ inline Index SusceptibilityCalculator::getSusceptibilityResultIndex(
 	);
 }
 
-inline void SusceptibilityCalculator::setSusceptibilityMode(
+inline void SusceptibilityCalculator::setMode(
 	Mode mode
 ){
-	susceptibilityMode = mode;
+	this->mode = mode;
 }
 
-inline SusceptibilityCalculator::Mode SusceptibilityCalculator::getSusceptibilityMode(
+inline SusceptibilityCalculator::Mode SusceptibilityCalculator::getMode(
 ) const{
-	return susceptibilityMode;
+	return mode;
 }
 
 inline void SusceptibilityCalculator::setEnergyType(
@@ -306,22 +300,22 @@ inline SusceptibilityCalculator::EnergyType SusceptibilityCalculator::getEnergyT
 	return energyType;
 }
 
-inline void SusceptibilityCalculator::setSusceptibilityEnergies(
-	const std::vector<std::complex<double>> &susceptibilityEnergies
+inline void SusceptibilityCalculator::setEnergies(
+	const std::vector<std::complex<double>> &energies
 ){
-	this->susceptibilityEnergies = susceptibilityEnergies;
+	this->energies = energies;
 	susceptibilityTree.clear();
 }
 
-inline void SusceptibilityCalculator::setSusceptibilityEnergiesAreInversionSymmetric(
-	bool susceptibilityEnergiesAreInversionSymmetric
+inline void SusceptibilityCalculator::setEnergiesAreInversionSymmetric(
+	bool energiesAreInversionSymmetric
 ){
-	this->susceptibilityEnergiesAreInversionSymmetric = susceptibilityEnergiesAreInversionSymmetric;
+	this->energiesAreInversionSymmetric = energiesAreInversionSymmetric;
 }
 
-inline bool SusceptibilityCalculator::getSusceptibilityEnergiesAreInversionSymmetric(
+inline bool SusceptibilityCalculator::getEnergiesAreInversionSymmetric(
 ) const{
-	return susceptibilityEnergiesAreInversionSymmetric;
+	return energiesAreInversionSymmetric;
 }
 
 inline void SusceptibilityCalculator::setSusceptibilityIsSafeFromPoles(

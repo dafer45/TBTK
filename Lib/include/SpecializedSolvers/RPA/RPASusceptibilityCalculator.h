@@ -79,8 +79,8 @@ public:
 
 	/** Set the energies for which the susceptibility should be
 	 *  calculated. */
-	void setSusceptibilityEnergies(
-		const std::vector<std::complex<double>> &susceptibilityEnergies
+	void setEnergies(
+		const std::vector<std::complex<double>> &energies
 	);
 
 	/** Set to true if the susceptibility energies can be assumed
@@ -92,13 +92,13 @@ public:
 	 *  (-E_n, -E_{n-1}, ..., E_{n-1}, E_n). Setting this flag to
 	 *  true without fullfilling this condition will result in
 	 *  undefined behavior. */
-	void setSusceptibilityEnergiesAreInversionSymmetric(
-		bool susceptibilityEnergiesAreInversionSymmetric
+	void setEnergiesAreInversionSymmetric(
+		bool energiesAreInversionSymmetric
 	);
 
 	/** Get whether the susceptibility energies are inversion
 	 *  symmetric. */
-	bool getSusceptibilityEnergiesAreInversionSymmetric() const;
+	bool getEnergiesAreInversionSymmetric() const;
 
 	/** Set to true if the susceptibility is known to only be
 	 *  evaluated at points away from poles. */
@@ -129,7 +129,7 @@ private:
 	EnergyType energyType;
 
 	/** Energies to calculate the susceptibility for. */
-	std::vector<std::complex<double>> susceptibilityEnergies;
+	std::vector<std::complex<double>> energies;
 public:
 	/** Calculate RPA Susceptibility. */
 	std::vector<std::complex<double>> calculateRPASusceptibility(
@@ -268,12 +268,12 @@ inline Index RPASusceptibilityCalculator::getSusceptibilityResultIndex(
 inline void RPASusceptibilityCalculator::setSusceptibilityMode(
 	SusceptibilityCalculator::Mode mode
 ){
-	susceptibilityCalculator->setSusceptibilityMode(mode);
+	susceptibilityCalculator->setMode(mode);
 }
 
 inline SusceptibilityCalculator::Mode RPASusceptibilityCalculator::getSusceptibilityMode(
 ) const{
-	return susceptibilityCalculator->getSusceptibilityMode();
+	return susceptibilityCalculator->getMode();
 }
 
 inline void RPASusceptibilityCalculator::setEnergyType(
@@ -310,31 +310,31 @@ inline RPASusceptibilityCalculator::EnergyType RPASusceptibilityCalculator::getE
 	return energyType;
 }
 
-inline void RPASusceptibilityCalculator::setSusceptibilityEnergies(
-	const std::vector<std::complex<double>> &susceptibilityEnergies
+inline void RPASusceptibilityCalculator::setEnergies(
+	const std::vector<std::complex<double>> &energies
 ){
-	susceptibilityCalculator->setSusceptibilityEnergies(
-		susceptibilityEnergies
+	susceptibilityCalculator->setEnergies(
+		energies
 	);
 
-	this->susceptibilityEnergies = susceptibilityEnergies;
+	this->energies = energies;
 
 	rpaSusceptibilityTree.clear();
 	rpaChargeSusceptibilityTree.clear();
 	rpaSpinSusceptibilityTree.clear();
 }
 
-inline void RPASusceptibilityCalculator::setSusceptibilityEnergiesAreInversionSymmetric(
-	bool susceptibilityEnergiesAreInversionSymmetric
+inline void RPASusceptibilityCalculator::setEnergiesAreInversionSymmetric(
+	bool energiesAreInversionSymmetric
 ){
-	susceptibilityCalculator->setSusceptibilityEnergiesAreInversionSymmetric(
-		susceptibilityEnergiesAreInversionSymmetric
+	susceptibilityCalculator->setEnergiesAreInversionSymmetric(
+		energiesAreInversionSymmetric
 	);
 }
 
-inline bool RPASusceptibilityCalculator::getSusceptibilityEnergiesAreInversionSymmetric(
+inline bool RPASusceptibilityCalculator::getEnergiesAreInversionSymmetric(
 ) const{
-	return susceptibilityCalculator->getSusceptibilityEnergiesAreInversionSymmetric();
+	return susceptibilityCalculator->getEnergiesAreInversionSymmetric();
 }
 
 inline void RPASusceptibilityCalculator::setSusceptibilityIsSafeFromPoles(

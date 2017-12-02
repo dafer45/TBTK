@@ -172,7 +172,7 @@ vector<vector<vector<complex<double>>>> RPASusceptibilityCalculator::rpaSuscepti
 	//Initialize denominator matrices to unit matrices
 	for(
 		unsigned int e = 0;
-		e < susceptibilityEnergies.size();
+		e < energies.size();
 		e++
 	){
 		//Create denominator matrix
@@ -216,7 +216,7 @@ vector<vector<vector<complex<double>>>> RPASusceptibilityCalculator::rpaSuscepti
 					);
 				for(
 					unsigned int i = 0;
-					i < susceptibilityEnergies.size();
+					i < energies.size();
 					i++
 				){
 					denominators.at(i)[
@@ -228,7 +228,7 @@ vector<vector<vector<complex<double>>>> RPASusceptibilityCalculator::rpaSuscepti
 	}
 
 	//Calculate (1 + U\chi_0)^{-1}
-	for(unsigned int n = 0; n < susceptibilityEnergies.size(); n++)
+	for(unsigned int n = 0; n < energies.size(); n++)
 		invertMatrix(denominators.at(n), matrixDimension);
 
 	//Initialize \chi_RPA
@@ -239,7 +239,7 @@ vector<vector<vector<complex<double>>>> RPASusceptibilityCalculator::rpaSuscepti
 			rpaSusceptibility[orbital2].push_back(vector<complex<double>>());
 			for(
 				unsigned int e = 0;
-				e < susceptibilityEnergies.size();
+				e < energies.size();
 				e++
 			){
 				rpaSusceptibility[orbital2][orbital3].push_back(0.);
@@ -264,7 +264,7 @@ vector<vector<vector<complex<double>>>> RPASusceptibilityCalculator::rpaSuscepti
 				for(unsigned int orbital3 = 0; orbital3 < numOrbitals; orbital3++){
 					for(
 						unsigned int i = 0;
-						i < susceptibilityEnergies.size();
+						i < energies.size();
 						i++
 					){
 						rpaSusceptibility[orbital2][orbital3].at(i) += denominators.at(i)[
@@ -280,7 +280,7 @@ vector<vector<vector<complex<double>>>> RPASusceptibilityCalculator::rpaSuscepti
 	}
 
 	//Free memory allocated for denominators
-	for(unsigned int n = 0; n < susceptibilityEnergies.size(); n++)
+	for(unsigned int n = 0; n < energies.size(); n++)
 		delete [] denominators.at(n);
 
 	return rpaSusceptibility;
@@ -513,7 +513,7 @@ vector<complex<double>> RPASusceptibilityCalculator::calculateChargeRPASusceptib
 			//Use symmetries to extend result to other entries.
 			if(
 				getEnergyType() == EnergyType::Imaginary
-				&& getSusceptibilityEnergiesAreInversionSymmetric()
+				&& getEnergiesAreInversionSymmetric()
 			){
 				vector<complex<double>> conjugatedResult;
 				for(unsigned int n = 0; n < result.size(); n++){
@@ -624,7 +624,7 @@ vector<complex<double>> RPASusceptibilityCalculator::calculateSpinRPASusceptibil
 			//Use symmetries to extend result to other entries.
 			if(
 				getEnergyType() == EnergyType::Imaginary
-				&& getSusceptibilityEnergiesAreInversionSymmetric()
+				&& getEnergiesAreInversionSymmetric()
 			){
 				vector<complex<double>> conjugatedResult;
 				for(unsigned int n = 0; n < result.size(); n++){

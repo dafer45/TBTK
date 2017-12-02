@@ -36,9 +36,9 @@ SusceptibilityCalculator::SusceptibilityCalculator(
 ){
 	this->momentumSpaceContext = &momentumSpaceContext;
 
-	susceptibilityMode = Mode::Lindhard;
+	mode = Mode::Lindhard;
 	energyType = EnergyType::Complex;
-	susceptibilityEnergiesAreInversionSymmetric = false;
+	energiesAreInversionSymmetric = false;
 	susceptibilityIsSafeFromPoles = false;
 
 	kPlusQLookupTable = nullptr;
@@ -67,9 +67,9 @@ SusceptibilityCalculator::SusceptibilityCalculator(
 ){
 	this->momentumSpaceContext = &momentumSpaceContext;
 
-	susceptibilityMode = Mode::Lindhard;
+	mode = Mode::Lindhard;
 	energyType = EnergyType::Complex;
-	susceptibilityEnergiesAreInversionSymmetric = false;
+	energiesAreInversionSymmetric = false;
 	susceptibilityIsSafeFromPoles = false;
 
 	this->kPlusQLookupTable = kPlusQLookupTable;
@@ -109,14 +109,14 @@ void SusceptibilityCalculator::precompute(unsigned int numWorkers){
 				*momentumSpaceContext
 			)
 		);
-		susceptibilityCalculators[n]->setSusceptibilityEnergies(
-			susceptibilityEnergies
+		susceptibilityCalculators[n]->setEnergies(
+			energies
 		);
 		susceptibilityCalculators[n]->setEnergyType(
 			energyType
 		);
-		susceptibilityCalculators[n]->setSusceptibilityEnergiesAreInversionSymmetric(
-			susceptibilityEnergiesAreInversionSymmetric
+		susceptibilityCalculators[n]->setEnergiesAreInversionSymmetric(
+			energiesAreInversionSymmetric
 		);
 
 		delete [] susceptibilityCalculators[n]->kPlusQLookupTable;
@@ -513,7 +513,7 @@ void SusceptibilityCalculator::cacheSusceptibility(
 	//Use symmetries to extend result to other entries.
 	if(
 		getEnergyType() == EnergyType::Imaginary
-		&& getSusceptibilityEnergiesAreInversionSymmetric()
+		&& getEnergiesAreInversionSymmetric()
 	){
 		vector<complex<double>> reversedResult;
 		vector<complex<double>> conjugatedResult;
@@ -605,9 +605,9 @@ vector<complex<double>> SusceptibilityCalculator::calculateSusceptibilityLindhar
 	vector<complex<double>> complexEnergies;
 	vector<unsigned int> realEnergyIndices;
 	vector<unsigned int> complexEnergyIndices;
-	for(unsigned int n = 0; n < susceptibilityEnergies.size(); n++){
+	for(unsigned int n = 0; n < energies.size(); n++){
 		result.push_back(0);
-		complex<double> energy = susceptibilityEnergies.at(n);
+		complex<double> energy = energies.at(n);
 		if(abs(imag(energy)) < 1e-10){
 			realEnergies.push_back(energy);
 			realEnergyIndices.push_back(n);
@@ -753,7 +753,7 @@ vector<complex<double>> SusceptibilityCalculator::calculateSusceptibilityLindhar
 	}
 
 	//Normalize result.
-	for(unsigned int n = 0; n < susceptibilityEnergies.size(); n++)
+	for(unsigned int n = 0; n < energies.size(); n++)
 		result[n] /= mesh.size();
 
 	//Cashe result
@@ -830,7 +830,7 @@ vector<complex<double>> SusceptibilityCalculator::calculateSusceptibility(
 		""
 	);
 
-	switch(getSusceptibilityMode()){
+	switch(getMode()){
 	case Mode::Lindhard:
 		if(kPlusQLookupTable != nullptr){
 			if(getSusceptibilityIsSafeFromPoles()){

@@ -186,20 +186,20 @@ inline void ElectronFluctuationVertexCalculator::setEnergies(
 	this->energies = energies;
 	vertexTree.clear();
 
-	rpaSusceptibilityCalculator->setSusceptibilityEnergies(energies);
+	rpaSusceptibilityCalculator->setEnergies(energies);
 }
 
 inline void ElectronFluctuationVertexCalculator::setEnergiesAreInversionSymmetric(
 	bool energiesAreInversionSymmetric
 ){
-	rpaSusceptibilityCalculator->setSusceptibilityEnergiesAreInversionSymmetric(
+	rpaSusceptibilityCalculator->setEnergiesAreInversionSymmetric(
 		energiesAreInversionSymmetric
 	);
 }
 
 inline bool ElectronFluctuationVertexCalculator::getEnergiesAreInversionSymmetric(
 ) const{
-	return rpaSusceptibilityCalculator->getSusceptibilityEnergiesAreInversionSymmetric();
+	return rpaSusceptibilityCalculator->getEnergiesAreInversionSymmetric();
 }
 
 inline void ElectronFluctuationVertexCalculator::setU(std::complex<double> U){
