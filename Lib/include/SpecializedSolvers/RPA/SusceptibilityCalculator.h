@@ -171,10 +171,6 @@ private:
 	/** Fermi-Dirac distribution lookup table. */
 	double *fermiDiracLookupTable;
 
-	/** Flag indicating whether the SusceptibilityCalculator is
-	 *  initialized. */
-	bool isInitialized;
-
 	/** Flag indicating whether the SusceptibilityCalculator is a master.
 	 *  Masters owns resources shared between masters and slaves and is
 	 *  responsible for cleaning up. */
@@ -251,11 +247,6 @@ private:
 		const Index &kIndex,
 		const Index &resultIndex
 	);
-
-	/** Lock used to prevent multiple threads from executing the main part
-	 *  of SusceptibilityCalculator::calculateSusceptibilityLindhard()
-	 *  simultaneously. */
-	omp_lock_t lindhardLock;
 };
 
 inline const MomentumSpaceContext& SusceptibilityCalculator::getMomentumSpaceContext(

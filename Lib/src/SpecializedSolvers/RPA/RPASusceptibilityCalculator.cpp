@@ -48,8 +48,6 @@ RPASusceptibilityCalculator::RPASusceptibilityCalculator(
 	);
 
 	interactionAmplitudesAreGenerated = false;
-
-	isInitialized = true;
 }
 
 RPASusceptibilityCalculator::RPASusceptibilityCalculator(
@@ -63,8 +61,6 @@ RPASusceptibilityCalculator::RPASusceptibilityCalculator(
 	Jp = 0.;
 
 	interactionAmplitudesAreGenerated = false;
-
-	isInitialized = true;
 }
 
 RPASusceptibilityCalculator::~RPASusceptibilityCalculator(){
@@ -147,13 +143,6 @@ vector<vector<vector<complex<double>>>> RPASusceptibilityCalculator::rpaSuscepti
 	const vector<int> &orbitalIndices,
 	const vector<InteractionAmplitude> &interactionAmplitudes
 ){
-	TBTKAssert(
-		isInitialized,
-		"SusceptibilityCalculator::rpaSusceptibilityMainAlgorithm()",
-		"SusceptibilityCalculator not yet initialized.",
-		"Use SusceptibilityCalculator::init() to initialize the"
-		<< " SusceptibilityCalculator."
-	);
 	TBTKAssert(
 		orbitalIndices.size() == 4,
 		"SusceptibilityCalculator::rpaSusceptibilityMainAlgorithm()",
@@ -290,13 +279,6 @@ vector<complex<double>> RPASusceptibilityCalculator::calculateRPASusceptibility(
 	const DualIndex &kDual,
 	const vector<int> &orbitalIndices
 ){
-	TBTKAssert(
-		isInitialized,
-		"SusceptibilityCalculator::calculateSusceptibility()",
-		"SusceptibilityCalculator not yet initialized.",
-		"Use SusceptibilityCalculator::init() to initialize the"
-		<< " SusceptibilityCalculator."
-	);
 	TBTKAssert(
 		orbitalIndices.size() == 4,
 		"getSusceptibility()",
@@ -445,13 +427,6 @@ vector<complex<double>> RPASusceptibilityCalculator::calculateChargeRPASusceptib
 	const vector<int> &orbitalIndices
 ){
 	TBTKAssert(
-		isInitialized,
-		"SusceptibilityCalculator::calculateSusceptibility()",
-		"SusceptibilityCalculator not yet initialized.",
-		"Use SusceptibilityCalculator::init() to initialize the"
-		<< " SusceptibilityCalculator."
-	);
-	TBTKAssert(
 		orbitalIndices.size() == 4,
 		"getSusceptibility()",
 		"Four orbital indices required but " << orbitalIndices.size()
@@ -555,13 +530,6 @@ vector<complex<double>> RPASusceptibilityCalculator::calculateSpinRPASusceptibil
 	const DualIndex &kDual,
 	const vector<int> &orbitalIndices
 ){
-	TBTKAssert(
-		isInitialized,
-		"SusceptibilityCalculator::calculateSusceptibility()",
-		"SusceptibilityCalculator not yet initialized.",
-		"Use SusceptibilityCalculator::init() to initialize the"
-		<< " SusceptibilityCalculator."
-	);
 	TBTKAssert(
 		orbitalIndices.size() == 4,
 		"getSusceptibility()",

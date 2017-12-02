@@ -54,9 +54,6 @@ SusceptibilityCalculator::SusceptibilityCalculator(
 		);
 	}
 
-	omp_init_lock(&lindhardLock);
-
-	isInitialized = true;
 	isMaster = true;
 }
 
@@ -76,9 +73,6 @@ SusceptibilityCalculator::SusceptibilityCalculator(
 
 	this->fermiDiracLookupTable = fermiDiracLookupTable;
 
-	omp_init_lock(&lindhardLock);
-
-	isInitialized = true;
 	isMaster = false;
 }
 
@@ -775,13 +769,6 @@ complex<double> SusceptibilityCalculator::calculateSusceptibility(
 	Mode mode
 ){
 	TBTKAssert(
-		isInitialized,
-		"SusceptibilityCalculator::calculateSusceptibility()",
-		"SusceptibilityCalculator not yet initialized.",
-		"Use SusceptibilityCalculator::init() to initialize the"
-		<< " SusceptibilityCalculator."
-	);
-	TBTKAssert(
 		orbitalIndices.size() == 4,
 		"getSusceptibility()",
 		"Four orbital indices required but " << orbitalIndices.size()
@@ -815,13 +802,6 @@ vector<complex<double>> SusceptibilityCalculator::calculateSusceptibility(
 	const DualIndex &kDual,
 	const vector<int> &orbitalIndices
 ){
-	TBTKAssert(
-		isInitialized,
-		"SusceptibilityCalculator::calculateSusceptibility()",
-		"SusceptibilityCalculator not yet initialized.",
-		"Use SusceptibilityCalculator::init() to initialize the"
-		<< " SusceptibilityCalculator."
-	);
 	TBTKAssert(
 		orbitalIndices.size() == 4,
 		"getSusceptibility()",

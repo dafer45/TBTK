@@ -195,10 +195,6 @@ private:
 	 *  spin-susceptibilities has been initialized. */
 	bool interactionAmplitudesAreGenerated;
 
-	/** Flag indicating whether the SusceptibilityCalculator is
-	 *  initialized. */
-	bool isInitialized;
-
 	/** Slave constructor. */
 	RPASusceptibilityCalculator(
 		SusceptibilityCalculator &susceptibilityCalculator
@@ -246,8 +242,6 @@ inline void RPASusceptibilityCalculator::setInteractionAmplitudes(
 	const std::vector<InteractionAmplitude> &interactionAmplitudes
 ){
 	this->interactionAmplitudes = interactionAmplitudes;
-
-	isInitialized = false;
 }
 
 inline Index RPASusceptibilityCalculator::getSusceptibilityResultIndex(
