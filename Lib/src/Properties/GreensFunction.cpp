@@ -33,15 +33,17 @@ GreensFunction::GreensFunction(
 	double lowerBound,
 	double upperBound,
 	unsigned int resolution
-){
+) :
+	AbstractProperty(resolution)
+{
 	this->type = type;
 
 	this->lowerBound = lowerBound;
 	this->upperBound = upperBound;
 	this->resolution = resolution;
-	this->data = new complex<double>[resolution];
+/*	this->data = new complex<double>[resolution];
 	for(unsigned int n = 0; n < resolution; n++)
-		this->data[n] = 0.;
+		this->data[n] = 0.;*/
 }
 
 GreensFunction::GreensFunction(
@@ -50,39 +52,49 @@ GreensFunction::GreensFunction(
 	double upperBound,
 	unsigned int resolution,
 	const complex<double> *data
-){
+) :
+	AbstractProperty(resolution, data)
+{
 	this->type = type;
 
 	this->lowerBound = lowerBound;
 	this->upperBound = upperBound;
 	this->resolution = resolution;
-	this->data = new complex<double>[resolution];
+/*	this->data = new complex<double>[resolution];
 	for(unsigned int n = 0; n < resolution; n++)
-		this->data[n] = data[n];
+		this->data[n] = data[n];*/
 }
 
-GreensFunction::GreensFunction(const GreensFunction &greensFunction){
+GreensFunction::GreensFunction(
+	const GreensFunction &greensFunction
+) :
+	AbstractProperty(greensFunction)
+{
 	type = greensFunction.type;
 	lowerBound = greensFunction.lowerBound;
 	upperBound = greensFunction.upperBound;
 	resolution = greensFunction.resolution;
-	data = new complex<double>[resolution];
+/*	data = new complex<double>[resolution];
 	for(unsigned int n = 0; n < resolution; n++)
-		data[n] = greensFunction.data[n];
+		data[n] = greensFunction.data[n];*/
 }
 
-GreensFunction::GreensFunction(GreensFunction &&greensFunction){
+GreensFunction::GreensFunction(
+	GreensFunction &&greensFunction
+) :
+	AbstractProperty(std::move(greensFunction))
+{
 	type = greensFunction.type;
 	lowerBound = greensFunction.lowerBound;
 	upperBound = greensFunction.upperBound;
 	resolution = greensFunction.resolution;
-	data = greensFunction.data;
-	greensFunction.data = nullptr;
+/*	data = greensFunction.data;
+	greensFunction.data = nullptr;*/
 }
 
 GreensFunction::~GreensFunction(){
-	if(data != nullptr)
-		delete [] data;
+/*	if(data != nullptr)
+		delete [] data;*/
 }
 
 };	//End of namespace Property

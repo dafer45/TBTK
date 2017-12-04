@@ -33,7 +33,7 @@ namespace TBTK{
 namespace Property{
 
 /** Container for Green's function. */
-class GreensFunction{
+class GreensFunction : public AbstractProperty<std::complex<double>>{
 public:
 	/** Enum class for specifying Green's function type. */
 	enum class Type{
@@ -79,7 +79,7 @@ public:
 	unsigned int getResolution() const;
 
 	/** Get GreensFunction data. */
-	const std::complex<double>* getData() const;
+//	const std::complex<double>* getData() const;
 
 	/** Assignment operator. */
 	const GreensFunction& operator=(const GreensFunction &rhs);
@@ -100,7 +100,7 @@ private:
 	unsigned int resolution;
 
 	/** Actual data. */
-	std::complex<double> *data;
+//	std::complex<double> *data;
 };
 
 inline double GreensFunction::getLowerBound() const{
@@ -115,21 +115,24 @@ inline unsigned int GreensFunction::getResolution() const{
 	return resolution;
 }
 
-inline const std::complex<double>* GreensFunction::getData() const{
+/*inline const std::complex<double>* GreensFunction::getData() const{
 	return data;
-}
+}*/
 
 inline const GreensFunction& GreensFunction::operator=(
 	const GreensFunction &rhs
 ){
 	if(this != &rhs){
+		AbstractProperty::operator=(rhs);
+
 		type = rhs.type;
 		lowerBound = rhs.lowerBound;
 		upperBound = rhs.upperBound;
 		resolution = rhs.resolution;
-		data = new std::complex<double>[resolution];
+
+/*		data = new std::complex<double>[resolution];
 		for(unsigned int n = 0; n < resolution; n++)
-			data[n] = rhs.data[n];
+			data[n] = rhs.data[n];*/
 	}
 
 	return *this;
@@ -139,12 +142,14 @@ inline const GreensFunction& GreensFunction::operator=(
 	GreensFunction &&rhs
 ){
 	if(this != &rhs){
+		AbstractProperty::operator=(std::move(rhs));
+
 		type = rhs.type;
 		lowerBound = rhs.lowerBound;
 		upperBound = rhs.upperBound;
 		resolution = rhs.resolution;
-		data = rhs.data;
-		rhs.data = nullptr;
+/*		data = rhs.data;
+		rhs.data = nullptr;*/
 	}
 
 	return *this;
