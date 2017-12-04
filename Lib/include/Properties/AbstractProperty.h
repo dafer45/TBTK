@@ -72,9 +72,6 @@ public:
 	/** Get IndexDescriptor. */
 	const IndexDescriptor& getIndexDescriptor() const;
 
-	/** Returns the storage format. */
-	IndexDescriptor::Format getFormat() const;
-
 	/** Returns true if the property contains data for the given index. */
 	bool contains(const Index &index) const;
 
@@ -266,16 +263,6 @@ inline const IndexDescriptor& AbstractProperty<
 >::getIndexDescriptor(
 ) const{
 	return indexDescriptor;
-}
-
-template<typename DataType, bool isFundamental, bool isSerializeable>
-inline IndexDescriptor::Format AbstractProperty<
-	DataType,
-	isFundamental,
-	isSerializeable
->::getFormat(
-) const{
-	return indexDescriptor.getFormat();
 }
 
 template<typename DataType, bool isFundamental, bool isSerializeable>

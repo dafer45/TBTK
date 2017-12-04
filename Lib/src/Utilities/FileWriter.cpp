@@ -375,7 +375,7 @@ void FileWriter::writeWaveFunction(
 	init();
 
 	int attributes[2];
-	attributes[0] = static_cast<int>(waveFunction.getFormat());
+	attributes[0] = static_cast<int>(waveFunction.getIndexDescriptor().getFormat());
 	attributes[1] = static_cast<int>(waveFunction.getStates().size());
 	string attributeNames[2];
 	attributeNames[0] = "Format";
@@ -390,7 +390,7 @@ void FileWriter::writeWaveFunction(
 		path
 	);
 
-	switch(waveFunction.getFormat()){
+	switch(waveFunction.getIndexDescriptor().getFormat()){
 	case IndexDescriptor::Format::Custom:
 	{
 		stringstream ss;
@@ -494,7 +494,7 @@ void FileWriter::writeDensity(
 	init();
 
 	int attributes[1];
-	attributes[0] = static_cast<int>(density.getFormat());
+	attributes[0] = static_cast<int>(density.getIndexDescriptor().getFormat());
 	string attributeNames[1];
 	attributeNames[0] = "Format";
 	stringstream ss;
@@ -507,7 +507,7 @@ void FileWriter::writeDensity(
 		path
 	);
 
-	switch(density.getFormat()){
+	switch(density.getIndexDescriptor().getFormat()){
 	case IndexDescriptor::Format::Ranges:
 	{
 		int rank = density.getDimensions();
@@ -593,7 +593,7 @@ void FileWriter::writeMagnetization(
 	init();
 
 	int attributes[1];
-	attributes[0] = static_cast<int>(magnetization.getFormat());
+	attributes[0] = static_cast<int>(magnetization.getIndexDescriptor().getFormat());
 	string attributeNames[1];
 	attributeNames[0] = "Format";
 	stringstream ss;
@@ -606,7 +606,7 @@ void FileWriter::writeMagnetization(
 		path
 	);
 
-	switch(magnetization.getFormat()){
+	switch(magnetization.getIndexDescriptor().getFormat()){
 	case IndexDescriptor::Format::Ranges:
 	{
 		int rank = magnetization.getDimensions();
@@ -724,7 +724,7 @@ void FileWriter::writeLDOS(
 	init();
 
 	int intAttributes[2];
-	intAttributes[0] = static_cast<int>(ldos.getFormat());
+	intAttributes[0] = static_cast<int>(ldos.getIndexDescriptor().getFormat());
 	intAttributes[1] = ldos.getResolution();
 	string intAttributeNames[2];
 	intAttributeNames[0] = "Format";
@@ -755,7 +755,7 @@ void FileWriter::writeLDOS(
 		path
 	);
 
-	switch(ldos.getFormat()){
+	switch(ldos.getIndexDescriptor().getFormat()){
 	case IndexDescriptor::Format::Ranges:
 	{
 		int rank = ldos.getDimensions();
@@ -856,7 +856,7 @@ void FileWriter::writeSpinPolarizedLDOS(
 	init();
 
 	int intAttributes[2];
-	intAttributes[0] = static_cast<int>(spinPolarizedLDOS.getFormat());
+	intAttributes[0] = static_cast<int>(spinPolarizedLDOS.getIndexDescriptor().getFormat());
 	intAttributes[1] = spinPolarizedLDOS.getResolution();
 	string intAttributeNames[2];
 	intAttributeNames[0] = "Format";
@@ -887,7 +887,7 @@ void FileWriter::writeSpinPolarizedLDOS(
 		path
 	);
 
-	switch(spinPolarizedLDOS.getFormat()){
+	switch(spinPolarizedLDOS.getIndexDescriptor().getFormat()){
 	case IndexDescriptor::Format::Ranges:
 	{
 		int rank = spinPolarizedLDOS.getDimensions();
