@@ -112,7 +112,7 @@ Property::WaveFunction APropertyExtractor::calculateWaveFunction(
 	return waveFunction;
 }
 
-Property::GreensFunction* APropertyExtractor::calculateGreensFunction(
+/*Property::GreensFunction* APropertyExtractor::calculateGreensFunction(
 	Index to,
 	Index from,
 	Property::GreensFunction::Type type
@@ -142,7 +142,7 @@ Property::GreensFunction* APropertyExtractor::calculateGreensFunction(
 	delete [] amplitudes;
 
 	return greensFunction;
-}
+}*/
 
 Property::DOS APropertyExtractor::calculateDOS(){
 	const complex<double> *ev = aSolver->getEigenValues();

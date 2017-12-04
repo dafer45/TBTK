@@ -84,11 +84,11 @@ public:
 	);
 
 	/** Calculate Green's function. */
-	Property::GreensFunction* calculateGreensFunction(
+/*	Property::GreensFunction* calculateGreensFunction(
 		Index to,
 		Index from,
 		Property::GreensFunction::Type type = Property::GreensFunction::Type::Retarded
-	);
+	);*/
 
 	/** Overrides PropertyExtractor::calculateDOS(). */
 	virtual Property::DOS calculateDOS();

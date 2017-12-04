@@ -748,7 +748,7 @@ Property::GreensFunction* ChebyshevSolver::generateGreensFunction(
 
 	Property::GreensFunction *greensFunction = new Property::GreensFunction(
 		type,
-		Property::GreensFunction::Format::Array,
+//		Property::GreensFunction::Format::Array,
 		lowerBound,
 		upperBound,
 		energyResolution,
@@ -805,7 +805,7 @@ Property::GreensFunction* ChebyshevSolver::generateGreensFunction(
 
 	Property::GreensFunction *greensFunction = new Property::GreensFunction(
 		type,
-		Property::GreensFunction::Format::Array,
+//		Property::GreensFunction::Format::Array,
 		lookupTableLowerBound,
 		lookupTableUpperBound,
 		lookupTableResolution,

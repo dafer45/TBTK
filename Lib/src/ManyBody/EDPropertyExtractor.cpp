@@ -45,7 +45,7 @@ Property::GreensFunction* EDPropertyExtractor::calculateGreensFunction(
 
 		Property::GreensFunction *greensFunction = new Property::GreensFunction(
 			type,
-			Property::GreensFunction::Format::Array,
+//			Property::GreensFunction::Format::Array,
 			lowerBound,
 			upperBound,
 			energyResolution,
@@ -82,7 +82,7 @@ Property::GreensFunction* EDPropertyExtractor::calculateGreensFunction(
 
 		Property::GreensFunction *greensFunction = new Property::GreensFunction(
 			type,
-			Property::GreensFunction::Format::Array,
+//			Property::GreensFunction::Format::Array,
 			lowerBound,
 			upperBound,
 			energyResolution,
@@ -189,7 +189,7 @@ Property::GreensFunction* EDPropertyExtractor::calculateGreensFunction(
 
 		Property::GreensFunction *greensFunction = new Property::GreensFunction(
 			type,
-			Property::GreensFunction::Format::Array,
+//			Property::GreensFunction::Format::Array,
 			lowerBound,
 			upperBound,
 			energyResolution,
@@ -286,7 +286,7 @@ Property::GreensFunction* EDPropertyExtractor::calculateGreensFunction(
 
 		Property::GreensFunction *greensFunction = new Property::GreensFunction(
 			type,
-			Property::GreensFunction::Format::Array,
+//			Property::GreensFunction::Format::Array,
 			lowerBound,
 			upperBound,
 			energyResolution,

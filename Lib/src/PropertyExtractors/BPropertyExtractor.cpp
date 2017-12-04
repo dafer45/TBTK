@@ -141,7 +141,7 @@ Property::WaveFunction BPropertyExtractor::calculateWaveFunction(
 	return waveFunction;
 }
 
-Property::GreensFunction* BPropertyExtractor::calculateGreensFunction(
+/*Property::GreensFunction* BPropertyExtractor::calculateGreensFunction(
 	Index to,
 	Index from,
 	Property::GreensFunction::Type type
@@ -171,7 +171,7 @@ Property::GreensFunction* BPropertyExtractor::calculateGreensFunction(
 	delete [] amplitudes;
 
 	return greensFunction;
-}
+}*/
 
 Property::DOS BPropertyExtractor::calculateDOS(){
 //	const double *ev = bSolver->getEigenValues();
