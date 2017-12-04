@@ -36,12 +36,12 @@ GreensFunction::GreensFunction(
 ){
 	this->type = type;
 
-	storage.arrayFormat.lowerBound = lowerBound;
-	storage.arrayFormat.upperBound = upperBound;
-	storage.arrayFormat.resolution = resolution;
-	storage.arrayFormat.data = new complex<double>[resolution];
+	this->lowerBound = lowerBound;
+	this->upperBound = upperBound;
+	this->resolution = resolution;
+	this->data = new complex<double>[resolution];
 	for(unsigned int n = 0; n < resolution; n++)
-		storage.arrayFormat.data[n] = 0.;
+		this->data[n] = 0.;
 }
 
 GreensFunction::GreensFunction(
@@ -53,48 +53,48 @@ GreensFunction::GreensFunction(
 ){
 	this->type = type;
 
-	storage.arrayFormat.lowerBound = lowerBound;
-	storage.arrayFormat.upperBound = upperBound;
-	storage.arrayFormat.resolution = resolution;
-	storage.arrayFormat.data = new complex<double>[resolution];
+	this->lowerBound = lowerBound;
+	this->upperBound = upperBound;
+	this->resolution = resolution;
+	this->data = new complex<double>[resolution];
 	for(unsigned int n = 0; n < resolution; n++)
-		storage.arrayFormat.data[n] = data[n];
+		this->data[n] = data[n];
 }
 
 GreensFunction::GreensFunction(const GreensFunction &greensFunction){
 	type = greensFunction.type;
-	storage.arrayFormat.lowerBound = greensFunction.storage.arrayFormat.lowerBound;
-	storage.arrayFormat.upperBound = greensFunction.storage.arrayFormat.upperBound;
-	storage.arrayFormat.resolution = greensFunction.storage.arrayFormat.resolution;
-	storage.arrayFormat.data = new complex<double>[storage.arrayFormat.resolution];
-	for(unsigned int n = 0; n < storage.arrayFormat.resolution; n++)
-		storage.arrayFormat.data[n] = greensFunction.storage.arrayFormat.data[n];
+	lowerBound = greensFunction.lowerBound;
+	upperBound = greensFunction.upperBound;
+	resolution = greensFunction.resolution;
+	data = new complex<double>[resolution];
+	for(unsigned int n = 0; n < resolution; n++)
+		data[n] = greensFunction.data[n];
 }
 
 GreensFunction::GreensFunction(GreensFunction &&greensFunction){
 	type = greensFunction.type;
-	storage.arrayFormat.lowerBound = greensFunction.storage.arrayFormat.lowerBound;
-	storage.arrayFormat.upperBound = greensFunction.storage.arrayFormat.upperBound;
-	storage.arrayFormat.resolution = greensFunction.storage.arrayFormat.resolution;
-	storage.arrayFormat.data = greensFunction.storage.arrayFormat.data;
-	greensFunction.storage.arrayFormat.data = nullptr;
+	lowerBound = greensFunction.lowerBound;
+	upperBound = greensFunction.upperBound;
+	resolution = greensFunction.resolution;
+	data = greensFunction.data;
+	greensFunction.data = nullptr;
 }
 
 GreensFunction::~GreensFunction(){
-	if(storage.arrayFormat.data != nullptr)
-		delete [] storage.arrayFormat.data;
+	if(data != nullptr)
+		delete [] data;
 }
 
 complex<double> GreensFunction::operator()(double E) const{
-	int e = (int)((E - storage.arrayFormat.lowerBound)/(storage.arrayFormat.upperBound - storage.arrayFormat.lowerBound)*(double)storage.arrayFormat.resolution);
+	int e = (int)((E - lowerBound)/(upperBound - lowerBound)*(double)resolution);
 	TBTKAssert(
-		e >= 0 && e < (int)storage.arrayFormat.resolution,
+		e >= 0 && e < (int)resolution,
 		"GreensFunction::operator()",
 		"Out of bound access for Green's function of format Format::Array.",
 		"Use Format::Poles or only access values inside the bounds."
 	);
 
-	return storage.arrayFormat.data[e];
+	return data[e];
 }
 
 };	//End of namespace Property

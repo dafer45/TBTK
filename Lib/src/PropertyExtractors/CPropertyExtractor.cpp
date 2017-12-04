@@ -193,7 +193,7 @@ complex<double> CPropertyExtractor::calculateExpectationValue(
 		from,
 		Property::GreensFunction::Type::NonPrincipal
 	);
-	const complex<double> *greensFunctionData = greensFunction->getArrayData();
+	const complex<double> *greensFunctionData = greensFunction->getData();
 
 	Statistics statistics = cSolver->getModel().getStatistics();
 
@@ -514,7 +514,7 @@ void CPropertyExtractor::calculateDensityCallback(
 		index,
 		Property::GreensFunction::Type::NonPrincipal
 	);
-	const complex<double> *greensFunctionData = greensFunction->getArrayData();
+	const complex<double> *greensFunctionData = greensFunction->getData();
 
 	Statistics statistics = pe->cSolver->getModel().getStatistics();
 
@@ -564,7 +564,7 @@ void CPropertyExtractor::calculateMAGCallback(
 			from,
 			Property::GreensFunction::Type::NonPrincipal
 		);
-		const complex<double> *greensFunctionData = greensFunction->getArrayData();
+		const complex<double> *greensFunctionData = greensFunction->getData();
 
 		for(int e = 0; e < pe->energyResolution; e++){
 			double weight;
@@ -604,7 +604,7 @@ void CPropertyExtractor::calculateLDOSCallback(
 		index,
 		Property::GreensFunction::Type::NonPrincipal
 	);
-	const complex<double> *greensFunctionData = greensFunction->getArrayData();
+	const complex<double> *greensFunctionData = greensFunction->getData();
 
 	const double dE = (pe->upperBound - pe->lowerBound)/pe->energyResolution;
 	for(int n = 0; n < pe->energyResolution; n++)
@@ -634,7 +634,7 @@ void CPropertyExtractor::calculateSP_LDOSCallback(
 			from,
 			Property::GreensFunction::Type::NonPrincipal
 		);
-		const complex<double> *greensFunctionData = greensFunction->getArrayData();
+		const complex<double> *greensFunctionData = greensFunction->getData();
 
 		for(int e = 0; e < pe->energyResolution; e++)
 			((SpinMatrix*)sp_ldos)[offset + e].at(n/2, n%2) += -i*greensFunctionData[e]/M_PI*dE;

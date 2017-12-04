@@ -39,8 +39,7 @@ public:
 		Advanced,
 		Retarded,
 		Principal,
-		NonPrincipal/*,
-		FreePole*/
+		NonPrincipal
 	};
 
 	/** Constructor. */
@@ -69,18 +68,17 @@ public:
 	/** Destructor. */
 	~GreensFunction();
 
-	/** Get lower bound for the energy. (For Format::ArrayFormat). */
-	double getArrayLowerBound() const;
+	/** Get lower bound for the energy. */
+	double getLowerBound() const;
 
-	/** Get upper bound for the energy. (For Format::ArrayFormat). */
-	double getArrayUpperBound() const;
+	/** Get upper bound for the energy. */
+	double getUpperBound() const;
 
-	/** Get energy resolution (number of energy intervals). (For
-	 *  Format::ArrayFormat). */
-	unsigned int getArrayResolution() const;
+	/** Get energy resolution (number of energy intervals). */
+	unsigned int getResolution() const;
 
-	/** Get GreensFunction data. (For Format::ArrayFormat). */
-	const std::complex<double>* getArrayData() const;
+	/** Get GreensFunction data. */
+	const std::complex<double>* getData() const;
 
 	/** Assignment operator. */
 	const GreensFunction& operator=(const GreensFunction &rhs);
@@ -103,46 +101,33 @@ private:
 	/** Green's function type. */
 	Type type;
 
-	/** Stores the Green's function as a descrete set of values on the real
-	 *  axis. */
-	class ArrayFormat{
-	public:
-		/** Lower bound for the energy. */
-		double lowerBound;
+	/** Lower bound for the energy. */
+	double lowerBound;
 
-		/** Upper bound for the energy. */
-		double upperBound;
+	/** Upper bound for the energy. */
+	double upperBound;
 
-		/** Energy resolution. (Number of energy intervals) */
-		unsigned int resolution;
+	/** Energy resolution. (Number of energy intervals) */
+	unsigned int resolution;
 
-		/** Actual data. */
-		std::complex<double> *data;
-	};
-
-	/** Union of storage formats. */
-	union Storage{
-		ArrayFormat arrayFormat;
-	};
-
-	/** Actuall storage. */
-	Storage storage;
+	/** Actual data. */
+	std::complex<double> *data;
 };
 
-inline double GreensFunction::getArrayLowerBound() const{
-	return storage.arrayFormat.lowerBound;
+inline double GreensFunction::getLowerBound() const{
+	return lowerBound;
 }
 
-inline double GreensFunction::getArrayUpperBound() const{
-	return storage.arrayFormat.upperBound;
+inline double GreensFunction::getUpperBound() const{
+	return upperBound;
 }
 
-inline unsigned int GreensFunction::getArrayResolution() const{
-	return storage.arrayFormat.resolution;
+inline unsigned int GreensFunction::getResolution() const{
+	return resolution;
 }
 
-inline const std::complex<double>* GreensFunction::getArrayData() const{
-	return storage.arrayFormat.data;
+inline const std::complex<double>* GreensFunction::getData() const{
+	return data;
 }
 
 inline const GreensFunction& GreensFunction::operator=(
@@ -150,12 +135,12 @@ inline const GreensFunction& GreensFunction::operator=(
 ){
 	if(this != &rhs){
 		type = rhs.type;
-		storage.arrayFormat.lowerBound = rhs.storage.arrayFormat.lowerBound;
-		storage.arrayFormat.upperBound = rhs.storage.arrayFormat.upperBound;
-		storage.arrayFormat.resolution = rhs.storage.arrayFormat.resolution;
-		storage.arrayFormat.data = new std::complex<double>[storage.arrayFormat.resolution];
-		for(unsigned int n = 0; n < storage.arrayFormat.resolution; n++)
-			storage.arrayFormat.data[n] = rhs.storage.arrayFormat.data[n];
+		lowerBound = rhs.lowerBound;
+		upperBound = rhs.upperBound;
+		resolution = rhs.resolution;
+		data = new std::complex<double>[resolution];
+		for(unsigned int n = 0; n < resolution; n++)
+			data[n] = rhs.data[n];
 	}
 
 	return *this;
@@ -166,11 +151,11 @@ inline const GreensFunction& GreensFunction::operator=(
 ){
 	if(this != &rhs){
 		type = rhs.type;
-		storage.arrayFormat.lowerBound = rhs.storage.arrayFormat.lowerBound;
-		storage.arrayFormat.upperBound = rhs.storage.arrayFormat.upperBound;
-		storage.arrayFormat.resolution = rhs.storage.arrayFormat.resolution;
-		storage.arrayFormat.data = rhs.storage.arrayFormat.data;
-		rhs.storage.arrayFormat.data = nullptr;
+		lowerBound = rhs.lowerBound;
+		upperBound = rhs.upperBound;
+		resolution = rhs.resolution;
+		data = rhs.data;
+		rhs.data = nullptr;
 	}
 
 	return *this;
@@ -181,13 +166,13 @@ inline GreensFunction GreensFunction::operator*(
 ) const{
 	GreensFunction newGreensFunction(
 		type,
-		storage.arrayFormat.lowerBound,
-		storage.arrayFormat.upperBound,
-		storage.arrayFormat.resolution
+		lowerBound,
+		upperBound,
+		resolution
 	);
 
-	for(unsigned int n = 0; n < storage.arrayFormat.resolution; n++)
-		newGreensFunction.storage.arrayFormat.data[n] = rhs*storage.arrayFormat.data[n];
+	for(unsigned int n = 0; n < resolution; n++)
+		newGreensFunction.data[n] = rhs*data[n];
 
 	return newGreensFunction;
 }
@@ -198,13 +183,13 @@ inline GreensFunction operator*(
 ){
 	GreensFunction newGreensFunction(
 		rhs.type,
-		rhs.storage.arrayFormat.lowerBound,
-		rhs.storage.arrayFormat.upperBound,
-		rhs.storage.arrayFormat.resolution
+		rhs.lowerBound,
+		rhs.upperBound,
+		rhs.resolution
 	);
 
-	for(unsigned int n = 0; n < rhs.storage.arrayFormat.resolution; n++)
-		newGreensFunction.storage.arrayFormat.data[n] = lhs*rhs.storage.arrayFormat.data[n];
+	for(unsigned int n = 0; n < rhs.resolution; n++)
+		newGreensFunction.data[n] = lhs*rhs.data[n];
 
 	return newGreensFunction;
 }
@@ -214,13 +199,13 @@ inline GreensFunction GreensFunction::operator/(
 ) const{
 	GreensFunction newGreensFunction(
 		type,
-		storage.arrayFormat.lowerBound,
-		storage.arrayFormat.upperBound,
-		storage.arrayFormat.resolution
+		lowerBound,
+		upperBound,
+		resolution
 	);
 
-	for(unsigned int n = 0; n < storage.arrayFormat.resolution; n++)
-		newGreensFunction.storage.arrayFormat.data[n] = storage.arrayFormat.data[n]/rhs;
+	for(unsigned int n = 0; n < resolution; n++)
+		newGreensFunction.data[n] = data[n]/rhs;
 
 	return newGreensFunction;
 }

@@ -33,8 +33,8 @@ Property::GreensFunction* EDPropertyExtractor::calculateGreensFunction(
 			Property::GreensFunction::Type::Retarded
 		);
 
-		const complex<double> *greensFunctionAData = greensFunctionA->getArrayData();
-		const complex<double> *greensFunctionRData = greensFunctionR->getArrayData();
+		const complex<double> *greensFunctionAData = greensFunctionA->getData();
+		const complex<double> *greensFunctionRData = greensFunctionR->getData();
 
 		complex<double> *greensFunctionData = new complex<double>[energyResolution];
 		for(int n = 0; n < energyResolution; n++)
@@ -70,8 +70,8 @@ Property::GreensFunction* EDPropertyExtractor::calculateGreensFunction(
 			Property::GreensFunction::Type::Retarded
 		);
 
-		const complex<double> *greensFunctionAData = greensFunctionA->getArrayData();
-		const complex<double> *greensFunctionRData = greensFunctionR->getArrayData();
+		const complex<double> *greensFunctionAData = greensFunctionA->getData();
+		const complex<double> *greensFunctionRData = greensFunctionR->getData();
 
 		complex<double> *greensFunctionData = new complex<double>[energyResolution];
 		for(int n = 0; n < energyResolution; n++)
@@ -483,7 +483,7 @@ void EDPropertyExtractor::calculateLDOSCallback(
 		index,
 		Property::GreensFunction::Type::NonPrincipal
 	);
-	const complex<double> *greensFunctionData = greensFunction->getArrayData();
+	const complex<double> *greensFunctionData = greensFunction->getData();
 
 	const double dE = (pe->upperBound - pe->lowerBound)/pe->energyResolution;
 	for(int n = 0; n < pe->energyResolution; n++)
@@ -514,7 +514,7 @@ void EDPropertyExtractor::calculateSpinPolarizedLDOSCallback(
 			from,
 			Property::GreensFunction::Type::NonPrincipal
 		);
-		const complex<double> *greensFunctionData = greensFunction->getArrayData();
+		const complex<double> *greensFunctionData = greensFunction->getData();
 
 		for(int e = 0; e < pe->energyResolution; e++)
 			((complex<double>*)spinPolarizedLDOS)[4*pe->energyResolution*offset + 4*e + n] += imag(greensFunctionData[e])/M_PI*dE;
