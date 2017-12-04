@@ -142,35 +142,97 @@ Property::GreensFunction** CPropertyExtractor::calculateGreensFunctions(
 
 	Property::GreensFunction **greensFunctions = new Property::GreensFunction*[to.size()];
 
+	ChebyshevSolver::Type chebyshevType;
+	switch(type){
+	case Property::GreensFunction::Type::Advanced:
+		chebyshevType = ChebyshevSolver::Type::Advanced;
+		break;
+	case Property::GreensFunction::Type::Retarded:
+		chebyshevType = ChebyshevSolver::Type::Retarded;
+		break;
+	case Property::GreensFunction::Type::Principal:
+		chebyshevType = ChebyshevSolver::Type::Principal;
+		break;
+	case Property::GreensFunction::Type::NonPrincipal:
+		chebyshevType = ChebyshevSolver::Type::NonPrincipal;
+		break;
+	default:
+		TBTKExit(
+			"CPropertyExtractor::calculateGreensFunctions()",
+			"Unknown GreensFunction type.",
+			"This should never happen, contact the developer."
+		);
+	}
+
 	if(useGPUToGenerateGreensFunctions){
 		for(unsigned int n = 0; n < to.size(); n++){
-			greensFunctions[n] = cSolver->generateGreensFunctionGPU(
+/*			greensFunctions[n] = cSolver->generateGreensFunctionGPU(
 				&(coefficients[n*numCoefficients]),
 				type
+			);*/
+			complex<double> *greensFunctionData = cSolver->generateGreensFunctionGPU(
+				&(coefficients[n*numCoefficients]),
+				chebyshevType
 			);
+			greensFunctions[n] = new Property::GreensFunction(
+				type,
+				lowerBound,
+				upperBound,
+				energyResolution,
+				greensFunctionData
+			);
+			delete [] greensFunctionData;
 		}
 	}
 	else{
 		if(useLookupTable){
 			#pragma omp parallel for
 			for(unsigned int n = 0; n < to.size(); n++){
-				greensFunctions[n] = cSolver->generateGreensFunction(
+/*				greensFunctions[n] = cSolver->generateGreensFunction(
 					&(coefficients[n*numCoefficients]),
 					type
+				);*/
+				complex<double> *greensFunctionData = cSolver->generateGreensFunction(
+					&(coefficients[n*numCoefficients]),
+					chebyshevType
 				);
+				greensFunctions[n] = new Property::GreensFunction(
+					type,
+					lowerBound,
+					upperBound,
+					energyResolution,
+					greensFunctionData
+				);
+				delete [] greensFunctionData;
 			}
 		}
 		else{
 			#pragma omp parallel for
 			for(unsigned int n = 0; n < to.size(); n++){
-				greensFunctions[n] = cSolver->generateGreensFunction(
+/*				greensFunctions[n] = cSolver->generateGreensFunction(
 					&(coefficients[n*numCoefficients]),
 					numCoefficients,
 					energyResolution,
 					lowerBound,
 					upperBound,
 					type
+				);*/
+				complex<double> *greensFunctionData = cSolver->generateGreensFunction(
+					&(coefficients[n*numCoefficients]),
+					numCoefficients,
+					energyResolution,
+					lowerBound,
+					upperBound,
+					chebyshevType
 				);
+				greensFunctions[n] = new Property::GreensFunction(
+					type,
+					lowerBound,
+					upperBound,
+					energyResolution,
+					greensFunctionData
+				);
+				delete [] greensFunctionData;
 			}
 		}
 	}

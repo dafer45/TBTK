@@ -633,9 +633,11 @@ void ChebyshevSolver::destroyLookupTableGPU(){
 	generatingFunctionLookupTable_device = NULL;
 }
 
-Property::GreensFunction* ChebyshevSolver::generateGreensFunctionGPU(
+//Property::GreensFunction* ChebyshevSolver::generateGreensFunctionGPU(
+complex<double>* ChebyshevSolver::generateGreensFunctionGPU(
 	complex<double> *coefficients,
-	Property::GreensFunction::Type type
+//	Property::GreensFunction::Type type
+	Type type
 ){
 	int device = GPUResourceManager::getInstance().allocateDevice();
 
@@ -656,7 +658,8 @@ Property::GreensFunction* ChebyshevSolver::generateGreensFunctionGPU(
 		""
 	);
 	TBTKAssert(
-		type == Property::GreensFunction::Type::Retarded,
+//		type == Property::GreensFunction::Type::Retarded,
+		type == Type::Retarded,
 		"ChebyshevSolver::generateGreensFunctionGPU()",
 		"Only evaluation of retarded Green's function is implemented for GPU so far.",
 		"Use CPU evaluation instead."
@@ -745,7 +748,7 @@ Property::GreensFunction* ChebyshevSolver::generateGreensFunctionGPU(
 
 	GPUResourceManager::getInstance().freeDevice(device);
 
-	Property::GreensFunction *greensFunction = new Property::GreensFunction(
+/*	Property::GreensFunction *greensFunction = new Property::GreensFunction(
 		type,
 //		Property::GreensFunction::Format::Array,
 		lookupTableLowerBound,
@@ -755,7 +758,9 @@ Property::GreensFunction* ChebyshevSolver::generateGreensFunctionGPU(
 	);
 	delete [] greensFunctionData;
 
-	return greensFunction;
+	return greensFunction;*/
+
+	return greensFunctionData;
 }
 
 };	//End of namespace TBTK

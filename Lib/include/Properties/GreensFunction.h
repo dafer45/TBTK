@@ -23,6 +23,7 @@
 #ifndef COM_DAFER45_TBTK_GREENS_FUNCTION
 #define COM_DAFER45_TBTK_GREENS_FUNCTION
 
+#include "AbstractProperty.h"
 #include "TBTKMacros.h"
 
 #include <complex>
