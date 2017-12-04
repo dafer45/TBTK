@@ -85,17 +85,5 @@ GreensFunction::~GreensFunction(){
 		delete [] data;
 }
 
-complex<double> GreensFunction::operator()(double E) const{
-	int e = (int)((E - lowerBound)/(upperBound - lowerBound)*(double)resolution);
-	TBTKAssert(
-		e >= 0 && e < (int)resolution,
-		"GreensFunction::operator()",
-		"Out of bound access for Green's function of format Format::Array.",
-		"Use Format::Poles or only access values inside the bounds."
-	);
-
-	return data[e];
-}
-
 };	//End of namespace Property
 };	//End of namespace TBTK

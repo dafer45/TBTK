@@ -85,18 +85,6 @@ public:
 
 	/** Move assignment operator. */
 	const GreensFunction& operator=(GreensFunction &&rhs);
-
-	/** Function call operator. */
-	std::complex<double> operator()(double E) const;
-
-	/** Multiplication operator. */
-	GreensFunction operator*(std::complex<double> rhs) const;
-
-	/** Multiplication operator. */
-	friend GreensFunction operator*(std::complex<double> lhs, const GreensFunction& rhs);
-
-	/** Division operator. */
-	GreensFunction operator/(std::complex<double> rhs) const;
 private:
 	/** Green's function type. */
 	Type type;
@@ -159,55 +147,6 @@ inline const GreensFunction& GreensFunction::operator=(
 	}
 
 	return *this;
-}
-
-inline GreensFunction GreensFunction::operator*(
-	std::complex<double> rhs
-) const{
-	GreensFunction newGreensFunction(
-		type,
-		lowerBound,
-		upperBound,
-		resolution
-	);
-
-	for(unsigned int n = 0; n < resolution; n++)
-		newGreensFunction.data[n] = rhs*data[n];
-
-	return newGreensFunction;
-}
-
-inline GreensFunction operator*(
-	std::complex<double> lhs,
-	const GreensFunction &rhs
-){
-	GreensFunction newGreensFunction(
-		rhs.type,
-		rhs.lowerBound,
-		rhs.upperBound,
-		rhs.resolution
-	);
-
-	for(unsigned int n = 0; n < rhs.resolution; n++)
-		newGreensFunction.data[n] = lhs*rhs.data[n];
-
-	return newGreensFunction;
-}
-
-inline GreensFunction GreensFunction::operator/(
-	std::complex<double> rhs
-) const{
-	GreensFunction newGreensFunction(
-		type,
-		lowerBound,
-		upperBound,
-		resolution
-	);
-
-	for(unsigned int n = 0; n < resolution; n++)
-		newGreensFunction.data[n] = data[n]/rhs;
-
-	return newGreensFunction;
 }
 
 };	//End namespace Property
