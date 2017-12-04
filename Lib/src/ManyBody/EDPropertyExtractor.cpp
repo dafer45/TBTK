@@ -18,6 +18,10 @@ Property::GreensFunction* EDPropertyExtractor::calculateGreensFunction(
 	Index from,
 	Property::GreensFunction::Type type
 ){
+	IndexTree memoryLayout;
+	memoryLayout.add(Index(Index(to, {IDX_SEPARATOR}), from));
+	memoryLayout.generateLinearMap();
+
 	switch(type){
 	case Property::GreensFunction::Type::Principal:
 	{
@@ -44,6 +48,7 @@ Property::GreensFunction* EDPropertyExtractor::calculateGreensFunction(
 		delete greensFunctionR;
 
 		Property::GreensFunction *greensFunction = new Property::GreensFunction(
+			memoryLayout,
 			type,
 //			Property::GreensFunction::Format::Array,
 			lowerBound,
@@ -81,6 +86,7 @@ Property::GreensFunction* EDPropertyExtractor::calculateGreensFunction(
 		delete greensFunctionR;
 
 		Property::GreensFunction *greensFunction = new Property::GreensFunction(
+			memoryLayout,
 			type,
 //			Property::GreensFunction::Format::Array,
 			lowerBound,
@@ -188,6 +194,7 @@ Property::GreensFunction* EDPropertyExtractor::calculateGreensFunction(
 			greensFunctionData[n] *= -i;
 
 		Property::GreensFunction *greensFunction = new Property::GreensFunction(
+			memoryLayout,
 			type,
 //			Property::GreensFunction::Format::Array,
 			lowerBound,
@@ -285,6 +292,7 @@ Property::GreensFunction* EDPropertyExtractor::calculateGreensFunction(
 			greensFunctionData[n] *= -i;
 
 		Property::GreensFunction *greensFunction = new Property::GreensFunction(
+			memoryLayout,
 			type,
 //			Property::GreensFunction::Format::Array,
 			lowerBound,

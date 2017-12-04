@@ -170,11 +170,15 @@ Property::GreensFunction** CPropertyExtractor::calculateGreensFunctions(
 				&(coefficients[n*numCoefficients]),
 				type
 			);*/
+			IndexTree memoryLayout;
+			memoryLayout.add(Index(Index(to[n], {IDX_SEPARATOR}), from));
+			memoryLayout.generateLinearMap();
 			complex<double> *greensFunctionData = cSolver->generateGreensFunctionGPU(
 				&(coefficients[n*numCoefficients]),
 				chebyshevType
 			);
 			greensFunctions[n] = new Property::GreensFunction(
+				memoryLayout,
 				type,
 				lowerBound,
 				upperBound,
@@ -192,11 +196,15 @@ Property::GreensFunction** CPropertyExtractor::calculateGreensFunctions(
 					&(coefficients[n*numCoefficients]),
 					type
 				);*/
+				IndexTree memoryLayout;
+				memoryLayout.add(Index(Index(to[n], {IDX_SEPARATOR}), from));
+				memoryLayout.generateLinearMap();
 				complex<double> *greensFunctionData = cSolver->generateGreensFunction(
 					&(coefficients[n*numCoefficients]),
 					chebyshevType
 				);
 				greensFunctions[n] = new Property::GreensFunction(
+					memoryLayout,
 					type,
 					lowerBound,
 					upperBound,
@@ -217,6 +225,9 @@ Property::GreensFunction** CPropertyExtractor::calculateGreensFunctions(
 					upperBound,
 					type
 				);*/
+				IndexTree memoryLayout;
+				memoryLayout.add(Index(Index(to[n], {IDX_SEPARATOR}), from));
+				memoryLayout.generateLinearMap();
 				complex<double> *greensFunctionData = cSolver->generateGreensFunction(
 					&(coefficients[n*numCoefficients]),
 					numCoefficients,
@@ -226,6 +237,7 @@ Property::GreensFunction** CPropertyExtractor::calculateGreensFunctions(
 					chebyshevType
 				);
 				greensFunctions[n] = new Property::GreensFunction(
+					memoryLayout,
 					type,
 					lowerBound,
 					upperBound,

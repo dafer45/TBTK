@@ -45,6 +45,7 @@ public:
 
 	/** Constructor. */
 	GreensFunction(
+		const IndexTree &indexTree,
 		Type type,
 		double lowerBound,
 		double upperBound,
@@ -53,6 +54,7 @@ public:
 
 	/** Constructor. */
 	GreensFunction(
+		const IndexTree &indexTree,
 		Type type,
 		double lowerBound,
 		double upperBound,

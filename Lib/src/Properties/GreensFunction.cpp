@@ -29,12 +29,13 @@ namespace TBTK{
 namespace Property{
 
 GreensFunction::GreensFunction(
+	const IndexTree &indexTree,
 	Type type,
 	double lowerBound,
 	double upperBound,
 	unsigned int resolution
 ) :
-	AbstractProperty(resolution)
+	AbstractProperty(indexTree, resolution)
 {
 	this->type = type;
 
@@ -47,13 +48,14 @@ GreensFunction::GreensFunction(
 }
 
 GreensFunction::GreensFunction(
+	const IndexTree &indexTree,
 	Type type,
 	double lowerBound,
 	double upperBound,
 	unsigned int resolution,
 	const complex<double> *data
 ) :
-	AbstractProperty(resolution, data)
+	AbstractProperty(indexTree, resolution, data)
 {
 	this->type = type;
 
