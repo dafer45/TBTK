@@ -23,6 +23,8 @@
 #include "Streams.h"
 #include "TBTKMacros.h"
 
+#include <set>
+
 using namespace std;
 
 static complex<double> i(0, 1);
@@ -126,6 +128,127 @@ Property::GreensFunction CPropertyExtractor::calculateGreensFunction(
 	return greensFunction;*/
 
 	return calculateGreensFunctions(toIndices, from, type);
+}
+
+Property::GreensFunction CPropertyExtractor::calculateGreensFunction(
+	initializer_list<initializer_list<Index>> patterns,
+	Property::GreensFunction::Type type
+){
+	IndexTree memoryLayout;
+	IndexTree fromIndices;
+	set<unsigned int> toIndexSizes;
+	for(unsigned int n = 0; n < patterns.size(); n++){
+		const initializer_list<Index>& pattern = *(patterns.begin() + n);
+
+		TBTKAssert(
+			pattern.size() == 2,
+			"CPropertyExtractor::calculateGreensFunction()",
+			"Invalid pattern. Each pattern entry needs to contain"
+			" exactly two Indices, but '"
+			<< pattern.size() << "' found in entry '" << n << "'.",
+			""
+		);
+
+		Index toPattern = *(pattern.begin() + 0);
+		Index fromPattern = *(pattern.begin() + 1);
+
+		toIndexSizes.insert(toPattern.getSize());
+
+		IndexTree toTree = generateIndexTree(
+			{toPattern},
+			*cSolver->getModel().getHoppingAmplitudeSet(),
+			true,
+			true
+		);
+		IndexTree fromTree = generateIndexTree(
+			{fromPattern},
+			*cSolver->getModel().getHoppingAmplitudeSet(),
+			true,
+			true
+		);
+
+		IndexTree::Iterator toIterator = toTree.begin();
+		while(!toIterator.getHasReachedEnd()){
+			Index toIndex = toIterator.getIndex();
+			IndexTree::Iterator fromIterator = fromTree.begin();
+			while(!fromIterator.getHasReachedEnd()){
+				Index fromIndex = fromIterator.getIndex();
+				memoryLayout.add(Index(Index(toIndex, {IDX_SEPARATOR}), fromIndex));
+				fromIndices.add(fromIndex);
+
+				fromIterator.searchNext();
+			}
+
+			toIterator.searchNext();
+		}
+	}
+	memoryLayout.generateLinearMap();
+	fromIndices.generateLinearMap();
+
+	Property::GreensFunction greensFunction(
+		memoryLayout,
+		type,
+		lowerBound,
+		upperBound,
+		energyResolution
+	);
+
+	IndexTree::Iterator iterator = fromIndices.begin();
+	while(!iterator.getHasReachedEnd()){
+		Index fromIndex = iterator.getIndex();
+		vector<Index> toIndices;
+		for(
+			set<unsigned int>::iterator iterator = toIndexSizes.begin();
+			iterator != toIndexSizes.end();
+			++iterator
+		){
+			Index toPattern;
+			for(unsigned int n = 0; n < *iterator; n++){
+				toPattern.push_back(IDX_ALL);
+			}
+
+			vector<Index> matchingIndices = memoryLayout.getIndexList(
+				Index(Index(toPattern, {IDX_SEPARATOR}), fromIndex)
+			);
+			for(unsigned int n = 0; n < matchingIndices.size(); n++){
+				Index toIndex;
+				for(unsigned int c = 0; c < *iterator; c++)
+					toIndex.push_back(matchingIndices[n][c]);
+				toIndices.push_back(toIndex);
+			}
+		}
+
+		Property::GreensFunction gf = calculateGreensFunctions(
+			toIndices,
+			fromIndex,
+			type
+		);
+
+		for(unsigned int n = 0; n < toIndices.size(); n++){
+			complex<double> *data = greensFunction.getDataRW();
+			const complex<double> *dataGF = gf.getData();
+
+			Index compoundIndex = Index(
+				Index(toIndices[n], {IDX_SEPARATOR}),
+				fromIndex
+			);
+
+			unsigned int offset = greensFunction.getOffset(
+				compoundIndex
+			);
+			unsigned int offsetGF = gf.getOffset(
+				compoundIndex
+			);
+
+			for(int c = 0; c < energyResolution; c++){
+				data[offset + c] = dataGF[offsetGF + c];
+			}
+		}
+
+		iterator.searchNext();
+	}
+
+	return greensFunction;
 }
 
 //Property::GreensFunction** CPropertyExtractor::calculateGreensFunctions(

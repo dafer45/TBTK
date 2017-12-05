@@ -72,6 +72,9 @@ public:
 		SearchMode searchMode
 	) const;
 
+	/** Generate a list of indices satisfying the specified pattern. */
+	std::vector<Index> getIndexList(const Index &pattern) const;
+
 	/** Iterator for iterating through @link Index Indices @link stored in
 	 *  the tree structure. */
 	class Iterator{
@@ -83,7 +86,11 @@ public:
 		void searchNext();
 
 		/** Get Index currently pointed at. */
-		const Index* getIndex() const;
+//		const Index* getIndex() const;
+		const Index getIndex() const;
+
+		/** Returns true if the iterator has reached the end. */
+		bool getHasReachedEnd() const;
 	private:
 		/** Root node to iterate from. */
 		const IndexTree *indexTree;
@@ -97,6 +104,9 @@ public:
 		 *  to ensure that the search moves past the Index encountered
 		 *  in the previous step. */
 		bool skipNextIndex;
+
+		/** Flag indicating that the iterator has reached the end. */
+		bool hasReachedEnd;
 
 		/** Constructor. */
 		Iterator(const IndexTree *indexTree);
@@ -178,6 +188,10 @@ private:
 
 inline int IndexTree::getSize() const{
 	return size;
+}
+
+inline bool IndexTree::Iterator::getHasReachedEnd() const{
+	return hasReachedEnd;
 }
 
 }; //End of namesapce TBTK

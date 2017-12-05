@@ -257,11 +257,19 @@ void FileWriter::writeIndexTree(
 
 	std::vector<int> serializedIndices;
 	IndexTree::Iterator it = indexTree.begin();
-	const Index *index;
+/*	const Index *index;
 	while((index = it.getIndex())){
 		serializedIndices.push_back(index->getSize());
 		for(unsigned int n = 0; n < index->getSize(); n++)
 			serializedIndices.push_back(index->at(n));
+
+		it.searchNext();
+	}*/
+	while(!it.getHasReachedEnd()){
+		Index index = it.getIndex();
+		serializedIndices.push_back(index.getSize());
+		for(unsigned int n = 0; n < index.getSize(); n++)
+			serializedIndices.push_back(index.at(n));
 
 		it.searchNext();
 	}

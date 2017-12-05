@@ -67,6 +67,12 @@ public:
 	);
 
 	/** Calculate Green's function for a range of 'to'-indices. */
+	Property::GreensFunction calculateGreensFunction(
+		std::initializer_list<std::initializer_list<Index>> patterns,
+		Property::GreensFunction::Type type = Property::GreensFunction::Type::Retarded
+	);
+
+	/** Calculate Green's function for a range of 'to'-indices. */
 //	Property::GreensFunction** calculateGreensFunctions(
 	Property::GreensFunction calculateGreensFunctions(
 		std::vector<Index> &to,

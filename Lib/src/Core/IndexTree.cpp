@@ -452,6 +452,28 @@ vector<unsigned int> IndexTree::getSubindicesMatching(
 	return matches;
 }
 
+vector<Index> IndexTree::getIndexList(const Index &pattern) const{
+	vector<Index> indexList;
+
+	Iterator iterator = begin();
+/*	const Index *index;
+	while((index = iterator.getIndex())){
+		if(index->equals(pattern, true))
+			indexList.push_back(*index);
+
+		iterator.searchNext();
+	}*/
+	while(!iterator.getHasReachedEnd()){
+		Index index = iterator.getIndex();
+		if(index.equals(pattern, true))
+			indexList.push_back(index);
+
+		iterator.searchNext();
+	}
+
+	return indexList;
+}
+
 void IndexTree::getPhysicalIndex(int linearIndex, vector<int> *indices) const{
 	if(this->linearIndex != -1)
 		return;
@@ -558,19 +580,24 @@ IndexTree::Iterator::Iterator(const IndexTree *indexTree){
 	this->indexTree = indexTree;
 	currentIndex.push_back(0);
 	skipNextIndex = false;
-	searchNext(this->indexTree, 0);
+	hasReachedEnd = false;
+	if(!searchNext(this->indexTree, 0))
+		hasReachedEnd = true;
 }
 
 void IndexTree::Iterator::reset(){
 	currentIndex.clear();
 	currentIndex.push_back(0);
 	skipNextIndex = false;
-	searchNext(indexTree, 0);
+	hasReachedEnd = false;
+	if(!searchNext(indexTree, 0))
+		hasReachedEnd = true;
 }
 
 void IndexTree::Iterator::searchNext(){
 	skipNextIndex = true;
-	searchNext(indexTree, 0);
+	if(!searchNext(indexTree, 0))
+		hasReachedEnd = true;
 }
 
 bool IndexTree::Iterator::searchNext(
@@ -600,19 +627,32 @@ bool IndexTree::Iterator::searchNext(
 	return false;
 }
 
-const Index* IndexTree::Iterator::getIndex() const{
+//const Index* IndexTree::Iterator::getIndex() const{
+const Index IndexTree::Iterator::getIndex() const{
+//	if(currentIndex.at(0) == (int)indexTree->children.size())
+//		return NULL;
 	if(currentIndex.at(0) == (int)indexTree->children.size())
-		return NULL;
+		return Index();
 
 //	Index *index = new Index({});
-	Index *index = new Index();
+//	Index *index = new Index();
+	Index index;
 
 	const IndexTree *indexTreeBranch = this->indexTree;
 	for(unsigned int n = 0; n < currentIndex.size()-1; n++){
+//		if(indexTreeBranch->indexSeparator)
+//			index->push_back(IDX_SEPARATOR);
+		if(indexTreeBranch->indexSeparator)
+			index.push_back(IDX_SEPARATOR);
+
+//		if(indexTreeBranch->wildcardIndex)
+//			index->push_back(indexTreeBranch->wildcardType);
+//		else
+//			index->push_back(currentIndex.at(n));
 		if(indexTreeBranch->wildcardIndex)
-			index->push_back(indexTreeBranch->wildcardType);
+			index.push_back(indexTreeBranch->wildcardType);
 		else
-			index->push_back(currentIndex.at(n));
+			index.push_back(currentIndex.at(n));
 
 		if(n < currentIndex.size()-1)
 			indexTreeBranch = &indexTreeBranch->children.at(currentIndex.at(n));
