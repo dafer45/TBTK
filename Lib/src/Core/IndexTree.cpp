@@ -147,9 +147,41 @@ void IndexTree::add(const Index &index, unsigned int subindex){
 		int currentIndex = index.at(subindex);
 
 		if(currentIndex == IDX_SEPARATOR){
-			indexSeparator = true;
+			if(children.size() == 0){
+				indexSeparator = true;
+			}
+			else{
+				TBTKAssert(
+					indexSeparator,
+					"IndexTree::add()",
+					"Invalid index '" << index.toString()
+					<< "'. Another Index has already been"
+					<< " added to the tree that has a"
+					<< " conflicting index at the index"
+					<< " separator at subindex "
+					<< subindex << "'.",
+					"Note that a separation point between"
+					<< " two indices counts as a subindex."
+				);
+			}
+
+			indexSeparator = false;
 			add(index, subindex+1);
+			indexSeparator = true;
 			return;
+		}
+		else{
+			TBTKAssert(
+				!indexSeparator,
+				"IndexTree::add()",
+				"Invalid index '" << index.toString() << "'."
+				<< " Another Index has already been added to"
+				<< " the tree that has a conflicting index"
+				<< " separator at subindex '"
+				<< subindex << "'.",
+				"Note that a separation point between two"
+				<< " indices counts as a subindex."
+			);
 		}
 
 		if(currentIndex < 0){
@@ -304,6 +336,28 @@ int IndexTree::getLinearIndex(
 
 		//Get current subindex
 		int currentIndex = index.at(subindex);
+
+		if(currentIndex == IDX_SEPARATOR){
+			if(indexSeparator){
+				return getLinearIndex(
+					index,
+					subindex+1,
+					searchMode,
+					returnNegativeForMissingIndex
+				);
+			}
+			else{
+				TBTKExit(
+					"IndexTree::getLinearIndex()",
+					"Invalid Index. Found IDX_SEPARATOR at"
+					<< " subindex '" << subindex << "',"
+					<< " but the node is not an index "
+					<< " separator.",
+					""
+				);
+			}
+		}
+
 		if(currentIndex < 0){
 			if(wildcardIndex){
 				currentIndex = 0;

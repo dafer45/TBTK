@@ -59,14 +59,16 @@ public:
 	);
 
 	/** Calculate Green's function. */
-	Property::GreensFunction* calculateGreensFunction(
+//	Property::GreensFunction* calculateGreensFunction(
+	Property::GreensFunction calculateGreensFunction(
 		Index to,
 		Index from,
 		Property::GreensFunction::Type type = Property::GreensFunction::Type::Retarded
 	);
 
 	/** Calculate Green's function for a range of 'to'-indices. */
-	Property::GreensFunction** calculateGreensFunctions(
+//	Property::GreensFunction** calculateGreensFunctions(
+	Property::GreensFunction calculateGreensFunctions(
 		std::vector<Index> &to,
 		Index from,
 		Property::GreensFunction::Type type = Property::GreensFunction::Type::Retarded
