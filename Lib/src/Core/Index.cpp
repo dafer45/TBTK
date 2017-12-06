@@ -43,10 +43,6 @@ Index::Index(const Index &head, const Index &tail){
 		tail.indices.begin(),
 		tail.indices.end()
 	);
-/*	for(unsigned int n = 0; n < head.getSize(); n++)
-		indices.push_back(head.at(n));
-	for(unsigned int n = 0; n < tail.getSize(); n++)
-		indices.push_back(tail.at(n));*/
 }
 
 Index::Index(initializer_list<initializer_list<int>> indexList){
