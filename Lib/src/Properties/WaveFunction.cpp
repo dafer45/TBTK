@@ -207,10 +207,37 @@ WaveFunction& WaveFunction::operator=(WaveFunction &&rhs){
 	return *this;
 }
 
-complex<double> WaveFunction::operator()(
+const complex<double>& WaveFunction::operator()(
         const Index &index,
         unsigned int state
 ) const{
+	if(isContinuous){
+		int n = state - states.at(0);
+		TBTKAssert(
+			n >= 0 && (unsigned int)n < states.size(),
+			"WaveFunction::operator()",
+			"WaveFunction does not contain state '" << state << "'.",
+			""
+		);
+		return AbstractProperty::operator()(index, n);
+	}
+	else{
+		for(unsigned int n = 0; n < states.size(); n++){
+			if(state == states.at(n))
+				return AbstractProperty::operator()(index, n);
+		}
+		TBTKExit(
+			"WaveFunction::operator()",
+			"WaveFunction does not contain state '" << state << "'.",
+			""
+		);
+	}
+}
+
+complex<double>& WaveFunction::operator()(
+        const Index &index,
+        unsigned int state
+){
 	if(isContinuous){
 		int n = state - states.at(0);
 		TBTKAssert(

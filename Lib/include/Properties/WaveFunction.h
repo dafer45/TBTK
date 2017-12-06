@@ -89,10 +89,16 @@ public:
 	const std::vector<unsigned int>& getStates() const;
 
 	/** Overrides AbstractProperty::operator(). */
-	std::complex<double> operator()(
+	const std::complex<double>& operator()(
 		const Index &index,
 		unsigned int state
 	) const;
+
+	/** Overrides AbstractProperty::operator(). */
+	std::complex<double>& operator()(
+		const Index &index,
+		unsigned int state
+	);
 
 	/** Get min absolute value. */
 	double getMinAbs() const;

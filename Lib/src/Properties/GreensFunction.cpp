@@ -28,6 +28,9 @@ static complex<double> i(0, 1);
 namespace TBTK{
 namespace Property{
 
+GreensFunction::GreensFunction() : AbstractProperty(){
+}
+
 GreensFunction::GreensFunction(
 	const IndexTree &indexTree,
 	Type type,

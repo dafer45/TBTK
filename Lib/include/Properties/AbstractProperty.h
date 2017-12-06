@@ -76,14 +76,23 @@ public:
 	bool contains(const Index &index) const;
 
 	/** Function call operator. */
-	virtual DataType operator()(const Index &index, unsigned int offset = 0) const;
+	virtual const DataType& operator()(const Index &index, unsigned int offset = 0) const;
 
 	/** Function call operator. */
-	virtual DataType operator()(unsigned int offset) const;
+	virtual DataType& operator()(const Index &index, unsigned int offset = 0);
+
+	/** Function call operator. */
+	virtual const DataType& operator()(unsigned int offset) const;
+
+	/** Function call operator. */
+	virtual DataType& operator()(unsigned int offset);
 
 	/** Implements Serializeable::serialize(). */
 	virtual std::string serialize(Mode mode) const;
 protected:
+	/** Constructor. */
+	AbstractProperty();
+
 	/** Constructor. */
 	AbstractProperty(
 		unsigned int blockSize
@@ -277,7 +286,7 @@ inline bool AbstractProperty<
 }
 
 template<typename DataType, bool isFundamental, bool isSerializeable>
-inline DataType AbstractProperty<
+inline const DataType& AbstractProperty<
 	DataType,
 	isFundamental,
 	isSerializeable
@@ -289,11 +298,32 @@ inline DataType AbstractProperty<
 }
 
 template<typename DataType, bool isFundamental, bool isSerializeable>
-inline DataType AbstractProperty<
+inline DataType& AbstractProperty<
+	DataType,
+	isFundamental,
+	isSerializeable
+>::operator()(
+	const Index &index,
+	unsigned int offset
+){
+	return data[getOffset(index) + offset];
+}
+
+template<typename DataType, bool isFundamental, bool isSerializeable>
+inline const DataType& AbstractProperty<
 	DataType,
 	isFundamental,
 	isSerializeable
 >::operator()(unsigned int offset) const{
+	return data[offset];
+}
+
+template<typename DataType, bool isFundamental, bool isSerializeable>
+inline DataType& AbstractProperty<
+	DataType,
+	isFundamental,
+	isSerializeable
+>::operator()(unsigned int offset){
 	return data[offset];
 }
 
@@ -480,6 +510,20 @@ inline std::string AbstractProperty<std::complex<double>, false, false>::seriali
 template<>
 inline std::string AbstractProperty<SpinMatrix, false, false>::serialize(Mode mode) const{
 	TBTKNotYetImplemented("AbstractProperty<SpinMatrix, false, false>::serialize()");
+}
+
+template<typename DataType, bool isFundamental, bool isSerializeable>
+AbstractProperty<
+	DataType,
+	isFundamental,
+	isSerializeable
+>::AbstractProperty() :
+	indexDescriptor(IndexDescriptor::Format::None)
+{
+	this->blockSize = 0;
+
+	size = blockSize;
+	data = nullptr;
 }
 
 template<typename DataType, bool isFundamental, bool isSerializeable>
@@ -811,6 +855,9 @@ AbstractProperty<
 		blockSize = rhs.blockSize;
 
 		size = rhs.size;
+		if(data != nullptr)
+			delete [] data;
+
 		if(rhs.data == nullptr){
 			data = nullptr;
 		}
@@ -842,6 +889,9 @@ AbstractProperty<
 		blockSize = rhs.blockSize;
 
 		size = rhs.size;
+		if(data != nullptr)
+			delete [] data;
+
 		if(rhs.data == nullptr){
 			data = nullptr;
 		}

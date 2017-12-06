@@ -44,6 +44,9 @@ public:
 	};
 
 	/** Constructor. */
+	GreensFunction();
+
+	/** Constructor. */
 	GreensFunction(
 		const IndexTree &indexTree,
 		Type type,
