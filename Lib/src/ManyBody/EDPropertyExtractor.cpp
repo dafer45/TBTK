@@ -50,7 +50,6 @@ Property::GreensFunction* EDPropertyExtractor::calculateGreensFunction(
 		Property::GreensFunction *greensFunction = new Property::GreensFunction(
 			memoryLayout,
 			type,
-//			Property::GreensFunction::Format::Array,
 			lowerBound,
 			upperBound,
 			energyResolution,
@@ -88,7 +87,6 @@ Property::GreensFunction* EDPropertyExtractor::calculateGreensFunction(
 		Property::GreensFunction *greensFunction = new Property::GreensFunction(
 			memoryLayout,
 			type,
-//			Property::GreensFunction::Format::Array,
 			lowerBound,
 			upperBound,
 			energyResolution,
@@ -196,7 +194,6 @@ Property::GreensFunction* EDPropertyExtractor::calculateGreensFunction(
 		Property::GreensFunction *greensFunction = new Property::GreensFunction(
 			memoryLayout,
 			type,
-//			Property::GreensFunction::Format::Array,
 			lowerBound,
 			upperBound,
 			energyResolution,
@@ -294,7 +291,6 @@ Property::GreensFunction* EDPropertyExtractor::calculateGreensFunction(
 		Property::GreensFunction *greensFunction = new Property::GreensFunction(
 			memoryLayout,
 			type,
-//			Property::GreensFunction::Format::Array,
 			lowerBound,
 			upperBound,
 			energyResolution,
@@ -332,7 +328,7 @@ Property::Density EDPropertyExtractor::calculateDensity(
 	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
 	Property::Density density(lDimensions, lRanges);
 
-	calculate(calculateDensityCallback, /*(void*)density.data*/(void*)density.getDataRW(), pattern, ranges, 0, 1);
+	calculate(calculateDensityCallback, (void*)density.getDataRW(), pattern, ranges, 0, 1);
 
 	return density;
 }

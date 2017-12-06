@@ -38,12 +38,6 @@ CPropertyExtractor::CPropertyExtractor(
 	bool useGPUToGenerateGreensFunctions,
 	bool useLookupTable
 ){
-/*	TBTKAssert(
-		cSolver != NULL,
-		"CPropertyExtractor::CPropertyExtractor()",
-		"Argument cSolver cannot be NULL.",
-		""
-	);*/
 	TBTKAssert(
 		numCoefficients > 0,
 		"CPropertyExtractor::CPropertyExtractor()",
@@ -119,13 +113,6 @@ Property::GreensFunction CPropertyExtractor::calculateGreensFunction(
 ){
 	vector<Index> toIndices;
 	toIndices.push_back(to);
-
-/*	Property::GreensFunction **greensFunctions = calculateGreensFunctions(toIndices, from, type);
-//	Property::GreensFunction *greensFunction = greensFunctions[0];
-	Property::GreensFunction greensFunction = *greensFunctions[0];
-	delete [] greensFunctions;
-
-	return greensFunction;*/
 
 	return calculateGreensFunctions(toIndices, from, type);
 }
@@ -251,7 +238,6 @@ Property::GreensFunction CPropertyExtractor::calculateGreensFunction(
 	return greensFunction;
 }
 
-//Property::GreensFunction** CPropertyExtractor::calculateGreensFunctions(
 Property::GreensFunction CPropertyExtractor::calculateGreensFunctions(
 	vector<Index> &to,
 	Index from,
@@ -267,8 +253,6 @@ Property::GreensFunction CPropertyExtractor::calculateGreensFunctions(
 	else{
 		cSolver->calculateCoefficients(to, from, coefficients, numCoefficients);
 	}
-
-//	Property::GreensFunction **greensFunctions = new Property::GreensFunction*[to.size()];
 
 	ChebyshevSolver::Type chebyshevType;
 	switch(type){
@@ -307,26 +291,10 @@ Property::GreensFunction CPropertyExtractor::calculateGreensFunctions(
 
 	if(useGPUToGenerateGreensFunctions){
 		for(unsigned int n = 0; n < to.size(); n++){
-/*			greensFunctions[n] = cSolver->generateGreensFunctionGPU(
-				&(coefficients[n*numCoefficients]),
-				type
-			);*/
-/*			IndexTree memoryLayout;
-			memoryLayout.add(Index(Index(to[n], {IDX_SEPARATOR}), from));
-			memoryLayout.generateLinearMap();*/
 			complex<double> *greensFunctionData = cSolver->generateGreensFunctionGPU(
 				&(coefficients[n*numCoefficients]),
 				chebyshevType
 			);
-/*			greensFunctions[n] = new Property::GreensFunction(
-				memoryLayout,
-				type,
-				lowerBound,
-				upperBound,
-				energyResolution,
-				greensFunctionData
-			);
-			delete [] greensFunctionData;*/
 			unsigned int offset = greensFunction.getOffset(Index(Index(to[n], {IDX_SEPARATOR}), from));
 			for(int c = 0; c < energyResolution; c++)
 				data[offset + c] = greensFunctionData[c];
@@ -337,26 +305,10 @@ Property::GreensFunction CPropertyExtractor::calculateGreensFunctions(
 		if(useLookupTable){
 			#pragma omp parallel for
 			for(unsigned int n = 0; n < to.size(); n++){
-/*				greensFunctions[n] = cSolver->generateGreensFunction(
-					&(coefficients[n*numCoefficients]),
-					type
-				);*/
-/*				IndexTree memoryLayout;
-				memoryLayout.add(Index(Index(to[n], {IDX_SEPARATOR}), from));
-				memoryLayout.generateLinearMap();*/
 				complex<double> *greensFunctionData = cSolver->generateGreensFunction(
 					&(coefficients[n*numCoefficients]),
 					chebyshevType
 				);
-/*				greensFunctions[n] = new Property::GreensFunction(
-					memoryLayout,
-					type,
-					lowerBound,
-					upperBound,
-					energyResolution,
-					greensFunctionData
-				);
-				delete [] greensFunctionData;*/
 				unsigned int offset = greensFunction.getOffset(Index(Index(to[n], {IDX_SEPARATOR}), from));
 				for(int c = 0; c < energyResolution; c++)
 					data[offset + c] = greensFunctionData[c];
@@ -366,17 +318,6 @@ Property::GreensFunction CPropertyExtractor::calculateGreensFunctions(
 		else{
 			#pragma omp parallel for
 			for(unsigned int n = 0; n < to.size(); n++){
-/*				greensFunctions[n] = cSolver->generateGreensFunction(
-					&(coefficients[n*numCoefficients]),
-					numCoefficients,
-					energyResolution,
-					lowerBound,
-					upperBound,
-					type
-				);*/
-/*				IndexTree memoryLayout;
-				memoryLayout.add(Index(Index(to[n], {IDX_SEPARATOR}), from));
-				memoryLayout.generateLinearMap();*/
 				complex<double> *greensFunctionData = cSolver->generateGreensFunction(
 					&(coefficients[n*numCoefficients]),
 					numCoefficients,
@@ -385,15 +326,6 @@ Property::GreensFunction CPropertyExtractor::calculateGreensFunctions(
 					upperBound,
 					chebyshevType
 				);
-/*				greensFunctions[n] = new Property::GreensFunction(
-					memoryLayout,
-					type,
-					lowerBound,
-					upperBound,
-					energyResolution,
-					greensFunctionData
-				);
-				delete [] greensFunctionData;*/
 				unsigned int offset = greensFunction.getOffset(Index(Index(to[n], {IDX_SEPARATOR}), from));
 				for(int c = 0; c < energyResolution; c++)
 					data[offset + c] = greensFunctionData[c];
@@ -404,7 +336,6 @@ Property::GreensFunction CPropertyExtractor::calculateGreensFunctions(
 
 	delete [] coefficients;
 
-//	return greensFunctions;
 	return greensFunction;
 }
 
@@ -416,13 +347,11 @@ complex<double> CPropertyExtractor::calculateExpectationValue(
 
 	complex<double> expectationValue = 0.;
 
-//	Property::GreensFunction *greensFunction = calculateGreensFunction(
 	Property::GreensFunction greensFunction = calculateGreensFunction(
 		to,
 		from,
 		Property::GreensFunction::Type::NonPrincipal
 	);
-//	const complex<double> *greensFunctionData = greensFunction->getData();
 	const complex<double> *greensFunctionData = greensFunction.getData();
 
 	Statistics statistics = cSolver->getModel().getStatistics();
@@ -448,8 +377,6 @@ complex<double> CPropertyExtractor::calculateExpectationValue(
 		expectationValue -= weight*conj(i*greensFunctionData[e])*dE/M_PI;
 	}
 
-//	delete greensFunction;
-
 	return expectationValue;
 }
 
@@ -466,7 +393,7 @@ Property::Density CPropertyExtractor::calculateDensity(
 
 	calculate(
 		calculateDensityCallback,
-		/*(void*)density.data*/(void*)density.getDataRW(),
+		(void*)density.getDataRW(),
 		pattern,
 		ranges,
 		0,
@@ -541,7 +468,7 @@ Property::Magnetization CPropertyExtractor::calculateMagnetization(
 		pattern,
 		ranges,
 		0,
-		/*1*/ /*4*/1
+		1
 	);
 
 	delete [] (int*)hint;
@@ -739,13 +666,11 @@ void CPropertyExtractor::calculateDensityCallback(
 ){
 	CPropertyExtractor *pe = (CPropertyExtractor*)cb_this;
 
-//	Property::GreensFunction *greensFunction = pe->calculateGreensFunction(
 	Property::GreensFunction greensFunction = pe->calculateGreensFunction(
 		index,
 		index,
 		Property::GreensFunction::Type::NonPrincipal
 	);
-//	const complex<double> *greensFunctionData = greensFunction->getData();
 	const complex<double> *greensFunctionData = greensFunction.getData();
 
 	Statistics statistics = pe->cSolver->getModel().getStatistics();
@@ -770,8 +695,6 @@ void CPropertyExtractor::calculateDensityCallback(
 
 		((double*)density)[offset] += weight*imag(greensFunctionData[e])/M_PI*dE;
 	}
-
-//	delete greensFunction;
 }
 
 void CPropertyExtractor::calculateMAGCallback(
@@ -791,13 +714,11 @@ void CPropertyExtractor::calculateMAGCallback(
 	for(int n = 0; n < 4; n++){
 		to.at(spinIndex) = n/2;		//up, up, down, down
 		from.at(spinIndex) = n%2;	//up, down, up, down
-//		Property::GreensFunction *greensFunction = pe->calculateGreensFunction(
 		Property::GreensFunction greensFunction = pe->calculateGreensFunction(
 			to,
 			from,
 			Property::GreensFunction::Type::NonPrincipal
 		);
-//		const complex<double> *greensFunctionData = greensFunction->getData();
 		const complex<double> *greensFunctionData = greensFunction.getData();
 
 		for(int e = 0; e < pe->energyResolution; e++){
@@ -817,11 +738,8 @@ void CPropertyExtractor::calculateMAGCallback(
 				);
 			}
 
-//			((complex<double>*)mag)[/*4**/offset + n] += weight*(-i)*greensFunctionData[e]/M_PI*dE;
 			((SpinMatrix*)mag)[offset].at(n/2, n%2) += weight*(-i)*greensFunctionData[e]/M_PI*dE;
 		}
-
-//		delete greensFunction;
 	}
 }
 
@@ -833,20 +751,16 @@ void CPropertyExtractor::calculateLDOSCallback(
 ){
 	CPropertyExtractor *pe = (CPropertyExtractor*)cb_this;
 
-//	Property::GreensFunction *greensFunction = pe->calculateGreensFunction(
 	Property::GreensFunction greensFunction = pe->calculateGreensFunction(
 		index,
 		index,
 		Property::GreensFunction::Type::NonPrincipal
 	);
-//	const complex<double> *greensFunctionData = greensFunction->getData();
 	const complex<double> *greensFunctionData = greensFunction.getData();
 
 	const double dE = (pe->upperBound - pe->lowerBound)/pe->energyResolution;
 	for(int n = 0; n < pe->energyResolution; n++)
 		((double*)ldos)[offset + n] += imag(greensFunctionData[n])/M_PI*dE;
-
-//	delete greensFunction;
 }
 
 void CPropertyExtractor::calculateSP_LDOSCallback(
@@ -865,19 +779,15 @@ void CPropertyExtractor::calculateSP_LDOSCallback(
 	for(int n = 0; n < 4; n++){
 		to.at(spinIndex) = n/2;		//up, up, down, down
 		from.at(spinIndex) = n%2;	//up, down, up, down
-//		Property::GreensFunction *greensFunction = pe->calculateGreensFunction(
 		Property::GreensFunction greensFunction = pe->calculateGreensFunction(
 			to,
 			from,
 			Property::GreensFunction::Type::NonPrincipal
 		);
-//		const complex<double> *greensFunctionData = greensFunction->getData();
 		const complex<double> *greensFunctionData = greensFunction.getData();
 
 		for(int e = 0; e < pe->energyResolution; e++)
 			((SpinMatrix*)sp_ldos)[offset + e].at(n/2, n%2) += -i*greensFunctionData[e]/M_PI*dE;
-
-//		delete greensFunction;
 	}
 }
 
