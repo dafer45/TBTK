@@ -63,6 +63,20 @@ Index::Index(const vector<vector<int>> &indexList){
 	}
 }
 
+Index::Index(initializer_list<Index> indexList){
+	for(unsigned int n = 0; n < indexList.size(); n++){
+		if(n > 0)
+			indices.push_back(IDX_SEPARATOR);
+		for(
+			unsigned int c = 0;
+			c < (indexList.begin() + n)->getSize();
+			c++
+		){
+			indices.push_back((indexList.begin() + n)->at(c));
+		}
+	}
+}
+
 Index::Index(const string &indexString){
 	TBTKExceptionAssert(
 		indexString[0] == '{',

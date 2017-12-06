@@ -70,6 +70,10 @@ public:
 	 *  between every index. */
 	Index(const std::vector<std::vector<int>> &indexList);
 
+	/** Constructor. Concatenates a list of indices, adding IDX_SEPARATOR
+	 *  between every index. */
+	Index(std::initializer_list<Index> indexList);
+
 	/** Constructor. */
 	Index(const std::string &indexString);
 
