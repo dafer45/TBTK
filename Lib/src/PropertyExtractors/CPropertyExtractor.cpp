@@ -160,7 +160,7 @@ Property::GreensFunction CPropertyExtractor::calculateGreensFunction(
 			IndexTree::Iterator fromIterator = fromTree.begin();
 			while(!fromIterator.getHasReachedEnd()){
 				Index fromIndex = fromIterator.getIndex();
-				memoryLayout.add(Index(Index(toIndex, {IDX_SEPARATOR}), fromIndex));
+				memoryLayout.add({toIndex, fromIndex});
 				fromIndices.add(fromIndex);
 
 				fromIterator.searchNext();
@@ -195,7 +195,7 @@ Property::GreensFunction CPropertyExtractor::calculateGreensFunction(
 			}
 
 			vector<Index> matchingIndices = memoryLayout.getIndexList(
-				Index(Index(toPattern, {IDX_SEPARATOR}), fromIndex)
+				{toPattern, fromIndex}
 			);
 			for(unsigned int n = 0; n < matchingIndices.size(); n++){
 				Index toIndex;
@@ -215,10 +215,7 @@ Property::GreensFunction CPropertyExtractor::calculateGreensFunction(
 			complex<double> *data = greensFunction.getDataRW();
 			const complex<double> *dataGF = gf.getData();
 
-			Index compoundIndex = Index(
-				Index(toIndices[n], {IDX_SEPARATOR}),
-				fromIndex
-			);
+			Index compoundIndex = Index({toIndices[n], fromIndex});
 
 			unsigned int offset = greensFunction.getOffset(
 				compoundIndex
@@ -278,7 +275,7 @@ Property::GreensFunction CPropertyExtractor::calculateGreensFunctions(
 
 	IndexTree memoryLayout;
 	for(unsigned int n = 0; n < to.size(); n++)
-		memoryLayout.add(Index(Index(to[n], {IDX_SEPARATOR}), from));
+		memoryLayout.add({to[n], from});
 	memoryLayout.generateLinearMap();
 	Property::GreensFunction greensFunction(
 		memoryLayout,
@@ -295,7 +292,7 @@ Property::GreensFunction CPropertyExtractor::calculateGreensFunctions(
 				&(coefficients[n*numCoefficients]),
 				chebyshevType
 			);
-			unsigned int offset = greensFunction.getOffset(Index(Index(to[n], {IDX_SEPARATOR}), from));
+			unsigned int offset = greensFunction.getOffset({to[n], from});
 			for(int c = 0; c < energyResolution; c++)
 				data[offset + c] = greensFunctionData[c];
 			delete [] greensFunctionData;
@@ -309,7 +306,7 @@ Property::GreensFunction CPropertyExtractor::calculateGreensFunctions(
 					&(coefficients[n*numCoefficients]),
 					chebyshevType
 				);
-				unsigned int offset = greensFunction.getOffset(Index(Index(to[n], {IDX_SEPARATOR}), from));
+				unsigned int offset = greensFunction.getOffset({to[n], from});
 				for(int c = 0; c < energyResolution; c++)
 					data[offset + c] = greensFunctionData[c];
 				delete [] greensFunctionData;
@@ -326,7 +323,7 @@ Property::GreensFunction CPropertyExtractor::calculateGreensFunctions(
 					upperBound,
 					chebyshevType
 				);
-				unsigned int offset = greensFunction.getOffset(Index(Index(to[n], {IDX_SEPARATOR}), from));
+				unsigned int offset = greensFunction.getOffset({to[n], from});
 				for(int c = 0; c < energyResolution; c++)
 					data[offset + c] = greensFunctionData[c];
 				delete [] greensFunctionData;

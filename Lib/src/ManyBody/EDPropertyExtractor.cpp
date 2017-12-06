@@ -19,7 +19,7 @@ Property::GreensFunction* EDPropertyExtractor::calculateGreensFunction(
 	Property::GreensFunction::Type type
 ){
 	IndexTree memoryLayout;
-	memoryLayout.add(Index(Index(to, {IDX_SEPARATOR}), from));
+	memoryLayout.add({to, from});
 	memoryLayout.generateLinearMap();
 
 	switch(type){
