@@ -35,8 +35,24 @@ public:
 	/** Constructor. */
 	Matrix();
 
+	/** Copy constructor. */
+	Matrix(const Matrix<DataType, ROWS, COLS> &matrix);
+
+	/** Move constructor. */
+	Matrix(Matrix<DataType, ROWS, COLS> &&matrix);
+
 	/** Destructor. */
 	~Matrix();
+
+	/** Assignment operator. */
+	Matrix<DataType, ROWS, COLS>& operator=(
+		const Matrix<DataType, ROWS, COLS> &rhs
+	);
+
+	/** Move assignment operator. */
+	Matrix<DataType, ROWS, COLS>& operator=(
+		Matrix<DataType, ROWS, COLS> &&rhs
+	);
 
 	/** Returns a constant reference to the data element. */
 	const DataType& at(unsigned int row, unsigned int col) const;
@@ -60,8 +76,20 @@ public:
 	/** Constructor. */
 	Matrix(unsigned int rows, unsigned int cols);
 
+	/** Copy constructor. */
+	Matrix(const Matrix<DataType, 0, 0> &matrix);
+
+	/** Move constructor. */
+	Matrix(Matrix<DataType, 0, 0> &&matrix);
+
 	/** Destructor. */
 	~Matrix();
+
+	/** Assignment operator. */
+	Matrix<DataType, 0, 0>& operator=(const Matrix<DataType, 0, 0> &rhs);
+
+	/** Move assignment operator. */
+	Matrix<DataType, 0, 0>& operator=(Matrix<DataType, 0, 0> &&rhs);
 
 	/** Returns a constant reference to the data element. */
 	const DataType& at(unsigned int row, unsigned int col) const;
@@ -74,6 +102,11 @@ public:
 
 	/** Get number of columns. */
 	unsigned int getNumCols() const;
+
+	/** Multiplication operator. */
+	const Matrix<DataType, 0, 0> operator*(
+		const Matrix<DataType, 0, 0> &rhs
+	) const;
 private:
 	/** Data. */
 	DataType *data;
@@ -91,11 +124,30 @@ public:
 	/** Constructor. */
 	Matrix(unsigned int rows, unsigned int cols);
 
+	/** Copy constructor. */
+	Matrix(const Matrix<std::complex<double>, 0, 0> &matrix);
+
+	/** Move constructor. */
+	Matrix(Matrix<std::complex<double>, 0, 0> &&matrix);
+
 	/** Destructor. */
 	~Matrix();
 
+	/** Assignment operator. */
+	Matrix<std::complex<double>, 0, 0>& operator=(
+		const Matrix<std::complex<double>, 0, 0> &rhs
+	);
+
+	/** Move assignment operator. */
+	Matrix<std::complex<double>, 0, 0>& operator=(
+		Matrix<std::complex<double>, 0, 0> &&rhs
+	);
+
 	/** Returns a constant reference to the data element. */
-	const std::complex<double>& at(unsigned int row, unsigned int col) const;
+	const std::complex<double>& at(
+		unsigned int row,
+		unsigned int col
+	) const;
 
 	/** Returns a reference to the data element. */
 	std::complex<double>& at(unsigned int row, unsigned int col);
@@ -105,6 +157,11 @@ public:
 
 	/** Get number of columns. */
 	unsigned int getNumCols() const;
+
+	/** Multiplication operator. */
+	const Matrix<std::complex<double>, 0, 0> operator*(
+		const Matrix<std::complex<double>, 0, 0> &rhs
+	) const;
 
 	/** Invert. */
 	void invert();
@@ -126,11 +183,40 @@ template<typename DataType, unsigned int ROWS, unsigned int COLS>
 Matrix<DataType, ROWS, COLS>::Matrix(){
 }
 
+template<typename DataType, unsigned int ROWS, unsigned int COLS>
+Matrix<DataType, ROWS, COLS>::Matrix(const Matrix<DataType, ROWS, COLS> &matrix){
+	for(unsigned int n = 0; n < ROWS*COLS; n++)
+		data[n] = matrix.data[n];
+}
+
+template<typename DataType, unsigned int ROWS, unsigned int COLS>
+Matrix<DataType, ROWS, COLS>::Matrix(Matrix<DataType, ROWS, COLS> &&matrix){
+	for(unsigned int n = 0; n < ROWS*COLS; n++)
+		data[n] = matrix.data[n];
+}
+
 template<typename DataType>
 Matrix<DataType, 0, 0>::Matrix(unsigned int rows, unsigned int cols){
 	this->rows = rows;
 	this->cols = cols;
 	data = new DataType[rows*cols];
+}
+
+template<typename DataType>
+Matrix<DataType, 0, 0>::Matrix(const Matrix<DataType, 0, 0> &matrix){
+	rows = matrix.rows;
+	cols = matrix.cols;
+	data = new DataType[rows*cols];
+	for(unsigned int n = 0; n < rows*cols; n++)
+		data[n] = matrix.data[n];
+}
+
+template<typename DataType>
+Matrix<DataType, 0, 0>::Matrix(Matrix<DataType, 0, 0> &&matrix){
+	rows = matrix.rows;
+	cols = matrix.cols;
+	data = matrix.data;
+	matrix.data = nullptr;
 }
 
 inline Matrix<std::complex<double>, 0, 0>::Matrix(unsigned int rows, unsigned int cols){
@@ -139,17 +225,126 @@ inline Matrix<std::complex<double>, 0, 0>::Matrix(unsigned int rows, unsigned in
 	data = new std::complex<double>[rows*cols];
 }
 
+inline Matrix<std::complex<double>, 0, 0>::Matrix(
+	const Matrix<std::complex<double>, 0, 0> &matrix
+){
+	rows = matrix.rows;
+	cols = matrix.cols;
+	data = new std::complex<double>[rows*cols];
+	for(unsigned int n = 0; n < rows*cols; n++)
+		data[n] = matrix.data[n];
+}
+
+inline Matrix<std::complex<double>, 0, 0>::Matrix(
+	Matrix<std::complex<double>, 0, 0> &&matrix
+){
+	rows = matrix.rows;
+	cols = matrix.cols;
+	data = matrix.data;
+	matrix.data = nullptr;
+}
+
 template<typename DataType, unsigned int ROWS, unsigned int COLS>
 Matrix<DataType, ROWS, COLS>::~Matrix(){
 }
 
 template<typename DataType>
 Matrix<DataType, 0, 0>::~Matrix(){
-	delete [] data;
+	if(data != nullptr)
+		delete [] data;
 }
 
 inline Matrix<std::complex<double>, 0, 0>::~Matrix(){
-	delete [] data;
+	if(data != nullptr)
+		delete [] data;
+}
+
+template<typename DataType, unsigned int ROWS, unsigned int COLS>
+Matrix<DataType, ROWS, COLS>& Matrix<DataType, ROWS, COLS>::operator=(
+	const Matrix<DataType, ROWS, COLS> &rhs
+){
+	if(this != &rhs){
+		for(unsigned int n = 0; n < ROWS*COLS; n++)
+			data[n] = rhs.data[n];
+	}
+
+	return *this;
+}
+
+template<typename DataType, unsigned int ROWS, unsigned int COLS>
+Matrix<DataType, ROWS, COLS>& Matrix<DataType, ROWS, COLS>::operator=(
+	Matrix<DataType, ROWS, COLS> &&rhs
+){
+	if(this != &rhs){
+		for(unsigned int n = 0; n < ROWS*COLS; n++)
+			data[n] = rhs.data[n];
+	}
+
+	return *this;
+}
+
+template<typename DataType>
+Matrix<DataType, 0, 0>& Matrix<DataType, 0, 0>::operator=(
+	const Matrix<DataType, 0, 0> &rhs
+){
+	if(this != &rhs){
+		rows = rhs.rows;
+		cols = rhs.cols;
+
+		if(data != nullptr)
+			delete [] data;
+
+		data = new DataType[rows*cols];
+		for(unsigned int n = 0; n < rows*cols; n++)
+			data[n] = rhs.data[n];
+	}
+}
+
+template<typename DataType>
+Matrix<DataType, 0, 0>& Matrix<DataType, 0, 0>::operator=(
+	Matrix<DataType, 0, 0> &&rhs
+){
+	if(this != &rhs){
+		rows = rhs.rows;
+		cols = rhs.cols;
+
+		if(data != nullptr)
+			delete [] data;
+
+		data = rhs.data;
+		rhs.data = nullptr;
+	}
+}
+
+inline Matrix<std::complex<double>, 0, 0>& Matrix<std::complex<double>, 0, 0>::operator=(
+	const Matrix<std::complex<double>, 0, 0> &rhs
+){
+	if(this != &rhs){
+		rows = rhs.rows;
+		cols = rhs.cols;
+
+		if(data != nullptr)
+			delete [] data;
+
+		data = new std::complex<double>[rows*cols];
+		for(unsigned int n = 0; n < rows*cols; n++)
+			data[n] = rhs.data[n];
+	}
+}
+
+inline Matrix<std::complex<double>, 0, 0>& Matrix<std::complex<double>, 0, 0>::operator=(
+	Matrix<std::complex<double>, 0, 0> &&rhs
+){
+	if(this != &rhs){
+		rows = rhs.rows;
+		cols = rhs.cols;
+
+		if(data != nullptr)
+			delete [] data;
+
+		data = rhs.data;
+		rhs.data = nullptr;
+	}
 }
 
 template<typename DataType, unsigned int ROWS, unsigned int COLS>
@@ -224,6 +419,59 @@ unsigned int Matrix<DataType, 0, 0>::getNumCols() const{
 
 inline unsigned int Matrix<std::complex<double>, 0, 0>::getNumCols() const{
 	return cols;
+}
+
+template<typename DataType>
+inline const Matrix<DataType, 0, 0> Matrix<DataType, 0, 0>::operator*(
+	const Matrix<DataType, 0, 0> &rhs
+) const{
+	TBTKAssert(
+		cols == rhs.rows,
+		"Matrix::operator*()",
+		"Incompatible matrix dimensions.",
+		"The matrix dimensions are " << rows << "x" << cols << " and "
+		<< rhs.rows << "x" << rhs.cols << "\n"
+	);
+
+	Matrix<DataType> result(rows, rhs.cols);
+	for(unsigned int row = 0; row < rows; row++){
+		for(unsigned int col = 0; col < rhs.cols; col++){
+			result.at(row, col) = 0.;
+
+			for(unsigned int n = 0; n < cols; n++){
+				result.at(row, col)
+					+= at(row, n)*rhs.at(n, col);
+			}
+		}
+	}
+
+	return result;
+}
+
+inline const Matrix<std::complex<double>, 0, 0> Matrix<std::complex<double>, 0, 0>::operator*(
+	const Matrix<std::complex<double>, 0, 0> &rhs
+) const{
+	TBTKAssert(
+		cols == rhs.rows,
+		"Matrix::operator*()",
+		"Incompatible matrix dimensions.",
+		"The matrix dimensions are " << rows << "x" << cols << " and "
+		<< rhs.rows << "x" << rhs.cols << "\n"
+	);
+
+	Matrix<std::complex<double>> result(rows, rhs.cols);
+	for(unsigned int row = 0; row < rows; row++){
+		for(unsigned int col = 0; col < rhs.cols; col++){
+			result.at(row, col) = 0.;
+
+			for(unsigned int n = 0; n < cols; n++){
+				result.at(row, col)
+					+= at(row, n)*rhs.at(n, col);
+			}
+		}
+	}
+
+	return result;
 }
 
 extern "C"{
