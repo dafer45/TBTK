@@ -67,7 +67,7 @@ public:
 	const int* getRanges() const;
 
 	/** Get the offset in memory for given Index. */
-	unsigned int getOffset(const Index &index) const;
+	int getOffset(const Index &index) const;
 
 	/** Get IndexDescriptor. */
 	const IndexDescriptor& getIndexDescriptor() const;
@@ -86,6 +86,17 @@ public:
 
 	/** Function call operator. */
 	virtual DataType& operator()(unsigned int offset);
+
+	/** Set whether access of index not contained in the Property is
+	 *  allowed or not. If eneabled, remember to also initialize the value
+	 *  used for out of bounds access using
+	 *  AbstractProperty::setDefaultValue(). */
+	void setAllowIndexOutOfBoundsAccess(bool allowIndexOutOfBoundsAccess);
+
+	/** Set the value that is returned when accessing indices not contained
+	 *  in the Property. Only use if
+	 *  AbstractProperty::setAllowIndexOutOfBoundsAccess(true) is called. */
+	void setDefaultValue(const DataType &defaultValue);
 
 	/** Implements Serializeable::serialize(). */
 	virtual std::string serialize(Mode mode) const;
@@ -167,6 +178,12 @@ private:
 
 	/** Data. */
 	DataType *data;
+
+	/** Flag indicating whether access of */
+	bool allowIndexOutOfBoundsAccess;
+
+	/** Default value used for out of bounds access. */
+	DataType defaultValue;
 };
 
 template<typename DataType, bool isFundamental, bool isSerializeable>
@@ -254,14 +271,17 @@ inline const int* AbstractProperty<
 }
 
 template<typename DataType, bool isFundamental, bool isSerializeable>
-inline unsigned int AbstractProperty<
+inline int AbstractProperty<
 	DataType,
 	isFundamental,
 	isSerializeable
 >::getOffset(
 	const Index &index
 ) const{
-	return blockSize*indexDescriptor.getLinearIndex(index);
+	return blockSize*indexDescriptor.getLinearIndex(
+		index,
+		allowIndexOutOfBoundsAccess
+	);
 }
 
 template<typename DataType, bool isFundamental, bool isSerializeable>
@@ -294,7 +314,12 @@ inline const DataType& AbstractProperty<
 	const Index &index,
 	unsigned int offset
 ) const{
-	return data[getOffset(index) + offset];
+//	return data[getOffset(index) + offset];
+	int indexOffset = getOffset(index);
+	if(indexOffset < 0)
+		return defaultValue;
+	else
+		return data[indexOffset + offset];
 }
 
 template<typename DataType, bool isFundamental, bool isSerializeable>
@@ -306,7 +331,15 @@ inline DataType& AbstractProperty<
 	const Index &index,
 	unsigned int offset
 ){
-	return data[getOffset(index) + offset];
+//	return data[getOffset(index) + offset];
+	int indexOffset = getOffset(index);
+	if(indexOffset < 0){
+		static DataType defaultValueNonConst = defaultValue;
+		return defaultValueNonConst;
+	}
+	else{
+		return data[indexOffset + offset];
+	}
 }
 
 template<typename DataType, bool isFundamental, bool isSerializeable>
@@ -325,6 +358,24 @@ inline DataType& AbstractProperty<
 	isSerializeable
 >::operator()(unsigned int offset){
 	return data[offset];
+}
+
+template<typename DataType, bool isFundamental, bool isSerializeable>
+inline void AbstractProperty<
+	DataType,
+	isFundamental,
+	isSerializeable
+>::setAllowIndexOutOfBoundsAccess(bool allowIndexOutOfBoundsAccess){
+	this->allowIndexOutOfBoundsAccess = allowIndexOutOfBoundsAccess;
+}
+
+template<typename DataType, bool isFundamental, bool isSerializeable>
+inline void AbstractProperty<
+	DataType,
+	isFundamental,
+	isSerializeable
+>::setDefaultValue(const DataType &defaultValue){
+	this->defaultValue = defaultValue;
 }
 
 template<>

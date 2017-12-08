@@ -78,7 +78,10 @@ public:
 	const IndexTree& getIndexTree() const;
 
 	/** Get linear index. */
-	unsigned int getLinearIndex(const Index &index) const;
+	int getLinearIndex(
+		const Index &index,
+		bool returnNegativeForMissingIndex = false
+	) const;
 
 	/** Get size. */
 	unsigned int getSize() const;
@@ -180,7 +183,10 @@ inline const IndexTree& IndexDescriptor::getIndexTree() const{
 	return *descriptor.customFormat.indexTree;
 }
 
-inline unsigned int IndexDescriptor::getLinearIndex(const Index &index) const{
+inline int IndexDescriptor::getLinearIndex(
+	const Index &index,
+	bool returnNegativeForMissingIndex
+) const{
 	TBTKAssert(
 		format == Format::Custom,
 		"IndexDescriptor::getOffset()",
@@ -190,7 +196,8 @@ inline unsigned int IndexDescriptor::getLinearIndex(const Index &index) const{
 
 	return descriptor.customFormat.indexTree->getLinearIndex(
 		index,
-		IndexTree::SearchMode::MatchWildcards
+		IndexTree::SearchMode::MatchWildcards,
+		returnNegativeForMissingIndex
 	);
 }
 

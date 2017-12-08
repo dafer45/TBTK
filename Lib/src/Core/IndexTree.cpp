@@ -387,9 +387,14 @@ int IndexTree::getLinearIndex(
 		//If the subindex is bigger than the current number of child
 		//nodes, an error has occured.
 		if(currentIndex >= (int)children.size()){
-			Streams::err << "Error, index out of bound: ";
-			index.print();
-			exit(1);
+			if(returnNegativeForMissingIndex){
+				return -1;
+			}
+			else{
+				Streams::err << "Error, index out of bound: ";
+				index.print();
+				exit(1);
+			}
 		}
 		//Continue to the next node level.
 		return children.at(currentIndex).getLinearIndex(
