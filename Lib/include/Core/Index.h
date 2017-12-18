@@ -31,6 +31,8 @@
 namespace TBTK{
 
 enum {
+	_ = -1,		//Shorthand notation for IDX_ALL. Always use IDX_ALL in
+	___ = -1,	//library code.
 	IDX_ALL = -1,
 	IDX_SUM_ALL = -2,
 	IDX_X = -3,

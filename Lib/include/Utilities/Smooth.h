@@ -23,6 +23,7 @@
 #ifndef COM_DAFER45_TBTK_SMOOTH
 #define COM_DAFER45_TBTK_SMOOTH
 
+#include "Array.h"
 #include "TBTKMacros.h"
 
 #include <cmath>
@@ -32,6 +33,13 @@ namespace TBTK{
 
 class Smooth{
 public:
+	/** Gaussian smoothing of custom data. */
+	static Array<double> gaussian(
+		const Array<double> &data,
+		double sigma,
+		int windowSize
+	);
+
 	/** Gaussian smoothing of custom data. */
 	static std::vector<double> gaussian(
 		const std::vector<double> &data,
@@ -55,6 +63,52 @@ public:
 	);
 private:
 };
+
+inline Array<double> Smooth::gaussian(
+	const Array<double> &data,
+	double sigma,
+	int windowSize
+){
+	TBTKAssert(
+		windowSize > 0,
+		"Smooth::gaussian()",
+		"'windowSize' must be larger than zero.",
+		""
+	);
+	TBTKAssert(
+		windowSize%2 == 1,
+		"Smooth::gaussian()",
+		"'windowSize' must be odd.",
+		""
+	);
+	TBTKAssert(
+		data.getRanges().size() == 1,
+		"Smooth::gaussian()",
+		"Array must have rank 1, but the rank is "
+		<< data.getRanges().size() << ".",
+		""
+	);
+
+	double normalization = 0;
+	for(int n = -windowSize/2; n <= windowSize/2; n++){
+		normalization += exp(-n*n/(2*sigma*sigma));
+	}
+	normalization = 1/normalization;
+
+	Array<double> result({data.getRanges()[0]}, 0);
+	for(int n = 0; n < data.getRanges()[0]; n++){
+		for(
+			int c = std::max(0, n - (int)windowSize/2);
+			c < std::min(n + (int)windowSize/2 + 1, (int)data.getRanges()[0]);
+			c++
+		){
+			result[{n}] += data[{c}]*exp(-(c-n)*(c-n)/(2*sigma*sigma));
+		}
+		result[{n}] *= normalization;
+	}
+
+	return result;
+}
 
 inline std::vector<double> Smooth::gaussian(
 	const std::vector<double> &data,

@@ -62,6 +62,16 @@ public:
 		const std::initializer_list<unsigned int> &index
 	) const;
 
+	/** Array subscript operator. Imediate access for optimization. For an
+	 *  array with size {SIZE_A, SIZE_B, SIZE_C}, the supplied index should
+	 *  be calculated as SIZE_C*SIZE_B*a + SIZE_C*b + c. */
+	DataType& operator[](unsigned int n);
+
+	/** Array subscript operator. Imediate access for optimization. For an
+	 *  array with size {SIZE_A, SIZE_B, SIZE_C}, the supplied index should
+	 *  be calculated as SIZE_C*SIZE_B*a + SIZE_C*b + c. */
+	const DataType& operator[](unsigned int n) const;
+
 	/** Get slice. */
 	Array<DataType> getSlice(const std::vector<int> &index) const;
 
@@ -205,6 +215,16 @@ inline const DataType& Array<DataType>::operator[](
 	}
 
 	return data[idx];
+}
+
+template<typename DataType>
+inline DataType& Array<DataType>::operator[](unsigned int n){
+	return data[n];
+}
+
+template<typename DataType>
+inline const DataType& Array<DataType>::operator[](unsigned int n) const{
+	return data[n];
 }
 
 template<typename DataType>
