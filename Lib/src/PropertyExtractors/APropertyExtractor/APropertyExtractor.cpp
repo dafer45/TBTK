@@ -428,7 +428,7 @@ void APropertyExtractor::calculateLDOSCallback(
 			int e = (int)((real(eigenValues[n]) - l_lim)/step_size);
 			if(e >= resolution)
 				e = resolution-1;
-			((double*)ldos)[resolution*offset + e] += real(conj(u)*u)/dE;
+			((double*)ldos)[offset + e] += real(conj(u)*u)/dE;
 		}
 	}
 }
