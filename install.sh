@@ -38,10 +38,10 @@ cd Lib/
 #	make
 #	cd ..
 
-echo ""
-echo "##################"
-echo "# Building Tools #"
-echo "##################"
-cd Tools
-	./build.sh
-	cd ..
+#echo ""
+#echo "##################"
+#echo "# Building Tools #"
+#echo "##################"
+#cd Tools
+#	./build.sh
+#	cd ..

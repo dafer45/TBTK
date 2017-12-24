@@ -25,10 +25,10 @@ cd Lib/
 	fi
 	cd ..
 
-echo ""
-echo "####################"
-echo "# Rebuilding Tools #"
-echo "####################"
-cd Tools
-	./build.sh
-	cd ..
+#echo ""
+#echo "####################"
+#echo "# Rebuilding Tools #"
+#echo "####################"
+#cd Tools
+#	./build.sh
+#	cd ..

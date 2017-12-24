@@ -1,4 +1,4 @@
-wget http://www.hdfgroup.org/ftp/HDF5/releases/hdf5-1.8.16/src/hdf5-1.8.16.tar
+wget http://www.hdfgroup.org/ftp/HDF5/releases/hdf5-1.8/hdf5-1.8.16/src/hdf5-1.8.16.tar
 tar -xvf hdf5-1.8.16.tar
 rm hdf5-1.8.16.tar
 mkdir hdf5-build
