@@ -298,6 +298,8 @@ Matrix<DataType, 0, 0>& Matrix<DataType, 0, 0>::operator=(
 		for(unsigned int n = 0; n < rows*cols; n++)
 			data[n] = rhs.data[n];
 	}
+
+	return *this;
 }
 
 template<typename DataType>
@@ -314,6 +316,8 @@ Matrix<DataType, 0, 0>& Matrix<DataType, 0, 0>::operator=(
 		data = rhs.data;
 		rhs.data = nullptr;
 	}
+
+	return *this;
 }
 
 inline Matrix<std::complex<double>, 0, 0>& Matrix<std::complex<double>, 0, 0>::operator=(
@@ -330,6 +334,8 @@ inline Matrix<std::complex<double>, 0, 0>& Matrix<std::complex<double>, 0, 0>::o
 		for(unsigned int n = 0; n < rows*cols; n++)
 			data[n] = rhs.data[n];
 	}
+
+	return *this;
 }
 
 inline Matrix<std::complex<double>, 0, 0>& Matrix<std::complex<double>, 0, 0>::operator=(
@@ -345,6 +351,8 @@ inline Matrix<std::complex<double>, 0, 0>& Matrix<std::complex<double>, 0, 0>::o
 		data = rhs.data;
 		rhs.data = nullptr;
 	}
+
+	return *this;
 }
 
 template<typename DataType, unsigned int ROWS, unsigned int COLS>
@@ -578,7 +586,7 @@ inline std::complex<double> Matrix<std::complex<double>, 0, 0>::determinant(){
 	std::complex<double> det = 1.;
 	for(unsigned int n = 0; n < rows; n++){
 		Streams::out << ipiv[n] << "\n";
-		if(ipiv[n]-1 == n)
+		if(ipiv[n]-1 == (int)n)
 			det *= copy[rows*n + n];
 		else
 			det *= -copy[rows*n + n];
