@@ -137,6 +137,7 @@ public:
 		unsigned int windowSize = 51
 	);
 
+	/** Plot 2D data. */
 	void plot(
 		const std::vector<std::vector<double>> &data
 	);
