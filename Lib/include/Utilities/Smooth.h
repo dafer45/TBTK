@@ -24,6 +24,7 @@
 #define COM_DAFER45_TBTK_SMOOTH
 
 #include "Array.h"
+#include "DOS.h"
 #include "TBTKMacros.h"
 
 #include <cmath>

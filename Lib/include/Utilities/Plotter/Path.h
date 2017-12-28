@@ -25,13 +25,16 @@
 
 #include "Coordinate.h"
 #include "Decoration.h"
+#include "Drawable.h"
 
 #include <vector>
+
+#include <opencv2/core/core.hpp>
 
 namespace TBTK{
 namespace Plot{
 
-class Path{
+class Path : public Drawable{
 public:
 	/** Constructor. */
 	Path();
@@ -49,7 +52,26 @@ public:
 	void setDecoration(const Decoration &decoration);
 
 	/** Draw. */
-	virtual void draw();
+	virtual void draw(
+		cv::Mat &canvas,
+		const Plotter &plotter,
+		double minX,
+		double maxX,
+		double minY,
+		double maxY
+	);
+
+	/** Implements Drawable::getMinX(). */
+	virtual double getMinX() const;
+
+	/** Implements Drawable::getMaxX(). */
+	virtual double getMaxX() const;
+
+	/** Implements Drawable::getMinY(). */
+	virtual double getMinY() const;
+
+	/** Implements Drawable::getMaxY(). */
+	virtual double getMaxY() const;
 private:
 	/** Coordinates. */
 	std::vector<Coordinate> coordinates;
@@ -78,6 +100,54 @@ inline void Path::add(const Coordinate &coordinate){
 
 inline void Path::setDecoration(const Decoration &decoration){
 	this->decoration = decoration;
+}
+
+inline double Path::getMinX() const{
+	if(coordinates.size() == 0)
+		return 0.;
+
+	double min = coordinates[0].x;
+	for(unsigned int n = 0; n < coordinates.size(); n++)
+		if(coordinates[n].x < min)
+			min = coordinates[n].x;
+
+	return min;
+}
+
+inline double Path::getMaxX() const{
+	if(coordinates.size() == 0)
+		return 0.;
+
+	double max = coordinates[0].x;
+	for(unsigned int n = 0; n < coordinates.size(); n++)
+		if(coordinates[n].x > max)
+			max = coordinates[n].x;
+
+	return max;
+}
+
+inline double Path::getMinY() const{
+	if(coordinates.size() == 0)
+		return 0.;
+
+	double min = coordinates[0].y;
+	for(unsigned int n = 0; n < coordinates.size(); n++)
+		if(coordinates[n].y < min)
+			min = coordinates[n].y;
+
+	return min;
+}
+
+inline double Path::getMaxY() const{
+	if(coordinates.size() == 0)
+		return 0.;
+
+	double max = coordinates[0].y;
+	for(unsigned int n = 0; n < coordinates.size(); n++)
+		if(coordinates[n].y > max)
+			max = coordinates[n].y;
+
+	return max;
 }
 
 };	//End namespace Plot

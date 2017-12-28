@@ -23,6 +23,10 @@
 #ifndef COM_DAFER45_TBTK_COORDINATE
 #define COM_DAFER45_TBTK_COORDINATE
 
+#include "TBTKMacros.h"
+
+#include <vector>
+
 namespace TBTK{
 namespace Plot{
 

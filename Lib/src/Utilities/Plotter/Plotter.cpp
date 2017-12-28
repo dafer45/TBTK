@@ -72,10 +72,14 @@ void Plotter::plot(
 		modifiedDecoration.setColor({0, 0, 0});
 //		modifiedDecoration.color = {0, 0, 0};
 
-	dataStorage.push_back(make_tuple(axis, data, modifiedDecoration));
+//	dataStorage.push_back(make_tuple(axis, data, modifiedDecoration));
+	dataStorage.push_back(Path());
+	dataStorage.back().setDecoration(modifiedDecoration);
+	for(unsigned int n = 0; n < axis.size(); n++)
+		dataStorage.back().add({axis[n], data[n]});
 
 	if(autoScaleX){
-		minX = get<0>(dataStorage.at(0)).at(0);
+/*		minX = get<0>(dataStorage.at(0)).at(0);
 		maxX = get<0>(dataStorage.at(0)).at(0);
 		for(unsigned int n = 0; n < dataStorage.size(); n++){
 			const std::vector<double> axis = get<0>(dataStorage.at(n));
@@ -86,10 +90,20 @@ void Plotter::plot(
 				if(axis.at(c) > maxX)
 					maxX = axis.at(c);
 			}
+		}*/
+		minX = dataStorage[0].getMinX();
+		maxX = dataStorage[0].getMaxX();
+		for(unsigned int n = 1; n < dataStorage.size(); n++){
+			double min = dataStorage[n].getMinX();
+			double max = dataStorage[n].getMaxX();
+			if(min < minX)
+				minX = min;
+			if(max > maxX)
+				maxX = max;
 		}
 	}
 	if(autoScaleY){
-		minY = get<1>(dataStorage.at(0)).at(0);
+/*		minY = get<1>(dataStorage.at(0)).at(0);
 		maxY = get<1>(dataStorage.at(0)).at(0);
 		for(unsigned int n = 0; n < dataStorage.size(); n++){
 			const std::vector<double> axis = get<0>(dataStorage.at(n));
@@ -100,6 +114,16 @@ void Plotter::plot(
 				if(data.at(c) > maxY)
 					maxY = data.at(c);
 			}
+		}*/
+		minY = dataStorage[0].getMinY();
+		maxY = dataStorage[0].getMaxY();
+		for(unsigned int n = 1; n < dataStorage.size(); n++){
+			double min = dataStorage[n].getMinY();
+			double max = dataStorage[n].getMaxY();
+			if(min < minY)
+				minY = min;
+			if(max > maxY)
+				maxY = max;
 		}
 	}
 
@@ -115,7 +139,15 @@ void Plotter::plot(
 	);
 
 	for(unsigned int n = 0; n < dataStorage.size(); n++){
-		const std::vector<double> axis = get<0>(dataStorage.at(n));
+		dataStorage[n].draw(
+			canvas,
+			*this,
+			minX,
+			maxX,
+			minY,
+			maxY
+		);
+/*		const std::vector<double> axis = get<0>(dataStorage.at(n));
 		const std::vector<double> data = get<1>(dataStorage.at(n));
 		Decoration &decoration = get<2>(dataStorage.at(n));
 		Scalar color(
@@ -213,7 +245,7 @@ void Plotter::plot(
 				"Unknown mode.",
 				"This should never happen, contact the developer."
 			);
-		}
+		}*/
 	}
 
 	drawAxes();

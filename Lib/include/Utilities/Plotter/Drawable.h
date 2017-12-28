@@ -23,8 +23,12 @@
 #ifndef COM_DAFER45_TBTK_DRAWABLE
 #define COM_DAFER45_TBTK_DRAWABLE
 
+#include <opencv2/core/core.hpp>
+
 namespace TBTK{
 namespace Plot{
+
+class Plotter;
 
 class Drawable{
 public:
@@ -32,17 +36,36 @@ public:
 	Drawable();
 
 	/** Destructor. */
-	virtual ~Decoration();
+	virtual ~Drawable();
 
 	/** Draw. */
-	virtual void draw() = 0;
+	virtual void draw(
+		cv::Mat &canvas,
+		const Plotter &plotter,
+		double minX,
+		double maxX,
+		double minY,
+		double maxY
+	) = 0;
+
+	/** Get minimum x-coordiante. */
+	virtual double getMinX() const = 0;
+
+	/** Get maximum x-coordiante. */
+	virtual double getMaxX() const = 0;
+
+	/** Get minimum y-coordiante. */
+	virtual double getMinY() const = 0;
+
+	/** Get maximum y-coordiante. */
+	virtual double getMaxY() const = 0;
 private:
 };
 
 inline Drawable::Drawable(){
 }
 
-inline Decoration::~Decoration(){
+inline Drawable::~Drawable(){
 }
 
 };	//End namespace Plot
