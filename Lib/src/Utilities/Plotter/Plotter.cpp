@@ -31,6 +31,7 @@ using namespace std;
 using namespace cv;
 
 namespace TBTK{
+namespace Plot{
 
 Plotter::Plotter(){
 	width = 600;
@@ -67,8 +68,9 @@ void Plotter::plot(
 		dataStorage.clear();
 
 	Decoration modifiedDecoration = decoration;
-	if(decoration.color.size() != 3)
-		modifiedDecoration.color = {0, 0, 0};
+	if(decoration.getColor().size() != 3)
+		modifiedDecoration.setColor({0, 0, 0});
+//		modifiedDecoration.color = {0, 0, 0};
 
 	dataStorage.push_back(make_tuple(axis, data, modifiedDecoration));
 
@@ -117,12 +119,12 @@ void Plotter::plot(
 		const std::vector<double> data = get<1>(dataStorage.at(n));
 		Decoration &decoration = get<2>(dataStorage.at(n));
 		Scalar color(
-			decoration.color[2],
-			decoration.color[1],
-			decoration.color[0]
+			decoration.getColor()[2],
+			decoration.getColor()[1],
+			decoration.getColor()[0]
 		);
 
-		switch(decoration.lineStyle){
+		switch(decoration.getLineStyle()){
 		case Decoration::LineStyle::Line:
 			for(unsigned int c = 1; c < data.size(); c++){
 				double x0 = axis.at(c-1);
@@ -174,7 +176,7 @@ void Plotter::plot(
 					getCVPoint(x0, y0),
 					getCVPoint(x1, y1),
 					color,
-					decoration.size,
+					decoration.getSize(),
 					CV_AA
 				);
 			}
@@ -198,7 +200,7 @@ void Plotter::plot(
 				circle(
 					canvas,
 					getCVPoint(x, y),
-					decoration.size,
+					decoration.getSize(),
 					color,
 					-1,
 					CV_AA
@@ -477,4 +479,5 @@ void Plotter::drawAxes(){
 	);
 }
 
+};	//End of namespace Plot
 };	//End of namespace TBTK

@@ -24,7 +24,9 @@
 #define COM_DAFER45_TBTK_PLOTTER
 
 #include "Array.h"
+#include "Decoration.h"
 #include "DOS.h"
+#include "Path.h"
 #include "Streams.h"
 #include "TBTKMacros.h"
 
@@ -36,6 +38,7 @@
 #include <opencv2/highgui/highgui.hpp>
 
 namespace TBTK{
+namespace Plot{
 
 class Plotter{
 public:
@@ -85,33 +88,33 @@ public:
 
 	/** Class describing how to decorate the data with line style, color,
 	 *  etc. */
-	class Decoration{
-	public:
+//	class Decoration{
+//	public:
 		/** Enum class for describingthe line style. */
-		enum class LineStyle {Line, Point};
+//		enum class LineStyle {Line, Point};
 
 		/** Constructor. */
-		Decoration(
-			const std::vector<unsigned char> &color,
-			LineStyle lineStyle,
-			unsigned int size = 1
-		);
+//		Decoration(
+//			const std::vector<unsigned char> &color,
+//			LineStyle lineStyle,
+//			unsigned int size = 1
+//		);
 
 		/** Destructor. */
-		~Decoration();
-	private:
+//		~Decoration();
+//	private:
 		/** Color. */
-		std::vector<unsigned char> color;
+//		std::vector<unsigned char> color;
 
 		/** Line style. */
-		LineStyle lineStyle;
+//		LineStyle lineStyle;
 
 		/** Width. */
-		unsigned int size;
+//		unsigned int size;
 
 		/** The Plotter have direct access to Decoration members. */
-		friend class Plotter;
-	};
+//		friend class Plotter;
+//	};
 
 	/** Plot data. */
 	void plot(
@@ -293,7 +296,7 @@ inline void Plotter::save(std::string filename) const{
 	imwrite(filename, canvas);
 }
 
-inline Plotter::Decoration::Decoration(
+/*inline Plotter::Decoration::Decoration(
 	const std::vector<unsigned char> &color,
 	LineStyle lineStyle,
 	unsigned int size
@@ -304,8 +307,9 @@ inline Plotter::Decoration::Decoration(
 }
 
 inline Plotter::Decoration::~Decoration(){
-}
+}*/
 
+};	//End namespace Plot
 };	//End namespace TBTK
 
 #endif
