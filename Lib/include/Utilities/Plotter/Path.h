@@ -23,6 +23,7 @@
 #ifndef COM_DAFER45_TBTK_PATH
 #define COM_DAFER45_TBTK_PATH
 
+#include "PlotCanvas.h"
 #include "Coordinate.h"
 #include "Decoration.h"
 #include "Drawable.h"
@@ -53,7 +54,7 @@ public:
 
 	/** Draw. */
 	virtual void draw(
-		cv::Mat &canvas,
+		PlotCanvas &canvas,
 		const Plotter &plotter,
 		double minX,
 		double maxX,

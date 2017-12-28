@@ -34,18 +34,8 @@ namespace TBTK{
 namespace Plot{
 
 Plotter::Plotter(){
-	width = 600;
-	height = 400;
-
-	paddingLeft = 100;
-	paddingRight = 40;
-	paddingBottom = 30;
-	paddingTop = 20;
-
 	autoScaleX = true;
 	autoScaleY = true;
-
-	hold = false;
 }
 
 Plotter::~Plotter(){
@@ -70,29 +60,15 @@ void Plotter::plot(
 	Decoration modifiedDecoration = decoration;
 	if(decoration.getColor().size() != 3)
 		modifiedDecoration.setColor({0, 0, 0});
-//		modifiedDecoration.color = {0, 0, 0};
 
-//	dataStorage.push_back(make_tuple(axis, data, modifiedDecoration));
 	dataStorage.push_back(Path());
 	dataStorage.back().setDecoration(modifiedDecoration);
 	for(unsigned int n = 0; n < axis.size(); n++)
 		dataStorage.back().add({axis[n], data[n]});
 
 	if(autoScaleX){
-/*		minX = get<0>(dataStorage.at(0)).at(0);
-		maxX = get<0>(dataStorage.at(0)).at(0);
-		for(unsigned int n = 0; n < dataStorage.size(); n++){
-			const std::vector<double> axis = get<0>(dataStorage.at(n));
-			const std::vector<double> data = get<1>(dataStorage.at(n));
-			for(unsigned int c = 0; c < data.size(); c++){
-				if(axis.at(c) < minX)
-					minX = axis.at(c);
-				if(axis.at(c) > maxX)
-					maxX = axis.at(c);
-			}
-		}*/
-		minX = dataStorage[0].getMinX();
-		maxX = dataStorage[0].getMaxX();
+		double minX = dataStorage[0].getMinX();
+		double maxX = dataStorage[0].getMaxX();
 		for(unsigned int n = 1; n < dataStorage.size(); n++){
 			double min = dataStorage[n].getMinX();
 			double max = dataStorage[n].getMaxX();
@@ -101,22 +77,11 @@ void Plotter::plot(
 			if(max > maxX)
 				maxX = max;
 		}
+		canvas.setBoundsX(minX, maxX);
 	}
 	if(autoScaleY){
-/*		minY = get<1>(dataStorage.at(0)).at(0);
-		maxY = get<1>(dataStorage.at(0)).at(0);
-		for(unsigned int n = 0; n < dataStorage.size(); n++){
-			const std::vector<double> axis = get<0>(dataStorage.at(n));
-			const std::vector<double> data = get<1>(dataStorage.at(n));
-			for(unsigned int c = 0; c < data.size(); c++){
-				if(data.at(c) < minY)
-					minY = data.at(c);
-				if(data.at(c) > maxY)
-					maxY = data.at(c);
-			}
-		}*/
-		minY = dataStorage[0].getMinY();
-		maxY = dataStorage[0].getMaxY();
+		double minY = dataStorage[0].getMinY();
+		double maxY = dataStorage[0].getMaxY();
 		for(unsigned int n = 1; n < dataStorage.size(); n++){
 			double min = dataStorage[n].getMinY();
 			double max = dataStorage[n].getMaxY();
@@ -125,130 +90,23 @@ void Plotter::plot(
 			if(max > maxY)
 				maxY = max;
 		}
+		canvas.setBoundsY(minY, maxY);
 	}
 
-	canvas = Mat::zeros(height, width, CV_8UC3);
-	rectangle(
-		canvas,
-		cvPoint(0, 0),
-		cvPoint(width-1, height-1),
-		Scalar(255, 255, 255),
-		CV_FILLED,
-		8,
-		0
-	);
+	canvas.clear();
 
 	for(unsigned int n = 0; n < dataStorage.size(); n++){
 		dataStorage[n].draw(
 			canvas,
 			*this,
-			minX,
-			maxX,
-			minY,
-			maxY
+			canvas.getMinX(),
+			canvas.getMaxX(),
+			canvas.getMinY(),
+			canvas.getMaxY()
 		);
-/*		const std::vector<double> axis = get<0>(dataStorage.at(n));
-		const std::vector<double> data = get<1>(dataStorage.at(n));
-		Decoration &decoration = get<2>(dataStorage.at(n));
-		Scalar color(
-			decoration.getColor()[2],
-			decoration.getColor()[1],
-			decoration.getColor()[0]
-		);
-
-		switch(decoration.getLineStyle()){
-		case Decoration::LineStyle::Line:
-			for(unsigned int c = 1; c < data.size(); c++){
-				double x0 = axis.at(c-1);
-				double y0 = data.at(c-1);
-				double x1 = axis.at(c);
-				double y1 = data.at(c);
-
-				//Clip lines
-				if(x1 < x0){
-					double temp = x0;
-					x0 = x1;
-					x1 = temp;
-					temp = y0;
-					y0 = y1;
-					y1 = temp;
-				}
-				if(x0 < minX && x1 < minX)
-					continue;
-				if(x0 > maxX && x1 > maxX)
-					continue;
-				if(x0 < minX){
-					if(x1 - x0 != 0)
-						y0 += (minX - x0)*(y1 - y0)/(x1 - x0);
-					x0 = minX;
-				}
-				if(x1 > maxX){
-					if(x1 - x0 != 0)
-						y1 -= (x1 - maxX)*(y1 - y0)/(x1 - x0);
-					x1 = maxX;
-				}
-				if(y0 < minY && y1 < minY)
-					continue;
-				if(y0 > maxY && y1 > maxY)
-					continue;
-				if(y0 < minY){
-					if(y1 - y0 != 0)
-						x0 += (minY - y0)*(x1 - x0)/(y1 - y0);
-					y0 = minY;
-				}
-				if(y1 > maxY){
-					if(y1 - y0 != 0)
-						x1 -= (y1 - maxY)*(x1 - x0)/(y1 - y0);
-					y1 = maxY;
-				}
-
-				//Draw line
-				line(
-					canvas,
-					getCVPoint(x0, y0),
-					getCVPoint(x1, y1),
-					color,
-					decoration.getSize(),
-					CV_AA
-				);
-			}
-			break;
-		case Decoration::LineStyle::Point:
-			for(unsigned int c = 1; c < data.size(); c++){
-				double x = axis.at(c-1);
-				double y = data.at(c-1);
-
-				//Clip points
-				if(x < minX)
-					continue;
-				if(x > maxX)
-					continue;
-				if(y < minY)
-					continue;
-				if(y > maxY)
-					continue;
-
-				//Draw line
-				circle(
-					canvas,
-					getCVPoint(x, y),
-					decoration.getSize(),
-					color,
-					-1,
-					CV_AA
-				);
-			}
-			break;
-		default:
-			TBTKExit(
-				"Plotter::plot()",
-				"Unknown mode.",
-				"This should never happen, contact the developer."
-			);
-		}*/
 	}
 
-	drawAxes();
+	canvas.drawAxes();
 }
 
 void Plotter::plot(
@@ -302,21 +160,9 @@ void Plotter::plot(
 			""
 		);
 	}
-	minX = 0;
-	maxX = data.size()-1;
-	minY = 0;
-	maxY = sizeY-1;
+	canvas.setBounds(0, data.size()-1, 0, sizeY-1);
 
-	canvas = Mat::zeros(height, width, CV_8UC3);
-	rectangle(
-		canvas,
-		cvPoint(0, 0),
-		cvPoint(width-1, height-1),
-		Scalar(255, 255, 255),
-		CV_FILLED,
-		8,
-		0
-	);
+	canvas.clear();
 
 	double minValue = data[0][0];
 	double maxValue = data[0][0];
@@ -336,9 +182,9 @@ void Plotter::plot(
 			double value10 = data[x+1][y];
 			double value11 = data[x+1][y+1];
 
-			Point p00 = getCVPoint(x, y);
-			Point p01 = getCVPoint(x, y+1);
-			Point p10 = getCVPoint(x+1, y);
+			Point p00 = canvas.getCVPoint(x, y);
+			Point p01 = canvas.getCVPoint(x, y+1);
+			Point p10 = canvas.getCVPoint(x+1, y);
 			for(int x = p00.x; x <= p10.x; x++){
 				for(int y = p00.y; y >= p01.y; y--){
 					double distanceX = (x-p00.x)/(double)(p10.x - p00.x);
@@ -346,15 +192,19 @@ void Plotter::plot(
 					double value0 = value00*(1 - distanceX) + value10*distanceX;
 					double value1 = value01*(1 - distanceX) + value11*distanceX;
 					double averagedValue = value0*(1 - distanceY) + value1*distanceY;
-					canvas.at<Vec3b>(y, x)[0] = 255;
-					canvas.at<Vec3b>(y, x)[1] = (255 - 255*(averagedValue - minValue)/(maxValue - minValue));
-					canvas.at<Vec3b>(y, x)[2] = (255 - 255*(averagedValue - minValue)/(maxValue - minValue));
+					canvas.setPixel(
+						x,
+						y,
+						(255 - 255*(averagedValue - minValue)/(maxValue - minValue)),
+						(255 - 255*(averagedValue - minValue)/(maxValue - minValue)),
+						255
+					);
 				}
 			}
 		}
 	}
 
-	drawAxes();
+	canvas.drawAxes();
 }
 
 void Plotter::plot(
@@ -392,123 +242,6 @@ void Plotter::plot(
 			<< " plotter."
 		);
 	}
-}
-
-void Plotter::drawAxes(){
-	line(
-		canvas,
-		getCVPoint(minX, minY),
-		getCVPoint(maxX, minY),
-		Scalar(0, 0, 0),
-		2,
-		CV_AA
-	);
-	line(
-		canvas,
-		getCVPoint(minX, minY),
-		getCVPoint(minX, maxY),
-		Scalar(0, 0, 0),
-		2,
-		CV_AA
-	);
-	stringstream ss;
-	ss.precision(1);
-	ss << scientific << minX;
-	string minXString = ss.str();
-	ss.str("");
-	ss << scientific << maxX;
-	string maxXString = ss.str();
-	ss.str("");
-	ss << scientific << minY;
-	string minYString = ss.str();
-	ss.str("");
-	ss << scientific << maxY;
-	string maxYString = ss.str();
-	int minXStringBaseLine;
-	int maxXStringBaseLine;
-	int minYStringBaseLine;
-	int maxYStringBaseLine;
-	Size minXStringSize = getTextSize(
-		minXString,
-		FONT_HERSHEY_SIMPLEX,
-		0.5,
-		1,
-		&minXStringBaseLine
-	);
-	Size maxXStringSize = getTextSize(
-		maxXString,
-		FONT_HERSHEY_SIMPLEX,
-		0.5,
-		1,
-		&maxXStringBaseLine
-	);
-	Size minYStringSize = getTextSize(
-		minYString,
-		FONT_HERSHEY_SIMPLEX,
-		0.5,
-		1,
-		&minYStringBaseLine
-	);
-	Size maxYStringSize = getTextSize(
-		maxYString,
-		FONT_HERSHEY_SIMPLEX,
-		0.5,
-		1,
-		&maxYStringBaseLine
-	);
-
-	putText(
-		canvas,
-		minXString,
-		Point(
-			paddingLeft - minXStringSize.width/2,
-			canvas.rows - (paddingBottom - 1.5*minXStringSize.height)
-		),
-		FONT_HERSHEY_SIMPLEX,
-		0.5,
-		Scalar(0, 0, 0),
-		2,
-		false
-	);
-	putText(
-		canvas,
-		maxXString,
-		Point(
-			canvas.cols - (paddingRight + maxXStringSize.width/2),
-			canvas.rows - (paddingBottom - 1.5*maxXStringSize.height)
-		),
-		FONT_HERSHEY_SIMPLEX,
-		0.5,
-		Scalar(0, 0, 0),
-		2,
-		false
-	);
-	putText(
-		canvas,
-		minYString,
-		Point(
-			paddingLeft - minYStringSize.width - 10,
-			canvas.rows - paddingBottom
-		),
-		FONT_HERSHEY_SIMPLEX,
-		0.5,
-		Scalar(0, 0, 0),
-		2,
-		false
-	);
-	putText(
-		canvas,
-		maxYString,
-		Point(
-			paddingLeft - maxYStringSize.width - 10,
-			paddingTop + maxYStringSize.height
-		),
-		FONT_HERSHEY_SIMPLEX,
-		0.5,
-		Scalar(0, 0, 0),
-		2,
-		false
-	);
 }
 
 };	//End of namespace Plot

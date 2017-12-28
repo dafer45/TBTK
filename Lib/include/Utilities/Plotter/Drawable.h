@@ -23,6 +23,8 @@
 #ifndef COM_DAFER45_TBTK_DRAWABLE
 #define COM_DAFER45_TBTK_DRAWABLE
 
+#include "PlotCanvas.h"
+
 #include <opencv2/core/core.hpp>
 
 namespace TBTK{
@@ -40,7 +42,7 @@ public:
 
 	/** Draw. */
 	virtual void draw(
-		cv::Mat &canvas,
+		PlotCanvas &canvas,
 		const Plotter &plotter,
 		double minX,
 		double maxX,

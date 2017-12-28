@@ -66,9 +66,6 @@ private:
 
 	/** Width. */
 	unsigned int size;
-
-	/** The Plotter have direct access to Decoration members. */
-//	friend class Plotter;
 };
 
 inline Decoration::Decoration(){

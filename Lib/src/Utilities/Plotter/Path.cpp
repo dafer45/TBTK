@@ -35,16 +35,13 @@ namespace TBTK{
 namespace Plot{
 
 void Path::draw(
-	Mat &canvas,
+	PlotCanvas &canvas,
 	const Plotter &plotter,
 	double minX,
 	double maxX,
 	double minY,
 	double maxY
 ){
-//	const std::vector<double> axis = get<0>(dataStorage.at(n));
-//	const std::vector<double> data = get<1>(dataStorage.at(n));
-//	Decoration &decoration = get<2>(dataStorage.at(n));
 	Scalar color(
 		decoration.getColor()[2],
 		decoration.getColor()[1],
@@ -97,20 +94,14 @@ void Path::draw(
 				y1 = maxY;
 			}
 
-			Point p1 = plotter.getCVPoint(x0, y0);
-			Point p2 = plotter.getCVPoint(x1, y1);
-
-			Streams::out << x0 << "\t" << y0 << "\t" << x1 << "\t" << y1 << "\n";
-			Streams::out << color[0] << "\t" << color[1] << "\t" << color[2] << "\t" << decoration.getSize() << "\n";
-			Streams::out << p1.x << "\t" << p1.y << "\t" << p2.x << "\t" << p2.y << "\n";
 			//Draw line
-			line(
-				canvas,
-				plotter.getCVPoint(x0, y0),
-				plotter.getCVPoint(x1, y1),
-				color,
-				decoration.getSize(),
-				CV_AA
+			canvas.drawLine(
+				x0,
+				y0,
+				x1,
+				y1,
+				decoration.getColor(),
+				decoration.getSize()
 			);
 		}
 		break;
@@ -130,13 +121,11 @@ void Path::draw(
 				continue;
 
 			//Draw line
-			circle(
-				canvas,
-				plotter.getCVPoint(x, y),
+			canvas.drawCircle(
+				x,
+				y,
 				decoration.getSize(),
-				color,
-				-1,
-				CV_AA
+				decoration.getColor()
 			);
 		}
 		break;

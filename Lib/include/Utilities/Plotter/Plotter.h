@@ -24,6 +24,7 @@
 #define COM_DAFER45_TBTK_PLOTTER
 
 #include "Array.h"
+#include "PlotCanvas.h"
 #include "Decoration.h"
 #include "DOS.h"
 #include "Path.h"
@@ -133,16 +134,7 @@ public:
 	void save(std::string filename) const;
 private:
 	/** Canvas. */
-	cv::Mat canvas;
-
-	/** Size of the resulting image. */
-	double width, height;
-
-	/** Paddings. */
-	unsigned int paddingLeft, paddingRight, paddingBottom, paddingTop;
-
-	/** Bounds. */
-	double minX, maxX, minY, maxY;
+	PlotCanvas canvas;
 
 	/** Flags indicating whether to auto scale along x and y direction. */
 	bool autoScaleX, autoScaleY;
@@ -150,29 +142,15 @@ private:
 	/** Flag indicating whether data is ploted on top of previous data or
 	 *  not. */
 	bool hold;
-
-	/** Storage for ploted data. Used if holde is true. */
-/*	std::vector<
-		std::tuple<std::vector<double>, std::vector<double>, Decoration>
-	> dataStorage;*/
 	std::vector<Path> dataStorage;
-
-	/** Converts a coordinate to a cvPoint that can be used as canvas
-	 *  /coordinate. */
-	cv::Point getCVPoint(double x, double y) const;
-
-	/** Draw axes. */
-	void drawAxes();
-
-	friend class Path;
 };
 
 inline void Plotter::setWidth(unsigned int width){
-	this->width = width;
+	canvas.setWidth(width);
 }
 
 inline void Plotter::setHeight(unsigned int height){
-	this->height = height;
+	canvas.setHeight(height);
 }
 
 inline void Plotter::setPadding(
@@ -181,10 +159,12 @@ inline void Plotter::setPadding(
 	double paddingBottom,
 	double paddingTop
 ){
-	this->paddingLeft = paddingLeft;
-	this->paddingRight = paddingRight;
-	this->paddingBottom = paddingBottom;
-	this->paddingTop = paddingTop;
+	canvas.setPadding(
+		paddingLeft,
+		paddingRight,
+		paddingBottom,
+		paddingTop
+	);
 }
 
 inline void Plotter::setBoundsX(
@@ -197,9 +177,8 @@ inline void Plotter::setBoundsX(
 		"minX has to be smaller than maxX",
 		""
 	);
-	this->minX = minX;
-	this->maxX = maxX;
 	this->autoScaleX = false;
+	canvas.setBoundsX(minX, maxX);
 }
 
 inline void Plotter::setBoundsY(
@@ -212,9 +191,8 @@ inline void Plotter::setBoundsY(
 		"minY has to be smaller than maxY",
 		""
 	);
-	this->minY = minY;
-	this->maxY = maxY;
 	this->autoScaleY = false;
+	canvas.setBoundsY(minY, maxY);
 }
 
 inline void Plotter::setBounds(
@@ -241,20 +219,11 @@ inline void Plotter::setAutoScale(bool autoScale){
 }
 
 inline void Plotter::setCanvas(cv::Mat &canvas){
-	this->canvas = canvas;
+	this->canvas.setCanvas(canvas);
 }
 
 inline const cv::Mat& Plotter::getCanvas() const{
-	return canvas;
-}
-
-inline cv::Point Plotter::getCVPoint(double x, double y) const{
-	double width = maxX - minX;
-	double height = maxY - minY;
-	return cv::Point(
-		paddingLeft + (1 - (paddingLeft + paddingRight)/(double)canvas.cols)*canvas.cols*(x - minX)/(double)width,
-		canvas.rows - 1 - (paddingBottom + (1 - (paddingBottom + paddingTop)/(double)canvas.rows)*canvas.rows*(y - minY)/(double)height)
-	);
+	return canvas.getCanvas();
 }
 
 inline void Plotter::setHold(bool hold){
@@ -266,7 +235,7 @@ inline void Plotter::clear(){
 }
 
 inline void Plotter::save(std::string filename) const{
-	imwrite(filename, canvas);
+	canvas.save(filename);
 }
 
 };	//End namespace Plot
