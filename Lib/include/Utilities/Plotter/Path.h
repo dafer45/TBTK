@@ -53,14 +53,7 @@ public:
 	void setDecoration(const Decoration &decoration);
 
 	/** Draw. */
-	virtual void draw(
-		PlotCanvas &canvas,
-		const Plotter &plotter,
-		double minX,
-		double maxX,
-		double minY,
-		double maxY
-	);
+	virtual void draw(PlotCanvas &canvas);
 
 	/** Implements Drawable::getMinX(). */
 	virtual double getMinX() const;

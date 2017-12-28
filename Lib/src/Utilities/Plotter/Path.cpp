@@ -19,7 +19,6 @@
  */
 
 #include "../../../include/Utilities/Plotter/Path.h"
-#include "Plotter/Plotter.h"
 #include "Smooth.h"
 #include "Streams.h"
 
@@ -34,14 +33,7 @@ using namespace cv;
 namespace TBTK{
 namespace Plot{
 
-void Path::draw(
-	PlotCanvas &canvas,
-	const Plotter &plotter,
-	double minX,
-	double maxX,
-	double minY,
-	double maxY
-){
+void Path::draw(PlotCanvas &canvas){
 	Scalar color(
 		decoration.getColor()[2],
 		decoration.getColor()[1],
@@ -55,44 +47,6 @@ void Path::draw(
 			double y0 = coordinates[c-1].y;
 			double x1 = coordinates[c].x;
 			double y1 = coordinates[c].y;
-
-			//Clip lines
-			if(x1 < x0){
-				double temp = x0;
-				x0 = x1;
-				x1 = temp;
-				temp = y0;
-				y0 = y1;
-				y1 = temp;
-			}
-			if(x0 < minX && x1 < minX)
-				continue;
-			if(x0 > maxX && x1 > maxX)
-				continue;
-			if(x0 < minX){
-				if(x1 - x0 != 0)
-					y0 += (minX - x0)*(y1 - y0)/(x1 - x0);
-				x0 = minX;
-			}
-			if(x1 > maxX){
-				if(x1 - x0 != 0)
-					y1 -= (x1 - maxX)*(y1 - y0)/(x1 - x0);
-				x1 = maxX;
-			}
-			if(y0 < minY && y1 < minY)
-				continue;
-			if(y0 > maxY && y1 > maxY)
-				continue;
-			if(y0 < minY){
-				if(y1 - y0 != 0)
-					x0 += (minY - y0)*(x1 - x0)/(y1 - y0);
-				y0 = minY;
-			}
-			if(y1 > maxY){
-				if(y1 - y0 != 0)
-					x1 -= (y1 - maxY)*(x1 - x0)/(y1 - y0);
-				y1 = maxY;
-			}
 
 			//Draw line
 			canvas.drawLine(
@@ -110,16 +64,6 @@ void Path::draw(
 			double x = coordinates[c-1].x;
 			double y = coordinates[c-1].y;
 
-			//Clip points
-			if(x < minX)
-				continue;
-			if(x > maxX)
-				continue;
-			if(y < minY)
-				continue;
-			if(y > maxY)
-				continue;
-
 			//Draw line
 			canvas.drawCircle(
 				x,
@@ -131,7 +75,7 @@ void Path::draw(
 		break;
 	default:
 		TBTKExit(
-			"Plotter::plot()",
+			"Path::draw()",
 			"Unknown mode.",
 			"This should never happen, contact the developer."
 		);

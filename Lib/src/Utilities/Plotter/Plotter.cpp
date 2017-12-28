@@ -54,24 +54,28 @@ void Plotter::plot(
 		""
 	);
 
-	if(!hold)
+	if(!hold){
+		for(unsigned int n = 0; n < dataStorage.size(); n++)
+			delete dataStorage[n];
 		dataStorage.clear();
+	}
 
 	Decoration modifiedDecoration = decoration;
 	if(decoration.getColor().size() != 3)
 		modifiedDecoration.setColor({0, 0, 0});
 
-	dataStorage.push_back(Path());
-	dataStorage.back().setDecoration(modifiedDecoration);
+	Path *path = new Path();
+	path->setDecoration(modifiedDecoration);
 	for(unsigned int n = 0; n < axis.size(); n++)
-		dataStorage.back().add({axis[n], data[n]});
+		path->add({axis[n], data[n]});
+	dataStorage.push_back(path);
 
 	if(autoScaleX){
-		double minX = dataStorage[0].getMinX();
-		double maxX = dataStorage[0].getMaxX();
+		double minX = dataStorage[0]->getMinX();
+		double maxX = dataStorage[0]->getMaxX();
 		for(unsigned int n = 1; n < dataStorage.size(); n++){
-			double min = dataStorage[n].getMinX();
-			double max = dataStorage[n].getMaxX();
+			double min = dataStorage[n]->getMinX();
+			double max = dataStorage[n]->getMaxX();
 			if(min < minX)
 				minX = min;
 			if(max > maxX)
@@ -80,11 +84,11 @@ void Plotter::plot(
 		canvas.setBoundsX(minX, maxX);
 	}
 	if(autoScaleY){
-		double minY = dataStorage[0].getMinY();
-		double maxY = dataStorage[0].getMaxY();
+		double minY = dataStorage[0]->getMinY();
+		double maxY = dataStorage[0]->getMaxY();
 		for(unsigned int n = 1; n < dataStorage.size(); n++){
-			double min = dataStorage[n].getMinY();
-			double max = dataStorage[n].getMaxY();
+			double min = dataStorage[n]->getMinY();
+			double max = dataStorage[n]->getMaxY();
 			if(min < minY)
 				minY = min;
 			if(max > maxY)
@@ -95,16 +99,8 @@ void Plotter::plot(
 
 	canvas.clear();
 
-	for(unsigned int n = 0; n < dataStorage.size(); n++){
-		dataStorage[n].draw(
-			canvas,
-			*this,
-			canvas.getMinX(),
-			canvas.getMaxX(),
-			canvas.getMinY(),
-			canvas.getMaxY()
-		);
-	}
+	for(unsigned int n = 0; n < dataStorage.size(); n++)
+		dataStorage[n]->draw(canvas);
 
 	canvas.drawAxes();
 }

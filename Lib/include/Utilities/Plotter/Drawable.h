@@ -41,14 +41,7 @@ public:
 	virtual ~Drawable();
 
 	/** Draw. */
-	virtual void draw(
-		PlotCanvas &canvas,
-		const Plotter &plotter,
-		double minX,
-		double maxX,
-		double minY,
-		double maxY
-	) = 0;
+	virtual void draw(PlotCanvas &canvas) = 0;
 
 	/** Get minimum x-coordiante. */
 	virtual double getMinX() const = 0;

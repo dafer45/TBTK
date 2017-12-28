@@ -142,7 +142,7 @@ private:
 	/** Flag indicating whether data is ploted on top of previous data or
 	 *  not. */
 	bool hold;
-	std::vector<Path> dataStorage;
+	std::vector<Drawable*> dataStorage;
 };
 
 inline void Plotter::setWidth(unsigned int width){
@@ -231,7 +231,9 @@ inline void Plotter::setHold(bool hold){
 }
 
 inline void Plotter::clear(){
-	this->dataStorage.clear();
+	for(unsigned int n = 0; n < dataStorage.size(); n++)
+		delete dataStorage[n];
+	dataStorage.clear();
 }
 
 inline void Plotter::save(std::string filename) const{

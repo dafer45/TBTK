@@ -257,6 +257,45 @@ inline void PlotCanvas::drawLine(
 	const std::vector<unsigned char> &color,
 	unsigned int width
 ){
+	//Clip lines
+	if(x1 < x0){
+		double temp = x0;
+		x0 = x1;
+		x1 = temp;
+		temp = y0;
+		y0 = y1;
+		y1 = temp;
+	}
+	if(x0 < minX && x1 < minX)
+		return;
+	if(x0 > maxX && x1 > maxX)
+		return;
+	if(x0 < minX){
+		if(x1 - x0 != 0)
+			y0 += (minX - x0)*(y1 - y0)/(x1 - x0);
+		x0 = minX;
+	}
+	if(x1 > maxX){
+		if(x1 - x0 != 0)
+			y1 -= (x1 - maxX)*(y1 - y0)/(x1 - x0);
+		x1 = maxX;
+	}
+	if(y0 < minY && y1 < minY)
+		return;
+	if(y0 > maxY && y1 > maxY)
+		return;
+	if(y0 < minY){
+		if(y1 - y0 != 0)
+			x0 += (minY - y0)*(x1 - x0)/(y1 - y0);
+		y0 = minY;
+	}
+	if(y1 > maxY){
+		if(y1 - y0 != 0)
+			x1 -= (y1 - maxY)*(x1 - x0)/(y1 - y0);
+		y1 = maxY;
+	}
+
+	//Draw line
 	cv::line(
 		canvas,
 		getCVPoint(x0, y0),
@@ -273,6 +312,17 @@ inline void PlotCanvas::drawCircle(
 	unsigned int size,
 	const std::vector<unsigned char> &color
 ){
+	//Clip point
+	if(x < minX)
+		return;
+	if(x > maxX)
+		return;
+	if(y < minY)
+		return;
+	if(y > maxY)
+		return;
+
+	//Draw cirlce
 	cv::circle(
 		canvas,
 		getCVPoint(x, y),
