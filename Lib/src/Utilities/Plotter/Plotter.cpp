@@ -57,11 +57,6 @@ void Plotter::plot(
 	point->setDecoration(modifiedDecoration);
 	point->setCoordinate({x, y});
 	dataStorage.push_back(point);
-
-/*	if(drawToCanvas){
-		drawDataStorage();
-		canvas.drawAxes();
-	}*/
 }
 
 void Plotter::plot(
@@ -89,9 +84,6 @@ void Plotter::plot(
 	for(unsigned int n = 0; n < axis.size(); n++)
 		path->add({axis[n], data[n]});
 	dataStorage.push_back(path);
-
-/*	drawDataStorage();
-	canvas.drawAxes();*/
 }
 
 void Plotter::plot(
@@ -298,9 +290,6 @@ void Plotter::plot(
 			);
 		}
 	}
-
-/*	drawDataStorage();
-	canvas.drawAxes();*/
 
 	hold = tempHold;
 }
