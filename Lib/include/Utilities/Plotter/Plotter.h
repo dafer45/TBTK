@@ -28,6 +28,7 @@
 #include "Decoration.h"
 #include "DOS.h"
 #include "Path.h"
+#include "Point.h"
 #include "Streams.h"
 #include "TBTKMacros.h"
 
@@ -87,6 +88,15 @@ public:
 	/** Get canvas. */
 	const cv::Mat& getCanvas() const;
 
+	/** Plot point. */
+	void plot(
+		double x,
+		double y,
+		const Decoration &decoration = Decoration(
+			{0, 0, 0}, Decoration::LineStyle::Point
+		)
+	);
+
 	/** Plot data. */
 	void plot(
 		const std::vector<double> &axis,
@@ -142,7 +152,15 @@ private:
 	/** Flag indicating whether data is ploted on top of previous data or
 	 *  not. */
 	bool hold;
+
+	/** Data storage. */
 	std::vector<Drawable*> dataStorage;
+
+	/** Draw data storage. */
+	void drawDataStorage();
+
+	/** Clear data storage. */
+	void clearDataStorage();
 };
 
 inline void Plotter::setWidth(unsigned int width){
@@ -231,13 +249,18 @@ inline void Plotter::setHold(bool hold){
 }
 
 inline void Plotter::clear(){
-	for(unsigned int n = 0; n < dataStorage.size(); n++)
-		delete dataStorage[n];
-	dataStorage.clear();
+	clearDataStorage();
+	canvas.clear();
 }
 
 inline void Plotter::save(std::string filename) const{
 	canvas.save(filename);
+}
+
+inline void Plotter::clearDataStorage(){
+	for(unsigned int n = 0; n < dataStorage.size(); n++)
+		delete dataStorage[n];
+	dataStorage.clear();
 }
 
 };	//End namespace Plot

@@ -42,6 +42,27 @@ Plotter::~Plotter(){
 }
 
 void Plotter::plot(
+	double x,
+	double y,
+	const Decoration &decoration
+){
+	if(!hold)
+		clearDataStorage();
+
+	Decoration modifiedDecoration = decoration;
+	if(decoration.getColor().size() != 3)
+		modifiedDecoration.setColor({0, 0, 0});
+
+	Point *point = new Point();
+	point->setDecoration(modifiedDecoration);
+	point->setCoordinate({x, y});
+	dataStorage.push_back(point);
+
+	drawDataStorage();
+	canvas.drawAxes();
+}
+
+void Plotter::plot(
 	const vector<double> &axis,
 	const vector<double> &data,
 	const Decoration &decoration
@@ -54,11 +75,8 @@ void Plotter::plot(
 		""
 	);
 
-	if(!hold){
-		for(unsigned int n = 0; n < dataStorage.size(); n++)
-			delete dataStorage[n];
-		dataStorage.clear();
-	}
+	if(!hold)
+		clearDataStorage();
 
 	Decoration modifiedDecoration = decoration;
 	if(decoration.getColor().size() != 3)
@@ -70,38 +88,7 @@ void Plotter::plot(
 		path->add({axis[n], data[n]});
 	dataStorage.push_back(path);
 
-	if(autoScaleX){
-		double minX = dataStorage[0]->getMinX();
-		double maxX = dataStorage[0]->getMaxX();
-		for(unsigned int n = 1; n < dataStorage.size(); n++){
-			double min = dataStorage[n]->getMinX();
-			double max = dataStorage[n]->getMaxX();
-			if(min < minX)
-				minX = min;
-			if(max > maxX)
-				maxX = max;
-		}
-		canvas.setBoundsX(minX, maxX);
-	}
-	if(autoScaleY){
-		double minY = dataStorage[0]->getMinY();
-		double maxY = dataStorage[0]->getMaxY();
-		for(unsigned int n = 1; n < dataStorage.size(); n++){
-			double min = dataStorage[n]->getMinY();
-			double max = dataStorage[n]->getMaxY();
-			if(min < minY)
-				minY = min;
-			if(max > maxY)
-				maxY = max;
-		}
-		canvas.setBoundsY(minY, maxY);
-	}
-
-	canvas.clear();
-
-	for(unsigned int n = 0; n < dataStorage.size(); n++)
-		dataStorage[n]->draw(canvas);
-
+	drawDataStorage();
 	canvas.drawAxes();
 }
 
@@ -178,9 +165,9 @@ void Plotter::plot(
 			double value10 = data[x+1][y];
 			double value11 = data[x+1][y+1];
 
-			Point p00 = canvas.getCVPoint(x, y);
-			Point p01 = canvas.getCVPoint(x, y+1);
-			Point p10 = canvas.getCVPoint(x+1, y);
+			cv::Point p00 = canvas.getCVPoint(x, y);
+			cv::Point p01 = canvas.getCVPoint(x, y+1);
+			cv::Point p10 = canvas.getCVPoint(x+1, y);
 			for(int x = p00.x; x <= p10.x; x++){
 				for(int y = p00.y; y >= p01.y; y--){
 					double distanceX = (x-p00.x)/(double)(p10.x - p00.x);
@@ -238,6 +225,43 @@ void Plotter::plot(
 			<< " plotter."
 		);
 	}
+}
+
+void Plotter::drawDataStorage(){
+	if(dataStorage.size() == 0)
+		return;
+
+	if(autoScaleX){
+		double minX = dataStorage[0]->getMinX();
+		double maxX = dataStorage[0]->getMaxX();
+		for(unsigned int n = 1; n < dataStorage.size(); n++){
+			double min = dataStorage[n]->getMinX();
+			double max = dataStorage[n]->getMaxX();
+			if(min < minX)
+				minX = min;
+			if(max > maxX)
+				maxX = max;
+		}
+		canvas.setBoundsX(minX, maxX);
+	}
+	if(autoScaleY){
+		double minY = dataStorage[0]->getMinY();
+		double maxY = dataStorage[0]->getMaxY();
+		for(unsigned int n = 1; n < dataStorage.size(); n++){
+			double min = dataStorage[n]->getMinY();
+			double max = dataStorage[n]->getMaxY();
+			if(min < minY)
+				minY = min;
+			if(max > maxY)
+				maxY = max;
+		}
+		canvas.setBoundsY(minY, maxY);
+	}
+
+	canvas.clear();
+
+	for(unsigned int n = 0; n < dataStorage.size(); n++)
+		dataStorage[n]->draw(canvas);
 }
 
 };	//End of namespace Plot
