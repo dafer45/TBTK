@@ -34,6 +34,7 @@
 
 using namespace std;
 using namespace TBTK;
+using namespace Plot;
 
 const complex<double> i(0, 1);
 

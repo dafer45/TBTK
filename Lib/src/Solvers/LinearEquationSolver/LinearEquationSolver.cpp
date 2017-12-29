@@ -28,6 +28,7 @@ namespace TBTK{
 
 LinearEquationSolver::LinearEquationSolver() : Communicator(true){
 	hamiltonian = NULL;
+	mode = Mode::LU;
 }
 
 LinearEquationSolver::~LinearEquationSolver(){
@@ -35,7 +36,7 @@ LinearEquationSolver::~LinearEquationSolver(){
 		delete [] hamiltonian;
 }
 
-vector<complex<double>> LinearEquationSolver::solve(
+vector<complex<double>> LinearEquationSolver::solveLU(
 	const vector<complex<double>> &y
 ){
 	TBTKAssert(
@@ -175,6 +176,12 @@ vector<complex<double>> LinearEquationSolver::solve(
 		result.push_back(complex<double>(answer[n].r, answer[n].i));
 
 	return result;
+}
+
+vector<complex<double>> LinearEquationSolver::solveConjugateGradient(
+	const vector<complex<double>> &y
+){
+	TBTKNotYetImplemented("LinearEquationSolver::solveConjugateGradient()");
 }
 
 };	//End of namespace TBTK
