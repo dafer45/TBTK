@@ -86,7 +86,7 @@ public:
 	void setCanvas(cv::Mat &canvas);
 
 	/** Get canvas. */
-	const cv::Mat& getCanvas() const;
+	const cv::Mat& getCanvas();
 
 	/** Plot point. */
 	void plot(
@@ -134,6 +134,24 @@ public:
 		)
 	);
 
+	/** Plot data with color coded intensity. */
+	void plot(
+		const std::vector<std::vector<double>> &data,
+		const std::vector<std::vector<double>> &intensity,
+		const Decoration &decoration = Decoration(
+			{0, 0, 0}, Decoration::LineStyle::Point
+		)
+	);
+
+	/** Plot data with color coded intensity. */
+	void plot(
+		const Array<double> &data,
+		const Array<double> &intensity,
+		const Decoration &decoration = Decoration(
+			{0, 0, 0}, Decoration::LineStyle::Point
+		)
+	);
+
 	/** Set whether ot not data is plotted on top of old data. */
 	void setHold(bool hold);
 
@@ -141,7 +159,7 @@ public:
 	void clear();
 
 	/** Save canvas to file. */
-	void save(std::string filename) const;
+	void save(std::string filename);
 private:
 	/** Canvas. */
 	PlotCanvas canvas;
@@ -240,7 +258,12 @@ inline void Plotter::setCanvas(cv::Mat &canvas){
 	this->canvas.setCanvas(canvas);
 }
 
-inline const cv::Mat& Plotter::getCanvas() const{
+inline const cv::Mat& Plotter::getCanvas(){
+	if(dataStorage.size() != 0){
+		drawDataStorage();
+		canvas.drawAxes();
+	}
+
 	return canvas.getCanvas();
 }
 
@@ -253,7 +276,12 @@ inline void Plotter::clear(){
 	canvas.clear();
 }
 
-inline void Plotter::save(std::string filename) const{
+inline void Plotter::save(std::string filename){
+	if(dataStorage.size() != 0){
+		drawDataStorage();
+		canvas.drawAxes();
+	}
+
 	canvas.save(filename);
 }
 
