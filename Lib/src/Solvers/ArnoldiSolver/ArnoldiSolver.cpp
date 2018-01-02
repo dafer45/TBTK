@@ -138,7 +138,7 @@ extern "C" void zneupd_(
 );
 
 void ArnoldiSolver::run(){
-	Streams::out << "Running ArnoldiSovler.\n";
+	Streams::out << "Running ArnoldiSolver.\n";
 /*	TBTKAssert(
 		getModel() != NULL,
 		"ArnoldiSolver::run()",
