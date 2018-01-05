@@ -305,7 +305,7 @@ void RayTracer::interactivePlot(
 				axis.push_back(lowerBound + n*dE);
 			}
 
-			Plotter plotter;
+			Plot::Plotter plotter;
 			plotter.setCanvas(canvas);
 			if(sigma != 0){
 				double scaledSigma = sigma/(ldos.getUpperBound() - ldos.getLowerBound())*ldos.getResolution();
@@ -453,7 +453,7 @@ void RayTracer::render(
 					int flags,
 					void *userData
 				){
-					Plotter plotter;
+					Plot::Plotter plotter;
 					plotter.setCanvas(propertyCanvas);
 					if(hitDescriptors[x][height - 1 - y].size() > 0){
 						const Index& index = hitDescriptors[x][height - 1 -y].at(0).getIndex();
