@@ -38,12 +38,16 @@ PlotCanvas::PlotCanvas(){
 	paddingRight = 40;
 	paddingBottom = 30;
 	paddingTop = 20;
+
+	labelX = "x";
+	labelY = "y";
 }
 
 PlotCanvas::~PlotCanvas(){
 }
 
 void PlotCanvas::drawAxes(){
+	//Axes
 	line(
 		canvas,
 		getCVPoint(minX, minY),
@@ -60,6 +64,8 @@ void PlotCanvas::drawAxes(){
 		2,
 		CV_AA
 	);
+
+	//Axes values
 	stringstream ss;
 	ss.precision(1);
 	ss << scientific << minX;
@@ -151,6 +157,50 @@ void PlotCanvas::drawAxes(){
 		Point(
 			paddingLeft - maxYStringSize.width - 10,
 			paddingTop + maxYStringSize.height
+		),
+		FONT_HERSHEY_SIMPLEX,
+		0.5,
+		Scalar(0, 0, 0),
+		2,
+		false
+	);
+
+	//Labels
+	int labelXStringBaseLine;
+	int labelYStringBaseLine;
+	Size labelXStringSize = getTextSize(
+		labelX,
+		FONT_HERSHEY_SIMPLEX,
+		0.5,
+		1,
+		&labelXStringBaseLine
+	);
+	Size labelYStringSize = getTextSize(
+		labelY,
+		FONT_HERSHEY_SIMPLEX,
+		0.5,
+		1,
+		&labelYStringBaseLine
+	);
+	putText(
+		canvas,
+		labelX,
+		Point(
+			paddingLeft + (canvas.cols - paddingLeft - paddingRight)/2 - labelXStringSize.width/2,
+			canvas.rows - (paddingBottom - 1.5*minXStringSize.height)
+		),
+		FONT_HERSHEY_SIMPLEX,
+		0.5,
+		Scalar(0, 0, 0),
+		2,
+		false
+	);
+	putText(
+		canvas,
+		labelY,
+		Point(
+			paddingLeft - labelYStringSize.width - 10,
+			paddingBottom + (canvas.rows - paddingBottom - paddingTop)/2 - labelYStringSize.height/2
 		),
 		FONT_HERSHEY_SIMPLEX,
 		0.5,

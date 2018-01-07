@@ -25,6 +25,8 @@
 
 #include "TBTKMacros.h"
 
+#include <string>
+
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
@@ -73,6 +75,12 @@ public:
 
 	/** Get maximum Y-value. */
 	double getMaxY() const;
+
+	/** Set x-label. */
+	void setLabelX(const std::string &labelX);
+
+	/** Set y-label. */
+	void setLabelY(const std::string &labelY);
 
 	/** Set canvas. */
 	void setCanvas(cv::Mat &canvas);
@@ -124,6 +132,9 @@ private:
 
 	/** Bounds. */
 	double minX, maxX, minY, maxY;
+
+	/** Labels. */
+	std::string labelX, labelY;
 public:
 	/** Converts a coordinate to a cvPoint that can be used as canvas
 	 *  /coordinate. */
@@ -205,6 +216,14 @@ inline double PlotCanvas::getMinY() const{
 
 inline double PlotCanvas::getMaxY() const{
 	return maxY;
+}
+
+inline void PlotCanvas::setLabelX(const std::string &labelX){
+	this->labelX = labelX;
+}
+
+inline void PlotCanvas::setLabelY(const std::string &labelY){
+	this->labelY = labelY;
 }
 
 inline void PlotCanvas::setCanvas(cv::Mat &canvas){

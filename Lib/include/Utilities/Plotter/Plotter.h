@@ -82,6 +82,12 @@ public:
 	/** Set auto scale. */
 	void setAutoScale(bool autoScale);
 
+	/** Set x-label. */
+	void setLabelX(const std::string &labelX);
+
+	/** Set y-label. */
+	void setLabelY(const std::string &labelY);
+
 	/** Set canvas. */
 	void setCanvas(cv::Mat &canvas);
 
@@ -252,6 +258,14 @@ inline void Plotter::setAutoScaleY(bool autoScaleY){
 inline void Plotter::setAutoScale(bool autoScale){
 	setAutoScaleX(autoScale);
 	setAutoScaleY(autoScale);
+}
+
+inline void Plotter::setLabelX(const std::string &labelX){
+	canvas.setLabelX(labelX);
+}
+
+inline void Plotter::setLabelY(const std::string &labelY){
+	canvas.setLabelY(labelY);
 }
 
 inline void Plotter::setCanvas(cv::Mat &canvas){
