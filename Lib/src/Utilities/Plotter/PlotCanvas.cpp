@@ -38,9 +38,6 @@ PlotCanvas::PlotCanvas(){
 	paddingRight = 40;
 	paddingBottom = 30;
 	paddingTop = 20;
-
-	labelX = "x";
-	labelY = "y";
 }
 
 PlotCanvas::~PlotCanvas(){
