@@ -202,7 +202,7 @@ Property::LDOS APropertyExtractor::calculateLDOS(
 		pattern,
 		ranges,
 		0,
-		1
+		energyResolution
 	);
 
 	return ldos;
