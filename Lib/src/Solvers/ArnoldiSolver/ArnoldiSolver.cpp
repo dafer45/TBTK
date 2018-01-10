@@ -641,7 +641,9 @@ void ArnoldiSolver::initShiftAndInvert(){
 	//Initialize SuperLU
 	options = new superlu_options_t();
 	set_default_options(options);
-	options->ColPerm = NATURAL;
+//	options->ColPerm = NATURAL;
+//	options->ColPerm = MMD_ATA;
+	options->ColPerm = COLAMD;
 
 	stat = new SuperLUStat_t();
 	StatInit(stat);
