@@ -38,6 +38,10 @@ PlotCanvas::PlotCanvas(){
 	paddingRight = 40;
 	paddingBottom = 30;
 	paddingTop = 20;
+
+	showColorBox = false;
+	minColor = 0;
+	maxColor = 0;
 }
 
 PlotCanvas::~PlotCanvas(){
@@ -126,7 +130,7 @@ void PlotCanvas::drawAxes(){
 		canvas,
 		maxXString,
 		Point(
-			canvas.cols - (paddingRight + maxXStringSize.width/2),
+			canvas.cols - (paddingRight + showColorBox*COLOR_BOX_WINDOW_WIDTH + maxXStringSize.width/2),
 			canvas.rows - (paddingBottom - 1.5*maxXStringSize.height)
 		),
 		FONT_HERSHEY_SIMPLEX,
@@ -183,7 +187,7 @@ void PlotCanvas::drawAxes(){
 		canvas,
 		labelX,
 		Point(
-			paddingLeft + (canvas.cols - paddingLeft - paddingRight)/2 - labelXStringSize.width/2,
+			paddingLeft + (canvas.cols - paddingLeft - paddingRight - showColorBox*COLOR_BOX_WINDOW_WIDTH)/2 - labelXStringSize.width/2,
 			canvas.rows - (paddingBottom - 1.5*minXStringSize.height)
 		),
 		FONT_HERSHEY_SIMPLEX,
@@ -205,7 +209,86 @@ void PlotCanvas::drawAxes(){
 		2,
 		false
 	);
+
+	if(showColorBox)
+		drawColorBox();
+}
+
+void PlotCanvas::drawColorBox(){
+	stringstream ss;
+	ss.precision(1);
+	ss << scientific << maxColor;
+	string maxColorString = ss.str();
+	int maxColorStringBaseLine;
+	Size maxColorStringSize = getTextSize(
+		maxColorString,
+		FONT_HERSHEY_SIMPLEX,
+		0.5,
+		1,
+		&maxColorStringBaseLine
+	);
+	putText(
+		canvas,
+		maxColorString,
+		Point(
+			canvas.cols - COLOR_BOX_WINDOW_WIDTH/2 - maxColorStringSize.width/2,
+			paddingTop + 1.5*maxColorStringSize.height
+		),
+		FONT_HERSHEY_SIMPLEX,
+		0.5,
+		Scalar(0, 0, 0),
+		2,
+		false
+	);
+
+	ss.str("");
+	ss << scientific << minColor;
+	string minColorString = ss.str();
+	int minColorStringBaseLine;
+	Size minColorStringSize = getTextSize(
+		minColorString,
+		FONT_HERSHEY_SIMPLEX,
+		0.5,
+		1,
+		&minColorStringBaseLine
+	);
+	putText(
+		canvas,
+		minColorString,
+		Point(
+			canvas.cols - COLOR_BOX_WINDOW_WIDTH/2 - minColorStringSize.width/2,
+			canvas.rows - (paddingBottom - 1.5*minColorStringSize.height)
+		),
+		FONT_HERSHEY_SIMPLEX,
+		0.5,
+		Scalar(0, 0, 0),
+		2,
+		false
+	);
+
+	double minX = canvas.cols - 3*COLOR_BOX_WINDOW_WIDTH/4;
+	double maxX = canvas.cols - COLOR_BOX_WINDOW_WIDTH/4;
+	double minY = paddingTop + 2.5*maxColorStringSize.height;
+	double maxY = canvas.rows - paddingBottom;
+	for(
+		unsigned int y = minY;
+		y < maxY;
+		y++
+	){
+		for(
+			unsigned int x = minX;
+			x < maxX;
+			x++
+		){
+			double value = minColor + (maxColor - minColor)*(maxY - y)/(maxY - minY);
+
+			canvas.at<Vec3b>(y, x)[0] = 255;
+			canvas.at<Vec3b>(y, x)[1] = (255 - 255*(value - minColor)/(maxColor + minColor));
+			canvas.at<Vec3b>(y, x)[2] = (255 - 255*(value - minColor)/(maxColor + minColor));
+		}
+	}
 }
 
 };	//End of namespace Plot
 };	//End of namespace TBTK
+

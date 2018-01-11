@@ -82,6 +82,15 @@ public:
 	/** Set y-label. */
 	void setLabelY(const std::string &labelY);
 
+	/** Set color box. */
+	void setShowColorBox(bool showColorBox);
+
+	/** Set color box. */
+	bool getShowColorBox() const;
+
+	/** Set color box bounds. */
+	void setBoundsColor(double minColor, double maxColor);
+
 	/** Set canvas. */
 	void setCanvas(cv::Mat &canvas);
 
@@ -135,6 +144,18 @@ private:
 
 	/** Labels. */
 	std::string labelX, labelY;
+
+	/** Flag indicating whether to display color box. */
+	bool showColorBox;
+
+	/** Bounds for colors. */
+	double minColor, maxColor;
+
+	/** Width of color box. */
+	static constexpr unsigned int COLOR_BOX_WINDOW_WIDTH = 100;
+
+	/** Draw color box. */
+	void drawColorBox();
 public:
 	/** Converts a coordinate to a cvPoint that can be used as canvas
 	 *  /coordinate. */
@@ -226,6 +247,19 @@ inline void PlotCanvas::setLabelY(const std::string &labelY){
 	this->labelY = labelY;
 }
 
+inline void PlotCanvas::setShowColorBox(bool showColorBox){
+	this->showColorBox = showColorBox;
+}
+
+inline bool PlotCanvas::getShowColorBox() const{
+	return showColorBox;
+}
+
+inline void PlotCanvas::setBoundsColor(double minColor, double maxColor){
+	this->minColor = minColor;
+	this->maxColor = maxColor;
+}
+
 inline void PlotCanvas::setCanvas(cv::Mat &canvas){
 	this->canvas = canvas;
 }
@@ -238,7 +272,7 @@ inline cv::Point PlotCanvas::getCVPoint(double x, double y) const{
 	double width = maxX - minX;
 	double height = maxY - minY;
 	return cv::Point(
-		paddingLeft + (1 - (paddingLeft + paddingRight)/(double)canvas.cols)*canvas.cols*(x - minX)/(double)width,
+		paddingLeft + (1 - (paddingLeft + paddingRight + showColorBox*COLOR_BOX_WINDOW_WIDTH)/(double)canvas.cols)*canvas.cols*(x - minX)/(double)width,
 		canvas.rows - 1 - (paddingBottom + (1 - (paddingBottom + paddingTop)/(double)canvas.rows)*canvas.rows*(y - minY)/(double)height)
 	);
 }

@@ -153,6 +153,10 @@ void Plotter::plot(
 		}
 	}
 
+	bool tempShowColorBox = canvas.getShowColorBox();
+	canvas.setShowColorBox(true);
+	canvas.setBoundsColor(minValue, maxValue);
+
 	for(unsigned int x = 0; x < data.size()-1; x++){
 		for(unsigned int y = 0; y < sizeY-1; y++){
 			double value00 = data[x][y];
@@ -183,6 +187,8 @@ void Plotter::plot(
 	}
 
 	canvas.drawAxes();
+
+	canvas.setShowColorBox(tempShowColorBox);
 }
 
 void Plotter::plot(
