@@ -37,12 +37,24 @@ public:
 	/** Constructor. */
 	SparseMatrix(StorageFormat);
 
+	/** Copy constructor. */
+	SparseMatrix(const SparseMatrix &sparseMatrix);
+
+	/** Copy constructor. */
+	SparseMatrix(SparseMatrix &&sparseMatrix);
+
 	/** Constructor. */
 	SparseMatrix(
 		StorageFormat storageFormat,
 		unsigned int numRows,
 		unsigned int numCols
 	);
+
+	/** Assignment operator. */
+	SparseMatrix& operator=(const SparseMatrix &sparseMatrix);
+
+	/** Move assignment operator. */
+	SparseMatrix& operator=(SparseMatrix &&sparseMatrix);
 
 	/** Destructor. */
 	~SparseMatrix();
@@ -142,7 +154,264 @@ inline SparseMatrix<DataType>::SparseMatrix(
 }
 
 template<typename DataType>
+inline SparseMatrix<DataType>::SparseMatrix(
+	const SparseMatrix &sparseMatrix
+){
+	storageFormat = sparseMatrix.storageFormat;
+
+	numRows = sparseMatrix.numRows;
+	numCols = sparseMatrix.numCols;
+	allowDynamicDimensions = sparseMatrix.allowDynamicDimensions;
+
+	csxNumMatrixElements = sparseMatrix.csxNumMatrixElements;
+	if(csxNumMatrixElements == -1){
+		TBTKAssert(
+			sparseMatrix.csxXPointers == nullptr
+			&& sparseMatrix.csxY == nullptr
+			&& sparseMatrix.csxValues == nullptr,
+			"SparseMatrix::SparseMatrix()",
+			"Invalid pointers in the original SparseMatrix.",
+			"This should never happen, contact the developer."
+		);
+
+		csxXPointers = nullptr;
+		csxY = nullptr;
+		csxValues = nullptr;
+	}
+	else{
+		TBTKAssert(
+			sparseMatrix.csxXPointers != nullptr
+			&& sparseMatrix.csxY != nullptr
+			&& sparseMatrix.csxValues != nullptr,
+			"SparseMatrix::SparseMatrix()",
+			"Invalid pointers in the original SparseMatrix.",
+			"This should never happen, contact the developer."
+		);
+
+		switch(storageFormat){
+		case StorageFormat::CSR:
+			csxXPointers = new unsigned int[numRows+1];
+			for(unsigned int row = 0; row < numRows+1; row++){
+				csxXPointers[row]
+					= sparseMatrix.csxXPointers[row];
+			}
+			break;
+		case StorageFormat::CSC:
+			csxXPointers = new unsigned int[numCols+1];
+			for(unsigned int col = 0; col < numCols+1; col++){
+				csxXPointers[col]
+					= sparseMatrix.csxXPointers[col];
+			}
+			break;
+		default:
+			TBTKExit(
+				"SparseMatrix::print()",
+				"Unknow StorageFormat.",
+				"This should never happen, contact the"
+				<< " developer."
+			);
+		}
+
+		csxY = new unsigned int[csxNumMatrixElements];
+		csxValues = new DataType[csxNumMatrixElements];
+		for(unsigned int n = 0; n < csxNumMatrixElements; n++){
+			csxY[n] = sparseMatrix.csxY[n];
+			csxValues[n] = sparseMatrix.csxValues[n];
+		}
+	}
+}
+
+template<typename DataType>
+inline SparseMatrix<DataType>::SparseMatrix(
+	SparseMatrix &&sparseMatrix
+){
+	storageFormat = sparseMatrix.storageFormat;
+
+	numRows = sparseMatrix.numRows;
+	numCols = sparseMatrix.numCols;
+	allowDynamicDimensions = sparseMatrix.allowDynamicDimensions;
+
+	csxNumMatrixElements = sparseMatrix.csxNumMatrixElements;
+	if(csxNumMatrixElements == -1){
+		TBTKAssert(
+			sparseMatrix.csxXPointers == nullptr
+			&& sparseMatrix.csxY == nullptr
+			&& sparseMatrix.csxValues == nullptr,
+			"SparseMatrix::SparseMatrix()",
+			"Invalid pointers in the original SparseMatrix.",
+			"This should never happen, contact the developer."
+		);
+
+		csxXPointers = nullptr;
+		csxY = nullptr;
+		csxValues = nullptr;
+	}
+	else{
+		TBTKAssert(
+			sparseMatrix.csxXPointers != nullptr
+			&& sparseMatrix.csxY != nullptr
+			&& sparseMatrix.csxValues != nullptr,
+			"SparseMatrix::SparseMatrix()",
+			"Invalid pointers in the original SparseMatrix.",
+			"This should never happen, contact the developer."
+		);
+
+		csxXPointers = sparseMatrix.csxXPointers;
+		sparseMatrix.csxXPointers = nullptr;
+
+		csxY = sparseMatrix.csxY;
+		sparseMatrix.csxY = nullptr;
+
+		csxValues = sparseMatrix.csxValues;
+		sparseMatrix.csxValues = nullptr;
+	}
+}
+
+template<typename DataType>
 inline SparseMatrix<DataType>::~SparseMatrix(){
+	if(csxXPointers != nullptr)
+		delete [] csxXPointers;
+	if(csxY != nullptr)
+		delete [] csxY;
+	if(csxValues != nullptr)
+		delete [] csxValues;
+}
+
+template<typename DataType>
+inline SparseMatrix<DataType>& SparseMatrix<DataType>::operator=(
+	const SparseMatrix &rhs
+){
+	if(this != &rhs){
+		storageFormat = rhs.storageFormat;
+
+		numRows = rhs.numRows;
+		numCols = rhs.numCols;
+		allowDynamicDimensions = rhs.allowDynamicDimensions;
+
+		if(csxXPointers != nullptr)
+			delete [] csxXPointers;
+		if(csxY != nullptr)
+			delete [] csxY;
+		if(csxValues != nullptr)
+			delete [] csxValues;
+
+		csxNumMatrixElements = rhs.csxNumMatrixElements;
+		if(csxNumMatrixElements == -1){
+			TBTKAssert(
+				rhs.csxXPointers == nullptr
+				&& rhs.csxY == nullptr
+				&& rhs.csxValues == nullptr,
+				"SparseMatrix::operator=()",
+				"Invalid pointers in the original SparseMatrix.",
+				"This should never happen, contact the developer."
+			);
+
+			csxXPointers = nullptr;
+			csxY = nullptr;
+			csxValues = nullptr;
+		}
+		else{
+			TBTKAssert(
+				rhs.csxXPointers != nullptr
+				&& rhs.csxY != nullptr
+				&& rhs.csxValues != nullptr,
+				"SparseMatrix::SparseMatrix()",
+				"Invalid pointers in the original SparseMatrix.",
+				"This should never happen, contact the developer."
+			);
+
+			switch(storageFormat){
+			case StorageFormat::CSR:
+				csxXPointers = new unsigned int[numRows+1];
+				for(unsigned int row = 0; row < numRows+1; row++){
+					csxXPointers[row]
+						= rhs.csxXPointers[row];
+				}
+				break;
+			case StorageFormat::CSC:
+				csxXPointers = new unsigned int[numCols+1];
+				for(unsigned int col = 0; col < numCols+1; col++){
+					csxXPointers[col]
+						= rhs.csxXPointers[col];
+				}
+				break;
+			default:
+				TBTKExit(
+					"SparseMatrix::print()",
+					"Unknow StorageFormat.",
+					"This should never happen, contact the"
+					<< " developer."
+				);
+			}
+
+			csxY = new unsigned int[csxNumMatrixElements];
+			csxValues = new DataType[csxNumMatrixElements];
+			for(unsigned int n = 0; n < csxNumMatrixElements; n++){
+				csxY[n] = rhs.csxY[n];
+				csxValues[n] = rhs.csxValues[n];
+			}
+		}
+	}
+
+	return *this;
+}
+
+template<typename DataType>
+inline SparseMatrix<DataType>& SparseMatrix<DataType>::operator=(
+	SparseMatrix &&rhs
+){
+	if(this != &rhs){
+		Streams::out << "Move assignment\n";
+		storageFormat = rhs.storageFormat;
+
+		numRows = rhs.numRows;
+		numCols = rhs.numCols;
+		allowDynamicDimensions = rhs.allowDynamicDimensions;
+
+		if(csxXPointers != nullptr)
+			delete [] csxXPointers;
+		if(csxY != nullptr)
+			delete [] csxY;
+		if(csxValues != nullptr)
+			delete [] csxValues;
+
+		csxNumMatrixElements = rhs.csxNumMatrixElements;
+		if(csxNumMatrixElements == -1){
+			TBTKAssert(
+				rhs.csxXPointers == nullptr
+				&& rhs.csxY == nullptr
+				&& rhs.csxValues == nullptr,
+				"SparseMatrix::operator=()",
+				"Invalid pointers in the original SparseMatrix.",
+				"This should never happen, contact the developer."
+			);
+
+			csxXPointers = nullptr;
+			csxY = nullptr;
+			csxValues = nullptr;
+		}
+		else{
+			TBTKAssert(
+				rhs.csxXPointers != nullptr
+				&& rhs.csxY != nullptr
+				&& rhs.csxValues != nullptr,
+				"SparseMatrix::SparseMatrix()",
+				"Invalid pointers in the original SparseMatrix.",
+				"This should never happen, contact the developer."
+			);
+
+			csxXPointers = rhs.csxXPointers;
+			rhs.csxXPointers = nullptr;
+
+			csxY = rhs.csxY;
+			rhs.csxY = nullptr;
+
+			csxValues = rhs.csxValues;
+			rhs.csxValues = nullptr;
+		}
+	}
+
+	return *this;
 }
 
 template<typename DataType>
