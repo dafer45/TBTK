@@ -20,6 +20,7 @@
 
 #include "LUSolver/LUSolver.h"
 
+#include "slu_ddefs.h"
 #include "slu_zdefs.h"
 
 using namespace std;
@@ -45,6 +46,65 @@ LUSolver::~LUSolver(){
 		delete [] columnPermutations;
 	if(statistics != nullptr)
 		StatFree(statistics);
+}
+
+void LUSolver::setMatrix(const SparseMatrix<double> &sparseMatrix){
+	//Ensure the matrix is on CSC format since this is the format used by
+	//SuperLU.
+	SparseMatrix<double> cscMatrix = sparseMatrix;
+	cscMatrix.setStorageFormat(
+		SparseMatrix<double>::StorageFormat::CSC
+	);
+
+	//Extract sparse matrix information
+	unsigned int numRows = cscMatrix.getNumRows();
+	unsigned int numColumns = cscMatrix.getNumColumns();
+	unsigned int numMatrixElements = cscMatrix.getCSCNumMatrixElements();
+	const unsigned int *cscColumnPointers = cscMatrix.getCSCColumnPointers();
+	const unsigned int *cscRows = cscMatrix.getCSCRows();
+	const double *cscValues = cscMatrix.getCSCValues();
+
+	//Ensure the matrix has at least on matrix element.
+	TBTKAssert(
+		numMatrixElements > 0,
+		"LUSolver::setMatrix()",
+		"Invalid matrix. The matrix has no non-zero matrix elements.",
+		""
+	);
+
+	//Prepare Input for SuperLU matrix constructor.
+	int *sluColumnPointers = new int[numColumns+1];
+	for(unsigned int n = 0; n < numColumns+1; n++)
+		sluColumnPointers[n] = cscColumnPointers[n];
+
+	int *sluRows = new int[numMatrixElements];
+	double *sluValues = new double[numMatrixElements];
+	for(unsigned int n = 0; n < numMatrixElements; n++){
+		sluRows[n] = cscRows[n];
+		sluValues[n] = cscValues[n];
+	}
+
+	//Create matrix.
+	SuperMatrix sluMatrix;
+	dCreate_CompCol_Matrix(
+		&sluMatrix,
+		numRows,
+		numColumns,
+		numMatrixElements,
+		sluValues,
+		(int*)sluRows,
+		(int*)sluColumnPointers,
+		SLU_NC,
+		SLU_D,
+		SLU_GE
+	);
+
+	allocatePermutationMatrices(numRows, numColumns);
+	initStatistics();
+	performLUFactorization(sluMatrix);
+
+	//Clean up
+	Destroy_CompCol_Matrix(&sluMatrix);
 }
 
 void LUSolver::setMatrix(const SparseMatrix<complex<double>> &sparseMatrix){
@@ -99,23 +159,34 @@ void LUSolver::setMatrix(const SparseMatrix<complex<double>> &sparseMatrix){
 		SLU_GE
 	);
 
-	//Allocate permutation matrices.
+	allocatePermutationMatrices(numRows, numColumns);
+	initStatistics();
+	performLUFactorization(sluMatrix);
+
+	//Clean up
+	Destroy_CompCol_Matrix(&sluMatrix);
+}
+
+void LUSolver::allocatePermutationMatrices(
+	unsigned int numRows,
+	unsigned int numColumns
+){
 	if(rowPermutations != nullptr)
 		delete [] rowPermutations;
 	if(columnPermutations != nullptr)
 		delete [] columnPermutations;
 	rowPermutations = new int[numRows];
 	columnPermutations = new int[numColumns];
+}
 
-	//Initialize SuperLU options.
-	superlu_options_t sluOptions;
-	set_default_options(&sluOptions);
-	sluOptions.ColPerm = COLAMD;
-
-	//Initialize SuperLU statistics.
+void LUSolver::initStatistics(){
+	if(statistics != nullptr)
+		StatFree(statistics);
 	statistics = new SuperLUStat_t();
 	StatInit(statistics);
+}
 
+void LUSolver::performLUFactorization(SuperMatrix &matrix){
 	//Create upper and lower triangular matrices
 	if(L != nullptr)
 		Destroy_SuperNode_Matrix(L);
@@ -124,16 +195,11 @@ void LUSolver::setMatrix(const SparseMatrix<complex<double>> &sparseMatrix){
 	L = new SuperMatrix();
 	U = new SuperMatrix();
 
-	performLUFactorization(sluMatrix, sluOptions);
+	//Initialize SuperLU options.
+	superlu_options_t options;
+	set_default_options(&options);
+	options.ColPerm = COLAMD;
 
-	//Clean up
-	Destroy_CompCol_Matrix(&sluMatrix);
-}
-
-void LUSolver::performLUFactorization(
-	SuperMatrix &matrix,
-	superlu_options_t &options
-){
 	//LU factorization performed in accordance with the procedure used in
 	//zgssv.c in SuperLU 5.2.1. See this file for further details.
 	if(options.ColPerm != MY_PERMC && options.Fact == DOFACT)
@@ -217,30 +283,7 @@ Matrix<complex<double>> LUSolver::solve(
 ){
 	unsigned int numRows = b.getNumRows();
 	unsigned int numColumns = b.getNumCols();
-/*	TBTKAssert(
-		b.getNumCols() == 1,
-		"LUSolver::solve()",
-		"Only single column right hand sides supported yet.",
-		""
-	);*/
-
-	TBTKAssert(
-		L != nullptr,
-		"LUSolver::solve()",
-		"Left hand side matrix not yet set.",
-		"Use LUSolver::setMatrix() to set a matrix to use on the left"
-		<< " hand side."
-	);
-
-	TBTKAssert(
-		(int)numRows == U->nrow,
-		"LUSolver::solve()",
-		"Incompatible dimensions. 'b' must have the same number of"
-		<< " rows as the matrix on the right hand side, but 'b' has '"
-		<< b.getNumRows() << "' rows, while the right hand side matrix"
-		<< " has '" << U->nrow << "' rows.",
-		""
-	);
+	checkSolveAssert(numRows);
 
 	doublecomplex *sluBValues = new doublecomplex[numRows*numColumns];
 	for(unsigned int row = 0; row < numRows; row++){
@@ -274,25 +317,7 @@ Matrix<complex<double>> LUSolver::solve(
 		statistics,
 		&info
 	);
-
-	//Error checking
-	if(info != 0){
-		if(info < 0){
-			TBTKExit(
-				"LUSolver::solve()",
-				"Argument",
-				"This should never happen, contact the developer."
-			);
-		}
-		else{
-			TBTKExit(
-				"LUSolver::solve()",
-				"zgstrs() returned with info = " << info << ".",
-				"Contact the developer, argument " << -info
-				<< " to zgstrf has an invalid value."
-			);
-		}
-	}
+	checkZgstrsErrors(info);
 
 	//Copy results to return value
 	Matrix<complex<double>> result(numRows, numColumns);
@@ -308,6 +333,47 @@ Matrix<complex<double>> LUSolver::solve(
 	Destroy_Dense_Matrix(&sluB);
 
 	return result;
+}
+
+void LUSolver::checkSolveAssert(unsigned int numRows){
+	TBTKAssert(
+		L != nullptr,
+		"LUSolver::solve()",
+		"Left hand side matrix not yet set.",
+		"Use LUSolver::setMatrix() to set a matrix to use on the left"
+		<< " hand side."
+	);
+
+	TBTKAssert(
+		(int)numRows == L->nrow,
+		"LUSolver::solve()",
+		"Incompatible dimensions. 'b' must have the same number of"
+		<< " rows as the matrix on the left hand side, but 'b' has '"
+		<< numRows << "' rows, while the left hand side matrix has '"
+		<< L->nrow << "' rows.",
+		""
+	);
+}
+
+void LUSolver::checkZgstrsErrors(int info){
+	if(info != 0){
+		if(info < 0){
+			TBTKExit(
+				"LUSolver::solve()",
+				"zgstrs() returned with info = " << info << ".",
+				"Contact the developer, argument " << -info
+				<< " to zgstrs has an invalid value."
+			);
+		}
+		else{
+			TBTKExit(
+				"LUSolver::solve()",
+				"zgstrs() returned with info = " << info << ".",
+				"Contact the developer, argument " << -info
+				<< " to zgstrf has an invalid value."
+			);
+		}
+	}
 }
 
 };	//End of namespace TBTK

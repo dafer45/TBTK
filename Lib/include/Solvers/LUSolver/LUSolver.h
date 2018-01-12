@@ -42,6 +42,9 @@ public:
 	~LUSolver();
 
 	/** Set matrix. */
+	void setMatrix(const SparseMatrix<double> &sparseMatrix);
+
+	/** Set matrix. */
 	void setMatrix(const SparseMatrix<std::complex<double>> &sparseMatrix);
 
 	/** Solve. */
@@ -64,11 +67,23 @@ private:
 	/** SuperLU statistics. */
 	SuperLUStat_t *statistics;
 
-	/** Perform LU factorization. */
-	void performLUFactorization(
-		SuperMatrix &matrix,
-		superlu_options_t &options
+	/** Allocate permutation matrices. */
+	void allocatePermutationMatrices(
+		unsigned int numRows,
+		unsigned int numColumns
 	);
+
+	/** Initialize statistics. */
+	void initStatistics();
+
+	/** Perform LU factorization. */
+	void performLUFactorization(SuperMatrix &matrix);
+
+	/** Check assertments for solve(). */
+	void checkSolveAssert(unsigned int numRows);
+
+	/** Check for zgstrs errors. */
+	void checkZgstrsErrors(int info);
 };
 
 };	//End of namespace TBTK
