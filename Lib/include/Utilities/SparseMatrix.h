@@ -851,9 +851,39 @@ inline void SparseMatrix<DataType>::constructCSX(){
 			switch(storageFormat){
 			case StorageFormat::CSR:
 				numRows = listOfLists.size();
+				numCols = 0;
+				for(
+					unsigned int row = 0;
+					row < listOfLists.size();
+					row++
+				){
+					if(listOfLists[row].size() == 0)
+						continue;
+
+					unsigned int maxCol = std::get<0>(
+						listOfLists[row].back()
+					);
+					if(maxCol+1 > numCols)
+						numCols = maxCol + 1;
+				}
 				break;
 			case StorageFormat::CSC:
 				numCols = listOfLists.size();
+				numRows = 0;
+				for(
+					unsigned int col = 0;
+					col < listOfLists.size();
+					col++
+				){
+					if(listOfLists[col].size() == 0)
+						continue;
+
+					unsigned int maxRow = std::get<0>(
+						listOfLists[col].back()
+					);
+					if(maxRow+1 > numRows)
+						numRows = maxRow + 1;
+				}
 				break;
 			default:
 				TBTKExit(
