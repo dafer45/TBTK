@@ -23,6 +23,9 @@
 #ifndef COM_DAFER45_TBTK_SPARSE_MATRIX
 #define COM_DAFER45_TBTK_SPARSE_MATRIX
 
+#include "TBTKMacros.h"
+
+#include <algorithm>
 #include <tuple>
 #include <vector>
 
