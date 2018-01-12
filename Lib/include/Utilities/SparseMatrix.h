@@ -68,6 +68,36 @@ public:
 	/** Set StorageFormat. */
 	void setStorageFormat(StorageFormat storageFormat);
 
+	/** Get number of rows. */
+	unsigned int getNumRows() const;
+
+	/** Get number of columns. */
+	unsigned int getNumColumns() const;
+
+	/** Get number of CSR matrix elements. */
+	unsigned int getCSRNumMatrixElements() const;
+
+	/** Get number of CSC matrix elements. */
+	unsigned int getCSCNumMatrixElements() const;
+
+	/** Get CSR row pointers. */
+	const unsigned int* getCSRRowPointers() const;
+
+	/** Get CSC column pointers. */
+	const unsigned int* getCSCColumnPointers() const;
+
+	/** Get CSR columns. */
+	const unsigned int* getCSRColumns() const;
+
+	/** Get CSC columns. */
+	const unsigned int* getCSCRows() const;
+
+	/** Get CSR values. */
+	const DataType* getCSRValues() const;
+
+	/** Get CSC values. */
+	const DataType* getCSCValues() const;
+
 	/** Print. */
 	void print() const;
 private:
@@ -449,12 +479,196 @@ inline void SparseMatrix<DataType>::add(
 }
 
 template<typename DataType>
-inline void SparseMatrix<DataType>::setStorageFormat(StorageFormat storageFormat){
+inline void SparseMatrix<DataType>::setStorageFormat(
+	StorageFormat storageFormat
+){
 	if(this->storageFormat != storageFormat){
 		convertCSXToLIL();
 		this->storageFormat = storageFormat;
 		constructCSX();
 	}
+}
+
+template<typename DataType>
+inline unsigned int SparseMatrix<DataType>::getNumRows() const{
+	TBTKAssert(
+		numRows != -1,
+		"SparseMatrix::getNumRows()",
+		"Number of rows not yet determined.",
+		""
+	);
+
+	return (unsigned int)numRows;
+}
+
+template<typename DataType>
+inline unsigned int SparseMatrix<DataType>::getNumColumns() const{
+	TBTKAssert(
+		numRows != -1,
+		"SparseMatrix::getNumRows()",
+		"Number of rows not yet determined.",
+		""
+	);
+
+	return (unsigned int)numCols;
+}
+
+template<typename DataType>
+inline unsigned int SparseMatrix<DataType>::getCSRNumMatrixElements() const{
+	TBTKAssert(
+		storageFormat == StorageFormat::CSR,
+		"SparseMatrix::getCSRNumMatrixElements()",
+		"Tried to access CSR number of matrix elements, but the matrix"
+		" is not on the CSR storage format.",
+		"Use SparseMatrix::setFormat() to change the storage format."
+	);
+
+	if(csxNumMatrixElements == -1)
+		return 0;
+	else
+		return (unsigned int)csxNumMatrixElements;
+}
+
+template<typename DataType>
+inline unsigned int SparseMatrix<DataType>::getCSCNumMatrixElements() const{
+	TBTKAssert(
+		storageFormat == StorageFormat::CSC,
+		"SparseMatrix::getCSCNumMatrixElements()",
+		"Tried to access CSC number of matrix elements, but the matrix"
+		" is not on the CSC storage format.",
+		"Use SparseMatrix::setFormat() to change the storage format."
+	);
+
+	if(csxNumMatrixElements == -1)
+		return 0;
+	else
+		return (unsigned int)csxNumMatrixElements;
+}
+
+template<typename DataType>
+inline const unsigned int* SparseMatrix<DataType>::getCSRRowPointers() const{
+	TBTKAssert(
+		storageFormat == StorageFormat::CSR,
+		"SparseMatrix::getCSRRowPointers()",
+		"Tried to access CSR row pointers, but the matrix is not on"
+		" the CSR storage format.",
+		"Use SparseMatrix::setFormat() to change the storage format."
+	);
+
+	TBTKAssert(
+		csxXPointers != nullptr,
+		"SparseMatrix::getCSRRowPointers()",
+		"Tried to access CSR row pointers, but row pointers have not"
+		<< " been constructed yet.",
+		""
+	);
+
+	return csxXPointers;
+}
+
+template<typename DataType>
+inline const unsigned int* SparseMatrix<DataType>::getCSCColumnPointers() const{
+	TBTKAssert(
+		storageFormat == StorageFormat::CSC,
+		"SparseMatrix::getCSCColumnPointers()",
+		"Tried to access CSC row pointers, but the matrix is not on"
+		" the CSC storage format.",
+		"Use SparseMatrix::setFormat() to change the storage format."
+	);
+
+	TBTKAssert(
+		csxXPointers != nullptr,
+		"SparseMatrix::getCSCColumnPointers()",
+		"Tried to access CSC column pointers, but column pointers have"
+		<< " not been constructed yet.",
+		""
+	);
+
+	return csxXPointers;
+}
+
+template<typename DataType>
+inline const unsigned int* SparseMatrix<DataType>::getCSRColumns() const{
+	TBTKAssert(
+		storageFormat == StorageFormat::CSR,
+		"SparseMatrix::getCSRColumns()",
+		"Tried to access CSR columns, but the matrix is not on the CSR"
+		<< " storage format.",
+		"Use SparseMatrix::setFormat() to change the storage format."
+	);
+
+	TBTKAssert(
+		csxY != nullptr,
+		"SparseMatrix::getCSRColumns()",
+		"Tried to access CSR columns, but columns have not been"
+		<< " constructed yet.",
+		""
+	);
+
+	return csxY;
+}
+
+template<typename DataType>
+inline const unsigned int* SparseMatrix<DataType>::getCSCRows() const{
+	TBTKAssert(
+		storageFormat == StorageFormat::CSC,
+		"SparseMatrix::getCSCRows()",
+		"Tried to access CSC rows, but the matrix is not on the CSC"
+		<< " storage format.",
+		"Use SparseMatrix::setFormat() to change the storage format."
+	);
+
+	TBTKAssert(
+		csxY != nullptr,
+		"SparseMatrix::getCSCRows()",
+		"Tried to access CSC rows, but rows have not been constructed"
+		<< " yet.",
+		""
+	);
+
+	return csxY;
+}
+
+template<typename DataType>
+inline const DataType* SparseMatrix<DataType>::getCSRValues() const{
+	TBTKAssert(
+		storageFormat == StorageFormat::CSR,
+		"SparseMatrix::getCSRValues()",
+		"Tried to access CSR values, but the matrix is not on the CSR"
+		<< " storage format.",
+		"Use SparseMatrix::setFormat() to change the storage format."
+	);
+
+	TBTKAssert(
+		csxValues != nullptr,
+		"SparseMatrix::getCSRValues()",
+		"Tried to access CSR values, but values have not been"
+		<< " constructed yet.",
+		""
+	);
+
+	return csxValues;
+}
+
+template<typename DataType>
+inline const DataType* SparseMatrix<DataType>::getCSCValues() const{
+	TBTKAssert(
+		storageFormat == StorageFormat::CSC,
+		"SparseMatrix::getCSCValues()",
+		"Tried to access CSC values, but the matrix is not on the CSC"
+		<< " storage format.",
+		"Use SparseMatrix::setFormat() to change the storage format."
+	);
+
+	TBTKAssert(
+		csxValues != nullptr,
+		"SparseMatrix::getCSCValues()",
+		"Tried to access CSC values, but values have not been"
+		<< " constructed yet.",
+		""
+	);
+
+	return csxValues;
 }
 
 template<typename DataType>
