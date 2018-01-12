@@ -62,6 +62,9 @@ public:
 	/** Add matrix element. */
 	void add(unsigned int row, unsigned int col, const DataType &value);
 
+	/** Set StorageFormat. */
+	void setStorageFormat(StorageFormat storageFormat);
+
 	/** Print. */
 	void print() const;
 private:
@@ -115,10 +118,14 @@ public:
 		> &listOfLists
 	) const;
 
-	/** Construct */
-
 	/** Construct matrix on compressed sparse row format (CSR). */
 	void constructCSX();
+
+	/** Adds all matrix elements constructed on CSR/CSC format to LIL.
+	 *  Used when a matrix is reconstructed either because new elements has
+	 *  been added, or because the format of the matrix is being changed.
+	 */
+	void convertCSXToLIL();
 };
 
 template<typename DataType>
@@ -205,7 +212,7 @@ inline SparseMatrix<DataType>::SparseMatrix(
 			break;
 		default:
 			TBTKExit(
-				"SparseMatrix::print()",
+				"SparseMatrix::SparseMatrix()",
 				"Unknow StorageFormat.",
 				"This should never happen, contact the"
 				<< " developer."
@@ -337,7 +344,7 @@ inline SparseMatrix<DataType>& SparseMatrix<DataType>::operator=(
 				break;
 			default:
 				TBTKExit(
-					"SparseMatrix::print()",
+					"SparseMatrix::SparseMatrix()",
 					"Unknow StorageFormat.",
 					"This should never happen, contact the"
 					<< " developer."
@@ -436,6 +443,15 @@ inline void SparseMatrix<DataType>::add(
 	}
 
 	dictionaryOfKeys.push_back(std::make_tuple(row, col, value));
+}
+
+template<typename DataType>
+inline void SparseMatrix<DataType>::setStorageFormat(StorageFormat storageFormat){
+	if(this->storageFormat != storageFormat){
+		convertCSXToLIL();
+		this->storageFormat = storageFormat;
+		constructCSX();
+	}
 }
 
 template<typename DataType>
@@ -607,84 +623,7 @@ inline void SparseMatrix<DataType>::mergeLIL(
 
 template<typename DataType>
 inline void SparseMatrix<DataType>::constructCSX(){
-	if(csxNumMatrixElements != -1){
-		TBTKAssert(
-			csxXPointers != nullptr
-			&& csxY != nullptr
-			&& csxValues != nullptr,
-			"SparseMatrix::constructCSX()",
-			"'csxNumMatrixElements' is not -1, but a csx-pointer"
-			<< " is a nullptr.",
-			"This should never happen, contact the developer."
-		);
-
-		switch(storageFormat){
-		case StorageFormat::CSR:
-		{
-			unsigned int row = 0;
-			for(unsigned int n = 0; n < csxNumMatrixElements; n++){
-				if(csxXPointers[row+1] == n){
-					for(
-						unsigned int r = row+1;
-						r < numRows+1;
-						r++
-					){
-						row++;
-						if(csxXPointers[r+1] > n)
-							break;
-					}
-				}
-
-				add(row, csxY[n], csxValues[n]);
-			}
-
-			break;
-		}
-		case StorageFormat::CSC:
-		{
-			unsigned int col = 0;
-			for(unsigned int n = 0; n < csxNumMatrixElements; n++){
-				if(csxXPointers[col+1] == n){
-					for(
-						unsigned int c = col+1;
-						c < numCols+1;
-						c++
-					){
-						col++;
-						if(csxXPointers[c+1] > n)
-							break;
-					}
-				}
-
-				add(csxY[n], col, csxValues[n]);
-			}
-
-			break;
-		}
-		default:
-			TBTKExit(
-				"SparseMatrix::constructCSX()",
-				"Unknow StorageFormat.",
-				"This should never happen, contact the"
-				<< " developer."
-			);
-		}
-
-		delete [] csxXPointers;
-		delete [] csxY;
-		delete [] csxValues;
-		csxNumMatrixElements = -1;
-	}
-
-	TBTKAssert(
-		csxXPointers == nullptr
-		&& csxY == nullptr
-		&& csxValues == nullptr,
-		"SparseMatrix::constructCSX()",
-		"Expected 'csxXPointers', 'csxY', and 'csrValues' to"
-		<< " be nullptr, but not all of them are.",
-		"This should never happen, contact the developer."
-	);
+	convertCSXToLIL();
 
 	if(dictionaryOfKeys.size() != 0){
 		std::vector<
@@ -786,6 +725,78 @@ inline void SparseMatrix<DataType>::constructCSX(){
 			"Invalid number of matrix elements.",
 			"This should never happen, contact the developer."
 		);
+	}
+}
+
+template<typename DataType>
+inline void SparseMatrix<DataType>::convertCSXToLIL(){
+	if(csxNumMatrixElements != -1){
+		TBTKAssert(
+			csxXPointers != nullptr
+			&& csxY != nullptr
+			&& csxValues != nullptr,
+			"SparseMatrix::convertCSXToLIL()",
+			"'csxNumMatrixElements' is not -1, but a csx-pointer"
+			<< " is a nullptr.",
+			"This should never happen, contact the developer."
+		);
+
+		switch(storageFormat){
+		case StorageFormat::CSR:
+		{
+			unsigned int row = 0;
+			for(unsigned int n = 0; n < csxNumMatrixElements; n++){
+				if(csxXPointers[row+1] == n){
+					for(
+						unsigned int r = row+1;
+						r < numRows+1;
+						r++
+					){
+						row++;
+						if(csxXPointers[r+1] > n)
+							break;
+					}
+				}
+
+				add(row, csxY[n], csxValues[n]);
+			}
+
+			break;
+		}
+		case StorageFormat::CSC:
+		{
+			unsigned int col = 0;
+			for(unsigned int n = 0; n < csxNumMatrixElements; n++){
+				if(csxXPointers[col+1] == n){
+					for(
+						unsigned int c = col+1;
+						c < numCols+1;
+						c++
+					){
+						col++;
+						if(csxXPointers[c+1] > n)
+							break;
+					}
+				}
+
+				add(csxY[n], col, csxValues[n]);
+			}
+
+			break;
+		}
+		default:
+			TBTKExit(
+				"SparseMatrix::convertCSXToLIL()",
+				"Unknow StorageFormat.",
+				"This should never happen, contact the"
+				<< " developer."
+			);
+		}
+
+		delete [] csxXPointers;
+		delete [] csxY;
+		delete [] csxValues;
+		csxNumMatrixElements = -1;
 	}
 }
 
