@@ -293,7 +293,8 @@ void ArnoldiSolver::arnoldiLoop(){
 		&ierr
 	);
 
-	if(ierr < 0){
+	checkZneupdIerr(ierr);
+/*	if(ierr < 0){
 		TBTKExit(
 			"ArnoldiSolver::arnoldiLoop()",
 			"Input parameter '" << -info << "' to zneupd is"
@@ -318,7 +319,7 @@ void ArnoldiSolver::arnoldiLoop(){
 		//least NCV columns for Z. NOTE: Not necessary if Z and V share
 		//the same space. Please notify the authors if this error
 		//occurs.
-	}
+	}*/
 
 	double numAccurateEigenValues = iparam[4]; //With respect to tolerance
 	Streams::out << "\nNumber of accurately converged eigenvalues: "
@@ -450,6 +451,35 @@ bool ArnoldiSolver::executeReverseCommunicationMessage(
 	}
 
 	return false;
+}
+
+void ArnoldiSolver::checkZneupdIerr(int ierr) const{
+	if(ierr < 0){
+		TBTKExit(
+			"ArnoldiSolver::arnoldiLoop()",
+			"Input parameter '" << -ierr << "' to zneupd is"
+			<< " invalid.",
+			"This should never happen, contact the developer."
+		);
+	}
+	else if(ierr != 0){
+		TBTKExit(
+			"ArnoldiSolver::arnoldiLoop()",
+			"zneupd() exited with error ierr = " << ierr
+			<< ". Unknown error ().",
+			"This should never happen, contact the developer."
+		);
+		//The documentation for zneupd() says the following in case
+		//ierr = 1:
+		//
+		//The Schur form computed by LAPACK routine csheqr could not be
+		//reordered by LAPACK routine ztrsen. Re-enter subroutine
+		//ZNEUPD with IPARAM(5)=NCV and increase the size of the array
+		//D to have dimension at least dimension NCV and allocate at
+		//least NCV columns for Z. NOTE: Not necessary if Z and V share
+		//the same space. Please notify the authors if this error
+		//occurs.
+	}
 }
 
 void ArnoldiSolver::initNormal(){

@@ -160,6 +160,8 @@ private:
 		Matrix<std::complex<double>> &b
 	);
 
+	void checkZneupdIerr(int ierr) const;
+
 	/** Sort eigen values and eigen vectors in accending order according to
 	 *  the real part of the eigen values. */
 	void sort();
