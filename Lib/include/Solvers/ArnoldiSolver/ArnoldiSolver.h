@@ -27,8 +27,6 @@
 #include "LUSolver/LUSolver.h"
 #include "Solver.h"
 
-#include "slu_zdefs.h"
-
 #include <complex>
 
 namespace TBTK{
