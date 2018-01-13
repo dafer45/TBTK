@@ -416,12 +416,19 @@ void LUSolver::solve(Matrix<complex<double>> &b){
 		//Setup right hand side on SuperLU format.
 		double *sluBValuesReal = new double[numRows*numColumns];
 		double *sluBValuesImag = new double[numRows*numColumns];
+		bool isReal = true;
+		bool isImag = true;
 		for(unsigned int row = 0; row < numRows; row++){
 			for(unsigned int col = 0; col < numColumns; col++){
-				sluBValuesReal[col*numRows + row]
-					= real(b.at(row, col));
-				sluBValuesImag[col*numRows + row]
-					= imag(b.at(row, col));
+				double r = real(b.at(row, col));
+				double i = imag(b.at(row, col));
+				sluBValuesReal[col*numRows + row] = r;
+				sluBValuesImag[col*numRows + row] = i;
+
+				if(r != 0)
+					isImag = false;
+				if(i != 0)
+					isReal = false;
 			}
 		}
 
@@ -449,31 +456,37 @@ void LUSolver::solve(Matrix<complex<double>> &b){
 			SLU_GE
 		);
 
-		//Solve
-		int info;
-		dgstrs(
-			NOTRANS,
-			L,
-			U,
-			columnPermutations,
-			rowPermutations,
-			&sluBReal,
-			statistics,
-			&info
-		);
-		checkXgstrsErrors(info, "dgstrs");
+		//Solve real part
+		if(!isImag){
+			int info;
+			dgstrs(
+				NOTRANS,
+				L,
+				U,
+				columnPermutations,
+				rowPermutations,
+				&sluBReal,
+				statistics,
+				&info
+			);
+			checkXgstrsErrors(info, "dgstrs");
+		}
 
-		dgstrs(
-			NOTRANS,
-			L,
-			U,
-			columnPermutations,
-			rowPermutations,
-			&sluBImag,
-			statistics,
-			&info
-		);
-		checkXgstrsErrors(info, "dgstrs");
+		//Solve imaginary part
+		if(!isReal){
+			int info;
+			dgstrs(
+				NOTRANS,
+				L,
+				U,
+				columnPermutations,
+				rowPermutations,
+				&sluBImag,
+				statistics,
+				&info
+			);
+			checkXgstrsErrors(info, "dgstrs");
+		}
 
 		//Copy results to return value
 		for(unsigned int row = 0; row < numRows; row++){
