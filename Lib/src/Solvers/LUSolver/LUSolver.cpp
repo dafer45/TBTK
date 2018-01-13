@@ -144,20 +144,51 @@ void LUSolver::setMatrix(const SparseMatrix<complex<double>> &sparseMatrix){
 		sluValues[n].i = imag(cscValues[n]);
 	}
 
+	//Check if the matrix is real.
+	bool matrixIsReal = true;
+	for(unsigned int n = 0; n < numMatrixElements; n++){
+		if(sluValues[n].i != 0){
+			matrixIsReal = false;
+			break;
+		}
+	}
+
 	//Create matrix.
 	SuperMatrix sluMatrix;
-	zCreate_CompCol_Matrix(
-		&sluMatrix,
-		numRows,
-		numColumns,
-		numMatrixElements,
-		sluValues,
-		(int*)sluRows,
-		(int*)sluColumnPointers,
-		SLU_NC,
-		SLU_Z,
-		SLU_GE
-	);
+	if(matrixIsReal){
+		double *sluRealValues = new double[numMatrixElements];
+		for(unsigned int n = 0; n < numMatrixElements; n++)
+			sluRealValues[n] = sluValues[n].r;
+
+		delete [] sluValues;
+
+		dCreate_CompCol_Matrix(
+			&sluMatrix,
+			numRows,
+			numColumns,
+			numMatrixElements,
+			sluRealValues,
+			(int*)sluRows,
+			(int*)sluColumnPointers,
+			SLU_NC,
+			SLU_D,
+			SLU_GE
+		);
+	}
+	else{
+		zCreate_CompCol_Matrix(
+			&sluMatrix,
+			numRows,
+			numColumns,
+			numMatrixElements,
+			sluValues,
+			(int*)sluRows,
+			(int*)sluColumnPointers,
+			SLU_NC,
+			SLU_Z,
+			SLU_GE
+		);
+	}
 
 	allocatePermutationMatrices(numRows, numColumns);
 	initStatistics();
@@ -329,6 +360,13 @@ Matrix<double> LUSolver::solve(
 	unsigned int numColumns = b.getNumCols();
 	checkSolveAssert(numRows);
 
+	TBTKAssert(
+		U->Dtype == SLU_D,
+		"LUSolver::solve()",
+		"The matrix is complex, therefore 'b' must be complex.",
+		""
+	);
+
 	//Setup right hand side on SuperLU format.
 	double *sluBValues = new double[numRows*numColumns];
 	for(unsigned int row = 0; row < numRows; row++)
@@ -359,7 +397,7 @@ Matrix<double> LUSolver::solve(
 		statistics,
 		&info
 	);
-	checkZgstrsErrors(info);
+	checkXgstrsErrors(info, "dgstrs");
 
 	//Copy results to return value
 	Matrix<double> result(numRows, numColumns);
@@ -379,55 +417,147 @@ Matrix<complex<double>> LUSolver::solve(
 	unsigned int numColumns = b.getNumCols();
 	checkSolveAssert(numRows);
 
-	//Setup right hand side on SuperLU format.
-	doublecomplex *sluBValues = new doublecomplex[numRows*numColumns];
-	for(unsigned int row = 0; row < numRows; row++){
-		for(unsigned int col = 0; col < numColumns; col++){
-			sluBValues[col*numRows + row].r = real(b.at(row, col));
-			sluBValues[col*numRows + row].i = imag(b.at(row, col));
+	switch(U->Dtype){
+	case SLU_D:
+	{
+		//Setup right hand side on SuperLU format.
+		double *sluBValuesReal = new double[numRows*numColumns];
+		double *sluBValuesImag = new double[numRows*numColumns];
+		for(unsigned int row = 0; row < numRows; row++){
+			for(unsigned int col = 0; col < numColumns; col++){
+				sluBValuesReal[col*numRows + row]
+					= real(b.at(row, col));
+				sluBValuesImag[col*numRows + row]
+					= imag(b.at(row, col));
+			}
 		}
-	}
 
-	SuperMatrix sluB;
-	zCreate_Dense_Matrix(
-		&sluB,
-		numRows,
-		numColumns,
-		sluBValues,
-		numRows,	//Leading dimension
-		SLU_DN,
-		SLU_Z,
-		SLU_GE
-	);
+		SuperMatrix sluBReal;
+		dCreate_Dense_Matrix(
+			&sluBReal,
+			numRows,
+			numColumns,
+			sluBValuesReal,
+			numRows,	//Leading dimension
+			SLU_DN,
+			SLU_D,
+			SLU_GE
+		);
 
-	//Solve
-	int info;
-	zgstrs(
-		NOTRANS,
-		L,
-		U,
-		columnPermutations,
-		rowPermutations,
-		&sluB,
-		statistics,
-		&info
-	);
-	checkZgstrsErrors(info);
+		SuperMatrix sluBImag;
+		dCreate_Dense_Matrix(
+			&sluBImag,
+			numRows,
+			numColumns,
+			sluBValuesImag,
+			numRows,	//Leading dimension
+			SLU_DN,
+			SLU_D,
+			SLU_GE
+		);
 
-	//Copy results to return value
-	Matrix<complex<double>> result(numRows, numColumns);
-	for(unsigned int row = 0; row < numRows; row++){
-		for(unsigned int col = 0; col < numColumns; col++){
-			result.at(row, col) = complex<double>(
-				sluBValues[col*numRows + row].r,
-				sluBValues[col*numRows + row].i
-			);
+		//Solve
+		int info;
+		dgstrs(
+			NOTRANS,
+			L,
+			U,
+			columnPermutations,
+			rowPermutations,
+			&sluBReal,
+			statistics,
+			&info
+		);
+		checkXgstrsErrors(info, "dgstrs");
+
+		dgstrs(
+			NOTRANS,
+			L,
+			U,
+			columnPermutations,
+			rowPermutations,
+			&sluBImag,
+			statistics,
+			&info
+		);
+		checkXgstrsErrors(info, "dgstrs");
+
+		//Copy results to return value
+		Matrix<complex<double>> result(numRows, numColumns);
+		for(unsigned int row = 0; row < numRows; row++){
+			for(unsigned int col = 0; col < numColumns; col++){
+				result.at(row, col) = complex<double>(
+					sluBValuesReal[col*numRows + row],
+					sluBValuesImag[col*numRows + row]
+				);
+			}
 		}
+
+		Destroy_Dense_Matrix(&sluBReal);
+		Destroy_Dense_Matrix(&sluBImag);
+
+		return result;
 	}
+	case SLU_Z:
+	{
+		//Setup right hand side on SuperLU format.
+		doublecomplex *sluBValues = new doublecomplex[numRows*numColumns];
+		for(unsigned int row = 0; row < numRows; row++){
+			for(unsigned int col = 0; col < numColumns; col++){
+				sluBValues[col*numRows + row].r = real(b.at(row, col));
+				sluBValues[col*numRows + row].i = imag(b.at(row, col));
+			}
+		}
 
-	Destroy_Dense_Matrix(&sluB);
+		SuperMatrix sluB;
+		zCreate_Dense_Matrix(
+			&sluB,
+			numRows,
+			numColumns,
+			sluBValues,
+			numRows,	//Leading dimension
+			SLU_DN,
+			SLU_Z,
+			SLU_GE
+		);
 
-	return result;
+		//Solve
+		int info;
+		zgstrs(
+			NOTRANS,
+			L,
+			U,
+			columnPermutations,
+			rowPermutations,
+			&sluB,
+			statistics,
+			&info
+		);
+		checkXgstrsErrors(info, "zgstrs");
+
+		//Copy results to return value
+		Matrix<complex<double>> result(numRows, numColumns);
+		for(unsigned int row = 0; row < numRows; row++){
+			for(unsigned int col = 0; col < numColumns; col++){
+				result.at(row, col) = complex<double>(
+					sluBValues[col*numRows + row].r,
+					sluBValues[col*numRows + row].i
+				);
+			}
+		}
+
+		Destroy_Dense_Matrix(&sluB);
+
+		return result;
+	}
+	default:
+		TBTKExit(
+			"LUSolver::solve()",
+			"Only matrices of type double and complex<double> are"
+			<< " supported yet",
+			"This should never happen, contact the developer."
+		);
+	}
 }
 
 void LUSolver::checkSolveAssert(unsigned int numRows){
@@ -450,22 +580,26 @@ void LUSolver::checkSolveAssert(unsigned int numRows){
 	);
 }
 
-void LUSolver::checkZgstrsErrors(int info){
+void LUSolver::checkXgstrsErrors(int info, string functionName){
 	if(info != 0){
 		if(info < 0){
 			TBTKExit(
 				"LUSolver::solve()",
-				"zgstrs() returned with info = " << info << ".",
+				functionName << "() returned with info = "
+				<< info << ".",
 				"Contact the developer, argument " << -info
-				<< " to zgstrs has an invalid value."
+				<< " to " << functionName << " has an invalid"
+				<< " value."
 			);
 		}
 		else{
 			TBTKExit(
 				"LUSolver::solve()",
-				"zgstrs() returned with info = " << info << ".",
+				functionName << "() returned with info = "
+				<< info << ".",
 				"Contact the developer, argument " << -info
-				<< " to zgstrf has an invalid value."
+				<< " to " << functionName << " has an invalid"
+				<< " value."
 			);
 		}
 	}

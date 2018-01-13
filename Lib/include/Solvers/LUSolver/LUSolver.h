@@ -101,8 +101,8 @@ private:
 		int numColumns
 	);
 
-	/** Check for zgstrs errors. */
-	void checkZgstrsErrors(int info);
+	/** Check for Xgstrs errors. */
+	void checkXgstrsErrors(int info, std::string functionName);
 };
 
 };	//End of namespace TBTK
