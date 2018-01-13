@@ -145,10 +145,6 @@ private:
 	 *  (SuperLU routine). */
 	void initShiftAndInvert();
 
-	/** Run implicitly restarted Arnoldi loop using normal mode. (Arnoldi
-	 *  routine). */
-//	void arnoldiLoopNormal();
-
 	/** Run implicitly restarted Arnoldi loop. */
 	void arnoldiLoop();
 
