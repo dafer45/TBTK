@@ -139,37 +139,6 @@ private:
 	/** LUSolver. */
 	LUSolver luSolver;
 
-	/** Hamiltonian. (SuperLU variable). */
-//	SuperMatrix *hamiltonian;
-
-	/** Vector used to represent both x and b in Ax = b. (SuperLU
-	 *  variable). */
-//	SuperMatrix *vector;
-
-	/** Lower triangular matrix L in LU decomposition of the Hamiltonian.
-	 *  (SuperLU variable). */
-//	SuperMatrix *lowerTriangular;
-
-	/** Upper triangular matrix U in LU decomposition of the Hamiltonian.
-	 *  (SuperLU variable). */
-//	SuperMatrix *upperTriangular;
-
-	/** Row permutation matrix Pr in LU decomposition LU = PrHPc.
-	 *  Permutations are performed to enhance performance and increase
-	 *  numerical stability. (SuperLU variable). */
-//	int *rowPermutations;
-
-	/** Column permutation matrix Pc in LU decomposition LU = PrHPc.
-	 *  Permutations are performed to enhance performance and increase
-	 *  numerical stability. (SuperLU variable). */
-//	int *colPermutations;
-
-	/** Options for LU decomposition. (SuperLU variable). */
-//	superlu_options_t *options;
-
-	/** Status for LU decomposition. (SuperLU variable). */
-//	SuperLUStat_t *stat;
-
 	/** Initialize solver for normal mode. Setting up SuperLU. (SuperLU
 	 *  routine). */
 	void initNormal();
@@ -177,9 +146,6 @@ private:
 	/** Initialize solver for shift and invert mode. Setting up SuperLU.
 	 *  (SuperLU routine). */
 	void initShiftAndInvert();
-
-	/** Perform LU decomposition of Hamiltonian. (SuperLU routine). */
-//	void performLUFactorization();
 
 	/** Run implicitly restarted Arnoldi loop using normal mode. (Arnoldi
 	 *  routine). */
