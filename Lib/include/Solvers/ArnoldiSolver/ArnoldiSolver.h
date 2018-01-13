@@ -24,6 +24,7 @@
 #define COM_DAFER45_ARNOLDI_SOLVER
 
 #include "Model.h"
+#include "LUSolver/LUSolver.h"
 #include "Solver.h"
 
 #include "slu_zdefs.h"
@@ -135,36 +136,39 @@ private:
 	/** Eigen vectors. (Arnoldi variable). */
 	std::complex<double> *eigenVectors;
 
+	/** LUSolver. */
+	LUSolver luSolver;
+
 	/** Hamiltonian. (SuperLU variable). */
-	SuperMatrix *hamiltonian;
+//	SuperMatrix *hamiltonian;
 
 	/** Vector used to represent both x and b in Ax = b. (SuperLU
 	 *  variable). */
-	SuperMatrix *vector;
+//	SuperMatrix *vector;
 
 	/** Lower triangular matrix L in LU decomposition of the Hamiltonian.
 	 *  (SuperLU variable). */
-	SuperMatrix *lowerTriangular;
+//	SuperMatrix *lowerTriangular;
 
 	/** Upper triangular matrix U in LU decomposition of the Hamiltonian.
 	 *  (SuperLU variable). */
-	SuperMatrix *upperTriangular;
+//	SuperMatrix *upperTriangular;
 
 	/** Row permutation matrix Pr in LU decomposition LU = PrHPc.
 	 *  Permutations are performed to enhance performance and increase
 	 *  numerical stability. (SuperLU variable). */
-	int *rowPermutations;
+//	int *rowPermutations;
 
 	/** Column permutation matrix Pc in LU decomposition LU = PrHPc.
 	 *  Permutations are performed to enhance performance and increase
 	 *  numerical stability. (SuperLU variable). */
-	int *colPermutations;
+//	int *colPermutations;
 
 	/** Options for LU decomposition. (SuperLU variable). */
-	superlu_options_t *options;
+//	superlu_options_t *options;
 
 	/** Status for LU decomposition. (SuperLU variable). */
-	SuperLUStat_t *stat;
+//	SuperLUStat_t *stat;
 
 	/** Initialize solver for normal mode. Setting up SuperLU. (SuperLU
 	 *  routine). */
@@ -175,7 +179,7 @@ private:
 	void initShiftAndInvert();
 
 	/** Perform LU decomposition of Hamiltonian. (SuperLU routine). */
-	void performLUFactorization();
+//	void performLUFactorization();
 
 	/** Run implicitly restarted Arnoldi loop using normal mode. (Arnoldi
 	 *  routine). */

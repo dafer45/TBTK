@@ -50,14 +50,14 @@ ArnoldiSolver::ArnoldiSolver(){
 	eigenVectors = NULL;
 
 	//SuperLU variables
-	hamiltonian = NULL;
+/*	hamiltonian = NULL;
 	rowPermutations = NULL;
 	colPermutations = NULL;
 	options = NULL;
 	stat = NULL;
 	vector = NULL;
 	lowerTriangular = NULL;
-	upperTriangular = NULL;
+	upperTriangular = NULL;*/
 }
 
 ArnoldiSolver::~ArnoldiSolver(){
@@ -70,7 +70,7 @@ ArnoldiSolver::~ArnoldiSolver(){
 		delete [] eigenVectors;
 
 	//Free SuperLU variables
-	if(hamiltonian != NULL)
+/*	if(hamiltonian != NULL)
 		Destroy_CompCol_Matrix(hamiltonian);
 	if(rowPermutations != NULL)
 		delete [] rowPermutations;
@@ -85,7 +85,7 @@ ArnoldiSolver::~ArnoldiSolver(){
 	if(lowerTriangular != NULL)
 		Destroy_SuperNode_Matrix(lowerTriangular);
 	if(upperTriangular != NULL)
-		Destroy_CompCol_Matrix(upperTriangular);
+		Destroy_CompCol_Matrix(upperTriangular);*/
 }
 
 //ARPACK function for performing single Arnoldi iteration step
@@ -412,6 +412,8 @@ void ArnoldiSolver::arnoldiLoopShiftAndInvert(){
 //		eigenVectors = new complex<double>[(numEigenValues+1)*model->getBasisSize()];
 	complex<double> *workev = new complex<double>[2*numLanczosVectors];
 
+	Matrix<complex<double>> b(basisSize, 1);
+
 	//Main loop ()
 	int counter = 0;
 	while(true){
@@ -455,6 +457,14 @@ void ArnoldiSolver::arnoldiLoopShiftAndInvert(){
 			//conversion between Fortran one based indices and c++
 			//zero based indices.
 			for(int n = 0; n < basisSize; n++)
+				b.at(n, 0) = workd[(ipntr[0] - 1) + n];
+
+			luSolver.solve(b);
+
+			for(int n = 0; n < basisSize; n++)
+				workd[(ipntr[1] - 1) + n] = b.at(n, 0);
+
+/*			for(int n = 0; n < basisSize; n++)
 				((complex<double>*)((DNformat*)vector->Store)->nzval)[n] = workd[(ipntr[0] - 1) + n];
 
 			trans_t transpose = NOTRANS;
@@ -470,7 +480,7 @@ void ArnoldiSolver::arnoldiLoopShiftAndInvert(){
 			);
 
 			for(int n = 0; n < basisSize; n++)
-				workd[(ipntr[1] - 1) + n] = ((complex<double>*)((DNformat*)vector->Store)->nzval)[n];
+				workd[(ipntr[1] - 1) + n] = ((complex<double>*)((DNformat*)vector->Store)->nzval)[n];*/
 
 			continue;
 		}
@@ -563,8 +573,34 @@ void ArnoldiSolver::initNormal(){
 }
 
 void ArnoldiSolver::initShiftAndInvert(){
-	//Get matrix representation on COO format
 	const Model &model = getModel();
+
+	SparseMatrix<complex<double>> matrix(
+		SparseMatrix<complex<double>>::StorageFormat::CSC
+	);
+
+	HoppingAmplitudeSet::Iterator it = getModel().getHoppingAmplitudeSet(
+	)->getIterator();
+	const HoppingAmplitude *ha;
+	while((ha = it.getHA())){
+		int from = model.getHoppingAmplitudeSet()->getBasisIndex(
+			ha->getFromIndex()
+		);
+		int to = model.getHoppingAmplitudeSet()->getBasisIndex(
+			ha->getToIndex()
+		);
+		matrix.add(to, from, ha->getAmplitude());
+
+		it.searchNextHA();
+	}
+	for(int n = 0; n < model.getBasisSize(); n++)
+		matrix.add(n, n, -shift);
+	matrix.constructCSX();
+
+	luSolver.setMatrix(matrix);
+
+	//Get matrix representation on COO format
+/*	const Model &model = getModel();
 	int basisSize = model.getBasisSize();
 	int numMatrixElements = model.getHoppingAmplitudeSet()->getNumMatrixElements();
 	const int *cooRowIndices = model.getHoppingAmplitudeSet()->getCOORowIndices();
@@ -667,10 +703,10 @@ void ArnoldiSolver::initShiftAndInvert(){
 	upperTriangular = new SuperMatrix();
 
 	//Perform LU factorization of the Hamiltonian
-	performLUFactorization();
+	performLUFactorization();*/
 }
 
-void ArnoldiSolver::performLUFactorization(){
+/*void ArnoldiSolver::performLUFactorization(){
 	//LU factorization performed in accordance with the procedure used in
 	//zgssv.c in SuperLU 5.2.1. See this file for further details.
 	int cPermSpec = options->ColPerm;
@@ -741,7 +777,7 @@ void ArnoldiSolver::performLUFactorization(){
 
 	delete [] etree;
 	Destroy_CompCol_Permuted(&hamiltonianCP);
-}
+}*/
 
 void ArnoldiSolver::sort(){
 	complex<double> *workspace = new complex<double>[numEigenValues];
