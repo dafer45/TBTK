@@ -48,12 +48,10 @@ public:
 	void setMatrix(const SparseMatrix<std::complex<double>> &sparseMatrix);
 
 	/** Solve. */
-	Matrix<double> solve(const Matrix<double> &b);
+	void solve(Matrix<double> &b);
 
 	/** Solve. */
-	Matrix<std::complex<double>> solve(
-		const Matrix<std::complex<double>> &b
-	);
+	void solve(Matrix<std::complex<double>> &b);
 private:
 	/** Pointer to lower triangular matrix. */
 	SuperMatrix *L;

@@ -353,9 +353,7 @@ void LUSolver::performLUFactorization(SuperMatrix &matrix){
 	Destroy_CompCol_Permuted(&matrixCP);
 }
 
-Matrix<double> LUSolver::solve(
-	const Matrix<double> &b
-){
+void LUSolver::solve(Matrix<double> &b){
 	unsigned int numRows = b.getNumRows();
 	unsigned int numColumns = b.getNumCols();
 	checkSolveAssert(numRows);
@@ -400,19 +398,14 @@ Matrix<double> LUSolver::solve(
 	checkXgstrsErrors(info, "dgstrs");
 
 	//Copy results to return value
-	Matrix<double> result(numRows, numColumns);
 	for(unsigned int row = 0; row < numRows; row++)
 		for(unsigned int col = 0; col < numColumns; col++)
-			result.at(row, col) = sluBValues[col*numRows + row];
+			b.at(row, col) = sluBValues[col*numRows + row];
 
 	Destroy_Dense_Matrix(&sluB);
-
-	return result;
 }
 
-Matrix<complex<double>> LUSolver::solve(
-	const Matrix<complex<double>> &b
-){
+void LUSolver::solve(Matrix<complex<double>> &b){
 	unsigned int numRows = b.getNumRows();
 	unsigned int numColumns = b.getNumCols();
 	checkSolveAssert(numRows);
@@ -483,10 +476,9 @@ Matrix<complex<double>> LUSolver::solve(
 		checkXgstrsErrors(info, "dgstrs");
 
 		//Copy results to return value
-		Matrix<complex<double>> result(numRows, numColumns);
 		for(unsigned int row = 0; row < numRows; row++){
 			for(unsigned int col = 0; col < numColumns; col++){
-				result.at(row, col) = complex<double>(
+				b.at(row, col) = complex<double>(
 					sluBValuesReal[col*numRows + row],
 					sluBValuesImag[col*numRows + row]
 				);
@@ -496,7 +488,7 @@ Matrix<complex<double>> LUSolver::solve(
 		Destroy_Dense_Matrix(&sluBReal);
 		Destroy_Dense_Matrix(&sluBImag);
 
-		return result;
+		break;
 	}
 	case SLU_Z:
 	{
@@ -536,10 +528,9 @@ Matrix<complex<double>> LUSolver::solve(
 		checkXgstrsErrors(info, "zgstrs");
 
 		//Copy results to return value
-		Matrix<complex<double>> result(numRows, numColumns);
 		for(unsigned int row = 0; row < numRows; row++){
 			for(unsigned int col = 0; col < numColumns; col++){
-				result.at(row, col) = complex<double>(
+				b.at(row, col) = complex<double>(
 					sluBValues[col*numRows + row].r,
 					sluBValues[col*numRows + row].i
 				);
@@ -548,7 +539,7 @@ Matrix<complex<double>> LUSolver::solve(
 
 		Destroy_Dense_Matrix(&sluB);
 
-		return result;
+		break;
 	}
 	default:
 		TBTKExit(
