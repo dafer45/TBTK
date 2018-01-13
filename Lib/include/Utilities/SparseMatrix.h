@@ -751,6 +751,7 @@ inline std::vector<
 
 	switch(storageFormat){
 	case StorageFormat::CSR:
+		listOfLists.reserve(numRows);
 		for(unsigned int row = 0; row < numRows; row++){
 			listOfLists.push_back(
 				std::vector<std::tuple<unsigned int, DataType>>()
@@ -766,6 +767,7 @@ inline std::vector<
 		}
 		break;
 	case StorageFormat::CSC:
+		listOfLists.reserve(numCols);
 		for(unsigned int col = 0; col < numCols; col++){
 			listOfLists.push_back(
 				std::vector<std::tuple<unsigned int, DataType>>()
