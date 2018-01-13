@@ -111,12 +111,6 @@ extern "C" void zneupd_(
 
 void ArnoldiSolver::run(){
 	Streams::out << "Running ArnoldiSolver.\n";
-/*	TBTKAssert(
-		getModel() != NULL,
-		"ArnoldiSolver::run()",
-		"No model set.",
-		"Use ArnoldSolver::setModel() to set model."
-	);*/
 
 	switch(mode){
 	case Mode::Normal:
@@ -203,12 +197,10 @@ void ArnoldiSolver::arnoldiLoop(){
 	complex<double> *workd = new complex<double>[3*basisSize];
 	complex<double> *workl = new complex<double>[worklSize];
 	double *rwork = new double[basisSize];
-//	int *select = new int[numEigenValues];	//Need to be allocated, but not initialized as long as howMany = 'A' in call to zneupd_
 	int *select = new int[numLanczosVectors];	//Need to be allocated, but not initialized as long as howMany = 'A' in call to zneupd_
 	eigenValues = new complex<double>[numEigenValues];
 	if(calculateEigenVectors)
 		eigenVectors = new complex<double>[numEigenValues*model.getBasisSize()];
-//		eigenVectors = new complex<double>[(numEigenValues+1)*model->getBasisSize()];
 	complex<double> *workev = new complex<double>[2*numLanczosVectors];
 
 	//Only used in Mode::ShiftAndInvert.
