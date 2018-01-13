@@ -35,6 +35,11 @@ namespace TBTK{
 
 class LUSolver : public Communicator{
 public:
+	/** Enum class for specifying the data type of the matrix. Used since
+	 *  complex matrices that are purely real are converted to double type
+	 *  for optimization. */
+	enum class DataType {None, Double, ComplexDouble};
+
 	/** Constructor */
 	LUSolver();
 
@@ -46,6 +51,9 @@ public:
 
 	/** Set matrix. */
 	void setMatrix(const SparseMatrix<std::complex<double>> &sparseMatrix);
+
+	/** Get matrix data type. */
+	DataType getMatrixDataType() const;
 
 	/** Solve. */
 	void solve(Matrix<double> &b);
@@ -67,6 +75,9 @@ private:
 
 	/** SuperLU statistics. */
 	SuperLUStat_t *statistics;
+
+	/** Get matrix data type. */
+	DataType matrixDataType;
 
 	/** Allocate permutation matrices. */
 	void allocatePermutationMatrices(
@@ -102,6 +113,10 @@ private:
 	/** Check for Xgstrs errors. */
 	void checkXgstrsErrors(int info, std::string functionName);
 };
+
+inline LUSolver::DataType LUSolver::getMatrixDataType() const{
+	return matrixDataType;
+}
 
 };	//End of namespace TBTK
 

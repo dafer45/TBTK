@@ -302,6 +302,8 @@ void LUSolver::performLUFactorization(SuperMatrix &matrix){
 	int info;
 	switch(matrixCP.Dtype){
 	case SLU_D:
+		matrixDataType = DataType::Double;
+
 		dgstrf(
 			&options,
 			&matrixCP,
@@ -322,6 +324,8 @@ void LUSolver::performLUFactorization(SuperMatrix &matrix){
 
 		break;
 	case SLU_Z:
+		matrixDataType = DataType::ComplexDouble;
+
 		zgstrf(
 			&options,
 			&matrixCP,
@@ -359,7 +363,8 @@ void LUSolver::solve(Matrix<double> &b){
 	checkSolveAssert(numRows);
 
 	TBTKAssert(
-		U->Dtype == SLU_D,
+		matrixDataType == DataType::Double,
+//		U->Dtype == SLU_D,
 		"LUSolver::solve()",
 		"The matrix is complex, therefore 'b' must be complex.",
 		""
@@ -410,8 +415,10 @@ void LUSolver::solve(Matrix<complex<double>> &b){
 	unsigned int numColumns = b.getNumCols();
 	checkSolveAssert(numRows);
 
-	switch(U->Dtype){
-	case SLU_D:
+//	switch(U->Dtype){
+//	case SLU_D:
+	switch(matrixDataType){
+	case DataType::Double:
 	{
 		//Setup right hand side on SuperLU format.
 		double *sluBValuesReal = new double[numRows*numColumns];
@@ -503,7 +510,8 @@ void LUSolver::solve(Matrix<complex<double>> &b){
 
 		break;
 	}
-	case SLU_Z:
+//	case SLU_Z:
+	case DataType::ComplexDouble:
 	{
 		//Setup right hand side on SuperLU format.
 		doublecomplex *sluBValues = new doublecomplex[numRows*numColumns];
