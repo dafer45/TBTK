@@ -186,81 +186,40 @@ void LUSolver::initStatistics(){
 	StatInit(statistics);
 }
 
-void LUSolver::performLUFactorization(SuperMatrix &matrix){
-	//Create upper and lower triangular matrices
+void LUSolver::allocateLUMatrices(){
 	if(L != nullptr)
 		Destroy_SuperNode_Matrix(L);
 	if(U != nullptr)
 		Destroy_SuperNode_Matrix(U);
 	L = new SuperMatrix();
 	U = new SuperMatrix();
+}
 
-	//Initialize SuperLU options.
-	superlu_options_t options;
-	set_default_options(&options);
-	options.ColPerm = COLAMD;
-
-	//LU factorization performed in accordance with the procedure used in
-	//zgssv.c in SuperLU 5.2.1. See this file for further details.
-	if(options.ColPerm != MY_PERMC && options.Fact == DOFACT)
-		get_perm_c(options.ColPerm, &matrix, columnPermutations);
-
-	int *etree = new int[matrix.ncol];
-
-	//Create new matrix resulting from post multiplication by the column
-	//permutation matrix, i.e. matrix*columnPermutations.
-	SuperMatrix matrixCP;
-	sp_preorder(
-		&options,
-		&matrix,
-		columnPermutations,
-		etree,
-		&matrixCP
-	);
-
-	//Query optimization parameters.
-	int panelSize = sp_ienv(1);
-	int relax = sp_ienv(2);
-
-	//Perform LU factorization.
-	int lwork = 0;
-	GlobalLU_t glu;
-	int info;
-	zgstrf(
-		&options,
-		&matrixCP,
-		relax,
-		panelSize,
-		etree,
-		nullptr,
-		lwork,
-		columnPermutations,
-		rowPermutations,
-		L,
-		U,
-		&glu,
-		statistics,
-		&info
-	);
-
-	//Error checking
+void LUSolver::checkXgstrfErrors(
+	int info,
+	string functionName,
+	int numColumns
+){
 	if(info != 0){
 		if(info < 0){
 			TBTKExit(
 				"LUSolver::performLUFactorization()",
-				"zgstrf() returned with info = " << info << ".",
+				functionName << "() returned with info = "
+				<< info << ".",
 				"Contact the developer, argument " << -info
-				<< " to zgstrf has an invalid value."
+				<< " to " << functionName << " has an invalid"
+				<< " value."
 			);
 		}
 		else{
-			if(info <= matrixCP.ncol){
+			if(info <= numColumns){
 				TBTKExit(
 					"LUSolver::performLUFactorization()",
 					"LU factorization is exactly singular."
 					<< " Element U(" << info << ", "
 					<< info << ") is zero.",
-					"Try adding a small perturbation to the matrix."
+					"Try adding a small perturbation to"
+					<< " the matrix."
 				);
 			}
 			else{
@@ -272,10 +231,145 @@ void LUSolver::performLUFactorization(SuperMatrix &matrix){
 			}
 		}
 	}
+}
+
+void LUSolver::initOptionsAndPermutationMatrices(
+	superlu_options_t &options,
+	SuperMatrix &matrix
+){
+	//Initialize options.
+	set_default_options(&options);
+	options.ColPerm = COLAMD;
+
+	//Calculate column permutations.
+	if(options.ColPerm != MY_PERMC && options.Fact == DOFACT)
+		get_perm_c(options.ColPerm, &matrix, columnPermutations);
+}
+
+//LU factorization performed in accordance with the procedure used in
+//zgssv.c in SuperLU 5.2.1. See this file for further details.
+void LUSolver::performLUFactorization(SuperMatrix &matrix){
+	allocateLUMatrices();
+
+	superlu_options_t options;
+	initOptionsAndPermutationMatrices(options, matrix);
+
+	int *etree = new int[matrix.ncol];
+
+	//Create new matrix resulting from post multiplication by the column
+	//permutation matrix, i.e. matrix*columnPermutations.
+	SuperMatrix matrixCP;
+	sp_preorder(&options, &matrix, columnPermutations, etree, &matrixCP);
+
+	//Query optimization parameters.
+	int panelSize = sp_ienv(1);
+	int relax = sp_ienv(2);
+
+	//Perform LU factorization.
+	int lwork = 0;
+	GlobalLU_t glu;
+	int info;
+	switch(matrixCP.Dtype){
+	case SLU_D:
+		dgstrf(
+			&options,
+			&matrixCP,
+			relax,
+			panelSize,
+			etree,
+			nullptr,
+			lwork,
+			columnPermutations,
+			rowPermutations,
+			L,
+			U,
+			&glu,
+			statistics,
+			&info
+		);
+		checkXgstrfErrors(info, "dgstrf", matrixCP.ncol);
+
+		break;
+	case SLU_Z:
+		zgstrf(
+			&options,
+			&matrixCP,
+			relax,
+			panelSize,
+			etree,
+			nullptr,
+			lwork,
+			columnPermutations,
+			rowPermutations,
+			L,
+			U,
+			&glu,
+			statistics,
+			&info
+		);
+		checkXgstrfErrors(info, "zgstrf", matrixCP.ncol);
+
+		break;
+	default:
+		TBTKExit(
+			"performLUFactorization()",
+			"Unsupported matrix format.",
+			"Contact the developer, this should never happen."
+		);
+	}
 
 	SUPERLU_FREE(etree);
-
 	Destroy_CompCol_Permuted(&matrixCP);
+}
+
+Matrix<double> LUSolver::solve(
+	const Matrix<double> &b
+){
+	unsigned int numRows = b.getNumRows();
+	unsigned int numColumns = b.getNumCols();
+	checkSolveAssert(numRows);
+
+	//Setup right hand side on SuperLU format.
+	double *sluBValues = new double[numRows*numColumns];
+	for(unsigned int row = 0; row < numRows; row++)
+		for(unsigned int col = 0; col < numColumns; col++)
+			sluBValues[col*numRows + row] = b.at(row, col);
+
+	SuperMatrix sluB;
+	dCreate_Dense_Matrix(
+		&sluB,
+		numRows,
+		numColumns,
+		sluBValues,
+		numRows,	//Leading dimension
+		SLU_DN,
+		SLU_D,
+		SLU_GE
+	);
+
+	//Solve
+	int info;
+	dgstrs(
+		NOTRANS,
+		L,
+		U,
+		columnPermutations,
+		rowPermutations,
+		&sluB,
+		statistics,
+		&info
+	);
+	checkZgstrsErrors(info);
+
+	//Copy results to return value
+	Matrix<double> result(numRows, numColumns);
+	for(unsigned int row = 0; row < numRows; row++)
+		for(unsigned int col = 0; col < numColumns; col++)
+			result.at(row, col) = sluBValues[col*numRows + row];
+
+	Destroy_Dense_Matrix(&sluB);
+
+	return result;
 }
 
 Matrix<complex<double>> LUSolver::solve(
@@ -285,6 +379,7 @@ Matrix<complex<double>> LUSolver::solve(
 	unsigned int numColumns = b.getNumCols();
 	checkSolveAssert(numRows);
 
+	//Setup right hand side on SuperLU format.
 	doublecomplex *sluBValues = new doublecomplex[numRows*numColumns];
 	for(unsigned int row = 0; row < numRows; row++){
 		for(unsigned int col = 0; col < numColumns; col++){

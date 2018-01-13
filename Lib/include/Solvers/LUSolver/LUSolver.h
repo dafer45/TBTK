@@ -48,6 +48,9 @@ public:
 	void setMatrix(const SparseMatrix<std::complex<double>> &sparseMatrix);
 
 	/** Solve. */
+	Matrix<double> solve(const Matrix<double> &b);
+
+	/** Solve. */
 	Matrix<std::complex<double>> solve(
 		const Matrix<std::complex<double>> &b
 	);
@@ -76,11 +79,27 @@ private:
 	/** Initialize statistics. */
 	void initStatistics();
 
+	/** Allocate LU matrices. */
+	void allocateLUMatrices();
+
+	/** Initialize SuperLU options and permutation matrices. */
+	void initOptionsAndPermutationMatrices(
+		superlu_options_t &options,
+		SuperMatrix &matrix
+	);
+
 	/** Perform LU factorization. */
 	void performLUFactorization(SuperMatrix &matrix);
 
 	/** Check assertments for solve(). */
 	void checkSolveAssert(unsigned int numRows);
+
+	/** Check for Xgstrf errors. */
+	void checkXgstrfErrors(
+		int info,
+		std::string functionName,
+		int numColumns
+	);
 
 	/** Check for zgstrs errors. */
 	void checkZgstrsErrors(int info);
