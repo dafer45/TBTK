@@ -121,11 +121,11 @@ void ArnoldiSolver::run(){
 	switch(mode){
 	case Mode::Normal:
 		initNormal();
-		arnoldiLoopNormal();
+		arnoldiLoop();
 		break;
 	case Mode::ShiftAndInvert:
 		initShiftAndInvert();
-		arnoldiLoopShiftAndInvert();
+		arnoldiLoop();
 		break;
 	default:
 		TBTKExit(
@@ -137,7 +137,7 @@ void ArnoldiSolver::run(){
 	sort();
 }
 
-void ArnoldiSolver::arnoldiLoopNormal(){
+/*void ArnoldiSolver::arnoldiLoopNormal(){
 	TBTKAssert(
 		numEigenValues > 0,
 		"ArnoldiSolver::arnoldiLoop()",
@@ -323,9 +323,9 @@ void ArnoldiSolver::arnoldiLoopNormal(){
 	delete [] rwork;
 	delete [] select;
 	delete [] workev;
-}
+}*/
 
-void ArnoldiSolver::arnoldiLoopShiftAndInvert(){
+void ArnoldiSolver::arnoldiLoop(){
 	TBTKAssert(
 		numEigenValues > 0,
 		"ArnoldiSolver::arnoldiLoop()",
@@ -354,7 +354,8 @@ void ArnoldiSolver::arnoldiLoopShiftAndInvert(){
 
 	//Reverse communication variable.
 	int ido = 0;
-	//info=0 indicates that a random vector is used to start the Arnoldi iteration
+	//info=0 indicates that a random vector is used to start the Arnoldi
+	//iteration.
 	int info = 0;
 
 	//Integer parameters used by ARPACK
@@ -363,8 +364,22 @@ void ArnoldiSolver::arnoldiLoopShiftAndInvert(){
 	iparam[0] = 1;
 	//Maximum number of Arnoldi iterations
 	iparam[2] = maxIterations;
-	//Use mode 3 of ZNAUPD	(shift and invert)
-	iparam[6] = 3;
+	switch(mode){
+	case Mode::Normal:
+		//Use mode 1 of ZNAUPD	(normal matrix multiplication)
+		iparam[6] = 1;
+		break;
+	case Mode::ShiftAndInvert:
+		//Use mode 3 of ZNAUPD	(shift and invert)
+		iparam[6] = 3;
+		break;
+	default:
+		TBTKExit(
+			"ArnoldiSolver::arnoldiLoop()",
+			"Unknown mode.",
+			"This should never happen, contact the developer."
+		);
+	}
 
 	//Integer "pointer" used by ARPACK to index into workd
 	int ipntr[14];
@@ -384,6 +399,7 @@ void ArnoldiSolver::arnoldiLoopShiftAndInvert(){
 //		eigenVectors = new complex<double>[(numEigenValues+1)*model->getBasisSize()];
 	complex<double> *workev = new complex<double>[2*numLanczosVectors];
 
+	//Only used in Mode::ShiftAndInvert.
 	Matrix<complex<double>> b(basisSize, 1);
 
 	//Main loop ()
@@ -424,17 +440,47 @@ void ArnoldiSolver::arnoldiLoopShiftAndInvert(){
 		);
 
 		if(ido == -1 || ido == 1){
-			//Solve x = (A - sigma*I)^{-1}b, where b =
-			//workd[ipntr[0]] and x = workd[ipntr[1]]. "-1" is for
-			//conversion between Fortran one based indices and c++
-			//zero based indices.
-			for(int n = 0; n < basisSize; n++)
-				b.at(n, 0) = workd[(ipntr[0] - 1) + n];
+			switch(mode){
+			case Mode::Normal:
+			{
+				//Perform matrix multiplcation y = Ax, where x =
+				//workd[ipntr[0]] and y = workd[ipntr[1]]. "-1" is for
+				//conversion between Fortran one based indices and c++
+				//zero based indices.
+				for(int n = 0; n < basisSize; n++)
+					workd[(ipntr[1] - 1) + n] = 0.;
 
-			luSolver.solve(b);
+				int numMatrixElements = model.getHoppingAmplitudeSet()->getNumMatrixElements();
+				const int *cooRowIndices = model.getHoppingAmplitudeSet()->getCOORowIndices();
+				const int *cooColIndices = model.getHoppingAmplitudeSet()->getCOOColIndices();
+				const complex<double> *cooValues = model.getHoppingAmplitudeSet()->getCOOValues();
+				for(int n = 0; n < numMatrixElements; n++)
+					workd[(ipntr[1] - 1) + cooRowIndices[n]] += cooValues[n]*workd[(ipntr[0] - 1) + cooColIndices[n]];
 
-			for(int n = 0; n < basisSize; n++)
-				workd[(ipntr[1] - 1) + n] = b.at(n, 0);
+				break;
+			}
+			case Mode::ShiftAndInvert:
+				//Solve x = (A - sigma*I)^{-1}b, where b =
+				//workd[ipntr[0]] and x = workd[ipntr[1]]. "-1"
+				//is for conversion between Fortran one based
+				//indices and c++ zero based indices.
+				for(int n = 0; n < basisSize; n++)
+					b.at(n, 0) = workd[(ipntr[0] - 1) + n];
+
+				luSolver.solve(b);
+
+				for(int n = 0; n < basisSize; n++)
+					workd[(ipntr[1] - 1) + n] = b.at(n, 0);
+
+				break;
+			default:
+				TBTKExit(
+					"ArnoldiSolver::arnoldiLoop()",
+					"Unknown mode.",
+					"This should never happen, contact the"
+					<< " developer."
+				);
+			}
 
 			continue;
 		}

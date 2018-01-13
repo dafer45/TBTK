@@ -147,11 +147,10 @@ private:
 
 	/** Run implicitly restarted Arnoldi loop using normal mode. (Arnoldi
 	 *  routine). */
-	void arnoldiLoopNormal();
+//	void arnoldiLoopNormal();
 
-	/** Run implicitly restarted Arnoldi loop using shift and invert mode.
-	 *  (Arnoldi routine). */
-	void arnoldiLoopShiftAndInvert();
+	/** Run implicitly restarted Arnoldi loop. */
+	void arnoldiLoop();
 
 	/** Sort eigen values and eigen vectors in accending order according to
 	 *  the real part of the eigen values. */
