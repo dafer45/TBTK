@@ -148,6 +148,18 @@ private:
 	/** Run implicitly restarted Arnoldi loop. */
 	void arnoldiLoop();
 
+	/** Check znaupd info for errors. */
+	void checkZnaupdInfo(int info) const;
+
+	/** Execute reverse communication message. */
+	bool executeReverseCommunicationMessage(
+		int ido,
+		int basisSize,
+		std::complex<double> *workd,
+		int *ipntr,
+		Matrix<std::complex<double>> &b
+	);
+
 	/** Sort eigen values and eigen vectors in accending order according to
 	 *  the real part of the eigen values. */
 	void sort();
