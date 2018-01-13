@@ -190,41 +190,94 @@ void ArnoldiSolver::arnoldiLoop(){
 	//Integer "pointer" used by ARPACK to index into workd
 	int ipntr[14];
 
-	//Allocate workspaces and output
-	int worklSize = 3*numLanczosVectors*numLanczosVectors + 5*numLanczosVectors;
-	residuals = new complex<double>[basisSize];
-	complex<double> *lanczosVectors = new complex<double>[basisSize*numLanczosVectors];
-	complex<double> *workd = new complex<double>[3*basisSize];
-	complex<double> *workl = new complex<double>[worklSize];
-	double *rwork = new double[basisSize];
-	int *select = new int[numLanczosVectors];	//Need to be allocated, but not initialized as long as howMany = 'A' in call to zneupd_
-	eigenValues = new complex<double>[numEigenValues];
-	if(calculateEigenVectors)
-		eigenVectors = new complex<double>[numEigenValues*model.getBasisSize()];
-	complex<double> *workev = new complex<double>[2*numLanczosVectors];
+	switch(1){
+	case 1:
+	{
+		//Allocate workspaces and output
+		int worklSize = 3*numLanczosVectors*numLanczosVectors + 5*numLanczosVectors;
+		residuals = new complex<double>[basisSize];
+		complex<double> *lanczosVectors = new complex<double>[basisSize*numLanczosVectors];
+		complex<double> *workd = new complex<double>[3*basisSize];
+		complex<double> *workl = new complex<double>[worklSize];
+		double *rwork = new double[basisSize];
+		int *select = new int[numLanczosVectors];	//Need to be allocated, but not initialized as long as howMany = 'A' in call to zneupd_
+		eigenValues = new complex<double>[numEigenValues];
+		if(calculateEigenVectors)
+			eigenVectors = new complex<double>[numEigenValues*model.getBasisSize()];
+		complex<double> *workev = new complex<double>[2*numLanczosVectors];
 
-	//Only used in Mode::ShiftAndInvert.
-	Matrix<complex<double>> b(basisSize, 1);
+		//Only used in Mode::ShiftAndInvert.
+		Matrix<complex<double>> b(basisSize, 1);
 
-	//Main loop ()
-	int counter = 0;
-	while(true){
-		Streams::out << "." << flush;
-		if(counter%10 == 9)
-			Streams::out << " ";
-		if(counter%50 == 49)
-			Streams::out << "\n";
+		//Main loop ()
+		int counter = 0;
+		while(true){
+			Streams::out << "." << flush;
+			if(counter%10 == 9)
+				Streams::out << " ";
+			if(counter%50 == 49)
+				Streams::out << "\n";
 
-		TBTKAssert(
-			counter++ <= maxIterations,
-			"ArnoldiSolver::arnoldiLoop()",
-			"Maximum number of iterations reached.",
-			""
-		);
+			TBTKAssert(
+				counter++ <= maxIterations,
+				"ArnoldiSolver::arnoldiLoop()",
+				"Maximum number of iterations reached.",
+				""
+			);
 
-		//Calculate one more Lanczos vector
-		znaupd_(
-			&ido,
+			//Calculate one more Lanczos vector
+			znaupd_(
+				&ido,
+				bmat,
+				&basisSize,
+				which,
+				&numEigenValues,
+				&tolerance,
+				residuals,
+				&numLanczosVectors,
+				lanczosVectors,
+				&basisSize,
+				iparam,
+				ipntr,
+				workd,
+				workl,
+				&worklSize,
+				rwork,
+				&info
+			);
+
+			checkZnaupdInfo(info);
+			if(
+				executeReverseCommunicationMessage(
+					ido,
+					basisSize,
+					workd,
+					ipntr,
+					b
+				)
+			){
+				break;
+			}
+		}
+		Streams::out << "\n";
+
+		//A = Compute numberOfEigenValues Ritz vectors
+		char howMany = 'A';
+		//Error message (Set to the same value as info
+		int ierr = info;
+		//Convert flag from bool to int
+		int calculateEigenVectorsBool = calculateEigenVectors;
+
+		//Extract eigenvalues and eigenvectors
+		zneupd_(
+			&calculateEigenVectorsBool,
+			&howMany,
+			select,
+			eigenValues,
+			eigenVectors,
+			&basisSize,
+			&sigma,
+			workev,
 			bmat,
 			&basisSize,
 			which,
@@ -240,73 +293,34 @@ void ArnoldiSolver::arnoldiLoop(){
 			workl,
 			&worklSize,
 			rwork,
-			&info
+			&ierr
 		);
+		checkZneupdIerr(ierr);
 
-		checkZnaupdInfo(info);
-		if(
-			executeReverseCommunicationMessage(
-				ido,
-				basisSize,
-				workd,
-				ipntr,
-				b
-			)
-		){
-			break;
-		}
+		//Calculate |Ax - lambda*x| here
+		//...
+
+		//Free memory
+		delete [] lanczosVectors;
+		delete [] workd;
+		delete [] workl;
+		delete [] rwork;
+		delete [] select;
+		delete [] workev;
+
+		break;
 	}
-	Streams::out << "\n";
-
-	//A = Compute numberOfEigenValues Ritz vectors
-	char howMany = 'A';
-	//Error message (Set to the same value as info
-	int ierr = info;
-	//Convert flag from bool to int
-	int calculateEigenVectorsBool = calculateEigenVectors;
-
-	//Extract eigenvalues and eigenvectors
-	zneupd_(
-		&calculateEigenVectorsBool,
-		&howMany,
-		select,
-		eigenValues,
-		eigenVectors,
-		&basisSize,
-		&sigma,
-		workev,
-		bmat,
-		&basisSize,
-		which,
-		&numEigenValues,
-		&tolerance,
-		residuals,
-		&numLanczosVectors,
-		lanczosVectors,
-		&basisSize,
-		iparam,
-		ipntr,
-		workd,
-		workl,
-		&worklSize,
-		rwork,
-		&ierr
-	);
-	checkZneupdIerr(ierr);
+	default:
+		TBTKExit(
+			"ArnoldiSolver::arnoldiLoop()",
+			"Unknown data type.",
+			"This should never happen, contact the developer."
+		);
+	}
 
 	double numAccurateEigenValues = iparam[4]; //With respect to tolerance
 	Streams::out << "\nNumber of accurately converged eigenvalues: "
 		<< numAccurateEigenValues << "\n";
-	//Calculate |Ax - lambda*x| here
-	//...
-
-	//Free memory
-	delete [] lanczosVectors;
-	delete [] workd;
-	delete [] workl;
-	delete [] rwork;
-	delete [] select;
-	delete [] workev;
 }
 
 void ArnoldiSolver::checkZnaupdInfo(int info) const{
