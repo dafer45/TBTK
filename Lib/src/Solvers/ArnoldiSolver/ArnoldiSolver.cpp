@@ -243,6 +243,54 @@ void ArnoldiSolver::arnoldiLoop(){
 			&info
 		);
 
+		if(info != 0){
+			if(info == 1){
+				TBTKExit(
+					"ArnoldiSolver::arnoldiLoop()",
+					"Maximum number of iterations"
+					<< " reached.",
+					""
+				);
+			}
+			else if(info == 3){
+				TBTKExit(
+					"ArnoldiSolver::arnoldiLoop()",
+					"No shifts could be applied during"
+					<< " implicit Arnoldi update.",
+					"Try increasing the number of Lanczos"
+					<< " vectors."
+				);
+			}
+			else if(info == -9999){
+				TBTKExit(
+					"ArnoldiSolver::arnoldiLoop()",
+					"Unable to build an Arnoldi"
+					<< " factorization.",
+					"Likely input error to znaupd, which"
+					<< " should never happen, contact the"
+					<< " developer."
+				);
+			}
+			else if(info < 0){
+				TBTKExit(
+					"ArnoldiSolver::arnoldiLoop()",
+					"Input parameter '" << -info << "' to"
+					<< " znaupd is invalid.",
+					"This should never happen, contact the"
+					<< " developer."
+				);
+			}
+			else{
+				TBTKExit(
+					"ArnoldiSolver::arnoldiLoop()",
+					"znaupd() exited with unknown error"
+					<< " info = " << info << "'.",
+					"This should never happen, contact the"
+					<< " developer."
+				);
+			}
+		}
+
 		if(ido == -1 || ido == 1){
 			switch(mode){
 			case Mode::Normal:
@@ -285,74 +333,89 @@ void ArnoldiSolver::arnoldiLoop(){
 					<< " developer."
 				);
 			}
-
-			continue;
 		}
-
-		TBTKAssert(
-			info >= 0,
-			"ArnoldiSolver::arnoldiLoop()",
-			"Error with _naupd, info = " << info << ".",
-			"Check the documentation in _naupd."
-		);
-
-		//A = Compute numberOfEigenValues Ritz vectors
-		char howMany = 'A';
-		//Error message
-		int ierr;
-		//Convert flag from bool to int
-		int calculateEigenVectorsBool = calculateEigenVectors;
-
-		//Extract eigenvalues and eigenvectors
-		zneupd_(
-			&calculateEigenVectorsBool,
-			&howMany,
-			select,
-			eigenValues,
-			eigenVectors,
-			&basisSize,
-			&sigma,
-			workev,
-			bmat,
-			&basisSize,
-			which,
-			&numEigenValues,
-			&tolerance,
-			residuals,
-			&numLanczosVectors,
-			lanczosVectors,
-			&basisSize,
-			iparam,
-			ipntr,
-			workd,
-			workl,
-			&worklSize,
-			rwork,
-			&ierr
-		);
-
-		if(ierr != 0){
-			Streams::err << "\nError with _neupd, info = " << ierr << ". Check the documentation of _neupd.";
-			exit(1);
-		}
-		else{
-			double numAccurateEigenValues = iparam[4];	//With respect to tolerance
-			Streams::out << "\nNumber of accurately converged eigenvalues: " << numAccurateEigenValues << "\n";
-			//Calculate |Ax - lambda*x| here
-			//...
-		}
-
-		break;
-
-		if(info == 1){
-			Streams::log << "Warning: Maximum number of iterations reached.\n";
+		else if(ido == 99){
 			break;
 		}
-		else if(info == 3){
-			Streams::log << "Warning: No shifts could be applied during implicit Arnoldi update. Try increasing numEigenValues.\n";
+		else{
+			TBTKExit(
+				"ArnoldiSolver::arnoldiLoop()",
+				"znaupd returned with ido = '" << ido << "',"
+				<< " which is not supported.",
+				"This should never happen, contact the"
+				<< " developer."
+			);
 		}
 	}
 	Streams::out << "\n";
+
+	//A = Compute numberOfEigenValues Ritz vectors
+	char howMany = 'A';
+	//Error message (Set to the same value as info
+	int ierr = info;
+	//Convert flag from bool to int
+	int calculateEigenVectorsBool = calculateEigenVectors;
+
+	//Extract eigenvalues and eigenvectors
+	zneupd_(
+		&calculateEigenVectorsBool,
+		&howMany,
+		select,
+		eigenValues,
+		eigenVectors,
+		&basisSize,
+		&sigma,
+		workev,
+		bmat,
+		&basisSize,
+		which,
+		&numEigenValues,
+		&tolerance,
+		residuals,
+		&numLanczosVectors,
+		lanczosVectors,
+		&basisSize,
+		iparam,
+		ipntr,
+		workd,
+		workl,
+		&worklSize,
+		rwork,
+		&ierr
+	);
+
+	if(ierr < 0){
+		TBTKExit(
+			"ArnoldiSolver::arnoldiLoop()",
+			"Input parameter '" << -info << "' to zneupd is"
+			<< " invalid.",
+			"This should never happen, contact the developer."
+		);
+	}
+	else if(ierr != 0){
+		TBTKExit(
+			"ArnoldiSolver::arnoldiLoop()",
+			"zneupd() exited with error ierr = " << ierr
+			<< ". Unknown error ().",
+			"This should never happen, contact the developer."
+		);
+		//The documentation for zneupd() says the following in case
+		//ierr = 1:
+		//
+		//The Schur form computed by LAPACK routine csheqr could not be
+		//reordered by LAPACK routine ztrsen. Re-enter subroutine
+		//ZNEUPD with IPARAM(5)=NCV and increase the size of the array
+		//D to have dimension at least dimension NCV and allocate at
+		//least NCV columns for Z. NOTE: Not necessary if Z and V share
+		//the same space. Please notify the authors if this error
+		//occurs.
+	}
+
+	double numAccurateEigenValues = iparam[4]; //With respect to tolerance
+	Streams::out << "\nNumber of accurately converged eigenvalues: "
+		<< numAccurateEigenValues << "\n";
+	//Calculate |Ax - lambda*x| here
+	//...
 
 	//Free memory
 	delete [] lanczosVectors;
