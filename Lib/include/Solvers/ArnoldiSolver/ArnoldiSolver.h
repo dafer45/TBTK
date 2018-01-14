@@ -155,6 +155,15 @@ private:
 	bool executeReverseCommunicationMessage(
 		int ido,
 		int basisSize,
+		double *workd,
+		int *ipntr,
+		Matrix<double> &b
+	);
+
+	/** Execute reverse communication message. */
+	bool executeReverseCommunicationMessage(
+		int ido,
+		int basisSize,
 		std::complex<double> *workd,
 		int *ipntr,
 		Matrix<std::complex<double>> &b
