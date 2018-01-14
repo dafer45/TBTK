@@ -283,8 +283,8 @@ void PlotCanvas::drawColorBox(){
 			double value = minColor + (maxColor - minColor)*(maxY - y)/(maxY - minY);
 
 			canvas.at<Vec3b>(y, x)[0] = 255;
-			canvas.at<Vec3b>(y, x)[1] = (255 - 255*(value - minColor)/(maxColor + minColor));
-			canvas.at<Vec3b>(y, x)[2] = (255 - 255*(value - minColor)/(maxColor + minColor));
+			canvas.at<Vec3b>(y, x)[1] = (255 - 255*(value - minColor)/(maxColor - minColor));
+			canvas.at<Vec3b>(y, x)[2] = (255 - 255*(value - minColor)/(maxColor - minColor));
 		}
 	}
 }
