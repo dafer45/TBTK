@@ -190,13 +190,20 @@ inline void PlotCanvas::setBoundsX(
 	double maxX
 ){
 	TBTKAssert(
-		minX < maxX,
+		minX <= maxX,
 		"Canvas::setBoundsX()",
 		"minX has to be smaller than maxX.",
 		""
 	);
-	this->minX = minX;
-	this->maxX = maxX;
+
+	if(mixX == maxX){
+		this->minX = minX - 1e-10;
+		this->maxX = maxX + 1e-10;
+	}
+	else{
+		this->minX = minX;
+		this->maxX = maxX;
+	}
 }
 
 inline void PlotCanvas::setBoundsY(
@@ -204,13 +211,20 @@ inline void PlotCanvas::setBoundsY(
 	double maxY
 ){
 	TBTKAssert(
-		minY < maxY,
+		minY <= maxY,
 		"Canvas::setBoundsY()",
 		"minY has to be smaller than maxY.",
 		""
 	);
-	this->minY = minY;
-	this->maxY = maxY;
+
+	if(minY == maxY){
+		this->minY = minY - 1e-10;
+		this->maxY = maxY + 1e-10;
+	}
+	else{
+		this->minY = minY;
+		this->maxY = maxY;
+	}
 }
 
 inline void PlotCanvas::setBounds(
