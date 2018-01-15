@@ -196,7 +196,7 @@ inline void PlotCanvas::setBoundsX(
 		""
 	);
 
-	if(mixX == maxX){
+	if(minX == maxX){
 		this->minX = minX - 1e-10;
 		this->maxX = maxX + 1e-10;
 	}
