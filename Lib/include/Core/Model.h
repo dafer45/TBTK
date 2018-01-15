@@ -23,9 +23,12 @@
 #ifndef COM_DAFER45_TBTK_MODEL
 #define COM_DAFER45_TBTK_MODEL
 
+#include "AbstractHoppingAmplitudeFilter.h"
+#include "AbstractIndexFilter.h"
 #include "Communicator.h"
 #include "Geometry.h"
 #include "HoppingAmplitudeSet.h"
+#include "IndexBasedHoppingAmplitudeFilter.h"
 #include "SingleParticleContext.h"
 #include "ManyBodyContext.h"
 #include "Serializeable.h"
@@ -143,7 +146,17 @@ public:
 	/** Get ManyBodyContext. */
 	ManyBodyContext* getManyBodyContext();
 
-	void saveEV(std::string path = "./", std::string filename = "EV.dat");
+	/** Set HoppingAmplitude filter. */
+	void setFilter(
+		const AbstractHoppingAmplitudeFilter &hoppingAmplitudeFilter
+	);
+
+	/** Set Index filter. */
+	void setFilter(
+		const AbstractIndexFilter &indexFilter
+	);
+
+//	void saveEV(std::string path = "./", std::string filename = "EV.dat");
 
 	/** Operator<<. */
 	Model& operator<<(const HoppingAmplitude& hoppingAmplitude);
@@ -168,6 +181,9 @@ private:
 
 	/** Many-body context. */
 	ManyBodyContext *manyBodyContext;
+
+	/** Hopping amplitude filter. */
+	AbstractHoppingAmplitudeFilter *hoppingAmplitudeFilter;
 
 	/** FileReader is a friend class to allow it to write Model data. */
 	friend class FileReader;
@@ -259,15 +275,60 @@ inline ManyBodyContext* Model::getManyBodyContext(){
 	return manyBodyContext;
 }
 
+inline void Model::setFilter(
+	const AbstractHoppingAmplitudeFilter &hoppingAmplitudeFilter
+){
+	if(this->hoppingAmplitudeFilter != nullptr)
+		delete this->hoppingAmplitudeFilter;
+
+	this->hoppingAmplitudeFilter = hoppingAmplitudeFilter.clone();
+}
+
+inline void Model::setFilter(
+	const AbstractIndexFilter &indexFilter
+){
+	if(this->hoppingAmplitudeFilter != nullptr)
+		delete this->hoppingAmplitudeFilter;
+
+	this->hoppingAmplitudeFilter = new IndexBasedHoppingAmplitudeFilter(
+		indexFilter
+	);
+}
+
 inline Model& Model::operator<<(const HoppingAmplitude &hoppingAmplitude){
-	addHoppingAmplitude(hoppingAmplitude);
+	if(
+		hoppingAmplitudeFilter == nullptr
+		|| hoppingAmplitudeFilter->isIncluded(hoppingAmplitude)
+	){
+		addHoppingAmplitude(hoppingAmplitude);
+	}
 
 	return *this;
 }
 
 inline Model& Model::operator<<(const std::tuple<HoppingAmplitude, HoppingAmplitude> &hoppingAmplitudes){
-	addHoppingAmplitude(std::get<0>(hoppingAmplitudes));
-	addHoppingAmplitude(std::get<1>(hoppingAmplitudes));
+	if(
+		hoppingAmplitudeFilter == nullptr
+	){
+		addHoppingAmplitude(std::get<0>(hoppingAmplitudes));
+		addHoppingAmplitude(std::get<1>(hoppingAmplitudes));
+	}
+	else{
+		if(
+			hoppingAmplitudeFilter->isIncluded(
+				std::get<0>(hoppingAmplitudes)
+			)
+		){
+			addHoppingAmplitude(std::get<0>(hoppingAmplitudes));
+		}
+		if(
+			hoppingAmplitudeFilter->isIncluded(
+				std::get<1>(hoppingAmplitudes)
+			)
+		){
+			addHoppingAmplitude(std::get<1>(hoppingAmplitudes));
+		}
+	}
 
 	return *this;
 }

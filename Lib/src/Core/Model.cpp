@@ -18,6 +18,7 @@
  *  @author Kristofer Björnson
  */
 
+#include "AbstractHoppingAmplitudeFilter.h"
 #include "Geometry.h"
 #include "Model.h"
 #include "Streams.h"
@@ -40,6 +41,7 @@ Model::Model() : Communicator(true){
 
 	singleParticleContext = new SingleParticleContext();
 	manyBodyContext = NULL;
+	hoppingAmplitudeFilter = nullptr;
 }
 
 Model::Model(const Model &model) : Communicator(model){
@@ -57,6 +59,11 @@ Model::Model(const Model &model) : Communicator(model){
 			*model.manyBodyContext
 		);
 	}
+
+	if(model.hoppingAmplitudeFilter == nullptr)
+		hoppingAmplitudeFilter = nullptr;
+	else
+		hoppingAmplitudeFilter = model.hoppingAmplitudeFilter->clone();
 }
 
 Model::Model(Model &&model) : Communicator(std::move(model)){
@@ -67,6 +74,9 @@ Model::Model(Model &&model) : Communicator(std::move(model)){
 	model.singleParticleContext = nullptr;
 	manyBodyContext = model.manyBodyContext;
 	model.manyBodyContext = nullptr;
+
+	hoppingAmplitudeFilter = model.hoppingAmplitudeFilter;
+	model.hoppingAmplitudeFilter = nullptr;
 }
 
 Model::Model(const string &serialization, Mode mode) : Communicator(true){
@@ -93,6 +103,8 @@ Model::Model(const string &serialization, Mode mode) : Communicator(true){
 
 		manyBodyContext = nullptr;
 
+		hoppingAmplitudeFilter = nullptr;
+
 		break;
 	}
 	case Mode::JSON:
@@ -109,6 +121,8 @@ Model::Model(const string &serialization, Mode mode) : Communicator(true){
 			);
 
 			manyBodyContext = nullptr;
+
+			hoppingAmplitudeFilter = nullptr;
 		}
 		catch(json::exception e){
 			TBTKExit(
@@ -135,6 +149,8 @@ Model::~Model(){
 		delete singleParticleContext;
 	if(manyBodyContext != nullptr)
 		delete manyBodyContext;
+	if(hoppingAmplitudeFilter != nullptr)
+		delete hoppingAmplitudeFilter;
 }
 
 Model& Model::operator=(const Model &rhs){
@@ -153,6 +169,14 @@ Model& Model::operator=(const Model &rhs){
 				*rhs.manyBodyContext
 			);
 		}
+
+		if(rhs.hoppingAmplitudeFilter == nullptr){
+			hoppingAmplitudeFilter = nullptr;
+		}
+		else{
+			hoppingAmplitudeFilter
+				= rhs.hoppingAmplitudeFilter->clone();
+		}
 	}
 
 	return *this;
@@ -167,6 +191,9 @@ Model& Model::operator=(Model &&rhs){
 		rhs.singleParticleContext = nullptr;
 		manyBodyContext = rhs.manyBodyContext;
 		rhs.manyBodyContext = nullptr;
+
+		hoppingAmplitudeFilter = rhs.hoppingAmplitudeFilter;
+		rhs.hoppingAmplitudeFilter = nullptr;
 	}
 
 	return *this;
