@@ -15,7 +15,7 @@
 
 /** @package TBTKcalc
  *  @file AbstractHoppingAmplitudeFilter.h
- *  @brief Abstract HoppingAmplitude range.
+ *  @brief Abstract HoppingAmplitude filter.
  *
  *  @author Kristofer Björnson
  */
