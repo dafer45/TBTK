@@ -72,6 +72,27 @@ public:
 	 *  be calculated as SIZE_C*SIZE_B*a + SIZE_C*b + c. */
 	const DataType& operator[](unsigned int n) const;
 
+	/** Addition operator. */
+	Array operator+(const Array &rhs) const;
+
+	/** Subtraction operator. */
+	Array operator-(const Array &rhs) const;
+
+	/** Multiplication operator. */
+	Array operator*(const DataType &rhs) const;
+
+	/** Multiplication operator. */
+	friend Array operator*(const DataType &lhs, const Array &rhs){
+		Array<DataType> result(rhs.ranges);
+		for(unsigned int n = 0; n < rhs.size; n++)
+			result.data[n] = lhs*rhs.data[n];
+
+		return result;
+	}
+
+	/** Division operator. */
+	Array operator/(const DataType &rhs) const;
+
 	/** Get slice. */
 	Array<DataType> getSlice(const std::vector<int> &index) const;
 
@@ -94,6 +115,12 @@ private:
 		unsigned int subindex,
 		unsigned int offsetSlice,
 		unsigned int offsetOriginal
+	) const;
+
+	/** Checks wether the Array has the same ranges as a given Array. */
+	void assertCompatibleRanges(
+		const Array &array,
+		std::string functionName
 	) const;
 };
 
@@ -228,6 +255,54 @@ inline const DataType& Array<DataType>::operator[](unsigned int n) const{
 }
 
 template<typename DataType>
+inline Array<DataType> Array<DataType>::operator+(
+	const Array<DataType> &rhs
+) const{
+	assertCompatibleRanges(rhs, "operator+()");
+
+	Array<DataType> result(ranges);
+	for(unsigned int n = 0; n < size; n++)
+		result.data[n] = data[n] + rhs.data[n];
+
+	return result;
+}
+
+template<typename DataType>
+inline Array<DataType> Array<DataType>::operator-(
+	const Array<DataType> &rhs
+) const{
+	assertCompatibleRanges(rhs, "operator+()");
+
+	Array<DataType> result(ranges);
+	for(unsigned int n = 0; n < size; n++)
+		result.data[n] = data[n] - rhs.data[n];
+
+	return result;
+}
+
+template<typename DataType>
+inline Array<DataType> Array<DataType>::operator*(
+	const DataType &rhs
+) const{
+	Array<DataType> result(ranges);
+	for(unsigned int n = 0; n < size; n++)
+		result.data[n] = data[n]*rhs;
+
+	return result;
+}
+
+template<typename DataType>
+inline Array<DataType> Array<DataType>::operator/(
+	const DataType &rhs
+) const{
+	Array<DataType> result(ranges);
+	for(unsigned int n = 0; n < size; n++)
+		result.data[n] = data[n]/rhs;
+
+	return result;
+}
+
+template<typename DataType>
 Array<DataType> Array<DataType>::getSlice(const std::vector<int> &index) const{
 	TBTKAssert(
 		ranges.size() == index.size(),
@@ -316,6 +391,28 @@ void Array<DataType>::fillSlice(
 template<typename DataType>
 inline const std::vector<unsigned int>& Array<DataType>::getRanges() const{
 	return ranges;
+}
+
+template<typename DataType>
+inline void Array<DataType>::assertCompatibleRanges(
+	const Array<DataType> &array,
+	std::string functionName
+) const{
+	TBTKAssert(
+		ranges.size() == array.ranges.size(),
+		"Array::" + functionName,
+		"Incompatible ranges.",
+		"Left and right hand sides must have the same number of"
+		<< " dimensions."
+	);
+	for(unsigned int n = 0; n < ranges.size(); n++){
+		TBTKAssert(
+			ranges[n] == array.ranges[n],
+			"Array::" + functionName,
+			"Incompatible ranges.",
+			"Left and right hand sides must have the same ranges."
+		);
+	}
 }
 
 }; //End of namesapce TBTK
