@@ -34,6 +34,9 @@ template<typename DataType>
 class Array{
 public:
 	/** Constructor. */
+	Array();
+
+	/** Constructor. */
 	Array(const std::vector<unsigned int> &ranges);
 
 	/** Constructor. */
@@ -125,6 +128,12 @@ private:
 };
 
 template<typename DataType>
+Array<DataType>::Array(){
+	size = 0;
+	data = nullptr;
+}
+
+template<typename DataType>
 Array<DataType>::Array(const std::vector<unsigned int> &ranges){
 	this->ranges = ranges;
 	size = 1;
@@ -168,9 +177,14 @@ template<typename DataType>
 Array<DataType>::Array(const Array &array){
 	ranges = array.ranges;
 	size = array.size;
-	data = new DataType[size];
-	for(unsigned int n = 0; n < size; n++)
-		data[n] = array.data[n];
+	if(size != 0){
+		data = new DataType[size];
+		for(unsigned int n = 0; n < size; n++)
+			data[n] = array.data[n];
+	}
+	else{
+		data = nullptr;
+	}
 }
 
 template<typename DataType>
@@ -194,9 +208,14 @@ Array<DataType>& Array<DataType>::operator=(const Array &rhs){
 		size = rhs.size;
 		if(data != nullptr)
 			delete [] data;
-		data = new DataType[size];
-		for(unsigned int n = 0; n < size; n++)
-			data[n] = rhs.data[n];
+		if(size != 0){
+			data = new DataType[size];
+			for(unsigned int n = 0; n < size; n++)
+				data[n] = rhs.data[n];
+		}
+		else{
+			data = nullptr;
+		}
 	}
 
 	return *this;
