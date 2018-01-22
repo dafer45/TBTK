@@ -23,7 +23,9 @@
 #ifndef COM_DAFER45_TBTK_GPU_RESOURCE_MANAGER
 #define COM_DAFER45_TBTK_GPU_RESOURCE_MANAGER
 
-#include <omp.h>
+#ifndef __APPLE__
+#	include <omp.h>
+#endif
 
 namespace TBTK{
 
@@ -56,8 +58,10 @@ private:
 	/** Used to indicate busy devices. */
 	bool *busyDevices;
 
+#ifndef __APPLE__
 	/** Lock for busy device table operations. */
 	omp_lock_t busyDevicesLock;
+#endif
 
 	/** Create device table. */
 	void createDeviceTable();

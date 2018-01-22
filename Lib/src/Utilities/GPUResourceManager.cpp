@@ -28,7 +28,9 @@ namespace TBTK{
 GPUResourceManager::GPUResourceManager(){
 	numDevices = 0;
 	busyDevices = NULL;
+#ifndef __APPLE__
 	omp_init_lock(&busyDevicesLock);
+#endif
 
 	createDeviceTable();
 }
@@ -50,7 +52,9 @@ int GPUResourceManager::allocateDevice(){
 	int device = 0;
 	bool done = false;
 	while(!done){
+#ifndef __APPLE__
 		omp_set_lock(&busyDevicesLock);
+#endif
 		#pragma omp flush
 		{
 			for(int n = 0; n < numDevices; n++){
@@ -63,20 +67,26 @@ int GPUResourceManager::allocateDevice(){
 			}
 		}
 		#pragma omp flush
+#ifndef __APPLE__
 		omp_unset_lock(&busyDevicesLock);
+#endif
 	}
 
 	return device;
 }
 
 void GPUResourceManager::freeDevice(int device){
+#ifndef __APPLE__
 	omp_set_lock(&busyDevicesLock);
+#endif
 	#pragma omp flush
 	{
 		busyDevices[device] = false;
 	}
 	#pragma omp flush
+#ifndef __APPLE__
 	omp_unset_lock(&busyDevicesLock);
+#endif
 }
 
 };	//End of namespace TBTK

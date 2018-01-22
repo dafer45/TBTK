@@ -31,7 +31,15 @@ CC:= g++
 NVCC:= nvcc
 
 # Compiler flags
-CFLAGS:= -std=c++11 -Wall -fopenmp -O3
+ifeq ($(OS), Windows_NT)
+	CFLAGS:= -std=c++11 -Wall -fopenmp -O3
+else
+	ifeq ($(shell uname -s), Darwin)
+		CFLAGS:= -std=c++11 -Wall -O3
+	else
+		CFLAGS:= -std=c++11 -Wall -fopenmp -O3
+	endif
+endif
 
 # CUDA compiler flags
 NVCCFLAGS:= -D_FORCE_INLINES -std=c++11 --compiler-options "-fopenmp"

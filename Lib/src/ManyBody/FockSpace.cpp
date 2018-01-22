@@ -40,7 +40,7 @@ FockSpace<BitRegister>::FockSpace(
 		maxParticlesPerState = 1;
 		break;
 	case Statistics::BoseEinstein:
-		maxParticlesPerState = maxParticlesPerState;
+//		maxParticlesPerState = maxParticlesPerState;
 		break;
 	default:
 		TBTKExit(
@@ -143,7 +143,7 @@ FockSpace<ExtensiveBitRegister>::FockSpace(
 		maxParticlesPerState = 1;
 		break;
 	case Statistics::BoseEinstein:
-		maxParticlesPerState = maxParticlesPerState;
+//		maxParticlesPerState = maxParticlesPerState;
 		break;
 	default:
 		TBTKExit(
