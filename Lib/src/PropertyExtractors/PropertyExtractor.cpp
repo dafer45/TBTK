@@ -25,10 +25,6 @@ using namespace std;
 
 namespace TBTK{
 
-namespace{
-	complex<double> i(0,1);
-}
-
 PropertyExtractor::PropertyExtractor(
 ){
 	this->energyResolution = ENERGY_RESOLUTION;

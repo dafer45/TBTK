@@ -18,13 +18,13 @@
  *  @author Kristofer Björnson
  */
 
-using namespace std;
-
 #include "BandDiagramGenerator.h"
 #include "DiagonalizationSolver.h"
 #include "ParametrizedLine.h"
 #include "Timer.h"
 #include "VectorNd.h"
+
+using namespace std;
 
 namespace TBTK{
 

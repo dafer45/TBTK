@@ -26,10 +26,6 @@ using namespace std;
 
 namespace TBTK{
 
-namespace{
-	complex<double> i(0,1);
-}
-
 BPropertyExtractor::BPropertyExtractor(BlockDiagonalizationSolver &bSolver){
 	this->bSolver = &bSolver;
 }
