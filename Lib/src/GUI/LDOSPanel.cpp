@@ -29,6 +29,8 @@ using namespace std;
 
 namespace TBTK{
 
+using namespace Plot;
+
 const wxWindowID LDOSPanel::GAUSSIAN_SMOOTHING_ID = wxWindow::NewControlId();
 const wxWindowID LDOSPanel::MIN_ID = wxWindow::NewControlId();
 const wxWindowID LDOSPanel::MAX_ID = wxWindow::NewControlId();
