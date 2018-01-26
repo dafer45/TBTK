@@ -50,12 +50,12 @@ public:
 	/** Create slave SusceptibilityCalcuator. The slave reuses internal
 	 *  lookup tables used to speed up the calculations and should not be
 	 *  used after the generating master have been destructed. */
-//	SusceptibilityCalculator* createSlave();
+	SusceptibilityCalculator* createSlave();
 
 	/** Precompute susceptibilities. Will calculate the susceptibility for
 	 *  all values using a parallel algorithm. Can speed up calculations if
 	 *  most of the susceptibilities are needed. */
-//	void precompute(unsigned int numWorkers = 129);
+	void precompute(unsigned int numWorkers = 129);
 
 	const MomentumSpaceContext& getMomentumSpaceContext() const;
 
@@ -65,17 +65,17 @@ public:
 	void generateKPlusQLookupTable();
 
 	/** Calculation modes. */
-//	enum class Mode {Lindhard, Matsubara};
+	enum class Mode {Lindhard, Matsubara};
 
 	/** Enum class for indicating whether the energy is an arbitrary comlex
 	 *  number, or if it is restricted to the real or imaginary axis. */
 	enum class EnergyType {Real, Imaginary, Complex};
 
 	/** Set the mode used to calculate the susceptibility. */
-//	void setMode(Mode mode);
+	void setMode(Mode mode);
 
 	/** Get the mode used to calculate the susceptibility. */
-//	Mode getMode() const;
+	Mode getMode() const;
 
 	/** Set energy type. */
 	void setEnergyType(EnergyType energyType);
@@ -88,10 +88,6 @@ public:
 	void setEnergies(
 		const std::vector<std::complex<double>> &energies
 	);
-
-	/** Get the energies for which the susceptibility should be calculated.
-	 */
-	const std::vector<std::complex<double>>& getEnergies() const;
 
 	/** Set to true if the susceptibility energies can be assumed
 	 *  to be inversion symmetric in the complex plane.
@@ -121,7 +117,7 @@ public:
 	bool getSusceptibilityIsSafeFromPoles() const;
 
 	/** Set the number of summation energies to use in Mode::Matsubara. */
-//	void setNumSummationEnergies(unsigned int numSummationEnergies);
+	void setNumSummationEnergies(unsigned int numSummationEnergies);
 
 	/** Save susceptibilities. */
 	void saveSusceptibilities(const std::string &filename) const;
@@ -133,7 +129,7 @@ private:
 	IndexedDataTree<SerializeableVector<std::complex<double>>> susceptibilityTree;
 
 	/** Mode to use for calculating the susceptibility. */
-//	Mode mode;
+	Mode mode;
 
 	/** Energy type for the susceptibility. */
 	EnergyType energyType;
@@ -151,18 +147,18 @@ private:
 	bool susceptibilityIsSafeFromPoles;
 public:
 	/** Calculate the susceptibility. */
-	virtual std::complex<double> calculateSusceptibility(
+	std::complex<double> calculateSusceptibility(
 		const std::vector<double> &k,
 		const std::vector<int> &orbitalIndices,
-		std::complex<double> energy/*,
-		Mode mode*/
-	) = 0;
+		std::complex<double> energy,
+		Mode mode
+	);
 
 	/** Calculate the susceptibility. */
-	virtual std::vector<std::complex<double>> calculateSusceptibility(
+	std::vector<std::complex<double>> calculateSusceptibility(
 		const DualIndex &kDual,
 		const std::vector<int> &orbitalIndices
-	) = 0;
+	);
 
 	/** Calculate the susceptibility. */
 	std::vector<std::complex<double>> calculateSusceptibility(
@@ -177,34 +173,25 @@ private:
 	int *kPlusQLookupTable;
 
 	/** Fermi-Dirac distribution lookup table. */
-//	double *fermiDiracLookupTable;
+	double *fermiDiracLookupTable;
 
 	/** Green's function for use in Mode::Matsubara. */
-//	std::complex<double> *greensFunction;
+	std::complex<double> *greensFunction;
 
 	/** Summation energies. Used in Mode::Matsubara. */
-//	std::vector<std::complex<double>> summationEnergies;
+	std::vector<std::complex<double>> summationEnergies;
 
 	/** Flag indicating whether the SusceptibilityCalculator is a master.
 	 *  Masters owns resources shared between masters and slaves and is
 	 *  responsible for cleaning up. */
 	bool isMaster;
-protected:
+
 	/** Slave constructor. */
 	SusceptibilityCalculator(
 		const MomentumSpaceContext &momentumSpaceContext,
-		int *kPlusQLookupTable/*,
-		double *fermiDiracLookupTable*/
+		int *kPlusQLookupTable,
+		double *fermiDiracLookupTable
 	);
-
-	/** Returns true if the SusceptibilityCalculator is a master. */
-	bool getIsMaster() const;
-
-	/** Returns the k+q lookup table. */
-	int* getKPlusQLookupTable();
-
-	/** Returns the k+q lookup table. */
-	const int* getKPlusQLookupTable() const;
 
 	/** Get Susceptibility result Index. */
 	Index getSusceptibilityResultIndex(
@@ -212,36 +199,33 @@ protected:
 		const std::vector<int> &orbitalIndices
 	) const;
 
-	/** Get susceptibility tree. */
-	const IndexedDataTree<SerializeableVector<std::complex<double>>>& getSusceptibilityTree() const;
-
 	/** Calculate the susceptibility using the Lindhard function. */
-/*	std::complex<double> calculateSusceptibilityLindhard(
+	std::complex<double> calculateSusceptibilityLindhard(
 		const std::vector<double> &k,
 		const std::vector<int> &orbitalIndices,
 		std::complex<double> energy
-	);*/
+	);
 
 	/** Calculate the susceptibility using the Lindhard function. */
-/*	template<bool useKPlusQLookupTable, bool isSafeFromPoles>
+	template<bool useKPlusQLookupTable, bool isSafeFromPoles>
 	std::vector<std::complex<double>> calculateSusceptibilityLindhard(
 		const DualIndex &kDual,
 		const std::vector<int> &orbitalIndices
-	);*/
+	);
 
 	/** Calculate the susceptibility using the Matsubara sum. */
-/*	std::complex<double> calculateSusceptibilityMatsubara(
+	std::complex<double> calculateSusceptibilityMatsubara(
 		const std::vector<double> &k,
 		const std::vector<int> &orbitalIndices,
 		std::complex<double> energy
-	);*/
+	);
 
 	/** Calculate the susceptibility using the Matsubara sum. */
-/*	template<bool useKPlusQLookupTable>
+	template<bool useKPlusQLookupTable>
 	std::vector<std::complex<double>> calculateSusceptibilityMatsubara(
 		const DualIndex &kDual,
 		const std::vector<int> &orbitalIndices
-	);*/
+	);
 
 	/** Returns the linear index for k+q. */
 	template<bool useKPlusQLookupTable>
@@ -253,18 +237,18 @@ protected:
 
 	/** Get polt times two Fermi functions for use in the Linhard
 	 *  function. */
-/*	std::complex<double> getPoleTimesTwoFermi(
+	std::complex<double> getPoleTimesTwoFermi(
 		std::complex<double> energy,
 		double e2,
 		double e1,
 		double chemicalPotential,
 		double temperature,
 		int kPlusQLinearIndex,
-c		unsigned int meshPoint,
+		unsigned int meshPoint,
 		unsigned int state2,
 		unsigned int state1,
 		unsigned int numOrbitals
-	) const;*/
+	) const;
 
 	/** Cache susceptibility. */
 	void cacheSusceptibility(
@@ -276,17 +260,17 @@ c		unsigned int meshPoint,
 	);
 
 	/** Calculate Green's function. */
-//	void calculateGreensFunction();
+	void calculateGreensFunction();
 
 	/** Get greensFunctionValue. */
-/*	std::complex<double>& getGreensFunctionValue(
+	std::complex<double>& getGreensFunctionValue(
 		unsigned int meshPoint,
 		unsigned int orbital0,
 		unsigned int orbital1,
 		unsigned int energy,
 		unsigned int numEnergies,
 		unsigned int numOrbitals
-	);*/
+	);
 };
 
 inline const MomentumSpaceContext& SusceptibilityCalculator::getMomentumSpaceContext(
@@ -309,7 +293,7 @@ inline Index SusceptibilityCalculator::getSusceptibilityResultIndex(
 	);
 }
 
-/*inline void SusceptibilityCalculator::setMode(
+inline void SusceptibilityCalculator::setMode(
 	Mode mode
 ){
 	this->mode = mode;
@@ -318,7 +302,7 @@ inline Index SusceptibilityCalculator::getSusceptibilityResultIndex(
 inline SusceptibilityCalculator::Mode SusceptibilityCalculator::getMode(
 ) const{
 	return mode;
-}*/
+}
 
 inline void SusceptibilityCalculator::setEnergyType(
 	EnergyType energyType
@@ -336,14 +320,10 @@ inline void SusceptibilityCalculator::setEnergies(
 ){
 	this->energies = energies;
 	susceptibilityTree.clear();
-/*	if(greensFunction != nullptr){
+	if(greensFunction != nullptr){
 		delete [] greensFunction;
 		greensFunction = nullptr;
-	}*/
-}
-
-inline const std::vector<std::complex<double>>& SusceptibilityCalculator::getEnergies() const{
-	return energies;
+	}
 }
 
 inline void SusceptibilityCalculator::setEnergiesAreInversionSymmetric(
@@ -367,7 +347,7 @@ inline bool SusceptibilityCalculator::getSusceptibilityIsSafeFromPoles() const{
 	return susceptibilityIsSafeFromPoles;
 }
 
-/*inline void SusceptibilityCalculator::setNumSummationEnergies(
+inline void SusceptibilityCalculator::setNumSummationEnergies(
 	unsigned int numSummationEnergies
 ){
 	TBTKAssert(
@@ -395,7 +375,7 @@ inline bool SusceptibilityCalculator::getSusceptibilityIsSafeFromPoles() const{
 		delete [] greensFunction;
 		greensFunction = nullptr;
 	}
-}*/
+}
 
 inline void SusceptibilityCalculator::saveSusceptibilities(
 	const std::string &filename
@@ -431,7 +411,7 @@ inline std::vector<std::complex<double>> SusceptibilityCalculator::calculateSusc
 	);
 }
 
-/*inline std::complex<double>& SusceptibilityCalculator::getGreensFunctionValue(
+inline std::complex<double>& SusceptibilityCalculator::getGreensFunctionValue(
 	unsigned int meshPoint,
 	unsigned int orbital0,
 	unsigned int orbital1,
@@ -445,22 +425,6 @@ inline std::vector<std::complex<double>> SusceptibilityCalculator::calculateSusc
 			+ orbital1
 		) + energy
 	];
-}*/
-
-inline bool SusceptibilityCalculator::getIsMaster() const{
-	return isMaster;
-}
-
-inline int* SusceptibilityCalculator::getKPlusQLookupTable(){
-	return kPlusQLookupTable;
-}
-
-inline const int* SusceptibilityCalculator::getKPlusQLookupTable() const{
-	return kPlusQLookupTable;
-}
-
-inline const IndexedDataTree<SerializeableVector<std::complex<double>>>& SusceptibilityCalculator::getSusceptibilityTree() const{
-	return susceptibilityTree;
 }
 
 };	//End of namespace TBTK

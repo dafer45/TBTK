@@ -19,7 +19,7 @@
  */
 
 #include "Functions.h"
-#include "RPA/SusceptibilityCalculator.h"
+#include "RPA/LindhardSusceptibilityCalculator.h"
 #include "UnitHandler.h"
 
 #include <complex>
@@ -31,20 +31,22 @@ const complex<double> i(0, 1);
 
 namespace TBTK{
 
-SusceptibilityCalculator::SusceptibilityCalculator(
+LindhardSusceptibilityCalculator::LindhardSusceptibilityCalculator(
 	const MomentumSpaceContext &momentumSpaceContext
-){
-	this->momentumSpaceContext = &momentumSpaceContext;
+) :
+	SusceptibilityCalculator(momentumSpaceContext)
+{
+//	this->momentumSpaceContext = &momentumSpaceContext;
 
 //	mode = Mode::Lindhard;
-	energyType = EnergyType::Complex;
-	energiesAreInversionSymmetric = false;
-	susceptibilityIsSafeFromPoles = false;
+//	energyType = EnergyType::Complex;
+//	energiesAreInversionSymmetric = false;
+//	susceptibilityIsSafeFromPoles = false;
 
-	kPlusQLookupTable = nullptr;
-	generateKPlusQLookupTable();
+//	kPlusQLookupTable = nullptr;
+//	generateKPlusQLookupTable();
 
-/*	const Model& model = momentumSpaceContext.getModel();
+	const Model& model = momentumSpaceContext.getModel();
 	fermiDiracLookupTable = new double[model.getBasisSize()];
 	for(int n = 0; n < model.getBasisSize(); n++){
 		fermiDiracLookupTable[n] = Functions::fermiDiracDistribution(
@@ -52,71 +54,76 @@ SusceptibilityCalculator::SusceptibilityCalculator(
 			model.getChemicalPotential(),
 			model.getTemperature()
 		);
-	}*/
+	}
 
 //	greensFunction = nullptr;
 
-	isMaster = true;
+//	isMaster = true;
 }
 
-SusceptibilityCalculator::SusceptibilityCalculator(
+LindhardSusceptibilityCalculator::LindhardSusceptibilityCalculator(
 	const MomentumSpaceContext &momentumSpaceContext,
-	int *kPlusQLookupTable/*,
-	double *fermiDiracLookupTable*/
-){
-	this->momentumSpaceContext = &momentumSpaceContext;
+	int *kPlusQLookupTable,
+	double *fermiDiracLookupTable
+) :
+	SusceptibilityCalculator(momentumSpaceContext, kPlusQLookupTable)
+{
+//	this->momentumSpaceContext = &momentumSpaceContext;
 
 //	mode = Mode::Lindhard;
-	energyType = EnergyType::Complex;
-	energiesAreInversionSymmetric = false;
-	susceptibilityIsSafeFromPoles = false;
+//	energyType = EnergyType::Complex;
+//	energiesAreInversionSymmetric = false;
+//	susceptibilityIsSafeFromPoles = false;
 
-	this->kPlusQLookupTable = kPlusQLookupTable;
+//	this->kPlusQLookupTable = kPlusQLookupTable;
 
-//	this->fermiDiracLookupTable = fermiDiracLookupTable;
+	this->fermiDiracLookupTable = fermiDiracLookupTable;
 
 //	greensFunction = nullptr;
 
-	isMaster = false;
+//	isMaster = false;
 }
 
-SusceptibilityCalculator::~SusceptibilityCalculator(){
-	if(isMaster && kPlusQLookupTable != nullptr)
-		delete [] kPlusQLookupTable;
-/*	if(isMaster && fermiDiracLookupTable != nullptr)
+LindhardSusceptibilityCalculator::~LindhardSusceptibilityCalculator(){
+/*	if(isMaster && kPlusQLookupTable != nullptr)
+		delete [] kPlusQLookupTable;*/
+	if(getIsMaster() && fermiDiracLookupTable != nullptr)
 		delete [] fermiDiracLookupTable;
-	if(greensFunction != nullptr)
+/*	if(greensFunction != nullptr)
 		delete [] greensFunction;*/
 }
 
-/*SusceptibilityCalculator* SusceptibilityCalculator::createSlave(){
-	return new SusceptibilityCalculator(
-		*momentumSpaceContext,
-		kPlusQLookupTable,
+LindhardSusceptibilityCalculator* LindhardSusceptibilityCalculator::createSlave(){
+	return new LindhardSusceptibilityCalculator(
+		getMomentumSpaceContext(),
+		getKPlusQLookupTable(),
 		fermiDiracLookupTable
 	);
-}*/
+}
 
-/*void SusceptibilityCalculator::precompute(unsigned int numWorkers){
-	Timer::tick("1");
-	const vector<vector<double>> &mesh = momentumSpaceContext->getMesh();
-	unsigned int numOrbitals = momentumSpaceContext->getNumOrbitals();
+void LindhardSusceptibilityCalculator::precompute(unsigned int numWorkers){
+	TBTKNotYetImplemented("LindhardSusceptibilityCalculator::precompute()");
+/*	Timer::tick("1");
+	const MomentumSpaceContext &momentumSpaceContext = getMomentumSpaceContext();
+	const vector<vector<double>> &mesh = momentumSpaceContext.getMesh();
+	unsigned int numOrbitals = momentumSpaceContext.getNumOrbitals();
 
 	vector<SusceptibilityCalculator*> susceptibilityCalculators;
 	for(unsigned int n = 0; n < numWorkers; n++){
 		susceptibilityCalculators.push_back(
-			new SusceptibilityCalculator(
-				*momentumSpaceContext
+			new LindhardSusceptibilityCalculator(
+				momentumSpaceContext
 			)
+//			this->createSlave()
 		);
 		susceptibilityCalculators[n]->setEnergies(
-			energies
+			getEnergies()
 		);
 		susceptibilityCalculators[n]->setEnergyType(
-			energyType
+			getEnergyType()
 		);
 		susceptibilityCalculators[n]->setEnergiesAreInversionSymmetric(
-			energiesAreInversionSymmetric
+			getEnergiesAreInversionSymmetric()
 		);
 
 		delete [] susceptibilityCalculators[n]->kPlusQLookupTable;
@@ -193,13 +200,13 @@ SusceptibilityCalculator::~SusceptibilityCalculator(){
 	Timer::tock();
 
 	Timer::tick("3");
-	Streams::out << "Susceptibility tree size:\t" << susceptibilityTree.getSizeInBytes() << "\n";
+//	Streams::out << "Susceptibility tree size:\t" << susceptibilityTree.getSizeInBytes() << "\n";
 	for(unsigned int n = 0; n < numWorkers; n++){
 		SusceptibilityCalculator &susceptibilityCalculator = *susceptibilityCalculators.at(n);
 		const vector<vector<double>> &mesh = meshes.at(n);
 
 		for(unsigned int c = 0; c < mesh.size(); c++){
-			Index kIndex = momentumSpaceContext->getKIndex(
+			Index kIndex = momentumSpaceContext.getKIndex(
 				mesh[c]
 			);
 
@@ -257,8 +264,8 @@ SusceptibilityCalculator::~SusceptibilityCalculator(){
 		delete susceptibilityCalculators[n];
 
 	Streams::out << "Susceptibility tree size:\t" << susceptibilityTree.getSizeInBytes() << "\n";
-	Timer::tock();
-}*/
+	Timer::tock();*/
+}
 
 void SusceptibilityCalculator::generateKPlusQLookupTable(){
 	if(kPlusQLookupTable != nullptr)
@@ -349,7 +356,7 @@ void SusceptibilityCalculator::generateKPlusQLookupTable(){
 	Timer::tock();
 }
 
-/*inline complex<double> SusceptibilityCalculator::getPoleTimesTwoFermi(
+inline complex<double> LindhardSusceptibilityCalculator::getPoleTimesTwoFermi(
 	complex<double> energy,
 	double e2,
 	double e1,
@@ -387,21 +394,22 @@ void SusceptibilityCalculator::generateKPlusQLookupTable(){
 			]
 		);
 	}
-}*/
+}
 
 //Implementation based on Eq. (14) in
 //S. Graser, T. A. Maier, P. J. Hirschfeld, and D. J. Scalapino,
 //New Journal of Physics 11, 025016 (2009)
-/*complex<double> SusceptibilityCalculator::calculateSusceptibilityLindhard(
+complex<double> LindhardSusceptibilityCalculator::calculateSusceptibilityLindhard(
 	const vector<double> &k,
 	const vector<int> &orbitalIndices,
 	complex<double> energy
 ){
-	const vector<vector<double>> &mesh = momentumSpaceContext->getMesh();
-	const vector<unsigned int> &numMeshPoints = momentumSpaceContext->getNumMeshPoints();
-	const BrillouinZone &brillouinZone = momentumSpaceContext->getBrillouinZone();
-	const Model &model = momentumSpaceContext->getModel();
-	unsigned int numOrbitals = momentumSpaceContext->getNumOrbitals();
+	const MomentumSpaceContext &momentumSpaceContext = getMomentumSpaceContext();
+	const vector<vector<double>> &mesh = momentumSpaceContext.getMesh();
+	const vector<unsigned int> &numMeshPoints = momentumSpaceContext.getNumMeshPoints();
+	const BrillouinZone &brillouinZone = momentumSpaceContext.getBrillouinZone();
+	const Model &model = momentumSpaceContext.getModel();
+	unsigned int numOrbitals = momentumSpaceContext.getNumOrbitals();
 
 	complex<double> result = 0;
 	for(unsigned int n = 0; n < mesh.size(); n++){
@@ -413,20 +421,20 @@ void SusceptibilityCalculator::generateKPlusQLookupTable(){
 			kPlusQIndex
 		);
 		for(unsigned int c = 0; c < numOrbitals; c++){
-			double e1 = momentumSpaceContext->getEnergy(n, c);
-			complex<double> a1 = momentumSpaceContext->getAmplitude(
+			double e1 = momentumSpaceContext.getEnergy(n, c);
+			complex<double> a1 = momentumSpaceContext.getAmplitude(
 				n,
 				c,
 				orbitalIndices.at(3)
 			);
-			complex<double> a2 = momentumSpaceContext->getAmplitude(
+			complex<double> a2 = momentumSpaceContext.getAmplitude(
 				n,
 				c,
 				orbitalIndices.at(0)
 			);
 
 			for(unsigned int j = 0; j < numOrbitals; j++){
-				double e2 = momentumSpaceContext->getEnergy(
+				double e2 = momentumSpaceContext.getEnergy(
 					kPlusQLinearIndex + j
 				);
 
@@ -443,12 +451,12 @@ void SusceptibilityCalculator::generateKPlusQLookupTable(){
 					numOrbitals
 				);
 
-				complex<double> a3 = momentumSpaceContext->getAmplitude(
+				complex<double> a3 = momentumSpaceContext.getAmplitude(
 					kPlusQLinearIndex/numOrbitals,
 					j,
 					orbitalIndices.at(1)
 				);
-				complex<double> a4 = momentumSpaceContext->getAmplitude(
+				complex<double> a4 = momentumSpaceContext.getAmplitude(
 					kPlusQLinearIndex/numOrbitals,
 					j,
 					orbitalIndices.at(2)
@@ -462,7 +470,7 @@ void SusceptibilityCalculator::generateKPlusQLookupTable(){
 	result /= mesh.size();
 
 	return result;
-}*/
+}
 
 template<>
 inline int SusceptibilityCalculator::getKPlusQLinearIndex<false>(
@@ -576,8 +584,8 @@ void SusceptibilityCalculator::cacheSusceptibility(
 	//</Needs proper checking>
 }
 
-/*template<bool useKPlusQLookupTable, bool isSafeFromPoles>
-vector<complex<double>> SusceptibilityCalculator::calculateSusceptibilityLindhard(
+template<bool useKPlusQLookupTable, bool isSafeFromPoles>
+vector<complex<double>> LindhardSusceptibilityCalculator::calculateSusceptibilityLindhard(
 	const DualIndex &kDual,
 	const vector<int> &orbitalIndices
 ){
@@ -591,12 +599,13 @@ vector<complex<double>> SusceptibilityCalculator::calculateSusceptibilityLindhar
 
 	//Try to return cashed result
 	SerializeableVector<complex<double>> result;
-	if(susceptibilityTree.get(result, resultIndex))
+	if(getSusceptibilityTree().get(result, resultIndex))
 		return result;
 
-	const vector<vector<double>> &mesh = momentumSpaceContext->getMesh();
-	const Model &model = momentumSpaceContext->getModel();
-	unsigned int numOrbitals = momentumSpaceContext->getNumOrbitals();
+	const MomentumSpaceContext &momentumSpaceContext = getMomentumSpaceContext();
+	const vector<vector<double>> &mesh = momentumSpaceContext.getMesh();
+	const Model &model = momentumSpaceContext.getModel();
+	unsigned int numOrbitals = momentumSpaceContext.getNumOrbitals();
 
 	//Initialize result and isolate purely real energies. The real energies
 	//need extra careful treatment because they can result in evaluation of
@@ -605,6 +614,7 @@ vector<complex<double>> SusceptibilityCalculator::calculateSusceptibilityLindhar
 	vector<complex<double>> complexEnergies;
 	vector<unsigned int> realEnergyIndices;
 	vector<unsigned int> complexEnergyIndices;
+	const vector<complex<double>> &energies = getEnergies();
 	for(unsigned int n = 0; n < energies.size(); n++){
 		result.push_back(0);
 		complex<double> energy = energies.at(n);
@@ -631,17 +641,17 @@ vector<complex<double>> SusceptibilityCalculator::calculateSusceptibilityLindhar
 			k,
 			kLinearIndex
 		);
-		int kPlusQMeshPoint = kPlusQLinearIndex/momentumSpaceContext->getNumOrbitals();
+		int kPlusQMeshPoint = kPlusQLinearIndex/momentumSpaceContext.getNumOrbitals();
 
 		for(unsigned int state1 = 0; state1 < numOrbitals; state1++){
 			//Get energy and amplitude for first state.
-			double e1 = momentumSpaceContext->getEnergy(meshPoint, state1);
-			complex<double> a1 = momentumSpaceContext->getAmplitude(
+			double e1 = momentumSpaceContext.getEnergy(meshPoint, state1);
+			complex<double> a1 = momentumSpaceContext.getAmplitude(
 				meshPoint,
 				state1,
 				orbitalIndices[3]
 			);
-			complex<double> a2 = momentumSpaceContext->getAmplitude(
+			complex<double> a2 = momentumSpaceContext.getAmplitude(
 				meshPoint,
 				state1,
 				orbitalIndices[0]
@@ -649,8 +659,8 @@ vector<complex<double>> SusceptibilityCalculator::calculateSusceptibilityLindhar
 
 			//Skip to the next state if the current state gives an
 			//obvious zero contribution.
-//			if(abs(a1*a2) < 1e-10)
-//				continue;
+/*			if(abs(a1*a2) < 1e-10)
+				continue;*/
 			if(real(a1*a2*conj(a1*a2)) < 1e-10)
 				continue;
 
@@ -660,15 +670,15 @@ vector<complex<double>> SusceptibilityCalculator::calculateSusceptibilityLindhar
 				state2++
 			){
 				//Get energy and amplitudes for second state
-				double e2 = momentumSpaceContext->getEnergy(
+				double e2 = momentumSpaceContext.getEnergy(
 					kPlusQLinearIndex + state2
 				);
-				complex<double> a3 = momentumSpaceContext->getAmplitude(
+				complex<double> a3 = momentumSpaceContext.getAmplitude(
 					kPlusQMeshPoint,
 					state2,
 					orbitalIndices[1]
 				);
-				complex<double> a4 = momentumSpaceContext->getAmplitude(
+				complex<double> a4 = momentumSpaceContext.getAmplitude(
 					kPlusQMeshPoint,
 					state2,
 					orbitalIndices[2]
@@ -676,8 +686,8 @@ vector<complex<double>> SusceptibilityCalculator::calculateSusceptibilityLindhar
 
 				//Skip to the next state if the current state
 				//gives an obvious zero contribution.
-//				if(abs(a3*a4) < 1e-10)
-//					continue;
+/*				if(abs(a3*a4) < 1e-10)
+					continue;*/
 				if(real(a3*a4*conj(a3*a4)) < 1e-10)
 					continue;
 
@@ -766,13 +776,13 @@ vector<complex<double>> SusceptibilityCalculator::calculateSusceptibilityLindhar
 	);
 
 	return result;
-}*/
+}
 
-/*complex<double> SusceptibilityCalculator::calculateSusceptibility(
+complex<double> LindhardSusceptibilityCalculator::calculateSusceptibility(
 	const vector<double> &k,
 	const vector<int> &orbitalIndices,
-	complex<double> energy,
-	Mode mode
+	complex<double> energy/*,
+	Mode mode*/
 ){
 	TBTKAssert(
 		orbitalIndices.size() == 4,
@@ -782,14 +792,14 @@ vector<complex<double>> SusceptibilityCalculator::calculateSusceptibilityLindhar
 		""
 	);
 
-	switch(mode){
-	case Mode::Lindhard:
+/*	switch(mode){
+	case Mode::Lindhard:*/
 		return calculateSusceptibilityLindhard(
 			k,
 			orbitalIndices,
 			energy
 		);
-	case Mode::Matsubara:
+/*	case Mode::Matsubara:
 		return calculateSusceptibilityMatsubara(
 			k,
 			orbitalIndices,
@@ -801,10 +811,10 @@ vector<complex<double>> SusceptibilityCalculator::calculateSusceptibilityLindhar
 			"Unknown mode.",
 			"This should never happen, contact the developer."
 		);
-	}
-}*/
+	}*/
+}
 
-/*vector<complex<double>> SusceptibilityCalculator::calculateSusceptibility(
+vector<complex<double>> LindhardSusceptibilityCalculator::calculateSusceptibility(
 	const DualIndex &kDual,
 	const vector<int> &orbitalIndices
 ){
@@ -816,9 +826,9 @@ vector<complex<double>> SusceptibilityCalculator::calculateSusceptibilityLindhar
 		""
 	);
 
-	switch(getMode()){
-	case Mode::Lindhard:
-		if(kPlusQLookupTable != nullptr){
+/*	switch(getMode()){
+	case Mode::Lindhard:*/
+		if(getKPlusQLookupTable() != nullptr){
 			if(getSusceptibilityIsSafeFromPoles()){
 				return calculateSusceptibilityLindhard<
 					true,
@@ -858,7 +868,7 @@ vector<complex<double>> SusceptibilityCalculator::calculateSusceptibilityLindhar
 				);
 			}
 		}
-	case Mode::Matsubara:
+/*	case Mode::Matsubara:
 		if(kPlusQLookupTable != nullptr){
 			return calculateSusceptibilityMatsubara<true>(
 				kDual,
@@ -877,8 +887,8 @@ vector<complex<double>> SusceptibilityCalculator::calculateSusceptibilityLindhar
 			"Unknown mode.",
 			"This should never happen, contact the developer."
 		);
-	}
-}*/
+	}*/
+}
 
 /*complex<double> SusceptibilityCalculator::calculateSusceptibilityMatsubara(
 	const vector<double> &k,

@@ -110,6 +110,9 @@ public:
 	 *  evaluated at points away from poles. */
 	bool getSusceptibilityIsSafeFromPoles() const;
 
+	/** Set the number of summation energies to use in Mode::Matsubara. */
+	void setNumSummationEnergies(unsigned int numSummationEnergies);
+
 	/** Save susceptibilities. */
 	void saveSusceptibilities(const std::string &filename) const;
 
@@ -341,6 +344,14 @@ inline void RPASusceptibilityCalculator::setSusceptibilityIsSafeFromPoles(
 
 inline bool RPASusceptibilityCalculator::getSusceptibilityIsSafeFromPoles() const{
 	return susceptibilityCalculator->getSusceptibilityIsSafeFromPoles();
+}
+
+inline void RPASusceptibilityCalculator::setNumSummationEnergies(
+	unsigned int numSummationEnergies
+){
+	susceptibilityCalculator->setNumSummationEnergies(
+		numSummationEnergies
+	);
 }
 
 inline void RPASusceptibilityCalculator::saveSusceptibilities(
