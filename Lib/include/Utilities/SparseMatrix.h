@@ -231,14 +231,14 @@ inline SparseMatrix<DataType>::SparseMatrix(
 		switch(storageFormat){
 		case StorageFormat::CSR:
 			csxXPointers = new unsigned int[numRows+1];
-			for(unsigned int row = 0; row < numRows+1; row++){
+			for(int row = 0; row < numRows+1; row++){
 				csxXPointers[row]
 					= sparseMatrix.csxXPointers[row];
 			}
 			break;
 		case StorageFormat::CSC:
 			csxXPointers = new unsigned int[numCols+1];
-			for(unsigned int col = 0; col < numCols+1; col++){
+			for(int col = 0; col < numCols+1; col++){
 				csxXPointers[col]
 					= sparseMatrix.csxXPointers[col];
 			}
@@ -254,7 +254,7 @@ inline SparseMatrix<DataType>::SparseMatrix(
 
 		csxY = new unsigned int[csxNumMatrixElements];
 		csxValues = new DataType[csxNumMatrixElements];
-		for(unsigned int n = 0; n < csxNumMatrixElements; n++){
+		for(int n = 0; n < csxNumMatrixElements; n++){
 			csxY[n] = sparseMatrix.csxY[n];
 			csxValues[n] = sparseMatrix.csxValues[n];
 		}
@@ -462,7 +462,7 @@ inline void SparseMatrix<DataType>::add(
 ){
 	if(!allowDynamicDimensions){
 		TBTKAssert(
-			row < numRows && col < numCols,
+			(int)row < numRows && (int)col < numCols,
 			"SparseMatrix::add()",
 			"Invalid matrix entry. The matrix was constructed"
 			" specifiying that the matrix dimension is '"
@@ -865,7 +865,7 @@ inline void SparseMatrix<DataType>::constructCSX(){
 					unsigned int maxCol = std::get<0>(
 						listOfLists[row].back()
 					);
-					if(maxCol+1 > numCols)
+					if((int)maxCol+1 > numCols)
 						numCols = maxCol + 1;
 				}
 				break;
@@ -883,7 +883,7 @@ inline void SparseMatrix<DataType>::constructCSX(){
 					unsigned int maxRow = std::get<0>(
 						listOfLists[col].back()
 					);
-					if(maxRow+1 > numRows)
+					if((int)maxRow+1 > numRows)
 						numRows = maxRow + 1;
 				}
 				break;
@@ -943,7 +943,7 @@ inline void SparseMatrix<DataType>::constructCSX(){
 		switch(storageFormat){
 		case StorageFormat::CSR:
 			for(
-				unsigned int row = listOfLists.size();
+				int row = listOfLists.size();
 				row < numRows;
 				row++
 			){
@@ -952,7 +952,7 @@ inline void SparseMatrix<DataType>::constructCSX(){
 			break;
 		case StorageFormat::CSC:
 			for(
-				unsigned int col = listOfLists.size();
+				int col = listOfLists.size();
 				col < numCols;
 				col++
 			){
@@ -969,7 +969,7 @@ inline void SparseMatrix<DataType>::constructCSX(){
 		}
 
 		TBTKAssert(
-			csxNumMatrixElements == currentMatrixElement,
+			csxNumMatrixElements == (int)currentMatrixElement,
 			"SparseMatrix::constructCSX()",
 			"Invalid number of matrix elements.",
 			"This should never happen, contact the developer."
@@ -994,15 +994,15 @@ inline void SparseMatrix<DataType>::convertCSXToLIL(){
 		case StorageFormat::CSR:
 		{
 			unsigned int row = 0;
-			for(unsigned int n = 0; n < csxNumMatrixElements; n++){
-				if(csxXPointers[row+1] == n){
+			for(int n = 0; n < csxNumMatrixElements; n++){
+				if((int)csxXPointers[row+1] == n){
 					for(
-						unsigned int r = row+1;
+						int r = row+1;
 						r < numRows+1;
 						r++
 					){
 						row++;
-						if(csxXPointers[r+1] > n)
+						if((int)csxXPointers[r+1] > n)
 							break;
 					}
 				}
@@ -1015,15 +1015,15 @@ inline void SparseMatrix<DataType>::convertCSXToLIL(){
 		case StorageFormat::CSC:
 		{
 			unsigned int col = 0;
-			for(unsigned int n = 0; n < csxNumMatrixElements; n++){
-				if(csxXPointers[col+1] == n){
+			for(int n = 0; n < csxNumMatrixElements; n++){
+				if((int)csxXPointers[col+1] == n){
 					for(
-						unsigned int c = col+1;
+						int c = col+1;
 						c < numCols+1;
 						c++
 					){
 						col++;
-						if(csxXPointers[c+1] > n)
+						if((int)csxXPointers[c+1] > n)
 							break;
 					}
 				}
