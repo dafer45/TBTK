@@ -36,6 +36,7 @@ namespace Plot{
 Plotter::Plotter(){
 	autoScaleX = true;
 	autoScaleY = true;
+	hold = false;
 }
 
 Plotter::~Plotter(){
