@@ -32,14 +32,16 @@ const complex<double> i(0, 1);
 namespace TBTK{
 
 SusceptibilityCalculator::SusceptibilityCalculator(
+	Algorithm algorithm,
 	const MomentumSpaceContext &momentumSpaceContext
 ){
+	this->algorithm = algorithm;
 	this->momentumSpaceContext = &momentumSpaceContext;
 
 //	mode = Mode::Lindhard;
 	energyType = EnergyType::Complex;
 	energiesAreInversionSymmetric = false;
-	susceptibilityIsSafeFromPoles = false;
+//	susceptibilityIsSafeFromPoles = false;
 
 	kPlusQLookupTable = nullptr;
 	generateKPlusQLookupTable();
@@ -60,16 +62,18 @@ SusceptibilityCalculator::SusceptibilityCalculator(
 }
 
 SusceptibilityCalculator::SusceptibilityCalculator(
+	Algorithm algorithm,
 	const MomentumSpaceContext &momentumSpaceContext,
 	int *kPlusQLookupTable/*,
 	double *fermiDiracLookupTable*/
 ){
+	this->algorithm = algorithm;
 	this->momentumSpaceContext = &momentumSpaceContext;
 
 //	mode = Mode::Lindhard;
 	energyType = EnergyType::Complex;
 	energiesAreInversionSymmetric = false;
-	susceptibilityIsSafeFromPoles = false;
+//	susceptibilityIsSafeFromPoles = false;
 
 	this->kPlusQLookupTable = kPlusQLookupTable;
 

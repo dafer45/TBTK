@@ -34,7 +34,7 @@ namespace TBTK{
 RPASusceptibilityCalculator::RPASusceptibilityCalculator(
 	const MomentumSpaceContext &momentumSpaceContext
 ){
-	susceptibilityCalculator = new SusceptibilityCalculator(
+	susceptibilityCalculator = new LindhardSusceptibilityCalculator(
 		momentumSpaceContext
 	);
 
@@ -52,6 +52,7 @@ RPASusceptibilityCalculator::RPASusceptibilityCalculator(
 
 RPASusceptibilityCalculator::RPASusceptibilityCalculator(
 	SusceptibilityCalculator &susceptibilityCalculator
+//	LindhardSusceptibilityCalculator &lindhardSusceptibilityCalculator
 ){
 	this->susceptibilityCalculator = susceptibilityCalculator.createSlave();
 

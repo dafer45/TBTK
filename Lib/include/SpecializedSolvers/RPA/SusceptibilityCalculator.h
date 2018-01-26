@@ -39,18 +39,30 @@ namespace TBTK{
 
 class SusceptibilityCalculator{
 public:
+	/** List of algorithm identifiers. Officilly supported algorithms are
+	 *  given unique identifiers. Algorithms not (yet) supported should
+	 *  make sure they use an identifier that does not clash with the
+	 *  officially supported ones. [ideally a large random looking number
+	 *  (magic number) to also minimize accidental clashes with other
+	 *  algorithms that are not (yet) supported. */
+	enum Algorithm {
+		Lindhard = 0,
+		Matsubara = 1
+	};
+
 	/** Constructor. */
 	SusceptibilityCalculator(
+		Algorithm algorithm,
 		const MomentumSpaceContext &momentumSpaceContext
 	);
 
 	/** Destructor. */
-	~SusceptibilityCalculator();
+	virtual ~SusceptibilityCalculator();
 
 	/** Create slave SusceptibilityCalcuator. The slave reuses internal
 	 *  lookup tables used to speed up the calculations and should not be
 	 *  used after the generating master have been destructed. */
-//	SusceptibilityCalculator* createSlave();
+	virtual SusceptibilityCalculator* createSlave() = 0;
 
 	/** Precompute susceptibilities. Will calculate the susceptibility for
 	 *  all values using a parallel algorithm. Can speed up calculations if
@@ -76,6 +88,9 @@ public:
 
 	/** Get the mode used to calculate the susceptibility. */
 //	Mode getMode() const;
+
+	/** Get the algorithm used to calculate the susceptibility. */
+	Algorithm getAlgorithm() const;
 
 	/** Set energy type. */
 	void setEnergyType(EnergyType energyType);
@@ -112,13 +127,13 @@ public:
 
 	/** Set to true if the susceptibility is known to only be
 	 *  evaluated at points away from poles. */
-	void setSusceptibilityIsSafeFromPoles(
+/*	void setSusceptibilityIsSafeFromPoles(
 		bool susceptibilityIsSafeFromPoles
-	);
+	);*/
 
 	/** Get whether the susceptibility is known to only be
 	 *  evaluated at points away from poles. */
-	bool getSusceptibilityIsSafeFromPoles() const;
+//	bool getSusceptibilityIsSafeFromPoles() const;
 
 	/** Set the number of summation energies to use in Mode::Matsubara. */
 //	void setNumSummationEnergies(unsigned int numSummationEnergies);
@@ -135,6 +150,9 @@ private:
 	/** Mode to use for calculating the susceptibility. */
 //	Mode mode;
 
+	/** Algorithm. */
+	Algorithm algorithm;
+
 	/** Energy type for the susceptibility. */
 	EnergyType energyType;
 
@@ -148,7 +166,7 @@ private:
 
 	/** Flag indicating whether the susceptibility is known to only
 	 *  be evaluated at points away from poles. */
-	bool susceptibilityIsSafeFromPoles;
+//	bool susceptibilityIsSafeFromPoles;
 public:
 	/** Calculate the susceptibility. */
 	virtual std::complex<double> calculateSusceptibility(
@@ -192,6 +210,7 @@ private:
 protected:
 	/** Slave constructor. */
 	SusceptibilityCalculator(
+		Algorithm algorithm,
 		const MomentumSpaceContext &momentumSpaceContext,
 		int *kPlusQLookupTable/*,
 		double *fermiDiracLookupTable*/
@@ -357,7 +376,7 @@ inline bool SusceptibilityCalculator::getEnergiesAreInversionSymmetric(
 	return energiesAreInversionSymmetric;
 }
 
-inline void SusceptibilityCalculator::setSusceptibilityIsSafeFromPoles(
+/*inline void SusceptibilityCalculator::setSusceptibilityIsSafeFromPoles(
 	bool susceptibilityIsSafeFromPoles
 ){
 	this->susceptibilityIsSafeFromPoles = susceptibilityIsSafeFromPoles;
@@ -365,7 +384,7 @@ inline void SusceptibilityCalculator::setSusceptibilityIsSafeFromPoles(
 
 inline bool SusceptibilityCalculator::getSusceptibilityIsSafeFromPoles() const{
 	return susceptibilityIsSafeFromPoles;
-}
+}*/
 
 /*inline void SusceptibilityCalculator::setNumSummationEnergies(
 	unsigned int numSummationEnergies

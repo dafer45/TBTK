@@ -46,12 +46,12 @@ public:
 	);
 
 	/** Destructor. */
-	~LindhardSusceptibilityCalculator();
+	virtual ~LindhardSusceptibilityCalculator();
 
 	/** Create slave SusceptibilityCalcuator. The slave reuses internal
 	 *  lookup tables used to speed up the calculations and should not be
 	 *  used after the generating master have been destructed. */
-	LindhardSusceptibilityCalculator* createSlave();
+	virtual LindhardSusceptibilityCalculator* createSlave();
 
 	/** Precompute susceptibilities. Will calculate the susceptibility for
 	 *  all values using a parallel algorithm. Can speed up calculations if
@@ -109,13 +109,13 @@ public:
 
 	/** Set to true if the susceptibility is known to only be
 	 *  evaluated at points away from poles. */
-/*	void setSusceptibilityIsSafeFromPoles(
+	void setSusceptibilityIsSafeFromPoles(
 		bool susceptibilityIsSafeFromPoles
-	);*/
+	);
 
 	/** Get whether the susceptibility is known to only be
 	 *  evaluated at points away from poles. */
-//	bool getSusceptibilityIsSafeFromPoles() const;
+	bool getSusceptibilityIsSafeFromPoles() const;
 
 	/** Set the number of summation energies to use in Mode::Matsubara. */
 //	void setNumSummationEnergies(unsigned int numSummationEnergies);
@@ -145,10 +145,10 @@ private:
 
 	/** Flag indicating whether the susceptibility is known to only
 	 *  be evaluated at points away from poles. */
-//	bool susceptibilityIsSafeFromPoles;
+	bool susceptibilityIsSafeFromPoles;
 public:
 	/** Calculate the susceptibility. */
-	std::complex<double> calculateSusceptibility(
+	virtual std::complex<double> calculateSusceptibility(
 		const std::vector<double> &k,
 		const std::vector<int> &orbitalIndices,
 		std::complex<double> energy/*,
@@ -156,7 +156,7 @@ public:
 	);
 
 	/** Calculate the susceptibility. */
-	std::vector<std::complex<double>> calculateSusceptibility(
+	virtual std::vector<std::complex<double>> calculateSusceptibility(
 		const DualIndex &kDual,
 		const std::vector<int> &orbitalIndices
 	);
@@ -336,19 +336,19 @@ inline void SusceptibilityCalculator::setEnergiesAreInversionSymmetric(
 inline bool SusceptibilityCalculator::getEnergiesAreInversionSymmetric(
 ) const{
 	return energiesAreInversionSymmetric;
-}
+}*/
 
-inline void SusceptibilityCalculator::setSusceptibilityIsSafeFromPoles(
+inline void LindhardSusceptibilityCalculator::setSusceptibilityIsSafeFromPoles(
 	bool susceptibilityIsSafeFromPoles
 ){
 	this->susceptibilityIsSafeFromPoles = susceptibilityIsSafeFromPoles;
 }
 
-inline bool SusceptibilityCalculator::getSusceptibilityIsSafeFromPoles() const{
+inline bool LindhardSusceptibilityCalculator::getSusceptibilityIsSafeFromPoles() const{
 	return susceptibilityIsSafeFromPoles;
 }
 
-inline void SusceptibilityCalculator::setNumSummationEnergies(
+/*inline void SusceptibilityCalculator::setNumSummationEnergies(
 	unsigned int numSummationEnergies
 ){
 	TBTKAssert(

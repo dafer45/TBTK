@@ -34,14 +34,14 @@ namespace TBTK{
 LindhardSusceptibilityCalculator::LindhardSusceptibilityCalculator(
 	const MomentumSpaceContext &momentumSpaceContext
 ) :
-	SusceptibilityCalculator(momentumSpaceContext)
+	SusceptibilityCalculator(Algorithm::Lindhard, momentumSpaceContext)
 {
 //	this->momentumSpaceContext = &momentumSpaceContext;
 
 //	mode = Mode::Lindhard;
 //	energyType = EnergyType::Complex;
 //	energiesAreInversionSymmetric = false;
-//	susceptibilityIsSafeFromPoles = false;
+	susceptibilityIsSafeFromPoles = false;
 
 //	kPlusQLookupTable = nullptr;
 //	generateKPlusQLookupTable();
@@ -66,14 +66,18 @@ LindhardSusceptibilityCalculator::LindhardSusceptibilityCalculator(
 	int *kPlusQLookupTable,
 	double *fermiDiracLookupTable
 ) :
-	SusceptibilityCalculator(momentumSpaceContext, kPlusQLookupTable)
+	SusceptibilityCalculator(
+		Algorithm::Lindhard,
+		momentumSpaceContext,
+		kPlusQLookupTable
+	)
 {
 //	this->momentumSpaceContext = &momentumSpaceContext;
 
 //	mode = Mode::Lindhard;
 //	energyType = EnergyType::Complex;
 //	energiesAreInversionSymmetric = false;
-//	susceptibilityIsSafeFromPoles = false;
+	susceptibilityIsSafeFromPoles = false;
 
 //	this->kPlusQLookupTable = kPlusQLookupTable;
 
@@ -267,7 +271,7 @@ void LindhardSusceptibilityCalculator::precompute(unsigned int numWorkers){
 	Timer::tock();*/
 }
 
-void SusceptibilityCalculator::generateKPlusQLookupTable(){
+/*void SusceptibilityCalculator::generateKPlusQLookupTable(){
 	if(kPlusQLookupTable != nullptr)
 		return;
 
@@ -354,7 +358,7 @@ void SusceptibilityCalculator::generateKPlusQLookupTable(){
 			fout << kPlusQLookupTable[n] << "\n";
 
 	Timer::tock();
-}
+}*/
 
 inline complex<double> LindhardSusceptibilityCalculator::getPoleTimesTwoFermi(
 	complex<double> energy,
@@ -501,7 +505,7 @@ inline int SusceptibilityCalculator::getKPlusQLinearIndex<true>(
 	];
 }
 
-void SusceptibilityCalculator::cacheSusceptibility(
+/*void SusceptibilityCalculator::cacheSusceptibility(
 	const vector<complex<double>> &result,
 	const vector<double> &k,
 	const vector<int> &orbitalIndices,
@@ -582,7 +586,7 @@ void SusceptibilityCalculator::cacheSusceptibility(
 		);
 	}
 	//</Needs proper checking>
-}
+}*/
 
 template<bool useKPlusQLookupTable, bool isSafeFromPoles>
 vector<complex<double>> LindhardSusceptibilityCalculator::calculateSusceptibilityLindhard(

@@ -27,6 +27,7 @@
 #include "MomentumSpaceContext.h"
 #include "SerializeableVector.h"
 #include "SusceptibilityCalculator.h"
+#include "LindhardSusceptibilityCalculator.h"
 
 #include <complex>
 
@@ -66,10 +67,10 @@ public:
 	enum class EnergyType {Real, Imaginary, Complex};
 
 	/** Set the mode used to calculate the susceptibility. */
-	void setSusceptibilityMode(SusceptibilityCalculator::Mode mode);
+//	void setSusceptibilityMode(SusceptibilityCalculator::Mode mode);
 
 	/** Get the mode used to calculate the susceptibility. */
-	SusceptibilityCalculator::Mode getSusceptibilityMode() const;
+//	SusceptibilityCalculator::Mode getSusceptibilityMode() const;
 
 	/** Set energy type. */
 	void setEnergyType(EnergyType energyType);
@@ -111,7 +112,7 @@ public:
 	bool getSusceptibilityIsSafeFromPoles() const;
 
 	/** Set the number of summation energies to use in Mode::Matsubara. */
-	void setNumSummationEnergies(unsigned int numSummationEnergies);
+//	void setNumSummationEnergies(unsigned int numSummationEnergies);
 
 	/** Save susceptibilities. */
 	void saveSusceptibilities(const std::string &filename) const;
@@ -262,7 +263,7 @@ inline Index RPASusceptibilityCalculator::getSusceptibilityResultIndex(
 	);
 }
 
-inline void RPASusceptibilityCalculator::setSusceptibilityMode(
+/*inline void RPASusceptibilityCalculator::setSusceptibilityMode(
 	SusceptibilityCalculator::Mode mode
 ){
 	susceptibilityCalculator->setMode(mode);
@@ -271,7 +272,7 @@ inline void RPASusceptibilityCalculator::setSusceptibilityMode(
 inline SusceptibilityCalculator::Mode RPASusceptibilityCalculator::getSusceptibilityMode(
 ) const{
 	return susceptibilityCalculator->getMode();
-}
+}*/
 
 inline void RPASusceptibilityCalculator::setEnergyType(
 	EnergyType energyType
@@ -337,22 +338,40 @@ inline bool RPASusceptibilityCalculator::getEnergiesAreInversionSymmetric(
 inline void RPASusceptibilityCalculator::setSusceptibilityIsSafeFromPoles(
 	bool susceptibilityIsSafeFromPoles
 ){
-	susceptibilityCalculator->setSusceptibilityIsSafeFromPoles(
+	TBTKAssert(
+		susceptibilityCalculator->getAlgorithm()
+			== SusceptibilityCalculator::Algorithm::Lindhard,
+		"RPASusceptibilityCalculator::setSusceptibilityIsSafeFromPoles()",
+		"Only valid function call if the underlying algorithm is"
+		<< " SusceptibilityCalculator::Algorithm::Lindhard.",
+		""
+	);
+
+	((LindhardSusceptibilityCalculator*)susceptibilityCalculator)->setSusceptibilityIsSafeFromPoles(
 		susceptibilityIsSafeFromPoles
 	);
 }
 
 inline bool RPASusceptibilityCalculator::getSusceptibilityIsSafeFromPoles() const{
-	return susceptibilityCalculator->getSusceptibilityIsSafeFromPoles();
+	TBTKAssert(
+		susceptibilityCalculator->getAlgorithm()
+			== SusceptibilityCalculator::Algorithm::Lindhard,
+		"RPASusceptibilityCalculator::getSusceptibilityIsSafeFromPoles()",
+		"Only valid function call if the underlying algorithm is"
+		<< " SusceptibilityCalculator::Algorithm::Lindhard.",
+		""
+	);
+
+	return ((LindhardSusceptibilityCalculator*)susceptibilityCalculator)->getSusceptibilityIsSafeFromPoles();
 }
 
-inline void RPASusceptibilityCalculator::setNumSummationEnergies(
+/*inline void RPASusceptibilityCalculator::setNumSummationEnergies(
 	unsigned int numSummationEnergies
 ){
 	susceptibilityCalculator->setNumSummationEnergies(
 		numSummationEnergies
 	);
-}
+}*/
 
 inline void RPASusceptibilityCalculator::saveSusceptibilities(
 	const std::string &filename
