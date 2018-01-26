@@ -100,12 +100,18 @@ inline Array<double> Smooth::gaussian(
 	for(int n = 0; n < data.getRanges()[0]; n++){
 		for(
 			int c = std::max(0, n - (int)windowSize/2);
-			c < std::min(n + (int)windowSize/2 + 1, (int)data.getRanges()[0]);
+			c < std::min(
+				n + (int)windowSize/2 + 1,
+				(int)data.getRanges()[0]
+			);
 			c++
 		){
-			result[{n}] += data[{c}]*exp(-(c-n)*(c-n)/(2*sigma*sigma));
+			result[{(unsigned int)n}]
+				+= data[
+					{(unsigned int)c}
+				]*exp(-(c-n)*(c-n)/(2*sigma*sigma));
 		}
-		result[{n}] *= normalization;
+		result[{(unsigned int)n}] *= normalization;
 	}
 
 	return result;
