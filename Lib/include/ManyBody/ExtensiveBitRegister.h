@@ -150,7 +150,8 @@ private:
 	unsigned int *values;
 
 	/** Mask for the most significant bit. */
-	static constexpr unsigned int MOST_SIGNIFICANT_BIT_MASK = 0x1 << (8*sizeof(unsigned int) - 1);
+	static constexpr unsigned int MOST_SIGNIFICANT_BIT_MASK
+		= (unsigned int)0x1 << (8*sizeof(unsigned int) - 1);
 };
 
 inline const ExtensiveBitRegister ExtensiveBitRegister::operator|(
