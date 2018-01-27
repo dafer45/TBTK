@@ -1,0 +1,193 @@
+CMAKE_MINIMUM_REQUIRED(VERSION 3.5.1)
+
+PROJECT(TBTK)
+
+SET(PROJECT_MAJOR_VERSION 0)
+SET(PROJECT_MINOR_VERSION 9)
+SET(PROJECT_PATCH_VERSION 5)
+SET(
+	PROJECT_VERSION
+	${PROJECT_MAJOR_VERSION}.${PROJECT_MINOR_VERSION}.${PROJECT_PATCH_VERSION}
+)
+
+#Variable that the user can set in CMakeCache.txt
+SET(ARPACK_LIB CACHE PATH "Path to ARPACK.")
+SET(SUPER_LU_LIB CACHE PATH "Path to SuperLU library.")
+SET(SUPER_LU_INCLUDE CACHE PATH "Path to SuperLU includes.")
+
+IF(EXISTS ${ARPACK_LIB})
+	SET(ARPACK_FOUND TRUE)
+ELSE(EXISTS ${ARPACK_LIB})
+	SET(ARPACK_FOUND FALSE)
+ENDIF(EXISTS ${ARPACK_LIB})
+
+IF(SUPER_LU_LIB AND  SUPER_LU_INCLUDE)
+	SET(SuperLU_FOUND TRUE)
+	INCLUDE_DIRECTORIES(${SUPER_LU_INCLUDE})
+ELSE(SUPER_LU_LIB AND SUPER_LU_INCLUDE)
+	SET(SuperLU_FOUND FALSE)
+ENDIF(SUPER_LU_LIB AND SUPER_LU_INCLUDE)
+
+#Detect packages
+FIND_PACKAGE(BLAS REQUIRED)
+FIND_PACKAGE(LAPACK REQUIRED)
+FIND_PACKAGE(CUDA QUIET)
+FIND_PACKAGE(CURL QUIET)
+FIND_PACKAGE(OpenCV QUIET)
+#FIND_PACKAGE(wxWidgets QUIET)
+#FIND_PACKAGE(OpenHDF5 QUIET)
+
+#Print which extention enabling libraries that were found.
+MESSAGE("\nLibraries that enables extentions that were found (empty box means not found).")
+IF(ARPACK_FOUND)
+	MESSAGE("[X] ARPACK")
+ELSE(ARPACK_FOUND)
+	MESSAGE("[ ] ARPACK")
+ENDIF(ARPACK_FOUND)
+
+IF(CUDA_FOUND)
+	MESSAGE("[X] Cuda")
+ELSE(CUDA_FOUND)
+	MESSAGE("[ ] Cuda")
+ENDIF(CUDA_FOUND)
+
+IF(CURL_FOUND)
+	MESSAGE("[X] cURL")
+ELSE(CURL_FOUND)
+	MESSAGE("[ ] cURL")
+ENDIF(CURL_FOUND)
+
+IF(OpenCV_FOUND)
+	MESSAGE("[X] OpenCV")
+ELSE(OpenCV_FOUND)
+	MESSAGE("[ ] OpenCV")
+ENDIF(OpenCV_FOUND)
+
+IF(SuperLU_FOUND)
+	MESSAGE("[X] SuperLU")
+ELSE(SuperLU_FOUND)
+	MESSAGE("[ ] SuperLU")
+ENDIF(SuperLU_FOUND)
+
+IF(wxWidgets_FOUND)
+	MESSAGE("[X] wxWidgets")
+ELSE(wxWidgets_FOUND)
+	MESSAGE("[ ] wxWidgets")
+ENDIF(wxWidgets_FOUND)
+
+#Setup flags for building extentions and print which extentions that will be
+#built.
+MESSAGE("\nExtenstions that will be built (empty box means the extention will not be built).")
+IF(ARPACK_FOUND AND SuperLU_FOUND)
+	MESSAGE("[X] ArnoldiSolver")
+	SET(COMPILE_ARNOLDI_SOLVER TRUE)
+ELSE(ARPACK_FOUND AND SuperLU_FOUND)
+	MESSAGE("[ ] ArnoldiSolver")
+ENDIF(ARPACK_FOUND AND SuperLU_FOUND)
+
+IF(CUDA_FOUND)
+	MESSAGE("[X] Cuda")
+	SET(COMPILE_CUDA TRUE)
+ELSE(CUDA_FOUND)
+	MESSAGE("[ ] Cuda")
+ENDIF(CUDA_FOUND)
+
+IF(CURL_FOUND)
+	MESSAGE("[X] Resource")
+	SET(COMPILE_RESOURCE TRUE)
+	MESSAGE("[X] DataManager")
+	SET(COMPILE_DATA_MANAGER TRUE)
+ELSE(CURL_FOUND)
+	MESSAGE("[ ] Resource")
+	MESSAGE("[ ] DataManager")
+ENDIF(CURL_FOUND)
+
+IF(OpenCV_FOUND)
+	MESSAGE("[X] Plotter")
+	SET(COMPILE_PLOTTER TRUE)
+	MESSAGE("[X] RayTracer")
+	SET(COMPILE_RAY_TRACER TRUE)
+ELSE(OpenCV_FOUND)
+	MESSAGE("[ ] Plotter")
+	MESSAGE("[ ] RayTracer")
+ENDIF(OpenCV_FOUND)
+
+IF(SuperLU_FOUND)
+	MESSAGE("[X] LinearEquationSolver")
+	SET(COMPILE_LINEAR_EQUATION_SOLVER TRUE)
+	MESSAGE("[X] LUSolver")
+	SET(COMPILE_LU_SOLVER TRUE)
+ELSE(SuperLU_FOUND)
+	MESSAGE("[ ] LinearEquationSolver")
+	MESSAGE("[ ] LUSolver")
+ENDIF(SuperLU_FOUND)
+
+IF(wxWidgets_FOUND)
+	MESSAGE("[X] GUI")
+	SET(COMPILE_GUI TRUE)
+ELSE(wxWidgets_FOUND)
+	MESSAGE("[ ] GUI")
+ENDIF(wxWidgets_FOUND)
+MESSAGE("\n")
+
+#C++ flags
+SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} -std=c++11)
+
+#Include paths
+INCLUDE_DIRECTORIES(
+	json/
+	hdf5/hdf5-build/hdf5/include/
+)
+
+INCLUDE_DIRECTORIES(
+	Lib/include/Builders/
+	Lib/include/Core/
+	Lib/include/Elements/
+	Lib/include/Exceptions/
+	Lib/include/GUI/
+	Lib/include/Lattices/
+	Lib/include/Lattices/D2/
+	Lib/include/Lattices/D3/
+	Lib/include/ManyBody/
+	Lib/include/ManyBody/FockStateMap/
+	Lib/include/ManyBody/FockStateRule/
+	Lib/include/Properties/
+	Lib/include/PropertyExtractors/
+	Lib/include/Solvers/
+	Lib/include/SpecializedSolvers/
+	Lib/include/StatesAndOperators/
+	Lib/include/Uncategorized/
+	Lib/include/Utilities/
+)
+
+IF(${COMPILE_ARNOLDI_SOLVER})
+	INCLUDE_DIRECTORIES(LIB/include/Solvers/ArnoldiSolver/)
+ENDIF(${COMPILE_ARNOLDI_SOLVER})
+
+IF(${COMPILE_DATA_MANAGER})
+	INCLUDE_DIRECTORIES(Lib/include/Utilities/DataManager/)
+ENDIF(${COMPILE_DATA_MANAGER})
+
+IF(${COMPILE_GUI})
+	INCLUDE_DIRECTORIES(LIB/include/GUI/)
+ENDIF(${COMPILE_GUI})
+
+IF(${COMPILE_LINEAR_EQUATION_SOLVER})
+	INCLUDE_DIRECTORIES(LIB/include/Solvers/LinearEquationSolver/)
+ENDIF(${COMPILE_LINEAR_EQUATION_SOLVER})
+
+IF(${COMPILE_PLOTTER})
+	INCLUDE_DIRECTORIES(LIB/include/Utilities/Plotter/)
+ENDIF(${COMPILE_PLOTTER})
+
+IF(${COMPILE_RESOURCE})
+	INCLUDE_DIRECTORIES(LIB/include/Utilities/Resource/)
+ENDIF(${COMPILE_RESOURCE})
+
+IF(${COMPILE_RAY_TRACER})
+	INCLUDE_DIRECTORIES(LIB/include/Utilities/RayTracer/)
+ENDIF(${COMPILE_RAY_TRACER})
+
+ADD_SUBDIRECTORY(Lib/src/)
+
+MESSAGE("TBTK CMAKELISTS.txt")

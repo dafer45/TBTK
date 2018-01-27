@@ -1,0 +1,108 @@
+FILE(
+	GLOB
+	TBTK_SRC
+	Builders/*.cpp
+	Core/*.cpp
+	Elements/*.cpp
+	Exceptions/*.cpp
+	Lattices/*.cpp
+	Lattices/D2/*.cpp
+	Lattices/D3/*.cpp
+	ManyBody/*.cpp
+	ManyBody/FockStateMap/*.cpp
+	ManyBody/FockStateRule/*.cpp
+	Properties/*.cpp
+	PropertyExtractors/*.cpp
+	Solvers/*.cpp
+	SpecializedSolvers/RPA/*.cpp
+	StatesAndOperators/*.cpp
+	Uncategorized/*.cpp
+	Utilities/*.cpp
+)
+
+IF(${COMPILE_CUDA})
+	FILE(
+		GLOB
+		TBTK_CUDA_SRC
+		cuda/*.cu
+	)
+	SET(TBTK_SRC ${TBTK_SRC} ${TBTK_CUDA_SRC})
+ELSE(${COMPILE_CUDA})
+	FILE(
+		GLOB
+		TBTK_CUDA_SRC
+		nocuda/*.cpp
+	)
+	SET(TBTK_SRC ${TBTK_SRC} ${TBTK_NOCUDA_SRC})
+ENDIF(${COMPILE_CUDA})
+
+IF(${COMPILE_DATA_MANAGER})
+	FILE(
+		GLOB
+		TBTK_DATA_MANAGER_SRC
+		Utilities/DataManager/*.cpp
+	)
+	SET(TBTK_SRC ${TBTK_SRC} ${TBTK_DATA_MANAGER_SRC})
+ENDIF(${COMPILE_DATA_MANAGER})
+
+IF(${COMPILE_GUI})
+	FILE(
+		GLOB
+		TBTK_GUI_SRC
+		GUI/*.cpp
+	)
+	SET(TBTK_SRC ${TBTK_SRC} ${TBTK_GUI_SRC})
+ENDIF(${COMPILE_GUI})
+
+IF(${COMPILE_LINEAR_EQUATION_SOLVER})
+	FILE(
+		GLOB
+		TBTK_LINEAR_EQUATION_SOLVER_SRC
+		Solvers/LinearEquationSolver/*.cpp
+	)
+	SET(TBTK_SRC ${TBTK_SRC} ${TBTK_LINEAR_EQUATION_SOLVER_SRC})
+ENDIF(${COMPILE_LINEAR_EQUATION_SOLVER})
+
+IF(${COMPILE_LU_SOLVER})
+	FILE(
+		GLOB
+		TBTK_LU_SOLVER_SRC
+		Solvers/LUSolver/*.cpp
+	)
+	SET(TBTK_SRC ${TBTK_SRC} ${TBTK_LU_SOLVER_SRC})
+ENDIF(${COMPILE_LU_SOLVER})
+
+IF(${COMPILE_PLOTTER})
+	FILE(
+		GLOB
+		TBTK_PLOTTER_SRC
+		Utilities/Plotter/*.cpp
+	)
+	SET(TBTK_SRC ${TBTK_SRC} ${TBTK_PLOTTER_SRC})
+ENDIF(${COMPILE_PLOTTER})
+
+IF(${COMPILE_RAY_TRACER})
+	FILE(
+		GLOB
+		TBTK_RAY_TRACER_SRC
+		Utilities/RayTracer/*.cpp
+	)
+	SET(TBTK_SRC ${TBTK_SRC} ${TBTK_RAY_TRACER_SRC})
+ENDIF(${COMPILE_RAY_TRACER})
+
+IF(${COMPILE_RESOURCE})
+	FILE(
+		GLOB
+		TBTK_RESOURCE_SRC
+		Utilities/Resource/*.cpp
+	)
+	SET(TBTK_SRC ${TBTK_SRC} ${TBTK_RESOURCE_SRC})
+ENDIF(${COMPILE_RESOURCE})
+
+CUDA_ADD_LIBRARY(
+	TBTK
+	STATIC
+	${TBTK_SRC}
+)
+
+#TARGET_COMPILE_FEATURES
