@@ -10,9 +10,7 @@ SET(
 	${PROJECT_MAJOR_VERSION}.${PROJECT_MINOR_VERSION}.${PROJECT_PATCH_VERSION}
 )
 
-LIST(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/CMake/Modules/)
-#LIST(APPEND CMAKE_CXX_INCLUDE_PATH $ENV{CPLUS_INCLUDE_PATH})
-#LIST(APPEND CMAKE_LIBRARY_PATH $ENV{LIBRARY_PATH})
+LIST(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake/Modules/")
 
 #Variable that the user can set in CMakeCache.txt
 #SET(ARPACK_LIB CACHE PATH "Path to ARPACK.")
@@ -43,7 +41,7 @@ FIND_PACKAGE(OpenCV QUIET)
 FIND_PACKAGE(OpenMP QUIET)
 #FIND_PACKAGE(OpenHDF5 QUIET)
 FIND_PACKAGE(SuperLU QUIET)
-#FIND_PACKAGE(wxWidgets QUIET)
+FIND_PACKAGE(wxWidgets QUIET)
 
 #Print which extention enabling libraries that were found.
 MESSAGE("\nLibraries that enables extentions that were found (empty box means not found).")
@@ -92,6 +90,10 @@ ENDIF(SuperLU_FOUND)
 
 IF(wxWidgets_FOUND)
 	MESSAGE("[X] wxWidgets")
+#	INCLUDE_DIRECTORIES(${wxWidgets_INCLUDE_DIRS})
+	INCLUDE(${wxWidgets_USE_FILE})
+	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${wxWidgets_CXX_FLAGS}")
+	SET(TBTK_LINK_LIBRARIES ${wxWidgets_LIBRARIES})
 ELSE(wxWidgets_FOUND)
 	MESSAGE("[ ] wxWidgets")
 ENDIF(wxWidgets_FOUND)
