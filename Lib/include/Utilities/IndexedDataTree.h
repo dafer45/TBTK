@@ -927,7 +927,7 @@ void IndexedDataTree<Data, true>::add(
 
 		//If the subindex is bigger than the current number of child
 		//nodes, create empty nodes.
-		if(currentIndex >= children.size())
+		if((unsigned int)currentIndex >= children.size())
 			for(int n = children.size(); n <= currentIndex; n++)
 				children.push_back(IndexedDataTree());
 		//Error detection:
@@ -1186,7 +1186,7 @@ bool IndexedDataTree<Data, true>::get(
 		);
 
 		//Return false because the Index is not included.
-		if(currentIndex >= children.size())
+		if((unsigned int)currentIndex >= children.size())
 			return false;
 
 		return children.at(currentIndex).get(data, index, subindex+1);

@@ -106,7 +106,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 	int *coefficientMap = new int[hoppingAmplitudeSet->getBasisSize()];
 	for(int n = 0; n < hoppingAmplitudeSet->getBasisSize(); n++)
 		coefficientMap[n] = -1;
-	for(int n = 0; n < to.size(); n++)
+	for(int n = 0; n < (int)to.size(); n++)
 		coefficientMap[hoppingAmplitudeSet->getBasisIndex(to.at(n))] = n;
 
 	if(getGlobalVerbose() && getVerbose()){
@@ -531,7 +531,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 	//Lorentzian convolution
 	double lambda = broadening*numCoefficients;
 	for(int n = 0; n < numCoefficients; n++)
-		for(int c = 0; c < to.size(); c++)
+		for(int c = 0; c < (int)to.size(); c++)
 			coefficients[n + c*numCoefficients] = coefficients[n + c*numCoefficients]*sinh(lambda*(1 - n/(double)numCoefficients))/sinh(lambda);
 }
 

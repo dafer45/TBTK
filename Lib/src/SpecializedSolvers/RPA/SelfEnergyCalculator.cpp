@@ -319,9 +319,9 @@ vector<complex<double>> SelfEnergyCalculator::calculateSelfEnergySelfConsistentl
 		electronFluctuationVertexCalculators[n]->generateInteractionAmplitudes();
 	}
 
-	const MomentumSpaceContext &momentumSpaceContext = electronFluctuationVertexCalculators[0]->getMomentumSpaceContext();
-	const BrillouinZone &brillouinZone = momentumSpaceContext.getBrillouinZone();
-	const vector<unsigned int> &numMeshPoints = momentumSpaceContext.getNumMeshPoints();
+//	const MomentumSpaceContext &momentumSpaceContext = electronFluctuationVertexCalculators[0]->getMomentumSpaceContext();
+//	const BrillouinZone &brillouinZone = momentumSpaceContext.getBrillouinZone();
+//	const vector<unsigned int> &numMeshPoints = momentumSpaceContext.getNumMeshPoints();
 
 	//Calculate offset
 /*	Index kIndex = brillouinZone.getMinorCellIndex(

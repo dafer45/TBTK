@@ -181,7 +181,7 @@ inline const std::complex<double> BlockDiagonalizationSolver::getAmplitude(
 	);
 	unsigned int block = stateToBlockMap.at(firstStateInBlock);
 	TBTKAssert(
-		state >= 0 && state < numStatesPerBlock.at(block),
+		state >= 0 && state < (int)numStatesPerBlock.at(block),
 		"BlockDiagonalizationSolver::getAmplitude()",
 		"Out of bound error. The block with block Index "
 		<< blockIndex.toString() << " has "
