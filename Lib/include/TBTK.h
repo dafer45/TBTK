@@ -1,4 +1,4 @@
-/* Copyright 2017 Kristofer Björnson
+/* Copyright 2018 Kristofer Björnson
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,8 @@
  */
 
 /** @package TBTKcalc
- *  @file Range.h
- *  @brief One-dimensional range.
+ *  @file TBTK.h
+ *  @brief Header file that can be included in project code to reduce overhead.
  *
  *  @author Kristofer Björnson
  */
