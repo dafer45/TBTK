@@ -53,6 +53,7 @@
 #include "TBTKMacros.h"
 #include "Timer.h"
 #include "UnitHandler.h"
+#include "Vector2d.h"
 #include "Vector3d.h"
 #include "VectorNd.h"
 #include "WannierParser.h"
