@@ -98,6 +98,9 @@ public:
 	 *  pseudo-Serializeable in that it implements the Serializeable
 	 * interface, but does so non-virtually. */
 	std::string serialize(Serializeable::Mode mode) const;
+
+	/** Get size in bytes. */
+	unsigned int getSizeInBytes() const;
 private:
 	/** Amplitude \f$a_{ij}\f$. Will be used if amplitudeCallback is NULL.
 	 */
@@ -149,6 +152,14 @@ inline std::string HoppingAmplitude::toString() const{
 		+ ", " + fromIndex.toString();
 
 	return str;
+}
+
+inline unsigned int HoppingAmplitude::getSizeInBytes() const{
+	return sizeof(HoppingAmplitude)
+		- sizeof(fromIndex)
+		- sizeof(toIndex)
+		+ fromIndex.getSizeInBytes()
+		+ toIndex.getSizeInBytes();
 }
 
 };	//End of namespace TBTK

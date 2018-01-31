@@ -145,6 +145,9 @@ public:
 	 *  implements the Serializeable interface, but does so non-virtually.
 	 */
 	std::string serialize(Serializeable::Mode mode) const;
+
+	/** Get size in bytes. */
+	unsigned int getSizeInBytes() const;
 private:
 	/** Subindex container. */
 	std::vector<int> indices;
@@ -277,6 +280,10 @@ inline int& Index::operator[](unsigned int subindex){
 
 inline const int& Index::operator[](unsigned int subindex) const{
 	return indices[subindex];
+}
+
+inline unsigned int Index::getSizeInBytes() const{
+	return sizeof(*this) + sizeof(int)*indices.capacity();
 }
 
 };	//End of namespace TBTK

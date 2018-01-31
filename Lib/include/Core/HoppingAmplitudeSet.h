@@ -234,6 +234,9 @@ public:
 
 	/** Implements Serializeable::serialize(). */
 	virtual std::string serialize(Mode mode) const;
+
+	/** Get size in bytes. */
+	unsigned int getSizeInBytes() const;
 private:
 	/** Root node for the tree structure in which HoppingAmplitudes are
 	 *  stored. */
@@ -356,6 +359,20 @@ inline const int* HoppingAmplitudeSet::getCOOColIndices() const{
 
 inline const std::complex<double>* HoppingAmplitudeSet::getCOOValues() const{
 	return cooValues;
+}
+
+inline unsigned int HoppingAmplitudeSet::getSizeInBytes() const{
+	unsigned int size = sizeof(*this) - sizeof(hoppingAmplitudeTree);
+	size += hoppingAmplitudeTree.getSizeInBytes();
+	if(numMatrixElements > 0){
+		size += numMatrixElements*(
+			sizeof(*cooRowIndices)
+			+ sizeof(*cooColIndices)
+			+ sizeof(*cooValues)
+		);
+	}
+
+	return size;
 }
 
 };	//End of namespace TBTK

@@ -93,6 +93,9 @@ public:
 	 *  debuging purposes. */
 	void print();
 
+	/** Get size in bytes. */
+	unsigned int getSizeInBytes() const;
+
 	/** Iterator for iterating through @link HoppingAmplitude
 	 *  HoppingAmplitudes @endlink stored in the tree structure. */
 	class Iterator{
@@ -273,6 +276,17 @@ inline int HoppingAmplitudeTree::getLastIndexInSubspace(
 	return subspace->getMaxIndex();
 }
 
+inline unsigned int HoppingAmplitudeTree::getSizeInBytes() const{
+	unsigned int size = 0;
+	for(unsigned int n = 0; n < hoppingAmplitudes.size(); n++)
+		size += hoppingAmplitudes[n].getSizeInBytes();
+	for(unsigned int n = 0; n < children.size(); n++)
+		size += children[n].getSizeInBytes();
+
+	return size + sizeof(HoppingAmplitudeTree);
+}
+
 };	//End of namespace TBTK
 
 #endif
+
