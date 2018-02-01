@@ -74,7 +74,7 @@ public:
 
 	/** Get Hilbert space index corresponding to given 'from'-index.
 	 *  @param index 'from'-index to get Hilbert space index for. */
-	int getBasisIndex(Index index) const;
+	int getBasisIndex(const Index &index) const;
 
 	/** Get size of Hilbert space. */
 	int getBasisSize() const;
@@ -146,7 +146,7 @@ inline void SingleParticleContext::addHoppingAmplitudeAndHermitianConjugate(
 	hoppingAmplitudeSet->addHoppingAmplitudeAndHermitianConjugate(ha);
 }
 
-inline int SingleParticleContext::getBasisIndex(Index index) const{
+inline int SingleParticleContext::getBasisIndex(const Index &index) const{
 	return hoppingAmplitudeSet->getBasisIndex(index);
 }
 

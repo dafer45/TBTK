@@ -165,6 +165,7 @@ inline const std::complex<double> BlockDiagonalizationSolver::getAmplitude(
 	unsigned int linearIndex = model.getBasisIndex(index);
 	unsigned int firstStateInBlock = blockToStateMap.at(block);
 	unsigned int lastStateInBlock = firstStateInBlock + numStatesPerBlock.at(block)-1;
+	offset += (state - firstStateInBlock)*numStatesPerBlock.at(block);
 	if(linearIndex >= firstStateInBlock && linearIndex <= lastStateInBlock)
 		return eigenVectors[offset + (linearIndex - firstStateInBlock)];
 	else
