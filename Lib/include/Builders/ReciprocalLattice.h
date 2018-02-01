@@ -78,6 +78,12 @@ public:
 	/** Genearates a Model for give momentum. */
 	Model* generateModel(std::vector<double> momentum) const;
 
+	/** Genearates a Model for give momentum. */
+	Model* generateModel(
+		const std::vector<std::vector<double>> &momentums,
+		const std::vector<Index> &blockIndices
+	) const;
+
 	/** Get reciprocal lattice vectors. */
 	const std::vector<std::vector<double>>& getReciprocalLatticeVectors() const;
 

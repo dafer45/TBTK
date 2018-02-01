@@ -186,6 +186,162 @@ Model* ReciprocalLattice::generateModel(vector<double> momentum) const{
 	return model;
 }
 
+Model* ReciprocalLattice::generateModel(
+	const vector<vector<double>> &momentums,
+	const vector<Index> &blockIndices
+) const{
+	TBTKAssert(
+		momentums.size() == blockIndices.size(),
+		"ReciprocalLattice::ReciprocalLattice()",
+		"Incompatible dimensions. The number of momentums must be the"
+		<< " same as the number of blockIndices. The the number of"
+		<< " momentums are " << momentums.size() << ", while the"
+		<< " number of blockIndices are " << blockIndices.size()
+		<< ".",
+		""
+	);
+
+	for(unsigned int n = 0; n < momentums.size(); n++){
+		TBTKAssert(
+			momentums[n].size() == reciprocalLatticeVectors.at(0).size(),
+			"ReciprocalLattice::ReciprocalLattice()",
+			"Incompatible dimensions. The number of components of"
+			<< " momentums must be the same as the number of"
+			<< " components of the lattice vectors in the UnitCell."
+			<< " The the number of components of momentums[" << n
+			<< "] are " << momentums[n].size() << ", while the"
+			<< " number of components for the latticeVectors are "
+			<< reciprocalLatticeVectors.at(0).size() << ".",
+			""
+		);
+		TBTKAssert(
+			blockIndices[n].getSize() == reciprocalLatticeVectors.at(0).size(),
+			"ReciprocalLattice::ReciprocalLattice()",
+			"Incompatible dimensions. The number of components of"
+			<< " blockIndices must be the same as the number of"
+			<< " components of the lattice vectors in the UnitCell."
+			<< " The the number of components of blockIndices["
+			<< n << "] are " << blockIndices[n].getSize()
+			<< ", while the number of components for the"
+			<< " latticeVectors are "
+			<< reciprocalLatticeVectors.at(0).size()
+			<< ".",
+			""
+		);
+	}
+
+	Model *model = new Model();
+
+	for(unsigned int from = 0; from < realSpaceReferenceCell->getStates().size(); from++){
+		//Get reference ket.
+		const AbstractState *referenceKet = realSpaceReferenceCell->getStates().at(from);
+
+		for(unsigned int to = 0; to < realSpaceReferenceCell->getStates().size(); to++){
+			//Get reference bra and its Index.
+			const AbstractState *referenceBra = realSpaceReferenceCell->getStates().at(to);
+			Index referenceBraIndex(referenceBra->getIndex());
+
+			//Get all bras that have a possible overlap with the
+			//reference ket.
+/*			const vector<const AbstractState*> *bras = realSpaceEnvironmentStateTree->getOverlappingStates(
+				referenceKet->getCoordinates(),
+				referenceKet->getExtent()
+			);*/
+			vector<const AbstractState*> *bras = realSpaceEnvironmentStateTree->getOverlappingStates(
+				referenceKet->getCoordinates(),
+				referenceKet->getExtent()
+			);
+
+			//Calculate momentum space amplitudes
+			vector<complex<double>> amplitudes;
+			for(unsigned int n = 0; n < momentums.size(); n++)
+				amplitudes.push_back(0.);
+
+			for(unsigned int n = 0; n < bras->size(); n++){
+				//Loop over all states that have a possible
+				//finite overlap with the reference ket.
+				const AbstractState *bra = bras->at(n);
+				if(bra->getIndex().equals(referenceBraIndex)){
+					//Only states with the same Index as
+					//the reference ket contributes to the
+					//amplitude.
+
+					//Get matrix element.
+					complex<double> matrixElement
+						= bras->at(
+							n
+						)->getMatrixElement(
+							*referenceKet
+						);
+
+					//Get coordinates.
+					const vector<double> &braCoordinates
+						= bra->getCoordinates();
+					const vector<double> &referenceCoordinates
+						= referenceBra->getCoordinates();
+					vector<double> coordinatesDifference;
+					for(
+						unsigned int c = 0;
+						c < braCoordinates.size();
+						c++
+					){
+						coordinatesDifference.push_back(
+							braCoordinates[c]
+							- referenceCoordinates[c]
+						);
+					}
+
+					static const complex<double> i(0., 1.);
+					for(
+						unsigned int m = 0;
+						m < momentums.size();
+						m++
+					){
+						const vector<double> &momentum
+							= momentums[m];
+
+						double exponent = 0.;
+						for(
+							unsigned int c = 0;
+							c < momentums[m].size();
+							c++
+						){
+							exponent += momentum[c]*coordinatesDifference[c];
+						}
+
+						amplitudes[m]
+							+= matrixElement*exp(
+								i*exponent
+							);
+					}
+				}
+			}
+
+			delete bras;
+
+			//Add HoppingAmplitude to Hamiltonian, unless the
+			//amplitude is exactly zero.
+			for(unsigned int n = 0; n < momentums.size(); n++){
+//				if(amplitude != 0.)
+//					model->addHA(HoppingAmplitude(amplitude, referenceBraIndex, referenceKet->getIndex()));
+					*model << HoppingAmplitude(
+						amplitudes[n],
+						Index(
+							blockIndices[n],
+							referenceBraIndex
+						),
+						Index(
+							blockIndices[n],
+							referenceKet->getIndex()
+						)
+					);
+			}
+		}
+	}
+
+	return model;
+}
+
 void ReciprocalLattice::setupReciprocalLatticeVectors(const UnitCell *unitCell){
 	const vector<vector<double>> latticeVectors = unitCell->getLatticeVectors();
 
