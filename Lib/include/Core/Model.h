@@ -52,6 +52,9 @@ public:
 	/** Constructor. */
 	Model();
 
+	/** Constructor. */
+	Model(const std::vector<unsigned int> &capacity);
+
 	/** Copy constructor. */
 	Model(const Model &model);
 

@@ -37,6 +37,25 @@ HoppingAmplitudeTree::HoppingAmplitudeTree(){
 	isPotentialBlockSeparator = true;
 }
 
+HoppingAmplitudeTree::HoppingAmplitudeTree(const vector<unsigned int> &capacity){
+	basisIndex = -1;
+	basisSize = -1;
+	isPotentialBlockSeparator = true;
+
+	if(capacity.size() != 0){
+		vector<unsigned int> childCapacity;
+		for(unsigned int n = 1; n < capacity.size(); n++)
+			childCapacity.push_back(capacity[n]);
+
+		children.reserve(capacity[0]);
+		for(unsigned int n = 0; n < capacity[0]; n++){
+			children.push_back(
+				HoppingAmplitudeTree(childCapacity)
+			);
+		}
+	}
+}
+
 HoppingAmplitudeTree::HoppingAmplitudeTree(
 	const string &serialization,
 	Mode mode

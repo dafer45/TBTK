@@ -39,6 +39,18 @@ HoppingAmplitudeSet::HoppingAmplitudeSet(){
 	cooValues = NULL;
 }
 
+HoppingAmplitudeSet::HoppingAmplitudeSet(const vector<unsigned int> &capacity){
+	isConstructed = false;
+	isSorted = false;
+	numMatrixElements = -1;
+
+	cooRowIndices = NULL;
+	cooColIndices = NULL;
+	cooValues = NULL;
+
+	hoppingAmplitudeTree = HoppingAmplitudeTree(capacity);
+}
+
 HoppingAmplitudeSet::HoppingAmplitudeSet(
 	const HoppingAmplitudeSet &hoppingAmplitudeSet
 ){

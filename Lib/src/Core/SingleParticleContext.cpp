@@ -34,6 +34,14 @@ SingleParticleContext::SingleParticleContext(){
 }
 
 SingleParticleContext::SingleParticleContext(
+	const vector<unsigned int> &capacity
+){
+	statistics = Statistics::FermiDirac;
+	hoppingAmplitudeSet = new HoppingAmplitudeSet(capacity);
+	geometry = nullptr;
+}
+
+SingleParticleContext::SingleParticleContext(
 	const SingleParticleContext &singleParticleContext
 ){
 	statistics = singleParticleContext.statistics;

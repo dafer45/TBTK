@@ -38,6 +38,15 @@ public:
 	/** Constructor. */
 	HoppingAmplitudeTree();
 
+	/** Constructor. Preallocates a HoppingAmplitudeTree such that the
+	 *  addition of HoppingAMplitudes with indices that have the same
+	 *  subindex structure as 'capacity', but with smaller subindices will
+	 *  not cause reallocation for the main tree stucture. Internal
+	 *  containers for HoppingAMplitudes may still be reallocated. */
+	HoppingAmplitudeTree(
+		const std::vector<unsigned int> &capacity
+	);
+
 	/** Constructor. Constructs the HoppingAmplitudeTree from a
 	 *  serialization string. */
 	HoppingAmplitudeTree(const std::string &serialization, Mode mode);

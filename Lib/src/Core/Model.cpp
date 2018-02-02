@@ -44,6 +44,15 @@ Model::Model() : Communicator(true){
 	hoppingAmplitudeFilter = nullptr;
 }
 
+Model::Model(const vector<unsigned int> &capacity) : Communicator(true){
+	temperature = 0.;
+	chemicalPotential = 0.;
+
+	singleParticleContext = new SingleParticleContext(capacity);
+	manyBodyContext = NULL;
+	hoppingAmplitudeFilter = nullptr;
+}
+
 Model::Model(const Model &model) : Communicator(model){
 	temperature = model.temperature;
 	chemicalPotential = model.chemicalPotential;

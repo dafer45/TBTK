@@ -49,6 +49,10 @@ public:
 	/** Constructor. */
 	HoppingAmplitudeSet();
 
+	/** Constructor. Preallocates the contained HoppingAmplitudeTree with
+	 *  capacity 'capacity'. */
+	HoppingAmplitudeSet(const std::vector<unsigned int> &capacity);
+
 	/** Copy constructor. */
 	HoppingAmplitudeSet(const HoppingAmplitudeSet &hoppingAmplitudeSet);
 

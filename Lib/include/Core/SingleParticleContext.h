@@ -37,6 +37,9 @@ public:
 	/** Constructor. */
 	SingleParticleContext();
 
+	/** Constructor. */
+	SingleParticleContext(const std::vector<unsigned int> &capacity);
+
 	/** Copy constructor. */
 	SingleParticleContext(
 		const SingleParticleContext &singleParticleContext
