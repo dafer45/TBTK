@@ -514,8 +514,49 @@ HoppingAmplitudeSet::Iterator::Iterator(const HoppingAmplitudeTree* hoppingAmpli
 	it = new HoppingAmplitudeTree::Iterator(hoppingAmplitudeTree);
 }
 
+HoppingAmplitudeSet::Iterator::Iterator(
+	const HoppingAmplitudeSet::Iterator &iterator
+){
+	it = new HoppingAmplitudeTree::Iterator(*iterator.it);
+}
+
+HoppingAmplitudeSet::Iterator::Iterator(
+	HoppingAmplitudeSet::Iterator &&iterator
+){
+	it = iterator.it;
+	iterator.it = nullptr;
+}
+
 HoppingAmplitudeSet::Iterator::~Iterator(){
-	delete it;
+	if(it != nullptr)
+		delete it;
+}
+
+HoppingAmplitudeSet::Iterator& HoppingAmplitudeSet::Iterator::operator=(
+	const HoppingAmplitudeSet::Iterator &rhs
+){
+	if(this != &rhs){
+		if(it != nullptr)
+			delete it;
+
+		it = new HoppingAmplitudeTree::Iterator(*rhs.it);
+	}
+
+	return *this;
+}
+
+HoppingAmplitudeSet::Iterator& HoppingAmplitudeSet::Iterator::operator=(
+	HoppingAmplitudeSet::Iterator &&rhs
+){
+	if(this != &rhs){
+		if(it != nullptr)
+			delete it;
+
+		it = rhs.it;
+		rhs.it = nullptr;
+	}
+
+	return *this;
 }
 
 void HoppingAmplitudeSet::Iterator::reset(){

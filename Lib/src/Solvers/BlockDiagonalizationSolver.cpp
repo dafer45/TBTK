@@ -36,6 +36,8 @@ BlockDiagonalizationSolver::BlockDiagonalizationSolver() : Communicator(true){
 
 	maxIterations = 50;
 	scCallback = nullptr;
+
+	parallelExecution = false;
 }
 
 BlockDiagonalizationSolver::~BlockDiagonalizationSolver(){
@@ -69,13 +71,18 @@ void BlockDiagonalizationSolver::run(){
 			Streams::out << "." << flush;
 		}
 
+		Timer::tick(0);
 		solve();
+		Timer::tock(0);
 
 		if(scCallback){
 			if(scCallback(this))
 				break;
-			else
+			else{
+				Timer::tick(1);
 				update();
+				Timer::tock(1);
+			}
 		}
 		else{
 			break;
@@ -266,32 +273,71 @@ void BlockDiagonalizationSolver::update(){
 		blockCounter++;
 		blockIterator.searchNext();
 	}*/
-	unsigned int blockCounter = 0;
-	while(!blockIterator.getHasReachedEnd()){
-		Index blockIndex = blockIterator.getIndex();
+	if(parallelExecution){
+		vector<HoppingAmplitudeSet::Iterator> iterators;
 
-		HoppingAmplitudeSet::Iterator iterator = getModel().getHoppingAmplitudeSet()->getIterator(
-			blockIndex
-		);
-		int minBasisIndex = iterator.getMinBasisIndex();
-		const HoppingAmplitude *hoppingAmplitude;
-		while((hoppingAmplitude = iterator.getHA())){
-			int from = model.getHoppingAmplitudeSet()->getBasisIndex(
-//				hoppingAmplitude->fromIndex
-				hoppingAmplitude->getFromIndex()
-			) - minBasisIndex;
-			int to = model.getHoppingAmplitudeSet()->getBasisIndex(
-//				hoppingAmplitude->toIndex
-				hoppingAmplitude->getToIndex()
-			) - minBasisIndex;
-			if(from >= to)
-				hamiltonian[blockOffsets.at(blockCounter) + to + (from*(from+1))/2] += hoppingAmplitude->getAmplitude();
+		while(!blockIterator.getHasReachedEnd()){
+			Index blockIndex = blockIterator.getIndex();
 
-			iterator.searchNextHA();
+			iterators.push_back(
+				getModel().getHoppingAmplitudeSet()->getIterator(
+					blockIndex
+				)
+			);
+
+			blockIterator.searchNext();
 		}
 
-		blockCounter++;
-		blockIterator.searchNext();
+		#pragma omp parallel for
+		for(unsigned int block = 0; block < iterators.size(); block++){
+			HoppingAmplitudeSet::Iterator &iterator = iterators[block];
+
+			int minBasisIndex = iterator.getMinBasisIndex();
+			const HoppingAmplitude *hoppingAmplitude;
+			while((hoppingAmplitude = iterator.getHA())){
+				int from = model.getHoppingAmplitudeSet()->getBasisIndex(
+//					hoppingAmplitude->fromIndex
+					hoppingAmplitude->getFromIndex()
+				) - minBasisIndex;
+				int to = model.getHoppingAmplitudeSet()->getBasisIndex(
+//					hoppingAmplitude->toIndex
+					hoppingAmplitude->getToIndex()
+				) - minBasisIndex;
+				if(from >= to)
+					hamiltonian[blockOffsets.at(block) + to + (from*(from+1))/2] += hoppingAmplitude->getAmplitude();
+
+				iterator.searchNextHA();
+			}
+		}
+	}
+	else{
+		unsigned int blockCounter = 0;
+		while(!blockIterator.getHasReachedEnd()){
+			Index blockIndex = blockIterator.getIndex();
+
+			HoppingAmplitudeSet::Iterator iterator = getModel().getHoppingAmplitudeSet()->getIterator(
+				blockIndex
+			);
+			int minBasisIndex = iterator.getMinBasisIndex();
+			const HoppingAmplitude *hoppingAmplitude;
+			while((hoppingAmplitude = iterator.getHA())){
+				int from = model.getHoppingAmplitudeSet()->getBasisIndex(
+//					hoppingAmplitude->fromIndex
+					hoppingAmplitude->getFromIndex()
+				) - minBasisIndex;
+				int to = model.getHoppingAmplitudeSet()->getBasisIndex(
+//					hoppingAmplitude->toIndex
+					hoppingAmplitude->getToIndex()
+				) - minBasisIndex;
+				if(from >= to)
+					hamiltonian[blockOffsets.at(blockCounter) + to + (from*(from+1))/2] += hoppingAmplitude->getAmplitude();
+
+				iterator.searchNextHA();
+			}
+
+			blockCounter++;
+			blockIterator.searchNext();
+		}
 	}
 
 /*	for(int b = 0; b < numBlocks; b++){

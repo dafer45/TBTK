@@ -92,6 +92,9 @@ public:
 
 	/** Get last state in the block corresponding to the given index. */
 	unsigned int getLastStateInBlock(const Index &index) const;
+
+	/** Set whether parallel execution is enabled or not. */
+	void setParallelExecution(bool parallelExecution);
 private:
 	/** pointer to array containing Hamiltonian. */
 	std::complex<double> *hamiltonian;
@@ -128,6 +131,9 @@ private:
 
 	/** Maximum number of iterations in the self-consistency loop. */
 	int maxIterations;
+
+	/** Flag indicating wether to enable parallel execution. */
+	bool parallelExecution;
 
 	/** Callback function to call each time a diagonalization has been
 	 *  completed. */
@@ -230,6 +236,12 @@ inline unsigned int BlockDiagonalizationSolver::getLastStateInBlock(
 	unsigned int block = stateToBlockMap.at(linearIndex);
 
 	return getFirstStateInBlock(index) + numStatesPerBlock.at(block)-1;
+}
+
+inline void BlockDiagonalizationSolver::setParallelExecution(
+	bool parallelExecution
+){
+	this->parallelExecution = parallelExecution;
 }
 
 };	//End of namespace TBTK

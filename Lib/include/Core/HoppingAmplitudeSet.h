@@ -158,8 +158,20 @@ public:
 	 *  HoppingAmplitudes @endlink. */
 	class Iterator{
 	public:
+		/** Copy constructor. */
+		Iterator(const Iterator &iterator);
+
+		/** Move constructor. */
+		Iterator(Iterator &&iterator);
+
 		/** Destructor. */
 		~Iterator();
+
+		/** Assignment operator. */
+		Iterator& operator=(const Iterator &rhs);
+
+		/** Move assignment operator. */
+		Iterator& operator=(Iterator &&rhs);
 
 		/** Reset iterator. */
 		void reset();

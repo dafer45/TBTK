@@ -119,8 +119,20 @@ public:
 		 *  currentIndex. */
 		int currentHoppingAmplitude;
 
+		/** Copy constructor. */
+		Iterator(const Iterator &iterator);
+
+		/** Move constructor. */
+		Iterator(Iterator &&iterator);
+
 		/** Constructor. */
 		Iterator(const HoppingAmplitudeTree *tree);
+
+		/** Assignment operator. */
+		Iterator& operator=(const Iterator &rhs);
+
+		/** Move assignment operator. */
+		Iterator& operator=(Iterator &&rhs);
 
 		/** Reset iterator. */
 		void reset();

@@ -620,6 +620,22 @@ string HoppingAmplitudeTree::serialize(Mode mode) const{
 	}
 }
 
+HoppingAmplitudeTree::Iterator::Iterator(
+	const HoppingAmplitudeTree::Iterator &iterator
+){
+	tree = iterator.tree;
+	currentIndex = iterator.currentIndex;
+	currentHoppingAmplitude = iterator.currentHoppingAmplitude;
+}
+
+HoppingAmplitudeTree::Iterator::Iterator(
+	HoppingAmplitudeTree::Iterator &&iterator
+){
+	tree = iterator.tree;
+	currentIndex = std::move(iterator.currentIndex);
+	currentHoppingAmplitude = iterator.currentHoppingAmplitude;
+}
+
 HoppingAmplitudeTree::Iterator::Iterator(const HoppingAmplitudeTree *tree){
 	this->tree = tree;
 	if(tree->children.size() == 0){
@@ -634,6 +650,30 @@ HoppingAmplitudeTree::Iterator::Iterator(const HoppingAmplitudeTree *tree){
 		currentHoppingAmplitude = -1;
 		searchNext(tree, 0);
 	}
+}
+
+HoppingAmplitudeTree::Iterator& HoppingAmplitudeTree::Iterator::operator=(
+	const HoppingAmplitudeTree::Iterator &rhs
+){
+	if(this != &rhs){
+		tree = rhs.tree;
+		currentIndex = rhs.currentIndex;
+		currentHoppingAmplitude = rhs.currentHoppingAmplitude;
+	}
+
+	return *this;
+}
+
+HoppingAmplitudeTree::Iterator& HoppingAmplitudeTree::Iterator::operator=(
+	HoppingAmplitudeTree::Iterator &&rhs
+){
+	if(this != &rhs){
+		tree = rhs.tree;
+		currentIndex = std::move(rhs.currentIndex);
+		currentHoppingAmplitude = rhs.currentHoppingAmplitude;
+	}
+
+	return *this;
 }
 
 void HoppingAmplitudeTree::Iterator::reset(){
