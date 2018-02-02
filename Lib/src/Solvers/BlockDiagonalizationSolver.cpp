@@ -71,17 +71,13 @@ void BlockDiagonalizationSolver::run(){
 			Streams::out << "." << flush;
 		}
 
-		Timer::tick(0);
 		solve();
-		Timer::tock(0);
 
 		if(scCallback){
 			if(scCallback(this))
 				break;
 			else{
-				Timer::tick(1);
 				update();
-				Timer::tock(1);
 			}
 		}
 		else{
@@ -392,42 +388,90 @@ extern "C" void zhbeb_(
 
 void BlockDiagonalizationSolver::solve(){
 	if(true){//Currently no support for banded matrices.
-		unsigned int eigenValuesOffset = 0;
-		for(int b = 0; b < numBlocks; b++){
-			//Setup zhpev to calculate...
-			char jobz = 'V';			//...eigenvalues and eigenvectors...
-			char uplo = 'U';			//...for an upper triangular...
-			int n = numStatesPerBlock.at(b);	//...nxn-matrix.
-			//Initialize workspaces
-			complex<double> *work = new complex<double>[(2*n-1)];
-			double *rwork = new double[3*n-2];
-			int info;
-			//Solve brop
-			zhpev_(
-				&jobz,
-				&uplo,
-				&n,
-				hamiltonian + blockOffsets.at(b),
-				eigenValues + eigenValuesOffset,
-				eigenVectors + eigenVectorOffsets.at(b),
-				&n,
-				work,
-				rwork,
-				&info
-			);
+		if(parallelExecution){
+			vector<unsigned int> eigenValuesOffsets;
+			eigenValuesOffsets.push_back(0);
+			for(int b = 1; b < numBlocks; b++){
+				eigenValuesOffsets.push_back(
+					eigenValuesOffsets[b-1]
+					+ numStatesPerBlock[b]
+				);
+			}
 
-			TBTKAssert(
-				info == 0,
-				"DiagonalizationSolver:solve()",
-				"Diagonalization routine zhpev exited with INFO=" + to_string(info) + ".",
-				"See LAPACK documentation for zhpev for further information."
-			);
+			#pragma omp parallel for
+			for(int b = 0; b < numBlocks; b++){
+				//Setup zhpev to calculate...
+				char jobz = 'V';			//...eigenvalues and eigenvectors...
+				char uplo = 'U';			//...for an upper triangular...
+				int n = numStatesPerBlock.at(b);	//...nxn-matrix.
+				//Initialize workspaces
+				complex<double> *work = new complex<double>[(2*n-1)];
+				double *rwork = new double[3*n-2];
+				int info;
+				//Solve brop
+				zhpev_(
+					&jobz,
+					&uplo,
+					&n,
+					hamiltonian + blockOffsets.at(b),
+					eigenValues + eigenValuesOffsets[b],
+					eigenVectors + eigenVectorOffsets.at(b),
+					&n,
+					work,
+					rwork,
+					&info
+				);
 
-			//Delete workspaces
-			delete [] work;
-			delete [] rwork;
+				TBTKAssert(
+					info == 0,
+					"DiagonalizationSolver:solve()",
+					"Diagonalization routine zhpev exited with INFO=" + to_string(info) + ".",
+					"See LAPACK documentation for zhpev for further information."
+				);
 
-			eigenValuesOffset += numStatesPerBlock.at(b);
+				//Delete workspaces
+				delete [] work;
+				delete [] rwork;
+			}
+		}
+		else{
+			unsigned int eigenValuesOffset = 0;
+			for(int b = 0; b < numBlocks; b++){
+				//Setup zhpev to calculate...
+				char jobz = 'V';			//...eigenvalues and eigenvectors...
+				char uplo = 'U';			//...for an upper triangular...
+				int n = numStatesPerBlock.at(b);	//...nxn-matrix.
+				//Initialize workspaces
+				complex<double> *work = new complex<double>[(2*n-1)];
+				double *rwork = new double[3*n-2];
+				int info;
+				//Solve brop
+				zhpev_(
+					&jobz,
+					&uplo,
+					&n,
+					hamiltonian + blockOffsets.at(b),
+					eigenValues + eigenValuesOffset,
+					eigenVectors + eigenVectorOffsets.at(b),
+					&n,
+					work,
+					rwork,
+					&info
+				);
+
+				TBTKAssert(
+					info == 0,
+					"DiagonalizationSolver:solve()",
+					"Diagonalization routine zhpev exited with INFO=" + to_string(info) + ".",
+					"See LAPACK documentation for zhpev for further information."
+				);
+
+				//Delete workspaces
+				delete [] work;
+				delete [] rwork;
+
+				eigenValuesOffset += numStatesPerBlock.at(b);
+			}
 		}
 	}
 /*	else{
