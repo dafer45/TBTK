@@ -31,14 +31,20 @@ void FourierTransform::transform(
 	int sizeX,
 	int sign
 ){
-	fftw_plan plan = fftw_plan_dft_1d(
+	fftw_plan plan;
+
+	#pragma omp critical
+	plan = fftw_plan_dft_1d(
 		sizeX,
 		reinterpret_cast<fftw_complex*>(in),
 		reinterpret_cast<fftw_complex*>(out),
 		sign,
 		FFTW_ESTIMATE
 	);
+
 	fftw_execute(plan);
+
+	#pragma omp critical
 	fftw_destroy_plan(plan);
 
 	for(int n = 0; n < sizeX; n++)
@@ -52,7 +58,10 @@ void FourierTransform::transform(
 	int sizeY,
 	int sign
 ){
-	fftw_plan plan = fftw_plan_dft_2d(
+	fftw_plan plan;
+
+	#pragma omp critical
+	plan = fftw_plan_dft_2d(
 		sizeX,
 		sizeY,
 		reinterpret_cast<fftw_complex*>(in),
@@ -60,7 +69,10 @@ void FourierTransform::transform(
 		sign,
 		FFTW_ESTIMATE
 	);
+
 	fftw_execute(plan);
+
+	#pragma omp critical
 	fftw_destroy_plan(plan);
 
 	for(int n = 0; n < sizeX*sizeY; n++)
@@ -75,7 +87,10 @@ void FourierTransform::transform(
 	int sizeZ,
 	int sign
 ){
-	fftw_plan plan = fftw_plan_dft_3d(
+	fftw_plan plan;
+
+	#pragma omp critical
+	plan = fftw_plan_dft_3d(
 		sizeX,
 		sizeY,
 		sizeZ,
@@ -84,7 +99,10 @@ void FourierTransform::transform(
 		sign,
 		FFTW_ESTIMATE
 	);
+
 	fftw_execute(plan);
+
+	#pragma omp critical
 	fftw_destroy_plan(plan);
 
 	for(int n = 0; n < sizeX*sizeY*sizeZ; n++)
