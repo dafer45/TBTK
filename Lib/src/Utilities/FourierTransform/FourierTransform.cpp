@@ -109,4 +109,82 @@ void FourierTransform::transform(
 		out[n] /= sqrt(sizeX*sizeY*sizeZ);
 }
 
+template<>
+FourierTransform::Plan<complex<double>>::Plan(
+	complex<double> *in,
+	complex<double> *out,
+	int sizeX,
+	int sign
+){
+	plan = new fftw_plan();
+
+	#pragma omp critical (TBTK_FOURIER_TRANSFORM)
+	*plan = fftw_plan_dft_1d(
+		sizeX,
+		reinterpret_cast<fftw_complex*>(in),
+		reinterpret_cast<fftw_complex*>(out),
+		sign,
+		FFTW_ESTIMATE
+	);
+
+	input = in;
+	output = out;
+	size = sizeX;
+	normalizationFactor = sqrt(sizeX);
+}
+
+template<>
+FourierTransform::Plan<complex<double>>::Plan(
+	complex<double> *in,
+	complex<double> *out,
+	int sizeX,
+	int sizeY,
+	int sign
+){
+	plan = new fftw_plan();
+
+	#pragma omp critical (TBTK_FOURIER_TRANSFORM)
+	*plan = fftw_plan_dft_2d(
+		sizeX,
+		sizeY,
+		reinterpret_cast<fftw_complex*>(in),
+		reinterpret_cast<fftw_complex*>(out),
+		sign,
+		FFTW_ESTIMATE
+	);
+
+	input = in;
+	output = out;
+	size = sizeX*sizeY;
+	normalizationFactor = sqrt(sizeX*sizeY);
+}
+
+template<>
+FourierTransform::Plan<complex<double>>::Plan(
+	complex<double> *in,
+	complex<double> *out,
+	int sizeX,
+	int sizeY,
+	int sizeZ,
+	int sign
+){
+	plan = new fftw_plan();
+
+	#pragma omp critical (TBTK_FOURIER_TRANSFORM)
+	*plan = fftw_plan_dft_3d(
+		sizeX,
+		sizeY,
+		sizeZ,
+		reinterpret_cast<fftw_complex*>(in),
+		reinterpret_cast<fftw_complex*>(out),
+		sign,
+		FFTW_ESTIMATE
+	);
+
+	input = in;
+	output = out;
+	size = sizeX*sizeY*sizeZ;
+	normalizationFactor = sqrt(sizeX*sizeY*sizeZ);
+}
+
 };

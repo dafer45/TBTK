@@ -33,7 +33,184 @@ namespace TBTK{
 
 class FourierTransform{
 public:
-	/** One-dimensional real Fourier transform. */
+	/** Plan for executing the Fourier-transform. */
+	template<typename DataType>
+	class Plan{
+	public:
+		/** Constructor. */
+		Plan(
+			DataType *in,
+			DataType *out,
+			int sizeX,
+			int sign
+		);
+
+		/** Constructor. */
+		Plan(
+			DataType *in,
+			DataType *out,
+			int sizeX,
+			int sizeY,
+			int sign
+		);
+
+		/** Constructor. */
+		Plan(
+			DataType *in,
+			DataType *out,
+			int sizeX,
+			int sizeY,
+			int sizeZ,
+			int sign
+		);
+
+		/** Copy constructor. */
+		Plan(const Plan &plan) = delete;
+
+		/** Move constructor. */
+		Plan(Plan &&plan);
+
+		/** Destructor. */
+		~Plan();
+
+		/** Assignment operator. */
+		Plan& operator=(const Plan &plan) = delete;
+
+		/** Move assignment operator. */
+		Plan& operator=(Plan &&plan);
+
+		/** Set normalization factor. */
+		void setNormalizationFactor(double normalizationFactor);
+
+		/** Get normalizationFactor. */
+		double getNormalizationFactor() const;
+	private:
+		/** FFTW3 plan. */
+		fftw_plan *plan;
+
+		/** Normalization factor. */
+		double normalizationFactor;
+
+		/** Data size. */
+		unsigned int size;
+
+		/** Input data. */
+		DataType *input;
+
+		/** Output data. */
+		DataType *output;
+
+		/** Get FFTW3 plan. */
+		fftw_plan& getFFTWPlan();
+
+		/** Get data size. */
+		unsigned int getSize() const;
+
+		/** Get input data. */
+		DataType* getInput();
+
+		/** Get output data. */
+		DataType* getOutput();
+
+		/** Make FourierTransform a friend class. */
+		friend class FourierTransform;
+	};
+
+	/** Plan for executing forward Fourier-transform. */
+	template<typename DataType>
+	class ForwardPlan : public Plan<DataType>{
+	public:
+		/** Constructor. */
+		ForwardPlan(
+			DataType *in,
+			DataType *out,
+			int sizeX
+		) : Plan<DataType>(
+			in,
+			out,
+			sizeX,
+			-1
+		){}
+
+		/** Constructor. */
+		ForwardPlan(
+			DataType *in,
+			DataType *out,
+			int sizeX,
+			int sizeY
+		) : Plan<DataType>(
+			in,
+			out,
+			sizeX,
+			sizeY,
+			-1
+		){}
+
+		/** Constructor. */
+		ForwardPlan(
+			DataType *in,
+			DataType *out,
+			int sizeX,
+			int sizeY,
+			int sizeZ
+		) : Plan<DataType>(
+			in,
+			out,
+			sizeX,
+			sizeY,
+			sizeZ,
+			-1
+		){}
+	};
+
+	/** Plan for executing inverse Fourier-transform. */
+	template<typename DataType>
+	class InversePlan : public Plan<DataType>{
+	public:
+		/** Constructor. */
+		InversePlan(
+			DataType *in,
+			DataType *out,
+			int sizeX
+		) : Plan<DataType>(
+			in,
+			out,
+			sizeX,
+			1
+		){}
+
+		/** Constructor. */
+		InversePlan(
+			DataType *in,
+			DataType *out,
+			int sizeX,
+			int sizeY
+		) : Plan<DataType>(
+			in,
+			out,
+			sizeX,
+			sizeY,
+			1
+		){}
+
+		/** Constructor. */
+		InversePlan(
+			DataType *in,
+			DataType *out,
+			int sizeX,
+			int sizeY,
+			int sizeZ
+		) : Plan<DataType>(
+			in,
+			out,
+			sizeX,
+			sizeY,
+			sizeZ,
+			1
+		){}
+	};
+
+	/** One-dimensional complex Fourier transform. */
 	static void transform(
 		std::complex<double> *in,
 		std::complex<double> *out,
@@ -59,6 +236,10 @@ public:
 		int sizeZ,
 		int sign
 	);
+
+	/** One-dimensional complex Fourier transform. */
+	template<typename DataType>
+	static void transform(Plan<DataType> &plan);
 
 	/** One-dimensional complex forward Fourier transform. */
 	static void forward(
@@ -109,6 +290,19 @@ public:
 	);
 private:
 };
+
+template<typename DataType>
+inline void FourierTransform::transform(Plan<DataType> &plan){
+	fftw_execute(plan.getFFTWPlan());
+
+	double normalizationFactor = plan.getNormalizationFactor();
+	if(normalizationFactor != 1.){
+		Streams::out << "Normalizing\n";
+		DataType *output = plan.getOutput();
+		for(unsigned int n = 0; n < plan.getSize(); n++)
+			output[n] /= normalizationFactor;
+	}
+}
 
 inline void FourierTransform::forward(
 	std::complex<double> *in,
@@ -162,6 +356,79 @@ inline void FourierTransform::inverse(
 	int sizeZ
 ){
 	transform(in, out, sizeX, sizeY, sizeZ, 1);
+}
+
+template<typename DataType>
+inline FourierTransform::Plan<DataType>::Plan(Plan &&plan){
+	this->plan = plan.plan;
+	plan.plan = nullptr;
+
+	normalizationFactor = plan.normalizationFactor;
+	size = plan.size;
+	input = plan.input;
+	output = plan.output;
+}
+
+template<typename DataType>
+inline FourierTransform::Plan<DataType>::~Plan(){
+	if(plan != nullptr){
+		fftw_destroy_plan(*plan);
+		delete plan;
+	}
+
+}
+
+template<typename DataType>
+inline FourierTransform::Plan<DataType>& FourierTransform::Plan<
+	DataType
+>::operator=(Plan &&rhs){
+	if(this != &rhs){
+		if(this->plan != nullptr){
+			fftw_destroy_plan(*this->plan);
+			delete this->plan;
+
+			this->plan = rhs.plan;
+
+			normalizationFactor = rhs.normalizationFactor;
+			size = rhs.size;
+			input = rhs.input;
+			output = rhs.output;
+		}
+	}
+
+	return *this;
+}
+
+template<typename DataType>
+inline void FourierTransform::Plan<DataType>::setNormalizationFactor(
+	double normalizationFactor
+){
+	this->normalizationFactor = normalizationFactor;
+}
+
+template<typename DataType>
+inline double FourierTransform::Plan<DataType>::getNormalizationFactor() const{
+	return normalizationFactor;
+}
+
+template<typename DataType>
+inline fftw_plan& FourierTransform::Plan<DataType>::getFFTWPlan(){
+	return *plan;
+}
+
+template<typename DataType>
+inline unsigned int FourierTransform::Plan<DataType>::getSize() const{
+	return size;
+}
+
+template<typename DataType>
+inline DataType* FourierTransform::Plan<DataType>::getInput(){
+	return input;
+}
+
+template<typename DataType>
+inline DataType* FourierTransform::Plan<DataType>::getOutput(){
+	return output;
 }
 
 };	//End of namespace TBTK
