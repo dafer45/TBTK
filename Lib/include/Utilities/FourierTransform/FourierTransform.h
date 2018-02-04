@@ -372,7 +372,9 @@ inline FourierTransform::Plan<DataType>::Plan(Plan &&plan){
 template<typename DataType>
 inline FourierTransform::Plan<DataType>::~Plan(){
 	if(plan != nullptr){
+		#pragma omp critical (TBTK_FOURIER_TRANSFORM)
 		fftw_destroy_plan(*plan);
+
 		delete plan;
 	}
 
@@ -384,7 +386,9 @@ inline FourierTransform::Plan<DataType>& FourierTransform::Plan<
 >::operator=(Plan &&rhs){
 	if(this != &rhs){
 		if(this->plan != nullptr){
+			#pragma omp critical (TBTK_FOURIER_TRANSFORM)
 			fftw_destroy_plan(*this->plan);
+
 			delete this->plan;
 
 			this->plan = rhs.plan;
