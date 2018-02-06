@@ -46,7 +46,7 @@ BlockDiagonalizationSolver::~BlockDiagonalizationSolver(){
 	if(eigenValues != nullptr)
 		delete [] eigenValues;
 	if(eigenVectors != nullptr)
-		delete eigenVectors;
+		delete [] eigenVectors;
 }
 
 void BlockDiagonalizationSolver::run(){
@@ -224,6 +224,13 @@ void BlockDiagonalizationSolver::init(){
 		Streams::out << "\tNumber of blocks: "
 			<< numStatesPerBlock.size() << "\n";
 	}
+
+	if(hamiltonian != nullptr)
+		delete [] hamiltonian;
+	if(eigenValues != nullptr)
+		delete [] eigenValues;
+	if(eigenVectors != nullptr)
+		delete [] eigenVectors;
 
 	hamiltonian = new complex<double>[hamiltonianSize];
 	eigenValues = new double[getModel().getBasisSize()];

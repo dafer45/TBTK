@@ -41,7 +41,7 @@ DiagonalizationSolver::~DiagonalizationSolver(){
 	if(eigenValues != NULL)
 		delete [] eigenValues;
 	if(eigenVectors != NULL)
-		delete eigenVectors;
+		delete [] eigenVectors;
 }
 
 void DiagonalizationSolver::run(){
@@ -91,6 +91,13 @@ void DiagonalizationSolver::init(){
 	int basisSize = getModel().getBasisSize();
 	if(getGlobalVerbose() && getVerbose())
 		Streams::out << "\tBasis size: " << basisSize << "\n";
+
+	if(hamiltonian != nullptr)
+		delete [] hamiltonian;
+	if(eigenValues != nullptr)
+		delete [] eigenValues;
+	if(eigenVectors != nullptr)
+		delete [] eigenVectors;
 
 	hamiltonian = new complex<double>[(basisSize*(basisSize+1))/2];
 	eigenValues = new double[basisSize];

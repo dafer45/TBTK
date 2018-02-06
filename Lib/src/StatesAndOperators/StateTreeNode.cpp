@@ -142,6 +142,8 @@ StateTreeNode::StateTreeNode(
 }
 
 StateTreeNode::~StateTreeNode(){
+	for(unsigned int n = 0; n < stateTreeNodes.size(); n++)
+		delete stateTreeNodes[n];
 }
 
 void StateTreeNode::add(AbstractState *state){

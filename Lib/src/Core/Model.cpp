@@ -167,9 +167,14 @@ Model& Model::operator=(const Model &rhs){
 		temperature = rhs.temperature;
 		chemicalPotential = rhs.chemicalPotential;
 
+		if(singleParticleContext != nullptr)
+			delete singleParticleContext;
 		singleParticleContext = new SingleParticleContext(
 			*rhs.singleParticleContext
 		);
+
+		if(manyBodyContext != nullptr)
+			delete manyBodyContext;
 		if(rhs.manyBodyContext == nullptr){
 			manyBodyContext = nullptr;
 		}
@@ -179,6 +184,8 @@ Model& Model::operator=(const Model &rhs){
 			);
 		}
 
+		if(hoppingAmplitudeFilter != nullptr)
+			delete hoppingAmplitudeFilter;
 		if(rhs.hoppingAmplitudeFilter == nullptr){
 			hoppingAmplitudeFilter = nullptr;
 		}
@@ -196,11 +203,18 @@ Model& Model::operator=(Model &&rhs){
 		temperature = rhs.temperature;
 		chemicalPotential = rhs.chemicalPotential;
 
+		if(singleParticleContext != nullptr)
+			delete singleParticleContext;
 		singleParticleContext = rhs.singleParticleContext;
 		rhs.singleParticleContext = nullptr;
+
+		if(manyBodyContext != nullptr)
+			delete manyBodyContext;
 		manyBodyContext = rhs.manyBodyContext;
 		rhs.manyBodyContext = nullptr;
 
+		if(hoppingAmplitudeFilter != nullptr)
+			delete hoppingAmplitudeFilter;
 		hoppingAmplitudeFilter = rhs.hoppingAmplitudeFilter;
 		rhs.hoppingAmplitudeFilter = nullptr;
 	}

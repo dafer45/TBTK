@@ -40,6 +40,7 @@ Plotter::Plotter(){
 }
 
 Plotter::~Plotter(){
+	clearDataStorage();
 }
 
 void Plotter::plot(
