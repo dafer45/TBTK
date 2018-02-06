@@ -109,6 +109,7 @@ void BlockDiagonalizationSolver::init(){
 		blockIterator.searchNext();
 	}*/
 	numBlocks = 0;
+	numStatesPerBlock.clear();
 	while(!blockIterator.getHasReachedEnd()){
 		Index blockIndex = blockIterator.getIndex();
 
@@ -123,6 +124,10 @@ void BlockDiagonalizationSolver::init(){
 	}
 
 	/** Calculate block sizes and blockOffsets. */
+	blockSizes.clear();
+	eigenVectorSizes.clear();
+	blockOffsets.clear();
+	eigenVectorOffsets.clear();
 	for(unsigned int n = 0; n < numStatesPerBlock.size(); n++){
 		unsigned int numStates = numStatesPerBlock.at(n);
 		blockSizes.push_back((numStates*(numStates+1))/2);
@@ -162,6 +167,8 @@ void BlockDiagonalizationSolver::init(){
 	//versa.
 	unsigned int blockCounter = 0;
 	unsigned int intraBlockCounter = 0;
+	blockToStateMap.clear();
+	stateToBlockMap.clear();
 	for(int n = 0; n < getModel().getBasisSize(); n++){
 		if(intraBlockCounter >= numStatesPerBlock.at(blockCounter)){
 			intraBlockCounter = 0;
@@ -170,7 +177,6 @@ void BlockDiagonalizationSolver::init(){
 
 		if(intraBlockCounter == 0)
 			blockToStateMap.push_back(n);
-
 
 		stateToBlockMap.push_back(blockCounter);
 		intraBlockCounter++;
