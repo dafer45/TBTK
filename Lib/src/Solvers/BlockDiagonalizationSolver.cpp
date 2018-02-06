@@ -156,8 +156,8 @@ void BlockDiagonalizationSolver::init(){
 
 	//Calculate amount of memory required to store all the blocks of the
 	//Hamiltonian.
-	unsigned long hamiltonianSize = 0;
-	unsigned long eigenVectorsSize = 0;
+	size_t hamiltonianSize = 0;
+	size_t eigenVectorsSize = 0;
 	for(unsigned int n = 0; n < numStatesPerBlock.size(); n++){
 		hamiltonianSize += (numStatesPerBlock.at(n)*(numStatesPerBlock.at(n)+1))/2;
 		eigenVectorsSize += numStatesPerBlock.at(n)*numStatesPerBlock.at(n);
@@ -183,10 +183,10 @@ void BlockDiagonalizationSolver::init(){
 	}
 
 	if(getGlobalVerbose() && getVerbose()){
-		long numBytesHamiltonian = hamiltonianSize*sizeof(
+		size_t numBytesHamiltonian = hamiltonianSize*sizeof(
 			complex<double>
 		);
-		long numBytesEigenVectors = eigenVectorsSize*sizeof(
+		size_t numBytesEigenVectors = eigenVectorsSize*sizeof(
 			complex<double>
 		);
 
