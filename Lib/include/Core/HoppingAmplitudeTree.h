@@ -304,10 +304,17 @@ inline unsigned int HoppingAmplitudeTree::getSizeInBytes() const{
 	for(unsigned int n = 0; n < children.size(); n++)
 		size += children[n].getSizeInBytes();
 
+	size += (
+		hoppingAmplitudes.capacity() - hoppingAmplitudes.size()
+	)*sizeof(HoppingAmplitude);
+
+	size += (
+		children.capacity() - children.size()
+	)*sizeof(HoppingAmplitudeTree);
+
 	return size + sizeof(HoppingAmplitudeTree);
 }
 
 };	//End of namespace TBTK
 
 #endif
-
