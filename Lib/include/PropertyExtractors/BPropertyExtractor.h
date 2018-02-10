@@ -152,6 +152,9 @@ public:
 	virtual Property::SpinPolarizedLDOS calculateSpinPolarizedLDOS(
 		std::initializer_list<Index> patterns
 	);
+
+	/** Overrider PropertyExtractor::calculateEntropy(). */
+	virtual double calculateEntropy();
 private:
 	/** Callback for calculating the wave function. Used by
 	 *  calculateWaveFunction. */

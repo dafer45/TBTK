@@ -22,6 +22,8 @@
 #include "Functions.h"
 #include "Streams.h"
 
+#include <cmath>
+
 using namespace std;
 
 namespace TBTK{
@@ -531,6 +533,44 @@ Property::SpinPolarizedLDOS BPropertyExtractor::calculateSpinPolarizedLDOS(
 	delete [] (void**)hint;
 
 	return spinPolarizedLDOS;
+}
+
+double BPropertyExtractor::calculateEntropy(){
+	Statistics statistics = bSolver->getModel().getStatistics();
+
+	double entropy = 0.;
+	for(int n = 0; n < bSolver->getModel().getBasisSize(); n++){
+		double p;
+
+		switch(statistics){
+		case Statistics::FermiDirac:
+			p = Functions::fermiDiracDistribution(
+				getEigenValue(n),
+				bSolver->getModel().getChemicalPotential(),
+				bSolver->getModel().getTemperature()
+			);
+			break;
+		case Statistics::BoseEinstein:
+			p = Functions::boseEinsteinDistribution(
+				getEigenValue(n),
+				bSolver->getModel().getChemicalPotential(),
+				bSolver->getModel().getTemperature()
+			);
+			break;
+		default:
+			TBTKExit(
+				"BPropertyExtractor::calculateEntropy()",
+				"Unknow statistsics.",
+				"This should never happen, contact the developer."
+			);
+		}
+
+		entropy -= p*log(p);
+	}
+
+	entropy *= UnitHandler::getK_BN();
+
+	return entropy;
 }
 
 void BPropertyExtractor::calculateWaveFunctionCallback(

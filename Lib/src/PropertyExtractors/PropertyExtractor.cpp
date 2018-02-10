@@ -148,6 +148,14 @@ Property::DOS PropertyExtractor::calculateDOS(){
 	);
 }
 
+double PropertyExtractor::calculateEntropy(){
+	TBTKExit(
+		"PropertyExtractor::calculateEntropy()",
+		"The chosen property extractor does not support this function call.",
+		"See the API for list of supported calls."
+	);
+}
+
 void PropertyExtractor::calculate(
 	void (*callback)(
 		PropertyExtractor *cb_this,

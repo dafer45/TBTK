@@ -221,6 +221,9 @@ public:
 
 	/** Calculate density of states. */
 	virtual Property::DOS calculateDOS();
+
+	/** Calculate entropy. */
+	virtual double calculateEntropy();
 protected:
 	/** Default energy resolution. */
 	static constexpr int ENERGY_RESOLUTION = 1000;
