@@ -1,0 +1,3 @@
+#Ignore folders with generated documentation pages
+html/
+latex/
