@@ -1,5 +1,0 @@
-\page Introduction
-
-# Introduction
-
-
