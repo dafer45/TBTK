@@ -1,0 +1,26 @@
+var classTBTK_1_1PropertyExtractor =
+[
+    [ "PropertyExtractor", "classTBTK_1_1PropertyExtractor.html#a2ca24641875ae757c1d66254d5c56d4b", null ],
+    [ "~PropertyExtractor", "classTBTK_1_1PropertyExtractor.html#a390a93a51ff8297337f453847b62420c", null ],
+    [ "calculate", "classTBTK_1_1PropertyExtractor.html#ad7bbb3246ac4a7bfb1fd9f13b2d9cc60", null ],
+    [ "calculate", "classTBTK_1_1PropertyExtractor.html#aaedb030da385e8d76ebdf30c1642e00a", null ],
+    [ "calculateDensity", "classTBTK_1_1PropertyExtractor.html#abfc69208c1e41c43edfc7cddf08e430e", null ],
+    [ "calculateDensity", "classTBTK_1_1PropertyExtractor.html#ab84e5c930587496dced7a0c3919ba0a9", null ],
+    [ "calculateDOS", "classTBTK_1_1PropertyExtractor.html#ad4a04a61ab7183922645df3c797cdd55", null ],
+    [ "calculateEntropy", "classTBTK_1_1PropertyExtractor.html#ae910b9ff6c092f864bd3cac968d200ec", null ],
+    [ "calculateExpectationValue", "classTBTK_1_1PropertyExtractor.html#a0092f65076d2e1fdc8ef5bbcef073264", null ],
+    [ "calculateLDOS", "classTBTK_1_1PropertyExtractor.html#abaa51f674593677e2edf2948aeaf95d8", null ],
+    [ "calculateLDOS", "classTBTK_1_1PropertyExtractor.html#a53fd35f8194e2f581b6baeac6e3daac0", null ],
+    [ "calculateMagnetization", "classTBTK_1_1PropertyExtractor.html#a1053ccd1b47b305cb4ed5f617b602489", null ],
+    [ "calculateMagnetization", "classTBTK_1_1PropertyExtractor.html#a5f46cbbf01484b51890f64c5af16a524", null ],
+    [ "calculateSpinPolarizedLDOS", "classTBTK_1_1PropertyExtractor.html#afc3f806386a9f3be346b97cacbf2f426", null ],
+    [ "calculateSpinPolarizedLDOS", "classTBTK_1_1PropertyExtractor.html#adf7729f159e24cdc8d71ef256072c21d", null ],
+    [ "ensureCompliantRanges", "classTBTK_1_1PropertyExtractor.html#a8d1822124100fe1ad9fde33d5ae692c6", null ],
+    [ "generateIndexTree", "classTBTK_1_1PropertyExtractor.html#ad134bf95aae6ce05170691a2b48e3717", null ],
+    [ "getLoopRanges", "classTBTK_1_1PropertyExtractor.html#a3e0e1b65478720b433d20e5b521b3c46", null ],
+    [ "setEnergyWindow", "classTBTK_1_1PropertyExtractor.html#ab93caa651075d59e940159a3637bba03", null ],
+    [ "energyResolution", "classTBTK_1_1PropertyExtractor.html#a8f46a629c7969533023d23cf3214d55f", null ],
+    [ "hint", "classTBTK_1_1PropertyExtractor.html#a038b9f26058558aecfbb1d12b8bbb5c4", null ],
+    [ "lowerBound", "classTBTK_1_1PropertyExtractor.html#abd7d691010c1f160f9f3b3a40149bb68", null ],
+    [ "upperBound", "classTBTK_1_1PropertyExtractor.html#a1b47016347879443379295d5716fccf2", null ]
+];
