@@ -1,10 +1,7 @@
-/*! \mainpage TBTK - Tight-Binding ToolKit
- *
- *  TBTK is a c++ library for solving general bilinear Hamiltonians.
- *  See http://dafer45.github.io/TBTK for an introduction to the library.
+/*! \mainpage TBTK
  *
  *  TBTK is a c++ library for modeling and solving second quantized Hamiltonians.
- *  The library originated as a toolkit for solving tight-binding models (bilinear Hamiltonians), but has since expanded its scope into general second-quantized models.
+ *  The library originated as a toolkit for solving tight-binding models (bilinear Hamiltonians), but has since expanded in scope to include general second-quantized models.
  *  A flexible indexing scheme allows for general models to be setup with little effort, and a variety of solution methods are implemented in a set of different solvers.
  *  The aim is to provide flexible and well thought through data structures that combines the efficiency of c++ with high level abstraction that allows developers to focus their attention on physics rather than numerics. In this way TBTK is intended to facilitate both the investigation of specific physical question as well as enabling rapid development of completely new methods.
  *
