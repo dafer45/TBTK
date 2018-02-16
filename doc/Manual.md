@@ -2,6 +2,7 @@ Manual {#manual}
 ======
 
 - @subpage Introduction
+- @subpage Overview
 - @subpage Model
 - @subpage Solve
 - @subpage ExtractProperties
@@ -50,7 +51,7 @@ This allows for components to be used interchangeably with little changes to the
 
 TBTK is first and foremost a collection of data structures intended to enable the implementation of algorithms for solving quantum mechanical problems, but also implements several different algorithms for solving specific problems.
 
-# c++11: Performance vs. user friendliness {#cpp11PerformanceVsUserFriendliness}
+# c++11: Performance vs. ease of use {#cpp11PerformanceVsEaseOfUse}
 
 Scientific computations are often very demanding and high performance is therefore often a high priority.
 However, while low level programming languages offer high performance, they also have a reputation of being relatively difficult to work with.
@@ -60,6 +61,28 @@ A well writen library can alleviate many of these issues, such as for example pu
 Great progress in this direction was taken with the establishment of the c++11 standard.
 The language of choice for TBTK has therefore been c++11, and much effort has gone into developing data structures that is as simple as possible to use.
 Great care has also been taken to avoid having the program crash without giving error messages that provide information that helps the user to resolve the problem.
+
+@page Overview Overview
+
+# Model, Solvers, and PropertyExtractors {#ModelSolversAndPropertyExtractors}
+It is useful to think of a typical scientific numeric study as involving three relatively separate decissions:
+- What is the model?
+- What method to use?
+- What properties to calculate?
+
+When writing code, the answer to these three questions essentially determines the input, algorithm, and output, respectively.
+To succesfully cary out studies of complex problems, it is important that it is easy to set up the model and to extract the properties, and that the underlying algorithm that performs the work is efficient.
+However, the simultaneous requirement on the algorithm to be efficient and that the calculation is easy to set up easily run countrary to each other.
+Efficiency often require low level optimization in the algorithm, which e.g. can put strict requirment of how the input and output is represented in memory.
+If this means the user is required to setup the input and extract the output on a format that requires deep knowledge about the internal workings of the algorithm, two important problems arise.
+First, if details about the algorithm is required to be kept in mind at all levels of the code it hinders the user from thinking about the problem on a higher level where numeric nuisance has been abstracted  away.
+Second, if the specific requirements of an algorithm determines the structure of the whole program, the whole code has to be rewritten if the choice is made to try another algorithm.
+
+To get around these problems TBTK encourages a workflow where the three stages of specifying input, chosing algorithm, and extracting properties are largly independent from each other.
+To achieve this TBTK has a class called a Model that allows for general models to be setup.
+Further, algorithms are implemented in a set of different Solvers, which takes a Model and internally converts it to the format most suitable for the algorithm.
+Finally, the Solver is wrapped in a PropertyExtractor, where the different PropertyExtractors have a uniform interface.
+By using the PropertyExtractors to extract properties from the Model, rather than by calling the Solvers directly, most code do not need to be changed if the Solver is changed.
 
 @page Model Model
 
