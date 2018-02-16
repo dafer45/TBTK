@@ -218,6 +218,10 @@ inline const MomentumSpaceContext& SusceptibilityCalculator::getMomentumSpaceCon
 	return *momentumSpaceContext;
 }
 
+inline SusceptibilityCalculator::Algorithm SusceptibilityCalculator::getAlgorithm() const{
+	return algorithm;
+}
+
 inline Index SusceptibilityCalculator::getSusceptibilityResultIndex(
 	const Index &kIndex,
 	const std::vector<int> &orbitalIndices
