@@ -86,11 +86,11 @@ Finally, the Solver is wrapped in a PropertyExtractor, where the different Prope
 By using the PropertyExtractors to extract properties from the Model, rather than by calling the Solvers directly, most code do not need to be changed if the Solver is changed.
 
 # Auxiliary tasks
-In addition to the three main tasks described above, auxiliary tasks such as reading/writing data from/to file, plotting, etc. are required.
-TBTK therefore also have a large set of tools for simplifying such tasks.
-A fundamental key feature of TBTK is that it also comes with a powerful method for handling units.
+While the three questions above captures the essence of a typical scientific problem, auxiliary tasks such as reading/writing data from/to file, plotting, etc. are required to solve a problem.
+TBTK therefore also have a large set of tools for simplifying such tasks, allowing the developer to put more mental effort into the main scientific questions.
+Further, a fundamental key feature of TBTK is that it also comes with a powerful method for handling units.
 While physical quantities often are expressed in terms of some specific combinations of units such as K, eV, C, etc. it is often useful to work in some for the problem at hands natural set of units.
-In high-energy physics this may mean \f$ \hbar = c = 1\f$, while in condensed matter physics it can be useful to express energies in terms of some arbitrary unit set by a hopping parameter.
+In high-energy physics this may mean \f$ \hbar = c = 1\f$, while in condensed matter physics it can be useful to express energies in terms of Rydbergs or some arbitrary unit set by a hopping parameter.
 For this TBTK provides a UnitHandler that enables the developer to specify the natural units for the given problem.
 All function calls to TBTK functions should be understood to be in terms of the specified natural units.
 
@@ -110,8 +110,76 @@ In the later case the Solver will have to adhere to the main development philoso
 
 @page UnitHandler UnitHandler
 
-# Units in physics, equations, and numerics {#UnitsInPhysicsEquationsAndNumerics}
-Most physical quantities comes with a unit attach.
+# Units and constants {#UnitsAndConstants}
+Most quantities of interest in physics have units, which means that the numerical value of the quantity depends on which units it is measured in.
+Different sets of units are relevant in different situations, e.g. is meter (m) a relevant unit for length in macroscopic problems, while Ångström (Å) is more relevant on atomic scales.
+However, computers work with unitless numbers, which means that any piece of code that relies on hard coded numerical values for physical constants implicitly force the user of the code to work in the same set of units.
+This is unacceptable for a library such as TBTK which aims at allowing physicist with different preferences for units to use the library to implement their own calculations.
+Simulatenously it is of value to not require the developer to specify the numerical value of every constant before development can begin.
+Contrary, it is very useful if the library itself can supply such constants in whatever units the developer prefer.
+To solve these issues, TBTK provides a UnitHandler that allows the user to specify what units are natural to the problem at hands, and all numbers passed to TBTK functions are assumed to be given in these natural units.
+
+# Base units, derived units, and natural units {#BaseUnitsDerivedUnitsAndNaturalUnits}
+The UnitHandler borrows its terminology from the SI standard for units.
+Not by forcing the user to work in SI units, but rather through a clear division of units into base units and derived units.
+To understand what this means, consider distances and times.
+These are quantities that are defined independently from each other and can be measured in for example meters (m) and seconds (s).
+In comparison, a velocity is a measure of distance per time and cannot be defined independently of these two quantities.
+Velocity can therefore be considered to be a quantity that is derived from the more fundamental quantities distance and time.
+In principle, there is no reason why a given quantity has to be considered more fundamental than any other, and it is perfectly valid to e.g. view time as a quantity derived from the more fundamental quantities distance and velocity.
+However, the fact remains that for the three quantities distance, time, and velocity, only two at a time can be defined independently from each other.
+Further, among all the quantities encountered in physics, only seven can be defined independently from each other.
+By fixing seven such quantities, a set of seven corresponding base units can be defined.
+All other units are considered derived units.
+
+The UnitHandler defines the fundamental quantities to be temperature, time, length, energy, charge, and count (amount).
+This is the first point where the UnitHandler deviates from the SI system, since the SI system do not define the units for energy and charge as base units, but instead the units for mass, current, and luminosity.
+Note in particular that the UnitHandler currently only defines base units for six different quantities.
+The missing quantity is due to ambiguity regarding whether angles should be considered unitfull or unitless quantities.
+Units for angle may therefore be added to the UnitHandler in the future.
+The decission to make the units for energy and charge base units, rather than mass and current as in the SI system, is based on a subjective perception of the former being more generally relevant in quantum mechanical calculations.
+
+Next, the UnitHandler also deviates from the SI system by only fixing the base quantities rather than the base units.
+While e.g. the SI unit for length is meter (m), the UnitHandler allows the base unit for length to be set to a range of different units such as meter (m), millimiter (mm), nanometer (nm), Ångström (Å), etc.
+Similarly a range of different options are available for other quantities, such as for example Joule (J) and electronvolt (eV) for energy, and Coulomb (C) and elementary charge (e) for charge.
+
+## Base units
+By default the base units are
+| Quantity    | Default base unit  |
+|-------------|--------------------|
+| Temperature | K (Kelvin)         |
+| Time        | s (seconds)        |
+| Length      | m (meter)          |
+| Energy      | eV (electron Volt) |
+| Charge      | C (Coulomb)        |
+| Count       | pcs (pieces)       |
+
+Further the available base units are
+| Quantity    | Available base units                             |
+|-------------|--------------------------------------------------|
+| Temperature | kK, K, mK, uK, nK                                |
+| Time        | s, ms, us, ns, ps, fs, as                        |
+| Length      | m, mm, um, nm, pm, fm, am, Ao                    |
+| Energy      | GeV, MeV, keV, eV, meV, ueV, J                   |
+| Charge      | kC, C, mC, uC, nC, pC, fC, aC, Te, Ge, Me, ke, e |
+| Count       | pcs, mol                                         |
+
+Most of these units should be self-explanatory, with Gx, Mx, kx, mx, etc. corresponds to giga, mega, kilo, milli, etc.
+Further, Ao corresponds to Ångström (Å), while pcs corresponds to pieces.
+If further base units are wanted, please do not hesitate to request the addition of additional base units.
+
+If base units other than the default base units are wanted, it is recommended to set the base units at the very start of a program.
+For example at the first line in the main routine.
+This avoids ambiguities that results from changing base units in the middle of execution.
+To for example set the base units to mK, ps, Å, meV, C, and mol, type
+```cpp
+	UnitHandler::setTemperatureUnit(UnitHandler::TemeratureUnit::mK);
+	UnitHandler::setTimeUnit(UnitHandler::TimeUnit::ps);
+	UnitHandler::setLengthUnit(UnitHandler::LengthUnit::Ao);
+	UnitHandler::setEnergyUnit(UnitHandler::EnergyUnit::meV);
+	UnitHandler::setChargeUnit(UnitHandler::ChargeUnit::C);
+	UnitHandler::setCountUnit(UnitHandler::CountUnit::mK);
+```
 
 @page Model Model
 
@@ -119,7 +187,7 @@ Most physical quantities comes with a unit attach.
 The main class for setting up a model is the Model class.
 The Model acts as a container of the Hamiltonian, temperature, chemical potential, etc.
 A typical initialization of a Model looks like
-```c++
+```cpp
 	Model model;
 	model.setTemperature(300);
 	model.setChemicalPotential(0);
