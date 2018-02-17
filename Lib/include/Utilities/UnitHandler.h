@@ -188,10 +188,10 @@ public:
 	static double getCN();
 
 	/** Get Avogadros number in the currently set base units. */
-	static double getN_aB();
+	static double getN_AB();
 
 	/** Get Avogadros number in the currently set natural units. */
-	static double getN_aN();
+	static double getN_AN();
 
 	/** Get the electron mass in the currently set base units. */
 	static double getM_eB();
@@ -407,7 +407,7 @@ public:
 	/** GetAvogadros number unit string.
 	 *
 	 *  @return string representation of the unit for Avogadros number. */
-	static std::string getN_aUnitString();
+	static std::string getN_AUnitString();
 
 	/** Get electron mass unit string.
 	 *
@@ -487,7 +487,7 @@ private:
 	static double c;
 
 	/** Avogadros number in the currently set units. */
-	static double n_a;
+	static double n_A;
 
 	/** Electron mass in the currently set units. */
 	static double m_e;
@@ -581,7 +581,7 @@ private:
 	static void updateC();
 
 	/** Update Avogadros number. To be called at change of units. */
-	static void updateN_a();
+	static void updateN_A();
 
 	/** Update electron mass. To be called at change of units. */
 	static void updateM_e();
@@ -667,12 +667,12 @@ inline double UnitHandler::getCN(){
 	return c*timeScale/lengthScale;
 }
 
-inline double UnitHandler::getN_aB(){
-	return n_a;
+inline double UnitHandler::getN_AB(){
+	return n_A;
 }
 
-inline double UnitHandler::getN_aN(){
-	return n_a/countScale;
+inline double UnitHandler::getN_AN(){
+	return n_A/countScale;
 }
 
 inline double UnitHandler::getM_eB(){

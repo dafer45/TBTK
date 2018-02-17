@@ -37,7 +37,7 @@ double UnitHandler::hbar	= HBAR;
 double UnitHandler::k_B		= K_B;
 double UnitHandler::e		= E;
 double UnitHandler::c		= C;
-double UnitHandler::n_a		= N_A;
+double UnitHandler::n_A		= N_A;
 double UnitHandler::m_e		= M_E;
 double UnitHandler::m_p		= M_P;
 double UnitHandler::mu_b	= MU_B;
@@ -131,7 +131,7 @@ void UnitHandler::setCountUnit(CountUnit unit){
 	double newConversionFactor = getCountConversionFactor();
 	countScale *= newConversionFactor/oldConversionFactor;
 
-	updateN_a();
+	updateN_A();
 }
 
 void UnitHandler::setTemperatureScale(double scale){
@@ -403,7 +403,7 @@ string UnitHandler::getCUnitString(){
 	return ss.str();
 }
 
-string UnitHandler::getN_aUnitString(){
+string UnitHandler::getN_AUnitString(){
 	return getCountUnitString();
 }
 
@@ -472,9 +472,9 @@ void UnitHandler::updateC(){
 	c /= getTimeConversionFactor();
 }
 
-void UnitHandler::updateN_a(){
-	n_a = N_A;
-	n_a *= getCountConversionFactor();
+void UnitHandler::updateN_A(){
+	n_A = N_A;
+	n_A *= getCountConversionFactor();
 }
 
 void UnitHandler::updateM_e(){
