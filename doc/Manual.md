@@ -113,13 +113,12 @@ In the later case the Solver will have to adhere to the main development philoso
 # Units and constants {#UnitsAndConstants}
 Most quantities of interest in physics have units, which means that the numerical value of the quantity depends on which units it is measured in.
 Different sets of units are relevant in different situations, e.g. is meter (m) a relevant unit for length in macroscopic problems, while Ångström (Å) is more relevant on atomic scales.
-However, computers work with unitless numbers, which means that any piece of code that relies on hard coded numerical values for physical constants implicitly force the user of the code to work in the same set of units.
+However, computers work with unitless numbers, which means that any piece of code that relies on hard coded numerical values for physical constants implicitly force the user to work in the same set of units.
 This is unacceptable for a library such as TBTK which aims at allowing physicist with different preferences for units to use the library to implement their own calculations.
-Simulatenously it is of value to not require the developer to specify the numerical value of every constant before development can begin.
-Contrary, it is very useful if the library itself can supply such constants in whatever units the developer prefer.
+It is also very useful if the library can supply such constants in whatever units the developer prefer.
 To solve these issues, TBTK provides a UnitHandler that allows the user to specify what units are natural to the problem at hands, and all numbers passed to TBTK functions are assumed to be given in these natural units.
 
-# Base units, derived units, and natural units {#BaseUnitsDerivedUnitsAndNaturalUnits}
+# Base units {#BaseUnits}
 The UnitHandler borrows its terminology from the SI standard for units.
 Not by forcing the user to work in SI units, but rather through a clear division of units into base units and derived units.
 To understand what this means, consider distances and times.
@@ -133,9 +132,9 @@ By fixing seven such quantities, a set of seven corresponding base units can be 
 All other units are considered derived units.
 
 The UnitHandler defines the fundamental quantities to be temperature, time, length, energy, charge, and count (amount).
-This is the first point where the UnitHandler deviates from the SI system, since the SI system do not define the units for energy and charge as base units, but instead the units for mass, current, and luminosity.
+This is the first point where the UnitHandler deviates from the SI system since the SI system do not define the units for energy and charge as base units, but instead the units for mass, current, and luminosity.
 Note in particular that the UnitHandler currently only defines base units for six different quantities.
-The missing quantity is due to ambiguity regarding whether angles should be considered unitfull or unitless quantities.
+The missing quantity is due to an ambiguity regarding whether an angle should be considered a unitfull or unitless quantity.
 Units for angle may therefore be added to the UnitHandler in the future.
 The decission to make the units for energy and charge base units, rather than mass and current as in the SI system, is based on a subjective perception of the former being more generally relevant in quantum mechanical calculations.
 
@@ -143,21 +142,20 @@ Next, the UnitHandler also deviates from the SI system by only fixing the base q
 While e.g. the SI unit for length is meter (m), the UnitHandler allows the base unit for length to be set to a range of different units such as meter (m), millimiter (mm), nanometer (nm), Ångström (Å), etc.
 Similarly a range of different options are available for other quantities, such as for example Joule (J) and electronvolt (eV) for energy, and Coulomb (C) and elementary charge (e) for charge.
 
-## Base units
 By default the base units are
-| Quantity    | Default base unit  |
-|-------------|--------------------|
-| Temperature | K (Kelvin)         |
-| Time        | s (seconds)        |
-| Length      | m (meter)          |
-| Energy      | eV (electron Volt) |
-| Charge      | C (Coulomb)        |
-| Count       | pcs (pieces)       |
+| Quantity    | Default base unit  | UnitHandler symbol |
+|-------------|--------------------|--------------------|
+| Temperature | K (Kelvin)         | Temperature        |
+| Time        | s (seconds)        | Time               |
+| Length      | m (meter)          | Length             |
+| Energy      | eV (electron Volt) | Energy             |
+| Charge      | C (Coulomb)        | Charge             |
+| Count       | pcs (pieces)       | Count              |
 
-Further the available base units are
+Further, the available base units are
 | Quantity    | Available base units                             |
 |-------------|--------------------------------------------------|
-| Temperature | kK, K, mK, uK, nK                                |
+| Temperature | kK, K, mK, uK, nK                                | 
 | Time        | s, ms, us, ns, ps, fs, as                        |
 | Length      | m, mm, um, nm, pm, fm, am, Ao                    |
 | Energy      | GeV, MeV, keV, eV, meV, ueV, J                   |
@@ -166,9 +164,9 @@ Further the available base units are
 
 Most of these units should be self-explanatory, with Gx, Mx, kx, mx, etc. corresponds to giga, mega, kilo, milli, etc.
 Further, Ao corresponds to Ångström (Å), while pcs corresponds to pieces.
-If further base units are wanted, please do not hesitate to request the addition of additional base units.
+If further base units are wanted, please do not hesitate to request additions.
 
-If base units other than the default base units are wanted, it is recommended to set the base units at the very start of a program.
+If base units other than the default base units are wanted, it is recommended to set these at the very start of a program.
 For example at the first line in the main routine.
 This avoids ambiguities that results from changing base units in the middle of execution.
 To for example set the base units to mK, ps, Å, meV, C, and mol, type
@@ -178,8 +176,92 @@ To for example set the base units to mK, ps, Å, meV, C, and mol, type
 	UnitHandler::setLengthUnit(UnitHandler::LengthUnit::Ao);
 	UnitHandler::setEnergyUnit(UnitHandler::EnergyUnit::meV);
 	UnitHandler::setChargeUnit(UnitHandler::ChargeUnit::C);
-	UnitHandler::setCountUnit(UnitHandler::CountUnit::mK);
+	UnitHandler::setCountUnit(UnitHandler::CountUnit::mol);
 ```
+
+# Natural units {#NaturalUnits}
+It is common in physics to use natural units in which for example \f$\hbar = c = 1\f$.
+Such natural units simplify equations and allows mental effort to be concentrated on the physical phenomena rather than numerical details.
+The same is true when implementing numerical calculations and it is for example common in tight-binding calculations to measure energy in units of some hopping parameter \f$t = 1\f$, while the actual unitfull value can be some arbitrary value such as \f$t = 724meV\f$.
+In TBTK all function calls are performed in natural units, except for the UnitHandler calls that specifies the natural units.
+This means that if the natural energy unit is set to e.g. \f$724meV\f$, an energy variable with say the value 1.2 that is passed to a function is internally interpretted by TBTK to have the unitfull value \f$1.2\times724meV\f$.
+However, note that this conversion is not necessarily done at the point where the function call is made and may be repeatedly done at later points of execution if the variable is stored internally.
+This is why it is important to not reconfigure the UnitHandler in the middle of a program since this introduces ambiguities.
+
+The natural unit is also known as the scale of the problem, and the code required to specify the natural energy unit (scale) to be \f$724meV\f$ is
+```cpp
+	//Set the energy base unit
+	UnitHandler::setEnergyUnit(UnitHandler::EnergyUnit::meV);
+	//Set the natural energy unit (scale) 
+	UnitHandler::setEnergyScale(724);
+```
+The code for setting the other five natural units is similar, with the word 'Energy' exchanged for the relevant quantity.
+
+# Converting between base and natural units {#ConvertingBetweenBaseAndNaturalUnits}
+Because the input and output from TBTK functions are in natural units, it is convenient to have a simple way to convert between the two.
+The UnitHandler provides such functions through a set of functions on the form
+```cpp
+	double quantityInBaseUnits    = UnitHandler::convertQuantityNtB(quantityInNaturalUnits);
+	double quantityInNaturalUnits = UnitHandler::convertQuantityBtN(quantityInBaseUnits);
+```
+Here 'Quantity' is to be replace by the corresponding UnitHandler symbol specified in the table above, and NtB and BtN should be read 'natural to base' and 'base to natural', respectively.
+
+# Derived units {#DerivedUnits}
+Since derived units are defined in terms of the base units, it is in principle possible to use the above method to perform conversion of arbitrary derived units to and from natural units.
+However, doing so would require decomposing the derived unit into the corresponding base units, convert the base units one by one, multiply them together with the appropriate exponents, and finally multiply the quantity itself by the result.
+Moreover, even though it e.g. may be most convenient to work in the base units \f$eV\f$, \f$m\f$, and \f$s\f$ for energy, length, and time, in which case the corresponding mass unit is \f$eVs^2/m^2\f$, it may be more convenient to actuall specify mass using the unit \f$kg\f$.
+For this reason the UnitHandler aslo has special support for certain derived units.
+Currently this is restricted to mass and magnetic field strength, but if more units are wanted, please do not hesitate to request additional derived units.
+The full list of possible derived units are
+| Quantity                | Available derived units                      | UnitHandler symbol |
+|-------------------------|----------------------------------------------|--------------------|
+| Mass                    | kg, g, mg, ug, ng, pg, fg, ag, u             | Mass               |
+| Magnetic field strength | MT, kT, T, mT, uT, nT, GG, MG, kG, G, mG, uG | MagneticField      |
+
+To convert mass, say specified in the derived units \f$kg\f$ to and from base and natural units the following function calls can be made
+```cpp
+	double massInBaseUnits    = UnitHandler::convertMassDtB(massInDerivedUnits, UnitHandler::MassUnit::kg);
+	double massInNaturalUnits = UnitHandler::convertMassDtN(massInDerivedUnits, UnitHandler::MassUnit::kg);
+	double massInDerivedUnits = UnitHandler::convertMassBtD(massInBaseUnits,    UnitHandler::MassUnit::kg);
+	double massInDerivedUnits = UnitHandler::convertMassNtD(massInNaturalUnits, UnitHandler::MassUnit::kg);
+```
+Here DtB, DtN, BtD, and NtD should be read 'derived to base', 'derived to natural', 'base to derived', and 'natural to derived', respectively.
+The function calls mimic the six corresponding combinations of calls for conversion between base and natural units, with the exception that for derived units the actual derived unit has to be passed as a second argument.
+
+# Constants {#Constants}
+The specification of physical constants is prone to errors.
+Partly because physical constants more often than not are long strings of rather random digits, and partly because it is easy to make mistakes when converting the constants to the particular units used in the calculation.
+The UnitHandler alleviates this issue by providing a range of predefined constants that can be requested on the currently used base or natural units.
+The available constants are
+| Name                    | Symbol           | UnitHandler symbol |
+|-------------------------|------------------|--------------------|
+| Reduced Planck constant | \f$\hbar\f$      | Hbar               |
+| Boltzman constant       | \f$k_B\f$        | K_B                |
+| Elementary charge       | \f$e\f$          | E                  |
+| Speed of light          | \f$c\f$          | C                  |
+| Avogadros number        | \f$N_A\f$        | N_A                |
+| Electron mass           | \f$m_e\f$        | M_e                |
+| Proton mass             | \f$m_p\f$        | M_p                |
+| Bohr magneton           | \f$\mu_B\f$      | Mu_B               |
+| Nuclear magneton        | \f$\mu_n\f$      | Mu_n               |
+| Vacuum permeability     | \f$\mu_0\f$      | Mu_0               |
+| Vacuum permittivity     | \f$\epsilon_0\f$ | Epsilon_0          |
+Please do not hesitate to request further constants.
+
+Once the base and natural units have been specified using the calls described above, the physical constants can be requested using function calls on the form
+```cpp
+	double constantValueInBaseUnits    = UnitHandler::getSymbolB();
+	double constantValueInNaturalUnits = UnitHandler::getSymbolN();
+```
+Here 'Symbol' is to be replaced by the corresponding symbol listed under 'UnitHandler symbol' in the table above.
+
+# Unit strings {#UnitStrings}
+When printing values, it is useful to also print the actuall unit strings.
+The UnitHandler therefore also provides methods for requesting the base unit strings for different quantities, which is obtained through function calls on the form
+```cpp
+	string unitSring = UnitHandler::getSymbolUnitString();
+```
+Here 'Symbol' can be any of the symbols listed in the tables over base units, derived units, and constants.
 
 @page Model Model
 
