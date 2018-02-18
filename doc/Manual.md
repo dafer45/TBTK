@@ -557,6 +557,41 @@ Once the Filter is specified, we are ready to use it to setup a Model
 	model.construct();
 ```
 
+# Advanced: Callback functions
+Sometimes it is useful to be able to delay specification of a HoppingAmplitudes value to a later time than the creation of the Model.
+This is for example the case if the same Model is going to be solved multiple times for different parameter values, or if some of the parameters in the Hamiltonian are going to be determined self-consistently.
+For this reason it is possible to pass a function as value argument to the HoppingAmplitude rather than a fixed value.
+If we have indices with the structure {x, y, s}, where the last index is a spin, and there exists som global parameter \f$J\f$ that determines the current strength of the Zeeman term, a typical callbackFunction looks like
+```cpp
+	complex<double> callbackJ(const Index &to, const Index &from){
+		//Get spin index.
+		int s = from[2];
+
+		//Return the value of the HoppingAmplitude
+		return -J*(1 - 2*s);
+	}
+```
+Just like when writing an IndexFilter, a certain amount of Model specific information needs to go into the specification of the callbacks.
+Here we have for example chosen to determine the spin by looking at the 'from'-Index, which should not differ from the spin-index of the *to*-Index.
+However, unlike when writing IndexFilters, the HoppingAmplitude callbacks only need to make sure that they work for the restricted Indices for which the callback is fed into the Model together with, since these are the only Indices that will ever be passed to the callback.
+
+Once the callback is defined, it is possible to use it when setting up a model as follows
+```cpp
+	model << HoppingAmplitude(callbackJ, {x, y, s}, {x, y, s});
+```
+
+# Block structure {#BlockStructure}
+One of the most powerful methods for solving quantum mechanical problems is block diagonalization of the Hamiltonian.
+What this means is that the Hamiltonian is broken apart into smaller blocks that are decoupled from each other and thereby effectively replaces one big problem with many smaller problems.
+The smaller problems are much simpler to solve and usually far outweighs the fact that several problems have to be solved instead.
+The most obvious example of this is a Hamiltonian which when written in reciprocal space separates into independent problems for each momentum \f$\mathbf{k}\f$.
+
+To facilitate the exploitation of block diagonal Hamiltonians TBTK has restricted support for automatically detecting when it is handed a Hamiltonian with a block diagonal structure.
+However, for this to work the developer has to organize the Index structure in such a way that TBTK is able to automatically take advantage of the block diagonal structure.
+Namely, TBTK will automaitcally detect existing block structures as long as the Index has the subindices that identifies the independen blocks standing to the left of the intra block indices.
+For a system with say three momentum subindices, one orbital subindex, and one spin subindex, where the Hamiltonian is block diagonal in the momentum space subindices, an appropriate Index structure is {kx, ky, kz, orbital, spin}.
+If for some reason the Index structure instead is given as {kx, ky, orbital, kz, spin}, TBTK will only be able to automatically detect kx and ky as block-indices, and will treate all of the three remaining subindices orbital, kz, and spin as internal indices for the blocks (at least as long as the Hamiltonian does not happen to also be block diagonal in the orbital subindex).
+
 @page Solvers Solvers
 
 # Limiting algorithm specific details from spreading {#LimitingAlgorithmSpecificDetailsFromSpreading}
@@ -641,12 +676,64 @@ Another \f$16N^2\f$ bytes are required to store the resulting eigenvectors, and 
 Neglecting the storage for the eigenvalues the approximate memory footprint for the DiagonalizationSolver is \f$24N^2\f$ bytes.
 This runs into the GB range around a basis size of 7000.
 
-The time it takes to diagonalize a matrix is somewhat less exact since it depends on the exact system specification, but as of 2018 runs into the hour range for basis sizes of a few thousands.
+The time it takes to diagonalize a matrix cannot be estimated with the same precission since it depends on the exact specification of the computer that the calculations are done on, but as of 2018 runs into the hour range for basis sizes of a few thousands.
 However, knowing the execution time for a certain size on a certain computer, the execution can be rather accurately predicted for other system sizes using that the computation time scales as \f$N^3\f$.
 
-## Self-consistency callback
+## Advanced: Self-consistency callback
+Sometimes the value of one or several parameters that go into the Hamiltonian are not known a priori, but it is instead part of the problem to figure out the correct value.
+A common approach for solving such problems is to make an initial guess for the parameters, solve the model for the corresponding parameters, and then update the parameters with the so obtained values.
+If the problem is well behaved enough, such an approach results in the unknown parameters eventually converging to fixed values.
+Once the calculated parameter value is equal (within some tollerance) to the input parameter in the current iteration, the parameters are said to have reached self-consistency.
+That is, the calculated parameters are consistent with themself in the sense that if they are used as input parameters, they are also the result of the calculation.
+
+When using diagonalization the self-consistent procedure is very straight forward: diagonalize the Hamiltonian, callculate and update parameters, and repeat until convergence.
+The DiagonalizationSolver is therefore prepared to run such a self-consistency loop.
+However, the the second step requires special knowledge about the system which the DiagonalizationSolver cannot incorporate without essentially becoming a single purpose solver.
+The solution to this problem is to allow the application developer to supply a callback function that the DiagonalizationSolver can call once the Hamiltonian has been diagonalized.
+This function is responsibile for calculating and updating relevant parameters, as well as informing the DiagonalizationSolver whether the solution has converged.
+The interface for such a function is
+```cpp
+	bool selfConsistencyCallback(DiagonalizationSolver &solver){
+		//Calculate and update parameters.
+		//...
+
+		//Determine wheter the solution has converged or not.
+		//...
+
+		//Return true if the solution has converged, otherwise false.
+		if(hasConverged)
+			return true;
+		else
+			return false;
+	}
+```
+The specific details of the self-consistency callback is up to the application developer to fill in, but the general structure has to be as above.
+That is, the callback has to accept the DiagonalizationSolver as an argument, perform the required work, determine whether the solution has converged and return true or false depending on wheter it has or not.
+In addition to the self-consistency callback, the application developer interested in developing such a self-consistent calculation should also make use of the HoppingAmplitude callback described in the Model chapter for passing relevant parameters back to the Model in the next iteration step.
+
+Once a self-consistency callback is implemented, the DiagonalizationSolver can be configured as follows to make use of it
+```cpp
+	DiagonalizationSolver solver;
+	solver.setModel(model);
+	solver.setSelfConsistencyCallback(selfConsistencyCallback);
+	solver.setMaxIterations(100);
+	solver.run();
+```
+Here the third line tells the Solver which function to use as a callback, while the fourth line puts an upper limit to the number of self-consistent steps the Solver will take if self-consistency is not reached.
+
 
 # BlockDiagonalizationSolver {#BlockDiagoanlizationSolver}
+The BlockDiagonalizationSolver is similar to the DiagonalizationSolver, except that it take advantage of possible block-diagonal structures in the Hamiltonian.
+For this to work it is important that the Models index structure is chosen such that TBTK is able to automatically detect the block-diagonal structure of the Hamiltonian, as described in the Model chapter.
+The BlockDiagonalizationSolver mimics the DiagonalizationSolver almost perfectly, and the code for initializing and running a BlockDiagonalizationSolver including a self-consistency callback is
+```cpp
+	DiagonalizationSolver solver;
+	solver.setModel(model);
+	solver.setSelfConsistencyCallback(selfConsistencyCallback);
+	solver.setMaxIterations(100);
+	solver.run();	
+```
+The only difference here is that the *selfCOnsistencyCallback* has to take a BlockDiagonalizationSolver as argument rather than a DiagonalizationSolver.
 
 # ArnoldiSolver {#ArnoldiSolver}
 
