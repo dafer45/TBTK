@@ -32,7 +32,7 @@ DiagonalizationSolver::DiagonalizationSolver() : Communicator(true){
 	eigenVectors = NULL;
 
 	maxIterations = 50;
-	scCallback = NULL;
+	selfConsistencyCallback = NULL;
 }
 
 DiagonalizationSolver::~DiagonalizationSolver(){
@@ -68,8 +68,8 @@ void DiagonalizationSolver::run(){
 
 		solve();
 
-		if(scCallback){
-			if(scCallback(this))
+		if(selfConsistencyCallback){
+			if(selfConsistencyCallback(*this))
 				break;
 			else
 				update();

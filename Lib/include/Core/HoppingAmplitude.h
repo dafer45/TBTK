@@ -56,7 +56,10 @@ public:
 	 *  value. The callback function has to be defined such that it returns
 	 * a value for the given indices when called at run time. */
 	HoppingAmplitude(
-		std::complex<double> (*amplitudeCallback)(Index, Index),
+		std::complex<double> (*amplitudeCallback)(
+			const Index &to,
+			const Index &from
+		),
 		Index toIndex,
 		Index fromIndex
 	);
@@ -109,8 +112,8 @@ private:
 	/** Callback function for runtime evaluation of amplitudes. Will be
 	 *  called if not NULL. */
 	std::complex<double> (*amplitudeCallback)(
-		Index toIndex,
-		Index fromIndex
+		const Index &toIndex,
+		const Index &fromIndex
 	);
 
 	/** Index to jump from (annihilate). */

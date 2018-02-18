@@ -83,7 +83,7 @@ void TimeEvolver::run(){
 
 	currentTimeStep = -1;
 	dSolver.setModel(model);
-	dSolver.setSCCallback(scCallback);
+	dSolver.setSelfConsistencyCallback(selfConsistencyCallback);
 	dSolver.run();
 
 	if(numberOfParticles < 0){
@@ -155,9 +155,9 @@ void TimeEvolver::run(){
 	}
 }
 
-bool TimeEvolver::scCallback(DiagonalizationSolver *dSolver){
+bool TimeEvolver::selfConsistencyCallback(DiagonalizationSolver &dSolver){
 	for(unsigned int n = 0; n < dSolvers.size(); n++){
-		if(dSolvers.at(n) == dSolver){
+		if(dSolvers.at(n) == &dSolver){
 			TimeEvolver *te = timeEvolvers.at(n);
 			te->onDiagonalizationFinished();
 			if(te->callback != NULL)
@@ -168,7 +168,7 @@ bool TimeEvolver::scCallback(DiagonalizationSolver *dSolver){
 	}
 
 	TBTKExit(
-		"TimeEvolver::scCallback()",
+		"TimeEvolver::selfConsistencyCallback()",
 		"DiagonalizationSolver not found.",
 		""
 	);

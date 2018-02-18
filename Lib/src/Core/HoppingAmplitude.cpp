@@ -43,7 +43,10 @@ HoppingAmplitude::HoppingAmplitude(
 };
 
 HoppingAmplitude::HoppingAmplitude(
-	complex<double> (*amplitudeCallback)(Index, Index),
+	complex<double> (*amplitudeCallback)(
+		const Index &to,
+		const Index &from
+	),
 	Index toIndex,
 	Index fromIndex
 ) :

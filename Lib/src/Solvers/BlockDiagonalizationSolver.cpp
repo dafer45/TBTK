@@ -35,7 +35,7 @@ BlockDiagonalizationSolver::BlockDiagonalizationSolver() : Communicator(true){
 	numBlocks = -1;
 
 	maxIterations = 50;
-	scCallback = nullptr;
+	selfConsistencyCallback = nullptr;
 
 	parallelExecution = false;
 }
@@ -73,8 +73,8 @@ void BlockDiagonalizationSolver::run(){
 
 		solve();
 
-		if(scCallback){
-			if(scCallback(this))
+		if(selfConsistencyCallback){
+			if(selfConsistencyCallback(*this))
 				break;
 			else{
 				update();

@@ -46,9 +46,9 @@ public:
 
 	/** Set self-consistency callback. If set to NULL or never called, the
 	 *  self-consistency loop will not be run. */
-	void setSCCallback(
-		bool (*scCallback)(
-			DiagonalizationSolver *diagonalizationSolver
+	void setSelfConsistencyCallback(
+		bool (*selfConsistencyCallback)(
+			DiagonalizationSolver &diagonalizationSolver
 		)
 	);
 
@@ -98,7 +98,9 @@ private:
 
 	/** Callback function to call each time a diagonalization has been
 	 *  completed. */
-	bool (*scCallback)(DiagonalizationSolver *diagonalizationSolver);
+	bool (*selfConsistencyCallback)(
+		DiagonalizationSolver &diagonalizationSolver
+	);
 
 	/** Allocates space for Hamiltonian etc. */
 	void init();
@@ -110,12 +112,12 @@ private:
 	void solve();
 };
 
-inline void DiagonalizationSolver::setSCCallback(
-	bool (*scCallback)(
-		DiagonalizationSolver *diagonalizationSolver
+inline void DiagonalizationSolver::setSelfConsistencyCallback(
+	bool (*selfConsistencyCallback)(
+		DiagonalizationSolver &diagonalizationSolver
 	)
 ){
-	this->scCallback = scCallback;
+	this->selfConsistencyCallback = selfConsistencyCallback;
 }
 
 inline void DiagonalizationSolver::setMaxIterations(int maxIterations){

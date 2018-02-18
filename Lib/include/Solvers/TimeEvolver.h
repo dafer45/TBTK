@@ -196,7 +196,7 @@ private:
 	 *  function because it does not know about the TimeEvolver. This
 	 *  static callback-function is therefore used in order to redirect the
 	 *  call to the correct TimeEvolver*/
-	static bool scCallback(DiagonalizationSolver *dSolver);
+	static bool selfConsistencyCallback(DiagonalizationSolver &dSolver);
 
 	/** Member function to call when diagonalization is finished. Called by
 	 *  scCallback(). */
