@@ -64,7 +64,8 @@ public:
 	unsigned int getDimensions() const;
 
 	/** Get the ranges for the dimensions of the density. */
-	const int* getRanges() const;
+//	const int* getRanges() const;
+	std::vector<int> getRanges() const;
 
 	/** Get the offset in memory for given Index. */
 	int getOffset(const Index &index) const;
@@ -262,7 +263,8 @@ inline unsigned int AbstractProperty<
 }
 
 template<typename DataType, bool isFundamental, bool isSerializeable>
-inline const int* AbstractProperty<
+//inline const int* AbstractProperty<
+inline std::vector<int> AbstractProperty<
 	DataType,
 	isFundamental,
 	isSerializeable
@@ -628,10 +630,11 @@ AbstractProperty<
 {
 	this->blockSize = blockSize;
 
-	indexDescriptor.setDimensions(dimensions);
+/*	indexDescriptor.setDimensions(dimensions);
 	int *thisRanges = indexDescriptor.getRanges();
 	for(unsigned int n = 0; n < dimensions; n++)
-		thisRanges[n] = ranges[n];
+		thisRanges[n] = ranges[n];*/
+	indexDescriptor.setRanges(ranges, dimensions);
 
 	size = blockSize*indexDescriptor.getSize();
 	data = new DataType[size];
@@ -654,10 +657,11 @@ AbstractProperty<
 {
 	this->blockSize = blockSize;
 
-	indexDescriptor.setDimensions(dimensions);
+/*	indexDescriptor.setDimensions(dimensions);
 	int *thisRanges = indexDescriptor.getRanges();
 	for(unsigned int n = 0; n < dimensions; n++)
-		thisRanges[n] = ranges[n];
+		thisRanges[n] = ranges[n];*/
+	indexDescriptor.setRanges(ranges, dimensions);
 
 	size = blockSize*indexDescriptor.getSize();
 	this->data = new DataType[size];

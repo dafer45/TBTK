@@ -519,7 +519,8 @@ void FileWriter::writeDensity(
 	case IndexDescriptor::Format::Ranges:
 	{
 		int rank = density.getDimensions();
-		const int *dims = density.getRanges();
+//		const int *dims = density.getRanges();
+		vector<int> dims = density.getRanges();
 
 		hsize_t density_dims[rank];
 		for(int n = 0; n < rank; n++)
@@ -618,7 +619,8 @@ void FileWriter::writeMagnetization(
 	case IndexDescriptor::Format::Ranges:
 	{
 		int rank = magnetization.getDimensions();
-		const int *dims = magnetization.getRanges();
+//		const int *dims = magnetization.getRanges();
+		vector<int> dims = magnetization.getRanges();
 		const SpinMatrix *data = magnetization.getData();
 
 		hsize_t mag_dims[rank+2];//Last two dimension for matrix elements and real/imaginary decomposition.
@@ -767,7 +769,8 @@ void FileWriter::writeLDOS(
 	case IndexDescriptor::Format::Ranges:
 	{
 		int rank = ldos.getDimensions();
-		const int *dims = ldos.getRanges();
+//		const int *dims = ldos.getRanges();
+		vector<int> dims = ldos.getRanges();
 
 		hsize_t ldos_dims[rank+1];//Last dimension is for energy
 		for(int n = 0; n < rank; n++)
@@ -899,7 +902,8 @@ void FileWriter::writeSpinPolarizedLDOS(
 	case IndexDescriptor::Format::Ranges:
 	{
 		int rank = spinPolarizedLDOS.getDimensions();
-		const int *dims = spinPolarizedLDOS.getRanges();
+//		const int *dims = spinPolarizedLDOS.getRanges();
+		vector<int> dims = spinPolarizedLDOS.getRanges();
 		const SpinMatrix *data = spinPolarizedLDOS.getData();
 
 		const int NUM_MATRIX_ELEMENTS = 4;

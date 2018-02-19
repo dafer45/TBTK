@@ -65,11 +65,15 @@ public:
 	/** Get dimensions. */
 	unsigned int getDimensions() const;
 
-	/** Get ranges. */
-	int* getRanges();
+	/** Set ranges. */
+	void setRanges(const int *ranges, unsigned int dimensions);
 
 	/** Get ranges. */
-	const int* getRanges() const;
+//	int* getRanges();
+	std::vector<int> getRanges() const;
+
+	/** Get ranges. */
+//	const int* getRanges() const;
 
 	/** Set IndexTree. */
 	void setIndexTree(const IndexTree &indexTree);
@@ -152,17 +156,39 @@ inline unsigned int IndexDescriptor::getDimensions() const{
 	return descriptor.rangeFormat.dimensions;
 }
 
-inline int* IndexDescriptor::getRanges(){
+inline void IndexDescriptor::setRanges(const int *ranges, unsigned int dimensions){
 	TBTKAssert(
 		format == Format::Ranges,
-		"IndexDescriptor::setDimensions()",
+		"IndexDescriptor::setRanges()",
 		"The IndexDescriptor is not of the format Format::Ranges.",
 		""
 	);
-	return descriptor.rangeFormat.ranges;
+	descriptor.rangeFormat.dimensions = dimensions;
+	if(descriptor.rangeFormat.ranges != NULL)
+		delete [] descriptor.rangeFormat.ranges;
+	descriptor.rangeFormat.ranges = new int[dimensions];
+	for(unsigned int n = 0; n < dimensions; n++)
+		descriptor.rangeFormat.ranges[n] = ranges[n];
 }
 
-inline const int* IndexDescriptor::getRanges() const{
+//inline int* IndexDescriptor::getRanges(){
+inline std::vector<int> IndexDescriptor::getRanges() const{
+	TBTKAssert(
+		format == Format::Ranges,
+		"IndexDescriptor::setDimensions()",
+		"The IndexDescriptor is not of the format Format::Ranges.",
+		""
+	);
+//	return descriptor.rangeFormat.ranges;
+
+	std::vector<int> ranges;
+	for(unsigned int n = 0; n < descriptor.rangeFormat.dimensions; n++)
+		ranges.push_back(descriptor.rangeFormat.ranges[n]);
+
+	return ranges;
+}
+
+/*inline const int* IndexDescriptor::getRanges() const{
 	TBTKAssert(
 		format == Format::Ranges,
 		"IndexDescriptor::setDimensions()",
@@ -170,7 +196,7 @@ inline const int* IndexDescriptor::getRanges() const{
 		""
 	);
 	return descriptor.rangeFormat.ranges;
-}
+}*/
 
 inline const IndexTree& IndexDescriptor::getIndexTree() const{
 	TBTKAssert(
