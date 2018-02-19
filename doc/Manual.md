@@ -77,13 +77,13 @@ A comparatively good understanding of the low level details of how a computer wo
 However, while c++ provides the ability to work on a very low level, it also provides the tools necessary to abstract away much of these details.
 A well written library can alleviate many of these issues, such as for example putting little requirement on the user to manage memory (the main source of errors for many new c/c++ programmers).
 Great progress in this direction was taken with the establishment of the c++11 standard.
-The language of choice for TBTK has therefore been c++11, and much effort has gone into developing data structures that is as simple as possible to use.
+The language of choice for TBTK has therefore been c++11, and much effort has gone into developing data structures that are as simple as possible to use.
 Great care has also been taken to avoid having the program crash without giving error messages that provide information that helps the user to resolve the problem.
 
 @page Overview Overview
 
 # Model, Solvers, and PropertyExtractors {#ModelSolversAndPropertyExtractors}
-It is useful to think of a typical scientific numerical study as involving three relatively separate decisions:
+It is useful to think of a typical scientific numerical study as involving three relatively separate questions:
 - What is the model?
 - What method to use?
 - What properties to calculate?
@@ -91,7 +91,7 @@ It is useful to think of a typical scientific numerical study as involving three
 When writing code, the answer to these three questions essentially determines the input, algorithm, and output, respectively.
 To successfully carry out studies of complex problems, it is important that it is easy to set up the model and to extract the properties, and that the underlying algorithm that performs the work is efficient.
 However, the simultaneous requirement on the algorithm to be efficient and that the calculation is easy to set up easily run contrary to each other.
-Efficiency often require low level optimization in the algorithm, which e.g. can put strict requirment of how the input and output is represented in memory.
+Efficiency often require low level optimization in the algorithm, which e.g. can put strict requirment on how the input and output is represented in memory.
 If this means the user is required to setup the input and extract the output on a format that requires deep knowledge about the internal workings of the algorithm, two important problems arise.
 First, if details about the algorithm is required to be kept in mind at all levels of the code it hinders the user from thinking about the problem on a higher level where numeric nuisance has been abstracted  away.
 Second, if the specific requirements of an algorithm determines the structure of the whole program, the whole code has to be rewritten if the choice is made to try another algorithm.
@@ -121,7 +121,7 @@ TBTK is also intended to enable the development of new Solvers and provides many
 This manual does not cover all these classes and the interested developer is instead referred to the API for a more detailed description.
 However, developers are still encouraged to study this manual to understand the design philosophy behind TBTK, and to also use the already existing Solvers as inspiration when writing new Solvers.
 Doing so can significantly reduce the amount of overhead required to create a new Solver and makes it easier for other developers to use the new Solver in their own project.
-The development of new Solvers are greatly encouraged and if you are interested in doing so but have any questions, please contact Kristofer Björnson at kristofer.bjornson@physics.uu.se.
+The development of new Solvers is greatly encouraged and if you are interested in doing so but do not know where to start, please contact Kristofer Björnson at kristofer.bjornson@physics.uu.se.
 New Solvers can either be released as stand alone packages or be pulled into the TBTK library.
 In the later case the Solver will have to adhere to the main development philosophy of TBTK, but we are happy with providing help with polishing the Solver to the point that it does.
 
