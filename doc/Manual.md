@@ -8,6 +8,9 @@ Manual {#manual}
 - @subpage Model
 - @subpage Solvers
 - @subpage PropertyExtractors
+- @subpage Properties
+- @subpage FileWriterAndFileReader
+- @subpage Streams
 
 @page Introduction Introduction
 
@@ -26,7 +29,7 @@ However, we note that it is very common for quantum mechanical problems with con
 For example, the continuous Schrödinger equation in a central potential with three continuous spatial coordinates does after some analytic manipulations become a problem with two discrete indices corresponding to the spherical harmonics, and one remaining continuous variable.
 Moreover, if not handled analytically, any remaining continuous variable eventually has to be discretized.
 
-Given that the restriction to discrete indices does not imply any severe limitation to the types of problems that can be addressed, a remaining challange is to allow for problems with arbitrary index complexity to be modeled and solved.
+Given that the restriction to discrete indices does not imply any severe limitation to the types of problems that can be addressed, a remaining challenge is to allow for problems with arbitrary index complexity to be modeled and solved.
 TBTK solves this through a flexible and efficient index system, which combined with a sophisticated storage structure for the Hamiltonian allows for essentially arbitrary index structures to be handled without significant performance penalties compared to highly optimized single purpose code.
 In fact, TBTK is explicitly designed to allow solution algorithms to internally use whatever data structures that are best suited for the problem at hand to optimize the calculation, without affecting the format on which the model is specified or properties are extracted.
 
@@ -37,31 +40,31 @@ This is particularly true in scientific computation, where the objective most of
 Algorithm centered thinking is manifested in the imperative programing paradigm and is probably the best way to learn the basics of programming and to implement simple tasks.
 However, while algorithms are of great importance, much of the success of todays computer software can be attributed to the development of powerful data structures.
 
-Anyone who has writen software that is more than a few hundred lines of code knows that a major challange is to organize the code in such a way that the complexity do not scale up with the size of the project.
+Anyone who has written software that is more than a few hundred lines of code knows that a major challenge is to organize the code in such a way that the complexity do not scale up with the size of the project.
 Otherwise, when e.g. coming back to a project after a few months, it may be difficult to make modifications to the code since you do not remember if or how it will affects other parts of the code.
-The reason for this can largly be traced back to the lack of proper attention paid to data structures.
+The reason for this can largely be traced back to the lack of proper attention paid to data structures.
 In particular, well designed data structures enables abstraction and encapsulation and is a core component of the object oriented programming paradigm.
 
 Abstraction is the process of dividing code into logical units that aids the thinking process by allowing the programmer to think on a higher level.
 Effective abstraction allows the programmer to forget about low level details and focus on the overarching problem at hands.
-For some analogies, mathemtics and physics are rife with abstractions: derivatives are defined through limits but differential equations are written using derivative symbols, matrices are rectangles of numbers but we carry out much of the algebra manipulating letters representing whole matrices rather than individual matrix elements, etc.
+For some analogies, mathematics and physics are rife with abstractions: derivatives are defined through limits but differential equations are written using derivative symbols, matrices are rectangles of numbers but we carry out much of the algebra manipulating letters representing whole matrices rather than individual matrix elements, etc.
 Much of mathematics is ultimately just addition, subtraction, multiplication, and division of real numbers, but through abstraction problems of much greater complexity can be tackled than if everything was formulated with those four symbols alone.
 Similarly programming is nothing but loops, conditional execution, assignment of values, function calls etc., but further abstraction allows the programmers mind to be freed from low level details to focus on the higher level aspects of much more complex problems.
 
-While abstraction means dividing code into logical units that allows the programmer to think on a higher level, encapsulation means making those units largly independent of each other.
-Different parts of a program should of course interact with each other, but low level details of a specific component should to an as large degree as posible be invisible to other components.
-Instead of allowing (and requiring) other components of a code to manipulate its low level details, components should strive to present themself to other components through an easy to use interface.
+While abstraction means dividing code into logical units that allows the programmer to think on a higher level, encapsulation means making those units largely independent of each other.
+Different parts of a program should of course interact with each other, but low level details of a specific component should to an as large degree as possible be invisible to other components.
+Instead of allowing (and requiring) other components of a code to manipulate its low level details, components should strive to present themselves to other components through an easy to use interface.
 The interface is provided through a so called application programming interface (API).
-The API is essentially a contract between a component and the outside world, where the component specifies a promisse to solve a particular problem given a particular input.
+The API is essentially a contract between a component and the outside world, where the component specifies a promise to solve a particular problem given a particular input.
 Encapsulation makes it possible to update a piece of code without remembering what other parts of the code is doing, as long as the update respects the contract specified in the API, and is key to solving the scalability issue.
-Developers mainly experienced with imperative programming likely recognize some of these concepts as being emboddied in the idea of dividing code into functions.
+Developers mainly experienced with imperative programming likely recognize some of these concepts as being embodied in the idea of dividing code into functions.
 Object oriented programming greatly extends this powerful technique.
 
 Scientific computing is often computationally intensive and much thought therefore goes into the development of different algorithms for solving the same problem.
 Different algorithms may have their own strengths and weaknesses making them the preffered choice under different circumstances.
 Often such algorithms are implemented in completely different software packages with little reuse of code, even though the code for the main algorithm may be a small part of the actual code.
 This is a likely result when data structures are an afterthought and results in both replicated work and less reliable code since code that is reused in multiple projects is much more extensively tested.
-A key to handling situations like this is called polymorphis and is a principle whereby different components essentially provides identical or partly identical contracts to the outside world, even though they internally may work very differently.
+A key to handling situations like this is called polymorphism and is a principle whereby different components essentially provides identical or partly identical contracts to the outside world, even though they internally may work very differently.
 This allows for components to be used interchangeably with little changes to the rest of the code base.
 
 TBTK is first and foremost a collection of data structures intended to enable the implementation of algorithms for solving quantum mechanical problems, but also implements several different algorithms for solving specific problems.
@@ -72,7 +75,7 @@ Scientific computations are often very demanding and high performance is therefo
 However, while low level programming languages offer high performance, they also have a reputation of being relatively difficult to work with.
 A comparatively good understanding of the low level details of how a computer works is usually required to write a program in languages such as c/c++ and FORTRAN compared to e.g. MATLAB and python.
 However, while c++ provides the ability to work on a very low level, it also provides the tools necessary to abstract away much of these details.
-A well writen library can alleviate many of these issues, such as for example putting little requirement on the user to manage memory (the main source of errors for many new c/c++ programmers).
+A well written library can alleviate many of these issues, such as for example putting little requirement on the user to manage memory (the main source of errors for many new c/c++ programmers).
 Great progress in this direction was taken with the establishment of the c++11 standard.
 The language of choice for TBTK has therefore been c++11, and much effort has gone into developing data structures that is as simple as possible to use.
 Great care has also been taken to avoid having the program crash without giving error messages that provide information that helps the user to resolve the problem.
@@ -80,20 +83,20 @@ Great care has also been taken to avoid having the program crash without giving 
 @page Overview Overview
 
 # Model, Solvers, and PropertyExtractors {#ModelSolversAndPropertyExtractors}
-It is useful to think of a typical scientific numerical study as involving three relatively separate decissions:
+It is useful to think of a typical scientific numerical study as involving three relatively separate decisions:
 - What is the model?
 - What method to use?
 - What properties to calculate?
 
 When writing code, the answer to these three questions essentially determines the input, algorithm, and output, respectively.
-To succesfully cary out studies of complex problems, it is important that it is easy to set up the model and to extract the properties, and that the underlying algorithm that performs the work is efficient.
-However, the simultaneous requirement on the algorithm to be efficient and that the calculation is easy to set up easily run countrary to each other.
+To successfully carry out studies of complex problems, it is important that it is easy to set up the model and to extract the properties, and that the underlying algorithm that performs the work is efficient.
+However, the simultaneous requirement on the algorithm to be efficient and that the calculation is easy to set up easily run contrary to each other.
 Efficiency often require low level optimization in the algorithm, which e.g. can put strict requirment of how the input and output is represented in memory.
 If this means the user is required to setup the input and extract the output on a format that requires deep knowledge about the internal workings of the algorithm, two important problems arise.
 First, if details about the algorithm is required to be kept in mind at all levels of the code it hinders the user from thinking about the problem on a higher level where numeric nuisance has been abstracted  away.
 Second, if the specific requirements of an algorithm determines the structure of the whole program, the whole code has to be rewritten if the choice is made to try another algorithm.
 
-To get around these problems TBTK is designed to encourage a workflow where the three stages of specifying input, chosing algorithm, and extracting properties are largly independent from each other.
+To get around these problems TBTK is designed to encourage a workflow where the three stages of specifying input, choosing algorithm, and extracting properties are largely independent from each other.
 To achieve this TBTK has a class called a Model that allows for general models to be setup.
 Further, algorithms are implemented in a set of different Solvers, which takes a Model and internally converts it to the format most suitable for the algorithm.
 Finally, the Solver is wrapped in a PropertyExtractor, where the different PropertyExtractors have a uniform interface.
@@ -109,13 +112,13 @@ For this TBTK provides a UnitHandler that enables the developer to specify the n
 All function calls to TBTK functions should be understood to be in terms of the specified natural units.
 
 # Implementing applications {#ImplementingApplications}
-For developers interested in implementing calculations that are meant to answer specific physical questions, which is also refered to as implementing applications, TBTK comes ready with a set of native Solvers.
+For developers interested in implementing calculations that are meant to answer specific physical questions, which is also referred to as implementing applications, TBTK comes ready with a set of native Solvers.
 This manual is mainly intended to describe this use case and therefore covers the most important classes needed to achieve this.
 In particular, this manual outlines how to properly setup a Model, select a Solver, and to extract properties using PropertyExtractors.
 
 # Implementing new Solvers {#ImplementingNewSolvers}
 TBTK is also intended to enable the development of new Solvers and provides many classes ment to simplify this task.
-This manual does not cover all these classes and the interested developer is instead refered to the API for a more detailed description.
+This manual does not cover all these classes and the interested developer is instead referred to the API for a more detailed description.
 However, developers are still encouraged to study this manual to understand the design philosophy behind TBTK, and to also use the already existing Solvers as inspiration when writing new Solvers.
 Doing so can significantly reduce the amount of overhead required to create a new Solver and makes it easier for other developers to use the new Solver in their own project.
 The development of new Solvers are greatly encouraged and if you are interested in doing so but have any questions, please contact Kristofer Björnson at kristofer.bjornson@physics.uu.se.
@@ -150,10 +153,10 @@ This is the first point where the UnitHandler deviates from the SI system since 
 Note in particular that the UnitHandler currently only defines base units for six different quantities.
 The missing quantity is due to an ambiguity regarding whether an angle should be considered a unitfull or unitless quantity.
 Units for angle may therefore be added to the UnitHandler in the future.
-The decission to make the units for energy and charge base units, rather than mass and current as in the SI system, is based on a subjective perception of the former being more generally relevant in quantum mechanical calculations.
+The decision to make the units for energy and charge base units, rather than mass and current as in the SI system, is based on a subjective perception of the former being more generally relevant in quantum mechanical calculations.
 
 Next, the UnitHandler also deviates from the SI system by only fixing the base quantities rather than the base units.
-While e.g. the SI unit for length is meter (m), the UnitHandler allows the base unit for length to be set to a range of different units such as meter (m), millimiter (mm), nanometer (nm), Ångström (Å), etc.
+While e.g. the SI unit for length is meter (m), the UnitHandler allows the base unit for length to be set to a range of different units such as meter (m), millimeter (mm), nanometer (nm), Ångström (Å), etc.
 Similarly a range of different options are available for other quantities, such as for example Joule (J) and electronvolt (eV) for energy, and Coulomb (C) and elementary charge (e) for charge.
 
 By default the base units are
@@ -198,7 +201,7 @@ It is common in physics to use natural units in which for example \f$\hbar = c =
 Such natural units simplify equations and allows mental effort to be concentrated on the physical phenomena rather than numerical details.
 The same is true when implementing numerical calculations and it is for example common in tight-binding calculations to measure energy in units of some hopping parameter \f$t = 1\f$, while the actual unitfull value can be some arbitrary value such as \f$t = 724meV\f$.
 In TBTK all function calls are performed in natural units, except for the UnitHandler calls that specifies the natural units.
-This means that if the natural energy unit is set to e.g. \f$724meV\f$, an energy variable with say the value 1.2 that is passed to a function is internally interpretted by TBTK to have the unitfull value \f$1.2\times724meV\f$.
+This means that if the natural energy unit is set to e.g. \f$724meV\f$, an energy variable with say the value 1.2 that is passed to a function is internally interpreted by TBTK to have the unitfull value \f$1.2\times724meV\f$.
 However, note that this conversion is not necessarily done at the point where the function call is made and may be repeatedly done at later points of execution if the variable is stored internally.
 This is why it is important to not reconfigure the UnitHandler in the middle of a program since this introduces ambiguities.
 
@@ -280,7 +283,7 @@ Here 'Symbol' can be any of the symbols listed in the tables over base units, de
 @page Indices Indices
 
 # Complex index structures {#ComplexIndexStructures}
-To get an idea about the generality of problems that TBTK is intended to be able to handle, imagine a molecule on top of a graphene sheet, which in turs sits on top of a three-dimensional magnetic substrate material.
+To get an idea about the generality of problems that TBTK is intended to be able to handle, imagine a molecule on top of a graphene sheet, which in turn sits on top of a three-dimensional magnetic substrate material.
 Further assume that we can model the three individual systems in the following way
 - Molecule: A one-dimensional chain with three orbitals and two spins per site.
 - Graphene: A two-dimensional sheet with two atoms per unit cell and with a single orbital and tow spins per atom.
@@ -288,7 +291,7 @@ Further assume that we can model the three individual systems in the following w
 
 To describe a system like this, we need three types of operators with three different types of index structure.
 We can for example introduce the operators \f$a_{xo\sigma}\f$, \f$b_{xys\sigma}\f$, and \f$c_{xyzso}\f$ for the molecule, graphene, and substrate, respectively.
-Here \f$x\f$, \f$y\f$, and \f$z\f$ correpsonds to spatial coordinates, \f$s\f$ is a sublattice index, \f$o\f$ is an orbital index, and \f$\sigma\f$ is a spin index.
+Here \f$x\f$, \f$y\f$, and \f$z\f$ corresponds to spatial coordinates, \f$s\f$ is a sublattice index, \f$o\f$ is an orbital index, and \f$\sigma\f$ is a spin index.
 First we note that the number of indices per operator is not the same.
 Further, even though every operator have an \f$x\f$-index, there is not necesarily any actual relationship between the different \f$x\f$-indices.
 In particular, the molecule may be oriented along some axis which does not coincide with the natural coordinate axes of the other two materials, and even more importantly, there is no reason why \f$x\f$ should run over the same number of values in the different materials.
@@ -296,7 +299,7 @@ Rather, the \f$x\f$-index is just a symbol indicating the first spatial index fo
 Similarly, the sublattice and orbital indices for the different operators are not the same.
 
 In TBTK systems like this can easily be modeled using flexible indices that compounds a set of indices into a list of non-negative integers in curly braces.
-Such a compund index is usually refered to simply as an index, while the individual components are refered to as subindices.
+Such a compound index is usually referred to simply as an index, while the individual components are referred to as subindices.
 While we above used different letters to differentiate between operators with different index structures, in TBTK this is instead handled by introducing one more subsystem identifier at the front of the list of subindices.
 E.g. can can we write typical indices as (spin up = 0, spin down = 1)
 | Index              | Description                                                                |
@@ -309,7 +312,7 @@ E.g. can can we write typical indices as (spin up = 0, spin down = 1)
 We have already mentioned one limitations on the indices, which is that they have to be non-negative numbers.
 Although this is no real restriction on what types of problems that can be modeled, negative indices abounds in quantum mechanics and this is certainly not without inconvenience.
 However, the optimizations and additional features that are enabled by this design decision has been deemed far more important in this case.
-Nevertheless, support for negative indices could be added in the future through additional "syntactic suggar".
+Nevertheless, support for negative indices could be added in the future through additional "syntactic sugar".
 Any developer interested in pursuing this direction is most welcome to discuss these ideas.
 
 Another restriction has to do with the fact that the subsystem index was added at the front of the indices.
@@ -323,7 +326,7 @@ However, more tricky situations than the one above can arise.
 Let us for example consider the case where the substrate above has different number of orbitals for the different sublatice sites.
 In this case it is an error to write the indices on the form {subsystem, x, y, z, orbital, sublattice}, because the orbitals run over different numbers of orbitals even though they can have identical values for all the subindices to the left of the orbital subindex.
 The original subindex order {subsystem, x, y, z, sublattice, orbital} given above does not have this problem though, since the sublattice index stands to the left of the orbital subindex and is different for the different sites.
-In general, ordering the subindices with "less local" subindices to the left should almost allways resolve such issues.
+In general, ordering the subindices with "less local" subindices to the left should almost always resolve such issues.
 
 @page Model Model
 
@@ -355,7 +358,7 @@ From the canonical form for the Hamiltonian, and if we write the time evolution 
 it is clear that \f$a_{\mathbf{i}\mathbf{j}}\f$ is the amplitude associated with the process where an electron is removed from \f$\mathbf{j}\f$ and inserted at \f$\mathbf{i}\f$.
 That is, in tight-binding terminology, the amplitude associated with a particle hopping from \f$\mathbf{j}\f$ to \f$\mathbf{i}\f$.
 While the term hopping amplitude often is restricted to the case where the two indices actually differ from each other, in TBTK it is used to refer to any \f$a_{\mathbf{i}\mathbf{j}}\f$.
-Moreover, the indices \f$\mathbf{i}\f$ and \f$\mathbf{j}\f$ are often refered to as to- and from-indices, respectively, and a HoppingAmplitude is created as
+Moreover, the indices \f$\mathbf{i}\f$ and \f$\mathbf{j}\f$ are often referred to as to- and from-indices, respectively, and a HoppingAmplitude is created as
 ```cpp
 	HoppingAmplitude(value, toIndex, fromIndex);
 ```
@@ -374,7 +377,7 @@ Although the above example is too simple to make the point since the index struc
 One of the core features of TBTK is embodied in the call to *model.construct()*.
 To understand why, we note that although the indices in the problem above have a linear structure, this is rarely the case in general.
 In other problems, such as for example a two-dimensional lattice the index structure is not linear but is easily linearized by a defining a mapping such as \f$h = L_y x + y\f$.
-The indices \f$(x, y)\f$ or {x, y} in TBTK notation we will call physical indices, while linearized indices such as \f$h\f$ are refered to as Hilbert space indices.
+The indices \f$(x, y)\f$ or {x, y} in TBTK notation we will call physical indices, while linearized indices such as \f$h\f$ are referred to as Hilbert space indices.
 
 So why do we need linearization?
 One answer is that algorithms almost universally are going to be most efficient in a linear basis.
@@ -389,11 +392,11 @@ The mapping from physical indices to Hilbert space and back again is certainly n
 In fact, this would have been prohibitively expensive.
 One of the most (or simply the most) important core data structures of TBTK is a tree structure in which the HoppingAmplitudes are stored.
 It allows for conversion back and forth between physical indices and Hilbert space indices with an overhead cost that is negligible in most parts of the code.
-Taking the responsibilty to linearize indices of from the developer is a significant abstraction that allows mental capacity to be focused on physics instead of numerics.
+Taking the responsibility to linearize indices of from the developer is a significant abstraction that allows mental capacity to be focused on physics instead of numerics.
 
 The one place where the overhead really is important is in the Solvers where most of the computational time usually is spent.
 Solvers therefore usually internally convert the Model to some much more optimal format using the linearization provided by the Model before starting the main calculation.
-This is also the reason why, as described in the PropertyExtractor chapter, it is recommended to not use the Solvers immediately to extract properties, but to instead wrapp them in PropertyExtractors.
+This is also the reason why, as described in the PropertyExtractor chapter, it is recommended to not use the Solvers immediately to extract properties, but to instead wrap them in PropertyExtractors.
 The PropertyExtractors provides the interface through which properties can be extracted from the Solvers using physical indices.
 In short, the distinction between physical indices and Hilbert space indices allows application developers to focus on the physics of the particular problem, while simultaneously allowing Solver developers to focus on numerical details and general properties rather than system specific details.
 
@@ -407,7 +410,7 @@ where
 	H_{Imp} &=& (U_{Imp} - J)d_{\uparrow}^{\dagger}d_{\uparrow} + (U_{Imp} + J)d_{\downarrow}^{\dagger}d_{\downarrow},\\
 	H_{Int} &=& \delta\sum_{\sigma}c_{(25,25)\sigma}^{\dagger}d_{\sigma} + H.c.
 \f}</center>
-Here \f$\mathbf{i}\f$ is a two-dimensional index, \f$\langle\mathbf{i}\mathbf{j}\rangle\f$ indicates summation over nearest neighbors, \f$\sigma\f$ is a spin index, and \f$c_{\mathbf{i}}\f$ and \f$d_{\sigma}\f$ are operators on the substrate and imputiry, respectively.
+Here \f$\mathbf{i}\f$ is a two-dimensional index, \f$\langle\mathbf{i}\mathbf{j}\rangle\f$ indicates summation over nearest neighbors, \f$\sigma\f$ is a spin index, and \f$c_{\mathbf{i}}\f$ and \f$d_{\sigma}\f$ are operators on the substrate and impurity, respectively.
 The parameters \f$U_s\f$ and \f$U_{Imp}\f$ are onsite energies on the substrate and impurity, respectively, while \f$t\f$ is a nearest neighbor hopping amplitude, \f$J\f$ is a Zeeman term, and \f$\delta\f$ is the coupling strength between the substrate and impurity.
 
 We first note that an appropriate index structure is {0, x, y, s} for the substrate and {1, s} for the impurity.
@@ -428,10 +431,10 @@ Using this index structure we next tabulate the hopping parameters on the canoni
 Symbolic subindices should be understood to imply that the values are valid for all possible values of the corresponding subindices.
 We also note that hopping amplitudes that appear multiple times should be understood to add the final value.
 For example does \f$a_{(1,\uparrow),(1,\uparrow)}\f$ appear twice (sixth and seventh row) and should be understood to add to \f$U - J\f$.
-While the first column is the analytical representation of the symbol for the hopping amplitudes, the third and fourth column is the corresponding numerical represenation.
+While the first column is the analytical representation of the symbol for the hopping amplitudes, the third and fourth column is the corresponding numerical representation.
 In particular, we note that we use 0 to mean up spin and 1 to mean down spin.
 Next we note that the table can be reduced if we take into account that row 2 and 3, 4 and 5, and 9 and 10 are each others Hermitian conjugates.
-Furtherher, row 7 and 8 can be combined into a single row by writing the value as \f$-J(1 - 2s)\f$.
+Further, row 7 and 8 can be combined into a single row by writing the value as \f$-J(1 - 2s)\f$.
 The table can therefore if we also ignore the first column be compressed to
 | Value            | To Index         | From Index       | Add Hermitian conjugate |
 |------------------|------------------|------------------|-------------------------|
@@ -602,13 +605,13 @@ Without somehow limiting these differences to a restricted part of the code the 
 
 In TBTK the approach to solving this problem is to provide a clear separation between the algorithm implemented inside the Solvers, and the specification of the Model and the extraction of properties.
 Solvers are therefore required to all accept a universal Model object and to internally convert it to whatever representation that is best suited to the algorithm.
-Solvers are then wrappen in PropertyExtractors which further limits the Solver specific details from spreading to other parts of the code.
+Solvers are then wrapped in PropertyExtractors which further limits the Solver specific details from spreading to other parts of the code.
 The idea is to limit the application developers exposure to the Solver as much as possible, freeing mental capacity to focus on the physical problem at hands.
 Nevertheless, a certain amount of method specific configurations are inevitable and the appropriate place to make such manipulations is through the Solver interface itself.
 This approach both limits the developers exposure to unecessary details, while also making sure the developer understands when algorithm specific details are configured.
 
 Contrary to what it may sound like, limiting the developers exposure to the Solver does not mean conceiling what is going on inside the Solver and to make it an impenetrable black box.
-In fact, TBTK aims at making such details as transparent as possible and to invite the interested developer to dig as deep as prefered.
+In fact, TBTK aims at making such details as transparent as possible and to invite the interested developer to dig as deep as preferred.
 To limit the exposure as much as possible rather means that once the developer has chosen Solver and configured it, the Solver specific details should not spread further and the developers should be free to not worry about low level details.
 In order to chose the right Solver for a given task and to configure it efficiently it is useful to have an as good understanding as possible about what the algorithm actually is doing.
 Therefore we here describe what the Solvers does, what their strengths and weaknesses are, and how to set up and configure them.
@@ -684,7 +687,7 @@ Sometimes the value of one or several parameters that go into the Hamiltonian ar
 A common approach for solving such problems is to make an initial guess for the parameters, solve the model for the corresponding parameters, and then update the parameters with the so obtained values.
 If the problem is well behaved enough, such an approach results in the unknown parameters eventually converging to fixed values.
 Once the calculated parameter value is equal (within some tollerance) to the input parameter in the current iteration, the parameters are said to have reached self-consistency.
-That is, the calculated parameters are consistent with themself in the sense that if they are used as input parameters, they are also the result of the calculation.
+That is, the calculated parameters are consistent with themselves in the sense that if they are used as input parameters, they are also the result of the calculation.
 
 When using diagonalization the self-consistent procedure is very straight forward: diagonalize the Hamiltonian, callculate and update parameters, and repeat until convergence.
 The DiagonalizationSolver is therefore prepared to run such a self-consistency loop.
@@ -720,7 +723,7 @@ Once a self-consistency callback is implemented, the DiagonalizationSolver can b
 	solver.run();
 ```
 Here the third line tells the Solver which function to use as a callback, while the fourth line puts an upper limit to the number of self-consistent steps the Solver will take if self-consistency is not reached.
-
+For a complete example of a self-consistent calculation the reader is referred to the SelfConsistentSuperconductivity template in the Template folder.
 
 # BlockDiagonalizationSolver {#BlockDiagoanlizationSolver}
 The BlockDiagonalizationSolver is similar to the DiagonalizationSolver, except that it take advantage of possible block-diagonal structures in the Hamiltonian.
@@ -736,7 +739,287 @@ The BlockDiagonalizationSolver mimics the DiagonalizationSolver almost perfectly
 The only difference here is that the *selfCOnsistencyCallback* has to take a BlockDiagonalizationSolver as argument rather than a DiagonalizationSolver.
 
 # ArnoldiSolver {#ArnoldiSolver}
+The main drawback of diagonalization is that it scales poorly with system size and becomes prohibitively demanding both in terms of memory and computational time if the individual blocks have a basis size of more than a few thousands.
+Arnoldi iterations instead utilizes the sparse nature of the Hamiltonian both to reduce the memory footprint and computational time and can therefore handle much larger systems.
+
+To understand Arnoldi iteration, consider a Hamiltonian \f$H\f$ and pick a random vector \f$v_{0}\f$ in the corresponding Hilbert space.
+Next define the recursive relation \f$v_{n} = Hv_{n-1}\f$.
+While \f$v_{0}\f$ is a random vector it can be decomposed into an eigenbasis, and it is clear that the recursive relation will result in the components of \f$v_{0}\f$ with the largest eigenvalues (in magnitude) to become more and more important for increasing \f$n\f$.
+Taking the collection of \f$v_{n}\f$ generated this way for some finite \f$n\f$, it is clear that they form a (possibly overcomplete) basis for some subspace of the total Hilbert space.
+In particular, because eigenvectors with large eigenvalues are favored by the procedure, it will start to approximate the part of the Hilbert space that contains the eigenvectors with extreme eigenvalues.
+Such a procedure is called an iterative Krylov space method, where Krylov space refers to the space spaned by the generated vectors.
+
+Arnoldi iteration improves the idea by continuously performing orthonormalization of the vectors before generating the next set of vectors and is therefore numerically superior to the somewhat simpler method just described.
+Once a subspace that is deemed large enough has been generated, diagonalization is performed on this much smaller space, resulting in eigevalues and eigenvectors for the extreme part of the Hilbert space to be calculated.
+We note that since the generated subspace cannot be guaranteed to contain the eigenvectors perfectly, the proceedure really generates approximate eigenvalues and eigenvectors known as Ritz-values and Ritz-vectors.
+However, the subspace often converge rather quickly to the true extreme subspace and therefore generates very good approximations to the most extreme eigenvectors.
+It is therefore convenient to think of the ArnoldiSolver simply as a solver that can calculate extreme eigenvalues and eigenvectors.
+
+With this background we are ready to understand how to create and configure a basic ArnoldiSolver
+```cpp
+	ArnoldiSolver solver;
+	solver.setModel(model);
+	solver.setNumLancxosVectors(200);
+	solver.setMaxIterations(500);
+	solver.setNumEigenVectors(100);
+	solver.setCalculateEigenVectors(true);
+	solver.run();
+```
+As seen, line 1, 2, and 7 is similar to the DiagonalizationSolvers and require no further explanation.
+The thrid lines specifies how many Ritz-vectors (or Lanczos vectors) that are going to be generated during the iterative procedure, while the fourth line specifies the maximum number of iterations.
+It may be suprising that the number of iterations are not the same as the number of generated Ritz-vectors, but is due to the fact that the ArnoldiSolver is using a further improvement on the procedure called implicitly restarted Arnoldi iteration.
+For further information on this the interested reader is referred to the documentation for the ARPACK library.
+Remembering that we successively build up a larger and larger subspace starting from some random initial vector, it is expected that not all of the generated Ritz-vectors are meaningfull, but only the most extreme ones.
+For this reason the fifth line is used to specify the number of vectors that actually is going to be retained at the end of the calculation.
+To understand the sixth line we finally have to mention that the eigenvectors used internally by the ArnoldiSolver during the iterative procedure is not in the basis of the full Hamiltonian.
+That 100 generated eigenvectors therefore has to be converted to the basis that we are interested in if we actually want to use the eigenvectors.
+The sixth line tells the ArnoldiSolver to do so.
+
+## Shift and invert (extracting non-extremal eigenvalues)
+It is often not the extremal eigenvalues and eigenvectors that are of interest, but rather those around specific eigenvalue.
+With a simple trick it is possible to access also these using Arnoldi iteration.
+Namely, if we first shift the Hamiltonian by some number \f$\lambda\f$ the eigenvalues around \f$\lambda\f$ in the original matrix are shifted to lie around zero.
+Further, since the inverse of a matrix has the same eigenvectors as the original matrix, and inverse eigenvalues, the eigenvectors with eigenvalues around \f$\lambda\f$ in the original Hamiltonian becomes the new extremal eigenvectors.
+The ArnoldiSolver implements this mode of execution, which can be run by adding the following two lines before the call to *solver.run()*.
+```cpp
+	solver.setCentralValue(2);
+	solver.setMode(ArnoldiSolver::Mode::ShiftAndInvert);
+```
+
+The shift can also be applied without inversion.
+This can be beneficial if extremal eigenvalues of a particular sign are of interest.
+Say that the spectrum of a Hamiltonian is known to be between -1 and 1.
+By setting the central value to -1 (shifting -1 to 0), the spectrum for the new Hamiltonian is between 0 and 2 and the ArnoldiSolver will therefore only extract the eigenvectors with positive eigenvalues.
+We note that the function is called *setCentralValue()* rather than *setShift()*, since to the user of the Solver the final result is not shifted.
+The shift is first applied to the Hamiltonian internally, but is also added to the resulting eigenvalues to cancel this modification of the problem, meaning that the final eigenvalues are going to have values around 1 and not 2.
 
 # ChebyshevSolver {#ChebyshevSolver}
+The ChebyshevSolver is a Green's function based solver that calculates Green's functions on the form
+<center>\f$G_{\mathbf{i}\mathbf{j}}(E) = \frac{1}{\sqrt{s^2 - E^2}}\sum_{m=0}^{\infty}\frac{b_{\mathbf{i}\mathbf{j}}^{(m)}}{1 + \delta_{0m}}F(m\textrm{acos}(E/s))\f$,</center>
+where \f$F(x)\f$ is one of the functions \f$\cos(x)\f$, \f$\sin(x)\f$, \f$e^{ix}\f$, and \f$e^{-ix}\f$.
+We do not go into details about this method here, but rather refer the interested reader to Phys. Rev. Lett. <b>78</b>, 275 (2006), Phys. Rev. Lett. <b>105</b>, 1 (2010), and <a href="http://urn.kb.se/resolve?urn=urn%3Anbn%3Ase%3Auu%3Adiva-305212">urn:nbn:se:uu:diva-305212</a>.
+However, we point out that the expression is a Chebyshev expansion of the Green's function, which really is nothing but Fourier expansion if we make the change of variable \f$x = \textrm{acos}(E/s)\f$.
+Since \f$\textrm{acos}(E/s)\f$ only is defined for \f$E/s \in (-1, 1)\f$, it is important that the energy \f$E\f$ is not too big.
+In fact, the number \f$s\f$ is a scale factor that has to be chosen for each system to ensure that the eigenvalues of the system are no larger in magnitude than \f$s\f$.
+
+The main benefit of the Chebyshev expansion of the Green's function is that, in contrast to for example a straight forward Fourier expansion, the expansion coefficients \f$b_{\mathbf{i}\mathbf{j}}^{(m)}\f$ can be calculated recursively using sparse matrix-vector multiplication.
+In particular, the coefficients are given by
+<center>\f{eqnarray*}{
+	b_{\mathbf{i}\mathbf{j}}^{(m)} &=& \langle j_{\mathbf{i}}^{(0)}|j_{\mathbf{j}}^{(m)}\rangle,
+\f}</center>
+where
+<center>\f{eqnarray*}{
+	|j_{\mathbf{j}}^{(1)}\rangle &=& H|j_{\mathbf{j}}^{(0)}\rangle,\\
+	|j_{\mathbf{j}}^{(m)}\rangle &=& 2H|j_{\mathbf{j}}^{(m-1)}\rangle - |j_{\mathbf{j}}^{(m-2)}\rangle.
+\f}</center>
+Further, the vectors \f$|j_{\mathbf{i}}^{(0)}\rangle\f$ and \f$j_{\mathbf{j}}^{(0)}\rangle\f$ are the vectors that result from from setting every element equal to zero, except for that associated with the Index \f$\mathbf{i}\f$ and \f$\mathbf{j}\f$, respectively, which is set to one.
+Since Hamiltonians usually are very sparse, and multiplication with sparse matrices can be done relatively quickly even for very large matrices, this means that a large number of expansion coefficients can be calculated quickly for relatively large systems.
+Nevertheless, an infinite number of expansion coefficients can of course not be calculated in a finite time, and therefore the sum in the equation above has to be cut off at some number of coefficients.
+Once the coefficients have been calculated, the final step needed to generate the Green's function is to evaluate the sum at as many energy points as is needed.
+
+With this background we are ready to understand how to create and initialize a ChebyshevSolver
+```cpp
+	const double SCALE_FACTOR = 10;
+
+	ChebyshevSolver solver;
+	solver.setModel(model);
+	solver.setScaleFactor(SCALE_FACTOR);
+```
+The only number that needs to be supplied at this point is the scale factor.
+We also note that in contrast to for example the DiagonalizationSolver, there is no *solver.run()* command for the ChebyshevSolver.
+This is because, unlike the DiagonalizationSolver which essentially solves the whole system by diagonalizing it before properties can be extracted, the ChebyshevSolver solves the problem as the properties are extracted.
+We also note here, that in order for the ChebyshevSolver to work, it is required that one additional call is made to the Model.
+Namely, at the point of Model construction write
+```cpp
+	model.construct();
+	model.constructCOO();
+```
+rather than just the first line.
+This makes the Model create an internal sparse matrix representation of the Hamiltonian on a standard matrix format called COO and is required by the ChebyshevSolver.
+This requirement is slightly in conflict with the general design philosophy expressed in this manual and is intended to be removed in the future.
 
 @page PropertyExtractors PropertyExtractors
+# Physical properties, not numerics {#PhysicalPropertiesNotNumerics}
+In order to allow application developers to focus on relevant physical questions rather than algorithm specific details, and to prevent algorithm specific requirements from spreading to other parts of the code, TBTK encourages the use PropertyExtractors for extracting physical quantities from the Solvers.
+PropertyExtractors are interfaces to Solvers that largely present themselves uniformly to other parts of the code.
+What this means is that code that relies on calls to a PropertyExtractor is relatively insensitive to what specific Solver that is being used.
+The application developer is therefore relatively free to change Solver at any stage in the development process.
+This is e.g. very useful when it is realized that a particular Solver is not the best one for the task.
+It is also very useful when setting up complex problems where it can be useful to benchmark results from different Solvers against each other.
+The later is especially true during the development of new Solvers.
+
+The different PropertyExtractors can of course not have completely identical interfaces, since some properties are simply not possible to calculate with some Solvers.
+Some Solvers may also make it possible to calculate very specific things that are not possible to do with any other Solver.
+The PropertyExtractors are therefore largely uniform interfaces, but not identical.
+However, for most standard properties there at least exists function calls that allow the properties to compile even if they cannot actually perform the calculation.
+The program will instead print error messages that make it clear that the particular Solver is not able to calculate the property and ask the developer to switch Solver.
+In fact, this is achieved through inheritance from a common abstract base class called PropertyExtractor and allows for completely Solver independent code to be written that works with the abstract base class rather than the individual Solver specific PropertyExtractors.
+The experienced c++ programmer can use this to write truly portable code, while the developer unfamiliar with innheritance and abstract classes do not need to worry about these details.
+
+Each of the Solvers described in the Solver chapter have their own PropertyExtractor called DPropertyExtractor, BPropertyExtractor, APropertyExtractor, and CPropertyExtractor for Diagonalization, BlockDiagonalization, Arnoldi, and Chebyshev, respectively.
+The practie of using a single letter rather than a full word at the start of the class name runs contrary to the practice of using fully readable names in the rest of TBTK code and will probably change in the future.
+Not least since the development of even more Solvers otherwise likely will lead to name clashes.
+The point of creation for the PropertyExtractor is the last point at which algorithm specific details may need to be known about the Solvers and below we therefore go through how to create and initialize the different PropertyExtractors.
+
+## DPropertyExtractor
+
+```cpp
+	DPropertyExtractor propertyExtractor(solver);
+```
+
+## BPropertyExtractor
+
+```cpp
+	BPropertyExtractor propertyExtractor(solver);
+```
+
+## APropertyExtractor
+
+```cpp
+	APropertyExtractors propertyExtractor(solver);
+```
+
+## CPropertyExtractor
+
+```cpp
+	CPropertyExtracto propertyExtractor(
+		solver,
+		NUM_COEFFICIENTS,
+		USE_GPU_TO_CALCULATE_COEFFICIENTS,
+		USE_GPU_TO_GENERATE_GREENS_FUNCTIONS,
+		USE_LOOKUP_TABLE
+	);
+```
+Here the second parameter is the number of Chebyshev coefficients that are included in the Chebyshev expansion explained in the Solver chapter.
+The three last parameters are boolean values which determine whether the Chebyshev coefficients should be evaluated on GPU (or CPU), whether the evaluation of the Green's function should be done on GPU (or CPU), and whether to use a lookup table for the later calculation.
+The last flag is recommended to be set to true whenever possible since it can reduce computation time significantly when evaluating multiple Green's functions.
+The lookup table may, however, require significant amounts of memory, and the only reason to set this flag to false is if memory is an issue.
+The two other flags can be set to true independently of each other if the library is compiled with CUDA support.
+However, the later of the two can only be true when lookup tables are enabled.
+
+# Extracting Properties {#ExtractingProperties}
+In addition to the PropertyExtractors, TBTK has a set of Property classes that are returned by the PropertyExtractors and which are more extensively described in the chapter Properties.
+These Property classes supports a few different storage modes internally which allows for different types of extraction.
+For example does the system in question often have some concrete structure such as a square lattice.
+In this case it is usefull for properties to preserve knowledge about this structure as it can allow for example two-dimensional plots of the data to be done simply.
+Other times no such structure exists, or properties are just wanted for a few different points for which there is no unifying structure.
+These different cases require somewhat different approaches for storing the data in memory, as well as for how to instruct the PropertyExtractors how to extract the data.
+We here describe how to extract the different properties and the reader can jump to any Property of interest to see how to handle the particular situation.
+The reader is, however, adviced to first read the first section about the density since this establishes most of the basic notation.
+
+Before continuing, we note that some Properties have an energy dependence.
+This means that the quantities needs to be evaluated at a certain number of energy points.
+The PropertyExtractors extracts such properties within an energy window using some energy resolution and this can be set using
+```cpp
+	propertyExtractor.setEnergyWindow(LOWER_BOUND, UPPER_BOUND, RESOLUTION);
+```
+Here the two first numbers are real values satisfying LOWER_BOUND < UPPER_BOUND, and RESOLUTION is an integer specifying the number of energy points that the window is divided into.
+
+## Density
+To demonstrate two different modes for extracting properties we consider a Model with the Index-structure {x, y, z, s} with dimensions SIZE_X, SIZE_Y, SIZE_Z, and two spin species.
+Next, assume that we are interested in extracting the electron density in the z = 10 plane.
+We can do this as follows
+```cpp
+	Property::Density density = propertyExtractor.calculateDensity(
+		{ IDX_X,  IDX_Y,     10, IDX_SUM_ALL},
+		{SIZE_X, SIZE_Y, SIZE_Z,           2}
+	);
+```
+Here the first curly brace specifies how the different subindices are to be treated by the PropertyExtractor.
+In this case we specify that the x and y indices are to be considered as a first and second running index.
+Note that the labels IDX_X and IDX_Y has nothing to do with the fact that the index structure has x and y variables at these positions.
+The two labels could be interchanged, in which case the y-subindex is going to be considered the first index in the Property.
+A third specifier IDX_Z is also available and it is important that IDX_Z only is used if IDX_Y is used, and IDX_Y only is used if IDX_X is used.
+The third subindex in the first bracket specifies that the PropertyExtractor should only extract the density for z=10.
+Finally, the identifier in the fourth position instructs the PropertyExtractor to sum the contribution from all spins.
+
+The second bracket specifies the range over which the subindices run, assuming that they start at {0, 0, 0, 0}.
+In this case the third subindex will not actually be used and can in principle be set to any value, for which 1 is another reasonable choice as a reminder that only one value is going to be used.
+While there currently is no way of changing the lower bound for the range, it is possible to limit the upper bound by for example passing {SIZE_X/2, SIZE_Y, SIZE_Z, 2} as second argument.
+In this case the density will only be evaluated for the lower half of the x-range.
+
+Now assume that we instead are interested in extracting the density for the z = 10 plane, the points along the line (y,z)=(5,15), and the spin down density on site (x,y,z)=(0,0,0).
+This can be achieved by passing a list of patterns to the PropertyExtractor as follows
+```cpp
+	Property::Density density = propertyExtractor.calculateDensity({
+			{___, ___, 10, IDX_SUM_ALL},
+			{___,   5, 15, IDX_SUM_ALL},
+			{  0,   0,  0,           1}
+	});
+```
+First note the two curly brackets on the first and last line which means that the other brackets are passed to the function as a list of brackets rather than as individual arguments.
+This allows for an arbitrary number of patterns to be passed to the PropertyExtractor.
+The distinction becomes particularly important to keep in mind when only two patterns are supplied, since forgetting the outer brackets will result in the first mode described above to be executed instead.
+The sets of three underscores are wildcards, meaning that any Index that matches the patter will be included independently of the values in those positions.
+We note here that while the three underscores are useful for improving readability in application code, it is also possible to use the more descriptive identifier IDX_ALL.
+
+## DOS
+The denesity of states (DOS) represent a third internal storage mode since being a system wide property it has no Index-structure.
+```cpp
+	Property::DOS dos = propertyExtractor.calculateDOS();
+```
+
+## LDOS
+Assuming the index structure {x, y, z, s}, with dimensions SIZE_X, SIZE_Y, SIZE_Z, and two spin species, the LDOS can be extracted for the z = 10 plane as
+```cpp
+	Property::LDOS ldos = propertyExtractor.calculateLDOS(
+		{ IDX_X,  IDX_Y,     10, IDX_SUM_ALL},
+		{SIZE_X, SIZE_Y, SIZE_Z,           2}
+	);
+```
+or for the plane z=10, along the line (y,z)=(5,15), and for the down spin on site (x,y,z)=(0,0,0) using
+```cpp
+	Property::LDOS ldos = propertyExtractor.calculateLDOS({
+			{___, ___, 10, IDX_SUM_ALL},
+			{___,   5, 15, IDX_SUM_ALL},
+			{  0,   0,  0,           1}
+	});
+```
+
+## Magnetization
+Assuming the index structure {x, y, z, s}, with dimensions SIZE_X, SIZE_Y, SIZE_Z, and two spin species, the Magnetization can be extracted for the z = 10 plane as
+```cpp
+	Property::LDOS ldos = propertyExtractor.calculateLDOS(
+		{ IDX_X,  IDX_Y,     10, IDX_SPIN},
+		{SIZE_X, SIZE_Y, SIZE_Z,        2}
+	);
+```
+or for the plane z=10, along the line (y,z)=(5,15), and for the site (x,y,z)=(0,0,0) using
+```cpp
+	Property::LDOS ldos = propertyExtractor.calculateLDOS({
+			{___, ___, 10, IDX_SPIN},
+			{___,   5, 15, IDX_SPIN},
+			{  0,   0,  0, IDX_SPIN}
+	});
+```
+Note that in order to calculate the Magnetization, it is necessary to specify one and only one spin-subindex using IDX_SPIN.
+
+## SpinPolairzedLDOS
+Assuming the index structure {x, y, z, s}, with dimensions SIZE_X, SIZE_Y, SIZE_Z, and two spin species, the SpinPolarizedLDOS can be extracted for the z = 10 plane as
+```cpp
+	Property::SpinPolarizedLDOS psinPolarizedLDOS = propertyExtractor.calculateSpinPolarizedLDOS(
+		{ IDX_X,  IDX_Y,     10, IDX_SPIN},
+		{SIZE_X, SIZE_Y, SIZE_Z,        2}
+	);
+```
+or for the plane z=10, along the line (y,z)=(5,15), and for the site (x,y,z)=(0,0,0) using
+```cpp
+	Property::SpinPolarizedLDOS spinPolarizedLDOS = propertyExtractor.calculateSpinPolarizedLDOS({
+			{___, ___, 10, IDX_SPIN},
+			{___,   5, 15, IDX_SPIN},
+			{  0,   0,  0, IDX_SPIN}
+	});
+```
+Note that in order to calculate the SpinPolarizedLDOS, it is necessary to specify one and only one spin-subindex using IDX_SPIN.
+
+## Further Properties
+Further Properties such as EigenValues, GreensFunction, and WaveFunction are also available but are not yet documented in this manual.
+If you are interested in these quantites, do not hesistate to contact kristofer.bjornson@physics.uu.se to get further details or to request a speedy update about one or several of these Properties.
+
+@page Properties Properties
+
+# Storage modes
+
+@page FileWriterAndFileReader FileWriter and FileReader
+
+@page Streams Streams
