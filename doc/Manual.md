@@ -1014,7 +1014,7 @@ or for the plane z=10, along the line (y,z)=(5,15), and for the site (x,y,z)=(0,
 Note that in order to calculate the SpinPolarizedLDOS, it is necessary to specify one and only one spin-subindex using IDX_SPIN.
 
 ## Further Properties
-Further Properties such as EigenValues, GreensFunction, and WaveFunction are also available but are not yet documented in this manual.
+Further Properties such as EigenValues, GreensFunction, and WaveFunctions are also available but are not yet documented in this manual.
 If you are interested in these quantites, do not hesistate to contact kristofer.bjornson@physics.uu.se to get further details or to request a speedy update about one or several of these Properties.
 
 @page Properties Properties
@@ -1116,21 +1116,113 @@ We note that it is recommended to be causius about turning this feature on, sinc
 Such bugs will be immediately detected at execution if out of bounds access is turned off.
 
 # Density {#Density}
-The Density is the square of the wave function
+The Density has DataType double and can be extracted on the Ranges or Custom format.
+Assume an Index structure with two spatial subindices, one orbital subindex and one spin subindex {x, y, orbital, spin}, and that the orbital and spin subindices has been summed over using the IDX_SUM_ALL specifier at the point of extraction.
+On Ranges format a specific element can the be accessed as
+```cpp
+	vector<int> ranges = density.getRanges();
+	const double *data = density.getData();
+	double &d = data[ranges[1]*x + y];
+```
+while on the Custom format it can be accessed as
+```cpp
+	double &d = density({x, y, ___, ___});
+```
 
 # DOS {#DOS}
+The DOS has DataType double and is a global Property without Index structure but with an energy variable.
+The lower and upper bound for the energy variable and the number of energy points in the interval can be extracted as
+```cpp
+	double lowerBound = dos.getLowerBound();
+	double upperBound = dos.getUpperBound();
+	double resolution = dos.getResolution();
+```
+while an individual element can be extracted as
+```cpp
+	double &d = dos(n);
+```
+where 0 <= *n* < *resolution*
 
 # EigenValues {#EigenValues}
-
-# GreensFunction {#GreensFunction}
+The EigenValues Property has DataType double and is a global Property without Index structure.
+The number of eigenvalues can be extracted as
+```cpp
+	unsigned int numEigenValues = eigenValues.getSize();
+```
+while an individual eigen value can be extracted as
+```cpp
+	double &e = eigenValues(n);
+```
+where 0 <= *n* < *numEigenValues*.
 
 # LDOS {#LDOS}
+The LDOS has DataType double and can be extracted on the Ranges or Custom format.
+Assume an Index structure with two spatial subindices, one orbital subindex and one spin subindex {x, y, orbital, spin}, and that the orbital and spin subindices has been summed over using the IDX_SUM_ALL specifier at the point of extraction.
+The lower and upper bound for the energy variable and the number of energy points in the interval can be extracted as
+```cpp
+	double lowerBound = ldos.getLowerBound();
+	double upperBound = ldos.getUpperBound();
+	double resolution = ldos.getResolution();
+```
+On Ranges format a specific element can the be accessed as
+```cpp
+	vector<int> ranges = ldos.getRanges();
+	const double *data = ldos.getData();
+	double &d = data[resolution*(ranges[1]*x + y) + n];
+```
+where 0 <= *n* < resolution, while on the Custom format it can be accessed as
+```cpp
+	double &d = ldos({x, y, ___, ___}, n);
+```
 
 # Magnetization {#Magnetization}
+The Magnetization has DataType SpinMatrix and can be extracted on the Ranges or Custom format.
+Assume an Index structure with two spatial subindices, one orbital subindex and one spin subindex {x, y, orbital, spin}.
+Further assume that the orbital subindex has been summed over using the IDX_SUM_ALL specifier at the point of extraction, while the spin-index has been specified using the IDX_SPIN specifier.
+On Ranges format a specific element can the be accessed as
+```cpp
+	vector<int> ranges = magnetiation.getRanges();
+	const SpinMatrix *data = magnetization.getData();
+	SpinMatrix &m = data[ranges[1]*x + y];
+```
+while on the Custom format it can be accessed as
+```cpp
+	SpinMatrix &m = magnetization({x, y, ___, ___});
+```
 
 # SpinPolarizedLDOS {#SpinPolarizedLDOS}
+The SpinPolarizedLDOS has DataType SpinMatrix and can be extracted on the Ranges or Custom format.
+Assume an Index structure with two spatial subindices, one orbital subindex and one spin subindex {x, y, orbital, spin}.
+Further assume that the orbital subindex has been summed over using the IDX_SUM_ALL specifier at the point of extraction, while the spin-index has been specified using the IDX_SPIN specifier.
+The lower and upper bound for the energy variable and the number of energy points in the interval can be extracted as
+```cpp
+	double lowerBound = spinPolarizedLDOS.getLowerBound();
+	double upperBound = spinPolarizedLDOS.getUpperBound();
+	double resolution = spinPolarizedLDOS.getResolution();
+```
+On Ranges format a specific element can the be accessed as
+```cpp
+	vector<int> ranges = spinPolarizedLDOS.getRanges();
+	const SpinMatrix *data = spinPolarizedLDOS.getData();
+	SpinMatrix &m = data[resolution*(ranges[1]*x + y) + n];
+```
+where 0 <= *n* < *resolution*, while on the Custom format it can be accessed as
+```cpp
+	SpinMatrix &s = spinPolarizedLDOS({x, y, ___, ___}, n);
+```
 
-# WaveFunction {#WaveFunction}
+# WaveFunctions {#WaveFunctions}
+The WaveFunctions has DataType complex<double> and can be extracted on the Custom format.
+Assume an Index structure with two spatial subindices, one orbital subindex and one spin subindex {x, y, orbital, spin}.
+The states for which WaveFunctions contains wave functions can be extracted as
+```cpp
+	vector<unsigned int> &states = waveFunction.getStates();
+```
+On the Custom format a specific element can be accessed as
+```cpp
+	complex<double> &w = waveFunctions({x, y, orbital, spin}, n);
+```
+where *n* is one of the numbers contained in *states*.
 
 @page FileWriterAndFileReader FileWriter and FileReader
 
