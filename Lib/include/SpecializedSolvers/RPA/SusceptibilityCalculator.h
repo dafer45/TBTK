@@ -183,6 +183,9 @@ protected:
 		const Index &kIndex,
 		const Index &resultIndex
 	);
+
+	/** Clear cache. */
+	void clearCache();
 private:
 	/** IndexedDataTree storing the bare susceptibilities. */
 	IndexedDataTree<SerializeableVector<std::complex<double>>> susceptibilityTree;
@@ -302,6 +305,10 @@ inline std::vector<std::complex<double>> SusceptibilityCalculator::calculateSusc
 		),
 		orbitalIndices
 	);
+}
+
+inline void SusceptibilityCalculator::clearCache(){
+	susceptibilityTree.clear();
 }
 
 inline bool SusceptibilityCalculator::getIsMaster() const{
