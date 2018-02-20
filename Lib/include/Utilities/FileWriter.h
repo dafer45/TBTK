@@ -35,7 +35,7 @@
 #include "SpectralFunction.h"
 #include "SpinPolarizedLDOS.h"
 #include "ParameterSet.h"
-#include "WaveFunction.h"
+#include "WaveFunctions.h"
 #include <fstream>
 #include <stdio.h>
 
@@ -84,9 +84,9 @@ public:
 	);
 
 	/** Write wave function to file. */
-	static void writeWaveFunction(
-		const Property::WaveFunction &waveFunction,
-		std::string name = "WaveFunction",
+	static void writeWaveFunctions(
+		const Property::WaveFunctions &waveFunctions,
+		std::string name = "WaveFunctions",
 		std::string path = "/"
 	);
 

@@ -13,12 +13,12 @@
  * limitations under the License.
  */
 
-/** @file WaveFunction.cpp
+/** @file WaveFunctions.cpp
  *
  *  @author Kristofer Björnson
  */
 
-#include "WaveFunction.h"
+#include "WaveFunctions.h"
 
 #include "json.hpp"
 
@@ -45,7 +45,7 @@ WaveFunction::WaveFunction(
 {
 }*/
 
-WaveFunction::WaveFunction(
+WaveFunctions::WaveFunctions(
 	const IndexTree &indexTree,
 	const initializer_list<unsigned int> &states
 ) :
@@ -63,7 +63,7 @@ WaveFunction::WaveFunction(
 	}
 }
 
-WaveFunction::WaveFunction(
+WaveFunctions::WaveFunctions(
 	const IndexTree &indexTree,
 	const vector<unsigned int> &states
 ) :
@@ -80,7 +80,7 @@ WaveFunction::WaveFunction(
 	}
 }
 
-WaveFunction::WaveFunction(
+WaveFunctions::WaveFunctions(
 	const IndexTree &indexTree,
 	const initializer_list<unsigned int> &states,
 	const complex<double> *data
@@ -99,7 +99,7 @@ WaveFunction::WaveFunction(
 	}
 }
 
-WaveFunction::WaveFunction(
+WaveFunctions::WaveFunctions(
 	const IndexTree &indexTree,
 	const vector<unsigned int> &states,
 	const complex<double> *data
@@ -117,25 +117,25 @@ WaveFunction::WaveFunction(
 	}
 }
 
-WaveFunction::WaveFunction(
-	const WaveFunction &waveFunction
+WaveFunctions::WaveFunctions(
+	const WaveFunctions &waveFunctions
 ) :
-	AbstractProperty(waveFunction),
-	states(waveFunction.states)
+	AbstractProperty(waveFunctions),
+	states(waveFunctions.states)
 {
-	this->isContinuous = waveFunction.isContinuous;
+	this->isContinuous = waveFunctions.isContinuous;
 }
 
-WaveFunction::WaveFunction(
-	WaveFunction &&waveFunction
+WaveFunctions::WaveFunctions(
+	WaveFunctions &&waveFunctions
 ) :
-	AbstractProperty(std::move(waveFunction)),
-	states(std::move(waveFunction.states))
+	AbstractProperty(std::move(waveFunctions)),
+	states(std::move(waveFunctions.states))
 {
-	this->isContinuous = waveFunction.isContinuous;
+	this->isContinuous = waveFunctions.isContinuous;
 }
 
-WaveFunction::WaveFunction(
+WaveFunctions::WaveFunctions(
 	const string &serialization,
 	Mode mode
 ) :
@@ -149,9 +149,9 @@ WaveFunction::WaveFunction(
 	)
 {
 	TBTKAssert(
-		validate(serialization, "WaveFunction", mode),
-		"WaveFunction::WaveFucntion()",
-		"Unable to parse string as WaveFunction '" << serialization
+		validate(serialization, "WaveFunctions", mode),
+		"WaveFunctions::WaveFunctions()",
+		"Unable to parse string as WaveFunctions '" << serialization
 		<< "'.",
 		""
 	);
@@ -167,8 +167,8 @@ WaveFunction::WaveFunction(
 		}
 		catch(json::exception e){
 			TBTKExit(
-				"WaveFunction::WaveFuntion()",
-				"Unable to parse string as WaveFunction '"
+				"WaveFunctions::WaveFuntions()",
+				"Unable to parse string as WaveFunctions '"
 				<< serialization << "'.",
 				""
 			);
@@ -177,17 +177,17 @@ WaveFunction::WaveFunction(
 		break;
 	default:
 		TBTKExit(
-			"WaveFunction::WaveFunction()",
+			"WaveFunctions::WaveFunctions()",
 			"Only Serializeable::Mode::JSON is supported yet.",
 			""
 		);
 	}
 }
 
-WaveFunction::~WaveFunction(){
+WaveFunctions::~WaveFunctions(){
 }
 
-WaveFunction& WaveFunction::operator=(const WaveFunction &rhs){
+WaveFunctions& WaveFunctions::operator=(const WaveFunctions &rhs){
 	if(this != &rhs){
 		AbstractProperty::operator=(rhs);
 		this->isContinuous = rhs.isContinuous;
@@ -197,7 +197,7 @@ WaveFunction& WaveFunction::operator=(const WaveFunction &rhs){
 	return *this;
 }
 
-WaveFunction& WaveFunction::operator=(WaveFunction &&rhs){
+WaveFunctions& WaveFunctions::operator=(WaveFunctions &&rhs){
 	if(this != &rhs){
 		AbstractProperty::operator=(std::move(rhs));
 		isContinuous = rhs.isContinuous;
@@ -207,7 +207,7 @@ WaveFunction& WaveFunction::operator=(WaveFunction &&rhs){
 	return *this;
 }
 
-const complex<double>& WaveFunction::operator()(
+const complex<double>& WaveFunctions::operator()(
         const Index &index,
         unsigned int state
 ) const{
@@ -215,8 +215,8 @@ const complex<double>& WaveFunction::operator()(
 		int n = state - states.at(0);
 		TBTKAssert(
 			n >= 0 && (unsigned int)n < states.size(),
-			"WaveFunction::operator()",
-			"WaveFunction does not contain state '" << state << "'.",
+			"WaveFunctions::operator()",
+			"WaveFunctions does not contain state '" << state << "'.",
 			""
 		);
 		return AbstractProperty::operator()(index, n);
@@ -227,14 +227,15 @@ const complex<double>& WaveFunction::operator()(
 				return AbstractProperty::operator()(index, n);
 		}
 		TBTKExit(
-			"WaveFunction::operator()",
-			"WaveFunction does not contain state '" << state << "'.",
+			"WaveFunctions::operator()",
+			"WaveFunctions does not contain state '" << state
+			<< "'.",
 			""
 		);
 	}
 }
 
-complex<double>& WaveFunction::operator()(
+complex<double>& WaveFunctions::operator()(
         const Index &index,
         unsigned int state
 ){
@@ -242,8 +243,9 @@ complex<double>& WaveFunction::operator()(
 		int n = state - states.at(0);
 		TBTKAssert(
 			n >= 0 && (unsigned int)n < states.size(),
-			"WaveFunction::operator()",
-			"WaveFunction does not contain state '" << state << "'.",
+			"WaveFunctions::operator()",
+			"WaveFunctions does not contain state '" << state
+			<< "'.",
 			""
 		);
 		return AbstractProperty::operator()(index, n);
@@ -254,14 +256,15 @@ complex<double>& WaveFunction::operator()(
 				return AbstractProperty::operator()(index, n);
 		}
 		TBTKExit(
-			"WaveFunction::operator()",
-			"WaveFunction does not contain state '" << state << "'.",
+			"WaveFunctions::operator()",
+			"WaveFunctions does not contain state '" << state
+			<< "'.",
 			""
 		);
 	}
 }
 
-double WaveFunction::getMinAbs() const{
+double WaveFunctions::getMinAbs() const{
 	const complex<double> *data = getData();
 	double min = abs(data[0]);
 	for(unsigned int n = 1; n < getSize(); n++)
@@ -271,7 +274,7 @@ double WaveFunction::getMinAbs() const{
 	return min;
 }
 
-double WaveFunction::getMaxAbs() const{
+double WaveFunctions::getMaxAbs() const{
 	const complex<double> *data = getData();
 	double max = abs(data[0]);
 	for(unsigned int n = 1; n < getSize(); n++)
@@ -281,7 +284,7 @@ double WaveFunction::getMaxAbs() const{
 	return max;
 }
 
-double WaveFunction::getMinArg() const{
+double WaveFunctions::getMinArg() const{
 	const complex<double> *data = getData();
 	double min = arg(data[0]);
 	for(unsigned int n = 1; n < getSize(); n++)
@@ -291,7 +294,7 @@ double WaveFunction::getMinArg() const{
 	return min;
 }
 
-double WaveFunction::getMaxArg() const{
+double WaveFunctions::getMaxArg() const{
 	const complex<double> *data = getData();
 	double max = arg(data[0]);
 	for(unsigned int n = 1; n < getSize(); n++)
@@ -301,12 +304,12 @@ double WaveFunction::getMaxArg() const{
 	return max;
 }
 
-string WaveFunction::serialize(Mode mode) const{
+string WaveFunctions::serialize(Mode mode) const{
 	switch(mode){
 	case Mode::JSON:
 	{
 		json j;
-		j["id"] = "WaveFunction";
+		j["id"] = "WaveFunctions";
 		j["isContinuous"] = isContinuous;
 		for(unsigned int n = 0; n < states.size(); n++)
 			j["states"].push_back(states.at(n));
@@ -318,7 +321,7 @@ string WaveFunction::serialize(Mode mode) const{
 	}
 	default:
 		TBTKExit(
-			"WaveFunction::serialize()",
+			"WaveFunctions::serialize()",
 			"Only Serializeable::Mode::JSON is supported yet.",
 			""
 		);

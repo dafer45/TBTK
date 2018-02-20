@@ -433,8 +433,8 @@ Property::EigenValues* FileReader::readEigenValues(string name, string path){
 	return eigenValues;
 }
 
-Property::WaveFunction* FileReader::readWaveFunction(string name, string path){
-	Property::WaveFunction *waveFunction = NULL;
+Property::WaveFunctions* FileReader::readWaveFunctions(string name, string path){
+	Property::WaveFunctions *waveFunctions = NULL;
 
 	int attributes[2];
 	string attributeNames[2];
@@ -472,7 +472,7 @@ Property::WaveFunction* FileReader::readWaveFunction(string name, string path){
 		read(&serializedStates, &statesRank, &statesDims, ss.str(), path);
 		TBTKAssert(
 			statesRank == 1,
-			"FileReader::readWaveFunction()",
+			"FileReader::readWaveFunctions()",
 			"Unable to read 'states'.",
 			"This should never happen, something is wrong with the input data."
 		);
@@ -487,7 +487,7 @@ Property::WaveFunction* FileReader::readWaveFunction(string name, string path){
 		int *dims;
 		read(&data, &rank, &dims, name, path);
 
-		waveFunction = new Property::WaveFunction(
+		waveFunctions = new Property::WaveFunctions(
 			*indexTree,
 			states,
 			data
@@ -500,13 +500,13 @@ Property::WaveFunction* FileReader::readWaveFunction(string name, string path){
 	}
 	default:
 		TBTKExit(
-			"FileReader::readWaveFunction()",
+			"FileReader::readWaveFunctions()",
 			"Storage format not supported.",
 			"This should never happen, contact the developer."
 		);
 	}
 
-	return waveFunction;
+	return waveFunctions;
 }
 
 Property::DOS* FileReader::readDOS(string name, string path){

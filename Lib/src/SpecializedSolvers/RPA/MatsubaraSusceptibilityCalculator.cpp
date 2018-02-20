@@ -123,8 +123,15 @@ vector<complex<double>> MatsubaraSusceptibilityCalculator::calculateSusceptibili
 	const DualIndex &kDual,
 	const vector<int> &orbitalIndices
 ){
+	TBTKAssert(
+		getEnergies().size() == summationEnergies.size(),
+		"MatsubaraSusceptibilityCalculator::calculateSusceptibilityMatsubara()",
+		"Only equally sized 'energies' and 'summationEnergies' are"
+		<< " supported yet.",
+		""
+	);
+
 	//Get kIndex and resultIndex
-//	const vector<double> &k = kDual.getContinuousIndex();
 	const vector<double> &k = kDual;
 	const Index &kIndex = kDual;
 	Index resultIndex = getSusceptibilityResultIndex(
@@ -164,32 +171,29 @@ vector<complex<double>> MatsubaraSusceptibilityCalculator::calculateSusceptibili
 		int kPlusQMeshPoint = kPlusQLinearIndex/momentumSpaceContext.getNumOrbitals();
 
 		for(unsigned int e = 0; e < energies.size(); e++){
-			unsigned int summationEnergy;
-/*			if((int)e - (int)energies.size()/2 < 0)
-				summationEnergy = energies.size()/2 - e;
-			else
-				summationEnergy = ...;*/
+			for(unsigned int n = 0; n < summationEnergies.size(); n++){
+				if(
+					e + n < summationEnergies.size()/2
+					|| e + n >= 3*(summationEnergies.size()/2)
+				){
+					continue;
+				}
 
-			while(
-				summationEnergy + e < summationEnergies.size()
-			){
 				result[e] -= getGreensFunctionValue(
 					meshPoint,
 					orbitalIndices[3],
 					orbitalIndices[0],
-					summationEnergy,
+					n,
 					summationEnergies.size(),
 					numOrbitals
 				)*getGreensFunctionValue(
 					kPlusQMeshPoint,
 					orbitalIndices[1],
 					orbitalIndices[2],
-					summationEnergy + ((int)e - (int)energies.size()/2),
+					n + e - summationEnergies.size()/2,
 					summationEnergies.size(),
 					numOrbitals
 				);
-
-				summationEnergy++;
 			}
 		}
 	}

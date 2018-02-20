@@ -14,14 +14,14 @@
  */
 
 /** @package TBTKcalc
- *  @file WaveFunction.h
- *  @brief Property container for wave function
+ *  @file WaveFunctions.h
+ *  @brief Property container for wave functions
  *
  *  @author Kristofer Björnson
  */
 
-#ifndef COM_DAFER45_TBTK_WAVE_FUNCTION
-#define COM_DAFER45_TBTK_WAVE_FUNCTION
+#ifndef COM_DAFER45_TBTK_WAVE_FUNCTIONS
+#define COM_DAFER45_TBTK_WAVE_FUNCTIONS
 
 #include "AbstractProperty.h"
 
@@ -31,7 +31,7 @@ namespace TBTK{
 namespace Property{
 
 /** Container for density. */
-class WaveFunction : public AbstractProperty<std::complex<double>>{
+class WaveFunctions : public AbstractProperty<std::complex<double>>{
 public:
 	/** Constructor. */
 //	WaveFunction(int dimensions, const int *ranges);
@@ -40,49 +40,49 @@ public:
 //	WaveFunction(int dimensions, const int *ranges, const double *data);
 
 	/** Constructor. */
-	WaveFunction(
+	WaveFunctions(
 		const IndexTree &indexTree,
 		const std::initializer_list<unsigned int> &states
 	);
 
 	/** Constructor. */
-	WaveFunction(
+	WaveFunctions(
 		const IndexTree &indexTree,
 		const std::vector<unsigned int> &states
 	);
 
 	/** Constructor. */
-	WaveFunction(
+	WaveFunctions(
 		const IndexTree &indexTree,
 		const std::initializer_list<unsigned int> &states,
 		const std::complex<double> *data
 	);
 
 	/** Constructor. */
-	WaveFunction(
+	WaveFunctions(
 		const IndexTree &indexTree,
 		const std::vector<unsigned int> &states,
 		const std::complex<double> *data
 	);
 
 	/** Copy constructor. */
-	WaveFunction(const WaveFunction &waveFunction);
+	WaveFunctions(const WaveFunctions &waveFunctions);
 
 	/** Move constructor. */
-	WaveFunction(WaveFunction &&waveFunction);
+	WaveFunctions(WaveFunctions &&waveFunctions);
 
-	/** Constructor. Constructs the WaveFunction from a serialization
+	/** Constructor. Constructs the WaveFunctions from a serialization
 	 *  string. */
-	WaveFunction(const std::string &serialization, Mode mode);
+	WaveFunctions(const std::string &serialization, Mode mode);
 
 	/** Destructor. */
-	~WaveFunction();
+	~WaveFunctions();
 
 	/** Assignment operator. */
-	WaveFunction& operator=(const WaveFunction &rhs);
+	WaveFunctions& operator=(const WaveFunctions &rhs);
 
 	/** Move assignment operator. */
-	WaveFunction& operator=(WaveFunction &&rhs);
+	WaveFunctions& operator=(WaveFunctions &&rhs);
 
 	/** Returns a vector with the state indices for which the wave function
 	 *  is defined. */
@@ -123,7 +123,7 @@ private:
 	std::vector<unsigned int> states;
 };
 
-inline const std::vector<unsigned int>& WaveFunction::getStates() const{
+inline const std::vector<unsigned int>& WaveFunctions::getStates() const{
 	return states;
 }
 

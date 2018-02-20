@@ -178,10 +178,10 @@ void RayTracer::plot(
 
 void RayTracer::plot(
 	const Model& model,
-	const Property::WaveFunction &waveFunction,
+	const Property::WaveFunctions &waveFunctions,
 	unsigned int state
 ){
-	const IndexDescriptor &indexDescriptor = waveFunction.getIndexDescriptor();
+	const IndexDescriptor &indexDescriptor = waveFunctions.getIndexDescriptor();
 	TBTKAssert(
 		indexDescriptor.getFormat() == IndexDescriptor::Format::Custom,
 		"RayTracer::plot()",
@@ -192,16 +192,16 @@ void RayTracer::plot(
 	);
 
 //	double minAbs = waveFunction.getMinAbs();
-	double maxAbs = waveFunction.getMaxAbs();
+	double maxAbs = waveFunctions.getMaxAbs();
 
 	vector<const FieldWrapper*> emptyFields;
 	render(
 		indexDescriptor,
 		model,
 		emptyFields,
-		[&waveFunction, state, maxAbs](HitDescriptor &hitDescriptor) -> RayTracer::Material
+		[&waveFunctions, state, maxAbs](HitDescriptor &hitDescriptor) -> RayTracer::Material
 		{
-			complex<double> amplitude = waveFunction(hitDescriptor.getIndex(), state);
+			complex<double> amplitude = waveFunctions(hitDescriptor.getIndex(), state);
 			double absolute = abs(amplitude);
 			absolute = absolute/maxAbs;
 			double argument = arg(amplitude);

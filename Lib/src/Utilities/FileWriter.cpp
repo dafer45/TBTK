@@ -375,16 +375,16 @@ void FileWriter::writeEigenValues(
 	}
 }
 
-void FileWriter::writeWaveFunction(
-	const Property::WaveFunction &waveFunction,
+void FileWriter::writeWaveFunctions(
+	const Property::WaveFunctions &waveFunctions,
 	string name,
 	string path
 ){
 	init();
 
 	int attributes[2];
-	attributes[0] = static_cast<int>(waveFunction.getIndexDescriptor().getFormat());
-	attributes[1] = static_cast<int>(waveFunction.getStates().size());
+	attributes[0] = static_cast<int>(waveFunctions.getIndexDescriptor().getFormat());
+	attributes[1] = static_cast<int>(waveFunctions.getStates().size());
 	string attributeNames[2];
 	attributeNames[0] = "Format";
 	attributeNames[1] = "NumStates";
@@ -398,18 +398,18 @@ void FileWriter::writeWaveFunction(
 		path
 	);
 
-	switch(waveFunction.getIndexDescriptor().getFormat()){
+	switch(waveFunctions.getIndexDescriptor().getFormat()){
 	case IndexDescriptor::Format::Custom:
 	{
 		stringstream ss;
 		ss << name << "IndexTree";
 		writeIndexTree(
-			waveFunction.getIndexDescriptor().getIndexTree(),
+			waveFunctions.getIndexDescriptor().getIndexTree(),
 			ss.str(),
 			path
 		);
 
-		const vector<unsigned int> &states = waveFunction.getStates();
+		const vector<unsigned int> &states = waveFunctions.getStates();
 		const int STATES_RANK = 1;
 		int statesDims[STATES_RANK] = {(int)states.size()};
 		ss.str("");
@@ -417,14 +417,14 @@ void FileWriter::writeWaveFunction(
 		write((int*)states.data(), STATES_RANK, statesDims, ss.str(), path);
 
 		const int RANK = 1;
-		int dims[RANK] = {(int)waveFunction.getSize()};
-		write(waveFunction.getData(), RANK, dims, name, path);
+		int dims[RANK] = {(int)waveFunctions.getSize()};
+		write(waveFunctions.getData(), RANK, dims, name, path);
 
 		break;
 	}
 	default:
 		TBTKExit(
-			"FileWriter::writeWaveFunction()",
+			"FileWriter::writeWaveFunctions()",
 			"Storage format not supported.",
 			"This should never happen, contact the developer."
 		);

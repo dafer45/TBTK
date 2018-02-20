@@ -28,7 +28,7 @@
 #include "LDOS.h"
 #include "Magnetization.h"
 #include "Model.h"
-#include "WaveFunction.h"
+#include "WaveFunctions.h"
 #include "TBTKMacros.h"
 #include "Vector3d.h"
 
@@ -117,7 +117,7 @@ public:
 	/** Plot Magnetization. */
 	void plot(
 		const Model &model,
-		const Property::WaveFunction &waveFunction,
+		const Property::WaveFunctions &waveFunctions,
 		unsigned int state
 	);
 

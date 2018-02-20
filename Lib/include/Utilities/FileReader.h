@@ -35,7 +35,7 @@
 #include "SpectralFunction.h"
 #include "SpinPolarizedLDOS.h"
 #include "ParameterSet.h"
-#include "WaveFunction.h"
+#include "WaveFunctions.h"
 
 #include <fstream>
 #include <stdio.h>
@@ -80,9 +80,9 @@ public:
 		std::string path = "/"
 	);
 
-	/** Read WaveFunction from file. */
-	static Property::WaveFunction* readWaveFunction(
-		std::string name = "WaveFunction",
+	/** Read WaveFunctionw from file. */
+	static Property::WaveFunctions* readWaveFunctions(
+		std::string name = "WaveFunctions",
 		std::string pat = "/"
 	);
 

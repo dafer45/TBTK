@@ -30,7 +30,7 @@
 #include "LDOS.h"
 #include "PropertyExtractor.h"
 #include "SpinPolarizedLDOS.h"
-#include "WaveFunction.h"
+#include "WaveFunctions.h"
 
 #include <complex>
 #include <initializer_list>
@@ -61,7 +61,7 @@ public:
 	const std::complex<double> getAmplitude(int state, const Index &index);
 
 	/** Calculate wave function. */
-	Property::WaveFunction calculateWaveFunction(
+	Property::WaveFunctions calculateWaveFunctions(
 		std::initializer_list<Index> patterns,
 		std::initializer_list<int> states
 	);
@@ -99,10 +99,10 @@ public:
 	);
 private:
 	/** Callback for calculating the wave function. Used by
-	 *  calculateWaveFunction. */
-	static void calculateWaveFunctionCallback(
+	 *  calculateWaveFunctions. */
+	static void calculateWaveFunctionsCallback(
 		PropertyExtractor *cb_this,
-		void *waveFunction,
+		void *waveFunctions,
 		const Index &index,
 		int offset
 	);
