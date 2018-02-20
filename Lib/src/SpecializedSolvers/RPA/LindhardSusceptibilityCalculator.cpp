@@ -395,7 +395,8 @@ vector<complex<double>> LindhardSusceptibilityCalculator::calculateSusceptibilit
 	const vector<int> &orbitalIndices
 ){
 	//Get kIndex and resultIndex
-	const vector<double> &k = kDual.getContinuousIndex();
+//	const vector<double> &k = kDual.getContinuousIndex();
+	const vector<double> &k = kDual;
 	const Index &kIndex = kDual;
 	Index resultIndex = getSusceptibilityResultIndex(
 		kIndex,

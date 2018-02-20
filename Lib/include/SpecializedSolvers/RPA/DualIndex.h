@@ -30,7 +30,7 @@
 
 namespace TBTK{
 
-class DualIndex : public Index{
+class DualIndex : public Index, public std::vector<double>{
 public:
 	/** Constructor. */
 	DualIndex(
@@ -42,9 +42,9 @@ public:
 	~DualIndex();
 
 	/** Get continuous index. */
-	const std::vector<double>& getContinuousIndex() const;
+//	const std::vector<double>& getContinuousIndex() const;
 private:
-	const std::vector<double> continuousIndex;
+//	const std::vector<double> continuousIndex;
 };
 
 inline DualIndex::DualIndex(
@@ -52,7 +52,8 @@ inline DualIndex::DualIndex(
 	const std::vector<double> &continuousIndex
 ) :
 	Index(index),
-	continuousIndex(continuousIndex)
+//	continuousIndex(continuousIndex)
+	std::vector<double>(continuousIndex)
 {
 	TBTKAssert(
 		index.getSize() == continuousIndex.size(),
@@ -66,9 +67,9 @@ inline DualIndex::DualIndex(
 inline DualIndex::~DualIndex(){
 }
 
-inline const std::vector<double>& DualIndex::getContinuousIndex() const{
+/*inline const std::vector<double>& DualIndex::getContinuousIndex() const{
 	return continuousIndex;
-}
+}*/
 
 };	//End of namespace TBTK
 

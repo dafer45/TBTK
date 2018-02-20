@@ -482,7 +482,8 @@ vector<complex<double>> RPASusceptibilityCalculator::calculateChargeRPASusceptib
 				= susceptibilityCalculator->getMomentumSpaceContext();
 			const vector<unsigned int> &numMeshPoints = momentumSpaceContext.getNumMeshPoints();
 			const BrillouinZone &brillouinZone = momentumSpaceContext.getBrillouinZone();
-			const vector<double> &k = kDual.getContinuousIndex();
+//			const vector<double> &k = kDual.getContinuousIndex();
+			const vector<double> &k = kDual;
 
 			const vector<complex<double>> &result = rpaSusceptibility[orbital0][orbital1];
 
@@ -586,7 +587,8 @@ vector<complex<double>> RPASusceptibilityCalculator::calculateSpinRPASusceptibil
 				= susceptibilityCalculator->getMomentumSpaceContext();
 			const vector<unsigned int> &numMeshPoints = momentumSpaceContext.getNumMeshPoints();
 			const BrillouinZone &brillouinZone = momentumSpaceContext.getBrillouinZone();
-			const vector<double> &k = kDual.getContinuousIndex();
+//			const vector<double> &k = kDual.getContinuousIndex();
+			const vector<double> &k = kDual;
 
 			const vector<complex<double>> &result = rpaSusceptibility[orbital0][orbital1];
 
