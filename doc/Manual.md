@@ -1017,8 +1017,104 @@ Further Properties such as EigenValues, GreensFunction, and WaveFunction are als
 If you are interested in these quantites, do not hesistate to contact kristofer.bjornson@physics.uu.se to get further details or to request a speedy update about one or several of these Properties.
 
 @page Properties Properties
+# Properties and meta data {#PropertiesAndMetaData}
+When calculating physical properties it is common to store the result in an arrays.
+The density at (x,y) for a two-dimensional grid with dimensions (SIZE_X, SIZE_Y) can for example be stored as the array element *density[SIZE_Y*x +y]*.
+However, there are two problems with using such a simple storage scheme.
+First, there is an implicit assumption in the way the elements are laid out in memory that is nowehere documented in actual code.
+Every time the developer needs to write new code that access an element in the array, it is up to the developer to remember that the offset to the element should be calculated as *SIZE_Y*x + y*.
+The rule is certainly easy for grid like systems like in this example, but generalizes poorly to complex structures, and moreover limits the possibility to write general purpose functions that takes the array as input.
+Second, the variables SIZE_X and SIZE_Y needs to be stored separately from the array and either be global variables or be passed independently to any function that uses the array.
 
-# Storage modes
+The variables SIZE_X and SIZE_Y, as well as the information that the offset should be calculated as SIZE_Y*x + y, is meta data that together with the data itself forms a self contained concept.
+In TBTK properties are therefore stored in Property classes which acts as containers of both the data itself, as well as the relevant meta data.
+Moreover, the Properties can internally store the data in a multiple of different storage modes, each suitable for different types of data.
+In this chapter we describe these different storage modes, as well as the various specific properties natively supported by TBTK.
+We also note that while this chapter describes the properties themselves, the reader is referred to the PropertyExtractor chapter for information about how to actually create the various Properties.
+
+# Storage modes {#SotrageModes}
+There currently exists three different storage modes known as None, Ranges, and Custom.
+The names correspond to the type of Index structures that they are meant for.
+
+## None
+The storage mode None is the simplest one and is meant for Properties that has no Index structure at all, which is typical of global properties such as the density of states (DOS) or eigenvalues.
+
+## Ranges
+The Ranges storage mode is the storage mode described in the first section of this chapter and is meant for Properties that are extracted on a regular grid.
+By explicitly preserving the grid structure in the Property, other routines can make stronger assumptions about the data than it otherwise would be able to do, which can be useful in certain cases.
+This is particularly true when plotting data, since for example a density extracted on some specific two-dimensional plane in a three-dimensional grid can be plotted as a surface plot.
+In contrast, it is not clear how to plot a density extracted from a few randomly chosen points in the three-dimensional grid.
+If a common storage format that support the later possibility is chosen also in the former case, additional information will have to be provided to for example a plotter routine to tell it that it actually is more structured than it appears from the storage format alone.
+In particular, TBTK comes prepared with python scripts ready to plot many Properties, and many of these only work when the Ranges format is used.
+
+Sometimes it is useful to access the raw data rather than the Property object as a whole.
+This can be done as follows
+```cpp
+	const DataType *data = property.getData();
+```
+Here DataType should be replaced by the specific data type for the partiular property.
+There also exists a corresponding call that gives write access to the data, but it is recommended to only use this when really needed.
+```cpp
+	//Warning! Only use this if it is really needed.
+	DataType *data = property.getData();
+```
+
+When Properties are extracted on the Ranges format, identifiers IDX_X, IDX_Y, and IDX_Z and corresponding ranges SIZE_X, SIZE_Y, and SIZE_Z are used (see the PropertyExtractor chapter).
+These are used to indicate which subindex that should be maped to the first, second, and third index in the array, and their ranges.
+The ranges are stored in the Property and can be accessed using
+```cpp
+	vector<int> ranges = property.getRanges();
+```
+Individual elements are then accessed from the array using
+```cpp
+	data[NUM_INTERNAL_ELEMENTS*(ranges[2]*(ranges[1]*x + y) + z) + n];
+```
+where x, y, and z corresponds to the first second and third index respectively.
+Further, NUM_INTERNAL_ELEMENTS refers to the number of elements in the data for each index, while n is a particular choice of internal element.
+This is needed when the data has further structure than the index structure, such as for example when for each index the data has been calculated for several energies.
+If the data has no internal structure, or fewer than three indices, the corresponding variables are removed.
+For example, if the data is two-dimensional and has no internal structure the data is accessed as
+```cpp
+	data[ranges[1]*x + y];
+```
+
+We finally note that while the Ranges format retains structural information about the problem, it does not retain the actual Index structure.
+That is, although the x, y, and z variables bear resemblance to the corresponding subindices in the original Index structure, they have no real relation to each other.
+Therefore it is not possible to extract elements from a Property on the Ranges format using the original Indices on the form {x, y, z, s}.
+
+## Custom
+The Custom format allows for Properties without a particular grid structure to be extracted.
+For example when some Property is extracted from a molecule or from a few points on a grid without any particular relation to each other.
+However, while no grid structure is imposed on the Property, the Custom format has the benefit of preserving the Index structure.
+What this means is that after a Property has been created, it is possible to request a particular element using the original Indices used to specify the Model.
+The interface for doing so is through the function operator, which means that the Property can be seen as a function defined over the Indices for which it has been extracted.
+To access a particular element of the Property, simply type
+```cpp
+	DataType &element = property({x, y, z, s}, n);
+```
+where DataType should be replaced with the particular data type for the Property, and the second argument should be ignored if the Property has no internal structure other than the Index structure.
+
+Some properties does not have the full Index structure of the original problem.
+For example may a property such as LDOS be calculated by summing over the spin subindex using the identifier IDX_SUM_ALL.
+Other Properties may still have the full Index structure, but the Property may have one data element associated with a range of indices.
+For example does the Magnetization contain one SpinMatrix that contains information about both up and down spins at the same time.
+A typical case like this occurs when IDX_SPIN has been inserted in one of the subindices of the full Index structure at extraction.
+In these cases the s in {x, y, z, s} should be left unspecified, which is possible to do with help of the wild card specifiers that either consists of three underscores or IDX_ALL.
+```cpp
+	DataType &element = property({x, y, z, ___});
+```
+
+By default the Properties will generate an error if an Index is supplied as argument for which the Property has not been extracted.
+However, sometimes it is useful to override this behavior and make the Property instead return some default value (e.g. 0) when an otherwise illegal Index is supplied.
+To do so, execute the following commands
+```cpp
+	property.setAllowIndexOutOfBoundsAccess(true);
+	property.setDefaultValue(defaultValue);
+```
+We note that it is recommended to be causius about turning this feature on, since out of bound access in most cases is a sign of a bug.
+Such bugs will be immediately detected at execution if out of bounds access is turned off.
+
+
 
 @page FileWriterAndFileReader FileWriter and FileReader
 
