@@ -1105,7 +1105,7 @@ In these cases the s in {x, y, z, s} should be left unspecified, which is possib
 ```
 
 By default the Properties will generate an error if an Index is supplied as argument for which the Property has not been extracted.
-However, sometimes it is useful to override this behavior and make the Property instead return some default value (e.g. 0) when an otherwise illegal Index is supplied.
+However, sometimes it is useful to override this behavior and make the Property instead return some default value (e.g. zero) when an otherwise illegal Index is supplied.
 To do so, execute the following commands
 ```cpp
 	property.setAllowIndexOutOfBoundsAccess(true);
@@ -1114,7 +1114,21 @@ To do so, execute the following commands
 We note that it is recommended to be causius about turning this feature on, since out of bound access in most cases is a sign of a bug.
 Such bugs will be immediately detected at execution if out of bounds access is turned off.
 
+# Density {#Density}
 
+# DOS {#DOS}
+
+# EigenValues {#EigenValues}
+
+# GreensFunction {#GreensFunction}
+
+# LDOS {#LDOS}
+
+# Magnetization {#Magnetization}
+
+# SpinPolarizedLDOS {#SpinPolarizedLDOS}
+
+# WaveFunction {#WaveFunction}
 
 @page FileWriterAndFileReader FileWriter and FileReader
 
