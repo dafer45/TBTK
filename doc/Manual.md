@@ -402,22 +402,22 @@ In short, the distinction between physical indices and Hilbert space indices all
 
 # Example: A slightly more complex Model {#ExampleASlightlyMoreComplexModel}
 To appreciate the ease with which Models can be setup in TBTK, we now consider a slightly more complex example.
-Consider a magnetic impurity on top of a two-dimensional substrate of size 51\times 51 described by
-<center>\f$H = H_{s} + H_{Imp} + H_{Int}\f$</center>
+Consider a magnetic impurity on top of a two-dimensional substrate of size 51x51 described by
+<center>\f$H = H_{S} + H_{Imp} + H_{Int}\f$</center>
 where
 <center>\f{eqnarray*}{
-	H_{s} &=& U_s\sum_{\mathbf{i}\sigma}c_{\mathbf{i}\sigma}^{\dagger}c_{\mathbf{i}\sigma} - t\sum_{\langle\mathbf{i}\mathbf{j}\rangle}c_{\mathbf{i}\sigma}^{\dagger}c_{\mathbf{j}\sigma},\\
+	H_{S} &=& U_S\sum_{\mathbf{i}\sigma}c_{\mathbf{i}\sigma}^{\dagger}c_{\mathbf{i}\sigma} - t\sum_{\langle\mathbf{i}\mathbf{j}\rangle\sigma}c_{\mathbf{i}\sigma}^{\dagger}c_{\mathbf{j}\sigma},\\
 	H_{Imp} &=& (U_{Imp} - J)d_{\uparrow}^{\dagger}d_{\uparrow} + (U_{Imp} + J)d_{\downarrow}^{\dagger}d_{\downarrow},\\
 	H_{Int} &=& \delta\sum_{\sigma}c_{(25,25)\sigma}^{\dagger}d_{\sigma} + H.c.
 \f}</center>
 Here \f$\mathbf{i}\f$ is a two-dimensional index, \f$\langle\mathbf{i}\mathbf{j}\rangle\f$ indicates summation over nearest neighbors, \f$\sigma\f$ is a spin index, and \f$c_{\mathbf{i}}\f$ and \f$d_{\sigma}\f$ are operators on the substrate and impurity, respectively.
-The parameters \f$U_s\f$ and \f$U_{Imp}\f$ are onsite energies on the substrate and impurity, respectively, while \f$t\f$ is a nearest neighbor hopping amplitude, \f$J\f$ is a Zeeman term, and \f$\delta\f$ is the coupling strength between the substrate and impurity.
+The parameters \f$U_S\f$ and \f$U_{Imp}\f$ are onsite energies on the substrate and impurity, respectively, while \f$t\f$ is a nearest neighbor hopping amplitude, \f$J\f$ is a Zeeman term, and \f$\delta\f$ is the coupling strength between the substrate and impurity.
 
 We first note that an appropriate index structure is {0, x, y, s} for the substrate and {1, s} for the impurity.
 Using this index structure we next tabulate the hopping parameters on the canonical form given at the beginning of this chapter.
 | Hopping amplitude                          | Value         | To Index         | From Index       |
 |--------------------------------------------|---------------|------------------|------------------|
-| \f$a_{(0,x,y,\sigma),(0,x,y,\sigma)}\f$    | \f$U_s\f$     | {0,   x,   y, s} | {0,   x,   y, s} |
+| \f$a_{(0,x,y,\sigma),(0,x,y,\sigma)}\f$    | \f$U_S\f$     | {0,   x,   y, s} | {0,   x,   y, s} |
 | \f$a_{(0,x+1,y,\sigma),(0,x,y,\sigma)}\f$  | \f$-t\f$      | {0, x+1,   y, s} | {0,   x,   y, s} |
 | \f$a_{(0,x,y,\sigma),(0,x+1,y,\sigma)}\f$  | \f$-t\f$      | {0,   x,   y, s} | {0, x+1,   y, s} |
 | \f$a_{(0,x,y+1,\sigma),(0,x,y,\sigma)}\f$  | \f$-t\f$      | {0,   x, y+1, s} | {0,   x,   y, s} |
@@ -430,7 +430,7 @@ Using this index structure we next tabulate the hopping parameters on the canoni
 
 Symbolic subindices should be understood to imply that the values are valid for all possible values of the corresponding subindices.
 We also note that hopping amplitudes that appear multiple times should be understood to add the final value.
-For example does \f$a_{(1,\uparrow),(1,\uparrow)}\f$ appear twice (sixth and seventh row) and should be understood to add to \f$U - J\f$.
+For example does \f$a_{(1,\uparrow),(1,\uparrow)}\f$ appear twice (sixth and seventh row) and should be understood to add to \f$U_{Imp} - J\f$.
 While the first column is the analytical representation of the symbol for the hopping amplitudes, the third and fourth column is the corresponding numerical representation.
 In particular, we note that we use 0 to mean up spin and 1 to mean down spin.
 Next we note that the table can be reduced if we take into account that row 2 and 3, 4 and 5, and 9 and 10 are each others Hermitian conjugates.
@@ -438,7 +438,7 @@ Further, row 7 and 8 can be combined into a single row by writing the value as \
 The table can therefore if we also ignore the first column be compressed to
 | Value            | To Index         | From Index       | Add Hermitian conjugate |
 |------------------|------------------|------------------|-------------------------|
-| \f$U_s\f$        | {0,   x,   y, s} | {0,   x,   y, s} |                         |
+| \f$U_S\f$        | {0,   x,   y, s} | {0,   x,   y, s} |                         |
 | \f$-t\f$         | {0, x+1,   y, s} | {0,   x,   y, s} | Yes                     |
 | \f$-t\f$         | {0,   x, y+1, s} | {0,   x,   y, s} | Yes                     |
 | \f$U_{Imp}\f$    | {1, s}           | {1, s}           |                         |
@@ -450,8 +450,8 @@ Once on this form, it is simple to implement the Model as follows
 	const int SIZE_X = 51;
 	const int SIZE_Y = 51;
 
-	double U_s = 1;
-	double U_imp = 1;
+	double U_S = 1;
+	double U_Imp = 1;
 	double t = 1;
 	double J = 1;
 	double delta = 1;
@@ -462,19 +462,19 @@ Once on this form, it is simple to implement the Model as follows
 	for(int x = 0; x < SIZE_X; x++){
 		for(int y = 0; y < SIZE_Y; y++){
 			for(int s = 0; s < 2; s++){
-				model << HoppingAmplitude(U_s, {0, x, y, s}, {0, x, y, s});
+				model << HoppingAmplitude(U_S, {0, x, y, s}, {0, x, y, s});
 
 				if(x+1 < SIZE_X)
-					model << HoppingAmplitude(-t, {0, x+1, y, s}, {0, x, y, s}) + HC;
+					model << HoppingAmplitude(-t, {0, x+1,   y, s}, {0, x, y, s}) + HC;
 				if(y+1 < SIZE_Y)
-					model << HoppingAmplitude(-t, {0, x, y+1, s}, {0, x, y, s}) + HC;
+					model << HoppingAmplitude(-t, {0,   x, y+1, s}, {0, x, y, s}) + HC;
 			}
 		}
 	}
 
 	for(int s = 0; s < 2; s++){
 		//Setup impurity.
-		model << HoppingAmplitude(U_imp,      {1, s}, {1, s});
+		model << HoppingAmplitude(     U_imp, {1, s}, {1, s});
 		model << HoppingAmplitude(-J*(1-2*s), {1, s}, {1, s});
 
 		//Add coupling between the substrate and impurity.
@@ -491,7 +491,7 @@ A key advice is to utilize the Hermitian conjugate to their maximum like we did 
 Note in particular that we used this to only have \f$x+1\f$ and \f$y+1\f$ in one position for the indices, respectivel (and no \f$x-1\f$ or \f$y-1\f$).
 Doing so reduces the number of lines of code, improves readability, simplifies maintainance, and consequently reduces the chance of introducing errors.
 
-# Advanced example: Using IndexFilters to construct a Model {#AdvancedExampleUsingIndexFiltersToConstructAModel}
+# Advanced: Using IndexFilters to construct a Model {#AdvancedUsingIndexFiltersToConstructAModel}
 While the already introduced concepts significantly simplifies the modeling of complex geometries, TBTK provides further ways to simplify the modeling stage.
 In particular, we note that in the example above, conditional statements had to be used in the first for-loop to ensure that HoppingAmplitudes were not added accross the boundary of the system.
 For more complex structures it is useful to be able to separate the specification of such exceptions to the rule from the specification of the rule itself.
@@ -551,9 +551,9 @@ Once the Filter is specified, we are ready to use it to setup a Model
 	for(int x = 0; x < SIZE_X; x++){
 		for(int y = 0; y < SIZE_Y; y++){
 			for(int s = 0; s < 2; s++){
-				model << HoppingAmplitude(U_s, {x, y, s}, {x, y, s});
-				model << HoppingAmplitude(-t, {x+1, y, s}, {x, y, s}) + HC;
-				model << HoppingAmplitude(-t, {x, y+1, s}, {x, y, s}) + HC;
+				model << HoppingAmplitude(U_s, {  x,   y, s}, {x, y, s});
+				model << HoppingAmplitude( -t, {x+1,   y, s}, {x, y, s}) + HC;
+				model << HoppingAmplitude( -t, {  x, y+1, s}, {x, y, s}) + HC;
 			}
 		}
 	}
@@ -906,6 +906,7 @@ Other times no such structure exists, or properties are just wanted for a few di
 These different cases require somewhat different approaches for storing the data in memory, as well as for how to instruct the PropertyExtractors how to extract the data.
 We here describe how to extract the different properties and the reader can jump to any Property of interest to see how to handle the particular situation.
 The reader is, however, adviced to first read the first section about the density since this establishes most of the basic notation.
+The reader is also referred to the Properties chapter where more details about the Properties are given.
 
 Before continuing, we note that some Properties have an energy dependence.
 This means that the quantities needs to be evaluated at a certain number of energy points.
@@ -1032,7 +1033,7 @@ Moreover, the Properties can internally store the data in a multiple of differen
 In this chapter we describe these different storage modes, as well as the various specific properties natively supported by TBTK.
 We also note that while this chapter describes the properties themselves, the reader is referred to the PropertyExtractor chapter for information about how to actually create the various Properties.
 
-# Storage modes {#SotrageModes}
+# Storage modes {#StorageModes}
 There currently exists three different storage modes known as None, Ranges, and Custom.
 The names correspond to the type of Index structures that they are meant for.
 
@@ -1115,6 +1116,7 @@ We note that it is recommended to be causius about turning this feature on, sinc
 Such bugs will be immediately detected at execution if out of bounds access is turned off.
 
 # Density {#Density}
+The Density is the square of the wave function
 
 # DOS {#DOS}
 
