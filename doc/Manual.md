@@ -13,6 +13,8 @@ Manual {#Manual}
 - @subpage Streams
 - @subpage Timer
 - @subpage FourierTransform
+- @subpage Array
+- @subpage Plotter
 
 @page Introduction Introduction
 
@@ -1533,4 +1535,52 @@ The normalization factor is set using
 Once a plan is setup, repeated transforms can be carried out on the data in the *in* and *out* arrays by simply typing
 ```cpp
 	FourierTransform::transform(plan);
+```
+
+@page Array Array
+# Multi-dimensional arrays {#MultiDimensionalArrays}
+One of the most common storage structures is the array.
+TBTK therefore has a simple Array class that allows for multi-dimensional data to be stored.
+Such an Array can be created as follows
+```cpp
+	Array<DataType> array({SIZE_0, SIZE_1, SIZE_2});
+```
+where DataType should be replace by the specific data type of interest.
+While the code above will create a three-dimensional array with dimensions (SIZE_0, SIZE_1, SIZE_2), it is possible to pass an arbitrary number of arguments to the constructor to create an Array of any dimension.
+
+By default an array is uninitialized at creation, but it is possible to also supply a second argument at creation that will be used to initialize each element in the array.
+For example, it is possible to initialize a three-dimensional array of doubles with zeros in the following way
+```cpp
+	Array<double> array({SIZE_0, SIZE_1, SIZE_2}, 0);
+```
+Once created it is possible to access the ranges of the array using
+```cpp
+	const vector<unsigned int> &ranges = array.getRanges();
+```
+
+An individual element in the Array can be accessed using
+```cpp
+	DataType &data = array[{x, y, z}];
+```
+where 0 <= x < ranges[0], 0 <= y < ranges[1], and 0 <= z < ranges[2].
+
+Given that the DataType supports the corresponding operators, it is also possible to add and subtract arrays from each other
+```cpp
+	Array<DataType> sum        = array0 + array1;
+	Array<DataType> difference = array0 - array1;
+```
+as well as multiply and divide them by an *element* of the given DataType
+```cpp
+	Array<DataType> product  = element*array;
+	Array<DataType> quotient = array/element;
+```
+
+A subset of an Array can also be extracted using
+```cpp
+	Array<DataType> array2D = array.getSlice({x, ___, ___});
+```
+which in this case will extract the two-dimensional slice of the Array for which the first index is 'x'.
+The new array is a pure two-dimensional array from which elements can be extracted using
+```cpp
+	DataType &element = array2D[{y, z}];
 ```
