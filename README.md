@@ -2,7 +2,7 @@
 
 Welcome to the Tight Binding Toolkit - TBTK
 
-For an introduction to the library, see http://dafer45.github.io/TBTK
+The manual is available at http://www.second-quantization.com
 
 # Installation instructions
 Without CUDA (gpu)  

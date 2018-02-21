@@ -476,7 +476,7 @@ Once on this form, it is simple to implement the Model as follows
 
 	for(int s = 0; s < 2; s++){
 		//Setup impurity.
-		model << HoppingAmplitude(     U_imp, {1, s}, {1, s});
+		model << HoppingAmplitude(     U_Imp, {1, s}, {1, s});
 		model << HoppingAmplitude(-J*(1-2*s), {1, s}, {1, s});
 
 		//Add coupling between the substrate and impurity.

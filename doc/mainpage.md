@@ -53,7 +53,7 @@ The parameters \f$U_S\f$ and \f$U_{Imp}\f$ are onsite energies on the substrate 
 
 	for(int s = 0; s < 2; s++){
 		//Setup impurity.
-		model << HoppingAmplitude(     U_imp, {1, s}, {1, s});
+		model << HoppingAmplitude(     U_Imp, {1, s}, {1, s});
 		model << HoppingAmplitude(-J*(1-2*s), {1, s}, {1, s});
 
 		//Add coupling between the substrate and impurity.
@@ -70,8 +70,8 @@ The parameters \f$U_S\f$ and \f$U_{Imp}\f$ are onsite energies on the substrate 
 
 	//Extract the spin-polarized LDOS.
 	DPropertyExtractor propertyExtractor(solver);
-	propertyExtractor.setEnergyWindow(-1, 1);
-	Property::SpinPolarizeLDOS spinPolarizedLDOS = propertyExtractor.calculateSpinPolarizedLDOS({{0, ___, ___, IDX_SPIN}});
+	propertyExtractor.setEnergyWindow(-1, 1, 1000);
+	Property::SpinPolarizedLDOS spinPolarizedLDOS = propertyExtractor.calculateSpinPolarizedLDOS({{0, ___, ___, IDX_SPIN}});
 
 	//Save result.
 	FileWriter::writeSpinPolarizedLDOS(spinPolarizedLDOS);
