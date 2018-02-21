@@ -9,8 +9,10 @@ Manual {#manual}
 - @subpage Solvers
 - @subpage PropertyExtractors
 - @subpage Properties
-- @subpage FileWriterAndFileReader
+- @subpage ImportingAndExportingData
 - @subpage Streams
+- @subpage Timer
+- @subpage FourierTransform
 
 @page Introduction Introduction
 
@@ -69,15 +71,15 @@ This allows for components to be used interchangeably with little changes to the
 
 TBTK is first and foremost a collection of data structures intended to enable the implementation of algorithms for solving quantum mechanical problems, but also implements several different algorithms for solving specific problems.
 
-# c++11: Performance vs. ease of use {#cpp11PerformanceVsEaseOfUse}
+# C++11: Performance vs. ease of use {#cpp11PerformanceVsEaseOfUse}
 
 Scientific computations are often very demanding and high performance is therefore often a high priority.
 However, while low level programming languages offer high performance, they also have a reputation of being relatively difficult to work with.
-A comparatively good understanding of the low level details of how a computer works is usually required to write a program in languages such as c/c++ and FORTRAN compared to e.g. MATLAB and python.
-However, while c++ provides the ability to work on a very low level, it also provides the tools necessary to abstract away much of these details.
-A well written library can alleviate many of these issues, such as for example putting little requirement on the user to manage memory (the main source of errors for many new c/c++ programmers).
-Great progress in this direction was taken with the establishment of the c++11 standard.
-The language of choice for TBTK has therefore been c++11, and much effort has gone into developing data structures that are as simple as possible to use.
+A comparatively good understanding of the low level details of how a computer works is usually required to write a program in languages such as C/C++ and FORTRAN compared to e.g. MATLAB and python.
+However, while C++ provides the ability to work on a very low level, it also provides the tools necessary to abstract away much of these details.
+A well written library can alleviate many of these issues, such as for example putting little requirement on the user to manage memory (the main source of errors for many new C/C++ programmers).
+Great progress in this direction was taken with the establishment of the C++11 standard.
+The language of choice for TBTK has therefore been C++11, and much effort has gone into developing data structures that are as simple as possible to use.
 Great care has also been taken to avoid having the program crash without giving error messages that provide information that helps the user to resolve the problem.
 
 @page Overview Overview
@@ -527,7 +529,7 @@ public:
 	}
 };
 ```
-The experienced c++ programmer recognizes this as an implementation of an abstract base class and is encouraged to write more complicated filters.
+The experienced C++ programmer recognizes this as an implementation of an abstract base class and is encouraged to write more complicated filters.
 In this case we note that it is important that the function *clone()* returns a proper copy of the Filter, which in this case is trivial since there are no member variables.
 However, for the developer not familiar with such concepts, it is enough to view this as a template where the main action takes place in the function *isIncluded()*.
 This function is responsible for returning whether a given input index is included in the Model or not.
@@ -854,7 +856,7 @@ The PropertyExtractors are therefore largely uniform interfaces, but not identic
 However, for most standard properties there at least exists function calls that allow the properties to compile even if they cannot actually perform the calculation.
 The program will instead print error messages that make it clear that the particular Solver is not able to calculate the property and ask the developer to switch Solver.
 In fact, this is achieved through inheritance from a common abstract base class called PropertyExtractor and allows for completely Solver independent code to be written that works with the abstract base class rather than the individual Solver specific PropertyExtractors.
-The experienced c++ programmer can use this to write truly portable code, while the developer unfamiliar with innheritance and abstract classes do not need to worry about these details.
+The experienced C++ programmer can use this to write truly portable code, while the developer unfamiliar with innheritance and abstract classes do not need to worry about these details.
 
 Each of the Solvers described in the Solver chapter have their own PropertyExtractor called DPropertyExtractor, BPropertyExtractor, APropertyExtractor, and CPropertyExtractor for Diagonalization, BlockDiagonalization, Arnoldi, and Chebyshev, respectively.
 The practie of using a single letter rather than a full word at the start of the class name runs contrary to the practice of using fully readable names in the rest of TBTK code and will probably change in the future.
@@ -1224,6 +1226,314 @@ On the Custom format a specific element can be accessed as
 ```
 where *n* is one of the numbers contained in *states*.
 
-@page FileWriterAndFileReader FileWriter and FileReader
+@page ImportingAndExportingData Importing and exporting data
+#  External storage {#ExternalStorage}
+While the classes described in the other Chapters allow data to be stored in RAM during execution, it is important to also be able to store data outside of program memory.
+This allows for data to be stored in files in between executions, to be exported to other programs, for external input to be read in, etc.
+TBTK therefore comes with two methods for writing data strucutres to file on a format that allows for them to later be read into the same data structures, as well as one method for reading parameter files.
+
+The first method is in the form of a FileWriter and FileReader class, which allows for Properties and Models to be written into HDF5 files.
+The HDF5 file format (https://support.hdfgroup.org/HDF5/) is a file format specifically designed for scientific data and has wide support in many languages.
+Data written to file using the FileWriter can therefore easily be imported into for example MATLAB or python code for post processing.
+This is particularly true for Properties stored on the Ranges format (see the Properties chapter), since the data sections in the HDF5 files will preserve the Ranges format.
+
+Many classes in TBTK can also be serialized, which mean that they are turned into strings.
+These strings can then be written to file or passed as arguments to the constructor for the corresponding class to recreate a copy of the original object.
+TBTK also contains a class called Resources, which allows for very general input and output of strings, including reading data immediately from the web.
+In combination these two techniques allows for very flexible export and import of data that essentially allows large parts of the current state of the program to be stored in permanent memory.
+The goal is to make almost every class serializeable.
+This would essentialy allow a program to be serialized in the middle of execution and restarted at a later time, or allow for truely distributed applications to communicate their current state accross the internet.
+However, this is a future vision not yet fully reached.
+
+Finally, TBTK also contains a FileParser that can parse a structured parameter file and create a ParameterSet.
+
+# FileReader and FileWriter {#FileReaderAndFileWriter}
+The HDF5 file format that is used for the FileReader and FileWriter essentially implements a UNIX like file system inside a file for structured data.
+It allows for arrays of data, together with meta data called attributes, to be stored in datasets inside the file that resembles files.
+When reading and writing data using the FileReader and FileWriter, it is therefore common to write several objects into the same HDF5-file.
+The first thing to know about the FileReader and FileWriter is therefore that the current file it is using is chosen by typing
+```cpp
+	FileReader::setFileName("Filename.h5");
+```
+and similar for the FileWriter.
+It is important to note here that the FileReader and FileWriter acts as global state machines.
+What this means is that whatever change that is made to them at runtime is reflected throught the code.
+If this command is executed in some part of the code, and then some other part of the code is reading a file, it will use the file "Filename.h5" as input.
+It is possible to check whether a particular file already exists by first setting the filename and the call
+```cpp
+	bool fileExists = FileReader::exists();
+```
+and similar for the FileWriter.
+
+A second important thing to know about HDF5 is that, although it can write new datasets to an already existing file, it does not allow for data sets to be overwritten.
+If a program is meant to be run repeatedly, overwriting the previous data in the file each time it is rerun, it is therefore required to first delete the previously generated file.
+This can be done in code by after having set the filename type
+```cpp
+	FileWriter::clear();
+```
+A similar call also exists for the FileReader, but it may seem harder to find a logical reason for calling it on the FileReader.
+
+A Model or Property cna be written to file as follows
+```cpp
+	FileWriter::writeDataType(dataType);
+```
+where *DataType* should be replaced by one of the DataTypes listed below, and *data* should be an object of this data type.
+|Supported DataTypes|
+|-------------------|
+| Model             |
+| EigenValues       |
+| WaveFunction      |
+| DOS               |
+| Density           |
+| Magnetization     |
+| LDOS              |
+| SpinPolarizedLDOS |
+| ParameterSet      |
+
+By default the FileWriter writes the data to a dataset with the same name as the DataType listed above.
+However, sometimes it is useful to specify a custom name, especially if multiple data structures of the same type are going to be written to the same file.
+It is therefore possible to pass a second parameter to the write function that will be used as name for the dataset
+```cpp
+	FileWriter::writeDataType(data, "CustomName");
+```
+
+The interface for reading data is completely analogous to that for writing and takes the form
+```cpp
+	DataType data = FileReader::readDataType();
+```
+where DataType once again is a placeholder for one of the actual data type names listed in the table above.
+
+# Serializeable and Resource
+Serialization is a powerful technique whereby an object is able to convert itself into a string.
+If some classes implments serialization, it is simple to write new serializeable classes that consists of such classes since the new class essentially can serialize itself simply by stringing together the serializations of its components.
+TBTK is designed to allow for different serialization modes since some types of serialization may be simpler or more readable in case they are not meant to be imported back into TBTK, while others might be more efficient in terms of execution time and memory requirements.
+However, currently only serialization into JSON is implemented to any significant extent.
+We will therefore only describe this mode here.
+
+If a class is serializeable, which means it either inherits from the Serializeable class, or is pseud-serializeable by implementing the *serilaize()* function, it is possible to create a serialization of a corresponding object as follows
+```cpp
+	string serialization = serializeabelObject.serialize(Serializeable::Mode::JSON);
+```
+Currently the Model and all Properties can be serialized like this.
+For clarity considering the Model class, a Model can be recreated from a serialization string as follows
+```cpp
+	Model model(serialization, Serializeable::Mode::JSON);
+```
+The notation for recreating other types of objects is the same, with Model replaced by the class name of the object of interest.
+
+Having a way to create serialization strings and to recreate objects from such strings, it is useful to also be able to simply write and read such strong to and from file.
+For this TBTK provides a class called Resource.
+The interface for writing a string to file using a resource is
+```cpp
+	Resource resource;
+	resource.setData(someString);
+	resource.write("Filename");
+```
+Similarly a string can be read from file using
+```cpp
+	resource.read("Filename");
+	const string &someString = resource.getData();
+```
+
+The Resource is, however, more powerful than demonstrated so far since it in fact implements an interface for the cURL library (https://curl.haxx.se).
+This means that it for example is possible to read input from a URL instead of from file.
+For example, a simple two level system is available at http://www.second-quantization.com/ExampleModel.json that can be used to construct a Model as follows
+```cpp
+	resource.read("http://www.second-quantization.com/ExampleModel.json");
+	Model model(resource.getData(), Serializeable::Mode::JSON);
+	model.construct();
+```
+
+# FileParser and ParameterSet {#FileParserAndParameterSet}
+While the main purpose of the other two methods is to provide methods for importing and exporting data that faithfully preserve the data structures that are used internally by TBTK, it is also often useful to read other information from files.
+In particular, it is useful to be able to pass parameter values to a program through a file, rather than to explicitly type the parameters into the code.
+Especially since the later option requires the program to be recompiled every time a parameter is updated.
+
+For this TBTK provides a FileParser and a ParameterSet.
+In particular, together they allow for files formated as follows to be read
+<pre>
+	int     sizeX       = 50
+	int     sizeY       = 50
+	double  radius      = 10
+	complex phaseFactor = (1, 0)
+	bool    useGPU      = true
+	string  filename    = Model.json
+</pre>
+First the file can be converted into a ParameterSet as follows
+```cpp
+	ParameterSet *parameterSet = FileParser::parseParameterSet("Filename");
+```
+Once the ParameterSet is created, the variables can be accessed
+```cpp
+	int sizeX                   = parameterSet->getInt("sizeX");
+	int sizeY                   = parameterSet->getInt("sizeY");
+	double radius               = parameterSet->getDouble("radius");
+	complex<double> phaseFactor = parameterSet->getComplex("phaseFactor");
+	bool useGPU                 = parameterSet->getBool("useGPU");
+	string filename             = parameterSet->getString("filename");
+```
+
+<b>Note:</b> The FileParser currently returns a pointer to a ParameterSet rather than a ParameterSet, indicated by the use of '*' and '->'.
+This is to be changed in the future, which will mean that no '*' should be used and '->' will be replaced by '.'.
 
 @page Streams Streams
+# Customizeable Streams {#CustomizeablStreams}
+It is often useful to print information to the screen during execution.
+Both for the sake of providing information about the progress of a calculation and for debuging code during development.
+It is perfectly possible to use the standard C style *printf()* or C++ style *cout* streams for these purposes.
+However, TBTK provides its own Stream interface that allows for customization of the output such as easy redirection of output to a logfile, etc.
+Moreover, all TBTK functions use the Stream interface, and it is therefore useful to know how to handle these Streams in order to for example mute TBTK.
+
+# Streams::out, Streams::log, and Streams::err {#OutLogAndErr}
+The Stream interface has three different output channels called Streams::out, Streams::log, and Streams::err.
+The Streams::out and Streams::err channels are by default equivalent to *cout* and *cerr* and is meant for standard out put and error output, respectively.
+In addition, the two buffers are forked to the Streams::log buffer which by default does nothing.
+However, it is possible to make Streams::log wirte to an output file by typing
+```cpp
+	Streams::openLog("Logfile");
+```
+To ensure that all information is writen to file at the end of a calculation, a corrsponding close call should be made at the end of the program
+```cpp
+	Streams::closeLog();
+```
+It is further possible to turn of the output that is directed to *cout* as follows
+```cpp
+	Streams::setStdMuteOut();
+```
+while the output to *cerr* is muted by
+```cpp
+	Streams::setStdMuteErr();
+```
+We note that if a log is opened, muting any of these two channels will not turn of the output written to the logfile.
+It is therefore possible to mute any output that otherwise would have gone to the screen and only redirect it to a file.
+However, it is recommended to not mute the error stream, since *cerr* is designed to not be buffered, while the other streams are.
+This means that information written to *cerr* before a crash will be guaranteed to reach the screen, while information written to the other streams do not provide this guarantee.
+
+# Communicators {#Communicators}
+Although not part of the actuall Stream interface, many classes implements a so called Communicator interface.
+It is useful to know, that in addition to muting the Streams themself it is possible to globaly mute all Communicators by typing
+```cpp
+	Communicator::setGlobalVerbose(false);
+```
+or individual objects implementing the Communicator interface using
+```cpp
+	communicator.setVerbose(false);
+```
+
+@page Timer Timer
+# Profiling {#Profiling}
+In a typical program most of the execution time is spent in a small fraction of the code.
+It is therefore a good coding practice to first focus on writing a functional program and to then profile it to find eventual bottlenecks.
+Optimization effort can then be spent on those parts of the code where it really matters.
+Doing so allows for a high level of abstraction to be maintained, which reduces development time and makes the code more readable and thereby less error prone.
+To help with profiling code, TBTK has a simple to use Timer class which can be used either as a timestamp stack or as an accumulators.
+It is also possible to mix the two modes, using the timestamp stack for some measurements while simultaneously using the accumulators for other.
+
+# Timestamp stack {#TimestampStack}
+To time a section, all that is required is to enclose it between a *Timer::tick()* and a *Timer::tock()* call
+```cpp
+	Timer::tick("A custom tag");
+	//Some code that is being timed.
+	//...
+	Timer::tock();
+```
+The tag string passed to *Timer::tick()* is optional, but is useful when multiple sections are timed since it will be printed together with the actual time when *Timer::tock()* is called.
+
+When used as above, the Timer acts as a stack.
+When a call is made to *Timer::tick()*, a new timestamp and tag is pushed onto the stack, and the *Timer::tock()* call pops the latest call and prints the corresponding time and tag.
+It is therefore possible to nest Timer calls as follows
+```cpp
+	Timer::tick("Full loop");
+	for(unsigned int m = 0; m < 10; m++){
+		Timer::tock("Inner loop");
+		for(unsigned int n = 0; n < 100; n++){
+			//Do something
+			//...
+		}
+		Timer::tock();
+	}
+	Timer::tock();
+```
+This will result in the Timer timing the inner loop ten times, each time printing the execution time together with the tag 'Inner loop'.
+After the ten individual timing event have been completed, the Timer will also print the time it took for the full nested loop to execute together with the tag 'Full loop'.
+
+# Accumulators {#Accumulators}
+Sometimes it is useful to measure the accumulated time taken by one or several pieces of code that are not necessarily executed without other code being executed in between.
+For example, consider the following loop
+```cpp
+	for(unsigned int n = 0; n < 1000000; n++){
+		task1();
+		task2();
+	}
+```
+This piece of code may have been identified as a bottleneck in the program, but it is not clear which of the two tasks that is responsible for it.
+Moreover, the time taken for each task may vary from call to call and therefore it is only useful to know the accumulated time taken for all 1,000,000 iterations.
+For cases like this the Timer provides the possibility to create accumulators as follows
+```cpp
+	unsigned int accumulatorID1 = Timer::createAccumulator("Task 1");
+	unsigned int accumulatorID2 = Timer::createAccumulator("Task 2");
+```
+The IDs returned by these functions can then be passed to the *Timer::tick()* and *Timer::tock()* calls to make it use these accumulators instead of the stack.
+For the loop above we can now write
+```cpp
+	for(unsigned int n = 0; n < 1000000; n++){
+		Timer::tick(accumulatorID1);
+		task1();
+		Timer::tock(accumulatorID1);
+
+		Timer::tick(accumulatorID2);
+		task2();
+		Timer::tock(accumulatorID2);
+	}	
+```
+Since the accumulators are meant to accumulate time over multiple calls, there is no reason for *Timer::tock()* to print the time each time it is called.
+Instead the Timer has a special function for printing information about the accumulators, which will print the accumulated time and tags for all the currently created accumulators.
+```cpp
+	Timer::printAccumulators();
+```
+
+@page FourierTransform FourierTransform
+# Fast Fourier transform {#FastFourierTransform}
+One of the most commonly employed tools in physics is the Fourier transform and TBTK therefore provides a class that can carry out one-, two-, and three-dimensional Fourier transforms.
+The class is a wrapper for the FFTW3 library (http://www.fftw.org), which implements and optimized version of the fast Fourier transform (FFT).
+
+## Basic interface {#BasicInterface}
+The basic interface for executing a transform is
+```cpp
+	FourierTransform::transform(in, out, SIZE_X, SIZE_Y, SIZE_Z, SIGN);
+```
+where the SIZE_Y and SIZE_Z can be droped depending on the dimensionality of the transform.
+Further, *in* and *out* are *complex<double>* arrays with SIZE_X*SIZE_Y*SIZE_Z elements, and SIGN should be -1 or 1 and determines the sign in the exponent of the transform.
+The normalization factor is \f$\sqrt{SIZE\_X\times SIZE\_Y\times SIZE\_Z}\f$.
+
+For simplicity the FourierTransform also has functions with special names for the transforms with positive and negative sign.
+The transform with negative sign can be called as
+```cpp
+	FourierTransform::forward(in, out, SIZE_X, SIZE_Y, SIZE_Z);
+```
+while the transform with positive sign can be called as
+```cpp
+	FourierTransform::inverse(in, out, SIZE_X, SIZE_Y, SIZE_Z);
+```
+
+## Advanced interface {#AdvancedInterface}
+While the basic interface is very convenient, each such call involves a certain amount of overhead.
+First, the FFTW3 library requires a plan to be setup prior to executing a transform, which involves a certain amount of computation ahead of the actual transform in order to figure out the optimal configuration.
+For similar transforms it is possible to do such calculations once and reuse the same plan.
+Second, by default the transform uses a specific normalization and it can be convenient to specify a custom normalization factor, or to set the normalization factor to 1, in which case the normalization step is avoided completely.
+For this reason it is possible to setup a plan ahead of execution that both wraps the FFTW3 paln, as well as contain information about the normalization.
+
+The creation of a plan mimics the interface for performing basic transforms
+```cpp
+	FourierTransform::Plan<complex<double>> plan(in, out, SIZE_X, SIZE_Y, SIZE_Z, SIGN);
+```
+Similar calls are available for creating forward and inverse transforms without explicitly specifying the sign and are called FourierTransform::ForwardPlan<complex<double>> and FourierTransform::InversePlan<complex<double>>, respectivley.
+The normalization factor is set using
+```cpp
+	plan.setNormalizationFactor(1.0);
+```
+
+Once a plan is setup, repeated transforms can be carried out on the data in the *in* and *out* arrays by simply typing
+```cpp
+	FourierTransform::transform(plan);
+```
