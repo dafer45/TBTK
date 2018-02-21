@@ -1361,20 +1361,17 @@ In particular, together they allow for files formated as follows to be read
 </pre>
 First the file can be converted into a ParameterSet as follows
 ```cpp
-	ParameterSet *parameterSet = FileParser::parseParameterSet("Filename");
+	ParameterSet parameterSet = FileParser::parseParameterSet("Filename");
 ```
 Once the ParameterSet is created, the variables can be accessed
 ```cpp
-	int sizeX                   = parameterSet->getInt("sizeX");
-	int sizeY                   = parameterSet->getInt("sizeY");
-	double radius               = parameterSet->getDouble("radius");
-	complex<double> phaseFactor = parameterSet->getComplex("phaseFactor");
-	bool useGPU                 = parameterSet->getBool("useGPU");
-	string filename             = parameterSet->getString("filename");
+	int sizeX                   = parameterSet.getInt("sizeX");
+	int sizeY                   = parameterSet.getInt("sizeY");
+	double radius               = parameterSet.getDouble("radius");
+	complex<double> phaseFactor = parameterSet.getComplex("phaseFactor");
+	bool useGPU                 = parameterSet.getBool("useGPU");
+	string filename             = parameterSet.getString("filename");
 ```
-
-<b>Note:</b> The FileParser currently returns a pointer to a ParameterSet rather than a ParameterSet, indicated by the use of '*' and '->'.
-This is to be changed in the future, which will mean that no '*' should be used and '->' will be replaced by '.'.
 
 @page Streams Streams
 # Customizeable Streams {#CustomizeablStreams}
