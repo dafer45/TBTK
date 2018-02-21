@@ -82,7 +82,7 @@ These libraries are
 | cURL               | https://curl.haxx.se/                      |
 | SuperLU (v5.2.1)   | http://crd-legacy.lbl.gov/~xiaoye/SuperLU/ |
 
-If one or several of these packages are installed, it is possible to enter the TBTK/Lib folder and install further components by typing the following commands.
+If one or several of these libraries are installed, it is possible to enter the TBTK/Lib folder and install further components by typing the following commands.
 
 Requires ARPACK and SuperLU
 ```bash
