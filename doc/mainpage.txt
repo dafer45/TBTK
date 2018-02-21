@@ -1,9 +1,0 @@
-/*! \mainpage TBTK
- *
- *  TBTK is a c++ library for modeling and solving second quantized Hamiltonians.
- *  The library originated as a toolkit for solving tight-binding models (bilinear Hamiltonians), but has since expanded in scope to include general second-quantized models.
- *  A flexible indexing scheme allows for general models to be setup with little effort, and a variety of solution methods are implemented in a set of different solvers.
- *  The aim is to provide flexible and well thought through data structures that combines the efficiency of c++ with high level abstraction that allows developers to focus their attention on physics rather than numerics. In this way TBTK is intended to facilitate both the investigation of specific physical question as well as enabling rapid development of completely new methods.
- *
- *  Note: Since backward incompatible changes can be present on the master branch, users are recomended to always make sure their projects depend on one of the released versions of the code.
- */
