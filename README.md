@@ -2,7 +2,7 @@
 
 Welcome to TBTK - A library for modeling and solving second quantized Hamiltonians.
 
-The manual is available at http://www.second-quantization.com
+The documentation is available at http://www.second-quantization.com
 
 # Installation instructions
 Without CUDA (gpu)  
