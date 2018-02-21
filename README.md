@@ -1,6 +1,6 @@
 [![DOI](https://zenodo.org/badge/50950512.svg)](https://zenodo.org/badge/latestdoi/50950512)
 
-Welcome to the Tight Binding Toolkit - TBTK
+Welcome to TBTK - A library for modeling and solving second quantized Hamiltonians.
 
 The manual is available at http://www.second-quantization.com
 
