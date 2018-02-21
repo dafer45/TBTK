@@ -59,12 +59,12 @@ public:
 
 	/** Write ParameterSet to file. */
 	static void writeParameterSet(
-		const ParameterSet *parameterSet,
+		const ParameterSet &parameterSet,
 		std::string fileName
 	);
 
 	/** Read ParameterSet from file. */
-	static ParameterSet* readParameterSet(std::string fileName);
+	static ParameterSet readParameterSet(std::string fileName);
 private:
 	/** Open output stream. */
 	static void openOutput(std::string fileName);

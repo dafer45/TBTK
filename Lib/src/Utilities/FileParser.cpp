@@ -71,37 +71,37 @@ Model* FileParser::readModel(string fileName){
 }
 
 void FileParser::writeParameterSet(
-	const ParameterSet *parameterSet,
+	const ParameterSet &parameterSet,
 	string filename
 ){
 	ofstream fout(filename);
 
-	for(int n = 0; n < parameterSet->getNumInt(); n++){
-		fout << "int\t" << parameterSet->getIntName(n) << "\t= "
-			<< parameterSet->getIntValue(n) << "\n";
+	for(int n = 0; n < parameterSet.getNumInt(); n++){
+		fout << "int\t" << parameterSet.getIntName(n) << "\t= "
+			<< parameterSet.getIntValue(n) << "\n";
 	}
-	for(int n = 0; n < parameterSet->getNumDouble(); n++){
-		fout << "double\t" << parameterSet->getDoubleName(n) << "\t= "
-			<< parameterSet->getDoubleValue(n) << "\n";
+	for(int n = 0; n < parameterSet.getNumDouble(); n++){
+		fout << "double\t" << parameterSet.getDoubleName(n) << "\t= "
+			<< parameterSet.getDoubleValue(n) << "\n";
 	}
-	for(int n = 0; n < parameterSet->getNumComplex(); n++){
-		fout << "complex\t" << parameterSet->getComplexName(n) << "\t= "
-			<< parameterSet->getComplexValue(n) << "\n";
+	for(int n = 0; n < parameterSet.getNumComplex(); n++){
+		fout << "complex\t" << parameterSet.getComplexName(n) << "\t= "
+			<< parameterSet.getComplexValue(n) << "\n";
 	}
-	for(int n = 0; n < parameterSet->getNumString(); n++){
-		fout << "string\t" << parameterSet->getStringName(n) << "\t= "
-			<< parameterSet->getStringValue(n) << "\n";
+	for(int n = 0; n < parameterSet.getNumString(); n++){
+		fout << "string\t" << parameterSet.getStringName(n) << "\t= "
+			<< parameterSet.getStringValue(n) << "\n";
 	}
-	for(int n = 0; n < parameterSet->getNumBool(); n++){
-		fout << "bool\t" << parameterSet->getBoolName(n) << "\t= "
-			<< parameterSet->getBoolValue(n) << "\n";
+	for(int n = 0; n < parameterSet.getNumBool(); n++){
+		fout << "bool\t" << parameterSet.getBoolName(n) << "\t= "
+			<< parameterSet.getBoolValue(n) << "\n";
 	}
 
 	fout.close();
 }
 
-ParameterSet* FileParser::readParameterSet(string fileName){
-	ParameterSet *parameterSet = new ParameterSet();
+ParameterSet FileParser::readParameterSet(string fileName){
+	ParameterSet parameterSet;
 
 	readInput(fileName);
 	removeComments();
@@ -132,7 +132,7 @@ ParameterSet* FileParser::readParameterSet(string fileName){
 			);
 			int value;
 			ssin >> value;
-			parameterSet->addInt(name, value);
+			parameterSet.addInt(name, value);
 		}
 		else if(type.compare("double") == 0){
 			string name;
@@ -147,7 +147,7 @@ ParameterSet* FileParser::readParameterSet(string fileName){
 			);
 			double value;
 			ssin >> value;
-			parameterSet->addDouble(name, value);
+			parameterSet.addDouble(name, value);
 		}
 		else if(type.compare("complex") == 0){
 			string name;
@@ -162,7 +162,7 @@ ParameterSet* FileParser::readParameterSet(string fileName){
 			);
 			complex<double> value;
 			ssin >> value;
-			parameterSet->addComplex(name, value);
+			parameterSet.addComplex(name, value);
 		}
 		else if(type.compare("string") == 0){
 			string name;
@@ -180,7 +180,7 @@ ParameterSet* FileParser::readParameterSet(string fileName){
 			int first = value.find_first_not_of(" \t");
 			int last = value.find_last_not_of(" \t");
 			value = value.substr(first, last - first + 1);
-			parameterSet->addString(name, value);
+			parameterSet.addString(name, value);
 		}
 		else if(type.compare("bool") == 0){
 			string name;
@@ -195,7 +195,7 @@ ParameterSet* FileParser::readParameterSet(string fileName){
 			);
 			bool value;
 			ssin >> value;
-			parameterSet->addBool(name, value);
+			parameterSet.addBool(name, value);
 		}
 		else{
 			TBTKExit(
