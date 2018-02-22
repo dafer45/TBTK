@@ -14,7 +14,7 @@ Manual {#Manual}
 - @subpage Timer
 - @subpage FourierTransform
 - @subpage Array
-- @subpage Plotter
+- @subpage Plotting
 
 @page Introduction Introduction
 
@@ -1584,3 +1584,152 @@ The new array is a pure two-dimensional array from which elements can be extract
 ```cpp
 	DataType &element = array2D[{y, z}];
 ```
+
+@page Plotting Plotting
+# Quick and dirty {#QuickAndDirty}
+The final step in most calculations involve plotting the results and TBTK therefore have limited support for plotting.
+The current plotting abilities are restricted and rough, and currently the user is therefore recommended to use some external tool for final production plots.
+However, the currently available plotting tools can be handy for quick and dirty plotting.
+Especially, it allows for visualization to occur even in the middle of a calculation, which can be particularly useful during development.
+
+# Plotter {#Plotter}
+Plotting immediately from C++ code can be done using the Plotter class and a Plotter is created as
+```cpp
+	Plotter plotter;
+```
+The Plotter currently generates pixel graphics and the width and height of the canvas can be set using
+```cpp
+	plotter.setWidth(WIDTH);
+	plotter.setHeight(HEIGHT);
+```
+where *WIDTH* and *HEIGHT* are positive integers.
+In order to save a plot type
+```cpp
+	plotter.save("FigureName.png");
+```
+Here it is important to make sure the filename ends with an image format such as '.png' for the call to succeed, as it will be used by the underlying OpenCV library to determine the file format of the resulting file.
+For an up to date list of the supported file formats the reader is referred to the OpenCV documentation (https://opencv.org/).
+
+It is possible to plot multiple data sets in the same graph, which can be done by setting *hold* to true
+```cpp
+	plotter.setHold(true);
+```
+When *hold* is set to true, it is also useful to be able to clear the plot, which is done as follows
+```cpp
+	plotter.clear();
+```
+
+By default the axes of a plot are automatically scaled to the bounds of the data.
+However, it is also possible to specify the bounds using
+```cpp
+	plotter.setBoundsX(-1, 1);
+	plotter.setBoundsY(0, 10);
+```
+or equivalently through a single call using
+```cpp
+	plotter.setBounds(-1, 1, 0, 10);
+```
+To return to auto scaling after bounds have been specified, use
+```cpp
+	plotter.setAutoScaleX(true);
+	plotter.setAutoScaleY(true);
+```
+or simultaneously turn on auto scaling for both axes using
+```cpp
+	plotter.setAutoScale(true);
+```
+
+## Decoration
+Many of the plot routines also accept a Decoration object as last argument to specify line the color and line style used for the data.
+A typical plot command with a Decoration object look like
+```cpp
+	plotter.plot(
+		data,
+		Decoration(
+			{192, 64, 64},
+			Decoration::LineStyle::Line
+		)
+	);
+```
+Here the first argument to the Decoration object is the color in RGB format and each entry can be a value between 0 and 255.
+The second argument is the line style, and currently this argument has to be supplied independently of whether the data actually can be plotted as lines or not.
+The possible values are Decoration::LineStyle::Line and Decoration::LineStyle::Point.
+
+## Plotting individual data points
+Individual data points can be plotted using
+```cpp
+	plotter.plot(x, y);
+```
+
+## Plotting 1D data
+One-dimensional data can be plotted using
+```cpp
+	plotter.plot(data);
+```
+where *data* either is an *std::vector* or a one-dimensional Array (see the Array chapter).
+By default the x-axis will start at 0 and increment 1 per data point, but it is also possible to specify the x-values for the data points by instead using
+```cpp
+	plotter.plot(axis, data);
+```
+where *axis* is of the same type and size as *data*.
+
+## Plotting 2D data
+Two-dimensional plots can be plotted using
+```cpp
+	plotter.plot(data);
+```
+where *data* either is of type *std::vector<std::vector<double>>* or a two-dimensional Array (see the Array chapter).
+
+# Plotting scripts {#PlottingScripts}
+TBTK also have prepared plotting scripts written in python that can be used to plot Properties that has been saved to file using the FileWriter.
+For these plotting scripts to work, the Properties has to be extracted on the Ranges (or None) format (see the PropertyExtractor and Properties chapters).
+Some quantities can also only be plotted if they have been extracted for some particular dimensionality.
+The plotting scripts can be run immediately form the terminal using the syntax
+```bash
+	TBTKPlotQuantity.py File.h5 parameters
+```
+where *Quantity* is a placeholder for the name of the relevant quantity, *File.h5* is the HDF5 file to which the Property has been written, and *parameters* is zero or more parameters needed to plot the data.
+These scripts are limited to a few special usage cases due to the fact that different dimensionalities requre widely different types of plots to be made.
+Howver, they can be used in these specific cases, or the plotting scripts which are available in the folder TBTK/Visualization/python can be used as templates for writing customized plotting scripts.
+
+## Density
+The Density can be plotted if it has been extracted on a two-dimensional grid using
+```bash
+	TBTKPlotDensity.py File.h5
+```
+
+## DOS
+The DOS can be plotted using
+```bash
+	TBTKPlotDOS.py File.h5 sigma
+```
+where *sigma* is a decimal number specifying the amount of Gaussian smoothing that will be applied along the energy axis.
+
+## EigenValues
+The EigenValues can be plotted as a monotoneously increasing line using
+```bash
+	TBTKPlotEigenValues.py File.h5
+```
+
+## LDOS
+The LDOS can be plotted if it has been extracted along a one-dimensional line using
+```bash
+	TBTKPlotLDOS.py File.h5 sigma
+```
+where *sigma* is a decimal number specifying the amount of Gaussian smoothing that will be applied along the energy axis.
+
+## Magnetization
+The Magnetization can be plotted if it has been extracted on a two-dimensional grid using
+```bash
+	TBTKPlotMagnetization.py File.h5 theta phi
+```
+where *theta* and *phi* are the polar and azimuthal angles, respectively, of the spin-polarization axis of interest.
+
+## SpinPolarizedLDOS
+The SpinPolarizedLDOS can be plotted if it has been extracted along a one-dimensional line using
+```bash
+	TBTKPlotSpinPolarizedLDOS.py File.h5 theta phi sigma
+```
+where *theta* and *phi* are the polar and azimuthal angles, respectively, of the spin-polarization axis of interest.
+Further, *sigma* is a decimal number specifying the amount of Gaussian smoothing that will be applied along the energy axis.
+
