@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-/** @package TBTKcalc ParameterSet
+/** @package TBTKcalc
  *  @file ParameterSet.h
  *  @brief Set of parameters
  *
