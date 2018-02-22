@@ -38,7 +38,7 @@ Whenever a new session is started (a new terminal window is opened), the first t
 This is true both before installation and every time the library is used after installation.
 This is done by entering the TBTK folder and typing
 ```bash
-	source ini_session.sh
+	source init_session.sh
 ```
 
 ### Install
