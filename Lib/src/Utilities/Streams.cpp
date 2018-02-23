@@ -19,6 +19,7 @@
  */
 
 #include "Streams.h"
+#include "TBTKMacros.h"
 
 #include <fstream>
 #include <iostream>
@@ -60,9 +61,16 @@ void Streams::setStdMuteErr(){
 
 void Streams::openLog(std::string fileName){
 	stdLogBuffer.open(fileName);
+
+/*	Streams::log << TBTK_ABOUT << "\n";
+	Streams::log << "Date: " << TBTK_GET_CURRENT_TIME_STRING() << "\n";
+	Streams::log << "\n";*/
+	Streams::log << TBTK_RUNTIME_CONTEXT_STRING << "\n";
 }
 
 void Streams::closeLog(){
+	Streams::log << "\n";
+	Streams::log << "Date: " << TBTK_GET_CURRENT_TIME_STRING();
 	stdLogBuffer.close();
 }
 

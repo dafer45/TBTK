@@ -25,9 +25,34 @@
 
 #include "Streams.h"
 
+#include <chrono>
 #include <cstring>
+#include <ctime>
 #include <sstream>
 #include <string>
+
+#define TBTK_VERSION_MAJOR 0
+#define TBTK_VERSION_MINOR 9
+#define TBTK_VERSION_PATCH 5
+#define TBTK_VERSION_STRING std::to_string(TBTK_VERSION_MAJOR) + "." \
+	+ std::to_string(TBTK_VERSION_MINOR) + "." \
+	+ std::to_string(TBTK_VERSION_PATCH)
+
+#define TBTK_ABOUT_STRING \
+	"TBTK\n" \
+	"Version: " + TBTK_VERSION_STRING
+
+inline std::string TBTK_GET_CURRENT_TIME_STRING(){
+	std::chrono::time_point<std::chrono::system_clock> timePoint
+		= std::chrono::system_clock::now();
+	std::time_t now = std::chrono::system_clock::to_time_t(timePoint);
+
+	return std::ctime(&now);
+}
+
+#define TBTK_RUNTIME_CONTEXT_STRING \
+	TBTK_ABOUT_STRING + "\n" \
+	+ "Date: " + TBTK_GET_CURRENT_TIME_STRING()
 
 #ifdef TBTKOptimize
 	#define TBTKAssert(expression, function, message, hint)	;
