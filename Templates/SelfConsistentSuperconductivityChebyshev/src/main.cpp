@@ -70,13 +70,13 @@ const double SC_WEIGHT_FACTOR = 0.5;
 const double DEBYE_FREQUENCY = 10.;
 
 //Self-consistency loop
-bool scLoop(ChebyshevSolver *cSolver){
+bool scLoop(ChebyshevSolver &cSolver){
 	//Setup CPropertyExtractor using GPU accelerated generation of
 	//coefficients and Green's function, and using lookup table. The
 	//Green's function is only calculated in an energy interval around E=0
 	//with a width twice of the Debye frequency.
 	CPropertyExtractor pe(
-		*cSolver,
+		cSolver,
 		NUM_COEFFICIENTS,
 		true,
 		true,
@@ -91,7 +91,7 @@ bool scLoop(ChebyshevSolver *cSolver){
 	//Self-consistency loop
 	int counter = 0;
 	while(counter++ < MAX_ITERATIONS){
-		cSolver->getModel().reconstructCOO();
+		cSolver.getModel().reconstructCOO();
 
 		//Clear the order parameter
 		for(int x = 0; x < SIZE_X; x++){
@@ -104,20 +104,17 @@ bool scLoop(ChebyshevSolver *cSolver){
 		for(int x = 0; x < SIZE_X; x++){
 			for(int y = 0; y < SIZE_Y; y++){
 				//Calculate anomulous Green's function
-				Property::GreensFunction *greensFunction = pe.calculateGreensFunction(
+				Property::GreensFunction greensFunction = pe.calculateGreensFunction(
 					{x, y, 3},
 					{x, y, 0}
 				);
-				const complex<double> *greensFunctionData = greensFunction->getArrayData();
+				const complex<double> *greensFunctionData = greensFunction.getData();
 
 				//Calculate order parameter
 				for(int n = 0; n < ENERGY_RESOLUTION/2; n++){
 					const double dE = 2.*DEBYE_FREQUENCY/(double)ENERGY_RESOLUTION;
 					D[(dCounter+1)%2][x][y] -= V_sc*i*greensFunctionData[n]*dE/M_PI;
 				}
-
-				//Free memory used for Green's function
-				delete greensFunction;
 
 				//Mix old and new order parameter
 				D[(dCounter+1)%2][x][y] = (1-SC_WEIGHT_FACTOR)*D[(dCounter+1)%2][x][y] + SC_WEIGHT_FACTOR*D[dCounter][x][y];
@@ -152,7 +149,7 @@ bool scLoop(ChebyshevSolver *cSolver){
 //Callback function responsible for determining the value of the order
 //parameter D_{to,from}c_{to}c_{from} where to and from are indices of the form
 //(x, y, spin).
-complex<double> fD(Index to, Index from){
+complex<double> fD(const Index &to, const Index &from){
 	//Obtain indices
 	int x = from.at(0);
 	int y = from.at(1);
@@ -226,7 +223,7 @@ int main(int argc, char **argv){
 	cSolver.setScaleFactor(SCALE_FACTOR);
 
 	//Run self-consistency loop
-	scLoop(&cSolver);
+	scLoop(cSolver);
 
 	//Set filename and remove any file already in the folder
 	FileWriter::setFileName("TBTKResults.h5");

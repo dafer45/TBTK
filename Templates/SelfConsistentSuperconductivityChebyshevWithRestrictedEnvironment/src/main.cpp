@@ -82,7 +82,7 @@ const double SC_MODEL_RADIUS = 15.;
 //Callback function responsible for determining the value of the order
 //parameter D_{to,from}c_{to}c_{from} where to and from are indices of the form
 //(x, y, spin).
-complex<double> fD(Index to, Index from){
+complex<double> fD(const Index &to, const Index &from){
 	//Obtain indices
 	int x = from.at(0);
 	int y = from.at(1);
@@ -203,11 +203,11 @@ double scLoop(double radius){
 				cSolver.setModel(*model);
 
 				//Calculate anomalous Green's function
-				Property::GreensFunction *greensFunction = pe.calculateGreensFunction(
+				Property::GreensFunction greensFunction = pe.calculateGreensFunction(
 					{x, y, 3},
 					{x, y, 0}
 				);
-				const complex<double> *greensFunctionData = greensFunction->getArrayData();
+				const complex<double> *greensFunctionData = greensFunction.getData();
 
 				//Free memory occupied by local model
 				delete model;
@@ -217,9 +217,6 @@ double scLoop(double radius){
 					const double dE = 2.*DEBYE_FREQUENCY/(double)ENERGY_RESOLUTION;
 					D[(dCounter+1)%2][x][y] -= V_sc*i*greensFunctionData[n]*dE/M_PI;
 				}
-
-				//Free memory used for Green's function
-				delete greensFunction;
 
 				//Mix old and new order parameter
 				D[(dCounter+1)%2][x][y] = (1 - SC_WEIGHT_FACTOR)*D[(dCounter+1)%2][x][y] + SC_WEIGHT_FACTOR*D[dCounter][x][y];

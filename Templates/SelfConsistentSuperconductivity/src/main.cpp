@@ -55,7 +55,7 @@ const complex<double> D_INITIAL_GUESS = 0.3;
 
 //Self-consistent callback that is to be called each time a diagonalization has
 //finished. Calculates the order parameter from the current solution.
-bool scCallback(DiagonalizationSolver *dSolver){
+bool scCallback(DiagonalizationSolver &dSolver){
 	//Clear the order parameter
 	for(int x = 0; x < SIZE_X; x++){
 		for(int y = 0; y < SIZE_Y; y++){
@@ -66,10 +66,10 @@ bool scCallback(DiagonalizationSolver *dSolver){
 	//Calculate D(x, y) = <c_{x, y, \downarrow}c_{x, y, \uparrow}> = \sum_{E_n<E_F} conj(v_d^{(n)})*u_u^{(n)}
 	for(int x = 0; x < SIZE_X; x++){
 		for(int y = 0; y < SIZE_Y; y++){
-			for(int n = 0; n < dSolver->getModel().getBasisSize()/2; n++){
+			for(int n = 0; n < dSolver.getModel().getBasisSize()/2; n++){
 				//Obtain amplitudes at site (x,y) for electron_up and hole_down components
-				complex<double> u_u = dSolver->getAmplitude(n, {x, y, 0});
-				complex<double> v_d = dSolver->getAmplitude(n, {x, y, 3});
+				complex<double> u_u = dSolver.getAmplitude(n, {x, y, 0});
+				complex<double> v_d = dSolver.getAmplitude(n, {x, y, 3});
 
 				D[(dCounter+1)%2][x][y] -= V_sc*conj(v_d)*u_u;
 			}
@@ -104,7 +104,7 @@ bool scCallback(DiagonalizationSolver *dSolver){
 //Callback function responsible for determining the value of the order
 //parameter D_{to,from}c_{to}c_{from} where to and from are indices of the form
 //(x, y, spin).
-complex<double> fD(Index to, Index from){
+complex<double> fD(const Index &to, const Index &from){
 	//Obtain indices
 	int x = from.at(0);
 	int y = from.at(1);
@@ -172,7 +172,7 @@ int main(int argc, char **argv){
 	DiagonalizationSolver dSolver;
 	dSolver.setModel(model);
 	dSolver.setMaxIterations(MAX_ITERATIONS);
-	dSolver.setSCCallback(scCallback);
+	dSolver.setSelfConsistencyCallback(scCallback);
 	dSolver.run();
 
 	//Set filename and remove any file already in the folder
