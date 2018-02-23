@@ -15,7 +15,7 @@
 
 /** @package TBTKcalc
  *  @file HoppingAmplitude.h
- *  @brief Hopping amplitude from state 'from' to 'to'
+ *  @brief Hopping amplitude from state 'from' to state 'to'.
  *
  *  @author Kristofer Björnson
  */
@@ -35,7 +35,9 @@ namespace TBTK{
 
 enum HermitianConjugate {HC};
 
-/** A hopping amplitude is a coefficeint \f$a_{ij}\f$ in a bilinear Hamiltonian
+/** @brief Hopping amplitude from state 'from' to state 'to'.
+ *
+ *  A hopping amplitude is a coefficeint \f$a_{ij}\f$ in a bilinear Hamiltonian
  *  \f$H = \sum_{ij}a_{ij}c_{i}^{\dagger}c_{j}\f$, where \f$i\f$ and \f$j\f$
  *  are reffered to using 'to' and 'from' respectively. The constructors can be
  *  called with the parameters either in the order (from, to, value) or the

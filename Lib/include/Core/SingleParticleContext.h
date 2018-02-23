@@ -15,7 +15,7 @@
 
 /** @package TBTKcalc
  *  @file SingleParticleContext.h
- *  @brief The context for single particle part of a Model.
+ *  @brief The context for the single particle part of a Model.
  *
  *  @author Kristofer Björnson
  */
@@ -32,6 +32,7 @@ namespace TBTK{
 
 class FileReader;
 
+/** @brief The context for the single particle part of a Model. */
 class SingleParticleContext : public Serializeable{
 public:
 	/** Constructor. */

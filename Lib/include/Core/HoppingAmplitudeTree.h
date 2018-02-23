@@ -15,7 +15,8 @@
 
 /** @package TBTKcalc
  *  @file HoppingAmplitudeTree.h
- *  @brief Node in tree used by AmplitudeSet to store @link HoppingAmplitude HoppingAmplitudes @endlink
+ *  @brief Node in tree used by HoppingAmplitudeSet to store @link
+ *    HoppingAmplitude HoppingAmplitudes @endlink.
  *
  *  @author Kristofer Björnson
  */
@@ -31,7 +32,10 @@
 
 namespace TBTK{
 
-/** HoppingAmplitudeTree is a tree structure used to build a tree for stroing
+/** @brief Node in tree used by HoppingAmplitudeSet to store @link
+ *    HoppingAmplitude HoppingAmplitudes @endlink.
+ *
+ *  HoppingAmplitudeTree is a tree structure used to build a tree for stroing
  *  @link HoppingAmplitude HoppingAmplitudes @endlink. Used by AmplitudeSet.*/
 class HoppingAmplitudeTree : public Serializeable{
 public:

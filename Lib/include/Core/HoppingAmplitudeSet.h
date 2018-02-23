@@ -15,7 +15,7 @@
 
 /** @package TBTKcalc
  *  @file HoppingAmplitudeSet.h
- *  @brief HoppingAmplitude container
+ *  @brief HoppingAmplitude container.
  *
  *  @author Kristofer Björnson
  */
@@ -35,7 +35,9 @@
 
 namespace TBTK{
 
-/** A HoppingAmplitudeSet is a container for @link HoppingAmplitude
+/** @brief HoppingAmplitude container.
+ *
+ *  A HoppingAmplitudeSet is a container for @link HoppingAmplitude
  *  HoppingAmplitudes @endlink. The structure contains the root node for the
  *  tree structure in which the @link HoppingAmplitude HoppingAmplitudes
  *  @endlink are stored, as well as functions for adding and accessing

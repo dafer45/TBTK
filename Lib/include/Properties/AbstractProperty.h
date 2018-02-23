@@ -15,7 +15,7 @@
 
 /** @package TBTKcalc
  *  @file AbstractPoperty.h
- *  @brief Abstract Property class
+ *  @brief Abstract Property class.
  *
  *  @author Kristofer Björnson
  */
@@ -32,6 +32,7 @@
 namespace TBTK{
 namespace Property{
 
+/** @brief Abstract Property class. */
 template<
 	typename DataType,
 	bool isFundamental = std::is_fundamental<DataType>::value,

@@ -15,7 +15,7 @@
 
 /** @package TBTKcalc
  *  @file LDOS.h
- *  @brief Property container for spectral function
+ *  @brief Property container for spectral function.
  *
  *  @author Kristofer Björnson
  */
@@ -28,6 +28,7 @@
 namespace TBTK{
 namespace Property{
 
+/** @brief Property container for spectral function. */
 class SpectralFunction : public LDOS{
 public:
 	/** Constructor. */

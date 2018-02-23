@@ -15,7 +15,7 @@
 
 /** @package TBTKcalc
  *  @file Density.h
- *  @brief Property container for density
+ *  @brief Property container for density.
  *
  *  @author Kristofer Björnson
  */
@@ -29,7 +29,7 @@
 namespace TBTK{
 namespace Property{
 
-/** Container for density. */
+/** @brief Property container for density. */
 class Density : public AbstractProperty<double>{
 public:
 	/** Constructor. */

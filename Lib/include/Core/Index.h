@@ -15,7 +15,7 @@
 
 /** @package TBTKcalc
  *  @file Index.h
- *  @brief Data structure for flexible physical indices
+ *  @brief Flexible physical index.
  *
  *  @author Kristofer Björnson
  */
@@ -42,7 +42,9 @@ enum {
 	IDX_SEPARATOR = -7
 };
 
-/** Flexible physical index for indexing arbitrary models. Each index can
+/** @brief Flexible physical index.
+ *
+ *  Flexible physical index for indexing arbitrary models. Each index can
  *  contain an arbitrary number of subindices. For example {x, y, spin},
  *  {x, y, z, orbital, spin}, and {subsystem, x, y, z, orbital, spin}.
  */

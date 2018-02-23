@@ -15,7 +15,7 @@
 
 /** @package TBTKcalc
  *  @file WaveFunctions.h
- *  @brief Property container for wave functions
+ *  @brief Property container for wave functions.
  *
  *  @author Kristofer Björnson
  */
@@ -30,7 +30,7 @@
 namespace TBTK{
 namespace Property{
 
-/** Container for density. */
+/** @brief Property container for wave function. */
 class WaveFunctions : public AbstractProperty<std::complex<double>>{
 public:
 	/** Constructor. */

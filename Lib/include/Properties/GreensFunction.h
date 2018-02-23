@@ -15,7 +15,7 @@
 
 /** @package TBTKcalc
  *  @file GreensFunction.h
- *  @brief Property container for Green's function
+ *  @brief Property container for Green's function.
  *
  *  @author Kristofer Björnson
  */
@@ -32,7 +32,7 @@
 namespace TBTK{
 namespace Property{
 
-/** Container for Green's function. */
+/** @brief Property container for Green's function. */
 class GreensFunction : public AbstractProperty<std::complex<double>>{
 public:
 	/** Enum class for specifying Green's function type. */

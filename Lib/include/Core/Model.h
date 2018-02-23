@@ -15,7 +15,7 @@
 
 /** @package TBTKcalc
  *  @file Model.h
- *  @brief Model Hamiltonian
+ *  @brief Container of Model related information.
  *
  *  @author Kristofer Björnson
  */
@@ -43,7 +43,9 @@ namespace TBTK{
 
 class FileReader;
 
-/** The Model conatins all information about the Hamiltonian. It is currently a
+/** @brief Container of Model related information.
+ *
+ *  The Model conatins all information about the Hamiltonian. It is currently a
  *  wrapper for HoppingAmplitudeSet, but can in the future come to be extended
  *  with further properties.
  */

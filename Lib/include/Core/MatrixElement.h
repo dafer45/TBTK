@@ -15,7 +15,7 @@
 
 /** @package TBTKcalc
  *  @file MatrixElement.h
- *  @brief Alias for HoppingAmplitude
+ *  @brief Alias for HoppingAmplitude.
  *
  *  @author Kristofer Björnson
  */
@@ -27,6 +27,7 @@
 
 namespace TBTK{
 
+/** @brief Alias for HoppingAmplitude. */
 using MatrixElement = HoppingAmplitude;
 
 };	//End of namespace TBTK

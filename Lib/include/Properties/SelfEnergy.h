@@ -15,7 +15,7 @@
 
 /** @package TBTKcalc
  *  @file SelfEnergy.h
- *  @brief Property container for self-energy
+ *  @brief Property container for self-energy.
  *
  *  @author Kristofer Björnson
  */
@@ -32,7 +32,7 @@
 namespace TBTK{
 namespace Property{
 
-/** Container for self-energy. */
+/** @brief Property container for self-energy. */
 class SelfEnergy : public AbstractProperty<std::complex<double>>{
 public:
 	/** Constructor. */

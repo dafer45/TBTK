@@ -16,7 +16,7 @@
 /** @package TBTKcalc
  *  @file SpinPolarizedLDOS.h
  *  @brief Property container for spin-polarized local density of states
- *  (spin-polarized LDOS)
+ *    (spin-polarized LDOS).
  *
  *  @author Kristofer Björnson
  */
@@ -32,8 +32,8 @@
 namespace TBTK{
 namespace Property{
 
-/** Container for spin-polarized local density of states (spin-polarized LDOS).
- */
+/** @brief Property container for spin-polarized local density of states
+ *    (spin-polarized LDOS). */
 class SpinPolarizedLDOS : public AbstractProperty<SpinMatrix>{
 public:
 	/** Constructor. */

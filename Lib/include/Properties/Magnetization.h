@@ -15,7 +15,7 @@
 
 /** @package TBTKcalc
  *  @file Magnetization.h
- *  @brief Property container for magnetization
+ *  @brief Property container for magnetization.
  *
  *  @author Kristofer Björnson
  */
@@ -31,7 +31,7 @@
 namespace TBTK{
 namespace Property{
 
-/** Container for magnetization. */
+/** @brief Property container for magnetization. */
 class Magnetization : public AbstractProperty<SpinMatrix>{
 public:
 	/** Constructor. */

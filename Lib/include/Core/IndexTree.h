@@ -15,7 +15,7 @@
 
 /** @package TBTKcalc
  *  @file IndexTree.h
- *  @brief Data structure for mapping physical indices to a linear index
+ *  @brief Data structure for mapping physical indices to a linear index.
  *
  *  @author Kristofer Björnson
  */
@@ -30,6 +30,7 @@
 
 namespace TBTK{
 
+/** @brief Data structure for mapping physical indices to a linear index. */
 class IndexTree : public Serializeable{
 public:
 	/** Constructor. */

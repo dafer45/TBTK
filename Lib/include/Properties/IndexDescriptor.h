@@ -29,6 +29,7 @@
 
 namespace TBTK{
 
+/** @brief Describes the index structure of data stored for several indices. */
 class IndexDescriptor : public Serializeable{
 public:
 	/** Enum class determining the storage format. */

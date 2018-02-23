@@ -15,7 +15,7 @@
 
 /** @package TBTKcalc
  *  @file Statistics.h
- *  @brief Enum for Fermi-Dirac and Bose-Einstein statistics.
+ *  @brief Enum class for Fermi-Dirac and Bose-Einstein statistics.
  *
  *  @author Kristofer Björnson
  */
@@ -25,6 +25,7 @@
 
 namespace TBTK{
 
+/** @Enum class for Fermi-Dirac and Bose-Einstein statistics. */
 enum class Statistics {FermiDirac, BoseEinstein};
 
 };	//End of namespace TBTK

@@ -15,7 +15,7 @@
 
 /** @package TBTKcalc
  *  @file DOS.h
- *  @brief Property container for density of states (DOS)
+ *  @brief Property container for density of states (DOS).
  *
  *  @author Kristofer Björnson
  */
@@ -28,7 +28,7 @@
 namespace TBTK{
 namespace Property{
 
-/** Container for density of states (DOS). */
+/** \brief Property container for density of states (DOS). */
 class DOS : public AbstractProperty<double>{
 public:
 	/** Constructor. */

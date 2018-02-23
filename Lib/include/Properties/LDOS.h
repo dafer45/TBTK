@@ -15,7 +15,7 @@
 
 /** @package TBTKcalc
  *  @file LDOS.h
- *  @brief Property container for local density of states (LDOS)
+ *  @brief Property container for local density of states (LDOS).
  *
  *  @author Kristofer Björnson
  */
@@ -29,7 +29,7 @@
 namespace TBTK{
 namespace Property{
 
-/** Container for local density of states (LDOS). */
+/** @brief Property container for local density of states (LDOS). */
 class LDOS : public AbstractProperty<double>{
 public:
 	/** Constructor. */

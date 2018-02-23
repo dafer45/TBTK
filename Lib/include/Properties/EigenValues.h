@@ -15,7 +15,7 @@
 
 /** @package TBTKcalc
  *  @file EigenValues.h
- *  @brief Property container for eigen values
+ *  @brief Property container for eigen values.
  *
  *  @author Kristofer Björnson
  */
@@ -28,7 +28,7 @@
 namespace TBTK{
 namespace Property{
 
-/** Container for local density of states (LDOS). */
+/** @brief Property container for eigen values.. */
 class EigenValues : public AbstractProperty<double>{
 public:
 	/** Constructor. */

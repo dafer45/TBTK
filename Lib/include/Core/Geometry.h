@@ -15,7 +15,7 @@
 
 /** @package TBTKcalc
  *  @file Geometry.h
- *  @brief Contains geometric inforamtion about a model.
+ *  @brief Contains geometric inforamtion about a Model.
  *
  *  @author Kristofer Björnson
  */
@@ -31,6 +31,7 @@
 namespace TBTK{
 	class FileReader;
 
+/** @brief Contains geometric information about a Model. */
 class Geometry : public Serializeable{
 public:
 	/** Constructor. */
