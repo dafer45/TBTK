@@ -15,7 +15,7 @@
 
 /** @package TBTKcalc
  *  @file DiagonalizationSolver.h
- *  @brief Solves a block diagonal Model using diagonalization
+ *  @brief Solves a block diagonal Model using diagonalization.
  *
  *  @author Kristofer Björnson
  */
@@ -32,7 +32,9 @@
 
 namespace TBTK{
 
-/** Solves a given model by Diagonalizing the Hamiltonian. The eigenvalues and
+/** @brief Solves a block diagonal Model using diagonalization.
+ *
+ *  Solves a given model by Diagonalizing the Hamiltonian. The eigenvalues and
  *  eigenvectors can then either be directly extracted and used to calculate
  *  custom physical quantities, or the PropertyExtractor can be used to extract
  *  common properties. Scales as \f$O(n^3)\f$ with the dimension of the Hilbert

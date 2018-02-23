@@ -27,6 +27,7 @@
 
 namespace TBTK{
 
+/** @brief Base class for Solvers. */
 class Solver{
 public:
 	/** Constructor */

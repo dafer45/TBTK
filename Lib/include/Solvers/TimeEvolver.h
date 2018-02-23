@@ -15,8 +15,7 @@
 
 /** @package TBTKcalc
  *  @file TimeEvolver.h
- *  @brief TimerEvolver for time evolution of ground state in respons to
- *  external field.
+ *  @brief Time evolves a ground state.
  *
  *  @author Kristofer Björnson
  */
@@ -33,6 +32,7 @@
 
 namespace TBTK{
 
+/** @brief Time evloves a ground state. */
 class TimeEvolver : public Solver{
 public:
 	/** Constructor. */

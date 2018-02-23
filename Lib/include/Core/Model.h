@@ -45,9 +45,8 @@ class FileReader;
 
 /** @brief Container of Model related information.
  *
- *  The Model conatins all information about the Hamiltonian. It is currently a
- *  wrapper for HoppingAmplitudeSet, but can in the future come to be extended
- *  with further properties.
+ *  The Model conatins all model related information such as the Hamiltonian,
+ *  temperature, and chemical potential.
  */
 class Model : public Serializeable, public Communicator{
 public:

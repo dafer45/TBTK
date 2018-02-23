@@ -15,7 +15,7 @@
 
 /** @package TBTKcalc
  *  @file ArnoldiSolver
- *  @brief Solves a Model using the Arnoldi method.
+ *  @brief Solves a Model using Arnoldi iteration.
  *
  *  @author Kristofer Björnson
  */
@@ -31,7 +31,9 @@
 
 namespace TBTK{
 
-/** The ArnoldiSolver can be used to calculate a few eigenvalues and
+/** @brief Solves a Model using Arnoldi iteration.
+ *
+ *  The ArnoldiSolver can be used to calculate a few eigenvalues and
  *  eigenvectors around a given energy.
  */
 class ArnoldiSolver : public Solver{

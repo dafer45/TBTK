@@ -33,6 +33,7 @@
 
 namespace TBTK{
 
+/** @brief Solves Hx = y for x, where H is a SparseMatrix. */
 class LUSolver : public Communicator{
 public:
 	/** Enum class for specifying the data type of the matrix. Used since
