@@ -39,7 +39,9 @@ class RPASusceptibilityCalculator{
 public:
 	/** Constructor. */
 	RPASusceptibilityCalculator(
-		const MomentumSpaceContext &momentumSpaceContext
+		const MomentumSpaceContext &momentumSpaceContext,
+		SusceptibilityCalculator::Algorithm algorithm
+			= SusceptibilityCalculator::Algorithm::Lindhard
 	);
 
 	/** Destructor. */

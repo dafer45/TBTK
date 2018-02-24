@@ -32,6 +32,7 @@
 #include "UnitHandler.h"
 
 #include <complex>
+#include <vector>
 
 #include <omp.h>
 
@@ -321,6 +322,37 @@ inline int* SusceptibilityCalculator::getKPlusQLookupTable(){
 
 inline const int* SusceptibilityCalculator::getKPlusQLookupTable() const{
 	return kPlusQLookupTable;
+}
+
+template<>
+inline int SusceptibilityCalculator::getKPlusQLinearIndex<false>(
+	unsigned int meshIndex,
+	const std::vector<double> &k,
+	int kLinearIndex
+) const{
+	const std::vector<std::vector<double>> &mesh
+		= momentumSpaceContext->getMesh();
+
+	Index kPlusQIndex
+		= momentumSpaceContext->getBrillouinZone().getMinorCellIndex(
+			{mesh[meshIndex][0] + k[0], mesh[meshIndex][1] + k[1]},
+			momentumSpaceContext->getNumMeshPoints()
+		);
+	return momentumSpaceContext->getModel().getHoppingAmplitudeSet()->getFirstIndexInBlock(
+		kPlusQIndex
+	);
+}
+
+template<>
+inline int SusceptibilityCalculator::getKPlusQLinearIndex<true>(
+	unsigned int meshIndex,
+	const std::vector<double> &k,
+	int kLinearIndex
+) const{
+	return kPlusQLookupTable[
+		meshIndex*momentumSpaceContext->getMesh().size()
+		+ kLinearIndex/momentumSpaceContext->getNumOrbitals()
+	];
 }
 
 inline const IndexedDataTree<SerializeableVector<std::complex<double>>>& SusceptibilityCalculator::getSusceptibilityTree() const{

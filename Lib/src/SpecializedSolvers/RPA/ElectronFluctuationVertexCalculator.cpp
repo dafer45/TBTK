@@ -40,7 +40,10 @@ ElectronFluctuationVertexCalculator::ElectronFluctuationVertexCalculator(
 	J = 0.;
 	Jp = 0.;
 
-	rpaSusceptibilityCalculator = new RPASusceptibilityCalculator(momentumSpaceContext);
+	rpaSusceptibilityCalculator = new RPASusceptibilityCalculator(
+		momentumSpaceContext,
+		SusceptibilityCalculator::Algorithm::Lindhard
+	);
 
 	interactionAmplitudesAreGenerated = false;
 

@@ -320,7 +320,7 @@ void SusceptibilityCalculator::generateKPlusQLookupTable(){
 	Timer::tock();
 }
 
-template<>
+/*template<>
 inline int SusceptibilityCalculator::getKPlusQLinearIndex<false>(
 	unsigned int meshIndex,
 	const vector<double> &k,
@@ -347,7 +347,7 @@ inline int SusceptibilityCalculator::getKPlusQLinearIndex<true>(
 		meshIndex*momentumSpaceContext->getMesh().size()
 		+ kLinearIndex/momentumSpaceContext->getNumOrbitals()
 	];
-}
+}*/
 
 void SusceptibilityCalculator::cacheSusceptibility(
 	const vector<complex<double>> &result,

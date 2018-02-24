@@ -123,13 +123,13 @@ vector<complex<double>> MatsubaraSusceptibilityCalculator::calculateSusceptibili
 	const DualIndex &kDual,
 	const vector<int> &orbitalIndices
 ){
-	TBTKAssert(
+/*	TBTKAssert(
 		getEnergies().size() == summationEnergies.size(),
 		"MatsubaraSusceptibilityCalculator::calculateSusceptibilityMatsubara()",
 		"Only equally sized 'energies' and 'summationEnergies' are"
 		<< " supported yet.",
 		""
-	);
+	);*/
 
 	//Get kIndex and resultIndex
 	const vector<double> &k = kDual;
@@ -173,8 +173,15 @@ vector<complex<double>> MatsubaraSusceptibilityCalculator::calculateSusceptibili
 		for(unsigned int e = 0; e < energies.size(); e++){
 			for(unsigned int n = 0; n < summationEnergies.size(); n++){
 				if(
-					e + n < summationEnergies.size()/2
-					|| e + n >= 3*(summationEnergies.size()/2)
+					(int)n + (int)e
+					- (int)energies.size()/2 < 0
+				){
+					continue;
+				}
+				if(
+					(int)n + (int)e
+					- (int)energies.size()/2
+					>= summationEnergies.size()
 				){
 					continue;
 				}
@@ -190,7 +197,7 @@ vector<complex<double>> MatsubaraSusceptibilityCalculator::calculateSusceptibili
 					kPlusQMeshPoint,
 					orbitalIndices[1],
 					orbitalIndices[2],
-					n + e - summationEnergies.size()/2,
+					n + e - energies.size()/2,
 					summationEnergies.size(),
 					numOrbitals
 				);

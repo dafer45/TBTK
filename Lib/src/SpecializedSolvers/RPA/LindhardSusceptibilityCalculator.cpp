@@ -360,7 +360,7 @@ complex<double> LindhardSusceptibilityCalculator::calculateSusceptibilityLindhar
 	return result;
 }
 
-template<>
+/*template<>
 inline int SusceptibilityCalculator::getKPlusQLinearIndex<false>(
 	unsigned int meshIndex,
 	const vector<double> &k,
@@ -387,7 +387,7 @@ inline int SusceptibilityCalculator::getKPlusQLinearIndex<true>(
 		meshIndex*momentumSpaceContext->getMesh().size()
 		+ kLinearIndex/momentumSpaceContext->getNumOrbitals()
 	];
-}
+}*/
 
 template<bool useKPlusQLookupTable, bool isSafeFromPoles>
 vector<complex<double>> LindhardSusceptibilityCalculator::calculateSusceptibilityLindhard(

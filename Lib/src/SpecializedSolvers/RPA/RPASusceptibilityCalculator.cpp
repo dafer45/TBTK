@@ -19,6 +19,7 @@
  */
 
 #include "Functions.h"
+#include "RPA/MatsubaraSusceptibilityCalculator.h"
 #include "RPA/RPASusceptibilityCalculator.h"
 #include "UnitHandler.h"
 
@@ -32,11 +33,25 @@ const complex<double> i(0, 1);
 namespace TBTK{
 
 RPASusceptibilityCalculator::RPASusceptibilityCalculator(
-	const MomentumSpaceContext &momentumSpaceContext
+	const MomentumSpaceContext &momentumSpaceContext,
+	SusceptibilityCalculator::Algorithm algorithm
 ){
-	susceptibilityCalculator = new LindhardSusceptibilityCalculator(
-		momentumSpaceContext
-	);
+	switch(algorithm){
+	case SusceptibilityCalculator::Algorithm::Lindhard:
+		susceptibilityCalculator = new LindhardSusceptibilityCalculator(
+			momentumSpaceContext
+		);
+	case SusceptibilityCalculator::Algorithm::Matsubara:
+		susceptibilityCalculator = new MatsubaraSusceptibilityCalculator(
+			momentumSpaceContext
+		);
+	default:
+		TBTKExit(
+			"RPASusceptibilityCalculator::RPASusceptibilityCalculator()",
+			"Unknown algorithm.",
+			"This should never happen, contact the developer."
+		);
+	}
 
 	U = 0.;
 	Up = 0.;
