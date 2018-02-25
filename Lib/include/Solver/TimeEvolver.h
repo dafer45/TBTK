@@ -23,7 +23,7 @@
 #ifndef COM_DAFER45_TBTK_TIME_EVOLVER
 #define COM_DAFER45_TBTK_TIME_EVOLVER
 
-#include "DiagonalizationSolver.h"
+#include "Diagonalizer.h"
 #include "Model.h"
 #include "UnitHandler.h"
 
@@ -31,6 +31,7 @@
 #include <vector>
 
 namespace TBTK{
+namespace Solver{
 
 /** @brief Time evloves a ground state. */
 class TimeEvolver : public Solver{
@@ -78,9 +79,9 @@ public:
 	/** Get occupancy of state. */
 	double getOccupancy(int state);
 
-	/** Get the DiagonalizationSolver, which contains the eigenvectors,
+	/** Get the Diagonalizer, which contains the eigenvectors,
 	 *  energies, etc. */
-	DiagonalizationSolver *getDiagonalizationSolver();
+	Diagonalizer *getDiagonalizer();
 
 	/** Get eigenvalue. */
 	double getEigenValue(int state);
@@ -135,10 +136,10 @@ public:
 	/** Get orthogonalityError. */
 	double getOrthogonalityError();
 private:
-	/** DiagonalizationSolver which is used to find the ground state, and
-	 *  which also acts as a container for the eigenvectors and energies
-	 *  during the time evolution. */
-	DiagonalizationSolver dSolver;
+	/** Diagonalizer which is used to find the ground state, and which also
+	 *  acts as a container for the eigenvectors and energies during the
+	 *  time evolution. */
+	Diagonalizer dSolver;
 
 	/** Pointer to array containing eigenvalues. */
 	double *eigenValues;
@@ -186,17 +187,17 @@ private:
 	 *  timeEvolver. */
 	static std::vector<TimeEvolver*> timeEvolvers;
 
-	/** List of DiagonalizationSolvers. Used by scCallback to redirect the
+	/** List of Diagonalizer. Used by scCallback to redirect the
 	 *  self-consistency callback of the dSolver to the correct
 	 *  timeEvolver. */
-	static std::vector<DiagonalizationSolver*> dSolvers;
+	static std::vector<Diagonalizer*> dSolvers;
 
-	/** Self-consistency callback for the DiagonalizationSolver to call.
-	 *  The Diagonalization solver can not call an ordinary member
-	 *  function because it does not know about the TimeEvolver. This
-	 *  static callback-function is therefore used in order to redirect the
+	/** Self-consistency callback for the Diagonalizer to call. The
+	 *  Diagonalizer solver can not call an ordinary member function
+	 *  because it does not know about the TimeEvolver. This static
+	 *  callback-function is therefore used in order to redirect the
 	 *  call to the correct TimeEvolver*/
-	static bool selfConsistencyCallback(DiagonalizationSolver &dSolver);
+	static bool selfConsistencyCallback(Diagonalizer &dSolver);
 
 	/** Member function to call when diagonalization is finished. Called by
 	 *  scCallback(). */
@@ -257,7 +258,7 @@ inline void TimeEvolver::fixParticleNumber(bool particleNumberIsFixed){
 	this->particleNumberIsFixed = particleNumberIsFixed;
 }
 
-inline DiagonalizationSolver* TimeEvolver::getDiagonalizationSolver(){
+inline Diagonalizer* TimeEvolver::getDiagonalizer(){
 	return &dSolver;
 }
 
@@ -298,6 +299,7 @@ inline double TimeEvolver::getOrthogonalityError(){
 	return orthogonalityError;
 }
 
-}; //End of namespace TBTK
+};	//End of namespace Solver
+};	//End of namespace TBTK
 
 #endif

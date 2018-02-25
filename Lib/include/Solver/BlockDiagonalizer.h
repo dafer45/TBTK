@@ -14,14 +14,14 @@
  */
 
 /** @package TBTKcalc
- *  @file DiagonalizationSolver.h
+ *  @file Diagonalizater.h
  *  @brief Solves a block diagonal Model using diagonalization.
  *
  *  @author Kristofer Björnson
  */
 
-#ifndef COM_DAFER45_TBTK_BLOCK_DIAGONALIZATION_SOLVER
-#define COM_DAFER45_TBTK_BLOCK_DIAGONALIZATION_SOLVER
+#ifndef COM_DAFER45_TBTK_SOLVER_BLOCK_DIAGONALIZER
+#define COM_DAFER45_TBTK_SOLVER_BLOCK_DIAGONALIZER
 
 #include "Communicator.h"
 #include "Model.h"
@@ -31,6 +31,7 @@
 #include <complex>
 
 namespace TBTK{
+namespace Solver{
 
 /** @brief Solves a block diagonal Model using diagonalization.
  *
@@ -39,19 +40,19 @@ namespace TBTK{
  *  custom physical quantities, or the PropertyExtractor can be used to extract
  *  common properties. Scales as \f$O(n^3)\f$ with the dimension of the Hilbert
  *  space. */
-class BlockDiagonalizationSolver : public Solver, public Communicator{
+class BlockDiagonalizer : public Solver, public Communicator{
 public:
 	/** Constructor */
-	BlockDiagonalizationSolver();
+	BlockDiagonalizer();
 
 	/** Destructor. */
-	virtual ~BlockDiagonalizationSolver();
+	virtual ~BlockDiagonalizer();
 
 	/** Set self-consistency callback. If set to NULL or never called, the
 	 *  self-consistency loop will not be run. */
 	void setSelfConsistencyCallback(
 		bool (*selfConsistencyCallback)(
-			BlockDiagonalizationSolver &blockDiagonalizationSolver
+			BlockDiagonalizer &blockDiagonalizer
 		)
 	);
 
@@ -139,7 +140,7 @@ private:
 
 	/** Callback function to call each time a diagonalization has been
 	 *  completed. */
-	bool (*selfConsistencyCallback)(BlockDiagonalizationSolver &blockDiagonalizationSolver);
+	bool (*selfConsistencyCallback)(BlockDiagonalizer &blockDiagonalizer);
 
 	/** Allocates space for Hamiltonian etc. */
 	void init();
@@ -151,19 +152,19 @@ private:
 	void solve();
 };
 
-inline void BlockDiagonalizationSolver::setSelfConsistencyCallback(
+inline void BlockDiagonalizer::setSelfConsistencyCallback(
 	bool (*selfConsistencyCallback)(
-		BlockDiagonalizationSolver &blockDiagonalizationSolver
+		BlockDiagonalizer &blockDiagonalizer
 	)
 ){
 	this->selfConsistencyCallback = selfConsistencyCallback;
 }
 
-inline void BlockDiagonalizationSolver::setMaxIterations(int maxIterations){
+inline void BlockDiagonalizer::setMaxIterations(int maxIterations){
 	this->maxIterations = maxIterations;
 }
 
-inline const std::complex<double> BlockDiagonalizationSolver::getAmplitude(
+inline const std::complex<double> BlockDiagonalizer::getAmplitude(
 	int state,
 	const Index &index
 ){
@@ -180,7 +181,7 @@ inline const std::complex<double> BlockDiagonalizationSolver::getAmplitude(
 		return 0;
 }
 
-inline const std::complex<double> BlockDiagonalizationSolver::getAmplitude(
+inline const std::complex<double> BlockDiagonalizer::getAmplitude(
 	const Index &blockIndex,
 	int state,
 	const Index &intraBlockIndex
@@ -191,7 +192,7 @@ inline const std::complex<double> BlockDiagonalizationSolver::getAmplitude(
 	unsigned int block = stateToBlockMap.at(firstStateInBlock);
 	TBTKAssert(
 		state >= 0 && state < (int)numStatesPerBlock.at(block),
-		"BlockDiagonalizationSolver::getAmplitude()",
+		"BlockDiagonalizer::getAmplitude()",
 		"Out of bound error. The block with block Index "
 		<< blockIndex.toString() << " has "
 		<< numStatesPerBlock.at(block) << " states, but state "
@@ -207,11 +208,11 @@ inline const std::complex<double> BlockDiagonalizationSolver::getAmplitude(
 	return eigenVectors[offset + (linearIndex - firstStateInBlock)];
 }
 
-inline const double BlockDiagonalizationSolver::getEigenValue(int state){
+inline const double BlockDiagonalizer::getEigenValue(int state){
 	return eigenValues[state];
 }
 
-inline const double BlockDiagonalizationSolver::getEigenValue(
+inline const double BlockDiagonalizer::getEigenValue(
 	const Index &blockIndex,
 	int state
 ){
@@ -222,7 +223,7 @@ inline const double BlockDiagonalizationSolver::getEigenValue(
 	return eigenValues[offset + state];
 }
 
-inline unsigned int BlockDiagonalizationSolver::getFirstStateInBlock(
+inline unsigned int BlockDiagonalizer::getFirstStateInBlock(
 	const Index &index
 ) const{
 	unsigned int linearIndex = getModel().getBasisIndex(index);
@@ -231,7 +232,7 @@ inline unsigned int BlockDiagonalizationSolver::getFirstStateInBlock(
 	return blockToStateMap.at(block);
 }
 
-inline unsigned int BlockDiagonalizationSolver::getLastStateInBlock(
+inline unsigned int BlockDiagonalizer::getLastStateInBlock(
 	const Index &index
 ) const{
 	unsigned int linearIndex = getModel().getBasisIndex(index);
@@ -240,12 +241,13 @@ inline unsigned int BlockDiagonalizationSolver::getLastStateInBlock(
 	return getFirstStateInBlock(index) + numStatesPerBlock.at(block)-1;
 }
 
-inline void BlockDiagonalizationSolver::setParallelExecution(
+inline void BlockDiagonalizer::setParallelExecution(
 	bool parallelExecution
 ){
 	this->parallelExecution = parallelExecution;
 }
 
+};	//End of namespace Solver
 };	//End of namespace TBTK
 
 #endif

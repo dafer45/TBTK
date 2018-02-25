@@ -15,7 +15,7 @@
 
 /** @package TBTKcalc
  *  @file EDPropertyExtractor.h
- *  @brief Extracts physical properties from the DiagonalizationSolver
+ *  @brief Extracts physical properties from the Diagonalizer
  *
  *  @author Kristofer Björnson
  */
@@ -23,7 +23,7 @@
 #ifndef COM_DAFER45_TBTK_ED_PROPERTY_EXTRACTOR
 #define COM_DAFER45_TBTK_ED_PROPERTY_EXTRACTOR
 
-#include "ExactDiagonalizationSolver.h"
+#include "Solver/ExactDiagonalizer.h"
 #include "GreensFunction.h"
 #include "PropertyExtractor.h"
 
@@ -34,7 +34,7 @@ namespace TBTK{
 class EDPropertyExtractor : public PropertyExtractor{
 public:
 	/** Constructor. */
-	EDPropertyExtractor(ExactDiagonalizationSolver &edSolver);
+	EDPropertyExtractor(Solver::ExactDiagonalizer &edSolver);
 
 	/** Destructor. */
 	~EDPropertyExtractor();
@@ -73,8 +73,8 @@ public:
 		Index ranges
 	);
 private:
-	/** DiagonalizationSolver to work on. */
-	ExactDiagonalizationSolver *edSolver;
+	/** Diagonalizer to work on. */
+	Solver::ExactDiagonalizer *edSolver;
 
 	/** Callback for calculating density. Used by calculateDensity(). */
 	static void calculateDensityCallback(

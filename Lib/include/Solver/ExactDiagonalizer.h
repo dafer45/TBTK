@@ -1,27 +1,28 @@
-#ifndef COM_DAFER45_TBTK_EXACT_DIAGONALIZATION_SOLVER
-#define COM_DAFER45_TBTK_EXACT_DIAGONALIZATION_SOLVER
+#ifndef COM_DAFER45_TBTK_SOLVER_EXACT_DIAGONALIZATION
+#define COM_DAFER45_TBTK_SOLVER_EXACT_DIAGONALIZATION
 
-#include "DiagonalizationSolver.h"
+#include "Solver/Diagonalizer.h"
 #include "FockStateRuleSet.h"
 #include "InteractionAmplitudeSet.h"
 #include "Model.h"
 #include "ManyBodyContext.h"
-#include "Solver.h"
+#include "Solver/Solver.h"
 #include "WrapperRule.h"
 
 #include <initializer_list>
 
 namespace TBTK{
+namespace Solver{
 
-class ExactDiagonalizationSolver : public Solver{
+class ExactDiagonalizer : public Solver{
 public:
 	/** Constructor. */
-	ExactDiagonalizationSolver(
+	ExactDiagonalizer(
 //		Model *model
 	);
 
 	/** Destructor. */
-	virtual ~ExactDiagonalizationSolver();
+	virtual ~ExactDiagonalizer();
 
 	/** Add FockStateRule. */
 	unsigned int addSubspace(std::initializer_list<const FockStateRule::WrapperRule> rules);
@@ -89,8 +90,8 @@ private:
 		std::shared_ptr<Model> manyBodyModel;
 
 		/** Pointer to diagonalization solver. */
-//		DiagonalizationSolver *dSolver;
-		std::shared_ptr<DiagonalizationSolver> dSolver;
+//		Diagonalizer *dSolver;
+		std::shared_ptr<Diagonalizer> dSolver;
 	private:
 	};
 
@@ -105,18 +106,18 @@ private:
 	void setupManyBodyModel(unsigned int subspace);
 };
 
-inline const double* ExactDiagonalizationSolver::getEigenValues(unsigned int subspace){
+inline const double* ExactDiagonalizer::getEigenValues(unsigned int subspace){
 	return subspaceContexts.at(subspace).dSolver->getEigenValues();
 }
 
-inline const double ExactDiagonalizationSolver::getEigenValue(
+inline const double ExactDiagonalizer::getEigenValue(
 	unsigned int subspace,
 	int state
 ){
 	return subspaceContexts.at(subspace).dSolver->getEigenValue(state);
 }
 
-inline const std::complex<double> ExactDiagonalizationSolver::getAmplitude(
+inline const std::complex<double> ExactDiagonalizer::getAmplitude(
 	unsigned int subspace,
 	int state,
 	const Index &index
@@ -127,10 +128,11 @@ inline const std::complex<double> ExactDiagonalizationSolver::getAmplitude(
 	);
 }
 
-/*inline Model* ExactDiagonalizationSolver::getModel(){
+/*inline Model* ExactDiagonalizer::getModel(){
 	return model;
 }*/
 
+};	//End of namespace Solver
 };	//End of namespace TBTK
 
 #endif

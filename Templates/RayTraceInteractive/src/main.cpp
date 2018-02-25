@@ -23,7 +23,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "DiagonalizationSolver.h"
+#include "Solver/Diagonalizer.h"
 #include "DOS.h"
 #include "DPropertyExtractor.h"
 #include "FileWriter.h"
@@ -98,8 +98,8 @@ int main(int argc, char **argv){
 		}
 	}
 
-	//Choose DiagonalizationSolver.
-	DiagonalizationSolver solver;
+	//Choose Diagonalizer.
+	Solver::Diagonalizer solver;
 	solver.setModel(model);
 	solver.run();
 

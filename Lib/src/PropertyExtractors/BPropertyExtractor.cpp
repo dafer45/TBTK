@@ -28,7 +28,7 @@ using namespace std;
 
 namespace TBTK{
 
-BPropertyExtractor::BPropertyExtractor(BlockDiagonalizationSolver &bSolver){
+BPropertyExtractor::BPropertyExtractor(Solver::BlockDiagonalizer &bSolver){
 	this->bSolver = &bSolver;
 }
 

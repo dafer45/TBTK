@@ -26,14 +26,14 @@
  *  @author Kristofer Björnson
  */
 
-#include "DiagonalizationSolver.h"
+#include "Solver/Diagonalizer.h"
 #include "DOS.h"
 #include "DPropertyExtractor.h"
 #include "EigenValues.h"
 #include "FileReader.h"
 #include "FileWriter.h"
 #include "Model.h"
-#include "WaveFunction.h"
+#include "WaveFunctions.h"
 
 #include <complex>
 #include <iostream>
@@ -133,8 +133,8 @@ int main(int argc, char **argv){
 		}
 	}
 
-	//Setup and run DiagonalizationSolver
-	DiagonalizationSolver dSolver;
+	//Setup and run Solver::Diagonalizer
+	Solver::Diagonalizer dSolver;
 	dSolver.setModel(model);
 	dSolver.run();
 
@@ -155,23 +155,23 @@ int main(int argc, char **argv){
 
 	//Calculate spin up wave function for all sites and state 64, 67, and
 	//73
-	Property::WaveFunction waveFunctionUp = pe.calculateWaveFunction(
+	Property::WaveFunctions waveFunctionsUp = pe.calculateWaveFunctions(
 		{
 			{IDX_ALL,	IDX_ALL,	IDX_ALL,	0}
 		},
 		{64, 67, 73}
 	);
-	FileWriter::writeWaveFunction(waveFunctionUp, "WaveFunctionUp");
+	FileWriter::writeWaveFunctions(waveFunctionsUp, "WaveFunctionsUp");
 
 	//Calculate spin down wave function for all sites and state 64, 67, and
 	//73
-	Property::WaveFunction waveFunctionDown = pe.calculateWaveFunction(
+	Property::WaveFunctions waveFunctionsDown = pe.calculateWaveFunctions(
 		{
 			{IDX_ALL,	IDX_ALL,	IDX_ALL,	1}
 		},
 		{64, 67, 73}
 	);
-	FileWriter::writeWaveFunction(waveFunctionDown, "WaveFunctionDown");
+	FileWriter::writeWaveFunctions(waveFunctionsDown, "WaveFunctionsDown");
 
 	return 0;
 }

@@ -13,12 +13,12 @@
  * limitations under the License.
  */
 
-/** @file ChebyshevSolver.cu
+/** @file ChebyshevExpander.cu
  *
  *  @author Kristofer Björnson
  */
 
-#include "ChebyshevSolver.h"
+#include "Solver/ChebyshevExpander.h"
 #include "GPUResourceManager.h"
 #include "HALinkedList.h"
 #include "Streams.h"
@@ -32,6 +32,7 @@
 using namespace std;
 
 namespace TBTK{
+namespace Solver{
 
 complex<double> minus_one(-1., 0.);
 complex<double> one(1., 0.);
@@ -53,7 +54,7 @@ void extractCoefficients(
 		coefficients[coefficientMap[to]*numCoefficients + currentCoefficient] = jResult[to];
 }
 
-void ChebyshevSolver::calculateCoefficientsGPU(
+void ChebyshevExpander::calculateCoefficientsGPU(
 	Index to,
 	Index from,
 	complex<double> *coefficients,
@@ -65,7 +66,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 	calculateCoefficientsGPU(toVector, from, coefficients, numCoefficients, broadening);
 }
 
-void ChebyshevSolver::calculateCoefficientsGPU(
+void ChebyshevExpander::calculateCoefficientsGPU(
 	vector<Index> &to,
 	Index from,
 	complex<double> *coefficients,
@@ -74,19 +75,19 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 ){
 /*	TBTKAssert(
 		getModel() != NULL,
-		"ChebyshevSolver::calculateCoefficientsGPU()",
+		"ChebyshevExpander::calculateCoefficientsGPU()",
 		"Model not set",
-		"Use ChebyshevSolver::setModel() to set model."
+		"Use ChebyshevExpander::setModel() to set model."
 	);*/
 	TBTKAssert(
 		scaleFactor > 0,
-		"ChebyshevSolver::calculateCoefficientsGPU()",
+		"ChebyshevExpander::calculateCoefficientsGPU()",
 		"Scale factor must be larger than zero.",
-		"Use ChebyshevSolver::setScaleFactor() to set scale factor."
+		"Use ChebyshevExpander::setScaleFactor() to set scale factor."
 	);
 	TBTKAssert(
 		numCoefficients > 0,
-		"ChebyshevSolver::calculateCoefficients()",
+		"ChebyshevExpander::calculateCoefficients()",
 		"numCoefficients has to be larger than zero.",
 		""
 	);
@@ -95,7 +96,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 
 	TBTKAssert(
 		cudaSetDevice(device) == cudaSuccess,
-		"ChebyshevSolver::calculateCoefficientsGPU()",
+		"ChebyshevExpander::calculateCoefficientsGPU()",
 		"CUDA set device error for device " << device << ".",
 		""
 	);
@@ -110,7 +111,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 		coefficientMap[hoppingAmplitudeSet->getBasisIndex(to.at(n))] = n;
 
 	if(getGlobalVerbose() && getVerbose()){
-		Streams::out << "ChebyshevSolver::calculateCoefficientsGPU\n";
+		Streams::out << "ChebyshevExpander::calculateCoefficientsGPU\n";
 		Streams::out << "\tFrom Index: " << fromBasisIndex << "\n";
 		Streams::out << "\tBasis size: " << hoppingAmplitudeSet->getBasisSize() << "\n";
 		Streams::out << "\tUsing damping: ";
@@ -176,7 +177,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 			(void**)&jIn1_device,
 			hoppingAmplitudeSet->getBasisSize()*sizeof(complex<double>)
 		) == cudaSuccess,
-		"ChebyshevSOlver::calculateCoefficientsGPU()",
+		"ChebyshevExpander::calculateCoefficientsGPU()",
 		"CUDA malloc error while allocating jIn1_device.",
 		""
 	);
@@ -185,7 +186,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 			(void**)&jIn2_device,
 			hoppingAmplitudeSet->getBasisSize()*sizeof(complex<double>)
 		) == cudaSuccess,
-		"ChebyshevSolver::calculateCoefficientsGPU()",
+		"ChebyshevExpander::calculateCoefficientsGPU()",
 		"CUDA malloc error while allocating jIn2_device.",
 		""
 	);
@@ -194,7 +195,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 			(void**)&cooHARowIndices_device,
 			numHoppingAmplitudes*sizeof(int)
 		) == cudaSuccess,
-		"ChebyshevSolver::calculateCoefficientsGPU()",
+		"ChebyshevExpander::calculateCoefficientsGPU()",
 		"CUDA malloc error while allocating cooHARowIndices_device.",
 		""
 	);
@@ -203,7 +204,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 			(void**)&csrHARowIndices_device,
 			(hoppingAmplitudeSet->getBasisSize()+1)*sizeof(int)
 		) == cudaSuccess,
-		"ChebyshevSolver::calculateCoefficientsGPU()",
+		"ChebyshevExpander::calculateCoefficientsGPU()",
 		"CUDA malloc error while allocating csrHARowIndices_device.",
 		""
 	);
@@ -212,7 +213,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 			(void**)&cooHAColIndices_device,
 			numHoppingAmplitudes*sizeof(int)
 		) == cudaSuccess,
-		"ChebyshevSolver::calculateCoefficientsGPU()",
+		"ChebyshevExpander::calculateCoefficientsGPU()",
 		"CUDA malloc error while allocating cooHAColIndices_device.",
 		""
 	);
@@ -221,7 +222,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 			(void**)&cooHAValues_device,
 			numHoppingAmplitudes*sizeof(complex<double>)
 		) == cudaSuccess,
-		"ChebyshevSolver::calculateCoefficientsGPU()",
+		"ChebyshevExpander::calculateCoefficientsGPU()",
 		"CUDA malloc error while allocating cooHAValues_device.",
 		""
 	)
@@ -230,7 +231,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 			(void**)&coefficients_device,
 			to.size()*numCoefficients*sizeof(complex<double>)
 		) == cudaSuccess,
-		"ChebyshevSolver::calculateCoefficientsGPU()",
+		"ChebyshevExpander::calculateCoefficientsGPU()",
 		"CUDA malloc error while allocating coefficients_device.",
 		""
 	);
@@ -239,7 +240,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 			(void**)&coefficientMap_device,
 			hoppingAmplitudeSet->getBasisSize()*sizeof(int)
 		) == cudaSuccess,
-		"ChebyshevSolver::calculateCoefficientsGPU()",
+		"ChebyshevExpander::calculateCoefficientsGPU()",
 		"CUDA malloc error while allocating coefficientMap_device.",
 		""
 	);
@@ -249,7 +250,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 				(void**)&damping_device,
 				hoppingAmplitudeSet->getBasisSize()*sizeof(complex<double>)
 			) == cudaSuccess,
-			"ChebyshevSolver::calculateCoefficientsGPU()",
+			"ChebyshevExpander::calculateCoefficientsGPU()",
 			"CUDA malloc error while allocating damping_device.",
 			""
 		);
@@ -262,7 +263,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 			hoppingAmplitudeSet->getBasisSize()*sizeof(complex<double>),
 			cudaMemcpyHostToDevice
 		) == cudaSuccess,
-		"ChebyshevSolver::calculateCoefficientsGPU()",
+		"ChebyshevExpander::calculateCoefficientsGPU()",
 		"CUDA memcpy error while copying jIn1.",
 		""
 	);
@@ -273,7 +274,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 			hoppingAmplitudeSet->getBasisSize()*sizeof(complex<double>),
 			cudaMemcpyHostToDevice
 		) == cudaSuccess,
-		"ChebyshevSolver::calculateCoefficientsGPU()",
+		"ChebyshevExpander::calculateCoefficientsGPU()",
 		"CUDA memcpy error while copying jIn2.",
 		""
 	);
@@ -284,7 +285,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 			numHoppingAmplitudes*sizeof(int),
 			cudaMemcpyHostToDevice
 		) == cudaSuccess,
-		"ChebyshevSolver::calculateCoefficientsGPU()",
+		"ChebyshevExpander::calculateCoefficientsGPU()",
 		"CUDA memcpy error while copying cooHARowIndices.",
 		""
 	);
@@ -295,7 +296,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 			numHoppingAmplitudes*sizeof(int),
 			cudaMemcpyHostToDevice
 		) == cudaSuccess,
-		"ChebyshevSolver::calculateCoefficients()",
+		"ChebyshevExpander::calculateCoefficients()",
 		"CUDA memcpy error while copying cooHAColIndices.",
 		""
 	)
@@ -306,7 +307,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 			numHoppingAmplitudes*sizeof(complex<double>),
 			cudaMemcpyHostToDevice
 		) == cudaSuccess,
-		"ChebyshevSolver::calculateCoefficientsGPU()",
+		"ChebyshevExpander::calculateCoefficientsGPU()",
 		"CUDA memcpy error while copying cooHAValues.",
 		""
 	);
@@ -317,7 +318,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 			to.size()*numCoefficients*sizeof(complex<double>),
 			cudaMemcpyHostToDevice
 		) == cudaSuccess,
-		"ChebyshevSolver::calculateCoefficients()",
+		"ChebyshevExpander::calculateCoefficients()",
 		"CUDA memcpy error while copying coefficients.",
 		""
 	)
@@ -328,7 +329,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 			hoppingAmplitudeSet->getBasisSize()*sizeof(int),
 			cudaMemcpyHostToDevice
 		) == cudaSuccess,
-		"ChebyshevSolver::calculateCoefficientsGPU()",
+		"ChebyshevExpander::calculateCoefficientsGPU()",
 		"CUDA memcpy error while copying coefficientMap.",
 		""
 	);
@@ -340,7 +341,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 				hoppingAmplitudeSet->getBasisSize()*sizeof(complex<double>),
 				cudaMemcpyHostToDevice
 			) == cudaSuccess,
-			"ChebyshevSolver::calculateCoefficientsGPU()",
+			"ChebyshevExpander::calculateCoefficientsGPU()",
 			"CUDA memcpy error while copying damping.",
 			""
 		);
@@ -349,7 +350,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 	cusparseHandle_t handle = NULL;
 	TBTKAssert(
 		cusparseCreate(&handle) == CUSPARSE_STATUS_SUCCESS,
-		"ChebyshevSolver::calculateCoefficientsGPU()",
+		"ChebyshevExpander::calculateCoefficientsGPU()",
 		"cuSPARSE create error.",
 		""
 	);
@@ -357,7 +358,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 	cusparseMatDescr_t descr = NULL;
 	TBTKAssert(
 		cusparseCreateMatDescr(&descr) == CUSPARSE_STATUS_SUCCESS,
-		"ChebyshevSolver::calculateCoefficientsGPU()",
+		"ChebyshevExpander::calculateCoefficientsGPU()",
 		"cuSPARSE create matrix descriptor error.",
 		""
 	);
@@ -367,7 +368,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 			descr,
 			CUSPARSE_MATRIX_TYPE_GENERAL
 		) == CUSPARSE_STATUS_SUCCESS,
-		"ChebyshevSolver::calculateCoefficientsGPU()",
+		"ChebyshevExpander::calculateCoefficientsGPU()",
 		"cuSPARSE set matrix type error.",
 		""
 	);
@@ -376,7 +377,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 			descr,
 			CUSPARSE_INDEX_BASE_ZERO
 		) == CUSPARSE_STATUS_SUCCESS,
-		"ChebyshevSolver::calculateCoefficientsGPU()",
+		"ChebyshevExpander::calculateCoefficientsGPU()",
 		"cuSPARSE set matrix index base error.",
 		""
 	);
@@ -390,7 +391,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 			csrHARowIndices_device,
 			CUSPARSE_INDEX_BASE_ZERO
 		) == CUSPARSE_STATUS_SUCCESS,
-		"ChebyshevSolver::calculateCoefficientsGPU()",
+		"ChebyshevExpander::calculateCoefficientsGPU()",
 		"cuSPARSE COO to CSR error.",
 		""
 	);
@@ -420,7 +421,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 			(cuDoubleComplex*)&zero,
 			(cuDoubleComplex*)jIn2_device
 		) == CUSPARSE_STATUS_SUCCESS,
-		"ChebyshevSolver::calculateCoefficentsGPU()",
+		"ChebyshevExpander::calculateCoefficentsGPU()",
 		"Matrix-vector multiplication error.",
 		""
 	);
@@ -457,7 +458,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 				(cuDoubleComplex*)&minus_one,
 				(cuDoubleComplex*)jIn2_device
 			) == CUSPARSE_STATUS_SUCCESS,
-			"ChebyshevSolver::calculateCoefficientsGPU()",
+			"ChebyshevExpander::calculateCoefficientsGPU()",
 			"Matrix-vector multiplication error.",
 			""
 		);
@@ -490,14 +491,14 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 			to.size()*numCoefficients*sizeof(complex<double>),
 			cudaMemcpyDeviceToHost
 		) == cudaSuccess,
-		"ChebyshevSolver::calculateCoefficientsGPU()",
+		"ChebyshevExpander::calculateCoefficientsGPU()",
 		"CUDA memcpy error while copying coefficients.",
 		""
 	);
 
 	TBTKAssert(
 		cusparseDestroyMatDescr(descr) == CUSPARSE_STATUS_SUCCESS,
-		"ChebyshevSolver::calculateCoefficientsGPU()",
+		"ChebyshevExpander::calculateCoefficientsGPU()",
 		"cuSPARSE destroy matrix descriptor error.",
 		""
 	);
@@ -505,7 +506,7 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 
 	TBTKAssert(
 		cusparseDestroy(handle) == CUSPARSE_STATUS_SUCCESS,
-		"ChebyshevSolver::calculateCoefficientsGPU()",
+		"ChebyshevExpander::calculateCoefficientsGPU()",
 		"cuSPARSE destroy error.",
 		""
 	);
@@ -549,15 +550,15 @@ void calculateGreensFunction(
 			greensFunction[e] = cuCadd(greensFunction[e], cuCmul(lookupTable[n*energyResolution + e], coefficients[n]));
 }
 
-void ChebyshevSolver::loadLookupTableGPU(){
+void ChebyshevExpander::loadLookupTableGPU(){
 	if(getGlobalVerbose() && getVerbose())
-		Streams::out << "CheyshevSolver::loadLookupTableGPU\n";
+		Streams::out << "CheyshevExpander::loadLookupTableGPU\n";
 
 	TBTKAssert(
 		generatingFunctionLookupTable != NULL,
-		"ChebyshevSolver::loadLookupTableGPU()",
+		"ChebyshevExpander::loadLookupTableGPU()",
 		"Lookup table has not been generated.",
-		"Call ChebyshevSolver::generateLokupTable() to generate lookup table."
+		"Call ChebyshevExpander::generateLokupTable() to generate lookup table."
 	);
 	if(generatingFunctionLookupTable_device != NULL)
 		destroyLookupTableGPU();
@@ -583,7 +584,7 @@ void ChebyshevSolver::loadLookupTableGPU(){
 	for(int n = 0; n < GPUResourceManager::getInstance().getNumDevices(); n++){
 		TBTKAssert(
 			cudaSetDevice(n) == cudaSuccess,
-			"ChebyshevSolver::loadLookupTableGPU()",
+			"ChebyshevExpander::loadLookupTableGPU()",
 			"CUDA set device error for device " << n << ".",
 			""
 		);
@@ -593,7 +594,7 @@ void ChebyshevSolver::loadLookupTableGPU(){
 				(void**)&generatingFunctionLookupTable_device[n],
 				lookupTableNumCoefficients*lookupTableResolution*sizeof(complex<double>)
 			)  == cudaSuccess,
-			"ChebyshevSolver::loadLookupTableGPU()",
+			"ChebyshevExpander::loadLookupTableGPU()",
 			"CUDA malloc error while allocating generatingFunctionLookupTable_device.",
 			""
 		);
@@ -605,7 +606,7 @@ void ChebyshevSolver::loadLookupTableGPU(){
 				lookupTableNumCoefficients*lookupTableResolution*sizeof(complex<double>),
 				cudaMemcpyHostToDevice
 			) == cudaSuccess,
-			"ChebyshevSolver::loadLookupTableGPU()",
+			"ChebyshevExpander::loadLookupTableGPU()",
 			"CUDA memcpy error while copying generatingFunctionLookupTable_device.",
 			""
 		);
@@ -614,13 +615,13 @@ void ChebyshevSolver::loadLookupTableGPU(){
 	delete [] generatingFunctionLookupTable_host;
 }
 
-void ChebyshevSolver::destroyLookupTableGPU(){
+void ChebyshevExpander::destroyLookupTableGPU(){
 	if(getGlobalVerbose() && getVerbose())
-		Streams::out << "ChebyshevSolver::destroyLookupTableGPU\n";
+		Streams::out << "ChebyshevExpander::destroyLookupTableGPU\n";
 
 	TBTKAssert(
 		generatingFunctionLookupTable_device != NULL,
-		"ChebyshevSolver::destroyLookupTableGPU()",
+		"ChebyshevExpander::destroyLookupTableGPU()",
 		"No lookup table loaded onto GPU.\n",
 		""
 	);
@@ -633,8 +634,8 @@ void ChebyshevSolver::destroyLookupTableGPU(){
 	generatingFunctionLookupTable_device = NULL;
 }
 
-//Property::GreensFunction* ChebyshevSolver::generateGreensFunctionGPU(
-complex<double>* ChebyshevSolver::generateGreensFunctionGPU(
+//Property::GreensFunction* ChebyshevExpander::generateGreensFunctionGPU(
+complex<double>* ChebyshevExpander::generateGreensFunctionGPU(
 	complex<double> *coefficients,
 //	Property::GreensFunction::Type type
 	Type type
@@ -643,24 +644,24 @@ complex<double>* ChebyshevSolver::generateGreensFunctionGPU(
 
 	TBTKAssert(
 		cudaSetDevice(device) == cudaSuccess,
-		"ChebyshevSolver::generateGreensFunctionGPU()",
+		"ChebyshevExpander::generateGreensFunctionGPU()",
 		"CUDA set device error for device " << device << ".",
 		""
 	);
 
 	if(getGlobalVerbose() && getVerbose())
-		Streams::out << "ChebyshevSolver::generateGreensFunctionGPU\n";
+		Streams::out << "ChebyshevExpander::generateGreensFunctionGPU\n";
 
 	TBTKAssert(
 		generatingFunctionLookupTable_device != NULL,
-		"ChebyshevSolver::generateGreensFunctionGPU()",
+		"ChebyshevExpander::generateGreensFunctionGPU()",
 		"No lookup table loaded onto GPU.",
 		""
 	);
 	TBTKAssert(
 //		type == Property::GreensFunction::Type::Retarded,
 		type == Type::Retarded,
-		"ChebyshevSolver::generateGreensFunctionGPU()",
+		"ChebyshevExpander::generateGreensFunctionGPU()",
 		"Only evaluation of retarded Green's function is implemented for GPU so far.",
 		"Use CPU evaluation instead."
 	);
@@ -678,7 +679,7 @@ complex<double>* ChebyshevSolver::generateGreensFunctionGPU(
 			(void**)&greensFunctionData_device,
 			lookupTableResolution*sizeof(complex<double>)
 		)  == cudaSuccess,
-		"ChebyshevSolver::generateGreensFunctionGPU()",
+		"ChebyshevExpander::generateGreensFunctionGPU()",
 		"CUDA malloc error while allocating greensFunction_device.",
 		""
 	);
@@ -687,7 +688,7 @@ complex<double>* ChebyshevSolver::generateGreensFunctionGPU(
 			(void**)&coefficients_device,
 			lookupTableNumCoefficients*sizeof(complex<double>)
 		)  == cudaSuccess,
-		"ChebyshevSolver::generateGreensFunctionGPU()",
+		"ChebyshevExpander::generateGreensFunctionGPU()",
 		"CUDA malloc error while allocating coefficients_device.",
 		""
 	);
@@ -699,7 +700,7 @@ complex<double>* ChebyshevSolver::generateGreensFunctionGPU(
 			lookupTableResolution*sizeof(complex<double>),
 			cudaMemcpyHostToDevice
 		) == cudaSuccess,
-		"ChebyshevSolver::generateGreensFunctionGPU()",
+		"ChebyshevExpander::generateGreensFunctionGPU()",
 		"CUDA memcpy error while copying greensFunctionData.",
 		""
 	);
@@ -710,7 +711,7 @@ complex<double>* ChebyshevSolver::generateGreensFunctionGPU(
 			lookupTableNumCoefficients*sizeof(complex<double>),
 			cudaMemcpyHostToDevice
 		) == cudaSuccess,
-		"ChebyshevSolver::generateGreensFunctionGPU()",
+		"ChebyshevExpander::generateGreensFunctionGPU()",
 		"CUDA memcpy error while copying coefficients.",
 		""
 	);
@@ -738,7 +739,7 @@ complex<double>* ChebyshevSolver::generateGreensFunctionGPU(
 			lookupTableResolution*sizeof(complex<double>),
 			cudaMemcpyDeviceToHost
 		) == cudaSuccess,
-		"ChebyshevSolver::generateGreensFunctionGPU()",
+		"ChebyshevExpander::generateGreensFunctionGPU()",
 		"CUDA memcpy error while copying greensFunction_device.",
 		""
 	);
@@ -763,4 +764,5 @@ complex<double>* ChebyshevSolver::generateGreensFunctionGPU(
 	return greensFunctionData;
 }
 
+};	//End of namespace Solver
 };	//End of namespace TBTK

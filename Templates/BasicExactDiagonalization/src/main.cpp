@@ -36,7 +36,7 @@
 
 #include "DifferenceRule.h"
 #include "EDPropertyExtractor.h"
-#include "ExactDiagonalizationSolver.h"
+#include "Solver/ExactDiagonalizer.h"
 #include "FileWriter.h"
 #include "Model.h"
 #include "SumRule.h"
@@ -123,7 +123,7 @@ int main(int argc, char **argv){
 	);
 
 	//Create exact diagonalization solver. Notation will be simplified.
-	ExactDiagonalizationSolver edSolver;
+	Solver::ExactDiagonalizer edSolver;
 	edSolver.setModel(model);
 
 	//Create and initialize EDPropertyExtractor.

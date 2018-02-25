@@ -18,11 +18,12 @@
  *  @author Kristofer Björnson
  */
 
-#include "Solver.h"
+#include "Solver/Solver.h"
 
 using namespace std;
 
 namespace TBTK{
+namespace Solver{
 
 Solver::Solver(){
 	model = NULL;
@@ -31,4 +32,5 @@ Solver::Solver(){
 Solver::~Solver(){
 }
 
+};	//End of namespace Solver
 };	//End of namespace TBTK

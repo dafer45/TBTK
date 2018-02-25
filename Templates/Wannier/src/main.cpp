@@ -23,8 +23,8 @@
  */
 
 #include "BandDiagramGenerator.h"
-#include "BlockDiagonalizationSolver.h"
-#include "DiagonalizationSolver.h"
+#include "Solver/BlockDiagonalizer.h"
+#include "Solver/Diagonalizer.h"
 #include "BPropertyExtractor.h"
 #include "DOS.h"
 #include "FileWriter.h"

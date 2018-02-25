@@ -18,13 +18,14 @@
  *  @author Kristofer Björnson
  */
 
-#include "LinearEquationSolver/LinearEquationSolver.h"
+#include "Solver/LinearEquationSolver/LinearEquationSolver.h"
 
 #include "slu_zdefs.h"
 
 using namespace std;
 
 namespace TBTK{
+namespace Solver{
 
 LinearEquationSolver::LinearEquationSolver() : Communicator(true){
 	hamiltonian = NULL;
@@ -184,4 +185,5 @@ vector<complex<double>> LinearEquationSolver::solveConjugateGradient(
 	TBTKNotYetImplemented("LinearEquationSolver::solveConjugateGradient()");
 }
 
+};	//End of namespace Solver
 };	//End of namespace TBTK

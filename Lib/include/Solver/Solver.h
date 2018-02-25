@@ -20,12 +20,13 @@
  *  @author Kristofer Björnson
  */
 
-#ifndef COM_DAFER45_TBTK_SOLVER
-#define COM_DAFER45_TBTK_SOLVER
+#ifndef COM_DAFER45_TBTK_SOLVER_SOLVER
+#define COM_DAFER45_TBTK_SOLVER_SOLVER
 
 #include "Model.h"
 
 namespace TBTK{
+namespace Solver{
 
 /** @brief Base class for Solvers. */
 class Solver{
@@ -73,6 +74,7 @@ inline const Model& Solver::getModel() const{
 	return *model;
 }
 
+};	//End of namespace Solver
 };	//End of namespace TBTK
 
 #endif

@@ -24,7 +24,7 @@
 
 #include "DPropertyExtractor.h"
 #include "FileWriter.h"
-#include "LinearEquationSolver/LinearEquationSolver.h"
+#include "Solver/LinearEquationSolver/LinearEquationSolver.h"
 #include "Model.h"
 #include "MatrixElement.h"
 #include "Plotter/Plotter.h"
@@ -54,7 +54,7 @@ int main(int argc, char **argv){
 	model.constructCOO();
 
 	Timer::tick("Solve");
-	LinearEquationSolver solver;
+	Solver::LinearEquationSolver solver;
 	solver.setModel(model);
 	vector<complex<double>> b;
 	for(int n = 0; n < NUM_SITES; n++){

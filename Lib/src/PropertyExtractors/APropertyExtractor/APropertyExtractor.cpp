@@ -30,7 +30,7 @@ namespace{
 	complex<double> i(0,1);
 }
 
-APropertyExtractor::APropertyExtractor(ArnoldiSolver &aSolver){
+APropertyExtractor::APropertyExtractor(Solver::ArnoldiIterator &aSolver){
 	this->aSolver = &aSolver;
 }
 
@@ -168,7 +168,8 @@ Property::LDOS APropertyExtractor::calculateLDOS(
 		aSolver->getCalculateEigenVectors(),
 		"APropertyExtractor::calculateLDOS()",
 		"Eigen vectors not calculated.",
-		"Use ArnoldiSolver::setCalculateEigenVectors() to ensure eigen vectors are calculated."
+		"Use Solver::ArnoldiIterator::setCalculateEigenVectors() to"
+		<< " ensure eigen vectors are calculated."
 	);
 
 	//hint[0] is an array of doubles, hint[1] is an array of ints
@@ -215,7 +216,7 @@ Property::LDOS APropertyExtractor::calculateLDOS(
 		aSolver->getCalculateEigenVectors(),
 		"APropertyExtractor::calculateLDOS()",
 		"Eigen vectors not calculated.",
-		"Use ArnoldiSolver::setCalculateEigenVectors() to ensure eigen vectors are calculated."
+		"Use Solver::ArnoldiIterator::setCalculateEigenVectors() to ensure eigen vectors are calculated."
 	);
 
 	//hint[0] is an array of doubles, hint[1] is an array of ints
@@ -269,7 +270,8 @@ Property::SpinPolarizedLDOS APropertyExtractor::calculateSpinPolarizedLDOS(
 		aSolver->getCalculateEigenVectors(),
 		"APropertyExtractor::calculateSpinPolarizedLDOS()",
 		"Eigen vectors not calculated.",
-		"Use ArnoldiSolver::setCalculateEigenVectors() to ensure eigen vectors are calculated."
+		"Use Solver::ArnoldiIterator::setCalculateEigenVectors() to"
+		<< " ensure eigen vectors are calculated."
 	);
 
 	//hint[0] is an array of doubles, hint[1] is an array of ints
@@ -340,7 +342,8 @@ Property::SpinPolarizedLDOS APropertyExtractor::calculateSpinPolarizedLDOS(
 		aSolver->getCalculateEigenVectors(),
 		"APropertyExtractor::calculateSpinPolarizedLDOS()",
 		"Eigen vectors not calculated.",
-		"Use ArnoldiSolver::setCalculateEigenVectors() to ensure eigen vectors are calculated."
+		"Use Solver::ArnoldiIterator::setCalculateEigenVectors() to"
+		<< " ensure eigen vectors are calculated."
 	);
 
 	//hint[0] is an array of doubles, hint[1] is an array of ints

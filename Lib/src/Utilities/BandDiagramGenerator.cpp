@@ -19,7 +19,7 @@
  */
 
 #include "BandDiagramGenerator.h"
-#include "DiagonalizationSolver.h"
+#include "Solver/Diagonalizer.h"
 #include "ParametrizedLine.h"
 #include "Timer.h"
 #include "VectorNd.h"
@@ -115,7 +115,7 @@ vector<vector<double>> BandDiagramGenerator::generateBandDiagram(
 				);
 				model->construct();
 
-				DiagonalizationSolver solver;
+				Solver::Diagonalizer solver;
 				solver.setModel(*model);
 				solver.run();
 

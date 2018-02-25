@@ -29,7 +29,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "ChebyshevSolver.h"
+#include "Solver/ChebyshevExpander.h"
 #include "CPropertyExtractor.h"
 #include "FileWriter.h"
 #include "GreensFunction.h"
@@ -56,7 +56,7 @@ const int SIZE_Y = 20;
 complex<double> D[2][SIZE_X][SIZE_Y];
 int dCounter = 0;
 
-//ChebyshevSolver parameters, SCALE_FACTOR scales the energy spectrum to lie
+//ChebyshevExpander parameters, SCALE_FACTOR scales the energy spectrum to lie
 //lie within -1 < E < 1, while NUM_COEFFICIENTS and ENERGY_RESOLUTION are the
 //number of Chebyshev coefficients used in the expansion of the Green's
 //function, and the number of points use to evaluate the Green's function,
@@ -164,7 +164,7 @@ double scLoop(double radius){
 	//coefficients and Green's function, and using lookup table. The
 	//Green's function is only calculated in an energy interval around E=0
 	//with a width twice the Debye frequency.
-	ChebyshevSolver cSolver;
+	Solver::ChebyshevExpander cSolver;
 	cSolver.setScaleFactor(SCALE_FACTOR);
 	CPropertyExtractor pe(
 		cSolver,

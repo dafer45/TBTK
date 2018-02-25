@@ -32,7 +32,7 @@ static complex<double> i(0, 1);
 namespace TBTK{
 
 CPropertyExtractor::CPropertyExtractor(
-	ChebyshevSolver &cSolver,
+	Solver::ChebyshevExpander &cSolver,
 	int numCoefficients,
 	bool useGPUToCalculateCoefficients,
 	bool useGPUToGenerateGreensFunctions,
@@ -60,13 +60,13 @@ CPropertyExtractor::CPropertyExtractor(
 		lowerBound >= -cSolver.getScaleFactor(),
 		"CPropertyExtractor::CPropertyExtractor()",
 		"Argument lowerBound has to be larger than -cSolver->getScaleFactor().",
-		"Use ChebyshevSolver::setScaleFactor() to set a larger scale factor."
+		"Use Solver::ChebyshevExpander::setScaleFactor() to set a larger scale factor."
 	);
 	TBTKAssert(
 		upperBound <= cSolver.getScaleFactor(),
 		"CPropertyExtractor::CPropertyExtractor()",
 		"Argument upperBound has to be smaller than cSolver->getScaleFactor().",
-		"Use ChebyshevSolver::setScaleFactor() to set a larger scale factor."
+		"Use Solver::ChebyshevExpnader::setScaleFactor() to set a larger scale factor."
 	);
 
 	this->cSolver = &cSolver;
@@ -251,19 +251,19 @@ Property::GreensFunction CPropertyExtractor::calculateGreensFunctions(
 		cSolver->calculateCoefficients(to, from, coefficients, numCoefficients);
 	}
 
-	ChebyshevSolver::Type chebyshevType;
+	Solver::ChebyshevExpander::Type chebyshevType;
 	switch(type){
 	case Property::GreensFunction::Type::Advanced:
-		chebyshevType = ChebyshevSolver::Type::Advanced;
+		chebyshevType = Solver::ChebyshevExpander::Type::Advanced;
 		break;
 	case Property::GreensFunction::Type::Retarded:
-		chebyshevType = ChebyshevSolver::Type::Retarded;
+		chebyshevType = Solver::ChebyshevExpander::Type::Retarded;
 		break;
 	case Property::GreensFunction::Type::Principal:
-		chebyshevType = ChebyshevSolver::Type::Principal;
+		chebyshevType = Solver::ChebyshevExpander::Type::Principal;
 		break;
 	case Property::GreensFunction::Type::NonPrincipal:
-		chebyshevType = ChebyshevSolver::Type::NonPrincipal;
+		chebyshevType = Solver::ChebyshevExpander::Type::NonPrincipal;
 		break;
 	default:
 		TBTKExit(

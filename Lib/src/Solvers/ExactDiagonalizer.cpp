@@ -1,8 +1,8 @@
-#include "ExactDiagonalizationSolver.h"
+#include "Solver/ExactDiagonalizer.h"
 #include "FockSpace.h"
 #include "FileWriter.h"
 #include "DOS.h"
-#include "DiagonalizationSolver.h"
+#include "Solver/Diagonalizer.h"
 #include "DPropertyExtractor.h"
 #include "SumRule.h"
 #include "DifferenceRule.h"
@@ -12,15 +12,16 @@
 using namespace std;
 
 namespace TBTK{
+namespace Solver{
 
-ExactDiagonalizationSolver::ExactDiagonalizationSolver(/*Model *model*/){
+ExactDiagonalizer::ExactDiagonalizer(/*Model *model*/){
 //	this->model = model;
 }
 
-ExactDiagonalizationSolver::~ExactDiagonalizationSolver(){
+ExactDiagonalizer::~ExactDiagonalizer(){
 }
 
-unsigned int ExactDiagonalizationSolver::addSubspace(initializer_list<const FockStateRule::WrapperRule> rules){
+unsigned int ExactDiagonalizer::addSubspace(initializer_list<const FockStateRule::WrapperRule> rules){
 	FockStateRuleSet fockStateRuleSet;
 	for(unsigned int n = 0; n < rules.size(); n++)
 		fockStateRuleSet.addFockStateRule(*(rules.begin()+n));
@@ -28,7 +29,7 @@ unsigned int ExactDiagonalizationSolver::addSubspace(initializer_list<const Fock
 	return addSubspace(fockStateRuleSet);
 }
 
-unsigned int ExactDiagonalizationSolver::addSubspace(vector<FockStateRule::WrapperRule> rules){
+unsigned int ExactDiagonalizer::addSubspace(vector<FockStateRule::WrapperRule> rules){
 	FockStateRuleSet fockStateRuleSet;
 	for(unsigned int n = 0; n < rules.size(); n++)
 		fockStateRuleSet.addFockStateRule(rules.at(n));
@@ -36,7 +37,7 @@ unsigned int ExactDiagonalizationSolver::addSubspace(vector<FockStateRule::Wrapp
 	return addSubspace(fockStateRuleSet);
 }
 
-unsigned int ExactDiagonalizationSolver::addSubspace(const FockStateRuleSet &rules){
+unsigned int ExactDiagonalizer::addSubspace(const FockStateRuleSet &rules){
 	for(unsigned int n = 0; n < subspaceContexts.size(); n++)
 		if(rules == subspaceContexts.at(n).fockStateRuleSet)
 			return n;
@@ -46,18 +47,18 @@ unsigned int ExactDiagonalizationSolver::addSubspace(const FockStateRuleSet &rul
 	return subspaceContexts.size()-1;
 }
 
-void ExactDiagonalizationSolver::run(unsigned int subspace){
+void ExactDiagonalizer::run(unsigned int subspace){
 	SubspaceContext &subspaceContext = subspaceContexts.at(subspace);
 	if(subspaceContext.manyBodyModel == NULL){
 		setupManyBodyModel(subspace);
-		subspaceContext.dSolver.reset(new DiagonalizationSolver());
+		subspaceContext.dSolver.reset(new Diagonalizer());
 		subspaceContext.dSolver->setModel(*subspaceContext.manyBodyModel.get());
 		subspaceContext.dSolver->run();
 	}
 }
 
 template<>
-void ExactDiagonalizationSolver::setupManyBodyModel<BitRegister>(unsigned int subspace){
+void ExactDiagonalizer::setupManyBodyModel<BitRegister>(unsigned int subspace){
 	FockSpace<BitRegister> *fockSpace = getModel().getManyBodyContext()->getFockSpaceBitRegister();
 	LadderOperator<BitRegister> **operators = fockSpace->getOperators();
 	SubspaceContext &subspaceContext = subspaceContexts.at(subspace);
@@ -131,7 +132,7 @@ void ExactDiagonalizationSolver::setupManyBodyModel<BitRegister>(unsigned int su
 }
 
 template<>
-void ExactDiagonalizationSolver::setupManyBodyModel<ExtensiveBitRegister>(unsigned int subspace){
+void ExactDiagonalizer::setupManyBodyModel<ExtensiveBitRegister>(unsigned int subspace){
 	FockSpace<ExtensiveBitRegister> *fockSpace = getModel().getManyBodyContext()->getFockSpaceExtensiveBitRegister();
 	LadderOperator<ExtensiveBitRegister> **operators = fockSpace->getOperators();
 	SubspaceContext &subspaceContext = subspaceContexts.at(subspace);
@@ -204,14 +205,14 @@ void ExactDiagonalizationSolver::setupManyBodyModel<ExtensiveBitRegister>(unsign
 	delete fockStateMap;
 }
 
-void ExactDiagonalizationSolver::setupManyBodyModel(unsigned int subspace){
+void ExactDiagonalizer::setupManyBodyModel(unsigned int subspace){
 	if(getModel().getManyBodyContext()->wrapsBitRegister())
 		setupManyBodyModel<BitRegister>(subspace);
 	else
 		setupManyBodyModel<ExtensiveBitRegister>(subspace);
 }
 
-ExactDiagonalizationSolver::SubspaceContext::SubspaceContext(
+ExactDiagonalizer::SubspaceContext::SubspaceContext(
 	initializer_list<const FockStateRule::WrapperRule> rules
 ){
 	for(unsigned int n = 0; n < rules.size(); n++)
@@ -221,7 +222,7 @@ ExactDiagonalizationSolver::SubspaceContext::SubspaceContext(
 	dSolver = NULL;
 }
 
-ExactDiagonalizationSolver::SubspaceContext::SubspaceContext(
+ExactDiagonalizer::SubspaceContext::SubspaceContext(
 	vector<FockStateRule::WrapperRule> rules
 ) :
 	manyBodyModel(nullptr),
@@ -231,7 +232,7 @@ ExactDiagonalizationSolver::SubspaceContext::SubspaceContext(
 		fockStateRuleSet.addFockStateRule(rules.at(n));
 }
 
-ExactDiagonalizationSolver::SubspaceContext::SubspaceContext(
+ExactDiagonalizer::SubspaceContext::SubspaceContext(
 	const FockStateRuleSet &rules
 ) :
 	manyBodyModel(nullptr),
@@ -240,7 +241,8 @@ ExactDiagonalizationSolver::SubspaceContext::SubspaceContext(
 	fockStateRuleSet = rules;
 }
 
-ExactDiagonalizationSolver::SubspaceContext::~SubspaceContext(){
+ExactDiagonalizer::SubspaceContext::~SubspaceContext(){
 }
 
+};	//End of namespace Solver
 };	//End of namespace TBTK

@@ -20,17 +20,18 @@
  *  @author Kristofer Björnson
  */
 
-#ifndef COM_DAFER45_TBTK_LINEAR_EQUATION_SOLVER
-#define COM_DAFER45_TBTK_LINEAR_EQUATION_SOLVER
+#ifndef COM_DAFER45_TBTK_SOLVER_LINEAR_EQUATION_SOLVER
+#define COM_DAFER45_TBTK_SOLVER_LINEAR_EQUATION_SOLVER
 
 #include "Communicator.h"
 #include "Model.h"
-#include "Solver.h"
+#include "Solver/Solver.h"
 
 #include <complex>
 #include <vector>
 
 namespace TBTK{
+namespace Solver{
 
 class LinearEquationSolver : public Solver, public Communicator{
 public:
@@ -89,6 +90,7 @@ inline std::vector<std::complex<double>> LinearEquationSolver::solve(
 	}
 }
 
+};	//End of namespace Solver
 };	//End of namespace TBTK
 
 #endif

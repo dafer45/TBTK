@@ -13,12 +13,12 @@
  * limitations under the License.
  */
 
-/** @file BlockDiagonalizationSolver.cpp
+/** @file BlockDiagonalizer.cpp
  *
  *  @author Kristofer Björnson
  */
 
-#include "BlockDiagonalizationSolver.h"
+#include "Solver/BlockDiagonalizer.h"
 #include "Streams.h"
 #include "TBTKMacros.h"
 
@@ -27,8 +27,9 @@
 using namespace std;
 
 namespace TBTK{
+namespace Solver{
 
-BlockDiagonalizationSolver::BlockDiagonalizationSolver() : Communicator(true){
+BlockDiagonalizer::BlockDiagonalizer() : Communicator(true){
 	hamiltonian = nullptr;
 	eigenValues = nullptr;
 	eigenVectors = nullptr;
@@ -40,7 +41,7 @@ BlockDiagonalizationSolver::BlockDiagonalizationSolver() : Communicator(true){
 	parallelExecution = false;
 }
 
-BlockDiagonalizationSolver::~BlockDiagonalizationSolver(){
+BlockDiagonalizer::~BlockDiagonalizer(){
 	if(hamiltonian != nullptr)
 		delete [] hamiltonian;
 	if(eigenValues != nullptr)
@@ -49,19 +50,19 @@ BlockDiagonalizationSolver::~BlockDiagonalizationSolver(){
 		delete [] eigenVectors;
 }
 
-void BlockDiagonalizationSolver::run(){
+void BlockDiagonalizer::run(){
 /*	TBTKAssert(
 		getModel() != NULL,
-		"DiagonalizationSolver::run()",
+		"Diagonalizer::run()",
 		"Model not set.",
-		"Use DiagonalizationSolver::setModel() to set model."
+		"Use Diagonalizer::setModel() to set model."
 	);*/
 
 	int iterationCounter = 0;
 	init();
 
 	if(getGlobalVerbose() && getVerbose())
-		Streams::out << "Running DiagonalizationSolver\n";
+		Streams::out << "Running Diagonalizer\n";
 	while(iterationCounter++ < maxIterations){
 		if(getGlobalVerbose() && getVerbose()){
 			if(iterationCounter%10 == 1)
@@ -88,9 +89,9 @@ void BlockDiagonalizationSolver::run(){
 		Streams::out << "\n";
 }
 
-void BlockDiagonalizationSolver::init(){
+void BlockDiagonalizer::init(){
 	if(getGlobalVerbose() && getVerbose())
-		Streams::out << "Initializing BlockDiagonalizationSolver\n";
+		Streams::out << "Initializing BlockDiagonalizer\n";
 
 	//Find number of blocks and number of states per block.
 	IndexTree blockIndices = getModel().getHoppingAmplitudeSet()->getSubspaceIndices();
@@ -245,7 +246,7 @@ void BlockDiagonalizationSolver::init(){
 	update();
 }
 
-void BlockDiagonalizationSolver::update(){
+void BlockDiagonalizer::update(){
 	const Model &model = getModel();
 
 	unsigned int hamiltonianSize = 0;
@@ -399,7 +400,7 @@ extern "C" void zhbeb_(
 	double *rwork,		//Workspace, dimension = max(1, 3*N-2)
 	int *info);		//0 = successful, <0 = -info value was illegal, >0 = info number of off-diagonal elements failed to converge.
 
-void BlockDiagonalizationSolver::solve(){
+void BlockDiagonalizer::solve(){
 	if(true){//Currently no support for banded matrices.
 		if(parallelExecution){
 			vector<unsigned int> eigenValuesOffsets;
@@ -437,7 +438,7 @@ void BlockDiagonalizationSolver::solve(){
 
 				TBTKAssert(
 					info == 0,
-					"DiagonalizationSolver:solve()",
+					"Diagonalizer:solve()",
 					"Diagonalization routine zhpev exited with INFO=" + to_string(info) + ".",
 					"See LAPACK documentation for zhpev for further information."
 				);
@@ -474,7 +475,7 @@ void BlockDiagonalizationSolver::solve(){
 
 				TBTKAssert(
 					info == 0,
-					"DiagonalizationSolver:solve()",
+					"Diagonalizer:solve()",
 					"Diagonalization routine zhpev exited with INFO=" + to_string(info) + ".",
 					"See LAPACK documentation for zhpev for further information."
 				);
@@ -513,4 +514,5 @@ void BlockDiagonalizationSolver::solve(){
 	}*/
 }
 
+};	//End of namespace Solver
 };	//End of namespace TBTK

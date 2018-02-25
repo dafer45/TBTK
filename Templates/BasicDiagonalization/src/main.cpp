@@ -25,7 +25,7 @@
 
 #include "Density.h"
 #include "DOS.h"
-#include "DiagonalizationSolver.h"
+#include "Solver/Diagonalizer.h"
 #include "DPropertyExtractor.h"
 #include "EigenValues.h"
 #include "FileWriter.h"
@@ -84,8 +84,8 @@ int main(int argc, char **argv){
 	//Construct model
 	model.construct();
 
-	//Setup and run DiagonalizationSolver
-	DiagonalizationSolver dSolver;
+	//Setup and run Diagonalizer
+	Solver::Diagonalizer dSolver;
 	dSolver.setModel(model);
 	dSolver.run();
 

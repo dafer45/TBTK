@@ -26,7 +26,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "DiagonalizationSolver.h"
+#include "Solver/Diagonalizer.h"
 #include "DPropertyExtractor.h"
 #include "FileWriter.h"
 #include "Magnetization.h"
@@ -60,7 +60,7 @@ const complex<double> D_INITIAL_GUESS = 0.3;
 
 //Self-consistent callback that is to be called each time a diagonalization has
 //finished. Calculates the order parameter from the current solution.
-bool scCallback(DiagonalizationSolver &dSolver){
+bool scCallback(Solver::Diagonalizer &dSolver){
 	//Clear the order parameter
 	for(int x = 0; x < SIZE_X; x++){
 		for(int y = 0; y < SIZE_Y; y++){
@@ -195,8 +195,8 @@ int main(int argc, char **argv){
 	//Initialize D
 	initD();
 
-	//Setup and run DiagonalizationSolver
-	DiagonalizationSolver dSolver;
+	//Setup and run Solver::Diagonalizer
+	Solver::Diagonalizer dSolver;
 	dSolver.setModel(model);
 	dSolver.setMaxIterations(MAX_ITERATIONS);
 	dSolver.setSelfConsistencyCallback(scCallback);

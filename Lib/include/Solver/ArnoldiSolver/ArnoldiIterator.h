@@ -14,35 +14,36 @@
  */
 
 /** @package TBTKcalc
- *  @file ArnoldiSolver
+ *  @file ArnoldiIterator
  *  @brief Solves a Model using Arnoldi iteration.
  *
  *  @author Kristofer Björnson
  */
 
-#ifndef COM_DAFER45_ARNOLDI_SOLVER
-#define COM_DAFER45_ARNOLDI_SOLVER
+#ifndef COM_DAFER45_SOLVER_ARNOLDI_ITERATOR
+#define COM_DAFER45_SOLVER_ARNOLDI_ITERATOR
 
 #include "Model.h"
-#include "LUSolver/LUSolver.h"
-#include "Solver.h"
+#include "Solver/LUSolver/LUSolver.h"
+#include "Solver/Solver.h"
 
 #include <complex>
 
 namespace TBTK{
+namespace Solver{
 
 /** @brief Solves a Model using Arnoldi iteration.
  *
- *  The ArnoldiSolver can be used to calculate a few eigenvalues and
+ *  The ArnoldiIterator can be used to calculate a few eigenvalues and
  *  eigenvectors around a given energy.
  */
-class ArnoldiSolver : public Solver{
+class ArnoldiIterator : public Solver{
 public:
 	/** Constructor. */
-	ArnoldiSolver();
+	ArnoldiIterator();
 
 	/** Destructor. */
-	virtual ~ArnoldiSolver();
+	virtual ~ArnoldiIterator();
 
 	/** Enum class describing the different modes of operation.
 	 *
@@ -177,7 +178,7 @@ private:
 	 *  the real part of the eigen values. */
 	void sort();
 
-	/** Merge sort helper function for ArnoldiSolver::sort(). */
+	/** Merge sort helper function for ArnoldiIterator::sort(). */
 	void mergeSortSplit(
 		std::complex<double> *dataIn,
 		std::complex<double> *dataOut,
@@ -187,7 +188,7 @@ private:
 		int end
 	);
 
-	/** Merge sort helper function for ArnoldiSolver::sort(). */
+	/** Merge sort helper function for ArnoldiIterator::sort(). */
 	void mergeSortMerge(
 		std::complex<double> *dataIn,
 		std::complex<double> *dataOut,
@@ -199,51 +200,51 @@ private:
 	);
 };
 
-inline void ArnoldiSolver::setMode(Mode mode){
+inline void ArnoldiIterator::setMode(Mode mode){
 	this->mode = mode;
 }
 
-inline void ArnoldiSolver::setNumEigenValues(int numEigenValues){
+inline void ArnoldiIterator::setNumEigenValues(int numEigenValues){
 	this->numEigenValues = numEigenValues;
 }
 
-inline int ArnoldiSolver::getNumEigenValues() const{
+inline int ArnoldiIterator::getNumEigenValues() const{
 	return numEigenValues;
 }
 
-inline void ArnoldiSolver::setCalculateEigenVectors(bool calculateEigenVectors){
+inline void ArnoldiIterator::setCalculateEigenVectors(bool calculateEigenVectors){
 	this->calculateEigenVectors = calculateEigenVectors;
 }
 
-inline bool ArnoldiSolver::getCalculateEigenVectors() const{
+inline bool ArnoldiIterator::getCalculateEigenVectors() const{
 	return calculateEigenVectors;
 }
 
-inline void ArnoldiSolver::setNumLanczosVectors(int numLanczosVectors){
+inline void ArnoldiIterator::setNumLanczosVectors(int numLanczosVectors){
 	this->numLanczosVectors = numLanczosVectors;
 }
 
-inline void ArnoldiSolver::setTolerance(double tolerance){
+inline void ArnoldiIterator::setTolerance(double tolerance){
 	this->tolerance = tolerance;
 }
 
-inline void ArnoldiSolver::setMaxIterations(int maxIterations){
+inline void ArnoldiIterator::setMaxIterations(int maxIterations){
 	this->maxIterations = maxIterations;
 }
 
-inline void ArnoldiSolver::setCentralValue(double centralValue){
+inline void ArnoldiIterator::setCentralValue(double centralValue){
 	shift = centralValue;
 }
 
-inline const std::complex<double>* ArnoldiSolver::getEigenValues() const{
+inline const std::complex<double>* ArnoldiIterator::getEigenValues() const{
 	return eigenValues;
 }
 
-inline const double ArnoldiSolver::getEigenValue(int state) const{
+inline const double ArnoldiIterator::getEigenValue(int state) const{
 	return real(eigenValues[state]);
 }
 
-inline const std::complex<double> ArnoldiSolver::getAmplitude(
+inline const std::complex<double> ArnoldiIterator::getAmplitude(
 	int state,
 	const Index &index
 ){
@@ -251,6 +252,7 @@ inline const std::complex<double> ArnoldiSolver::getAmplitude(
 	return eigenVectors[model.getBasisSize()*state + model.getBasisIndex(index)];
 }
 
+};	//End of namespace Solver
 };	//End of namesapce TBTK
 
 #endif

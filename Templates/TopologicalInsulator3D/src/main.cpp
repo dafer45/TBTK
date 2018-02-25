@@ -27,7 +27,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "ChebyshevSolver.h"
+#include "Solver/ChebyshevExpander.h"
 #include "FileWriter.h"
 #include "GreensFunction.h"
 #include "HoppingAmplitudeSet.h"
@@ -114,8 +114,8 @@ int main(int argc, char **argv){
 	FileWriter::setFileName("TBTKResults.h5");
 	FileWriter::clear();
 
-	//Setup ChebyshevSolver
-	ChebyshevSolver cSolver;
+	//Setup Solver::ChebyshevExpander
+	Solver::ChebyshevExpander cSolver;
 	cSolver.setModel(model);
 
 	//Generate lookup table for quicker evaluation of Green's functions.

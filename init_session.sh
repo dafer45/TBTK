@@ -33,6 +33,7 @@ then
 else
 	CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/Builders;
 fi
+CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/;
 CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/Utilities/DataManager;
 CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/Elements;
 CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/Exceptions;
@@ -47,7 +48,7 @@ CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/ManyBody/FockStateMap;
 CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/ManyBody/FockStateRule;
 CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/Properties;
 CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/PropertyExtractors;
-CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/Solvers;
+#CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/Solvers;
 CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/SpecializedSolvers;
 CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/StatesAndOperators;
 CPLUS_INCLUDE_PATH+=:${TBTK_dir}/Lib/include/Utilities;

@@ -15,7 +15,7 @@
 
 /** @package TBTKcalc
  *  @file BPropertyExtractor.h
- *  @brief Extracts physical properties from the BlockDiagonalizationSolver
+ *  @brief Extracts physical properties from the Solver::BlockDiagonalizer.
  *
  *  @author Kristofer Björnson
  */
@@ -23,7 +23,7 @@
 #ifndef COM_DAFER45_TBTK_B_PROPERTY_EXTRACTOR
 #define COM_DAFER45_TBTK_B_PROPERTY_EXTRACTOR
 
-#include "BlockDiagonalizationSolver.h"
+#include "Solver/BlockDiagonalizer.h"
 #include "DOS.h"
 #include "Density.h"
 #include "EigenValues.h"
@@ -40,12 +40,12 @@
 namespace TBTK{
 
 /** The BPropertyExtractor extracts common physical properties such as DOS,
- *  Density, LDOS, etc. from a BlockDiagonalizationSolver. These can then be
+ *  Density, LDOS, etc. from a BlockDiagonalizer. These can then be
  *  written to file using the FileWriter.*/
 class BPropertyExtractor : public PropertyExtractor{
 public:
 	/** Constructor. */
-	BPropertyExtractor(BlockDiagonalizationSolver &bSolver);
+	BPropertyExtractor(Solver::BlockDiagonalizer &bSolver);
 
 	/** Destructor. */
 	virtual ~BPropertyExtractor();
@@ -199,8 +199,8 @@ private:
 		int offset
 	);
 
-	/** DiagonalizationSolver to work on. */
-	BlockDiagonalizationSolver *bSolver;
+	/** Solver::Diagonalizer to work on. */
+	Solver::BlockDiagonalizer *bSolver;
 };
 
 inline double BPropertyExtractor::getEigenValue(int state) const{

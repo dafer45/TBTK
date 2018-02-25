@@ -92,7 +92,7 @@ void MomentumSpaceContext::init(){
 	);
 
 	Timer::tick("Diagonalize");
-	solver = BlockDiagonalizationSolver();
+	solver = Solver::BlockDiagonalizer();
 	solver.setModel(*model);
 	solver.run();
 	Timer::tock();

@@ -24,7 +24,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "DiagonalizationSolver.h"
+#include "Solver/Diagonalizer.h"
 #include "DOS.h"
 #include "DPropertyExtractor.h"
 #include "EigenValues.h"
@@ -120,8 +120,8 @@ int main(int argc, char **argv){
 	//Construct model
 	model.construct();
 
-	//Setup and run DiagonalizationSolver
-	DiagonalizationSolver dSolver;
+	//Setup and run Solver::Diagonalizer
+	Solver::Diagonalizer dSolver;
 	dSolver.setModel(model);
 	dSolver.run();
 

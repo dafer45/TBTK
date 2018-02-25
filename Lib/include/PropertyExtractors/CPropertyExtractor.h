@@ -15,7 +15,7 @@
 
 /** @package TBTKcalc
  *  @file CPropertyExtractor.h
- *  @brief Extracts physical properties from the ChebyshevSolver
+ *  @brief Extracts physical properties from the ChebyshevExpander.
  *
  *  @author Kristofer Björnson
  */
@@ -23,7 +23,7 @@
 #ifndef COM_DAFER45_TBTK_C_PROPERTY_EXTRACTOR
 #define COM_DAFER45_TBTK_C_PROPERTY_EXTRACTOR
 
-#include "ChebyshevSolver.h"
+#include "Solver/ChebyshevExpander.h"
 #include "Density.h"
 #include "GreensFunction.h"
 #include "LDOS.h"
@@ -36,12 +36,12 @@
 
 namespace TBTK{
 
-/** Experimental class for extracting properties from a ChebyshevSolver. */
+/** Experimental class for extracting properties from a ChebyshevExpander. */
 class CPropertyExtractor : public PropertyExtractor{
 public:
 	/** Constructor. */
 	CPropertyExtractor(
-		ChebyshevSolver &cSolver,
+		Solver::ChebyshevExpander &cSolver,
 		int numCoefficients,
 		bool useGPUToCalculateCoefficients,
 		bool useGPUToGenerateGreensFunctions,
@@ -127,8 +127,8 @@ public:
 		std::initializer_list<Index> pattern
 	);
 private:
-	/** ChebyshevSolver to work on. */
-	ChebyshevSolver *cSolver;
+	/** ChebyshevExpander to work on. */
+	Solver::ChebyshevExpander *cSolver;
 
 	/** Number of Chebyshev coefficients used in the expansion. */
 	int numCoefficients;

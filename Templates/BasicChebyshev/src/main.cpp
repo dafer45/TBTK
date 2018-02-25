@@ -26,7 +26,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "ChebyshevSolver.h"
+#include "Solver/ChebyshevExpander.h"
 #include "CPropertyExtractor.h"
 #include "FileWriter.h"
 #include "LDOS.h"
@@ -87,8 +87,8 @@ int main(int argc, char **argv){
 	const int ENERGY_RESOLUTION = 10000;
 	const double SCALE_FACTOR = 5.;
 
-	//Setup ChebyshevSolver
-	ChebyshevSolver cSolver;
+	//Setup Solver::ChebyshevExpander
+	Solver::ChebyshevExpander cSolver;
 	cSolver.setModel(model);
 	cSolver.setScaleFactor(SCALE_FACTOR);
 

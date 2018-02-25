@@ -24,7 +24,6 @@
 #define COM_DAFER45_TBTK_SELF_ENERGY_CALCULATOR
 
 #include "BrillouinZone.h"
-#include "BlockDiagonalizationSolver.h"
 #include "BPropertyExtractor.h"
 #include "IndexedDataTree.h"
 #include "ElectronFluctuationVertexCalculator.h"

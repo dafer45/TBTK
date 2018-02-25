@@ -14,14 +14,14 @@
  */
 
 /** @package TBTKcalc
- *  @file DiagonalizationSolver.h
+ *  @file Diagonalizer.h
  *  @brief Solves a Model using diagonalization.
  *
  *  @author Kristofer Björnson
  */
 
-#ifndef COM_DAFER45_TBTK_DIAGONALIZATION_SOLVER
-#define COM_DAFER45_TBTK_DIAGONALIZATION_SOLVER
+#ifndef COM_DAFER45_TBTK_SOLVER_DIAGONALIZATION
+#define COM_DAFER45_TBTK_SOLVER_DIAGONALIZATION
 
 #include "Communicator.h"
 #include "Model.h"
@@ -30,6 +30,7 @@
 #include <complex>
 
 namespace TBTK{
+namespace Solver{
 
 /** @brief Solves a Model using diagonalization.
  *
@@ -38,19 +39,19 @@ namespace TBTK{
  *  custom physical quantities, or the PropertyExtractor can be used to extract
  *  common properties. Scales as \f$O(n^3)\f$ with the dimension of the Hilbert
  *  space. */
-class DiagonalizationSolver : public Solver, public Communicator{
+class Diagonalizer : public Solver, public Communicator{
 public:
 	/** Constructor */
-	DiagonalizationSolver();
+	Diagonalizer();
 
 	/** Destructor. */
-	virtual ~DiagonalizationSolver();
+	virtual ~Diagonalizer();
 
 	/** Set self-consistency callback. If set to NULL or never called, the
 	 *  self-consistency loop will not be run. */
 	void setSelfConsistencyCallback(
 		bool (*selfConsistencyCallback)(
-			DiagonalizationSolver &diagonalizationSolver
+			Diagonalizer &diagonalizer
 		)
 	);
 
@@ -101,7 +102,7 @@ private:
 	/** Callback function to call each time a diagonalization has been
 	 *  completed. */
 	bool (*selfConsistencyCallback)(
-		DiagonalizationSolver &diagonalizationSolver
+		Diagonalizer &diagonalizer
 	);
 
 	/** Allocates space for Hamiltonian etc. */
@@ -114,35 +115,35 @@ private:
 	void solve();
 };
 
-inline void DiagonalizationSolver::setSelfConsistencyCallback(
+inline void Diagonalizer::setSelfConsistencyCallback(
 	bool (*selfConsistencyCallback)(
-		DiagonalizationSolver &diagonalizationSolver
+		Diagonalizer &diagonalizer
 	)
 ){
 	this->selfConsistencyCallback = selfConsistencyCallback;
 }
 
-inline void DiagonalizationSolver::setMaxIterations(int maxIterations){
+inline void Diagonalizer::setMaxIterations(int maxIterations){
 	this->maxIterations = maxIterations;
 }
 
-inline const double* DiagonalizationSolver::getEigenValues(){
+inline const double* Diagonalizer::getEigenValues(){
 	return eigenValues;
 }
 
-inline double* DiagonalizationSolver::getEigenValuesRW(){
+inline double* Diagonalizer::getEigenValuesRW(){
 	return eigenValues;
 }
 
-inline const std::complex<double>* DiagonalizationSolver::getEigenVectors(){
+inline const std::complex<double>* Diagonalizer::getEigenVectors(){
 	return eigenVectors;
 }
 
-inline std::complex<double>* DiagonalizationSolver::getEigenVectorsRW(){
+inline std::complex<double>* Diagonalizer::getEigenVectorsRW(){
 	return eigenVectors;
 }
 
-inline const std::complex<double> DiagonalizationSolver::getAmplitude(
+inline const std::complex<double> Diagonalizer::getAmplitude(
 	int state,
 	const Index &index
 ){
@@ -150,10 +151,11 @@ inline const std::complex<double> DiagonalizationSolver::getAmplitude(
 	return eigenVectors[model.getBasisSize()*state + model.getBasisIndex(index)];
 }
 
-inline const double DiagonalizationSolver::getEigenValue(int state){
+inline const double Diagonalizer::getEigenValue(int state){
 	return eigenValues[state];
 }
 
+};	//End of namespace Solver
 };	//End of namespace TBTK
 
 #endif

@@ -13,12 +13,12 @@
  * limitations under the License.
  */
 
-/** @file ChebyshevSolver.cpp
+/** @file ChebyshevExpander.cpp
  *
  *  @author Kristofer Björnson
  */
 
-#include "ChebyshevSolver.h"
+#include "Solver/ChebyshevExpander.h"
 #include "HALinkedList.h"
 #include "Streams.h"
 #include "TBTKMacros.h"
@@ -30,12 +30,13 @@
 using namespace std;
 
 namespace TBTK{
+namespace Solver{
 
 namespace{
 	const complex<double> i(0, 1);
 }
 
-ChebyshevSolver::ChebyshevSolver() : Communicator(false){
+ChebyshevExpander::ChebyshevExpander() : Communicator(false){
 	scaleFactor = 1.;
 	damping = NULL;
 	generatingFunctionLookupTable = NULL;
@@ -46,7 +47,7 @@ ChebyshevSolver::ChebyshevSolver() : Communicator(false){
 	lookupTableUpperBound = 0.;
 }
 
-ChebyshevSolver::~ChebyshevSolver(){
+ChebyshevExpander::~ChebyshevExpander(){
 	if(generatingFunctionLookupTable != NULL){
 		for(int n = 0; n < lookupTableNumCoefficients; n++)
 			delete [] generatingFunctionLookupTable[n];
@@ -55,12 +56,12 @@ ChebyshevSolver::~ChebyshevSolver(){
 	}
 }
 
-void ChebyshevSolver::setModel(Model &model){
+void ChebyshevExpander::setModel(Model &model){
 	Solver::setModel(model);
 	model.sortHoppingAmplitudes();	//Required for GPU evaluation
 }
 
-void ChebyshevSolver::calculateCoefficients(
+void ChebyshevExpander::calculateCoefficients(
 	Index to,
 	Index from,
 	complex<double> *coefficients,
@@ -71,19 +72,19 @@ void ChebyshevSolver::calculateCoefficients(
 
 /*	TBTKAssert(
 		model != NULL,
-		"ChebyshevSolver::calculateCoefficients()",
+		"ChebyshevExpander::calculateCoefficients()",
 		"Model not set.",
-		"Use ChebyshevSolver::setModel() to set model."
+		"Use ChebyshevExpander::setModel() to set model."
 	);*/
 	TBTKAssert(
 		scaleFactor > 0,
-		"ChebyshevSolver::calculateCoefficients()",
+		"ChebyshevExpander::calculateCoefficients()",
 		"Scale factor must be larger than zero.",
-		"Use ChebyshevSolver::setScaleFactor() to set scale factor."
+		"Use ChebyshevExpander::setScaleFactor() to set scale factor."
 	);
 	TBTKAssert(
 		numCoefficients > 0,
-		"ChebyshevSolver::calculateCoefficients()",
+		"ChebyshevExpander::calculateCoefficients()",
 		"numCoefficients has to be larger than 0.",
 		""
 	);
@@ -94,7 +95,7 @@ void ChebyshevSolver::calculateCoefficients(
 	int toBasisIndex = hoppingAmplitudeSet->getBasisIndex(to);
 
 	if(getGlobalVerbose() && getVerbose()){
-		Streams::out << "ChebyshevSolver::calculateCoefficients\n";
+		Streams::out << "ChebyshevExpander::calculateCoefficients\n";
 		Streams::out << "\tFrom Index: " << fromBasisIndex << "\n";
 		Streams::out << "\tTo Index: " << toBasisIndex << "\n";
 		Streams::out << "\tBasis size: " << hoppingAmplitudeSet->getBasisSize() << "\n";
@@ -218,7 +219,7 @@ void ChebyshevSolver::calculateCoefficients(
 		coefficients[n] = coefficients[n]*sinh(lambda*(1 - n/(double)numCoefficients))/sinh(lambda);
 }
 
-void ChebyshevSolver::calculateCoefficients(
+void ChebyshevExpander::calculateCoefficients(
 	vector<Index> &to,
 	Index from,
 	complex<double> *coefficients,
@@ -228,19 +229,19 @@ void ChebyshevSolver::calculateCoefficients(
 	const Model &model = getModel();
 /*	TBTKAssert(
 		model != NULL,
-		"ChebyshevSolver::calculateCoefficients()",
+		"ChebyshevExpander::calculateCoefficients()",
 		"Model not set.",
-		"Use ChebyshevSolver::setModel() to set model."
+		"Use ChebyshevExpander::setModel() to set model."
 	);*/
 	TBTKAssert(
 		scaleFactor > 0,
-		"ChebyshevSolver::calculateCoefficients()",
+		"ChebyshevExpander::calculateCoefficients()",
 		"Scale factor must be larger than zero.",
-		"Use ChebyshevSolver::setScaleFactor() to set scale factor."
+		"Use ChebyshevExpander::setScaleFactor() to set scale factor."
 	);
 	TBTKAssert(
 		numCoefficients > 0,
-		"ChebyshevSolver::calculateCoefficients()",
+		"ChebyshevExpander::calculateCoefficients()",
 		"numCoefficients has to be larger than 0.",
 		""
 	);
@@ -255,7 +256,7 @@ void ChebyshevSolver::calculateCoefficients(
 		coefficientMap[hoppingAmplitudeSet->getBasisIndex(to.at(n))] = n;
 
 	if(getGlobalVerbose() && getVerbose()){
-		Streams::out << "ChebyshevSolver::calculateCoefficients\n";
+		Streams::out << "ChebyshevExpander::calculateCoefficients\n";
 		Streams::out << "\tFrom Index: " << fromBasisIndex << "\n";
 		Streams::out << "\tBasis size: " << hoppingAmplitudeSet->getBasisSize() << "\n";
 		Streams::out << "\tProgress (100 coefficients per dot): ";
@@ -384,7 +385,7 @@ void ChebyshevSolver::calculateCoefficients(
 		coefficients[n] = coefficients[n]*sinh(lambda*(1 - n/(double)numCoefficients))/sinh(lambda);
 }
 
-void ChebyshevSolver::calculateCoefficientsWithCutoff(
+void ChebyshevExpander::calculateCoefficientsWithCutoff(
 	Index to,
 	Index from,
 	complex<double> *coefficients,
@@ -396,19 +397,19 @@ void ChebyshevSolver::calculateCoefficientsWithCutoff(
 
 /*	TBTKAssert(
 		model != NULL,
-		"ChebyshevSolver::calculateCoefficientsWithCutoff()",
+		"ChebyshevExpander::calculateCoefficientsWithCutoff()",
 		"Model not set.",
-		"Use ChebyshevSolver::setModel() to set model."
+		"Use ChebyshevExpander::setModel() to set model."
 	);*/
 	TBTKAssert(
 		scaleFactor > 0,
-		"ChebyshevSolver::calculateCoefficientsWithCutoff()",
+		"ChebyshevExpander::calculateCoefficientsWithCutoff()",
 		"Scale factor must be larger than zero.",
-		"Use ChebyshevSolver::setScaleFactor() to set scale factor."
+		"Use ChebyshevExpander::setScaleFactor() to set scale factor."
 	);
 	TBTKAssert(
 		numCoefficients > 0,
-		"ChebyshevSolver::calculateCoefficientsWithCutoff()",
+		"ChebyshevExpander::calculateCoefficientsWithCutoff()",
 		"numCoefficients has to be larger than 0.",
 		""
 	);
@@ -419,7 +420,7 @@ void ChebyshevSolver::calculateCoefficientsWithCutoff(
 	int toBasisIndex = hoppingAmplitudeSet->getBasisIndex(to);
 
 	if(getGlobalVerbose() && getVerbose()){
-		Streams::out << "ChebyshevSolver::calculateCoefficients\n";
+		Streams::out << "ChebyshevExpander::calculateCoefficients\n";
 		Streams::out << "\tFrom Index: " << fromBasisIndex << "\n";
 		Streams::out << "\tTo Index: " << toBasisIndex << "\n";
 		Streams::out << "\tBasis size: " << hoppingAmplitudeSet->getBasisSize() << "\n";
@@ -556,7 +557,7 @@ void ChebyshevSolver::calculateCoefficientsWithCutoff(
 		coefficients[n] = coefficients[n]*sinh(lambda*(1 - n/(double)numCoefficients))/sinh(lambda);
 }
 
-void ChebyshevSolver::generateLookupTable(
+void ChebyshevExpander::generateLookupTable(
 	int numCoefficients,
 	int energyResolution,
 	double lowerBound,
@@ -564,33 +565,33 @@ void ChebyshevSolver::generateLookupTable(
 ){
 	TBTKAssert(
 		numCoefficients > 0,
-		"ChebyshevSolver::generateLookupTable()",
+		"ChebyshevExpander::generateLookupTable()",
 		"numCoefficients has to be larger than 0.",
 		""
 	);
 	TBTKAssert(
 		energyResolution > 0,
-		"ChebyshevSolver::generateLookupTable()",
+		"ChebyshevExpander::generateLookupTable()",
 		"energyResolution has to be larger than 0.",
 		""
 	);
 	TBTKAssert(
 		lowerBound < upperBound,
-		"ChebyshevSolver::generateLookupTable()",
+		"ChebyshevExpander::generateLookupTable()",
 		"lowerBound has to be smaller than upperBound.",
 		""
 	);
 	TBTKAssert(
 		lowerBound >= -scaleFactor,
-		"ChebyshevSolver::generateLookupTable()",
+		"ChebyshevExpander::generateLookupTable()",
 		"lowerBound has to be larger than -scaleFactor.",
-		"Use ChebyshevSolver::setScaleFactor to set a larger scale factor."
+		"Use ChebyshevExpander::setScaleFactor to set a larger scale factor."
 	);
 	TBTKAssert(
 		upperBound <= scaleFactor,
-		"ChebyshevSolver::generateLookupTable()",
+		"ChebyshevExpander::generateLookupTable()",
 		"upperBound has to be smaller than scaleFactor.",
-		"Use ChebyshevSolver::setScaleFactor to set a larger scale factor."
+		"Use ChebyshevExpander::setScaleFactor to set a larger scale factor."
 	);
 
 	if(getGlobalVerbose() && getVerbose()){
@@ -631,10 +632,10 @@ void ChebyshevSolver::generateLookupTable(
 	}
 }
 
-void ChebyshevSolver::destroyLookupTable(){
+void ChebyshevExpander::destroyLookupTable(){
 	TBTKAssert(
 		generatingFunctionLookupTable != NULL,
-		"ChebyshevSolver::destroyLookupTable()",
+		"ChebyshevExpander::destroyLookupTable()",
 		"No lookup table generated.",
 		""
 	);
@@ -646,8 +647,8 @@ void ChebyshevSolver::destroyLookupTable(){
 	generatingFunctionLookupTable = NULL;
 }
 
-//Property::GreensFunction* ChebyshevSolver::generateGreensFunction(
-complex<double>* ChebyshevSolver::generateGreensFunction(
+//Property::GreensFunction* ChebyshevExpander::generateGreensFunction(
+complex<double>* ChebyshevExpander::generateGreensFunction(
 	complex<double> *coefficients,
 	int numCoefficients,
 	int energyResolution,
@@ -658,33 +659,33 @@ complex<double>* ChebyshevSolver::generateGreensFunction(
 ){
 	TBTKAssert(
 		numCoefficients > 0,
-		"ChebyshevSolver::generateLookupTable()",
+		"ChebyshevExpander::generateLookupTable()",
 		"numCoefficients has to be larger than 0.",
 		""
 	);
 	TBTKAssert(
 		energyResolution > 0,
-		"ChebyshevSolver::generateLookupTable()",
+		"ChebyshevExpander::generateLookupTable()",
 		"energyResolution has to be larger than 0.",
 		""
 	);
 	TBTKAssert(
 		lowerBound < upperBound,
-		"ChebyshevSolver::generateLookupTable()",
+		"ChebyshevExpander::generateLookupTable()",
 		"lowerBound has to be smaller than upperBound.",
 		""
 	);
 	TBTKAssert(
 		lowerBound > -scaleFactor,
-		"ChebyshevSolver::generateLookupTable()",
+		"ChebyshevExpander::generateLookupTable()",
 		"lowerBound has to be larger than -scaleFactor.",
-		"Use ChebyshevSolver::setScaleFactor to set a larger scale factor."
+		"Use ChebyshevExpander::setScaleFactor to set a larger scale factor."
 	);
 	TBTKAssert(
 		upperBound < scaleFactor,
-		"ChebyshevSolver::generateLookupTable()",
+		"ChebyshevExpander::generateLookupTable()",
 		"upperBound has to be smaller than scaleFactor.",
-		"Use ChebyshevSolver::setScaleFactor to set a larger scale factor."
+		"Use ChebyshevExpander::setScaleFactor to set a larger scale factor."
 	);
 
 	complex<double> *greensFunctionData = new complex<double>[energyResolution];
@@ -746,7 +747,7 @@ complex<double>* ChebyshevSolver::generateGreensFunction(
 	}
 	else{
 		TBTKExit(
-			"ChebyshevSolver::generateGreensFunction()",
+			"ChebyshevExpander::generateGreensFunction()",
 			"Unknown GreensFunctionType",
 			""
 		);
@@ -767,17 +768,17 @@ complex<double>* ChebyshevSolver::generateGreensFunction(
 	return greensFunctionData;
 }
 
-//Property::GreensFunction* ChebyshevSolver::generateGreensFunction(
-complex<double>* ChebyshevSolver::generateGreensFunction(
+//Property::GreensFunction* ChebyshevExpander::generateGreensFunction(
+complex<double>* ChebyshevExpander::generateGreensFunction(
 	complex<double> *coefficients,
 //	Property::GreensFunction::Type type
 	Type type
 ){
 	TBTKAssert(
 		generatingFunctionLookupTable != NULL,
-		"ChebyshevSolver::generateGreensFunction()",
+		"ChebyshevExpander::generateGreensFunction()",
 		"Lookup table has not been generated.",
-		"Use ChebyshevSolver::generateLookupTable() to generate lookup table."
+		"Use ChebyshevExpander::generateLookupTable() to generate lookup table."
 	);
 
 	complex<double> *greensFunctionData = new complex<double>[lookupTableResolution];
@@ -832,7 +833,7 @@ complex<double>* ChebyshevSolver::generateGreensFunction(
 	return greensFunctionData;
 }
 
-complex<double> ChebyshevSolver::getMonolopoulosABCDamping(
+complex<double> ChebyshevExpander::getMonolopoulosABCDamping(
 	double distanceToBoundary,
 	double boundarySize,
 	double e,
@@ -854,4 +855,5 @@ complex<double> ChebyshevSolver::getMonolopoulosABCDamping(
 	return exp(-gamma);
 }
 
+};	//End of namespace Solver
 };	//End of namespace TBTK

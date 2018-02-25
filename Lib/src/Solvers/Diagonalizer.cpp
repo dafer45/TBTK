@@ -13,20 +13,21 @@
  * limitations under the License.
  */
 
-/** @file DiagonalizationSolver.cpp
+/** @file Diagonalizer.cpp
  *
  *  @author Kristofer Björnson
  */
 
-#include "DiagonalizationSolver.h"
+#include "Solver/Diagonalizer.h"
 #include "Streams.h"
 #include "TBTKMacros.h"
 
 using namespace std;
 
 namespace TBTK{
+namespace Solver{
 
-DiagonalizationSolver::DiagonalizationSolver() : Communicator(true){
+Diagonalizer::Diagonalizer() : Communicator(true){
 	hamiltonian = NULL;
 	eigenValues = NULL;
 	eigenVectors = NULL;
@@ -35,7 +36,7 @@ DiagonalizationSolver::DiagonalizationSolver() : Communicator(true){
 	selfConsistencyCallback = NULL;
 }
 
-DiagonalizationSolver::~DiagonalizationSolver(){
+Diagonalizer::~Diagonalizer(){
 	if(hamiltonian != NULL)
 		delete [] hamiltonian;
 	if(eigenValues != NULL)
@@ -44,19 +45,19 @@ DiagonalizationSolver::~DiagonalizationSolver(){
 		delete [] eigenVectors;
 }
 
-void DiagonalizationSolver::run(){
+void Diagonalizer::run(){
 /*	TBTKAssert(
 		getModel() != NULL,
-		"DiagonalizationSolver::run()",
+		"Diagonalizer::run()",
 		"Model not set.",
-		"Use DiagonalizationSolver::setModel() to set model."
+		"Use Diagonalizer::setModel() to set model."
 	);*/
 
 	int iterationCounter = 0;
 	init();
 
 	if(getGlobalVerbose() && getVerbose())
-		Streams::out << "Running DiagonalizationSolver\n";
+		Streams::out << "Running Diagonalizer\n";
 	while(iterationCounter++ < maxIterations){
 		if(getGlobalVerbose() && getVerbose()){
 			if(iterationCounter%10 == 1)
@@ -82,9 +83,9 @@ void DiagonalizationSolver::run(){
 		Streams::out << "\n";
 }
 
-void DiagonalizationSolver::init(){
+void Diagonalizer::init(){
 	if(getGlobalVerbose() && getVerbose())
-		Streams::out << "Initializing DiagonalizationSolver\n";
+		Streams::out << "Initializing Diagonalizer\n";
 
 //	model->amplitudeSet.construct();
 
@@ -106,7 +107,7 @@ void DiagonalizationSolver::init(){
 	update();
 }
 
-void DiagonalizationSolver::update(){
+void Diagonalizer::update(){
 	const Model &model = getModel();
 	int basisSize = model.getBasisSize();
 
@@ -154,7 +155,7 @@ extern "C" void zhbeb_(
 	double *rwork,		//Workspace, dimension = max(1, 3*N-2)
 	int *info);		//0 = successful, <0 = -info value was illegal, >0 = info number of off-diagonal elements failed to converge.
 
-void DiagonalizationSolver::solve(){
+void Diagonalizer::solve(){
 	if(true){//Currently no support for banded matrices.
 		//Setup zhpev to calculate...
 		char jobz = 'V';		//...eigenvalues and eigenvectors...
@@ -169,7 +170,7 @@ void DiagonalizationSolver::solve(){
 
 		TBTKAssert(
 			info == 0,
-			"DiagonalizationSolver:solve()",
+			"Diagonalizer:solve()",
 			"Diagonalization routine zhpev exited with INFO=" + to_string(info) + ".",
 			"See LAPACK documentation for zhpev for further information."
 		);
@@ -204,4 +205,5 @@ void DiagonalizationSolver::solve(){
 	}*/
 }
 
+};	//End of namespace Solver
 };	//End of namespace TBTK

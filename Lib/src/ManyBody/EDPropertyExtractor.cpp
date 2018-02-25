@@ -6,7 +6,7 @@ static complex<double> i(0, 1);
 
 namespace TBTK{
 
-EDPropertyExtractor::EDPropertyExtractor(ExactDiagonalizationSolver &edSolver){
+EDPropertyExtractor::EDPropertyExtractor(Solver::ExactDiagonalizer &edSolver){
 	this->edSolver = &edSolver;
 }
 

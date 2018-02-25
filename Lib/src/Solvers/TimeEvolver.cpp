@@ -21,7 +21,7 @@
 #include "HoppingAmplitudeSet.h"
 #include "Streams.h"
 #include "TBTKMacros.h"
-#include "TimeEvolver.h"
+#include "Solver/TimeEvolver.h"
 
 #include <complex>
 #include <math.h>
@@ -29,11 +29,12 @@
 using namespace std;
 
 namespace TBTK{
+namespace Solver{
 
 const complex<double> i(0, 1);
 
 vector<TimeEvolver*> TimeEvolver::timeEvolvers;
-vector<DiagonalizationSolver*> TimeEvolver::dSolvers;
+vector<Diagonalizer*> TimeEvolver::dSolvers;
 
 TimeEvolver::TimeEvolver(){
 	eigenValues = NULL;
@@ -155,7 +156,7 @@ void TimeEvolver::run(){
 	}
 }
 
-bool TimeEvolver::selfConsistencyCallback(DiagonalizationSolver &dSolver){
+bool TimeEvolver::selfConsistencyCallback(Diagonalizer &dSolver){
 	for(unsigned int n = 0; n < dSolvers.size(); n++){
 		if(dSolvers.at(n) == &dSolver){
 			TimeEvolver *te = timeEvolvers.at(n);
@@ -169,7 +170,7 @@ bool TimeEvolver::selfConsistencyCallback(DiagonalizationSolver &dSolver){
 
 	TBTKExit(
 		"TimeEvolver::selfConsistencyCallback()",
-		"DiagonalizationSolver not found.",
+		"Diagonalizer not found.",
 		""
 	);
 
@@ -322,4 +323,5 @@ void TimeEvolver::calculateOrthogonalityError(){
 		orthogonalityError = maxOverlap;
 }
 
-};
+};	//End of namespace Solver
+};	//End of namespace TBTK

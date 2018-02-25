@@ -24,7 +24,7 @@
 #define COM_DAFER45_TBTK_MOMENTUM_SPACE_CONTEXT
 
 #include "BrillouinZone.h"
-#include "BlockDiagonalizationSolver.h"
+#include "Solver/BlockDiagonalizer.h"
 #include "BPropertyExtractor.h"
 
 namespace TBTK{
@@ -102,7 +102,7 @@ private:
 	unsigned int numOrbitals;
 
 	/** Solver. */
-	BlockDiagonalizationSolver solver;
+	Solver::BlockDiagonalizer solver;
 
 	/** Property extractor. */
 	BPropertyExtractor *propertyExtractor;

@@ -15,7 +15,7 @@
 
 /** @package TBTKcalc
  *  @file APropertyExtractor.h
- *  @brief Extracts physical properties from the ArnoldiSolver
+ *  @brief Extracts physical properties from the Solver::ArnoldiIterator.
  *
  *  @author Kristofer Björnson
  */
@@ -23,7 +23,7 @@
 #ifndef COM_DAFER45_TBTK_A_PROPERTY_EXTRACTOR
 #define COM_DAFER45_TBTK_A_PROPERTY_EXTRACTOR
 
-#include "../../Solvers/ArnoldiSolver/ArnoldiSolver.h"
+#include "../../Solver/ArnoldiSolver/ArnoldiIterator.h"
 #include "DOS.h"
 #include "EigenValues.h"
 #include "GreensFunction.h"
@@ -38,12 +38,12 @@
 namespace TBTK{
 
 /** The APropertyExtractor extracts common physical properties such as DOS,
- *  LDOS, etc. from an ArnoldiSolver. These can then be written to file using
- *  the FileWriter. */
+ *  LDOS, etc. from a Solver::ArnoldiIterator. These can then be written to
+ *  file using the FileWriter. */
 class APropertyExtractor : public PropertyExtractor{
 public:
 	/** Constructor. */
-	APropertyExtractor(ArnoldiSolver &aSolver);
+	APropertyExtractor(Solver::ArnoldiIterator &aSolver);
 
 	/** Destructor. */
 	virtual ~APropertyExtractor();
@@ -125,8 +125,8 @@ private:
 		int offset
 	);
 
-	/** ArnoldiSolver to work on. */
-	ArnoldiSolver *aSolver;
+	/** Solver::ArnoldiIterator to work on. */
+	Solver::ArnoldiIterator *aSolver;
 };
 
 inline double APropertyExtractor::getEigenValue(int state){

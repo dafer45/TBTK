@@ -13,19 +13,19 @@
  * limitations under the License.
  */
 
-/** @file ArnoldiSolver.cpp
+/** @file ArnoldiIterator.cpp
  *
  *  @author Kristofer Björnson
  */
 
-/* Note: The ArnoldiSolver is based on the ARPACK driver zndrv2.f, which can
+/* Note: The ArnoldiIterator is based on the ARPACK driver zndrv2.f, which can
  * be found at EXAMPLES/COMPLEX/zndrv2.f in the ARPACK source tree. The main
  * loop closely resembles zndrv2.f.
  * ARPACK can be downloaded from http://www.caam.rice.edu/software/ARPACK/.
  * See http://www.caam.rice.edu/software/ARPACK/UG/node138.html for more
  * information about parameters. */
 
-#include "../../../include/Solvers/ArnoldiSolver/ArnoldiSolver.h"
+#include "../../../include/Solver/ArnoldiSolver/ArnoldiIterator.h"
 #include "Streams.h"
 #include "TBTKMacros.h"
 
@@ -34,8 +34,9 @@
 using namespace std;
 
 namespace TBTK{
+namespace Solver{
 
-ArnoldiSolver::ArnoldiSolver(){
+ArnoldiIterator::ArnoldiIterator(){
 	mode = Mode::Normal;
 
 	//Arnoldi variables (ARPACK)
@@ -50,7 +51,7 @@ ArnoldiSolver::ArnoldiSolver(){
 	eigenVectors = NULL;
 }
 
-ArnoldiSolver::~ArnoldiSolver(){
+ArnoldiIterator::~ArnoldiIterator(){
 	//Free Arnoldi variables (ARPACK)
 	if(residuals != NULL)
 		delete [] residuals;
@@ -160,8 +161,8 @@ extern "C" void zneupd_(
         int                     *INFO
 );
 
-void ArnoldiSolver::run(){
-	Streams::out << "Running ArnoldiSolver.\n";
+void ArnoldiIterator::run(){
+	Streams::out << "Running ArnoldiIterator.\n";
 
 	switch(mode){
 	case Mode::Normal:
@@ -174,7 +175,7 @@ void ArnoldiSolver::run(){
 		break;
 	default:
 		TBTKExit(
-			"ArnoldiSolver::run()",
+			"ArnoldiIterator::run()",
 			"Unknown mode.",
 			"This should never happen, contact the developer."
 		);
@@ -182,16 +183,16 @@ void ArnoldiSolver::run(){
 	sort();
 }
 
-void ArnoldiSolver::arnoldiLoop(){
+void ArnoldiIterator::arnoldiLoop(){
 	TBTKAssert(
 		numEigenValues > 0,
-		"ArnoldiSolver::arnoldiLoop()",
+		"ArnoldiIterator::arnoldiLoop()",
 		"The number of eigenvalues must be larger than 0.",
 		""
 	);
 	TBTKAssert(
 		numLanczosVectors >= numEigenValues + 2,
-		"ArnoldiSolver::arnoldiLoop()",
+		"ArnoldiIterator::arnoldiLoop()",
 		"The number of Lanczos vectors must be at least two larger"
 		<< " than the number of eigenvalues (" << numEigenValues
 		<< ").",
@@ -232,7 +233,7 @@ void ArnoldiSolver::arnoldiLoop(){
 		break;
 	default:
 		TBTKExit(
-			"ArnoldiSolver::arnoldiLoop()",
+			"ArnoldiIterator::arnoldiLoop()",
 			"Unknown mode.",
 			"This should never happen, contact the developer."
 		);
@@ -280,7 +281,7 @@ void ArnoldiSolver::arnoldiLoop(){
 
 			TBTKAssert(
 				counter++ <= maxIterations,
-				"ArnoldiSolver::arnoldiLoop()",
+				"ArnoldiIterator::arnoldiLoop()",
 				"Maximum number of iterations reached.",
 				""
 			);
@@ -379,7 +380,7 @@ void ArnoldiSolver::arnoldiLoop(){
 		for(int n = 0; n < numEigenValues; n++){
 			TBTKAssert(
 				imag(eigenValues[n]) == 0,
-				"ArnoldiSolver::arnoldiLoop()",
+				"ArnoldiIterator::arnoldiLoop()",
 				"Complex eigenvalue obtained, but support not"
 				<< " implemented.",
 				""
@@ -436,7 +437,7 @@ void ArnoldiSolver::arnoldiLoop(){
 
 			TBTKAssert(
 				counter++ <= maxIterations,
-				"ArnoldiSolver::arnoldiLoop()",
+				"ArnoldiIterator::arnoldiLoop()",
 				"Maximum number of iterations reached.",
 				""
 			);
@@ -530,11 +531,11 @@ void ArnoldiSolver::arnoldiLoop(){
 		<< numAccurateEigenValues << "\n";
 }
 
-void ArnoldiSolver::checkZnaupdInfo(int info) const{
+void ArnoldiIterator::checkZnaupdInfo(int info) const{
 	if(info != 0){
 		if(info == 1){
 			TBTKExit(
-				"ArnoldiSolver::arnoldiLoop()",
+				"ArnoldiIterator::arnoldiLoop()",
 				"Maximum number of iterations"
 				<< " reached.",
 				""
@@ -542,7 +543,7 @@ void ArnoldiSolver::checkZnaupdInfo(int info) const{
 		}
 		else if(info == 3){
 			TBTKExit(
-				"ArnoldiSolver::arnoldiLoop()",
+				"ArnoldiIterator::arnoldiLoop()",
 				"No shifts could be applied during"
 				<< " implicit Arnoldi update.",
 				"Try increasing the number of Lanczos"
@@ -551,7 +552,7 @@ void ArnoldiSolver::checkZnaupdInfo(int info) const{
 		}
 		else if(info == -9999){
 			TBTKExit(
-				"ArnoldiSolver::arnoldiLoop()",
+				"ArnoldiIterator::arnoldiLoop()",
 				"Unable to build an Arnoldi"
 				<< " factorization.",
 				"Likely input error to znaupd, which"
@@ -561,7 +562,7 @@ void ArnoldiSolver::checkZnaupdInfo(int info) const{
 		}
 		else if(info < 0){
 			TBTKExit(
-				"ArnoldiSolver::arnoldiLoop()",
+				"ArnoldiIterator::arnoldiLoop()",
 				"Input parameter '" << -info << "' to"
 				<< " znaupd is invalid.",
 				"This should never happen, contact the"
@@ -570,7 +571,7 @@ void ArnoldiSolver::checkZnaupdInfo(int info) const{
 		}
 		else{
 			TBTKExit(
-				"ArnoldiSolver::arnoldiLoop()",
+				"ArnoldiIterator::arnoldiLoop()",
 				"znaupd() exited with unknown error"
 				<< " info = " << info << "'.",
 				"This should never happen, contact the"
@@ -580,7 +581,7 @@ void ArnoldiSolver::checkZnaupdInfo(int info) const{
 	}
 }
 
-bool ArnoldiSolver::executeReverseCommunicationMessage(
+bool ArnoldiIterator::executeReverseCommunicationMessage(
 	int ido,
 	int basisSize,
 	double *workd,
@@ -592,7 +593,7 @@ bool ArnoldiSolver::executeReverseCommunicationMessage(
 		case Mode::Normal:
 		{
 			TBTKExit(
-				"ArnoldiSolver::executeReverseCommunicationMessage()",
+				"ArnoldiIterator::executeReverseCommunicationMessage()",
 				"Mode::Normal not implemented yet.",
 				""
 			);
@@ -613,7 +614,7 @@ bool ArnoldiSolver::executeReverseCommunicationMessage(
 			break;
 		default:
 			TBTKExit(
-				"ArnoldiSolver::arnoldiLoop()",
+				"ArnoldiIterator::arnoldiLoop()",
 				"Unknown mode.",
 				"This should never happen, contact the"
 				<< " developer."
@@ -625,7 +626,7 @@ bool ArnoldiSolver::executeReverseCommunicationMessage(
 	}
 	else{
 		TBTKExit(
-			"ArnoldiSolver::arnoldiLoop()",
+			"ArnoldiIterator::arnoldiLoop()",
 			"znaupd returned with ido = '" << ido << "',"
 			<< " which is not supported.",
 			"This should never happen, contact the"
@@ -636,7 +637,7 @@ bool ArnoldiSolver::executeReverseCommunicationMessage(
 	return false;
 }
 
-bool ArnoldiSolver::executeReverseCommunicationMessage(
+bool ArnoldiIterator::executeReverseCommunicationMessage(
 	int ido,
 	int basisSize,
 	complex<double> *workd,
@@ -680,7 +681,7 @@ bool ArnoldiSolver::executeReverseCommunicationMessage(
 			break;
 		default:
 			TBTKExit(
-				"ArnoldiSolver::arnoldiLoop()",
+				"ArnoldiIterator::arnoldiLoop()",
 				"Unknown mode.",
 				"This should never happen, contact the"
 				<< " developer."
@@ -692,7 +693,7 @@ bool ArnoldiSolver::executeReverseCommunicationMessage(
 	}
 	else{
 		TBTKExit(
-			"ArnoldiSolver::arnoldiLoop()",
+			"ArnoldiIterator::arnoldiLoop()",
 			"znaupd returned with ido = '" << ido << "',"
 			<< " which is not supported.",
 			"This should never happen, contact the"
@@ -703,10 +704,10 @@ bool ArnoldiSolver::executeReverseCommunicationMessage(
 	return false;
 }
 
-void ArnoldiSolver::checkZneupdIerr(int ierr) const{
+void ArnoldiIterator::checkZneupdIerr(int ierr) const{
 	if(ierr < 0){
 		TBTKExit(
-			"ArnoldiSolver::arnoldiLoop()",
+			"ArnoldiIterator::arnoldiLoop()",
 			"Input parameter '" << -ierr << "' to zneupd is"
 			<< " invalid.",
 			"This should never happen, contact the developer."
@@ -714,7 +715,7 @@ void ArnoldiSolver::checkZneupdIerr(int ierr) const{
 	}
 	else if(ierr != 0){
 		TBTKExit(
-			"ArnoldiSolver::arnoldiLoop()",
+			"ArnoldiIterator::arnoldiLoop()",
 			"zneupd() exited with error ierr = " << ierr
 			<< ". Unknown error ().",
 			"This should never happen, contact the developer."
@@ -732,20 +733,20 @@ void ArnoldiSolver::checkZneupdIerr(int ierr) const{
 	}
 }
 
-void ArnoldiSolver::initNormal(){
+void ArnoldiIterator::initNormal(){
 	//Get matrix representation on COO format
 	const Model &model = getModel();
 	const int *cooRowIndices = model.getHoppingAmplitudeSet()->getCOORowIndices();
 	const int *cooColIndices = model.getHoppingAmplitudeSet()->getCOOColIndices();
 	TBTKAssert(
 		cooRowIndices != NULL && cooColIndices != NULL,
-		"ArnoldiSolver::initNormal()",
+		"ArnoldiIterator::initNormal()",
 		"COO format not constructed.",
 		"Use Model::constructCOO() to construct COO format."
 	);
 }
 
-void ArnoldiSolver::initShiftAndInvert(){
+void ArnoldiIterator::initShiftAndInvert(){
 	const Model &model = getModel();
 
 	SparseMatrix<complex<double>> matrix(
@@ -773,7 +774,7 @@ void ArnoldiSolver::initShiftAndInvert(){
 	luSolver.setMatrix(matrix);
 }
 
-void ArnoldiSolver::sort(){
+void ArnoldiIterator::sort(){
 	complex<double> *workspace = new complex<double>[numEigenValues];
 	for(int n = 0; n < numEigenValues; n++)
 		workspace[n] = eigenValues[n];
@@ -812,7 +813,7 @@ void ArnoldiSolver::sort(){
 	delete [] workspace;
 }
 
-void ArnoldiSolver::mergeSortSplit(
+void ArnoldiIterator::mergeSortSplit(
 	complex<double> *dataIn,
 	complex<double> *dataOut,
 	int *orderIn,
@@ -831,7 +832,7 @@ void ArnoldiSolver::mergeSortSplit(
 	mergeSortMerge(dataIn, dataOut, orderIn, orderOut, first, middle, end);
 }
 
-void ArnoldiSolver::mergeSortMerge(
+void ArnoldiIterator::mergeSortMerge(
 	complex<double> *dataIn,
 	complex<double> *dataOut,
 	int *orderIn,
@@ -856,4 +857,5 @@ void ArnoldiSolver::mergeSortMerge(
 	}
 }
 
+};	//End of namespace Solver
 };	//End of namespace TBTK
