@@ -156,6 +156,7 @@ INCLUDE_DIRECTORIES(
 )
 
 INCLUDE_DIRECTORIES(
+	Lib/include/
 	Lib/include/Builders/
 	Lib/include/Core/
 	Lib/include/Elements/
@@ -167,7 +168,7 @@ INCLUDE_DIRECTORIES(
 	Lib/include/ManyBody/
 	Lib/include/ManyBody/FockStateMap/
 	Lib/include/ManyBody/FockStateRule/
-	Lib/include/Properties/
+#	Lib/include/Properties/
 #	Lib/include/PropertyExtractors/
 #	Lib/include/Solvers/
 	Lib/include/SpecializedSolvers/
