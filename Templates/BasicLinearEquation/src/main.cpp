@@ -22,7 +22,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "DPropertyExtractor.h"
+#include "PropertyExtractor/Diagonalizer.h"
 #include "FileWriter.h"
 #include "Solver/LinearEquationSolver/LinearEquationSolver.h"
 #include "Model.h"

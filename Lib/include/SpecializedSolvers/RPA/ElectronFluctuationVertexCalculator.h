@@ -24,7 +24,6 @@
 #define COM_DAFER45_TBTK_ELECTRON_FLUCTUATION_VERTEX_CALCULATOR
 
 #include "BrillouinZone.h"
-#include "BPropertyExtractor.h"
 #include "IndexedDataTree.h"
 #include "RPASusceptibilityCalculator.h"
 

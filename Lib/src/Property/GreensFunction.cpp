@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "GreensFunction.h"
+#include "Property/GreensFunction.h"
 #include "TBTKMacros.h"
 
 using namespace std;

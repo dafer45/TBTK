@@ -35,7 +35,7 @@
  */
 
 #include "DifferenceRule.h"
-#include "EDPropertyExtractor.h"
+#include "PropertyExtractor/ExactDiagonalizer.h"
 #include "Solver/ExactDiagonalizer.h"
 #include "FileWriter.h"
 #include "Model.h"
@@ -126,8 +126,8 @@ int main(int argc, char **argv){
 	Solver::ExactDiagonalizer edSolver;
 	edSolver.setModel(model);
 
-	//Create and initialize EDPropertyExtractor.
-	EDPropertyExtractor pe(edSolver);
+	//Create and initialize PropertyExtractor.
+	PropertyExtractor::ExactDiagonalizer pe(edSolver);
 	const int ENERGY_RESOLUTION = 1000;
 	double LOWER_BOUND = -6.;
 	double UPPER_BOUND = 6.;

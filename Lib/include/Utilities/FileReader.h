@@ -26,16 +26,16 @@
 
 #include "HoppingAmplitudeSet.h"
 #include "Geometry.h"
-#include "EigenValues.h"
-#include "DOS.h"
-#include "Density.h"
-#include "Magnetization.h"
 #include "Model.h"
-#include "LDOS.h"
-#include "SpectralFunction.h"
-#include "SpinPolarizedLDOS.h"
 #include "ParameterSet.h"
-#include "WaveFunctions.h"
+#include "Property/EigenValues.h"
+#include "Property/DOS.h"
+#include "Property/Density.h"
+#include "Property/Magnetization.h"
+#include "Property/LDOS.h"
+#include "Property/SpectralFunction.h"
+#include "Property/SpinPolarizedLDOS.h"
+#include "Property/WaveFunctions.h"
 
 #include <fstream>
 #include <stdio.h>

@@ -20,33 +20,34 @@
  *  @author Kristofer Björnson
  */
 
-#ifndef COM_DAFER45_TBTK_A_PROPERTY_EXTRACTOR
-#define COM_DAFER45_TBTK_A_PROPERTY_EXTRACTOR
+#ifndef COM_DAFER45_TBTK_PROPERTY_EXTRACTOR_ARNOLDI_ITERATOR
+#define COM_DAFER45_TBTK_PROPERTY_EXTRACTOR_ARNOLDI_ITERATOR
 
 #include "../../Solver/ArnoldiSolver/ArnoldiIterator.h"
-#include "DOS.h"
-#include "EigenValues.h"
-#include "GreensFunction.h"
-#include "LDOS.h"
-#include "PropertyExtractor.h"
-#include "SpinPolarizedLDOS.h"
-#include "WaveFunctions.h"
+#include "Property/DOS.h"
+#include "Property/EigenValues.h"
+#include "Property/GreensFunction.h"
+#include "Property/LDOS.h"
+#include "Property/SpinPolarizedLDOS.h"
+#include "Property/WaveFunctions.h"
+#include "PropertyExtractor/PropertyExtractor.h"
 
 #include <complex>
 #include <initializer_list>
 
 namespace TBTK{
+namespace PropertyExtractor{
 
-/** The APropertyExtractor extracts common physical properties such as DOS,
- *  LDOS, etc. from a Solver::ArnoldiIterator. These can then be written to
- *  file using the FileWriter. */
-class APropertyExtractor : public PropertyExtractor{
+/** The PropertyExtractor::ArnoldiIterator extracts common physical properties
+ *  such as DOS, LDOS, etc. from a Solver::ArnoldiIterator. These can then be
+ *  written to file using the FileWriter. */
+class ArnoldiIterator : public PropertyExtractor{
 public:
 	/** Constructor. */
-	APropertyExtractor(Solver::ArnoldiIterator &aSolver);
+	ArnoldiIterator(Solver::ArnoldiIterator &aSolver);
 
 	/** Destructor. */
-	virtual ~APropertyExtractor();
+	virtual ~ArnoldiIterator();
 
 	/** Get eigenvalues. */
 	Property::EigenValues getEigenValues();
@@ -129,17 +130,18 @@ private:
 	Solver::ArnoldiIterator *aSolver;
 };
 
-inline double APropertyExtractor::getEigenValue(int state){
+inline double ArnoldiIterator::getEigenValue(int state){
 	return aSolver->getEigenValue(state);
 }
 
-inline const std::complex<double> APropertyExtractor::getAmplitude(
+inline const std::complex<double> ArnoldiIterator::getAmplitude(
 	int state,
 	const Index &index
 ){
 	return aSolver->getAmplitude(state, index);
 }
 
+};	//End of namespace PropertyExtractor
 };	//End of namespace TBTK
 
 #endif

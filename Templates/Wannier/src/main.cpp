@@ -25,7 +25,7 @@
 #include "BandDiagramGenerator.h"
 #include "Solver/BlockDiagonalizer.h"
 #include "Solver/Diagonalizer.h"
-#include "BPropertyExtractor.h"
+#include "PropertyExtractor/BlockDiagonalizer.h"
 #include "DOS.h"
 #include "FileWriter.h"
 #include "ParametrizedLine3d.h"

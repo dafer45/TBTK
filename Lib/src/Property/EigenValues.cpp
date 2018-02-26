@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
 */
 
-#include "EigenValues.h"
+#include "Property/EigenValues.h"
 
 #include "json.hpp"
 

@@ -116,6 +116,12 @@ Enter this folder and type
 ```bash
 	cmake /path/to/TBTK
 	make
+```
+Next, it is possible to optionally specify the installation path using
+```bash
+	cmake -DCMAKE_INSTALL_PREFIX:PATH=/installation/path /path/to/TBTK
+```
+Finally, TBTK is installed by typing
+```bash
 	make install
 ```
-

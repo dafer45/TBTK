@@ -14,7 +14,7 @@
  */
 
 /** @package TBTKcalc
- *  @file CPropertyExtractor.h
+ *  @file ChebyshevExpander.h
  *  @brief Extracts physical properties from the ChebyshevExpander.
  *
  *  @author Kristofer Björnson
@@ -24,23 +24,24 @@
 #define COM_DAFER45_TBTK_C_PROPERTY_EXTRACTOR
 
 #include "Solver/ChebyshevExpander.h"
-#include "Density.h"
-#include "GreensFunction.h"
-#include "LDOS.h"
-#include "Magnetization.h"
-#include "PropertyExtractor.h"
-#include "SpinPolarizedLDOS.h"
+#include "Property/Density.h"
+#include "Property/GreensFunction.h"
+#include "Property/LDOS.h"
+#include "Property/Magnetization.h"
+#include "Property/SpinPolarizedLDOS.h"
+#include "PropertyExtractor/PropertyExtractor.h"
 
 #include <initializer_list>
 #include <iostream>
 
 namespace TBTK{
+namespace PropertyExtractor{
 
 /** Experimental class for extracting properties from a ChebyshevExpander. */
-class CPropertyExtractor : public PropertyExtractor{
+class ChebyshevExpander : public PropertyExtractor{
 public:
 	/** Constructor. */
-	CPropertyExtractor(
+	ChebyshevExpander(
 		Solver::ChebyshevExpander &cSolver,
 		int numCoefficients,
 		bool useGPUToCalculateCoefficients,
@@ -49,7 +50,7 @@ public:
 	);
 
 	/** Destructor. */
-	virtual ~CPropertyExtractor();
+	virtual ~ChebyshevExpander();
 
 	/** Overrides PropertyExtractor::setEnergyWindow(). */
 	virtual void setEnergyWindow(
@@ -184,6 +185,7 @@ private:
 	void ensureLookupTableIsReady();
 };
 
+};	//End of namespace PropertyExtractor
 };	//End of namespace TBTK
 
 #endif

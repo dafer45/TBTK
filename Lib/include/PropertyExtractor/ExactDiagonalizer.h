@@ -14,30 +14,31 @@
  */
 
 /** @package TBTKcalc
- *  @file EDPropertyExtractor.h
+ *  @file ExactDiagonalizer.h
  *  @brief Extracts physical properties from the Diagonalizer
  *
  *  @author Kristofer Björnson
  */
 
-#ifndef COM_DAFER45_TBTK_ED_PROPERTY_EXTRACTOR
-#define COM_DAFER45_TBTK_ED_PROPERTY_EXTRACTOR
+#ifndef COM_DAFER45_TBTK_PROPERTY_EXTRACTOR_EXACT_DIAGONALIZER
+#define COM_DAFER45_TBTK_PROPERTY_EXTRACTOR_EXACT_DIAGONALIZER
 
 #include "Solver/ExactDiagonalizer.h"
-#include "GreensFunction.h"
-#include "PropertyExtractor.h"
+#include "Property/GreensFunction.h"
+#include "PropertyExtractor/PropertyExtractor.h"
 
 #include <complex>
 
 namespace TBTK{
+namespace PropertyExtractor{
 
-class EDPropertyExtractor : public PropertyExtractor{
+class ExactDiagonalizer : public PropertyExtractor{
 public:
 	/** Constructor. */
-	EDPropertyExtractor(Solver::ExactDiagonalizer &edSolver);
+	ExactDiagonalizer(Solver::ExactDiagonalizer &edSolver);
 
 	/** Destructor. */
-	~EDPropertyExtractor();
+	~ExactDiagonalizer();
 
 	/** Calculate Green's function. */
 	Property::GreensFunction* calculateGreensFunction(
@@ -112,6 +113,7 @@ private:
 	);
 };
 
+};	//End of namespace PropertyExtractor
 };	//End of namespace TBTK
 
 #endif

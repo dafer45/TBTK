@@ -30,7 +30,7 @@
  */
 
 #include "Solver/ChebyshevExpander.h"
-#include "CPropertyExtractor.h"
+#include "PropertyExtractor/ChebyshevExpander.h"
 #include "FileWriter.h"
 #include "GreensFunction.h"
 #include "Model.h"
@@ -166,7 +166,7 @@ double scLoop(double radius){
 	//with a width twice the Debye frequency.
 	Solver::ChebyshevExpander cSolver;
 	cSolver.setScaleFactor(SCALE_FACTOR);
-	CPropertyExtractor pe(
+	PropertyExtractor::ChebyshevExpander pe(
 		cSolver,
 		NUM_COEFFICIENTS,
 		true,

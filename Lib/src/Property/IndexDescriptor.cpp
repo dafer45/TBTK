@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "IndexDescriptor.h"
+#include "Property/IndexDescriptor.h"
 #include "TBTKMacros.h"
 
 #include <string>

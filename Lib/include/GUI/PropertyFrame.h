@@ -23,10 +23,10 @@
 #ifndef COM_DAFER45_TBTK_PROPERTY_FRAME
 #define COM_DAFER45_TBTK_PROPERTY_FRAME
 
-#include "AbstractProperty.h"
-#include "DOS.h"
-#include "LDOS.h"
 #include "ImagePanel.h"
+#include "Property/AbstractProperty.h"
+#include "Property/DOS.h"
+#include "Property/LDOS.h"
 
 #include <wx/wx.h>
 #include <wx/sizer.h>

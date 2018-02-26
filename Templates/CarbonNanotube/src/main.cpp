@@ -26,7 +26,7 @@
 
 #include "Solver/Diagonalizer.h"
 #include "DOS.h"
-#include "DPropertyExtractor.h"
+#include "PropertyExtractor/Diagonalizer.h"
 #include "EigenValues.h"
 #include "FileWriter.h"
 #include "Model.h"
@@ -85,7 +85,7 @@ int main(int argc, char **argv){
 	FileWriter::clear();
 
 	//Create PropertyExtractor
-	DPropertyExtractor pe(dSolver);
+	PropertyExtractor::Diagonalizer pe(dSolver);
 
 	//Setup energy window
 	const double LOWER_BOUND = -5.;

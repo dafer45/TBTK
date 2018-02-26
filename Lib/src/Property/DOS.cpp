@@ -13,12 +13,13 @@
  * limitations under the License.
  */
 
-/** @file LDOS.cpp
+/** @file DOS.cpp
  *
  *  @author Kristofer Björnson
  */
 
-#include "LDOS.h"
+#include "Property/DOS.h"
+#include "Streams.h"
 
 #include "json.hpp"
 
@@ -28,85 +29,53 @@ using namespace nlohmann;
 namespace TBTK{
 namespace Property{
 
-LDOS::LDOS(
-	int dimensions,
-	const int *ranges,
+DOS::DOS(
 	double lowerBound,
 	double upperBound,
 	int resolution
 ) :
-	AbstractProperty(dimensions, ranges, resolution)
+	AbstractProperty(resolution)
 {
 	this->lowerBound = lowerBound;
 	this->upperBound = upperBound;
 	this->resolution = resolution;
 }
 
-LDOS::LDOS(
-	int dimensions,
-	const int *ranges,
+DOS::DOS(
 	double lowerBound,
 	double upperBound,
 	int resolution,
 	const double *data
 ) :
-	AbstractProperty(dimensions, ranges, resolution, data)
+	AbstractProperty(resolution, data)
 {
 	this->lowerBound = lowerBound;
 	this->upperBound = upperBound;
 	this->resolution = resolution;
 }
 
-LDOS::LDOS(
-	const IndexTree &indexTree,
-	double lowerBound,
-	double upperBound,
-	int resolution
+DOS::DOS(
+	const DOS &dos
 ) :
-	AbstractProperty(indexTree, resolution)
+	AbstractProperty(dos)
 {
-	this->lowerBound = lowerBound;
-	this->upperBound = upperBound;
-	this->resolution = resolution;
+	lowerBound = dos.lowerBound;
+	upperBound = dos.upperBound;
+	resolution = dos.resolution;
 }
 
-LDOS::LDOS(
-	const IndexTree &indexTree,
-	double lowerBound,
-	double upperBound,
-	int resolution,
-	const double *data
+DOS::DOS(
+	DOS &&dos
 ) :
-	AbstractProperty(indexTree, resolution, data)
+	AbstractProperty(std::move(dos))
 {
-	this->lowerBound = lowerBound;
-	this->upperBound = upperBound;
-	this->resolution = resolution;
+	lowerBound = dos.lowerBound;
+	upperBound = dos.upperBound;
+	resolution = dos.resolution;
 }
 
-LDOS::LDOS(
-	const LDOS &ldos
-) :
-	AbstractProperty(ldos)
-{
-	lowerBound = ldos.lowerBound;
-	upperBound = ldos.upperBound;
-	resolution = ldos.resolution;
-}
-
-LDOS::LDOS(
-	LDOS &&ldos
-) :
-	AbstractProperty(std::move(ldos))
-{
-	lowerBound = ldos.lowerBound;
-	upperBound = ldos.upperBound;
-	resolution = ldos.resolution;
-}
-
-LDOS::LDOS(
-	const string &serialization,
-	Mode mode
+DOS::DOS(
+	const string &serialization, Mode mode
 ) :
 	AbstractProperty(
 		Serializeable::extract(
@@ -118,9 +87,9 @@ LDOS::LDOS(
 	)
 {
 	TBTKAssert(
-		validate(serialization, "LDOS", mode),
-		"LDOS::LDOS()",
-		"Unable to parse string as LDOS '" << serialization << "'.",
+		validate(serialization, "DOS", mode),
+		"DOS::DOS()",
+		"Unable to parse string as DOS '" << serialization << "'.",
 		""
 	);
 
@@ -134,8 +103,8 @@ LDOS::LDOS(
 		}
 		catch(json::exception e){
 			TBTKExit(
-				"LDOS::LDOS()",
-				"Unable to parse string as LDOS '"
+				"DOS::DOS()",
+				"Unable to parse string as DOS '"
 				<< serialization << "'.",
 				""
 			);
@@ -144,20 +113,19 @@ LDOS::LDOS(
 		break;
 	default:
 		TBTKExit(
-			"LDOS::LDOS()",
+			"DOS::DOS()",
 			"Only Serializeable::Mode::JSON is supported yet.",
 			""
 		);
 	}
 }
 
-LDOS::~LDOS(){
+DOS::~DOS(){
 }
 
-LDOS& LDOS::operator=(const LDOS &rhs){
+DOS& DOS::operator=(const DOS &rhs){
 	if(this != &rhs){
 		AbstractProperty::operator=(rhs);
-
 		lowerBound = rhs.lowerBound;
 		upperBound = rhs.upperBound;
 		resolution = rhs.resolution;
@@ -166,10 +134,9 @@ LDOS& LDOS::operator=(const LDOS &rhs){
 	return *this;
 }
 
-LDOS& LDOS::operator=(LDOS &&rhs){
+DOS& DOS::operator=(DOS &&rhs){
 	if(this != &rhs){
 		AbstractProperty::operator=(std::move(rhs));
-
 		lowerBound = rhs.lowerBound;
 		upperBound = rhs.upperBound;
 		resolution = rhs.resolution;
@@ -178,12 +145,12 @@ LDOS& LDOS::operator=(LDOS &&rhs){
 	return *this;
 }
 
-string LDOS::serialize(Mode mode) const{
+string DOS::serialize(Mode mode) const{
 	switch(mode){
 	case Mode::JSON:
 	{
 		json j;
-		j["id"] = "LDOS";
+		j["id"] = "DOS";
 		j["lowerBound"] = lowerBound;
 		j["upperBound"] = upperBound;
 		j["resolution"] = resolution;
@@ -195,8 +162,8 @@ string LDOS::serialize(Mode mode) const{
 	}
 	default:
 		TBTKExit(
-			"LDOS::serialize()",
-			"Onle Serializeable::Mode::JSON is supported yet.",
+			"DOS::serialize()",
+			"Only Serializeable::Mode::JSON is supported yet.",
 			""
 		);
 	}

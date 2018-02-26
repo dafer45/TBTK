@@ -1,4 +1,4 @@
-/* Copyright 2017 Kristofer Björnson
+/* Copyright 2016 Kristofer Björnson
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,12 @@
  * limitations under the License.
  */
 
-/** @file BPropertyExtractor.cpp
+/** @file Diagonalizer.cpp
  *
  *  @author Kristofer Björnson
  */
 
-#include "BPropertyExtractor.h"
+#include "PropertyExtractor/Diagonalizer.h"
 #include "Functions.h"
 #include "Streams.h"
 
@@ -27,15 +27,16 @@
 using namespace std;
 
 namespace TBTK{
+namespace PropertyExtractor{
 
-BPropertyExtractor::BPropertyExtractor(Solver::BlockDiagonalizer &bSolver){
-	this->bSolver = &bSolver;
+Diagonalizer::Diagonalizer(Solver::Diagonalizer &dSolver){
+	this->dSolver = &dSolver;
 }
 
-BPropertyExtractor::~BPropertyExtractor(){
+Diagonalizer::~Diagonalizer(){
 }
 
-/*void BPropertyExtractor::saveEigenValues(string path, string filename){
+void Diagonalizer::saveEigenValues(string path, string filename){
 	stringstream ss;
 	ss << path;
 	if(path.back() != '/')
@@ -43,53 +44,52 @@ BPropertyExtractor::~BPropertyExtractor(){
 	ss << filename;
 	ofstream fout;
 	fout.open(ss.str().c_str());
-	for(int n = 0; n < dSolver->getModel()->getBasisSize(); n++){
+	for(int n = 0; n < dSolver->getModel().getBasisSize(); n++){
 		fout << dSolver->getEigenValues()[n] << "\n";
 	}
 	fout.close();
 }
 
-void DPropertyExtractor::getTabulatedHoppingAmplitudeSet(
+void Diagonalizer::getTabulatedHoppingAmplitudeSet(
 	complex<double> **amplitudes,
 	int **indices,
 	int *numHoppingAmplitudes,
 	int *maxIndexSize
 ){
-	dSolver->getModel()->getHoppingAmplitudeSet()->tabulate(
+	dSolver->getModel().getHoppingAmplitudeSet()->tabulate(
 		amplitudes,
 		indices,
 		numHoppingAmplitudes,
 		maxIndexSize
 	);
-}*/
+}
 
-Property::EigenValues BPropertyExtractor::getEigenValues(){
-	int size = bSolver->getModel().getBasisSize();
-//	const double *ev = bSolver->getEigenValues();
+Property::EigenValues Diagonalizer::getEigenValues(){
+	int size = dSolver->getModel().getBasisSize();
+	const double *ev = dSolver->getEigenValues();
 
 	Property::EigenValues eigenValues(size);
 	double *data = eigenValues.getDataRW();
 	for(int n = 0; n < size; n++)
-		data[n] = bSolver->getEigenValue(n);
-//		data[n] = ev[n];
+		data[n] = ev[n];
 
 	return eigenValues;
 }
 
-Property::WaveFunctions BPropertyExtractor::calculateWaveFunctions(
+Property::WaveFunctions Diagonalizer::calculateWaveFunctions(
 	initializer_list<Index> patterns,
 	initializer_list<int> states
 ){
 	IndexTree allIndices = generateIndexTree(
 		patterns,
-		*bSolver->getModel().getHoppingAmplitudeSet(),
+		*dSolver->getModel().getHoppingAmplitudeSet(),
 		false,
 		false
 	);
 
 	IndexTree memoryLayout = generateIndexTree(
 		patterns,
-		*bSolver->getModel().getHoppingAmplitudeSet(),
+		*dSolver->getModel().getHoppingAmplitudeSet(),
 		true,
 		true
 	);
@@ -97,13 +97,13 @@ Property::WaveFunctions BPropertyExtractor::calculateWaveFunctions(
 	vector<unsigned int> statesVector;
 	if(states.size() == 1){
 		if(*states.begin() == IDX_ALL){
-			for(int n = 0; n < bSolver->getModel().getBasisSize(); n++)
+			for(int n = 0; n < dSolver->getModel().getBasisSize(); n++)
 				statesVector.push_back(n);
 		}
 		else{
 			TBTKAssert(
 				*states.begin() >= 0,
-				"BPropertyExtractor::calculateWaveFunctions()",
+				"PropertyExtractor::Diagonalizer::calculateWaveFunctions()",
 				"Found unexpected index symbol.",
 				"Use only positive numbers or '{IDX_ALL}'"
 			);
@@ -114,7 +114,7 @@ Property::WaveFunctions BPropertyExtractor::calculateWaveFunctions(
 		for(unsigned int n = 0; n < states.size(); n++){
 			TBTKAssert(
 				*(states.begin() + n) >= 0,
-				"BPropertyExtractor::calculateWaveFunctions()",
+				"PropertyExtractor::Diagonalizer::calculateWaveFunctions()",
 				"Found unexpected index symbol.",
 				"Use only positive numbers or '{IDX_ALL}'"
 			);
@@ -139,20 +139,20 @@ Property::WaveFunctions BPropertyExtractor::calculateWaveFunctions(
 	return waveFunctions;
 }
 
-/*Property::GreensFunction* BPropertyExtractor::calculateGreensFunction(
+/*Property::GreensFunction* DPropertyExtractor::calculateGreensFunction(
 	Index to,
 	Index from,
 	Property::GreensFunction::Type type
 ){
-	unsigned int numPoles = bSolver->getModel().getBasisSize();
+	unsigned int numPoles = dSolver->getModel().getBasisSize();
 
 	complex<double> *positions = new complex<double>[numPoles];
 	complex<double> *amplitudes = new complex<double>[numPoles];
-	for(int n = 0; n < bSolver->getModel().getBasisSize(); n++){
-		positions[n] = bSolver->getEigenValue(n);
+	for(int n = 0; n < dSolver->getModel().getBasisSize(); n++){
+		positions[n] = dSolver->getEigenValue(n);
 
-		complex<double> uTo = bSolver->getAmplitude(n, to);
-		complex<double> uFrom = bSolver->getAmplitude(n, from);
+		complex<double> uTo = dSolver->getAmplitude(n, to);
+		complex<double> uFrom = dSolver->getAmplitude(n, from);
 
 		amplitudes[n] = uTo*conj(uFrom);
 	}
@@ -171,15 +171,14 @@ Property::WaveFunctions BPropertyExtractor::calculateWaveFunctions(
 	return greensFunction;
 }*/
 
-Property::DOS BPropertyExtractor::calculateDOS(){
-//	const double *ev = bSolver->getEigenValues();
+Property::DOS Diagonalizer::calculateDOS(){
+	const double *ev = dSolver->getEigenValues();
 
 	Property::DOS dos(lowerBound, upperBound, energyResolution);
 	double *data = dos.getDataRW();
 	double dE = (upperBound - lowerBound)/energyResolution;
-	for(int n = 0; n < bSolver->getModel().getBasisSize(); n++){
-		int e = (int)(((bSolver->getEigenValue(n) - lowerBound)/(upperBound - lowerBound))*energyResolution);
-//		int e = (int)(((ev[n] - lowerBound)/(upperBound - lowerBound))*energyResolution);
+	for(int n = 0; n < dSolver->getModel().getBasisSize(); n++){
+		int e = (int)(((ev[n] - lowerBound)/(upperBound - lowerBound))*energyResolution);
 		if(e >= 0 && e < energyResolution){
 			data[e] += 1./dE;
 		}
@@ -188,7 +187,7 @@ Property::DOS BPropertyExtractor::calculateDOS(){
 	return dos;
 }
 
-complex<double> BPropertyExtractor::calculateExpectationValue(
+complex<double> Diagonalizer::calculateExpectationValue(
 	Index to,
 	Index from
 ){
@@ -196,27 +195,27 @@ complex<double> BPropertyExtractor::calculateExpectationValue(
 
 	complex<double> expectationValue = 0.;
 
-	Statistics statistics = bSolver->getModel().getStatistics();
+	Statistics statistics = dSolver->getModel().getStatistics();
 
-	for(int n = 0; n < bSolver->getModel().getBasisSize(); n++){
+	for(int n = 0; n < dSolver->getModel().getBasisSize(); n++){
 		double weight;
 		if(statistics == Statistics::FermiDirac){
 			weight = Functions::fermiDiracDistribution(
-				bSolver->getEigenValue(n),
-				bSolver->getModel().getChemicalPotential(),
-				bSolver->getModel().getTemperature()
+				dSolver->getEigenValue(n),
+				dSolver->getModel().getChemicalPotential(),
+				dSolver->getModel().getTemperature()
 			);
 		}
 		else{
 			weight = Functions::boseEinsteinDistribution(
-				bSolver->getEigenValue(n),
-				bSolver->getModel().getChemicalPotential(),
-				bSolver->getModel().getTemperature()
+				dSolver->getEigenValue(n),
+				dSolver->getModel().getChemicalPotential(),
+				dSolver->getModel().getTemperature()
 			);
 		}
 
-		complex<double> u_to = bSolver->getAmplitude(n, to);
-		complex<double> u_from = bSolver->getAmplitude(n, from);
+		complex<double> u_to = dSolver->getAmplitude(n, to);
+		complex<double> u_from = dSolver->getAmplitude(n, from);
 
 		expectationValue += weight*conj(u_to)*u_from;
 	}
@@ -224,7 +223,7 @@ complex<double> BPropertyExtractor::calculateExpectationValue(
 	return expectationValue;
 }
 
-/*Property::Density DPropertyExtractor::calculateDensity(
+Property::Density Diagonalizer::calculateDensity(
 	Index pattern,
 	Index ranges
 ){
@@ -238,21 +237,21 @@ complex<double> BPropertyExtractor::calculateExpectationValue(
 	calculate(calculateDensityCallback, (void*)density.getDataRW(), pattern, ranges, 0, 1);
 
 	return density;
-}*/
+}
 
-Property::Density BPropertyExtractor::calculateDensity(
+Property::Density Diagonalizer::calculateDensity(
 	initializer_list<Index> patterns
 ){
 	IndexTree allIndices = generateIndexTree(
 		patterns,
-		*bSolver->getModel().getHoppingAmplitudeSet(),
+		*dSolver->getModel().getHoppingAmplitudeSet(),
 		false,
 		false
 	);
 
 	IndexTree memoryLayout = generateIndexTree(
 		patterns,
-		*bSolver->getModel().getHoppingAmplitudeSet(),
+		*dSolver->getModel().getHoppingAmplitudeSet(),
 		true,
 		true
 	);
@@ -269,13 +268,13 @@ Property::Density BPropertyExtractor::calculateDensity(
 	return density;
 }
 
-/*Property::Magnetization DPropertyExtractor::calculateMagnetization(
+Property::Magnetization Diagonalizer::calculateMagnetization(
 	Index pattern,
 	Index ranges
 ){
 	hint = new int[1];
 	((int*)hint)[0] = -1;
-	for(unsigned int n = 0; n < pattern.size(); n++){
+	for(unsigned int n = 0; n < pattern.getSize(); n++){
 		if(pattern.at(n) == IDX_SPIN){
 			((int*)hint)[0] = n;
 			pattern.at(n) = 0;
@@ -286,7 +285,7 @@ Property::Density BPropertyExtractor::calculateDensity(
 	if(((int*)hint)[0] == -1){
 		delete [] (int*)hint;
 		TBTKExit(
-			"DPropertyExtractor::calculateMagnetization()",
+			"PropertyExtractor::Diagonalizer::calculateMagnetization()",
 			"No spin index indiceated.",
 			"Used IDX_SPIN to indicate the position of the spin index."
 		);
@@ -299,26 +298,33 @@ Property::Density BPropertyExtractor::calculateDensity(
 	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
 	Property::Magnetization magnetization(lDimensions, lRanges);
 
-	calculate(calculateMAGCallback, (void*)magnetization.getDataRW(), pattern, ranges, 0, 4);
+	calculate(
+		calculateMAGCallback,
+		(void*)magnetization.getDataRW(),
+		pattern,
+		ranges,
+		0,
+		1
+	);
 
 	delete [] (int*)hint;
 
 	return magnetization;
-}*/
+}
 
-Property::Magnetization BPropertyExtractor::calculateMagnetization(
+Property::Magnetization Diagonalizer::calculateMagnetization(
 	std::initializer_list<Index> patterns
 ){
 	IndexTree allIndices = generateIndexTree(
 		patterns,
-		*bSolver->getModel().getHoppingAmplitudeSet(),
+		*dSolver->getModel().getHoppingAmplitudeSet(),
 		false,
 		true
 	);
 
 	IndexTree memoryLayout = generateIndexTree(
 		patterns,
-		*bSolver->getModel().getHoppingAmplitudeSet(),
+		*dSolver->getModel().getHoppingAmplitudeSet(),
 		true,
 		true
 	);
@@ -327,7 +333,7 @@ Property::Magnetization BPropertyExtractor::calculateMagnetization(
 
 	hint = new int[1];
 	calculate(
-		calculateMagnetizationCallback,
+		calculateMAGCallback,
 		allIndices,
 		memoryLayout,
 		magnetization,
@@ -339,7 +345,7 @@ Property::Magnetization BPropertyExtractor::calculateMagnetization(
 	return magnetization;
 }
 
-/*Property::LDOS BPropertyExtractor::calculateLDOS(
+Property::LDOS Diagonalizer::calculateLDOS(
 	Index pattern,
 	Index ranges
 ){
@@ -371,9 +377,9 @@ Property::Magnetization BPropertyExtractor::calculateMagnetization(
 	calculate(calculateLDOSCallback, (void*)ldos.getDataRW(), pattern, ranges, 0, energyResolution);
 
 	return ldos;
-}*/
+}
 
-Property::LDOS BPropertyExtractor::calculateLDOS(
+Property::LDOS Diagonalizer::calculateLDOS(
 	std::initializer_list<Index> patterns
 ){
 	//hint[0] is an array of doubles, hint[1] is an array of ints
@@ -390,14 +396,14 @@ Property::LDOS BPropertyExtractor::calculateLDOS(
 
 	IndexTree allIndices = generateIndexTree(
 		patterns,
-		*bSolver->getModel().getHoppingAmplitudeSet(),
+		*dSolver->getModel().getHoppingAmplitudeSet(),
 		false,
 		true
 	);
 
 	IndexTree memoryLayout = generateIndexTree(
 		patterns,
-		*bSolver->getModel().getHoppingAmplitudeSet(),
+		*dSolver->getModel().getHoppingAmplitudeSet(),
 		true,
 		true
 	);
@@ -419,7 +425,7 @@ Property::LDOS BPropertyExtractor::calculateLDOS(
 	return ldos;
 }
 
-/*Property::SpinPolarizedLDOS DPropertyExtractor::calculateSpinPolarizedLDOS(
+Property::SpinPolarizedLDOS Diagonalizer::calculateSpinPolarizedLDOS(
 	Index pattern,
 	Index ranges
 ){
@@ -436,7 +442,7 @@ Property::LDOS BPropertyExtractor::calculateLDOS(
 	((int**)hint)[1][0] = energyResolution;
 
 	((int**)hint)[1][1] = -1;
-	for(unsigned int n = 0; n < pattern.size(); n++){
+	for(unsigned int n = 0; n < pattern.getSize(); n++){
 		if(pattern.at(n) == IDX_SPIN){
 			((int**)hint)[1][1] = n;
 			pattern.at(n) = 0;
@@ -449,7 +455,7 @@ Property::LDOS BPropertyExtractor::calculateLDOS(
 		delete [] ((int**)hint)[1];
 		delete [] (void**)hint;
 		TBTKExit(
-			"DPropertyExtractor::calculateSpinPolarizedLDOS()",
+			"PropertyExtractor::Diagonalizer::calculateSpinPolarizedLDOS()",
 			"No spin index indicated.",
 			"Used IDX_SPIN to indicate the position of the spin index."
 		);
@@ -474,7 +480,7 @@ Property::LDOS BPropertyExtractor::calculateLDOS(
 		pattern,
 		ranges,
 		0,
-		4*energyResolution
+		energyResolution
 	);
 
 	delete [] ((double**)hint)[0];
@@ -482,9 +488,9 @@ Property::LDOS BPropertyExtractor::calculateLDOS(
 	delete [] (void**)hint;
 
 	return spinPolarizedLDOS;
-}*/
+}
 
-Property::SpinPolarizedLDOS BPropertyExtractor::calculateSpinPolarizedLDOS(
+Property::SpinPolarizedLDOS Diagonalizer::calculateSpinPolarizedLDOS(
 	std::initializer_list<Index> patterns
 ){
 	//hint[0] is an array of doubles, hint[1] is an array of ints
@@ -501,14 +507,14 @@ Property::SpinPolarizedLDOS BPropertyExtractor::calculateSpinPolarizedLDOS(
 
 	IndexTree allIndices = generateIndexTree(
 		patterns,
-		*bSolver->getModel().getHoppingAmplitudeSet(),
+		*dSolver->getModel().getHoppingAmplitudeSet(),
 		false,
 		true
 	);
 
 	IndexTree memoryLayout = generateIndexTree(
 		patterns,
-		*bSolver->getModel().getHoppingAmplitudeSet(),
+		*dSolver->getModel().getHoppingAmplitudeSet(),
 		true,
 		true
 	);
@@ -535,32 +541,32 @@ Property::SpinPolarizedLDOS BPropertyExtractor::calculateSpinPolarizedLDOS(
 	return spinPolarizedLDOS;
 }
 
-double BPropertyExtractor::calculateEntropy(){
-	Statistics statistics = bSolver->getModel().getStatistics();
+double Diagonalizer::calculateEntropy(){
+	Statistics statistics = dSolver->getModel().getStatistics();
 
 	double entropy = 0.;
-	for(int n = 0; n < bSolver->getModel().getBasisSize(); n++){
+	for(int n = 0; n < dSolver->getModel().getBasisSize(); n++){
 		double p;
 
 		switch(statistics){
 		case Statistics::FermiDirac:
 			p = Functions::fermiDiracDistribution(
 				getEigenValue(n),
-				bSolver->getModel().getChemicalPotential(),
-				bSolver->getModel().getTemperature()
+				dSolver->getModel().getChemicalPotential(),
+				dSolver->getModel().getTemperature()
 			);
 			break;
 		case Statistics::BoseEinstein:
 			p = Functions::boseEinsteinDistribution(
 				getEigenValue(n),
-				bSolver->getModel().getChemicalPotential(),
-				bSolver->getModel().getTemperature()
+				dSolver->getModel().getChemicalPotential(),
+				dSolver->getModel().getTemperature()
 			);
 			break;
 		default:
 			TBTKExit(
-				"BPropertyExtractor::calculateEntropy()",
-				"Unknow statistsics.",
+				"PropertyExtractor::Diagonalizer::calculateEntropy()",
+				"Unknown statistics.",
 				"This should never happen, contact the developer."
 			);
 		}
@@ -573,98 +579,80 @@ double BPropertyExtractor::calculateEntropy(){
 	return entropy;
 }
 
-void BPropertyExtractor::calculateWaveFunctionsCallback(
+void Diagonalizer::calculateWaveFunctionsCallback(
 	PropertyExtractor *cb_this,
 	void *waveFunctions,
 	const Index &index,
 	int offset
 ){
-	BPropertyExtractor *pe = (BPropertyExtractor*)cb_this;
+	Diagonalizer *pe = (Diagonalizer*)cb_this;
 
 	const vector<unsigned int> states = ((Property::WaveFunctions**)pe->hint)[0]->getStates();
 	for(unsigned int n = 0; n < states.size(); n++)
 		((complex<double>*)waveFunctions)[offset + n] += pe->getAmplitude(states.at(n), index);
 }
 
-void BPropertyExtractor::calculateDensityCallback(
+void Diagonalizer::calculateDensityCallback(
 	PropertyExtractor *cb_this,
 	void* density,
 	const Index &index,
 	int offset
 ){
-	BPropertyExtractor *pe = (BPropertyExtractor*)cb_this;
+	Diagonalizer *pe = (Diagonalizer*)cb_this;
 
-//	const double *eigen_values = pe->bSolver->getEigenValues();
-	Statistics statistics = pe->bSolver->getModel().getStatistics();
-	int firstStateInBlock = pe->bSolver->getFirstStateInBlock(index);
-	int lastStateInBlock = pe->bSolver->getLastStateInBlock(index);
-	for(int n = firstStateInBlock; n <= lastStateInBlock; n++){
-//	for(int n = 0; n < pe->bSolver->getModel()->getBasisSize(); n++){
+	const double *eigen_values = pe->dSolver->getEigenValues();
+	Statistics statistics = pe->dSolver->getModel().getStatistics();
+	for(int n = 0; n < pe->dSolver->getModel().getBasisSize(); n++){
 		double weight;
 		if(statistics == Statistics::FermiDirac){
-			weight = Functions::fermiDiracDistribution(
-				pe->bSolver->getEigenValue(n),
-				pe->bSolver->getModel().getChemicalPotential(),
-				pe->bSolver->getModel().getTemperature()
-			);
+			weight = Functions::fermiDiracDistribution(eigen_values[n],
+									pe->dSolver->getModel().getChemicalPotential(),
+									pe->dSolver->getModel().getTemperature());
 		}
 		else{
-			weight = Functions::boseEinsteinDistribution(
-				pe->bSolver->getEigenValue(n),
-				pe->bSolver->getModel().getChemicalPotential(),
-				pe->bSolver->getModel().getTemperature()
-			);
+			weight = Functions::boseEinsteinDistribution(eigen_values[n],
+									pe->dSolver->getModel().getChemicalPotential(),
+									pe->dSolver->getModel().getTemperature());
 		}
 
-		complex<double> u = pe->bSolver->getAmplitude(n, index);
+		complex<double> u = pe->dSolver->getAmplitude(n, index);
 
 		((double*)density)[offset] += pow(abs(u), 2)*weight;
 	}
 }
 
-void BPropertyExtractor::calculateMagnetizationCallback(
+void Diagonalizer::calculateMAGCallback(
 	PropertyExtractor *cb_this,
 	void *mag,
 	const Index &index,
 	int offset
 ){
-	BPropertyExtractor *pe = (BPropertyExtractor*)cb_this;
+	Diagonalizer *pe = (Diagonalizer*)cb_this;
 
-//	const double *eigen_values = pe->bSolver->getEigenValues();
-	Statistics statistics = pe->bSolver->getModel().getStatistics();
+	const double *eigen_values = pe->dSolver->getEigenValues();
+	Statistics statistics = pe->dSolver->getModel().getStatistics();
 
 	int spin_index = ((int*)pe->hint)[0];
 	Index index_u(index);
 	Index index_d(index);
 	index_u.at(spin_index) = 0;
 	index_d.at(spin_index) = 1;
-	int firstStateInBlock = pe->bSolver->getFirstStateInBlock(index);
-	int lastStateInBlock = pe->bSolver->getLastStateInBlock(index);
-	for(int n = firstStateInBlock; n <= lastStateInBlock; n++){
-//	for(int n = 0; n < pe->bSolver->getModel()->getBasisSize(); n++){
+	for(int n = 0; n < pe->dSolver->getModel().getBasisSize(); n++){
 		double weight;
 		if(statistics == Statistics::FermiDirac){
-			weight = Functions::fermiDiracDistribution(
-				pe->bSolver->getEigenValue(n),
-				pe->bSolver->getModel().getChemicalPotential(),
-				pe->bSolver->getModel().getTemperature()
-			);
+			weight = Functions::fermiDiracDistribution(eigen_values[n],
+									pe->dSolver->getModel().getChemicalPotential(),
+									pe->dSolver->getModel().getTemperature());
 		}
 		else{
-			weight = Functions::boseEinsteinDistribution(
-				pe->bSolver->getEigenValue(n),
-				pe->bSolver->getModel().getChemicalPotential(),
-				pe->bSolver->getModel().getTemperature()
-			);
+			weight = Functions::boseEinsteinDistribution(eigen_values[n],
+									pe->dSolver->getModel().getChemicalPotential(),
+									pe->dSolver->getModel().getTemperature());
 		}
 
-		complex<double> u_u = pe->bSolver->getAmplitude(n, index_u);
-		complex<double> u_d = pe->bSolver->getAmplitude(n, index_d);
+		complex<double> u_u = pe->dSolver->getAmplitude(n, index_u);
+		complex<double> u_d = pe->dSolver->getAmplitude(n, index_d);
 
-/*		((complex<double>*)mag)[offset + 0] += conj(u_u)*u_u*weight;
-		((complex<double>*)mag)[offset + 1] += conj(u_u)*u_d*weight;
-		((complex<double>*)mag)[offset + 2] += conj(u_d)*u_u*weight;
-		((complex<double>*)mag)[offset + 3] += conj(u_d)*u_d*weight;*/
 		((SpinMatrix*)mag)[offset].at(0, 0) += conj(u_u)*u_u*weight;
 		((SpinMatrix*)mag)[offset].at(0, 1) += conj(u_u)*u_d*weight;
 		((SpinMatrix*)mag)[offset].at(1, 0) += conj(u_d)*u_u*weight;
@@ -672,15 +660,15 @@ void BPropertyExtractor::calculateMagnetizationCallback(
 	}
 }
 
-void BPropertyExtractor::calculateLDOSCallback(
+void Diagonalizer::calculateLDOSCallback(
 	PropertyExtractor *cb_this,
 	void *ldos,
 	const Index &index,
 	int offset
 ){
-	BPropertyExtractor *pe = (BPropertyExtractor*)cb_this;
+	Diagonalizer *pe = (Diagonalizer*)cb_this;
 
-//	const double *eigen_values = pe->bSolver->getEigenValues();
+	const double *eigen_values = pe->dSolver->getEigenValues();
 
 	double u_lim = ((double**)pe->hint)[0][0];
 	double l_lim = ((double**)pe->hint)[0][1];
@@ -688,16 +676,12 @@ void BPropertyExtractor::calculateLDOSCallback(
 
 	double step_size = (u_lim - l_lim)/(double)resolution;
 
-	int firstStateInBlock = pe->bSolver->getFirstStateInBlock(index);
-	int lastStateInBlock = pe->bSolver->getLastStateInBlock(index);
 	double dE = (pe->upperBound - pe->lowerBound)/pe->energyResolution;
-	for(int n = firstStateInBlock; n <= lastStateInBlock; n++){
-//	for(int n = 0; n < pe->bSolver->getModel()->getBasisSize(); n++){
-		double eigenValue = pe->bSolver->getEigenValue(n);
-		if(eigenValue > l_lim && eigenValue < u_lim){
-			complex<double> u = pe->bSolver->getAmplitude(n, index);
+	for(int n = 0; n < pe->dSolver->getModel().getBasisSize(); n++){
+		if(eigen_values[n] > l_lim && eigen_values[n] < u_lim){
+			complex<double> u = pe->dSolver->getAmplitude(n, index);
 
-			int e = (int)((eigenValue - l_lim)/step_size);
+			int e = (int)((eigen_values[n] - l_lim)/step_size);
 			if(e >= resolution)
 				e = resolution-1;
 			((double*)ldos)[offset + e] += real(conj(u)*u)/dE;
@@ -705,13 +689,15 @@ void BPropertyExtractor::calculateLDOSCallback(
 	}
 }
 
-void BPropertyExtractor::calculateSP_LDOSCallback(
+void Diagonalizer::calculateSP_LDOSCallback(
 	PropertyExtractor *cb_this,
 	void *sp_ldos,
 	const Index &index,
 	int offset
 ){
-	BPropertyExtractor *pe = (BPropertyExtractor*)cb_this;
+	Diagonalizer *pe = (Diagonalizer*)cb_this;
+
+	const double *eigen_values = pe->dSolver->getEigenValues();
 
 	double u_lim = ((double**)pe->hint)[0][0];
 	double l_lim = ((double**)pe->hint)[0][1];
@@ -724,17 +710,13 @@ void BPropertyExtractor::calculateSP_LDOSCallback(
 	Index index_d(index);
 	index_u.at(spin_index) = 0;
 	index_d.at(spin_index) = 1;
-	int firstStateInBlock = pe->bSolver->getFirstStateInBlock(index);
-	int lastStateInBlock = pe->bSolver->getLastStateInBlock(index);
 	double dE = (pe->upperBound - pe->lowerBound)/pe->energyResolution;
-	for(int n = firstStateInBlock; n <= lastStateInBlock; n++){
-//	for(int n = 0; n < pe->bSolver->getModel()->getBasisSize(); n++){
-		double eigenValue = pe->bSolver->getEigenValue(n);
-		if(eigenValue > l_lim && eigenValue < u_lim){
-			complex<double> u_u = pe->bSolver->getAmplitude(n, index_u);
-			complex<double> u_d = pe->bSolver->getAmplitude(n, index_d);
+	for(int n = 0; n < pe->dSolver->getModel().getBasisSize(); n++){
+		if(eigen_values[n] > l_lim && eigen_values[n] < u_lim){
+			complex<double> u_u = pe->dSolver->getAmplitude(n, index_u);
+			complex<double> u_d = pe->dSolver->getAmplitude(n, index_d);
 
-			int e = (int)((eigenValue - l_lim)/step_size);
+			int e = (int)((eigen_values[n] - l_lim)/step_size);
 			if(e >= resolution)
 				e = resolution-1;
 			((SpinMatrix*)sp_ldos)[offset + e].at(0, 0) += conj(u_u)*u_u/dE;
@@ -745,4 +727,5 @@ void BPropertyExtractor::calculateSP_LDOSCallback(
 	}
 }
 
+};	//End of namespace PropertyExtractor
 };	//End of namespace TBTK

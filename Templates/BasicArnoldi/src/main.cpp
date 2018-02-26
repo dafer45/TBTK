@@ -23,8 +23,8 @@
  *  @author Kristofer Björnson
  */
 
-#include "ArnoldiSolver/ArnoldiSolver.h"
-#include "APropertyExtractor/APropertyExtractor.h"
+#include "Solver/ArnoldiSolver/ArnoldiIterator.h"
+#include "PropertyExtractor/APropertyExtractor/ArnoldiIterator.h"
 #include "DOS.h"
 #include "EigenValues.h"
 #include "FileWriter.h"
@@ -86,12 +86,12 @@ int main(int argc, char **argv){
 	model.construct();
 	model.constructCOO();
 
-	//Setup and run DiagonalizationSolver
+	//Setup and run Solver::ArnoldiIterator
 	const int NUM_EIGEN_VALUES = 1600;
 	const int NUM_LANCZOS_VECTORS = 3200;
 	int MAX_ITERATIONS = 4000;
-	ArnoldiSolver aSolver;
-	aSolver.setMode(ArnoldiSolver::Mode::ShiftAndInvert);
+	Solver::ArnoldiIterator aSolver;
+	aSolver.setMode(Solver::ArnoldiIterator::Mode::ShiftAndInvert);
 	aSolver.setModel(model);
 	aSolver.setCentralValue(1.0);
 	aSolver.setNumEigenValues(NUM_EIGEN_VALUES);
@@ -105,7 +105,7 @@ int main(int argc, char **argv){
 	FileWriter::clear();
 
 	//Create PropertyExtractor
-	APropertyExtractor pe(aSolver);
+	PropertyExtractor::ArnoldiIterator pe(aSolver);
 
 	//Setup energy window
 	const double UPPER_BOUND = 1.25;

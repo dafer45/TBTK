@@ -13,13 +13,12 @@
  * limitations under the License.
  */
 
-/** @file DOS.cpp
+/** @file SpinPolarizedLDOS.h
  *
  *  @author Kristofer Björnson
  */
 
-#include "DOS.h"
-#include "Streams.h"
+#include "Property/SpinPolarizedLDOS.h"
 
 #include "json.hpp"
 
@@ -29,53 +28,85 @@ using namespace nlohmann;
 namespace TBTK{
 namespace Property{
 
-DOS::DOS(
+SpinPolarizedLDOS::SpinPolarizedLDOS(
+	int dimensions,
+	const int *ranges,
 	double lowerBound,
 	double upperBound,
 	int resolution
 ) :
-	AbstractProperty(resolution)
+	AbstractProperty(dimensions, ranges, resolution)
 {
 	this->lowerBound = lowerBound;
 	this->upperBound = upperBound;
 	this->resolution = resolution;
 }
 
-DOS::DOS(
+SpinPolarizedLDOS::SpinPolarizedLDOS(
+	int dimensions,
+	const int *ranges,
 	double lowerBound,
 	double upperBound,
 	int resolution,
-	const double *data
+	const SpinMatrix *data
 ) :
-	AbstractProperty(resolution, data)
+	AbstractProperty(dimensions, ranges, resolution, data)
 {
 	this->lowerBound = lowerBound;
 	this->upperBound = upperBound;
 	this->resolution = resolution;
 }
 
-DOS::DOS(
-	const DOS &dos
+SpinPolarizedLDOS::SpinPolarizedLDOS(
+	const IndexTree &indexTree,
+	double lowerBound,
+	double upperBound,
+	int resolution,
+	const SpinMatrix *data
 ) :
-	AbstractProperty(dos)
+	AbstractProperty(indexTree, resolution, data)
 {
-	lowerBound = dos.lowerBound;
-	upperBound = dos.upperBound;
-	resolution = dos.resolution;
+	this->lowerBound = lowerBound;
+	this->upperBound = upperBound;
+	this->resolution = resolution;
 }
 
-DOS::DOS(
-	DOS &&dos
+SpinPolarizedLDOS::SpinPolarizedLDOS(
+	const IndexTree &indexTree,
+	double lowerBound,
+	double upperBound,
+	int resolution
 ) :
-	AbstractProperty(std::move(dos))
+	AbstractProperty(indexTree, resolution)
 {
-	lowerBound = dos.lowerBound;
-	upperBound = dos.upperBound;
-	resolution = dos.resolution;
+	this->lowerBound = lowerBound;
+	this->upperBound = upperBound;
+	this->resolution = resolution;
 }
 
-DOS::DOS(
-	const string &serialization, Mode mode
+SpinPolarizedLDOS::SpinPolarizedLDOS(
+	const SpinPolarizedLDOS &spinPolarizedLDOS
+) :
+	AbstractProperty(spinPolarizedLDOS)
+{
+	lowerBound = spinPolarizedLDOS.lowerBound;
+	upperBound = spinPolarizedLDOS.upperBound;
+	resolution = spinPolarizedLDOS.resolution;
+}
+
+SpinPolarizedLDOS::SpinPolarizedLDOS(
+	SpinPolarizedLDOS &&spinPolarizedLDOS
+) :
+	AbstractProperty(std::move(spinPolarizedLDOS))
+{
+	lowerBound = spinPolarizedLDOS.lowerBound;
+	upperBound = spinPolarizedLDOS.upperBound;
+	resolution = spinPolarizedLDOS.resolution;
+}
+
+SpinPolarizedLDOS::SpinPolarizedLDOS(
+	const string &serialization,
+	Mode mode
 ) :
 	AbstractProperty(
 		Serializeable::extract(
@@ -87,9 +118,10 @@ DOS::DOS(
 	)
 {
 	TBTKAssert(
-		validate(serialization, "DOS", mode),
-		"DOS::DOS()",
-		"Unable to parse string as DOS '" << serialization << "'.",
+		validate(serialization, "SpinPolarizedLDOS", mode),
+		"SpinPolarizedLDOS::SpinPolarizedLDOS()",
+		"Unable to parse string as SpinPolarizedLDOS '"
+		<< serialization << "'.",
 		""
 	);
 
@@ -103,9 +135,10 @@ DOS::DOS(
 		}
 		catch(json::exception e){
 			TBTKExit(
-				"DOS::DOS()",
-				"Unable to parse string as DOS '"
-				<< serialization << "'.",
+				"SpinPolarizedLDOS::SpinPolarizedLDOS()",
+				"Unable to parse the string as"
+				" SpinPolarizedLDOS '" << serialization
+				<< "'.",
 				""
 			);
 		}
@@ -113,19 +146,20 @@ DOS::DOS(
 		break;
 	default:
 		TBTKExit(
-			"DOS::DOS()",
+			"SpinPolarizedLDOS::SpinPolarizedLDOS()",
 			"Only Serializeable::Mode::JSON is supported yet.",
 			""
 		);
 	}
 }
 
-DOS::~DOS(){
+SpinPolarizedLDOS::~SpinPolarizedLDOS(){
 }
 
-DOS& DOS::operator=(const DOS &rhs){
+SpinPolarizedLDOS& SpinPolarizedLDOS::operator=(const SpinPolarizedLDOS &rhs){
 	if(this != &rhs){
 		AbstractProperty::operator=(rhs);
+
 		lowerBound = rhs.lowerBound;
 		upperBound = rhs.upperBound;
 		resolution = rhs.resolution;
@@ -134,9 +168,10 @@ DOS& DOS::operator=(const DOS &rhs){
 	return *this;
 }
 
-DOS& DOS::operator=(DOS &&rhs){
+SpinPolarizedLDOS& SpinPolarizedLDOS::operator=(SpinPolarizedLDOS &&rhs){
 	if(this != &rhs){
 		AbstractProperty::operator=(std::move(rhs));
+
 		lowerBound = rhs.lowerBound;
 		upperBound = rhs.upperBound;
 		resolution = rhs.resolution;
@@ -145,12 +180,12 @@ DOS& DOS::operator=(DOS &&rhs){
 	return *this;
 }
 
-string DOS::serialize(Mode mode) const{
+string SpinPolarizedLDOS::serialize(Mode mode) const{
 	switch(mode){
 	case Mode::JSON:
 	{
 		json j;
-		j["id"] = "DOS";
+		j["id"] = "SpinPolarizedLDOS";
 		j["lowerBound"] = lowerBound;
 		j["upperBound"] = upperBound;
 		j["resolution"] = resolution;
@@ -162,7 +197,7 @@ string DOS::serialize(Mode mode) const{
 	}
 	default:
 		TBTKExit(
-			"DOS::serialize()",
+			"SpinPolarizedLDOS::serialize()",
 			"Only Serializeable::Mode::JSON is supported yet.",
 			""
 		);

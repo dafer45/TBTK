@@ -25,7 +25,7 @@
 
 #include "Solver/Diagonalizer.h"
 #include "DOS.h"
-#include "DPropertyExtractor.h"
+#include "PropertyExtractor/Diagonalizer.h"
 #include "FileWriter.h"
 #include "Model.h"
 #include "Plotter/Plotter.h"
@@ -104,7 +104,7 @@ int main(int argc, char **argv){
 	solver.run();
 
 	//Setup PropertyExtractor and calculate LDOS.
-	DPropertyExtractor pe(solver);
+	PropertyExtractor::Diagonalizer pe(solver);
 	pe.setEnergyWindow(-10, 10, 1000);
 	Property::LDOS ldos = pe.calculateLDOS({
 		{IDX_ALL, IDX_ALL, IDX_SUM_ALL}

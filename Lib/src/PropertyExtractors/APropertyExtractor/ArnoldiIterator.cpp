@@ -18,26 +18,27 @@
  *  @author Kristofer Björnson
  */
 
-#include "../../../include/PropertyExtractors/APropertyExtractor/APropertyExtractor.h"
+#include "PropertyExtractor/APropertyExtractor/ArnoldiIterator.h"
 #include "Functions.h"
 #include "Streams.h"
 
 using namespace std;
 
 namespace TBTK{
+namespace PropertyExtractor{
 
 namespace{
 	complex<double> i(0,1);
 }
 
-APropertyExtractor::APropertyExtractor(Solver::ArnoldiIterator &aSolver){
+ArnoldiIterator::ArnoldiIterator(Solver::ArnoldiIterator &aSolver){
 	this->aSolver = &aSolver;
 }
 
-APropertyExtractor::~APropertyExtractor(){
+ArnoldiIterator::~ArnoldiIterator(){
 }
 
-Property::EigenValues APropertyExtractor::getEigenValues(){
+Property::EigenValues ArnoldiIterator::getEigenValues(){
 	int size = aSolver->getNumEigenValues();
 	const complex<double> *ev = aSolver->getEigenValues();
 
@@ -49,7 +50,7 @@ Property::EigenValues APropertyExtractor::getEigenValues(){
 	return eigenValues;
 }
 
-Property::WaveFunctions APropertyExtractor::calculateWaveFunctions(
+Property::WaveFunctions ArnoldiIterator::calculateWaveFunctions(
 	initializer_list<Index> patterns,
 	initializer_list<int> states
 ){
@@ -76,7 +77,7 @@ Property::WaveFunctions APropertyExtractor::calculateWaveFunctions(
 		else{
 			TBTKAssert(
 				*states.begin() >= 0,
-				"APropertyExtractor::calculateWaveFunctions()",
+				"PropertyExtractor::ArnoldiIterator::calculateWaveFunctions()",
 				"Found unexpected index symbol.",
 				"Use only positive numbers or '{IDX_ALL}'"
 			);
@@ -87,7 +88,7 @@ Property::WaveFunctions APropertyExtractor::calculateWaveFunctions(
 		for(unsigned int n = 0; n < states.size(); n++){
 			TBTKAssert(
 				*(states.begin() + n) >= 0,
-				"APropertyExtractor::calculateWaveFunctions()",
+				"PropertyExtractor::ArnoldiIterator::calculateWaveFunctions()",
 				"Found unexpected index symbol.",
 				"Use only positive numbers or '{IDX_ALL}'"
 			);
@@ -144,7 +145,7 @@ Property::WaveFunctions APropertyExtractor::calculateWaveFunctions(
 	return greensFunction;
 }*/
 
-Property::DOS APropertyExtractor::calculateDOS(){
+Property::DOS ArnoldiIterator::calculateDOS(){
 	const complex<double> *ev = aSolver->getEigenValues();
 
 	Property::DOS dos(lowerBound, upperBound, energyResolution);
@@ -160,13 +161,13 @@ Property::DOS APropertyExtractor::calculateDOS(){
 	return dos;
 }
 
-Property::LDOS APropertyExtractor::calculateLDOS(
+Property::LDOS ArnoldiIterator::calculateLDOS(
 	Index pattern,
 	Index ranges
 ){
 	TBTKAssert(
 		aSolver->getCalculateEigenVectors(),
-		"APropertyExtractor::calculateLDOS()",
+		"PropertyExtractor::ArnoldiIterator::calculateLDOS()",
 		"Eigen vectors not calculated.",
 		"Use Solver::ArnoldiIterator::setCalculateEigenVectors() to"
 		<< " ensure eigen vectors are calculated."
@@ -209,12 +210,12 @@ Property::LDOS APropertyExtractor::calculateLDOS(
 	return ldos;
 }
 
-Property::LDOS APropertyExtractor::calculateLDOS(
+Property::LDOS ArnoldiIterator::calculateLDOS(
 	initializer_list<Index> patterns
 ){
 	TBTKAssert(
 		aSolver->getCalculateEigenVectors(),
-		"APropertyExtractor::calculateLDOS()",
+		"PropertyExtractor::ArnoldiIterator::calculateLDOS()",
 		"Eigen vectors not calculated.",
 		"Use Solver::ArnoldiIterator::setCalculateEigenVectors() to ensure eigen vectors are calculated."
 	);
@@ -262,13 +263,13 @@ Property::LDOS APropertyExtractor::calculateLDOS(
 	return ldos;
 }
 
-Property::SpinPolarizedLDOS APropertyExtractor::calculateSpinPolarizedLDOS(
+Property::SpinPolarizedLDOS ArnoldiIterator::calculateSpinPolarizedLDOS(
 	Index pattern,
 	Index ranges
 ){
 	TBTKAssert(
 		aSolver->getCalculateEigenVectors(),
-		"APropertyExtractor::calculateSpinPolarizedLDOS()",
+		"ArnoldiIterator::calculateSpinPolarizedLDOS()",
 		"Eigen vectors not calculated.",
 		"Use Solver::ArnoldiIterator::setCalculateEigenVectors() to"
 		<< " ensure eigen vectors are calculated."
@@ -300,7 +301,7 @@ Property::SpinPolarizedLDOS APropertyExtractor::calculateSpinPolarizedLDOS(
 		delete [] ((int**)hint)[1];
 		delete [] (void**)hint;
 		TBTKExit(
-			"APropertyExtractor::calculateSpinPolarizedLDOS()",
+			"PropertyExtractor::ArnoldiIterator::calculateSpinPolarizedLDOS()",
 			"No spin index indicated.",
 			"Use IDX_SPIN to indicate the position of the spin index."
 		);
@@ -335,12 +336,12 @@ Property::SpinPolarizedLDOS APropertyExtractor::calculateSpinPolarizedLDOS(
 	return spinPolarizedLDOS;
 }
 
-Property::SpinPolarizedLDOS APropertyExtractor::calculateSpinPolarizedLDOS(
+Property::SpinPolarizedLDOS ArnoldiIterator::calculateSpinPolarizedLDOS(
 	initializer_list<Index> patterns
 ){
 	TBTKAssert(
 		aSolver->getCalculateEigenVectors(),
-		"APropertyExtractor::calculateSpinPolarizedLDOS()",
+		"PropertyExtractor::ArnoldiIterator::calculateSpinPolarizedLDOS()",
 		"Eigen vectors not calculated.",
 		"Use Solver::ArnoldiIterator::setCalculateEigenVectors() to"
 		<< " ensure eigen vectors are calculated."
@@ -394,26 +395,26 @@ Property::SpinPolarizedLDOS APropertyExtractor::calculateSpinPolarizedLDOS(
 	return spinPolarizedLDOS;
 }
 
-void APropertyExtractor::calculateWaveFunctionsCallback(
+void ArnoldiIterator::calculateWaveFunctionsCallback(
 	PropertyExtractor *cb_this,
 	void *waveFunctions,
 	const Index &index,
 	int offset
 ){
-	APropertyExtractor *pe = (APropertyExtractor*)cb_this;
+	ArnoldiIterator *pe = (ArnoldiIterator*)cb_this;
 
 	const vector<unsigned int> states = ((Property::WaveFunctions**)pe->hint)[0]->getStates();
 	for(unsigned int n = 0; n < states.size(); n++)
 		((complex<double>*)waveFunctions)[offset + n] += pe->getAmplitude(states.at(n), index);
 }
 
-void APropertyExtractor::calculateLDOSCallback(
+void ArnoldiIterator::calculateLDOSCallback(
 	PropertyExtractor *cb_this,
 	void *ldos,
 	const Index &index,
 	int offset
 ){
-	APropertyExtractor *pe = (APropertyExtractor*)cb_this;
+	ArnoldiIterator *pe = (ArnoldiIterator*)cb_this;
 
 	const complex<double> *eigenValues = pe->aSolver->getEigenValues();
 
@@ -436,13 +437,13 @@ void APropertyExtractor::calculateLDOSCallback(
 	}
 }
 
-void APropertyExtractor::calculateSpinPolarizedLDOSCallback(
+void ArnoldiIterator::calculateSpinPolarizedLDOSCallback(
 	PropertyExtractor *cb_this,
 	void *sp_ldos,
 	const Index &index,
 	int offset
 ){
-	APropertyExtractor *pe = (APropertyExtractor*)cb_this;
+	ArnoldiIterator *pe = (ArnoldiIterator*)cb_this;
 
 	const complex<double> *eigenValues = pe->aSolver->getEigenValues();
 
@@ -474,4 +475,5 @@ void APropertyExtractor::calculateSpinPolarizedLDOSCallback(
 	}
 }
 
+};	//End of namespace PropertyExtractor
 };	//End of namespace TBTK

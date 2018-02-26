@@ -20,22 +20,23 @@
  *  @author Kristofer Björnson
  */
 
-#ifndef COM_DAFER45_TBTK_PROPERTY_EXTRACTOR
-#define COM_DAFER45_TBTK_PROPERTY_EXTRACTOR
+#ifndef COM_DAFER45_TBTK_PROPERTY_EXTRACTOR_PROPERTY_EXTRACTOR
+#define COM_DAFER45_TBTK_PROPERTY_EXTRACTOR_PROPERTY_EXTRACTOR
 
-#include "AbstractProperty.h"
-#include "Density.h"
-#include "DOS.h"
 #include "HoppingAmplitudeSet.h"
 #include "Index.h"
-#include "LDOS.h"
-#include "Magnetization.h"
-#include "SpinPolarizedLDOS.h"
+#include "Property/AbstractProperty.h"
+#include "Property/Density.h"
+#include "Property/DOS.h"
+#include "Property/LDOS.h"
+#include "Property/Magnetization.h"
+#include "Property/SpinPolarizedLDOS.h"
 
 #include <complex>
 #include <initializer_list>
 
 namespace TBTK{
+namespace PropertyExtractor{
 
 /** The PropertyExtractor extracts is a base class for derived
  *  PropertyExtractors that are used to extract common physical properties such
@@ -371,6 +372,7 @@ void PropertyExtractor::calculate(
 	}
 }
 
+};	//End of namespace PropertyExtractor
 };	//End of namespace TBTK
 
 #endif

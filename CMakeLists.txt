@@ -1,4 +1,4 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 3.5.1)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12.2)
 
 PROJECT(TBTK)
 
@@ -168,8 +168,8 @@ INCLUDE_DIRECTORIES(
 	Lib/include/ManyBody/FockStateMap/
 	Lib/include/ManyBody/FockStateRule/
 	Lib/include/Properties/
-	Lib/include/PropertyExtractors/
-	Lib/include/Solvers/
+#	Lib/include/PropertyExtractors/
+#	Lib/include/Solvers/
 	Lib/include/SpecializedSolvers/
 	Lib/include/StatesAndOperators/
 	Lib/include/Uncategorized/
@@ -177,7 +177,7 @@ INCLUDE_DIRECTORIES(
 )
 
 IF(${COMPILE_ARNOLDI_SOLVER})
-	INCLUDE_DIRECTORIES(LIB/include/Solvers/ArnoldiSolver/)
+	INCLUDE_DIRECTORIES(LIB/include/Solver/ArnoldiSolver/)
 ENDIF(${COMPILE_ARNOLDI_SOLVER})
 
 IF(${COMPILE_DATA_MANAGER})
@@ -193,7 +193,7 @@ IF(${COMPILE_GUI})
 ENDIF(${COMPILE_GUI})
 
 IF(${COMPILE_LINEAR_EQUATION_SOLVER})
-	INCLUDE_DIRECTORIES(LIB/include/Solvers/LinearEquationSolver/)
+	INCLUDE_DIRECTORIES(LIB/include/Solver/LinearEquationSolver/)
 ENDIF(${COMPILE_LINEAR_EQUATION_SOLVER})
 
 IF(${COMPILE_PLOTTER})

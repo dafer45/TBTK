@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "SpectralFunction.h"
+#include "Property/SpectralFunction.h"
 
 #include <utility>
 

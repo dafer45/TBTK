@@ -26,9 +26,9 @@
 #include "Array.h"
 #include "PlotCanvas.h"
 #include "Decoration.h"
-#include "DOS.h"
 #include "Path.h"
 #include "Point.h"
+#include "Property/DOS.h"
 #include "Streams.h"
 #include "TBTKMacros.h"
 

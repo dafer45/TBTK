@@ -13,12 +13,12 @@
  * limitations under the License.
  */
 
-/** @file Density.cpp
+/** @file Magnetization.cpp
  *
  *  @author Kristofer Björnson
  */
 
-#include "Density.h"
+#include "Property/Magnetization.h"
 
 #include "json.hpp"
 
@@ -28,53 +28,53 @@ using namespace nlohmann;
 namespace TBTK{
 namespace Property{
 
-Density::Density(
+Magnetization::Magnetization(
 	int dimensions,
-	const int *ranges
+	const int* ranges
 ) :
-	AbstractProperty(dimensions, ranges, 1)
+	AbstractProperty(dimensions, ranges, 4)
 {
 }
 
-Density::Density(
+Magnetization::Magnetization(
 	int dimensions,
-	const int *ranges,
-	const double *data
+	const int* ranges,
+	const SpinMatrix *data
 ) :
-	AbstractProperty(dimensions, ranges, 1, data)
+	AbstractProperty(dimensions, ranges, 4, data)
 {
 }
 
-Density::Density(
+Magnetization::Magnetization(
 	const IndexTree &indexTree
 ) :
-	AbstractProperty(indexTree, 1)
+	AbstractProperty(indexTree, 4)
 {
 }
 
-Density::Density(
+Magnetization::Magnetization(
 	const IndexTree &indexTree,
-	const double *data
+	const SpinMatrix *data
 ) :
-	AbstractProperty(indexTree, 1, data)
+	AbstractProperty(indexTree, 4, data)
 {
 }
 
-Density::Density(
-	const Density &density
+Magnetization::Magnetization(
+	const Magnetization &magnetization
 ) :
-	AbstractProperty(density)
+	AbstractProperty(magnetization)
 {
 }
 
-Density::Density(
-	Density &&density
+Magnetization::Magnetization(
+	Magnetization &&magnetization
 ) :
-	AbstractProperty(std::move(density))
+	AbstractProperty(std::move(magnetization))
 {
 }
 
-Density::Density(
+Magnetization::Magnetization(
 	const string &serialization,
 	Mode mode
 ) :
@@ -88,56 +88,37 @@ Density::Density(
 	)
 {
 	TBTKAssert(
-		validate(serialization, "Density", mode),
-		"Density::Density()",
-		"Unable to parse string as Density '" << serialization << "'.",
+		validate(serialization, "Magnetization", mode)
+,		"Magnetization::Magnetization()",
+		"Unable to parse string as Magnetization '" << serialization
+		<< "'.",
 		""
 	);
 }
 
-Density::~Density(){
+Magnetization::~Magnetization(){
 }
 
-Density& Density::operator=(const Density &rhs){
+Magnetization& Magnetization::operator=(const Magnetization &rhs){
 	if(this != &rhs)
 		AbstractProperty::operator=(rhs);
 
 	return *this;
 }
 
-Density& Density::operator=(Density &&rhs){
+Magnetization& Magnetization::operator=(Magnetization &&rhs){
 	if(this != &rhs)
 		AbstractProperty::operator=(std::move(rhs));
 
 	return *this;
 }
 
-double Density::getMin() const{
-	const double *data = getData();
-	double min = data[0];
-	for(unsigned int n = 1; n < getSize(); n++)
-		if(data[n] < min)
-			min = data[n];
-
-	return min;
-}
-
-double Density::getMax() const{
-	const double *data = getData();
-	double max = data[0];
-	for(unsigned int n = 1; n < getSize(); n++)
-		if(data[n] > max)
-			max = data[n];
-
-	return max;
-}
-
-string Density::serialize(Mode mode) const{
+string Magnetization::serialize(Mode mode) const{
 	switch(mode){
-	case Mode::JSON:
+	case Mode ::JSON:
 	{
 		json j;
-		j["id"] = "Density";
+		j["id"] = "Magnetization";
 		j["abstractProperty"] = json::parse(
 			AbstractProperty::serialize(mode)
 		);
@@ -146,7 +127,7 @@ string Density::serialize(Mode mode) const{
 	}
 	default:
 		TBTKExit(
-			"Density::serialize()",
+			"Magnetization::serialize()",
 			"Only Serializeable::Mode::JSON is supported yet.",
 			""
 		);

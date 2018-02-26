@@ -13,12 +13,12 @@
  * limitations under the License.
  */
 
-/** @file CPropertyExtractor.cpp
+/** @file ChebyshevExpander.cpp
  *
  *  @author Kristofer Björnson
  */
 
-#include "CPropertyExtractor.h"
+#include "PropertyExtractor/ChebyshevExpander.h"
 #include "Functions.h"
 #include "Streams.h"
 #include "TBTKMacros.h"
@@ -30,8 +30,9 @@ using namespace std;
 static complex<double> i(0, 1);
 
 namespace TBTK{
+namespace PropertyExtractor{
 
-CPropertyExtractor::CPropertyExtractor(
+ChebyshevExpander::ChebyshevExpander(
 	Solver::ChebyshevExpander &cSolver,
 	int numCoefficients,
 	bool useGPUToCalculateCoefficients,
@@ -40,31 +41,31 @@ CPropertyExtractor::CPropertyExtractor(
 ){
 	TBTKAssert(
 		numCoefficients > 0,
-		"CPropertyExtractor::CPropertyExtractor()",
+		"PropertyExtractor::ChebyshevExpnader::ChebyshevExpander()",
 		"Argument numCoefficients has to be a positive number.",
 		""
 	);
 	TBTKAssert(
 		energyResolution > 0,
-		"CPropertyExtractor::CPropertyExtractor()",
+		"PropertyExtractor::ChebyshevExpander::ChebyshevExpander()",
 		"Argument energyResolution has to be a positive number.",
 		""
 	);
 	TBTKAssert(
 		lowerBound < upperBound,
-		"CPropertyExtractor::CPropertyExtractor()",
+		"PropertyExtractor::ChebyshevExpander::ChebyshevExpander()",
 		"Argument lowerBound has to be smaller than argument upperBound.",
 		""
 	);
 	TBTKAssert(
 		lowerBound >= -cSolver.getScaleFactor(),
-		"CPropertyExtractor::CPropertyExtractor()",
+		"PropertyExtractor::ChebyshevExpander::ChebyshevExpander()",
 		"Argument lowerBound has to be larger than -cSolver->getScaleFactor().",
 		"Use Solver::ChebyshevExpander::setScaleFactor() to set a larger scale factor."
 	);
 	TBTKAssert(
 		upperBound <= cSolver.getScaleFactor(),
-		"CPropertyExtractor::CPropertyExtractor()",
+		"PropertyExtractor::ChebyshevExapnder::ChebysheExpander()",
 		"Argument upperBound has to be smaller than cSolver->getScaleFactor().",
 		"Use Solver::ChebyshevExpnader::setScaleFactor() to set a larger scale factor."
 	);
@@ -83,12 +84,12 @@ CPropertyExtractor::CPropertyExtractor(
 
 }
 
-CPropertyExtractor::~CPropertyExtractor(){
+ChebyshevExpander::~ChebyshevExpander(){
 	if(useGPUToGenerateGreensFunctions)
 		cSolver->destroyLookupTableGPU();
 }
 
-void CPropertyExtractor::setEnergyWindow(
+void ChebyshevExpander::setEnergyWindow(
 	double lowerBound,
 	double upperBound,
 	int energyResolution
@@ -106,7 +107,7 @@ void CPropertyExtractor::setEnergyWindow(
 }
 
 //Property::GreensFunction* CPropertyExtractor::calculateGreensFunction(
-Property::GreensFunction CPropertyExtractor::calculateGreensFunction(
+Property::GreensFunction ChebyshevExpander::calculateGreensFunction(
 	Index to,
 	Index from,
 	Property::GreensFunction::Type type
@@ -117,7 +118,7 @@ Property::GreensFunction CPropertyExtractor::calculateGreensFunction(
 	return calculateGreensFunctions(toIndices, from, type);
 }
 
-Property::GreensFunction CPropertyExtractor::calculateGreensFunction(
+Property::GreensFunction ChebyshevExpander::calculateGreensFunction(
 	initializer_list<initializer_list<Index>> patterns,
 	Property::GreensFunction::Type type
 ){
@@ -129,7 +130,7 @@ Property::GreensFunction CPropertyExtractor::calculateGreensFunction(
 
 		TBTKAssert(
 			pattern.size() == 2,
-			"CPropertyExtractor::calculateGreensFunction()",
+			"ChebyshevExpander::calculateGreensFunction()",
 			"Invalid pattern. Each pattern entry needs to contain"
 			" exactly two Indices, but '"
 			<< pattern.size() << "' found in entry '" << n << "'.",
@@ -235,7 +236,7 @@ Property::GreensFunction CPropertyExtractor::calculateGreensFunction(
 	return greensFunction;
 }
 
-Property::GreensFunction CPropertyExtractor::calculateGreensFunctions(
+Property::GreensFunction ChebyshevExpander::calculateGreensFunctions(
 	vector<Index> &to,
 	Index from,
 	Property::GreensFunction::Type type
@@ -267,7 +268,7 @@ Property::GreensFunction CPropertyExtractor::calculateGreensFunctions(
 		break;
 	default:
 		TBTKExit(
-			"CPropertyExtractor::calculateGreensFunctions()",
+			"PropertyExtractor::ChebyshevExpander::calculateGreensFunctions()",
 			"Unknown GreensFunction type.",
 			"This should never happen, contact the developer."
 		);
@@ -336,7 +337,7 @@ Property::GreensFunction CPropertyExtractor::calculateGreensFunctions(
 	return greensFunction;
 }
 
-complex<double> CPropertyExtractor::calculateExpectationValue(
+complex<double> ChebyshevExpander::calculateExpectationValue(
 	Index to,
 	Index from
 ){
@@ -377,7 +378,7 @@ complex<double> CPropertyExtractor::calculateExpectationValue(
 	return expectationValue;
 }
 
-Property::Density CPropertyExtractor::calculateDensity(
+Property::Density ChebyshevExpander::calculateDensity(
 	Index pattern,
 	Index ranges
 ){
@@ -400,7 +401,7 @@ Property::Density CPropertyExtractor::calculateDensity(
 	return density;
 }
 
-Property::Density CPropertyExtractor::calculateDensity(
+Property::Density ChebyshevExpander::calculateDensity(
 	std::initializer_list<Index> patterns
 ){
 	IndexTree allIndices = generateIndexTree(
@@ -429,7 +430,7 @@ Property::Density CPropertyExtractor::calculateDensity(
 	return density;
 }
 
-Property::Magnetization CPropertyExtractor::calculateMagnetization(
+Property::Magnetization ChebyshevExpander::calculateMagnetization(
 	Index pattern,
 	Index ranges
 ){
@@ -446,7 +447,7 @@ Property::Magnetization CPropertyExtractor::calculateMagnetization(
 	if(((int*)hint)[0] == -1){
 		delete [] (int*)hint;
 		TBTKExit(
-			"CPropertyExtractor::calculateMagnetization()",
+			"PropertyExtractor::ChebyshevExpander::calculateMagnetization()",
 			"No spin index indicated.",
 			"Use IDX_SPIN to indicate the position of the spin index."
 		);
@@ -473,7 +474,7 @@ Property::Magnetization CPropertyExtractor::calculateMagnetization(
 	return magnetization;
 }
 
-Property::Magnetization CPropertyExtractor::calculateMagnetization(
+Property::Magnetization ChebyshevExpander::calculateMagnetization(
 	std::initializer_list<Index> patterns
 ){
 	IndexTree allIndices = generateIndexTree(
@@ -506,7 +507,7 @@ Property::Magnetization CPropertyExtractor::calculateMagnetization(
 	return magnetization;
 }
 
-Property::LDOS CPropertyExtractor::calculateLDOS(Index pattern, Index ranges){
+Property::LDOS ChebyshevExpander::calculateLDOS(Index pattern, Index ranges){
 	ensureCompliantRanges(pattern, ranges);
 
 	int lDimensions;
@@ -532,7 +533,7 @@ Property::LDOS CPropertyExtractor::calculateLDOS(Index pattern, Index ranges){
 	return ldos;
 }
 
-Property::LDOS CPropertyExtractor::calculateLDOS(
+Property::LDOS ChebyshevExpander::calculateLDOS(
 	std::initializer_list<Index> patterns
 ){
 	IndexTree allIndices = generateIndexTree(
@@ -566,7 +567,7 @@ Property::LDOS CPropertyExtractor::calculateLDOS(
 	return ldos;
 }
 
-Property::SpinPolarizedLDOS CPropertyExtractor::calculateSpinPolarizedLDOS(
+Property::SpinPolarizedLDOS ChebyshevExpander::calculateSpinPolarizedLDOS(
 	Index pattern,
 	Index ranges
 ){
@@ -583,7 +584,7 @@ Property::SpinPolarizedLDOS CPropertyExtractor::calculateSpinPolarizedLDOS(
 	if(((int*)hint)[0] == -1){
 		delete [] (int*)hint;
 		TBTKExit(
-			"CPropertyExtractor::calculateSpinPolarizedLDOS()",
+			"PropertyExtractor::ChebsyhevExpander::calculateSpinPolarizedLDOS()",
 			"No spin index indicated.",
 			"Use IDX_SPIN to indicate the position of the spin index."
 		);
@@ -616,7 +617,7 @@ Property::SpinPolarizedLDOS CPropertyExtractor::calculateSpinPolarizedLDOS(
 	return spinPolarizedLDOS;
 }
 
-Property::SpinPolarizedLDOS CPropertyExtractor::calculateSpinPolarizedLDOS(
+Property::SpinPolarizedLDOS ChebyshevExpander::calculateSpinPolarizedLDOS(
 	std::initializer_list<Index> patterns
 ){
 	hint = new int[1];
@@ -655,13 +656,13 @@ Property::SpinPolarizedLDOS CPropertyExtractor::calculateSpinPolarizedLDOS(
 	return spinPolarizedLDOS;
 }
 
-void CPropertyExtractor::calculateDensityCallback(
+void ChebyshevExpander::calculateDensityCallback(
 	PropertyExtractor *cb_this,
 	void *density,
 	const Index &index,
 	int offset
 ){
-	CPropertyExtractor *pe = (CPropertyExtractor*)cb_this;
+	ChebyshevExpander *pe = (ChebyshevExpander*)cb_this;
 
 	Property::GreensFunction greensFunction = pe->calculateGreensFunction(
 		index,
@@ -694,13 +695,13 @@ void CPropertyExtractor::calculateDensityCallback(
 	}
 }
 
-void CPropertyExtractor::calculateMAGCallback(
+void ChebyshevExpander::calculateMAGCallback(
 	PropertyExtractor *cb_this,
 	void *mag,
 	const Index &index,
 	int offset
 ){
-	CPropertyExtractor *pe = (CPropertyExtractor*)cb_this;
+	ChebyshevExpander *pe = (ChebyshevExpander*)cb_this;
 
 	int spinIndex = ((int*)(pe->hint))[0];
 	Index to(index);
@@ -740,13 +741,13 @@ void CPropertyExtractor::calculateMAGCallback(
 	}
 }
 
-void CPropertyExtractor::calculateLDOSCallback(
+void ChebyshevExpander::calculateLDOSCallback(
 	PropertyExtractor *cb_this,
 	void *ldos,
 	const Index &index,
 	int offset
 ){
-	CPropertyExtractor *pe = (CPropertyExtractor*)cb_this;
+	ChebyshevExpander *pe = (ChebyshevExpander*)cb_this;
 
 	Property::GreensFunction greensFunction = pe->calculateGreensFunction(
 		index,
@@ -760,13 +761,13 @@ void CPropertyExtractor::calculateLDOSCallback(
 		((double*)ldos)[offset + n] += imag(greensFunctionData[n])/M_PI*dE;
 }
 
-void CPropertyExtractor::calculateSP_LDOSCallback(
+void ChebyshevExpander::calculateSP_LDOSCallback(
 	PropertyExtractor *cb_this,
 	void *sp_ldos,
 	const Index &index,
 	int offset
 ){
-	CPropertyExtractor *pe = (CPropertyExtractor*)cb_this;
+	ChebyshevExpander *pe = (ChebyshevExpander*)cb_this;
 
 	int spinIndex = ((int*)(pe->hint))[0];
 	Index to(index);
@@ -788,7 +789,7 @@ void CPropertyExtractor::calculateSP_LDOSCallback(
 	}
 }
 
-void CPropertyExtractor::ensureLookupTableIsReady(){
+void ChebyshevExpander::ensureLookupTableIsReady(){
 	if(useLookupTable){
 		if(!cSolver->getLookupTableIsGenerated())
 			cSolver->generateLookupTable(numCoefficients, energyResolution, lowerBound, upperBound);
@@ -797,11 +798,13 @@ void CPropertyExtractor::ensureLookupTableIsReady(){
 	}
 	else if(useGPUToGenerateGreensFunctions){
 		TBTKExit(
-			"CPropertyExtractor::CPropertyExtractor()",
-			"Argument 'useLookupTable' cannot be false if argument 'useGPUToGenerateGreensFunction' is true.",
+			"PropertyExtractor::ChebyshevExpander::ensureLookupTableIsReady()",
+			"Argument 'useLookupTable' cannot be false if argument"
+			<< " 'useGPUToGenerateGreensFunction' is true.",
 			""
 		);
 	}
 }
 
+};	//End of namespace PropertyExtractor
 };	//End of namespace TBTK

@@ -27,7 +27,7 @@
  */
 
 #include "Solver/ChebyshevExpander.h"
-#include "CPropertyExtractor.h"
+#include "PropertyExtractor/ChebyshevExpander.h"
 #include "FileWriter.h"
 #include "LDOS.h"
 #include "Model.h"
@@ -105,7 +105,7 @@ int main(int argc, char **argv){
 	//(required if the Green's function is evaluated on a GPU), and the
 	//lower and upper bound between which the Green's function is evaluated
 	//(has to be inside the interval [-SCALE_FACTOR, SCALE_FACTOR]).
-	CPropertyExtractor pe(
+	PropertyExtractor::ChebyshevExpander pe(
 		cSolver,
 		NUM_COEFFICIENTS,
 		false,

@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "WaveFunctions.h"
+#include "Property/WaveFunctions.h"
 
 #include "json.hpp"
 

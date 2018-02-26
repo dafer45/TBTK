@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "SelfEnergy.h"
+#include "Property/SelfEnergy.h"
 #include "TBTKMacros.h"
 
 using namespace std;

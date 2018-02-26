@@ -28,7 +28,7 @@
 
 #include "Solver/Diagonalizer.h"
 #include "DOS.h"
-#include "DPropertyExtractor.h"
+#include "PropertyExtractor/Diagonalizer.h"
 #include "EigenValues.h"
 #include "FileReader.h"
 #include "FileWriter.h"
@@ -145,7 +145,7 @@ int main(int argc, char **argv){
 	FileWriter::writeModel(model);
 
 	//Create PropertyExtractor
-	DPropertyExtractor pe(dSolver);
+	PropertyExtractor::Diagonalizer pe(dSolver);
 
 	//Calculate Density
 	Property::Density density = pe.calculateDensity({

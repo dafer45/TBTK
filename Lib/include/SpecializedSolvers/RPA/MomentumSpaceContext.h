@@ -25,7 +25,7 @@
 
 #include "BrillouinZone.h"
 #include "Solver/BlockDiagonalizer.h"
-#include "BPropertyExtractor.h"
+#include "PropertyExtractor/BlockDiagonalizer.h"
 
 namespace TBTK{
 
@@ -84,7 +84,7 @@ public:
 	Index getKIndex(const std::vector<double> &k) const;
 
 	/** Get property extractor. */
-	const BPropertyExtractor& getPropertyExtractor() const;
+	const PropertyExtractor::BlockDiagonalizer& getPropertyExtractorBlockDiagonalizer() const;
 private:
 	/** Model to work on. */
 	Model *model;
@@ -105,7 +105,7 @@ private:
 	Solver::BlockDiagonalizer solver;
 
 	/** Property extractor. */
-	BPropertyExtractor *propertyExtractor;
+	PropertyExtractor::BlockDiagonalizer *propertyExtractor;
 
 	/** Energies. */
 	double *energies;
@@ -205,7 +205,7 @@ inline Index MomentumSpaceContext::getKIndex(
 	);
 }
 
-inline const BPropertyExtractor& MomentumSpaceContext::getPropertyExtractor(
+inline const PropertyExtractor::BlockDiagonalizer& MomentumSpaceContext::getPropertyExtractorBlockDiagonalizer(
 ) const{
 	return *propertyExtractor;
 }

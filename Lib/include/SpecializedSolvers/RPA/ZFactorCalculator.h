@@ -24,7 +24,6 @@
 #define COM_DAFER45_TBTK_Z_FACTOR_CALCULATOR
 
 #include "BrillouinZone.h"
-#include "BPropertyExtractor.h"
 #include "IndexedDataTree.h"
 #include "SelfEnergyCalculator.h"
 

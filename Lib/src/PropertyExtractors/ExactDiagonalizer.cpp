@@ -1,19 +1,20 @@
-#include "EDPropertyExtractor.h"
+#include "PropertyExtractor/ExactDiagonalizer.h"
 
 using namespace std;
 
 static complex<double> i(0, 1);
 
 namespace TBTK{
+namespace PropertyExtractor{
 
-EDPropertyExtractor::EDPropertyExtractor(Solver::ExactDiagonalizer &edSolver){
+ExactDiagonalizer::ExactDiagonalizer(Solver::ExactDiagonalizer &edSolver){
 	this->edSolver = &edSolver;
 }
 
-EDPropertyExtractor::~EDPropertyExtractor(){
+ExactDiagonalizer::~ExactDiagonalizer(){
 }
 
-Property::GreensFunction* EDPropertyExtractor::calculateGreensFunction(
+Property::GreensFunction* ExactDiagonalizer::calculateGreensFunction(
 	Index to,
 	Index from,
 	Property::GreensFunction::Type type
@@ -127,7 +128,7 @@ Property::GreensFunction* EDPropertyExtractor::calculateGreensFunction(
 			break;
 		default:
 			TBTKExit(
-				"EDPropertyExtractor::calculateGreensFunction()",
+				"PropertyExtractor::ExactDiagonalizer::calculateGreensFunction()",
 				"Only support for ChebyshevSolver::GreensFunctionType::Retarded implemented so far.",
 				""
 			);
@@ -224,7 +225,7 @@ Property::GreensFunction* EDPropertyExtractor::calculateGreensFunction(
 			break;
 		default:
 			TBTKExit(
-				"EDPropertyExtractor::calculateGreensFunction()",
+				"PropertyExtractor::ExactDiagonalizer::calculateGreensFunction()",
 				"Only support for ChebyshevSolver::GreensFunctionType::Retarded implemented so far.",
 				""
 			);
@@ -303,21 +304,21 @@ Property::GreensFunction* EDPropertyExtractor::calculateGreensFunction(
 	}
 	else{
 		TBTKExit(
-			"EDPropertyExtractor::calculateGreensFunction()",
+			"PropertyExtractor::ExactDiagonalizer::calculateGreensFunction()",
 			"Unknown BitRegister type.",
 			""
 		);
 	}
 }
 
-complex<double> EDPropertyExtractor::calculateExpectationValue(
+complex<double> ExactDiagonalizer::calculateExpectationValue(
 	Index to,
 	Index from
 ){
-	TBTKNotYetImplemented("EDPropertyExtractor::calculateExpectationValue()");
+	TBTKNotYetImplemented("PropertyExtractor::ExactDiagonalizer::calculateExpectationValue()");
 }
 
-Property::Density EDPropertyExtractor::calculateDensity(
+Property::Density ExactDiagonalizer::calculateDensity(
 	Index pattern,
 	Index ranges
 ){
@@ -333,7 +334,7 @@ Property::Density EDPropertyExtractor::calculateDensity(
 	return density;
 }
 
-Property::Magnetization EDPropertyExtractor::calculateMagnetization(
+Property::Magnetization ExactDiagonalizer::calculateMagnetization(
 	Index pattern,
 	Index ranges
 ){
@@ -350,7 +351,7 @@ Property::Magnetization EDPropertyExtractor::calculateMagnetization(
 	if(((int*)hint)[0] == -1){
 		delete [] (int*)hint;
 		TBTKExit(
-			"EDPropertyExtractor::calculateMagnetization()",
+			"PropertyExtractor::ExactDiagonalizer::calculateMagnetization()",
 			"No spin index found.",
 			"Use IDX_SPIN to indicate position of spin index."
 		);
@@ -377,7 +378,7 @@ Property::Magnetization EDPropertyExtractor::calculateMagnetization(
 	return magnetization;
 }
 
-Property::LDOS EDPropertyExtractor::calculateLDOS(
+Property::LDOS ExactDiagonalizer::calculateLDOS(
 	Index pattern,
 	Index ranges
 ){
@@ -406,7 +407,7 @@ Property::LDOS EDPropertyExtractor::calculateLDOS(
 	return ldos;
 }
 
-Property::SpinPolarizedLDOS EDPropertyExtractor::calculateSpinPolarizedLDOS(
+Property::SpinPolarizedLDOS ExactDiagonalizer::calculateSpinPolarizedLDOS(
 	Index pattern,
 	Index ranges
 ){
@@ -423,7 +424,7 @@ Property::SpinPolarizedLDOS EDPropertyExtractor::calculateSpinPolarizedLDOS(
 	if(((int*)hint)[0] == -1){
 		delete [] (int*)hint;
 		TBTKExit(
-			"EDPropertyExtractor::calculateSpinPolarizedLDOS()",
+			"PropertyExtractor::ExactDiagonalizer::calculateSpinPolarizedLDOS()",
 			"No spin index found.",
 			"Use IDX_SPIN to indicate position of spin index."
 		);
@@ -456,31 +457,31 @@ Property::SpinPolarizedLDOS EDPropertyExtractor::calculateSpinPolarizedLDOS(
 	return spinPolarizedLDOS;
 }
 
-void EDPropertyExtractor::calculateDensityCallback(
+void ExactDiagonalizer::calculateDensityCallback(
 	PropertyExtractor *cb_this,
 	void *density,
 	const Index &index,
 	int offset
 ){
-	TBTKNotYetImplemented("EDPropertyExtractor::calculateDensityCallback()");
+	TBTKNotYetImplemented("PropertyExtractor::ExactDiagonalizer::calculateDensityCallback()");
 }
 
-void EDPropertyExtractor::calculateMagnetizationCallback(
+void ExactDiagonalizer::calculateMagnetizationCallback(
 	PropertyExtractor *cb_this,
 	void *magnetization,
 	const Index &index,
 	int offset
 ){
-	TBTKNotYetImplemented("EDPropertyExtractor::calculateMagnetizationCallback()");
+	TBTKNotYetImplemented("PropertyExtractor::ExactDiagonalizer::calculateMagnetizationCallback()");
 }
 
-void EDPropertyExtractor::calculateLDOSCallback(
+void ExactDiagonalizer::calculateLDOSCallback(
 	PropertyExtractor *cb_this,
 	void *ldos,
 	const Index &index,
 	int offset
 ){
-	EDPropertyExtractor *pe = (EDPropertyExtractor*)cb_this;
+	ExactDiagonalizer *pe = (ExactDiagonalizer*)cb_this;
 
 	Property::GreensFunction *greensFunction = pe->calculateGreensFunction(
 		index,
@@ -496,13 +497,13 @@ void EDPropertyExtractor::calculateLDOSCallback(
 	delete greensFunction;
 }
 
-void EDPropertyExtractor::calculateSpinPolarizedLDOSCallback(
+void ExactDiagonalizer::calculateSpinPolarizedLDOSCallback(
 	PropertyExtractor *cb_this,
 	void *spinPolarizedLDOS,
 	const Index &index,
 	int offset
 ){
-	EDPropertyExtractor *pe = (EDPropertyExtractor*)cb_this;
+	ExactDiagonalizer *pe = (ExactDiagonalizer*)cb_this;
 
 	int spinIndex = ((int*)(pe->hint))[0];
 	Index to(index);
@@ -527,4 +528,5 @@ void EDPropertyExtractor::calculateSpinPolarizedLDOSCallback(
 	}
 }
 
+};	//End of namespace PropertyExtractor
 };	//End of namespace TBTK

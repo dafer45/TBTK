@@ -623,22 +623,22 @@ In the code examples presented here it is assumed that a Model object has alread
 
 # Overview of native Solvers {#OverviewOfNativeSolvers}
 TBTK currently contains four production ready Solvers.
-These are called DiagonalizationSolver, BlockDiagonalizationSolver, ArnoldiSolver, and ChebyshevSolver.
+These are called Diagonalizer, BlockDiagonalizer, ArnoldiIterator, and ChebyshevExpander.
 The first two of these are based on diagonalization, allowing for all eigenvalues and eigenvectors to be calculated.
 Their strength is that once a problem has been diagonalized, complete knowledge about the system is available and arbitrary properties can be calculated.
 However, diagonalization scales poorly with system size and is therefore not feasible for very large systems.
-The BlockDiagonalizationSolver provides important improvements in this regard for large systems if they are block diagonal, in which case the BlockDiagonalizationSolver can handle very large systems compared to the DiagonalizationSolver.
+The BlockDiagonalizer provides important improvements in this regard for large systems if they are block diagonal, in which case the BlockDiagonalizer can handle very large systems compared to the Diagonalizer.
 
-Next, the ArnoldiSolver is similar to the DiagonalizationSolvers in the sense that it calculates eigenvalues and eigenvectors.
+Next, the ArnoldiIterator is similar to the Diagonalizers in the sense that it calculates eigenvalues and eigenvectors.
 However, it is what is know as an iterative Krylov space Solver, which succesively builds up a subspace of the Hilbert space and performs diagonalization on this restricted subspace.
-Therefore the ArnoldiSolver only extracts a few eigenvalues and eigenvectors.
-Complete information about a system can therefore usually not be obtained with the help of the ArnoldiSolver, but it can often give access to the relevant information for very large systems if only a few eigenvalues or eigenvectors are needed.
+Therefore the ArnoldiIterator only extracts a few eigenvalues and eigenvectors.
+Complete information about a system can therefore usually not be obtained with the help of the ArnoldiIterator, but it can often give access to the relevant information for very large systems if only a few eigenvalues or eigenvectors are needed.
 Arnoldi iteration is closely related to the Lanczos method and is also the underlying method used when extracting a limited number of eigenvalues and eigenvectors using MATLABS eigs-function.
 
-Finally, the ChebyshevSolver is different from the other methods in that it extracts the Green's function rather than eigenvalues and eigenvectors.
-The ChebyshevSolvers strenght is also that it can be used for relatively large systems.
-Moreover, while the DiagonalizationSolvers requires that the whole system first is diagonalized, and thereby essentially solves the full problem, before any property can be extracted, the ChebyshevSolver allows for individual Green's functions to be calculated which contains only partial information about the system.
-However, the ChebyshevMethod is also an iterative method (but not Krylov), and would in fact require an infinite number of steps to obtain an exact solution.
+Finally, the ChebyshevExpander is different from the other methods in that it extracts the Green's function rather than eigenvalues and eigenvectors.
+The ChebyshevExpanders strenght is also that it can be used for relatively large systems.
+Moreover, while the Diagonalizers requires that the whole system first is diagonalized, and thereby essentially solves the full problem, before any property can be extracted, the ChebyshevExpander allows for individual Green's functions to be calculated which contains only partial information about the system.
+However, the Chebyshev method is also an iterative method (but not Krylov), and would in fact require an infinite number of steps to obtain an exact solution.
 
 # General remarks about Solvers {#GeneralRemarksAboutSolvers}
 The Solvers all innherit from a common base class called Solver.
@@ -661,13 +661,13 @@ To do so, call
 	solver.setVerbose(false);
 ```
 
-# DiagonalizationSolver {#DiagonalizationSolver}
-The DiagonalizationSolver sets up a dense matrix representing the Hamiltonian and then diagonalizes it to obtain eigenvalues and eigenvectors.
-The DiagonalizationSolver is probably the simplest possible Solver to work with as long as the system sizes are small enough to make it feasible, which means Hilbert spaces with a basis size of up to a few thousands.
-A simple set up of the DiagonalizationSolver
+# Solver::Diagonalizer {#SolverDiagonalizer}
+The Diagonalizer sets up a dense matrix representing the Hamiltonian and then diagonalizes it to obtain eigenvalues and eigenvectors.
+The Diagonalizer is probably the simplest possible Solver to work with as long as the system sizes are small enough to make it feasible, which means Hilbert spaces with a basis size of up to a few thousands.
+A simple set up of the Diagonalizer
 ```cpp
-	//Create a DiagoanlizationSolver.
-	DiagonalizationSolver solver;
+	//Create a Solver::Diagoanlizer.
+	Solver::Diagonalizer solver;
 	//Set the Model to work on.
 	solver.setModel(model);
 	//Diagonalize the Hamiltonian
@@ -676,11 +676,11 @@ A simple set up of the DiagonalizationSolver
 That's it. The problem is solved and can be passed to a corresponding PropertyExtractor for further processing.
 
 ## Estimating time and space requirements
-Since diagonalization is a rather simple problem conceptually, it is easy to estimate the memory and time costs for the DiagonalizationSolver.
+Since diagonalization is a rather simple problem conceptually, it is easy to estimate the memory and time costs for the Diagonalizer.
 Memorywise the Hamiltonian is stored as an upper triangular matrix with complex<double> entries each 16 bytes large.
 The storage space required for the Hamiltonian is therefore roughly \f$16N^2/2 = 8N^2\f$ bytes, where \f$N\f$ is the basis size of the Hamiltonian.
 Another \f$16N^2\f$ bytes are required to store the resulting eigenvectors, and \f$8N\f$ bytes for the eigenvalues.
-Neglecting the storage for the eigenvalues the approximate memory footprint for the DiagonalizationSolver is \f$24N^2\f$ bytes.
+Neglecting the storage for the eigenvalues the approximate memory footprint for the Diagonalizer is \f$24N^2\f$ bytes.
 This runs into the GB range around a basis size of 7000.
 
 The time it takes to diagonalize a matrix cannot be estimated with the same precission since it depends on the exact specification of the computer that the calculations are done on, but as of 2018 runs into the hour range for basis sizes of a few thousands.
@@ -694,13 +694,13 @@ Once the calculated parameter value is equal (within some tollerance) to the inp
 That is, the calculated parameters are consistent with themselves in the sense that if they are used as input parameters, they are also the result of the calculation.
 
 When using diagonalization the self-consistent procedure is very straight forward: diagonalize the Hamiltonian, callculate and update parameters, and repeat until convergence.
-The DiagonalizationSolver is therefore prepared to run such a self-consistency loop.
-However, the the second step requires special knowledge about the system which the DiagonalizationSolver cannot incorporate without essentially becoming a single purpose solver.
-The solution to this problem is to allow the application developer to supply a callback function that the DiagonalizationSolver can call once the Hamiltonian has been diagonalized.
-This function is responsibile for calculating and updating relevant parameters, as well as informing the DiagonalizationSolver whether the solution has converged.
+The Diagonalizer is therefore prepared to run such a self-consistency loop.
+However, the the second step requires special knowledge about the system which the Diagonalizer cannot incorporate without essentially becoming a single purpose solver.
+The solution to this problem is to allow the application developer to supply a callback function that the Diagonalizer can call once the Hamiltonian has been diagonalized.
+This function is responsibile for calculating and updating relevant parameters, as well as informing the Diagonalizer whether the solution has converged.
 The interface for such a function is
 ```cpp
-	bool selfConsistencyCallback(DiagonalizationSolver &solver){
+	bool selfConsistencyCallback(Solver::Diagonalizer &solver){
 		//Calculate and update parameters.
 		//...
 
@@ -715,12 +715,12 @@ The interface for such a function is
 	}
 ```
 The specific details of the self-consistency callback is up to the application developer to fill in, but the general structure has to be as above.
-That is, the callback has to accept the DiagonalizationSolver as an argument, perform the required work, determine whether the solution has converged and return true or false depending on wheter it has or not.
+That is, the callback has to accept the Diagonalizer as an argument, perform the required work, determine whether the solution has converged and return true or false depending on wheter it has or not.
 In addition to the self-consistency callback, the application developer interested in developing such a self-consistent calculation should also make use of the HoppingAmplitude callback described in the Model chapter for passing relevant parameters back to the Model in the next iteration step.
 
-Once a self-consistency callback is implemented, the DiagonalizationSolver can be configured as follows to make use of it
+Once a self-consistency callback is implemented, the Diagonalizer can be configured as follows to make use of it
 ```cpp
-	DiagonalizationSolver solver;
+	Solver::Diagonalizer solver;
 	solver.setModel(model);
 	solver.setSelfConsistencyCallback(selfConsistencyCallback);
 	solver.setMaxIterations(100);
@@ -729,20 +729,20 @@ Once a self-consistency callback is implemented, the DiagonalizationSolver can b
 Here the third line tells the Solver which function to use as a callback, while the fourth line puts an upper limit to the number of self-consistent steps the Solver will take if self-consistency is not reached.
 For a complete example of a self-consistent calculation the reader is referred to the SelfConsistentSuperconductivity template in the Template folder.
 
-# BlockDiagonalizationSolver {#BlockDiagoanlizationSolver}
-The BlockDiagonalizationSolver is similar to the DiagonalizationSolver, except that it take advantage of possible block-diagonal structures in the Hamiltonian.
+# Solver::BlockDiagonalizer {#SolverBlockDiagoanlizer}
+The BlockDiagonalizer is similar to the Diagonalizer, except that it take advantage of possible block-diagonal structures in the Hamiltonian.
 For this to work it is important that the Models index structure is chosen such that TBTK is able to automatically detect the block-diagonal structure of the Hamiltonian, as described in the Model chapter.
-The BlockDiagonalizationSolver mimics the DiagonalizationSolver almost perfectly, and the code for initializing and running a BlockDiagonalizationSolver including a self-consistency callback is
+The BlockDiagonalizer mimics the Diagonalizer almost perfectly, and the code for initializing and running a BlockDiagonalizer including a self-consistency callback is
 ```cpp
-	DiagonalizationSolver solver;
+	SOlver::BlockDiagonalizer solver;
 	solver.setModel(model);
 	solver.setSelfConsistencyCallback(selfConsistencyCallback);
 	solver.setMaxIterations(100);
 	solver.run();	
 ```
-The only difference here is that the *selfCOnsistencyCallback* has to take a BlockDiagonalizationSolver as argument rather than a DiagonalizationSolver.
+The only difference here is that the *selfCOnsistencyCallback* has to take a BlockDiagonalizer as argument rather than a Diagonalizer.
 
-# ArnoldiSolver {#ArnoldiSolver}
+# Solver::ArnoldiIterator {#SolverArnoldiIterator}
 The main drawback of diagonalization is that it scales poorly with system size and becomes prohibitively demanding both in terms of memory and computational time if the individual blocks have a basis size of more than a few thousands.
 Arnoldi iterations instead utilizes the sparse nature of the Hamiltonian both to reduce the memory footprint and computational time and can therefore handle much larger systems.
 
@@ -759,9 +759,9 @@ We note that since the generated subspace cannot be guaranteed to contain the ei
 However, the subspace often converge rather quickly to the true extreme subspace and therefore generates very good approximations to the most extreme eigenvectors.
 It is therefore convenient to think of the ArnoldiSolver simply as a solver that can calculate extreme eigenvalues and eigenvectors.
 
-With this background we are ready to understand how to create and configure a basic ArnoldiSolver
+With this background we are ready to understand how to create and configure a basic ArnoldiIterator
 ```cpp
-	ArnoldiSolver solver;
+	Solver::ArnoldiIterator solver;
 	solver.setModel(model);
 	solver.setNumLancxosVectors(200);
 	solver.setMaxIterations(500);
@@ -769,36 +769,36 @@ With this background we are ready to understand how to create and configure a ba
 	solver.setCalculateEigenVectors(true);
 	solver.run();
 ```
-As seen, line 1, 2, and 7 is similar to the DiagonalizationSolvers and require no further explanation.
+As seen, line 1, 2, and 7 is similar to the Diagonalizers and require no further explanation.
 The thrid lines specifies how many Ritz-vectors (or Lanczos vectors) that are going to be generated during the iterative procedure, while the fourth line specifies the maximum number of iterations.
-It may be suprising that the number of iterations are not the same as the number of generated Ritz-vectors, but is due to the fact that the ArnoldiSolver is using a further improvement on the procedure called implicitly restarted Arnoldi iteration.
+It may be suprising that the number of iterations are not the same as the number of generated Ritz-vectors, but is due to the fact that the ArnoldiIterator is using a further improvement on the procedure called implicitly restarted Arnoldi iteration.
 For further information on this the interested reader is referred to the documentation for the ARPACK library.
 Remembering that we successively build up a larger and larger subspace starting from some random initial vector, it is expected that not all of the generated Ritz-vectors are meaningfull, but only the most extreme ones.
 For this reason the fifth line is used to specify the number of vectors that actually is going to be retained at the end of the calculation.
-To understand the sixth line we finally have to mention that the eigenvectors used internally by the ArnoldiSolver during the iterative procedure is not in the basis of the full Hamiltonian.
+To understand the sixth line we finally have to mention that the eigenvectors used internally by the ArnoldiIterator during the iterative procedure is not in the basis of the full Hamiltonian.
 That 100 generated eigenvectors therefore has to be converted to the basis that we are interested in if we actually want to use the eigenvectors.
-The sixth line tells the ArnoldiSolver to do so.
+The sixth line tells the ArnoldiIterator to do so.
 
 ## Shift and invert (extracting non-extremal eigenvalues)
 It is often not the extremal eigenvalues and eigenvectors that are of interest, but rather those around specific eigenvalue.
 With a simple trick it is possible to access also these using Arnoldi iteration.
 Namely, if we first shift the Hamiltonian by some number \f$\lambda\f$ the eigenvalues around \f$\lambda\f$ in the original matrix are shifted to lie around zero.
 Further, since the inverse of a matrix has the same eigenvectors as the original matrix, and inverse eigenvalues, the eigenvectors with eigenvalues around \f$\lambda\f$ in the original Hamiltonian becomes the new extremal eigenvectors.
-The ArnoldiSolver implements this mode of execution, which can be run by adding the following two lines before the call to *solver.run()*.
+The ArnoldiIterator implements this mode of execution, which can be run by adding the following two lines before the call to *solver.run()*.
 ```cpp
 	solver.setCentralValue(2);
-	solver.setMode(ArnoldiSolver::Mode::ShiftAndInvert);
+	solver.setMode(Solver::ArnoldiIterator::Mode::ShiftAndInvert);
 ```
 
 The shift can also be applied without inversion.
 This can be beneficial if extremal eigenvalues of a particular sign are of interest.
 Say that the spectrum of a Hamiltonian is known to be between -1 and 1.
-By setting the central value to -1 (shifting -1 to 0), the spectrum for the new Hamiltonian is between 0 and 2 and the ArnoldiSolver will therefore only extract the eigenvectors with positive eigenvalues.
+By setting the central value to -1 (shifting -1 to 0), the spectrum for the new Hamiltonian is between 0 and 2 and the ArnoldiIterator will therefore only extract the eigenvectors with positive eigenvalues.
 We note that the function is called *setCentralValue()* rather than *setShift()*, since to the user of the Solver the final result is not shifted.
 The shift is first applied to the Hamiltonian internally, but is also added to the resulting eigenvalues to cancel this modification of the problem, meaning that the final eigenvalues are going to have values around 1 and not 2.
 
-# ChebyshevSolver {#ChebyshevSolver}
-The ChebyshevSolver is a Green's function based solver that calculates Green's functions on the form
+# Solver::ChebyshevExpander {#SolverChebyshevSolver}
+The ChebyshevExpander is a Green's function based solver that calculates Green's functions on the form
 <center>\f$G_{\mathbf{i}\mathbf{j}}(E) = \frac{1}{\sqrt{s^2 - E^2}}\sum_{m=0}^{\infty}\frac{b_{\mathbf{i}\mathbf{j}}^{(m)}}{1 + \delta_{0m}}F(m\textrm{acos}(E/s))\f$,</center>
 where \f$F(x)\f$ is one of the functions \f$\cos(x)\f$, \f$\sin(x)\f$, \f$e^{ix}\f$, and \f$e^{-ix}\f$.
 We do not go into details about this method here, but rather refer the interested reader to Phys. Rev. Lett. <b>78</b>, 275 (2006), Phys. Rev. Lett. <b>105</b>, 1 (2010), and <a href="http://urn.kb.se/resolve?urn=urn%3Anbn%3Ase%3Auu%3Adiva-305212">urn:nbn:se:uu:diva-305212</a>.
@@ -821,25 +821,25 @@ Since Hamiltonians usually are very sparse, and multiplication with sparse matri
 Nevertheless, an infinite number of expansion coefficients can of course not be calculated in a finite time, and therefore the sum in the equation above has to be cut off at some number of coefficients.
 Once the coefficients have been calculated, the final step needed to generate the Green's function is to evaluate the sum at as many energy points as is needed.
 
-With this background we are ready to understand how to create and initialize a ChebyshevSolver
+With this background we are ready to understand how to create and initialize a ChebyshevExpander
 ```cpp
 	const double SCALE_FACTOR = 10;
 
-	ChebyshevSolver solver;
+	Solver::ChebyshevExpander solver;
 	solver.setModel(model);
 	solver.setScaleFactor(SCALE_FACTOR);
 ```
 The only number that needs to be supplied at this point is the scale factor.
-We also note that in contrast to for example the DiagonalizationSolver, there is no *solver.run()* command for the ChebyshevSolver.
-This is because, unlike the DiagonalizationSolver which essentially solves the whole system by diagonalizing it before properties can be extracted, the ChebyshevSolver solves the problem as the properties are extracted.
-We also note here, that in order for the ChebyshevSolver to work, it is required that one additional call is made to the Model.
+We also note that in contrast to for example the DiagonalizationSolver, there is no *solver.run()* command for the ChebyshevExpander.
+This is because, unlike the Diagonalizer which essentially solves the whole system by diagonalizing it before properties can be extracted, the ChebyshevExpander solves the problem as the properties are extracted.
+We also note here, that in order for the ChebyshevExpander to work, it is required that one additional call is made to the Model.
 Namely, at the point of Model construction write
 ```cpp
 	model.construct();
 	model.constructCOO();
 ```
 rather than just the first line.
-This makes the Model create an internal sparse matrix representation of the Hamiltonian on a standard matrix format called COO and is required by the ChebyshevSolver.
+This makes the Model create an internal sparse matrix representation of the Hamiltonian on a standard matrix format called COO and is required by the ChebyshevExpander.
 This requirement is slightly in conflict with the general design philosophy expressed in this manual and is intended to be removed in the future.
 
 @page PropertyExtractors PropertyExtractors
@@ -852,41 +852,39 @@ This is e.g. very useful when it is realized that a particular Solver is not the
 It is also very useful when setting up complex problems where it can be useful to benchmark results from different Solvers against each other.
 The later is especially true during the development of new Solvers.
 
-The different PropertyExtractors can of course not have completely identical interfaces, since some properties are simply not possible to calculate with some Solvers.
+The different PropertyExtractors can, however, not have completely identical interfaces, since some properties are simply not possible to calculate with some Solvers.
 Some Solvers may also make it possible to calculate very specific things that are not possible to do with any other Solver.
 The PropertyExtractors are therefore largely uniform interfaces, but not identical.
 However, for most standard properties there at least exists function calls that allow the properties to compile even if they cannot actually perform the calculation.
 The program will instead print error messages that make it clear that the particular Solver is not able to calculate the property and ask the developer to switch Solver.
-In fact, this is achieved through inheritance from a common abstract base class called PropertyExtractor and allows for completely Solver independent code to be written that works with the abstract base class rather than the individual Solver specific PropertyExtractors.
+In fact, this is achieved through inheritance from a common abstract base class called PropertyExtractor::PropertyExtractor and allows for completely Solver independent code to be written that works with the abstract base class rather than the individual Solver specific PropertyExtractors.
 The experienced C++ programmer can use this to write truly portable code, while the developer unfamiliar with innheritance and abstract classes do not need to worry about these details.
 
-Each of the Solvers described in the Solver chapter have their own PropertyExtractor called DPropertyExtractor, BPropertyExtractor, APropertyExtractor, and CPropertyExtractor for Diagonalization, BlockDiagonalization, Arnoldi, and Chebyshev, respectively.
-The practie of using a single letter rather than a full word at the start of the class name runs contrary to the practice of using fully readable names in the rest of TBTK code and will probably change in the future.
-Not least since the development of even more Solvers otherwise likely will lead to name clashes.
+Each of the Solvers described in the Solver chapter have their own PropertyExtractor called PropertyExtractor::Diagonalizer, PropertyExtractor::BlockDiagonalizer, PropertyExtractor::ArnoldiIterator, and PropertyExtractor::ChebyshevExpander.
 The point of creation for the PropertyExtractor is the last point at which algorithm specific details may need to be known about the Solvers and below we therefore go through how to create and initialize the different PropertyExtractors.
 
-## DPropertyExtractor
+## PropertyExtractor::Diagonalizer
 
 ```cpp
-	DPropertyExtractor propertyExtractor(solver);
+	PropertyExtractor::Diagonalizer propertyExtractor(solver);
 ```
 
-## BPropertyExtractor
+## PropertyExtractor::BlockDiagonalizer
 
 ```cpp
-	BPropertyExtractor propertyExtractor(solver);
+	PropertyExtractor::BlockDiagonalizer propertyExtractor(solver);
 ```
 
-## APropertyExtractor
+## PropertyExtractor::ArnoldiIterator
 
 ```cpp
-	APropertyExtractors propertyExtractor(solver);
+	PropertyExtractors::ArnoldiIterator propertyExtractor(solver);
 ```
 
-## CPropertyExtractor
+## PropertyExtractor::ChebyshevExpander
 
 ```cpp
-	CPropertyExtracto propertyExtractor(
+	PropertyExtractor::ChebyshevExpander propertyExtractor(
 		solver,
 		NUM_COEFFICIENTS,
 		USE_GPU_TO_CALCULATE_COEFFICIENTS,

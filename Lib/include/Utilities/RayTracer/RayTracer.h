@@ -23,12 +23,12 @@
 #ifndef COM_DAFER45_TBTK_RAY_TRACER
 #define COM_DAFER45_TBTK_RAY_TRACER
 
-#include "Density.h"
 #include "FieldWrapper.h"
-#include "LDOS.h"
-#include "Magnetization.h"
 #include "Model.h"
-#include "WaveFunctions.h"
+#include "Property/Density.h"
+#include "Property/LDOS.h"
+#include "Property/Magnetization.h"
+#include "Property/WaveFunctions.h"
 #include "TBTKMacros.h"
 #include "Vector3d.h"
 

@@ -14,41 +14,42 @@
  */
 
 /** @package TBTKcalc
- *  @file BPropertyExtractor.h
+ *  @file BlockDiagonalizer.h
  *  @brief Extracts physical properties from the Solver::BlockDiagonalizer.
  *
  *  @author Kristofer Björnson
  */
 
-#ifndef COM_DAFER45_TBTK_B_PROPERTY_EXTRACTOR
-#define COM_DAFER45_TBTK_B_PROPERTY_EXTRACTOR
+#ifndef COM_DAFER45_TBTK_PROPERTY_EXTRACTOR_BLOCK_DIAGONALIZER
+#define COM_DAFER45_TBTK_PROPERTY_EXTRACTOR_BLOCK_DIAGONALIZER
 
 #include "Solver/BlockDiagonalizer.h"
-#include "DOS.h"
-#include "Density.h"
-#include "EigenValues.h"
-#include "GreensFunction.h"
-#include "LDOS.h"
-#include "Magnetization.h"
-#include "PropertyExtractor.h"
-#include "SpinPolarizedLDOS.h"
-#include "WaveFunctions.h"
+#include "Property/DOS.h"
+#include "Property/Density.h"
+#include "Property/EigenValues.h"
+#include "Property/GreensFunction.h"
+#include "Property/LDOS.h"
+#include "Property/Magnetization.h"
+#include "Property/SpinPolarizedLDOS.h"
+#include "Property/WaveFunctions.h"
+#include "PropertyExtractor/PropertyExtractor.h"
 
 #include <complex>
 #include <initializer_list>
 
 namespace TBTK{
+namespace PropertyExtractor{
 
-/** The BPropertyExtractor extracts common physical properties such as DOS,
+/** The PropertyExtractor extracts common physical properties such as DOS,
  *  Density, LDOS, etc. from a BlockDiagonalizer. These can then be
  *  written to file using the FileWriter.*/
-class BPropertyExtractor : public PropertyExtractor{
+class BlockDiagonalizer : public PropertyExtractor{
 public:
 	/** Constructor. */
-	BPropertyExtractor(Solver::BlockDiagonalizer &bSolver);
+	BlockDiagonalizer(Solver::BlockDiagonalizer &bSolver);
 
 	/** Destructor. */
-	virtual ~BPropertyExtractor();
+	virtual ~BlockDiagonalizer();
 
 	/** Legacy. */
 /*	void saveEigenValues(
@@ -203,25 +204,25 @@ private:
 	Solver::BlockDiagonalizer *bSolver;
 };
 
-inline double BPropertyExtractor::getEigenValue(int state) const{
+inline double BlockDiagonalizer::getEigenValue(int state) const{
 	return bSolver->getEigenValue(state);
 }
 
-inline double BPropertyExtractor::getEigenValue(
+inline double BlockDiagonalizer::getEigenValue(
 	const Index &blockIndex,
 	int state
 ) const{
 	return bSolver->getEigenValue(blockIndex, state);
 }
 
-inline const std::complex<double> BPropertyExtractor::getAmplitude(
+inline const std::complex<double> BlockDiagonalizer::getAmplitude(
 	int state,
 	const Index &index
 ){
 	return bSolver->getAmplitude(state, index);
 }
 
-inline const std::complex<double> BPropertyExtractor::getAmplitude(
+inline const std::complex<double> BlockDiagonalizer::getAmplitude(
 	const Index &blockIndex,
 	int state,
 	const Index &intraBlockIndex
@@ -229,6 +230,7 @@ inline const std::complex<double> BPropertyExtractor::getAmplitude(
 	return bSolver->getAmplitude(blockIndex, state, intraBlockIndex);
 }
 
+};	//End of namespace PropertyExtractor
 };	//End of namespace TBTK
 
 #endif

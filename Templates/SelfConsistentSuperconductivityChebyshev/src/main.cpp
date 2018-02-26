@@ -25,7 +25,7 @@
  */
 
 #include "Solver/ChebyshevExpander.h"
-#include "CPropertyExtractor.h"
+#include "PropertyExtractor/ChebyshevExpander.h"
 #include "FileWriter.h"
 #include "GreensFunction.h"
 #include "Model.h"
@@ -75,7 +75,7 @@ bool scLoop(Solver::ChebyshevExpander &cSolver){
 	//coefficients and Green's function, and using lookup table. The
 	//Green's function is only calculated in an energy interval around E=0
 	//with a width twice of the Debye frequency.
-	CPropertyExtractor pe(
+	PropertyExtractor::ChebyshevExpander pe(
 		cSolver,
 		NUM_COEFFICIENTS,
 		true,

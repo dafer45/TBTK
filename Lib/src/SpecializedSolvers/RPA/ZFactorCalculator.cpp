@@ -151,7 +151,8 @@ vector<complex<double>> ZFactorCalculator::calculateZFactor(
 	const BrillouinZone &brillouinZone = momentumSpaceContext.getBrillouinZone();
 	const vector<unsigned int> &numMeshPoints = momentumSpaceContext.getNumMeshPoints();
 	unsigned int numOrbitals = momentumSpaceContext.getNumOrbitals();
-	const BPropertyExtractor &propertyExtractor = momentumSpaceContext.getPropertyExtractor();
+	const PropertyExtractor::BlockDiagonalizer &propertyExtractor
+		= momentumSpaceContext.getPropertyExtractorBlockDiagonalizer();
 
 	//Calculate kT
 	double temperature = UnitHandler::convertTemperatureNtB(

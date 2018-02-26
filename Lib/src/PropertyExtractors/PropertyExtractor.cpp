@@ -18,12 +18,13 @@
  *  @author Kristofer Björnson
  */
 
-#include "PropertyExtractor.h"
+#include "PropertyExtractor/PropertyExtractor.h"
 #include "TBTKMacros.h"
 
 using namespace std;
 
 namespace TBTK{
+namespace PropertyExtractor{
 
 PropertyExtractor::PropertyExtractor(
 ){
@@ -289,4 +290,5 @@ IndexTree PropertyExtractor::generateIndexTree(
 	return indexTree;
 }
 
+};	//End of namesapce PropertyExtractor
 };	//End of namespace TBTK

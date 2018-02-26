@@ -11,9 +11,11 @@ FILE(
 	ManyBody/*.cpp
 	ManyBody/FockStateMap/*.cpp
 	ManyBody/FockStateRule/*.cpp
-	Properties/*.cpp
+	Property/*.cpp
 	PropertyExtractors/*.cpp
+	PropertyExtractors/APropertyExtractor/*.cpp
 	Solvers/*.cpp
+	Solvers/ArnoldiSolver/*.cpp
 	SpecializedSolvers/RPA/*.cpp
 	StatesAndOperators/*.cpp
 	Uncategorized/*.cpp

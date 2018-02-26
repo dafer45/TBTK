@@ -24,9 +24,9 @@
 #define COM_DAFER45_TBTK_LDOS_PANEL
 
 #include "Index.h"
-#include "LDOS.h"
 #include "ImagePanel.h"
 #include "IndexPanel.h"
+#include "Property/LDOS.h"
 
 #include <wx/wx.h>
 #include <wx/sizer.h>

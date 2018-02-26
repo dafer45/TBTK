@@ -27,7 +27,7 @@
  */
 
 #include "Solver/Diagonalizer.h"
-#include "DPropertyExtractor.h"
+#include "PropertyExtractor/Diagonalizer.h"
 #include "FileWriter.h"
 #include "Magnetization.h"
 #include "Model.h"
@@ -223,7 +223,7 @@ int main(int argc, char **argv){
 	FileWriter::write(D_arg, D_RANK, dDims, "D_arg");
 
 	//Calculate and save magnetization
-	DPropertyExtractor pe(dSolver);
+	PropertyExtractor::Diagonalizer pe(dSolver);
 
 	const int SP_LDOS_LOWER_BOUND = -2.;
 	const int SP_LDOS_UPPER_BOUND = 2.;

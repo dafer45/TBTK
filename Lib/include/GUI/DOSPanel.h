@@ -23,8 +23,8 @@
 #ifndef COM_DAFER45_TBTK_DOS_PANEL
 #define COM_DAFER45_TBTK_DOS_PANEL
 
-#include "DOS.h"
 #include "ImagePanel.h"
+#include "Property/DOS.h"
 
 #include <wx/wx.h>
 #include <wx/sizer.h>
