@@ -23,7 +23,7 @@
 #ifndef COM_DAFER45_TBTK_PROPERTY_EXTRACTOR_ARNOLDI_ITERATOR
 #define COM_DAFER45_TBTK_PROPERTY_EXTRACTOR_ARNOLDI_ITERATOR
 
-#include "../../Solver/ArnoldiSolver/ArnoldiIterator.h"
+#include "Solver/ArnoldiSolver/ArnoldiIterator.h"
 #include "Property/DOS.h"
 #include "Property/EigenValues.h"
 #include "Property/GreensFunction.h"
