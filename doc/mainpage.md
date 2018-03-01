@@ -65,12 +65,12 @@ The parameters \f$U_S\f$ and \f$U_{Imp}\f$ are onsite energies on the substrate 
 	model.construct();
 
 	//Setup Solver
-	DiagonalizationSolver solver;
+	Solver::Diagonalizer solver;
 	solver.setModel(model);
 	solver.run();
 
 	//Extract the spin-polarized LDOS.
-	DPropertyExtractor propertyExtractor(solver);
+	PropertyExtractor::Diagonalizer propertyExtractor(solver);
 	propertyExtractor.setEnergyWindow(-1, 1, 1000);
 	Property::SpinPolarizedLDOS spinPolarizedLDOS = propertyExtractor.calculateSpinPolarizedLDOS({{0, ___, ___, IDX_SPIN}});
 
