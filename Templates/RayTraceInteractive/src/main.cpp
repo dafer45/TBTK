@@ -23,14 +23,14 @@
  *  @author Kristofer Björnson
  */
 
-#include "Solver/Diagonalizer.h"
-#include "DOS.h"
-#include "PropertyExtractor/Diagonalizer.h"
 #include "FileWriter.h"
 #include "Model.h"
 #include "Plotter/Plotter.h"
+#include "PropertyExtractor/Diagonalizer.h"
+#include "Property/DOS.h"
 #include "RayTracer/RayTracer.h"
 #include "Smooth.h"
+#include "Solver/Diagonalizer.h"
 #include "Streams.h"
 #include "Timer.h"
 

@@ -23,14 +23,14 @@
  */
 
 #include "BandDiagramGenerator.h"
-#include "Solver/BlockDiagonalizer.h"
-#include "Solver/Diagonalizer.h"
-#include "PropertyExtractor/BlockDiagonalizer.h"
-#include "DOS.h"
 #include "FileWriter.h"
 #include "ParametrizedLine3d.h"
 #include "Plotter/Plotter.h"
+#include "PropertyExtractor/BlockDiagonalizer.h"
+#include "Property/DOS.h"
 #include "RayTracer/RayTracer.h"
+#include "Solver/BlockDiagonalizer.h"
+#include "Solver/Diagonalizer.h"
 #include "Streams.h"
 #include "TBTKMacros.h"
 #include "Timer.h"

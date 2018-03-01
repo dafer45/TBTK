@@ -29,12 +29,12 @@
  *  @author Kristofer Björnson
  */
 
-#include "Solver/ChebyshevExpander.h"
-#include "PropertyExtractor/ChebyshevExpander.h"
 #include "FileWriter.h"
-#include "GreensFunction.h"
 #include "Model.h"
 #include "Timer.h"
+#include "PropertyExtractor/ChebyshevExpander.h"
+#include "Property/GreensFunction.h"
+#include "Solver/ChebyshevExpander.h"
 
 #include <chrono>
 #include <complex>

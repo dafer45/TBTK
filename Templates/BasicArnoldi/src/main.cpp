@@ -23,14 +23,14 @@
  *  @author Kristofer Björnson
  */
 
-#include "Solver/ArnoldiSolver/ArnoldiIterator.h"
-#include "PropertyExtractor/APropertyExtractor/ArnoldiIterator.h"
-#include "DOS.h"
-#include "EigenValues.h"
 #include "FileWriter.h"
-#include "LDOS.h"
 #include "Model.h"
-#include "SpinPolarizedLDOS.h"
+#include "PropertyExtractor/APropertyExtractor/ArnoldiIterator.h"
+#include "Property/DOS.h"
+#include "Property/EigenValues.h"
+#include "Property/LDOS.h"
+#include "Property/SpinPolarizedLDOS.h"
+#include "Solver/ArnoldiSolver/ArnoldiIterator.h"
 #include "Timer.h"
 
 #include <complex>

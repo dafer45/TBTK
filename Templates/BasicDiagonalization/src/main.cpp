@@ -23,16 +23,16 @@
  *  @author Kristofer Björnson
  */
 
-#include "Density.h"
-#include "DOS.h"
-#include "Solver/Diagonalizer.h"
-#include "PropertyExtractor/Diagonalizer.h"
-#include "EigenValues.h"
 #include "FileWriter.h"
-#include "LDOS.h"
-#include "Magnetization.h"
 #include "Model.h"
-#include "SpinPolarizedLDOS.h"
+#include "Property/Density.h"
+#include "Property/DOS.h"
+#include "Property/EigenValues.h"
+#include "Property/LDOS.h"
+#include "Property/Magnetization.h"
+#include "Property/SpinPolarizedLDOS.h"
+#include "PropertyExtractor/Diagonalizer.h"
+#include "Solver/Diagonalizer.h"
 
 #include <complex>
 

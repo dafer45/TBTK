@@ -24,12 +24,12 @@
  *  @author Kristofer Björnson
  */
 
-#include "Solver/Diagonalizer.h"
-#include "DOS.h"
-#include "PropertyExtractor/Diagonalizer.h"
-#include "EigenValues.h"
 #include "FileWriter.h"
 #include "Model.h"
+#include "PropertyExtractor/Diagonalizer.h"
+#include "Property/DOS.h"
+#include "Property/EigenValues.h"
+#include "Solver/Diagonalizer.h"
 
 #include <complex>
 #include <iostream>
