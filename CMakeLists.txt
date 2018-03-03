@@ -238,8 +238,25 @@ EXPORT(
 
 #Copy TBTKConfigure.cmake to installation folder.
 CONFIGURE_FILE(
-	CMake/TBTKConfig.cmake
-	"${CMAKE_CURRENT_BINARY_DIR}/CMake/TBTK/TBTKConfig.cmake"
+	CMake/TBTKConfigTemplate.cmake
+	"${CMAKE_CURRENT_BINARY_DIR}/CMake/TBTKConfig.cmake"
+	COPYONLY
+)
+
+#Copy Find modules to installation folder.
+CONFIGURE_FILE(
+	CMake/Modules/FindARPACK.cmake
+	"${CMAKE_CURRENT_BINARY_DIR}/CMake/Modules/FindARPACK.cmake"
+	COPYONLY
+)
+CONFIGURE_FILE(
+	CMake/Modules/FindFFTW3.cmake
+	"${CMAKE_CURRENT_BINARY_DIR}/CMake/Modules/FindFFTW3.cmake"
+	COPYONLY
+)
+CONFIGURE_FILE(
+	CMake/Modules/FindSuperLU.cmake
+	"${CMAKE_CURRENT_BINARY_DIR}/CMake/Modules/FindSuperLU.cmake"
 	COPYONLY
 )
 
@@ -252,7 +269,7 @@ INSTALL(
 	DESTINATION ${ConfigPackageLocation}
 )
 INSTALL(
-	FILES CMake/TBTKConfig.cmake "${CMAKE_CURRENT_BINARY_DIR}/CMake/TBTKVersion.cmake"
+	FILES ${CMAKE_CURRENT_BINARY_DIR}/CMake/TBTKConfig.cmake "${CMAKE_CURRENT_BINARY_DIR}/CMake/TBTKVersion.cmake"
 	DESTINATION ${ConfigPackageLocation}
 	COMPONENT Devel
 )
@@ -261,7 +278,7 @@ INSTALL(
 	DESTINATION ${ConfigPackageLocation}
 	FILES_MATCHING PATTERN *.cmake
 )
-INSTALL(
-	FILES CMake/TBTKConfig.cmake
-	DESTINATION ${ConfigPackageLocation}
-)
+#INSTALL(
+#	FILES CMake/TBTKConfig.cmake
+#	DESTINATION ${ConfigPackageLocation}
+#)
