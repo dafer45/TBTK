@@ -18,10 +18,10 @@
  *  @author Kristofer Björnson
  */
 
-#include "Serializeable.h"
-#include "TBTKMacros.h"
+#include "TBTK/Serializeable.h"
+#include "TBTK/TBTKMacros.h"
 
-#include "json.hpp"
+#include "TBTK/json.hpp"
 
 using namespace std;
 using namespace nlohmann;

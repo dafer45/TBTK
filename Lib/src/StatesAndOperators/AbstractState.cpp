@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "AbstractState.h"
+#include "TBTK/AbstractState.h"
 
 using namespace std;
 

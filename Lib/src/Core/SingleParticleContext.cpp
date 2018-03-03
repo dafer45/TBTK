@@ -18,9 +18,9 @@
  *  @author Kristofer Björnson
  */
 
-#include "SingleParticleContext.h"
+#include "TBTK/SingleParticleContext.h"
 
-#include "json.hpp"
+#include "TBTK/json.hpp"
 
 using namespace std;
 using namespace nlohmann;

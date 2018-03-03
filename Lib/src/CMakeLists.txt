@@ -13,9 +13,9 @@ FILE(
 	ManyBody/FockStateRule/*.cpp
 	Property/*.cpp
 	PropertyExtractors/*.cpp
-	PropertyExtractors/APropertyExtractor/*.cpp
+	PropertyExtractors/ArnoldiIterator/*.cpp
 	Solvers/*.cpp
-	Solvers/ArnoldiSolver/*.cpp
+	Solvers/ArnoldiIterator/*.cpp
 	SpecializedSolvers/RPA/*.cpp
 	StatesAndOperators/*.cpp
 	Uncategorized/*.cpp
@@ -42,7 +42,7 @@ IF(${COMPILE_DATA_MANAGER})
 	FILE(
 		GLOB
 		TBTK_DATA_MANAGER_SRC
-		Utilities/DataManager/*.cpp
+		DataManager/*.cpp
 	)
 	SET(TBTK_SRC ${TBTK_SRC} ${TBTK_DATA_MANAGER_SRC})
 ENDIF(${COMPILE_DATA_MANAGER})
@@ -51,7 +51,7 @@ IF(${COMPILE_FOURIER_TRANSFORM})
 	FILE(
 		GLOB
 		TBTK_FOURIER_TRANSFORM_SRC
-		Utilities/FourierTransform/*.cpp
+		FourierTransform/*.cpp
 	)
 	SET(TBTK_SRC ${TBTK_SRC} ${TBTK_FOURIER_TRANSFORM_SRC})
 ENDIF(${COMPILE_FOURIER_TRANSFORM})
@@ -87,7 +87,7 @@ IF(${COMPILE_PLOTTER})
 	FILE(
 		GLOB
 		TBTK_PLOTTER_SRC
-		Utilities/Plotter/*.cpp
+		Plotter/*.cpp
 	)
 	SET(TBTK_SRC ${TBTK_SRC} ${TBTK_PLOTTER_SRC})
 ENDIF(${COMPILE_PLOTTER})
@@ -96,7 +96,7 @@ IF(${COMPILE_RAY_TRACER})
 	FILE(
 		GLOB
 		TBTK_RAY_TRACER_SRC
-		Utilities/RayTracer/*.cpp
+		RayTracer/*.cpp
 	)
 	SET(TBTK_SRC ${TBTK_SRC} ${TBTK_RAY_TRACER_SRC})
 ENDIF(${COMPILE_RAY_TRACER})
@@ -105,7 +105,7 @@ IF(${COMPILE_RESOURCE})
 	FILE(
 		GLOB
 		TBTK_RESOURCE_SRC
-		Utilities/Resource/*.cpp
+		Resource/*.cpp
 	)
 	SET(TBTK_SRC ${TBTK_SRC} ${TBTK_RESOURCE_SRC})
 ENDIF(${COMPILE_RESOURCE})
@@ -130,6 +130,6 @@ TARGET_LINK_LIBRARIES(TBTK ${TBTK_LINK_LIBRARIES})
 
 INSTALL(
 	TARGETS TBTK EXPORT TBTKLibraries
-	LIBRARY DESTINATION lib
-	ARCHIVE DESTINATION lib
+	LIBRARY DESTINATION lib/TBTK
+	ARCHIVE DESTINATION lib/TBTK
 )

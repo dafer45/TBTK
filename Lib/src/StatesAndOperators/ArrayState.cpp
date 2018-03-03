@@ -18,8 +18,8 @@
  *  @author Kristofer Björnson
  */
 
-#include "ArrayState.h"
-#include "TBTKMacros.h"
+#include "TBTK/ArrayState.h"
+#include "TBTK/TBTKMacros.h"
 
 using namespace std;
 

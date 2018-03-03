@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "D3HexagonalPrimitive.h"
+#include "TBTK/D3/D3HexagonalPrimitive.h"
 
 #include <cmath>
 

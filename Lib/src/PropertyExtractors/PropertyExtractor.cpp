@@ -18,8 +18,8 @@
  *  @author Kristofer Björnson
  */
 
-#include "PropertyExtractor/PropertyExtractor.h"
-#include "TBTKMacros.h"
+#include "TBTK/PropertyExtractor/PropertyExtractor.h"
+#include "TBTK/TBTKMacros.h"
 
 using namespace std;
 

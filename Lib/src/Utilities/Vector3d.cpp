@@ -18,8 +18,8 @@
  *  @author Kristofer Björnson
  */
 
-#include "TBTKMacros.h"
-#include "Vector3d.h"
+#include "TBTK/TBTKMacros.h"
+#include "TBTK/Vector3d.h"
 
 using namespace std;
 

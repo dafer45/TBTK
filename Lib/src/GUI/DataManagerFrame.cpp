@@ -18,10 +18,10 @@
  *  @author Kristofer Björnson
  */
 
-#include "DataManagerFrame.h"
-#include "ParameterSliderPanel.h"
-#include "PropertyFrame.h"
-#include "Streams.h"
+#include "TBTK/DataManagerFrame.h"
+#include "TBTK/ParameterSliderPanel.h"
+#include "TBTK/PropertyFrame.h"
+#include "TBTK/Streams.h"
 
 #include <iomanip>
 

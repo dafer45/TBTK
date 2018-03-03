@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "Timer.h"
+#include "TBTK/Timer.h"
 
 using namespace std;
 

@@ -18,9 +18,9 @@
  *  @author Kristofer Björnson
  */
 
-#include "Property/Density.h"
+#include "TBTK/Property/Density.h"
 
-#include "json.hpp"
+#include "TBTK/json.hpp"
 
 using namespace std;
 using namespace nlohmann;

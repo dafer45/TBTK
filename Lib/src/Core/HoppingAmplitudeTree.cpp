@@ -18,13 +18,13 @@
  *  @author Kristofer Björnson
  */
 
-#include "TBTKMacros.h"
-#include "HoppingAmplitudeTree.h"
-#include "Streams.h"
+#include "TBTK/TBTKMacros.h"
+#include "TBTK/HoppingAmplitudeTree.h"
+#include "TBTK/Streams.h"
 
 #include <algorithm>
 
-#include "json.hpp"
+#include "TBTK/json.hpp"
 
 using namespace std;
 using namespace nlohmann;

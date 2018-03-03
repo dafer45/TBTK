@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "Solver/Solver.h"
+#include "TBTK/Solver/Solver.h"
 
 using namespace std;
 

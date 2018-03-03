@@ -1,4 +1,4 @@
-#include "IndexException.h"
+#include "TBTK/IndexException.h"
 
 namespace TBTK{
 

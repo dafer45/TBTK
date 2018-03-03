@@ -18,9 +18,9 @@
  *  @author Kristofer Björnson
  */
 
-#include "OrthorhombicBaseCentered.h"
-#include "Streams.h"
-#include "Vector3d.h"
+#include "TBTK/D3/OrthorhombicBaseCentered.h"
+#include "TBTK/Streams.h"
+#include "TBTK/Vector3d.h"
 
 #include <cmath>
 

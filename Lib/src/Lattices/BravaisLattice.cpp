@@ -18,8 +18,8 @@
  *  @author Kristofer Björnson
  */
 
-#include "BravaisLattice.h"
-#include "TBTKMacros.h"
+#include "TBTK/BravaisLattice.h"
+#include "TBTK/TBTKMacros.h"
 
 using namespace std;
 

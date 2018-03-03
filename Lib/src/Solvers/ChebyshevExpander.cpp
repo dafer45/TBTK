@@ -18,11 +18,11 @@
  *  @author Kristofer Björnson
  */
 
-#include "Solver/ChebyshevExpander.h"
-#include "HALinkedList.h"
-#include "Streams.h"
-#include "TBTKMacros.h"
-#include "UnitHandler.h"
+#include "TBTK/Solver/ChebyshevExpander.h"
+#include "TBTK/HALinkedList.h"
+#include "TBTK/Streams.h"
+#include "TBTK/TBTKMacros.h"
+#include "TBTK/UnitHandler.h"
 
 #include <iostream>
 #include <math.h>

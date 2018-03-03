@@ -19,9 +19,9 @@
  *  @author Andreas Theiler
  */
 
-#include "FileReader.h"
-#include "Streams.h"
-#include "TBTKMacros.h"
+#include "TBTK/FileReader.h"
+#include "TBTK/Streams.h"
+#include "TBTK/TBTKMacros.h"
 
 #include <H5Cpp.h>
 

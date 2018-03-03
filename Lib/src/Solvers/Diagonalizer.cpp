@@ -18,9 +18,9 @@
  *  @author Kristofer Björnson
  */
 
-#include "Solver/Diagonalizer.h"
-#include "Streams.h"
-#include "TBTKMacros.h"
+#include "TBTK/Solver/Diagonalizer.h"
+#include "TBTK/Streams.h"
+#include "TBTK/TBTKMacros.h"
 
 using namespace std;
 

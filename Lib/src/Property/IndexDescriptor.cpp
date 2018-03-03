@@ -18,12 +18,12 @@
  *  @author Kristofer Björnson
  */
 
-#include "Property/IndexDescriptor.h"
-#include "TBTKMacros.h"
+#include "TBTK/Property/IndexDescriptor.h"
+#include "TBTK/TBTKMacros.h"
 
 #include <string>
 
-#include "json.hpp"
+#include "TBTK/json.hpp"
 
 using namespace std;
 using namespace nlohmann;

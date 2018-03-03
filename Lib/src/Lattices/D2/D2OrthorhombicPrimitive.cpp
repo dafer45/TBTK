@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "D2OrthorhombicPrimitive.h"
+#include "TBTK/D2/D2OrthorhombicPrimitive.h"
 
 #include <cmath>
 

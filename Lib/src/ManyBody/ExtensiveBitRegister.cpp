@@ -19,8 +19,8 @@
  */
 
 
-#include "ExtensiveBitRegister.h"
-#include "Streams.h"
+#include "TBTK/ExtensiveBitRegister.h"
+#include "TBTK/Streams.h"
 
 namespace TBTK{
 

@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "CubicPrimitive.h"
+#include "TBTK/D3/CubicPrimitive.h"
 
 using namespace std;
 

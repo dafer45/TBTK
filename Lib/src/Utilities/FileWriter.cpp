@@ -19,7 +19,7 @@
  *  @author Andreas Theiler
  */
 
-#include "FileWriter.h"
+#include "TBTK/FileWriter.h"
 
 #include <H5Cpp.h>
 

@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "D2HexagonalPrimitive.h"
+#include "TBTK/D2/D2HexagonalPrimitive.h"
 
 #include <cmath>
 

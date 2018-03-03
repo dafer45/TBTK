@@ -18,10 +18,10 @@
  *  @author Kristofer Björnson
  */
 
-#include "HoppingAmplitudeSet.h"
-#include "Streams.h"
-#include "TBTKMacros.h"
-#include "Solver/TimeEvolver.h"
+#include "TBTK/HoppingAmplitudeSet.h"
+#include "TBTK/Streams.h"
+#include "TBTK/TBTKMacros.h"
+#include "TBTK/Solver/TimeEvolver.h"
 
 #include <complex>
 #include <math.h>

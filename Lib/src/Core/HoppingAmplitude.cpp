@@ -18,12 +18,12 @@
  *  @author Kristofer Björnson
  */
 
-#include "HoppingAmplitude.h"
-#include "Streams.h"
+#include "TBTK/HoppingAmplitude.h"
+#include "TBTK/Streams.h"
 
 #include <sstream>
 
-#include "json.hpp"
+#include "TBTK/json.hpp"
 
 using namespace std;
 using namespace nlohmann;

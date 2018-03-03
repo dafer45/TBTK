@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "GPUResourceManager.h"
+#include "TBTK/GPUResourceManager.h"
 
 namespace TBTK{
 

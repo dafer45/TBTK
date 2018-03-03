@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "D2TetragonalPrimitive.h"
+#include "TBTK/D2/D2TetragonalPrimitive.h"
 
 #include <cmath>
 

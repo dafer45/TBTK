@@ -18,8 +18,8 @@
  *  @author Kristofer Björnson
  */
 
-#include "TetragonalBodyCentered.h"
-#include "Vector3d.h"
+#include "TBTK/D3/TetragonalBodyCentered.h"
+#include "TBTK/Vector3d.h"
 
 using namespace std;
 

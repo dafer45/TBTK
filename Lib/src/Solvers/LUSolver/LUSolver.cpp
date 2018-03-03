@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "Solver/LUSolver/LUSolver.h"
+#include "TBTK/Solver/LUSolver.h"
 
 #include "slu_ddefs.h"
 #include "slu_zdefs.h"

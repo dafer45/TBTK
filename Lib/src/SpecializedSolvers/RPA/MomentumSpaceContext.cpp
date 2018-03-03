@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "RPA/MomentumSpaceContext.h"
+#include "TBTK/RPA/MomentumSpaceContext.h"
 
 using namespace std;
 

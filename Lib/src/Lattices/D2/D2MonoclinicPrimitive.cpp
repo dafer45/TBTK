@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "D2MonoclinicPrimitive.h"
+#include "TBTK/D2/D2MonoclinicPrimitive.h"
 
 #include <cmath>
 

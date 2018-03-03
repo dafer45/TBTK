@@ -17,13 +17,13 @@
  *  @author Kristofer Björnson
  */
 
-#include "IndexException.h"
-#include "IndexTree.h"
-#include "TBTKMacros.h"
+#include "TBTK/IndexException.h"
+#include "TBTK/IndexTree.h"
+#include "TBTK/TBTKMacros.h"
 
 #include <sstream>
 
-#include "json.hpp"
+#include "TBTK/json.hpp"
 
 using namespace std;
 using namespace nlohmann;

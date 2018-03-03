@@ -19,9 +19,9 @@
  */
 
 
-#include "DefaultMap.h"
-#include "FockSpace.h"
-#include "LookupTableMap.h"
+#include "TBTK/DefaultMap.h"
+#include "TBTK/FockSpace.h"
+#include "TBTK/LookupTableMap.h"
 
 namespace TBTK{
 

@@ -18,8 +18,8 @@
  *  @author Kristofer Björnson
  */
 
-#include "SpacePartition.h"
-#include "TBTKMacros.h"
+#include "TBTK/SpacePartition.h"
+#include "TBTK/TBTKMacros.h"
 
 using namespace std;
 

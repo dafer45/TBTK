@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "IndexBasedHoppingAmplitudeFilter.h"
+#include "TBTK/IndexBasedHoppingAmplitudeFilter.h"
 
 namespace TBTK{
 

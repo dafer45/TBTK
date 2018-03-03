@@ -18,11 +18,11 @@
  *  @author Kristofer Björnson
  */
 
-#include "Solver/ChebyshevExpander.h"
-#include "GPUResourceManager.h"
-#include "HALinkedList.h"
-#include "Streams.h"
-#include "TBTKMacros.h"
+#include "TBTK/Solver/ChebyshevExpander.h"
+#include "TBTK/GPUResourceManager.h"
+#include "TBTK/HALinkedList.h"
+#include "TBTK/Streams.h"
+#include "TBTK/TBTKMacros.h"
 
 #include <cuComplex.h>
 #include <cusparse_v2.h>

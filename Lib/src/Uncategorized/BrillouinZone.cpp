@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "BrillouinZone.h"
+#include "TBTK/BrillouinZone.h"
 
 using namespace std;
 

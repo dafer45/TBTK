@@ -18,15 +18,15 @@
  *  @author Kristofer Björnson
  */
 
-#include "Atom.h"
-#include "BasicState.h"
-#include "FieldWrapper.h"
-#include "ParallelepipedCell.h"
-#include "ParallelepipedArrayState.h"
-#include "Timer.h"
-#include "UnitCell.h"
-#include "Vector3d.h"
-#include "WannierParser.h"
+#include "TBTK/Atom.h"
+#include "TBTK/BasicState.h"
+#include "TBTK/FieldWrapper.h"
+#include "TBTK/ParallelepipedCell.h"
+#include "TBTK/ParallelepipedArrayState.h"
+#include "TBTK/Timer.h"
+#include "TBTK/UnitCell.h"
+#include "TBTK/Vector3d.h"
+#include "TBTK/WannierParser.h"
 
 #include <fstream>
 #include <sstream>

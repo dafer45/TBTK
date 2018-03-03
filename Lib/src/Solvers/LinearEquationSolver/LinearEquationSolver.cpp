@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "Solver/LinearEquationSolver/LinearEquationSolver.h"
+#include "TBTK/Solver/LinearEquationSolver.h"
 
 #include "slu_zdefs.h"
 

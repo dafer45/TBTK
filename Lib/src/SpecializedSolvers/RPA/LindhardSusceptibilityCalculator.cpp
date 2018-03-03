@@ -18,9 +18,9 @@
  *  @author Kristofer Björnson
  */
 
-#include "Functions.h"
-#include "RPA/LindhardSusceptibilityCalculator.h"
-#include "UnitHandler.h"
+#include "TBTK/Functions.h"
+#include "TBTK/RPA/LindhardSusceptibilityCalculator.h"
+#include "TBTK/UnitHandler.h"
 
 #include <complex>
 #include <iomanip>

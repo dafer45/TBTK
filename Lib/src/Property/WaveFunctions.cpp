@@ -18,9 +18,9 @@
  *  @author Kristofer Björnson
  */
 
-#include "Property/WaveFunctions.h"
+#include "TBTK/Property/WaveFunctions.h"
 
-#include "json.hpp"
+#include "TBTK/json.hpp"
 
 using namespace std;
 using namespace nlohmann;

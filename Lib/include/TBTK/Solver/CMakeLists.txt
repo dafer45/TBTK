@@ -1,0 +1,13 @@
+INSTALL(
+	DIRECTORY .
+	DESTINATION include/TBTK/Solver
+	FILES_MATCHING PATTERN *.h
+	PATTERN ArnoldiIterator* EXCLUDE
+	PATTERN LinearEquationSolver* EXCLUDE
+	PATTERN LUSolver* EXCLUDE
+)
+
+ADD_SUBDIRECTORY(ArnoldiIterator/TBTK/Solver)
+ADD_SUBDIRECTORY(LinearEquationSolver/TBTK/Solver)
+ADD_SUBDIRECTORY(LUSolver/TBTK/Solver)
+

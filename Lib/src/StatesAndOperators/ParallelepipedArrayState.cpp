@@ -18,8 +18,8 @@
  *  @author Kristofer Björnson
  */
 
-#include "ParallelepipedArrayState.h"
-#include "TBTKMacros.h"
+#include "TBTK/ParallelepipedArrayState.h"
+#include "TBTK/TBTKMacros.h"
 
 using namespace std;
 

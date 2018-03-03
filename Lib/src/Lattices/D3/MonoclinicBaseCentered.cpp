@@ -18,9 +18,9 @@
  *  @author Kristofer Björnson
  */
 
-#include "MonoclinicBaseCentered.h"
-#include "Streams.h"
-#include "Vector3d.h"
+#include "TBTK/D3/MonoclinicBaseCentered.h"
+#include "TBTK/Streams.h"
+#include "TBTK/Vector3d.h"
 
 #include <cmath>
 

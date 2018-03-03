@@ -18,10 +18,10 @@
  *  @author Kristofer Björnson
  */
 
-#include "Functions.h"
-#include "InteractionAmplitude.h"
-#include "RPA/SelfEnergyCalculator.h"
-#include "UnitHandler.h"
+#include "TBTK/Functions.h"
+#include "TBTK/InteractionAmplitude.h"
+#include "TBTK/RPA/SelfEnergyCalculator.h"
+#include "TBTK/UnitHandler.h"
 
 #include <complex>
 #include <iomanip>

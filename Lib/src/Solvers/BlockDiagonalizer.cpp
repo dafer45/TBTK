@@ -18,9 +18,9 @@
  *  @author Kristofer Björnson
  */
 
-#include "Solver/BlockDiagonalizer.h"
-#include "Streams.h"
-#include "TBTKMacros.h"
+#include "TBTK/Solver/BlockDiagonalizer.h"
+#include "TBTK/Streams.h"
+#include "TBTK/TBTKMacros.h"
 
 #include <iomanip>
 

@@ -18,8 +18,8 @@
  *  @author Kristofer Björnson
  */
 
-#include "CubicBodyCentered.h"
-#include "Vector3d.h"
+#include "TBTK/D3/CubicBodyCentered.h"
+#include "TBTK/Vector3d.h"
 
 using namespace std;
 

@@ -18,8 +18,8 @@
  *  @author Kristofer Björnson
  */
 
-#include "ParallelepipedCell.h"
-#include "TBTKMacros.h"
+#include "TBTK/ParallelepipedCell.h"
+#include "TBTK/TBTKMacros.h"
 
 using namespace std;
 

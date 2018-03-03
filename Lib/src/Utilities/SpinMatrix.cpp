@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "SpinMatrix.h"
+#include "TBTK/SpinMatrix.h"
 
 using namespace std;
 

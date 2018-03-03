@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "Atom.h"
+#include "TBTK/Atom.h"
 
 using namespace std;
 

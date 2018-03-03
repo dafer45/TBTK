@@ -164,14 +164,15 @@ INCLUDE_DIRECTORIES(
 	Lib/include/Exceptions/
 	Lib/include/GUI/
 	Lib/include/Lattices/
-	Lib/include/Lattices/D2/
-	Lib/include/Lattices/D3/
+#	Lib/include/Lattices/D2/
+#	Lib/include/Lattices/D3/
 	Lib/include/ManyBody/
-	Lib/include/ManyBody/FockStateMap/
-	Lib/include/ManyBody/FockStateRule/
+	Lib/include/ManyBody/TBTK/FockStateMap/
+	Lib/include/ManyBody/TBTK/FockStateRule/
 #	Lib/include/Properties/
 #	Lib/include/PropertyExtractors/
 #	Lib/include/Solvers/
+	Lib/include/Resource/
 	Lib/include/SpecializedSolvers/
 	Lib/include/StatesAndOperators/
 	Lib/include/Uncategorized/
@@ -179,41 +180,46 @@ INCLUDE_DIRECTORIES(
 )
 
 IF(${COMPILE_ARNOLDI_SOLVER})
-	INCLUDE_DIRECTORIES(LIB/include/Solver/ArnoldiSolver/)
+	INCLUDE_DIRECTORIES(Lib/include/TBTK/Solver/ArnoldiIterator/)
+	INCLUDE_DIRECTORIES(Lib/include/TBTK/PropertyExtractor/ArnoldiIterator/)
 ENDIF(${COMPILE_ARNOLDI_SOLVER})
 
 IF(${COMPILE_DATA_MANAGER})
-	INCLUDE_DIRECTORIES(Lib/include/Utilities/DataManager/)
+	INCLUDE_DIRECTORIES(Lib/include/DataManager/)
 ENDIF(${COMPILE_DATA_MANAGER})
 
 IF(${COMPILE_FOURIER_TRANSFORM})
-	INCLUDE_DIRECTORIES(LIB/include/Utilities/FourierTransform)
+	INCLUDE_DIRECTORIES(Lib/include/FourierTransform/)
 ENDIF(${COMPILE_FOURIER_TRANSFORM})
 
 IF(${COMPILE_GUI})
-	INCLUDE_DIRECTORIES(LIB/include/GUI/)
+	INCLUDE_DIRECTORIES(Lib/include/GUI/)
 ENDIF(${COMPILE_GUI})
 
 IF(${COMPILE_LINEAR_EQUATION_SOLVER})
-	INCLUDE_DIRECTORIES(LIB/include/Solver/LinearEquationSolver/)
+	INCLUDE_DIRECTORIES(Lib/include/TBTK/Solver/LinearEquationSolver/)
 ENDIF(${COMPILE_LINEAR_EQUATION_SOLVER})
 
+IF(${COMPILE_LU_SOLVER})
+	INCLUDE_DIRECTORIES(Lib/include/TBTK/Solver/LUSolver/)
+ENDIF(${COMPILE_LU_SOLVER})
+
 IF(${COMPILE_PLOTTER})
-	INCLUDE_DIRECTORIES(LIB/include/Utilities/Plotter/)
+	INCLUDE_DIRECTORIES(Lib/include/Plotter/)
 ENDIF(${COMPILE_PLOTTER})
 
 IF(${COMPILE_RESOURCE})
-	INCLUDE_DIRECTORIES(LIB/include/Utilities/Resource/)
+	INCLUDE_DIRECTORIES(Lib/include/Resource/)
 ENDIF(${COMPILE_RESOURCE})
 
 IF(${COMPILE_RAY_TRACER})
-	INCLUDE_DIRECTORIES(LIB/include/Utilities/RayTracer/)
+	INCLUDE_DIRECTORIES(Lib/include/RayTracer/)
 ENDIF(${COMPILE_RAY_TRACER})
 
 #Add subdirectory.
 ADD_SUBDIRECTORY(Lib/include/)
 ADD_SUBDIRECTORY(Lib/src/)
-ADD_SUBDIRECTORY(json/)
+ADD_SUBDIRECTORY(json/TBTK)
 
 #Create TBTKVersion.cmake.
 INCLUDE(CMakePackageConfigHelpers)
@@ -233,12 +239,12 @@ EXPORT(
 #Copy TBTKConfigure.cmake to installation folder.
 CONFIGURE_FILE(
 	CMake/TBTKConfig.cmake
-	"${CMAKE_CURRENT_BINARY_DIR}/CMake/TBTKConfig.cmake"
+	"${CMAKE_CURRENT_BINARY_DIR}/CMake/TBTK/TBTKConfig.cmake"
 	COPYONLY
 )
 
 #Installation rules for configuration files.
-SET(ConfigPackageLocation lib/CMake)
+SET(ConfigPackageLocation lib/TBTK/CMake)
 INSTALL(
 	EXPORT TBTKLibraries
 	FILE TBTKTargets.cmake

@@ -18,8 +18,8 @@
  *  @author Kristofer Björnson
  */
 
-#include "OrthorhombicBodyCentered.h"
-#include "Vector3d.h"
+#include "TBTK/D3/OrthorhombicBodyCentered.h"
+#include "TBTK/Vector3d.h"
 
 #include <cmath>
 

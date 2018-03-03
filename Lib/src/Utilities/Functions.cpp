@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "Functions.h"
+#include "TBTK/Functions.h"
 
 namespace TBTK{
 

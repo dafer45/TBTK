@@ -19,8 +19,8 @@
  *  @author Kristofer Björnson
  */
 
-#include "ChebyshevSolver.h"
-#include "Streams.h"
+#include "TBTK/Solver/ChebyshevExpander.h"
+#include "TBTK/Streams.h"
 
 #include <iostream>
 

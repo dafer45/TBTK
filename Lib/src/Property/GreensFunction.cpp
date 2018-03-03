@@ -18,8 +18,8 @@
  *  @author Kristofer Björnson
  */
 
-#include "Property/GreensFunction.h"
-#include "TBTKMacros.h"
+#include "TBTK/Property/GreensFunction.h"
+#include "TBTK/TBTKMacros.h"
 
 using namespace std;
 

@@ -18,9 +18,9 @@
  *  @author Kristofer Björnson
 */
 
-#include "Property/EigenValues.h"
+#include "TBTK/Property/EigenValues.h"
 
-#include "json.hpp"
+#include "TBTK/json.hpp"
 
 using namespace std;
 using namespace nlohmann;

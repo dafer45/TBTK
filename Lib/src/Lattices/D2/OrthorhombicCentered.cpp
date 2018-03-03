@@ -18,8 +18,8 @@
  *  @author Kristofer Björnson
  */
 
-#include "OrthorhombicCentered.h"
-#include "Streams.h"
+#include "TBTK/D2/OrthorhombicCentered.h"
+#include "TBTK/Streams.h"
 
 #include <cmath>
 

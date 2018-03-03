@@ -18,9 +18,9 @@
  *  @author Kristofer Björnson
  */
 
-#include "Functions.h"
-#include "RPA/ZFactorCalculator.h"
-#include "UnitHandler.h"
+#include "TBTK/Functions.h"
+#include "TBTK/RPA/ZFactorCalculator.h"
+#include "TBTK/UnitHandler.h"
 
 #include <complex>
 #include <iomanip>

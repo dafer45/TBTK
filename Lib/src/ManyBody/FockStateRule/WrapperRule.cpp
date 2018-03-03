@@ -18,8 +18,8 @@
  *  @author Kristofer Björnson
  */
 
-#include "WrapperRule.h"
-#include "TBTKMacros.h"
+#include "TBTK/WrapperRule.h"
+#include "TBTK/TBTKMacros.h"
 
 namespace TBTK{
 namespace FockStateRule{

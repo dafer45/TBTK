@@ -18,10 +18,10 @@
  *  @author Kristofer Björnson
  */
 
-#include "HoppingAmplitudeSet.h"
-#include "ModelFactory.h"
-#include "Streams.h"
-#include "TBTKMacros.h"
+#include "TBTK/HoppingAmplitudeSet.h"
+#include "TBTK/ModelFactory.h"
+#include "TBTK/Streams.h"
+#include "TBTK/TBTKMacros.h"
 
 using namespace std;
 

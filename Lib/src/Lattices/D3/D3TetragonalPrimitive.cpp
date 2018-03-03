@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "D3TetragonalPrimitive.h"
+#include "TBTK/D3/D3TetragonalPrimitive.h"
 
 using namespace std;
 

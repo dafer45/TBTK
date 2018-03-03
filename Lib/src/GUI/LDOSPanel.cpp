@@ -18,10 +18,10 @@
  *  @author Kristofer Björnson
  */
 
-#include "IndexException.h"
-#include "Plotter/Plotter.h"
-#include "Smooth.h"
-#include "LDOSPanel.h"
+#include "TBTK/IndexException.h"
+#include "TBTK/Plotter.h"
+#include "TBTK/Smooth.h"
+#include "TBTK/LDOSPanel.h"
 
 #include <wx/gbsizer.h>
 

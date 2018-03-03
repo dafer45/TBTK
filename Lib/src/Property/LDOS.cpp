@@ -18,9 +18,9 @@
  *  @author Kristofer Björnson
  */
 
-#include "Property/LDOS.h"
+#include "TBTK/Property/LDOS.h"
 
-#include "json.hpp"
+#include "TBTK/json.hpp"
 
 using namespace std;
 using namespace nlohmann;

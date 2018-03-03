@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "Communicator.h"
+#include "TBTK/Communicator.h"
 
 namespace TBTK{
 

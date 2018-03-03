@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "StateSet.h"
+#include "TBTK/StateSet.h"
 
 using namespace std;
 

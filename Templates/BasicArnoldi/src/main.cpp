@@ -23,15 +23,15 @@
  *  @author Kristofer Björnson
  */
 
-#include "FileWriter.h"
-#include "Model.h"
-#include "PropertyExtractor/APropertyExtractor/ArnoldiIterator.h"
-#include "Property/DOS.h"
-#include "Property/EigenValues.h"
-#include "Property/LDOS.h"
-#include "Property/SpinPolarizedLDOS.h"
-#include "Solver/ArnoldiSolver/ArnoldiIterator.h"
-#include "Timer.h"
+#include "TBTK/FileWriter.h"
+#include "TBTK/Model.h"
+#include "TBTK/PropertyExtractor/ArnoldiIterator.h"
+#include "TBTK/Property/DOS.h"
+#include "TBTK/Property/EigenValues.h"
+#include "TBTK/Property/LDOS.h"
+#include "TBTK/Property/SpinPolarizedLDOS.h"
+#include "TBTK/Solver/ArnoldiIterator.h"
+#include "TBTK/Timer.h"
 
 #include <complex>
 

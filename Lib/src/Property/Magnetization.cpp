@@ -18,9 +18,9 @@
  *  @author Kristofer Björnson
  */
 
-#include "Property/Magnetization.h"
+#include "TBTK/Property/Magnetization.h"
 
-#include "json.hpp"
+#include "TBTK/json.hpp"
 
 using namespace std;
 using namespace nlohmann;

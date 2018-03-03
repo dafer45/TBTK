@@ -18,8 +18,8 @@
  *  @author Kristofer Björnson
  */
 
-#include "Streams.h"
-#include "ImagePanel.h"
+#include "TBTK/Streams.h"
+#include "TBTK/ImagePanel.h"
 
 using namespace std;
 

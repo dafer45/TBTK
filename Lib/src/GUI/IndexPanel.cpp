@@ -18,8 +18,8 @@
  *  @author Kristofer Björnson
  */
 
-#include "IndexException.h"
-#include "IndexPanel.h"
+#include "TBTK/IndexException.h"
+#include "TBTK/IndexPanel.h"
 
 #include <wx/gbsizer.h>
 

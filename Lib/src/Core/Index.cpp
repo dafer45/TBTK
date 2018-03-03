@@ -17,14 +17,14 @@
  *  @author Kristofer Björnson
  */
 
-#include "Index.h"
-#include "IndexException.h"
-#include "Streams.h"
-#include "TBTKMacros.h"
+#include "TBTK/Index.h"
+#include "TBTK/IndexException.h"
+#include "TBTK/Streams.h"
+#include "TBTK/TBTKMacros.h"
 
 #include <vector>
 
-#include "json.hpp"
+#include "TBTK/json.hpp"
 
 using namespace std;
 using namespace nlohmann;

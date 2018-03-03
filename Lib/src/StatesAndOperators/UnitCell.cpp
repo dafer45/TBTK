@@ -18,8 +18,8 @@
  *  @author Kristofer Björnson
  */
 
-#include "TBTKMacros.h"
-#include "UnitCell.h"
+#include "TBTK/TBTKMacros.h"
+#include "TBTK/UnitCell.h"
 
 using namespace std;
 

@@ -18,8 +18,8 @@
  *  @author Kristofer Björnson
  */
 
-#include "Plotter/Plotter.h"
-#include "DOSPanel.h"
+#include "TBTK/Plotter.h"
+#include "TBTK/DOSPanel.h"
 
 #include <wx/gbsizer.h>
 

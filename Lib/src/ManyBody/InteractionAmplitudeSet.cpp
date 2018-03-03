@@ -1,4 +1,4 @@
-#include "InteractionAmplitudeSet.h"
+#include "TBTK/InteractionAmplitudeSet.h"
 
 using namespace std;
 

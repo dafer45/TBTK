@@ -18,9 +18,9 @@
  *  @author Kristofer Björnson
  */
 
-#include "PropertyExtractor/Diagonalizer.h"
-#include "Functions.h"
-#include "Streams.h"
+#include "TBTK/PropertyExtractor/Diagonalizer.h"
+#include "TBTK/Functions.h"
+#include "TBTK/Streams.h"
 
 #include <cmath>
 

@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "DefaultMap.h"
+#include "TBTK/DefaultMap.h"
 
 namespace TBTK{
 namespace FockStateMap{

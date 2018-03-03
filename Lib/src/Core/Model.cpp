@@ -18,17 +18,17 @@
  *  @author Kristofer Björnson
  */
 
-#include "AbstractHoppingAmplitudeFilter.h"
-#include "Geometry.h"
-#include "Model.h"
-#include "Streams.h"
-#include "TBTKMacros.h"
+#include "TBTK/AbstractHoppingAmplitudeFilter.h"
+#include "TBTK/Geometry.h"
+#include "TBTK/Model.h"
+#include "TBTK/Streams.h"
+#include "TBTK/TBTKMacros.h"
 
 #include <fstream>
 #include <math.h>
 #include <string>
 
-#include "json.hpp"
+#include "TBTK/json.hpp"
 
 using namespace std;
 using namespace nlohmann;

@@ -18,10 +18,10 @@
  *  @author Kristofer Björnson
  */
 
-#include "PropertyExtractor/ChebyshevExpander.h"
-#include "Functions.h"
-#include "Streams.h"
-#include "TBTKMacros.h"
+#include "TBTK/PropertyExtractor/ChebyshevExpander.h"
+#include "TBTK/Functions.h"
+#include "TBTK/Streams.h"
+#include "TBTK/TBTKMacros.h"
 
 #include <set>
 

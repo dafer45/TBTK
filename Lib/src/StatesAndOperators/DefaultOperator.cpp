@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "DefaultOperator.h"
+#include "TBTK/DefaultOperator.h"
 
 namespace TBTK{
 

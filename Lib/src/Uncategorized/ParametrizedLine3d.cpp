@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "ParametrizedLine3d.h"
+#include "TBTK/ParametrizedLine3d.h"
 
 using namespace std;
 

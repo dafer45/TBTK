@@ -18,9 +18,9 @@
  *  @author Kristofer Björnson
  */
 
-#include "HexagonalRhombohedralDiagonal.h"
-#include "Streams.h"
-#include "Vector3d.h"
+#include "TBTK/D3/HexagonalRhombohedralDiagonal.h"
+#include "TBTK/Streams.h"
+#include "TBTK/Vector3d.h"
 
 #include <cmath>
 

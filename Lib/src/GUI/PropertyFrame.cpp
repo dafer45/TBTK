@@ -18,10 +18,10 @@
  *  @author Kristofer Björnson
  */
 
-#include "Plotter/Plotter.h"
-#include "DOSPanel.h"
-#include "LDOSPanel.h"
-#include "PropertyFrame.h"
+#include "TBTK/Plotter.h"
+#include "TBTK/DOSPanel.h"
+#include "TBTK/LDOSPanel.h"
+#include "TBTK/PropertyFrame.h"
 
 using namespace std;
 

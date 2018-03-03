@@ -18,10 +18,10 @@
  *  @author Kristofer Björnson
  */
 
-#include "Property/DOS.h"
-#include "Streams.h"
+#include "TBTK/Property/DOS.h"
+#include "TBTK/Streams.h"
 
-#include "json.hpp"
+#include "TBTK/json.hpp"
 
 using namespace std;
 using namespace nlohmann;

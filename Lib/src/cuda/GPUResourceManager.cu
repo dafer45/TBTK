@@ -18,8 +18,8 @@
  *  @author Kristofer Björnson
  */
 
-#include "GPUResourceManager.h"
-#include "Streams.h"
+#include "TBTK/GPUResourceManager.h"
+#include "TBTK/Streams.h"
 
 using namespace std;
 

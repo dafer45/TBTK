@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "SumRule.h"
+#include "TBTK/SumRule.h"
 
 #include <algorithm>
 

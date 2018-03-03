@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "HALinkedList.h"
+#include "TBTK/HALinkedList.h"
 
 namespace TBTK{
 

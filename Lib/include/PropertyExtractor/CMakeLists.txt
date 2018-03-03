@@ -1,7 +1,0 @@
-ADD_SUBDIRECTORY(APropertyExtractor)
-
-INSTALL(
-	DIRECTORY .
-	DESTINATION include/PropertyExtractor
-	FILES_MATCHING PATTERN *.h
-)

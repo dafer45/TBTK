@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "AbstractOperator.h"
+#include "TBTK/AbstractOperator.h"
 
 namespace TBTK{
 

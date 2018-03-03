@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "D3OrthorhombicPrimitive.h"
+#include "TBTK/D3/D3OrthorhombicPrimitive.h"
 
 #include <cmath>
 

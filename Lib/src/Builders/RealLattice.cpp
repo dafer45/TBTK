@@ -18,8 +18,8 @@
  *  @author Kristofer Björnson
  */
 
-#include "RealLattice.h"
-#include "TBTKMacros.h"
+#include "TBTK/RealLattice.h"
+#include "TBTK/TBTKMacros.h"
 
 using namespace std;
 

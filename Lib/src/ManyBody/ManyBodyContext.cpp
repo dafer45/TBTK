@@ -18,8 +18,8 @@
  *  @author Kristofer Björnson
  */
 
-#include "ManyBodyContext.h"
-#include "Streams.h"
+#include "TBTK/ManyBodyContext.h"
+#include "TBTK/Streams.h"
 
 using namespace std;
 

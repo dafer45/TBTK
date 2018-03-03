@@ -18,9 +18,9 @@
  *  @author Kristofer Björnson
  */
 
-#include "D3MonoclinicPrimitive.h"
-#include "TBTKMacros.h"
-#include "Vector3d.h"
+#include "TBTK/D3/D3MonoclinicPrimitive.h"
+#include "TBTK/TBTKMacros.h"
+#include "TBTK/Vector3d.h"
 
 #include <cmath>
 

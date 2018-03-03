@@ -18,10 +18,10 @@
  *  @author Kristofer Björnson
  */
 
-#include "Functions.h"
-#include "RPA/MatsubaraSusceptibilityCalculator.h"
-#include "RPA/RPASusceptibilityCalculator.h"
-#include "UnitHandler.h"
+#include "TBTK/Functions.h"
+#include "TBTK/RPA/MatsubaraSusceptibilityCalculator.h"
+#include "TBTK/RPA/RPASusceptibilityCalculator.h"
+#include "TBTK/UnitHandler.h"
 
 #include <complex>
 #include <iomanip>

@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "FockStateRule.h"
+#include "TBTK/FockStateRule.h"
 
 namespace TBTK{
 namespace FockStateRule{

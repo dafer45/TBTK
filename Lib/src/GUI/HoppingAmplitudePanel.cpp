@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "HoppingAmplitudePanel.h"
+#include "TBTK/HoppingAmplitudePanel.h"
 
 #include <sstream>
 

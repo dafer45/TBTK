@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "RPA/MatsubaraSusceptibilityCalculator.h"
+#include "TBTK/RPA/MatsubaraSusceptibilityCalculator.h"
 
 #include <complex>
 #include <iomanip>

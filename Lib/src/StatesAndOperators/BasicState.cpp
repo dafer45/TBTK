@@ -18,8 +18,8 @@
  *  @author Kristofer Björnson
  */
 
-#include "BasicState.h"
-#include "TBTKMacros.h"
+#include "TBTK/BasicState.h"
+#include "TBTK/TBTKMacros.h"
 
 #include <algorithm>
 

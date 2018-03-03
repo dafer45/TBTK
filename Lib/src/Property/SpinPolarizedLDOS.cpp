@@ -18,9 +18,9 @@
  *  @author Kristofer Björnson
  */
 
-#include "Property/SpinPolarizedLDOS.h"
+#include "TBTK/Property/SpinPolarizedLDOS.h"
 
-#include "json.hpp"
+#include "TBTK/json.hpp"
 
 using namespace std;
 using namespace nlohmann;

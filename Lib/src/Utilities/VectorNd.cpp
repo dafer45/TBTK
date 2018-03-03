@@ -18,8 +18,8 @@
  *  @author Kristofer Björnson
  */
 
-#include "TBTKMacros.h"
-#include "VectorNd.h"
+#include "TBTK/TBTKMacros.h"
+#include "TBTK/VectorNd.h"
 
 using namespace std;
 

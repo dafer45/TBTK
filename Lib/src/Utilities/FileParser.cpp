@@ -19,10 +19,10 @@
  *  @author Andreas Theiler
  */
 
-#include "FileParser.h"
-#include "Geometry.h"
-#include "Streams.h"
-#include "TBTKMacros.h"
+#include "TBTK/FileParser.h"
+#include "TBTK/Geometry.h"
+#include "TBTK/Streams.h"
+#include "TBTK/TBTKMacros.h"
 
 #include <fstream>
 #include <iomanip>

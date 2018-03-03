@@ -1,4 +1,4 @@
-#include "PropertyExtractor/ExactDiagonalizer.h"
+#include "TBTK/PropertyExtractor/ExactDiagonalizer.h"
 
 using namespace std;
 
