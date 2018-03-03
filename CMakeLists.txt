@@ -87,10 +87,10 @@ ENDIF(wxWidgets_FOUND)
 #built.
 MESSAGE("\nExtenstions that will be built (empty box means the extention will not be built).")
 IF(ARPACK_FOUND AND SuperLU_FOUND)
-	MESSAGE("[X] ArnoldiSolver")
-	SET(COMPILE_ARNOLDI_SOLVER TRUE)
+	MESSAGE("[X] ArnoldiIterator")
+	SET(COMPILE_ARNOLDI_ITERATOR TRUE)
 ELSE(ARPACK_FOUND AND SuperLU_FOUND)
-	MESSAGE("[ ] ArnoldiSolver")
+	MESSAGE("[ ] ArnoldiIterator")
 ENDIF(ARPACK_FOUND AND SuperLU_FOUND)
 
 IF(CUDA_FOUND)
@@ -163,7 +163,7 @@ INCLUDE_DIRECTORIES(
 	Lib/include/Elements/
 	Lib/include/Exceptions/
 	Lib/include/GUI/
-	Lib/include/Lattices/
+#	Lib/include/Lattices/
 #	Lib/include/Lattices/D2/
 #	Lib/include/Lattices/D3/
 	Lib/include/ManyBody/
@@ -179,10 +179,10 @@ INCLUDE_DIRECTORIES(
 	Lib/include/Utilities/
 )
 
-IF(${COMPILE_ARNOLDI_SOLVER})
-	INCLUDE_DIRECTORIES(Lib/include/TBTK/Solver/ArnoldiIterator/)
-	INCLUDE_DIRECTORIES(Lib/include/TBTK/PropertyExtractor/ArnoldiIterator/)
-ENDIF(${COMPILE_ARNOLDI_SOLVER})
+IF(${COMPILE_ARNOLDI_ITERATOR})
+#	INCLUDE_DIRECTORIES(Lib/include/TBTK/Solver/ArnoldiIterator/)
+#	INCLUDE_DIRECTORIES(Lib/include/TBTK/PropertyExtractor/ArnoldiIterator/)
+ENDIF(${COMPILE_ARNOLDI_ITERATOR})
 
 IF(${COMPILE_DATA_MANAGER})
 	INCLUDE_DIRECTORIES(Lib/include/DataManager/)

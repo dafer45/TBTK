@@ -5,9 +5,9 @@ FILE(
 	Core/*.cpp
 	Elements/*.cpp
 	Exceptions/*.cpp
-	Lattices/*.cpp
-	Lattices/D2/*.cpp
-	Lattices/D3/*.cpp
+	Lattice/*.cpp
+	Lattice/D2/*.cpp
+	Lattice/D3/*.cpp
 	ManyBody/*.cpp
 	ManyBody/FockStateMap/*.cpp
 	ManyBody/FockStateRule/*.cpp

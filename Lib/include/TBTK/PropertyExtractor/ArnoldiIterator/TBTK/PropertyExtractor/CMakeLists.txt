@@ -1,5 +1,0 @@
-INSTALL(
-	DIRECTORY .
-	DESTINATION include/TBTK/PropertyExtractor
-	FILES_MATCHING PATTERN *.h
-)
