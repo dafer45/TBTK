@@ -29,12 +29,12 @@
  *  @author Kristofer Björnson
  */
 
-#include "FileWriter.h"
-#include "Model.h"
-#include "Timer.h"
-#include "PropertyExtractor/ChebyshevExpander.h"
-#include "Property/GreensFunction.h"
-#include "Solver/ChebyshevExpander.h"
+#include "TBTK/FileWriter.h"
+#include "TBTK/Model.h"
+#include "TBTK/Property/GreensFunction.h"
+#include "TBTK/PropertyExtractor/ChebyshevExpander.h"
+#include "TBTK/Solver/ChebyshevExpander.h"
+#include "TBTK/Timer.h"
 
 #include <chrono>
 #include <complex>

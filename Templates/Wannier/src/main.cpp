@@ -22,19 +22,19 @@
  *  @author Kristofer Björnson
  */
 
-#include "BandDiagramGenerator.h"
-#include "FileWriter.h"
-#include "ParametrizedLine3d.h"
-#include "Plotter/Plotter.h"
-#include "PropertyExtractor/BlockDiagonalizer.h"
-#include "Property/DOS.h"
-#include "RayTracer/RayTracer.h"
-#include "Solver/BlockDiagonalizer.h"
-#include "Solver/Diagonalizer.h"
-#include "Streams.h"
-#include "TBTKMacros.h"
-#include "Timer.h"
-#include "WannierParser.h"
+#include "TBTK/BandDiagramGenerator.h"
+#include "TBTK/FileWriter.h"
+#include "TBTK/ParametrizedLine3d.h"
+#include "TBTK/Plotter.h"
+#include "TBTK/Property/DOS.h"
+#include "TBTK/PropertyExtractor/BlockDiagonalizer.h"
+#include "TBTK/RayTracer.h"
+#include "TBTK/Solver/BlockDiagonalizer.h"
+#include "TBTK/Solver/Diagonalizer.h"
+#include "TBTK/Streams.h"
+#include "TBTK/TBTKMacros.h"
+#include "TBTK/Timer.h"
+#include "TBTK/WannierParser.h"
 
 #include <complex>
 #include <iostream>

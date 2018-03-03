@@ -24,12 +24,12 @@
  *  @author Kristofer Björnson
  */
 
-#include "FileWriter.h"
-#include "Model.h"
-#include "Property/DOS.h"
-#include "Property/EigenValues.h"
-#include "PropertyExtractor/Diagonalizer.h"
-#include "Solver/Diagonalizer.h"
+#include "TBTK/FileWriter.h"
+#include "TBTK/Model.h"
+#include "TBTK/Property/DOS.h"
+#include "TBTK/Property/EigenValues.h"
+#include "TBTK/PropertyExtractor/Diagonalizer.h"
+#include "TBTK/Solver/Diagonalizer.h"
 
 #include <complex>
 #include <iostream>

@@ -34,12 +34,12 @@
  *  @author Kristofer Björnson
  */
 
-#include "DifferenceRule.h"
-#include "PropertyExtractor/ExactDiagonalizer.h"
-#include "Solver/ExactDiagonalizer.h"
-#include "FileWriter.h"
-#include "Model.h"
-#include "SumRule.h"
+#include "TBTK/DifferenceRule.h"
+#include "TBTK/FileWriter.h"
+#include "TBTK/Model.h"
+#include "TBTK/PropertyExtractor/ExactDiagonalizer.h"
+#include "TBTK/Solver/ExactDiagonalizer.h"
+#include "TBTK/SumRule.h"
 
 #include <complex>
 

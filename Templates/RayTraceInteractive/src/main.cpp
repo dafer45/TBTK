@@ -23,16 +23,16 @@
  *  @author Kristofer Björnson
  */
 
-#include "FileWriter.h"
-#include "Model.h"
-#include "Plotter/Plotter.h"
-#include "PropertyExtractor/Diagonalizer.h"
-#include "Property/DOS.h"
-#include "RayTracer/RayTracer.h"
-#include "Smooth.h"
-#include "Solver/Diagonalizer.h"
-#include "Streams.h"
-#include "Timer.h"
+#include "TBTK/FileWriter.h"
+#include "TBTK/Model.h"
+#include "TBTK/Plotter.h"
+#include "TBTK/PropertyExtractor/Diagonalizer.h"
+#include "TBTK/Property/DOS.h"
+#include "TBTK/RayTracer.h"
+#include "TBTK/Smooth.h"
+#include "TBTK/Solver/Diagonalizer.h"
+#include "TBTK/Streams.h"
+#include "TBTK/Timer.h"
 
 #include <cmath>
 #include <complex>

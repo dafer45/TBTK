@@ -1,0 +1,23 @@
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12.2)
+
+PROJECT(TBTKSelfConsistentSuperconductivity)
+
+FIND_PACKAGE(TBTK CONFIG REQUIRED)
+
+#Include paths
+INCLUDE_DIRECTORIES(
+	include/
+	${TBTK_INCLUDE_PATHS}
+)
+
+FILE(
+	GLOB
+	SRC
+	src/*.cpp
+)
+
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -O3")
+
+ADD_EXECUTABLE(SelfConsistentSuperconductivity ${SRC})
+
+TARGET_LINK_LIBRARIES(SelfConsistentSuperconductivity ${TBTK_LIBRARIES})

@@ -24,9 +24,9 @@
  *  @author Kristofer Björnson
  */
 
-#include "Solver/Diagonalizer.h"
-#include "FileWriter.h"
-#include "Model.h"
+#include "TBTK/FileWriter.h"
+#include "TBTK/Model.h"
+#include "TBTK/Solver/Diagonalizer.h"
 
 #include <complex>
 #include <iostream>

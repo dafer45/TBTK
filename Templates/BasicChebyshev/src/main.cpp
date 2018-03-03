@@ -26,11 +26,11 @@
  *  @author Kristofer Björnson
  */
 
-#include "FileWriter.h"
-#include "Model.h"
-#include "PropertyExtractor/ChebyshevExpander.h"
-#include "Property/LDOS.h"
-#include "Solver/ChebyshevExpander.h"
+#include "TBTK/FileWriter.h"
+#include "TBTK/Model.h"
+#include "TBTK/Property/LDOS.h"
+#include "TBTK/PropertyExtractor/ChebyshevExpander.h"
+#include "TBTK/Solver/ChebyshevExpander.h"
 
 #include <complex>
 

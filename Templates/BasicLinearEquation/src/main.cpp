@@ -22,13 +22,13 @@
  *  @author Kristofer Björnson
  */
 
-#include "PropertyExtractor/Diagonalizer.h"
-#include "FileWriter.h"
-#include "Solver/LinearEquationSolver/LinearEquationSolver.h"
-#include "Model.h"
-#include "MatrixElement.h"
-#include "Plotter/Plotter.h"
-#include "Timer.h"
+#include "TBTK/FileWriter.h"
+#include "TBTK/Model.h"
+#include "TBTK/MatrixElement.h"
+#include "TBTK/Plotter.h"
+#include "TBTK/PropertyExtractor/Diagonalizer.h"
+#include "TBTK/Solver/LinearEquationSolver.h"
+#include "TBTK/Timer.h"
 
 #include <complex>
 

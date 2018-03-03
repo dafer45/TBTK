@@ -22,7 +22,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "Streams.h"
+#include "TBTK/Streams.h"
 
 #include <complex>
 

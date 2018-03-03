@@ -26,12 +26,12 @@
  *  @author Kristofer Björnson
  */
 
-#include "FileWriter.h"
-#include "Model.h"
-#include "PropertyExtractor/Diagonalizer.h"
-#include "Property/Magnetization.h"
-#include "Property/SpinPolarizedLDOS.h"
-#include "Solver/Diagonalizer.h"
+#include "TBTK/FileWriter.h"
+#include "TBTK/Model.h"
+#include "TBTK/Property/Magnetization.h"
+#include "TBTK/Property/SpinPolarizedLDOS.h"
+#include "TBTK/PropertyExtractor/Diagonalizer.h"
+#include "TBTK/Solver/Diagonalizer.h"
 
 #include <complex>
 #include <iostream>

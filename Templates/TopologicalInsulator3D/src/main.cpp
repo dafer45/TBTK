@@ -27,11 +27,11 @@
  *  @author Kristofer Björnson
  */
 
-#include "FileWriter.h"
-#include "HoppingAmplitudeSet.h"
-#include "Model.h"
-#include "Property/GreensFunction.h"
-#include "Solver/ChebyshevExpander.h"
+#include "TBTK/FileWriter.h"
+#include "TBTK/HoppingAmplitudeSet.h"
+#include "TBTK/Model.h"
+#include "TBTK/Property/GreensFunction.h"
+#include "TBTK/Solver/ChebyshevExpander.h"
 
 #include <fftw3.h>
 
