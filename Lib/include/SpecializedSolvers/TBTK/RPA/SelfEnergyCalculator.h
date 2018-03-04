@@ -239,7 +239,7 @@ inline void SelfEnergyCalculator::setJp(std::complex<double> Jp){
 inline void SelfEnergyCalculator::saveSusceptibilities(
 	const std::string &filename
 ) const{
-	unsigned int lastPos = filename.find_last_of('/');
+	size_t lastPos = filename.find_last_of('/');
 	std::string path;
 	std::string fname = filename;
 	if(lastPos != std::string::npos){
@@ -261,7 +261,7 @@ inline void SelfEnergyCalculator::saveSusceptibilities(
 inline void SelfEnergyCalculator::loadSusceptibilities(
 	const std::string &filename
 ){
-	unsigned int lastPos = filename.find_last_of('/');
+	size_t lastPos = filename.find_last_of('/');
 	std::string path;
 	std::string fname = filename;
 	if(lastPos != std::string::npos){

@@ -181,7 +181,7 @@ inline Index SpacePartition::getMinorCellIndex(
 }
 
 inline Index SpacePartition::getMinorCellIndex(
-	const std::vector<double> &coordinate,
+	const std::initializer_list<double> coordinate,
 	const std::vector<unsigned int> &numMeshPoints
 ) const{
 	return getMinorCellIndex(

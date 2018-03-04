@@ -27,7 +27,7 @@
 
 using namespace std;
 
-const complex<double> i(0, 1);
+//const complex<double> i(0, 1);
 
 namespace TBTK{
 
