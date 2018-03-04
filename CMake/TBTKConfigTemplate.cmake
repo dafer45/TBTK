@@ -9,7 +9,7 @@ INCLUDE("${CMAKE_CURRENT_LIST_DIR}/TBTKTargets.cmake")
 LIST(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/Modules/")
 
 #Add link directory for global install
-#LINK_DIRECTORIES(${CMAKE_CURRENT_LIST_DIR}/..)
+LINK_DIRECTORIES(${CMAKE_CURRENT_LIST_DIR}/..)
 #Add link directory for build directory
 LINK_DIRECTORIES(${CMAKE_CURRENT_LIST_DIR}/../Lib/src/)
 
