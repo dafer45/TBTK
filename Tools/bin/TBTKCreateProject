@@ -8,7 +8,7 @@ then
 fi
 
 templateProjectName=$2
-templateProjectPath=$TBTK_dir/Templates
+templateProjectPath=${CMAKE_INSTALL_PREFIX}/TBTK/Templates
 if [ -z "$templateProjectName" ]
 then
 	templateProjectName=EmtpyProject
