@@ -164,7 +164,9 @@ void SelfEnergyCalculator::generateKMinusQLookupTable(){
 		return;
 	}
 
+#ifdef TBTK_USE_OPEN_MP
 	#pragma omp parallel for
+#endif
 	for(unsigned int k = 0; k < mesh.size(); k++){
 		const vector<double> &K = mesh.at(k);
 		for(unsigned int q = 0; q < mesh.size(); q++){

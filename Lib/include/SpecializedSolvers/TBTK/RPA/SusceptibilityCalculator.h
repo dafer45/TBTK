@@ -34,7 +34,7 @@
 #include <complex>
 #include <vector>
 
-#include <omp.h>
+//#include <omp.h>
 
 namespace TBTK{
 
