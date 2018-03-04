@@ -13,9 +13,9 @@ FILE(
 	ManyBody/FockStateRule/*.cpp
 	Property/*.cpp
 	PropertyExtractors/*.cpp
-	PropertyExtractors/ArnoldiIterator/*.cpp
+#	PropertyExtractors/ArnoldiIterator/*.cpp
 	Solvers/*.cpp
-	Solvers/ArnoldiIterator/*.cpp
+#	Solvers/ArnoldiIterator/*.cpp
 	SpecializedSolvers/RPA/*.cpp
 	StatesAndOperators/*.cpp
 	Uncategorized/*.cpp
@@ -27,7 +27,24 @@ LIST(
 	TBTK_SRC
 	"${CMAKE_CURRENT_SOURCE_DIR}/Utilities/FileReader.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/Utilities/FileWriter.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/Solver/ArnoldiIterator.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/Solver/LinnearEquationSolver.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/Solver/LUSolver.cpp"
 )
+
+IF(${COMPILE_ARNOLDI_ITERATOR})
+	FILE(
+		GLOB
+		TBTK_SOLVER_ARNOLDI_ITERATOR_SRC
+		Solver/ArnoldiIterator.cpp
+	)
+	FILE(
+		GLOB
+		TBTK_PROPERTY_EXTRACTOR_ARNOLDI_ITERATOR_SRC
+		PropertyExtractor/ArnoldiIterator.cu
+	)
+	SET(TBTK_SRC ${TBTK_SRC} ${TBTK_SOLVER_ARNOLDI_ITERATOR_SRC} ${TBTK_PROPERTY_EXTRACTOR_ARNOLDI_ITERATOR_SRC})
+ENDIF(${COMPILE_ARNOLDI_ITERATOR})
 
 IF(${COMPILE_CUDA})
 	FILE(
@@ -90,7 +107,7 @@ IF(${COMPILE_LINEAR_EQUATION_SOLVER})
 	FILE(
 		GLOB
 		TBTK_LINEAR_EQUATION_SOLVER_SRC
-		Solvers/LinearEquationSolver/*.cpp
+		Solvers/LinearEquationSolver.cpp
 	)
 	SET(TBTK_SRC ${TBTK_SRC} ${TBTK_LINEAR_EQUATION_SOLVER_SRC})
 ENDIF(${COMPILE_LINEAR_EQUATION_SOLVER})
@@ -99,7 +116,7 @@ IF(${COMPILE_LU_SOLVER})
 	FILE(
 		GLOB
 		TBTK_LU_SOLVER_SRC
-		Solvers/LUSolver/*.cpp
+		Solvers/LUSolver.cpp
 	)
 	SET(TBTK_SRC ${TBTK_SRC} ${TBTK_LU_SOLVER_SRC})
 ENDIF(${COMPILE_LU_SOLVER})
