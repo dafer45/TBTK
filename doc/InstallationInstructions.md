@@ -58,25 +58,31 @@ It is recommended that application developers stores a note insde any project us
 It is then possible at any time in the future to check out v0.9.5 and recompile an application developed against this version.
 
 # Install TBTK {#InstallTBTK}
-Begin by create a new folder, then enter this folder and type
+## Linux
+TBTK should be built in a different folder than the source folder, therefore begin by create a new folder, for example TBTKBuild.
+Then enter this folder and type
 ```bash
 	cmake /path/to/TBTK
 ```
-The installation can be customized by supplying the following flags to the cmake command above
-| Flag                            | Description                                                   |
-|---------------------------------|---------------------------------------------------------------|
-| -DCMAKE_INSTALL_PREFIX:PATH=XXX | Specify a custom insallation path.                            |
-| -DSUPER_LU_INCLUDE_PATH=XXX     | Specify a non standard search path for SuperLU include files. |
-| -DSUPER_LU_LIBRARY_PATH=XXX     | Specify a non standard search path for SuperLU library files. |
 
-where XXX is to be replaced by the relevant path.
-
-Then compile the library by typing
+Compile the library by typing
 ```bash
 	make
 ```
 
 Finally, TBTK is installed by typing
 ```bash
-	make install
+	sudo make install
 ```
+The last command requires administrator privileges.
+If administrator privileges are not available, or a local install is preferred, see the customization options below.
+
+## Customized installation
+The installation can be customized by supplying the following flags to the cmake command above
+| Flag                             | Description                                                                                                |
+|----------------------------------|------------------------------------------------------------------------------------------------------------|
+| -DCMAKE_INSTALL_PREFIX:PATH=XXX  | Specify a custom insallation path. For example a local path if administrator privileges are not available. |
+| -DSUPER_LU_INCLUDE_PATH:PATH=XXX | Specify a non standard search path for SuperLU include files.                                              |
+| -DSUPER_LU_LIBRARY_PATH:PATH=XXX | Specify a non standard search path for SuperLU library files.                                              |
+
+where XXX is to be replaced by the relevant path.
