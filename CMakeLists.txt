@@ -311,4 +311,4 @@ INSTALL(
 	FILES_MATCHING PATTERN *.cmake
 )
 
-MESSAGE("Installation path: ${CMAKE_INSTALL_PREFIX}")
+MESSAGE("Installation path that will be used if installed: ${CMAKE_INSTALL_PREFIX}")
