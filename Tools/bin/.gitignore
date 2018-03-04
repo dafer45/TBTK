@@ -3,3 +3,4 @@
 #Except
 !.gitignore
 !TBTKCreateProject
+!CMakeLists.txt
