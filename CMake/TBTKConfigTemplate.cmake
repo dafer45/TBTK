@@ -11,7 +11,7 @@ LIST(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/Modules/")
 #Add link directory for global install
 LINK_DIRECTORIES(${CMAKE_CURRENT_LIST_DIR}/..)
 #Add link directory for build directory
-LINK_DIRECTORIES(${CMAKE_CURRENT_LIST_DIR}/../Lib/src/)
+#LINK_DIRECTORIES(${CMAKE_CURRENT_LIST_DIR}/../Lib/src/)
 
 #Detect packages
 FIND_PACKAGE(BLAS REQUIRED)
