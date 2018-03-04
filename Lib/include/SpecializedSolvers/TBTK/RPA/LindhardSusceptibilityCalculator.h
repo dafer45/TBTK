@@ -28,7 +28,7 @@
 
 #include <complex>
 
-#include <omp.h>
+//#include <omp.h>
 
 namespace TBTK{
 
