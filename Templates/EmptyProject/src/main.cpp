@@ -29,8 +29,6 @@
 using namespace std;
 using namespace TBTK;
 
-const complex<double> i(0, 1);
-
 int main(int argc, char **argv){
 	Streams::out << "Hello quantum world!\n";
 
