@@ -30,6 +30,7 @@ LIST(
 	"${CMAKE_CURRENT_SOURCE_DIR}/Solver/ArnoldiIterator.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/Solver/LinnearEquationSolver.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/Solver/LUSolver.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/PropertyExtractor/ArnoldiIterator.cpp"
 )
 
 IF(${COMPILE_ARNOLDI_ITERATOR})
