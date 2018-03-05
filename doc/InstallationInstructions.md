@@ -3,15 +3,15 @@ Installation instructions {#InstallationInstructions}
 
 # System requirements {#SystemRequirements}
 In order to install TBTK, the following software and libraries must be installed on the system
-| Required software | Further information |
-|-------------------|---------------------|
-| CMake             | https://cmake.org   |
+| Required software | Further information  |
+|-------------------|----------------------|
+| git               | https://git-scm.com/ |
+| CMake             | https://cmake.org    |
 
 | Required libraries | Further information               |
 |--------------------|-----------------------------------|
 | BLAS               | http://www.netlib.org/blas        |
 | LAPACK             | http://www.netlib.org/lapack      |
-| HDF5               | https://support.hdfgroup.org/HDF5 |
 
 ## Optional requirements
 Additional features will also be available if one or more of the following libraries are installed
@@ -24,20 +24,22 @@ Additional features will also be available if one or more of the following libra
 | SuperLU (v5.2.1)   | http://crd-legacy.lbl.gov/~xiaoye/SuperLU   |
 | wxWidgets          | https://www.wxwidgets.org                   |
 | CUDA               | https://developer.nvidia.com/cuda-downloads |
+| HDF5               | https://support.hdfgroup.org/HDF5           |
 
 The following table shows the optional libraries that are required for the different TBTK components
-|                                            | ARPACK | FFTW3 | OpenCV | cURL | SuperLU (v5.2.1) | wxWidgets | CUDA |
-|--------------------------------------------|:------:|:-----:|:------:|:----:|:----------------:|:---------:|:----:|
-| ArnoldiIterator                            | X      |       |        |      | X                |           |      |
-| FourierTransform                           |        | X     |        |      |                  |           |      |
-| Plotter                                    |        |       | X      |      |                  |           |      |
-| RayTracer                                  |        |       | X      |      |                  |           |      |
-| Resource                                   |        |       |        | X    |                  |           |      |
-| DataManager                                |        |       |        | X    |                  |           |      |
-| LinnearEquationSolver                      |        |       |        |      | X                |           |      |
-| LUSolver                                   |        |       |        |      | X                |           |      |
-| GUI                                        |        |       |        |      |                  | X         |      |
-| Enable GPU execution for ChebyshevExpander |        |       |        |      |                  |           | X    |
+|                                            | ARPACK | FFTW3 | OpenCV | cURL | SuperLU (v5.2.1) | wxWidgets | CUDA | HDF5 |
+|--------------------------------------------|:------:|:-----:|:------:|:----:|:----------------:|:---------:|:----:|:----:|
+| ArnoldiIterator                            | X      |       |        |      | X                |           |      |      |
+| FourierTransform                           |        | X     |        |      |                  |           |      |      |
+| Plotter                                    |        |       | X      |      |                  |           |      |      |
+| RayTracer                                  |        |       | X      |      |                  |           |      |      |
+| Resource                                   |        |       |        | X    |                  |           |      |      |
+| DataManager                                |        |       |        | X    |                  |           |      |      |
+| LinnearEquationSolver                      |        |       |        |      | X                |           |      |      |
+| LUSolver                                   |        |       |        |      | X                |           |      |      |
+| GUI                                        |        |       |        |      |                  | X         |      |      |
+| Enable GPU execution for ChebyshevExpander |        |       |        |      |                  |           | X    |      |
+| FileReader and FileWriter                  |        |       |        |      |                  |           |      | X    |
 
 # Download TBTK {#DownloadTBTK}
 TBTK can be downloaded from github.
@@ -58,7 +60,7 @@ It is recommended that application developers stores a note insde any project us
 It is then possible at any time in the future to check out v0.9.5 and recompile an application developed against this version.
 
 # Install TBTK {#InstallTBTK}
-## Linux
+## Unix like operating systems such as Linux and Mac OS
 TBTK should be built in a different folder than the source folder, therefore begin by create a new folder, for example TBTKBuild.
 Then enter this folder and type
 ```bash

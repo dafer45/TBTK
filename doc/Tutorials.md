@@ -6,6 +6,9 @@ These tutorials assume that TBTK has already been installed as described in the 
 # Getting started
 - @subpage CreatingANewApplication
 
+# Building applications
+- @subpage BuildingAFirstApplication
+
 @page CreatingANewApplication Creating a new application (Unix like operating systems such as Linux and Mac OS)
 # Creating, building, and executing a first application {#CreatingBuildingAndExecutingAFirstApplication}
 ## Project creation using TBTKCreateApplication
@@ -132,3 +135,5 @@ Therefore type
 	bash plot.sh
 ```
 and view the results in the *figures* folder.
+
+@page BuildingAFirstApplication Building a first application
