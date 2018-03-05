@@ -2,19 +2,23 @@ Installation instructions {#InstallationInstructions}
 ======
 
 # System requirements {#SystemRequirements}
-In order to install TBTK, the following software and libraries must be installed on the system
+In order to install TBTK, the following software must be installed on the system.
 | Required software | Further information  |
 |-------------------|----------------------|
 | git               | https://git-scm.com/ |
 | CMake             | https://cmake.org    |
 
+The following libraries are also required.
+If you are unsure whether the libraries are installed or not, you can proceed with the installation as described below.
+If these libraries are missing, the call to *cmake* will fail with an error message that tells that one or both of these are missing.
 | Required libraries | Further information               |
 |--------------------|-----------------------------------|
 | BLAS               | http://www.netlib.org/blas        |
 | LAPACK             | http://www.netlib.org/lapack      |
 
+
 ## Optional requirements
-Additional features will also be available if one or more of the following libraries are installed
+Additional features will also be available if one or more of the following libraries are installed.
 | Optional libraries | Further information                         |
 |--------------------|---------------------------------------------|
 | ARPACK             | http://www.caam.rice.edu/software/ARPACK    |
@@ -26,7 +30,7 @@ Additional features will also be available if one or more of the following libra
 | CUDA               | https://developer.nvidia.com/cuda-downloads |
 | HDF5               | https://support.hdfgroup.org/HDF5           |
 
-The following table shows the optional libraries that are required for the different TBTK components
+The following table shows the optional libraries that are required for the different TBTK components.
 |                                            | ARPACK | FFTW3 | OpenCV | cURL | SuperLU (v5.2.1) | wxWidgets | CUDA | HDF5 |
 |--------------------------------------------|:------:|:-----:|:------:|:----:|:----------------:|:---------:|:----:|:----:|
 | ArnoldiIterator                            | X      |       |        |      | X                |           |      |      |
@@ -42,8 +46,7 @@ The following table shows the optional libraries that are required for the diffe
 | FileReader and FileWriter                  |        |       |        |      |                  |           |      | X    |
 
 # Download TBTK {#DownloadTBTK}
-TBTK can be downloaded from github.
-Assuming git (https://git-scm.com/) is installed, type
+TBTK can be downloaded from github, which is done by typing
 ```bash
 	git clone https://github.com/dafer45/TBTK/
 ```
@@ -61,7 +64,7 @@ It is then possible at any time in the future to check out v0.9.5 and recompile 
 
 # Install TBTK {#InstallTBTK}
 ## Unix like operating systems such as Linux and Mac OS
-TBTK should be built in a different folder than the source folder, therefore begin by create a new folder, for example TBTKBuild.
+TBTK should be built in a different folder than the source folder, therefore begin by create a new folder outside of the TBTK folder, for example TBTKBuild.
 Then enter this folder and type
 ```bash
 	cmake /path/to/TBTK
