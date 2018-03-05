@@ -248,6 +248,7 @@ ADD_SUBDIRECTORY(Lib/src/)
 ADD_SUBDIRECTORY(json/TBTK)
 ADD_SUBDIRECTORY(Templates/)
 ADD_SUBDIRECTORY(Tools/bin/)
+ADD_SUBDIRECTORY(Visualization/python/)
 
 #Create TBTKVersion.cmake.
 INCLUDE(CMakePackageConfigHelpers)
