@@ -40,7 +40,7 @@ double UnitHandler::c		= C;
 double UnitHandler::n_A		= N_A;
 double UnitHandler::m_e		= M_E;
 double UnitHandler::m_p		= M_P;
-double UnitHandler::mu_b	= MU_B;
+double UnitHandler::mu_B	= MU_B;
 double UnitHandler::mu_n	= MU_N;
 double UnitHandler::mu_0	= MU_0;
 double UnitHandler::epsilon_0	= EPSILON_0;
@@ -78,7 +78,7 @@ void UnitHandler::setTimeUnit(TimeUnit unit){
 	updateC();
 	updateM_e();
 	updateM_p();
-	updateMu_b();
+	updateMu_B();
 	updateMu_n();
 	updateMu_0();
 }
@@ -92,7 +92,7 @@ void UnitHandler::setLengthUnit(LengthUnit unit){
 	updateC();
 	updateM_e();
 	updateM_p();
-	updateMu_b();
+	updateMu_B();
 	updateMu_n();
 	updateMu_0();
 	updateEpsilon_0();
@@ -119,7 +119,7 @@ void UnitHandler::setChargeUnit(ChargeUnit unit){
 	chargeScale *= newConversionFactor/oldConversionFactor;
 
 	updateE();
-	updateMu_b();
+	updateMu_B();
 	updateMu_n();
 	updateMu_0();
 	updateEpsilon_0();
@@ -421,7 +421,7 @@ string UnitHandler::getM_pUnitString(){
 	return ss.str();
 }
 
-string UnitHandler::getMu_bUnitString(){
+string UnitHandler::getMu_BUnitString(){
 	stringstream ss;
 	ss << getChargeUnitString() << getLengthUnitString() << "^2" << "/" << getTimeUnitString();
 
@@ -491,11 +491,11 @@ void UnitHandler::updateM_p(){
 	m_p /= getLengthConversionFactor()*getLengthConversionFactor();
 }
 
-void UnitHandler::updateMu_b(){
-	mu_b = MU_B;
-	mu_b *= getChargeConversionFactor();
-	mu_b *= getLengthConversionFactor()*getLengthConversionFactor();
-	mu_b /= getTimeConversionFactor();
+void UnitHandler::updateMu_B(){
+	mu_B = MU_B;
+	mu_B *= getChargeConversionFactor();
+	mu_B *= getLengthConversionFactor()*getLengthConversionFactor();
+	mu_B /= getTimeConversionFactor();
 }
 
 void UnitHandler::updateMu_n(){

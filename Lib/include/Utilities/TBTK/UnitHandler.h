@@ -206,10 +206,10 @@ public:
 	static double getM_pN();
 
 	/** Get the Bohr magneton in the currently set base units. */
-	static double getMu_bB();
+	static double getMu_BB();
 
 	/** Get the Bohr magneton in the currently set natural units. */
-	static double getMu_bN();
+	static double getMu_BN();
 
 	/** Get the nuclear magneton in the currently set base units. */
 	static double getMu_nB();
@@ -422,7 +422,7 @@ public:
 	/** Get Bohr magneton unit string.
 	 *
 	 *  @return string representation of the unit for the Bohr magneton. */
-	static std::string getMu_bUnitString();
+	static std::string getMu_BUnitString();
 
 	/** Get nuclear magneton unit string.
 	 *
@@ -496,7 +496,7 @@ private:
 	static double m_p;
 
 	/** Bohr magneton in the currently set units. */
-	static double mu_b;
+	static double mu_B;
 
 	/** Nuclear magneton in the currently set units. */
 	static double mu_n;
@@ -590,7 +590,7 @@ private:
 	static void updateM_p();
 
 	/** Update Bohr magneton. To be called at change of units. */
-	static void updateMu_b();
+	static void updateMu_B();
 
 	/** Update nuclear magneton. To be called at change of units. */
 	static void updateMu_n();
@@ -691,12 +691,12 @@ inline double UnitHandler::getM_pN(){
 	return m_p*lengthScale*lengthScale/(energyScale*timeScale*timeScale);
 }
 
-inline double UnitHandler::getMu_bB(){
-	return mu_b;
+inline double UnitHandler::getMu_BB(){
+	return mu_B;
 }
 
-inline double UnitHandler::getMu_bN(){
-	return mu_b*timeScale/(chargeScale*lengthScale*lengthScale);
+inline double UnitHandler::getMu_BN(){
+	return mu_B*timeScale/(chargeScale*lengthScale*lengthScale);
 }
 
 inline double UnitHandler::getMu_nB(){
