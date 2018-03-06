@@ -138,14 +138,21 @@ Therefore type
 and view the results in the *figures* folder.
 
 @page BuildingAFirstApplicationTwoLevelSystem Building a first application (two level system)
+# Purpose and learning outcome {#PurposeAndLearningOutcome}
+In this tutorial we create an application that models a simple two level system.
+The problem itself is very simple and is more easily solved using pen and paper than using this tutorial.
+However, the purpose of this tutorial is to familiarize the reader with both C++ and the general workflow for writing TBTK applications.
+At the end of this tutorial the reader should have a good understanding of the general structure of a TBTK application and be able to start writing custom applications.
+In particular, the reader will be familiar with how to use the UnitHandler to handle the fact that numerical variables are unitless.
+The reader will also know how to setup a Model, choose a Solver, and how to use a PropertyExtractor to extract properties from a Model without having to interact with the method specific Solver directly.
+
 # Problem description {#ProblemDescription}
-As a first example we will create an application that models a simple two level system.
-Consider therefore a single electron spin in a magnetic field described by the Hamiltonian
+Consider a single electron spin in a magnetic field described by the Hamiltonian
 <center>\f$ H = -\mu_B B\sigma_z\f$,</center>
 where \f$\mu_B\f$ is the Bohr magneton, B is the magnetic field strength, and \f$\sigma_z\f$ is the third Pauli matrix.
 The energy split induced by a magnetic field acting on an electron spin is known as the Zeeman split.
-In this tutorial we therefore calculate this energy split as a function of the magnetic field.
-Moreover, at zero temperature and non-zero magnetic field strength, the system will be in its ground state and be maximally magnetized parallel to the magnetic field.
+In this tutorial we write an application that can be used to calculate this energy split as a function of the magnetic field.
+Further, at zero temperature and non-zero magnetic field strength, the system will be in its ground state and be maximally magnetized parallel to the magnetic field.
 However, at finite temperatures both the ground state and the excited state will have a finite occupation determined by the Fermi-Dirac distribution.
 We therefore also invstigate how the magnetization varies with magnetic field strength and temperature.
 
@@ -162,14 +169,14 @@ Identifying up spin with \f$0\f$ and down spin with \f$1\f$, the hopping amplitu
 |--------------------------------|----------------|----------|------------|
 | \f$a_{\uparrow\uparrow}\f$     | \f$-\mu_B B\f$ | {0}      | {0}        |
 | \f$a_{\downarrow\downarrow}\f$ | \f$\mu_B B\f$  | {1}      | {1}        |
-Here the first column is an analytical symbold for the hopping amplitude, the second is its actual value, while the third and forth column corresponds to the numerical representation of the first and second index of \f$a_{\mathbf{i}\mathbf{j}}\f$.
-The three last columns is therefore a sufficient representation of the hopping amplitude and is what enters into the numerical model.
+Here the first column is an analytical symbol for the hopping amplitude, the second is its actual value, while the third and forth column corresponds to the numerical representation of the first and second index of \f$a_{\mathbf{i}\mathbf{j}}\f$.
+The three last columns forms a complete representation of the hopping amplitude and is what enters into the numerical model.
 This particular way of representing the hopping amplitudes reoccurs throughout TBTK and its documentation.
 
-# Implementing the calculation {#Implementing the calculation}
-## Understanding *src/main.cpp*
-We are now ready to create the application and assume that an empty project has been created as described in the "Creating a new application" tutorial.
-Once created, we open the file *src/main.cpp*, which should contain the following code
+# Implementing the calculation {#ImplementingTheCalculation}
+## Understanding *src/main.cpp* (C++ crash course)
+We are now ready to create the application and assume that an empty project is created as described in the "Creating a new application" tutorial.
+Once created, we open the file *src/main.cpp*, which contains the following code
 ```cpp
 	#include "TBTK/Streams.h"
 
@@ -184,33 +191,33 @@ Once created, we open the file *src/main.cpp*, which should contain the followin
 		return 0;
 	}
 ```
-Here the first two lines are include statements that includes other C++ library components into our code.
+Here the first two lines are include statements that includes other C++ library components in the code.
 The first include statement includes a component called *Streams* from the TBTK library that can be used to output information to the screen at runtime.
 The second include statement includes *complex* numbers from the C++ standard library (STL).
-In this empty project nu actual complex numbers are present by default, but complex numbers are so common in TBTK applications that they are included by default in the template projects.
+In this empty project no actual use is made of complex numbers, but since complex numbers are so common in TBTK applications they are included by default in the template projects.
 Each component of TBTK is available in a separate file and as we build our applications we will include more files.
 
 To understand the next two lines we note that in C++, functions, classes, etc can be organized into namespaces to avoid name clashes between different libraries that defines components with the same names.
 In particular, every component of STL is in the namespace *std*, while every component of TBTK is in the namespace *TBTK*.
-For example, the Stream class included above is by default accessed as TBTK::Streams.
-However, often there are no actual name clashes and it is convenient to not have to prepend every function call etc with *std::* or *TBTK::* and it is therefore possible to tell the compiler to "use" particular namespaces.
+For example, the Streams class included above is by default accessed as TBTK::Streams.
+However, often there are few actual name clashes and it is convenient to not have to prepend every function call etc with *std::* or *TBTK::* and it is therefore possible to tell the compiler to "use" particular namespaces.
 Possible name clashes can then be handled individually by prepending only those components for which ambiguity arise by their corresponding namespaces.
 
 The actuall entry point for the program is
 ```cpp
 	int main(int argc, char **argv){
 ```
-However, we note that global variable assigmnets occur ahead of this time, meaning that it in principle is possible for some execution of code to occur already before the main routine begins.
-The arguments *argc* and *argv* can be used to accept arguments from the command line, and the interested reader is referred to make a web search for further information on how to use these.
+However, we note that global variable assignmets occur ahead of this time, meaning that it in principle is possible for some execution of code to occur already before the main routine begins.
+The arguments *argc* and *argv* can be used to accept arguments from the command line, and the interested reader is adviced to make a web search for further information on how to use these.
 
 Inside the main function two things occur.
 First, "Hello quantum world!\n" is written to the output stream, where '<<' can be read as send the right hand side to the output stream Streams::out.
 Writing to Streams::out will by default result in information being printed to the screen.
-The "\n" at the end of the string is a line break character and results in whatever follows to be printed on a new line.
+The "\n" at the end of the string is a line break character and means that any character that is printed after it will appear on a new line.
 Finally, the main function exits by returning *0*, which is a message indicating that the application finished as expected.
 
 ## Initializing units
-Having understood the structure of *src/main.cpp*, we are now ready to start implementing the actuall application.
+Having understood the structure of *src/main.cpp*, we are now ready to implement the actuall application.
 The first step is to specify the units that we will be using.
 In particular, we will measure temperature in terms of Kelvin and energies in terms of *meV*.
 To achieve this we remove the print statement in the code above and replace it by
@@ -232,18 +239,18 @@ To achieve this we remove the print statement in the code above and replace it b
 		return 0;
 	}
 ```
-We here note the use of two functions of the form
+We here note the use of paris of functions of the form
 ```cpp
 	UnitHandler::setEnergyUnit(UnitHandler::EnergyUnit::meV);
 	UnitHandler::setEnergyScale(1);
 ```
-Together these two calls tells TBTK that any other value corresponding to an energy that is entered into the code should be understood to be in units of 1meV.
+Together these two calls tells TBTK that any other value corresponding to an energy that is entered into the code should be understood to be in units of 1 meV.
 That is, these two lines defines the natural energy scale for the problem to be 1meV.
-Had we instead passed for example *13606* to the second function call, then every number E passed to a TBTK function that corresponds to an energy would have ben interpretted to mean *13606*E meV*.
+Had we instead passed for example 13606 to the second function call, then every number E passed to a TBTK function that corresponds to an energy would have been interpretted to mean 13606E meV.
 
 ## Specifying parameters
 The next step in our calculation is to setup variables containing the relevant parameters for the problem.
-We begin by specifying some default parameter values *temperature = 300K* and *magneticField = 1T*, as well as requesting the Bohr magneton from the UnitHandler.
+We begin by specifying some default parameter values *T = 300K* and *B = 1T*, as well as requesting the Bohr magneton from the UnitHandler.
 ```cpp
 	#include "TBTK/UnitHandler.h"
 
@@ -260,12 +267,12 @@ We begin by specifying some default parameter values *temperature = 300K* and *m
 		UnitHandler::setEnergyScale(1);
 
 		//Setup input parameters.
-		double temperature = 300;
-		double magneticField = 1;
+		double T = 300;
+		double B = 1;
 
 		//Setup parameters in natural units.
-		double magneticFieldNaturalUnits = UnitHandler::convertMagneticFieldDtB(
-			magneticField,
+		double B_N = UnitHandler::convertMagneticFieldDtB(
+			B,
 			UnitHandler::MagneticFieldUnit::T
 		);
 		double mu_B = UnitHandler::getMu_BN();
@@ -274,20 +281,20 @@ We begin by specifying some default parameter values *temperature = 300K* and *m
 	}
 ```
 While the two first new lines may seem simple to understad, we note that numerical numbers are unit less.
-The numbers are actually only physically meaning full either implicitly through the developers interpretation of the values or explicitly by convention.
-What the UnitHandler calls above does is to explicitly specify that temperatures are meassured in terms of one Kelvin.
-This convention allows us to unambiguosly pass the *temperature* variable to any TBTK function.
-However, the variable *magneticField* is so far only implicitly understod to mean 1T.
-Moreover, there is in fact no function for specifying the convention for magnetic fields directly in TBTK since its natural unit is set indirectly by specifying the natural units for six other so called *base quantities* (see [UnitHandler](@ref UnitHandler) for detailed information).
+The numbers are actually only physically meaningful either implicitly through the developers interpretation or convention, or explicitly by declaration of convention.
+What the UnitHandler calls added in the previous step does is to explicitly declare that temperatures are meassured in terms of one Kelvin.
+This declaration of convention allows us to unambiguosly pass  *T* to any TBTK function.
+However, the variable *B* is so far only implicitly understod to contain the value one Tesla (rather than for example one Gauss).
+Moreover, there is in fact no function for declaring the convention for magnetic fields directly in TBTK since its natural unit is set indirectly by declaring the natural units for six other so called *base quantities* (see [UnitHandler](@ref UnitHandler) for detailed information).
 Instead we use the following function
 ```cpp
-	double magneticFieldNaturalUnits = UnitHandler::convertMagneticFieldDtN(
-		magneticField,
+	double B_N = UnitHandler::convertMagneticFieldDtN(
+		B,
 		UnitHandler::MagneticFieldUnit::T
 	);
 ```
-to convert the input parameter *magneticField* from units of Tesla to current natural units.
-The resulting variable *magneticFieldNaturalUnits* can the be safetly passed to other TBTK functions that expects a magnetic field or be multiplied with other parameters specified in natural units.
+to convert the input parameter *B* from units of Tesla to the current natural units.
+The resulting variable *T_N* can then be safetly passed to other TBTK functions that expects a magnetic field or be multiplied with other parameters specified in natural units.
 The letters *DtN* at the end of the function name should be read 'derived to natural'.
 The last new line similarly requests the Bohr magneton on natural units, where the *N* at the end of the function name stands for *natural*.
 
@@ -310,12 +317,12 @@ Having specified the parameters for the problem, the Model can be setup as follo
 		UnitHandler::setEnergyScale(1);
 
 		//Setup input parameters.
-		double temperature = 300;
-		double magneticField = 1;
+		double T = 300;
+		double B = 1;
 
 		//Setup parameters in natural units.
-		double magneticFieldNaturalUnits = UnitHandler::convertMagneticFieldDtB(
-			magneticField,
+		double B_N = UnitHandler::convertMagneticFieldDtB(
+			B,
 			UnitHandler::MagneticFieldUnit::T
 		);
 		double mu_B = UnitHandler::getMu_BN();
@@ -323,30 +330,27 @@ Having specified the parameters for the problem, the Model can be setup as follo
 		//Create model object.
 		Model model;
 
-		//Set the temperature.
-		model.setTemperature(temperature);
-
 		//Add HoppingAmplitudes to the Model
-		model << HoppingAmplitude(-mu_B*magneticFieldNaturalUnits, {0}, {0});
-		model << HoppingAmplitude( mu_B*magneticFieldNaturalUnits, {1}, {1});
+		model << HoppingAmplitude(-mu_B*B_N, {0}, {0});
+		model << HoppingAmplitude( mu_B*B_N, {1}, {1});
 
 		//Construct a Hilbert space for the Model.
 		model.construct();
 
 		//Set the temperature.
-		model.setTemperature(temperature);
+		model.setTemperature(T);
 
 		return 0;
 	}
 ```
-Here the first new line creates the actual Model object called *model*, and in the two following lines the HoppingAmplitudes are added to the Model.
+Here the first new line creates the actual Model object called *model* and in the two following lines the HoppingAmplitudes are added to the Model.
 Note that the syntax for feeding HoppingAmplitudes to the Model is similar to how the string "Hello quantum world!\n" was fed to Streams::out.
 Also note how the HoppingAmplitudes are constructed in complete analogy with the three last columns in the hopping amplitude table at the beginning of this tutorial.
-Next, the second last new line sets up the actual Hilbert space for the problem, which mainly is used internally by the various Solvers that can be applied to the problem.
+Next, the second last new line sets up the actual Hilbert space for the problem, which mainly will be of use to the Solvers.
 Finally, the temperature is set in the last new line.
 
 ## Choosing Solver
-For a small problem like the one considered here, the best solution method often is diagonalization, which solves the problem and gives direct access to the eigenvalues and eigenstates.
+For a small problem like the one considered here the best solution method often is diagonalization, which after solving the problem gives direct access to the eigenvalues and eigenstates.
 We therefore her setup and run a Solver::Diagonalizer as follows.
 ```cpp
 	#include "TBTK/UnitHandler.h"
@@ -366,12 +370,12 @@ We therefore her setup and run a Solver::Diagonalizer as follows.
 		UnitHandler::setEnergyScale(1);
 
 		//Setup input parameters.
-		double temperature = 300;
-		double magneticField = 1;
+		double T = 300;
+		double B = 1;
 
 		//Setup parameters in natural units.
-		double magneticFieldNaturalUnits = UnitHandler::convertMagneticFieldDtB(
-			magneticField,
+		double B_N = UnitHandler::convertMagneticFieldDtB(
+			B,
 			UnitHandler::MagneticFieldUnit::T
 		);
 		double mu_B = UnitHandler::getMu_BN();
@@ -380,14 +384,14 @@ We therefore her setup and run a Solver::Diagonalizer as follows.
 		Model model;
 
 		//Add HoppingAmplitudes to the Model
-		model << HoppingAmplitude(-mu_B*magneticFieldNaturalUnits, {0}, {0});
-		model << HoppingAmplitude( mu_B*magneticFieldNaturalUnits, {1}, {1});
+		model << HoppingAmplitude(-mu_B*B_N, {0}, {0});
+		model << HoppingAmplitude( mu_B*B_N, {1}, {1});
 
 		//Construct a Hilbert space for the Model.
 		model.construct();
 
 		//Set the temperature.
-		model.setTemperature(temperature);
+		model.setTemperature(T);
 
 		//Create Solver.
 		Solver::Diagonalizer solver;
@@ -401,7 +405,7 @@ In the second new line the Solver is told to work on the Model *model*, while th
 
 ## Creating a PropertyExtractor
 Because different Solvers can present themself very differently to the outside world, direct extraction of properties from the Solver is discouraged in TBTK.
-Instead Solvers comes with corresponding PropertyExtractors that abstracts away some of the irrelevant numerical details of the particular Solvers and allows for focus to be put on the actual physics of the problem.
+Instead Solvers come with corresponding PropertyExtractors that abstracts away some of the irrelevant numerical details of the particular Solvers and allows for focus to be put on the actual physics of the problem.
 The next step is therefore to wrap the Solver in a PropertyExtractor, which is done as follows.
 ```cpp
 	#include "TBTK/UnitHandler.h"
@@ -422,12 +426,12 @@ The next step is therefore to wrap the Solver in a PropertyExtractor, which is d
 		UnitHandler::setEnergyScale(1);
 
 		//Setup input parameters.
-		double temperature = 300;
-		double magneticField = 1;
+		double T = 300;
+		double B = 1;
 
 		//Setup parameters in natural units.
-		double magneticFieldNaturalUnits = UnitHandler::convertMagneticFieldDtB(
-			magneticField,
+		double B_N = UnitHandler::convertMagneticFieldDtB(
+			B,
 			UnitHandler::MagneticFieldUnit::T
 		);
 		double mu_B = UnitHandler::getMu_BN();
@@ -436,14 +440,14 @@ The next step is therefore to wrap the Solver in a PropertyExtractor, which is d
 		Model model;
 
 		//Add HoppingAmplitudes to the Model
-		model << HoppingAmplitude(-mu_B*magneticFieldNaturalUnits, {0}, {0});
-		model << HoppingAmplitude( mu_B*magneticFieldNaturalUnits, {1}, {1});
+		model << HoppingAmplitude(-mu_B*B_N, {0}, {0});
+		model << HoppingAmplitude( mu_B*B_N, {1}, {1});
 
 		//Construct a Hilbert space for the Model.
 		model.construct();
 
 		//Set the temperature.
-		model.setTemperature(temperature);
+		model.setTemperature(T);
 
 		//Create Solver.
 		Solver::Diagonalizer solver;
@@ -459,7 +463,7 @@ The next step is therefore to wrap the Solver in a PropertyExtractor, which is d
 
 ## Calculating the Zeeman split
 To calculate the Zeeman split, we need to know the energy of the individual eigenstates of the system.
-In our case we have two eigenstates with eigenvalues \f$E_1\f$ and \f$E_2\f$ and the Zeeman split is calculated as \f$E_Z = E_1 - E_2\f$.
+In our case we have two eigenstates with eigenvalues \f$E_0\f$ and \f$E_1\f$ and the Zeeman split is calculated as \f$E_Z = E_1 - E_0\f$.
 We implement these calculations as follows.
 ```cpp
 	#include "TBTK/UnitHandler.h"
@@ -467,6 +471,7 @@ We implement these calculations as follows.
 	#include "TBTK/Solver/Diagonalizer.h"
 	#include "TBTK/PropertyExtractor/Diagonalizer.h"
 	#include "TBTK/Property/EigenValues.h"
+	#include "TBTK/Streams.h"
 
 	#include <complex>
 
@@ -481,12 +486,12 @@ We implement these calculations as follows.
 		UnitHandler::setEnergyScale(1);
 
 		//Setup input parameters.
-		double temperature = 300;
-		double magneticField = 1;
+		double T = 300;
+		double B = 1;
 
 		//Setup parameters in natural units.
-		double magneticFieldNaturalUnits = UnitHandler::convertMagneticFieldDtB(
-			magneticField,
+		double B_N = UnitHandler::convertMagneticFieldDtB(
+			B,
 			UnitHandler::MagneticFieldUnit::T
 		);
 		double mu_B = UnitHandler::getMu_BN();
@@ -495,14 +500,14 @@ We implement these calculations as follows.
 		Model model;
 
 		//Add HoppingAmplitudes to the Model
-		model << HoppingAmplitude(-mu_B*magneticFieldNaturalUnits, {0}, {0});
-		model << HoppingAmplitude( mu_B*magneticFieldNaturalUnits, {1}, {1});
+		model << HoppingAmplitude(-mu_B*B_N, {0}, {0});
+		model << HoppingAmplitude( mu_B*B_N, {1}, {1});
 
 		//Construct a Hilbert space for the Model.
 		model.construct();
 
 		//Set the temperature.
-		model.setTemperature(temperature);
+		model.setTemperature(T);
 
 		//Create Solver.
 		Solver::Diagonalizer solver;
@@ -512,10 +517,10 @@ We implement these calculations as follows.
 		//Create PropertyExtractor.
 		PropertyExtractor::Diagonalizer propertyExtractor(solver);
 
-		//Calculate eigen values
+		//Calculate eigenvalues
 		Property::EigenValues eigenValues = propertyExtractor.getEigenValues();
 
-		//Print the energies of the individual eigen states.
+		//Print the energies of the individual eigenstates.
 		Streams::out << "Energies for the individual eigenstates:\n";
 		for(unsigned int n = 0; n < eigenValues.getSize(); n++)
 			Streams::out << eigenValues(n) << UnitHandler::getEnergyUnitString() << "\n";
