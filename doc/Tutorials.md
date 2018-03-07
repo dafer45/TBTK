@@ -11,6 +11,11 @@ The tutorials are written for physicisists that not necessarily are familiar wit
 - @subpage BuildingAFirstApplicationTwoLevelSystem
 
 @page CreatingANewApplication Creating a new application (Unix like operating systems such as Linux and Mac OS)
+# Purpose and learning outcome {#CreatingANewApplicationPurposeAndLearningOutcome}
+In this tutorial we learn how to create a new project and how to build and execute an application.
+We also go through the file and folder structure of a basic project and learn to create more complex template projects.
+At the end of this tutorial the reader should be comfortable with the support structure inside which an application is built and be ready to learn how to write actual applications.
+
 # Creating, building, and executing a first application {#CreatingBuildingAndExecutingAFirstApplication}
 ## Project creation using TBTKCreateApplication
 One of the main issues when writing code in a language such as C++ is the need to manage both source files and dependencies in terms of other libraries.
@@ -138,7 +143,7 @@ Therefore type
 and view the results in the *figures* folder.
 
 @page BuildingAFirstApplicationTwoLevelSystem Building a first application (two level system)
-# Purpose and learning outcome {#PurposeAndLearningOutcome}
+# Purpose and learning outcome {#BuildingAFirstApplicationTwoLevelSystemPurposeAndLearningOutcome}
 In this tutorial we create an application that models a simple two level system.
 The problem itself is very simple and is more easily solved using pen and paper than using this tutorial.
 However, the purpose of this tutorial is to familiarize the reader with both C++ and the general workflow for writing TBTK applications.
@@ -522,34 +527,33 @@ We implement these calculations as follows.
 
 		//Print the energies of the individual eigenstates.
 		Streams::out << "Energies for the individual eigenstates:\n";
-		for(unsigned int n = 0; n < eigenValues.getSize(); n++)
-			Streams::out << eigenValues(n) << UnitHandler::getEnergyUnitString() << "\n";
+		for(unsigned int n = 0; n < eigenValues.getSize(); n++){
+			Streams::out << UnitHandler::convertEnergyNtB(eigenValues(n))
+				<< " " << UnitHandler::getEnergyUnitString() << "\n";
+		}
 
 		//Print the Zeeman split.
-		Streams::out << "\nZeeman split: " << eigenValues(1) - eigenValues(0)
+		Streams::out << "\nZeeman split: "
+			<< UnitHander::convertEnergyNtB(eigenValues(1) - eigenValues(0))
 			<< UnitHandler::getEnergyUnitString() << "\n";
 
 		return 0;
 	}
 ```
 Here we first request the Property::EigenValues from the PropertyExtractor.
-This object can seen as a function of the eigenstate indices and we can obtain the individual energies using *eigenValues(0)* and *eigenValues(1)*.
-The Property::EigenValues object also contains information about the number of actual eigenvalues, which is obtained using *eigenValues.getSize()*.
+This object can be seen as a function of the eigenstate indices and we can obtain the individual energies using *eigenValues(0)* and *eigenValues(1)*.
+The object eigenValues also contains information about the number of actual eigenvalues, which is obtained using *eigenValues.getSize()*.
 This is used in the newly added for-loop to loop over all eigenvalues and print them.
-We also note the call to *UnitHandler::getEnergyUnitString()*, which returns a string representation of the current base units, resulting in energies being printed together with their units.
-In the two last lines, the Zeeman split is calculated and similarly printed.
 
-<b>Note</b> UnitHandler::getEnergyUnitString() prints the unit string for the base unit.
-However, eigenValues are in natural units, which here happens to be the same as the base units since we used *1* in the call to
-```cpp
-	UnitHandler::setEnergyScale(1);
-```
-In general, the natural units will need to be converted back to base units before being printed as above.
-This can be achieved as follows
-```cpp
-	UnitHandler::convertEnergyNtB(eigenValues(n));
-```
-where *NtB* should be read as "natural to base".
+We make two notes about the expression inside the for-loop.
+First, instead of printing the eigenValues imediately, we first pass them through the function UnitHandler::convertEnergyNtB() to convert the values from "natural to base" units.
+This is done since all numbers in TBTK are in the natural units specified by the UnitHandler calls at the beginning of the program.
+Certainly, it is posible to print the values in the natural scale too, but here we want to print them in the base units meV.
+In fact, in this case the conversion is not strictly necessary since the natural energy scale is set to 1 meV, which means that the natural units and the base units are the same.
+However, it is good practice to always perform the convertion even if it is known to be trivial since it makes it possible to later change the natural scale without ahving to change the rest of the code.
+Second, after printing the numeric value of the eigenvalues, we call UnitHandler::getENergyUnitString() to also print a string representation of the energy unit after the energy values.
+
+In the two last lines, the Zeeman split is calculated and similarly printed.
 
 ## Calculating the magnetization
 To be continued...
