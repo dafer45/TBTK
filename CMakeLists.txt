@@ -164,12 +164,12 @@ ELSE(SuperLU_FOUND)
 	MESSAGE("[ ] LUSolver")
 ENDIF(SuperLU_FOUND)
 
-IF(wxWidgets_FOUND)
+IF(wxWidgets_FOUND AND OpenCV_FOUND)
 	MESSAGE("[X] GUI")
 	SET(COMPILE_GUI TRUE)
-ELSE(wxWidgets_FOUND)
+ELSE(wxWidgets_FOUND AND OpenCV_FOUND)
 	MESSAGE("[ ] GUI")
-ENDIF(wxWidgets_FOUND)
+ENDIF(wxWidgets_FOUND AND OpenCV_FOUND)
 MESSAGE("\n")
 
 #C++ flags
