@@ -109,29 +109,51 @@ public:
 	/** Print HoppingAmplitude. Mainly for debugging. */
 	void print() const;
 
-	/** Get the amplitude value \f$a_{ij}\f$. */
+	/** Get the amplitude value \f$a_{ij}\f$.
+	 *
+	 *  @return The value of the amplitude. */
 	std::complex<double> getAmplitude() const;
 
-	/** Addition operator. */
+	/** Addition operator. Creates a tuple containing the HoppingAmplitude
+	 *  and its Hermitian conjugate. Used to allow the syntax<br>
+	 *  model << hoppingAmplitude + HC.
+	 *
+	 *  @param hc Should be HC.
+	 *
+	 *  @return HoppingAmplitude tuple containing the original
+	 *  HoppingAmplitude and its Hermitian conjugate. */
 	std::tuple<HoppingAmplitude, HoppingAmplitude> operator+(
 		const HermitianConjugate hc
 	);
 
-	/** Get to index. */
+	/** Get to index.
+	 *
+	 *  @return The to-Index. */
 	const Index& getToIndex() const;
 
-	/** Get from index. */
+	/** Get from index.
+	 *
+	 *  @return The from Index. */
 	const Index& getFromIndex() const;
 
-	/** Get string representation of the HoppingAmplitude. */
+	/** Get string representation of the HoppingAmplitude.
+	 *
+	 *  @return A string representation of the HoppingAmplitude. */
 	std::string toString() const;
 
 	/** Serialize HoppingAmplitude. Note that HoppingAmplitude is
 	 *  pseudo-Serializeable in that it implements the Serializeable
-	 * interface, but does so non-virtually. */
+	 * interface, but does so non-virtually.
+	 *
+	 *  @param mode Serialization mode to use.
+	 *
+	 *  @return Serialized string representation of the HoppingAmplitude.
+	 */
 	std::string serialize(Serializeable::Mode mode) const;
 
-	/** Get size in bytes. */
+	/** Get size in bytes.
+	 *
+	 *  @return Memory size required to store the HoppingAmplitude. */
 	unsigned int getSizeInBytes() const;
 private:
 	/** Amplitude \f$a_{ij}\f$. Will be used if amplitudeCallback is NULL.

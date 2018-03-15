@@ -228,4 +228,8 @@ TEST(Index, operatorGreaterThan){
 	EXPECT_EXIT(Index({1, 2, 3}) > Index({1, 2}), ::testing::ExitedWithCode(1), "");
 }
 
+TEST(Index, getSizeInBytes){
+	EXPECT_TRUE(Index().getSizeInBytes() > 0) << "getSizeInBytes() failed.";
+}
+
 };
