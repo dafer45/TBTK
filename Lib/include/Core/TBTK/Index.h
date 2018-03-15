@@ -50,105 +50,183 @@ enum {
  */
 class Index{
 public:
-	/** Constructor. */
+	/** Constructs an empty Index. */
 	Index(){};
 
-	/** Constructor. */
+	/** Constructs an Index from an initializer list.
+	 *
+	 * @param i Initializer list from which the Index is constructed. */
 	Index(std::initializer_list<int> i) : indices(i){};
 
-	/** Constructor. */
+	/** Constructs an Index from an std::vector<int>.
+	 *
+	 *  @param i Vector from which the Index is constructed. */
 	Index(std::vector<int> i) : indices(i){};
 
-	/** Copy constructor. */
+	/** Copy constructor.
+	 *
+	 *  @param index Index to copy. */
 	Index(const Index &index) : indices(index.indices){};
 
-	/** Constructor. Concatenates two indices into one total index of the
-	 *  form {head, tail}. */
+	/** Constructs a new Index by concatenating two indices into one total
+	 *  index of the form {head, tail}.
+	 *
+	 *  @param head First part of the compund Index.
+	 *  @param tail Second part of the compund Index.*/
 	Index(const Index &head, const Index &tail);
 
-	/** Constructor. Concatenates a list of indices, adding IDX_SEPARATOR
-	 *  between every index. */
+	/** Constructs a compound Index by concatenating a list of indices,
+	 *  adding IDX_SEPARATOR between every index.
+	 *
+	 *  @param indexList List of indices. */
 	Index(std::initializer_list<std::initializer_list<int>> indexList);
 
-	/** Constructor. Concatenates a list of indices, adding IDX_SEPARATOR
-	 *  between every index. */
+	/** Constructs a compund Index by concatenating a list of indices,
+	 *  adding IDX_SEPARATOR between every index.
+	 *
+	 *  @param indexList List of indices. */
 	Index(const std::vector<std::vector<int>> &indexList);
 
-	/** Constructor. Concatenates a list of indices, adding IDX_SEPARATOR
-	 *  between every index. */
+	/** Constructs a compound Index by Concatenating a list of indices,
+	 *  adding IDX_SEPARATOR between every index.
+	 *
+	 *  @param indexList List of indices. */
 	Index(std::initializer_list<Index> indexList);
 
-	/** Constructor. */
+	/** Constructs an Index from a string.
+	 *
+	 *  @param indexString String such as "{1, 2, 3} from which the Index is
+	 *  constructed. */
 	Index(const std::string &indexString);
 
-	/** Constructor. Constructs the Index from a serialization string. */
+	/** Constructs an Index from a serialization string.
+	 *
+	 *  @param serialization Serialization string from which to construct
+	 *  the Index.
+	 *
+	 *  @param mode Mode with which the string has been serialized. */
 	Index(const std::string &serialization, Serializeable::Mode mode);
 
 	/** Compare this index with another index. Returns true if the indices
-	 * have the same number of subindices and all subindices are equal.
-	 * @param index Index to compare with.
-	 * @param allowWildcard IDX_ALL is interpreted as wildcard. */
+	 *  have the same number of subindices and all subindices are equal.
+	 *
+	 *  @param index Index to compare with.
+	 *  @param allowWildcard IDX_ALL is interpreted as wildcard.
+	 *
+	 *  @return True if the indices are equal, otherwise false. */
 	bool equals(const Index &index, bool allowWildcard = false) const;
 
-	/** Get subindex n. */
+	/** Get subindex n.
+	 *
+	 *  @param n Subindex.
+	 *
+	 *  @return Subindex at position n. */
 	int& at(unsigned int n);
 
-	/** Get subindex n. Constant version. */
+	/** Get subindex n. Constant version.
+	 *
+	 *  @param n Subindex.
+	 *
+	 *  @return Subindex at position n. */
 	const int& at(unsigned int n) const;
 
-	/** Get size. */
+	/** Get size.
+	 *
+	 *  @return Number of subindices for individual indices such as
+	 *  {1, 2, 3}. For compound indices such as {{1, 2}, {3,4}, {5, 6}},
+	 *  the total number of subindices (here 6) plus the number of index
+	 *  separators (here 2) are returned (here 6+2=8). */
 	unsigned int getSize() const;
 
-	/** Reserves memory for the Index. */
+	/** Reserves memory for the Index.
+	 *
+	 *  @param Number of subindices to reserve space for. */
 	void reserve(unsigned int size);
 
-	/** Push subindex at the back of the index. */
+	/** Push subindex at the back of the index.
+	 *
+	 *  @param subindex Subindex to append to the Index. */
 	void push_back(int subindex);
 
-	/** Removes and returns the first subindex. */
+	/** Removes and returns the first subindex.
+	 *
+	 *  @return The first subindex. */
 	int popFront();
 
-	/** Removes and returns the last subindex. */
+	/** Removes and returns the last subindex.
+	 *
+	 *  @return The last subindex. */
 	int popBack();
 
 	/** Returns an index with the same number or subindices, and each
-	 *  subindex set to 1. */
+	 *  subindex set to 1.
+	 *
+	 *  @return Index with all subindices set to 1. */
 	Index getUnitRange();
 
 	/** Returns an Index containing the subindices from position 'first' to
-	 *  'last'. */
+	 *  'last'.
+	 *
+	 *  @parameter first First index to include in range (inclusive).
+	 *  @parameter last Last index to include in range (inclusive).
+	 *
+	 *  @return An index containing the subindices in the range first to
+	 *  last (inclusive). */
 	Index getSubIndex(int first, int last);
 
 	/** Returns true if the Index is a pattern index. That is, if it
-	 *  contains a negative subindex. */
+	 *  contains a negative subindex.
+	 *
+	 *  @return True if the Index is a pattern index, otherwise false. */
 	bool isPatternIndex() const;
 
 	/** Print index. Mainly for debuging. */
 	void print() const;
 
-	/** Print index. Mainly for debuging. */
+	/** Get string representation of the Index.
+	 *
+	 *  @return A string representation of the Index. */
 	std::string toString() const;
 
 	/** Comparison operator. Returns false if the TreeNode structure would
-	 *  generate a smaller Hilbert space index for i1 than for i2. */
+	 *  generate a smaller Hilbert space index for i1 than for i2.
+	 *
+	 *  @return True if i1 would generate a smaller Hilbert space index
+	 *  than i2. */
 	friend bool operator<(const Index &i1, const Index &i2);
 
 	/** Comparison operator. Returns false if the TreeNode structure would
-	 *  generate a larger Hilbert space index for i1 than for i2. */
+	 *  generate a larger Hilbert space index for i1 than for i2.
+	 *
+	 *  @return True if i1 would generate a larger Hilbert space index than
+	 *  i2. */
 	friend bool operator>(const Index &i1, const Index &i2);
 
-	/** Subscript operator. */
+	/** Subscript operator.
+	 *
+	 *  @param n Subindex.
+	 *
+	 *  @return Subindex at position n. */
 	int& operator[](unsigned int subindex);
 
-	/** Subscript operator. */
+	/** Subscript operator.
+	 *
+	 *  @param n Subindex.
+	 *
+	 *  @return Subindex at position n. */
 	const int& operator[](unsigned int subindex) const;
 
 	/** Serialize Index. Note that Index is pseudo-Serializeable in that it
 	 *  implements the Serializeable interface, but does so non-virtually.
-	 */
+	 *
+	 *  @param mode Serialization mode to use.
+	 *
+	 *  @return Serialized string represenation of the Index. */
 	std::string serialize(Serializeable::Mode mode) const;
 
-	/** Get size in bytes. */
+	/** Get size in bytes.
+	 *
+	 *  @return Memory size required to store the Index. */
 	unsigned int getSizeInBytes() const;
 private:
 	/** Subindex container. */
