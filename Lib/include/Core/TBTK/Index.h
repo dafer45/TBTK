@@ -30,6 +30,25 @@
 
 namespace TBTK{
 
+/** \brief Enum for special subindex values.
+ *
+ *  While non-negative subindices in an Index corresponds to normal subindices,
+ *  negative subindices are reserved for special purposes.<br><br>
+ *  <b>IDX_ALL = _ = ___:</b><br>
+ *    Wildcard Used to indicate that all indices are to be considered or that
+ *    the particular subindex value is of no interest. To improve
+ *    self-documentation for library code, only IDX_ALL should be used in
+ *    actuall library code. '_' and '___' are syntactic suggar meant for use in
+ *    application code.<br><br>
+ *  <b>IDX_X, IDX_Y, IDX_Z:</b><br>
+ *    Loop indices used to indicate that a particular index should be looped
+ *    over.<br><br>
+ *  <b>IDX_SPIN:</b><br>
+ *    Used to indicate that a certain subindex should be interpreted as a
+ *    spin-subindex.<br><br>
+ *  <b>IDX_SEPARATOR:</b><br>
+ *    Used as Index-separator in compound indices such as {{1, 2}, {3, 4}},
+ *    which is stored as {1, 2, IDX_SEPARATOR, 3, 4}. */
 enum {
 	_ = -1,		//Shorthand notation for IDX_ALL. Always use IDX_ALL in
 	___ = -1,	//library code.

@@ -33,6 +33,7 @@
 
 namespace TBTK{
 
+/** \brief Enum used to indicate the Hermitian conjugate. */
 enum HermitianConjugate {HC};
 
 /** @brief Hopping amplitude from state 'from' to state 'to'.
@@ -47,7 +48,15 @@ enum HermitianConjugate {HC};
  */
 class HoppingAmplitude{
 public:
-	/** Constructor. */
+	/** Constructs a HoppingAmplitude from a value and two @link Index
+	 *  Indices@endlink.
+	 *
+	 *  @param amplitude The amplitude value.
+	 *  @param toIndex The left index (i or to-Index) on the
+	 *  HoppingAmplitude.
+	 *
+	 *  @param fromIndex The right index (j or from-Index) on the
+	 *  HoppingAmplitude. */
 	HoppingAmplitude(
 		std::complex<double> amplitude,
 		Index toIndex,
@@ -56,7 +65,16 @@ public:
 
 	/** Constructor. Takes a callback function rather than a paramater
 	 *  value. The callback function has to be defined such that it returns
-	 * a value for the given indices when called at run time. */
+	 *  a value for the given indices when called at run time.
+	 *
+	 *  @param amplitudeCallback A callback function able that is able to
+	 *  return a value when passed toIndex and fromIndex.
+	 *
+	 *  @param toIndex The left index (i or to-Index) on the
+	 *  HoppingAmplitude.
+	 *
+	 *  @param fromIndex The right index (j or from-Index) on the
+	 *  HoppingAmplitude. */
 	HoppingAmplitude(
 		std::complex<double> (*amplitudeCallback)(
 			const Index &to,
@@ -66,17 +84,26 @@ public:
 		Index fromIndex
 	);
 
-	/** Copy constructor. */
+	/** Copy constructor.
+	 *
+	 *  @param ha HoppingAmplitude to copy. */
 	HoppingAmplitude(const HoppingAmplitude &ha);
 
 	/** Constructor. Constructs the HoppingAmplitude from a serialization
-	 *  string. */
+	 *  string.
+	 *
+	 *  @param serialization Serialization string from which to construct
+	 *  the Index.
+	 *
+	 *  @param mode Mode with which the string has been serialized. */
 	HoppingAmplitude(
 		const std::string &serializeation,
 		Serializeable::Mode mode
 	);
 
-	/** Get the Hermitian cojugate of the HoppingAmplitude. */
+	/** Get the Hermitian cojugate of the HoppingAmplitude.
+	 *
+	 *  @return The Hermitian conjugate of the HoppingAmplitude. */
 	HoppingAmplitude getHermitianConjugate() const;
 
 	/** Print HoppingAmplitude. Mainly for debugging. */
