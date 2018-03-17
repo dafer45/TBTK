@@ -207,25 +207,49 @@ TEST(Index, toString){
 TEST(Index, operatorLessThan){
 	std::string errorMessage = "operator<() failed.";
 
-	Streams::setStdMuteErr();
-
 	EXPECT_FALSE(Index({1, 2, 3}) < Index({1, 2, 3}));
 	EXPECT_TRUE(Index({1, 2, 3}) < Index({1, 2, 4}));
 	EXPECT_FALSE(Index({1, 2, 3}) < Index({1, 1, 4}));
-	EXPECT_EXIT(Index({1, 2}) < Index({1, 2, 3}), ::testing::ExitedWithCode(1), "");
-	EXPECT_EXIT(Index({1, 2, 3}) < Index({1, 2}), ::testing::ExitedWithCode(1), "");
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			Index({1, 2}) < Index({1, 2, 3});
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			Index({1, 2, 3}) < Index({1, 2});
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
 }
 
 TEST(Index, operatorGreaterThan){
 	std::string errorMessage = "operator>() failed.";
 
-	Streams::setStdMuteErr();
-
 	EXPECT_FALSE(Index({1, 2, 3}) > Index({1, 2, 3}));
 	EXPECT_FALSE(Index({1, 2, 3}) > Index({1, 2, 4}));
 	EXPECT_TRUE(Index({1, 2, 3}) > Index({1, 1, 4}));
-	EXPECT_EXIT(Index({1, 2}) > Index({1, 2, 3}), ::testing::ExitedWithCode(1), "");
-	EXPECT_EXIT(Index({1, 2, 3}) > Index({1, 2}), ::testing::ExitedWithCode(1), "");
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			Index({1, 2}) > Index({1, 2, 3});
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			Index({1, 2, 3}) > Index({1, 2});
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
 }
 
 TEST(Index, getSizeInBytes){

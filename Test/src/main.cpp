@@ -2,6 +2,7 @@
 
 #include "TBTK/Test/Index.h"
 #include "TBTK/Test/HoppingAmplitude.h"
+#include "TBTK/Test/HoppingAmplitudeTree.h"
 
 int main(int argc, char **argv){
 	::testing::InitGoogleTest(&argc, argv);
