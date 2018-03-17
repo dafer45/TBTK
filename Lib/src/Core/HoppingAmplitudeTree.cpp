@@ -231,6 +231,17 @@ void HoppingAmplitudeTree::add(HoppingAmplitude &ha, unsigned int subindex){
 		//Get current subindex
 //		int currentIndex = ha.fromIndex.at(subindex);
 		int currentIndex = ha.getFromIndex().at(subindex);
+		//Error detection:
+		//Negative indices not allowed.
+		TBTKAssert(
+			currentIndex >= 0,
+			"HoppingAmplitude:add()",
+			"Invalid Index. Only indices with non-negative"
+			<< " subindices can be added. But the from-Index "
+			<< ha.getFromIndex().toString() << " has a negative"
+			<< " subindex in position '" << subindex << "'.",
+			""
+		);
 		//If the subindex is bigger than the current number of child
 		//nodes, create empty nodes.
 		if(currentIndex >= (int)children.size()){
@@ -245,12 +256,23 @@ void HoppingAmplitudeTree::add(HoppingAmplitude &ha, unsigned int subindex){
 		//This is an error because different number of subindices is
 		//only allowed if the HoppingAmplitudes differ in one of their
 		//common indices.
-		if(hoppingAmplitudes.size() != 0){
+		TBTKAssert(
+			hoppingAmplitudes.size() == 0,
+			"HoppingAmplitudeTree::add()",
+			"Incompatible HoppingAmplitudes. Tried to add a"
+			<< " HoppingAmplitude with from-Index "
+			<< ha.getFromIndex().toString() << ", but"
+			<< " HoppingAmplitude with from-Index "
+			<< hoppingAmplitudes[0].getFromIndex().toString()
+			<< " has already been added.",
+			""
+		);
+/*		if(hoppingAmplitudes.size() != 0){
 			Streams::err << "Error, incompatible amplitudes:\n";
 			ha.print();
 			hoppingAmplitudes.at(0).print();
 			exit(1);
-		}
+		}*/
 		//Ensure isPotentialBlockSeparator is set to false in case the
 		//'toIndex' and the 'fromIndex' differs in the subindex
 		//corresponding to this HoppingAmplitudeTree level.
@@ -270,12 +292,23 @@ void HoppingAmplitudeTree::add(HoppingAmplitude &ha, unsigned int subindex){
 		//error because different number of subindices is only allowed
 		//if the HoppingAmplitudes differ in one of their common
 		//indices.
-		if(children.size() != 0){
+		TBTKAssert(
+			children.size() == 0,
+			"HoppingAmplitudeTree:add(),",
+			"Incompatible HoppingAmplitudes. Tried to add a"
+			<< " HoppingAmplitude with from-Index "
+			<< ha.getFromIndex().toString() << ", but"
+			<< " HoppingAmplitude with from-Index "
+			<< getFirstHA().getFromIndex().toString() << " has"
+			<< " already been added.",
+			""
+		);
+/*		if(children.size() != 0){
 			Streams::err << "Error, incompatible amplitudes:\n";
 			ha.print();
 			getFirstHA().print();
 			exit(1);
-		}
+		}*/
 		//Add HoppingAmplitude to node.
 		hoppingAmplitudes.push_back(ha);
 	}
