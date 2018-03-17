@@ -39,29 +39,41 @@ namespace TBTK{
  *  @link HoppingAmplitude HoppingAmplitudes @endlink. Used by AmplitudeSet.*/
 class HoppingAmplitudeTree : public Serializeable{
 public:
-	/** Constructor. */
+	/** Constructs a HoppingAmplitudeTree. */
 	HoppingAmplitudeTree();
 
-	/** Constructor. Preallocates a HoppingAmplitudeTree such that the
-	 *  addition of HoppingAMplitudes with indices that have the same
-	 *  subindex structure as 'capacity', but with smaller subindices will
-	 *  not cause reallocation for the main tree stucture. Internal
-	 *  containers for HoppingAMplitudes may still be reallocated. */
+	/** Constructs a HoppingAmplitude with a preallocated tree structure
+	 *  such that the addition of HoppingAmplitudes with indices that have
+	 *  the same subindex structure as 'capacity', but with smaller
+	 *  subindices will not cause reallocation for the main tree stucture.
+	 *  Internal containers for HoppingAmplitudes may still be reallocated.
+	 *
+	 *  @param The 'Index capacity'. */
 	HoppingAmplitudeTree(
 		const std::vector<unsigned int> &capacity
 	);
 
 	/** Constructor. Constructs the HoppingAmplitudeTree from a
-	 *  serialization string. */
+	 *  serialization string.
+	 *
+	 *  @param serialization Serialization string from which to construct
+	 *  the Index
+	 *
+	 *  @param mode Mode with which the string has been serialized. */
 	HoppingAmplitudeTree(const std::string &serialization, Mode mode);
 
 	/** Destructor. */
 	virtual ~HoppingAmplitudeTree();
 
-	/** Add a HoppingAmplitude. */
+	/** Add a HoppingAmplitude.
+	 *
+	 *  @param ha HoppingAmplitude to add. */
 	void add(HoppingAmplitude ha);
 
-	/** Get basis size. */
+	/** Get basis size.
+	 *
+	 *  @return The basis size if the basis has been generated using the
+	 *  call to HoppingAmplitudeTree::generateBasisSize(), otherwise -1. */
 	int getBasisSize() const;
 
 	/** Get IndexTree containing the Indices that describe the subspace
