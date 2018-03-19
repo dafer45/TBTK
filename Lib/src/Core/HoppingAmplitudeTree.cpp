@@ -31,6 +31,8 @@ using namespace nlohmann;
 
 namespace TBTK{
 
+const HoppingAmplitudeTree HoppingAmplitudeTree::emptyTree;
+
 HoppingAmplitudeTree::HoppingAmplitudeTree(){
 	basisIndex = -1;
 	basisSize = -1;
@@ -341,14 +343,19 @@ const HoppingAmplitudeTree* HoppingAmplitudeTree::getSubTree(
 	}
 
 	if((unsigned int)subspace.at(subindex) < children.size()){
-		return children.at(subspace.at(subindex)).getSubTree(subspace, subindex+1);
+		return children.at(subspace.at(subindex)).getSubTree(
+			subspace,
+			subindex+1
+		);
 	}
 	else{
-		TBTKExit(
+/*		TBTKExit(
 			"HoppingAmplitudeTree::getSubTree()",
-			"Subspace index '" << subspace.toString() << "' does not exist.",
+			"Subspace index '" << subspace.toString() << "' does"
+			<< " not exist.",
 			""
-		);
+		);*/
+		return &emptyTree;
 	}
 }
 
@@ -357,8 +364,10 @@ bool HoppingAmplitudeTree::isProperSubspace(const Index &subspace) const{
 		if(subspace.at(n) < 0){
 			TBTKExit(
 				"HoppingAmplitudeTree::getSubTree()",
-				"Invalid subspace index '" << subspace.toString() << "'.",
-				"Subspace indices cannot have negative subindices."
+				"Invalid subspace index '"
+				<< subspace.toString() << "'.",
+				"Subspace indices cannot have negative"
+				<< " subindices."
 			);
 		}
 	}
@@ -370,19 +379,27 @@ bool HoppingAmplitudeTree::isProperSubspace(
 	const Index &subspace,
 	unsigned int subindex
 ) const{
-	if(subindex == subspace.getSize())
+	if(subindex+1 == subspace.getSize())
 		return isPotentialBlockSeparator;
 
 	if(isPotentialBlockSeparator){
 		if((unsigned int)subspace.at(subindex) < children.size()){
-			return isProperSubspace(subspace, subindex+1);
+			return children[subspace[subindex]].isProperSubspace(
+				subspace,
+				subindex+1
+			);
 		}
 		else{
-			TBTKExit(
+/*			TBTKExit(
 				"HoppingAmplitudeTree::isProperSubspace()",
-				"Subspace index '" <<subspace.toString() << "' does not exist.",
+				"Subspace index '" << subspace.toString()
+				<< "' does not exist.",
 				""
-			);
+			);*/
+			//The subspace is empty and getSubTree will return
+			//HoppingAmaplitudeTree::emptyTree. The empty subspace
+			//is considered a proper subspace.
+			return true;
 		}
 	}
 	else{

@@ -76,22 +76,71 @@ public:
 	 *  call to HoppingAmplitudeTree::generateBasisSize(), otherwise -1. */
 	int getBasisSize() const;
 
-	/** Get IndexTree containing the Indices that describe the subspace
-	 *  structure. */
+	/** Get HoppingAmplitudeTree containing the @link HoppingAmplitude
+	 *  HoppingAmplitudes @endlink of the specified subspace. If the
+	 *  original HoppingAMplitudeTree has an Index structure with
+	 *  {subspace, intra subspace indices}, then the new
+	 *  HoppingAmplitudeTree has the Index-structure
+	 *  {intra subspace indices}. This function does not guarantee to
+	 *  return a closed subspace and can contain HoppingAmplitudes to
+	 *  components with other subspace indices if the specified subspace is
+	 *  not a proper subspace. If in doubt, use
+	 *  HoppingAmplitudeTree::isProperSubspace() to check whether a given
+	 *  subspace is a proper subspace before calling this function. Empty
+	 *  subspaces for which no HoppingAmplitudes have been added return
+	 *  empty subspaces.
+	 *
+	 *  @param subspace A number of subindices that when used as leftmost
+	 *  subindices in an Index specifies a subspace.
+	 *
+	 *  @return A (possibly improper) subspace of the HoppingAmplitudeTree. */
 	const HoppingAmplitudeTree* getSubTree(const Index &subspace) const;
 
-	/** Returns true if the subspace is a proper subsapce. That is, if the
+	/** Returns true if the subspace is a proper subspace. That is, if the
 	 *  corresponding subtree only contains HoppingAmplitudes that connects
-	 *  sistes within the subtree. */
+	 *  states within the subtree (see exception below). Empty subspaces
+	 *  for which no @link HoppingAmplitude HoppingAmplitudes @endlink have
+	 *  been added are considered proper subspaces.<br>
+	 *  <br>
+	 *  %Exception: For a subspace to be considered a proper subspace, each
+	 *  of it subindices needs to completely split the problem into
+	 *  independent parts. For example, for the set of @link
+	 *  HoppingAmplitude HoppingAmplitudes @endlink below, {0, 0, 0} is a
+	 *  proper subspace in the sense that it contains no @link
+	 *  HoppingAmplitude HoppingAmplitudes @endlink to other subspaces.
+	 *  However, the second subindex does not split the problem completely
+	 *  since {0, 0, 1} and {0, 0, 2} belong to the same subspace. In this
+	 *  case {0, 0} therefore is the most specific proper subspace.<br>
+	 *  HoppingAmplitude(1, {0, 0, 0}, {0, 0, 0});<br>
+	 *  HoppingAmplitude(1, {0, 0, 1}, {0, 0, 2});<br>
+	 *  HoppingAmplitude(1, {0, 0, 2}, {0, 0, 1});
+	 *
+	 *  @param subspace A number of subindices that when used as leftmost
+	 *  subindices in an Index specifies a subspace.
+	 *
+	 *  @return True if the subspace is a proper subspace according to the
+	 *  definition above, otherwise false. */
 	bool isProperSubspace(const Index &subspace) const;
 
-	/** Returns an IndexTree containing all subspace indices. */
+	/** Returns an IndexTree containing all proper subspace indices.
+	 *
+	 *  @return An IndexTree containing all proper subspace indices. */
 	IndexTree getSubspaceIndices() const;
 
-	/** Get first index in subspace. */
+	/** Get first index in subspace.
+	 *
+	 *  @param subspaceIndex The physical Index of the subspace.
+	 *
+	 *  @return The first Hilbert space index in the given subspace. If the
+	 *  subspace is empty, -1 is returned. */
 	int getFirstIndexInSubspace(const Index &subspaceIndex) const;
 
-	/** Get last index in subspace. */
+	/** Get last index in subspace.
+	 *
+	 *  @param subspaceIndex The physical Index of the subspace.
+	 *
+	 *  @return The last Hilbert space index in the given subspace. If the
+	 *  subspace is empty, -1 is returned. */
 	int getLastIndexInSubspace(const Index &subspaceIndex) const;
 
 	/** Get all @link HoppingAmplitude HoppingAmplitudes @endlink with
@@ -215,6 +264,10 @@ private:
 	/** Child nodes. Never non-empty at the same time as hoppingAmplitudes
 	*/
 	std::vector<HoppingAmplitudeTree> children;
+
+	/** Empty tree that is returned by HoppingAMplitudeTree::getSubTree
+	 *  when a non-existing subspace is requested. */
+	static const HoppingAmplitudeTree emptyTree;
 
 	/** Add HoppingAmplitude. Is called by the public
 	 *  HoppingAmplitudeTree::add and is called recursively. */
