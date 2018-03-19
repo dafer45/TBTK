@@ -144,20 +144,46 @@ public:
 	int getLastIndexInSubspace(const Index &subspaceIndex) const;
 
 	/** Get all @link HoppingAmplitude HoppingAmplitudes @endlink with
-	 *  given 'from'-index. */
+	 *  given 'from'-index.
+	 *
+	 *  @param index From-Index.
+	 *
+	 *  @return All @link HoppingAmplitude HoppingAmplitudes @endlink with
+	 *  the given from-Index. */
 	const std::vector<HoppingAmplitude>* getHAs(Index index) const;
 
-	/** Get Hilbert space basis index for given physical index. */
+	/** Get Hilbert space basis index for given physical index.
+	 *
+	 *  @param index Physical Index for which to obtain the Hilbert space
+	 *  index.
+	 *
+	 *  @return The Hilbert space index corresponding to the given Physical
+	 *  Index. Returns -1 if HoppingAmplitudeTree::generateBasisIndices()
+	 *  has not been called. */
 	int getBasisIndex(const Index &index) const;
 
-	/** Get physical index for given Hilbert space basis index. */
+	/** Get physical index for given Hilbert space basis index.
+	 *
+	 *  @param basisIndex Hilbert space index for which to obtain the
+	 *  physical Index.
+	 *
+	 *  @return The physical index corresponding to the given Hilbert space
+	 *  index. */
 	Index getPhysicalIndex(int basisIndex) const;
 
-	/** Generate Hilbert space indices. No more @link HoppingAmplitude
+	/**  Generate Hilbert space indices. No more @link HoppingAmplitude
 	 *   HoppingAmplitudes @endlink should be added after this call. */
 	void generateBasisIndices();
 
-	/** Generate a list of indices satisfying the specified pattern. */
+	/** Generate a list containing the indices in the HoppingAmplitudeTree
+	 *  that satisfies the specified pattern. The indices are ordered in
+	 *  terms of rising Hilbert space indices.
+	 *
+	 *  @param pattern Pattern to match agains. IDX_ALL can be used as a
+	 *  wildcard.
+	 *
+	 *  @return A list of physical indices that match the specified
+	 *  pattern. */
 	std::vector<Index> getIndexList(const Index &pattern) const;
 
 	/** Sort HoppingAmplitudes in row order. */
@@ -167,7 +193,9 @@ public:
 	 *  debuging purposes. */
 	void print();
 
-	/** Get size in bytes. */
+	/** Get size in bytes.
+	 *
+	 *  @return Memory size required to store the Index. */
 	unsigned int getSizeInBytes() const;
 
 	/** Iterator for iterating through @link HoppingAmplitude
@@ -229,7 +257,11 @@ public:
 	/** Returns Iterator initialized to point at first HoppingAmplitude. */
 	Iterator begin() const;
 
-	/** Implements Serializeable::serialize. */
+	/** Implements Serializeable::serialize.
+	 *
+	 *  @param mode Serialization mode to use.
+	 *
+	 *  @return Serialized string represenation of the Index. */
 	virtual std::string serialize(Mode mode) const;
 private:
 	/** Basis index for the Hamiltonian. */
