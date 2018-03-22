@@ -181,7 +181,7 @@ vector<complex<double>> MatsubaraSusceptibilityCalculator::calculateSusceptibili
 				if(
 					(int)n + (int)e
 					- (int)energies.size()/2
-					>= summationEnergies.size()
+					>= (int)summationEnergies.size()
 				){
 					continue;
 				}
