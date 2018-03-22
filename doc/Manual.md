@@ -564,7 +564,7 @@ Once the Filter is specified, we are ready to use it to setup a Model
 	model.construct();
 ```
 
-# Advanced: Callback functions
+# Advanced: Callback functions {#AdvancedCallbackFunctions}
 Sometimes it is useful to be able to delay specification of a HoppingAmplitudes value to a later time than the creation of the Model.
 This is for example the case if the same Model is going to be solved multiple times for different parameter values, or if some of the parameters in the Hamiltonian are going to be determined self-consistently.
 For this reason it is possible to pass a function as value argument to the HoppingAmplitude rather than a fixed value.

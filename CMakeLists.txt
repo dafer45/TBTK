@@ -28,8 +28,11 @@ FIND_PACKAGE(OpenMP QUIET)
 FIND_PACKAGE(SuperLU QUIET)
 FIND_PACKAGE(wxWidgets QUIET)
 
-#Print which extention enabling libraries that were found.
-MESSAGE("\nLibraries that enables extentions that were found (empty box means not found).")
+#Print which extension enabling libraries that were found.
+MESSAGE("")
+MESSAGE("============================== OPTIONAL LIBRARIES ==============================")
+MESSAGE("Libraries that enables extensions that were found (empty box means not found).")
+MESSAGE("--------------------------------------------------------------------------------")
 IF(ARPACK_FOUND)
 	MESSAGE("[X] ARPACK")
 ELSE(ARPACK_FOUND)
@@ -96,10 +99,14 @@ IF(wxWidgets_FOUND)
 ELSE(wxWidgets_FOUND)
 	MESSAGE("[ ] wxWidgets")
 ENDIF(wxWidgets_FOUND)
+MESSAGE("================================================================================")
 
-#Setup flags for building extentions and print which extentions that will be
+#Setup flags for building extensions and print which extensions that will be
 #built.
-MESSAGE("\nExtenstions that will be built (empty box means the extention will not be built).")
+MESSAGE("")
+MESSAGE("================================== EXTENSIONS ==================================")
+MESSAGE("Extensions that will be built (empty box means the extension will not be built).")
+MESSAGE("--------------------------------------------------------------------------------")
 IF(ARPACK_FOUND AND SuperLU_FOUND)
 	MESSAGE("[X] ArnoldiIterator")
 	SET(COMPILE_ARNOLDI_ITERATOR TRUE)
@@ -172,7 +179,7 @@ IF(wxWidgets_FOUND AND OpenCV_FOUND)
 ELSE(wxWidgets_FOUND AND OpenCV_FOUND)
 	MESSAGE("[ ] GUI")
 ENDIF(wxWidgets_FOUND AND OpenCV_FOUND)
-MESSAGE("\n")
+MESSAGE("================================================================================")
 
 #C++ flags
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -O3")
@@ -252,6 +259,7 @@ ADD_SUBDIRECTORY(Templates/)
 ADD_SUBDIRECTORY(Tools/bin/)
 ADD_SUBDIRECTORY(Visualization/python/)
 ADD_SUBDIRECTORY(Test/)
+ADD_SUBDIRECTORY(doc/)
 
 #Create TBTKVersion.cmake.
 INCLUDE(CMakePackageConfigHelpers)
@@ -316,4 +324,25 @@ INSTALL(
 	FILES_MATCHING PATTERN *.cmake
 )
 
-MESSAGE("Installation path that will be used if installed: ${CMAKE_INSTALL_PREFIX}")
+#MESSAGE("Installation path that will be used if installed: ${CMAKE_INSTALL_PREFIX}")
+
+IF(UNIX)
+	MESSAGE("")
+	MESSAGE("================================= WHAT'S NEXT? ==================================")
+	MESSAGE("TBTK build scripts successfully generated. The following options are now")
+	MESSAGE("available.")
+	MESSAGE("--------------------------------------------------------------------------------")
+	MESSAGE("make\t\t\tBuild TBTK.")
+	MESSAGE("sudo make install\tInstall TBTK to '${CMAKE_INSTALL_PREFIX}'.")
+#	MESSAGE("\nType 'make' to build TBTK, followed by 'sudo make install' to install.")
+	IF(${TBTK_TESTING_ENABLED})
+		MESSAGE("make test\t\tRun tests.")
+#		MESSAGE("Type 'make test' to run tests.")
+	ENDIF(${TBTK_TESTING_ENABLED})
+	IF(${TBTK_DOCUMENTATION_ENABLED})
+		MESSAGE("make documentation\tBuild the documentation. The documentation will be found")
+		MESSAGE("\t\t\tat '${CMAKE_BINARY_DIR}/doc/html/index.html'.")
+#		MESSAGE("Type 'make documentation' to run tests.")
+	ENDIF(${TBTK_DOCUMENTATION_ENABLED})
+	MESSAGE("================================================================================\n")
+ENDIF(UNIX)
