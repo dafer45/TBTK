@@ -328,7 +328,7 @@ INSTALL(
 
 IF(UNIX)
 	MESSAGE("")
-	MESSAGE("================================= WHAT'S NEXT? ==================================")
+	MESSAGE("================================= WHAT'S NEXT? =================================")
 	MESSAGE("TBTK build scripts successfully generated. The following options are now")
 	MESSAGE("available.")
 	MESSAGE("--------------------------------------------------------------------------------")
