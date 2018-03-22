@@ -1,24 +1,24 @@
 .\" Process this file with
-.\" grof -man -Tascii TBTKCreateProject.1
+.\" grof -man -Tascii TBTKCreateApplication.1
 .\"
-.TH TBTKCreateProject 1 "January 2017" TBTK "User Manual"
+.TH TBTKCreateApplication 1 "January 2017" TBTK "User Manual"
 .SH NAME
-TBTKCreateProject \- Creates a new project.
+TBTKCreateApplication \- Creates a new application.
 .SH SYNOPSIS
 .B TBTKCreate
-.I projectName
+.I applicationName
 .B [
 .I templateName
 .B ]
 .SH DESCRIPTION
-.B TBTKCreateProject
-Creates a new project by copying one of the template projects into the current
-directory.
+.B TBTKCreateApplication
+Creates a new application by copying one of the template application into the
+current directory.
 .SH OPTIONS
-.IP "projectName"
-The name of the new project folder.
+.IP "applicationtName"
+The name of the new application folder.
 .IP "templateName"
-Optional name of the project to copy. Available options are:
+Optional name of the application to copy. Available options are:
 .br
 .RS 14
 BasicArnoldi
@@ -52,18 +52,20 @@ WireOnSuperconductor
 .SH DIAGNOSTICS
 The following diagnostics may be issued by stderr:
 
-Error: Missing project name (first argument)
+Error: Missing application name (first argument)
 .RS
-The first paramater, the name of the new project, was not specified.
+The first paramater, the name of the new application, was not specified.
 .RE
-Error: No template project with the name '...' exists.
+Error: No template application with the name '...' exists.
 .RS
-The second argument does not agree with any of the available template project
+The second argument does not agree with any of the available template
+application
+
 names.
 .RE
 Error: A folder with the name '...' already exists.
 .RS
-Unable to create a new project because a folder with the same name already
+Unable to create a new application because a folder with the same name already
 exists.
 .SH AUTHOR
 Kristofer Björnson (dafer45@hotmail.com)

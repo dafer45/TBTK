@@ -1,0 +1,6 @@
+IF(UNIX)
+	INSTALL(
+		FILES TBTKCreateApplication.1
+		DESTINATION man/man1/
+	)
+ENDIF(UNIX)

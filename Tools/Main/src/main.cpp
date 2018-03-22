@@ -33,7 +33,7 @@ using namespace TBTK;
 int main(int argc, char **argv){
 	if(argc == 1){
 		Streams::out << "==================================== ABOUT =====================================\n";
-		Streams::out << TBTK_RUNTIME_CONTEXT_STRING;
+		Streams::out << TBTK_ABOUT_STRING << "\n";
 		Streams::out << "\n";
 		Streams::out << "============================= FURTHER INFORMATION ==============================\n";
 		Streams::out << "For help, type 'TBTK help'.\n";
