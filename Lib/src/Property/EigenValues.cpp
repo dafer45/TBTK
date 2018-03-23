@@ -62,7 +62,7 @@ EigenValues::EigenValues(
 	Mode mode
 ) :
 	AbstractProperty(
-		Serializeable::extract(
+		Serializable::extract(
 			serialization,
 			mode,
 			"abstractProperty"
@@ -111,7 +111,7 @@ string EigenValues::serialize(Mode mode) const{
 	default:
 		TBTKExit(
 			"EigenValues::serialize()",
-			"Only Serializeable::Mode::JSON is supported yet.",
+			"Only Serializable::Mode::JSON is supported yet.",
 			""
 		);
 	}

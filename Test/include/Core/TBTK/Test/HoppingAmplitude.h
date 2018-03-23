@@ -53,8 +53,8 @@ TEST(HoppingAmplitude, SerializeToJSON){
 
 	HoppingAmplitude hoppingAmplitude0(std::complex<double>(1, 2), {1, 2, 3}, {4, 5});
 	HoppingAmplitude hoppingAmplitude1(
-		hoppingAmplitude0.serialize(Serializeable::Mode::JSON),
-		Serializeable::Mode::JSON
+		hoppingAmplitude0.serialize(Serializable::Mode::JSON),
+		Serializable::Mode::JSON
 	);
 	EXPECT_EQ(hoppingAmplitude0.getAmplitude(), hoppingAmplitude1.getAmplitude()) << errorMessage;
 	EXPECT_TRUE(hoppingAmplitude0.getToIndex().equals(hoppingAmplitude1.getToIndex())) << errorMessage;

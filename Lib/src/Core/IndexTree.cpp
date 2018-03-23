@@ -125,7 +125,7 @@ IndexTree::IndexTree(const string &serialization, Mode mode){
 	default:
 		TBTKExit(
 			"IndexTree::IndexTree()",
-			"Only Serializeable::Mode::Debug is supported yet.",
+			"Only Serializable::Mode::Debug is supported yet.",
 			""
 		);
 	}
@@ -544,12 +544,12 @@ string IndexTree::serialize(Mode mode) const{
 				ss << ",";
 			ss << children.at(n).serialize(mode);
 		}
-		ss << "," << Serializeable::serialize(indexIncluded, mode);
-		ss << "," << Serializeable::serialize(wildcardIndex, mode);
-		ss << "," << Serializeable::serialize(wildcardType, mode);
-		ss << "," << Serializeable::serialize(indexSeparator, mode);
-		ss << "," << Serializeable::serialize(linearIndex, mode);
-		ss << "," << Serializeable::serialize(size, mode);
+		ss << "," << Serializable::serialize(indexIncluded, mode);
+		ss << "," << Serializable::serialize(wildcardIndex, mode);
+		ss << "," << Serializable::serialize(wildcardType, mode);
+		ss << "," << Serializable::serialize(indexSeparator, mode);
+		ss << "," << Serializable::serialize(linearIndex, mode);
+		ss << "," << Serializable::serialize(size, mode);
 		ss << ")";
 
 		return ss.str();
@@ -575,7 +575,7 @@ string IndexTree::serialize(Mode mode) const{
 	default:
 		TBTKExit(
 			"IndexTree:IndexTree()",
-			"Only Serializeable::Mode::Debug is supported yet.",
+			"Only Serializable::Mode::Debug is supported yet.",
 			""
 		);
 	}

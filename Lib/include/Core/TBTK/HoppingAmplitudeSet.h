@@ -26,7 +26,7 @@
 #include "TBTK/HoppingAmplitude.h"
 #include "TBTK/HoppingAmplitudeTree.h"
 #include "TBTK/IndexTree.h"
-#include "TBTK/Serializeable.h"
+#include "TBTK/Serializable.h"
 #include "TBTK/Streams.h"
 #include "TBTK/TBTKMacros.h"
 
@@ -46,7 +46,7 @@ namespace TBTK{
  *  has to be called in order to construct an appropriate Hilbert space. The
  *  HoppingAmplitudeSet is most importantly used by the Model to store the
  *  Hamiltonian. */
-class HoppingAmplitudeSet : public Serializeable{
+class HoppingAmplitudeSet : public Serializable{
 public:
 	/** Constructor. */
 	HoppingAmplitudeSet();
@@ -250,7 +250,7 @@ public:
 		int *maxIndexSize
 	) const;
 
-	/** Implements Serializeable::serialize(). */
+	/** Implements Serializable::serialize(). */
 	virtual std::string serialize(Mode mode) const;
 
 	/** Get size in bytes. */

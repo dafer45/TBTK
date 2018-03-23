@@ -24,14 +24,14 @@
 #define COM_DAFER45_TBTK_INDEX_TREE
 
 #include "TBTK/Index.h"
-#include "TBTK/Serializeable.h"
+#include "TBTK/Serializable.h"
 
 #include <vector>
 
 namespace TBTK{
 
 /** @brief Data structure for mapping physical indices to a linear index. */
-class IndexTree : public Serializeable{
+class IndexTree : public Serializable{
 public:
 	/** Constructor. */
 	IndexTree();
@@ -127,7 +127,7 @@ public:
 	/** Returns Iterator initialized to point at first Index. */
 	Iterator begin() const;
 
-	/** Implements Serializeable::serialize(). */
+	/** Implements Serializable::serialize(). */
 	std::string serialize(Mode mode) const;
 private:
 	/** Child nodes.*/

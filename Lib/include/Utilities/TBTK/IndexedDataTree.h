@@ -24,7 +24,7 @@
 #define COM_DAFER45_TBTK_INDEXED_DATA_TREE
 
 #include "TBTK/Index.h"
-#include "TBTK/Serializeable.h"
+#include "TBTK/Serializable.h"
 #include "TBTK/TBTKMacros.h"
 
 #include <complex>
@@ -34,8 +34,8 @@
 
 namespace TBTK{
 
-template<typename Data, bool = std::is_base_of<Serializeable, Data>::value>
-class IndexedDataTree : public Serializeable{
+template<typename Data, bool = std::is_base_of<Serializable, Data>::value>
+class IndexedDataTree : public Serializable{
 public:
 	/** Constructor. */
 	IndexedDataTree();
@@ -87,7 +87,7 @@ private:
 };
 
 template<typename Data>
-class IndexedDataTree<Data, true> : public Serializeable{
+class IndexedDataTree<Data, true> : public Serializable{
 public:
 	/** Constructor. */
 	IndexedDataTree();
@@ -139,7 +139,7 @@ private:
 };
 
 template<typename Data>
-class IndexedDataTree<Data, false> : public Serializeable{
+class IndexedDataTree<Data, false> : public Serializable{
 public:
 	/** Constructor. */
 	IndexedDataTree();
@@ -190,8 +190,8 @@ private:
 	bool get(Data &data, const Index& index, unsigned int subindex) const;
 };
 
-template<typename Data, bool isSerializeable>
-IndexedDataTree<Data, isSerializeable>::IndexedDataTree(){
+template<typename Data, bool isSerializable>
+IndexedDataTree<Data, isSerializable>::IndexedDataTree(){
 	indexIncluded = false;
 	indexSeparator = false;
 }
@@ -265,7 +265,7 @@ inline IndexedDataTree<bool, false>::IndexedDataTree(
 	default:
 		TBTKExit(
 			"IndexedDataTree<bool>::IndexedDataTree()",
-			"Only Serializeable::Mode::JSON is supported yet.",
+			"Only Serializable::Mode::JSON is supported yet.",
 			""
 		);
 	}
@@ -327,7 +327,7 @@ inline IndexedDataTree<char, false>::IndexedDataTree(
 	default:
 		TBTKExit(
 			"IndexedDataTree<char>::IndexedDataTree()",
-			"Only Serializeable::Mode::JSON is supported yet.",
+			"Only Serializable::Mode::JSON is supported yet.",
 			""
 		);
 	}
@@ -389,7 +389,7 @@ inline IndexedDataTree<int, false>::IndexedDataTree(
 	default:
 		TBTKExit(
 			"IndexedDataTree<int>::IndexedDataTree()",
-			"Only Serializeable::Mode::JSON is supported yet.",
+			"Only Serializable::Mode::JSON is supported yet.",
 			""
 		);
 	}
@@ -451,7 +451,7 @@ inline IndexedDataTree<float, false>::IndexedDataTree(
 	default:
 		TBTKExit(
 			"IndexedDataTree<float>::IndexedDataTree()",
-			"Only Serializeable::Mode::JSON is supported yet.",
+			"Only Serializable::Mode::JSON is supported yet.",
 			""
 		);
 	}
@@ -513,7 +513,7 @@ inline IndexedDataTree<double, false>::IndexedDataTree(
 	default:
 		TBTKExit(
 			"IndexedDataTree<double>::IndexedDataTree()",
-			"Only Serializeable::Mode::JSON is supported yet.",
+			"Only Serializable::Mode::JSON is supported yet.",
 			""
 		);
 	}
@@ -578,7 +578,7 @@ inline IndexedDataTree<std::complex<double>, false>::IndexedDataTree(
 	default:
 		TBTKExit(
 			"IndexedDataTree<std::complex<double>>::IndexedDataTree()",
-			"Only Serializeable::Mode::JSON is supported yet.",
+			"Only Serializable::Mode::JSON is supported yet.",
 			""
 		);
 	}
@@ -642,7 +642,7 @@ IndexedDataTree<Data, true>::IndexedDataTree(
 	default:
 		TBTKExit(
 			"IndexedDataTree<Data>::IndexedDataTree()",
-			"Only Serializeable::Mode::JSON is supported yet.",
+			"Only Serializable::Mode::JSON is supported yet.",
 			""
 		);
 	}
@@ -707,14 +707,14 @@ IndexedDataTree<Data, false>::IndexedDataTree(
 	default:
 		TBTKExit(
 			"IndexedDataTree<Data>::IndexedDataTree()",
-			"Only Serializeable::Mode::JSON is supported yet.",
+			"Only Serializable::Mode::JSON is supported yet.",
 			""
 		);
 	}*/
 }
 
-template<typename Data, bool isSerializeable>
-IndexedDataTree<Data, isSerializeable>::~IndexedDataTree(){
+template<typename Data, bool isSerializable>
+IndexedDataTree<Data, isSerializable>::~IndexedDataTree(){
 }
 
 template<typename Data>
@@ -725,8 +725,8 @@ template<typename Data>
 IndexedDataTree<Data, false>::~IndexedDataTree(){
 }
 
-template<typename Data, bool isSerializeable>
-void IndexedDataTree<Data, isSerializeable>::add(
+template<typename Data, bool isSerializable>
+void IndexedDataTree<Data, isSerializable>::add(
 	const Data &data,
 	const Index &index
 ){
@@ -749,8 +749,8 @@ void IndexedDataTree<Data, false>::add(
 	add(data, index, 0);
 }
 
-template<typename Data, bool isSerializeable>
-void IndexedDataTree<Data, isSerializeable>::add(
+template<typename Data, bool isSerializable>
+void IndexedDataTree<Data, isSerializable>::add(
 	const Data &data,
 	const Index &index,
 	unsigned int subindex
@@ -1085,8 +1085,8 @@ void IndexedDataTree<Data, false>::add(
 	}
 }
 
-template<typename Data, bool isSerializeable>
-bool IndexedDataTree<Data, isSerializeable>::get(Data &data, const Index &index) const{
+template<typename Data, bool isSerializable>
+bool IndexedDataTree<Data, isSerializable>::get(Data &data, const Index &index) const{
 	return get(data, index, 0);
 }
 
@@ -1100,8 +1100,8 @@ bool IndexedDataTree<Data, false>::get(Data &data, const Index &index) const{
 	return get(data, index, 0);
 }
 
-template<typename Data, bool isSerializeable>
-bool IndexedDataTree<Data, isSerializeable>::get(
+template<typename Data, bool isSerializable>
+bool IndexedDataTree<Data, isSerializable>::get(
 	Data &data,
 	const Index &index,
 	unsigned int subindex
@@ -1269,8 +1269,8 @@ bool IndexedDataTree<Data, false>::get(
 	}
 }
 
-template<typename Data, bool isSerializeable>
-void IndexedDataTree<Data, isSerializeable>::clear(){
+template<typename Data, bool isSerializable>
+void IndexedDataTree<Data, isSerializable>::clear(){
 	indexIncluded = false;
 	children.clear();
 }
@@ -1287,8 +1287,8 @@ void IndexedDataTree<Data, false>::clear(){
 	children.clear();
 }
 
-template<typename Data, bool isSerializeable>
-unsigned int IndexedDataTree<Data, isSerializeable>::getSizeInBytes() const{
+template<typename Data, bool isSerializable>
+unsigned int IndexedDataTree<Data, isSerializable>::getSizeInBytes() const{
 	unsigned int size = sizeof(IndexedDataTree<Data>);
 	for(unsigned int n = 0; n < children.size(); n++)
 		size += children.at(n).getSizeInBytes();
@@ -1337,7 +1337,7 @@ inline std::string IndexedDataTree<bool, false>::serialize(Mode mode) const{
 	default:
 		TBTKExit(
 			"IndexedDataTree<Data>::serialize()",
-			"Only Serializeable::Mode::JSON is supported yet.",
+			"Only Serializable::Mode::JSON is supported yet.",
 			""
 		);
 	}
@@ -1366,7 +1366,7 @@ inline std::string IndexedDataTree<char, false>::serialize(Mode mode) const{
 	default:
 		TBTKExit(
 			"IndexedDataTree<Data>::serialize()",
-			"Only Serializeable::Mode::JSON is supported yet.",
+			"Only Serializable::Mode::JSON is supported yet.",
 			""
 		);
 	}
@@ -1395,7 +1395,7 @@ inline std::string IndexedDataTree<int, false>::serialize(Mode mode) const{
 	default:
 		TBTKExit(
 			"IndexedDataTree<Data>::serialize()",
-			"Only Serializeable::Mode::JSON is supported yet.",
+			"Only Serializable::Mode::JSON is supported yet.",
 			""
 		);
 	}
@@ -1424,7 +1424,7 @@ inline std::string IndexedDataTree<float, false>::serialize(Mode mode) const{
 	default:
 		TBTKExit(
 			"IndexedDataTree<Data>::serialize()",
-			"Only Serializeable::Mode::JSON is supported yet.",
+			"Only Serializable::Mode::JSON is supported yet.",
 			""
 		);
 	}
@@ -1453,7 +1453,7 @@ inline std::string IndexedDataTree<double, false>::serialize(Mode mode) const{
 	default:
 		TBTKExit(
 			"IndexedDataTree<Data>::serialize()",
-			"Only Serializeable::Mode::JSON is supported yet.",
+			"Only Serializable::Mode::JSON is supported yet.",
 			""
 		);
 	}
@@ -1484,7 +1484,7 @@ inline std::string IndexedDataTree<std::complex<double>, false>::serialize(Mode 
 	default:
 		TBTKExit(
 			"IndexedDataTree<Data>::serialize()",
-			"Only Serializeable::Mode::JSON is supported yet.",
+			"Only Serializable::Mode::JSON is supported yet.",
 			""
 		);
 	}
@@ -1513,7 +1513,7 @@ std::string IndexedDataTree<Data, true>::serialize(Mode mode) const{
 	default:
 		TBTKExit(
 			"IndexedDataTree<Data>::serialize()",
-			"Only Serializeable::Mode::JSON is supported yet.",
+			"Only Serializable::Mode::JSON is supported yet.",
 			""
 		);
 	}
@@ -1543,7 +1543,7 @@ std::string IndexedDataTree<Data, false>::serialize(Mode mode) const{
 	default:
 		TBTKExit(
 			"IndexedDataTree<Data>::serialize()",
-			"Only Serializeable::Mode::JSON is supported yet.",
+			"Only Serializable::Mode::JSON is supported yet.",
 			""
 		);
 	}*/

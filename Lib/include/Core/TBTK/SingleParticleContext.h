@@ -25,7 +25,7 @@
 
 #include "TBTK/Geometry.h"
 #include "TBTK/HoppingAmplitudeSet.h"
-#include "TBTK/Serializeable.h"
+#include "TBTK/Serializable.h"
 #include "TBTK/Statistics.h"
 
 namespace TBTK{
@@ -33,7 +33,7 @@ namespace TBTK{
 class FileReader;
 
 /** @brief The context for the single particle part of a Model. */
-class SingleParticleContext : public Serializeable{
+class SingleParticleContext : public Serializable{
 public:
 	/** Constructor. */
 	SingleParticleContext();
@@ -115,7 +115,7 @@ public:
 	/** Get Geometry. */
 	Geometry* getGeometry();
 
-	/** Implements Serializeable::serialize(). */
+	/** Implements Serializable::serialize(). */
 	std::string serialize(Mode mode) const;
 private:
 	/** Statistics (Fermi-Dirac or Bose-Einstein).*/

@@ -247,20 +247,20 @@ Index::Index(const string &indexString){
 		indices.push_back(indexVector.at(n));
 }
 
-Index::Index(const string &serialization, Serializeable::Mode mode){
+Index::Index(const string &serialization, Serializable::Mode mode){
 	switch(mode){
-	case Serializeable::Mode::Debug:
+	case Serializable::Mode::Debug:
 	{
 		TBTKAssert(
-			Serializeable::validate(serialization, "Index", mode),
+			Serializable::validate(serialization, "Index", mode),
 			"Index::Index()",
 			"Unable to parse string as index '" << serialization
 			<< "'.",
 			""
 		);
-		string content = Serializeable::getContent(
+		string content = Serializable::getContent(
 			serialization,
-			Serializeable::Mode::Debug
+			Serializable::Mode::Debug
 		);
 
 		stringstream ss;
@@ -279,10 +279,10 @@ Index::Index(const string &serialization, Serializeable::Mode mode){
 		}
 		break;
 	}
-	case Serializeable::Mode::JSON:
+	case Serializable::Mode::JSON:
 	{
 		TBTKAssert(
-			Serializeable::validate(serialization, "Index", mode),
+			Serializable::validate(serialization, "Index", mode),
 			"Index::Index()",
 			"Unable to parse string as index '" << serialization
 			<< "'.",
@@ -307,7 +307,7 @@ Index::Index(const string &serialization, Serializeable::Mode mode){
 	default:
 		TBTKExit(
 			"Index::Index()",
-			"Only Serializeable::Mode::Debug is supported yet.",
+			"Only Serializable::Mode::Debug is supported yet.",
 			""
 		);
 	}
@@ -384,22 +384,22 @@ Index Index::getSubIndex(int first, int last){
 	return Index(newSubindices);
 }
 
-string Index::serialize(Serializeable::Mode mode) const{
+string Index::serialize(Serializable::Mode mode) const{
 	switch(mode){
-	case Serializeable::Mode::Debug:
+	case Serializable::Mode::Debug:
 	{
 		stringstream ss;
 		ss << "Index(";
 		for(unsigned int n = 0; n < indices.size(); n++){
 			if(n != 0)
 				ss << ",";
-			ss << Serializeable::serialize(indices.at(n), mode);
+			ss << Serializable::serialize(indices.at(n), mode);
 		}
 		ss << ")";
 
 		return ss.str();
 	}
-	case Serializeable::Mode::JSON:
+	case Serializable::Mode::JSON:
 	{
 		json j;
 		j["id"] = "Index";
@@ -410,7 +410,7 @@ string Index::serialize(Serializeable::Mode mode) const{
 	default:
 		TBTKExit(
 			"Index::serialize()",
-			"Only Serializeable::Mode::Debug is supported yet.",
+			"Only Serializable::Mode::Debug is supported yet.",
 			""
 		);
 	}

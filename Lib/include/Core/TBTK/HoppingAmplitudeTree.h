@@ -26,7 +26,7 @@
 
 #include "TBTK/HoppingAmplitude.h"
 #include "TBTK/IndexTree.h"
-#include "TBTK/Serializeable.h"
+#include "TBTK/Serializable.h"
 
 #include <vector>
 
@@ -37,7 +37,7 @@ namespace TBTK{
  *
  *  HoppingAmplitudeTree is a tree structure used to build a tree for stroing
  *  @link HoppingAmplitude HoppingAmplitudes @endlink. Used by AmplitudeSet.*/
-class HoppingAmplitudeTree : public Serializeable{
+class HoppingAmplitudeTree : public Serializable{
 public:
 	/** Constructs a HoppingAmplitudeTree. */
 	HoppingAmplitudeTree();
@@ -257,7 +257,7 @@ public:
 	/** Returns Iterator initialized to point at first HoppingAmplitude. */
 	Iterator begin() const;
 
-	/** Implements Serializeable::serialize.
+	/** Implements Serializable::serialize.
 	 *
 	 *  @param mode Serialization mode to use.
 	 *

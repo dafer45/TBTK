@@ -175,7 +175,7 @@ HoppingAmplitudeTree::HoppingAmplitudeTree(
 	default:
 		TBTKExit(
 			"HoppingAmplitudeTree::HoppingAmplitudeTree()",
-			"Only Serializeable::Mode::Debug is supported yet.",
+			"Only Serializable::Mode::Debug is supported yet.",
 			""
 		);
 	}
@@ -614,9 +614,9 @@ string HoppingAmplitudeTree::serialize(Mode mode) const{
 	{
 		stringstream ss;
 		ss << "HoppingAmplitudeTree(";
-		ss << Serializeable::serialize(basisIndex, mode);
-		ss << "," << Serializeable::serialize(basisSize, mode);
-		ss << "," << Serializeable::serialize(
+		ss << Serializable::serialize(basisIndex, mode);
+		ss << "," << Serializable::serialize(basisSize, mode);
+		ss << "," << Serializable::serialize(
 			isPotentialBlockSeparator,
 			mode
 		);
@@ -644,7 +644,7 @@ string HoppingAmplitudeTree::serialize(Mode mode) const{
 			j["hoppingAmplitudes"].push_back(
 				json::parse(
 					hoppingAmplitudes.at(n).serialize(
-						Serializeable::Mode::JSON
+						Serializable::Mode::JSON
 					)
 				)
 			);
@@ -653,7 +653,7 @@ string HoppingAmplitudeTree::serialize(Mode mode) const{
 			j["children"].push_back(
 				json::parse(
 					children.at(n).serialize(
-						Serializeable::Mode::JSON
+						Serializable::Mode::JSON
 					)
 				)
 			);
@@ -664,7 +664,7 @@ string HoppingAmplitudeTree::serialize(Mode mode) const{
 	default:
 		TBTKExit(
 			"HoppingAmplitudeTree::serialize()",
-			"Only Serializeable::Mode::Debug is supported yet.",
+			"Only Serializable::Mode::Debug is supported yet.",
 			""
 		);
 	}

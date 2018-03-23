@@ -113,26 +113,26 @@ void PropertyFrame::onMenuFileOpen(wxCommandEvent &event){
 		ifstream fin(openDialog->GetPath());
 		string serialization(istream_iterator<char>(fin), {});
 		if(
-			Serializeable::hasID(
+			Serializable::hasID(
 				serialization,
-				Serializeable::Mode::JSON
+				Serializable::Mode::JSON
 			)
 		){
-			string id = Serializeable::getID(
+			string id = Serializable::getID(
 				serialization,
-				Serializeable::Mode::JSON
+				Serializable::Mode::JSON
 			);
 			if(id.compare("DOS") == 0){
 				Property::DOS dos(
 					serialization,
-					Serializeable::Mode::JSON
+					Serializable::Mode::JSON
 				);
 				setProperty(dos);
 			}
 			else if(id.compare("LDOS") == 0){
 				Property::LDOS ldos(
 					serialization,
-					Serializeable::Mode::JSON
+					Serializable::Mode::JSON
 				);
 				setProperty(ldos);
 			}

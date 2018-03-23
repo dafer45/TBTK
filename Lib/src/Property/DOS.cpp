@@ -78,7 +78,7 @@ DOS::DOS(
 	const string &serialization, Mode mode
 ) :
 	AbstractProperty(
-		Serializeable::extract(
+		Serializable::extract(
 			serialization,
 			mode,
 			"abstractProperty"
@@ -114,7 +114,7 @@ DOS::DOS(
 	default:
 		TBTKExit(
 			"DOS::DOS()",
-			"Only Serializeable::Mode::JSON is supported yet.",
+			"Only Serializable::Mode::JSON is supported yet.",
 			""
 		);
 	}
@@ -163,7 +163,7 @@ string DOS::serialize(Mode mode) const{
 	default:
 		TBTKExit(
 			"DOS::serialize()",
-			"Only Serializeable::Mode::JSON is supported yet.",
+			"Only Serializable::Mode::JSON is supported yet.",
 			""
 		);
 	}

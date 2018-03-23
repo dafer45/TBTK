@@ -23,14 +23,14 @@
 #ifndef COM_DAFER45_TBTK_RANGE
 #define COM_DAFER45_TBTK_RANGE
 
-#include "TBTK/Serializeable.h"
+#include "TBTK/Serializable.h"
 #include "TBTK/TBTKMacros.h"
 
 #include "TBTK/json.hpp"
 
 namespace TBTK{
 
-class Range : public Serializeable{
+class Range : public Serializable{
 public:
 	/** Constructor. */
 	Range(

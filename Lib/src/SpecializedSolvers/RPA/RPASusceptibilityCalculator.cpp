@@ -310,7 +310,7 @@ vector<complex<double>> RPASusceptibilityCalculator::calculateRPASusceptibility(
 	);
 
 	//Try to return cashed result
-	SerializeableVector<complex<double>> result;
+	SerializableVector<complex<double>> result;
 	if(rpaSusceptibilityTree.get(result, resultIndex))
 		return result;
 
@@ -457,7 +457,7 @@ vector<complex<double>> RPASusceptibilityCalculator::calculateChargeRPASusceptib
 	);
 
 	//Try to return cashed result
-	SerializeableVector<complex<double>> result;
+	SerializableVector<complex<double>> result;
 	if(rpaChargeSusceptibilityTree.get(result, resultIndex))
 		return result;
 
@@ -562,7 +562,7 @@ vector<complex<double>> RPASusceptibilityCalculator::calculateSpinRPASusceptibil
 	);
 
 	//Try to return cached result
-	SerializeableVector<complex<double>> result;
+	SerializableVector<complex<double>> result;
 	if(rpaSpinSusceptibilityTree.get(result, resultIndex))
 		return result;
 

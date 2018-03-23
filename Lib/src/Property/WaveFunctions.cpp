@@ -140,7 +140,7 @@ WaveFunctions::WaveFunctions(
 	Mode mode
 ) :
 	AbstractProperty(
-		Serializeable::extract(
+		Serializable::extract(
 			serialization,
 			mode,
 			"abstractProperty"
@@ -178,7 +178,7 @@ WaveFunctions::WaveFunctions(
 	default:
 		TBTKExit(
 			"WaveFunctions::WaveFunctions()",
-			"Only Serializeable::Mode::JSON is supported yet.",
+			"Only Serializable::Mode::JSON is supported yet.",
 			""
 		);
 	}
@@ -322,7 +322,7 @@ string WaveFunctions::serialize(Mode mode) const{
 	default:
 		TBTKExit(
 			"WaveFunctions::serialize()",
-			"Only Serializeable::Mode::JSON is supported yet.",
+			"Only Serializable::Mode::JSON is supported yet.",
 			""
 		);
 	}

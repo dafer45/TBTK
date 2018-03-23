@@ -65,7 +65,7 @@ Developers mainly experienced with imperative programming likely recognize some 
 Object oriented programming greatly extends this powerful technique.
 
 Scientific computing is often computationally intensive and much thought therefore goes into the development of different algorithms for solving the same problem.
-Different algorithms may have their own strengths and weaknesses making them the preffered choice under different circumstances.
+Different algorithms may have their own strengths and weaknesses making them the preferred choice under different circumstances.
 Often such algorithms are implemented in completely different software packages with little reuse of code, even though the code for the main algorithm may be a small part of the actual code.
 This is a likely result when data structures are an afterthought and results in both replicated work and less reliable code since code that is reused in multiple projects is much more extensively tested.
 A key to handling situations like this is called polymorphism and is a principle whereby different components essentially provides identical or partly identical contracts to the outside world, even though they internally may work very differently.
@@ -95,7 +95,7 @@ It is useful to think of a typical scientific numerical study as involving three
 When writing code, the answer to these three questions essentially determines the input, algorithm, and output, respectively.
 To successfully carry out studies of complex problems, it is important that it is easy to set up the model and to extract the properties, and that the underlying algorithm that performs the work is efficient.
 However, the simultaneous requirement on the algorithm to be efficient and that the calculation is easy to set up easily run contrary to each other.
-Efficiency often require low level optimization in the algorithm, which e.g. can put strict requirment on how the input and output is represented in memory.
+Efficiency often require low level optimization in the algorithm, which e.g. can put strict requirement on how the input and output is represented in memory.
 If this means the user is required to setup the input and extract the output on a format that requires deep knowledge about the internal workings of the algorithm, two important problems arise.
 First, if details about the algorithm is required to be kept in mind at all levels of the code it hinders the user from thinking about the problem on a higher level where numeric nuisance has been abstracted  away.
 Second, if the specific requirements of an algorithm determines the structure of the whole program, the whole code has to be rewritten if the choice is made to try another algorithm.
@@ -155,7 +155,7 @@ All other units are considered derived units.
 The UnitHandler defines the fundamental quantities to be temperature, time, length, energy, charge, and count (amount).
 This is the first point where the UnitHandler deviates from the SI system since the SI system do not define the units for energy and charge as base units, but instead the units for mass, current, and luminosity.
 Note in particular that the UnitHandler currently only defines base units for six different quantities.
-The missing quantity is due to an ambiguity regarding whether an angle should be considered a unitfull or unitless quantity.
+The missing quantity is due to an ambiguity regarding whether an angle should be considered a unitful or unitless quantity.
 Units for angle may therefore be added to the UnitHandler in the future.
 The decision to make the units for energy and charge base units, rather than mass and current as in the SI system, is based on a subjective perception of the former being more generally relevant in quantum mechanical calculations.
 
@@ -203,9 +203,9 @@ To for example set the base units to mK, ps, Å, meV, C, and mol, type
 # Natural units {#NaturalUnits}
 It is common in physics to use natural units in which for example \f$\hbar = c = 1\f$.
 Such natural units simplify equations and allows mental effort to be concentrated on the physical phenomena rather than numerical details.
-The same is true when implementing numerical calculations and it is for example common in tight-binding calculations to measure energy in units of some hopping parameter \f$t = 1\f$, while the actual unitfull value can be some arbitrary value such as \f$t = 724meV\f$.
+The same is true when implementing numerical calculations and it is for example common in tight-binding calculations to measure energy in units of some hopping parameter \f$t = 1\f$, while the actual unitful value can be some arbitrary value such as \f$t = 724meV\f$.
 In TBTK all function calls are performed in natural units, except for the UnitHandler calls that specifies the natural units.
-This means that if the natural energy unit is set to e.g. \f$724meV\f$, an energy variable with say the value 1.2 that is passed to a function is internally interpreted by TBTK to have the unitfull value \f$1.2\times724meV\f$.
+This means that if the natural energy unit is set to e.g. \f$724meV\f$, an energy variable with say the value 1.2 that is passed to a function is internally interpreted by TBTK to have the unitful value \f$1.2\times724meV\f$.
 However, note that this conversion is not necessarily done at the point where the function call is made and may be repeatedly done at later points of execution if the variable is stored internally.
 This is why it is important to not reconfigure the UnitHandler in the middle of a program since this introduces ambiguities.
 
@@ -230,8 +230,8 @@ Here 'Quantity' is to be replace by the corresponding UnitHandler symbol specifi
 # Derived units {#DerivedUnits}
 Since derived units are defined in terms of the base units, it is in principle possible to use the above method to perform conversion of arbitrary derived units to and from natural units.
 However, doing so would require decomposing the derived unit into the corresponding base units, convert the base units one by one, multiply them together with the appropriate exponents, and finally multiply the quantity itself by the result.
-Moreover, even though it e.g. may be most convenient to work in the base units \f$eV\f$, \f$m\f$, and \f$s\f$ for energy, length, and time, in which case the corresponding mass unit is \f$eVs^2/m^2\f$, it may be more convenient to actuall specify mass using the unit \f$kg\f$.
-For this reason the UnitHandler aslo has special support for certain derived units.
+Moreover, even though it e.g. may be most convenient to work in the base units \f$eV\f$, \f$m\f$, and \f$s\f$ for energy, length, and time, in which case the corresponding mass unit is \f$eVs^2/m^2\f$, it may be more convenient to actual specify mass using the unit \f$kg\f$.
+For this reason the UnitHandler also has special support for certain derived units.
 Currently this is restricted to mass and magnetic field strength, but if more units are wanted, please do not hesitate to request additional derived units.
 The full list of possible derived units are
 | Quantity                | Available derived units                      | UnitHandler symbol |
@@ -277,7 +277,7 @@ Once the base and natural units have been specified using the calls described ab
 Here 'Symbol' is to be replaced by the corresponding symbol listed under 'UnitHandler symbol' in the table above.
 
 # Unit strings {#UnitStrings}
-When printing values, it is useful to also print the actuall unit strings.
+When printing values, it is useful to also print the actual unit strings.
 The UnitHandler therefore also provides methods for requesting the base unit strings for different quantities, which is obtained through function calls on the form
 ```cpp
 	string unitSring = UnitHandler::getSymbolUnitString();
@@ -297,7 +297,7 @@ To describe a system like this, we need three types of operators with three diff
 We can for example introduce the operators \f$a_{xo\sigma}\f$, \f$b_{xys\sigma}\f$, and \f$c_{xyzso}\f$ for the molecule, graphene, and substrate, respectively.
 Here \f$x\f$, \f$y\f$, and \f$z\f$ corresponds to spatial coordinates, \f$s\f$ is a sublattice index, \f$o\f$ is an orbital index, and \f$\sigma\f$ is a spin index.
 First we note that the number of indices per operator is not the same.
-Further, even though every operator have an \f$x\f$-index, there is not necesarily any actual relationship between the different \f$x\f$-indices.
+Further, even though every operator have an \f$x\f$-index, there is not necessarily any actual relationship between the different \f$x\f$-indices.
 In particular, the molecule may be oriented along some axis which does not coincide with the natural coordinate axes of the other two materials, and even more importantly, there is no reason why \f$x\f$ should run over the same number of values in the different materials.
 Rather, the \f$x\f$-index is just a symbol indicating the first spatial index for the corresponding operator.
 Similarly, the sublattice and orbital indices for the different operators are not the same.
@@ -386,7 +386,7 @@ The indices \f$(x, y)\f$ or {x, y} in TBTK notation we will call physical indice
 So why do we need linearization?
 One answer is that algorithms almost universally are going to be most efficient in a linear basis.
 Moreover, algorithms can also be made much more general if the linearization procedure is not part of the algorithm itself.
-If mappings such as \f$h = L_y x + y\f$ are hard coded into the Solver, it is essentially a single purpose code, possibly with a few nobs to turn to adjust the system size and parameter values, but the code is locked to a very specific type of problem.
+If mappings such as \f$h = L_y x + y\f$ are hard coded into the Solver, it is essentially a single purpose code, possibly with a few knobs to turn to adjust the system size and parameter values, but the code is locked to a very specific type of problem.
 On the contrary, a Solver that accepts any Model that can provide itself on a linearized form can be reused for widely different types of problems.
 
 So why physical indices?
@@ -415,7 +415,7 @@ where
 	H_{Int} &=& \delta\sum_{\sigma}c_{(25,25)\sigma}^{\dagger}d_{\sigma} + H.c.
 \f}</center>
 Here \f$\mathbf{i}\f$ is a two-dimensional index, \f$\langle\mathbf{i}\mathbf{j}\rangle\f$ indicates summation over nearest neighbors, \f$\sigma\f$ is a spin index, and \f$c_{\mathbf{i}}\f$ and \f$d_{\sigma}\f$ are operators on the substrate and impurity, respectively.
-The parameters \f$U_S\f$ and \f$U_{Imp}\f$ are onsite energies on the substrate and impurity, respectively, while \f$t\f$ is a nearest neighbor hopping amplitude, \f$J\f$ is a Zeeman term, and \f$\delta\f$ is the coupling strength between the substrate and impurity.
+The parameters \f$U_S\f$ and \f$U_{Imp}\f$ are on-site energies on the substrate and impurity, respectively, while \f$t\f$ is a nearest neighbor hopping amplitude, \f$J\f$ is a Zeeman term, and \f$\delta\f$ is the coupling strength between the substrate and impurity.
 
 We first note that an appropriate index structure is {0, x, y, s} for the substrate and {1, s} for the impurity.
 Using this index structure we next tabulate the hopping parameters on the canonical form given at the beginning of this chapter.
@@ -492,12 +492,12 @@ Once on this form, it is simple to implement the Model as follows
 For pedagogical reasons we here went through the process of converting the analytical Hamiltonian to a numerical Model in quite some detail.
 However, with a small amount of experience the second table can be read of immediately from the Hamiltonian, cutting down the work significantly.
 A key advice is to utilize the Hermitian conjugate to their maximum like we did above.
-Note in particular that we used this to only have \f$x+1\f$ and \f$y+1\f$ in one position for the indices, respectivel (and no \f$x-1\f$ or \f$y-1\f$).
+Note in particular that we used this to only have \f$x+1\f$ and \f$y+1\f$ in one position for the indices, respectively (and no \f$x-1\f$ or \f$y-1\f$).
 Doing so reduces the number of lines of code, improves readability, simplifies maintainance, and consequently reduces the chance of introducing errors.
 
 # Advanced: Using IndexFilters to construct a Model {#AdvancedUsingIndexFiltersToConstructAModel}
 While the already introduced concepts significantly simplifies the modeling of complex geometries, TBTK provides further ways to simplify the modeling stage.
-In particular, we note that in the example above, conditional statements had to be used in the first for-loop to ensure that HoppingAmplitudes were not added accross the boundary of the system.
+In particular, we note that in the example above, conditional statements had to be used in the first for-loop to ensure that HoppingAmplitudes were not added across the boundary of the system.
 For more complex structures it is useful to be able to separate the specification of such exceptions to the rule from the specification of the rule itself.
 This can be accomplished through the use of an IndexFilter, which can be used by the Model to accept or reject HoppingAmplitudes based on their to- and from-indices.
 
@@ -568,7 +568,7 @@ Once the Filter is specified, we are ready to use it to setup a Model
 Sometimes it is useful to be able to delay specification of a HoppingAmplitudes value to a later time than the creation of the Model.
 This is for example the case if the same Model is going to be solved multiple times for different parameter values, or if some of the parameters in the Hamiltonian are going to be determined self-consistently.
 For this reason it is possible to pass a function as value argument to the HoppingAmplitude rather than a fixed value.
-If we have indices with the structure {x, y, s}, where the last index is a spin, and there exists som global parameter \f$J\f$ that determines the current strength of the Zeeman term, a typical callbackFunction looks like
+If we have indices with the structure {x, y, s}, where the last index is a spin, and there exists some global parameter \f$J\f$ that determines the current strength of the Zeeman term, a typical callbackFunction looks like
 ```cpp
 	complex<double> callbackJ(const Index &to, const Index &from){
 		//Get spin index.
@@ -595,9 +595,9 @@ The most obvious example of this is a Hamiltonian which when written in reciproc
 
 To facilitate the exploitation of block diagonal Hamiltonians TBTK has restricted support for automatically detecting when it is handed a Hamiltonian with a block diagonal structure.
 However, for this to work the developer has to organize the Index structure in such a way that TBTK is able to automatically take advantage of the block diagonal structure.
-Namely, TBTK will automaitcally detect existing block structures as long as the Index has the subindices that identifies the independen blocks standing to the left of the intra block indices.
+Namely, TBTK will automatically detect existing block structures as long as the Index has the subindices that identifies the independent blocks standing to the left of the intra block indices.
 For a system with say three momentum subindices, one orbital subindex, and one spin subindex, where the Hamiltonian is block diagonal in the momentum space subindices, an appropriate Index structure is {kx, ky, kz, orbital, spin}.
-If for some reason the Index structure instead is given as {kx, ky, orbital, kz, spin}, TBTK will only be able to automatically detect kx and ky as block-indices, and will treate all of the three remaining subindices orbital, kz, and spin as internal indices for the blocks (at least as long as the Hamiltonian does not happen to also be block diagonal in the orbital subindex).
+If for some reason the Index structure instead is given as {kx, ky, orbital, kz, spin}, TBTK will only be able to automatically detect kx and ky as block-indices, and will treat all of the three remaining subindices orbital, kz, and spin as internal indices for the blocks (at least as long as the Hamiltonian does not happen to also be block diagonal in the orbital subindex).
 
 @page Solvers Solvers
 
@@ -612,9 +612,9 @@ Solvers are therefore required to all accept a universal Model object and to int
 Solvers are then wrapped in PropertyExtractors which further limits the Solver specific details from spreading to other parts of the code.
 The idea is to limit the application developers exposure to the Solver as much as possible, freeing mental capacity to focus on the physical problem at hands.
 Nevertheless, a certain amount of method specific configurations are inevitable and the appropriate place to make such manipulations is through the Solver interface itself.
-This approach both limits the developers exposure to unecessary details, while also making sure the developer understands when algorithm specific details are configured.
+This approach both limits the developers exposure to unnecessary details, while also making sure the developer understands when algorithm specific details are configured.
 
-Contrary to what it may sound like, limiting the developers exposure to the Solver does not mean conceiling what is going on inside the Solver and to make it an impenetrable black box.
+Contrary to what it may sound like, limiting the developers exposure to the Solver does not mean concealing what is going on inside the Solver and to make it an impenetrable black box.
 In fact, TBTK aims at making such details as transparent as possible and to invite the interested developer to dig as deep as preferred.
 To limit the exposure as much as possible rather means that once the developer has chosen Solver and configured it, the Solver specific details should not spread further and the developers should be free to not worry about low level details.
 In order to chose the right Solver for a given task and to configure it efficiently it is useful to have an as good understanding as possible about what the algorithm actually is doing.
@@ -630,7 +630,7 @@ However, diagonalization scales poorly with system size and is therefore not fea
 The BlockDiagonalizer provides important improvements in this regard for large systems if they are block diagonal, in which case the BlockDiagonalizer can handle very large systems compared to the Diagonalizer.
 
 Next, the ArnoldiIterator is similar to the Diagonalizers in the sense that it calculates eigenvalues and eigenvectors.
-However, it is what is know as an iterative Krylov space Solver, which succesively builds up a subspace of the Hilbert space and performs diagonalization on this restricted subspace.
+However, it is what is know as an iterative Krylov space Solver, which successively builds up a subspace of the Hilbert space and performs diagonalization on this restricted subspace.
 Therefore the ArnoldiIterator only extracts a few eigenvalues and eigenvectors.
 Complete information about a system can therefore usually not be obtained with the help of the ArnoldiIterator, but it can often give access to the relevant information for very large systems if only a few eigenvalues or eigenvectors are needed.
 Arnoldi iteration is closely related to the Lanczos method and is also the underlying method used when extracting a limited number of eigenvalues and eigenvectors using MATLABS eigs-function.
@@ -641,9 +641,9 @@ Moreover, while the Diagonalizers requires that the whole system first is diagon
 However, the Chebyshev method is also an iterative method (but not Krylov), and would in fact require an infinite number of steps to obtain an exact solution.
 
 # General remarks about Solvers {#GeneralRemarksAboutSolvers}
-The Solvers all innherit from a common base class called Solver.
+The Solvers all inherit from a common base class called Solver.
 This Solver class is an abstract class, meaning it is not actually possible to create an object of the Solver class itself.
-However, the Solver base class forces every other Solver to implement a method for seting the Model that it should work on.
+However, the Solver base class forces every other Solver to implement a method for setting the Model that it should work on.
 The following call is therefore possible (and required) to call to initialize any given Solver called *solver*
 ```cpp
 	solver.setModel(model);
@@ -653,7 +653,7 @@ It is important here to note that although the Model is passed to the Solver and
 It is therefore important that the Model remains in memory throughout the lifetime of the Solver and that the caller takes responsibility for any possible cleanup work.
 The user not familiar with memory management should not worry though, as long as standard practices as outlined in this manual are observed, these issues are irrelevant.
 
-The Solvers are also Communicatiors, which means that they may output information that is possible to mute.
+The Solvers are also Communicators, which means that they may output information that is possible to mute.
 This can become important if a Solver for example is created or executed inside of a loop.
 In this case extensive output can be produced and it can be desired to turn this off.
 To do so, call
@@ -677,34 +677,34 @@ That's it. The problem is solved and can be passed to a corresponding PropertyEx
 
 ## Estimating time and space requirements
 Since diagonalization is a rather simple problem conceptually, it is easy to estimate the memory and time costs for the Diagonalizer.
-Memorywise the Hamiltonian is stored as an upper triangular matrix with complex<double> entries each 16 bytes large.
+Memory wise the Hamiltonian is stored as an upper triangular matrix with complex<double> entries each 16 bytes large.
 The storage space required for the Hamiltonian is therefore roughly \f$16N^2/2 = 8N^2\f$ bytes, where \f$N\f$ is the basis size of the Hamiltonian.
 Another \f$16N^2\f$ bytes are required to store the resulting eigenvectors, and \f$8N\f$ bytes for the eigenvalues.
 Neglecting the storage for the eigenvalues the approximate memory footprint for the Diagonalizer is \f$24N^2\f$ bytes.
 This runs into the GB range around a basis size of 7000.
 
-The time it takes to diagonalize a matrix cannot be estimated with the same precission since it depends on the exact specification of the computer that the calculations are done on, but as of 2018 runs into the hour range for basis sizes of a few thousands.
+The time it takes to diagonalize a matrix cannot be estimated with the same precision since it depends on the exact specification of the computer that the calculations are done on, but as of 2018 runs into the hour range for basis sizes of a few thousands.
 However, knowing the execution time for a certain size on a certain computer, the execution can be rather accurately predicted for other system sizes using that the computation time scales as \f$N^3\f$.
 
 ## Advanced: Self-consistency callback
 Sometimes the value of one or several parameters that go into the Hamiltonian are not known a priori, but it is instead part of the problem to figure out the correct value.
 A common approach for solving such problems is to make an initial guess for the parameters, solve the model for the corresponding parameters, and then update the parameters with the so obtained values.
 If the problem is well behaved enough, such an approach results in the unknown parameters eventually converging to fixed values.
-Once the calculated parameter value is equal (within some tollerance) to the input parameter in the current iteration, the parameters are said to have reached self-consistency.
+Once the calculated parameter value is equal (within some tolerance) to the input parameter in the current iteration, the parameters are said to have reached self-consistency.
 That is, the calculated parameters are consistent with themselves in the sense that if they are used as input parameters, they are also the result of the calculation.
 
-When using diagonalization the self-consistent procedure is very straight forward: diagonalize the Hamiltonian, callculate and update parameters, and repeat until convergence.
+When using diagonalization the self-consistent procedure is very straight forward: diagonalize the Hamiltonian, calculate and update parameters, and repeat until convergence.
 The Diagonalizer is therefore prepared to run such a self-consistency loop.
 However, the the second step requires special knowledge about the system which the Diagonalizer cannot incorporate without essentially becoming a single purpose solver.
 The solution to this problem is to allow the application developer to supply a callback function that the Diagonalizer can call once the Hamiltonian has been diagonalized.
-This function is responsibile for calculating and updating relevant parameters, as well as informing the Diagonalizer whether the solution has converged.
+This function is responsible for calculating and updating relevant parameters, as well as informing the Diagonalizer whether the solution has converged.
 The interface for such a function is
 ```cpp
 	bool selfConsistencyCallback(Solver::Diagonalizer &solver){
 		//Calculate and update parameters.
 		//...
 
-		//Determine wheter the solution has converged or not.
+		//Determine whether the solution has converged or not.
 		//...
 
 		//Return true if the solution has converged, otherwise false.
@@ -715,7 +715,7 @@ The interface for such a function is
 	}
 ```
 The specific details of the self-consistency callback is up to the application developer to fill in, but the general structure has to be as above.
-That is, the callback has to accept the Diagonalizer as an argument, perform the required work, determine whether the solution has converged and return true or false depending on wheter it has or not.
+That is, the callback has to accept the Diagonalizer as an argument, perform the required work, determine whether the solution has converged and return true or false depending on whether it has or not.
 In addition to the self-consistency callback, the application developer interested in developing such a self-consistent calculation should also make use of the HoppingAmplitude callback described in the Model chapter for passing relevant parameters back to the Model in the next iteration step.
 
 Once a self-consistency callback is implemented, the Diagonalizer can be configured as follows to make use of it
@@ -751,11 +751,11 @@ Next define the recursive relation \f$v_{n} = Hv_{n-1}\f$.
 While \f$v_{0}\f$ is a random vector it can be decomposed into an eigenbasis, and it is clear that the recursive relation will result in the components of \f$v_{0}\f$ with the largest eigenvalues (in magnitude) to become more and more important for increasing \f$n\f$.
 Taking the collection of \f$v_{n}\f$ generated this way for some finite \f$n\f$, it is clear that they form a (possibly overcomplete) basis for some subspace of the total Hilbert space.
 In particular, because eigenvectors with large eigenvalues are favored by the procedure, it will start to approximate the part of the Hilbert space that contains the eigenvectors with extreme eigenvalues.
-Such a procedure is called an iterative Krylov space method, where Krylov space refers to the space spaned by the generated vectors.
+Such a procedure is called an iterative Krylov space method, where Krylov space refers to the space spanned by the generated vectors.
 
 Arnoldi iteration improves the idea by continuously performing orthonormalization of the vectors before generating the next set of vectors and is therefore numerically superior to the somewhat simpler method just described.
 Once a subspace that is deemed large enough has been generated, diagonalization is performed on this much smaller space, resulting in eigevalues and eigenvectors for the extreme part of the Hilbert space to be calculated.
-We note that since the generated subspace cannot be guaranteed to contain the eigenvectors perfectly, the proceedure really generates approximate eigenvalues and eigenvectors known as Ritz-values and Ritz-vectors.
+We note that since the generated subspace cannot be guaranteed to contain the eigenvectors perfectly, the procedure really generates approximate eigenvalues and eigenvectors known as Ritz-values and Ritz-vectors.
 However, the subspace often converge rather quickly to the true extreme subspace and therefore generates very good approximations to the most extreme eigenvectors.
 It is therefore convenient to think of the ArnoldiSolver simply as a solver that can calculate extreme eigenvalues and eigenvectors.
 
@@ -770,10 +770,10 @@ With this background we are ready to understand how to create and configure a ba
 	solver.run();
 ```
 As seen, line 1, 2, and 7 is similar to the Diagonalizers and require no further explanation.
-The thrid lines specifies how many Ritz-vectors (or Lanczos vectors) that are going to be generated during the iterative procedure, while the fourth line specifies the maximum number of iterations.
-It may be suprising that the number of iterations are not the same as the number of generated Ritz-vectors, but is due to the fact that the ArnoldiIterator is using a further improvement on the procedure called implicitly restarted Arnoldi iteration.
+The third line specifies how many Ritz-vectors (or Lanczos vectors) that are going to be generated during the iterative procedure, while the fourth line specifies the maximum number of iterations.
+It may be surprising that the number of iterations are not the same as the number of generated Ritz-vectors, but is due to the fact that the ArnoldiIterator is using a further improvement on the procedure called implicitly restarted Arnoldi iteration.
 For further information on this the interested reader is referred to the documentation for the ARPACK library.
-Remembering that we successively build up a larger and larger subspace starting from some random initial vector, it is expected that not all of the generated Ritz-vectors are meaningfull, but only the most extreme ones.
+Remembering that we successively build up a larger and larger subspace starting from some random initial vector, it is expected that not all of the generated Ritz-vectors are meaningful, but only the most extreme ones.
 For this reason the fifth line is used to specify the number of vectors that actually is going to be retained at the end of the calculation.
 To understand the sixth line we finally have to mention that the eigenvectors used internally by the ArnoldiIterator during the iterative procedure is not in the basis of the full Hamiltonian.
 That 100 generated eigenvectors therefore has to be converted to the basis that we are interested in if we actually want to use the eigenvectors.
@@ -858,7 +858,7 @@ The PropertyExtractors are therefore largely uniform interfaces, but not identic
 However, for most standard properties there at least exists function calls that allow the properties to compile even if they cannot actually perform the calculation.
 The program will instead print error messages that make it clear that the particular Solver is not able to calculate the property and ask the developer to switch Solver.
 In fact, this is achieved through inheritance from a common abstract base class called PropertyExtractor::PropertyExtractor and allows for completely Solver independent code to be written that works with the abstract base class rather than the individual Solver specific PropertyExtractors.
-The experienced C++ programmer can use this to write truly portable code, while the developer unfamiliar with innheritance and abstract classes do not need to worry about these details.
+The experienced C++ programmer can use this to write truly portable code, while the developer unfamiliar with inheritance and abstract classes do not need to worry about these details.
 
 Each of the Solvers described in the Solver chapter have their own PropertyExtractor called PropertyExtractor::Diagonalizer, PropertyExtractor::BlockDiagonalizer, PropertyExtractor::ArnoldiIterator, and PropertyExtractor::ChebyshevExpander.
 The point of creation for the PropertyExtractor is the last point at which algorithm specific details may need to be known about the Solvers and below we therefore go through how to create and initialize the different PropertyExtractors.
@@ -903,11 +903,11 @@ However, the later of the two can only be true when lookup tables are enabled.
 In addition to the PropertyExtractors, TBTK has a set of Property classes that are returned by the PropertyExtractors and which are more extensively described in the chapter Properties.
 These Property classes supports a few different storage modes internally which allows for different types of extraction.
 For example does the system in question often have some concrete structure such as a square lattice.
-In this case it is usefull for properties to preserve knowledge about this structure as it can allow for example two-dimensional plots of the data to be done simply.
+In this case it is useful for properties to preserve knowledge about this structure as it can allow for example two-dimensional plots of the data to be done simply.
 Other times no such structure exists, or properties are just wanted for a few different points for which there is no unifying structure.
 These different cases require somewhat different approaches for storing the data in memory, as well as for how to instruct the PropertyExtractors how to extract the data.
 We here describe how to extract the different properties and the reader can jump to any Property of interest to see how to handle the particular situation.
-The reader is, however, adviced to first read the first section about the density since this establishes most of the basic notation.
+The reader is, however, advised to first read the first section about the density since this establishes most of the basic notation.
 The reader is also referred to the Properties chapter where more details about the Properties are given.
 
 Before continuing, we note that some Properties have an energy dependence.
@@ -957,7 +957,7 @@ The sets of three underscores are wildcards, meaning that any Index that matches
 We note here that while the three underscores are useful for improving readability in application code, it is also possible to use the more descriptive identifier IDX_ALL.
 
 ## DOS
-The denesity of states (DOS) represent a third internal storage mode since being a system wide property it has no Index-structure.
+The density of states (DOS) represent a third internal storage mode since being a system wide property it has no Index-structure.
 ```cpp
 	Property::DOS dos = propertyExtractor.calculateDOS();
 ```
@@ -1017,14 +1017,14 @@ Note that in order to calculate the SpinPolarizedLDOS, it is necessary to specif
 
 ## Further Properties
 Further Properties such as EigenValues, GreensFunction, and WaveFunctions are also available but are not yet documented in this manual.
-If you are interested in these quantites, do not hesistate to contact kristofer.bjornson@physics.uu.se to get further details or to request a speedy update about one or several of these Properties.
+If you are interested in these quantities, do not hesitate to contact kristofer.bjornson@physics.uu.se to get further details or to request a speedy update about one or several of these Properties.
 
 @page Properties Properties
 # Properties and meta data {#PropertiesAndMetaData}
 When calculating physical properties it is common to store the result in an arrays.
 The density at (x,y) for a two-dimensional grid with dimensions (SIZE_X, SIZE_Y) can for example be stored as the array element *density[SIZE_Y*x +y]*.
 However, there are two problems with using such a simple storage scheme.
-First, there is an implicit assumption in the way the elements are laid out in memory that is nowehere documented in actual code.
+First, there is an implicit assumption in the way the elements are laid out in memory that is nowhere documented in actual code.
 Every time the developer needs to write new code that access an element in the array, it is up to the developer to remember that the offset to the element should be calculated as *SIZE_Y*x + y*.
 The rule is certainly easy for grid like systems like in this example, but generalizes poorly to complex structures, and moreover limits the possibility to write general purpose functions that takes the array as input.
 Second, the variables SIZE_X and SIZE_Y needs to be stored separately from the array and either be global variables or be passed independently to any function that uses the array.
@@ -1063,7 +1063,7 @@ There also exists a corresponding call that gives write access to the data, but 
 ```
 
 When Properties are extracted on the Ranges format, identifiers IDX_X, IDX_Y, and IDX_Z and corresponding ranges SIZE_X, SIZE_Y, and SIZE_Z are used (see the PropertyExtractor chapter).
-These are used to indicate which subindex that should be maped to the first, second, and third index in the array, and their ranges.
+These are used to indicate which subindex that should be mapped to the first, second, and third index in the array, and their ranges.
 The ranges are stored in the Property and can be accessed using
 ```cpp
 	vector<int> ranges = property.getRanges();
@@ -1114,7 +1114,7 @@ To do so, execute the following commands
 	property.setAllowIndexOutOfBoundsAccess(true);
 	property.setDefaultValue(defaultValue);
 ```
-We note that it is recommended to be causius about turning this feature on, since out of bound access in most cases is a sign of a bug.
+We note that it is recommended to be cautious about turning this feature on, since out of bound access in most cases is a sign of a bug.
 Such bugs will be immediately detected at execution if out of bounds access is turned off.
 
 # Density {#Density}
@@ -1230,7 +1230,7 @@ where *n* is one of the numbers contained in *states*.
 #  External storage {#ExternalStorage}
 While the classes described in the other Chapters allow data to be stored in RAM during execution, it is important to also be able to store data outside of program memory.
 This allows for data to be stored in files in between executions, to be exported to other programs, for external input to be read in, etc.
-TBTK therefore comes with two methods for writing data strucutres to file on a format that allows for them to later be read into the same data structures, as well as one method for reading parameter files.
+TBTK therefore comes with two methods for writing data structures to file on a format that allows for them to later be read into the same data structures, as well as one method for reading parameter files.
 
 The first method is in the form of a FileWriter and FileReader class, which allows for Properties and Models to be written into HDF5 files.
 The HDF5 file format (https://support.hdfgroup.org/HDF5/) is a file format specifically designed for scientific data and has wide support in many languages.
@@ -1241,8 +1241,8 @@ Many classes in TBTK can also be serialized, which mean that they are turned int
 These strings can then be written to file or passed as arguments to the constructor for the corresponding class to recreate a copy of the original object.
 TBTK also contains a class called Resources, which allows for very general input and output of strings, including reading data immediately from the web.
 In combination these two techniques allows for very flexible export and import of data that essentially allows large parts of the current state of the program to be stored in permanent memory.
-The goal is to make almost every class serializeable.
-This would essentialy allow a program to be serialized in the middle of execution and restarted at a later time, or allow for truely distributed applications to communicate their current state accross the internet.
+The goal is to make almost every class serializable.
+This would essentially allow a program to be serialized in the middle of execution and restarted at a later time, or allow for truly distributed applications to communicate their current state across the Internet.
 However, this is a future vision not yet fully reached.
 
 Finally, TBTK also contains a FileParser that can parse a structured parameter file and create a ParameterSet.
@@ -1303,21 +1303,21 @@ The interface for reading data is completely analogous to that for writing and t
 ```
 where DataType once again is a placeholder for one of the actual data type names listed in the table above.
 
-# Serializeable and Resource
+# Serializable and Resource
 Serialization is a powerful technique whereby an object is able to convert itself into a string.
-If some classes implments serialization, it is simple to write new serializeable classes that consists of such classes since the new class essentially can serialize itself simply by stringing together the serializations of its components.
+If some classes implements serialization, it is simple to write new serializable classes that consists of such classes since the new class essentially can serialize itself simply by stringing together the serializations of its components.
 TBTK is designed to allow for different serialization modes since some types of serialization may be simpler or more readable in case they are not meant to be imported back into TBTK, while others might be more efficient in terms of execution time and memory requirements.
 However, currently only serialization into JSON is implemented to any significant extent.
 We will therefore only describe this mode here.
 
-If a class is serializeable, which means it either inherits from the Serializeable class, or is pseud-serializeable by implementing the *serilaize()* function, it is possible to create a serialization of a corresponding object as follows
+If a class is serializable, which means it either inherits from the Serializable class, or is pseudo-serializable by implementing the *serialize()* function, it is possible to create a serialization of a corresponding object as follows
 ```cpp
-	string serialization = serializeabelObject.serialize(Serializeable::Mode::JSON);
+	string serialization = serializeabelObject.serialize(Serializable::Mode::JSON);
 ```
 Currently the Model and all Properties can be serialized like this.
 For clarity considering the Model class, a Model can be recreated from a serialization string as follows
 ```cpp
-	Model model(serialization, Serializeable::Mode::JSON);
+	Model model(serialization, Serializable::Mode::JSON);
 ```
 The notation for recreating other types of objects is the same, with Model replaced by the class name of the object of interest.
 
@@ -1340,7 +1340,7 @@ This means that it for example is possible to read input from a URL instead of f
 For example, a simple two level system is available at http://www.second-quantization.com/ExampleModel.json that can be used to construct a Model as follows
 ```cpp
 	resource.read("http://www.second-quantization.com/ExampleModel.json");
-	Model model(resource.getData(), Serializeable::Mode::JSON);
+	Model model(resource.getData(), Serializable::Mode::JSON);
 	model.construct();
 ```
 
@@ -1374,7 +1374,7 @@ Once the ParameterSet is created, the variables can be accessed
 ```
 
 @page Streams Streams
-# Customizeable Streams {#CustomizeablStreams}
+# Customizable Streams {#CustomizablStreams}
 It is often useful to print information to the screen during execution.
 Both for the sake of providing information about the progress of a calculation and for debuging code during development.
 It is perfectly possible to use the standard C style *printf()* or C++ style *cout* streams for these purposes.
@@ -1385,11 +1385,11 @@ Moreover, all TBTK functions use the Stream interface, and it is therefore usefu
 The Stream interface has three different output channels called Streams::out, Streams::log, and Streams::err.
 The Streams::out and Streams::err channels are by default equivalent to *cout* and *cerr* and is meant for standard out put and error output, respectively.
 In addition, the two buffers are forked to the Streams::log buffer which by default does nothing.
-However, it is possible to make Streams::log wirte to an output file by typing
+However, it is possible to make Streams::log write to an output file by typing
 ```cpp
 	Streams::openLog("Logfile");
 ```
-To ensure that all information is writen to file at the end of a calculation, a corrsponding close call should be made at the end of the program
+To ensure that all information is written to file at the end of a calculation, a corresponding close call should be made at the end of the program
 ```cpp
 	Streams::closeLog();
 ```
@@ -1407,8 +1407,8 @@ However, it is recommended to not mute the error stream, since *cerr* is designe
 This means that information written to *cerr* before a crash will be guaranteed to reach the screen, while information written to the other streams do not provide this guarantee.
 
 # Communicators {#Communicators}
-Although not part of the actuall Stream interface, many classes implements a so called Communicator interface.
-It is useful to know, that in addition to muting the Streams themself it is possible to globaly mute all Communicators by typing
+Although not part of the actual Stream interface, many classes implements a so called Communicator interface.
+It is useful to know, that in addition to muting the Streams themselves it is possible to globally mute all Communicators by typing
 ```cpp
 	Communicator::setGlobalVerbose(false);
 ```
@@ -1499,7 +1499,7 @@ The basic interface for executing a transform is
 ```cpp
 	FourierTransform::transform(in, out, SIZE_X, SIZE_Y, SIZE_Z, SIGN);
 ```
-where the SIZE_Y and SIZE_Z can be droped depending on the dimensionality of the transform.
+where the SIZE_Y and SIZE_Z can be dropped depending on the dimensionality of the transform.
 Further, *in* and *out* are *complex<double>* arrays with SIZE_X*SIZE_Y*SIZE_Z elements, and SIGN should be -1 or 1 and determines the sign in the exponent of the transform.
 The normalization factor is \f$\sqrt{SIZE\_X\times SIZE\_Y\times SIZE\_Z}\f$.
 
@@ -1687,8 +1687,8 @@ The plotting scripts can be run immediately form the terminal using the syntax
 	TBTKPlotQuantity.py File.h5 parameters
 ```
 where *Quantity* is a placeholder for the name of the relevant quantity, *File.h5* is the HDF5 file to which the Property has been written, and *parameters* is zero or more parameters needed to plot the data.
-These scripts are limited to a few special usage cases due to the fact that different dimensionalities requre widely different types of plots to be made.
-Howver, they can be used in these specific cases, or the plotting scripts which are available in the folder TBTK/Visualization/python can be used as templates for writing customized plotting scripts.
+These scripts are limited to a few special usage cases due to the fact that different dimensionalities require widely different types of plots to be made.
+However, they can be used in these specific cases, or the plotting scripts which are available in the folder TBTK/Visualization/python can be used as templates for writing customized plotting scripts.
 
 ## Density
 The Density can be plotted if it has been extracted on a two-dimensional grid using
@@ -1704,7 +1704,7 @@ The DOS can be plotted using
 where *sigma* is a decimal number specifying the amount of Gaussian smoothing that will be applied along the energy axis.
 
 ## EigenValues
-The EigenValues can be plotted as a monotoneously increasing line using
+The EigenValues can be plotted as a monotonously increasing line using
 ```bash
 	TBTKPlotEigenValues.py File.h5
 ```

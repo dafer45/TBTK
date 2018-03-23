@@ -252,7 +252,7 @@ HoppingAmplitudeSet::HoppingAmplitudeSet(
 	default:
 		TBTKExit(
 			"HoppingAmplitudeSet::HoppingAmplitudeSet()",
-			"Only Serializeable::Mode::Debug is supported yet.",
+			"Only Serializable::Mode::Debug is supported yet.",
 			""
 		);
 	}
@@ -449,24 +449,24 @@ string HoppingAmplitudeSet::serialize(Mode mode) const{
 		stringstream ss;
 		ss << "HoppingAmplitudeSet(";
 		ss << hoppingAmplitudeTree.serialize(mode);
-		ss << "," << Serializeable::serialize(isConstructed, mode);
-		ss << "," << Serializeable::serialize(isSorted, mode);
-		ss << "," << Serializeable::serialize(numMatrixElements, mode);
+		ss << "," << Serializable::serialize(isConstructed, mode);
+		ss << "," << Serializable::serialize(isSorted, mode);
+		ss << "," << Serializable::serialize(numMatrixElements, mode);
 		if(numMatrixElements != -1){
 			for(int n = 0; n < numMatrixElements; n++){
-				ss << "," << Serializeable::serialize(
+				ss << "," << Serializable::serialize(
 					cooRowIndices[n],
 					mode
 				);
 			}
 			for(int n = 0; n < numMatrixElements; n++){
-				ss << "," << Serializeable::serialize(
+				ss << "," << Serializable::serialize(
 					cooColIndices[n],
 					mode
 				);
 			}
 			for(int n = 0; n < numMatrixElements; n++){
-				ss << "," << Serializeable::serialize(
+				ss << "," << Serializable::serialize(
 					cooValues[n],
 					mode
 				);
@@ -491,7 +491,7 @@ string HoppingAmplitudeSet::serialize(Mode mode) const{
 				j["cooRowIndices"].push_back(cooRowIndices[n]);
 				j["cooColIndices"].push_back(cooColIndices[n]);
 				j["cooValues"].push_back(
-					Serializeable::serialize(
+					Serializable::serialize(
 						cooValues[n],
 						mode
 					)
@@ -504,7 +504,7 @@ string HoppingAmplitudeSet::serialize(Mode mode) const{
 	default:
 		TBTKExit(
 			"HoppingAmplitudeSet::serialize()",
-			"Only Serializeable::Mode::Debug is supported yet.",
+			"Only Serializable::Mode::Debug is supported yet.",
 			""
 		);
 	}

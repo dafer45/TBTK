@@ -31,7 +31,7 @@
 #include "TBTK/IndexBasedHoppingAmplitudeFilter.h"
 #include "TBTK/SingleParticleContext.h"
 #include "TBTK/ManyBodyContext.h"
-#include "TBTK/Serializeable.h"
+#include "TBTK/Serializable.h"
 #include "TBTK/Statistics.h"
 
 #include <complex>
@@ -48,7 +48,7 @@ class FileReader;
  *  The Model conatins all model related information such as the Hamiltonian,
  *  temperature, and chemical potential.
  */
-class Model : public Serializeable, public Communicator{
+class Model : public Serializable, public Communicator{
 public:
 	/** Constructor. */
 	Model();
@@ -170,7 +170,7 @@ public:
 		const std::tuple<HoppingAmplitude, HoppingAmplitude> &hoppingAmplitudes
 	);
 
-	/** Implements Serializeable::serialize(). Note that the
+	/** Implements Serializable::serialize(). Note that the
 	 *  ManyBodyContext is not yet serialized. */
 	std::string serialize(Mode mode) const;
 private:

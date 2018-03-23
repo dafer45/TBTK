@@ -24,8 +24,8 @@ TEST(HoppingAmplitudeTree, SerializeToJSON){
 	hoppingAmplitudeTree0.generateBasisIndices();
 
 	HoppingAmplitudeTree hoppingAmplitudeTree1(
-		hoppingAmplitudeTree0.serialize(Serializeable::Mode::JSON),
-		Serializeable::Mode::JSON
+		hoppingAmplitudeTree0.serialize(Serializable::Mode::JSON),
+		Serializable::Mode::JSON
 	);
 
 	EXPECT_EQ(hoppingAmplitudeTree1.getBasisSize(), 5);

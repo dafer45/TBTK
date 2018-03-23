@@ -15,7 +15,7 @@
 
 /** @package TBTKcalc
  *  @file Resource.h
- *  @brief Allows Serializeable objects to be saved and loaded using URI.
+ *  @brief Allows Serializable objects to be saved and loaded using URI.
  *
  *  @author Kristofer Björnson
  */
@@ -23,7 +23,7 @@
 #ifndef COM_DAFER45_TBTK_RESOURCE
 #define COM_DAFER45_TBTK_RESOURCE
 
-#include "TBTK/Serializeable.h"
+#include "TBTK/Serializable.h"
 
 #include <string>
 #include <vector>

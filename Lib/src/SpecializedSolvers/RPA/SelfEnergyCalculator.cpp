@@ -279,7 +279,7 @@ vector<complex<double>> SelfEnergyCalculator::calculateSelfEnergy(
 		}
 	);
 
-	SerializeableVector<complex<double>> result;
+	SerializableVector<complex<double>> result;
 	if(selfEnergyTree.get(result, resultIndex))
 		return result;
 
@@ -339,7 +339,7 @@ vector<complex<double>> SelfEnergyCalculator::calculateSelfEnergySelfConsistentl
 		}
 	);*/
 
-	SerializeableVector<complex<double>> result;
+	SerializableVector<complex<double>> result;
 /*	if(selfEnergyTree.get(result, resultIndex))
 		return result;
 

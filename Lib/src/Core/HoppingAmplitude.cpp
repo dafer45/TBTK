@@ -68,10 +68,10 @@ HoppingAmplitude::HoppingAmplitude(
 
 HoppingAmplitude::HoppingAmplitude(
 	const string &serialization,
-	Serializeable::Mode mode
+	Serializable::Mode mode
 ){
 	TBTKAssert(
-		Serializeable::validate(
+		Serializable::validate(
 			serialization,
 			"HoppingAmplitude",
 			mode
@@ -83,13 +83,13 @@ HoppingAmplitude::HoppingAmplitude(
 	);
 
 	switch(mode){
-	case Serializeable::Mode::Debug:
+	case Serializable::Mode::Debug:
 	{
-		string content = Serializeable::getContent(serialization, mode);
+		string content = Serializable::getContent(serialization, mode);
 
-		vector<string> elements = Serializeable::split(
+		vector<string> elements = Serializable::split(
 			content,
-			Serializeable::Mode::Debug
+			Serializable::Mode::Debug
 		);
 
 		amplitudeCallback = nullptr;
@@ -101,13 +101,13 @@ HoppingAmplitude::HoppingAmplitude(
 		fromIndex = Index(elements.at(2), mode);
 		break;
 	}
-	case Serializeable::Mode::JSON:
+	case Serializable::Mode::JSON:
 	{
 		try{
 			amplitudeCallback = nullptr;
 
 			json j = json::parse(serialization);
-			Serializeable::deserialize(j["amplitude"].get<string>(), &amplitude, mode);
+			Serializable::deserialize(j["amplitude"].get<string>(), &amplitude, mode);
 			toIndex = Index(j["toIndex"].dump(), mode);
 			fromIndex = Index(j["fromIndex"].dump(), mode);
 		}
@@ -125,7 +125,7 @@ HoppingAmplitude::HoppingAmplitude(
 	default:
 		TBTKExit(
 			"HoppingAmplitude::HoppingAmplitude()",
-			"Only Serializeable::Mode::Debug is supported yet.",
+			"Only Serializable::Mode::Debug is supported yet.",
 			""
 		);
 	}
@@ -152,7 +152,7 @@ void HoppingAmplitude::print() const{
 	Streams::out << "Amplitude:\t" << getAmplitude() << "\n";
 }
 
-string HoppingAmplitude::serialize(Serializeable::Mode mode) const{
+string HoppingAmplitude::serialize(Serializable::Mode mode) const{
 	TBTKAssert(
 		amplitudeCallback == nullptr,
 		"HoppingAmplitude::serialize()",
@@ -162,21 +162,21 @@ string HoppingAmplitude::serialize(Serializeable::Mode mode) const{
 	);
 
 	switch(mode){
-	case Serializeable::Mode::Debug:
+	case Serializable::Mode::Debug:
 	{
 		stringstream ss;
 		ss << "HoppingAmplitude(";
-		ss << Serializeable::serialize(amplitude, mode) << ",";
+		ss << Serializable::serialize(amplitude, mode) << ",";
 		ss << toIndex.serialize(mode) << "," << fromIndex.serialize(mode);
 		ss << ")";
 
 		return ss.str();
 	}
-	case Serializeable::Mode::JSON:
+	case Serializable::Mode::JSON:
 	{
 		json j;
 		j["id"] = "HoppingAmplitude";
-		j["amplitude"] = Serializeable::serialize(amplitude, mode);
+		j["amplitude"] = Serializable::serialize(amplitude, mode);
 		j["toIndex"] = json::parse(toIndex.serialize(mode));
 		j["fromIndex"] = json::parse(fromIndex.serialize(mode));
 
@@ -196,7 +196,7 @@ string HoppingAmplitude::serialize(Serializeable::Mode mode) const{
 	default:
 		TBTKExit(
 			"HoppingAmplitude::serialize()",
-			"Only Serializeable::Mode::Debug is supported yet.",
+			"Only Serializable::Mode::Debug is supported yet.",
 			""
 		);
 	}

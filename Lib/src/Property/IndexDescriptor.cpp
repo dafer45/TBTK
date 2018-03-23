@@ -177,7 +177,7 @@ IndexDescriptor::IndexDescriptor(const std::string &serialization, Mode mode){
 	default:
 		TBTKExit(
 			"IndexDescriptor::IndexDescriptor()",
-			"Only Serializeable::Mode::JSON is supported yet.",
+			"Only Serializable::Mode::JSON is supported yet.",
 			""
 		);
 	}
@@ -346,7 +346,7 @@ std::string IndexDescriptor::serialize(Mode mode) const{
 	default:
 		TBTKExit(
 			"IndexDescriptor::serialize()",
-			"Only Serializeable::Mode::JSON is supported yet.",
+			"Only Serializable::Mode::JSON is supported yet.",
 			""
 		);
 	}

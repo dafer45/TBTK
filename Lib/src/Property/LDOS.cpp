@@ -109,7 +109,7 @@ LDOS::LDOS(
 	Mode mode
 ) :
 	AbstractProperty(
-		Serializeable::extract(
+		Serializable::extract(
 			serialization,
 			mode,
 			"abstractProperty"
@@ -145,7 +145,7 @@ LDOS::LDOS(
 	default:
 		TBTKExit(
 			"LDOS::LDOS()",
-			"Only Serializeable::Mode::JSON is supported yet.",
+			"Only Serializable::Mode::JSON is supported yet.",
 			""
 		);
 	}
@@ -196,7 +196,7 @@ string LDOS::serialize(Mode mode) const{
 	default:
 		TBTKExit(
 			"LDOS::serialize()",
-			"Onle Serializeable::Mode::JSON is supported yet.",
+			"Onle Serializable::Mode::JSON is supported yet.",
 			""
 		);
 	}

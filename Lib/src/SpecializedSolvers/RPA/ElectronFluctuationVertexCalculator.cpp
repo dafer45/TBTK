@@ -210,7 +210,7 @@ vector<complex<double>> ElectronFluctuationVertexCalculator::calculateSelfEnergy
 		}
 	);
 
-	SerializeableVector<complex<double>> result;
+	SerializableVector<complex<double>> result;
 	if(vertexTree.get(result, resultIndex))
 		return result;
 

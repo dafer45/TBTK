@@ -119,7 +119,7 @@ private:
 	bool isInitialized;
 
 	/** IndexedDataTree storing the vertex. */
-	IndexedDataTree<SerializeableVector<std::complex<double>>> vertexTree;
+	IndexedDataTree<SerializableVector<std::complex<double>>> vertexTree;
 
 	/** Interaction parameters. */
 	std::complex<double> U, Up, J, Jp;

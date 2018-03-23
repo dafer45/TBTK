@@ -169,19 +169,19 @@ void DataManagerFrame::onMenuFileOpen(wxCommandEvent &event){
 		ifstream fin(openDialog->GetPath());
 		string serialization(istream_iterator<char>(fin), {});
 		if(
-			Serializeable::hasID(
+			Serializable::hasID(
 				serialization,
-				Serializeable::Mode::JSON
+				Serializable::Mode::JSON
 			)
 		){
-			string id = Serializeable::getID(
+			string id = Serializable::getID(
 				serialization,
-				Serializeable::Mode::JSON
+				Serializable::Mode::JSON
 			);
 			if(id.compare("DataManager") == 0){
 				DataManager *dataManager = new DataManager(
 					serialization,
-					Serializeable::Mode::JSON
+					Serializable::Mode::JSON
 				);
 				setDataManager(dataManager, true);
 			}
@@ -243,7 +243,7 @@ void DataManagerFrame::updateOpenWindows(){
 			unsigned int id = dataManager->getID(dataPoint);
 
 			switch(dataManager->getFileType(dataManager->getDataType(n))){
-			case DataManager::FileType::SerializeableJSON:
+			case DataManager::FileType::SerializableJSON:
 			{
 				string filename = dataManager->getFilename(
 					dataManager->getDataType(n),
@@ -255,15 +255,15 @@ void DataManagerFrame::updateOpenWindows(){
 					break;
 
 				string serialization(istream_iterator<char>(fin), {});
-				string serializationID = Serializeable::getID(
+				string serializationID = Serializable::getID(
 					serialization,
-					Serializeable::Mode::JSON
+					Serializable::Mode::JSON
 				);
 				if(serializationID.compare("DOS") == 0){
 					((PropertyFrame*)currentDataWindows.at(n))->setProperty(
 						Property::DOS(
 							serialization,
-							Serializeable::Mode::JSON
+							Serializable::Mode::JSON
 						)
 					);
 				}
@@ -271,7 +271,7 @@ void DataManagerFrame::updateOpenWindows(){
 					((PropertyFrame*)currentDataWindows.at(n))->setProperty(
 						Property::LDOS(
 							serialization,
-							Serializeable::Mode::JSON
+							Serializable::Mode::JSON
 						)
 					);
 				}
@@ -281,7 +281,7 @@ void DataManagerFrame::updateOpenWindows(){
 			default:
 				TBTKExit(
 					"DataManagerFrame::DataManagerFrame()",
-					"Only DataManager::FileType::SerializeableJSON"
+					"Only DataManager::FileType::SerializableJSON"
 					<< " is supported yet.",
 					""
 				);

@@ -109,7 +109,7 @@ SpinPolarizedLDOS::SpinPolarizedLDOS(
 	Mode mode
 ) :
 	AbstractProperty(
-		Serializeable::extract(
+		Serializable::extract(
 			serialization,
 			mode,
 			"abstractProperty"
@@ -147,7 +147,7 @@ SpinPolarizedLDOS::SpinPolarizedLDOS(
 	default:
 		TBTKExit(
 			"SpinPolarizedLDOS::SpinPolarizedLDOS()",
-			"Only Serializeable::Mode::JSON is supported yet.",
+			"Only Serializable::Mode::JSON is supported yet.",
 			""
 		);
 	}
@@ -198,7 +198,7 @@ string SpinPolarizedLDOS::serialize(Mode mode) const{
 	default:
 		TBTKExit(
 			"SpinPolarizedLDOS::serialize()",
-			"Only Serializeable::Mode::JSON is supported yet.",
+			"Only Serializable::Mode::JSON is supported yet.",
 			""
 		);
 	}

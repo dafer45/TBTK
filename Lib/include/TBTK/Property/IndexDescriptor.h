@@ -24,13 +24,13 @@
 #define COM_DAFER45_TBTK_INDEX_DESCRIPTOR
 
 #include "TBTK/IndexTree.h"
-#include "TBTK/Serializeable.h"
+#include "TBTK/Serializable.h"
 #include "TBTK/TBTKMacros.h"
 
 namespace TBTK{
 
 /** @brief Describes the index structure of data stored for several indices. */
-class IndexDescriptor : public Serializeable{
+class IndexDescriptor : public Serializable{
 public:
 	/** Enum class determining the storage format. */
 	enum class Format {None, Ranges, Custom};
@@ -94,7 +94,7 @@ public:
 	/** Returns true if the index descriptor contains the given index. */
 	bool contains(const Index &index) const;
 
-	/** Implements Serializeable::serializea(). */
+	/** Implements Serializable::serializea(). */
 	virtual std::string serialize(Mode mode) const;
 private:
 	/** Index descriptor format. */

@@ -24,7 +24,7 @@
 #define COM_DAFER45_TBTK_HOPPING_AMPLITUDE
 
 #include "TBTK/Index.h"
-#include "TBTK/Serializeable.h"
+#include "TBTK/Serializable.h"
 
 #include <complex>
 #include <initializer_list>
@@ -98,7 +98,7 @@ public:
 	 *  @param mode Mode with which the string has been serialized. */
 	HoppingAmplitude(
 		const std::string &serializeation,
-		Serializeable::Mode mode
+		Serializable::Mode mode
 	);
 
 	/** Get the Hermitian cojugate of the HoppingAmplitude.
@@ -142,14 +142,14 @@ public:
 	std::string toString() const;
 
 	/** Serialize HoppingAmplitude. Note that HoppingAmplitude is
-	 *  pseudo-Serializeable in that it implements the Serializeable
+	 *  pseudo-Serializable in that it implements the Serializable
 	 * interface, but does so non-virtually.
 	 *
 	 *  @param mode Serialization mode to use.
 	 *
 	 *  @return Serialized string representation of the HoppingAmplitude.
 	 */
-	std::string serialize(Serializeable::Mode mode) const;
+	std::string serialize(Serializable::Mode mode) const;
 
 	/** Get size in bytes.
 	 *

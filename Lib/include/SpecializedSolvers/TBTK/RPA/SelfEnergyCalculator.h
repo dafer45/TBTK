@@ -131,7 +131,7 @@ private:
 	bool isInitialized;
 
 	/** IndexedDataTree storing the self-energy. */
-	IndexedDataTree<SerializeableVector<std::complex<double>>> selfEnergyTree;
+	IndexedDataTree<SerializableVector<std::complex<double>>> selfEnergyTree;
 
 	/** Self-energy main loop. */
 	template<bool singleSelfEnergyEnergy>

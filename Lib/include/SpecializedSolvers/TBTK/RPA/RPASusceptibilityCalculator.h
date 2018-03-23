@@ -25,7 +25,7 @@
 
 #include "TBTK/InteractionAmplitude.h"
 #include "TBTK/RPA/MomentumSpaceContext.h"
-#include "TBTK/SerializeableVector.h"
+#include "TBTK/SerializableVector.h"
 #include "TBTK/RPA/SusceptibilityCalculator.h"
 #include "TBTK/RPA/LindhardSusceptibilityCalculator.h"
 
@@ -123,13 +123,13 @@ public:
 	void loadSusceptibilities(const std::string &filename);
 private:
 	/** IndexedDataTree storing the RPA susceptibilities. */
-	IndexedDataTree<SerializeableVector<std::complex<double>>> rpaSusceptibilityTree;
+	IndexedDataTree<SerializableVector<std::complex<double>>> rpaSusceptibilityTree;
 
 	/** IndexedDataTree storing the RPA charge susceptibility. */
-	IndexedDataTree<SerializeableVector<std::complex<double>>> rpaChargeSusceptibilityTree;
+	IndexedDataTree<SerializableVector<std::complex<double>>> rpaChargeSusceptibilityTree;
 
 	/** IndexedDataTree storing the RPA spin susceptibility. */
-	IndexedDataTree<SerializeableVector<std::complex<double>>> rpaSpinSusceptibilityTree;
+	IndexedDataTree<SerializableVector<std::complex<double>>> rpaSpinSusceptibilityTree;
 
 	/** Energy type for the susceptibility. */
 	EnergyType energyType;

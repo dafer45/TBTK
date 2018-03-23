@@ -14,14 +14,14 @@
  */
 
 /** @package TBTKcalc
- *  @file Serializeable.h
- *  @brief Abstract base class for serializeable objects.
+ *  @file Serializable.h
+ *  @brief Abstract base class for serializable objects.
  *
  *  @author Kristofer Björnson
  */
 
-#ifndef COM_DAFER45_TBTK_SERIALIZEABLE
-#define COM_DAFER45_TBTK_SERIALIZEABLE
+#ifndef COM_DAFER45_TBTK_SERIALIZABLE
+#define COM_DAFER45_TBTK_SERIALIZABLE
 
 #include "TBTK/Statistics.h"
 #include "TBTK/TBTKMacros.h"
@@ -33,13 +33,13 @@
 namespace TBTK{
 
 //Forward declaration of classes that are pseudo-Serializable (that implements
-//the Serializeable interface non-virtually).
+//the Serializable interface non-virtually).
 class Index;
 class HoppingAmplitude;
 
-class Serializeable{
+class Serializable{
 public:
-	/** Serializeation modes. Note that debug is not guaranteed to be
+	/** Serialization modes. Note that debug is not guaranteed to be
 	 *  backward compatible. */
 	enum class Mode {Debug, Binary, XML, JSON};
 
@@ -141,14 +141,14 @@ protected:
 		std::string component
 	);
 
-	/** Friend classes (Classes that are psudo-Serializeable because they
+	/** Friend classes (Classes that are psudo-Serializable because they
 	 *  are so small and often used that a virtual function would have a
 	 *  non-negligible performance penalty). */
 	friend class Index;
 	friend class HoppingAmplitude;
 };
 
-inline std::string Serializeable::serialize(bool b, Mode mode){
+inline std::string Serializable::serialize(bool b, Mode mode){
 	switch(mode){
 	case Mode::Debug:
 	case Mode::JSON:
@@ -160,14 +160,14 @@ inline std::string Serializeable::serialize(bool b, Mode mode){
 	}
 	default:
 		TBTKExit(
-			"Serializeable::serialize()",
+			"Serializable::serialize()",
 			"Only Mode::Debug is supported yet.",
 			""
 		);
 	}
 }
 
-inline void Serializeable::deserialize(
+inline void Serializable::deserialize(
 	const std::string &serialization,
 	bool *b,
 	Mode mode
@@ -184,14 +184,14 @@ inline void Serializeable::deserialize(
 	}
 	default:
 		TBTKExit(
-			"Serializeable::deserialize()",
+			"Serializable::deserialize()",
 			"Only Mode::Debug is supported yet.",
 			""
 		);
 	}
 }
 
-inline std::string Serializeable::serialize(int i, Mode mode){
+inline std::string Serializable::serialize(int i, Mode mode){
 	switch(mode){
 	case Mode::Debug:
 	case Mode::JSON:
@@ -203,14 +203,14 @@ inline std::string Serializeable::serialize(int i, Mode mode){
 	}
 	default:
 		TBTKExit(
-			"Serializeable::serialize()",
+			"Serializable::serialize()",
 			"Only Mode::Debug is supported yet.",
 			""
 		);
 	}
 }
 
-inline void Serializeable::deserialize(
+inline void Serializable::deserialize(
 	const std::string &serialization,
 	int *i,
 	Mode mode
@@ -227,14 +227,14 @@ inline void Serializeable::deserialize(
 	}
 	default:
 		TBTKExit(
-			"Serializeable::deserialize()",
+			"Serializable::deserialize()",
 			"Only Mode::Debug is supported yet.",
 			""
 		);
 	}
 }
 
-inline std::string Serializeable::serialize(unsigned int u, Mode mode){
+inline std::string Serializable::serialize(unsigned int u, Mode mode){
 	switch(mode){
 	case Mode::Debug:
 	case Mode::JSON:
@@ -246,14 +246,14 @@ inline std::string Serializeable::serialize(unsigned int u, Mode mode){
 	}
 	default:
 		TBTKExit(
-			"Serializeable::serialize()",
+			"Serializable::serialize()",
 			"Only Mode::Debug is supported yet.",
 			""
 		);
 	}
 }
 
-inline void Serializeable::deserialize(
+inline void Serializable::deserialize(
 	const std::string &serialization,
 	unsigned int *u,
 	Mode mode
@@ -270,14 +270,14 @@ inline void Serializeable::deserialize(
 	}
 	default:
 		TBTKExit(
-			"Serializeable::deserialize()",
+			"Serializable::deserialize()",
 			"Only Mode::Debug is supported yet.",
 			""
 		);
 	}
 }
 
-inline std::string Serializeable::serialize(double d, Mode mode){
+inline std::string Serializable::serialize(double d, Mode mode){
 	switch(mode){
 	case Mode::Debug:
 	case Mode::JSON:
@@ -289,14 +289,14 @@ inline std::string Serializeable::serialize(double d, Mode mode){
 	}
 	default:
 		TBTKExit(
-			"Serializeable::serialize()",
+			"Serializable::serialize()",
 			"Only Mode::Debug is supported yet.",
 			""
 		);
 	}
 }
 
-inline void Serializeable::deserialize(
+inline void Serializable::deserialize(
 	const std::string &serialization,
 	double *d,
 	Mode mode
@@ -313,14 +313,14 @@ inline void Serializeable::deserialize(
 	}
 	default:
 		TBTKExit(
-			"Serializeable::deserialize()",
+			"Serializable::deserialize()",
 			"Only Mode::Debug is supported yet.",
 			""
 		);
 	}
 }
 
-inline std::string Serializeable::serialize(std::complex<double> c, Mode mode){
+inline std::string Serializable::serialize(std::complex<double> c, Mode mode){
 	switch(mode){
 	case Mode::Debug:
 	case Mode::JSON:
@@ -332,14 +332,14 @@ inline std::string Serializeable::serialize(std::complex<double> c, Mode mode){
 	}
 	default:
 		TBTKExit(
-			"Serializeable::serialize()",
+			"Serializable::serialize()",
 			"Only Mode::Debug is supported yet.",
 			""
 		);
 	}
 }
 
-inline void Serializeable::deserialize(
+inline void Serializable::deserialize(
 	const std::string &serialization,
 	std::complex<double> *c,
 	Mode mode
@@ -356,14 +356,14 @@ inline void Serializeable::deserialize(
 	}
 	default:
 		TBTKExit(
-			"Serializeable::deserialize()",
+			"Serializable::deserialize()",
 			"Only Mode::Debug is supported yet.",
 			""
 		);
 	}
 }
 
-inline std::string Serializeable::serialize(Statistics statistics, Mode mode){
+inline std::string Serializable::serialize(Statistics statistics, Mode mode){
 	switch(mode){
 	case Mode::Debug:
 	{
@@ -375,7 +375,7 @@ inline std::string Serializeable::serialize(Statistics statistics, Mode mode){
 			break;
 		default:
 			TBTKExit(
-				"Serializeable::serialize()",
+				"Serializable::serialize()",
 				"Unknown Statistics type '" << static_cast<int>(statistics) << "'",
 				"This should never happen, contact the developer."
 			);
@@ -395,7 +395,7 @@ inline std::string Serializeable::serialize(Statistics statistics, Mode mode){
 			break;
 		default:
 			TBTKExit(
-				"Serializeable::serialize()",
+				"Serializable::serialize()",
 				"Unknown Statistics type '" << static_cast<int>(statistics) << "'",
 				"This should never happen, contact the developer."
 			);
@@ -405,14 +405,14 @@ inline std::string Serializeable::serialize(Statistics statistics, Mode mode){
 	}
 	default:
 		TBTKExit(
-			"Serializeable::serialize()",
+			"Serializable::serialize()",
 			"Only Mode::Debug is supported yet.",
 			""
 		);
 	}
 }
 
-inline void Serializeable::deserialize(
+inline void Serializable::deserialize(
 	const std::string &serialization,
 	Statistics *statistics,
 	Mode mode
@@ -433,7 +433,7 @@ inline void Serializeable::deserialize(
 			break;
 		default:
 			TBTKExit(
-				"Serializeable::serialize()",
+				"Serializable::serialize()",
 				"Unknown Statistics type '" << i << "'",
 				"The serialization string is either corrupted"
 				<< " or the the serialization was created with"
@@ -454,7 +454,7 @@ inline void Serializeable::deserialize(
 		}
 		else{
 			TBTKExit(
-				"Serializeable::serialize()",
+				"Serializable::serialize()",
 				"Unknown Statistics type '" << serialization
 				<< "'",
 				"The serialization string is either corrupted"
@@ -468,7 +468,7 @@ inline void Serializeable::deserialize(
 	}
 	default:
 		TBTKExit(
-			"Serializeable::deserialize()",
+			"Serializable::deserialize()",
 			"Only Mode::Debug is supported yet.",
 			""
 		);

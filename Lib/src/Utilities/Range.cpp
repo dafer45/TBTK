@@ -92,7 +92,7 @@ Range::Range(const string &serialization, Mode mode){
 	default:
 		TBTKExit(
 			"Range::Range()",
-			"Only Serializeable::Mode::JSON is supported yet.",
+			"Only Serializable::Mode::JSON is supported yet.",
 			""
 		);
 	}
@@ -116,7 +116,7 @@ std::string Range::serialize(Mode mode) const{
 	default:
 		TBTKExit(
 			"Range::serialize()",
-			"Only Serializeable::Mode::JSON is supported yet.",
+			"Only Serializable::Mode::JSON is supported yet.",
 			""
 		);
 	}

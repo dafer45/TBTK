@@ -23,7 +23,7 @@
 #ifndef COM_DAFER45_TBTK_INDEX
 #define COM_DAFER45_TBTK_INDEX
 
-#include "TBTK/Serializeable.h"
+#include "TBTK/Serializable.h"
 #include "TBTK/Streams.h"
 
 #include <vector>
@@ -124,7 +124,7 @@ public:
 	 *  the Index.
 	 *
 	 *  @param mode Mode with which the string has been serialized. */
-	Index(const std::string &serialization, Serializeable::Mode mode);
+	Index(const std::string &serialization, Serializable::Mode mode);
 
 	/** Compare this index with another index. Returns true if the indices
 	 *  have the same number of subindices and all subindices are equal.
@@ -235,13 +235,13 @@ public:
 	 *  @return Subindex at position n. */
 	const int& operator[](unsigned int subindex) const;
 
-	/** Serialize Index. Note that Index is pseudo-Serializeable in that it
-	 *  implements the Serializeable interface, but does so non-virtually.
+	/** Serialize Index. Note that Index is pseudo-Serializable in that it
+	 *  implements the Serializable interface, but does so non-virtually.
 	 *
 	 *  @param mode Serialization mode to use.
 	 *
 	 *  @return Serialized string represenation of the Index. */
-	std::string serialize(Serializeable::Mode mode) const;
+	std::string serialize(Serializable::Mode mode) const;
 
 	/** Get size in bytes.
 	 *

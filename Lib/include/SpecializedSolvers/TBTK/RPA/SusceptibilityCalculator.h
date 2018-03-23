@@ -28,7 +28,7 @@
 #include "TBTK/InteractionAmplitude.h"
 #include "TBTK/RPA/MomentumSpaceContext.h"
 #include "TBTK/Resource.h"
-#include "TBTK/SerializeableVector.h"
+#include "TBTK/SerializableVector.h"
 #include "TBTK/UnitHandler.h"
 
 #include <complex>
@@ -166,7 +166,7 @@ protected:
 	) const;
 
 	/** Get susceptibility tree. */
-	const IndexedDataTree<SerializeableVector<std::complex<double>>>& getSusceptibilityTree() const;
+	const IndexedDataTree<SerializableVector<std::complex<double>>>& getSusceptibilityTree() const;
 
 	/** Returns the linear index for k+q. */
 	template<bool useKPlusQLookupTable>
@@ -189,7 +189,7 @@ protected:
 	void clearCache();
 private:
 	/** IndexedDataTree storing the bare susceptibilities. */
-	IndexedDataTree<SerializeableVector<std::complex<double>>> susceptibilityTree;
+	IndexedDataTree<SerializableVector<std::complex<double>>> susceptibilityTree;
 
 	/** Algorithm. */
 	Algorithm algorithm;
@@ -279,7 +279,7 @@ inline void SusceptibilityCalculator::saveSusceptibilities(
 ) const{
 	Resource resource;
 	resource.setData(
-		susceptibilityTree.serialize(Serializeable::Mode::JSON)
+		susceptibilityTree.serialize(Serializable::Mode::JSON)
 	);
 	resource.write(filename);
 }
@@ -289,9 +289,9 @@ inline void SusceptibilityCalculator::loadSusceptibilities(
 ){
 	Resource resource;
 	resource.read(filename);
-	susceptibilityTree = IndexedDataTree<SerializeableVector<std::complex<double>>>(
+	susceptibilityTree = IndexedDataTree<SerializableVector<std::complex<double>>>(
 		resource.getData(),
-		Serializeable::Mode::JSON
+		Serializable::Mode::JSON
 	);
 }
 
@@ -355,7 +355,7 @@ inline int SusceptibilityCalculator::getKPlusQLinearIndex<true>(
 	];
 }
 
-inline const IndexedDataTree<SerializeableVector<std::complex<double>>>& SusceptibilityCalculator::getSusceptibilityTree() const{
+inline const IndexedDataTree<SerializableVector<std::complex<double>>>& SusceptibilityCalculator::getSusceptibilityTree() const{
 	return susceptibilityTree;
 }
 

@@ -147,7 +147,7 @@ Model::Model(const string &serialization, Mode mode) : Communicator(true){
 	default:
 		TBTKExit(
 			"Model::Model()",
-			"Only Serializeable::Mode::Debug is supported yet.",
+			"Only Serializable::Mode::Debug is supported yet.",
 			""
 		);
 	}
@@ -256,8 +256,8 @@ string Model::serialize(Mode mode) const{
 	{
 		stringstream ss;
 		ss << "Model(";
-		ss << Serializeable::serialize(temperature, mode);
-		ss << "," << Serializeable::serialize(chemicalPotential, mode);
+		ss << Serializable::serialize(temperature, mode);
+		ss << "," << Serializable::serialize(chemicalPotential, mode);
 		ss << "," << singleParticleContext->serialize(mode);
 		ss << ")";
 
@@ -278,7 +278,7 @@ string Model::serialize(Mode mode) const{
 	default:
 		TBTKExit(
 			"Model::serialize()",
-			"Only Serializeable::Mode::Debug is supported yet.",
+			"Only Serializable::Mode::Debug is supported yet.",
 			""
 		);
 	}

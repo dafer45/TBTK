@@ -205,7 +205,7 @@ DataManager::DataManager(const string &serialization, Mode mode){
 	default:
 		TBTKExit(
 			"DataManager::DataManager()",
-			"Only Serializeable::Mode::JSON is supported yet.",
+			"Only Serializable::Mode::JSON is supported yet.",
 			""
 		);
 	}
@@ -286,7 +286,7 @@ string DataManager::getFilename(const string &dataType, int id) const{
 	switch(fileTypes.at(getDataTypeIndex(dataType))){
 	case FileType::Custom:
 		break;
-	case FileType::SerializeableJSON:
+	case FileType::SerializableJSON:
 		filename += ".json";
 		break;
 	case FileType::PNG:
@@ -326,7 +326,7 @@ void DataManager::markCompleted(
 }
 
 void DataManager::complete(
-	const Serializeable &serializeable,
+	const Serializable &serializable,
 	const string &dataType,
 	int id
 ){
@@ -340,8 +340,8 @@ void DataManager::complete(
 	Resource resource;
 	string filename = path + getFilename(dataType, id);
 	switch(fileTypes.at(getDataTypeIndex(dataType))){
-	case FileType::SerializeableJSON:
-		resource.setData(serializeable.serialize(Mode::JSON));
+	case FileType::SerializableJSON:
+		resource.setData(serializable.serialize(Mode::JSON));
 		break;
 	default:
 		TBTKExit(
@@ -506,7 +506,7 @@ string DataManager::serialize(Mode mode) const{
 	default:
 		TBTKExit(
 			"DataManager::serialize()",
-			"Only Serializeable::Mode::JSON is supported yet.",
+			"Only Serializable::Mode::JSON is supported yet.",
 			""
 		);
 	}

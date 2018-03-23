@@ -207,7 +207,7 @@ void LindhardSusceptibilityCalculator::precompute(unsigned int numWorkers){
 							orbital3 < numOrbitals;
 							orbital3++
 						){
-							SerializeableVector<complex<double>> result;
+							SerializableVector<complex<double>> result;
 							Index resultIndex = Index(
 								kIndex,
 								{
@@ -404,7 +404,7 @@ vector<complex<double>> LindhardSusceptibilityCalculator::calculateSusceptibilit
 	);
 
 	//Try to return cashed result
-	SerializeableVector<complex<double>> result;
+	SerializableVector<complex<double>> result;
 	if(getSusceptibilityTree().get(result, resultIndex))
 		return result;
 

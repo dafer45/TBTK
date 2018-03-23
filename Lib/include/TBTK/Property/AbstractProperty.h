@@ -36,9 +36,9 @@ namespace Property{
 template<
 	typename DataType,
 	bool isFundamental = std::is_fundamental<DataType>::value,
-	bool isSerializeable = std::is_base_of<Serializeable, DataType>::value
+	bool isSerializable = std::is_base_of<Serializable, DataType>::value
 >
-class AbstractProperty : public Serializeable{
+class AbstractProperty : public Serializable{
 public:
 	/** Get block size. */
 	unsigned int getBlockSize() const;
@@ -100,7 +100,7 @@ public:
 	 *  AbstractProperty::setAllowIndexOutOfBoundsAccess(true) is called. */
 	void setDefaultValue(const DataType &defaultValue);
 
-	/** Implements Serializeable::serialize(). */
+	/** Implements Serializable::serialize(). */
 	virtual std::string serialize(Mode mode) const;
 protected:
 	/** Constructor. */
@@ -188,20 +188,20 @@ private:
 	DataType defaultValue;
 };
 
-template<typename DataType, bool isFundamental, bool isSerializeable>
+template<typename DataType, bool isFundamental, bool isSerializable>
 inline unsigned int AbstractProperty<
 	DataType,
 	isFundamental,
-	isSerializeable
+	isSerializable
 >::getBlockSize() const{
 	return blockSize;
 }
 
-template<typename DataType, bool isFundamental, bool isSerializeable>
+template<typename DataType, bool isFundamental, bool isSerializable>
 inline void AbstractProperty<
 	DataType,
 	isFundamental,
-	isSerializeable
+	isSerializable
 >::setSize(unsigned int size){
 	this->size = size;
 	if(data != nullptr)
@@ -209,75 +209,75 @@ inline void AbstractProperty<
 	data = new DataType[size];
 }
 
-template<typename DataType, bool isFundamental, bool isSerializeable>
+template<typename DataType, bool isFundamental, bool isSerializable>
 inline unsigned int AbstractProperty<
 	DataType,
 	isFundamental,
-	isSerializeable
+	isSerializable
 >::getSize() const{
 	return size;
 }
 
-template<typename DataType, bool isFundamental, bool isSerializeable>
+template<typename DataType, bool isFundamental, bool isSerializable>
 inline const DataType* AbstractProperty<
 	DataType,
 	isFundamental,
-	isSerializeable
+	isSerializable
 >::getData() const{
 	return data;
 }
 
-template<typename DataType, bool isFundamental, bool isSerializeable>
+template<typename DataType, bool isFundamental, bool isSerializable>
 inline DataType* AbstractProperty<
 	DataType,
 	isFundamental,
-	isSerializeable
+	isSerializable
 >::getDataRW(){
 	return data;
 }
 
-template<typename DataType, bool isFundamental, bool isSerializeable>
+template<typename DataType, bool isFundamental, bool isSerializable>
 inline unsigned int AbstractProperty<
 	DataType,
 	isFundamental,
-	isSerializeable
+	isSerializable
 >::getSizeInBytes() const{
 	return size*sizeof(DataType);
 }
 
-template<typename DataType, bool isFundamental, bool isSerializeable>
+template<typename DataType, bool isFundamental, bool isSerializable>
 inline char* AbstractProperty<
 	DataType,
 	isFundamental,
-	isSerializeable
+	isSerializable
 >::getRawData(){
 	return (char*)data;
 }
 
-template<typename DataType, bool isFundamental, bool isSerializeable>
+template<typename DataType, bool isFundamental, bool isSerializable>
 inline unsigned int AbstractProperty<
 	DataType,
 	isFundamental,
-	isSerializeable
+	isSerializable
 >::getDimensions() const{
 	return indexDescriptor.getDimensions();
 }
 
-template<typename DataType, bool isFundamental, bool isSerializeable>
+template<typename DataType, bool isFundamental, bool isSerializable>
 //inline const int* AbstractProperty<
 inline std::vector<int> AbstractProperty<
 	DataType,
 	isFundamental,
-	isSerializeable
+	isSerializable
 >::getRanges() const{
 	return indexDescriptor.getRanges();
 }
 
-template<typename DataType, bool isFundamental, bool isSerializeable>
+template<typename DataType, bool isFundamental, bool isSerializable>
 inline int AbstractProperty<
 	DataType,
 	isFundamental,
-	isSerializeable
+	isSerializable
 >::getOffset(
 	const Index &index
 ) const{
@@ -287,32 +287,32 @@ inline int AbstractProperty<
 	);
 }
 
-template<typename DataType, bool isFundamental, bool isSerializeable>
+template<typename DataType, bool isFundamental, bool isSerializable>
 inline const IndexDescriptor& AbstractProperty<
 	DataType,
 	isFundamental,
-	isSerializeable
+	isSerializable
 >::getIndexDescriptor(
 ) const{
 	return indexDescriptor;
 }
 
-template<typename DataType, bool isFundamental, bool isSerializeable>
+template<typename DataType, bool isFundamental, bool isSerializable>
 inline bool AbstractProperty<
 	DataType,
 	isFundamental,
-	isSerializeable
+	isSerializable
 >::contains(
 	const Index &index
 ) const{
 	return indexDescriptor.contains(index);
 }
 
-template<typename DataType, bool isFundamental, bool isSerializeable>
+template<typename DataType, bool isFundamental, bool isSerializable>
 inline const DataType& AbstractProperty<
 	DataType,
 	isFundamental,
-	isSerializeable
+	isSerializable
 >::operator()(
 	const Index &index,
 	unsigned int offset
@@ -325,11 +325,11 @@ inline const DataType& AbstractProperty<
 		return data[indexOffset + offset];
 }
 
-template<typename DataType, bool isFundamental, bool isSerializeable>
+template<typename DataType, bool isFundamental, bool isSerializable>
 inline DataType& AbstractProperty<
 	DataType,
 	isFundamental,
-	isSerializeable
+	isSerializable
 >::operator()(
 	const Index &index,
 	unsigned int offset
@@ -345,38 +345,38 @@ inline DataType& AbstractProperty<
 	}
 }
 
-template<typename DataType, bool isFundamental, bool isSerializeable>
+template<typename DataType, bool isFundamental, bool isSerializable>
 inline const DataType& AbstractProperty<
 	DataType,
 	isFundamental,
-	isSerializeable
+	isSerializable
 >::operator()(unsigned int offset) const{
 	return data[offset];
 }
 
-template<typename DataType, bool isFundamental, bool isSerializeable>
+template<typename DataType, bool isFundamental, bool isSerializable>
 inline DataType& AbstractProperty<
 	DataType,
 	isFundamental,
-	isSerializeable
+	isSerializable
 >::operator()(unsigned int offset){
 	return data[offset];
 }
 
-template<typename DataType, bool isFundamental, bool isSerializeable>
+template<typename DataType, bool isFundamental, bool isSerializable>
 inline void AbstractProperty<
 	DataType,
 	isFundamental,
-	isSerializeable
+	isSerializable
 >::setAllowIndexOutOfBoundsAccess(bool allowIndexOutOfBoundsAccess){
 	this->allowIndexOutOfBoundsAccess = allowIndexOutOfBoundsAccess;
 }
 
-template<typename DataType, bool isFundamental, bool isSerializeable>
+template<typename DataType, bool isFundamental, bool isSerializable>
 inline void AbstractProperty<
 	DataType,
 	isFundamental,
-	isSerializeable
+	isSerializable
 >::setDefaultValue(const DataType &defaultValue){
 	this->defaultValue = defaultValue;
 }
@@ -405,7 +405,7 @@ inline std::string AbstractProperty<
 	default:
 		TBTKExit(
 			"AbstractProperty<DataType>::serialize()",
-			"Only Serializeable::Mode::JSON is supported yet.",
+			"Only Serializable::Mode::JSON is supported yet.",
 			""
 		);
 	}
@@ -435,7 +435,7 @@ inline std::string AbstractProperty<
 	default:
 		TBTKExit(
 			"AbstractProperty<DataType>::serialize()",
-			"Only Serializeable::Mode::JSON is supported yet.",
+			"Only Serializable::Mode::JSON is supported yet.",
 			""
 		);
 	}
@@ -465,7 +465,7 @@ inline std::string AbstractProperty<
 	default:
 		TBTKExit(
 			"AbstractProperty<DataType>::serialize()",
-			"Only Serializeable::Mode::JSON is supported yet.",
+			"Only Serializable::Mode::JSON is supported yet.",
 			""
 		);
 	}
@@ -495,7 +495,7 @@ inline std::string AbstractProperty<
 	default:
 		TBTKExit(
 			"AbstractProperty<DataType>::serialize()",
-			"Only Serializeable::Mode::JSON is supported yet.",
+			"Only Serializable::Mode::JSON is supported yet.",
 			""
 		);
 	}
@@ -525,7 +525,7 @@ inline std::string AbstractProperty<
 	default:
 		TBTKExit(
 			"AbstractProperty<DataType>::serialize()",
-			"Only Serializeable::Mode::JSON is supported yet.",
+			"Only Serializable::Mode::JSON is supported yet.",
 			""
 		);
 	}
@@ -546,7 +546,7 @@ inline std::string AbstractProperty<std::complex<double>, false, false>::seriali
 		for(unsigned int n = 0; n < size; n++){
 //			std::stringstream ss;
 //			ss << "(" << real(data[n]) << "," << imag(data[n]) << ")";
-			std::string s = Serializeable::serialize(data[n], mode);
+			std::string s = Serializable::serialize(data[n], mode);
 			j["data"].push_back(s);
 		}
 
@@ -555,7 +555,7 @@ inline std::string AbstractProperty<std::complex<double>, false, false>::seriali
 	default:
 		TBTKExit(
 			"AbstractProperty<DataType>::serialize()",
-			"Only Serializeable::Mode::JSON is supported yet.",
+			"Only Serializable::Mode::JSON is supported yet.",
 			""
 		);
 	}
@@ -566,11 +566,11 @@ inline std::string AbstractProperty<SpinMatrix, false, false>::serialize(Mode mo
 	TBTKNotYetImplemented("AbstractProperty<SpinMatrix, false, false>::serialize()");
 }
 
-template<typename DataType, bool isFundamental, bool isSerializeable>
+template<typename DataType, bool isFundamental, bool isSerializable>
 AbstractProperty<
 	DataType,
 	isFundamental,
-	isSerializeable
+	isSerializable
 >::AbstractProperty() :
 	indexDescriptor(IndexDescriptor::Format::None)
 {
@@ -580,11 +580,11 @@ AbstractProperty<
 	data = nullptr;
 }
 
-template<typename DataType, bool isFundamental, bool isSerializeable>
+template<typename DataType, bool isFundamental, bool isSerializable>
 AbstractProperty<
 	DataType,
 	isFundamental,
-	isSerializeable
+	isSerializable
 >::AbstractProperty(
 	unsigned int blockSize
 ) :
@@ -598,11 +598,11 @@ AbstractProperty<
 		data[n] = 0.;
 }
 
-template<typename DataType, bool isFundamental, bool isSerializeable>
+template<typename DataType, bool isFundamental, bool isSerializable>
 AbstractProperty<
 	DataType,
 	isFundamental,
-	isSerializeable
+	isSerializable
 >::AbstractProperty(
 	unsigned int blockSize,
 	const DataType *data
@@ -617,11 +617,11 @@ AbstractProperty<
 		this->data[n] = data[n];
 }
 
-template<typename DataType, bool isFundamental, bool isSerializeable>
+template<typename DataType, bool isFundamental, bool isSerializable>
 AbstractProperty<
 	DataType,
 	isFundamental,
-	isSerializeable
+	isSerializable
 >::AbstractProperty(
 	unsigned int dimensions,
 	const int *ranges,
@@ -643,11 +643,11 @@ AbstractProperty<
 		data[n] = 0.;
 }
 
-template<typename DataType, bool isFundamental, bool isSerializeable>
+template<typename DataType, bool isFundamental, bool isSerializable>
 AbstractProperty<
 	DataType,
 	isFundamental,
-	isSerializeable
+	isSerializable
 >::AbstractProperty(
 	unsigned int dimensions,
 	const int *ranges,
@@ -670,11 +670,11 @@ AbstractProperty<
 		this->data[n] = data[n];
 }
 
-template<typename DataType, bool isFundamental, bool isSerializeable>
+template<typename DataType, bool isFundamental, bool isSerializable>
 AbstractProperty<
 	DataType,
 	isFundamental,
-	isSerializeable
+	isSerializable
 >::AbstractProperty(
 	const IndexTree &indexTree,
 	unsigned int blockSize
@@ -691,11 +691,11 @@ AbstractProperty<
 		data[n] = 0.;
 }
 
-template<typename DataType, bool isFundamental, bool isSerializeable>
+template<typename DataType, bool isFundamental, bool isSerializable>
 AbstractProperty<
 	DataType,
 	isFundamental,
-	isSerializeable
+	isSerializable
 >::AbstractProperty(
 	const IndexTree &indexTree,
 	unsigned int blockSize,
@@ -713,11 +713,11 @@ AbstractProperty<
 		this->data[n] = data[n];
 }
 
-template<typename DataType, bool isFundamental, bool isSerializeable>
+template<typename DataType, bool isFundamental, bool isSerializable>
 AbstractProperty<
 	DataType,
 	isFundamental,
-	isSerializeable
+	isSerializable
 >::AbstractProperty(
 	const AbstractProperty &abstractProperty
 ) :
@@ -736,11 +736,11 @@ AbstractProperty<
 	}
 }
 
-template<typename DataType, bool isFundamental, bool isSerializeable>
+template<typename DataType, bool isFundamental, bool isSerializable>
 AbstractProperty<
 	DataType,
 	isFundamental,
-	isSerializeable
+	isSerializable
 >::AbstractProperty(
 	AbstractProperty &&abstractProperty
 ) :
@@ -764,7 +764,7 @@ inline AbstractProperty<double, true, false>::AbstractProperty(
 	Mode mode
 ) :
 	indexDescriptor(
-		Serializeable::extract(serialization, mode, "indexDescriptor"),
+		Serializable::extract(serialization, mode, "indexDescriptor"),
 		mode
 	)
 {
@@ -807,7 +807,7 @@ inline AbstractProperty<double, true, false>::AbstractProperty(
 	default:
 		TBTKExit(
 			"AbstractProperty::AbstractProperty()",
-			"Only Serializeable::Mode::JSON is supported yet.",
+			"Only Serializable::Mode::JSON is supported yet.",
 			""
 		);
 	}
@@ -819,7 +819,7 @@ inline AbstractProperty<std::complex<double>, false, false>::AbstractProperty(
 	Mode mode
 ) :
 	indexDescriptor(
-		Serializeable::extract(serialization, mode, "indexDescriptor"),
+		Serializable::extract(serialization, mode, "indexDescriptor"),
 		mode
 	)
 {
@@ -846,7 +846,7 @@ inline AbstractProperty<std::complex<double>, false, false>::AbstractProperty(
 				++it
 			){
 				std::complex<double> c;
-				Serializeable::deserialize(it->get<std::string>(), &c, mode);
+				Serializable::deserialize(it->get<std::string>(), &c, mode);
 				data[counter] = c;
 				counter++;
 			}
@@ -864,7 +864,7 @@ inline AbstractProperty<std::complex<double>, false, false>::AbstractProperty(
 	default:
 		TBTKExit(
 			"AbstractProperty::AbstractProperty()",
-			"Only Serializeable::Mode::JSON is supported yet.",
+			"Only Serializable::Mode::JSON is supported yet.",
 			""
 		);
 	}
@@ -876,32 +876,32 @@ inline AbstractProperty<SpinMatrix, false, false>::AbstractProperty(
 	Mode mode
 ) :
 	indexDescriptor(
-		Serializeable::extract(serialization, mode, "indexDescriptor"),
+		Serializable::extract(serialization, mode, "indexDescriptor"),
 		mode
 	)
 {
 	TBTKNotYetImplemented("AbstractProperty<SpinMatrix, false, false>::AbstractProperty()");
 }
 
-template<typename DataType, bool isFundamental, bool isSerializeable>
+template<typename DataType, bool isFundamental, bool isSerializable>
 inline AbstractProperty<
 	DataType,
 	isFundamental,
-	isSerializeable
+	isSerializable
 >::~AbstractProperty(){
 	if(data != nullptr)
 		delete [] data;
 }
 
-template<typename DataType, bool isFundamental, bool isSerializeable>
+template<typename DataType, bool isFundamental, bool isSerializable>
 AbstractProperty<
 	DataType,
 	isFundamental,
-	isSerializeable
+	isSerializable
 >& AbstractProperty<
 	DataType,
 	isFundamental,
-	isSerializeable
+	isSerializable
 >::operator=(
 	const AbstractProperty &rhs
 ){
@@ -927,15 +927,15 @@ AbstractProperty<
 	return *this;
 }
 
-template<typename DataType, bool isFundamental, bool isSerializeable>
+template<typename DataType, bool isFundamental, bool isSerializable>
 AbstractProperty<
 	DataType,
 	isFundamental,
-	isSerializeable
+	isSerializable
 >& AbstractProperty<
 	DataType,
 	isFundamental,
-	isSerializeable
+	isSerializable
 >::operator=(
 	AbstractProperty &&rhs
 ){

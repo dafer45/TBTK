@@ -140,7 +140,7 @@ vector<complex<double>> MatsubaraSusceptibilityCalculator::calculateSusceptibili
 	);
 
 	//Try to return cashed result
-	SerializeableVector<complex<double>> result;
+	SerializableVector<complex<double>> result;
 	if(getSusceptibilityTree().get(result, resultIndex))
 		return result;
 

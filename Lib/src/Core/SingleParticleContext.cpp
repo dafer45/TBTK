@@ -137,7 +137,7 @@ SingleParticleContext::SingleParticleContext(
 	default:
 		TBTKExit(
 			"SingleParticleContext::SingleParticleContext()",
-			"Only Serializeable::Mode::Debug is supported yet.",
+			"Only Serializable::Mode::Debug is supported yet.",
 			""
 		);
 	}
@@ -210,7 +210,7 @@ string SingleParticleContext::serialize(Mode mode) const{
 	{
 		stringstream ss;
 		ss << "SingleParticleContext(";
-		ss << Serializeable::serialize(statistics, mode);
+		ss << Serializable::serialize(statistics, mode);
 		ss << "," << hoppingAmplitudeSet->serialize(mode);
 		if(geometry == nullptr)
 			ss << "," << "null";
@@ -224,7 +224,7 @@ string SingleParticleContext::serialize(Mode mode) const{
 	{
 		json j;
 		j["id"] = "SingleParticleContext";
-		j["statistics"] = Serializeable::serialize(statistics, mode);
+		j["statistics"] = Serializable::serialize(statistics, mode);
 		j["hoppingAmplitudeSet"] = json::parse(
 			hoppingAmplitudeSet->serialize(mode)
 		);
@@ -236,7 +236,7 @@ string SingleParticleContext::serialize(Mode mode) const{
 	default:
 		TBTKExit(
 			"SingleParticleContext::serialize()",
-			"Only Serializeable::Mode::Debugis supported yet.",
+			"Only Serializable::Mode::Debugis supported yet.",
 			""
 		);
 	}

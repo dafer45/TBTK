@@ -23,14 +23,14 @@
 #ifndef COM_DAFER45_TBTK_DATA_MANAGER
 #define COM_DAFER45_TBTK_DATA_MANAGER
 
-#include "TBTK/Serializeable.h"
+#include "TBTK/Serializable.h"
 
 #include <string>
 #include <vector>
 
 namespace TBTK{
 
-class DataManager : public Serializeable{
+class DataManager : public Serializable{
 public:
 	/** Constructor. */
 	DataManager(
@@ -77,7 +77,7 @@ public:
 
 	enum class FileType {
 		Custom,
-		SerializeableJSON,
+		SerializableJSON,
 		PNG
 	};
 
@@ -118,14 +118,14 @@ public:
 		int id
 	);
 
-	/** Complete save a Serializeable result and mark it as completed. */
+	/** Complete save a Serializable result and mark it as completed. */
 	void complete(
-		const Serializeable &serializeable,
+		const Serializable &serializable,
 		const std::string &dataType,
 		int id
 	);
 
-	/** Implements Serializeable::serialize(). */
+	/** Implements Serializable::serialize(). */
 	virtual std::string serialize(Mode mode) const;
 private:
 	/** Lower bounds. */

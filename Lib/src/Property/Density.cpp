@@ -79,7 +79,7 @@ Density::Density(
 	Mode mode
 ) :
 	AbstractProperty(
-		Serializeable::extract(
+		Serializable::extract(
 			serialization,
 			mode,
 			"abstractProperty"
@@ -147,7 +147,7 @@ string Density::serialize(Mode mode) const{
 	default:
 		TBTKExit(
 			"Density::serialize()",
-			"Only Serializeable::Mode::JSON is supported yet.",
+			"Only Serializable::Mode::JSON is supported yet.",
 			""
 		);
 	}

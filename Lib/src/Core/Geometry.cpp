@@ -217,7 +217,7 @@ Geometry::Geometry(
 	default:
 		TBTKExit(
 			"Geometry::Geometry()",
-			"Only Serializeable::Mode:Debug is supported yet.",
+			"Only Serializable::Mode:Debug is supported yet.",
 			""
 		);
 	}
@@ -436,14 +436,14 @@ string Geometry::serialize(Mode mode) const{
 	{
 		stringstream ss;
 		ss << "Geometry(";
-		ss << Serializeable::serialize(dimensions, mode);
-		ss << "," << Serializeable::serialize(numSpecifiers, mode);
+		ss << Serializable::serialize(dimensions, mode);
+		ss << "," << Serializable::serialize(numSpecifiers, mode);
 		for(
 			unsigned int n = 0;
 			n < dimensions*hoppingAmplitudeSet->getBasisSize();
 			n++
 		){
-			ss << "," << Serializeable::serialize(
+			ss << "," << Serializable::serialize(
 				coordinates[n],
 				mode
 			);
@@ -453,7 +453,7 @@ string Geometry::serialize(Mode mode) const{
 			n < numSpecifiers*hoppingAmplitudeSet->getBasisSize();
 			n++
 		){
-			ss << "," << Serializeable::serialize(
+			ss << "," << Serializable::serialize(
 				specifiers[n],
 				mode
 			);
@@ -490,7 +490,7 @@ string Geometry::serialize(Mode mode) const{
 	default:
 		TBTKExit(
 			"Geometry::Geometry()",
-			"Only Serializeable::Mode::Debug is supported yet.",
+			"Only Serializable::Mode::Debug is supported yet.",
 			""
 		);
 	}

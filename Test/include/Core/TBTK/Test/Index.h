@@ -103,8 +103,8 @@ TEST(Index, ConstructorString){
 TEST(Index, SerializeToJSON){
 	Index index0({1, 2, 3});
 	Index index1(
-		index0.serialize(Serializeable::Mode::JSON),
-		Serializeable::Mode::JSON
+		index0.serialize(Serializable::Mode::JSON),
+		Serializable::Mode::JSON
 	);
 	EXPECT_TRUE(index1.equals(index0)) << "JSON serialization failed.";
 }

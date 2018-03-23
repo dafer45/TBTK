@@ -14,16 +14,16 @@
  */
 
 /** @package TBTKcalc
- *  @file SerializeableVector.h
- *  @brief Serializeable wrapper of std::vector.
+ *  @file SerializableVector.h
+ *  @brief Serializable wrapper of std::vector.
  *
  *  @author Kristofer Björnson
  */
 
-#ifndef COM_DAFER45_TBTK_SERIALIZEABLE_VECTOR
-#define COM_DAFER45_TBTK_SERIALIZEABLE_VECTOR
+#ifndef COM_DAFER45_TBTK_SERIALIZABLE_VECTOR
+#define COM_DAFER45_TBTK_SERIALIZABLE_VECTOR
 
-#include "TBTK/Serializeable.h"
+#include "TBTK/Serializable.h"
 
 #include <string>
 #include <vector>
@@ -32,79 +32,79 @@
 
 namespace TBTK{
 
-template<typename DataType, bool = std::is_base_of<Serializeable, DataType>::value>
-class SerializeableVector : public std::vector<DataType>, Serializeable{
+template<typename DataType, bool = std::is_base_of<Serializable, DataType>::value>
+class SerializableVector : public std::vector<DataType>, Serializable{
 public:
 	/** Constructor. */
-	SerializeableVector() : std::vector<DataType>(){};
+	SerializableVector() : std::vector<DataType>(){};
 
 	/** Constructor. */
-	SerializeableVector(
+	SerializableVector(
 		const std::vector<DataType> &v
 	) : std::vector<DataType>(v){};
 
-	/** Constructor. Constructs the SerializeableVector from a
+	/** Constructor. Constructs the SerializableVector from a
 	 *  serialization string.*/
-	SerializeableVector(const std::string &serialization, Mode mode);
+	SerializableVector(const std::string &serialization, Mode mode);
 
-	/** Implements Serializeable::serialize(). */
+	/** Implements Serializable::serialize(). */
 	std::string serialize(Mode mode) const;
 private:
 };
 
 template<typename DataType>
-class SerializeableVector<DataType, true> :
-	public std::vector<DataType>, Serializeable
+class SerializableVector<DataType, true> :
+	public std::vector<DataType>, Serializable
 {
 public:
 	/** Constructor. */
-	SerializeableVector() : std::vector<DataType>(){};
+	SerializableVector() : std::vector<DataType>(){};
 
 	/** Constructor. */
-	SerializeableVector(
+	SerializableVector(
 		const std::vector<DataType> &v
 	) : std::vector<DataType>(v){};
 
-	/** Constructor. Constructs the SerializeableVector from a
+	/** Constructor. Constructs the SerializableVector from a
 	 *  serialization string.*/
-	SerializeableVector(const std::string &serialization, Mode mode);
+	SerializableVector(const std::string &serialization, Mode mode);
 
-	/** Implements Serializeable::serialize(). */
+	/** Implements Serializable::serialize(). */
 	std::string serialize(Mode mode) const;
 private:
 };
 
 template<typename DataType>
-class SerializeableVector<DataType, false> :
-	public std::vector<DataType>, Serializeable
+class SerializableVector<DataType, false> :
+	public std::vector<DataType>, Serializable
 {
 public:
 	/** Constructor. */
-	SerializeableVector() : std::vector<DataType>(){};
+	SerializableVector() : std::vector<DataType>(){};
 
 	/** Constructor. */
-	SerializeableVector(
+	SerializableVector(
 		const std::vector<DataType> &v
 	) : std::vector<DataType>(v){};
 
-	/** Constructor. Constructs the SerializeableVector from a
+	/** Constructor. Constructs the SerializableVector from a
 	 *  serialization string.*/
-	SerializeableVector(const std::string &serialization, Mode mode);
+	SerializableVector(const std::string &serialization, Mode mode);
 
-	/** Implements Serializeable::serialize(). */
+	/** Implements Serializable::serialize(). */
 	std::string serialize(Mode mode) const;
 private:
 };
 
 template<typename DataType>
-SerializeableVector<DataType, false>::SerializeableVector(
+SerializableVector<DataType, false>::SerializableVector(
 	const std::string &serialization,
 	Mode mode
 ){
 	TBTKAssert(
-		validate(serialization, "SerializeableVector", mode),
-		"SerializeableVector::SerializeableVector()",
-		"Unable to parse string as SerializeableVector '" << serialization << "'.",
+		validate(serialization, "SerializableVector", mode),
+		"SerializableVector::SerializableVector()",
+		"Unable to parse string as SerializableVector '" << serialization << "'.",
 		""
 	);
 
@@ -119,7 +119,7 @@ SerializeableVector<DataType, false>::SerializeableVector(
 				++it
 			){
 				DataType value;
-				Serializeable::deserialize(
+				Serializable::deserialize(
 					*it,
 					&value,
 					mode
@@ -129,8 +129,8 @@ SerializeableVector<DataType, false>::SerializeableVector(
 		}
 		catch(nlohmann::json::exception e){
 			TBTKExit(
-				"SerializeableVector::SerializeableVector()",
-				"Unable to parse string as SerializeableVector"
+				"SerializableVector::SerializableVector()",
+				"Unable to parse string as SerializableVector"
 				<< " '" << serialization << "'.",
 				""
 			);
@@ -139,22 +139,22 @@ SerializeableVector<DataType, false>::SerializeableVector(
 		break;
 	default:
 		TBTKExit(
-			"SerializeableVector::SerializeableVector()",
-			"Only SerializeableVector::Mode::JSON is supported yet.",
+			"SerializableVector::SerializableVector()",
+			"Only SerializableVector::Mode::JSON is supported yet.",
 			""
 		);
 	}
 }
 
 template<typename DataType>
-SerializeableVector<DataType, true>::SerializeableVector(
+SerializableVector<DataType, true>::SerializableVector(
 	const std::string &serialization,
 	Mode mode
 ){
 	TBTKAssert(
-		validate(serialization, "SerializeableVector", mode),
-		"SerializeableVector::SerializeableVector()",
-		"Unable to parse string as SerializeableVector '" << serialization << "'.",
+		validate(serialization, "SerializableVector", mode),
+		"SerializableVector::SerializableVector()",
+		"Unable to parse string as SerializableVector '" << serialization << "'.",
 		""
 	);
 
@@ -175,8 +175,8 @@ SerializeableVector<DataType, true>::SerializeableVector(
 		}
 		catch(nlohmann::json::exception e){
 			TBTKExit(
-				"SerializeableVector::SerializeableVector()",
-				"Unable to parse string as SerializeableVector"
+				"SerializableVector::SerializableVector()",
+				"Unable to parse string as SerializableVector"
 				<< " '" << serialization << "'.",
 				""
 			);
@@ -185,24 +185,24 @@ SerializeableVector<DataType, true>::SerializeableVector(
 		break;
 	default:
 		TBTKExit(
-			"SerializeableVector::SerializeableVector()",
-			"Only SerializeableVector::Mode::JSON is supported yet.",
+			"SerializableVector::SerializableVector()",
+			"Only SerializableVector::Mode::JSON is supported yet.",
 			""
 		);
 	}
 }
 
 template<typename DataType>
-std::string SerializeableVector<DataType, false>::serialize(Mode mode) const{
+std::string SerializableVector<DataType, false>::serialize(Mode mode) const{
 	switch(mode){
 	case Mode::JSON:
 	{
 		nlohmann::json j;
-		j["id"] = "SerializeableVector";
+		j["id"] = "SerializableVector";
 		j["elements"] = nlohmann::json::array();
 		for(unsigned int n = 0; n < std::vector<DataType>::size(); n++){
 			j["elements"].push_back(
-				Serializeable::serialize(
+				Serializable::serialize(
 					std::vector<DataType>::at(n),
 					mode
 				)
@@ -213,20 +213,20 @@ std::string SerializeableVector<DataType, false>::serialize(Mode mode) const{
 	}
 	default:
 		TBTKExit(
-			"SerializeableVector::serialize()",
-			"Only Serializeable::Mode::JSON is supported yet.",
+			"SerializableVector::serialize()",
+			"Only Serializable::Mode::JSON is supported yet.",
 			""
 		);
 	}
 }
 
 template<typename DataType>
-std::string SerializeableVector<DataType, true>::serialize(Mode mode) const{
+std::string SerializableVector<DataType, true>::serialize(Mode mode) const{
 	switch(mode){
 	case Mode::JSON:
 	{
 		nlohmann::json j;
-		j["id"] = "SerializeableVector";
+		j["id"] = "SerializableVector";
 		j["elements"] = nlohmann::json::array();
 		for(unsigned int n = 0; n < std::vector<DataType>::size(); n++){
 			j["elements"].push_back(
@@ -238,8 +238,8 @@ std::string SerializeableVector<DataType, true>::serialize(Mode mode) const{
 	}
 	default:
 		TBTKExit(
-			"SerializeableVector::serialize()",
-			"Only Serializeable::Mode::JSON is supported yet.",
+			"SerializableVector::serialize()",
+			"Only Serializable::Mode::JSON is supported yet.",
 			""
 		);
 	}
