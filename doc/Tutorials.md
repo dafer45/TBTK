@@ -20,7 +20,7 @@ At the end of this tutorial the reader should be comfortable with the support st
 ## Project creation using TBTKCreateApplication
 One of the main issues when writing code in a language such as C++ is the need to manage both source files and dependencies in terms of other libraries.
 In addition to the main source code, a full project therefore requires one or several supporting files and folders.
-TBTK therefore comes with an executable called TBTKCreateApplication that helps setup the relevant support structure, and which in combination with CMake allows the developer to focus on developing the actuall application.
+TBTK therefore comes with an executable called TBTKCreateApplication that helps setup the relevant support structure, and which in combination with CMake allows the developer to focus on developing the actual application.
 Before creating a project, it is recommended to have a folder called for example *TBTKApplications* in which different applications are created.
 This can be created on the command line using
 ```bash
@@ -40,7 +40,7 @@ To enter the project folder and build the application, type
 	cmake .
 	make
 ```
-Here the second line creates the relevant files required to build the application, while the third line builds the actuall executable.
+Here the second line creates the relevant files required to build the application, while the third line builds the actual executable.
 
 It can also be useful to build the application in a separate folder from source code.
 This can be achieved by instead typing
@@ -69,13 +69,13 @@ The purpose of the folders are
 
 At creation the project also contains a number of files.
 The files and their purpose are listed below.
-Application developers can largly ignore files in gray text since these are meant to be unedited.
+Application developers can largely ignore files in gray text since these are meant to be unedited.
 However, descriptions are provided to aid developers interested in customizing the build procedure.
 | File name                                      | Description                                                                                                      |
 |------------------------------------------------|------------------------------------------------------------------------------------------------------------------|
 | <span style="color:gray">CMakeLists.txt</span> | <span style="color:gray">File used by CMake to setup the build system. The file used by the *cmake* call.</span> |
-| plot.sh                                        | File intended for python plot commandin to be listed in (see TBTK/Templates for exampels).                       |
-| src/main.cpp                                   | The file in which the code for the actuall application is written.                                               |
+| plot.sh                                        | File intended for python plot command to be listed in (see TBTK/Templates for examples).                         |
+| src/main.cpp                                   | The file in which the code for the actual application is written.                                                |
 
 Once *cmake* is executed, a number of additional files are created
 | File name | Description |
@@ -208,12 +208,12 @@ For example, the Streams class included above is by default accessed as TBTK::St
 However, often there are few actual name clashes and it is convenient to not have to prepend every function call etc with *std::* or *TBTK::* and it is therefore possible to tell the compiler to "use" particular namespaces.
 Possible name clashes can then be handled individually by prepending only those components for which ambiguity arise by their corresponding namespaces.
 
-The actuall entry point for the program is
+The actual entry point for the program is
 ```cpp
 	int main(int argc, char **argv){
 ```
-However, we note that global variable assignmets occur ahead of this time, meaning that it in principle is possible for some execution of code to occur already before the main routine begins.
-The arguments *argc* and *argv* can be used to accept arguments from the command line, and the interested reader is adviced to make a web search for further information on how to use these.
+However, we note that global variable assignments occur ahead of this time, meaning that it in principle is possible for some execution of code to occur already before the main routine begins.
+The arguments *argc* and *argv* can be used to accept arguments from the command line, and the interested reader is advised to make a web search for further information on how to use these.
 
 Inside the main function two things occur.
 First, "Hello quantum world!\n" is written to the output stream, where '<<' can be read as send the right hand side to the output stream Streams::out.
@@ -222,7 +222,7 @@ The "\n" at the end of the string is a line break character and means that any c
 Finally, the main function exits by returning *0*, which is a message indicating that the application finished as expected.
 
 ## Initializing units
-Having understood the structure of *src/main.cpp*, we are now ready to implement the actuall application.
+Having understood the structure of *src/main.cpp*, we are now ready to implement the actual application.
 The first step is to specify the units that we will be using.
 In particular, we will measure temperature in terms of Kelvin and energies in terms of *meV*.
 To achieve this we remove the print statement in the code above and replace it by
@@ -244,14 +244,14 @@ To achieve this we remove the print statement in the code above and replace it b
 		return 0;
 	}
 ```
-We here note the use of paris of functions of the form
+We here note the use of pairs of functions of the form
 ```cpp
 	UnitHandler::setEnergyUnit(UnitHandler::EnergyUnit::meV);
 	UnitHandler::setEnergyScale(1);
 ```
 Together these two calls tells TBTK that any other value corresponding to an energy that is entered into the code should be understood to be in units of 1 meV.
 That is, these two lines defines the natural energy scale for the problem to be 1meV.
-Had we instead passed for example 13606 to the second function call, then every number E passed to a TBTK function that corresponds to an energy would have been interpretted to mean 13606E meV.
+Had we instead passed for example 13606 to the second function call, then every number E passed to a TBTK function that corresponds to an energy would have been interpreted to mean 13606E meV.
 
 ## Specifying parameters
 The next step in our calculation is to setup variables containing the relevant parameters for the problem.
@@ -287,7 +287,7 @@ We begin by specifying some default parameter values *T = 300K* and *B = 1T*, as
 ```
 While the two first new lines may seem simple to understad, we note that numerical numbers are unit less.
 The numbers are actually only physically meaningful either implicitly through the developers interpretation or convention, or explicitly by declaration of convention.
-What the UnitHandler calls added in the previous step does is to explicitly declare that temperatures are meassured in terms of one Kelvin.
+What the UnitHandler calls added in the previous step does is to explicitly declare that temperatures are measured in terms of one Kelvin.
 This declaration of convention allows us to unambiguosly pass  *T* to any TBTK function.
 However, the variable *B* is so far only implicitly understod to contain the value one Tesla (rather than for example one Gauss).
 Moreover, there is in fact no function for declaring the convention for magnetic fields directly in TBTK since its natural unit is set indirectly by declaring the natural units for six other so called *base quantities* (see [UnitHandler](@ref UnitHandler) for detailed information).
@@ -299,7 +299,7 @@ Instead we use the following function
 	);
 ```
 to convert the input parameter *B* from units of Tesla to the current natural units.
-The resulting variable *T_N* can then be safetly passed to other TBTK functions that expects a magnetic field or be multiplied with other parameters specified in natural units.
+The resulting variable *T_N* can then be safely passed to other TBTK functions that expects a magnetic field or be multiplied with other parameters specified in natural units.
 The letters *DtN* at the end of the function name should be read 'derived to natural'.
 The last new line similarly requests the Bohr magneton on natural units, where the *N* at the end of the function name stands for *natural*.
 
@@ -409,7 +409,7 @@ We therefore her setup and run a Solver::Diagonalizer as follows.
 In the second new line the Solver is told to work on the Model *model*, while the last new line runs the diagonalization procedure.
 
 ## Creating a PropertyExtractor
-Because different Solvers can present themself very differently to the outside world, direct extraction of properties from the Solver is discouraged in TBTK.
+Because different Solvers can present themselves very differently to the outside world, direct extraction of properties from the Solver is discouraged in TBTK.
 Instead Solvers come with corresponding PropertyExtractors that abstracts away some of the irrelevant numerical details of the particular Solvers and allows for focus to be put on the actual physics of the problem.
 The next step is therefore to wrap the Solver in a PropertyExtractor, which is done as follows.
 ```cpp
@@ -546,11 +546,11 @@ The object eigenValues also contains information about the number of actual eige
 This is used in the newly added for-loop to loop over all eigenvalues and print them.
 
 We make two notes about the expression inside the for-loop.
-First, instead of printing the eigenValues imediately, we first pass them through the function UnitHandler::convertEnergyNtB() to convert the values from "natural to base" units.
+First, instead of printing the eigenValues immediately, we first pass them through the function UnitHandler::convertEnergyNtB() to convert the values from "natural to base" units.
 This is done since all numbers in TBTK are in the natural units specified by the UnitHandler calls at the beginning of the program.
-Certainly, it is posible to print the values in the natural scale too, but here we want to print them in the base units meV.
+Certainly, it is possible to print the values in the natural scale too, but here we want to print them in the base units meV.
 In fact, in this case the conversion is not strictly necessary since the natural energy scale is set to 1 meV, which means that the natural units and the base units are the same.
-However, it is good practice to always perform the convertion even if it is known to be trivial since it makes it possible to later change the natural scale without ahving to change the rest of the code.
+However, it is good practice to always perform the conversion even if it is known to be trivial since it makes it possible to later change the natural scale without having to change the rest of the code.
 Second, after printing the numeric value of the eigenvalues, we call UnitHandler::getENergyUnitString() to also print a string representation of the energy unit after the energy values.
 
 In the two last lines, the Zeeman split is calculated and similarly printed.
