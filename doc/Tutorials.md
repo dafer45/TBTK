@@ -2,7 +2,7 @@ Tutorials {#Tutorials}
 ======
 
 These tutorials assume that TBTK has already been installed as described in the [Installation instructions](@ref InstallationInstructions).
-The tutorials are written for physicisists that not necessarily are familiar with C++ and therefore introduces both TBTK as well as C++ in the first couple of tutorials.
+The tutorials are written for physicists that not necessarily are familiar with C++ and therefore introduces both TBTK as well as C++ in the first couple of tutorials.
 
 # Getting started
 - @subpage CreatingANewApplication
@@ -21,12 +21,12 @@ At the end of this tutorial the reader should be comfortable with the support st
 One of the main issues when writing code in a language such as C++ is the need to manage both source files and dependencies in terms of other libraries.
 In addition to the main source code, a full project therefore requires one or several supporting files and folders.
 TBTK therefore comes with an executable called TBTKCreateApplication that helps setup the relevant support structure, and which in combination with CMake allows the developer to focus on developing the actual application.
-Before creating a project, it is recommended to have a folder called for example *TBTKApplications* in which different applications are created.
+Before creating a project, it is recommended to have a folder called for example *TBTKApplications* inside which applications are created.
 This can be created on the command line using
 ```bash
 	mkdir TBTKApplications
 ```
-Then, to enter this folder and create a new application, simply type
+Then, to enter this folder and create a new application, type
 ```bash
 	cd TBTKApplications
 	TBTKCreateApplication ApplicationName
@@ -51,8 +51,8 @@ This can be achieved by instead typing
 	make
 ```
 
-## Run the executable
-The program can now be run by typing
+## Execute the application
+The application can now be executed by typing
 ```bash
 	./build/Application
 ```
@@ -74,7 +74,7 @@ However, descriptions are provided to aid developers interested in customizing t
 | File name                                      | Description                                                                                                      |
 |------------------------------------------------|------------------------------------------------------------------------------------------------------------------|
 | <span style="color:gray">CMakeLists.txt</span> | <span style="color:gray">File used by CMake to setup the build system. The file used by the *cmake* call.</span> |
-| plot.sh                                        | File intended for python plot command to be listed in (see TBTK/Templates for examples).                         |
+| plot.sh                                        | File intended for python plot commands to be listed in (see TBTK/Templates for examples).                        |
 | src/main.cpp                                   | The file in which the code for the actual application is written.                                                |
 
 Once *cmake* is executed, a number of additional files are created
@@ -87,7 +87,7 @@ Once *cmake* is executed, a number of additional files are created
 
 # Template applications {#TemplateApplications}
 ## More complex templates
-While the usage of TBTKCreateApplication as presented above is useful for starting projects from scratch, it is also possible to start from more complex projects.
+While the usage of TBTKCreateApplication as presented above is useful for starting projects from scratch, it is also possible to start from more complex projects by typing
 ```bash
 	TBTKCreateApplication ApplicationName TemplateName
 ```
@@ -146,7 +146,7 @@ and view the results in the *figures* folder.
 # Purpose and learning outcome {#BuildingAFirstApplicationTwoLevelSystemPurposeAndLearningOutcome}
 In this tutorial we create an application that models a simple two level system.
 The problem itself is very simple and is more easily solved using pen and paper than using this tutorial.
-However, the purpose of this tutorial is to familiarize the reader with both C++ and the general workflow for writing TBTK applications.
+However, the purpose of this tutorial is to get familiar with both C++ and the general workflow for writing TBTK applications.
 At the end of this tutorial the reader should have a good understanding of the general structure of a TBTK application and be able to start writing custom applications.
 In particular, the reader will be familiar with how to use the UnitHandler to handle the fact that numerical variables are unitless.
 The reader will also know how to setup a Model, choose a Solver, and how to use a PropertyExtractor to extract properties from a Model without having to interact with the method specific Solver directly.
@@ -176,7 +176,7 @@ Identifying up spin with \f$0\f$ and down spin with \f$1\f$, the hopping amplitu
 | \f$a_{\downarrow\downarrow}\f$ | \f$\mu_B B\f$  | {1}      | {1}        |
 Here the first column is an analytical symbol for the hopping amplitude, the second is its actual value, while the third and forth column corresponds to the numerical representation of the first and second index of \f$a_{\mathbf{i}\mathbf{j}}\f$.
 The three last columns forms a complete representation of the hopping amplitude and is what enters into the numerical model.
-This particular way of representing the hopping amplitudes reoccurs throughout TBTK and its documentation.
+This particular way of representing the hopping amplitudes reoccurs throughout TBTK and the documentation.
 
 # Implementing the calculation {#ImplementingTheCalculation}
 ## Understanding *src/main.cpp* (C++ crash course)
