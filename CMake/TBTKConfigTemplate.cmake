@@ -14,8 +14,8 @@ INCLUDE("${CMAKE_CURRENT_LIST_DIR}/TBTKTargets.cmake")
 #Add custom Find-modules
 LIST(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/Modules/")
 
-#Include TBTKVersion.cmake
-INCLUDE(TBTKVersion)
+#Include TBTKVersionInfo.cmake
+INCLUDE(TBTKVersionInfo)
 
 #Add link directory for global install
 LINK_DIRECTORIES(${CMAKE_CURRENT_LIST_DIR}/..)
