@@ -1,2 +1,3 @@
-Update version number in TBTKMacros.h
-Update version number in CMakeLists.txt
+Run tests
+Check that the documentation is up to date
+Update version number in CMake/Modules/TBTKVersion.cmake

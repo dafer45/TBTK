@@ -2,17 +2,18 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12.2)
 
 PROJECT(TBTK)
 
-ENABLE_TESTING()
-
-SET(TBTK_MAJOR_VERSION 0)
-SET(TBTK_MINOR_VERSION 9)
-SET(TBTK_PATCH_VERSION 5)
-SET(
-	TBTK_VERSION
-	${TBTK_MAJOR_VERSION}.${TBTK_MINOR_VERSION}.${TBTK_PATCH_VERSION}
+EXECUTE_PROCESS(
+	COMMAND git rev-parse --short HEAD
+	WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+	OUTPUT_VARIABLE TBTK_VERSION_GIT_HASH
+	OUTPUT_STRIP_TRAILING_WHITESPACE
 )
 
+ENABLE_TESTING()
+
 LIST(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake/Modules/")
+
+INCLUDE(TBTKVersion)
 
 #Detect packages
 FIND_PACKAGE(BLAS REQUIRED)
@@ -283,7 +284,7 @@ CONFIGURE_FILE(
 	COPYONLY
 )
 
-#Copy Find modules to installation folder.
+#Copy Find modules to build folder.
 CONFIGURE_FILE(
 	CMake/Modules/FindARPACK.cmake
 	"${CMAKE_CURRENT_BINARY_DIR}/CMake/Modules/FindARPACK.cmake"
@@ -305,6 +306,17 @@ CONFIGURE_FILE(
 	COPYONLY
 )
 
+#Copy TBTKVersion.cmake and TBTKGitInfo.cmake to build folder.
+CONFIGURE_FILE(
+	CMake/Modules/TBTKVersion.cmake
+	"${CMAKE_CURRENT_BINARY_DIR}/CMake/Modules/TBTKVersion.cmake"
+	COPYONLY
+)
+CONFIGURE_FILE(
+	CMake/Modules/TBTKGitInfo.cmake
+	${CMAKE_CURRENT_BINARY_DIR}/CMake/Modules/TBTKGitInfo.cmake
+)
+
 #Installation rules for configuration files.
 SET(ConfigPackageLocation lib/TBTK/CMake)
 INSTALL(
@@ -319,7 +331,7 @@ INSTALL(
 	COMPONENT Devel
 )
 INSTALL(
-	DIRECTORY ./CMake/Modules
+	DIRECTORY ${TBTK_BINARY_DIR}/CMake/Modules
 	DESTINATION ${ConfigPackageLocation}
 	FILES_MATCHING PATTERN *.cmake
 )

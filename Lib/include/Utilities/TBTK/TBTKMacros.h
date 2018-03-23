@@ -31,16 +31,14 @@
 #include <sstream>
 #include <string>
 
-#define TBTK_VERSION_MAJOR 0
-#define TBTK_VERSION_MINOR 9
-#define TBTK_VERSION_PATCH 5
 #define TBTK_VERSION_STRING std::to_string(TBTK_VERSION_MAJOR) + "." \
 	+ std::to_string(TBTK_VERSION_MINOR) + "." \
 	+ std::to_string(TBTK_VERSION_PATCH)
 
 #define TBTK_ABOUT_STRING \
 	"TBTK\n" \
-	"Version: " + TBTK_VERSION_STRING
+	"Version:\t" + TBTK_VERSION_STRING + "\n" \
+	"Git hash:\t" TBTK_VERSION_GIT_HASH
 
 inline std::string TBTK_GET_CURRENT_TIME_STRING(){
 	std::chrono::time_point<std::chrono::system_clock> timePoint
@@ -52,7 +50,7 @@ inline std::string TBTK_GET_CURRENT_TIME_STRING(){
 
 #define TBTK_RUNTIME_CONTEXT_STRING \
 	TBTK_ABOUT_STRING + "\n" \
-	+ "Date: " + TBTK_GET_CURRENT_TIME_STRING()
+	+ "Date:\t" + TBTK_GET_CURRENT_TIME_STRING()
 
 #ifdef TBTKOptimize
 	#define TBTKAssert(expression, function, message, hint)	;
