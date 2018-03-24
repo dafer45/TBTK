@@ -7,7 +7,7 @@ Full documentation is available at:  http://www.second-quantization.com/
 
 # License
 TBTK is free software that is licensed under the Appache 2.0 license (see the file
-"License").  Please give attribution in accordance with the "Cite" section hereunder.
+"License").  Please give attribution in accordance with the "Cite" section below.
 
 ### Third party license
 #### json/TBTK/json.hpp (for serialization)
