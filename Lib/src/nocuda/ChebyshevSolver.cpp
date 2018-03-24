@@ -27,8 +27,9 @@
 using namespace std;
 
 namespace TBTK{
+namespace Solver{
 
-void ChebyshevSolver::calculateCoefficientsGPU(
+void ChebyshevExpander::calculateCoefficientsGPU(
 	Index to,
 	Index from,
 	complex<double> *coefficients,
@@ -36,13 +37,13 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 	double broadening
 ){
 	TBTKExit(
-		"ChebyshevSolver::calculateCoefficientsGPU()",
+		"ChebyshevExpander::calculateCoefficientsGPU()",
 		"GPU Not supported.",
 		"Install with GPU support or use CPU version."
 	);
 }
 
-void ChebyshevSolver::calculateCoefficientsGPU(
+void ChebyshevExpander::calculateCoefficientsGPU(
 	vector<Index> &to,
 	Index from,
 	complex<double> *coefficients,
@@ -50,44 +51,45 @@ void ChebyshevSolver::calculateCoefficientsGPU(
 	double broadening
 ){
 	TBTKExit(
-		"ChebyshevSolver::calculateCoefficientsGPU()",
+		"ChebyshevExpander::calculateCoefficientsGPU()",
 		"GPU Not supported.",
 		"Install with GPU support or use CPU version."
 	);
 }
 
-void ChebyshevSolver::loadLookupTableGPU(){
+void ChebyshevExpander::loadLookupTableGPU(){
 	TBTKExit(
-		"ChebyshevSolver::loadLookupTableGPU()",
+		"ChebyshevExpander::loadLookupTableGPU()",
 		"GPU Not supported.",
 		"Install with GPU support or use CPU version."
 	);
 }
 
-void ChebyshevSolver::destroyLookupTableGPU(){
+void ChebyshevExpander::destroyLookupTableGPU(){
 	TBTKExit(
-		"ChebyshevSolver::destroyLookupTableGPU()",
+		"ChebyshevExpander::destroyLookupTableGPU()",
 		"GPU Not supported.",
 		"Install with GPU support or use CPU version."
 	);
 }
 
-complex<double>* ChebyshevSolver::generateGreensFunctionGPU(
+complex<double>* ChebyshevExpander::generateGreensFunctionGPU(
 	complex<double> *coefficients,
 	Type type
 ){
 	TBTKExit(
-		"ChebyshevSolver::generateGreensFunctionGPU()",
+		"ChebyshevExpander::generateGreensFunctionGPU()",
 		"GPU Not supported.",
 		"Install with GPU support or use CPU version."
 	);
 }
 
-/*void ChebyshevSolver::createDeviceTableGPU(){
+/*void ChebyshevExpander::createDeviceTableGPU(){
 	numDevices = 0;
 }
 
-void ChebyshevSolver::destroyDeviceTableGPU(){
+void ChebyshevExpander::destroyDeviceTableGPU(){
 }*/
 
+};	//End of namespace Solver
 };	//End of namespace TBTK
