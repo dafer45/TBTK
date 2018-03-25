@@ -27,6 +27,7 @@
 #include "TBTK/AbstractIndexFilter.h"
 #include "TBTK/Communicator.h"
 #include "TBTK/Geometry.h"
+#include "TBTK/HoppingAmplitudeList.h"
 #include "TBTK/HoppingAmplitudeSet.h"
 #include "TBTK/IndexBasedHoppingAmplitudeFilter.h"
 #include "TBTK/SingleParticleContext.h"
@@ -169,6 +170,9 @@ public:
 	Model& operator<<(
 		const std::tuple<HoppingAmplitude, HoppingAmplitude> &hoppingAmplitudes
 	);
+
+	/** Operator<<. */
+	Model& operator<<(const HoppingAmplitudeList& hoppingAmplitudeList);
 
 	/** Implements Serializable::serialize(). Note that the
 	 *  ManyBodyContext is not yet serialized. */
@@ -333,6 +337,13 @@ inline Model& Model::operator<<(const std::tuple<HoppingAmplitude, HoppingAmplit
 			addHoppingAmplitude(std::get<1>(hoppingAmplitudes));
 		}
 	}
+
+	return *this;
+}
+
+inline Model& Model::operator<<(const HoppingAmplitudeList &hoppingAmplitudeList){
+	for(unsigned int n = 0; n < hoppingAmplitudeList.getSize(); n++)
+		addHoppingAmplitude(hoppingAmplitudeList[n]);
 
 	return *this;
 }

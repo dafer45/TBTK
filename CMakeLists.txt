@@ -198,6 +198,7 @@ INCLUDE_DIRECTORIES(
 	Lib/include/Core/
 	Lib/include/Elements/
 	Lib/include/Exceptions/
+	Lib/include/FiniteDifferences/
 	Lib/include/GUI/
 #	Lib/include/Lattices/
 #	Lib/include/Lattices/D2/
