@@ -35,13 +35,19 @@ public:
 	 *  @param subindex Subindex corresponding to the direction of
 	 *  differentiation.
 	 *
-	 *  @param index Index at which the difference is taken. */
-	ForwardDifference(unsigned int subindex, const Index &index);
+	 *  @param index Index at which the difference is taken.
+	 *  @pragma dx Step length. */
+	ForwardDifference(
+		unsigned int subindex,
+		const Index &index,
+		double dx = 1
+	);
 };
 
 inline ForwardDifference::ForwardDifference(
 	unsigned int subindex,
-	const Index &index
+	const Index &index,
+	double dx
 ){
 	TBTKAssert(
 		subindex < index.getSize(),
@@ -52,8 +58,8 @@ inline ForwardDifference::ForwardDifference(
 	);
 	Index forward = index;
 	forward[subindex]++;
-	pushBack(HoppingAmplitude(1, index, index));
-	pushBack(HoppingAmplitude(-1, index, forward));
+	pushBack(HoppingAmplitude(1/dx, index, index));
+	pushBack(HoppingAmplitude(-1/dx, index, forward));
 }
 
 };	//End of namespace TBTK

@@ -10,6 +10,8 @@ TEST(ForwardDifference, Constructor){
 
 	EXPECT_DOUBLE_EQ(real(forwardDifference0[0].getAmplitude()), 1);
 	EXPECT_DOUBLE_EQ(imag(forwardDifference0[0].getAmplitude()), 0);
+	EXPECT_DOUBLE_EQ(real(forwardDifference0[1].getAmplitude()), -1);
+	EXPECT_DOUBLE_EQ(imag(forwardDifference0[1].getAmplitude()), 0);
 	EXPECT_TRUE(forwardDifference0[0].getToIndex().equals({1, 2, 3}));
 	EXPECT_TRUE(forwardDifference0[0].getFromIndex().equals({1, 2, 3}));
 	EXPECT_TRUE(forwardDifference0[1].getToIndex().equals({1, 2, 3}));
@@ -20,10 +22,18 @@ TEST(ForwardDifference, Constructor){
 
 	EXPECT_DOUBLE_EQ(real(forwardDifference1[0].getAmplitude()), 1);
 	EXPECT_DOUBLE_EQ(imag(forwardDifference1[0].getAmplitude()), 0);
+	EXPECT_DOUBLE_EQ(real(forwardDifference1[1].getAmplitude()), -1);
+	EXPECT_DOUBLE_EQ(imag(forwardDifference1[1].getAmplitude()), 0);
 	EXPECT_TRUE(forwardDifference1[0].getToIndex().equals({1, 2, 3}));
 	EXPECT_TRUE(forwardDifference1[0].getFromIndex().equals({1, 2, 3}));
 	EXPECT_TRUE(forwardDifference1[1].getToIndex().equals({1, 2, 3}));
 	EXPECT_TRUE(forwardDifference1[1].getFromIndex().equals({1, 3, 3}));
+
+	ForwardDifference forwardDifference2(0, {1, 2, 3}, 0.1);
+	EXPECT_DOUBLE_EQ(real(forwardDifference2[0].getAmplitude()), 10);
+	EXPECT_DOUBLE_EQ(imag(forwardDifference2[0].getAmplitude()), 0);
+	EXPECT_DOUBLE_EQ(real(forwardDifference2[1].getAmplitude()), -10);
+	EXPECT_DOUBLE_EQ(imag(forwardDifference2[1].getAmplitude()), 0);
 
 	EXPECT_EXIT(
 		{

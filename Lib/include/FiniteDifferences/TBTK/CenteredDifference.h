@@ -35,13 +35,19 @@ public:
 	 *  @param subindex Subindex corresponding to the direction of
 	 *  differentiation.
 	 *
-	 *  @param index Index at which the difference is taken. */
-	CenteredDifference(unsigned int subindex, const Index &index);
+	 *  @param index Index at which the difference is taken.
+	 *  @param dx Step length. */
+	CenteredDifference(
+		unsigned int subindex,
+		const Index &index,
+		double dx = 1
+	);
 };
 
 inline CenteredDifference::CenteredDifference(
 	unsigned int subindex,
-	const Index &index
+	const Index &index,
+	double dx
 ){
 	TBTKAssert(
 		subindex < index.getSize(),
@@ -65,8 +71,8 @@ inline CenteredDifference::CenteredDifference(
 	backward[subindex]--;
 	Index forward = index;
 	forward[subindex]++;
-	pushBack(HoppingAmplitude(1/2., index, backward));
-	pushBack(HoppingAmplitude(-1/2., index, forward));
+	pushBack(HoppingAmplitude(1/(2*dx), index, backward));
+	pushBack(HoppingAmplitude(-1/(2*dx), index, forward));
 }
 
 };	//End of namespace TBTK

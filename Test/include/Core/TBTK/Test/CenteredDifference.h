@@ -10,6 +10,8 @@ TEST(CenteredDifference, Constructor){
 
 	EXPECT_DOUBLE_EQ(real(centeredDifference0[0].getAmplitude()), 1/2.);
 	EXPECT_DOUBLE_EQ(imag(centeredDifference0[0].getAmplitude()), 0);
+	EXPECT_DOUBLE_EQ(real(centeredDifference0[1].getAmplitude()), -1/2.);
+	EXPECT_DOUBLE_EQ(imag(centeredDifference0[1].getAmplitude()), 0);
 	EXPECT_TRUE(centeredDifference0[0].getToIndex().equals({1, 2, 3}));
 	EXPECT_TRUE(centeredDifference0[0].getFromIndex().equals({0, 2, 3}));
 	EXPECT_TRUE(centeredDifference0[1].getToIndex().equals({1, 2, 3}));
@@ -20,10 +22,18 @@ TEST(CenteredDifference, Constructor){
 
 	EXPECT_DOUBLE_EQ(real(centeredDifference1[0].getAmplitude()), 1/2.);
 	EXPECT_DOUBLE_EQ(imag(centeredDifference1[0].getAmplitude()), 0);
+	EXPECT_DOUBLE_EQ(real(centeredDifference1[1].getAmplitude()), -1/2.);
+	EXPECT_DOUBLE_EQ(imag(centeredDifference1[1].getAmplitude()), 0);
 	EXPECT_TRUE(centeredDifference1[0].getToIndex().equals({1, 2, 3}));
 	EXPECT_TRUE(centeredDifference1[0].getFromIndex().equals({1, 1, 3}));
 	EXPECT_TRUE(centeredDifference1[1].getToIndex().equals({1, 2, 3}));
 	EXPECT_TRUE(centeredDifference1[1].getFromIndex().equals({1, 3, 3}));
+
+	CenteredDifference centeredDifference2(1, {1, 2, 3}, 0.1);
+	EXPECT_DOUBLE_EQ(real(centeredDifference2[0].getAmplitude()), 5);
+	EXPECT_DOUBLE_EQ(imag(centeredDifference2[0].getAmplitude()), 0);
+	EXPECT_DOUBLE_EQ(real(centeredDifference2[1].getAmplitude()), -5);
+	EXPECT_DOUBLE_EQ(imag(centeredDifference2[1].getAmplitude()), 0);
 
 	EXPECT_EXIT(
 		{
