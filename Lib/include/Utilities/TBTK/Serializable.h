@@ -146,6 +146,7 @@ protected:
 	 *  non-negligible performance penalty). */
 	friend class Index;
 	friend class HoppingAmplitude;
+	friend class SourceAmplitude;
 };
 
 inline std::string Serializable::serialize(bool b, Mode mode){
