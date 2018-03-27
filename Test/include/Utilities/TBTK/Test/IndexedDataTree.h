@@ -7,7 +7,6 @@ namespace TBTK{
 
 TEST(IndexedDataTree, Constructor){
 	//Not testable on its own.
-
 }
 
 //TODO
@@ -192,7 +191,7 @@ TEST(IndexedDataTree, add){
 	);
 }
 
-TEST(IndexedDataTree, get){
+TEST(IndexedDataTree, get0){
 	/**************************/
 	/* Serializable elements. */
 	/**************************/
@@ -287,6 +286,94 @@ TEST(IndexedDataTree, get){
 	);
 }
 
+TEST(IndexedDataTree, get1){
+	/**************************/
+	/* Serializable elements. */
+	/**************************/
+
+	Streams::setStdMuteOut();
+
+	//Setup Models that will work as test elements.
+	Model model0;
+	model0 << HoppingAmplitude(1, {0}, {0});
+	model0.construct();
+
+	Model model1;
+	model1 << HoppingAmplitude(1, {0}, {0});
+	model1 << HoppingAmplitude(1, {1}, {1});
+	model1.construct();
+
+	Model model2;
+	model2 << HoppingAmplitude(1, {0}, {0});
+	model2 << HoppingAmplitude(1, {1}, {1});
+	model2 << HoppingAmplitude(1, {2}, {2});
+	model2.construct();
+
+	Model model3;
+	model3 << HoppingAmplitude(1, {0}, {0});
+	model3 << HoppingAmplitude(1, {1}, {1});
+	model3 << HoppingAmplitude(1, {2}, {2});
+	model3 << HoppingAmplitude(1, {3}, {3});
+	model3.construct();
+
+	//Actual tests
+	IndexedDataTree<Model> indexedDataTree0;
+	indexedDataTree0.add(model0, {1, 2, 3});
+	indexedDataTree0.add(model1, {1, 2, 4});
+	indexedDataTree0.add(model2, {1, 2, 3});
+	indexedDataTree0.add(model3, {{1, 2, 5}, {1, 2, 3}});
+
+	//Access existing elements.
+	EXPECT_EQ(indexedDataTree0.get({1, 2, 3}).getBasisSize(), 3);
+	EXPECT_EQ(indexedDataTree0.get({1, 2, 4}).getBasisSize(), 2);
+	EXPECT_EQ(indexedDataTree0.get({{1, 2, 5}, {1, 2, 3}}).getBasisSize(), 4);
+
+	//Access non-existing element
+	EXPECT_THROW(indexedDataTree0.get({1, 2, 2}), ElementNotFoundException);
+	EXPECT_THROW(indexedDataTree0.get({1, 1, 3}), ElementNotFoundException);
+
+	//Fail to access Index with negative Index (Except for the negative
+	//IDX_SEPARATOR already tested above).
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			indexedDataTree0.get({1, -1, 3});
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+
+	/*************************************/
+	/* Non/pseudo-serializable elements. */
+	/*************************************/
+	IndexedDataTree<int> indexedDataTree1;
+	indexedDataTree1.add(1, {1, 2, 3});
+	indexedDataTree1.add(2, {1, 2, 4});
+	indexedDataTree1.add(3, {1, 2, 3});
+	indexedDataTree1.add(4, {{1, 2, 5}, {1, 2, 3}});
+
+	int myInt;
+	//Access existing elements.
+	EXPECT_EQ(indexedDataTree1.get({1, 2, 3}), 3);
+	EXPECT_EQ(indexedDataTree1.get({1, 2, 4}), 2);
+	EXPECT_EQ(indexedDataTree1.get({{1, 2, 5}, {1, 2, 3}}), 4);
+
+	//Access non-existing element
+	EXPECT_THROW(indexedDataTree1.get({1, 2, 2}), ElementNotFoundException);
+	EXPECT_THROW(indexedDataTree1.get({1, 1, 3}), ElementNotFoundException);
+
+	//Fail to access Index with negative Index (Except for the negative
+	//IDX_SEPARATOR already tested above).
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			indexedDataTree1.get(myInt, {1, -1, 3});
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
 TEST(IndexedDataTree, clear){
 	/**************************/
 	/* Serializable elements. */
@@ -329,6 +416,75 @@ TEST(IndexedDataTree, getSizeInBytes){
 	/*************************************/
 	IndexedDataTree<int> indexedDataTree1;
 	EXPECT_TRUE(indexedDataTree1.getSizeInBytes() > 0);
+}
+
+TEST(indexedDataTree, Iterator){
+	/**************************/
+	/* Serializable elements. */
+	/**************************/
+
+	//Setup Models that will work as test elements.
+	Model model0;
+	model0 << HoppingAmplitude(1, {0}, {0});
+	model0.construct();
+
+	Model model1;
+	model1 << HoppingAmplitude(1, {0}, {0});
+	model1 << HoppingAmplitude(1, {1}, {1});
+	model1.construct();
+
+	Model model2;
+	model2 << HoppingAmplitude(1, {0}, {0});
+	model2 << HoppingAmplitude(1, {1}, {1});
+	model2 << HoppingAmplitude(1, {2}, {2});
+	model2.construct();
+
+	Model model3;
+	model3 << HoppingAmplitude(1, {0}, {0});
+	model3 << HoppingAmplitude(1, {1}, {1});
+	model3 << HoppingAmplitude(1, {2}, {2});
+	model3 << HoppingAmplitude(1, {3}, {3});
+	model3.construct();
+
+	//Actual tests
+	IndexedDataTree<Model> indexedDataTree0;
+	indexedDataTree0.add(model0, {1, 2, 3});
+	indexedDataTree0.add(model1, {1, 2, 4});
+	indexedDataTree0.add(model2, {1, 2, 3});
+	indexedDataTree0.add(model3, {{1, 2, 5}, {1, 2, 3}});
+
+	IndexedDataTree<Model>::Iterator iterator0 = indexedDataTree0.begin();
+	EXPECT_FALSE(iterator0 == indexedDataTree0.end());
+	EXPECT_TRUE(iterator0 != indexedDataTree0.end());
+	EXPECT_EQ((*iterator0).getBasisSize(), 3);
+	++iterator0;
+	EXPECT_EQ((*iterator0).getBasisSize(), 2);
+	++iterator0;
+	EXPECT_EQ((*iterator0).getBasisSize(), 4);
+	++iterator0;
+	EXPECT_TRUE(iterator0 == indexedDataTree0.end());
+	EXPECT_FALSE(iterator0 != indexedDataTree0.end());
+
+	/*************************************/
+	/* Non/pseudo-serializable elements. */
+	/*************************************/
+	IndexedDataTree<int> indexedDataTree1;
+	indexedDataTree1.add(1, {1, 2, 3});
+	indexedDataTree1.add(2, {1, 2, 4});
+	indexedDataTree1.add(3, {1, 2, 3});
+	indexedDataTree1.add(4, {{1, 2, 5}, {1, 2, 3}});
+
+	IndexedDataTree<int>::Iterator iterator1 = indexedDataTree1.begin();
+	EXPECT_FALSE(iterator1 == indexedDataTree1.end());
+	EXPECT_TRUE(iterator1 != indexedDataTree1.end());
+	EXPECT_EQ((*iterator1), 3);
+	++iterator1;
+	EXPECT_EQ((*iterator1), 2);
+	++iterator1;
+	EXPECT_EQ((*iterator1), 4);
+	++iterator1;
+	EXPECT_TRUE(iterator1 == indexedDataTree1.end());
+	EXPECT_FALSE(iterator1 != indexedDataTree1.end());
 }
 
 };

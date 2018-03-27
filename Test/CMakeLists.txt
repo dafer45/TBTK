@@ -17,6 +17,8 @@ IF(GTest_FOUND)
 		MESSAGE("[X] TBTK (installed)")
 		INCLUDE_DIRECTORIES(
 			include/Core
+			include/FiniteDifferences
+			include/Utilities
 		)
 
 		FILE(GLOB SRC src/*)

@@ -23,6 +23,7 @@
 #ifndef COM_DAFER45_TBTK_INDEXED_DATA_TREE
 #define COM_DAFER45_TBTK_INDEXED_DATA_TREE
 
+#include "TBTK/ElementNotFoundException.h"
 #include "TBTK/Index.h"
 #include "TBTK/Serializable.h"
 #include "TBTK/TBTKMacros.h"
@@ -69,6 +70,16 @@ public:
 	 *  @return True if a data element was found, otherwise false. */
 	bool get(Data &data, const Index &index) const;
 
+	/** Get data.
+	 *
+	 *  @param index Index for which to extract the data for.
+	 *
+	 *  @return Reference to the element.
+	 *
+	 *  @throws ElementNotFoundException If the no element with the
+	 *  requested Index exists. */
+	Data& get(const Index &index);
+
 	/** Clear the data. */
 	void clear();
 
@@ -83,6 +94,50 @@ public:
 	 *
 	 *  @return Serialized string representation of the IndexedDataTree. */
 	virtual std::string serialize(Mode mode) const;
+
+	/** Iterator for iterating through the elements stored in the tree
+	 *  structure. */
+	class Iterator{
+	public:
+		/** Reset. */
+		void reset();
+
+		/** Search next element. */
+		void operator++();
+
+		/** Get current element. */
+		Data& operator*();
+
+		/** Equality operator. */
+		bool operator==(const Iterator &rhs) const;
+
+		/** Inequality operator. */
+		bool operator!=(const Iterator &rhs) const;
+	private:
+		/** IndexedDataTree to iterate over. */
+		IndexedDataTree *indexedDataTree;
+
+		/** Current Index. */
+		Index currentIndex;
+
+		/** Private constructor. Limits the ability to construct an
+		 *  Iterator to the IndexedDataTree. */
+		Iterator(IndexedDataTree *indexedDataTree, bool end = false);
+
+		/** Make the IndexedDataTree able to construct an Iterator. */
+		friend class IndexedDataTree;
+	};
+
+	/** Create Iterator.
+	 *
+	 *  @return Iterator pointing at the first element in the
+	 *  IndexedDataTree. */
+	Iterator begin();
+
+	/** Get Iterator pointing to the end.
+	 *
+	 *  @return An Iterator pointing at the end of the IndexedDataTree. */
+	Iterator end();
 private:
 	/** Child nodes. */
 	std::vector<IndexedDataTree> children;
@@ -106,6 +161,29 @@ private:
 	/** Get indexed data. Is called by the public function
 	 *  IndexedDataTree::get() and is called recuresively. */
 	bool get(Data &data, const Index& index, unsigned int subindex) const;
+
+	/** Get indexed data. Is called by the public function
+	 *  IndexedDataTree::get() and is called recuresively. */
+	Data& get(const Index& index, unsigned int subindex);
+
+	/** Returns the first Index for which an element exists. */
+	Index getFirstIndex() const;
+
+	/** Function called by IndexedDataTree::getFirstIndex() to perform the
+	 *  actual work of finding the first Index. */
+	bool getFirstIndex(Index &index) const;
+
+	/** Get the Index that follows the given Index. Returns the empty Index
+	 *  if no next Index exists. */
+	Index getNextIndex(const Index &index) const;
+
+	/** Function called by IndexedDataTree::getNextIndex() to perform the
+	 *  actual work of finding the next Index. Is called recursively and
+	 *  returns true when the Index has been found. */
+	bool getNextIndex(
+		const Index &currentIndex,
+		Index &nextIndex
+	) const;
 };
 
 template<typename Data>
@@ -127,6 +205,16 @@ public:
 	/** Get data. */
 	bool get(Data &data, const Index &index) const;
 
+	/** Get data.
+	 *
+	 *  @param index Index for which to extract the data for.
+	 *
+	 *  @return Reference to the element.
+	 *
+	 *  @throws ElementNotFoundException If the no element with the
+	 *  requested Index exists. */
+	Data& get(const Index &index);
+
 	/** Clear. */
 	void clear();
 
@@ -135,6 +223,50 @@ public:
 
 	/** Serilaize. */
 	virtual std::string serialize(Mode mode) const;
+
+	/** Iterator for iterating through the elements stored in the tree
+	 *  structure. */
+	class Iterator{
+	public:
+		/** Reset. */
+		void reset();
+
+		/** Search next element. */
+		void operator++();
+
+		/** Get current element. */
+		Data& operator*();
+
+		/** Equality operator. */
+		bool operator==(const Iterator &rhs) const;
+
+		/** Inequality operator. */
+		bool operator!=(const Iterator &rhs) const;
+	private:
+		/** IndexedDataTree to iterate over. */
+		IndexedDataTree *indexedDataTree;
+
+		/** Current Index. */
+		Index currentIndex;
+
+		/** Private constructor. Limits the ability to construct an
+		 *  Iterator to the IndexedDataTree. */
+		Iterator(IndexedDataTree *indexedDataTree, bool ennd = false);
+
+		/** Make the IndexedDataTree able to construct an Iterator. */
+		friend class IndexedDataTree;
+	};
+
+	/** Create Iterator.
+	 *
+	 *  @return Iterator pointing at the first element in the
+	 *  IndexedDataTree. */
+	Iterator begin();
+
+	/** Get Iterator pointing to the end.
+	 *
+	 *  @return An Iterator pointing at the end of the IndexedDataTree. */
+	Iterator end();
 private:
 	/** Child nodes. */
 	std::vector<IndexedDataTree> children;
@@ -158,6 +290,29 @@ private:
 	/** Get indexed data. Is called by the public function
 	 *  IndexedDataTree::get() and is called recuresively. */
 	bool get(Data &data, const Index& index, unsigned int subindex) const;
+
+	/** Get indexed data. Is called by the public function
+	 *  IndexedDataTree::get() and is called recuresively. */
+	Data& get(const Index& index, unsigned int subindex);
+
+	/** Returns the first Index for which an element exists. */
+	Index getFirstIndex() const;
+
+	/** Function called by IndexedDataTree::getFirstIndex() to perform the
+	 *  actual work of finding the first Index. */
+	bool getFirstIndex(Index &index) const;
+
+	/** Get the Index that follows the given Index. Returns the empty Index
+	 *  if no next Index exists. */
+	Index getNextIndex(const Index &index) const;
+
+	/** Function called by IndexedDataTree::getNextIndex() to perform the
+	 *  actual work of finding the next Index. Is called recursively and
+	 *  returns true when the Index has been found. */
+	bool getNextIndex(
+		const Index &currentIndex,
+		Index &nextIndex
+	) const;
 };
 
 template<typename Data>
@@ -179,6 +334,16 @@ public:
 	/** Get data. */
 	bool get(Data &data, const Index &index) const;
 
+	/** Get data.
+	 *
+	 *  @param index Index for which to extract the data for.
+	 *
+	 *  @return Reference to the element.
+	 *
+	 *  @throws ElementNotFoundException If the no element with the
+	 *  requested Index exists. */
+	Data& get(const Index &index);
+
 	/** Clear. */
 	void clear();
 
@@ -187,6 +352,50 @@ public:
 
 	/** Serilaize. */
 	virtual std::string serialize(Mode mode) const;
+
+	/** Iterator for iterating through the elements stored in the tree
+	 *  structure. */
+	class Iterator{
+	public:
+		/** Reset. */
+		void reset();
+
+		/** Search next element. */
+		void operator++();
+
+		/** Get current element. */
+		Data& operator*();
+
+		/** Equality operator. */
+		bool operator==(const Iterator &rhs) const;
+
+		/** Inequality operator. */
+		bool operator!=(const Iterator &rhs) const;
+	private:
+		/** IndexedDataTree to iterate over. */
+		IndexedDataTree *indexedDataTree;
+
+		/** Current Index. */
+		Index currentIndex;
+
+		/** Private constructor. Limits the ability to construct an
+		 *  Iterator to the IndexedDataTree. */
+		Iterator(IndexedDataTree *indexedDataTree, bool end = false);
+
+		/** Make the IndexedDataTree able to construct an Iterator. */
+		friend class IndexedDataTree;
+	};
+
+	/** Create Iterator.
+	 *
+	 *  @return Iterator pointing at the first element in the
+	 *  IndexedDataTree. */
+	Iterator begin();
+
+	/** Get Iterator pointing to the end.
+	 *
+	 *  @return An Iterator pointing at the end of the IndexedDataTree. */
+	Iterator end();
 private:
 	/** Child nodes. */
 	std::vector<IndexedDataTree> children;
@@ -210,6 +419,31 @@ private:
 	/** Get indexed data. Is called by the public function
 	 *  IndexedDataTree::get() and is called recuresively. */
 	bool get(Data &data, const Index& index, unsigned int subindex) const;
+
+	/** Get indexed data. Is called by the public function
+	 *  IndexedDataTree::get() and is called recuresively. */
+	Data& get(const Index& index, unsigned int subindex);
+
+	/** Returns the first Index for which an element exists. Return the
+	 *  empty Index if no element exists. */
+	Index getFirstIndex() const;
+
+	/** Function called by IndexedDataTree::getFirstIndex() to perform the
+	 *  actual work of finding the first Index. Is called recursively and
+	 *  returns true when the Index has been found. */
+	bool getFirstIndex(Index &index) const;
+
+	/** Get the Index that follows the given Index. Returns the empty Index
+	 *  if no next Index exists. */
+	Index getNextIndex(const Index &index) const;
+
+	/** Function called by IndexedDataTree::getNextIndex() to perform the
+	 *  actual work of finding the next Index. Is called recursively and
+	 *  returns true when the Index has been found. */
+	bool getNextIndex(
+		const Index &currentIndex,
+		Index &nextIndex
+	) const;
 };
 
 template<typename Data, bool isSerializable>
@@ -1291,6 +1525,338 @@ bool IndexedDataTree<Data, false>::get(
 	}
 }
 
+template<typename Data>
+Data& IndexedDataTree<Data, true>::get(const Index &index){
+	return get(index, 0);
+}
+
+template<typename Data>
+Data& IndexedDataTree<Data, false>::get(const Index &index){
+	return get(index, 0);
+}
+
+template<typename Data>
+Data& IndexedDataTree<Data, true>::get(
+	const Index &index,
+	unsigned int subindex
+){
+	if(subindex < index.getSize()){
+		//If the current subindex is not the last, continue to the next
+		//node level.
+
+		//Get current subindex.
+		int currentIndex = index.at(subindex);
+
+		if(currentIndex == IDX_SEPARATOR){
+			if(indexSeparator){
+				return get(index, subindex+1);
+			}
+			else{
+				TBTKExit(
+					"IndexedDataTree::get()",
+					"Invalid Index. Found IDX_SEPARATOR at"
+					<< " subindex '" << subindex << "',"
+					<< " but the node is not an index"
+					<< " separator.",
+					""
+				);
+			}
+		}
+
+		TBTKAssert(
+			currentIndex >= 0,
+			"IndexedDataTree::get()",
+			"Invalid Index. Negative indices not allowed, but the"
+			<< "index " << index.toString() << " have a negative"
+			<< " index" << " in position " << subindex << ".",
+			"Compound indices such as {{1, 2, 3}, {4, 5, 6}} are"
+			<< " separated by IDX_SEPARATOR with the value '"
+			<< IDX_SEPARATOR << "' and are" << " represented as {1"
+			<< ", 2, 3, " << IDX_SEPARATOR << ", 4, 5, 6}. This is"
+			<< " the only allowed instance of negative numbers."
+		);
+
+		//Throw ElementNotFoundException if the Index is not included.
+		if((unsigned int)currentIndex >= children.size()){
+			throw ElementNotFoundException(
+				"IndexedDataTree()",
+				TBTKWhere,
+				"Tried to get element with Index '"
+				+ index.toString() + "', but no such element"
+				+ " exists.",
+				""
+			);
+		}
+
+		return children.at(currentIndex).get(index, subindex+1);
+	}
+	else{
+		//If the current subindex is the last, try to extract the data.
+		//Return data if successful but throw ElementNotFoundException if the
+		//data does not exist.
+		if(indexIncluded){
+			return data;
+		}
+		else{
+			throw ElementNotFoundException(
+				"IndexedDataTree()",
+				TBTKWhere,
+				"Tried to get element with Index '"
+				+ index.toString() + "', but no such element"
+				+ " exists.",
+				""
+			);
+		}
+	}
+}
+
+template<typename Data>
+Data& IndexedDataTree<Data, false>::get(
+	const Index &index,
+	unsigned int subindex
+){
+	if(subindex < index.getSize()){
+		//If the current subindex is not the last, continue to the next
+		//node level.
+
+		//Get current subindex.
+		int currentIndex = index.at(subindex);
+
+		if(currentIndex == IDX_SEPARATOR){
+			if(indexSeparator){
+				return get(index, subindex+1);
+			}
+			else{
+				TBTKExit(
+					"IndexedDataTree::get()",
+					"Invalid Index. Found IDX_SEPARATOR at"
+					<< " subindex '" << subindex << "',"
+					<< " but the node is not an index"
+					<< " separator.",
+					""
+				);
+			}
+		}
+
+		TBTKAssert(
+			currentIndex >= 0,
+			"IndexedDataTree::get()",
+			"Invalid Index. Negative indices not allowed, but the"
+			<< "index " << index.toString() << " have a negative"
+			<< " index" << " in position " << subindex << ".",
+			"Compound indices such as {{1, 2, 3}, {4, 5, 6}} are"
+			<< " separated by IDX_SEPARATOR with the value '"
+			<< IDX_SEPARATOR << "' and are" << " represented as {1"
+			<< ", 2, 3, " << IDX_SEPARATOR << ", 4, 5, 6}. This is"
+			<< " the only allowed instance of negative numbers."
+		);
+
+		//Throw ElementNotFoundException if the Index is not included.
+		if((unsigned int)currentIndex >= children.size()){
+			throw ElementNotFoundException(
+				"IndexedDataTree()",
+				TBTKWhere,
+				"Tried to get element with Index '"
+				+ index.toString() + "', but no such element"
+				+ " exists.",
+				""
+			);
+		}
+
+		return children.at(currentIndex).get(index, subindex+1);
+	}
+	else{
+		//If the current subindex is the last, try to extract the data.
+		//Return data if successful but throw ElementNotFoundException
+		//if the data does not exist.
+		if(indexIncluded){
+			return data;
+		}
+		else{
+			throw ElementNotFoundException(
+				"IndexedDataTree()",
+				TBTKWhere,
+				"Tried to get element with Index '"
+				+ index.toString() + "', but no such element"
+				+ " exists.",
+				""
+			);
+		}
+	}
+}
+
+template<typename Data>
+Index IndexedDataTree<Data, true>::getFirstIndex() const{
+	Index index;
+	getFirstIndex(index);
+
+	return index;
+}
+
+template<typename Data>
+Index IndexedDataTree<Data, false>::getFirstIndex() const{
+	Index index;
+	getFirstIndex(index);
+
+	return index;
+}
+
+template<typename Data>
+bool IndexedDataTree<Data, true>::getFirstIndex(Index &index) const{
+	if(indexIncluded)
+		return true;
+
+	if(indexSeparator)
+		index.push_back(IDX_SEPARATOR);
+
+	for(unsigned int n = 0; n < children.size(); n++){
+		index.push_back(n);
+		if(children[n].getFirstIndex(index))
+			return true;
+
+		index.popBack();
+	}
+
+	if(indexSeparator)
+		index.popBack();
+
+	return false;
+}
+
+template<typename Data>
+bool IndexedDataTree<Data, false>::getFirstIndex(Index &index) const{
+	if(indexIncluded)
+		return true;
+
+	if(indexSeparator)
+		index.push_back(IDX_SEPARATOR);
+
+	for(unsigned int n = 0; n < children.size(); n++){
+		index.push_back(n);
+		if(children[n].getFirstIndex(index))
+			return true;
+
+		index.popBack();
+	}
+
+	if(indexSeparator)
+		index.popBack();
+
+	return false;
+}
+
+template<typename Data>
+Index IndexedDataTree<Data, true>::getNextIndex(const Index &index) const{
+	if(index.getSize() == 0)
+		return Index();
+
+	Index nextIndex;
+	getNextIndex(index, nextIndex);
+
+	return nextIndex;
+}
+
+template<typename Data>
+Index IndexedDataTree<Data, false>::getNextIndex(const Index &index) const{
+	if(index.getSize() == 0)
+		return Index();
+
+	Index nextIndex;
+	getNextIndex(index, nextIndex);
+
+	return nextIndex;
+}
+
+template<typename Data>
+bool IndexedDataTree<Data, true>::getNextIndex(
+	const Index &currentIndex,
+	Index &nextIndex
+) const{
+	if(indexIncluded){
+		if(currentIndex.equals(nextIndex))
+			return false;
+
+		return true;
+	}
+
+	if(indexSeparator)
+		nextIndex.push_back(IDX_SEPARATOR);
+
+	bool hasSameIndexStructure = true;
+	if(currentIndex.getSize() > nextIndex.getSize()){
+		for(unsigned int n = 0; n < nextIndex.getSize(); n++){
+			if(currentIndex[n] != nextIndex[n]){
+				hasSameIndexStructure = false;
+				break;
+			}
+		}
+	}
+	else{
+		hasSameIndexStructure = false;
+	}
+
+	unsigned int startIndex = 0;
+	if(hasSameIndexStructure)
+		startIndex = currentIndex[nextIndex.getSize()];
+	for(unsigned int n = startIndex; n < children.size(); n++){
+		nextIndex.push_back(n);
+		if(children[n].getNextIndex(currentIndex, nextIndex))
+			return true;
+
+		nextIndex.popBack();
+	}
+
+	if(indexSeparator)
+		nextIndex.popBack();
+
+	return false;
+}
+
+template<typename Data>
+bool IndexedDataTree<Data, false>::getNextIndex(
+	const Index &currentIndex,
+	Index &nextIndex
+) const{
+	if(indexIncluded){
+		if(currentIndex.equals(nextIndex))
+			return false;
+
+		return true;
+	}
+
+	if(indexSeparator)
+		nextIndex.push_back(IDX_SEPARATOR);
+
+	bool hasSameIndexStructure = true;
+	if(currentIndex.getSize() > nextIndex.getSize()){
+		for(unsigned int n = 0; n < nextIndex.getSize(); n++){
+			if(currentIndex[n] != nextIndex[n]){
+				hasSameIndexStructure = false;
+				break;
+			}
+		}
+	}
+	else{
+		hasSameIndexStructure = false;
+	}
+
+	unsigned int startIndex = 0;
+	if(hasSameIndexStructure)
+		startIndex = currentIndex[nextIndex.getSize()];
+	for(unsigned int n = startIndex; n < children.size(); n++){
+		nextIndex.push_back(n);
+		if(children[n].getNextIndex(currentIndex, nextIndex))
+			return true;
+
+		nextIndex.popBack();
+	}
+
+	if(indexSeparator)
+		nextIndex.popBack();
+
+	return false;
+}
+
 template<typename Data, bool isSerializable>
 void IndexedDataTree<Data, isSerializable>::clear(){
 	indexIncluded = false;
@@ -1569,6 +2135,134 @@ std::string IndexedDataTree<Data, false>::serialize(Mode mode) const{
 			""
 		);
 	}*/
+}
+
+template<typename Data>
+typename IndexedDataTree<Data, true>::Iterator IndexedDataTree<Data, true>::begin(){
+	return Iterator(this);
+}
+
+template<typename Data>
+typename IndexedDataTree<Data, false>::Iterator IndexedDataTree<Data, false>::begin(){
+	return Iterator(this);
+}
+
+template<typename Data>
+typename IndexedDataTree<Data, true>::Iterator IndexedDataTree<Data, true>::end(){
+	return Iterator(this, true);
+}
+
+template<typename Data>
+typename IndexedDataTree<Data, false>::Iterator IndexedDataTree<Data, false>::end(){
+	return Iterator(this, true);
+}
+
+template<typename Data>
+void IndexedDataTree<Data, true>::Iterator::reset(){
+	currentIndex = indexedDataTree->getFirstIndex();
+}
+
+template<typename Data>
+void IndexedDataTree<Data, false>::Iterator::reset(){
+	currentIndex = indexedDataTree->getFirstIndex();
+}
+
+template<typename Data>
+void IndexedDataTree<Data, true>::Iterator::operator++(){
+	currentIndex = indexedDataTree->getNextIndex(currentIndex);
+}
+
+template<typename Data>
+void IndexedDataTree<Data, false>::Iterator::operator++(){
+	currentIndex = indexedDataTree->getNextIndex(currentIndex);
+}
+
+template<typename Data>
+Data& IndexedDataTree<Data, true>::Iterator::operator*(){
+	return indexedDataTree->get(currentIndex);
+}
+
+template<typename Data>
+Data& IndexedDataTree<Data, false>::Iterator::operator*(){
+	return indexedDataTree->get(currentIndex);
+}
+
+template<typename Data>
+bool IndexedDataTree<Data, true>::Iterator::operator==(
+	const IndexedDataTree<Data, true>::Iterator &rhs
+) const{
+	if(
+		indexedDataTree == rhs.indexedDataTree
+		&& currentIndex.equals(rhs.currentIndex)
+	){
+		return true;
+	}
+	else{
+		return false;
+	}
+}
+
+template<typename Data>
+bool IndexedDataTree<Data, false>::Iterator::operator==(
+	const IndexedDataTree<Data, false>::Iterator &rhs
+) const{
+	if(
+		indexedDataTree == rhs.indexedDataTree
+		&& currentIndex.equals(rhs.currentIndex)
+	){
+		return true;
+	}
+	else{
+		return false;
+	}
+}
+
+template<typename Data>
+bool IndexedDataTree<Data, true>::Iterator::operator!=(
+	const IndexedDataTree<Data, true>::Iterator &rhs
+) const{
+	if(
+		indexedDataTree != rhs.indexedDataTree
+		|| !currentIndex.equals(rhs.currentIndex)
+	){
+		return true;
+	}
+	else{
+		return false;
+	}
+}
+
+template<typename Data>
+bool IndexedDataTree<Data, false>::Iterator::operator!=(
+	const IndexedDataTree<Data, false>::Iterator &rhs
+) const{
+	if(
+		indexedDataTree != rhs.indexedDataTree
+		|| !currentIndex.equals(rhs.currentIndex)
+	){
+		return true;
+	}
+	else{
+		return false;
+	}
+}
+
+template<typename Data>
+IndexedDataTree<Data, true>::Iterator::Iterator(IndexedDataTree *indexedDataTree, bool end){
+	this->indexedDataTree = indexedDataTree;
+	if(end)
+		currentIndex = Index();
+	else
+		currentIndex = indexedDataTree->getFirstIndex();
+}
+
+template<typename Data>
+IndexedDataTree<Data, false>::Iterator::Iterator(IndexedDataTree *indexedDataTree, bool end){
+	this->indexedDataTree = indexedDataTree;
+	if(end)
+		currentIndex = Index();
+	else
+		currentIndex = indexedDataTree->getFirstIndex();
 }
 
 }; //End of namesapce TBTK
