@@ -99,13 +99,10 @@ public:
 	 *  structure. */
 	class Iterator{
 	public:
-		/** Reset. */
-		void reset();
-
-		/** Search next element. */
+		/** Increment operator. */
 		void operator++();
 
-		/** Get current element. */
+		/** Dereference operator. */
 		Data& operator*();
 
 		/** Equality operator. */
@@ -228,13 +225,10 @@ public:
 	 *  structure. */
 	class Iterator{
 	public:
-		/** Reset. */
-		void reset();
-
-		/** Search next element. */
+		/** Increment operator. */
 		void operator++();
 
-		/** Get current element. */
+		/** Dereference operator. */
 		Data& operator*();
 
 		/** Equality operator. */
@@ -357,13 +351,10 @@ public:
 	 *  structure. */
 	class Iterator{
 	public:
-		/** Reset. */
-		void reset();
-
-		/** Search next element. */
+		/** Increment operator. */
 		void operator++();
 
-		/** Get current element. */
+		/** Dereference operator. */
 		Data& operator*();
 
 		/** Equality operator. */
@@ -2155,16 +2146,6 @@ typename IndexedDataTree<Data, true>::Iterator IndexedDataTree<Data, true>::end(
 template<typename Data>
 typename IndexedDataTree<Data, false>::Iterator IndexedDataTree<Data, false>::end(){
 	return Iterator(this, true);
-}
-
-template<typename Data>
-void IndexedDataTree<Data, true>::Iterator::reset(){
-	currentIndex = indexedDataTree->getFirstIndex();
-}
-
-template<typename Data>
-void IndexedDataTree<Data, false>::Iterator::reset(){
-	currentIndex = indexedDataTree->getFirstIndex();
 }
 
 template<typename Data>
