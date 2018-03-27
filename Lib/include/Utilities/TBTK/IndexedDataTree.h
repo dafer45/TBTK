@@ -41,25 +41,47 @@ public:
 	IndexedDataTree();
 
 	/** Constructor. Constructs the IndexedDataTree from a serialization
-	 *  string. */
+	 *  string.
+	 *
+	 *  @param serialization Serialization string from which to construct
+	 *  the IndexedDataTree.
+	 *
+	 *  @param mode Mode with which the string has been serialized. */
 	IndexedDataTree(const std::string &serialization, Mode mode);
 
 	/** Destructor. */
 	virtual ~IndexedDataTree();
 
-	/** Add indexed data. */
+	/** Add indexed data. Multiple calls to the function with the same
+	 *  Index will overwrite previous data.
+	 *
+	 *  @param data Data element to add.
+	 *  @param index Index at which to add the element. */
 	void add(const Data &data, const Index &index);
 
-	/** Get data. */
+	/** Get data.
+	 *
+	 *  @param data Reference to an object that the data will be written
+	 *  to.
+	 *
+	 *  @param index Index for which to extract the data for.
+	 *
+	 *  @return True if a data element was found, otherwise false. */
 	bool get(Data &data, const Index &index) const;
 
-	/** Clear. */
+	/** Clear the data. */
 	void clear();
 
-	/** Get size in bytes. */
+	/** Get size in bytes.
+	 *
+	 *  @return Memory size required to store the IndexedDataTree. */
 	unsigned int getSizeInBytes() const;
 
-	/** Serilaize. */
+	/** Serilaize.
+	 *
+	 *  @param mode Serialization mode to use.
+	 *
+	 *  @return Serialized string representation of the IndexedDataTree. */
 	virtual std::string serialize(Mode mode) const;
 private:
 	/** Child nodes. */
@@ -1039,7 +1061,7 @@ void IndexedDataTree<Data, false>::add(
 
 		//If the subindex is bigger than the current number of child
 		//nodes, create empty nodes.
-		if(currentIndex >= children.size())
+		if(currentIndex >= (int)children.size())
 			for(int n = children.size(); n <= currentIndex; n++)
 				children.push_back(IndexedDataTree());
 		//Error detection:
@@ -1249,7 +1271,7 @@ bool IndexedDataTree<Data, false>::get(
 		);
 
 		//Return false because the Index is not included.
-		if(currentIndex >= children.size())
+		if(currentIndex >= (int)children.size())
 			return false;
 
 		return children.at(currentIndex).get(data, index, subindex+1);
