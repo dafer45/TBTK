@@ -3,10 +3,10 @@ Installation instructions {#InstallationInstructions}
 
 # System requirements {#SystemRequirements}
 In order to install TBTK, the following software must be installed.
-| Required software | Further information  |
-|-------------------|----------------------|
-| git               | https://git-scm.com/ |
-| CMake             | https://cmake.org    |
+| Required software           | Further information  |
+|-----------------------------|----------------------|
+| git                         | https://git-scm.com/ |
+| CMake (Minimum version 3.0) | https://cmake.org    |
 
 The following libraries are also required.
 If you are unsure whether the libraries are installed or not, you can proceed with the installation as described below.
