@@ -7,6 +7,7 @@
 #include "TBTK/Test/HoppingAmplitudeList.h"
 #include "TBTK/Test/HoppingAmplitudeTree.h"
 #include "TBTK/Test/Index.h"
+#include "TBTK/Test/SourceAmplitude.h"
 
 int main(int argc, char **argv){
 	::testing::InitGoogleTest(&argc, argv);
