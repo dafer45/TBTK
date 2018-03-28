@@ -547,10 +547,17 @@ TEST(IndexedDataTree, Iterator){
 	EXPECT_FALSE(iterator1 == indexedDataTree1.end());
 	EXPECT_TRUE(iterator1 != indexedDataTree1.end());
 	EXPECT_EQ((*iterator1), 3);
+
 	++iterator1;
+	EXPECT_FALSE(iterator1 == indexedDataTree1.end());
+	EXPECT_TRUE(iterator1 != indexedDataTree1.end());
 	EXPECT_EQ((*iterator1), 2);
+
 	++iterator1;
+	EXPECT_FALSE(iterator1 == indexedDataTree1.end());
+	EXPECT_TRUE(iterator1 != indexedDataTree1.end());
 	EXPECT_EQ((*iterator1), 4);
+
 	++iterator1;
 	EXPECT_TRUE(iterator1 == indexedDataTree1.end());
 	EXPECT_FALSE(iterator1 != indexedDataTree1.end());

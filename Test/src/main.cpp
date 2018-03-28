@@ -9,6 +9,7 @@
 #include "TBTK/Test/Index.h"
 #include "TBTK/Test/IndexedDataTree.h"
 #include "TBTK/Test/SourceAmplitude.h"
+#include "TBTK/Test/SourceAmplitudeSet.h"
 
 int main(int argc, char **argv){
 	::testing::InitGoogleTest(&argc, argv);
