@@ -539,6 +539,7 @@ inline IndexedDataTree<char, false>::IndexedDataTree(
 				serialization
 			);
 			indexIncluded = j.at("indexIncluded").get<bool>();
+			indexSeparator = j.at("indexSeparator").get<bool>();
 			data = j.at("data").get<char>();
 			try{
 				nlohmann::json children = j.at("children");
@@ -601,6 +602,7 @@ inline IndexedDataTree<int, false>::IndexedDataTree(
 				serialization
 			);
 			indexIncluded = j.at("indexIncluded").get<bool>();
+			indexSeparator = j.at("indexSeparator").get<bool>();
 			data = j.at("data").get<int>();
 			try{
 				nlohmann::json children = j.at("children");
@@ -663,6 +665,7 @@ inline IndexedDataTree<float, false>::IndexedDataTree(
 				serialization
 			);
 			indexIncluded = j.at("indexIncluded").get<bool>();
+			indexSeparator = j.at("indexSeparator").get<bool>();
 			data = j.at("data").get<float>();
 			try{
 				nlohmann::json children = j.at("children");
@@ -725,6 +728,7 @@ inline IndexedDataTree<double, false>::IndexedDataTree(
 				serialization
 			);
 			indexIncluded = j.at("indexIncluded").get<bool>();
+			indexSeparator = j.at("indexSeparator").get<bool>();
 			data = j.at("data").get<double>();
 			try{
 				nlohmann::json children = j.at("children");
@@ -787,6 +791,7 @@ inline IndexedDataTree<std::complex<double>, false>::IndexedDataTree(
 				serialization
 			);
 			indexIncluded = j.at("indexIncluded").get<bool>();
+			indexSeparator = j.at("indexSeparator").get<bool>();
 			std::string dataString = j.at("data").get<std::string>();
 			std::stringstream ss(dataString);
 			ss >> data;
@@ -852,6 +857,7 @@ IndexedDataTree<Data, true>::IndexedDataTree(
 				serialization
 			);
 			indexIncluded = j.at("indexIncluded").get<bool>();
+			indexSeparator = j.at("indexSeparator").get<bool>();
 			std::string dataString = j.at("data").get<std::string>();
 			data = Data(dataString, mode);
 //			data = j.at("data").get<Data>();
