@@ -4,4 +4,12 @@
 - Remove responsibility to store the Hamiltonian on the COO sparse matrix
   format from the HoppingAMplitudeSet. Likely solution: Make the
   HoppingAmplitudeTree or HoppingAMplitudeSet responsible for on the demand
-  constructing and returning a SparseMatrix.
+  constructing and returning a SparseMatrix. The HoppingAmplitudeTree is
+  complex in itself, and probably it is therefore better to let the
+  HoppingAmplitudeSet take on this responsibility. This should also result in
+  the copy and move constructors, destructor and assignment and move assignment
+  operators to no longer be needed.
+
+- Rename HoppingAmplitudeTree::getHAs() and HoppingAmplitudeSet::getHAs() to
+  ::getHoppingAmplitudes(). Also make these functions return constant
+  references rather than pointers to constants.
