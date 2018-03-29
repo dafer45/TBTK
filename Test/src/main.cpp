@@ -5,6 +5,7 @@
 #include "TBTK/Test/ForwardDifference.h"
 #include "TBTK/Test/HoppingAmplitude.h"
 #include "TBTK/Test/HoppingAmplitudeList.h"
+#include "TBTK/Test/HoppingAmplitudeSet.h"
 #include "TBTK/Test/HoppingAmplitudeTree.h"
 #include "TBTK/Test/Index.h"
 #include "TBTK/Test/IndexedDataTree.h"

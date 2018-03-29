@@ -42,11 +42,12 @@ public:
 	/** Constructs a HoppingAmplitudeTree. */
 	HoppingAmplitudeTree();
 
-	/** Constructs a HoppingAmplitude with a preallocated tree structure
-	 *  such that the addition of HoppingAmplitudes with indices that have
-	 *  the same subindex structure as 'capacity', but with smaller
-	 *  subindices will not cause reallocation for the main tree stucture.
-	 *  Internal containers for HoppingAmplitudes may still be reallocated.
+	/** Constructs a HoppingAmplitudeTree with a preallocated tree
+	 *  structure such that the addition of HoppingAmplitudes with indices
+	 *  that have the same subindex structure as 'capacity', but with
+	 *  smaller subindices will not cause reallocation for the main tree
+	 *  stucture. Internal containers for HoppingAmplitudes may still be
+	 *  reallocated.
 	 *
 	 *  @param The 'Index capacity'. */
 	HoppingAmplitudeTree(
@@ -162,12 +163,12 @@ public:
 	 *  has not been called. */
 	int getBasisIndex(const Index &index) const;
 
-	/** Get physical index for given Hilbert space basis index.
+	/** Get physical Index for given Hilbert space basis index.
 	 *
 	 *  @param basisIndex Hilbert space index for which to obtain the
 	 *  physical Index.
 	 *
-	 *  @return The physical index corresponding to the given Hilbert space
+	 *  @return The physical Index corresponding to the given Hilbert space
 	 *  index. */
 	Index getPhysicalIndex(int basisIndex) const;
 

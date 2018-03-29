@@ -48,30 +48,53 @@ namespace TBTK{
  *  Hamiltonian. */
 class HoppingAmplitudeSet : public Serializable{
 public:
-	/** Constructor. */
+	/** Constructs a HoppingAmplitudeSet. */
 	HoppingAmplitudeSet();
 
-	/** Constructor. Preallocates the contained HoppingAmplitudeTree with
-	 *  capacity 'capacity'. */
+	/** Constructs a HoppingAmplitudeSet with a preallocated storage
+	 *  structure such that the addition of HoppingAmplitudes with indices
+	 *  that have the same subindex structure as 'capacity', but with
+	 *  smaller subindices will not cause reallocation for the main storage
+	 *  structure. Internal containers for @link HoppingAmplitude
+	 *  HoppingAmplitudes @endlink may still be reallocated.
+	 *
+	 *  @param capacity 'Index capacity'. */
 	HoppingAmplitudeSet(const std::vector<unsigned int> &capacity);
 
-	/** Copy constructor. */
+	/** Copy constructor.
+	 *
+	 *  @param hoppingAmplitudeSet HoppingAmplitudeSet to copy. */
 	HoppingAmplitudeSet(const HoppingAmplitudeSet &hoppingAmplitudeSet);
 
-	/** Move constructor. */
+	/** Move constructor.
+	 *
+	 *  @param hoppingAMplitudeSet HoppingAmplitudeSet to move. */
 	HoppingAmplitudeSet(HoppingAmplitudeSet &&hoppingAmplitudeSet);
 
 	/** Constructor. Constructs the HoppingAmplitudeSet from a
-	 *  serialization string. */
+	 *  serialization string.
+	 *
+	 *  @param serialization Serialization string from which to construct
+	 *  the HoppingAmplitudeSet.
+	 *
+	 *  @param mode Mode with which the string has been serialized. */
 	HoppingAmplitudeSet(const std::string &serializeation, Mode mode);
 
 	/** Destructor. */
 	virtual ~HoppingAmplitudeSet();
 
-	/** Assignment operator. */
+	/** Assignment operator.
+	 *
+	 *  @param rhs HoppingAmplitude to assign to the left hand side.
+	 *
+	 *  @return Reference to the assigned HoppingAmplitudeSet. */
 	HoppingAmplitudeSet& operator=(const HoppingAmplitudeSet &rhs);
 
-	/** Move assignment operator. */
+	/** Move assignment operator.
+	 *
+	 *  @param rhs HoppingAmplitude to assign to the left hand side.
+	 *
+	 *  @return Reference to the assigned HoppingAmplitudeSet. */
 	HoppingAmplitudeSet& operator=(HoppingAmplitudeSet &&rhs);
 
 	/** Add a single HoppingAmplitude.
@@ -87,26 +110,52 @@ public:
 	/** Get all @link HoppingAmplitude HoppingAmplitudes @endlink with
 	 * given 'from'-index.
 	 *
-	 *  @param index 'From'-index to get HoppingAmplitudes for. */
+	 *  @param index 'From'-index to get HoppingAmplitudes for.
+	 *
+	 *  @return All @link HoppingAmplitude HoppingAmplitudes @endlink with
+	 *  the given from-Index. */
 	const std::vector<HoppingAmplitude>* getHAs(Index index) const;
 
 	/** Get Hilbert space index corresponding to given 'from'-index.
 	 *
-	 *  @param index 'From'-index to get Hilbert space index for. */
+	 *  @param index Physical Index for which to obtain the Hilbert space
+	 *  index.
+	 *
+	 *  @return The Hilbert space index corresponding to the given Physical
+	 *  Index. Returns -1 if HoppingAmplitudeTree::construct() has not been
+	 *  called. */
 	int getBasisIndex(const Index &index) const;
 
-	/** Get Physical index for given Hilbert space basis index. */
+	/** Get physical Index for given Hilbert space basis index.
+	 *
+	 *  @param basisIndex Hilbert space index for which to obtain the
+	 *  physical Index.
+	 *
+	 *  @return The physical Index corresponding to the given Hilbert space
+	 *  index. */
 	Index getPhysicalIndex(int basisIndex) const;
 
-	/** Get size of Hilbert space. */
+	/** Get size of Hilbert space.
+	 *
+	 *  @return The basis size if the basis has ben constructed using the
+	 *  call to HoppingAmplitudeSet::construct(), otherwise -1. */
 	int getBasisSize() const;
 
-	/** Returns true if the subspace is a proper subspace. That is, if all
-	 *  indices starting with the indices in 'subspace' only are connected
-	 *  to other indices with the same initial subspace indices. */
+	/** Returns true if the subspace is a proper subspace. See
+	 *  HoppingAmplitudeTree::isProperSubspace() for a detailed
+	 *  explanation.
+	 *
+	 *  @param subspace A number of subindices that when used as leftmost
+	 *  subindices in an Index specifies a subspace.
+	 *
+	 *  @return True if the subspace is a proper subspace according to the
+	 *  definition given in the documentation for
+	 *  HoppingAmplitudeTree::isPropertSubspace(). */
 	bool isProperSubspace(const Index &subspace);
 
-	/** Returns an IndexTree containing all subspace indices. */
+	/** Returns an IndexTree containing all proper subspace indices.
+	 *
+	 *  @return An IndexTree containing all proper subspace indices. */
 	IndexTree getSubspaceIndices() const;
 
 	/** Construct Hilbert space. No more @link HoppingAmplitude
