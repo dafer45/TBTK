@@ -13,3 +13,7 @@
 - Rename HoppingAmplitudeTree::getHAs() and HoppingAmplitudeSet::getHAs() to
   ::getHoppingAmplitudes(). Also make these functions return constant
   references rather than pointers to constants.
+
+- Rewrite HoppingAmplitudeTree::Iterator and HoppingAmplitudeSet::Iterator to
+  use standard iterator notation with operator++(), operator*(), operator==(),
+  and operator!=().

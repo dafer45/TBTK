@@ -162,16 +162,36 @@ public:
 	 *  HoppingAmplitudes @endlink should be added after this call. */
 	void construct();
 
-	/** Returns true if the Hilbert space basis has been constructed. */
+	/**  Check whether the Hilbert space basis has been constructed.
+	 *
+	 *  @return True if the Hilbert space basis has been constructed. */
 	bool getIsConstructed() const;
 
-	/** Generate a list of indices satisfying the specified pattern. */
+	/** Generate a list containing the indices in the HoppingAmplitudeSet
+	 *  that stisfies the specified pattern. The indices are ordered in
+	 *  terms of rising Hilbert space indices.
+	 *
+	 *  @param pattern Pattern to match against. IDX_ALL can be used as a
+	 *  wildcard.
+	 *
+	 *  @return A list of physical indices that match the specified
+	 *  pattern. */
 	std::vector<Index> getIndexList(const Index &pattern) const;
 
-	/** Get first index in block. */
+	/** Get first index in block.
+	 *
+	 *  @param subspaceIndex The physical Index of the subspace.
+	 *
+	 *  @return The first Hilbert space index in the given subspace. If the
+	 *  subspace is emtpy, -1 is returned. */
 	int getFirstIndexInBlock(const Index &blockIndex) const;
 
-	/** Get last index in block. */
+	/** Get last index in block.
+	 *
+	 *  @param subspaceIndex The physical Index of the subspace.
+	 *
+	 *  @return The last Hilbert space index in the given subspace. If the
+	 *  subspace is empty, -1 is returned. */
 	int getLastIndexInBlock(const Index &blockIndex) const;
 
 	/** Sort HoppingAmplitudes. */

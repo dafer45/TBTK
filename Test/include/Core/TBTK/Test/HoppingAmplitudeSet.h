@@ -313,208 +313,98 @@ TEST(HoppingAmplitudeSet, getSubspaceIndices){
 	EXPECT_TRUE(iterator.getIndex().equals({1, 1}));
 }
 
-/*TEST(HoppingAmplitudeTree, getSubTree){
-	std::string errorMessage = "getSubTree() failed.";
-
-	HoppingAmplitudeTree hoppingAmplitudeTree;
-
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {1, 2, 3, 4}, {1, 2, 3, 4}));
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {1, 2, 3, 4}, {1, 2, 3, 5}));
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {1, 2, 3, 5}, {1, 2, 3, 4}));
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {1, 2, 3, 6}, {1, 2, 3, 7}));
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {1, 2, 3, 7}, {1, 2, 3, 6}));
-
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {2, 2, 2, 4}, {2, 2, 2, 4}));
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {2, 2, 2, 4}, {2, 2, 2, 5}));
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {2, 2, 2, 5}, {2, 2, 2, 4}));
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {2, 2, 2, 6}, {2, 2, 2, 7}));
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {2, 2, 2, 7}, {2, 2, 2, 6}));
-
-	hoppingAmplitudeTree.generateBasisIndices();
-
-	EXPECT_EXIT(
-		{
-			const HoppingAmplitudeTree *hoppingAmplitudeTree0 = hoppingAmplitudeTree.getSubTree({1, 2});
-			const HoppingAmplitudeTree *hoppingAmplitudeTree1 = hoppingAmplitudeTree.getSubTree({2, 2});
-			const HoppingAmplitudeTree *hoppingAmplitudeTree2 = hoppingAmplitudeTree.getSubTree({1, 1});
-			const HoppingAmplitudeTree *hoppingAmplitudeTree3 = hoppingAmplitudeTree.getSubTree({1, 3});
-
-			HoppingAmplitudeTree::Iterator iterator = hoppingAmplitudeTree0->begin();
-			int counter = 0;
-			const HoppingAmplitude *hoppingAmplitude;
-			while((hoppingAmplitude = iterator.getHA())){
-				counter++;
-				if(!hoppingAmplitude->getFromIndex().equals({1, 2, 3, IDX_ALL}, true))
-					exit(1);
-
-				iterator.searchNextHA();
-			}
-			if(counter != 5)
-				exit(1);
-
-			iterator = hoppingAmplitudeTree1->begin();
-			counter = 0;
-			while((hoppingAmplitude = iterator.getHA())){
-				counter++;
-				if(!hoppingAmplitude->getFromIndex().equals({2, 2, 2, IDX_ALL}, true))
-					exit(1);
-
-				iterator.searchNextHA();
-			}
-			if(counter != 5)
-				exit(1);
-
-			iterator = hoppingAmplitudeTree2->begin();
-			counter = 0;
-			while((hoppingAmplitude = iterator.getHA())){
-				counter++;
-				iterator.searchNextHA();
-			}
-			if(counter != 0)
-				exit(1);
-
-			iterator = hoppingAmplitudeTree3->begin();
-			counter = 0;
-			while((hoppingAmplitude = iterator.getHA())){
-				counter++;
-				iterator.searchNextHA();
-			}
-			if(counter != 0)
-				exit(1);
-
-			std::cerr << "Test completed.";
-			exit(0);
-		},
-		::testing::ExitedWithCode(0),
-		"Test completed."
-	);
-
-	EXPECT_EXIT(
-		{
-			Streams::setStdMuteErr();
-			hoppingAmplitudeTree.getSubTree({1, -1});
-		},
-		::testing::ExitedWithCode(1),
-		""
-	);
-}
-
-TEST(HoppingAmplitudeTree, getFirstIndexInSubspace){
-	HoppingAmplitudeTree hoppingAmplitudeTree;
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {0, 0, 0}, {0, 0, 0}));
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 1}));
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 2}));
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {0, 0, 2}, {0, 0, 1}));
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 0}));
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 1}));
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {1, 1, 1}, {1, 1, 0}));
-	hoppingAmplitudeTree.generateBasisIndices();
-
-	EXPECT_EXIT(
-		{
-			Streams::setStdMuteErr();
-			hoppingAmplitudeTree.getFirstIndexInSubspace({0, 0, 1});
-		},
-		::testing::ExitedWithCode(1),
-		""
-	);
-
-	EXPECT_EQ(hoppingAmplitudeTree.getFirstIndexInSubspace({0, 1}), -1);
-	EXPECT_EQ(hoppingAmplitudeTree.getFirstIndexInSubspace({0, 0}), 0);
-	EXPECT_EQ(hoppingAmplitudeTree.getFirstIndexInSubspace({1, 1}), 3);
-}
-
-TEST(HoppingAmplitudeTree, getLastIndexInSubspace){
-	HoppingAmplitudeTree hoppingAmplitudeTree;
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {0, 0, 0}, {0, 0, 0}));
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 1}));
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 2}));
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {0, 0, 2}, {0, 0, 1}));
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 0}));
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 1}));
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {1, 1, 1}, {1, 1, 0}));
-	hoppingAmplitudeTree.generateBasisIndices();
-
-	EXPECT_EXIT(
-		{
-			Streams::setStdMuteErr();
-			hoppingAmplitudeTree.getLastIndexInSubspace({0, 0, 1});
-		},
-		::testing::ExitedWithCode(1),
-		""
-	);
-
-	EXPECT_EQ(hoppingAmplitudeTree.getLastIndexInSubspace({0, 1}), -1);
-	EXPECT_EQ(hoppingAmplitudeTree.getLastIndexInSubspace({0, 0}), 2);
-	EXPECT_EQ(hoppingAmplitudeTree.getLastIndexInSubspace({1, 1}), 4);
-}
-
-TEST(HoppingAmplitudeTree, getBasisIndex){
-	HoppingAmplitudeTree hoppingAmplitudeTree;
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {0, 0, 0}, {0, 0, 0}));
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 1}));
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 2}));
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {0, 0, 2}, {0, 0, 1}));
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 0}));
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 1}));
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {1, 1, 1}, {1, 1, 0}));
-
-	EXPECT_EQ(hoppingAmplitudeTree.getBasisIndex({0, 0, 0}), -1);
-	EXPECT_EQ(hoppingAmplitudeTree.getBasisIndex({0, 0, 1}), -1);
-	EXPECT_EQ(hoppingAmplitudeTree.getBasisIndex({0, 0, 2}), -1);
-	EXPECT_EQ(hoppingAmplitudeTree.getBasisIndex({1, 1, 0}), -1);
-	EXPECT_EQ(hoppingAmplitudeTree.getBasisIndex({1, 1, 1}), -1);
-
-	hoppingAmplitudeTree.generateBasisIndices();
-
-	EXPECT_EQ(hoppingAmplitudeTree.getBasisIndex({0, 0, 0}), 0);
-	EXPECT_EQ(hoppingAmplitudeTree.getBasisIndex({0, 0, 1}), 1);
-	EXPECT_EQ(hoppingAmplitudeTree.getBasisIndex({0, 0, 2}), 2);
-	EXPECT_EQ(hoppingAmplitudeTree.getBasisIndex({1, 1, 0}), 3);
-	EXPECT_EQ(hoppingAmplitudeTree.getBasisIndex({1, 1, 1}), 4);
-}
-
-TEST(HoppingAmplitudeTree, generateBasisIndices){
+TEST(HoppingAmplitudeTree, construct){
 	//Already tested through
-	//HoppingAmplitudeTree::getBasisSize()
-	//HoppingAmplitudeTree::getBasisIndex()
-	//HoppingAmplitudeTree::getPhysicalIndex()
+	//HoppingAmplitudeSet::getBasisSize()
+	//HoppingAmplitudeSet::getBasisIndex()
+	//HoppingAmplitudeSet::getPhysicalIndex()
 }
 
-TEST(HoppingAmplitudeTree, getIndexList){
-	HoppingAmplitudeTree hoppingAmplitudeTree;
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {0, 0, 0}, {0, 0, 0}));
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 1}));
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 2}));
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {0, 0, 2}, {0, 0, 1}));
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 0}));
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 1}));
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {1, 1, 1}, {1, 1, 0}));
-	hoppingAmplitudeTree.generateBasisIndices();
+TEST(HoppingAmplitudeSet, getIsConstructed){
+	HoppingAmplitudeSet hoppingAmplitudeSet;
+	EXPECT_FALSE(hoppingAmplitudeSet.getIsConstructed());
+	hoppingAmplitudeSet.construct();
+	EXPECT_TRUE(hoppingAmplitudeSet.getIsConstructed());
+}
 
-	std::vector<Index> indices = hoppingAmplitudeTree.getIndexList({0, 0, IDX_ALL});
+TEST(HoppingAmplitudeSet, getIndexList){
+	HoppingAmplitudeSet hoppingAmplitudeSet;
+	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {0, 0, 0}, {0, 0, 0}));
+	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 1}));
+	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 2}));
+	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {0, 0, 2}, {0, 0, 1}));
+	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 0}));
+	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 1}));
+	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {1, 1, 1}, {1, 1, 0}));
+	hoppingAmplitudeSet.construct();
+
+	std::vector<Index> indices = hoppingAmplitudeSet.getIndexList({0, 0, IDX_ALL});
 	EXPECT_TRUE(indices[0].equals({0, 0, 0}));
 	EXPECT_TRUE(indices[1].equals({0, 0, 1}));
 	EXPECT_TRUE(indices[2].equals({0, 0, 2}));
 
-	indices = hoppingAmplitudeTree.getIndexList({1, 1, IDX_ALL});
+	indices = hoppingAmplitudeSet.getIndexList({1, 1, IDX_ALL});
 	EXPECT_TRUE(indices[0].equals({1, 1, 0}));
 	EXPECT_TRUE(indices[1].equals({1, 1, 1}));
 
-	indices = hoppingAmplitudeTree.getIndexList({IDX_ALL, IDX_ALL, 1});
+	indices = hoppingAmplitudeSet.getIndexList({IDX_ALL, IDX_ALL, 1});
 	EXPECT_TRUE(indices[0].equals({0, 0, 1}));
 	EXPECT_TRUE(indices[1].equals({1, 1, 1}));
-}*/
+}
 
-//TODO
-//...
-/*TEST(HoppingAmplitudeTree, sort){
-}*/
+TEST(HoppingAmplitudeSet, getFirstIndexInBlock){
+	HoppingAmplitudeSet hoppingAmplitudeSet;
+	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {0, 0, 0}, {0, 0, 0}));
+	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 1}));
+	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 2}));
+	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {0, 0, 2}, {0, 0, 1}));
+	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 0}));
+	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 1}));
+	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {1, 1, 1}, {1, 1, 0}));
+	hoppingAmplitudeSet.construct();
 
-//TODO
-//...
-/*TEST(HoppingAmplitudeTree, print){
-}*/
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			hoppingAmplitudeSet.getFirstIndexInBlock({0, 0, 1});
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+
+	EXPECT_EQ(hoppingAmplitudeSet.getFirstIndexInBlock({0, 1}), -1);
+	EXPECT_EQ(hoppingAmplitudeSet.getFirstIndexInBlock({0, 0}), 0);
+	EXPECT_EQ(hoppingAmplitudeSet.getFirstIndexInBlock({1, 1}), 3);
+}
+
+TEST(HoppingAmplitudeSet, getLastIndexInBlock){
+	HoppingAmplitudeSet hoppingAmplitudeSet;
+	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {0, 0, 0}, {0, 0, 0}));
+	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 1}));
+	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 2}));
+	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {0, 0, 2}, {0, 0, 1}));
+	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 0}));
+	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 1}));
+	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {1, 1, 1}, {1, 1, 0}));
+	hoppingAmplitudeSet.construct();
+
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			hoppingAmplitudeSet.getLastIndexInBlock({0, 0, 1});
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+
+	EXPECT_EQ(hoppingAmplitudeSet.getLastIndexInBlock({0, 1}), -1);
+	EXPECT_EQ(hoppingAmplitudeSet.getLastIndexInBlock({0, 0}), 2);
+	EXPECT_EQ(hoppingAmplitudeSet.getLastIndexInBlock({1, 1}), 4);
+}
+
+TEST(HoppingAmplitudeSet, serialize){
+	//Already tested through serializeToJSON
+}
 
 TEST(HoppingAmplitudeSet, getSizeInBytes){
 	HoppingAmplitudeSet hoppingAmplitudeSet;
@@ -525,9 +415,5 @@ TEST(HoppingAmplitudeSet, getSizeInBytes){
 //...
 /*TEST(HoppingAmplitudeTree, begin){
 }*/
-
-TEST(HoppingAmplitudeSet, serialize){
-	//Already tested through serializeToJSON
-}
 
 };

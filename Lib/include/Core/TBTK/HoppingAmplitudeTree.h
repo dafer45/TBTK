@@ -180,7 +180,7 @@ public:
 	 *  that satisfies the specified pattern. The indices are ordered in
 	 *  terms of rising Hilbert space indices.
 	 *
-	 *  @param pattern Pattern to match agains. IDX_ALL can be used as a
+	 *  @param pattern Pattern to match against. IDX_ALL can be used as a
 	 *  wildcard.
 	 *
 	 *  @return A list of physical indices that match the specified
