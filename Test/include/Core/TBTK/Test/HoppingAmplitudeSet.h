@@ -413,7 +413,7 @@ TEST(HoppingAmplitudeSet, getSizeInBytes){
 
 //TODO
 //...
-/*TEST(HoppingAmplitudeTree, begin){
-}*/
+TEST(HoppingAmplitudeSet, Iterator){
+}
 
 };

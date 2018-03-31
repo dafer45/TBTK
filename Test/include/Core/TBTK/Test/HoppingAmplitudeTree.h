@@ -450,4 +450,9 @@ TEST(HoppingAmplitudeTree, serialize){
 	//Already tested through serializeToJSON
 }
 
+//TODO
+//...
+TEST(HoppingAmplitudeTree, Iterator){
+}
+
 };

@@ -17,3 +17,17 @@
 - Rewrite HoppingAmplitudeTree::Iterator and HoppingAmplitudeSet::Iterator to
   use standard iterator notation with operator++(), operator*(), operator==(),
   and operator!=().
+
+- [1] Make SingleParticleContext::hoppingAmplitudeSet a normal member of
+  SingleParticleContext rather than a pointer. This should remove the need to
+  explicitly implement the copy and move constructors, destructor, and
+  assignment and move asignment operators. Possibly make SingleParticleContext
+  inherit from HoppingAmplitudeSet to avoid reimplementation of the
+  HoppingAmplitudeSet interface through inline functions in
+  SingleParticleContext that calls the corresponding HoppingAmplitudeSet
+  functions.
+
+- Make SingleParticleContext::getHoppingAmplitudeSet() return a reference
+  instead of a pointer to a HoppingAmplitudeSet. Possbly remove this case if
+  the SingleParticleContext inherits from the HoppingAmplitudeSet as suggested
+  in [1].

@@ -64,10 +64,14 @@ public:
 	/** Move assignment operator. */
 	SingleParticleContext& operator=(SingleParticleContext &&rhs);
 
-	/** Set statistics. */
+	/** Set statistics.
+	 *
+	 *  @param statistics The Statistics to use.*/
 	void setStatistics(Statistics statistics);
 
-	/** Get statistics. */
+	/** Get statistics.
+	 *
+	 *  @return The currently set Statistics. */
 	Statistics getStatistics() const;
 
 	/** Add a HoppingAmplitude. */

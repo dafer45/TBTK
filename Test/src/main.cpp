@@ -9,6 +9,7 @@
 #include "TBTK/Test/HoppingAmplitudeTree.h"
 #include "TBTK/Test/Index.h"
 #include "TBTK/Test/IndexedDataTree.h"
+#include "TBTK/Test/SingleParticleContext.h"
 #include "TBTK/Test/SourceAmplitude.h"
 #include "TBTK/Test/SourceAmplitudeSet.h"
 
