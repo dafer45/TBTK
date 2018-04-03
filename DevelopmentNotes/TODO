@@ -31,3 +31,7 @@
   instead of a pointer to a HoppingAmplitudeSet. Possbly remove this case if
   the SingleParticleContext inherits from the HoppingAmplitudeSet as suggested
   in [1].
+
+- Rename ManyBodyContext (etc) to ManyParticleContext (etc).
+
+- Rename Model::addHoppingAmplitude() to Model::add().

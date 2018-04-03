@@ -162,7 +162,7 @@ public:
 	 *  HoppingAmplitudes @endlink should be added after this call. */
 	void construct();
 
-	/**  Check whether the Hilbert space basis has been constructed.
+	/** Check whether the Hilbert space basis has been constructed.
 	 *
 	 *  @return True if the Hilbert space basis has been constructed. */
 	bool getIsConstructed() const;

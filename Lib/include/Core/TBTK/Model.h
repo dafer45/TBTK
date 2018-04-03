@@ -54,49 +54,90 @@ public:
 	/** Constructor. */
 	Model();
 
-	/** Constructor. */
+	/** Constructs a Model with a preallocated storage structure such that
+	 *  the addition of HoppingAmplitudes with indices that have the same
+	 *  subindex structure as 'capacity', but with smaller subindices will
+	 *  not cause reallocation for the main storage structure. Internal
+	 *  containers for HoppingAmplitudes may still be reallocated.
+	 *
+	 *  @param capacity The 'Index capacity'. */
 	Model(const std::vector<unsigned int> &capacity);
 
-	/** Copy constructor. */
+	/** Copy constructor.
+	 *
+	 *  @param model Model to copy. */
 	Model(const Model &model);
 
-	/** Move constructor. */
+	/** Move constructor.
+	 *
+	 *  @param model Model to move. */
 	Model(Model &&model);
 
 	/** Constructor. Constructs the Model from a serialization string. Note
-	 *  that the ManyBodyContext is not yet serialized. */
+	 *  that the ManyBodyContext is not yet serialized.
+	 *
+	 *  @param serialization Serialization string from which to construct
+	 *  the Index.
+	 *
+	 *  @param mode Mode with which the string has been serialized. */
 	Model(const std::string &serialization, Mode mode);
 
 	/** Destructor. */
 	virtual ~Model();
 
-	/** Assignment operator. */
-	Model& operator=(const Model &model);
+	/** Assignment operator.
+	 *
+	 *  @param rhs Model to assign to the left hand side.
+	 *
+	 *  @return Reference to the assigned Model. */
+	Model& operator=(const Model &rhs);
 
-	/** Move assignment operator. */
-	Model& operator=(Model &&model);
+	/** Move assignment operator.
+	 *
+	 *  @param rhs Model to assign to the left hand side.
+	 *
+	 *  @return Reference to the assigned Model. */
+	Model& operator=(Model &&rhs);
 
-	/** Add a HoppingAmplitude. */
+	/** Add a HoppingAmplitude.
+	 *
+	 @param ha HoppingAmplitude to add. */
 	void addHoppingAmplitude(HoppingAmplitude ha);
 
-	/** Add a HoppingAmplitude and its Hermitian conjugate. */
+	/** Add a HoppingAmplitude and its Hermitian conjugate.
+	 *
+	 *  @param ha HoppingAmplitude to add. */
 	void addHoppingAmplitudeAndHermitianConjugate(HoppingAmplitude ha);
 
-	/** Add a Model as a subsystem. */
+	/** Add a Model as a subsystem.
+	 *
+	 *  @param model Model to include as subsystem.
+	 *  @param subsystemIndex Index that will be prepended to each Index in
+	 *  the model. */
 	void addModel(const Model &model, const Index &subsytemIndex);
 
 	/** Get Hilbert space index corresponding to given 'from'-index.
-	 *  @param index 'From'-index to get Hilbert space index for. */
+	 *
+	 *  @param index Physical Index for which to obtain the Hilbert space
+	 *  index.
+	 *
+	 *  @return The Hilbert space index corresponding to the given Physical
+	 *  Index. Returns -1 if Model::construct() has not been called. */
 	int getBasisIndex(const Index &index) const;
 
-	/** Get size of Hilbert space. */
+	/** Get size of Hilbert space.
+	 *
+	 *  @return The basis size if the basis has been constructed using the
+	 *  call to Model::construct(), otherwise -1. */
 	int getBasisSize() const;
 
 	/** Construct Hilbert space. No more @link HoppingAmplitude
 	 *  HoppingAmplitudes @endlink should be added after this call. */
 	void construct();
 
-	/** Returns true if the Hilbert space basis has been constructed. */
+	/** Check whether the Hilbert space basis has been constructed.
+	 *
+	 *  @return True if the Hilbert space basis has been constructed. */
 	bool getIsConstructed();
 
 	/** Sort HoppingAmplitudes. */
@@ -115,48 +156,91 @@ public:
 	 *  callbacks. */
 	void reconstructCOO();
 
-	/** Set temperature. */
+	/** Set temperature.
+	 *
+	 *  @param temperature The temperature. */
 	void setTemperature(double temperature);
 
-	/** Get temperature. */
+	/** Get temperature.
+	 *
+	 *  @return The temperature. */
 	double getTemperature() const;
 
-	/** Set chemical potential. */
+	/** Set chemical potential.
+	 *
+	 *  @param chemicalPotential The chemical potential. */
 	void setChemicalPotential(double chemicalPotential);
 
-	/** Get chemical potential. */
+	/** Get chemical potential.
+	 *
+	 *  @return The chemical potential. */
 	double getChemicalPotential() const;
 
-	/** Set statistics. */
+	/** Set statistics.
+	 *
+	 *  @param statistics The statistics to use. */
 	void setStatistics(Statistics statistics);
 
-	/** Get statistics. */
+	/** Get statistics.
+	 *
+	 *  @return The currently set Statistics. */
 	Statistics getStatistics() const;
 
-	/** Get amplitude set. */
+	/** Get amplitude set.
+	 *
+	 *  @return Pointer to the contained HoppingAmplitudeSet. */
 	const HoppingAmplitudeSet* getHoppingAmplitudeSet() const;
 
-	/** Create geometry. */
+	/** Create geometry.
+	 *
+	 *  @param dimensions Number of spatial dimensions to use for the
+	 *  Geometry.
+	 *
+	 *  @param numSpecifiers The number of additional specifiers to use per
+	 *  Index. */
 	void createGeometry(int dimensions, int numSpecifiers = 0);
 
-	/** Get geometry. */
+	/** Get geometry.
+	 *
+	 *  @return Pointer to the contained Geometry. */
 	Geometry* getGeometry();
 
-	/** Get geometry. */
+	/** Get geometry.
+	 *
+	 *  @return Pointer to the contained Geometry. */
 	const Geometry* getGeometry() const;
 
 	/** Create ManyBodyContext. */
 	void createManyBodyContext();
 
-	/** Get ManyBodyContext. */
+	/** Get ManyBodyContext.
+	 *
+	 *  @return Pointer to the contained ManyBodyContext. */
 	ManyBodyContext* getManyBodyContext();
 
-	/** Set HoppingAmplitude filter. */
+	/** Set a HoppingAmplitudeFilter. The HoppingAmplitudeFilter will be
+	 *  used by the Model to determine whether a given HoppingAmplitude
+	 *  that is passed to the Model actually should be added or not. If no
+	 *  HoppingAmplitudeFilter is set, all @link HoppingAmplitude
+	 *  HoppingAmplitudes @endlink are added. But if a
+	 *  HoppingAmplitudeFilter is set, only those @link HoppingAmplitud
+	 *  HoppingAmplitudes @endlink that the filter returns true for are
+	 *  added.
+	 *
+	 *  @param hoppingAmplitudeFilter The HoppingAmplitudeFilter to use. */
 	void setFilter(
 		const AbstractHoppingAmplitudeFilter &hoppingAmplitudeFilter
 	);
 
-	/** Set Index filter. */
+	/** Set an IndexFilter. The IndexFilter will be used by the Model to
+	 *  determine whether a given HoppingAmplitude that is passed to the
+	 *  Model actually should be added or not. If no IndexFilter is set,
+	 *  all @link HoppingAmplitude HoppingAmplitudes @endlink are added.
+	 *  But if an IndexFilter is set, only those @link HoppingAmplitud
+	 *  HoppingAmplitudes @endlink for which the filter returns true for
+	 *  both @link Index Indices @endlink are added.
+	 *
+	 *  @param indexFilter The IndexFilter to use. */
 	void setFilter(
 		const AbstractIndexFilter &indexFilter
 	);

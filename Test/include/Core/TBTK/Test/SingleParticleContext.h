@@ -5,7 +5,9 @@
 namespace TBTK{
 
 TEST(SingleParticleContext, Constructor){
-	//Not testable on its own.
+	//Check default values.
+	SingleParticleContext singleParticleContext;
+	EXPECT_EQ(singleParticleContext.getStatistics(), Statistics::FermiDirac);
 }
 
 TEST(SingleParticleContext, ConstructorCapacity){
@@ -44,14 +46,11 @@ TEST(SingleParticleContext, setStatistics){
 TEST(SingleParticleContext, getStatistics){
 	SingleParticleContext singleParticleContext;
 
-	//Check that default initialization is Statistics::FermiDirac.
-	EXPECT_EQ(singleParticleContext.getStatistics(), Statistics::FermiDirac);
-
-	//Check that default initialization is Statistics::FermiDirac.
+	//Check that it is possible to set and get Statistics::BoseEinstein.
 	singleParticleContext.setStatistics(Statistics::BoseEinstein);
 	EXPECT_EQ(singleParticleContext.getStatistics(), Statistics::BoseEinstein);
 
-	//Check that default initialization is Statistics::FermiDirac.
+	//Check that it is possible to set and get Statistics::FermiDirac.
 	singleParticleContext.setStatistics(Statistics::FermiDirac);
 	EXPECT_EQ(singleParticleContext.getStatistics(), Statistics::FermiDirac);
 }

@@ -49,7 +49,7 @@ public:
 	 *  stucture. Internal containers for HoppingAmplitudes may still be
 	 *  reallocated.
 	 *
-	 *  @param The 'Index capacity'. */
+	 *  @param capacity The 'Index capacity'. */
 	HoppingAmplitudeTree(
 		const std::vector<unsigned int> &capacity
 	);
