@@ -311,7 +311,7 @@ int IndexTree::getLinearIndex(
 	switch(searchMode){
 	case SearchMode::StrictMatch:
 		break;
-	case SearchMode::IgnoreWildcards:
+/*	case SearchMode::IgnoreWildcards:
 		if(wildcardIndex)
 			return children.at(0).getLinearIndex(
 				index,
@@ -319,7 +319,7 @@ int IndexTree::getLinearIndex(
 				searchMode,
 				returnNegativeForMissingIndex
 			);
-		break;
+		break;*/
 	case SearchMode::MatchWildcards:
 		break;
 	default:
@@ -360,6 +360,17 @@ int IndexTree::getLinearIndex(
 
 		if(currentIndex < 0){
 			if(wildcardIndex){
+				TBTKAssert(
+					currentIndex == wildcardType,
+					"IndexTree::getLinearIndex()",
+					"Invalid wildcard type. The Index '"
+					<< index.toString() << "' has a"
+					<< " wildcard in subindex '"
+					<< subindex << "' which is different"
+					<< " from the wildcard type encoded in"
+					<< " the IndexTree.",
+					""
+				);
 				currentIndex = 0;
 			}
 			else{
@@ -391,9 +402,16 @@ int IndexTree::getLinearIndex(
 				return -1;
 			}
 			else{
-				Streams::err << "Error, index out of bound: ";
+				throw IndexException(
+					"IndexTree::getLinearIndex()",
+					TBTKWhere,
+					"Index not included in the IndexTree '"
+					+ index.toString() + "'.",
+					""
+				);
+/*				Streams::err << "Error, index out of bound: ";
 				index.print();
-				exit(1);
+				exit(1);*/
 			}
 		}
 		//Continue to the next node level.
