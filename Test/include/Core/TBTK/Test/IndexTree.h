@@ -173,4 +173,49 @@ TEST(IndexTree, add){
 	);
 }
 
+TEST(IndexTree, generateLinearMap){
+	IndexTree indexTree;
+	indexTree.add({1, 2, 3});
+	indexTree.add({1, 2, 4});
+	indexTree.add({1, 3, 3});
+	indexTree.generateLinearMap();
+
+	EXPECT_EQ(indexTree.getSize(), 3);
+}
+
+//TODO
+//...
+TEST(IndexTree, getLinearIndex){
+}
+
+//TODO
+//...
+TEST(IndexTree, getPhysicalIndex){
+}
+
+//TODO
+//...
+TEST(IndexTree, getSize){
+}
+
+//TODO
+//...
+TEST(IndexTree, getSubindicesMatching){
+}
+
+//TODO
+//...
+TEST(IndexTree, getIndexList){
+}
+
+//TODO
+//...
+TEST(IndexTree, serialize){
+}
+
+//TODO
+//...
+TEST(IndexTree, Iterator){
+}
+
 };
