@@ -1,3 +1,4 @@
+#include "TBTK/IndexException.h"
 #include "TBTK/IndexTree.h"
 
 #include "gtest/gtest.h"
@@ -106,6 +107,9 @@ TEST(IndexTree, add){
 	//Adding already existing compund Index.
 	indexTree.add({{1, 2, 5}, {1, 2, 3}});
 
+	//Adding Index with wildcard.
+	indexTree.add({2, IDX_ALL, 3});
+
 	//Fail to add compund Index if a non-compund Index with the same
 	//structure already have been added.
 	EXPECT_EXIT(
@@ -117,8 +121,19 @@ TEST(IndexTree, add){
 		""
 	);
 
+	//Fail to add compund Index if it clashes with a compund Index
+	//structure that have already been added.
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			indexTree.add({{1, 2, 5}});
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+
 	//Fail to add Index if it clashes with a compund Index structure that
-	//already have been added.
+	//have already been added.
 	EXPECT_EXIT(
 		{
 			Streams::setStdMuteErr();
@@ -128,8 +143,8 @@ TEST(IndexTree, add){
 		""
 	);
 
-	//Fail to add Index if it clashes with an Index structure that
-	//already has been added (longer version).
+	//Fail to add Index if it clashes with an Index structure that has
+	//already been added (longer version).
 	EXPECT_EXIT(
 		{
 			Streams::setStdMuteErr();
@@ -139,8 +154,8 @@ TEST(IndexTree, add){
 		""
 	);
 
-	//Fail to add Index if it clashes with an Index structure that
-	//already has been added (shorter version).
+	//Fail to add Index if it clashes with an Index structure that has
+	//already been added (shorter version).
 	EXPECT_EXIT(
 		{
 			Streams::setStdMuteErr();
@@ -161,15 +176,51 @@ TEST(IndexTree, add){
 		""
 	);
 
-	//Fail to add Index with negative Index (Except for the negative
-	//IDX_SEPARATOR already tested above).
+	//Fail to add Index with wildcard Index in a position that clashes with
+	//a non-wildcard Index structure
 	EXPECT_EXIT(
 		{
 			Streams::setStdMuteErr();
-			indexTree.add({1, -1, 3});
+			indexTree.add({1, IDX_ALL, 3});
 		},
 		::testing::ExitedWithCode(1),
 		""
+	);
+
+	//Fail to add Index that that has a specific subindex in a position
+	//previously marked as a wildcard.
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			indexTree.add({2, 1, 3});
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+
+	//Fail to add Index that has a similar Index structure to an already
+	//added Index, but which differs in wildcard type at the shared
+	//wildcard position.
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			indexTree.add({2, IDX_SPIN, 3});
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+
+	//Succed at adding an Index that has a similar Index structure to an already
+	//added Index up to a wildcard Index if it has the same wildcard type.
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			indexTree.add({2, IDX_ALL, 4});
+			std::cerr << "Test completed.";
+			exit(0);
+		},
+		::testing::ExitedWithCode(0),
+		"Test completed."
 	);
 }
 
@@ -186,6 +237,203 @@ TEST(IndexTree, generateLinearMap){
 //TODO
 //...
 TEST(IndexTree, getLinearIndex){
+	IndexTree indexTree;
+	indexTree.add({0, 0, 0});
+	indexTree.add({0, 0, 1});
+	indexTree.add({0, 1, 0});
+	indexTree.add({1, 0, 0});
+	indexTree.add({0, 1, 2, 3});
+	indexTree.add({{1, 2, 3}, {4, 5, 6}});
+	indexTree.add({3, IDX_SPIN, 4});
+	indexTree.add({4, IDX_ALL, 5});
+	indexTree.generateLinearMap();
+
+	///////////////////////
+	// Strict match mode //
+	///////////////////////
+
+	//Test normal requests.
+	EXPECT_EQ(indexTree.getLinearIndex({0, 0, 0}), 0);
+	EXPECT_EQ(indexTree.getLinearIndex({0, 0, 1}), 1);
+	EXPECT_EQ(indexTree.getLinearIndex({0, 1, 0}), 2);
+	EXPECT_EQ(indexTree.getLinearIndex({0, 1, 2, 3}), 3);
+	EXPECT_EQ(indexTree.getLinearIndex({1, 0, 0}), 4);
+	EXPECT_EQ(indexTree.getLinearIndex({{1, 2, 3}, {4, 5, 6}}), 5);
+	EXPECT_EQ(indexTree.getLinearIndex({3, IDX_SPIN, 4}), 6);
+	EXPECT_EQ(indexTree.getLinearIndex({4, IDX_ALL, 5}), 7);
+
+	//Fail to request wildcard Indices using wildcards replaced by zero.
+	//(Zero is used internally for wildcard indices, so this is meant to
+	//test that the internal structure does not leak through).
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			indexTree.getLinearIndex({3, 0, 4});
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+
+	//Fail to request wildcard Indices using wrong wildcard. replaced by zero.
+	//(Zero is used internally for wildcard indices, so this is meant to
+	//test that the internal structure does not leak through).
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			indexTree.getLinearIndex({3, IDX_ALL, 4});
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+
+	//Throw IndexException when accessing non-existing Index.
+	EXPECT_THROW(indexTree.getLinearIndex({9, 8, 7}), IndexException);
+	EXPECT_THROW(indexTree.getLinearIndex({0, 1, 2, 0}), IndexException);
+
+	//Return -1 when accessing non-existing Index.
+	EXPECT_EQ(
+		indexTree.getLinearIndex(
+			{9, 8, 7},
+			IndexTree::SearchMode::StrictMatch,
+			true
+		),
+		-1
+	);
+	EXPECT_EQ(
+		indexTree.getLinearIndex(
+			{0, 1, 2, 0},
+			IndexTree::SearchMode::StrictMatch,
+			true
+		),
+		-1
+	);
+
+	////////////////////////
+	// MatchWildcard mode //
+	////////////////////////
+
+	//Test normal requests.
+	EXPECT_EQ(
+		indexTree.getLinearIndex(
+			{0, 0, 0},
+			IndexTree::SearchMode::MatchWildcards
+		),
+		0
+	);
+	EXPECT_EQ(
+		indexTree.getLinearIndex(
+			{0, 0, 1},
+			IndexTree::SearchMode::MatchWildcards
+		),
+		1
+	);
+	EXPECT_EQ(
+		indexTree.getLinearIndex(
+			{0, 1, 0},
+			IndexTree::SearchMode::MatchWildcards
+		),
+		2
+	);
+	EXPECT_EQ(
+		indexTree.getLinearIndex(
+			{0, 1, 2, 3},
+			IndexTree::SearchMode::MatchWildcards
+		),
+		3
+	);
+	EXPECT_EQ(
+		indexTree.getLinearIndex(
+			{1, 0, 0},
+			IndexTree::SearchMode::MatchWildcards
+		),
+		4
+	);
+	EXPECT_EQ(
+		indexTree.getLinearIndex(
+			{{1, 2, 3}, {4, 5, 6}},
+			IndexTree::SearchMode::MatchWildcards
+		),
+		5
+	);
+	EXPECT_EQ(
+		indexTree.getLinearIndex(
+			{3, IDX_SPIN, 4},
+			IndexTree::SearchMode::MatchWildcards
+		),
+		6
+	);
+	EXPECT_EQ(
+		indexTree.getLinearIndex(
+			{4, IDX_ALL, 5},
+			IndexTree::SearchMode::MatchWildcards
+		),
+		7
+	);
+
+	//Test wildcard requests.
+	EXPECT_EQ(
+		indexTree.getLinearIndex(
+			{3, 1, 4},
+			IndexTree::SearchMode::MatchWildcards
+		),
+		6
+	);
+	EXPECT_EQ(
+		indexTree.getLinearIndex(
+			{4, 2, 5},
+			IndexTree::SearchMode::MatchWildcards
+		),
+		7
+	);
+
+	//Fail to request wildcard Indices using wrong wildcard. replaced by zero.
+	//(Zero is used internally for wildcard indices, so this is meant to
+	//test that the internal structure does not leak through).
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			indexTree.getLinearIndex(
+				{3, IDX_ALL, 4},
+				IndexTree::SearchMode::MatchWildcards
+			);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+
+	//Throw IndexException when accessing non-existing Index.
+	EXPECT_THROW(
+		indexTree.getLinearIndex(
+			{9, 8, 7},
+			IndexTree::SearchMode::MatchWildcards
+		),
+		IndexException
+	);
+	EXPECT_THROW(
+		indexTree.getLinearIndex(
+			{0, 1, 2, 0},
+			IndexTree::SearchMode::MatchWildcards
+		),
+		IndexException
+	);
+
+	//Return -1 when accessing non-existing Index.
+	EXPECT_EQ(
+		indexTree.getLinearIndex(
+			{9, 8, 7},
+			IndexTree::SearchMode::MatchWildcards,
+			true
+		),
+		-1
+	);
+	EXPECT_EQ(
+		indexTree.getLinearIndex(
+			{0, 1, 2, 0},
+			IndexTree::SearchMode::MatchWildcards,
+			true
+		),
+		-1
+	);
 }
 
 //TODO
