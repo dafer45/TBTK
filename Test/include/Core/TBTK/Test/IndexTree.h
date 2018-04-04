@@ -587,6 +587,63 @@ TEST(IndexTree, getSubindicesMatching){
 //TODO
 //...
 TEST(IndexTree, getIndexList){
+	IndexTree indexTree;
+	indexTree.add({0, 0, 0});
+	indexTree.add({0, 0, 1});
+	indexTree.add({0, 1, 0});
+	indexTree.add({1, 0, 0});
+	indexTree.add({0, 1, 2, 3});
+	indexTree.add({{1, 2, 3}, {4, 5, 6}});
+	indexTree.add({3, IDX_SPIN, 4});
+	indexTree.add({4, IDX_ALL, 5});
+	indexTree.generateLinearMap();
+
+	//Match without IDX_ALL wildcards
+	std::vector<Index> indexList0 = indexTree.getIndexList({0, 0, 0});
+	std::vector<Index> indexList1 = indexTree.getIndexList({0, 1, 0});
+	std::vector<Index> indexList2 = indexTree.getIndexList(
+		{{1, 2, 3}, {4, 5, 6}}
+	);
+	std::vector<Index> indexList3 = indexTree.getIndexList(
+		{3, IDX_SPIN, 4}
+	);
+	ASSERT_EQ(indexList0.size(), 1);
+	ASSERT_EQ(indexList1.size(), 1);
+	ASSERT_EQ(indexList2.size(), 1);
+	ASSERT_EQ(indexList3.size(), 1);
+	EXPECT_TRUE(indexList0[0].equals({0, 0, 0}));
+	EXPECT_TRUE(indexList1[0].equals({0, 1, 0}));
+	EXPECT_TRUE(indexList2[0].equals({{1, 2, 3}, {4, 5, 6}}));
+	EXPECT_TRUE(indexList3[0].equals({3, IDX_SPIN, 4}));
+
+	//Match with wildcard
+	std::vector<Index> indexList4 = indexTree.getIndexList(
+		{0, IDX_ALL, IDX_ALL}
+	);
+	std::vector<Index> indexList5 = indexTree.getIndexList(
+		{{IDX_ALL, IDX_ALL, IDX_ALL}, {IDX_ALL, IDX_ALL, IDX_ALL}}
+	);
+	ASSERT_EQ(indexList4.size(), 3);
+	ASSERT_EQ(indexList5.size(), 1);
+	EXPECT_TRUE(indexList4[0].equals({0, 0, 0}));
+	EXPECT_TRUE(indexList4[1].equals({0, 0, 1}));
+	EXPECT_TRUE(indexList4[2].equals({0, 1, 0}));
+	EXPECT_TRUE(indexList5[0].equals({{1, 2, 3}, {4, 5, 6}}));
+
+	//Match against IDX_ALL wildcard in the IndexTree by specifying IDX_ALL
+	//also in the pattern.
+	std::vector<Index> indexList6 = indexTree.getIndexList(
+		{4, IDX_ALL, 5}
+	);
+	ASSERT_EQ(indexList6.size(), 1);
+	EXPECT_TRUE(indexList6[0].equals({4, IDX_ALL, 5}));
+
+	//Do not match against IDX_ALL wildcard in the IndexTree when not
+	//specifying IDX_ALL also in the pattern.
+	std::vector<Index> indexList7 = indexTree.getIndexList(
+		{4, 0, 5}
+	);
+	ASSERT_EQ(indexList7.size(), 0);
 }
 
 TEST(IndexTree, serialize){

@@ -177,8 +177,8 @@ public:
 		SearchMode searchMode
 	) const;
 
-	/** Generate a list of indices satisfying the specified pattern.
-	 *  TODO More details.
+	/** Generate a list containing all the @link Index Indices @endlink in
+	 *  the IndexTree that satisfies the specified pattern.
 	 *
 	 *  @param pattern Pattern to match against.
 	 *

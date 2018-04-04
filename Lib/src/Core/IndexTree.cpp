@@ -488,8 +488,26 @@ vector<Index> IndexTree::getIndexList(const Index &pattern) const{
 	}*/
 	while(!iterator.getHasReachedEnd()){
 		Index index = iterator.getIndex();
-		if(index.equals(pattern, true))
-			indexList.push_back(index);
+		if(index.equals(pattern, true)){
+			//Index::equals() has here determined that the Indices
+			//are equal up to IDX_ALL wildcards. However, we do not
+			//want to add 'index' if the match is because 'index'
+			//has an IDX_ALL wildcard in a subindex where 'pattern'
+			//has some other value. Only IDX_ALL wildcards in the
+			//'pattern' Index should be treated as wildcards.
+			bool equalityIsValid = true;
+			for(unsigned int n = 0; n < index.getSize(); n++){
+				if(index[n] == IDX_ALL){
+					if(pattern[n] != IDX_ALL){
+						equalityIsValid = false;
+						break;
+					}
+				}
+			}
+
+			if(equalityIsValid)
+				indexList.push_back(index);
+		}
 
 		iterator.searchNext();
 	}
