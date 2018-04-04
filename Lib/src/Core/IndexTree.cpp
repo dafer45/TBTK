@@ -461,7 +461,7 @@ Index IndexTree::getPhysicalIndex(int linearIndex) const{
 }
 
 vector<unsigned int> IndexTree::getSubindicesMatching(
-	int i,
+	int subindexValue,
 	const Index &index,
 	SearchMode searchMode
 ) const{
@@ -469,7 +469,7 @@ vector<unsigned int> IndexTree::getSubindicesMatching(
 	Index physicalIndex = getPhysicalIndex(linearIndex);
 	vector<unsigned int> matches;
 	for(unsigned int n = 0; n < physicalIndex.getSize(); n++)
-		if(physicalIndex.at(n) == i)
+		if(physicalIndex.at(n) == subindexValue)
 			matches.push_back(n);
 
 	return matches;

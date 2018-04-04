@@ -14,9 +14,9 @@
   ::getHoppingAmplitudes(). Also make these functions return constant
   references rather than pointers to constants.
 
-- Rewrite HoppingAmplitudeTree::Iterator and HoppingAmplitudeSet::Iterator to
-  use standard iterator notation with operator++(), operator*(), operator==(),
-  and operator!=().
+- Rewrite HoppingAmplitudeTree::Iterator, HoppingAmplitudeSet::Iterator and
+  IndexTree::Iterator to use standard iterator notation with operator++(),
+  operator*(), operator==(), and operator!=().
 
 - [1] Make SingleParticleContext::hoppingAmplitudeSet a normal member of
   SingleParticleContext rather than a pointer. This should remove the need to

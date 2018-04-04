@@ -9,82 +9,115 @@ TEST(IndexTree, Constructor){
 	//Not testable on its own.
 }
 
-//TODO
-//...
-//TEST(IndexedDataTree, SerializeToJSON){
-	/**************************/
-	/* Serializable elements. */
-	/**************************/
+TEST(IndexTree, SerializeToJSON){
+	IndexTree indexTree0;
+	indexTree0.add({0, 0, 0});
+	indexTree0.add({0, 0, 1});
+	indexTree0.add({0, 1, 0});
+	indexTree0.add({1, 0, 0});
+	indexTree0.add({0, 1, 2, 3});
+	indexTree0.add({{1, 2, 3}, {4, 5, 6}});
+	indexTree0.add({3, IDX_SPIN, 4});
+	indexTree0.add({4, IDX_ALL, 5});
+	indexTree0.generateLinearMap();
 
-/*	Streams::setStdMuteOut();
-
-	//Setup Models that will work as test elements.
-	Model model0;
-	model0 << HoppingAmplitude(1, {0}, {0});
-	model0.construct();
-
-	Model model1;
-	model1 << HoppingAmplitude(1, {0}, {0});
-	model1 << HoppingAmplitude(1, {1}, {1});
-	model1.construct();
-
-	Model model2;
-	model2 << HoppingAmplitude(1, {0}, {0});
-	model2 << HoppingAmplitude(1, {1}, {1});
-	model2 << HoppingAmplitude(1, {2}, {2});
-	model2.construct();
-
-	Model model3;
-	model3 << HoppingAmplitude(1, {0}, {0});
-	model3 << HoppingAmplitude(1, {1}, {1});
-	model3 << HoppingAmplitude(1, {2}, {2});
-	model3 << HoppingAmplitude(1, {3}, {3});
-	model3.construct();
-
-	//Actual tests
-	IndexedDataTree<Model> indexedDataTree0;
-	indexedDataTree0.add(model0, {1, 2, 3});
-	indexedDataTree0.add(model1, {1, 2, 4});
-	indexedDataTree0.add(model2, {1, 2, 3});
-	indexedDataTree0.add(model3, {{1, 2, 5}, {1, 2, 3}});
-
-	IndexedDataTree<Model> indexedDataTree1(
-		indexedDataTree0.serialize(Serializable::Mode::JSON),
+	IndexTree indexTree1(
+		indexTree0.serialize(Serializable::Mode::JSON),
 		Serializable::Mode::JSON
 	);
 
-	//Access existing elements.
-	EXPECT_EQ(indexedDataTree1.get({1, 2, 3}).getBasisSize(), 3);
-	EXPECT_EQ(indexedDataTree1.get({1, 2, 4}).getBasisSize(), 2);
-	EXPECT_EQ(indexedDataTree1.get({{1, 2, 5}, {1, 2, 3}}).getBasisSize(), 4);
+	///////////////////////
+	// Strict match mode //
+	///////////////////////
 
-	//Access non-existing element
-	EXPECT_THROW(indexedDataTree1.get({1, 2, 2}), ElementNotFoundException);
-	EXPECT_THROW(indexedDataTree1.get({1, 1, 3}), ElementNotFoundException);*/
+	//Test normal requests.
+	EXPECT_EQ(indexTree1.getLinearIndex({0, 0, 0}), 0);
+	EXPECT_EQ(indexTree1.getLinearIndex({0, 0, 1}), 1);
+	EXPECT_EQ(indexTree1.getLinearIndex({0, 1, 0}), 2);
+	EXPECT_EQ(indexTree1.getLinearIndex({0, 1, 2, 3}), 3);
+	EXPECT_EQ(indexTree1.getLinearIndex({1, 0, 0}), 4);
+	EXPECT_EQ(indexTree1.getLinearIndex({{1, 2, 3}, {4, 5, 6}}), 5);
+	EXPECT_EQ(indexTree1.getLinearIndex({3, IDX_SPIN, 4}), 6);
+	EXPECT_EQ(indexTree1.getLinearIndex({4, IDX_ALL, 5}), 7);
 
-	/*************************************/
-	/* Non/pseudo-serializable elements. */
-	/*************************************/
-/*	IndexedDataTree<int> indexedDataTree2;
-	indexedDataTree2.add(1, {1, 2, 3});
-	indexedDataTree2.add(2, {1, 2, 4});
-	indexedDataTree2.add(3, {1, 2, 3});
-	indexedDataTree2.add(4, {{1, 2, 5}, {1, 2, 3}});
+	////////////////////////
+	// MatchWildcard mode //
+	////////////////////////
 
-	IndexedDataTree<int> indexedDataTree3(
-		indexedDataTree2.serialize(Serializable::Mode::JSON),
-		Serializable::Mode::JSON
+	//Test normal requests.
+	EXPECT_EQ(
+		indexTree1.getLinearIndex(
+			{0, 0, 0},
+			IndexTree::SearchMode::MatchWildcards
+		),
+		0
+	);
+	EXPECT_EQ(
+		indexTree1.getLinearIndex(
+			{0, 0, 1},
+			IndexTree::SearchMode::MatchWildcards
+		),
+		1
+	);
+	EXPECT_EQ(
+		indexTree1.getLinearIndex(
+			{0, 1, 0},
+			IndexTree::SearchMode::MatchWildcards
+		),
+		2
+	);
+	EXPECT_EQ(
+		indexTree1.getLinearIndex(
+			{0, 1, 2, 3},
+			IndexTree::SearchMode::MatchWildcards
+		),
+		3
+	);
+	EXPECT_EQ(
+		indexTree1.getLinearIndex(
+			{1, 0, 0},
+			IndexTree::SearchMode::MatchWildcards
+		),
+		4
+	);
+	EXPECT_EQ(
+		indexTree1.getLinearIndex(
+			{{1, 2, 3}, {4, 5, 6}},
+			IndexTree::SearchMode::MatchWildcards
+		),
+		5
+	);
+	EXPECT_EQ(
+		indexTree1.getLinearIndex(
+			{3, IDX_SPIN, 4},
+			IndexTree::SearchMode::MatchWildcards
+		),
+		6
+	);
+	EXPECT_EQ(
+		indexTree1.getLinearIndex(
+			{4, IDX_ALL, 5},
+			IndexTree::SearchMode::MatchWildcards
+		),
+		7
 	);
 
-	//Access existing elements.
-	EXPECT_EQ(indexedDataTree3.get({1, 2, 3}), 3);
-	EXPECT_EQ(indexedDataTree3.get({1, 2, 4}), 2);
-	EXPECT_EQ(indexedDataTree3.get({{1, 2, 5}, {1, 2, 3}}), 4);
-
-	//Access non-existing element
-	EXPECT_THROW(indexedDataTree3.get({1, 2, 2}), ElementNotFoundException);
-	EXPECT_THROW(indexedDataTree3.get({1, 1, 3}), ElementNotFoundException);
-}*/
+	//Test wildcard requests.
+	EXPECT_EQ(
+		indexTree1.getLinearIndex(
+			{3, 1, 4},
+			IndexTree::SearchMode::MatchWildcards
+		),
+		6
+	);
+	EXPECT_EQ(
+		indexTree1.getLinearIndex(
+			{4, 2, 5},
+			IndexTree::SearchMode::MatchWildcards
+		),
+		7
+	);
+}
 
 TEST(IndexTree, Destructor){
 	//Not testable on its own.
@@ -234,8 +267,6 @@ TEST(IndexTree, generateLinearMap){
 	EXPECT_EQ(indexTree.getSize(), 3);
 }
 
-//TODO
-//...
 TEST(IndexTree, getLinearIndex){
 	IndexTree indexTree;
 	indexTree.add({0, 0, 0});
@@ -436,19 +467,121 @@ TEST(IndexTree, getLinearIndex){
 	);
 }
 
-//TODO
-//...
 TEST(IndexTree, getPhysicalIndex){
+	IndexTree indexTree;
+	indexTree.add({0, 0, 0});
+	indexTree.add({0, 0, 1});
+	indexTree.add({0, 1, 0});
+	indexTree.add({1, 0, 0});
+	indexTree.add({0, 1, 2, 3});
+	indexTree.add({{1, 2, 3}, {4, 5, 6}});
+	indexTree.add({3, IDX_SPIN, 4});
+	indexTree.add({4, IDX_ALL, 5});
+	indexTree.generateLinearMap();
+
+	//Normal access.
+	EXPECT_TRUE(indexTree.getPhysicalIndex(0).equals({0, 0, 0}));
+	EXPECT_TRUE(indexTree.getPhysicalIndex(1).equals({0, 0, 1}));
+	EXPECT_TRUE(indexTree.getPhysicalIndex(2).equals({0, 1, 0}));
+	EXPECT_TRUE(indexTree.getPhysicalIndex(3).equals({0, 1, 2, 3}));
+	EXPECT_TRUE(indexTree.getPhysicalIndex(4).equals({1, 0, 0}));
+	EXPECT_TRUE(indexTree.getPhysicalIndex(5).equals({{1, 2, 3}, {4, 5, 6}}));
+	EXPECT_TRUE(indexTree.getPhysicalIndex(6).equals({{3, IDX_SPIN, 4}}));
+	EXPECT_TRUE(indexTree.getPhysicalIndex(7).equals({{4, IDX_ALL, 5}}));
+
+	//Index out of bound.
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			indexTree.getPhysicalIndex(-1);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			indexTree.getPhysicalIndex(8);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
 }
 
-//TODO
-//...
 TEST(IndexTree, getSize){
+	IndexTree indexTree;
+	indexTree.add({1, 2, 3});
+	indexTree.add({1, 2, 4});
+	indexTree.add({1, 3, 3});
+
+	EXPECT_EQ(indexTree.getSize(), -1);
+	indexTree.generateLinearMap();
+	EXPECT_EQ(indexTree.getSize(), 3);
 }
 
-//TODO
-//...
 TEST(IndexTree, getSubindicesMatching){
+	IndexTree indexTree;
+	indexTree.add({1, 2, 1});
+	indexTree.add({1, 2, 3});
+	indexTree.add({2, IDX_ALL, 4, IDX_SPIN, 6, IDX_ALL});
+	indexTree.generateLinearMap();
+
+	//Match agains normal Index in StrictMatch mode.
+	std::vector<unsigned int> subindices0
+		= indexTree.getSubindicesMatching(
+			1,
+			{1, 2, 1},
+			IndexTree::SearchMode::StrictMatch
+		);
+	EXPECT_EQ(subindices0.size(), 2);
+	EXPECT_EQ(subindices0[0], 0);
+	EXPECT_EQ(subindices0[1], 2);
+
+	//Match agains normal Index in MatchWildcards mode.
+	std::vector<unsigned int> subindices1
+		= indexTree.getSubindicesMatching(
+			1,
+			{1, 2, 1},
+			IndexTree::SearchMode::MatchWildcards
+		);
+	EXPECT_EQ(subindices1.size(), 2);
+	EXPECT_EQ(subindices1[0], 0);
+	EXPECT_EQ(subindices1[1], 2);
+
+	//Match against wildcard indices in StrictMatch mode.
+	std::vector<unsigned int> subindices2
+		= indexTree.getSubindicesMatching(
+			IDX_ALL,
+			{2, IDX_ALL, 4, IDX_SPIN, 6, IDX_ALL},
+			IndexTree::SearchMode::StrictMatch
+		);
+	EXPECT_EQ(subindices2.size(), 2);
+	EXPECT_EQ(subindices2[0], 1);
+	EXPECT_EQ(subindices2[1], 5);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			std::vector<unsigned int> subindices3
+				= indexTree.getSubindicesMatching(
+					IDX_ALL,
+					{2, 3, 4, 5, 6, 7},
+					IndexTree::SearchMode::StrictMatch
+				);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+
+	//Match against wildcard indices in MatchWildcards mode.
+	std::vector<unsigned int> subindices4
+		= indexTree.getSubindicesMatching(
+			IDX_ALL,
+			{2, 3, 4, 5, 6, 7},
+			IndexTree::SearchMode::MatchWildcards
+		);
+	EXPECT_EQ(subindices4.size(), 2);
+	EXPECT_EQ(subindices4[0], 1);
+	EXPECT_EQ(subindices4[1], 5);
 }
 
 //TODO
@@ -456,9 +589,8 @@ TEST(IndexTree, getSubindicesMatching){
 TEST(IndexTree, getIndexList){
 }
 
-//TODO
-//...
 TEST(IndexTree, serialize){
+	//Already tested through SerializeToJSON.
 }
 
 //TODO

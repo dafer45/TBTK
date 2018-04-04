@@ -102,7 +102,7 @@ public:
 	 *    specified in the same subindex position. This is the standard
 	 *    mode of execution.
 	 *  <br/>
-	 *  <b>MAtchWildcards:</b><br/>
+	 *  <b>MatchWildcards:</b><br/>
 	 *    Subindices marked as wildcard indices in the IndexTree are
 	 *    accepted independently of the subindex value in the Index passed
 	 *    to this function. For example, if {1, IDX_ALL, 3} has been added
@@ -133,20 +133,58 @@ public:
 		bool returnNegativeForMissingIndex = false
 	) const;
 
-	/** Get physical index. */
+	/** Get physical index corresponding to given linear index.
+	 *
+	 *  @param linearIndex Linear index.
+	 *
+	 *  @return The physical Index that corresponds to the given linear
+	 *  Index. */
 	Index getPhysicalIndex(int linearIndex) const;
 
-	/** Get size. */
+	/** Get size.
+	 *
+	 *  @return The number of @link Index Indices @endlink stored in the
+	 *  IndexTree. Returns -1 if IndexTree::generateLinearMap() has not yet
+	 *  been called. */
 	int getSize() const;
 
-	/** Get subindex. */
+	/** First searches the IndexTree for a matching Index and then returns
+	 *  a list of subindiex positions that matches the given subindex
+	 *  value. If executed in SearchMode::StrictMatch, the function will
+	 *  simply return the matching subindices in the input Index itself.
+	 *  However, if executed in SearchMode::MatchWildcards, the IndexTree
+	 *  will be searched for an Index that is matching up to a wildcard,
+	 *  according to the specification of IndexTree::getLinearIndex(), and
+	 *  then perform the subindex matching on the resulting Index.
+	 *  <br/><br/>
+	 *  <b>Example:</b> If {1, IDX_ALL, 3, IDX_SPIN, 5, IDX_ALL} is stored
+	 *  in the IndexTree and the method is called as getSubindicesMatching(
+	 *  IDX_ALL, {1, 2, 3, 4, 5, 6}, IndexTree::SearchMode::MatchWildcards)
+	 *  then {1, IDX_ALL, 3, IDX_SPIN, 5, IDX_ALL} will first be found and
+	 *  then matched against the subindex value IDX_ALL, which results in a
+	 *  vector containing 1 and 5 being returned.
+	 *
+	 *  @param subindexValue The subindex value to match against.
+	 *  @param index The Index to match against.
+	 *  @param searchMode Mode to use when matching 'index' against the
+	 *  @link Index Indices @endlink in the IndexTree.
+	 *
+	 *  @return An std::vector<int> containing the subindex positions for
+	 *  which subindexValue has the same value as the matched Index. */
 	std::vector<unsigned int> getSubindicesMatching(
-		int i,
+		int subindexValue,
 		const Index &index,
 		SearchMode searchMode
 	) const;
 
-	/** Generate a list of indices satisfying the specified pattern. */
+	/** Generate a list of indices satisfying the specified pattern.
+	 *  TODO More details.
+	 *
+	 *  @param pattern Pattern to match against.
+	 *
+	 *  @return An std::vector<Index> containing all the @link Index
+	 *  Indices @endlink in the IndexTree that matches the specified
+	 *  pattern. */
 	std::vector<Index> getIndexList(const Index &pattern) const;
 
 	/** Iterator for iterating through @link Index Indices @link stored in
