@@ -75,6 +75,7 @@ TEST(Model, addModel){
 	model1 << HoppingAmplitude(3, {1}, {1});
 
 	Model model;
+	model.setVerbose(false);
 	model.addModel(model0, {0});
 	model.addModel(model1, {1});
 	model.construct();
@@ -252,6 +253,7 @@ public:
 TEST(Model, setFilter){
 	//HoppingAmplitudeFilter.
 	Model model0;
+	model0.setVerbose(false);
 	model0.setFilter(HoppingAmplitudeFilter());
 	model0 << HoppingAmplitude(0, {0, 0, 0}, {0, 0, 0});
 	model0 << HoppingAmplitude(0, {0, 1, 0}, {0, 0, 0});
@@ -265,6 +267,7 @@ TEST(Model, setFilter){
 
 	//IndexFilter.
 	Model model1;
+	model1.setVerbose(false);
 	model1.setFilter(IndexFilter());
 	model1 << HoppingAmplitude(0, {0, 0, 0}, {0, 0, 0});
 	model1 << HoppingAmplitude(0, {0, 1, 0}, {0, 0, 0});
@@ -279,6 +282,7 @@ TEST(Model, setFilter){
 
 TEST(Model, operatorInsertion){
 	Model model;
+	model.setVerbose(false);
 	//Normal
 	model << HoppingAmplitude(0, {0}, {0});
 	//Tuple
