@@ -235,7 +235,9 @@ public:
 		friend class IndexTree;
 	};
 
-	/** Returns Iterator initialized to point at first Index. */
+	/** Get Iterator.
+	 *
+	 *  @return An Iterator initialized to point at the first Index. */
 	Iterator begin() const;
 
 	/** Implements Serializable::serialize(). */
