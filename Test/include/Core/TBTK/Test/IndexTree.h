@@ -584,8 +584,6 @@ TEST(IndexTree, getSubindicesMatching){
 	EXPECT_EQ(subindices4[1], 5);
 }
 
-//TODO
-//...
 TEST(IndexTree, getIndexList){
 	IndexTree indexTree;
 	indexTree.add({0, 0, 0});
@@ -650,9 +648,52 @@ TEST(IndexTree, serialize){
 	//Already tested through SerializeToJSON.
 }
 
-//TODO
-//...
 TEST(IndexTree, Iterator){
+	IndexTree indexTree;
+	indexTree.add({0, 0, 0});
+	indexTree.add({0, 0, 1});
+	indexTree.add({0, 1, 0});
+	indexTree.add({1, 0, 0});
+	indexTree.add({0, 1, 2, 3});
+	indexTree.add({{1, 2, 3}, {4, 5, 6}});
+	indexTree.add({3, IDX_SPIN, 4});
+	indexTree.add({4, IDX_ALL, 5});
+	indexTree.generateLinearMap();
+
+	IndexTree::Iterator iterator = indexTree.begin();
+	EXPECT_FALSE(iterator.getHasReachedEnd());
+	EXPECT_TRUE(iterator.getIndex().equals({0, 0, 0}));
+
+	iterator.searchNext();
+	EXPECT_FALSE(iterator.getHasReachedEnd());
+	EXPECT_TRUE(iterator.getIndex().equals({0, 0, 1}));
+
+	iterator.searchNext();
+	EXPECT_FALSE(iterator.getHasReachedEnd());
+	EXPECT_TRUE(iterator.getIndex().equals({0, 1, 0}));
+
+	iterator.searchNext();
+	EXPECT_FALSE(iterator.getHasReachedEnd());
+	EXPECT_TRUE(iterator.getIndex().equals({0, 1, 2, 3}));
+
+	iterator.searchNext();
+	EXPECT_FALSE(iterator.getHasReachedEnd());
+	EXPECT_TRUE(iterator.getIndex().equals({1, 0, 0}));
+
+	iterator.searchNext();
+	EXPECT_FALSE(iterator.getHasReachedEnd());
+	EXPECT_TRUE(iterator.getIndex().equals({{1, 2, 3}, {4, 5, 6}}));
+
+	iterator.searchNext();
+	EXPECT_FALSE(iterator.getHasReachedEnd());
+	EXPECT_TRUE(iterator.getIndex().equals({3, IDX_SPIN, 4}));
+
+	iterator.searchNext();
+	EXPECT_FALSE(iterator.getHasReachedEnd());
+	EXPECT_TRUE(iterator.getIndex().equals({4, IDX_ALL, 5}));
+
+	iterator.searchNext();
+	EXPECT_TRUE(iterator.getHasReachedEnd());
 }
 
 };
