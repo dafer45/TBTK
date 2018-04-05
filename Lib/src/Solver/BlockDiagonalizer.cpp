@@ -408,7 +408,7 @@ void BlockDiagonalizer::solve(){
 			for(int b = 1; b < numBlocks; b++){
 				eigenValuesOffsets.push_back(
 					eigenValuesOffsets[b-1]
-					+ numStatesPerBlock[b]
+					+ numStatesPerBlock[b-1]
 				);
 			}
 
