@@ -194,7 +194,7 @@ void IndexTree::add(const Index &index, unsigned int subindex){
 						<< "position for which non "
 						<< "wild card indices already "
 						<< "have been added:\n";
-					index.print();
+					Streams::err << index.toString() << "\n";
 					exit(1);
 				}
 				wildcardIndex = true;
@@ -206,7 +206,7 @@ void IndexTree::add(const Index &index, unsigned int subindex){
 					<< "in subindex position for which "
 					<< "wild card with different wild card"
 					<< " type already have been added:\n";
-				index.print();
+				Streams::err << index.toString() << "\n";
 				exit(1);
 			}
 			currentIndex = 0;
@@ -216,7 +216,7 @@ void IndexTree::add(const Index &index, unsigned int subindex){
 				<< "add index because an index with a wild "
 				<< "card in subindex position " << subindex
 				<< " already have been added:\n";
-			index.print();
+			Streams::err << index.toString() << "\n";
 			exit(1);
 		}
 
@@ -235,7 +235,7 @@ void IndexTree::add(const Index &index, unsigned int subindex){
 			Streams::err << "Error in IndexTree::add(), index "
 				<< "incompatible with previously added index "
 				<< "at subindex " << subindex << ":\n";
-			index.print();
+			Streams::err << index.toString() << "\n";
 			exit(1);
 		}
 		//Propagate to the next node level.
@@ -254,7 +254,7 @@ void IndexTree::add(const Index &index, unsigned int subindex){
 			Streams::err << "Error in IndexTree::add(), index "
 				<< "incompatible with previously added index "
 				<< "at subindex " << subindex << ":\n";
-			index.print();
+			Streams::err << index.toString() << "\n";
 			exit(1);
 		}
 
@@ -378,7 +378,7 @@ int IndexTree::getLinearIndex(
 					<< "IndexTree::getLinearIndex(). "
 					<< "Subindex " << subindex << " should"
 					<< " not be a wild card index:\n";
-				index.print();
+				Streams::err << index.toString() << "\n";
 				exit(1);
 			}
 		}
@@ -390,7 +390,7 @@ int IndexTree::getLinearIndex(
 				Streams::err << "Error in IndexTree::getLinearIndex()."
 					<< " Subindex " << subindex << " has to be a "
 					<< "wild card index:\n";
-				index.print();
+				Streams::err << index.toString();
 				exit(1);
 			}
 		}
