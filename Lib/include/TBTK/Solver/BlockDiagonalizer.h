@@ -42,21 +42,35 @@ namespace Solver{
  *  space. */
 class BlockDiagonalizer : public Solver, public Communicator{
 public:
-	/** Constructor */
+	/** Constructs a Solver::Diagonalizer. */
 	BlockDiagonalizer();
 
 	/** Destructor. */
 	virtual ~BlockDiagonalizer();
 
-	/** Set self-consistency callback. If set to NULL or never called, the
-	 *  self-consistency loop will not be run. */
+	/** Set self-consistency callback. If set to nullptr or never called,
+	 *  the self-consistency loop will not be run.
+	 *
+	 *  @param selfConsistencyCallback A callback function that will be
+	 *  called after the Model has been diagonalized. The function should
+	 *  calculate relevant quantities, modify the Model if necessary, and
+	 *  return false if further iteration is necessary. If true is
+	 *  returned, self-consistency is considered to be reached and the
+	 *  iteration stops. */
 	void setSelfConsistencyCallback(
 		bool (*selfConsistencyCallback)(
 			BlockDiagonalizer &blockDiagonalizer
 		)
 	);
 
-	/** Set maximum number of iterations for the self-consistency loop. */
+	/** Set maximum number of iterations for the self-consistency loop.
+	 *  Only used if BlockDiagonalizer::setSelfConsistencyCallback() has
+	 *  been called with a non-nullptr argument. If the self-consistency
+	 *  callback does not return true, maxIterations determine the maximum
+	 *  number of times it is called.
+	 *
+	 *  @param maxIterations Maximum number of iterations to use in a
+	 *  self-consistent calculation. */
 	void setMaxIterations(int maxIterations);
 
 	/** Run calculations. Diagonalizes ones if no self-consistency callback
@@ -64,39 +78,70 @@ public:
 	 *  or maximum number of iterations has been reached. */
 	void run();
 
-	/** Get eigenvalue. */
+	/** Get eigenvalue. The eigenvalues are ordered first by block, and
+	 *  then in accending order. This means that eigenvalues for blocks
+	 *  with smaller @link Index Indices @endlink comes before eigenvalues
+	 *  for blocks with larger @link Index Indices @endlink, while inside
+	 *  each block the eigenvalues are in accending order.
+	 *
+	 *  @param state The state number.
+	 *
+	 *  @return The eigenvalue for the given state. */
 	const double getEigenValue(int state);
 
 	/** Get eigenvalue for specific block. Note that in contrast to
 	 *  getEigenValue(int state), 'state' here is relative to the first
-	 *  state of the block. */
+	 *  state of the block.
+	 *
+	 *  @param blockIndex Block index to get the eigenvalue for.
+	 *  @param state State index relative to the block in accending order.
+	 *
+	 *  @return The eigenvalue for the given state in the given block. */
 	const double getEigenValue(const Index &blockIndex, int state);
 
 	/** Get amplitude for given eigenvector \f$n\f$ and physical index
 	 * \f$x\f$: \f$\Psi_{n}(x)\f$.
+	 *
 	 *  @param state Eigenstate number \f$n\f$.
 	 *  @param index Physical index \f$x\f$.
-	 */
+	 *
+	 *  @return The amplitude \f$\Psi_{n}(\mathbf{x})\f$. */
 	const std::complex<double> getAmplitude(int state, const Index &index);
 
-	/** Same as getAmplitude(int state, const Index &index), but the
-	 *  amplitude is accessed by first identifying the block using the
-	 *  blockIndex, then using 'state', which here is relative to the first
-	 *  state in the block, and finally accessing the amplitude
-	 *  {blockIndex, intraBlockIndex}. */
+	/** Get amplitude for given eigenvector \f$n\f$, block index \f$b\f$,
+	 *  and physical index \f$x\f$: \f$\Psi_{nb}(x)\f$.
+	 *
+	 *  @param blockIndex Block index \f$b\f$
+	 *  @param state Eigenstate number \f$n\f$ relative to the given block.
+	 *  @param index Physical index \f$x\f$.
+	 *
+	 *  @return The amplitude \f$\Psi_{nb}(\mathbf{x})\f$. */
 	const std::complex<double> getAmplitude(
 		const Index &blockIndex,
 		int state,
 		const Index &intraBlockIndex
 	);
 
-	/** Get first state in the block corresponding to the given index. */
+	/** Get first state in the block corresponding to the given Index.
+	 *
+	 *  @param index A physical Index.
+	 *
+	 *  @return The global state index for the first state that belongs to
+	 *  the block for which the given Index is part of the basis. */
 	unsigned int getFirstStateInBlock(const Index &index) const;
 
-	/** Get last state in the block corresponding to the given index. */
+	/** Get last state in the block corresponding to the given Index.
+	 *
+	 *  @param index A physical Index.
+	 *
+	 *  @return The global state index for the last state that belongs to
+	 *  the block for which the given Index is part of the basis. */
 	unsigned int getLastStateInBlock(const Index &index) const;
 
-	/** Set whether parallel execution is enabled or not. */
+	/** Set whether parallel execution is enabled or not. Parallel
+	 *  execution is only possible if OpenMP is available.
+	 *
+	 *  @pragma parallelExecution True to enable parallel execution. */
 	void setParallelExecution(bool parallelExecution);
 private:
 	/** pointer to array containing Hamiltonian. */

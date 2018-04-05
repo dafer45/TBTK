@@ -110,6 +110,7 @@ public:
 	/** Get eigenvalue for a specific state.
 	 *
 	 *  @param state The state number, ordered in accending order.
+	 *
 	 *  @return The eigenvalue for the given state. */
 	const double getEigenValue(int state);
 
@@ -117,7 +118,9 @@ public:
 	 * \f$x\f$: \f$\Psi_{n}(x)\f$.
 	 *
 	 *  @param state Eigenstate number \f$n\f$.
-	 *  @param index Physical index \f$x\f$. */
+	 *  @param index Physical index \f$x\f$.
+	 *
+	 *  @return The amplitude \f$\Psi_{n}(x)\f$. */
 	const std::complex<double> getAmplitude(int state, const Index &index);
 private:
 	/** pointer to array containing Hamiltonian. */
