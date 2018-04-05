@@ -31,19 +31,25 @@ namespace Solver{
 /** @brief Base class for Solvers. */
 class Solver{
 public:
-	/** Constructor */
+	/** Constructs a Solver::Solver. */
 	Solver();
 
 	/** Destructor. */
 	virtual ~Solver();
 
-	/** Set model to work on. */
+	/** Set model to solve.
+	 *
+	 *  @param model The Model that is to be solved. */
 	virtual void setModel(Model &model);
 
-	/** Get model. */
+	/** Get model.
+	 *
+	 *  @return The Model that the Solver is solving. */
 	Model& getModel();
 
-	/** Get model. */
+	/** Get model.
+	 *
+	 *  @return The Model that the Solver is solving. */
 	const Model& getModel() const;
 private:
 	/** Model to work on. */

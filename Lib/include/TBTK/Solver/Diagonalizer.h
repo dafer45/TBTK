@@ -41,50 +41,83 @@ namespace Solver{
  *  space. */
 class Diagonalizer : public Solver, public Communicator{
 public:
-	/** Constructor */
+	/** Constructs a Solver::Diagonalizer. */
 	Diagonalizer();
 
 	/** Destructor. */
 	virtual ~Diagonalizer();
 
-	/** Set self-consistency callback. If set to NULL or never called, the
-	 *  self-consistency loop will not be run. */
+	/** Set self-consistency callback. If set to nullptr or never called,
+	 *  the self-consistency loop will not be run.
+	 *
+	 *  @param selfConsistencyCallback A callback function that will be
+	 *  called after the Model has been diagonalized. The function should
+	 *  calculate relevant quantities, modify the Model if necessary, and
+	 *  return false if further iteration is necessary. If true is
+	 *  returned, self-consistency is considered to be reached and the
+	 *  iteration stops. */
 	void setSelfConsistencyCallback(
 		bool (*selfConsistencyCallback)(
 			Diagonalizer &diagonalizer
 		)
 	);
 
-	/** Set maximum number of iterations for the self-consistency loop. */
+	/** Set the maximum number of iterations for the self-consistency loop.
+	 *  Only used if Diagonalizer::setSelfConsistencyCallback() has been
+	 *  called with a non-nullptr argument. If the self-consistency
+	 *  callback does not return true, maxIterations determines the maximum
+	 *  number of times it is called.
+	 *
+	 *  @param maxIterations Maximum number of iterations to use in a
+	 *  self-consistent callculation. */
 	void setMaxIterations(int maxIterations);
 
 	/** Run calculations. Diagonalizes ones if no self-consistency callback
-	 *  have been set, or otherwise multiple times until slef-consistencey
+	 *  have been set, or otherwise multiple times until self-consistencey
 	 *  or maximum number of iterations has been reached. */
 	void run();
 
-	/** Get eigenvalues. */
+	/** Get eigenvalues. Eigenvalues are ordered in accending order.
+	 *
+	 *  @return A pointer to the internal storage for the eigenvalues. */
 	const double* getEigenValues();
 
-	/** Get eigenvalues. Same as getEigenValues(), but with write access.
-	 *  Use with causion. */
+	/** Get eigenvalues. Eigenvalues are ordered in accending order. Same
+	 *  as getEigenValues(), but with write access. Use with caution.
+	 *
+	 *  @return A pointer to the internal storage for the eigenvalues. */
 	double* getEigenValuesRW();
 
-	/** Get eigenvectors. **/
+	/** Get eigenvectors. The eigenvectors are stored successively in
+	 *  memory, with the eigenvector corresponding to the smallest
+	 *  eigenvalue occupying the 'basisSize' first positions, the second
+	 *  occupying the next 'basisSize' elements, and so forth, where
+	 *  'basisSize' is the basis size of the Model.
+	 *
+	 *  @return A pointer to the internal storage for the eigenvectors. **/
 	const std::complex<double>* getEigenVectors();
 
-	/** Get eigenvectors. Same as getEigenVectors(), but with write access.
-	 *  Use with causion. **/
+	/** Get eigenvectors. The eigenvectors are stored successively in
+	 *  memory, with the eigenvector corresponding to the smallest
+	 *  eigenvalue occupying the 'basisSize' first positions, the second
+	 *  occupying the next 'basisSize' elements, and so forth, where
+	 *  'basisSize' is the basis size of the Model. Same as
+	 *  getEigenVectors(), but with write access. Use with caution.
+	 *
+	 *  @return A pointer to the internal storage for the eigenvectors. **/
 	std::complex<double>* getEigenVectorsRW();
 
-	/** Get eigenvalue. */
+	/** Get eigenvalue for a specific state.
+	 *
+	 *  @param state The state number, ordered in accending order.
+	 *  @return The eigenvalue for the given state. */
 	const double getEigenValue(int state);
 
 	/** Get amplitude for given eigenvector \f$n\f$ and physical index
 	 * \f$x\f$: \f$\Psi_{n}(x)\f$.
+	 *
 	 *  @param state Eigenstate number \f$n\f$.
-	 *  @param index Physical index \f$x\f$.
-	 */
+	 *  @param index Physical index \f$x\f$. */
 	const std::complex<double> getAmplitude(int state, const Index &index);
 private:
 	/** pointer to array containing Hamiltonian. */
