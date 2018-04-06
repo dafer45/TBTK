@@ -2,13 +2,14 @@
   HoppingAmpliutdeSet::add().
 
 - Remove responsibility to store the Hamiltonian on the COO sparse matrix
-  format from the HoppingAMplitudeSet. Likely solution: Make the
+  format from the HoppingAmplitudeSet. Likely solution: Make the
   HoppingAmplitudeTree or HoppingAMplitudeSet responsible for on the demand
   constructing and returning a SparseMatrix. The HoppingAmplitudeTree is
   complex in itself, and probably it is therefore better to let the
   HoppingAmplitudeSet take on this responsibility. This should also result in
   the copy and move constructors, destructor and assignment and move assignment
-  operators to no longer be needed.
+  operators to no longer be needed. Further, this removes the need on the
+  Solver::ChebyshevExpander to override the metodh Solver::setSolver().
 
 - Rename HoppingAmplitudeTree::getHAs() and HoppingAmplitudeSet::getHAs() to
   ::getHoppingAmplitudes(). Also make these functions return constant
@@ -42,3 +43,12 @@
 
 - Make ArnoldiIterator::setCentralValue() affect also the calculations
   performed in Mode::Normal.
+
+- Restructure Solver::ChebyshevExpander so that it hides more method specific
+  details, such as the requirement to call CPU and GPU versions of the
+  functions explicitly. Instead add functions for specifying the execution mode
+  and internally redirect to the appropriate methods. I.e. make CPU/GPU
+  specific methods private and provide a combined function that redirects the
+  execution depending on the specified mode. This should remove the requirement
+  on method specific parameters to be passed to the constructor for the
+  PropertyExtractor::ChebyshevExpander.

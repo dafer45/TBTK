@@ -50,7 +50,7 @@ namespace Solver{
  */
 class ChebyshevExpander : public Solver, public Communicator{
 public:
-	/** Constructor. */
+	/** Constructs a Solver::ChebyshevExpander. */
 	ChebyshevExpander();
 
 	/** Destructor. */
@@ -59,10 +59,16 @@ public:
 	/** Overrides Solver::setModel(). */
 	virtual void setModel(Model &model);
 
-	/** Set scale factor. */
+	/** Sets the scale factor that rescales the Hamiltonian to ensure that
+	 *  the energy spectrum of the Hamiltonian is bounded on the interval
+	 *  (-1, 1).
+	 *
+	 *  @param scaleFactor The scale factor. */
 	void setScaleFactor(double scaleFactor);
 
-	/** Get scale factor. */
+	/** Get scale factor.
+	 *
+	 *  @return The scale factor that is used to rescale the Hamiltonian. */
 	double getScaleFactor();
 
 	/** Calculates the Chebyshev coefficients for \f$ G_{ij}(E)\f$, where
