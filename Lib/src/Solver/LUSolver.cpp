@@ -33,6 +33,7 @@ LUSolver::LUSolver() : Communicator(true){
 	rowPermutations = nullptr;
 	columnPermutations = nullptr;
 	statistics = nullptr;
+	matrixDataType = DataType::None;
 }
 
 LUSolver::~LUSolver(){
@@ -64,7 +65,7 @@ void LUSolver::setMatrix(const SparseMatrix<double> &sparseMatrix){
 	const unsigned int *cscRows = cscMatrix.getCSCRows();
 	const double *cscValues = cscMatrix.getCSCValues();
 
-	//Ensure the matrix has at least on matrix element.
+	//Ensure the matrix has at least one matrix element.
 	TBTKAssert(
 		numMatrixElements > 0,
 		"LUSolver::setMatrix()",

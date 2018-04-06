@@ -15,7 +15,7 @@
 
 /** @package TBTKcalc
  *  @file LUSolver.h
- *  @brief Solves Hx = y for x, where H is a SparseMatrix.
+ *  @brief Solves Mx = b for x, where M is a SparseMatrix.
  *
  *  @author Kristofer Björnson
  */
@@ -33,7 +33,7 @@
 
 namespace TBTK{
 
-/** @brief Solves Hx = y for x, where H is a SparseMatrix. */
+/** @brief Solves Mx = b for x, where M is a SparseMatrix. */
 class LUSolver : public Communicator{
 public:
 	/** Enum class for specifying the data type of the matrix. Used since
@@ -41,25 +41,42 @@ public:
 	 *  for optimization. */
 	enum class DataType {None, Double, ComplexDouble};
 
-	/** Constructor */
+	/** Constructs a Solver::LUSolver. */
 	LUSolver();
 
 	/** Destructor. */
 	~LUSolver();
 
-	/** Set matrix. */
+	/** Set matrix.
+	 *
+	 *  @param sparseMatrix Matrix \f$M\f$ to use in the equation \f$Mx =
+	 *  b\f$. */
 	void setMatrix(const SparseMatrix<double> &sparseMatrix);
 
-	/** Set matrix. */
+	/** Set matrix.
+	 *
+	 *  @param sparseMatrix Matrix \f$H\f$ to use in the equation \f$Mx =
+	 *  b\f$. */
 	void setMatrix(const SparseMatrix<std::complex<double>> &sparseMatrix);
 
-	/** Get matrix data type. */
+	/** Get matrix data type. Is None before a matrix has been set, Double
+	 *  if a real matrix has been set, and ComplexDouble if a complex
+	 *  matrix has been set. Note that a SparseMatrix<std::complex<double>>
+	 *  is stored as Double internally if the matrix is real.
+	 *
+	 *  @return The data type that is used to store the data. */
 	DataType getMatrixDataType() const;
 
-	/** Solve. */
+	/** Solve for \f$x\f$ in the equation \f$Mx = b\f$.
+	 *
+	 *  @param b The vector \f$b\f$. Contains the answer \f$x\f$ when
+	 *  finished. */
 	void solve(Matrix<double> &b);
 
-	/** Solve. */
+	/** Solve for \f$x\f$ in the equation \f$Mx = b\f$.
+	 *
+	 *  @param b The vector \f$b\f$. Contains the answer \f$x\f$ when
+	 *  finished. */
 	void solve(Matrix<std::complex<double>> &b);
 private:
 	/** Pointer to lower triangular matrix. */

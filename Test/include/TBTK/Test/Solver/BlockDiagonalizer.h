@@ -217,6 +217,7 @@ TEST(BlockDiagonalizer, getEigenVectors){
 			::testing::ExitedWithCode(1),
 			""
 		);
+		::testing::FLAGS_gtest_death_test_style = "fast";
 	}
 }
 
