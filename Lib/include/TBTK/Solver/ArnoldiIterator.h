@@ -37,7 +37,7 @@ namespace Solver{
  *  The ArnoldiIterator can be used to calculate a few eigenvalues and
  *  eigenvectors around a given energy.
  */
-class ArnoldiIterator : public Solver{
+class ArnoldiIterator : public Solver, public Communicator{
 public:
 	/** Constructs a Solver::ArnoldiIterator. */
 	ArnoldiIterator();
@@ -76,24 +76,56 @@ public:
 	 *  @return The number of eigenvalues that are calculated. */
 	int getNumEigenValues() const;
 
-	/** Set whether eigen vectors should be calculated. */
+	/** Set whether eigen vectors should be calculated.
+	 *
+	 *  @param calculateEigenVectors True to enable the calculation of
+	 *  eigenvectors. */
 	void setCalculateEigenVectors(bool calculateEigenVectors);
 
-	/** Get wether eigen vectors are calculated or not. */
+	/** Get wether eigen vectors are calculated or not.
+	 *
+	 *  @return True if eigenvectors are set to be calculated. */
 	bool getCalculateEigenVectors() const;
 
 	/** Set the number of Lanczos vectors to use. (Dimension of the Krylov
-	 *  space). */
+	 *  space).
+	 *
+	 *  @param numLanczosVectors The dimension of the Krylov space used. */
 	void setNumLanczosVectors(int numLanczosVectors);
 
-	/** Set the accpeted tolerance. */
+	/** Get the number of Lanczos vectors to use. (Dimension of the Krylov
+	 *  space).
+	 *
+	 *  @return The dimension of the Krylov space used. */
+	int getNumLanczosVectors() const;
+
+	/** Set the accpeted tolerance. Passed to the ARPACK functions
+	 *  [d/z]naupd and [d/z]neupd. See the TOL parameter in the ARPACK
+	 *  documentation for more information.
+	 *
+	 *  @param tolerance Tolerance used by ARPACK. */
 	void setTolerance(double tolerance);
 
-	/** Set maimum number of iterations in the implicitly restarted Arnoldi
-	 *  algorithm. */
+	/** Set the maixmum number of iterations in the implicitly restarted
+	 *  Arnoldi algorithm.
+	 *
+	 *  @param maxIterations The maximum number of iterations performed in
+	 *  the implicitly restarted Arnoldi algorithm. */
 	void setMaxIterations(int maxIterations);
 
-	/** Set shift. */
+	/** Set amount by which eigenvalues will be shifted during
+	 *  calculations. I.e. the calculation is caried out on \f$H -\sigma
+	 *  I\f$ rather than \f$H\f$. Eigenvalues are shifted back, so this
+	 *  does not affect the eigenvalues. However, since Arnoldi iteration
+	 *  calculates extreme eigenvalues in the normal mode and eigenvalues
+	 *  closest to zero in shift-and-invert mode, it does affect which
+	 *  eigenvalues that are calculated.
+	 *  <br/><br/>
+	 *  <b>Note:</b> The shift is not yet implemented in for the normal
+	 *  mode.
+	 *
+	 *  @param centralValue The value \f$\sigma\f$ by which the Hamiltonian
+	 *  is shifted. */
 	void setCentralValue(double centralValue);
 
 	/** Run the implicitly restarted Arnoldi algorithm. */
@@ -235,6 +267,10 @@ inline bool ArnoldiIterator::getCalculateEigenVectors() const{
 
 inline void ArnoldiIterator::setNumLanczosVectors(int numLanczosVectors){
 	this->numLanczosVectors = numLanczosVectors;
+}
+
+inline int ArnoldiIterator::getNumLanczosVectors() const{
+	return numLanczosVectors;
 }
 
 inline void ArnoldiIterator::setTolerance(double tolerance){
