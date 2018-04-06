@@ -39,7 +39,7 @@ namespace Solver{
  */
 class ArnoldiIterator : public Solver{
 public:
-	/** Constructor. */
+	/** Constructs a Solver::ArnoldiIterator. */
 	ArnoldiIterator();
 
 	/** Destructor. */
@@ -56,18 +56,27 @@ public:
 	 *      given value and the corresponding eigen vectors. */
 	enum class Mode {Normal, ShiftAndInvert};
 
-	/** Set mode of operation. */
+	/** Set mode of operation.
+	 *
+	 *  @param mode The mode of operation to use. */
 	void setMode(Mode mode);
 
-	/** Get mode of operation. */
+	/** Get mode of operation.
+	 *
+	 *  @return The mode of operation. */
+	Mode getMode() const;
 
-	/** Set the number of eigenvalues to calculate. */
+	/** Set the number of eigenvalues to calculate.
+	 *
+	 *  @param numEigenValues The number of eigenvalues to calculate. */
 	void setNumEigenValues(int numEigenValues);
 
-	/** Get number of eigenvalues. */
+	/** Get number of eigenvalues.
+	 *
+	 *  @return The number of eigenvalues that are calculated. */
 	int getNumEigenValues() const;
 
-	/** Set wether eigen vectors should be calculated. */
+	/** Set whether eigen vectors should be calculated. */
 	void setCalculateEigenVectors(bool calculateEigenVectors);
 
 	/** Get wether eigen vectors are calculated or not. */
@@ -202,6 +211,10 @@ private:
 
 inline void ArnoldiIterator::setMode(Mode mode){
 	this->mode = mode;
+}
+
+inline ArnoldiIterator::Mode ArnoldiIterator::getMode() const{
+	return mode;
 }
 
 inline void ArnoldiIterator::setNumEigenValues(int numEigenValues){
