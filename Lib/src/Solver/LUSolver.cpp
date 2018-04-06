@@ -221,7 +221,7 @@ void LUSolver::allocateLUMatrices(){
 	if(L != nullptr)
 		Destroy_SuperNode_Matrix(L);
 	if(U != nullptr)
-		Destroy_SuperNode_Matrix(U);
+		Destroy_CompCol_Matrix(U);
 	L = new SuperMatrix();
 	U = new SuperMatrix();
 }

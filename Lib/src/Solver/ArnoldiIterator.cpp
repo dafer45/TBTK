@@ -36,7 +36,7 @@ using namespace std;
 namespace TBTK{
 namespace Solver{
 
-ArnoldiIterator::ArnoldiIterator(){
+ArnoldiIterator::ArnoldiIterator() : Communicator(true){
 	mode = Mode::Normal;
 
 	//Arnoldi variables (ARPACK)
@@ -162,7 +162,8 @@ extern "C" void zneupd_(
 );
 
 void ArnoldiIterator::run(){
-	Streams::out << "Running ArnoldiIterator.\n";
+	if(getGlobalVerbose() && getVerbose())
+		Streams::out << "Running ArnoldiIterator.\n";
 
 	switch(mode){
 	case Mode::Normal:
@@ -256,13 +257,21 @@ void ArnoldiIterator::arnoldiLoop(){
 
 		//Allocate workspaces and output
 		int worklSize = 3*numLanczosVectors*numLanczosVectors + 6*numLanczosVectors;
+		if(residuals != nullptr)
+			delete [] residuals;
 		residuals = new complex<double>[basisSize];	//Not used during ARPACK call
 		double *residualsArpack = new double[basisSize];
 		double *lanczosVectors = new double[basisSize*numLanczosVectors];
 		double *workd = new double[3*basisSize];
 		double *workl = new double[worklSize];
 		int *select = new int[numLanczosVectors];	//Need to be allocated, but not initialized as long as howMany = 'A' in call to dneupd_
+		if(eigenValues != nullptr)
+			delete [] eigenValues;
 		eigenValues = new complex<double>[numEigenValues+1];
+		if(eigenVectors != nullptr){
+			delete [] eigenVectors;
+			eigenVectors = nullptr;
+		}
 		if(calculateEigenVectors)
 			eigenVectors = new complex<double>[numEigenValues*model.getBasisSize()];
 		double *workev = new double[3*numLanczosVectors];
@@ -273,11 +282,13 @@ void ArnoldiIterator::arnoldiLoop(){
 		//Main loop ()
 		int counter = 0;
 		while(true){
-			Streams::out << "." << flush;
-			if(counter%10 == 9)
-				Streams::out << " ";
-			if(counter%50 == 49)
-				Streams::out << "\n";
+			if(getGlobalVerbose() && getVerbose()){
+				Streams::out << "." << flush;
+				if(counter%10 == 9)
+					Streams::out << " ";
+				if(counter%50 == 49)
+					Streams::out << "\n";
+			}
 
 			TBTKAssert(
 				counter++ <= maxIterations,
@@ -319,7 +330,8 @@ void ArnoldiIterator::arnoldiLoop(){
 				break;
 			}
 		}
-		Streams::out << "\n";
+		if(getGlobalVerbose() && getVerbose())
+			Streams::out << "\n";
 
 		//A = Compute numberOfEigenValues Ritz vectors
 		char howMany = 'A';
@@ -412,13 +424,21 @@ void ArnoldiIterator::arnoldiLoop(){
 	else{
 		//Allocate workspaces and output
 		int worklSize = 3*numLanczosVectors*numLanczosVectors + 5*numLanczosVectors;
+		if(residuals != nullptr)
+			delete [] residuals;
 		residuals = new complex<double>[basisSize];
 		complex<double> *lanczosVectors = new complex<double>[basisSize*numLanczosVectors];
 		complex<double> *workd = new complex<double>[3*basisSize];
 		complex<double> *workl = new complex<double>[worklSize];
 		double *rwork = new double[basisSize];
 		int *select = new int[numLanczosVectors];	//Need to be allocated, but not initialized as long as howMany = 'A' in call to zneupd_
+		if(eigenValues != nullptr)
+			delete [] eigenValues;
 		eigenValues = new complex<double>[numEigenValues+1];
+		if(eigenVectors != nullptr){
+			delete [] eigenVectors;
+			eigenVectors = nullptr;
+		}
 		if(calculateEigenVectors)
 			eigenVectors = new complex<double>[numEigenValues*model.getBasisSize()];
 		complex<double> *workev = new complex<double>[2*numLanczosVectors];
@@ -429,11 +449,13 @@ void ArnoldiIterator::arnoldiLoop(){
 		//Main loop ()
 		int counter = 0;
 		while(true){
-			Streams::out << "." << flush;
-			if(counter%10 == 9)
-				Streams::out << " ";
-			if(counter%50 == 49)
-				Streams::out << "\n";
+			if(getGlobalVerbose() && getVerbose()){
+				Streams::out << "." << flush;
+				if(counter%10 == 9)
+					Streams::out << " ";
+				if(counter%50 == 49)
+					Streams::out << "\n";
+			}
 
 			TBTKAssert(
 				counter++ <= maxIterations,
@@ -476,7 +498,8 @@ void ArnoldiIterator::arnoldiLoop(){
 				break;
 			}
 		}
-		Streams::out << "\n";
+		if(getGlobalVerbose() && getVerbose())
+			Streams::out << "\n";
 
 		//A = Compute numberOfEigenValues Ritz vectors
 		char howMany = 'A';
@@ -527,8 +550,10 @@ void ArnoldiIterator::arnoldiLoop(){
 	}
 
 	double numAccurateEigenValues = iparam[4]; //With respect to tolerance
-	Streams::out << "\nNumber of accurately converged eigenvalues: "
-		<< numAccurateEigenValues << "\n";
+	if(getGlobalVerbose() && getVerbose()){
+		Streams::out << "\nNumber of accurately converged eigenvalues: "
+			<< numAccurateEigenValues << "\n";
+	}
 }
 
 void ArnoldiIterator::checkZnaupdInfo(int info) const{
