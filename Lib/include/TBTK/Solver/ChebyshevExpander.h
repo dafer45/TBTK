@@ -71,6 +71,70 @@ public:
 	 *  @return The scale factor that is used to rescale the Hamiltonian. */
 	double getScaleFactor();
 
+	/** Set whether Chebyshev coefficients should be calculated on GPU. The
+	 *  default value is false.
+	 *
+	 *  @param calculateCoefficientsOnGPU True to use GPU, false to use
+	 *  CPU. */
+	void setCalculateCoefficientsOnGPU(bool calculateCoefficientsOnGPU);
+
+	/** Get whether Chebyshev coefficients are set to be calculated on GPU.
+	 */
+	bool getCalculateCoefficientsOnGPU() const;
+
+	/** Set whether Green's functions should be generated on GPU. The
+	 *  default value is false.
+	 *
+	 *  @param generateGreensFunctionsOnGPU True to use GPU, false to use
+	 *  CPU. */
+	void setGenerateGreensFunctionsOnGPU(
+		bool generateGreensFunctionsOnGPU
+	);
+
+	/** Get whether Green's functions are set to be generated on GPU. */
+	bool getGenerateGreensFunctionsOnGPU() const;
+
+	/** Calculates the Chebyshev coefficients for \f$ G_{ij}(E)\f$, where
+	 *  \f$i = \textrm{to}\f$ is a set of indices and \f$j =
+	 *  \textrm{from}\f$.
+	 *
+	 *  @param to vector of 'to'-indeces, or \f$i\f$'s.
+	 *  @param from 'From'-index, or \f$j\f$.
+	 *  @param coefficients Pointer to array able to hold
+	 *  numCoefficients\f$\times\f$toIndeices.size() coefficients.
+	 *
+	 *  @param numCoefficients Number of coefficients to calculate for each
+	 *  to-index.
+	 *
+	 *  @param broadening Broadening to use in convolusion of coefficients
+	 *  to remedy Gibb's osciallations. */
+	void calculateCoefficients(
+		std::vector<Index> &to,
+		Index from,
+		std::complex<double> *coefficients,
+		int numCoefficients,
+		double broadening = 0.000001
+	);
+
+	/** Calculates the Chebyshev coefficients for \f$ G_{ij}(E)\f$, where
+	 *  \f$i = \textrm{to}\f$ and \f$j = \textrm{from}\f$.
+	 *
+	 *  @param to 'To'-index, or \f$i\f$.
+	 *  @param from 'From'-index, or \f$j\f$.
+	 *  @param coefficients Pointer to array able to hold numCoefficients
+	 *  coefficients.
+	 *
+	 *  @param numCoefficients Number of coefficients to calculate.
+	 *  @param broadening Broadening to use in convolusion of coefficients
+	 *  to remedy Gibb's osciallations. */
+	void calculateCoefficients(
+		Index to,
+		Index from,
+		std::complex<double> *coefficients,
+		int numCoefficients,
+		double broadening = 0.000001
+	);
+private:
 	/** Calculates the Chebyshev coefficients for \f$ G_{ij}(E)\f$, where
 	 *  \f$i = \textrm{to}\f$ is a set of indices and \f$j =
 	 *  \textrm{from}\f$. Runs on CPU.
@@ -118,8 +182,7 @@ public:
 	 *  @param numCoefficients Number of coefficients to calculate for each
 	 *  to-index.
 	 *  @param broadening Broadening to use in convolusion of coefficients
-	 *  to remedy Gibb's osciallations.
-	 */
+	 *  to remedy Gibb's osciallations. */
 	void calculateCoefficientsGPU(
 		std::vector<Index> &to,
 		Index from,
@@ -135,8 +198,7 @@ public:
 	 *  @param coefficients Pointer to array able to hold numCoefficients coefficients.
 	 *  @param numCoefficients Number of coefficients to calculate.
 	 *  @param broadening Broadening to use in convolusion of coefficients
-	 *  to remedy Gibb's osciallations.
-	 */
+	 *  to remedy Gibb's osciallations. */
 	void calculateCoefficientsGPU(
 		Index to,
 		Index from,
@@ -144,7 +206,7 @@ public:
 		int numCoefficients,
 		double broadening = 0.000001
 	);
-
+public:
 	/** Experimental. */
 	void calculateCoefficientsWithCutoff(
 		Index to,
@@ -279,6 +341,14 @@ private:
 	/** Scale factor. */
 	double scaleFactor;
 
+	/** Flag indicating whether to use GPU to calculate Chebyshev
+	 *  coefficients. */
+	bool calculateCoefficientsOnGPU;
+
+	/** Flag indicating whether to use GPU to generate Green's functions.
+	 */
+	bool generateGreensFunctionsOnGPU;
+
 	/** Damping mask. */
 	std::complex<double> *damping;
 
@@ -310,6 +380,80 @@ inline void ChebyshevExpander::setScaleFactor(double scaleFactor){
 
 inline double ChebyshevExpander::getScaleFactor(){
 	return scaleFactor;
+}
+
+inline void ChebyshevExpander::setCalculateCoefficientsOnGPU(
+	bool calculateCoefficientsOnGPU
+){
+	this->calculateCoefficientsOnGPU = calculateCoefficientsOnGPU;
+}
+
+inline bool ChebyshevExpander::getCalculateCoefficientsOnGPU() const{
+	return calculateCoefficientsOnGPU;
+}
+
+inline void ChebyshevExpander::setGenerateGreensFunctionsOnGPU(
+	bool generateGreensFunctionsOnGPU
+){
+	this->generateGreensFunctionsOnGPU = generateGreensFunctionsOnGPU;
+}
+
+inline bool ChebyshevExpander::getGenerateGreensFunctionsOnGPU() const{
+	return generateGreensFunctionsOnGPU;
+}
+
+inline void ChebyshevExpander::calculateCoefficients(
+	std::vector<Index> &to,
+	Index from,
+	std::complex<double> *coefficients,
+	int numCoefficients,
+	double broadening
+){
+	if(calculateCoefficientsOnGPU){
+		return calculateCoefficientsGPU(
+			to,
+			from,
+			coefficients,
+			numCoefficients,
+			broadening
+		);
+	}
+	else{
+		return calculateCoefficientsCPU(
+			to,
+			from,
+			coefficients,
+			numCoefficients,
+			broadening
+		);
+	}
+}
+
+inline void ChebyshevExpander::calculateCoefficients(
+	Index to,
+	Index from,
+	std::complex<double> *coefficients,
+	int numCoefficients,
+	double broadening
+){
+	if(calculateCoefficientsOnGPU){
+		return calculateCoefficientsGPU(
+			to,
+			from,
+			coefficients,
+			numCoefficients,
+			broadening
+		);
+	}
+	else{
+		return calculateCoefficientsCPU(
+			to,
+			from,
+			coefficients,
+			numCoefficients,
+			broadening
+		);
+	}
 }
 
 inline bool ChebyshevExpander::getLookupTableIsGenerated(){

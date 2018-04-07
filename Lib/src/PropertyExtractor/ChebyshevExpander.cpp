@@ -245,12 +245,13 @@ Property::GreensFunction ChebyshevExpander::calculateGreensFunctions(
 
 	complex<double> *coefficients = new complex<double>[numCoefficients*to.size()];
 
-	if(useGPUToCalculateCoefficients){
+/*	if(useGPUToCalculateCoefficients){
 		cSolver->calculateCoefficientsGPU(to, from, coefficients, numCoefficients);
 	}
 	else{
 		cSolver->calculateCoefficientsCPU(to, from, coefficients, numCoefficients);
-	}
+	}*/
+	cSolver->calculateCoefficients(to, from, coefficients, numCoefficients);
 
 	Solver::ChebyshevExpander::Type chebyshevType;
 	switch(type){

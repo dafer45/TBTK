@@ -40,5 +40,27 @@ TEST(ChebyshevExpander, getScaleFactor){
 	EXPECT_DOUBLE_EQ(solver.getScaleFactor(), 20);
 }
 
+TEST(ChebyshevExpander, setCalculateCoefficientsOnGPU){
+	//Tested through ChebyshevExpander::getCalculateCoefficientsOnGPU().
+}
+
+TEST(ChebyshevExpander, getCalculateCoefficientsOnGPU){
+	ChebyshevExpander solver;
+	EXPECT_FALSE(solver.getCalculateCoefficientsOnGPU());
+	solver.setCalculateCoefficientsOnGPU(true);
+	EXPECT_TRUE(solver.getCalculateCoefficientsOnGPU());
+}
+
+TEST(ChebyshevExpander, setGenerateGreensFunctionsOnGPU){
+	//Tested through ChebyshevExpander::getGenerateGreensFunctionsOnGPU().
+}
+
+TEST(ChebyshevExpander, getGenerateGreensFunctionsOnGPU){
+	ChebyshevExpander solver;
+	EXPECT_FALSE(solver.getGenerateGreensFunctionsOnGPU());
+	solver.setGenerateGreensFunctionsOnGPU(true);
+	EXPECT_TRUE(solver.getGenerateGreensFunctionsOnGPU());
+}
+
 };	//End of namespace Solver
 };	//End of namespace TBTK

@@ -38,6 +38,8 @@ namespace{
 
 ChebyshevExpander::ChebyshevExpander() : Communicator(false){
 	scaleFactor = 1.;
+	calculateCoefficientsOnGPU = false;
+	generateGreensFunctionsOnGPU = false;
 	damping = NULL;
 	generatingFunctionLookupTable = NULL;
 	generatingFunctionLookupTable_device = NULL;
