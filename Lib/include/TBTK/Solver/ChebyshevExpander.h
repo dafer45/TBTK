@@ -83,7 +83,7 @@ public:
 	 *  @param broadening Broadening to use in convolusion of coefficients
 	 *  to remedy Gibb's osciallations.
 	 */
-	void calculateCoefficients(
+	void calculateCoefficientsCPU(
 		std::vector<Index> &to,
 		Index from,
 		std::complex<double> *coefficients,
@@ -100,7 +100,7 @@ public:
 	 *  @param broadening Broadening to use in convolusion of coefficients
 	 *  to remedy Gibb's osciallations.
 	 */
-	void calculateCoefficients(
+	void calculateCoefficientsCPU(
 		Index to,
 		Index from,
 		std::complex<double> *coefficients,
@@ -208,7 +208,7 @@ public:
 	 *  scaleFactor setBy setScaleFactor (default value 1).
 	 */
 //	Property::GreensFunction* generateGreensFunction(
-	std::complex<double>* generateGreensFunction(
+	std::complex<double>* generateGreensFunctionCPU(
 		std::complex<double> *coefficients,
 		int numCoefficients,
 		int energyResolution,
@@ -229,7 +229,7 @@ public:
 	 * in the call to ChebyshevExpander::generateLookupTable
 	 */
 //	Property::GreensFunction* generateGreensFunction(
-	std::complex<double>* generateGreensFunction(
+	std::complex<double>* generateGreensFunctionCPU(
 		std::complex<double> *coefficients,
 //		Property::GreensFunction::Type type = Property::GreensFunction::Type::Retarded
 		Type type = Type::Retarded

@@ -61,7 +61,7 @@ void ChebyshevExpander::setModel(Model &model){
 	model.sortHoppingAmplitudes();	//Required for GPU evaluation
 }
 
-void ChebyshevExpander::calculateCoefficients(
+void ChebyshevExpander::calculateCoefficientsCPU(
 	Index to,
 	Index from,
 	complex<double> *coefficients,
@@ -219,7 +219,7 @@ void ChebyshevExpander::calculateCoefficients(
 		coefficients[n] = coefficients[n]*sinh(lambda*(1 - n/(double)numCoefficients))/sinh(lambda);
 }
 
-void ChebyshevExpander::calculateCoefficients(
+void ChebyshevExpander::calculateCoefficientsCPU(
 	vector<Index> &to,
 	Index from,
 	complex<double> *coefficients,
@@ -648,7 +648,7 @@ void ChebyshevExpander::destroyLookupTable(){
 }
 
 //Property::GreensFunction* ChebyshevExpander::generateGreensFunction(
-complex<double>* ChebyshevExpander::generateGreensFunction(
+complex<double>* ChebyshevExpander::generateGreensFunctionCPU(
 	complex<double> *coefficients,
 	int numCoefficients,
 	int energyResolution,
@@ -769,7 +769,7 @@ complex<double>* ChebyshevExpander::generateGreensFunction(
 }
 
 //Property::GreensFunction* ChebyshevExpander::generateGreensFunction(
-complex<double>* ChebyshevExpander::generateGreensFunction(
+complex<double>* ChebyshevExpander::generateGreensFunctionCPU(
 	complex<double> *coefficients,
 //	Property::GreensFunction::Type type
 	Type type

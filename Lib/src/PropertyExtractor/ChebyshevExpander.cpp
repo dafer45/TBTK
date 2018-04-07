@@ -249,7 +249,7 @@ Property::GreensFunction ChebyshevExpander::calculateGreensFunctions(
 		cSolver->calculateCoefficientsGPU(to, from, coefficients, numCoefficients);
 	}
 	else{
-		cSolver->calculateCoefficients(to, from, coefficients, numCoefficients);
+		cSolver->calculateCoefficientsCPU(to, from, coefficients, numCoefficients);
 	}
 
 	Solver::ChebyshevExpander::Type chebyshevType;
@@ -303,7 +303,7 @@ Property::GreensFunction ChebyshevExpander::calculateGreensFunctions(
 		if(useLookupTable){
 			#pragma omp parallel for
 			for(unsigned int n = 0; n < to.size(); n++){
-				complex<double> *greensFunctionData = cSolver->generateGreensFunction(
+				complex<double> *greensFunctionData = cSolver->generateGreensFunctionCPU(
 					&(coefficients[n*numCoefficients]),
 					chebyshevType
 				);
@@ -316,7 +316,7 @@ Property::GreensFunction ChebyshevExpander::calculateGreensFunctions(
 		else{
 			#pragma omp parallel for
 			for(unsigned int n = 0; n < to.size(); n++){
-				complex<double> *greensFunctionData = cSolver->generateGreensFunction(
+				complex<double> *greensFunctionData = cSolver->generateGreensFunctionCPU(
 					&(coefficients[n*numCoefficients]),
 					numCoefficients,
 					energyResolution,
