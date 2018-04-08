@@ -38,6 +38,10 @@ namespace{
 
 ChebyshevExpander::ChebyshevExpander() : Communicator(false){
 	scaleFactor = 1.;
+	numCoefficients = 1000;
+	energyResolution = 1000;
+	lowerBound = -1;
+	upperBound = 1;
 	calculateCoefficientsOnGPU = false;
 	generateGreensFunctionsOnGPU = false;
 	damping = NULL;
@@ -67,7 +71,7 @@ void ChebyshevExpander::calculateCoefficientsCPU(
 	Index to,
 	Index from,
 	complex<double> *coefficients,
-	int numCoefficients,
+//	int numCoefficients,
 	double broadening
 ){
 	const Model &model = getModel();
@@ -225,7 +229,7 @@ void ChebyshevExpander::calculateCoefficientsCPU(
 	vector<Index> &to,
 	Index from,
 	complex<double> *coefficients,
-	int numCoefficients,
+//	int numCoefficients,
 	double broadening
 ){
 	const Model &model = getModel();

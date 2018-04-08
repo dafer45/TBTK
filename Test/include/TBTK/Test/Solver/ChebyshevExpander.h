@@ -62,5 +62,49 @@ TEST(ChebyshevExpander, getGenerateGreensFunctionsOnGPU){
 	EXPECT_TRUE(solver.getGenerateGreensFunctionsOnGPU());
 }
 
+TEST(ChebyshevExpander, setNumCoefficients){
+	//Tested through ChebyshevExpander::getNumCoefficients().
+}
+
+TEST(ChebyshevExpander, getNumCoefficients){
+	ChebyshevExpander solver;
+	EXPECT_EQ(solver.getNumCoefficients(), 1000);
+	solver.setNumCoefficients(2000);
+	EXPECT_EQ(solver.getNumCoefficients(), 2000);
+}
+
+TEST(ChebyshevExpander, setEnergyResolution){
+	//Tested through ChebyshevExpander::getEnergyResolution().
+}
+
+TEST(ChebyshevExpander, getEnergyResolution){
+	ChebyshevExpander solver;
+	EXPECT_EQ(solver.getEnergyResolution(), 1000);
+	solver.setEnergyResolution(2000);
+	EXPECT_EQ(solver.getEnergyResolution(), 2000);
+}
+
+TEST(ChebyshevExpander, setLowerBound){
+	//Tested through ChebyshevExpander::getLowerBound().
+}
+
+TEST(ChebyshevExpander, getLowerBound){
+	ChebyshevExpander solver;
+	EXPECT_EQ(solver.getLowerBound(), -1);
+	solver.setLowerBound(-2);
+	EXPECT_EQ(solver.getLowerBound(), -2);
+}
+
+TEST(ChebyshevExpander, setUpperBound){
+	//Tested through ChebyshevExpander::getUpperBound().
+}
+
+TEST(ChebyshevExpander, getUpperBound){
+	ChebyshevExpander solver;
+	EXPECT_EQ(solver.getUpperBound(), 1);
+	solver.setUpperBound(2);
+	EXPECT_EQ(solver.getUpperBound(), 2);
+}
+
 };	//End of namespace Solver
 };	//End of namespace TBTK

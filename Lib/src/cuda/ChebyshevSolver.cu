@@ -58,19 +58,19 @@ void ChebyshevExpander::calculateCoefficientsGPU(
 	Index to,
 	Index from,
 	complex<double> *coefficients,
-	int numCoefficients,
+//	int numCoefficients,
 	double broadening
 ){
 	vector<Index> toVector;
 	toVector.push_back(to);
-	calculateCoefficientsGPU(toVector, from, coefficients, numCoefficients, broadening);
+	calculateCoefficientsGPU(toVector, from, coefficients/*, numCoefficients*/, broadening);
 }
 
 void ChebyshevExpander::calculateCoefficientsGPU(
 	vector<Index> &to,
 	Index from,
 	complex<double> *coefficients,
-	int numCoefficients,
+//	int numCoefficients,
 	double broadening
 ){
 /*	TBTKAssert(

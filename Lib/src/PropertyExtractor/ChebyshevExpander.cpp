@@ -251,7 +251,7 @@ Property::GreensFunction ChebyshevExpander::calculateGreensFunctions(
 	else{
 		cSolver->calculateCoefficientsCPU(to, from, coefficients, numCoefficients);
 	}*/
-	cSolver->calculateCoefficients(to, from, coefficients, numCoefficients);
+	cSolver->calculateCoefficients(to, from, coefficients/*, numCoefficients*/);
 
 	Solver::ChebyshevExpander::Type chebyshevType;
 	switch(type){
