@@ -33,18 +33,18 @@ namespace TBTK{
 namespace PropertyExtractor{
 
 ChebyshevExpander::ChebyshevExpander(
-	Solver::ChebyshevExpander &cSolver,
+	Solver::ChebyshevExpander &cSolver/*,
 	int numCoefficients,
 	bool useGPUToCalculateCoefficients,
 	bool useGPUToGenerateGreensFunctions,
-	bool useLookupTable
+	bool useLookupTable*/
 ){
-	TBTKAssert(
+/*	TBTKAssert(
 		numCoefficients > 0,
 		"PropertyExtractor::ChebyshevExpnader::ChebyshevExpander()",
 		"Argument numCoefficients has to be a positive number.",
 		""
-	);
+	);*/
 	TBTKAssert(
 		energyResolution > 0,
 		"PropertyExtractor::ChebyshevExpander::ChebyshevExpander()",
@@ -71,10 +71,10 @@ ChebyshevExpander::ChebyshevExpander(
 	);
 
 	this->cSolver = &cSolver;
-	this->numCoefficients = numCoefficients;
+/*	this->numCoefficients = numCoefficients;
 	this->useGPUToCalculateCoefficients = useGPUToCalculateCoefficients;
 	this->useGPUToGenerateGreensFunctions = useGPUToGenerateGreensFunctions;
-	this->useLookupTable = useLookupTable;
+	this->useLookupTable = useLookupTable;*/
 
 	setEnergyWindow(
 		-cSolver.getScaleFactor(),
@@ -85,8 +85,8 @@ ChebyshevExpander::ChebyshevExpander(
 }
 
 ChebyshevExpander::~ChebyshevExpander(){
-	if(useGPUToGenerateGreensFunctions)
-		cSolver->destroyLookupTableGPU();
+/*	if(useGPUToGenerateGreensFunctions)
+		cSolver->destroyLookupTableGPU();*/
 }
 
 void ChebyshevExpander::setEnergyWindow(
@@ -100,10 +100,14 @@ void ChebyshevExpander::setEnergyWindow(
 		energyResolution
 	);
 
-	if(cSolver->getLookupTableIsLoadedGPU())
+	cSolver->setLowerBound(lowerBound);
+	cSolver->setUpperBound(upperBound);
+	cSolver->setEnergyResolution(energyResolution);
+
+/*	if(cSolver->getLookupTableIsLoadedGPU())
 		cSolver->destroyLookupTableGPU();
 	if(cSolver->getLookupTableIsGenerated())
-		cSolver->destroyLookupTable();
+		cSolver->destroyLookupTable();*/
 }
 
 //Property::GreensFunction* CPropertyExtractor::calculateGreensFunction(
@@ -241,9 +245,10 @@ Property::GreensFunction ChebyshevExpander::calculateGreensFunctions(
 	Index from,
 	Property::GreensFunction::Type type
 ){
-	ensureLookupTableIsReady();
+//	ensureLookupTableIsReady();
 
-	complex<double> *coefficients = new complex<double>[numCoefficients*to.size()];
+//	complex<double> *coefficients = new complex<double>[numCoefficients*to.size()];
+	complex<double> *coefficients = new complex<double>[cSolver->getNumCoefficients()*to.size()];
 
 /*	if(useGPUToCalculateCoefficients){
 		cSolver->calculateCoefficientsGPU(to, from, coefficients, numCoefficients);
@@ -288,9 +293,13 @@ Property::GreensFunction ChebyshevExpander::calculateGreensFunctions(
 	);
 	complex<double> *data = greensFunction.getDataRW();
 
-	if(useGPUToGenerateGreensFunctions){
+/*	if(useGPUToGenerateGreensFunctions){
 		for(unsigned int n = 0; n < to.size(); n++){
-			complex<double> *greensFunctionData = cSolver->generateGreensFunctionGPU(
+//			complex<double> *greensFunctionData = cSolver->generateGreensFunctionGPU(
+//				&(coefficients[n*numCoefficients]),
+//				chebyshevType
+//			);
+			complex<double> *greensFunctionData = cSolver->generateGreensFunction(
 				&(coefficients[n*numCoefficients]),
 				chebyshevType
 			);
@@ -304,7 +313,11 @@ Property::GreensFunction ChebyshevExpander::calculateGreensFunctions(
 		if(useLookupTable){
 			#pragma omp parallel for
 			for(unsigned int n = 0; n < to.size(); n++){
-				complex<double> *greensFunctionData = cSolver->generateGreensFunctionCPU(
+//				complex<double> *greensFunctionData = cSolver->generateGreensFunctionCPU(
+//					&(coefficients[n*numCoefficients]),
+//					chebyshevType
+//				);
+				complex<double> *greensFunctionData = cSolver->generateGreensFunction(
 					&(coefficients[n*numCoefficients]),
 					chebyshevType
 				);
@@ -317,12 +330,16 @@ Property::GreensFunction ChebyshevExpander::calculateGreensFunctions(
 		else{
 			#pragma omp parallel for
 			for(unsigned int n = 0; n < to.size(); n++){
-				complex<double> *greensFunctionData = cSolver->generateGreensFunctionCPU(
+//				complex<double> *greensFunctionData = cSolver->generateGreensFunctionCPU(
+//					&(coefficients[n*numCoefficients]),
+//					numCoefficients,
+//					energyResolution,
+//					lowerBound,
+//					upperBound,
+//					chebyshevType
+//				);
+				complex<double> *greensFunctionData = cSolver->generateGreensFunction(
 					&(coefficients[n*numCoefficients]),
-					numCoefficients,
-					energyResolution,
-					lowerBound,
-					upperBound,
 					chebyshevType
 				);
 				unsigned int offset = greensFunction.getOffset({to[n], from});
@@ -331,6 +348,17 @@ Property::GreensFunction ChebyshevExpander::calculateGreensFunctions(
 				delete [] greensFunctionData;
 			}
 		}
+	}*/
+	#pragma omp parallel for
+	for(unsigned int n = 0; n < to.size(); n++){
+		complex<double> *greensFunctionData = cSolver->generateGreensFunction(
+			&(coefficients[n*cSolver->getNumCoefficients()]),
+			chebyshevType
+		);
+		unsigned int offset = greensFunction.getOffset({to[n], from});
+		for(int c = 0; c < energyResolution; c++)
+			data[offset + c] = greensFunctionData[c];
+		delete [] greensFunctionData;
 	}
 
 	delete [] coefficients;
@@ -790,7 +818,7 @@ void ChebyshevExpander::calculateSP_LDOSCallback(
 	}
 }
 
-void ChebyshevExpander::ensureLookupTableIsReady(){
+/*void ChebyshevExpander::ensureLookupTableIsReady(){
 	if(useLookupTable){
 		if(!cSolver->getLookupTableIsGenerated())
 			cSolver->generateLookupTable(numCoefficients, energyResolution, lowerBound, upperBound);
@@ -805,7 +833,7 @@ void ChebyshevExpander::ensureLookupTableIsReady(){
 			""
 		);
 	}
-}
+}*/
 
 };	//End of namespace PropertyExtractor
 };	//End of namespace TBTK

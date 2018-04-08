@@ -88,9 +88,13 @@ int main(int argc, char **argv){
 	const double SCALE_FACTOR = 5.;
 
 	//Setup Solver::ChebyshevExpander
-	Solver::ChebyshevExpander cSolver;
-	cSolver.setModel(model);
-	cSolver.setScaleFactor(SCALE_FACTOR);
+	Solver::ChebyshevExpander solver;
+	solver.setModel(model);
+	solver.setScaleFactor(SCALE_FACTOR);
+	solver.setCalculateCoefficientsOnGPU(false);
+	solver.setGenerateGreensFunctionsOnGPU(false);
+	solver.setUseLookupTable(true);
+	solver.setNumCoefficients(NUM_COEFFICIENTS);
 
 	//Set filename and remove any file already in the folder
 	FileWriter::setFileName("TBTKResults.h5");
@@ -105,20 +109,14 @@ int main(int argc, char **argv){
 	//(required if the Green's function is evaluated on a GPU), and the
 	//lower and upper bound between which the Green's function is evaluated
 	//(has to be inside the interval [-SCALE_FACTOR, SCALE_FACTOR]).
-	PropertyExtractor::ChebyshevExpander pe(
-		cSolver,
-		NUM_COEFFICIENTS,
-		false,
-		false,
-		true
-	);
+	PropertyExtractor::ChebyshevExpander pe(solver);
 	pe.setEnergyWindow(-SCALE_FACTOR, SCALE_FACTOR, ENERGY_RESOLUTION);
 
 	//Extract local density of states and write to file
-	Property::LDOS ldos = pe.calculateLDOS({IDX_X, SIZE_Y/2, IDX_SUM_ALL},
-						{SIZE_X, 1, 2});
-	const int RANK = 1;
-	int dims[RANK] = {SIZE_X};
+	Property::LDOS ldos = pe.calculateLDOS(
+		{IDX_X, SIZE_Y/2, IDX_SUM_ALL},
+		{SIZE_X, 1, 2}
+	);
 	FileWriter::writeLDOS(ldos);
 
 	return 0;

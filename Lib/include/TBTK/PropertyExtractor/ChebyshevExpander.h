@@ -42,11 +42,11 @@ class ChebyshevExpander : public PropertyExtractor{
 public:
 	/** Constructor. */
 	ChebyshevExpander(
-		Solver::ChebyshevExpander &cSolver,
+		Solver::ChebyshevExpander &cSolver/*,
 		int numCoefficients,
 		bool useGPUToCalculateCoefficients,
 		bool useGPUToGenerateGreensFunctions,
-		bool useLookupTable = true
+		bool useLookupTable = true*/
 	);
 
 	/** Destructor. */
@@ -132,18 +132,18 @@ private:
 	Solver::ChebyshevExpander *cSolver;
 
 	/** Number of Chebyshev coefficients used in the expansion. */
-	int numCoefficients;
+//	int numCoefficients;
 
 	/** Flag indicating whether a lookup table is used or not. */
-	bool useLookupTable;
+//	bool useLookupTable;
 
 	/** Flag indicating whether the GPU should be used to calculate
 	 *  Chebyshev coefficients. */
-	bool useGPUToCalculateCoefficients;
+//	bool useGPUToCalculateCoefficients;
 
 	/** Flag indicating whether the GPU should be used to generate Green's
 	 *  functions. */
-	bool useGPUToGenerateGreensFunctions;
+//	bool useGPUToGenerateGreensFunctions;
 
 	/** !!!Not tested!!! Callback for calculating density.
 	 *  Used by calculateDensity. */
@@ -182,7 +182,7 @@ private:
 	);
 
 	/** Ensure that the lookup table is in a ready state. */
-	void ensureLookupTableIsReady();
+//	void ensureLookupTableIsReady();
 };
 
 };	//End of namespace PropertyExtractor

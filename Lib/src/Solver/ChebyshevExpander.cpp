@@ -44,6 +44,7 @@ ChebyshevExpander::ChebyshevExpander() : Communicator(false){
 	upperBound = 1;
 	calculateCoefficientsOnGPU = false;
 	generateGreensFunctionsOnGPU = false;
+	useLookupTable = false;
 	damping = NULL;
 	generatingFunctionLookupTable = NULL;
 	generatingFunctionLookupTable_device = NULL;
@@ -54,12 +55,14 @@ ChebyshevExpander::ChebyshevExpander() : Communicator(false){
 }
 
 ChebyshevExpander::~ChebyshevExpander(){
-	if(generatingFunctionLookupTable != NULL){
+	if(generatingFunctionLookupTable != nullptr){
 		for(int n = 0; n < lookupTableNumCoefficients; n++)
 			delete [] generatingFunctionLookupTable[n];
 
 		delete [] generatingFunctionLookupTable;
 	}
+	if(generatingFunctionLookupTable_device != nullptr)
+		destroyLookupTableGPU();
 }
 
 void ChebyshevExpander::setModel(Model &model){
@@ -640,7 +643,7 @@ void ChebyshevExpander::generateLookupTable(
 
 void ChebyshevExpander::destroyLookupTable(){
 	TBTKAssert(
-		generatingFunctionLookupTable != NULL,
+		generatingFunctionLookupTable != nullptr,
 		"ChebyshevExpander::destroyLookupTable()",
 		"No lookup table generated.",
 		""
@@ -650,104 +653,143 @@ void ChebyshevExpander::destroyLookupTable(){
 
 	delete [] generatingFunctionLookupTable;
 
-	generatingFunctionLookupTable = NULL;
+	generatingFunctionLookupTable = nullptr;
 }
 
 //Property::GreensFunction* ChebyshevExpander::generateGreensFunction(
 complex<double>* ChebyshevExpander::generateGreensFunctionCPU(
 	complex<double> *coefficients,
-	int numCoefficients,
+/*	int numCoefficients,
 	int energyResolution,
 	double lowerBound,
-	double upperBound,
-//	Property::GreensFunction::Type type
+	double upperBound,*/
 	Type type
 ){
 	TBTKAssert(
 		numCoefficients > 0,
-		"ChebyshevExpander::generateLookupTable()",
+		"ChebyshevExpander::generateGreensFunctionCPU()",
 		"numCoefficients has to be larger than 0.",
 		""
 	);
 	TBTKAssert(
 		energyResolution > 0,
-		"ChebyshevExpander::generateLookupTable()",
+		"ChebyshevExpander::generateGreensFunctionCPU()",
 		"energyResolution has to be larger than 0.",
 		""
 	);
 	TBTKAssert(
 		lowerBound < upperBound,
-		"ChebyshevExpander::generateLookupTable()",
+		"ChebyshevExpander::generateGreensFunctionCPU()",
 		"lowerBound has to be smaller than upperBound.",
 		""
 	);
 	TBTKAssert(
-		lowerBound > -scaleFactor,
-		"ChebyshevExpander::generateLookupTable()",
+		lowerBound >= -scaleFactor,
+		"ChebyshevExpander::generateGreensFunctionCPU()",
 		"lowerBound has to be larger than -scaleFactor.",
 		"Use ChebyshevExpander::setScaleFactor to set a larger scale factor."
 	);
 	TBTKAssert(
-		upperBound < scaleFactor,
-		"ChebyshevExpander::generateLookupTable()",
+		upperBound <= scaleFactor,
+		"ChebyshevExpander::generateGreensFunctionCPU()",
 		"upperBound has to be smaller than scaleFactor.",
 		"Use ChebyshevExpander::setScaleFactor to set a larger scale factor."
 	);
+/*	TBTKAssert(
+		generatingFunctionLookupTable != nullptr,
+		"ChebyshevExpander::generateGreensFunction()",
+		"Lookup table has not been generated.",
+		"Use ChebyshevExpander::generateLookupTable() to generate lookup table."
+	);*/
+
+	ensureLookupTableIsReady();
 
 	complex<double> *greensFunctionData = new complex<double>[energyResolution];
 	for(int e = 0; e < energyResolution; e++)
 		greensFunctionData[e] = 0.;
 
 	const double DELTA = 0.0001;
-//	if(type == Property::GreensFunction::Type::Retarded){
 	if(type == Type::Retarded){
-		for(int n = 0; n < numCoefficients; n++){
-			double denominator = 1.;
-			if(n == 0)
-				denominator = 2.;
+		if(generatingFunctionLookupTable){
+			for(int n = 0; n < lookupTableNumCoefficients; n++){
+				for(int e = 0; e < lookupTableResolution; e++){
+					greensFunctionData[e] += generatingFunctionLookupTable[n][e]*coefficients[n];
+				}
+			}
+		}
+		else{
+			for(int n = 0; n < numCoefficients; n++){
+				double denominator = 1.;
+				if(n == 0)
+					denominator = 2.;
 
-			for(int e = 0; e < energyResolution; e++){
-				double E = (lowerBound + (upperBound - lowerBound)*e/(double)energyResolution)/scaleFactor;
-				greensFunctionData[e] += coefficients[n]*(1/scaleFactor)*(-2.*i/sqrt(1+DELTA - E*E))*exp(-i*((double)n)*acos(E))/denominator;
+				for(int e = 0; e < energyResolution; e++){
+					double E = (lowerBound + (upperBound - lowerBound)*e/(double)energyResolution)/scaleFactor;
+					greensFunctionData[e] += coefficients[n]*(1/scaleFactor)*(-2.*i/sqrt(1+DELTA - E*E))*exp(-i*((double)n)*acos(E))/denominator;
+				}
 			}
 		}
 	}
-//	else if(type == Property::GreensFunction::Type::Advanced){
 	else if(type == Type::Advanced){
-		for(int n = 0; n < numCoefficients; n++){
-			double denominator = 1.;
-			if(n == 0)
-				denominator = 2.;
+		if(generatingFunctionLookupTable){
+			for(int n = 0; n < lookupTableNumCoefficients; n++){
+				for(int e = 0; e < lookupTableResolution; e++){
+					greensFunctionData[e] += coefficients[n]*conj(generatingFunctionLookupTable[n][e]);
+				}
+			}
+		}
+		else{
+			for(int n = 0; n < numCoefficients; n++){
+				double denominator = 1.;
+				if(n == 0)
+					denominator = 2.;
 
-			for(int e = 0; e < energyResolution; e++){
-				double E = (lowerBound + (upperBound - lowerBound)*e/(double)energyResolution)/scaleFactor;
-				greensFunctionData[e] += coefficients[n]*conj((1/scaleFactor)*(-2.*i/sqrt(1+DELTA - E*E))*exp(-i*((double)n)*acos(E))/denominator);
+				for(int e = 0; e < energyResolution; e++){
+					double E = (lowerBound + (upperBound - lowerBound)*e/(double)energyResolution)/scaleFactor;
+					greensFunctionData[e] += coefficients[n]*conj((1/scaleFactor)*(-2.*i/sqrt(1+DELTA - E*E))*exp(-i*((double)n)*acos(E))/denominator);
+				}
 			}
 		}
 	}
-//	else if(type == Property::GreensFunction::Type::Principal){
 	else if(type == Type::Principal){
-		for(int n = 0; n < numCoefficients; n++){
-			double denominator = 1.;
-			if(n == 0)
-				denominator = 2.;
+		if(generatingFunctionLookupTable){
+			for(int n = 0; n < lookupTableNumCoefficients; n++){
+				for(int e = 0; e < lookupTableResolution; e++){
+					greensFunctionData[e] += -coefficients[n]*real(generatingFunctionLookupTable[n][e]);
+				}
+			}
+		}
+		else{
+			for(int n = 0; n < numCoefficients; n++){
+				double denominator = 1.;
+				if(n == 0)
+					denominator = 2.;
 
-			for(int e = 0; e < energyResolution; e++){
-				double E = (lowerBound + (upperBound - lowerBound)*e/(double)energyResolution)/scaleFactor;
-				greensFunctionData[e] += -coefficients[n]*real((1/scaleFactor)*(-2.*i/sqrt(1+DELTA - E*E))*exp(-i*((double)n)*acos(E))/denominator);
+				for(int e = 0; e < energyResolution; e++){
+					double E = (lowerBound + (upperBound - lowerBound)*e/(double)energyResolution)/scaleFactor;
+					greensFunctionData[e] += -coefficients[n]*real((1/scaleFactor)*(-2.*i/sqrt(1+DELTA - E*E))*exp(-i*((double)n)*acos(E))/denominator);
+				}
 			}
 		}
 	}
-//	else if(type == Property::GreensFunction::Type::NonPrincipal){
 	else if(type == Type::NonPrincipal){
-		for(int n = 0; n < numCoefficients; n++){
-			double denominator = 1.;
-			if(n == 0)
-				denominator = 2.;
+		if(generatingFunctionLookupTable){
+			for(int n = 0; n < lookupTableNumCoefficients; n++){
+				for(int e = 0; e < lookupTableResolution; e++){
+					greensFunctionData[e] -= coefficients[n]*i*imag(generatingFunctionLookupTable[n][e]);
+				}
+			}
+		}
+		else{
+			for(int n = 0; n < numCoefficients; n++){
+				double denominator = 1.;
+				if(n == 0)
+					denominator = 2.;
 
-			for(int e = 0; e < energyResolution; e++){
-				double E = (lowerBound + (upperBound - lowerBound)*e/(double)energyResolution)/scaleFactor;
-				greensFunctionData[e] -= coefficients[n]*i*imag((1/scaleFactor)*(-2.*i/sqrt(1+DELTA - E*E))*exp(-i*((double)n)*acos(E))/denominator);
+				for(int e = 0; e < energyResolution; e++){
+					double E = (lowerBound + (upperBound - lowerBound)*e/(double)energyResolution)/scaleFactor;
+					greensFunctionData[e] -= coefficients[n]*i*imag((1/scaleFactor)*(-2.*i/sqrt(1+DELTA - E*E))*exp(-i*((double)n)*acos(E))/denominator);
+				}
 			}
 		}
 	}
@@ -759,23 +801,10 @@ complex<double>* ChebyshevExpander::generateGreensFunctionCPU(
 		);
 	}
 
-/*	Property::GreensFunction *greensFunction = new Property::GreensFunction(
-		type,
-//		Property::GreensFunction::Format::Array,
-		lowerBound,
-		upperBound,
-		energyResolution,
-		greensFunctionData
-	);
-	delete [] greensFunctionData;
-
-	return greensFunction;*/
-
 	return greensFunctionData;
 }
 
-//Property::GreensFunction* ChebyshevExpander::generateGreensFunction(
-complex<double>* ChebyshevExpander::generateGreensFunctionCPU(
+/*complex<double>* ChebyshevExpander::generateGreensFunctionCPU(
 	complex<double> *coefficients,
 //	Property::GreensFunction::Type type
 	Type type
@@ -791,7 +820,6 @@ complex<double>* ChebyshevExpander::generateGreensFunctionCPU(
 	for(int e = 0; e < lookupTableResolution; e++)
 		greensFunctionData[e] = 0.;
 
-//	if(type == Property::GreensFunction::Type::Retarded){
 	if(type == Type::Retarded){
 		for(int n = 0; n < lookupTableNumCoefficients; n++){
 			for(int e = 0; e < lookupTableResolution; e++){
@@ -799,7 +827,6 @@ complex<double>* ChebyshevExpander::generateGreensFunctionCPU(
 			}
 		}
 	}
-//	else if(type == Property::GreensFunction::Type::Advanced){
 	else if(type == Type::Advanced){
 		for(int n = 0; n < lookupTableNumCoefficients; n++){
 			for(int e = 0; e < lookupTableResolution; e++){
@@ -807,7 +834,6 @@ complex<double>* ChebyshevExpander::generateGreensFunctionCPU(
 			}
 		}
 	}
-//	else if(type == Property::GreensFunction::Type::Principal){
 	else if(type == Type::Principal){
 		for(int n = 0; n < lookupTableNumCoefficients; n++){
 			for(int e = 0; e < lookupTableResolution; e++){
@@ -815,7 +841,6 @@ complex<double>* ChebyshevExpander::generateGreensFunctionCPU(
 			}
 		}
 	}
-//	else if(type == Property::GreensFunction::Type::NonPrincipal){
 	else if(type == Type::NonPrincipal){
 		for(int n = 0; n < lookupTableNumCoefficients; n++){
 			for(int e = 0; e < lookupTableResolution; e++){
@@ -824,20 +849,8 @@ complex<double>* ChebyshevExpander::generateGreensFunctionCPU(
 		}
 	}
 
-/*	Property::GreensFunction *greensFunction = new Property::GreensFunction(
-		type,
-//		Property::GreensFunction::Format::Array,
-		lookupTableLowerBound,
-		lookupTableUpperBound,
-		lookupTableResolution,
-		greensFunctionData
-	);
-	delete [] greensFunctionData;
-
-	return greensFunction;*/
-
 	return greensFunctionData;
-}
+}*/
 
 complex<double> ChebyshevExpander::getMonolopoulosABCDamping(
 	double distanceToBoundary,

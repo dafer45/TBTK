@@ -106,5 +106,16 @@ TEST(ChebyshevExpander, getUpperBound){
 	EXPECT_EQ(solver.getUpperBound(), 2);
 }
 
+TEST(ChebyshevExpander, setUseLookupTable){
+	//Tested through ChebyshevExpander::getUseLookupTable().
+}
+
+TEST(ChebyshevExpander, getUseLookupTable){
+	ChebyshevExpander solver;
+	EXPECT_FALSE(solver.getUseLookupTable());
+	solver.setUseLookupTable(true);
+	EXPECT_TRUE(solver.getUseLookupTable());
+}
+
 };	//End of namespace Solver
 };	//End of namespace TBTK

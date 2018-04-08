@@ -649,6 +649,8 @@ complex<double>* ChebyshevExpander::generateGreensFunctionGPU(
 		""
 	);
 
+	ensureLookupTableIsReady();
+
 	if(getGlobalVerbose() && getVerbose())
 		Streams::out << "ChebyshevExpander::generateGreensFunctionGPU\n";
 

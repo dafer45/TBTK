@@ -127,7 +127,8 @@ public:
 	void setCalculateCoefficientsOnGPU(bool calculateCoefficientsOnGPU);
 
 	/** Get whether Chebyshev coefficients are set to be calculated on GPU.
-	 */
+	 *
+	 *  @return True if GPU is used. */
 	bool getCalculateCoefficientsOnGPU() const;
 
 	/** Set whether Green's functions should be generated on GPU. The
@@ -139,8 +140,22 @@ public:
 		bool generateGreensFunctionsOnGPU
 	);
 
-	/** Get whether Green's functions are set to be generated on GPU. */
+	/** Get whether Green's functions are set to be generated on GPU.
+	 *
+	 *  @return True if GPU is used. */
 	bool getGenerateGreensFunctionsOnGPU() const;
+
+	/** Set whether a lookup table should be used to when generating
+	 *  Green's functions.
+	 *
+	 *  @param useLookupTable True to use a lookup table. */
+	void setUseLookupTable(bool useLookupTable);
+
+	/** Set whether a lookup table should be used to when generating
+	 *  Green's functions.
+	 *
+	 *  @return True if a lookup table is used. */
+	bool getUseLookupTable() const ;
 
 	/** Calculates the Chebyshev coefficients for \f$ G_{ij}(E)\f$, where
 	 *  \f$i = \textrm{to}\f$ is a set of indices and \f$j =
@@ -160,7 +175,6 @@ public:
 		std::vector<Index> &to,
 		Index from,
 		std::complex<double> *coefficients,
-//		int numCoefficients,
 		double broadening = 0.000001
 	);
 
@@ -179,89 +193,6 @@ public:
 		Index to,
 		Index from,
 		std::complex<double> *coefficients,
-//		int numCoefficients,
-		double broadening = 0.000001
-	);
-private:
-	/** Calculates the Chebyshev coefficients for \f$ G_{ij}(E)\f$, where
-	 *  \f$i = \textrm{to}\f$ is a set of indices and \f$j =
-	 *  \textrm{from}\f$. Runs on CPU.
-	 *  @param to vector of 'to'-indeces, or \f$i\f$'s.
-	 *  @param from 'From'-index, or \f$j\f$.
-	 *  @param coefficients Pointer to array able to hold
-	 *  numCoefficients\f$\times\f$toIndeices.size() coefficients.
-	 *  @param numCoefficients Number of coefficients to calculate for each
-	 *  to-index.
-	 *  @param broadening Broadening to use in convolusion of coefficients
-	 *  to remedy Gibb's osciallations.
-	 */
-	void calculateCoefficientsCPU(
-		std::vector<Index> &to,
-		Index from,
-		std::complex<double> *coefficients,
-//		int numCoefficients,
-		double broadening = 0.000001
-	);
-
-	/** Calculates the Chebyshev coefficients for \f$ G_{ij}(E)\f$, where
-	 *  \f$i = \textrm{to}\f$ and \f$j = \textrm{from}\f$. Runs on CPU.
-	 *  @param to 'To'-index, or \f$i\f$.
-	 *  @param from 'From'-index, or \f$j\f$.
-	 *  @param coefficients Pointer to array able to hold numCoefficients coefficients.
-	 *  @param numCoefficients Number of coefficients to calculate.
-	 *  @param broadening Broadening to use in convolusion of coefficients
-	 *  to remedy Gibb's osciallations.
-	 */
-	void calculateCoefficientsCPU(
-		Index to,
-		Index from,
-		std::complex<double> *coefficients,
-//		int numCoefficients,
-		double broadening = 0.000001
-	);
-
-	/** Calculates the Chebyshev coefficients for \f$ G_{ij}(E)\f$, where
-	 *  \f$i = \textrm{to}\f$ is a set of indices and \f$j =
-	 *  \textrm{from}\f$. Runs on GPU.
-	 *  @param to vector of 'to'-indeces, or \f$i\f$'s.
-	 *  @param from 'From'-index, or \f$j\f$.
-	 *  @param coefficients Pointer to array able to hold
-	 *  numCoefficients\f$\times\f$toIndeices.size() coefficients.
-	 *  @param numCoefficients Number of coefficients to calculate for each
-	 *  to-index.
-	 *  @param broadening Broadening to use in convolusion of coefficients
-	 *  to remedy Gibb's osciallations. */
-	void calculateCoefficientsGPU(
-		std::vector<Index> &to,
-		Index from,
-		std::complex<double> *coefficients,
-//		int numCoefficients,
-		double broadening = 0.000001
-	);
-
-	/** Calculates the Chebyshev coefficients for \f$ G_{ij}(E)\f$, where
-	 *  \f$i = \textrm{to}\f$ and \f$j = \textrm{from}\f$. Runs on GPU.
-	 *  @param to 'To'-index, or \f$i\f$.
-	 *  @param from 'From'-index, or \f$j\f$.
-	 *  @param coefficients Pointer to array able to hold numCoefficients coefficients.
-	 *  @param numCoefficients Number of coefficients to calculate.
-	 *  @param broadening Broadening to use in convolusion of coefficients
-	 *  to remedy Gibb's osciallations. */
-	void calculateCoefficientsGPU(
-		Index to,
-		Index from,
-		std::complex<double> *coefficients,
-//		int numCoefficients,
-		double broadening = 0.000001
-	);
-public:
-	/** Experimental. */
-	void calculateCoefficientsWithCutoff(
-		Index to,
-		Index from,
-		std::complex<double> *coefficients,
-		int numCoefficients,
-		double componentCutoff,
 		double broadening = 0.000001
 	);
 
@@ -314,67 +245,22 @@ public:
 	 * numCoefficients and energyResolution are here the values specified
 	 * in the call to ChebyshevExpander::generateLookupTable
 	 */
-/*	std::complex<double>* generateGreensFunction(
+	std::complex<double>* generateGreensFunction(
 		std::complex<double> *coefficients,
 		Type type = Type::Retarded
-	);*/
+	);
+private:
+	//These three functions are experimental and therefore not part of the
+	//public interface of released code.
 
-	/** Genererate Green's function. Does not use lookup table generated by
-	 *  ChebyshevExpander::generateLookupTable. Runs on CPU.
-	 *  @param greensFunction Pointer to array able to hold Green's
-	 *  function. Has to be able to hold energyResolution elements.
-	 *  @param coefficients Chebyshev coefficients calculated by
-	 *  ChebyshevExpander::calculateCoefficients.
-	 *  @param numCoefficeints Number of coefficients in coefficients.
-	 *  @param energyResolution Number of elements in greensFunction.
-	 *  @param lowerBound Lower bound, has to be larger or equal to
-	 *  -scaleFactor set by setScaleFactor (default value 1).
-	 *  @param upperBound Upper bound, has to be smaller or equal to
-	 *  scaleFactor setBy setScaleFactor (default value 1).
-	 */
-//	Property::GreensFunction* generateGreensFunction(
-	std::complex<double>* generateGreensFunctionCPU(
+	/** Experimental. */
+	void calculateCoefficientsWithCutoff(
+		Index to,
+		Index from,
 		std::complex<double> *coefficients,
 		int numCoefficients,
-		int energyResolution,
-		double lowerBound = -1.,
-		double upperBound = 1.,
-//		Property::GreensFunction::Type type = Property::GreensFunction::Type::Retarded
-		Type type = Type::Retarded
-	);
-
-	/** Genererate Green's function. Uses lookup table generated by
-	 *  ChebyshevExpander::generateLookupTable. Runs on CPU.
-	 *  @param greensFunction Pointer to array able to hold Green's
-	 *  function. Has to be able to hold energyResolution elements.
-	 *  @param coefficients Chebyshev coefficients calculated by
-	 *  ChebyshevExpander::calculateCoefficients.
-	 *
-	 * numCoefficients and energyResolution are here the values specified
-	 * in the call to ChebyshevExpander::generateLookupTable
-	 */
-//	Property::GreensFunction* generateGreensFunction(
-	std::complex<double>* generateGreensFunctionCPU(
-		std::complex<double> *coefficients,
-//		Property::GreensFunction::Type type = Property::GreensFunction::Type::Retarded
-		Type type = Type::Retarded
-	);
-
-	/** Genererate Green's function. Uses lookup table generated by
-	 *  ChebyshevExpander::generateLookupTable. Runs on GPU.
-	 *  @param greensFunction Pointer to array able to hold Green's
-	 *  function. Has to be able to hold energyResolution elements.
-	 *  @param coefficients Chebyshev coefficients calculated by
-	 *  ChebyshevExpander::calculateCoefficients.
-	 *
-	 * numCoefficients and energyResolution are here the values specified
-	 * in the call to ChebyshevExpander::generateLookupTable
-	 */
-//	Property::GreensFunction* generateGreensFunctionGPU(
-	std::complex<double>* generateGreensFunctionGPU(
-		std::complex<double> *coefficients,
-//		Property::GreensFunction::Type type = Property::GreensFunction::Type::Retarded
-		Type type = Type::Retarded
+		double componentCutoff,
+		double broadening = 0.000001
 	);
 
 	/** Damping potential based on J. Chem. Phys. 117, 9552 (2002).
@@ -425,6 +311,10 @@ private:
 	 */
 	bool generateGreensFunctionsOnGPU;
 
+	/** Flag indicating whether to use a lookup table when generating
+	 *  Green's functions. */
+	bool useLookupTable;
+
 	/** Damping mask. */
 	std::complex<double> *damping;
 
@@ -448,9 +338,137 @@ private:
 
 	/** Upper bound for energy used for the lookup table. */
 	double lookupTableUpperBound;
+
+	/** Ensure that the lookup table is in a ready state. */
+	void ensureLookupTableIsReady();
+
+	/** Calculates the Chebyshev coefficients for \f$ G_{ij}(E)\f$, where
+	 *  \f$i = \textrm{to}\f$ is a set of indices and \f$j =
+	 *  \textrm{from}\f$. Runs on CPU.
+	 *  @param to vector of 'to'-indeces, or \f$i\f$'s.
+	 *  @param from 'From'-index, or \f$j\f$.
+	 *  @param coefficients Pointer to array able to hold
+	 *  numCoefficients\f$\times\f$toIndeices.size() coefficients.
+	 *  @param numCoefficients Number of coefficients to calculate for each
+	 *  to-index.
+	 *  @param broadening Broadening to use in convolusion of coefficients
+	 *  to remedy Gibb's osciallations.
+	 */
+	void calculateCoefficientsCPU(
+		std::vector<Index> &to,
+		Index from,
+		std::complex<double> *coefficients,
+		double broadening = 0.000001
+	);
+
+	/** Calculates the Chebyshev coefficients for \f$ G_{ij}(E)\f$, where
+	 *  \f$i = \textrm{to}\f$ and \f$j = \textrm{from}\f$. Runs on CPU.
+	 *  @param to 'To'-index, or \f$i\f$.
+	 *  @param from 'From'-index, or \f$j\f$.
+	 *  @param coefficients Pointer to array able to hold numCoefficients coefficients.
+	 *  @param numCoefficients Number of coefficients to calculate.
+	 *  @param broadening Broadening to use in convolusion of coefficients
+	 *  to remedy Gibb's osciallations.
+	 */
+	void calculateCoefficientsCPU(
+		Index to,
+		Index from,
+		std::complex<double> *coefficients,
+		double broadening = 0.000001
+	);
+
+	/** Calculates the Chebyshev coefficients for \f$ G_{ij}(E)\f$, where
+	 *  \f$i = \textrm{to}\f$ is a set of indices and \f$j =
+	 *  \textrm{from}\f$. Runs on GPU.
+	 *  @param to vector of 'to'-indeces, or \f$i\f$'s.
+	 *  @param from 'From'-index, or \f$j\f$.
+	 *  @param coefficients Pointer to array able to hold
+	 *  numCoefficients\f$\times\f$toIndeices.size() coefficients.
+	 *  @param numCoefficients Number of coefficients to calculate for each
+	 *  to-index.
+	 *  @param broadening Broadening to use in convolusion of coefficients
+	 *  to remedy Gibb's osciallations. */
+	void calculateCoefficientsGPU(
+		std::vector<Index> &to,
+		Index from,
+		std::complex<double> *coefficients,
+		double broadening = 0.000001
+	);
+
+	/** Calculates the Chebyshev coefficients for \f$ G_{ij}(E)\f$, where
+	 *  \f$i = \textrm{to}\f$ and \f$j = \textrm{from}\f$. Runs on GPU.
+	 *  @param to 'To'-index, or \f$i\f$.
+	 *  @param from 'From'-index, or \f$j\f$.
+	 *  @param coefficients Pointer to array able to hold numCoefficients coefficients.
+	 *  @param numCoefficients Number of coefficients to calculate.
+	 *  @param broadening Broadening to use in convolusion of coefficients
+	 *  to remedy Gibb's osciallations. */
+	void calculateCoefficientsGPU(
+		Index to,
+		Index from,
+		std::complex<double> *coefficients,
+		double broadening = 0.000001
+	);
+
+	/** Genererate Green's function. Does not use lookup table generated by
+	 *  ChebyshevExpander::generateLookupTable. Runs on CPU.
+	 *  @param greensFunction Pointer to array able to hold Green's
+	 *  function. Has to be able to hold energyResolution elements.
+	 *  @param coefficients Chebyshev coefficients calculated by
+	 *  ChebyshevExpander::calculateCoefficients.
+	 *  @param numCoefficeints Number of coefficients in coefficients.
+	 *  @param energyResolution Number of elements in greensFunction.
+	 *  @param lowerBound Lower bound, has to be larger or equal to
+	 *  -scaleFactor set by setScaleFactor (default value 1).
+	 *  @param upperBound Upper bound, has to be smaller or equal to
+	 *  scaleFactor setBy setScaleFactor (default value 1).
+	 */
+	std::complex<double>* generateGreensFunctionCPU(
+		std::complex<double> *coefficients,
+		int numCoefficients,
+		int energyResolution,
+		double lowerBound = -1.,
+		double upperBound = 1.,
+		Type type = Type::Retarded
+	);
+
+	/** Genererate Green's function. Uses lookup table generated by
+	 *  ChebyshevExpander::generateLookupTable. Runs on CPU.
+	 *  @param greensFunction Pointer to array able to hold Green's
+	 *  function. Has to be able to hold energyResolution elements.
+	 *  @param coefficients Chebyshev coefficients calculated by
+	 *  ChebyshevExpander::calculateCoefficients.
+	 *
+	 * numCoefficients and energyResolution are here the values specified
+	 * in the call to ChebyshevExpander::generateLookupTable
+	 */
+	std::complex<double>* generateGreensFunctionCPU(
+		std::complex<double> *coefficients,
+		Type type = Type::Retarded
+	);
+
+	/** Genererate Green's function. Uses lookup table generated by
+	 *  ChebyshevExpander::generateLookupTable. Runs on GPU.
+	 *  @param greensFunction Pointer to array able to hold Green's
+	 *  function. Has to be able to hold energyResolution elements.
+	 *  @param coefficients Chebyshev coefficients calculated by
+	 *  ChebyshevExpander::calculateCoefficients.
+	 *
+	 * numCoefficients and energyResolution are here the values specified
+	 * in the call to ChebyshevExpander::generateLookupTable
+	 */
+	std::complex<double>* generateGreensFunctionGPU(
+		std::complex<double> *coefficients,
+		Type type = Type::Retarded
+	);
 };
 
 inline void ChebyshevExpander::setScaleFactor(double scaleFactor){
+	if(generatingFunctionLookupTable != nullptr)
+		destroyLookupTable();
+	if(generatingFunctionLookupTable_device != nullptr)
+		destroyLookupTableGPU();
+
 	this->scaleFactor = scaleFactor;
 }
 
@@ -459,6 +477,11 @@ inline double ChebyshevExpander::getScaleFactor(){
 }
 
 inline void ChebyshevExpander::setNumCoefficients(int numCoefficients){
+	if(generatingFunctionLookupTable != nullptr)
+		destroyLookupTable();
+	if(generatingFunctionLookupTable_device != nullptr)
+		destroyLookupTableGPU();
+
 	this->numCoefficients = numCoefficients;
 }
 
@@ -467,6 +490,11 @@ inline int ChebyshevExpander::getNumCoefficients() const{
 }
 
 inline void ChebyshevExpander::setEnergyResolution(int energyResolution){
+	if(generatingFunctionLookupTable != nullptr)
+		destroyLookupTable();
+	if(generatingFunctionLookupTable_device != nullptr)
+		destroyLookupTableGPU();
+
 	this->energyResolution = energyResolution;
 }
 
@@ -475,6 +503,11 @@ inline int ChebyshevExpander::getEnergyResolution() const{
 }
 
 inline void ChebyshevExpander::setLowerBound(double lowerBound){
+	if(generatingFunctionLookupTable != nullptr)
+		destroyLookupTable();
+	if(generatingFunctionLookupTable_device != nullptr)
+		destroyLookupTableGPU();
+
 	this->lowerBound = lowerBound;
 }
 
@@ -483,6 +516,11 @@ inline double ChebyshevExpander::getLowerBound() const{
 }
 
 inline void ChebyshevExpander::setUpperBound(double upperBound){
+	if(generatingFunctionLookupTable != nullptr)
+		destroyLookupTable();
+	if(generatingFunctionLookupTable_device != nullptr)
+		destroyLookupTableGPU();
+
 	this->upperBound = upperBound;
 }
 
@@ -508,6 +546,21 @@ inline void ChebyshevExpander::setGenerateGreensFunctionsOnGPU(
 
 inline bool ChebyshevExpander::getGenerateGreensFunctionsOnGPU() const{
 	return generateGreensFunctionsOnGPU;
+}
+
+inline void ChebyshevExpander::setUseLookupTable(bool useLookupTable){
+	if(!useLookupTable){
+		if(generatingFunctionLookupTable != nullptr)
+			destroyLookupTable();
+		if(generatingFunctionLookupTable_device != nullptr)
+			destroyLookupTableGPU();
+	}
+
+	this->useLookupTable = useLookupTable;
+}
+
+inline bool ChebyshevExpander::getUseLookupTable() const{
+	return useLookupTable;
 }
 
 inline void ChebyshevExpander::calculateCoefficients(
@@ -578,8 +631,40 @@ inline bool ChebyshevExpander::getLookupTableIsLoadedGPU(){
 		return false;
 }
 
+inline std::complex<double>* ChebyshevExpander::generateGreensFunction(
+	std::complex<double> *coefficients,
+	Type type
+){
+	if(generateGreensFunctionsOnGPU){
+		return generateGreensFunctionGPU(coefficients, type);
+	}
+	else{
+		return generateGreensFunctionCPU(coefficients, type);
+	}
+}
+
 inline void ChebyshevExpander::setDamping(std::complex<double> *damping){
 	this->damping = damping;
+}
+
+inline void ChebyshevExpander::ensureLookupTableIsReady(){
+	if(useLookupTable){
+		if(!generatingFunctionLookupTable)
+			generateLookupTable(numCoefficients, energyResolution, lowerBound, upperBound);
+		if(generateGreensFunctionsOnGPU && !generatingFunctionLookupTable_device)
+			loadLookupTableGPU();
+	}
+	else if(generateGreensFunctionsOnGPU){
+		TBTKExit(
+			"Solver::ChebyshevSolver::ensureLookupTableIsReady()",
+			"Green's functions can only be generated on GPU using"
+			<< " lookup tables.",
+			"Use Solver::ChebyshevExpander::setGenerateGreensFunctionOnGPU()"
+			<< " and"
+			<< " Solver::ChebyshevExpander::setUseLookupTable() to"
+			<< " configure the Solver::ChebyshevExpander."
+		);
+	}
 }
 
 };	//End of namespace Solver
