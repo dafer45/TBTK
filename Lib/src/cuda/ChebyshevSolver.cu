@@ -54,24 +54,19 @@ void extractCoefficients(
 		coefficients[coefficientMap[to]*numCoefficients + currentCoefficient] = jResult[to];
 }
 
-void ChebyshevExpander::calculateCoefficientsGPU(
+std::vector<std::complex<double>> ChebyshevExpander::calculateCoefficientsGPU(
 	Index to,
-	Index from,
-	complex<double> *coefficients,
-//	int numCoefficients,
-	double broadening
+	Index from
 ){
 	vector<Index> toVector;
 	toVector.push_back(to);
-	calculateCoefficientsGPU(toVector, from, coefficients/*, numCoefficients*/, broadening);
+
+	return calculateCoefficientsGPU(toVector, from);
 }
 
-void ChebyshevExpander::calculateCoefficientsGPU(
+std::vector<std::complex<double>> ChebyshevExpander::calculateCoefficientsGPU(
 	vector<Index> &to,
-	Index from,
-	complex<double> *coefficients,
-//	int numCoefficients,
-	double broadening
+	Index from
 ){
 /*	TBTKAssert(
 		getModel() != NULL,
@@ -100,6 +95,11 @@ void ChebyshevExpander::calculateCoefficientsGPU(
 		"CUDA set device error for device " << device << ".",
 		""
 	);
+
+	vector<complex<double>> coefficients;
+	coefficients.reserve(numCoefficients*to.size());
+	for(unsigned int n = 0; n < numCoefficients*to.size(); n++)
+		coefficients.push_back(0);
 
 	const HoppingAmplitudeSet *hoppingAmplitudeSet = getModel().getHoppingAmplitudeSet();
 
@@ -314,7 +314,7 @@ void ChebyshevExpander::calculateCoefficientsGPU(
 	TBTKAssert(
 		cudaMemcpy(
 			coefficients_device,
-			coefficients,
+			coefficients.data(),
 			to.size()*numCoefficients*sizeof(complex<double>),
 			cudaMemcpyHostToDevice
 		) == cudaSuccess,
@@ -486,7 +486,7 @@ void ChebyshevExpander::calculateCoefficientsGPU(
 
 	TBTKAssert(
 		cudaMemcpy(
-			coefficients,
+			coefficients.data(),
 			coefficients_device,
 			to.size()*numCoefficients*sizeof(complex<double>),
 			cudaMemcpyDeviceToHost
@@ -534,6 +534,8 @@ void ChebyshevExpander::calculateCoefficientsGPU(
 	for(int n = 0; n < numCoefficients; n++)
 		for(int c = 0; c < (int)to.size(); c++)
 			coefficients[n + c*numCoefficients] = coefficients[n + c*numCoefficients]*sinh(lambda*(1 - n/(double)numCoefficients))/sinh(lambda);
+
+	return coefficients;
 }
 
 __global__

@@ -39,6 +39,7 @@ namespace{
 ChebyshevExpander::ChebyshevExpander() : Communicator(false){
 	scaleFactor = 1.;
 	numCoefficients = 1000;
+	broadening = 1e-6;
 	energyResolution = 1000;
 	lowerBound = -1;
 	upperBound = 1;
@@ -70,12 +71,9 @@ void ChebyshevExpander::setModel(Model &model){
 	model.sortHoppingAmplitudes();	//Required for GPU evaluation
 }
 
-void ChebyshevExpander::calculateCoefficientsCPU(
+vector<complex<double>> ChebyshevExpander::calculateCoefficientsCPU(
 	Index to,
-	Index from,
-	complex<double> *coefficients,
-//	int numCoefficients,
-	double broadening
+	Index from
 ){
 	const Model &model = getModel();
 
@@ -97,6 +95,11 @@ void ChebyshevExpander::calculateCoefficientsCPU(
 		"numCoefficients has to be larger than 0.",
 		""
 	);
+
+	vector<complex<double>> coefficients;
+	coefficients.reserve(numCoefficients);
+	for(int n = 0; n < numCoefficients; n++)
+		coefficients.push_back(0);
 
 	const HoppingAmplitudeSet *hoppingAmplitudeSet = model.getHoppingAmplitudeSet();
 
@@ -226,14 +229,13 @@ void ChebyshevExpander::calculateCoefficientsCPU(
 	double lambda = broadening*numCoefficients;
 	for(int n = 0; n < numCoefficients; n++)
 		coefficients[n] = coefficients[n]*sinh(lambda*(1 - n/(double)numCoefficients))/sinh(lambda);
+
+	return coefficients;
 }
 
-void ChebyshevExpander::calculateCoefficientsCPU(
+vector<complex<double>> ChebyshevExpander::calculateCoefficientsCPU(
 	vector<Index> &to,
-	Index from,
-	complex<double> *coefficients,
-//	int numCoefficients,
-	double broadening
+	Index from
 ){
 	const Model &model = getModel();
 /*	TBTKAssert(
@@ -254,6 +256,11 @@ void ChebyshevExpander::calculateCoefficientsCPU(
 		"numCoefficients has to be larger than 0.",
 		""
 	);
+
+	vector<complex<double>> coefficients;
+	coefficients.reserve(numCoefficients*to.size());
+	for(unsigned int n = 0; n < numCoefficients*to.size(); n++)
+		coefficients.push_back(0);
 
 	const HoppingAmplitudeSet *hoppingAmplitudeSet = model.getHoppingAmplitudeSet();
 
@@ -392,6 +399,8 @@ void ChebyshevExpander::calculateCoefficientsCPU(
 	double lambda = broadening*numCoefficients;
 	for(int n = 0; n < numCoefficients; n++)
 		coefficients[n] = coefficients[n]*sinh(lambda*(1 - n/(double)numCoefficients))/sinh(lambda);
+
+	return coefficients;
 }
 
 void ChebyshevExpander::calculateCoefficientsWithCutoff(

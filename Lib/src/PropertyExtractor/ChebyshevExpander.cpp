@@ -248,7 +248,7 @@ Property::GreensFunction ChebyshevExpander::calculateGreensFunctions(
 //	ensureLookupTableIsReady();
 
 //	complex<double> *coefficients = new complex<double>[numCoefficients*to.size()];
-	complex<double> *coefficients = new complex<double>[cSolver->getNumCoefficients()*to.size()];
+//	complex<double> *coefficients = new complex<double>[cSolver->getNumCoefficients()*to.size()];
 
 /*	if(useGPUToCalculateCoefficients){
 		cSolver->calculateCoefficientsGPU(to, from, coefficients, numCoefficients);
@@ -256,7 +256,12 @@ Property::GreensFunction ChebyshevExpander::calculateGreensFunctions(
 	else{
 		cSolver->calculateCoefficientsCPU(to, from, coefficients, numCoefficients);
 	}*/
-	cSolver->calculateCoefficients(to, from, coefficients/*, numCoefficients*/);
+	vector<complex<double>> coefficients = cSolver->calculateCoefficients(
+		to,
+		from
+//		coefficients,
+//		numCoefficients
+	);
 
 	Solver::ChebyshevExpander::Type chebyshevType;
 	switch(type){
@@ -361,7 +366,7 @@ Property::GreensFunction ChebyshevExpander::calculateGreensFunctions(
 		delete [] greensFunctionData;
 	}
 
-	delete [] coefficients;
+//	delete [] coefficients;
 
 	return greensFunction;
 }
