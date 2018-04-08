@@ -68,12 +68,6 @@ std::vector<std::complex<double>> ChebyshevExpander::calculateCoefficientsGPU(
 	vector<Index> &to,
 	Index from
 ){
-/*	TBTKAssert(
-		getModel() != NULL,
-		"ChebyshevExpander::calculateCoefficientsGPU()",
-		"Model not set",
-		"Use ChebyshevExpander::setModel() to set model."
-	);*/
 	TBTKAssert(
 		scaleFactor > 0,
 		"ChebyshevExpander::calculateCoefficientsGPU()",
