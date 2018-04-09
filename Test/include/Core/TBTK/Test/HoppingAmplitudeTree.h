@@ -30,7 +30,9 @@ TEST(HoppingAmplitudeTree, SerializeToJSON){
 
 	EXPECT_EQ(hoppingAmplitudeTree1.getBasisSize(), 5);
 
-	std::vector<Index> indices = hoppingAmplitudeTree1.getIndexList({0, 0, IDX_ALL});
+	std::vector<Index> indices = hoppingAmplitudeTree1.getIndexList(
+		{0, 0, IDX_ALL}
+	);
 	EXPECT_TRUE(indices[0].equals({0, 0, 0}));
 	EXPECT_TRUE(indices[1].equals({0, 0, 1}));
 	EXPECT_TRUE(indices[2].equals({0, 0, 2}));
@@ -48,8 +50,12 @@ TEST(HoppingAmplitudeTree, add){
 	EXPECT_EXIT(
 		{
 			HoppingAmplitudeTree hoppingAmplitudeTree;
-			hoppingAmplitudeTree.add(HoppingAmplitude(1, {1, 2}, {3, 4}));
-			hoppingAmplitudeTree.add(HoppingAmplitude(1, {1, 2}, {3, 5}));
+			hoppingAmplitudeTree.add(
+				HoppingAmplitude(1, {1, 2}, {3, 4})
+			);
+			hoppingAmplitudeTree.add(
+				HoppingAmplitude(1, {1, 2}, {3, 5})
+			);
 			std::cerr << "Test completed.";
 			exit(0);
 		},
@@ -61,8 +67,12 @@ TEST(HoppingAmplitudeTree, add){
 		{
 			Streams::setStdMuteErr();
 			HoppingAmplitudeTree hoppingAmplitudeTree;
-			hoppingAmplitudeTree.add(HoppingAmplitude(1, {1, 2}, {3, 4}));
-			hoppingAmplitudeTree.add(HoppingAmplitude(1, {1, 2}, {3, 4, 5}));
+			hoppingAmplitudeTree.add(
+				HoppingAmplitude(1, {1, 2}, {3, 4})
+			);
+			hoppingAmplitudeTree.add(
+				HoppingAmplitude(1, {1, 2}, {3, 4, 5})
+			);
 		},
 		::testing::ExitedWithCode(1),
 		""
@@ -72,8 +82,12 @@ TEST(HoppingAmplitudeTree, add){
 		{
 			Streams::setStdMuteErr();
 			HoppingAmplitudeTree hoppingAmplitudeTree;
-			hoppingAmplitudeTree.add(HoppingAmplitude(1, {1, 2}, {3, 4, 5}));
-			hoppingAmplitudeTree.add(HoppingAmplitude(1, {1, 2}, {3, 4}));
+			hoppingAmplitudeTree.add(
+				HoppingAmplitude(1, {1, 2}, {3, 4, 5})
+			);
+			hoppingAmplitudeTree.add(
+				HoppingAmplitude(1, {1, 2}, {3, 4})
+			);
 		},
 		::testing::ExitedWithCode(1),
 		""
@@ -83,7 +97,9 @@ TEST(HoppingAmplitudeTree, add){
 		{
 			Streams::setStdMuteErr();
 			HoppingAmplitudeTree hoppingAmplitudeTree;
-			hoppingAmplitudeTree.add(HoppingAmplitude(1, {1, 2}, {3, -1, 5}));
+			hoppingAmplitudeTree.add(
+				HoppingAmplitude(1, {1, 2}, {3, -1, 5})
+			);
 		},
 		::testing::ExitedWithCode(1),
 		""
@@ -109,34 +125,63 @@ TEST(HoppingAmplitudeTree, getSubTree){
 
 	HoppingAmplitudeTree hoppingAmplitudeTree;
 
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {1, 2, 3, 4}, {1, 2, 3, 4}));
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {1, 2, 3, 4}, {1, 2, 3, 5}));
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {1, 2, 3, 5}, {1, 2, 3, 4}));
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {1, 2, 3, 6}, {1, 2, 3, 7}));
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {1, 2, 3, 7}, {1, 2, 3, 6}));
+	hoppingAmplitudeTree.add(
+		HoppingAmplitude(1, {1, 2, 3, 4}, {1, 2, 3, 4})
+	);
+	hoppingAmplitudeTree.add(
+		HoppingAmplitude(1, {1, 2, 3, 4}, {1, 2, 3, 5})
+	);
+	hoppingAmplitudeTree.add(
+		HoppingAmplitude(1, {1, 2, 3, 5}, {1, 2, 3, 4})
+	);
+	hoppingAmplitudeTree.add(
+		HoppingAmplitude(1, {1, 2, 3, 6}, {1, 2, 3, 7})
+	);
+	hoppingAmplitudeTree.add(
+		HoppingAmplitude(1, {1, 2, 3, 7}, {1, 2, 3, 6})
+	);
 
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {2, 2, 2, 4}, {2, 2, 2, 4}));
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {2, 2, 2, 4}, {2, 2, 2, 5}));
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {2, 2, 2, 5}, {2, 2, 2, 4}));
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {2, 2, 2, 6}, {2, 2, 2, 7}));
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {2, 2, 2, 7}, {2, 2, 2, 6}));
+	hoppingAmplitudeTree.add(
+		HoppingAmplitude(1, {2, 2, 2, 4}, {2, 2, 2, 4})
+	);
+	hoppingAmplitudeTree.add(
+		HoppingAmplitude(1, {2, 2, 2, 4}, {2, 2, 2, 5})
+	);
+	hoppingAmplitudeTree.add(
+		HoppingAmplitude(1, {2, 2, 2, 5}, {2, 2, 2, 4})
+	);
+	hoppingAmplitudeTree.add(
+		HoppingAmplitude(1, {2, 2, 2, 6}, {2, 2, 2, 7})
+	);
+	hoppingAmplitudeTree.add(
+		HoppingAmplitude(1, {2, 2, 2, 7}, {2, 2, 2, 6})
+	);
 
 	hoppingAmplitudeTree.generateBasisIndices();
 
 	EXPECT_EXIT(
 		{
-			const HoppingAmplitudeTree *hoppingAmplitudeTree0 = hoppingAmplitudeTree.getSubTree({1, 2});
-			const HoppingAmplitudeTree *hoppingAmplitudeTree1 = hoppingAmplitudeTree.getSubTree({2, 2});
-			const HoppingAmplitudeTree *hoppingAmplitudeTree2 = hoppingAmplitudeTree.getSubTree({1, 1});
-			const HoppingAmplitudeTree *hoppingAmplitudeTree3 = hoppingAmplitudeTree.getSubTree({1, 3});
+			const HoppingAmplitudeTree *hoppingAmplitudeTree0
+				= hoppingAmplitudeTree.getSubTree({1, 2});
+			const HoppingAmplitudeTree *hoppingAmplitudeTree1
+				= hoppingAmplitudeTree.getSubTree({2, 2});
+			const HoppingAmplitudeTree *hoppingAmplitudeTree2
+				= hoppingAmplitudeTree.getSubTree({1, 1});
+			const HoppingAmplitudeTree *hoppingAmplitudeTree3
+				= hoppingAmplitudeTree.getSubTree({1, 3});
 
-			HoppingAmplitudeTree::Iterator iterator = hoppingAmplitudeTree0->begin();
+			HoppingAmplitudeTree::Iterator iterator
+				= hoppingAmplitudeTree0->begin();
 			int counter = 0;
 			const HoppingAmplitude *hoppingAmplitude;
 			while((hoppingAmplitude = iterator.getHA())){
 				counter++;
-				if(!hoppingAmplitude->getFromIndex().equals({1, 2, 3, IDX_ALL}, true))
+				if(
+					!hoppingAmplitude->getFromIndex(
+					).equals({1, 2, 3, IDX_ALL}, true)
+				){
 					exit(1);
+				}
 
 				iterator.searchNextHA();
 			}
@@ -147,8 +192,11 @@ TEST(HoppingAmplitudeTree, getSubTree){
 			counter = 0;
 			while((hoppingAmplitude = iterator.getHA())){
 				counter++;
-				if(!hoppingAmplitude->getFromIndex().equals({2, 2, 2, IDX_ALL}, true))
+				if(!hoppingAmplitude->getFromIndex(
+				).equals({2, 2, 2, IDX_ALL}, true)
+				){
 					exit(1);
+				}
 
 				iterator.searchNextHA();
 			}
@@ -191,21 +239,39 @@ TEST(HoppingAmplitudeTree, getSubTree){
 }
 
 TEST(HoppingAmplitudeTree, isProperSubspace){
-	std::string errorMessage = "getSubTree() failed.";
-
 	HoppingAmplitudeTree hoppingAmplitudeTree;
 
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {1, 2, 3, 4, 5}, {1, 2, 3, 4, 5}));
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {1, 2, 3, 4, 5}, {1, 2, 3, 5, 5}));
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {1, 2, 3, 5, 5}, {1, 2, 3, 4, 5}));
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {1, 2, 3, 6, 5}, {1, 2, 3, 7, 5}));
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {1, 2, 3, 7, 5}, {1, 2, 3, 6, 5}));
+	hoppingAmplitudeTree.add(
+		HoppingAmplitude(1, {1, 2, 3, 4, 5}, {1, 2, 3, 4, 5})
+	);
+	hoppingAmplitudeTree.add(
+		HoppingAmplitude(1, {1, 2, 3, 4, 5}, {1, 2, 3, 5, 5})
+	);
+	hoppingAmplitudeTree.add(
+		HoppingAmplitude(1, {1, 2, 3, 5, 5}, {1, 2, 3, 4, 5})
+	);
+	hoppingAmplitudeTree.add(
+		HoppingAmplitude(1, {1, 2, 3, 6, 5}, {1, 2, 3, 7, 5})
+	);
+	hoppingAmplitudeTree.add(
+		HoppingAmplitude(1, {1, 2, 3, 7, 5}, {1, 2, 3, 6, 5})
+	);
 
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {2, 2, 2, 4, 5}, {2, 2, 2, 4, 5}));
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {2, 2, 2, 4, 5}, {2, 2, 2, 5, 5}));
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {2, 2, 2, 5, 5}, {2, 2, 2, 4, 5}));
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {2, 2, 2, 6, 5}, {2, 2, 2, 7, 5}));
-	hoppingAmplitudeTree.add(HoppingAmplitude(1, {2, 2, 2, 7, 5}, {2, 2, 2, 6, 5}));
+	hoppingAmplitudeTree.add(
+		HoppingAmplitude(1, {2, 2, 2, 4, 5}, {2, 2, 2, 4, 5})
+	);
+	hoppingAmplitudeTree.add(
+		HoppingAmplitude(1, {2, 2, 2, 4, 5}, {2, 2, 2, 5, 5})
+	);
+	hoppingAmplitudeTree.add(
+		HoppingAmplitude(1, {2, 2, 2, 5, 5}, {2, 2, 2, 4, 5})
+	);
+	hoppingAmplitudeTree.add(
+		HoppingAmplitude(1, {2, 2, 2, 6, 5}, {2, 2, 2, 7, 5})
+	);
+	hoppingAmplitudeTree.add(
+		HoppingAmplitude(1, {2, 2, 2, 7, 5}, {2, 2, 2, 6, 5})
+	);
 
 	EXPECT_EXIT(
 		{
@@ -215,12 +281,12 @@ TEST(HoppingAmplitudeTree, isProperSubspace){
 		::testing::ExitedWithCode(1),
 		""
 	);
-	EXPECT_TRUE(hoppingAmplitudeTree.isProperSubspace({1, 2})) << errorMessage;
-	EXPECT_TRUE(hoppingAmplitudeTree.isProperSubspace({2, 2})) << errorMessage;
-	EXPECT_TRUE(hoppingAmplitudeTree.isProperSubspace({1, 1})) << errorMessage;
-	EXPECT_TRUE(hoppingAmplitudeTree.isProperSubspace({1, 2, 3})) << errorMessage;
-	EXPECT_FALSE(hoppingAmplitudeTree.isProperSubspace({1, 2, 3, 4})) << errorMessage;
-	EXPECT_FALSE(hoppingAmplitudeTree.isProperSubspace({1, 2, 3, 4, 5})) << errorMessage;
+	EXPECT_TRUE(hoppingAmplitudeTree.isProperSubspace({1, 2}));
+	EXPECT_TRUE(hoppingAmplitudeTree.isProperSubspace({2, 2}));
+	EXPECT_TRUE(hoppingAmplitudeTree.isProperSubspace({1, 1}));
+	EXPECT_TRUE(hoppingAmplitudeTree.isProperSubspace({1, 2, 3}));
+	EXPECT_FALSE(hoppingAmplitudeTree.isProperSubspace({1, 2, 3, 4}));
+	EXPECT_FALSE(hoppingAmplitudeTree.isProperSubspace({1, 2, 3, 4, 5}));
 	EXPECT_TRUE(hoppingAmplitudeTree.isProperSubspace({1, 3}));
 }
 
@@ -259,7 +325,9 @@ TEST(HoppingAmplitudeTree, getFirstIndexInSubspace){
 	EXPECT_EXIT(
 		{
 			Streams::setStdMuteErr();
-			hoppingAmplitudeTree.getFirstIndexInSubspace({0, 0, 1});
+			hoppingAmplitudeTree.getFirstIndexInSubspace(
+				{0, 0, 1}
+			);
 		},
 		::testing::ExitedWithCode(1),
 		""
@@ -295,7 +363,7 @@ TEST(HoppingAmplitudeTree, getLastIndexInSubspace){
 	EXPECT_EQ(hoppingAmplitudeTree.getLastIndexInSubspace({1, 1}), 4);
 }
 
-TEST(HoppingAmplitudeTree, getHAs){
+TEST(HoppingAmplitudeTree, getHoppingAmplitudes){
 	HoppingAmplitudeTree hoppingAmplitudeTree;
 	hoppingAmplitudeTree.add(HoppingAmplitude(1, {0, 0, 0}, {0, 0, 0}));
 	hoppingAmplitudeTree.add(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 1}));
@@ -306,19 +374,27 @@ TEST(HoppingAmplitudeTree, getHAs){
 	hoppingAmplitudeTree.add(HoppingAmplitude(1, {1, 1, 1}, {1, 1, 0}));
 	hoppingAmplitudeTree.generateBasisIndices();
 
-	const std::vector<HoppingAmplitude> *hoppingAmplitudes = hoppingAmplitudeTree.getHAs({0, 0, 1});
+	const std::vector<HoppingAmplitude> *hoppingAmplitudes
+		= hoppingAmplitudeTree.getHoppingAmplitudes({0, 0, 1});
 	EXPECT_EQ(hoppingAmplitudes->size(), 2);
 	for(unsigned int n = 0; n < hoppingAmplitudes->size(); n++){
-		const HoppingAmplitude &hoppingAmplitude = hoppingAmplitudes->at(n);
+		const HoppingAmplitude &hoppingAmplitude
+			= hoppingAmplitudes->at(n);
 
 		EXPECT_TRUE(hoppingAmplitude.getFromIndex().equals({0, 0, 1}));
-		EXPECT_TRUE(hoppingAmplitude.getToIndex().equals({0, 0, 1}) || hoppingAmplitude.getToIndex().equals({0, 0, 2}));
+		EXPECT_TRUE(
+			hoppingAmplitude.getToIndex().equals({0, 0, 1})
+			|| hoppingAmplitude.getToIndex().equals({0, 0, 2})
+		);
 	}
 
-	hoppingAmplitudes = hoppingAmplitudeTree.getHAs({0, 0, 2});
+	hoppingAmplitudes = hoppingAmplitudeTree.getHoppingAmplitudes(
+		{0, 0, 2}
+	);
 	EXPECT_EQ(hoppingAmplitudes->size(), 1);
 	for(unsigned int n = 0; n < hoppingAmplitudes->size(); n++){
-		const HoppingAmplitude &hoppingAmplitude = hoppingAmplitudes->at(n);
+		const HoppingAmplitude &hoppingAmplitude
+			= hoppingAmplitudes->at(n);
 
 		EXPECT_TRUE(hoppingAmplitude.getFromIndex().equals({0, 0, 2}));
 		EXPECT_TRUE(hoppingAmplitude.getToIndex().equals({0, 0, 1}));
@@ -371,11 +447,21 @@ TEST(HoppingAmplitudeTree, getPhysicsIndex){
 
 	hoppingAmplitudeTree.generateBasisIndices();
 
-	EXPECT_TRUE(hoppingAmplitudeTree.getPhysicalIndex(0).equals({0, 0, 0}));
-	EXPECT_TRUE(hoppingAmplitudeTree.getPhysicalIndex(1).equals({0, 0, 1}));
-	EXPECT_TRUE(hoppingAmplitudeTree.getPhysicalIndex(2).equals({0, 0, 2}));
-	EXPECT_TRUE(hoppingAmplitudeTree.getPhysicalIndex(3).equals({1, 1, 0}));
-	EXPECT_TRUE(hoppingAmplitudeTree.getPhysicalIndex(4).equals({1, 1, 1}));
+	EXPECT_TRUE(
+		hoppingAmplitudeTree.getPhysicalIndex(0).equals({0, 0, 0})
+	);
+	EXPECT_TRUE(
+		hoppingAmplitudeTree.getPhysicalIndex(1).equals({0, 0, 1})
+	);
+	EXPECT_TRUE(
+		hoppingAmplitudeTree.getPhysicalIndex(2).equals({0, 0, 2})
+	);
+	EXPECT_TRUE(
+		hoppingAmplitudeTree.getPhysicalIndex(3).equals({1, 1, 0})
+	);
+	EXPECT_TRUE(
+		hoppingAmplitudeTree.getPhysicalIndex(4).equals({1, 1, 1})
+	);
 	EXPECT_EXIT(
 		{
 			Streams::setStdMuteErr();
@@ -412,7 +498,9 @@ TEST(HoppingAmplitudeTree, getIndexList){
 	hoppingAmplitudeTree.add(HoppingAmplitude(1, {1, 1, 1}, {1, 1, 0}));
 	hoppingAmplitudeTree.generateBasisIndices();
 
-	std::vector<Index> indices = hoppingAmplitudeTree.getIndexList({0, 0, IDX_ALL});
+	std::vector<Index> indices = hoppingAmplitudeTree.getIndexList(
+		{0, 0, IDX_ALL}
+	);
 	EXPECT_TRUE(indices[0].equals({0, 0, 0}));
 	EXPECT_TRUE(indices[1].equals({0, 0, 1}));
 	EXPECT_TRUE(indices[2].equals({0, 0, 2}));

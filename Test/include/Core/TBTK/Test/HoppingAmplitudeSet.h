@@ -163,7 +163,7 @@ TEST(HoppingAmplitudeSet, add){
 	EXPECT_EQ(hoppingAmplitudes1->size(), 1);
 }*/
 
-TEST(HoppingAmplitudeSet, getHAs){
+TEST(HoppingAmplitudeSet, getHoppingAmplitudes){
 	HoppingAmplitudeSet hoppingAmplitudeSet;
 	hoppingAmplitudeSet.add(HoppingAmplitude(1, {0, 0, 0}, {0, 0, 0}));
 	hoppingAmplitudeSet.add(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 1}));
@@ -175,7 +175,7 @@ TEST(HoppingAmplitudeSet, getHAs){
 	hoppingAmplitudeSet.construct();
 
 	const std::vector<HoppingAmplitude> *hoppingAmplitudes
-		= hoppingAmplitudeSet.getHAs({0, 0, 1});
+		= hoppingAmplitudeSet.getHoppingAmplitudes({0, 0, 1});
 	EXPECT_EQ(hoppingAmplitudes->size(), 2);
 	for(unsigned int n = 0; n < hoppingAmplitudes->size(); n++){
 		const HoppingAmplitude &hoppingAmplitude
@@ -188,7 +188,7 @@ TEST(HoppingAmplitudeSet, getHAs){
 		);
 	}
 
-	hoppingAmplitudes = hoppingAmplitudeSet.getHAs({0, 0, 2});
+	hoppingAmplitudes = hoppingAmplitudeSet.getHoppingAmplitudes({0, 0, 2});
 	EXPECT_EQ(hoppingAmplitudes->size(), 1);
 	for(unsigned int n = 0; n < hoppingAmplitudes->size(); n++){
 		const HoppingAmplitude &hoppingAmplitude

@@ -151,7 +151,9 @@ public:
 	 *
 	 *  @return All @link HoppingAmplitude HoppingAmplitudes @endlink with
 	 *  the given from-Index. */
-	const std::vector<HoppingAmplitude>* getHAs(Index index) const;
+	const std::vector<HoppingAmplitude>* getHoppingAmplitudes(
+		Index index
+	) const;
 
 	/** Get Hilbert space basis index for given physical index.
 	 *
@@ -327,8 +329,8 @@ private:
 	void getBlockIndices(IndexTree &blockIndices, Index index) const;
 
 	/** Get HoppingAmpilitudes. Is called by the public
-	 *  HoppingAmplitudeTree::getHAs and is called recursively. */
-	const std::vector<HoppingAmplitude>* getHAs(
+	 *  HoppingAmplitudeTree::getHoppingAmplitudes and is called recursively. */
+	const std::vector<HoppingAmplitude>* getHoppingAmplitudes(
 		Index index,
 		unsigned int subindex
 	) const;

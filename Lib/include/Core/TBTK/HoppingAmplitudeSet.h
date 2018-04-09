@@ -109,7 +109,9 @@ public:
 	 *
 	 *  @return All @link HoppingAmplitude HoppingAmplitudes @endlink with
 	 *  the given from-Index. */
-	const std::vector<HoppingAmplitude>* getHAs(Index index) const;
+	const std::vector<HoppingAmplitude>* getHoppingAmplitudes(
+		Index index
+	) const;
 
 	/** Get Hilbert space index corresponding to given 'from'-index.
 	 *
@@ -350,10 +352,12 @@ inline void HoppingAmplitudeSet::add(HoppingAmplitude ha){
 	hoppingAmplitudeTree.add(ha);
 }
 
-inline const std::vector<HoppingAmplitude>* HoppingAmplitudeSet::getHAs(
+inline const std::vector<
+	HoppingAmplitude
+>* HoppingAmplitudeSet::getHoppingAmplitudes(
 	Index index
 ) const{
-	return hoppingAmplitudeTree.getHAs(index);
+	return hoppingAmplitudeTree.getHoppingAmplitudes(index);
 }
 
 inline int HoppingAmplitudeSet::getBasisIndex(const Index &index) const{

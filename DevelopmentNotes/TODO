@@ -8,9 +8,9 @@
   operators to no longer be needed. Further, this removes the need on the
   Solver::ChebyshevExpander to override the metodh Solver::setSolver().
 
-- Rename HoppingAmplitudeTree::getHAs() and HoppingAmplitudeSet::getHAs() to
-  ::getHoppingAmplitudes(). Also make these functions return constant
-  references rather than pointers to constants.
+- Make HoppingAmplitudeTree::getHoppingAmplitudes() and
+  HoppingAmplitudeSet::getHoppingAmplitudes() return constant references rather
+  than pointers to constants.
 
 - Rewrite HoppingAmplitudeTree::Iterator, HoppingAmplitudeSet::Iterator and
   IndexTree::Iterator to use standard iterator notation with operator++(),

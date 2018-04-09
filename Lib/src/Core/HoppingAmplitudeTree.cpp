@@ -433,13 +433,17 @@ void HoppingAmplitudeTree::getBlockIndices(
 	}
 }
 
-const std::vector<HoppingAmplitude>* HoppingAmplitudeTree::getHAs(
+const std::vector<
+	HoppingAmplitude
+>* HoppingAmplitudeTree::getHoppingAmplitudes(
 	Index index
 ) const{
-	return getHAs(index, 0);
+	return getHoppingAmplitudes(index, 0);
 }
 
-const std::vector<HoppingAmplitude>* HoppingAmplitudeTree::getHAs(
+const std::vector<
+	HoppingAmplitude
+>* HoppingAmplitudeTree::getHoppingAmplitudes(
 	Index index,
 	unsigned int subindex
 ) const{
@@ -458,7 +462,10 @@ const std::vector<HoppingAmplitude>* HoppingAmplitudeTree::getHAs(
 			exit(1);
 		}
 		//Continue to the next node level.
-		return children.at(currentIndex).getHAs(index, subindex+1);
+		return children.at(currentIndex).getHoppingAmplitudes(
+			index,
+			subindex+1
+		);
 	}
 	else{
 		//If the current subindex is the last, return HoppingAmplitudes.
