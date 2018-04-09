@@ -29,25 +29,24 @@ namespace TBTK{
 
 SingleParticleContext::SingleParticleContext(){
 	statistics = Statistics::FermiDirac;
-	hoppingAmplitudeSet = new HoppingAmplitudeSet();
 	geometry = nullptr;
 }
 
 SingleParticleContext::SingleParticleContext(
 	const vector<unsigned int> &capacity
-){
+) :
+	HoppingAmplitudeSet(capacity)
+{
 	statistics = Statistics::FermiDirac;
-	hoppingAmplitudeSet = new HoppingAmplitudeSet(capacity);
 	geometry = nullptr;
 }
 
 SingleParticleContext::SingleParticleContext(
 	const SingleParticleContext &singleParticleContext
-){
+) :
+	HoppingAmplitudeSet(singleParticleContext)
+{
 	statistics = singleParticleContext.statistics;
-	hoppingAmplitudeSet = new HoppingAmplitudeSet(
-		*singleParticleContext.hoppingAmplitudeSet
-	);
 	if(singleParticleContext.geometry == nullptr){
 		geometry = nullptr;
 	}
@@ -60,11 +59,10 @@ SingleParticleContext::SingleParticleContext(
 
 SingleParticleContext::SingleParticleContext(
 	SingleParticleContext &&singleParticleContext
-){
+) :
+	HoppingAmplitudeSet(singleParticleContext)
+{
 	statistics = singleParticleContext.statistics;
-
-	hoppingAmplitudeSet = singleParticleContext.hoppingAmplitudeSet;
-	singleParticleContext.hoppingAmplitudeSet = nullptr;
 
 	geometry = singleParticleContext.geometry;
 	singleParticleContext.geometry = nullptr;
@@ -73,7 +71,18 @@ SingleParticleContext::SingleParticleContext(
 SingleParticleContext::SingleParticleContext(
 	const string &serialization,
 	Mode mode
-){
+) :
+	HoppingAmplitudeSet(
+		extractComponent(
+			serialization,
+			"SingleParticleContext",
+			"HoppingAmplitudeSet",
+			"hoppingAmplitudeSet",
+			mode
+		),
+		mode
+	)
+{
 	TBTKAssert(
 		validate(serialization, "SingleParticleContext", mode),
 		"SingleParticleContext::SingleParticleContext()",
@@ -90,11 +99,10 @@ SingleParticleContext::SingleParticleContext(
 		vector<string> elements = split(content, mode);
 
 		deserialize(elements.at(0), &statistics, mode);
-		hoppingAmplitudeSet = new HoppingAmplitudeSet(elements.at(1), mode);
 		if(elements.at(2).compare("null") == 0)
 			geometry = nullptr;
 		else
-			geometry = new Geometry(elements.at(2), mode, *hoppingAmplitudeSet);
+			geometry = new Geometry(elements.at(2), mode, *this);
 
 		break;
 	}
@@ -107,15 +115,11 @@ SingleParticleContext::SingleParticleContext(
 				&statistics,
 				mode
 			);
-			hoppingAmplitudeSet = new HoppingAmplitudeSet(
-				j.at("hoppingAmplitudeSet").dump(),
-				mode
-			);
 			try{
 				geometry = new Geometry(
 					j.at("geometry").dump(),
 					mode,
-					*hoppingAmplitudeSet
+					*this
 				);
 			}
 			catch(json::exception e){
@@ -144,8 +148,6 @@ SingleParticleContext::SingleParticleContext(
 }
 
 SingleParticleContext::~SingleParticleContext(){
-	if(hoppingAmplitudeSet != nullptr)
-		delete hoppingAmplitudeSet;
 	if(geometry != nullptr)
 		delete geometry;
 }
@@ -156,9 +158,7 @@ SingleParticleContext& SingleParticleContext::operator=(
 	if(this != &rhs){
 		statistics = rhs.statistics;
 
-		hoppingAmplitudeSet = new HoppingAmplitudeSet(
-			*rhs.hoppingAmplitudeSet
-		);
+		HoppingAmplitudeSet::operator=(rhs);
 
 		if(rhs.geometry == nullptr)
 			geometry = nullptr;
@@ -175,18 +175,13 @@ SingleParticleContext& SingleParticleContext::operator=(
 	if(this != &rhs){
 		statistics = rhs.statistics;
 
-		hoppingAmplitudeSet = rhs.hoppingAmplitudeSet;
-		rhs.hoppingAmplitudeSet = nullptr;
+		HoppingAmplitudeSet::operator=(rhs);
 
 		geometry = rhs.geometry;
 		rhs.geometry = nullptr;
 	}
 
 	return *this;
-}
-
-void SingleParticleContext::construct(){
-	hoppingAmplitudeSet->construct();
 }
 
 void SingleParticleContext::createGeometry(int dimensions, int numSpecifiers){
@@ -200,7 +195,7 @@ void SingleParticleContext::createGeometry(int dimensions, int numSpecifiers){
 	geometry = new Geometry(
 		dimensions,
 		numSpecifiers,
-		hoppingAmplitudeSet
+		this
 	);
 }
 
@@ -211,7 +206,7 @@ string SingleParticleContext::serialize(Mode mode) const{
 		stringstream ss;
 		ss << "SingleParticleContext(";
 		ss << Serializable::serialize(statistics, mode);
-		ss << "," << hoppingAmplitudeSet->serialize(mode);
+		ss << "," << HoppingAmplitudeSet::serialize(mode);
 		if(geometry == nullptr)
 			ss << "," << "null";
 		else
@@ -226,7 +221,7 @@ string SingleParticleContext::serialize(Mode mode) const{
 		j["id"] = "SingleParticleContext";
 		j["statistics"] = Serializable::serialize(statistics, mode);
 		j["hoppingAmplitudeSet"] = json::parse(
-			hoppingAmplitudeSet->serialize(mode)
+			HoppingAmplitudeSet::serialize(mode)
 		);
 		if(geometry != nullptr)
 			j["geometry"] = json::parse(geometry->serialize(mode));
