@@ -54,17 +54,19 @@ void extractCoefficients(
 		coefficients[coefficientMap[to]*numCoefficients + currentCoefficient] = jResult[to];
 }
 
-std::vector<std::complex<double>> ChebyshevExpander::calculateCoefficientsGPU(
+vector<complex<double>> ChebyshevExpander::calculateCoefficientsGPU(
 	Index to,
 	Index from
 ){
 	vector<Index> toVector;
 	toVector.push_back(to);
 
-	return calculateCoefficientsGPU(toVector, from);
+	return calculateCoefficientsGPU(toVector, from)[0];
 }
 
-std::vector<std::complex<double>> ChebyshevExpander::calculateCoefficientsGPU(
+vector<
+	vector<std::complex<double>>
+> ChebyshevExpander::calculateCoefficientsGPU(
 	vector<Index> &to,
 	Index from
 ){
@@ -90,10 +92,13 @@ std::vector<std::complex<double>> ChebyshevExpander::calculateCoefficientsGPU(
 		""
 	);
 
-	vector<complex<double>> coefficients;
-	coefficients.reserve(numCoefficients*to.size());
-	for(unsigned int n = 0; n < numCoefficients*to.size(); n++)
-		coefficients.push_back(0);
+	vector<vector<complex<double>>> coefficients;
+	for(unsigned int n = 0; n < to.size(); n++){
+		coefficients.push_back(vector<complex<double>>());
+		coefficients[n].reserve(numCoefficients);
+		for(int c = 0; c < numCoefficients; c++)
+			coefficients[n].push_back(0);
+	}
 
 	const HoppingAmplitudeSet *hoppingAmplitudeSet = getModel().getHoppingAmplitudeSet();
 
@@ -128,7 +133,8 @@ std::vector<std::complex<double>> ChebyshevExpander::calculateCoefficientsGPU(
 
 	for(int n = 0; n < hoppingAmplitudeSet->getBasisSize(); n++)
 		if(coefficientMap[n] != -1)
-			coefficients[coefficientMap[n]*numCoefficients] = jIn1[n];
+			coefficients[coefficientMap[n]][0] = jIn1[n];
+//			coefficients[coefficientMap[n]*numCoefficients] = jIn1[n];
 
 	const int numHoppingAmplitudes = hoppingAmplitudeSet->getNumMatrixElements();
 	const int *cooHARowIndices_host = hoppingAmplitudeSet->getCOORowIndices();
@@ -305,7 +311,20 @@ std::vector<std::complex<double>> ChebyshevExpander::calculateCoefficientsGPU(
 		"CUDA memcpy error while copying cooHAValues.",
 		""
 	);
-	TBTKAssert(
+	for(unsigned int n = 0; n < to.size(); n++){
+		TBTKAssert(
+			cudaMemcpy(
+				coefficients_device + numCoefficients*n,
+				coefficients[n].data(),
+				numCoefficients*sizeof(complex<double>),
+				cudaMemcpyHostToDevice
+			) == cudaSuccess,
+			"ChebyshevExpander::calculateCoefficients()",
+			"CUDA memcpy error while copying coefficients.",
+			""
+		);
+	}
+/*	TBTKAssert(
 		cudaMemcpy(
 			coefficients_device,
 			coefficients.data(),
@@ -315,7 +334,7 @@ std::vector<std::complex<double>> ChebyshevExpander::calculateCoefficientsGPU(
 		"ChebyshevExpander::calculateCoefficients()",
 		"CUDA memcpy error while copying coefficients.",
 		""
-	)
+	);*/
 	TBTKAssert(
 		cudaMemcpy(
 			coefficientMap_device,
@@ -478,7 +497,20 @@ std::vector<std::complex<double>> ChebyshevExpander::calculateCoefficientsGPU(
 	if(getGlobalVerbose() && getVerbose())
 		Streams::out << "\n";
 
-	TBTKAssert(
+	for(unsigned int n = 0; n < to.size(); n++){
+		TBTKAssert(
+			cudaMemcpy(
+				coefficients[n].data(),
+				coefficients_device + numCoefficients*n,
+				numCoefficients*sizeof(complex<double>),
+				cudaMemcpyDeviceToHost
+			) == cudaSuccess,
+			"ChebyshevExpander::calculateCoefficientsGPU()",
+			"CUDA memcpy error while copying coefficients.",
+			""
+		);
+	}
+/*	TBTKAssert(
 		cudaMemcpy(
 			coefficients.data(),
 			coefficients_device,
@@ -488,7 +520,7 @@ std::vector<std::complex<double>> ChebyshevExpander::calculateCoefficientsGPU(
 		"ChebyshevExpander::calculateCoefficientsGPU()",
 		"CUDA memcpy error while copying coefficients.",
 		""
-	);
+	);*/
 
 	TBTKAssert(
 		cusparseDestroyMatDescr(descr) == CUSPARSE_STATUS_SUCCESS,
@@ -527,7 +559,8 @@ std::vector<std::complex<double>> ChebyshevExpander::calculateCoefficientsGPU(
 	double lambda = broadening*numCoefficients;
 	for(int n = 0; n < numCoefficients; n++)
 		for(int c = 0; c < (int)to.size(); c++)
-			coefficients[n + c*numCoefficients] = coefficients[n + c*numCoefficients]*sinh(lambda*(1 - n/(double)numCoefficients))/sinh(lambda);
+			coefficients[c][n] = coefficients[c][n]*sinh(lambda*(1 - n/(double)numCoefficients))/sinh(lambda);
+//			coefficients[n + c*numCoefficients] = coefficients[n + c*numCoefficients]*sinh(lambda*(1 - n/(double)numCoefficients))/sinh(lambda);
 
 	return coefficients;
 }

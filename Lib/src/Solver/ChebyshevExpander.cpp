@@ -233,7 +233,7 @@ vector<complex<double>> ChebyshevExpander::calculateCoefficientsCPU(
 	return coefficients;
 }
 
-vector<complex<double>> ChebyshevExpander::calculateCoefficientsCPU(
+vector<vector<complex<double>>> ChebyshevExpander::calculateCoefficientsCPU(
 	vector<Index> &to,
 	Index from
 ){
@@ -257,10 +257,13 @@ vector<complex<double>> ChebyshevExpander::calculateCoefficientsCPU(
 		""
 	);
 
-	vector<complex<double>> coefficients;
-	coefficients.reserve(numCoefficients*to.size());
-	for(unsigned int n = 0; n < numCoefficients*to.size(); n++)
-		coefficients.push_back(0);
+	vector<vector<complex<double>>> coefficients;
+	for(unsigned int n = 0; n < to.size(); n++){
+		coefficients.push_back(vector<complex<double>>());
+		coefficients[n].reserve(numCoefficients);
+		for(int c = 0; c < numCoefficients; c++)
+			coefficients[n].push_back(0);
+	}
 
 	const HoppingAmplitudeSet *hoppingAmplitudeSet = model.getHoppingAmplitudeSet();
 
@@ -292,7 +295,8 @@ vector<complex<double>> ChebyshevExpander::calculateCoefficientsCPU(
 
 	for(int n = 0; n < hoppingAmplitudeSet->getBasisSize(); n++)
 		if(coefficientMap[n] != -1)
-			coefficients[coefficientMap[n]*numCoefficients] = jIn1[n];
+			coefficients[coefficientMap[n]][0] = jIn1[n];
+//			coefficients[coefficientMap[n]*numCoefficients] = jIn1[n];
 
 	//Generate a fixed hopping amplitude and inde list, for speed.
 	HoppingAmplitudeSet::Iterator it = hoppingAmplitudeSet->getIterator();
@@ -341,7 +345,8 @@ vector<complex<double>> ChebyshevExpander::calculateCoefficientsCPU(
 
 	for(int n = 0; n < hoppingAmplitudeSet->getBasisSize(); n++)
 		if(coefficientMap[n] != -1)
-			coefficients[coefficientMap[n]*numCoefficients + 1] = jIn1[n];
+			coefficients[coefficientMap[n]][1] = jIn1[n];
+//			coefficients[coefficientMap[n]*numCoefficients + 1] = jIn1[n];
 
 	//Multiply hopping amplitudes by factor two, to spped up calculation of 2H|j(n-1)> - |j(n-2)>.
 	for(int n = 0; n < numHoppingAmplitudes; n++)
@@ -376,7 +381,8 @@ vector<complex<double>> ChebyshevExpander::calculateCoefficientsCPU(
 
 		for(int c = 0; c < hoppingAmplitudeSet->getBasisSize(); c++)
 			if(coefficientMap[c] != -1)
-				coefficients[coefficientMap[c]*numCoefficients + n] = jIn1[c];
+				coefficients[coefficientMap[c]][n] = jIn1[c];
+//				coefficients[coefficientMap[c]*numCoefficients + n] = jIn1[c];
 
 		if(getGlobalVerbose() && getVerbose()){
 			if(n%100 == 0)
@@ -398,7 +404,9 @@ vector<complex<double>> ChebyshevExpander::calculateCoefficientsCPU(
 	//Lorentzian convolution
 	double lambda = broadening*numCoefficients;
 	for(int n = 0; n < numCoefficients; n++)
-		coefficients[n] = coefficients[n]*sinh(lambda*(1 - n/(double)numCoefficients))/sinh(lambda);
+		for(unsigned int c = 0; c < to.size(); c++)
+			coefficients[c][n] = coefficients[c][n]*sinh(lambda*(1 - n/(double)numCoefficients))/sinh(lambda);
+//		coefficients[n] = coefficients[n]*sinh(lambda*(1 - n/(double)numCoefficients))/sinh(lambda);
 
 	return coefficients;
 }

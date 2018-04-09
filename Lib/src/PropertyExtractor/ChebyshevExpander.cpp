@@ -221,7 +221,7 @@ Property::GreensFunction ChebyshevExpander::calculateGreensFunctions(
 	Index from,
 	Property::GreensFunction::Type type
 ){
-	vector<complex<double>> coefficients = cSolver->calculateCoefficients(
+	vector<vector<complex<double>>> coefficients = cSolver->calculateCoefficients(
 		to,
 		from
 	);
@@ -263,8 +263,12 @@ Property::GreensFunction ChebyshevExpander::calculateGreensFunctions(
 
 	#pragma omp parallel for
 	for(unsigned int n = 0; n < to.size(); n++){
-		complex<double> *greensFunctionData = cSolver->generateGreensFunction(
+/*		complex<double> *greensFunctionData = cSolver->generateGreensFunction(
 			&(coefficients[n*cSolver->getNumCoefficients()]),
+			chebyshevType
+		);*/
+		complex<double> *greensFunctionData = cSolver->generateGreensFunction(
+			coefficients[n].data(),
 			chebyshevType
 		);
 		unsigned int offset = greensFunction.getOffset({to[n], from});
