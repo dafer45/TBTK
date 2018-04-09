@@ -665,7 +665,7 @@ void ChebyshevExpander::destroyLookupTableGPU(){
 
 //Property::GreensFunction* ChebyshevExpander::generateGreensFunctionGPU(
 complex<double>* ChebyshevExpander::generateGreensFunctionGPU(
-	complex<double> *coefficients,
+	const vector<complex<double>> &coefficients,
 //	Property::GreensFunction::Type type
 	Type type
 ){
@@ -738,7 +738,7 @@ complex<double>* ChebyshevExpander::generateGreensFunctionGPU(
 	TBTKAssert(
 		cudaMemcpy(
 			coefficients_device,
-			coefficients,
+			coefficients.data(),
 			lookupTableNumCoefficients*sizeof(complex<double>),
 			cudaMemcpyHostToDevice
 		) == cudaSuccess,

@@ -675,11 +675,7 @@ void ChebyshevExpander::destroyLookupTable(){
 
 //Property::GreensFunction* ChebyshevExpander::generateGreensFunction(
 complex<double>* ChebyshevExpander::generateGreensFunctionCPU(
-	complex<double> *coefficients,
-/*	int numCoefficients,
-	int energyResolution,
-	double lowerBound,
-	double upperBound,*/
+	const vector<complex<double>> &coefficients,
 	Type type
 ){
 	TBTKAssert(

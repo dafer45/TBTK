@@ -268,7 +268,7 @@ Property::GreensFunction ChebyshevExpander::calculateGreensFunctions(
 			chebyshevType
 		);*/
 		complex<double> *greensFunctionData = cSolver->generateGreensFunction(
-			coefficients[n].data(),
+			coefficients[n],
 			chebyshevType
 		);
 		unsigned int offset = greensFunction.getOffset({to[n], from});
