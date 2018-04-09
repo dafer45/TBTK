@@ -59,63 +59,7 @@ TEST(SingleParticleContext, getStatistics){
 //This function should possibly be removed from the SingleParticleContext
 //itself by makin the SingleParticleContext inherit from the
 //HoppingAmplitudeSet.
-TEST(SingleParticleContext, add){
-}
-
-//TODO
-//This function should possibly be removed from the SingleParticleContext
-//itself by makin the SingleParticleContext inherit from the
-//HoppingAmplitudeSet.
-/*TEST(SingleParticleContext, addHoppingAmplitudeAndHermitianConjugate){
-}*/
-
-//TODO
-//This function should possibly be removed from the SingleParticleContext
-//itself by makin the SingleParticleContext inherit from the
-//HoppingAmplitudeSet.
-TEST(SingleParticleContext, getBasisIndex){
-}
-
-//TODO
-//This function should possibly be removed from the SingleParticleContext
-//itself by makin the SingleParticleContext inherit from the
-//HoppingAmplitudeSet.
-TEST(SingleParticleContext, getBasisSize){
-}
-
-//TODO
-//This function should possibly be removed from the SingleParticleContext
-//itself by makin the SingleParticleContext inherit from the
-//HoppingAmplitudeSet.
-TEST(SingleParticleContext, construct){
-}
-
-//TODO
-//This function should possibly be removed from the SingleParticleContext
-//itself by makin the SingleParticleContext inherit from the
-//HoppingAmplitudeSet.
 TEST(SingleParticleContext, constructCOO){
-}
-
-//TODO
-//This function should possibly be removed from the SingleParticleContext
-//itself by makin the SingleParticleContext inherit from the
-//HoppingAmplitudeSet.
-TEST(SingleParticleContext, destructCOO){
-}
-
-//TODO
-//This function should possibly be removed from the SingleParticleContext
-//itself by makin the SingleParticleContext inherit from the
-//HoppingAmplitudeSet.
-TEST(SingleParticleContext, reconstructCOO){
-}
-
-//TODO
-//This function should possibly be removed from the SingleParticleContext
-//itself by makin the SingleParticleContext inherit from the
-//HoppingAmplitudeSet.
-TEST(SingleParticleContext, getHoppingAmplitudeSet){
 }
 
 //TODO
