@@ -1,13 +1,3 @@
-- Make HoppingAmplitudeSet inherit from the HoppingAmplitudeTree to reduce the
-  aparant complexity of the HoppingAmplitudeSet. The HoppingAmplitudeSet
-  currently reimplements much of the HoppingAmplitudeTrees interface through
-  inline functions that call the corresponding HoppingAmplitudeTree functions.
-  Whetherthe inheritance should be private or public depends on whether all of
-  the HoppingAmplitudeTrees public functions should be available or not, which
-  has to be checked. In case private inheritance is prefered, use "using
-  HoppingAmplitudeTree::methodName;" to make specific methods visible through
-  the HoppingAmplitudeSet.
-
 - Make SingleParticleContext inherit from HoppingAmplitudeSet and Geometry.
 
 - Make Model inherit from SingleParticleContext and ManyBodyContext.

@@ -221,10 +221,10 @@ void HoppingAmplitudeTree::print(unsigned int subindex){
 }
 
 void HoppingAmplitudeTree::add(HoppingAmplitude ha){
-	add(ha, 0);
+	_add(ha, 0);
 }
 
-void HoppingAmplitudeTree::add(HoppingAmplitude &ha, unsigned int subindex){
+void HoppingAmplitudeTree::_add(HoppingAmplitude &ha, unsigned int subindex){
 //	if(subindex < ha.fromIndex.size()){
 	if(subindex < ha.getFromIndex().getSize()){
 		//If the current subindex is not the last, the HoppingAmplitude
@@ -237,7 +237,7 @@ void HoppingAmplitudeTree::add(HoppingAmplitude &ha, unsigned int subindex){
 		//Negative indices not allowed.
 		TBTKAssert(
 			currentIndex >= 0,
-			"HoppingAmplitude:add()",
+			"HoppingAmplitude:_add()",
 			"Invalid Index. Only indices with non-negative"
 			<< " subindices can be added. But the from-Index "
 			<< ha.getFromIndex().toString() << " has a negative"
@@ -260,7 +260,7 @@ void HoppingAmplitudeTree::add(HoppingAmplitude &ha, unsigned int subindex){
 		//common indices.
 		TBTKAssert(
 			hoppingAmplitudes.size() == 0,
-			"HoppingAmplitudeTree::add()",
+			"HoppingAmplitudeTree::_add()",
 			"Incompatible HoppingAmplitudes. Tried to add a"
 			<< " HoppingAmplitude with from-Index "
 			<< ha.getFromIndex().toString() << ", but"
@@ -282,7 +282,7 @@ void HoppingAmplitudeTree::add(HoppingAmplitude &ha, unsigned int subindex){
 		if(ha.getToIndex().getSize() <= subindex || currentIndex != ha.getToIndex().at(subindex))
 			isPotentialBlockSeparator = false;
 		//Propagate to the next node level.
-		children.at(currentIndex).add(ha, subindex+1);
+		children.at(currentIndex)._add(ha, subindex+1);
 	}
 	else{
 		//If the current subindex is the last, the HoppingAmplitude
@@ -296,7 +296,7 @@ void HoppingAmplitudeTree::add(HoppingAmplitude &ha, unsigned int subindex){
 		//indices.
 		TBTKAssert(
 			children.size() == 0,
-			"HoppingAmplitudeTree:add(),",
+			"HoppingAmplitudeTree:_add(),",
 			"Incompatible HoppingAmplitudes. Tried to add a"
 			<< " HoppingAmplitude with from-Index "
 			<< ha.getFromIndex().toString() << ", but"
@@ -372,10 +372,10 @@ bool HoppingAmplitudeTree::isProperSubspace(const Index &subspace) const{
 		}
 	}
 
-	return isProperSubspace(subspace, 0);
+	return _isProperSubspace(subspace, 0);
 }
 
-bool HoppingAmplitudeTree::isProperSubspace(
+bool HoppingAmplitudeTree::_isProperSubspace(
 	const Index &subspace,
 	unsigned int subindex
 ) const{
@@ -384,7 +384,7 @@ bool HoppingAmplitudeTree::isProperSubspace(
 
 	if(isPotentialBlockSeparator){
 		if((unsigned int)subspace.at(subindex) < children.size()){
-			return children[subspace[subindex]].isProperSubspace(
+			return children[subspace[subindex]]._isProperSubspace(
 				subspace,
 				subindex+1
 			);
@@ -438,12 +438,12 @@ const std::vector<
 >& HoppingAmplitudeTree::getHoppingAmplitudes(
 	Index index
 ) const{
-	return getHoppingAmplitudes(index, 0);
+	return _getHoppingAmplitudes(index, 0);
 }
 
 const std::vector<
 	HoppingAmplitude
->& HoppingAmplitudeTree::getHoppingAmplitudes(
+>& HoppingAmplitudeTree::_getHoppingAmplitudes(
 	Index index,
 	unsigned int subindex
 ) const{
@@ -462,7 +462,7 @@ const std::vector<
 			exit(1);
 		}
 		//Continue to the next node level.
-		return children.at(currentIndex).getHoppingAmplitudes(
+		return children.at(currentIndex)._getHoppingAmplitudes(
 			index,
 			subindex+1
 		);
@@ -474,10 +474,10 @@ const std::vector<
 }
 
 int HoppingAmplitudeTree::getBasisIndex(const Index &index) const{
-	return getBasisIndex(index, 0);
+	return _getBasisIndex(index, 0);
 }
 
-int HoppingAmplitudeTree::getBasisIndex(const Index &index, unsigned int subindex) const{
+int HoppingAmplitudeTree::_getBasisIndex(const Index &index, unsigned int subindex) const{
 	if(subindex < index.getSize()){
 		//If the current subindex is not the last, continue to the next
 		//node level.
@@ -493,7 +493,7 @@ int HoppingAmplitudeTree::getBasisIndex(const Index &index, unsigned int subinde
 			exit(1);
 		}
 		//Continue to the next node level.
-		return children.at(currentIndex).getBasisIndex(index, subindex+1);
+		return children.at(currentIndex)._getBasisIndex(index, subindex+1);
 	}
 	else{
 		//If the current subindex is the last, return HoppingAmplitudes.
@@ -510,12 +510,12 @@ Index HoppingAmplitudeTree::getPhysicalIndex(int basisIndex) const{
 	);
 
 	vector<int> indices;
-	getPhysicalIndex(basisIndex, &indices);
+	_getPhysicalIndex(basisIndex, &indices);
 
 	return Index(indices);
 }
 
-void HoppingAmplitudeTree::getPhysicalIndex(
+void HoppingAmplitudeTree::_getPhysicalIndex(
 	int basisIndex,
 	vector<int> *indices
 ) const{
@@ -531,7 +531,7 @@ void HoppingAmplitudeTree::getPhysicalIndex(
 
 		if(min <= basisIndex && basisIndex <= max){
 			indices->push_back(n);
-			children.at(n).getPhysicalIndex(basisIndex, indices);
+			children.at(n)._getPhysicalIndex(basisIndex, indices);
 			break;
 		}
 	}

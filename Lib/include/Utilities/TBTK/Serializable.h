@@ -51,6 +51,31 @@ public:
 
 	/** Get the ID of a serialization string. */
 	static std::string getID(const std::string &serialization, Mode mode);
+
+	/** Extract a component from a container serialization. When
+	 *  serializing classes, their parent are embedded inside the child
+	 *  class serialization. I.e. the parent class is a component contained
+	 *  in the child class serialization. However, when reconstructing a
+	 *  serialized class, its parent constructor has to be called before
+	 *  the child class is constructed. This function provides the means
+	 *  to extract the serialization of a parent class from the
+	 *  serialization of a child class.
+	 *
+	 *  @param containerID ID for the container (child class).
+	 *  @param componentID ID for the component (parent class).
+	 *  @param componentName Name used to refer to the parent object. Only
+	 *  used in some modes.
+	 *
+	 *  @param mode Mode with which the string has been serialized.
+	 *
+	 *  @return The serialization string for the component. */
+	static std::string extractComponent(
+		const std::string &serialization,
+		const std::string &containerID,
+		const std::string &componentID,
+		const std::string &componentName,
+		Mode mode
+	);
 protected:
 	/** Validate serialization string. */
 	static bool validate(

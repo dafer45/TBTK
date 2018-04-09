@@ -46,8 +46,20 @@ namespace TBTK{
  *  has to be called in order to construct an appropriate Hilbert space. The
  *  HoppingAmplitudeSet is most importantly used by the Model to store the
  *  Hamiltonian. */
-class HoppingAmplitudeSet : public Serializable{
+class HoppingAmplitudeSet :
+	virtual public Serializable,
+	private HoppingAmplitudeTree
+{
 public:
+	using HoppingAmplitudeTree::add;
+	using HoppingAmplitudeTree::getHoppingAmplitudes;
+	using HoppingAmplitudeTree::getBasisIndex;
+	using HoppingAmplitudeTree::getPhysicalIndex;
+	using HoppingAmplitudeTree::getBasisSize;
+	using HoppingAmplitudeTree::isProperSubspace;
+	using HoppingAmplitudeTree::getSubspaceIndices;
+	using HoppingAmplitudeTree::getIndexList;
+
 	/** Constructs a HoppingAmplitudeSet. */
 	HoppingAmplitudeSet();
 
@@ -97,64 +109,6 @@ public:
 	 *  @return Reference to the assigned HoppingAmplitudeSet. */
 	HoppingAmplitudeSet& operator=(HoppingAmplitudeSet &&rhs);
 
-	/** Add a single HoppingAmplitude.
-	 *
-	 *  @param ha HoppingAmplitude to add. */
-	void add(HoppingAmplitude ha);
-
-	/** Get all @link HoppingAmplitude HoppingAmplitudes @endlink with
-	 * given 'from'-index.
-	 *
-	 *  @param index 'From'-index to get HoppingAmplitudes for.
-	 *
-	 *  @return All @link HoppingAmplitude HoppingAmplitudes @endlink with
-	 *  the given from-Index. */
-	const std::vector<HoppingAmplitude>& getHoppingAmplitudes(
-		Index index
-	) const;
-
-	/** Get Hilbert space index corresponding to given 'from'-index.
-	 *
-	 *  @param index Physical Index for which to obtain the Hilbert space
-	 *  index.
-	 *
-	 *  @return The Hilbert space index corresponding to the given Physical
-	 *  Index. Returns -1 if HoppingAmplitudeTree::construct() has not been
-	 *  called. */
-	int getBasisIndex(const Index &index) const;
-
-	/** Get physical Index for given Hilbert space basis index.
-	 *
-	 *  @param basisIndex Hilbert space index for which to obtain the
-	 *  physical Index.
-	 *
-	 *  @return The physical Index corresponding to the given Hilbert space
-	 *  index. */
-	Index getPhysicalIndex(int basisIndex) const;
-
-	/** Get size of Hilbert space.
-	 *
-	 *  @return The basis size if the basis has ben constructed using the
-	 *  call to HoppingAmplitudeSet::construct(), otherwise -1. */
-	int getBasisSize() const;
-
-	/** Returns true if the subspace is a proper subspace. See
-	 *  HoppingAmplitudeTree::isProperSubspace() for a detailed
-	 *  explanation.
-	 *
-	 *  @param subspace A number of subindices that when used as leftmost
-	 *  subindices in an Index specifies a subspace.
-	 *
-	 *  @return True if the subspace is a proper subspace according to the
-	 *  definition given in the documentation for
-	 *  HoppingAmplitudeTree::isPropertSubspace(). */
-	bool isProperSubspace(const Index &subspace);
-
-	/** Returns an IndexTree containing all proper subspace indices.
-	 *
-	 *  @return An IndexTree containing all proper subspace indices. */
-	IndexTree getSubspaceIndices() const;
-
 	/** Construct Hilbert space. No more @link HoppingAmplitude
 	 *  HoppingAmplitudes @endlink should be added after this call. */
 	void construct();
@@ -163,17 +117,6 @@ public:
 	 *
 	 *  @return True if the Hilbert space basis has been constructed. */
 	bool getIsConstructed() const;
-
-	/** Generate a list containing the indices in the HoppingAmplitudeSet
-	 *  that stisfies the specified pattern. The indices are ordered in
-	 *  terms of rising Hilbert space indices.
-	 *
-	 *  @param pattern Pattern to match against. IDX_ALL can be used as a
-	 *  wildcard.
-	 *
-	 *  @return A list of physical indices that match the specified
-	 *  pattern. */
-	std::vector<Index> getIndexList(const Index &pattern) const;
 
 	/** Get first index in block.
 	 *
@@ -322,10 +265,6 @@ public:
 	/** Get size in bytes. */
 	unsigned int getSizeInBytes() const;
 private:
-	/** Root node for the tree structure in which HoppingAmplitudes are
-	 *  stored. */
-	HoppingAmplitudeTree hoppingAmplitudeTree;
-
 	/** Flag indicating whether the HoppingAmplitudeSet have been
 	 *  constructed. */
 	bool isConstructed;
@@ -348,38 +287,6 @@ private:
 	std::complex<double> *cooValues;
 };
 
-inline void HoppingAmplitudeSet::add(HoppingAmplitude ha){
-	hoppingAmplitudeTree.add(ha);
-}
-
-inline const std::vector<
-	HoppingAmplitude
->& HoppingAmplitudeSet::getHoppingAmplitudes(
-	Index index
-) const{
-	return hoppingAmplitudeTree.getHoppingAmplitudes(index);
-}
-
-inline int HoppingAmplitudeSet::getBasisIndex(const Index &index) const{
-	return hoppingAmplitudeTree.getBasisIndex(index);
-}
-
-inline Index HoppingAmplitudeSet::getPhysicalIndex(int basisIndex) const{
-	return hoppingAmplitudeTree.getPhysicalIndex(basisIndex);
-}
-
-inline int HoppingAmplitudeSet::getBasisSize() const{
-	return hoppingAmplitudeTree.getBasisSize();
-}
-
-inline bool HoppingAmplitudeSet::isProperSubspace(const Index &subspace){
-	return hoppingAmplitudeTree.isProperSubspace(subspace);
-}
-
-inline IndexTree HoppingAmplitudeSet::getSubspaceIndices() const{
-	return hoppingAmplitudeTree.getSubspaceIndices();
-}
-
 inline void HoppingAmplitudeSet::construct(){
 	TBTKAssert(
 		!isConstructed,
@@ -388,7 +295,7 @@ inline void HoppingAmplitudeSet::construct(){
 		""
 	);
 
-	hoppingAmplitudeTree.generateBasisIndices();
+	HoppingAmplitudeTree::generateBasisIndices();
 	isConstructed = true;
 }
 
@@ -396,22 +303,16 @@ inline bool HoppingAmplitudeSet::getIsConstructed() const{
 	return isConstructed;
 }
 
-inline std::vector<Index> HoppingAmplitudeSet::getIndexList(
-	const Index &pattern
-) const{
-	return hoppingAmplitudeTree.getIndexList(pattern);
-}
-
 inline int HoppingAmplitudeSet::getFirstIndexInBlock(
 	const Index &blockIndex
 ) const{
-	return hoppingAmplitudeTree.getFirstIndexInSubspace(blockIndex);
+	return HoppingAmplitudeTree::getFirstIndexInSubspace(blockIndex);
 }
 
 inline int HoppingAmplitudeSet::getLastIndexInBlock(
 	const Index &blockIndex
 ) const{
-	return hoppingAmplitudeTree.getLastIndexInSubspace(blockIndex);
+	return HoppingAmplitudeTree::getLastIndexInSubspace(blockIndex);
 }
 
 inline void HoppingAmplitudeSet::sort(){
@@ -423,7 +324,7 @@ inline void HoppingAmplitudeSet::sort(){
 	);
 
 	if(!isSorted){
-		hoppingAmplitudeTree.sort(&hoppingAmplitudeTree);
+		HoppingAmplitudeTree::sort(this);
 		isSorted = true;
 	}
 }
@@ -441,8 +342,8 @@ inline const std::complex<double>* HoppingAmplitudeSet::getCOOValues() const{
 }
 
 inline unsigned int HoppingAmplitudeSet::getSizeInBytes() const{
-	unsigned int size = sizeof(*this) - sizeof(hoppingAmplitudeTree);
-	size += hoppingAmplitudeTree.getSizeInBytes();
+	unsigned int size = sizeof(*this) - sizeof(HoppingAmplitudeTree);
+	size += HoppingAmplitudeTree::getSizeInBytes();
 	if(numMatrixElements > 0){
 		size += numMatrixElements*(
 			sizeof(*cooRowIndices)

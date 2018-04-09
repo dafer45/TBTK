@@ -143,6 +143,44 @@ string Serializable::getID(const string &serialization, Mode mode){
 	}
 }
 
+string Serializable::extractComponent(
+	const string &serialization,
+	const string &containerID,
+	const string &componentID,
+	const string &componentName,
+	Mode mode
+){
+	TBTKAssert(
+		validate(serialization, containerID, mode),
+		"Serializable::extractComponent()",
+		"Invalid container ID in the serialization string '"
+		<< serialization << "'. Expected '" << containerID << "'.",
+		""
+	);
+	switch(mode){
+	case Mode::JSON:
+		try{
+			json j = json::parse(serialization);
+			return j.at(componentName).dump();
+		}
+		catch(json::exception e){
+			TBTKExit(
+				"Serializable::extractComponent()",
+				"Unable to extract component with ID '"
+				<< componentID << "' from the serialization"
+				<< " string '" << serialization << "'.",
+				""
+			);
+		}
+	default:
+		TBTKExit(
+			"Serializable::extractComponent()",
+			"Only Serializable::Mode::JSON is supported yet.",
+			""
+		);
+	}
+}
+
 string Serializable::getContent(const string &serialization, Mode mode){
 	switch(mode){
 	case Mode::Debug:

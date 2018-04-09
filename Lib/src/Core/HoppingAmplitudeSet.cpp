@@ -39,7 +39,11 @@ HoppingAmplitudeSet::HoppingAmplitudeSet(){
 	cooValues = NULL;
 }
 
-HoppingAmplitudeSet::HoppingAmplitudeSet(const vector<unsigned int> &capacity){
+HoppingAmplitudeSet::HoppingAmplitudeSet(
+	const vector<unsigned int> &capacity
+) :
+	HoppingAmplitudeTree(capacity)
+{
 	isConstructed = false;
 	isSorted = false;
 	numMatrixElements = -1;
@@ -47,14 +51,13 @@ HoppingAmplitudeSet::HoppingAmplitudeSet(const vector<unsigned int> &capacity){
 	cooRowIndices = NULL;
 	cooColIndices = NULL;
 	cooValues = NULL;
-
-	hoppingAmplitudeTree = HoppingAmplitudeTree(capacity);
 }
 
 HoppingAmplitudeSet::HoppingAmplitudeSet(
 	const HoppingAmplitudeSet &hoppingAmplitudeSet
-){
-	hoppingAmplitudeTree = hoppingAmplitudeSet.hoppingAmplitudeTree;
+) :
+	HoppingAmplitudeTree(hoppingAmplitudeSet)
+{
 	isConstructed = hoppingAmplitudeSet.isConstructed;
 	isSorted = hoppingAmplitudeSet.isSorted;
 	numMatrixElements = hoppingAmplitudeSet.numMatrixElements;
@@ -78,8 +81,9 @@ HoppingAmplitudeSet::HoppingAmplitudeSet(
 
 HoppingAmplitudeSet::HoppingAmplitudeSet(
 	HoppingAmplitudeSet &&hoppingAmplitudeSet
-){
-	hoppingAmplitudeTree = hoppingAmplitudeSet.hoppingAmplitudeTree;
+) :
+	HoppingAmplitudeTree(hoppingAmplitudeSet)
+{
 	isConstructed = hoppingAmplitudeSet.isConstructed;
 	isSorted = hoppingAmplitudeSet.isSorted;
 	numMatrixElements = hoppingAmplitudeSet.numMatrixElements;
@@ -97,7 +101,18 @@ HoppingAmplitudeSet::HoppingAmplitudeSet(
 HoppingAmplitudeSet::HoppingAmplitudeSet(
 	const string &serialization,
 	Mode mode
-){
+) :
+	HoppingAmplitudeTree(
+		extractComponent(
+			serialization,
+			"HoppingAmplitudeSet",
+			"HoppingAmplitudeTree",
+			"hoppingAmplitudeTree",
+			mode
+		),
+		mode
+	)
+{
 	switch(mode){
 	case Mode::Debug:
 	{
@@ -112,7 +127,6 @@ HoppingAmplitudeSet::HoppingAmplitudeSet(
 
 		vector<string> elements = split(content, mode);
 
-		hoppingAmplitudeTree = HoppingAmplitudeTree(elements.at(0), mode);
 		stringstream ss;
 		ss.str(elements.at(1));
 		ss >> isConstructed;
@@ -158,10 +172,6 @@ HoppingAmplitudeSet::HoppingAmplitudeSet(
 	{
 		try{
 			json j = json::parse(serialization);
-			hoppingAmplitudeTree = HoppingAmplitudeTree(
-				j.at("hoppingAmplitudeTree").dump(),
-				mode
-			);
 			isConstructed = j.at("isConstructed").get<bool>();
 			isSorted = j.at("isSorted").get<bool>();
 			numMatrixElements = j.at("numMatrixElements").get<int>();
@@ -271,7 +281,7 @@ HoppingAmplitudeSet& HoppingAmplitudeSet::operator=(
 	const HoppingAmplitudeSet &rhs
 ){
 	if(this != &rhs){
-		hoppingAmplitudeTree = rhs.hoppingAmplitudeTree;
+		HoppingAmplitudeTree::operator=(rhs);
 		isConstructed = rhs.isConstructed;
 		isSorted = rhs.isSorted;
 		numMatrixElements = rhs.numMatrixElements;
@@ -298,7 +308,7 @@ HoppingAmplitudeSet& HoppingAmplitudeSet::operator=(
 
 HoppingAmplitudeSet& HoppingAmplitudeSet::operator=(HoppingAmplitudeSet &&rhs){
 	if(this != &rhs){
-		hoppingAmplitudeTree = rhs.hoppingAmplitudeTree;
+		HoppingAmplitudeTree::operator=(rhs);
 		isConstructed = rhs.isConstructed;
 		isSorted = rhs.isSorted;
 		numMatrixElements = rhs.numMatrixElements;
@@ -348,8 +358,6 @@ void HoppingAmplitudeSet::constructCOO(){
 	int currentCol = -1;
 	int currentRow = -1;
 	while((ha = it.getHA())){
-/*		int col = getBasisIndex(ha->fromIndex);
-		int row = getBasisIndex(ha->toIndex);*/
 		int col = getBasisIndex(ha->getFromIndex());
 		int row = getBasisIndex(ha->getToIndex());
 		if(col > currentCol){
@@ -374,8 +382,6 @@ void HoppingAmplitudeSet::constructCOO(){
 	currentCol = -1;
 	currentRow = -1;
 	while((ha = it.getHA())){
-/*		int col = getBasisIndex(ha->fromIndex);
-		int row = getBasisIndex(ha->toIndex);*/
 		int col = getBasisIndex(ha->getFromIndex());
 		int row = getBasisIndex(ha->getToIndex());
 		complex<double> amplitude = ha->getAmplitude();
@@ -429,17 +435,17 @@ void HoppingAmplitudeSet::reconstructCOO(){
 }
 
 void HoppingAmplitudeSet::print(){
-	hoppingAmplitudeTree.print();
+	HoppingAmplitudeTree::print();
 }
 
 HoppingAmplitudeSet::Iterator HoppingAmplitudeSet::getIterator() const{
-	return HoppingAmplitudeSet::Iterator(&hoppingAmplitudeTree);
+	return HoppingAmplitudeSet::Iterator(this);
 }
 
 HoppingAmplitudeSet::Iterator HoppingAmplitudeSet::getIterator(
 	const Index &subspace
 ) const{
-	return HoppingAmplitudeSet::Iterator(hoppingAmplitudeTree.getSubTree(subspace));
+	return HoppingAmplitudeSet::Iterator(getSubTree(subspace));
 }
 
 string HoppingAmplitudeSet::serialize(Mode mode) const{
@@ -448,7 +454,7 @@ string HoppingAmplitudeSet::serialize(Mode mode) const{
 	{
 		stringstream ss;
 		ss << "HoppingAmplitudeSet(";
-		ss << hoppingAmplitudeTree.serialize(mode);
+		ss << HoppingAmplitudeTree::serialize(mode);
 		ss << "," << Serializable::serialize(isConstructed, mode);
 		ss << "," << Serializable::serialize(isSorted, mode);
 		ss << "," << Serializable::serialize(numMatrixElements, mode);
@@ -481,7 +487,7 @@ string HoppingAmplitudeSet::serialize(Mode mode) const{
 		json j;
 		j["id"] = "HoppingAmplitudeSet";
 		j["hoppingAmplitudeTree"] = json::parse(
-			hoppingAmplitudeTree.serialize(mode)
+			HoppingAmplitudeTree::serialize(mode)
 		);
 		j["isConstructed"] = isConstructed;
 		j["isSorted"] = isSorted;
@@ -596,7 +602,6 @@ void HoppingAmplitudeSet::tabulate(
 	while((ha = it.getHA())){
 		(*numHoppingAmplitudes)++;
 
-//		int indexSize = ha->fromIndex.size();
 		int indexSize = ha->getFromIndex().getSize();
 		if(indexSize > *maxIndexSize)
 			(*maxIndexSize) = indexSize;
@@ -613,14 +618,10 @@ void HoppingAmplitudeSet::tabulate(
 	it.reset();
 	int counter = 0;
 	while((ha = it.getHA())){
-//		for(unsigned int n = 0; n < ha->fromIndex.size(); n++)
 		for(unsigned int n = 0; n < ha->getFromIndex().getSize(); n++)
 			(*table)[2*(*maxIndexSize)*counter+n] = ha->getFromIndex().at(n);
-//			(*table)[2*(*maxIndexSize)*counter+n] = ha->fromIndex.at(n);
-//		for(unsigned int n = 0; n < ha->toIndex.size(); n++)
 		for(unsigned int n = 0; n < ha->getToIndex().getSize(); n++)
 			(*table)[2*(*maxIndexSize)*counter+n+(*maxIndexSize)] = ha->getToIndex().at(n);
-//			(*table)[2*(*maxIndexSize)*counter+n+(*maxIndexSize)] = ha->toIndex.at(n);
 		(*amplitudes)[counter] = ha->getAmplitude();
 
 		it.searchNextHA();

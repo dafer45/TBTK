@@ -37,7 +37,7 @@ namespace TBTK{
  *
  *  HoppingAmplitudeTree is a tree structure used to build a tree for stroing
  *  @link HoppingAmplitude HoppingAmplitudes @endlink. Used by AmplitudeSet.*/
-class HoppingAmplitudeTree : public Serializable{
+class HoppingAmplitudeTree : virtual public Serializable{
 public:
 	/** Constructs a HoppingAmplitudeTree. */
 	HoppingAmplitudeTree();
@@ -306,7 +306,7 @@ private:
 
 	/** Add HoppingAmplitude. Is called by the public
 	 *  HoppingAmplitudeTree::add and is called recursively. */
-	void add(HoppingAmplitude &ha, unsigned int subindex);
+	void _add(HoppingAmplitude &ha, unsigned int subindex);
 
 	/** Get sub tree. Is called by HoppingAmplitudeTree::getSubTree and is
 	 *  called recursively. */
@@ -318,7 +318,7 @@ private:
 	/** Returns true if the subspace is a proper subsapce. Is called by
 	 *  HoppingAmplitudeTree::isProperSubspace and is called recursively.
 	 */
-	bool isProperSubspace(
+	bool _isProperSubspace(
 		const Index &subspace,
 		unsigned int subindex
 	) const;
@@ -329,20 +329,22 @@ private:
 	void getBlockIndices(IndexTree &blockIndices, Index index) const;
 
 	/** Get HoppingAmpilitudes. Is called by the public
-	 *  HoppingAmplitudeTree::getHoppingAmplitudes and is called recursively. */
-	const std::vector<HoppingAmplitude>& getHoppingAmplitudes(
+	 *  HoppingAmplitudeTree::getHoppingAmplitudes and is called
+	 *  recursively. */
+	const std::vector<HoppingAmplitude>& _getHoppingAmplitudes(
 		Index index,
 		unsigned int subindex
 	) const;
 
 	/** Get Hilbert space index for given physical index. Is called by the
-	 *  public HoppingAmplitudeTree::getBasisIndex and is called recursively. */
-	int getBasisIndex(const Index &index, unsigned int subindex) const;
+	 *  public HoppingAmplitudeTree::getBasisIndex and is called
+	 *  recursively. */
+	int _getBasisIndex(const Index &index, unsigned int subindex) const;
 
 	/** Get physical index for given Hilbert space index. Is called by the
 	 *  public HoppingAmplitudeTreee::getPhysicalIndex and is called
 	 *  recursively. */
-	void getPhysicalIndex(int basisIndex, std::vector<int> *indices) const;
+	void _getPhysicalIndex(int basisIndex, std::vector<int> *indices) const;
 
 	/** Get minimum index on HoppingAmplitudeTree. */
 	int getMinIndex() const;
