@@ -102,12 +102,7 @@ public:
 	/** Add a HoppingAmplitude.
 	 *
 	 @param ha HoppingAmplitude to add. */
-	void addHoppingAmplitude(HoppingAmplitude ha);
-
-	/** Add a HoppingAmplitude and its Hermitian conjugate.
-	 *
-	 *  @param ha HoppingAmplitude to add. */
-	void addHoppingAmplitudeAndHermitianConjugate(HoppingAmplitude ha);
+	void add(HoppingAmplitude ha);
 
 	/** Add a Model as a subsystem.
 	 *
@@ -245,8 +240,6 @@ public:
 		const AbstractIndexFilter &indexFilter
 	);
 
-//	void saveEV(std::string path = "./", std::string filename = "EV.dat");
-
 	/** Operator<<. */
 	Model& operator<<(const HoppingAmplitude& hoppingAmplitude);
 
@@ -281,14 +274,8 @@ private:
 	friend class FileReader;
 };
 
-inline void Model::addHoppingAmplitude(HoppingAmplitude ha){
-	singleParticleContext->addHoppingAmplitude(ha);
-}
-
-inline void Model::addHoppingAmplitudeAndHermitianConjugate(
-	HoppingAmplitude ha
-){
-	singleParticleContext->addHoppingAmplitudeAndHermitianConjugate(ha);
+inline void Model::add(HoppingAmplitude ha){
+	singleParticleContext->add(ha);
 }
 
 inline int Model::getBasisSize() const{
@@ -392,7 +379,7 @@ inline Model& Model::operator<<(const HoppingAmplitude &hoppingAmplitude){
 		hoppingAmplitudeFilter == nullptr
 		|| hoppingAmplitudeFilter->isIncluded(hoppingAmplitude)
 	){
-		addHoppingAmplitude(hoppingAmplitude);
+		add(hoppingAmplitude);
 	}
 
 	return *this;
@@ -402,8 +389,8 @@ inline Model& Model::operator<<(const std::tuple<HoppingAmplitude, HoppingAmplit
 	if(
 		hoppingAmplitudeFilter == nullptr
 	){
-		addHoppingAmplitude(std::get<0>(hoppingAmplitudes));
-		addHoppingAmplitude(std::get<1>(hoppingAmplitudes));
+		add(std::get<0>(hoppingAmplitudes));
+		add(std::get<1>(hoppingAmplitudes));
 	}
 	else{
 		if(
@@ -411,14 +398,14 @@ inline Model& Model::operator<<(const std::tuple<HoppingAmplitude, HoppingAmplit
 				std::get<0>(hoppingAmplitudes)
 			)
 		){
-			addHoppingAmplitude(std::get<0>(hoppingAmplitudes));
+			add(std::get<0>(hoppingAmplitudes));
 		}
 		if(
 			hoppingAmplitudeFilter->isIncluded(
 				std::get<1>(hoppingAmplitudes)
 			)
 		){
-			addHoppingAmplitude(std::get<1>(hoppingAmplitudes));
+			add(std::get<1>(hoppingAmplitudes));
 		}
 	}
 
@@ -427,7 +414,7 @@ inline Model& Model::operator<<(const std::tuple<HoppingAmplitude, HoppingAmplit
 
 inline Model& Model::operator<<(const HoppingAmplitudeList &hoppingAmplitudeList){
 	for(unsigned int n = 0; n < hoppingAmplitudeList.getSize(); n++)
-		addHoppingAmplitude(hoppingAmplitudeList[n]);
+		add(hoppingAmplitudeList[n]);
 
 	return *this;
 }

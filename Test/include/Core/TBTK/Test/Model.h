@@ -56,14 +56,14 @@ TEST(Model, operatorMoveAssignment){
 //TODO
 //Should possibly be removed completely by making the Model inherit from the
 //SingleParticleContext.
-TEST(Model, addHoppingAmplitude){
+TEST(Model, add){
 }
 
 //TODO
 //Should possibly be removed completely by making the Model inherit from the
 //SingleParticleContext.
-TEST(Model, addHoppingAmplitudeAndHermitianConjugate){
-}
+/*TEST(Model, addHoppingAmplitudeAndHermitianConjugate){
+}*/
 
 TEST(Model, addModel){
 	Model model0;

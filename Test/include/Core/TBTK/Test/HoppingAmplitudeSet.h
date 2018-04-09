@@ -34,13 +34,13 @@ TEST(HoppingAmplitudeSet, MoveConstructor){
 
 TEST(HoppingAmplitudeSet, SerializeToJSON){
 	HoppingAmplitudeSet hoppingAmplitudeSet0;
-	hoppingAmplitudeSet0.addHoppingAmplitude(HoppingAmplitude(1, {0, 0, 0}, {0, 0, 0}));
-	hoppingAmplitudeSet0.addHoppingAmplitude(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 1}));
-	hoppingAmplitudeSet0.addHoppingAmplitude(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 2}));
-	hoppingAmplitudeSet0.addHoppingAmplitude(HoppingAmplitude(1, {0, 0, 2}, {0, 0, 1}));
-	hoppingAmplitudeSet0.addHoppingAmplitude(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 0}));
-	hoppingAmplitudeSet0.addHoppingAmplitude(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 1}));
-	hoppingAmplitudeSet0.addHoppingAmplitude(HoppingAmplitude(1, {1, 1, 1}, {1, 1, 0}));
+	hoppingAmplitudeSet0.add(HoppingAmplitude(1, {0, 0, 0}, {0, 0, 0}));
+	hoppingAmplitudeSet0.add(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 1}));
+	hoppingAmplitudeSet0.add(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 2}));
+	hoppingAmplitudeSet0.add(HoppingAmplitude(1, {0, 0, 2}, {0, 0, 1}));
+	hoppingAmplitudeSet0.add(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 0}));
+	hoppingAmplitudeSet0.add(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 1}));
+	hoppingAmplitudeSet0.add(HoppingAmplitude(1, {1, 1, 1}, {1, 1, 0}));
 	hoppingAmplitudeSet0.construct();
 
 	HoppingAmplitudeSet hoppingAmplitudeSet1(
@@ -85,13 +85,17 @@ TEST(HoppingAmplitudeSet, operatorAssignment){
 TEST(HoppingAmplitudeSet, operatorMoveAssignment){
 }
 
-TEST(HoppingAmplitudeSet, addHoppingAmplitude){
+TEST(HoppingAmplitudeSet, add){
 	//Test normal function
 	EXPECT_EXIT(
 		{
 			HoppingAmplitudeSet hoppingAmplitudeSet;
-			hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {1, 2}, {3, 4}));
-			hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {1, 2}, {3, 5}));
+			hoppingAmplitudeSet.add(
+				HoppingAmplitude(1, {1, 2}, {3, 4})
+			);
+			hoppingAmplitudeSet.add(
+				HoppingAmplitude(1, {1, 2}, {3, 5})
+			);
 			std::cerr << "Test completed.";
 			exit(0);
 		},
@@ -104,8 +108,12 @@ TEST(HoppingAmplitudeSet, addHoppingAmplitude){
 		{
 			Streams::setStdMuteErr();
 			HoppingAmplitudeSet hoppingAmplitudeSet;
-			hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {1, 2}, {3, 4}));
-			hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {1, 2}, {3, 4, 5}));
+			hoppingAmplitudeSet.add(
+				HoppingAmplitude(1, {1, 2}, {3, 4})
+			);
+			hoppingAmplitudeSet.add(
+				HoppingAmplitude(1, {1, 2}, {3, 4, 5})
+			);
 		},
 		::testing::ExitedWithCode(1),
 		""
@@ -116,8 +124,12 @@ TEST(HoppingAmplitudeSet, addHoppingAmplitude){
 		{
 			Streams::setStdMuteErr();
 			HoppingAmplitudeSet hoppingAmplitudeSet;
-			hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {1, 2}, {3, 4, 5}));
-			hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {1, 2}, {3, 4}));
+			hoppingAmplitudeSet.add(
+				HoppingAmplitude(1, {1, 2}, {3, 4, 5})
+			);
+			hoppingAmplitudeSet.add(
+				HoppingAmplitude(1, {1, 2}, {3, 4})
+			);
 		},
 		::testing::ExitedWithCode(1),
 		""
@@ -128,14 +140,16 @@ TEST(HoppingAmplitudeSet, addHoppingAmplitude){
 		{
 			Streams::setStdMuteErr();
 			HoppingAmplitudeSet hoppingAmplitudeSet;
-			hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {1, 2}, {3, -1, 5}));
+			hoppingAmplitudeSet.add(
+				HoppingAmplitude(1, {1, 2}, {3, -1, 5})
+			);
 		},
 		::testing::ExitedWithCode(1),
 		""
 	);
 }
 
-TEST(HoppingAmplitudeSet, addHoppingAmplitudeAndHermitianConjugate){
+/*TEST(HoppingAmplitudeSet, addHoppingAmplitudeAndHermitianConjugate){
 	HoppingAmplitudeSet hoppingAmplitudeSet;
 	hoppingAmplitudeSet.addHoppingAmplitudeAndHermitianConjugate(HoppingAmplitude(1, {1, 2}, {3, 4}));
 	hoppingAmplitudeSet.construct();
@@ -147,32 +161,38 @@ TEST(HoppingAmplitudeSet, addHoppingAmplitudeAndHermitianConjugate){
 	//Check that the Hermitian conjugate was added.
 	const std::vector<HoppingAmplitude> *hoppingAmplitudes1 = hoppingAmplitudeSet.getHAs({1, 2});
 	EXPECT_EQ(hoppingAmplitudes1->size(), 1);
-}
+}*/
 
 TEST(HoppingAmplitudeSet, getHAs){
 	HoppingAmplitudeSet hoppingAmplitudeSet;
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {0, 0, 0}, {0, 0, 0}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 1}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 2}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {0, 0, 2}, {0, 0, 1}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 0}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 1}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {1, 1, 1}, {1, 1, 0}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {0, 0, 0}, {0, 0, 0}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 1}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 2}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {0, 0, 2}, {0, 0, 1}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 0}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 1}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {1, 1, 1}, {1, 1, 0}));
 	hoppingAmplitudeSet.construct();
 
-	const std::vector<HoppingAmplitude> *hoppingAmplitudes = hoppingAmplitudeSet.getHAs({0, 0, 1});
+	const std::vector<HoppingAmplitude> *hoppingAmplitudes
+		= hoppingAmplitudeSet.getHAs({0, 0, 1});
 	EXPECT_EQ(hoppingAmplitudes->size(), 2);
 	for(unsigned int n = 0; n < hoppingAmplitudes->size(); n++){
-		const HoppingAmplitude &hoppingAmplitude = hoppingAmplitudes->at(n);
+		const HoppingAmplitude &hoppingAmplitude
+			= hoppingAmplitudes->at(n);
 
 		EXPECT_TRUE(hoppingAmplitude.getFromIndex().equals({0, 0, 1}));
-		EXPECT_TRUE(hoppingAmplitude.getToIndex().equals({0, 0, 1}) || hoppingAmplitude.getToIndex().equals({0, 0, 2}));
+		EXPECT_TRUE(
+			hoppingAmplitude.getToIndex().equals({0, 0, 1})
+			|| hoppingAmplitude.getToIndex().equals({0, 0, 2})
+		);
 	}
 
 	hoppingAmplitudes = hoppingAmplitudeSet.getHAs({0, 0, 2});
 	EXPECT_EQ(hoppingAmplitudes->size(), 1);
 	for(unsigned int n = 0; n < hoppingAmplitudes->size(); n++){
-		const HoppingAmplitude &hoppingAmplitude = hoppingAmplitudes->at(n);
+		const HoppingAmplitude &hoppingAmplitude
+			= hoppingAmplitudes->at(n);
 
 		EXPECT_TRUE(hoppingAmplitude.getFromIndex().equals({0, 0, 2}));
 		EXPECT_TRUE(hoppingAmplitude.getToIndex().equals({0, 0, 1}));
@@ -181,13 +201,13 @@ TEST(HoppingAmplitudeSet, getHAs){
 
 TEST(HoppingAmplitudeSet, getBasisIndex){
 	HoppingAmplitudeSet hoppingAmplitudeSet;
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {0, 0, 0}, {0, 0, 0}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 1}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 2}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {0, 0, 2}, {0, 0, 1}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 0}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 1}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {1, 1, 1}, {1, 1, 0}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {0, 0, 0}, {0, 0, 0}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 1}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 2}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {0, 0, 2}, {0, 0, 1}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 0}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 1}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {1, 1, 1}, {1, 1, 0}));
 
 	EXPECT_EQ(hoppingAmplitudeSet.getBasisIndex({0, 0, 0}), -1);
 	EXPECT_EQ(hoppingAmplitudeSet.getBasisIndex({0, 0, 1}), -1);
@@ -206,13 +226,13 @@ TEST(HoppingAmplitudeSet, getBasisIndex){
 
 TEST(HoppingAmplitudeSet, getPhysicsIndex){
 	HoppingAmplitudeSet hoppingAmplitudeSet;
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {0, 0, 0}, {0, 0, 0}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 1}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 2}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {0, 0, 2}, {0, 0, 1}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 0}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 1}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {1, 1, 1}, {1, 1, 0}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {0, 0, 0}, {0, 0, 0}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 1}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 2}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {0, 0, 2}, {0, 0, 1}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 0}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 1}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {1, 1, 1}, {1, 1, 0}));
 
 	EXPECT_EXIT(
 		{
@@ -251,10 +271,10 @@ TEST(HoppingAmplitudeSet, getPhysicsIndex){
 TEST(HoppingAmplitudeSet, getBasisSize){
 	HoppingAmplitudeSet hoppingAmplitudeSet;
 	EXPECT_EQ(hoppingAmplitudeSet.getBasisSize(), -1);
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {1, 2}, {3, 4}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {1, 2}, {3, 2}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {3, 4}, {1, 2}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {3, 2}, {1, 2}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {1, 2}, {3, 4}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {1, 2}, {3, 2}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {3, 4}, {1, 2}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {3, 2}, {1, 2}));
 	EXPECT_EQ(hoppingAmplitudeSet.getBasisSize(), -1);
 	hoppingAmplitudeSet.construct();
 	EXPECT_EQ(hoppingAmplitudeSet.getBasisSize(), 3);
@@ -263,17 +283,37 @@ TEST(HoppingAmplitudeSet, getBasisSize){
 TEST(HoppingAmplitudeSet, isProperSubspace){
 	HoppingAmplitudeSet hoppingAmplitudeSet;
 
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {1, 2, 3, 4, 5}, {1, 2, 3, 4, 5}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {1, 2, 3, 4, 5}, {1, 2, 3, 5, 5}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {1, 2, 3, 5, 5}, {1, 2, 3, 4, 5}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {1, 2, 3, 6, 5}, {1, 2, 3, 7, 5}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {1, 2, 3, 7, 5}, {1, 2, 3, 6, 5}));
+	hoppingAmplitudeSet.add(
+		HoppingAmplitude(1, {1, 2, 3, 4, 5}, {1, 2, 3, 4, 5})
+	);
+	hoppingAmplitudeSet.add(
+		HoppingAmplitude(1, {1, 2, 3, 4, 5}, {1, 2, 3, 5, 5})
+	);
+	hoppingAmplitudeSet.add(
+		HoppingAmplitude(1, {1, 2, 3, 5, 5}, {1, 2, 3, 4, 5})
+	);
+	hoppingAmplitudeSet.add(
+		HoppingAmplitude(1, {1, 2, 3, 6, 5}, {1, 2, 3, 7, 5})
+	);
+	hoppingAmplitudeSet.add(
+		HoppingAmplitude(1, {1, 2, 3, 7, 5}, {1, 2, 3, 6, 5})
+	);
 
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {2, 2, 2, 4, 5}, {2, 2, 2, 4, 5}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {2, 2, 2, 4, 5}, {2, 2, 2, 5, 5}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {2, 2, 2, 5, 5}, {2, 2, 2, 4, 5}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {2, 2, 2, 6, 5}, {2, 2, 2, 7, 5}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {2, 2, 2, 7, 5}, {2, 2, 2, 6, 5}));
+	hoppingAmplitudeSet.add(
+		HoppingAmplitude(1, {2, 2, 2, 4, 5}, {2, 2, 2, 4, 5})
+	);
+	hoppingAmplitudeSet.add(
+		HoppingAmplitude(1, {2, 2, 2, 4, 5}, {2, 2, 2, 5, 5})
+	);
+	hoppingAmplitudeSet.add(
+		HoppingAmplitude(1, {2, 2, 2, 5, 5}, {2, 2, 2, 4, 5})
+	);
+	hoppingAmplitudeSet.add(
+		HoppingAmplitude(1, {2, 2, 2, 6, 5}, {2, 2, 2, 7, 5})
+	);
+	hoppingAmplitudeSet.add(
+		HoppingAmplitude(1, {2, 2, 2, 7, 5}, {2, 2, 2, 6, 5})
+	);
 
 	EXPECT_EXIT(
 		{
@@ -294,13 +334,13 @@ TEST(HoppingAmplitudeSet, isProperSubspace){
 
 TEST(HoppingAmplitudeSet, getSubspaceIndices){
 	HoppingAmplitudeSet hoppingAmplitudeSet;
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {0, 0, 0}, {0, 0, 0}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 1}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 2}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {0, 0, 2}, {0, 0, 1}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 0}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 1}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {1, 1, 1}, {1, 1, 0}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {0, 0, 0}, {0, 0, 0}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 1}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 2}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {0, 0, 2}, {0, 0, 1}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 0}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 1}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {1, 1, 1}, {1, 1, 0}));
 	hoppingAmplitudeSet.construct();
 
 	IndexTree subspaceIndices = hoppingAmplitudeSet.getSubspaceIndices();
@@ -329,13 +369,13 @@ TEST(HoppingAmplitudeSet, getIsConstructed){
 
 TEST(HoppingAmplitudeSet, getIndexList){
 	HoppingAmplitudeSet hoppingAmplitudeSet;
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {0, 0, 0}, {0, 0, 0}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 1}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 2}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {0, 0, 2}, {0, 0, 1}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 0}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 1}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {1, 1, 1}, {1, 1, 0}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {0, 0, 0}, {0, 0, 0}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 1}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 2}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {0, 0, 2}, {0, 0, 1}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 0}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 1}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {1, 1, 1}, {1, 1, 0}));
 	hoppingAmplitudeSet.construct();
 
 	std::vector<Index> indices = hoppingAmplitudeSet.getIndexList({0, 0, IDX_ALL});
@@ -354,13 +394,13 @@ TEST(HoppingAmplitudeSet, getIndexList){
 
 TEST(HoppingAmplitudeSet, getFirstIndexInBlock){
 	HoppingAmplitudeSet hoppingAmplitudeSet;
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {0, 0, 0}, {0, 0, 0}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 1}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 2}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {0, 0, 2}, {0, 0, 1}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 0}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 1}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {1, 1, 1}, {1, 1, 0}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {0, 0, 0}, {0, 0, 0}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 1}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 2}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {0, 0, 2}, {0, 0, 1}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 0}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 1}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {1, 1, 1}, {1, 1, 0}));
 	hoppingAmplitudeSet.construct();
 
 	EXPECT_EXIT(
@@ -379,13 +419,13 @@ TEST(HoppingAmplitudeSet, getFirstIndexInBlock){
 
 TEST(HoppingAmplitudeSet, getLastIndexInBlock){
 	HoppingAmplitudeSet hoppingAmplitudeSet;
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {0, 0, 0}, {0, 0, 0}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 1}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 2}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {0, 0, 2}, {0, 0, 1}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 0}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 1}));
-	hoppingAmplitudeSet.addHoppingAmplitude(HoppingAmplitude(1, {1, 1, 1}, {1, 1, 0}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {0, 0, 0}, {0, 0, 0}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 1}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 2}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {0, 0, 2}, {0, 0, 1}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 0}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 1}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {1, 1, 1}, {1, 1, 0}));
 	hoppingAmplitudeSet.construct();
 
 	EXPECT_EXIT(

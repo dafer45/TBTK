@@ -75,10 +75,7 @@ public:
 	Statistics getStatistics() const;
 
 	/** Add a HoppingAmplitude. */
-	void addHoppingAmplitude(HoppingAmplitude ha);
-
-	/** Add a HoppingAmplitude and its Hermitian conjugate. */
-	void addHoppingAmplitudeAndHermitianConjugate(HoppingAmplitude ha);
+	void add(HoppingAmplitude ha);
 
 	/** Get Hilbert space index corresponding to given 'from'-index.
 	 *  @param index 'from'-index to get Hilbert space index for. */
@@ -144,14 +141,8 @@ inline Statistics SingleParticleContext::getStatistics() const{
 	return statistics;
 }
 
-inline void SingleParticleContext::addHoppingAmplitude(HoppingAmplitude ha){
-	hoppingAmplitudeSet->addHoppingAmplitude(ha);
-}
-
-inline void SingleParticleContext::addHoppingAmplitudeAndHermitianConjugate(
-	HoppingAmplitude ha
-){
-	hoppingAmplitudeSet->addHoppingAmplitudeAndHermitianConjugate(ha);
+inline void SingleParticleContext::add(HoppingAmplitude ha){
+	hoppingAmplitudeSet->add(ha);
 }
 
 inline int SingleParticleContext::getBasisIndex(const Index &index) const{

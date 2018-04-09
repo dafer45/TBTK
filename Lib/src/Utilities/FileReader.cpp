@@ -155,7 +155,9 @@ HoppingAmplitudeSet* FileReader::readHoppingAmplitudeSet(
 					to.push_back(i);
 			}
 
-			hoppingAmplitudeSet->addHoppingAmplitude(HoppingAmplitude(amplitudes[n], to, from));
+			hoppingAmplitudeSet->add(
+				HoppingAmplitude(amplitudes[n], to, from)
+			);
 		}
 	}
 	catch(FileIException error){

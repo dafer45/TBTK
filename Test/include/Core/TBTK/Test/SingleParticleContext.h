@@ -59,15 +59,15 @@ TEST(SingleParticleContext, getStatistics){
 //This function should possibly be removed from the SingleParticleContext
 //itself by makin the SingleParticleContext inherit from the
 //HoppingAmplitudeSet.
-TEST(SingleParticleContext, addHoppingAmplitude){
+TEST(SingleParticleContext, add){
 }
 
 //TODO
 //This function should possibly be removed from the SingleParticleContext
 //itself by makin the SingleParticleContext inherit from the
 //HoppingAmplitudeSet.
-TEST(SingleParticleContext, addHoppingAmplitudeAndHermitianConjugate){
-}
+/*TEST(SingleParticleContext, addHoppingAmplitudeAndHermitianConjugate){
+}*/
 
 //TODO
 //This function should possibly be removed from the SingleParticleContext
