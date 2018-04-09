@@ -40,7 +40,18 @@ namespace Solver{
 /** @brief Solves a Model using the Chebyshev method.
  *
  *  The ChebyshevExpander can be used to calculate Green's function for a given
- *  Model. The implementation is based on PhysRevLett.105.167006. The
+ *  Model using an expansion of the form
+ *  <br/>
+ *  <center>\f$
+ *    G_{\mathbf{i}\mathbf{j}}(E) = \frac{1}{\sqrt{s^2 - E^2}}
+ *    \sum_{m=0}^{\infty}
+ *    \frac{b_{\mathbf{i}\mathbf{j}}^{(m)}}{1 + \delta_{0m}}
+ *    F(m\textrm{acos}(E/s)),
+ *  \f$</center>
+ *  <br/>
+ *  where \f$F(x)\f$ is one of the functions \f$\cos(x)\f$, \f$\sin(x)\f$,
+ *  \f$e^{ix}\f$, and \f$e^{-ix}\f$.
+ *  The implementation is based on PhysRevLett.105.167006. The
  *  ChebyshevExpander can be run on CPU, GPU, or a mixture of both. The
  *  calculation of Chebyshev coefficients scales as \f$O(n)\f$ with each of the
  *  following: dimension of the Hilbert space and number of Chebyshev

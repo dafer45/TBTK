@@ -604,15 +604,17 @@ vector<
 	GPUResourceManager::getInstance().freeDevice(device);
 
 	//Lorentzian convolution
-	double lambda = broadening*numCoefficients;
-	for(int n = 0; n < numCoefficients; n++){
-		for(int c = 0; c < (int)to.size(); c++){
-			coefficients[c][n] = coefficients[c][n]*sinh(
-				lambda*(
-					1 - n/(double)numCoefficients
-				)
-			)/sinh(lambda);
-//			coefficients[n + c*numCoefficients] = coefficients[n + c*numCoefficients]*sinh(lambda*(1 - n/(double)numCoefficients))/sinh(lambda);
+	if(broadening != 0){
+		double lambda = broadening*numCoefficients;
+		for(int n = 0; n < numCoefficients; n++){
+			for(int c = 0; c < (int)to.size(); c++){
+				coefficients[c][n] = coefficients[c][n]*sinh(
+					lambda*(
+						1 - n/(double)numCoefficients
+					)
+				)/sinh(lambda);
+//				coefficients[n + c*numCoefficients] = coefficients[n + c*numCoefficients]*sinh(lambda*(1 - n/(double)numCoefficients))/sinh(lambda);
+			}
 		}
 	}
 

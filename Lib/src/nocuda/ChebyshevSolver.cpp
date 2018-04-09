@@ -29,12 +29,9 @@ using namespace std;
 namespace TBTK{
 namespace Solver{
 
-void ChebyshevExpander::calculateCoefficientsGPU(
+vector<complex<double>> ChebyshevExpander::calculateCoefficientsGPU(
 	Index to,
-	Index from,
-	complex<double> *coefficients,
-	int numCoefficients,
-	double broadening
+	Index from
 ){
 	TBTKExit(
 		"ChebyshevExpander::calculateCoefficientsGPU()",
@@ -43,12 +40,9 @@ void ChebyshevExpander::calculateCoefficientsGPU(
 	);
 }
 
-void ChebyshevExpander::calculateCoefficientsGPU(
+vector<vector<complex<double>>> ChebyshevExpander::calculateCoefficientsGPU(
 	vector<Index> &to,
-	Index from,
-	complex<double> *coefficients,
-	int numCoefficients,
-	double broadening
+	Index from
 ){
 	TBTKExit(
 		"ChebyshevExpander::calculateCoefficientsGPU()",
@@ -73,8 +67,8 @@ void ChebyshevExpander::destroyLookupTableGPU(){
 	);
 }
 
-complex<double>* ChebyshevExpander::generateGreensFunctionGPU(
-	complex<double> *coefficients,
+vector<complex<double>> ChebyshevExpander::generateGreensFunctionGPU(
+	const vector<complex<double>> &coefficients,
 	Type type
 ){
 	TBTKExit(

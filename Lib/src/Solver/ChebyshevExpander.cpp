@@ -226,9 +226,11 @@ vector<complex<double>> ChebyshevExpander::calculateCoefficientsCPU(
 	delete [] fromIndices;
 
 	//Lorentzian convolution
-	double lambda = broadening*numCoefficients;
-	for(int n = 0; n < numCoefficients; n++)
-		coefficients[n] = coefficients[n]*sinh(lambda*(1 - n/(double)numCoefficients))/sinh(lambda);
+	if(broadening != 0){
+		double lambda = broadening*numCoefficients;
+		for(int n = 0; n < numCoefficients; n++)
+			coefficients[n] = coefficients[n]*sinh(lambda*(1 - n/(double)numCoefficients))/sinh(lambda);
+	}
 
 	return coefficients;
 }
@@ -402,11 +404,13 @@ vector<vector<complex<double>>> ChebyshevExpander::calculateCoefficientsCPU(
 	delete [] fromIndices;
 
 	//Lorentzian convolution
-	double lambda = broadening*numCoefficients;
-	for(int n = 0; n < numCoefficients; n++)
-		for(unsigned int c = 0; c < to.size(); c++)
-			coefficients[c][n] = coefficients[c][n]*sinh(lambda*(1 - n/(double)numCoefficients))/sinh(lambda);
-//		coefficients[n] = coefficients[n]*sinh(lambda*(1 - n/(double)numCoefficients))/sinh(lambda);
+	if(broadening != 0){
+		double lambda = broadening*numCoefficients;
+		for(int n = 0; n < numCoefficients; n++)
+			for(unsigned int c = 0; c < to.size(); c++)
+				coefficients[c][n] = coefficients[c][n]*sinh(lambda*(1 - n/(double)numCoefficients))/sinh(lambda);
+//			coefficients[n] = coefficients[n]*sinh(lambda*(1 - n/(double)numCoefficients))/sinh(lambda);
+	}
 
 	return coefficients;
 }
@@ -578,9 +582,11 @@ void ChebyshevExpander::calculateCoefficientsWithCutoff(
 	delete [] everReachedIndices;
 
 	//Lorentzian convolution
-	double lambda = broadening*numCoefficients;
-	for(int n = 0; n < numCoefficients; n++)
-		coefficients[n] = coefficients[n]*sinh(lambda*(1 - n/(double)numCoefficients))/sinh(lambda);
+	if(broadening != 0){
+		double lambda = broadening*numCoefficients;
+		for(int n = 0; n < numCoefficients; n++)
+			coefficients[n] = coefficients[n]*sinh(lambda*(1 - n/(double)numCoefficients))/sinh(lambda);
+	}
 }
 
 void ChebyshevExpander::generateLookupTable(
