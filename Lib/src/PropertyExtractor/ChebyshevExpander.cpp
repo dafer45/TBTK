@@ -267,14 +267,14 @@ Property::GreensFunction ChebyshevExpander::calculateGreensFunctions(
 			&(coefficients[n*cSolver->getNumCoefficients()]),
 			chebyshevType
 		);*/
-		complex<double> *greensFunctionData = cSolver->generateGreensFunction(
+		vector<complex<double>> greensFunctionData = cSolver->generateGreensFunction(
 			coefficients[n],
 			chebyshevType
 		);
 		unsigned int offset = greensFunction.getOffset({to[n], from});
 		for(int c = 0; c < energyResolution; c++)
 			data[offset + c] = greensFunctionData[c];
-		delete [] greensFunctionData;
+//		delete [] greensFunctionData;
 	}
 
 	return greensFunction;

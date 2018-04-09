@@ -674,7 +674,7 @@ void ChebyshevExpander::destroyLookupTable(){
 }
 
 //Property::GreensFunction* ChebyshevExpander::generateGreensFunction(
-complex<double>* ChebyshevExpander::generateGreensFunctionCPU(
+vector<complex<double>> ChebyshevExpander::generateGreensFunctionCPU(
 	const vector<complex<double>> &coefficients,
 	Type type
 ){
@@ -717,9 +717,11 @@ complex<double>* ChebyshevExpander::generateGreensFunctionCPU(
 
 	ensureLookupTableIsReady();
 
-	complex<double> *greensFunctionData = new complex<double>[energyResolution];
+/*	complex<double> *greensFunctionData = new complex<double>[energyResolution];
 	for(int e = 0; e < energyResolution; e++)
-		greensFunctionData[e] = 0.;
+		greensFunctionData[e] = 0.;*/
+
+	vector<complex<double>> greensFunctionData(energyResolution, 0);
 
 	const double DELTA = 0.0001;
 	if(type == Type::Retarded){

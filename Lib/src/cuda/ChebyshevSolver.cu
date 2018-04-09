@@ -664,7 +664,7 @@ void ChebyshevExpander::destroyLookupTableGPU(){
 }
 
 //Property::GreensFunction* ChebyshevExpander::generateGreensFunctionGPU(
-complex<double>* ChebyshevExpander::generateGreensFunctionGPU(
+vector<complex<double>> ChebyshevExpander::generateGreensFunctionGPU(
 	const vector<complex<double>> &coefficients,
 //	Property::GreensFunction::Type type
 	Type type
@@ -697,10 +697,12 @@ complex<double>* ChebyshevExpander::generateGreensFunctionGPU(
 		"Use CPU evaluation instead."
 	);
 
-	complex<double> *greensFunctionData = new complex<double>[lookupTableResolution];
+/*	complex<double> *greensFunctionData = new complex<double>[lookupTableResolution];
 
 	for(int e = 0; e < lookupTableResolution; e++)
-		greensFunctionData[e] = 0.;
+		greensFunctionData[e] = 0.;*/
+
+	vector<complex<double>> greensFunctionData(lookupTableResolution, 0.);
 
 	complex<double> *greensFunctionData_device;
 	complex<double> *coefficients_device;
@@ -727,7 +729,7 @@ complex<double>* ChebyshevExpander::generateGreensFunctionGPU(
 	TBTKAssert(
 		cudaMemcpy(
 			greensFunctionData_device,
-			greensFunctionData,
+			greensFunctionData.data(),
 			lookupTableResolution*sizeof(complex<double>),
 			cudaMemcpyHostToDevice
 		) == cudaSuccess,
@@ -765,7 +767,7 @@ complex<double>* ChebyshevExpander::generateGreensFunctionGPU(
 
 	TBTKAssert(
 		cudaMemcpy(
-			greensFunctionData,
+			greensFunctionData.data(),
 			greensFunctionData_device,
 			lookupTableResolution*sizeof(complex<double>),
 			cudaMemcpyDeviceToHost

@@ -222,7 +222,7 @@ public:
 	 * numCoefficients and energyResolution are here the values specified
 	 * in the call to ChebyshevExpander::generateLookupTable
 	 */
-	std::complex<double>* generateGreensFunction(
+	std::vector<std::complex<double>> generateGreensFunction(
 		const std::vector<std::complex<double>> &coefficients,
 		Type type = Type::Retarded
 	);
@@ -450,7 +450,7 @@ private:
 	 * numCoefficients and energyResolution are here the values specified
 	 * in the call to ChebyshevExpander::generateLookupTable
 	 */
-	std::complex<double>* generateGreensFunctionCPU(
+	std::vector<std::complex<double>> generateGreensFunctionCPU(
 		const std::vector<std::complex<double>> &coefficients,
 		Type type = Type::Retarded
 	);
@@ -465,7 +465,7 @@ private:
 	 * numCoefficients and energyResolution are here the values specified
 	 * in the call to ChebyshevExpander::generateLookupTable
 	 */
-	std::complex<double>* generateGreensFunctionGPU(
+	std::vector<std::complex<double>> generateGreensFunctionGPU(
 		const std::vector<std::complex<double>> &coefficients,
 		Type type = Type::Retarded
 	);
@@ -631,7 +631,7 @@ inline bool ChebyshevExpander::getLookupTableIsLoadedGPU(){
 		return false;
 }
 
-inline std::complex<double>* ChebyshevExpander::generateGreensFunction(
+inline std::vector<std::complex<double>> ChebyshevExpander::generateGreensFunction(
 	const std::vector<std::complex<double>> &coefficients,
 	Type type
 ){
