@@ -28,7 +28,8 @@ namespace TBTK{
 void GPUResourceManager::createDeviceTable(){
 	cudaGetDeviceCount(&numDevices);
 
-	Streams::out << "Num GPU devices: " << numDevices << "\n";
+	if(getGlobalVerbose())
+		Streams::out << "Num GPU devices: " << numDevices << "\n";
 
 	if(numDevices > 0){
 		busyDevices = new bool[numDevices];

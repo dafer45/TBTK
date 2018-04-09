@@ -43,12 +43,3 @@
 
 - Make ArnoldiIterator::setCentralValue() affect also the calculations
   performed in Mode::Normal.
-
-- Restructure Solver::ChebyshevExpander so that it hides more method specific
-  details, such as the requirement to call CPU and GPU versions of the
-  functions explicitly. Instead add functions for specifying the execution mode
-  and internally redirect to the appropriate methods. I.e. make CPU/GPU
-  specific methods private and provide a combined function that redirects the
-  execution depending on the specified mode. This should remove the requirement
-  on method specific parameters to be passed to the constructor for the
-  PropertyExtractor::ChebyshevExpander.

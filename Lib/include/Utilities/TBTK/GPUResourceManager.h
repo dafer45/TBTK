@@ -23,13 +23,15 @@
 #ifndef COM_DAFER45_TBTK_GPU_RESOURCE_MANAGER
 #define COM_DAFER45_TBTK_GPU_RESOURCE_MANAGER
 
+#include "Communicator.h"
+
 #ifndef __APPLE__
 #	include <omp.h>
 #endif
 
 namespace TBTK{
 
-class GPUResourceManager{
+class GPUResourceManager : public Communicator{
 public:
 	/** Get number of GPU devices. */
 	int getNumDevices();

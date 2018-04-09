@@ -25,7 +25,7 @@ using namespace std;
 
 namespace TBTK{
 
-GPUResourceManager::GPUResourceManager(){
+GPUResourceManager::GPUResourceManager() : Communicator(true){
 	numDevices = 0;
 	busyDevices = NULL;
 #ifndef __APPLE__
