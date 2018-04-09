@@ -151,7 +151,7 @@ public:
 	 *
 	 *  @return All @link HoppingAmplitude HoppingAmplitudes @endlink with
 	 *  the given from-Index. */
-	const std::vector<HoppingAmplitude>* getHoppingAmplitudes(
+	const std::vector<HoppingAmplitude>& getHoppingAmplitudes(
 		Index index
 	) const;
 
@@ -330,7 +330,7 @@ private:
 
 	/** Get HoppingAmpilitudes. Is called by the public
 	 *  HoppingAmplitudeTree::getHoppingAmplitudes and is called recursively. */
-	const std::vector<HoppingAmplitude>* getHoppingAmplitudes(
+	const std::vector<HoppingAmplitude>& getHoppingAmplitudes(
 		Index index,
 		unsigned int subindex
 	) const;

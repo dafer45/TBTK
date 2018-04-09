@@ -174,12 +174,12 @@ TEST(HoppingAmplitudeSet, getHoppingAmplitudes){
 	hoppingAmplitudeSet.add(HoppingAmplitude(1, {1, 1, 1}, {1, 1, 0}));
 	hoppingAmplitudeSet.construct();
 
-	const std::vector<HoppingAmplitude> *hoppingAmplitudes
+	const std::vector<HoppingAmplitude> &hoppingAmplitudes0
 		= hoppingAmplitudeSet.getHoppingAmplitudes({0, 0, 1});
-	EXPECT_EQ(hoppingAmplitudes->size(), 2);
-	for(unsigned int n = 0; n < hoppingAmplitudes->size(); n++){
+	EXPECT_EQ(hoppingAmplitudes0.size(), 2);
+	for(unsigned int n = 0; n < hoppingAmplitudes0.size(); n++){
 		const HoppingAmplitude &hoppingAmplitude
-			= hoppingAmplitudes->at(n);
+			= hoppingAmplitudes0.at(n);
 
 		EXPECT_TRUE(hoppingAmplitude.getFromIndex().equals({0, 0, 1}));
 		EXPECT_TRUE(
@@ -188,11 +188,12 @@ TEST(HoppingAmplitudeSet, getHoppingAmplitudes){
 		);
 	}
 
-	hoppingAmplitudes = hoppingAmplitudeSet.getHoppingAmplitudes({0, 0, 2});
-	EXPECT_EQ(hoppingAmplitudes->size(), 1);
-	for(unsigned int n = 0; n < hoppingAmplitudes->size(); n++){
+	const std::vector<HoppingAmplitude> &hoppingAmplitudes1
+		= hoppingAmplitudeSet.getHoppingAmplitudes({0, 0, 2});
+	EXPECT_EQ(hoppingAmplitudes1.size(), 1);
+	for(unsigned int n = 0; n < hoppingAmplitudes1.size(); n++){
 		const HoppingAmplitude &hoppingAmplitude
-			= hoppingAmplitudes->at(n);
+			= hoppingAmplitudes1.at(n);
 
 		EXPECT_TRUE(hoppingAmplitude.getFromIndex().equals({0, 0, 2}));
 		EXPECT_TRUE(hoppingAmplitude.getToIndex().equals({0, 0, 1}));

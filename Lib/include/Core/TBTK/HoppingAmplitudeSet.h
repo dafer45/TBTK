@@ -109,7 +109,7 @@ public:
 	 *
 	 *  @return All @link HoppingAmplitude HoppingAmplitudes @endlink with
 	 *  the given from-Index. */
-	const std::vector<HoppingAmplitude>* getHoppingAmplitudes(
+	const std::vector<HoppingAmplitude>& getHoppingAmplitudes(
 		Index index
 	) const;
 
@@ -354,7 +354,7 @@ inline void HoppingAmplitudeSet::add(HoppingAmplitude ha){
 
 inline const std::vector<
 	HoppingAmplitude
->* HoppingAmplitudeSet::getHoppingAmplitudes(
+>& HoppingAmplitudeSet::getHoppingAmplitudes(
 	Index index
 ) const{
 	return hoppingAmplitudeTree.getHoppingAmplitudes(index);

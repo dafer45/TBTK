@@ -8,10 +8,6 @@
   operators to no longer be needed. Further, this removes the need on the
   Solver::ChebyshevExpander to override the metodh Solver::setSolver().
 
-- Make HoppingAmplitudeTree::getHoppingAmplitudes() and
-  HoppingAmplitudeSet::getHoppingAmplitudes() return constant references rather
-  than pointers to constants.
-
 - Rewrite HoppingAmplitudeTree::Iterator, HoppingAmplitudeSet::Iterator and
   IndexTree::Iterator to use standard iterator notation with operator++(),
   operator*(), operator==(), and operator!=().

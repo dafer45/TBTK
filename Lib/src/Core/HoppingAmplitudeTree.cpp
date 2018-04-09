@@ -435,7 +435,7 @@ void HoppingAmplitudeTree::getBlockIndices(
 
 const std::vector<
 	HoppingAmplitude
->* HoppingAmplitudeTree::getHoppingAmplitudes(
+>& HoppingAmplitudeTree::getHoppingAmplitudes(
 	Index index
 ) const{
 	return getHoppingAmplitudes(index, 0);
@@ -443,7 +443,7 @@ const std::vector<
 
 const std::vector<
 	HoppingAmplitude
->* HoppingAmplitudeTree::getHoppingAmplitudes(
+>& HoppingAmplitudeTree::getHoppingAmplitudes(
 	Index index,
 	unsigned int subindex
 ) const{
@@ -469,7 +469,7 @@ const std::vector<
 	}
 	else{
 		//If the current subindex is the last, return HoppingAmplitudes.
-		return &hoppingAmplitudes;
+		return hoppingAmplitudes;
 	}
 }
 
