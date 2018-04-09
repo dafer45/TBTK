@@ -231,7 +231,7 @@ inline const std::complex<double> BlockDiagonalizer::getAmplitude(
 	int state,
 	const Index &intraBlockIndex
 ){
-	int firstStateInBlock = getModel().getHoppingAmplitudeSet()->getFirstIndexInBlock(
+	int firstStateInBlock = getModel().getHoppingAmplitudeSet().getFirstIndexInBlock(
 		blockIndex
 	);
 	unsigned int block = stateToBlockMap.at(firstStateInBlock);
@@ -261,7 +261,7 @@ inline const double BlockDiagonalizer::getEigenValue(
 	const Index &blockIndex,
 	int state
 ){
-	int offset = getModel().getHoppingAmplitudeSet()->getFirstIndexInBlock(
+	int offset = getModel().getHoppingAmplitudeSet().getFirstIndexInBlock(
 		blockIndex
 	);
 

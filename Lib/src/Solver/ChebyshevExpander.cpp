@@ -101,24 +101,24 @@ vector<complex<double>> ChebyshevExpander::calculateCoefficientsCPU(
 	for(int n = 0; n < numCoefficients; n++)
 		coefficients.push_back(0);
 
-	const HoppingAmplitudeSet *hoppingAmplitudeSet = model.getHoppingAmplitudeSet();
+	const HoppingAmplitudeSet &hoppingAmplitudeSet = model.getHoppingAmplitudeSet();
 
-	int fromBasisIndex = hoppingAmplitudeSet->getBasisIndex(from);
-	int toBasisIndex = hoppingAmplitudeSet->getBasisIndex(to);
+	int fromBasisIndex = hoppingAmplitudeSet.getBasisIndex(from);
+	int toBasisIndex = hoppingAmplitudeSet.getBasisIndex(to);
 
 	if(getGlobalVerbose() && getVerbose()){
 		Streams::out << "ChebyshevExpander::calculateCoefficients\n";
 		Streams::out << "\tFrom Index: " << fromBasisIndex << "\n";
 		Streams::out << "\tTo Index: " << toBasisIndex << "\n";
-		Streams::out << "\tBasis size: " << hoppingAmplitudeSet->getBasisSize() << "\n";
+		Streams::out << "\tBasis size: " << hoppingAmplitudeSet.getBasisSize() << "\n";
 		Streams::out << "\tProgress (100 coefficients per dot): ";
 	}
 
-	complex<double> *jIn1 = new complex<double>[hoppingAmplitudeSet->getBasisSize()];
-	complex<double> *jIn2 = new complex<double>[hoppingAmplitudeSet->getBasisSize()];
-	complex<double> *jResult = new complex<double>[hoppingAmplitudeSet->getBasisSize()];
+	complex<double> *jIn1 = new complex<double>[hoppingAmplitudeSet.getBasisSize()];
+	complex<double> *jIn2 = new complex<double>[hoppingAmplitudeSet.getBasisSize()];
+	complex<double> *jResult = new complex<double>[hoppingAmplitudeSet.getBasisSize()];
 	complex<double> *jTemp = NULL;
-	for(int n = 0; n < hoppingAmplitudeSet->getBasisSize(); n++){
+	for(int n = 0; n < hoppingAmplitudeSet.getBasisSize(); n++){
 		jIn1[n] = 0.;
 		jIn2[n] = 0.;
 		jResult[n] = 0.;
@@ -129,7 +129,7 @@ vector<complex<double>> ChebyshevExpander::calculateCoefficientsCPU(
 	coefficients[0] = jIn1[toBasisIndex];
 
 	//Generate a fixed hopping amplitude and inde list, for speed.
-	HoppingAmplitudeSet::Iterator it = hoppingAmplitudeSet->getIterator();
+	HoppingAmplitudeSet::Iterator it = hoppingAmplitudeSet.getIterator();
 	const HoppingAmplitude *ha;
 	int numHoppingAmplitudes = 0;
 	while((ha = it.getHA())){
@@ -145,8 +145,8 @@ vector<complex<double>> ChebyshevExpander::calculateCoefficientsCPU(
 	while((ha = it.getHA())){
 /*		toIndices[counter] = hoppingAmplitudeSet->getBasisIndex(ha->toIndex);
 		fromIndices[counter] = hoppingAmplitudeSet->getBasisIndex(ha->fromIndex);*/
-		toIndices[counter] = hoppingAmplitudeSet->getBasisIndex(ha->getToIndex());
-		fromIndices[counter] = hoppingAmplitudeSet->getBasisIndex(ha->getFromIndex());
+		toIndices[counter] = hoppingAmplitudeSet.getBasisIndex(ha->getToIndex());
+		fromIndices[counter] = hoppingAmplitudeSet.getBasisIndex(ha->getFromIndex());
 		hoppingAmplitudes[counter] = ha->getAmplitude()/scaleFactor;
 
 		it.searchNextHA();
@@ -154,7 +154,7 @@ vector<complex<double>> ChebyshevExpander::calculateCoefficientsCPU(
 	}
 
 	//Calculate |j1>
-	for(int c = 0; c < hoppingAmplitudeSet->getBasisSize(); c++)
+	for(int c = 0; c < hoppingAmplitudeSet.getBasisSize(); c++)
 		jResult[c] = 0.;
 	for(int n = 0; n < numHoppingAmplitudes; n++){
 		int from = fromIndices[n];
@@ -164,7 +164,7 @@ vector<complex<double>> ChebyshevExpander::calculateCoefficientsCPU(
 	}
 
 	if(damping != NULL){
-		for(int n = 0; n < hoppingAmplitudeSet->getBasisSize(); n++)
+		for(int n = 0; n < hoppingAmplitudeSet.getBasisSize(); n++)
 			jResult[n] *= damping[n];
 	}
 
@@ -181,11 +181,11 @@ vector<complex<double>> ChebyshevExpander::calculateCoefficientsCPU(
 
 	//Iteratively calculate |jn> and corresponding Chebyshev coefficients.
 	for(int n = 2; n < numCoefficients; n++){
-		for(int c = 0; c < hoppingAmplitudeSet->getBasisSize(); c++)
+		for(int c = 0; c < hoppingAmplitudeSet.getBasisSize(); c++)
 			jResult[c] = -jIn2[c];
 
 		if(damping != NULL){
-			for(int c = 0; c < hoppingAmplitudeSet->getBasisSize(); c++)
+			for(int c = 0; c < hoppingAmplitudeSet.getBasisSize(); c++)
 				jResult[c] *= damping[c];
 		}
 
@@ -197,7 +197,7 @@ vector<complex<double>> ChebyshevExpander::calculateCoefficientsCPU(
 		}
 
 		if(damping != NULL){
-			for(int c = 0; c < hoppingAmplitudeSet->getBasisSize(); c++)
+			for(int c = 0; c < hoppingAmplitudeSet.getBasisSize(); c++)
 				jResult[c] *= damping[c];
 		}
 
@@ -267,27 +267,27 @@ vector<vector<complex<double>>> ChebyshevExpander::calculateCoefficientsCPU(
 			coefficients[n].push_back(0);
 	}
 
-	const HoppingAmplitudeSet *hoppingAmplitudeSet = model.getHoppingAmplitudeSet();
+	const HoppingAmplitudeSet &hoppingAmplitudeSet = model.getHoppingAmplitudeSet();
 
-	int fromBasisIndex = hoppingAmplitudeSet->getBasisIndex(from);
-	int *coefficientMap = new int[hoppingAmplitudeSet->getBasisSize()];
-	for(int n = 0; n < hoppingAmplitudeSet->getBasisSize(); n++)
+	int fromBasisIndex = hoppingAmplitudeSet.getBasisIndex(from);
+	int *coefficientMap = new int[hoppingAmplitudeSet.getBasisSize()];
+	for(int n = 0; n < hoppingAmplitudeSet.getBasisSize(); n++)
 		coefficientMap[n] = -1;
 	for(unsigned int n = 0; n < to.size(); n++)
-		coefficientMap[hoppingAmplitudeSet->getBasisIndex(to.at(n))] = n;
+		coefficientMap[hoppingAmplitudeSet.getBasisIndex(to.at(n))] = n;
 
 	if(getGlobalVerbose() && getVerbose()){
 		Streams::out << "ChebyshevExpander::calculateCoefficients\n";
 		Streams::out << "\tFrom Index: " << fromBasisIndex << "\n";
-		Streams::out << "\tBasis size: " << hoppingAmplitudeSet->getBasisSize() << "\n";
+		Streams::out << "\tBasis size: " << hoppingAmplitudeSet.getBasisSize() << "\n";
 		Streams::out << "\tProgress (100 coefficients per dot): ";
 	}
 
-	complex<double> *jIn1 = new complex<double>[hoppingAmplitudeSet->getBasisSize()];
-	complex<double> *jIn2 = new complex<double>[hoppingAmplitudeSet->getBasisSize()];
-	complex<double> *jResult = new complex<double>[hoppingAmplitudeSet->getBasisSize()];
+	complex<double> *jIn1 = new complex<double>[hoppingAmplitudeSet.getBasisSize()];
+	complex<double> *jIn2 = new complex<double>[hoppingAmplitudeSet.getBasisSize()];
+	complex<double> *jResult = new complex<double>[hoppingAmplitudeSet.getBasisSize()];
 	complex<double> *jTemp = NULL;
-	for(int n = 0; n < hoppingAmplitudeSet->getBasisSize(); n++){
+	for(int n = 0; n < hoppingAmplitudeSet.getBasisSize(); n++){
 		jIn1[n] = 0.;
 		jIn2[n] = 0.;
 		jResult[n] = 0.;
@@ -295,13 +295,13 @@ vector<vector<complex<double>>> ChebyshevExpander::calculateCoefficientsCPU(
 	//Set up initial state (|j0>)
 	jIn1[fromBasisIndex] = 1.;
 
-	for(int n = 0; n < hoppingAmplitudeSet->getBasisSize(); n++)
+	for(int n = 0; n < hoppingAmplitudeSet.getBasisSize(); n++)
 		if(coefficientMap[n] != -1)
 			coefficients[coefficientMap[n]][0] = jIn1[n];
 //			coefficients[coefficientMap[n]*numCoefficients] = jIn1[n];
 
 	//Generate a fixed hopping amplitude and inde list, for speed.
-	HoppingAmplitudeSet::Iterator it = hoppingAmplitudeSet->getIterator();
+	HoppingAmplitudeSet::Iterator it = hoppingAmplitudeSet.getIterator();
 	const HoppingAmplitude *ha;
 	int numHoppingAmplitudes = 0;
 	while((ha = it.getHA())){
@@ -317,8 +317,8 @@ vector<vector<complex<double>>> ChebyshevExpander::calculateCoefficientsCPU(
 	while((ha = it.getHA())){
 /*		toIndices[counter] = hoppingAmplitudeSet->getBasisIndex(ha->toIndex);
 		fromIndices[counter] = hoppingAmplitudeSet->getBasisIndex(ha->fromIndex);*/
-		toIndices[counter] = hoppingAmplitudeSet->getBasisIndex(ha->getToIndex());
-		fromIndices[counter] = hoppingAmplitudeSet->getBasisIndex(ha->getFromIndex());
+		toIndices[counter] = hoppingAmplitudeSet.getBasisIndex(ha->getToIndex());
+		fromIndices[counter] = hoppingAmplitudeSet.getBasisIndex(ha->getFromIndex());
 		hoppingAmplitudes[counter] = ha->getAmplitude()/scaleFactor;
 
 		it.searchNextHA();
@@ -326,7 +326,7 @@ vector<vector<complex<double>>> ChebyshevExpander::calculateCoefficientsCPU(
 	}
 
 	//Calculate |j1>
-	for(int c = 0; c < hoppingAmplitudeSet->getBasisSize(); c++)
+	for(int c = 0; c < hoppingAmplitudeSet.getBasisSize(); c++)
 		jResult[c] = 0.;
 	for(int n = 0; n < numHoppingAmplitudes; n++){
 		int from = fromIndices[n];
@@ -336,7 +336,7 @@ vector<vector<complex<double>>> ChebyshevExpander::calculateCoefficientsCPU(
 	}
 
 	if(damping != NULL){
-		for(int c = 0; c < hoppingAmplitudeSet->getBasisSize(); c++)
+		for(int c = 0; c < hoppingAmplitudeSet.getBasisSize(); c++)
 			jResult[c] *= damping[c];
 	}
 
@@ -345,7 +345,7 @@ vector<vector<complex<double>>> ChebyshevExpander::calculateCoefficientsCPU(
 	jIn1 = jResult;
 	jResult = jTemp;
 
-	for(int n = 0; n < hoppingAmplitudeSet->getBasisSize(); n++)
+	for(int n = 0; n < hoppingAmplitudeSet.getBasisSize(); n++)
 		if(coefficientMap[n] != -1)
 			coefficients[coefficientMap[n]][1] = jIn1[n];
 //			coefficients[coefficientMap[n]*numCoefficients + 1] = jIn1[n];
@@ -356,11 +356,11 @@ vector<vector<complex<double>>> ChebyshevExpander::calculateCoefficientsCPU(
 
 	//Iteratively calculate |jn> and corresponding Chebyshev coefficients.
 	for(int n = 2; n < numCoefficients; n++){
-		for(int c = 0; c < hoppingAmplitudeSet->getBasisSize(); c++)
+		for(int c = 0; c < hoppingAmplitudeSet.getBasisSize(); c++)
 			jResult[c] = -jIn2[c];
 
 		if(damping != NULL){
-			for(int c = 0; c < hoppingAmplitudeSet->getBasisSize(); c++)
+			for(int c = 0; c < hoppingAmplitudeSet.getBasisSize(); c++)
 				jResult[c] *= damping[c];
 		}
 
@@ -372,7 +372,7 @@ vector<vector<complex<double>>> ChebyshevExpander::calculateCoefficientsCPU(
 		}
 
 		if(damping != NULL){
-			for(int c = 0; c < hoppingAmplitudeSet->getBasisSize(); c++)
+			for(int c = 0; c < hoppingAmplitudeSet.getBasisSize(); c++)
 				jResult[c] *= damping[c];
 		}
 
@@ -381,7 +381,7 @@ vector<vector<complex<double>>> ChebyshevExpander::calculateCoefficientsCPU(
 		jIn1 = jResult;
 		jResult = jTemp;
 
-		for(int c = 0; c < hoppingAmplitudeSet->getBasisSize(); c++)
+		for(int c = 0; c < hoppingAmplitudeSet.getBasisSize(); c++)
 			if(coefficientMap[c] != -1)
 				coefficients[coefficientMap[c]][n] = jIn1[c];
 //				coefficients[coefficientMap[c]*numCoefficients + n] = jIn1[c];
@@ -444,24 +444,24 @@ void ChebyshevExpander::calculateCoefficientsWithCutoff(
 		""
 	);
 
-	const HoppingAmplitudeSet *hoppingAmplitudeSet = model.getHoppingAmplitudeSet();
+	const HoppingAmplitudeSet &hoppingAmplitudeSet = model.getHoppingAmplitudeSet();
 
-	int fromBasisIndex = hoppingAmplitudeSet->getBasisIndex(from);
-	int toBasisIndex = hoppingAmplitudeSet->getBasisIndex(to);
+	int fromBasisIndex = hoppingAmplitudeSet.getBasisIndex(from);
+	int toBasisIndex = hoppingAmplitudeSet.getBasisIndex(to);
 
 	if(getGlobalVerbose() && getVerbose()){
 		Streams::out << "ChebyshevExpander::calculateCoefficients\n";
 		Streams::out << "\tFrom Index: " << fromBasisIndex << "\n";
 		Streams::out << "\tTo Index: " << toBasisIndex << "\n";
-		Streams::out << "\tBasis size: " << hoppingAmplitudeSet->getBasisSize() << "\n";
+		Streams::out << "\tBasis size: " << hoppingAmplitudeSet.getBasisSize() << "\n";
 		Streams::out << "\tProgress (100 coefficients per dot): ";
 	}
 
-	complex<double> *jIn1 = new complex<double>[hoppingAmplitudeSet->getBasisSize()];
-	complex<double> *jIn2 = new complex<double>[hoppingAmplitudeSet->getBasisSize()];
-	complex<double> *jResult = new complex<double>[hoppingAmplitudeSet->getBasisSize()];
+	complex<double> *jIn1 = new complex<double>[hoppingAmplitudeSet.getBasisSize()];
+	complex<double> *jIn2 = new complex<double>[hoppingAmplitudeSet.getBasisSize()];
+	complex<double> *jResult = new complex<double>[hoppingAmplitudeSet.getBasisSize()];
 	complex<double> *jTemp = NULL;
-	for(int n = 0; n < hoppingAmplitudeSet->getBasisSize(); n++){
+	for(int n = 0; n < hoppingAmplitudeSet.getBasisSize(); n++){
 		jIn1[n] = 0.;
 		jIn2[n] = 0.;
 		jResult[n] = 0.;
@@ -471,16 +471,16 @@ void ChebyshevExpander::calculateCoefficientsWithCutoff(
 
 	coefficients[0] = jIn1[toBasisIndex];
 
-	HALinkedList haLinkedList(*hoppingAmplitudeSet);
+	HALinkedList haLinkedList(hoppingAmplitudeSet);
 	haLinkedList.rescaleAmplitudes(scaleFactor);
 	haLinkedList.addLinkedList(fromBasisIndex);
 
-	int *newlyReachedIndices = new int[hoppingAmplitudeSet->getBasisSize()];
-	int *everReachedIndices = new int[hoppingAmplitudeSet->getBasisSize()];
-	bool *everReachedIndicesAdded = new bool[hoppingAmplitudeSet->getBasisSize()];
+	int *newlyReachedIndices = new int[hoppingAmplitudeSet.getBasisSize()];
+	int *everReachedIndices = new int[hoppingAmplitudeSet.getBasisSize()];
+	bool *everReachedIndicesAdded = new bool[hoppingAmplitudeSet.getBasisSize()];
 	int newlyReachedIndicesCounter = 0;
 	int everReachedIndicesCounter = 0;
-	for(int n = 0; n < hoppingAmplitudeSet->getBasisSize(); n++){
+	for(int n = 0; n < hoppingAmplitudeSet.getBasisSize(); n++){
 		newlyReachedIndices[n] = -1;
 		everReachedIndices[n] = -1;
 		everReachedIndicesAdded[n] = false;

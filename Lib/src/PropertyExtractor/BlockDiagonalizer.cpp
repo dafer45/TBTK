@@ -83,14 +83,14 @@ Property::WaveFunctions BlockDiagonalizer::calculateWaveFunctions(
 ){
 	IndexTree allIndices = generateIndexTree(
 		patterns,
-		*bSolver->getModel().getHoppingAmplitudeSet(),
+		bSolver->getModel().getHoppingAmplitudeSet(),
 		false,
 		false
 	);
 
 	IndexTree memoryLayout = generateIndexTree(
 		patterns,
-		*bSolver->getModel().getHoppingAmplitudeSet(),
+		bSolver->getModel().getHoppingAmplitudeSet(),
 		true,
 		true
 	);
@@ -246,14 +246,14 @@ Property::Density BlockDiagonalizer::calculateDensity(
 ){
 	IndexTree allIndices = generateIndexTree(
 		patterns,
-		*bSolver->getModel().getHoppingAmplitudeSet(),
+		bSolver->getModel().getHoppingAmplitudeSet(),
 		false,
 		false
 	);
 
 	IndexTree memoryLayout = generateIndexTree(
 		patterns,
-		*bSolver->getModel().getHoppingAmplitudeSet(),
+		bSolver->getModel().getHoppingAmplitudeSet(),
 		true,
 		true
 	);
@@ -312,14 +312,14 @@ Property::Magnetization BlockDiagonalizer::calculateMagnetization(
 ){
 	IndexTree allIndices = generateIndexTree(
 		patterns,
-		*bSolver->getModel().getHoppingAmplitudeSet(),
+		bSolver->getModel().getHoppingAmplitudeSet(),
 		false,
 		true
 	);
 
 	IndexTree memoryLayout = generateIndexTree(
 		patterns,
-		*bSolver->getModel().getHoppingAmplitudeSet(),
+		bSolver->getModel().getHoppingAmplitudeSet(),
 		true,
 		true
 	);
@@ -391,14 +391,14 @@ Property::LDOS BlockDiagonalizer::calculateLDOS(
 
 	IndexTree allIndices = generateIndexTree(
 		patterns,
-		*bSolver->getModel().getHoppingAmplitudeSet(),
+		bSolver->getModel().getHoppingAmplitudeSet(),
 		false,
 		true
 	);
 
 	IndexTree memoryLayout = generateIndexTree(
 		patterns,
-		*bSolver->getModel().getHoppingAmplitudeSet(),
+		bSolver->getModel().getHoppingAmplitudeSet(),
 		true,
 		true
 	);
@@ -502,14 +502,14 @@ Property::SpinPolarizedLDOS BlockDiagonalizer::calculateSpinPolarizedLDOS(
 
 	IndexTree allIndices = generateIndexTree(
 		patterns,
-		*bSolver->getModel().getHoppingAmplitudeSet(),
+		bSolver->getModel().getHoppingAmplitudeSet(),
 		false,
 		true
 	);
 
 	IndexTree memoryLayout = generateIndexTree(
 		patterns,
-		*bSolver->getModel().getHoppingAmplitudeSet(),
+		bSolver->getModel().getHoppingAmplitudeSet(),
 		true,
 		true
 	);

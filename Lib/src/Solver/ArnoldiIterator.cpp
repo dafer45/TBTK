@@ -681,10 +681,10 @@ bool ArnoldiIterator::executeReverseCommunicationMessage(
 				workd[(ipntr[1] - 1) + n] = 0.;
 
 			const Model &model = getModel();
-			int numMatrixElements = model.getHoppingAmplitudeSet()->getNumMatrixElements();
-			const int *cooRowIndices = model.getHoppingAmplitudeSet()->getCOORowIndices();
-			const int *cooColIndices = model.getHoppingAmplitudeSet()->getCOOColIndices();
-			const complex<double> *cooValues = model.getHoppingAmplitudeSet()->getCOOValues();
+			int numMatrixElements = model.getHoppingAmplitudeSet().getNumMatrixElements();
+			const int *cooRowIndices = model.getHoppingAmplitudeSet().getCOORowIndices();
+			const int *cooColIndices = model.getHoppingAmplitudeSet().getCOOColIndices();
+			const complex<double> *cooValues = model.getHoppingAmplitudeSet().getCOOValues();
 			for(int n = 0; n < numMatrixElements; n++)
 				workd[(ipntr[1] - 1) + cooRowIndices[n]] += cooValues[n]*workd[(ipntr[0] - 1) + cooColIndices[n]];
 
@@ -761,8 +761,8 @@ void ArnoldiIterator::checkZneupdIerr(int ierr) const{
 void ArnoldiIterator::initNormal(){
 	//Get matrix representation on COO format
 	const Model &model = getModel();
-	const int *cooRowIndices = model.getHoppingAmplitudeSet()->getCOORowIndices();
-	const int *cooColIndices = model.getHoppingAmplitudeSet()->getCOOColIndices();
+	const int *cooRowIndices = model.getHoppingAmplitudeSet().getCOORowIndices();
+	const int *cooColIndices = model.getHoppingAmplitudeSet().getCOOColIndices();
 	TBTKAssert(
 		cooRowIndices != NULL && cooColIndices != NULL,
 		"ArnoldiIterator::initNormal()",
@@ -779,13 +779,13 @@ void ArnoldiIterator::initShiftAndInvert(){
 	);
 
 	HoppingAmplitudeSet::Iterator it = getModel().getHoppingAmplitudeSet(
-	)->getIterator();
+	).getIterator();
 	const HoppingAmplitude *ha;
 	while((ha = it.getHA())){
-		int from = model.getHoppingAmplitudeSet()->getBasisIndex(
+		int from = model.getHoppingAmplitudeSet().getBasisIndex(
 			ha->getFromIndex()
 		);
-		int to = model.getHoppingAmplitudeSet()->getBasisIndex(
+		int to = model.getHoppingAmplitudeSet().getBasisIndex(
 			ha->getToIndex()
 		);
 		matrix.add(to, from, ha->getAmplitude());

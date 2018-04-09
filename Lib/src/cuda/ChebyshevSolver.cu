@@ -103,16 +103,16 @@ vector<
 			coefficients[n].push_back(0);
 	}
 
-	const HoppingAmplitudeSet *hoppingAmplitudeSet
+	const HoppingAmplitudeSet &hoppingAmplitudeSet
 		= getModel().getHoppingAmplitudeSet();
 
-	int fromBasisIndex = hoppingAmplitudeSet->getBasisIndex(from);
-	int *coefficientMap = new int[hoppingAmplitudeSet->getBasisSize()];
-	for(int n = 0; n < hoppingAmplitudeSet->getBasisSize(); n++)
+	int fromBasisIndex = hoppingAmplitudeSet.getBasisIndex(from);
+	int *coefficientMap = new int[hoppingAmplitudeSet.getBasisSize()];
+	for(int n = 0; n < hoppingAmplitudeSet.getBasisSize(); n++)
 		coefficientMap[n] = -1;
 	for(int n = 0; n < (int)to.size(); n++){
 		coefficientMap[
-			hoppingAmplitudeSet->getBasisIndex(to.at(n))
+			hoppingAmplitudeSet.getBasisIndex(to.at(n))
 		] = n;
 	}
 
@@ -120,7 +120,7 @@ vector<
 		Streams::out << "ChebyshevExpander::calculateCoefficientsGPU\n";
 		Streams::out << "\tFrom Index: " << fromBasisIndex << "\n";
 		Streams::out << "\tBasis size: "
-			<< hoppingAmplitudeSet->getBasisSize() << "\n";
+			<< hoppingAmplitudeSet.getBasisSize() << "\n";
 		Streams::out << "\tUsing damping: ";
 		if(damping != NULL)
 			Streams::out << "Yes\n";
@@ -129,11 +129,11 @@ vector<
 	}
 
 	complex<double> *jIn1
-		= new complex<double>[hoppingAmplitudeSet->getBasisSize()];
+		= new complex<double>[hoppingAmplitudeSet.getBasisSize()];
 	complex<double> *jIn2
-		= new complex<double>[hoppingAmplitudeSet->getBasisSize()];
+		= new complex<double>[hoppingAmplitudeSet.getBasisSize()];
 	complex<double> *jTemp = NULL;
-	for(int n = 0; n < hoppingAmplitudeSet->getBasisSize(); n++){
+	for(int n = 0; n < hoppingAmplitudeSet.getBasisSize(); n++){
 		jIn1[n] = 0.;
 		jIn2[n] = 0.;
 	}
@@ -141,19 +141,19 @@ vector<
 	//Set up initial state (|j0>)
 	jIn1[fromBasisIndex] = 1.;
 
-	for(int n = 0; n < hoppingAmplitudeSet->getBasisSize(); n++)
+	for(int n = 0; n < hoppingAmplitudeSet.getBasisSize(); n++)
 		if(coefficientMap[n] != -1)
 			coefficients[coefficientMap[n]][0] = jIn1[n];
 //			coefficients[coefficientMap[n]*numCoefficients] = jIn1[n];
 
 	const int numHoppingAmplitudes
-		= hoppingAmplitudeSet->getNumMatrixElements();
+		= hoppingAmplitudeSet.getNumMatrixElements();
 	const int *cooHARowIndices_host
-		= hoppingAmplitudeSet->getCOORowIndices();
+		= hoppingAmplitudeSet.getCOORowIndices();
 	const int *cooHAColIndices_host
-		= hoppingAmplitudeSet->getCOOColIndices();
+		= hoppingAmplitudeSet.getCOOColIndices();
 	const complex<double> *cooHAValues_host
-		= hoppingAmplitudeSet->getCOOValues();
+		= hoppingAmplitudeSet.getCOOValues();
 
 	//Initialize GPU
 	complex<double> *jIn1_device;
@@ -167,12 +167,12 @@ vector<
 	complex<double> *damping_device = NULL;
 
 	int totalMemoryRequirement
-		= hoppingAmplitudeSet->getBasisSize()*sizeof(complex<double>);
-	totalMemoryRequirement += hoppingAmplitudeSet->getBasisSize()*sizeof(
+		= hoppingAmplitudeSet.getBasisSize()*sizeof(complex<double>);
+	totalMemoryRequirement += hoppingAmplitudeSet.getBasisSize()*sizeof(
 		complex<double>
 	);
 	totalMemoryRequirement += numHoppingAmplitudes*sizeof(int);
-	totalMemoryRequirement += hoppingAmplitudeSet->getBasisSize()*sizeof(
+	totalMemoryRequirement += hoppingAmplitudeSet.getBasisSize()*sizeof(
 		int
 	);
 	totalMemoryRequirement += numHoppingAmplitudes*sizeof(int);
@@ -182,11 +182,11 @@ vector<
 	totalMemoryRequirement += to.size()*numCoefficients*sizeof(
 		complex<double>
 	);
-	totalMemoryRequirement += hoppingAmplitudeSet->getBasisSize()*sizeof(
+	totalMemoryRequirement += hoppingAmplitudeSet.getBasisSize()*sizeof(
 		int
 	);
 	if(damping != NULL){
-		totalMemoryRequirement += hoppingAmplitudeSet->getBasisSize(
+		totalMemoryRequirement += hoppingAmplitudeSet.getBasisSize(
 		)*sizeof(complex<double>);
 	}
 	if(getGlobalVerbose() && getVerbose()){
@@ -206,7 +206,7 @@ vector<
 	TBTKAssert(
 		cudaMalloc(
 			(void**)&jIn1_device,
-			hoppingAmplitudeSet->getBasisSize()*sizeof(
+			hoppingAmplitudeSet.getBasisSize()*sizeof(
 				complex<double>
 			)
 		) == cudaSuccess,
@@ -217,7 +217,7 @@ vector<
 	TBTKAssert(
 		cudaMalloc(
 			(void**)&jIn2_device,
-			hoppingAmplitudeSet->getBasisSize()*sizeof(
+			hoppingAmplitudeSet.getBasisSize()*sizeof(
 				complex<double>
 			)
 		) == cudaSuccess,
@@ -237,7 +237,7 @@ vector<
 	TBTKAssert(
 		cudaMalloc(
 			(void**)&csrHARowIndices_device,
-			(hoppingAmplitudeSet->getBasisSize()+1)*sizeof(int)
+			(hoppingAmplitudeSet.getBasisSize()+1)*sizeof(int)
 		) == cudaSuccess,
 		"ChebyshevExpander::calculateCoefficientsGPU()",
 		"CUDA malloc error while allocating csrHARowIndices_device.",
@@ -273,7 +273,7 @@ vector<
 	TBTKAssert(
 		cudaMalloc(
 			(void**)&coefficientMap_device,
-			hoppingAmplitudeSet->getBasisSize()*sizeof(int)
+			hoppingAmplitudeSet.getBasisSize()*sizeof(int)
 		) == cudaSuccess,
 		"ChebyshevExpander::calculateCoefficientsGPU()",
 		"CUDA malloc error while allocating coefficientMap_device.",
@@ -283,7 +283,7 @@ vector<
 		TBTKAssert(
 			cudaMalloc(
 				(void**)&damping_device,
-				hoppingAmplitudeSet->getBasisSize()*sizeof(
+				hoppingAmplitudeSet.getBasisSize()*sizeof(
 					complex<double>
 				)
 			) == cudaSuccess,
@@ -297,7 +297,7 @@ vector<
 		cudaMemcpy(
 			jIn1_device,
 			jIn1,
-			hoppingAmplitudeSet->getBasisSize()*sizeof(
+			hoppingAmplitudeSet.getBasisSize()*sizeof(
 				complex<double>
 			),
 			cudaMemcpyHostToDevice
@@ -310,7 +310,7 @@ vector<
 		cudaMemcpy(
 			jIn2_device,
 			jIn2,
-			hoppingAmplitudeSet->getBasisSize()*sizeof(
+			hoppingAmplitudeSet.getBasisSize()*sizeof(
 				complex<double>
 			),
 			cudaMemcpyHostToDevice
@@ -380,7 +380,7 @@ vector<
 		cudaMemcpy(
 			coefficientMap_device,
 			coefficientMap,
-			hoppingAmplitudeSet->getBasisSize()*sizeof(int),
+			hoppingAmplitudeSet.getBasisSize()*sizeof(int),
 			cudaMemcpyHostToDevice
 		) == cudaSuccess,
 		"ChebyshevExpander::calculateCoefficientsGPU()",
@@ -392,7 +392,7 @@ vector<
 			cudaMemcpy(
 				damping_device,
 				damping,
-				hoppingAmplitudeSet->getBasisSize()*sizeof(
+				hoppingAmplitudeSet.getBasisSize()*sizeof(
 					complex<double>
 				),
 				cudaMemcpyHostToDevice
@@ -443,7 +443,7 @@ vector<
 			handle,
 			cooHARowIndices_device,
 			numHoppingAmplitudes,
-			hoppingAmplitudeSet->getBasisSize(),
+			hoppingAmplitudeSet.getBasisSize(),
 			csrHARowIndices_device,
 			CUSPARSE_INDEX_BASE_ZERO
 		) == CUSPARSE_STATUS_SUCCESS,
@@ -454,8 +454,8 @@ vector<
 
 	//Calculate |j1>
 	int block_size = 1024;
-	int num_blocks = hoppingAmplitudeSet->getBasisSize()/block_size
-		+ (hoppingAmplitudeSet->getBasisSize()%block_size == 0 ? 0:1);
+	int num_blocks = hoppingAmplitudeSet.getBasisSize()/block_size
+		+ (hoppingAmplitudeSet.getBasisSize()%block_size == 0 ? 0:1);
 	if(getGlobalVerbose() && getVerbose()){
 		Streams::out << "\tCUDA Block size: " << block_size << "\n";
 		Streams::out << "\tCUDA Num blocks: " << num_blocks << "\n";
@@ -466,8 +466,8 @@ vector<
 		cusparseZcsrmv(
 			handle,
 			CUSPARSE_OPERATION_NON_TRANSPOSE,
-			hoppingAmplitudeSet->getBasisSize(),
-			hoppingAmplitudeSet->getBasisSize(),
+			hoppingAmplitudeSet.getBasisSize(),
+			hoppingAmplitudeSet.getBasisSize(),
 			numHoppingAmplitudes,
 			(cuDoubleComplex*)&multiplier,
 			descr,
@@ -485,7 +485,7 @@ vector<
 
 	extractCoefficients <<< num_blocks, block_size >>> (
 		(cuDoubleComplex*)jIn2_device,
-		hoppingAmplitudeSet->getBasisSize(),
+		hoppingAmplitudeSet.getBasisSize(),
 		(cuDoubleComplex*)coefficients_device,
 		1,
 		coefficientMap_device,
@@ -505,8 +505,8 @@ vector<
 			cusparseZcsrmv(
 				handle,
 				CUSPARSE_OPERATION_NON_TRANSPOSE,
-				hoppingAmplitudeSet->getBasisSize(),
-				hoppingAmplitudeSet->getBasisSize(),
+				hoppingAmplitudeSet.getBasisSize(),
+				hoppingAmplitudeSet.getBasisSize(),
 				numHoppingAmplitudes,
 				(cuDoubleComplex*)&multiplier,
 				descr,
@@ -524,7 +524,7 @@ vector<
 
 		extractCoefficients <<< num_blocks, block_size >>> (
 			(cuDoubleComplex*)jIn2_device,
-			hoppingAmplitudeSet->getBasisSize(),
+			hoppingAmplitudeSet.getBasisSize(),
 			(cuDoubleComplex*)coefficients_device,
 			n,
 			coefficientMap_device,

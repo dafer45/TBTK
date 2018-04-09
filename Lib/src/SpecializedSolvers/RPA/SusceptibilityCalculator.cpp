@@ -299,7 +299,7 @@ void SusceptibilityCalculator::generateKPlusQLookupTable(){
 				Q,
 				numMeshPoints
 			);
-			int qLinearIndex = model.getHoppingAmplitudeSet()->getFirstIndexInBlock(
+			int qLinearIndex = model.getHoppingAmplitudeSet().getFirstIndexInBlock(
 				qIndex
 			);
 			Index kPlusQIndex = brillouinZone.getMinorCellIndex(
@@ -308,7 +308,7 @@ void SusceptibilityCalculator::generateKPlusQLookupTable(){
 			);
 			kPlusQLookupTable[
 				k*mesh.size() + qLinearIndex/numOrbitals
-			] = model.getHoppingAmplitudeSet()->getFirstIndexInBlock(
+			] = model.getHoppingAmplitudeSet().getFirstIndexInBlock(
 				kPlusQIndex
 			);
 		}

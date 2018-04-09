@@ -338,7 +338,7 @@ inline int SusceptibilityCalculator::getKPlusQLinearIndex<false>(
 			{mesh[meshIndex][0] + k[0], mesh[meshIndex][1] + k[1]},
 			momentumSpaceContext->getNumMeshPoints()
 		);
-	return momentumSpaceContext->getModel().getHoppingAmplitudeSet()->getFirstIndexInBlock(
+	return momentumSpaceContext->getModel().getHoppingAmplitudeSet().getFirstIndexInBlock(
 		kPlusQIndex
 	);
 }

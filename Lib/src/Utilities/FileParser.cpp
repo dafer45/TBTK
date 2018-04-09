@@ -342,7 +342,7 @@ void FileParser::writeAmplitudes(Model *model, AmplitudeMode amplitudeMode){
 	fout << "Amplitudes:\n";
 	fout << left << setw(30) << "Mode" << "= " << static_cast<int>(amplitudeMode) << "\n";
 
-	HoppingAmplitudeSet::Iterator it = model->getHoppingAmplitudeSet()->getIterator();
+	HoppingAmplitudeSet::Iterator it = model->getHoppingAmplitudeSet().getIterator();
 	const HoppingAmplitude *ha;
 	while((ha = it.getHA())){
 		switch(amplitudeMode){
@@ -402,7 +402,7 @@ void FileParser::writeGeometry(Model *model){
 	fout << left << setw(30) << "Dimensions" << "= " << dimensions << "\n";
 	fout << left << setw(30) << "Num specifiers" << "= " << numSpecifiers << "\n";
 
-	HoppingAmplitudeSet::Iterator it = model->getHoppingAmplitudeSet()->getIterator();
+	HoppingAmplitudeSet::Iterator it = model->getHoppingAmplitudeSet().getIterator();
 	const HoppingAmplitude *ha;
 	Index dummyIndex({-1});
 	Index &prevIndex = dummyIndex;//Start with dummy index

@@ -51,10 +51,10 @@ vector<complex<double>> LinearEquationSolver::solveLU(
 	//Get matrix representation of COO format
 	const Model &model = getModel();
 	int basisSize = model.getBasisSize();
-	int numMatrixElements = model.getHoppingAmplitudeSet()->getNumMatrixElements();
-	const int *cooRowIndices = model.getHoppingAmplitudeSet()->getCOORowIndices();
-	const int *cooColIndices = model.getHoppingAmplitudeSet()->getCOOColIndices();
-	const complex<double> *cooValues = model.getHoppingAmplitudeSet()->getCOOValues();
+	int numMatrixElements = model.getHoppingAmplitudeSet().getNumMatrixElements();
+	const int *cooRowIndices = model.getHoppingAmplitudeSet().getCOORowIndices();
+	const int *cooColIndices = model.getHoppingAmplitudeSet().getCOOColIndices();
+	const complex<double> *cooValues = model.getHoppingAmplitudeSet().getCOOValues();
 	TBTKAssert(
 		cooRowIndices != nullptr && cooColIndices != nullptr,
 		"LinearEquationSolver::solve()",

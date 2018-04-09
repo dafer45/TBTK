@@ -391,7 +391,7 @@ void RayTracer::render(
 			if(i.at(n) < 0)
 				i.at(n) = IDX_ALL;
 
-		vector<Index> indices = model.getHoppingAmplitudeSet()->getIndexList(i);
+		vector<Index> indices = model.getHoppingAmplitudeSet().getIndexList(i);
 
 		coordinates.push_back(Vector3d({0., 0., 0.}));
 		for(unsigned int n = 0; n < indices.size(); n++){

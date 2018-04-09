@@ -61,7 +61,7 @@ void FileWriter::writeModel(const Model &model, string name, string path){
 	stringstream ss;
 	ss << name << "HoppingAmplitudeSet";
 
-	writeHoppingAmplitudeSet(*model.getHoppingAmplitudeSet(), ss.str(), path);
+	writeHoppingAmplitudeSet(model.getHoppingAmplitudeSet(), ss.str(), path);
 
 	ss.str("");
 	ss << name << "Geometry";

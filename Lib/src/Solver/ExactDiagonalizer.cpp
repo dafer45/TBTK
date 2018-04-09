@@ -68,7 +68,7 @@ void ExactDiagonalizer::setupManyBodyModel<BitRegister>(unsigned int subspace){
 
 	subspaceContext.manyBodyModel.reset(new Model());
 	for(unsigned int n = 0; n < fockStateMap->getBasisSize(); n++){
-		HoppingAmplitudeSet::Iterator it = getModel().getHoppingAmplitudeSet()->getIterator();
+		HoppingAmplitudeSet::Iterator it = getModel().getHoppingAmplitudeSet().getIterator();
 		const HoppingAmplitude *ha;
 		while((ha = it.getHA())){
 			it.searchNextHA();
@@ -142,7 +142,7 @@ void ExactDiagonalizer::setupManyBodyModel<ExtensiveBitRegister>(unsigned int su
 
 	subspaceContext.manyBodyModel.reset(new Model());
 	for(unsigned int n = 0; n < fockStateMap->getBasisSize(); n++){
-		HoppingAmplitudeSet::Iterator it = getModel().getHoppingAmplitudeSet()->getIterator();
+		HoppingAmplitudeSet::Iterator it = getModel().getHoppingAmplitudeSet().getIterator();
 		const HoppingAmplitude *ha;
 		while((ha = it.getHA())){
 			it.searchNextHA();

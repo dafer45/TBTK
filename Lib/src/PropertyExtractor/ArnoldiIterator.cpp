@@ -56,14 +56,14 @@ Property::WaveFunctions ArnoldiIterator::calculateWaveFunctions(
 ){
 	IndexTree allIndices = generateIndexTree(
 		patterns,
-		*aSolver->getModel().getHoppingAmplitudeSet(),
+		aSolver->getModel().getHoppingAmplitudeSet(),
 		false,
 		false
 	);
 
 	IndexTree memoryLayout = generateIndexTree(
 		patterns,
-		*aSolver->getModel().getHoppingAmplitudeSet(),
+		aSolver->getModel().getHoppingAmplitudeSet(),
 		true,
 		true
 	);
@@ -234,14 +234,14 @@ Property::LDOS ArnoldiIterator::calculateLDOS(
 
 	IndexTree allIndices = generateIndexTree(
 		patterns,
-		*aSolver->getModel().getHoppingAmplitudeSet(),
+		aSolver->getModel().getHoppingAmplitudeSet(),
 		false,
 		true
 	);
 
 	IndexTree memoryLayout = generateIndexTree(
 		patterns,
-		*aSolver->getModel().getHoppingAmplitudeSet(),
+		aSolver->getModel().getHoppingAmplitudeSet(),
 		true,
 		true
 	);
@@ -361,14 +361,14 @@ Property::SpinPolarizedLDOS ArnoldiIterator::calculateSpinPolarizedLDOS(
 
 	IndexTree allIndices = generateIndexTree(
 		patterns,
-		*aSolver->getModel().getHoppingAmplitudeSet(),
+		aSolver->getModel().getHoppingAmplitudeSet(),
 		false,
 		true
 	);
 
 	IndexTree memoryLayout = generateIndexTree(
 		patterns,
-		*aSolver->getModel().getHoppingAmplitudeSet(),
+		aSolver->getModel().getHoppingAmplitudeSet(),
 		true,
 		true
 	);

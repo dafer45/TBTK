@@ -180,7 +180,7 @@ void SelfEnergyCalculator::generateKMinusQLookupTable(){
 				Q,
 				numMeshPoints
 			);
-			int qLinearIndex = model.getHoppingAmplitudeSet()->getFirstIndexInBlock(
+			int qLinearIndex = model.getHoppingAmplitudeSet().getFirstIndexInBlock(
 				qIndex
 			);
 			Index kMinusQIndex = brillouinZone.getMinorCellIndex(
@@ -189,7 +189,7 @@ void SelfEnergyCalculator::generateKMinusQLookupTable(){
 			);
 			kMinusQLookupTable[
 				k*mesh.size() + qLinearIndex/numOrbitals
-			] = model.getHoppingAmplitudeSet()->getFirstIndexInBlock(
+			] = model.getHoppingAmplitudeSet().getFirstIndexInBlock(
 				kMinusQIndex
 			);
 		}
@@ -215,7 +215,7 @@ inline int SelfEnergyCalculator::getKMinusQLinearIndex<false>(
 		{mesh[meshIndex][0] + k[0], mesh[meshIndex][1] + k[1]},
 		momentumSpaceContext.getNumMeshPoints()
 	);
-	return momentumSpaceContext.getModel().getHoppingAmplitudeSet()->getFirstIndexInBlock(
+	return momentumSpaceContext.getModel().getHoppingAmplitudeSet().getFirstIndexInBlock(
 		kMinusQIndex
 	);
 }
@@ -377,7 +377,7 @@ void SelfEnergyCalculator::selfEnergyMainLoop(
 	Index kIndex = momentumSpaceContext.getKIndex(k);
 
 	//Get linear index corresponding to kIndex.
-	int kLinearIndex = model.getHoppingAmplitudeSet()->getFirstIndexInBlock(
+	int kLinearIndex = model.getHoppingAmplitudeSet().getFirstIndexInBlock(
 		kIndex
 	);
 

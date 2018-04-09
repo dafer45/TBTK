@@ -1,4 +1,4 @@
-- Make SingleParticleContext inherit from HoppingAmplitudeSet and Geometry.
+- Make SingleParticleContext inherit from Geometry.
 
 - Make Model inherit from SingleParticleContext and ManyBodyContext.
 

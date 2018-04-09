@@ -250,7 +250,7 @@ Geometry* FileReader::readGeometry(Model *model, string name, string path){
 		dataspaceS.getSimpleExtentDims(dims_internalS, NULL);
 		int numSpecifiers = dims_internalS[1];
 
-		geometry = new Geometry(dimensions, numSpecifiers, model->getHoppingAmplitudeSet());
+		geometry = new Geometry(dimensions, numSpecifiers, &model->getHoppingAmplitudeSet());
 
 		datasetC.read(geometry->coordinates, PredType::NATIVE_DOUBLE, dataspaceC);
 		if(numSpecifiers != 0)

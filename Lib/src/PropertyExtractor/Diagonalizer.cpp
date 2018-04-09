@@ -56,7 +56,7 @@ void Diagonalizer::getTabulatedHoppingAmplitudeSet(
 	int *numHoppingAmplitudes,
 	int *maxIndexSize
 ){
-	dSolver->getModel().getHoppingAmplitudeSet()->tabulate(
+	dSolver->getModel().getHoppingAmplitudeSet().tabulate(
 		amplitudes,
 		indices,
 		numHoppingAmplitudes,
@@ -82,14 +82,14 @@ Property::WaveFunctions Diagonalizer::calculateWaveFunctions(
 ){
 	IndexTree allIndices = generateIndexTree(
 		patterns,
-		*dSolver->getModel().getHoppingAmplitudeSet(),
+		dSolver->getModel().getHoppingAmplitudeSet(),
 		false,
 		false
 	);
 
 	IndexTree memoryLayout = generateIndexTree(
 		patterns,
-		*dSolver->getModel().getHoppingAmplitudeSet(),
+		dSolver->getModel().getHoppingAmplitudeSet(),
 		true,
 		true
 	);
@@ -244,14 +244,14 @@ Property::Density Diagonalizer::calculateDensity(
 ){
 	IndexTree allIndices = generateIndexTree(
 		patterns,
-		*dSolver->getModel().getHoppingAmplitudeSet(),
+		dSolver->getModel().getHoppingAmplitudeSet(),
 		false,
 		false
 	);
 
 	IndexTree memoryLayout = generateIndexTree(
 		patterns,
-		*dSolver->getModel().getHoppingAmplitudeSet(),
+		dSolver->getModel().getHoppingAmplitudeSet(),
 		true,
 		true
 	);
@@ -317,14 +317,14 @@ Property::Magnetization Diagonalizer::calculateMagnetization(
 ){
 	IndexTree allIndices = generateIndexTree(
 		patterns,
-		*dSolver->getModel().getHoppingAmplitudeSet(),
+		dSolver->getModel().getHoppingAmplitudeSet(),
 		false,
 		true
 	);
 
 	IndexTree memoryLayout = generateIndexTree(
 		patterns,
-		*dSolver->getModel().getHoppingAmplitudeSet(),
+		dSolver->getModel().getHoppingAmplitudeSet(),
 		true,
 		true
 	);
@@ -396,14 +396,14 @@ Property::LDOS Diagonalizer::calculateLDOS(
 
 	IndexTree allIndices = generateIndexTree(
 		patterns,
-		*dSolver->getModel().getHoppingAmplitudeSet(),
+		dSolver->getModel().getHoppingAmplitudeSet(),
 		false,
 		true
 	);
 
 	IndexTree memoryLayout = generateIndexTree(
 		patterns,
-		*dSolver->getModel().getHoppingAmplitudeSet(),
+		dSolver->getModel().getHoppingAmplitudeSet(),
 		true,
 		true
 	);
@@ -507,14 +507,14 @@ Property::SpinPolarizedLDOS Diagonalizer::calculateSpinPolarizedLDOS(
 
 	IndexTree allIndices = generateIndexTree(
 		patterns,
-		*dSolver->getModel().getHoppingAmplitudeSet(),
+		dSolver->getModel().getHoppingAmplitudeSet(),
 		false,
 		true
 	);
 
 	IndexTree memoryLayout = generateIndexTree(
 		patterns,
-		*dSolver->getModel().getHoppingAmplitudeSet(),
+		dSolver->getModel().getHoppingAmplitudeSet(),
 		true,
 		true
 	);

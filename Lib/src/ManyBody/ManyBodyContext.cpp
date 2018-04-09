@@ -37,11 +37,11 @@ ManyBodyContext::ManyBodyContext(const SingleParticleContext *singleParticleCont
 {
 /*	brFockSpace = make_shared<FockSpace<BitRegister>>(fockSpace);
 	ebrFockSpace = make_shared<FockSpace<ExtensiveBitRegister>>(NULL);*/
-	interactionAmplitudeSet.reset(new InteractionAmplitudeSet(singleParticleContext->getHoppingAmplitudeSet()));
+	interactionAmplitudeSet.reset(new InteractionAmplitudeSet(singleParticleContext));
 	if(singleParticleContext->getBasisSize() < 32){	//Only 31 states can be encoded in a FockState<BitRegister>.
 		brFockSpace.reset(
 			new FockSpace<BitRegister>(
-				singleParticleContext->getHoppingAmplitudeSet(),
+				singleParticleContext,
 				singleParticleContext->getStatistics(),
 				1	//Only one particle per state at the moment
 			)
@@ -50,7 +50,7 @@ ManyBodyContext::ManyBodyContext(const SingleParticleContext *singleParticleCont
 	else{
 		ebrFockSpace.reset(
 			new FockSpace<ExtensiveBitRegister>(
-				singleParticleContext->getHoppingAmplitudeSet(),
+				singleParticleContext,
 				singleParticleContext->getStatistics(),
 				1	//Only one particle per state at the moment
 			)
@@ -59,7 +59,7 @@ ManyBodyContext::ManyBodyContext(const SingleParticleContext *singleParticleCont
 
 	interactionAmplitudeSet.reset(
 		new InteractionAmplitudeSet(
-			singleParticleContext->getHoppingAmplitudeSet()
+			singleParticleContext
 		)
 	);
 }

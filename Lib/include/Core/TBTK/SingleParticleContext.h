@@ -83,9 +83,6 @@ public:
 	/** Construct Hamiltonian on COO format. */
 	void constructCOO();
 
-	/** Get HoppingAMplitudeSet. */
-	const HoppingAmplitudeSet* getHoppingAmplitudeSet() const;
-
 	/** Create Geometry. */
 	void createGeometry(int dimensions, int numSpecifiers = 0);
 
@@ -120,10 +117,6 @@ inline void SingleParticleContext::sortHoppingAmplitudes(){
 inline void SingleParticleContext::constructCOO(){
 	HoppingAmplitudeSet::sort();
 	HoppingAmplitudeSet::constructCOO();
-}
-
-inline const HoppingAmplitudeSet* SingleParticleContext::getHoppingAmplitudeSet() const{
-	return this;
 }
 
 inline Geometry* SingleParticleContext::getGeometry(){

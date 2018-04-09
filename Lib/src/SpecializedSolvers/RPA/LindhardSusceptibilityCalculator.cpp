@@ -305,7 +305,7 @@ complex<double> LindhardSusceptibilityCalculator::calculateSusceptibilityLindhar
 			{mesh[n][0] + k[0], mesh[n][1] + k[1]},
 			numMeshPoints
 		);
-		int kPlusQLinearIndex =  model.getHoppingAmplitudeSet()->getFirstIndexInBlock(
+		int kPlusQLinearIndex =  model.getHoppingAmplitudeSet().getFirstIndexInBlock(
 			kPlusQIndex
 		);
 		for(unsigned int c = 0; c < numOrbitals; c++){
@@ -435,7 +435,7 @@ vector<complex<double>> LindhardSusceptibilityCalculator::calculateSusceptibilit
 	}
 
 	//Get linear index corresponding to kIndex.
-	int kLinearIndex = model.getHoppingAmplitudeSet()->getFirstIndexInBlock(
+	int kLinearIndex = model.getHoppingAmplitudeSet().getFirstIndexInBlock(
 		kIndex
 	);
 

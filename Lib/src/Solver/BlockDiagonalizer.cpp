@@ -94,7 +94,7 @@ void BlockDiagonalizer::init(){
 		Streams::out << "Initializing BlockDiagonalizer\n";
 
 	//Find number of blocks and number of states per block.
-	IndexTree blockIndices = getModel().getHoppingAmplitudeSet()->getSubspaceIndices();
+	IndexTree blockIndices = getModel().getHoppingAmplitudeSet().getSubspaceIndices();
 	IndexTree::Iterator blockIterator = blockIndices.begin();
 /*	const Index *blockIndex;
 	numBlocks = 0;
@@ -116,7 +116,7 @@ void BlockDiagonalizer::init(){
 
 		numBlocks++;
 
-		HoppingAmplitudeSet::Iterator iterator = getModel().getHoppingAmplitudeSet()->getIterator(
+		HoppingAmplitudeSet::Iterator iterator = getModel().getHoppingAmplitudeSet().getIterator(
 			blockIndex
 		);
 		numStatesPerBlock.push_back(iterator.getNumBasisIndices());
@@ -255,7 +255,7 @@ void BlockDiagonalizer::update(){
 	for(unsigned int n = 0; n < hamiltonianSize; n++)
 		hamiltonian[n] = 0.;
 
-	IndexTree blockIndices = getModel().getHoppingAmplitudeSet()->getSubspaceIndices();
+	IndexTree blockIndices = getModel().getHoppingAmplitudeSet().getSubspaceIndices();
 	IndexTree::Iterator blockIterator = blockIndices.begin();
 /*	const Index *blockIndex;
 	unsigned int blockCounter = 0;
@@ -290,7 +290,7 @@ void BlockDiagonalizer::update(){
 			Index blockIndex = blockIterator.getIndex();
 
 			iterators.push_back(
-				getModel().getHoppingAmplitudeSet()->getIterator(
+				getModel().getHoppingAmplitudeSet().getIterator(
 					blockIndex
 				)
 			);
@@ -305,11 +305,11 @@ void BlockDiagonalizer::update(){
 			int minBasisIndex = iterator.getMinBasisIndex();
 			const HoppingAmplitude *hoppingAmplitude;
 			while((hoppingAmplitude = iterator.getHA())){
-				int from = model.getHoppingAmplitudeSet()->getBasisIndex(
+				int from = model.getHoppingAmplitudeSet().getBasisIndex(
 //					hoppingAmplitude->fromIndex
 					hoppingAmplitude->getFromIndex()
 				) - minBasisIndex;
-				int to = model.getHoppingAmplitudeSet()->getBasisIndex(
+				int to = model.getHoppingAmplitudeSet().getBasisIndex(
 //					hoppingAmplitude->toIndex
 					hoppingAmplitude->getToIndex()
 				) - minBasisIndex;
@@ -325,17 +325,17 @@ void BlockDiagonalizer::update(){
 		while(!blockIterator.getHasReachedEnd()){
 			Index blockIndex = blockIterator.getIndex();
 
-			HoppingAmplitudeSet::Iterator iterator = getModel().getHoppingAmplitudeSet()->getIterator(
+			HoppingAmplitudeSet::Iterator iterator = getModel().getHoppingAmplitudeSet().getIterator(
 				blockIndex
 			);
 			int minBasisIndex = iterator.getMinBasisIndex();
 			const HoppingAmplitude *hoppingAmplitude;
 			while((hoppingAmplitude = iterator.getHA())){
-				int from = model.getHoppingAmplitudeSet()->getBasisIndex(
+				int from = model.getHoppingAmplitudeSet().getBasisIndex(
 //					hoppingAmplitude->fromIndex
 					hoppingAmplitude->getFromIndex()
 				) - minBasisIndex;
-				int to = model.getHoppingAmplitudeSet()->getBasisIndex(
+				int to = model.getHoppingAmplitudeSet().getBasisIndex(
 //					hoppingAmplitude->toIndex
 					hoppingAmplitude->getToIndex()
 				) - minBasisIndex;

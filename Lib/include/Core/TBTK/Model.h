@@ -184,7 +184,7 @@ public:
 	/** Get amplitude set.
 	 *
 	 *  @return Pointer to the contained HoppingAmplitudeSet. */
-	const HoppingAmplitudeSet* getHoppingAmplitudeSet() const;
+	const HoppingAmplitudeSet& getHoppingAmplitudeSet() const;
 
 	/** Create geometry.
 	 *
@@ -330,8 +330,8 @@ inline Statistics Model::getStatistics() const{
 	return singleParticleContext->getStatistics();
 }
 
-inline const HoppingAmplitudeSet* Model::getHoppingAmplitudeSet() const{
-	return singleParticleContext->getHoppingAmplitudeSet();
+inline const HoppingAmplitudeSet& Model::getHoppingAmplitudeSet() const{
+	return *singleParticleContext;
 }
 
 inline void Model::createGeometry(int dimensions, int numSpecifiers){

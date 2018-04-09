@@ -114,13 +114,13 @@ void Diagonalizer::update(){
 	for(int n = 0; n < (basisSize*(basisSize+1))/2; n++)
 		hamiltonian[n] = 0.;
 
-	HoppingAmplitudeSet::Iterator it = model.getHoppingAmplitudeSet()->getIterator();
+	HoppingAmplitudeSet::Iterator it = model.getHoppingAmplitudeSet().getIterator();
 	const HoppingAmplitude *ha;
 	while((ha = it.getHA())){
 /*		int from = model->getHoppingAmplitudeSet()->getBasisIndex(ha->fromIndex);
 		int to = model->getHoppingAmplitudeSet()->getBasisIndex(ha->toIndex);*/
-		int from = model.getHoppingAmplitudeSet()->getBasisIndex(ha->getFromIndex());
-		int to = model.getHoppingAmplitudeSet()->getBasisIndex(ha->getToIndex());
+		int from = model.getHoppingAmplitudeSet().getBasisIndex(ha->getFromIndex());
+		int to = model.getHoppingAmplitudeSet().getBasisIndex(ha->getToIndex());
 		if(from >= to)
 			hamiltonian[to + (from*(from+1))/2] += ha->getAmplitude();
 

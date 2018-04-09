@@ -156,7 +156,7 @@ vector<complex<double>> MatsubaraSusceptibilityCalculator::calculateSusceptibili
 	const Model &model = momentumSpaceContext.getModel();
 
 	//Get linear index corresponding to kIndex.
-	int kLinearIndex = model.getHoppingAmplitudeSet()->getFirstIndexInBlock(
+	int kLinearIndex = model.getHoppingAmplitudeSet().getFirstIndexInBlock(
 		kIndex
 	);
 
