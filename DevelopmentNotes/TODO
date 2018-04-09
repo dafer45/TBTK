@@ -12,15 +12,6 @@
   IndexTree::Iterator to use standard iterator notation with operator++(),
   operator*(), operator==(), and operator!=().
 
-- [1] Make SingleParticleContext::hoppingAmplitudeSet a normal member of
-  SingleParticleContext rather than a pointer. This should remove the need to
-  explicitly implement the copy and move constructors, destructor, and
-  assignment and move asignment operators. Possibly make SingleParticleContext
-  inherit from HoppingAmplitudeSet to avoid reimplementation of the
-  HoppingAmplitudeSet interface through inline functions in
-  SingleParticleContext that calls the corresponding HoppingAmplitudeSet
-  functions.
-
 - Rename ManyBodyContext (etc) to ManyParticleContext (etc).
 
 - The BlockDiagonalizer does not work for Models with a single global block.

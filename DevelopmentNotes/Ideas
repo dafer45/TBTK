@@ -1,4 +1,6 @@
-- Make SingleParticleContext inherit from Geometry.
+- Make SingleParticleContext inherit from Geometry. This should remove the need
+  for copy and move constructors, destructor, and assignment and move
+  assignment operators.
 
 - Make Model inherit from SingleParticleContext and ManyBodyContext.
 
@@ -10,3 +12,4 @@
   the mapping between physical and Hilbert space indices to reduce the
   responsibility of the HoppingAmplitudeTree/HoppingAmplitudeSet to that solely
   related to the HoppingAmplitudes.
+
