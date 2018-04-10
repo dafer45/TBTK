@@ -113,6 +113,7 @@ public:
 	 *  through the elements stored in the tree structure. */
 	class Iterator;
 	class ConstIterator;
+private:
 	template<bool isConstIterator>
 	class _Iterator{
 	public:
@@ -158,7 +159,7 @@ public:
 		friend class Iterator;
 		friend class ConstIterator;
 	};
-
+public:
 	/** Iterator for iterating through the elements stored in the tree
 	 *  structure. */
 	class Iterator : public _Iterator<false>{
@@ -306,6 +307,7 @@ public:
 	 *  the elements stored in the tree structure. */
 	class Iterator;
 	class ConstIterator;
+private:
 	template<bool isConstIterator>
 	class _Iterator{
 	public:
@@ -351,7 +353,7 @@ public:
 		friend class Iterator;
 		friend class ConstIterator;
 	};
-
+public:
 	/** Iterator for iterating through the elements stored in the tree
 	 *  structure. */
 	class Iterator : public _Iterator<false>{
@@ -499,6 +501,7 @@ public:
 	 *  the elements stored in the tree structure. */
 	class Iterator;
 	class ConstIterator;
+private:
 	template<bool isConstIterator>
 	class _Iterator{
 	public:
@@ -544,7 +547,7 @@ public:
 		friend class Iterator;
 		friend class ConstIterator;
 	};
-
+public:
 	/** Iterator for iterating through the elements stored in the tree
 	 *  structure. */
 	class Iterator : public _Iterator<false>{

@@ -14,4 +14,3 @@
   the mapping between physical and Hilbert space indices to reduce the
   responsibility of the HoppingAmplitudeTree/HoppingAmplitudeSet to that solely
   related to the HoppingAmplitudes.
-
