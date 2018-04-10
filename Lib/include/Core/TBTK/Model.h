@@ -275,19 +275,19 @@ private:
 };
 
 inline void Model::add(HoppingAmplitude ha){
-	singleParticleContext->add(ha);
+	singleParticleContext->getHoppingAmplitudeSet().add(ha);
 }
 
 inline int Model::getBasisSize() const{
-	return singleParticleContext->getBasisSize();
+	return singleParticleContext->getHoppingAmplitudeSet().getBasisSize();
 }
 
 inline int Model::getBasisIndex(const Index &index) const{
-	return singleParticleContext->getBasisIndex(index);
+	return singleParticleContext->getHoppingAmplitudeSet().getBasisIndex(index);
 }
 
 inline bool Model::getIsConstructed(){
-	return singleParticleContext->getIsConstructed();
+	return singleParticleContext->getHoppingAmplitudeSet().getIsConstructed();
 }
 
 inline void Model::sortHoppingAmplitudes(){
@@ -299,11 +299,11 @@ inline void Model::constructCOO(){
 }
 
 inline void Model::destructCOO(){
-	singleParticleContext->destructCOO();
+	singleParticleContext->getHoppingAmplitudeSet().destructCOO();
 }
 
 inline void Model::reconstructCOO(){
-	singleParticleContext->reconstructCOO();
+	singleParticleContext->getHoppingAmplitudeSet().reconstructCOO();
 }
 
 inline void Model::setTemperature(double temperature){
@@ -331,7 +331,7 @@ inline Statistics Model::getStatistics() const{
 }
 
 inline const HoppingAmplitudeSet& Model::getHoppingAmplitudeSet() const{
-	return *singleParticleContext;
+	return singleParticleContext->getHoppingAmplitudeSet();
 }
 
 inline void Model::createGeometry(int dimensions, int numSpecifiers){

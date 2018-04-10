@@ -84,7 +84,7 @@ HoppingAmplitudeSet* FileReader::readHoppingAmplitudeSet(
 	HoppingAmplitudeSet *hoppingAmplitudeSet = NULL;
 
 	try{
-		Exception::dontPrint();
+		H5::Exception::dontPrint();
 		H5File file(filename, H5F_ACC_RDONLY);
 
 		stringstream ssI;
@@ -193,7 +193,7 @@ Geometry* FileReader::readGeometry(Model *model, string name, string path){
 	Geometry *geometry = NULL;
 
 	try{
-		Exception::dontPrint();
+		H5::Exception::dontPrint();
 		H5File file(filename, H5F_ACC_RDONLY);
 
 		stringstream ssC;
@@ -295,7 +295,7 @@ IndexTree* FileReader::readIndexTree(string name, string path){
 	IndexTree *indexTree = NULL;
 
 	try{
-		Exception::dontPrint();
+		H5::Exception::dontPrint();
 		H5File file(filename, H5F_ACC_RDONLY);
 
 		stringstream ss;
@@ -386,7 +386,7 @@ Property::EigenValues* FileReader::readEigenValues(string name, string path){
 			ss << "/";
 		ss << name;
 
-		Exception::dontPrint();
+		H5::Exception::dontPrint();
 		H5File file(filename, H5F_ACC_RDONLY);
 
 		DataSet dataset = file.openDataSet(name);
@@ -525,7 +525,7 @@ Property::DOS* FileReader::readDOS(string name, string path){
 			ss << "/";
 		ss << name;
 
-		Exception::dontPrint();
+		H5::Exception::dontPrint();
 		H5File file(filename, H5F_ACC_RDONLY);
 
 		DataSet dataset = file.openDataSet(name);
@@ -614,7 +614,7 @@ Property::Density* FileReader::readDensity(string name, string path){
 				ss << "/";
 			ss << name;
 
-			Exception::dontPrint();
+			H5::Exception::dontPrint();
 			H5File file(filename, H5F_ACC_RDONLY);
 
 			DataSet dataset = file.openDataSet(name);
@@ -736,7 +736,7 @@ Property::Magnetization* FileReader::readMagnetization(
 				ss << "/";
 			ss << name;
 
-			Exception::dontPrint();
+			H5::Exception::dontPrint();
 			H5File file(filename, H5F_ACC_RDONLY);
 
 			DataSet dataset = file.openDataSet(name);
@@ -894,7 +894,7 @@ Property::LDOS* FileReader::readLDOS(string name, string path){
 				ss << "/";
 			ss << name;
 
-			Exception::dontPrint();
+			H5::Exception::dontPrint();
 			H5File file(filename, H5F_ACC_RDONLY);
 
 			DataSet dataset = file.openDataSet(name);
@@ -1057,7 +1057,7 @@ Property::SpinPolarizedLDOS* FileReader::readSpinPolarizedLDOS(
 				ss << "/";
 			ss << name;
 
-			Exception::dontPrint();
+			H5::Exception::dontPrint();
 			H5File file(filename, H5F_ACC_RDONLY);
 
 			DataSet dataset = file.openDataSet(name);
@@ -1194,7 +1194,7 @@ void FileReader::read(
 			ss << "/";
 		ss << name;
 
-		Exception::dontPrint();
+		H5::Exception::dontPrint();
 		H5File file(filename, H5F_ACC_RDONLY);
 
 		DataSet dataset = file.openDataSet(name);
@@ -1263,7 +1263,7 @@ void FileReader::read(
 			ss << "/";
 		ss << name;
 
-		Exception::dontPrint();
+		H5::Exception::dontPrint();
 		H5File file(filename, H5F_ACC_RDONLY);
 
 		DataSet dataset = file.openDataSet(name);
@@ -1388,7 +1388,7 @@ void FileReader::readAttributes(
 			ss << "/";
 		ss << name;
 
-		Exception::dontPrint();
+		H5::Exception::dontPrint();
 		H5File file(filename, H5F_ACC_RDONLY);
 
 		DataSet dataset = file.openDataSet(name);
@@ -1446,7 +1446,7 @@ void FileReader::readAttributes(
 			ss << "/";
 		ss << name;
 
-		Exception::dontPrint();
+		H5::Exception::dontPrint();
 		H5File file(filename, H5F_ACC_RDONLY);
 
 		DataSet dataset = file.openDataSet(name);
@@ -1501,7 +1501,7 @@ ParameterSet* FileReader::readParameterSet(
 			ss << "/";
 		ss << name;
 
-		Exception::dontPrint();
+		H5::Exception::dontPrint();
 		ParameterSet *ps = new ParameterSet();
 
 		H5File file(filename, H5F_ACC_RDONLY);

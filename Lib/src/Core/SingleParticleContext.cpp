@@ -35,7 +35,7 @@ SingleParticleContext::SingleParticleContext(){
 SingleParticleContext::SingleParticleContext(
 	const vector<unsigned int> &capacity
 ) :
-	HoppingAmplitudeSet(capacity)
+	hoppingAmplitudeSet(capacity)
 {
 	statistics = Statistics::FermiDirac;
 	geometry = nullptr;
@@ -44,7 +44,7 @@ SingleParticleContext::SingleParticleContext(
 SingleParticleContext::SingleParticleContext(
 	const SingleParticleContext &singleParticleContext
 ) :
-	HoppingAmplitudeSet(singleParticleContext)
+	hoppingAmplitudeSet(singleParticleContext.getHoppingAmplitudeSet())
 {
 	statistics = singleParticleContext.statistics;
 	if(singleParticleContext.geometry == nullptr){
@@ -60,7 +60,7 @@ SingleParticleContext::SingleParticleContext(
 SingleParticleContext::SingleParticleContext(
 	SingleParticleContext &&singleParticleContext
 ) :
-	HoppingAmplitudeSet(singleParticleContext)
+	hoppingAmplitudeSet(singleParticleContext.getHoppingAmplitudeSet())
 {
 	statistics = singleParticleContext.statistics;
 
@@ -71,7 +71,7 @@ SingleParticleContext::SingleParticleContext(
 SingleParticleContext::SingleParticleContext(
 	const string &serialization,
 	Mode mode
-) :
+)/* :
 	HoppingAmplitudeSet(
 		extractComponent(
 			serialization,
@@ -81,7 +81,7 @@ SingleParticleContext::SingleParticleContext(
 			mode
 		),
 		mode
-	)
+	)*/
 {
 	TBTKAssert(
 		validate(serialization, "SingleParticleContext", mode),
@@ -99,10 +99,11 @@ SingleParticleContext::SingleParticleContext(
 		vector<string> elements = split(content, mode);
 
 		deserialize(elements.at(0), &statistics, mode);
+		hoppingAmplitudeSet = HoppingAmplitudeSet(elements.at(1), mode);
 		if(elements.at(2).compare("null") == 0)
 			geometry = nullptr;
 		else
-			geometry = new Geometry(elements.at(2), mode, *this);
+			geometry = new Geometry(elements.at(2), mode, hoppingAmplitudeSet);
 
 		break;
 	}
@@ -115,11 +116,15 @@ SingleParticleContext::SingleParticleContext(
 				&statistics,
 				mode
 			);
+			hoppingAmplitudeSet = HoppingAmplitudeSet(
+				j.at("hoppingAmplitudeSet").dump(),
+				mode
+			);
 			try{
 				geometry = new Geometry(
 					j.at("geometry").dump(),
 					mode,
-					*this
+					hoppingAmplitudeSet
 				);
 			}
 			catch(json::exception e){
@@ -158,7 +163,7 @@ SingleParticleContext& SingleParticleContext::operator=(
 	if(this != &rhs){
 		statistics = rhs.statistics;
 
-		HoppingAmplitudeSet::operator=(rhs);
+		hoppingAmplitudeSet = rhs.getHoppingAmplitudeSet();
 
 		if(rhs.geometry == nullptr)
 			geometry = nullptr;
@@ -175,7 +180,7 @@ SingleParticleContext& SingleParticleContext::operator=(
 	if(this != &rhs){
 		statistics = rhs.statistics;
 
-		HoppingAmplitudeSet::operator=(rhs);
+		hoppingAmplitudeSet = rhs.getHoppingAmplitudeSet();
 
 		geometry = rhs.geometry;
 		rhs.geometry = nullptr;
@@ -186,7 +191,7 @@ SingleParticleContext& SingleParticleContext::operator=(
 
 void SingleParticleContext::createGeometry(int dimensions, int numSpecifiers){
 	TBTKAssert(
-		getIsConstructed(),
+		hoppingAmplitudeSet.getIsConstructed(),
 		"SingleParticleContext::createGeometry()",
 		"Hilbert space basis has not been constructed yet.",
 		""
@@ -195,7 +200,7 @@ void SingleParticleContext::createGeometry(int dimensions, int numSpecifiers){
 	geometry = new Geometry(
 		dimensions,
 		numSpecifiers,
-		this
+		&hoppingAmplitudeSet
 	);
 }
 
@@ -206,7 +211,7 @@ string SingleParticleContext::serialize(Mode mode) const{
 		stringstream ss;
 		ss << "SingleParticleContext(";
 		ss << Serializable::serialize(statistics, mode);
-		ss << "," << HoppingAmplitudeSet::serialize(mode);
+		ss << "," << hoppingAmplitudeSet.serialize(mode);
 		if(geometry == nullptr)
 			ss << "," << "null";
 		else
@@ -221,7 +226,7 @@ string SingleParticleContext::serialize(Mode mode) const{
 		j["id"] = "SingleParticleContext";
 		j["statistics"] = Serializable::serialize(statistics, mode);
 		j["hoppingAmplitudeSet"] = json::parse(
-			HoppingAmplitudeSet::serialize(mode)
+			hoppingAmplitudeSet.serialize(mode)
 		);
 		if(geometry != nullptr)
 			j["geometry"] = json::parse(geometry->serialize(mode));

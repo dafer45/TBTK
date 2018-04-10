@@ -43,7 +43,7 @@ void FileWriter::init(){
 		return;
 
 	try{
-		Exception::dontPrint();
+		H5::Exception::dontPrint();
 		H5File file(filename, H5F_ACC_RDWR);
 		file.close();
 	}
@@ -107,7 +107,7 @@ void FileWriter::writeHoppingAmplitudeSet(
 	amplitudeDims[0] = 2*numHoppingAmplitudes;	//2 because data is complex<double> interpreted as 2*double
 
 	try{
-		Exception::dontPrint();
+		H5::Exception::dontPrint();
 		H5File file(filename, H5F_ACC_RDWR);
 
 		stringstream ss;
@@ -187,7 +187,7 @@ void FileWriter::writeGeometry(
 	sDims[1] = numSpecifiers;
 
 	try{
-		Exception::dontPrint();
+		H5::Exception::dontPrint();
 		H5File file(filename, H5F_ACC_RDWR);
 
 		stringstream ss;
@@ -277,7 +277,7 @@ void FileWriter::writeIndexTree(
 	const int RANK = 1;
 	hsize_t dims[RANK] = {serializedIndices.size()};
 	try{
-		Exception::dontPrint();
+		H5::Exception::dontPrint();
 		H5File file(filename, H5F_ACC_RDWR);
 
 		stringstream ss;
@@ -338,7 +338,7 @@ void FileWriter::writeEigenValues(
 			ss << "/";
 		ss << name;
 
-		Exception::dontPrint();
+		H5::Exception::dontPrint();
 		H5File file(filename, H5F_ACC_RDWR);
 
 		DataSpace dataspace = DataSpace(RANK, dims);
@@ -452,7 +452,7 @@ void FileWriter::writeDOS(const Property::DOS &dos, string name, string path){
 			ss << "/";
 		ss << name;
 
-		Exception::dontPrint();
+		H5::Exception::dontPrint();
 		H5File file(filename, H5F_ACC_RDWR);
 
 		DataSpace dataspace = DataSpace(DOS_RANK, dos_dims);
@@ -533,7 +533,7 @@ void FileWriter::writeDensity(
 				ss << "/";
 			ss << name;
 
-			Exception::dontPrint();
+			H5::Exception::dontPrint();
 			H5File file(filename, H5F_ACC_RDWR);
 
 			DataSpace dataspace = DataSpace(rank, density_dims);
@@ -653,7 +653,7 @@ void FileWriter::writeMagnetization(
 				ss << "/";
 			ss << name;
 
-			Exception::dontPrint();
+			H5::Exception::dontPrint();
 			H5File file(filename, H5F_ACC_RDWR);
 
 			DataSpace dataspace = DataSpace(rank+2, mag_dims);
@@ -791,7 +791,7 @@ void FileWriter::writeLDOS(
 				ss << "/";
 			ss << name;
 
-			Exception::dontPrint();
+			H5::Exception::dontPrint();
 			H5File file(filename, H5F_ACC_RDWR);
 
 			DataSpace dataspace = DataSpace(rank+1, ldos_dims);
@@ -945,7 +945,7 @@ void FileWriter::writeSpinPolarizedLDOS(
 				ss << "/";
 			ss << name;
 
-			Exception::dontPrint();
+			H5::Exception::dontPrint();
 			H5File file(filename, H5F_ACC_RDWR);
 
 			DataSpace dataspace = DataSpace(rank+3, sp_ldos_dims);
@@ -1045,7 +1045,7 @@ void FileWriter::write(
 			ss << "/";
 		ss << name;
 
-		Exception::dontPrint();
+		H5::Exception::dontPrint();
 		H5File file(filename, H5F_ACC_RDWR);
 
 		DataSpace dataspace = DataSpace(rank, data_dims);
@@ -1102,7 +1102,7 @@ void FileWriter::write(
 			ss << "/";
 		ss << name;
 
-		Exception::dontPrint();
+		H5::Exception::dontPrint();
 		H5File file(filename, H5F_ACC_RDWR);
 
 		DataSpace dataspace = DataSpace(rank, data_dims);
@@ -1188,7 +1188,7 @@ void FileWriter::writeAttributes(
 			ss << "/";
 		ss << name;
 
-		Exception::dontPrint();
+		H5::Exception::dontPrint();
 		H5File file(filename, H5F_ACC_RDWR);
 
 		DataSpace dataspace = DataSpace(ATTRIBUTES_RANK, limits_dims);
@@ -1249,7 +1249,7 @@ void FileWriter::writeAttributes(
 			ss << "/";
 		ss << name;
 
-		Exception::dontPrint();
+		H5::Exception::dontPrint();
 		H5File file(filename, H5F_ACC_RDWR);
 
 		DataSpace dataspace = DataSpace(ATTRIBUTES_RANK, limits_dims);
@@ -1315,7 +1315,7 @@ void FileWriter::writeParameterSet(
 			ss << "/";
 		ss << name;
 
-		Exception::dontPrint();
+		H5::Exception::dontPrint();
 		H5File file(filename, H5F_ACC_RDWR);
 
 		DataSpace dataspace = DataSpace(ATTRIBUTES_RANK, attribute_dims);

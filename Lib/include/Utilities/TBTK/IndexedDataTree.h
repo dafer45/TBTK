@@ -31,7 +31,11 @@
 #include <complex>
 #include <sstream>
 
-#include "TBTK/json.hpp"
+//This is used to work around incompatibilities between nlohmann::json and
+//CUDA. This effectively forbids instantiation of IndexedDataTree in CUDA code.
+#ifndef TBTK_DISABLE_NLOHMANN_JSON
+#	include "TBTK/json.hpp"
+#endif
 
 namespace TBTK{
 
@@ -436,6 +440,10 @@ private:
 		Index &nextIndex
 	) const;
 };
+
+//This is used to work around incompatibilities between nlohmann::json and
+//CUDA. This effectively forbids instantiation of IndexedDataTree in CUDA code.
+#ifndef TBTK_DISABLE_NLOHMANN_JSON
 
 template<typename Data, bool isSerializable>
 IndexedDataTree<Data, isSerializable>::IndexedDataTree(){
@@ -2251,6 +2259,10 @@ IndexedDataTree<Data, false>::Iterator::Iterator(IndexedDataTree *indexedDataTre
 	else
 		currentIndex = indexedDataTree->getFirstIndex();
 }
+
+//This is used to work around incompatibilities between nlohmann::json and
+//CUDA. This effectively forbids instantiation of IndexedDataTree in CUDA code.
+#endif
 
 }; //End of namesapce TBTK
 

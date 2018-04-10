@@ -18,6 +18,10 @@
  *  @author Kristofer Björnson
  */
 
+//Flag used to work around incompatibilities between nlohmann::json and CUDA.
+//This disables code in header files that depends on nlohmann::json.
+#define TBTK_DISABLE_NLOHMANN_JSON
+
 #include "TBTK/Solver/ChebyshevExpander.h"
 #include "TBTK/GPUResourceManager.h"
 #include "TBTK/HALinkedList.h"

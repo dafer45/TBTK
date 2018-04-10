@@ -242,7 +242,7 @@ void Model::construct(){
 	if(getGlobalVerbose() && getVerbose())
 		Streams::out << "Constructing system\n";
 
-	singleParticleContext->construct();
+	singleParticleContext->getHoppingAmplitudeSet().construct();
 
 	int basisSize = getBasisSize();
 

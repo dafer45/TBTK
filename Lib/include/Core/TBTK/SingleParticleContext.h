@@ -26,6 +26,7 @@
 #include "TBTK/Geometry.h"
 #include "TBTK/HoppingAmplitudeSet.h"
 #include "TBTK/Serializable.h"
+#include "TBTK/SourceAmplitudeSet.h"
 #include "TBTK/Statistics.h"
 
 namespace TBTK{
@@ -33,10 +34,7 @@ namespace TBTK{
 class FileReader;
 
 /** @brief The context for the single particle part of a Model. */
-class SingleParticleContext :
-	virtual public Serializable,
-	public HoppingAmplitudeSet
-{
+class SingleParticleContext : public Serializable{
 public:
 	/** Constructor. */
 	SingleParticleContext();
@@ -83,6 +81,16 @@ public:
 	/** Construct Hamiltonian on COO format. */
 	void constructCOO();
 
+	/** Get the contained HoppingAmplitudeSet.
+	 *
+	 *  @return The contained HoppingAmplitudeSet. */
+	HoppingAmplitudeSet& getHoppingAmplitudeSet();
+
+	/** Get the contained HoppingAmplitudeSet.
+	 *
+	 *  @return The contained HoppingAmplitudeSet. */
+	const HoppingAmplitudeSet& getHoppingAmplitudeSet() const;
+
 	/** Create Geometry. */
 	void createGeometry(int dimensions, int numSpecifiers = 0);
 
@@ -92,6 +100,9 @@ public:
 	/** Implements Serializable::serialize(). */
 	std::string serialize(Mode mode) const;
 private:
+	/** HoppingAmplitudeSet. */
+	HoppingAmplitudeSet hoppingAmplitudeSet;
+
 	/** Statistics (Fermi-Dirac or Bose-Einstein).*/
 	Statistics statistics;
 
@@ -111,12 +122,21 @@ inline Statistics SingleParticleContext::getStatistics() const{
 }
 
 inline void SingleParticleContext::sortHoppingAmplitudes(){
-	HoppingAmplitudeSet::sort();
+	hoppingAmplitudeSet.sort();
 }
 
 inline void SingleParticleContext::constructCOO(){
-	HoppingAmplitudeSet::sort();
-	HoppingAmplitudeSet::constructCOO();
+	hoppingAmplitudeSet.sort();
+	hoppingAmplitudeSet.constructCOO();
+}
+
+inline HoppingAmplitudeSet& SingleParticleContext::getHoppingAmplitudeSet(){
+	return hoppingAmplitudeSet;
+}
+
+inline const HoppingAmplitudeSet&
+SingleParticleContext::getHoppingAmplitudeSet() const{
+	return hoppingAmplitudeSet;
 }
 
 inline Geometry* SingleParticleContext::getGeometry(){

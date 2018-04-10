@@ -62,6 +62,20 @@ TEST(SingleParticleContext, getStatistics){
 TEST(SingleParticleContext, constructCOO){
 }
 
+TEST(SingleParticleContext, getHoppingAmplitudeSet){
+	SingleParticleContext singleParticleContext0;
+	HoppingAmplitudeSet &hoppingAmplitudeSet0
+		= singleParticleContext0.getHoppingAmplitudeSet();
+	//Dummy call to supress warning about unused variable.
+	hoppingAmplitudeSet0.getBasisSize();
+
+	const SingleParticleContext singleParticleContext1;
+	const HoppingAmplitudeSet &hoppingAmplitudeSet1
+		= singleParticleContext1.getHoppingAmplitudeSet();
+	//Dummy call to supress warning about unused variable.
+	hoppingAmplitudeSet1.getBasisSize();
+}
+
 //TODO
 //This function should possibly be removed from the SingleParticleContext
 //itself by makin the SingleParticleContext inherit from the
