@@ -39,11 +39,9 @@ using namespace Plot;
 const complex<double> i(0, 1);
 
 int main(int argc, char **argv){
-	TBTKNotYetImplemented("BasicLinearEquation");
-
-	Timer::tick("Full calculation");
 	int NUM_SITES = 1000;
 
+	//Setup Model.
 	Model model;
 	for(int n = 0; n < NUM_SITES; n++){
 		model << MatrixElement(2., {n}, {n});
@@ -51,34 +49,33 @@ int main(int argc, char **argv){
 			model << MatrixElement(-1., {n}, {n-1}) + HC;
 	}
 	model.construct();
-	model.constructCOO();
 
-	Timer::tick("Solve");
-	Solver::LinearEquationSolver solver;
-	solver.setModel(model);
-	vector<complex<double>> b;
 	for(int n = 0; n < NUM_SITES; n++){
 		if((n > 100 && n < 150) || (n > 300 && n < 350))
-			b.push_back(1);
+			model << SourceAmplitude(1, {n});
 		else
-			b.push_back(0);
-//		b.push_back(1);
+			model << SourceAmplitude(0, {n});
 	}
-	vector<complex<double>> result = solver.solve(b);
-	Timer::tock();
+
+	//Solve
+	Solver::LinearEquationSolver solver;
+	solver.setModel(model);
+	solver.run();
+
+	//Extract the result.
+	const Matrix<complex<double>> result0 = solver.getResult();
+	vector<complex<double>> result;
+	for(unsigned int n = 0; n < result0.getNumRows(); n++)
+		result.push_back(result0.at(n, 0));
 
 	vector<double> data;
 	for(unsigned int n = 0; n < result.size(); n++)
 		data.push_back(real(result[n]));
 
+	//Plot.
 	Plotter plotter;
 	plotter.plot(data);
 	plotter.save("figures/Solution.png");
-
-//	for(int n = 0; n < NUM_SITES; n++)
-//		Streams::out << result[n] << "\n";
-
-	Timer::tock();
 
 	return 0;
 }

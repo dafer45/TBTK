@@ -24,6 +24,7 @@
 #define COM_DAFER45_TBTK_SOLVER_LINEAR_EQUATION_SOLVER
 
 #include "TBTK/Communicator.h"
+#include "TBTK/Matrix.h"
 #include "TBTK/Model.h"
 #include "TBTK/Solver/Solver.h"
 
@@ -41,53 +42,18 @@ public:
 	/** Destructor. */
 	virtual ~LinearEquationSolver();
 
-	/** Modes. */
-	enum class Mode {LU, ConjugateGradient};
+	/** Run calculation. */
+	void run();
 
-	/** Set mode. */
-	void setMode(Mode mode);
-
-	/** Solve. */
-	std::vector<std::complex<double>> solve(
-		const std::vector<std::complex<double>> &y
-	);
+	/** Get result. */
+	const Matrix<std::complex<double>>& getResult() const;
 private:
-	/** pointer to array containing Hamiltonian. */
-	std::complex<double> *hamiltonian;
-
-	/** Mode. */
-	Mode mode;
-
-	/** Solve using LU-decomposition. */
-	std::vector<std::complex<double>> solveLU(
-		const std::vector<std::complex<double>> &y
-	);
-
-	/** Solve using conjugate gradient. */
-	std::vector<std::complex<double>> solveConjugateGradient(
-		const std::vector<std::complex<double>> &y
-	);
+	/** The right hand side of the equation. */
+	Matrix<std::complex<double>> source;
 };
 
-inline void LinearEquationSolver::setMode(Mode mode){
-	this->mode = mode;
-}
-
-inline std::vector<std::complex<double>> LinearEquationSolver::solve(
-	const std::vector<std::complex<double>> &y
-){
-	switch(mode){
-	case Mode::LU:
-		return solveLU(y);
-	case Mode::ConjugateGradient:
-		return solveConjugateGradient(y);
-	default:
-		TBTKExit(
-			"LinearEquationSolver::solve()",
-			"Unknown mode.",
-			"This should never happen, contact the developer."
-		);
-	}
+inline const Matrix<std::complex<double>>& LinearEquationSolver::getResult() const{
+	return source;
 }
 
 };	//End of namespace Solver
