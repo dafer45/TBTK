@@ -39,7 +39,7 @@
 
 namespace TBTK{
 
-template<typename Data, bool = std::is_base_of<Serializable, Data>::value>
+template<typename Data, bool isSerializeable = std::is_base_of<Serializable, Data>::value>
 class IndexedDataTree : public Serializable{
 public:
 	/** Constructor. */
@@ -84,6 +84,16 @@ public:
 	 *  requested Index exists. */
 	Data& get(const Index &index);
 
+	/** Get data.
+	 *
+	 *  @param index Index for which to extract the data for.
+	 *
+	 *  @return Reference to the element.
+	 *
+	 *  @throws ElementNotFoundException If the no element with the
+	 *  requested Index exists. */
+	const Data& get(const Index &index) const;
+
 	/** Clear the data. */
 	void clear();
 
@@ -101,29 +111,71 @@ public:
 
 	/** Iterator for iterating through the elements stored in the tree
 	 *  structure. */
-	class Iterator{
+	class Iterator;
+	class ConstIterator;
+	template<bool isConstIterator>
+	class _Iterator{
 	public:
+		/** Typedef to allow for pointers to const and non-const
+		 *  depending on Iterator type. */
+		typedef typename std::conditional<
+			isConstIterator,
+			const Data&,
+			Data&
+		>::type DataReferenceType;
+
 		/** Increment operator. */
 		void operator++();
 
 		/** Dereference operator. */
-		Data& operator*();
+		DataReferenceType operator*();
 
 		/** Equality operator. */
-		bool operator==(const Iterator &rhs) const;
+		bool operator==(const _Iterator &rhs) const;
 
 		/** Inequality operator. */
-		bool operator!=(const Iterator &rhs) const;
+		bool operator!=(const _Iterator &rhs) const;
 	private:
+		/** Typedef to allow for pointers to const and non-const
+		 *  depending on Iterator type. */
+		typedef typename std::conditional<
+			isConstIterator,
+			const IndexedDataTree*,
+			IndexedDataTree*
+		>::type IndexedDataTreePointerType;
+
 		/** IndexedDataTree to iterate over. */
-		IndexedDataTree *indexedDataTree;
+		IndexedDataTreePointerType indexedDataTree;
 
 		/** Current Index. */
 		Index currentIndex;
 
 		/** Private constructor. Limits the ability to construct an
 		 *  Iterator to the IndexedDataTree. */
-		Iterator(IndexedDataTree *indexedDataTree, bool end = false);
+		_Iterator(IndexedDataTreePointerType indexedDataTree, bool end = false);
+
+		/** Make the IndexedDataTree able to construct an Iterator. */
+		friend class Iterator;
+		friend class ConstIterator;
+	};
+
+	class Iterator : public _Iterator<false>{
+	private:
+		Iterator(
+			IndexedDataTree *indexedDataTree,
+			bool end = false
+		) : _Iterator<false>(indexedDataTree, end){};
+
+		/** Make the IndexedDataTree able to construct an Iterator. */
+		friend class IndexedDataTree;
+	};
+
+	class ConstIterator : public _Iterator<true>{
+	private:
+		ConstIterator(
+			const IndexedDataTree *indexedDataTree,
+			bool end = false
+		) : _Iterator<true>(indexedDataTree, end){};
 
 		/** Make the IndexedDataTree able to construct an Iterator. */
 		friend class IndexedDataTree;
@@ -135,10 +187,21 @@ public:
 	 *  IndexedDataTree. */
 	Iterator begin();
 
+	/** Create Iterator for constant elements.
+	 *
+	 *  @return Iterator pointing at the first element in the
+	 *  IndexedDataTree. */
+	ConstIterator cbegin() const;
+
 	/** Get Iterator pointing to the end.
 	 *
 	 *  @return An Iterator pointing at the end of the IndexedDataTree. */
 	Iterator end();
+
+	/** Get Iterator for constatne elements that points to the end.
+	 *
+	 *  @return An Iterator pointing at the end of the IndexedDataTree. */
+	ConstIterator cend() const;
 private:
 	/** Child nodes. */
 	std::vector<IndexedDataTree> children;
@@ -165,7 +228,7 @@ private:
 
 	/** Get indexed data. Is called by the public function
 	 *  IndexedDataTree::get() and is called recuresively. */
-	Data& get(const Index& index, unsigned int subindex);
+	const Data& get(const Index& index, unsigned int subindex) const;
 
 	/** Returns the first Index for which an element exists. */
 	Index getFirstIndex() const;
@@ -216,6 +279,16 @@ public:
 	 *  requested Index exists. */
 	Data& get(const Index &index);
 
+	/** Get data.
+	 *
+	 *  @param index Index for which to extract the data for.
+	 *
+	 *  @return Reference to the element.
+	 *
+	 *  @throws ElementNotFoundException If the no element with the
+	 *  requested Index exists. */
+	const Data& get(const Index &index) const;
+
 	/** Clear. */
 	void clear();
 
@@ -227,29 +300,71 @@ public:
 
 	/** Iterator for iterating through the elements stored in the tree
 	 *  structure. */
-	class Iterator{
+	class Iterator;
+	class ConstIterator;
+	template<bool isConstIterator>
+	class _Iterator{
 	public:
+		/** Typedef to allow for pointers to const and non-const
+		 *  depending on Iterator type. */
+		typedef typename std::conditional<
+			isConstIterator,
+			const Data&,
+			Data&
+		>::type DataReferenceType;
+
 		/** Increment operator. */
 		void operator++();
 
 		/** Dereference operator. */
-		Data& operator*();
+		DataReferenceType operator*();
 
 		/** Equality operator. */
-		bool operator==(const Iterator &rhs) const;
+		bool operator==(const _Iterator &rhs) const;
 
 		/** Inequality operator. */
-		bool operator!=(const Iterator &rhs) const;
+		bool operator!=(const _Iterator &rhs) const;
 	private:
+		/** Typedef to allow for pointers to const and non-const
+		 *  depending on Iterator type. */
+		typedef typename std::conditional<
+			isConstIterator,
+			const IndexedDataTree*,
+			IndexedDataTree*
+		>::type IndexedDataTreePointerType;
+
 		/** IndexedDataTree to iterate over. */
-		IndexedDataTree *indexedDataTree;
+		IndexedDataTreePointerType indexedDataTree;
 
 		/** Current Index. */
 		Index currentIndex;
 
 		/** Private constructor. Limits the ability to construct an
 		 *  Iterator to the IndexedDataTree. */
-		Iterator(IndexedDataTree *indexedDataTree, bool ennd = false);
+		_Iterator(IndexedDataTreePointerType indexedDataTree, bool end = false);
+
+		/** Make the IndexedDataTree able to construct an Iterator. */
+		friend class Iterator;
+		friend class ConstIterator;
+	};
+
+	class Iterator : public _Iterator<false>{
+	private:
+		Iterator(
+			IndexedDataTree *indexedDataTree,
+			bool end = false
+		) : _Iterator<false>(indexedDataTree, end){};
+
+		/** Make the IndexedDataTree able to construct an Iterator. */
+		friend class IndexedDataTree;
+	};
+
+	class ConstIterator : public _Iterator<true>{
+	private:
+		ConstIterator(
+			const IndexedDataTree *indexedDataTree,
+			bool end = false
+		) : _Iterator<true>(indexedDataTree, end){};
 
 		/** Make the IndexedDataTree able to construct an Iterator. */
 		friend class IndexedDataTree;
@@ -261,10 +376,21 @@ public:
 	 *  IndexedDataTree. */
 	Iterator begin();
 
+	/** Create Iterator for constant elements.
+	 *
+	 *  @return Iterator pointing at the first element in the
+	 *  IndexedDataTree. */
+	ConstIterator cbegin() const;
+
 	/** Get Iterator pointing to the end.
 	 *
 	 *  @return An Iterator pointing at the end of the IndexedDataTree. */
 	Iterator end();
+
+	/** Get Iterator for constatne elements that points to the end.
+	 *
+	 *  @return An Iterator pointing at the end of the IndexedDataTree. */
+	ConstIterator cend() const;
 private:
 	/** Child nodes. */
 	std::vector<IndexedDataTree> children;
@@ -291,7 +417,7 @@ private:
 
 	/** Get indexed data. Is called by the public function
 	 *  IndexedDataTree::get() and is called recuresively. */
-	Data& get(const Index& index, unsigned int subindex);
+	const Data& get(const Index& index, unsigned int subindex) const;
 
 	/** Returns the first Index for which an element exists. */
 	Index getFirstIndex() const;
@@ -342,6 +468,16 @@ public:
 	 *  requested Index exists. */
 	Data& get(const Index &index);
 
+	/** Get data.
+	 *
+	 *  @param index Index for which to extract the data for.
+	 *
+	 *  @return Reference to the element.
+	 *
+	 *  @throws ElementNotFoundException If the no element with the
+	 *  requested Index exists. */
+	const Data& get(const Index &index) const;
+
 	/** Clear. */
 	void clear();
 
@@ -353,29 +489,71 @@ public:
 
 	/** Iterator for iterating through the elements stored in the tree
 	 *  structure. */
-	class Iterator{
+	class Iterator;
+	class ConstIterator;
+	template<bool isConstIterator>
+	class _Iterator{
 	public:
+		/** Typedef to allow for pointers to const and non-const
+		 *  depending on Iterator type. */
+		typedef typename std::conditional<
+			isConstIterator,
+			const Data&,
+			Data&
+		>::type DataReferenceType;
+
 		/** Increment operator. */
 		void operator++();
 
 		/** Dereference operator. */
-		Data& operator*();
+		DataReferenceType operator*();
 
 		/** Equality operator. */
-		bool operator==(const Iterator &rhs) const;
+		bool operator==(const _Iterator &rhs) const;
 
 		/** Inequality operator. */
-		bool operator!=(const Iterator &rhs) const;
+		bool operator!=(const _Iterator &rhs) const;
 	private:
+		/** Typedef to allow for pointers to const and non-const
+		 *  depending on Iterator type. */
+		typedef typename std::conditional<
+			isConstIterator,
+			const IndexedDataTree*,
+			IndexedDataTree*
+		>::type IndexedDataTreePointerType;
+
 		/** IndexedDataTree to iterate over. */
-		IndexedDataTree *indexedDataTree;
+		IndexedDataTreePointerType indexedDataTree;
 
 		/** Current Index. */
 		Index currentIndex;
 
 		/** Private constructor. Limits the ability to construct an
 		 *  Iterator to the IndexedDataTree. */
-		Iterator(IndexedDataTree *indexedDataTree, bool end = false);
+		_Iterator(IndexedDataTreePointerType indexedDataTree, bool end = false);
+
+		/** Make the IndexedDataTree able to construct an Iterator. */
+		friend class Iterator;
+		friend class ConstIterator;
+	};
+
+	class Iterator : public _Iterator<false>{
+	private:
+		Iterator(
+			IndexedDataTree *indexedDataTree,
+			bool end = false
+		) : _Iterator<false>(indexedDataTree, end){};
+
+		/** Make the IndexedDataTree able to construct an Iterator. */
+		friend class IndexedDataTree;
+	};
+
+	class ConstIterator : public _Iterator<true>{
+	private:
+		ConstIterator(
+			const IndexedDataTree *indexedDataTree,
+			bool end = false
+		) : _Iterator<true>(indexedDataTree, end){};
 
 		/** Make the IndexedDataTree able to construct an Iterator. */
 		friend class IndexedDataTree;
@@ -387,10 +565,21 @@ public:
 	 *  IndexedDataTree. */
 	Iterator begin();
 
+	/** Create Iterator for constant elements.
+	 *
+	 *  @return Iterator pointing at the first element in the
+	 *  IndexedDataTree. */
+	ConstIterator cbegin() const;
+
 	/** Get Iterator pointing to the end.
 	 *
 	 *  @return An Iterator pointing at the end of the IndexedDataTree. */
 	Iterator end();
+
+	/** Get Iterator for constatne elements that points to the end.
+	 *
+	 *  @return An Iterator pointing at the end of the IndexedDataTree. */
+	ConstIterator cend() const;
 private:
 	/** Child nodes. */
 	std::vector<IndexedDataTree> children;
@@ -417,7 +606,7 @@ private:
 
 	/** Get indexed data. Is called by the public function
 	 *  IndexedDataTree::get() and is called recuresively. */
-	Data& get(const Index& index, unsigned int subindex);
+	const Data& get(const Index& index, unsigned int subindex) const;
 
 	/** Returns the first Index for which an element exists. Return the
 	 *  empty Index if no element exists. */
@@ -1532,19 +1721,47 @@ bool IndexedDataTree<Data, false>::get(
 
 template<typename Data>
 Data& IndexedDataTree<Data, true>::get(const Index &index){
+	//Casting is safe because we do not guarantee that the IndexedDataTree
+	//is not modified. Casting away const from the returned reference is
+	//therefore not a violation of any promisse made by this function.
+	//See also "Avoiding Duplication in const and Non-const Member
+	//Function" in S. Meyers, Effective C++.
+	return const_cast<Data&>(
+		static_cast<const IndexedDataTree<Data, true>*>(
+			this
+		)->get(index, 0)
+	);
+}
+
+template<typename Data>
+const Data& IndexedDataTree<Data, true>::get(const Index &index) const{
 	return get(index, 0);
 }
 
 template<typename Data>
 Data& IndexedDataTree<Data, false>::get(const Index &index){
+	//Casting is safe because we do not guarantee that the IndexedDataTree
+	//is not modified. Casting away const from the returned reference is
+	//therefore not a violation of any promisse made by this function.
+	//See also "Avoiding Duplication in const and Non-const Member
+	//Function" in S. Meyers, Effective C++.
+	return const_cast<Data&>(
+		static_cast<const IndexedDataTree<Data, false>*>(
+			this
+		)->get(index, 0)
+	);
+}
+
+template<typename Data>
+const Data& IndexedDataTree<Data, false>::get(const Index &index) const{
 	return get(index, 0);
 }
 
 template<typename Data>
-Data& IndexedDataTree<Data, true>::get(
+const Data& IndexedDataTree<Data, true>::get(
 	const Index &index,
 	unsigned int subindex
-){
+) const{
 	if(subindex < index.getSize()){
 		//If the current subindex is not the last, continue to the next
 		//node level.
@@ -1616,10 +1833,10 @@ Data& IndexedDataTree<Data, true>::get(
 }
 
 template<typename Data>
-Data& IndexedDataTree<Data, false>::get(
+const Data& IndexedDataTree<Data, false>::get(
 	const Index &index,
 	unsigned int subindex
-){
+) const{
 	if(subindex < index.getSize()){
 		//If the current subindex is not the last, continue to the next
 		//node level.
@@ -2153,6 +2370,16 @@ typename IndexedDataTree<Data, false>::Iterator IndexedDataTree<Data, false>::be
 }
 
 template<typename Data>
+typename IndexedDataTree<Data, true>::ConstIterator IndexedDataTree<Data, true>::cbegin() const{
+	return ConstIterator(this);
+}
+
+template<typename Data>
+typename IndexedDataTree<Data, false>::ConstIterator IndexedDataTree<Data, false>::cbegin() const{
+	return ConstIterator(this);
+}
+
+template<typename Data>
 typename IndexedDataTree<Data, true>::Iterator IndexedDataTree<Data, true>::end(){
 	return Iterator(this, true);
 }
@@ -2163,28 +2390,46 @@ typename IndexedDataTree<Data, false>::Iterator IndexedDataTree<Data, false>::en
 }
 
 template<typename Data>
-void IndexedDataTree<Data, true>::Iterator::operator++(){
+typename IndexedDataTree<Data, true>::ConstIterator IndexedDataTree<Data, true>::cend() const{
+	return ConstIterator(this, true);
+}
+
+template<typename Data>
+typename IndexedDataTree<Data, false>::ConstIterator IndexedDataTree<Data, false>::cend() const{
+	return ConstIterator(this, true);
+}
+
+template<typename Data> template<bool isConstIterator>
+void IndexedDataTree<Data, true>::_Iterator<isConstIterator>::operator++(){
 	currentIndex = indexedDataTree->getNextIndex(currentIndex);
 }
 
-template<typename Data>
-void IndexedDataTree<Data, false>::Iterator::operator++(){
+template<typename Data> template<bool isConstIterator>
+void IndexedDataTree<Data, false>::_Iterator<isConstIterator>::operator++(){
 	currentIndex = indexedDataTree->getNextIndex(currentIndex);
 }
 
-template<typename Data>
-Data& IndexedDataTree<Data, true>::Iterator::operator*(){
+template<typename Data> template<bool isConstIterator>
+typename IndexedDataTree<Data, true>::template _Iterator<
+	isConstIterator
+>::DataReferenceType IndexedDataTree<Data, true>::_Iterator<
+	isConstIterator
+>::operator*(){
 	return indexedDataTree->get(currentIndex);
 }
 
-template<typename Data>
-Data& IndexedDataTree<Data, false>::Iterator::operator*(){
+template<typename Data> template<bool isConstIterator>
+typename IndexedDataTree<Data, false>::template _Iterator<
+	isConstIterator
+>::DataReferenceType IndexedDataTree<Data, false>::_Iterator<
+	isConstIterator
+>::operator*(){
 	return indexedDataTree->get(currentIndex);
 }
 
-template<typename Data>
-bool IndexedDataTree<Data, true>::Iterator::operator==(
-	const IndexedDataTree<Data, true>::Iterator &rhs
+template<typename Data> template<bool isConstIterator>
+bool IndexedDataTree<Data, true>::_Iterator<isConstIterator>::operator==(
+	const IndexedDataTree<Data, true>::_Iterator<isConstIterator> &rhs
 ) const{
 	if(
 		indexedDataTree == rhs.indexedDataTree
@@ -2197,9 +2442,9 @@ bool IndexedDataTree<Data, true>::Iterator::operator==(
 	}
 }
 
-template<typename Data>
-bool IndexedDataTree<Data, false>::Iterator::operator==(
-	const IndexedDataTree<Data, false>::Iterator &rhs
+template<typename Data> template<bool isConstIterator>
+bool IndexedDataTree<Data, false>::_Iterator<isConstIterator>::operator==(
+	const IndexedDataTree<Data, false>::_Iterator<isConstIterator> &rhs
 ) const{
 	if(
 		indexedDataTree == rhs.indexedDataTree
@@ -2212,9 +2457,9 @@ bool IndexedDataTree<Data, false>::Iterator::operator==(
 	}
 }
 
-template<typename Data>
-bool IndexedDataTree<Data, true>::Iterator::operator!=(
-	const IndexedDataTree<Data, true>::Iterator &rhs
+template<typename Data> template<bool isConstIterator>
+bool IndexedDataTree<Data, true>::_Iterator<isConstIterator>::operator!=(
+	const IndexedDataTree<Data, true>::_Iterator<isConstIterator> &rhs
 ) const{
 	if(
 		indexedDataTree != rhs.indexedDataTree
@@ -2227,9 +2472,9 @@ bool IndexedDataTree<Data, true>::Iterator::operator!=(
 	}
 }
 
-template<typename Data>
-bool IndexedDataTree<Data, false>::Iterator::operator!=(
-	const IndexedDataTree<Data, false>::Iterator &rhs
+template<typename Data> template<bool isConstIterator>
+bool IndexedDataTree<Data, false>::_Iterator<isConstIterator>::operator!=(
+	const IndexedDataTree<Data, false>::_Iterator<isConstIterator> &rhs
 ) const{
 	if(
 		indexedDataTree != rhs.indexedDataTree
@@ -2242,8 +2487,11 @@ bool IndexedDataTree<Data, false>::Iterator::operator!=(
 	}
 }
 
-template<typename Data>
-IndexedDataTree<Data, true>::Iterator::Iterator(IndexedDataTree *indexedDataTree, bool end){
+template<typename Data> template<bool isConstIterator>
+IndexedDataTree<Data, true>::_Iterator<isConstIterator>::_Iterator(
+	IndexedDataTreePointerType indexedDataTree,
+	bool end
+){
 	this->indexedDataTree = indexedDataTree;
 	if(end)
 		currentIndex = Index();
@@ -2251,8 +2499,11 @@ IndexedDataTree<Data, true>::Iterator::Iterator(IndexedDataTree *indexedDataTree
 		currentIndex = indexedDataTree->getFirstIndex();
 }
 
-template<typename Data>
-IndexedDataTree<Data, false>::Iterator::Iterator(IndexedDataTree *indexedDataTree, bool end){
+template<typename Data> template<bool isConstIterator>
+IndexedDataTree<Data, false>::_Iterator<isConstIterator>::_Iterator(
+	IndexedDataTreePointerType indexedDataTree,
+	bool end
+){
 	this->indexedDataTree = indexedDataTree;
 	if(end)
 		currentIndex = Index();

@@ -41,6 +41,7 @@ Model::Model() : Communicator(true){
 
 	singleParticleContext = new SingleParticleContext();
 	manyBodyContext = NULL;
+	indexFilter = nullptr;
 	hoppingAmplitudeFilter = nullptr;
 }
 
@@ -50,6 +51,7 @@ Model::Model(const vector<unsigned int> &capacity) : Communicator(true){
 
 	singleParticleContext = new SingleParticleContext(capacity);
 	manyBodyContext = NULL;
+	indexFilter = nullptr;
 	hoppingAmplitudeFilter = nullptr;
 }
 
@@ -69,6 +71,11 @@ Model::Model(const Model &model) : Communicator(model){
 		);
 	}
 
+	if(model.indexFilter == nullptr)
+		indexFilter = nullptr;
+	else
+		indexFilter = model.indexFilter->clone();
+
 	if(model.hoppingAmplitudeFilter == nullptr)
 		hoppingAmplitudeFilter = nullptr;
 	else
@@ -83,6 +90,9 @@ Model::Model(Model &&model) : Communicator(std::move(model)){
 	model.singleParticleContext = nullptr;
 	manyBodyContext = model.manyBodyContext;
 	model.manyBodyContext = nullptr;
+
+	indexFilter = model.indexFilter;
+	model.indexFilter = nullptr;
 
 	hoppingAmplitudeFilter = model.hoppingAmplitudeFilter;
 	model.hoppingAmplitudeFilter = nullptr;
@@ -112,6 +122,7 @@ Model::Model(const string &serialization, Mode mode) : Communicator(true){
 
 		manyBodyContext = nullptr;
 
+		indexFilter = nullptr;
 		hoppingAmplitudeFilter = nullptr;
 
 		break;
@@ -131,6 +142,7 @@ Model::Model(const string &serialization, Mode mode) : Communicator(true){
 
 			manyBodyContext = nullptr;
 
+			indexFilter = nullptr;
 			hoppingAmplitudeFilter = nullptr;
 		}
 		catch(json::exception e){
@@ -158,6 +170,8 @@ Model::~Model(){
 		delete singleParticleContext;
 	if(manyBodyContext != nullptr)
 		delete manyBodyContext;
+	if(indexFilter != nullptr)
+		delete indexFilter;
 	if(hoppingAmplitudeFilter != nullptr)
 		delete hoppingAmplitudeFilter;
 }
@@ -182,6 +196,15 @@ Model& Model::operator=(const Model &rhs){
 			manyBodyContext = new ManyBodyContext(
 				*rhs.manyBodyContext
 			);
+		}
+
+		if(indexFilter != nullptr)
+			delete indexFilter;
+		if(rhs.indexFilter == nullptr){
+			indexFilter = nullptr;
+		}
+		else{
+			indexFilter = rhs.indexFilter->clone();
 		}
 
 		if(hoppingAmplitudeFilter != nullptr)
@@ -212,6 +235,11 @@ Model& Model::operator=(Model &&rhs){
 			delete manyBodyContext;
 		manyBodyContext = rhs.manyBodyContext;
 		rhs.manyBodyContext = nullptr;
+
+		if(indexFilter != nullptr)
+			delete indexFilter;
+		indexFilter = rhs.indexFilter;
+		rhs.indexFilter = nullptr;
 
 		if(hoppingAmplitudeFilter != nullptr)
 			delete hoppingAmplitudeFilter;

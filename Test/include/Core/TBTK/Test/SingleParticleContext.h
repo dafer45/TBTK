@@ -76,6 +76,20 @@ TEST(SingleParticleContext, getHoppingAmplitudeSet){
 	hoppingAmplitudeSet1.getBasisSize();
 }
 
+TEST(SingleParticleContext, getSourceAmplitudeSet){
+	SingleParticleContext singleParticleContext0;
+	SourceAmplitudeSet &sourceAmplitudeSet0
+		= singleParticleContext0.getSourceAmplitudeSet();
+	//Dummy call to supress warning about unused variable.
+	sourceAmplitudeSet0.getSizeInBytes();
+
+	const SingleParticleContext singleParticleContext1;
+	const SourceAmplitudeSet &sourceAmplitudeSet1
+		= singleParticleContext1.getSourceAmplitudeSet();
+	//Dummy call to supress warning about unused variable.
+	sourceAmplitudeSet1.getSizeInBytes();
+}
+
 //TODO
 //This function should possibly be removed from the SingleParticleContext
 //itself by makin the SingleParticleContext inherit from the

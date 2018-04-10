@@ -1,3 +1,4 @@
+#include "TBTK/ElementNotFoundException.h"
 #include "TBTK/Model.h"
 
 #include "gtest/gtest.h"
@@ -272,6 +273,20 @@ TEST(Model, setFilter){
 	model1 << HoppingAmplitude(0, {1, 0, 1}, {1, 2, 1});
 	model1.construct();
 	EXPECT_EQ(model1.getBasisSize(), 4);
+
+	model1 << SourceAmplitude(0, {0, 0, 0});
+	model1 << SourceAmplitude(0, {0, 1, 0});
+	model1 << SourceAmplitude(0, {0, 2, 0});
+	model1 << SourceAmplitude(0, {1, 0, 1});
+	model1 << SourceAmplitude(0, {1, 2, 1});
+	EXPECT_EQ(model1.getSourceAmplitudeSet().get({0, 0, 0}).size(), 1);
+	EXPECT_THROW(
+		model1.getSourceAmplitudeSet().get({0, 1, 0}),
+		ElementNotFoundException
+	);
+	EXPECT_EQ(model1.getSourceAmplitudeSet().get({0, 2, 0}).size(), 1);
+	EXPECT_EQ(model1.getSourceAmplitudeSet().get({1, 0, 1}).size(), 1);
+	EXPECT_EQ(model1.getSourceAmplitudeSet().get({1, 2, 1}).size(), 1);
 }
 
 TEST(Model, operatorInsertion){

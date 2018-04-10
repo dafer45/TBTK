@@ -183,8 +183,13 @@ public:
 
 	/** Get amplitude set.
 	 *
-	 *  @return Pointer to the contained HoppingAmplitudeSet. */
+	 *  @return Reference to the contained HoppingAmplitudeSet. */
 	const HoppingAmplitudeSet& getHoppingAmplitudeSet() const;
+
+	/** Get SourceAmplitudeSet.
+	 *
+	 *  @return Reference to the contained SourceAmplitudeSet. */
+	const SourceAmplitudeSet& getSourceAmplitudeSet() const;
 
 	/** Create geometry.
 	 *
@@ -251,6 +256,9 @@ public:
 	/** Operator<<. */
 	Model& operator<<(const HoppingAmplitudeList& hoppingAmplitudeList);
 
+	/** Operator<<. */
+	Model& operator<<(const SourceAmplitude& sourceAmplitude);
+
 	/** Implements Serializable::serialize(). Note that the
 	 *  ManyBodyContext is not yet serialized. */
 	std::string serialize(Mode mode) const;
@@ -266,6 +274,9 @@ private:
 
 	/** Many-body context. */
 	ManyBodyContext *manyBodyContext;
+
+	/** Index filter. */
+	AbstractIndexFilter *indexFilter;
 
 	/** Hopping amplitude filter. */
 	AbstractHoppingAmplitudeFilter *hoppingAmplitudeFilter;
@@ -334,6 +345,10 @@ inline const HoppingAmplitudeSet& Model::getHoppingAmplitudeSet() const{
 	return singleParticleContext->getHoppingAmplitudeSet();
 }
 
+inline const SourceAmplitudeSet& Model::getSourceAmplitudeSet() const{
+	return singleParticleContext->getSourceAmplitudeSet();
+}
+
 inline void Model::createGeometry(int dimensions, int numSpecifiers){
 	singleParticleContext->createGeometry(dimensions, numSpecifiers);
 }
@@ -366,6 +381,10 @@ inline void Model::setFilter(
 inline void Model::setFilter(
 	const AbstractIndexFilter &indexFilter
 ){
+	if(this->indexFilter != nullptr)
+		delete this->indexFilter;
+	this->indexFilter = indexFilter.clone();
+
 	if(this->hoppingAmplitudeFilter != nullptr)
 		delete this->hoppingAmplitudeFilter;
 
@@ -415,6 +434,19 @@ inline Model& Model::operator<<(const std::tuple<HoppingAmplitude, HoppingAmplit
 inline Model& Model::operator<<(const HoppingAmplitudeList &hoppingAmplitudeList){
 	for(unsigned int n = 0; n < hoppingAmplitudeList.getSize(); n++)
 		add(hoppingAmplitudeList[n]);
+
+	return *this;
+}
+
+inline Model& Model::operator<<(const SourceAmplitude &sourceAmplitude){
+	if(
+		indexFilter == nullptr
+		|| indexFilter->isIncluded(sourceAmplitude.getIndex())
+	){
+		singleParticleContext->getSourceAmplitudeSet().add(
+			sourceAmplitude
+		);
+	}
 
 	return *this;
 }

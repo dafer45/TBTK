@@ -70,6 +70,18 @@ public:
 		const Index &index
 	);
 
+	/** Get all @link SourceAmplitude SourceAmplitudes @endlink with the
+	 *  given Index.
+	 *
+	 *  @param index Index to get @link SourceAmplitude SourceAmplitudes
+	 *  @endlink for.
+	 *
+	 *  @return All @link SourceAmplitude SourceAmplitudes @endlink for the
+	 *  given Index. */
+	const std::vector<SourceAmplitude>& get(
+		const Index &index
+	) const;
+
 	/** Iterator for iterating through the @link SourceAmplitude
 	 *  SourceAmplitudes @endlink. */
 	class Iterator{
@@ -157,6 +169,12 @@ inline void SourceAmplitudeSet::add(
 inline std::vector<SourceAmplitude>& SourceAmplitudeSet::get(
 	const Index &index
 ){
+	return sourceAmplitudeTree.get(index);
+}
+
+inline const std::vector<SourceAmplitude>& SourceAmplitudeSet::get(
+	const Index &index
+) const{
 	return sourceAmplitudeTree.get(index);
 }
 

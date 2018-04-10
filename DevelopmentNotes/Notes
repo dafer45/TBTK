@@ -1,0 +1,4 @@
+- There is currently some incompatibility between nlohmann::json and CUDA. Some
+  code is therefor disabled in CUDA files using the flag
+  TBTK_DISABLE_NLOHMANN_JSON. This should be removed once compatibility is
+  achieved or a better work around is found.

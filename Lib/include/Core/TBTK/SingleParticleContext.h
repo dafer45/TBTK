@@ -91,6 +91,16 @@ public:
 	 *  @return The contained HoppingAmplitudeSet. */
 	const HoppingAmplitudeSet& getHoppingAmplitudeSet() const;
 
+	/** Get the contained SourceAmplitudeSet.
+	 *
+	 *  @return The contained SourceAmplitudeSet. */
+	SourceAmplitudeSet& getSourceAmplitudeSet();
+
+	/** Get the contained SourceAmplitudeSet.
+	 *
+	 *  @return The contained SourceAmplitudeSet. */
+	const SourceAmplitudeSet& getSourceAmplitudeSet() const;
+
 	/** Create Geometry. */
 	void createGeometry(int dimensions, int numSpecifiers = 0);
 
@@ -102,6 +112,9 @@ public:
 private:
 	/** HoppingAmplitudeSet. */
 	HoppingAmplitudeSet hoppingAmplitudeSet;
+
+	/** SourceAmplitudeSet. */
+	SourceAmplitudeSet sourceAmplitudeSet;
 
 	/** Statistics (Fermi-Dirac or Bose-Einstein).*/
 	Statistics statistics;
@@ -137,6 +150,15 @@ inline HoppingAmplitudeSet& SingleParticleContext::getHoppingAmplitudeSet(){
 inline const HoppingAmplitudeSet&
 SingleParticleContext::getHoppingAmplitudeSet() const{
 	return hoppingAmplitudeSet;
+}
+
+inline SourceAmplitudeSet& SingleParticleContext::getSourceAmplitudeSet(){
+	return sourceAmplitudeSet;
+}
+
+inline const SourceAmplitudeSet&
+SingleParticleContext::getSourceAmplitudeSet() const{
+	return sourceAmplitudeSet;
 }
 
 inline Geometry* SingleParticleContext::getGeometry(){
