@@ -192,6 +192,12 @@ public:
 	 *  IndexedDataTree. */
 	Iterator begin();
 
+	/** Create Iterator.
+	 *
+	 *  @return Iterator pointing at the first element in the
+	 *  IndexedDataTree. */
+	ConstIterator begin() const;
+
 	/** Create Iterator for constant elements.
 	 *
 	 *  @return Iterator pointing at the first element in the
@@ -202,6 +208,11 @@ public:
 	 *
 	 *  @return An Iterator pointing at the end of the IndexedDataTree. */
 	Iterator end();
+
+	/** Get Iterator pointing to the end.
+	 *
+	 *  @return An Iterator pointing at the end of the IndexedDataTree. */
+	ConstIterator end() const;
 
 	/** Get Iterator for constatne elements that points to the end.
 	 *
@@ -386,6 +397,12 @@ public:
 	 *  IndexedDataTree. */
 	Iterator begin();
 
+	/** Create Iterator.
+	 *
+	 *  @return Iterator pointing at the first element in the
+	 *  IndexedDataTree. */
+	ConstIterator begin() const;
+
 	/** Create Iterator for constant elements.
 	 *
 	 *  @return Iterator pointing at the first element in the
@@ -396,6 +413,11 @@ public:
 	 *
 	 *  @return An Iterator pointing at the end of the IndexedDataTree. */
 	Iterator end();
+
+	/** Get Iterator pointing to the end.
+	 *
+	 *  @return An Iterator pointing at the end of the IndexedDataTree. */
+	ConstIterator end() const;
 
 	/** Get Iterator for constatne elements that points to the end.
 	 *
@@ -580,6 +602,12 @@ public:
 	 *  IndexedDataTree. */
 	Iterator begin();
 
+	/** Create Iterator.
+	 *
+	 *  @return Iterator pointing at the first element in the
+	 *  IndexedDataTree. */
+	ConstIterator begin() const;
+
 	/** Create Iterator for constant elements.
 	 *
 	 *  @return Iterator pointing at the first element in the
@@ -590,6 +618,11 @@ public:
 	 *
 	 *  @return An Iterator pointing at the end of the IndexedDataTree. */
 	Iterator end();
+
+	/** Get Iterator pointing to the end.
+	 *
+	 *  @return An Iterator pointing at the end of the IndexedDataTree. */
+	ConstIterator end() const;
 
 	/** Get Iterator for constatne elements that points to the end.
 	 *
@@ -2380,8 +2413,18 @@ typename IndexedDataTree<Data, true>::Iterator IndexedDataTree<Data, true>::begi
 }
 
 template<typename Data>
+typename IndexedDataTree<Data, true>::ConstIterator IndexedDataTree<Data, true>::begin() const{
+	return ConstIterator(this);
+}
+
+template<typename Data>
 typename IndexedDataTree<Data, false>::Iterator IndexedDataTree<Data, false>::begin(){
 	return Iterator(this);
+}
+
+template<typename Data>
+typename IndexedDataTree<Data, false>::ConstIterator IndexedDataTree<Data, false>::begin() const{
+	return ConstIterator(this);
 }
 
 template<typename Data>
@@ -2400,8 +2443,18 @@ typename IndexedDataTree<Data, true>::Iterator IndexedDataTree<Data, true>::end(
 }
 
 template<typename Data>
+typename IndexedDataTree<Data, true>::ConstIterator IndexedDataTree<Data, true>::end() const{
+	return ConstIterator(this, true);
+}
+
+template<typename Data>
 typename IndexedDataTree<Data, false>::Iterator IndexedDataTree<Data, false>::end(){
 	return Iterator(this, true);
+}
+
+template<typename Data>
+typename IndexedDataTree<Data, false>::ConstIterator IndexedDataTree<Data, false>::end() const{
+	return ConstIterator(this, true);
 }
 
 template<typename Data>

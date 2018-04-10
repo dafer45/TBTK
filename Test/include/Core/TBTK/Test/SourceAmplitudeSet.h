@@ -142,4 +142,41 @@ TEST(SourceAmplitudeSet, Iterator){
 	EXPECT_FALSE(iterator != sourceAmplitudeSet.end());
 }
 
+TEST(SourceAmplitudeSet, ConstIterator){
+	SourceAmplitudeSet sourceAmplitudeSet;
+	sourceAmplitudeSet.add(SourceAmplitude(1, {1, 2, 3}));
+	sourceAmplitudeSet.add(SourceAmplitude(2, {1, 2, 4}));
+	sourceAmplitudeSet.add(SourceAmplitude(3, {1, 2, 3}));
+
+	SourceAmplitudeSet::ConstIterator iterator = sourceAmplitudeSet.cbegin();
+	EXPECT_FALSE(iterator == sourceAmplitudeSet.cend());
+	EXPECT_TRUE(iterator != sourceAmplitudeSet.cend());
+	EXPECT_EQ(real((*iterator).getAmplitude()), 1);
+	EXPECT_EQ(imag((*iterator).getAmplitude()), 0);
+	EXPECT_TRUE((*iterator).getIndex().equals({1, 2, 3}));
+
+	++iterator;
+	EXPECT_FALSE(iterator == sourceAmplitudeSet.cend());
+	EXPECT_TRUE(iterator != sourceAmplitudeSet.cend());
+	EXPECT_EQ(real((*iterator).getAmplitude()), 3);
+	EXPECT_EQ(imag((*iterator).getAmplitude()), 0);
+	EXPECT_TRUE((*iterator).getIndex().equals({1, 2, 3}));
+
+	++iterator;
+	EXPECT_FALSE(iterator == sourceAmplitudeSet.cend());
+	EXPECT_TRUE(iterator != sourceAmplitudeSet.cend());
+	EXPECT_EQ(real((*iterator).getAmplitude()), 2);
+	EXPECT_EQ(imag((*iterator).getAmplitude()), 0);
+	EXPECT_TRUE((*iterator).getIndex().equals({1, 2, 4}));
+
+	++iterator;
+	EXPECT_TRUE(iterator == sourceAmplitudeSet.cend());
+	EXPECT_FALSE(iterator != sourceAmplitudeSet.cend());
+
+	//Verify that begin() and end() return ConstIterator for const
+	//SourceAmplitudeSet.
+	iterator = const_cast<const SourceAmplitudeSet&>(sourceAmplitudeSet).begin();
+	iterator = const_cast<const SourceAmplitudeSet&>(sourceAmplitudeSet).end();
+}
+
 };

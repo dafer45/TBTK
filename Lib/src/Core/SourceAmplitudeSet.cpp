@@ -75,8 +75,24 @@ SourceAmplitudeSet::Iterator SourceAmplitudeSet::begin(){
 	return SourceAmplitudeSet::Iterator(sourceAmplitudeTree);
 }
 
+SourceAmplitudeSet::ConstIterator SourceAmplitudeSet::begin() const{
+	return SourceAmplitudeSet::ConstIterator(sourceAmplitudeTree);
+}
+
+SourceAmplitudeSet::ConstIterator SourceAmplitudeSet::cbegin() const{
+	return SourceAmplitudeSet::ConstIterator(sourceAmplitudeTree);
+}
+
 SourceAmplitudeSet::Iterator SourceAmplitudeSet::end(){
 	return SourceAmplitudeSet::Iterator(sourceAmplitudeTree, true);
+}
+
+SourceAmplitudeSet::ConstIterator SourceAmplitudeSet::end() const{
+	return SourceAmplitudeSet::ConstIterator(sourceAmplitudeTree, true);
+}
+
+SourceAmplitudeSet::ConstIterator SourceAmplitudeSet::cend() const{
+	return SourceAmplitudeSet::ConstIterator(sourceAmplitudeTree, true);
 }
 
 string SourceAmplitudeSet::serialize(Mode mode) const{
@@ -100,7 +116,7 @@ string SourceAmplitudeSet::serialize(Mode mode) const{
 	}
 }
 
-SourceAmplitudeSet::Iterator::Iterator(
+/*SourceAmplitudeSet::Iterator::Iterator(
 	IndexedDataTree<std::vector<SourceAmplitude>> &sourceAmplitudeTree,
 	bool end
 ) :
@@ -149,6 +165,6 @@ bool SourceAmplitudeSet::Iterator::operator!=(const Iterator &rhs){
 	else{
 		return false;
 	}
-}
+}*/
 
 };	//End of namespace TBTK

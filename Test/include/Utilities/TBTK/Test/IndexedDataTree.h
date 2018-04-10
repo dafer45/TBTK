@@ -598,7 +598,8 @@ TEST(IndexedDataTree, ConstIterator){
 	indexedDataTree0.add(model2, {1, 2, 3});
 	indexedDataTree0.add(model3, {{1, 2, 5}, {1, 2, 3}});
 
-	IndexedDataTree<Model>::ConstIterator iterator0 = indexedDataTree0.cbegin();
+	IndexedDataTree<Model>::ConstIterator iterator0
+		= indexedDataTree0.cbegin();
 	EXPECT_FALSE(iterator0 == indexedDataTree0.cend());
 	EXPECT_TRUE(iterator0 != indexedDataTree0.cend());
 	EXPECT_EQ((*iterator0).getBasisSize(), 3);
@@ -610,6 +611,15 @@ TEST(IndexedDataTree, ConstIterator){
 	EXPECT_TRUE(iterator0 == indexedDataTree0.cend());
 	EXPECT_FALSE(iterator0 != indexedDataTree0.cend());
 
+	//Verify that begin() is defined with return type ConstIterator for
+	//const IndexedDataTree.
+	iterator0 = const_cast<const IndexedDataTree<Model>&>(
+		indexedDataTree0
+	).begin();
+	iterator0 = const_cast<const IndexedDataTree<Model>&>(
+		indexedDataTree0
+	).end();
+
 	/*************************************/
 	/* Non/pseudo-serializable elements. */
 	/*************************************/
@@ -619,7 +629,8 @@ TEST(IndexedDataTree, ConstIterator){
 	indexedDataTree1.add(3, {1, 2, 3});
 	indexedDataTree1.add(4, {{1, 2, 5}, {1, 2, 3}});
 
-	IndexedDataTree<int>::ConstIterator iterator1 = indexedDataTree1.cbegin();
+	IndexedDataTree<int>::ConstIterator iterator1
+		= indexedDataTree1.cbegin();
 	EXPECT_FALSE(iterator1 == indexedDataTree1.cend());
 	EXPECT_TRUE(iterator1 != indexedDataTree1.cend());
 	EXPECT_EQ((*iterator1), 3);
@@ -637,6 +648,15 @@ TEST(IndexedDataTree, ConstIterator){
 	++iterator1;
 	EXPECT_TRUE(iterator1 == indexedDataTree1.cend());
 	EXPECT_FALSE(iterator1 != indexedDataTree1.cend());
+
+	//Verify that begin() and end() is defined with return type
+	//ConstIterator for const IndexedDataTree.
+	iterator1 = const_cast<const IndexedDataTree<int>&>(
+		indexedDataTree1
+	).begin();
+	iterator1 = const_cast<const IndexedDataTree<int>&>(
+		indexedDataTree1
+	).end();
 }
 
 };
