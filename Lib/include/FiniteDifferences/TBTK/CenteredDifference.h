@@ -71,8 +71,8 @@ inline CenteredDifference::CenteredDifference(
 	backward[subindex]--;
 	Index forward = index;
 	forward[subindex]++;
-	pushBack(HoppingAmplitude(1/(2*dx), index, backward));
-	pushBack(HoppingAmplitude(-1/(2*dx), index, forward));
+	add(HoppingAmplitude(1/(2*dx), index, backward));
+	add(HoppingAmplitude(-1/(2*dx), index, forward));
 }
 
 };	//End of namespace TBTK

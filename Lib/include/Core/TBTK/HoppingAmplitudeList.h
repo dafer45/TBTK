@@ -51,7 +51,7 @@ public:
 	/** Append HoppingAmplitude to the end of the list.
 	 *
 	 *  @param hoppingAmplitude HoppingAmplitude to add. */
-	void pushBack(const HoppingAmplitude &hoppingAmplitude);
+	void add(const HoppingAmplitude &hoppingAmplitude);
 
 	/** Get size.
 	 *
@@ -82,7 +82,9 @@ private:
 	std::vector<HoppingAmplitude> hoppingAmplitudes;
 };
 
-inline void HoppingAmplitudeList::pushBack(const HoppingAmplitude &hoppingAmplitude){
+inline void HoppingAmplitudeList::add(
+	const HoppingAmplitude &hoppingAmplitude
+){
 	hoppingAmplitudes.push_back(hoppingAmplitude);
 }
 
@@ -90,7 +92,9 @@ inline unsigned int HoppingAmplitudeList::getSize() const{
 	return hoppingAmplitudes.size();
 }
 
-inline const HoppingAmplitude& HoppingAmplitudeList::operator[](unsigned int n) const{
+inline const HoppingAmplitude& HoppingAmplitudeList::operator[](
+	unsigned int n
+) const{
 	return hoppingAmplitudes[n];
 }
 

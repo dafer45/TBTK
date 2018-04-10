@@ -298,8 +298,8 @@ TEST(Model, operatorInsertion){
 	model << HoppingAmplitude(1, {1}, {0}) + HC;
 	//HoppingAMplitudeList.
 	HoppingAmplitudeList hoppingAmplitudeList;
-	hoppingAmplitudeList.pushBack(HoppingAmplitude(2, {2}, {0}));
-	hoppingAmplitudeList.pushBack(HoppingAmplitude(2, {0}, {2}));
+	hoppingAmplitudeList.add(HoppingAmplitude(2, {2}, {0}));
+	hoppingAmplitudeList.add(HoppingAmplitude(2, {0}, {2}));
 	model << hoppingAmplitudeList;
 	model.construct();
 

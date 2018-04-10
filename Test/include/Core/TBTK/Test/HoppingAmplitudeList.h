@@ -11,9 +11,9 @@ TEST(HoppingAmplitudeList, Constructor){
 
 TEST(HoppingAmplitudeList, SerializeToJSON){
 	HoppingAmplitudeList hoppingAmplitudeList0;
-	hoppingAmplitudeList0.pushBack(HoppingAmplitude(1, {1, 2}, {3, 4}));
-	hoppingAmplitudeList0.pushBack(HoppingAmplitude(1, {2, 1}, {3, 4}));
-	hoppingAmplitudeList0.pushBack(HoppingAmplitude(1, {2, 1}, {4, 3}));
+	hoppingAmplitudeList0.add(HoppingAmplitude(1, {1, 2}, {3, 4}));
+	hoppingAmplitudeList0.add(HoppingAmplitude(1, {2, 1}, {3, 4}));
+	hoppingAmplitudeList0.add(HoppingAmplitude(1, {2, 1}, {4, 3}));
 
 	HoppingAmplitudeList hoppingAmplitudeList1(
 		hoppingAmplitudeList0.serialize(Serializable::Mode::JSON),
@@ -32,18 +32,18 @@ TEST(HoppingAmplitudeList, getSize){
 	HoppingAmplitudeList hoppingAmplitudeList;
 	EXPECT_EQ(hoppingAmplitudeList.getSize(), 0);
 
-	hoppingAmplitudeList.pushBack(HoppingAmplitude(1, {1, 2}, {3, 4}));
-	hoppingAmplitudeList.pushBack(HoppingAmplitude(1, {2, 1}, {3, 4}));
-	hoppingAmplitudeList.pushBack(HoppingAmplitude(1, {2, 1}, {4, 3}));
+	hoppingAmplitudeList.add(HoppingAmplitude(1, {1, 2}, {3, 4}));
+	hoppingAmplitudeList.add(HoppingAmplitude(1, {2, 1}, {3, 4}));
+	hoppingAmplitudeList.add(HoppingAmplitude(1, {2, 1}, {4, 3}));
 	EXPECT_EQ(hoppingAmplitudeList.getSize(), 3);
 }
 
 TEST(HoppingAmplitudeList, operatorSubscript){
 	HoppingAmplitudeList hoppingAmplitudeList;
 
-	hoppingAmplitudeList.pushBack(HoppingAmplitude(1, {1, 2}, {3, 4}));
-	hoppingAmplitudeList.pushBack(HoppingAmplitude(1, {2, 1}, {3, 4}));
-	hoppingAmplitudeList.pushBack(HoppingAmplitude(1, {2, 1}, {4, 3}));
+	hoppingAmplitudeList.add(HoppingAmplitude(1, {1, 2}, {3, 4}));
+	hoppingAmplitudeList.add(HoppingAmplitude(1, {2, 1}, {3, 4}));
+	hoppingAmplitudeList.add(HoppingAmplitude(1, {2, 1}, {4, 3}));
 
 	EXPECT_TRUE(hoppingAmplitudeList[0].getToIndex().equals({1, 2}));
 	EXPECT_TRUE(hoppingAmplitudeList[0].getFromIndex().equals({3, 4}));

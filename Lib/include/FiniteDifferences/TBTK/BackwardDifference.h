@@ -69,8 +69,8 @@ inline BackwardDifference::BackwardDifference(
 
 	Index backward = index;
 	backward[subindex]--;
-	pushBack(HoppingAmplitude(1/dx, index, backward));
-	pushBack(HoppingAmplitude(-1/dx, index, index));
+	add(HoppingAmplitude(1/dx, index, backward));
+	add(HoppingAmplitude(-1/dx, index, index));
 }
 
 };	//End of namespace TBTK

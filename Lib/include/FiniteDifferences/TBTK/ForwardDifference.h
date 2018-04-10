@@ -58,8 +58,8 @@ inline ForwardDifference::ForwardDifference(
 	);
 	Index forward = index;
 	forward[subindex]++;
-	pushBack(HoppingAmplitude(1/dx, index, index));
-	pushBack(HoppingAmplitude(-1/dx, index, forward));
+	add(HoppingAmplitude(1/dx, index, index));
+	add(HoppingAmplitude(-1/dx, index, forward));
 }
 
 };	//End of namespace TBTK
