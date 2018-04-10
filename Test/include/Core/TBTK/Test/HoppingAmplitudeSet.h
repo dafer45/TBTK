@@ -354,7 +354,7 @@ TEST(HoppingAmplitudeSet, getSubspaceIndices){
 	EXPECT_TRUE(iterator.getIndex().equals({1, 1}));
 }
 
-TEST(HoppingAmplitudeTree, construct){
+TEST(HoppingAmplitudeSet, construct){
 	//Already tested through
 	//HoppingAmplitudeSet::getBasisSize()
 	//HoppingAmplitudeSet::getBasisIndex()
@@ -441,6 +441,54 @@ TEST(HoppingAmplitudeSet, getLastIndexInBlock){
 	EXPECT_EQ(hoppingAmplitudeSet.getLastIndexInBlock({0, 1}), -1);
 	EXPECT_EQ(hoppingAmplitudeSet.getLastIndexInBlock({0, 0}), 2);
 	EXPECT_EQ(hoppingAmplitudeSet.getLastIndexInBlock({1, 1}), 4);
+}
+
+TEST(HoppingAmplitudeSet, getSparseMatrix){
+	HoppingAmplitudeSet hoppingAmplitudeSet;
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {1}, {0}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(2, {0}, {1}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(3, {2}, {2}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(4, {4}, {3}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(5, {3}, {4}));
+	hoppingAmplitudeSet.construct();
+
+	SparseMatrix<std::complex<double>> sparseMatrix
+		= hoppingAmplitudeSet.getSparseMatrix();
+
+	ASSERT_EQ(sparseMatrix.getNumRows(), 5);
+	ASSERT_EQ(sparseMatrix.getNumColumns(), 5);
+
+	//Check column pointers.
+	const unsigned int *columnPointers
+		= sparseMatrix.getCSCColumnPointers();
+	EXPECT_EQ(columnPointers[0], 0);
+	EXPECT_EQ(columnPointers[1], 1);
+	EXPECT_EQ(columnPointers[2], 2);
+	EXPECT_EQ(columnPointers[3], 3);
+	EXPECT_EQ(columnPointers[4], 4);
+	EXPECT_EQ(columnPointers[5], 5);
+
+	//Check rows.
+	const unsigned int *rows
+		= sparseMatrix.getCSCRows();
+	EXPECT_EQ(rows[0], 1);
+	EXPECT_EQ(rows[1], 0);
+	EXPECT_EQ(rows[2], 2);
+	EXPECT_EQ(rows[3], 4);
+	EXPECT_EQ(rows[4], 3);
+
+	//Check values.
+	const std::complex<double> *values = sparseMatrix.getCSCValues();
+	EXPECT_DOUBLE_EQ(real(values[0]), 1);
+	EXPECT_DOUBLE_EQ(imag(values[0]), 0);
+	EXPECT_DOUBLE_EQ(real(values[1]), 2);
+	EXPECT_DOUBLE_EQ(imag(values[1]), 0);
+	EXPECT_DOUBLE_EQ(real(values[2]), 3);
+	EXPECT_DOUBLE_EQ(imag(values[2]), 0);
+	EXPECT_DOUBLE_EQ(real(values[3]), 4);
+	EXPECT_DOUBLE_EQ(imag(values[3]), 0);
+	EXPECT_DOUBLE_EQ(real(values[4]), 5);
+	EXPECT_DOUBLE_EQ(imag(values[4]), 0);
 }
 
 TEST(HoppingAmplitudeSet, serialize){

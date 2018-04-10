@@ -98,6 +98,9 @@ public:
 	/** Get CSC values. */
 	const DataType* getCSCValues() const;
 
+	/** Construct the sparse matrix. */
+	void construct();
+
 	/** Print. */
 	void print() const;
 private:
@@ -669,6 +672,11 @@ inline const DataType* SparseMatrix<DataType>::getCSCValues() const{
 	);
 
 	return csxValues;
+}
+
+template<typename DataType>
+inline void SparseMatrix<DataType>::construct(){
+	constructCSX();
 }
 
 template<typename DataType>

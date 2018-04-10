@@ -27,6 +27,7 @@
 #include "TBTK/HoppingAmplitudeTree.h"
 #include "TBTK/IndexTree.h"
 #include "TBTK/Serializable.h"
+#include "TBTK/SparseMatrix.h"
 #include "TBTK/Streams.h"
 #include "TBTK/TBTKMacros.h"
 
@@ -164,6 +165,13 @@ public:
 
 	/** Get row indices on COO format. */
 	const std::complex<double>* getCOOValues() const;
+
+	/** Get a sprase matrix corresponding to the HoppingAMplitudeSet. The
+	 *  basis of the matrix is the Hilbert space basis.
+	 *
+	 *  @return A sparse matrix representation of the HoppingAmplitudeSet.
+	 */
+	SparseMatrix<std::complex<double>> getSparseMatrix() const;
 
 	/** Iterator for iterating through @link HoppingAmplitude
 	 *  HoppingAmplitudes @endlink. */
@@ -339,6 +347,35 @@ inline const int* HoppingAmplitudeSet::getCOOColIndices() const{
 
 inline const std::complex<double>* HoppingAmplitudeSet::getCOOValues() const{
 	return cooValues;
+}
+
+inline SparseMatrix<std::complex<double>> HoppingAmplitudeSet::getSparseMatrix(
+) const{
+	TBTKAssert(
+		isConstructed,
+		"HoppingAmplitudeSet::getSparseMatrix()",
+		"HoppingAmplitudeSet has to be constructed first.",
+		""
+	);
+
+	SparseMatrix<std::complex<double>> sparseMatrix(
+		SparseMatrix<std::complex<double>>::StorageFormat::CSC
+	);
+
+	Iterator iterator = getIterator();
+	const HoppingAmplitude *hoppingAmplitude;
+	while((hoppingAmplitude = iterator.getHA())){
+		sparseMatrix.add(
+			getBasisIndex(hoppingAmplitude->getToIndex()),
+			getBasisIndex(hoppingAmplitude->getFromIndex()),
+			hoppingAmplitude->getAmplitude()
+		);
+
+		iterator.searchNextHA();
+	}
+	sparseMatrix.construct();
+
+	return sparseMatrix;
 }
 
 inline unsigned int HoppingAmplitudeSet::getSizeInBytes() const{
