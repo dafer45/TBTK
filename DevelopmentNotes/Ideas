@@ -1,8 +1,10 @@
-- Make SingleParticleContext inherit from Geometry. This should remove the need
-  for copy and move constructors, destructor, and assignment and move
-  assignment operators.
+- Make SingleParticleContext contain a Geometry instead of a pointer to a
+  Geometry. This should remove the need for copy and move constructors,
+  destructor, and assignment and move assignment operators.
 
-- Make Model inherit from SingleParticleContext and ManyBodyContext.
+- Make Model inherit from SingleParticleContext and ManyBodyContext. Update:
+  Probably it is better to replace pointers by member objects instead of
+  inheriting.
 
 - Make Geometry use an IndexedDataTree to store the coordinates and specifiers
   to avoid the requirement that a HoppingAmplitudeSet has been constructed
