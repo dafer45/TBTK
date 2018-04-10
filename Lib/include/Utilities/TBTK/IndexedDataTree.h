@@ -109,8 +109,8 @@ public:
 	 *  @return Serialized string representation of the IndexedDataTree. */
 	virtual std::string serialize(Mode mode) const;
 
-	/** Iterator for iterating through the elements stored in the tree
-	 *  structure. */
+	/** Base classed used by Iterator and ConstIterator for iterating
+	 *  through the elements stored in the tree structure. */
 	class Iterator;
 	class ConstIterator;
 	template<bool isConstIterator>
@@ -159,6 +159,8 @@ public:
 		friend class ConstIterator;
 	};
 
+	/** Iterator for iterating through the elements stored in the tree
+	 *  structure. */
 	class Iterator : public _Iterator<false>{
 	private:
 		Iterator(
@@ -170,6 +172,8 @@ public:
 		friend class IndexedDataTree;
 	};
 
+	/** ConstIterator for iterating through the elements stored in the tree
+	 *  structure. */
 	class ConstIterator : public _Iterator<true>{
 	private:
 		ConstIterator(
@@ -298,8 +302,8 @@ public:
 	/** Serilaize. */
 	virtual std::string serialize(Mode mode) const;
 
-	/** Iterator for iterating through the elements stored in the tree
-	 *  structure. */
+	/** Base class used by Iterator and ConstIterator for iterating through
+	 *  the elements stored in the tree structure. */
 	class Iterator;
 	class ConstIterator;
 	template<bool isConstIterator>
@@ -348,6 +352,8 @@ public:
 		friend class ConstIterator;
 	};
 
+	/** Iterator for iterating through the elements stored in the tree
+	 *  structure. */
 	class Iterator : public _Iterator<false>{
 	private:
 		Iterator(
@@ -359,6 +365,8 @@ public:
 		friend class IndexedDataTree;
 	};
 
+	/** ConstIterator for iterating through the elements stored in the tree
+	 *  structure. */
 	class ConstIterator : public _Iterator<true>{
 	private:
 		ConstIterator(
@@ -487,8 +495,8 @@ public:
 	/** Serilaize. */
 	virtual std::string serialize(Mode mode) const;
 
-	/** Iterator for iterating through the elements stored in the tree
-	 *  structure. */
+	/** Base class used by Iterator and ConstIterator for iterating through
+	 *  the elements stored in the tree structure. */
 	class Iterator;
 	class ConstIterator;
 	template<bool isConstIterator>
@@ -537,6 +545,8 @@ public:
 		friend class ConstIterator;
 	};
 
+	/** Iterator for iterating through the elements stored in the tree
+	 *  structure. */
 	class Iterator : public _Iterator<false>{
 	private:
 		Iterator(
@@ -548,6 +558,8 @@ public:
 		friend class IndexedDataTree;
 	};
 
+	/** ConstIterator for iterating through the elements stored in the tree
+	 *  structure. */
 	class ConstIterator : public _Iterator<true>{
 	private:
 		ConstIterator(
