@@ -39,6 +39,9 @@ namespace TBTK{
  *  H\Psi + S\f$. */
 class SourceAmplitude{
 public:
+	/** Constructs a SourceAmplitude. */
+	SourceAmplitude();
+
 	/** Constructs a SourceAmplitude from a value and an Index.
 	 *
 	 *  @param amplitude The amplitude value.
@@ -112,6 +115,9 @@ private:
 	Index index;
 
 };
+
+inline SourceAmplitude::SourceAmplitude() : amplitudeCallback(nullptr){
+}
 
 inline std::complex<double> SourceAmplitude::getAmplitude() const{
 	if(amplitudeCallback)

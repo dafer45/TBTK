@@ -121,6 +121,9 @@ private:
 	Index eliminationIndex;
 };
 
+inline BoundaryCondition::BoundaryCondition(){
+}
+
 inline void BoundaryCondition::add(const HoppingAmplitude &hoppingAmplitude){
 	hoppingAmplitudeList.add(hoppingAmplitude);
 }
