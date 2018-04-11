@@ -38,7 +38,34 @@ TEST(BoundaryCondition, SerializeToJSON){
 }
 
 TEST(BoundaryCondition, add){
-	//Tested through BoundaryCondition::getHoppingAmplitudeSet().
+	BoundaryCondition boundaryCondition0;
+
+	//Fail to add HoppingAmplitudes with different to-Indices.
+	boundaryCondition0.add(HoppingAmplitude(0, {0}, {2}));
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			boundaryCondition0.add(HoppingAmplitude(0, {1}, {2}));
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+
+	//Fail to add HoppingAmplitude with different to-Index than the
+	//SourceAmplitudes Index.
+	BoundaryCondition boundaryCondition1;
+	boundaryCondition1.set(SourceAmplitude(0, {0}));
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			boundaryCondition1.add(HoppingAmplitude(0, {1}, {2}));
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	//Succeed to add HoppingAmplitude with the same to-Index as the
+	//SourceAmplitudes Index.
+	boundaryCondition1.add(HoppingAmplitude(0, {0}, {2}));
 }
 
 TEST(BoundaryCondition, getHoppingAmplitudeSet){
@@ -52,7 +79,21 @@ TEST(BoundaryCondition, getHoppingAmplitudeSet){
 }
 
 TEST(BoundaryCondition, set){
-	//Tested through BoundaryCondition::getSourceAmplitude().
+	//Fail to set SourceAmplitude with an Index that disagrees with the
+	//to-Indices of the already added HoppingAmplitudes.
+	BoundaryCondition boundaryCondition;
+	boundaryCondition.add(HoppingAmplitude(0, {0}, {2}));
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			boundaryCondition.set(SourceAmplitude(0, {1}));
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	//Succeed to add SourceAmplitude with an Index that agrees with the
+	//to-Indices of the already added HoppingAmplitudes.
+	boundaryCondition.set(SourceAmplitude(0, {0}));
 }
 
 TEST(BoundaryCondition, getSourceAmplitude){
@@ -66,11 +107,26 @@ TEST(BoundaryCondition, getSourceAmplitude){
 }
 
 TEST(BoundaryCondition, setEliminationIndex){
-	//Tested through BoundaryCondition::getEliminationIndex().
+	BoundaryCondition boundaryCondition;
+	boundaryCondition.add(HoppingAmplitude(0, {0}, {1}));
+	//Fail to set Elimination Index that is not present among the
+	//from-Indices of the added HoppingAmplitudes.
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			boundaryCondition.setEliminationIndex({2});
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	//Succeed at adding Elimination Index that is present among the
+	//from-Indices of the added HoppingAmplitudes.
+	boundaryCondition.setEliminationIndex({1});
 }
 
 TEST(BoundaryCondition, getEliminationIndex){
 	BoundaryCondition boundaryCondition;
+	boundaryCondition.add(HoppingAmplitude(0, {0, 0}, {0, 0}));
 	boundaryCondition.setEliminationIndex({0, 0});
 	EXPECT_TRUE(boundaryCondition.getEliminationIndex().equals({0, 0}));
 }

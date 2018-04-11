@@ -125,6 +125,41 @@ inline BoundaryCondition::BoundaryCondition(){
 }
 
 inline void BoundaryCondition::add(const HoppingAmplitude &hoppingAmplitude){
+	if(hoppingAmplitudeList.getSize() > 0){
+		TBTKAssert(
+			hoppingAmplitude.getToIndex().equals(
+				hoppingAmplitudeList[0].getToIndex()
+			),
+			"BoundaryCondition::add()",
+			"Incompatible to-Indices. All HoppingAmplitudes in a"
+			<< " BoundaryCondition must have the same to-Index."
+			<< " The added HoppingAmplitude has to-Index '"
+			<< hoppingAmplitude.getToIndex().toString() << "'"
+			<< " while a HoppingAmplitude with to-Index '"
+			<< hoppingAmplitudeList[0].getToIndex().toString()
+			<< "' already has been added.",
+			""
+		);
+	}
+	else{
+		if(!sourceAmplitude.getIndex().equals({})){
+			TBTKAssert(
+				hoppingAmplitude.getToIndex().equals(
+					sourceAmplitude.getIndex()
+				),
+				"BoundaryCondition::add()",
+				"Incompatible Indices. The HoppingAmplitude"
+				<< " must have the same to-Index as the Index"
+				<< " of the SourceAmplitude. The"
+				<< " HoppingAmplitude has to-Index '"
+				<< hoppingAmplitude.getToIndex().toString()
+				<< "' while the SourceAmplitude has Index '"
+				<< sourceAmplitude.getIndex().toString() << "'.",
+				""
+		);
+		}
+	}
+
 	hoppingAmplitudeList.add(hoppingAmplitude);
 }
 
@@ -133,6 +168,30 @@ inline const HoppingAmplitudeList& BoundaryCondition::getHoppingAmplitudeList() 
 }
 
 inline void BoundaryCondition::set(const SourceAmplitude &sourceAmplitude){
+	TBTKAssert(
+		!sourceAmplitude.getIndex().equals({}),
+		"BoundaryCondition::set()",
+		"Invalid Index. The SourceAmplitudes Index cannot be the empty"
+		<< "Index.",
+		""
+	);
+	if(hoppingAmplitudeList.getSize() > 0){
+		TBTKAssert(
+			sourceAmplitude.getIndex().equals(
+				hoppingAmplitudeList[0].getToIndex()
+			),
+			"BoundaryCondition::set()",
+			"Incompatible Indices. The SourceAmplitude must have"
+			<< " the same Index as the HoppingAmplitudes"
+			<< " to-Indices. The SourceAmplitude has Index '"
+			<< sourceAmplitude.getIndex().toString() << "' while a"
+			<< " HoppingAmplitude with to-Index '"
+			<< hoppingAmplitudeList[0].getToIndex().toString()
+			<< "' already has been added.",
+			""
+		);
+	}
+
 	this->sourceAmplitude = sourceAmplitude;
 }
 
@@ -141,6 +200,27 @@ inline const SourceAmplitude& BoundaryCondition::getSourceAmplitude() const{
 }
 
 inline void BoundaryCondition::setEliminationIndex(const Index &eliminationIndex){
+	bool eliminationIndexFound = false;
+	for(unsigned int n = 0; n < hoppingAmplitudeList.getSize(); n++){
+		if(
+			hoppingAmplitudeList[n].getFromIndex().equals(
+				eliminationIndex
+			)
+		){
+			eliminationIndexFound = true;
+			break;
+		}
+	}
+	TBTKAssert(
+		eliminationIndexFound,
+		"BoundaryCondition::setEliminationIndex()",
+		"Invalid elimination Index. The elimination Index must be"
+		<< " equal to the from-Index of at least one HoppingAmplitude"
+		<< " added to the BoundaryCondition but no such from-Index was"
+		<< " found.",
+		"First add HoppingAmplitudes using BoundaryCondition::add()"
+	);
+
 	this->eliminationIndex = eliminationIndex;
 }
 
