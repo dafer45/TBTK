@@ -95,7 +95,7 @@ void BlockDiagonalizer::init(){
 
 	//Find number of blocks and number of states per block.
 	IndexTree blockIndices = getModel().getHoppingAmplitudeSet().getSubspaceIndices();
-	IndexTree::Iterator blockIterator = blockIndices.begin();
+/*	IndexTree::Iterator blockIterator = blockIndices.begin();
 	numBlocks = 0;
 	numStatesPerBlock.clear();
 	while(!blockIterator.getHasReachedEnd()){
@@ -109,6 +109,22 @@ void BlockDiagonalizer::init(){
 		numStatesPerBlock.push_back(iterator.getNumBasisIndices());
 
 		blockIterator.searchNext();
+	}*/
+	numBlocks = 0;
+	numStatesPerBlock.clear();
+	for(
+		IndexTree::ConstIterator blockIterator = blockIndices.cbegin();
+		blockIterator != blockIndices.cend();
+		++blockIterator
+	){
+		Index blockIndex = *blockIterator;
+
+		numBlocks++;
+
+		HoppingAmplitudeSet::ConstIterator iterator = getModel().getHoppingAmplitudeSet().cbegin(
+			blockIndex
+		);
+		numStatesPerBlock.push_back(iterator.getNumBasisIndices());
 	}
 
 	/** Calculate block sizes and blockOffsets. */
@@ -243,7 +259,7 @@ void BlockDiagonalizer::update(){
 		hamiltonian[n] = 0.;
 
 	IndexTree blockIndices = getModel().getHoppingAmplitudeSet().getSubspaceIndices();
-	IndexTree::Iterator blockIterator = blockIndices.begin();
+/*	IndexTree::Iterator blockIterator = blockIndices.begin();
 	if(parallelExecution){
 		vector<HoppingAmplitudeSet::ConstIterator> iterators;
 		vector<HoppingAmplitudeSet::ConstIterator> endIterators;
@@ -314,6 +330,79 @@ void BlockDiagonalizer::update(){
 
 			blockCounter++;
 			blockIterator.searchNext();
+		}
+	}*/
+	IndexTree::ConstIterator blockIterator = blockIndices.cbegin();
+	if(parallelExecution){
+		vector<HoppingAmplitudeSet::ConstIterator> iterators;
+		vector<HoppingAmplitudeSet::ConstIterator> endIterators;
+
+		while(blockIterator != blockIndices.cend()){
+			Index blockIndex = *blockIterator;
+
+			iterators.push_back(
+				getModel().getHoppingAmplitudeSet().cbegin(
+					blockIndex
+				)
+			);
+			endIterators.push_back(
+				getModel().getHoppingAmplitudeSet().cend(
+					blockIndex
+				)
+			);
+
+			++blockIterator;
+		}
+
+		#pragma omp parallel for
+		for(unsigned int block = 0; block < iterators.size(); block++){
+			HoppingAmplitudeSet::ConstIterator &iterator = iterators[block];
+			HoppingAmplitudeSet::ConstIterator &endIterator = endIterators[block];
+
+			int minBasisIndex = iterator.getMinBasisIndex();
+			while(iterator != endIterator){
+				int from = model.getHoppingAmplitudeSet().getBasisIndex(
+					(*iterator).getFromIndex()
+				) - minBasisIndex;
+				int to = model.getHoppingAmplitudeSet().getBasisIndex(
+					(*iterator).getToIndex()
+				) - minBasisIndex;
+				if(from >= to)
+					hamiltonian[blockOffsets.at(block) + to + (from*(from+1))/2] += (*iterator).getAmplitude();
+
+				++iterator;
+			}
+		}
+	}
+	else{
+		unsigned int blockCounter = 0;
+		while(blockIterator != blockIndices.cend()){
+			Index blockIndex = *blockIterator;
+
+			HoppingAmplitudeSet::ConstIterator iterator
+				= getModel().getHoppingAmplitudeSet().cbegin(
+					blockIndex
+				);
+			int minBasisIndex = iterator.getMinBasisIndex();
+			while(
+				iterator != getModel().getHoppingAmplitudeSet().cend(
+						blockIndex
+					)
+			){
+				int from = model.getHoppingAmplitudeSet().getBasisIndex(
+					(*iterator).getFromIndex()
+				) - minBasisIndex;
+				int to = model.getHoppingAmplitudeSet().getBasisIndex(
+					(*iterator).getToIndex()
+				) - minBasisIndex;
+				if(from >= to)
+					hamiltonian[blockOffsets.at(blockCounter) + to + (from*(from+1))/2] += (*iterator).getAmplitude();
+
+				++iterator;
+			}
+
+			blockCounter++;
+			++blockIterator;
 		}
 	}
 

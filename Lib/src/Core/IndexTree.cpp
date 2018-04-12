@@ -478,14 +478,14 @@ vector<unsigned int> IndexTree::getSubindicesMatching(
 vector<Index> IndexTree::getIndexList(const Index &pattern) const{
 	vector<Index> indexList;
 
-	Iterator iterator = begin();
-/*	const Index *index;
-	while((index = iterator.getIndex())){
-		if(index->equals(pattern, true))
-			indexList.push_back(*index);
-
-		iterator.searchNext();
-	}*/
+/*	Iterator iterator = begin();
+//	const Index *index;
+//	while((index = iterator.getIndex())){
+//		if(index->equals(pattern, true))
+//			indexList.push_back(*index);
+//
+//		iterator.searchNext();
+//	}
 	while(!iterator.getHasReachedEnd()){
 		Index index = iterator.getIndex();
 		if(index.equals(pattern, true)){
@@ -510,6 +510,33 @@ vector<Index> IndexTree::getIndexList(const Index &pattern) const{
 		}
 
 		iterator.searchNext();
+	}*/
+	for(
+		IndexTree::ConstIterator iterator = cbegin();
+		iterator != cend();
+		++iterator
+	){
+		Index index = *iterator;
+		if(index.equals(pattern, true)){
+			//Index::equals() has here determined that the Indices
+			//are equal up to IDX_ALL wildcards. However, we do not
+			//want to add 'index' if the match is because 'index'
+			//has an IDX_ALL wildcard in a subindex where 'pattern'
+			//has some other value. Only IDX_ALL wildcards in the
+			//'pattern' Index should be treated as wildcards.
+			bool equalityIsValid = true;
+			for(unsigned int n = 0; n < index.getSize(); n++){
+				if(index[n] == IDX_ALL){
+					if(pattern[n] != IDX_ALL){
+						equalityIsValid = false;
+						break;
+					}
+				}
+			}
+
+			if(equalityIsValid)
+				indexList.push_back(index);
+		}
 	}
 
 	return indexList;
@@ -615,95 +642,6 @@ string IndexTree::serialize(Mode mode) const{
 			""
 		);
 	}
-}
-
-IndexTree::Iterator::Iterator(const IndexTree *indexTree){
-	this->indexTree = indexTree;
-	currentIndex.push_back(0);
-	skipNextIndex = false;
-	hasReachedEnd = false;
-	if(!searchNext(this->indexTree, 0))
-		hasReachedEnd = true;
-}
-
-void IndexTree::Iterator::reset(){
-	currentIndex.clear();
-	currentIndex.push_back(0);
-	skipNextIndex = false;
-	hasReachedEnd = false;
-	if(!searchNext(indexTree, 0))
-		hasReachedEnd = true;
-}
-
-void IndexTree::Iterator::searchNext(){
-	skipNextIndex = true;
-	if(!searchNext(indexTree, 0))
-		hasReachedEnd = true;
-}
-
-bool IndexTree::Iterator::searchNext(
-	const IndexTree *indexTree,
-	unsigned int subindex
-){
-	if(indexTree->children.size() == 0){
-		if(indexTree->indexIncluded){
-			if(skipNextIndex)
-				skipNextIndex = false;
-			else
-				return true;
-		}
-	}
-
-	unsigned int  n = currentIndex.at(subindex);
-	while(n < indexTree->children.size()){
-		if(subindex+1 == currentIndex.size())
-			currentIndex.push_back(0);
-		if(searchNext(&indexTree->children.at(n), subindex+1))
-			return true;
-
-		currentIndex.pop_back();
-		n = ++currentIndex.back();
-	}
-
-	return false;
-}
-
-//const Index* IndexTree::Iterator::getIndex() const{
-const Index IndexTree::Iterator::getIndex() const{
-//	if(currentIndex.at(0) == (int)indexTree->children.size())
-//		return NULL;
-	if(currentIndex.at(0) == (int)indexTree->children.size())
-		return Index();
-
-//	Index *index = new Index({});
-//	Index *index = new Index();
-	Index index;
-
-	const IndexTree *indexTreeBranch = this->indexTree;
-	for(unsigned int n = 0; n < currentIndex.size()-1; n++){
-//		if(indexTreeBranch->indexSeparator)
-//			index->push_back(IDX_SEPARATOR);
-		if(indexTreeBranch->indexSeparator)
-			index.push_back(IDX_SEPARATOR);
-
-//		if(indexTreeBranch->wildcardIndex)
-//			index->push_back(indexTreeBranch->wildcardType);
-//		else
-//			index->push_back(currentIndex.at(n));
-		if(indexTreeBranch->wildcardIndex)
-			index.push_back(indexTreeBranch->wildcardType);
-		else
-			index.push_back(currentIndex.at(n));
-
-		if(n < currentIndex.size()-1)
-			indexTreeBranch = &indexTreeBranch->children.at(currentIndex.at(n));
-	}
-
-	return index;
-}
-
-IndexTree::Iterator IndexTree::begin() const{
-	return Iterator(this);
 }
 
 };	//End of namespace TBTK

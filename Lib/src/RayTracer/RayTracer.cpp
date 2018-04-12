@@ -361,27 +361,7 @@ void RayTracer::render(
 
 	//Setup IndexTree.
 	const IndexTree &indexTree = indexDescriptor.getIndexTree();
-	IndexTree::Iterator iterator = indexTree.begin();
-/*	const Index *index;
-	vector<Vector3d> coordinates;
-	while((index = iterator.getIndex())){
-		Index i = *index;
-		for(unsigned int n = 0; n < i.getSize(); n++)
-			if(i.at(n) < 0)
-				i.at(n) = IDX_ALL;
-
-		vector<Index> indices = model.getHoppingAmplitudeSet()->getIndexList(i);
-
-		coordinates.push_back(Vector3d({0., 0., 0.}));
-		for(unsigned int n = 0; n < indices.size(); n++){
-			const double *c = geometry->getCoordinates(indices.at(n));
-			coordinates.back().x += c[0]/indices.size();
-			coordinates.back().y += c[1]/indices.size();
-			coordinates.back().z += c[2]/indices.size();
-		}
-
-		iterator.searchNext();
-	}*/
+/*	IndexTree::Iterator iterator = indexTree.begin();
 	vector<Vector3d> coordinates;
 	while(!iterator.getHasReachedEnd()){
 		Index index = iterator.getIndex();
@@ -402,6 +382,29 @@ void RayTracer::render(
 		}
 
 		iterator.searchNext();
+	}*/
+	vector<Vector3d> coordinates;
+	for(
+		IndexTree::ConstIterator iterator = indexTree.cbegin();
+		iterator != indexTree.cend();
+		++iterator
+	){
+		Index index = *iterator;
+
+		Index i = index;
+		for(unsigned int n = 0; n < i.getSize(); n++)
+			if(i.at(n) < 0)
+				i.at(n) = IDX_ALL;
+
+		vector<Index> indices = model.getHoppingAmplitudeSet().getIndexList(i);
+
+		coordinates.push_back(Vector3d({0., 0., 0.}));
+		for(unsigned int n = 0; n < indices.size(); n++){
+			const double *c = geometry->getCoordinates(indices.at(n));
+			coordinates.back().x += c[0]/indices.size();
+			coordinates.back().y += c[1]/indices.size();
+			coordinates.back().z += c[2]/indices.size();
+		}
 	}
 
 	//Setup canvas and HitDescriptors.

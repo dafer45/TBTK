@@ -660,40 +660,49 @@ TEST(IndexTree, Iterator){
 	indexTree.add({4, IDX_ALL, 5});
 	indexTree.generateLinearMap();
 
-	IndexTree::Iterator iterator = indexTree.begin();
-	EXPECT_FALSE(iterator.getHasReachedEnd());
-	EXPECT_TRUE(iterator.getIndex().equals({0, 0, 0}));
+	IndexTree::ConstIterator iterator = indexTree.cbegin();
+	EXPECT_TRUE(iterator != indexTree.cend());
+	EXPECT_FALSE(iterator == indexTree.cend());
+	EXPECT_TRUE((*iterator).equals({0, 0, 0}));
 
-	iterator.searchNext();
-	EXPECT_FALSE(iterator.getHasReachedEnd());
-	EXPECT_TRUE(iterator.getIndex().equals({0, 0, 1}));
+	++iterator;
+	EXPECT_TRUE(iterator != indexTree.cend());
+	EXPECT_FALSE(iterator == indexTree.cend());
+	EXPECT_TRUE((*iterator).equals({0, 0, 1}));
 
-	iterator.searchNext();
-	EXPECT_FALSE(iterator.getHasReachedEnd());
-	EXPECT_TRUE(iterator.getIndex().equals({0, 1, 0}));
+	++iterator;
+	EXPECT_TRUE(iterator != indexTree.cend());
+	EXPECT_FALSE(iterator == indexTree.cend());
+	EXPECT_TRUE((*iterator).equals({0, 1, 0}));
 
-	iterator.searchNext();
-	EXPECT_FALSE(iterator.getHasReachedEnd());
-	EXPECT_TRUE(iterator.getIndex().equals({0, 1, 2, 3}));
+	++iterator;
+	EXPECT_TRUE(iterator != indexTree.cend());
+	EXPECT_FALSE(iterator == indexTree.cend());
+	EXPECT_TRUE((*iterator).equals({0, 1, 2, 3}));
 
-	iterator.searchNext();
-	EXPECT_FALSE(iterator.getHasReachedEnd());
-	EXPECT_TRUE(iterator.getIndex().equals({1, 0, 0}));
+	++iterator;
+	EXPECT_TRUE(iterator != indexTree.cend());
+	EXPECT_FALSE(iterator == indexTree.cend());
+	EXPECT_TRUE((*iterator).equals({1, 0, 0}));
 
-	iterator.searchNext();
-	EXPECT_FALSE(iterator.getHasReachedEnd());
-	EXPECT_TRUE(iterator.getIndex().equals({{1, 2, 3}, {4, 5, 6}}));
+	++iterator;
+	EXPECT_TRUE(iterator != indexTree.cend());
+	EXPECT_FALSE(iterator == indexTree.cend());
+	EXPECT_TRUE((*iterator).equals({{1, 2, 3}, {4, 5, 6}}));
 
-	iterator.searchNext();
-	EXPECT_FALSE(iterator.getHasReachedEnd());
-	EXPECT_TRUE(iterator.getIndex().equals({3, IDX_SPIN, 4}));
+	++iterator;
+	EXPECT_TRUE(iterator != indexTree.cend());
+	EXPECT_FALSE(iterator == indexTree.cend());
+	EXPECT_TRUE((*iterator).equals({3, IDX_SPIN, 4}));
 
-	iterator.searchNext();
-	EXPECT_FALSE(iterator.getHasReachedEnd());
-	EXPECT_TRUE(iterator.getIndex().equals({4, IDX_ALL, 5}));
+	++iterator;
+	EXPECT_TRUE(iterator != indexTree.cend());
+	EXPECT_FALSE(iterator == indexTree.cend());
+	EXPECT_TRUE((*iterator).equals({4, IDX_ALL, 5}));
 
-	iterator.searchNext();
-	EXPECT_TRUE(iterator.getHasReachedEnd());
+	++iterator;
+	EXPECT_FALSE(iterator != indexTree.cend());
+	EXPECT_TRUE(iterator == indexTree.cend());
 }
 
 };

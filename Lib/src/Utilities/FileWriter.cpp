@@ -256,15 +256,7 @@ void FileWriter::writeIndexTree(
 	init();
 
 	std::vector<int> serializedIndices;
-	IndexTree::Iterator it = indexTree.begin();
-/*	const Index *index;
-	while((index = it.getIndex())){
-		serializedIndices.push_back(index->getSize());
-		for(unsigned int n = 0; n < index->getSize(); n++)
-			serializedIndices.push_back(index->at(n));
-
-		it.searchNext();
-	}*/
+/*	IndexTree::Iterator it = indexTree.begin();
 	while(!it.getHasReachedEnd()){
 		Index index = it.getIndex();
 		serializedIndices.push_back(index.getSize());
@@ -272,6 +264,16 @@ void FileWriter::writeIndexTree(
 			serializedIndices.push_back(index.at(n));
 
 		it.searchNext();
+	}*/
+	for(
+		IndexTree::ConstIterator iterator = indexTree.cbegin();
+		iterator != indexTree.cend();
+		++iterator
+	){
+		Index index = *iterator;
+		serializedIndices.push_back(index.getSize());
+		for(unsigned int n = 0; n < index.getSize(); n++)
+			serializedIndices.push_back(index.at(n));
 	}
 
 	const int RANK = 1;

@@ -348,10 +348,10 @@ TEST(HoppingAmplitudeSet, getSubspaceIndices){
 
 	EXPECT_EQ(subspaceIndices.getSize(), 2);
 
-	IndexTree::Iterator iterator = subspaceIndices.begin();
-	EXPECT_TRUE(iterator.getIndex().equals({0, 0}));
-	iterator.searchNext();
-	EXPECT_TRUE(iterator.getIndex().equals({1, 1}));
+	IndexTree::ConstIterator iterator = subspaceIndices.cbegin();
+	EXPECT_TRUE((*iterator).equals({0, 0}));
+	++iterator;
+	EXPECT_TRUE((*iterator).equals({1, 1}));
 }
 
 TEST(HoppingAmplitudeSet, construct){

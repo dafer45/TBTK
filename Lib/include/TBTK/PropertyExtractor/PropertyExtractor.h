@@ -316,34 +316,6 @@ void PropertyExtractor::calculate(
 	int *spinIndexHint
 ){
 /*	IndexTree::Iterator it = allIndices.begin();
-	const Index *index;
-//	int counter = 0;
-	while((index = it.getIndex())){
-		if(spinIndexHint != nullptr){
-			std::vector<unsigned int> spinIndices = memoryLayout.getSubindicesMatching(
-				IDX_SPIN,
-				*index,
-				IndexTree::SearchMode::MatchWildcards
-			);
-			TBTKAssert(
-				spinIndices.size() == 1,
-				"PropertyExtractor::calculate()",
-				"Zero or several spin indeces found.",
-				"Use IDX_SPIN once and only once per pattern to indicate spin index."
-			);
-			*spinIndexHint = spinIndices.at(0);
-		}
-
-		callback(
-			this,
-			abstractProperty.getDataRW(),
-			*index,
-			abstractProperty.getOffset(*index)
-		);
-
-		it.searchNext();
-	}*/
-	IndexTree::Iterator it = allIndices.begin();
 	while(!it.getHasReachedEnd()){
 		Index index = it.getIndex();
 		if(spinIndexHint != nullptr){
@@ -369,6 +341,34 @@ void PropertyExtractor::calculate(
 		);
 
 		it.searchNext();
+	}*/
+	for(
+		IndexTree::ConstIterator iterator = allIndices.cbegin();
+		iterator != allIndices.end();
+		++iterator
+	){
+		Index index = *iterator;
+		if(spinIndexHint != nullptr){
+			std::vector<unsigned int> spinIndices = memoryLayout.getSubindicesMatching(
+				IDX_SPIN,
+				index,
+				IndexTree::SearchMode::MatchWildcards
+			);
+			TBTKAssert(
+				spinIndices.size() == 1,
+				"PropertyExtractor::calculate()",
+				"Zero or several spin indeces found.",
+				"Use IDX_SPIN once and only once per pattern to indicate spin index."
+			);
+			*spinIndexHint = spinIndices.at(0);
+		}
+
+		callback(
+			this,
+			abstractProperty.getDataRW(),
+			index,
+			abstractProperty.getOffset(index)
+		);
 	}
 }
 

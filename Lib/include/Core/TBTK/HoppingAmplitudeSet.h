@@ -193,7 +193,7 @@ private:
 		void operator++();
 
 		/** Dereference operator. */
-		const HoppingAmplitude& operator*();
+		HoppingAmplitudeReferenceType operator*();
 
 		/** Equality operator. */
 		bool operator==(const _Iterator &rhs) const;
@@ -596,7 +596,11 @@ inline void HoppingAmplitudeSet::_Iterator<isConstIterator>::operator++(){
 }
 
 template<bool isConstIterator>
-inline const HoppingAmplitude& HoppingAmplitudeSet::_Iterator<isConstIterator>::operator*(){
+inline typename HoppingAmplitudeSet::_Iterator<
+	isConstIterator
+>::HoppingAmplitudeReferenceType HoppingAmplitudeSet::_Iterator<
+	isConstIterator
+>::operator*(){
 	return *iterator;
 }
 

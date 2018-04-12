@@ -187,25 +187,57 @@ public:
 	 *  pattern. */
 	std::vector<Index> getIndexList(const Index &pattern) const;
 
-	/** Iterator for iterating through @link Index Indices @link stored in
-	 *  the tree structure. */
-	class Iterator{
+//	class Iterator;
+	class ConstIterator;
+private:
+	/** Base class used by Iterator and ConstIterator for iterating through
+	 *  @link Index Indices @link stored in the tree structure. */
+	template<bool isConstIterator>
+	class _Iterator{
 	public:
+		/** Typedef to allow for pointer to const and non-const
+		 *  depending on Iterator type. */
+		typedef typename std::conditional<
+			isConstIterator,
+			const Index,
+			Index
+		>::type IndexType;
+
+		/** Increment operator. */
+		void operator++();
+
+		/** Dereference operator. */
+		IndexType operator*();
+
+		/** Equality operator. */
+		bool operator==(const _Iterator &rhs) const;
+
+		/** Inequality operator. */
+		bool operator!=(const _Iterator &rhs) const;
+
 		/** Reset iterator. */
-		void reset();
+//		void reset();
 
 		/** Advance the iterator by one. */
-		void searchNext();
+//		void searchNext();
 
 		/** Get Index currently pointed at. */
 //		const Index* getIndex() const;
-		const Index getIndex() const;
+//		const Index getIndex() const;
 
 		/** Returns true if the iterator has reached the end. */
-		bool getHasReachedEnd() const;
+//		bool getHasReachedEnd() const;
 	private:
+		/** Typedef to allow for pointer to const and non-const
+		 *  depending on Iterator type. */
+		typedef typename std::conditional<
+			isConstIterator,
+			const IndexTree*,
+			IndexTree*
+		>::type IndexTreePointerType;
+
 		/** Root node to iterate from. */
-		const IndexTree *indexTree;
+		IndexTreePointerType indexTree;
 
 		/** Current index at which the iterator points at. */
 		std::vector<int> currentIndex;
@@ -218,27 +250,56 @@ public:
 		bool skipNextIndex;
 
 		/** Flag indicating that the iterator has reached the end. */
-		bool hasReachedEnd;
+//		bool hasReachedEnd;
 
 		/** Constructor. */
-		Iterator(const IndexTree *indexTree);
+		_Iterator(IndexTreePointerType indexTree, bool end = false);
 
 		/** Search after next Index. Is used by
-		 *  IndexTree::Iterator::searchNext() and is called
+		 *  IndexTree::_Iterator::searchNext() and is called
 		 *  recursively. */
 		bool searchNext(
 			const IndexTree *indexTree,
 			unsigned int subindex
 		);
 
-		/** Allow IndexTree to construct Iterator. */
+		/** Allow Iterator and ConstIterator to construct _Iterator. */
+		friend class Iterator;
+		friend class ConstIterator;
+	};
+public:
+	/** ConstIterator for iterating through the elements stored in the
+	 *  IndexTree. */
+	class ConstIterator : public _Iterator<true>{
+	private:
+		ConstIterator(
+			const IndexTree *indexTree,
+			bool end = false
+		) : _Iterator<true>(indexTree, end){}
+
+		/** Make the IndexTree able to construct a ConstIterator. */
 		friend class IndexTree;
 	};
 
-	/** Get Iterator.
+	/** Get ConstIterator.
 	 *
-	 *  @return An Iterator initialized to point at the first Index. */
-	Iterator begin() const;
+	 *  @return ConstIterator initialized to point at the first Index. */
+	ConstIterator begin() const;
+
+	/** Get ConstIterator.
+	 *
+	 *  @return ConstIterator initialized to point at the first Index. */
+	ConstIterator cbegin() const;
+
+	/** Create ConstIterator pointing to the end.
+	 *
+	 *  @return ConstIterator pointing to the end of the IndexTree. */
+	ConstIterator end() const;
+
+	/** Create ConstIterator pointing to the end.
+	 *
+	 *  @return ConstIterator pointing to the end of the IndexTree. */
+	ConstIterator cend() const;
 
 	/** Implements Serializable::serialize(). */
 	std::string serialize(Mode mode) const;
@@ -300,14 +361,183 @@ private:
 	int getMaxIndex() const;
 };
 
+inline IndexTree::ConstIterator IndexTree::begin() const{
+	return ConstIterator(this);
+}
+
+inline IndexTree::ConstIterator IndexTree::cbegin() const{
+	return ConstIterator(this);
+}
+
+inline IndexTree::ConstIterator IndexTree::end() const{
+	return ConstIterator(this, true);
+}
+
+inline IndexTree::ConstIterator IndexTree::cend() const{
+	return ConstIterator(this, true);
+}
+
 inline int IndexTree::getSize() const{
 	return size;
 }
 
-inline bool IndexTree::Iterator::getHasReachedEnd() const{
+/*inline bool IndexTree::Iterator::getHasReachedEnd() const{
 	return hasReachedEnd;
+}*/
+
+template<bool isConstIterator>
+IndexTree::_Iterator<isConstIterator>::_Iterator(IndexTreePointerType indexTree, bool end){
+	if(end){
+		this->indexTree = indexTree;
+		currentIndex.push_back(indexTree->children.size());
+	}
+	else{
+		this->indexTree = indexTree;
+		currentIndex.push_back(0);
+		skipNextIndex = false;
+//		hasReachedEnd = false;
+//		if(!searchNext(this->indexTree, 0))
+//			hasReachedEnd = true;
+		searchNext(this->indexTree, 0);
+	}
+}
+
+/*void IndexTree::Iterator::reset(){
+	currentIndex.clear();
+	currentIndex.push_back(0);
+	skipNextIndex = false;
+	hasReachedEnd = false;
+	if(!searchNext(indexTree, 0))
+		hasReachedEnd = true;
+}*/
+
+/*void IndexTree::Iterator::searchNext(){
+	skipNextIndex = true;
+	if(!searchNext(indexTree, 0))
+		hasReachedEnd = true;
+}*/
+
+template<bool isConstIterator>
+void IndexTree::_Iterator<isConstIterator>::operator++(){
+	skipNextIndex = true;
+//	if(!searchNext(indexTree, 0))
+//		hasReachedEnd = true;
+	searchNext(indexTree, 0);
+}
+
+template<bool isConstIterator>
+bool IndexTree::_Iterator<isConstIterator>::searchNext(
+	const IndexTree *indexTree,
+	unsigned int subindex
+){
+	if(indexTree->children.size() == 0){
+		if(indexTree->indexIncluded){
+			if(skipNextIndex)
+				skipNextIndex = false;
+			else
+				return true;
+		}
+	}
+
+	unsigned int  n = currentIndex.at(subindex);
+	while(n < indexTree->children.size()){
+		if(subindex+1 == currentIndex.size())
+			currentIndex.push_back(0);
+		if(searchNext(&indexTree->children.at(n), subindex+1))
+			return true;
+
+		currentIndex.pop_back();
+		n = ++currentIndex.back();
+	}
+
+	return false;
+}
+
+//const Index* IndexTree::Iterator::getIndex() const{
+/*const Index IndexTree::Iterator::getIndex() const{
+//	if(currentIndex.at(0) == (int)indexTree->children.size())
+//		return NULL;
+	if(currentIndex.at(0) == (int)indexTree->children.size())
+		return Index();
+
+//	Index *index = new Index({});
+//	Index *index = new Index();
+	Index index;
+
+	const IndexTree *indexTreeBranch = this->indexTree;
+	for(unsigned int n = 0; n < currentIndex.size()-1; n++){
+//		if(indexTreeBranch->indexSeparator)
+//			index->push_back(IDX_SEPARATOR);
+		if(indexTreeBranch->indexSeparator)
+			index.push_back(IDX_SEPARATOR);
+
+//		if(indexTreeBranch->wildcardIndex)
+//			index->push_back(indexTreeBranch->wildcardType);
+//		else
+//			index->push_back(currentIndex.at(n));
+		if(indexTreeBranch->wildcardIndex)
+			index.push_back(indexTreeBranch->wildcardType);
+		else
+			index.push_back(currentIndex.at(n));
+
+		if(n < currentIndex.size()-1)
+			indexTreeBranch = &indexTreeBranch->children.at(currentIndex.at(n));
+	}
+
+	return index;
+}*/
+
+template<bool isConstIterator>
+typename IndexTree::_Iterator<isConstIterator>::IndexType IndexTree::_Iterator<isConstIterator>::operator*(){
+	if(currentIndex.at(0) == (int)indexTree->children.size()){
+		TBTKExit(
+			"IndexTree::_Iterator<isConstIterator>::operator*()",
+			"Out of range access. Tried to access an element using"
+			<< " an Iterator that points beyond the last element.",
+			""
+		);
+	}
+
+	Index index;
+
+	const IndexTree *indexTreeBranch = this->indexTree;
+	for(unsigned int n = 0; n < currentIndex.size()-1; n++){
+		if(indexTreeBranch->indexSeparator)
+			index.push_back(IDX_SEPARATOR);
+
+		if(indexTreeBranch->wildcardIndex)
+			index.push_back(indexTreeBranch->wildcardType);
+		else
+			index.push_back(currentIndex.at(n));
+
+		if(n < currentIndex.size()-1)
+			indexTreeBranch = &indexTreeBranch->children.at(currentIndex.at(n));
+	}
+
+	return index;
+}
+
+template<bool isConstIterator>
+bool IndexTree::_Iterator<isConstIterator>::operator==(const _Iterator &rhs) const{
+	if(indexTree != rhs.indexTree)
+		return false;
+
+	if(currentIndex.size() != rhs.currentIndex.size())
+		return false;
+
+	for(unsigned int n = 0; n < currentIndex.size(); n++)
+		if(currentIndex[n] != rhs.currentIndex[n])
+			return false;
+
+	return true;
+};
+
+template<bool isConstIterator>
+bool IndexTree::_Iterator<isConstIterator>::operator!=(const _Iterator &rhs) const{
+	return !operator==(rhs);
 }
 
 }; //End of namesapce TBTK
 
 #endif
+

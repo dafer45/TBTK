@@ -47,7 +47,7 @@ Model* FileReader::readModel(string name, string path){
 	ss << name << "HoppingAmplitudeSet";
 
 	HoppingAmplitudeSet *hoppingAmplitudeSet = readHoppingAmplitudeSet(ss.str());
-	((HoppingAmplitudeSet*)model->singleParticleContext)->operator=(*hoppingAmplitudeSet);
+	model->singleParticleContext->hoppingAmplitudeSet = *hoppingAmplitudeSet;
 	delete hoppingAmplitudeSet;
 	model->construct();
 
