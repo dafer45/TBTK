@@ -8,10 +8,6 @@
   operators to no longer be needed. Further, this removes the need on the
   Solver::ChebyshevExpander to override the metodh Solver::setSolver().
 
-- [1] Rewrite HoppingAmplitudeTree::Iterator, HoppingAmplitudeSet::Iterator and
-  IndexTree::Iterator to use standard iterator notation with operator++(),
-  operator*(), operator==(), and operator!=().
-
 - Rename ManyBodyContext (etc) to ManyParticleContext (etc).
 
 - The BlockDiagonalizer does not work for Models with a single global block.
@@ -20,6 +16,3 @@
 
 - Make ArnoldiIterator::setCentralValue() affect also the calculations
   performed in Mode::Normal.
-
-- Implement ConstIterator for every Iterator, but first do [1]. See
-  IndexedDataTree for how to implement ConstIterator.
