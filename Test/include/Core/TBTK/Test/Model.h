@@ -77,25 +77,26 @@ TEST(Model, addModel){
 
 	EXPECT_EQ(model.getBasisSize(), 4);
 
-	HoppingAmplitudeSet::Iterator iterator = model.getHoppingAmplitudeSet().getIterator();
-	EXPECT_EQ(real(iterator.getHA()->getAmplitude()), 0);
-	EXPECT_TRUE(iterator.getHA()->getToIndex().equals({0, 0}));
-	EXPECT_TRUE(iterator.getHA()->getFromIndex().equals({0, 0}));
+	HoppingAmplitudeSet::Iterator iterator
+		= model.getHoppingAmplitudeSet().begin();
+	EXPECT_EQ(real((*iterator).getAmplitude()), 0);
+	EXPECT_TRUE((*iterator).getToIndex().equals({0, 0}));
+	EXPECT_TRUE((*iterator).getFromIndex().equals({0, 0}));
 
-	iterator.searchNextHA();
-	EXPECT_EQ(real(iterator.getHA()->getAmplitude()), 1);
-	EXPECT_TRUE(iterator.getHA()->getToIndex().equals({0, 1}));
-	EXPECT_TRUE(iterator.getHA()->getFromIndex().equals({0, 1}));
+	++iterator;
+	EXPECT_EQ(real((*iterator).getAmplitude()), 1);
+	EXPECT_TRUE((*iterator).getToIndex().equals({0, 1}));
+	EXPECT_TRUE((*iterator).getFromIndex().equals({0, 1}));
 
-	iterator.searchNextHA();
-	EXPECT_EQ(real(iterator.getHA()->getAmplitude()), 2);
-	EXPECT_TRUE(iterator.getHA()->getToIndex().equals({1, 0}));
-	EXPECT_TRUE(iterator.getHA()->getFromIndex().equals({1, 0}));
+	++iterator;
+	EXPECT_EQ(real((*iterator).getAmplitude()), 2);
+	EXPECT_TRUE((*iterator).getToIndex().equals({1, 0}));
+	EXPECT_TRUE((*iterator).getFromIndex().equals({1, 0}));
 
-	iterator.searchNextHA();
-	EXPECT_EQ(real(iterator.getHA()->getAmplitude()), 3);
-	EXPECT_TRUE(iterator.getHA()->getToIndex().equals({1, 1}));
-	EXPECT_TRUE(iterator.getHA()->getFromIndex().equals({1, 1}));
+	++iterator;
+	EXPECT_EQ(real((*iterator).getAmplitude()), 3);
+	EXPECT_TRUE((*iterator).getToIndex().equals({1, 1}));
+	EXPECT_TRUE((*iterator).getFromIndex().equals({1, 1}));
 }
 
 //TODO
@@ -305,30 +306,31 @@ TEST(Model, operatorInsertion){
 
 	EXPECT_EQ(model.getBasisSize(), 3);
 
-	HoppingAmplitudeSet::Iterator iterator = model.getHoppingAmplitudeSet().getIterator();
-	EXPECT_DOUBLE_EQ(real(iterator.getHA()->getAmplitude()), 0);
-	EXPECT_TRUE(iterator.getHA()->getToIndex().equals({0}));
-	EXPECT_TRUE(iterator.getHA()->getFromIndex().equals({0}));
+	HoppingAmplitudeSet::Iterator iterator
+		= model.getHoppingAmplitudeSet().begin();
+	EXPECT_DOUBLE_EQ(real((*iterator).getAmplitude()), 0);
+	EXPECT_TRUE((*iterator).getToIndex().equals({0}));
+	EXPECT_TRUE((*iterator).getFromIndex().equals({0}));
 
-	iterator.searchNextHA();
-	EXPECT_DOUBLE_EQ(real(iterator.getHA()->getAmplitude()), 1);
-	EXPECT_TRUE(iterator.getHA()->getToIndex().equals({1}));
-	EXPECT_TRUE(iterator.getHA()->getFromIndex().equals({0}));
+	++iterator;
+	EXPECT_DOUBLE_EQ(real((*iterator).getAmplitude()), 1);
+	EXPECT_TRUE((*iterator).getToIndex().equals({1}));
+	EXPECT_TRUE((*iterator).getFromIndex().equals({0}));
 
-	iterator.searchNextHA();
-	EXPECT_DOUBLE_EQ(real(iterator.getHA()->getAmplitude()), 2);
-	EXPECT_TRUE(iterator.getHA()->getToIndex().equals({2}));
-	EXPECT_TRUE(iterator.getHA()->getFromIndex().equals({0}));
+	++iterator;
+	EXPECT_DOUBLE_EQ(real((*iterator).getAmplitude()), 2);
+	EXPECT_TRUE((*iterator).getToIndex().equals({2}));
+	EXPECT_TRUE((*iterator).getFromIndex().equals({0}));
 
-	iterator.searchNextHA();
-	EXPECT_DOUBLE_EQ(real(iterator.getHA()->getAmplitude()), 1);
-	EXPECT_TRUE(iterator.getHA()->getToIndex().equals({0}));
-	EXPECT_TRUE(iterator.getHA()->getFromIndex().equals({1}));
+	++iterator;
+	EXPECT_DOUBLE_EQ(real((*iterator).getAmplitude()), 1);
+	EXPECT_TRUE((*iterator).getToIndex().equals({0}));
+	EXPECT_TRUE((*iterator).getFromIndex().equals({1}));
 
-	iterator.searchNextHA();
-	EXPECT_DOUBLE_EQ(real(iterator.getHA()->getAmplitude()), 2);
-	EXPECT_TRUE(iterator.getHA()->getToIndex().equals({0}));
-	EXPECT_TRUE(iterator.getHA()->getFromIndex().equals({2}));
+	++iterator;
+	EXPECT_DOUBLE_EQ(real((*iterator).getAmplitude()), 2);
+	EXPECT_TRUE((*iterator).getToIndex().equals({0}));
+	EXPECT_TRUE((*iterator).getFromIndex().equals({2}));
 }
 
 TEST(Model, serialize){

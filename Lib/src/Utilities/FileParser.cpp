@@ -342,7 +342,7 @@ void FileParser::writeAmplitudes(Model *model, AmplitudeMode amplitudeMode){
 	fout << "Amplitudes:\n";
 	fout << left << setw(30) << "Mode" << "= " << static_cast<int>(amplitudeMode) << "\n";
 
-	HoppingAmplitudeSet::Iterator it = model->getHoppingAmplitudeSet().getIterator();
+/*	HoppingAmplitudeSet::Iterator it = model->getHoppingAmplitudeSet().getIterator();
 	const HoppingAmplitude *ha;
 	while((ha = it.getHA())){
 		switch(amplitudeMode){
@@ -350,24 +350,24 @@ void FileParser::writeAmplitudes(Model *model, AmplitudeMode amplitudeMode){
 			fout << left << setw(30);
 			write(ha->getAmplitude());
 			fout << left << setw(20);
-/*			write(ha->toIndex);
-			write(ha->fromIndex);*/
+//			write(ha->toIndex);
+//			write(ha->fromIndex);
 			write(ha->getToIndex());
 			write(ha->getFromIndex());
 			writeLineBreaks(1);
 			break;
 		case AmplitudeMode::ALL_EXCEPT_HC:
 		{
-/*			int from = model->getBasisIndex(ha->fromIndex);
-			int to = model->getBasisIndex(ha->toIndex);*/
+//			int from = model->getBasisIndex(ha->fromIndex);
+//			int to = model->getBasisIndex(ha->toIndex);
 			int from = model->getBasisIndex(ha->getFromIndex());
 			int to = model->getBasisIndex(ha->getToIndex());
 			if(from <= to){
 				fout << left << setw(30);
 				write(ha->getAmplitude());
 				fout << setw(20);
-/*				write(ha->toIndex);
-				write(ha->fromIndex);*/
+//				write(ha->toIndex);
+//				write(ha->fromIndex);
 				write(ha->getToIndex());
 				write(ha->getFromIndex());
 				writeLineBreaks(1);
@@ -383,6 +383,43 @@ void FileParser::writeAmplitudes(Model *model, AmplitudeMode amplitudeMode){
 		}
 
 		it.searchNextHA();
+	}*/
+	for(
+		HoppingAmplitudeSet::Iterator iterator
+			= model->getHoppingAmplitudeSet().begin();
+		iterator != model->getHoppingAmplitudeSet().end();
+		++iterator
+	){
+		switch(amplitudeMode){
+		case AmplitudeMode::ALL:
+			fout << left << setw(30);
+			write((*iterator).getAmplitude());
+			fout << left << setw(20);
+			write((*iterator).getToIndex());
+			write((*iterator).getFromIndex());
+			writeLineBreaks(1);
+			break;
+		case AmplitudeMode::ALL_EXCEPT_HC:
+		{
+			int from = model->getBasisIndex((*iterator).getFromIndex());
+			int to = model->getBasisIndex((*iterator).getToIndex());
+			if(from <= to){
+				fout << left << setw(30);
+				write((*iterator).getAmplitude());
+				fout << setw(20);
+				write((*iterator).getToIndex());
+				write((*iterator).getFromIndex());
+				writeLineBreaks(1);
+			}
+			break;
+		}
+		default:
+			TBTKExit(
+				"FileParser::writeAmplitudes()",
+				"Unsupported amplitudeMode (" << static_cast<int>(amplitudeMode) << ").",
+				""
+			);
+		}
 	}
 }
 
@@ -402,7 +439,7 @@ void FileParser::writeGeometry(Model *model){
 	fout << left << setw(30) << "Dimensions" << "= " << dimensions << "\n";
 	fout << left << setw(30) << "Num specifiers" << "= " << numSpecifiers << "\n";
 
-	HoppingAmplitudeSet::Iterator it = model->getHoppingAmplitudeSet().getIterator();
+/*	HoppingAmplitudeSet::Iterator it = model->getHoppingAmplitudeSet().getIterator();
 	const HoppingAmplitude *ha;
 	Index dummyIndex({-1});
 	Index &prevIndex = dummyIndex;//Start with dummy index
@@ -423,6 +460,28 @@ void FileParser::writeGeometry(Model *model){
 		}
 
 		it.searchNextHA();
+	}*/
+	Index dummyIndex({-1});
+	Index &prevIndex = dummyIndex;//Start with dummy index
+	for(
+		HoppingAmplitudeSet::Iterator iterator
+			= model->getHoppingAmplitudeSet().begin();
+		iterator != model->getHoppingAmplitudeSet().end();
+		++iterator
+	){
+		const Index &index = (*iterator).getFromIndex();
+		if(!index.equals(prevIndex)){
+			const double *coordinates = geometry->getCoordinates(index);
+			const int *specifiers = geometry->getSpecifiers(index);
+			fout << left << setw(30);
+			writeCoordinates(coordinates, dimensions);
+			fout << setw(20);
+			writeSpecifiers(specifiers, numSpecifiers);
+			write(index);
+			writeLineBreaks(1);
+
+			prevIndex = index;
+		}
 	}
 }
 

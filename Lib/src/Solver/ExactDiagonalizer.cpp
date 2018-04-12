@@ -68,7 +68,7 @@ void ExactDiagonalizer::setupManyBodyModel<BitRegister>(unsigned int subspace){
 
 	subspaceContext.manyBodyModel.reset(new Model());
 	for(unsigned int n = 0; n < fockStateMap->getBasisSize(); n++){
-		HoppingAmplitudeSet::Iterator it = getModel().getHoppingAmplitudeSet().getIterator();
+/*		HoppingAmplitudeSet::Iterator it = getModel().getHoppingAmplitudeSet().getIterator();
 		const HoppingAmplitude *ha;
 		while((ha = it.getHA())){
 			it.searchNextHA();
@@ -90,6 +90,31 @@ void ExactDiagonalizer::setupManyBodyModel<BitRegister>(unsigned int subspace){
 
 			*subspaceContext.manyBodyModel << HoppingAmplitude(
 				ha->getAmplitude()*(double)fockState.getPrefactor(),
+				{to},
+				{from}
+			);
+		}*/
+		for(
+			HoppingAmplitudeSet::Iterator iterator
+				= getModel().getHoppingAmplitudeSet().begin();
+			iterator != getModel().getHoppingAmplitudeSet().end();
+			++iterator
+		){
+			FockState<BitRegister> fockState = fockStateMap->getFockState(n);
+
+			int from = fockStateMap->getBasisIndex(fockState);
+
+			operators[getModel().getBasisIndex((*iterator).getFromIndex())][1]*fockState;
+			if(fockState.isNull())
+				continue;
+			operators[getModel().getBasisIndex((*iterator).getToIndex())][0]*fockState;
+			if(fockState.isNull())
+				continue;
+
+			int to = fockStateMap->getBasisIndex(fockState);
+
+			*subspaceContext.manyBodyModel << HoppingAmplitude(
+				(*iterator).getAmplitude()*(double)fockState.getPrefactor(),
 				{to},
 				{from}
 			);
@@ -142,7 +167,7 @@ void ExactDiagonalizer::setupManyBodyModel<ExtensiveBitRegister>(unsigned int su
 
 	subspaceContext.manyBodyModel.reset(new Model());
 	for(unsigned int n = 0; n < fockStateMap->getBasisSize(); n++){
-		HoppingAmplitudeSet::Iterator it = getModel().getHoppingAmplitudeSet().getIterator();
+/*		HoppingAmplitudeSet::Iterator it = getModel().getHoppingAmplitudeSet().getIterator();
 		const HoppingAmplitude *ha;
 		while((ha = it.getHA())){
 			it.searchNextHA();
@@ -164,6 +189,31 @@ void ExactDiagonalizer::setupManyBodyModel<ExtensiveBitRegister>(unsigned int su
 
 			*subspaceContext.manyBodyModel << HoppingAmplitude(
 				ha->getAmplitude()*(double)fockState.getPrefactor(),
+				{to},
+				{from}
+			);
+		}*/
+		for(
+			HoppingAmplitudeSet::Iterator iterator
+				= getModel().getHoppingAmplitudeSet().begin();
+			iterator != getModel().getHoppingAmplitudeSet().end();
+			++iterator
+		){
+			FockState<ExtensiveBitRegister> fockState = fockStateMap->getFockState(n);
+
+			int from = fockStateMap->getBasisIndex(fockState);
+
+			operators[getModel().getBasisIndex((*iterator).getFromIndex())][1]*fockState;
+			if(fockState.isNull())
+				continue;
+			operators[getModel().getBasisIndex((*iterator).getToIndex())][0]*fockState;
+			if(fockState.isNull())
+				continue;
+
+			int to = fockStateMap->getBasisIndex(fockState);
+
+			*subspaceContext.manyBodyModel << HoppingAmplitude(
+				(*iterator).getAmplitude()*(double)fockState.getPrefactor(),
 				{to},
 				{from}
 			);

@@ -187,7 +187,7 @@ HoppingAmplitudeTree::~HoppingAmplitudeTree(){
 vector<Index> HoppingAmplitudeTree::getIndexList(const Index &pattern) const{
 	vector<Index> indexList;
 
-	Iterator it = begin();
+/*	Iterator it = begin();
 	const HoppingAmplitude *ha;
 	while((ha = it.getHA())){
 //		if(ha->fromIndex.equals(pattern, true)){
@@ -203,6 +203,23 @@ vector<Index> HoppingAmplitudeTree::getIndexList(const Index &pattern) const{
 		}
 
 		it.searchNextHA();
+	}*/
+	for(
+		Iterator iterator = begin();
+		iterator != end();
+		++iterator
+	){
+//		if(ha->fromIndex.equals(pattern, true)){
+		if((*iterator).getFromIndex().equals(pattern, true)){
+			if(
+				indexList.size() == 0
+				|| !indexList.back().equals((*iterator).getFromIndex(), false)
+//				|| !indexList.back().equals(ha->fromIndex, false)
+			){
+				indexList.push_back((*iterator).getFromIndex());
+//				indexList.push_back(ha->fromIndex);
+			}
+		}
 	}
 
 	return indexList;
@@ -677,7 +694,7 @@ string HoppingAmplitudeTree::serialize(Mode mode) const{
 	}
 }
 
-HoppingAmplitudeTree::Iterator::Iterator(
+/*HoppingAmplitudeTree::Iterator::Iterator(
 	const HoppingAmplitudeTree::Iterator &iterator
 ){
 	tree = iterator.tree;
@@ -691,25 +708,40 @@ HoppingAmplitudeTree::Iterator::Iterator(
 	tree = iterator.tree;
 	currentIndex = std::move(iterator.currentIndex);
 	currentHoppingAmplitude = iterator.currentHoppingAmplitude;
-}
+}*/
 
-HoppingAmplitudeTree::Iterator::Iterator(const HoppingAmplitudeTree *tree){
-	this->tree = tree;
-	if(tree->children.size() == 0){
-		//Handle the special case when the data is stored on the head
-		//node. Can for example be the case when iterating over a
-		//single leaf node.
-		currentHoppingAmplitude = -1;
-		searchNext(tree, -1);
+HoppingAmplitudeTree::Iterator::Iterator(
+	const HoppingAmplitudeTree *tree,
+	bool end
+){
+	if(end){
+		this->tree = tree;
+		if(tree->children.size() == 0){
+			currentHoppingAmplitude = -1;
+		}
+		else{
+			currentIndex.push_back(tree->children.size());
+			currentHoppingAmplitude = -1;
+		}
 	}
 	else{
-		currentIndex.push_back(0);
-		currentHoppingAmplitude = -1;
-		searchNext(tree, 0);
+		this->tree = tree;
+		if(tree->children.size() == 0){
+			//Handle the special case when the data is stored on the head
+			//node. Can for example be the case when iterating over a
+			//single leaf node.
+			currentHoppingAmplitude = -1;
+			searchNext(tree, -1);
+		}
+		else{
+			currentIndex.push_back(0);
+			currentHoppingAmplitude = -1;
+			searchNext(tree, 0);
+		}
 	}
 }
 
-HoppingAmplitudeTree::Iterator& HoppingAmplitudeTree::Iterator::operator=(
+/*HoppingAmplitudeTree::Iterator& HoppingAmplitudeTree::Iterator::operator=(
 	const HoppingAmplitudeTree::Iterator &rhs
 ){
 	if(this != &rhs){
@@ -750,6 +782,18 @@ void HoppingAmplitudeTree::Iterator::reset(){
 }
 
 void HoppingAmplitudeTree::Iterator::searchNextHA(){
+	if(tree->children.size() == 0){
+		//Handle the special case when the data is stored on the head
+		//node. Can for example be the case when iterating over a
+		//single leaf node.
+		searchNext(tree, -1);
+	}
+	else{
+		searchNext(tree, 0);
+	}
+}*/
+
+void HoppingAmplitudeTree::Iterator::operator++(){
 	if(tree->children.size() == 0){
 		//Handle the special case when the data is stored on the head
 		//node. Can for example be the case when iterating over a
@@ -849,7 +893,7 @@ bool HoppingAmplitudeTree::Iterator::searchNext(
 	return false;
 }
 
-const HoppingAmplitude* HoppingAmplitudeTree::Iterator::getHA() const{
+/*const HoppingAmplitude* HoppingAmplitudeTree::Iterator::getHA() const{
 	if(currentIndex.size() == 0){
 		//Handle the special case when the data is stored on the head
 		//node. Can for example be the case when iterating over a
@@ -869,6 +913,66 @@ const HoppingAmplitude* HoppingAmplitudeTree::Iterator::getHA() const{
 	}
 
 	return &tn->hoppingAmplitudes.at(currentHoppingAmplitude);
+}*/
+
+const HoppingAmplitude& HoppingAmplitudeTree::Iterator::operator*(){
+	if(currentIndex.size() == 0){
+		//Handle the special case when the data is stored on the head
+		//node. Can for example be the case when iterating over a
+		//single leaf node.
+		if(currentHoppingAmplitude == -1){
+			TBTKExit(
+				"HoppingAmplitudeTree::Iterator::operator*()",
+				"Out of range access. Tried to access an"
+				<< " element using an iterator that points"
+				<< " beyond the last element.",
+				""
+			);
+		}
+		else{
+			return tree->hoppingAmplitudes.at(currentHoppingAmplitude);
+		}
+	}
+
+	if(currentIndex.at(0) == (int)tree->children.size()){
+		TBTKExit(
+			"HoppingAmplitudeTree::Iterator::operator*()",
+			"Out of range access. Tried to access an"
+			<< " element using an iterator that points"
+			<< " beyond the last element.",
+			""
+		);
+	}
+	const HoppingAmplitudeTree *tn = this->tree;
+	for(unsigned int n = 0; n < currentIndex.size()-1; n++){
+		tn = &tn->children.at(currentIndex.at(n));
+	}
+
+	return tn->hoppingAmplitudes.at(currentHoppingAmplitude);
+}
+
+bool HoppingAmplitudeTree::Iterator::operator==(const Iterator &rhs) const{
+	if(
+		this->tree == rhs.tree
+		&& currentIndex.size() == rhs.currentIndex.size()
+	){
+		for(unsigned int n = 0; n < currentIndex.size(); n++){
+			if(currentIndex[n] != rhs.currentIndex[n])
+				return false;
+		}
+
+		if(currentHoppingAmplitude == rhs.currentHoppingAmplitude)
+			return true;
+		else
+			return false;
+	}
+	else{
+		return false;
+	}
+}
+
+bool HoppingAmplitudeTree::Iterator::operator!=(const Iterator &rhs) const{
+	return !operator==(rhs);
 }
 
 int HoppingAmplitudeTree::Iterator::getMinBasisIndex() const{
@@ -888,6 +992,10 @@ int HoppingAmplitudeTree::Iterator::getNumBasisIndices() const{
 
 HoppingAmplitudeTree::Iterator HoppingAmplitudeTree::begin() const{
 	return Iterator(this);
+}
+
+HoppingAmplitudeTree::Iterator HoppingAmplitudeTree::end() const{
+	return Iterator(this, true);
 }
 
 HoppingAmplitude HoppingAmplitudeTree::getFirstHA() const{

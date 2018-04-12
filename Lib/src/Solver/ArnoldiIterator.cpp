@@ -778,7 +778,7 @@ void ArnoldiIterator::initShiftAndInvert(){
 		SparseMatrix<complex<double>>::StorageFormat::CSC
 	);
 
-	HoppingAmplitudeSet::Iterator it = getModel().getHoppingAmplitudeSet(
+/*	HoppingAmplitudeSet::Iterator it = getModel().getHoppingAmplitudeSet(
 	).getIterator();
 	const HoppingAmplitude *ha;
 	while((ha = it.getHA())){
@@ -791,6 +791,20 @@ void ArnoldiIterator::initShiftAndInvert(){
 		matrix.add(to, from, ha->getAmplitude());
 
 		it.searchNextHA();
+	}*/
+	for(
+		HoppingAmplitudeSet::Iterator iterator
+			= getModel().getHoppingAmplitudeSet().begin();
+		iterator != getModel().getHoppingAmplitudeSet().end();
+		++iterator
+	){
+		int from = model.getHoppingAmplitudeSet().getBasisIndex(
+			(*iterator).getFromIndex()
+		);
+		int to = model.getHoppingAmplitudeSet().getBasisIndex(
+			(*iterator).getToIndex()
+		);
+		matrix.add(to, from, (*iterator).getAmplitude());
 	}
 	for(int n = 0; n < model.getBasisSize(); n++)
 		matrix.add(n, n, -shift);

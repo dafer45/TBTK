@@ -215,29 +215,20 @@ public:
 		 *  currentIndex. */
 		int currentHoppingAmplitude;
 
-		/** Copy constructor. */
-		Iterator(const Iterator &iterator);
-
-		/** Move constructor. */
-		Iterator(Iterator &&iterator);
-
 		/** Constructor. */
-		Iterator(const HoppingAmplitudeTree *tree);
+		Iterator(const HoppingAmplitudeTree *tree, bool end = false);
 
-		/** Assignment operator. */
-		Iterator& operator=(const Iterator &rhs);
+		/** Increment operator. */
+		void operator++();
 
-		/** Move assignment operator. */
-		Iterator& operator=(Iterator &&rhs);
+		/** Dereference operator. */
+		const HoppingAmplitude& operator*();
 
-		/** Reset iterator. */
-		void reset();
+		/** Equality operator. */
+		bool operator==(const Iterator &rhs) const;
 
-		/** Advance the iterator by one. */
-		void searchNextHA();
-
-		/** Get HoppingAmplitude currently pointed at. */
-		const HoppingAmplitude* getHA() const;
+		/** Inequality operator. */
+		bool operator!=(const Iterator &rhs) const;
 
 		/** Get minimum basis index. */
 		int getMinBasisIndex() const;
@@ -257,8 +248,17 @@ public:
 		);
 	};
 
-	/** Returns Iterator initialized to point at first HoppingAmplitude. */
+	/** Create Iterator.
+	 *
+	 *  @return Iterator pointing to the first element in the
+	 *  HoppingAmplitudeTree. */
 	Iterator begin() const;
+
+	/** Create Iterator pointing to the end.
+	 *
+	 *  @return Iterator pointing to the end of the HoppingAmplitudeTree.
+	 */
+	Iterator end() const;
 
 	/** Implements Serializable::serialize.
 	 *

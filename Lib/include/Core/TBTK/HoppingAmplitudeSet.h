@@ -177,29 +177,17 @@ public:
 	 *  HoppingAmplitudes @endlink. */
 	class Iterator{
 	public:
-		/** Copy constructor. */
-		Iterator(const Iterator &iterator);
+		/** Increment operator. */
+		void operator++();
 
-		/** Move constructor. */
-		Iterator(Iterator &&iterator);
+		/** Dereference operator. */
+		const HoppingAmplitude& operator*();
 
-		/** Destructor. */
-		~Iterator();
+		/** Equality operator. */
+		bool operator==(const Iterator &rhs) const;
 
-		/** Assignment operator. */
-		Iterator& operator=(const Iterator &rhs);
-
-		/** Move assignment operator. */
-		Iterator& operator=(Iterator &&rhs);
-
-		/** Reset iterator. */
-		void reset();
-
-		/** Iterate to next HoppingAmplitude. */
-		void searchNextHA();
-
-		/** Get current HoppingAmplitude. */
-		const HoppingAmplitude* getHA() const;
+		/** Inequality operator. */
+		bool operator!=(const Iterator &rhs) const;
 
 		/** Get minimum index. */
 		int getMinBasisIndex() const;
@@ -216,22 +204,41 @@ public:
 
 		/** Private constructor. Limits the ability to construct the
 		 *  iterator to the HoppingAmplitudeSet. */
-		Iterator(const HoppingAmplitudeTree *hoppingAmplitudeTree);
+		Iterator(
+			const HoppingAmplitudeTree *hoppingAmplitudeTree,
+			bool end = false
+		);
 
 		/** HoppingAmplitudeTree iterator. Implements the actual
 		 *  iteration. */
-		HoppingAmplitudeTree::Iterator* it;
+		HoppingAmplitudeTree::Iterator iterator;
 	};
 
-	/** Returns an iterator for iterating through @link HoppingAmplitude
-	 *  HoppingAmplitudes @endlink. */
-	HoppingAmplitudeSet::Iterator getIterator() const;
+	/** Create Iterator.
+	 *
+	 *  @return Iterator pointing to the first element in the
+	 *  HoppingAmplitudeSet. */
+	Iterator begin() const;
 
-	/** Returns an iterator for iterating through @link HoppingAmplitude
-	 *  HoppingAmplitudes @endlink. The iterator is restricted to the
-	 *  subspace for which the 'from'-index starts with the indices in
-	 *  the argument 'subspace'. */
-	HoppingAmplitudeSet::Iterator getIterator(const Index &subspace) const;
+	/** Create Iterator for a particular subspace.
+	 *
+	 *  @param Index for the subspace the Iterator is to be iterating over.
+	 *
+	 *  @return Iterator pointing to the first element in the
+	 *  HoppingAmplitudeSet. */
+	Iterator begin(const Index &subspace) const;
+
+	/** Create Iterator pointing to the end.
+	 *
+	 *  @return Iterator pointing to the end of the HoppingAmplitudeSet. */
+	Iterator end() const;
+
+	/** Create Iterator pointing to the end for a particular subspace.
+	 *
+	 *  @param Index for the subspace the Iterator is to be iterating over.
+	 *
+	 *  @return Iterator pointing to the end of the HoppingAmplitudeSet. */
+	Iterator end(const Index &subspace) const;
 
 	/** Print tree structure. Mainly for debuging. */
 	void print();
@@ -362,20 +369,48 @@ inline SparseMatrix<std::complex<double>> HoppingAmplitudeSet::getSparseMatrix(
 		SparseMatrix<std::complex<double>>::StorageFormat::CSC
 	);
 
-	Iterator iterator = getIterator();
-	const HoppingAmplitude *hoppingAmplitude;
-	while((hoppingAmplitude = iterator.getHA())){
+	for(
+		Iterator iterator = begin();
+		iterator != end();
+		++iterator
+	){
 		sparseMatrix.add(
-			getBasisIndex(hoppingAmplitude->getToIndex()),
-			getBasisIndex(hoppingAmplitude->getFromIndex()),
-			hoppingAmplitude->getAmplitude()
+			getBasisIndex((*iterator).getToIndex()),
+			getBasisIndex((*iterator).getFromIndex()),
+			(*iterator).getAmplitude()
 		);
-
-		iterator.searchNextHA();
 	}
 	sparseMatrix.construct();
 
 	return sparseMatrix;
+}
+
+inline HoppingAmplitudeSet::Iterator HoppingAmplitudeSet::begin() const{
+	return Iterator(this);
+}
+
+inline HoppingAmplitudeSet::Iterator HoppingAmplitudeSet::begin(
+	const Index &subspace
+) const{
+	return Iterator(getSubTree(subspace));
+}
+
+inline HoppingAmplitudeSet::Iterator HoppingAmplitudeSet::end() const{
+	return Iterator(this, true);
+}
+
+inline HoppingAmplitudeSet::Iterator HoppingAmplitudeSet::end(
+	const Index &subspace
+) const{
+	return Iterator(getSubTree(subspace), true);
+}
+
+inline bool HoppingAmplitudeSet::Iterator::operator==(const Iterator &rhs) const{
+	return iterator == rhs.iterator;
+}
+
+inline bool HoppingAmplitudeSet::Iterator::operator!=(const Iterator &rhs) const{
+	return iterator != rhs.iterator;
 }
 
 inline unsigned int HoppingAmplitudeSet::getSizeInBytes() const{
@@ -390,6 +425,34 @@ inline unsigned int HoppingAmplitudeSet::getSizeInBytes() const{
 	}
 
 	return size;
+}
+
+inline void HoppingAmplitudeSet::Iterator::operator++(){
+	++iterator;
+}
+
+inline const HoppingAmplitude& HoppingAmplitudeSet::Iterator::operator*(){
+	return *iterator;
+}
+
+inline int HoppingAmplitudeSet::Iterator::getMinBasisIndex() const{
+	return iterator.getMinBasisIndex();
+}
+
+inline int HoppingAmplitudeSet::Iterator::getMaxBasisIndex() const{
+	return iterator.getMaxBasisIndex();
+}
+
+inline int HoppingAmplitudeSet::Iterator::getNumBasisIndices() const{
+	return iterator.getNumBasisIndices();
+}
+
+inline HoppingAmplitudeSet::Iterator::Iterator(
+	const HoppingAmplitudeTree *hoppingAmplitudeTree,
+	bool end
+) :
+	iterator(hoppingAmplitudeTree, end)
+{
 }
 
 };	//End of namespace TBTK

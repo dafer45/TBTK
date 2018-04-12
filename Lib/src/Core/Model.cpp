@@ -251,7 +251,7 @@ Model& Model::operator=(Model &&rhs){
 }
 
 void Model::addModel(const Model &model, const Index &index){
-	HoppingAmplitudeSet::Iterator it = model.getHoppingAmplitudeSet().getIterator();
+/*	HoppingAmplitudeSet::Iterator it = model.getHoppingAmplitudeSet().getIterator();
 	const HoppingAmplitude *ha;
 	while((ha = it.getHA())){
 		add(
@@ -263,6 +263,20 @@ void Model::addModel(const Model &model, const Index &index){
 		);
 
 		it.searchNextHA();
+	}*/
+	for(
+		HoppingAmplitudeSet::Iterator iterator
+			= model.getHoppingAmplitudeSet().begin();
+		iterator != model.getHoppingAmplitudeSet().end();
+		++iterator
+	){
+		add(
+			HoppingAmplitude(
+				(*iterator).getAmplitude(),
+				Index(index, (*iterator).getToIndex()),
+				Index(index, (*iterator).getFromIndex())
+			)
+		);
 	}
 }
 

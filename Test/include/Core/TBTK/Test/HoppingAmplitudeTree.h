@@ -170,53 +170,65 @@ TEST(HoppingAmplitudeTree, getSubTree){
 			const HoppingAmplitudeTree *hoppingAmplitudeTree3
 				= hoppingAmplitudeTree.getSubTree({1, 3});
 
-			HoppingAmplitudeTree::Iterator iterator
-				= hoppingAmplitudeTree0->begin();
 			int counter = 0;
-			const HoppingAmplitude *hoppingAmplitude;
-			while((hoppingAmplitude = iterator.getHA())){
+			for(
+				HoppingAmplitudeTree::Iterator iterator
+					= hoppingAmplitudeTree0->begin();
+				iterator != hoppingAmplitudeTree0->end();
+				++iterator
+			){
 				counter++;
 				if(
-					!hoppingAmplitude->getFromIndex(
-					).equals({1, 2, 3, IDX_ALL}, true)
+					!(*iterator).getFromIndex().equals(
+						{1, 2, 3, IDX_ALL},
+						true
+					)
 				){
 					exit(1);
 				}
-
-				iterator.searchNextHA();
 			}
 			if(counter != 5)
 				exit(1);
 
-			iterator = hoppingAmplitudeTree1->begin();
 			counter = 0;
-			while((hoppingAmplitude = iterator.getHA())){
+			for(
+				HoppingAmplitudeTree::Iterator iterator
+					= hoppingAmplitudeTree1->begin();
+				iterator != hoppingAmplitudeTree1->end();
+				++iterator
+			){
 				counter++;
-				if(!hoppingAmplitude->getFromIndex(
-				).equals({2, 2, 2, IDX_ALL}, true)
+				if(!(*iterator).getFromIndex().equals(
+						{2, 2, 2, IDX_ALL},
+						true
+					)
 				){
 					exit(1);
 				}
-
-				iterator.searchNextHA();
 			}
 			if(counter != 5)
 				exit(1);
 
-			iterator = hoppingAmplitudeTree2->begin();
 			counter = 0;
-			while((hoppingAmplitude = iterator.getHA())){
+			for(
+				HoppingAmplitudeTree::Iterator iterator
+					= hoppingAmplitudeTree2->begin();
+				iterator != hoppingAmplitudeTree2->end();
+				++iterator
+			){
 				counter++;
-				iterator.searchNextHA();
 			}
 			if(counter != 0)
 				exit(1);
 
-			iterator = hoppingAmplitudeTree3->begin();
 			counter = 0;
-			while((hoppingAmplitude = iterator.getHA())){
+			for(
+				HoppingAmplitudeTree::Iterator iterator
+					= hoppingAmplitudeTree3->begin();
+				iterator != hoppingAmplitudeTree3->end();
+				++iterator
+			){
 				counter++;
-				iterator.searchNextHA();
 			}
 			if(counter != 0)
 				exit(1);
