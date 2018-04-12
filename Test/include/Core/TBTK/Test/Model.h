@@ -77,8 +77,8 @@ TEST(Model, addModel){
 
 	EXPECT_EQ(model.getBasisSize(), 4);
 
-	HoppingAmplitudeSet::Iterator iterator
-		= model.getHoppingAmplitudeSet().begin();
+	HoppingAmplitudeSet::ConstIterator iterator
+		= model.getHoppingAmplitudeSet().cbegin();
 	EXPECT_EQ(real((*iterator).getAmplitude()), 0);
 	EXPECT_TRUE((*iterator).getToIndex().equals({0, 0}));
 	EXPECT_TRUE((*iterator).getFromIndex().equals({0, 0}));
@@ -306,8 +306,8 @@ TEST(Model, operatorInsertion){
 
 	EXPECT_EQ(model.getBasisSize(), 3);
 
-	HoppingAmplitudeSet::Iterator iterator
-		= model.getHoppingAmplitudeSet().begin();
+	HoppingAmplitudeSet::ConstIterator iterator
+		= model.getHoppingAmplitudeSet().cbegin();
 	EXPECT_DOUBLE_EQ(real((*iterator).getAmplitude()), 0);
 	EXPECT_TRUE((*iterator).getToIndex().equals({0}));
 	EXPECT_TRUE((*iterator).getFromIndex().equals({0}));

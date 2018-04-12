@@ -104,24 +104,10 @@ void TimeEvolver::run(){
 		for(int n = 0; n < basisSize*basisSize; n++)
 			dPsi[n] = 0.;
 
-/*		HoppingAmplitudeSet::Iterator it = model.getHoppingAmplitudeSet().getIterator();
-		const HoppingAmplitude *ha;
-		while((ha = it.getHA())){
-//			int fromIndex = model->getHoppingAmplitudeSet()->getBasisIndex(ha->fromIndex);
-//			int toIndex = model->getHoppingAmplitudeSet()->getBasisIndex(ha->toIndex);
-			int fromIndex = model.getHoppingAmplitudeSet().getBasisIndex(ha->getFromIndex());
-			int toIndex = model.getHoppingAmplitudeSet().getBasisIndex(ha->getToIndex());
-			complex<double> amplitude = ha->getAmplitude();
-			#pragma omp parallel for
-			for(int n = 0; n < basisSize; n++){
-				dPsi[basisSize*n + toIndex] += amplitude*eigenVectorsMap[n][fromIndex];
-			}
-			it.searchNextHA();
-		}*/
 		for(
-			HoppingAmplitudeSet::Iterator iterator
-				= model.getHoppingAmplitudeSet().begin();
-			iterator != model.getHoppingAmplitudeSet().end();
+			HoppingAmplitudeSet::ConstIterator iterator
+				= model.getHoppingAmplitudeSet().cbegin();
+			iterator != model.getHoppingAmplitudeSet().cend();
 			++iterator
 		){
 			int fromIndex = model.getHoppingAmplitudeSet().getBasisIndex((*iterator).getFromIndex());

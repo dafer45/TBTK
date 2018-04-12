@@ -39,7 +39,9 @@ HoppingAmplitudeTree::HoppingAmplitudeTree(){
 	isPotentialBlockSeparator = true;
 }
 
-HoppingAmplitudeTree::HoppingAmplitudeTree(const vector<unsigned int> &capacity){
+HoppingAmplitudeTree::HoppingAmplitudeTree(
+	const vector<unsigned int> &capacity
+){
 	basisIndex = -1;
 	basisSize = -1;
 	isPotentialBlockSeparator = true;
@@ -187,37 +189,17 @@ HoppingAmplitudeTree::~HoppingAmplitudeTree(){
 vector<Index> HoppingAmplitudeTree::getIndexList(const Index &pattern) const{
 	vector<Index> indexList;
 
-/*	Iterator it = begin();
-	const HoppingAmplitude *ha;
-	while((ha = it.getHA())){
-//		if(ha->fromIndex.equals(pattern, true)){
-		if(ha->getFromIndex().equals(pattern, true)){
-			if(
-				indexList.size() == 0
-				|| !indexList.back().equals(ha->getFromIndex(), false)
-//				|| !indexList.back().equals(ha->fromIndex, false)
-			){
-				indexList.push_back(ha->getFromIndex());
-//				indexList.push_back(ha->fromIndex);
-			}
-		}
-
-		it.searchNextHA();
-	}*/
 	for(
-		Iterator iterator = begin();
-		iterator != end();
+		ConstIterator iterator = cbegin();
+		iterator != cend();
 		++iterator
 	){
-//		if(ha->fromIndex.equals(pattern, true)){
 		if((*iterator).getFromIndex().equals(pattern, true)){
 			if(
 				indexList.size() == 0
 				|| !indexList.back().equals((*iterator).getFromIndex(), false)
-//				|| !indexList.back().equals(ha->fromIndex, false)
 			){
 				indexList.push_back((*iterator).getFromIndex());
-//				indexList.push_back(ha->fromIndex);
 			}
 		}
 	}
@@ -331,6 +313,21 @@ void HoppingAmplitudeTree::_add(HoppingAmplitude &ha, unsigned int subindex){
 		//Add HoppingAmplitude to node.
 		hoppingAmplitudes.push_back(ha);
 	}
+}
+
+HoppingAmplitudeTree* HoppingAmplitudeTree::getSubTree(
+	const Index &subspace
+){
+	//Casting is safe because we do not guarantee that the
+	//HoppingAmplitudeTre is not modified. Casting away const from the
+	//returned reference is therefore not a violation of any promisse made
+	//by this function. See also "Avoiding Duplication in const and
+	//Non-const Member Function" in S. Meyers, Effective C++.
+	return const_cast<HoppingAmplitudeTree*>(
+		static_cast<const HoppingAmplitudeTree*>(this)->getSubTree(
+			subspace
+		)
+	);
 }
 
 const HoppingAmplitudeTree* HoppingAmplitudeTree::getSubTree(
@@ -692,310 +689,6 @@ string HoppingAmplitudeTree::serialize(Mode mode) const{
 			""
 		);
 	}
-}
-
-/*HoppingAmplitudeTree::Iterator::Iterator(
-	const HoppingAmplitudeTree::Iterator &iterator
-){
-	tree = iterator.tree;
-	currentIndex = iterator.currentIndex;
-	currentHoppingAmplitude = iterator.currentHoppingAmplitude;
-}
-
-HoppingAmplitudeTree::Iterator::Iterator(
-	HoppingAmplitudeTree::Iterator &&iterator
-){
-	tree = iterator.tree;
-	currentIndex = std::move(iterator.currentIndex);
-	currentHoppingAmplitude = iterator.currentHoppingAmplitude;
-}*/
-
-HoppingAmplitudeTree::Iterator::Iterator(
-	const HoppingAmplitudeTree *tree,
-	bool end
-){
-	if(end){
-		this->tree = tree;
-		if(tree->children.size() == 0){
-			currentHoppingAmplitude = -1;
-		}
-		else{
-			currentIndex.push_back(tree->children.size());
-			currentHoppingAmplitude = -1;
-		}
-	}
-	else{
-		this->tree = tree;
-		if(tree->children.size() == 0){
-			//Handle the special case when the data is stored on the head
-			//node. Can for example be the case when iterating over a
-			//single leaf node.
-			currentHoppingAmplitude = -1;
-			searchNext(tree, -1);
-		}
-		else{
-			currentIndex.push_back(0);
-			currentHoppingAmplitude = -1;
-			searchNext(tree, 0);
-		}
-	}
-}
-
-/*HoppingAmplitudeTree::Iterator& HoppingAmplitudeTree::Iterator::operator=(
-	const HoppingAmplitudeTree::Iterator &rhs
-){
-	if(this != &rhs){
-		tree = rhs.tree;
-		currentIndex = rhs.currentIndex;
-		currentHoppingAmplitude = rhs.currentHoppingAmplitude;
-	}
-
-	return *this;
-}
-
-HoppingAmplitudeTree::Iterator& HoppingAmplitudeTree::Iterator::operator=(
-	HoppingAmplitudeTree::Iterator &&rhs
-){
-	if(this != &rhs){
-		tree = rhs.tree;
-		currentIndex = std::move(rhs.currentIndex);
-		currentHoppingAmplitude = rhs.currentHoppingAmplitude;
-	}
-
-	return *this;
-}
-
-void HoppingAmplitudeTree::Iterator::reset(){
-	currentIndex.clear();
-	if(tree->children.size() == 0){
-		//Handle the special case when the data is stored on the head
-		//node. Can for example be the case when iterating over a
-		//single leaf node.
-		currentHoppingAmplitude = -1;
-		searchNext(tree, -1);
-	}
-	else{
-		currentIndex.push_back(0);
-		currentHoppingAmplitude = -1;
-		searchNext(tree, 0);
-	}
-}
-
-void HoppingAmplitudeTree::Iterator::searchNextHA(){
-	if(tree->children.size() == 0){
-		//Handle the special case when the data is stored on the head
-		//node. Can for example be the case when iterating over a
-		//single leaf node.
-		searchNext(tree, -1);
-	}
-	else{
-		searchNext(tree, 0);
-	}
-}*/
-
-void HoppingAmplitudeTree::Iterator::operator++(){
-	if(tree->children.size() == 0){
-		//Handle the special case when the data is stored on the head
-		//node. Can for example be the case when iterating over a
-		//single leaf node.
-		searchNext(tree, -1);
-	}
-	else{
-		searchNext(tree, 0);
-	}
-}
-
-bool HoppingAmplitudeTree::Iterator::searchNext(
-	const HoppingAmplitudeTree *hoppingAmplitudeTree,
-	unsigned int subindex
-){
-	if(subindex+1 == currentIndex.size()){
-		//If the node level corresponding to the current index is
-		//reached, try to execute leaf node actions.
-
-		if(currentHoppingAmplitude != -1){
-			//The iterator is in the process of iterating over
-			//HoppingAmplitudes on this leaf node. Try to iterate further.
-
-			currentHoppingAmplitude++;
-			if(currentHoppingAmplitude == (int)hoppingAmplitudeTree->hoppingAmplitudes.size()){
-				//Last HoppingAmplitude already reached. Reset
-				//currentHoppingAmplitude and return false to
-				//indicate that no more HoppingAMplitudes exist
-				//on this node.
-				currentHoppingAmplitude = -1;
-				return false;
-			}
-			else{
-				//Return true to indicate that the next
-				//HoppingAmplitude succesfully has been found.
-				return true;
-			}
-		}
-
-		//We are here guaranteed that the iterator is not currently in
-		//a state where it is iterating over HoppingAmplitudes on this
-		//node.
-
-		if(hoppingAmplitudeTree->children.size() == 0){
-			//The node has no children and is therefore either a
-			//leaf node with HoppingAmplitudes stored on it, or an
-			//empty dummy node.
-
-			if(hoppingAmplitudeTree->hoppingAmplitudes.size() != 0){
-				//There are HoppingAMplitudes on this node,
-				//initialize the iterator to start iterating
-				//over these. Return true to indicate that a
-				//HoppingAmplitude was found.
-				currentHoppingAmplitude = 0;
-				return true;
-			}
-			else{
-				//The node is an empty dymmy node. Return false
-				//to indicate that no more HoppingAmplitudes
-				//exist on this node.
-				return false;
-			}
-		}
-	}
-
-	//We are here guaranteed that this is not a leaf or dummy node. We know
-	//this because either the tests inside the previous if-statements
-	//failed, or we are iterating through children that already have been
-	//visited on an earlier call to searchNext if the outer if-statement
-	//itself failed.
-
-	//Perform depth first search for the next HoppingAmplitude. Starts from
-	//the child node reffered to by currentIndex.
-	unsigned int n = currentIndex.at(subindex);
-	while(n < hoppingAmplitudeTree->children.size()){
-		if(subindex+1 == currentIndex.size()){
-			//The deepest point visited so far on this branch has
-			//been reached. Initialize the depth first search for
-			//child n to start from child n's zeroth child.
-			currentIndex.push_back(0);
-		}
-		if(searchNext(&hoppingAmplitudeTree->children.at(n), subindex+1)){
-			//Depth first search on child n succeded at finding a
-			//HoppingAmplitude. Return true to indicate success.
-			return true;
-		}
-		//Child n does not have any more HoppingAmplitudes. Pop
-		//the subindex corresponding to child n's node level and
-		//increment the subindex corresponding to this node level to
-		//prepare for depth first search of child n+1.
-		currentIndex.pop_back();
-		n = ++currentIndex.back();
-	}
-
-	//Return false to indicate that no more HoppingAmplitudes could be
-	//found on this node.
-	return false;
-}
-
-/*const HoppingAmplitude* HoppingAmplitudeTree::Iterator::getHA() const{
-	if(currentIndex.size() == 0){
-		//Handle the special case when the data is stored on the head
-		//node. Can for example be the case when iterating over a
-		//single leaf node.
-		if(currentHoppingAmplitude == -1)
-			return NULL;
-		else
-			return &tree->hoppingAmplitudes.at(currentHoppingAmplitude);
-	}
-
-	if(currentIndex.at(0) == (int)tree->children.size()){
-		return NULL;
-	}
-	const HoppingAmplitudeTree *tn = this->tree;
-	for(unsigned int n = 0; n < currentIndex.size()-1; n++){
-		tn = &tn->children.at(currentIndex.at(n));
-	}
-
-	return &tn->hoppingAmplitudes.at(currentHoppingAmplitude);
-}*/
-
-const HoppingAmplitude& HoppingAmplitudeTree::Iterator::operator*(){
-	if(currentIndex.size() == 0){
-		//Handle the special case when the data is stored on the head
-		//node. Can for example be the case when iterating over a
-		//single leaf node.
-		if(currentHoppingAmplitude == -1){
-			TBTKExit(
-				"HoppingAmplitudeTree::Iterator::operator*()",
-				"Out of range access. Tried to access an"
-				<< " element using an iterator that points"
-				<< " beyond the last element.",
-				""
-			);
-		}
-		else{
-			return tree->hoppingAmplitudes.at(currentHoppingAmplitude);
-		}
-	}
-
-	if(currentIndex.at(0) == (int)tree->children.size()){
-		TBTKExit(
-			"HoppingAmplitudeTree::Iterator::operator*()",
-			"Out of range access. Tried to access an"
-			<< " element using an iterator that points"
-			<< " beyond the last element.",
-			""
-		);
-	}
-	const HoppingAmplitudeTree *tn = this->tree;
-	for(unsigned int n = 0; n < currentIndex.size()-1; n++){
-		tn = &tn->children.at(currentIndex.at(n));
-	}
-
-	return tn->hoppingAmplitudes.at(currentHoppingAmplitude);
-}
-
-bool HoppingAmplitudeTree::Iterator::operator==(const Iterator &rhs) const{
-	if(
-		this->tree == rhs.tree
-		&& currentIndex.size() == rhs.currentIndex.size()
-	){
-		for(unsigned int n = 0; n < currentIndex.size(); n++){
-			if(currentIndex[n] != rhs.currentIndex[n])
-				return false;
-		}
-
-		if(currentHoppingAmplitude == rhs.currentHoppingAmplitude)
-			return true;
-		else
-			return false;
-	}
-	else{
-		return false;
-	}
-}
-
-bool HoppingAmplitudeTree::Iterator::operator!=(const Iterator &rhs) const{
-	return !operator==(rhs);
-}
-
-int HoppingAmplitudeTree::Iterator::getMinBasisIndex() const{
-	return tree->getMinIndex();
-}
-
-int HoppingAmplitudeTree::Iterator::getMaxBasisIndex() const{
-	return tree->getMaxIndex();
-}
-
-int HoppingAmplitudeTree::Iterator::getNumBasisIndices() const{
-	if(getMaxBasisIndex() == -1)
-		return 0;
-	else
-		return 1 + getMaxBasisIndex() - getMinBasisIndex();
-}
-
-HoppingAmplitudeTree::Iterator HoppingAmplitudeTree::begin() const{
-	return Iterator(this);
-}
-
-HoppingAmplitudeTree::Iterator HoppingAmplitudeTree::end() const{
-	return Iterator(this, true);
 }
 
 HoppingAmplitude HoppingAmplitudeTree::getFirstHA() const{

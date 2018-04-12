@@ -778,24 +778,10 @@ void ArnoldiIterator::initShiftAndInvert(){
 		SparseMatrix<complex<double>>::StorageFormat::CSC
 	);
 
-/*	HoppingAmplitudeSet::Iterator it = getModel().getHoppingAmplitudeSet(
-	).getIterator();
-	const HoppingAmplitude *ha;
-	while((ha = it.getHA())){
-		int from = model.getHoppingAmplitudeSet().getBasisIndex(
-			ha->getFromIndex()
-		);
-		int to = model.getHoppingAmplitudeSet().getBasisIndex(
-			ha->getToIndex()
-		);
-		matrix.add(to, from, ha->getAmplitude());
-
-		it.searchNextHA();
-	}*/
 	for(
-		HoppingAmplitudeSet::Iterator iterator
-			= getModel().getHoppingAmplitudeSet().begin();
-		iterator != getModel().getHoppingAmplitudeSet().end();
+		HoppingAmplitudeSet::ConstIterator iterator
+			= getModel().getHoppingAmplitudeSet().cbegin();
+		iterator != getModel().getHoppingAmplitudeSet().cend();
 		++iterator
 	){
 		int from = model.getHoppingAmplitudeSet().getBasisIndex(

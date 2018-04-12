@@ -109,11 +109,11 @@ public:
 	 *  @return Serialized string representation of the IndexedDataTree. */
 	virtual std::string serialize(Mode mode) const;
 
-	/** Base classed used by Iterator and ConstIterator for iterating
-	 *  through the elements stored in the tree structure. */
 	class Iterator;
 	class ConstIterator;
 private:
+	/** Base classed used by Iterator and ConstIterator for iterating
+	 *  through the elements stored in the tree structure. */
 	template<bool isConstIterator>
 	class _Iterator{
 	public:
@@ -192,15 +192,15 @@ public:
 	 *  IndexedDataTree. */
 	Iterator begin();
 
-	/** Create Iterator.
+	/** Create ConstIterator.
 	 *
-	 *  @return Iterator pointing at the first element in the
+	 *  @return ConstIterator pointing at the first element in the
 	 *  IndexedDataTree. */
 	ConstIterator begin() const;
 
-	/** Create Iterator for constant elements.
+	/** Create ConstIterator.
 	 *
-	 *  @return Iterator pointing at the first element in the
+	 *  @return ConstIterator pointing at the first element in the
 	 *  IndexedDataTree. */
 	ConstIterator cbegin() const;
 
@@ -209,14 +209,14 @@ public:
 	 *  @return An Iterator pointing at the end of the IndexedDataTree. */
 	Iterator end();
 
-	/** Get Iterator pointing to the end.
+	/** Get ConstIterator pointing to the end.
 	 *
-	 *  @return An Iterator pointing at the end of the IndexedDataTree. */
+	 *  @return A ConstIterator pointing at the end of the IndexedDataTree. */
 	ConstIterator end() const;
 
-	/** Get Iterator for constatne elements that points to the end.
+	/** Get ConstIterator that points to the end.
 	 *
-	 *  @return An Iterator pointing at the end of the IndexedDataTree. */
+	 *  @return A ConstIterator pointing at the end of the IndexedDataTree. */
 	ConstIterator cend() const;
 private:
 	/** Child nodes. */

@@ -368,29 +368,8 @@ Model* ModelFactory::merge(
 	Model *model = new Model();
 	for(unsigned int n = 0; n < models.size(); n++){
 		Model *m = *(models.begin() + n);
-/*		HoppingAmplitudeSet::Iterator it = m->getHoppingAmplitudeSet().getIterator();
-		const HoppingAmplitude *ha;
-		while((ha = it.getHA())){
-			complex<double> amplitude = ha->getAmplitude();
-//			Index from = ha->fromIndex;
-//			Index to = ha->fromIndex;
-			Index from = ha->getFromIndex();
-			Index to = ha->getToIndex();
-
-			vector<int> newFrom({(int)n});
-			for(unsigned int c = 0; c < from.getSize(); c++)
-				newFrom.push_back(from.at(c));
-
-			vector<int> newTo({(int)n});
-			for(unsigned int c = 0; c < to.getSize(); c++)
-				newTo.push_back(to.at(c));
-
-			*model << HoppingAmplitude(amplitude, newTo, newFrom);
-
-			it.searchNextHA();
-		}*/
 		for(
-			HoppingAmplitudeSet::Iterator iterator
+			HoppingAmplitudeSet::ConstIterator iterator
 				= m->getHoppingAmplitudeSet().begin();
 			iterator != m->getHoppingAmplitudeSet().end();
 			++iterator
@@ -442,26 +421,8 @@ Model* ModelFactory::merge(
 		for(unsigned int n = 0; n < models.size(); n++){
 			Model *m = *(models.begin() + n);
 			Geometry *g = m->getGeometry();
-/*			HoppingAmplitudeSet::Iterator it = m->getHoppingAmplitudeSet().getIterator();
-			const HoppingAmplitude *ha;
-			while((ha = it.getHA())){
-//				Index from = ha->fromIndex;
-				Index from = ha->getFromIndex();
-
-				vector<int> newFrom({(int)n});
-				for(unsigned int c = 0; c < from.getSize(); c++)
-					newFrom.push_back(from.at(c));
-
-//				int basisIndex = m->getBasisIndex(ha->fromIndex);
-				int basisIndex = m->getBasisIndex(ha->getFromIndex());
-				const double *coordinates = g->getCoordinates(basisIndex);
-
-				geometry->setCoordinates(newFrom, {coordinates[0], coordinates[1], coordinates[2]});
-
-				it.searchNextHA();
-			}*/
 			for(
-				HoppingAmplitudeSet::Iterator iterator
+				HoppingAmplitudeSet::ConstIterator iterator
 					= m->getHoppingAmplitudeSet().begin();
 				iterator != m->getHoppingAmplitudeSet().end();
 				++iterator

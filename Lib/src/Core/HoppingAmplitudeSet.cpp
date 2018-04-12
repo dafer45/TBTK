@@ -352,31 +352,12 @@ void HoppingAmplitudeSet::constructCOO(){
 	);
 
 	//Count number of matrix elements
-/*	HoppingAmplitudeSet::Iterator it = getIterator();
-	const HoppingAmplitude *ha;
-	numMatrixElements = 0;
-	int currentCol = -1;
-	int currentRow = -1;
-	while((ha = it.getHA())){
-		int col = getBasisIndex(ha->getFromIndex());
-		int row = getBasisIndex(ha->getToIndex());
-		if(col > currentCol){
-			currentCol = col;
-			currentRow = -1;
-		}
-		if(row > currentRow){
-			currentRow = row;
-			numMatrixElements++;
-		}
-
-		it.searchNextHA();
-	}*/
 	numMatrixElements = 0;
 	int currentCol = -1;
 	int currentRow = -1;
 	for(
-		Iterator iterator = begin();
-		iterator != end();
+		ConstIterator iterator = cbegin();
+		iterator != cend();
 		++iterator
 	){
 		int col = getBasisIndex((*iterator).getFromIndex());
@@ -396,44 +377,12 @@ void HoppingAmplitudeSet::constructCOO(){
 	cooValues = new complex<double>[numMatrixElements];
 
 	//Setup matrix on COO format
-/*	it.reset();
-	int currentMatrixElement = -1;
-	currentCol = -1;
-	currentRow = -1;
-	while((ha = it.getHA())){
-		int col = getBasisIndex(ha->getFromIndex());
-		int row = getBasisIndex(ha->getToIndex());
-		complex<double> amplitude = ha->getAmplitude();
-
-		if(col > currentCol){
-			currentCol = col;
-			currentRow = -1;
-		}
-		if(row > currentRow){
-			currentRow = row;
-			currentMatrixElement++;
-
-			//Note: The sorted HoppingAmplitudeSet is in ordered
-			//column major order, while the COO format is in row
-			//major order. The Hermitian conjugat eis therefore
-			//taken here. (That is, conjugate and intercahnge of
-			//rows and columns is intentional)
-			cooRowIndices[currentMatrixElement] = col;
-			cooColIndices[currentMatrixElement] = row;
-			cooValues[currentMatrixElement] = conj(amplitude);
-		}
-		else{
-			cooValues[currentMatrixElement] += conj(amplitude);
-		}
-
-		it.searchNextHA();
-	}*/
 	int currentMatrixElement = -1;
 	currentCol = -1;
 	currentRow = -1;
 	for(
-		Iterator iterator = begin();
-		iterator != end();
+		ConstIterator iterator = cbegin();
+		iterator != cend();
 		++iterator
 	){
 		int col = getBasisIndex((*iterator).getFromIndex());
@@ -489,16 +438,6 @@ void HoppingAmplitudeSet::reconstructCOO(){
 void HoppingAmplitudeSet::print(){
 	HoppingAmplitudeTree::print();
 }
-
-/*HoppingAmplitudeSet::Iterator HoppingAmplitudeSet::getIterator() const{
-	return HoppingAmplitudeSet::Iterator(this);
-}
-
-HoppingAmplitudeSet::Iterator HoppingAmplitudeSet::getIterator(
-	const Index &subspace
-) const{
-	return HoppingAmplitudeSet::Iterator(getSubTree(subspace));
-}*/
 
 string HoppingAmplitudeSet::serialize(Mode mode) const{
 	switch(mode){
@@ -568,103 +507,17 @@ string HoppingAmplitudeSet::serialize(Mode mode) const{
 	}
 }
 
-/*HoppingAmplitudeSet::Iterator::Iterator(const HoppingAmplitudeTree* hoppingAmplitudeTree){
-	it = new HoppingAmplitudeTree::Iterator(hoppingAmplitudeTree);
-}
-
-HoppingAmplitudeSet::Iterator::Iterator(
-	const HoppingAmplitudeSet::Iterator &iterator
-){
-	it = new HoppingAmplitudeTree::Iterator(*iterator.it);
-}
-
-HoppingAmplitudeSet::Iterator::Iterator(
-	HoppingAmplitudeSet::Iterator &&iterator
-){
-	it = iterator.it;
-	iterator.it = nullptr;
-}
-
-HoppingAmplitudeSet::Iterator::~Iterator(){
-	if(it != nullptr)
-		delete it;
-}
-
-HoppingAmplitudeSet::Iterator& HoppingAmplitudeSet::Iterator::operator=(
-	const HoppingAmplitudeSet::Iterator &rhs
-){
-	if(this != &rhs){
-		if(it != nullptr)
-			delete it;
-
-		it = new HoppingAmplitudeTree::Iterator(*rhs.it);
-	}
-
-	return *this;
-}
-
-HoppingAmplitudeSet::Iterator& HoppingAmplitudeSet::Iterator::operator=(
-	HoppingAmplitudeSet::Iterator &&rhs
-){
-	if(this != &rhs){
-		if(it != nullptr)
-			delete it;
-
-		it = rhs.it;
-		rhs.it = nullptr;
-	}
-
-	return *this;
-}
-
-void HoppingAmplitudeSet::Iterator::reset(){
-	it->reset();
-}
-
-void HoppingAmplitudeSet::Iterator::searchNextHA(){
-	it->searchNextHA();
-}
-
-const HoppingAmplitude* HoppingAmplitudeSet::Iterator::getHA() const{
-	return it->getHA();
-}
-
-int HoppingAmplitudeSet::Iterator::getMinBasisIndex() const{
-	return it->getMinBasisIndex();
-}
-
-int HoppingAmplitudeSet::Iterator::getMaxBasisIndex() const{
-	return it->getMaxBasisIndex();
-}
-
-int HoppingAmplitudeSet::Iterator::getNumBasisIndices() const{
-	return it->getNumBasisIndices();
-}*/
-
 void HoppingAmplitudeSet::tabulate(
 	complex<double> **amplitudes,
 	int **table,
 	int *numHoppingAmplitudes,
 	int *maxIndexSize
 ) const{
-/*	Iterator it = getIterator();
-	const HoppingAmplitude *ha;
-	(*numHoppingAmplitudes) = 0;
-	(*maxIndexSize) = 0;
-	while((ha = it.getHA())){
-		(*numHoppingAmplitudes)++;
-
-		int indexSize = ha->getFromIndex().getSize();
-		if(indexSize > *maxIndexSize)
-			(*maxIndexSize) = indexSize;
-
-		it.searchNextHA();
-	}*/
 	(*numHoppingAmplitudes) = 0;
 	(*maxIndexSize) = 0;
 	for(
-		Iterator iterator = begin();
-		iterator != end();
+		ConstIterator iterator = cbegin();
+		iterator != cend();
 		++iterator
 	){
 		(*numHoppingAmplitudes)++;
@@ -680,22 +533,10 @@ void HoppingAmplitudeSet::tabulate(
 		(*table)[n] = -1;
 	(*amplitudes) = new complex<double>[(*numHoppingAmplitudes)];
 
-/*	it.reset();
-	int counter = 0;
-	while((ha = it.getHA())){
-		for(unsigned int n = 0; n < ha->getFromIndex().getSize(); n++)
-			(*table)[2*(*maxIndexSize)*counter+n] = ha->getFromIndex().at(n);
-		for(unsigned int n = 0; n < ha->getToIndex().getSize(); n++)
-			(*table)[2*(*maxIndexSize)*counter+n+(*maxIndexSize)] = ha->getToIndex().at(n);
-		(*amplitudes)[counter] = ha->getAmplitude();
-
-		it.searchNextHA();
-		counter++;
-	}*/
 	int counter = 0;
 	for(
-		Iterator iterator = begin();
-		iterator != end();
+		ConstIterator iterator = cbegin();
+		iterator != cend();
 		++iterator
 	){
 		for(unsigned int n = 0; n < (*iterator).getFromIndex().getSize(); n++)

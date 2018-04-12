@@ -129,18 +129,11 @@ vector<complex<double>> ChebyshevExpander::calculateCoefficientsCPU(
 	coefficients[0] = jIn1[toBasisIndex];
 
 	//Generate a fixed hopping amplitude and inde list, for speed.
-/*	HoppingAmplitudeSet::Iterator it = hoppingAmplitudeSet.getIterator();
-	const HoppingAmplitude *ha;
-	int numHoppingAmplitudes = 0;
-	while((ha = it.getHA())){
-		numHoppingAmplitudes++;
-		it.searchNextHA();
-	}*/
 	int numHoppingAmplitudes = 0;
 	for(
-		HoppingAmplitudeSet::Iterator iterator
-			= hoppingAmplitudeSet.begin();
-		iterator != hoppingAmplitudeSet.end();
+		HoppingAmplitudeSet::ConstIterator iterator
+			= hoppingAmplitudeSet.cbegin();
+		iterator != hoppingAmplitudeSet.cend();
 		++iterator
 	){
 		numHoppingAmplitudes++;
@@ -149,23 +142,11 @@ vector<complex<double>> ChebyshevExpander::calculateCoefficientsCPU(
 	complex<double> *hoppingAmplitudes = new complex<double>[numHoppingAmplitudes];
 	int *toIndices = new int[numHoppingAmplitudes];
 	int *fromIndices = new int[numHoppingAmplitudes];
-/*	it.reset();
-	int counter = 0;
-	while((ha = it.getHA())){
-//		toIndices[counter] = hoppingAmplitudeSet->getBasisIndex(ha->toIndex);
-//		fromIndices[counter] = hoppingAmplitudeSet->getBasisIndex(ha->fromIndex);
-		toIndices[counter] = hoppingAmplitudeSet.getBasisIndex(ha->getToIndex());
-		fromIndices[counter] = hoppingAmplitudeSet.getBasisIndex(ha->getFromIndex());
-		hoppingAmplitudes[counter] = ha->getAmplitude()/scaleFactor;
-
-		it.searchNextHA();
-		counter++;
-	}*/
 	int counter = 0;
 	for(
-		HoppingAmplitudeSet::Iterator iterator
-			= hoppingAmplitudeSet.begin();
-		iterator != hoppingAmplitudeSet.end();
+		HoppingAmplitudeSet::ConstIterator iterator
+			= hoppingAmplitudeSet.cbegin();
+		iterator != hoppingAmplitudeSet.cend();
 		++iterator
 	){
 		toIndices[counter] = hoppingAmplitudeSet.getBasisIndex((*iterator).getToIndex());
@@ -323,18 +304,11 @@ vector<vector<complex<double>>> ChebyshevExpander::calculateCoefficientsCPU(
 //			coefficients[coefficientMap[n]*numCoefficients] = jIn1[n];
 
 	//Generate a fixed hopping amplitude and inde list, for speed.
-/*	HoppingAmplitudeSet::Iterator it = hoppingAmplitudeSet.getIterator();
-	const HoppingAmplitude *ha;
-	int numHoppingAmplitudes = 0;
-	while((ha = it.getHA())){
-		numHoppingAmplitudes++;
-		it.searchNextHA();
-	}*/
 	int numHoppingAmplitudes = 0;
 	for(
-		HoppingAmplitudeSet::Iterator iterator
-			= hoppingAmplitudeSet.begin();
-		iterator != hoppingAmplitudeSet.end();
+		HoppingAmplitudeSet::ConstIterator iterator
+			= hoppingAmplitudeSet.cbegin();
+		iterator != hoppingAmplitudeSet.cend();
 		++iterator
 	){
 		numHoppingAmplitudes++;
@@ -343,23 +317,11 @@ vector<vector<complex<double>>> ChebyshevExpander::calculateCoefficientsCPU(
 	complex<double> *hoppingAmplitudes = new complex<double>[numHoppingAmplitudes];
 	int *toIndices = new int[numHoppingAmplitudes];
 	int *fromIndices = new int[numHoppingAmplitudes];
-/*	it.reset();
-	int counter = 0;
-	while((ha = it.getHA())){
-//		toIndices[counter] = hoppingAmplitudeSet->getBasisIndex(ha->toIndex);
-//		fromIndices[counter] = hoppingAmplitudeSet->getBasisIndex(ha->fromIndex);
-		toIndices[counter] = hoppingAmplitudeSet.getBasisIndex(ha->getToIndex());
-		fromIndices[counter] = hoppingAmplitudeSet.getBasisIndex(ha->getFromIndex());
-		hoppingAmplitudes[counter] = ha->getAmplitude()/scaleFactor;
-
-		it.searchNextHA();
-		counter++;
-	}*/
 	int counter = 0;
 	for(
-		HoppingAmplitudeSet::Iterator iterator
-			= hoppingAmplitudeSet.begin();
-		iterator != hoppingAmplitudeSet.end();
+		HoppingAmplitudeSet::ConstIterator iterator
+			= hoppingAmplitudeSet.cbegin();
+		iterator != hoppingAmplitudeSet.cend();
 		++iterator
 	){
 		toIndices[counter] = hoppingAmplitudeSet.getBasisIndex((*iterator).getToIndex());

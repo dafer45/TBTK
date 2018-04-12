@@ -173,10 +173,22 @@ public:
 	 */
 	SparseMatrix<std::complex<double>> getSparseMatrix() const;
 
-	/** Iterator for iterating through @link HoppingAmplitude
-	 *  HoppingAmplitudes @endlink. */
-	class Iterator{
+	class Iterator;
+	class ConstIterator;
+private:
+	/** Base class used by Iterator and ConstIterator for iterating through
+	 *  @link HoppingAmplitude HoppingAmplitudes @endlink. */
+	template<bool isConstIterator>
+	class _Iterator{
 	public:
+		/** Typedef to allow for pointers to const and non-const
+		 *  depending on Iterator type. */
+		typedef typename std::conditional<
+			isConstIterator,
+			const HoppingAmplitude&,
+			HoppingAmplitude&
+		>::type HoppingAmplitudeReferenceType;
+
 		/** Increment operator. */
 		void operator++();
 
@@ -184,10 +196,10 @@ public:
 		const HoppingAmplitude& operator*();
 
 		/** Equality operator. */
-		bool operator==(const Iterator &rhs) const;
+		bool operator==(const _Iterator &rhs) const;
 
 		/** Inequality operator. */
-		bool operator!=(const Iterator &rhs) const;
+		bool operator!=(const _Iterator &rhs) const;
 
 		/** Get minimum index. */
 		int getMinBasisIndex() const;
@@ -198,27 +210,84 @@ public:
 		/** Get number of basis indices. */
 		int getNumBasisIndices() const;
 	private:
-		/** The iterator can only be constructed by the
-		 *  HoppingAmplitudeSet. */
-		friend class HoppingAmplitudeSet;
+		/** Typedef to allow for pointers to const and non-const
+		 *  depending on Iterator type. */
+		typedef typename std::conditional<
+			isConstIterator,
+			HoppingAmplitudeTree::ConstIterator,
+			HoppingAmplitudeTree::Iterator
+		>::type HoppingAmplitudeTreeIteratorType;
 
-		/** Private constructor. Limits the ability to construct the
-		 *  iterator to the HoppingAmplitudeSet. */
-		Iterator(
-			const HoppingAmplitudeTree *hoppingAmplitudeTree,
-			bool end = false
-		);
+		/** Typedef to allow for pointers to const and non-const
+		 *  depending on Iterator type. */
+		typedef typename std::conditional<
+			isConstIterator,
+			const HoppingAmplitudeTree*,
+			HoppingAmplitudeTree*
+		>::type HoppingAmplitudeTreePointerType;
 
 		/** HoppingAmplitudeTree iterator. Implements the actual
 		 *  iteration. */
-		HoppingAmplitudeTree::Iterator iterator;
+		HoppingAmplitudeTreeIteratorType iterator;
+
+		/** Give access to the constructor to Iterator and
+		 *  ConstIterator. */
+		friend class Iterator;
+		friend class ConstIterator;
+
+		/** Private constructor. Limits the ability to construct the
+		 *  iterator to the HoppingAmplitudeSet. */
+		_Iterator(
+			HoppingAmplitudeTreePointerType hoppingAmplitudeTree,
+			bool end = false
+		);
+	};
+public:
+	/** Iterator for iterating through the elements stored in the
+	 *  HoppingAmplitudeSet. */
+	class Iterator : public _Iterator<false>{
+	private:
+		Iterator(
+			HoppingAmplitudeTree *hoppingAmplitudeTree,
+			bool end = false
+		) : _Iterator<false>(hoppingAmplitudeTree, end){};
+
+		/** Make the HoppingAmplitudeSet able to construct an Iterator.
+		*/
+		friend class HoppingAmplitudeSet;
+	};
+
+	/** Const Iterator for iterating through the elements stored in the
+	 *  HoppingAmplitudeSet. */
+	class ConstIterator : public _Iterator<true>{
+	private:
+		ConstIterator(
+			const HoppingAmplitudeTree *hoppingAmplitudeTree,
+			bool end = false
+		) : _Iterator<true>(hoppingAmplitudeTree, end){};
+
+		/** Make the HoppingAmplitudeSet able to construct an Iterator.
+		*/
+		friend class HoppingAmplitudeSet;
 	};
 
 	/** Create Iterator.
 	 *
 	 *  @return Iterator pointing to the first element in the
 	 *  HoppingAmplitudeSet. */
-	Iterator begin() const;
+	Iterator begin();
+
+	/** Create ConstIterator.
+	 *
+	 *  @return ConstIterator pointing to the first element in the
+	 *  HoppingAmplitudeSet. */
+	ConstIterator begin() const;
+
+	/** Create ConstIterator.
+	 *
+	 *  @return ConstIterator pointing to the first element in the
+	 *  HoppingAmplitudeSet. */
+	ConstIterator cbegin() const;
 
 	/** Create Iterator for a particular subspace.
 	 *
@@ -226,19 +295,67 @@ public:
 	 *
 	 *  @return Iterator pointing to the first element in the
 	 *  HoppingAmplitudeSet. */
-	Iterator begin(const Index &subspace) const;
+	Iterator begin(const Index &subspace);
+
+	/** Create ConstIterator for a particular subspace.
+	 *
+	 *  @param Index for the subspace the ConstIterator is to be iterating
+	 *  over.
+	 *
+	 *  @return ConstIterator pointing to the first element in the
+	 *  HoppingAmplitudeSet. */
+	ConstIterator begin(const Index &subspace) const;
+
+	/** Create ConstIterator for a particular subspace.
+	 *
+	 *  @param Index for the subspace the ConstIterator is to be iterating
+	 *  over.
+	 *
+	 *  @return ConstIterator pointing to the first element in the
+	 *  HoppingAmplitudeSet. */
+	ConstIterator cbegin(const Index &subspace) const;
 
 	/** Create Iterator pointing to the end.
 	 *
 	 *  @return Iterator pointing to the end of the HoppingAmplitudeSet. */
-	Iterator end() const;
+	Iterator end();
+
+	/** Create ConstIterator pointing to the end.
+	 *
+	 *  @return ConstIterator pointing to the end of the
+	 *  HoppingAmplitudeSet. */
+	ConstIterator end() const;
+
+	/** Create ConstIterator pointing to the end.
+	 *
+	 *  @return ConstIterator pointing to the end of the
+	 *  HoppingAmplitudeSet. */
+	ConstIterator cend() const;
 
 	/** Create Iterator pointing to the end for a particular subspace.
 	 *
 	 *  @param Index for the subspace the Iterator is to be iterating over.
 	 *
 	 *  @return Iterator pointing to the end of the HoppingAmplitudeSet. */
-	Iterator end(const Index &subspace) const;
+	Iterator end(const Index &subspace);
+
+	/** Create ConstIterator pointing to the end for a particular subspace.
+	 *
+	 *  @param Index for the subspace the ConstIterator is to be iterating
+	 *  over.
+	 *
+	 *  @return ConstIterator pointing to the end of the
+	 *  HoppingAmplitudeSet. */
+	ConstIterator end(const Index &subspace) const;
+
+	/** Create ConstIterator pointing to the end for a particular subspace.
+	 *
+	 *  @param Index for the subspace the ConstIterator is to be iterating
+	 *  over.
+	 *
+	 *  @return ConstIterator pointing to the end of the
+	 *  HoppingAmplitudeSet. */
+	ConstIterator cend(const Index &subspace) const;
 
 	/** Print tree structure. Mainly for debuging. */
 	void print();
@@ -370,7 +487,7 @@ inline SparseMatrix<std::complex<double>> HoppingAmplitudeSet::getSparseMatrix(
 	);
 
 	for(
-		Iterator iterator = begin();
+		ConstIterator iterator = begin();
 		iterator != end();
 		++iterator
 	){
@@ -385,31 +502,77 @@ inline SparseMatrix<std::complex<double>> HoppingAmplitudeSet::getSparseMatrix(
 	return sparseMatrix;
 }
 
-inline HoppingAmplitudeSet::Iterator HoppingAmplitudeSet::begin() const{
+inline HoppingAmplitudeSet::Iterator HoppingAmplitudeSet::begin(){
 	return Iterator(this);
+}
+
+inline HoppingAmplitudeSet::ConstIterator HoppingAmplitudeSet::begin() const{
+	return ConstIterator(this);
+}
+
+inline HoppingAmplitudeSet::ConstIterator HoppingAmplitudeSet::cbegin() const{
+	return ConstIterator(this);
 }
 
 inline HoppingAmplitudeSet::Iterator HoppingAmplitudeSet::begin(
 	const Index &subspace
-) const{
+){
 	return Iterator(getSubTree(subspace));
 }
 
-inline HoppingAmplitudeSet::Iterator HoppingAmplitudeSet::end() const{
+inline HoppingAmplitudeSet::ConstIterator HoppingAmplitudeSet::begin(
+	const Index &subspace
+) const{
+	return ConstIterator(getSubTree(subspace));
+}
+
+inline HoppingAmplitudeSet::ConstIterator HoppingAmplitudeSet::cbegin(
+	const Index &subspace
+) const{
+	return ConstIterator(getSubTree(subspace));
+}
+
+inline HoppingAmplitudeSet::Iterator HoppingAmplitudeSet::end(){
 	return Iterator(this, true);
+}
+
+inline HoppingAmplitudeSet::ConstIterator HoppingAmplitudeSet::end() const{
+	return ConstIterator(this, true);
+}
+
+inline HoppingAmplitudeSet::ConstIterator HoppingAmplitudeSet::cend() const{
+	return ConstIterator(this, true);
 }
 
 inline HoppingAmplitudeSet::Iterator HoppingAmplitudeSet::end(
 	const Index &subspace
-) const{
+){
 	return Iterator(getSubTree(subspace), true);
 }
 
-inline bool HoppingAmplitudeSet::Iterator::operator==(const Iterator &rhs) const{
+inline HoppingAmplitudeSet::ConstIterator HoppingAmplitudeSet::end(
+	const Index &subspace
+) const{
+	return ConstIterator(getSubTree(subspace), true);
+}
+
+inline HoppingAmplitudeSet::ConstIterator HoppingAmplitudeSet::cend(
+	const Index &subspace
+) const{
+	return ConstIterator(getSubTree(subspace), true);
+}
+
+template<bool isConstIterator>
+inline bool HoppingAmplitudeSet::_Iterator<isConstIterator>::operator==(
+	const _Iterator &rhs
+) const{
 	return iterator == rhs.iterator;
 }
 
-inline bool HoppingAmplitudeSet::Iterator::operator!=(const Iterator &rhs) const{
+template<bool isConstIterator>
+inline bool HoppingAmplitudeSet::_Iterator<isConstIterator>::operator!=(
+	const _Iterator &rhs
+) const{
 	return iterator != rhs.iterator;
 }
 
@@ -427,31 +590,44 @@ inline unsigned int HoppingAmplitudeSet::getSizeInBytes() const{
 	return size;
 }
 
-inline void HoppingAmplitudeSet::Iterator::operator++(){
+template<bool isConstIterator>
+inline void HoppingAmplitudeSet::_Iterator<isConstIterator>::operator++(){
 	++iterator;
 }
 
-inline const HoppingAmplitude& HoppingAmplitudeSet::Iterator::operator*(){
+template<bool isConstIterator>
+inline const HoppingAmplitude& HoppingAmplitudeSet::_Iterator<isConstIterator>::operator*(){
 	return *iterator;
 }
 
-inline int HoppingAmplitudeSet::Iterator::getMinBasisIndex() const{
+template<bool isConstIterator>
+inline int HoppingAmplitudeSet::_Iterator<isConstIterator>::getMinBasisIndex() const{
 	return iterator.getMinBasisIndex();
 }
 
-inline int HoppingAmplitudeSet::Iterator::getMaxBasisIndex() const{
+template<bool isConstIterator>
+inline int HoppingAmplitudeSet::_Iterator<isConstIterator>::getMaxBasisIndex() const{
 	return iterator.getMaxBasisIndex();
 }
 
-inline int HoppingAmplitudeSet::Iterator::getNumBasisIndices() const{
+template<bool isConstIterator>
+inline int HoppingAmplitudeSet::_Iterator<isConstIterator>::getNumBasisIndices() const{
 	return iterator.getNumBasisIndices();
 }
 
-inline HoppingAmplitudeSet::Iterator::Iterator(
-	const HoppingAmplitudeTree *hoppingAmplitudeTree,
+template<bool isConstIterator>
+inline HoppingAmplitudeSet::_Iterator<isConstIterator>::_Iterator(
+	HoppingAmplitudeTreePointerType hoppingAmplitudeTree,
 	bool end
 ) :
-	iterator(hoppingAmplitudeTree, end)
+//	iterator(hoppingAmplitudeTree, end)
+	iterator(
+		(
+			end ?
+			hoppingAmplitudeTree->end()
+			: hoppingAmplitudeTree->begin()
+		)
+	)
 {
 }
 

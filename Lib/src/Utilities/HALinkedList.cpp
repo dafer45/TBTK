@@ -23,17 +23,10 @@
 namespace TBTK{
 
 HALinkedList::HALinkedList(const HoppingAmplitudeSet &as){
-/*	HoppingAmplitudeSet::Iterator it = as.getIterator();
-	const HoppingAmplitude *ha;
-	int numHoppingAmplitudes = 0;
-	while((ha = it.getHA())){
-		numHoppingAmplitudes++;
-		it.searchNextHA();
-	}*/
 	int numHoppingAmplitudes = 0;
 	for(
-		HoppingAmplitudeSet::Iterator iterator = as.begin();
-		iterator != as.end();
+		HoppingAmplitudeSet::ConstIterator iterator = as.cbegin();
+		iterator != as.cend();
 		++iterator
 	){
 		numHoppingAmplitudes++;
@@ -47,33 +40,10 @@ HALinkedList::HALinkedList(const HoppingAmplitudeSet &as){
 		linkList[n] = NULL;
 		lastLinks[n] = NULL;
 	}
-/*	it.reset();
-	int counter = 0;
-	while((ha = it.getHA())){
-//		linkArray[counter].from = as.getBasisIndex(ha->fromIndex);
-//		linkArray[counter].to = as.getBasisIndex(ha->toIndex);
-		linkArray[counter].from = as.getBasisIndex(ha->getFromIndex());
-		linkArray[counter].to = as.getBasisIndex(ha->getToIndex());
-		linkArray[counter].amplitude = ha->getAmplitude();
-		linkArray[counter].next1 = NULL;
-		linkArray[counter].next2 = NULL;
-
-		int from = linkArray[counter].from;
-		if(lastLinks[from] == NULL)
-			linkList[from] = &linkArray[counter];
-		else
-			lastLinks[from]->next1 = &linkArray[counter];
-
-		lastLinks[from] = &linkArray[counter];
-
-		counter++;
-
-		it.searchNextHA();
-	}*/
 	int counter = 0;
 	for(
-		HoppingAmplitudeSet::Iterator iterator = as.begin();
-		iterator != as.end();
+		HoppingAmplitudeSet::ConstIterator iterator = as.cbegin();
+		iterator != as.cend();
 		++iterator
 	){
 		linkArray[counter].from = as.getBasisIndex((*iterator).getFromIndex());

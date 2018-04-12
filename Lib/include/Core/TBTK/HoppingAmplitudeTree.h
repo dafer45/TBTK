@@ -95,6 +95,26 @@ public:
 	 *  subindices in an Index specifies a subspace.
 	 *
 	 *  @return A (possibly improper) subspace of the HoppingAmplitudeTree. */
+	HoppingAmplitudeTree* getSubTree(const Index &subspace);
+
+	/** Get HoppingAmplitudeTree containing the @link HoppingAmplitude
+	 *  HoppingAmplitudes @endlink of the specified subspace. If the
+	 *  original HoppingAMplitudeTree has an Index structure with
+	 *  {subspace, intra subspace indices}, then the new
+	 *  HoppingAmplitudeTree has the Index-structure
+	 *  {intra subspace indices}. This function does not guarantee to
+	 *  return a closed subspace and can contain HoppingAmplitudes to
+	 *  components with other subspace indices if the specified subspace is
+	 *  not a proper subspace. If in doubt, use
+	 *  HoppingAmplitudeTree::isProperSubspace() to check whether a given
+	 *  subspace is a proper subspace before calling this function. Empty
+	 *  subspaces for which no HoppingAmplitudes have been added return
+	 *  empty subspaces.
+	 *
+	 *  @param subspace A number of subindices that when used as leftmost
+	 *  subindices in an Index specifies a subspace.
+	 *
+	 *  @return A (possibly improper) subspace of the HoppingAmplitudeTree. */
 	const HoppingAmplitudeTree* getSubTree(const Index &subspace) const;
 
 	/** Returns true if the subspace is a proper subspace. That is, if the
@@ -196,39 +216,34 @@ public:
 	 *  debuging purposes. */
 	void print();
 
-	/** Get size in bytes.
-	 *
-	 *  @return Memory size required to store the Index. */
-	unsigned int getSizeInBytes() const;
-
-	/** Iterator for iterating through @link HoppingAmplitude
-	 *  HoppingAmplitudes @endlink stored in the tree structure. */
-	class Iterator{
+	class Iterator;
+	class ConstIterator;
+private:
+	/** Base class Iterator and ConstIterator for iterating through the
+	 *  @link HoppingAmplitude HoppingAmplitudes @endlink stored in the
+	 *  tree structure. */
+	template<bool isConstIterator>
+	class _Iterator{
 	public:
-		/** Root node to iterate from. */
-		const HoppingAmplitudeTree* tree;
-
-		/** Current index at which the iterator points at. */
-		std::vector<int> currentIndex;
-
-		/** Current HoppingAmplitude that the iterator points at at the
-		 *  currentIndex. */
-		int currentHoppingAmplitude;
-
-		/** Constructor. */
-		Iterator(const HoppingAmplitudeTree *tree, bool end = false);
+		/** Typedef to allow for pointers to const and non-const
+		 *  depending on Iterator type. */
+		typedef typename std::conditional<
+			isConstIterator,
+			const HoppingAmplitude&,
+			HoppingAmplitude&
+		>::type HoppingAmplitudeReferenceType;
 
 		/** Increment operator. */
 		void operator++();
 
 		/** Dereference operator. */
-		const HoppingAmplitude& operator*();
+		HoppingAmplitudeReferenceType operator*();
 
 		/** Equality operator. */
-		bool operator==(const Iterator &rhs) const;
+		bool operator==(const _Iterator &rhs) const;
 
 		/** Inequality operator. */
-		bool operator!=(const Iterator &rhs) const;
+		bool operator!=(const _Iterator &rhs) const;
 
 		/** Get minimum basis index. */
 		int getMinBasisIndex() const;
@@ -239,26 +254,103 @@ public:
 		/** Get number of basis indices. */
 		int getNumBasisIndices() const;
 	private:
+		/** Typedef to allow for pointers to const and non-const
+		 *  depending on Iterator tpye. */
+		typedef typename std::conditional<
+			isConstIterator,
+			const HoppingAmplitudeTree*,
+			HoppingAmplitudeTree*
+		>::type HoppingAmplitudeTreePointerType;
+
+		/** Root node to iterate from. */
+		HoppingAmplitudeTreePointerType tree;
+
+		/** Current index at which the iterator points at. */
+		std::vector<int> currentIndex;
+
+		/** Current HoppingAmplitude that the iterator points at at the
+		 *  currentIndex. */
+		int currentHoppingAmplitude;
+
+		/** Give Iterator and ConstIterator access to the constructor. */
+		friend class Iterator;
+		friend class ConstIterator;
+
+		/** Constructor. */
+		_Iterator(HoppingAmplitudeTreePointerType tree, bool end = false);
+
 		/** Search after next HoppingAmplitude. Is used by
 		 *  HoppingAmplitudeTree::Iterator::searchNext and called
 		 *  recursively. */
 		bool searchNext(
-			const HoppingAmplitudeTree *hoppingAmplitudeTree,
-			unsigned int subindex
+			HoppingAmplitudeTreePointerType hoppingAmplitudeTree,
+			int subindex
 		);
+	};
+public:
+	/** Iterator for iterating through the @link HoppingAmplitude
+	 *  HoppingAmplitudes @endlink stored in the HoppingAmplitudeTree. */
+	class Iterator : public _Iterator<false>{
+	private:
+		Iterator(
+			HoppingAmplitudeTree *hoppingAmplitudeTree,
+			bool end = false
+		) : _Iterator<false>(hoppingAmplitudeTree, end){};
+
+		/** Make the HoppingAmplitudeTree able to construct an
+		 *  Iterator. */
+		friend class HoppingAmplitudeTree;
+	};
+
+	/** Iterator for iterating through the @link HoppingAmplitude
+	 *  HoppingAmplitudes @endlink stored in the HoppingAmplitudeTree. */
+	class ConstIterator : public _Iterator<true>{
+	private:
+		ConstIterator(
+			const HoppingAmplitudeTree *hoppingAmplitudeTree,
+			bool end = false
+		) : _Iterator<true>(hoppingAmplitudeTree, end){};
+
+		/** Make the HoppingAmplitudeTree able to construct a
+		 *  ConstIterator. */
+		friend class HoppingAmplitudeTree;
 	};
 
 	/** Create Iterator.
 	 *
 	 *  @return Iterator pointing to the first element in the
 	 *  HoppingAmplitudeTree. */
-	Iterator begin() const;
+	Iterator begin();
+
+	/** Create ConstIterator.
+	 *
+	 *  @return ConstIterator pointing to the first element in the
+	 *  HoppingAmplitudeTree. */
+	ConstIterator begin() const;
+
+	/** Create ConstIterator.
+	 *
+	 *  @return ConstIterator pointing to the first element in the
+	 *  HoppingAmplitudeTree. */
+	ConstIterator cbegin() const;
 
 	/** Create Iterator pointing to the end.
 	 *
 	 *  @return Iterator pointing to the end of the HoppingAmplitudeTree.
 	 */
-	Iterator end() const;
+	Iterator end();
+
+	/** Create ConstIterator pointing to the end.
+	 *
+	 *  @return ConstIterator pointing to the end of the
+	 *  HoppingAmplitudeTree. */
+	ConstIterator end() const;
+
+	/** Create ConstIterator pointing to the end.
+	 *
+	 *  @return ConstIterator pointing to the end of the
+	 *  HoppingAmplitudeTree. */
+	ConstIterator cend() const;
 
 	/** Implements Serializable::serialize.
 	 *
@@ -266,6 +358,11 @@ public:
 	 *
 	 *  @return Serialized string represenation of the Index. */
 	virtual std::string serialize(Mode mode) const;
+
+	/** Get size in bytes.
+	 *
+	 *  @return Memory size required to store the Index. */
+	unsigned int getSizeInBytes() const;
 private:
 	/** Basis index for the Hamiltonian. */
 	int basisIndex;
@@ -403,6 +500,30 @@ inline int HoppingAmplitudeTree::getLastIndexInSubspace(
 	return subspace->getMaxIndex();
 }
 
+inline HoppingAmplitudeTree::Iterator HoppingAmplitudeTree::begin(){
+	return Iterator(this);
+}
+
+inline HoppingAmplitudeTree::ConstIterator HoppingAmplitudeTree::begin() const{
+	return ConstIterator(this);
+}
+
+inline HoppingAmplitudeTree::ConstIterator HoppingAmplitudeTree::cbegin() const{
+	return ConstIterator(this);
+}
+
+inline HoppingAmplitudeTree::Iterator HoppingAmplitudeTree::end(){
+	return Iterator(this, true);
+}
+
+inline HoppingAmplitudeTree::ConstIterator HoppingAmplitudeTree::end() const{
+	return ConstIterator(this, true);
+}
+
+inline HoppingAmplitudeTree::ConstIterator HoppingAmplitudeTree::cend() const{
+	return ConstIterator(this, true);
+}
+
 inline unsigned int HoppingAmplitudeTree::getSizeInBytes() const{
 	unsigned int size = 0;
 	for(unsigned int n = 0; n < hoppingAmplitudes.size(); n++)
@@ -419,6 +540,229 @@ inline unsigned int HoppingAmplitudeTree::getSizeInBytes() const{
 	)*sizeof(HoppingAmplitudeTree);
 
 	return size + sizeof(HoppingAmplitudeTree);
+}
+
+template<bool isConstIterator>
+HoppingAmplitudeTree::_Iterator<isConstIterator>::_Iterator(
+	HoppingAmplitudeTreePointerType tree,
+	bool end
+)
+{
+	if(end){
+		this->tree = tree;
+		if(tree->children.size() == 0){
+			currentHoppingAmplitude = -1;
+		}
+		else{
+			currentIndex.push_back(tree->children.size());
+			currentHoppingAmplitude = -1;
+		}
+	}
+	else{
+		this->tree = tree;
+		if(tree->children.size() == 0){
+			//Handle the special case when the data is stored on the head
+			//node. Can for example be the case when iterating over a
+			//single leaf node.
+			currentHoppingAmplitude = -1;
+			searchNext(tree, -1);
+		}
+		else{
+			currentIndex.push_back(0);
+			currentHoppingAmplitude = -1;
+			searchNext(tree, 0);
+		}
+	}
+}
+
+template<bool isConstIterator>
+void HoppingAmplitudeTree::_Iterator<isConstIterator>::operator++(){
+	if(tree->children.size() == 0){
+		//Handle the special case when the data is stored on the head
+		//node. Can for example be the case when iterating over a
+		//single leaf node.
+		searchNext(tree, -1);
+	}
+	else{
+		searchNext(tree, 0);
+	}
+}
+
+template<bool isConstIterator>
+bool HoppingAmplitudeTree::_Iterator<isConstIterator>::searchNext(
+	HoppingAmplitudeTreePointerType hoppingAmplitudeTree,
+	int subindex
+){
+	if(subindex+1 == (int)currentIndex.size()){
+		//If the node level corresponding to the current index is
+		//reached, try to execute leaf node actions.
+
+		if(currentHoppingAmplitude != -1){
+			//The iterator is in the process of iterating over
+			//HoppingAmplitudes on this leaf node. Try to iterate further.
+
+			currentHoppingAmplitude++;
+			if(currentHoppingAmplitude == (int)hoppingAmplitudeTree->hoppingAmplitudes.size()){
+				//Last HoppingAmplitude already reached. Reset
+				//currentHoppingAmplitude and return false to
+				//indicate that no more HoppingAMplitudes exist
+				//on this node.
+				currentHoppingAmplitude = -1;
+				return false;
+			}
+			else{
+				//Return true to indicate that the next
+				//HoppingAmplitude succesfully has been found.
+				return true;
+			}
+		}
+
+		//We are here guaranteed that the iterator is not currently in
+		//a state where it is iterating over HoppingAmplitudes on this
+		//node.
+
+		if(hoppingAmplitudeTree->children.size() == 0){
+			//The node has no children and is therefore either a
+			//leaf node with HoppingAmplitudes stored on it, or an
+			//empty dummy node.
+
+			if(hoppingAmplitudeTree->hoppingAmplitudes.size() != 0){
+				//There are HoppingAMplitudes on this node,
+				//initialize the iterator to start iterating
+				//over these. Return true to indicate that a
+				//HoppingAmplitude was found.
+				currentHoppingAmplitude = 0;
+				return true;
+			}
+			else{
+				//The node is an empty dymmy node. Return false
+				//to indicate that no more HoppingAmplitudes
+				//exist on this node.
+				return false;
+			}
+		}
+	}
+
+	//We are here guaranteed that this is not a leaf or dummy node. We know
+	//this because either the tests inside the previous if-statements
+	//failed, or we are iterating through children that already have been
+	//visited on an earlier call to searchNext if the outer if-statement
+	//itself failed.
+
+	//Perform depth first search for the next HoppingAmplitude. Starts from
+	//the child node reffered to by currentIndex.
+	unsigned int n = currentIndex.at(subindex);
+	while(n < hoppingAmplitudeTree->children.size()){
+		if(subindex+1 == (int)currentIndex.size()){
+			//The deepest point visited so far on this branch has
+			//been reached. Initialize the depth first search for
+			//child n to start from child n's zeroth child.
+			currentIndex.push_back(0);
+		}
+		if(searchNext(&hoppingAmplitudeTree->children.at(n), subindex+1)){
+			//Depth first search on child n succeded at finding a
+			//HoppingAmplitude. Return true to indicate success.
+			return true;
+		}
+		//Child n does not have any more HoppingAmplitudes. Pop
+		//the subindex corresponding to child n's node level and
+		//increment the subindex corresponding to this node level to
+		//prepare for depth first search of child n+1.
+		currentIndex.pop_back();
+		n = ++currentIndex.back();
+	}
+
+	//Return false to indicate that no more HoppingAmplitudes could be
+	//found on this node.
+	return false;
+}
+
+template<bool isConstIterator>
+typename HoppingAmplitudeTree::_Iterator<
+	isConstIterator
+>::HoppingAmplitudeReferenceType HoppingAmplitudeTree::_Iterator<
+	isConstIterator
+>::operator*(){
+	if(currentIndex.size() == 0){
+		//Handle the special case when the data is stored on the head
+		//node. Can for example be the case when iterating over a
+		//single leaf node.
+		if(currentHoppingAmplitude == -1){
+			TBTKExit(
+				"HoppingAmplitudeTree::_Iterator::operator*()",
+				"Out of range access. Tried to access an"
+				<< " element using an iterator that points"
+				<< " beyond the last element.",
+				""
+			);
+		}
+		else{
+			return tree->hoppingAmplitudes.at(currentHoppingAmplitude);
+		}
+	}
+
+	if(currentIndex.at(0) == (int)tree->children.size()){
+		TBTKExit(
+			"HoppingAmplitudeTree::_Iterator::operator*()",
+			"Out of range access. Tried to access an"
+			<< " element using an iterator that points"
+			<< " beyond the last element.",
+			""
+		);
+	}
+	const HoppingAmplitudeTree *tn = this->tree;
+	for(unsigned int n = 0; n < currentIndex.size()-1; n++){
+		tn = &tn->children.at(currentIndex.at(n));
+	}
+
+	return tn->hoppingAmplitudes.at(currentHoppingAmplitude);
+}
+
+template<bool isConstIterator>
+bool HoppingAmplitudeTree::_Iterator<isConstIterator>::operator==(const _Iterator &rhs) const{
+	if(
+		this->tree == rhs.tree
+		&& currentIndex.size() == rhs.currentIndex.size()
+	){
+		for(unsigned int n = 0; n < currentIndex.size(); n++){
+			if(currentIndex[n] != rhs.currentIndex[n])
+				return false;
+		}
+
+		if(currentHoppingAmplitude == rhs.currentHoppingAmplitude)
+			return true;
+		else
+			return false;
+	}
+	else{
+		return false;
+	}
+}
+
+template<bool isConstIterator>
+bool HoppingAmplitudeTree::_Iterator<isConstIterator>::operator!=(
+	const _Iterator &rhs
+) const{
+	return !operator==(rhs);
+}
+
+template<bool isConstIterator>
+int HoppingAmplitudeTree::_Iterator<isConstIterator>::getMinBasisIndex() const{
+	return tree->getMinIndex();
+}
+
+template<bool isConstIterator>
+int HoppingAmplitudeTree::_Iterator<isConstIterator>::getMaxBasisIndex() const{
+	return tree->getMaxIndex();
+}
+
+template<bool isConstIterator>
+int HoppingAmplitudeTree::_Iterator<isConstIterator>::getNumBasisIndices(
+) const{
+	if(getMaxBasisIndex() == -1)
+		return 0;
+	else
+		return 1 + getMaxBasisIndex() - getMinBasisIndex();
 }
 
 };	//End of namespace TBTK

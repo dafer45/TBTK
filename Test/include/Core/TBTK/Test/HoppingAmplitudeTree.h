@@ -172,9 +172,9 @@ TEST(HoppingAmplitudeTree, getSubTree){
 
 			int counter = 0;
 			for(
-				HoppingAmplitudeTree::Iterator iterator
-					= hoppingAmplitudeTree0->begin();
-				iterator != hoppingAmplitudeTree0->end();
+				HoppingAmplitudeTree::ConstIterator iterator
+					= hoppingAmplitudeTree0->cbegin();
+				iterator != hoppingAmplitudeTree0->cend();
 				++iterator
 			){
 				counter++;
@@ -192,9 +192,9 @@ TEST(HoppingAmplitudeTree, getSubTree){
 
 			counter = 0;
 			for(
-				HoppingAmplitudeTree::Iterator iterator
-					= hoppingAmplitudeTree1->begin();
-				iterator != hoppingAmplitudeTree1->end();
+				HoppingAmplitudeTree::ConstIterator iterator
+					= hoppingAmplitudeTree1->cbegin();
+				iterator != hoppingAmplitudeTree1->cend();
 				++iterator
 			){
 				counter++;
@@ -211,9 +211,9 @@ TEST(HoppingAmplitudeTree, getSubTree){
 
 			counter = 0;
 			for(
-				HoppingAmplitudeTree::Iterator iterator
-					= hoppingAmplitudeTree2->begin();
-				iterator != hoppingAmplitudeTree2->end();
+				HoppingAmplitudeTree::ConstIterator iterator
+					= hoppingAmplitudeTree2->cbegin();
+				iterator != hoppingAmplitudeTree2->cend();
 				++iterator
 			){
 				counter++;
@@ -223,9 +223,9 @@ TEST(HoppingAmplitudeTree, getSubTree){
 
 			counter = 0;
 			for(
-				HoppingAmplitudeTree::Iterator iterator
-					= hoppingAmplitudeTree3->begin();
-				iterator != hoppingAmplitudeTree3->end();
+				HoppingAmplitudeTree::ConstIterator iterator
+					= hoppingAmplitudeTree3->cbegin();
+				iterator != hoppingAmplitudeTree3->cend();
 				++iterator
 			){
 				counter++;
