@@ -32,7 +32,61 @@
 namespace TBTK{
 namespace Property{
 
-/** @brief Abstract Property class. */
+/** @brief Abstract Property class.
+ *
+ *  The AbstractProperty provides a generic storage for data of different type
+ *  and storage structure and enables the implementation of specific
+ *  Properties. To understand the storage structure, it is important to know
+ *  that the Property structures data in several layers and that each layer is
+ *  customizeable to allow for Properties with relatively different structure
+ *  to be stored.
+ *
+ *  <b>DataType:</b><br/>
+ *  The first layer allows for the data type of the individual data elements to
+ *  be customized through the template argument DataType.
+ *
+ *  <b>Block:</b><br/>
+ *  In the next layer data is grouped into blocks of N elements. This allows
+ *  for Properties to be grouped without specific knowledge about what the
+ *  group structure originates from. It is up to the individual Properties to
+ *  give meaning to the internal structure of the block, but a common usage
+ *  case is to store an energy resolved property for a number of energies.
+ *
+ *  <b>Index structure:</b><br/>
+ *  In the third layer data blocks are given @link Index Indices \endlink. For
+ *  flexibility and the ability to optimize for different use cases, several
+ *  different storage formats are available for the Index structure and
+ *  internally an IndexDescriptor is used to handle the differnt formats. These
+ *  formats are:
+ *  <br/><br/>
+ *  <i>IndexDescriptor::Format::None</i>:<br/>
+ *  Used when the Property has no Index structure.
+ *  <br/><br/>
+ *  <i>IndexDescriptor::Format::Ranges</i>:<br/>
+ *  Used to store a Property for a (possibly multi-dimensional) range of @link
+ *  Index Indices @endlink. The Ranges format is particularly efficient and
+ *  imposes a regular grid structure on the data that sometimes can be required
+ *  to for example plotting the Property. However, it has the limitation that
+ *  it cannot be used to store Properties for a few select points on a grid, or
+ *  for an Index strcucture that does not have a particular grid structure.
+ *  <br/><br/>
+ *  IndexDescriptor::Format::Custom:<br/>
+ *  The Custom format has the benefit of being able to store the Property for a
+ *  custom selected set of @link Index Indices @endlink. It also allows the
+ *  value of the Property to be accessed using the function notation
+ *  property(index) or property(index, n). Where index is and Index and n is a
+ *  number indexing into the data block for the given Index. To achieve this
+ *  flexibility the Custom format comes with a slightly larger overhead than
+ *  the Ranges format.
+ *  <br/><br/>
+ *  Sometimes it is usefull to input or access data in raw format, especially
+ *  when writing custom Property classes or PropertyExtractors. In this case it
+ *  is important to know that internally the data is stored in a single
+ *  continous DataType array with blocks stored sequentially. The order the
+ *  blocks are stored in when containing data for multiple @link Index Indices
+ *  @endlink is such that if the @link Index Indices@endlink are added to an
+ *  IndexTree, they appear in the order of the corresponding linear indices
+ *  obtained from the IndexTree. */
 template<
 	typename DataType,
 	bool isFundamental = std::is_fundamental<DataType>::value,
@@ -103,15 +157,22 @@ public:
 	/** Implements Serializable::serialize(). */
 	virtual std::string serialize(Mode mode) const;
 protected:
-	/** Constructor. */
+	/** Constructs an uninitialized AbstractProperty. */
 	AbstractProperty();
 
-	/** Constructor. */
-	AbstractProperty(
-		unsigned int blockSize
-	);
+	/** Constructs an AbstractProperty with a single data block (i.e. no
+	 *  Index structure).
+	 *
+	 *  @param blockSize The number of data elements in the block. */
+	AbstractProperty(unsigned int blockSize);
 
-	/** Constructor. */
+	/** Constructs and AbstractProperty with a single data block (i.e. no
+	 *  Index structure) and fills the internal memory with the data
+	 *  provided as input.
+	 *
+	 *  @param blockSize The number of data elements in the block.
+	 *  @param data The data stored on the raw format described in the
+	 *  detailed description of the class. */
 	AbstractProperty(
 		unsigned int blockSize,
 		const DataType *data
