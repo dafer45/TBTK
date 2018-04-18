@@ -87,6 +87,11 @@ public:
 	 *  resulting Index is treated as a normal Index. */
 	void generateLinearMap();
 
+	/** Get whether the linear map has been generated.
+	 *
+	 *  @return True if the linear map has been generated. */
+	bool getLinearMapIsGenerated() const;
+
 	/** Enum class for selecting mode used to search indices with
 	 *  getLinearIndex(). */
 	enum class SearchMode{StrictMatch, /*IgnoreWildcards,*/ MatchWildcards};
@@ -360,6 +365,13 @@ private:
 	/** Get maximum linear index of IndexTree. */
 	int getMaxIndex() const;
 };
+
+inline bool IndexTree::getLinearMapIsGenerated() const{
+	if(size == -1)
+		return false;
+	else
+		return true;
+}
 
 inline IndexTree::ConstIterator IndexTree::begin() const{
 	return ConstIterator(this);

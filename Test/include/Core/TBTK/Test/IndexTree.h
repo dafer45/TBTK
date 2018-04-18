@@ -267,6 +267,16 @@ TEST(IndexTree, generateLinearMap){
 	EXPECT_EQ(indexTree.getSize(), 3);
 }
 
+TEST(IndexTree, getLinearMapIsGenerated){
+	IndexTree indexTree;
+	indexTree.add({1, 2, 3});
+	indexTree.add({1, 2, 4});
+	indexTree.add({1, 3, 3});
+	EXPECT_FALSE(indexTree.getLinearMapIsGenerated());
+	indexTree.generateLinearMap();
+	EXPECT_TRUE(indexTree.getLinearMapIsGenerated());
+}
+
 TEST(IndexTree, getLinearIndex){
 	IndexTree indexTree;
 	indexTree.add({0, 0, 0});
