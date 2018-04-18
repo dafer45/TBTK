@@ -94,11 +94,10 @@ template<
 >
 class AbstractProperty : public Serializable{
 public:
-	/** Get block size. */
+	/** Get block size.
+	 *
+	 *  @return The size per block. */
 	unsigned int getBlockSize() const;
-
-	/** Set size. */
-	void setSize(unsigned int size);
 
 	/** Get size. */
 	unsigned int getSize() const;
@@ -302,18 +301,6 @@ inline unsigned int AbstractProperty<
 	isSerializable
 >::getBlockSize() const{
 	return blockSize;
-}
-
-template<typename DataType, bool isFundamental, bool isSerializable>
-inline void AbstractProperty<
-	DataType,
-	isFundamental,
-	isSerializable
->::setSize(unsigned int size){
-	this->size = size;
-	if(data != nullptr)
-		delete [] data;
-	data = new DataType[size];
 }
 
 template<typename DataType, bool isFundamental, bool isSerializable>
