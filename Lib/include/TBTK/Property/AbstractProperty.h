@@ -166,7 +166,7 @@ protected:
 	 *  @param blockSize The number of data elements in the block. */
 	AbstractProperty(unsigned int blockSize);
 
-	/** Constructs and AbstractProperty with a single data block (i.e. no
+	/** Constructs an AbstractProperty with a single data block (i.e. no
 	 *  Index structure) and fills the internal memory with the data
 	 *  provided as input.
 	 *
@@ -178,14 +178,31 @@ protected:
 		const DataType *data
 	);
 
-	/** Constructor. */
+	/** Constructs an AbstractProperty with the Ranges format.
+	 *
+	 *  @param dimensions Number of dimensons for the grid.
+	 *  @param ranges A list of upper limits for the ranges of the
+	 *  different dimensions. The nth dimension will have the range [0,
+	 *  ranges[n]).
+	 *
+	 *  @param blockSize The number of data elements per block. */
 	AbstractProperty(
 		unsigned int dimensions,
 		const int *ranges,
 		unsigned int blockSize
 	);
 
-	/** Constructor. */
+	/** Constructs an AbstractProperty with the Ranges format and fills the
+	 *  internal memory with the data provided as input.
+	 *
+	 *  @param dimensions Number of dimensons for the grid.
+	 *  @param ranges A list of upper limits for the ranges of the
+	 *  different dimensions. The nth dimension will have the range [0,
+	 *  ranges[n]).
+	 *
+	 *  @param blockSize The number of data elements per block.
+	 *  @param data The data stored on the raw format described in the
+	 *  detailed description of the class. */
 	AbstractProperty(
 		unsigned int dimensions,
 		const int *ranges,
@@ -193,27 +210,48 @@ protected:
 		const DataType *data
 	);
 
-	/** Constructor. */
+	/** Constructs and AbstractProperty with the Custom format.
+	 *
+	 *  @param indexTree IndexTree containing the @link Index Indices
+	 *  @endlink that the AbstractProperty should contain data for.
+	 *
+	 *  @param blockSize The number of data elements per block. */
 	AbstractProperty(
 		const IndexTree &indexTree,
 		unsigned int blockSize
 	);
 
-	/** Constructor. */
+	/** Constructs and AbstractProperty with the Custom format.
+	 *
+	 *  @param indexTree IndexTree containing the @link Index Indices
+	 *  @endlink that the AbstractProperty should contain data for.
+	 *
+	 *  @param blockSize The number of data elements per block.
+	 *  @param data The data stored on the raw format described in the
+	 *  detailed description of the class. */
 	AbstractProperty(
 		const IndexTree &indexTree,
 		unsigned int blockSize,
 		const DataType *data
 	);
 
-	/** Copy constructor. */
+	/** Copy constructor.
+	 *
+	 *  @param abstractProperty AbstractProperty to copy. */
 	AbstractProperty(const AbstractProperty &abstractProperty);
 
-	/** Move constructor. */
+	/** Move constructor.
+	 *
+	 *  @param abstractProperty AbstractProperty to move. */
 	AbstractProperty(AbstractProperty &&abstractProperty);
 
 	/** Constructor. Constructs the AbstractProperty from a serialization
-	 *  string. */
+	 *  string.
+	 *
+	 *  @param serialization Serialization string from which to construct
+	 *  the AbstractProperty.
+	 *
+	 *  @param mode Mode with which the string has been serialized. */
 	AbstractProperty(
 		const std::string &serialization,
 		Mode mode
@@ -222,10 +260,18 @@ protected:
 	/** Destructor. */
 	virtual ~AbstractProperty();
 
-	/** Assignment operator. */
+	/** Assignment operator.
+	 *
+	 *  @param rhs AbstractProperty to assign to the left hand side.
+	 *
+	 *  @return Reference to the assigned AbstractProperty. */
 	AbstractProperty& operator=(const AbstractProperty &abstractProperty);
 
-	/** Move assignment operator. */
+	/** Move assignment operator.
+	 *
+	 *  @param rhs AbstractProperty to assign to the left hand side.
+	 *
+	 *  @return Reference to the assigned AbstractProperty. */
 	AbstractProperty& operator=(AbstractProperty &&abstractProperty);
 private:
 	/** IndexDescriptor describing the memory layout of the data. */
@@ -742,6 +788,14 @@ AbstractProperty<
 ) :
 	indexDescriptor(IndexDescriptor::Format::Custom)
 {
+	TBTKAssert(
+		indexTree.getLinearMapIsGenerated(),
+		"AbstractProperty::AbstractProperty()",
+		"Linear map not constructed for the IndexTree.",
+		"Call IndexTree::generateLinearIndex() before passing the"
+		" IndexTree to the AbstractProperty constructor."
+	);
+
 	this->blockSize = blockSize;
 
 	indexDescriptor.setIndexTree(indexTree);
@@ -764,6 +818,14 @@ AbstractProperty<
 ) :
 	indexDescriptor(IndexDescriptor::Format::Custom)
 {
+	TBTKAssert(
+		indexTree.getLinearMapIsGenerated(),
+		"AbstractProperty::AbstractProperty()",
+		"Linear map not constructed for the IndexTree.",
+		"Call IndexTree::generateLinearIndex() before passing the"
+		" IndexTree to the AbstractProperty constructor."
+	);
+
 	this->blockSize = blockSize;
 
 	indexDescriptor.setIndexTree(indexTree);

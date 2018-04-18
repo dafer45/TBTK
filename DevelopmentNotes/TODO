@@ -16,3 +16,9 @@
 
 - Make ArnoldiIterator::setCentralValue() affect also the calculations
   performed in Mode::Normal.
+
+- Make AbstractProperty constructor take a vector of ranges instead of a c-type
+  array.
+
+- Implement support for serialization for all primitive data types,
+  Serializable, and pseudo-Serializable classes.
