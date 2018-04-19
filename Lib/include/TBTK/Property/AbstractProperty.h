@@ -99,20 +99,30 @@ public:
 	 *  @return The size per block. */
 	unsigned int getBlockSize() const;
 
-	/** Get size. */
+	/** Get size.
+	 *
+	 *  @return The total number of data elements in the Property. I.e. the
+	 *  number of blocks times the block size. */
 	unsigned int getSize() const;
 
-	/** Get data. */
+	/** Get data.
+	 *
+	 *  @return The data on the raw format described in the detailed
+	 *  description. */
 	const DataType* getData() const;
 
-	/** Same as getData, but with write access. */
+	/** Get data. Same as AbstractProperty::getData(), but with write
+	 *  access.
+	 *
+	 *  @return The data on the raw format described in the detailed
+	 *  description. */
 	DataType* getDataRW();
 
 	/** Get size in bytes. */
-	unsigned int getSizeInBytes() const;
+//	unsigned int getDataSizeInBytes() const;
 
 	/** Returns data on raw format. Intended for use in serialization. */
-	char* getRawData();
+//	char* getRawData();
 
 	/** Get the dimension of the data. */
 	unsigned int getDimensions() const;
@@ -330,12 +340,12 @@ inline DataType* AbstractProperty<
 	return data;
 }
 
-template<typename DataType, bool isFundamental, bool isSerializable>
+/*template<typename DataType, bool isFundamental, bool isSerializable>
 inline unsigned int AbstractProperty<
 	DataType,
 	isFundamental,
 	isSerializable
->::getSizeInBytes() const{
+>::getDataSizeInBytes() const{
 	return size*sizeof(DataType);
 }
 
@@ -346,7 +356,7 @@ inline char* AbstractProperty<
 	isSerializable
 >::getRawData(){
 	return (char*)data;
-}
+}*/
 
 template<typename DataType, bool isFundamental, bool isSerializable>
 inline unsigned int AbstractProperty<

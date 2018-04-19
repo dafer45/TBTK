@@ -405,7 +405,25 @@ TEST(AbstractProperty, OperatorMoveAssignment){
 }
 
 TEST(AbstractProperty, getBlockSize){
-	//Already tested through constructors.
+	//Already tested through the constructors.
+}
+
+TEST(AbstractProperty, getSize){
+	//Already tested through the constructors.
+}
+
+TEST(AbstractProperty, getData){
+	//Already tested through the constructors.
+}
+
+TEST(AbstractProperty, getDataRW){
+	Property<int> property(10);
+	const int *data0 = property.getData();
+	int *data1 = property.getDataRW();
+	for(unsigned int n = 0; n < 10; n++)
+		data1[n] = n;
+	for(unsigned int n = 0; n < 10; n++)
+		EXPECT_EQ(data0[n], n);
 }
 
 };	//End of namespace Solver
