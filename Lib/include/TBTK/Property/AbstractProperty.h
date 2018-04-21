@@ -124,43 +124,121 @@ public:
 	/** Returns data on raw format. Intended for use in serialization. */
 //	char* getRawData();
 
-	/** Get the dimension of the data. */
+	/** Get the dimension of the data. [Only works for the Ranges format.]
+	 *
+	 *  @return The dimension of the grid that the data is calculated on.
+	 */
 	unsigned int getDimensions() const;
 
-	/** Get the ranges for the dimensions of the density. */
-//	const int* getRanges() const;
+	/** Get the ranges for the dimensions of the density. [Only works for
+	 *  the Ranges format.]
+	 *
+	 *  @return A list of ranges for the different dimensions of the grid
+	 *  the data is calculated on. */
 	std::vector<int> getRanges() const;
 
-	/** Get the offset in memory for given Index. */
+	/** Get the memory offset that should be used to access the raw data
+	 *  for the given Index. [Only works for the Custom format.]
+	 *
+	 *  @param index Index for which to get the offset.
+	 *
+	 *  @return The memory offset for the given Index. */
 	int getOffset(const Index &index) const;
 
-	/** Get IndexDescriptor. */
+	/** Get IndexDescriptor.
+	 *
+	 *  @return The IndexDescriptor that is used internally to handle the
+	 *  different formats.*/
 	const IndexDescriptor& getIndexDescriptor() const;
 
-	/** Returns true if the property contains data for the given index. */
+	/** Returns true if the property contains data for the given index.
+	 *  [Only works for the Custom format.]
+	 *
+	 *  @param index Index to check.
+	 *
+	 *  @raturn True if the Property contains data for the given Index. */
 	bool contains(const Index &index) const;
 
-	/** Function call operator. */
-	virtual const DataType& operator()(const Index &index, unsigned int offset = 0) const;
+	/** Function call operator. Returns the data element for the given
+	 *  Index and offset. By default the Property does not accept @link
+	 *  Index Indices @endlink that are not contained in the Property.
+	 *  However, AbstractProperty::setAllowIndexOutOfBounds(true) is called
+	 *  the Property will return the value set by a call to
+	 *  AbstractProperty::setDefaultVlue(). [Only works for the Custom
+	 *  format.]
+	 *
+	 *  @param index The Index to get the data for.
+	 *  @param offset The offset to apply inside the block for the given
+	 *  Index. If not specified, the first element is returned. The
+	 *  function can therefore be used without specifying the offset when
+	 *  Properties with only a single element per block. [Only works for
+	 *  the Custom format.]
+	 *
+	 *  @return The data element for the given Index and offset. */
+	virtual const DataType& operator()(
+		const Index &index,
+		unsigned int offset = 0
+	) const;
 
-	/** Function call operator. */
-	virtual DataType& operator()(const Index &index, unsigned int offset = 0);
+	/** Function call operator. Returns the data element for the given
+	 *  Index and offset. By default the Property does not accept @link
+	 *  Index Indices @endlink that are not contained in the Property.
+	 *  However, AbstractProperty::setAllowIndexOutOfBounds(true) is called
+	 *  the Property will return the value set by a call to
+	 *  AbstractProperty::setDefaultVlue(). Note that although it is safe
+	 *  to write to out of bounds elements, doing so does not result in the
+	 *  value being stored in the Property. [Only works for Format::Custom].
+	 *
+	 *  @param index The Index to get the data for.
+	 *  @param offset The offset to apply inside the block for the given
+	 *  Index. If not specified, the first element is returned. The
+	 *  function can therefore be used without specifying the offset when
+	 *  Properties with only a single element per block. [Only works for
+	 *  the Custom format.]
+	 *
+	 *  @return The data element for the given Index and offset. */
+	virtual DataType& operator()(
+		const Index &index,
+		unsigned int offset = 0
+	);
 
-	/** Function call operator. */
+	/** Function call operator. Returns the data element for the given
+	 *  offset.
+	 *
+	 *  @param offset The offset to apply. The offset is an index into the
+	 *  raw data.
+	 *
+	 *  @return The data element for the given offset. */
 	virtual const DataType& operator()(unsigned int offset) const;
 
-	/** Function call operator. */
+	/** Function call operator. Returns the data element for the given
+	 *  offset.
+	 *
+	 *  @param offset The offset to apply. The offset is an index into the
+	 *  raw data.
+	 *
+	 *  @return The data element for the given offset. */
 	virtual DataType& operator()(unsigned int offset);
 
-	/** Set whether access of index not contained in the Property is
-	 *  allowed or not. If eneabled, remember to also initialize the value
-	 *  used for out of bounds access using
-	 *  AbstractProperty::setDefaultValue(). */
+	/** Set whether the access of data elements for @link Index Indices
+	 *  @endlink that are not contained in the Property is allowed or not
+	 *  when using the function operator AbstractProperty::operator(). If
+	 *  enabled, remember to also initialize the value that is used for out
+	 *  of bounds access using AbstractProperty::setDefaultValue(). [Only
+	 *  meaningful for the Custom format.]
+	 *
+	 *  @param allowIndexOutOfBoundsAccess True to enable out of bounds
+	 *  access. */
 	void setAllowIndexOutOfBoundsAccess(bool allowIndexOutOfBoundsAccess);
 
 	/** Set the value that is returned when accessing indices not contained
-	 *  in the Property. Only use if
-	 *  AbstractProperty::setAllowIndexOutOfBoundsAccess(true) is called. */
+	 *  in the Property using the function operator
+	 *  AbstractProperty::operator(). Only used if
+	 *  AbstractProperty::setAllowIndexOutOfBoundsAccess(true) is called.
+	 *  [Only meaningful for the Custom format.]
+	 *
+	 *  @param defaultValue The value that will be returned for out of
+	 *  bounds access.*/
 	void setDefaultValue(const DataType &defaultValue);
 
 	/** Implements Serializable::serialize(). */
@@ -441,7 +519,8 @@ inline DataType& AbstractProperty<
 //	return data[getOffset(index) + offset];
 	int indexOffset = getOffset(index);
 	if(indexOffset < 0){
-		static DataType defaultValueNonConst = defaultValue;
+		static DataType defaultValueNonConst;
+		defaultValueNonConst = defaultValue;
 		return defaultValueNonConst;
 	}
 	else{
@@ -682,6 +761,8 @@ AbstractProperty<
 
 	size = blockSize;
 	data = nullptr;
+
+	allowIndexOutOfBoundsAccess = false;
 }
 
 template<typename DataType, bool isFundamental, bool isSerializable>
@@ -700,6 +781,8 @@ AbstractProperty<
 	data = new DataType[size];
 	for(unsigned int n = 0; n < size; n++)
 		data[n] = 0.;
+
+	allowIndexOutOfBoundsAccess = false;
 }
 
 template<typename DataType, bool isFundamental, bool isSerializable>
@@ -719,6 +802,8 @@ AbstractProperty<
 	this->data = new DataType[size];
 	for(unsigned int n = 0; n < size; n++)
 		this->data[n] = data[n];
+
+	allowIndexOutOfBoundsAccess = false;
 }
 
 template<typename DataType, bool isFundamental, bool isSerializable>
@@ -745,6 +830,8 @@ AbstractProperty<
 	data = new DataType[size];
 	for(unsigned int n = 0; n < size; n++)
 		data[n] = 0.;
+
+	allowIndexOutOfBoundsAccess = false;
 }
 
 template<typename DataType, bool isFundamental, bool isSerializable>
@@ -772,6 +859,8 @@ AbstractProperty<
 	this->data = new DataType[size];
 	for(unsigned int n = 0; n < size; n++)
 		this->data[n] = data[n];
+
+	allowIndexOutOfBoundsAccess = false;
 }
 
 template<typename DataType, bool isFundamental, bool isSerializable>
@@ -801,6 +890,8 @@ AbstractProperty<
 	data = new DataType[size];
 	for(unsigned int n = 0; n < size; n++)
 		data[n] = 0.;
+
+	allowIndexOutOfBoundsAccess = false;
 }
 
 template<typename DataType, bool isFundamental, bool isSerializable>
@@ -831,6 +922,8 @@ AbstractProperty<
 	this->data = new DataType[size];
 	for(unsigned int n = 0; n < size; n++)
 		this->data[n] = data[n];
+
+	allowIndexOutOfBoundsAccess = false;
 }
 
 template<typename DataType, bool isFundamental, bool isSerializable>
@@ -854,6 +947,9 @@ AbstractProperty<
 		for(unsigned int n = 0; n < size; n++)
 			data[n] = abstractProperty.data[n];
 	}
+
+	allowIndexOutOfBoundsAccess
+		= abstractProperty.allowIndexOutOfBoundsAccess;
 }
 
 template<typename DataType, bool isFundamental, bool isSerializable>
@@ -876,6 +972,9 @@ AbstractProperty<
 		data = abstractProperty.data;
 		abstractProperty.data = nullptr;
 	}
+
+	allowIndexOutOfBoundsAccess
+		= abstractProperty.allowIndexOutOfBoundsAccess;
 }
 
 template<>
@@ -1042,6 +1141,8 @@ AbstractProperty<
 			for(unsigned int n = 0; n < size; n++)
 				data[n] = rhs.data[n];
 		}
+
+		allowIndexOutOfBoundsAccess = rhs.allowIndexOutOfBoundsAccess;
 	}
 
 	return *this;
@@ -1075,6 +1176,8 @@ AbstractProperty<
 			data = rhs.data;
 			rhs.data = nullptr;
 		}
+
+		allowIndexOutOfBoundsAccess = rhs.allowIndexOutOfBoundsAccess;
 	}
 
 	return *this;

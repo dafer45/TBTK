@@ -1,4 +1,5 @@
 #include "TBTK/Property/AbstractProperty.h"
+#include "TBTK/IndexException.h"
 
 #include "gtest/gtest.h"
 
@@ -424,6 +425,251 @@ TEST(AbstractProperty, getDataRW){
 		data1[n] = n;
 	for(unsigned int n = 0; n < 10; n++)
 		EXPECT_EQ(data0[n], n);
+}
+
+TEST(AbstractProperty, getDimensions){
+	//Fail for IndexDescriptor::Format::None.
+	Property<int> property0(10);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			property0.getDimensions();
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+
+	//IndexDescriptor::Format::Ranges.
+	const int ranges[3] = {2, 3, 4};
+	Property<int> property1(3, ranges, 10);
+	EXPECT_EQ(property1.getDimensions(), 3);
+
+	//Fail for IndexDescriptor::Format::Custom.
+	IndexTree indexTree;
+	indexTree.generateLinearMap();
+	Property<int> property2(indexTree, 10);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			property2.getDimensions();
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+TEST(AbstractProperty, getRanges){
+	//Fail for IndexDescriptor::Format::None.
+	Property<int> property0(10);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			property0.getRanges();
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+
+	//IndexDescriptor::Format::Ranges.
+	const int rangesIn[3] = {2, 3, 4};
+	Property<int> property1(3, rangesIn, 10);
+	const std::vector<int> ranges = property1.getRanges();
+	ASSERT_EQ(ranges.size(), 3);
+	EXPECT_EQ(ranges[0], 2);
+	EXPECT_EQ(ranges[1], 3);
+	EXPECT_EQ(ranges[2], 4);
+
+	//Fail for IndexDescriptor::Format::Custom.
+	IndexTree indexTree;
+	indexTree.generateLinearMap();
+	Property<int> property2(indexTree, 10);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			property2.getRanges();
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+TEST(AbstractProperty, getOffset){
+	//Fail for IndexDescriptor::Format::None.
+	Property<int> property0(10);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			property0.getOffset({1});
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+
+	//Fail for IndexDescriptor::Format::Ranges.
+	const int rangesIn[3] = {2, 3, 4};
+	Property<int> property1(3, rangesIn, 10);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			property1.getOffset({1});
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+
+	//IndexDescriptor::Format::Custom.
+	IndexTree indexTree;
+	indexTree.add({0});
+	indexTree.add({1});
+	indexTree.add({2});
+	indexTree.generateLinearMap();
+	Property<int> property2(indexTree, 10);
+	EXPECT_EQ(property2.getOffset({0}), 0);
+	EXPECT_EQ(property2.getOffset({1}), 10);
+	EXPECT_EQ(property2.getOffset({2}), 20);
+}
+
+//TODO
+//This function should probably be removed.
+TEST(AbstractProperty, getIndexDescriptor){
+}
+
+TEST(AbstractProperty, contains){
+	//Fail for IndexDescriptor::Format::None.
+	Property<int> property0(10);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			property0.contains({1});
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+
+	//Fail for IndexDescriptor::Format::Ranges.
+	const int rangesIn[3] = {2, 3, 4};
+	Property<int> property1(3, rangesIn, 10);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			property1.contains({1});
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+
+	//IndexDescriptor::Format::Custom.
+	IndexTree indexTree;
+	indexTree.add({0});
+	indexTree.add({1});
+	indexTree.add({2});
+	indexTree.generateLinearMap();
+	Property<int> property2(indexTree, 10);
+	EXPECT_TRUE(property2.contains({0}));
+	EXPECT_TRUE(property2.contains({1}));
+	EXPECT_TRUE(property2.contains({2}));
+	EXPECT_FALSE(property2.contains({3}));
+}
+
+TEST(AbstractProperty, operatorFunction){
+	Property<int> property0(10);
+	//Fail to use indexed version for IndexDescriptor::Format::None.
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			property0({1}, 0);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			const_cast<const Property<int>&>(property0)({1}, 0);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	//Non-indexed version.
+	property0(0) = 0;
+	property0(1) = 1;
+	property0(2) = 2;
+	EXPECT_EQ(const_cast<const Property<int>&>(property0)(0), 0);
+	EXPECT_EQ(const_cast<const Property<int>&>(property0)(1), 1);
+	EXPECT_EQ(const_cast<const Property<int>&>(property0)(2), 2);
+
+	//Fail to use indexed version for IndexDescriptor::Format::Ranges.
+	const int rangesIn[3] = {2, 3, 4};
+	Property<int> property1(3, rangesIn, 10);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			property1({1}, 0);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			const_cast<const Property<int>&>(property1)({1}, 0);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	//Non-indexed version
+	property1(0) = 0;
+	property1(1) = 1;
+	property1(2) = 2;
+	EXPECT_EQ(const_cast<const Property<int>&>(property1)(0), 0);
+	EXPECT_EQ(const_cast<const Property<int>&>(property1)(1), 1);
+	EXPECT_EQ(const_cast<const Property<int>&>(property1)(2), 2);
+
+	//IndexDescriptor::Format::Custom. Normal behavior.
+	IndexTree indexTree;
+	indexTree.add({0});
+	indexTree.add({1});
+	indexTree.add({2});
+	indexTree.generateLinearMap();
+	Property<int> property2(indexTree, 10);
+	property2({0}, 1) = 1;
+	property2({1}, 2) = 2;
+	property2({2}, 3) = 3;
+	EXPECT_EQ(const_cast<Property<int>&>(property2)({0}, 1), 1);
+	EXPECT_EQ(const_cast<Property<int>&>(property2)({1}, 2), 2);
+	EXPECT_EQ(const_cast<Property<int>&>(property2)({2}, 3), 3);
+	EXPECT_EQ(const_cast<Property<int>&>(property2)(1), 1);
+	EXPECT_EQ(const_cast<Property<int>&>(property2)(12), 2);
+	EXPECT_EQ(const_cast<Property<int>&>(property2)(23), 3);
+	property2(12) = 12;
+	EXPECT_EQ(const_cast<Property<int>&>(property2)(12), 12);
+	//IndexDescriptor::Format::Custom. Check index out-of-bounds behavior.
+	property2.setDefaultValue(99);
+	EXPECT_THROW(property2({3}, 1), IndexException);
+	EXPECT_THROW(
+		const_cast<Property<int>&>(property2)({3}, 1),
+		IndexException
+	);
+	property2.setAllowIndexOutOfBoundsAccess(true);
+	EXPECT_EQ(property2({3}, 0), 99);
+	EXPECT_EQ(const_cast<Property<int>&>(property2)({3}, 0), 99);
+	property2({3}, 0) = 0;
+	EXPECT_EQ(property2({3}, 0), 99);
+}
+
+TEST(AbstractProperty, setAllowOutOfBoundsAccess){
+	//Already tested through AbstractProperty;;operatorFunction
+}
+
+TEST(AbstractProperty, setDefaultValue){
+	//Already tested through AbstractProperty;;operatorFunction
+}
+
+//TODO
+//This function is currently not implemented for all data types. First
+//implement full support for all primitive data types, Serializable, and
+//pseudo-Serializable classes.
+TEST(AbstractProperty, serialize){
 }
 
 };	//End of namespace Solver

@@ -22,3 +22,11 @@
 
 - Implement support for serialization for all primitive data types,
   Serializable, and pseudo-Serializable classes.
+
+- Review the design of AbstractProperty. The class currently probably exposes
+  too much of its internal structure and also requires the user to be aware of
+  the IndexDescriptor when creating new AbstractProperties using the enum class
+  IndexDescriptor::Format..
+
+- AbstractProperty currently does not serialize the variable
+  allowIndexOutOfBoundsAccess. Fix this.
