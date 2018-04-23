@@ -43,9 +43,9 @@ GreensFunction::GreensFunction(
 	this->lowerBound = lowerBound;
 	this->upperBound = upperBound;
 	this->resolution = resolution;
-/*	this->data = new complex<double>[resolution];
-	for(unsigned int n = 0; n < resolution; n++)
-		this->data[n] = 0.;*/
+//	this->data = new complex<double>[resolution];
+//	for(unsigned int n = 0; n < resolution; n++)
+//		this->data[n] = 0.;
 }
 
 GreensFunction::GreensFunction(
@@ -63,12 +63,12 @@ GreensFunction::GreensFunction(
 	this->lowerBound = lowerBound;
 	this->upperBound = upperBound;
 	this->resolution = resolution;
-/*	this->data = new complex<double>[resolution];
-	for(unsigned int n = 0; n < resolution; n++)
-		this->data[n] = data[n];*/
+//	this->data = new complex<double>[resolution];
+//	for(unsigned int n = 0; n < resolution; n++)
+//		this->data[n] = data[n];
 }
 
-GreensFunction::GreensFunction(
+/*GreensFunction::GreensFunction(
 	const GreensFunction &greensFunction
 ) :
 	AbstractProperty(greensFunction)
@@ -77,9 +77,9 @@ GreensFunction::GreensFunction(
 	lowerBound = greensFunction.lowerBound;
 	upperBound = greensFunction.upperBound;
 	resolution = greensFunction.resolution;
-/*	data = new complex<double>[resolution];
-	for(unsigned int n = 0; n < resolution; n++)
-		data[n] = greensFunction.data[n];*/
+//	data = new complex<double>[resolution];
+//	for(unsigned int n = 0; n < resolution; n++)
+//		data[n] = greensFunction.data[n];
 }
 
 GreensFunction::GreensFunction(
@@ -91,14 +91,14 @@ GreensFunction::GreensFunction(
 	lowerBound = greensFunction.lowerBound;
 	upperBound = greensFunction.upperBound;
 	resolution = greensFunction.resolution;
-/*	data = greensFunction.data;
-	greensFunction.data = nullptr;*/
+//	data = greensFunction.data;
+//	greensFunction.data = nullptr;
 }
 
 GreensFunction::~GreensFunction(){
-/*	if(data != nullptr)
-		delete [] data;*/
-}
+//	if(data != nullptr)
+//		delete [] data;
+}*/
 
 };	//End of namespace Property
 };	//End of namespace TBTK

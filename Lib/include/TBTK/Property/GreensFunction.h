@@ -43,10 +43,19 @@ public:
 		NonPrincipal
 	};
 
-	/** Constructor. */
+	/** Constructs an uninitialized GreensFunction. */
 	GreensFunction();
 
-	/** Constructor. */
+	/** Constructs a GreensFunction on the Custom format. [See
+	 *  AbstractProperty for detailed information about the Custom format.]
+	 *
+	 *  @param indexTree IndexTree containing the @link Index Indices
+	 *  @endlink for which the GreensFunction should be contained.
+	 *
+	 *  @param type The GreensFunction type.
+	 *  @param lowerBound Lower bound for the energy.
+	 *  @param upperBound Upper bound for the energy.
+	 *  @param resolution Number of points to use for the energy. */
 	GreensFunction(
 		const IndexTree &indexTree,
 		Type type,
@@ -55,7 +64,18 @@ public:
 		unsigned int resolution
 	);
 
-	/** Constructor. */
+	/** Constructs a GreensFunction on the Custom format and initializes it
+	 *  with data. [See AbstractProperty for detailed information about the
+	 *  Custom format and the raw data format.]
+	 *
+	 *  @param indexTree IndexTree containing the @link Index Indices
+	 *  @endlink for which the GreensFunction should be contained.
+	 *
+	 *  @param type The GreensFunction type.
+	 *  @param lowerBound Lower bound for the energy.
+	 *  @param upperBound Upper bound for the energy.
+	 *  @param resolution Number of points to use for the energy.
+	 *  @param data Raw data to initialize the GreensFunction with. */
 	GreensFunction(
 		const IndexTree &indexTree,
 		Type type,
@@ -66,31 +86,43 @@ public:
 	);
 
 	/** Copy constructor. */
-	GreensFunction(const GreensFunction &greensFunction);
+//	GreensFunction(const GreensFunction &greensFunction);
 
 	/** Move constructor. */
-	GreensFunction(GreensFunction &&greensFunction);
+//	GreensFunction(GreensFunction &&greensFunction);
 
 	/** Destructor. */
-	~GreensFunction();
+//	~GreensFunction();
 
-	/** Get lower bound for the energy. */
+	/** Get Green's function type.
+	 *
+	 *  @return The Green's function type. */
+	Type getType() const;
+
+	/** Get lower bound for the energy.
+	 *
+	 *  @return Lower bound for the energy. */
 	double getLowerBound() const;
 
-	/** Get upper bound for the energy. */
+	/** Get upper bound for the energy.
+	 *
+	 *  @return Upper bound for the energy. */
 	double getUpperBound() const;
 
-	/** Get energy resolution (number of energy intervals). */
+	/** Get the energy resolution (number of points used for the energy
+	 *  axis).
+	 *
+	 *  @return The energy resolution. */
 	unsigned int getResolution() const;
 
 	/** Get GreensFunction data. */
 //	const std::complex<double>* getData() const;
 
 	/** Assignment operator. */
-	const GreensFunction& operator=(const GreensFunction &rhs);
+//	const GreensFunction& operator=(const GreensFunction &rhs);
 
 	/** Move assignment operator. */
-	const GreensFunction& operator=(GreensFunction &&rhs);
+//	const GreensFunction& operator=(GreensFunction &&rhs);
 private:
 	/** Green's function type. */
 	Type type;
@@ -108,6 +140,10 @@ private:
 //	std::complex<double> *data;
 };
 
+inline GreensFunction::Type GreensFunction::getType() const{
+	return type;
+}
+
 inline double GreensFunction::getLowerBound() const{
 	return lowerBound;
 }
@@ -124,7 +160,7 @@ inline unsigned int GreensFunction::getResolution() const{
 	return data;
 }*/
 
-inline const GreensFunction& GreensFunction::operator=(
+/*inline const GreensFunction& GreensFunction::operator=(
 	const GreensFunction &rhs
 ){
 	if(this != &rhs){
@@ -135,9 +171,9 @@ inline const GreensFunction& GreensFunction::operator=(
 		upperBound = rhs.upperBound;
 		resolution = rhs.resolution;
 
-/*		data = new std::complex<double>[resolution];
-		for(unsigned int n = 0; n < resolution; n++)
-			data[n] = rhs.data[n];*/
+//		data = new std::complex<double>[resolution];
+//		for(unsigned int n = 0; n < resolution; n++)
+//			data[n] = rhs.data[n];
 	}
 
 	return *this;
@@ -153,12 +189,12 @@ inline const GreensFunction& GreensFunction::operator=(
 		lowerBound = rhs.lowerBound;
 		upperBound = rhs.upperBound;
 		resolution = rhs.resolution;
-/*		data = rhs.data;
-		rhs.data = nullptr;*/
+//		data = rhs.data;
+//		rhs.data = nullptr;
 	}
 
 	return *this;
-}
+}*/
 
 };	//End namespace Property
 };	//End namespace TBTK

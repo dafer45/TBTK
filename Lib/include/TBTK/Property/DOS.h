@@ -70,7 +70,7 @@ public:
 
 	/** Get lower bound for the energy.
 	 *
-	 *  @return lowerBound for the energy. */
+	 *  @return Lower bound for the energy. */
 	double getLowerBound() const;
 
 	/** Get upper bound for the energy.
