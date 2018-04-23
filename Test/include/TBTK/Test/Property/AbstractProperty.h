@@ -672,5 +672,5 @@ TEST(AbstractProperty, setDefaultValue){
 TEST(AbstractProperty, serialize){
 }
 
-};	//End of namespace Solver
+};	//End of namespace Property
 };	//End of namespace TBTK

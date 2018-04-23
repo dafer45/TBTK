@@ -31,10 +31,19 @@ namespace Property{
 /** \brief Property container for density of states (DOS). */
 class DOS : public AbstractProperty<double>{
 public:
-	/** Constructor. */
+	/** Constructs a Density.
+	 *
+	 *  @param lowerBound Lower bound for the energy.
+	 *  @param upperBound Upper bound for the energy.
+	 *  @param resolution Number of points to us for the energy. */
 	DOS(double lowerBound, double upperBound, int resolution);
 
-	/** Constructor. */
+	/** Constructs a Density and initializes it with data.
+	 *
+	 *  @param lowerBound Lower bound for the energy.
+	 *  @param upperBound Upper bound for the energy.
+	 *  @param resolution Number of points to us for the energy.
+	 *  @param data Raw data to initialize the DOS with. */
 	DOS(
 		double lowerBound,
 		double upperBound,
@@ -43,31 +52,43 @@ public:
 	);
 
 	/** Copy constructor. */
-	DOS(const DOS &dos);
+//	DOS(const DOS &dos);
 
 	/** Move constructor. */
-	DOS(DOS &&dos);
+//	DOS(DOS &&dos);
 
-	/** Constructor. Constructs the DOS from a serialization string. */
+	/** Constructor. Constructs the DOS from a serialization string.
+	 *
+	 *  @param serialization Serialization string from which to construct
+	 *  the DOS.
+	 *
+	 *  @param mode Mode with which the string has been serialized. */
 	DOS(const std::string &serialization, Mode mode);
 
 	/** Destructor. */
-	~DOS();
+//	~DOS();
 
-	/** Get lower bound for the energy. */
+	/** Get lower bound for the energy.
+	 *
+	 *  @return lowerBound for the energy. */
 	double getLowerBound() const;
 
-	/** Get upper bound for the energy. */
+	/** Get upper bound for the energy.
+	 *
+	 *  @return Upper bound for the energy. */
 	double getUpperBound() const;
 
-	/** Get energy resolution. (Number of energy intervals) */
+	/** Get the energy resolution (number of points used for the energy
+	 *  axis).
+	 *
+	 *  @return The energy resolution. */
 	int getResolution() const;
 
 	/** Assignment operator. */
-	DOS& operator=(const DOS &dos);
+//	DOS& operator=(const DOS &dos);
 
 	/** Move assignment operator. */
-	DOS& operator=(DOS &&dos);
+//	DOS& operator=(DOS &&dos);
 
 	/** Overrides AbstractProperty::serialize(). */
 	virtual std::string serialize(Mode mode) const;

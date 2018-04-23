@@ -54,7 +54,7 @@ DOS::DOS(
 	this->resolution = resolution;
 }
 
-DOS::DOS(
+/*DOS::DOS(
 	const DOS &dos
 ) :
 	AbstractProperty(dos)
@@ -72,7 +72,7 @@ DOS::DOS(
 	lowerBound = dos.lowerBound;
 	upperBound = dos.upperBound;
 	resolution = dos.resolution;
-}
+}*/
 
 DOS::DOS(
 	const string &serialization, Mode mode
@@ -120,7 +120,7 @@ DOS::DOS(
 	}
 }
 
-DOS::~DOS(){
+/*DOS::~DOS(){
 }
 
 DOS& DOS::operator=(const DOS &rhs){
@@ -143,7 +143,7 @@ DOS& DOS::operator=(DOS &&rhs){
 	}
 
 	return *this;
-}
+}*/
 
 string DOS::serialize(Mode mode) const{
 	switch(mode){

@@ -115,5 +115,5 @@ TEST(Denity, serialize){
 	//Already tested through SerializeToJSON
 }
 
-};	//End of namespace Solver
+};	//End of namespace Property
 };	//End of namespace TBTK
