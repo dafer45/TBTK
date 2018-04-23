@@ -60,7 +60,7 @@ Density::Density(
 {
 }
 
-Density::Density(
+/*Density::Density(
 	const Density &density
 ) :
 	AbstractProperty(density)
@@ -72,7 +72,7 @@ Density::Density(
 ) :
 	AbstractProperty(std::move(density))
 {
-}
+}*/
 
 Density::Density(
 	const string &serialization,
@@ -95,7 +95,7 @@ Density::Density(
 	);
 }
 
-Density::~Density(){
+/*Density::~Density(){
 }
 
 Density& Density::operator=(const Density &rhs){
@@ -110,7 +110,7 @@ Density& Density::operator=(Density &&rhs){
 		AbstractProperty::operator=(std::move(rhs));
 
 	return *this;
-}
+}*/
 
 double Density::getMin() const{
 	const double *data = getData();

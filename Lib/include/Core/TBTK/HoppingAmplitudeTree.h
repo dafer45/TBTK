@@ -58,7 +58,7 @@ public:
 	 *  serialization string.
 	 *
 	 *  @param serialization Serialization string from which to construct
-	 *  the Index
+	 *  the Index.
 	 *
 	 *  @param mode Mode with which the string has been serialized. */
 	HoppingAmplitudeTree(const std::string &serialization, Mode mode);
