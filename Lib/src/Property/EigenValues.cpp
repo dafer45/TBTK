@@ -43,7 +43,7 @@ EigenValues::EigenValues(
 {
 }
 
-EigenValues::EigenValues(
+/*EigenValues::EigenValues(
 	const EigenValues &eigenValues
 ) :
 	AbstractProperty(eigenValues)
@@ -55,7 +55,7 @@ EigenValues::EigenValues(
 ) :
 	AbstractProperty(std::move(eigenValues))
 {
-}
+}*/
 
 EigenValues::EigenValues(
 	const string &serialization,
@@ -79,7 +79,7 @@ EigenValues::EigenValues(
 	);
 }
 
-EigenValues::~EigenValues(){
+/*EigenValues::~EigenValues(){
 }
 
 EigenValues& EigenValues::operator=(const EigenValues &rhs){
@@ -94,7 +94,7 @@ EigenValues& EigenValues::operator=(EigenValues &&rhs){
 		AbstractProperty::operator=(std::move(rhs));
 
 	return *this;
-}
+}*/
 
 string EigenValues::serialize(Mode mode) const{
 	switch(mode){
