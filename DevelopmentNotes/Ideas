@@ -14,3 +14,10 @@
   the mapping between physical and Hilbert space indices to reduce the
   responsibility of the HoppingAmplitudeTree/HoppingAmplitudeSet to that solely
   related to the HoppingAmplitudes.
+
+- Remove IndexDescriptor::setRanges() and IndexDescriptor::setIndexTree() and
+  make the constructors take these as arguments instead. Because the
+  IndexDescriptor is not fully initialized until the set-calls are made, and
+  which set call that has to be made is determined by which format that is
+  specified in the constructor, unifying them will resault in a less confusing
+  interface.

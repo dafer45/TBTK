@@ -30,3 +30,10 @@
 
 - AbstractProperty currently does not serialize the variable
   allowIndexOutOfBoundsAccess. Fix this.
+
+- Add serialization for Property::GreensFunction.
+
+- Modify IndexDescriptor::setRanges() so that it takes an std::vector<int>
+  instead of a c-type array and a dimension. IndexDescriptor::getDimensions()
+  is also superfluous as this can be better determined from the size of the
+  ranges returned by IndexDescriptor::getRanges().
