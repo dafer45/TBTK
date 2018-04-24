@@ -275,6 +275,12 @@ void IndexDescriptor::setIndexTree(const IndexTree &indexTree){
 		"The IndexDescriptor is not of the format Format::Custom.",
 		""
 	);
+	TBTKAssert(
+		indexTree.getLinearMapIsGenerated(),
+		"IndexDescriptor::setIndexTree()",
+		"Linear map not constructed for the IndexTree.",
+		"First call IndexTree::generateLinearMap()."
+	);
 
 	descriptor.customFormat.indexTree = new IndexTree(indexTree);
 }

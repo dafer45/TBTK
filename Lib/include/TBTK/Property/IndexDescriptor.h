@@ -29,69 +29,130 @@
 
 namespace TBTK{
 
-/** @brief Describes the index structure of data stored for several indices. */
+/** @brief Describes the index structure of data stored for several indices.
+ *
+ *  The IndexDescriptor is a helper class for the AbstractProperty to help
+ *  handle the storage of data using different type of indexing. See
+ *  AbstractProperty for a description of the various formats. */
 class IndexDescriptor : public Serializable{
 public:
 	/** Enum class determining the storage format. */
 	enum class Format {None, Ranges, Custom};
 
-	/** Constructor. */
+	/** Constructs an IndexDescriptor.
+	 *
+	 *  @param format The storage format the the IndexDescriptor describes.
+	 */
 	IndexDescriptor(Format format);
 
-	/** Copy constructor. */
+	/** Copy constructor.
+	 *
+	 *  @param indexDescriptor IndexDescriptor to copy. */
 	IndexDescriptor(const IndexDescriptor &indexDescriptor);
 
-	/** Move constructor. */
+	/** Move constructor.
+	 *
+	 *  @param indexDescriptor IndexDescriptor to move. */
 	IndexDescriptor(IndexDescriptor &&indexDescriptor);
 
 	/** Constructor. Construct the IndexDescriptor from a serialization
-	 *  string. */
+	 *  string.
+	 *
+	 *  @param serialization Serialization string from which to construct
+	 *  the IndexDescriptor.
+	 *
+	 *  @param mode Mode with which the string has been serialized. */
 	IndexDescriptor(const std::string &serialization, Mode mode);
 
 	/** Destructor. */
 	~IndexDescriptor();
 
-	/** Assignment operator. */
+	/** Assignment operator.
+	 *
+	 *  @param rhs IndexDescriptor to assign to the left hand side.
+	 *
+	 *  @return Reference to the assigned IndexDescriptor. */
 	IndexDescriptor& operator=(const IndexDescriptor &rhs);
 
-	/** Move assignment operator. */
+	/** Move assignment operator.
+	 *
+	 *  @param rhs IndexDescriptor to assign to the left hand side.
+	 *
+	 *  @return Reference to the assigned IndexDescriptor. */
 	IndexDescriptor& operator=(IndexDescriptor &&rhs);
 
-	/** Get format. */
+	/** Get format.
+	 *
+	 *  @return The Format that the IndexDescriptor describes. */
 	Format getFormat() const;
 
 	/** Set dimensions. */
-	void setDimensions(unsigned int dimensions);
+//	void setDimensions(unsigned int dimensions);
 
-	/** Get dimensions. */
+	/** Get the number of dimensions for the grid described by the
+	 *  IndexDescriptor. [Only works for the Ranges format.]
+	 *
+	 *  @return The number of dimensions. */
 	unsigned int getDimensions() const;
 
-	/** Set ranges. */
+	/** Set ranges. [Only works for the Ranges format.]
+	 *
+	 *  @param ranges The upper limits (exlcusive) of the grid described by
+	 *  the IndexDescriptor.
+	 *
+	 *  @param dimensions The number of dimensions of the grid. [Should be
+	 *  the same as the number of elements in ranges.) */
 	void setRanges(const int *ranges, unsigned int dimensions);
 
-	/** Get ranges. */
+	/** Get ranges. [Only works for the Ranges format.]
+	 *
+	 *  @return The upper limits (exclusive) of the grid described by the
+	 *  IndexDescriptor. */
 //	int* getRanges();
 	std::vector<int> getRanges() const;
 
 	/** Get ranges. */
 //	const int* getRanges() const;
 
-	/** Set IndexTree. */
+	/** Set IndexTree. [Only works for the Custom format.]
+	 *
+	 *  @param indexTree An IndexTree containing all the @link Index
+	 *  Indices @endlink that should be described by the IndexDescriptor.
+	 */
 	void setIndexTree(const IndexTree &indexTree);
 
-	/** Get IndexTree. */
+	/** Get IndexTree. [Only works for the Custom format.]
+	 *
+	 *  @return An IndexTree containing all the @link Index Indices
+	 *  @endlink that are described by the IndexDescriptor. */
 	const IndexTree& getIndexTree() const;
 
-	/** Get linear index. */
+	/** Get linear index. [Only works for the Custom format.]
+	 *
+	 *  @param index The Index to get the linear Index for.
+	 *  @param returnNegativeForMissingIndex If set to true, requesting an
+	 *  Index that is not included results in -1 being returned. If set to
+	 *  false, an IndexException will be thrown in the same situation.
+	 *
+	 *  @return The linear index that corresponds to the given Index. */
 	int getLinearIndex(
 		const Index &index,
 		bool returnNegativeForMissingIndex = false
 	) const;
 
-	/** Get size. */
+	/** Get the number of data elements described by the IndexDescriptor.
+	 *  For Format::None this is equal to 1, while for the other formats
+	 *  this is equal to the number of @link Index Indices @endlink that
+	 *  are described by the IndexDescriptor.
+	 *
+	 *  @return The number of data elements described by the
+	 *  IndexDescriptor. */
 	unsigned int getSize() const;
 
-	/** Returns true if the index descriptor contains the given index. */
+	/** Check whether a given Index is contained in the IndexDescriptor.
+	 *  [Only works for the Custom format.]
+	 *
+	 *  @return True if the index descriptor contains the given index. */
 	bool contains(const Index &index) const;
 
 	/** Implements Serializable::serializea(). */
@@ -134,7 +195,7 @@ inline IndexDescriptor::Format IndexDescriptor::getFormat() const{
 	return format;
 }
 
-inline void IndexDescriptor::setDimensions(unsigned int dimensions){
+/*inline void IndexDescriptor::setDimensions(unsigned int dimensions){
 	TBTKAssert(
 		format == Format::Ranges,
 		"IndexDescriptor::setDimensions()",
@@ -145,7 +206,7 @@ inline void IndexDescriptor::setDimensions(unsigned int dimensions){
 	if(descriptor.rangeFormat.ranges != NULL)
 		delete [] descriptor.rangeFormat.ranges;
 	descriptor.rangeFormat.ranges = new int[dimensions];
-}
+}*/
 
 inline unsigned int IndexDescriptor::getDimensions() const{
 	TBTKAssert(
