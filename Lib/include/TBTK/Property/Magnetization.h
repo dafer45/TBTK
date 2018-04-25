@@ -34,20 +34,46 @@ namespace Property{
 /** @brief Property container for magnetization. */
 class Magnetization : public AbstractProperty<SpinMatrix>{
 public:
-	/** Constructor. */
+	/** Constructs Magnetization on the Ranges format. [See
+	 *  AbstractProperty for detailed information about the Ranges
+	 *  format.]
+	 *
+	 *  @param dimensions Number of dimensions for the grid.
+	 *  @param ranges The upper limit (exclusive) for the corresponding
+	 *  dimensions. */
 	Magnetization(int dimensions, const int* ranges);
 
-	/** Constructor. */
+	/** Constructs Magnetization on the Ranges format and initializes it
+	 *  with data. [See AbstractProperty for detailed information about the
+	 *  Ranges format and the raw data format.]
+	 *
+	 *  @param dimensions Number of dimensions for the grid.
+	 *  @param ranges The upper limit (exclusive) for the corresponding
+	 *  dimensions.
+	 *
+	 *  @param data Raw data to initialize the Magnetization with. */
 	Magnetization(
 		int dimensions,
 		const int* ranges,
 		const SpinMatrix *data
 	);
 
-	/** Constructor. */
+	/** Constructs Magnetization on the Custom format. [See
+	 *  AbstractProperty for detailed information about the Custom
+	 *  format.]
+	 *
+	 *  @param indexTree IndexTree containing the @link Index Indeices
+	 *  @endlink for which the Magnetization should be contained. */
 	Magnetization(const IndexTree &indexTree);
 
-	/** Constructor. */
+	/** Constructs Magnetization on the Custom format and initializes it
+	 *  with data. [See AbstractProperty for detailed information about the
+	 *  Custom format and the raw data format.]
+	 *
+	 *  @param indexTree IndexTree containing the @link Index Indeices
+	 *  @endlink for which the Magnetization should be contained.
+	 *
+	 *  @param data Raw data to initialize the Magnetization with. */
 	Magnetization(
 		const IndexTree &indexTree,
 		const SpinMatrix *data
@@ -60,7 +86,12 @@ public:
 //	Magnetization(Magnetization &&magnetization);
 
 	/** Constructor. Constructs the Magnetization from a serialization
-	 *  string. */
+	 *  string.
+	 *
+	 *  @param serialization Serialization string from which to construct
+	 *  the Magnetization.
+	 *
+	 *  @param mode Mode with which the string has been serialized. */
 	Magnetization(const std::string &serialization, Mode mode);
 
 	/** Destructor. */
