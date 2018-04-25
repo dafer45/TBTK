@@ -32,7 +32,16 @@ namespace Property{
 /** @brief Property container for local density of states (LDOS). */
 class LDOS : public AbstractProperty<double>{
 public:
-	/** Constructor. */
+	/** Constructs LDOS on the Ranges format. [See AbstractProperty for
+	 *  detailed information about the Ranges format.]
+	 *
+	 *  @param dimensions Number of dimensions for the grid.
+	 *  @param ranges The upper limit (exclusive) for the corresponding
+	 *  dimensions.
+	 *
+	 *  @param lowerBound Lower bound for the energy.
+	 *  @param upperBound Upper bound for the energy
+	 *  @param resolution Number of points to use for the energy. */
 	LDOS(
 		int dimensions,
 		const int *ranges,
@@ -41,7 +50,18 @@ public:
 		int resolution
 	);
 
-	/** Constructor. */
+	/** Constructs LDOS on the Ranges format and initializes it with data.
+	 *  [See AbstractProperty for detailed information about the Ranges
+	 *  format and the raw data format.]
+	 *
+	 *  @param dimensions Number of dimensions for the grid.
+	 *  @param ranges The upper limit (exclusive) for the corresponding
+	 *  dimensions.
+	 *
+	 *  @param lowerBound Lower bound for the energy.
+	 *  @param upperBound Upper bound for the energy
+	 *  @param resolution Number of points to use for the energy.
+	 *  @param data Raw data to initialize the LDOS with. */
 	LDOS(
 		int dimensions,
 		const int *ranges,
@@ -51,7 +71,15 @@ public:
 		const double *data
 	);
 
-	/** Constructor. */
+	/** Constructs LDOS on the Custom format. [See AbstractProperty for
+	 *  detailed information about the Custom format.]
+	 *
+	 *  @param indexTree IndexTree containing the $link Index Indices
+	 *  @endlink for which the LDOS should be contained.
+	 *
+	 *  @param lowerBound Lower bound for the energy.
+	 *  @param upperBound Upper bound for the energy
+	 *  @param resolution Number of points to use for the energy. */
 	LDOS(
 		const IndexTree &indexTree,
 		double lowerBound,
@@ -59,7 +87,17 @@ public:
 		int resolution
 	);
 
-	/** Constructor. */
+	/** Constructs LDOS on the Custom format and initializes it with data.
+	 *  [See AbstractProperty for detailed information about the Custom
+	 *  format and the raw data format.]
+	 *
+	 *  @param indexTree IndexTree containing the $link Index Indices
+	 *  @endlink for which the LDOS should be contained.
+	 *
+	 *  @param lowerBound Lower bound for the energy.
+	 *  @param upperBound Upper bound for the energy
+	 *  @param resolution Number of points to use for the energy.
+	 *  @param data Raw data to initialize the LDOS with. */
 	LDOS(
 		const IndexTree &indexTree,
 		double lowerBound,
@@ -69,31 +107,43 @@ public:
 	);
 
 	/** Copy constructor. */
-	LDOS(const LDOS &ldos);
+//	LDOS(const LDOS &ldos);
 
 	/** Move constructor. */
-	LDOS(LDOS &&ldos);
+//	LDOS(LDOS &&ldos);
 
-	/** Constructor. Construct the LDOS from a serialization string. */
+	/** Constructor. Construct the LDOS from a serialization string.
+	 *
+	 *  @param serialization Serialization string from which to construct
+	 *  the LDOS.
+	 *
+	 *  @param mode Mode with which the string has been serialized. */
 	LDOS(const std::string &serialization, Mode mode);
 
 	/** Destructor. */
-	~LDOS();
+//	~LDOS();
 
-	/** Get lower bound for the energy. */
+	/** Get lower bound for the energy.
+	 *
+	 *  @return Lower bound for the energy. */
 	double getLowerBound() const;
 
-	/** Get upper bound for the energy. */
+	/** Get upper bound for the energy.
+	 *
+	 *  @return Upper bound for the energy. */
 	double getUpperBound() const;
 
-	/** Get energy resolution. (Number of energy intervals) */
+	/** Get the energy resolution (number of points used for the energy
+	 *  axis).
+	 *
+	 *  @return The energy resolution. */
 	int getResolution() const;
 
 	/** Assignment operator. */
-	LDOS& operator=(const LDOS &ldos);
+//	LDOS& operator=(const LDOS &ldos);
 
 	/** Move assignment operator. */
-	LDOS& operator=(LDOS &&ldos);
+//	LDOS& operator=(LDOS &&ldos);
 
 	/** Overrides AbstractProperty::serialize(). */
 	virtual std::string serialize(Mode mode) const;

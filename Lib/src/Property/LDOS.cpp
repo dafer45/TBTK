@@ -84,7 +84,7 @@ LDOS::LDOS(
 	this->resolution = resolution;
 }
 
-LDOS::LDOS(
+/*LDOS::LDOS(
 	const LDOS &ldos
 ) :
 	AbstractProperty(ldos)
@@ -102,7 +102,7 @@ LDOS::LDOS(
 	lowerBound = ldos.lowerBound;
 	upperBound = ldos.upperBound;
 	resolution = ldos.resolution;
-}
+}*/
 
 LDOS::LDOS(
 	const string &serialization,
@@ -151,7 +151,7 @@ LDOS::LDOS(
 	}
 }
 
-LDOS::~LDOS(){
+/*LDOS::~LDOS(){
 }
 
 LDOS& LDOS::operator=(const LDOS &rhs){
@@ -176,7 +176,7 @@ LDOS& LDOS::operator=(LDOS &&rhs){
 	}
 
 	return *this;
-}
+}*/
 
 string LDOS::serialize(Mode mode) const{
 	switch(mode){
