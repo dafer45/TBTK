@@ -32,7 +32,7 @@ Magnetization::Magnetization(
 	int dimensions,
 	const int* ranges
 ) :
-	AbstractProperty(dimensions, ranges, 4)
+	AbstractProperty(dimensions, ranges, 1)
 {
 }
 
@@ -41,14 +41,14 @@ Magnetization::Magnetization(
 	const int* ranges,
 	const SpinMatrix *data
 ) :
-	AbstractProperty(dimensions, ranges, 4, data)
+	AbstractProperty(dimensions, ranges, 1, data)
 {
 }
 
 Magnetization::Magnetization(
 	const IndexTree &indexTree
 ) :
-	AbstractProperty(indexTree, 4)
+	AbstractProperty(indexTree, 1)
 {
 }
 
@@ -56,11 +56,11 @@ Magnetization::Magnetization(
 	const IndexTree &indexTree,
 	const SpinMatrix *data
 ) :
-	AbstractProperty(indexTree, 4, data)
+	AbstractProperty(indexTree, 1, data)
 {
 }
 
-Magnetization::Magnetization(
+/*Magnetization::Magnetization(
 	const Magnetization &magnetization
 ) :
 	AbstractProperty(magnetization)
@@ -72,7 +72,7 @@ Magnetization::Magnetization(
 ) :
 	AbstractProperty(std::move(magnetization))
 {
-}
+}*/
 
 Magnetization::Magnetization(
 	const string &serialization,
@@ -96,7 +96,7 @@ Magnetization::Magnetization(
 	);
 }
 
-Magnetization::~Magnetization(){
+/*Magnetization::~Magnetization(){
 }
 
 Magnetization& Magnetization::operator=(const Magnetization &rhs){
@@ -111,7 +111,7 @@ Magnetization& Magnetization::operator=(Magnetization &&rhs){
 		AbstractProperty::operator=(std::move(rhs));
 
 	return *this;
-}
+}*/
 
 string Magnetization::serialize(Mode mode) const{
 	switch(mode){
