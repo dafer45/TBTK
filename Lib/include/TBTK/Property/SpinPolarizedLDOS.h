@@ -36,7 +36,16 @@ namespace Property{
  *    (spin-polarized LDOS). */
 class SpinPolarizedLDOS : public AbstractProperty<SpinMatrix>{
 public:
-	/** Constructor. */
+	/** Constructs a SpinPolarizedDOS on the Ranges format. [See
+	 *  AbstractProperty for detailed information about the Ranges format.]
+	 *
+	 *  @param dimensions Number of dimensions for the grid.
+	 *  @param ranges The upper limits (exclusive) for the corresponding
+	 *  dimensions.
+	 *
+	 *  @param lowerBound Lower bound for the energy.
+	 *  @param upperBound Upper bound for the energy.
+	 *  @param resolution Number of points to use for the energy. */
 	SpinPolarizedLDOS(
 		int dimensions,
 		const int *ranges,
@@ -45,7 +54,18 @@ public:
 		int resolution
 	);
 
-	/** Constructor. */
+	/** Constructs a SpinPolarizedDOS on the Ranges format and initializes
+	 *  it with data. [See AbstractProperty for detailed information about
+	 *  the Ranges format and the raw data format.]
+	 *
+	 *  @param dimensions Number of dimensions for the grid.
+	 *  @param ranges The upper limits (exclusive) for the corresponding
+	 *  dimensions.
+	 *
+	 *  @param lowerBound Lower bound for the energy.
+	 *  @param upperBound Upper bound for the energy.
+	 *  @param resolution Number of points to use for the energy.
+	 *  @param data Raw data to initialize the SpinPolarizedLDOS with. */
 	SpinPolarizedLDOS(
 		int dimensions,
 		const int *ranges,
@@ -55,7 +75,15 @@ public:
 		const SpinMatrix *data
 	);
 
-	/** Constructor. */
+	/** Constructs a SpinPolarizedDOS on the Custom format. [See
+	 *  AbstractProperty for detailed information about the Custom format.]
+	 *
+	 *  @param indexTree IndexTree containing the @link Index Indices
+	 *  @endlink for which the SpinPolarizedLDOS is contained.
+	 *
+	 *  @param lowerBound Lower bound for the energy.
+	 *  @param upperBound Upper bound for the energy.
+	 *  @param resolution Number of points to use for the energy. */
 	SpinPolarizedLDOS(
 		const IndexTree &indexTree,
 		double lowerBound,
@@ -63,7 +91,17 @@ public:
 		int resolution
 	);
 
-	/** Constructor. */
+	/** Constructs a SpinPolarizedDOS on the Custom format and initialize
+	 *  it with data. [See AbstractProperty for detailed information about
+	 *  the Custom format and the raw data format.]
+	 *
+	 *  @param indexTree IndexTree containing the @link Index Indices
+	 *  @endlink for which the SpinPolarizedLDOS is contained.
+	 *
+	 *  @param lowerBound Lower bound for the energy.
+	 *  @param upperBound Upper bound for the energy.
+	 *  @param resolution Number of points to use for the energy.
+	 *  @param data Raw data to initialize the SpinPolarizedLDOS with. */
 	SpinPolarizedLDOS(
 		const IndexTree &indexTree,
 		double lowerBound,
@@ -73,32 +111,44 @@ public:
 	);
 
 	/** Copy constructor. */
-	SpinPolarizedLDOS(const SpinPolarizedLDOS &spinPolarizedLDOS);
+//	SpinPolarizedLDOS(const SpinPolarizedLDOS &spinPolarizedLDOS);
 
 	/** Move constructor. */
-	SpinPolarizedLDOS(SpinPolarizedLDOS &&spinPolarizedLDOS);
+//	SpinPolarizedLDOS(SpinPolarizedLDOS &&spinPolarizedLDOS);
 
 	/** Constructor. Construct the SpinPolarizedLDOS from a serialization
-	 *  string. */
+	 *  string.
+	 *
+	 *  @param serialization Serialization string from which to construct
+	 *  the SpinPolarizedLDOS.
+	 *
+	 *  @param mode Mode with which the string has been serialized. */
 	SpinPolarizedLDOS(const std::string &serialization, Mode mode);
 
 	/** Destructor. */
-	~SpinPolarizedLDOS();
+//	~SpinPolarizedLDOS();
 
-	/** Get lower bound for the energy. */
+	/** Get lower bound for the energy.
+	 *
+	 *  @return Lower bound for the energy. */
 	double getLowerBound() const;
 
-	/** Get upper bound for the energy. */
+	/** Get upper bound for the energy.
+	 *
+	 *  @return Upper bound for the energy. */
 	double getUpperBound() const;
 
-	/** Get energy resolution. (Number of energy intervals) */
+	/** Get the energy resolution (number of points used for the energy
+	 *  axis).
+	 *
+	 *  @return The energy resolution. */
 	int getResolution() const;
 
 	/** Assignment operator. */
-	SpinPolarizedLDOS& operator=(const SpinPolarizedLDOS &rhs);
+//	SpinPolarizedLDOS& operator=(const SpinPolarizedLDOS &rhs);
 
 	/** Move assignment operator. */
-	SpinPolarizedLDOS& operator=(SpinPolarizedLDOS &&rhs);
+//	SpinPolarizedLDOS& operator=(SpinPolarizedLDOS &&rhs);
 
 	/** Overrides AbstractProperty::serialize(). */
 	std::string serialize(Mode mode) const;

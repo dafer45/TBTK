@@ -26,7 +26,7 @@ TEST(Magnetization, Constructor0){
 
 TEST(Magnetization, Constructor1){
 	int ranges[3] = {2, 3, 4};
-	SpinMatrix dataInput[2*3*4*4];
+	SpinMatrix dataInput[2*3*4];
 	for(unsigned int n = 0; n < 2*3*4; n++){
 		for(unsigned int r = 0; r < 2; r++){
 			for(unsigned int c = 0; c < 2; c++){
@@ -119,7 +119,7 @@ TEST(Magnetization, Constructor3){
 TEST(LDOS, SerializeToJSON){
 	//IndexDescriptor::Format::Ranges.
 /*	int ranges[3] = {2, 3, 4};
-	SpinMatrix dataInput0[2*3*4*4];
+	SpinMatrix dataInput0[2*3*4];
 	for(unsigned int n = 0; n < 2*3*4; n++){
 		for(unsigned int r = 0; r < 2; r++){
 			for(unsigned int c = 0; c < 2; c++){

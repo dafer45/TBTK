@@ -84,7 +84,7 @@ SpinPolarizedLDOS::SpinPolarizedLDOS(
 	this->resolution = resolution;
 }
 
-SpinPolarizedLDOS::SpinPolarizedLDOS(
+/*SpinPolarizedLDOS::SpinPolarizedLDOS(
 	const SpinPolarizedLDOS &spinPolarizedLDOS
 ) :
 	AbstractProperty(spinPolarizedLDOS)
@@ -102,7 +102,7 @@ SpinPolarizedLDOS::SpinPolarizedLDOS(
 	lowerBound = spinPolarizedLDOS.lowerBound;
 	upperBound = spinPolarizedLDOS.upperBound;
 	resolution = spinPolarizedLDOS.resolution;
-}
+}*/
 
 SpinPolarizedLDOS::SpinPolarizedLDOS(
 	const string &serialization,
@@ -153,7 +153,7 @@ SpinPolarizedLDOS::SpinPolarizedLDOS(
 	}
 }
 
-SpinPolarizedLDOS::~SpinPolarizedLDOS(){
+/*SpinPolarizedLDOS::~SpinPolarizedLDOS(){
 }
 
 SpinPolarizedLDOS& SpinPolarizedLDOS::operator=(const SpinPolarizedLDOS &rhs){
@@ -178,7 +178,7 @@ SpinPolarizedLDOS& SpinPolarizedLDOS::operator=(SpinPolarizedLDOS &&rhs){
 	}
 
 	return *this;
-}
+}*/
 
 string SpinPolarizedLDOS::serialize(Mode mode) const{
 	switch(mode){

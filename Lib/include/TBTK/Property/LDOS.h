@@ -74,7 +74,7 @@ public:
 	/** Constructs LDOS on the Custom format. [See AbstractProperty for
 	 *  detailed information about the Custom format.]
 	 *
-	 *  @param indexTree IndexTree containing the $link Index Indices
+	 *  @param indexTree IndexTree containing the @link Index Indices
 	 *  @endlink for which the LDOS should be contained.
 	 *
 	 *  @param lowerBound Lower bound for the energy.
@@ -91,7 +91,7 @@ public:
 	 *  [See AbstractProperty for detailed information about the Custom
 	 *  format and the raw data format.]
 	 *
-	 *  @param indexTree IndexTree containing the $link Index Indices
+	 *  @param indexTree IndexTree containing the @link Index Indices
 	 *  @endlink for which the LDOS should be contained.
 	 *
 	 *  @param lowerBound Lower bound for the energy.
