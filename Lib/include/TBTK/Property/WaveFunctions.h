@@ -40,25 +40,42 @@ public:
 //	WaveFunction(int dimensions, const int *ranges, const double *data);
 
 	/** Constructor. */
-	WaveFunctions(
+/*	WaveFunctions(
 		const IndexTree &indexTree,
 		const std::initializer_list<unsigned int> &states
-	);
+	);*/
 
-	/** Constructor. */
+	/** Constructs WaveFunctions on the Custom format. [See
+	 *  AbstractProperty for detailed information about the Custom format.]
+	 *
+	 *  @param indexTree IndexTree containing the @link Index Indices
+	 *  @endlink for which the WaveFunctions should be constructed.
+	 *
+	 *  @param states A list of the states for which the correspinding
+	 *  wavefunctions should be contained. */
 	WaveFunctions(
 		const IndexTree &indexTree,
 		const std::vector<unsigned int> &states
 	);
 
 	/** Constructor. */
-	WaveFunctions(
+/*	WaveFunctions(
 		const IndexTree &indexTree,
 		const std::initializer_list<unsigned int> &states,
 		const std::complex<double> *data
-	);
+	);*/
 
-	/** Constructor. */
+	/** Constructs WaveFunctions on the Custom format and initializes it
+	 *  with data. [See AbstractProperty for detailed information about the
+	 *  Custom format and the raw data format.]
+	 *
+	 *  @param indexTree IndexTree containing the @link Index Indices
+	 *  @endlink for which the WaveFunctions should be constructed.
+	 *
+	 *  @param states A list of the states for which the correspinding
+	 *  wavefunctions should be contained.
+	 *
+	 *  @param data Raw data to initialize the WaveFunctions with. */
 	WaveFunctions(
 		const IndexTree &indexTree,
 		const std::vector<unsigned int> &states,
@@ -66,26 +83,31 @@ public:
 	);
 
 	/** Copy constructor. */
-	WaveFunctions(const WaveFunctions &waveFunctions);
+//	WaveFunctions(const WaveFunctions &waveFunctions);
 
 	/** Move constructor. */
-	WaveFunctions(WaveFunctions &&waveFunctions);
+//	WaveFunctions(WaveFunctions &&waveFunctions);
 
 	/** Constructor. Constructs the WaveFunctions from a serialization
-	 *  string. */
+	 *  string.
+	 *
+	 *  @param serialization Serialization string from which to construct
+	 *  the WaveFunctions. */
 	WaveFunctions(const std::string &serialization, Mode mode);
 
 	/** Destructor. */
-	~WaveFunctions();
+//	~WaveFunctions();
 
 	/** Assignment operator. */
-	WaveFunctions& operator=(const WaveFunctions &rhs);
+//	WaveFunctions& operator=(const WaveFunctions &rhs);
 
 	/** Move assignment operator. */
-	WaveFunctions& operator=(WaveFunctions &&rhs);
+//	WaveFunctions& operator=(WaveFunctions &&rhs);
 
-	/** Returns a vector with the state indices for which the wave function
-	 *  is defined. */
+	/** Get the contained states.
+	 *
+	 * *@return A vector with the state indices for which the wave function
+	 *  is contained. */
 	const std::vector<unsigned int>& getStates() const;
 
 	/** Overrides AbstractProperty::operator(). */
@@ -100,16 +122,24 @@ public:
 		unsigned int state
 	);
 
-	/** Get min absolute value. */
+	/** Get the minimum absolute value.
+	 *
+	 *  @return The minimum absolute value. */
 	double getMinAbs() const;
 
-	/** Get max absolute value. */
+	/** Get the maximum absolute value.
+	 *
+	 *  @return The maximum absolute value. */
 	double getMaxAbs() const;
 
-	/** Get min argument value. */
+	/** Get the minimum argument value.
+	 *
+	 *  @return The minimum argument value. */
 	double getMinArg() const;
 
-	/** Get max argument value. */
+	/** Get the maximum argument value.
+	 *
+	 *  @return The maximum argument value. */
 	double getMaxArg() const;
 
 	/** Overrides AbstractProperty::serialize(). */

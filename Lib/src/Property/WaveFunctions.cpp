@@ -45,7 +45,7 @@ WaveFunction::WaveFunction(
 {
 }*/
 
-WaveFunctions::WaveFunctions(
+/*WaveFunctions::WaveFunctions(
 	const IndexTree &indexTree,
 	const initializer_list<unsigned int> &states
 ) :
@@ -61,7 +61,7 @@ WaveFunctions::WaveFunctions(
 			break;
 		}
 	}
-}
+}*/
 
 WaveFunctions::WaveFunctions(
 	const IndexTree &indexTree,
@@ -80,7 +80,7 @@ WaveFunctions::WaveFunctions(
 	}
 }
 
-WaveFunctions::WaveFunctions(
+/*WaveFunctions::WaveFunctions(
 	const IndexTree &indexTree,
 	const initializer_list<unsigned int> &states,
 	const complex<double> *data
@@ -97,7 +97,7 @@ WaveFunctions::WaveFunctions(
 			break;
 		}
 	}
-}
+}*/
 
 WaveFunctions::WaveFunctions(
 	const IndexTree &indexTree,
@@ -117,7 +117,7 @@ WaveFunctions::WaveFunctions(
 	}
 }
 
-WaveFunctions::WaveFunctions(
+/*WaveFunctions::WaveFunctions(
 	const WaveFunctions &waveFunctions
 ) :
 	AbstractProperty(waveFunctions),
@@ -133,7 +133,7 @@ WaveFunctions::WaveFunctions(
 	states(std::move(waveFunctions.states))
 {
 	this->isContinuous = waveFunctions.isContinuous;
-}
+}*/
 
 WaveFunctions::WaveFunctions(
 	const string &serialization,
@@ -184,7 +184,7 @@ WaveFunctions::WaveFunctions(
 	}
 }
 
-WaveFunctions::~WaveFunctions(){
+/*WaveFunctions::~WaveFunctions(){
 }
 
 WaveFunctions& WaveFunctions::operator=(const WaveFunctions &rhs){
@@ -205,7 +205,7 @@ WaveFunctions& WaveFunctions::operator=(WaveFunctions &&rhs){
 	}
 
 	return *this;
-}
+}*/
 
 const complex<double>& WaveFunctions::operator()(
         const Index &index,

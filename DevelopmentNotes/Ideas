@@ -21,3 +21,10 @@
   which set call that has to be made is determined by which format that is
   specified in the constructor, unifying them will resault in a less confusing
   interface.
+
+- Reconsider whether WaveFunctions actually should have the functions
+  getMinAbs(), getMaxAbs(), getMinArg(), and getMaxArg(). These are used by the
+  RayTracer, but do not seem to have general usability. Probably the RayTracer
+  should implement it's own helper functions for this, or another helper class
+  should be created to provide the needed functionallity without putting the
+  responsibility on the WaveFunctions.

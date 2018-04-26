@@ -583,6 +583,9 @@ inline std::string AbstractProperty<
 		for(unsigned int n = 0; n < size; n++)
 			j["data"].push_back(data[n]);
 
+		j["allowIndexOutOfBoundsAccess"] = allowIndexOutOfBoundsAccess;
+		j["defaultValue"] = defaultValue;
+
 		return j.dump();
 	}
 	default:
@@ -612,6 +615,9 @@ inline std::string AbstractProperty<
 		j["size"] = size;
 		for(unsigned int n = 0; n < size; n++)
 			j["data"].push_back(data[n]);
+
+		j["allowIndexOutOfBoundsAccess"] = allowIndexOutOfBoundsAccess;
+		j["defaultValue"] = defaultValue;
 
 		return j.dump();
 	}
@@ -643,6 +649,9 @@ inline std::string AbstractProperty<
 		for(unsigned int n = 0; n < size; n++)
 			j["data"].push_back(data[n]);
 
+		j["allowIndexOutOfBoundsAccess"] = allowIndexOutOfBoundsAccess;
+		j["defaultValue"] = defaultValue;
+
 		return j.dump();
 	}
 	default:
@@ -672,6 +681,9 @@ inline std::string AbstractProperty<
 		j["size"] = size;
 		for(unsigned int n = 0; n < size; n++)
 			j["data"].push_back(data[n]);
+
+		j["allowIndexOutOfBoundsAccess"] = allowIndexOutOfBoundsAccess;
+		j["defaultValue"] = defaultValue;
 
 		return j.dump();
 	}
@@ -703,6 +715,9 @@ inline std::string AbstractProperty<
 		for(unsigned int n = 0; n < size; n++)
 			j["data"].push_back(data[n]);
 
+		j["allowIndexOutOfBoundsAccess"] = allowIndexOutOfBoundsAccess;
+		j["defaultValue"] = defaultValue;
+
 		return j.dump();
 	}
 	default:
@@ -732,6 +747,9 @@ inline std::string AbstractProperty<std::complex<double>, false, false>::seriali
 			std::string s = Serializable::serialize(data[n], mode);
 			j["data"].push_back(s);
 		}
+
+		j["allowIndexOutOfBoundsAccess"] = allowIndexOutOfBoundsAccess;
+		j["defaultValue"] = Serializable::serialize(defaultValue, mode);
 
 		return j.dump();
 	}
@@ -1012,6 +1030,11 @@ inline AbstractProperty<double, true, false>::AbstractProperty(
 				data[counter] = *it;
 				counter++;
 			}
+
+			allowIndexOutOfBoundsAccess = j.at(
+				"allowIndexOutOfBoundsAccess"
+			).get<bool>();
+			defaultValue = j.at("defaultValue").get<double>();
 		}
 		catch(nlohmann::json::exception e){
 			TBTKExit(
@@ -1069,6 +1092,15 @@ inline AbstractProperty<std::complex<double>, false, false>::AbstractProperty(
 				data[counter] = c;
 				counter++;
 			}
+
+			allowIndexOutOfBoundsAccess = j.at(
+				"allowIndexOutOfBoundsAccess"
+			).get<bool>();
+			Serializable::deserialize(
+				j.at("defaultValue").get<std::string>(),
+				&defaultValue,
+				mode
+			);
 		}
 		catch(nlohmann::json::exception e){
 			TBTKExit(
