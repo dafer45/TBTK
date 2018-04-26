@@ -37,3 +37,10 @@
   instead of a c-type array and a dimension. IndexDescriptor::getDimensions()
   is also superfluous as this can be better determined from the size of the
   ranges returned by IndexDescriptor::getRanges().
+
+- Reconsider how to implement function call operators for AbstractProperty. The
+  compiler allows {1} to be converted to an unsigned int instead of an
+  initializer list (and subsequently and Index) with a single int. This means
+  AbstractProperty::operator(unsigned int) can be called instead of
+  AbstractProperty::operator(Index, unsigned int = defaultValue) when the Index
+  has a single subindex.

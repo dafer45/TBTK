@@ -8,6 +8,8 @@ namespace TBTK{
 namespace PropertyExtractor{
 
 const double EPSILON_100 = 100*std::numeric_limits<double>::epsilon();
+const double EPSILON_10000 = 10000*std::numeric_limits<double>::epsilon();
+const double CHEMICAL_POTENTIAL = 1;
 
 #define SETUP_MODEL() \
 	Model model; \
@@ -15,7 +17,8 @@ const double EPSILON_100 = 100*std::numeric_limits<double>::epsilon();
 	const int SIZE = 50; \
 	for(int x = 0; x < SIZE; x++) \
 		model << HoppingAmplitude(-1, {(x+1)%SIZE}, {x}) + HC; \
-	model.construct();
+	model.construct(); \
+	model.setChemicalPotential(CHEMICAL_POTENTIAL);
 
 #define SETUP_AND_RUN_SOLVER() \
 	Solver::Diagonalizer solver; \
@@ -192,6 +195,154 @@ TEST(Diagonalizer, calculateWaveFunctions){
 		""
 	);
 	::testing::FLAGS_gtest_death_test_style = "fast";
+}
+
+TEST(Diagonalizer, calculateDOS){
+	SETUP_MODEL();
+	SETUP_AND_RUN_SOLVER();
+	const double LOWER_BOUND = -10;
+	const double UPPER_BOUND = 10;
+	const int RESOLUTION = 1000;
+
+	Diagonalizer propertyExtractor(solver);
+	propertyExtractor.setEnergyWindow(
+		LOWER_BOUND,
+		UPPER_BOUND,
+		RESOLUTION
+	);
+
+	//Calculate DOS to compare to. EigenValues has already been checked
+	//using Diagonalizer::getEigenValues(), so it is safe to use it here
+	//for these this test.
+	Property::EigenValues eigenValues = propertyExtractor.getEigenValues();
+	double dosBenchmark[1000];
+	for(unsigned int n = 0; n < RESOLUTION; n++)
+		dosBenchmark[n] = 0.;
+	double dE = (UPPER_BOUND - LOWER_BOUND)/RESOLUTION;
+	for(unsigned int n = 0; n < SIZE; n++){
+		int e = (int)(
+			RESOLUTION*(eigenValues(n) - LOWER_BOUND)/(
+				UPPER_BOUND - LOWER_BOUND
+			)
+		);
+		if(e >= 0 && e < RESOLUTION)
+			dosBenchmark[e] += 1/dE;
+	}
+
+	//Calculate DOS
+	Property::DOS dos = propertyExtractor.calculateDOS();
+
+	//Check that bounds and resolution are corectly set.
+	EXPECT_DOUBLE_EQ(dos.getLowerBound(), -10);
+	EXPECT_DOUBLE_EQ(dos.getUpperBound(), 10);
+	ASSERT_EQ(dos.getResolution(), 1000);
+
+	//Check that the dos agrees with the benchmark and that it integrates
+	//to the number of states in the Model.
+	double integratedDOS = 0;
+	for(unsigned int n = 0; n < RESOLUTION; n++){
+		integratedDOS += dos(n)*dE;
+		EXPECT_DOUBLE_EQ(dos(n), dosBenchmark[n]);
+	}
+	EXPECT_NEAR(integratedDOS, SIZE, EPSILON_100);
+}
+
+//TODO
+//...
+TEST(Diagonalizer, calculateExpectationValue){
+}
+
+TEST(Diagonalizer, calculateDensity){
+	SETUP_MODEL();
+	SETUP_AND_RUN_SOLVER();
+
+	Diagonalizer propertyExtractor(solver);
+
+	//Calculate density to compare to. getEigenValue() and getAmplitude()
+	//has already been checked using Diagonalizer::getEigenValue() and
+	//Diagonalizer::getAmplitude(), so it is safe to use them here for this
+	//test.
+	double densityBenchmark = 0;
+	for(unsigned int n = 0; n < SIZE; n++){
+		if(propertyExtractor.getEigenValue(n) - CHEMICAL_POTENTIAL > 0)
+			continue;
+		densityBenchmark += pow(
+			abs(propertyExtractor.getAmplitude(n, {0})
+			), 2
+		);
+	}
+
+	//Check Ranges format.
+	Property::Density density0 = propertyExtractor.calculateDensity(
+		{IDX_X},
+		{SIZE}
+	);
+	ASSERT_EQ(density0.getSize(), SIZE);
+	const double *data = density0.getData();
+	for(unsigned int n = 0; n < SIZE; n++)
+		EXPECT_NEAR(data[n], densityBenchmark, EPSILON_100);
+
+	//Check Custom format.
+	Property::Density density1 = propertyExtractor.calculateDensity({
+		{IDX_ALL}
+	});
+	ASSERT_EQ(density1.getSize(), SIZE);
+	for(unsigned int n = 0; n < SIZE; n++)
+		EXPECT_NEAR(density1({n}), densityBenchmark, EPSILON_100);
+}
+
+//TODO
+//...
+TEST(Diagonalizer, calculateMagnetization){
+}
+
+TEST(Diagonalizer, calculateLDOS){
+	SETUP_MODEL();
+	SETUP_AND_RUN_SOLVER();
+	const double LOWER_BOUND = -10;
+	const double UPPER_BOUND = 10;
+	const int RESOLUTION = 1000;
+
+	Diagonalizer propertyExtractor(solver);
+	propertyExtractor.setEnergyWindow(
+		LOWER_BOUND,
+		UPPER_BOUND,
+		RESOLUTION
+	);
+
+	Property::DOS dos = propertyExtractor.calculateDOS();
+
+	//Check Ranges format.
+	Property::LDOS ldos0 = propertyExtractor.calculateLDOS(
+		{IDX_X},
+		{SIZE}
+	);
+	const double *data = ldos0.getData();
+	for(unsigned int n = 0; n < RESOLUTION; n++){
+		for(int x = 0; x < SIZE; x++){
+			EXPECT_NEAR(
+				data[RESOLUTION*x + n],
+				dos(n)/SIZE,
+				EPSILON_10000
+			);
+		}
+	}
+
+	//Check Custom format.
+	Property::LDOS ldos1 = propertyExtractor.calculateLDOS({{IDX_ALL}});
+	for(unsigned int n = 0; n < RESOLUTION; n++)
+		for(int x = 0; x < SIZE; x++)
+			EXPECT_NEAR(ldos1({x}, n), dos(n)/SIZE, EPSILON_10000);
+}
+
+//TODO
+//...
+TEST(Diagonalizer, calculateSpinPolarizedLDOS){
+}
+
+//TODO
+//...
+TEST(Diagonalizer, calculateEntropy){
 }
 
 };	//End of namespace PropertyExtractor
