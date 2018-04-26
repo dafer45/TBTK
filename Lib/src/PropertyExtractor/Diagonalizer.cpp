@@ -33,10 +33,10 @@ Diagonalizer::Diagonalizer(Solver::Diagonalizer &dSolver){
 	this->dSolver = &dSolver;
 }
 
-Diagonalizer::~Diagonalizer(){
-}
+/*Diagonalizer::~Diagonalizer(){
+}*/
 
-void Diagonalizer::saveEigenValues(string path, string filename){
+/*void Diagonalizer::saveEigenValues(string path, string filename){
 	stringstream ss;
 	ss << path;
 	if(path.back() != '/')
@@ -62,7 +62,7 @@ void Diagonalizer::getTabulatedHoppingAmplitudeSet(
 		numHoppingAmplitudes,
 		maxIndexSize
 	);
-}
+}*/
 
 Property::EigenValues Diagonalizer::getEigenValues(){
 	int size = dSolver->getModel().getBasisSize();
@@ -78,7 +78,7 @@ Property::EigenValues Diagonalizer::getEigenValues(){
 
 Property::WaveFunctions Diagonalizer::calculateWaveFunctions(
 	initializer_list<Index> patterns,
-	initializer_list<int> states
+	vector<int> states
 ){
 	IndexTree allIndices = generateIndexTree(
 		patterns,

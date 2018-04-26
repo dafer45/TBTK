@@ -45,43 +45,63 @@ namespace PropertyExtractor{
  *  written to file using the FileWriter.*/
 class Diagonalizer : public PropertyExtractor{
 public:
-	/** Constructor. */
-	Diagonalizer(Solver::Diagonalizer &dSolver);
+	/** Constructs a PropertyExtractor::Diagonalizer.
+	 *
+	 *  @param solver The Solver to use. */
+	Diagonalizer(Solver::Diagonalizer &solver);
 
 	/** Destructor. */
-	virtual ~Diagonalizer();
+//	virtual ~Diagonalizer();
 
 	/** Legacy. */
-	void saveEigenValues(
+/*	void saveEigenValues(
 		std::string path = "./",
 		std::string filename = "EV.dat"
-	);
+	);*/
 
 	/** Experimental. Extracts a tabulated version of the
 	 *  HoppingAmplitudeSet. */
-	void getTabulatedHoppingAmplitudeSet(
+/*	void getTabulatedHoppingAmplitudeSet(
 		std::complex<double> **amplitudes,
 		int **indices,
 		int *numHoppingAmplitudes,
 		int *maxIndexSize
-	);
+	);*/
 
-	/** Get eigenvalues. */
+	/** Get eigenvalues.
+	 *
+	 *  @return A Property::EigenValues containing all the eigen values in
+	 *  accending order. */
 	Property::EigenValues getEigenValues();
 
-	/** Get eigenvalue. */
+	/** Get a single eigenvalue.
+	 *
+	 *  @param state The state (in accendingorder) to get the eigen value
+	 *  for. */
 	double getEigenValue(int state);
 
 	/** Get amplitude for given eigenvector \f$n\f$ and physical index
 	 *  \f$x\f$: \f$\Psi_{n}(x)\f$.
+	 *
 	 *  @param state Eigenstate number \f$n\f$
 	 *  @param index Physical index \f$x\f$. */
 	const std::complex<double> getAmplitude(int state, const Index &index);
 
-	/** Calculate wave function. */
+	/** Calculate WaveFunction on the Custom format. [See AbstractProperty
+	 *  for detailed information about the Custom format. See
+	 *  PropertyExtractor for detailed information about the patterns
+	 *  argument.]
+	 *
+	 *  @param pattern The pattern to use.
+	 *  @param states The states to extract the wave functions for. Can be
+	 *  set to {IDX_ALL} to get all states.
+	 *
+	 *  @return A WaveFunctions object containing the wave functions values
+	 *  for the Indices that stisfies the given patterns and state numbers.
+	 */
 	Property::WaveFunctions calculateWaveFunctions(
 		std::initializer_list<Index> patterns,
-		std::initializer_list<int> states
+		std::vector<int> states
 	);
 
 	/** Calculate Green's function. */
