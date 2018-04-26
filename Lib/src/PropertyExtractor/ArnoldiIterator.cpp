@@ -35,8 +35,8 @@ ArnoldiIterator::ArnoldiIterator(Solver::ArnoldiIterator &aSolver){
 	this->aSolver = &aSolver;
 }
 
-ArnoldiIterator::~ArnoldiIterator(){
-}
+/*ArnoldiIterator::~ArnoldiIterator(){
+}*/
 
 Property::EigenValues ArnoldiIterator::getEigenValues(){
 	int size = aSolver->getNumEigenValues();

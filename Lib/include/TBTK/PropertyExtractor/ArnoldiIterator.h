@@ -43,11 +43,13 @@ namespace PropertyExtractor{
  *  written to file using the FileWriter. */
 class ArnoldiIterator : public PropertyExtractor{
 public:
-	/** Constructor. */
-	ArnoldiIterator(Solver::ArnoldiIterator &aSolver);
+	/** Constructs a PropertyExtractor::ArnoldiIterator.
+	 *
+	 *  @param solver Solver to use. */
+	ArnoldiIterator(Solver::ArnoldiIterator &solver);
 
 	/** Destructor. */
-	virtual ~ArnoldiIterator();
+//	virtual ~ArnoldiIterator();
 
 	/** Get eigenvalues. */
 	Property::EigenValues getEigenValues();
