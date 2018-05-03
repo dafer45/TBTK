@@ -23,6 +23,8 @@
 #ifndef COM_DAFER45_TBTK_INDEX_DESCRIPTOR
 #define COM_DAFER45_TBTK_INDEX_DESCRIPTOR
 
+#include "TBTK/IndexedDataTree.h"
+#include "TBTK/IndexException.h"
 #include "TBTK/IndexTree.h"
 #include "TBTK/Serializable.h"
 #include "TBTK/TBTKMacros.h"
@@ -37,7 +39,7 @@ namespace TBTK{
 class IndexDescriptor : public Serializable{
 public:
 	/** Enum class determining the storage format. */
-	enum class Format {None, Ranges, Custom};
+	enum class Format {None, Ranges, Custom, Dynamic};
 
 	/** Constructs an IndexDescriptor.
 	 *
@@ -127,7 +129,12 @@ public:
 	 *  @endlink that are described by the IndexDescriptor. */
 	const IndexTree& getIndexTree() const;
 
-	/** Get linear index. [Only works for the Custom format.]
+	/** Add Index. [Only works for the Dynamic format.]
+	 *
+	 *  @param index Index to add.  */
+	void add(const Index &index);
+
+	/** Get linear index. [Only works for the Custom and Dynamic formats.]
 	 *
 	 *  @param index The Index to get the linear Index for.
 	 *  @param returnNegativeForMissingIndex If set to true, requesting an
@@ -150,7 +157,7 @@ public:
 	unsigned int getSize() const;
 
 	/** Check whether a given Index is contained in the IndexDescriptor.
-	 *  [Only works for the Custom format.]
+	 *  [Only works for the Custom and Dynamic formats.]
 	 *
 	 *  @return True if the index descriptor contains the given index. */
 	bool contains(const Index &index) const;
@@ -180,11 +187,22 @@ private:
 		IndexTree *indexTree;
 	};
 
+	class DynamicFormat{
+	public:
+		/** IndexedDataTree that maps each added Index to a linear
+		 *  index. */
+		IndexedDataTree<unsigned int> *indexedDataTree;
+
+		/** Current number of Indices added to the IndexedDataTree. */
+		unsigned int size;
+	};
+
 	/** Union of descriptor formats. */
 	union Descriptor{
 		NoneFormat noneFormat;
 		RangeFormat rangeFormat;
 		CustomFormat customFormat;
+		DynamicFormat dynamicFormat;
 	};
 
 	/** Actuall descriptor. */
@@ -271,11 +289,35 @@ inline const IndexTree& IndexDescriptor::getIndexTree() const{
 	return *descriptor.customFormat.indexTree;
 }
 
+inline void IndexDescriptor::add(const Index &index){
+	TBTKAssert(
+		format == Format::Dynamic,
+		"IndexDescriptor::add()",
+		"The IndexDescriptor is not of the format Format::Dynamic.",
+		""
+	);
+
+	unsigned int dummy;
+	TBTKAssert(
+		!descriptor.dynamicFormat.indexedDataTree->get(dummy, index),
+		"IndexDescriptor::add()",
+		"The IndexDescriptor already contains the Index '"
+		<< index.toString() << "'.",
+		""
+	);
+
+	descriptor.dynamicFormat.indexedDataTree->add(
+		descriptor.dynamicFormat.size,
+		index
+	);
+	descriptor.dynamicFormat.size++;
+}
+
 inline int IndexDescriptor::getLinearIndex(
 	const Index &index,
 	bool returnNegativeForMissingIndex
 ) const{
-	TBTKAssert(
+/*	TBTKAssert(
 		format == Format::Custom,
 		"IndexDescriptor::getOffset()",
 		"The IndexDescriptor is not of the format Format::Custom.",
@@ -286,11 +328,50 @@ inline int IndexDescriptor::getLinearIndex(
 		index,
 		IndexTree::SearchMode::MatchWildcards,
 		returnNegativeForMissingIndex
-	);
+	);*/
+	switch(format){
+	case Format::Custom:
+		return descriptor.customFormat.indexTree->getLinearIndex(
+			index,
+			IndexTree::SearchMode::MatchWildcards,
+			returnNegativeForMissingIndex
+		);
+	case Format::Dynamic:
+	{
+		unsigned int linearIndex;
+		if(
+			descriptor.dynamicFormat.indexedDataTree->get(
+				linearIndex,
+				index
+			)
+		){
+			return linearIndex;
+		}
+		else if(returnNegativeForMissingIndex){
+			return -1;
+		}
+		else{
+			throw IndexException(
+				"IndexDescriptor::getLinearIndex()",
+				TBTKWhere,
+				"Index not included in the IndexDescriptor '"
+				+ index.toString() + "'.",
+				""
+			);
+		}
+	}
+	default:
+		TBTKExit(
+			"IndexDescriptor::getOffset()",
+			"The IndexDescriptor is not of the format"
+			" Format::Custom or Format::Dynamic.",
+			""
+		);
+	}
 }
 
 inline bool IndexDescriptor::contains(const Index &index) const{
-	TBTKAssert(
+/*	TBTKAssert(
 		format == Format::Custom,
 		"IndexDescriptor::contains()",
 		"The IndexDescriptor is not of the format Format::Custom.",
@@ -308,6 +389,43 @@ inline bool IndexDescriptor::contains(const Index &index) const{
 	}
 	else{
 		return true;
+	}*/
+	switch(format){
+	case Format::Custom:
+		if(
+			descriptor.customFormat.indexTree->getLinearIndex(
+				index,
+				IndexTree::SearchMode::StrictMatch,
+				true
+			) == -1
+		){
+			return false;
+		}
+		else{
+			return true;
+		}
+	case Format::Dynamic:
+	{
+		unsigned int dummy;
+		if(
+			descriptor.dynamicFormat.indexedDataTree->get(
+				dummy,
+				index
+			)
+		){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
+	default:
+		TBTKExit(
+			"IndexDescriptor::contains()",
+			"The IndexDescriptor is not of the format"
+			" Format::Custom or Format::Dynamic.",
+			""
+		);
 	}
 }
 

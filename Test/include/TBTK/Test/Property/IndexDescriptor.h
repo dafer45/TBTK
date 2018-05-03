@@ -31,12 +31,12 @@ TEST(IndexDescriptor, Destructor){
 }
 
 //TODO
-//..
+//...
 TEST(IndexDescriptor, operatorAssignment){
 }
 
 //TODO
-//..
+//...
 TEST(IndexDescriptor, operatorMoveAssignment){
 }
 
@@ -52,6 +52,11 @@ TEST(IndexDescriptor, getFormat){
 	EXPECT_EQ(
 		indexDescriptor2.getFormat(),
 		IndexDescriptor::Format::Custom
+	);
+	IndexDescriptor indexDescriptor3(IndexDescriptor::Format::Dynamic);
+	EXPECT_EQ(
+		indexDescriptor3.getFormat(),
+		IndexDescriptor::Format::Dynamic
 	);
 }
 
@@ -87,6 +92,19 @@ TEST(IndexDescriptor, getDimensions){
 		::testing::ExitedWithCode(1),
 		""
 	);
+
+	//Fail for Format::Dynamic
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			IndexDescriptor indexDescriptor(
+				IndexDescriptor::Format::Dynamic
+			);
+			indexDescriptor.getDimensions();
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
 }
 
 TEST(IndexDescriptor, setRanges){
@@ -105,15 +123,30 @@ TEST(IndexDescriptor, setRanges){
 		""
 	);
 
-	//Ranges.
+	//Format::Ranges.
 	IndexDescriptor indexDescriptor(IndexDescriptor::Format::Ranges);
 	indexDescriptor.setRanges(ranges, 3);
 
-	//Fail for Format::None.
+	//Fail for Format::Custom.
 	EXPECT_EXIT(
 		{
 			Streams::setStdMuteErr();
-			IndexDescriptor indexDescriptor(IndexDescriptor::Format::Custom);
+			IndexDescriptor indexDescriptor(
+				IndexDescriptor::Format::Custom
+			);
+			indexDescriptor.setRanges(ranges, 3);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+
+	//Fail for Format::Dynamic.
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			IndexDescriptor indexDescriptor(
+				IndexDescriptor::Format::Dynamic
+			);
 			indexDescriptor.setRanges(ranges, 3);
 		},
 		::testing::ExitedWithCode(1),
@@ -126,7 +159,9 @@ TEST(IndexDescriptor, getRanges){
 	EXPECT_EXIT(
 		{
 			Streams::setStdMuteErr();
-			IndexDescriptor indexDescriptor(IndexDescriptor::Format::None);
+			IndexDescriptor indexDescriptor(
+				IndexDescriptor::Format::None
+			);
 			indexDescriptor.getRanges();
 		},
 		::testing::ExitedWithCode(1),
@@ -142,11 +177,26 @@ TEST(IndexDescriptor, getRanges){
 	EXPECT_EQ(ranges[1], 3);
 	EXPECT_EQ(ranges[2], 4);
 
-	//Fail for Format::None.
+	//Fail for Format::Custom.
 	EXPECT_EXIT(
 		{
 			Streams::setStdMuteErr();
-			IndexDescriptor indexDescriptor(IndexDescriptor::Format::Custom);
+			IndexDescriptor indexDescriptor(
+				IndexDescriptor::Format::Custom
+			);
+			indexDescriptor.getRanges();
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+
+	//Fail for Format::Dynamic.
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			IndexDescriptor indexDescriptor(
+				IndexDescriptor::Format::Dynamic
+			);
 			indexDescriptor.getRanges();
 		},
 		::testing::ExitedWithCode(1),
@@ -200,6 +250,20 @@ TEST(IndexDescriptor, setIndexTree){
 		::testing::ExitedWithCode(1),
 		""
 	);
+
+	//Fail for Format::Dynamic.
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			IndexDescriptor indexDescriptor(
+				IndexDescriptor::Format::Dynamic
+			);
+			indexDescriptor.setIndexTree(indexTree0);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+
 }
 
 TEST(IndexDescriptor, getIndexTree){
@@ -242,6 +306,74 @@ TEST(IndexDescriptor, getIndexTree){
 	EXPECT_EQ(indexTree.getLinearIndex({0}), 0);
 	EXPECT_EQ(indexTree.getLinearIndex({1}), 1);
 	EXPECT_EQ(indexTree.getLinearIndex({2}), 2);
+
+	//Fail for Format::Dynamic.
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			IndexDescriptor indexDescriptor(
+				IndexDescriptor::Format::Dynamic
+			);
+			indexDescriptor.getIndexTree();
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+TEST(IndexDescriptor, add){
+	//Fail for Format::None.
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			IndexDescriptor indexDescriptor(
+				IndexDescriptor::Format::None
+			);
+			indexDescriptor.add({0});
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+
+	//Fail for Format::Ranges.
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			IndexDescriptor indexDescriptor(
+				IndexDescriptor::Format::Ranges
+			);
+			indexDescriptor.add({0});
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+
+	//Fail for Format::None.
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			IndexDescriptor indexDescriptor(
+				IndexDescriptor::Format::Custom
+			);
+			indexDescriptor.add({0});
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+
+	//Format::Dynamic.
+	IndexDescriptor indexDescriptor(IndexDescriptor::Format::Dynamic);
+	indexDescriptor.add({0});
+	indexDescriptor.add({2});
+	indexDescriptor.add({1});
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			indexDescriptor.add({0});
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
 }
 
 TEST(IndexDescriptor, getLinearIndex){
@@ -272,29 +404,45 @@ TEST(IndexDescriptor, getLinearIndex){
 	);
 
 	//Format::Custom
-	IndexDescriptor indexDescriptor(IndexDescriptor::Format::Custom);
+	IndexDescriptor indexDescriptor0(IndexDescriptor::Format::Custom);
 	IndexTree indexTreeInput;
 	indexTreeInput.add({0});
 	indexTreeInput.add({1});
 	indexTreeInput.add({2});
 	indexTreeInput.generateLinearMap();
-	indexDescriptor.setIndexTree(indexTreeInput);
-	EXPECT_EQ(indexDescriptor.getLinearIndex({0}), 0);
-	EXPECT_EQ(indexDescriptor.getLinearIndex({1}), 1);
-	EXPECT_EQ(indexDescriptor.getLinearIndex({2}), 2);
-	EXPECT_THROW(indexDescriptor.getLinearIndex({3}), IndexException);
-	EXPECT_EQ(indexDescriptor.getLinearIndex({3}, true), -1);
+	indexDescriptor0.setIndexTree(indexTreeInput);
+	EXPECT_EQ(indexDescriptor0.getLinearIndex({0}), 0);
+	EXPECT_EQ(indexDescriptor0.getLinearIndex({1}), 1);
+	EXPECT_EQ(indexDescriptor0.getLinearIndex({2}), 2);
+	EXPECT_THROW(indexDescriptor0.getLinearIndex({3}), IndexException);
+	EXPECT_EQ(indexDescriptor0.getLinearIndex({3}, true), -1);
+
+	//TODO
+	//Implement test for Format::Dynamic once a function for adding Indices
+	//to the IndexDescriptor is available.
+	IndexDescriptor indexDescriptor1(IndexDescriptor::Format::Dynamic);
+	indexDescriptor1.add({0});
+	indexDescriptor1.add({2});
+	indexDescriptor1.add({1});
+	EXPECT_EQ(indexDescriptor1.getLinearIndex({0}), 0);
+	EXPECT_EQ(indexDescriptor1.getLinearIndex({1}), 2);
+	EXPECT_EQ(indexDescriptor1.getLinearIndex({2}), 1);
+	EXPECT_THROW(indexDescriptor1.getLinearIndex({3}), IndexException);
+	EXPECT_EQ(indexDescriptor1.getLinearIndex({3}, true), -1);
 }
 
 TEST(IndexDescriptor, getSize){
+	//Format::None.
 	IndexDescriptor indexDescriptor0(IndexDescriptor::Format::None);
 	EXPECT_EQ(indexDescriptor0.getSize(), 1);
 
+	//Format::Ranges.
 	IndexDescriptor indexDescriptor1(IndexDescriptor::Format::Ranges);
 	int ranges[3] = {2, 3, 4};
 	indexDescriptor1.setRanges(ranges, 3);
 	EXPECT_EQ(indexDescriptor1.getSize(), 2*3*4);
 
+	//Format::Custom.
 	IndexDescriptor indexDescriptor2(IndexDescriptor::Format::Custom);
 	IndexTree indexTree;
 	indexTree.add({0});
@@ -302,7 +450,16 @@ TEST(IndexDescriptor, getSize){
 	indexTree.add({2});
 	indexTree.generateLinearMap();
 	indexDescriptor2.setIndexTree(indexTree);
-	EXPECT_EQ(indexTree.getSize(), 3);
+	EXPECT_EQ(indexDescriptor2.getSize(), 3);
+
+	//TODO
+	//Implement test for Format::Dynamic once a function for adding Indices
+	//to the IndexDescriptor is available.
+	IndexDescriptor indexDescriptor3(IndexDescriptor::Format::Dynamic);
+	indexDescriptor3.add({0});
+	indexDescriptor3.add({2});
+	indexDescriptor3.add({1});
+	EXPECT_EQ(indexDescriptor3.getSize(), 3);
 }
 
 TEST(IndexDescriptor, contains){
@@ -332,18 +489,30 @@ TEST(IndexDescriptor, contains){
 		""
 	);
 
-	//Format::Custom
-	IndexDescriptor indexDescriptor(IndexDescriptor::Format::Custom);
+	//Format::Custom.
+	IndexDescriptor indexDescriptor0(IndexDescriptor::Format::Custom);
 	IndexTree indexTreeInput;
 	indexTreeInput.add({0});
 	indexTreeInput.add({1});
 	indexTreeInput.add({2});
 	indexTreeInput.generateLinearMap();
-	indexDescriptor.setIndexTree(indexTreeInput);
-	EXPECT_TRUE(indexDescriptor.contains({0}));
-	EXPECT_TRUE(indexDescriptor.contains({1}));
-	EXPECT_TRUE(indexDescriptor.contains({2}));
-	EXPECT_FALSE(indexDescriptor.contains({3}));
+	indexDescriptor0.setIndexTree(indexTreeInput);
+	EXPECT_TRUE(indexDescriptor0.contains({0}));
+	EXPECT_TRUE(indexDescriptor0.contains({1}));
+	EXPECT_TRUE(indexDescriptor0.contains({2}));
+	EXPECT_FALSE(indexDescriptor0.contains({3}));
+
+	//TODO
+	//Implement test for Format::Dynamic once a function for adding Indices
+	//to the IndexDescriptor is available.
+	IndexDescriptor indexDescriptor1(IndexDescriptor::Format::Dynamic);
+	indexDescriptor1.add({0});
+	indexDescriptor1.add({2});
+	indexDescriptor1.add({1});
+	EXPECT_TRUE(indexDescriptor1.contains({0}));
+	EXPECT_TRUE(indexDescriptor1.contains({1}));
+	EXPECT_TRUE(indexDescriptor1.contains({2}));
+	EXPECT_FALSE(indexDescriptor1.contains({3}));
 }
 
 TEST(IndexDescriptor, serialize){

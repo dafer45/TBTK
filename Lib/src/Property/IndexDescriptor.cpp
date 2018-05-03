@@ -41,6 +41,11 @@ IndexDescriptor::IndexDescriptor(Format format){
 	case Format::Custom:
 		descriptor.customFormat.indexTree = new IndexTree();
 		break;
+	case Format::Dynamic:
+		descriptor.dynamicFormat.indexedDataTree
+			= new IndexedDataTree<unsigned int>();
+		descriptor.dynamicFormat.size = 0;
+		break;
 	default:
 		TBTKExit(
 			"IndexDescriptor::IndexDescriptor()",
@@ -61,13 +66,30 @@ IndexDescriptor::IndexDescriptor(const IndexDescriptor &indexDescriptor){
 			descriptor.rangeFormat.ranges = nullptr;
 		}
 		else{
-			descriptor.rangeFormat.ranges = new int[descriptor.rangeFormat.dimensions];
-			for(unsigned int n = 0; n < descriptor.rangeFormat.dimensions; n++)
-				descriptor.rangeFormat.ranges[n] = indexDescriptor.descriptor.rangeFormat.ranges[n];
+			descriptor.rangeFormat.ranges
+				= new int[descriptor.rangeFormat.dimensions];
+			for(
+				unsigned int n = 0;
+				n < descriptor.rangeFormat.dimensions;
+				n++
+			){
+				descriptor.rangeFormat.ranges[n]
+					= indexDescriptor.descriptor.rangeFormat.ranges[n];
+			}
 		}
 		break;
 	case Format::Custom:
-		descriptor.customFormat.indexTree = new IndexTree(*indexDescriptor.descriptor.customFormat.indexTree);
+		descriptor.customFormat.indexTree = new IndexTree(
+			*indexDescriptor.descriptor.customFormat.indexTree
+		);
+		break;
+	case Format::Dynamic:
+		descriptor.dynamicFormat.indexedDataTree
+			= new IndexedDataTree<unsigned int>(
+				*indexDescriptor.descriptor.dynamicFormat.indexedDataTree
+			);
+		descriptor.dynamicFormat.size
+			= indexDescriptor.descriptor.dynamicFormat.size;
 		break;
 	default:
 		TBTKExit(
@@ -84,18 +106,30 @@ IndexDescriptor::IndexDescriptor(IndexDescriptor &&indexDescriptor){
 	case Format::None:
 		break;
 	case Format::Ranges:
-		descriptor.rangeFormat.dimensions = indexDescriptor.descriptor.rangeFormat.dimensions;
+		descriptor.rangeFormat.dimensions
+			= indexDescriptor.descriptor.rangeFormat.dimensions;
 		if(indexDescriptor.descriptor.rangeFormat.ranges == nullptr){
 			descriptor.rangeFormat.ranges = nullptr;
 		}
 		else{
-			descriptor.rangeFormat.ranges = indexDescriptor.descriptor.rangeFormat.ranges;
-			indexDescriptor.descriptor.rangeFormat.ranges = nullptr;
+			descriptor.rangeFormat.ranges
+				= indexDescriptor.descriptor.rangeFormat.ranges;
+			indexDescriptor.descriptor.rangeFormat.ranges
+				= nullptr;
 		}
 		break;
 	case Format::Custom:
-		descriptor.customFormat.indexTree = indexDescriptor.descriptor.customFormat.indexTree;
+		descriptor.customFormat.indexTree
+			= indexDescriptor.descriptor.customFormat.indexTree;
 		indexDescriptor.descriptor.customFormat.indexTree = nullptr;
+		break;
+	case Format::Dynamic:
+		descriptor.dynamicFormat.indexedDataTree
+			= indexDescriptor.descriptor.dynamicFormat.indexedDataTree;
+		indexDescriptor.descriptor.dynamicFormat.indexedDataTree
+			= nullptr;
+		descriptor.dynamicFormat.size
+			= indexDescriptor.descriptor.dynamicFormat.size;
 		break;
 	default:
 		TBTKExit(
@@ -152,6 +186,18 @@ IndexDescriptor::IndexDescriptor(const std::string &serialization, Mode mode){
 					mode
 				);
 			}
+			else if(formatString.compare("Dynamic") == 0){
+				format = Format::Dynamic;
+
+				descriptor.dynamicFormat.indexedDataTree
+					= new IndexedDataTree<unsigned int>(
+						j.at("indexedDataTree").dump(),
+						mode
+					);
+
+				descriptor.dynamicFormat.size
+					= j.at("size").get<unsigned int>();
+			}
 			else{
 				TBTKExit(
 					"IndexDescriptor::IndexDescriptor",
@@ -195,6 +241,10 @@ IndexDescriptor::~IndexDescriptor(){
 		if(descriptor.customFormat.indexTree != nullptr)
 			delete descriptor.customFormat.indexTree;
 		break;
+	case Format::Dynamic:
+		if(descriptor.dynamicFormat.indexedDataTree != nullptr)
+			delete descriptor.dynamicFormat.indexedDataTree;
+		break;
 	default:
 		TBTKExit(
 			"IndexDescriptor::~IndexDescriptor()",
@@ -222,7 +272,17 @@ IndexDescriptor& IndexDescriptor::operator=(const IndexDescriptor &rhs){
 			}
 			break;
 		case Format::Custom:
-			descriptor.customFormat.indexTree = new IndexTree(*rhs.descriptor.customFormat.indexTree);
+			descriptor.customFormat.indexTree = new IndexTree(
+				*rhs.descriptor.customFormat.indexTree
+			);
+			break;
+		case Format::Dynamic:
+			descriptor.dynamicFormat.indexedDataTree
+				= new IndexedDataTree<unsigned int>(
+					*rhs.descriptor.dynamicFormat.indexedDataTree
+				);
+			descriptor.dynamicFormat.size
+				= rhs.descriptor.dynamicFormat.size;
 			break;
 		default:
 			TBTKExit(
@@ -255,6 +315,13 @@ IndexDescriptor& IndexDescriptor::operator=(IndexDescriptor &&rhs){
 		case Format::Custom:
 			descriptor.customFormat.indexTree = rhs.descriptor.customFormat.indexTree;
 			rhs.descriptor.customFormat.indexTree = nullptr;
+			break;
+		case Format::Dynamic:
+			descriptor.dynamicFormat.indexedDataTree
+				= rhs.descriptor.dynamicFormat.indexedDataTree;
+			rhs.descriptor.dynamicFormat.indexedDataTree = nullptr;
+			descriptor.dynamicFormat.size
+				= rhs.descriptor.dynamicFormat.size;
 			break;
 		default:
 			TBTKExit(
@@ -299,6 +366,8 @@ unsigned int IndexDescriptor::getSize() const{
 	}
 	case Format::Custom:
 		return descriptor.customFormat.indexTree->getSize();
+	case Format::Dynamic:
+		return descriptor.dynamicFormat.size;
 	default:
 		TBTKExit(
 			"IndexDescriptor::operator=()",
@@ -338,6 +407,15 @@ std::string IndexDescriptor::serialize(Mode mode) const{
 					mode
 				)
 			);
+			break;
+		case Format::Dynamic:
+			j["format"] = "Dynamic";
+			j["indexedDataTree"] = json::parse(
+				descriptor.dynamicFormat.indexedDataTree->serialize(
+					mode
+				)
+			);
+			j["size"] = descriptor.dynamicFormat.size;
 			break;
 		default:
 			TBTKExit(
