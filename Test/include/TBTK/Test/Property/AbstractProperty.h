@@ -88,7 +88,7 @@ TEST(AbstractProperty, Constructor0){
 	Property<int> property;
 	EXPECT_EQ(property.getBlockSize(), 0);
 	EXPECT_EQ(property.getSize(), 0);
-	EXPECT_EQ(property.getData(), nullptr);
+	EXPECT_EQ(property.getData().size(), 0);
 }
 
 TEST(AbstractProperty, Constructor1){
@@ -96,9 +96,9 @@ TEST(AbstractProperty, Constructor1){
 	Property<int> property(10);
 	EXPECT_EQ(property.getBlockSize(), 10);
 	EXPECT_EQ(property.getSize(), 10);
-	const int *data = property.getData();
-	ASSERT_TRUE(data != nullptr);
-	for(unsigned int n = 0; n < property.getSize(); n++)
+	const std::vector<int> &data = property.getData();
+	ASSERT_EQ(data.size(), property.getSize());
+	for(unsigned int n = 0; n < data.size(); n++)
 		EXPECT_EQ(data[n], 0);
 }
 
@@ -109,7 +109,8 @@ TEST(AbstractProperty, Constructor2){
 	Property<int> property(10, dataInput);
 	ASSERT_EQ(property.getBlockSize(), 10);
 	ASSERT_EQ(property.getSize(), 10);
-	const int *data = property.getData();
+	const std::vector<int> &data = property.getData();
+	ASSERT_EQ(data.size(), property.getSize());
 	EXPECT_EQ(data[0], 0);
 	EXPECT_EQ(data[1], 1);
 	EXPECT_EQ(data[2], 2);
@@ -122,9 +123,9 @@ TEST(AbstractProperty, Constructor3){
 	Property<int> property(3, ranges, 10);
 	EXPECT_EQ(property.getBlockSize(), 10);
 	EXPECT_EQ(property.getSize(), 2*3*4*10);
-	const int *data = property.getData();
-	ASSERT_TRUE(data != nullptr);
-	for(unsigned int n = 0; n < property.getSize(); n++)
+	const std::vector<int> &data = property.getData();
+	ASSERT_EQ(data.size(), property.getSize());
+	for(unsigned int n = 0; n < data.size(); n++)
 		EXPECT_DOUBLE_EQ(data[n], 0);
 }
 
@@ -138,9 +139,9 @@ TEST(AbstractProperty, Constructor4){
 	Property<int> property(3, ranges, 10, dataInput);
 	EXPECT_EQ(property.getBlockSize(), 10);
 	EXPECT_EQ(property.getSize(), 2*3*4*10);
-	const int *data = property.getData();
-	ASSERT_TRUE(data != nullptr);
-	for(unsigned int n = 0; n < property.getSize(); n++)
+	const std::vector<int> &data = property.getData();
+	ASSERT_EQ(data.size(), property.getSize());
+	for(unsigned int n = 0; n < data.size(); n++)
 		EXPECT_DOUBLE_EQ(data[n], n);
 }
 
@@ -166,9 +167,9 @@ TEST(AbstractProperty, Constructor5){
 	Property<int> property(indexTree, 10);
 	EXPECT_EQ(property.getBlockSize(), 10);
 	EXPECT_EQ(property.getSize(), 3*10);
-	const int *data = property.getData();
-	ASSERT_TRUE(data != nullptr);
-	for(unsigned int n = 0; n < 3*10; n++)
+	const std::vector<int> &data = property.getData();
+	ASSERT_EQ(data.size(), property.getSize());
+	for(unsigned int n = 0; n < data.size(); n++)
 		EXPECT_EQ(data[n], 0);
 }
 
@@ -198,9 +199,9 @@ TEST(AbstractProperty, Constructor6){
 	Property<int> property(indexTree, 10, inputData);
 	EXPECT_EQ(property.getBlockSize(), 10);
 	EXPECT_EQ(property.getSize(), 3*10);
-	const int *data = property.getData();
-	ASSERT_TRUE(data != nullptr);
-	for(unsigned int n = 0; n < 3*10; n++)
+	const std::vector<int> &data = property.getData();
+	ASSERT_EQ(data.size(), property.getSize());
+	for(unsigned int n = 0; n < data.size(); n++)
 		EXPECT_EQ(data[n], n);
 }
 
@@ -211,7 +212,8 @@ TEST(AbstractProperty, CopyConstructor){
 	Property<int> property1(property0);
 	ASSERT_EQ(property1.getBlockSize(), 10);
 	ASSERT_EQ(property1.getSize(), 10);
-	const int *data1 = property1.getData();
+	const std::vector<int> &data1 = property1.getData();
+	ASSERT_EQ(data1.size(), property1.getSize());
 	EXPECT_EQ(data1[0], 0);
 	EXPECT_EQ(data1[1], 1);
 	EXPECT_EQ(data1[2], 2);
@@ -226,9 +228,9 @@ TEST(AbstractProperty, CopyConstructor){
 	Property<int> property3(property2);
 	EXPECT_EQ(property3.getBlockSize(), 10);
 	EXPECT_EQ(property3.getSize(), 2*3*4*10);
-	const int *data3 = property3.getData();
-	ASSERT_TRUE(data3 != nullptr);
-	for(unsigned int n = 0; n < property3.getSize(); n++)
+	const std::vector<int> &data3 = property3.getData();
+	ASSERT_EQ(data3.size(), property3.getSize());
+	for(unsigned int n = 0; n < data3.size(); n++)
 		EXPECT_DOUBLE_EQ(data3[n], n);
 
 	//Property with Custom format.
@@ -244,9 +246,9 @@ TEST(AbstractProperty, CopyConstructor){
 	Property<int> property5(property4);
 	EXPECT_EQ(property5.getBlockSize(), 10);
 	EXPECT_EQ(property5.getSize(), 3*10);
-	const int *data5 = property5.getData();
-	ASSERT_TRUE(data5 != nullptr);
-	for(unsigned int n = 0; n < 3*10; n++)
+	const std::vector<int> &data5 = property5.getData();
+	ASSERT_EQ(data5.size(), property5.getSize());
+	for(unsigned int n = 0; n < data5.size(); n++)
 		EXPECT_EQ(data5[n], n);
 }
 
@@ -257,7 +259,8 @@ TEST(AbstractProperty, MoveConstructor){
 	Property<int> property1(std::move(property0));
 	ASSERT_EQ(property1.getBlockSize(), 10);
 	ASSERT_EQ(property1.getSize(), 10);
-	const int *data1 = property1.getData();
+	const std::vector<int> &data1 = property1.getData();
+	ASSERT_EQ(data1.size(), property1.getSize());
 	EXPECT_EQ(data1[0], 0);
 	EXPECT_EQ(data1[1], 1);
 	EXPECT_EQ(data1[2], 2);
@@ -272,9 +275,9 @@ TEST(AbstractProperty, MoveConstructor){
 	Property<int> property3(std::move(property2));
 	EXPECT_EQ(property3.getBlockSize(), 10);
 	EXPECT_EQ(property3.getSize(), 2*3*4*10);
-	const int *data3 = property3.getData();
-	ASSERT_TRUE(data3 != nullptr);
-	for(unsigned int n = 0; n < property3.getSize(); n++)
+	const std::vector<int> &data3 = property3.getData();
+	ASSERT_EQ(data3.size(), property3.getSize());
+	for(unsigned int n = 0; n < data3.size(); n++)
 		EXPECT_DOUBLE_EQ(data3[n], n);
 
 	//Property with Custom format.
@@ -290,9 +293,9 @@ TEST(AbstractProperty, MoveConstructor){
 	Property<int> property5(std::move(property4));
 	EXPECT_EQ(property5.getBlockSize(), 10);
 	EXPECT_EQ(property5.getSize(), 3*10);
-	const int *data5 = property5.getData();
-	ASSERT_TRUE(data5 != nullptr);
-	for(unsigned int n = 0; n < 3*10; n++)
+	const std::vector<int> &data5 = property5.getData();
+	ASSERT_EQ(data5.size(), property5.getSize());
+	for(unsigned int n = 0; n < data5.size(); n++)
 		EXPECT_EQ(data5[n], n);
 }
 
@@ -315,7 +318,8 @@ TEST(AbstractProperty, OperatorAssignment){
 	property1 = property0;
 	ASSERT_EQ(property1.getBlockSize(), 10);
 	ASSERT_EQ(property1.getSize(), 10);
-	const int *data1 = property1.getData();
+	const std::vector<int> &data1 = property1.getData();
+	ASSERT_EQ(data1.size(), property1.getSize());
 	EXPECT_EQ(data1[0], 0);
 	EXPECT_EQ(data1[1], 1);
 	EXPECT_EQ(data1[2], 2);
@@ -331,9 +335,9 @@ TEST(AbstractProperty, OperatorAssignment){
 	property3 = property2;
 	EXPECT_EQ(property3.getBlockSize(), 10);
 	EXPECT_EQ(property3.getSize(), 2*3*4*10);
-	const int *data3 = property3.getData();
-	ASSERT_TRUE(data3 != nullptr);
-	for(unsigned int n = 0; n < property3.getSize(); n++)
+	const std::vector<int> &data3 = property3.getData();
+	ASSERT_EQ(data3.size(), property3.getSize());
+	for(unsigned int n = 0; n < data3.size(); n++)
 		EXPECT_DOUBLE_EQ(data3[n], n);
 
 	//Property with Custom format.
@@ -350,9 +354,9 @@ TEST(AbstractProperty, OperatorAssignment){
 	property5 = property4;
 	EXPECT_EQ(property5.getBlockSize(), 10);
 	EXPECT_EQ(property5.getSize(), 3*10);
-	const int *data5 = property5.getData();
-	ASSERT_TRUE(data5 != nullptr);
-	for(unsigned int n = 0; n < 3*10; n++)
+	const std::vector<int> &data5 = property5.getData();
+	ASSERT_EQ(data5.size(), property5.getSize());
+	for(unsigned int n = 0; n < data5.size(); n++)
 		EXPECT_EQ(data5[n], n);
 }
 
@@ -364,7 +368,8 @@ TEST(AbstractProperty, OperatorMoveAssignment){
 	property1 = std::move(property0);
 	ASSERT_EQ(property1.getBlockSize(), 10);
 	ASSERT_EQ(property1.getSize(), 10);
-	const int *data1 = property1.getData();
+	const std::vector<int> &data1 = property1.getData();
+	ASSERT_EQ(data1.size(), property1.getSize());
 	EXPECT_EQ(data1[0], 0);
 	EXPECT_EQ(data1[1], 1);
 	EXPECT_EQ(data1[2], 2);
@@ -380,9 +385,9 @@ TEST(AbstractProperty, OperatorMoveAssignment){
 	property3 = std::move(property2);
 	EXPECT_EQ(property3.getBlockSize(), 10);
 	EXPECT_EQ(property3.getSize(), 2*3*4*10);
-	const int *data3 = property3.getData();
-	ASSERT_TRUE(data3 != nullptr);
-	for(unsigned int n = 0; n < property3.getSize(); n++)
+	const std::vector<int> &data3 = property3.getData();
+	ASSERT_EQ(data3.size(), property3.getSize());
+	for(unsigned int n = 0; n < data3.size(); n++)
 		EXPECT_DOUBLE_EQ(data3[n], n);
 
 	//Property with Custom format.
@@ -399,9 +404,9 @@ TEST(AbstractProperty, OperatorMoveAssignment){
 	property5 = std::move(property4);
 	EXPECT_EQ(property5.getBlockSize(), 10);
 	EXPECT_EQ(property5.getSize(), 3*10);
-	const int *data5 = property5.getData();
-	ASSERT_TRUE(data5 != nullptr);
-	for(unsigned int n = 0; n < 3*10; n++)
+	const std::vector<int> &data5 = property5.getData();
+	ASSERT_EQ(data5.size(), property5.getSize());
+	for(unsigned int n = 0; n < data5.size(); n++)
 		EXPECT_EQ(data5[n], n);
 }
 
@@ -419,11 +424,13 @@ TEST(AbstractProperty, getData){
 
 TEST(AbstractProperty, getDataRW){
 	Property<int> property(10);
-	const int *data0 = property.getData();
-	int *data1 = property.getDataRW();
-	for(unsigned int n = 0; n < 10; n++)
+	const std::vector<int> &data0 = property.getData();
+	std::vector<int> &data1 = property.getDataRW();
+	ASSERT_EQ(data0.size(), 10);
+	ASSERT_EQ(data1.size(), 10);
+	for(unsigned int n = 0; n < data1.size(); n++)
 		data1[n] = n;
-	for(unsigned int n = 0; n < 10; n++)
+	for(unsigned int n = 0; n < data0.size(); n++)
 		EXPECT_EQ(data0[n], n);
 }
 

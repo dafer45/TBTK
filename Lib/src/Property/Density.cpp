@@ -113,9 +113,9 @@ Density& Density::operator=(Density &&rhs){
 }*/
 
 double Density::getMin() const{
-	const double *data = getData();
+	const std::vector<double> &data = getData();
 	double min = data[0];
-	for(unsigned int n = 1; n < getSize(); n++)
+	for(unsigned int n = 1; n < data.size(); n++)
 		if(data[n] < min)
 			min = data[n];
 
@@ -123,9 +123,9 @@ double Density::getMin() const{
 }
 
 double Density::getMax() const{
-	const double *data = getData();
+	const std::vector<double> &data = getData();
 	double max = data[0];
-	for(unsigned int n = 1; n < getSize(); n++)
+	for(unsigned int n = 1; n < data.size(); n++)
 		if(data[n] > max)
 			max = data[n];
 

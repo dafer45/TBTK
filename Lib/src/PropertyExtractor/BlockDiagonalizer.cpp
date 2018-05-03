@@ -69,7 +69,7 @@ Property::EigenValues BlockDiagonalizer::getEigenValues(){
 //	const double *ev = bSolver->getEigenValues();
 
 	Property::EigenValues eigenValues(size);
-	double *data = eigenValues.getDataRW();
+	std::vector<double> &data = eigenValues.getDataRW();
 	for(int n = 0; n < size; n++)
 		data[n] = bSolver->getEigenValue(n);
 //		data[n] = ev[n];
@@ -176,7 +176,7 @@ Property::DOS BlockDiagonalizer::calculateDOS(){
 //	const double *ev = bSolver->getEigenValues();
 
 	Property::DOS dos(lowerBound, upperBound, energyResolution);
-	double *data = dos.getDataRW();
+	std::vector<double> &data = dos.getDataRW();
 	double dE = (upperBound - lowerBound)/energyResolution;
 	for(int n = 0; n < bSolver->getModel().getBasisSize(); n++){
 		int e = (int)(((bSolver->getEigenValue(n) - lowerBound)/(upperBound - lowerBound))*energyResolution);

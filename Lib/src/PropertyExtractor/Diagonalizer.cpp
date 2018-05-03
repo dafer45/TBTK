@@ -69,7 +69,7 @@ Property::EigenValues Diagonalizer::getEigenValues(){
 	const double *ev = dSolver->getEigenValues();
 
 	Property::EigenValues eigenValues(size);
-	double *data = eigenValues.getDataRW();
+	std::vector<double> &data = eigenValues.getDataRW();
 	for(int n = 0; n < size; n++)
 		data[n] = ev[n];
 
@@ -175,7 +175,7 @@ Property::DOS Diagonalizer::calculateDOS(){
 	const double *ev = dSolver->getEigenValues();
 
 	Property::DOS dos(lowerBound, upperBound, energyResolution);
-	double *data = dos.getDataRW();
+	std::vector<double> &data = dos.getDataRW();
 	double dE = (upperBound - lowerBound)/energyResolution;
 	for(int n = 0; n < dSolver->getModel().getBasisSize(); n++){
 		int e = (int)(((ev[n] - lowerBound)/(upperBound - lowerBound))*energyResolution);
@@ -234,7 +234,7 @@ Property::Density Diagonalizer::calculateDensity(
 	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
 	Property::Density density(lDimensions, lRanges);
 
-	calculate(calculateDensityCallback, (void*)density.getDataRW(), pattern, ranges, 0, 1);
+	calculate(calculateDensityCallback, (void*)density.getDataRW().data(), pattern, ranges, 0, 1);
 
 	return density;
 }
@@ -300,7 +300,7 @@ Property::Magnetization Diagonalizer::calculateMagnetization(
 
 	calculate(
 		calculateMAGCallback,
-		(void*)magnetization.getDataRW(),
+		(void*)magnetization.getDataRW().data(),
 		pattern,
 		ranges,
 		0,
@@ -374,7 +374,7 @@ Property::LDOS Diagonalizer::calculateLDOS(
 		energyResolution
 	);
 
-	calculate(calculateLDOSCallback, (void*)ldos.getDataRW(), pattern, ranges, 0, energyResolution);
+	calculate(calculateLDOSCallback, (void*)ldos.getDataRW().data(), pattern, ranges, 0, energyResolution);
 
 	return ldos;
 }
@@ -476,7 +476,7 @@ Property::SpinPolarizedLDOS Diagonalizer::calculateSpinPolarizedLDOS(
 
 	calculate(
 		calculateSP_LDOSCallback,
-		(void*)spinPolarizedLDOS.getDataRW(),
+		(void*)spinPolarizedLDOS.getDataRW().data(),
 		pattern,
 		ranges,
 		0,

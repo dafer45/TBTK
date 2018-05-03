@@ -182,9 +182,9 @@ inline Property::DOS Smooth::gaussian(
 	double sigma,
 	int windowSize
 ){
-	const double *data = dos.getData();
+	const std::vector<double> &data = dos.getData();
 	std::vector<double> dataVector;
-	for(unsigned int n = 0; n < dos.getSize(); n++)
+	for(unsigned int n = 0; n < data.size(); n++)
 		dataVector.push_back(data[n]);
 
 	double lowerBound = dos.getLowerBound();

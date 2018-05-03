@@ -265,9 +265,9 @@ complex<double>& WaveFunctions::operator()(
 }
 
 double WaveFunctions::getMinAbs() const{
-	const complex<double> *data = getData();
+	const std::vector<complex<double>> &data = getData();
 	double min = abs(data[0]);
-	for(unsigned int n = 1; n < getSize(); n++)
+	for(unsigned int n = 1; n < data.size(); n++)
 		if(abs(data[n]) < min)
 			min = abs(data[n]);
 
@@ -275,9 +275,9 @@ double WaveFunctions::getMinAbs() const{
 }
 
 double WaveFunctions::getMaxAbs() const{
-	const complex<double> *data = getData();
+	const std::vector<complex<double>> &data = getData();
 	double max = abs(data[0]);
-	for(unsigned int n = 1; n < getSize(); n++)
+	for(unsigned int n = 1; n < data.size(); n++)
 		if(abs(data[n]) > max)
 			max = abs(data[n]);
 
@@ -285,9 +285,9 @@ double WaveFunctions::getMaxAbs() const{
 }
 
 double WaveFunctions::getMinArg() const{
-	const complex<double> *data = getData();
+	const std::vector<complex<double>> &data = getData();
 	double min = arg(data[0]);
-	for(unsigned int n = 1; n < getSize(); n++)
+	for(unsigned int n = 1; n < data.size(); n++)
 		if(arg(data[n]) < min)
 			min = arg(data[n]);
 
@@ -295,9 +295,9 @@ double WaveFunctions::getMinArg() const{
 }
 
 double WaveFunctions::getMaxArg() const{
-	const complex<double> *data = getData();
+	const std::vector<complex<double>> &data = getData();
 	double max = arg(data[0]);
-	for(unsigned int n = 1; n < getSize(); n++)
+	for(unsigned int n = 1; n < data.size(); n++)
 		if(arg(data[n]) > max)
 			max = arg(data[n]);
 

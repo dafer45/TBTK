@@ -16,8 +16,8 @@ TEST(SpinPolarizedLDOS, Constructor0){
 	EXPECT_DOUBLE_EQ(spinPolarizedLDOS.getUpperBound(), 10);
 	ASSERT_EQ(spinPolarizedLDOS.getResolution(), 1000);
 	ASSERT_EQ(spinPolarizedLDOS.getSize(), 2*3*4*1000);
-	const SpinMatrix *data = spinPolarizedLDOS.getData();
-	for(unsigned int n = 0; n < 2*3*4*1000; n++){
+	const std::vector<SpinMatrix> &data = spinPolarizedLDOS.getData();
+	for(unsigned int n = 0; n < data.size(); n++){
 		for(unsigned int r = 0; r < 2; r++){
 			for(unsigned int c = 0; c < 2; c++){
 				EXPECT_DOUBLE_EQ(real(data[n].at(r, c)), 0);
@@ -54,8 +54,8 @@ TEST(SpinPolarizedLDOS, Constructor1){
 	EXPECT_DOUBLE_EQ(spinPolarizedLDOS.getUpperBound(), 10);
 	ASSERT_EQ(spinPolarizedLDOS.getResolution(), 1000);
 	ASSERT_EQ(spinPolarizedLDOS.getSize(), 2*3*4*1000);
-	const SpinMatrix *data = spinPolarizedLDOS.getData();
-	for(unsigned int n = 0; n < 2*3*4*1000; n++){
+	const std::vector<SpinMatrix> &data = spinPolarizedLDOS.getData();
+	for(unsigned int n = 0; n < data.size(); n++){
 		for(unsigned int r = 0; r < 2; r++){
 			for(unsigned int c = 0; c < 2; c++){
 				EXPECT_DOUBLE_EQ(
@@ -83,7 +83,7 @@ TEST(SpinPolarizedLDOS, Constructor2){
 	ASSERT_EQ(spinPolarizedLDOS.getResolution(), 1000);
 	ASSERT_EQ(spinPolarizedLDOS.getSize(), 3*1000);
 	for(int n = 0; n < 3; n++){
-		for(int m = 0; m < 1000; m++){
+		for(int m = 0; m < spinPolarizedLDOS.getResolution(); m++){
 			for(unsigned int r = 0; r < 2; r++){
 				for(unsigned int c = 0; c < 2; c++){
 					EXPECT_DOUBLE_EQ(
@@ -139,7 +139,11 @@ TEST(SpinPolarizedLDOS, Constructor3){
 	ASSERT_EQ(spinPolarizedLDOS.getResolution(), 1000);
 	ASSERT_EQ(spinPolarizedLDOS.getSize(), 3*1000);
 	for(int n = 0; n < 3; n++){
-		for(unsigned int m = 0; m < 1000; m++){
+		for(
+			int m = 0;
+			m < spinPolarizedLDOS.getResolution();
+			m++
+		){
 			for(unsigned int r = 0; r < 2; r++){
 				for(unsigned int c = 0; c < 2; c++){
 					EXPECT_DOUBLE_EQ(

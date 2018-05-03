@@ -331,7 +331,7 @@ void FileWriter::writeEigenValues(
 
 	const int RANK = 1;
 	hsize_t dims[1];
-	dims[0] = ev.getSize();
+	dims[0] = ev.getData().size();
 
 	try{
 		stringstream ss;
@@ -345,7 +345,10 @@ void FileWriter::writeEigenValues(
 
 		DataSpace dataspace = DataSpace(RANK, dims);
 		DataSet dataset = DataSet(file.createDataSet(name, PredType::IEEE_F64BE, dataspace));
-		dataset.write(ev.getData(), PredType::NATIVE_DOUBLE);
+		dataset.write(
+			ev.getData().data(),
+			PredType::NATIVE_DOUBLE
+		);
 		dataspace.close();
 		dataset.close();
 
@@ -419,8 +422,8 @@ void FileWriter::writeWaveFunctions(
 		write((int*)states.data(), STATES_RANK, statesDims, ss.str(), path);
 
 		const int RANK = 1;
-		int dims[RANK] = {(int)waveFunctions.getSize()};
-		write(waveFunctions.getData(), RANK, dims, name, path);
+		int dims[RANK] = {(int)waveFunctions.getData().size()};
+		write(waveFunctions.getData().data(), RANK, dims, name, path);
 
 		break;
 	}
@@ -458,8 +461,14 @@ void FileWriter::writeDOS(const Property::DOS &dos, string name, string path){
 		H5File file(filename, H5F_ACC_RDWR);
 
 		DataSpace dataspace = DataSpace(DOS_RANK, dos_dims);
-		DataSet dataset = DataSet(file.createDataSet(name, PredType::IEEE_F64BE, dataspace));
-		dataset.write(dos.getData(), PredType::NATIVE_DOUBLE);
+		DataSet dataset = DataSet(
+			file.createDataSet(
+				name,
+				PredType::IEEE_F64BE,
+				dataspace
+			)
+		);
+		dataset.write(dos.getData().data(), PredType::NATIVE_DOUBLE);
 		dataspace.close();
 
 		dataspace = DataSpace(LIMITS_RANK, limits_dims);
@@ -504,7 +513,9 @@ void FileWriter::writeDensity(
 	init();
 
 	int attributes[1];
-	attributes[0] = static_cast<int>(density.getIndexDescriptor().getFormat());
+	attributes[0] = static_cast<int>(
+		density.getIndexDescriptor().getFormat()
+	);
 	string attributeNames[1];
 	attributeNames[0] = "Format";
 	stringstream ss;
@@ -540,7 +551,7 @@ void FileWriter::writeDensity(
 
 			DataSpace dataspace = DataSpace(rank, density_dims);
 			DataSet dataset = DataSet(file.createDataSet(name, PredType::IEEE_F64BE, dataspace));
-			dataset.write(density.getData(), PredType::NATIVE_DOUBLE);
+			dataset.write(density.getData().data(), PredType::NATIVE_DOUBLE);
 			dataspace.close();
 			dataset.close();
 			file.close();
@@ -582,8 +593,8 @@ void FileWriter::writeDensity(
 		);
 
 		const int RANK = 1;
-		int dims[RANK] = {(int)density.getSize()};
-		write(density.getData(), RANK, dims, name, path);
+		int dims[RANK] = {(int)density.getData().size()};
+		write(density.getData().data(), RANK, dims, name, path);
 
 		break;
 	}
@@ -623,7 +634,7 @@ void FileWriter::writeMagnetization(
 		int rank = magnetization.getDimensions();
 //		const int *dims = magnetization.getRanges();
 		vector<int> dims = magnetization.getRanges();
-		const SpinMatrix *data = magnetization.getData();
+		const std::vector<SpinMatrix> &data = magnetization.getData();
 
 		hsize_t mag_dims[rank+2];//Last two dimension for matrix elements and real/imaginary decomposition.
 		for(int n = 0; n < rank; n++)
@@ -705,8 +716,8 @@ void FileWriter::writeMagnetization(
 		);
 
 		const int RANK = 1;
-		int dims[RANK] = {4*(int)magnetization.getSize()};
-		const SpinMatrix *data = magnetization.getData();
+		int dims[RANK] = {4*(int)magnetization.getData().size()};
+		const std::vector<SpinMatrix> &data = magnetization.getData();
 		complex<double> *data_internal = new complex<double>[dims[0]];
 		for(int n = 0; n < dims[0]/4; n++){
 			data_internal[4*n + 0] = data[n].at(0, 0);
@@ -797,8 +808,17 @@ void FileWriter::writeLDOS(
 			H5File file(filename, H5F_ACC_RDWR);
 
 			DataSpace dataspace = DataSpace(rank+1, ldos_dims);
-			DataSet dataset = DataSet(file.createDataSet(name, PredType::IEEE_F64BE, dataspace));
-			dataset.write(ldos.getData(), PredType::NATIVE_DOUBLE);
+			DataSet dataset = DataSet(
+				file.createDataSet(
+					name,
+					PredType::IEEE_F64BE,
+					dataspace
+				)
+			);
+			dataset.write(
+				ldos.getData().data(),
+				PredType::NATIVE_DOUBLE
+			);
 			dataspace.close();
 
 			dataspace = DataSpace(LIMITS_RANK, limits_dims);
@@ -847,8 +867,8 @@ void FileWriter::writeLDOS(
 		);
 
 		const int RANK = 1;
-		int dims[RANK] = {(int)ldos.getSize()};
-		write(ldos.getData(), RANK, dims, name, path);
+		int dims[RANK] = {(int)ldos.getData().size()};
+		write(ldos.getData().data(), RANK, dims, name, path);
 
 		break;
 	}
@@ -906,7 +926,8 @@ void FileWriter::writeSpinPolarizedLDOS(
 		int rank = spinPolarizedLDOS.getDimensions();
 //		const int *dims = spinPolarizedLDOS.getRanges();
 		vector<int> dims = spinPolarizedLDOS.getRanges();
-		const SpinMatrix *data = spinPolarizedLDOS.getData();
+		const std::vector<SpinMatrix> &data
+			= spinPolarizedLDOS.getData();
 
 		const int NUM_MATRIX_ELEMENTS = 4;
 		hsize_t sp_ldos_dims[rank+2];//Three last dimensions are for energy, spin components, and real/imaginary decomposition.
@@ -1004,8 +1025,9 @@ void FileWriter::writeSpinPolarizedLDOS(
 		);
 
 		const int RANK = 1;
-		int dims[RANK] = {4*(int)spinPolarizedLDOS.getSize()};
-		const SpinMatrix *data = spinPolarizedLDOS.getData();
+		int dims[RANK] = {4*(int)spinPolarizedLDOS.getData().size()};
+		const std::vector<SpinMatrix> &data
+			= spinPolarizedLDOS.getData();
 		complex<double> *data_internal = new complex<double>[dims[0]];
 		for(int n = 0; n < dims[0]/4; n++){
 			data_internal[4*n + 0] = data[n].at(0, 0);

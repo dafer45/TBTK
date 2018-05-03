@@ -365,7 +365,7 @@ void PropertyExtractor::calculate(
 
 		callback(
 			this,
-			abstractProperty.getDataRW(),
+			abstractProperty.getDataRW().data(),
 			index,
 			abstractProperty.getOffset(index)
 		);

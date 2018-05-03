@@ -16,8 +16,8 @@ TEST(LDOS, Constructor0){
 	EXPECT_DOUBLE_EQ(ldos.getUpperBound(), 10);
 	ASSERT_EQ(ldos.getResolution(), 1000);
 	ASSERT_EQ(ldos.getSize(), 1000*2*3*4);
-	const double *data = ldos.getData();
-	for(unsigned int n = 0; n < 1000*2*3*4; n++)
+	const std::vector<double> &data = ldos.getData();
+	for(unsigned int n = 0; n < data.size(); n++)
 		EXPECT_DOUBLE_EQ(data[n], 0);
 }
 
@@ -35,8 +35,8 @@ TEST(LDOS, Constructor1){
 	EXPECT_DOUBLE_EQ(ldos.getUpperBound(), 10);
 	ASSERT_EQ(ldos.getResolution(), 1000);
 	ASSERT_EQ(ldos.getSize(), 1000*2*3*4);
-	const double *data = ldos.getData();
-	for(unsigned int n = 0; n < 1000*2*3*4; n++)
+	const std::vector<double> &data = ldos.getData();
+	for(unsigned int n = 0; n < data.size(); n++)
 		EXPECT_DOUBLE_EQ(data[n], n);
 }
 
@@ -51,7 +51,7 @@ TEST(LDOS, Constructor2){
 	EXPECT_DOUBLE_EQ(ldos.getUpperBound(), 10);
 	ASSERT_EQ(ldos.getResolution(), 1000);
 	ASSERT_EQ(ldos.getSize(), 1000*3);
-	for(unsigned int n = 0; n < 1000; n++){
+	for(int n = 0; n < ldos.getResolution(); n++){
 		EXPECT_DOUBLE_EQ(ldos({0}, n), 0);
 		EXPECT_DOUBLE_EQ(ldos({1}, n), 0);
 		EXPECT_DOUBLE_EQ(ldos({2}, n), 0);
@@ -72,7 +72,7 @@ TEST(LDOS, Constructor3){
 	EXPECT_DOUBLE_EQ(ldos.getUpperBound(), 10);
 	ASSERT_EQ(ldos.getResolution(), 1000);
 	ASSERT_EQ(ldos.getSize(), 1000*3);
-	for(unsigned int n = 0; n < 1000; n++){
+	for(int n = 0; n < ldos.getResolution(); n++){
 		EXPECT_DOUBLE_EQ(ldos({0}, n), n);
 		EXPECT_DOUBLE_EQ(ldos({1}, n), n+1000);
 		EXPECT_DOUBLE_EQ(ldos({2}, n), n+2000);
@@ -98,8 +98,8 @@ TEST(LDOS, SerializeToJSON){
 	EXPECT_DOUBLE_EQ(ldos1.getUpperBound(), 10);
 	ASSERT_EQ(ldos1.getResolution(), 1000);
 	ASSERT_EQ(ldos1.getSize(), 1000*2*3*4);
-	const double *data1 = ldos1.getData();
-	for(unsigned int n = 0; n < 1000*2*3*4; n++)
+	const std::vector<double> &data1 = ldos1.getData();
+	for(unsigned int n = 0; n < data1.size(); n++)
 		EXPECT_DOUBLE_EQ(data1[n], n);
 
 	//IndexDescriptor::Format::Custom
@@ -120,7 +120,7 @@ TEST(LDOS, SerializeToJSON){
 	EXPECT_DOUBLE_EQ(ldos3.getUpperBound(), 10);
 	ASSERT_EQ(ldos3.getResolution(), 1000);
 	ASSERT_EQ(ldos3.getSize(), 1000*3);
-	for(unsigned int n = 0; n < 1000; n++){
+	for(int n = 0; n < ldos3.getResolution(); n++){
 		EXPECT_DOUBLE_EQ(ldos3({0}, n), n);
 		EXPECT_DOUBLE_EQ(ldos3({1}, n), n+1000);
 		EXPECT_DOUBLE_EQ(ldos3({2}, n), n+2000);

@@ -109,14 +109,14 @@ public:
 	 *
 	 *  @return The data on the raw format described in the detailed
 	 *  description. */
-	const DataType* getData() const;
+	const std::vector<DataType>& getData() const;
 
 	/** Get data. Same as AbstractProperty::getData(), but with write
 	 *  access.
 	 *
 	 *  @return The data on the raw format described in the detailed
 	 *  description. */
-	DataType* getDataRW();
+	std::vector<DataType>& getDataRW();
 
 	/** Get the dimension of the data. [Only works for the Ranges format.]
 	 *
@@ -392,21 +392,21 @@ inline unsigned int AbstractProperty<
 }
 
 template<typename DataType, bool isFundamental, bool isSerializable>
-inline const DataType* AbstractProperty<
+inline const std::vector<DataType>& AbstractProperty<
 	DataType,
 	isFundamental,
 	isSerializable
 >::getData() const{
-	return data.data();
+	return data;
 }
 
 template<typename DataType, bool isFundamental, bool isSerializable>
-inline DataType* AbstractProperty<
+inline std::vector<DataType>& AbstractProperty<
 	DataType,
 	isFundamental,
 	isSerializable
 >::getDataRW(){
-	return data.data();
+	return data;
 }
 
 template<typename DataType, bool isFundamental, bool isSerializable>

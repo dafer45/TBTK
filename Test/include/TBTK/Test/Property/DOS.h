@@ -10,8 +10,8 @@ TEST(DOS, Constructor0){
 	EXPECT_EQ(dos.getLowerBound(), -10);
 	EXPECT_EQ(dos.getUpperBound(), 10);
 	ASSERT_EQ(dos.getResolution(), 1000);
-	const double *data = dos.getData();
-	for(unsigned int n = 0; n < 1000; n++)
+	const std::vector<double> &data = dos.getData();
+	for(unsigned int n = 0; n < data.size(); n++)
 		EXPECT_DOUBLE_EQ(data[n], 0);
 }
 
@@ -23,8 +23,8 @@ TEST(DOS, Constructor1){
 	EXPECT_EQ(dos.getLowerBound(), -10);
 	EXPECT_EQ(dos.getUpperBound(), 10);
 	ASSERT_EQ(dos.getResolution(), 1000);
-	const double *data = dos.getData();
-	for(unsigned int n = 0; n < 1000; n++)
+	const std::vector<double> &data = dos.getData();
+	for(unsigned int n = 0; n < data.size(); n++)
 		EXPECT_DOUBLE_EQ(data[n], n);
 }
 
@@ -40,8 +40,8 @@ TEST(DOS, SerializeToJSON){
 	EXPECT_EQ(dos1.getLowerBound(), -10);
 	EXPECT_EQ(dos1.getUpperBound(), 10);
 	ASSERT_EQ(dos1.getResolution(), 1000);
-	const double *data = dos1.getData();
-	for(unsigned int n = 0; n < 1000; n++)
+	const std::vector<double> &data = dos1.getData();
+	for(unsigned int n = 0; n < data.size(); n++)
 		EXPECT_DOUBLE_EQ(data[n], n);
 }
 

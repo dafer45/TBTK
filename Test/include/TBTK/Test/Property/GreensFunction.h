@@ -26,7 +26,7 @@ TEST(GreensFunction, Constructor1){
 	ASSERT_EQ(greensFunction0.getBlockSize(), 1000);
 	ASSERT_EQ(greensFunction0.getResolution(), 1000);
 	ASSERT_EQ(greensFunction0.getSize(), 3*1000);
-	for(unsigned int n = 0; n < 1000; n++){
+	for(unsigned int n = 0; n < greensFunction0.getResolution(); n++){
 		EXPECT_DOUBLE_EQ(
 			real(greensFunction0({{0, 1}, {0, 1}}, n)),
 			0

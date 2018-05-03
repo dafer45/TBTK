@@ -43,7 +43,7 @@ Property::EigenValues ArnoldiIterator::getEigenValues(){
 	const complex<double> *ev = aSolver->getEigenValues();
 
 	Property::EigenValues eigenValues(size);
-	double *data = eigenValues.getDataRW();
+	std::vector<double> &data = eigenValues.getDataRW();
 	for(int n = 0; n < size; n++)
 		data[n] = real(ev[n]);
 
@@ -149,7 +149,7 @@ Property::DOS ArnoldiIterator::calculateDOS(){
 	const complex<double> *ev = aSolver->getEigenValues();
 
 	Property::DOS dos(lowerBound, upperBound, energyResolution);
-	double *data = dos.getDataRW();
+	std::vector<double> &data = dos.getDataRW();
 	double dE = (upperBound - lowerBound)/energyResolution;
 	for(int n = 0; n < aSolver->getNumEigenValues(); n++){
 		int e = (int)(((real(ev[n]) - lowerBound)/(upperBound - lowerBound))*energyResolution);
@@ -200,7 +200,7 @@ Property::LDOS ArnoldiIterator::calculateLDOS(
 
 	calculate(
 		calculateLDOSCallback,
-		(void*)ldos.getData(),
+		(void*)ldos.getData().data(),
 		pattern,
 		ranges,
 		0,
@@ -322,7 +322,7 @@ Property::SpinPolarizedLDOS ArnoldiIterator::calculateSpinPolarizedLDOS(
 
 	calculate(
 		calculateSpinPolarizedLDOSCallback,
-		(void*)spinPolarizedLDOS.getDataRW(),
+		(void*)spinPolarizedLDOS.getDataRW().data(),
 		pattern,
 		ranges,
 		0,

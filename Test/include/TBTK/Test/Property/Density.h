@@ -13,9 +13,10 @@ TEST(Density, Constructor0){
 	ASSERT_EQ(density.getRanges()[1], 3);
 	ASSERT_EQ(density.getRanges()[2], 4);
 	ASSERT_EQ(density.getBlockSize(), 1);
+	ASSERT_EQ(density.getSize(), 2*3*4);
 
-	const double *data = density.getData();
-	for(unsigned int n = 0; n < 2*3*4; n++)
+	const std::vector<double> &data = density.getData();
+	for(unsigned int n = 0; n < data.size(); n++)
 		EXPECT_DOUBLE_EQ(data[n], 0);
 }
 
@@ -30,9 +31,10 @@ TEST(Density, Constructor1){
 	ASSERT_EQ(density.getRanges()[1], 3);
 	ASSERT_EQ(density.getRanges()[2], 4);
 	ASSERT_EQ(density.getBlockSize(), 1);
+	ASSERT_EQ(density.getSize(), 2*3*4);
 
-	const double *data = density.getData();
-	for(unsigned int n = 0; n < 2*3*4; n++)
+	const std::vector<double> &data = density.getData();
+	for(unsigned int n = 0; n < data.size(); n++)
 		EXPECT_DOUBLE_EQ(data[n], n);
 }
 
@@ -77,9 +79,10 @@ TEST(Density, SerializeToJSON){
 	ASSERT_EQ(density1.getRanges()[1], 3);
 	ASSERT_EQ(density1.getRanges()[2], 4);
 	ASSERT_EQ(density1.getBlockSize(), 1);
+	ASSERT_EQ(density1.getSize(), 2*3*4);
 
-	const double *data = density1.getData();
-	for(unsigned int n = 0; n < 2*3*4; n++)
+	const std::vector<double> &data = density1.getData();
+	for(unsigned int n = 0; n < data.size(); n++)
 		EXPECT_DOUBLE_EQ(data[n], n);
 
 	//Custom format

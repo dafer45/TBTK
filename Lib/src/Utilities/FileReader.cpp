@@ -406,7 +406,11 @@ Property::EigenValues* FileReader::readEigenValues(string name, string path){
 
 		eigenValues = new Property::EigenValues(size);
 
-		dataset.read(eigenValues->getDataRW(), PredType::NATIVE_DOUBLE, dataspace);
+		dataset.read(
+			eigenValues->getDataRW().data(),
+			PredType::NATIVE_DOUBLE,
+			dataspace
+		);
 	}
 	catch(FileIException error){
 		Streams::log << error.getCDetailMsg() << "\n";
@@ -551,7 +555,11 @@ Property::DOS* FileReader::readDOS(string name, string path){
 
 		dos = new Property::DOS(lowerBound, upperBound, resolution);
 
-		dataset.read(dos->getDataRW(), PredType::NATIVE_DOUBLE, dataspace);
+		dataset.read(
+			dos->getDataRW().data(),
+			PredType::NATIVE_DOUBLE,
+			dataspace
+		);
 	}
 	catch(FileIException error){
 		Streams::log << error.getCDetailMsg() << "\n";
@@ -639,7 +647,11 @@ Property::Density* FileReader::readDensity(string name, string path){
 			density = new Property::Density(rank, dims);
 			delete [] dims;
 
-			dataset.read(/*density->data*/density->getDataRW(), PredType::NATIVE_DOUBLE, dataspace);
+			dataset.read(
+				density->getDataRW().data(),
+				PredType::NATIVE_DOUBLE,
+				dataspace
+			);
 		}
 		catch(FileIException error){
 			Streams::log << error.getCDetailMsg() << "\n";
@@ -766,8 +778,13 @@ Property::Magnetization* FileReader::readMagnetization(
 				size *= dims_internal[n];
 
 			double *mag_internal = new double[size];
-			dataset.read(mag_internal, PredType::NATIVE_DOUBLE, dataspace);
-			SpinMatrix *data = magnetization->getDataRW();
+			dataset.read(
+				mag_internal,
+				PredType::NATIVE_DOUBLE,
+				dataspace
+			);
+			std::vector<SpinMatrix> &data
+				= magnetization->getDataRW();
 			for(int n = 0; n < size/8; n++){
 				data[n].at(0, 0) = complex<double>(mag_internal[8*n+0], mag_internal[8*n+1]);
 				data[n].at(0, 1) = complex<double>(mag_internal[8*n+2], mag_internal[8*n+3]);
@@ -929,9 +946,9 @@ Property::LDOS* FileReader::readLDOS(string name, string path){
 			for(int n = 0; n < rank_internal; n++)
 				size *= dims_internal[n];
 
-			double *ldos_data = ldos->getDataRW();
+			std::vector<double> &ldos_data = ldos->getDataRW();
 			dataset.read(
-				ldos_data,
+				ldos_data.data(),
 				PredType::NATIVE_DOUBLE,
 				dataspace
 			);
@@ -1094,8 +1111,13 @@ Property::SpinPolarizedLDOS* FileReader::readSpinPolarizedLDOS(
 				size *= dims_internal[n];
 
 			double *sp_ldos_internal = new double[size];
-			dataset.read(sp_ldos_internal, PredType::NATIVE_DOUBLE, dataspace);
-			SpinMatrix *data = spinPolarizedLDOS->getDataRW();
+			dataset.read(
+				sp_ldos_internal,
+				PredType::NATIVE_DOUBLE,
+				dataspace
+			);
+			std::vector<SpinMatrix> &data
+				= spinPolarizedLDOS->getDataRW();
 			for(int n = 0; n < size/8; n++){
 				data[n].at(0, 0) = complex<double>(sp_ldos_internal[8*n+0], sp_ldos_internal[8*n+1]);
 				data[n].at(0, 1) = complex<double>(sp_ldos_internal[8*n+2], sp_ldos_internal[8*n+3]);

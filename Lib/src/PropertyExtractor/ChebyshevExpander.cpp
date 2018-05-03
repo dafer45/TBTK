@@ -264,8 +264,10 @@ Property::GreensFunction ChebyshevExpander::calculateGreensFunction(
 		);
 
 		for(unsigned int n = 0; n < toIndices.size(); n++){
-			complex<double> *data = greensFunction.getDataRW();
-			const complex<double> *dataGF = gf.getData();
+			std::vector<complex<double>> &data
+				= greensFunction.getDataRW();
+			const std::vector<complex<double>> &dataGF
+				= gf.getData();
 
 			Index compoundIndex = Index({toIndices[n], fromIndex});
 
@@ -328,7 +330,7 @@ Property::GreensFunction ChebyshevExpander::calculateGreensFunctions(
 		upperBound,
 		energyResolution
 	);
-	complex<double> *data = greensFunction.getDataRW();
+	std::vector<complex<double>> &data = greensFunction.getDataRW();
 
 	#pragma omp parallel for
 	for(unsigned int n = 0; n < to.size(); n++){
@@ -362,7 +364,8 @@ complex<double> ChebyshevExpander::calculateExpectationValue(
 		from,
 		Property::GreensFunction::Type::NonPrincipal
 	);
-	const complex<double> *greensFunctionData = greensFunction.getData();
+	const std::vector<complex<double>> &greensFunctionData
+		= greensFunction.getData();
 
 	Statistics statistics = cSolver->getModel().getStatistics();
 
@@ -403,7 +406,7 @@ Property::Density ChebyshevExpander::calculateDensity(
 
 	calculate(
 		calculateDensityCallback,
-		(void*)density.getDataRW(),
+		(void*)density.getDataRW().data(),
 		pattern,
 		ranges,
 		0,
@@ -474,7 +477,7 @@ Property::Magnetization ChebyshevExpander::calculateMagnetization(
 
 	calculate(
 		calculateMAGCallback,
-		(void*)magnetization.getDataRW(),
+		(void*)magnetization.getDataRW().data(),
 		pattern,
 		ranges,
 		0,
@@ -535,7 +538,7 @@ Property::LDOS ChebyshevExpander::calculateLDOS(Index pattern, Index ranges){
 
 	calculate(
 		calculateLDOSCallback,
-		(void*)ldos.getDataRW(),
+		(void*)ldos.getDataRW().data(),
 		pattern,
 		ranges,
 		0,
@@ -617,7 +620,7 @@ Property::SpinPolarizedLDOS ChebyshevExpander::calculateSpinPolarizedLDOS(
 
 	calculate(
 		calculateSP_LDOSCallback,
-		(void*)spinPolarizedLDOS.getDataRW(),
+		(void*)spinPolarizedLDOS.getDataRW().data(),
 		pattern,
 		ranges,
 		0,
@@ -681,7 +684,8 @@ void ChebyshevExpander::calculateDensityCallback(
 		index,
 		Property::GreensFunction::Type::NonPrincipal
 	);
-	const complex<double> *greensFunctionData = greensFunction.getData();
+	const std::vector<complex<double>> &greensFunctionData
+		= greensFunction.getData();
 
 	Statistics statistics = pe->cSolver->getModel().getStatistics();
 
@@ -724,12 +728,14 @@ void ChebyshevExpander::calculateMAGCallback(
 	for(int n = 0; n < 4; n++){
 		to.at(spinIndex) = n/2;		//up, up, down, down
 		from.at(spinIndex) = n%2;	//up, down, up, down
-		Property::GreensFunction greensFunction = pe->calculateGreensFunction(
-			to,
-			from,
-			Property::GreensFunction::Type::NonPrincipal
-		);
-		const complex<double> *greensFunctionData = greensFunction.getData();
+		Property::GreensFunction greensFunction
+			= pe->calculateGreensFunction(
+				to,
+				from,
+				Property::GreensFunction::Type::NonPrincipal
+			);
+		const std::vector<complex<double>> &greensFunctionData
+			= greensFunction.getData();
 
 		for(int e = 0; e < pe->energyResolution; e++){
 			double weight;
@@ -766,7 +772,8 @@ void ChebyshevExpander::calculateLDOSCallback(
 		index,
 		Property::GreensFunction::Type::NonPrincipal
 	);
-	const complex<double> *greensFunctionData = greensFunction.getData();
+	const std::vector<complex<double>> &greensFunctionData
+		= greensFunction.getData();
 
 	const double dE = (pe->upperBound - pe->lowerBound)/pe->energyResolution;
 	for(int n = 0; n < pe->energyResolution; n++)
@@ -794,7 +801,8 @@ void ChebyshevExpander::calculateSP_LDOSCallback(
 			from,
 			Property::GreensFunction::Type::NonPrincipal
 		);
-		const complex<double> *greensFunctionData = greensFunction.getData();
+		const std::vector<complex<double>> &greensFunctionData
+			= greensFunction.getData();
 
 		for(int e = 0; e < pe->energyResolution; e++)
 			((SpinMatrix*)sp_ldos)[offset + e].at(n/2, n%2) += -i*greensFunctionData[e]/M_PI*dE;

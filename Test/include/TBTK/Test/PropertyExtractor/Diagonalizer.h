@@ -278,8 +278,8 @@ TEST(Diagonalizer, calculateDensity){
 		{SIZE}
 	);
 	ASSERT_EQ(density0.getSize(), SIZE);
-	const double *data = density0.getData();
-	for(unsigned int n = 0; n < SIZE; n++)
+	const std::vector<double> &data = density0.getData();
+	for(unsigned int n = 0; n < data.size(); n++)
 		EXPECT_NEAR(data[n], densityBenchmark, EPSILON_100);
 
 	//Check Custom format.
@@ -287,7 +287,7 @@ TEST(Diagonalizer, calculateDensity){
 		{IDX_ALL}
 	});
 	ASSERT_EQ(density1.getSize(), SIZE);
-	for(unsigned int n = 0; n < SIZE; n++)
+	for(unsigned int n = 0; n < density1.getSize(); n++)
 		EXPECT_NEAR(density1({n}), densityBenchmark, EPSILON_100);
 }
 
@@ -317,8 +317,8 @@ TEST(Diagonalizer, calculateLDOS){
 		{IDX_X},
 		{SIZE}
 	);
-	const double *data = ldos0.getData();
-	for(unsigned int n = 0; n < RESOLUTION; n++){
+	const std::vector<double> &data = ldos0.getData();
+	for(int n = 0; n < ldos0.getResolution(); n++){
 		for(int x = 0; x < SIZE; x++){
 			EXPECT_NEAR(
 				data[RESOLUTION*x + n],

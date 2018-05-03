@@ -8,8 +8,8 @@ namespace Property{
 TEST(EigenValues, Constructor0){
 	EigenValues eigenValues(1000);
 	ASSERT_EQ(eigenValues.getSize(), 1000);
-	const double *data = eigenValues.getData();
-	for(unsigned int n = 0; n < 1000; n++)
+	const std::vector<double> &data = eigenValues.getData();
+	for(unsigned int n = 0; n < data.size(); n++)
 		EXPECT_DOUBLE_EQ(data[n], 0);
 }
 
@@ -19,8 +19,8 @@ TEST(EigenValues, Constructor1){
 		dataInput[n] = n;
 	EigenValues eigenValues(1000, dataInput);
 	ASSERT_EQ(eigenValues.getSize(), 1000);
-	const double *data = eigenValues.getData();
-	for(unsigned int n = 0; n < 1000; n++)
+	const std::vector<double> &data = eigenValues.getData();
+	for(unsigned int n = 0; n < data.size(); n++)
 		EXPECT_DOUBLE_EQ(data[n], n);
 }
 
@@ -34,8 +34,8 @@ TEST(EigenValues, SerializeToJSON){
 		Serializable::Mode::JSON
 	);
 	ASSERT_EQ(eigenValues1.getSize(), 1000);
-	const double *data = eigenValues1.getData();
-	for(unsigned int n = 0; n < 1000; n++)
+	const std::vector<double> &data = eigenValues1.getData();
+	for(unsigned int n = 0; n < data.size(); n++)
 		EXPECT_DOUBLE_EQ(data[n], n);
 }
 

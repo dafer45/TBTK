@@ -38,8 +38,10 @@ Property::GreensFunction* ExactDiagonalizer::calculateGreensFunction(
 			Property::GreensFunction::Type::Retarded
 		);
 
-		const complex<double> *greensFunctionAData = greensFunctionA->getData();
-		const complex<double> *greensFunctionRData = greensFunctionR->getData();
+		const std::vector<complex<double>> &greensFunctionAData
+			= greensFunctionA->getData();
+		const std::vector<complex<double>> &greensFunctionRData
+			= greensFunctionR->getData();
 
 		complex<double> *greensFunctionData = new complex<double>[energyResolution];
 		for(int n = 0; n < energyResolution; n++)
@@ -75,10 +77,13 @@ Property::GreensFunction* ExactDiagonalizer::calculateGreensFunction(
 			Property::GreensFunction::Type::Retarded
 		);
 
-		const complex<double> *greensFunctionAData = greensFunctionA->getData();
-		const complex<double> *greensFunctionRData = greensFunctionR->getData();
+		const std::vector<complex<double>> &greensFunctionAData
+			= greensFunctionA->getData();
+		const std::vector<complex<double>> &greensFunctionRData
+			= greensFunctionR->getData();
 
-		complex<double> *greensFunctionData = new complex<double>[energyResolution];
+		complex<double> *greensFunctionData
+			= new complex<double>[energyResolution];
 		for(int n = 0; n < energyResolution; n++)
 			greensFunctionData[n] = (greensFunctionAData[n] - greensFunctionRData[n])/2.;
 
@@ -329,7 +334,14 @@ Property::Density ExactDiagonalizer::calculateDensity(
 	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
 	Property::Density density(lDimensions, lRanges);
 
-	calculate(calculateDensityCallback, (void*)density.getDataRW(), pattern, ranges, 0, 1);
+	calculate(
+		calculateDensityCallback,
+		(void*)density.getDataRW().data(),
+		pattern,
+		ranges,
+		0,
+		1
+	);
 
 	return density;
 }
@@ -366,7 +378,7 @@ Property::Magnetization ExactDiagonalizer::calculateMagnetization(
 
 	calculate(
 		calculateMagnetizationCallback,
-		(void*)magnetization.getDataRW(),
+		(void*)magnetization.getDataRW().data(),
 		pattern,
 		ranges,
 		0,
@@ -397,7 +409,7 @@ Property::LDOS ExactDiagonalizer::calculateLDOS(
 
 	calculate(
 		calculateLDOSCallback,
-		(void*)ldos.getDataRW(),
+		(void*)ldos.getDataRW().data(),
 		pattern,
 		ranges,
 		0,
@@ -445,7 +457,7 @@ Property::SpinPolarizedLDOS ExactDiagonalizer::calculateSpinPolarizedLDOS(
 
 	calculate(
 		calculateSpinPolarizedLDOSCallback,
-		(void*)spinPolarizedLDOS.getDataRW(),
+		(void*)spinPolarizedLDOS.getDataRW().data(),
 		pattern,
 		ranges,
 		0,
@@ -488,7 +500,8 @@ void ExactDiagonalizer::calculateLDOSCallback(
 		index,
 		Property::GreensFunction::Type::NonPrincipal
 	);
-	const complex<double> *greensFunctionData = greensFunction->getData();
+	const std::vector<complex<double>> &greensFunctionData
+		= greensFunction->getData();
 
 	const double dE = (pe->upperBound - pe->lowerBound)/pe->energyResolution;
 	for(int n = 0; n < pe->energyResolution; n++)
@@ -514,12 +527,14 @@ void ExactDiagonalizer::calculateSpinPolarizedLDOSCallback(
 		to.at(spinIndex) = n/2;
 		from.at(spinIndex) = n%2;
 
-		Property::GreensFunction *greensFunction = pe->calculateGreensFunction(
-			to,
-			from,
-			Property::GreensFunction::Type::NonPrincipal
-		);
-		const complex<double> *greensFunctionData = greensFunction->getData();
+		Property::GreensFunction *greensFunction
+			= pe->calculateGreensFunction(
+				to,
+				from,
+				Property::GreensFunction::Type::NonPrincipal
+			);
+		const std::vector<complex<double>> &greensFunctionData
+			= greensFunction->getData();
 
 		for(int e = 0; e < pe->energyResolution; e++)
 			((complex<double>*)spinPolarizedLDOS)[4*pe->energyResolution*offset + 4*e + n] += imag(greensFunctionData[e])/M_PI*dE;

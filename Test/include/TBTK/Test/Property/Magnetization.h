@@ -13,8 +13,8 @@ TEST(Magnetization, Constructor0){
 	EXPECT_EQ(magnetization.getRanges()[1], 3);
 	EXPECT_EQ(magnetization.getRanges()[2], 4);
 	ASSERT_EQ(magnetization.getSize(), 2*3*4);
-	const SpinMatrix *data = magnetization.getData();
-	for(unsigned int n = 0; n < 2*3*4; n++){
+	const std::vector<SpinMatrix> &data = magnetization.getData();
+	for(unsigned int n = 0; n < data.size(); n++){
 		for(unsigned int r = 0; r < 2; r++){
 			for(unsigned int c = 0; c < 2; c++){
 				EXPECT_DOUBLE_EQ(real(data[n].at(r, c)), 0);
@@ -40,8 +40,8 @@ TEST(Magnetization, Constructor1){
 	EXPECT_EQ(magnetization.getRanges()[1], 3);
 	EXPECT_EQ(magnetization.getRanges()[2], 4);
 	ASSERT_EQ(magnetization.getSize(), 2*3*4);
-	const SpinMatrix *data = magnetization.getData();
-	for(unsigned int n = 0; n < 2*3*4; n++){
+	const std::vector<SpinMatrix> &data = magnetization.getData();
+	for(unsigned int n = 0; n < data.size(); n++){
 		for(unsigned int r = 0; r < 2; r++){
 			for(unsigned int c = 0; c < 2; c++){
 				EXPECT_DOUBLE_EQ(
@@ -65,7 +65,7 @@ TEST(Magnetization, Constructor2){
 	indexTree.generateLinearMap();
 	Magnetization magnetization(indexTree);
 	ASSERT_EQ(magnetization.getSize(), 3);
-	for(unsigned int n = 0; n < 3; n++){
+	for(unsigned int n = 0; n < magnetization.getSize(); n++){
 		for(unsigned int r = 0; r < 2; r++){
 			for(unsigned int c = 0; c < 2; c++){
 				EXPECT_DOUBLE_EQ(
@@ -97,7 +97,7 @@ TEST(Magnetization, Constructor3){
 	}
 	Magnetization magnetization(indexTree, dataInput);
 	ASSERT_EQ(magnetization.getSize(), 3);
-	for(unsigned int n = 0; n < 3; n++){
+	for(unsigned int n = 0; n < magnetization.getSize(); n++){
 		for(unsigned int r = 0; r < 2; r++){
 			for(unsigned int c = 0; c < 2; c++){
 				EXPECT_DOUBLE_EQ(
