@@ -118,12 +118,6 @@ public:
 	 *  description. */
 	DataType* getDataRW();
 
-	/** Get size in bytes. */
-//	unsigned int getDataSizeInBytes() const;
-
-	/** Returns data on raw format. Intended for use in serialization. */
-//	char* getRawData();
-
 	/** Get the dimension of the data. [Only works for the Ranges format.]
 	 *
 	 *  @return The dimension of the grid that the data is calculated on.
@@ -369,11 +363,8 @@ private:
 	 *  indexDescriptor.size()*blockSize = size. */
 	unsigned int blockSize;
 
-	/** Number of data elements. */
-	unsigned int size;
-
 	/** Data. */
-	DataType *data;
+	std::vector<DataType> data;
 
 	/** Flag indicating whether access of */
 	bool allowIndexOutOfBoundsAccess;
@@ -397,7 +388,7 @@ inline unsigned int AbstractProperty<
 	isFundamental,
 	isSerializable
 >::getSize() const{
-	return size;
+	return data.size();
 }
 
 template<typename DataType, bool isFundamental, bool isSerializable>
@@ -406,7 +397,7 @@ inline const DataType* AbstractProperty<
 	isFundamental,
 	isSerializable
 >::getData() const{
-	return data;
+	return data.data();
 }
 
 template<typename DataType, bool isFundamental, bool isSerializable>
@@ -415,26 +406,8 @@ inline DataType* AbstractProperty<
 	isFundamental,
 	isSerializable
 >::getDataRW(){
-	return data;
+	return data.data();
 }
-
-/*template<typename DataType, bool isFundamental, bool isSerializable>
-inline unsigned int AbstractProperty<
-	DataType,
-	isFundamental,
-	isSerializable
->::getDataSizeInBytes() const{
-	return size*sizeof(DataType);
-}
-
-template<typename DataType, bool isFundamental, bool isSerializable>
-inline char* AbstractProperty<
-	DataType,
-	isFundamental,
-	isSerializable
->::getRawData(){
-	return (char*)data;
-}*/
 
 template<typename DataType, bool isFundamental, bool isSerializable>
 inline unsigned int AbstractProperty<
@@ -446,7 +419,6 @@ inline unsigned int AbstractProperty<
 }
 
 template<typename DataType, bool isFundamental, bool isSerializable>
-//inline const int* AbstractProperty<
 inline std::vector<int> AbstractProperty<
 	DataType,
 	isFundamental,
@@ -499,7 +471,6 @@ inline const DataType& AbstractProperty<
 	const Index &index,
 	unsigned int offset
 ) const{
-//	return data[getOffset(index) + offset];
 	int indexOffset = getOffset(index);
 	if(indexOffset < 0)
 		return defaultValue;
@@ -516,7 +487,6 @@ inline DataType& AbstractProperty<
 	const Index &index,
 	unsigned int offset
 ){
-//	return data[getOffset(index) + offset];
 	int indexOffset = getOffset(index);
 	if(indexOffset < 0){
 		static DataType defaultValueNonConst;
@@ -579,8 +549,7 @@ inline std::string AbstractProperty<
 			indexDescriptor.serialize(mode)
 		);
 		j["blockSize"] = blockSize;
-		j["size"] = size;
-		for(unsigned int n = 0; n < size; n++)
+		for(unsigned int n = 0; n < data.size(); n++)
 			j["data"].push_back(data[n]);
 
 		j["allowIndexOutOfBoundsAccess"] = allowIndexOutOfBoundsAccess;
@@ -612,8 +581,7 @@ inline std::string AbstractProperty<
 			indexDescriptor.serialize(mode)
 		);
 		j["blockSize"] = blockSize;
-		j["size"] = size;
-		for(unsigned int n = 0; n < size; n++)
+		for(unsigned int n = 0; n < data.size(); n++)
 			j["data"].push_back(data[n]);
 
 		j["allowIndexOutOfBoundsAccess"] = allowIndexOutOfBoundsAccess;
@@ -645,8 +613,7 @@ inline std::string AbstractProperty<
 			indexDescriptor.serialize(mode)
 		);
 		j["blockSize"] = blockSize;
-		j["size"] = size;
-		for(unsigned int n = 0; n < size; n++)
+		for(unsigned int n = 0; n < data.size(); n++)
 			j["data"].push_back(data[n]);
 
 		j["allowIndexOutOfBoundsAccess"] = allowIndexOutOfBoundsAccess;
@@ -678,8 +645,7 @@ inline std::string AbstractProperty<
 			indexDescriptor.serialize(mode)
 		);
 		j["blockSize"] = blockSize;
-		j["size"] = size;
-		for(unsigned int n = 0; n < size; n++)
+		for(unsigned int n = 0; n < data.size(); n++)
 			j["data"].push_back(data[n]);
 
 		j["allowIndexOutOfBoundsAccess"] = allowIndexOutOfBoundsAccess;
@@ -711,8 +677,7 @@ inline std::string AbstractProperty<
 			indexDescriptor.serialize(mode)
 		);
 		j["blockSize"] = blockSize;
-		j["size"] = size;
-		for(unsigned int n = 0; n < size; n++)
+		for(unsigned int n = 0; n < data.size(); n++)
 			j["data"].push_back(data[n]);
 
 		j["allowIndexOutOfBoundsAccess"] = allowIndexOutOfBoundsAccess;
@@ -740,10 +705,7 @@ inline std::string AbstractProperty<std::complex<double>, false, false>::seriali
 			indexDescriptor.serialize(mode)
 		);
 		j["blockSize"] = blockSize;
-		j["size"] = size;
-		for(unsigned int n = 0; n < size; n++){
-//			std::stringstream ss;
-//			ss << "(" << real(data[n]) << "," << imag(data[n]) << ")";
+		for(unsigned int n = 0; n < data.size(); n++){
 			std::string s = Serializable::serialize(data[n], mode);
 			j["data"].push_back(s);
 		}
@@ -777,9 +739,6 @@ AbstractProperty<
 {
 	this->blockSize = 0;
 
-	size = blockSize;
-	data = nullptr;
-
 	allowIndexOutOfBoundsAccess = false;
 }
 
@@ -795,10 +754,10 @@ AbstractProperty<
 {
 	this->blockSize = blockSize;
 
-	size = blockSize;
-	data = new DataType[size];
+	unsigned int size = blockSize;
+	data.reserve(size);
 	for(unsigned int n = 0; n < size; n++)
-		data[n] = 0.;
+		data.push_back(0.);
 
 	allowIndexOutOfBoundsAccess = false;
 }
@@ -816,10 +775,10 @@ AbstractProperty<
 {
 	this->blockSize = blockSize;
 
-	size = blockSize;
-	this->data = new DataType[size];
+	unsigned int size = blockSize;
+	this->data.reserve(size);
 	for(unsigned int n = 0; n < size; n++)
-		this->data[n] = data[n];
+		this->data.push_back(data[n]);
 
 	allowIndexOutOfBoundsAccess = false;
 }
@@ -838,16 +797,12 @@ AbstractProperty<
 {
 	this->blockSize = blockSize;
 
-/*	indexDescriptor.setDimensions(dimensions);
-	int *thisRanges = indexDescriptor.getRanges();
-	for(unsigned int n = 0; n < dimensions; n++)
-		thisRanges[n] = ranges[n];*/
 	indexDescriptor.setRanges(ranges, dimensions);
 
-	size = blockSize*indexDescriptor.getSize();
-	data = new DataType[size];
+	unsigned int size = blockSize*indexDescriptor.getSize();
+	data.reserve(size);
 	for(unsigned int n = 0; n < size; n++)
-		data[n] = 0.;
+		data.push_back(DataType(0.));
 
 	allowIndexOutOfBoundsAccess = false;
 }
@@ -867,16 +822,12 @@ AbstractProperty<
 {
 	this->blockSize = blockSize;
 
-/*	indexDescriptor.setDimensions(dimensions);
-	int *thisRanges = indexDescriptor.getRanges();
-	for(unsigned int n = 0; n < dimensions; n++)
-		thisRanges[n] = ranges[n];*/
 	indexDescriptor.setRanges(ranges, dimensions);
 
-	size = blockSize*indexDescriptor.getSize();
-	this->data = new DataType[size];
+	unsigned int size = blockSize*indexDescriptor.getSize();
+	this->data.reserve(size);
 	for(unsigned int n = 0; n < size; n++)
-		this->data[n] = data[n];
+		this->data.push_back(data[n]);
 
 	allowIndexOutOfBoundsAccess = false;
 }
@@ -904,10 +855,10 @@ AbstractProperty<
 
 	indexDescriptor.setIndexTree(indexTree);
 
-	size = blockSize*indexDescriptor.getSize();
-	data = new DataType[size];
+	unsigned int size = blockSize*indexDescriptor.getSize();
+	data.reserve(size);
 	for(unsigned int n = 0; n < size; n++)
-		data[n] = 0.;
+		data.push_back(DataType(0.));
 
 	allowIndexOutOfBoundsAccess = false;
 }
@@ -936,10 +887,10 @@ AbstractProperty<
 
 	indexDescriptor.setIndexTree(indexTree);
 
-	size = blockSize*indexDescriptor.getSize();
-	this->data = new DataType[size];
+	unsigned int size = blockSize*indexDescriptor.getSize();
+	this->data.reserve(size);
 	for(unsigned int n = 0; n < size; n++)
-		this->data[n] = data[n];
+		this->data.push_back(data[n]);
 
 	allowIndexOutOfBoundsAccess = false;
 }
@@ -956,15 +907,7 @@ AbstractProperty<
 {
 	blockSize = abstractProperty.blockSize;
 
-	size = abstractProperty.size;
-	if(abstractProperty.data == nullptr){
-		data = nullptr;
-	}
-	else{
-		data = new DataType[size];
-		for(unsigned int n = 0; n < size; n++)
-			data[n] = abstractProperty.data[n];
-	}
+	data = abstractProperty.data;
 
 	allowIndexOutOfBoundsAccess
 		= abstractProperty.allowIndexOutOfBoundsAccess;
@@ -982,14 +925,7 @@ AbstractProperty<
 {
 	blockSize = abstractProperty.blockSize;
 
-	size = abstractProperty.size;
-	if(abstractProperty.data == nullptr){
-		data = nullptr;
-	}
-	else{
-		data = abstractProperty.data;
-		abstractProperty.data = nullptr;
-	}
+	data = abstractProperty.data;
 
 	allowIndexOutOfBoundsAccess
 		= abstractProperty.allowIndexOutOfBoundsAccess;
@@ -1018,17 +954,13 @@ inline AbstractProperty<double, true, false>::AbstractProperty(
 		try{
 			nlohmann::json j = nlohmann::json::parse(serialization);
 			blockSize = j.at("blockSize").get<unsigned int>();
-			size = j.at("size").get<unsigned int>();
-			data = new double[size];
 			nlohmann::json d = j.at("data");
-			unsigned int counter = 0;
 			for(
 				nlohmann::json::iterator it = d.begin();
 				it < d.end();
 				++it
 			){
-				data[counter] = *it;
-				counter++;
+				data.push_back(*it);
 			}
 
 			allowIndexOutOfBoundsAccess = j.at(
@@ -1078,10 +1010,7 @@ inline AbstractProperty<std::complex<double>, false, false>::AbstractProperty(
 		try{
 			nlohmann::json j = nlohmann::json::parse(serialization);
 			blockSize = j.at("blockSize").get<unsigned int>();
-			size = j.at("size").get<unsigned int>();
-			data = new std::complex<double>[size];
 			nlohmann::json d = j.at("data");
-			unsigned int counter = 0;
 			for(
 				nlohmann::json::iterator it = d.begin();
 				it < d.end();
@@ -1089,8 +1018,7 @@ inline AbstractProperty<std::complex<double>, false, false>::AbstractProperty(
 			){
 				std::complex<double> c;
 				Serializable::deserialize(it->get<std::string>(), &c, mode);
-				data[counter] = c;
-				counter++;
+				data.push_back(c);
 			}
 
 			allowIndexOutOfBoundsAccess = j.at(
@@ -1140,8 +1068,6 @@ inline AbstractProperty<
 	isFundamental,
 	isSerializable
 >::~AbstractProperty(){
-	if(data != nullptr)
-		delete [] data;
 }
 
 template<typename DataType, bool isFundamental, bool isSerializable>
@@ -1161,18 +1087,7 @@ AbstractProperty<
 
 		blockSize = rhs.blockSize;
 
-		size = rhs.size;
-		if(data != nullptr)
-			delete [] data;
-
-		if(rhs.data == nullptr){
-			data = nullptr;
-		}
-		else{
-			data = new DataType[size];
-			for(unsigned int n = 0; n < size; n++)
-				data[n] = rhs.data[n];
-		}
+		data = rhs.data;
 
 		allowIndexOutOfBoundsAccess = rhs.allowIndexOutOfBoundsAccess;
 	}
@@ -1197,17 +1112,7 @@ AbstractProperty<
 
 		blockSize = rhs.blockSize;
 
-		size = rhs.size;
-		if(data != nullptr)
-			delete [] data;
-
-		if(rhs.data == nullptr){
-			data = nullptr;
-		}
-		else{
-			data = rhs.data;
-			rhs.data = nullptr;
-		}
+		data = rhs.data;
 
 		allowIndexOutOfBoundsAccess = rhs.allowIndexOutOfBoundsAccess;
 	}

@@ -35,6 +35,11 @@ public:
 	/** Constructor. */
 	SpinMatrix();
 
+	/** Constructs a SpinMatrix with all elements set to the same value.
+	 *
+	 *  @param value The value to assign each entry. */
+	SpinMatrix(std::complex<double> value);
+
 	/** Destructor. */
 	~SpinMatrix();
 

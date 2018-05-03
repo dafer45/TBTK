@@ -27,6 +27,14 @@ namespace TBTK{
 SpinMatrix::SpinMatrix(){
 }
 
+SpinMatrix::SpinMatrix(complex<double> value){
+	for(unsigned int row = 0; row < getNumRows(); row++){
+		for(unsigned int col = 0; col < getNumCols(); col++){
+			at(row, col) = value;
+		}
+	}
+}
+
 SpinMatrix::~SpinMatrix(){
 }
 
