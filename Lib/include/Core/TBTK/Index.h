@@ -191,7 +191,7 @@ public:
 	 *
 	 *  @return An index containing the subindices in the range first to
 	 *  last (inclusive). */
-	Index getSubIndex(int first, int last);
+	Index getSubIndex(int first, int last) const;
 
 	/** Split a compound Index into its components.
 	 *

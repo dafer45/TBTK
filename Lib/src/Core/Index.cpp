@@ -376,7 +376,7 @@ Index Index::getUnitRange(){
 	return unitRange;
 }
 
-Index Index::getSubIndex(int first, int last){
+Index Index::getSubIndex(int first, int last) const{
 	vector<int> newSubindices;
 	for(int n = first; n <= last; n++)
 		newSubindices.push_back(indices.at(n));
