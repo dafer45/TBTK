@@ -182,6 +182,15 @@ TEST(Index, getSubIndex){
 	EXPECT_TRUE(index.getSubIndex(3, 5).equals({4, 5, 6})) << "getSubIndex() failed.";
 }
 
+TEST(Index, split){
+	Index index({{1, 2, 3}, {4, 5}, {6, 7, 8}});
+	std::vector<Index> indices = index.split();
+	ASSERT_EQ(indices.size(), 3);
+	ASSERT_TRUE(indices[0].equals({1, 2, 3}));
+	ASSERT_TRUE(indices[1].equals({4, 5}));
+	ASSERT_TRUE(indices[2].equals({6, 7, 8}));
+}
+
 TEST(Index, isPatternIndex){
 	std::string errorMessage = "isPatternIndex() failed.";
 

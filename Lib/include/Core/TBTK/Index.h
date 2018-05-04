@@ -193,6 +193,12 @@ public:
 	 *  last (inclusive). */
 	Index getSubIndex(int first, int last);
 
+	/** Split a compound Index into its components.
+	 *
+	 *  @return An std::vector<Index> containing the individual @link Index
+	 *  Indices @endlink.*/
+	std::vector<Index> split() const;
+
 	/** Returns true if the Index is a pattern index. That is, if it
 	 *  contains a negative subindex.
 	 *
@@ -363,6 +369,19 @@ inline int Index::popBack(){
 	indices.pop_back();
 
 	return last;
+}
+
+inline std::vector<Index> Index::split() const{
+	std::vector<Index> components;
+	components.push_back(Index());
+	for(unsigned int n = 0; n < indices.size(); n++){
+		if(indices[n] == IDX_SEPARATOR)
+			components.push_back(Index());
+		else
+			components.back().push_back(indices[n]);
+	}
+
+	return components;
 }
 
 inline bool Index::isPatternIndex() const{
