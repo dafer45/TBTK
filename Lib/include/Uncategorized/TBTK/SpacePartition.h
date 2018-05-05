@@ -130,6 +130,17 @@ public:
 	virtual std::vector<std::vector<double>> getMinorMesh(
 		const std::vector<unsigned int> &numMeshPoints
 	) const = 0;
+
+	/** Returns a single point of the minor mesh covering the unit cell,
+	 *  using numMeshPoints mesh points along the corresponding directions.
+	 *
+	 *  @param meshPoint The mesh point to retrieve.
+	 *  @param numMeshPoints. The number of mesh points in the minor mesh.
+	 */
+	virtual std::vector<double> getMinorMeshPoint(
+		const std::vector<unsigned int> &meshPoint,
+		const std::vector<unsigned int> &numMeshPoints
+	) const = 0;
 protected:
 	/** Get basis vectors. */
 	const std::vector<Vector3d>& getBasisVectors() const;

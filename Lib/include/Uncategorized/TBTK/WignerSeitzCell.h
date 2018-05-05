@@ -70,6 +70,12 @@ public:
 	virtual std::vector<std::vector<double>> getMinorMesh(
 		const std::vector<unsigned int> &numMeshPoints
 	) const;
+
+	/** Implements SpacePartition::getMinorMeshPoint*/
+	virtual std::vector<double> getMinorMeshPoint(
+		const std::vector<unsigned int> &meshPoint,
+		const std::vector<unsigned int> &numMeshPoints
+	) const;
 private:
 	/** Constant used to give a margin to the Wigner-Seitz cell. If not
 	 *  used, boundary terms could be included or not included basen on

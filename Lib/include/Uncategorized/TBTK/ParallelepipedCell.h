@@ -70,6 +70,12 @@ public:
 	virtual std::vector<std::vector<double>> getMinorMesh(
 		const std::vector<unsigned int> &numMeshPoints
 	) const;
+
+	/** Implements SpacePartition::getMinorMeshPoint(). */
+	virtual std::vector<double> getMinorMeshPoint(
+		const std::vector<unsigned int> &meshPoint,
+		const std::vector<unsigned int> &numMeshPoints
+	) const;
 private:
 	/** Vectors pointing along the normal direction of the two other basis
 	 *  vectors, and with reciprocal normal length of the corresponding

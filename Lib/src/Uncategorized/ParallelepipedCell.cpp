@@ -387,4 +387,82 @@ vector<vector<double>> ParallelepipedCell::getMinorMesh(
 	return mesh;
 }
 
+vector<double> ParallelepipedCell::getMinorMeshPoint(
+	const std::vector<unsigned int> &meshPoint,
+	const std::vector<unsigned int> &numMeshPoints
+) const{
+	TBTKAssert(
+		meshPoint.size() == getNumDimensions(),
+		"ParallelepipedCell::getMinorMeshPoint()",
+		"Incompatible dimensions.",
+		"The argument 'meshPoint' must have the same number of"
+		<< " components as the dimension of the parallelepiped cell."
+		<< " The parallelepiped cell has dimension "
+		<< getNumDimensions() << ", while numMeshPoints have "
+		<< meshPoint.size() << " components."
+	);
+	TBTKAssert(
+		numMeshPoints.size() == getNumDimensions(),
+		"ParallelepipedCell::getMinorMeshPoint()",
+		"Incompatible dimensions.",
+		"The argument 'numMeshPoints' must have the same number of"
+		<< " components as the dimension of the parallelepiped cell."
+		<< " The parallelepiped cell has dimension "
+		<< getNumDimensions() << ", while numMeshPoints have "
+		<< numMeshPoints.size() << " components."
+	);
+	for(unsigned int n = 0; n < meshPoint.size(); n++){
+		TBTKAssert(
+			meshPoint[n] < numMeshPoints[n],
+			"ParallelepipedCell::getMinorMeshPoint()",
+			"Mesh point out of range.",
+			"The mesh point 'meshPoint[" << n << "]="
+			<< meshPoint[n] << "' must be less than"
+			<< " 'numMeshPoints[" << n << "]=" << numMeshPoints[n]
+			<< "'."
+		);
+	}
+
+	const vector<Vector3d> &basisVectors = getBasisVectors();
+
+	switch(numMeshPoints.size()){
+	case 1:
+	{
+		const Vector3d &b0 = basisVectors.at(0);
+
+		return {(meshPoint[0]*b0/numMeshPoints.at(0)).x};
+	}
+	case 2:
+	{
+		const Vector3d &b0 = basisVectors.at(0);
+		const Vector3d &b1 = basisVectors.at(1);
+
+		Vector3d mp
+			= meshPoint[0]*b0/numMeshPoints.at(0)
+			+ meshPoint[1]*b1/numMeshPoints.at(1);
+
+		return {mp.x, mp.y};
+	}
+	case 3:
+	{
+		const Vector3d &b0 = basisVectors.at(0);
+		const Vector3d &b1 = basisVectors.at(1);
+		const Vector3d &b2 = basisVectors.at(2);
+
+		Vector3d mp
+			= meshPoint[0]*b0/numMeshPoints.at(0)
+			+ meshPoint[1]*b1/numMeshPoints.at(1)
+			+ meshPoint[2]*b2/numMeshPoints.at(2);
+
+		return {mp.x, mp.y, mp.z};
+	}
+	default:
+		TBTKExit(
+			"ParallelepipedCell::getMesh()",
+			"This should never happen.",
+			"Notify the developer about this bug."
+		);
+	}
+}
+
 };	//End of namespace TBTK

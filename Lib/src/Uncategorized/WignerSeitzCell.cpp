@@ -210,4 +210,51 @@ vector<vector<double>> WignerSeitzCell::getMinorMesh(
 	return mesh;
 }
 
+vector<double> WignerSeitzCell::getMinorMeshPoint(
+	const vector<unsigned int> &meshPoint,
+	const vector<unsigned int> &numMeshPoints
+) const{
+	vector<double> mp = ParallelepipedCell::getMinorMeshPoint(
+		meshPoint,
+		numMeshPoints
+	);
+
+	switch(getNumDimensions()){
+	case 1:
+	{
+		Vector3d firstCellMeshPoint = getFirstCellCoordinates(
+			{mp[0], 0, 0}
+		);
+
+		return {firstCellMeshPoint.x};
+	}
+	case 2:
+	{
+		Vector3d firstCellMeshPoint = getFirstCellCoordinates(
+			{mp[0], mp[1], 0}
+		);
+
+		return {firstCellMeshPoint.x, firstCellMeshPoint.y};
+	}
+	case 3:
+	{
+		Vector3d firstCellMeshPoint = getFirstCellCoordinates(
+			mp
+		);
+
+		return {
+			firstCellMeshPoint.x,
+			firstCellMeshPoint.y,
+			firstCellMeshPoint.z
+		};
+	}
+	default:
+		TBTKExit(
+			"WignerSeitzCell::getMinorMeshPoint()",
+			"This should never happed.",
+			"Notify the developer about this bug."
+		);
+	}
+}
+
 };	//End of namespace TBTK
