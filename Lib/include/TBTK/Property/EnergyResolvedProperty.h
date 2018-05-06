@@ -172,6 +172,9 @@ public:
 	 *
 	 *  @return The highest Matsubara energy. */
 	double getUpperMatsubaraEnergy() const;
+
+	/** Get the nth Matsubara energy. */
+	std::complex<double> getMatsubaraEnergy(unsigned int n) const;
 private:
 	/** The energy type for the property. */
 	EnergyType energyType;
@@ -613,6 +616,29 @@ inline double EnergyResolvedProperty<DataType>::getUpperMatsubaraEnergy(
 			descriptor.matsubaraEnergy.lowerMatsubaraEnergyIndex
 			+ 2*(descriptor.matsubaraEnergy.numMatsubaraEnergies-1)
 		)*descriptor.matsubaraEnergy.fundamentalMatsubaraEnergy;
+}
+
+template<typename DataType>
+inline std::complex<double> EnergyResolvedProperty<
+	DataType
+>::getMatsubaraEnergy(
+	unsigned int n
+) const{
+	TBTKAssert(
+		energyType == EnergyType::FermionicMatsubara
+		|| energyType == EnergyType::BosonicMatsubara,
+		"GreensFunction::getMatsubaraEnergy()",
+		"The Property is not of the type"
+		<< " EnergyType::FermionicMatsubara or"
+		<< " EnergyType::BosonicMatsubara.",
+		""
+	);
+
+	return std::complex<double>(
+		0,
+		(descriptor.matsubaraEnergy.lowerMatsubaraEnergyIndex + 2*n)
+		*descriptor.matsubaraEnergy.fundamentalMatsubaraEnergy
+	);
 }
 
 };	//End namespace Property

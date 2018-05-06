@@ -787,5 +787,110 @@ TEST(EnergyResolvedProperty, getLowerMatsubaraEnergy){
 	//EnergyResolvedProperty::Constructor1
 }
 
+TEST(EnergyResolvedProperty, getUpperMatsubaraEnergy){
+	IndexTree indexTree;
+	indexTree.add({0});
+	indexTree.add({1});
+	indexTree.add({2});
+	indexTree.generateLinearMap();
+
+	//Fail for EnergyType::Real.
+	EnergyResolvedProperty<int> energyResolvedProperty(
+		indexTree,
+		-10,
+		10,
+		1000
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			energyResolvedProperty.getLowerMatsubaraEnergy();
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+
+
+	//EnergyType::FermionicMatsubara.
+	//Already tested through
+	//EnergyResolvedProperty::Constructor0
+	//EnergyResolvedProperty::Constructor1
+
+	//EnergyType::BosonicMatsubara.
+	//Already tested through
+	//EnergyResolvedProperty::Constructor0
+	//EnergyResolvedProperty::Constructor1
+}
+
+TEST(EnergyResolvedProperty, getMatsubaraEnergy){
+	IndexTree indexTree;
+	indexTree.add({0});
+	indexTree.add({1});
+	indexTree.add({2});
+	indexTree.generateLinearMap();
+
+	//Fail for EnergyType::Real.
+	EXPECT_EXIT(
+		{
+			EnergyResolvedProperty<int> energyResolvedProperty(
+				indexTree,
+				-10,
+				10,
+				1000
+			);
+			Streams::setStdMuteErr();
+			energyResolvedProperty.getLowerMatsubaraEnergy();
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+
+	//EnergyType::FermionicMatsubara.
+	EnergyResolvedProperty<int> energyResolvedProperty0(
+		EnergyResolvedProperty<int>::EnergyType::FermionicMatsubara,
+		indexTree,
+		-9,
+		9,
+		2.2
+	);
+	for(
+		unsigned int n = 0;
+		n < energyResolvedProperty0.getNumMatsubaraEnergies();
+		n++
+	){
+		EXPECT_DOUBLE_EQ(
+			real(energyResolvedProperty0.getMatsubaraEnergy(n)),
+			0
+		);
+		EXPECT_DOUBLE_EQ(
+			imag(energyResolvedProperty0.getMatsubaraEnergy(n)),
+			(-9 + 2*n)*2.2
+		);
+	}
+
+	//EnergyType::BosonicMatsubara.
+	EnergyResolvedProperty<int> energyResolvedProperty1(
+		EnergyResolvedProperty<int>::EnergyType::BosonicMatsubara,
+		indexTree,
+		-10,
+		10,
+		2.2
+	);
+	for(
+		unsigned int n = 0;
+		n < energyResolvedProperty1.getNumMatsubaraEnergies();
+		n++
+	){
+		EXPECT_DOUBLE_EQ(
+			real(energyResolvedProperty1.getMatsubaraEnergy(n)),
+			0
+		);
+		EXPECT_DOUBLE_EQ(
+			imag(energyResolvedProperty1.getMatsubaraEnergy(n)),
+			(-10 + 2*n)*2.2
+		);
+	}
+}
+
 };	//End of namespace Property
 };	//End of namespace TBTK
