@@ -277,6 +277,8 @@ vector<complex<double>> ElectronFluctuationVertex::calculateSelfEnergyVertex(
 		//statement.
 	}
 
+	generateInteractionAmplitudes();
+
 //	const BrillouinZone &brillouinZone
 //		= momentumSpaceContext.getBrillouinZone();
 //	const vector<unsigned int> &numMeshPoints
@@ -371,6 +373,7 @@ vector<complex<double>> ElectronFluctuationVertex::calculateSelfEnergyVertex(
 				kDual,
 				{c0_o, a1_o, c1_i, a0_i}
 			);*/
+
 			const vector<complex<double>> &chargeSusceptibilityData
 				= chargeSusceptibility.getData();
 			unsigned int offsetChargeSusceptibility
@@ -496,7 +499,7 @@ vector<complex<double>> ElectronFluctuationVertex::calculateSelfEnergyVertex(
 						offsetChargeSusceptibility + n
 					]
 					+ spinSusceptibilityData[
-						offsetSpinSusceptibility +n
+						offsetSpinSusceptibility + n
 					]
 				)/2.;
 			}
