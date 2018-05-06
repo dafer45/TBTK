@@ -138,6 +138,13 @@ public:
 	 *  @return The energy resolution. */
 	unsigned int getResolution() const;
 
+	/** Get the nth energy value.
+	 *
+	 *  @param n The energy index to get the energy for.
+	 *
+	 *  @return The energy for the nth energy index. */
+	double getEnergy(unsigned int n) const;
+
 	/** Get the lower Matsubara energy index. That is, l in the expression
 	 *  E = (l + 2*n)*E_0.
 	 *
@@ -213,10 +220,11 @@ EnergyResolvedProperty<DataType>::EnergyResolvedProperty(
 	AbstractProperty<DataType>(indexTree, resolution)
 {
 	TBTKAssert(
-		lowerBound < upperBound,
+		lowerBound <= upperBound,
 		"EnergyResolvedProperty::EnergyResolvedProperty()",
 		"Invalid energy bounds. The 'lowerBound=" << lowerBound << "'"
-		" must be smaller than the 'upperBound=" << upperBound << "'.",
+		" must be less or equal to the 'upperBound=" << upperBound
+		<< "'.",
 		""
 	);
 	TBTKAssert(
@@ -498,6 +506,29 @@ inline unsigned int EnergyResolvedProperty<DataType>::getResolution() const{
 	);
 
 	return descriptor.realEnergy.resolution;
+}
+
+template<typename DataType>
+inline double EnergyResolvedProperty<DataType>::getEnergy(
+	unsigned int n
+) const{
+	TBTKAssert(
+		energyType == EnergyType::Real,
+		"GreensFunction::getEnergy()",
+		"The Property is not of the type EnergyType::Real.",
+		""
+	);
+
+	double dE;
+	if(descriptor.realEnergy.resolution == 1)
+		dE = 0;
+	else
+		dE = (
+			descriptor.realEnergy.upperBound
+			- descriptor.realEnergy.lowerBound
+		)/(descriptor.realEnergy.resolution - 1);
+
+	return descriptor.realEnergy.lowerBound + n*dE;
 }
 
 template<typename DataType>

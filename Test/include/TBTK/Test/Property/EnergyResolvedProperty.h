@@ -591,6 +591,62 @@ TEST(EnergyResolvedProperty, getResolution){
 	);
 }
 
+TEST(EnergyResolvedProperty, getEnergy){
+	IndexTree indexTree;
+	indexTree.add({0});
+	indexTree.add({1});
+	indexTree.add({2});
+	indexTree.generateLinearMap();
+
+	//EnergyType::Real.
+	EnergyResolvedProperty<int> energyResolvedProperty(
+		indexTree,
+		-10,
+		10,
+		1000
+	);
+	for(unsigned int n = 0; n < 1000; n++){
+		EXPECT_DOUBLE_EQ(
+			energyResolvedProperty.getEnergy(n),
+			-10 + n*20/999.
+		);
+	}
+
+	//Fail for EnergyType::FermionicMatsubara.
+	EnergyResolvedProperty<int> energyResolvedProperty0(
+		EnergyResolvedProperty<int>::EnergyType::FermionicMatsubara,
+		indexTree,
+		-9,
+		9,
+		1000
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			energyResolvedProperty0.getResolution();
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+
+	//Fail for EnergyType::BosonicMatsubara.
+	EnergyResolvedProperty<int> energyResolvedProperty1(
+		EnergyResolvedProperty<int>::EnergyType::BosonicMatsubara,
+		indexTree,
+		-10,
+		10,
+		1000
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			energyResolvedProperty1.getResolution();
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
 TEST(EnergyResolvedProperty, getLowerMatsubaraEnergyIndex){
 	IndexTree indexTree;
 	indexTree.add({0});
