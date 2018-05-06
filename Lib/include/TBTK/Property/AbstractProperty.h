@@ -371,6 +371,18 @@ private:
 
 	/** Default value used for out of bounds access. */
 	DataType defaultValue;
+
+	/** Function to be overloaded by Properties that support dynamic
+	 *  calculation. The overloading function should calculate the property
+	 *  for the given Index and write it into the provided block. If no
+	 *  overload is provided, the AbstractProperty defaults to print an
+	 *  error message telling that dynamic calculation of the Property is
+	 *  not possible.
+	 *
+	 *  @param index The Index for which the Property should be calculated.
+	 *  @param block Pointer to the first element of the block into which
+	 *  the Property should be written. */
+	virtual void calculateDynamically(const Index &index, DataType *block);
 };
 
 template<typename DataType, bool isFundamental, bool isSerializable>
@@ -1118,6 +1130,19 @@ AbstractProperty<
 	}
 
 	return *this;
+}
+
+template<typename DataType, bool isFundamental, bool isSerializable>
+void AbstractProperty<
+	DataType,
+	isFundamental,
+	isSerializable
+>::calculateDynamically(const Index &index, DataType *block){
+	TBTKExit(
+		"AbstractProperty::calculateDynamically()",
+		"This Property does not support dynamic calculation.",
+		""
+	);
 }
 
 };	//End namespace Property
