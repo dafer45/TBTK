@@ -168,6 +168,10 @@ TEST(EnergyResolvedProperty, Constructor2){
 		10
 	);
 	EXPECT_DOUBLE_EQ(
+		energyResolvedProperty0.getFundamentalMatsubaraEnergy(),
+		2
+	);
+	EXPECT_DOUBLE_EQ(
 		energyResolvedProperty0.getLowerMatsubaraEnergy(),
 		-9*2
 	);
@@ -239,6 +243,10 @@ TEST(EnergyResolvedProperty, Constructor2){
 	EXPECT_EQ(
 		energyResolvedProperty1.getNumMatsubaraEnergies(),
 		11
+	);
+	EXPECT_DOUBLE_EQ(
+		energyResolvedProperty1.getFundamentalMatsubaraEnergy(),
+		2
 	);
 	EXPECT_DOUBLE_EQ(
 		energyResolvedProperty1.getLowerMatsubaraEnergy(),
@@ -344,6 +352,10 @@ TEST(EnergyResolvedProperty, Constructor3){
 		10
 	);
 	EXPECT_DOUBLE_EQ(
+		energyResolvedProperty0.getFundamentalMatsubaraEnergy(),
+		2
+	);
+	EXPECT_DOUBLE_EQ(
 		energyResolvedProperty0.getLowerMatsubaraEnergy(),
 		-9*2
 	);
@@ -421,6 +433,10 @@ TEST(EnergyResolvedProperty, Constructor3){
 	EXPECT_EQ(
 		energyResolvedProperty1.getNumMatsubaraEnergies(),
 		11
+	);
+	EXPECT_DOUBLE_EQ(
+		energyResolvedProperty1.getFundamentalMatsubaraEnergy(),
+		2
 	);
 	EXPECT_DOUBLE_EQ(
 		energyResolvedProperty1.getLowerMatsubaraEnergy(),
@@ -673,13 +689,13 @@ TEST(EnergyResolvedProperty, getLowerMatsubaraEnergyIndex){
 
 	//EnergyType::FermionicMatsubara.
 	//Already tested through
-	//EnergyResolvedProperty::Constructor0
-	//EnergyResolvedProperty::Constructor1
+	//EnergyResolvedProperty::Constructor2
+	//EnergyResolvedProperty::Constructor3
 
 	//EnergyType::BosonicMatsubara.
 	//Already tested through
-	//EnergyResolvedProperty::Constructor0
-	//EnergyResolvedProperty::Constructor1
+	//EnergyResolvedProperty::Constructor2
+	//EnergyResolvedProperty::Constructor3
 }
 
 TEST(EnergyResolvedProperty, getUpperMatsubaraEnergyIndex){
@@ -708,13 +724,13 @@ TEST(EnergyResolvedProperty, getUpperMatsubaraEnergyIndex){
 
 	//EnergyType::FermionicMatsubara.
 	//Already tested through
-	//EnergyResolvedProperty::Constructor0
-	//EnergyResolvedProperty::Constructor1
+	//EnergyResolvedProperty::Constructor2
+	//EnergyResolvedProperty::Constructor3
 
 	//EnergyType::BosonicMatsubara.
 	//Already tested through
-	//EnergyResolvedProperty::Constructor0
-	//EnergyResolvedProperty::Constructor1
+	//EnergyResolvedProperty::Constructor2
+	//EnergyResolvedProperty::Constructor3
 }
 
 TEST(EnergyResolvedProperty, getNumMatsubaraEnergies){
@@ -743,13 +759,48 @@ TEST(EnergyResolvedProperty, getNumMatsubaraEnergies){
 
 	//EnergyType::FermionicMatsubara.
 	//Already tested through
-	//EnergyResolvedProperty::Constructor0
-	//EnergyResolvedProperty::Constructor1
+	//EnergyResolvedProperty::Constructor2
+	//EnergyResolvedProperty::Constructor3
 
 	//EnergyType::BosonicMatsubara.
 	//Already tested through
-	//EnergyResolvedProperty::Constructor0
-	//EnergyResolvedProperty::Constructor1
+	//EnergyResolvedProperty::Constructor2
+	//EnergyResolvedProperty::Constructor3
+}
+
+TEST(EnergyResolvedProperty, getFundamentalMatsubaraEnergy){
+	IndexTree indexTree;
+	indexTree.add({0});
+	indexTree.add({1});
+	indexTree.add({2});
+	indexTree.generateLinearMap();
+
+	//Fail for EnergyType::Real.
+	EnergyResolvedProperty<int> energyResolvedProperty(
+		indexTree,
+		-10,
+		10,
+		1000
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			energyResolvedProperty.getNumMatsubaraEnergies();
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+
+
+	//EnergyType::FermionicMatsubara.
+	//Already tested through
+	//EnergyResolvedProperty::Constructor2
+	//EnergyResolvedProperty::Constructor3
+
+	//EnergyType::BosonicMatsubara.
+	//Already tested through
+	//EnergyResolvedProperty::Constructor2
+	//EnergyResolvedProperty::Constructor3
 }
 
 TEST(EnergyResolvedProperty, getLowerMatsubaraEnergy){
@@ -778,13 +829,13 @@ TEST(EnergyResolvedProperty, getLowerMatsubaraEnergy){
 
 	//EnergyType::FermionicMatsubara.
 	//Already tested through
-	//EnergyResolvedProperty::Constructor0
-	//EnergyResolvedProperty::Constructor1
+	//EnergyResolvedProperty::Constructor2
+	//EnergyResolvedProperty::Constructor3
 
 	//EnergyType::BosonicMatsubara.
 	//Already tested through
-	//EnergyResolvedProperty::Constructor0
-	//EnergyResolvedProperty::Constructor1
+	//EnergyResolvedProperty::Constructor2
+	//EnergyResolvedProperty::Constructor3
 }
 
 TEST(EnergyResolvedProperty, getUpperMatsubaraEnergy){
@@ -813,13 +864,13 @@ TEST(EnergyResolvedProperty, getUpperMatsubaraEnergy){
 
 	//EnergyType::FermionicMatsubara.
 	//Already tested through
-	//EnergyResolvedProperty::Constructor0
-	//EnergyResolvedProperty::Constructor1
+	//EnergyResolvedProperty::Constructor2
+	//EnergyResolvedProperty::Constructor3
 
 	//EnergyType::BosonicMatsubara.
 	//Already tested through
-	//EnergyResolvedProperty::Constructor0
-	//EnergyResolvedProperty::Constructor1
+	//EnergyResolvedProperty::Constructor2
+	//EnergyResolvedProperty::Constructor3
 }
 
 TEST(EnergyResolvedProperty, getMatsubaraEnergy){

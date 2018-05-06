@@ -163,6 +163,10 @@ public:
 	 *  @return The number of Matsubara energies. */
 	unsigned int getNumMatsubaraEnergies() const;
 
+	/** Get the fundamental Matsubara energy E_0 in the expression
+	 *  E = (l + 2*n)*E_0. */
+	double getFundamentalMatsubaraEnergy() const;
+
 	/** Get the lower Matsubara energy.
 	 *
 	 *  @return The lowest Matsubara energy. */
@@ -580,6 +584,23 @@ inline unsigned int EnergyResolvedProperty<DataType>::getNumMatsubaraEnergies() 
 	);
 
 	return descriptor.matsubaraEnergy.numMatsubaraEnergies;
+}
+
+template<typename DataType>
+inline double EnergyResolvedProperty<
+	DataType
+>::getFundamentalMatsubaraEnergy() const{
+	TBTKAssert(
+		energyType == EnergyType::FermionicMatsubara
+		|| energyType == EnergyType::BosonicMatsubara,
+		"GreensFunction::getFundamentalMatsubaraEnergy()",
+		"The Property is not of the type"
+		<< " EnergyType::FermionicMatsubara or"
+		<< " EnergyType::BosonicMatsubara.",
+		""
+	);
+
+	return descriptor.matsubaraEnergy.fundamentalMatsubaraEnergy;
 }
 
 template<typename DataType>
