@@ -27,12 +27,12 @@
 #include "TBTK/IndexedDataTree.h"
 #include "TBTK/Property/Susceptibility.h"
 #include "TBTK/RPA/MomentumSpaceContext.h"
-#include "TBTK/RPA/RPASusceptibilityCalculator.h"
+//#include "TBTK/RPA/RPASusceptibilityCalculator.h"
 
 namespace TBTK{
 namespace Solver{
 
-class ElectronFluctuationVertex{
+class ElectronFluctuationVertex : public Solver{
 public:
 	/** Constructor. */
 	ElectronFluctuationVertex(
@@ -51,6 +51,12 @@ public:
 
 	/** Get momentum cpsace context. */
 	const MomentumSpaceContext& getMomentumSpaceContext() const;
+
+	/** Get the charge susceptibility. */
+	const Property::Susceptibility& getChargeSusceptibility() const;
+
+	/** Get the spin susceptibility. */
+	const Property::Susceptibility& getSpinSusceptibility() const;
 
 	/** Enum class for indicating whether the energy is an arbitrary comlex
 	 *  number, or if it is restricted to the real or imaginary axis. */
@@ -161,6 +167,16 @@ private:
 inline const MomentumSpaceContext&
 ElectronFluctuationVertex::getMomentumSpaceContext() const{
 	return momentumSpaceContext;
+}
+
+inline const Property::Susceptibility&
+ElectronFluctuationVertex::getChargeSusceptibility() const{
+	return chargeSusceptibility;
+}
+
+inline const Property::Susceptibility&
+ElectronFluctuationVertex::getSpinSusceptibility() const{
+	return spinSusceptibility;
 }
 
 /*inline void ElectronFluctuationVertexCalculator::setEnergyType(
