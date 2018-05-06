@@ -87,6 +87,14 @@ void LindhardSusceptibility::setEnergyWindow(
 	);
 
 	energyType = EnergyType::Matsubara;
+	this->lowerFermionicMatsubaraEnergyIndex
+		= lowerFermionicMatsubaraEnergyIndex;
+	this->upperFermionicMatsubaraEnergyIndex
+		= upperFermionicMatsubaraEnergyIndex;
+	this->lowerBosonicMatsubaraEnergyIndex
+		= lowerBosonicMatsubaraEnergyIndex;
+	this->upperBosonicMatsubaraEnergyIndex
+		= upperBosonicMatsubaraEnergyIndex;
 }
 
 Property::Susceptibility LindhardSusceptibility::calculateSusceptibility(
