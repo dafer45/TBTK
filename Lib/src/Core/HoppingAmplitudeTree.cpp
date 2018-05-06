@@ -186,12 +186,49 @@ HoppingAmplitudeTree::HoppingAmplitudeTree(
 HoppingAmplitudeTree::~HoppingAmplitudeTree(){
 }
 
-vector<Index> HoppingAmplitudeTree::getIndexList(const Index &pattern) const{
+/*vector<Index> HoppingAmplitudeTree::getIndexList(const Index &pattern) const{
 	vector<Index> indexList;
 
 	for(
 		ConstIterator iterator = cbegin();
 		iterator != cend();
+		++iterator
+	){
+		if((*iterator).getFromIndex().equals(pattern, true)){
+			if(
+				indexList.size() == 0
+				|| !indexList.back().equals((*iterator).getFromIndex(), false)
+			){
+				indexList.push_back((*iterator).getFromIndex());
+			}
+		}
+	}
+
+	return indexList;
+}*/
+
+vector<Index> HoppingAmplitudeTree::getIndexList(const Index &pattern) const{
+	vector<Index> indexList;
+
+//	bool wildcardFound = false;
+	Index subTreeIndex;
+	Index intraSubTreeIndex;
+	for(unsigned int n = 0; n < pattern.getSize(); n++){
+		if(pattern[n] < 0)
+			break;
+//			wildcardFound;
+
+//		if(wildcardFound)
+//			intraSubtreeIndex;
+//		else
+			subTreeIndex.push_back(pattern[n]);
+	}
+
+	const HoppingAmplitudeTree *subTree = getSubTree(subTreeIndex);
+
+	for(
+		ConstIterator iterator = subTree->cbegin();
+		iterator != subTree->cend();
 		++iterator
 	){
 		if((*iterator).getFromIndex().equals(pattern, true)){
