@@ -1,4 +1,4 @@
-/* Copyright 2018 Kristofer Björnson
+/* Copyright 2017 Kristofer Björnson
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,8 +26,8 @@ using namespace std;
 namespace TBTK{
 namespace Property{
 
-/*SelfEnergy::SelfEnergy() : EnergyResolvedProperty(){
-}*/
+SelfEnergy::SelfEnergy() : AbstractProperty(){
+}
 
 SelfEnergy::SelfEnergy(
 	const IndexTree &indexTree,
@@ -35,8 +35,11 @@ SelfEnergy::SelfEnergy(
 	double upperBound,
 	unsigned int resolution
 ) :
-	EnergyResolvedProperty(indexTree, lowerBound, upperBound, resolution)
+	AbstractProperty(indexTree, resolution)
 {
+	this->lowerBound = lowerBound;
+	this->upperBound = upperBound;
+	this->resolution = resolution;
 }
 
 SelfEnergy::SelfEnergy(
@@ -46,42 +49,34 @@ SelfEnergy::SelfEnergy(
 	unsigned int resolution,
 	const complex<double> *data
 ) :
-	EnergyResolvedProperty(indexTree, lowerBound, upperBound, resolution, data)
+	AbstractProperty(indexTree, resolution, data)
 {
+	this->lowerBound = lowerBound;
+	this->upperBound = upperBound;
+	this->resolution = resolution;
 }
 
 SelfEnergy::SelfEnergy(
-	const IndexTree &indexTree,
-	int lowerMatsubaraEnergyIndex,
-	int upperMatsubaraEnergyIndex,
-	double fundamentalMatsubaraEnergy
+	const SelfEnergy &selfEnergy
 ) :
-	EnergyResolvedProperty(
-		EnergyType::BosonicMatsubara,
-		indexTree,
-		lowerMatsubaraEnergyIndex,
-		upperMatsubaraEnergyIndex,
-		fundamentalMatsubaraEnergy
-	)
+	AbstractProperty(selfEnergy)
 {
+	lowerBound = selfEnergy.lowerBound;
+	upperBound = selfEnergy.upperBound;
+	resolution = selfEnergy.resolution;
 }
 
 SelfEnergy::SelfEnergy(
-	const IndexTree &indexTree,
-	int lowerMatsubaraEnergyIndex,
-	int upperMatsubaraEnergyIndex,
-	double fundamentalMatsubaraEnergy,
-	const complex<double> *data
+	SelfEnergy &&selfEnergy
 ) :
-	EnergyResolvedProperty(
-		EnergyType::BosonicMatsubara,
-		indexTree,
-		lowerMatsubaraEnergyIndex,
-		upperMatsubaraEnergyIndex,
-		fundamentalMatsubaraEnergy,
-		data
-	)
+	AbstractProperty(std::move(selfEnergy))
 {
+	lowerBound = selfEnergy.lowerBound;
+	upperBound = selfEnergy.upperBound;
+	resolution = selfEnergy.resolution;
+}
+
+SelfEnergy::~SelfEnergy(){
 }
 
 };	//End of namespace Property

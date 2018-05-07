@@ -1,4 +1,4 @@
-/* Copyright 2017 Kristofer Björnson
+/* Copyright 2018 Kristofer Björnson
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,15 @@
 
 /** @package TBTKcalc
  *  @file SelfEnergy.h
- *  @brief Property container for self-energy.
+ *  @brief Property container for the SelfEnergy.
  *
  *  @author Kristofer Björnson
  */
 
-#ifndef COM_DAFER45_TBTK_SELF_ENERGY
-#define COM_DAFER45_TBTK_SELF_ENERGY
+#ifndef COM_DAFER45_TBTK_PROPERTY_SELF_ENERGY
+#define COM_DAFER45_TBTK_PROPERTY_SELF_ENERGY
 
-#include "TBTK/Property/AbstractProperty.h"
+#include "TBTK/Property/EnergyResolvedProperty.h"
 #include "TBTK/TBTKMacros.h"
 
 #include <complex>
@@ -32,13 +32,22 @@
 namespace TBTK{
 namespace Property{
 
-/** @brief Property container for self-energy. */
-class SelfEnergy : public AbstractProperty<std::complex<double>>{
+/** @brief Property container for the SelfEnergy. */
+class SelfEnergy : public EnergyResolvedProperty<std::complex<double>>{
 public:
-	/** Constructor. */
-	SelfEnergy();
+	/** Constructs an uninitialized SelfEnergy. */
+//	SelfEnergy();
 
-	/** Constructor. */
+	/** Constructs a SelfEnergy with real energies on the Custom format.
+	 *  [See AbstractProperty for detailed information about the Custom
+	 *  format.]
+	 *
+	 *  @param indexTree IndexTree containing the @link Index Indices
+	 *  @endlink for which the SelfEnergy should be contained.
+	 *
+	 *  @param lowerBound Lower bound for the energy.
+	 *  @param upperBound Upper bound for the energy.
+	 *  @param resolution Number of points to use for the energy. */
 	SelfEnergy(
 		const IndexTree &indexTree,
 		double lowerBound,
@@ -46,7 +55,17 @@ public:
 		unsigned int resolution
 	);
 
-	/** Constructor. */
+	/** Constructs a SelfEnergy with real energies on the Custom format
+	 *  and initializes it with data. [See AbstractProperty for detailed
+	 *  information about the Custom format and the raw data format.]
+	 *
+	 *  @param indexTree IndexTree containing the @link Index Indices
+	 *  @endlink for which the SelfEnergy should be contained.
+	 *
+	 *  @param lowerBound Lower bound for the energy.
+	 *  @param upperBound Upper bound for the energy.
+	 *  @param resolution Number of points to use for the energy.
+	 *  @param data Raw data to initialize the GreensFunction with. */
 	SelfEnergy(
 		const IndexTree &indexTree,
 		double lowerBound,
@@ -55,79 +74,44 @@ public:
 		const std::complex<double> *data
 	);
 
-	/** Copy constructor. */
-	SelfEnergy(const SelfEnergy &selfEnergy);
+	/** Constructs a SelfEnergy with Matsubara energies on the Custom
+	 *  format. [See AbstractProperty for detailed information about the
+	 *  Custom format.]
+	 *
+	 *  @param indexTree IndexTree containing the @link Index Indices
+	 *  @endlink for which the SelfEnergy should be contained.
+	 *
+	 *  @param lowerBound Lower bound for the energy.
+	 *  @param upperBound Upper bound for the energy.
+	 *  @param resolution Number of points to use for the energy. */
+	SelfEnergy(
+		const IndexTree &indexTree,
+		int lowerMatsubaraEnergyIndex,
+		int upperMatsubaraEnergyIndex,
+		double fundamentalMatsubaraEnergy
+	);
 
-	/** Move constructor. */
-	SelfEnergy(SelfEnergy &&selfEnergy);
-
-	/** Destructor. */
-	~SelfEnergy();
-
-	/** Get lower bound for the energy. */
-	double getLowerBound() const;
-
-	/** Get upper bound for the energy. */
-	double getUpperBound() const;
-
-	/** Get energy resolution (number of energy intervals). */
-	unsigned int getResolution() const;
-
-	/** Assignment operator. */
-	const SelfEnergy& operator=(const SelfEnergy &rhs);
-
-	/** Move assignment operator. */
-	const SelfEnergy& operator=(SelfEnergy &&rhs);
+	/** Constructs a SelfEnergy with Matsubara energies on the Custom
+	 *  format and initializes it with data. [See AbstractProperty for
+	 *  detailed information about the Custom format and the raw data
+	 *  format.]
+	 *
+	 *  @param indexTree IndexTree containing the @link Index Indices
+	 *  @endlink for which the SelfEnergy should be contained.
+	 *
+	 *  @param lowerBound Lower bound for the energy.
+	 *  @param upperBound Upper bound for the energy.
+	 *  @param resolution Number of points to use for the energy.
+	 *  @param data Raw data to initialize the GreensFunction with. */
+	SelfEnergy(
+		const IndexTree &indexTree,
+		int lowerMatsubaraEnergyIndex,
+		int upperMatsubaraEnergyIndex,
+		double fundamentalMatsubaraEnergy,
+		const std::complex<double> *data
+	);
 private:
-	/** Lower bound for the energy. */
-	double lowerBound;
-
-	/** Upper bound for the energy. */
-	double upperBound;
-
-	/** Energy resolution. (Number of energy intervals) */
-	unsigned int resolution;
 };
-
-inline double SelfEnergy::getLowerBound() const{
-	return lowerBound;
-}
-
-inline double SelfEnergy::getUpperBound() const{
-	return upperBound;
-}
-
-inline unsigned int SelfEnergy::getResolution() const{
-	return resolution;
-}
-
-inline const SelfEnergy& SelfEnergy::operator=(
-	const SelfEnergy &rhs
-){
-	if(this != &rhs){
-		AbstractProperty::operator=(rhs);
-
-		lowerBound = rhs.lowerBound;
-		upperBound = rhs.upperBound;
-		resolution = rhs.resolution;
-	}
-
-	return *this;
-}
-
-inline const SelfEnergy& SelfEnergy::operator=(
-	SelfEnergy &&rhs
-){
-	if(this != &rhs){
-		AbstractProperty::operator=(std::move(rhs));
-
-		lowerBound = rhs.lowerBound;
-		upperBound = rhs.upperBound;
-		resolution = rhs.resolution;
-	}
-
-	return *this;
-}
 
 };	//End namespace Property
 };	//End namespace TBTK
