@@ -334,7 +334,7 @@ vector<vector<vector<complex<double>>>> RPASusceptibility::rpaSusceptibilityMain
 	return rpaSusceptibility;
 }
 
-vector<complex<double>> RPASusceptibility::calculateRPASusceptibility(
+IndexedDataTree<vector<complex<double>>> RPASusceptibility::calculateRPASusceptibility(
 	const Index &index
 ){
 	vector<Index> components = index.split();
@@ -361,14 +361,29 @@ vector<complex<double>> RPASusceptibility::calculateRPASusceptibility(
 	);*/
 
 	//TODO
-	//This return statement possibly wastes computation by throwing away
-	//everything except on component of the result. The way
-	//intraBlockIndices[n] are used also assumes that they have a single
+	//The way intraBlockIndices[n] are used assumes that they have a single
 	//subindex, which limits generality.
-	return rpaSusceptibilityMainAlgorithm(
+	vector<vector<vector<complex<double>>>> result = rpaSusceptibilityMainAlgorithm(
 		index,
 		interactionAmplitudes
-	)[intraBlockIndices[2][0]][intraBlockIndices[3][0]];
+	);
+	IndexedDataTree<vector<complex<double>>> indexedDataTree;
+	for(unsigned int n = 0; n < result.size(); n++){
+		for(unsigned int c = 0; c < result[n].size(); c++){
+			indexedDataTree.add(
+				result[n][c],
+				{
+					kIndex,
+					intraBlockIndices[0],
+					intraBlockIndices[1],
+					{(int)n},
+					{(int)c}
+				}
+			);
+		}
+	}
+
+	return indexedDataTree;
 }
 
 void RPASusceptibility::generateInteractionAmplitudes(){
@@ -461,7 +476,7 @@ void RPASusceptibility::generateInteractionAmplitudes(){
 	interactionAmplitudesAreGenerated = true;
 }
 
-vector<complex<double>> RPASusceptibility::calculateChargeRPASusceptibility(
+IndexedDataTree<vector<complex<double>>> RPASusceptibility::calculateChargeRPASusceptibility(
 	const Index &index
 ){
 	vector<Index> components = index.split();
@@ -490,13 +505,38 @@ vector<complex<double>> RPASusceptibility::calculateChargeRPASusceptibility(
 		interactionAmplitudesCharge
 	);*/
 
-	return rpaSusceptibilityMainAlgorithm(
+/*	return rpaSusceptibilityMainAlgorithm(
 		index,
 		interactionAmplitudesCharge
-	)[intraBlockIndices[2][0]][intraBlockIndices[3][0]];
+	)[intraBlockIndices[2][0]][intraBlockIndices[3][0]];*/
+
+	//TODO
+	//The way intraBlockIndices[n] are used assumes that they have a single
+	//subindex, which limits generality.
+	vector<vector<vector<complex<double>>>> result = rpaSusceptibilityMainAlgorithm(
+		index,
+		interactionAmplitudesCharge
+	);
+	IndexedDataTree<vector<complex<double>>> indexedDataTree;
+	for(unsigned int n = 0; n < result.size(); n++){
+		for(unsigned int c = 0; c < result[n].size(); c++){
+			indexedDataTree.add(
+				result[n][c],
+				{
+					kIndex,
+					intraBlockIndices[0],
+					intraBlockIndices[1],
+					{(int)n},
+					{(int)c}
+				}
+			);
+		}
+	}
+
+	return indexedDataTree;
 }
 
-vector<complex<double>> RPASusceptibility::calculateSpinRPASusceptibility(
+IndexedDataTree<vector<complex<double>>> RPASusceptibility::calculateSpinRPASusceptibility(
 	const Index &index
 ){
 	vector<Index> components = index.split();
@@ -525,10 +565,35 @@ vector<complex<double>> RPASusceptibility::calculateSpinRPASusceptibility(
 		interactionAmplitudesSpin
 	);*/
 
-	return rpaSusceptibilityMainAlgorithm(
+/*	return rpaSusceptibilityMainAlgorithm(
 		index,
 		interactionAmplitudesSpin
-	)[intraBlockIndices[2][0]][intraBlockIndices[3][0]];
+	)[intraBlockIndices[2][0]][intraBlockIndices[3][0]];*/
+
+	//TODO
+	//The way intraBlockIndices[n] are used assumes that they have a single
+	//subindex, which limits generality.
+	vector<vector<vector<complex<double>>>> result = rpaSusceptibilityMainAlgorithm(
+		index,
+		interactionAmplitudesCharge
+	);
+	IndexedDataTree<vector<complex<double>>> indexedDataTree;
+	for(unsigned int n = 0; n < result.size(); n++){
+		for(unsigned int c = 0; c < result[n].size(); c++){
+			indexedDataTree.add(
+				result[n][c],
+				{
+					kIndex,
+					intraBlockIndices[0],
+					intraBlockIndices[1],
+					{(int)n},
+					{(int)c}
+				}
+			);
+		}
+	}
+
+	return indexedDataTree;
 }
 
 }	//End of namespace Solver

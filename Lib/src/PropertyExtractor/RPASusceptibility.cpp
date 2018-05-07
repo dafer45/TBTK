@@ -418,6 +418,7 @@ Property::Susceptibility RPASusceptibility::calculateChargeSusceptibility(
 			bareSusceptibility.getResolution()
 		);
 
+		chargeSusceptibilityTree.clear();
 		calculate(
 			calculateChargeSusceptibilityCallback,
 			allIndices,
@@ -467,6 +468,7 @@ Property::Susceptibility RPASusceptibility::calculateChargeSusceptibility(
 			bareSusceptibility.getFundamentalMatsubaraEnergy()
 		);
 
+		chargeSusceptibilityTree.clear();
 		calculate(
 			calculateChargeSusceptibilityCallback,
 			allIndices,
@@ -793,6 +795,7 @@ Property::Susceptibility RPASusceptibility::calculateSpinSusceptibility(
 			bareSusceptibility.getResolution()
 		);
 
+		spinSusceptibilityTree.clear();
 		calculate(
 			calculateSpinSusceptibilityCallback,
 			allIndices,
@@ -811,6 +814,7 @@ Property::Susceptibility RPASusceptibility::calculateSpinSusceptibility(
 			bareSusceptibility.getFundamentalMatsubaraEnergy()
 		);
 
+		spinSusceptibilityTree.clear();
 		calculate(
 			calculateSpinSusceptibilityCallback,
 			allIndices,
@@ -838,10 +842,27 @@ void RPASusceptibility::calculateChargeSusceptibilityCallback(
 	RPASusceptibility *propertyExtractor
 		= (RPASusceptibility*)cb_this;
 
-	vector<complex<double>> s
-		= propertyExtractor->solver->calculateChargeRPASusceptibility(
-			index
-		);
+	vector<complex<double>> s;
+	if(!propertyExtractor->chargeSusceptibilityTree.get(s, index)){
+		propertyExtractor->chargeSusceptibilityTree
+			= propertyExtractor->solver->calculateChargeRPASusceptibility(
+				index
+			);
+		if(
+			!propertyExtractor->chargeSusceptibilityTree.get(
+				s,
+				index
+			)
+		){
+			TBTKExit(
+				"PropertyExtractor::RPASusceptibility::calculateChargeSusceptibilityCallback()",
+				"Unable to find RPASusceptibility for the"
+				<< " Index '" << index.toString() << "'.",
+				"This should never happen, contact the"
+				<< " developer."
+			);
+		}
+	}
 
 	for(unsigned int e = 0; e < s.size(); e++)
 		((complex<double>*)susceptibility)[offset + e] += s[e];
@@ -856,10 +877,27 @@ void RPASusceptibility::calculateSpinSusceptibilityCallback(
 	RPASusceptibility *propertyExtractor
 		= (RPASusceptibility*)cb_this;
 
-	vector<complex<double>> s
-		= propertyExtractor->solver->calculateSpinRPASusceptibility(
-			index
-		);
+	vector<complex<double>> s;
+	if(!propertyExtractor->spinSusceptibilityTree.get(s, index)){
+		propertyExtractor->spinSusceptibilityTree
+			= propertyExtractor->solver->calculateSpinRPASusceptibility(
+				index
+			);
+		if(
+			!propertyExtractor->spinSusceptibilityTree.get(
+				s,
+				index
+			)
+		){
+			TBTKExit(
+				"PropertyExtractor::RPASusceptibility::calculateSpinSusceptibilityCallback()",
+				"Unable to find RPASusceptibility for the"
+				<< " Index '" << index.toString() << "'.",
+				"This should never happen, contact the"
+				<< " developer."
+			);
+		}
+	}
 
 	for(unsigned int e = 0; e < s.size(); e++)
 		((complex<double>*)susceptibility)[offset + e] += s[e];

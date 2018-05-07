@@ -65,17 +65,23 @@ public:
 	);
 
 	/** Calculate RPA Susceptibility. */
-	std::vector<std::complex<double>> calculateRPASusceptibility(
+	IndexedDataTree<
+		std::vector<std::complex<double>>
+	> calculateRPASusceptibility(
 		const Index &index
 	);
 
 	/** Calculate charge RPA Susceptibility. */
-	std::vector<std::complex<double>> calculateChargeRPASusceptibility(
+	IndexedDataTree<
+		std::vector<std::complex<double>>
+	> calculateChargeRPASusceptibility(
 		const Index &index
 	);
 
 	/** Calculate spin RPA Susceptibility. */
-	std::vector<std::complex<double>> calculateSpinRPASusceptibility(
+	IndexedDataTree<
+		std::vector<std::complex<double>>
+	> calculateSpinRPASusceptibility(
 		const Index &index
 	);
 
@@ -108,7 +114,10 @@ private:
 	bool interactionAmplitudesAreGenerated;
 
 	/** Invert matix. */
-	void invertMatrix(std::complex<double> *matrix, unsigned int dimensions);
+	void invertMatrix(
+		std::complex<double> *matrix,
+		unsigned int dimensions
+	);
 
 	/** Multiply matrices. */
 	void multiplyMatrices(
@@ -119,7 +128,9 @@ private:
 	);
 
 	/** RPA-susceptibility main algorithm. */
-	std::vector<std::vector<std::vector<std::complex<double>>>> rpaSusceptibilityMainAlgorithm(
+	std::vector<
+		std::vector<std::vector<std::complex<double>>>
+	> rpaSusceptibilityMainAlgorithm(
 		const Index &index,
 		const std::vector<InteractionAmplitude> &interactionAmpltiudes
 	);

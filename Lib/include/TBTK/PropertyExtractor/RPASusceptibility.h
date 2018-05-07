@@ -92,6 +92,18 @@ private:
 	/** Energies. */
 //	std::vector<std::complex<double>> energies;
 
+	/** Charge susceptibility tree for storing results between calls to the
+	 *  calculateChargeSusceptibilityCallback(). */
+	IndexedDataTree<
+		std::vector<std::complex<double>>
+	> chargeSusceptibilityTree;
+
+	/** Spin susceptibility tree for storing results between calls to the
+	 *  calculateSpinSusceptibilityCallback(). */
+	IndexedDataTree<
+		std::vector<std::complex<double>>
+	> spinSusceptibilityTree;
+
 	//TODO
 	//These variables should be made part if the PropertyExtractor instead
 	//once its been tested to work well for this specific case.
