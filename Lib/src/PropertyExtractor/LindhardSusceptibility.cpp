@@ -439,10 +439,8 @@ Property::Susceptibility LindhardSusceptibility::calculateSusceptibility(
 			- lowerBosonicMatsubaraEnergyIndex
 		)/2 + 1;
 
-		double temperature = UnitHandler::convertTemperatureNtB(
-			solver->getModel().getTemperature()
-		);
-		double kT = UnitHandler::getK_BB()*temperature;
+		double temperature = solver->getModel().getTemperature();
+		double kT = UnitHandler::getK_BN()*temperature;
 		double fundamentalMatsubaraEnergy = M_PI*kT;
 
 		energies.clear();
