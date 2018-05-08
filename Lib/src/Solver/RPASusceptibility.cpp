@@ -575,7 +575,7 @@ IndexedDataTree<vector<complex<double>>> RPASusceptibility::calculateSpinRPASusc
 	//subindex, which limits generality.
 	vector<vector<vector<complex<double>>>> result = rpaSusceptibilityMainAlgorithm(
 		index,
-		interactionAmplitudesCharge
+		interactionAmplitudesSpin
 	);
 	IndexedDataTree<vector<complex<double>>> indexedDataTree;
 	for(unsigned int n = 0; n < result.size(); n++){
