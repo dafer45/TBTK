@@ -944,6 +944,62 @@ AbstractProperty<
 }
 
 template<>
+inline AbstractProperty<int, true, false>::AbstractProperty(
+	const std::string &serialization,
+	Mode mode
+) :
+	indexDescriptor(
+		Serializable::extract(serialization, mode, "indexDescriptor"),
+		mode
+	)
+{
+	TBTKAssert(
+		validate(serialization, "AbstractProperty", mode),
+		"AbstractProperty::AbstractProperty()",
+		"Unable to parse string as AbstractProperty '" << serialization
+		<< "'.",
+		""
+	);
+
+	switch(mode){
+	case Mode::JSON:
+		try{
+			nlohmann::json j = nlohmann::json::parse(serialization);
+			blockSize = j.at("blockSize").get<unsigned int>();
+			nlohmann::json d = j.at("data");
+			for(
+				nlohmann::json::iterator it = d.begin();
+				it < d.end();
+				++it
+			){
+				data.push_back(*it);
+			}
+
+			allowIndexOutOfBoundsAccess = j.at(
+				"allowIndexOutOfBoundsAccess"
+			).get<bool>();
+			defaultValue = j.at("defaultValue").get<double>();
+		}
+		catch(nlohmann::json::exception e){
+			TBTKExit(
+				"AbstractProperty::AbstractProperty()",
+				"Unable to parse string as AbstractProperty '"
+				<< serialization << "'.",
+				""
+			);
+		}
+
+		break;
+	default:
+		TBTKExit(
+			"AbstractProperty::AbstractProperty()",
+			"Only Serializable::Mode::JSON is supported yet.",
+			""
+		);
+	}
+}
+
+template<>
 inline AbstractProperty<double, true, false>::AbstractProperty(
 	const std::string &serialization,
 	Mode mode

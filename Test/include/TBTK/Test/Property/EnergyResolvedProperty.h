@@ -458,6 +458,165 @@ TEST(EnergyResolvedProperty, Constructor3){
 	}
 }
 
+TEST(EnergyResolvedProerty, SerializeToJSON){
+	//EnergyType::Real.
+	IndexTree indexTree;
+	indexTree.add({0});
+	indexTree.add({1});
+	indexTree.add({2});
+	indexTree.generateLinearMap();
+	int data[3000];
+	for(unsigned int n = 0; n < 3000; n++)
+		data[n] = n;
+	EnergyResolvedProperty<int> energyResolvedProperty0(
+		indexTree,
+		-10,
+		10,
+		1000,
+		data
+	);
+	EnergyResolvedProperty<int> energyResolvedProperty1(
+		energyResolvedProperty0.serialize(Serializable::Mode::JSON),
+		Serializable::Mode::JSON
+	);
+	EXPECT_EQ(
+		energyResolvedProperty1.getEnergyType(),
+		EnergyResolvedProperty<int>::EnergyType::Real
+	);
+	EXPECT_EQ(
+		energyResolvedProperty1.getLowerBound(),
+		-10
+	);
+	EXPECT_EQ(
+		energyResolvedProperty1.getUpperBound(),
+		10
+	);
+	EXPECT_EQ(
+		energyResolvedProperty1.getResolution(),
+		1000
+	);
+
+	for(int n = 0; n < 3; n++){
+		for(
+			unsigned int c = 0;
+			c < 1000;
+			c++
+		){
+			EXPECT_EQ(energyResolvedProperty1({n}, c), 1000*n + c);
+		}
+	}
+
+	//EnergyType::FermionicMatsubara.
+	int data2[3*10];
+	for(unsigned int n = 0; n < 3*10; n++)
+		data2[n] = n;
+	EnergyResolvedProperty<int> energyResolvedProperty2(
+		EnergyResolvedProperty<int>::EnergyType::FermionicMatsubara,
+		indexTree,
+		-9,
+		9,
+		2,
+		data2
+	);
+	EnergyResolvedProperty<int> energyResolvedProperty3(
+		energyResolvedProperty2.serialize(Serializable::Mode::JSON),
+		Serializable::Mode::JSON
+	);
+	EXPECT_EQ(
+		energyResolvedProperty3.getEnergyType(),
+		EnergyResolvedProperty<int>::EnergyType::FermionicMatsubara
+	);
+	EXPECT_EQ(
+		energyResolvedProperty3.getLowerMatsubaraEnergyIndex(),
+		-9
+	);
+	EXPECT_EQ(
+		energyResolvedProperty3.getUpperMatsubaraEnergyIndex(),
+		9
+	);
+	EXPECT_EQ(
+		energyResolvedProperty3.getNumMatsubaraEnergies(),
+		10
+	);
+	EXPECT_DOUBLE_EQ(
+		energyResolvedProperty3.getFundamentalMatsubaraEnergy(),
+		2
+	);
+	EXPECT_DOUBLE_EQ(
+		energyResolvedProperty3.getLowerMatsubaraEnergy(),
+		-9*2
+	);
+	EXPECT_DOUBLE_EQ(
+		energyResolvedProperty3.getUpperMatsubaraEnergy(),
+		9*2
+	);
+
+	for(int n = 0; n < 3; n++){
+		for(
+			unsigned int c = 0;
+			c < 10;
+			c++
+		){
+			EXPECT_EQ(energyResolvedProperty3({n}, c), 10*n + c);
+		}
+	}
+
+	//EnergyType::BosonicMatsubara.
+	int data4[3*11];
+	for(unsigned int n = 0; n < 3*11; n++)
+		data4[n] = n;
+	EnergyResolvedProperty<int> energyResolvedProperty4(
+		EnergyResolvedProperty<int>::EnergyType::BosonicMatsubara,
+		indexTree,
+		-10,
+		10,
+		2,
+		data4
+	);
+	EnergyResolvedProperty<int> energyResolvedProperty5(
+		energyResolvedProperty4.serialize(Serializable::Mode::JSON),
+		Serializable::Mode::JSON
+	);
+	EXPECT_EQ(
+		energyResolvedProperty5.getEnergyType(),
+		EnergyResolvedProperty<int>::EnergyType::BosonicMatsubara
+	);
+	EXPECT_EQ(
+		energyResolvedProperty5.getLowerMatsubaraEnergyIndex(),
+		-10
+	);
+	EXPECT_EQ(
+		energyResolvedProperty5.getUpperMatsubaraEnergyIndex(),
+		10
+	);
+	EXPECT_EQ(
+		energyResolvedProperty5.getNumMatsubaraEnergies(),
+		11
+	);
+	EXPECT_DOUBLE_EQ(
+		energyResolvedProperty5.getFundamentalMatsubaraEnergy(),
+		2
+	);
+	EXPECT_DOUBLE_EQ(
+		energyResolvedProperty5.getLowerMatsubaraEnergy(),
+		-10*2
+	);
+	EXPECT_DOUBLE_EQ(
+		energyResolvedProperty5.getUpperMatsubaraEnergy(),
+		10*2
+	);
+
+	for(int n = 0; n < 3; n++){
+		for(
+			unsigned int c = 0;
+			c < 11;
+			c++
+		){
+			EXPECT_EQ(energyResolvedProperty5({n}, c), 11*n + c);
+		}
+	}
+}
+
 TEST(EnergyResolvedProperty, getEnergyType){
 	//Already tested throguh
 	//EnergyResolvedProperty::Constructor0
@@ -941,6 +1100,10 @@ TEST(EnergyResolvedProperty, getMatsubaraEnergy){
 			(-10 + 2*n)*2.2
 		);
 	}
+}
+
+TEST(EnergyResolvedProperty, serialize){
+	//Already tested through EnergyResolvedProperty::SerializatToJSON().
 }
 
 };	//End of namespace Property

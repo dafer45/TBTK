@@ -120,6 +120,16 @@ public:
 		const DataType *data
 	);
 
+	/** Constructor. Constructs the EnergyResolvedProperty from a
+	 *  serialization string.
+	 *
+	 *  @param serialization Serialization string from which to construct
+	 *  the EnergyResolvedProperty. */
+	EnergyResolvedProperty(
+		const std::string &serialization,
+		Serializable::Mode mode
+	);
+
 	/*** Get energy type.
 	 *
 	 *  @return The EnergyType. */
@@ -182,6 +192,9 @@ public:
 
 	/** Get the nth Matsubara energy. */
 	std::complex<double> getMatsubaraEnergy(unsigned int n) const;
+
+	/** Overrides AbstractProperty::serialize(). */
+	virtual std::string serialize(Serializable::Mode mode) const;
 private:
 	/** The energy type for the property. */
 	EnergyType energyType;
@@ -481,6 +494,81 @@ EnergyResolvedProperty<DataType>::EnergyResolvedProperty(
 }
 
 template<typename DataType>
+EnergyResolvedProperty<DataType>::EnergyResolvedProperty(
+	const std::string &serialization,
+	Serializable::Mode mode
+) :
+	AbstractProperty<DataType>(
+		Serializable::extract(
+			serialization,
+			mode,
+			"abstractProperty"
+		),
+		mode
+	)
+{
+	TBTKAssert(
+		Serializable::validate(serialization, "EnergyResolvedProperty", mode),
+		"Property::EnergyResolvedProperty::EnergyResolvedProperty()",
+		"Unable to parse string as EnergyResolvedProperty '"
+		<< serialization << "'.",
+		""
+	);
+
+	switch(mode){
+	case Serializable::Mode::JSON:
+		try{
+			nlohmann::json j = nlohmann::json::parse(serialization);
+			std::string et = j.at("energyType").get<std::string>();
+			if(et.compare("Real") == 0){
+				energyType = EnergyType::Real;
+				descriptor.realEnergy.lowerBound
+					= j.at("lowerBound").get<double>();
+				descriptor.realEnergy.upperBound
+					= j.at("upperBound").get<double>();
+				descriptor.realEnergy.resolution
+					= j.at("resolution").get<double>();
+			}
+			else if(et.compare("FermionicMatsubara") == 0){
+				energyType = EnergyType::FermionicMatsubara;
+				descriptor.matsubaraEnergy.lowerMatsubaraEnergyIndex
+					= j.at("lowerMatsubaraEnergyIndex");
+				descriptor.matsubaraEnergy.numMatsubaraEnergies
+					= j.at("numMatsubaraEnergies");
+				descriptor.matsubaraEnergy.fundamentalMatsubaraEnergy
+					= j.at("fundamentalMatsubaraEnergy");
+			}
+			else if(et.compare("BosonicMatsubara") == 0){
+				energyType = EnergyType::BosonicMatsubara;
+				descriptor.matsubaraEnergy.lowerMatsubaraEnergyIndex
+					= j.at("lowerMatsubaraEnergyIndex");
+				descriptor.matsubaraEnergy.numMatsubaraEnergies
+					= j.at("numMatsubaraEnergies");
+				descriptor.matsubaraEnergy.fundamentalMatsubaraEnergy
+					= j.at("fundamentalMatsubaraEnergy");
+			}
+		}
+		catch(nlohmann::json::exception e){
+			TBTKExit(
+				"Proerty::EnergyResolvedProperty::EnergyResolvedProperty()",
+				"Unable to parse string as"
+				<< " EnergyResolvedProperty '" << serialization
+				<< "'.",
+				""
+			);
+		}
+
+		break;
+	default:
+		TBTKExit(
+			"Property::EnergyResolvedProperty::EnergyResolvedProperty()",
+			"Only Serializable::Mode::JSON is supported yet.",
+			""
+		);
+	}
+}
+
+template<typename DataType>
 inline typename EnergyResolvedProperty<DataType>::EnergyType
 EnergyResolvedProperty<DataType>::getEnergyType() const{
 	return energyType;
@@ -667,6 +755,63 @@ inline std::complex<double> EnergyResolvedProperty<
 		(descriptor.matsubaraEnergy.lowerMatsubaraEnergyIndex + 2*n)
 		*descriptor.matsubaraEnergy.fundamentalMatsubaraEnergy
 	);
+}
+
+template<typename DataType>
+inline std::string EnergyResolvedProperty<DataType>::serialize(Serializable::Mode mode) const{
+	switch(mode){
+	case Serializable::Mode::JSON:
+	{
+		nlohmann::json j;
+		j["id"] = "EnergyResolvedProperty";
+		switch(energyType){
+		case EnergyType::Real:
+			j["energyType"] = "Real";
+			j["lowerBound"] = descriptor.realEnergy.lowerBound;
+			j["upperBound"] = descriptor.realEnergy.upperBound;
+			j["resolution"] = descriptor.realEnergy.resolution;
+
+			break;
+		case EnergyType::FermionicMatsubara:
+			j["energyType"] = "FermionicMatsubara";
+			j["lowerMatsubaraEnergyIndex"]
+				= descriptor.matsubaraEnergy.lowerMatsubaraEnergyIndex;
+			j["numMatsubaraEnergies"]
+				= descriptor.matsubaraEnergy.numMatsubaraEnergies;
+			j["fundamentalMatsubaraEnergy"]
+				= descriptor.matsubaraEnergy.fundamentalMatsubaraEnergy;
+
+			break;
+		case EnergyType::BosonicMatsubara:
+			j["energyType"] = "BosonicMatsubara";
+			j["lowerMatsubaraEnergyIndex"]
+				= descriptor.matsubaraEnergy.lowerMatsubaraEnergyIndex;
+			j["numMatsubaraEnergies"]
+				= descriptor.matsubaraEnergy.numMatsubaraEnergies;
+			j["fundamentalMatsubaraEnergy"]
+				= descriptor.matsubaraEnergy.fundamentalMatsubaraEnergy;
+
+			break;
+		default:
+			TBTKExit(
+				"Property::EnergyResolvedProperty::serialize()",
+				"Unknown EnergyType.",
+				"This should never happen, contact the developer."
+			);
+		}
+		j["abstractProperty"] = nlohmann::json::parse(
+			AbstractProperty<DataType>::serialize(mode)
+		);
+
+		return j.dump();
+	}
+	default:
+		TBTKExit(
+			"Property::EnergyResolvedProperty::serialize()",
+			"Only Serializable::Mode::JSON is supported yet.",
+			""
+		);
+	}
 }
 
 };	//End namespace Property
