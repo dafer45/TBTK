@@ -36,7 +36,7 @@ public:
 	 *  differentiation.
 	 *
 	 *  @param index Index at which the difference is taken.
-	 *  @pragma dx Step length. */
+	 *  @param dx Step length. */
 	ForwardDifference(
 		unsigned int subindex,
 		const Index &index,
