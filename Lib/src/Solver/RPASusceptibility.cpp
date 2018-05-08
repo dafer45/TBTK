@@ -27,8 +27,6 @@
 
 using namespace std;
 
-//const complex<double> i(0, 1);
-
 namespace TBTK{
 namespace Solver{
 
@@ -47,28 +45,12 @@ RPASusceptibility::RPASusceptibility(
 	interactionAmplitudesAreGenerated = false;
 }
 
-/*RPASusceptibility::RPASusceptibility(
-	SusceptibilityCalculator &susceptibilityCalculator
-){
-	this->susceptibilityCalculator = susceptibilityCalculator.createSlave();
-
-	U = 0.;
-	Up = 0.;
-	J = 0.;
-	Jp = 0.;
-
-	interactionAmplitudesAreGenerated = false;
-}*/
-
 RPASusceptibility* RPASusceptibility::createSlave(){
 	TBTKExit(
 		"Solver::RPASusceptibility::createSlave()",
 		"This function is not supported by this solver.",
 		""
 	);
-/*	return new RPASusceptibilityCalculator(
-		*susceptibilityCalculator
-	);*/
 }
 
 extern "C" {

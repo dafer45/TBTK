@@ -110,6 +110,18 @@ public:
 		double fundamentalMatsubaraEnergy,
 		const std::complex<double> *data
 	);
+
+	/** Constructor. Constructs the Susceptibility from a serialization
+	 *  string.
+	 *
+	 *  @param serialization Serialization string from which to construct
+	 *  the Susceptibility.
+	 *
+	 *  @param mode Mode with which the string has been serialized. */
+	Susceptibility(const std::string &serialization, Mode mode);
+
+	/** Overrides EnergyResolvedProperty::serialize(). */
+	std::string serialize(Mode mode) const;
 private:
 };
 
