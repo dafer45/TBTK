@@ -26,8 +26,8 @@ using namespace std;
 namespace TBTK{
 namespace Property{
 
-/*Susceptibility::Susceptibility() : EnergyResolvedProperty(){
-}*/
+Susceptibility::Susceptibility() : EnergyResolvedProperty(){
+}
 
 Susceptibility::Susceptibility(
 	const IndexTree &indexTree,

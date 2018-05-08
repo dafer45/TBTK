@@ -39,6 +39,9 @@ public:
 	/** Enum class for specifying the energy type. */
 	enum class EnergyType{Real, FermionicMatsubara, BosonicMatsubara};
 
+	/** Constructs an uninitialized EnergyResolvedProperty. */
+	EnergyResolvedProperty();
+
 	/** Constructs an EnergyResolvedProperty with real energies on the
 	 *  Custom format. [See AbstractProperty for detailed information about
 	 *  the Custom format.]
@@ -216,6 +219,10 @@ private:
 	/** The actual energy descriptor. */
 	EnergyDescriptor descriptor;
 };
+
+template<typename DataType>
+EnergyResolvedProperty<DataType>::EnergyResolvedProperty(){
+}
 
 template<typename DataType>
 EnergyResolvedProperty<DataType>::EnergyResolvedProperty(

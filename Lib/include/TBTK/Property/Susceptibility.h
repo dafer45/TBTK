@@ -36,7 +36,7 @@ namespace Property{
 class Susceptibility : public EnergyResolvedProperty<std::complex<double>>{
 public:
 	/** Constructs an uninitialized Susceptibility. */
-//	Susceptibility();
+	Susceptibility();
 
 	/** Constructs a Susceptibility with real energies on the Custom
 	 *  format. [See AbstractProperty for detailed information about the
