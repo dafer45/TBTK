@@ -57,7 +57,7 @@ public:
 		int lowerFermionicMatsubaraEnergyIndex,
 		int upperFermionicMatsubaraEnergyIndex,
 		int lowerBosonicMatsubaraEnergyIndex,
-		int upperBosonicEnergyIndex
+		int upperBosonicMatsubaraEnergyIndex
 	);
 
 	/** Calculates the Susceptibility. */
@@ -80,7 +80,7 @@ private:
 	std::vector<std::complex<double>> energies;
 
 	//TODO
-	//These variables should be made part if the PropertyExtractor instead
+	//These variables should be made part of the PropertyExtractor instead
 	//once its been tested to work well for this specific case.
 	enum class EnergyType{Real, Matsubara};
 	EnergyType energyType;
