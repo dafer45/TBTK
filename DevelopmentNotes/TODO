@@ -44,3 +44,9 @@
   AbstractProperty::operator(unsigned int) can be called instead of
   AbstractProperty::operator(Index, unsigned int = defaultValue) when the Index
   has a single subindex.
+
+- Move Matsubara related information from specific PropertyExtractors to
+  PropertyExtractor::PropertyExtractor.
+
+- Merge Property::GreensFunction and Property::GreensFunction2 into
+  Property::GreensFunction.
