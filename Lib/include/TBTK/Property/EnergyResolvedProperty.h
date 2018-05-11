@@ -339,7 +339,7 @@ EnergyResolvedProperty<DataType>::EnergyResolvedProperty(
 		TBTKAssert(
 			abs(upperMatsubaraEnergyIndex%2) == 1,
 			"EnergyResolvedProperty::EnergyResolvedProperty()",
-			"The 'uppererMatsubaraEnergyIndex="
+			"The 'upperMatsubaraEnergyIndex="
 			<< upperMatsubaraEnergyIndex << "' must be odd for"
 			<< " EnergyType::FermionicMatsubara.",
 			""
@@ -367,7 +367,7 @@ EnergyResolvedProperty<DataType>::EnergyResolvedProperty(
 		TBTKAssert(
 			upperMatsubaraEnergyIndex%2 == 0,
 			"EnergyResolvedProperty::EnergyResolvedProperty()",
-			"The 'uppererMatsubaraEnergyIndex="
+			"The 'upperMatsubaraEnergyIndex="
 			<< upperMatsubaraEnergyIndex << "' must be even for"
 			<< " EnergyType::BosonicMatsubara.",
 			""
