@@ -27,7 +27,7 @@
 #include "TBTK/Property/DOS.h"
 #include "TBTK/Property/Density.h"
 #include "TBTK/Property/EigenValues.h"
-#include "TBTK/Property/GreensFunction.h"
+#include "TBTK/Property/GreensFunction2.h"
 #include "TBTK/Property/LDOS.h"
 #include "TBTK/Property/Magnetization.h"
 #include "TBTK/Property/SpinPolarizedLDOS.h"
@@ -66,6 +66,23 @@ public:
 		int *maxIndexSize
 	);*/
 
+	/** Overrider PropertyExtractor::setEnergyWindow(). */
+	virtual void setEnergyWindow(
+		double lowerBound,
+		double upperBound,
+		int resolution
+	);
+
+	//TODO
+	//This should be extended to become part of the PropertyExtractor
+	//interface once it is tested to work for this specific case.
+	virtual void setEnergyWindow(
+		int lowerFermionicMatsubaraEnergyIndex,
+		int upperFermionicMatsubaraEnergyIndex,
+		int lowerBosonicMatsubaraEnergyIndex,
+		int upperBosonicMatsubaraEnergyIndex
+	);
+
 	/** Get eigenvalues. */
 	Property::EigenValues getEigenValues();
 
@@ -95,11 +112,19 @@ public:
 	);
 
 	/** Calculate Green's function. */
-/*	Property::GreensFunction* calculateGreensFunction(
+/*	Property::GreensFunction2 calculateGreensFunction(
 		Index to,
 		Index from,
-		Property::GreensFunction::Type type = Property::GreensFunction::Type::Retarded
+		Property::GreensFunction2::Type type
+			= Property::GreensFunction2::Type::Retarded
 	);*/
+
+	/** Calculate the Green's function. */
+	Property::GreensFunction2 calculateGreensFunction(
+		std::vector<Index> patterns,
+		Property::GreensFunction2::Type type
+			= Property::GreensFunction2::Type::Retarded
+	);
 
 	/** Overrides PropertyExtractor::calculateDOS(). */
 	virtual Property::DOS calculateDOS();
@@ -166,6 +191,15 @@ private:
 		int offset
 	);
 
+	/** Callback for calculating the Green's function. Used by
+	 *  calculateGreensFunction. */
+	static void calculateGreensFunctionCallback(
+		PropertyExtractor *cb_this,
+		void *greensFunction,
+		const Index &index,
+		int offset
+	);
+
 	/** Callback for calculating density. Used by calculateDensity. */
 	static void calculateDensityCallback(
 		PropertyExtractor *cb_this,
@@ -202,6 +236,19 @@ private:
 
 	/** Solver::Diagonalizer to work on. */
 	Solver::BlockDiagonalizer *bSolver;
+
+	/** Energies. */
+//	std::vector<std::complex<double>> energies;
+
+	//TODO
+	//These variables should be made part of the PropertyExtractor instead
+	//once it has been tested to work for this specific case.
+	enum class EnergyType{Real, Matsubara};
+	EnergyType energyType;
+	int lowerFermionicMatsubaraEnergyIndex;
+	int upperFermionicMatsubaraEnergyIndex;
+	int lowerBosonicMatsubaraEnergyIndex;
+	int upperBosonicMatsubaraEnergyIndex;
 };
 
 inline double BlockDiagonalizer::getEigenValue(int state) const{

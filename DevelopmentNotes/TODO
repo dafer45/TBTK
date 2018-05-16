@@ -50,3 +50,9 @@
 
 - Merge Property::GreensFunction and Property::GreensFunction2 into
   Property::GreensFunction.
+
+- Remove variables such as hint and energies from the PropertyExtractors that
+  are used to communicate information between the calculateXXX-functions and
+  the XXXCallback-functions. Instead pass a hint parameter as argument through
+  the calculate() and callback functions. This will allow the same
+  PropertyExtractor to be parallelized as long as the solver allows for this.

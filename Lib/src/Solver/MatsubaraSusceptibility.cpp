@@ -39,25 +39,6 @@ MatsubaraSusceptibility::MatsubaraSusceptibility(
 {
 }
 
-/*MatsubaraSusceptibility::MatsubaraSusceptibility(
-	const MomentumSpaceContext &momentumSpaceContext,
-	int *kPlusQLookupTable,
-	double *fermiDiracLookupTable
-) :
-	Susceptibility(
-		Algorithm::Lindhard,
-		momentumSpaceContext,
-		kPlusQLookupTable
-	)
-{
-	this->fermiDiracLookupTable = fermiDiracLookupTable;
-}
-
-MatsubaraSusceptibility::~LindhardSusceptibility(){
-	if(getIsMaster() && fermiDiracLookupTable != nullptr)
-		delete [] fermiDiracLookupTable;
-}*/
-
 MatsubaraSusceptibility* MatsubaraSusceptibility::createSlave(){
 	TBTKExit(
 		"Solver::MatsubaraSusceptibility::createSlave()",
@@ -69,6 +50,10 @@ MatsubaraSusceptibility* MatsubaraSusceptibility::createSlave(){
 vector<complex<double>> MatsubaraSusceptibility::calculateSusceptibility(
 	const Index &index
 ){
+	TBTKNotYetImplemented(
+		"MatsubaraSusceptibility::calculateSusceptibility()"
+	);
+
 	vector<Index> components = index.split();
 	TBTKAssert(
 		components.size() == 5,
@@ -77,13 +62,13 @@ vector<complex<double>> MatsubaraSusceptibility::calculateSusceptibility(
 		<< "but '" << components.size() << "' components suplied.",
 		""
 	);
-/*	const Index &kIndex = components[0];
+	const Index &kIndex = components[0];
 	const Index intraBlockIndices[4] = {
 		components[1],
 		components[2],
 		components[3],
 		components[4]
-	};*/
+	};
 
 	TBTKAssert(
 		greensFunction.getEnergyType()
@@ -97,6 +82,11 @@ vector<complex<double>> MatsubaraSusceptibility::calculateSusceptibility(
 	);
 	unsigned int numMatsubaraEnergies
 		= greensFunction.getNumMatsubaraEnergies();
+//	unsigned int lowerFermionicMatsubaraEnergyIndex
+//		= greensFunction.getLowerMatsubaraEnergyIndex();
+//	vector<int> matsubaraIndices;
+//	for(unsigned int n = 0; n < numMatsubaraEnergies; n++)
+//		matsubaraIndices[n] = lowerFermionicMatsubaraEnergyIndex + 2*n;
 
 	vector<complex<double>> susceptibility;
 	susceptibility.reserve(numMatsubaraEnergies);
@@ -104,7 +94,65 @@ vector<complex<double>> MatsubaraSusceptibility::calculateSusceptibility(
 		susceptibility.push_back(0.);
 	}
 
-	for(unsigned int n = 0; n < numMatsubaraEnergies; n++){
+	const MomentumSpaceContext &momentumSpaceContext
+		= getMomentumSpaceContext();
+	const vector<vector<double>> &mesh = momentumSpaceContext.getMesh();
+	const vector<unsigned int> &numMeshPoints
+		= momentumSpaceContext.getNumMeshPoints();
+	const BrillouinZone &brillouinZone
+		= momentumSpaceContext.getBrillouinZone();
+
+	vector<unsigned int> kVector;
+	kVector.reserve(kIndex.getSize());
+	for(unsigned int n = 0; n < kIndex.getSize(); n++)
+		kVector.push_back(kIndex[n]);
+	vector<double> k = brillouinZone.getMinorMeshPoint(
+		kVector,
+		numMeshPoints
+	);
+
+	for(unsigned int meshPoint = 0; meshPoint < mesh.size(); meshPoint++){
+		Index qIndex = brillouinZone.getMinorCellIndex(
+			{mesh[meshPoint][0], mesh[meshPoint][1]},
+			numMeshPoints
+		);
+		Index kPlusQIndex = brillouinZone.getMinorCellIndex(
+			{k[0] + mesh[meshPoint][0], k[1] + mesh[meshPoint][1]},
+			numMeshPoints
+		);
+
+		for(unsigned int n = 0; n < numMatsubaraEnergies; n++){
+			for(unsigned int c = 0; c < numMatsubaraEnergies; c++){
+/*				if(n+c >= numMatsubaraEnergies)
+					continue;
+
+				susceptibility[n] += greensFunction(
+					{
+						Index(
+							qIndex,
+							intraBlockIndices[3]
+						),
+						Index(
+							qIndex,
+							intraBlockIndices[0]
+						)
+					},
+					c
+				)*greensFunction(
+					{
+						Index(
+							kPlusQIndex,
+							intraBlockIndices[1]
+						),
+						Index(
+							kPlusQIndex,
+							intraBlockIndices[2]
+						)
+					},
+					n + c
+				);*/
+			}
+		}
 	}
 
 	return susceptibility;

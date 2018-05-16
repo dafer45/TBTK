@@ -31,9 +31,70 @@ namespace PropertyExtractor{
 
 BlockDiagonalizer::BlockDiagonalizer(Solver::BlockDiagonalizer &bSolver){
 	this->bSolver = &bSolver;
+	energyType = EnergyType::Real;
 }
 
 BlockDiagonalizer::~BlockDiagonalizer(){
+}
+
+void BlockDiagonalizer::setEnergyWindow(
+	double lowerBound,
+	double upperBound,
+	int resolution
+){
+	PropertyExtractor::setEnergyWindow(
+		lowerBound,
+		upperBound,
+		resolution
+	);
+
+	energyType = EnergyType::Real;
+}
+
+void BlockDiagonalizer::setEnergyWindow(
+	int lowerFermionicMatsubaraEnergyIndex,
+	int upperFermionicMatsubaraEnergyIndex,
+	int lowerBosonicMatsubaraEnergyIndex,
+	int upperBosonicMatsubaraEnergyIndex
+){
+	TBTKAssert(
+		abs(lowerFermionicMatsubaraEnergyIndex%2) == 1,
+		"PropertyExtractor::BlockDiagonalizer::setEnergyWindow()",
+		"'lowerFermionicMatsubaraEnergyIndex="
+		<< lowerFermionicMatsubaraEnergyIndex << "' must be odd.",
+		""
+	);
+	TBTKAssert(
+		abs(upperFermionicMatsubaraEnergyIndex%2) == 1,
+		"PropertyExtractor::BlockDiagonalizer::setEnergyWindow()",
+		"'upperFermionicMatsubaraEnergyIndex="
+		<< upperFermionicMatsubaraEnergyIndex << "' must be odd.",
+		""
+	);
+	TBTKAssert(
+		abs(lowerBosonicMatsubaraEnergyIndex%2) == 0,
+		"PropertyExtractor::BlockDiagonalizer::setEnergyWindow()",
+		"'lowerBosonicMatsubaraEnergyIndex="
+		<< lowerFermionicMatsubaraEnergyIndex << "' must be odd.",
+		""
+	);
+	TBTKAssert(
+		abs(upperBosonicMatsubaraEnergyIndex%2) == 0,
+		"PropertyExtractor::BlockDiagonalizer::setEnergyWindow()",
+		"'upperBosonicMatsubaraEnergyIndex="
+		<< upperBosonicMatsubaraEnergyIndex << "' must be odd.",
+		""
+	);
+
+	energyType = EnergyType::Matsubara;
+	this->lowerFermionicMatsubaraEnergyIndex
+		= lowerFermionicMatsubaraEnergyIndex;
+	this->upperFermionicMatsubaraEnergyIndex
+		= upperFermionicMatsubaraEnergyIndex;
+	this->lowerBosonicMatsubaraEnergyIndex
+		= lowerBosonicMatsubaraEnergyIndex;
+	this->upperBosonicMatsubaraEnergyIndex
+		= upperBosonicMatsubaraEnergyIndex;
 }
 
 /*void BPropertyExtractor::saveEigenValues(string path, string filename){
@@ -140,10 +201,10 @@ Property::WaveFunctions BlockDiagonalizer::calculateWaveFunctions(
 	return waveFunctions;
 }
 
-/*Property::GreensFunction* BPropertyExtractor::calculateGreensFunction(
+/*Property::GreensFunction2 BPropertyExtractor::calculateGreensFunction(
 	Index to,
 	Index from,
-	Property::GreensFunction::Type type
+	Property::GreensFunction2::Type type
 ){
 	unsigned int numPoles = bSolver->getModel().getBasisSize();
 
@@ -172,7 +233,163 @@ Property::WaveFunctions BlockDiagonalizer::calculateWaveFunctions(
 	return greensFunction;
 }*/
 
+Property::GreensFunction2 BlockDiagonalizer::calculateGreensFunction(
+	vector<Index> patterns,
+	Property::GreensFunction2::Type type
+){
+	IndexTree allIndices;
+	IndexTree memoryLayout;
+	for(unsigned int n = 0; n < patterns.size(); n++){
+		const Index &pattern = *(patterns.begin() + n);
+
+		std::vector<Index> components = pattern.split();
+		TBTKAssert(
+			components.size() == 2,
+			"PropertyExtractor::BlockDiagonalizer::calculateGreensFunction()",
+			"Invalid pattern '" << pattern.toString() << "'.",
+			"The Index must be a compund Index with 2 component"
+			<< " Indices, but the number of components are '"
+			<< components.size() << "'."
+		);
+
+		//TODO
+		//Continue here.
+		const Index &toPattern = components[0];
+		const Index &fromPattern = components[1];
+
+		//Generate allIndices.
+		IndexTree allToIndices = generateIndexTree(
+			{toPattern},
+			bSolver->getModel().getHoppingAmplitudeSet(),
+			false,
+			false
+		);
+		IndexTree allFromIndices = generateIndexTree(
+			{fromPattern},
+			bSolver->getModel().getHoppingAmplitudeSet(),
+			false,
+			false
+		);
+		for(
+			IndexTree::ConstIterator iteratorTo
+				= allToIndices.cbegin();
+			iteratorTo != allToIndices.cend();
+			++iteratorTo
+		){
+			for(
+				IndexTree::ConstIterator iteratorFrom
+					= allFromIndices.cbegin();
+				iteratorFrom != allFromIndices.cend();
+				++iteratorFrom
+			){
+				allIndices.add({*iteratorTo, *iteratorFrom});
+			}
+		}
+
+		//Generate memory layout
+		IndexTree memoryLayoutTo = generateIndexTree(
+			{toPattern},
+			bSolver->getModel().getHoppingAmplitudeSet(),
+			true,
+			false
+		);
+		IndexTree memoryLayoutFrom = generateIndexTree(
+			{fromPattern},
+			bSolver->getModel().getHoppingAmplitudeSet(),
+			true,
+			false
+		);
+		for(
+			IndexTree::ConstIterator iteratorTo
+				= memoryLayoutTo.cbegin();
+			iteratorTo != memoryLayoutTo.cend();
+			++iteratorTo
+		){
+			for(
+				IndexTree::ConstIterator iteratorFrom
+					= memoryLayoutFrom.cbegin();
+				iteratorFrom != memoryLayoutFrom.cend();
+				++iteratorFrom
+			){
+				memoryLayout.add({*iteratorTo, *iteratorFrom});
+			}
+		}
+	}
+	allIndices.generateLinearMap();
+	memoryLayout.generateLinearMap();
+
+	switch(type){
+	case Property::GreensFunction2::Type::Matsubara:
+	{
+		TBTKAssert(
+			lowerFermionicMatsubaraEnergyIndex
+				<= upperFermionicMatsubaraEnergyIndex,
+			"PropertyExtractor::BlockDiagonalizer::calculateGreensFunction()",
+			"'lowerFermionicMatsubaraEnergyIndex="
+			<< lowerFermionicMatsubaraEnergyIndex << "' must be"
+			<< " less or equal to"
+			<< " 'upperFermionicMatsubaraEnergyIndex="
+			<< upperFermionicMatsubaraEnergyIndex << "'.",
+			"This should never happen, contact the developer."
+		);
+		unsigned int numMatsubaraEnergies = (
+			upperFermionicMatsubaraEnergyIndex
+			- lowerFermionicMatsubaraEnergyIndex
+		)/2 + 1;
+
+		double temperature = bSolver->getModel().getTemperature();
+		double kT = UnitHandler::getK_BN()*temperature;
+		double fundamentalMatsubaraEnergy = M_PI*kT;
+
+		hint = new vector<complex<double>>();
+		vector<complex<double>> &energies = *((vector<complex<double>>*)hint);
+		energies.clear();
+		energies.reserve(numMatsubaraEnergies);
+		for(int n = 0; n < numMatsubaraEnergies; n++){
+			energies.push_back(
+				(double)(
+					lowerFermionicMatsubaraEnergyIndex
+					+ 2*n
+				)*complex<double>(0, 1)*M_PI*kT
+			);
+		}
+
+		Property::GreensFunction2 greensFunction(
+			memoryLayout,
+			lowerFermionicMatsubaraEnergyIndex,
+			upperFermionicMatsubaraEnergyIndex,
+			fundamentalMatsubaraEnergy
+		);
+
+		calculate(
+			calculateGreensFunctionCallback,
+			allIndices,
+			memoryLayout,
+			greensFunction
+		);
+
+		delete (vector<complex<double>>*)hint;
+
+		return greensFunction;
+	}
+	default:
+		TBTKExit(
+			"PropertyExtractor::BlockDiagonalizer::calculateGreensFunction()",
+			"Only Property::GreensFunction::Type::Matsubara"
+			<< " supported yet.",
+			""
+		);
+	}
+}
+
 Property::DOS BlockDiagonalizer::calculateDOS(){
+	TBTKAssert(
+		energyType == EnergyType::Real,
+		"PropertyExtractor::BlockDiagonalizer::calculateDOS()",
+		"Only real energies supported for the DOS.",
+		"Use PropertyExtractor::BlockDiagonalizer::setEnergyWindow()"
+		<< " to set a real energy window."
+	);
 //	const double *ev = bSolver->getEigenValues();
 
 	Property::DOS dos(lowerBound, upperBound, energyResolution);
@@ -377,6 +594,14 @@ Property::Magnetization BlockDiagonalizer::calculateMagnetization(
 Property::LDOS BlockDiagonalizer::calculateLDOS(
 	std::initializer_list<Index> patterns
 ){
+	TBTKAssert(
+		energyType == EnergyType::Real,
+		"PropertyExtractor::BlockDiagonalizer::calculateLDOS()",
+		"Only real energies supported for the LDOS.",
+		"Use PropertyExtractor::BlockDiagonalizer::setEnergyWindow()"
+		<< " to set a real energy window."
+	);
+
 	//hint[0] is an array of doubles, hint[1] is an array of ints
 	//hint[0][0]: upperBound
 	//hint[0][1]: lowerBound
@@ -488,6 +713,14 @@ Property::LDOS BlockDiagonalizer::calculateLDOS(
 Property::SpinPolarizedLDOS BlockDiagonalizer::calculateSpinPolarizedLDOS(
 	std::initializer_list<Index> patterns
 ){
+	TBTKAssert(
+		energyType == EnergyType::Real,
+		"PropertyExtractor::BlockDiagonalizer::calculateSpinPolarizedLDOS()",
+		"Only real energies supported for the SpinPolarizedLDOS.",
+		"Use PropertyExtractor::BlockDiagonalizer::setEnergyWindow()"
+		<< " to set a real energy window."
+	);
+
 	//hint[0] is an array of doubles, hint[1] is an array of ints
 	//hint[0][0]: upperBound
 	//hint[0][1]: lowerBound
@@ -585,6 +818,87 @@ void BlockDiagonalizer::calculateWaveFunctionsCallback(
 	const vector<unsigned int> states = ((Property::WaveFunctions**)pe->hint)[0]->getStates();
 	for(unsigned int n = 0; n < states.size(); n++)
 		((complex<double>*)waveFunctions)[offset + n] += pe->getAmplitude(states.at(n), index);
+}
+
+void BlockDiagonalizer::calculateGreensFunctionCallback(
+	PropertyExtractor *cb_this,
+	void *greensFunction,
+	const Index &index,
+	int offset
+){
+	BlockDiagonalizer *propertyExtractor = (BlockDiagonalizer*)cb_this;
+	const vector<complex<double>> &energies
+		= *((vector<complex<double>>*)propertyExtractor->hint);
+
+	vector<Index> components = index.split();
+	const Index &toIndex = components[0];
+	const Index &fromIndex = components[1];
+
+	unsigned int firstStateInBlock
+		= propertyExtractor->bSolver->getFirstStateInBlock(
+			toIndex
+		);
+	unsigned int lastStateInBlock
+		= propertyExtractor->bSolver->getLastStateInBlock(
+			toIndex
+		);
+	if(
+		firstStateInBlock
+			!= propertyExtractor->bSolver->getFirstStateInBlock(
+				fromIndex
+			)
+	){
+		return;
+	}
+
+	for(unsigned int n = firstStateInBlock; n <= lastStateInBlock; n++){
+		double energy = propertyExtractor->bSolver->getEigenValue(n);
+		complex<double> toAmplitude = propertyExtractor->getAmplitude(
+			n,
+			toIndex
+		);
+		complex<double> fromAmplitude
+			= propertyExtractor->getAmplitude(
+				n,
+				fromIndex
+			);
+		complex<double> numerator = toAmplitude*conj(fromAmplitude);
+		if(abs(numerator) < numeric_limits<double>::epsilon())
+			continue;
+
+		for(unsigned int e = 0; e < energies.size(); e++){
+			if(index.equals({{0, 50, ___}, {0, 50, ___}}, true)){
+				Streams::out << index.toString() << toAmplitude << "\t" << fromAmplitude << "\n";
+			}
+			((complex<double>*)greensFunction)[offset + e]
+				+= numerator/(energies[e] - energy);
+		}
+	}
+/*	unsigned int numPoles = bSolver->getModel().getBasisSize();
+
+	complex<double> *positions = new complex<double>[numPoles];
+	complex<double> *amplitudes = new complex<double>[numPoles];
+	for(int n = 0; n < bSolver->getModel().getBasisSize(); n++){
+		positions[n] = bSolver->getEigenValue(n);
+
+		complex<double> uTo = bSolver->getAmplitude(n, to);
+		complex<double> uFrom = bSolver->getAmplitude(n, from);
+
+		amplitudes[n] = uTo*conj(uFrom);
+	}
+
+	Property::GreensFunction *greensFunction = new Property::GreensFunction(
+		type,
+		Property::GreensFunction::Format::Poles,
+		numPoles,
+		positions,
+		amplitudes
+	);
+
+	delete [] positions;
+	delete [] amplitudes;
+
+	return greensFunction;*/
 }
 
 void BlockDiagonalizer::calculateDensityCallback(

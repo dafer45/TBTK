@@ -445,7 +445,7 @@ Property::Susceptibility LindhardSusceptibility::calculateSusceptibility(
 
 		energies.clear();
 		energies.reserve(numMatsubaraEnergies);
-		for(unsigned int n = 0; n < numMatsubaraEnergies; n++){
+		for(int n = 0; n < numMatsubaraEnergies; n++){
 			energies.push_back(
 				(double)(
 					lowerBosonicMatsubaraEnergyIndex + 2*n

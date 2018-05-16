@@ -74,7 +74,7 @@ GreensFunction2::GreensFunction2(
 	double fundamentalMatsubaraEnergy
 ) :
 	EnergyResolvedProperty(
-		EnergyType::BosonicMatsubara,
+		EnergyType::FermionicMatsubara,
 		indexTree,
 		lowerMatsubaraEnergyIndex,
 		upperMatsubaraEnergyIndex,
@@ -92,7 +92,7 @@ GreensFunction2::GreensFunction2(
 	const complex<double> *data
 ) :
 	EnergyResolvedProperty(
-		EnergyType::BosonicMatsubara,
+		EnergyType::FermionicMatsubara,
 		indexTree,
 		lowerMatsubaraEnergyIndex,
 		upperMatsubaraEnergyIndex,
