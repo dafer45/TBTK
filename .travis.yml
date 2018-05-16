@@ -17,7 +17,6 @@ matrix:
             - libfftw3-dev
             - libhdf5-serial-dev
             - libopencv-dev
-            - libsuperlu-dev
       env:
         - MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9"
 
