@@ -5,14 +5,14 @@ language: cpp
 matrix:
   include:
     - os: linux
-    addons:
-      apt:
-        source:
-          - ubuntu-toolchain-r-test
-        packages:
-          - g++-4.9
-    env:
-      - MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9"
+      addons:
+        apt:
+          source:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-4.9
+      env:
+        - MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9"
 
 before_install:
   - eval "${MATRIX_EVAL}"
