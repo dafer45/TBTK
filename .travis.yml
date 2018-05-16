@@ -2,17 +2,12 @@ sudo: true
 
 language: cpp
 
-os: linux
-  addons:
-    source:
-      - ubuntu-toolchain-r-test
-    packages:
-      - g++-4.9
-  env:
-    - CC=gcc-4.9
-    - CXX=g++-4.9
+env:
+  - CC=gcc-4.9
+  - CXX=g++-4.9
 
 install:
+  - sudo apt-get install gcc-4.9
   - sudo apt-get install cmake
   - sudo apt-get install libblas-dev liblapack-dev
 
