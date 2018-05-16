@@ -2,10 +2,22 @@ sudo: true
 
 language: cpp
 
+matrix:
+  inlcude:
+    - os: linux
+    addons:
+      apt:
+        source:
+          - ubuntu-toolchain-r-test
+        packages:
+          - g++-4.9
+    env:
+      - MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9"
+
+before_install:
+  - eval "${MATRIX_EVAL}"
+
 install:
-  - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
-  - sudo apt-get update
-  - sudo apt-get install gcc-4.9
   - sudo apt-get install cmake
   - sudo apt-get install libblas-dev liblapack-dev
 
