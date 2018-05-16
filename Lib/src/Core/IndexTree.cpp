@@ -26,7 +26,7 @@
 #include "TBTK/json.hpp"
 
 using namespace std;
-using namespace nlohmann;
+//using namespace nlohmann;
 
 namespace TBTK{
 
@@ -92,16 +92,16 @@ IndexTree::IndexTree(const string &serialization, Mode mode){
 	case Mode::JSON:
 	{
 		try{
-			json j = json::parse(serialization);
+			nlohmann::json j = nlohmann::json::parse(serialization);
 			try{
-				json c = j.at("children");
-				for(json::iterator it = c.begin(); it != c.end(); ++it){
+				nlohmann::json c = j.at("children");
+				for(nlohmann::json::iterator it = c.begin(); it != c.end(); ++it){
 					children.push_back(
 						IndexTree(it->dump(), mode)
 					);
 				}
 			}
-			catch(json::exception e){
+			catch(nlohmann::json::exception e){
 				//It is valid to not have children.
 			}
 			indexIncluded = j.at("indexIncluded").get<bool>();
@@ -111,7 +111,7 @@ IndexTree::IndexTree(const string &serialization, Mode mode){
 			linearIndex = j.at("linearIndex").get<int>();
 			size = j.at("size").get<int>();
 		}
-		catch(json::exception e){
+		catch(nlohmann::json::exception e){
 			TBTKExit(
 				"IndexTree::IndexTree()",
 				"Unable to parse string as IndexTree '"
@@ -619,11 +619,11 @@ string IndexTree::serialize(Mode mode) const{
 	}
 	case Mode::JSON:
 	{
-		json j;
+		nlohmann::json j;
 		j["id"] = "IndexTree";
 		for(unsigned int n = 0; n < children.size(); n++){
 			j["children"].push_back(
-				json::parse(children.at(n).serialize(mode))
+				nlohmann::json::parse(children.at(n).serialize(mode))
 			);
 		}
 		j["indexIncluded"] = indexIncluded;
