@@ -13,7 +13,7 @@ matrix:
             - g++-4.9
             - libblas-dev
             - liblapack-dev
-            - libarpack-dev
+            - libarpack2-dev
             - libfftw3-dev
             - libhdf5-serial-dev
             - libopencv-dev
