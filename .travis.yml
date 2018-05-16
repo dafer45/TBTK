@@ -11,8 +11,13 @@ matrix:
             - ubuntu-toolchain-r-test
           packages:
             - g++-4.9
+            - libblas-dev
+            - liblapack-dev
+            - libarpack-dev
             - libfftw3-dev
             - libhdf5-serial-dev
+            - libopencv-dev
+            - libsuperlu-dev
       env:
         - MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9"
 
@@ -21,7 +26,6 @@ before_install:
 
 install:
   - sudo apt-get install cmake
-  - sudo apt-get install libblas-dev liblapack-dev
 
 script:
   - cd ..
