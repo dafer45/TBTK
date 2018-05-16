@@ -8,6 +8,7 @@ install:
 script:
   - pwd
   - ls
+  - cd ..
   - mkdir TBTKBuild
   - cd TBTKBuild
   - cmake ../TBTK/
