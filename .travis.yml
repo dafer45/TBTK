@@ -4,6 +4,7 @@ language: cpp
 
 install:
   - sudo apt-get install cmake
+  - sudo apt-get install libblas-dev liblapack-dev
 
 script:
   - pwd
