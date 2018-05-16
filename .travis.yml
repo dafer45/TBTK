@@ -3,12 +3,12 @@ sudo: true
 language: cpp
 
 install:
-  - apt-get install cmake
+  - sudo apt-get install cmake
 
 script:
   - cd ..
   - mkdir TBTKBuild
   - cmake ../TBTK/
   - make
-  - make instal
+  - sudo make instal
   - make test
