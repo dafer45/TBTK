@@ -7,7 +7,7 @@ matrix:
     - os: linux
       addons:
         apt:
-          source:
+          sources:
             - ubuntu-toolchain-r-test
           packages:
             - g++-4.9
