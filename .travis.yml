@@ -6,8 +6,10 @@ install:
   - sudo apt-get install cmake
 
 script:
-  - cd ..
+  - pwd
+  - ls
   - mkdir TBTKBuild
+  - cd TBTKBuild
   - cmake ../TBTK/
   - make
   - sudo make instal
