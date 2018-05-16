@@ -21,9 +21,6 @@ install:
   - sudo apt-get install cmake
   - sudo apt-get install libblas-dev liblapack-dev
 
-env:
-  - CC=gcc-4.9 && CXX=g++-4.9
-
 script:
   - cd ..
   - mkdir TBTKBuild
