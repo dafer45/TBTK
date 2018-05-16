@@ -25,7 +25,7 @@
 #include "TBTK/json.hpp"
 
 using namespace std;
-using namespace nlohmann;
+//using namespace nlohmann;
 
 namespace TBTK{
 
@@ -148,11 +148,11 @@ Geometry::Geometry(
 	case Mode::JSON:
 	{
 		try{
-			json j = json::parse(serialization);
+			nlohmann::json j = nlohmann::json::parse(serialization);
 			dimensions = j.at("dimensions").get<int>();
 			numSpecifiers = j.at("numSpecifiers").get<int>();
 
-			json c = j.at("coordinates");
+			nlohmann::json c = j.at("coordinates");
 			TBTKAssert(
 				distance(
 					c.begin(),
@@ -170,13 +170,13 @@ Geometry::Geometry(
 			);
 			coordinates = new double[dimensions*hoppingAmplitudeSet.getBasisSize()];
 			unsigned int counter = 0;
-			for(json::iterator it = c.begin(); it < c.end(); ++it){
+			for(nlohmann::json::iterator it = c.begin(); it < c.end(); ++it){
 				coordinates[counter] = *it;
 				counter++;
 			}
 
 			if(numSpecifiers > 0){
-				json s = j.at("specifiers");
+				nlohmann::json s = j.at("specifiers");
 				TBTKAssert(
 					distance(
 						s.begin(),
@@ -194,7 +194,7 @@ Geometry::Geometry(
 				);
 				specifiers = new int[numSpecifiers*hoppingAmplitudeSet.getBasisSize()];
 				unsigned int counter = 0;
-				for(json::iterator it = s.begin(); it < s.end(); ++it){
+				for(nlohmann::json::iterator it = s.begin(); it < s.end(); ++it){
 					specifiers[counter] = *it;
 					counter++;
 				}
@@ -203,7 +203,7 @@ Geometry::Geometry(
 				specifiers = nullptr;
 			}
 		}
-		catch(json::exception e){
+		catch(nlohmann::json::exception e){
 			TBTKExit(
 				"Geometry::Geometry()",
 				"Unable to parse string as Geometry '"
@@ -464,7 +464,7 @@ string Geometry::serialize(Mode mode) const{
 	}
 	case Mode::JSON:
 	{
-		json j;
+		nlohmann::json j;
 		j["id"] = "Geometry";
 		j["dimensions"] = dimensions;
 		j["numSpecifiers"] = numSpecifiers;

@@ -24,7 +24,7 @@
 #include "TBTK/json.hpp"
 
 using namespace std;
-using namespace nlohmann;
+//using namespace nlohmann;
 
 namespace TBTK{
 
@@ -59,13 +59,13 @@ bool Serializable::validate(
 	case Mode::JSON:
 	{
 		try{
-			json j = json::parse(serialization);
+			nlohmann::json j = nlohmann::json::parse(serialization);
 			if(j.at("id").get<string>().compare(id) == 0)
 				return true;
 			else
 				return false;
 		}
-		catch(json::exception e){
+		catch(nlohmann::json::exception e){
 			return false;
 		}
 	}
@@ -90,11 +90,11 @@ bool Serializable::hasID(const string &serialization, Mode mode){
 	}
 	case Mode::JSON:
 		try{
-			json j = json::parse(serialization);
+			nlohmann::json j = nlohmann::json::parse(serialization);
 			j.at("id");
 			return true;
 		}
-		catch(json::exception e){
+		catch(nlohmann::json::exception e){
 			return false;
 		}
 	default:
@@ -123,10 +123,10 @@ string Serializable::getID(const string &serialization, Mode mode){
 	}
 	case Mode::JSON:
 		try{
-			json j = json::parse(serialization);
+			nlohmann::json j = nlohmann::json::parse(serialization);
 			return j.at("id");
 		}
-		catch(json::exception e){
+		catch(nlohmann::json::exception e){
 			TBTKExit(
 				"Serializable::getID()",
 				"Unable to parse serialization string '"
@@ -160,10 +160,10 @@ string Serializable::extractComponent(
 	switch(mode){
 	case Mode::JSON:
 		try{
-			json j = json::parse(serialization);
+			nlohmann::json j = nlohmann::json::parse(serialization);
 			return j.at(componentName).dump();
 		}
-		catch(json::exception e){
+		catch(nlohmann::json::exception e){
 			TBTKExit(
 				"Serializable::extractComponent()",
 				"Unable to extract component with ID '"
@@ -271,11 +271,11 @@ string Serializable::extract(
 	switch(mode){
 	case Mode::JSON:
 		try{
-			json j = json::parse(serialization);
+			nlohmann::json j = nlohmann::json::parse(serialization);
 
 			return j.at(component).dump();
 		}
-		catch(json::exception e){
+		catch(nlohmann::json::exception e){
 			TBTKExit(
 				"Serializable::extract()",
 				"Unable to extract '" << component << "' from"

@@ -23,7 +23,7 @@
 #include "TBTK/json.hpp"
 
 using namespace std;
-using namespace nlohmann;
+//using namespace nlohmann;
 
 namespace TBTK{
 
@@ -68,11 +68,11 @@ SourceAmplitude::SourceAmplitude(
 		try{
 			amplitudeCallback = nullptr;
 
-			json j = json::parse(serialization);
+			nlohmann::json j = nlohmann::json::parse(serialization);
 			Serializable::deserialize(j["amplitude"].get<string>(), &amplitude, mode);
 			index = Index(j["index"].dump(), mode);
 		}
-		catch(json::exception e){
+		catch(nlohmann::json::exception e){
 			TBTKExit(
 				"SourceAmplitude::SourceAmplitude()",
 				"Unable to parse string as SourceAmplitude '"
@@ -104,10 +104,10 @@ string SourceAmplitude::serialize(Serializable::Mode mode) const{
 	switch(mode){
 	case Serializable::Mode::JSON:
 	{
-		json j;
+		nlohmann::json j;
 		j["id"] = "SourceAmplitude";
 		j["amplitude"] = Serializable::serialize(amplitude, mode);
-		j["index"] = json::parse(index.serialize(mode));
+		j["index"] = nlohmann::json::parse(index.serialize(mode));
 
 		return j.dump();
 	}

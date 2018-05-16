@@ -24,7 +24,7 @@
 #include "TBTK/json.hpp"
 
 using namespace std;
-using namespace nlohmann;
+//using namespace nlohmann;
 
 namespace TBTK{
 namespace Property{
@@ -112,7 +112,7 @@ Susceptibility::Susceptibility(
 	case Mode::JSON:
 		try{
 		}
-		catch(json::exception e){
+		catch(nlohmann::json::exception e){
 			TBTKExit(
 				"Property::Susceptibility::Susceptibility()",
 				"Unable to parse string as"
@@ -136,9 +136,9 @@ string Susceptibility::serialize(Mode mode) const{
 	switch(mode){
 	case Mode::JSON:
 	{
-		json j;
+		nlohmann::json j;
 		j["id"] = "Susceptibility";
-		j["energyResolvedProperty"] = json::parse(
+		j["energyResolvedProperty"] = nlohmann::json::parse(
 			EnergyResolvedProperty::serialize(mode)
 		);
 

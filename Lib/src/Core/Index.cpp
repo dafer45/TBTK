@@ -27,7 +27,7 @@
 #include "TBTK/json.hpp"
 
 using namespace std;
-using namespace nlohmann;
+//using namespace nlohmann;
 
 namespace TBTK{
 
@@ -290,10 +290,10 @@ Index::Index(const string &serialization, Serializable::Mode mode){
 		);
 
 		try{
-			json j = json::parse(serialization);
+			nlohmann::json j = nlohmann::json::parse(serialization);
 			indices = j.at("indices").get<vector<int>>();
 		}
-		catch(json::exception e){
+		catch(nlohmann::json::exception e){
 			TBTKExit(
 				"Index::Index()",
 				"Unable to parse string as index '"
@@ -401,9 +401,9 @@ string Index::serialize(Serializable::Mode mode) const{
 	}
 	case Serializable::Mode::JSON:
 	{
-		json j;
+		nlohmann::json j;
 		j["id"] = "Index";
-		j["indices"] = json(indices);
+		j["indices"] = nlohmann::json(indices);
 
 		return j.dump();
 	}

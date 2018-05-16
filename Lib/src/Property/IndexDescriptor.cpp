@@ -26,7 +26,7 @@
 #include "TBTK/json.hpp"
 
 using namespace std;
-using namespace nlohmann;
+//using namespace nlohmann;
 
 namespace TBTK{
 
@@ -152,7 +152,7 @@ IndexDescriptor::IndexDescriptor(const std::string &serialization, Mode mode){
 	switch(mode){
 	case Mode::JSON:
 		try{
-			json j = json::parse(serialization);
+			nlohmann::json j = nlohmann::json::parse(serialization);
 			string formatString = j.at("format").get<string>();
 			if(formatString.compare("None") == 0){
 				format = Format::None;
@@ -167,10 +167,10 @@ IndexDescriptor::IndexDescriptor(const std::string &serialization, Mode mode){
 				descriptor.rangeFormat.ranges = new int[
 					descriptor.rangeFormat.dimensions
 				];
-				json ranges = j.at("ranges");
+				nlohmann::json ranges = j.at("ranges");
 				unsigned int counter = 0;
 				for(
-					json::iterator it = ranges.begin();
+					nlohmann::json::iterator it = ranges.begin();
 					it < ranges.end();
 					++it
 				){
@@ -211,7 +211,7 @@ IndexDescriptor::IndexDescriptor(const std::string &serialization, Mode mode){
 				);
 			}
 		}
-		catch(json::exception e){
+		catch(nlohmann::json::exception e){
 			TBTKExit(
 				"IndexDescriptor::IndexDescriptor()",
 				"Unable to parse string as IndexDescriptor '"
@@ -381,7 +381,7 @@ std::string IndexDescriptor::serialize(Mode mode) const{
 	switch(mode){
 	case Mode::JSON:
 	{
-		json j;
+		nlohmann::json j;
 		j["id"] = "IndexDescriptor";
 		switch(format){
 		case Format::None:
@@ -402,7 +402,7 @@ std::string IndexDescriptor::serialize(Mode mode) const{
 			break;
 		case Format::Custom:
 			j["format"] = "Custom";
-			j["indexTree"] = json::parse(
+			j["indexTree"] = nlohmann::json::parse(
 				descriptor.customFormat.indexTree->serialize(
 					mode
 				)
@@ -410,7 +410,7 @@ std::string IndexDescriptor::serialize(Mode mode) const{
 			break;
 		case Format::Dynamic:
 			j["format"] = "Dynamic";
-			j["indexedDataTree"] = json::parse(
+			j["indexedDataTree"] = nlohmann::json::parse(
 				descriptor.dynamicFormat.indexedDataTree->serialize(
 					mode
 				)

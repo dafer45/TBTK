@@ -23,7 +23,7 @@
 #include "TBTK/json.hpp"
 
 using namespace std;
-using namespace nlohmann;
+//using namespace nlohmann;
 
 namespace TBTK{
 
@@ -110,7 +110,7 @@ SingleParticleContext::SingleParticleContext(
 	case Mode::JSON:
 	{
 		try{
-			json j = json::parse(serialization);
+			nlohmann::json j = nlohmann::json::parse(serialization);
 			deserialize(
 				j.at("statistics").get<string>(),
 				&statistics,
@@ -127,11 +127,11 @@ SingleParticleContext::SingleParticleContext(
 					hoppingAmplitudeSet
 				);
 			}
-			catch(json::exception e){
+			catch(nlohmann::json::exception e){
 				geometry = nullptr;
 			}
 		}
-		catch(json::exception e){
+		catch(nlohmann::json::exception e){
 			TBTKExit(
 				"SingleParticleContext::SingleParticleContext()",
 				"Unable to parse string as"
@@ -222,14 +222,14 @@ string SingleParticleContext::serialize(Mode mode) const{
 	}
 	case Mode::JSON:
 	{
-		json j;
+		nlohmann::json j;
 		j["id"] = "SingleParticleContext";
 		j["statistics"] = Serializable::serialize(statistics, mode);
-		j["hoppingAmplitudeSet"] = json::parse(
+		j["hoppingAmplitudeSet"] = nlohmann::json::parse(
 			hoppingAmplitudeSet.serialize(mode)
 		);
 		if(geometry != nullptr)
-			j["geometry"] = json::parse(geometry->serialize(mode));
+			j["geometry"] = nlohmann::json::parse(geometry->serialize(mode));
 
 		return j.dump();
 	}

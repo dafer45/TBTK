@@ -26,7 +26,7 @@
 #include "TBTK/json.hpp"
 
 using namespace std;
-using namespace nlohmann;
+//using namespace nlohmann;
 
 namespace TBTK{
 
@@ -106,12 +106,12 @@ HoppingAmplitude::HoppingAmplitude(
 		try{
 			amplitudeCallback = nullptr;
 
-			json j = json::parse(serialization);
+			nlohmann::json j = nlohmann::json::parse(serialization);
 			Serializable::deserialize(j["amplitude"].get<string>(), &amplitude, mode);
 			toIndex = Index(j["toIndex"].dump(), mode);
 			fromIndex = Index(j["fromIndex"].dump(), mode);
 		}
-		catch(json::exception e){
+		catch(nlohmann::json::exception e){
 			TBTKExit(
 				"HoppingAmplitude::HoppingAmplitude()",
 				"Unable to parse string as HoppingAmplitude '"
@@ -174,11 +174,11 @@ string HoppingAmplitude::serialize(Serializable::Mode mode) const{
 	}
 	case Serializable::Mode::JSON:
 	{
-		json j;
+		nlohmann::json j;
 		j["id"] = "HoppingAmplitude";
 		j["amplitude"] = Serializable::serialize(amplitude, mode);
-		j["toIndex"] = json::parse(toIndex.serialize(mode));
-		j["fromIndex"] = json::parse(fromIndex.serialize(mode));
+		j["toIndex"] = nlohmann::json::parse(toIndex.serialize(mode));
+		j["fromIndex"] = nlohmann::json::parse(fromIndex.serialize(mode));
 
 		return j.dump();
 

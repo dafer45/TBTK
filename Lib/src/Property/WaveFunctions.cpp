@@ -23,7 +23,7 @@
 #include "TBTK/json.hpp"
 
 using namespace std;
-using namespace nlohmann;
+//using namespace nlohmann;
 
 namespace TBTK{
 namespace Property{
@@ -159,13 +159,13 @@ WaveFunctions::WaveFunctions(
 	switch(mode){
 	case Mode::JSON:
 		try{
-			json j = json::parse(serialization);
+			nlohmann::json j = nlohmann::json::parse(serialization);
 			isContinuous = j.at("isContinuous").get<bool>();
-			json s = j.at("states");
-			for(json::iterator it = s.begin(); it < s.end(); ++it)
+			nlohmann::json s = j.at("states");
+			for(nlohmann::json::iterator it = s.begin(); it < s.end(); ++it)
 				states.push_back(*it);
 		}
-		catch(json::exception e){
+		catch(nlohmann::json::exception e){
 			TBTKExit(
 				"WaveFunctions::WaveFuntions()",
 				"Unable to parse string as WaveFunctions '"
@@ -308,12 +308,12 @@ string WaveFunctions::serialize(Mode mode) const{
 	switch(mode){
 	case Mode::JSON:
 	{
-		json j;
+		nlohmann::json j;
 		j["id"] = "WaveFunctions";
 		j["isContinuous"] = isContinuous;
 		for(unsigned int n = 0; n < states.size(); n++)
 			j["states"].push_back(states.at(n));
-		j["abstractProperty"] = json::parse(
+		j["abstractProperty"] = nlohmann::json::parse(
 			AbstractProperty::serialize(mode)
 		);
 

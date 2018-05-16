@@ -31,7 +31,7 @@
 #include "TBTK/json.hpp"
 
 using namespace std;
-using namespace nlohmann;
+//using namespace nlohmann;
 
 namespace TBTK{
 
@@ -130,7 +130,7 @@ Model::Model(const string &serialization, Mode mode) : Communicator(true){
 	case Mode::JSON:
 	{
 		try{
-			json j = json::parse(serialization);
+			nlohmann::json j = nlohmann::json::parse(serialization);
 			temperature = j.at("temperature").get<double>();
 			chemicalPotential = j.at(
 				"chemicalPotential"
@@ -145,7 +145,7 @@ Model::Model(const string &serialization, Mode mode) : Communicator(true){
 			indexFilter = nullptr;
 			hoppingAmplitudeFilter = nullptr;
 		}
-		catch(json::exception e){
+		catch(nlohmann::json::exception e){
 			TBTKExit(
 				"Model::Model()",
 				"Unable to parse string as Model '"
@@ -294,11 +294,11 @@ string Model::serialize(Mode mode) const{
 	}
 	case Mode::JSON:
 	{
-		json j;
+		nlohmann::json j;
 		j["id"] = "Model";
 		j["temperature"] = temperature;
 		j["chemicalPotential"] = chemicalPotential;
-		j["singleParticleContext"] = json::parse(
+		j["singleParticleContext"] = nlohmann::json::parse(
 			singleParticleContext->serialize(mode)
 		);
 

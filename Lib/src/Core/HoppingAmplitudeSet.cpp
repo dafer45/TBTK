@@ -25,7 +25,7 @@
 #include "TBTK/json.hpp"
 
 using namespace std;
-using namespace nlohmann;
+//using namespace nlohmann;
 
 namespace TBTK{
 
@@ -171,7 +171,7 @@ HoppingAmplitudeSet::HoppingAmplitudeSet(
 	case Mode::JSON:
 	{
 		try{
-			json j = json::parse(serialization);
+			nlohmann::json j = nlohmann::json::parse(serialization);
 			isConstructed = j.at("isConstructed").get<bool>();
 			isSorted = j.at("isSorted").get<bool>();
 			numMatrixElements = j.at("numMatrixElements").get<int>();
@@ -181,9 +181,9 @@ HoppingAmplitudeSet::HoppingAmplitudeSet(
 				cooValues = nullptr;
 			}
 			else{
-				json cri = j.at("cooRowIndices");
-				json cci = j.at("cooColIndices");
-				json cv = j.at("cooValues");
+				nlohmann::json cri = j.at("cooRowIndices");
+				nlohmann::json cci = j.at("cooColIndices");
+				nlohmann::json cv = j.at("cooValues");
 				TBTKAssert(
 					distance(
 						cri.begin(),
@@ -232,23 +232,23 @@ HoppingAmplitudeSet::HoppingAmplitudeSet(
 				cooValues = new complex<double>[numMatrixElements];
 
 				unsigned int counter = 0;
-				for(json::iterator it = cri.begin(); it < cri.end(); ++it){
+				for(nlohmann::json::iterator it = cri.begin(); it < cri.end(); ++it){
 					cooRowIndices[counter] = *it;
 					counter++;
 				}
 				counter = 0;
-				for(json::iterator it = cci.begin(); it < cci.end(); ++it){
+				for(nlohmann::json::iterator it = cci.begin(); it < cci.end(); ++it){
 					cooColIndices[counter] = *it;
 					counter++;
 				}
 				counter = 0;
-				for(json::iterator it = cv.begin(); it < cv.end(); ++it){
+				for(nlohmann::json::iterator it = cv.begin(); it < cv.end(); ++it){
 					deserialize(*it, &cooValues[counter], mode);
 					counter++;
 				}
 			}
 		}
-		catch(json::exception e){
+		catch(nlohmann::json::exception e){
 			TBTKExit(
 				"HoppingAmplitudeSet::HoppingAmplitudeSet()",
 				"Unable to parse string as HoppingAmplitudeSet"
@@ -475,9 +475,9 @@ string HoppingAmplitudeSet::serialize(Mode mode) const{
 	}
 	case Mode::JSON:
 	{
-		json j;
+		nlohmann::json j;
 		j["id"] = "HoppingAmplitudeSet";
-		j["hoppingAmplitudeTree"] = json::parse(
+		j["hoppingAmplitudeTree"] = nlohmann::json::parse(
 			HoppingAmplitudeTree::serialize(mode)
 		);
 		j["isConstructed"] = isConstructed;

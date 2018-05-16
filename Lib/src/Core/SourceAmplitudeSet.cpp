@@ -25,7 +25,7 @@
 #include "TBTK/json.hpp"
 
 using namespace std;
-using namespace nlohmann;
+//using namespace nlohmann;
 
 namespace TBTK{
 
@@ -40,7 +40,7 @@ SourceAmplitudeSet::SourceAmplitudeSet(
 	case Mode::JSON:
 	{
 		try{
-			json j = json::parse(serialization);
+			nlohmann::json j = nlohmann::json::parse(serialization);
 			sourceAmplitudeTree = IndexedDataTree<
 				std::vector<SourceAmplitude>
 			>(
@@ -48,7 +48,7 @@ SourceAmplitudeSet::SourceAmplitudeSet(
 				mode
 			);
 		}
-		catch(json::exception e){
+		catch(nlohmann::json::exception e){
 			TBTKExit(
 				"SourceAmplitudeSet::SourceAmplitudeSet()",
 				"Unable to parse string as SourceAmplitudeSet"
@@ -99,9 +99,9 @@ string SourceAmplitudeSet::serialize(Mode mode) const{
 	switch(mode){
 	case Mode::JSON:
 	{
-		json j;
+		nlohmann::json j;
 		j["id"] = "SourceAmplitudeSet";
-		j["sourceAmplitudeTree"] = json::parse(
+		j["sourceAmplitudeTree"] = nlohmann::json::parse(
 			sourceAmplitudeTree.serialize(mode)
 		);
 

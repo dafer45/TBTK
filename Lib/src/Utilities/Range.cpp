@@ -23,7 +23,7 @@
 #include "TBTK/json.hpp"
 
 using namespace std;
-using namespace nlohmann;
+//using namespace nlohmann;
 
 namespace TBTK{
 
@@ -74,12 +74,12 @@ Range::Range(const string &serialization, Mode mode){
 	switch(mode){
 	case Mode::JSON:
 		try{
-			json j = json::parse(serialization);
+			nlohmann::json j = nlohmann::json::parse(serialization);
 			start = j.at("start").get<double>();
 			dx = j.at("dx").get<double>();
 			resolution = j.at("resolution").get<unsigned int>();
 		}
-		catch(json::exception e){
+		catch(nlohmann::json::exception e){
 			TBTKExit(
 				"Range::Range()",
 				"Unable to parse string as Range '"
@@ -105,7 +105,7 @@ std::string Range::serialize(Mode mode) const{
 	switch(mode){
 	case Mode::JSON:
 	{
-		json j;
+		nlohmann::json j;
 		j["id"] = "Range";
 		j["start"] = start;
 		j["dx"] = dx;

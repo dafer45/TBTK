@@ -23,7 +23,7 @@
 #include "TBTK/json.hpp"
 
 using namespace std;
-using namespace nlohmann;
+//using namespace nlohmann;
 
 namespace TBTK{
 namespace Property{
@@ -127,12 +127,12 @@ LDOS::LDOS(
 	switch(mode){
 	case Mode::JSON:
 		try{
-			json j = json::parse(serialization);
+			nlohmann::json j = nlohmann::json::parse(serialization);
 			lowerBound = j.at("lowerBound").get<double>();
 			upperBound = j.at("upperBound").get<double>();
 			resolution = j.at("resolution").get<int>();
 		}
-		catch(json::exception e){
+		catch(nlohmann::json::exception e){
 			TBTKExit(
 				"LDOS::LDOS()",
 				"Unable to parse string as LDOS '"
@@ -182,12 +182,12 @@ string LDOS::serialize(Mode mode) const{
 	switch(mode){
 	case Mode::JSON:
 	{
-		json j;
+		nlohmann::json j;
 		j["id"] = "LDOS";
 		j["lowerBound"] = lowerBound;
 		j["upperBound"] = upperBound;
 		j["resolution"] = resolution;
-		j["abstractProperty"] = json::parse(
+		j["abstractProperty"] = nlohmann::json::parse(
 			AbstractProperty::serialize(mode)
 		);
 

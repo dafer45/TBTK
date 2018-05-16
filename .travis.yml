@@ -2,6 +2,12 @@ sudo: true
 
 language: cpp
 
+addons:
+  apt:
+    packages:
+      - libfftw3-dev
+      - libhdf5-serial-dev
+
 matrix:
   include:
     - os: linux

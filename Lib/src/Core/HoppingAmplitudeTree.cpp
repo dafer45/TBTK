@@ -27,7 +27,7 @@
 #include "TBTK/json.hpp"
 
 using namespace std;
-using namespace nlohmann;
+//using namespace nlohmann;
 
 namespace TBTK{
 
@@ -126,7 +126,7 @@ HoppingAmplitudeTree::HoppingAmplitudeTree(
 	case Mode::JSON:
 	{
 		try{
-			json j = json::parse(serialization);
+			nlohmann::json j = nlohmann::json::parse(serialization);
 			basisIndex = j.at("basisIndex").get<int>();
 			basisSize = j.at("basisSize").get<int>();
 			isPotentialBlockSeparator = j.at(
@@ -136,14 +136,14 @@ HoppingAmplitudeTree::HoppingAmplitudeTree(
 /*				json has = j.at(
 					"hoppingAmplitudes"
 				).get<json::array>();*/
-				json has = j.at("hoppingAmplitudes");
-				for(json::iterator it = has.begin(); it != has.end(); ++it){
+				nlohmann::json has = j.at("hoppingAmplitudes");
+				for(nlohmann::json::iterator it = has.begin(); it != has.end(); ++it){
 					hoppingAmplitudes.push_back(
 						HoppingAmplitude(it->dump(), mode)
 					);
 				}
 			}
-			catch(json::exception e){
+			catch(nlohmann::json::exception e){
 				//It is valid to not have HoppingAmplitudes.
 			}
 
@@ -151,18 +151,18 @@ HoppingAmplitudeTree::HoppingAmplitudeTree(
 /*				json c = j.at(
 					"children"
 				).get<json>();*/
-				json c = j.at("children");
-				for(json::iterator it = c.begin(); it != c.end(); ++it){
+				nlohmann::json c = j.at("children");
+				for(nlohmann::json::iterator it = c.begin(); it != c.end(); ++it){
 					children.push_back(
 						HoppingAmplitudeTree(it->dump(), mode)
 					);
 				}
 			}
-			catch(json::exception e){
+			catch(nlohmann::json::exception e){
 				//It is valid to not have children.
 			}
 		}
-		catch(json::exception e){
+		catch(nlohmann::json::exception e){
 			TBTKExit(
 				"HoppingAmplitudeTree::HoppingAmplitudeTree()",
 				"Unable to parse string as"
@@ -693,14 +693,14 @@ string HoppingAmplitudeTree::serialize(Mode mode) const{
 	}
 	case Mode::JSON:
 	{
-		json j;
+		nlohmann::json j;
 		j["id"] = "HoppingAmplitudeTree";
 		j["basisIndex"] = basisIndex;
 		j["basisSize"] = basisSize;
 		j["isPotentialBlockSeparator"] = isPotentialBlockSeparator;
 		for(unsigned int n = 0; n < hoppingAmplitudes.size(); n++){
 			j["hoppingAmplitudes"].push_back(
-				json::parse(
+				nlohmann::json::parse(
 					hoppingAmplitudes.at(n).serialize(
 						Serializable::Mode::JSON
 					)
@@ -709,7 +709,7 @@ string HoppingAmplitudeTree::serialize(Mode mode) const{
 		}
 		for(unsigned int n = 0; n < children.size(); n++){
 			j["children"].push_back(
-				json::parse(
+				nlohmann::json::parse(
 					children.at(n).serialize(
 						Serializable::Mode::JSON
 					)

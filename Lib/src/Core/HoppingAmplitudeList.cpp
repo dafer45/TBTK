@@ -23,7 +23,7 @@
 #include "TBTK/json.hpp"
 
 using namespace std;
-using namespace nlohmann;
+//using namespace nlohmann;
 
 namespace TBTK{
 
@@ -50,12 +50,12 @@ HoppingAmplitudeList::HoppingAmplitudeList(
 	case Serializable::Mode::JSON:
 	{
 		try{
-			json j = json::parse(serialization);
-			json has = j.at(
+			nlohmann::json j = nlohmann::json::parse(serialization);
+			nlohmann::json has = j.at(
 				"hoppingAmplitudes"
 			);
 			for(
-				json::iterator it = has.begin();
+				nlohmann::json::iterator it = has.begin();
 				it != has.end();
 				++it
 			){
@@ -64,7 +64,7 @@ HoppingAmplitudeList::HoppingAmplitudeList(
 				);
 			}
 		}
-		catch(json::exception e){
+		catch(nlohmann::json::exception e){
 			TBTKExit(
 				"HoppingAmplitudeList::HoppingAmplitudeList()",
 				"Unable to parse string as HoppingAmplitudeList '"
@@ -88,11 +88,11 @@ string HoppingAmplitudeList::serialize(Serializable::Mode mode) const{
 	switch(mode){
 	case Serializable::Mode::JSON:
 	{
-		json j;
+		nlohmann::json j;
 		j["id"] = "HoppingAmplitudeList";
 		for(unsigned int n = 0; n < hoppingAmplitudes.size(); n++){
 			j["hoppingAmplitudes"].push_back(
-				json::parse(
+				nlohmann::json::parse(
 					hoppingAmplitudes[n].serialize(
 						Serializable::Mode::JSON
 					)

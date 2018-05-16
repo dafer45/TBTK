@@ -23,7 +23,7 @@
 #include "TBTK/json.hpp"
 
 using namespace std;
-using namespace nlohmann;
+//using namespace nlohmann;
 
 namespace TBTK{
 namespace Property{
@@ -100,9 +100,9 @@ string EigenValues::serialize(Mode mode) const{
 	switch(mode){
 	case Mode::JSON:
 	{
-		json j;
+		nlohmann::json j;
 		j["id"] = "EigenValues";
-		j["abstractProperty"] = json::parse(
+		j["abstractProperty"] = nlohmann::json::parse(
 			AbstractProperty::serialize(mode)
 		);
 

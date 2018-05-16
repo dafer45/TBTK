@@ -27,7 +27,7 @@
 #include "TBTK/json.hpp"
 
 using namespace std;
-using namespace nlohmann;
+//using namespace nlohmann;
 
 namespace TBTK{
 
@@ -101,38 +101,38 @@ DataManager::DataManager(const string &serialization, Mode mode){
 	switch(mode){
 	case Mode::JSON:
 		try{
-			json j = json::parse(serialization);
+			nlohmann::json j = nlohmann::json::parse(serialization);
 
-			json lowerBounds = j.at("lowerBounds");
+			nlohmann::json lowerBounds = j.at("lowerBounds");
 			for(
-				json::iterator it = lowerBounds.begin();
+				nlohmann::json::iterator it = lowerBounds.begin();
 				it < lowerBounds.end();
 				++it
 			){
 				this->lowerBounds.push_back(*it);
 			}
 
-			json upperBounds = j.at("upperBounds");
+			nlohmann::json upperBounds = j.at("upperBounds");
 			for(
-				json::iterator it = upperBounds.begin();
+				nlohmann::json::iterator it = upperBounds.begin();
 				it < upperBounds.end();
 				++it
 			){
 				this->upperBounds.push_back(*it);
 			}
 
-			json numTicks = j.at("numTicks");
+			nlohmann::json numTicks = j.at("numTicks");
 			for(
-				json::iterator it = numTicks.begin();
+				nlohmann::json::iterator it = numTicks.begin();
 				it < numTicks.end();
 				++it
 			){
 				this->numTicks.push_back(*it);
 			}
 
-			json parameterNames = j.at("parameterNames");
+			nlohmann::json parameterNames = j.at("parameterNames");
 			for(
-				json::iterator it = parameterNames.begin();
+				nlohmann::json::iterator it = parameterNames.begin();
 				it < parameterNames.end();
 				++it
 			){
@@ -144,12 +144,12 @@ DataManager::DataManager(const string &serialization, Mode mode){
 
 			numDataPoints = j.at("numDataPoints");
 
-			json dataTypes = j.at("dataTypes");
-			json reservedDataPoints = j.at("reservedDataPoints");
-			json completedDataPoints = j.at("completedDataPoints");
+			nlohmann::json dataTypes = j.at("dataTypes");
+			nlohmann::json reservedDataPoints = j.at("reservedDataPoints");
+			nlohmann::json completedDataPoints = j.at("completedDataPoints");
 			int counter = 0;
 			for(
-				json::iterator it = dataTypes.begin();
+				nlohmann::json::iterator it = dataTypes.begin();
 				it < dataTypes.end();
 				++it
 			){
@@ -160,7 +160,7 @@ DataManager::DataManager(const string &serialization, Mode mode){
 					reserved[n] = false;
 				int counter2 = 0;
 				for(
-					json::iterator it2 = reservedDataPoints.at(counter).begin();
+					nlohmann::json::iterator it2 = reservedDataPoints.at(counter).begin();
 					it2 < reservedDataPoints.at(counter).end(); ++it2
 				){
 					reserved[counter2] = *it2;
@@ -173,7 +173,7 @@ DataManager::DataManager(const string &serialization, Mode mode){
 					reserved[n] = false;
 				counter2 = 0;
 				for(
-					json::iterator it2 = completedDataPoints.at(counter).begin();
+					nlohmann::json::iterator it2 = completedDataPoints.at(counter).begin();
 					it2 < completedDataPoints.at(counter).end(); ++it2
 				){
 					completed[counter2] = *it2;
@@ -184,16 +184,16 @@ DataManager::DataManager(const string &serialization, Mode mode){
 				counter++;
 			}
 
-			json fileTypes = j.at("fileTypes");
+			nlohmann::json fileTypes = j.at("fileTypes");
 			for(
-				json::iterator it = fileTypes.begin();
+				nlohmann::json::iterator it = fileTypes.begin();
 				it < fileTypes.end();
 				++it
 			){
 				this->fileTypes.push_back(*it);
 			}
 		}
-		catch(json::exception e){
+		catch(nlohmann::json::exception e){
 			TBTKExit(
 				"DataManager::DataManager()",
 				"Unable to parse string as DataManager '"
@@ -473,7 +473,7 @@ string DataManager::serialize(Mode mode) const{
 	switch(mode){
 	case Mode::JSON:
 	{
-		json j;
+		nlohmann::json j;
 		j["id"] = "DataManager";
 		for(unsigned int n = 0; n < lowerBounds.size(); n++){
 			j["lowerBounds"].push_back(lowerBounds.at(n));
@@ -487,8 +487,8 @@ string DataManager::serialize(Mode mode) const{
 		for(unsigned int n = 0; n < dataTypes.size(); n++){
 			j["dataTypes"] = dataTypes;
 			j["fileTypes"] = fileTypes;
-			j["reservedDataPoints"].push_back(json());
-			j["completedDataPoints"].push_back(json());
+			j["reservedDataPoints"].push_back(nlohmann::json());
+			j["completedDataPoints"].push_back(nlohmann::json());
 			for(unsigned int c = 0; c < numDataPoints; c++){
 				//Do not export information about reserved
 				//data. At least for now reservation is not

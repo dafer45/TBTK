@@ -23,7 +23,7 @@
 #include "TBTK/json.hpp"
 
 using namespace std;
-using namespace nlohmann;
+//using namespace nlohmann;
 
 namespace TBTK{
 
@@ -47,7 +47,7 @@ BoundaryCondition::BoundaryCondition(
 	case Serializable::Mode::JSON:
 	{
 		try{
-			json j = json::parse(serialization);
+			nlohmann::json j = nlohmann::json::parse(serialization);
 			hoppingAmplitudeList = HoppingAmplitudeList(
 				j["hoppingAmplitudeList"].dump(),
 				mode
@@ -61,7 +61,7 @@ BoundaryCondition::BoundaryCondition(
 				mode
 			);
 		}
-		catch(json::exception e){
+		catch(nlohmann::json::exception e){
 			TBTKExit(
 				"BoundaryCondition::BoundaryCondition()",
 				"Unable to parse string as BoundaryCondition '"
@@ -85,11 +85,11 @@ string BoundaryCondition::serialize(Serializable::Mode mode) const{
 	switch(mode){
 	case Serializable::Mode::JSON:
 	{
-		json j;
+		nlohmann::json j;
 		j["id"] = "BoundaryCondition";
-		j["hoppingAmplitudeList"] = json::parse(hoppingAmplitudeList.serialize(mode));
-		j["sourceAmplitude"] = json::parse(sourceAmplitude.serialize(mode));
-		j["eliminationIndex"] = json::parse(eliminationIndex.serialize(mode));
+		j["hoppingAmplitudeList"] = nlohmann::json::parse(hoppingAmplitudeList.serialize(mode));
+		j["sourceAmplitude"] = nlohmann::json::parse(sourceAmplitude.serialize(mode));
+		j["eliminationIndex"] = nlohmann::json::parse(eliminationIndex.serialize(mode));
 
 		return j.dump();
 	}
