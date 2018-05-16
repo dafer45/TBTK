@@ -25,12 +25,11 @@ env:
   - CC=gcc-4.9 && CXX=g++-4.9
 
 script:
-  - pwd
-  - ls
   - cd ..
   - mkdir TBTKBuild
   - cd TBTKBuild
   - cmake ../TBTK/
   - make
   - sudo make install
+  - make
   - make test
