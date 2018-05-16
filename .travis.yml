@@ -3,7 +3,7 @@ sudo: true
 language: cpp
 
 matrix:
-  inlcude:
+  include:
     - os: linux
     addons:
       apt:
