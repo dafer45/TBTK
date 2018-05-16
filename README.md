@@ -1,4 +1,5 @@
 [![DOI](https://zenodo.org/badge/50950512.svg)](https://zenodo.org/badge/latestdoi/50950512)
+[![Build Status](https://travis-ci.org/dafer45/TBTK.svg?branch=master)](https://travis-ci.org/dafer45/TBTK)
 
 Welcome to TBTK, a library for modeling and solving second quantized Hamiltonians.
 
