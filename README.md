@@ -105,7 +105,7 @@ For each point (x, y) on the lattice, the magnetization is a two-by-two complex 
 The up and down components of the spin are given by the two diagonal entries.
 We can therefore print the magnetization (the real part of the difference between the up and down components) at site (10, 10) as follows.
 ```cpp
-SpinMatrix m = magnetization({10, 10, RESOLUTION});
+SpinMatrix m = magnetization({10, 10, IDX_SPIN});
 Streams::out << "Magnetization:\t" << real(m.at(0, 0) - m.at(1, 1)) << "\n";
 ```
 **Result:**
