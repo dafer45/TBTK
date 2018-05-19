@@ -6,6 +6,30 @@ Welcome to TBTK, a library for modeling and solving second quantized Hamiltonian
 Full documentation is available at:  http://www.second-quantization.com/
 
 
+# Get started
+## Installation
+```bash
+git clone http://github.com/dafer45/TBTK
+mkdir TBTKBuild
+cd TBTKBuild
+cmake ../TBTK
+make
+sudo make install
+```
+
+## Create, build, and run a first application
+```bash
+cd ..
+mkdir TBTKApplications
+cd TBTKApplication
+TBTKCreateAppliaction MyFirstApplication
+cd MyFirstApplication
+cmake .
+make
+./build/Application
+```
+
+
 # License
 TBTK is free software that is licensed under the Appache 2.0 license (see the file
 "License").  Please give attribution in accordance with the "Cite" section below.
