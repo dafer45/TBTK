@@ -18,6 +18,7 @@ Also see: http://www.second-tech.com
 # Example
 Consider the tight-binding Hamiltonian  
 <p align="center"><img src="doc/ExampleHamiltonian.png" /></p>  
+
 on a square lattice of size 20x20, where angle brackets denotes summation over nearest neighbors, and *sigma* is a spin summation index.
 The parameters *t = 1 eV* and *J = 0.25 eV* are the nearest neighbor hopping amplitude the strength of the Zeeman term, respectively.
 Moreover, let the chemical potential be *mu = -1 eV*, the temperature be *T = 300K*, and the particle have Fermi-Dirac statistics.
