@@ -4,7 +4,7 @@
 Welcome to TBTK, a library for modeling and solving second quantized Hamiltonians.
 
 Full documentation is available at:  http://www.second-quantization.com/
-
+Also see: http://www.second-tech.com
 
 # Quickstart
 ## Installation
@@ -32,6 +32,8 @@ cmake .
 make
 ./build/Application
 ```
+
+For more information, see http://second-tech.com/wordpress/index.php/tbtk/.
 
 
 # License
