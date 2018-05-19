@@ -22,7 +22,7 @@ sudo make install
 ```bash
 cd ..
 mkdir TBTKApplications
-cd TBTKApplication
+cd TBTKApplications
 TBTKCreateAppliaction MyFirstApplication
 cd MyFirstApplication
 ```
