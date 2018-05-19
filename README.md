@@ -32,7 +32,14 @@ const Statistics statistics     = Statistics::FermiDirac;
 ```
 
 Now assume that we are interested in calculating the density of states (DOS) and magnetization for the system.
+For the DOS we want to use the energy window [-10, 10] and an energy resolution of 1000 points.  
+```cpp
+	const double LOWER_BOUND        = -10;
+	const double UPPER_BOUND        = 10;
+	const int RESOLUTION            = 1000;
+```
 In addition we decide that the appropriate solution method for the system is diagonalization.
+We proceed as follows.
 
 ## Setup the model  
 ```cpp
@@ -58,6 +65,11 @@ model.construct();
 model.setChemicalPotential(mu);
 model.setTemperature(T);
 model.setStatistics(statistics);
+```
+
+## Select solution method  
+```cpp
+
 ```
 
 # Quickstart
