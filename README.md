@@ -23,10 +23,10 @@ on a square lattice of size 20x20, where angle brackets denotes summation over n
 The parameters *t = 1 eV* and *J = 0.25 eV* are the nearest neighbor hopping amplitude and the strength of the Zeeman term, respectively.
 Moreover, let the chemical potential be *mu = -1 eV*, the temperature be *T = 300K*, and the particle have Fermi-Dirac statistics.  
 ```cpp
-const int SIZE_X                = 20;
-const int SIZE_Y                = 20;
+const int SIZE_X                = 30;
+const int SIZE_Y                = 30;
 const double t                  = 1;
-const double J                  = 0.25;
+const double J                  = 0.5;
 const double T                  = 300;
 const Statistics statistics     = Statistics::FermiDirac;
 ```
@@ -34,9 +34,9 @@ const Statistics statistics     = Statistics::FermiDirac;
 Now assume that we are interested in calculating the density of states (DOS) and magnetization for the system.
 For the DOS we want to use the energy window [-10, 10] and an energy resolution of 1000 points.  
 ```cpp
-	const double LOWER_BOUND        = -10;
-	const double UPPER_BOUND        = 10;
-	const int RESOLUTION            = 1000;
+const double LOWER_BOUND        = -10;
+const double UPPER_BOUND        = 10;
+const int RESOLUTION            = 1000;
 ```
 In addition we decide that the appropriate solution method for the system is diagonalization.
 We proceed as follows.
@@ -69,7 +69,46 @@ model.setStatistics(statistics);
 
 ## Select solution method  
 ```cpp
+Solver::Diagonalizer solver;
+solver.setModel(model);
+solver.run();
+```
 
+## Calculate properties  
+```cpp
+PropertyExtractor::Diagonalizer propertyExtractor(solver);
+propertyExtractor.setEnergyWindow(LOWER_BOUND, UPPER_BOUND, RESOLUTION);
+
+//Calculate the DOS.
+Propery::DOS dos = propertyExtractor.calculateDOS();
+
+//Calculate the Magnetization for all x and y values by passing the wildcard
+//___ in the correpsonding positions. IDX_SPIN is used to tell the
+//PropertyExtractor which subindex that corresponds to spin.
+Property::Magnetization magnetization
+        = propertyExtractor.calculateMagnetization({{___, ___, IDX_SPIN}});
+```
+
+## Plot and print results  
+The DOS is a one dimensional function of the energy and can be plotted with a Gaussian smoothing of 0.07 as follows.  
+```cpp
+Plotter plotter;
+plotter.setLabelX("Energy");
+plotter.setLabelY("DOS");
+plotter.plot(dos, 0.07);
+plotter.save("figures/DOS.png");
+```
+<p align="center"><img src="doc/DOS.png" /></p>  
+
+For each point (x, y) on the lattice, the magnetization is a two-by-two complex matrix called a SpinMatrix.
+The up and down components of the spin are given by the two diagonal entries.
+We can therefore print the magnetization (the real part of the difference between the up and down component) at site (10, 10) as follows.
+```cpp
+SpinMatrix m = magnetization({10, 10, RESOLUTION});
+Streams::out << "Magnetization:\t" << real(m.at(0, 0) - m.at(1, 1)) << "\n";
+```  
+```bash
+Magnetization:	0.144248
 ```
 
 # Quickstart
