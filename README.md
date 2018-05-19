@@ -24,10 +24,10 @@ Moreover, let the chemical potential be *mu = -1 eV*, the temperature be *T = 30
 The model can then be setup as follows
 
 ```cpp
-const int SIZE_X                = 20;
-const int SIZE_Y                = 20;
-const double t                  = 1;
-const double J                  = 0.25;
+const int SIZE_X        = 20;
+const int SIZE_Y        = 20;
+const double t          = 1;
+const double J          = 0.25;
  
 Model model;
 for(int x = 0; x < SIZE_X; x++){
