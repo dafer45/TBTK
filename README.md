@@ -1,6 +1,7 @@
 [![DOI](https://zenodo.org/badge/50950512.svg)](https://zenodo.org/badge/latestdoi/50950512)
 [![Build Status](https://travis-ci.org/dafer45/TBTK.svg?branch=master)](https://travis-ci.org/dafer45/TBTK)
 
+# TBTK
 Welcome to TBTK, a library for modeling and solving second quantized Hamiltonians.
 
 Full documentation is available at:  http://www.second-quantization.com/
@@ -34,7 +35,7 @@ make
 ```
 
 ## What's next?
-For further information, see http://second-tech.com/wordpress/index.php/tbtk/.
+For further information, see http://second-tech.com/wordpress/index.php/tbtk/ and the templates in the Template folder..
 
 
 # License
