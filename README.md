@@ -27,7 +27,7 @@ const int SIZE_X                = 20;
 const int SIZE_Y                = 20;
 const double t                  = 1;
 const double J                  = 0.25;
-
+ 
 Model model;
 for(int x = 0; x < SIZE_X; x++){
         for(int y = 0; y < SIZE_Y; y++){
@@ -36,7 +36,7 @@ for(int x = 0; x < SIZE_X; x++){
                         model << HoppingAmplitude(-t, {x+1, y}, {x, y}) + HC;
                 if(y+1 < SIZE_Y)
                         model << HoppingAmplitude(-t, {x, y+1}, {x, y}) + HC;
-
+ 
                 //Add Zeeman term.
                 model << HoppingAmplitude(-J, {x, y}, {x, y});
         }
