@@ -32,14 +32,16 @@ const double J          = 0.25;
 Model model;
 for(int x = 0; x < SIZE_X; x++){
         for(int y = 0; y < SIZE_Y; y++){
-                //Add nearest neighbor hopping.
-                if(x+1 < SIZE_X)
-                        model << HoppingAmplitude(-t, {x+1, y}, {x, y}) + HC;
-                if(y+1 < SIZE_Y)
-                        model << HoppingAmplitude(-t, {x, y+1}, {x, y}) + HC;
+                for(int s = 0; s < 2; s++){
+                        //Add nearest neighbor hopping (HC for Hermitian conjugate).
+                        if(x+1 < SIZE_X)
+                                model << HoppingAmplitude(-t, {x+1, y, s}, {x, y, s}) + HC;
+                        if(y+1 < SIZE_Y)
+                                model << HoppingAmplitude(-t, {x, y+1, s}, {x, y, s}) + HC;
  
-                //Add Zeeman term.
-                model << HoppingAmplitude(-J, {x, y}, {x, y});
+                        //Add Zeeman term.
+                        model << HoppingAmplitude(-J*2*(1/2. - s), {x, y, s}, {x, y, s});
+                }
         }
 }
 //Create Hilbert space basis.
