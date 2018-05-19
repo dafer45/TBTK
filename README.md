@@ -20,17 +20,19 @@ Consider the tight-binding Hamiltonian
 <p align="center"><img src="doc/ExampleHamiltonian.png" /></p>  
 
 on a square lattice of size 20x20, where angle brackets denotes summation over nearest neighbors, and *sigma* is a spin summation index.
-The parameters *t = 1 eV* and *J = 0.25 eV* are the nearest neighbor hopping amplitude abd the strength of the Zeeman term, respectively.
-Moreover, let the chemical potential be *mu = -1 eV*, the temperature be *T = 300K*, and the particle have Fermi-Dirac statistics.
-
-## Setup the model
-
+The parameters *t = 1 eV* and *J = 0.25 eV* are the nearest neighbor hopping amplitude and the strength of the Zeeman term, respectively.
+Moreover, let the chemical potential be *mu = -1 eV*, the temperature be *T = 300K*, and the particle have Fermi-Dirac statistics.  
 ```cpp
-const int SIZE_X        = 20;
-const int SIZE_Y        = 20;
-const double t          = 1;
-const double J          = 0.25;
- 
+const int SIZE_X                = 20;
+const int SIZE_Y                = 20;
+const double t                  = 1;
+const double J                  = 0.25;
+const temperature               = 100;
+const Statistics statistics     = Statistics::FermiDirac;
+```
+
+## Setup the model  
+```cpp
 Model model;
 for(int x = 0; x < SIZE_X; x++){
         for(int y = 0; y < SIZE_Y; y++){
@@ -40,7 +42,7 @@ for(int x = 0; x < SIZE_X; x++){
                                 model << HoppingAmplitude(-t, {x+1, y, s}, {x, y, s}) + HC;
                         if(y+1 < SIZE_Y)
                                 model << HoppingAmplitude(-t, {x, y+1, s}, {x, y, s}) + HC;
- 
+
                         //Add Zeeman term.
                         model << HoppingAmplitude(-J*2*(1/2. - s), {x, y, s}, {x, y, s});
                 }
