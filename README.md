@@ -33,7 +33,8 @@ make
 ./build/Application
 ```
 
-For more information, see http://second-tech.com/wordpress/index.php/tbtk/.
+## What's next?
+For further information, see http://second-tech.com/wordpress/index.php/tbtk/.
 
 
 # License
