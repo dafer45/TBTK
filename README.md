@@ -18,10 +18,10 @@ Also see: http://www.second-tech.com
 # Example
 Consider the tight-binding Hamiltonian  
 <p align="center"><img src="doc/ExampleHamiltonian.png" /></p>  
-on a square lattice of size 20x20, where angle brackets denotes summation over nearest neighbors, and _sigma_ is a spin summation index.
-The parameters _t = 1 eV_ and _J = 0.25 eV_ are the nearest neighbor hopping amplitude and strength of a Zeeman term, respectively.
-Moreover, let the chemical potential be _mu = -1 eV_, the temperature be _T = 300K_, and the particle have Fermi-Dirac statistics.
-The model can then be setup as follows
+on a square lattice of size 20x20, where angle brackets denotes summation over nearest neighbors, and *sigma* is a spin summation index.
+The parameters *t = 1 eV* and *J = 0.25 eV* are the nearest neighbor hopping amplitude and strength of a Zeeman term, respectively.
+Moreover, let the chemical potential be *mu = -1 eV*, the temperature be *T = 300K*, and the particle have Fermi-Dirac statistics.
+## Setup the model
 
 ```cpp
 const int SIZE_X        = 20;
