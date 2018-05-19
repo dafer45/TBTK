@@ -98,7 +98,7 @@ plotter.setLabelY("DOS");
 plotter.plot(dos, 0.07);
 plotter.save("figures/DOS.png");
 ```
-Result:
+**Result:**
 <p align="center"><img src="doc/DOS.png" /></p>  
 
 For each point (x, y) on the lattice, the magnetization is a two-by-two complex matrix called a SpinMatrix.
@@ -107,8 +107,8 @@ We can therefore print the magnetization (the real part of the difference betwee
 ```cpp
 SpinMatrix m = magnetization({10, 10, RESOLUTION});
 Streams::out << "Magnetization:\t" << real(m.at(0, 0) - m.at(1, 1)) << "\n";
-```  
-Result:
+```
+**Result:**
 ```bash
 Magnetization:	0.144248
 ```
