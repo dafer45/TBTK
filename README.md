@@ -4,7 +4,7 @@
 # TBTK
 Welcome to TBTK, a library for modeling and solving second quantized Hamiltonians with discrete indices.
 I. e., Hamiltonians of the form  
-<center><img src="doc/Hamiltonian.png" /></center>
+<p align="center"><img src="doc/Hamiltonian.png" /></p>
 
 Full documentation is available at:  http://www.second-quantization.com/  
 Also see: http://www.second-tech.com
