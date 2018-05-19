@@ -46,7 +46,7 @@ the MIT license.
 
 # Cite
 #### To cite TBTK, mention TBTK in the text and cite the Digital Object Identifier (DOI) for this project.
-[![DOI](https://zenodo.org/badge/50950512.svg)](https://zenodo.org/badge/latestdoi/50950512)
+[![DOI](https://zenodo.org/badge/50950512.svg)](https://zenodo.org/badge/latestdoi/50950512)  
 Kristofer Björnson, & Andreas Theiler. (2017). dafer45/TBTK: First version with
 native plotting [Data set]. Zenodo. http://doi.org/10.5281/zenodo.556398
 
