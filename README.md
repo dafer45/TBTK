@@ -9,7 +9,7 @@ TBTK itself originated as a Tight-Binding ToolKit, and currently have complete s
 However, the scope of TBTK has expanded vastly since its inception.
 It is today first and foremost a collection of data structures that are meant to enable rapid development of new algorithms for both interacting and non-interacting systems.
 Examples of such data structures are quantities such as the Density, DOS, (spin-polarized) LDOS, Green's functions, Susceptibilities, etc.
-TBTK thereby aims to enable the development of frontends and backends to already existing packages that allows for seamless integration of the codebase already developed by the scientific community.
+In addition to providing native solvers, TBTK thereby also aims to enable the development of frontends and backends to already existing packages that allows for seamless integration of the codebase already developed by the scientific community.
 To aid such integration, TBTK is specifically designed to allow for solution algorithms to be used interchangably with minimal amount of modification of the code.
 
 Full documentation is available at:  http://www.second-quantization.com/  
