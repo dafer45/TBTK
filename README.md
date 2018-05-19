@@ -10,10 +10,45 @@ However, the scope of TBTK has expanded vastly since its inception.
 It is today first and foremost a collection of data structures that are meant to enable rapid development of new algorithms for both interacting and non-interacting systems.
 Examples of such data structures are quantities such as the Density, DOS, (spin-polarized) LDOS, Green's functions, Susceptibilities, etc.
 TBTK thereby aims to enable the development of frontends and backends to already existing packages that allows for seamless integration of the codebase already developed by the scientific community.
-To aid such seamless integration, TBTK is designed to allow for solution algorithms to be used interchangably with minimal amount of modification of the code.
+To aid such integration, TBTK is specifically designed to allow for solution algorithms to be used interchangably with minimal amount of modification of the code.
 
 Full documentation is available at:  http://www.second-quantization.com/  
 Also see: http://www.second-tech.com
+
+# Example
+Consider the tight-binding Hamiltonian  
+<p align="center"><img src="doc/ExampleHamiltonian.png" /></p>  
+on a square lattice of size 20x20, where angle brackets denotes summation over nearest neighbors, $\sigma$ is a spin summation index.
+The parameters *t = 1 eV* and *J = 0.25 eV* are the nearest neighbor hopping amplitude and strength of a Zeeman term, respectively.
+Moreover, let the chemical potential be *mu = -1 eV*, the temperature be *T = 300K*, and the particle have Fermi-Dirac statistics.
+The model can then be setup as follows
+```cpp
+const int SIZE_X                = 20;
+const int SIZE_Y                = 20;
+const double t                  = 1;
+const double J                  = 0.25;
+
+Model model;
+for(int x = 0; x < SIZE_X; x++){
+        for(int y = 0; y < SIZE_Y; y++){
+                //Add nearest neighbor hopping.
+                if(x+1 < SIZE_X)
+                        model << HoppingAmplitude(-t, {x+1, y}, {x, y}) + HC;
+                if(y+1 < SIZE_Y)
+                        model << HoppingAmplitude(-t, {x, y+1}, {x, y}) + HC;
+
+                //Add Zeeman term.
+                model << HoppingAmplitude(-J, {x, y}, {x, y});
+        }
+}
+//Create Hilbert space basis.
+model.construct();
+
+//Set the chemical potential and temperature.
+model.setChemicalPotential(-1);
+model.setTemperature(300);
+model.setStatistics(Statistics::FermiDirac);
+```
 
 # Quickstart
 ## Installation
