@@ -6,7 +6,7 @@ Welcome to TBTK, a library for modeling and solving second quantized Hamiltonian
 Full documentation is available at:  http://www.second-quantization.com/
 
 
-# Get started
+# Quickstart
 ## Installation
 ```bash
 git clone http://github.com/dafer45/TBTK
@@ -17,13 +17,17 @@ make
 sudo make install
 ```
 
-## Create, build, and run a first application
+## Create a first application
 ```bash
 cd ..
 mkdir TBTKApplications
 cd TBTKApplication
 TBTKCreateAppliaction MyFirstApplication
 cd MyFirstApplication
+```
+
+## Build and run the application
+```bash
 cmake .
 make
 ./build/Application
