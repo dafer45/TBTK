@@ -29,11 +29,13 @@ const double t                  = 1;
 const double J                  = 0.25;
 const double T                  = 300;
 const Statistics statistics     = Statistics::FermiDirac;
+```
 
 Now assume that we are interested in calculating the density of states (DOS) and magnetization for the system.
 In addition we decide that the appropriate solution method for the system is diagonalization.
 
 ## Setup the model  
+```cpp
 Model model;
 for(int x = 0; x < SIZE_X; x++){
         for(int y = 0; y < SIZE_Y; y++){
