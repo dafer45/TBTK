@@ -35,7 +35,7 @@ make
 ```
 
 ## What's next?
-For further information, see http://second-tech.com/wordpress/index.php/tbtk/ and the templates in the Template folder..
+For further information, see http://second-tech.com/wordpress/index.php/tbtk/ and the templates in the Template folder.
 
 
 # License
