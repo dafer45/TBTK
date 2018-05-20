@@ -21,7 +21,7 @@ Consider the tight-binding Hamiltonian
 <p align="center"><img src="doc/ExampleHamiltonian.png" /></p>  
 
 on a square lattice of size 30x30, where angle brackets denotes summation over nearest neighbors, and *sigma* is a spin summation index.
-The parameters *t = 1 eV* and *J = 0.25 eV* are the nearest neighbor hopping amplitude and the strength of the Zeeman term, respectively.
+The parameters *t = 1 eV* and *J = 0.5 eV* are the nearest neighbor hopping amplitude and the strength of the Zeeman term, respectively.
 Moreover, let the chemical potential be *mu = -1 eV*, the temperature be *T = 300K*, and the particle have Fermi-Dirac statistics.  
 ```cpp
 const int SIZE_X                = 30;
@@ -62,7 +62,7 @@ for(int x = 0; x < SIZE_X; x++){
 //Create Hilbert space basis.
 model.construct();
 
-//Set the chemical potential and temperature.
+//Set the chemical potential, temperature, and statistics.
 model.setChemicalPotential(mu);
 model.setTemperature(T);
 model.setStatistics(statistics);
