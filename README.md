@@ -150,6 +150,11 @@ make
 sudo make install
 ```
 
+## Run unit tests (optional)
+```bash
+make test
+```
+
 ## Create a first application
 ```bash
 cd ..
