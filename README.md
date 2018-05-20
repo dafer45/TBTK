@@ -123,9 +123,9 @@ For more examples and complete applications, see http://second-tech.com/wordpres
 * clang (exact version number not known at the moment).  
 
 **Required software and libraries:**  
-* CMake
-* BLAS
-* LAPACK
+* CMake (https://cmake.org/)
+* BLAS (http://www.netlib.org/blas/)
+* LAPACK (http://www.netlib.org/lapack/)
 
 **Optional libraries:**
 * ARPACK
