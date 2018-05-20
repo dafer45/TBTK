@@ -132,6 +132,7 @@ For more examples and complete applications, see http://second-tech.com/wordpres
 * CUDA
 * cURL
 * FFTW3
+* Google Test
 * HDF5
 * OpenCV
 * OpenBLAS
