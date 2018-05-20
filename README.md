@@ -151,7 +151,7 @@ Additional features will also be available if one or more of the following libra
 
 The following table shows the optional libraries that are required to enable extensions to the core capabilities.
 Components marked as *experimental* or *highly experimental* should be considered to be restricted for use by experienced developers.
-These components are not yet stable and rapid changes to their API may occur.
+These components are not yet stable and rapid changes to their interfaces may occur.
 See the documentation for deatiled information about the corresponding components.
 
 |                                                                                                                         | ARPACK | FFTW3 | OpenCV | cURL | SuperLU (v5.2.1) | wxWidgets | CUDA | HDF5 | OpenBLAS | OpenMP | Google Test |
