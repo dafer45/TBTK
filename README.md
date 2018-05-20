@@ -118,8 +118,26 @@ Magnetization:	0.144248
 For more examples and complete applications, see http://second-tech.com/wordpress/index.php/tbtk/ and the templates in the Templates folder.
 
 # System requirements
-TBTK is currently verified to work with gcc (v4.9 and up) and Mac OS using clang (exact version number not known at the moment).
-Requried software and libraries are CMake, BLAS, and LAPACK, while additional features are enabled by installing ARPACK, CUDA, cURL, FFTW3, HDF5, OpenCV, OpenBLAS, OpenMP, SuperLU, and wxWidgets.
+TBTK is verified to work with:  
+* gcc (v4.9 and up)
+* clang (exact version number not known at the moment).  
+
+Requried software and libraries:  
+* CMake
+* BLAS
+* LAPACK
+
+Additional features are enabled by installing:
+* ARPACK
+* CUDA
+* cURL
+* FFTW3
+* HDF5
+* OpenCV
+* OpenBLAS
+* OpenMP
+* SuperLU
+* wxWidgets.
 
 # Quickstart
 ## Installation
