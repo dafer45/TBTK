@@ -130,18 +130,20 @@ For more examples and complete applications, see http://second-tech.com/wordpres
 
 **Optional libraries:**  
 Additional features will also be available if one or more of the following libraries are installed.  
-| Optional libraries | Further information                         |
-|--------------------|---------------------------------------------|
-| ARPACK             | http://www.caam.rice.edu/software/ARPACK    |
-| FFTW3              | http://www.fftw.org                         |
-| OpenCV             | https://opencv.org                          |
-| cURL               | https://curl.haxx.se                        |
-| SuperLU (v5.2.1)   | http://crd-legacy.lbl.gov/~xiaoye/SuperLU   |
-| wxWidgets          | https://www.wxwidgets.org                   |
-| CUDA               | https://developer.nvidia.com/cuda-downloads |
-| HDF5               | https://support.hdfgroup.org/HDF5           |
+
+| Optional libraries | Further information                         |  
+|--------------------|---------------------------------------------|  
+| ARPACK             | http://www.caam.rice.edu/software/ARPACK    |  
+| FFTW3              | http://www.fftw.org                         |  
+| OpenCV             | https://opencv.org                          |  
+| cURL               | https://curl.haxx.se                        |  
+| SuperLU (v5.2.1)   | http://crd-legacy.lbl.gov/~xiaoye/SuperLU   |  
+| wxWidgets          | https://www.wxwidgets.org                   |  
+| CUDA               | https://developer.nvidia.com/cuda-downloads |  
+| HDF5               | https://support.hdfgroup.org/HDF5           |  
 
 The following table shows the optional libraries that are required for the different TBTK components.  
+
 |                                            | ARPACK | FFTW3 | OpenCV | cURL | SuperLU (v5.2.1) | wxWidgets | CUDA | HDF5 |
 |--------------------------------------------|:------:|:-----:|:------:|:----:|:----------------:|:---------:|:----:|:----:|
 | ArnoldiIterator                            | X      |       |        |      | X                |           |      |      |
