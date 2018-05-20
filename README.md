@@ -174,7 +174,7 @@ make
 ```
 
 # License
-TBTK is free software that is licensed under the Appache 2.0 license (see the file
+TBTK is free software that is licensed under the Apache 2.0 license (see the file
 "License").  Please give attribution in accordance with the "Cite" section below.
 
 ### Third party license
