@@ -118,16 +118,16 @@ Magnetization:	0.144248
 For more examples and complete applications, see http://second-tech.com/wordpress/index.php/tbtk/ and the templates in the Templates folder.
 
 # System requirements
-TBTK is verified to work with:  
+**Verified to work with:**  
 * gcc (v4.9 and up)
 * clang (exact version number not known at the moment).  
 
-Requried software and libraries:  
+**Requried software and libraries:**  
 * CMake
 * BLAS
 * LAPACK
 
-Additional features are enabled by installing:
+**Optional libraries:**
 * ARPACK
 * CUDA
 * cURL
