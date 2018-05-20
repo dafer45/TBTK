@@ -93,7 +93,7 @@ Property::Magnetization magnetization
 
 ## Plot and print results  
 The DOS is a one-dimensional function of the energy and can easily be plotted.
-We here do so using a Gaussian smoothing of 0.07.  
+We here do so using a Gaussian smoothing with standard deviation 0.07.  
 ```cpp
 Plotter plotter;
 plotter.setLabelX("Energy");
