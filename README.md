@@ -123,52 +123,50 @@ For more examples and complete applications, see http://second-tech.com/wordpres
 * gcc (v4.9 and up)
 * clang (exact version number not known at the moment).  
 
-**Required software and libraries:**  
-* CMake (https://cmake.org/)
-* BLAS (http://www.netlib.org/blas/)
-* LAPACK (http://www.netlib.org/lapack/)
+| Required software  | Further information  |
+|--------------------|----------------------|
+| git                | https://git-scm.com/ |
+| CMake              | https://cmake.org/   |
 
-**Optional libraries:**  
-Additional features will also be available if one or more of the following libraries are installed.  
+| Required libraries | Further information          |
+|--------------------|------------------------------|
+| BLAS               | http://www.netlib.org/blas   |
+| LAPACK             | http://www.netlib.org/lapack |
 
-| Optional libraries | Further information                         |  
-|--------------------|---------------------------------------------|  
-| ARPACK             | http://www.caam.rice.edu/software/ARPACK    |  
-| FFTW3              | http://www.fftw.org                         |  
-| OpenCV             | https://opencv.org                          |  
-| cURL               | https://curl.haxx.se                        |  
-| SuperLU (v5.2.1)   | http://crd-legacy.lbl.gov/~xiaoye/SuperLU   |  
-| wxWidgets          | https://www.wxwidgets.org                   |  
-| CUDA               | https://developer.nvidia.com/cuda-downloads |  
-| HDF5               | https://support.hdfgroup.org/HDF5           |  
+Additional features will also be available if one or more of the following libraries are installed.
 
-The following table shows the optional libraries that are required for the different TBTK components.  
+| Optional libraries | Further information                         |
+|--------------------|---------------------------------------------|
+| ARPACK             | http://www.caam.rice.edu/software/ARPACK    |
+| FFTW3              | http://www.fftw.org                         |
+| OpenCV             | https://opencv.org                          |
+| cURL               | https://curl.haxx.se                        |
+| SuperLU (v5.2.1)   | http://crd-legacy.lbl.gov/~xiaoye/SuperLU   |
+| wxWidgets          | https://www.wxwidgets.org                   |
+| CUDA               | https://developer.nvidia.com/cuda-downloads |
+| HDF5               | https://support.hdfgroup.org/HDF5           |
+| OpenBLAS           | https://www.openblas.net/                   |
+| OpenMP             | https://www.openmp.org/                     |
+| Google Test        | https://github.com/google/googletest        |
 
-|                                            | ARPACK | FFTW3 | OpenCV | cURL | SuperLU (v5.2.1) | wxWidgets | CUDA | HDF5 |
-|--------------------------------------------|:------:|:-----:|:------:|:----:|:----------------:|:---------:|:----:|:----:|
-| ArnoldiIterator                            | X      |       |        |      | X                |           |      |      |
-| FourierTransform                           |        | X     |        |      |                  |           |      |      |
-| Plotter                                    |        |       | X      |      |                  |           |      |      |
-| RayTracer                                  |        |       | X      |      |                  |           |      |      |
-| Resource                                   |        |       |        | X    |                  |           |      |      |
-| DataManager                                |        |       |        | X    |                  |           |      |      |
-| LinnearEquationSolver                      |        |       |        |      | X                |           |      |      |
-| LUSolver                                   |        |       |        |      | X                |           |      |      |
-| GUI                                        |        |       |        |      |                  | X         |      |      |
-| Enable GPU execution for ChebyshevExpander |        |       |        |      |                  |           | X    |      |
-| FileReader and FileWriter                  |        |       |        |      |                  |           |      | X    |
+The following table shows the optional libraries that are required for the different TBTK components.
 
-* ARPACK (Enables Solver::ArnoldiIterator)
-* CUDA (Enables GPU execution for Solver::ChebyshevExpander)
-* cURL (Enables Resource for simple)
-* FFTW3
-* Google Test
-* HDF5
-* OpenCV
-* OpenBLAS
-* OpenMP
-* SuperLU
-* wxWidgets.
+|                                              | ARPACK | FFTW3 | OpenCV | cURL | SuperLU (v5.2.1) | wxWidgets | CUDA | HDF5 | OpenBLAS | OpenMP | Google Test |
+|----------------------------------------------|:------:|:-----:|:------:|:----:|:----------------:|:---------:|:----:|:----:|:--------:|:------:|:-----------:|
+| ArnoldiIterator                              | X      |       |        |      | X                |           |      |      |          |        |             |
+| FourierTransform                             |        | X     |        |      |                  |           |      |      |          |        |             |
+| Plotter                                      |        |       | X      |      |                  |           |      |      |          |        |             |
+| RayTracer                                    |        |       | X      |      |                  |           |      |      |          |        |             |
+| Resource                                     |        |       |        | X    |                  |           |      |      |          |        |             |
+| DataManager                                  |        |       |        | X    |                  |           |      |      |          |        |             |
+| LinnearEquationSolver                        |        |       |        |      | X                |           |      |      |          |        |             |
+| LUSolver                                     |        |       |        |      | X                |           |      |      |          |        |             |
+| GUI                                          |        |       |        |      |                  | X         |      |      |          |        |             |
+| Enable GPU execution for ChebyshevExpander   |        |       |        |      |                  |           | X    |      |          |        |             |
+| FileReader and FileWriter                    |        |       |        |      |                  |           |      | X    |          |        |             |
+| Improved linear algebra performance          |        |       |        |      |                  |           |      |      | X        |        |             |
+| Parallel CPU execution of various algorithms |        |       |        |      |                  |           |      |      |          | X      |             |
+| Unit testing                                 |        |       |        |      |                  |           |      |      |          |        |             |
 
 # Quickstart
 ## Installation
