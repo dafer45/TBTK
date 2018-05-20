@@ -167,6 +167,7 @@ See the documentation for deatiled information about the corresponding component
 A number of experimental features are also enabled by the optional libraries.
 These components are not yet stable and rapid changes to their interfaces may occur.
 They should at the moment only be considered to be used by experienced developers.
+
 | Experimental extensions | OpenCV | cURL | SuperLU (v5.2.1) | wxWidgets |
 |-------------------------|:------:|:----:|:----------------:|:---------:|
 | RayTracer               | X      |      |                  |           |
