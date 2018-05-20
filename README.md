@@ -116,6 +116,22 @@ Streams::out << "Magnetization:\t" << real(m.at(0, 0) - m.at(1, 1)) << "\n";
 Magnetization:	0.144248
 ```
 
+## Additional
+The example above demonstrates the general workflow for writing a TBTK application, but the solution method and quantities calculated can vary.
+The following is a list of native production ready solvers.
+* [Diagonalizer](http://www.second-quantization.com/Solvers.html#SolverDiagonalizer)
+* [BlockDiagonalizer](http://www.second-quantization.com/Solvers.html#SolverBlockDiagoanlizer)
+* [ArnoldiIterator](http://www.second-quantization.com/Solvers.html#SolverArnoldiIterator)
+* [ChebyshevExpander](http://www.second-quantization.com/Solvers.html#SolverChebyshevSolver)
+The list of production ready properties is.
+* [Density](http://www.second-quantization.com/Properties.html#Density)
+* [DOS](http://www.second-quantization.com/Properties.html#DOS)
+* [EigenValues](http://www.second-quantization.com/Properties.html#EigenValues)
+* [LDOS](http://www.second-quantization.com/Properties.html#LDOS)
+* [Magnetization](http://www.second-quantization.com/Properties.html#Magnetization)
+* [SpinPolarizedLDOS](http://www.second-quantization.com/Properties.html#SpinPolarizedLDOS)
+* [WaveFunctions](http://www.second-quantization.com/Properties.html#WaveFunctions)
+
 For more examples and complete applications, see http://second-tech.com/wordpress/index.php/tbtk/ and the templates in the Templates folder.
 
 # System requirements
