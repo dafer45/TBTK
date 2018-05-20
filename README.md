@@ -115,7 +115,7 @@ Streams::out << "Magnetization:\t" << real(m.at(0, 0) - m.at(1, 1)) << "\n";
 Magnetization:	0.144248
 ```
 
-For more examples and complete programs, see http://second-tech.com/wordpress/index.php/tbtk/ and the templates in the Template folder.
+For more examples and complete applications, see http://second-tech.com/wordpress/index.php/tbtk/ and the templates in the Template folder.
 
 # Quickstart
 ## Installation
