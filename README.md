@@ -166,7 +166,7 @@ The following table shows the optional libraries that are required for the diffe
 | FileReader and FileWriter                    |        |       |        |      |                  |           |      | X    |          |        |             |
 | Improved linear algebra performance          |        |       |        |      |                  |           |      |      | X        |        |             |
 | Parallel CPU execution of various algorithms |        |       |        |      |                  |           |      |      |          | X      |             |
-| Unit testing                                 |        |       |        |      |                  |           |      |      |          |        |             |
+| Unit testing                                 |        |       |        |      |                  |           |      |      |          |        | X           |
 
 # Quickstart
 ## Installation
