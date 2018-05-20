@@ -11,8 +11,8 @@ It is today more generally a collection of data structures that are meant to ena
 Examples of such data structures are quantities such as the Density, DOS, EigenValues, (spin-polarized) LDOS, Magnetization, WaveFunctions, etc.
 In addition to providing native solvers, TBTK thereby also aims to enable the development of frontends and backends to already existing packages that allows for seamless integration of the codebase already developed by the scientific community.
 To aid such integration, TBTK is specifically designed to allow for solution algorithms to be used interchangably with minimal amount of modification of the code.
-
-Full documentation is available at:  http://www.second-quantization.com/  
+<br/><br/>
+For full documenation, see:  http://www.second-quantization.com/  
 Also see: http://www.second-tech.com
 
 # Example
