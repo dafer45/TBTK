@@ -13,7 +13,7 @@ In addition to providing native solvers, TBTK thereby also aims to enable the de
 To aid such integration, TBTK is specifically designed to allow for solution algorithms to be used interchangably with minimal amount of modification of the code.  
 <br/><br/>
 
-**For full documenation, see:** http://www.second-quantization.com/  
+**Full documenation available at:** http://www.second-quantization.com/  
 **Also see:** http://www.second-tech.com
 
 # Example
