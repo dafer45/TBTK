@@ -150,26 +150,30 @@ Additional features will also be available if one or more of the following libra
 | Google Test        | https://github.com/google/googletest        |
 
 The following table shows the optional libraries that are required to enable extensions to the core capabilities.
-Components marked as *experimental* or *highly experimental* should be considered to be restricted for use by experienced developers.
-These components are not yet stable and rapid changes to their interfaces may occur.
 See the documentation for deatiled information about the corresponding components.
 
-|                                                                                                                         | ARPACK | FFTW3 | OpenCV | cURL | SuperLU (v5.2.1) | wxWidgets | CUDA | HDF5 | OpenBLAS | OpenMP | Google Test |
-|-------------------------------------------------------------------------------------------------------------------------|:------:|:-----:|:------:|:----:|:----------------:|:---------:|:----:|:----:|:--------:|:------:|:-----------:|
-| [ArnoldiIterator](http://www.second-quantization.com/Solvers.html#SolverArnoldiIterator)                                | X      |       |        |      | X                |           |      |      |          |        |             |
-| [FourierTransform](http://www.second-quantization.com/FourierTransform.html)                                            |        | X     |        |      |                  |           |      |      |          |        |             |
-| [Plotter](http://www.second-quantization.com/FourierTransform.html)                                                     |        |       | X      |      |                  |           |      |      |          |        |             |
-| RayTracer (highly experimental)                                                                                         |        |       | X      |      |                  |           |      |      |          |        |             |
-| [Resource](http://www.second-quantization.com/ImportingAndExportingData.html)                                           |        |       |        | X    |                  |           |      |      |          |        |             |
-| DataManager (highly experimental)                                                                                       |        |       |        | X    |                  |           |      |      |          |        |             |
-| LinnearEquationSolver (experimental)                                                                                    |        |       |        |      | X                |           |      |      |          |        |             |
-| LUSolver (experimental)                                                                                                 |        |       |        |      | X                |           |      |      |          |        |             |
-| GUI (highly experimental)                                                                                               |        |       |        |      |                  | X         |      |      |          |        |             |
-| [Enable GPU execution for the ChebyshevExpander](http://www.second-quantization.com/Solvers.html#SolverChebyshevSolver) |        |       |        |      |                  |           | X    |      |          |        |             |
-| [FileReader and FileWriter](http://www.second-quantization.com/ImportingAndExportingData.html#FileReaderAndFileWriter)  |        |       |        |      |                  |           |      | X    |          |        |             |
-| Improved linear algebra performance                                                                                     |        |       |        |      |                  |           |      |      | X        |        |             |
-| Parallel CPU execution of various algorithms                                                                            |        |       |        |      |                  |           |      |      |          | X      |             |
-| Unit testing                                                                                                            |        |       |        |      |                  |           |      |      |          |        | X           |
+| Extensions                                                                                                              | ARPACK | FFTW3 | OpenCV | cURL | SuperLU (v5.2.1) | CUDA | HDF5 | OpenBLAS | OpenMP | Google Test |
+|-------------------------------------------------------------------------------------------------------------------------|:------:|:-----:|:------:|:----:|:----------------:|:----:|:----:|:--------:|:------:|:-----------:|
+| [ArnoldiIterator](http://www.second-quantization.com/Solvers.html#SolverArnoldiIterator)                                | X      |       |        |      | X                |      |      |          |        |             |
+| [FourierTransform](http://www.second-quantization.com/FourierTransform.html)                                            |        | X     |        |      |                  |      |      |          |        |             |
+| [Plotter](http://www.second-quantization.com/FourierTransform.html)                                                     |        |       | X      |      |                  |      |      |          |        |             |
+| [Resource](http://www.second-quantization.com/ImportingAndExportingData.html)                                           |        |       |        | X    |                  |      |      |          |        |             |
+| [Enable GPU execution for the ChebyshevExpander](http://www.second-quantization.com/Solvers.html#SolverChebyshevSolver) |        |       |        |      |                  | X    |      |          |        |             |
+| [FileReader and FileWriter](http://www.second-quantization.com/ImportingAndExportingData.html#FileReaderAndFileWriter)  |        |       |        |      |                  |      | X    |          |        |             |
+| Improved linear algebra performance                                                                                     |        |       |        |      |                  |      |      | X        |        |             |
+| Parallel CPU execution of various algorithms                                                                            |        |       |        |      |                  |      |      |          | X      |             |
+| Unit testing                                                                                                            |        |       |        |      |                  |      |      |          |        | X           |
+
+A number of experimental features are also enabled by the optional libraries.
+These components are not yet stable and rapid changes to their interfaces may occur.
+They should at the moment only be considered to be used by experienced developers.
+| Experimental extensions | OpenCV | cURL | SuperLU (v5.2.1) | wxWidgets |
+|-------------------------|:------:|:----:|:----------------:|:---------:|
+| RayTracer               | X      |      |                  |           |
+| DataManager             |        | X    |                  |           |
+| LinnearEquationSolver   |        |      | X                |           |
+| LUSolver                |        |      | X                |           |
+| GUI                     |        |      |                  | X         |
 
 # Quickstart
 ## Installation
