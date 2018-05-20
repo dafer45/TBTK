@@ -122,7 +122,7 @@ For more examples and complete applications, see http://second-tech.com/wordpres
 * gcc (v4.9 and up)
 * clang (exact version number not known at the moment).  
 
-**Requried software and libraries:**  
+**Required software and libraries:**  
 * CMake
 * BLAS
 * LAPACK
