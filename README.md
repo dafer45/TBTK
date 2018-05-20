@@ -149,7 +149,8 @@ Additional features will also be available if one or more of the following libra
 | OpenMP             | https://www.openmp.org/                     |
 | Google Test        | https://github.com/google/googletest        |
 
-The following table shows the optional libraries that are required for the different TBTK components.
+The following table shows the optional libraries that are required to enable extensions to the core capabilities.
+See the documentation for deatiled information about the corresponding components.
 
 |                                                  | ARPACK | FFTW3 | OpenCV | cURL | SuperLU (v5.2.1) | wxWidgets | CUDA | HDF5 | OpenBLAS | OpenMP | Google Test |
 |--------------------------------------------------|:------:|:-----:|:------:|:----:|:----------------:|:---------:|:----:|:----:|:--------:|:------:|:-----------:|
