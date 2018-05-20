@@ -97,7 +97,7 @@ inline Array<double> Smooth::gaussian(
 	normalization = 1/normalization;
 
 	Array<double> result({data.getRanges()[0]}, 0);
-	for(unsigned int n = 0; n < data.getRanges()[0]; n++){
+	for(int n = 0; n < (int)data.getRanges()[0]; n++){
 		for(
 			int c = std::max(0, (int)n - (int)windowSize/2);
 			c < std::min(
@@ -142,7 +142,7 @@ inline std::vector<double> Smooth::gaussian(
 	normalization = 1/normalization;
 
 	std::vector<double> result;
-	for(unsigned int n = 0; n < data.size(); n++){
+	for(int n = 0; n < (int)data.size(); n++){
 		result.push_back(0);
 		for(
 			int c = std::max(0, (int)n - (int)windowSize/2);
