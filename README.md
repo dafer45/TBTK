@@ -115,6 +115,8 @@ Streams::out << "Magnetization:\t" << real(m.at(0, 0) - m.at(1, 1)) << "\n";
 Magnetization:	0.144248
 ```
 
+For more involved examples, see http://second-tech.com/wordpress/index.php/tbtk/ and the templates in the Template folder.
+
 # Quickstart
 ## Installation
 ```bash
@@ -141,10 +143,6 @@ cmake .
 make
 ./build/Application
 ```
-
-## What's next?
-For further information, see http://second-tech.com/wordpress/index.php/tbtk/ and the templates in the Template folder.
-
 
 # License
 TBTK is free software that is licensed under the Appache 2.0 license (see the file
