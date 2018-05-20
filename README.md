@@ -151,22 +151,22 @@ Additional features will also be available if one or more of the following libra
 
 The following table shows the optional libraries that are required for the different TBTK components.
 
-|                                              | ARPACK | FFTW3 | OpenCV | cURL | SuperLU (v5.2.1) | wxWidgets | CUDA | HDF5 | OpenBLAS | OpenMP | Google Test |
-|----------------------------------------------|:------:|:-----:|:------:|:----:|:----------------:|:---------:|:----:|:----:|:--------:|:------:|:-----------:|
-| ArnoldiIterator                              | X      |       |        |      | X                |           |      |      |          |        |             |
-| FourierTransform                             |        | X     |        |      |                  |           |      |      |          |        |             |
-| Plotter                                      |        |       | X      |      |                  |           |      |      |          |        |             |
-| RayTracer                                    |        |       | X      |      |                  |           |      |      |          |        |             |
-| Resource                                     |        |       |        | X    |                  |           |      |      |          |        |             |
-| DataManager                                  |        |       |        | X    |                  |           |      |      |          |        |             |
-| LinnearEquationSolver                        |        |       |        |      | X                |           |      |      |          |        |             |
-| LUSolver                                     |        |       |        |      | X                |           |      |      |          |        |             |
-| GUI                                          |        |       |        |      |                  | X         |      |      |          |        |             |
-| Enable GPU execution for ChebyshevExpander   |        |       |        |      |                  |           | X    |      |          |        |             |
-| FileReader and FileWriter                    |        |       |        |      |                  |           |      | X    |          |        |             |
-| Improved linear algebra performance          |        |       |        |      |                  |           |      |      | X        |        |             |
-| Parallel CPU execution of various algorithms |        |       |        |      |                  |           |      |      |          | X      |             |
-| Unit testing                                 |        |       |        |      |                  |           |      |      |          |        | X           |
+|                                                  | ARPACK | FFTW3 | OpenCV | cURL | SuperLU (v5.2.1) | wxWidgets | CUDA | HDF5 | OpenBLAS | OpenMP | Google Test |
+|--------------------------------------------------|:------:|:-----:|:------:|:----:|:----------------:|:---------:|:----:|:----:|:--------:|:------:|:-----------:|
+| ArnoldiIterator                                  | X      |       |        |      | X                |           |      |      |          |        |             |
+| FourierTransform                                 |        | X     |        |      |                  |           |      |      |          |        |             |
+| Plotter                                          |        |       | X      |      |                  |           |      |      |          |        |             |
+| RayTracer                                        |        |       | X      |      |                  |           |      |      |          |        |             |
+| Resource                                         |        |       |        | X    |                  |           |      |      |          |        |             |
+| DataManager                                      |        |       |        | X    |                  |           |      |      |          |        |             |
+| LinnearEquationSolver                            |        |       |        |      | X                |           |      |      |          |        |             |
+| LUSolver                                         |        |       |        |      | X                |           |      |      |          |        |             |
+| GUI                                              |        |       |        |      |                  | X         |      |      |          |        |             |
+| Enable GPU execution for the ChebyshevExpander   |        |       |        |      |                  |           | X    |      |          |        |             |
+| FileReader and FileWriter                        |        |       |        |      |                  |           |      | X    |          |        |             |
+| Improved linear algebra performance              |        |       |        |      |                  |           |      |      | X        |        |             |
+| Parallel CPU execution of various algorithms     |        |       |        |      |                  |           |      |      |          | X      |             |
+| Unit testing                                     |        |       |        |      |                  |           |      |      |          |        | X           |
 
 # Quickstart
 ## Installation
