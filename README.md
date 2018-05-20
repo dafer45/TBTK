@@ -23,7 +23,7 @@ Consider the tight-binding Hamiltonian
 
 on a square lattice of size 30x30, where angle brackets denotes summation over nearest neighbors, and *sigma* is a spin summation index.
 The parameters *t = 1 eV* and *J = 0.5 eV* are the nearest neighbor hopping amplitude and the strength of the Zeeman term, respectively.
-Moreover, let the chemical potential be *mu = -1 eV*, the temperature be *T = 300K*, and the particle have Fermi-Dirac statistics.  
+Moreover, let the chemical potential be *mu = -1 eV*, the temperature be *T = 300K*, and the particles have Fermi-Dirac statistics.  
 ```cpp
 const int SIZE_X                = 30;
 const int SIZE_Y                = 30;
@@ -93,7 +93,7 @@ Property::Magnetization magnetization
 
 ## Plot and print results  
 The DOS is a one-dimensional function of the energy and can easily be plotted.
-We here do so using a Gaussian smoothin of 0.07.  
+We here do so using a Gaussian smoothing of 0.07.  
 ```cpp
 Plotter plotter;
 plotter.setLabelX("Energy");
