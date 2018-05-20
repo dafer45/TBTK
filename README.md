@@ -128,8 +128,8 @@ For more examples and complete applications, see http://second-tech.com/wordpres
 * BLAS (http://www.netlib.org/blas/)
 * LAPACK (http://www.netlib.org/lapack/)
 
-**Optional libraries:**
-Additional features will also be available if one or more of the following libraries are installed.
+**Optional libraries:**  
+Additional features will also be available if one or more of the following libraries are installed.  
 | Optional libraries | Further information                         |
 |--------------------|---------------------------------------------|
 | ARPACK             | http://www.caam.rice.edu/software/ARPACK    |
@@ -141,7 +141,7 @@ Additional features will also be available if one or more of the following libra
 | CUDA               | https://developer.nvidia.com/cuda-downloads |
 | HDF5               | https://support.hdfgroup.org/HDF5           |
 
-The following table shows the optional libraries that are required for the different TBTK components.
+The following table shows the optional libraries that are required for the different TBTK components.  
 |                                            | ARPACK | FFTW3 | OpenCV | cURL | SuperLU (v5.2.1) | wxWidgets | CUDA | HDF5 |
 |--------------------------------------------|:------:|:-----:|:------:|:----:|:----------------:|:---------:|:----:|:----:|
 | ArnoldiIterator                            | X      |       |        |      | X                |           |      |      |
