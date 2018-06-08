@@ -57,7 +57,7 @@ SelfEnergy::SelfEnergy(
 	double fundamentalMatsubaraEnergy
 ) :
 	EnergyResolvedProperty(
-		EnergyType::BosonicMatsubara,
+		EnergyType::FermionicMatsubara,
 		indexTree,
 		lowerMatsubaraEnergyIndex,
 		upperMatsubaraEnergyIndex,
@@ -74,7 +74,7 @@ SelfEnergy::SelfEnergy(
 	const complex<double> *data
 ) :
 	EnergyResolvedProperty(
-		EnergyType::BosonicMatsubara,
+		EnergyType::FermionicMatsubara,
 		indexTree,
 		lowerMatsubaraEnergyIndex,
 		upperMatsubaraEnergyIndex,

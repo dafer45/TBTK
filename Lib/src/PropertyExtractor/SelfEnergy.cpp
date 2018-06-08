@@ -342,18 +342,18 @@ Property::SelfEnergy SelfEnergy::calculateSelfEnergy(
 	case Property::EnergyResolvedProperty<complex<double>>::EnergyType::BosonicMatsubara:
 	{
 		TBTKAssert(
-			lowerBosonicMatsubaraEnergyIndex
-			<= upperBosonicMatsubaraEnergyIndex,
+			lowerFermionicMatsubaraEnergyIndex
+			<= upperFermionicMatsubaraEnergyIndex,
 			"PropertyExtractor::SelfEnergy::calculateSelfEnergy()",
-			"'lowerBosonicMatsubaraEnergyIndex="
-			<< lowerBosonicMatsubaraEnergyIndex << "' must be less"
-			<< " or equal to 'upperBosonicMatsubaraEnergyIndex="
-			<< lowerBosonicMatsubaraEnergyIndex << "'.",
+			"'lowerFermionicMatsubaraEnergyIndex="
+			<< lowerFermionicMatsubaraEnergyIndex << "' must be less"
+			<< " or equal to 'upperFermionicMatsubaraEnergyIndex="
+			<< lowerFermionicMatsubaraEnergyIndex << "'.",
 			"This should never happen, contact the developer."
 		);
 		unsigned int numMatsubaraEnergies = (
-			upperBosonicMatsubaraEnergyIndex
-			- lowerBosonicMatsubaraEnergyIndex
+			upperFermionicMatsubaraEnergyIndex
+			- lowerFermionicMatsubaraEnergyIndex
 		)/2 + 1;
 
 		double temperature = solver->getModel().getTemperature();
@@ -361,18 +361,18 @@ Property::SelfEnergy SelfEnergy::calculateSelfEnergy(
 		double fundamentalMatsubaraEnergy = M_PI*kT;
 
 		energies.reserve(numMatsubaraEnergies);
-		for(int n = 0; n < numMatsubaraEnergies; n++){
+		for(int n = 0; n < (int)numMatsubaraEnergies; n++){
 			energies.push_back(
 				(double)(
-					lowerBosonicMatsubaraEnergyIndex + 2*n
+					lowerFermionicMatsubaraEnergyIndex + 2*n
 				)*complex<double>(0, 1)*M_PI*kT
 			);
 		}
 
 		Property::SelfEnergy selfEnergy(
 			memoryLayout,
-			lowerBosonicMatsubaraEnergyIndex,
-			upperBosonicMatsubaraEnergyIndex,
+			lowerFermionicMatsubaraEnergyIndex,
+			upperFermionicMatsubaraEnergyIndex,
 			fundamentalMatsubaraEnergy
 		);
 

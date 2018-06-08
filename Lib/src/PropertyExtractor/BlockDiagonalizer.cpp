@@ -345,7 +345,7 @@ Property::GreensFunction2 BlockDiagonalizer::calculateGreensFunction(
 		vector<complex<double>> &energies = *((vector<complex<double>>*)hint);
 		energies.clear();
 		energies.reserve(numMatsubaraEnergies);
-		for(int n = 0; n < numMatsubaraEnergies; n++){
+		for(int n = 0; n < (int)numMatsubaraEnergies; n++){
 			energies.push_back(
 				(double)(
 					lowerFermionicMatsubaraEnergyIndex

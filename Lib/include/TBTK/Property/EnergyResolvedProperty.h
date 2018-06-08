@@ -630,7 +630,7 @@ inline double EnergyResolvedProperty<DataType>::getEnergy(
 			- descriptor.realEnergy.lowerBound
 		)/(descriptor.realEnergy.resolution - 1);
 
-	return descriptor.realEnergy.lowerBound + n*dE;
+	return descriptor.realEnergy.lowerBound + ((int)n)*dE;
 }
 
 template<typename DataType>
@@ -752,7 +752,7 @@ inline std::complex<double> EnergyResolvedProperty<
 
 	return std::complex<double>(
 		0,
-		(descriptor.matsubaraEnergy.lowerMatsubaraEnergyIndex + 2*n)
+		(descriptor.matsubaraEnergy.lowerMatsubaraEnergyIndex + 2*(int)n)
 		*descriptor.matsubaraEnergy.fundamentalMatsubaraEnergy
 	);
 }
