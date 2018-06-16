@@ -1074,7 +1074,7 @@ TEST(EnergyResolvedProperty, getMatsubaraEnergy){
 		);
 		EXPECT_DOUBLE_EQ(
 			imag(energyResolvedProperty0.getMatsubaraEnergy(n)),
-			(-9 + 2*n)*2.2
+			(-9 + 2*(int)n)*2.2
 		);
 	}
 
@@ -1097,7 +1097,7 @@ TEST(EnergyResolvedProperty, getMatsubaraEnergy){
 		);
 		EXPECT_DOUBLE_EQ(
 			imag(energyResolvedProperty1.getMatsubaraEnergy(n)),
-			(-10 + 2*n)*2.2
+			(-10 + 2*(int)n)*2.2
 		);
 	}
 }
