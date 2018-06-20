@@ -238,6 +238,46 @@ double UnitHandler::convertMagneticFieldNtD(
 	return magneticFieldInDefaultBaseUnits*getMagneticFieldConversionFactor(unit);
 }
 
+double UnitHandler::convertVoltageDtB(
+	double voltage,
+	VoltageUnit unit
+){
+	double voltageInDefaultBaseUnits = voltage/getVoltageConversionFactor(unit);
+	double cfE = getEnergyConversionFactor();
+	double cfC = getChargeConversionFactor();
+	return voltageInDefaultBaseUnits*cfE/cfC;
+}
+
+double UnitHandler::convertVoltageBtD(
+	double voltage,
+	VoltageUnit unit
+){
+	double cfE = getEnergyConversionFactor();
+	double cfC = getChargeConversionFactor();
+	double voltageInDefaultBaseUnits = voltage*cfC/cfE;
+	return voltageInDefaultBaseUnits*getVoltageConversionFactor(unit);
+}
+
+double UnitHandler::convertVoltageDtN(
+	double voltage,
+	VoltageUnit unit
+){
+	double voltageInDefaultBaseUnits = voltage/getVoltageConversionFactor(unit);
+	double cfE = getEnergyConversionFactor()/energyScale;
+	double cfC = getChargeConversionFactor()/chargeScale;
+	return voltageInDefaultBaseUnits*cfE/cfC;
+}
+
+double UnitHandler::convertVoltageNtD(
+	double voltage,
+	VoltageUnit unit
+){
+	double cfE = getEnergyConversionFactor()/energyScale;
+	double cfC = getChargeConversionFactor()/chargeScale;
+	double voltageInDefaultBaseUnits = voltage*cfC/cfE;
+	return voltageInDefaultBaseUnits*getVoltageConversionFactor(unit);
+}
+
 string UnitHandler::getTemperatureUnitString(){
 	switch(temperatureUnit){
 		case TemperatureUnit::kK:
@@ -374,6 +414,13 @@ string UnitHandler::getMassUnitString(){
 string UnitHandler::getMagneticFieldUnitString(){
 	stringstream ss;
 	ss << getEnergyUnitString() << getTimeUnitString() << "/" << getChargeUnitString() << getLengthUnitString() << "^2";
+
+	return ss.str();
+}
+
+string UnitHandler::getVoltageUnitString(){
+	stringstream ss;
+	ss << getEnergyUnitString() << "/" << getChargeUnitString();
 
 	return ss.str();
 }
@@ -722,6 +769,31 @@ double UnitHandler::getMagneticFieldConversionFactor(MagneticFieldUnit unit){
 		default:	//Should never happen, hard error generated for quick bug detection
 			TBTKExit(
 				"UnitHandler::getMagneticFieldConversionFactor()",
+				"Unknown unit - " << static_cast<int>(unit) << ".",
+				""
+			);
+	}
+}
+
+double UnitHandler::getVoltageConversionFactor(VoltageUnit unit){
+	switch(unit){
+		case VoltageUnit::GV:
+			return V_per_baseVoltage*1e-9;
+		case VoltageUnit::MV:
+			return V_per_baseVoltage*1e-6;
+		case VoltageUnit::kV:
+			return V_per_baseVoltage*1e-3;
+		case VoltageUnit::V:
+			return V_per_baseVoltage;
+		case VoltageUnit::mV:
+			return V_per_baseVoltage*1e3;
+		case VoltageUnit::uV:
+			return V_per_baseVoltage*1e6;
+		case VoltageUnit::nV:
+			return V_per_baseVoltage*1e9;
+		default:	//Should never happen, hard error generated for quick bug detection
+			TBTKExit(
+				"UnitHandler::getVoltageConversionFactor()",
 				"Unknown unit - " << static_cast<int>(unit) << ".",
 				""
 			);

@@ -163,6 +163,18 @@ public:
 		MT, kT, T, mT, uT, nT, GG, MG, kG, G, mG, uG
 	};
 
+	/** Voltage unit (derived unit):<br/>
+	 *	GV - kilovolt<br/>
+	 *	MV - kilovolt<br/>
+	 *	kV - kilovolt<br/>
+	 *	V - volt<br/>
+	 *	mV - millivolt</br>
+	 *	uV - millivolt<br/>
+	 *	nV - millivolt */
+	enum class VoltageUnit{
+		GV, MV, kV, V, mV, uV, nV
+	};
+
 	/** Get the Planck constant in the currently set base units. */
 	static double getHbarB();
 
@@ -337,6 +349,30 @@ public:
 		MagneticFieldUnit unit
 	);
 
+	/** Convert voltage from derived units to base units. */
+	static double convertVoltageDtB(
+		double voltage,
+		VoltageUnit unit
+	);
+
+	/** Convert voltage from base units to derived units. */
+	static double convertVoltageBtD(
+		double voltage,
+		VoltageUnit unit
+	);
+
+	/** Convert voltage from derived units to natural units. */
+	static double convertVoltageDtN(
+		double voltage,
+		VoltageUnit unit
+	);
+
+	/** Convert voltage from natural units to derived units. */
+	static double convertVoltageNtD(
+		double voltage,
+		VoltageUnit unit
+	);
+
 	/** Get temperature unit string
 	 *
 	 *  @return string representation of the currently set temperature unit.
@@ -379,6 +415,12 @@ public:
 	 *  @return string representation of the derived magnetic field unit in
 	 *  terms of the currently set base units. */
 	static std::string getMagneticFieldUnitString();
+
+	/** Get voltage unit string.
+	 *
+	 *  @return string representation of the derived voltage unit in terms
+	 *  of the currently set base units. */
+	static std::string getVoltageUnitString();
 
 	/** Get Planck constant unit string
 	 *
@@ -532,6 +574,12 @@ private:
 	/** Conversion factor from T to eVs/Cm^2. */
 	static constexpr double baseMagneticField_per_T = 1./T_per_baseMagneticField;
 
+	/** Conversion factor from V to eV/C. */
+	static constexpr double V_per_baseVoltage = 1.602176565e-19;
+
+	/** Conversion factor from eV/C to V. */
+	static constexpr double baseVoltage_per_V = 1./V_per_baseVoltage;
+
 	/** Currently set temperature unit. */
 	static TemperatureUnit temperatureUnit;
 
@@ -633,6 +681,10 @@ private:
 	 *  unit per unit magnetic field strength in the default unit
 	 *  (eVs/Cm^2). */
 	static double getMagneticFieldConversionFactor(MagneticFieldUnit unit);
+
+	/** Returns the amount of unit voltage in the input unit per unit
+	 *  voltage in the default unit (eV/C). */
+	static double getVoltageConversionFactor(VoltageUnit unit);
 };
 
 inline double UnitHandler::getHbarB(){
