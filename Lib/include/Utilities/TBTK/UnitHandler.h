@@ -277,6 +277,24 @@ public:
 	/** Set count unit. */
 	static void setCountScale(double scale);
 
+	/** Set temperature scale. */
+	static void setTemperatureScale(double scale, TemperatureUnit unit);
+
+	/** Set time scale. */
+	static void setTimeScale(double scale, TimeUnit unit);
+
+	/** Set length scale. */
+	static void setLengthScale(double scale, LengthUnit unit);
+
+	/** Set energy scale. */
+	static void setEnergyScale(double scale, EnergyUnit unit);
+
+	/** Set charge scale. */
+	static void setChargeScale(double scale, ChargeUnit unit);
+
+	/** Set count scale. */
+	static void setCountScale(double scale, CountUnit unit);
+
 	/** Convert temperature from natural units to base units. */
 	static double convertTemperatureNtB(double temperature);
 
@@ -773,6 +791,36 @@ inline double UnitHandler::getEpsilon_0B(){
 
 inline double UnitHandler::getEpsilon_0N(){
 	return epsilon_0*energyScale*lengthScale/(chargeScale*chargeScale);
+}
+
+inline void UnitHandler::setTemperatureScale(double scale, TemperatureUnit unit){
+	setTemperatureUnit(unit);
+	setTemperatureScale(scale);
+}
+
+inline void UnitHandler::setTimeScale(double scale, TimeUnit unit){
+	setTimeUnit(unit);
+	setTimeScale(scale);
+}
+
+inline void UnitHandler::setLengthScale(double scale, LengthUnit unit){
+	setLengthUnit(unit);
+	setLengthScale(scale);
+}
+
+inline void UnitHandler::setEnergyScale(double scale, EnergyUnit unit){
+	setEnergyUnit(unit);
+	setEnergyScale(scale);
+}
+
+inline void UnitHandler::setChargeScale(double scale, ChargeUnit unit){
+	setChargeUnit(unit);
+	setChargeScale(scale);
+}
+
+inline void UnitHandler::setCountScale(double scale, CountUnit unit){
+	setCountUnit(unit);
+	setCountScale(scale);
 }
 
 inline double UnitHandler::convertTemperatureNtB(double temperature){
