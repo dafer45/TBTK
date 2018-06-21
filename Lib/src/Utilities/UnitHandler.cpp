@@ -158,6 +158,210 @@ void UnitHandler::setCountScale(double scale){
 	countScale = scale;
 }
 
+void UnitHandler::setTemperatureScale(string scale){
+	stringstream ss(scale);
+	vector<string> components;
+	string word;
+	while(getline(ss, word, ' '))
+		components.push_back(word);
+
+	TBTKAssert(
+		components.size() == 2,
+		"UnitHandler::setTemperatureScale()",
+		"Invalid temperature scale string '" << scale << "'.",
+		"The string has to be on the format '[scale] [unit]', e.g."
+		<< " '1 K'."
+	);
+
+	double s;
+	try{
+		s = stod(components[0]);
+	}
+	catch(const std::exception &e){
+		TBTKExit(
+			"UnitHandler::setTemperatureScale()",
+			"Unable to parse '" << components[0] << "' as a"
+			" double.",
+			"The string has to be on the format '[scale] [unit]', e.g."
+			<< " '1 K'."
+		);
+	}
+
+	TemperatureUnit unit = getTemperatureUnit(components[1]);
+
+	setTemperatureScale(s, unit);
+}
+
+void UnitHandler::setTimeScale(string scale){
+	stringstream ss(scale);
+	vector<string> components;
+	string word;
+	while(getline(ss, word, ' '))
+		components.push_back(word);
+
+	TBTKAssert(
+		components.size() == 2,
+		"UnitHandler::setTimeScale()",
+		"Invalid time scale string '" << scale << "'.",
+		"The string has to be on the format '[scale] [unit]', e.g."
+		<< " '1 s'."
+	);
+
+	double s;
+	try{
+		s = stod(components[0]);
+	}
+	catch(const std::exception &e){
+		TBTKExit(
+			"UnitHandler::setTimeScale()",
+			"Unable to parse '" << components[0] << "' as a"
+			" double.",
+			"The string has to be on the format '[scale] [unit]', e.g."
+			<< " '1 s'."
+		);
+	}
+
+	TimeUnit unit = getTimeUnit(components[1]);
+
+	setTimeScale(s, unit);
+}
+
+void UnitHandler::setLengthScale(string scale){
+	stringstream ss(scale);
+	vector<string> components;
+	string word;
+	while(getline(ss, word, ' '))
+		components.push_back(word);
+
+	TBTKAssert(
+		components.size() == 2,
+		"UnitHandler::setLengthScale()",
+		"Invalid length scale string '" << scale << "'.",
+		"The string has to be on the format '[scale] [unit]', e.g."
+		<< " '1 m'."
+	);
+
+	double s;
+	try{
+		s = stod(components[0]);
+	}
+	catch(const std::exception &e){
+		TBTKExit(
+			"UnitHandler::setLengthScale()",
+			"Unable to parse '" << components[0] << "' as a"
+			" double.",
+			"The string has to be on the format '[scale] [unit]', e.g."
+			<< " '1 m'."
+		);
+	}
+
+	LengthUnit unit = getLengthUnit(components[1]);
+
+	setLengthScale(s, unit);
+}
+
+void UnitHandler::setEnergyScale(string scale){
+	stringstream ss(scale);
+	vector<string> components;
+	string word;
+	while(getline(ss, word, ' '))
+		components.push_back(word);
+
+	TBTKAssert(
+		components.size() == 2,
+		"UnitHandler::setEnergyScale()",
+		"Invalid energy scale string '" << scale << "'.",
+		"The string has to be on the format '[scale] [unit]', e.g."
+		<< " '1 eV'."
+	);
+
+	double s;
+	try{
+		s = stod(components[0]);
+	}
+	catch(const std::exception &e){
+		TBTKExit(
+			"UnitHandler::setEnergyScale()",
+			"Unable to parse '" << components[0] << "' as a"
+			" double.",
+			"The string has to be on the format '[scale] [unit]', e.g."
+			<< " '1 eV'."
+		);
+	}
+
+	EnergyUnit unit = getEnergyUnit(components[1]);
+
+	setEnergyScale(s, unit);
+}
+
+void UnitHandler::setChargeScale(string scale){
+	stringstream ss(scale);
+	vector<string> components;
+	string word;
+	while(getline(ss, word, ' '))
+		components.push_back(word);
+
+	TBTKAssert(
+		components.size() == 2,
+		"UnitHandler::setChargeScale()",
+		"Invalid charge scale string '" << scale << "'.",
+		"The string has to be on the format '[scale] [unit]', e.g."
+		<< " '1 C'."
+	);
+
+	double s;
+	try{
+		s = stod(components[0]);
+	}
+	catch(const std::exception &e){
+		TBTKExit(
+			"UnitHandler::setChargeScale()",
+			"Unable to parse '" << components[0] << "' as a"
+			" double.",
+			"The string has to be on the format '[scale] [unit]', e.g."
+			<< " '1 C'."
+		);
+	}
+
+	ChargeUnit unit = getChargeUnit(components[1]);
+
+	setChargeScale(s, unit);
+}
+
+void UnitHandler::setCountScale(string scale){
+	stringstream ss(scale);
+	vector<string> components;
+	string word;
+	while(getline(ss, word, ' '))
+		components.push_back(word);
+
+	TBTKAssert(
+		components.size() == 2,
+		"UnitHandler::setCountScale()",
+		"Invalid count scale string '" << scale << "'.",
+		"The string has to be on the format '[scale] [unit]', e.g."
+		<< " '1 pcs'."
+	);
+
+	double s;
+	try{
+		s = stod(components[0]);
+	}
+	catch(const std::exception &e){
+		TBTKExit(
+			"UnitHandler::setCountScale()",
+			"Unable to parse '" << components[0] << "' as a"
+			" double.",
+			"The string has to be on the format '[scale] [unit]', e.g."
+			<< " '1 pcs'."
+		);
+	}
+
+	CountUnit unit = getCountUnit(components[1]);
+
+	setCountScale(s, unit);
+}
+
 double UnitHandler::convertMassDtB(double mass, MassUnit unit){
 	double massInDefaultBaseUnits = mass/getMassConversionFactor(unit);
 	double cfE = getEnergyConversionFactor();
@@ -797,6 +1001,192 @@ double UnitHandler::getVoltageConversionFactor(VoltageUnit unit){
 				"Unknown unit - " << static_cast<int>(unit) << ".",
 				""
 			);
+	}
+}
+
+UnitHandler::TemperatureUnit UnitHandler::getTemperatureUnit(string unit){
+	if(unit.compare("kK") == 0){
+		return TemperatureUnit::kK;
+	}
+	else if(unit.compare("K") == 0){
+		return TemperatureUnit::K;
+	}
+	else if(unit.compare("mK") == 0){
+		return TemperatureUnit::mK;
+	}
+	else if(unit.compare("uK") == 0){
+		return TemperatureUnit::uK;
+	}
+	else if(unit.compare("nK") == 0){
+		return TemperatureUnit::nK;
+	}
+	else{
+		TBTKExit(
+			"UnitHandler::getTemperatureUnit()",
+			"Invalid temperature unit '" << unit << "'",
+			""
+		);
+	}
+}
+
+UnitHandler::TimeUnit UnitHandler::getTimeUnit(string unit){
+	if(unit.compare("s") == 0){
+		return TimeUnit::s;
+	}
+	else if(unit.compare("ms") == 0){
+		return TimeUnit::ms;
+	}
+	else if(unit.compare("us") == 0){
+		return TimeUnit::us;
+	}
+	else if(unit.compare("ns") == 0){
+		return TimeUnit::ns;
+	}
+	else if(unit.compare("ps") == 0){
+		return TimeUnit::ps;
+	}
+	else if(unit.compare("fs") == 0){
+		return TimeUnit::fs;
+	}
+	else if(unit.compare("as") == 0){
+		return TimeUnit::as;
+	}
+	else{
+		TBTKExit(
+			"UnitHandler::getTimeUnit()",
+			"Invalid time unit '" << unit << "'",
+			""
+		);
+	}
+}
+
+UnitHandler::LengthUnit UnitHandler::getLengthUnit(string unit){
+	if(unit.compare("m") == 0){
+		return LengthUnit::m;
+	}
+	else if(unit.compare("mm") == 0){
+		return LengthUnit::mm;
+	}
+	else if(unit.compare("um") == 0){
+		return LengthUnit::um;
+	}
+	else if(unit.compare("nm") == 0){
+		return LengthUnit::nm;
+	}
+	else if(unit.compare("pm") == 0){
+		return LengthUnit::pm;
+	}
+	else if(unit.compare("fm") == 0){
+		return LengthUnit::fm;
+	}
+	else if(unit.compare("am") == 0){
+		return LengthUnit::am;
+	}
+	else if(unit.compare("Ao") == 0){
+		return LengthUnit::Ao;
+	}
+	else{
+		TBTKExit(
+			"UnitHandler::getLengthUnit()",
+			"Invalid length unit '" << unit << "'",
+			""
+		);
+	}
+}
+
+UnitHandler::EnergyUnit UnitHandler::getEnergyUnit(string unit){
+	if(unit.compare("GeV") == 0){
+		return EnergyUnit::GeV;
+	}
+	else if(unit.compare("MeV") == 0){
+		return EnergyUnit::MeV;
+	}
+	else if(unit.compare("keV") == 0){
+		return EnergyUnit::keV;
+	}
+	else if(unit.compare("eV") == 0){
+		return EnergyUnit::eV;
+	}
+	else if(unit.compare("meV") == 0){
+		return EnergyUnit::meV;
+	}
+	else if(unit.compare("ueV") == 0){
+		return EnergyUnit::ueV;
+	}
+	else if(unit.compare("J") == 0){
+		return EnergyUnit::J;
+	}
+	else{
+		TBTKExit(
+			"UnitHandler::getEnergyUnit()",
+			"Invalid energy unit '" << unit << "'",
+			""
+		);
+	}
+}
+
+UnitHandler::ChargeUnit UnitHandler::getChargeUnit(string unit){
+	if(unit.compare("kC") == 0){
+		return ChargeUnit::kC;
+	}
+	else if(unit.compare("C") == 0){
+		return ChargeUnit::C;
+	}
+	else if(unit.compare("mC") == 0){
+		return ChargeUnit::mC;
+	}
+	else if(unit.compare("uC") == 0){
+		return ChargeUnit::uC;
+	}
+	else if(unit.compare("nC") == 0){
+		return ChargeUnit::nC;
+	}
+	else if(unit.compare("pC") == 0){
+		return ChargeUnit::pC;
+	}
+	else if(unit.compare("fC") == 0){
+		return ChargeUnit::fC;
+	}
+	else if(unit.compare("aC") == 0){
+		return ChargeUnit::aC;
+	}
+	else if(unit.compare("Te") == 0){
+		return ChargeUnit::Te;
+	}
+	else if(unit.compare("Ge") == 0){
+		return ChargeUnit::Ge;
+	}
+	else if(unit.compare("Me") == 0){
+		return ChargeUnit::Me;
+	}
+	else if(unit.compare("ke") == 0){
+		return ChargeUnit::ke;
+	}
+	else if(unit.compare("e") == 0){
+		return ChargeUnit::e;
+	}
+	else{
+		TBTKExit(
+			"UnitHandler::getChargeUnit()",
+			"Invalid charge unit '" << unit << "'",
+			""
+		);
+	}
+}
+
+UnitHandler::CountUnit UnitHandler::getCountUnit(string unit){
+	if(unit.compare("pcs") == 0){
+		return CountUnit::pcs;
+	}
+	else if(unit.compare("mol") == 0){
+		return CountUnit::mol;
+	}
+	else{
+		TBTKExit(
+			"UnitHandler::getCountUnit()",
+			"Invalid count unit '" << unit << "'",
+			""
+		);
 	}
 }
 

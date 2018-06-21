@@ -23,7 +23,10 @@
 #ifndef COM_DAFER45_TBTK_UNIT_HANDLER
 #define COM_DAFER45_TBTK_UNIT_HANDLER
 
+#include "TBTKMacros.h"
+
 #include <string>
+#include <vector>
 #include <math.h>
 
 #ifdef M_E	//Avoid name clash with math.h macro M_E
@@ -295,6 +298,27 @@ public:
 	/** Set count scale. */
 	static void setCountScale(double scale, CountUnit unit);
 
+	/** Set temperature scale. */
+	static void setTemperatureScale(std::string scale);
+
+	/** Set time scale. */
+	static void setTimeScale(std::string scale);
+
+	/** Set length scale. */
+	static void setLengthScale(std::string scale);
+
+	/** Set energy scale. */
+	static void setEnergyScale(std::string scale);
+
+	/** Set charge scale. */
+	static void setChargeScale(std::string scale);
+
+	/** Set count scale. */
+	static void setCountScale(std::string scale);
+
+	/** Set scales. */
+	static void setScales(const std::vector<std::string> &scales);
+
 	/** Convert temperature from natural units to base units. */
 	static double convertTemperatureNtB(double temperature);
 
@@ -368,28 +392,16 @@ public:
 	);
 
 	/** Convert voltage from derived units to base units. */
-	static double convertVoltageDtB(
-		double voltage,
-		VoltageUnit unit
-	);
+	static double convertVoltageDtB(double voltage, VoltageUnit unit);
 
 	/** Convert voltage from base units to derived units. */
-	static double convertVoltageBtD(
-		double voltage,
-		VoltageUnit unit
-	);
+	static double convertVoltageBtD(double voltage, VoltageUnit unit);
 
 	/** Convert voltage from derived units to natural units. */
-	static double convertVoltageDtN(
-		double voltage,
-		VoltageUnit unit
-	);
+	static double convertVoltageDtN(double voltage, VoltageUnit unit);
 
 	/** Convert voltage from natural units to derived units. */
-	static double convertVoltageNtD(
-		double voltage,
-		VoltageUnit unit
-	);
+	static double convertVoltageNtD(double voltage, VoltageUnit unit);
 
 	/** Get temperature unit string
 	 *
@@ -703,6 +715,24 @@ private:
 	/** Returns the amount of unit voltage in the input unit per unit
 	 *  voltage in the default unit (eV/C). */
 	static double getVoltageConversionFactor(VoltageUnit unit);
+
+	/** Converts a string into a TemperatureUnit. */
+	static TemperatureUnit getTemperatureUnit(std::string unit);
+
+	/** Converts a string into a TimeUnit. */
+	static TimeUnit getTimeUnit(std::string unit);
+
+	/** Converts a string into a LengthUnit. */
+	static LengthUnit getLengthUnit(std::string unit);
+
+	/** Converts a string into a EnergyUnit. */
+	static EnergyUnit getEnergyUnit(std::string unit);
+
+	/** Converts a string into a ChargeUnit. */
+	static ChargeUnit getChargeUnit(std::string unit);
+
+	/** Converts a string into a CountUnit. */
+	static CountUnit getCountUnit(std::string unit);
 };
 
 inline double UnitHandler::getHbarB(){
@@ -821,6 +851,22 @@ inline void UnitHandler::setChargeScale(double scale, ChargeUnit unit){
 inline void UnitHandler::setCountScale(double scale, CountUnit unit){
 	setCountUnit(unit);
 	setCountScale(scale);
+}
+
+inline void UnitHandler::setScales(const std::vector<std::string> &scales){
+	TBTKAssert(
+		scales.size() == 6,
+		"UnitHandler::setScales()",
+		"'scales' must contain six strings.",
+		""
+	);
+
+	setChargeScale(scales[0]);
+	setCountScale(scales[1]);
+	setEnergyScale(scales[2]);
+	setLengthScale(scales[3]);
+	setTemperatureScale(scales[4]);
+	setTimeScale(scales[5]);
 }
 
 inline double UnitHandler::convertTemperatureNtB(double temperature){
