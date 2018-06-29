@@ -29,6 +29,7 @@
 #include "TBTK/Path.h"
 #include "TBTK/Point.h"
 #include "TBTK/Property/DOS.h"
+#include "TBTK/Property/EigenValues.h"
 #include "TBTK/Streams.h"
 #include "TBTK/TBTKMacros.h"
 
@@ -126,6 +127,9 @@ public:
 		double sigma = 0,
 		unsigned int windowSize = 51
 	);
+
+	/** Plot eigenvalues. */
+	void plot(const Property::EigenValues &eigenValues);
 
 	/** Plot 2D data. */
 	void plot(

@@ -120,6 +120,20 @@ void Plotter::plot(
 	plot(axis, data);
 }
 
+void Plotter::plot(const Property::EigenValues &eigenValues){
+	vector<double> data;
+	for(unsigned int n = 0; n < eigenValues.getSize(); n++)
+		data.push_back(eigenValues(n));
+
+	plot(
+		data,
+		Decoration(
+			{0, 0, 0},
+			Decoration::LineStyle::Point
+		)
+	);
+}
+
 void Plotter::plot(
 	const vector<vector<double>> &data
 ){
