@@ -1,6 +1,6 @@
 [![DOI](https://zenodo.org/badge/50950512.svg)](https://zenodo.org/badge/latestdoi/50950512)
 [![Build Status](https://travis-ci.org/dafer45/TBTK.svg?branch=master)](https://travis-ci.org/dafer45/TBTK)  
-<a href="https://www.patreon.com/bePatron?u=12043676" data-patreon-widget-type="become-patron-button">Become a Patron!</a><script async src="https://c6.patreon.com/becomePatronButton.bundle.js"></script>
+<a href="https://www.patreon.com/bePatron?u=12043676" data-patreon-widget-type="become-patron-button"><img src="doc/become_a_patron_button.png"></a>
 
 # TBTK
 Welcome to TBTK, a library for modeling and solving second quantized Hamiltonians with discrete indices.
