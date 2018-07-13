@@ -32,7 +32,7 @@ namespace Solver{
 
 MatsubaraSusceptibility::MatsubaraSusceptibility(
 	const MomentumSpaceContext &momentumSpaceContext,
-	const Property::GreensFunction2 &greensFunction
+	const Property::GreensFunction &greensFunction
 ) :
 	Susceptibility(Algorithm::Lindhard, momentumSpaceContext),
 	greensFunction(greensFunction)

@@ -233,9 +233,9 @@ Property::WaveFunctions BlockDiagonalizer::calculateWaveFunctions(
 	return greensFunction;
 }*/
 
-Property::GreensFunction2 BlockDiagonalizer::calculateGreensFunction(
+Property::GreensFunction BlockDiagonalizer::calculateGreensFunction(
 	vector<Index> patterns,
-	Property::GreensFunction2::Type type
+	Property::GreensFunction::Type type
 ){
 	IndexTree allIndices;
 	IndexTree memoryLayout;
@@ -319,7 +319,7 @@ Property::GreensFunction2 BlockDiagonalizer::calculateGreensFunction(
 	memoryLayout.generateLinearMap();
 
 	switch(type){
-	case Property::GreensFunction2::Type::Matsubara:
+	case Property::GreensFunction::Type::Matsubara:
 	{
 		TBTKAssert(
 			lowerFermionicMatsubaraEnergyIndex
@@ -354,7 +354,7 @@ Property::GreensFunction2 BlockDiagonalizer::calculateGreensFunction(
 			);
 		}
 
-		Property::GreensFunction2 greensFunction(
+		Property::GreensFunction greensFunction(
 			memoryLayout,
 			lowerFermionicMatsubaraEnergyIndex,
 			upperFermionicMatsubaraEnergyIndex,

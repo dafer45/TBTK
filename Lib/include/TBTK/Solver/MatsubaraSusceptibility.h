@@ -23,7 +23,7 @@
 #ifndef COM_DAFER45_TBTK_SOLVER_MATSUBARA_SUSCEPTIBILITY
 #define COM_DAFER45_TBTK_SOLVER_MATSUBARA_SUSCEPTIBILITY
 
-#include "TBTK/Property/GreensFunction2.h"
+#include "TBTK/Property/GreensFunction.h"
 #include "TBTK/RPA/MomentumSpaceContext.h"
 #include "TBTK/Solver/Susceptibility.h"
 
@@ -37,7 +37,7 @@ public:
 	/** Constructor. */
 	MatsubaraSusceptibility(
 		const MomentumSpaceContext &momentumSpaceContext,
-		const Property::GreensFunction2 &greensFunction
+		const Property::GreensFunction &greensFunction
 	);
 
 	/** Destructor. */
@@ -59,7 +59,7 @@ public:
 	);
 private:
 	/** The Green's function to calculate the Susceptibility form. */
-	const Property::GreensFunction2 &greensFunction;
+	const Property::GreensFunction &greensFunction;
 
 	/** Slave constructor. */
 /*	MatsubaraSusceptibility(

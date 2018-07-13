@@ -27,7 +27,7 @@
 #include "TBTK/Property/DOS.h"
 #include "TBTK/Property/Density.h"
 #include "TBTK/Property/EigenValues.h"
-#include "TBTK/Property/GreensFunction2.h"
+#include "TBTK/Property/GreensFunction.h"
 #include "TBTK/Property/LDOS.h"
 #include "TBTK/Property/Magnetization.h"
 #include "TBTK/Property/SpinPolarizedLDOS.h"
@@ -120,10 +120,10 @@ public:
 	);*/
 
 	/** Calculate the Green's function. */
-	Property::GreensFunction2 calculateGreensFunction(
+	Property::GreensFunction calculateGreensFunction(
 		std::vector<Index> patterns,
-		Property::GreensFunction2::Type type
-			= Property::GreensFunction2::Type::Retarded
+		Property::GreensFunction::Type type
+			= Property::GreensFunction::Type::Retarded
 	);
 
 	/** Overrides PropertyExtractor::calculateDOS(). */
