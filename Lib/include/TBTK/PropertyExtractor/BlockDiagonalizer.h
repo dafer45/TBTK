@@ -45,11 +45,13 @@ namespace PropertyExtractor{
  *  written to file using the FileWriter.*/
 class BlockDiagonalizer : public PropertyExtractor{
 public:
-	/** Constructor. */
-	BlockDiagonalizer(Solver::BlockDiagonalizer &bSolver);
+	/** Constructs a PropertyExtractor::BlockDiagonalizer.
+	 *
+	 *  @param solver The Solver to use. */
+	BlockDiagonalizer(Solver::BlockDiagonalizer &solver);
 
 	/** Destructor. */
-	virtual ~BlockDiagonalizer();
+//	virtual ~BlockDiagonalizer();
 
 	/** Legacy. */
 /*	void saveEigenValues(
@@ -66,7 +68,10 @@ public:
 		int *maxIndexSize
 	);*/
 
-	/** Overrider PropertyExtractor::setEnergyWindow(). */
+	/** Overrides PropertyExtractor::setEnergyWindow().
+	 *
+	 *  Identical to the overriden function, except that it also sets the
+	 *  energy type to EnergyType::Real. */
 	virtual void setEnergyWindow(
 		double lowerBound,
 		double upperBound,
@@ -83,22 +88,52 @@ public:
 		int upperBosonicMatsubaraEnergyIndex
 	);
 
-	/** Get eigenvalues. */
+	/** Get eigenvalues. The eigenvalues are ordered first by block, and
+	 *  then in accending order. This means that eigenvalues for blocks
+	 *  with smaller @link Index Indices @endlink comes before eigenvalues
+	 *  for blocks with larger @link Index Indices @endlink, while inside
+	 *  each block the eigenvalues are in accending order.
+	 *
+	 *  @return A Property::EigenValues containing all the eigenvalues. */
 	Property::EigenValues getEigenValues();
 
-	/** Get eigenvalue. */
+	/** Get eigenvalue. The eigenvalues are ordered first by block, and
+	 *  then in accending order. This means that eigenvalues for blocks
+	 *  with smaller @link Index Indices @endlink comes before eigenvalues
+	 *  for blocks with larger @link Index Indices @endlink, while inside
+	 *  each block the eigenvalues are in accending order.
+	 *
+	 *  @param state The state number.
+	 *
+	 *  @return The eigenvalue for the given state. */
 	double getEigenValue(int state) const;
 
-	/** Get eigenvalue. */
+	/** Get eigenvalue. The eigenvalues are ordered in accending order.
+	 *
+	 *  @param blockIndex The block Index to get the eigenvalue for.
+	 *  @param state The intra block state index starting from zero for the
+	 *  lowest eigenvalue in the block.
+	 *
+	 *  @return The eigenvalue for the given block and state. */
 	double getEigenValue(const Index &blockIndex, int state) const;
 
 	/** Get amplitude for given eigenvector \f$n\f$ and physical index
 	 *  \f$x\f$: \f$\Psi_{n}(x)\f$.
+	 *
 	 *  @param state Eigenstate number \f$n\f$
-	 *  @param index Physical index \f$x\f$. */
+	 *  @param index Physical index \f$x\f$.
+	 *
+	 *  @return The amplitude \f$\Psi_{n}(\mathbf{x})\f$. */
 	const std::complex<double> getAmplitude(int state, const Index &index);
 
-	/** Get amplitude. */
+	/** Get amplitude for given eigenvector \f$n\f$, block index \f$b\f$,
+	 *  and physical Index \f$x\f$: \f$\Psi_{nb}(\mathbf{x})\f$.
+	 *
+	 *  @param blockIndex Block Index \f$b\f$.
+	 *  @param state Eigenstate number \f$n\f$ relative to the given block.
+	 *  @param index Physical Index \f$x\f$.
+	 *
+	 *  @return The amplitude \f$\Psi_{nb}(\mathbf{x})\f$.  */
 	const std::complex<double> getAmplitude(
 		const Index &blockIndex,
 		int state,
