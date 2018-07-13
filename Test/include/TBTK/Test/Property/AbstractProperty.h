@@ -662,6 +662,12 @@ TEST(AbstractProperty, operatorFunction){
 	EXPECT_EQ(const_cast<Property<int>&>(property2)({3}, 0), 99);
 	property2({3}, 0) = 0;
 	EXPECT_EQ(property2({3}, 0), 99);
+	//Check that the correct overloaded opeartor is called. An ambiguity
+	//can arise since {1} can be cast to 1 instead of Index({1}).
+	property2(1) = 100;
+	property2(10) = 1000;
+	EXPECT_EQ(property2(1), 100);
+	EXPECT_EQ(property2({1}), 1000);
 }
 
 TEST(AbstractProperty, setAllowOutOfBoundsAccess){

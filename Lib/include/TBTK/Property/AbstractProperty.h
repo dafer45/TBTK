@@ -196,6 +196,54 @@ public:
 		unsigned int offset = 0
 	);
 
+	/** Alias for operator()(const Index &index, unsigned int offset = 0).
+	 *  Ensures that operator()(unsigned int offset) is not called when
+	 *  calling the function operator default offset and a single subindex
+	 *  index operator()({1}). Without this {1} would be cast to 1 instead
+	 *  of Index({1}).
+	 *
+	 *  @param index The Index to get the data for.
+	 *
+	 *  @return The data element for the given Index. */
+	DataType& operator()(const std::initializer_list<int> &index);
+
+	/** Alias for operator()(const Index &index, unsigned int offset = 0).
+	 *  Ensures that operator()(unsigned int offset) is not called when
+	 *  calling the function operator default offset and a single subindex
+	 *  index operator()({1}). Without this {1} would be cast to 1 instead
+	 *  of Index({1}).
+	 *
+	 *  @param index The Index to get the data for.
+	 *
+	 *  @return The data element for the given Index. */
+	const DataType& operator()(
+		const std::initializer_list<int> &index
+	) const;
+
+	/** Alias for operator()(const Index &index, unsigned int offset = 0).
+	 *  Ensures that operator()(unsigned int offset) is not called when
+	 *  calling the function operator default offset and a single subindex
+	 *  index operator()({1}). Without this {1} would be cast to 1 instead
+	 *  of Index({1}).
+	 *
+	 *  @param index The Index to get the data for.
+	 *
+	 *  @return The data element for the given Index. */
+	DataType& operator()(const std::initializer_list<unsigned int> &index);
+
+	/** Alias for operator()(const Index &index, unsigned int offset = 0).
+	 *  Ensures that operator()(unsigned int offset) is not called when
+	 *  calling the function operator default offset and a single subindex
+	 *  index operator()({1}). Without this {1} would be cast to 1 instead
+	 *  of Index({1}).
+	 *
+	 *  @param index The Index to get the data for.
+	 *
+	 *  @return The data element for the given Index. */
+	const DataType& operator()(
+		const std::initializer_list<unsigned int> &index
+	) const;
+
 	/** Function call operator. Returns the data element for the given
 	 *  offset.
 	 *
@@ -508,6 +556,42 @@ inline DataType& AbstractProperty<
 	else{
 		return data[indexOffset + offset];
 	}
+}
+
+template<typename DataType, bool isFundamental, bool isSerializeable>
+inline DataType& AbstractProperty<
+	DataType,
+	isFundamental,
+	isSerializeable
+>::operator()(const std::initializer_list<int> &index){
+	return operator()(index, 0);
+}
+
+template<typename DataType, bool isFundamental, bool isSerializeable>
+inline const DataType& AbstractProperty<
+	DataType,
+	isFundamental,
+	isSerializeable
+>::operator()(const std::initializer_list<int> &index) const{
+	return operator()(index, 0);
+}
+
+template<typename DataType, bool isFundamental, bool isSerializeable>
+inline DataType& AbstractProperty<
+	DataType,
+	isFundamental,
+	isSerializeable
+>::operator()(const std::initializer_list<unsigned int> &index){
+	return operator()(index, 0);
+}
+
+template<typename DataType, bool isFundamental, bool isSerializeable>
+inline const DataType& AbstractProperty<
+	DataType,
+	isFundamental,
+	isSerializeable
+>::operator()(const std::initializer_list<unsigned int> &index) const{
+	return operator()(index, 0);
 }
 
 template<typename DataType, bool isFundamental, bool isSerializable>
