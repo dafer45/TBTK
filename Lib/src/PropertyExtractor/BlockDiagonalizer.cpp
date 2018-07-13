@@ -867,7 +867,15 @@ void BlockDiagonalizer::calculateGreensFunctionCallback(
 			continue;
 
 		for(unsigned int e = 0; e < energies.size(); e++){
-			if(index.equals({{0, 50, ___}, {0, 50, ___}}, true)){
+			if(
+				index.equals(
+					{
+						{0, 50, IDX_ALL},
+						{0, 50, IDX_ALL}
+					},
+					true
+				)
+			){
 				Streams::out << index.toString() << toAmplitude << "\t" << fromAmplitude << "\n";
 			}
 			((complex<double>*)greensFunction)[offset + e]

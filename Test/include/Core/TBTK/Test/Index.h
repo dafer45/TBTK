@@ -212,8 +212,7 @@ TEST(Index, isPatternIndex){
 	std::string errorMessage = "isPatternIndex() failed.";
 
 	EXPECT_FALSE(Index({1, 2, 3}).isPatternIndex()) << errorMessage;
-	EXPECT_TRUE(Index({1, _, 3}).isPatternIndex()) << errorMessage;
-	EXPECT_TRUE(Index({1, ___, 3}).isPatternIndex()) << errorMessage;
+	EXPECT_TRUE(Index({1, _a_, 3}).isPatternIndex()) << errorMessage;
 	EXPECT_TRUE(Index({1, IDX_ALL, 3}).isPatternIndex()) << errorMessage;
 	EXPECT_TRUE(Index({1, IDX_SUM_ALL, 3}).isPatternIndex()) << errorMessage;
 	EXPECT_TRUE(Index({1, IDX_X, 3}).isPatternIndex()) << errorMessage;

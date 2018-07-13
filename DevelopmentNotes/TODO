@@ -57,8 +57,4 @@
   the calculate() and callback functions. This will allow the same
   PropertyExtractor to be parallelized as long as the solver allows for this.
 
-- An identifier with an initial underscore followed by a captial letter as well
-  as any idnetifier with two or more sequential underscores are reserved even
-  inside namespaces. Therefore replace the wildcard indices _ and ___ by _w_.
-
 - Change initlailizer_list arguments in PropertyExtractors to vector.
