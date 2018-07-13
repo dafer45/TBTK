@@ -77,10 +77,22 @@ public:
 	 * @param i Initializer list from which the Index is constructed. */
 	Index(std::initializer_list<int> i) : indices(i){};
 
+	/** Constructs an Index from an initializer list.
+	 *
+	 * @param i Initializer list from which the Index is constructed. */
+	Index(
+		std::initializer_list<unsigned int> i
+	) : indices(i.begin(), i.end()){};
+
 	/** Constructs an Index from an std::vector<int>.
 	 *
 	 *  @param i Vector from which the Index is constructed. */
 	Index(std::vector<int> i) : indices(i){};
+
+	/** Constructs an Index from an std::vector<int>.
+	 *
+	 *  @param i Vector from which the Index is constructed. */
+	Index(std::vector<unsigned int> i) : indices(i.begin(), i.end()){};
 
 	/** Copy constructor.
 	 *

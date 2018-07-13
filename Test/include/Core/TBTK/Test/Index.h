@@ -9,7 +9,7 @@ TEST(Index, ConstructorEmpty){
 	EXPECT_EQ(index.getSize(), 0) << "Empty Index does not have size 0.";
 }
 
-TEST(Index, ConstructorInitializerList){
+TEST(Index, ConstructorInitializerListInt){
 	Index index({1, 2, 3});
 	EXPECT_EQ(index.getSize(), 3) << "Index({1, 2, 3}) does not have size 3.";
 	EXPECT_EQ(index[0], 1) << "Index({1, 2, 3}) does not have '1' as first subindex.";
@@ -17,8 +17,25 @@ TEST(Index, ConstructorInitializerList){
 	EXPECT_EQ(index[2], 3) << "Index({1, 2, 3}) does not have '3' as third subindex.";
 }
 
-TEST(Index, ConstructorVector){
-	std::vector<int> myVector({1,2,3});
+TEST(Index, ConstructorInitializerListUnsignedInt){
+	Index index({(unsigned int)1, (unsigned int)2, (unsigned int)3});
+	EXPECT_EQ(index.getSize(), 3) << "Index({1, 2, 3}) does not have size 3.";
+	EXPECT_EQ(index[0], 1) << "Index({1, 2, 3}) does not have '1' as first subindex.";
+	EXPECT_EQ(index[1], 2) << "Index({1, 2, 3}) does not have '2' as second subindex.";
+	EXPECT_EQ(index[2], 3) << "Index({1, 2, 3}) does not have '3' as third subindex.";
+}
+
+TEST(Index, ConstructorVectorInt){
+	std::vector<int> myVector({1, 2, 3});
+	Index index(myVector);
+	EXPECT_EQ(index.getSize(), 3) << "Index(std::vector<int>({1, 2, 3})) does not have size 3.";
+	EXPECT_EQ(index[0], 1)<< "Index(std::vector<int>({1, 2, 3})) does not have '1' as first subindex.";
+	EXPECT_EQ(index[1], 2) << "Index(std::vector<int>({1, 2, 3})) does not have '2' as second subindex.";
+	EXPECT_EQ(index[2], 3) << "Index(std::vector<int>({1, 2, 3})) does not have '3' as third subindex.";
+}
+
+TEST(Index, ConstructorVectorUnsignedInt){
+	std::vector<unsigned int> myVector({1, 2, 3});
 	Index index(myVector);
 	EXPECT_EQ(index.getSize(), 3) << "Index(std::vector<int>({1, 2, 3})) does not have size 3.";
 	EXPECT_EQ(index[0], 1)<< "Index(std::vector<int>({1, 2, 3})) does not have '1' as first subindex.";

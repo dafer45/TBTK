@@ -45,12 +45,21 @@ public:
 	/** Run calculation. */
 	void run();
 
+	/** Get amplitude for given Index. */
+	const std::complex<double> getAmplitude(const Index &index) const;
+
 	/** Get result. */
 	const Matrix<std::complex<double>>& getResult() const;
 private:
 	/** The right hand side of the equation. */
 	Matrix<std::complex<double>> source;
 };
+
+inline const std::complex<double> LinearEquationSolver::getAmplitude(
+	const Index &index
+) const{
+	return source.at(getModel().getBasisIndex(index), 0);
+}
 
 inline const Matrix<std::complex<double>>& LinearEquationSolver::getResult() const{
 	return source;
