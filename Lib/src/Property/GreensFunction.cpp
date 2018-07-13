@@ -1,4 +1,4 @@
-/* Copyright 2017 Kristofer Björnson
+/* Copyright 2018 Kristofer Björnson
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,8 +26,8 @@ using namespace std;
 namespace TBTK{
 namespace Property{
 
-GreensFunction::GreensFunction() : AbstractProperty(){
-}
+/*SelfEnergy::SelfEnergy() : EnergyResolvedProperty(){
+}*/
 
 GreensFunction::GreensFunction(
 	const IndexTree &indexTree,
@@ -36,16 +36,9 @@ GreensFunction::GreensFunction(
 	double upperBound,
 	unsigned int resolution
 ) :
-	AbstractProperty(indexTree, resolution)
+	EnergyResolvedProperty(indexTree, lowerBound, upperBound, resolution),
+	type(type)
 {
-	this->type = type;
-
-	this->lowerBound = lowerBound;
-	this->upperBound = upperBound;
-	this->resolution = resolution;
-//	this->data = new complex<double>[resolution];
-//	for(unsigned int n = 0; n < resolution; n++)
-//		this->data[n] = 0.;
 }
 
 GreensFunction::GreensFunction(
@@ -56,49 +49,59 @@ GreensFunction::GreensFunction(
 	unsigned int resolution,
 	const complex<double> *data
 ) :
-	AbstractProperty(indexTree, resolution, data)
+	EnergyResolvedProperty(
+		indexTree,
+		lowerBound,
+		upperBound,
+		resolution,
+		data
+	),
+	type(type)
 {
-	this->type = type;
-
-	this->lowerBound = lowerBound;
-	this->upperBound = upperBound;
-	this->resolution = resolution;
-//	this->data = new complex<double>[resolution];
-//	for(unsigned int n = 0; n < resolution; n++)
-//		this->data[n] = data[n];
-}
-
-/*GreensFunction::GreensFunction(
-	const GreensFunction &greensFunction
-) :
-	AbstractProperty(greensFunction)
-{
-	type = greensFunction.type;
-	lowerBound = greensFunction.lowerBound;
-	upperBound = greensFunction.upperBound;
-	resolution = greensFunction.resolution;
-//	data = new complex<double>[resolution];
-//	for(unsigned int n = 0; n < resolution; n++)
-//		data[n] = greensFunction.data[n];
+	TBTKAssert(
+		type != Type::Matsubara,
+		"GreensFunction::GreensFunction()",
+		"This constructor does not allow for the construction of a"
+		<< " GreensFunction of type Type::Matsubara.",
+		""
+	);
 }
 
 GreensFunction::GreensFunction(
-	GreensFunction &&greensFunction
+	const IndexTree &indexTree,
+	int lowerMatsubaraEnergyIndex,
+	int upperMatsubaraEnergyIndex,
+	double fundamentalMatsubaraEnergy
 ) :
-	AbstractProperty(std::move(greensFunction))
+	EnergyResolvedProperty(
+		EnergyType::FermionicMatsubara,
+		indexTree,
+		lowerMatsubaraEnergyIndex,
+		upperMatsubaraEnergyIndex,
+		fundamentalMatsubaraEnergy
+	),
+	type(Type::Matsubara)
 {
-	type = greensFunction.type;
-	lowerBound = greensFunction.lowerBound;
-	upperBound = greensFunction.upperBound;
-	resolution = greensFunction.resolution;
-//	data = greensFunction.data;
-//	greensFunction.data = nullptr;
 }
 
-GreensFunction::~GreensFunction(){
-//	if(data != nullptr)
-//		delete [] data;
-}*/
+GreensFunction::GreensFunction(
+	const IndexTree &indexTree,
+	int lowerMatsubaraEnergyIndex,
+	int upperMatsubaraEnergyIndex,
+	double fundamentalMatsubaraEnergy,
+	const complex<double> *data
+) :
+	EnergyResolvedProperty(
+		EnergyType::FermionicMatsubara,
+		indexTree,
+		lowerMatsubaraEnergyIndex,
+		upperMatsubaraEnergyIndex,
+		fundamentalMatsubaraEnergy,
+		data
+	),
+	type(Type::Matsubara)
+{
+}
 
 };	//End of namespace Property
 };	//End of namespace TBTK

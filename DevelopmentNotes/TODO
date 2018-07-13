@@ -48,9 +48,6 @@
 - Move Matsubara related information from specific PropertyExtractors to
   PropertyExtractor::PropertyExtractor.
 
-- Merge Property::GreensFunction and Property::GreensFunction2 into
-  Property::GreensFunction.
-
 - Remove variables such as hint and energies from the PropertyExtractors that
   are used to communicate information between the calculateXXX-functions and
   the XXXCallback-functions. Instead pass a hint parameter as argument through
