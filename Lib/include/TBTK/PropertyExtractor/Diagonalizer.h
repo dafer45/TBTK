@@ -97,8 +97,8 @@ public:
 	 *  set to {IDX_ALL} to get all states.
 	 *
 	 *  @return A WaveFunctions object containing the wave functions values
-	 *  for the Indices that stisfies the given patterns and state numbers.
-	 */
+	 *  for the Indices that satisfies the given patterns and state
+	 *  numbers. */
 	Property::WaveFunctions calculateWaveFunctions(
 		std::initializer_list<Index> patterns,
 		std::vector<int> states

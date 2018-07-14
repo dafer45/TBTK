@@ -260,5 +260,152 @@ TEST(BlockDiagonalizer, getAmplitude1){
 	}
 }
 
+TEST(BlockDiagonalizer, calculateWaveFunction){
+	SETUP_MODEL();
+	SETUP_AND_RUN_SOLVER();
+
+	//Check when all states are calculated.
+	BlockDiagonalizer propertyExtractor(solver);
+	Property::WaveFunctions waveFunctions0
+		= propertyExtractor.calculateWaveFunctions(
+			{{IDX_ALL, IDX_ALL}},
+			{IDX_ALL}
+		);
+
+	for(int state = 0; state < 2*SIZE; state++){
+		for(int k = 0; k < SIZE; k++){
+			for(int n = 0; n < 2; n++){
+				EXPECT_DOUBLE_EQ(
+					real(waveFunctions0({k, n}, state)),
+					real(
+						propertyExtractor.getAmplitude(
+							state,
+							{k, n}
+						)
+					)
+				);
+				EXPECT_DOUBLE_EQ(
+					imag(waveFunctions0({k, n}, state)),
+					imag(
+						propertyExtractor.getAmplitude(
+							state,
+							{k, n}
+						)
+					)
+				);
+			}
+		}
+	}
+
+	//Check when some states and some indices are calculated.
+	std::vector<int> states = {1, 3, 7};
+	std::vector<std::vector<int>> sites = {{0, 0}, {3, 1}, {5, 0}};
+	Property::WaveFunctions waveFunctions1
+		= propertyExtractor.calculateWaveFunctions(
+			{sites[0], sites[1], sites[2]},
+			{states[0], states[1], states[2]}
+		);
+	for(unsigned int n = 0; n < states.size(); n++){
+		for(unsigned int c = 0; c < sites.size(); c++){
+			EXPECT_DOUBLE_EQ(
+				real(waveFunctions1({sites[c]}, states[n])),
+				real(waveFunctions0({sites[c]}, states[n]))
+			);
+			EXPECT_DOUBLE_EQ(
+				imag(waveFunctions1({sites[c]}, states[n])),
+				imag(waveFunctions0({sites[c]}, states[n]))
+			);
+		}
+	}
+	EXPECT_THROW(waveFunctions1({0, 1}, 1), IndexException);
+	::testing::FLAGS_gtest_death_test_style = "threadsafe";
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			waveFunctions1({0, 0}, 0);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	::testing::FLAGS_gtest_death_test_style = "fast";
+}
+
+//TODO
+//...
+TEST(BlockDiagonalizer, calculateGreensFunction){
+}
+
+TEST(BlockDiagonalizer, calculateDOS){
+	SETUP_MODEL();
+	SETUP_AND_RUN_SOLVER();
+	const double LOWER_BOUND = -100;
+	const double UPPER_BOUND = 100;
+	const int RESOLUTION = 1000;
+
+	//Calculate the DOS.
+	BlockDiagonalizer propertyExtractor(solver);
+	propertyExtractor.setEnergyWindow(
+		LOWER_BOUND,
+		UPPER_BOUND,
+		RESOLUTION
+	);
+	Property::DOS dos = propertyExtractor.calculateDOS();
+
+	//Calculate DOS to compare to using the Diagonalizer.
+	Diagonalizer propertyExtractorDiagonalizer(solverDiagonalizer[0]);
+	propertyExtractorDiagonalizer.setEnergyWindow(
+		LOWER_BOUND,
+		UPPER_BOUND,
+		RESOLUTION
+	);
+	Property::DOS dosDiagonalizer
+		= propertyExtractorDiagonalizer.calculateDOS();
+	for(int k = 1; k < SIZE; k++){
+		Diagonalizer propertyExtractorDiagonalizer(solverDiagonalizer[k]);
+		propertyExtractorDiagonalizer.setEnergyWindow(
+			LOWER_BOUND,
+			UPPER_BOUND,
+			RESOLUTION
+		);
+		Property::DOS d = propertyExtractorDiagonalizer.calculateDOS();
+		for(int n = 0; n < RESOLUTION; n++)
+			dosDiagonalizer(n) += d(n);
+	}
+
+	//Compare the DOS.
+	for(int n = 0; n < RESOLUTION; n++)
+		EXPECT_NEAR(dos(n), dosDiagonalizer(n), EPSILON_100);
+}
+
+//TODO
+//...
+TEST(BlockDiagonalizer, calculateExpectationValue){
+}
+
+//TODO
+//...
+TEST(BlockDiagonalizer, calculateDensity){
+}
+
+//TODO
+//...
+TEST(BlockDiagonalizer, calculateMagnetization){
+}
+
+//TODO
+//...
+TEST(BlockDiagonalizer, calculateLDOS){
+}
+
+//TODO
+//...
+TEST(BlockDiagonalizer, calculateSpinPolarizedLDOS){
+}
+
+//TODO
+//...
+TEST(BlockDiagonalizer, calculateEntropy){
+}
+
 };	//End of namespace PropertyExtractor
 };	//End of namespace TBTK

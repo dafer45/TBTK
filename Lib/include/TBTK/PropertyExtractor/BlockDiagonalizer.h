@@ -140,7 +140,18 @@ public:
 		const Index &intraBlockIndex
 	) const;
 
-	/** Calculate wave function. */
+	/** Calculate the wave function on the Custom format. [See
+	 *  AbstractProperty for detailed information about the Custom format.
+	 *  See PropertyExtractor for detailed information about the patterns
+	 *  argument.]
+	 *
+	 *  @param patterns The pattern to use
+	 *  @param states The states to extract the wave function for. Can be
+	 *  set to {IDX_ALL} to get all states.
+	 *
+	 *  @return A WaveFunctions object containing the wave functions values
+	 *  for the Indices that satisfies the given patterns and state
+	 *  numbers. */
 	Property::WaveFunctions calculateWaveFunctions(
 		std::initializer_list<Index> patterns,
 		std::initializer_list<int> states
@@ -154,7 +165,15 @@ public:
 			= Property::GreensFunction2::Type::Retarded
 	);*/
 
-	/** Calculate the Green's function. */
+	/** Calculate the Green's function on the Custom format. [See
+	 *  AbstractProperty for detailed information about the Custom format.
+	 *  See PropertyExtractor for detailed information about the patterns
+	 *  argument.]
+	 *
+	 *  @param patterns The pattern to use.
+	 *  @param type The Green's function type.
+	 *
+	 *  @return A GreensFunction for the given patterns. */
 	Property::GreensFunction calculateGreensFunction(
 		std::vector<Index> patterns,
 		Property::GreensFunction::Type type
