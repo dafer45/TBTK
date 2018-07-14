@@ -51,7 +51,7 @@ public:
 	BlockDiagonalizer(Solver::BlockDiagonalizer &solver);
 
 	/** Destructor. */
-//	virtual ~BlockDiagonalizer();
+	virtual ~BlockDiagonalizer();
 
 	/** Legacy. */
 /*	void saveEigenValues(
