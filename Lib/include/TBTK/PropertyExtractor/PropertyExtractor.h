@@ -226,23 +226,14 @@ public:
 	/** Calculate entropy. */
 	virtual double calculateEntropy();
 protected:
-	/** Default energy resolution. */
-	static constexpr int ENERGY_RESOLUTION = 1000;
+	/** Get resolution. */
+	int getEnergyResolution() const;
 
-	/** Energy resolution used for energy dependent quantities. */
-	int energyResolution;
+	/** Get lower bound. */
+	double getLowerBound() const;
 
-	/** Default lower bound. */
-	static constexpr double LOWER_BOUND = -1.;
-
-	/** Lower bound used for energy dependent quantities. */
-	double lowerBound;
-
-	/** Default upper bound. */
-	static constexpr double UPPER_BOUND = 1.;
-
-	/** Upper bound used for energy dependent quantities. */
-	double upperBound;
+	/** Get upper bound. */
+	double getUpperBound() const;
 
 	/** Loops over range indices and calls the appropriate callback
 	 *  function to calculate the correct quantity. */
@@ -300,7 +291,38 @@ protected:
 		bool keepSumationWildcards,
 		bool keepSpinWildcards
 	);
+private:
+	/** Default energy resolution. */
+	static constexpr int ENERGY_RESOLUTION = 1000;
+
+	/** Energy resolution used for energy dependent quantities. */
+	int energyResolution;
+
+	/** Default lower bound. */
+	static constexpr double LOWER_BOUND = -1.;
+
+	/** Lower bound used for energy dependent quantities. */
+	double lowerBound;
+
+	/** Default upper bound. */
+	static constexpr double UPPER_BOUND = 1.;
+
+	/** Upper bound used for energy dependent quantities. */
+	double upperBound;
+
 };
+
+inline int PropertyExtractor::getEnergyResolution() const{
+	return energyResolution;
+}
+
+inline double PropertyExtractor::getLowerBound() const{
+	return lowerBound;
+}
+
+inline double PropertyExtractor::getUpperBound() const{
+	return upperBound;
+}
 
 template<typename DataType>
 void PropertyExtractor::calculate(

@@ -148,6 +148,10 @@ Property::WaveFunctions ArnoldiIterator::calculateWaveFunctions(
 Property::DOS ArnoldiIterator::calculateDOS(){
 	const complex<double> *ev = aSolver->getEigenValues();
 
+	double lowerBound = getLowerBound();
+	double upperBound = getUpperBound();
+	int energyResolution = getEnergyResolution();
+
 	Property::DOS dos(lowerBound, upperBound, energyResolution);
 	std::vector<double> &data = dos.getDataRW();
 	double dE = (upperBound - lowerBound)/energyResolution;
@@ -172,6 +176,10 @@ Property::LDOS ArnoldiIterator::calculateLDOS(
 		"Use Solver::ArnoldiIterator::setCalculateEigenVectors() to"
 		<< " ensure eigen vectors are calculated."
 	);
+
+	double lowerBound = getLowerBound();
+	double upperBound = getUpperBound();
+	double energyResolution = getEnergyResolution();
 
 	//hint[0] is an array of doubles, hint[1] is an array of ints
 	//hint[0][0]: upperBound
@@ -219,6 +227,10 @@ Property::LDOS ArnoldiIterator::calculateLDOS(
 		"Eigen vectors not calculated.",
 		"Use Solver::ArnoldiIterator::setCalculateEigenVectors() to ensure eigen vectors are calculated."
 	);
+
+	double lowerBound = getLowerBound();
+	double upperBound = getUpperBound();
+	int energyResolution = getEnergyResolution();
 
 	//hint[0] is an array of doubles, hint[1] is an array of ints
 	//hint[0][0]: upperBound
@@ -274,6 +286,10 @@ Property::SpinPolarizedLDOS ArnoldiIterator::calculateSpinPolarizedLDOS(
 		"Use Solver::ArnoldiIterator::setCalculateEigenVectors() to"
 		<< " ensure eigen vectors are calculated."
 	);
+
+	double lowerBound = getLowerBound();
+	double upperBound = getUpperBound();
+	int energyResolution = getEnergyResolution();
 
 	//hint[0] is an array of doubles, hint[1] is an array of ints
 	//hint[0][0]: upperBound
@@ -346,6 +362,10 @@ Property::SpinPolarizedLDOS ArnoldiIterator::calculateSpinPolarizedLDOS(
 		"Use Solver::ArnoldiIterator::setCalculateEigenVectors() to"
 		<< " ensure eigen vectors are calculated."
 	);
+
+	double lowerBound = getLowerBound();
+	double upperBound = getUpperBound();
+	int energyResolution = getEnergyResolution();
 
 	//hint[0] is an array of doubles, hint[1] is an array of ints
 	//hint[0][0]: upperBound
@@ -424,7 +444,11 @@ void ArnoldiIterator::calculateLDOSCallback(
 
 	double step_size = (u_lim - l_lim)/(double)resolution;
 
-	double dE = (pe->upperBound - pe->lowerBound)/pe->energyResolution;
+	double lowerBound = pe->getLowerBound();
+	double upperBound = pe->getUpperBound();
+	int energyResolution = pe->getEnergyResolution();
+
+	double dE = (upperBound - lowerBound)/energyResolution;
 	for(int n = 0; n < pe->aSolver->getNumEigenValues(); n++){
 		if(real(eigenValues[n]) > l_lim && real(eigenValues[n]) < u_lim){
 			complex<double> u = pe->aSolver->getAmplitude(n, index);
@@ -454,11 +478,15 @@ void ArnoldiIterator::calculateSpinPolarizedLDOSCallback(
 
 	double step_size = (u_lim - l_lim)/(double)resolution;
 
+	double lowerBound = pe->getLowerBound();
+	double upperBound = pe->getUpperBound();
+	int energyResolution = pe->getEnergyResolution();
+
 	Index index_u(index);
 	Index index_d(index);
 	index_u.at(spin_index) = 0;
 	index_d.at(spin_index) = 1;
-	double dE = (pe->upperBound - pe->lowerBound)/pe->energyResolution;
+	double dE = (upperBound - lowerBound)/energyResolution;
 	for(int n = 0; n < pe->aSolver->getNumEigenValues(); n++){
 		if(real(eigenValues[n]) > l_lim && real(eigenValues[n]) < u_lim){
 			complex<double> u_u = pe->aSolver->getAmplitude(n, index_u);

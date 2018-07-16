@@ -19,6 +19,10 @@ Property::GreensFunction* ExactDiagonalizer::calculateGreensFunction(
 	Index from,
 	Property::GreensFunction::Type type
 ){
+	double lowerBound = getLowerBound();
+	double upperBound = getUpperBound();
+	int energyResolution = getEnergyResolution();
+
 	IndexTree memoryLayout;
 	memoryLayout.add({to, from});
 	memoryLayout.generateLinearMap();
@@ -402,9 +406,9 @@ Property::LDOS ExactDiagonalizer::calculateLDOS(
 	Property::LDOS ldos(
 		lDimensions,
 		lRanges,
-		lowerBound,
-		upperBound,
-		energyResolution
+		getLowerBound(),
+		getUpperBound(),
+		getEnergyResolution()
 	);
 
 	calculate(
@@ -450,9 +454,9 @@ Property::SpinPolarizedLDOS ExactDiagonalizer::calculateSpinPolarizedLDOS(
 	Property::SpinPolarizedLDOS spinPolarizedLDOS(
 		lDimensions,
 		lRanges,
-		lowerBound,
-		upperBound,
-		energyResolution
+		getLowerBound(),
+		getUpperBound(),
+		getEnergyResolution()
 	);
 
 	calculate(
@@ -503,9 +507,13 @@ void ExactDiagonalizer::calculateLDOSCallback(
 	const std::vector<complex<double>> &greensFunctionData
 		= greensFunction->getData();
 
-	const double dE = (pe->upperBound - pe->lowerBound)/pe->energyResolution;
-	for(int n = 0; n < pe->energyResolution; n++)
-		((double*)ldos)[pe->energyResolution*offset + n] += imag(greensFunctionData[n])/M_PI*dE;
+	double lowerBound = pe->getLowerBound();
+	double upperBound = pe->getUpperBound();
+	int energyResolution = pe->getEnergyResolution();
+
+	const double dE = (upperBound - lowerBound)/energyResolution;
+	for(int n = 0; n < energyResolution; n++)
+		((double*)ldos)[energyResolution*offset + n] += imag(greensFunctionData[n])/M_PI*dE;
 
 	delete greensFunction;
 }
@@ -522,7 +530,11 @@ void ExactDiagonalizer::calculateSpinPolarizedLDOSCallback(
 	Index to(index);
 	Index from(index);
 
-	const double dE = (pe->upperBound - pe->lowerBound)/pe->energyResolution;
+	double lowerBound = pe->getLowerBound();
+	double upperBound = pe->getUpperBound();
+	int energyResolution = pe->getEnergyResolution();
+
+	const double dE = (upperBound - lowerBound)/energyResolution;
 	for(unsigned int n = 0; n < 4; n++){
 		to.at(spinIndex) = n/2;
 		from.at(spinIndex) = n%2;
@@ -536,8 +548,8 @@ void ExactDiagonalizer::calculateSpinPolarizedLDOSCallback(
 		const std::vector<complex<double>> &greensFunctionData
 			= greensFunction->getData();
 
-		for(int e = 0; e < pe->energyResolution; e++)
-			((complex<double>*)spinPolarizedLDOS)[4*pe->energyResolution*offset + 4*e + n] += imag(greensFunctionData[e])/M_PI*dE;
+		for(int e = 0; e < energyResolution; e++)
+			((complex<double>*)spinPolarizedLDOS)[4*energyResolution*offset + 4*e + n] += imag(greensFunctionData[e])/M_PI*dE;
 
 		delete greensFunction;
 	}

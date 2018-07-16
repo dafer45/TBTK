@@ -174,6 +174,10 @@ Property::WaveFunctions Diagonalizer::calculateWaveFunctions(
 Property::DOS Diagonalizer::calculateDOS(){
 	const double *ev = dSolver->getEigenValues();
 
+	double lowerBound = getLowerBound();
+	double upperBound = getUpperBound();
+	int energyResolution = getEnergyResolution();
+
 	Property::DOS dos(lowerBound, upperBound, energyResolution);
 	std::vector<double> &data = dos.getDataRW();
 	double dE = (upperBound - lowerBound)/energyResolution;
@@ -349,6 +353,10 @@ Property::LDOS Diagonalizer::calculateLDOS(
 	Index pattern,
 	Index ranges
 ){
+	double lowerBound = getLowerBound();
+	double upperBound = getUpperBound();
+	int energyResolution = getEnergyResolution();
+
 	//hint[0] is an array of doubles, hint[1] is an array of ints
 	//hint[0][0]: upperBound
 	//hint[0][1]: lowerBound
@@ -382,6 +390,10 @@ Property::LDOS Diagonalizer::calculateLDOS(
 Property::LDOS Diagonalizer::calculateLDOS(
 	std::initializer_list<Index> patterns
 ){
+	double lowerBound = getLowerBound();
+	double upperBound = getUpperBound();
+	int energyResolution = getEnergyResolution();
+
 	//hint[0] is an array of doubles, hint[1] is an array of ints
 	//hint[0][0]: upperBound
 	//hint[0][1]: lowerBound
@@ -429,6 +441,10 @@ Property::SpinPolarizedLDOS Diagonalizer::calculateSpinPolarizedLDOS(
 	Index pattern,
 	Index ranges
 ){
+	double lowerBound = getLowerBound();
+	double upperBound = getUpperBound();
+	int energyResolution = getEnergyResolution();
+
 	//hint[0] is an array of doubles, hint[1] is an array of ints
 	//hint[0][0]: upperBound
 	//hint[0][1]: lowerBound
@@ -493,6 +509,10 @@ Property::SpinPolarizedLDOS Diagonalizer::calculateSpinPolarizedLDOS(
 Property::SpinPolarizedLDOS Diagonalizer::calculateSpinPolarizedLDOS(
 	std::initializer_list<Index> patterns
 ){
+	double lowerBound = getLowerBound();
+	double upperBound = getUpperBound();
+	int energyResolution = getEnergyResolution();
+
 	//hint[0] is an array of doubles, hint[1] is an array of ints
 	//hint[0][0]: upperBound
 	//hint[0][1]: lowerBound
@@ -668,6 +688,10 @@ void Diagonalizer::calculateLDOSCallback(
 ){
 	Diagonalizer *pe = (Diagonalizer*)cb_this;
 
+	double lowerBound = pe->getLowerBound();
+	double upperBound = pe->getUpperBound();
+	int energyResolution = pe->getEnergyResolution();
+
 	const double *eigen_values = pe->dSolver->getEigenValues();
 
 	double u_lim = ((double**)pe->hint)[0][0];
@@ -676,7 +700,7 @@ void Diagonalizer::calculateLDOSCallback(
 
 	double step_size = (u_lim - l_lim)/(double)resolution;
 
-	double dE = (pe->upperBound - pe->lowerBound)/pe->energyResolution;
+	double dE = (upperBound - lowerBound)/energyResolution;
 	for(int n = 0; n < pe->dSolver->getModel().getBasisSize(); n++){
 		if(eigen_values[n] > l_lim && eigen_values[n] < u_lim){
 			complex<double> u = pe->dSolver->getAmplitude(n, index);
@@ -697,6 +721,10 @@ void Diagonalizer::calculateSP_LDOSCallback(
 ){
 	Diagonalizer *pe = (Diagonalizer*)cb_this;
 
+	double lowerBound = pe->getLowerBound();
+	double upperBound = pe->getUpperBound();
+	int energyResolution = pe->getEnergyResolution();
+
 	const double *eigen_values = pe->dSolver->getEigenValues();
 
 	double u_lim = ((double**)pe->hint)[0][0];
@@ -710,7 +738,7 @@ void Diagonalizer::calculateSP_LDOSCallback(
 	Index index_d(index);
 	index_u.at(spin_index) = 0;
 	index_d.at(spin_index) = 1;
-	double dE = (pe->upperBound - pe->lowerBound)/pe->energyResolution;
+	double dE = (upperBound - lowerBound)/energyResolution;
 	for(int n = 0; n < pe->dSolver->getModel().getBasisSize(); n++){
 		if(eigen_values[n] > l_lim && eigen_values[n] < u_lim){
 			complex<double> u_u = pe->dSolver->getAmplitude(n, index_u);

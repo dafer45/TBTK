@@ -392,6 +392,10 @@ Property::DOS BlockDiagonalizer::calculateDOS(){
 	);
 //	const double *ev = bSolver->getEigenValues();
 
+	double lowerBound = getLowerBound();
+	double upperBound = getUpperBound();
+	int energyResolution = getEnergyResolution();
+
 	Property::DOS dos(lowerBound, upperBound, energyResolution);
 	std::vector<double> &data = dos.getDataRW();
 	double dE = (upperBound - lowerBound)/energyResolution;
@@ -602,6 +606,10 @@ Property::LDOS BlockDiagonalizer::calculateLDOS(
 		<< " to set a real energy window."
 	);
 
+	double lowerBound = getLowerBound();
+	double upperBound = getUpperBound();
+	int energyResolution = getEnergyResolution();
+
 	//hint[0] is an array of doubles, hint[1] is an array of ints
 	//hint[0][0]: upperBound
 	//hint[0][1]: lowerBound
@@ -720,6 +728,10 @@ Property::SpinPolarizedLDOS BlockDiagonalizer::calculateSpinPolarizedLDOS(
 		"Use PropertyExtractor::BlockDiagonalizer::setEnergyWindow()"
 		<< " to set a real energy window."
 	);
+
+	double lowerBound = getLowerBound();
+	double upperBound = getUpperBound();
+	int energyResolution = getEnergyResolution();
 
 	//hint[0] is an array of doubles, hint[1] is an array of ints
 	//hint[0][0]: upperBound
@@ -1011,9 +1023,13 @@ void BlockDiagonalizer::calculateLDOSCallback(
 
 	double step_size = (u_lim - l_lim)/(double)resolution;
 
+	double lowerBound = pe->getLowerBound();
+	double upperBound = pe->getUpperBound();
+	int energyResolution = pe->getEnergyResolution();
+
 	int firstStateInBlock = pe->bSolver->getFirstStateInBlock(index);
 	int lastStateInBlock = pe->bSolver->getLastStateInBlock(index);
-	double dE = (pe->upperBound - pe->lowerBound)/pe->energyResolution;
+	double dE = (upperBound - lowerBound)/energyResolution;
 	for(int n = firstStateInBlock; n <= lastStateInBlock; n++){
 //	for(int n = 0; n < pe->bSolver->getModel()->getBasisSize(); n++){
 		double eigenValue = pe->bSolver->getEigenValue(n);
@@ -1043,13 +1059,17 @@ void BlockDiagonalizer::calculateSP_LDOSCallback(
 
 	double step_size = (u_lim - l_lim)/(double)resolution;
 
+	double lowerBound = pe->getLowerBound();
+	double upperBound = pe->getUpperBound();
+	int energyResolution = pe->getEnergyResolution();
+
 	Index index_u(index);
 	Index index_d(index);
 	index_u.at(spin_index) = 0;
 	index_d.at(spin_index) = 1;
 	int firstStateInBlock = pe->bSolver->getFirstStateInBlock(index);
 	int lastStateInBlock = pe->bSolver->getLastStateInBlock(index);
-	double dE = (pe->upperBound - pe->lowerBound)/pe->energyResolution;
+	double dE = (upperBound - lowerBound)/energyResolution;
 	for(int n = firstStateInBlock; n <= lastStateInBlock; n++){
 //	for(int n = 0; n < pe->bSolver->getModel()->getBasisSize(); n++){
 		double eigenValue = pe->bSolver->getEigenValue(n);

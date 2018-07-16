@@ -396,6 +396,10 @@ Property::Susceptibility LindhardSusceptibility::calculateSusceptibility(
 	switch(energyType){
 	case EnergyType::Real:
 	{
+		double lowerBound = getLowerBound();
+		double upperBound = getUpperBound();
+		int energyResolution = getEnergyResolution();
+
 		energies.clear();
 		energies.reserve(energyResolution);
 		double dE;
