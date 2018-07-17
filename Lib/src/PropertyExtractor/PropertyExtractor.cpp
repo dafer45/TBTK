@@ -274,44 +274,98 @@ IndexTree PropertyExtractor::generateIndexTree(
 
 	for(unsigned int n = 0; n < patterns.size(); n++){
 		Index pattern = *(patterns.begin() + n);
-		for(unsigned int c = 0; c < pattern.getSize(); c++){
-			switch(pattern.at(c)){
-			case IDX_ALL:
-			case IDX_SUM_ALL:
-			case IDX_SPIN:
-				pattern.at(c) = IDX_ALL;
-				break;
-			default:
-				TBTKAssert(
-					pattern.at(c) >= 0,
-					"PropertyExtractor::generateIndexTree()",
-					"Subindex " << c << " of pattern " << n << " is invalid.",
-					"Must be non-negative, IDX_ALL, IDX_SUM_ALL, or IDX_SPIN."
-				);
-				break;
-			}
-			if(pattern.at(c) < 0)
-				pattern.at(c) = IDX_ALL;
-		}
 
-		vector<Index> indices = hoppingAmplitudeSet.getIndexList(
-			pattern
-		);
-		Index p = *(patterns.begin() + n);
-		for(unsigned int c = 0; c < indices.size(); c++){
-			for(unsigned int m = 0; m < p.getSize(); m++){
-				if(
-					keepSummationWildcards
-					&& p.at(m) == IDX_SUM_ALL
-				){
-					indices.at(c).at(m) = IDX_SUM_ALL;
+		vector<Index> components = pattern.split();
+
+		switch(components.size()){
+		case 1:
+		{
+			pattern = components[0];
+
+			for(unsigned int c = 0; c < pattern.getSize(); c++){
+				switch(pattern.at(c)){
+				case IDX_ALL:
+				case IDX_SUM_ALL:
+				case IDX_SPIN:
+					pattern.at(c) = IDX_ALL;
+					break;
+				default:
+					TBTKAssert(
+						pattern.at(c) >= 0,
+						"PropertyExtractor::generateIndexTree()",
+						"Subindex " << c << " of pattern " << n << " is invalid.",
+						"Must be non-negative, IDX_ALL, IDX_SUM_ALL, or IDX_SPIN."
+					);
+					break;
 				}
-				if(keepSpinWildcards && p.at(m) == IDX_SPIN)
-					indices.at(c).at(m) = IDX_SPIN;
+				if(pattern.at(c) < 0)
+					pattern.at(c) = IDX_ALL;
 			}
+
+			vector<Index> indices = hoppingAmplitudeSet.getIndexList(
+				pattern
+			);
+			Index p = *(patterns.begin() + n);
+			for(unsigned int c = 0; c < indices.size(); c++){
+				for(unsigned int m = 0; m < p.getSize(); m++){
+					if(
+						keepSummationWildcards
+						&& p.at(m) == IDX_SUM_ALL
+					){
+						indices.at(c).at(m) = IDX_SUM_ALL;
+					}
+					if(keepSpinWildcards && p.at(m) == IDX_SPIN)
+						indices.at(c).at(m) = IDX_SPIN;
+				}
+			}
+			for(unsigned int c = 0; c < indices.size(); c++)
+				indexTree.add(indices.at(c));
+
+			break;
 		}
-		for(unsigned int c = 0; c < indices.size(); c++)
-			indexTree.add(indices.at(c));
+		case 2:
+		{
+			IndexTree firstIndexTree = generateIndexTree(
+				{components[0]},
+				hoppingAmplitudeSet,
+				keepSummationWildcards,
+				keepSpinWildcards
+			);
+			IndexTree secondIndexTree = generateIndexTree(
+				{components[1]},
+				hoppingAmplitudeSet,
+				keepSummationWildcards,
+				keepSpinWildcards
+			);
+			for(
+				IndexTree::ConstIterator iterator0
+					= firstIndexTree.cbegin();
+				iterator0 != firstIndexTree.cend();
+				++iterator0
+			){
+				for(
+					IndexTree::ConstIterator iterator1
+						= secondIndexTree.cbegin();
+					iterator1 != secondIndexTree.cend();
+					++iterator1
+				){
+					indexTree.add({*iterator0, *iterator1});
+				}
+			}
+
+			break;
+		}
+		default:
+			TBTKExit(
+				"PropertyExtractor::generateIndexTree()",
+				"Only patterns with one and two component"
+				<< " Indices are supported so far, but the"
+				<< " pattern '" << pattern.toString() << "'"
+				<< " has '" << components.size() << "'"
+				<< " components.",
+				""
+			);
+		}
 	}
 
 	indexTree.generateLinearMap();

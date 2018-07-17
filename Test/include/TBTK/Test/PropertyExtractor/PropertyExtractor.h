@@ -528,6 +528,7 @@ TEST(PropertyExtractor, getLoopRanges){
 TEST(PropertyExtractor, gnerateIndexTree){
 	PublicPropertyExtractor propertyExtractor;
 
+	//Setup a HoppingAmplitudeSet to extract Indices from.
 	HoppingAmplitudeSet hoppingAmplitudeSet;
 	hoppingAmplitudeSet.add(HoppingAmplitude(0, {0, 0, 0}, {0, 0, 0}));
 	hoppingAmplitudeSet.add(HoppingAmplitude(0, {0, 0, 1}, {0, 0, 1}));
@@ -649,6 +650,33 @@ TEST(PropertyExtractor, gnerateIndexTree){
 	++iterator3;
 	EXPECT_TRUE(iterator3 == indexTree3.cend());
 
+	//Check that two compound indices works.
+	IndexTree indexTree4 = propertyExtractor.generateIndexTree(
+		{{{0, 0, IDX_ALL}, {0, 0, IDX_ALL}}},
+		hoppingAmplitudeSet,
+		false,
+		false
+	);
+	IndexTree::ConstIterator iterator4 = indexTree4.cbegin();
+	EXPECT_TRUE((*iterator4).equals({{0, 0, 0}, {0, 0, 0}}));
+	++iterator4;
+	EXPECT_TRUE((*iterator4).equals({{0, 0, 0}, {0, 0, 1}}));
+	++iterator4;
+	EXPECT_TRUE((*iterator4).equals({{0, 0, 0}, {0, 0, 2}}));
+	++iterator4;
+	EXPECT_TRUE((*iterator4).equals({{0, 0, 1}, {0, 0, 0}}));
+	++iterator4;
+	EXPECT_TRUE((*iterator4).equals({{0, 0, 1}, {0, 0, 1}}));
+	++iterator4;
+	EXPECT_TRUE((*iterator4).equals({{0, 0, 1}, {0, 0, 2}}));
+	++iterator4;
+	EXPECT_TRUE((*iterator4).equals({{0, 0, 2}, {0, 0, 0}}));
+	++iterator4;
+	EXPECT_TRUE((*iterator4).equals({{0, 0, 2}, {0, 0, 1}}));
+	++iterator4;
+	EXPECT_TRUE((*iterator4).equals({{0, 0, 2}, {0, 0, 2}}));
+	++iterator4;
+	EXPECT_TRUE(iterator4 == indexTree4.cend());
 }
 
 };	//End of namespace PropertyExtractor
