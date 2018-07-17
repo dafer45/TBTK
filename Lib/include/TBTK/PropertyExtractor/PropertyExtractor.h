@@ -443,6 +443,10 @@ protected:
 	 *  still be labeld such in the IndexTree depending on the flags that
 	 *  are passed to the function.
 	 *
+	 *  The pattern can also be a compund Index consisting of two Indices,
+	 *  in which case the pattern matching is applied to each component
+	 *  Index separately.
+	 *
 	 *  @param patterns List of patterns to match against.
 	 *  @param The HoppingAmplitudeSet cntaining all the @link Index
 	 *  Indices @endlink that will be matched against the patterns.
