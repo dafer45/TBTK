@@ -170,6 +170,7 @@ void PropertyExtractor::calculate(
 	int currentOffset,
 	int offsetMultiplier
 ){
+	//Find the next specifier index.
 	int currentSubindex = pattern.getSize()-1;
 	for(; currentSubindex >= 0; currentSubindex--){
 		if(pattern.at(currentSubindex) < 0)
@@ -177,22 +178,36 @@ void PropertyExtractor::calculate(
 	}
 
 	if(currentSubindex == -1){
+		//No further specifier index found. Call the callback.
 		callback(this, memory, pattern, currentOffset);
 	}
 	else{
+		//Ensure that the specifier is valid for the Ranges format.
 		TBTKAssert(
-			pattern.at(currentSubindex) != IDX_ALL,
+			pattern.at(currentSubindex) == IDX_SUM_ALL
+			|| pattern.at(currentSubindex) == IDX_X
+			|| pattern.at(currentSubindex) == IDX_Y
+			|| pattern.at(currentSubindex) == IDX_Z,
 			"PropertyExtractor::calculate()",
-			"IDX_ALL found at subindex " << currentSubindex << ".",
-			"Did you mean IDX_SUM_ALL, IDX_X, IDX_Y, IDX_Z, or IDX_SPIN?"
+			"Invalid specifier found at subindex "
+			<< currentSubindex << ".",
+			"Did you mean IDX_SUM_ALL, IDX_X, IDX_Y, or IDX_Z?"
 		);
 
+		//Multiply the memory offset for non summation indices.
 		int nextOffsetMultiplier = offsetMultiplier;
-		if(pattern.at(currentSubindex) < IDX_SUM_ALL)
+		if(pattern.at(currentSubindex) != IDX_SUM_ALL)
 			nextOffsetMultiplier *= ranges.at(currentSubindex);
+
+		//Set flag indicating whether the current subindex is a
+		//summation index.
 		bool isSumIndex = false;
 		if(pattern.at(currentSubindex) == IDX_SUM_ALL)
 			isSumIndex = true;
+
+		//Recurively call the calculate function with the specifier at
+		//the current subindex replaced by each subindex value in the
+		//corresponding range.
 		for(int n = 0; n < ranges.at(currentSubindex); n++){
 			pattern.at(currentSubindex) = n;
 			calculate(
@@ -222,27 +237,37 @@ void PropertyExtractor::ensureCompliantRanges(
 void PropertyExtractor::getLoopRanges(
 	const Index &pattern,
 	const Index &ranges,
-	int *lDimensions,
-	int **lRanges
+	int *loopDimensions,
+	int **loopRanges
 ){
-	*lDimensions = 0;
+	*loopDimensions = 0;
 	for(unsigned int n = 0; n < ranges.getSize(); n++){
-		if(pattern.at(n) < IDX_SUM_ALL)
-			(*lDimensions)++;
+		if(
+			pattern.at(n) == IDX_X
+			|| pattern.at(n) == IDX_Y
+			|| pattern.at(n) == IDX_Z
+		){
+			(*loopDimensions)++;
+		}
 	}
 
-	(*lRanges) = new int[*lDimensions];
+	(*loopRanges) = new int[*loopDimensions];
 	int counter = 0;
 	for(unsigned int n = 0; n < ranges.getSize(); n++){
-		if(pattern.at(n) < IDX_SUM_ALL)
-			(*lRanges)[counter++] = ranges.at(n);
+		if(
+			pattern.at(n) == IDX_X
+			|| pattern.at(n) == IDX_Y
+			|| pattern.at(n) == IDX_Z
+		){
+			(*loopRanges)[counter++] = ranges.at(n);
+		}
 	}
 }
 
 IndexTree PropertyExtractor::generateIndexTree(
 	std::initializer_list<Index> patterns,
 	const HoppingAmplitudeSet &hoppingAmplitudeSet,
-	bool keepSumationWildcards,
+	bool keepSummationWildcards,
 	bool keepSpinWildcards
 ){
 	IndexTree indexTree;
@@ -275,8 +300,12 @@ IndexTree PropertyExtractor::generateIndexTree(
 		Index p = *(patterns.begin() + n);
 		for(unsigned int c = 0; c < indices.size(); c++){
 			for(unsigned int m = 0; m < p.getSize(); m++){
-				if(keepSumationWildcards && p.at(m) == IDX_SUM_ALL)
+				if(
+					keepSummationWildcards
+					&& p.at(m) == IDX_SUM_ALL
+				){
 					indices.at(c).at(m) = IDX_SUM_ALL;
+				}
 				if(keepSpinWildcards && p.at(m) == IDX_SPIN)
 					indices.at(c).at(m) = IDX_SPIN;
 			}
