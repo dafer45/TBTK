@@ -26,6 +26,8 @@
 
 using namespace std;
 
+static complex<double> i(0, 1);
+
 namespace TBTK{
 namespace PropertyExtractor{
 
@@ -237,7 +239,19 @@ Property::GreensFunction BlockDiagonalizer::calculateGreensFunction(
 	vector<Index> patterns,
 	Property::GreensFunction::Type type
 ){
-	IndexTree allIndices;
+	for(unsigned int n = 0; n < patterns.size(); n++){
+		TBTKAssert(
+			(patterns.begin() + n)->split().size() == 2,
+			"PropertyExtractor::BlockDiagonalizer::calculateGreensFunction()",
+			"'pattern' must be 2 component Indices, but '"
+			<< (patterns.begin() + n)->toString() << "' has "
+			<< (patterns.begin() + n)->split().size() << "'"
+			<< " component(s).",
+			""
+		);
+	}
+
+/*	IndexTree allIndices;
 	IndexTree memoryLayout;
 	for(unsigned int n = 0; n < patterns.size(); n++){
 		const Index &pattern = *(patterns.begin() + n);
@@ -316,9 +330,47 @@ Property::GreensFunction BlockDiagonalizer::calculateGreensFunction(
 		}
 	}
 	allIndices.generateLinearMap();
-	memoryLayout.generateLinearMap();
+	memoryLayout.generateLinearMap();*/
+
+	IndexTree allIndices = generateIndexTree(
+		patterns,
+		bSolver->getModel().getHoppingAmplitudeSet(),
+		false,
+		false
+	);
+
+	IndexTree memoryLayout = generateIndexTree(
+		patterns,
+		bSolver->getModel().getHoppingAmplitudeSet(),
+		true,
+		false
+	);
 
 	switch(type){
+	case Property::GreensFunction::Type::Advanced:
+	case Property::GreensFunction::Type::Retarded:
+	{
+		Property::GreensFunction greensFunction(
+			memoryLayout,
+			type,
+			getLowerBound(),
+			getUpperBound(),
+			getEnergyResolution()
+		);
+
+		hint = &greensFunction;
+
+		calculate(
+			calculateGreensFunctionCallback,
+			allIndices,
+			memoryLayout,
+			greensFunction
+		);
+
+		hint = nullptr;
+
+		return greensFunction;
+	}
 	case Property::GreensFunction::Type::Matsubara:
 	{
 		TBTKAssert(
@@ -332,16 +384,16 @@ Property::GreensFunction BlockDiagonalizer::calculateGreensFunction(
 			<< upperFermionicMatsubaraEnergyIndex << "'.",
 			"This should never happen, contact the developer."
 		);
-		unsigned int numMatsubaraEnergies = (
+/*		unsigned int numMatsubaraEnergies = (
 			upperFermionicMatsubaraEnergyIndex
 			- lowerFermionicMatsubaraEnergyIndex
-		)/2 + 1;
+		)/2 + 1;*/
 
 		double temperature = bSolver->getModel().getTemperature();
 		double kT = UnitHandler::getK_BN()*temperature;
 		double fundamentalMatsubaraEnergy = M_PI*kT;
 
-		hint = new vector<complex<double>>();
+/*		hint = new vector<complex<double>>();
 		vector<complex<double>> &energies = *((vector<complex<double>>*)hint);
 		energies.clear();
 		energies.reserve(numMatsubaraEnergies);
@@ -352,7 +404,7 @@ Property::GreensFunction BlockDiagonalizer::calculateGreensFunction(
 					+ 2*n
 				)*complex<double>(0, 1)*M_PI*kT
 			);
-		}
+		}*/
 
 		Property::GreensFunction greensFunction(
 			memoryLayout,
@@ -361,6 +413,8 @@ Property::GreensFunction BlockDiagonalizer::calculateGreensFunction(
 			fundamentalMatsubaraEnergy
 		);
 
+		hint = &greensFunction;
+
 		calculate(
 			calculateGreensFunctionCallback,
 			allIndices,
@@ -368,15 +422,17 @@ Property::GreensFunction BlockDiagonalizer::calculateGreensFunction(
 			greensFunction
 		);
 
-		delete (vector<complex<double>>*)hint;
+		hint = nullptr;
+
+//		delete (vector<complex<double>>*)hint;
 
 		return greensFunction;
 	}
 	default:
 		TBTKExit(
 			"PropertyExtractor::BlockDiagonalizer::calculateGreensFunction()",
-			"Only Property::GreensFunction::Type::Matsubara"
-			<< " supported yet.",
+			"Only Property::GreensFunction::Type Advanced,"
+			<< " Retarded, and Matsubara supported yet.",
 			""
 		);
 	}
@@ -839,8 +895,8 @@ void BlockDiagonalizer::calculateGreensFunctionCallback(
 	int offset
 ){
 	BlockDiagonalizer *propertyExtractor = (BlockDiagonalizer*)cb_this;
-	const vector<complex<double>> &energies
-		= *((vector<complex<double>>*)propertyExtractor->hint);
+/*	const vector<complex<double>> &energies
+		= *((vector<complex<double>>*)propertyExtractor->hint);*/
 
 	vector<Index> components = index.split();
 	const Index &toIndex = components[0];
@@ -863,62 +919,90 @@ void BlockDiagonalizer::calculateGreensFunctionCallback(
 		return;
 	}
 
-	for(unsigned int n = firstStateInBlock; n <= lastStateInBlock; n++){
-		double energy = propertyExtractor->bSolver->getEigenValue(n);
-		complex<double> toAmplitude = propertyExtractor->getAmplitude(
-			n,
-			toIndex
-		);
-		complex<double> fromAmplitude
-			= propertyExtractor->getAmplitude(
-				n,
-				fromIndex
-			);
-		complex<double> numerator = toAmplitude*conj(fromAmplitude);
-		if(abs(numerator) < numeric_limits<double>::epsilon())
-			continue;
+	Property::GreensFunction &gf
+		= *(Property::GreensFunction*)propertyExtractor->hint;
 
-		for(unsigned int e = 0; e < energies.size(); e++){
-			if(
-				index.equals(
-					{
-						{0, 50, IDX_ALL},
-						{0, 50, IDX_ALL}
-					},
-					true
-				)
+	switch(gf.getType()){
+	case Property::GreensFunction::Type::Advanced:
+	case Property::GreensFunction::Type::Retarded:
+	{
+		double lowerBound = propertyExtractor->getLowerBound();
+		double upperBound = propertyExtractor->getUpperBound();
+		double energyResolution
+			= propertyExtractor->getEnergyResolution();
+		double dE = (upperBound - lowerBound)/energyResolution;
+		double delta = propertyExtractor->getEnergyInfinitesimal();
+		if(gf.getType() == Property::GreensFunction::Type::Advanced)
+			delta *= -1;
+
+		for(int e = 0; e < energyResolution; e++){
+			double E = lowerBound +e*dE;
+			for(
+				int n = 0;
+				n < propertyExtractor->bSolver->getModel(
+					).getBasisSize();
+				n++
 			){
-				Streams::out << index.toString() << toAmplitude << "\t" << fromAmplitude << "\n";
+				double E_n
+					= propertyExtractor->getEigenValue(n);
+				complex<double> amplitude0
+					= propertyExtractor->getAmplitude(
+						n,
+						components[0]
+					);
+				complex<double> amplitude1
+					= propertyExtractor->getAmplitude(
+						n,
+						components[1]
+					);
+				((complex<double>*)greensFunction)[offset + e]
+					+= amplitude0*conj(amplitude1)/(
+						E - E_n + i*delta
+					);
 			}
-			((complex<double>*)greensFunction)[offset + e]
-				+= numerator/(energies[e] - energy);
 		}
+
+		break;
 	}
-/*	unsigned int numPoles = bSolver->getModel().getBasisSize();
+	case Property::GreensFunction::Type::Matsubara:
+	{
+		unsigned int numMatsubaraEnergies
+			= gf.getNumMatsubaraEnergies();
 
-	complex<double> *positions = new complex<double>[numPoles];
-	complex<double> *amplitudes = new complex<double>[numPoles];
-	for(int n = 0; n < bSolver->getModel().getBasisSize(); n++){
-		positions[n] = bSolver->getEigenValue(n);
+		for(unsigned int n = firstStateInBlock; n <= lastStateInBlock; n++){
+			double energy = propertyExtractor->bSolver->getEigenValue(n);
+			complex<double> toAmplitude = propertyExtractor->getAmplitude(
+				n,
+				toIndex
+			);
+			complex<double> fromAmplitude
+				= propertyExtractor->getAmplitude(
+					n,
+					fromIndex
+				);
+			complex<double> numerator = toAmplitude*conj(fromAmplitude);
+			if(abs(numerator) < numeric_limits<double>::epsilon())
+				continue;
 
-		complex<double> uTo = bSolver->getAmplitude(n, to);
-		complex<double> uFrom = bSolver->getAmplitude(n, from);
+			for(unsigned int e = 0; e < numMatsubaraEnergies; e++){
+				((complex<double>*)greensFunction)[offset + e]
+					+= numerator/(
+						gf.getMatsubaraEnergy(e)
+						- energy
+					);
+			}
+		}
 
-		amplitudes[n] = uTo*conj(uFrom);
+		break;
 	}
-
-	Property::GreensFunction *greensFunction = new Property::GreensFunction(
-		type,
-		Property::GreensFunction::Format::Poles,
-		numPoles,
-		positions,
-		amplitudes
-	);
-
-	delete [] positions;
-	delete [] amplitudes;
-
-	return greensFunction;*/
+	default:
+		TBTKExit(
+			"PropertyExtractor::BlockDiagonalizer::calculateGreensFunctionCallback()",
+			"Unsupported Green's function type.",
+			"This should never happen, contact the developer."
+			//Should have been cought in calculateGreensFunction().
+		);
+	}
 }
 
 void BlockDiagonalizer::calculateDensityCallback(

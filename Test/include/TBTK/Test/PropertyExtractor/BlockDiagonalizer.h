@@ -330,9 +330,81 @@ TEST(BlockDiagonalizer, calculateWaveFunction){
 	::testing::FLAGS_gtest_death_test_style = "fast";
 }
 
-//TODO
-//...
 TEST(BlockDiagonalizer, calculateGreensFunction){
+	SETUP_MODEL();
+	SETUP_AND_RUN_SOLVER();
+	const double LOWER_BOUND = -100;
+	const double UPPER_BOUND = 100;
+	const int RESOLUTION = 1000;
+
+	BlockDiagonalizer propertyExtractor(solver);
+	propertyExtractor.setEnergyWindow(
+		LOWER_BOUND,
+		UPPER_BOUND,
+		RESOLUTION
+	);
+	propertyExtractor.setEnergyInfinitesimal(200./SIZE);
+	std::vector<Index> patterns;
+	for(int k = 0; k < SIZE; k++)
+		patterns.push_back({{k, IDX_ALL}, {k, IDX_ALL}});
+	Property::GreensFunction greensFunction
+		= propertyExtractor.calculateGreensFunction(
+			patterns,
+			Property::GreensFunction::Type::Retarded
+		);
+
+	EXPECT_DOUBLE_EQ(greensFunction.getLowerBound(), LOWER_BOUND);
+	EXPECT_DOUBLE_EQ(greensFunction.getUpperBound(), UPPER_BOUND);
+	EXPECT_EQ(greensFunction.getResolution(), RESOLUTION);
+
+	for(int k = 0; k < SIZE; k++){
+		Diagonalizer propertyExtractorDiagonalizer(
+			solverDiagonalizer[k]
+		);
+		propertyExtractorDiagonalizer.setEnergyWindow(
+			LOWER_BOUND,
+			UPPER_BOUND,
+			RESOLUTION
+		);
+		propertyExtractorDiagonalizer.setEnergyInfinitesimal(
+			200./SIZE
+		);
+		Property::GreensFunction greensFunctionDiagonalizer
+			= propertyExtractorDiagonalizer.calculateGreensFunction(
+				{{Index({IDX_ALL}), Index({IDX_ALL})}},
+				Property::GreensFunction::Type::Retarded
+			);
+
+		for(unsigned int n = 0; n < RESOLUTION; n++){
+			for(int c = 0; c < 2; c++){
+				for(int m = 0; m < 2; m++){
+					EXPECT_NEAR(
+						real(greensFunction({{k, c}, {k, m}}, n)),
+						real(
+							greensFunctionDiagonalizer(
+								{Index({c}), Index({m})},
+								n
+							)
+						),
+						EPSILON_100
+					);
+					EXPECT_NEAR(
+						imag(greensFunction({{k, c}, {k, m}}, n)),
+						imag(
+							greensFunctionDiagonalizer(
+								{Index({c}), Index({m})},
+								n
+							)
+						),
+						EPSILON_100
+					);
+				}
+			}
+		}
+	}
+
+	//TODO
+	//Test calculation of Property::GreensFunction::Type::Matsubara.
 }
 
 TEST(BlockDiagonalizer, calculateDOS){

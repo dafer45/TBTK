@@ -470,7 +470,8 @@ protected:
 	 *  @param keepSpinWildcards If true, spin wildcards in the pattern
 	 *  will be preserved in the IndexTree. */
 	IndexTree generateIndexTree(
-		std::initializer_list<Index> patterns,
+//		std::initializer_list<Index> patterns,
+		std::vector<Index> patterns,
 		const HoppingAmplitudeSet &hoppingAmplitudeSet,
 		bool keepSummationWildcards,
 		bool keepSpinWildcards

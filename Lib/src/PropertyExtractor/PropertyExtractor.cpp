@@ -270,7 +270,8 @@ void PropertyExtractor::getLoopRanges(
 }
 
 IndexTree PropertyExtractor::generateIndexTree(
-	std::initializer_list<Index> patterns,
+//	std::initializer_list<Index> patterns,
+	std::vector<Index> patterns,
 	const HoppingAmplitudeSet &hoppingAmplitudeSet,
 	bool keepSummationWildcards,
 	bool keepSpinWildcards

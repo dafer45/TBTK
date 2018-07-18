@@ -177,6 +177,18 @@ Property::GreensFunction Diagonalizer::calculateGreensFunction(
 	std::initializer_list<Index> patterns,
 	Property::GreensFunction::Type type
 ){
+	for(unsigned int n = 0; n < patterns.size(); n++){
+		TBTKAssert(
+			(patterns.begin() + n)->split().size() == 2,
+			"PropertyExtractor::Diagonalizer::calculateGreensFunction()",
+			"'pattern' must be 2 component Indices, but '"
+			<< (patterns.begin() + n)->toString() << "' has '"
+			<< (patterns.begin() + n)->split().size() << "'"
+			<< " component(s).",
+			""
+		);
+	}
+
 	IndexTree allIndices = generateIndexTree(
 		patterns,
 		dSolver->getModel().getHoppingAmplitudeSet(),
