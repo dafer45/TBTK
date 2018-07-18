@@ -26,6 +26,8 @@
 
 using namespace std;
 
+static complex<double> i(0, 1);
+
 namespace TBTK{
 namespace PropertyExtractor{
 
@@ -170,6 +172,64 @@ Property::WaveFunctions Diagonalizer::calculateWaveFunctions(
 
 	return greensFunction;
 }*/
+
+Property::GreensFunction Diagonalizer::calculateGreensFunction(
+	std::initializer_list<Index> patterns,
+	Property::GreensFunction::Type type
+){
+	IndexTree allIndices = generateIndexTree(
+		patterns,
+		dSolver->getModel().getHoppingAmplitudeSet(),
+		false,
+		false
+	);
+
+	IndexTree memoryLayout = generateIndexTree(
+		patterns,
+		dSolver->getModel().getHoppingAmplitudeSet(),
+		true,
+		true
+	);
+
+	Property::GreensFunction greensFunction;
+
+	switch(type){
+	case Property::GreensFunction::Type::Advanced:
+	case Property::GreensFunction::Type::Retarded:
+	{
+		greensFunction = Property::GreensFunction(
+			memoryLayout,
+			type,
+			getLowerBound(),
+			getUpperBound(),
+			getEnergyResolution()
+		);
+
+		hint = &greensFunction;
+
+		calculate(
+			calculateGreensFunctionCallback,
+			allIndices,
+			memoryLayout,
+			greensFunction
+		);
+
+		hint = nullptr;
+
+		break;
+	}
+	default:
+		TBTKExit(
+			"PropertyExtractor::Diagonalizer::calculateGreensFunction()",
+			"Only type Property::GreensFunction::Type::Advanced"
+			<< " and Property::GrensFunction::Type::Retarded"
+			<< " supported yet.",
+			""
+		);
+	}
+
+	return greensFunction;
+}
 
 Property::DOS Diagonalizer::calculateDOS(){
 	const double *ev = dSolver->getEigenValues();
@@ -612,6 +672,60 @@ void Diagonalizer::calculateWaveFunctionsCallback(
 		((complex<double>*)waveFunctions)[offset + n] += pe->getAmplitude(states.at(n), index);
 }
 
+void Diagonalizer::calculateGreensFunctionCallback(
+	PropertyExtractor *cb_this,
+	void *greensFunction,
+	const Index &index,
+	int offset
+){
+	Diagonalizer *pe = (Diagonalizer*)cb_this;
+
+	double lowerBound = pe->getLowerBound();
+	double upperBound = pe->getUpperBound();
+	int energyResolution = pe->getEnergyResolution();
+	double dE = (upperBound - lowerBound)/energyResolution;
+	double delta = pe->getEnergyInfinitesimal();
+
+	vector<Index> components = index.split();
+
+	Property::GreensFunction &gf = *(Property::GreensFunction*)pe->hint;
+
+	switch(gf.getType()){
+	case Property::GreensFunction::Type::Advanced:
+		delta *= -1;
+	case Property::GreensFunction::Type::Retarded:
+	{
+		for(int e = 0; e < energyResolution; e++){
+			double E = lowerBound + e*dE;
+			for(
+				int n = 0;
+				n < pe->dSolver->getModel().getBasisSize();
+				n++
+			){
+				double E_n = pe->getEigenValue(n);
+				complex<double> amplitude0
+					= pe->getAmplitude(n, components[0]);
+				complex<double> amplitude1
+					= pe->getAmplitude(n, components[1]);
+				((complex<double>*)greensFunction)[offset + e]
+					+= amplitude0*conj(amplitude1)/(
+						E - E_n + i*delta
+					);
+			}
+		}
+
+		break;
+	}
+	default:
+		TBTKExit(
+			"Diagonalizer::calculateGreensFunctionCallback()",
+			"Only type GreensFunction::Type::Advanced and"
+			<< " GreensFunction::Type::Retarded supported yet.",
+			""
+		);
+	}
+}
+
 void Diagonalizer::calculateDensityCallback(
 	PropertyExtractor *cb_this,
 	void* density,
@@ -625,14 +739,18 @@ void Diagonalizer::calculateDensityCallback(
 	for(int n = 0; n < pe->dSolver->getModel().getBasisSize(); n++){
 		double weight;
 		if(statistics == Statistics::FermiDirac){
-			weight = Functions::fermiDiracDistribution(eigen_values[n],
-									pe->dSolver->getModel().getChemicalPotential(),
-									pe->dSolver->getModel().getTemperature());
+			weight = Functions::fermiDiracDistribution(
+				eigen_values[n],
+				pe->dSolver->getModel().getChemicalPotential(),
+				pe->dSolver->getModel().getTemperature()
+			);
 		}
 		else{
-			weight = Functions::boseEinsteinDistribution(eigen_values[n],
-									pe->dSolver->getModel().getChemicalPotential(),
-									pe->dSolver->getModel().getTemperature());
+			weight = Functions::boseEinsteinDistribution(
+				eigen_values[n],
+				pe->dSolver->getModel().getChemicalPotential(),
+				pe->dSolver->getModel().getTemperature()
+			);
 		}
 
 		complex<double> u = pe->dSolver->getAmplitude(n, index);

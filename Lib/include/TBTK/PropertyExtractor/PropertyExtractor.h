@@ -61,6 +61,14 @@ public:
 		int energyResolution
 	);
 
+	/** Set the size of the energy infinitesimal that can be used to add
+	 *  for example an \f$i\delta\f$ term to the denominator of the Green's
+	 *  function.
+	 *
+	 *  @param energyInfinitesimal The energy infinitesimal \f$\delta\f$.
+	 */
+	virtual void setEnergyInfinitesimal(double energyInfinitesimal);
+
 	/** Calculate the density. This function should be overriden by those
 	 *  deriving classes that provide support for calculating the density.
 	 *  By default the PropertyExtractor prints an error message that the
@@ -320,6 +328,11 @@ protected:
 	 *  @return The upper bound for the energy window. */
 	double getUpperBound() const;
 
+	/*** Get the nergy infinitesimal.
+	 *
+	 *  @return The energy infinitesimal. */
+	double getEnergyInfinitesimal() const;
+
 	/** Loops over range indices and calls the given callback function to
 	 *  calculate the correct quantity. The function recursively calls
 	 *  itself replacing any IDX_SUM_ALL, IDX_X, IDX_Y, and IDX_Z
@@ -480,6 +493,13 @@ private:
 
 	/** Upper bound used for energy dependent quantities. */
 	double upperBound;
+
+	/** Default energy infinitesimal. */
+	static constexpr double ENERGY_INFINITESIMAL = 1e-3;
+
+	/** The nergy infinitesimal \f$\delta\f$ that for example can be used
+	 *  in the denominator of the Green's function as \f$i\delta\f$. */
+	double energyInfinitesimal;
 };
 
 inline int PropertyExtractor::getEnergyResolution() const{
@@ -492,6 +512,10 @@ inline double PropertyExtractor::getLowerBound() const{
 
 inline double PropertyExtractor::getUpperBound() const{
 	return upperBound;
+}
+
+inline double PropertyExtractor::getEnergyInfinitesimal() const{
+	return energyInfinitesimal;
 }
 
 template<typename DataType>

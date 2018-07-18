@@ -1,6 +1,7 @@
 #include "TBTK/IndexException.h"
 #include "TBTK/PropertyExtractor/Diagonalizer.h"
 #include <cmath>
+#include <complex>
 
 #include "gtest/gtest.h"
 
@@ -132,6 +133,104 @@ TEST(Diagonalizer, getAmplitude){
 			+ pow(std::abs(projectionAmplitude1), 2.)
 		);
 		EXPECT_NEAR(std::abs(projectionAmplitudeTotal), 1, EPSILON_100);
+	}
+}
+
+TEST(Diagonalizer, calculateGreensFunction){
+	SETUP_MODEL();
+	SETUP_AND_RUN_SOLVER();
+
+	Diagonalizer propertyExtractor(solver);
+	propertyExtractor.setEnergyWindow(-5, 5, 100);
+	double delta = 0.1;
+	propertyExtractor.setEnergyInfinitesimal(delta);
+
+	//Verify that both the Advanced and Retarded Green's function is
+	//calculated correctly.
+	for(unsigned int n = 0; n < 2; n++){
+		Property::GreensFunction greensFunction;
+		double sign;
+		switch(n){
+		case 0:
+			greensFunction
+				= propertyExtractor.calculateGreensFunction(
+					{{Index({IDX_ALL}), Index({0})}},
+					Property::GreensFunction::Type::Advanced
+				);
+			sign = -1;
+
+			break;
+		case 1:
+			greensFunction
+				= propertyExtractor.calculateGreensFunction(
+					{{Index({IDX_ALL}), Index({0})}},
+					Property::GreensFunction::Type::Retarded
+				);
+			sign = 1;
+
+			break;
+		default:
+			TBTKExit(
+				"Test::PropertyExtractor::Diagonalizer::calculateGreensFunction()",
+				"Unknown action for n='" << n << "'.",
+				"This should never happen, contact the"
+				<< " developer."
+			);
+		}
+
+		EXPECT_DOUBLE_EQ(greensFunction.getLowerBound(), -5);
+		EXPECT_DOUBLE_EQ(greensFunction.getUpperBound(), 5);
+		EXPECT_EQ(greensFunction.getResolution(), 100);
+
+		std::complex<double> i(0, 1);
+		for(int x = 0; x < SIZE; x++){
+			for(int n = 0; n < 100; n++){
+				std::complex<double> gf = 0;
+				double E = -5 + 0.1*n;
+				for(unsigned int c = 0; c < SIZE; c++){
+					double E_c
+						= propertyExtractor.getEigenValue(c);
+					std::complex<double> amplitude0
+						= propertyExtractor.getAmplitude(
+							c, {x}
+						);
+					std::complex<double> amplitude1
+						= propertyExtractor.getAmplitude(
+							c, {0}
+						);
+					gf += amplitude0*conj(amplitude1)/(
+						E - E_c + sign*i*delta
+					);
+				}
+
+				EXPECT_NEAR(
+					real(
+						greensFunction(
+							{
+								Index({x}),
+								Index({0})
+							},
+							n
+						)
+					),
+					real(gf),
+					EPSILON_100
+				);
+				EXPECT_NEAR(
+					imag(
+						greensFunction(
+							{
+								Index({x}),
+								Index({0})
+							},
+							n
+						)
+					),
+					imag(gf),
+					EPSILON_100
+				);
+			}
+		}
 	}
 }
 

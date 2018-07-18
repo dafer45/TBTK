@@ -2,3 +2,9 @@
   code is therefor disabled in CUDA files using the flag
   TBTK_DISABLE_NLOHMANN_JSON. This should be removed once compatibility is
   achieved or a better work around is found.
+
+- Creating compound Indices with a single subindex per Index such as {{0}, {1}}
+  results in an ambiguity for which constructor to call. This means that such
+  Indices currently have to be created using the notation
+  {Index({0}), Index({1})} instead. A workaround for this would be very good
+  since its a notational nuisance.

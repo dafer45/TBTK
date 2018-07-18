@@ -31,6 +31,7 @@ PropertyExtractor::PropertyExtractor(
 	this->energyResolution = ENERGY_RESOLUTION;
 	this->lowerBound = LOWER_BOUND;
 	this->upperBound = UPPER_BOUND;
+	this->energyInfinitesimal = ENERGY_INFINITESIMAL;
 }
 
 PropertyExtractor::~PropertyExtractor(){
@@ -44,6 +45,10 @@ void PropertyExtractor::setEnergyWindow(
 	this->energyResolution = energyResolution;
 	this->lowerBound = lowerBound;
 	this->upperBound = upperBound;
+}
+
+void PropertyExtractor::setEnergyInfinitesimal(double energyInfinitesimal){
+	this->energyInfinitesimal = energyInfinitesimal;
 }
 
 Property::Density PropertyExtractor::calculateDensity(

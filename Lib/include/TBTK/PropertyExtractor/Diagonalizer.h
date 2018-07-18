@@ -111,6 +111,13 @@ public:
 		Property::GreensFunction::Type type = Property::GreensFunction::Type::Retarded
 	);*/
 
+	/** Calculate Green's function. */
+	Property::GreensFunction calculateGreensFunction(
+		std::initializer_list<Index> patterns,
+		Property::GreensFunction::Type type
+			= Property::GreensFunction::Type::Retarded
+	);
+
 	/** Overrides PropertyExtractor::calculateDOS(). */
 	virtual Property::DOS calculateDOS();
 
@@ -172,6 +179,15 @@ private:
 	static void calculateWaveFunctionsCallback(
 		PropertyExtractor *cb_this,
 		void *waveFunctions,
+		const Index &index,
+		int offset
+	);
+
+	/** Callback for calculating the Green's function. Used by
+	 *  calculateGreensFunction. */
+	static void calculateGreensFunctionCallback(
+		PropertyExtractor *cb_this,
+		void *greensFunction,
 		const Index &index,
 		int offset
 	);

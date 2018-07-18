@@ -39,7 +39,7 @@ public:
 	enum class Type{Advanced, Retarded, Principal, NonPrincipal, Matsubara};
 
 	/** Constructs an uninitialized GreensFunction. */
-//	GreensFunction();
+	GreensFunction();
 
 	/** Constructs a GreensFunction with real energies on the Custom
 	 *  format. [See AbstractProperty for detailed information about the

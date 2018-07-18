@@ -26,8 +26,8 @@ using namespace std;
 namespace TBTK{
 namespace Property{
 
-/*SelfEnergy::SelfEnergy() : EnergyResolvedProperty(){
-}*/
+GreensFunction::GreensFunction() : EnergyResolvedProperty(){
+}
 
 GreensFunction::GreensFunction(
 	const IndexTree &indexTree,
