@@ -337,6 +337,7 @@ TEST(BlockDiagonalizer, calculateGreensFunction){
 	const double UPPER_BOUND = 100;
 	const int RESOLUTION = 1000;
 
+	//Setup the PropertyExtractor
 	BlockDiagonalizer propertyExtractor(solver);
 	propertyExtractor.setEnergyWindow(
 		LOWER_BOUND,
@@ -344,6 +345,8 @@ TEST(BlockDiagonalizer, calculateGreensFunction){
 		RESOLUTION
 	);
 	propertyExtractor.setEnergyInfinitesimal(200./SIZE);
+
+	//Calculate the Green's function for every block.
 	std::vector<Index> patterns;
 	for(int k = 0; k < SIZE; k++)
 		patterns.push_back({{k, IDX_ALL}, {k, IDX_ALL}});
@@ -353,11 +356,15 @@ TEST(BlockDiagonalizer, calculateGreensFunction){
 			Property::GreensFunction::Type::Retarded
 		);
 
+	//Check the energy window values.
 	EXPECT_DOUBLE_EQ(greensFunction.getLowerBound(), LOWER_BOUND);
 	EXPECT_DOUBLE_EQ(greensFunction.getUpperBound(), UPPER_BOUND);
 	EXPECT_EQ(greensFunction.getResolution(), RESOLUTION);
 
+	//Check the calculate Green's function against results for the
+	//Diagonalizer.
 	for(int k = 0; k < SIZE; k++){
+		//Setup the PropertyExtractor for the Diagonalizer.
 		Diagonalizer propertyExtractorDiagonalizer(
 			solverDiagonalizer[k]
 		);
@@ -369,15 +376,20 @@ TEST(BlockDiagonalizer, calculateGreensFunction){
 		propertyExtractorDiagonalizer.setEnergyInfinitesimal(
 			200./SIZE
 		);
+
+		//Calculate the Green's function for a single block using the
+		//Diagonalizer.
 		Property::GreensFunction greensFunctionDiagonalizer
 			= propertyExtractorDiagonalizer.calculateGreensFunction(
 				{{Index({IDX_ALL}), Index({IDX_ALL})}},
 				Property::GreensFunction::Type::Retarded
 			);
 
+		//Perform the check for each value.
 		for(unsigned int n = 0; n < RESOLUTION; n++){
 			for(int c = 0; c < 2; c++){
 				for(int m = 0; m < 2; m++){
+					//Real part.
 					EXPECT_NEAR(
 						real(greensFunction({{k, c}, {k, m}}, n)),
 						real(
@@ -388,6 +400,8 @@ TEST(BlockDiagonalizer, calculateGreensFunction){
 						),
 						EPSILON_100
 					);
+
+					//Imaginary part.
 					EXPECT_NEAR(
 						imag(greensFunction({{k, c}, {k, m}}, n)),
 						imag(
