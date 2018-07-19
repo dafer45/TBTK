@@ -542,6 +542,20 @@ vector<Index> IndexTree::getIndexList(const Index &pattern) const{
 	return indexList;
 }
 
+bool IndexTree::equals(const IndexTree &indexTree) const{
+	ConstIterator iterator0 = cbegin();
+	ConstIterator iterator1 = indexTree.cbegin();
+	while(iterator0 != cend() && iterator1 != indexTree.cend()){
+		if(!(*iterator0).equals((*iterator1)))
+			return false;
+
+		++iterator0;
+		++iterator1;
+	}
+
+	return (iterator0 == cend() && iterator1 == indexTree.cend());
+}
+
 void IndexTree::getPhysicalIndex(int linearIndex, vector<int> *indices) const{
 	if(this->linearIndex != -1)
 		return;

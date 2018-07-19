@@ -192,6 +192,15 @@ public:
 	 *  pattern. */
 	std::vector<Index> getIndexList(const Index &pattern) const;
 
+	/** Returns true if the two @link IndexTree IndexTrees @endlink contain
+	 *  the same @link Index Indices @endlink.
+	 *
+	 *  @param indexTree IndexTree to compare to.
+	 *
+	 *  @return True if the two @link IndexTree IndexTrees @endlink contain
+	 *  the same @link Index Indices @endlink. */
+	bool equals(const IndexTree &indexTree) const;
+
 //	class Iterator;
 	class ConstIterator;
 private:

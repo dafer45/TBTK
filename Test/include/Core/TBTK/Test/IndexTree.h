@@ -654,6 +654,39 @@ TEST(IndexTree, getIndexList){
 	ASSERT_EQ(indexList7.size(), 0);
 }
 
+TEST(IndexTree, equals){
+	IndexTree indexTree0;
+	indexTree0.add({0, 1});
+	indexTree0.add({1, IDX_ALL});
+	indexTree0.add({2, 0, IDX_SPIN});
+	indexTree0.add({2, 1, 3});
+
+	IndexTree indexTree1;
+	indexTree1.add({0, 1});
+	indexTree1.add({1, IDX_ALL});
+	indexTree1.add({2, 0, IDX_SPIN});
+	indexTree1.add({2, 1, 3});
+
+	IndexTree indexTree2;
+	indexTree2.add({0, 1});
+	indexTree2.add({1, IDX_ALL});
+	indexTree2.add({2, 0, IDX_SPIN});
+	indexTree2.add({2, 1, 2});
+
+	IndexTree indexTree3;
+	indexTree3.add({0, 1});
+	indexTree3.add({1, IDX_ALL});
+	indexTree3.add({2, 0, IDX_SPIN});
+
+	EXPECT_TRUE(indexTree0.equals(indexTree0));
+	EXPECT_TRUE(indexTree0.equals(indexTree1));
+	EXPECT_FALSE(indexTree0.equals(indexTree2));
+	EXPECT_FALSE(indexTree0.equals(indexTree3));
+	EXPECT_FALSE(indexTree1.equals(indexTree2));
+	EXPECT_FALSE(indexTree1.equals(indexTree3));
+	EXPECT_FALSE(indexTree2.equals(indexTree3));
+}
+
 TEST(IndexTree, serialize){
 	//Already tested through SerializeToJSON.
 }
