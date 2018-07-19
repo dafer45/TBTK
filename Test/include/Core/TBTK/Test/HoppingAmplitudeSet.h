@@ -443,6 +443,52 @@ TEST(HoppingAmplitudeSet, getLastIndexInBlock){
 	EXPECT_EQ(hoppingAmplitudeSet.getLastIndexInBlock({1, 1}), 4);
 }
 
+TEST(HoppingAmplitudeSet, getIndexTree){
+	HoppingAmplitudeSet hoppingAmplitudeSet;
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {0, 0, 0}, {0, 0, 0}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 1}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 2}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {0, 0, 2}, {0, 0, 1}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 0}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 1}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {1, 1, 1}, {1, 1, 0}));
+	hoppingAmplitudeSet.construct();
+
+	IndexTree indexTree = hoppingAmplitudeSet.getIndexTree();
+	IndexTree::ConstIterator iterator = indexTree.cbegin();
+	EXPECT_TRUE((*iterator).equals({0, 0, 0}));
+	++iterator;
+	EXPECT_TRUE((*iterator).equals({0, 0, 1}));
+	++iterator;
+	EXPECT_TRUE((*iterator).equals({0, 0, 2}));
+	++iterator;
+	EXPECT_TRUE((*iterator).equals({1, 1, 0}));
+	++iterator;
+	EXPECT_TRUE((*iterator).equals({1, 1, 1}));
+	++iterator;
+	EXPECT_EQ(iterator, indexTree.cend());
+}
+
+TEST(HoppingAmplitudeSet, getIndexTreeSubspace){
+	HoppingAmplitudeSet hoppingAmplitudeSet;
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {0, 0, 0}, {0, 0, 0}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 1}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 2}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {0, 0, 2}, {0, 0, 1}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 0}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 1}));
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {1, 1, 1}, {1, 1, 0}));
+	hoppingAmplitudeSet.construct();
+
+	IndexTree indexTree = hoppingAmplitudeSet.getIndexTree({1, 1});
+	IndexTree::ConstIterator iterator = indexTree.cbegin();
+	EXPECT_TRUE((*iterator).equals({1, 1, 0}));
+	++iterator;
+	EXPECT_TRUE((*iterator).equals({1, 1, 1}));
+	++iterator;
+	EXPECT_EQ(iterator, indexTree.cend());
+}
+
 TEST(HoppingAmplitudeSet, getSparseMatrix){
 	HoppingAmplitudeSet hoppingAmplitudeSet;
 	hoppingAmplitudeSet.add(HoppingAmplitude(1, {1}, {0}));

@@ -326,6 +326,34 @@ HoppingAmplitudeSet& HoppingAmplitudeSet::operator=(HoppingAmplitudeSet &&rhs){
 	return *this;
 }
 
+IndexTree HoppingAmplitudeSet::getIndexTree() const{
+	IndexTree indexTree;
+	for(
+		ConstIterator iterator = cbegin();
+		iterator != cend();
+		++iterator
+	){
+		indexTree.add((*iterator).getFromIndex());
+	}
+	indexTree.generateLinearMap();
+
+	return indexTree;
+}
+
+IndexTree HoppingAmplitudeSet::getIndexTree(const Index &subspace) const{
+	IndexTree indexTree;
+	for(
+		ConstIterator iterator = cbegin(subspace);
+		iterator != cend(subspace);
+		++iterator
+	){
+		indexTree.add((*iterator).getFromIndex());
+	}
+	indexTree.generateLinearMap();
+
+	return indexTree;
+}
+
 int HoppingAmplitudeSet::getNumMatrixElements() const{
 	TBTKAssert(
 		numMatrixElements != -1,

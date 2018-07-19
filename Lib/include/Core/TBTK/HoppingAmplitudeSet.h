@@ -136,6 +136,24 @@ public:
 	 *  subspace is empty, -1 is returned. */
 	int getLastIndexInBlock(const Index &blockIndex) const;
 
+	/** Get an IndexTree containing all the @link Index Indices @endlink
+	 *  that are contained in the HoppingAmplitudeSet.
+	 *
+	 *  @return An IndexTree containing all the @link Index Indices
+	 *  @endlink that are contained in the HoppingAmplitudeSet. */
+	IndexTree getIndexTree() const;
+
+	/** Get an IndexTree containing all the @link Index Indices @endlink
+	 *  that are contained in the given subspace of the
+	 *  HoppingAmplitudeSet.
+	 *
+	 *  @param subspace The subspaec to get the IndexTree for.
+	 *
+	 *  @return An IndexTree containing all the @link Index Indices
+	 *  @endlink that are contained in the given subspace of the
+	 *  HoppingAmplitudeSet. */
+	IndexTree getIndexTree(const Index &subspace) const;
+
 	/** Sort HoppingAmplitudes. */
 	void sort();
 
