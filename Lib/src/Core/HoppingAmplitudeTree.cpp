@@ -484,6 +484,24 @@ void HoppingAmplitudeTree::getBlockIndices(
 	}
 }
 
+Index HoppingAmplitudeTree::getSubspaceIndex(const Index &index) const{
+	Index blockIndex;
+	getBlockIndex(index, 0, blockIndex);
+
+	return blockIndex;
+}
+
+void HoppingAmplitudeTree::getBlockIndex(
+	const Index &index,
+	unsigned int subindex,
+	Index &blockIndex
+) const{
+	if(children.size() > 0 && isPotentialBlockSeparator){
+		blockIndex.push_back(index[subindex]);
+		children[index[subindex]].getBlockIndex(index, subindex+1, blockIndex);
+	}
+}
+
 const std::vector<
 	HoppingAmplitude
 >& HoppingAmplitudeTree::getHoppingAmplitudes(

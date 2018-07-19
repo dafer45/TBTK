@@ -59,6 +59,7 @@ public:
 	using HoppingAmplitudeTree::getBasisSize;
 	using HoppingAmplitudeTree::isProperSubspace;
 	using HoppingAmplitudeTree::getSubspaceIndices;
+	using HoppingAmplitudeTree::getSubspaceIndex;
 	using HoppingAmplitudeTree::getIndexList;
 
 	/** Constructs a HoppingAmplitudeSet. */

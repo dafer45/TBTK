@@ -148,6 +148,13 @@ public:
 	 *  @return An IndexTree containing all proper subspace indices. */
 	IndexTree getSubspaceIndices() const;
 
+	/** Returns the subspace part of an Index.
+	 *
+	 *  @param index An Index.
+	 *
+	 *  @return A new Index containing only the subspace Index of index. */
+	Index getSubspaceIndex(const Index &index) const;
+
 	/** Get first index in subspace.
 	 *
 	 *  @param subspaceIndex The physical Index of the subspace.
@@ -424,6 +431,15 @@ private:
 	 *  indexTree. Is calleed by HoppingAmplitudeTree::getBlockIndices()
 	 *  and is called recuresively. */
 	void getBlockIndices(IndexTree &blockIndices, Index index) const;
+
+	/** Returns the block part of an Index. Is called by
+	 *  HoppingAmplitudeTree:getSubspaceIndex() and is called recuresively.
+	 */
+	void getBlockIndex(
+		const Index &index,
+		unsigned int subindex,
+		Index &blockIndex
+	) const;
 
 	/** Get HoppingAmpilitudes. Is called by the public
 	 *  HoppingAmplitudeTree::getHoppingAmplitudes and is called

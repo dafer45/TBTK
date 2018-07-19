@@ -323,6 +323,34 @@ TEST(HoppingAmplitudeTree, getSubspaceIndices){
 	EXPECT_TRUE((*iterator).equals({1, 1}));
 }
 
+TEST(HoppingAmplitudeTree, getSubspaceIndex){
+	HoppingAmplitudeTree hoppingAmplitudeTree;
+	hoppingAmplitudeTree.add(HoppingAmplitude(1, {0, 0, 0}, {0, 0, 0}));
+	hoppingAmplitudeTree.add(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 1}));
+	hoppingAmplitudeTree.add(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 2}));
+	hoppingAmplitudeTree.add(HoppingAmplitude(1, {0, 0, 2}, {0, 0, 1}));
+	hoppingAmplitudeTree.add(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 0}));
+	hoppingAmplitudeTree.add(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 1}));
+	hoppingAmplitudeTree.add(HoppingAmplitude(1, {1, 1, 1}, {1, 1, 0}));
+	hoppingAmplitudeTree.generateBasisIndices();
+
+	EXPECT_TRUE(
+		hoppingAmplitudeTree.getSubspaceIndex({0, 0, 0}).equals({0, 0})
+	);
+	EXPECT_TRUE(
+		hoppingAmplitudeTree.getSubspaceIndex({0, 0, 1}).equals({0, 0})
+	);
+	EXPECT_TRUE(
+		hoppingAmplitudeTree.getSubspaceIndex({0, 0, 2}).equals({0, 0})
+	);
+	EXPECT_TRUE(
+		hoppingAmplitudeTree.getSubspaceIndex({1, 1, 0}).equals({1, 1})
+	);
+	EXPECT_TRUE(
+		hoppingAmplitudeTree.getSubspaceIndex({1, 1, 1}).equals({1, 1})
+	);
+}
+
 TEST(HoppingAmplitudeTree, getFirstIndexInSubspace){
 	HoppingAmplitudeTree hoppingAmplitudeTree;
 	hoppingAmplitudeTree.add(HoppingAmplitude(1, {0, 0, 0}, {0, 0, 0}));
