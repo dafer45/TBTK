@@ -174,7 +174,8 @@ Property::WaveFunctions Diagonalizer::calculateWaveFunctions(
 }*/
 
 Property::GreensFunction Diagonalizer::calculateGreensFunction(
-	std::initializer_list<Index> patterns,
+//	std::initializer_list<Index> patterns,
+	const vector<Index> &patterns,
 	Property::GreensFunction::Type type
 ){
 	for(unsigned int n = 0; n < patterns.size(); n++){

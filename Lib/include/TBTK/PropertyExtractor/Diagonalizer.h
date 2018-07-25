@@ -113,7 +113,8 @@ public:
 
 	/** Calculate Green's function. */
 	Property::GreensFunction calculateGreensFunction(
-		std::initializer_list<Index> patterns,
+//		std::initializer_list<Index> patterns,
+		const std::vector<Index> &patterns,
 		Property::GreensFunction::Type type
 			= Property::GreensFunction::Type::Retarded
 	);
