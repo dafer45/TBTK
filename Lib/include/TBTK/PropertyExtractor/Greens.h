@@ -85,9 +85,9 @@ public:
 //	virtual Property::LDOS calculateLDOS(Index pattern, Index ranges);
 
 	/** Overrides PropertyExtractor::calculateLDOS(). */
-/*	virtual Property::LDOS calculateLDOS(
+	virtual Property::LDOS calculateLDOS(
 		std::initializer_list<Index> pattern
-	);*/
+	);
 
 	/** Overrides PropertyExtractor::calculateSpinPolarizedLDOS(). */
 /*	virtual Property::SpinPolarizedLDOS calculateSpinPolarizedLDOS(
@@ -122,12 +122,12 @@ private:
 
 	/** Callback for calculating the local density of states. Used by
 	 *  calculateLDOS. */
-/*	static void calculateLDOSCallback(
+	static void calculateLDOSCallback(
 		PropertyExtractor *cb_this,
 		void *ldos,
 		const Index &index,
 		int offset
-	);*/
+	);
 
 	/** Callback for calculating the spin-polarized local density of
 	 *  states. Used by calculateSpinPolarizedLDOS. */

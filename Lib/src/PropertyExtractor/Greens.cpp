@@ -211,7 +211,7 @@ Property::LDOS Greens::calculateLDOS(Index pattern, Index ranges){
 	);
 
 	return ldos;
-}
+}*/
 
 Property::LDOS Greens::calculateLDOS(
 	std::initializer_list<Index> patterns
@@ -232,9 +232,9 @@ Property::LDOS Greens::calculateLDOS(
 
 	Property::LDOS ldos(
 		memoryLayout,
-		getLowerBound(),
-		getUpperBound(),
-		getEnergyResolution()
+		solver->getGreensFunction().getLowerBound(),
+		solver->getGreensFunction().getUpperBound(),
+		solver->getGreensFunction().getResolution()
 	);
 
 	calculate(
@@ -247,7 +247,7 @@ Property::LDOS Greens::calculateLDOS(
 	return ldos;
 }
 
-Property::SpinPolarizedLDOS Greens::calculateSpinPolarizedLDOS(
+/*Property::SpinPolarizedLDOS Greens::calculateSpinPolarizedLDOS(
 	Index pattern,
 	Index ranges
 ){
@@ -342,10 +342,10 @@ void Greens::calculateDensityCallback(
 	const Index &index,
 	int offset
 ){
-	Greens *pe = (Greens*)cb_this;
+	Greens *propertyExtractor = (Greens*)cb_this;
 
 	const Property::GreensFunction &greensFunction
-		= pe->solver->getGreensFunction();
+		= propertyExtractor->solver->getGreensFunction();
 /*	calculateGreensFunction(
 		index,
 		index,
@@ -354,7 +354,7 @@ void Greens::calculateDensityCallback(
 	const std::vector<complex<double>> &greensFunctionData
 		= greensFunction.getData();*/
 
-	Statistics statistics = pe->solver->getModel().getStatistics();
+	Statistics statistics = propertyExtractor->solver->getModel().getStatistics();
 
 	switch(greensFunction.getType()){
 	case Property::GreensFunction::Type::Retarded:
@@ -371,17 +371,18 @@ void Greens::calculateDensityCallback(
 			if(statistics == Statistics::FermiDirac){
 				weight = Functions::fermiDiracDistribution(
 					E,
-					pe->solver->getModel(
+					propertyExtractor->solver->getModel(
 					).getChemicalPotential(),
-					pe->solver->getModel().getTemperature()
+					propertyExtractor->solver->getModel(
+					).getTemperature()
 				);
 			}
 			else{
 				weight = Functions::boseEinsteinDistribution(
 					E,
-					pe->solver->getModel(
+					propertyExtractor->solver->getModel(
 					).getChemicalPotential(),
-					pe->solver->getModel().getTemperature()
+					propertyExtractor->solver->getModel().getTemperature()
 				);
 			}
 
@@ -407,17 +408,17 @@ void Greens::calculateDensityCallback(
 			if(statistics == Statistics::FermiDirac){
 				weight = Functions::fermiDiracDistribution(
 					E,
-					pe->solver->getModel(
+					propertyExtractor->solver->getModel(
 					).getChemicalPotential(),
-					pe->solver->getModel().getTemperature()
+					propertyExtractor->solver->getModel().getTemperature()
 				);
 			}
 			else{
 				weight = Functions::boseEinsteinDistribution(
 					E,
-					pe->solver->getModel(
+					propertyExtractor->solver->getModel(
 					).getChemicalPotential(),
-					pe->solver->getModel().getTemperature()
+					propertyExtractor->solver->getModel().getTemperature()
 				);
 			}
 
@@ -490,34 +491,69 @@ void Greens::calculateDensityCallback(
 			((SpinMatrix*)mag)[offset].at(n/2, n%2) += weight*(-i)*greensFunctionData[e]/M_PI*dE;
 		}
 	}
-}
+}*/
 
-void ChebyshevExpander::calculateLDOSCallback(
+void Greens::calculateLDOSCallback(
 	PropertyExtractor *cb_this,
 	void *ldos,
 	const Index &index,
 	int offset
 ){
-	ChebyshevExpander *pe = (ChebyshevExpander*)cb_this;
+	Greens *propertyExtractor = (Greens*)cb_this;
 
-	Property::GreensFunction greensFunction = pe->calculateGreensFunction(
+	const Property::GreensFunction &greensFunction
+		= propertyExtractor->solver->getGreensFunction();
+/*	Property::GreensFunction greensFunction = pe->calculateGreensFunction(
 		index,
 		index,
 		Property::GreensFunction::Type::NonPrincipal
 	);
 	const std::vector<complex<double>> &greensFunctionData
-		= greensFunction.getData();
+		= greensFunction.getData();*/
 
-	double lowerBound = pe->getLowerBound();
-	double upperBound = pe->getUpperBound();
-	int energyResolution = pe->getEnergyResolution();
+	switch(greensFunction.getType()){
+	case Property::GreensFunction::Type::Retarded:
+	{
+		double lowerBound = greensFunction.getLowerBound();
+		double upperBound = greensFunction.getUpperBound();
+		int energyResolution = greensFunction.getResolution();
 
-	const double dE = (upperBound - lowerBound)/energyResolution;
-	for(int n = 0; n < energyResolution; n++)
-		((double*)ldos)[offset + n] += imag(greensFunctionData[n])/M_PI*dE;
+		const double dE = (upperBound - lowerBound)/energyResolution;
+		for(int n = 0; n < energyResolution; n++)
+			((double*)ldos)[offset + n] -= imag(
+				greensFunction({index, index}, n)
+			)/M_PI*dE;
+
+		break;
+	}
+	case Property::GreensFunction::Type::Advanced:
+	case Property::GreensFunction::Type::NonPrincipal:
+	{
+		double lowerBound = greensFunction.getLowerBound();
+		double upperBound = greensFunction.getUpperBound();
+		int energyResolution = greensFunction.getResolution();
+
+		const double dE = (upperBound - lowerBound)/energyResolution;
+		for(int n = 0; n < energyResolution; n++)
+			((double*)ldos)[offset + n] += imag(
+				greensFunction({index, index}, n)
+			)/M_PI*dE;
+
+		break;
+	}
+	case Property::GreensFunction::Type::Principal:
+	default:
+		TBTKExit(
+			"PropertyExtractor::Greens::calculateDensityCallback()",
+			"Only calculation of the Density from the Retarded,"
+			<< " Advanced, and NonPrincipal Green's function"
+			<< " is supported yet.",
+			""
+		);
+	}
 }
 
-void ChebyshevExpander::calculateSP_LDOSCallback(
+/*void ChebyshevExpander::calculateSP_LDOSCallback(
 	PropertyExtractor *cb_this,
 	void *sp_ldos,
 	const Index &index,
