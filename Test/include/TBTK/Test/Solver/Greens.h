@@ -140,7 +140,7 @@ TEST(Greens, addSelfEnergy){
 			int column = 2*xp + yp;
 
 			referenceGreensFunction.at(row, column)
-				= x + y + xp + yp + e;
+				= -(double)(x + y + xp + yp + e);
 		}
 
 		//Subtract the Hamiltonian from the denominator of the

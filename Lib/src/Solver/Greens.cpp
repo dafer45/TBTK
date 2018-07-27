@@ -39,7 +39,7 @@ Property::GreensFunction Greens::calculateInteractingGreensFunction(
 	TBTKAssert(
 		greensFunction->getIndexDescriptor().getFormat()
 			== IndexDescriptor::Format::Custom,
-		"Solver::Greens::addSelfEnergy()",
+		"Solver::Greens::calculateInteractingGreensFunction()",
 		"The Green's function must be on the Custom format.",
 		"See Property::AbstractProperty for detailed information about"
 		<< " the storage formats. Also see the documentation for the"
@@ -50,7 +50,7 @@ Property::GreensFunction Greens::calculateInteractingGreensFunction(
 	TBTKAssert(
 		selfEnergy.getIndexDescriptor().getFormat()
 			== IndexDescriptor::Format::Custom,
-		"Solver::Greens::addSelfEnergy()",
+		"Solver::Greens::calculateInteractingGreensFunction()",
 		"The self-energy must be on the Custom format.",
 		"See Property::AbstractProperty for detailed information about"
 		<< " the storage formats. Also see the documentation for the"
@@ -60,14 +60,14 @@ Property::GreensFunction Greens::calculateInteractingGreensFunction(
 	);
 	TBTKAssert(
 		greensFunction->getEnergyType() == selfEnergy.getEnergyType(),
-		"Solver::GreensFunction::addSelfEnergy()",
+		"Solver::GreensFunction::calculateInteractingGreensFunction()",
 		"The GreensFunction and SelfEnergy must have the same energy"
 		<< " type.",
 		""
 	);
 
 	if(getGlobalVerbose() && getVerbose())
-		Streams::out << "Solver::Greens::addSelfEnergy()\n";
+		Streams::out << "Solver::Greens::calculateInteractingGreensFunction()\n";
 
 	//Get the Green's function and self-energy's  IndexTrees and the
 	//HoppingAmplitudeSet from the Model.
@@ -83,7 +83,7 @@ Property::GreensFunction Greens::calculateInteractingGreensFunction(
 	//not satisfied.
 	TBTKAssert(
 		greensFunctionIndices.equals(selfEnergyIndices),
-		"Solver::Greens::addSelfEnergy()",
+		"Solver::Greens::calculateInteractingGreensFunction()",
 		"Only GreensFunctions and SelfEnergies with the exact same"
 		<< " Index structure are supported yet.",
 		""
@@ -149,7 +149,7 @@ Property::GreensFunction Greens::calculateInteractingGreensFunction(
 					greensFunction->contains(
 						compoundIndex
 					),
-					"Solver::Greens::addSelfEnergy()",
+					"Solver::Greens::calculateInteractingGreensFunction()",
 					"Missing Index. The Index '"
 					<< compoundIndex.toString() << "' is"
 					<< " missing in the Green's function.",
@@ -170,7 +170,7 @@ Property::GreensFunction Greens::calculateInteractingGreensFunction(
 		//message if this is not fulfilled.
 		if(!isBlockRestricted){
 			TBTKExit(
-				"Greens::addSelfEnergy()",
+				"Greens::calculateInteractingGreensFunction()",
 				"Only Green's functions with Index pairs that are"
 				<< " restricted to intra block pairs are supported"
 				<< " yet.",
@@ -204,7 +204,7 @@ Property::GreensFunction Greens::calculateInteractingGreensFunction(
 					Index compoundIndex({*iterator0, *iterator1});
 					TBTKAssert(
 						greensFunction->contains(compoundIndex),
-						"Solver::Greens::addSelfEnergy()",
+						"Solver::Greens::calculateInteractingGreensFunction()",
 						"Missing Index. The Green's function"
 						<< " has at least one component in the"
 						<< " block '" << blockIndex.toString()
@@ -244,7 +244,7 @@ Property::GreensFunction Greens::calculateInteractingGreensFunction(
 		break;
 	default:
 		TBTKExit(
-			"Solver::GreensFunction::addSelfEnergy()",
+			"Solver::GreensFunction::calculateInteractingGreensFunction()",
 			"Unknown energy type",
 			"This should never happen, contact the developer."
 		);
@@ -311,7 +311,7 @@ Property::GreensFunction Greens::calculateInteractingGreensFunction(
 				){
 					Index compoundIndex = {*iterator0, *iterator1};
 
-					matrix.at(row, column) += selfEnergy(
+					matrix.at(row, column) -= selfEnergy(
 						compoundIndex,
 						n
 					);
@@ -423,7 +423,7 @@ Property::GreensFunction Greens::calculateInteractingGreensFunction(
 					){
 						Index compoundIndex = {*iterator0, *iterator1};
 
-						matrix.at(row, column) += selfEnergy(
+						matrix.at(row, column) -= selfEnergy(
 							compoundIndex,
 							n
 						);
