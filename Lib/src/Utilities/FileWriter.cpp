@@ -56,6 +56,13 @@ void FileWriter::init(){
 }
 
 void FileWriter::writeModel(const Model &model, string name, string path){
+	TBTKAssert(
+		path.compare("/") == 0,
+		"FileWriter::writeModel()",
+		"'path' not yet supported.",
+		"Only use the default path value \"/\"."
+	);
+
 	init();
 
 	stringstream ss;
@@ -89,6 +96,13 @@ void FileWriter::writeHoppingAmplitudeSet(
 	string name,
 	string path
 ){
+	TBTKAssert(
+		path.compare("/") == 0,
+		"FileWriter::writeHoppingAmplitudeSet()",
+		"'path' not yet supported.",
+		"Only use the default path value \"/\"."
+	);
+
 	init();
 
 	complex<double> *amplitudes;
@@ -170,6 +184,13 @@ void FileWriter::writeGeometry(
 	string name,
 	string path
 ){
+	TBTKAssert(
+		path.compare("/") == 0,
+		"FileWriter::writeGeometry()",
+		"'path' not yet supported.",
+		"Only use the default path value \"/\"."
+	);
+
 	init();
 
 	int dimensions = geometry.getDimensions();
@@ -253,6 +274,13 @@ void FileWriter::writeIndexTree(
 	string name,
 	string path
 ){
+	TBTKAssert(
+		path.compare("/") == 0,
+		"FileWriter::writeIndexTree()",
+		"'path' not yet supported.",
+		"Only use the default path value \"/\"."
+	);
+
 	init();
 
 	std::vector<int> serializedIndices;
@@ -327,6 +355,13 @@ void FileWriter::writeEigenValues(
 	string name,
 	string path
 ){
+	TBTKAssert(
+		path.compare("/") == 0,
+		"FileWriter::writeEigenValues()",
+		"'path' not yet supported.",
+		"Only use the default path value \"/\"."
+	);
+
 	init();
 
 	const int RANK = 1;
@@ -385,6 +420,13 @@ void FileWriter::writeWaveFunctions(
 	string name,
 	string path
 ){
+	TBTKAssert(
+		path.compare("/") == 0,
+		"FileWriter::writeWaveFunctions()",
+		"'path' not yet supported.",
+		"Only use the default path value \"/\"."
+	);
+
 	init();
 
 	int attributes[2];
@@ -437,6 +479,13 @@ void FileWriter::writeWaveFunctions(
 }
 
 void FileWriter::writeDOS(const Property::DOS &dos, string name, string path){
+	TBTKAssert(
+		path.compare("/") == 0,
+		"FileWriter::writeDOS()",
+		"'path' not yet supported.",
+		"Only use the default path value \"/\"."
+	);
+
 	init();
 
 	const int DOS_RANK = 1;
@@ -510,6 +559,13 @@ void FileWriter::writeDensity(
 	string name,
 	string path
 ){
+	TBTKAssert(
+		path.compare("/") == 0,
+		"FileWriter::writeDensity()",
+		"'path' not yet supported.",
+		"Only use the default path value \"/\"."
+	);
+
 	init();
 
 	int attributes[1];
@@ -612,6 +668,13 @@ void FileWriter::writeMagnetization(
 	string name,
 	string path
 ){
+	TBTKAssert(
+		path.compare("/") == 0,
+		"FileWriter::writeMagnetization()",
+		"'path' not yet supported.",
+		"Only use the default path value \"/\"."
+	);
+
 	init();
 
 	int attributes[1];
@@ -744,6 +807,13 @@ void FileWriter::writeLDOS(
 	string name,
 	string path
 ){
+	TBTKAssert(
+		path.compare("/") == 0,
+		"FileWriter::writeLDOS()",
+		"'path' not yet supported.",
+		"Only use the default path value \"/\"."
+	);
+
 	init();
 
 	int intAttributes[2];
@@ -886,6 +956,13 @@ void FileWriter::writeSpinPolarizedLDOS(
 	string name,
 	string path
 ){
+	TBTKAssert(
+		path.compare("/") == 0,
+		"FileWriter::writeSpinPolarizedLDOS()",
+		"'path' not yet supported.",
+		"Only use the default path value \"/\"."
+	);
+
 	init();
 
 	int intAttributes[2];
@@ -1056,6 +1133,13 @@ void FileWriter::write(
 	string name,
 	string path
 ){
+	TBTKAssert(
+		path.compare("/") == 0,
+		"FileWriter::write()",
+		"'path' not yet supported.",
+		"Only use the default path value \"/\"."
+	);
+
 	init();
 
 	hsize_t data_dims[rank];
@@ -1113,6 +1197,13 @@ void FileWriter::write(
 	string name,
 	string path
 ){
+	TBTKAssert(
+		path.compare("/") == 0,
+		"FileWriter::write()",
+		"'path' not yet supported.",
+		"Only use the default path value \"/\"."
+	);
+
 	init();
 
 	hsize_t data_dims[rank];
@@ -1170,6 +1261,13 @@ void FileWriter::write(
 	string name,
 	string path
 ){
+	TBTKAssert(
+		path.compare("/") == 0,
+		"FileWriter::write()",
+		"'path' not yet supported.",
+		"Only use the default path value \"/\"."
+	);
+
 	unsigned int size = 1;
 	for(unsigned int n = 0; n < (unsigned int)rank; n++)
 		size *= dims[n];
@@ -1199,6 +1297,13 @@ void FileWriter::writeAttributes(
 	string name,
 	string path
 ){
+	TBTKAssert(
+		path.compare("/") == 0,
+		"FileWriter::writeAttributes()",
+		"'path' not yet supported.",
+		"Only use the default path value \"/\"."
+	);
+
 	init();
 
 	const int ATTRIBUTES_RANK = 1;
@@ -1260,6 +1365,13 @@ void FileWriter::writeAttributes(
 	string name,
 	string path
 ){
+	TBTKAssert(
+		path.compare("/") == 0,
+		"FileWriter::writeAttributes()",
+		"'path' not yet supported.",
+		"Only use the default path value \"/\"."
+	);
+
 	init();
 
 	const int ATTRIBUTES_RANK = 1;
@@ -1327,6 +1439,13 @@ void FileWriter::writeParameterSet(
 	std::string name,
 	std::string path
 ){
+	TBTKAssert(
+		path.compare("/") == 0,
+		"FileWriter::writeParameterSet()",
+		"'path' not yet supported.",
+		"Only use the default path value \"/\"."
+	);
+
 	init();
 
 	const int ATTRIBUTES_RANK = 0;
