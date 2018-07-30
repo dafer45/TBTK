@@ -5,7 +5,7 @@
 #include "TBTK/FockStateRuleSet.h"
 #include "TBTK/InteractionAmplitudeSet.h"
 #include "TBTK/Model.h"
-#include "TBTK/ManyBodyContext.h"
+#include "TBTK/ManyParticleContext.h"
 #include "TBTK/Solver/Solver.h"
 #include "TBTK/WrapperRule.h"
 
@@ -86,8 +86,8 @@ private:
 		FockStateRuleSet fockStateRuleSet;
 
 		/** Pointer to many-body model. */
-//		Model *manyBodyModel;
-		std::shared_ptr<Model> manyBodyModel;
+//		Model *manyParticleModel;
+		std::shared_ptr<Model> manyParticleModel;
 
 		/** Pointer to diagonalization solver. */
 //		Diagonalizer *dSolver;
@@ -99,11 +99,11 @@ private:
 	std::vector<SubspaceContext> subspaceContexts;
 
 	/** Setup many-body mapping. */
-	void setupManyBodyModel(unsigned int subspace);
+	void setupManyParticleModel(unsigned int subspace);
 
 	/** Setup many-body model. */
 	template<typename BIT_REGISTER>
-	void setupManyBodyModel(unsigned int subspace);
+	void setupManyParticleModel(unsigned int subspace);
 };
 
 inline const double* ExactDiagonalizer::getEigenValues(unsigned int subspace){

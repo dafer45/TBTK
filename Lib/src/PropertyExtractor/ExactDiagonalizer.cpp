@@ -111,14 +111,14 @@ Property::GreensFunction* ExactDiagonalizer::calculateGreensFunction(
 		break;
 	}
 
-	ManyBodyContext *manyBodyContext = edSolver->getModel().getManyBodyContext();
+	ManyParticleContext *manyParticleContext = edSolver->getModel().getManyParticleContext();
 
-	const FockStateRuleSet ruleSet0 = manyBodyContext->getFockStateRuleSet();
+	const FockStateRuleSet ruleSet0 = manyParticleContext->getFockStateRuleSet();
 	unsigned int subspaceID0 = edSolver->addSubspace(ruleSet0);
 
 	unsigned int subspaceID1;
-	if(manyBodyContext->wrapsBitRegister()){
-		const FockSpace<BitRegister> *fockSpace = manyBodyContext->getFockSpaceBitRegister();
+	if(manyParticleContext->wrapsBitRegister()){
+		const FockSpace<BitRegister> *fockSpace = manyParticleContext->getFockSpaceBitRegister();
 		const HoppingAmplitudeSet *hoppingAmplitudeSet = fockSpace->getHoppingAmplitudeSet();
 		LadderOperator<BitRegister> **operators = fockSpace->getOperators();
 		LadderOperator<BitRegister> *fromOperator;
@@ -214,8 +214,8 @@ Property::GreensFunction* ExactDiagonalizer::calculateGreensFunction(
 
 		return greensFunction;
 	}
-	else if(manyBodyContext->wrapsExtensiveBitRegister()){
-		const FockSpace<ExtensiveBitRegister> *fockSpace = manyBodyContext->getFockSpaceExtensiveBitRegister();
+	else if(manyParticleContext->wrapsExtensiveBitRegister()){
+		const FockSpace<ExtensiveBitRegister> *fockSpace = manyParticleContext->getFockSpaceExtensiveBitRegister();
 		const HoppingAmplitudeSet *hoppingAmplitudeSet = fockSpace->getHoppingAmplitudeSet();
 		LadderOperator<ExtensiveBitRegister> **operators = fockSpace->getOperators();
 		LadderOperator<ExtensiveBitRegister> *fromOperator;

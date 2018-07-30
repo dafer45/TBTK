@@ -8,9 +8,9 @@ FILE(
 	Lattice/*.cpp
 	Lattice/D2/*.cpp
 	Lattice/D3/*.cpp
-	ManyBody/*.cpp
-	ManyBody/FockStateMap/*.cpp
-	ManyBody/FockStateRule/*.cpp
+	ManyParticle/*.cpp
+	ManyParticle/FockStateMap/*.cpp
+	ManyParticle/FockStateRule/*.cpp
 	Property/*.cpp
 	PropertyExtractor/*.cpp
 #	PropertyExtractors/ArnoldiIterator/*.cpp

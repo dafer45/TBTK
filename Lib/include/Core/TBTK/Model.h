@@ -31,7 +31,7 @@
 #include "TBTK/HoppingAmplitudeSet.h"
 #include "TBTK/IndexBasedHoppingAmplitudeFilter.h"
 #include "TBTK/SingleParticleContext.h"
-#include "TBTK/ManyBodyContext.h"
+#include "TBTK/ManyParticleContext.h"
 #include "TBTK/Serializable.h"
 #include "TBTK/Statistics.h"
 
@@ -74,7 +74,7 @@ public:
 	Model(Model &&model);
 
 	/** Constructor. Constructs the Model from a serialization string. Note
-	 *  that the ManyBodyContext is not yet serialized.
+	 *  that the ManyParticleContext is not yet serialized.
 	 *
 	 *  @param serialization Serialization string from which to construct
 	 *  the Index.
@@ -210,13 +210,13 @@ public:
 	 *  @return Pointer to the contained Geometry. */
 	const Geometry* getGeometry() const;
 
-	/** Create ManyBodyContext. */
-	void createManyBodyContext();
+	/** Create ManyParticleContext. */
+	void createManyParticleContext();
 
-	/** Get ManyBodyContext.
+	/** Get ManyParticleContext.
 	 *
-	 *  @return Pointer to the contained ManyBodyContext. */
-	ManyBodyContext* getManyBodyContext();
+	 *  @return Pointer to the contained ManyParticleContext. */
+	ManyParticleContext* getManyParticleContext();
 
 	/** Set a HoppingAmplitudeFilter. The HoppingAmplitudeFilter will be
 	 *  used by the Model to determine whether a given HoppingAmplitude
@@ -260,7 +260,7 @@ public:
 	Model& operator<<(const SourceAmplitude& sourceAmplitude);
 
 	/** Implements Serializable::serialize(). Note that the
-	 *  ManyBodyContext is not yet serialized. */
+	 *  ManyParticleContext is not yet serialized. */
 	std::string serialize(Mode mode) const;
 private:
 	/** Temperature. */
@@ -273,7 +273,7 @@ private:
 	SingleParticleContext *singleParticleContext;
 
 	/** Many-body context. */
-	ManyBodyContext *manyBodyContext;
+	ManyParticleContext *manyParticleContext;
 
 	/** Index filter. */
 	AbstractIndexFilter *indexFilter;
@@ -361,12 +361,12 @@ inline const Geometry* Model::getGeometry() const{
 	return singleParticleContext->getGeometry();
 }
 
-inline void Model::createManyBodyContext(){
-	manyBodyContext = new ManyBodyContext(singleParticleContext);
+inline void Model::createManyParticleContext(){
+	manyParticleContext = new ManyParticleContext(singleParticleContext);
 }
 
-inline ManyBodyContext* Model::getManyBodyContext(){
-	return manyBodyContext;
+inline ManyParticleContext* Model::getManyParticleContext(){
+	return manyParticleContext;
 }
 
 inline void Model::setFilter(

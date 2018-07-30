@@ -13,20 +13,20 @@
  * limitations under the License.
  */
 
-/** @file ManyBodyContext.cpp
+/** @file ManyParticleContext.cpp
  *
  *  @author Kristofer Björnson
  */
 
-#include "TBTK/ManyBodyContext.h"
+#include "TBTK/ManyParticleContext.h"
 #include "TBTK/Streams.h"
 
 using namespace std;
 
 namespace TBTK{
 
-//ManyBodyContext::ManyBodyContext(FockSpace<BitRegister> *fockSpace
-ManyBodyContext::ManyBodyContext(const SingleParticleContext *singleParticleContext
+//ManyParticleContext::ManyParticleContext(FockSpace<BitRegister> *fockSpace
+ManyParticleContext::ManyParticleContext(const SingleParticleContext *singleParticleContext
 ) :
 /*	brFockSpace(fockSpace),
 	ebrFockSpace(NULL),
@@ -64,7 +64,7 @@ ManyBodyContext::ManyBodyContext(const SingleParticleContext *singleParticleCont
 	);
 }
 
-/*ManyBodyContext::ManyBodyContext(FockSpace<ExtensiveBitRegister> *fockSpace
+/*ManyParticleContext::ManyParticleContext(FockSpace<ExtensiveBitRegister> *fockSpace
 ) :
 	brFockSpace(NULL),
 	ebrFockSpace(fockSpace),
@@ -72,7 +72,7 @@ ManyBodyContext::ManyBodyContext(const SingleParticleContext *singleParticleCont
 {
 }*/
 
-ManyBodyContext::~ManyBodyContext(){
+ManyParticleContext::~ManyParticleContext(){
 /*	if(brFockSpace != NULL)
 		delete brFockSpace;
 

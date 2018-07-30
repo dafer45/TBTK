@@ -40,7 +40,7 @@ Model::Model() : Communicator(true){
 	chemicalPotential = 0.;
 
 	singleParticleContext = new SingleParticleContext();
-	manyBodyContext = NULL;
+	manyParticleContext = NULL;
 	indexFilter = nullptr;
 	hoppingAmplitudeFilter = nullptr;
 }
@@ -50,7 +50,7 @@ Model::Model(const vector<unsigned int> &capacity) : Communicator(true){
 	chemicalPotential = 0.;
 
 	singleParticleContext = new SingleParticleContext(capacity);
-	manyBodyContext = NULL;
+	manyParticleContext = NULL;
 	indexFilter = nullptr;
 	hoppingAmplitudeFilter = nullptr;
 }
@@ -62,12 +62,12 @@ Model::Model(const Model &model) : Communicator(model){
 	singleParticleContext = new SingleParticleContext(
 		*model.singleParticleContext
 	);
-	if(model.manyBodyContext == nullptr){
-		manyBodyContext = nullptr;
+	if(model.manyParticleContext == nullptr){
+		manyParticleContext = nullptr;
 	}
 	else{
-		manyBodyContext = new ManyBodyContext(
-			*model.manyBodyContext
+		manyParticleContext = new ManyParticleContext(
+			*model.manyParticleContext
 		);
 	}
 
@@ -88,8 +88,8 @@ Model::Model(Model &&model) : Communicator(std::move(model)){
 
 	singleParticleContext = model.singleParticleContext;
 	model.singleParticleContext = nullptr;
-	manyBodyContext = model.manyBodyContext;
-	model.manyBodyContext = nullptr;
+	manyParticleContext = model.manyParticleContext;
+	model.manyParticleContext = nullptr;
 
 	indexFilter = model.indexFilter;
 	model.indexFilter = nullptr;
@@ -120,7 +120,7 @@ Model::Model(const string &serialization, Mode mode) : Communicator(true){
 			mode
 		);
 
-		manyBodyContext = nullptr;
+		manyParticleContext = nullptr;
 
 		indexFilter = nullptr;
 		hoppingAmplitudeFilter = nullptr;
@@ -140,7 +140,7 @@ Model::Model(const string &serialization, Mode mode) : Communicator(true){
 				mode
 			);
 
-			manyBodyContext = nullptr;
+			manyParticleContext = nullptr;
 
 			indexFilter = nullptr;
 			hoppingAmplitudeFilter = nullptr;
@@ -168,8 +168,8 @@ Model::Model(const string &serialization, Mode mode) : Communicator(true){
 Model::~Model(){
 	if(singleParticleContext != nullptr)
 		delete singleParticleContext;
-	if(manyBodyContext != nullptr)
-		delete manyBodyContext;
+	if(manyParticleContext != nullptr)
+		delete manyParticleContext;
 	if(indexFilter != nullptr)
 		delete indexFilter;
 	if(hoppingAmplitudeFilter != nullptr)
@@ -187,14 +187,14 @@ Model& Model::operator=(const Model &rhs){
 			*rhs.singleParticleContext
 		);
 
-		if(manyBodyContext != nullptr)
-			delete manyBodyContext;
-		if(rhs.manyBodyContext == nullptr){
-			manyBodyContext = nullptr;
+		if(manyParticleContext != nullptr)
+			delete manyParticleContext;
+		if(rhs.manyParticleContext == nullptr){
+			manyParticleContext = nullptr;
 		}
 		else{
-			manyBodyContext = new ManyBodyContext(
-				*rhs.manyBodyContext
+			manyParticleContext = new ManyParticleContext(
+				*rhs.manyParticleContext
 			);
 		}
 
@@ -231,10 +231,10 @@ Model& Model::operator=(Model &&rhs){
 		singleParticleContext = rhs.singleParticleContext;
 		rhs.singleParticleContext = nullptr;
 
-		if(manyBodyContext != nullptr)
-			delete manyBodyContext;
-		manyBodyContext = rhs.manyBodyContext;
-		rhs.manyBodyContext = nullptr;
+		if(manyParticleContext != nullptr)
+			delete manyParticleContext;
+		manyParticleContext = rhs.manyParticleContext;
+		rhs.manyParticleContext = nullptr;
 
 		if(indexFilter != nullptr)
 			delete indexFilter;

@@ -204,9 +204,9 @@ INCLUDE_DIRECTORIES(
 #	Lib/include/Lattices/
 #	Lib/include/Lattices/D2/
 #	Lib/include/Lattices/D3/
-	Lib/include/ManyBody/
-	Lib/include/ManyBody/TBTK/FockStateMap/
-	Lib/include/ManyBody/TBTK/FockStateRule/
+	Lib/include/ManyParticle/
+	Lib/include/ManyParticle/TBTK/FockStateMap/
+	Lib/include/ManyParticle/TBTK/FockStateRule/
 #	Lib/include/Properties/
 #	Lib/include/PropertyExtractors/
 #	Lib/include/Solvers/

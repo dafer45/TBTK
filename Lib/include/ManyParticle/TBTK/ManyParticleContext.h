@@ -14,15 +14,15 @@
  */
 
 /** @package TBTKcalc
- *  @file ManyBodyContext.h
- *  @brief Many-body context.
+ *  @file ManyParticleContext.h
+ *  @brief Many-particle context.
  *
  *  @author Kristofer Björnson
  */
 
 
-#ifndef COM_DAFER45_TBTK_MANY_BODY_CONTEXT
-#define COM_DAFER45_TBTK_MANY_BODY_CONTEXT
+#ifndef COM_DAFER45_TBTK_MANY_PARTICLE_CONTEXT
+#define COM_DAFER45_TBTK_MANY_PARTICLE_CONTEXT
 
 #include "TBTK/BitRegister.h"
 #include "TBTK/ExtensiveBitRegister.h"
@@ -35,19 +35,21 @@
 
 namespace TBTK{
 
-class ManyBodyContext{
+class ManyParticleContext{
 public:
-	/** Constructor. The ManyBodyContext assumes ownership of the
+	/** Constructor. The ManyParticleContext assumes ownership of the
 	 *  FockSpace and will destroy it at destrucion. */
-//	ManyBodyContext(FockSpace<BitRegister> *fockSpace);
-	ManyBodyContext(const SingleParticleContext *singleParticleContext);
+//	ManyParticleContext(FockSpace<BitRegister> *fockSpace);
+	ManyParticleContext(
+		const SingleParticleContext *singleParticleContext
+	);
 
-	/** Constructor. The ManyBodyContext assumes ownership of the
+	/** Constructor. The ManyParticleContext assumes ownership of the
 	 *  FockSpace and will destroy it at destrucion. */
-//	ManyBodyContext(FockSpace<ExtensiveBitRegister> *fockSpace);
+//	ManyParticleContext(FockSpace<ExtensiveBitRegister> *fockSpace);
 
 	/** Destructor. */
-	~ManyBodyContext();
+	~ManyParticleContext();
 
 	/** Returns true if the wrapped FockState is of type BitRegister. */
 	bool wrapsBitRegister();
@@ -90,41 +92,41 @@ private:
 	std::shared_ptr<InteractionAmplitudeSet> interactionAmplitudeSet;
 };
 
-inline bool ManyBodyContext::wrapsBitRegister(){
+inline bool ManyParticleContext::wrapsBitRegister(){
 	if(brFockSpace.get() != NULL)
 		return true;
 	else
 		return false;
 }
 
-inline bool ManyBodyContext::wrapsExtensiveBitRegister(){
+inline bool ManyParticleContext::wrapsExtensiveBitRegister(){
 	if(ebrFockSpace.get() != NULL)
 		return true;
 	else
 		return false;
 }
 
-inline FockSpace<BitRegister>* ManyBodyContext::getFockSpaceBitRegister(){
+inline FockSpace<BitRegister>* ManyParticleContext::getFockSpaceBitRegister(){
 	return brFockSpace.get();
 }
 
-inline FockSpace<ExtensiveBitRegister>* ManyBodyContext::getFockSpaceExtensiveBitRegister(){
+inline FockSpace<ExtensiveBitRegister>* ManyParticleContext::getFockSpaceExtensiveBitRegister(){
 	return ebrFockSpace.get();
 }
 
-inline void ManyBodyContext::addFockStateRule(const FockStateRule::WrapperRule rule){
+inline void ManyParticleContext::addFockStateRule(const FockStateRule::WrapperRule rule){
 	fockStateRuleSet.addFockStateRule(rule);
 }
 
-inline void ManyBodyContext::addIA(InteractionAmplitude ia){
+inline void ManyParticleContext::addIA(InteractionAmplitude ia){
 	interactionAmplitudeSet.get()->addIA(ia);
 }
 
-inline const InteractionAmplitudeSet* ManyBodyContext::getInteractionAmplitudeSet() const{
+inline const InteractionAmplitudeSet* ManyParticleContext::getInteractionAmplitudeSet() const{
 	return interactionAmplitudeSet.get();
 }
 
-inline const FockStateRuleSet& ManyBodyContext::getFockStateRuleSet() const{
+inline const FockStateRuleSet& ManyParticleContext::getFockStateRuleSet() const{
 	return fockStateRuleSet;
 }
 
