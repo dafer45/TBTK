@@ -33,7 +33,7 @@
 #include "TBTK/Property/SpinPolarizedLDOS.h"
 
 #include <complex>
-#include <initializer_list>
+//#include <initializer_list>
 
 namespace TBTK{
 namespace PropertyExtractor{
@@ -112,7 +112,8 @@ public:
 	 *  @return A Property::Density for the @link Index Indices @endlink
 	 *  that match the patterns. */
 	virtual Property::Density calculateDensity(
-		std::initializer_list<Index> patterns
+//		std::initializer_list<Index> patterns
+		std::vector<Index> patterns
 	);
 
 	/** Calculate the magnetization. This function should be overriden by
@@ -168,7 +169,8 @@ public:
 	 *  @return A Property::Magnetization for the @link Index Indices
 	 *  @endlink that match the patterns. */
 	virtual Property::Magnetization calculateMagnetization(
-		std::initializer_list<Index> patterns
+//		std::initializer_list<Index> patterns
+		std::vector<Index> patterns
 	);
 
 	/** Calculate the local density of states. This function should be
@@ -213,7 +215,8 @@ public:
 	 *  @return A Property::LDOS for the @link Index Indices @endlink that
 	 *  match the patterns. */
 	virtual Property::LDOS calculateLDOS(
-		std::initializer_list<Index> patterns
+//		std::initializer_list<Index> patterns
+		std::vector<Index> patterns
 	);
 
 	/** Calculate the spin-polarized local density of states. This function
@@ -278,7 +281,8 @@ public:
 	 *  @return A Property::SpinPolarizedLDOS for the @link Index Indices
 	 *  @endlink that match the patterns. */
 	virtual Property::SpinPolarizedLDOS calculateSpinPolarizedLDOS(
-		std::initializer_list<Index> patterns
+//		std::initializer_list<Index> patterns
+		std::vector<Index> patterns
 	);
 
 	/** Calculate the expectation value \f$\langle

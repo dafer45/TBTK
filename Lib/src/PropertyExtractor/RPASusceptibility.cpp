@@ -101,7 +101,8 @@ void RPASusceptibility::setEnergyWindow(
 }
 
 Property::Susceptibility RPASusceptibility::calculateChargeSusceptibility(
-	std::initializer_list<Index> patterns
+//	std::initializer_list<Index> patterns
+	vector<Index> patterns
 ){
 	//Calculate allIndices.
 	IndexTree allIndices;
@@ -488,7 +489,8 @@ Property::Susceptibility RPASusceptibility::calculateChargeSusceptibility(
 }
 
 Property::Susceptibility RPASusceptibility::calculateSpinSusceptibility(
-	std::initializer_list<Index> patterns
+//	std::initializer_list<Index> patterns
+	vector<Index> patterns
 ){
 	//Calculate allIndices.
 	IndexTree allIndices;

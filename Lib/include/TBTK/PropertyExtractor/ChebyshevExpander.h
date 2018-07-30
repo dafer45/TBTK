@@ -31,7 +31,7 @@
 #include "TBTK/Property/SpinPolarizedLDOS.h"
 #include "TBTK/PropertyExtractor/PropertyExtractor.h"
 
-#include <initializer_list>
+//#include <initializer_list>
 #include <iostream>
 
 namespace TBTK{
@@ -69,7 +69,8 @@ public:
 
 	/** Calculate Green's function for a range of 'to'-indices. */
 	Property::GreensFunction calculateGreensFunction(
-		std::initializer_list<std::initializer_list<Index>> patterns,
+//		std::initializer_list<std::initializer_list<Index>> patterns,
+		std::vector<std::vector<Index>> patterns,
 		Property::GreensFunction::Type type = Property::GreensFunction::Type::Retarded
 	);
 
@@ -95,7 +96,8 @@ public:
 
 	/** Overrides PropertyExtractor::calculateDensity(). */
 	virtual Property::Density calculateDensity(
-		std::initializer_list<Index> patterns
+//		std::initializer_list<Index> patterns
+		std::vector<Index> patterns
 	);
 
 	/** Overrides PropertyExtractor::calculateMagnetization(). */
@@ -106,7 +108,8 @@ public:
 
 	/** Overrides PropertyExtractor::calculateMagnetization(). */
 	virtual Property::Magnetization calculateMagnetization(
-		std::initializer_list<Index> patterns
+//		std::initializer_list<Index> patterns
+		std::vector<Index> patterns
 	);
 
 	/** Overrides PropertyExtractor::calculateLDOS(). */
@@ -114,7 +117,8 @@ public:
 
 	/** Overrides PropertyExtractor::calculateLDOS(). */
 	virtual Property::LDOS calculateLDOS(
-		std::initializer_list<Index> pattern
+//		std::initializer_list<Index> pattern
+		std::vector<Index> patterns
 	);
 
 	/** Overrides PropertyExtractor::calculateSpinPolarizedLDOS(). */
@@ -125,7 +129,8 @@ public:
 
 	/** Overrides PropertyExtractor::calculateSpinPolarizedLDOS(). */
 	virtual Property::SpinPolarizedLDOS calculateSpinPolarizedLDOS(
-		std::initializer_list<Index> pattern
+//		std::initializer_list<Index> pattern
+		std::vector<Index> patterns
 	);
 private:
 	/** ChebyshevExpander to work on. */

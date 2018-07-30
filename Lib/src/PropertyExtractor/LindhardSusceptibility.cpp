@@ -98,7 +98,8 @@ void LindhardSusceptibility::setEnergyWindow(
 }
 
 Property::Susceptibility LindhardSusceptibility::calculateSusceptibility(
-	std::initializer_list<Index> patterns
+//	std::initializer_list<Index> patterns
+	vector<Index> patterns
 ){
 	//Calculate allIndices.
 	IndexTree allIndices;

@@ -78,7 +78,8 @@ Property::Density Greens::calculateDensity(
 }
 
 Property::Density Greens::calculateDensity(
-	std::initializer_list<Index> patterns
+//	std::initializer_list<Index> patterns
+	vector<Index> patterns
 ){
 	IndexTree allIndices = generateIndexTree(
 		patterns,
@@ -214,7 +215,8 @@ Property::LDOS Greens::calculateLDOS(Index pattern, Index ranges){
 }*/
 
 Property::LDOS Greens::calculateLDOS(
-	std::initializer_list<Index> patterns
+//	std::initializer_list<Index> patterns
+	vector<Index> patterns
 ){
 	IndexTree allIndices = generateIndexTree(
 		patterns,

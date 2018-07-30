@@ -31,7 +31,7 @@
 #include "TBTK/Property/SpinPolarizedLDOS.h"
 #include "TBTK/PropertyExtractor/PropertyExtractor.h"
 
-#include <initializer_list>
+//#include <initializer_list>
 #include <iostream>
 
 namespace TBTK{
@@ -67,7 +67,8 @@ public:
 
 	/** Overrides PropertyExtractor::calculateDensity(). */
 	virtual Property::Density calculateDensity(
-		std::initializer_list<Index> patterns
+//		std::initializer_list<Index> patterns
+		std::vector<Index> patterns
 	);
 
 	/** Overrides PropertyExtractor::calculateMagnetization(). */
@@ -86,7 +87,8 @@ public:
 
 	/** Overrides PropertyExtractor::calculateLDOS(). */
 	virtual Property::LDOS calculateLDOS(
-		std::initializer_list<Index> pattern
+//		std::initializer_list<Index> pattern
+		std::vector<Index> patterns
 	);
 
 	/** Overrides PropertyExtractor::calculateSpinPolarizedLDOS(). */

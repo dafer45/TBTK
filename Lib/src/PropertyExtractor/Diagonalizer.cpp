@@ -79,7 +79,8 @@ Property::EigenValues Diagonalizer::getEigenValues(){
 }
 
 Property::WaveFunctions Diagonalizer::calculateWaveFunctions(
-	initializer_list<Index> patterns,
+//	initializer_list<Index> patterns,
+	vector<Index> patterns,
 	vector<int> states
 ){
 	IndexTree allIndices = generateIndexTree(
@@ -317,7 +318,8 @@ Property::Density Diagonalizer::calculateDensity(
 }
 
 Property::Density Diagonalizer::calculateDensity(
-	initializer_list<Index> patterns
+//	initializer_list<Index> patterns
+	vector<Index> patterns
 ){
 	IndexTree allIndices = generateIndexTree(
 		patterns,
@@ -390,7 +392,8 @@ Property::Magnetization Diagonalizer::calculateMagnetization(
 }
 
 Property::Magnetization Diagonalizer::calculateMagnetization(
-	std::initializer_list<Index> patterns
+//	std::initializer_list<Index> patterns
+	vector<Index> patterns
 ){
 	IndexTree allIndices = generateIndexTree(
 		patterns,
@@ -461,7 +464,8 @@ Property::LDOS Diagonalizer::calculateLDOS(
 }
 
 Property::LDOS Diagonalizer::calculateLDOS(
-	std::initializer_list<Index> patterns
+//	std::initializer_list<Index> patterns
+	vector<Index> patterns
 ){
 	double lowerBound = getLowerBound();
 	double upperBound = getUpperBound();
@@ -580,7 +584,8 @@ Property::SpinPolarizedLDOS Diagonalizer::calculateSpinPolarizedLDOS(
 }
 
 Property::SpinPolarizedLDOS Diagonalizer::calculateSpinPolarizedLDOS(
-	std::initializer_list<Index> patterns
+//	std::initializer_list<Index> patterns
+	vector<Index> patterns
 ){
 	double lowerBound = getLowerBound();
 	double upperBound = getUpperBound();

@@ -51,8 +51,10 @@ Property::EigenValues ArnoldiIterator::getEigenValues(){
 }
 
 Property::WaveFunctions ArnoldiIterator::calculateWaveFunctions(
-	initializer_list<Index> patterns,
-	initializer_list<int> states
+//	initializer_list<Index> patterns,
+	vector<Index> patterns,
+//	initializer_list<int> states
+	vector<int> states
 ){
 	IndexTree allIndices = generateIndexTree(
 		patterns,
@@ -219,7 +221,8 @@ Property::LDOS ArnoldiIterator::calculateLDOS(
 }
 
 Property::LDOS ArnoldiIterator::calculateLDOS(
-	initializer_list<Index> patterns
+//	initializer_list<Index> patterns
+	vector<Index> patterns
 ){
 	TBTKAssert(
 		aSolver->getCalculateEigenVectors(),
@@ -353,7 +356,8 @@ Property::SpinPolarizedLDOS ArnoldiIterator::calculateSpinPolarizedLDOS(
 }
 
 Property::SpinPolarizedLDOS ArnoldiIterator::calculateSpinPolarizedLDOS(
-	initializer_list<Index> patterns
+//	initializer_list<Index> patterns
+	vector<Index> patterns
 ){
 	TBTKAssert(
 		aSolver->getCalculateEigenVectors(),

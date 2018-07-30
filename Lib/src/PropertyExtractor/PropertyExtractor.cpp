@@ -63,7 +63,8 @@ Property::Density PropertyExtractor::calculateDensity(
 }
 
 Property::Density PropertyExtractor::calculateDensity(
-	initializer_list<Index> patterns
+//	initializer_list<Index> patterns
+	vector<Index> patterns
 ){
 	TBTKExit(
 		"PropertyExtractor::calculateDensity()",
@@ -84,7 +85,8 @@ Property::Magnetization PropertyExtractor::calculateMagnetization(
 }
 
 Property::Magnetization PropertyExtractor::calculateMagnetization(
-	initializer_list<Index> patterns
+//	initializer_list<Index> patterns
+	vector<Index> patterns
 ){
 	TBTKExit(
 		"PropertyExtractor::calculateMagnetization()",
@@ -105,7 +107,8 @@ Property::LDOS PropertyExtractor::calculateLDOS(
 }
 
 Property::LDOS PropertyExtractor::calculateLDOS(
-	initializer_list<Index>	pattern
+//	initializer_list<Index>	pattern
+	vector<Index> patterns
 ){
 	TBTKExit(
 		"PropertyExtractor::calculateLDOS()",
@@ -126,7 +129,8 @@ Property::SpinPolarizedLDOS PropertyExtractor::calculateSpinPolarizedLDOS(
 }
 
 Property::SpinPolarizedLDOS PropertyExtractor::calculateSpinPolarizedLDOS(
-	initializer_list<Index> pattern
+//	initializer_list<Index> pattern
+	vector<Index> patterns
 ){
 	TBTKExit(
 		"PropertyExtractor::calculateSpinPolarizedLDOS()",

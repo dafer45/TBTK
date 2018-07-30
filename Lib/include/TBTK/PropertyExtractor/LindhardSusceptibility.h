@@ -29,7 +29,7 @@
 #include "TBTK/PropertyExtractor/PropertyExtractor.h"
 
 #include <complex>
-#include <initializer_list>
+//#include <initializer_list>
 
 namespace TBTK{
 namespace PropertyExtractor{
@@ -62,7 +62,8 @@ public:
 
 	/** Calculates the Susceptibility. */
 	virtual Property::Susceptibility calculateSusceptibility(
-		std::initializer_list<Index> patterns
+//		std::initializer_list<Index> patterns
+		std::vector<Index> patterns
 	);
 private:
 	/** Calback for callculating susceptibility. */

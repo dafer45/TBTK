@@ -99,7 +99,8 @@ void ElectronFluctuationVertex::setEnergyWindow(
 }
 
 Property::InteractionVertex ElectronFluctuationVertex::calculateInteractionVertex(
-	std::initializer_list<Index> patterns
+//	std::initializer_list<Index> patterns
+	vector<Index> patterns
 ){
 	//Calculate allIndices.
 	IndexTree allIndices;

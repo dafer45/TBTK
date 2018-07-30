@@ -33,7 +33,7 @@
 #include "TBTK/PropertyExtractor/PropertyExtractor.h"
 
 #include <complex>
-#include <initializer_list>
+//#include <initializer_list>
 
 namespace TBTK{
 namespace PropertyExtractor{
@@ -65,8 +65,10 @@ public:
 
 	/** Calculate wave function. */
 	Property::WaveFunctions calculateWaveFunctions(
-		std::initializer_list<Index> patterns,
-		std::initializer_list<int> states
+//		std::initializer_list<Index> patterns,
+		std::vector<Index> patterns,
+//		std::initializer_list<int> states
+		std::vector<int> states
 	);
 
 	/** Calculate Green's function. */
@@ -87,7 +89,8 @@ public:
 
 	/** Overrides PropertyExtractor::calculateLDOS(). */
 	virtual Property::LDOS calculateLDOS(
-		std::initializer_list<Index> patterns
+//		std::initializer_list<Index> patterns
+		std::vector<Index> patterns
 	);
 
 	/** Overrides PropertyExtractor::calculateSpinPolarizedLDOS(). */
@@ -98,7 +101,8 @@ public:
 
 	/** Overrides PropertyExtractor::calculateSpinPolarizedLDOS(). */
 	virtual Property::SpinPolarizedLDOS calculateSpinPolarizedLDOS(
-		std::initializer_list<Index> patterns
+//		std::initializer_list<Index> patterns
+		std::vector<Index> patterns
 	);
 private:
 	/** Callback for calculating the wave function. Used by

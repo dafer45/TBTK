@@ -35,7 +35,7 @@
 #include "TBTK/PropertyExtractor/PropertyExtractor.h"
 
 #include <complex>
-#include <initializer_list>
+//#include <initializer_list>
 
 namespace TBTK{
 namespace PropertyExtractor{
@@ -100,7 +100,8 @@ public:
 	 *  for the Indices that satisfies the given patterns and state
 	 *  numbers. */
 	Property::WaveFunctions calculateWaveFunctions(
-		std::initializer_list<Index> patterns,
+//		std::initializer_list<Index> patterns,
+		std::vector<Index> patterns,
 		std::vector<int> states
 	);
 
@@ -136,7 +137,8 @@ public:
 
 	/** Overrides PropertyExtractor::calculateDensity(). */
 	virtual Property::Density calculateDensity(
-		std::initializer_list<Index> patterns
+//		std::initializer_list<Index> patterns
+		std::vector<Index> patterns
 	);
 
 	/** Overrides PropertyExtractor::calculateMagnetization(). */
@@ -147,7 +149,8 @@ public:
 
 	/** Overrides PropertyExtractor::calculateMagnetization(). */
 	virtual Property::Magnetization calculateMagnetization(
-		std::initializer_list<Index> patterns
+//		std::initializer_list<Index> patterns
+		std::vector<Index> patterns
 	);
 
 	/** Overrides PropertyExtractor::calculateLDOS(). */
@@ -158,7 +161,8 @@ public:
 
 	/** Overrides PropertyExtractor::calculateLDOS(). */
 	virtual Property::LDOS calculateLDOS(
-		std::initializer_list<Index> patterns
+//		std::initializer_list<Index> patterns
+		std::vector<Index> patterns
 	);
 
 	/** Overrides PropertyExtractor::calculateSpinPolarizedLDOS(). */
@@ -169,7 +173,8 @@ public:
 
 	/** Overrides PropertyExtractor::calculateSpinPolarizedLDOS(). */
 	virtual Property::SpinPolarizedLDOS calculateSpinPolarizedLDOS(
-		std::initializer_list<Index> patterns
+//		std::initializer_list<Index> patterns
+		std::vector<Index> patterns
 	);
 
 	/** Overrides PropertyExtractor::calculateEntropy(). */

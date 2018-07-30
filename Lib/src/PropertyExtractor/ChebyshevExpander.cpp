@@ -103,14 +103,16 @@ Property::GreensFunction ChebyshevExpander::calculateGreensFunction(
 }
 
 Property::GreensFunction ChebyshevExpander::calculateGreensFunction(
-	initializer_list<initializer_list<Index>> patterns,
+//	initializer_list<initializer_list<Index>> patterns,
+	vector<vector<Index>> patterns,
 	Property::GreensFunction::Type type
 ){
 	IndexTree memoryLayout;
 	IndexTree fromIndices;
 	set<unsigned int> toIndexSizes;
 	for(unsigned int n = 0; n < patterns.size(); n++){
-		const initializer_list<Index>& pattern = *(patterns.begin() + n);
+//		const initializer_list<Index>& pattern = *(patterns.begin() + n);
+		const vector<Index>& pattern = *(patterns.begin() + n);
 
 		TBTKAssert(
 			pattern.size() == 2,
@@ -425,7 +427,8 @@ Property::Density ChebyshevExpander::calculateDensity(
 }
 
 Property::Density ChebyshevExpander::calculateDensity(
-	std::initializer_list<Index> patterns
+//	std::initializer_list<Index> patterns
+	vector<Index> patterns
 ){
 	IndexTree allIndices = generateIndexTree(
 		patterns,
@@ -498,7 +501,8 @@ Property::Magnetization ChebyshevExpander::calculateMagnetization(
 }
 
 Property::Magnetization ChebyshevExpander::calculateMagnetization(
-	std::initializer_list<Index> patterns
+//	std::initializer_list<Index> patterns
+	vector<Index> patterns
 ){
 	IndexTree allIndices = generateIndexTree(
 		patterns,
@@ -561,7 +565,8 @@ Property::LDOS ChebyshevExpander::calculateLDOS(Index pattern, Index ranges){
 }
 
 Property::LDOS ChebyshevExpander::calculateLDOS(
-	std::initializer_list<Index> patterns
+//	std::initializer_list<Index> patterns
+	vector<Index> patterns
 ){
 	IndexTree allIndices = generateIndexTree(
 		patterns,
@@ -645,7 +650,8 @@ Property::SpinPolarizedLDOS ChebyshevExpander::calculateSpinPolarizedLDOS(
 }
 
 Property::SpinPolarizedLDOS ChebyshevExpander::calculateSpinPolarizedLDOS(
-	std::initializer_list<Index> patterns
+//	std::initializer_list<Index> patterns
+	vector<Index> patterns
 ){
 	hint = new int[1];
 

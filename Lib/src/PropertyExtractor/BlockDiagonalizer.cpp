@@ -141,8 +141,10 @@ Property::EigenValues BlockDiagonalizer::getEigenValues(){
 }
 
 Property::WaveFunctions BlockDiagonalizer::calculateWaveFunctions(
-	initializer_list<Index> patterns,
-	initializer_list<int> states
+//	initializer_list<Index> patterns,
+	vector<Index> patterns,
+//	initializer_list<int> states
+	vector<int> states
 ){
 	IndexTree allIndices = generateIndexTree(
 		patterns,
@@ -519,7 +521,8 @@ complex<double> BlockDiagonalizer::calculateExpectationValue(
 }*/
 
 Property::Density BlockDiagonalizer::calculateDensity(
-	initializer_list<Index> patterns
+//	initializer_list<Index> patterns
+	vector<Index> patterns
 ){
 	IndexTree allIndices = generateIndexTree(
 		patterns,
@@ -585,7 +588,8 @@ Property::Density BlockDiagonalizer::calculateDensity(
 }*/
 
 Property::Magnetization BlockDiagonalizer::calculateMagnetization(
-	std::initializer_list<Index> patterns
+//	std::initializer_list<Index> patterns
+	vector<Index> patterns
 ){
 	IndexTree allIndices = generateIndexTree(
 		patterns,
@@ -652,7 +656,8 @@ Property::Magnetization BlockDiagonalizer::calculateMagnetization(
 }*/
 
 Property::LDOS BlockDiagonalizer::calculateLDOS(
-	std::initializer_list<Index> patterns
+//	std::initializer_list<Index> patterns
+	vector<Index> patterns
 ){
 	TBTKAssert(
 		energyType == EnergyType::Real,
@@ -775,7 +780,8 @@ Property::LDOS BlockDiagonalizer::calculateLDOS(
 }*/
 
 Property::SpinPolarizedLDOS BlockDiagonalizer::calculateSpinPolarizedLDOS(
-	std::initializer_list<Index> patterns
+//	std::initializer_list<Index> patterns
+	vector<Index> patterns
 ){
 	TBTKAssert(
 		energyType == EnergyType::Real,
