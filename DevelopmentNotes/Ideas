@@ -28,11 +28,3 @@
   should implement it's own helper functions for this, or another helper class
   should be created to provide the needed functionallity without putting the
   responsibility on the WaveFunctions.
-
-- Add a functions to PropertyExtractor::PropertyExtractor for checking whether
-  the patterns argument contains only patterns with expected number of
-  component Indices. Also add a function for checking whether the subindices
-  only contains valid subindex values and specifiers. For example, a certain
-  function may require a compound Index with two components, and only accept
-  subindices that are positive or have the specifier values IDX_ALL and
-  IDX_SUM_ALL.
