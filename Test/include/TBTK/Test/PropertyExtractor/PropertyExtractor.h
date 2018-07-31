@@ -103,6 +103,30 @@ public:
 			keepSpinWildcards
 		);
 	}
+
+	void validatePatternsNumComponents(
+		const std::vector<Index> &patterns,
+		unsigned int expectedNumComponentIndices,
+		const std::string &functionName
+	){
+		PropertyExtractor::validatePatternsNumComponents(
+			patterns,
+			expectedNumComponentIndices,
+			functionName
+		);
+	}
+
+	void validatePatternsSpecifiers(
+		const std::vector<Index> &patterns,
+		const std::vector<int> &specifiers,
+		const std::string &functionName
+	){
+		PropertyExtractor::validatePatternsSpecifiers(
+			patterns,
+			specifiers,
+			functionName
+		);
+	}
 };
 
 TEST(PropertyExtractor, Constructor){
@@ -677,6 +701,140 @@ TEST(PropertyExtractor, gnerateIndexTree){
 	EXPECT_TRUE((*iterator4).equals({{0, 0, 2}, {0, 0, 2}}));
 	++iterator4;
 	EXPECT_TRUE(iterator4 == indexTree4.cend());
+}
+
+TEST(PropertyExtractor, validatePatternsNumComponents){
+	PublicPropertyExtractor propertyExtractor;
+
+	//Check correct single Index patterns.
+	propertyExtractor.validatePatternsNumComponents(
+		{
+			{0, 1, IDX_ALL},
+			{0, 2, IDX_SPIN},
+			{1, IDX_SUM_ALL, 2},
+			{1, 4, 5}
+		},
+		1,
+		"Test::PropertyExtractor::validatePatternsNumComponents"
+	);
+
+	//Check incorect single Index patterns.
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			propertyExtractor.validatePatternsNumComponents(
+				{
+					{0, 1, IDX_ALL},
+					{0, 2, IDX_SPIN},
+					{{1, IDX_SUM_ALL, 2}, {1, 2, 3}},
+					{1, 4, 5}
+				},
+				1,
+				"Test::PropertyExtractor::validatePatternsNumComponents"
+			);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+
+	//Check correct double index patterns.
+	propertyExtractor.validatePatternsNumComponents(
+		{
+			{{0, 1, IDX_ALL}, {1, 2, 3}},
+			{{0, 2, IDX_SPIN}, {1, 2, 3}},
+			{{1, IDX_SUM_ALL, 2}, {1, 2, 3}},
+			{{1, 4, 5}, {1, 2, 3}}
+		},
+		2,
+		"Test::PropertyExtractor::validatePatternsNumComponents"
+	);
+
+	//Check incorect double Index patterns.
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			propertyExtractor.validatePatternsNumComponents(
+				{
+					{{0, 1, IDX_ALL}, {1, 2, 3}},
+					{{0, 2, IDX_SPIN}, {1, 2, 3}},
+					{{1, IDX_SUM_ALL, 2}},
+					{{1, 4, 5}, {1, 2, 3}}
+				},
+				1,
+				"Test::PropertyExtractor::validatePatternsNumComponents"
+			);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+TEST(PropertyExtractor, validatePatternsSpecifiers){
+	PublicPropertyExtractor propertyExtractor;
+
+	//Check that all specifiers are recognized.
+	propertyExtractor.validatePatternsSpecifiers(
+		{
+			{0, IDX_SUM_ALL, 1},
+			{IDX_ALL, IDX_SPIN, IDX_X},
+			{IDX_Y, IDX_Z}
+		},
+		{IDX_ALL, IDX_SUM_ALL, IDX_X, IDX_Y, IDX_Z, IDX_SPIN},
+		"Test::PropertyExtractor::validatePatternsSpecifiers"
+	);
+
+	//Check that every missing specifiers generates an error.
+	std::vector<std::vector<int>> specifiers = {
+		{IDX_ALL,	IDX_SUM_ALL,	IDX_X,	IDX_Y,	IDX_Z		},
+		{IDX_ALL,	IDX_SUM_ALL,	IDX_X,	IDX_Y,		IDX_SPIN},
+		{IDX_ALL,	IDX_SUM_ALL,	IDX_X,		IDX_Z,	IDX_SPIN},
+		{IDX_ALL,	IDX_SUM_ALL,		IDX_Y,	IDX_Z,	IDX_SPIN},
+		{IDX_ALL,			IDX_X,	IDX_Y,	IDX_Z,	IDX_SPIN},
+		{		IDX_SUM_ALL,	IDX_X,	IDX_Y,	IDX_Z,	IDX_SPIN},
+	};
+	for(unsigned int n = 0; n < specifiers.size(); n++){
+		EXPECT_EXIT(
+			{
+				Streams::setStdMuteErr();
+				propertyExtractor.validatePatternsSpecifiers(
+					{
+						{0, IDX_SUM_ALL, 1},
+						{IDX_ALL, IDX_SPIN, IDX_X},
+						{IDX_Y, IDX_Z}
+					},
+					specifiers[n],
+					"Test::PropertyExtractor::validatePatternsSpecifiers"
+				);
+			},
+			::testing::ExitedWithCode(1),
+			""
+		);
+	}
+
+	//Check that compond indices works.
+	propertyExtractor.validatePatternsSpecifiers(
+		{
+			{{IDX_ALL, 0}, {1, IDX_SPIN}}
+		},
+		{IDX_ALL, IDX_SPIN},
+		"Test::PropertyExtractor::validatePatternsSpecifiers"
+	);
+
+	//Check that missing Index for compound Index generates an error.
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			propertyExtractor.validatePatternsSpecifiers(
+				{
+					{{IDX_ALL, 0}, {1, IDX_SPIN}}
+				},
+				{IDX_SPIN},
+				"Test::PropertyExtractor::validatePatternsSpecifiers"
+			);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
 }
 
 };	//End of namespace PropertyExtractor
