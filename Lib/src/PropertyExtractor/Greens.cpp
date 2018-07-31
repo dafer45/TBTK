@@ -81,6 +81,17 @@ Property::Density Greens::calculateDensity(
 //	std::initializer_list<Index> patterns
 	vector<Index> patterns
 ){
+	validatePatternsNumComponents(
+		patterns,
+		1,
+		"PropertyExtractor::Greens::calculateDensity()"
+	);
+	validatePatternsSpecifiers(
+		patterns,
+		{IDX_ALL, IDX_SUM_ALL},
+		"PropertyExtractor::Greens::calculateDensity()"
+	);
+
 	IndexTree allIndices = generateIndexTree(
 		patterns,
 		solver->getModel().getHoppingAmplitudeSet(),
@@ -218,6 +229,17 @@ Property::LDOS Greens::calculateLDOS(
 //	std::initializer_list<Index> patterns
 	vector<Index> patterns
 ){
+	validatePatternsNumComponents(
+		patterns,
+		1,
+		"PropertyExtractor::Greens::calculateLDOS()"
+	);
+	validatePatternsSpecifiers(
+		patterns,
+		{IDX_ALL, IDX_SUM_ALL},
+		"PropertyExtractor::Greens::calculateLDOS()"
+	);
+
 	IndexTree allIndices = generateIndexTree(
 		patterns,
 		solver->getModel().getHoppingAmplitudeSet(),

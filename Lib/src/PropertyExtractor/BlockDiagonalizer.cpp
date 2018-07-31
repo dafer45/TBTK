@@ -146,6 +146,17 @@ Property::WaveFunctions BlockDiagonalizer::calculateWaveFunctions(
 //	initializer_list<int> states
 	vector<int> states
 ){
+	validatePatternsNumComponents(
+		patterns,
+		1,
+		"PropertyExtractor::BlockDiagonalizer::calculateWaveFunction()"
+	);
+	validatePatternsSpecifiers(
+		patterns,
+		{IDX_ALL, IDX_SUM_ALL},
+		"PropertyExtractor::BlockDiagonalizer::calculateWaveFunction()"
+	);
+
 	IndexTree allIndices = generateIndexTree(
 		patterns,
 		bSolver->getModel().getHoppingAmplitudeSet(),
@@ -241,7 +252,18 @@ Property::GreensFunction BlockDiagonalizer::calculateGreensFunction(
 	vector<Index> patterns,
 	Property::GreensFunction::Type type
 ){
-	for(unsigned int n = 0; n < patterns.size(); n++){
+	validatePatternsNumComponents(
+		patterns,
+		2,
+		"PropertyExtractor::BlockDiagonalizer::calculateGreensFunction()"
+	);
+	validatePatternsSpecifiers(
+		patterns,
+		{IDX_ALL, IDX_SUM_ALL},
+		"PropertyExtractor::BlockDiagonalizer::calculateGreensFunction()"
+	);
+
+/*	for(unsigned int n = 0; n < patterns.size(); n++){
 		TBTKAssert(
 			(patterns.begin() + n)->split().size() == 2,
 			"PropertyExtractor::BlockDiagonalizer::calculateGreensFunction()",
@@ -251,7 +273,7 @@ Property::GreensFunction BlockDiagonalizer::calculateGreensFunction(
 			<< " component(s).",
 			""
 		);
-	}
+	}*/
 
 /*	IndexTree allIndices;
 	IndexTree memoryLayout;
@@ -524,6 +546,17 @@ Property::Density BlockDiagonalizer::calculateDensity(
 //	initializer_list<Index> patterns
 	vector<Index> patterns
 ){
+	validatePatternsNumComponents(
+		patterns,
+		1,
+		"PropertyExtractor::BlockDiagonalizer::calculateDensity()"
+	);
+	validatePatternsSpecifiers(
+		patterns,
+		{IDX_ALL, IDX_SUM_ALL},
+		"PropertyExtractor::BlockDiagonalizer::calculateDensity()"
+	);
+
 	IndexTree allIndices = generateIndexTree(
 		patterns,
 		bSolver->getModel().getHoppingAmplitudeSet(),
@@ -591,6 +624,17 @@ Property::Magnetization BlockDiagonalizer::calculateMagnetization(
 //	std::initializer_list<Index> patterns
 	vector<Index> patterns
 ){
+	validatePatternsNumComponents(
+		patterns,
+		1,
+		"PropertyExtractor::BlockDiagonalizer::calculateMagnetization()"
+	);
+	validatePatternsSpecifiers(
+		patterns,
+		{IDX_ALL, IDX_SUM_ALL, IDX_SPIN},
+		"PropertyExtractor::BlockDiagonalizer::calculateMagnetization()"
+	);
+
 	IndexTree allIndices = generateIndexTree(
 		patterns,
 		bSolver->getModel().getHoppingAmplitudeSet(),
@@ -659,6 +703,17 @@ Property::LDOS BlockDiagonalizer::calculateLDOS(
 //	std::initializer_list<Index> patterns
 	vector<Index> patterns
 ){
+	validatePatternsNumComponents(
+		patterns,
+		1,
+		"PropertyExtractor::BlockDiagonalizer::calculateLDOS()"
+	);
+	validatePatternsSpecifiers(
+		patterns,
+		{IDX_ALL, IDX_SUM_ALL},
+		"PropertyExtractor::BlockDiagonalizer::calculateLDOS()"
+	);
+
 	TBTKAssert(
 		energyType == EnergyType::Real,
 		"PropertyExtractor::BlockDiagonalizer::calculateLDOS()",
@@ -783,6 +838,17 @@ Property::SpinPolarizedLDOS BlockDiagonalizer::calculateSpinPolarizedLDOS(
 //	std::initializer_list<Index> patterns
 	vector<Index> patterns
 ){
+	validatePatternsNumComponents(
+		patterns,
+		1,
+		"PropertyExtractor::BlockDiagonalizer::calculateSpinPolarizedLDOS()"
+	);
+	validatePatternsSpecifiers(
+		patterns,
+		{IDX_ALL, IDX_SUM_ALL, IDX_SPIN},
+		"PropertyExtractor::BlockDiagonalizer::calculateSpinPolarizedLDOS()"
+	);
+
 	TBTKAssert(
 		energyType == EnergyType::Real,
 		"PropertyExtractor::BlockDiagonalizer::calculateSpinPolarizedLDOS()",

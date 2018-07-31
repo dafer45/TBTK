@@ -83,6 +83,17 @@ Property::WaveFunctions Diagonalizer::calculateWaveFunctions(
 	vector<Index> patterns,
 	vector<int> states
 ){
+	validatePatternsNumComponents(
+		patterns,
+		1,
+		"PropertyExtractor::Diagonalizer::calculateWaveFunction()"
+	);
+	validatePatternsSpecifiers(
+		patterns,
+		{IDX_ALL, IDX_SUM_ALL},
+		"PropertyExtractor::Diagonalizer::calculateWaveFunction()"
+	);
+
 	IndexTree allIndices = generateIndexTree(
 		patterns,
 		dSolver->getModel().getHoppingAmplitudeSet(),
@@ -179,7 +190,18 @@ Property::GreensFunction Diagonalizer::calculateGreensFunction(
 	const vector<Index> &patterns,
 	Property::GreensFunction::Type type
 ){
-	for(unsigned int n = 0; n < patterns.size(); n++){
+	validatePatternsNumComponents(
+		patterns,
+		2,
+		"PropertyExtractor::Diagonalizer::calculateGreensFunction()"
+	);
+	validatePatternsSpecifiers(
+		patterns,
+		{IDX_ALL, IDX_SUM_ALL},
+		"PropertyExtractor::Diagonalizer::calculateGreensFunction()"
+	);
+
+/*	for(unsigned int n = 0; n < patterns.size(); n++){
 		TBTKAssert(
 			(patterns.begin() + n)->split().size() == 2,
 			"PropertyExtractor::Diagonalizer::calculateGreensFunction()",
@@ -189,7 +211,7 @@ Property::GreensFunction Diagonalizer::calculateGreensFunction(
 			<< " component(s).",
 			""
 		);
-	}
+	}*/
 
 	IndexTree allIndices = generateIndexTree(
 		patterns,
@@ -321,6 +343,17 @@ Property::Density Diagonalizer::calculateDensity(
 //	initializer_list<Index> patterns
 	vector<Index> patterns
 ){
+	validatePatternsNumComponents(
+		patterns,
+		1,
+		"PropertyExtractor::Diagonalizer::calculateDensity()"
+	);
+	validatePatternsSpecifiers(
+		patterns,
+		{IDX_ALL, IDX_SUM_ALL},
+		"PropertyExtractor::Diagonalizer::calculateDensity()"
+	);
+
 	IndexTree allIndices = generateIndexTree(
 		patterns,
 		dSolver->getModel().getHoppingAmplitudeSet(),
@@ -395,6 +428,17 @@ Property::Magnetization Diagonalizer::calculateMagnetization(
 //	std::initializer_list<Index> patterns
 	vector<Index> patterns
 ){
+	validatePatternsNumComponents(
+		patterns,
+		1,
+		"PropertyExtractor::Diagonalizer::calculateMagnetization()"
+	);
+	validatePatternsSpecifiers(
+		patterns,
+		{IDX_ALL, IDX_SUM_ALL, IDX_SPIN},
+		"PropertyExtractor::Diagonalizer::calculateMagnetization()"
+	);
+
 	IndexTree allIndices = generateIndexTree(
 		patterns,
 		dSolver->getModel().getHoppingAmplitudeSet(),
@@ -467,6 +511,17 @@ Property::LDOS Diagonalizer::calculateLDOS(
 //	std::initializer_list<Index> patterns
 	vector<Index> patterns
 ){
+	validatePatternsNumComponents(
+		patterns,
+		1,
+		"PropertyExtractor::Diagonalizer::calculateLDOS()"
+	);
+	validatePatternsSpecifiers(
+		patterns,
+		{IDX_ALL, IDX_SUM_ALL},
+		"PropertyExtractor::Diagonalizer::calculateLDOS()"
+	);
+
 	double lowerBound = getLowerBound();
 	double upperBound = getUpperBound();
 	int energyResolution = getEnergyResolution();
@@ -587,6 +642,17 @@ Property::SpinPolarizedLDOS Diagonalizer::calculateSpinPolarizedLDOS(
 //	std::initializer_list<Index> patterns
 	vector<Index> patterns
 ){
+	validatePatternsNumComponents(
+		patterns,
+		1,
+		"PropertyExtractor::Diagonalizer::calculateSpinPolarizedLDOS()"
+	);
+	validatePatternsSpecifiers(
+		patterns,
+		{IDX_ALL, IDX_SUM_ALL, IDX_SPIN},
+		"PropertyExtractor::Diagonalizer::calculateSpinPolarizedLDOS()"
+	);
+
 	double lowerBound = getLowerBound();
 	double upperBound = getUpperBound();
 	int energyResolution = getEnergyResolution();
