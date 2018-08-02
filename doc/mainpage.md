@@ -2,7 +2,8 @@
 
 TBTK is a C++ library for modeling and solving second quantized Hamiltonians.
 A flexible indexing scheme allows for general models to be setup with little effort, and a variety of solution methods are implemented in natively available solvers.
-The aim is to provide flexible and well thought through data structures that combines the efficiency of C++ with high level abstraction that allows developers to focus their attention on physics rather than numerics. In this way TBTK is intended to facilitate both the investigation of specific physical question as well as enabling rapid development of completely new methods.
+The aim is to provide flexible and well thought through data structures that combines the efficiency of C++ with high level abstraction that allows developers to focus their attention on physics rather than numerics.
+Thereby facilitating both the investigation of specific physical question as well as enabling rapid development of completely new methods.
 
 To get started, see the [installation instructions](@ref InstallationInstructions), the [manual](@ref Manual), and the [tutorials](@ref Tutorials).
 
@@ -10,6 +11,10 @@ The code is available at https://github.com/dafer45/TBTK.
 
 # Example
 ## Problem formulation
+
+<img src="MainPageModel.png" style="max-width: 800px" />  
+<i>A magnetic impurity on top of a square lattice. Image generated using the built in RayTracer (currently in experimental development stage).</i>  
+
 Consider a magnetic impurity on top of a two-dimensional substrate of size 51x51 described by
 <center>\f$H = H_{S} + H_{Imp} + H_{Int}\f$</center>
 where
@@ -42,12 +47,25 @@ The parameters \f$U_S\f$ and \f$U_{Imp}\f$ are onsite energies on the substrate 
 	for(int x = 0; x < SIZE_X; x++){
 		for(int y = 0; y < SIZE_Y; y++){
 			for(int s = 0; s < 2; s++){
-				model << HoppingAmplitude(U_S, {0, x, y, s}, {0, x, y, s});
+				model << HoppingAmplitude(
+					U_S,
+					{0, x, y, s},
+					{0, x, y, s}
+				);
 
-				if(x+1 < SIZE_X)
-					model << HoppingAmplitude(-t, {0, x+1,   y, s}, {0, x, y, s}) + HC;
-				if(y+1 < SIZE_Y)
-					model << HoppingAmplitude(-t, {0,   x, y+1, s}, {0, x, y, s}) + HC;
+				if(x+1 < SIZE_X){
+					model << HoppingAmplitude(
+						-t,
+						{0, x+1, y, s},
+						{0, x,   y, s}
+					) + HC;
+				}
+				if(y+1 < SIZE_Y){
+					model << HoppingAmplitude(-t,
+						{0, x, y+1, s},
+						{0, x, y,   s}
+					) + HC;
+				}
 			}
 		}
 	}
@@ -58,7 +76,11 @@ The parameters \f$U_S\f$ and \f$U_{Imp}\f$ are onsite energies on the substrate 
 		model << HoppingAmplitude(-J*(1-2*s), {1, s}, {1, s});
 
 		//Add coupling between the substrate and impurity.
-		model << HoppingAmplitude(delta, {0, SIZE_X/2, SIZE_Y/2, s}, {1, s}) + HC;
+		model << HoppingAmplitude(
+			delta,
+			{0, SIZE_X/2, SIZE_Y/2, s},
+			{1, s}
+		) + HC;
 	}
 
 	//Construct model.
@@ -72,7 +94,10 @@ The parameters \f$U_S\f$ and \f$U_{Imp}\f$ are onsite energies on the substrate 
 	//Extract the spin-polarized LDOS.
 	PropertyExtractor::Diagonalizer propertyExtractor(solver);
 	propertyExtractor.setEnergyWindow(-1, 1, 1000);
-	Property::SpinPolarizedLDOS spinPolarizedLDOS = propertyExtractor.calculateSpinPolarizedLDOS({{0, ___, ___, IDX_SPIN}});
+	Property::SpinPolarizedLDOS spinPolarizedLDOS
+		= propertyExtractor.calculateSpinPolarizedLDOS(
+			{{0, ___, ___, IDX_SPIN}}
+		);
 
 	//Save result.
 	FileWriter::writeSpinPolarizedLDOS(spinPolarizedLDOS);

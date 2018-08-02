@@ -1,0 +1,22 @@
+/* The standard CSS for doxygen 1.8.11 */
+
+body, table, div, p, dl {
+	font-size: 16px;	//Modified
+}
+
+h1, h2, h3, h4, h5, h6 {
+	line-height: 100%;	//Modified
+}
+
+div.line {
+        font-size: 16px;	//Modified
+}
+
+div.textblock {
+	max-width: 800px;	//Modified
+}
+
+#nav-tree .label{
+	font-size: 14px;	//Modified
+}
+
