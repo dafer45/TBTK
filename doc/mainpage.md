@@ -34,10 +34,10 @@ The parameters \f$U_S\f$ and \f$U_{Imp}\f$ are onsite energies on the substrate 
 	const int SIZE_X = 51;
 	const int SIZE_Y = 51;
 
-	double U_S = 1;
+	double U_S   = 1;
 	double U_Imp = 1;
-	double t = 1;
-	double J = 1;
+	double t     = 1;
+	double J     = 1;
 	double delta = 1;
 
 	//Create model.
@@ -96,7 +96,7 @@ The parameters \f$U_S\f$ and \f$U_{Imp}\f$ are onsite energies on the substrate 
 	propertyExtractor.setEnergyWindow(-1, 1, 1000);
 	Property::SpinPolarizedLDOS spinPolarizedLDOS
 		= propertyExtractor.calculateSpinPolarizedLDOS(
-			{{0, ___, ___, IDX_SPIN}}
+			{{0, _a_, _a_, IDX_SPIN}}
 		);
 
 	//Save result.

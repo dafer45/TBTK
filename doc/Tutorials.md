@@ -523,19 +523,23 @@ We implement these calculations as follows.
 		PropertyExtractor::Diagonalizer propertyExtractor(solver);
 
 		//Calculate eigenvalues
-		Property::EigenValues eigenValues = propertyExtractor.getEigenValues();
+		Property::EigenValues eigenValues
+			= propertyExtractor.getEigenValues();
 
 		//Print the energies of the individual eigenstates.
 		Streams::out << "Energies for the individual eigenstates:\n";
 		for(unsigned int n = 0; n < eigenValues.getSize(); n++){
-			Streams::out << UnitHandler::convertEnergyNtB(eigenValues(n))
-				<< " " << UnitHandler::getEnergyUnitString() << "\n";
+			Streams::out << UnitHandler::convertEnergyNtB(
+					eigenValues(n)
+				) << " " << UnitHandler::getEnergyUnitString()
+				<< "\n";
 		}
 
 		//Print the Zeeman split.
 		Streams::out << "\nZeeman split: "
-			<< UnitHander::convertEnergyNtB(eigenValues(1) - eigenValues(0))
-			<< UnitHandler::getEnergyUnitString() << "\n";
+			<< UnitHander::convertEnergyNtB(
+				eigenValues(1) - eigenValues(0)
+			) << UnitHandler::getEnergyUnitString() << "\n";
 
 		return 0;
 	}
