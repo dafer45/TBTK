@@ -86,10 +86,10 @@ propertyExtractor.setEnergyWindow(LOWER_BOUND, UPPER_BOUND, RESOLUTION);
 Propery::DOS dos = propertyExtractor.calculateDOS();
 
 //Calculate the Magnetization for all x and y values by passing the wildcard
-//___ in the correpsonding positions. IDX_SPIN is used to tell the
+//_a_ in the correpsonding positions. IDX_SPIN is used to tell the
 //PropertyExtractor which subindex that corresponds to spin.
 Property::Magnetization magnetization
-        = propertyExtractor.calculateMagnetization({{___, ___, IDX_SPIN}});
+        = propertyExtractor.calculateMagnetization({{_a_, _a_, IDX_SPIN}});
 ```
 
 ## Plot and print results  
