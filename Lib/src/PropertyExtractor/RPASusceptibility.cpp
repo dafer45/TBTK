@@ -34,7 +34,7 @@ RPASusceptibility::RPASusceptibility(
 	Solver::RPASusceptibility &solver
 ){
 	this->solver = &solver;
-	energyType = EnergyType::Real;
+//	energyType = EnergyType::Real;
 }
 
 void RPASusceptibility::setEnergyWindow(
