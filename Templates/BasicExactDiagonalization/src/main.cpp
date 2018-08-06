@@ -93,12 +93,12 @@ int main(int argc, char **argv){
 	//Construct single particle Hilbert space.
 	model.construct();
 
-	//Create many-body context and add interaction amplitudes.
-	model.createManyBodyContext();
-	ManyBodyContext *manyBodyContext = model.getManyBodyContext();
+	//Create many-particle context and add interaction amplitudes.
+	model.createManyParticleContext();
+	ManyParticleContext *manyParticleContext = model.getManyParticleContext();
 	for(int x = 0; x < SIZE_X; x++){
 		for(int y = 0; y < SIZE_Y; y++){
-			manyBodyContext->addIA(InteractionAmplitude(
+			manyParticleContext->addIA(InteractionAmplitude(
 				U,
 				{{x, y, 0}, {x, y, 1}},	//Creation operators (i and j)
 				{{x, y, 1}, {x, y, 0}}	//Annihilation operators (k and l)
@@ -108,13 +108,13 @@ int main(int argc, char **argv){
 
 	//Add rules determining what Fock space subspace the ground state
 	//belongs to.
-	manyBodyContext->addFockStateRule(		//Half-filling
+	manyParticleContext->addFockStateRule(		//Half-filling
 		FockStateRule::SumRule(
 			{{IDX_ALL, IDX_ALL, IDX_ALL}},	//Add all states
 			SIZE_X*SIZE_Y			//Total number of particles
 		)
 	);
-	manyBodyContext->addFockStateRule(		//Total spin = 0
+	manyParticleContext->addFockStateRule(		//Total spin = 0
 		FockStateRule::DifferenceRule(
 			{{IDX_ALL, IDX_ALL, 0}},	//Add up spins
 			{{IDX_ALL, IDX_ALL, 1}},	//Subtract down spins
