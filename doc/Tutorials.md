@@ -58,7 +58,7 @@ The application can now be executed by typing
 ```
 
 # Default application folder structure {#DefaultApplicationFolderStructure}
-When creating an application project using TBTKCreateApplication, a number of files and folders are created.
+When creating an application using TBTKCreateApplication, a number of files and folders are created.
 The purpose of the folders are
 | Folder name | Description                                |
 |-------------|--------------------------------------------|
@@ -105,7 +105,7 @@ where *TemplateName* can be any of
 | WireOnSuperconductor            | Demonstrates how to set up a magnetic wire on top of a two-dimensional superconducting layer.                            |
 
 ## Example: BasicDiagonalization
-To demonstrate this, lets build and execute BasicDiagonalization.
+To demonstrate the use of template projects, lets build and execute BasicDiagonalization.
 Before beginning we note that this template uses the FileWriter and therefore requires that HDF5 is installed and detected by TBTK.
 Therefore make sure the HDF5 box is checked in the output from *cmake* below.
 Starting from the folder TBTKApplication, we type
@@ -224,7 +224,8 @@ Finally, the main function exits by returning *0*, which is a message indicating
 ## Initializing units
 Having understood the structure of *src/main.cpp*, we are now ready to implement the actual application.
 The first step is to specify the units that we will be using.
-In particular, we will measure temperature in terms of Kelvin and energies in terms of *meV*.
+Of particular interest to us is to measure temperature in terms of Kelvin and energies in terms of *meV*.
+The remaining quantities we set to Coulomb, pieces, meter, and seconds.
 To achieve this we remove the print statement in the code above and replace it by
 ```cpp
 	#include "TBTK/UnitHandler.h"
@@ -236,26 +237,17 @@ To achieve this we remove the print statement in the code above and replace it b
 
 	int main(int argc, char **argv){
 		//Initialize the UnitHandler.
-		UnitHandler::setTemperatureUnit(UnitHandler::TemperatureUnit::K);
-		UnitHandler::setTemperatureScale(1);
-		UnitHandler::setEnergyUnit(UnitHandler::EnergyUnit::meV);
-		UnitHandler::setEnergyScale(1);
+		UnitHandler::setScales({"1 C", "1 pcs", "1 meV", "1 m", "1 K", "1 s"});
 
 		return 0;
 	}
 ```
-We here note the use of pairs of functions of the form
-```cpp
-	UnitHandler::setEnergyUnit(UnitHandler::EnergyUnit::meV);
-	UnitHandler::setEnergyScale(1);
-```
-Together these two calls tells TBTK that any other value corresponding to an energy that is entered into the code should be understood to be in units of 1 meV.
-That is, these two lines defines the natural energy scale for the problem to be 1meV.
-Had we instead passed for example 13606 to the second function call, then every number E passed to a TBTK function that corresponds to an energy would have been interpreted to mean 13606E meV.
+All numbers passed to TBTK functions will be interpreted to be in these units.
+This for example means that a 2 passed to a function that accepts an energy will be interpreted as 2 meV.
 
 ## Specifying parameters
 The next step in our calculation is to setup variables containing the relevant parameters for the problem.
-We begin by specifying some default parameter values *T = 300K* and *B = 1T*, as well as requesting the Bohr magneton from the UnitHandler.
+We begin by specifying some default parameter values *T = 300 K* and *B = 1 T*, as well as requesting the Bohr magneton from the UnitHandler.
 ```cpp
 	#include "TBTK/UnitHandler.h"
 
@@ -266,10 +258,7 @@ We begin by specifying some default parameter values *T = 300K* and *B = 1T*, as
 
 	int main(int argc, char **argv){
 		//Initialize the UnitHandler.
-		UnitHandler::setTemperatureUnit(UnitHandler::TemperatureUnit::K);
-		UnitHandler::setTemperatureScale(1);
-		UnitHandler::setEnergyUnit(UnitHandler::EnergyUnit::eV);
-		UnitHandler::setEnergyScale(1);
+		UnitHandler::setScales({"1 C", "1 pcs", "1 meV", "1 m", "1 K", "1 s"});
 
 		//Setup input parameters.
 		double T = 300;
@@ -287,7 +276,7 @@ We begin by specifying some default parameter values *T = 300K* and *B = 1T*, as
 ```
 While the two first new lines may seem simple to understad, we note that numerical numbers are unit less.
 The numbers are actually only physically meaningful either implicitly through the developers interpretation or convention, or explicitly by declaration of convention.
-What the UnitHandler calls added in the previous step does is to explicitly declare that temperatures are measured in terms of one Kelvin.
+What the UnitHandler call added in the previous step does is to explicitly declare that temperatures are measured in terms of one Kelvin.
 This declaration of convention allows us to unambiguosly pass  *T* to any TBTK function.
 However, the variable *B* is so far only implicitly understod to contain the value one Tesla (rather than for example one Gauss).
 Moreover, there is in fact no function for declaring the convention for magnetic fields directly in TBTK since its natural unit is set indirectly by declaring the natural units for six other so called *base quantities* (see [UnitHandler](@ref UnitHandler) for detailed information).
@@ -316,10 +305,7 @@ Having specified the parameters for the problem, the Model can be setup as follo
 
 	int main(int argc, char **argv){
 		//Initialize the UnitHandler.
-		UnitHandler::setTemperatureUnit(UnitHandler::TemperatureUnit::K);
-		UnitHandler::setTemperatureScale(1);
-		UnitHandler::setEnergyUnit(UnitHandler::EnergyUnit::eV);
-		UnitHandler::setEnergyScale(1);
+		UnitHandler::setScales({"1 C", "1 pcs", "1 meV", "1 m", "1 K", "1 s"});
 
 		//Setup input parameters.
 		double T = 300;
@@ -356,7 +342,7 @@ Finally, the temperature is set in the last new line.
 
 ## Choosing Solver
 For a small problem like the one considered here the best solution method often is diagonalization, which after solving the problem gives direct access to the eigenvalues and eigenstates.
-We therefore her setup and run a Solver::Diagonalizer as follows.
+We therefore here setup and run a Solver::Diagonalizer as follows.
 ```cpp
 	#include "TBTK/UnitHandler.h"
 	#include "TBTK/Model.h"
@@ -369,10 +355,7 @@ We therefore her setup and run a Solver::Diagonalizer as follows.
 
 	int main(int argc, char **argv){
 		//Initialize the UnitHandler.
-		UnitHandler::setTemperatureUnit(UnitHandler::TemperatureUnit::K);
-		UnitHandler::setTemperatureScale(1);
-		UnitHandler::setEnergyUnit(UnitHandler::EnergyUnit::eV);
-		UnitHandler::setEnergyScale(1);
+		UnitHandler::setScales({"1 C", "1 pcs", "1 meV", "1 m", "1 K", "1 s"});
 
 		//Setup input parameters.
 		double T = 300;
@@ -425,10 +408,7 @@ The next step is therefore to wrap the Solver in a PropertyExtractor, which is d
 
 	int main(int argc, char **argv){
 		//Initialize the UnitHandler.
-		UnitHandler::setTemperatureUnit(UnitHandler::TemperatureUnit::K);
-		UnitHandler::setTemperatureScale(1);
-		UnitHandler::setEnergyUnit(UnitHandler::EnergyUnit::eV);
-		UnitHandler::setEnergyScale(1);
+		UnitHandler::setScales({"1 C", "1 pcs", "1 meV", "1 m", "1 K", "1 s"});
 
 		//Setup input parameters.
 		double T = 300;
@@ -485,10 +465,7 @@ We implement these calculations as follows.
 
 	int main(int argc, char **argv){
 		//Initialize the UnitHandler.
-		UnitHandler::setTemperatureUnit(UnitHandler::TemperatureUnit::K);
-		UnitHandler::setTemperatureScale(1);
-		UnitHandler::setEnergyUnit(UnitHandler::EnergyUnit::eV);
-		UnitHandler::setEnergyScale(1);
+		UnitHandler::setScales({"1 C", "1 pcs", "1 meV", "1 m", "1 K", "1 s"});
 
 		//Setup input parameters.
 		double T = 300;
