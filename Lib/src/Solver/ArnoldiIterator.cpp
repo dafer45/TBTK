@@ -384,6 +384,11 @@ void ArnoldiIterator::arnoldiLoop(){
 				eigenValuesReal[n],
 				eigenValuesImag[n]
 			);
+
+			//Sigma not applied by dneupd_ in normal mode.
+			//Therefore add it.
+			if(mode == Mode::Normal)
+				eigenValues[n] += sigma;
 		}
 
 		delete [] eigenValuesReal;
@@ -537,6 +542,11 @@ void ArnoldiIterator::arnoldiLoop(){
 		);
 		checkZneupdIerr(ierr);
 
+		//Sigma not applied by zneupd_ in normal mode. Therefore add
+		//it.
+		if(mode == Mode::Normal)
+			for(int n = 0; n < basisSize; n++)
+				eigenValues[n] += sigma;
 		//Calculate |Ax - lambda*x| here
 		//...
 
@@ -687,6 +697,10 @@ bool ArnoldiIterator::executeReverseCommunicationMessage(
 			const complex<double> *cooValues = model.getHoppingAmplitudeSet().getCOOValues();
 			for(int n = 0; n < numMatrixElements; n++)
 				workd[(ipntr[1] - 1) + cooRowIndices[n]] += cooValues[n]*workd[(ipntr[0] - 1) + cooColIndices[n]];
+
+			//Apply shift.
+			for(int n = 0; n < basisSize; n++)
+				workd[(ipntr[1] - 1) + n] -= shift*workd[(ipntr[0] - 1) + n];
 
 			break;
 		}

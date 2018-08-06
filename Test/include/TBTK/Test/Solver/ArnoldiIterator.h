@@ -5,6 +5,8 @@
 namespace TBTK{
 namespace Solver{
 
+const double EPSILON_100 = 100*std::numeric_limits<double>::epsilon();
+
 TEST(ArnoldiIterator, Constructor){
 	//Not testable on its own.
 }
@@ -86,9 +88,7 @@ TEST(ArnoldiIterator, setCentralValue){
 	solver.setNumLanczosVectors(3);
 	solver.setMaxIterations(10);
 
-	//Currently central value is not implemented in normal mode, but these
-	//tests should be valid once it is done.
-/*	solver.setMode(ArnoldiIterator::Mode::Normal);
+	solver.setMode(ArnoldiIterator::Mode::Normal);
 	solver.run();
 	EXPECT_DOUBLE_EQ(solver.getEigenValue(0), 2);
 	solver.setCentralValue(3);
@@ -96,7 +96,7 @@ TEST(ArnoldiIterator, setCentralValue){
 	EXPECT_DOUBLE_EQ(solver.getEigenValue(0), -1);
 	solver.setCentralValue(-0.5);
 	solver.run();
-	EXPECT_DOUBLE_EQ(solver.getEigenValue(0), 2);*/
+	EXPECT_DOUBLE_EQ(solver.getEigenValue(0), 2);
 
 	solver.setMode(ArnoldiIterator::Mode::ShiftAndInvert);
 	solver.setCentralValue(-1.1);
@@ -157,15 +157,15 @@ TEST(ArnoldiIterator, getEigenValues){
 	solver.run();
 	const std::complex<double> *eigenValues = solver.getEigenValues();
 	EXPECT_NEAR(real(eigenValues[0]), -1, 1e-5);
-	EXPECT_NEAR(imag(eigenValues[0]), 0, 1e-14);
+	EXPECT_NEAR(imag(eigenValues[0]), 0, EPSILON_100);
 	EXPECT_NEAR(real(eigenValues[1]), 1, 1e-5);
-	EXPECT_NEAR(imag(eigenValues[1]), 0, 1e-14);
+	EXPECT_NEAR(imag(eigenValues[1]), 0, EPSILON_100);
 	EXPECT_NEAR(real(eigenValues[2]), 2, 1e-5);
-	EXPECT_NEAR(imag(eigenValues[2]), 0, 1e-14);
+	EXPECT_NEAR(imag(eigenValues[2]), 0, EPSILON_100);
 	EXPECT_NEAR(real(eigenValues[3]), 2.9, 1e-5);
-	EXPECT_NEAR(imag(eigenValues[3]), 0, 1e-14);
+	EXPECT_NEAR(imag(eigenValues[3]), 0, EPSILON_100);
 	EXPECT_NEAR(real(eigenValues[4]), 3.1, 1e-5);
-	EXPECT_NEAR(imag(eigenValues[4]), 0, 1e-14);
+	EXPECT_NEAR(imag(eigenValues[4]), 0, EPSILON_100);
 }
 
 TEST(ArnoldiIterator, getEigenValue){
@@ -199,24 +199,24 @@ TEST(ArnoldiIterator, getAmplitude){
 	solver.run();
 
 	EXPECT_NEAR(real(solver.getAmplitude(0, {0})/solver.getAmplitude(0, {1})), -1, 1e-5);
-	EXPECT_NEAR(imag(solver.getAmplitude(0, {0})/solver.getAmplitude(0, {1})), 0, 1e-14);
-	EXPECT_NEAR(real(solver.getAmplitude(0, {2})), 0, 1e-14);
-	EXPECT_NEAR(imag(solver.getAmplitude(0, {2})), 0, 1e-14);
-	EXPECT_NEAR(real(solver.getAmplitude(0, {3})), 0, 1e-14);
-	EXPECT_NEAR(imag(solver.getAmplitude(0, {3})), 0, 1e-14);
-	EXPECT_NEAR(real(solver.getAmplitude(0, {4})), 0, 1e-14);
-	EXPECT_NEAR(imag(solver.getAmplitude(0, {4})), 0, 1e-14);
-	EXPECT_NEAR(real(solver.getAmplitude(0, {5})), 0, 1e-14);
-	EXPECT_NEAR(imag(solver.getAmplitude(0, {5})), 0, 1e-14);
-	EXPECT_NEAR(real(solver.getAmplitude(0, {6})), 0, 1e-14);
-	EXPECT_NEAR(imag(solver.getAmplitude(0, {6})), 0, 1e-14);
+	EXPECT_NEAR(imag(solver.getAmplitude(0, {0})/solver.getAmplitude(0, {1})), 0, EPSILON_100);
+	EXPECT_NEAR(real(solver.getAmplitude(0, {2})), 0, EPSILON_100);
+	EXPECT_NEAR(imag(solver.getAmplitude(0, {2})), 0, EPSILON_100);
+	EXPECT_NEAR(real(solver.getAmplitude(0, {3})), 0, EPSILON_100);
+	EXPECT_NEAR(imag(solver.getAmplitude(0, {3})), 0, EPSILON_100);
+	EXPECT_NEAR(real(solver.getAmplitude(0, {4})), 0, EPSILON_100);
+	EXPECT_NEAR(imag(solver.getAmplitude(0, {4})), 0, EPSILON_100);
+	EXPECT_NEAR(real(solver.getAmplitude(0, {5})), 0, EPSILON_100);
+	EXPECT_NEAR(imag(solver.getAmplitude(0, {5})), 0, EPSILON_100);
+	EXPECT_NEAR(real(solver.getAmplitude(0, {6})), 0, EPSILON_100);
+	EXPECT_NEAR(imag(solver.getAmplitude(0, {6})), 0, EPSILON_100);
 	EXPECT_NEAR(real(solver.getAmplitude(1, {0})/solver.getAmplitude(1, {1})), 1, 1e-5);
-	EXPECT_NEAR(imag(solver.getAmplitude(1, {0})/solver.getAmplitude(1, {1})), 0, 1e-14);
+	EXPECT_NEAR(imag(solver.getAmplitude(1, {0})/solver.getAmplitude(1, {1})), 0, EPSILON_100);
 	EXPECT_NEAR(abs(solver.getAmplitude(2, {2})), 1, 1e-5);
 	EXPECT_NEAR(real(solver.getAmplitude(3, {3})/solver.getAmplitude(3, {4})), -1, 1e-5);
-	EXPECT_NEAR(imag(solver.getAmplitude(3, {3})/solver.getAmplitude(3, {4})), 0, 1e-14);
+	EXPECT_NEAR(imag(solver.getAmplitude(3, {3})/solver.getAmplitude(3, {4})), 0, EPSILON_100);
 	EXPECT_NEAR(real(solver.getAmplitude(4, {3})/solver.getAmplitude(4, {4})), 1, 1e-5);
-	EXPECT_NEAR(imag(solver.getAmplitude(4, {3})/solver.getAmplitude(4, {4})), 0, 1e-14);
+	EXPECT_NEAR(imag(solver.getAmplitude(4, {3})/solver.getAmplitude(4, {4})), 0, EPSILON_100);
 }
 
 };	//End of namespace Solver
