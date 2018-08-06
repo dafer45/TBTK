@@ -23,9 +23,6 @@
   the IndexDescriptor when creating new AbstractProperties using the enum class
   IndexDescriptor::Format..
 
-- AbstractProperty currently does not serialize the variable
-  allowIndexOutOfBoundsAccess. Fix this.
-
 - Add serialization for Property::GreensFunction.
 
 - Modify IndexDescriptor::setRanges() so that it takes an std::vector<int>
