@@ -27,7 +27,7 @@
 
 using namespace std;
 
-static complex<double> i(0, 1);
+//static complex<double> i(0, 1);
 
 namespace TBTK{
 namespace PropertyExtractor{

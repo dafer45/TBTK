@@ -8,3 +8,8 @@
   Indices currently have to be created using the notation
   {Index({0}), Index({1})} instead. A workaround for this would be very good
   since its a notational nuisance.
+
+- An ugly work around to get the code to compile on Mac is present in
+  AbstractProperty::serialize<bool, true, false>(). The refference is first
+  explicitly converted to a bool before being passed to the push_back()
+  function.

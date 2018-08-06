@@ -109,12 +109,12 @@ private:
 	//TODO
 	//These variables should be made part if the PropertyExtractor instead
 	//once its been tested to work well for this specific case.
-	enum class EnergyType{Real, Matsubara};
+/*	enum class EnergyType{Real, Matsubara};
 	EnergyType energyType;
 	int lowerFermionicMatsubaraEnergyIndex;
 	int upperFermionicMatsubaraEnergyIndex;
 	int lowerBosonicMatsubaraEnergyIndex;
-	int upperBosonicMatsubaraEnergyIndex;
+	int upperBosonicMatsubaraEnergyIndex;*/
 };
 
 };	//End of namespace PropertyExtractor

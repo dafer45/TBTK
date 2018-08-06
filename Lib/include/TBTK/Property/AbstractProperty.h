@@ -645,8 +645,15 @@ inline std::string AbstractProperty<
 			indexDescriptor.serialize(mode)
 		);
 		j["blockSize"] = blockSize;
-		for(unsigned int n = 0; n < data.size(); n++)
-			j["data"].push_back(data[n]);
+		for(unsigned int n = 0; n < data.size(); n++){
+			//Convert the reference data[n] to an actual bool to
+			//get the code to compile on Mac. Some issue with the
+			//nlohmann library on Mac. Replace by the single
+			//commented out line when it is working again.
+			bool d = data[n];
+			j["data"].push_back(d);
+//			j["data"].push_back(data[n]);
+		}
 
 		j["allowIndexOutOfBoundsAccess"] = allowIndexOutOfBoundsAccess;
 		j["defaultValue"] = defaultValue;
