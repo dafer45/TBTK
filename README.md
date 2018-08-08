@@ -240,7 +240,6 @@ the MIT license.
 # Cite
 #### To cite TBTK, mention TBTK in the text and cite
 Kristofer Björnson, TBTK: A quantum mechanics software development kit, arXiv:1808.02409 (2018).  
-[![DOI](https://zenodo.org/badge/50950512.svg)](https://zenodo.org/badge/latestdoi/50950512)  
 Kristofer Björnson, & Andreas Theiler. (2018). Zenodo. http://doi.org/10.5281/zenodo.556398
 
 #### If you use the ChebyshevSolver to produce results, please also cite the following references:
