@@ -72,7 +72,7 @@ public:
 	 *
 	 *  Identical to the overriden function, except that it also sets the
 	 *  energy type to EnergyType::Real. */
-	virtual void setEnergyWindow(
+/*	virtual void setEnergyWindow(
 		double lowerBound,
 		double upperBound,
 		int resolution
@@ -86,7 +86,7 @@ public:
 		int upperFermionicMatsubaraEnergyIndex,
 		int lowerBosonicMatsubaraEnergyIndex,
 		int upperBosonicMatsubaraEnergyIndex
-	);
+	);*/
 
 	/** Get eigenvalues. The eigenvalues are ordered first by block, and
 	 *  then in accending order. This means that eigenvalues for blocks
@@ -303,12 +303,12 @@ private:
 	//TODO
 	//These variables should be made part of the PropertyExtractor instead
 	//once it has been tested to work for this specific case.
-	enum class EnergyType{Real, Matsubara};
+/*	enum class EnergyType{Real, Matsubara};
 	EnergyType energyType;
 	int lowerFermionicMatsubaraEnergyIndex;
 	int upperFermionicMatsubaraEnergyIndex;
 	int lowerBosonicMatsubaraEnergyIndex;
-	int upperBosonicMatsubaraEnergyIndex;
+	int upperBosonicMatsubaraEnergyIndex;*/
 };
 
 inline double BlockDiagonalizer::getEigenValue(int state) const{

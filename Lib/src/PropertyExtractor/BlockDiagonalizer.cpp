@@ -33,13 +33,13 @@ namespace PropertyExtractor{
 
 BlockDiagonalizer::BlockDiagonalizer(Solver::BlockDiagonalizer &bSolver){
 	this->bSolver = &bSolver;
-	energyType = EnergyType::Real;
+//	energyType = EnergyType::Real;
 }
 
 BlockDiagonalizer::~BlockDiagonalizer(){
 }
 
-void BlockDiagonalizer::setEnergyWindow(
+/*void BlockDiagonalizer::setEnergyWindow(
 	double lowerBound,
 	double upperBound,
 	int resolution
@@ -97,7 +97,7 @@ void BlockDiagonalizer::setEnergyWindow(
 		= lowerBosonicMatsubaraEnergyIndex;
 	this->upperBosonicMatsubaraEnergyIndex
 		= upperBosonicMatsubaraEnergyIndex;
-}
+}*/
 
 /*void BPropertyExtractor::saveEigenValues(string path, string filename){
 	stringstream ss;
@@ -397,6 +397,11 @@ Property::GreensFunction BlockDiagonalizer::calculateGreensFunction(
 	}
 	case Property::GreensFunction::Type::Matsubara:
 	{
+		int lowerFermionicMatsubaraEnergyIndex
+			= getLowerFermionicMatsubaraEnergyIndex();
+		int upperFermionicMatsubaraEnergyIndex
+			= getUpperFermionicMatsubaraEnergyIndex();
+
 		TBTKAssert(
 			lowerFermionicMatsubaraEnergyIndex
 				<= upperFermionicMatsubaraEnergyIndex,
@@ -464,7 +469,7 @@ Property::GreensFunction BlockDiagonalizer::calculateGreensFunction(
 
 Property::DOS BlockDiagonalizer::calculateDOS(){
 	TBTKAssert(
-		energyType == EnergyType::Real,
+		getEnergyType() == EnergyType::Real,
 		"PropertyExtractor::BlockDiagonalizer::calculateDOS()",
 		"Only real energies supported for the DOS.",
 		"Use PropertyExtractor::BlockDiagonalizer::setEnergyWindow()"
@@ -715,7 +720,7 @@ Property::LDOS BlockDiagonalizer::calculateLDOS(
 	);
 
 	TBTKAssert(
-		energyType == EnergyType::Real,
+		getEnergyType() == EnergyType::Real,
 		"PropertyExtractor::BlockDiagonalizer::calculateLDOS()",
 		"Only real energies supported for the LDOS.",
 		"Use PropertyExtractor::BlockDiagonalizer::setEnergyWindow()"
@@ -850,7 +855,7 @@ Property::SpinPolarizedLDOS BlockDiagonalizer::calculateSpinPolarizedLDOS(
 	);
 
 	TBTKAssert(
-		energyType == EnergyType::Real,
+		getEnergyType() == EnergyType::Real,
 		"PropertyExtractor::BlockDiagonalizer::calculateSpinPolarizedLDOS()",
 		"Only real energies supported for the SpinPolarizedLDOS.",
 		"Use PropertyExtractor::BlockDiagonalizer::setEnergyWindow()"
