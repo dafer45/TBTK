@@ -1,6 +1,7 @@
 #include "TBTK/PropertyExtractor/BlockDiagonalizer.h"
 #include "TBTK/PropertyExtractor/Diagonalizer.h"
 #include "TBTK/Solver/Diagonalizer.h"
+#include "TBTK/UnitHandler.h"
 #include <cmath>
 
 #include "gtest/gtest.h"
@@ -333,48 +334,193 @@ TEST(BlockDiagonalizer, calculateWaveFunction){
 TEST(BlockDiagonalizer, calculateGreensFunction){
 	SETUP_MODEL();
 	SETUP_AND_RUN_SOLVER();
+
+	//Setup patterns to calculate the Green's function for.
+	std::vector<Index> patterns;
+	for(int k = 0; k < SIZE; k++)
+		patterns.push_back({{k, IDX_ALL}, {k, IDX_ALL}});
+
+	////////////////////////////////////////////
+	// Advanced and Retarded Green's function //
+	////////////////////////////////////////////
+
 	const double LOWER_BOUND = -100;
 	const double UPPER_BOUND = 100;
 	const int RESOLUTION = 1000;
 
-	//Setup the PropertyExtractor
+	for(int n = 0; n < 2; n++){
+		//Setup the PropertyExtractor
+		BlockDiagonalizer propertyExtractor(solver);
+		propertyExtractor.setEnergyWindow(
+			LOWER_BOUND,
+			UPPER_BOUND,
+			RESOLUTION
+		);
+		propertyExtractor.setEnergyInfinitesimal(200./SIZE);
+
+		//Calculate the Green's function for every block.
+		Property::GreensFunction greensFunction;
+		if(n == 0){
+			greensFunction
+				= propertyExtractor.calculateGreensFunction(
+					patterns,
+					Property::GreensFunction::Type::Advanced
+				);
+		}
+		else{
+			greensFunction
+				= propertyExtractor.calculateGreensFunction(
+					patterns,
+					Property::GreensFunction::Type::Retarded
+				);
+		}
+
+		//Check the energy window values.
+		EXPECT_DOUBLE_EQ(greensFunction.getLowerBound(), LOWER_BOUND);
+		EXPECT_DOUBLE_EQ(greensFunction.getUpperBound(), UPPER_BOUND);
+		EXPECT_EQ(greensFunction.getResolution(), RESOLUTION);
+
+		//Check the calculation of the Green's function against results for the
+		//Diagonalizer.
+		for(int k = 0; k < SIZE; k++){
+			//Setup the PropertyExtractor for the Diagonalizer.
+			Diagonalizer propertyExtractorDiagonalizer(
+				solverDiagonalizer[k]
+			);
+			propertyExtractorDiagonalizer.setEnergyWindow(
+				LOWER_BOUND,
+				UPPER_BOUND,
+				RESOLUTION
+			);
+			propertyExtractorDiagonalizer.setEnergyInfinitesimal(
+				200./SIZE
+			);
+
+			//Calculate the Green's function for a single block using the
+			//Diagonalizer.
+			Property::GreensFunction greensFunctionDiagonalizer;
+			if(n == 0){
+				greensFunctionDiagonalizer
+					= propertyExtractorDiagonalizer.calculateGreensFunction(
+						{
+							{
+								Index({IDX_ALL}),
+								Index({IDX_ALL})
+							}
+						},
+						Property::GreensFunction::Type::Advanced
+					);
+			}
+			else{
+				greensFunctionDiagonalizer
+					= propertyExtractorDiagonalizer.calculateGreensFunction(
+						{
+							{
+								Index({IDX_ALL}),
+								Index({IDX_ALL})
+							}
+						},
+						Property::GreensFunction::Type::Retarded
+					);
+			}
+
+			//Perform the check for each value.
+			for(unsigned int n = 0; n < RESOLUTION; n++){
+				for(int c = 0; c < 2; c++){
+					for(int m = 0; m < 2; m++){
+						//Real part.
+						EXPECT_NEAR(
+							real(greensFunction({{k, c}, {k, m}}, n)),
+							real(
+								greensFunctionDiagonalizer(
+									{Index({c}), Index({m})},
+									n
+								)
+							),
+							EPSILON_100
+						);
+
+						//Imaginary part.
+						EXPECT_NEAR(
+							imag(greensFunction({{k, c}, {k, m}}, n)),
+							imag(
+								greensFunctionDiagonalizer(
+									{Index({c}), Index({m})},
+									n
+								)
+							),
+							EPSILON_100
+						);
+					}
+				}
+			}
+		}
+	}
+
+	////////////////////////////////
+	// Matsubara Green's function //
+	////////////////////////////////
+
+	//Check the calculation of the Matsubara Green's function against
+	//results for the Diagonalizer.
+	const double TEMPERATURE = 1;
+	const double KT = UnitHandler::getK_BN()*TEMPERATURE;
+	const std::complex<double> FUNDAMENTAL_MATSUBARA_ENERGY
+		= std::complex<double>(0, 1)*M_PI*KT;
+	model.setTemperature(TEMPERATURE);
+	const int LOWER_MATSUBARA_ENERGY_INDEX = -11;
+	const int UPPER_MATSUBARA_ENERGY_INDEX = 11;
+	const int NUM_MATSUBARA_ENERGIES = 12;
+
+	//Setup the PropertyExtractor.
 	BlockDiagonalizer propertyExtractor(solver);
 	propertyExtractor.setEnergyWindow(
-		LOWER_BOUND,
-		UPPER_BOUND,
-		RESOLUTION
+		LOWER_MATSUBARA_ENERGY_INDEX,
+		UPPER_MATSUBARA_ENERGY_INDEX,
+		0,
+		0
 	);
-	propertyExtractor.setEnergyInfinitesimal(200./SIZE);
 
 	//Calculate the Green's function for every block.
-	std::vector<Index> patterns;
-	for(int k = 0; k < SIZE; k++)
-		patterns.push_back({{k, IDX_ALL}, {k, IDX_ALL}});
 	Property::GreensFunction greensFunction
 		= propertyExtractor.calculateGreensFunction(
 			patterns,
-			Property::GreensFunction::Type::Retarded
+			Property::GreensFunction::Type::Matsubara
 		);
 
-	//Check the energy window values.
-	EXPECT_DOUBLE_EQ(greensFunction.getLowerBound(), LOWER_BOUND);
-	EXPECT_DOUBLE_EQ(greensFunction.getUpperBound(), UPPER_BOUND);
-	EXPECT_EQ(greensFunction.getResolution(), RESOLUTION);
+	//Check the energy window values and the fundamental Matsubara energy.
+	EXPECT_EQ(
+		greensFunction.getLowerMatsubaraEnergyIndex(),
+		LOWER_MATSUBARA_ENERGY_INDEX
+	);
+	EXPECT_EQ(
+		greensFunction.getUpperMatsubaraEnergyIndex(),
+		UPPER_MATSUBARA_ENERGY_INDEX
+	);
+	EXPECT_EQ(
+		greensFunction.getNumMatsubaraEnergies(),
+		NUM_MATSUBARA_ENERGIES
+	);
+	EXPECT_DOUBLE_EQ(
+		greensFunction.getFundamentalMatsubaraEnergy(),
+		imag(FUNDAMENTAL_MATSUBARA_ENERGY)
+	);
 
-	//Check the calculate Green's function against results for the
+	//Check the calculation of the Green's function against results for the
 	//Diagonalizer.
 	for(int k = 0; k < SIZE; k++){
+		//Change the temperature for the Diagonalizer model.
+		modelDiagonalizer[k].setTemperature(TEMPERATURE);
+
 		//Setup the PropertyExtractor for the Diagonalizer.
 		Diagonalizer propertyExtractorDiagonalizer(
 			solverDiagonalizer[k]
 		);
 		propertyExtractorDiagonalizer.setEnergyWindow(
-			LOWER_BOUND,
-			UPPER_BOUND,
-			RESOLUTION
-		);
-		propertyExtractorDiagonalizer.setEnergyInfinitesimal(
-			200./SIZE
+			LOWER_MATSUBARA_ENERGY_INDEX,
+			UPPER_MATSUBARA_ENERGY_INDEX,
+			0,
+			0
 		);
 
 		//Calculate the Green's function for a single block using the
@@ -382,11 +528,11 @@ TEST(BlockDiagonalizer, calculateGreensFunction){
 		Property::GreensFunction greensFunctionDiagonalizer
 			= propertyExtractorDiagonalizer.calculateGreensFunction(
 				{{Index({IDX_ALL}), Index({IDX_ALL})}},
-				Property::GreensFunction::Type::Retarded
+				Property::GreensFunction::Type::Matsubara
 			);
 
 		//Perform the check for each value.
-		for(unsigned int n = 0; n < RESOLUTION; n++){
+		for(unsigned int n = 0; n < NUM_MATSUBARA_ENERGIES; n++){
 			for(int c = 0; c < 2; c++){
 				for(int m = 0; m < 2; m++){
 					//Real part.
@@ -416,9 +562,6 @@ TEST(BlockDiagonalizer, calculateGreensFunction){
 			}
 		}
 	}
-
-	//TODO
-	//Test calculation of Property::GreensFunction::Type::Matsubara.
 }
 
 TEST(BlockDiagonalizer, calculateDOS){
