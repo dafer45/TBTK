@@ -254,11 +254,55 @@ Property::GreensFunction Diagonalizer::calculateGreensFunction(
 
 		break;
 	}
+	case Property::GreensFunction::Type::Matsubara:
+	{
+		int lowerFermionicMatsubaraEnergyIndex
+			= getLowerFermionicMatsubaraEnergyIndex();
+		int upperFermionicMatsubaraEnergyIndex
+			= getUpperFermionicMatsubaraEnergyIndex();
+
+		TBTKAssert(
+			lowerFermionicMatsubaraEnergyIndex
+				<= upperFermionicMatsubaraEnergyIndex,
+			"PropertyExtractor::Diagonalizer::caluclateGreensFunction()",
+			"'lowerFermionicMatsubaraEnergyIndex="
+			<< lowerFermionicMatsubaraEnergyIndex << "' must be"
+			<< " less or equal to"
+			<< " 'upperFermionicMatsubaraEnergyIndex="
+			<< upperFermionicMatsubaraEnergyIndex << "'.",
+			"This should never happen, contact the developer."
+		);
+
+		double temperature = dSolver->getModel().getTemperature();
+		double kT = UnitHandler::getK_BN()*temperature;
+		double fundamentalMatsubaraEnergy = M_PI*kT;
+
+		greensFunction = Property::GreensFunction(
+			memoryLayout,
+			lowerFermionicMatsubaraEnergyIndex,
+			upperFermionicMatsubaraEnergyIndex,
+			fundamentalMatsubaraEnergy
+		);
+
+		hint = &greensFunction;
+
+		calculate(
+			calculateGreensFunctionCallback,
+			allIndices,
+			memoryLayout,
+			greensFunction
+		);
+
+		hint = nullptr;
+
+		break;
+	}
 	default:
 		TBTKExit(
 			"PropertyExtractor::Diagonalizer::calculateGreensFunction()",
-			"Only type Property::GreensFunction::Type::Advanced"
-			<< " and Property::GrensFunction::Type::Retarded"
+			"Only type Property::GreensFunction::Type::Advanced,"
+			<< " Property::GrensFunction::Type::Retarded, and"
+			<< " Property::GreensFunction::Type::Matsubara"
 			<< " supported yet.",
 			""
 		);
@@ -764,23 +808,37 @@ void Diagonalizer::calculateGreensFunctionCallback(
 ){
 	Diagonalizer *pe = (Diagonalizer*)cb_this;
 
-	double lowerBound = pe->getLowerBound();
-	double upperBound = pe->getUpperBound();
-	int energyResolution = pe->getEnergyResolution();
-	double dE = (upperBound - lowerBound)/energyResolution;
-	double delta = pe->getEnergyInfinitesimal();
-
 	vector<Index> components = index.split();
 
 	Property::GreensFunction &gf = *(Property::GreensFunction*)pe->hint;
 
 	switch(gf.getType()){
 	case Property::GreensFunction::Type::Advanced:
-		delta *= -1;
 	case Property::GreensFunction::Type::Retarded:
 	{
+		double lowerBound = pe->getLowerBound();
+		double upperBound = pe->getUpperBound();
+		int energyResolution = pe->getEnergyResolution();
+		double dE = (upperBound - lowerBound)/energyResolution;
+		double delta;
+		switch(gf.getType()){
+			case Property::GreensFunction::Type::Advanced:
+				delta = -pe->getEnergyInfinitesimal();
+				break;
+			case Property::GreensFunction::Type::Retarded:
+				delta = pe->getEnergyInfinitesimal();
+				break;
+			default:
+				TBTKExit(
+					"Diagonalizer::calculateGreensFunctionCallback()",
+					"Unknown Green's function type.",
+					"This should never happen, contact the developer."
+				);
+		}
+
 		for(int e = 0; e < energyResolution; e++){
 			double E = lowerBound + e*dE;
+
 			for(
 				int n = 0;
 				n < pe->dSolver->getModel().getBasisSize();
@@ -800,11 +858,40 @@ void Diagonalizer::calculateGreensFunctionCallback(
 
 		break;
 	}
+	case Property::GreensFunction::Type::Matsubara:
+	{
+		unsigned int numMatsubaraEnergies
+			= gf.getNumMatsubaraEnergies();
+
+		for(unsigned int e = 0; e < numMatsubaraEnergies; e++){
+			complex<double> E = gf.getMatsubaraEnergy(e);
+
+			for(
+				int n = 0;
+				n < pe->dSolver->getModel().getBasisSize();
+				n++
+			){
+				double E_n = pe->getEigenValue(n);
+				complex<double> amplitude0
+					= pe->getAmplitude(n, components[0]);
+				complex<double> amplitude1
+					= pe->getAmplitude(n, components[1]);
+				((complex<double>*)greensFunction)[offset + e]
+					+= amplitude0*conj(amplitude1)/(
+						E - E_n
+					);
+			}
+		}
+
+		break;
+	}
 	default:
 		TBTKExit(
 			"Diagonalizer::calculateGreensFunctionCallback()",
-			"Only type GreensFunction::Type::Advanced and"
-			<< " GreensFunction::Type::Retarded supported yet.",
+			"Only type Property::GreensFunction::Type::Advanced,"
+			<< " Property::GreensFunction::Type::Retarded, and"
+			<< " Property::GreensFunction::Type::Matsubara"
+			<< " supported yet.",
 			""
 		);
 	}

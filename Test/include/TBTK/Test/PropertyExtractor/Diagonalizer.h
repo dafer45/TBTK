@@ -1,5 +1,6 @@
 #include "TBTK/IndexException.h"
 #include "TBTK/PropertyExtractor/Diagonalizer.h"
+#include "TBTK/UnitHandler.h"
 #include <cmath>
 #include <complex>
 
@@ -230,6 +231,90 @@ TEST(Diagonalizer, calculateGreensFunction){
 					EPSILON_100
 				);
 			}
+		}
+	}
+
+	//Verify that the Matsubara Green's function is calculated correctly.
+	model.setTemperature(1);
+	const int LOWER_MATSUBARA_ENERGY_INDEX = -11;
+	const int UPPER_MATSUBARA_ENERGY_INDEX = 11;
+	const int NUM_MATSUBARA_ENERGIES = 12;
+	propertyExtractor.setEnergyWindow(
+		LOWER_MATSUBARA_ENERGY_INDEX,
+		UPPER_MATSUBARA_ENERGY_INDEX,
+		0,
+		0
+	);
+	Property::GreensFunction greensFunction
+		= propertyExtractor.calculateGreensFunction(
+			{{Index({IDX_ALL}), Index({0})}},
+			Property::GreensFunction::Type::Matsubara
+		);
+
+	EXPECT_EQ(
+		greensFunction.getLowerMatsubaraEnergyIndex(),
+		LOWER_MATSUBARA_ENERGY_INDEX
+	);
+	EXPECT_EQ(
+		greensFunction.getUpperMatsubaraEnergyIndex(),
+		UPPER_MATSUBARA_ENERGY_INDEX
+	);
+	EXPECT_EQ(
+		greensFunction.getNumMatsubaraEnergies(),
+		NUM_MATSUBARA_ENERGIES
+	);
+
+	std::complex<double> i(0, 1);
+	for(int x = 0; x < SIZE; x++){
+		for(int n = 0; n < NUM_MATSUBARA_ENERGIES; n++){
+			std::complex<double> gf = 0;
+			double temperature = model.getTemperature();
+			double kT = UnitHandler::getK_BN()*temperature;
+			std::complex<double> E = (
+				LOWER_MATSUBARA_ENERGY_INDEX + 2.*n
+			)*i*M_PI*kT;
+			for(unsigned int c = 0; c < SIZE; c++){
+				double E_c
+					= propertyExtractor.getEigenValue(c);
+				std::complex<double> amplitude0
+					= propertyExtractor.getAmplitude(
+						c, {x}
+					);
+				std::complex<double> amplitude1
+					= propertyExtractor.getAmplitude(
+						c, {0}
+					);
+				gf += amplitude0*conj(amplitude1)/(
+					E - E_c
+				);
+			}
+
+			EXPECT_NEAR(
+				real(
+					greensFunction(
+						{
+							Index({x}),
+							Index({0})
+						},
+						n
+					)
+				),
+				real(gf),
+				EPSILON_100
+			);
+			EXPECT_NEAR(
+				imag(
+					greensFunction(
+						{
+							Index({x}),
+							Index({0})
+						},
+						n
+					)
+				),
+				imag(gf),
+				EPSILON_100
+			);
 		}
 	}
 }
