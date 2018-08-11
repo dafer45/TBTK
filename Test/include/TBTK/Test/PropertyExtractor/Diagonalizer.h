@@ -262,6 +262,10 @@ TEST(Diagonalizer, calculateGreensFunction){
 		greensFunction.getUpperMatsubaraEnergyIndex(),
 		UPPER_MATSUBARA_ENERGY_INDEX
 	);
+	EXPECT_EQ(
+		greensFunction.getNumMatsubaraEnergies(),
+		NUM_MATSUBARA_ENERGIES
+	);
 	EXPECT_DOUBLE_EQ(
 		greensFunction.getFundamentalMatsubaraEnergy(),
 		FUNDAMENTAL_MATSUBARA_ENERGY
@@ -271,11 +275,6 @@ TEST(Diagonalizer, calculateGreensFunction){
 	for(int x = 0; x < SIZE; x++){
 		for(int n = 0; n < NUM_MATSUBARA_ENERGIES; n++){
 			std::complex<double> gf = 0;
-/*			double temperature = model.getTemperature();
-			double kT = UnitHandler::getK_BN()*temperature;
-			std::complex<double> E = (
-				LOWER_MATSUBARA_ENERGY_INDEX + 2.*n
-			)*i*M_PI*kT;*/
 			std::complex<double> E = (
 				LOWER_MATSUBARA_ENERGY_INDEX + 2.*n
 			)*i*FUNDAMENTAL_MATSUBARA_ENERGY;
