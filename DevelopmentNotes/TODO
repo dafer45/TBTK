@@ -30,9 +30,6 @@
   is also superfluous as this can be better determined from the size of the
   ranges returned by IndexDescriptor::getRanges().
 
-- Move Matsubara related information from specific PropertyExtractors to
-  PropertyExtractor::PropertyExtractor.
-
 - Remove variables such as hint and energies from the PropertyExtractors that
   are used to communicate information between the calculateXXX-functions and
   the XXXCallback-functions. Instead pass a hint parameter as argument through

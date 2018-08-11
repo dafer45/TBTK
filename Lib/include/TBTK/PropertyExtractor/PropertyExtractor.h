@@ -49,7 +49,8 @@ public:
 	/** Destructor. */
 	virtual ~PropertyExtractor();
 
-	/** Set the energy window used for energy dependent quantities.
+	/** Set the energy window used for energy dependent quantities. The
+	 *  energy window is set to be real.
 	 *
 	 *  @param lowerBound The lower bound for the energy window.
 	 *  @param upperBound The upper bound for the energy window.
@@ -59,6 +60,27 @@ public:
 		double lowerBound,
 		double upperBound,
 		int energyResolution
+	);
+
+	/** Set the energy window used for energy dependent quantities. The
+	 *  energy window is set to consist of Matsubara energies.
+	 *
+	 *  @param lowerFermionicMatsubaraEnergyIndex The lower Fermionic
+	 *  Matsubara energy index.
+	 *
+	 *  @param upperFermionicMatsubaraEnergyIndex The upper Fermionic
+	 *  Matsubara energy index.
+	 *
+	 *  @param lowerBosonicMatsubaraEnergyIndex The lower Bosonic
+	 *  Matsubara energy index.
+	 *
+	 *  @param upperBosonicMatsubaraEnergyIndex The upper Bosonic
+	 *  Matsubara energy index. */
+	virtual void setEnergyWindow(
+		int lowerFermionicMatsubaraEnergyIndex,
+		int upperFermionicMatsubaraEnergyIndex,
+		int lowerBosonicMatsubaraEnergyIndex,
+		int upperBosonicMatsubaraEnergyIndex
 	);
 
 	/** Set the size of the energy infinitesimal that can be used to add
@@ -317,6 +339,14 @@ public:
 	 *  @return The entropy. */
 	virtual double calculateEntropy();
 protected:
+	/** Energy type. */
+	enum class EnergyType{Real, Matsubara};
+
+	/** Get the energy type.
+	 *
+	 *  @return The EnergyType for the energy window. */
+	EnergyType getEnergyType() const;
+
 	/** Get the energy resolution.
 	 *
 	 *  @return The energy resolution for the energy window. */
@@ -331,6 +361,26 @@ protected:
 	 *
 	 *  @return The upper bound for the energy window. */
 	double getUpperBound() const;
+
+	/** Get the lower Fermionic Matsubara energy index.
+	 *
+	 *  @return The lower Fermionic Matsubara energy index. */
+	int getLowerFermionicMatsubaraEnergyIndex() const;
+
+	/** Get the upper Fermionic Matsubara energy index.
+	 *
+	 *  @return The upper Fermionic Matsubara energy index. */
+	int getUpperFermionicMatsubaraEnergyIndex() const;
+
+	/** Get the lower Bosonic Matsubara energy index.
+	 *
+	 *  @return The lower Bosonic Matsubara energy index. */
+	int getLowerBosonicMatsubaraEnergyIndex() const;
+
+	/** Get the upper Bosonic Matsubara energy index.
+	 *
+	 *  @return The upper Bosonic Matsubara energy index. */
+	int getUpperBosonicMatsubaraEnergyIndex() const;
 
 	/*** Get the nergy infinitesimal.
 	 *
@@ -512,23 +562,57 @@ protected:
 		const std::string &functionName
 	) const;
 private:
+	/** Energy type used for energy dependent quantities. */
+	EnergyType energyType;
+
 	/** Default energy resolution. */
 	static constexpr int ENERGY_RESOLUTION = 1000;
 
-	/** Energy resolution used for energy dependent quantities. */
+	/** Energy resolution used for energy dependent quantities when the
+	 *  energy type is EnergyType::Real. */
 	int energyResolution;
 
 	/** Default lower bound. */
 	static constexpr double LOWER_BOUND = -1.;
 
-	/** Lower bound used for energy dependent quantities. */
+	/** Lower bound used for energy dependent quantities when the energy
+	 *  type is EnergyType::Real. */
 	double lowerBound;
 
 	/** Default upper bound. */
 	static constexpr double UPPER_BOUND = 1.;
 
-	/** Upper bound used for energy dependent quantities. */
+	/** Upper bound used for energy dependent quantities when the energy
+	 *  type is EnergyType::Real. */
 	double upperBound;
+
+	/** Default lower Fermionic Matsubara energy index. */
+	static constexpr int LOWER_FERMIONIC_MATSUBARA_ENERGY_INDEX = -1;
+
+	/** Lower Fermionic Matsubara energy index used for Fermionic energies
+	 *  when the energy type is EnergyType::Matsubara. */
+	int lowerFermionicMatsubaraEnergyIndex;
+
+	/** Default upper Fermionic Matsubara energy index. */
+	static constexpr int UPPER_FERMIONIC_MATSUBARA_ENERGY_INDEX = 1;
+
+	/** Upper Fermionic Matsubara energy index used for Fermionic energies
+	 *  when the energy type is EnergyType::Matsubara. */
+	int upperFermionicMatsubaraEnergyIndex;
+
+	/** Default lower Bosonic Matsubara energy index. */
+	static constexpr int LOWER_BOSONIC_MATSUBARA_ENERGY_INDEX = 0;
+
+	/** Lower Bosonic Matsubara energy index used for Bosonic energies when
+	 *   the energy type is EnergyType::Matsubara. */
+	int lowerBosonicMatsubaraEnergyIndex;
+
+	/** Default upper Bosonic Matsubara energy index. */
+	static constexpr int UPPER_BOSONIC_MATSUBARA_ENERGY_INDEX = 0;
+
+	/** Upper Bosonic Matsubara energy index used for Bosonic energies
+	 *  when the energy type is EnergyType::Matsubara. */
+	int upperBosonicMatsubaraEnergyIndex;
 
 	/** Default energy infinitesimal. */
 	static constexpr double ENERGY_INFINITESIMAL = 1e-3;
@@ -538,16 +622,106 @@ private:
 	double energyInfinitesimal;
 };
 
+inline PropertyExtractor::EnergyType PropertyExtractor::getEnergyType() const{
+	return energyType;
+}
+
 inline int PropertyExtractor::getEnergyResolution() const{
+	TBTKAssert(
+		energyType == EnergyType::Real,
+		"PropertyExtractor::PropertyExtractor::getEnergyResolution()",
+		"The energy resolution cannot be accessed when the energy type"
+		<< " is Matsubara.",
+		"Use PropertyExtractor::PropertyExtractor::setEnergyWindow()"
+		<< " with three arguments if real energies are wanted for the"
+		<< " PropertyExtractor."
+	);
+
 	return energyResolution;
 }
 
 inline double PropertyExtractor::getLowerBound() const{
+	TBTKAssert(
+		energyType == EnergyType::Real,
+		"PropertyExtractor::PropertyExtractor::getLowerBound()",
+		"The lower bound cannot be accessed when the energy type is"
+		<< " Matsubara.",
+		"Use PropertyExtractor::PropertyExtractor::setEnergyWindow()"
+		<< " with three arguments if real energies are wanted for the"
+		<< " PropertyExtractor."
+	);
+
 	return lowerBound;
 }
 
 inline double PropertyExtractor::getUpperBound() const{
+	TBTKAssert(
+		energyType == EnergyType::Real,
+		"PropertyExtractor::PropertyExtractor::getUpperBound()",
+		"The upper bound cannot be accessed when the energy type is"
+		<< " Matsubara.",
+		"Use PropertyExtractor::PropertyExtractor::setEnergyWindow()"
+		<< " with three arguments if real energies are wanted for the"
+		<< " PropertyExtractor."
+	);
+
 	return upperBound;
+}
+
+inline int PropertyExtractor::getLowerFermionicMatsubaraEnergyIndex() const{
+	TBTKAssert(
+		energyType == EnergyType::Matsubara,
+		"PropertyExtractor::PropertyExtractor::getLowerFermionicMatsubaraEnergyIndex()",
+		"The lower Fermionic Matsubara energy index cannot be accessed"
+		<< " when the energy type is real.",
+		"Use PropertyExtractor::PropertyExtractor::setEnergyWindow()"
+		<< " with four arguments if Matsubara energies are wanted for"
+		<< " the PropertyExtractor."
+	);
+
+	return lowerFermionicMatsubaraEnergyIndex;
+}
+
+inline int PropertyExtractor::getUpperFermionicMatsubaraEnergyIndex() const{
+	TBTKAssert(
+		energyType == EnergyType::Matsubara,
+		"PropertyExtractor::PropertyExtractor::getUpperFermionicMatsubaraEnergyIndex()",
+		"The upper Fermionic Matsubara energy index cannot be accessed"
+		<< " when the energy type is real.",
+		"Use PropertyExtractor::PropertyExtractor::setEnergyWindow()"
+		<< " with four arguments if Matsubara energies are wanted for"
+		<< " the PropertyExtractor."
+	);
+
+	return upperFermionicMatsubaraEnergyIndex;
+}
+
+inline int PropertyExtractor::getLowerBosonicMatsubaraEnergyIndex() const{
+	TBTKAssert(
+		energyType == EnergyType::Matsubara,
+		"PropertyExtractor::PropertyExtractor::getLowerBosonicMatsubaraEnergyIndex()",
+		"The lower Bosonic Matsubara energy index cannot be accessed"
+		<< " when the energy type is real.",
+		"Use PropertyExtractor::PropertyExtractor::setEnergyWindow()"
+		<< " with four arguments if Matsubara energies are wanted for"
+		<< " the PropertyExtractor."
+	);
+
+	return lowerBosonicMatsubaraEnergyIndex;
+}
+
+inline int PropertyExtractor::getUpperBosonicMatsubaraEnergyIndex() const{
+	TBTKAssert(
+		energyType == EnergyType::Matsubara,
+		"PropertyExtractor::PropertyExtractor::getUpperBosonicMatsubaraEnergyIndex()",
+		"The upper Bosonic Matsubara energy index cannot be accessed"
+		<< " when the energy type is real.",
+		"Use PropertyExtractor::PropertyExtractor::setEnergyWindow()"
+		<< " with four arguments if Matsubara energies are wanted for"
+		<< " the PropertyExtractor."
+	);
+
+	return upperBosonicMatsubaraEnergyIndex;
 }
 
 inline double PropertyExtractor::getEnergyInfinitesimal() const{

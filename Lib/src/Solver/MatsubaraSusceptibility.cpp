@@ -48,10 +48,29 @@ MatsubaraSusceptibility* MatsubaraSusceptibility::createSlave(){
 }
 
 vector<complex<double>> MatsubaraSusceptibility::calculateSusceptibility(
-	const Index &index
+	const Index &index,
+	const std::vector<std::complex<double>> &energies
+){
+	TBTKExit(
+		"Solver::MatsubaraSusceptibility::calculateSusceptibility()",
+		"This function is not supported for this solver. The"
+		<< " Susceptibility cannot be calculated for arbitrary"
+		<< " energies, but is restricted to a range of Matsubara"
+		<< " energy indices.",
+		"Use the same function with lowerMatsubaraEnergyIndex and"
+		<< " upperMatsubaraEnergyIndex arguments instead of the"
+		<< " energies argument. Alternatively use"
+		<< " Solver::LindhardSusceptibility."
+	);
+}
+
+vector<complex<double>> MatsubaraSusceptibility::calculateSusceptibility(
+	const Index &index,
+	int lowerMatsubaraEnergyIndex,
+	int upperMatsubaraEnergyIndex
 ){
 	TBTKNotYetImplemented(
-		"MatsubaraSusceptibility::calculateSusceptibility()"
+		"Solver::MatsubaraSusceptibility::calculateSusceptibility()"
 	);
 
 	vector<Index> components = index.split();
@@ -71,6 +90,32 @@ vector<complex<double>> MatsubaraSusceptibility::calculateSusceptibility(
 	};
 
 	TBTKAssert(
+		lowerMatsubaraEnergyIndex <= upperMatsubaraEnergyIndex,
+		"Solver::MatsubaraSusceptibility::calculateSusceptibility()",
+		"The lowerMatsubaraEnergyIndex='" << lowerMatsubaraEnergyIndex
+		<< "' must be less or equal to the upperMatsubaraEnergyIndex='"
+		<< upperMatsubaraEnergyIndex << "'.",
+		""
+	);
+	TBTKAssert(
+		lowerMatsubaraEnergyIndex%2 == 0,
+		"Solver::MatsubaraSusceptibility::calculateSusceptibility()",
+		"The lowerMatsubaraEnergyIndex='" << lowerMatsubaraEnergyIndex
+		<< "' must be even.",
+		""
+	);
+	TBTKAssert(
+		upperMatsubaraEnergyIndex%2 == 0,
+		"Solver::MatsubaraSusceptibility::calculateSusceptibility()",
+		"The upperMatsubaraEnergyIndex='" << upperMatsubaraEnergyIndex
+		<< "' must be even.",
+		""
+	);
+	unsigned int numMatsubaraEnergiesSusceptibility = (
+		upperMatsubaraEnergyIndex - lowerMatsubaraEnergyIndex
+	)/2 + 1;
+
+	TBTKAssert(
 		greensFunction.getEnergyType()
 			== Property::EnergyResolvedProperty<
 				complex<double>
@@ -80,19 +125,17 @@ vector<complex<double>> MatsubaraSusceptibility::calculateSusceptibility(
 		<< " Property::EnergyResolvedProperty::EnergyType::FermionMatsubara",
 		""
 	);
-	unsigned int numMatsubaraEnergies
+	unsigned int numMatsubaraEnergiesGreensFunction
 		= greensFunction.getNumMatsubaraEnergies();
-//	unsigned int lowerFermionicMatsubaraEnergyIndex
-//		= greensFunction.getLowerMatsubaraEnergyIndex();
-//	vector<int> matsubaraIndices;
-//	for(unsigned int n = 0; n < numMatsubaraEnergies; n++)
-//		matsubaraIndices[n] = lowerFermionicMatsubaraEnergyIndex + 2*n;
+	int lowerMatsubaraEnergyIndexGreensFunction
+		= greensFunction.getLowerMatsubaraEnergyIndex();
+	int upperMatsubaraEnergyIndexGreensFunction
+		= greensFunction.getUpperMatsubaraEnergyIndex();
 
 	vector<complex<double>> susceptibility;
-	susceptibility.reserve(numMatsubaraEnergies);
-	for(unsigned int n = 0; n < numMatsubaraEnergies; n++){
+	susceptibility.reserve(numMatsubaraEnergiesSusceptibility);
+	for(unsigned int n = 0; n < numMatsubaraEnergiesSusceptibility; n++)
 		susceptibility.push_back(0.);
-	}
 
 	const MomentumSpaceContext &momentumSpaceContext
 		= getMomentumSpaceContext();
@@ -121,39 +164,75 @@ vector<complex<double>> MatsubaraSusceptibility::calculateSusceptibility(
 			numMeshPoints
 		);
 
-		for(unsigned int n = 0; n < numMatsubaraEnergies; n++){
-			for(unsigned int c = 0; c < numMatsubaraEnergies; c++){
-/*				if(n+c >= numMatsubaraEnergies)
-					continue;
+		for(
+			int susceptibilityEnergyIndex = 0;
+			susceptibilityEnergyIndex
+				< (int)numMatsubaraEnergiesSusceptibility;
+			susceptibilityEnergyIndex++
+		){
+			int matsubaraEnergyIndexExternal
+				= lowerMatsubaraEnergyIndex
+					+ 2*susceptibilityEnergyIndex;
+			for(
+				int firstEnergyIndex = 0;
+				firstEnergyIndex
+					< (int)numMatsubaraEnergiesGreensFunction;
+				firstEnergyIndex++
+			){
+				int matsubaraEnergyIndexInternal
+					= lowerMatsubaraEnergyIndexGreensFunction
+						+ 2*firstEnergyIndex;
 
-				susceptibility[n] += greensFunction(
-					{
-						Index(
-							qIndex,
-							intraBlockIndices[3]
-						),
-						Index(
-							qIndex,
-							intraBlockIndices[0]
-						)
-					},
-					c
-				)*greensFunction(
-					{
-						Index(
-							kPlusQIndex,
-							intraBlockIndices[1]
-						),
-						Index(
-							kPlusQIndex,
-							intraBlockIndices[2]
-						)
-					},
-					n + c
-				);*/
+				int  sumMatsubaraEnergyIndices
+					= matsubaraEnergyIndexInternal
+						+ matsubaraEnergyIndexExternal;
+				if(
+					sumMatsubaraEnergyIndices
+					< lowerMatsubaraEnergyIndexGreensFunction
+					|| sumMatsubaraEnergyIndices
+					> upperMatsubaraEnergyIndexGreensFunction
+				){
+					continue;
+				}
+
+				int secondEnergyIndex = (
+					sumMatsubaraEnergyIndices
+					- lowerMatsubaraEnergyIndexGreensFunction
+				)/2;
+
+				susceptibility[susceptibilityEnergyIndex]
+					-= greensFunction(
+						{
+							Index(
+								qIndex,
+								intraBlockIndices[3]
+							),
+							Index(
+								qIndex,
+								intraBlockIndices[0]
+							)
+						},
+						firstEnergyIndex
+					)*greensFunction(
+						{
+							Index(
+								kPlusQIndex,
+								intraBlockIndices[1]
+							),
+							Index(
+								kPlusQIndex,
+								intraBlockIndices[2]
+							)
+						},
+						secondEnergyIndex
+					);
 			}
 		}
 	}
+
+	double kT = greensFunction.getFundamentalMatsubaraEnergy()/M_PI;
+	for(unsigned int n = 0; n < numMatsubaraEnergiesSusceptibility; n++)
+		susceptibility[n] /= mesh.size()/kT;
 
 	return susceptibility;
 }

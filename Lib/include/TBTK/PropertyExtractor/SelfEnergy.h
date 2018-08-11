@@ -44,21 +44,21 @@ public:
 	SelfEnergy(Solver::SelfEnergy &solver);
 
 	/** Overrides PropertyExtractor::setEnergyWindow(). */
-	virtual void setEnergyWindow(
+/*	virtual void setEnergyWindow(
 		double lowerBound,
 		double upperBound,
 		int resolution
-	);
+	);*/
 
 	//TODO
 	//This should be extended to become part of the PropertyExtractor
 	//interface once its tested to work well for this specific case.
-	virtual void setEnergyWindow(
+/*	virtual void setEnergyWindow(
 		int lowerFermionicMatsubaraEnergyIndex,
 		int upperFermionicMatsubaraEnergyIndex,
 		int lowerBosonicMatsubaraEnergyIndex,
 		int upperBosonicEnergyIndex
-	);
+	);*/
 
 	/** Calculates the Susceptibility. */
 	virtual Property::SelfEnergy calculateSelfEnergy(
@@ -83,12 +83,12 @@ private:
 	//TODO
 	//These variables should be made part if the PropertyExtractor instead
 	//once its been tested to work well for this specific case.
-	enum class EnergyType{Real, Matsubara};
+/*	enum class EnergyType{Real, Matsubara};
 	EnergyType energyType;
 	int lowerFermionicMatsubaraEnergyIndex;
 	int upperFermionicMatsubaraEnergyIndex;
 	int lowerBosonicMatsubaraEnergyIndex;
-	int upperBosonicMatsubaraEnergyIndex;
+	int upperBosonicMatsubaraEnergyIndex;*/
 };
 
 };	//End of namespace PropertyExtractor

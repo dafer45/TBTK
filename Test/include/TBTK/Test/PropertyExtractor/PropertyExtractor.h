@@ -24,6 +24,22 @@ public:
 		return PropertyExtractor::getEnergyResolution();
 	}
 
+	int getLowerFermionicMatsubaraEnergyIndex() const{
+		return PropertyExtractor::getLowerFermionicMatsubaraEnergyIndex();
+	}
+
+	int getUpperFermionicMatsubaraEnergyIndex() const{
+		return PropertyExtractor::getUpperFermionicMatsubaraEnergyIndex();
+	}
+
+	int getLowerBosonicMatsubaraEnergyIndex() const{
+		return PropertyExtractor::getLowerBosonicMatsubaraEnergyIndex();
+	}
+
+	int getUpperBosonicMatsubaraEnergyIndex() const{
+		return PropertyExtractor::getUpperBosonicMatsubaraEnergyIndex();
+	}
+
 	void calculate(
 		void(*callback)(
 			PropertyExtractor *cb_this,
@@ -137,7 +153,7 @@ TEST(PropertyExtractor, Destructor){
 	//Not testable on its own.
 }
 
-TEST(PropertyExtractor, setEnergyWindow){
+TEST(PropertyExtractor, setEnergyWindowReal){
 	PublicPropertyExtractor propertyExtractor;
 
 	//Verify that the energy windows is properly set.
@@ -145,6 +161,143 @@ TEST(PropertyExtractor, setEnergyWindow){
 	EXPECT_DOUBLE_EQ(propertyExtractor.getLowerBound(), -10);
 	EXPECT_DOUBLE_EQ(propertyExtractor.getUpperBound(), 10);
 	EXPECT_EQ(propertyExtractor.getEnergyResolution(), 100);
+
+	//Print error message when accessing Matsubara quantities.
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteOut();
+			propertyExtractor.getLowerFermionicMatsubaraEnergyIndex();
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteOut();
+			propertyExtractor.getUpperFermionicMatsubaraEnergyIndex();
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteOut();
+			propertyExtractor.getLowerBosonicMatsubaraEnergyIndex();
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteOut();
+			propertyExtractor.getUpperBosonicMatsubaraEnergyIndex();
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+TEST(PropertyExtractor, setEnergyWindowMatsubara){
+	PublicPropertyExtractor propertyExtractor;
+
+	//Verify that the energy windows is properly set.
+	propertyExtractor.setEnergyWindow(-11, 11, -10, 10);
+	EXPECT_DOUBLE_EQ(
+		propertyExtractor.getLowerFermionicMatsubaraEnergyIndex(),
+		-11
+	);
+	EXPECT_DOUBLE_EQ(
+		propertyExtractor.getUpperFermionicMatsubaraEnergyIndex(),
+		11
+	);
+	EXPECT_DOUBLE_EQ(
+		propertyExtractor.getLowerBosonicMatsubaraEnergyIndex(),
+		-10
+	);
+	EXPECT_DOUBLE_EQ(
+		propertyExtractor.getUpperBosonicMatsubaraEnergyIndex(),
+		10
+	);
+
+	//Print error message for even Fermionic indices, and odd Bosonic
+	//indices.
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteOut();
+			propertyExtractor.setEnergyWindow(-10, 11, -10, 10);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteOut();
+			propertyExtractor.setEnergyWindow(-11, 10, -10, 10);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteOut();
+			propertyExtractor.setEnergyWindow(-11, 11, -11, 10);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteOut();
+			propertyExtractor.setEnergyWindow(-11, 11, -10, 11);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+
+	//Print error message if the lower index is larger than the upper
+	//index.
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteOut();
+			propertyExtractor.setEnergyWindow(11, -11, -10, 10);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteOut();
+			propertyExtractor.setEnergyWindow(-11, 11, 10, -10);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+
+	//Print error message when accessing real quantities.
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteOut();
+			propertyExtractor.getLowerBound();
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteOut();
+			propertyExtractor.getUpperBound();
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteOut();
+			propertyExtractor.getEnergyResolution();
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
 }
 
 TEST(PropertyExtractor, calculateDensityRangesFormat){
@@ -301,16 +454,50 @@ TEST(PropertyExtractor, calculateEntropy){
 	);
 }
 
+TEST(PropertyExtractor, getEnergyType){
+	//Not testable on its own.
+}
+
 TEST(PropertyExtractor, getEnergyResolution){
-	//Already tested through PropertyExtractor::setEnergyWindow().
+	//Already tested through
+	//PropertyExtractor::setEnergyWindowReal.
+	//PropertyExtractor::setEnergyWindowMatsubara.
 }
 
 TEST(PropertyExtractor, getLowerBound){
-	//Already tested through PropertyExtractor::setEnergyWindow().
+	//Already tested through
+	//PropertyExtractor::setEnergyWindowReal.
+	//PropertyExtractor::setEnergyWindowMatsubara.
 }
 
 TEST(PropertyExtractor, getUpperBound){
-	//Already tested through PropertyExtractor::setEnergyWindow().
+	//Already tested through
+	//PropertyExtractor::setEnergyWindowReal.
+	//PropertyExtractor::setEnergyWindowMatsubara.
+}
+
+TEST(PropertyExtractor, getLowerFermionicMatsubaraEnergyIndex){
+	//Already tested through
+	//PropertyExtractor::setEnergyWindowReal.
+	//PropertyExtractor::setEnergyWindowMatsubara.
+}
+
+TEST(PropertyExtractor, getUpperFermionicMatsubaraEnergyIndex){
+	//Already tested through
+	//PropertyExtractor::setEnergyWindowReal.
+	//PropertyExtractor::setEnergyWindowMatsubara.
+}
+
+TEST(PropertyExtractor, getLowerBosonicMatsubaraEnergyIndex){
+	//Already tested through
+	//PropertyExtractor::setEnergyWindowReal.
+	//PropertyExtractor::setEnergyWindowMatsubara.
+}
+
+TEST(PropertyExtractor, getUpperBosonicMatsubaraEnergyIndex){
+	//Already tested through
+	//PropertyExtractor::setEnergyWindowReal.
+	//PropertyExtractor::setEnergyWindowMatsubara.
 }
 
 //Helper function for TEST(PropertyExtractor, calculateRanges).

@@ -36,7 +36,7 @@ SelfEnergy::SelfEnergy(
 	this->solver = &solver;
 }
 
-void SelfEnergy::setEnergyWindow(
+/*void SelfEnergy::setEnergyWindow(
 	double lowerBound,
 	double upperBound,
 	int resolution
@@ -47,7 +47,7 @@ void SelfEnergy::setEnergyWindow(
 		resolution
 	);
 
-	energyType = EnergyType::Real;
+//	energyType = EnergyType::Real;
 }
 
 void SelfEnergy::setEnergyWindow(
@@ -94,7 +94,7 @@ void SelfEnergy::setEnergyWindow(
 		= lowerBosonicMatsubaraEnergyIndex;
 	this->upperBosonicMatsubaraEnergyIndex
 		= upperBosonicMatsubaraEnergyIndex;
-}
+}*/
 
 Property::SelfEnergy SelfEnergy::calculateSelfEnergy(
 //	std::initializer_list<Index> patterns
@@ -342,6 +342,11 @@ Property::SelfEnergy SelfEnergy::calculateSelfEnergy(
 	switch(interactionVertex.getEnergyType()){
 	case Property::EnergyResolvedProperty<complex<double>>::EnergyType::BosonicMatsubara:
 	{
+		int lowerFermionicMatsubaraEnergyIndex
+			= getLowerFermionicMatsubaraEnergyIndex();
+		int upperFermionicMatsubaraEnergyIndex
+			= getUpperFermionicMatsubaraEnergyIndex();
+
 		TBTKAssert(
 			lowerFermionicMatsubaraEnergyIndex
 			<= upperFermionicMatsubaraEnergyIndex,

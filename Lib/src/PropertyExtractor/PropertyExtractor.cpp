@@ -28,10 +28,21 @@ namespace PropertyExtractor{
 
 PropertyExtractor::PropertyExtractor(
 ){
+	this->energyType = EnergyType::Real;
+
 	this->energyResolution = ENERGY_RESOLUTION;
 	this->lowerBound = LOWER_BOUND;
 	this->upperBound = UPPER_BOUND;
 	this->energyInfinitesimal = ENERGY_INFINITESIMAL;
+
+	this->lowerFermionicMatsubaraEnergyIndex
+		= LOWER_FERMIONIC_MATSUBARA_ENERGY_INDEX;
+	this->upperFermionicMatsubaraEnergyIndex
+		= UPPER_FERMIONIC_MATSUBARA_ENERGY_INDEX;
+	this->lowerBosonicMatsubaraEnergyIndex
+		= LOWER_BOSONIC_MATSUBARA_ENERGY_INDEX;
+	this->upperBosonicMatsubaraEnergyIndex
+		= UPPER_BOSONIC_MATSUBARA_ENERGY_INDEX;
 }
 
 PropertyExtractor::~PropertyExtractor(){
@@ -42,9 +53,78 @@ void PropertyExtractor::setEnergyWindow(
 	double upperBound,
 	int energyResolution
 ){
+	this->energyType = EnergyType::Real;
+
 	this->energyResolution = energyResolution;
 	this->lowerBound = lowerBound;
 	this->upperBound = upperBound;
+}
+
+void PropertyExtractor::setEnergyWindow(
+	int lowerFermionicMatsubaraEnergyIndex,
+	int upperFermionicMatsubaraEnergyIndex,
+	int lowerBosonicMatsubaraEnergyIndex,
+	int upperBosonicMatsubaraEnergyIndex
+){
+	TBTKAssert(
+		abs(lowerFermionicMatsubaraEnergyIndex%2) == 1,
+		"PropertyExtractor::PropertyExtractor::setEnergyWindow()",
+		"'lowerFermionicMatsubaraEnergyIndex="
+		<< lowerFermionicMatsubaraEnergyIndex << "' must be odd.",
+		""
+	);
+	TBTKAssert(
+		abs(upperFermionicMatsubaraEnergyIndex%2) == 1,
+		"PropertyExtractor::PropertyExtractor::setEnergyWindow()",
+		"'upperFermionicMatsubaraEnergyIndex="
+		<< upperFermionicMatsubaraEnergyIndex << "' must be odd.",
+		""
+	);
+	TBTKAssert(
+		abs(lowerBosonicMatsubaraEnergyIndex%2) == 0,
+		"PropertyExtractor::PropertyExtractor::setEnergyWindow()",
+		"'lowerBosonicMatsubaraEnergyIndex="
+		<< lowerBosonicMatsubaraEnergyIndex << "' must be odd.",
+		""
+	);
+	TBTKAssert(
+		abs(upperBosonicMatsubaraEnergyIndex%2) == 0,
+		"PropertyExtractor::PropertyExtractor::setEnergyWindow()",
+		"'upperBosonicMatsubaraEnergyIndex="
+		<< upperBosonicMatsubaraEnergyIndex << "' must be odd.",
+		""
+	);
+	TBTKAssert(
+		lowerFermionicMatsubaraEnergyIndex
+			<= upperFermionicMatsubaraEnergyIndex,
+		"PropertyExtractor::PropertyExtractor::setEnergyWindow()",
+		"'lowerFermionicMatsubaraEnergyIndex="
+		<< lowerFermionicMatsubaraEnergyIndex << "' must be less or"
+		<< " equal to 'upperFermionicMatsubaraEnergyIndex="
+		<< upperFermionicMatsubaraEnergyIndex<< "'",
+		""
+	);
+	TBTKAssert(
+		lowerBosonicMatsubaraEnergyIndex
+			<= upperBosonicMatsubaraEnergyIndex,
+		"PropertyExtractor::PropertyExtractor::setEnergyWindow()",
+		"'lowerBosonicMatsubaraEnergyIndex="
+		<< lowerBosonicMatsubaraEnergyIndex << "' must be less or"
+		<< " equal to 'upperBosonicMatsubaraEnergyIndex="
+		<< upperBosonicMatsubaraEnergyIndex<< "'",
+		""
+	);
+
+	this->energyType = EnergyType::Matsubara;
+
+	this->lowerFermionicMatsubaraEnergyIndex
+		= lowerFermionicMatsubaraEnergyIndex;
+	this->upperFermionicMatsubaraEnergyIndex
+		= upperFermionicMatsubaraEnergyIndex;
+	this->lowerBosonicMatsubaraEnergyIndex
+		= lowerBosonicMatsubaraEnergyIndex;
+	this->upperBosonicMatsubaraEnergyIndex
+		= upperBosonicMatsubaraEnergyIndex;
 }
 
 void PropertyExtractor::setEnergyInfinitesimal(double energyInfinitesimal){

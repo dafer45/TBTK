@@ -34,10 +34,10 @@ LindhardSusceptibility::LindhardSusceptibility(
 	Solver::LindhardSusceptibility &solver
 ){
 	this->solver = &solver;
-	energyType = EnergyType::Real;
+//	energyType = EnergyType::Real;
 }
 
-void LindhardSusceptibility::setEnergyWindow(
+/*void LindhardSusceptibility::setEnergyWindow(
 	double lowerBound,
 	double upperBound,
 	int resolution
@@ -95,7 +95,7 @@ void LindhardSusceptibility::setEnergyWindow(
 		= lowerBosonicMatsubaraEnergyIndex;
 	this->upperBosonicMatsubaraEnergyIndex
 		= upperBosonicMatsubaraEnergyIndex;
-}
+}*/
 
 Property::Susceptibility LindhardSusceptibility::calculateSusceptibility(
 //	std::initializer_list<Index> patterns
@@ -394,7 +394,7 @@ Property::Susceptibility LindhardSusceptibility::calculateSusceptibility(
 	((double**)hint)[0][1] = lowerBound;
 	((int**)hint)[1][0] = energyResolution;*/
 
-	switch(energyType){
+	switch(getEnergyType()){
 	case EnergyType::Real:
 	{
 		double lowerBound = getLowerBound();
@@ -429,6 +429,11 @@ Property::Susceptibility LindhardSusceptibility::calculateSusceptibility(
 	}
 	case EnergyType::Matsubara:
 	{
+		int lowerBosonicMatsubaraEnergyIndex
+			= getLowerBosonicMatsubaraEnergyIndex();
+		int upperBosonicMatsubaraEnergyIndex
+			= getUpperBosonicMatsubaraEnergyIndex();
+
 		TBTKAssert(
 			lowerBosonicMatsubaraEnergyIndex
 			<= upperBosonicMatsubaraEnergyIndex,

@@ -50,9 +50,7 @@ public:
 		int resolution
 	);
 
-	//TODO
-	//This should be extended to become part of the PropertyExtractor
-	//interface once its tested to work well for this specific case.
+	/** Overrides PropertyExtractor::setEnergyWindow(). */
 	virtual void setEnergyWindow(
 		int lowerFermionicMatsubaraEnergyIndex,
 		int upperFermionicMatsubaraEnergyIndex,

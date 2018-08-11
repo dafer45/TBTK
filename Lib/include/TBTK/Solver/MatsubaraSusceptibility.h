@@ -55,8 +55,13 @@ public:
 
 	/** Calculate the susceptibility. */
 	std::vector<std::complex<double>> calculateSusceptibility(
-		const Index &index
+		const Index &index,
+		int lowerMatsubaraEnergyIndex,
+		int upperMatsubaraEnergyIndex
 	);
+
+	/** Returns the GreensFunction. */
+	const Property::GreensFunction& getGreensFunction() const;
 private:
 	/** The Green's function to calculate the Susceptibility form. */
 	const Property::GreensFunction &greensFunction;
@@ -75,6 +80,11 @@ private:
 		const std::vector<std::complex<double>> &energies
 	);*/
 };
+
+inline const Property::GreensFunction&
+MatsubaraSusceptibility::getGreensFunction() const{
+	return greensFunction;
+}
 
 };	//End of namespace Solver
 };	//End of namespace TBTK
