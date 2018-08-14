@@ -862,9 +862,12 @@ void Diagonalizer::calculateGreensFunctionCallback(
 	{
 		unsigned int numMatsubaraEnergies
 			= gf.getNumMatsubaraEnergies();
+		double chemicalPotential = pe->dSolver->getModel(
+			).getChemicalPotential();
 
 		for(unsigned int e = 0; e < numMatsubaraEnergies; e++){
-			complex<double> E = gf.getMatsubaraEnergy(e);
+			complex<double> E = gf.getMatsubaraEnergy(e)
+				+ chemicalPotential;
 
 			for(
 				int n = 0;

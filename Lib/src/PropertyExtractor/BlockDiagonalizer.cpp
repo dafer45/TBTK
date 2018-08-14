@@ -1045,9 +1045,19 @@ void BlockDiagonalizer::calculateGreensFunctionCallback(
 	{
 		unsigned int numMatsubaraEnergies
 			= gf.getNumMatsubaraEnergies();
+		double chemicalPotential
+			= propertyExtractor->bSolver->getModel(
+			).getChemicalPotential();
 
-		for(unsigned int n = firstStateInBlock; n <= lastStateInBlock; n++){
-			double energy = propertyExtractor->bSolver->getEigenValue(n);
+		for(
+			unsigned int n = firstStateInBlock;
+			n <= lastStateInBlock;
+			n++
+		){
+			double energy
+				= propertyExtractor->bSolver->getEigenValue(n)
+					- chemicalPotential;
+
 			complex<double> toAmplitude = propertyExtractor->getAmplitude(
 				n,
 				toIndex

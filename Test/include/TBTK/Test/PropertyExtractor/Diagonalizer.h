@@ -290,7 +290,7 @@ TEST(Diagonalizer, calculateGreensFunction){
 						c, {0}
 					);
 				gf += amplitude0*conj(amplitude1)/(
-					E - E_c
+					E - E_c + CHEMICAL_POTENTIAL
 				);
 			}
 
