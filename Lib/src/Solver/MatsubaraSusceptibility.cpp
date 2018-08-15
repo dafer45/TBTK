@@ -69,10 +69,6 @@ vector<complex<double>> MatsubaraSusceptibility::calculateSusceptibility(
 	int lowerMatsubaraEnergyIndex,
 	int upperMatsubaraEnergyIndex
 ){
-	TBTKNotYetImplemented(
-		"Solver::MatsubaraSusceptibility::calculateSusceptibility()"
-	);
-
 	vector<Index> components = index.split();
 	TBTKAssert(
 		components.size() == 5,
@@ -205,11 +201,11 @@ vector<complex<double>> MatsubaraSusceptibility::calculateSusceptibility(
 						{
 							Index(
 								qIndex,
-								intraBlockIndices[3]
+								intraBlockIndices[1]
 							),
 							Index(
 								qIndex,
-								intraBlockIndices[0]
+								intraBlockIndices[2]
 							)
 						},
 						firstEnergyIndex
@@ -217,11 +213,11 @@ vector<complex<double>> MatsubaraSusceptibility::calculateSusceptibility(
 						{
 							Index(
 								kPlusQIndex,
-								intraBlockIndices[1]
+								intraBlockIndices[3]
 							),
 							Index(
 								kPlusQIndex,
-								intraBlockIndices[2]
+								intraBlockIndices[0]
 							)
 						},
 						secondEnergyIndex
