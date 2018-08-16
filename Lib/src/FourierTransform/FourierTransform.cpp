@@ -109,6 +109,37 @@ void FourierTransform::transform(
 		out[n] /= sqrt(sizeX*sizeY*sizeZ);
 }
 
+void FourierTransform::transform(
+	complex<double> *in,
+	complex<double> *out,
+	const vector<unsigned int> &ranges,
+	int sign
+){
+	fftw_plan plan;
+
+	#pragma omp critical (TBTK_FOURIER_TRANSFORM)
+	plan = fftw_plan_dft(
+		ranges.size(),
+		(int*)ranges.data(),
+		reinterpret_cast<fftw_complex*>(in),
+		reinterpret_cast<fftw_complex*>(out),
+		sign,
+		FFTW_ESTIMATE
+	);
+
+	fftw_execute(plan);
+
+	#pragma omp critical (TBTK_FOURIER_TRANSFORM)
+	fftw_destroy_plan(plan);
+
+	double numElements = 1;
+	for(unsigned int n = 0; n < ranges.size(); n++)
+		numElements *= ranges[n];
+
+	for(int n = 0; n < numElements; n++)
+		out[n] /= sqrt(numElements);
+}
+
 template<>
 FourierTransform::Plan<complex<double>>::Plan(
 	complex<double> *in,
@@ -185,6 +216,33 @@ FourierTransform::Plan<complex<double>>::Plan(
 	output = out;
 	size = sizeX*sizeY*sizeZ;
 	normalizationFactor = sqrt(sizeX*sizeY*sizeZ);
+}
+
+template<>
+FourierTransform::Plan<complex<double>>::Plan(
+	complex<double> *in,
+	complex<double> *out,
+	const std::vector<unsigned int> &ranges,
+	int sign
+){
+	plan = new fftw_plan();
+
+	#pragma omp critical (TBTK_FOURIER_TRANSFORM)
+	*plan = fftw_plan_dft(
+		ranges.size(),
+		(int*)ranges.data(),
+		reinterpret_cast<fftw_complex*>(in),
+		reinterpret_cast<fftw_complex*>(out),
+		sign,
+		FFTW_ESTIMATE
+	);
+
+	input = in;
+	output = out;
+	size = 1;
+	for(unsigned int n = 0; n < ranges.size(); n++)
+		size *= ranges[n];
+	normalizationFactor = sqrt(size);
 }
 
 };

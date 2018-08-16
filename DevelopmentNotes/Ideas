@@ -28,3 +28,6 @@
   should implement it's own helper functions for this, or another helper class
   should be created to provide the needed functionallity without putting the
   responsibility on the WaveFunctions.
+
+- Remove FourierTransform functions with explicit dimensional arguments sizeX,
+  sizeY, and sizeZ in favor of the single function with the ranges argument.

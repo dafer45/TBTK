@@ -28,6 +28,7 @@
 #include <fftw3.h>
 
 #include <complex>
+#include <vector>
 
 namespace TBTK{
 
@@ -61,6 +62,14 @@ public:
 			int sizeX,
 			int sizeY,
 			int sizeZ,
+			int sign
+		);
+
+		/** Constructor. */
+		Plan(
+			DataType *in,
+			DataType *out,
+			const std::vector<unsigned int> &ranges,
 			int sign
 		);
 
@@ -161,6 +170,18 @@ public:
 			sizeZ,
 			-1
 		){}
+
+		/** Constructor. */
+		ForwardPlan(
+			DataType *in,
+			DataType *out,
+			const std::vector<unsigned int> &ranges
+		) : Plan<DataType>(
+			in,
+			out,
+			ranges,
+			-1
+		){}
 	};
 
 	/** Plan for executing inverse Fourier-transform. */
@@ -208,9 +229,27 @@ public:
 			sizeZ,
 			1
 		){}
+
+		/** Constructor. */
+		InversePlan(
+			DataType *in,
+			DataType *out,
+			const std::vector<unsigned int> &ranges
+		) : Plan<DataType>(
+			in,
+			out,
+			ranges,
+			1
+		){}
 	};
 
-	/** One-dimensional complex Fourier transform. */
+	/** One-dimensional complex Fourier transform.
+	 *
+	 *  @param in Pointer to array containing the input.
+	 *  @param out Pointer to array that will contain the output.
+	 *  @param sizeX The size of the data.
+	 *  @param sign The sign to use in the exponent of the Fourier
+	 *  transform. */
 	static void transform(
 		std::complex<double> *in,
 		std::complex<double> *out,
@@ -218,7 +257,14 @@ public:
 		int sign
 	);
 
-	/** Two-dimensional complex Fourier transform. */
+	/** Two-dimensional complex Fourier transform.
+	 *
+	 *  @param in Pointer to array containing the input.
+	 *  @param out Pointer to array that will contain the output.
+	 *  @param sizeX The range of the first dimension.
+	 *  @param sizeY The range of the second dimension.
+	 *  @param sign The sign to use in the exponent of the Fourier
+	 *  transform. */
 	static void transform(
 		std::complex<double> *in,
 		std::complex<double> *out,
@@ -227,7 +273,15 @@ public:
 		int sign
 	);
 
-	/** Three-dimensional complex Fourier transform. */
+	/** Three-dimensional complex Fourier transform.
+	 *
+	 *  @param in Pointer to array containing the input.
+	 *  @param out Pointer to array that will contain the output.
+	 *  @param sizeX The range of the first dimension.
+	 *  @param sizeY The range of the second dimension.
+	 *  @param sizeZ The range of the third dimension.
+	 *  @param sign The sign to use in the exponent of the Fourier
+	 *  transform. */
 	static void transform(
 		std::complex<double> *in,
 		std::complex<double> *out,
@@ -237,18 +291,43 @@ public:
 		int sign
 	);
 
-	/** One-dimensional complex Fourier transform. */
+	/** N-dimensional complex Fourier transform.
+	 *
+	 *  @param in Pointer to array containing the input.
+	 *  @param out Pointer to array that will contain the output.
+	 *  @param ranges The dimensions of the data.
+	 *  @param sign The sign to use in the exponent of the Fourier
+	 *  transform. */
+	static void transform(
+		std::complex<double> *in,
+		std::complex<double> *out,
+		const std::vector<unsigned int> &ranges,
+		int sign
+	);
+
+	/** Execute a planned transform.
+	 *
+	 *  @param plan The plan to execute. */
 	template<typename DataType>
 	static void transform(Plan<DataType> &plan);
 
-	/** One-dimensional complex forward Fourier transform. */
+	/** One-dimensional complex forward Fourier transform.
+	 *
+	 *  @param in Pointer to array containing the input.
+	 *  @param out Pointer to array that will contain the output.
+	 *  @param sizeX The size of the data. */
 	static void forward(
 		std::complex<double> *in,
 		std::complex<double> *out,
 		int sizeX
 	);
 
-	/** Two-dimensional complex forward Fourier transform. */
+	/** Two-dimensional complex forward Fourier transform.
+	 *
+	 *  @param in Pointer to array containing the input.
+	 *  @param out Pointer to array that will contain the output.
+	 *  @param sizeX The range of the first dimension.
+	 *  @param sizeY The range of the second dimension. */
 	static void forward(
 		std::complex<double> *in,
 		std::complex<double> *out,
@@ -256,7 +335,13 @@ public:
 		int sizeY
 	);
 
-	/** Three-dimensional complex forward Fourier transform. */
+	/** Three-dimensional complex forward Fourier transform.
+	 *
+	 *  @param in Pointer to array containing the input.
+	 *  @param out Pointer to array that will contain the output.
+	 *  @param sizeX The range of the first dimension.
+	 *  @param sizeY The range of the second dimension.
+	 *  @param sizeZ The range of the third dimension. */
 	static void forward(
 		std::complex<double> *in,
 		std::complex<double> *out,
@@ -265,14 +350,34 @@ public:
 		int sizeZ
 	);
 
-	/** One-dimensional complex inverse Fourier transform. */
+	/** N-dimensional complex forward Fourier transform.
+	 *
+	 *  @param in Pointer to array containing the input.
+	 *  @param out Pointer to array that will contain the output.
+	 *  @param ranges The dimensions of the data. */
+	static void forward(
+		std::complex<double> *in,
+		std::complex<double> *out,
+		const std::vector<unsigned int> &ranges
+	);
+
+	/** One-dimensional complex inverse Fourier transform.
+	 *
+	 *  @param in Pointer to array containing the input.
+	 *  @param out Pointer to array that will contain the output.
+	 *  @param sizeX The size of the data. */
 	static void inverse(
 		std::complex<double> *in,
 		std::complex<double> *out,
 		int sizeX
 	);
 
-	/** Two-dimensional complex inverse Fourier transform. */
+	/** Two-dimensional complex inverse Fourier transform.
+	 *
+	 *  @param in Pointer to array containing the input.
+	 *  @param out Pointer to array that will contain the output.
+	 *  @param sizeX The range of the first dimension.
+	 *  @param sizeY The range of the second dimension. */
 	static void inverse(
 		std::complex<double> *in,
 		std::complex<double> *out,
@@ -280,7 +385,13 @@ public:
 		int sizeY
 	);
 
-	/** Three-dimensional complex inverse Fourier transform. */
+	/** Three-dimensional complex inverse Fourier transform.
+	 *
+	 *  @param in Pointer to array containing the input.
+	 *  @param out Pointer to array that will contain the output.
+	 *  @param sizeX The range of the first dimension.
+	 *  @param sizeY The range of the second dimension.
+	 *  @param sizeZ The range of the third dimension. */
 	static void inverse(
 		std::complex<double> *in,
 		std::complex<double> *out,
@@ -288,6 +399,18 @@ public:
 		int sizeY,
 		int sizeZ
 	);
+
+	/** N-dimensional complex inverse Fourier transform.
+	 *
+	 *  @param in Pointer to array containing the input.
+	 *  @param out Pointer to array that will contain the output.
+	 *  @param ranges The dimensions of the data. */
+	static void inverse(
+		std::complex<double> *in,
+		std::complex<double> *out,
+		const std::vector<unsigned int> &ranges
+	);
+
 private:
 };
 
@@ -297,7 +420,6 @@ inline void FourierTransform::transform(Plan<DataType> &plan){
 
 	double normalizationFactor = plan.getNormalizationFactor();
 	if(normalizationFactor != 1.){
-		Streams::out << "Normalizing\n";
 		DataType *output = plan.getOutput();
 		for(unsigned int n = 0; n < plan.getSize(); n++)
 			output[n] /= normalizationFactor;
@@ -331,6 +453,14 @@ inline void FourierTransform::forward(
 	transform(in, out, sizeX, sizeY, sizeZ, -1);
 }
 
+inline void FourierTransform::forward(
+	std::complex<double> *in,
+	std::complex<double> *out,
+	const std::vector<unsigned int> &ranges
+){
+	transform(in, out, ranges, -1);
+}
+
 inline void FourierTransform::inverse(
 	std::complex<double> *in,
 	std::complex<double> *out,
@@ -356,6 +486,14 @@ inline void FourierTransform::inverse(
 	int sizeZ
 ){
 	transform(in, out, sizeX, sizeY, sizeZ, 1);
+}
+
+inline void FourierTransform::inverse(
+	std::complex<double> *in,
+	std::complex<double> *out,
+	const std::vector<unsigned int> &ranges
+){
+	transform(in, out, ranges, 1);
 }
 
 template<typename DataType>

@@ -19,6 +19,7 @@ IF(GTest_FOUND)
 			include/
 			include/Core
 			include/FiniteDifferences
+			include/FourierTransform
 			include/Utilities
 		)
 
