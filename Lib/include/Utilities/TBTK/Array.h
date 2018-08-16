@@ -101,6 +101,12 @@ public:
 
 	/** Get ranges. */
 	const std::vector<unsigned int>& getRanges() const;
+
+	/** Get data. */
+	DataType* getData();
+
+	/** Get data. */
+	const DataType* getData() const;
 private:
 	/** Data data. */
 	DataType *data;
@@ -410,6 +416,16 @@ void Array<DataType>::fillSlice(
 template<typename DataType>
 inline const std::vector<unsigned int>& Array<DataType>::getRanges() const{
 	return ranges;
+}
+
+template<typename DataType>
+inline DataType* Array<DataType>::getData(){
+	return data;
+}
+
+template<typename DataType>
+inline const DataType* Array<DataType>::getData() const{
+	return data;
 }
 
 template<typename DataType>
