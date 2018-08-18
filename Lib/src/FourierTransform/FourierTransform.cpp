@@ -26,17 +26,20 @@ using namespace std;
 namespace TBTK{
 
 void FourierTransform::transform(
-	complex<double> *in,
+	const complex<double> *in,
 	complex<double> *out,
 	int sizeX,
 	int sign
 ){
 	fftw_plan plan;
 
+	//Const cast is OK since FFTW3 does not modify the input.
 	#pragma omp critical (TBTK_FOURIER_TRANSFORM)
 	plan = fftw_plan_dft_1d(
 		sizeX,
-		reinterpret_cast<fftw_complex*>(in),
+		const_cast<fftw_complex*>(
+			reinterpret_cast<const fftw_complex*>(in)
+		),
 		reinterpret_cast<fftw_complex*>(out),
 		sign,
 		FFTW_ESTIMATE
@@ -52,7 +55,7 @@ void FourierTransform::transform(
 }
 
 void FourierTransform::transform(
-	complex<double> *in,
+	const complex<double> *in,
 	complex<double> *out,
 	int sizeX,
 	int sizeY,
@@ -60,11 +63,14 @@ void FourierTransform::transform(
 ){
 	fftw_plan plan;
 
+	//Const cast is OK since FFTW3 does not modify the input.
 	#pragma omp critical (TBTK_FOURIER_TRANSFORM)
 	plan = fftw_plan_dft_2d(
 		sizeX,
 		sizeY,
-		reinterpret_cast<fftw_complex*>(in),
+		const_cast<fftw_complex*>(
+			reinterpret_cast<const fftw_complex*>(in)
+		),
 		reinterpret_cast<fftw_complex*>(out),
 		sign,
 		FFTW_ESTIMATE
@@ -80,7 +86,7 @@ void FourierTransform::transform(
 }
 
 void FourierTransform::transform(
-	complex<double> *in,
+	const complex<double> *in,
 	complex<double> *out,
 	int sizeX,
 	int sizeY,
@@ -89,12 +95,15 @@ void FourierTransform::transform(
 ){
 	fftw_plan plan;
 
+	//Const cast is OK since FFTW3 does not modify the input.
 	#pragma omp critical (TBTK_FOURIER_TRANSFORM)
 	plan = fftw_plan_dft_3d(
 		sizeX,
 		sizeY,
 		sizeZ,
-		reinterpret_cast<fftw_complex*>(in),
+		const_cast<fftw_complex*>(
+			reinterpret_cast<const fftw_complex*>(in)
+		),
 		reinterpret_cast<fftw_complex*>(out),
 		sign,
 		FFTW_ESTIMATE
@@ -110,18 +119,21 @@ void FourierTransform::transform(
 }
 
 void FourierTransform::transform(
-	complex<double> *in,
+	const complex<double> *in,
 	complex<double> *out,
 	const vector<unsigned int> &ranges,
 	int sign
 ){
 	fftw_plan plan;
 
+	//Const cast is OK since FFTW3 does not modify the input.
 	#pragma omp critical (TBTK_FOURIER_TRANSFORM)
 	plan = fftw_plan_dft(
 		ranges.size(),
 		(int*)ranges.data(),
-		reinterpret_cast<fftw_complex*>(in),
+		const_cast<fftw_complex*>(
+			reinterpret_cast<const fftw_complex*>(in)
+		),
 		reinterpret_cast<fftw_complex*>(out),
 		sign,
 		FFTW_ESTIMATE
@@ -142,17 +154,20 @@ void FourierTransform::transform(
 
 template<>
 FourierTransform::Plan<complex<double>>::Plan(
-	complex<double> *in,
+	const complex<double> *in,
 	complex<double> *out,
 	int sizeX,
 	int sign
 ){
 	plan = new fftw_plan();
 
+	//Const cast is OK since FFTW3 does not modify the input.
 	#pragma omp critical (TBTK_FOURIER_TRANSFORM)
 	*plan = fftw_plan_dft_1d(
 		sizeX,
-		reinterpret_cast<fftw_complex*>(in),
+		const_cast<fftw_complex*>(
+			reinterpret_cast<const fftw_complex*>(in)
+		),
 		reinterpret_cast<fftw_complex*>(out),
 		sign,
 		FFTW_ESTIMATE
@@ -166,7 +181,7 @@ FourierTransform::Plan<complex<double>>::Plan(
 
 template<>
 FourierTransform::Plan<complex<double>>::Plan(
-	complex<double> *in,
+	const complex<double> *in,
 	complex<double> *out,
 	int sizeX,
 	int sizeY,
@@ -174,11 +189,14 @@ FourierTransform::Plan<complex<double>>::Plan(
 ){
 	plan = new fftw_plan();
 
+	//Const cast is OK since FFTW3 does not modify the input.
 	#pragma omp critical (TBTK_FOURIER_TRANSFORM)
 	*plan = fftw_plan_dft_2d(
 		sizeX,
 		sizeY,
-		reinterpret_cast<fftw_complex*>(in),
+		const_cast<fftw_complex*>(
+			reinterpret_cast<const fftw_complex*>(in)
+		),
 		reinterpret_cast<fftw_complex*>(out),
 		sign,
 		FFTW_ESTIMATE
@@ -192,7 +210,7 @@ FourierTransform::Plan<complex<double>>::Plan(
 
 template<>
 FourierTransform::Plan<complex<double>>::Plan(
-	complex<double> *in,
+	const complex<double> *in,
 	complex<double> *out,
 	int sizeX,
 	int sizeY,
@@ -201,12 +219,15 @@ FourierTransform::Plan<complex<double>>::Plan(
 ){
 	plan = new fftw_plan();
 
+	//Const cast is OK since FFTW3 does not modify the input.
 	#pragma omp critical (TBTK_FOURIER_TRANSFORM)
 	*plan = fftw_plan_dft_3d(
 		sizeX,
 		sizeY,
 		sizeZ,
-		reinterpret_cast<fftw_complex*>(in),
+		const_cast<fftw_complex*>(
+			reinterpret_cast<const fftw_complex*>(in)
+		),
 		reinterpret_cast<fftw_complex*>(out),
 		sign,
 		FFTW_ESTIMATE
@@ -220,18 +241,21 @@ FourierTransform::Plan<complex<double>>::Plan(
 
 template<>
 FourierTransform::Plan<complex<double>>::Plan(
-	complex<double> *in,
+	const complex<double> *in,
 	complex<double> *out,
 	const std::vector<unsigned int> &ranges,
 	int sign
 ){
 	plan = new fftw_plan();
 
+	//Const cast is OK since FFTW3 does not modify the input.
 	#pragma omp critical (TBTK_FOURIER_TRANSFORM)
 	*plan = fftw_plan_dft(
 		ranges.size(),
 		(int*)ranges.data(),
-		reinterpret_cast<fftw_complex*>(in),
+		const_cast<fftw_complex*>(
+			reinterpret_cast<const fftw_complex*>(in)
+		),
 		reinterpret_cast<fftw_complex*>(out),
 		sign,
 		FFTW_ESTIMATE

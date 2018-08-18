@@ -40,7 +40,7 @@ public:
 	public:
 		/** Constructor. */
 		Plan(
-			DataType *in,
+			const DataType *in,
 			DataType *out,
 			int sizeX,
 			int sign
@@ -48,7 +48,7 @@ public:
 
 		/** Constructor. */
 		Plan(
-			DataType *in,
+			const DataType *in,
 			DataType *out,
 			int sizeX,
 			int sizeY,
@@ -57,7 +57,7 @@ public:
 
 		/** Constructor. */
 		Plan(
-			DataType *in,
+			const DataType *in,
 			DataType *out,
 			int sizeX,
 			int sizeY,
@@ -67,7 +67,7 @@ public:
 
 		/** Constructor. */
 		Plan(
-			DataType *in,
+			const DataType *in,
 			DataType *out,
 			const std::vector<unsigned int> &ranges,
 			int sign
@@ -104,7 +104,7 @@ public:
 		unsigned int size;
 
 		/** Input data. */
-		DataType *input;
+		const DataType *input;
 
 		/** Output data. */
 		DataType *output;
@@ -131,7 +131,7 @@ public:
 	public:
 		/** Constructor. */
 		ForwardPlan(
-			DataType *in,
+			const DataType *in,
 			DataType *out,
 			int sizeX
 		) : Plan<DataType>(
@@ -143,7 +143,7 @@ public:
 
 		/** Constructor. */
 		ForwardPlan(
-			DataType *in,
+			const DataType *in,
 			DataType *out,
 			int sizeX,
 			int sizeY
@@ -157,7 +157,7 @@ public:
 
 		/** Constructor. */
 		ForwardPlan(
-			DataType *in,
+			const DataType *in,
 			DataType *out,
 			int sizeX,
 			int sizeY,
@@ -173,7 +173,7 @@ public:
 
 		/** Constructor. */
 		ForwardPlan(
-			DataType *in,
+			const DataType *in,
 			DataType *out,
 			const std::vector<unsigned int> &ranges
 		) : Plan<DataType>(
@@ -190,7 +190,7 @@ public:
 	public:
 		/** Constructor. */
 		InversePlan(
-			DataType *in,
+			const DataType *in,
 			DataType *out,
 			int sizeX
 		) : Plan<DataType>(
@@ -202,7 +202,7 @@ public:
 
 		/** Constructor. */
 		InversePlan(
-			DataType *in,
+			const DataType *in,
 			DataType *out,
 			int sizeX,
 			int sizeY
@@ -216,7 +216,7 @@ public:
 
 		/** Constructor. */
 		InversePlan(
-			DataType *in,
+			const DataType *in,
 			DataType *out,
 			int sizeX,
 			int sizeY,
@@ -232,7 +232,7 @@ public:
 
 		/** Constructor. */
 		InversePlan(
-			DataType *in,
+			const DataType *in,
 			DataType *out,
 			const std::vector<unsigned int> &ranges
 		) : Plan<DataType>(
@@ -251,7 +251,7 @@ public:
 	 *  @param sign The sign to use in the exponent of the Fourier
 	 *  transform. */
 	static void transform(
-		std::complex<double> *in,
+		const std::complex<double> *in,
 		std::complex<double> *out,
 		int sizeX,
 		int sign
@@ -266,7 +266,7 @@ public:
 	 *  @param sign The sign to use in the exponent of the Fourier
 	 *  transform. */
 	static void transform(
-		std::complex<double> *in,
+		const std::complex<double> *in,
 		std::complex<double> *out,
 		int sizeX,
 		int sizeY,
@@ -283,7 +283,7 @@ public:
 	 *  @param sign The sign to use in the exponent of the Fourier
 	 *  transform. */
 	static void transform(
-		std::complex<double> *in,
+		const std::complex<double> *in,
 		std::complex<double> *out,
 		int sizeX,
 		int sizeY,
@@ -299,7 +299,7 @@ public:
 	 *  @param sign The sign to use in the exponent of the Fourier
 	 *  transform. */
 	static void transform(
-		std::complex<double> *in,
+		const std::complex<double> *in,
 		std::complex<double> *out,
 		const std::vector<unsigned int> &ranges,
 		int sign
@@ -317,7 +317,7 @@ public:
 	 *  @param out Pointer to array that will contain the output.
 	 *  @param sizeX The size of the data. */
 	static void forward(
-		std::complex<double> *in,
+		const std::complex<double> *in,
 		std::complex<double> *out,
 		int sizeX
 	);
@@ -329,7 +329,7 @@ public:
 	 *  @param sizeX The range of the first dimension.
 	 *  @param sizeY The range of the second dimension. */
 	static void forward(
-		std::complex<double> *in,
+		const std::complex<double> *in,
 		std::complex<double> *out,
 		int sizeX,
 		int sizeY
@@ -343,7 +343,7 @@ public:
 	 *  @param sizeY The range of the second dimension.
 	 *  @param sizeZ The range of the third dimension. */
 	static void forward(
-		std::complex<double> *in,
+		const std::complex<double> *in,
 		std::complex<double> *out,
 		int sizeX,
 		int sizeY,
@@ -356,7 +356,7 @@ public:
 	 *  @param out Pointer to array that will contain the output.
 	 *  @param ranges The dimensions of the data. */
 	static void forward(
-		std::complex<double> *in,
+		const std::complex<double> *in,
 		std::complex<double> *out,
 		const std::vector<unsigned int> &ranges
 	);
@@ -367,7 +367,7 @@ public:
 	 *  @param out Pointer to array that will contain the output.
 	 *  @param sizeX The size of the data. */
 	static void inverse(
-		std::complex<double> *in,
+		const std::complex<double> *in,
 		std::complex<double> *out,
 		int sizeX
 	);
@@ -379,7 +379,7 @@ public:
 	 *  @param sizeX The range of the first dimension.
 	 *  @param sizeY The range of the second dimension. */
 	static void inverse(
-		std::complex<double> *in,
+		const std::complex<double> *in,
 		std::complex<double> *out,
 		int sizeX,
 		int sizeY
@@ -393,7 +393,7 @@ public:
 	 *  @param sizeY The range of the second dimension.
 	 *  @param sizeZ The range of the third dimension. */
 	static void inverse(
-		std::complex<double> *in,
+		const std::complex<double> *in,
 		std::complex<double> *out,
 		int sizeX,
 		int sizeY,
@@ -406,7 +406,7 @@ public:
 	 *  @param out Pointer to array that will contain the output.
 	 *  @param ranges The dimensions of the data. */
 	static void inverse(
-		std::complex<double> *in,
+		const std::complex<double> *in,
 		std::complex<double> *out,
 		const std::vector<unsigned int> &ranges
 	);
@@ -427,7 +427,7 @@ inline void FourierTransform::transform(Plan<DataType> &plan){
 }
 
 inline void FourierTransform::forward(
-	std::complex<double> *in,
+	const std::complex<double> *in,
 	std::complex<double> *out,
 	int sizeX
 ){
@@ -435,7 +435,7 @@ inline void FourierTransform::forward(
 }
 
 inline void FourierTransform::forward(
-	std::complex<double> *in,
+	const std::complex<double> *in,
 	std::complex<double> *out,
 	int sizeX,
 	int sizeY
@@ -444,7 +444,7 @@ inline void FourierTransform::forward(
 }
 
 inline void FourierTransform::forward(
-	std::complex<double> *in,
+	const std::complex<double> *in,
 	std::complex<double> *out,
 	int sizeX,
 	int sizeY,
@@ -454,7 +454,7 @@ inline void FourierTransform::forward(
 }
 
 inline void FourierTransform::forward(
-	std::complex<double> *in,
+	const std::complex<double> *in,
 	std::complex<double> *out,
 	const std::vector<unsigned int> &ranges
 ){
@@ -462,7 +462,7 @@ inline void FourierTransform::forward(
 }
 
 inline void FourierTransform::inverse(
-	std::complex<double> *in,
+	const std::complex<double> *in,
 	std::complex<double> *out,
 	int sizeX
 ){
@@ -470,7 +470,7 @@ inline void FourierTransform::inverse(
 }
 
 inline void FourierTransform::inverse(
-	std::complex<double> *in,
+	const std::complex<double> *in,
 	std::complex<double> *out,
 	int sizeX,
 	int sizeY
@@ -479,7 +479,7 @@ inline void FourierTransform::inverse(
 }
 
 inline void FourierTransform::inverse(
-	std::complex<double> *in,
+	const std::complex<double> *in,
 	std::complex<double> *out,
 	int sizeX,
 	int sizeY,
@@ -489,7 +489,7 @@ inline void FourierTransform::inverse(
 }
 
 inline void FourierTransform::inverse(
-	std::complex<double> *in,
+	const std::complex<double> *in,
 	std::complex<double> *out,
 	const std::vector<unsigned int> &ranges
 ){

@@ -107,6 +107,9 @@ public:
 
 	/** Get data. */
 	const DataType* getData() const;
+
+	/** Get the number of elements in the Array. */
+	unsigned int getSize() const;
 private:
 	/** Data data. */
 	DataType *data;
@@ -426,6 +429,11 @@ inline DataType* Array<DataType>::getData(){
 template<typename DataType>
 inline const DataType* Array<DataType>::getData() const{
 	return data;
+}
+
+template<typename DataType>
+inline unsigned int Array<DataType>::getSize() const{
+	return size;
 }
 
 template<typename DataType>
