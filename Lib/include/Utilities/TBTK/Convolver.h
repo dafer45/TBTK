@@ -43,8 +43,8 @@ public:
 		const Array<DataType> &array1
 	);
 
-	/** Calculates the cross correlation \f$\sum_{x}f^{*}(x)g(x+y) of two
-	 *  arrays \f$f\f$ and \f$g\f$.
+	/** Calculates the cross correlation \f$\sum_{x}f^{*}(x)g(x+y)\f$ of
+	 *  two arrays \f$f\f$ and \f$g\f$.
 	 *
 	 *  @param array0 The array \f$f\f$ in the cross correlation.
 	 *  @param array1 The array \f$g\f$ in the cross correlation.
