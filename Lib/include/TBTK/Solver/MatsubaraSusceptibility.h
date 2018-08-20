@@ -54,6 +54,13 @@ public:
 	);
 
 	/** Calculate the susceptibility. */
+/*	std::vector<std::complex<double>> calculateSusceptibility(
+		const Index &index,
+		int lowerMatsubaraEnergyIndex,
+		int upperMatsubaraEnergyIndex
+	);*/
+
+	/** Calculate the susceptibility. */
 	std::vector<std::complex<double>> calculateSusceptibility(
 		const Index &index,
 		int lowerMatsubaraEnergyIndex,
