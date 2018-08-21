@@ -123,6 +123,12 @@ public:
 	 *  @param indexList List of indices. */
 	Index(std::initializer_list<Index> indexList);
 
+	/** Constructs a compound Index by Concatenating a list of indices,
+	 *  adding IDX_SEPARATOR between every index.
+	 *
+	 *  @param indexList List of indices. */
+	Index(std::vector<Index> indexList);
+
 	/** Constructs an Index from a string.
 	 *
 	 *  @param indexString String such as "{1, 2, 3} from which the Index is
