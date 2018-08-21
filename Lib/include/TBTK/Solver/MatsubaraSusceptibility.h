@@ -25,6 +25,7 @@
 
 #include "TBTK/Property/GreensFunction.h"
 #include "TBTK/RPA/MomentumSpaceContext.h"
+#include "TBTK/Property/Susceptibility.h"
 #include "TBTK/Solver/Susceptibility.h"
 
 #include <complex>
@@ -54,14 +55,14 @@ public:
 	);
 
 	/** Calculate the susceptibility. */
-/*	std::vector<std::complex<double>> calculateSusceptibility(
+	std::vector<std::complex<double>> calculateSusceptibility(
 		const Index &index,
 		int lowerMatsubaraEnergyIndex,
 		int upperMatsubaraEnergyIndex
-	);*/
+	);
 
 	/** Calculate the susceptibility. */
-	std::vector<std::complex<double>> calculateSusceptibility(
+	Property::Susceptibility calculateSusceptibilityAllBlocks(
 		const Index &index,
 		int lowerMatsubaraEnergyIndex,
 		int upperMatsubaraEnergyIndex
