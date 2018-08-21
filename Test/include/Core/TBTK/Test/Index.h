@@ -79,16 +79,29 @@ TEST(Index, ConstructorConcatenationVector){
 TEST(Index, ConstructorCompundInitializerList){
 	std::string errorMessage = "Compund Index construction failed.";
 
-	Index index({{1}, {2, 3}, {4, 5, 6}});
-	EXPECT_EQ(index.getSize(), 8) << errorMessage;
-	EXPECT_EQ(index[0], 1) << errorMessage;
-	EXPECT_EQ(index[1], IDX_SEPARATOR) << errorMessage;
-	EXPECT_EQ(index[2], 2) << errorMessage;
-	EXPECT_EQ(index[3], 3) << errorMessage;
-	EXPECT_EQ(index[4], IDX_SEPARATOR) << errorMessage;
-	EXPECT_EQ(index[5], 4) << errorMessage;
-	EXPECT_EQ(index[6], 5) << errorMessage;
-	EXPECT_EQ(index[7], 6) << errorMessage;
+	//Using an initializer list.
+	Index index0({{1}, {2, 3}, {4, 5, 6}});
+	EXPECT_EQ(index0.getSize(), 8) << errorMessage;
+	EXPECT_EQ(index0[0], 1) << errorMessage;
+	EXPECT_EQ(index0[1], IDX_SEPARATOR) << errorMessage;
+	EXPECT_EQ(index0[2], 2) << errorMessage;
+	EXPECT_EQ(index0[3], 3) << errorMessage;
+	EXPECT_EQ(index0[4], IDX_SEPARATOR) << errorMessage;
+	EXPECT_EQ(index0[5], 4) << errorMessage;
+	EXPECT_EQ(index0[6], 5) << errorMessage;
+	EXPECT_EQ(index0[7], 6) << errorMessage;
+
+	//Using a vector.
+	Index index1(std::vector<Index>({{1}, {2, 3}, {4, 5, 6}}));
+	EXPECT_EQ(index1.getSize(), 8) << errorMessage;
+	EXPECT_EQ(index1[0], 1) << errorMessage;
+	EXPECT_EQ(index1[1], IDX_SEPARATOR) << errorMessage;
+	EXPECT_EQ(index1[2], 2) << errorMessage;
+	EXPECT_EQ(index1[3], 3) << errorMessage;
+	EXPECT_EQ(index1[4], IDX_SEPARATOR) << errorMessage;
+	EXPECT_EQ(index1[5], 4) << errorMessage;
+	EXPECT_EQ(index1[6], 5) << errorMessage;
+	EXPECT_EQ(index1[7], 6) << errorMessage;
 }
 
 TEST(Index, ConstructorCompundVector){
