@@ -210,7 +210,8 @@ Property::LDOS ArnoldiIterator::calculateLDOS(
 
 	calculate(
 		calculateLDOSCallback,
-		(void*)ldos.getData().data(),
+		ldos,
+//		(void*)ldos.getData().data(),
 		pattern,
 		ranges,
 		0,
@@ -341,7 +342,8 @@ Property::SpinPolarizedLDOS ArnoldiIterator::calculateSpinPolarizedLDOS(
 
 	calculate(
 		calculateSpinPolarizedLDOSCallback,
-		(void*)spinPolarizedLDOS.getDataRW().data(),
+		spinPolarizedLDOS,
+//		(void*)spinPolarizedLDOS.getDataRW().data(),
 		pattern,
 		ranges,
 		0,
@@ -421,24 +423,32 @@ Property::SpinPolarizedLDOS ArnoldiIterator::calculateSpinPolarizedLDOS(
 
 void ArnoldiIterator::calculateWaveFunctionsCallback(
 	PropertyExtractor *cb_this,
-	void *waveFunctions,
+	Property::Property &property,
+//	void *waveFunctions,
 	const Index &index,
 	int offset
 ){
 	ArnoldiIterator *pe = (ArnoldiIterator*)cb_this;
+	Property::WaveFunctions &waveFunctions
+		= (Property::WaveFunctions&)property;
+	vector<complex<double>> &data = waveFunctions.getDataRW();
 
 	const vector<unsigned int> states = ((Property::WaveFunctions**)pe->hint)[0]->getStates();
 	for(unsigned int n = 0; n < states.size(); n++)
-		((complex<double>*)waveFunctions)[offset + n] += pe->getAmplitude(states.at(n), index);
+		data[offset + n] += pe->getAmplitude(states.at(n), index);
+//		((complex<double>*)waveFunctions)[offset + n] += pe->getAmplitude(states.at(n), index);
 }
 
 void ArnoldiIterator::calculateLDOSCallback(
 	PropertyExtractor *cb_this,
-	void *ldos,
+	Property::Property &property,
+//	void *ldos,
 	const Index &index,
 	int offset
 ){
 	ArnoldiIterator *pe = (ArnoldiIterator*)cb_this;
+	Property::LDOS &ldos = (Property::LDOS&)property;
+	vector<double> &data = ldos.getDataRW();
 
 	const complex<double> *eigenValues = pe->aSolver->getEigenValues();
 
@@ -460,18 +470,23 @@ void ArnoldiIterator::calculateLDOSCallback(
 			int e = (int)((real(eigenValues[n]) - l_lim)/step_size);
 			if(e >= resolution)
 				e = resolution-1;
-			((double*)ldos)[offset + e] += real(conj(u)*u)/dE;
+			data[offset + e] += real(conj(u)*u)/dE;
+//			((double*)ldos)[offset + e] += real(conj(u)*u)/dE;
 		}
 	}
 }
 
 void ArnoldiIterator::calculateSpinPolarizedLDOSCallback(
 	PropertyExtractor *cb_this,
-	void *sp_ldos,
+	Property::Property &property,
+//	void *sp_ldos,
 	const Index &index,
 	int offset
 ){
 	ArnoldiIterator *pe = (ArnoldiIterator*)cb_this;
+	Property::SpinPolarizedLDOS &spinPolarizedLDOS
+		= (Property::SpinPolarizedLDOS&)property;
+	vector<SpinMatrix> &data = spinPolarizedLDOS.getDataRW();
 
 	const complex<double> *eigenValues = pe->aSolver->getEigenValues();
 
@@ -499,10 +514,14 @@ void ArnoldiIterator::calculateSpinPolarizedLDOSCallback(
 			int e = (int)((real(eigenValues[n]) - l_lim)/step_size);
 			if(e >= resolution)
 				e = resolution-1;
-			((SpinMatrix*)sp_ldos)[offset + e].at(0, 0) += conj(u_u)*u_u/dE;
-			((SpinMatrix*)sp_ldos)[offset + e].at(0, 1) += conj(u_u)*u_d/dE;
-			((SpinMatrix*)sp_ldos)[offset + e].at(1, 0) += conj(u_d)*u_u/dE;
-			((SpinMatrix*)sp_ldos)[offset + e].at(1, 1) += conj(u_d)*u_d/dE;
+			data[offset + e].at(0, 0) += conj(u_u)*u_u/dE;
+			data[offset + e].at(0, 1) += conj(u_u)*u_d/dE;
+			data[offset + e].at(1, 0) += conj(u_d)*u_u/dE;
+			data[offset + e].at(1, 1) += conj(u_d)*u_d/dE;
+//			((SpinMatrix*)sp_ldos)[offset + e].at(0, 0) += conj(u_u)*u_u/dE;
+//			((SpinMatrix*)sp_ldos)[offset + e].at(0, 1) += conj(u_u)*u_d/dE;
+//			((SpinMatrix*)sp_ldos)[offset + e].at(1, 0) += conj(u_d)*u_u/dE;
+//			((SpinMatrix*)sp_ldos)[offset + e].at(1, 1) += conj(u_d)*u_d/dE;
 		}
 	}
 }

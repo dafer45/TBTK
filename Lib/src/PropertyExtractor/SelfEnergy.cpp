@@ -403,12 +403,15 @@ Property::SelfEnergy SelfEnergy::calculateSelfEnergy(
 
 void SelfEnergy::calculateSelfEnergyCallback(
 	PropertyExtractor *cb_this,
-	void *selfEnergy,
+	Property::Property &property,
+//	void *selfEnergy,
 	const Index &index,
 	int offset
 ){
 	SelfEnergy *propertyExtractor
 		= (SelfEnergy*)cb_this;
+	Property::SelfEnergy &selfEnergy = (Property::SelfEnergy&)property;
+	vector<complex<double>> &data = selfEnergy.getDataRW();
 
 	vector<complex<double>> se
 		= propertyExtractor->solver->calculateSelfEnergy(
@@ -417,7 +420,8 @@ void SelfEnergy::calculateSelfEnergyCallback(
 		);
 
 	for(unsigned int e = 0; e < se.size(); e++)
-		((complex<double>*)selfEnergy)[offset + e] += se[e];
+		data[offset + e] += se[e];
+//		((complex<double>*)selfEnergy)[offset + e] += se[e];
 }
 
 };	//End of namespace PropertyExtractor

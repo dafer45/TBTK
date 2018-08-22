@@ -73,7 +73,8 @@ private:
 	/** Calback for callculating susceptibility. */
 	static void calculateChargeSusceptibilityCallback(
 		PropertyExtractor *cb_this,
-		void *susceptibility,
+		Property::Property &property,
+//		void *susceptibility,
 		const Index &index,
 		int offset
 	);
@@ -81,7 +82,8 @@ private:
 	/** Calback for callculating susceptibility. */
 	static void calculateSpinSusceptibilityCallback(
 		PropertyExtractor *cb_this,
-		void *susceptibility,
+		Property::Property &property,
+//		void *susceptibility,
 		const Index &index,
 		int offset
 	);

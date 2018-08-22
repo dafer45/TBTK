@@ -80,7 +80,8 @@ private:
 	/** Callback for calculating density. Used by calculateDensity(). */
 	static void calculateDensityCallback(
 		PropertyExtractor *cb_this,
-		void *density,
+		Property::Property &property,
+//		void *density,
 		const Index &index,
 		int offset
 	);
@@ -89,7 +90,8 @@ private:
 	 *  calculateMangetization(). */
 	static void calculateMagnetizationCallback(
 		PropertyExtractor *cb_this,
-		void *density,
+		Property::Property &property,
+//		void *density,
 		const Index &index,
 		int offset
 	);
@@ -98,7 +100,8 @@ private:
 	 *  calculateLDOS(). */
 	static void calculateLDOSCallback(
 		PropertyExtractor *cb_this,
-		void *ldos,
+		Property::Property &property,
+//		void *ldos,
 		const Index &index,
 		int offset
 	);
@@ -107,7 +110,8 @@ private:
 	 *  Used by calculateSpinPolarizedLDOS(). */
 	static void calculateSpinPolarizedLDOSCallback(
 		PropertyExtractor *cb_this,
-		void *spinPolarizedLDOS,
+		Property::Property &property,
+//		void *spinPolarizedLDOS,
 		const Index &index,
 		int offset
 	);

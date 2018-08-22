@@ -69,7 +69,8 @@ private:
 	/** Calback for callculating the self-energy. */
 	static void calculateSelfEnergyCallback(
 		PropertyExtractor *cb_this,
-		void *selfEnergy,
+		Property::Property &property,
+//		void *selfEnergy,
 		const Index &index,
 		int offset
 	);

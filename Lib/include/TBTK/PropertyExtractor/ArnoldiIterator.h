@@ -109,7 +109,8 @@ private:
 	 *  calculateWaveFunctions. */
 	static void calculateWaveFunctionsCallback(
 		PropertyExtractor *cb_this,
-		void *waveFunctions,
+		Property::Property &property,
+//		void *waveFunctions,
 		const Index &index,
 		int offset
 	);
@@ -118,7 +119,8 @@ private:
 	 *  calculateLDOS. */
 	static void calculateLDOSCallback(
 		PropertyExtractor *cb_this,
-		void *ldos,
+		Property::Property &property,
+//		void *ldos,
 		const Index &index,
 		int offset
 	);
@@ -127,7 +129,8 @@ private:
 	 *  Used by calculateSP_LDOS. */
 	static void calculateSpinPolarizedLDOSCallback(
 		PropertyExtractor *cb_this,
-		void *sp_ldos,
+		Property::Property &property,
+//		void *sp_ldos,
 		const Index &index,
 		int offset
 	);

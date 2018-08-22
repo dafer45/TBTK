@@ -246,7 +246,7 @@ double PropertyExtractor::calculateEntropy(){
 	);
 }
 
-void PropertyExtractor::calculate(
+/*void PropertyExtractor::calculate(
 	void (*callback)(
 		PropertyExtractor *cb_this,
 		void *memory,
@@ -311,7 +311,7 @@ void PropertyExtractor::calculate(
 				currentOffset += offsetMultiplier;
 		}
 	}
-}
+}*/
 
 void PropertyExtractor::ensureCompliantRanges(
 	const Index &pattern,

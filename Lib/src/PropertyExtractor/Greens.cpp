@@ -67,7 +67,8 @@ Property::Density Greens::calculateDensity(
 
 	calculate(
 		calculateDensityCallback,
-		(void*)density.getDataRW().data(),
+		density,
+//		(void*)density.getDataRW().data(),
 		pattern,
 		ranges,
 		0,
@@ -362,11 +363,14 @@ Property::SpinPolarizedLDOS Greens::calculateSpinPolarizedLDOS(
 
 void Greens::calculateDensityCallback(
 	PropertyExtractor *cb_this,
-	void *density,
+	Property::Property &property,
+//	void *density,
 	const Index &index,
 	int offset
 ){
 	Greens *propertyExtractor = (Greens*)cb_this;
+	Property::Density &density = (Property::Density&)property;
+	vector<double> &data = density.getDataRW();
 
 	const Property::GreensFunction &greensFunction
 		= propertyExtractor->solver->getGreensFunction();
@@ -410,9 +414,12 @@ void Greens::calculateDensityCallback(
 				);
 			}
 
-			((double*)density)[offset] += -weight*imag(
+			data[offset] += -weight*imag(
 				greensFunction({index, index}, e)
 			)/M_PI*dE;
+//			((double*)density)[offset] += -weight*imag(
+//				greensFunction({index, index}, e)
+//			)/M_PI*dE;
 		}
 
 		break;
@@ -446,9 +453,12 @@ void Greens::calculateDensityCallback(
 				);
 			}
 
-			((double*)density)[offset] += weight*imag(
+			data[offset] += weight*imag(
 				greensFunction({index, index}, e)
 			)/M_PI*dE;
+//			((double*)density)[offset] += weight*imag(
+//				greensFunction({index, index}, e)
+//			)/M_PI*dE;
 		}
 
 		break;
@@ -519,11 +529,14 @@ void Greens::calculateDensityCallback(
 
 void Greens::calculateLDOSCallback(
 	PropertyExtractor *cb_this,
-	void *ldos,
+	Property::Property &property,
+//	void *ldos,
 	const Index &index,
 	int offset
 ){
 	Greens *propertyExtractor = (Greens*)cb_this;
+	Property::LDOS &ldos = (Property::LDOS&)property;
+	vector<double> &data = ldos.getDataRW();
 
 	const Property::GreensFunction &greensFunction
 		= propertyExtractor->solver->getGreensFunction();
@@ -543,10 +556,14 @@ void Greens::calculateLDOSCallback(
 		int energyResolution = greensFunction.getResolution();
 
 		const double dE = (upperBound - lowerBound)/energyResolution;
-		for(int n = 0; n < energyResolution; n++)
-			((double*)ldos)[offset + n] -= imag(
+		for(int n = 0; n < energyResolution; n++){
+			data[offset + n] -= imag(
 				greensFunction({index, index}, n)
 			)/M_PI*dE;
+//			((double*)ldos)[offset + n] -= imag(
+//				greensFunction({index, index}, n)
+//			)/M_PI*dE;
+		}
 
 		break;
 	}
@@ -558,10 +575,14 @@ void Greens::calculateLDOSCallback(
 		int energyResolution = greensFunction.getResolution();
 
 		const double dE = (upperBound - lowerBound)/energyResolution;
-		for(int n = 0; n < energyResolution; n++)
-			((double*)ldos)[offset + n] += imag(
+		for(int n = 0; n < energyResolution; n++){
+			data[offset + n] += imag(
 				greensFunction({index, index}, n)
 			)/M_PI*dE;
+//			((double*)ldos)[offset + n] += imag(
+//				greensFunction({index, index}, n)
+//			)/M_PI*dE;
+		}
 
 		break;
 	}

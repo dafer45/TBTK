@@ -432,12 +432,16 @@ Property::Susceptibility MatsubaraSusceptibility::calculateSusceptibility(
 
 void MatsubaraSusceptibility::calculateSusceptibilityCallback(
 	PropertyExtractor *cb_this,
-	void *susceptibility,
+	Property::Property &property,
+//	void *susceptibility,
 	const Index &index,
 	int offset
 ){
 	MatsubaraSusceptibility *propertyExtractor
 		= (MatsubaraSusceptibility*)cb_this;
+	Property::Susceptibility &susceptibility
+		= (Property::Susceptibility&)property;
+	vector<complex<double>> &data = susceptibility.getDataRW();
 
 	vector<complex<double>> s
 		= propertyExtractor->solver->calculateSusceptibility(
@@ -447,7 +451,8 @@ void MatsubaraSusceptibility::calculateSusceptibilityCallback(
 		);
 
 	for(unsigned int e = 0; e < s.size(); e++)
-		((complex<double>*)susceptibility)[offset + e] += s[e];
+		data[offset + e] += s[e];
+//		((complex<double>*)susceptibility)[offset + e] += s[e];
 }
 
 };	//End of namespace PropertyExtractor

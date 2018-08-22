@@ -490,12 +490,16 @@ Property::Susceptibility LindhardSusceptibility::calculateSusceptibility(
 
 void LindhardSusceptibility::calculateSusceptibilityCallback(
 	PropertyExtractor *cb_this,
-	void *susceptibility,
+	Property::Property &property,
+//	void *susceptibility,
 	const Index &index,
 	int offset
 ){
 	LindhardSusceptibility *propertyExtractor
 		= (LindhardSusceptibility*)cb_this;
+	Property::Susceptibility &susceptibility
+		= (Property::Susceptibility&)property;
+	vector<complex<double>> &data = susceptibility.getDataRW();
 
 	vector<complex<double>> s
 		= propertyExtractor->solver->calculateSusceptibility(
@@ -504,27 +508,8 @@ void LindhardSusceptibility::calculateSusceptibilityCallback(
 		);
 
 	for(unsigned int e = 0; e < s.size(); e++)
-		((complex<double>*)susceptibility)[offset + e] += s[e];
-
-/*	const double *eigen_values = pe->dSolver->getEigenValues();
-
-	double u_lim = ((double**)pe->hint)[0][0];
-	double l_lim = ((double**)pe->hint)[0][1];
-	int resolution = ((int**)pe->hint)[1][0];
-
-	double step_size = (u_lim - l_lim)/(double)resolution;
-
-	double dE = (pe->upperBound - pe->lowerBound)/pe->energyResolution;
-	for(int n = 0; n < pe->dSolver->getModel().getBasisSize(); n++){
-		if(eigen_values[n] > l_lim && eigen_values[n] < u_lim){
-			complex<double> u = pe->dSolver->getAmplitude(n, index);
-
-			int e = (int)((eigen_values[n] - l_lim)/step_size);
-			if(e >= resolution)
-				e = resolution-1;
-			((double*)ldos)[offset + e] += real(conj(u)*u)/dE;
-		}
-	}*/
+		data[offset + e] += s[e];
+//		((complex<double>*)susceptibility)[offset + e] += s[e];
 }
 
 };	//End of namespace PropertyExtractor

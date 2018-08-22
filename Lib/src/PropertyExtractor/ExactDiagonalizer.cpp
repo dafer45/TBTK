@@ -340,7 +340,8 @@ Property::Density ExactDiagonalizer::calculateDensity(
 
 	calculate(
 		calculateDensityCallback,
-		(void*)density.getDataRW().data(),
+		density,
+//		(void*)density.getDataRW().data(),
 		pattern,
 		ranges,
 		0,
@@ -382,7 +383,8 @@ Property::Magnetization ExactDiagonalizer::calculateMagnetization(
 
 	calculate(
 		calculateMagnetizationCallback,
-		(void*)magnetization.getDataRW().data(),
+		magnetization,
+//		(void*)magnetization.getDataRW().data(),
 		pattern,
 		ranges,
 		0,
@@ -413,7 +415,8 @@ Property::LDOS ExactDiagonalizer::calculateLDOS(
 
 	calculate(
 		calculateLDOSCallback,
-		(void*)ldos.getDataRW().data(),
+		ldos,
+//		(void*)ldos.getDataRW().data(),
 		pattern,
 		ranges,
 		0,
@@ -461,7 +464,8 @@ Property::SpinPolarizedLDOS ExactDiagonalizer::calculateSpinPolarizedLDOS(
 
 	calculate(
 		calculateSpinPolarizedLDOSCallback,
-		(void*)spinPolarizedLDOS.getDataRW().data(),
+		spinPolarizedLDOS,
+//		(void*)spinPolarizedLDOS.getDataRW().data(),
 		pattern,
 		ranges,
 		0,
@@ -475,7 +479,8 @@ Property::SpinPolarizedLDOS ExactDiagonalizer::calculateSpinPolarizedLDOS(
 
 void ExactDiagonalizer::calculateDensityCallback(
 	PropertyExtractor *cb_this,
-	void *density,
+	Property::Property &property,
+//	void *density,
 	const Index &index,
 	int offset
 ){
@@ -484,7 +489,8 @@ void ExactDiagonalizer::calculateDensityCallback(
 
 void ExactDiagonalizer::calculateMagnetizationCallback(
 	PropertyExtractor *cb_this,
-	void *magnetization,
+	Property::Property &property,
+//	void *magnetization,
 	const Index &index,
 	int offset
 ){
@@ -493,11 +499,14 @@ void ExactDiagonalizer::calculateMagnetizationCallback(
 
 void ExactDiagonalizer::calculateLDOSCallback(
 	PropertyExtractor *cb_this,
-	void *ldos,
+	Property::Property &property,
+//	void *ldos,
 	const Index &index,
 	int offset
 ){
 	ExactDiagonalizer *pe = (ExactDiagonalizer*)cb_this;
+	Property::LDOS &ldos = (Property::LDOS&)property;
+	vector<double> &data = ldos.getDataRW();
 
 	Property::GreensFunction *greensFunction = pe->calculateGreensFunction(
 		index,
@@ -513,18 +522,25 @@ void ExactDiagonalizer::calculateLDOSCallback(
 
 	const double dE = (upperBound - lowerBound)/energyResolution;
 	for(int n = 0; n < energyResolution; n++)
-		((double*)ldos)[energyResolution*offset + n] += imag(greensFunctionData[n])/M_PI*dE;
+		data[energyResolution*offset + n] += imag(greensFunctionData[n])/M_PI*dE;
+//		((double*)ldos)[energyResolution*offset + n] += imag(greensFunctionData[n])/M_PI*dE;
 
 	delete greensFunction;
 }
 
 void ExactDiagonalizer::calculateSpinPolarizedLDOSCallback(
 	PropertyExtractor *cb_this,
-	void *spinPolarizedLDOS,
+	Property::Property &property,
+//	void *spinPolarizedLDOS,
 	const Index &index,
 	int offset
 ){
-	ExactDiagonalizer *pe = (ExactDiagonalizer*)cb_this;
+	TBTKNotYetImplemented("PropertyExtractor::ExactDiagonalizer::calculateMagnetizationCallback()");
+
+/*	ExactDiagonalizer *pe = (ExactDiagonalizer*)cb_this;
+	Property::SpinPolarizedLDOS &spinPolarizedLDOS
+		= (Property::SpinPolarizedLDOS&)property;
+	vector<SpinMatrix> &data = spinPolarizedLDOS.getDataRW();
 
 	int spinIndex = ((int*)(pe->hint))[0];
 	Index to(index);
@@ -549,10 +565,11 @@ void ExactDiagonalizer::calculateSpinPolarizedLDOSCallback(
 			= greensFunction->getData();
 
 		for(int e = 0; e < energyResolution; e++)
-			((complex<double>*)spinPolarizedLDOS)[4*energyResolution*offset + 4*e + n] += imag(greensFunctionData[e])/M_PI*dE;
+			data[4*energyResolution*offset + 4*e + n] += imag(greensFunctionData[e])/M_PI*dE;
+//			((complex<double>*)spinPolarizedLDOS)[4*energyResolution*offset + 4*e + n] += imag(greensFunctionData[e])/M_PI*dE;
 
 		delete greensFunction;
-	}
+	}*/
 }
 
 };	//End of namespace PropertyExtractor

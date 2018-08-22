@@ -445,12 +445,16 @@ Property::InteractionVertex ElectronFluctuationVertex::calculateInteractionVerte
 
 void ElectronFluctuationVertex::calculateInteractionVertexCallback(
 	PropertyExtractor *cb_this,
-	void *interactionVertex,
+	Property::Property &property,
+//	void *interactionVertex,
 	const Index &index,
 	int offset
 ){
 	ElectronFluctuationVertex *propertyExtractor
 		= (ElectronFluctuationVertex*)cb_this;
+	Property::InteractionVertex &interactionVertex
+		= (Property::InteractionVertex&)property;
+	vector<complex<double>> &data = interactionVertex.getDataRW();
 
 	vector<complex<double>> iv
 		= propertyExtractor->solver->calculateSelfEnergyVertex(
@@ -458,7 +462,8 @@ void ElectronFluctuationVertex::calculateInteractionVertexCallback(
 		);
 
 	for(unsigned int e = 0; e < iv.size(); e++)
-		((complex<double>*)interactionVertex)[offset + e] += iv[e];
+		data[offset + e] += iv[e];
+//		((complex<double>*)interactionVertex)[offset + e] += iv[e];
 }
 
 };	//End of namespace PropertyExtractor

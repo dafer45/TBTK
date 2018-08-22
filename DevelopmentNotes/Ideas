@@ -31,3 +31,7 @@
 
 - Remove FourierTransform functions with explicit dimensional arguments sizeX,
   sizeY, and sizeZ in favor of the single function with the ranges argument.
+
+- The class AbstractProperty should change name and Property::Property should
+  probably take over much of the non template related responsibilities of the
+  current AbstractProperty class.

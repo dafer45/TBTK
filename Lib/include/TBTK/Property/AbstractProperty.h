@@ -23,6 +23,7 @@
 #ifndef COM_DAFER45_TBTK_ABSTRACT_PROPERTY
 #define COM_DAFER45_TBTK_ABSTRACT_PROPERTY
 
+#include "TBTK/Property/Property.h"
 #include "TBTK/Property/IndexDescriptor.h"
 #include "TBTK/SpinMatrix.h"
 #include "TBTK/TBTKMacros.h"
@@ -92,7 +93,7 @@ template<
 	bool isFundamental = std::is_fundamental<DataType>::value,
 	bool isSerializable = std::is_base_of<Serializable, DataType>::value
 >
-class AbstractProperty : public Serializable{
+class AbstractProperty : public Property, public Serializable{
 public:
 	/** Get block size.
 	 *

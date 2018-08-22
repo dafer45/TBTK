@@ -108,7 +108,8 @@ private:
 	/** Callback for calculating the density. Used by calculateDensity. */
 	static void calculateDensityCallback(
 		PropertyExtractor *cb_this,
-		void *density,
+		Property::Property &property,
+//		void *density,
 		const Index &index,
 		int offset
 	);
@@ -126,7 +127,8 @@ private:
 	 *  calculateLDOS. */
 	static void calculateLDOSCallback(
 		PropertyExtractor *cb_this,
-		void *ldos,
+		Property::Property &property,
+//		void *ldos,
 		const Index &index,
 		int offset
 	);

@@ -40,14 +40,17 @@ public:
 		return PropertyExtractor::getUpperBosonicMatsubaraEnergyIndex();
 	}
 
+	template<typename DataType>
 	void calculate(
 		void(*callback)(
 			PropertyExtractor *cb_this,
-			void *memory,
+			Property::Property &property,
+//			void *memory,
 			const Index &index,
 			int offset
 		),
-		void *memory,
+		Property::AbstractProperty<DataType> &property,
+//		void *memory,
 		Index pattern,
 		const Index &ranges,
 		int currentOffset,
@@ -55,7 +58,8 @@ public:
 	){
 		PropertyExtractor::calculate(
 			callback,
-			memory,
+			property,
+//			memory,
 			pattern,
 			ranges,
 			currentOffset,
@@ -67,7 +71,8 @@ public:
 	void calculate(
 		void(*callback)(
 			PropertyExtractor *cb_this,
-			void *memory,
+			Property::Property &property,
+//			void *memory,
 			const Index &index,
 			int offset
 		),
@@ -503,12 +508,17 @@ TEST(PropertyExtractor, getUpperBosonicMatsubaraEnergyIndex){
 //Helper function for TEST(PropertyExtractor, calculateRanges).
 void callbackRanges(
 	PropertyExtractor *cb_this,
-	void *memory,
+	Property::Property &property,
+//	void *memory,
 	const Index &index,
 	int offset
 ){
+	Property::LDOS &ldos = (Property::LDOS&)property;
+	std::vector<double> &data = ldos.getDataRW();
+
 	for(unsigned int n = 0; n < 10; n++)
-		((int*)memory)[offset + n] += 10*(3*index[0] + index[2]) + n;
+		data[offset + n] += 10*(3*index[0] + index[2]) + n;
+//		((int*)memory)[offset + n] += 10*(3*index[0] + index[2]) + n;
 }
 
 TEST(PropertyExtractor, calculateRanges){
@@ -517,7 +527,22 @@ TEST(PropertyExtractor, calculateRanges){
 	//Check that the callback is called for all Indices and with the
 	//correct offset when using both loop and sum specifiers as well as
 	//normal subindices.
-	int memory[3*10];
+	const int DIMENSIONS = 3;
+	int ranges[DIMENSIONS] = {2, 1, 3};
+	Property::LDOS ldos(DIMENSIONS, ranges, -1, 1, 10);
+	for(unsigned int n = 0; n < ldos.getSize(); n++)
+		ldos.getDataRW()[n] = 0;
+	propertyExtractor.calculate(
+		callbackRanges,
+		ldos,
+		{IDX_SUM_ALL, 2, IDX_X},
+		{2, 1, 3},
+		0,
+		10
+	);
+	for(unsigned int n = 0; n < 3*10; n++)
+		EXPECT_NEAR(ldos.getData()[n], n + (30 + n), EPSILON_100);
+/*	int memory[3*10];
 	for(unsigned int n = 0; n < 3*10; n++)
 		memory[n] = 0;
 	propertyExtractor.calculate(
@@ -529,7 +554,7 @@ TEST(PropertyExtractor, calculateRanges){
 		10
 	);
 	for(unsigned int n = 0; n < 3*10; n++)
-		EXPECT_EQ(memory[n], n + (30 + n));
+		EXPECT_EQ(memory[n], n + (30 + n));*/
 
 	//Check that incompatible subindex specifiers generate errors.
 	EXPECT_EXIT(
@@ -537,7 +562,8 @@ TEST(PropertyExtractor, calculateRanges){
 			Streams::setStdMuteErr();
 			propertyExtractor.calculate(
 				callbackRanges,
-				memory,
+				ldos,
+//				memory,
 				{IDX_ALL, 2, IDX_X},
 				{2, 1, 3},
 				0,
@@ -552,7 +578,8 @@ TEST(PropertyExtractor, calculateRanges){
 			Streams::setStdMuteErr();
 			propertyExtractor.calculate(
 				callbackRanges,
-				memory,
+				ldos,
+//				memory,
 				{IDX_SUM_ALL, 2, IDX_SPIN},
 				{2, 1, 3},
 				0,
@@ -567,7 +594,8 @@ TEST(PropertyExtractor, calculateRanges){
 			Streams::setStdMuteErr();
 			propertyExtractor.calculate(
 				callbackRanges,
-				memory,
+				ldos,
+//				memory,
 				{IDX_SUM_ALL, 2, IDX_SEPARATOR},
 				{2, 1, 3},
 				0,
@@ -583,18 +611,24 @@ TEST(PropertyExtractor, calculateRanges){
 int spinIndex;
 void callbackCustom(
 	PropertyExtractor *cb_this,
-	void *memory,
+	Property::Property &property,
+//	void *memory,
 	const Index &index,
 	int offset
 ){
+	Property::SpinPolarizedLDOS &spinPolarizedLDOS
+		= (Property::SpinPolarizedLDOS&)property;
+	std::vector<SpinMatrix> &data = spinPolarizedLDOS.getDataRW();
+
 	if(index[0] == 1 || index[0] == 3)
 		EXPECT_EQ(spinIndex, 2);
 	else
 		EXPECT_EQ(spinIndex, 1);
 
 	for(unsigned int n = 0; n < 100; n++){
-		((SpinMatrix*)memory)[offset + n]
-			+= SpinMatrix((index[0] + index[1])*n);
+		data[offset + n] += SpinMatrix((index[0] + index[1])*n);
+//		((SpinMatrix*)memory)[offset + n]
+//			+= SpinMatrix((index[0] + index[1])*n);
 	}
 }
 

@@ -67,7 +67,8 @@ private:
 	/** Calback for callculating susceptibility. */
 	static void calculateInteractionVertexCallback(
 		PropertyExtractor *cb_this,
-		void *interactionVertex,
+		Property::Property &property,
+//		void *interactionVertex,
 		const Index &index,
 		int offset
 	);

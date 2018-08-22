@@ -427,14 +427,17 @@ protected:
 	 *  with increasing the current subindex by one. Should be equal to the
 	 *  number of data elements per Index for the initial call to the
 	 *  function. */
+	template<typename DataType>
 	void calculate(
 		void (*callback)(
 			PropertyExtractor *cb_this,
-			void *memory,
+			Property::Property &property,
+//			void *memory,
 			const Index &index,
 			int offset
 		),
-		void *memory,
+		Property::AbstractProperty<DataType> &property,
+//		void *memory,
 		Index pattern,
 		const Index &ranges,
 		int currentOffset,
@@ -461,7 +464,8 @@ protected:
 	void calculate(
 		void (*callback)(
 			PropertyExtractor *cb_this,
-			void *memory,
+			Property::Property &property,
+//			void *memory,
 			const Index &index,
 			int offset
 		),
@@ -732,7 +736,79 @@ template<typename DataType>
 void PropertyExtractor::calculate(
 	void (*callback)(
 		PropertyExtractor *cb_this,
-		void *memory,
+		Property::Property &property,
+//		void *memory,
+		const Index &index,
+		int offset
+	),
+	Property::AbstractProperty<DataType> &property,
+//	void *memory,
+	Index pattern,
+	const Index &ranges,
+	int currentOffset,
+	int offsetMultiplier
+){
+	//Find the next specifier index.
+	int currentSubindex = pattern.getSize()-1;
+	for(; currentSubindex >= 0; currentSubindex--){
+		if(pattern.at(currentSubindex) < 0)
+			break;
+	}
+
+	if(currentSubindex == -1){
+		//No further specifier index found. Call the callback.
+		callback(this, property/*memory*/, pattern, currentOffset);
+	}
+	else{
+		//Ensure that the specifier is valid for the Ranges format.
+		TBTKAssert(
+			pattern.at(currentSubindex) == IDX_SUM_ALL
+			|| pattern.at(currentSubindex) == IDX_X
+			|| pattern.at(currentSubindex) == IDX_Y
+			|| pattern.at(currentSubindex) == IDX_Z,
+			"PropertyExtractor::calculate()",
+			"Invalid specifier found at subindex "
+			<< currentSubindex << ".",
+			"Did you mean IDX_SUM_ALL, IDX_X, IDX_Y, or IDX_Z?"
+		);
+
+		//Multiply the memory offset for non summation indices.
+		int nextOffsetMultiplier = offsetMultiplier;
+		if(pattern.at(currentSubindex) != IDX_SUM_ALL)
+			nextOffsetMultiplier *= ranges.at(currentSubindex);
+
+		//Set flag indicating whether the current subindex is a
+		//summation index.
+		bool isSumIndex = false;
+		if(pattern.at(currentSubindex) == IDX_SUM_ALL)
+			isSumIndex = true;
+
+		//Recurively call the calculate function with the specifier at
+		//the current subindex replaced by each subindex value in the
+		//corresponding range.
+		for(int n = 0; n < ranges.at(currentSubindex); n++){
+			pattern.at(currentSubindex) = n;
+			calculate(
+				callback,
+				property,
+//				memory,
+				pattern,
+				ranges,
+				currentOffset,
+				nextOffsetMultiplier
+			);
+			if(!isSumIndex)
+				currentOffset += offsetMultiplier;
+		}
+	}
+}
+
+template<typename DataType>
+void PropertyExtractor::calculate(
+	void (*callback)(
+		PropertyExtractor *cb_this,
+		Property::Property &property,
+//		void *memory,
 		const Index &index,
 		int offset
 	),
@@ -764,7 +840,8 @@ void PropertyExtractor::calculate(
 
 		callback(
 			this,
-			abstractProperty.getDataRW().data(),
+			abstractProperty,
+//			abstractProperty.getDataRW().data(),
 			index,
 			abstractProperty.getOffset(index)
 		);

@@ -184,7 +184,8 @@ private:
 	 *  calculateWaveFunctions. */
 	static void calculateWaveFunctionsCallback(
 		PropertyExtractor *cb_this,
-		void *waveFunctions,
+		Property::Property &property,
+//		void *waveFunctions,
 		const Index &index,
 		int offset
 	);
@@ -193,7 +194,8 @@ private:
 	 *  calculateGreensFunction. */
 	static void calculateGreensFunctionCallback(
 		PropertyExtractor *cb_this,
-		void *greensFunction,
+		Property::Property &property,
+//		void *greensFunction,
 		const Index &index,
 		int offset
 	);
@@ -201,7 +203,8 @@ private:
 	/** Callback for calculating density. Used by calculateDensity. */
 	static void calculateDensityCallback(
 		PropertyExtractor *cb_this,
-		void *density,
+		Property::Property &property,
+//		void *density,
 		const Index &index,
 		int offset
 	);
@@ -209,7 +212,8 @@ private:
 	/** Callback for calculating magnetization. Used by calculateMAG. */
 	static void calculateMAGCallback(
 		PropertyExtractor *cb_this,
-		void *mag,
+		Property::Property &property,
+//		void *mag,
 		const Index &index,
 		int offset
 	);
@@ -218,7 +222,8 @@ private:
 	 *  calculateLDOS. */
 	static void calculateLDOSCallback(
 		PropertyExtractor *cb_this,
-		void *ldos,
+		Property::Property &property,
+//		void *ldos,
 		const Index &index,
 		int offset
 	);
@@ -227,7 +232,8 @@ private:
 	 *  Used by calculateSP_LDOS. */
 	static void calculateSP_LDOSCallback(
 		PropertyExtractor *cb_this,
-		void *sp_ldos,
+		Property::Property &property,
+//		void *sp_ldos,
 		const Index &index,
 		int offset
 	);

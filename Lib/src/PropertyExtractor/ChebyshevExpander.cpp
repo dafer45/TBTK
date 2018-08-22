@@ -416,7 +416,8 @@ Property::Density ChebyshevExpander::calculateDensity(
 
 	calculate(
 		calculateDensityCallback,
-		(void*)density.getDataRW().data(),
+		density,
+//		(void*)density.getDataRW().data(),
 		pattern,
 		ranges,
 		0,
@@ -488,7 +489,8 @@ Property::Magnetization ChebyshevExpander::calculateMagnetization(
 
 	calculate(
 		calculateMAGCallback,
-		(void*)magnetization.getDataRW().data(),
+		magnetization,
+//		(void*)magnetization.getDataRW().data(),
 		pattern,
 		ranges,
 		0,
@@ -554,7 +556,8 @@ Property::LDOS ChebyshevExpander::calculateLDOS(Index pattern, Index ranges){
 
 	calculate(
 		calculateLDOSCallback,
-		(void*)ldos.getDataRW().data(),
+		ldos,
+//		(void*)ldos.getDataRW().data(),
 		pattern,
 		ranges,
 		0,
@@ -637,7 +640,8 @@ Property::SpinPolarizedLDOS ChebyshevExpander::calculateSpinPolarizedLDOS(
 
 	calculate(
 		calculateSP_LDOSCallback,
-		(void*)spinPolarizedLDOS.getDataRW().data(),
+		spinPolarizedLDOS,
+//		(void*)spinPolarizedLDOS.getDataRW().data(),
 		pattern,
 		ranges,
 		0,
@@ -691,11 +695,14 @@ Property::SpinPolarizedLDOS ChebyshevExpander::calculateSpinPolarizedLDOS(
 
 void ChebyshevExpander::calculateDensityCallback(
 	PropertyExtractor *cb_this,
-	void *density,
+	Property::Property &property,
+//	void *density,
 	const Index &index,
 	int offset
 ){
 	ChebyshevExpander *pe = (ChebyshevExpander*)cb_this;
+	Property::Density &density = (Property::Density&)property;
+	vector<double> &data = density.getDataRW();
 
 	Property::GreensFunction greensFunction = pe->calculateGreensFunction(
 		index,
@@ -729,17 +736,22 @@ void ChebyshevExpander::calculateDensityCallback(
 			);
 		}
 
-		((double*)density)[offset] += weight*imag(greensFunctionData[e])/M_PI*dE;
+		data[offset] += weight*imag(greensFunctionData[e])/M_PI*dE;
+//		((double*)density)[offset] += weight*imag(greensFunctionData[e])/M_PI*dE;
 	}
 }
 
 void ChebyshevExpander::calculateMAGCallback(
 	PropertyExtractor *cb_this,
-	void *mag,
+	Property::Property &property,
+//	void *mag,
 	const Index &index,
 	int offset
 ){
 	ChebyshevExpander *pe = (ChebyshevExpander*)cb_this;
+	Property::Magnetization &magnetization
+		= (Property::Magnetization&)property;
+	vector<SpinMatrix> &data = magnetization.getDataRW();
 
 	int spinIndex = ((int*)(pe->hint))[0];
 	Index to(index);
@@ -780,18 +792,23 @@ void ChebyshevExpander::calculateMAGCallback(
 				);
 			}
 
-			((SpinMatrix*)mag)[offset].at(n/2, n%2) += weight*(-i)*greensFunctionData[e]/M_PI*dE;
+			data[offset].at(n/2, n%2)
+				+= weight*(-i)*greensFunctionData[e]/M_PI*dE;
+//			((SpinMatrix*)mag)[offset].at(n/2, n%2) += weight*(-i)*greensFunctionData[e]/M_PI*dE;
 		}
 	}
 }
 
 void ChebyshevExpander::calculateLDOSCallback(
 	PropertyExtractor *cb_this,
-	void *ldos,
+	Property::Property &property,
+//	void *ldos,
 	const Index &index,
 	int offset
 ){
 	ChebyshevExpander *pe = (ChebyshevExpander*)cb_this;
+	Property::LDOS &ldos = (Property::LDOS&)property;
+	vector<double> &data = ldos.getDataRW();
 
 	Property::GreensFunction greensFunction = pe->calculateGreensFunction(
 		index,
@@ -807,16 +824,21 @@ void ChebyshevExpander::calculateLDOSCallback(
 
 	const double dE = (upperBound - lowerBound)/energyResolution;
 	for(int n = 0; n < energyResolution; n++)
-		((double*)ldos)[offset + n] += imag(greensFunctionData[n])/M_PI*dE;
+		data[offset + n] += imag(greensFunctionData[n])/M_PI*dE;
+//		((double*)ldos)[offset + n] += imag(greensFunctionData[n])/M_PI*dE;
 }
 
 void ChebyshevExpander::calculateSP_LDOSCallback(
 	PropertyExtractor *cb_this,
-	void *sp_ldos,
+	Property::Property &property,
+//	void *sp_ldos,
 	const Index &index,
 	int offset
 ){
 	ChebyshevExpander *pe = (ChebyshevExpander*)cb_this;
+	Property::SpinPolarizedLDOS &spinPolarizedLDOS
+		= (Property::SpinPolarizedLDOS&)property;
+	vector<SpinMatrix> &data = spinPolarizedLDOS.getDataRW();
 
 	int spinIndex = ((int*)(pe->hint))[0];
 	Index to(index);
@@ -839,7 +861,8 @@ void ChebyshevExpander::calculateSP_LDOSCallback(
 			= greensFunction.getData();
 
 		for(int e = 0; e < energyResolution; e++)
-			((SpinMatrix*)sp_ldos)[offset + e].at(n/2, n%2) += -i*greensFunctionData[e]/M_PI*dE;
+			data[offset + e].at(n/2, n%2) += -i*greensFunctionData[e]/M_PI*dE;
+//			((SpinMatrix*)sp_ldos)[offset + e].at(n/2, n%2) += -i*greensFunctionData[e]/M_PI*dE;
 	}
 }
 

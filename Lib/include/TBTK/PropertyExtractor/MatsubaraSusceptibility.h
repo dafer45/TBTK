@@ -67,7 +67,8 @@ private:
 	/** Calback for callculating susceptibility. */
 	static void calculateSusceptibilityCallback(
 		PropertyExtractor *cb_this,
-		void *susceptibility,
+		Property::Property &property,
+//		void *susceptibility,
 		const Index &index,
 		int offset
 	);

@@ -154,7 +154,8 @@ private:
 	 *  Used by calculateDensity. */
 	static void calculateDensityCallback(
 		PropertyExtractor *cb_this,
-		void *density,
+		Property::Property &property,
+//		void *density,
 		const Index &index,
 		int offset
 	);
@@ -163,7 +164,8 @@ private:
 	 *  Used by calculateMAG. */
 	static void calculateMAGCallback(
 		PropertyExtractor *cb_this,
-		void *density,
+		Property::Property &property,
+//		void *density,
 		const Index &index,
 		int offset
 	);
@@ -172,7 +174,8 @@ private:
 	 *  Used by calculateLDOS. */
 	static void calculateLDOSCallback(
 		PropertyExtractor *cb_this,
-		void *ldos,
+		Property::Property &property,
+//		void *ldos,
 		const Index &index,
 		int offset
 	);
@@ -181,7 +184,8 @@ private:
 	 *  density of states. Used by calculateSP_LDOS. */
 	static void calculateSP_LDOSCallback(
 		PropertyExtractor *cb_this,
-		void *sp_ldos,
+		Property::Property &property,
+//		void *sp_ldos,
 		const Index &index,
 		int offset
 	);
