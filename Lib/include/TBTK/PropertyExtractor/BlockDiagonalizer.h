@@ -53,41 +53,6 @@ public:
 	/** Destructor. */
 	virtual ~BlockDiagonalizer();
 
-	/** Legacy. */
-/*	void saveEigenValues(
-		std::string path = "./",
-		std::string filename = "EV.dat"
-	);*/
-
-	/** Experimental. Extracts a tabulated version of the
-	 *  HoppingAmplitudeSet. */
-/*	void getTabulatedHoppingAmplitudeSet(
-		std::complex<double> **amplitudes,
-		int **indices,
-		int *numHoppingAmplitudes,
-		int *maxIndexSize
-	);*/
-
-	/** Overrides PropertyExtractor::setEnergyWindow().
-	 *
-	 *  Identical to the overriden function, except that it also sets the
-	 *  energy type to EnergyType::Real. */
-/*	virtual void setEnergyWindow(
-		double lowerBound,
-		double upperBound,
-		int resolution
-	);
-
-	//TODO
-	//This should be extended to become part of the PropertyExtractor
-	//interface once it is tested to work for this specific case.
-	virtual void setEnergyWindow(
-		int lowerFermionicMatsubaraEnergyIndex,
-		int upperFermionicMatsubaraEnergyIndex,
-		int lowerBosonicMatsubaraEnergyIndex,
-		int upperBosonicMatsubaraEnergyIndex
-	);*/
-
 	/** Get eigenvalues. The eigenvalues are ordered first by block, and
 	 *  then in accending order. This means that eigenvalues for blocks
 	 *  with smaller @link Index Indices @endlink comes before eigenvalues
@@ -153,19 +118,9 @@ public:
 	 *  for the Indices that satisfies the given patterns and state
 	 *  numbers. */
 	Property::WaveFunctions calculateWaveFunctions(
-//		std::initializer_list<Index> patterns,
 		std::vector<Index> patterns,
-//		std::initializer_list<int> states
 		std::vector<int> states
 	);
-
-	/** Calculate Green's function. */
-/*	Property::GreensFunction2 calculateGreensFunction(
-		Index to,
-		Index from,
-		Property::GreensFunction2::Type type
-			= Property::GreensFunction2::Type::Retarded
-	);*/
 
 	/** Calculate the Green's function on the Custom format. [See
 	 *  AbstractProperty for detailed information about the Custom format.
@@ -192,50 +147,22 @@ public:
 	);
 
 	/** Overrides PropertyExtractor::calculateDensity(). */
-/*	virtual Property::Density calculateDensity(
-		Index pattern,
-		Index ranges
-	);*/
-
-	/** Overrides PropertyExtractor::calculateDensity(). */
 	virtual Property::Density calculateDensity(
-//		std::initializer_list<Index> patterns
 		std::vector<Index> patterns
 	);
-
-	/** Overrides PropertyExtractor::calculateMagnetization(). */
-/*	virtual Property::Magnetization calculateMagnetization(
-		Index pattern,
-		Index ranges
-	);*/
 
 	/** Overrides PropertyExtractor::calculateMagnetization(). */
 	virtual Property::Magnetization calculateMagnetization(
-//		std::initializer_list<Index> patterns
 		std::vector<Index> patterns
 	);
-
-	/** Overrides PropertyExtractor::calculateLDOS(). */
-/*	virtual Property::LDOS calculateLDOS(
-		Index pattern,
-		Index ranges
-	);*/
 
 	/** Overrides PropertyExtractor::calculateLDOS(). */
 	virtual Property::LDOS calculateLDOS(
-//		std::initializer_list<Index> patterns
 		std::vector<Index> patterns
 	);
 
 	/** Overrides PropertyExtractor::calculateSpinPolarizedLDOS(). */
-/*	virtual Property::SpinPolarizedLDOS calculateSpinPolarizedLDOS(
-		Index pattern,
-		Index ranges
-	);*/
-
-	/** Overrides PropertyExtractor::calculateSpinPolarizedLDOS(). */
 	virtual Property::SpinPolarizedLDOS calculateSpinPolarizedLDOS(
-//		std::initializer_list<Index> patterns
 		std::vector<Index> patterns
 	);
 
@@ -247,7 +174,6 @@ private:
 	static void calculateWaveFunctionsCallback(
 		PropertyExtractor *cb_this,
 		Property::Property &property,
-//		void *waveFunctions,
 		const Index &index,
 		int offset
 	);
@@ -257,7 +183,6 @@ private:
 	static void calculateGreensFunctionCallback(
 		PropertyExtractor *cb_this,
 		Property::Property &property,
-//		void *greensFunction,
 		const Index &index,
 		int offset
 	);
@@ -266,7 +191,6 @@ private:
 	static void calculateDensityCallback(
 		PropertyExtractor *cb_this,
 		Property::Property &property,
-//		void *density,
 		const Index &index,
 		int offset
 	);
@@ -275,7 +199,6 @@ private:
 	static void calculateMagnetizationCallback(
 		PropertyExtractor *cb_this,
 		Property::Property &property,
-//		void *mag,
 		const Index &index,
 		int offset
 	);
@@ -285,7 +208,6 @@ private:
 	static void calculateLDOSCallback(
 		PropertyExtractor *cb_this,
 		Property::Property &property,
-//		void *ldos,
 		const Index &index,
 		int offset
 	);
@@ -295,26 +217,12 @@ private:
 	static void calculateSP_LDOSCallback(
 		PropertyExtractor *cb_this,
 		Property::Property &property,
-//		void *sp_ldos,
 		const Index &index,
 		int offset
 	);
 
 	/** Solver::Diagonalizer to work on. */
 	Solver::BlockDiagonalizer *bSolver;
-
-	/** Energies. */
-//	std::vector<std::complex<double>> energies;
-
-	//TODO
-	//These variables should be made part of the PropertyExtractor instead
-	//once it has been tested to work for this specific case.
-/*	enum class EnergyType{Real, Matsubara};
-	EnergyType energyType;
-	int lowerFermionicMatsubaraEnergyIndex;
-	int upperFermionicMatsubaraEnergyIndex;
-	int lowerBosonicMatsubaraEnergyIndex;
-	int upperBosonicMatsubaraEnergyIndex;*/
 };
 
 inline double BlockDiagonalizer::getEigenValue(int state) const{

@@ -33,117 +33,24 @@ namespace PropertyExtractor{
 
 BlockDiagonalizer::BlockDiagonalizer(Solver::BlockDiagonalizer &bSolver){
 	this->bSolver = &bSolver;
-//	energyType = EnergyType::Real;
 }
 
 BlockDiagonalizer::~BlockDiagonalizer(){
 }
 
-/*void BlockDiagonalizer::setEnergyWindow(
-	double lowerBound,
-	double upperBound,
-	int resolution
-){
-	PropertyExtractor::setEnergyWindow(
-		lowerBound,
-		upperBound,
-		resolution
-	);
-
-	energyType = EnergyType::Real;
-}
-
-void BlockDiagonalizer::setEnergyWindow(
-	int lowerFermionicMatsubaraEnergyIndex,
-	int upperFermionicMatsubaraEnergyIndex,
-	int lowerBosonicMatsubaraEnergyIndex,
-	int upperBosonicMatsubaraEnergyIndex
-){
-	TBTKAssert(
-		abs(lowerFermionicMatsubaraEnergyIndex%2) == 1,
-		"PropertyExtractor::BlockDiagonalizer::setEnergyWindow()",
-		"'lowerFermionicMatsubaraEnergyIndex="
-		<< lowerFermionicMatsubaraEnergyIndex << "' must be odd.",
-		""
-	);
-	TBTKAssert(
-		abs(upperFermionicMatsubaraEnergyIndex%2) == 1,
-		"PropertyExtractor::BlockDiagonalizer::setEnergyWindow()",
-		"'upperFermionicMatsubaraEnergyIndex="
-		<< upperFermionicMatsubaraEnergyIndex << "' must be odd.",
-		""
-	);
-	TBTKAssert(
-		abs(lowerBosonicMatsubaraEnergyIndex%2) == 0,
-		"PropertyExtractor::BlockDiagonalizer::setEnergyWindow()",
-		"'lowerBosonicMatsubaraEnergyIndex="
-		<< lowerFermionicMatsubaraEnergyIndex << "' must be odd.",
-		""
-	);
-	TBTKAssert(
-		abs(upperBosonicMatsubaraEnergyIndex%2) == 0,
-		"PropertyExtractor::BlockDiagonalizer::setEnergyWindow()",
-		"'upperBosonicMatsubaraEnergyIndex="
-		<< upperBosonicMatsubaraEnergyIndex << "' must be odd.",
-		""
-	);
-
-	energyType = EnergyType::Matsubara;
-	this->lowerFermionicMatsubaraEnergyIndex
-		= lowerFermionicMatsubaraEnergyIndex;
-	this->upperFermionicMatsubaraEnergyIndex
-		= upperFermionicMatsubaraEnergyIndex;
-	this->lowerBosonicMatsubaraEnergyIndex
-		= lowerBosonicMatsubaraEnergyIndex;
-	this->upperBosonicMatsubaraEnergyIndex
-		= upperBosonicMatsubaraEnergyIndex;
-}*/
-
-/*void BPropertyExtractor::saveEigenValues(string path, string filename){
-	stringstream ss;
-	ss << path;
-	if(path.back() != '/')
-		ss << '/';
-	ss << filename;
-	ofstream fout;
-	fout.open(ss.str().c_str());
-	for(int n = 0; n < dSolver->getModel()->getBasisSize(); n++){
-		fout << dSolver->getEigenValues()[n] << "\n";
-	}
-	fout.close();
-}
-
-void DPropertyExtractor::getTabulatedHoppingAmplitudeSet(
-	complex<double> **amplitudes,
-	int **indices,
-	int *numHoppingAmplitudes,
-	int *maxIndexSize
-){
-	dSolver->getModel()->getHoppingAmplitudeSet()->tabulate(
-		amplitudes,
-		indices,
-		numHoppingAmplitudes,
-		maxIndexSize
-	);
-}*/
-
 Property::EigenValues BlockDiagonalizer::getEigenValues(){
 	int size = bSolver->getModel().getBasisSize();
-//	const double *ev = bSolver->getEigenValues();
 
 	Property::EigenValues eigenValues(size);
 	std::vector<double> &data = eigenValues.getDataRW();
 	for(int n = 0; n < size; n++)
 		data[n] = bSolver->getEigenValue(n);
-//		data[n] = ev[n];
 
 	return eigenValues;
 }
 
 Property::WaveFunctions BlockDiagonalizer::calculateWaveFunctions(
-//	initializer_list<Index> patterns,
 	vector<Index> patterns,
-//	initializer_list<int> states
 	vector<int> states
 ){
 	validatePatternsNumComponents(
@@ -263,99 +170,6 @@ Property::GreensFunction BlockDiagonalizer::calculateGreensFunction(
 		"PropertyExtractor::BlockDiagonalizer::calculateGreensFunction()"
 	);
 
-/*	for(unsigned int n = 0; n < patterns.size(); n++){
-		TBTKAssert(
-			(patterns.begin() + n)->split().size() == 2,
-			"PropertyExtractor::BlockDiagonalizer::calculateGreensFunction()",
-			"'pattern' must be 2 component Indices, but '"
-			<< (patterns.begin() + n)->toString() << "' has "
-			<< (patterns.begin() + n)->split().size() << "'"
-			<< " component(s).",
-			""
-		);
-	}*/
-
-/*	IndexTree allIndices;
-	IndexTree memoryLayout;
-	for(unsigned int n = 0; n < patterns.size(); n++){
-		const Index &pattern = *(patterns.begin() + n);
-
-		std::vector<Index> components = pattern.split();
-		TBTKAssert(
-			components.size() == 2,
-			"PropertyExtractor::BlockDiagonalizer::calculateGreensFunction()",
-			"Invalid pattern '" << pattern.toString() << "'.",
-			"The Index must be a compund Index with 2 component"
-			<< " Indices, but the number of components are '"
-			<< components.size() << "'."
-		);
-
-		//TODO
-		//Continue here.
-		const Index &toPattern = components[0];
-		const Index &fromPattern = components[1];
-
-		//Generate allIndices.
-		IndexTree allToIndices = generateIndexTree(
-			{toPattern},
-			bSolver->getModel().getHoppingAmplitudeSet(),
-			false,
-			false
-		);
-		IndexTree allFromIndices = generateIndexTree(
-			{fromPattern},
-			bSolver->getModel().getHoppingAmplitudeSet(),
-			false,
-			false
-		);
-		for(
-			IndexTree::ConstIterator iteratorTo
-				= allToIndices.cbegin();
-			iteratorTo != allToIndices.cend();
-			++iteratorTo
-		){
-			for(
-				IndexTree::ConstIterator iteratorFrom
-					= allFromIndices.cbegin();
-				iteratorFrom != allFromIndices.cend();
-				++iteratorFrom
-			){
-				allIndices.add({*iteratorTo, *iteratorFrom});
-			}
-		}
-
-		//Generate memory layout
-		IndexTree memoryLayoutTo = generateIndexTree(
-			{toPattern},
-			bSolver->getModel().getHoppingAmplitudeSet(),
-			true,
-			false
-		);
-		IndexTree memoryLayoutFrom = generateIndexTree(
-			{fromPattern},
-			bSolver->getModel().getHoppingAmplitudeSet(),
-			true,
-			false
-		);
-		for(
-			IndexTree::ConstIterator iteratorTo
-				= memoryLayoutTo.cbegin();
-			iteratorTo != memoryLayoutTo.cend();
-			++iteratorTo
-		){
-			for(
-				IndexTree::ConstIterator iteratorFrom
-					= memoryLayoutFrom.cbegin();
-				iteratorFrom != memoryLayoutFrom.cend();
-				++iteratorFrom
-			){
-				memoryLayout.add({*iteratorTo, *iteratorFrom});
-			}
-		}
-	}
-	allIndices.generateLinearMap();
-	memoryLayout.generateLinearMap();*/
-
 	IndexTree allIndices = generateIndexTree(
 		patterns,
 		bSolver->getModel().getHoppingAmplitudeSet(),
@@ -413,27 +227,10 @@ Property::GreensFunction BlockDiagonalizer::calculateGreensFunction(
 			<< upperFermionicMatsubaraEnergyIndex << "'.",
 			"This should never happen, contact the developer."
 		);
-/*		unsigned int numMatsubaraEnergies = (
-			upperFermionicMatsubaraEnergyIndex
-			- lowerFermionicMatsubaraEnergyIndex
-		)/2 + 1;*/
 
 		double temperature = bSolver->getModel().getTemperature();
 		double kT = UnitHandler::getK_BN()*temperature;
 		double fundamentalMatsubaraEnergy = M_PI*kT;
-
-/*		hint = new vector<complex<double>>();
-		vector<complex<double>> &energies = *((vector<complex<double>>*)hint);
-		energies.clear();
-		energies.reserve(numMatsubaraEnergies);
-		for(int n = 0; n < (int)numMatsubaraEnergies; n++){
-			energies.push_back(
-				(double)(
-					lowerFermionicMatsubaraEnergyIndex
-					+ 2*n
-				)*complex<double>(0, 1)*M_PI*kT
-			);
-		}*/
 
 		Property::GreensFunction greensFunction(
 			memoryLayout,
@@ -452,8 +249,6 @@ Property::GreensFunction BlockDiagonalizer::calculateGreensFunction(
 		);
 
 		hint = nullptr;
-
-//		delete (vector<complex<double>>*)hint;
 
 		return greensFunction;
 	}
@@ -475,7 +270,6 @@ Property::DOS BlockDiagonalizer::calculateDOS(){
 		"Use PropertyExtractor::BlockDiagonalizer::setEnergyWindow()"
 		<< " to set a real energy window."
 	);
-//	const double *ev = bSolver->getEigenValues();
 
 	double lowerBound = getLowerBound();
 	double upperBound = getUpperBound();
@@ -486,10 +280,8 @@ Property::DOS BlockDiagonalizer::calculateDOS(){
 	double dE = (upperBound - lowerBound)/energyResolution;
 	for(int n = 0; n < bSolver->getModel().getBasisSize(); n++){
 		int e = (int)(((bSolver->getEigenValue(n) - lowerBound)/(upperBound - lowerBound))*energyResolution);
-//		int e = (int)(((ev[n] - lowerBound)/(upperBound - lowerBound))*energyResolution);
-		if(e >= 0 && e < energyResolution){
+		if(e >= 0 && e < energyResolution)
 			data[e] += 1./dE;
-		}
 	}
 
 	return dos;
@@ -531,24 +323,7 @@ complex<double> BlockDiagonalizer::calculateExpectationValue(
 	return expectationValue;
 }
 
-/*Property::Density DPropertyExtractor::calculateDensity(
-	Index pattern,
-	Index ranges
-){
-	ensureCompliantRanges(pattern, ranges);
-
-	int lDimensions;
-	int *lRanges;
-	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
-	Property::Density density(lDimensions, lRanges);
-
-	calculate(calculateDensityCallback, (void*)density.getDataRW(), pattern, ranges, 0, 1);
-
-	return density;
-}*/
-
 Property::Density BlockDiagonalizer::calculateDensity(
-//	initializer_list<Index> patterns
 	vector<Index> patterns
 ){
 	validatePatternsNumComponents(
@@ -588,45 +363,7 @@ Property::Density BlockDiagonalizer::calculateDensity(
 	return density;
 }
 
-/*Property::Magnetization DPropertyExtractor::calculateMagnetization(
-	Index pattern,
-	Index ranges
-){
-	hint = new int[1];
-	((int*)hint)[0] = -1;
-	for(unsigned int n = 0; n < pattern.size(); n++){
-		if(pattern.at(n) == IDX_SPIN){
-			((int*)hint)[0] = n;
-			pattern.at(n) = 0;
-			ranges.at(n) = 1;
-			break;
-		}
-	}
-	if(((int*)hint)[0] == -1){
-		delete [] (int*)hint;
-		TBTKExit(
-			"DPropertyExtractor::calculateMagnetization()",
-			"No spin index indiceated.",
-			"Used IDX_SPIN to indicate the position of the spin index."
-		);
-	}
-
-	ensureCompliantRanges(pattern, ranges);
-
-	int lDimensions;
-	int *lRanges;
-	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
-	Property::Magnetization magnetization(lDimensions, lRanges);
-
-	calculate(calculateMAGCallback, (void*)magnetization.getDataRW(), pattern, ranges, 0, 4);
-
-	delete [] (int*)hint;
-
-	return magnetization;
-}*/
-
 Property::Magnetization BlockDiagonalizer::calculateMagnetization(
-//	std::initializer_list<Index> patterns
 	vector<Index> patterns
 ){
 	validatePatternsNumComponents(
@@ -670,42 +407,7 @@ Property::Magnetization BlockDiagonalizer::calculateMagnetization(
 	return magnetization;
 }
 
-/*Property::LDOS BPropertyExtractor::calculateLDOS(
-	Index pattern,
-	Index ranges
-){
-	//hint[0] is an array of doubles, hint[1] is an array of ints
-	//hint[0][0]: upperBound
-	//hint[0][1]: lowerBound
-	//hint[1][0]: resolution
-	//hint[1][1]: spin_index
-	hint = new void*[2];
-	((double**)hint)[0] = new double[2];
-	((int**)hint)[1] = new int[1];
-	((double**)hint)[0][0] = upperBound;
-	((double**)hint)[0][1] = lowerBound;
-	((int**)hint)[1][0] = energyResolution;
-
-	ensureCompliantRanges(pattern, ranges);
-
-	int lDimensions;
-	int *lRanges;
-	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
-	Property::LDOS ldos(
-		lDimensions,
-		lRanges,
-		lowerBound,
-		upperBound,
-		energyResolution
-	);
-
-	calculate(calculateLDOSCallback, (void*)ldos.getDataRW(), pattern, ranges, 0, energyResolution);
-
-	return ldos;
-}*/
-
 Property::LDOS BlockDiagonalizer::calculateLDOS(
-//	std::initializer_list<Index> patterns
 	vector<Index> patterns
 ){
 	validatePatternsNumComponents(
@@ -774,73 +476,7 @@ Property::LDOS BlockDiagonalizer::calculateLDOS(
 	return ldos;
 }
 
-/*Property::SpinPolarizedLDOS DPropertyExtractor::calculateSpinPolarizedLDOS(
-	Index pattern,
-	Index ranges
-){
-	//hint[0] is an array of doubles, hint[1] is an array of ints
-	//hint[0][0]: upperBound
-	//hint[0][1]: lowerBound
-	//hint[1][0]: resolution
-	//hint[1][1]: spin_index
-	hint = new void*[2];
-	((double**)hint)[0] = new double[2];
-	((int**)hint)[1] = new int[2];
-	((double**)hint)[0][0] = upperBound;
-	((double**)hint)[0][1] = lowerBound;
-	((int**)hint)[1][0] = energyResolution;
-
-	((int**)hint)[1][1] = -1;
-	for(unsigned int n = 0; n < pattern.size(); n++){
-		if(pattern.at(n) == IDX_SPIN){
-			((int**)hint)[1][1] = n;
-			pattern.at(n) = 0;
-			ranges.at(n) = 1;
-			break;
-		}
-	}
-	if(((int**)hint)[1][1] == -1){
-		delete [] ((double**)hint)[0];
-		delete [] ((int**)hint)[1];
-		delete [] (void**)hint;
-		TBTKExit(
-			"DPropertyExtractor::calculateSpinPolarizedLDOS()",
-			"No spin index indicated.",
-			"Used IDX_SPIN to indicate the position of the spin index."
-		);
-	}
-
-	ensureCompliantRanges(pattern, ranges);
-
-	int lDimensions;
-	int *lRanges;
-	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
-	Property::SpinPolarizedLDOS spinPolarizedLDOS(
-		lDimensions,
-		lRanges,
-		lowerBound,
-		upperBound,
-		energyResolution
-	);
-
-	calculate(
-		calculateSP_LDOSCallback,
-		(void*)spinPolarizedLDOS.getDataRW(),
-		pattern,
-		ranges,
-		0,
-		4*energyResolution
-	);
-
-	delete [] ((double**)hint)[0];
-	delete [] ((int**)hint)[1];
-	delete [] (void**)hint;
-
-	return spinPolarizedLDOS;
-}*/
-
 Property::SpinPolarizedLDOS BlockDiagonalizer::calculateSpinPolarizedLDOS(
-//	std::initializer_list<Index> patterns
 	vector<Index> patterns
 ){
 	validatePatternsNumComponents(
@@ -955,7 +591,6 @@ double BlockDiagonalizer::calculateEntropy(){
 void BlockDiagonalizer::calculateWaveFunctionsCallback(
 	PropertyExtractor *cb_this,
 	Property::Property &property,
-//	void *waveFunctions,
 	const Index &index,
 	int offset
 ){
@@ -967,13 +602,11 @@ void BlockDiagonalizer::calculateWaveFunctionsCallback(
 	const vector<unsigned int> states = ((Property::WaveFunctions**)pe->hint)[0]->getStates();
 	for(unsigned int n = 0; n < states.size(); n++)
 		data[offset + n] += pe->getAmplitude(states.at(n), index);
-//		((complex<double>*)waveFunctions)[offset + n] += pe->getAmplitude(states.at(n), index);
 }
 
 void BlockDiagonalizer::calculateGreensFunctionCallback(
 	PropertyExtractor *cb_this,
 	Property::Property &property,
-//	void *greensFunction,
 	const Index &index,
 	int offset
 ){
@@ -981,9 +614,6 @@ void BlockDiagonalizer::calculateGreensFunctionCallback(
 	Property::GreensFunction &greensFunction
 		= (Property::GreensFunction&)property;
 	vector<complex<double>> &data = greensFunction.getDataRW();
-
-/*	const vector<complex<double>> &energies
-		= *((vector<complex<double>>*)propertyExtractor->hint);*/
 
 	vector<Index> components = index.split();
 	const Index &toIndex = components[0];
@@ -1046,10 +676,6 @@ void BlockDiagonalizer::calculateGreensFunctionCallback(
 					+= amplitude0*conj(amplitude1)/(
 						E - E_n + i*delta
 					);
-//				((complex<double>*)greensFunction)[offset + e]
-//					+= amplitude0*conj(amplitude1)/(
-//						E - E_n + i*delta
-//					);
 			}
 		}
 
@@ -1091,11 +717,6 @@ void BlockDiagonalizer::calculateGreensFunctionCallback(
 						gf.getMatsubaraEnergy(e)
 						- energy
 					);
-//				((complex<double>*)greensFunction)[offset + e]
-//					+= numerator/(
-//						gf.getMatsubaraEnergy(e)
-//						- energy
-//					);
 			}
 		}
 
@@ -1114,7 +735,6 @@ void BlockDiagonalizer::calculateGreensFunctionCallback(
 void BlockDiagonalizer::calculateDensityCallback(
 	PropertyExtractor *cb_this,
 	Property::Property &property,
-//	void* density,
 	const Index &index,
 	int offset
 ){
@@ -1122,12 +742,10 @@ void BlockDiagonalizer::calculateDensityCallback(
 	Property::Density &density = (Property::Density&)property;
 	vector<double> &data = density.getDataRW();
 
-//	const double *eigen_values = pe->bSolver->getEigenValues();
 	Statistics statistics = pe->bSolver->getModel().getStatistics();
 	int firstStateInBlock = pe->bSolver->getFirstStateInBlock(index);
 	int lastStateInBlock = pe->bSolver->getLastStateInBlock(index);
 	for(int n = firstStateInBlock; n <= lastStateInBlock; n++){
-//	for(int n = 0; n < pe->bSolver->getModel()->getBasisSize(); n++){
 		double weight;
 		if(statistics == Statistics::FermiDirac){
 			weight = Functions::fermiDiracDistribution(
@@ -1147,14 +765,12 @@ void BlockDiagonalizer::calculateDensityCallback(
 		complex<double> u = pe->bSolver->getAmplitude(n, index);
 
 		data[offset] += pow(abs(u), 2)*weight;
-//		((double*)density)[offset] += pow(abs(u), 2)*weight;
 	}
 }
 
 void BlockDiagonalizer::calculateMagnetizationCallback(
 	PropertyExtractor *cb_this,
 	Property::Property &property,
-//	void *mag,
 	const Index &index,
 	int offset
 ){
@@ -1163,7 +779,6 @@ void BlockDiagonalizer::calculateMagnetizationCallback(
 		= (Property::Magnetization&)property;
 	vector<SpinMatrix> &data = magnetization.getDataRW();
 
-//	const double *eigen_values = pe->bSolver->getEigenValues();
 	Statistics statistics = pe->bSolver->getModel().getStatistics();
 
 	int spin_index = ((int*)pe->hint)[0];
@@ -1174,7 +789,6 @@ void BlockDiagonalizer::calculateMagnetizationCallback(
 	int firstStateInBlock = pe->bSolver->getFirstStateInBlock(index);
 	int lastStateInBlock = pe->bSolver->getLastStateInBlock(index);
 	for(int n = firstStateInBlock; n <= lastStateInBlock; n++){
-//	for(int n = 0; n < pe->bSolver->getModel()->getBasisSize(); n++){
 		double weight;
 		if(statistics == Statistics::FermiDirac){
 			weight = Functions::fermiDiracDistribution(
@@ -1198,25 +812,18 @@ void BlockDiagonalizer::calculateMagnetizationCallback(
 		data[offset].at(0, 1) += conj(u_u)*u_d*weight;
 		data[offset].at(1, 0) += conj(u_d)*u_u*weight;
 		data[offset].at(1, 1) += conj(u_d)*u_d*weight;
-//		((SpinMatrix*)mag)[offset].at(0, 0) += conj(u_u)*u_u*weight;
-//		((SpinMatrix*)mag)[offset].at(0, 1) += conj(u_u)*u_d*weight;
-//		((SpinMatrix*)mag)[offset].at(1, 0) += conj(u_d)*u_u*weight;
-//		((SpinMatrix*)mag)[offset].at(1, 1) += conj(u_d)*u_d*weight;
 	}
 }
 
 void BlockDiagonalizer::calculateLDOSCallback(
 	PropertyExtractor *cb_this,
 	Property::Property &property,
-//	void *ldos,
 	const Index &index,
 	int offset
 ){
 	BlockDiagonalizer *pe = (BlockDiagonalizer*)cb_this;
 	Property::LDOS &ldos = (Property::LDOS&)property;
 	vector<double> &data = ldos.getDataRW();
-
-//	const double *eigen_values = pe->bSolver->getEigenValues();
 
 	double u_lim = ((double**)pe->hint)[0][0];
 	double l_lim = ((double**)pe->hint)[0][1];
@@ -1232,7 +839,6 @@ void BlockDiagonalizer::calculateLDOSCallback(
 	int lastStateInBlock = pe->bSolver->getLastStateInBlock(index);
 	double dE = (upperBound - lowerBound)/energyResolution;
 	for(int n = firstStateInBlock; n <= lastStateInBlock; n++){
-//	for(int n = 0; n < pe->bSolver->getModel()->getBasisSize(); n++){
 		double eigenValue = pe->bSolver->getEigenValue(n);
 		if(eigenValue > l_lim && eigenValue < u_lim){
 			complex<double> u = pe->bSolver->getAmplitude(n, index);
@@ -1241,7 +847,6 @@ void BlockDiagonalizer::calculateLDOSCallback(
 			if(e >= resolution)
 				e = resolution-1;
 			data[offset + e] += real(conj(u)*u)/dE;
-//			((double*)ldos)[offset + e] += real(conj(u)*u)/dE;
 		}
 	}
 }
@@ -1249,7 +854,6 @@ void BlockDiagonalizer::calculateLDOSCallback(
 void BlockDiagonalizer::calculateSP_LDOSCallback(
 	PropertyExtractor *cb_this,
 	Property::Property &property,
-//	void *sp_ldos,
 	const Index &index,
 	int offset
 ){
@@ -1277,7 +881,6 @@ void BlockDiagonalizer::calculateSP_LDOSCallback(
 	int lastStateInBlock = pe->bSolver->getLastStateInBlock(index);
 	double dE = (upperBound - lowerBound)/energyResolution;
 	for(int n = firstStateInBlock; n <= lastStateInBlock; n++){
-//	for(int n = 0; n < pe->bSolver->getModel()->getBasisSize(); n++){
 		double eigenValue = pe->bSolver->getEigenValue(n);
 		if(eigenValue > l_lim && eigenValue < u_lim){
 			complex<double> u_u = pe->bSolver->getAmplitude(n, index_u);
@@ -1290,10 +893,6 @@ void BlockDiagonalizer::calculateSP_LDOSCallback(
 			data[offset + e].at(0, 1) += conj(u_u)*u_d/dE;
 			data[offset + e].at(1, 0) += conj(u_d)*u_u/dE;
 			data[offset + e].at(1, 1) += conj(u_d)*u_d/dE;
-//			((SpinMatrix*)sp_ldos)[offset + e].at(0, 0) += conj(u_u)*u_u/dE;
-//			((SpinMatrix*)sp_ldos)[offset + e].at(0, 1) += conj(u_u)*u_d/dE;
-//			((SpinMatrix*)sp_ldos)[offset + e].at(1, 0) += conj(u_d)*u_u/dE;
-//			((SpinMatrix*)sp_ldos)[offset + e].at(1, 1) += conj(u_d)*u_d/dE;
 		}
 	}
 }

@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-/** @file Diagonalizer.cpp
+/** @file LindhardSusceptibility.cpp
  *
  *  @author Kristofer Björnson
  */
@@ -34,71 +34,9 @@ LindhardSusceptibility::LindhardSusceptibility(
 	Solver::LindhardSusceptibility &solver
 ){
 	this->solver = &solver;
-//	energyType = EnergyType::Real;
 }
-
-/*void LindhardSusceptibility::setEnergyWindow(
-	double lowerBound,
-	double upperBound,
-	int resolution
-){
-	PropertyExtractor::setEnergyWindow(
-		lowerBound,
-		upperBound,
-		resolution
-	);
-
-	energyType = EnergyType::Real;
-}
-
-void LindhardSusceptibility::setEnergyWindow(
-	int lowerFermionicMatsubaraEnergyIndex,
-	int upperFermionicMatsubaraEnergyIndex,
-	int lowerBosonicMatsubaraEnergyIndex,
-	int upperBosonicMatsubaraEnergyIndex
-){
-	TBTKAssert(
-		abs(lowerFermionicMatsubaraEnergyIndex%2) == 1,
-		"PropertyExtractor::LindhardSusceptibility::setEnergyWindow()",
-		"'lowerFermionicMatsubaraEnergyIndex="
-		<< lowerFermionicMatsubaraEnergyIndex << "' must be odd.",
-		""
-	);
-	TBTKAssert(
-		abs(upperFermionicMatsubaraEnergyIndex%2) == 1,
-		"PropertyExtractor::LindhardSusceptibility::setEnergyWindow()",
-		"'upperFermionicMatsubaraEnergyIndex="
-		<< upperFermionicMatsubaraEnergyIndex << "' must be odd.",
-		""
-	);
-	TBTKAssert(
-		abs(lowerBosonicMatsubaraEnergyIndex%2) == 0,
-		"PropertyExtractor::LindhardSusceptibility::setEnergyWindow()",
-		"'lowerBosonicMatsubaraEnergyIndex="
-		<< lowerBosonicMatsubaraEnergyIndex << "' must be odd.",
-		""
-	);
-	TBTKAssert(
-		abs(upperBosonicMatsubaraEnergyIndex%2) == 0,
-		"PropertyExtractor::LindhardSusceptibility::setEnergyWindow()",
-		"'upperBosoonicMatsubaraEnergyIndex="
-		<< upperBosonicMatsubaraEnergyIndex << "' must be odd.",
-		""
-	);
-
-	energyType = EnergyType::Matsubara;
-	this->lowerFermionicMatsubaraEnergyIndex
-		= lowerFermionicMatsubaraEnergyIndex;
-	this->upperFermionicMatsubaraEnergyIndex
-		= upperFermionicMatsubaraEnergyIndex;
-	this->lowerBosonicMatsubaraEnergyIndex
-		= lowerBosonicMatsubaraEnergyIndex;
-	this->upperBosonicMatsubaraEnergyIndex
-		= upperBosonicMatsubaraEnergyIndex;
-}*/
 
 Property::Susceptibility LindhardSusceptibility::calculateSusceptibility(
-//	std::initializer_list<Index> patterns
 	vector<Index> patterns
 ){
 	//Calculate allIndices.
@@ -382,18 +320,6 @@ Property::Susceptibility LindhardSusceptibility::calculateSusceptibility(
 	}
 	memoryLayout.generateLinearMap();
 
-	//hint[0] is an array of doubles, hint[1] is an array of ints
-	//hint[0][0]: upperBound
-	//hint[0][1]: lowerBound
-	//hint[1][0]: resolution
-	//hint[1][1]: spin_index
-/*	hint = new void*[2];
-	((double**)hint)[0] = new double[2];
-	((int**)hint)[1] = new int[1];
-	((double**)hint)[0][0] = upperBound;
-	((double**)hint)[0][1] = lowerBound;
-	((int**)hint)[1][0] = energyResolution;*/
-
 	switch(getEnergyType()){
 	case EnergyType::Real:
 	{
@@ -491,7 +417,6 @@ Property::Susceptibility LindhardSusceptibility::calculateSusceptibility(
 void LindhardSusceptibility::calculateSusceptibilityCallback(
 	PropertyExtractor *cb_this,
 	Property::Property &property,
-//	void *susceptibility,
 	const Index &index,
 	int offset
 ){
@@ -509,7 +434,6 @@ void LindhardSusceptibility::calculateSusceptibilityCallback(
 
 	for(unsigned int e = 0; e < s.size(); e++)
 		data[offset + e] += s[e];
-//		((complex<double>*)susceptibility)[offset + e] += s[e];
 }
 
 };	//End of namespace PropertyExtractor

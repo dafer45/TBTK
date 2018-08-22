@@ -35,37 +35,6 @@ Diagonalizer::Diagonalizer(Solver::Diagonalizer &dSolver){
 	this->dSolver = &dSolver;
 }
 
-/*Diagonalizer::~Diagonalizer(){
-}*/
-
-/*void Diagonalizer::saveEigenValues(string path, string filename){
-	stringstream ss;
-	ss << path;
-	if(path.back() != '/')
-		ss << '/';
-	ss << filename;
-	ofstream fout;
-	fout.open(ss.str().c_str());
-	for(int n = 0; n < dSolver->getModel().getBasisSize(); n++){
-		fout << dSolver->getEigenValues()[n] << "\n";
-	}
-	fout.close();
-}
-
-void Diagonalizer::getTabulatedHoppingAmplitudeSet(
-	complex<double> **amplitudes,
-	int **indices,
-	int *numHoppingAmplitudes,
-	int *maxIndexSize
-){
-	dSolver->getModel().getHoppingAmplitudeSet().tabulate(
-		amplitudes,
-		indices,
-		numHoppingAmplitudes,
-		maxIndexSize
-	);
-}*/
-
 Property::EigenValues Diagonalizer::getEigenValues(){
 	int size = dSolver->getModel().getBasisSize();
 	const double *ev = dSolver->getEigenValues();
@@ -79,7 +48,6 @@ Property::EigenValues Diagonalizer::getEigenValues(){
 }
 
 Property::WaveFunctions Diagonalizer::calculateWaveFunctions(
-//	initializer_list<Index> patterns,
 	vector<Index> patterns,
 	vector<int> states
 ){
@@ -186,7 +154,6 @@ Property::WaveFunctions Diagonalizer::calculateWaveFunctions(
 }*/
 
 Property::GreensFunction Diagonalizer::calculateGreensFunction(
-//	std::initializer_list<Index> patterns,
 	const vector<Index> &patterns,
 	Property::GreensFunction::Type type
 ){
@@ -200,18 +167,6 @@ Property::GreensFunction Diagonalizer::calculateGreensFunction(
 		{IDX_ALL, IDX_SUM_ALL},
 		"PropertyExtractor::Diagonalizer::calculateGreensFunction()"
 	);
-
-/*	for(unsigned int n = 0; n < patterns.size(); n++){
-		TBTKAssert(
-			(patterns.begin() + n)->split().size() == 2,
-			"PropertyExtractor::Diagonalizer::calculateGreensFunction()",
-			"'pattern' must be 2 component Indices, but '"
-			<< (patterns.begin() + n)->toString() << "' has '"
-			<< (patterns.begin() + n)->split().size() << "'"
-			<< " component(s).",
-			""
-		);
-	}*/
 
 	IndexTree allIndices = generateIndexTree(
 		patterns,
@@ -381,7 +336,6 @@ Property::Density Diagonalizer::calculateDensity(
 	calculate(
 		calculateDensityCallback,
 		density,
-//		(void*)density.getDataRW().data(),
 		pattern,
 		ranges,
 		0,
@@ -392,7 +346,6 @@ Property::Density Diagonalizer::calculateDensity(
 }
 
 Property::Density Diagonalizer::calculateDensity(
-//	initializer_list<Index> patterns
 	vector<Index> patterns
 ){
 	validatePatternsNumComponents(
@@ -465,7 +418,6 @@ Property::Magnetization Diagonalizer::calculateMagnetization(
 	calculate(
 		calculateMAGCallback,
 		magnetization,
-//		(void*)magnetization.getDataRW().data(),
 		pattern,
 		ranges,
 		0,
@@ -478,7 +430,6 @@ Property::Magnetization Diagonalizer::calculateMagnetization(
 }
 
 Property::Magnetization Diagonalizer::calculateMagnetization(
-//	std::initializer_list<Index> patterns
 	vector<Index> patterns
 ){
 	validatePatternsNumComponents(
@@ -558,7 +509,6 @@ Property::LDOS Diagonalizer::calculateLDOS(
 	calculate(
 		calculateLDOSCallback,
 		ldos,
-//		(void*)ldos.getDataRW().data(),
 		pattern,
 		ranges,
 		0,
@@ -569,7 +519,6 @@ Property::LDOS Diagonalizer::calculateLDOS(
 }
 
 Property::LDOS Diagonalizer::calculateLDOS(
-//	std::initializer_list<Index> patterns
 	vector<Index> patterns
 ){
 	validatePatternsNumComponents(
@@ -686,7 +635,6 @@ Property::SpinPolarizedLDOS Diagonalizer::calculateSpinPolarizedLDOS(
 	calculate(
 		calculateSP_LDOSCallback,
 		spinPolarizedLDOS,
-//		(void*)spinPolarizedLDOS.getDataRW().data(),
 		pattern,
 		ranges,
 		0,
@@ -701,7 +649,6 @@ Property::SpinPolarizedLDOS Diagonalizer::calculateSpinPolarizedLDOS(
 }
 
 Property::SpinPolarizedLDOS Diagonalizer::calculateSpinPolarizedLDOS(
-//	std::initializer_list<Index> patterns
 	vector<Index> patterns
 ){
 	validatePatternsNumComponents(
@@ -808,7 +755,6 @@ double Diagonalizer::calculateEntropy(){
 void Diagonalizer::calculateWaveFunctionsCallback(
 	PropertyExtractor *cb_this,
 	Property::Property &property,
-//	void *waveFunctions,
 	const Index &index,
 	int offset
 ){
@@ -817,16 +763,15 @@ void Diagonalizer::calculateWaveFunctionsCallback(
 		= (Property::WaveFunctions&)property;
 	vector<complex<double>> &data = waveFunctions.getDataRW();
 
-	const vector<unsigned int> states = ((Property::WaveFunctions**)pe->hint)[0]->getStates();
+	const vector<unsigned int> states
+		= ((Property::WaveFunctions**)pe->hint)[0]->getStates();
 	for(unsigned int n = 0; n < states.size(); n++)
 		data[offset + n] += pe->getAmplitude(states.at(n), index);
-//		((complex<double>*)waveFunctions)[offset + n] += pe->getAmplitude(states.at(n), index);
 }
 
 void Diagonalizer::calculateGreensFunctionCallback(
 	PropertyExtractor *cb_this,
 	Property::Property &property,
-//	void *greensFunction,
 	const Index &index,
 	int offset
 ){
@@ -834,7 +779,6 @@ void Diagonalizer::calculateGreensFunctionCallback(
 
 	vector<Index> components = index.split();
 
-//	Property::GreensFunction &gf = *(Property::GreensFunction*)pe->hint;
 	Property::GreensFunction &greensFunction
 		= (Property::GreensFunction&)property;
 	vector<complex<double>> &data = greensFunction.getDataRW();
@@ -930,7 +874,6 @@ void Diagonalizer::calculateGreensFunctionCallback(
 void Diagonalizer::calculateDensityCallback(
 	PropertyExtractor *cb_this,
 	Property::Property &property,
-//	void* density,
 	const Index &index,
 	int offset
 ){
@@ -960,14 +903,12 @@ void Diagonalizer::calculateDensityCallback(
 		complex<double> u = pe->dSolver->getAmplitude(n, index);
 
 		data[offset] += pow(abs(u), 2)*weight;
-//		((double*)density)[offset] += pow(abs(u), 2)*weight;
 	}
 }
 
 void Diagonalizer::calculateMAGCallback(
 	PropertyExtractor *cb_this,
 	Property::Property &property,
-//	void *mag,
 	const Index &index,
 	int offset
 ){
@@ -1004,17 +945,12 @@ void Diagonalizer::calculateMAGCallback(
 		data[offset].at(0, 1) += conj(u_u)*u_d*weight;
 		data[offset].at(1, 0) += conj(u_d)*u_u*weight;
 		data[offset].at(1, 1) += conj(u_d)*u_d*weight;
-//		((SpinMatrix*)mag)[offset].at(0, 0) += conj(u_u)*u_u*weight;
-//		((SpinMatrix*)mag)[offset].at(0, 1) += conj(u_u)*u_d*weight;
-//		((SpinMatrix*)mag)[offset].at(1, 0) += conj(u_d)*u_u*weight;
-//		((SpinMatrix*)mag)[offset].at(1, 1) += conj(u_d)*u_d*weight;
 	}
 }
 
 void Diagonalizer::calculateLDOSCallback(
 	PropertyExtractor *cb_this,
 	Property::Property &property,
-//	void *ldos,
 	const Index &index,
 	int offset
 ){
@@ -1043,7 +979,6 @@ void Diagonalizer::calculateLDOSCallback(
 			if(e >= resolution)
 				e = resolution-1;
 			data[offset + e] += real(conj(u)*u)/dE;
-//			((double*)ldos)[offset + e] += real(conj(u)*u)/dE;
 		}
 	}
 }
@@ -1051,7 +986,6 @@ void Diagonalizer::calculateLDOSCallback(
 void Diagonalizer::calculateSP_LDOSCallback(
 	PropertyExtractor *cb_this,
 	Property::Property &property,
-//	void *sp_ldos,
 	const Index &index,
 	int offset
 ){
@@ -1090,10 +1024,6 @@ void Diagonalizer::calculateSP_LDOSCallback(
 			data[offset + e].at(0, 1) += conj(u_u)*u_d/dE;
 			data[offset + e].at(1, 0) += conj(u_d)*u_u/dE;
 			data[offset + e].at(1, 1) += conj(u_d)*u_d/dE;
-//			((SpinMatrix*)sp_ldos)[offset + e].at(0, 0) += conj(u_u)*u_u/dE;
-//			((SpinMatrix*)sp_ldos)[offset + e].at(0, 1) += conj(u_u)*u_d/dE;
-//			((SpinMatrix*)sp_ldos)[offset + e].at(1, 0) += conj(u_d)*u_u/dE;
-//			((SpinMatrix*)sp_ldos)[offset + e].at(1, 1) += conj(u_d)*u_d/dE;
 		}
 	}
 }

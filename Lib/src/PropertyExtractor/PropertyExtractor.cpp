@@ -143,7 +143,6 @@ Property::Density PropertyExtractor::calculateDensity(
 }
 
 Property::Density PropertyExtractor::calculateDensity(
-//	initializer_list<Index> patterns
 	vector<Index> patterns
 ){
 	TBTKExit(
@@ -165,7 +164,6 @@ Property::Magnetization PropertyExtractor::calculateMagnetization(
 }
 
 Property::Magnetization PropertyExtractor::calculateMagnetization(
-//	initializer_list<Index> patterns
 	vector<Index> patterns
 ){
 	TBTKExit(
@@ -187,7 +185,6 @@ Property::LDOS PropertyExtractor::calculateLDOS(
 }
 
 Property::LDOS PropertyExtractor::calculateLDOS(
-//	initializer_list<Index>	pattern
 	vector<Index> patterns
 ){
 	TBTKExit(
@@ -209,7 +206,6 @@ Property::SpinPolarizedLDOS PropertyExtractor::calculateSpinPolarizedLDOS(
 }
 
 Property::SpinPolarizedLDOS PropertyExtractor::calculateSpinPolarizedLDOS(
-//	initializer_list<Index> pattern
 	vector<Index> patterns
 ){
 	TBTKExit(
@@ -245,73 +241,6 @@ double PropertyExtractor::calculateEntropy(){
 		"See the API for list of supported calls."
 	);
 }
-
-/*void PropertyExtractor::calculate(
-	void (*callback)(
-		PropertyExtractor *cb_this,
-		void *memory,
-		const Index &index,
-		int offset
-	),
-	void *memory,
-	Index pattern,
-	const Index &ranges,
-	int currentOffset,
-	int offsetMultiplier
-){
-	//Find the next specifier index.
-	int currentSubindex = pattern.getSize()-1;
-	for(; currentSubindex >= 0; currentSubindex--){
-		if(pattern.at(currentSubindex) < 0)
-			break;
-	}
-
-	if(currentSubindex == -1){
-		//No further specifier index found. Call the callback.
-		callback(this, memory, pattern, currentOffset);
-	}
-	else{
-		//Ensure that the specifier is valid for the Ranges format.
-		TBTKAssert(
-			pattern.at(currentSubindex) == IDX_SUM_ALL
-			|| pattern.at(currentSubindex) == IDX_X
-			|| pattern.at(currentSubindex) == IDX_Y
-			|| pattern.at(currentSubindex) == IDX_Z,
-			"PropertyExtractor::calculate()",
-			"Invalid specifier found at subindex "
-			<< currentSubindex << ".",
-			"Did you mean IDX_SUM_ALL, IDX_X, IDX_Y, or IDX_Z?"
-		);
-
-		//Multiply the memory offset for non summation indices.
-		int nextOffsetMultiplier = offsetMultiplier;
-		if(pattern.at(currentSubindex) != IDX_SUM_ALL)
-			nextOffsetMultiplier *= ranges.at(currentSubindex);
-
-		//Set flag indicating whether the current subindex is a
-		//summation index.
-		bool isSumIndex = false;
-		if(pattern.at(currentSubindex) == IDX_SUM_ALL)
-			isSumIndex = true;
-
-		//Recurively call the calculate function with the specifier at
-		//the current subindex replaced by each subindex value in the
-		//corresponding range.
-		for(int n = 0; n < ranges.at(currentSubindex); n++){
-			pattern.at(currentSubindex) = n;
-			calculate(
-				callback,
-				memory,
-				pattern,
-				ranges,
-				currentOffset,
-				nextOffsetMultiplier
-			);
-			if(!isSumIndex)
-				currentOffset += offsetMultiplier;
-		}
-	}
-}*/
 
 void PropertyExtractor::ensureCompliantRanges(
 	const Index &pattern,
@@ -354,7 +283,6 @@ void PropertyExtractor::getLoopRanges(
 }
 
 IndexTree PropertyExtractor::generateIndexTree(
-//	std::initializer_list<Index> patterns,
 	std::vector<Index> patterns,
 	const HoppingAmplitudeSet &hoppingAmplitudeSet,
 	bool keepSummationWildcards,

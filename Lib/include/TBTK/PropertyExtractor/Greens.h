@@ -53,12 +53,6 @@ public:
 		int energyResolution
 	);
 
-	/** Overrides PropertyExtractor::calculateExpectationValue(). */
-/*	virtual std::complex<double> calculateExpectationValue(
-		Index to,
-		Index from
-	);*/
-
 	/** Overrides PropertyExtractor::calculateDensity(). */
 	virtual Property::Density calculateDensity(
 		Index pattern,
@@ -67,40 +61,13 @@ public:
 
 	/** Overrides PropertyExtractor::calculateDensity(). */
 	virtual Property::Density calculateDensity(
-//		std::initializer_list<Index> patterns
 		std::vector<Index> patterns
 	);
-
-	/** Overrides PropertyExtractor::calculateMagnetization(). */
-/*	virtual Property::Magnetization calculateMagnetization(
-		Index pattern,
-		Index ranges
-	);*/
-
-	/** Overrides PropertyExtractor::calculateMagnetization(). */
-/*	virtual Property::Magnetization calculateMagnetization(
-		std::initializer_list<Index> patterns
-	);*/
-
-	/** Overrides PropertyExtractor::calculateLDOS(). */
-//	virtual Property::LDOS calculateLDOS(Index pattern, Index ranges);
 
 	/** Overrides PropertyExtractor::calculateLDOS(). */
 	virtual Property::LDOS calculateLDOS(
-//		std::initializer_list<Index> pattern
 		std::vector<Index> patterns
 	);
-
-	/** Overrides PropertyExtractor::calculateSpinPolarizedLDOS(). */
-/*	virtual Property::SpinPolarizedLDOS calculateSpinPolarizedLDOS(
-		Index pattern,
-		Index ranges
-	);*/
-
-	/** Overrides PropertyExtractor::calculateSpinPolarizedLDOS(). */
-/*	virtual Property::SpinPolarizedLDOS calculateSpinPolarizedLDOS(
-		std::initializer_list<Index> pattern
-	);*/
 private:
 	/** ChebyshevExpander to work on. */
 	Solver::Greens *solver;
@@ -109,38 +76,18 @@ private:
 	static void calculateDensityCallback(
 		PropertyExtractor *cb_this,
 		Property::Property &property,
-//		void *density,
 		const Index &index,
 		int offset
 	);
-
-	/** Callback for calculating the magnetization. Used by
-	 *  calculateMagnetization. */
-/*	static void calculateMagnetizationCallback(
-		PropertyExtractor *cb_this,
-		void *density,
-		const Index &index,
-		int offset
-	);*/
 
 	/** Callback for calculating the local density of states. Used by
 	 *  calculateLDOS. */
 	static void calculateLDOSCallback(
 		PropertyExtractor *cb_this,
 		Property::Property &property,
-//		void *ldos,
 		const Index &index,
 		int offset
 	);
-
-	/** Callback for calculating the spin-polarized local density of
-	 *  states. Used by calculateSpinPolarizedLDOS. */
-/*	static void calculateSpinPolarizedLDOSCallback(
-		PropertyExtractor *cb_this,
-		void *sp_ldos,
-		const Index &index,
-		int offset
-	);*/
 };
 
 };	//End of namespace PropertyExtractor

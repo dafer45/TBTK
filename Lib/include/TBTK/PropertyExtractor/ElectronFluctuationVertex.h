@@ -60,7 +60,6 @@ public:
 
 	/** Calculates the Susceptibility. */
 	virtual Property::InteractionVertex calculateInteractionVertex(
-//		std::initializer_list<Index> patterns
 		std::vector<Index> patterns
 	);
 private:
@@ -68,26 +67,12 @@ private:
 	static void calculateInteractionVertexCallback(
 		PropertyExtractor *cb_this,
 		Property::Property &property,
-//		void *interactionVertex,
 		const Index &index,
 		int offset
 	);
 
 	/** Solver::ElectronFluctautionVertex to work on. */
 	Solver::ElectronFluctuationVertex *solver;
-
-	/** Energies. */
-//	std::vector<std::complex<double>> energies;
-
-	//TODO
-	//These variables should be made part if the PropertyExtractor instead
-	//once its been tested to work well for this specific case.
-/*	enum class EnergyType{Real, Matsubara};
-	EnergyType energyType;
-	int lowerFermionicMatsubaraEnergyIndex;
-	int upperFermionicMatsubaraEnergyIndex;
-	int lowerBosonicMatsubaraEnergyIndex;
-	int upperBosonicMatsubaraEnergyIndex;*/
 };
 
 };	//End of namespace PropertyExtractor

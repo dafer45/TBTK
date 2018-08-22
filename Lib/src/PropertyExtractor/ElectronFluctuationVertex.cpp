@@ -46,13 +46,6 @@ void ElectronFluctuationVertex::setEnergyWindow(
 		"This function is not supported for this PropertyExtractor.",
 		""
 	);
-/*	PropertyExtractor::setEnergyWindow(
-		lowerBound,
-		upperBound,
-		resolution
-	);
-
-	energyType = EnergyType::Real;*/
 }
 
 void ElectronFluctuationVertex::setEnergyWindow(
@@ -66,40 +59,9 @@ void ElectronFluctuationVertex::setEnergyWindow(
 		"This function is not supported for this PropertyExtractor.",
 		""
 	);
-/*	TBTKAssert(
-		abs(lowerFermionicMatsubaraEnergyIndex%2) == 1,
-		"PropertyExtractor::LindhardSusceptibility::setEnergyWindow()",
-		"'lowerFermionicMatsubaraEnergyIndex="
-		<< lowerFermionicMatsubaraEnergyIndex << "' must be odd.",
-		""
-	);
-	TBTKAssert(
-		abs(upperFermionicMatsubaraEnergyIndex%2) == 1,
-		"PropertyExtractor::LindhardSusceptibility::setEnergyWindow()",
-		"'upperFermionicMatsubaraEnergyIndex="
-		<< upperFermionicMatsubaraEnergyIndex << "' must be odd.",
-		""
-	);
-	TBTKAssert(
-		abs(lowerBosonicMatsubaraEnergyIndex%2) == 0,
-		"PropertyExtractor::LindhardSusceptibility::setEnergyWindow()",
-		"'lowerBosonicMatsubaraEnergyIndex="
-		<< lowerBosonicMatsubaraEnergyIndex << "' must be odd.",
-		""
-	);
-	TBTKAssert(
-		abs(upperBosonicMatsubaraEnergyIndex%2) == 0,
-		"PropertyExtractor::LindhardSusceptibility::setEnergyWindow()",
-		"'upperBosoonicMatsubaraEnergyIndex="
-		<< upperBosonicMatsubaraEnergyIndex << "' must be odd.",
-		""
-	);
-
-	energyType = EnergyType::Matsubara;*/
 }
 
 Property::InteractionVertex ElectronFluctuationVertex::calculateInteractionVertex(
-//	std::initializer_list<Index> patterns
 	vector<Index> patterns
 ){
 	//Calculate allIndices.
@@ -383,18 +345,6 @@ Property::InteractionVertex ElectronFluctuationVertex::calculateInteractionVerte
 	}
 	memoryLayout.generateLinearMap();
 
-	//hint[0] is an array of doubles, hint[1] is an array of ints
-	//hint[0][0]: upperBound
-	//hint[0][1]: lowerBound
-	//hint[1][0]: resolution
-	//hint[1][1]: spin_index
-/*	hint = new void*[2];
-	((double**)hint)[0] = new double[2];
-	((int**)hint)[1] = new int[1];
-	((double**)hint)[0][0] = upperBound;
-	((double**)hint)[0][1] = lowerBound;
-	((int**)hint)[1][0] = energyResolution;*/
-
 	const Property::Susceptibility &chargeSusceptibility
 		= solver->getChargeSusceptibility();
 	switch(chargeSusceptibility.getEnergyType()){
@@ -446,7 +396,6 @@ Property::InteractionVertex ElectronFluctuationVertex::calculateInteractionVerte
 void ElectronFluctuationVertex::calculateInteractionVertexCallback(
 	PropertyExtractor *cb_this,
 	Property::Property &property,
-//	void *interactionVertex,
 	const Index &index,
 	int offset
 ){
@@ -463,7 +412,6 @@ void ElectronFluctuationVertex::calculateInteractionVertexCallback(
 
 	for(unsigned int e = 0; e < iv.size(); e++)
 		data[offset + e] += iv[e];
-//		((complex<double>*)interactionVertex)[offset + e] += iv[e];
 }
 
 };	//End of namespace PropertyExtractor

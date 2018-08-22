@@ -103,7 +103,6 @@ Property::GreensFunction ChebyshevExpander::calculateGreensFunction(
 }
 
 Property::GreensFunction ChebyshevExpander::calculateGreensFunction(
-//	initializer_list<initializer_list<Index>> patterns,
 	vector<vector<Index>> patterns,
 	Property::GreensFunction::Type type
 ){
@@ -111,7 +110,6 @@ Property::GreensFunction ChebyshevExpander::calculateGreensFunction(
 	IndexTree fromIndices;
 	set<unsigned int> toIndexSizes;
 	for(unsigned int n = 0; n < patterns.size(); n++){
-//		const initializer_list<Index>& pattern = *(patterns.begin() + n);
 		const vector<Index>& pattern = *(patterns.begin() + n);
 
 		TBTKAssert(
@@ -141,20 +139,6 @@ Property::GreensFunction ChebyshevExpander::calculateGreensFunction(
 			true
 		);
 
-/*		IndexTree::Iterator toIterator = toTree.begin();
-		while(!toIterator.getHasReachedEnd()){
-			Index toIndex = toIterator.getIndex();
-			IndexTree::Iterator fromIterator = fromTree.begin();
-			while(!fromIterator.getHasReachedEnd()){
-				Index fromIndex = fromIterator.getIndex();
-				memoryLayout.add({toIndex, fromIndex});
-				fromIndices.add(fromIndex);
-
-				fromIterator.searchNext();
-			}
-
-			toIterator.searchNext();
-		}*/
 		for(
 			IndexTree::ConstIterator toIterator = toTree.cbegin();
 			toIterator != toTree.cend();
@@ -184,57 +168,6 @@ Property::GreensFunction ChebyshevExpander::calculateGreensFunction(
 		getEnergyResolution()
 	);
 
-/*	IndexTree::Iterator iterator = fromIndices.begin();
-	while(!iterator.getHasReachedEnd()){
-		Index fromIndex = iterator.getIndex();
-		vector<Index> toIndices;
-		for(
-			set<unsigned int>::iterator iterator = toIndexSizes.begin();
-			iterator != toIndexSizes.end();
-			++iterator
-		){
-			Index toPattern;
-			for(unsigned int n = 0; n < *iterator; n++){
-				toPattern.push_back(IDX_ALL);
-			}
-
-			vector<Index> matchingIndices = memoryLayout.getIndexList(
-				{toPattern, fromIndex}
-			);
-			for(unsigned int n = 0; n < matchingIndices.size(); n++){
-				Index toIndex;
-				for(unsigned int c = 0; c < *iterator; c++)
-					toIndex.push_back(matchingIndices[n][c]);
-				toIndices.push_back(toIndex);
-			}
-		}
-
-		Property::GreensFunction gf = calculateGreensFunctions(
-			toIndices,
-			fromIndex,
-			type
-		);
-
-		for(unsigned int n = 0; n < toIndices.size(); n++){
-			complex<double> *data = greensFunction.getDataRW();
-			const complex<double> *dataGF = gf.getData();
-
-			Index compoundIndex = Index({toIndices[n], fromIndex});
-
-			unsigned int offset = greensFunction.getOffset(
-				compoundIndex
-			);
-			unsigned int offsetGF = gf.getOffset(
-				compoundIndex
-			);
-
-			for(int c = 0; c < energyResolution; c++){
-				data[offset + c] = dataGF[offsetGF + c];
-			}
-		}
-
-		iterator.searchNext();
-	}*/
 	for(
 		IndexTree::ConstIterator iterator = fromIndices.cbegin();
 		iterator != fromIndices.cend();
@@ -340,10 +273,6 @@ Property::GreensFunction ChebyshevExpander::calculateGreensFunctions(
 
 	#pragma omp parallel for
 	for(unsigned int n = 0; n < to.size(); n++){
-/*		complex<double> *greensFunctionData = cSolver->generateGreensFunction(
-			&(coefficients[n*cSolver->getNumCoefficients()]),
-			chebyshevType
-		);*/
 		vector<complex<double>> greensFunctionData = cSolver->generateGreensFunction(
 			coefficients[n],
 			chebyshevType
@@ -351,7 +280,6 @@ Property::GreensFunction ChebyshevExpander::calculateGreensFunctions(
 		unsigned int offset = greensFunction.getOffset({to[n], from});
 		for(int c = 0; c < getEnergyResolution(); c++)
 			data[offset + c] = greensFunctionData[c];
-//		delete [] greensFunctionData;
 	}
 
 	return greensFunction;
@@ -417,7 +345,6 @@ Property::Density ChebyshevExpander::calculateDensity(
 	calculate(
 		calculateDensityCallback,
 		density,
-//		(void*)density.getDataRW().data(),
 		pattern,
 		ranges,
 		0,
@@ -428,7 +355,6 @@ Property::Density ChebyshevExpander::calculateDensity(
 }
 
 Property::Density ChebyshevExpander::calculateDensity(
-//	std::initializer_list<Index> patterns
 	vector<Index> patterns
 ){
 	IndexTree allIndices = generateIndexTree(
@@ -490,7 +416,6 @@ Property::Magnetization ChebyshevExpander::calculateMagnetization(
 	calculate(
 		calculateMAGCallback,
 		magnetization,
-//		(void*)magnetization.getDataRW().data(),
 		pattern,
 		ranges,
 		0,
@@ -503,7 +428,6 @@ Property::Magnetization ChebyshevExpander::calculateMagnetization(
 }
 
 Property::Magnetization ChebyshevExpander::calculateMagnetization(
-//	std::initializer_list<Index> patterns
 	vector<Index> patterns
 ){
 	IndexTree allIndices = generateIndexTree(
@@ -557,18 +481,16 @@ Property::LDOS ChebyshevExpander::calculateLDOS(Index pattern, Index ranges){
 	calculate(
 		calculateLDOSCallback,
 		ldos,
-//		(void*)ldos.getDataRW().data(),
 		pattern,
 		ranges,
 		0,
-		/*1*/energyResolution
+		energyResolution
 	);
 
 	return ldos;
 }
 
 Property::LDOS ChebyshevExpander::calculateLDOS(
-//	std::initializer_list<Index> patterns
 	vector<Index> patterns
 ){
 	IndexTree allIndices = generateIndexTree(
@@ -641,7 +563,6 @@ Property::SpinPolarizedLDOS ChebyshevExpander::calculateSpinPolarizedLDOS(
 	calculate(
 		calculateSP_LDOSCallback,
 		spinPolarizedLDOS,
-//		(void*)spinPolarizedLDOS.getDataRW().data(),
 		pattern,
 		ranges,
 		0,
@@ -654,7 +575,6 @@ Property::SpinPolarizedLDOS ChebyshevExpander::calculateSpinPolarizedLDOS(
 }
 
 Property::SpinPolarizedLDOS ChebyshevExpander::calculateSpinPolarizedLDOS(
-//	std::initializer_list<Index> patterns
 	vector<Index> patterns
 ){
 	hint = new int[1];
@@ -696,7 +616,6 @@ Property::SpinPolarizedLDOS ChebyshevExpander::calculateSpinPolarizedLDOS(
 void ChebyshevExpander::calculateDensityCallback(
 	PropertyExtractor *cb_this,
 	Property::Property &property,
-//	void *density,
 	const Index &index,
 	int offset
 ){
@@ -737,14 +656,12 @@ void ChebyshevExpander::calculateDensityCallback(
 		}
 
 		data[offset] += weight*imag(greensFunctionData[e])/M_PI*dE;
-//		((double*)density)[offset] += weight*imag(greensFunctionData[e])/M_PI*dE;
 	}
 }
 
 void ChebyshevExpander::calculateMAGCallback(
 	PropertyExtractor *cb_this,
 	Property::Property &property,
-//	void *mag,
 	const Index &index,
 	int offset
 ){
@@ -794,7 +711,6 @@ void ChebyshevExpander::calculateMAGCallback(
 
 			data[offset].at(n/2, n%2)
 				+= weight*(-i)*greensFunctionData[e]/M_PI*dE;
-//			((SpinMatrix*)mag)[offset].at(n/2, n%2) += weight*(-i)*greensFunctionData[e]/M_PI*dE;
 		}
 	}
 }
@@ -802,7 +718,6 @@ void ChebyshevExpander::calculateMAGCallback(
 void ChebyshevExpander::calculateLDOSCallback(
 	PropertyExtractor *cb_this,
 	Property::Property &property,
-//	void *ldos,
 	const Index &index,
 	int offset
 ){
@@ -825,13 +740,11 @@ void ChebyshevExpander::calculateLDOSCallback(
 	const double dE = (upperBound - lowerBound)/energyResolution;
 	for(int n = 0; n < energyResolution; n++)
 		data[offset + n] += imag(greensFunctionData[n])/M_PI*dE;
-//		((double*)ldos)[offset + n] += imag(greensFunctionData[n])/M_PI*dE;
 }
 
 void ChebyshevExpander::calculateSP_LDOSCallback(
 	PropertyExtractor *cb_this,
 	Property::Property &property,
-//	void *sp_ldos,
 	const Index &index,
 	int offset
 ){
@@ -862,7 +775,6 @@ void ChebyshevExpander::calculateSP_LDOSCallback(
 
 		for(int e = 0; e < energyResolution; e++)
 			data[offset + e].at(n/2, n%2) += -i*greensFunctionData[e]/M_PI*dE;
-//			((SpinMatrix*)sp_ldos)[offset + e].at(n/2, n%2) += -i*greensFunctionData[e]/M_PI*dE;
 	}
 }
 

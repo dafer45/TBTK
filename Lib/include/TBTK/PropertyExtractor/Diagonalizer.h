@@ -35,7 +35,6 @@
 #include "TBTK/PropertyExtractor/PropertyExtractor.h"
 
 #include <complex>
-//#include <initializer_list>
 
 namespace TBTK{
 namespace PropertyExtractor{
@@ -49,24 +48,6 @@ public:
 	 *
 	 *  @param solver The Solver to use. */
 	Diagonalizer(Solver::Diagonalizer &solver);
-
-	/** Destructor. */
-//	virtual ~Diagonalizer();
-
-	/** Legacy. */
-/*	void saveEigenValues(
-		std::string path = "./",
-		std::string filename = "EV.dat"
-	);*/
-
-	/** Experimental. Extracts a tabulated version of the
-	 *  HoppingAmplitudeSet. */
-/*	void getTabulatedHoppingAmplitudeSet(
-		std::complex<double> **amplitudes,
-		int **indices,
-		int *numHoppingAmplitudes,
-		int *maxIndexSize
-	);*/
 
 	/** Get eigenvalues.
 	 *
@@ -100,7 +81,6 @@ public:
 	 *  for the Indices that satisfies the given patterns and state
 	 *  numbers. */
 	Property::WaveFunctions calculateWaveFunctions(
-//		std::initializer_list<Index> patterns,
 		std::vector<Index> patterns,
 		std::vector<int> states
 	);
@@ -114,7 +94,6 @@ public:
 
 	/** Calculate Green's function. */
 	Property::GreensFunction calculateGreensFunction(
-//		std::initializer_list<Index> patterns,
 		const std::vector<Index> &patterns,
 		Property::GreensFunction::Type type
 			= Property::GreensFunction::Type::Retarded
@@ -137,7 +116,6 @@ public:
 
 	/** Overrides PropertyExtractor::calculateDensity(). */
 	virtual Property::Density calculateDensity(
-//		std::initializer_list<Index> patterns
 		std::vector<Index> patterns
 	);
 
@@ -149,7 +127,6 @@ public:
 
 	/** Overrides PropertyExtractor::calculateMagnetization(). */
 	virtual Property::Magnetization calculateMagnetization(
-//		std::initializer_list<Index> patterns
 		std::vector<Index> patterns
 	);
 
@@ -161,7 +138,6 @@ public:
 
 	/** Overrides PropertyExtractor::calculateLDOS(). */
 	virtual Property::LDOS calculateLDOS(
-//		std::initializer_list<Index> patterns
 		std::vector<Index> patterns
 	);
 
@@ -173,7 +149,6 @@ public:
 
 	/** Overrides PropertyExtractor::calculateSpinPolarizedLDOS(). */
 	virtual Property::SpinPolarizedLDOS calculateSpinPolarizedLDOS(
-//		std::initializer_list<Index> patterns
 		std::vector<Index> patterns
 	);
 
@@ -185,7 +160,6 @@ private:
 	static void calculateWaveFunctionsCallback(
 		PropertyExtractor *cb_this,
 		Property::Property &property,
-//		void *waveFunctions,
 		const Index &index,
 		int offset
 	);
@@ -195,7 +169,6 @@ private:
 	static void calculateGreensFunctionCallback(
 		PropertyExtractor *cb_this,
 		Property::Property &property,
-//		void *greensFunction,
 		const Index &index,
 		int offset
 	);
@@ -204,7 +177,6 @@ private:
 	static void calculateDensityCallback(
 		PropertyExtractor *cb_this,
 		Property::Property &property,
-//		void *density,
 		const Index &index,
 		int offset
 	);
@@ -213,7 +185,6 @@ private:
 	static void calculateMAGCallback(
 		PropertyExtractor *cb_this,
 		Property::Property &property,
-//		void *mag,
 		const Index &index,
 		int offset
 	);
@@ -223,7 +194,6 @@ private:
 	static void calculateLDOSCallback(
 		PropertyExtractor *cb_this,
 		Property::Property &property,
-//		void *ldos,
 		const Index &index,
 		int offset
 	);
@@ -233,7 +203,6 @@ private:
 	static void calculateSP_LDOSCallback(
 		PropertyExtractor *cb_this,
 		Property::Property &property,
-//		void *sp_ldos,
 		const Index &index,
 		int offset
 	);

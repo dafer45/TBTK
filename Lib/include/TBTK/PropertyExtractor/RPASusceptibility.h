@@ -29,7 +29,6 @@
 #include "TBTK/PropertyExtractor/PropertyExtractor.h"
 
 #include <complex>
-//#include <initializer_list>
 
 namespace TBTK{
 namespace PropertyExtractor{
@@ -60,13 +59,11 @@ public:
 
 	/** Calculates the Susceptibility. */
 	virtual Property::Susceptibility calculateChargeSusceptibility(
-//		std::initializer_list<Index> patterns
 		std::vector<Index> patterns
 	);
 
 	/** Calculates the Susceptibility. */
 	virtual Property::Susceptibility calculateSpinSusceptibility(
-//		std::initializer_list<Index> patterns
 		std::vector<Index> patterns
 	);
 private:
@@ -74,7 +71,6 @@ private:
 	static void calculateChargeSusceptibilityCallback(
 		PropertyExtractor *cb_this,
 		Property::Property &property,
-//		void *susceptibility,
 		const Index &index,
 		int offset
 	);
@@ -83,16 +79,12 @@ private:
 	static void calculateSpinSusceptibilityCallback(
 		PropertyExtractor *cb_this,
 		Property::Property &property,
-//		void *susceptibility,
 		const Index &index,
 		int offset
 	);
 
 	/** Solver::Diagonalizer to work on. */
 	Solver::RPASusceptibility *solver;
-
-	/** Energies. */
-//	std::vector<std::complex<double>> energies;
 
 	/** Charge susceptibility tree for storing results between calls to the
 	 *  calculateChargeSusceptibilityCallback(). */
@@ -105,16 +97,6 @@ private:
 	IndexedDataTree<
 		std::vector<std::complex<double>>
 	> spinSusceptibilityTree;
-
-	//TODO
-	//These variables should be made part if the PropertyExtractor instead
-	//once its been tested to work well for this specific case.
-/*	enum class EnergyType{Real, Matsubara};
-	EnergyType energyType;
-	int lowerFermionicMatsubaraEnergyIndex;
-	int upperFermionicMatsubaraEnergyIndex;
-	int lowerBosonicMatsubaraEnergyIndex;
-	int upperBosonicMatsubaraEnergyIndex;*/
 };
 
 };	//End of namespace PropertyExtractor

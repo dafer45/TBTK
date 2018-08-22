@@ -34,68 +34,7 @@ MatsubaraSusceptibility::MatsubaraSusceptibility(
 	Solver::MatsubaraSusceptibility &solver
 ){
 	this->solver = &solver;
-//	energyType = EnergyType::Real;
 }
-
-/*void MatsubaraSusceptibility::setEnergyWindow(
-	double lowerBound,
-	double upperBound,
-	int resolution
-){
-	PropertyExtractor::setEnergyWindow(
-		lowerBound,
-		upperBound,
-		resolution
-	);
-
-	energyType = EnergyType::Real;
-}
-
-void MatsubaraSusceptibility::setEnergyWindow(
-	int lowerFermionicMatsubaraEnergyIndex,
-	int upperFermionicMatsubaraEnergyIndex,
-	int lowerBosonicMatsubaraEnergyIndex,
-	int upperBosonicMatsubaraEnergyIndex
-){
-	TBTKAssert(
-		abs(lowerFermionicMatsubaraEnergyIndex%2) == 1,
-		"PropertyExtractor::MatsubaraSusceptibility::setEnergyWindow()",
-		"'lowerFermionicMatsubaraEnergyIndex="
-		<< lowerFermionicMatsubaraEnergyIndex << "' must be odd.",
-		""
-	);
-	TBTKAssert(
-		abs(upperFermionicMatsubaraEnergyIndex%2) == 1,
-		"PropertyExtractor::MatsubaraSusceptibility::setEnergyWindow()",
-		"'upperFermionicMatsubaraEnergyIndex="
-		<< upperFermionicMatsubaraEnergyIndex << "' must be odd.",
-		""
-	);
-	TBTKAssert(
-		abs(lowerBosonicMatsubaraEnergyIndex%2) == 0,
-		"PropertyExtractor::MatsubaraSusceptibility::setEnergyWindow()",
-		"'lowerBosonicMatsubaraEnergyIndex="
-		<< lowerBosonicMatsubaraEnergyIndex << "' must be odd.",
-		""
-	);
-	TBTKAssert(
-		abs(upperBosonicMatsubaraEnergyIndex%2) == 0,
-		"PropertyExtractor::MatsubaraSusceptibility::setEnergyWindow()",
-		"'upperBosoonicMatsubaraEnergyIndex="
-		<< upperBosonicMatsubaraEnergyIndex << "' must be odd.",
-		""
-	);
-
-	energyType = EnergyType::Matsubara;
-	this->lowerFermionicMatsubaraEnergyIndex
-		= lowerFermionicMatsubaraEnergyIndex;
-	this->upperFermionicMatsubaraEnergyIndex
-		= upperFermionicMatsubaraEnergyIndex;
-	this->lowerBosonicMatsubaraEnergyIndex
-		= lowerBosonicMatsubaraEnergyIndex;
-	this->upperBosonicMatsubaraEnergyIndex
-		= upperBosonicMatsubaraEnergyIndex;
-}*/
 
 Property::Susceptibility MatsubaraSusceptibility::calculateSusceptibility(
 	vector<Index> patterns
@@ -433,7 +372,6 @@ Property::Susceptibility MatsubaraSusceptibility::calculateSusceptibility(
 void MatsubaraSusceptibility::calculateSusceptibilityCallback(
 	PropertyExtractor *cb_this,
 	Property::Property &property,
-//	void *susceptibility,
 	const Index &index,
 	int offset
 ){
@@ -452,7 +390,6 @@ void MatsubaraSusceptibility::calculateSusceptibilityCallback(
 
 	for(unsigned int e = 0; e < s.size(); e++)
 		data[offset + e] += s[e];
-//		((complex<double>*)susceptibility)[offset + e] += s[e];
 }
 
 };	//End of namespace PropertyExtractor

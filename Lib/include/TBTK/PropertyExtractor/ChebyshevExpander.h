@@ -41,13 +41,7 @@ namespace PropertyExtractor{
 class ChebyshevExpander : public PropertyExtractor{
 public:
 	/** Constructor. */
-	ChebyshevExpander(
-		Solver::ChebyshevExpander &cSolver/*,
-		int numCoefficients,
-		bool useGPUToCalculateCoefficients,
-		bool useGPUToGenerateGreensFunctions,
-		bool useLookupTable = true*/
-	);
+	ChebyshevExpander(Solver::ChebyshevExpander &cSolver);
 
 	/** Destructor. */
 	virtual ~ChebyshevExpander();
@@ -60,7 +54,6 @@ public:
 	);
 
 	/** Calculate Green's function. */
-//	Property::GreensFunction* calculateGreensFunction(
 	Property::GreensFunction calculateGreensFunction(
 		Index to,
 		Index from,
@@ -69,13 +62,11 @@ public:
 
 	/** Calculate Green's function for a range of 'to'-indices. */
 	Property::GreensFunction calculateGreensFunction(
-//		std::initializer_list<std::initializer_list<Index>> patterns,
 		std::vector<std::vector<Index>> patterns,
 		Property::GreensFunction::Type type = Property::GreensFunction::Type::Retarded
 	);
 
 	/** Calculate Green's function for a range of 'to'-indices. */
-//	Property::GreensFunction** calculateGreensFunctions(
 	Property::GreensFunction calculateGreensFunctions(
 		std::vector<Index> &to,
 		Index from,
@@ -96,7 +87,6 @@ public:
 
 	/** Overrides PropertyExtractor::calculateDensity(). */
 	virtual Property::Density calculateDensity(
-//		std::initializer_list<Index> patterns
 		std::vector<Index> patterns
 	);
 
@@ -108,7 +98,6 @@ public:
 
 	/** Overrides PropertyExtractor::calculateMagnetization(). */
 	virtual Property::Magnetization calculateMagnetization(
-//		std::initializer_list<Index> patterns
 		std::vector<Index> patterns
 	);
 
@@ -117,7 +106,6 @@ public:
 
 	/** Overrides PropertyExtractor::calculateLDOS(). */
 	virtual Property::LDOS calculateLDOS(
-//		std::initializer_list<Index> pattern
 		std::vector<Index> patterns
 	);
 
@@ -129,33 +117,17 @@ public:
 
 	/** Overrides PropertyExtractor::calculateSpinPolarizedLDOS(). */
 	virtual Property::SpinPolarizedLDOS calculateSpinPolarizedLDOS(
-//		std::initializer_list<Index> pattern
 		std::vector<Index> patterns
 	);
 private:
 	/** ChebyshevExpander to work on. */
 	Solver::ChebyshevExpander *cSolver;
 
-	/** Number of Chebyshev coefficients used in the expansion. */
-//	int numCoefficients;
-
-	/** Flag indicating whether a lookup table is used or not. */
-//	bool useLookupTable;
-
-	/** Flag indicating whether the GPU should be used to calculate
-	 *  Chebyshev coefficients. */
-//	bool useGPUToCalculateCoefficients;
-
-	/** Flag indicating whether the GPU should be used to generate Green's
-	 *  functions. */
-//	bool useGPUToGenerateGreensFunctions;
-
 	/** !!!Not tested!!! Callback for calculating density.
 	 *  Used by calculateDensity. */
 	static void calculateDensityCallback(
 		PropertyExtractor *cb_this,
 		Property::Property &property,
-//		void *density,
 		const Index &index,
 		int offset
 	);
@@ -165,7 +137,6 @@ private:
 	static void calculateMAGCallback(
 		PropertyExtractor *cb_this,
 		Property::Property &property,
-//		void *density,
 		const Index &index,
 		int offset
 	);
@@ -175,7 +146,6 @@ private:
 	static void calculateLDOSCallback(
 		PropertyExtractor *cb_this,
 		Property::Property &property,
-//		void *ldos,
 		const Index &index,
 		int offset
 	);
@@ -185,13 +155,9 @@ private:
 	static void calculateSP_LDOSCallback(
 		PropertyExtractor *cb_this,
 		Property::Property &property,
-//		void *sp_ldos,
 		const Index &index,
 		int offset
 	);
-
-	/** Ensure that the lookup table is in a ready state. */
-//	void ensureLookupTableIsReady();
 };
 
 };	//End of namespace PropertyExtractor

@@ -134,7 +134,6 @@ public:
 	 *  @return A Property::Density for the @link Index Indices @endlink
 	 *  that match the patterns. */
 	virtual Property::Density calculateDensity(
-//		std::initializer_list<Index> patterns
 		std::vector<Index> patterns
 	);
 
@@ -191,7 +190,6 @@ public:
 	 *  @return A Property::Magnetization for the @link Index Indices
 	 *  @endlink that match the patterns. */
 	virtual Property::Magnetization calculateMagnetization(
-//		std::initializer_list<Index> patterns
 		std::vector<Index> patterns
 	);
 
@@ -237,7 +235,6 @@ public:
 	 *  @return A Property::LDOS for the @link Index Indices @endlink that
 	 *  match the patterns. */
 	virtual Property::LDOS calculateLDOS(
-//		std::initializer_list<Index> patterns
 		std::vector<Index> patterns
 	);
 
@@ -303,7 +300,6 @@ public:
 	 *  @return A Property::SpinPolarizedLDOS for the @link Index Indices
 	 *  @endlink that match the patterns. */
 	virtual Property::SpinPolarizedLDOS calculateSpinPolarizedLDOS(
-//		std::initializer_list<Index> patterns
 		std::vector<Index> patterns
 	);
 
@@ -411,7 +407,7 @@ protected:
 	 *  @param callback A callback function that is called to perform the
 	 *  actual calculation for a given Index.
 	 *
-	 *  @param memory Pointer to the memory where the result is to be
+	 *  @param property Reference to Property where the result is to be
 	 *  stored.
 	 *
 	 *  @param pattern An Index specifying the pattern for which to perform
@@ -432,12 +428,10 @@ protected:
 		void (*callback)(
 			PropertyExtractor *cb_this,
 			Property::Property &property,
-//			void *memory,
 			const Index &index,
 			int offset
 		),
 		Property::AbstractProperty<DataType> &property,
-//		void *memory,
 		Index pattern,
 		const Index &ranges,
 		int currentOffset,
@@ -465,7 +459,6 @@ protected:
 		void (*callback)(
 			PropertyExtractor *cb_this,
 			Property::Property &property,
-//			void *memory,
 			const Index &index,
 			int offset
 		),
@@ -528,7 +521,6 @@ protected:
 	 *  @param keepSpinWildcards If true, spin wildcards in the pattern
 	 *  will be preserved in the IndexTree. */
 	IndexTree generateIndexTree(
-//		std::initializer_list<Index> patterns,
 		std::vector<Index> patterns,
 		const HoppingAmplitudeSet &hoppingAmplitudeSet,
 		bool keepSummationWildcards,
@@ -737,12 +729,10 @@ void PropertyExtractor::calculate(
 	void (*callback)(
 		PropertyExtractor *cb_this,
 		Property::Property &property,
-//		void *memory,
 		const Index &index,
 		int offset
 	),
 	Property::AbstractProperty<DataType> &property,
-//	void *memory,
 	Index pattern,
 	const Index &ranges,
 	int currentOffset,
@@ -791,7 +781,6 @@ void PropertyExtractor::calculate(
 			calculate(
 				callback,
 				property,
-//				memory,
 				pattern,
 				ranges,
 				currentOffset,
@@ -808,7 +797,6 @@ void PropertyExtractor::calculate(
 	void (*callback)(
 		PropertyExtractor *cb_this,
 		Property::Property &property,
-//		void *memory,
 		const Index &index,
 		int offset
 	),
@@ -841,7 +829,6 @@ void PropertyExtractor::calculate(
 		callback(
 			this,
 			abstractProperty,
-//			abstractProperty.getDataRW().data(),
 			index,
 			abstractProperty.getOffset(index)
 		);

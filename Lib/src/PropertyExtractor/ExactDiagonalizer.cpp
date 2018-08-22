@@ -341,7 +341,6 @@ Property::Density ExactDiagonalizer::calculateDensity(
 	calculate(
 		calculateDensityCallback,
 		density,
-//		(void*)density.getDataRW().data(),
 		pattern,
 		ranges,
 		0,
@@ -384,7 +383,6 @@ Property::Magnetization ExactDiagonalizer::calculateMagnetization(
 	calculate(
 		calculateMagnetizationCallback,
 		magnetization,
-//		(void*)magnetization.getDataRW().data(),
 		pattern,
 		ranges,
 		0,
@@ -416,7 +414,6 @@ Property::LDOS ExactDiagonalizer::calculateLDOS(
 	calculate(
 		calculateLDOSCallback,
 		ldos,
-//		(void*)ldos.getDataRW().data(),
 		pattern,
 		ranges,
 		0,
@@ -465,7 +462,6 @@ Property::SpinPolarizedLDOS ExactDiagonalizer::calculateSpinPolarizedLDOS(
 	calculate(
 		calculateSpinPolarizedLDOSCallback,
 		spinPolarizedLDOS,
-//		(void*)spinPolarizedLDOS.getDataRW().data(),
 		pattern,
 		ranges,
 		0,
@@ -480,7 +476,6 @@ Property::SpinPolarizedLDOS ExactDiagonalizer::calculateSpinPolarizedLDOS(
 void ExactDiagonalizer::calculateDensityCallback(
 	PropertyExtractor *cb_this,
 	Property::Property &property,
-//	void *density,
 	const Index &index,
 	int offset
 ){
@@ -490,7 +485,6 @@ void ExactDiagonalizer::calculateDensityCallback(
 void ExactDiagonalizer::calculateMagnetizationCallback(
 	PropertyExtractor *cb_this,
 	Property::Property &property,
-//	void *magnetization,
 	const Index &index,
 	int offset
 ){
@@ -500,7 +494,6 @@ void ExactDiagonalizer::calculateMagnetizationCallback(
 void ExactDiagonalizer::calculateLDOSCallback(
 	PropertyExtractor *cb_this,
 	Property::Property &property,
-//	void *ldos,
 	const Index &index,
 	int offset
 ){
@@ -521,9 +514,10 @@ void ExactDiagonalizer::calculateLDOSCallback(
 	int energyResolution = pe->getEnergyResolution();
 
 	const double dE = (upperBound - lowerBound)/energyResolution;
-	for(int n = 0; n < energyResolution; n++)
-		data[energyResolution*offset + n] += imag(greensFunctionData[n])/M_PI*dE;
-//		((double*)ldos)[energyResolution*offset + n] += imag(greensFunctionData[n])/M_PI*dE;
+	for(int n = 0; n < energyResolution; n++){
+		data[energyResolution*offset + n]
+			+= imag(greensFunctionData[n])/M_PI*dE;
+	}
 
 	delete greensFunction;
 }
@@ -531,7 +525,6 @@ void ExactDiagonalizer::calculateLDOSCallback(
 void ExactDiagonalizer::calculateSpinPolarizedLDOSCallback(
 	PropertyExtractor *cb_this,
 	Property::Property &property,
-//	void *spinPolarizedLDOS,
 	const Index &index,
 	int offset
 ){

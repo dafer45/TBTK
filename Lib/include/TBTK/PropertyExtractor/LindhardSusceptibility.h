@@ -29,7 +29,6 @@
 #include "TBTK/PropertyExtractor/PropertyExtractor.h"
 
 #include <complex>
-//#include <initializer_list>
 
 namespace TBTK{
 namespace PropertyExtractor{
@@ -43,26 +42,8 @@ public:
 	 *  @param solver The Solver to use. */
 	LindhardSusceptibility(Solver::LindhardSusceptibility &solver);
 
-	/** Overrides PropertyExtractor::setEnergyWindow(). */
-/*	virtual void setEnergyWindow(
-		double lowerBound,
-		double upperBound,
-		int resolution
-	);*/
-
-	//TODO
-	//This should be extended to become part of the PropertyExtractor
-	//interface once its tested to work well for this specific case.
-/*	virtual void setEnergyWindow(
-		int lowerFermionicMatsubaraEnergyIndex,
-		int upperFermionicMatsubaraEnergyIndex,
-		int lowerBosonicMatsubaraEnergyIndex,
-		int upperBosonicMatsubaraEnergyIndex
-	);*/
-
 	/** Calculates the Susceptibility. */
 	virtual Property::Susceptibility calculateSusceptibility(
-//		std::initializer_list<Index> patterns
 		std::vector<Index> patterns
 	);
 private:
@@ -70,7 +51,6 @@ private:
 	static void calculateSusceptibilityCallback(
 		PropertyExtractor *cb_this,
 		Property::Property &property,
-//		void *susceptibility,
 		const Index &index,
 		int offset
 	);
@@ -80,16 +60,6 @@ private:
 
 	/** Energies. */
 	std::vector<std::complex<double>> energies;
-
-	//TODO
-	//These variables should be made part of the PropertyExtractor instead
-	//once its been tested to work well for this specific case.
-/*	enum class EnergyType{Real, Matsubara};
-	EnergyType energyType;
-	int lowerFermionicMatsubaraEnergyIndex;
-	int upperFermionicMatsubaraEnergyIndex;
-	int lowerBosonicMatsubaraEnergyIndex;
-	int upperBosonicMatsubaraEnergyIndex;*/
 };
 
 };	//End of namespace PropertyExtractor

@@ -34,7 +34,6 @@ RPASusceptibility::RPASusceptibility(
 	Solver::RPASusceptibility &solver
 ){
 	this->solver = &solver;
-//	energyType = EnergyType::Real;
 }
 
 void RPASusceptibility::setEnergyWindow(
@@ -47,14 +46,6 @@ void RPASusceptibility::setEnergyWindow(
 		"This function is not supported for this PropertyExtractor.",
 		""
 	);
-
-/*	PropertyExtractor::setEnergyWindow(
-		lowerBound,
-		upperBound,
-		resolution
-	);
-
-	energyType = EnergyType::Real;*/
 }
 
 void RPASusceptibility::setEnergyWindow(
@@ -68,40 +59,9 @@ void RPASusceptibility::setEnergyWindow(
 		"This function is not supported for this PropertyExtractor.",
 		""
 	);
-/*	TBTKAssert(
-		abs(lowerFermionicMatsubaraEnergyIndex%2) == 1,
-		"PropertyExtractor::LindhardSusceptibility::setEnergyWindow()",
-		"'lowerFermionicMatsubaraEnergyIndex="
-		<< lowerFermionicMatsubaraEnergyIndex << "' must be odd.",
-		""
-	);
-	TBTKAssert(
-		abs(upperFermionicMatsubaraEnergyIndex%2) == 1,
-		"PropertyExtractor::LindhardSusceptibility::setEnergyWindow()",
-		"'upperFermionicMatsubaraEnergyIndex="
-		<< upperFermionicMatsubaraEnergyIndex << "' must be odd.",
-		""
-	);
-	TBTKAssert(
-		abs(lowerBosonicMatsubaraEnergyIndex%2) == 0,
-		"PropertyExtractor::LindhardSusceptibility::setEnergyWindow()",
-		"'lowerBosonicMatsubaraEnergyIndex="
-		<< lowerBosonicMatsubaraEnergyIndex << "' must be odd.",
-		""
-	);
-	TBTKAssert(
-		abs(upperBosonicMatsubaraEnergyIndex%2) == 0,
-		"PropertyExtractor::LindhardSusceptibility::setEnergyWindow()",
-		"'upperBosoonicMatsubaraEnergyIndex="
-		<< upperBosonicMatsubaraEnergyIndex << "' must be odd.",
-		""
-	);
-
-	energyType = EnergyType::Matsubara;*/
 }
 
 Property::Susceptibility RPASusceptibility::calculateChargeSusceptibility(
-//	std::initializer_list<Index> patterns
 	vector<Index> patterns
 ){
 	//Calculate allIndices.
@@ -385,33 +345,11 @@ Property::Susceptibility RPASusceptibility::calculateChargeSusceptibility(
 	}
 	memoryLayout.generateLinearMap();
 
-	//hint[0] is an array of doubles, hint[1] is an array of ints
-	//hint[0][0]: upperBound
-	//hint[0][1]: lowerBound
-	//hint[1][0]: resolution
-	//hint[1][1]: spin_index
-/*	hint = new void*[2];
-	((double**)hint)[0] = new double[2];
-	((int**)hint)[1] = new int[1];
-	((double**)hint)[0][0] = upperBound;
-	((double**)hint)[0][1] = lowerBound;
-	((int**)hint)[1][0] = energyResolution;*/
-
 	const Property::Susceptibility &bareSusceptibility
 		= solver->getBareSusceptibility();
 	switch(bareSusceptibility.getEnergyType()){
 	case Property::EnergyResolvedProperty<complex<double>>::EnergyType::Real:
 	{
-/*		energies.clear();
-		energies.reserve(energyResolution);
-		double dE;
-		if(energyResolution == 1)
-			dE = 0;
-		else
-			dE = (upperBound - lowerBound)/(energyResolution-1);
-		for(int n = 0; n < energyResolution; n++)
-			energies.push_back(lowerBound + n*dE);*/
-
 		Property::Susceptibility susceptibility(
 			memoryLayout,
 			bareSusceptibility.getLowerBound(),
@@ -431,37 +369,6 @@ Property::Susceptibility RPASusceptibility::calculateChargeSusceptibility(
 	}
 	case Property::EnergyResolvedProperty<complex<double>>::EnergyType::BosonicMatsubara:
 	{
-/*		TBTKAssert(
-			lowerBosonicMatsubaraEnergyIndex
-			<= upperBosonicMatsubaraEnergyIndex,
-			"PropertyExtractor::LindhardSusceptibility::calculateSusceptibility()",
-			"'lowerBosonicMatsubaraEnergyIndex="
-			<< lowerBosonicMatsubaraEnergyIndex << "' must be less"
-			<< " or equal to 'upperBosonicMatsubaraEnergyIndex='"
-			<< upperBosonicMatsubaraEnergyIndex << "'.",
-			"This should never happen, contact the developer."
-		);
-		unsigned int numMatsubaraEnergies = (
-			upperBosonicMatsubaraEnergyIndex
-			- lowerBosonicMatsubaraEnergyIndex
-		)/2 + 1;
-
-		double temperature = UnitHandler::convertTemperatureNtB(
-			solver->getModel().getTemperature()
-		);
-		double kT = UnitHandler::getK_BB()*temperature;
-		double fundamentalMatsubaraEnergy = M_PI*kT;
-
-		energies.clear();
-		energies.reserve(numMatsubaraEnergies);
-		for(unsigned int n = 0; n < numMatsubaraEnergies; n++){
-			energies.push_back(
-				(double)(
-					lowerBosonicMatsubaraEnergyIndex + 2*n
-				)*complex<double>(0, 1)*M_PI*kT
-			);
-		}*/
-
 		Property::Susceptibility susceptibility(
 			memoryLayout,
 			bareSusceptibility.getLowerMatsubaraEnergyIndex(),
@@ -489,7 +396,6 @@ Property::Susceptibility RPASusceptibility::calculateChargeSusceptibility(
 }
 
 Property::Susceptibility RPASusceptibility::calculateSpinSusceptibility(
-//	std::initializer_list<Index> patterns
 	vector<Index> patterns
 ){
 	//Calculate allIndices.
@@ -772,18 +678,6 @@ Property::Susceptibility RPASusceptibility::calculateSpinSusceptibility(
 		}
 	}
 	memoryLayout.generateLinearMap();
-
-	//hint[0] is an array of doubles, hint[1] is an array of ints
-	//hint[0][0]: upperBound
-	//hint[0][1]: lowerBound
-	//hint[1][0]: resolution
-	//hint[1][1]: spin_index
-/*	hint = new void*[2];
-	((double**)hint)[0] = new double[2];
-	((int**)hint)[1] = new int[1];
-	((double**)hint)[0][0] = upperBound;
-	((double**)hint)[0][1] = lowerBound;
-	((int**)hint)[1][0] = energyResolution;*/
 
 	const Property::Susceptibility &bareSusceptibility
 		= solver->getBareSusceptibility();
@@ -838,7 +732,6 @@ Property::Susceptibility RPASusceptibility::calculateSpinSusceptibility(
 void RPASusceptibility::calculateChargeSusceptibilityCallback(
 	PropertyExtractor *cb_this,
 	Property::Property &property,
-//	void *susceptibility,
 	const Index &index,
 	int offset
 ){
@@ -872,7 +765,6 @@ void RPASusceptibility::calculateChargeSusceptibilityCallback(
 
 	for(unsigned int e = 0; e < s.size(); e++)
 		data[offset + e] += s[e];
-//		((complex<double>*)susceptibility)[offset + e] += s[e];
 }
 
 void RPASusceptibility::calculateSpinSusceptibilityCallback(
@@ -912,7 +804,6 @@ void RPASusceptibility::calculateSpinSusceptibilityCallback(
 
 	for(unsigned int e = 0; e < s.size(); e++)
 		data[offset + e] += s[e];
-//		((complex<double>*)susceptibility)[offset + e] += s[e];
 }
 
 };	//End of namespace PropertyExtractor

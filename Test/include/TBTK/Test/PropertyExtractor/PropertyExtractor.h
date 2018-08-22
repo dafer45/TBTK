@@ -45,12 +45,10 @@ public:
 		void(*callback)(
 			PropertyExtractor *cb_this,
 			Property::Property &property,
-//			void *memory,
 			const Index &index,
 			int offset
 		),
 		Property::AbstractProperty<DataType> &property,
-//		void *memory,
 		Index pattern,
 		const Index &ranges,
 		int currentOffset,
@@ -59,7 +57,6 @@ public:
 		PropertyExtractor::calculate(
 			callback,
 			property,
-//			memory,
 			pattern,
 			ranges,
 			currentOffset,
@@ -72,7 +69,6 @@ public:
 		void(*callback)(
 			PropertyExtractor *cb_this,
 			Property::Property &property,
-//			void *memory,
 			const Index &index,
 			int offset
 		),
@@ -509,7 +505,6 @@ TEST(PropertyExtractor, getUpperBosonicMatsubaraEnergyIndex){
 void callbackRanges(
 	PropertyExtractor *cb_this,
 	Property::Property &property,
-//	void *memory,
 	const Index &index,
 	int offset
 ){
@@ -518,7 +513,6 @@ void callbackRanges(
 
 	for(unsigned int n = 0; n < 10; n++)
 		data[offset + n] += 10*(3*index[0] + index[2]) + n;
-//		((int*)memory)[offset + n] += 10*(3*index[0] + index[2]) + n;
 }
 
 TEST(PropertyExtractor, calculateRanges){
@@ -542,19 +536,6 @@ TEST(PropertyExtractor, calculateRanges){
 	);
 	for(unsigned int n = 0; n < 3*10; n++)
 		EXPECT_NEAR(ldos.getData()[n], n + (30 + n), EPSILON_100);
-/*	int memory[3*10];
-	for(unsigned int n = 0; n < 3*10; n++)
-		memory[n] = 0;
-	propertyExtractor.calculate(
-		callbackRanges,
-		memory,
-		{IDX_SUM_ALL, 2, IDX_X},
-		{2, 1, 3},
-		0,
-		10
-	);
-	for(unsigned int n = 0; n < 3*10; n++)
-		EXPECT_EQ(memory[n], n + (30 + n));*/
 
 	//Check that incompatible subindex specifiers generate errors.
 	EXPECT_EXIT(
@@ -563,7 +544,6 @@ TEST(PropertyExtractor, calculateRanges){
 			propertyExtractor.calculate(
 				callbackRanges,
 				ldos,
-//				memory,
 				{IDX_ALL, 2, IDX_X},
 				{2, 1, 3},
 				0,
@@ -579,7 +559,6 @@ TEST(PropertyExtractor, calculateRanges){
 			propertyExtractor.calculate(
 				callbackRanges,
 				ldos,
-//				memory,
 				{IDX_SUM_ALL, 2, IDX_SPIN},
 				{2, 1, 3},
 				0,
@@ -595,7 +574,6 @@ TEST(PropertyExtractor, calculateRanges){
 			propertyExtractor.calculate(
 				callbackRanges,
 				ldos,
-//				memory,
 				{IDX_SUM_ALL, 2, IDX_SEPARATOR},
 				{2, 1, 3},
 				0,
@@ -612,7 +590,6 @@ int spinIndex;
 void callbackCustom(
 	PropertyExtractor *cb_this,
 	Property::Property &property,
-//	void *memory,
 	const Index &index,
 	int offset
 ){
@@ -625,11 +602,8 @@ void callbackCustom(
 	else
 		EXPECT_EQ(spinIndex, 1);
 
-	for(unsigned int n = 0; n < 100; n++){
+	for(unsigned int n = 0; n < 100; n++)
 		data[offset + n] += SpinMatrix((index[0] + index[1])*n);
-//		((SpinMatrix*)memory)[offset + n]
-//			+= SpinMatrix((index[0] + index[1])*n);
-	}
 }
 
 TEST(PropertyExtractor, calculateCustom){

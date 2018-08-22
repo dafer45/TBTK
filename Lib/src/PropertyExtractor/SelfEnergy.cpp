@@ -36,68 +36,7 @@ SelfEnergy::SelfEnergy(
 	this->solver = &solver;
 }
 
-/*void SelfEnergy::setEnergyWindow(
-	double lowerBound,
-	double upperBound,
-	int resolution
-){
-	PropertyExtractor::setEnergyWindow(
-		lowerBound,
-		upperBound,
-		resolution
-	);
-
-//	energyType = EnergyType::Real;
-}
-
-void SelfEnergy::setEnergyWindow(
-	int lowerFermionicMatsubaraEnergyIndex,
-	int upperFermionicMatsubaraEnergyIndex,
-	int lowerBosonicMatsubaraEnergyIndex,
-	int upperBosonicMatsubaraEnergyIndex
-){
-	TBTKAssert(
-		abs(lowerFermionicMatsubaraEnergyIndex%2) == 1,
-		"PropertyExtractor::SelfEnergy::setEnergyWindow()",
-		"'lowerFermionicMatsubaraEnergyIndex="
-		<< lowerFermionicMatsubaraEnergyIndex << "' must be odd.",
-		""
-	);
-	TBTKAssert(
-		abs(upperFermionicMatsubaraEnergyIndex%2) == 1,
-		"PropertyExtractor::SelfEnergy::setEnergyWindow()",
-		"'upperFermionicMatsubaraEnergyIndex="
-		<< upperFermionicMatsubaraEnergyIndex << "' must be odd.",
-		""
-	);
-	TBTKAssert(
-		abs(lowerBosonicMatsubaraEnergyIndex%2) == 0,
-		"PropertyExtractor::SelfEnergy::setEnergyWindow()",
-		"'lowerBosonicMatsubaraEnergyIndex="
-		<< lowerBosonicMatsubaraEnergyIndex << "' must be odd.",
-		""
-	);
-	TBTKAssert(
-		abs(upperBosonicMatsubaraEnergyIndex%2) == 0,
-		"PropertyExtractor::SelfEnergy::setEnergyWindow()",
-		"'upperBosoonicMatsubaraEnergyIndex="
-		<< upperBosonicMatsubaraEnergyIndex << "' must be odd.",
-		""
-	);
-
-	energyType = EnergyType::Matsubara;
-	this->lowerFermionicMatsubaraEnergyIndex
-		= lowerFermionicMatsubaraEnergyIndex;
-	this->upperFermionicMatsubaraEnergyIndex
-		= upperFermionicMatsubaraEnergyIndex;
-	this->lowerBosonicMatsubaraEnergyIndex
-		= lowerBosonicMatsubaraEnergyIndex;
-	this->upperBosonicMatsubaraEnergyIndex
-		= upperBosonicMatsubaraEnergyIndex;
-}*/
-
 Property::SelfEnergy SelfEnergy::calculateSelfEnergy(
-//	std::initializer_list<Index> patterns
 	vector<Index> patterns
 ){
 	//Calculate allIndices.
@@ -325,18 +264,6 @@ Property::SelfEnergy SelfEnergy::calculateSelfEnergy(
 	}
 	memoryLayout.generateLinearMap();
 
-	//hint[0] is an array of doubles, hint[1] is an array of ints
-	//hint[0][0]: upperBound
-	//hint[0][1]: lowerBound
-	//hint[1][0]: resolution
-	//hint[1][1]: spin_index
-/*	hint = new void*[2];
-	((double**)hint)[0] = new double[2];
-	((int**)hint)[1] = new int[1];
-	((double**)hint)[0][0] = upperBound;
-	((double**)hint)[0][1] = lowerBound;
-	((int**)hint)[1][0] = energyResolution;*/
-
 	const Property::InteractionVertex &interactionVertex
 		= solver->getInteractionVertex();
 	switch(interactionVertex.getEnergyType()){
@@ -404,7 +331,6 @@ Property::SelfEnergy SelfEnergy::calculateSelfEnergy(
 void SelfEnergy::calculateSelfEnergyCallback(
 	PropertyExtractor *cb_this,
 	Property::Property &property,
-//	void *selfEnergy,
 	const Index &index,
 	int offset
 ){
@@ -421,7 +347,6 @@ void SelfEnergy::calculateSelfEnergyCallback(
 
 	for(unsigned int e = 0; e < se.size(); e++)
 		data[offset + e] += se[e];
-//		((complex<double>*)selfEnergy)[offset + e] += se[e];
 }
 
 };	//End of namespace PropertyExtractor

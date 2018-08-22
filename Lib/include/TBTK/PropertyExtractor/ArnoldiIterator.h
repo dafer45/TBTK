@@ -48,9 +48,6 @@ public:
 	 *  @param solver Solver to use. */
 	ArnoldiIterator(Solver::ArnoldiIterator &solver);
 
-	/** Destructor. */
-//	virtual ~ArnoldiIterator();
-
 	/** Get eigenvalues. */
 	Property::EigenValues getEigenValues();
 
@@ -65,9 +62,7 @@ public:
 
 	/** Calculate wave function. */
 	Property::WaveFunctions calculateWaveFunctions(
-//		std::initializer_list<Index> patterns,
 		std::vector<Index> patterns,
-//		std::initializer_list<int> states
 		std::vector<int> states
 	);
 
@@ -89,7 +84,6 @@ public:
 
 	/** Overrides PropertyExtractor::calculateLDOS(). */
 	virtual Property::LDOS calculateLDOS(
-//		std::initializer_list<Index> patterns
 		std::vector<Index> patterns
 	);
 
@@ -101,7 +95,6 @@ public:
 
 	/** Overrides PropertyExtractor::calculateSpinPolarizedLDOS(). */
 	virtual Property::SpinPolarizedLDOS calculateSpinPolarizedLDOS(
-//		std::initializer_list<Index> patterns
 		std::vector<Index> patterns
 	);
 private:
@@ -110,7 +103,6 @@ private:
 	static void calculateWaveFunctionsCallback(
 		PropertyExtractor *cb_this,
 		Property::Property &property,
-//		void *waveFunctions,
 		const Index &index,
 		int offset
 	);
@@ -120,7 +112,6 @@ private:
 	static void calculateLDOSCallback(
 		PropertyExtractor *cb_this,
 		Property::Property &property,
-//		void *ldos,
 		const Index &index,
 		int offset
 	);
@@ -130,7 +121,6 @@ private:
 	static void calculateSpinPolarizedLDOSCallback(
 		PropertyExtractor *cb_this,
 		Property::Property &property,
-//		void *sp_ldos,
 		const Index &index,
 		int offset
 	);
