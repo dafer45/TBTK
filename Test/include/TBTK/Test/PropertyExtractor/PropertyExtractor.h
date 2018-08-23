@@ -91,20 +91,15 @@ public:
 		const IndexTree &memoryLayout,
 		Property::AbstractProperty<DataType> &abstractProperty,
 		Information &information
-//		int *spinIndexHint
 	){
 		PropertyExtractor::calculate(
 			callback,
 			allIndices,
 			memoryLayout,
 			abstractProperty,
-//			spinIndexHint,
 			information
 		);
 	}
-
-//	void setHint(void *hint){
-//	}
 
 	void ensureCompliantRanges(const Index &pattern, Index &ranges){
 		PropertyExtractor::ensureCompliantRanges(pattern, ranges);
@@ -178,7 +173,6 @@ public:
 	}
 
 	//Helper function for TEST(PropertyExtractor, calculateCustom).
-//	static int spinIndex;
 	static void callbackCustom(
 		PropertyExtractor *cb_this,
 		Property::Property &property,
@@ -655,11 +649,6 @@ TEST(PropertyExtractor, calculateCustom){
 	memoryLayout.add({3, IDX_SUM_ALL, IDX_SPIN});
 	memoryLayout.generateLinearMap();
 
-	//Set the spin index. Note that since the spin subindex alternatingly
-	//is in the second and third subindex position, we test whether the
-	//spin index is updated properly by the calculate function.
-//	propertyExtractor.setHint(&PublicPropertyExtractor::spinIndex);
-
 	//Create the property.
 	Property::SpinPolarizedLDOS spinPolarizedLDOS(
 		memoryLayout,
@@ -675,7 +664,6 @@ TEST(PropertyExtractor, calculateCustom){
 		allIndices,
 		memoryLayout,
 		spinPolarizedLDOS,
-//		&spinIndex
 		information
 	);
 
@@ -729,9 +717,6 @@ TEST(PropertyExtractor, calculateCustom){
 			}
 		}
 	}
-
-	//Clear the spin index.
-//	propertyExtractor.setHint(nullptr);
 }
 
 TEST(PropertyExtractor, enureCompliantRanges){
