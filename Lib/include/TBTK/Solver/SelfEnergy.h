@@ -54,18 +54,6 @@ public:
 	/** Initialize the SelfEnergyCalculator. */
 	void init();
 
-	/** Set the energies for which the self-energy should be
-	 *  calculated. */
-/*	void setSelfEnergyEnergies(
-		const std::vector<std::complex<double>> &selfEnergyEnergies
-	);*/
-
-	/** Calculate self-energy. */
-/*	std::vector<std::complex<double>> calculateSelfEnergy(
-		const std::vector<double> &k,
-		const std::vector<int> &orbitalIndices
-	);*/
-
 	/** Calculate self-energy. */
 	std::vector<std::complex<double>> calculateSelfEnergy(
 		const Index &index,
@@ -77,18 +65,6 @@ public:
 		unsigned int numMatsubaraFrequencies,
 		const std::vector<std::complex<double>> &energies
 	);
-
-	/** Set U. */
-//	void setU(std::complex<double> U);
-
-	/** Set Up. */
-//	void setUp(std::complex<double> Up);
-
-	/** Set J. */
-//	void setJ(std::complex<double> J);
-
-	/** Set Jp. */
-//	void setJp(std::complex<double> Jp);
 private:
 	/** Momentum space context. */
 	const MomentumSpaceContext &momentumSpaceContext;
@@ -111,19 +87,8 @@ private:
 		int kLinearIndex
 	) const;
 
-	/** Energies to calculate the self-energy for. */
-//	std::vector<std::complex<double>> selfEnergyEnergies;
-
 	/** Flag indicating whether the SelfEnergyCalculator is initialized. */
 	bool isInitialized;
-
-	/** Self-energy main loop. */
-/*	template<bool singleSelfEnergyEnergy>
-	void selfEnergyMainLoop(
-		const std::vector<double> &k,
-		const std::vector<int> &orbitalIndices,
-		std::vector<std::complex<double>> &result
-	);*/
 
 	/** Self-energy main loop. */
 	template<bool singleSelfEnergyEnergy>
@@ -132,9 +97,6 @@ private:
 		const std::vector<std::complex<double>> &energies,
 		std::vector<std::complex<double>> &result
 	);
-
-	/** Interaction parameters. */
-//	std::complex<double> U, Up, J, Jp;
 };
 
 inline const MomentumSpaceContext& SelfEnergy::getMomentumSpaceContext(
@@ -146,28 +108,6 @@ inline const Property::InteractionVertex& SelfEnergy::getInteractionVertex(
 ) const{
 	return interactionVertex;
 }
-
-/*inline void SelfEnergy::setSelfEnergyEnergies(
-	const std::vector<std::complex<double>> &selfEnergyEnergies
-){
-	this->selfEnergyEnergies = selfEnergyEnergies;
-}*/
-
-/*inline void SelfEnergy::setU(std::complex<double> U){
-	this->U = U;
-}
-
-inline void SelfEnergy::setUp(std::complex<double> Up){
-	this->Up = Up;
-}
-
-inline void SelfEnergy::setJ(std::complex<double> J){
-	this->J = J;
-}
-
-inline void SelfEnergy::setJp(std::complex<double> Jp){
-	this->Jp = Jp;
-}*/
 
 };	//End of namespace Solver
 };	//End of namespace TBTK

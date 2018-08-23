@@ -43,11 +43,6 @@ SelfEnergy::SelfEnergy(
 	isInitialized = false;
 
 	kMinusQLookupTable = nullptr;
-
-/*	U = 0.;
-	Up = 0.;
-	J = 0.;
-	Jp = 0.;*/
 }
 
 SelfEnergy::~SelfEnergy(){
@@ -376,17 +371,6 @@ void SelfEnergy::selfEnergyMainLoop(
 					propagatorEnd < numOrbitals;
 					propagatorEnd++
 				){
-/*					vector<complex<double>> selfEnergyVertex
-						= electronFluctuationVertexCalculators[worker]->calculateSelfEnergyVertex(
-							mesh.at(n),
-							{
-								(int)propagatorEnd,
-								orbitalIndices[0],
-								(int)propagatorStart,
-								orbitalIndices[1]
-							}
-						);*/
-
 					const vector<complex<double>> &selfEnergyVertexData
 						= interactionVertex.getData();
 					unsigned int offsetSelfEnergyVertex
@@ -432,11 +416,9 @@ void SelfEnergy::selfEnergyMainLoop(
 
 						for(
 							unsigned int e0 = 0;
-//							e0 < numSummationEnergies;
 							e0 < summationEnergies.size();
 							e0++
 						){
-//							complex<double> numerator = selfEnergyVertex[e0]*greensFunctionNumerator;
 							complex<double> numerator = selfEnergyVertexData[offsetSelfEnergyVertex + e0]*greensFunctionNumerator;
 							complex<double> E = summationEnergies[e0] - relativeStateEnergy;
 
