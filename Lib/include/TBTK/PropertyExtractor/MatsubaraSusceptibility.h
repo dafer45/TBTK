@@ -49,12 +49,12 @@ public:
 private:
 	/** Information class for passing information about the block structure
 	 *  when calculating the susceptibility. */
-	class MatsubaraInformation : public Information{
+	class SusceptibilityBlockInformation : public Information{
 	public:
 		/** Constructs a
-		 *  PropertyExtractor::MatsubaraSusceptibility::MatsubaraInfomration.
+		 *  PropertyExtractor::MatsubaraSusceptibility::SusceptibilityBlockInfomration.
 		 */
-		MatsubaraInformation();
+		SusceptibilityBlockInformation();
 
 		/** Set whether the susceptibility should be calculated for all
 		 *  block indices. */
@@ -87,14 +87,14 @@ private:
 	std::vector<std::complex<double>> energies;
 };
 
-inline void MatsubaraSusceptibility::MatsubaraInformation::setCalculateSusceptibilityForAllBlocks(
+inline void MatsubaraSusceptibility::SusceptibilityBlockInformation::setCalculateSusceptibilityForAllBlocks(
 	bool calculateSusceptibilityForAllBlocks
 ){
 	this->calculateSusceptibilityForAllBlocks
 		= calculateSusceptibilityForAllBlocks;
 }
 
-inline bool MatsubaraSusceptibility::MatsubaraInformation::getCalculateSusceptibilityForAllBlocks(
+inline bool MatsubaraSusceptibility::SusceptibilityBlockInformation::getCalculateSusceptibilityForAllBlocks(
 ) const{
 	return calculateSusceptibilityForAllBlocks;
 }

@@ -41,7 +41,7 @@ Property::Susceptibility MatsubaraSusceptibility::calculateSusceptibility(
 ){
 	//Flag that will be set to false if a block subindex without the
 	//IDX_ALL specifier is encountered.
-	MatsubaraInformation information;
+	SusceptibilityBlockInformation information;
 	information.setCalculateSusceptibilityForAllBlocks(true);
 
 	//Check input and set calculateSusceptibilityForAllBlocks.
@@ -408,7 +408,7 @@ void MatsubaraSusceptibility::calculateSusceptibilityCallback(
 ){
 	if(
 		(
-			(MatsubaraInformation&)information
+			(SusceptibilityBlockInformation&)information
 		).getCalculateSusceptibilityForAllBlocks()
 	){
 		MatsubaraSusceptibility *propertyExtractor
@@ -464,7 +464,7 @@ void MatsubaraSusceptibility::calculateSusceptibilityCallback(
 	}
 }
 
-MatsubaraSusceptibility::MatsubaraInformation::MatsubaraInformation(){
+MatsubaraSusceptibility::SusceptibilityBlockInformation::SusceptibilityBlockInformation(){
 	calculateSusceptibilityForAllBlocks = false;
 }
 
