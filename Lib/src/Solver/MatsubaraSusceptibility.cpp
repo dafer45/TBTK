@@ -528,9 +528,9 @@ Property::Susceptibility MatsubaraSusceptibility::calculateSusceptibilityAllBloc
 
 	double kT = greensFunction.getFundamentalMatsubaraEnergy()/M_PI;
 	for(unsigned int meshPoint = 0; meshPoint < mesh.size(); meshPoint++){
-		for(unsigned int n = 0; n < numMatsubaraEnergiesSusceptibility; n++){
+		for(unsigned int n = 0; n < 2*numMatsubaraEnergiesGreensFunction; n++){
 			susceptibilityOut[
-				numMatsubaraEnergiesSusceptibility*meshPoint
+				2*numMatsubaraEnergiesGreensFunction*meshPoint
 				+ n
 			] /= mesh.size()/kT;
 		}
@@ -548,6 +548,7 @@ Property::Susceptibility MatsubaraSusceptibility::calculateSusceptibilityAllBloc
 			});
 		}
 	}
+	memoryLayout.generateLinearMap();
 
 	Property::Susceptibility susceptibility(
 		memoryLayout,

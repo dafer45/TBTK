@@ -39,8 +39,12 @@ MatsubaraSusceptibility::MatsubaraSusceptibility(
 Property::Susceptibility MatsubaraSusceptibility::calculateSusceptibility(
 	vector<Index> patterns
 ){
-	//Calculate allIndices.
-	IndexTree allIndices;
+	//Flag that will be set to false if a block subindex without the
+	//IDX_ALL specifier is encountered.
+	MatsubaraInformation information;
+	information.setCalculateSusceptibilityForAllBlocks(true);
+
+	//Check input and set calculateSusceptibilityForAllBlocks.
 	for(unsigned int n = 0; n < patterns.size(); n++){
 		const Index &pattern = *(patterns.begin() + n);
 
@@ -72,12 +76,37 @@ Property::Susceptibility MatsubaraSusceptibility::calculateSusceptibility(
 			//subindices to append after the kIndex.
 		}
 
+		for(unsigned int c = 0; c < indices[0].getSize(); c++){
+			if(indices[0][c] != IDX_ALL){
+				information.setCalculateSusceptibilityForAllBlocks(
+					false
+				);
+			}
+		}
+	}
+
+	//Calculate allIndices.
+	IndexTree allIndices;
+	for(unsigned int n = 0; n < patterns.size(); n++){
+		const Index &pattern = *(patterns.begin() + n);
+		vector<Index> indices = pattern.split();
+
 		Index kIndexPattern = indices[0];
+
+		if(information.getCalculateSusceptibilityForAllBlocks()){
+			for(
+				unsigned int c = 0;
+				c < kIndexPattern.getSize();
+				c++
+			){
+				kIndexPattern[c] = 0;
+			}
+		}
 
 		//TODO
 		//This is the restricting assumption.
 		Index kIndexPatternExtended = kIndexPattern;
-		for(unsigned int n = 0; n < indices[1].getSize(); n++)
+		for(unsigned int c = 0; c < indices[1].getSize(); c++)
 			kIndexPatternExtended.push_back(IDX_ALL);
 
 		IndexTree kIndexTree = generateIndexTree(
@@ -351,7 +380,6 @@ Property::Susceptibility MatsubaraSusceptibility::calculateSusceptibility(
 			).getFundamentalMatsubaraEnergy()
 		);
 
-		Information information;
 		calculate(
 			calculateSusceptibilityCallback,
 			allIndices,
@@ -378,21 +406,66 @@ void MatsubaraSusceptibility::calculateSusceptibilityCallback(
 	int offset,
 	Information &information
 ){
-	MatsubaraSusceptibility *propertyExtractor
-		= (MatsubaraSusceptibility*)cb_this;
-	Property::Susceptibility &susceptibility
-		= (Property::Susceptibility&)property;
-	vector<complex<double>> &data = susceptibility.getDataRW();
+	if(
+		(
+			(MatsubaraInformation&)information
+		).getCalculateSusceptibilityForAllBlocks()
+	){
+		MatsubaraSusceptibility *propertyExtractor
+			= (MatsubaraSusceptibility*)cb_this;
+		Property::Susceptibility &susceptibility
+			= (Property::Susceptibility&)property;
+		vector<complex<double>> &data = susceptibility.getDataRW();
 
-	vector<complex<double>> s
-		= propertyExtractor->solver->calculateSusceptibility(
-			index,
-			propertyExtractor->getLowerBosonicMatsubaraEnergyIndex(),
-			propertyExtractor->getUpperBosonicMatsubaraEnergyIndex()
-		);
+		vector<Index> components = index.split();
 
-	for(unsigned int e = 0; e < s.size(); e++)
-		data[offset + e] += s[e];
+		Property::Susceptibility s
+			= propertyExtractor->solver->calculateSusceptibilityAllBlocks(
+				{
+					components[1],
+					components[2],
+					components[3],
+					components[4]
+				},
+				propertyExtractor->getLowerBosonicMatsubaraEnergyIndex(),
+				propertyExtractor->getUpperBosonicMatsubaraEnergyIndex()
+			);
+
+		const IndexTree &containedIndices
+			= s.getIndexDescriptor().getIndexTree();
+		for(
+			IndexTree::ConstIterator iterator
+				= containedIndices.cbegin();
+			iterator != containedIndices.cend();
+			++iterator
+		){
+			for(unsigned int e = 0; e < s.getBlockSize(); e++){
+				data[susceptibility.getOffset(*iterator) + e]
+					+= s(*iterator, e);
+			}
+		}
+	}
+	else{
+		MatsubaraSusceptibility *propertyExtractor
+			= (MatsubaraSusceptibility*)cb_this;
+		Property::Susceptibility &susceptibility
+			= (Property::Susceptibility&)property;
+		vector<complex<double>> &data = susceptibility.getDataRW();
+
+		vector<complex<double>> s
+			= propertyExtractor->solver->calculateSusceptibility(
+				index,
+				propertyExtractor->getLowerBosonicMatsubaraEnergyIndex(),
+				propertyExtractor->getUpperBosonicMatsubaraEnergyIndex()
+			);
+
+		for(unsigned int e = 0; e < s.size(); e++)
+			data[offset + e] += s[e];
+	}
+}
+
+MatsubaraSusceptibility::MatsubaraInformation::MatsubaraInformation(){
+	calculateSusceptibilityForAllBlocks = false;
 }
 
 };	//End of namespace PropertyExtractor

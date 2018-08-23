@@ -47,6 +47,30 @@ public:
 		std::vector<Index> patterns
 	);
 private:
+	/** Information class for passing information about the block structure
+	 *  when calculating the susceptibility. */
+	class MatsubaraInformation : public Information{
+	public:
+		/** Constructs a
+		 *  PropertyExtractor::MatsubaraSusceptibility::MatsubaraInfomration.
+		 */
+		MatsubaraInformation();
+
+		/** Set whether the susceptibility should be calculated for all
+		 *  block indices. */
+		void setCalculateSusceptibilityForAllBlocks(
+			bool calculateSusceptibilityForAllBlocks
+		);
+
+		/** Get whether the susceptibility should be calculated for all
+		 *  block indices. */
+		bool getCalculateSusceptibilityForAllBlocks() const;
+	private:
+		/** Flag indicating whether the susceptibility should be
+		 *  calculated for all block indices. */
+		bool calculateSusceptibilityForAllBlocks;
+	};
+
 	/** Calback for callculating susceptibility. */
 	static void calculateSusceptibilityCallback(
 		PropertyExtractor *cb_this,
@@ -62,6 +86,18 @@ private:
 	/** Energies. */
 	std::vector<std::complex<double>> energies;
 };
+
+inline void MatsubaraSusceptibility::MatsubaraInformation::setCalculateSusceptibilityForAllBlocks(
+	bool calculateSusceptibilityForAllBlocks
+){
+	this->calculateSusceptibilityForAllBlocks
+		= calculateSusceptibilityForAllBlocks;
+}
+
+inline bool MatsubaraSusceptibility::MatsubaraInformation::getCalculateSusceptibilityForAllBlocks(
+) const{
+	return calculateSusceptibilityForAllBlocks;
+}
 
 };	//End of namespace PropertyExtractor
 };	//End of namespace TBTK
