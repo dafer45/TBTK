@@ -63,13 +63,15 @@ Property::Density Greens::calculateDensity(
 	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
 	Property::Density density(lDimensions, lRanges);
 
+	Information information;
 	calculate(
 		calculateDensityCallback,
 		density,
 		pattern,
 		ranges,
 		0,
-		1
+		1,
+		information
 	);
 
 	return density;
@@ -105,11 +107,13 @@ Property::Density Greens::calculateDensity(
 
 	Property::Density density(memoryLayout);
 
+	Information information;
 	calculate(
 		calculateDensityCallback,
 		allIndices,
 		memoryLayout,
-		density
+		density,
+		information
 	);
 
 	return density;
@@ -150,11 +154,13 @@ Property::LDOS Greens::calculateLDOS(
 		solver->getGreensFunction().getResolution()
 	);
 
+	Information information;
 	calculate(
 		calculateLDOSCallback,
 		allIndices,
 		memoryLayout,
-		ldos
+		ldos,
+		information
 	);
 
 	return ldos;
@@ -164,7 +170,8 @@ void Greens::calculateDensityCallback(
 	PropertyExtractor *cb_this,
 	Property::Property &property,
 	const Index &index,
-	int offset
+	int offset,
+	Information &information
 ){
 	Greens *propertyExtractor = (Greens*)cb_this;
 	Property::Density &density = (Property::Density&)property;
@@ -264,7 +271,8 @@ void Greens::calculateLDOSCallback(
 	PropertyExtractor *cb_this,
 	Property::Property &property,
 	const Index &index,
-	int offset
+	int offset,
+	Information &information
 ){
 	Greens *propertyExtractor = (Greens*)cb_this;
 	Property::LDOS &ldos = (Property::LDOS&)property;

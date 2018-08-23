@@ -52,7 +52,8 @@ private:
 		PropertyExtractor *cb_this,
 		Property::Property &property,
 		const Index &index,
-		int offset
+		int offset,
+		Information &information
 	);
 
 	/** Solver::Diagonalizer to work on. */

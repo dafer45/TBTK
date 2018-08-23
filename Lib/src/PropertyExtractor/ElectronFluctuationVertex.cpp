@@ -357,11 +357,13 @@ Property::InteractionVertex ElectronFluctuationVertex::calculateInteractionVerte
 			chargeSusceptibility.getResolution()
 		);
 
+		Information information;
 		calculate(
 			calculateInteractionVertexCallback,
 			allIndices,
 			memoryLayout,
-			interactionVertex
+			interactionVertex,
+			information
 		);
 
 		return interactionVertex;
@@ -375,11 +377,13 @@ Property::InteractionVertex ElectronFluctuationVertex::calculateInteractionVerte
 			chargeSusceptibility.getFundamentalMatsubaraEnergy()
 		);
 
+		Information information;
 		calculate(
 			calculateInteractionVertexCallback,
 			allIndices,
 			memoryLayout,
-			interactionVertex
+			interactionVertex,
+			information
 		);
 
 		return interactionVertex;
@@ -397,7 +401,8 @@ void ElectronFluctuationVertex::calculateInteractionVertexCallback(
 	PropertyExtractor *cb_this,
 	Property::Property &property,
 	const Index &index,
-	int offset
+	int offset,
+	Information &information
 ){
 	ElectronFluctuationVertex *propertyExtractor
 		= (ElectronFluctuationVertex*)cb_this;

@@ -358,11 +358,13 @@ Property::Susceptibility RPASusceptibility::calculateChargeSusceptibility(
 		);
 
 		chargeSusceptibilityTree.clear();
+		Information information;
 		calculate(
 			calculateChargeSusceptibilityCallback,
 			allIndices,
 			memoryLayout,
-			susceptibility
+			susceptibility,
+			information
 		);
 
 		return susceptibility;
@@ -377,11 +379,13 @@ Property::Susceptibility RPASusceptibility::calculateChargeSusceptibility(
 		);
 
 		chargeSusceptibilityTree.clear();
+		Information information;
 		calculate(
 			calculateChargeSusceptibilityCallback,
 			allIndices,
 			memoryLayout,
-			susceptibility
+			susceptibility,
+			information
 		);
 
 		return susceptibility;
@@ -692,11 +696,13 @@ Property::Susceptibility RPASusceptibility::calculateSpinSusceptibility(
 		);
 
 		spinSusceptibilityTree.clear();
+		Information information;
 		calculate(
 			calculateSpinSusceptibilityCallback,
 			allIndices,
 			memoryLayout,
-			susceptibility
+			susceptibility,
+			information
 		);
 
 		return susceptibility;
@@ -711,11 +717,13 @@ Property::Susceptibility RPASusceptibility::calculateSpinSusceptibility(
 		);
 
 		spinSusceptibilityTree.clear();
+		Information information;
 		calculate(
 			calculateSpinSusceptibilityCallback,
 			allIndices,
 			memoryLayout,
-			susceptibility
+			susceptibility,
+			information
 		);
 
 		return susceptibility;
@@ -733,7 +741,8 @@ void RPASusceptibility::calculateChargeSusceptibilityCallback(
 	PropertyExtractor *cb_this,
 	Property::Property &property,
 	const Index &index,
-	int offset
+	int offset,
+	Information &information
 ){
 	RPASusceptibility *propertyExtractor
 		= (RPASusceptibility*)cb_this;
@@ -772,7 +781,8 @@ void RPASusceptibility::calculateSpinSusceptibilityCallback(
 	Property::Property &property,
 //	void *susceptibility,
 	const Index &index,
-	int offset
+	int offset,
+	Information &information
 ){
 	RPASusceptibility *propertyExtractor
 		= (RPASusceptibility*)cb_this;

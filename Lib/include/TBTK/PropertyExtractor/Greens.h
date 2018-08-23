@@ -77,7 +77,8 @@ private:
 		PropertyExtractor *cb_this,
 		Property::Property &property,
 		const Index &index,
-		int offset
+		int offset,
+		Information &information
 	);
 
 	/** Callback for calculating the local density of states. Used by
@@ -86,7 +87,8 @@ private:
 		PropertyExtractor *cb_this,
 		Property::Property &property,
 		const Index &index,
-		int offset
+		int offset,
+		Information &information
 	);
 };
 

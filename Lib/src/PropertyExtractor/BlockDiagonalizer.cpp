@@ -108,17 +108,19 @@ Property::WaveFunctions BlockDiagonalizer::calculateWaveFunctions(
 
 	Property::WaveFunctions waveFunctions(memoryLayout, statesVector);
 
-	hint = new Property::WaveFunctions*[1];
-	((Property::WaveFunctions**)hint)[0] = &waveFunctions;
+//	hint = new Property::WaveFunctions*[1];
+//	((Property::WaveFunctions**)hint)[0] = &waveFunctions;
 
+	Information information;
 	calculate(
 		calculateWaveFunctionsCallback,
 		allIndices,
 		memoryLayout,
-		waveFunctions
+		waveFunctions,
+		information
 	);
 
-	delete [] (Property::WaveFunctions**)hint;
+//	delete [] (Property::WaveFunctions**)hint;
 
 	return waveFunctions;
 }
@@ -196,16 +198,18 @@ Property::GreensFunction BlockDiagonalizer::calculateGreensFunction(
 			getEnergyResolution()
 		);
 
-		hint = &greensFunction;
+//		hint = &greensFunction;
 
+		Information information;
 		calculate(
 			calculateGreensFunctionCallback,
 			allIndices,
 			memoryLayout,
-			greensFunction
+			greensFunction,
+			information
 		);
 
-		hint = nullptr;
+//		hint = nullptr;
 
 		return greensFunction;
 	}
@@ -239,16 +243,18 @@ Property::GreensFunction BlockDiagonalizer::calculateGreensFunction(
 			fundamentalMatsubaraEnergy
 		);
 
-		hint = &greensFunction;
+//		hint = &greensFunction;
 
+		Information information;
 		calculate(
 			calculateGreensFunctionCallback,
 			allIndices,
 			memoryLayout,
-			greensFunction
+			greensFunction,
+			information
 		);
 
-		hint = nullptr;
+//		hint = nullptr;
 
 		return greensFunction;
 	}
@@ -353,11 +359,13 @@ Property::Density BlockDiagonalizer::calculateDensity(
 
 	Property::Density density(memoryLayout);
 
+	Information information;
 	calculate(
 		calculateDensityCallback,
 		allIndices,
 		memoryLayout,
-		density
+		density,
+		information
 	);
 
 	return density;
@@ -393,16 +401,18 @@ Property::Magnetization BlockDiagonalizer::calculateMagnetization(
 
 	Property::Magnetization magnetization(memoryLayout);
 
-	hint = new int[1];
+//	hint = new int[1];
+	Information information;
 	calculate(
 		calculateMagnetizationCallback,
 		allIndices,
 		memoryLayout,
 		magnetization,
-		(int*)hint
+//		(int*)hint
+		information
 	);
 
-	delete [] (int*)hint;
+//	delete [] (int*)hint;
 
 	return magnetization;
 }
@@ -438,12 +448,12 @@ Property::LDOS BlockDiagonalizer::calculateLDOS(
 	//hint[0][1]: lowerBound
 	//hint[1][0]: resolution
 	//hint[1][1]: spin_index
-	hint = new void*[2];
-	((double**)hint)[0] = new double[2];
-	((int**)hint)[1] = new int[1];
-	((double**)hint)[0][0] = upperBound;
-	((double**)hint)[0][1] = lowerBound;
-	((int**)hint)[1][0] = energyResolution;
+//	hint = new void*[2];
+//	((double**)hint)[0] = new double[2];
+//	((int**)hint)[1] = new int[1];
+//	((double**)hint)[0][0] = upperBound;
+//	((double**)hint)[0][1] = lowerBound;
+//	((int**)hint)[1][0] = energyResolution;
 
 	IndexTree allIndices = generateIndexTree(
 		patterns,
@@ -466,11 +476,13 @@ Property::LDOS BlockDiagonalizer::calculateLDOS(
 		energyResolution
 	);
 
+	Information information;
 	calculate(
 		calculateLDOSCallback,
 		allIndices,
 		memoryLayout,
-		ldos
+		ldos,
+		information
 	);
 
 	return ldos;
@@ -507,12 +519,12 @@ Property::SpinPolarizedLDOS BlockDiagonalizer::calculateSpinPolarizedLDOS(
 	//hint[0][1]: lowerBound
 	//hint[1][0]: resolution
 	//hint[1][1]: spin_index
-	hint = new void*[2];
-	((double**)hint)[0] = new double[2];
-	((int**)hint)[1] = new int[2];
-	((double**)hint)[0][0] = upperBound;
-	((double**)hint)[0][1] = lowerBound;
-	((int**)hint)[1][0] = energyResolution;
+//	hint = new void*[2];
+//	((double**)hint)[0] = new double[2];
+//	((int**)hint)[1] = new int[2];
+//	((double**)hint)[0][0] = upperBound;
+//	((double**)hint)[0][1] = lowerBound;
+//	((int**)hint)[1][0] = energyResolution;
 
 	IndexTree allIndices = generateIndexTree(
 		patterns,
@@ -535,17 +547,19 @@ Property::SpinPolarizedLDOS BlockDiagonalizer::calculateSpinPolarizedLDOS(
 		energyResolution
 	);
 
+	Information information;
 	calculate(
 		calculateSP_LDOSCallback,
 		allIndices,
 		memoryLayout,
 		spinPolarizedLDOS,
-		&(((int**)hint)[1][1])
+//		&(((int**)hint)[1][1])
+		information
 	);
 
-	delete [] ((double**)hint)[0];
-	delete [] ((int**)hint)[1];
-	delete [] (void**)hint;
+//	delete [] ((double**)hint)[0];
+//	delete [] ((int**)hint)[1];
+//	delete [] (void**)hint;
 
 	return spinPolarizedLDOS;
 }
@@ -592,14 +606,16 @@ void BlockDiagonalizer::calculateWaveFunctionsCallback(
 	PropertyExtractor *cb_this,
 	Property::Property &property,
 	const Index &index,
-	int offset
+	int offset,
+	Information &information
 ){
 	BlockDiagonalizer *pe = (BlockDiagonalizer*)cb_this;
 	Property::WaveFunctions &waveFunctions
 		= (Property::WaveFunctions&)property;
 	vector<complex<double>> &data = waveFunctions.getDataRW();
 
-	const vector<unsigned int> states = ((Property::WaveFunctions**)pe->hint)[0]->getStates();
+//	const vector<unsigned int> states = ((Property::WaveFunctions**)pe->hint)[0]->getStates();
+	const vector<unsigned int> states = waveFunctions.getStates();
 	for(unsigned int n = 0; n < states.size(); n++)
 		data[offset + n] += pe->getAmplitude(states.at(n), index);
 }
@@ -608,7 +624,8 @@ void BlockDiagonalizer::calculateGreensFunctionCallback(
 	PropertyExtractor *cb_this,
 	Property::Property &property,
 	const Index &index,
-	int offset
+	int offset,
+	Information &information
 ){
 	BlockDiagonalizer *propertyExtractor = (BlockDiagonalizer*)cb_this;
 	Property::GreensFunction &greensFunction
@@ -636,10 +653,10 @@ void BlockDiagonalizer::calculateGreensFunctionCallback(
 		return;
 	}
 
-	Property::GreensFunction &gf
-		= *(Property::GreensFunction*)propertyExtractor->hint;
+//	Property::GreensFunction &gf
+//		= *(Property::GreensFunction*)propertyExtractor->hint;
 
-	switch(gf.getType()){
+	switch(greensFunction.getType()){
 	case Property::GreensFunction::Type::Advanced:
 	case Property::GreensFunction::Type::Retarded:
 	{
@@ -649,7 +666,7 @@ void BlockDiagonalizer::calculateGreensFunctionCallback(
 			= propertyExtractor->getEnergyResolution();
 		double dE = (upperBound - lowerBound)/energyResolution;
 		double delta = propertyExtractor->getEnergyInfinitesimal();
-		if(gf.getType() == Property::GreensFunction::Type::Advanced)
+		if(greensFunction.getType() == Property::GreensFunction::Type::Advanced)
 			delta *= -1;
 
 		for(int e = 0; e < energyResolution; e++){
@@ -684,7 +701,7 @@ void BlockDiagonalizer::calculateGreensFunctionCallback(
 	case Property::GreensFunction::Type::Matsubara:
 	{
 		unsigned int numMatsubaraEnergies
-			= gf.getNumMatsubaraEnergies();
+			= greensFunction.getNumMatsubaraEnergies();
 		double chemicalPotential
 			= propertyExtractor->bSolver->getModel(
 			).getChemicalPotential();
@@ -712,11 +729,10 @@ void BlockDiagonalizer::calculateGreensFunctionCallback(
 				continue;
 
 			for(unsigned int e = 0; e < numMatsubaraEnergies; e++){
-				data[offset + e]
-					+= numerator/(
-						gf.getMatsubaraEnergy(e)
-						- energy
-					);
+				data[offset + e] += numerator/(
+					greensFunction.getMatsubaraEnergy(e)
+					- energy
+				);
 			}
 		}
 
@@ -736,7 +752,8 @@ void BlockDiagonalizer::calculateDensityCallback(
 	PropertyExtractor *cb_this,
 	Property::Property &property,
 	const Index &index,
-	int offset
+	int offset,
+	Information &information
 ){
 	BlockDiagonalizer *pe = (BlockDiagonalizer*)cb_this;
 	Property::Density &density = (Property::Density&)property;
@@ -772,7 +789,8 @@ void BlockDiagonalizer::calculateMagnetizationCallback(
 	PropertyExtractor *cb_this,
 	Property::Property &property,
 	const Index &index,
-	int offset
+	int offset,
+	Information &information
 ){
 	BlockDiagonalizer *pe = (BlockDiagonalizer*)cb_this;
 	Property::Magnetization &magnetization
@@ -781,11 +799,12 @@ void BlockDiagonalizer::calculateMagnetizationCallback(
 
 	Statistics statistics = pe->bSolver->getModel().getStatistics();
 
-	int spin_index = ((int*)pe->hint)[0];
+//	int spin_index = ((int*)pe->hint)[0];
+	int spinIndex = information.getSpinIndex();
 	Index index_u(index);
 	Index index_d(index);
-	index_u.at(spin_index) = 0;
-	index_d.at(spin_index) = 1;
+	index_u.at(spinIndex) = 0;
+	index_d.at(spinIndex) = 1;
 	int firstStateInBlock = pe->bSolver->getFirstStateInBlock(index);
 	int lastStateInBlock = pe->bSolver->getLastStateInBlock(index);
 	for(int n = firstStateInBlock; n <= lastStateInBlock; n++){
@@ -819,17 +838,18 @@ void BlockDiagonalizer::calculateLDOSCallback(
 	PropertyExtractor *cb_this,
 	Property::Property &property,
 	const Index &index,
-	int offset
+	int offset,
+	Information &information
 ){
 	BlockDiagonalizer *pe = (BlockDiagonalizer*)cb_this;
 	Property::LDOS &ldos = (Property::LDOS&)property;
 	vector<double> &data = ldos.getDataRW();
 
-	double u_lim = ((double**)pe->hint)[0][0];
-	double l_lim = ((double**)pe->hint)[0][1];
-	int resolution = ((int**)pe->hint)[1][0];
+//	double u_lim = ((double**)pe->hint)[0][0];
+//	double l_lim = ((double**)pe->hint)[0][1];
+//	int resolution = ((int**)pe->hint)[1][0];
 
-	double step_size = (u_lim - l_lim)/(double)resolution;
+//	double step_size = (u_lim - l_lim)/(double)resolution;
 
 	double lowerBound = pe->getLowerBound();
 	double upperBound = pe->getUpperBound();
@@ -840,12 +860,16 @@ void BlockDiagonalizer::calculateLDOSCallback(
 	double dE = (upperBound - lowerBound)/energyResolution;
 	for(int n = firstStateInBlock; n <= lastStateInBlock; n++){
 		double eigenValue = pe->bSolver->getEigenValue(n);
-		if(eigenValue > l_lim && eigenValue < u_lim){
+//		if(eigenValue > l_lim && eigenValue < u_lim){
+		if(eigenValue > lowerBound && eigenValue < upperBound){
 			complex<double> u = pe->bSolver->getAmplitude(n, index);
 
-			int e = (int)((eigenValue - l_lim)/step_size);
-			if(e >= resolution)
-				e = resolution-1;
+//			int e = (int)((eigenValue - l_lim)/step_size);
+			int e = (int)((eigenValue - lowerBound)/dE);
+//			if(e >= resolution)
+//				e = resolution-1;
+			if(e >= energyResolution)
+				e = energyResolution - 1;
 			data[offset + e] += real(conj(u)*u)/dE;
 		}
 	}
@@ -855,19 +879,21 @@ void BlockDiagonalizer::calculateSP_LDOSCallback(
 	PropertyExtractor *cb_this,
 	Property::Property &property,
 	const Index &index,
-	int offset
+	int offset,
+	Information &information
 ){
 	BlockDiagonalizer *pe = (BlockDiagonalizer*)cb_this;
 	Property::SpinPolarizedLDOS &spinPolarizedLDOS
 		= (Property::SpinPolarizedLDOS&)property;
 	vector<SpinMatrix> &data = spinPolarizedLDOS.getDataRW();
 
-	double u_lim = ((double**)pe->hint)[0][0];
-	double l_lim = ((double**)pe->hint)[0][1];
-	int resolution = ((int**)pe->hint)[1][0];
-	int spin_index = ((int**)pe->hint)[1][1];
+//	double u_lim = ((double**)pe->hint)[0][0];
+//	double l_lim = ((double**)pe->hint)[0][1];
+//	int resolution = ((int**)pe->hint)[1][0];
+//	int spin_index = ((int**)pe->hint)[1][1];
+	int spinIndex = information.getSpinIndex();
 
-	double step_size = (u_lim - l_lim)/(double)resolution;
+//	double step_size = (u_lim - l_lim)/(double)resolution;
 
 	double lowerBound = pe->getLowerBound();
 	double upperBound = pe->getUpperBound();
@@ -875,20 +901,24 @@ void BlockDiagonalizer::calculateSP_LDOSCallback(
 
 	Index index_u(index);
 	Index index_d(index);
-	index_u.at(spin_index) = 0;
-	index_d.at(spin_index) = 1;
+	index_u.at(spinIndex) = 0;
+	index_d.at(spinIndex) = 1;
 	int firstStateInBlock = pe->bSolver->getFirstStateInBlock(index);
 	int lastStateInBlock = pe->bSolver->getLastStateInBlock(index);
 	double dE = (upperBound - lowerBound)/energyResolution;
 	for(int n = firstStateInBlock; n <= lastStateInBlock; n++){
 		double eigenValue = pe->bSolver->getEigenValue(n);
-		if(eigenValue > l_lim && eigenValue < u_lim){
+//		if(eigenValue > l_lim && eigenValue < u_lim){
+		if(eigenValue > lowerBound && eigenValue < upperBound){
 			complex<double> u_u = pe->bSolver->getAmplitude(n, index_u);
 			complex<double> u_d = pe->bSolver->getAmplitude(n, index_d);
 
-			int e = (int)((eigenValue - l_lim)/step_size);
-			if(e >= resolution)
-				e = resolution-1;
+//			int e = (int)((eigenValue - l_lim)/step_size);
+			int e = (int)((eigenValue - lowerBound)/dE);
+//			if(e >= resolution)
+//				e = resolution-1;
+			if(e >= energyResolution)
+				e = energyResolution - 1;
 			data[offset + e].at(0, 0) += conj(u_u)*u_u/dE;
 			data[offset + e].at(0, 1) += conj(u_u)*u_d/dE;
 			data[offset + e].at(1, 0) += conj(u_d)*u_u/dE;

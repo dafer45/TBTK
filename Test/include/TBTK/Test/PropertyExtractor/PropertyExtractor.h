@@ -12,6 +12,17 @@ const double EPSILON_100 = 100*std::numeric_limits<double>::epsilon();
 //Helper class that exposes the PropertyExtractors protected functions.
 class PublicPropertyExtractor : public PropertyExtractor{
 public:
+	class PublicInformation : public Information{
+	public:
+		void setSpinIndex(int spinIndex){
+			Information::setSpinIndex(spinIndex);
+		}
+
+		int getSpinIndex() const{
+			return Information::getSpinIndex();
+		}
+	};
+
 	double getLowerBound() const{
 		return PropertyExtractor::getLowerBound();
 	}
@@ -46,13 +57,15 @@ public:
 			PropertyExtractor *cb_this,
 			Property::Property &property,
 			const Index &index,
-			int offset
+			int offset,
+			Information &information
 		),
 		Property::AbstractProperty<DataType> &property,
 		Index pattern,
 		const Index &ranges,
 		int currentOffset,
-		int offsetMultiplier
+		int offsetMultiplier,
+		Information &information
 	){
 		PropertyExtractor::calculate(
 			callback,
@@ -60,7 +73,8 @@ public:
 			pattern,
 			ranges,
 			currentOffset,
-			offsetMultiplier
+			offsetMultiplier,
+			information
 		);
 	}
 
@@ -70,24 +84,27 @@ public:
 			PropertyExtractor *cb_this,
 			Property::Property &property,
 			const Index &index,
-			int offset
+			int offset,
+			Information &information
 		),
 		const IndexTree &allIndices,
 		const IndexTree &memoryLayout,
 		Property::AbstractProperty<DataType> &abstractProperty,
-		int *spinIndexHint
+		Information &information
+//		int *spinIndexHint
 	){
 		PropertyExtractor::calculate(
 			callback,
 			allIndices,
 			memoryLayout,
 			abstractProperty,
-			spinIndexHint
+//			spinIndexHint,
+			information
 		);
 	}
 
-	void setHint(void *hint){
-	}
+//	void setHint(void *hint){
+//	}
 
 	void ensureCompliantRanges(const Index &pattern, Index &ranges){
 		PropertyExtractor::ensureCompliantRanges(pattern, ranges);
@@ -144,6 +161,45 @@ public:
 			functionName
 		);
 	}
+
+	//Helper function for TEST(PropertyExtractor, calculateRanges).
+	static void callbackRanges(
+		PropertyExtractor *cb_this,
+		Property::Property &property,
+		const Index &index,
+		int offset,
+		Information &information
+	){
+		Property::LDOS &ldos = (Property::LDOS&)property;
+		std::vector<double> &data = ldos.getDataRW();
+
+		for(unsigned int n = 0; n < 10; n++)
+			data[offset + n] += 10*(3*index[0] + index[2]) + n;
+	}
+
+	//Helper function for TEST(PropertyExtractor, calculateCustom).
+//	static int spinIndex;
+	static void callbackCustom(
+		PropertyExtractor *cb_this,
+		Property::Property &property,
+		const Index &index,
+		int offset,
+		Information &information
+	){
+		Property::SpinPolarizedLDOS &spinPolarizedLDOS
+			= (Property::SpinPolarizedLDOS&)property;
+		std::vector<SpinMatrix> &data = spinPolarizedLDOS.getDataRW();
+
+		if(index[0] == 1 || index[0] == 3)
+			EXPECT_EQ(information.getSpinIndex(), 2);
+		else
+			EXPECT_EQ(information.getSpinIndex(), 1);
+
+		for(unsigned int n = 0; n < 100; n++){
+			data[offset + n]
+				+= SpinMatrix((index[0] + index[1])*n);
+		}
+	}
 };
 
 TEST(PropertyExtractor, Constructor){
@@ -166,7 +222,7 @@ TEST(PropertyExtractor, setEnergyWindowReal){
 	//Print error message when accessing Matsubara quantities.
 	EXPECT_EXIT(
 		{
-			Streams::setStdMuteOut();
+			Streams::setStdMuteErr();
 			propertyExtractor.getLowerFermionicMatsubaraEnergyIndex();
 		},
 		::testing::ExitedWithCode(1),
@@ -174,7 +230,7 @@ TEST(PropertyExtractor, setEnergyWindowReal){
 	);
 	EXPECT_EXIT(
 		{
-			Streams::setStdMuteOut();
+			Streams::setStdMuteErr();
 			propertyExtractor.getUpperFermionicMatsubaraEnergyIndex();
 		},
 		::testing::ExitedWithCode(1),
@@ -182,7 +238,7 @@ TEST(PropertyExtractor, setEnergyWindowReal){
 	);
 	EXPECT_EXIT(
 		{
-			Streams::setStdMuteOut();
+			Streams::setStdMuteErr();
 			propertyExtractor.getLowerBosonicMatsubaraEnergyIndex();
 		},
 		::testing::ExitedWithCode(1),
@@ -190,7 +246,7 @@ TEST(PropertyExtractor, setEnergyWindowReal){
 	);
 	EXPECT_EXIT(
 		{
-			Streams::setStdMuteOut();
+			Streams::setStdMuteErr();
 			propertyExtractor.getUpperBosonicMatsubaraEnergyIndex();
 		},
 		::testing::ExitedWithCode(1),
@@ -224,7 +280,7 @@ TEST(PropertyExtractor, setEnergyWindowMatsubara){
 	//indices.
 	EXPECT_EXIT(
 		{
-			Streams::setStdMuteOut();
+			Streams::setStdMuteErr();
 			propertyExtractor.setEnergyWindow(-10, 11, -10, 10);
 		},
 		::testing::ExitedWithCode(1),
@@ -232,7 +288,7 @@ TEST(PropertyExtractor, setEnergyWindowMatsubara){
 	);
 	EXPECT_EXIT(
 		{
-			Streams::setStdMuteOut();
+			Streams::setStdMuteErr();
 			propertyExtractor.setEnergyWindow(-11, 10, -10, 10);
 		},
 		::testing::ExitedWithCode(1),
@@ -240,7 +296,7 @@ TEST(PropertyExtractor, setEnergyWindowMatsubara){
 	);
 	EXPECT_EXIT(
 		{
-			Streams::setStdMuteOut();
+			Streams::setStdMuteErr();
 			propertyExtractor.setEnergyWindow(-11, 11, -11, 10);
 		},
 		::testing::ExitedWithCode(1),
@@ -248,7 +304,7 @@ TEST(PropertyExtractor, setEnergyWindowMatsubara){
 	);
 	EXPECT_EXIT(
 		{
-			Streams::setStdMuteOut();
+			Streams::setStdMuteErr();
 			propertyExtractor.setEnergyWindow(-11, 11, -10, 11);
 		},
 		::testing::ExitedWithCode(1),
@@ -259,7 +315,7 @@ TEST(PropertyExtractor, setEnergyWindowMatsubara){
 	//index.
 	EXPECT_EXIT(
 		{
-			Streams::setStdMuteOut();
+			Streams::setStdMuteErr();
 			propertyExtractor.setEnergyWindow(11, -11, -10, 10);
 		},
 		::testing::ExitedWithCode(1),
@@ -267,7 +323,7 @@ TEST(PropertyExtractor, setEnergyWindowMatsubara){
 	);
 	EXPECT_EXIT(
 		{
-			Streams::setStdMuteOut();
+			Streams::setStdMuteErr();
 			propertyExtractor.setEnergyWindow(-11, 11, 10, -10);
 		},
 		::testing::ExitedWithCode(1),
@@ -277,7 +333,7 @@ TEST(PropertyExtractor, setEnergyWindowMatsubara){
 	//Print error message when accessing real quantities.
 	EXPECT_EXIT(
 		{
-			Streams::setStdMuteOut();
+			Streams::setStdMuteErr();
 			propertyExtractor.getLowerBound();
 		},
 		::testing::ExitedWithCode(1),
@@ -285,7 +341,7 @@ TEST(PropertyExtractor, setEnergyWindowMatsubara){
 	);
 	EXPECT_EXIT(
 		{
-			Streams::setStdMuteOut();
+			Streams::setStdMuteErr();
 			propertyExtractor.getUpperBound();
 		},
 		::testing::ExitedWithCode(1),
@@ -293,7 +349,7 @@ TEST(PropertyExtractor, setEnergyWindowMatsubara){
 	);
 	EXPECT_EXIT(
 		{
-			Streams::setStdMuteOut();
+			Streams::setStdMuteErr();
 			propertyExtractor.getEnergyResolution();
 		},
 		::testing::ExitedWithCode(1),
@@ -501,20 +557,6 @@ TEST(PropertyExtractor, getUpperBosonicMatsubaraEnergyIndex){
 	//PropertyExtractor::setEnergyWindowMatsubara.
 }
 
-//Helper function for TEST(PropertyExtractor, calculateRanges).
-void callbackRanges(
-	PropertyExtractor *cb_this,
-	Property::Property &property,
-	const Index &index,
-	int offset
-){
-	Property::LDOS &ldos = (Property::LDOS&)property;
-	std::vector<double> &data = ldos.getDataRW();
-
-	for(unsigned int n = 0; n < 10; n++)
-		data[offset + n] += 10*(3*index[0] + index[2]) + n;
-}
-
 TEST(PropertyExtractor, calculateRanges){
 	PublicPropertyExtractor propertyExtractor;
 
@@ -526,13 +568,15 @@ TEST(PropertyExtractor, calculateRanges){
 	Property::LDOS ldos(DIMENSIONS, ranges, -1, 1, 10);
 	for(unsigned int n = 0; n < ldos.getSize(); n++)
 		ldos.getDataRW()[n] = 0;
+	PublicPropertyExtractor::PublicInformation information;
 	propertyExtractor.calculate(
-		callbackRanges,
+		PublicPropertyExtractor::callbackRanges,
 		ldos,
 		{IDX_SUM_ALL, 2, IDX_X},
 		{2, 1, 3},
 		0,
-		10
+		10,
+		information
 	);
 	for(unsigned int n = 0; n < 3*10; n++)
 		EXPECT_NEAR(ldos.getData()[n], n + (30 + n), EPSILON_100);
@@ -541,13 +585,15 @@ TEST(PropertyExtractor, calculateRanges){
 	EXPECT_EXIT(
 		{
 			Streams::setStdMuteErr();
+			PublicPropertyExtractor::PublicInformation information;
 			propertyExtractor.calculate(
-				callbackRanges,
+				PublicPropertyExtractor::callbackRanges,
 				ldos,
 				{IDX_ALL, 2, IDX_X},
 				{2, 1, 3},
 				0,
-				10
+				10,
+				information
 			);
 		},
 		::testing::ExitedWithCode(1),
@@ -556,13 +602,15 @@ TEST(PropertyExtractor, calculateRanges){
 	EXPECT_EXIT(
 		{
 			Streams::setStdMuteErr();
+			PublicPropertyExtractor::PublicInformation information;
 			propertyExtractor.calculate(
-				callbackRanges,
+				PublicPropertyExtractor::callbackRanges,
 				ldos,
 				{IDX_SUM_ALL, 2, IDX_SPIN},
 				{2, 1, 3},
 				0,
-				10
+				10,
+				information
 			);
 		},
 		::testing::ExitedWithCode(1),
@@ -571,39 +619,20 @@ TEST(PropertyExtractor, calculateRanges){
 	EXPECT_EXIT(
 		{
 			Streams::setStdMuteErr();
+			PublicPropertyExtractor::PublicInformation information;
 			propertyExtractor.calculate(
-				callbackRanges,
+				PublicPropertyExtractor::callbackRanges,
 				ldos,
 				{IDX_SUM_ALL, 2, IDX_SEPARATOR},
 				{2, 1, 3},
 				0,
-				10
+				10,
+				information
 			);
 		},
 		::testing::ExitedWithCode(1),
 		""
 	);
-}
-
-//Helper function for TEST(PropertyExtractor, calculateCustom).
-int spinIndex;
-void callbackCustom(
-	PropertyExtractor *cb_this,
-	Property::Property &property,
-	const Index &index,
-	int offset
-){
-	Property::SpinPolarizedLDOS &spinPolarizedLDOS
-		= (Property::SpinPolarizedLDOS&)property;
-	std::vector<SpinMatrix> &data = spinPolarizedLDOS.getDataRW();
-
-	if(index[0] == 1 || index[0] == 3)
-		EXPECT_EQ(spinIndex, 2);
-	else
-		EXPECT_EQ(spinIndex, 1);
-
-	for(unsigned int n = 0; n < 100; n++)
-		data[offset + n] += SpinMatrix((index[0] + index[1])*n);
 }
 
 TEST(PropertyExtractor, calculateCustom){
@@ -629,7 +658,7 @@ TEST(PropertyExtractor, calculateCustom){
 	//Set the spin index. Note that since the spin subindex alternatingly
 	//is in the second and third subindex position, we test whether the
 	//spin index is updated properly by the calculate function.
-	propertyExtractor.setHint(&spinIndex);
+//	propertyExtractor.setHint(&PublicPropertyExtractor::spinIndex);
 
 	//Create the property.
 	Property::SpinPolarizedLDOS spinPolarizedLDOS(
@@ -640,12 +669,14 @@ TEST(PropertyExtractor, calculateCustom){
 	);
 
 	//Run calculation.
+	PublicPropertyExtractor::PublicInformation information;
 	propertyExtractor.calculate(
-		callbackCustom,
+		PublicPropertyExtractor::callbackCustom,
 		allIndices,
 		memoryLayout,
 		spinPolarizedLDOS,
-		&spinIndex
+//		&spinIndex
+		information
 	);
 
 	//Check the results.
@@ -700,7 +731,7 @@ TEST(PropertyExtractor, calculateCustom){
 	}
 
 	//Clear the spin index.
-	propertyExtractor.setHint(nullptr);
+//	propertyExtractor.setHint(nullptr);
 }
 
 TEST(PropertyExtractor, enureCompliantRanges){
@@ -1030,6 +1061,25 @@ TEST(PropertyExtractor, validatePatternsSpecifiers){
 		::testing::ExitedWithCode(1),
 		""
 	);
+}
+
+TEST(PropertyExtractor, Information){
+	//Nothing to test.
+}
+
+TEST(PropertyExtractorInformation, setSpinIndex){
+	//Tested through PropertyExtractorInformation::getSpinIndex.
+}
+
+TEST(PropertyExtractorInformation, getSpinIndex){
+	PublicPropertyExtractor::PublicInformation information;
+
+	//Check that the value is initialized to -1.
+	EXPECT_EQ(information.getSpinIndex(), -1);
+
+	//Check that the value can be set and retreived.
+	information.setSpinIndex(3);
+	EXPECT_EQ(information.getSpinIndex(), 3);
 }
 
 };	//End of namespace PropertyExtractor

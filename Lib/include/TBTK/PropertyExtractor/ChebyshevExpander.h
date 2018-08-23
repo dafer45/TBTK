@@ -129,7 +129,8 @@ private:
 		PropertyExtractor *cb_this,
 		Property::Property &property,
 		const Index &index,
-		int offset
+		int offset,
+		Information &information
 	);
 
 	/** !!!Not tested!!! Callback for calculating magnetization.
@@ -138,7 +139,8 @@ private:
 		PropertyExtractor *cb_this,
 		Property::Property &property,
 		const Index &index,
-		int offset
+		int offset,
+		Information &information
 	);
 
 	/** !!!Not tested!!! Callback for calculating local density of states.
@@ -147,7 +149,8 @@ private:
 		PropertyExtractor *cb_this,
 		Property::Property &property,
 		const Index &index,
-		int offset
+		int offset,
+		Information &information
 	);
 
 	/** !!!Not tested!!! Callback for calculating spin-polarized local
@@ -156,7 +159,8 @@ private:
 		PropertyExtractor *cb_this,
 		Property::Property &property,
 		const Index &index,
-		int offset
+		int offset,
+		Information &information
 	);
 };
 

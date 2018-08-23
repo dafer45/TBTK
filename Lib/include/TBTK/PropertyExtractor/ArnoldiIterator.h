@@ -104,7 +104,8 @@ private:
 		PropertyExtractor *cb_this,
 		Property::Property &property,
 		const Index &index,
-		int offset
+		int offset,
+		Information &information
 	);
 
 	/** Callback for callculating local density of states. Used by
@@ -113,7 +114,8 @@ private:
 		PropertyExtractor *cb_this,
 		Property::Property &property,
 		const Index &index,
-		int offset
+		int offset,
+		Information &information
 	);
 
 	/** Callback for calculating spin-polarized local density of states.
@@ -122,7 +124,8 @@ private:
 		PropertyExtractor *cb_this,
 		Property::Property &property,
 		const Index &index,
-		int offset
+		int offset,
+		Information &information
 	);
 
 	/** Solver::ArnoldiIterator to work on. */

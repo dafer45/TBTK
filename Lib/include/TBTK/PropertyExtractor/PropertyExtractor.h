@@ -378,6 +378,31 @@ protected:
 	 *  @return The upper Bosonic Matsubara energy index. */
 	int getUpperBosonicMatsubaraEnergyIndex() const;
 
+	/** Info class that is able to pass the most common parameters between
+	 *  calculate-functions and the corresponding callbacks. Calculations
+	 *  requiring more advanced features should override this class and
+	 *  perform a type cast in the callbacks. */
+	class Information{
+	public:
+		/** Constructs a
+		 *  PropertyExtractor::PropertyExtractor::Information. */
+		Information();
+
+		/** Set the subindex for the spin index.
+		 *
+		 *  @param spinIndex The subindex that is the spin index. */
+		void setSpinIndex(int spinIndex);
+
+		/** Get the subindex for the spin index.
+		 *
+		 *  @return The spin index. Returns -1 if no spin-index has
+		 *  been set. */
+		int getSpinIndex() const;
+	private:
+		/** Spin index. */
+		int spinIndex;
+	};
+
 	/*** Get the nergy infinitesimal.
 	 *
 	 *  @return The energy infinitesimal. */
@@ -422,20 +447,25 @@ protected:
 	 *  @param offsetMultiplier Number indicating the block size associated
 	 *  with increasing the current subindex by one. Should be equal to the
 	 *  number of data elements per Index for the initial call to the
-	 *  function. */
+	 *  function.
+	 *
+	 *  @param information Allows for custom information to be passed
+	 *  between the calculate-functions and the correpsonding callbacks. */
 	template<typename DataType>
 	void calculate(
 		void (*callback)(
 			PropertyExtractor *cb_this,
 			Property::Property &property,
 			const Index &index,
-			int offset
+			int offset,
+			Information &information
 		),
 		Property::AbstractProperty<DataType> &property,
 		Index pattern,
 		const Index &ranges,
 		int currentOffset,
-		int offsetMultiplier
+		int offsetMultiplier,
+		Information &information
 	);
 
 	/** Loops over the indices satisfying the specified patterns and calls
@@ -450,27 +480,27 @@ protected:
 	 *
 	 *  @param memoryLayout The memory layout used for the Property.
 	 *  @param abstractProperty The Property that is being calculated.
-	 *  @param spinIndexHint Pointer to a memory location that provides
-	 *  information about which subindex that corresponds to a spin index.
-	 *  If the specification of a spin subindex is not necessary for the
-	 *  given Property, this should be nullptr. */
+	 *  @param information Allows for custom information to be passed
+	 *  between the calculate-functions and the correpsonding callbacks. */
 	template<typename DataType>
 	void calculate(
 		void (*callback)(
 			PropertyExtractor *cb_this,
 			Property::Property &property,
 			const Index &index,
-			int offset
+			int offset,
+			Information &information
 		),
 		const IndexTree &allIndices,
 		const IndexTree &memoryLayout,
 		Property::AbstractProperty<DataType> &abstractProperty,
-		int *spinIndexHint = nullptr
+		Information &information
+//		int *spinIndexHint = nullptr
 	);
 
 	/** Hint used to pass information between calculate[Property] and
 	 *  calculate[Property]Callback. */
-	void *hint;
+//	void *hint;
 
 	/** Ensure that range indices are on compliant format. I.e., sets the
 	 *  range to  one for indices with non-negative pattern value.
@@ -730,13 +760,15 @@ void PropertyExtractor::calculate(
 		PropertyExtractor *cb_this,
 		Property::Property &property,
 		const Index &index,
-		int offset
+		int offset,
+		Information &information
 	),
 	Property::AbstractProperty<DataType> &property,
 	Index pattern,
 	const Index &ranges,
 	int currentOffset,
-	int offsetMultiplier
+	int offsetMultiplier,
+	Information &information
 ){
 	//Find the next specifier index.
 	int currentSubindex = pattern.getSize()-1;
@@ -747,7 +779,7 @@ void PropertyExtractor::calculate(
 
 	if(currentSubindex == -1){
 		//No further specifier index found. Call the callback.
-		callback(this, property/*memory*/, pattern, currentOffset);
+		callback(this, property, pattern, currentOffset, information);
 	}
 	else{
 		//Ensure that the specifier is valid for the Ranges format.
@@ -784,7 +816,8 @@ void PropertyExtractor::calculate(
 				pattern,
 				ranges,
 				currentOffset,
-				nextOffsetMultiplier
+				nextOffsetMultiplier,
+				information
 			);
 			if(!isSumIndex)
 				currentOffset += offsetMultiplier;
@@ -798,12 +831,14 @@ void PropertyExtractor::calculate(
 		PropertyExtractor *cb_this,
 		Property::Property &property,
 		const Index &index,
-		int offset
+		int offset,
+		Information &information
 	),
 	const IndexTree &allIndices,
 	const IndexTree &memoryLayout,
 	Property::AbstractProperty<DataType> &abstractProperty,
-	int *spinIndexHint
+	Information &information/*,
+	int *spinIndexHint*/
 ){
 	for(
 		IndexTree::ConstIterator iterator = allIndices.cbegin();
@@ -811,26 +846,31 @@ void PropertyExtractor::calculate(
 		++iterator
 	){
 		Index index = *iterator;
-		if(spinIndexHint != nullptr){
-			std::vector<unsigned int> spinIndices = memoryLayout.getSubindicesMatching(
+//		if(spinIndexHint != nullptr){
+		std::vector<unsigned int> spinIndices
+			= memoryLayout.getSubindicesMatching(
 				IDX_SPIN,
 				index,
 				IndexTree::SearchMode::MatchWildcards
 			);
+		if(spinIndices.size() != 0){
 			TBTKAssert(
 				spinIndices.size() == 1,
 				"PropertyExtractor::calculate()",
-				"Zero or several spin indeces found.",
-				"Use IDX_SPIN once and only once per pattern to indicate spin index."
+				"Several spin indeces found.",
+				"Use IDX_SPIN at most once per pattern to"
+				<< " indicate spin index."
 			);
-			*spinIndexHint = spinIndices.at(0);
+//			*spinIndexHint = spinIndices.at(0);
+			information.setSpinIndex(spinIndices[0]);
 		}
 
 		callback(
 			this,
 			abstractProperty,
 			index,
-			abstractProperty.getOffset(index)
+			abstractProperty.getOffset(index),
+			information
 		);
 	}
 }
@@ -895,6 +935,14 @@ inline void PropertyExtractor::validatePatternsSpecifiers(
 			}
 		}
 	}
+}
+
+inline void PropertyExtractor::Information::setSpinIndex(int spinIndex){
+	this->spinIndex = spinIndex;
+}
+
+inline int PropertyExtractor::Information::getSpinIndex() const{
+	return spinIndex;
 }
 
 };	//End of namespace PropertyExtractor

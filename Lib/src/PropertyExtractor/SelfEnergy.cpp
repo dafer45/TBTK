@@ -309,11 +309,13 @@ Property::SelfEnergy SelfEnergy::calculateSelfEnergy(
 			fundamentalMatsubaraEnergy
 		);
 
+		Information information;
 		calculate(
 			calculateSelfEnergyCallback,
 			allIndices,
 			memoryLayout,
-			selfEnergy
+			selfEnergy,
+			information
 		);
 
 		return selfEnergy;
@@ -332,7 +334,8 @@ void SelfEnergy::calculateSelfEnergyCallback(
 	PropertyExtractor *cb_this,
 	Property::Property &property,
 	const Index &index,
-	int offset
+	int offset,
+	Information &information
 ){
 	SelfEnergy *propertyExtractor
 		= (SelfEnergy*)cb_this;

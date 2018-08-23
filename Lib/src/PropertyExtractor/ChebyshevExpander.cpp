@@ -342,13 +342,15 @@ Property::Density ChebyshevExpander::calculateDensity(
 	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
 	Property::Density density(lDimensions, lRanges);
 
+	Information information;
 	calculate(
 		calculateDensityCallback,
 		density,
 		pattern,
 		ranges,
 		0,
-		1
+		1,
+		information
 	);
 
 	return density;
@@ -373,11 +375,13 @@ Property::Density ChebyshevExpander::calculateDensity(
 
 	Property::Density density(memoryLayout);
 
+	Information information;
 	calculate(
 		calculateDensityCallback,
 		allIndices,
 		memoryLayout,
-		density
+		density,
+		information
 	);
 
 	return density;
@@ -387,18 +391,21 @@ Property::Magnetization ChebyshevExpander::calculateMagnetization(
 	Index pattern,
 	Index ranges
 ){
-	hint = new int[1];
-	((int*)hint)[0] = -1;
+//	hint = new int[1];
+//	((int*)hint)[0] = -1;
+	Information information;
 	for(unsigned int n = 0; n < pattern.getSize(); n++){
 		if(pattern.at(n) == IDX_SPIN){
-			((int*)hint)[0] = n;
+//			((int*)hint)[0] = n;
+			information.setSpinIndex(n);
 			pattern.at(n) = 0;
 			ranges.at(n) = 1;
 			break;
 		}
 	}
-	if(((int*)hint)[0] == -1){
-		delete [] (int*)hint;
+//	if(((int*)hint)[0] == -1){
+	if(information.getSpinIndex() == -1){
+//		delete [] (int*)hint;
 		TBTKExit(
 			"PropertyExtractor::ChebyshevExpander::calculateMagnetization()",
 			"No spin index indicated.",
@@ -419,10 +426,11 @@ Property::Magnetization ChebyshevExpander::calculateMagnetization(
 		pattern,
 		ranges,
 		0,
-		1
+		1,
+		information
 	);
 
-	delete [] (int*)hint;
+//	delete [] (int*)hint;
 
 	return magnetization;
 }
@@ -446,16 +454,18 @@ Property::Magnetization ChebyshevExpander::calculateMagnetization(
 
 	Property::Magnetization magnetization(memoryLayout);
 
-	hint = new int[1];
+//	hint = new int[1];
+	Information information;
 	calculate(
 		calculateMAGCallback,
 		allIndices,
 		memoryLayout,
 		magnetization,
-		(int*)hint
+//		(int*)hint,
+		information
 	);
 
-	delete [] (int*)hint;
+//	delete [] (int*)hint;
 
 	return magnetization;
 }
@@ -478,13 +488,15 @@ Property::LDOS ChebyshevExpander::calculateLDOS(Index pattern, Index ranges){
 		energyResolution
 	);
 
+	Information information;
 	calculate(
 		calculateLDOSCallback,
 		ldos,
 		pattern,
 		ranges,
 		0,
-		energyResolution
+		energyResolution,
+		information
 	);
 
 	return ldos;
@@ -514,11 +526,13 @@ Property::LDOS ChebyshevExpander::calculateLDOS(
 		getEnergyResolution()
 	);
 
+	Information information;
 	calculate(
 		calculateLDOSCallback,
 		allIndices,
 		memoryLayout,
-		ldos
+		ldos,
+		information
 	);
 
 	return ldos;
@@ -528,18 +542,21 @@ Property::SpinPolarizedLDOS ChebyshevExpander::calculateSpinPolarizedLDOS(
 	Index pattern,
 	Index ranges
 ){
-	hint = new int[1];
-	((int*)hint)[0] = -1;
+//	hint = new int[1];
+//	((int*)hint)[0] = -1;
+	Information information;
 	for(unsigned int n = 0; n < pattern.getSize(); n++){
 		if(pattern.at(n) == IDX_SPIN){
-			((int*)hint)[0] = n;
+//			((int*)hint)[0] = n;
+			information.setSpinIndex(n);
 			pattern.at(n) = 0;
 			ranges.at(n) = 1;
 			break;
 		}
 	}
-	if(((int*)hint)[0] == -1){
-		delete [] (int*)hint;
+//	if(((int*)hint)[0] == -1){
+	if(information.getSpinIndex() == -1){
+//		delete [] (int*)hint;
 		TBTKExit(
 			"PropertyExtractor::ChebsyhevExpander::calculateSpinPolarizedLDOS()",
 			"No spin index indicated.",
@@ -566,10 +583,11 @@ Property::SpinPolarizedLDOS ChebyshevExpander::calculateSpinPolarizedLDOS(
 		pattern,
 		ranges,
 		0,
-		getEnergyResolution()
+		getEnergyResolution(),
+		information
 	);
 
-	delete [] (int*)hint;
+//	delete [] (int*)hint;
 
 	return spinPolarizedLDOS;
 }
@@ -577,7 +595,7 @@ Property::SpinPolarizedLDOS ChebyshevExpander::calculateSpinPolarizedLDOS(
 Property::SpinPolarizedLDOS ChebyshevExpander::calculateSpinPolarizedLDOS(
 	vector<Index> patterns
 ){
-	hint = new int[1];
+//	hint = new int[1];
 
 	IndexTree allIndices = generateIndexTree(
 		patterns,
@@ -600,15 +618,17 @@ Property::SpinPolarizedLDOS ChebyshevExpander::calculateSpinPolarizedLDOS(
 		getEnergyResolution()
 	);
 
+	Information information;
 	calculate(
 		calculateSP_LDOSCallback,
 		allIndices,
 		memoryLayout,
 		spinPolarizedLDOS,
-		(int*)hint
+//		(int*)hint
+		information
 	);
 
-	delete [] (int*)hint;
+//	delete [] (int*)hint;
 
 	return spinPolarizedLDOS;
 }
@@ -617,7 +637,8 @@ void ChebyshevExpander::calculateDensityCallback(
 	PropertyExtractor *cb_this,
 	Property::Property &property,
 	const Index &index,
-	int offset
+	int offset,
+	Information &information
 ){
 	ChebyshevExpander *pe = (ChebyshevExpander*)cb_this;
 	Property::Density &density = (Property::Density&)property;
@@ -663,14 +684,16 @@ void ChebyshevExpander::calculateMAGCallback(
 	PropertyExtractor *cb_this,
 	Property::Property &property,
 	const Index &index,
-	int offset
+	int offset,
+	Information &information
 ){
 	ChebyshevExpander *pe = (ChebyshevExpander*)cb_this;
 	Property::Magnetization &magnetization
 		= (Property::Magnetization&)property;
 	vector<SpinMatrix> &data = magnetization.getDataRW();
 
-	int spinIndex = ((int*)(pe->hint))[0];
+//	int spinIndex = ((int*)(pe->hint))[0];
+	int spinIndex = information.getSpinIndex();
 	Index to(index);
 	Index from(index);
 	Statistics statistics = pe->cSolver->getModel().getStatistics();
@@ -719,7 +742,8 @@ void ChebyshevExpander::calculateLDOSCallback(
 	PropertyExtractor *cb_this,
 	Property::Property &property,
 	const Index &index,
-	int offset
+	int offset,
+	Information &information
 ){
 	ChebyshevExpander *pe = (ChebyshevExpander*)cb_this;
 	Property::LDOS &ldos = (Property::LDOS&)property;
@@ -746,14 +770,16 @@ void ChebyshevExpander::calculateSP_LDOSCallback(
 	PropertyExtractor *cb_this,
 	Property::Property &property,
 	const Index &index,
-	int offset
+	int offset,
+	Information &information
 ){
 	ChebyshevExpander *pe = (ChebyshevExpander*)cb_this;
 	Property::SpinPolarizedLDOS &spinPolarizedLDOS
 		= (Property::SpinPolarizedLDOS&)property;
 	vector<SpinMatrix> &data = spinPolarizedLDOS.getDataRW();
 
-	int spinIndex = ((int*)(pe->hint))[0];
+//	int spinIndex = ((int*)(pe->hint))[0];
+	int spinIndex = information.getSpinIndex();
 	Index to(index);
 	Index from(index);
 

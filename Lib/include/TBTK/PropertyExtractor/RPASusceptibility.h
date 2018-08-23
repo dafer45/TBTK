@@ -72,7 +72,8 @@ private:
 		PropertyExtractor *cb_this,
 		Property::Property &property,
 		const Index &index,
-		int offset
+		int offset,
+		Information &information
 	);
 
 	/** Calback for callculating susceptibility. */
@@ -80,7 +81,8 @@ private:
 		PropertyExtractor *cb_this,
 		Property::Property &property,
 		const Index &index,
-		int offset
+		int offset,
+		Information &information
 	);
 
 	/** Solver::Diagonalizer to work on. */

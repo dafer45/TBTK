@@ -391,5 +391,9 @@ IndexTree PropertyExtractor::generateIndexTree(
 	return indexTree;
 }
 
+PropertyExtractor::Information::Information(){
+	spinIndex = -1;
+}
+
 };	//End of namesapce PropertyExtractor
 };	//End of namespace TBTK

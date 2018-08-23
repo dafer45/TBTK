@@ -351,11 +351,13 @@ Property::Susceptibility MatsubaraSusceptibility::calculateSusceptibility(
 			).getFundamentalMatsubaraEnergy()
 		);
 
+		Information information;
 		calculate(
 			calculateSusceptibilityCallback,
 			allIndices,
 			memoryLayout,
-			susceptibility
+			susceptibility,
+			information
 		);
 
 		return susceptibility;
@@ -373,7 +375,8 @@ void MatsubaraSusceptibility::calculateSusceptibilityCallback(
 	PropertyExtractor *cb_this,
 	Property::Property &property,
 	const Index &index,
-	int offset
+	int offset,
+	Information &information
 ){
 	MatsubaraSusceptibility *propertyExtractor
 		= (MatsubaraSusceptibility*)cb_this;

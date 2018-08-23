@@ -344,11 +344,13 @@ Property::Susceptibility LindhardSusceptibility::calculateSusceptibility(
 			energies.size()
 		);
 
+		Information information;
 		calculate(
 			calculateSusceptibilityCallback,
 			allIndices,
 			memoryLayout,
-			susceptibility
+			susceptibility,
+			information
 		);
 
 		return susceptibility;
@@ -396,11 +398,13 @@ Property::Susceptibility LindhardSusceptibility::calculateSusceptibility(
 			fundamentalMatsubaraEnergy
 		);
 
+		Information information;
 		calculate(
 			calculateSusceptibilityCallback,
 			allIndices,
 			memoryLayout,
-			susceptibility
+			susceptibility,
+			information
 		);
 
 		return susceptibility;
@@ -418,7 +422,8 @@ void LindhardSusceptibility::calculateSusceptibilityCallback(
 	PropertyExtractor *cb_this,
 	Property::Property &property,
 	const Index &index,
-	int offset
+	int offset,
+	Information &information
 ){
 	LindhardSusceptibility *propertyExtractor
 		= (LindhardSusceptibility*)cb_this;
