@@ -41,9 +41,6 @@ public:
 		const Property::GreensFunction &greensFunction
 	);
 
-	/** Destructor. */
-//	virtual ~MatsubaraSusceptibility();
-
 	/** Create slave SusceptibilityCalcuator. Not used. */
 	virtual MatsubaraSusceptibility* createSlave();
 
@@ -73,20 +70,6 @@ public:
 private:
 	/** The Green's function to calculate the Susceptibility form. */
 	const Property::GreensFunction &greensFunction;
-
-	/** Slave constructor. */
-/*	MatsubaraSusceptibility(
-		const MomentumSpaceContext &momentumSpaceContext,
-		int *kPlusQLookupTable,
-		double *fermiDiracLookupTable
-	);*/
-
-	/** Calculate the susceptibility using the Lindhard function. */
-/*	template<bool useKPlusQLookupTable>
-	std::vector<std::complex<double>> calculateSusceptibilityMatsubara(
-		const Index &index,
-		const std::vector<std::complex<double>> &energies
-	);*/
 };
 
 inline const Property::GreensFunction&

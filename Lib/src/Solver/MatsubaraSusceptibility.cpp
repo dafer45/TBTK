@@ -236,166 +236,6 @@ vector<complex<double>> MatsubaraSusceptibility::calculateSusceptibility(
 	return susceptibility;
 }
 
-/*vector<complex<double>> MatsubaraSusceptibility::calculateSusceptibility(
-	const Index &index,
-	int lowerMatsubaraEnergyIndex,
-	int upperMatsubaraEnergyIndex
-){
-	vector<Index> components = index.split();
-	TBTKAssert(
-		components.size() == 5,
-		"Solver::MatsubaraSusceptibility::calculateSusceptibility()",
-		"The Index must be a compund Index with 5 component Indices,"
-		<< "but '" << components.size() << "' components suplied.",
-		""
-	);
-	TBTKAssert(
-		components[0].getSize() == 2,
-		"Solver::MatsubaraSusceptibility::calculateSusceptibility()",
-		"Only two-dimensional momentum spaces supported yet, but the"
-		<< " k-Index '" << components[0].toString() << "' has '"
-		<< components[0].getSize() << "' components.",
-		""
-	);
-	const Index &kIndex = components[0];
-	const Index intraBlockIndices[4] = {
-		components[1],
-		components[2],
-		components[3],
-		components[4]
-	};
-
-	TBTKAssert(
-		lowerMatsubaraEnergyIndex <= upperMatsubaraEnergyIndex,
-		"Solver::MatsubaraSusceptibility::calculateSusceptibility()",
-		"The lowerMatsubaraEnergyIndex='" << lowerMatsubaraEnergyIndex
-		<< "' must be less or equal to the upperMatsubaraEnergyIndex='"
-		<< upperMatsubaraEnergyIndex << "'.",
-		""
-	);
-	TBTKAssert(
-		lowerMatsubaraEnergyIndex%2 == 0,
-		"Solver::MatsubaraSusceptibility::calculateSusceptibility()",
-		"The lowerMatsubaraEnergyIndex='" << lowerMatsubaraEnergyIndex
-		<< "' must be even.",
-		""
-	);
-	TBTKAssert(
-		upperMatsubaraEnergyIndex%2 == 0,
-		"Solver::MatsubaraSusceptibility::calculateSusceptibility()",
-		"The upperMatsubaraEnergyIndex='" << upperMatsubaraEnergyIndex
-		<< "' must be even.",
-		""
-	);
-	unsigned int numMatsubaraEnergiesSusceptibility = (
-		upperMatsubaraEnergyIndex - lowerMatsubaraEnergyIndex
-	)/2 + 1;
-
-	TBTKAssert(
-		greensFunction.getEnergyType()
-			== Property::EnergyResolvedProperty<
-				complex<double>
-			>::EnergyType::FermionicMatsubara,
-		"Solver::MatsubaraSusceptibility::calculateSusceptibility()",
-		"The Green's function must be of the energy type"
-		<< " Property::EnergyResolvedProperty::EnergyType::FermionMatsubara",
-		""
-	);
-
-	const MomentumSpaceContext &momentumSpaceContext
-		= getMomentumSpaceContext();
-	const vector<vector<double>> &mesh = momentumSpaceContext.getMesh();
-	const vector<unsigned int> &numMeshPoints
-		= momentumSpaceContext.getNumMeshPoints();
-	const BrillouinZone &brillouinZone
-		= momentumSpaceContext.getBrillouinZone();
-
-	vector<complex<double>> susceptibility;
-	susceptibility.reserve(numMatsubaraEnergiesSusceptibility);
-	for(unsigned int n = 0; n < numMatsubaraEnergiesSusceptibility; n++)
-		susceptibility.push_back(0.);
-
-	unsigned int numMatsubaraEnergiesGreensFunction
-		= greensFunction.getNumMatsubaraEnergies();
-	vector<unsigned int> crossCorrelationRanges;
-	for(unsigned int n = 0; n < numMeshPoints.size(); n++)
-		crossCorrelationRanges.push_back(numMeshPoints[n]);
-	crossCorrelationRanges.push_back(2*numMatsubaraEnergiesGreensFunction);
-
-	Array<complex<double>> greensFunction0In(crossCorrelationRanges, 0);
-	Array<complex<double>> greensFunction1In(crossCorrelationRanges, 0);
-
-	for(unsigned int meshPoint = 0; meshPoint < mesh.size(); meshPoint++){
-		Index qIndex = brillouinZone.getMinorCellIndex(
-			{mesh[meshPoint][0], mesh[meshPoint][1]},
-			numMeshPoints
-		);
-
-		for(
-			unsigned int n = 0;
-			n < numMatsubaraEnergiesGreensFunction;
-			n++
-		){
-			greensFunction0In[{
-				(unsigned int)qIndex[0],
-				(unsigned int)qIndex[1],
-				n
-			}] = conj(greensFunction(
-				{
-					Index(qIndex, intraBlockIndices[1]),
-					Index(qIndex, intraBlockIndices[2])
-				},
-				n
-			));
-			greensFunction1In[{
-				(unsigned int)qIndex[0],
-				(unsigned int)qIndex[1],
-				n
-			}] = greensFunction(
-				{
-					Index(qIndex, intraBlockIndices[3]),
-					Index(qIndex, intraBlockIndices[0])
-				},
-				n
-			);
-		}
-	}
-
-	Array<complex<double>> susceptibilityOut = Convolver::crossCorrelate(
-		greensFunction0In,
-		greensFunction1In
-	);
-
-	for(unsigned int n = 0; n < numMatsubaraEnergiesSusceptibility; n++){
-		int energyIndex = (lowerMatsubaraEnergyIndex + 2*(int)n)/2;
-
-		if(
-			energyIndex < -(int)numMatsubaraEnergiesGreensFunction
-			|| energyIndex
-				> (int)numMatsubaraEnergiesGreensFunction
-		){
-			susceptibility[n] = 0;
-		}
-
-		if(energyIndex < 0)
-			energyIndex += 2*(int)numMatsubaraEnergiesGreensFunction;
-
-		else{
-			susceptibility[n] = -susceptibilityOut[
-				2*numMatsubaraEnergiesGreensFunction*(
-					numMeshPoints[1]*kIndex[0] + kIndex[1]
-				) + energyIndex
-			];
-		}
-	}
-
-	double kT = greensFunction.getFundamentalMatsubaraEnergy()/M_PI;
-	for(unsigned int n = 0; n < numMatsubaraEnergiesSusceptibility; n++)
-		susceptibility[n] /= mesh.size()/kT;
-
-	return susceptibility;
-}*/
-
 Property::Susceptibility MatsubaraSusceptibility::calculateSusceptibilityAllBlocks(
 	const Index &index,
 	int lowerMatsubaraEnergyIndex,
@@ -469,11 +309,6 @@ Property::Susceptibility MatsubaraSusceptibility::calculateSusceptibilityAllBloc
 		<< numMeshPoints.size() << "'-dimensional momentum space.",
 		""
 	);
-
-/*	vector<complex<double>> susceptibility;
-	susceptibility.reserve(numMatsubaraEnergiesSusceptibility);
-	for(unsigned int n = 0; n < numMatsubaraEnergiesSusceptibility; n++)
-		susceptibility.push_back(0.);*/
 
 	unsigned int numMatsubaraEnergiesGreensFunction
 		= greensFunction.getNumMatsubaraEnergies();
@@ -607,29 +442,6 @@ Property::Susceptibility MatsubaraSusceptibility::calculateSusceptibilityAllBloc
 			}
 		}
 	}
-
-/*	for(unsigned int n = 0; n < numMatsubaraEnergiesSusceptibility; n++){
-		int energyIndex = (lowerMatsubaraEnergyIndex + 2*(int)n)/2;
-
-		if(
-			energyIndex < -(int)numMatsubaraEnergiesGreensFunction
-			|| energyIndex
-				> (int)numMatsubaraEnergiesGreensFunction
-		){
-			susceptibility[n] = 0;
-		}
-
-		if(energyIndex < 0)
-			energyIndex += 2*(int)numMatsubaraEnergiesGreensFunction;
-
-		else{
-			susceptibility[n] = -susceptibilityOut[
-				2*numMatsubaraEnergiesGreensFunction*(
-					numMeshPoints[1]*kIndex[0] + kIndex[1]
-				) + energyIndex
-			];
-		}
-	}*/
 
 	return susceptibility;
 }
