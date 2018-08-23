@@ -391,21 +391,16 @@ Property::Magnetization ChebyshevExpander::calculateMagnetization(
 	Index pattern,
 	Index ranges
 ){
-//	hint = new int[1];
-//	((int*)hint)[0] = -1;
 	Information information;
 	for(unsigned int n = 0; n < pattern.getSize(); n++){
 		if(pattern.at(n) == IDX_SPIN){
-//			((int*)hint)[0] = n;
 			information.setSpinIndex(n);
 			pattern.at(n) = 0;
 			ranges.at(n) = 1;
 			break;
 		}
 	}
-//	if(((int*)hint)[0] == -1){
 	if(information.getSpinIndex() == -1){
-//		delete [] (int*)hint;
 		TBTKExit(
 			"PropertyExtractor::ChebyshevExpander::calculateMagnetization()",
 			"No spin index indicated.",
@@ -430,8 +425,6 @@ Property::Magnetization ChebyshevExpander::calculateMagnetization(
 		information
 	);
 
-//	delete [] (int*)hint;
-
 	return magnetization;
 }
 
@@ -454,18 +447,14 @@ Property::Magnetization ChebyshevExpander::calculateMagnetization(
 
 	Property::Magnetization magnetization(memoryLayout);
 
-//	hint = new int[1];
 	Information information;
 	calculate(
 		calculateMAGCallback,
 		allIndices,
 		memoryLayout,
 		magnetization,
-//		(int*)hint,
 		information
 	);
-
-//	delete [] (int*)hint;
 
 	return magnetization;
 }
@@ -542,21 +531,16 @@ Property::SpinPolarizedLDOS ChebyshevExpander::calculateSpinPolarizedLDOS(
 	Index pattern,
 	Index ranges
 ){
-//	hint = new int[1];
-//	((int*)hint)[0] = -1;
 	Information information;
 	for(unsigned int n = 0; n < pattern.getSize(); n++){
 		if(pattern.at(n) == IDX_SPIN){
-//			((int*)hint)[0] = n;
 			information.setSpinIndex(n);
 			pattern.at(n) = 0;
 			ranges.at(n) = 1;
 			break;
 		}
 	}
-//	if(((int*)hint)[0] == -1){
 	if(information.getSpinIndex() == -1){
-//		delete [] (int*)hint;
 		TBTKExit(
 			"PropertyExtractor::ChebsyhevExpander::calculateSpinPolarizedLDOS()",
 			"No spin index indicated.",
@@ -587,16 +571,12 @@ Property::SpinPolarizedLDOS ChebyshevExpander::calculateSpinPolarizedLDOS(
 		information
 	);
 
-//	delete [] (int*)hint;
-
 	return spinPolarizedLDOS;
 }
 
 Property::SpinPolarizedLDOS ChebyshevExpander::calculateSpinPolarizedLDOS(
 	vector<Index> patterns
 ){
-//	hint = new int[1];
-
 	IndexTree allIndices = generateIndexTree(
 		patterns,
 		cSolver->getModel().getHoppingAmplitudeSet(),
@@ -624,11 +604,8 @@ Property::SpinPolarizedLDOS ChebyshevExpander::calculateSpinPolarizedLDOS(
 		allIndices,
 		memoryLayout,
 		spinPolarizedLDOS,
-//		(int*)hint
 		information
 	);
-
-//	delete [] (int*)hint;
 
 	return spinPolarizedLDOS;
 }
@@ -692,7 +669,6 @@ void ChebyshevExpander::calculateMAGCallback(
 		= (Property::Magnetization&)property;
 	vector<SpinMatrix> &data = magnetization.getDataRW();
 
-//	int spinIndex = ((int*)(pe->hint))[0];
 	int spinIndex = information.getSpinIndex();
 	Index to(index);
 	Index from(index);
@@ -778,7 +754,6 @@ void ChebyshevExpander::calculateSP_LDOSCallback(
 		= (Property::SpinPolarizedLDOS&)property;
 	vector<SpinMatrix> &data = spinPolarizedLDOS.getDataRW();
 
-//	int spinIndex = ((int*)(pe->hint))[0];
 	int spinIndex = information.getSpinIndex();
 	Index to(index);
 	Index from(index);

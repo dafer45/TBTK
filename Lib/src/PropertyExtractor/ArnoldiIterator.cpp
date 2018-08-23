@@ -95,9 +95,6 @@ Property::WaveFunctions ArnoldiIterator::calculateWaveFunctions(
 
 	Property::WaveFunctions waveFunctions(memoryLayout, statesVector);
 
-//	hint = new Property::WaveFunctions*[1];
-//	((Property::WaveFunctions**)hint)[0] = &waveFunctions;
-
 	Information information;
 	calculate(
 		calculateWaveFunctionsCallback,
@@ -106,8 +103,6 @@ Property::WaveFunctions ArnoldiIterator::calculateWaveFunctions(
 		waveFunctions,
 		information
 	);
-
-//	delete [] (Property::WaveFunctions**)hint;
 
 	return waveFunctions;
 }
@@ -180,18 +175,6 @@ Property::LDOS ArnoldiIterator::calculateLDOS(
 	double upperBound = getUpperBound();
 	double energyResolution = getEnergyResolution();
 
-	//hint[0] is an array of doubles, hint[1] is an array of ints
-	//hint[0][0]: upperBound
-	//hint[0][1]: lowerBound
-	//hint[1][0]: resolution
-	//hint[1][1]: spin_index
-//	hint = new void*[2];
-//	((double**)hint)[0] = new double[2];
-//	((int**)hint)[1] = new int[1];
-//	((double**)hint)[0][0] = upperBound;
-//	((double**)hint)[0][1] = lowerBound;
-//	((int**)hint)[1][0] = energyResolution;
-
 	ensureCompliantRanges(pattern, ranges);
 
 	int lDimensions;
@@ -232,18 +215,6 @@ Property::LDOS ArnoldiIterator::calculateLDOS(
 	double lowerBound = getLowerBound();
 	double upperBound = getUpperBound();
 	int energyResolution = getEnergyResolution();
-
-	//hint[0] is an array of doubles, hint[1] is an array of ints
-	//hint[0][0]: upperBound
-	//hint[0][1]: lowerBound
-	//hint[1][0]: resolution
-	//hint[1][1]: spin_index
-//	hint = new void*[2];
-//	((double**)hint)[0] = new double[2];
-//	((int**)hint)[1] = new int[1];
-//	((double**)hint)[0][0] = upperBound;
-//	((double**)hint)[0][1] = lowerBound;
-//	((int**)hint)[1][0] = energyResolution;
 
 	IndexTree allIndices = generateIndexTree(
 		patterns,
@@ -294,34 +265,16 @@ Property::SpinPolarizedLDOS ArnoldiIterator::calculateSpinPolarizedLDOS(
 	double upperBound = getUpperBound();
 	int energyResolution = getEnergyResolution();
 
-	//hint[0] is an array of doubles, hint[1] is an array of ints
-	//hint[0][0]: upperBound
-	//hint[0][1]: lowerBound
-	//hint[1][0]: resolution
-	//hint[1][1]: spin_index
-//	hint = new void*[2];
-//	((double**)hint)[0] = new double[2];
-//	((int**)hint)[1] = new int[2];
-//	((double**)hint)[0][0] = upperBound;
-//	((double**)hint)[0][1] = lowerBound;
-//	((int**)hint)[1][0] = energyResolution;
-
-//	((int**)hint)[1][1] = -1;
 	Information information;
 	for(unsigned int n = 0; n < pattern.getSize(); n++){
 		if(pattern.at(n) == IDX_SPIN){
-//			((int**)hint)[1][1] = n;
 			information.setSpinIndex(n);
 			pattern.at(n) = 0;
 			ranges.at(n) = 1;
 			break;
 		}
 	}
-//	if(((int**)hint)[1][1] == -1){
 	if(information.getSpinIndex() == -1){
-//		delete [] ((double**)hint)[0];
-//		delete [] ((int**)hint)[1];
-//		delete [] (void**)hint;
 		TBTKExit(
 			"PropertyExtractor::ArnoldiIterator::calculateSpinPolarizedLDOS()",
 			"No spin index indicated.",
@@ -352,10 +305,6 @@ Property::SpinPolarizedLDOS ArnoldiIterator::calculateSpinPolarizedLDOS(
 		information
 	);
 
-//	delete [] ((double**)hint)[0];
-//	delete [] ((int**)hint)[1];
-//	delete [] (void**)hint;
-
 	return spinPolarizedLDOS;
 }
 
@@ -373,18 +322,6 @@ Property::SpinPolarizedLDOS ArnoldiIterator::calculateSpinPolarizedLDOS(
 	double lowerBound = getLowerBound();
 	double upperBound = getUpperBound();
 	int energyResolution = getEnergyResolution();
-
-	//hint[0] is an array of doubles, hint[1] is an array of ints
-	//hint[0][0]: upperBound
-	//hint[0][1]: lowerBound
-	//hint[1][0]: resolution
-	//hint[1][1]: spin_index
-//	hint = new void*[2];
-//	((double**)hint)[0] = new double[2];
-//	((int**)hint)[1] = new int[2];
-//	((double**)hint)[0][0] = upperBound;
-//	((double**)hint)[0][1] = lowerBound;
-//	((int**)hint)[1][0] = energyResolution;
 
 	IndexTree allIndices = generateIndexTree(
 		patterns,
@@ -413,13 +350,8 @@ Property::SpinPolarizedLDOS ArnoldiIterator::calculateSpinPolarizedLDOS(
 		allIndices,
 		memoryLayout,
 		spinPolarizedLDOS,
-//		&(((int**)hint)[1][1])
 		information
 	);
-
-//	delete [] ((double**)hint)[0];
-//	delete [] ((int**)hint)[1];
-//	delete [] (void**)hint;
 
 	return spinPolarizedLDOS;
 }
@@ -436,7 +368,6 @@ void ArnoldiIterator::calculateWaveFunctionsCallback(
 		= (Property::WaveFunctions&)property;
 	vector<complex<double>> &data = waveFunctions.getDataRW();
 
-//	const vector<unsigned int> states = ((Property::WaveFunctions**)pe->hint)[0]->getStates();
 	const vector<unsigned int> states = waveFunctions.getStates();
 	for(unsigned int n = 0; n < states.size(); n++)
 		data[offset + n] += pe->getAmplitude(states.at(n), index);
@@ -455,29 +386,19 @@ void ArnoldiIterator::calculateLDOSCallback(
 
 	const complex<double> *eigenValues = pe->aSolver->getEigenValues();
 
-//	double u_lim = ((double**)pe->hint)[0][0];
-//	double l_lim = ((double**)pe->hint)[0][1];
-//	int resolution = ((int**)pe->hint)[1][0];
-
-//	double step_size = (u_lim - l_lim)/(double)resolution;
-
 	double lowerBound = pe->getLowerBound();
 	double upperBound = pe->getUpperBound();
 	int energyResolution = pe->getEnergyResolution();
 
 	double dE = (upperBound - lowerBound)/energyResolution;
 	for(int n = 0; n < pe->aSolver->getNumEigenValues(); n++){
-//		if(real(eigenValues[n]) > l_lim && real(eigenValues[n]) < u_lim){
 		if(
 			real(eigenValues[n]) > lowerBound
 			&& real(eigenValues[n]) < upperBound
 		){
 			complex<double> u = pe->aSolver->getAmplitude(n, index);
 
-//			int e = (int)((real(eigenValues[n]) - l_lim)/step_size);
 			int e = (int)((real(eigenValues[n]) - lowerBound)/dE);
-//			if(e >= resolution)
-//				e = resolution-1;
 			if(e >= energyResolution)
 				e = energyResolution - 1;
 			data[offset + e] += real(conj(u)*u)/dE;
@@ -499,13 +420,7 @@ void ArnoldiIterator::calculateSpinPolarizedLDOSCallback(
 
 	const complex<double> *eigenValues = pe->aSolver->getEigenValues();
 
-//	double u_lim = ((double**)pe->hint)[0][0];
-//	double l_lim = ((double**)pe->hint)[0][1];
-//	int resolution = ((int**)pe->hint)[1][0];
-//	int spin_index = ((int**)pe->hint)[1][1];
 	int spinIndex = information.getSpinIndex();
-
-//	double step_size = (u_lim - l_lim)/(double)resolution;
 
 	double lowerBound = pe->getLowerBound();
 	double upperBound = pe->getUpperBound();
@@ -517,7 +432,6 @@ void ArnoldiIterator::calculateSpinPolarizedLDOSCallback(
 	index_d.at(spinIndex) = 1;
 	double dE = (upperBound - lowerBound)/energyResolution;
 	for(int n = 0; n < pe->aSolver->getNumEigenValues(); n++){
-//		if(real(eigenValues[n]) > l_lim && real(eigenValues[n]) < u_lim){
 		if(
 			real(eigenValues[n]) > lowerBound
 			&& real(eigenValues[n]) < upperBound
@@ -525,10 +439,7 @@ void ArnoldiIterator::calculateSpinPolarizedLDOSCallback(
 			complex<double> u_u = pe->aSolver->getAmplitude(n, index_u);
 			complex<double> u_d = pe->aSolver->getAmplitude(n, index_d);
 
-//			int e = (int)((real(eigenValues[n]) - l_lim)/step_size);
 			int e = (int)((real(eigenValues[n]) - lowerBound)/dE);
-//			if(e >= resolution)
-//				e = resolution-1;
 			if(e >= energyResolution)
 				e = energyResolution - 1;
 			data[offset + e].at(0, 0) += conj(u_u)*u_u/dE;

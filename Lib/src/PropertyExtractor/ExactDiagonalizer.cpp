@@ -356,21 +356,16 @@ Property::Magnetization ExactDiagonalizer::calculateMagnetization(
 	Index pattern,
 	Index ranges
 ){
-//	hint = new int[1];
-//	((int*)hint)[0] = -1;
 	Information information;
 	for(unsigned int n = 0; n < pattern.getSize(); n++){
 		if(pattern.at(n) == IDX_SPIN){
-//			((int*)hint)[0] = n;
 			information.setSpinIndex(n);
 			pattern.at(n) = 0;
 			ranges.at(n) = 1;
 			break;
 		}
 	}
-//	if(((int*)hint)[0] == -1){
 	if(information.getSpinIndex() == -1){
-//		delete [] (int*)hint;
 		TBTKExit(
 			"PropertyExtractor::ExactDiagonalizer::calculateMagnetization()",
 			"No spin index found.",
@@ -394,8 +389,6 @@ Property::Magnetization ExactDiagonalizer::calculateMagnetization(
 		1,
 		information
 	);
-
-//	delete [] (int*)hint;
 
 	return magnetization;
 }
@@ -435,21 +428,16 @@ Property::SpinPolarizedLDOS ExactDiagonalizer::calculateSpinPolarizedLDOS(
 	Index pattern,
 	Index ranges
 ){
-//	hint = new int[1];
-//	((int*)hint)[0] = -1;
 	Information information;
 	for(unsigned int n = 0; n < pattern.getSize(); n++){
 		if(pattern.at(n) == IDX_SPIN){
-//			((int*)hint)[0] = n;
 			information.setSpinIndex(n);
 			pattern.at(n) = 0;
 			ranges.at(n) = 1;
 			break;
 		}
 	}
-//	if(((int*)hint)[0] == -1){
 	if(information.getSpinIndex() == -1){
-//		delete [] (int*)hint;
 		TBTKExit(
 			"PropertyExtractor::ExactDiagonalizer::calculateSpinPolarizedLDOS()",
 			"No spin index found.",
@@ -479,8 +467,6 @@ Property::SpinPolarizedLDOS ExactDiagonalizer::calculateSpinPolarizedLDOS(
 		1,
 		information
 	);
-
-//	delete [] (int*) hint;
 
 	return spinPolarizedLDOS;
 }

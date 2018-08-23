@@ -495,12 +495,7 @@ protected:
 		const IndexTree &memoryLayout,
 		Property::AbstractProperty<DataType> &abstractProperty,
 		Information &information
-//		int *spinIndexHint = nullptr
 	);
-
-	/** Hint used to pass information between calculate[Property] and
-	 *  calculate[Property]Callback. */
-//	void *hint;
 
 	/** Ensure that range indices are on compliant format. I.e., sets the
 	 *  range to  one for indices with non-negative pattern value.
@@ -837,8 +832,7 @@ void PropertyExtractor::calculate(
 	const IndexTree &allIndices,
 	const IndexTree &memoryLayout,
 	Property::AbstractProperty<DataType> &abstractProperty,
-	Information &information/*,
-	int *spinIndexHint*/
+	Information &information
 ){
 	for(
 		IndexTree::ConstIterator iterator = allIndices.cbegin();
@@ -846,7 +840,6 @@ void PropertyExtractor::calculate(
 		++iterator
 	){
 		Index index = *iterator;
-//		if(spinIndexHint != nullptr){
 		std::vector<unsigned int> spinIndices
 			= memoryLayout.getSubindicesMatching(
 				IDX_SPIN,
@@ -861,7 +854,6 @@ void PropertyExtractor::calculate(
 				"Use IDX_SPIN at most once per pattern to"
 				<< " indicate spin index."
 			);
-//			*spinIndexHint = spinIndices.at(0);
 			information.setSpinIndex(spinIndices[0]);
 		}
 

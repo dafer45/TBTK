@@ -106,9 +106,6 @@ Property::WaveFunctions Diagonalizer::calculateWaveFunctions(
 
 	Property::WaveFunctions waveFunctions(memoryLayout, statesVector);
 
-//	hint = new Property::WaveFunctions*[1];
-//	((Property::WaveFunctions**)hint)[0] = &waveFunctions;
-
 	Information information;
 	calculate(
 		calculateWaveFunctionsCallback,
@@ -117,8 +114,6 @@ Property::WaveFunctions Diagonalizer::calculateWaveFunctions(
 		waveFunctions,
 		information
 	);
-
-//	delete [] (Property::WaveFunctions**)hint;
 
 	return waveFunctions;
 }
@@ -198,8 +193,6 @@ Property::GreensFunction Diagonalizer::calculateGreensFunction(
 			getEnergyResolution()
 		);
 
-//		hint = &greensFunction;
-
 		Information information;
 		calculate(
 			calculateGreensFunctionCallback,
@@ -208,8 +201,6 @@ Property::GreensFunction Diagonalizer::calculateGreensFunction(
 			greensFunction,
 			information
 		);
-
-//		hint = nullptr;
 
 		break;
 	}
@@ -243,8 +234,6 @@ Property::GreensFunction Diagonalizer::calculateGreensFunction(
 			fundamentalMatsubaraEnergy
 		);
 
-//		hint = &greensFunction;
-
 		Information information;
 		calculate(
 			calculateGreensFunctionCallback,
@@ -253,8 +242,6 @@ Property::GreensFunction Diagonalizer::calculateGreensFunction(
 			greensFunction,
 			information
 		);
-
-//		hint = nullptr;
 
 		break;
 	}
@@ -399,21 +386,16 @@ Property::Magnetization Diagonalizer::calculateMagnetization(
 	Index pattern,
 	Index ranges
 ){
-//	hint = new int[1];
-//	((int*)hint)[0] = -1;
 	Information information;
 	for(unsigned int n = 0; n < pattern.getSize(); n++){
 		if(pattern.at(n) == IDX_SPIN){
-//			((int*)hint)[0] = n;
 			information.setSpinIndex(n);
 			pattern.at(n) = 0;
 			ranges.at(n) = 1;
 			break;
 		}
 	}
-//	if(((int*)hint)[0] == -1){
 	if(information.getSpinIndex() == -1){
-//		delete [] (int*)hint;
 		TBTKExit(
 			"PropertyExtractor::Diagonalizer::calculateMagnetization()",
 			"No spin index indiceated.",
@@ -437,8 +419,6 @@ Property::Magnetization Diagonalizer::calculateMagnetization(
 		1,
 		information
 	);
-
-//	delete [] (int*)hint;
 
 	return magnetization;
 }
@@ -473,19 +453,14 @@ Property::Magnetization Diagonalizer::calculateMagnetization(
 
 	Property::Magnetization magnetization(memoryLayout);
 
-//	hint = new int[1];
 	Information information;
 	calculate(
 		calculateMAGCallback,
 		allIndices,
 		memoryLayout,
 		magnetization,
-		information/*,
-//		(int*)hint
-		spinIndex*/
+		information
 	);
-
-//	delete [] (int*)hint;
 
 	return magnetization;
 }
@@ -497,18 +472,6 @@ Property::LDOS Diagonalizer::calculateLDOS(
 	double lowerBound = getLowerBound();
 	double upperBound = getUpperBound();
 	int energyResolution = getEnergyResolution();
-
-	//hint[0] is an array of doubles, hint[1] is an array of ints
-	//hint[0][0]: upperBound
-	//hint[0][1]: lowerBound
-	//hint[1][0]: resolution
-	//hint[1][1]: spin_index
-//	hint = new void*[2];
-//	((double**)hint)[0] = new double[2];
-//	((int**)hint)[1] = new int[1];
-//	((double**)hint)[0][0] = upperBound;
-//	((double**)hint)[0][1] = lowerBound;
-//	((int**)hint)[1][0] = energyResolution;
 
 	ensureCompliantRanges(pattern, ranges);
 
@@ -555,18 +518,6 @@ Property::LDOS Diagonalizer::calculateLDOS(
 	double upperBound = getUpperBound();
 	int energyResolution = getEnergyResolution();
 
-	//hint[0] is an array of doubles, hint[1] is an array of ints
-	//hint[0][0]: upperBound
-	//hint[0][1]: lowerBound
-	//hint[1][0]: resolution
-	//hint[1][1]: spin_index
-//	hint = new void*[2];
-//	((double**)hint)[0] = new double[2];
-//	((int**)hint)[1] = new int[1];
-//	((double**)hint)[0][0] = upperBound;
-//	((double**)hint)[0][1] = lowerBound;
-//	((int**)hint)[1][0] = energyResolution;
-
 	IndexTree allIndices = generateIndexTree(
 		patterns,
 		dSolver->getModel().getHoppingAmplitudeSet(),
@@ -608,34 +559,16 @@ Property::SpinPolarizedLDOS Diagonalizer::calculateSpinPolarizedLDOS(
 	double upperBound = getUpperBound();
 	int energyResolution = getEnergyResolution();
 
-	//hint[0] is an array of doubles, hint[1] is an array of ints
-	//hint[0][0]: upperBound
-	//hint[0][1]: lowerBound
-	//hint[1][0]: resolution
-	//hint[1][1]: spin_index
-//	hint = new void*[2];
-//	((double**)hint)[0] = new double[2];
-//	((int**)hint)[1] = new int[2];
-//	((double**)hint)[0][0] = upperBound;
-//	((double**)hint)[0][1] = lowerBound;
-//	((int**)hint)[1][0] = energyResolution;
-
-//	((int**)hint)[1][1] = -1;
 	Information information;
 	for(unsigned int n = 0; n < pattern.getSize(); n++){
 		if(pattern.at(n) == IDX_SPIN){
-//			((int**)hint)[1][1] = n;
 			information.setSpinIndex(n);
 			pattern.at(n) = 0;
 			ranges.at(n) = 1;
 			break;
 		}
 	}
-//	if(((int**)hint)[1][1] == -1){
 	if(information.getSpinIndex() == -1){
-//		delete [] ((double**)hint)[0];
-//		delete [] ((int**)hint)[1];
-//		delete [] (void**)hint;
 		TBTKExit(
 			"PropertyExtractor::Diagonalizer::calculateSpinPolarizedLDOS()",
 			"No spin index indicated.",
@@ -666,10 +599,6 @@ Property::SpinPolarizedLDOS Diagonalizer::calculateSpinPolarizedLDOS(
 		information
 	);
 
-//	delete [] ((double**)hint)[0];
-//	delete [] ((int**)hint)[1];
-//	delete [] (void**)hint;
-
 	return spinPolarizedLDOS;
 }
 
@@ -690,18 +619,6 @@ Property::SpinPolarizedLDOS Diagonalizer::calculateSpinPolarizedLDOS(
 	double lowerBound = getLowerBound();
 	double upperBound = getUpperBound();
 	int energyResolution = getEnergyResolution();
-
-	//hint[0] is an array of doubles, hint[1] is an array of ints
-	//hint[0][0]: upperBound
-	//hint[0][1]: lowerBound
-	//hint[1][0]: resolution
-	//hint[1][1]: spin_index
-//	hint = new void*[2];
-//	((double**)hint)[0] = new double[2];
-//	((int**)hint)[1] = new int[2];
-//	((double**)hint)[0][0] = upperBound;
-//	((double**)hint)[0][1] = lowerBound;
-//	((int**)hint)[1][0] = energyResolution;
 
 	IndexTree allIndices = generateIndexTree(
 		patterns,
@@ -731,12 +648,7 @@ Property::SpinPolarizedLDOS Diagonalizer::calculateSpinPolarizedLDOS(
 		memoryLayout,
 		spinPolarizedLDOS,
 		information
-//		&(((int**)hint)[1][1])
 	);
-
-//	delete [] ((double**)hint)[0];
-//	delete [] ((int**)hint)[1];
-//	delete [] (void**)hint;
 
 	return spinPolarizedLDOS;
 }
@@ -791,8 +703,6 @@ void Diagonalizer::calculateWaveFunctionsCallback(
 		= (Property::WaveFunctions&)property;
 	vector<complex<double>> &data = waveFunctions.getDataRW();
 
-//	const vector<unsigned int> states
-//		= ((Property::WaveFunctions**)pe->hint)[0]->getStates();
 	const vector<unsigned int> states = waveFunctions.getStates();
 	for(unsigned int n = 0; n < states.size(); n++)
 		data[offset + n] += pe->getAmplitude(states.at(n), index);
@@ -952,7 +862,6 @@ void Diagonalizer::calculateMAGCallback(
 	const double *eigen_values = pe->dSolver->getEigenValues();
 	Statistics statistics = pe->dSolver->getModel().getStatistics();
 
-//	int spin_index = ((int*)pe->hint)[0];
 	int spinIndex = information.getSpinIndex();
 	Index index_u(index);
 	Index index_d(index);
@@ -1002,25 +911,15 @@ void Diagonalizer::calculateLDOSCallback(
 
 	const double *eigen_values = pe->dSolver->getEigenValues();
 
-//	double u_lim = ((double**)pe->hint)[0][0];
-//	double l_lim = ((double**)pe->hint)[0][1];
-//	int resolution = ((int**)pe->hint)[1][0];
-
-//	double step_size = (u_lim - l_lim)/(double)resolution;
-
 	double dE = (upperBound - lowerBound)/energyResolution;
 	for(int n = 0; n < pe->dSolver->getModel().getBasisSize(); n++){
-//		if(eigen_values[n] > l_lim && eigen_values[n] < u_lim){
 		if(
 			eigen_values[n] > lowerBound
 			&& eigen_values[n] < upperBound
 		){
 			complex<double> u = pe->dSolver->getAmplitude(n, index);
 
-//			int e = (int)((eigen_values[n] - l_lim)/step_size);
 			int e = (int)((eigen_values[n] - lowerBound)/dE);
-//			if(e >= resolution)
-//				e = resolution-1;
 			if(e >= energyResolution)
 				e = energyResolution - 1;
 			data[offset + e] += real(conj(u)*u)/dE;
@@ -1046,13 +945,7 @@ void Diagonalizer::calculateSP_LDOSCallback(
 
 	const double *eigen_values = pe->dSolver->getEigenValues();
 
-//	double u_lim = ((double**)pe->hint)[0][0];
-//	double l_lim = ((double**)pe->hint)[0][1];
-//	int resolution = ((int**)pe->hint)[1][0];
-//	int spin_index = ((int**)pe->hint)[1][1];
 	int spinIndex = information.getSpinIndex();
-
-//	double step_size = (u_lim - l_lim)/(double)resolution;
 
 	Index index_u(index);
 	Index index_d(index);
@@ -1060,7 +953,6 @@ void Diagonalizer::calculateSP_LDOSCallback(
 	index_d.at(spinIndex) = 1;
 	double dE = (upperBound - lowerBound)/energyResolution;
 	for(int n = 0; n < pe->dSolver->getModel().getBasisSize(); n++){
-//		if(eigen_values[n] > l_lim && eigen_values[n] < u_lim){
 		if(
 			eigen_values[n] > lowerBound
 			&& eigen_values[n] < upperBound
@@ -1068,10 +960,7 @@ void Diagonalizer::calculateSP_LDOSCallback(
 			complex<double> u_u = pe->dSolver->getAmplitude(n, index_u);
 			complex<double> u_d = pe->dSolver->getAmplitude(n, index_d);
 
-//			int e = (int)((eigen_values[n] - l_lim)/step_size);
 			int e = (int)((eigen_values[n] - lowerBound)/dE);
-//			if(e >= resolution)
-//				e = resolution-1;
 			if(e >= energyResolution)
 				e = energyResolution - 1;
 			data[offset + e].at(0, 0) += conj(u_u)*u_u/dE;

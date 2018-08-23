@@ -779,7 +779,6 @@ void RPASusceptibility::calculateChargeSusceptibilityCallback(
 void RPASusceptibility::calculateSpinSusceptibilityCallback(
 	PropertyExtractor *cb_this,
 	Property::Property &property,
-//	void *susceptibility,
 	const Index &index,
 	int offset,
 	Information &information
