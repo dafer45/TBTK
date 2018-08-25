@@ -77,7 +77,7 @@ vector<complex<double>> MatsubaraSusceptibility::calculateSusceptibility(
 		components.size() == 5,
 		"Solver::MatsubaraSusceptibility::calculateSusceptibility()",
 		"The Index must be a compund Index with 5 component Indices,"
-		<< "but '" << components.size() << "' components suplied.",
+		<< " but '" << components.size() << "' components suplied.",
 		""
 	);
 	const Index &kIndex = components[0];

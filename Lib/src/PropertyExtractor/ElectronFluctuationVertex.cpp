@@ -72,7 +72,7 @@ Property::InteractionVertex ElectronFluctuationVertex::calculateInteractionVerte
 		vector<Index> indices = pattern.split();
 		TBTKAssert(
 			indices.size() == 5,
-			"PropertyExtractor::LindhardSusceptibility::calculateSusceptibility()",
+			"PropertyExtractor::ElectronFluctuationVertex::calculateInteractionVertex()",
 			"Invalid pattern '" << pattern.toString() << "'.",
 			"The Index must be a compound Index with five"
 			<< " component Indices, but the number of components"
@@ -81,7 +81,7 @@ Property::InteractionVertex ElectronFluctuationVertex::calculateInteractionVerte
 		for(unsigned int n = 2; n < indices.size(); n++){
 			TBTKAssert(
 				indices[n].getSize() == indices[1].getSize(),
-				"PropertyExtractor::LindhardSusceptibility::calculateSusceptibility()",
+				"PropertyExtractor::ElectronFLuctuationVertex::calculateInteractionVertex()",
 				"Currently the last four Indices has to have"
 				" the same number of subindices. The clash"
 				<< " appeared between '"
@@ -212,7 +212,7 @@ Property::InteractionVertex ElectronFluctuationVertex::calculateInteractionVerte
 		vector<Index> indices = pattern.split();
 		TBTKAssert(
 			indices.size() == 5,
-			"PropertyExtractor::LindhardSusceptibility::calculateSusceptibility()",
+			"PropertyExtractor::ElectronFluctuationVertex::calculateInteractionVertex()",
 			"Invalid pattern '" << pattern.toString() << "'.",
 			"The Index must be a compound Index with five"
 			<< " component Indices, but the number of components"
@@ -221,7 +221,7 @@ Property::InteractionVertex ElectronFluctuationVertex::calculateInteractionVerte
 		for(unsigned int n = 2; n < indices.size(); n++){
 			TBTKAssert(
 				indices[n].getSize() == indices[1].getSize(),
-				"PropertyExtractor::LindhardSusceptibility::calculateSusceptibility()",
+				"PropertyExtractor::ElectronFluctuationVertex::calculateInteractionVertex()",
 				"Currently the last four Indices has to have"
 				" the same number of subindices. The clash"
 				<< " appeared between '"
