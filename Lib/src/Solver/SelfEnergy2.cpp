@@ -78,14 +78,14 @@ vector<complex<double>> SelfEnergy2::calculateSelfEnergy(
 		""
 	);
 	TBTKAssert(
-		lowerMatsubaraEnergyIndex%2 == 1,
+		abs(lowerMatsubaraEnergyIndex)%2 == 1,
 		"Solver::SelfEnergy2::calclulateSelfEnergy()",
 		"The lowerMatsubaraEnergyIndex='" << lowerMatsubaraEnergyIndex
 		<< "' must be odd.",
 		""
 	);
 	TBTKAssert(
-		upperMatsubaraEnergyIndex%2 == 1,
+		abs(upperMatsubaraEnergyIndex)%2 == 1,
 		"Solver::SelfEnergy2::calclulateSelfEnergy()",
 		"The upperMatsubaraEnergyIndex='" << upperMatsubaraEnergyIndex
 		<< "' must be odd.",
@@ -153,8 +153,8 @@ vector<complex<double>> SelfEnergy2::calculateSelfEnergy(
 			{mesh[meshPoint][0], mesh[meshPoint][1]},
 			numMeshPoints
 		);
-		Index qMinusKIndex = brillouinZone.getMinorCellIndex(
-			{mesh[meshPoint][0] - k[0], mesh[meshPoint][1] - k[1]},
+		Index kMinusQIndex = brillouinZone.getMinorCellIndex(
+			{k[0] - mesh[meshPoint][0], k[1] - mesh[meshPoint][1]},
 			numMeshPoints
 		);
 
@@ -176,8 +176,8 @@ vector<complex<double>> SelfEnergy2::calculateSelfEnergy(
 						+ 2*firstEnergyIndex;
 
 				int differenceMatsubaraEnergyIndices
-					= matsubaraEnergyIndexInternal
-						- matsubaraEnergyIndexExternal;
+					= matsubaraEnergyIndexExternal
+						- matsubaraEnergyIndexInternal;
 
 				if(
 					differenceMatsubaraEnergyIndices
@@ -207,20 +207,20 @@ vector<complex<double>> SelfEnergy2::calculateSelfEnergy(
 							+= interactionVertex(
 								{
 									qIndex,
-									{orbital0},
-									intraBlockIndices[1],
 									intraBlockIndices[0],
-									{orbital1}
+									{orbital1},
+									{orbital0},
+									intraBlockIndices[1]
 								},
 								firstEnergyIndex
 						)*greensFunction(
 							{
 								Index(
-									qMinusKIndex,
+									kMinusQIndex,
 									{orbital1}
 								),
 								Index(
-									qMinusKIndex,
+									kMinusQIndex,
 									{orbital0}
 								)
 							},

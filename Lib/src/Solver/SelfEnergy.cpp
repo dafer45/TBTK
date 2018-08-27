@@ -376,8 +376,10 @@ void SelfEnergy::selfEnergyMainLoop(
 					unsigned int offsetSelfEnergyVertex
 						= interactionVertex.getOffset({
 							qIndex,
-							{(int)propagatorEnd},
 							intraBlockIndices0,
+							{(int)propagatorEnd},
+//							{(int)propagatorEnd},
+//							intraBlockIndices0,
 							{(int)propagatorStart},
 							intraBlockIndices1
 						});
@@ -420,7 +422,8 @@ void SelfEnergy::selfEnergyMainLoop(
 							e0++
 						){
 							complex<double> numerator = selfEnergyVertexData[offsetSelfEnergyVertex + e0]*greensFunctionNumerator;
-							complex<double> E = summationEnergies[e0] - relativeStateEnergy;
+//							complex<double> E = summationEnergies[e0] - relativeStateEnergy;
+							complex<double> E = -summationEnergies[e0] - relativeStateEnergy;
 
 							if(singleSelfEnergyEnergy){
 								results[worker][0] += numerator/(
