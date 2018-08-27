@@ -292,6 +292,9 @@ Model* ReciprocalLattice::generateModel(
 					}
 
 					static const complex<double> i(0., 1.);
+#ifdef TBTK_USE_OPEN_MP
+					#pragma omp parallel for
+#endif
 					for(
 						unsigned int m = 0;
 						m < momentums.size();
