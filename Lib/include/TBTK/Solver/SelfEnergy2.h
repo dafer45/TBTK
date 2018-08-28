@@ -24,6 +24,7 @@
 #define COM_DAFER45_TBTK_SOLVER_SELF_ENERGY2
 
 #include "TBTK/Property/InteractionVertex.h"
+#include "TBTK/Property/SelfEnergy.h"
 #include "TBTK/RPA/MomentumSpaceContext.h"
 #include "TBTK/Solver/Solver.h"
 
@@ -54,6 +55,13 @@ public:
 
 	/** Calculate the self-energy. */
 	std::vector<std::complex<double>> calculateSelfEnergy(
+		const Index &index,
+		int lowerMatsubaraEnergyIndex,
+		int upperMatsubaraEnergyIndex
+	);
+
+	/** Calculate the self-energy. */
+	Property::SelfEnergy calculateSelfEnergyAllBlocks(
 		const Index &index,
 		int lowerMatsubaraEnergyIndex,
 		int upperMatsubaraEnergyIndex
