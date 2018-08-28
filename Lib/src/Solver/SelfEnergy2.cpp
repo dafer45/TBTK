@@ -325,6 +325,8 @@ Property::SelfEnergy SelfEnergy2::calculateSelfEnergyAllBlocks(
 		= interactionVertex.getNumMatsubaraEnergies();
 	int lowerMatsubaraEnergyIndexInteractionVertex
 		= interactionVertex.getLowerMatsubaraEnergyIndex();
+	int upperMatsubaraEnergyIndexInteractionVertex
+		= interactionVertex.getLowerMatsubaraEnergyIndex();
 
 /*	vector<complex<double>> selfEnergy;
 	selfEnergy.reserve(numMatsubaraEnergiesSelfEnergy);
@@ -352,8 +354,8 @@ Property::SelfEnergy SelfEnergy2::calculateSelfEnergyAllBlocks(
 		lowerMatsubaraEnergyIndexGreensFunction
 	);
 	int maxMatsubaraEnergyIndex = max(
-		lowerMatsubaraEnergyIndexInteractionVertex,
-		lowerMatsubaraEnergyIndexGreensFunction
+		upperMatsubaraEnergyIndexInteractionVertex,
+		upperMatsubaraEnergyIndexGreensFunction
 	);
 	int numMatsubaraEnergiesCrossCorrelation = 2*(
 		(maxMatsubaraEnergyIndex - minMatsubaraEnergyIndex)/2 + 1
@@ -395,7 +397,7 @@ Property::SelfEnergy SelfEnergy2::calculateSelfEnergyAllBlocks(
 					n++
 				){
 					int energyIndex = (
-						lowerMatsubaraEnergyIndex
+						lowerMatsubaraEnergyIndexInteractionVertex
 						+ 2*(int)n
 					)/2;
 					while(energyIndex < 0){
@@ -406,7 +408,7 @@ Property::SelfEnergy SelfEnergy2::calculateSelfEnergyAllBlocks(
 						(unsigned int)qIndex[0],
 						(unsigned int)qIndex[1],
 						(unsigned int)energyIndex
-					}] = conj(interactionVertex(
+					}] = interactionVertex(
 						{
 							qIndex,
 							intraBlockIndices[0],
@@ -415,7 +417,7 @@ Property::SelfEnergy SelfEnergy2::calculateSelfEnergyAllBlocks(
 							intraBlockIndices[1]
 						},
 						n
-					));
+					);
 				}
 
 				for(
@@ -424,7 +426,7 @@ Property::SelfEnergy SelfEnergy2::calculateSelfEnergyAllBlocks(
 					n++
 				){
 					int energyIndex = (
-						lowerMatsubaraEnergyIndex
+						lowerMatsubaraEnergyIndexGreensFunction
 						+ 2*(int)n - 1
 					)/2;
 					while(energyIndex < 0){
@@ -435,7 +437,7 @@ Property::SelfEnergy SelfEnergy2::calculateSelfEnergyAllBlocks(
 						(unsigned int)qIndex[0],
 						(unsigned int)qIndex[1],
 						(unsigned int)energyIndex
-					}] = conj(greensFunction(
+					}] = greensFunction(
 						{
 							Index(
 								qIndex,
@@ -447,12 +449,12 @@ Property::SelfEnergy SelfEnergy2::calculateSelfEnergyAllBlocks(
 							)
 						},
 						n
-					));
+					);
 				}
 			}
 
 			if(orbital0 == 0 && orbital1 == 0){
-				selfEnergyArray = Convolver::crossCorrelate(
+				selfEnergyArray = Convolver::convolve(
 					interactionVertexArray,
 					greensFunctionArray
 				);
@@ -460,7 +462,7 @@ Property::SelfEnergy SelfEnergy2::calculateSelfEnergyAllBlocks(
 			else{
 				selfEnergyArray
 					= selfEnergyArray
-						+ Convolver::crossCorrelate(
+						+ Convolver::convolve(
 							interactionVertexArray,
 							greensFunctionArray
 						);
@@ -509,7 +511,7 @@ Property::SelfEnergy SelfEnergy2::calculateSelfEnergyAllBlocks(
 				n++
 			){
 				int energyIndex = (
-					lowerMatsubaraEnergyIndex + 2*(int)n
+					lowerMatsubaraEnergyIndex + 2*(int)n - 1
 				)/2;
 
 				if(
@@ -528,6 +530,9 @@ Property::SelfEnergy SelfEnergy2::calculateSelfEnergyAllBlocks(
 					) = 0;
 				}
 				else{
+					if(energyIndex < 0)
+						energyIndex += 2*(int)numMatsubaraEnergiesGreensFunction;
+
 					selfEnergy(
 						{
 							{kx, ky},

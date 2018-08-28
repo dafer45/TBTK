@@ -39,8 +39,12 @@ SelfEnergy2::SelfEnergy2(
 Property::SelfEnergy SelfEnergy2::calculateSelfEnergy(
 	vector<Index> patterns
 ){
-	//Calculate allIndices.
-	IndexTree allIndices;
+	//Flag that will be set to false if a block subindex without the
+	//IDX_ALL specifier is encountered.
+	SelfEnergyBlockInformation information;
+	information.setCalculateSelfEnergyForAllBlocks(true);
+
+	//Check input and set calculateSelfEnergyForAllBlocks.
 	for(unsigned int n = 0; n < patterns.size(); n++){
 		const Index &pattern = *(patterns.begin() + n);
 
@@ -53,15 +57,15 @@ Property::SelfEnergy SelfEnergy2::calculateSelfEnergy(
 			<< " component Indices, but the number of components"
 			<< " are " << components.size() << "."
 		);
-		for(unsigned int n = 2; n < components.size(); n++){
+		for(unsigned int c = 2; c < components.size(); c++){
 			TBTKAssert(
-				components[n].getSize() == components[1].getSize(),
+				components[c].getSize() == components[1].getSize(),
 				"PropertyExtractor::SelfEnergy2::calculateSelfEnergy()",
 				"Currently the last four Indices has to have"
 				" the same number of subindices. The clash"
 				<< " appeared between '"
 				<< components[1].toString() << "' and '"
-				<< components[n].toString() << "'",
+				<< components[c].toString() << "'",
 				"Contact the developer if support for more"
 				<< " general Indices is needed."
 			);
@@ -72,7 +76,32 @@ Property::SelfEnergy SelfEnergy2::calculateSelfEnergy(
 			//subindices to append after the kIndex.
 		}
 
+		for(unsigned int c = 0; c < components[0].getSize(); c++){
+			if(components[0][c] != IDX_ALL){
+				information.setCalculateSelfEnergyForAllBlocks(
+					false
+				);
+			}
+		}
+	}
+
+	//Calculate allIndices.
+	IndexTree allIndices;
+	for(unsigned int n = 0; n < patterns.size(); n++){
+		const Index &pattern = *(patterns.begin() + n);
+		vector<Index> components = pattern.split();
+
 		Index kIndexPattern = components[0];
+
+		if(information.getCalculateSelfEnergyForAllBlocks()){
+			for(
+				unsigned int c = 0;
+				c < kIndexPattern.getSize();
+				c++
+			){
+				kIndexPattern[c] = 0;
+			}
+		}
 
 		//TODO
 		//This is the restricting assumption.
@@ -296,7 +325,6 @@ Property::SelfEnergy SelfEnergy2::calculateSelfEnergy(
 			fundamentalMatsubaraEnergy
 		);
 
-		Information information;
 		calculate(
 			calculateSelfEnergyCallback,
 			allIndices,
@@ -332,15 +360,45 @@ void SelfEnergy2::calculateSelfEnergyCallback(
 	switch(selfEnergy.getEnergyType()){
 	case Property::EnergyResolvedProperty<complex<double>>::EnergyType::FermionicMatsubara:
 	{
-		vector<complex<double>> se
-			= propertyExtractor->solver->calculateSelfEnergy(
-				index,
-				selfEnergy.getLowerMatsubaraEnergyIndex(),
-				selfEnergy.getUpperMatsubaraEnergyIndex()
-			);
+		if(
+			(
+				(SelfEnergyBlockInformation&)information
+			).getCalculateSelfEnergyForAllBlocks()
+		){
+			vector<Index> components = index.split();
 
-		for(unsigned int e = 0; e < se.size(); e++)
-			data[offset + e] += se[e];
+			Property::SelfEnergy s
+				= propertyExtractor->solver->calculateSelfEnergyAllBlocks(
+					{components[1], components[2]},
+					propertyExtractor->getLowerFermionicMatsubaraEnergyIndex(),
+					propertyExtractor->getUpperFermionicMatsubaraEnergyIndex()
+				);
+
+			const IndexTree &containedIndices
+				= s.getIndexDescriptor().getIndexTree();
+			for(
+				IndexTree::ConstIterator iterator
+					= containedIndices.cbegin();
+				iterator != containedIndices.cend();
+				++iterator
+			){
+				for(unsigned int e = 0; e < s.getBlockSize(); e++){
+					data[selfEnergy.getOffset(*iterator) + e]
+						+= s(*iterator, e);
+				}
+			}
+		}
+		else{
+			vector<complex<double>> se
+				= propertyExtractor->solver->calculateSelfEnergy(
+					index,
+					selfEnergy.getLowerMatsubaraEnergyIndex(),
+					selfEnergy.getUpperMatsubaraEnergyIndex()
+				);
+
+			for(unsigned int e = 0; e < se.size(); e++)
+				data[offset + e] += se[e];
+		}
 
 		break;
 	}
@@ -351,6 +409,10 @@ void SelfEnergy2::calculateSelfEnergyCallback(
 			""
 		);
 	}
+}
+
+SelfEnergy2::SelfEnergyBlockInformation::SelfEnergyBlockInformation(){
+	calculateSelfEnergyForAllBlocks = false;
 }
 
 };	//End of namespace PropertyExtractor

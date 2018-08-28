@@ -419,11 +419,10 @@ Property::Susceptibility MatsubaraSusceptibility::calculateSusceptibilityAllBloc
 						n
 					) = 0;
 				}
-
-				if(energyIndex < 0)
-					energyIndex += 2*(int)numMatsubaraEnergiesGreensFunction;
-
 				else{
+					if(energyIndex < 0)
+						energyIndex += 2*(int)numMatsubaraEnergiesGreensFunction;
+
 					susceptibility(
 						{
 							{kx, ky},

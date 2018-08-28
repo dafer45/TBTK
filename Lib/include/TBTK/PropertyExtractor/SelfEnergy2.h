@@ -47,6 +47,29 @@ public:
 		std::vector<Index> patterns
 	);
 private:
+	/***/
+	class SelfEnergyBlockInformation : public Information{
+	public:
+		/** Constructs a
+		 *  PropertyExtractor::SelfEnergy2::SelfEnergyBlockInformation.
+		 */
+		SelfEnergyBlockInformation();
+
+		/** Set whether the self-energy should be calculated for all
+		 *  block indices. */
+		void setCalculateSelfEnergyForAllBlocks(
+			bool calculateSelfEnergyForAllBlocks
+		);
+
+		/** Get whether the self-energy should be calculated for all
+		 *  block indices. */
+		bool getCalculateSelfEnergyForAllBlocks() const;
+	private:
+		/** Flag indicating whether the self-energy should be
+		 *  calculated for all block indices. */
+		bool calculateSelfEnergyForAllBlocks;
+	};
+
 	/** Calback for callculating the self-energy. */
 	static void calculateSelfEnergyCallback(
 		PropertyExtractor *cb_this,
@@ -59,6 +82,18 @@ private:
 	/** Solver::SelfEnergy2 to work on. */
 	Solver::SelfEnergy2 *solver;
 };
+
+inline void SelfEnergy2::SelfEnergyBlockInformation::setCalculateSelfEnergyForAllBlocks(
+	bool calculateSelfEnergyForAllBlocks
+){
+	this->calculateSelfEnergyForAllBlocks
+		= calculateSelfEnergyForAllBlocks;
+}
+
+inline bool SelfEnergy2::SelfEnergyBlockInformation::getCalculateSelfEnergyForAllBlocks(
+) const{
+	return calculateSelfEnergyForAllBlocks;
+}
 
 };	//End of namespace PropertyExtractor
 };	//End of namespace TBTK
