@@ -26,8 +26,8 @@ using namespace std;
 namespace TBTK{
 namespace Property{
 
-/*Susceptibility::Susceptibility() : EnergyResolvedProperty(){
-}*/
+InteractionVertex::InteractionVertex() : EnergyResolvedProperty(){
+}
 
 InteractionVertex::InteractionVertex(
 	const IndexTree &indexTree,

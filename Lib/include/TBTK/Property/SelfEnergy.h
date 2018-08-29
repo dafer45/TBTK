@@ -36,7 +36,7 @@ namespace Property{
 class SelfEnergy : public EnergyResolvedProperty<std::complex<double>>{
 public:
 	/** Constructs an uninitialized SelfEnergy. */
-//	SelfEnergy();
+	SelfEnergy();
 
 	/** Constructs a SelfEnergy with real energies on the Custom format.
 	 *  [See AbstractProperty for detailed information about the Custom

@@ -36,7 +36,7 @@ namespace Property{
 class InteractionVertex : public EnergyResolvedProperty<std::complex<double>>{
 public:
 	/** Constructs an uninitialized InteractionVertex. */
-//	InteractionVertex();
+	InteractionVertex();
 
 	/** Constructs an InteractionVertex with real energies on the Custom
 	 *  format. [See AbstractProperty for detailed information about the
