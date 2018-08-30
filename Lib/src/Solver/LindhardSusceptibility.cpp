@@ -44,6 +44,11 @@ LindhardSusceptibility::LindhardSusceptibility(
 			model.getTemperature()
 		);
 	}
+
+	kPlusQLookupTable = nullptr;
+	generateKPlusQLookupTable();
+
+	isMaster = true;
 }
 
 LindhardSusceptibility::LindhardSusceptibility(
@@ -53,16 +58,23 @@ LindhardSusceptibility::LindhardSusceptibility(
 ) :
 	Susceptibility(
 		Algorithm::Lindhard,
-		momentumSpaceContext,
-		kPlusQLookupTable
+		momentumSpaceContext/*,
+		kPlusQLookupTable*/
 	)
 {
 	this->fermiDiracLookupTable = fermiDiracLookupTable;
+	this->kPlusQLookupTable = kPlusQLookupTable;
+
+	isMaster = false;
 }
 
 LindhardSusceptibility::~LindhardSusceptibility(){
-	if(getIsMaster() && fermiDiracLookupTable != nullptr)
+//	if(getIsMaster() && fermiDiracLookupTable != nullptr)
+//		delete [] fermiDiracLookupTable;
+	if(isMaster && fermiDiracLookupTable != nullptr)
 		delete [] fermiDiracLookupTable;
+	if(isMaster && kPlusQLookupTable != nullptr)
+		delete [] kPlusQLookupTable;
 }
 
 LindhardSusceptibility* LindhardSusceptibility::createSlave(){
@@ -418,6 +430,101 @@ vector<complex<double>> LindhardSusceptibility::calculateSusceptibility(
 			energies
 		);
 	}
+}
+
+void LindhardSusceptibility::generateKPlusQLookupTable(){
+	if(kPlusQLookupTable != nullptr)
+		return;
+
+	Timer::tick("Calculate k+q lookup table.");
+	const MomentumSpaceContext &momentumSpaceContext
+		= getMomentumSpaceContext();
+	const vector<vector<double>> &mesh = momentumSpaceContext.getMesh();
+	const vector<unsigned int> &numMeshPoints
+		= momentumSpaceContext.getNumMeshPoints();
+	const BrillouinZone &brillouinZone
+		= momentumSpaceContext.getBrillouinZone();
+	const Model &model = momentumSpaceContext.getModel();
+	unsigned int numOrbitals = momentumSpaceContext.getNumOrbitals();
+
+	kPlusQLookupTable = new int[mesh.size()*mesh.size()];
+
+	string cacheName = "cache/kPlusQLookupTable";
+	for(
+		unsigned int n = 0;
+		n < numMeshPoints.size();
+		n++
+	){
+		cacheName += "_" + to_string(numMeshPoints.at(n));
+	}
+	ifstream fin(cacheName);
+	if(fin){
+		unsigned int counter = 0;
+		int value;
+		while(fin >> value){
+			TBTKAssert(
+				counter < mesh.size()*mesh.size(),
+				"LindhardSusceptibility::generateKPlusQLookupTable()",
+				"Found cache file '" << cacheName << "',"
+				<< " but it is too large.",
+				"Clear the cache to recalculate"
+				<< " kPlusQLookupTable."
+			);
+			kPlusQLookupTable[counter] = value;
+			counter++;
+		}
+		fin.close();
+
+		TBTKAssert(
+			counter == mesh.size()*mesh.size(),
+			"LindhardSusceptibility::generateKPlusQLookupTable()",
+			"Found cache file" << cacheName << ","
+			<< " but it is too small.",
+			"Clear the cache to recalculate kPlusQLookupTable."
+		);
+
+		Timer::tock();
+
+		return;
+	}
+
+#ifdef TBTK_USE_OPEN_MP
+	#pragma omp parallel for
+#endif
+	for(unsigned int k = 0; k < mesh.size(); k++){
+		const vector<double>& K = mesh.at(k);
+		for(unsigned int q = 0; q < mesh.size(); q++){
+			vector<double> Q = mesh.at(q);
+
+			vector<double> kPlusQ;
+			for(unsigned int n = 0; n < K.size(); n++)
+				kPlusQ.push_back(K.at(n)+Q.at(n));
+
+			Index qIndex = brillouinZone.getMinorCellIndex(
+				Q,
+				numMeshPoints
+			);
+			int qLinearIndex = model.getHoppingAmplitudeSet().getFirstIndexInBlock(
+				qIndex
+			);
+			Index kPlusQIndex = brillouinZone.getMinorCellIndex(
+				kPlusQ,
+				numMeshPoints
+			);
+			kPlusQLookupTable[
+				k*mesh.size() + qLinearIndex/numOrbitals
+			] = model.getHoppingAmplitudeSet().getFirstIndexInBlock(
+				kPlusQIndex
+			);
+		}
+	}
+
+	ofstream fout(cacheName);
+	if(fout)
+		for(unsigned int n = 0; n < mesh.size()*mesh.size(); n++)
+			fout << kPlusQLookupTable[n] << "\n";
+
+	Timer::tock();
 }
 
 }	//End of namespace Solver

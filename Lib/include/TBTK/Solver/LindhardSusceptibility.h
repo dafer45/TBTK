@@ -83,7 +83,79 @@ private:
 		unsigned int state1,
 		unsigned int numOrbitals
 	) const;
+
+	/** Generate lookup table for the k+q linear index. Can be called
+	 *  repeatedly, and the lookup table is only generated the first time.
+	 */
+	void generateKPlusQLookupTable();
+
+	/** Returns the k+q lookup table. */
+	int* getKPlusQLookupTable();
+
+	/** Returns the k+q lookup table. */
+	const int* getKPlusQLookupTable() const;
+
+        /** Returns the linear index for k+q. */
+	template<bool useKPlusQLookupTable>
+	int getKPlusQLinearIndex(
+		unsigned int meshIndex,
+		const std::vector<double> &k,
+		int kLinearIndex
+	) const;
+
+	/** Lookup table for calculating k+q. */
+	int *kPlusQLookupTable;
+
+	/** Flag indicating whether the LindhardSusceptibility is a master.
+	 *  Masters own resources shared between masters and slaves and are
+	 *  responsible for cleaning up. */
+	bool isMaster;
 };
+
+inline int* LindhardSusceptibility::getKPlusQLookupTable(){
+	return kPlusQLookupTable;
+}
+
+inline const int* LindhardSusceptibility::getKPlusQLookupTable() const{
+	return kPlusQLookupTable;
+}
+
+template<>
+inline int LindhardSusceptibility::getKPlusQLinearIndex<false>(
+	unsigned int meshIndex,
+	const std::vector<double> &k,
+	int kLinearIndex
+) const{
+	const MomentumSpaceContext &momentumSpaceContext
+		= getMomentumSpaceContext();
+
+	const std::vector<std::vector<double>> &mesh
+		= momentumSpaceContext.getMesh();
+
+	Index kPlusQIndex
+		= momentumSpaceContext.getBrillouinZone().getMinorCellIndex(
+			{mesh[meshIndex][0] + k[0], mesh[meshIndex][1] + k[1]},
+			momentumSpaceContext.getNumMeshPoints()
+		);
+	return momentumSpaceContext.getModel().getHoppingAmplitudeSet().getFirstIndexInBlock(
+		kPlusQIndex
+	);
+}
+
+template<>
+inline int LindhardSusceptibility::getKPlusQLinearIndex<true>(
+	unsigned int meshIndex,
+	const std::vector<double> &k,
+	int kLinearIndex
+) const{
+	const MomentumSpaceContext &momentumSpaceContext
+		= getMomentumSpaceContext();
+
+	return kPlusQLookupTable[
+		meshIndex*momentumSpaceContext.getMesh().size()
+		+ kLinearIndex/momentumSpaceContext.getNumOrbitals()
+	];
+}
 
 };	//End of namespace Solver
 };	//End of namespace TBTK

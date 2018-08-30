@@ -39,13 +39,13 @@ Susceptibility::Susceptibility(
 
 	energiesAreInversionSymmetric = false;
 
-	kPlusQLookupTable = nullptr;
-	generateKPlusQLookupTable();
+//	kPlusQLookupTable = nullptr;
+//	generateKPlusQLookupTable();
 
-	isMaster = true;
+//	isMaster = true;
 }
 
-Susceptibility::Susceptibility(
+/*Susceptibility::Susceptibility(
 	Algorithm algorithm,
 	const MomentumSpaceContext &momentumSpaceContext,
 	int *kPlusQLookupTable
@@ -55,17 +55,17 @@ Susceptibility::Susceptibility(
 
 	energiesAreInversionSymmetric = false;
 
-	this->kPlusQLookupTable = kPlusQLookupTable;
+//	this->kPlusQLookupTable = kPlusQLookupTable;
 
 	isMaster = false;
-}
+}*/
 
 Susceptibility::~Susceptibility(){
-	if(isMaster && kPlusQLookupTable != nullptr)
-		delete [] kPlusQLookupTable;
+/*	if(isMaster && kPlusQLookupTable != nullptr)
+		delete [] kPlusQLookupTable;*/
 }
 
-void Susceptibility::generateKPlusQLookupTable(){
+/*void Susceptibility::generateKPlusQLookupTable(){
 	if(kPlusQLookupTable != nullptr)
 		return;
 
@@ -154,7 +154,7 @@ void Susceptibility::generateKPlusQLookupTable(){
 			fout << kPlusQLookupTable[n] << "\n";
 
 	Timer::tock();
-}
+}*/
 
 }	//End namespace Solver
 }	//End of namesapce TBTK
