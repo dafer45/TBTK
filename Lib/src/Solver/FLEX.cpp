@@ -52,9 +52,69 @@ FLEX::FLEX(const MomentumSpaceContext &momentumSpaceContext) :
 	state = State::NotYetStarted;
 	maxIterations = 1;
 	callback = nullptr;
+
+	norm = Norm::Max;
+	convergenceParameter = 0;
 }
 
 void FLEX::run(){
+	//Calculate the non-interacting Green's function.
+	Timer::tick("Green's function 0");
+	calculateBareGreensFunction();
+	greensFunction = greensFunction0;
+	Timer::tock();
+
+	state = State::GreensFunctionCalculated;
+	if(callback != nullptr)
+		callback(*this);
+
+	//The main loop.
+	unsigned int iteration = 0;
+	while(iteration++ < maxIterations){
+		Timer::tick("One iteration");
+		//Calculate the bare susceptibility.
+		calculateBareSusceptibility();
+		state = State::BareSusceptibilityCalculated;
+		if(callback != nullptr)
+			callback(*this);
+
+		//Calculate the RPA charge and spin susceptibilities.
+		calculateRPASusceptibilities();
+		state = State::RPASusceptibilitiesCalculated;
+		if(callback != nullptr)
+			callback(*this);
+
+		//Calculate the interaction vertex.
+		calculateInteractionVertex();
+		state = State::InteractionVertexCalculated;
+		if(callback != nullptr)
+			callback(*this);
+
+		//Calculate the self-energy.
+		calculateSelfEnergy();
+		state = State::SelfEnergyCalculated;
+		if(callback != nullptr)
+			callback(*this);
+
+		//Calculate the self energy.
+		oldGreensFunction = greensFunction;
+		calculateGreensFunction();
+		state = State::GreensFunctionCalculated;
+		if(callback != nullptr)
+			callback(*this);
+
+		calculateConvergenceParameter();
+		Streams::out << "Convergence parameter:\t"
+			<< convergenceParameter << "\n";
+
+		Timer::tock();
+
+		if(convergenceParameter < tolerance)
+			break;
+	}
+}
+
+void FLEX::calculateBareGreensFunction(){
 	const vector<unsigned int> &numMeshPoints
 		= momentumSpaceContext.getNumMeshPoints();
 	TBTKAssert(
@@ -67,11 +127,10 @@ void FLEX::run(){
 	);
 
 	BlockDiagonalizer blockDiagonalizer;
+	blockDiagonalizer.setVerbose(false);
 	blockDiagonalizer.setModel(getModel());
 	blockDiagonalizer.run();
 
-	//Calculate the non-interacting Green's function.
-	Timer::tick("Green's function 0");
 	vector<Index> greensFunctionPatterns;
 	for(int kx = 0; kx < (int)numMeshPoints[0]; kx++){
 		for(int ky = 0; ky < (int)numMeshPoints[1]; ky++){
@@ -89,178 +148,143 @@ void FLEX::run(){
 		lowerBosonicMatsubaraEnergyIndex,
 		upperBosonicMatsubaraEnergyIndex
 	);
-	Property::GreensFunction greensFunction0
+	greensFunction0
 		= blockDiagonalizerPropertyExtractor.calculateGreensFunction(
 			greensFunctionPatterns,
 			Property::GreensFunction::Type::Matsubara
 		);
-	greensFunction = greensFunction0;
-	Timer::tock();
+}
 
-	state = State::GreensFunctionCalculated;
-	if(callback != nullptr)
-		callback(*this);
+void FLEX::calculateBareSusceptibility(){
+	MatsubaraSusceptibility matsubaraSusceptibilitySolver(
+		momentumSpaceContext,
+		greensFunction
+	);
+	matsubaraSusceptibilitySolver.setVerbose(false);
+	matsubaraSusceptibilitySolver.setModel(getModel());
 
-	//The main loop.
-	unsigned int iteration = 0;
-	while(iteration++ < maxIterations){
-		Timer::tick("One iteration");
-		//Calculate the bare susceptibility.
-		Timer::tick("Bare susceptibility");
-		MatsubaraSusceptibility matsubaraSusceptibilitySolver(
-			momentumSpaceContext,
-			greensFunction
+	PropertyExtractor::MatsubaraSusceptibility
+		matsubaraSusceptibilityPropertyExtractor(
+			matsubaraSusceptibilitySolver
 		);
-		matsubaraSusceptibilitySolver.setModel(getModel());
+	matsubaraSusceptibilityPropertyExtractor.setEnergyWindow(
+		lowerFermionicMatsubaraEnergyIndex,
+		upperFermionicMatsubaraEnergyIndex,
+		lowerBosonicMatsubaraEnergyIndex,
+		upperBosonicMatsubaraEnergyIndex
+	);
+	bareSusceptibility
+		= matsubaraSusceptibilityPropertyExtractor.calculateSusceptibility({
+			{
+				{IDX_ALL, IDX_ALL},
+				{IDX_ALL},
+				{IDX_ALL},
+				{IDX_ALL},
+				{IDX_ALL}
+			}
+		});
+}
 
-		PropertyExtractor::MatsubaraSusceptibility
-			matsubaraSusceptibilityPropertyExtractor(
-				matsubaraSusceptibilitySolver
-			);
-		matsubaraSusceptibilityPropertyExtractor.setEnergyWindow(
-			lowerFermionicMatsubaraEnergyIndex,
-			upperFermionicMatsubaraEnergyIndex,
-			lowerBosonicMatsubaraEnergyIndex,
-			upperBosonicMatsubaraEnergyIndex
-		);
+void FLEX::calculateRPASusceptibilities(){
+	RPASusceptibility rpaSusceptibilitySolver(
+		momentumSpaceContext,
 		bareSusceptibility
-			= matsubaraSusceptibilityPropertyExtractor.calculateSusceptibility({
-				{
-					{IDX_ALL, IDX_ALL},
-					{IDX_ALL},
-					{IDX_ALL},
-					{IDX_ALL},
-					{IDX_ALL}
-				}
-			});
-		Timer::tock();
+	);
+	rpaSusceptibilitySolver.setVerbose(false);
+	rpaSusceptibilitySolver.setModel(getModel());
+	rpaSusceptibilitySolver.setU(U);
+	rpaSusceptibilitySolver.setJ(J);
+	rpaSusceptibilitySolver.setUp(U - 2.*J);
+	rpaSusceptibilitySolver.setJp(J);
 
-		state = State::BareSusceptibilityCalculated;
-		if(callback != nullptr)
-			callback(*this);
-
-		//Calculate the RPA charge and spin susceptibilities.
-		Timer::tick("RPA susceptibilities");
-		RPASusceptibility rpaSusceptibilitySolver(
-			momentumSpaceContext,
-			bareSusceptibility
+	PropertyExtractor::RPASusceptibility
+		rpaSusceptibilityPropertyExtractor(
+			rpaSusceptibilitySolver
 		);
-		rpaSusceptibilitySolver.setModel(getModel());
-		rpaSusceptibilitySolver.setU(U);
-		rpaSusceptibilitySolver.setJ(J);
-		rpaSusceptibilitySolver.setUp(U - 2.*J);
-		rpaSusceptibilitySolver.setJp(J);
+	rpaChargeSusceptibility
+		= rpaSusceptibilityPropertyExtractor.calculateChargeSusceptibility({
+			{
+				{IDX_ALL, IDX_ALL},
+				{IDX_ALL},
+				{IDX_ALL},
+				{IDX_ALL},
+				{IDX_ALL}
+			}
+		});
+	rpaSpinSusceptibility
+		= rpaSusceptibilityPropertyExtractor.calculateSpinSusceptibility({
+			{
+				{IDX_ALL, IDX_ALL},
+				{IDX_ALL},
+				{IDX_ALL},
+				{IDX_ALL},
+				{IDX_ALL}
+			}
+		});
+}
 
-		PropertyExtractor::RPASusceptibility
-			rpaSusceptibilityPropertyExtractor(
-				rpaSusceptibilitySolver
-			);
-		rpaChargeSusceptibility
-			= rpaSusceptibilityPropertyExtractor.calculateChargeSusceptibility({
-				{
-					{IDX_ALL, IDX_ALL},
-					{IDX_ALL},
-					{IDX_ALL},
-					{IDX_ALL},
-					{IDX_ALL}
-				}
-			});
-		rpaSpinSusceptibility
-			= rpaSusceptibilityPropertyExtractor.calculateSpinSusceptibility({
-				{
-					{IDX_ALL, IDX_ALL},
-					{IDX_ALL},
-					{IDX_ALL},
-					{IDX_ALL},
-					{IDX_ALL}
-				}
-			});
-		Timer::tock();
-
-		state = State::RPASusceptibilitiesCalculated;
-		if(callback != nullptr)
-			callback(*this);
-
-		//Calculate the interaction vertex.
-		Timer::tick("Interaction vertex");
-		ElectronFluctuationVertex
-			electronFluctuationVertexSolver(
-				momentumSpaceContext,
-				rpaChargeSusceptibility,
-				rpaSpinSusceptibility
-			);
-		electronFluctuationVertexSolver.setModel(getModel());
-		electronFluctuationVertexSolver.setU(U);
-		electronFluctuationVertexSolver.setJ(J);
-		electronFluctuationVertexSolver.setUp(U - 2.*J);
-		electronFluctuationVertexSolver.setJp(J);
-
-		PropertyExtractor::ElectronFluctuationVertex
-			electronFluctuationVertexPropertyExtractor(
-				electronFluctuationVertexSolver
-			);
-		interactionVertex
-			= electronFluctuationVertexPropertyExtractor.calculateInteractionVertex({
-				{
-					{IDX_ALL, IDX_ALL},
-					{IDX_ALL},
-					{IDX_ALL},
-					{IDX_ALL},
-					{IDX_ALL}
-				}
-			});
-		Timer::tock();
-
-		state = State::InteractionVertexCalculated;
-		if(callback != nullptr)
-			callback(*this);
-
-		//Calculate the self-energy.
-		Timer::tick("Self-energy");
-		SelfEnergy2 selfEnergySolver(
+void FLEX::calculateInteractionVertex(){
+	ElectronFluctuationVertex
+		electronFluctuationVertexSolver(
 			momentumSpaceContext,
-			interactionVertex,
-			greensFunction
+			rpaChargeSusceptibility,
+			rpaSpinSusceptibility
 		);
-		selfEnergySolver.setModel(getModel());
+	electronFluctuationVertexSolver.setVerbose(false);
+	electronFluctuationVertexSolver.setModel(getModel());
+	electronFluctuationVertexSolver.setU(U);
+	electronFluctuationVertexSolver.setJ(J);
+	electronFluctuationVertexSolver.setUp(U - 2.*J);
+	electronFluctuationVertexSolver.setJp(J);
+
+	PropertyExtractor::ElectronFluctuationVertex
+		electronFluctuationVertexPropertyExtractor(
+			electronFluctuationVertexSolver
+		);
+	interactionVertex
+		= electronFluctuationVertexPropertyExtractor.calculateInteractionVertex({
+			{
+				{IDX_ALL, IDX_ALL},
+				{IDX_ALL},
+				{IDX_ALL},
+				{IDX_ALL},
+				{IDX_ALL}
+			}
+		});
+}
+
+void FLEX::calculateSelfEnergy(){
+	SelfEnergy2 selfEnergySolver(
+		momentumSpaceContext,
+		interactionVertex,
+		greensFunction
+	);
+	selfEnergySolver.setVerbose(false);
+	selfEnergySolver.setModel(getModel());
 
 		PropertyExtractor::SelfEnergy2 selfEnergyPropertyExtractor(
-			selfEnergySolver
-		);
-		selfEnergyPropertyExtractor.setEnergyWindow(
-			lowerFermionicMatsubaraEnergyIndex,
-			upperFermionicMatsubaraEnergyIndex,
-			lowerBosonicMatsubaraEnergyIndex,
-			upperBosonicMatsubaraEnergyIndex
-		);
+		selfEnergySolver
+	);
+	selfEnergyPropertyExtractor.setEnergyWindow(
+		lowerFermionicMatsubaraEnergyIndex,
+		upperFermionicMatsubaraEnergyIndex,
+		lowerBosonicMatsubaraEnergyIndex,
+		upperBosonicMatsubaraEnergyIndex
+	);
+	selfEnergy = selfEnergyPropertyExtractor.calculateSelfEnergy({
+		{{IDX_ALL, IDX_ALL}, {IDX_ALL}, {IDX_ALL}}
+	});
+	convertSelfEnergyIndexStructure();
+}
+
+void FLEX::calculateGreensFunction(){
+	Greens greensSolver;
+	greensSolver.setVerbose(false);
+	greensSolver.setModel(getModel());
+	greensSolver.setGreensFunction(greensFunction0);
+	greensFunction = greensSolver.calculateInteractingGreensFunction(
 		selfEnergy
-			= selfEnergyPropertyExtractor.calculateSelfEnergy({
-				{{IDX_ALL, IDX_ALL}, {IDX_ALL}, {IDX_ALL}}
-			});
-		convertSelfEnergyIndexStructure();
-		Timer::tock();
-
-		state = State::SelfEnergyCalculated;
-		if(callback != nullptr)
-			callback(*this);
-
-		//Calculate the self energy.
-		Timer::tick("Green's function");
-		Greens greensSolver;
-		greensSolver.setModel(getModel());
-		greensSolver.setGreensFunction(greensFunction0);
-		greensFunction
-			= greensSolver.calculateInteractingGreensFunction(
-				selfEnergy
-			);
-		Timer::tock();
-
-		state = State::GreensFunctionCalculated;
-		if(callback != nullptr)
-			callback(*this);
-
-		Timer::tock();
-	}
+	);
 }
 
 void FLEX::convertSelfEnergyIndexStructure(){
@@ -353,6 +377,55 @@ void FLEX::convertSelfEnergyIndexStructure(){
 	}
 
 	selfEnergy = newSelfEnergy;
+}
+
+void FLEX::calculateConvergenceParameter(){
+	const vector<complex<double>> &oldData = oldGreensFunction.getData();
+	const vector<complex<double>> &newData = greensFunction.getData();
+
+	TBTKAssert(
+		oldData.size() == newData.size(),
+		"Solver::FLEX::calculateConvergenceParameter()",
+		"Incompatible Green's function data sizes.",
+		"This should never happen, contact the developer."
+	);
+
+	switch(norm){
+	case Norm::Max:
+	{
+		double oldMax = 0;
+		double differenceMax = 0;
+		for(unsigned int n = 0; n < oldData.size(); n++){
+			if(abs(oldData[n]) > oldMax)
+				oldMax = abs(oldData[n]);
+			if(abs(oldData[n] - newData[n]) > differenceMax)
+				differenceMax = abs(oldData[n] - newData[n]);
+		}
+
+		convergenceParameter = differenceMax/oldMax;
+
+		break;
+	}
+	case Norm::L2:
+	{
+		double oldL2 = 0;
+		double differenceL2 = 0;
+		for(unsigned int n = 0; n < oldData.size(); n++){
+			oldL2 += pow(abs(oldData[n]), 2);
+			differenceL2 += pow(abs(oldData[n] - newData[n]), 2);
+		}
+
+		convergenceParameter = differenceL2/oldL2;
+
+		break;
+	}
+	default:
+		TBTKExit(
+			"Solver::FLEX::calculateConvergenceParameter()",
+			"Unknown norm.",
+			"This should never happen, contact the developer."
+		);
+	}
 }
 
 }	//End of namespace Solver

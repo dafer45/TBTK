@@ -45,6 +45,10 @@ public:
 		SelfEnergyCalculated
 	};
 
+	/** Enum class for specifying which norm to use when calculating the
+	 *  convergence parameter. */
+	enum class Norm{Max, L2};
+
 	/** Constructor. */
 	FLEX(const MomentumSpaceContext &momentumSpaceContext);
 
@@ -118,8 +122,23 @@ public:
 	 *  @return The current state of the solver. */
 	State getState() const;
 
-	/** Set the maximum number of iterations. */
+	/** Set the maximum number of iterations.
+	 *
+	 *  @param maxIterations The maximum number of iteration that the
+	 *  self-consistent loop will run. */
 	void setMaxIterations(unsigned int maxIterations);
+
+	/** Set the norm used to calculate the convergence parameter.
+	 *
+	 *  @param norm The norm to use when calculating the convergence
+	 *  parameter. */
+	void setNorm(Norm norm);
+
+	/** Set the tolerance that is used to terminate the self-consistent
+	 *  loop.
+	 *
+	 *  @param tolerance The tolerance. */
+	void setTolerance(double tolerance);
 
 	/** Set callback to be called at each step in the loop.
 	 *
@@ -133,8 +152,14 @@ private:
 	/** Momentum space context. */
 	const MomentumSpaceContext &momentumSpaceContext;
 
+	/** Bare Green's function. */
+	Property::GreensFunction greensFunction0;
+
 	/** Green's function. */
 	Property::GreensFunction greensFunction;
+
+	/** Green's function. */
+	Property::GreensFunction oldGreensFunction;
 
 	/** Susceptibility. */
 	Property::Susceptibility bareSusceptibility;
@@ -175,13 +200,47 @@ private:
 	/** Maximum numer of iterations. */
 	unsigned int maxIterations;
 
+	/** Norm to use when calculating the convergence parameter. */
+	Norm norm;
+
+	/** The tolerance that is used to terminate the self-consistent loop.
+	 */
+	double tolerance;
+
+	/** Parameter used to indicate the degree to which the results have
+	 *  converged. */
+	double convergenceParameter;
+
 	/** Callback that is called after each step in the loop. */
 	void (*callback)(FLEX &solver);
 
+	/** Calculate the bare Green's function. */
+	void calculateBareGreensFunction();
+
+	/** Calculate the bare susceptibility. */
+	void calculateBareSusceptibility();
+
+	/** Calculate the bare susceptibility. */
+	void calculateRPASusceptibilities();
+
+	/** Calculate the interaction vertex. */
+	void calculateInteractionVertex();
+
+	/** Calculate the self energy. */
+	void calculateSelfEnergy();
+
+	/** Calculate the Green's function. */
+	void calculateGreensFunction();
+
 	/** Convert the self-energy index structure from
 	 *  {{block}, {intra block 0}, {intra block 1}} to
-	 *  {{block, intra block 0}, {block, intra block 1}}*/
+	 *  {{block, intra block 0}, {block, intra block 1}} */
 	void convertSelfEnergyIndexStructure();
+
+	/** Calculate the convergence parameter as the norm of the difference
+	 *  between the previous and current Green's Function divided by the
+	 *  norm of the previous Green's function. */
+	void calculateConvergenceParameter();
 };
 
 inline const MomentumSpaceContext& FLEX::getMomentumSpaceContext() const{
@@ -272,6 +331,14 @@ inline void FLEX::setMaxIterations(unsigned int maxIterations){
 	);
 
 	this->maxIterations = maxIterations;
+}
+
+inline void FLEX::setNorm(Norm norm){
+	this->norm = norm;
+}
+
+inline void FLEX::setTolerance(double tolerance){
+	this->tolerance = tolerance;
 }
 
 inline void FLEX::setCallback(void (*callback)(FLEX &solver)){
