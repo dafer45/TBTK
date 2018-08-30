@@ -25,6 +25,7 @@
 #include "TBTK/PropertyExtractor/SelfEnergy2.h"
 #include "TBTK/Solver/BlockDiagonalizer.h"
 #include "TBTK/Solver/ElectronFluctuationVertex.h"
+#include "TBTK/Solver/Greens.h"
 #include "TBTK/Solver/MatsubaraSusceptibility.h"
 #include "TBTK/Solver/RPASusceptibility.h"
 #include "TBTK/Solver/SelfEnergy2.h"
@@ -49,6 +50,7 @@ FLEX::FLEX(const MomentumSpaceContext &momentumSpaceContext) :
 	J = 0;
 
 	state = State::NotYetStarted;
+	maxIterations = 1;
 	callback = nullptr;
 }
 
@@ -87,11 +89,12 @@ void FLEX::run(){
 		lowerBosonicMatsubaraEnergyIndex,
 		upperBosonicMatsubaraEnergyIndex
 	);
-	greensFunction
+	Property::GreensFunction greensFunction0
 		= blockDiagonalizerPropertyExtractor.calculateGreensFunction(
 			greensFunctionPatterns,
 			Property::GreensFunction::Type::Matsubara
 		);
+	greensFunction = greensFunction0;
 	Timer::tock();
 
 	state = State::GreensFunctionCalculated;
@@ -99,8 +102,9 @@ void FLEX::run(){
 		callback(*this);
 
 	//The main loop.
-	bool done = false;
-	while(!done){
+	unsigned int iteration = 0;
+	while(iteration++ < maxIterations){
+		Timer::tick("One iteration");
 		//Calculate the bare susceptibility.
 		Timer::tick("Bare susceptibility");
 		MatsubaraSusceptibility matsubaraSusceptibilitySolver(
@@ -119,11 +123,6 @@ void FLEX::run(){
 			lowerBosonicMatsubaraEnergyIndex,
 			upperBosonicMatsubaraEnergyIndex
 		);
-		Streams::out
-			<< lowerFermionicMatsubaraEnergyIndex << "\t"
-			<< upperFermionicMatsubaraEnergyIndex << "\t"
-			<< lowerBosonicMatsubaraEnergyIndex << "\t"
-			<< upperBosonicMatsubaraEnergyIndex << "\n";
 		bareSusceptibility
 			= matsubaraSusceptibilityPropertyExtractor.calculateSusceptibility({
 				{
@@ -245,7 +244,22 @@ void FLEX::run(){
 		if(callback != nullptr)
 			callback(*this);
 
-		done = true;
+		//Calculate the self energy.
+		Timer::tick("Green's function");
+		Greens greensSolver;
+		greensSolver.setModel(getModel());
+		greensSolver.setGreensFunction(greensFunction0);
+		greensFunction
+			= greensSolver.calculateInteractingGreensFunction(
+				selfEnergy
+			);
+		Timer::tock();
+
+		state = State::GreensFunctionCalculated;
+		if(callback != nullptr)
+			callback(*this);
+
+		Timer::tock();
 	}
 }
 

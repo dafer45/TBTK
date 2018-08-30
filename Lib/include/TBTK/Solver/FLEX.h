@@ -118,6 +118,9 @@ public:
 	 *  @return The current state of the solver. */
 	State getState() const;
 
+	/** Set the maximum number of iterations. */
+	void setMaxIterations(unsigned int maxIterations);
+
 	/** Set callback to be called at each step in the loop.
 	 *
 	 *  @param callback The callback. Set to nullptr to disable callbacks.
@@ -168,6 +171,9 @@ private:
 
 	/** The current state the solver is in. */
 	State state;
+
+	/** Maximum numer of iterations. */
+	unsigned int maxIterations;
 
 	/** Callback that is called after each step in the loop. */
 	void (*callback)(FLEX &solver);
@@ -254,6 +260,18 @@ inline void FLEX::setJ(double J){
 
 inline FLEX::State FLEX::getState() const{
 	return state;
+}
+
+inline void FLEX::setMaxIterations(unsigned int maxIterations){
+	TBTKAssert(
+		maxIterations > 0,
+		"Solver::FLEX::setMaxIterations()",
+		"'maxIterations=" << maxIterations << "' must be larger than"
+		<< " zero.",
+		""
+	);
+
+	this->maxIterations = maxIterations;
 }
 
 inline void FLEX::setCallback(void (*callback)(FLEX &solver)){
