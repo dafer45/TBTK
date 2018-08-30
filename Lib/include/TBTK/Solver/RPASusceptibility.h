@@ -118,12 +118,12 @@ private:
 	);
 
 	/** Multiply matrices. */
-	void multiplyMatrices(
+/*	void multiplyMatrices(
 		std::complex<double> *matrix1,
 		std::complex<double> *matrix2,
 		std::complex<double> *result,
 		unsigned int dimensions
-	);
+	);*/
 
 	/** RPA-susceptibility main algorithm. */
 	std::vector<

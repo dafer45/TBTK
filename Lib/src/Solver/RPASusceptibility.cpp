@@ -93,7 +93,7 @@ inline void RPASusceptibility::invertMatrix(
 	delete [] work;
 }
 
-void RPASusceptibility::multiplyMatrices(
+/*void RPASusceptibility::multiplyMatrices(
 	complex<double> *matrix1,
 	complex<double> *matrix2,
 	complex<double> *result,
@@ -116,7 +116,7 @@ void printMatrix(complex<double> *matrix, unsigned int dimension){
 		Streams::out << "\n";
 	}
 	Streams::out << "\n";
-}
+}*/
 
 vector<vector<vector<complex<double>>>> RPASusceptibility::rpaSusceptibilityMainAlgorithm(
 	const Index &index,
