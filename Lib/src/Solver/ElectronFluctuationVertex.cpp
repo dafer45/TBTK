@@ -36,6 +36,7 @@ ElectronFluctuationVertex::ElectronFluctuationVertex(
 	const Property::Susceptibility &chargeSusceptibility,
 	const Property::Susceptibility &spinSusceptibility
 ) :
+	Communicator(true),
 	momentumSpaceContext(momentumSpaceContext),
 	chargeSusceptibility(chargeSusceptibility),
 	spinSusceptibility(spinSusceptibility)

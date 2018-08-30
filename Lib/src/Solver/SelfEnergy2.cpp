@@ -35,6 +35,7 @@ SelfEnergy2::SelfEnergy2(
 	const Property::InteractionVertex &interactionVertex,
 	const Property::GreensFunction &greensFunction
 ) :
+	Communicator(true),
 	momentumSpaceContext(momentumSpaceContext),
 	interactionVertex(interactionVertex),
 	greensFunction(greensFunction)

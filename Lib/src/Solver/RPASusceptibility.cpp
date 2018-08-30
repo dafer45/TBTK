@@ -35,6 +35,7 @@ RPASusceptibility::RPASusceptibility(
 	const Property::Susceptibility &bareSusceptibility
 ) :
 	Susceptibility(Algorithm::RPA, momentumSpaceContext),
+	Communicator(true),
 	bareSusceptibility(bareSusceptibility)
 {
 	U = 0.;

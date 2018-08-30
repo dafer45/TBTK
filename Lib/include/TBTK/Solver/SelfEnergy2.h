@@ -31,7 +31,7 @@
 namespace TBTK{
 namespace Solver{
 
-class SelfEnergy2 : public Solver{
+class SelfEnergy2 : public Solver, public Communicator{
 public:
 	/** Constructor. */
 	SelfEnergy2(

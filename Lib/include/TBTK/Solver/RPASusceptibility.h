@@ -36,7 +36,7 @@
 namespace TBTK{
 namespace Solver{
 
-class RPASusceptibility : public Susceptibility{
+class RPASusceptibility : public Susceptibility, public Communicator{
 public:
 	/** Constructor. */
 	RPASusceptibility(

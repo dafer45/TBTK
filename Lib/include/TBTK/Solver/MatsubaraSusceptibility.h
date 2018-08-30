@@ -33,7 +33,7 @@
 namespace TBTK{
 namespace Solver{
 
-class MatsubaraSusceptibility : public Susceptibility{
+class MatsubaraSusceptibility : public Susceptibility, public Communicator{
 public:
 	/** Constructor. */
 	MatsubaraSusceptibility(

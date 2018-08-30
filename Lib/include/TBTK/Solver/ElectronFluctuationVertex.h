@@ -32,7 +32,7 @@
 namespace TBTK{
 namespace Solver{
 
-class ElectronFluctuationVertex : public Solver{
+class ElectronFluctuationVertex : public Solver, public Communicator{
 public:
 	/** Constructor. */
 	ElectronFluctuationVertex(

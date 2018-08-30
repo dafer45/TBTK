@@ -38,6 +38,7 @@ MatsubaraSusceptibility::MatsubaraSusceptibility(
 	const Property::GreensFunction &greensFunction
 ) :
 	Susceptibility(Algorithm::Lindhard, momentumSpaceContext),
+	Communicator(true),
 	greensFunction(greensFunction)
 {
 }
