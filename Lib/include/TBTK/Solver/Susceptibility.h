@@ -54,11 +54,6 @@ public:
 	/** Destructor. */
 	virtual ~Susceptibility();
 
-	/** Create slave SusceptibilityCalcuator. The slave reuses internal
-	 *  lookup tables used to speed up the calculations and should not be
-	 *  used after the generating master have been destructed. */
-//	virtual Susceptibility* createSlave() = 0;
-
 	/** Calculate the susceptibility. */
 	virtual std::vector<std::complex<double>> calculateSusceptibility(
 		const Index &index,
@@ -66,11 +61,6 @@ public:
 	) = 0;
 
 	const MomentumSpaceContext& getMomentumSpaceContext() const;
-
-	/** Generate lookup table for the k+q linear index. Can be called
-	 *  repeatedly, and the lookup table is only generated the first time.
-	 */
-//	void generateKPlusQLookupTable();
 
 	/** Get the algorithm used to calculate the susceptibility. */
 	Algorithm getAlgorithm() const;
@@ -91,30 +81,6 @@ public:
 	/** Get whether the susceptibility energies are inversion
 	 *  symmetric. */
 	bool getEnergiesAreInversionSymmetric() const;
-protected:
-	/** Slave constructor. */
-/*	Susceptibility(
-		Algorithm algorithm,
-		const MomentumSpaceContext &momentumSpaceContext,
-		int *kPlusQLookupTable
-	);*/
-
-	/** Returns true if the Susceptibility is a master. */
-//	bool getIsMaster() const;
-
-	/** Returns the k+q lookup table. */
-//	int* getKPlusQLookupTable();
-
-	/** Returns the k+q lookup table. */
-//	const int* getKPlusQLookupTable() const;
-
-	/** Returns the linear index for k+q. */
-/*	template<bool useKPlusQLookupTable>
-	int getKPlusQLinearIndex(
-		unsigned int meshIndex,
-		const std::vector<double> &k,
-		int kLinearIndex
-	) const;*/
 private:
 	/** Algorithm. */
 	Algorithm algorithm;
@@ -126,14 +92,6 @@ private:
 
 	/** Momentum space context. */
 	const MomentumSpaceContext *momentumSpaceContext;
-
-	/** Lookup table for calculating k+q. */
-//	int *kPlusQLookupTable;
-
-	/** Flag indicating whether the Susceptibility is a master.
-	 *  Masters owns resources shared between masters and slaves and is
-	 *  responsible for cleaning up. */
-//	bool isMaster;
 };
 
 inline const MomentumSpaceContext& Susceptibility::getMomentumSpaceContext(
@@ -155,49 +113,6 @@ inline bool Susceptibility::getEnergiesAreInversionSymmetric(
 ) const{
 	return energiesAreInversionSymmetric;
 }
-
-/*inline bool Susceptibility::getIsMaster() const{
-	return isMaster;
-}*/
-
-/*inline int* Susceptibility::getKPlusQLookupTable(){
-	return kPlusQLookupTable;
-}
-
-inline const int* Susceptibility::getKPlusQLookupTable() const{
-	return kPlusQLookupTable;
-}
-
-template<>
-inline int Susceptibility::getKPlusQLinearIndex<false>(
-	unsigned int meshIndex,
-	const std::vector<double> &k,
-	int kLinearIndex
-) const{
-	const std::vector<std::vector<double>> &mesh
-		= momentumSpaceContext->getMesh();
-
-	Index kPlusQIndex
-		= momentumSpaceContext->getBrillouinZone().getMinorCellIndex(
-			{mesh[meshIndex][0] + k[0], mesh[meshIndex][1] + k[1]},
-			momentumSpaceContext->getNumMeshPoints()
-		);
-	return momentumSpaceContext->getModel().getHoppingAmplitudeSet().getFirstIndexInBlock(
-		kPlusQIndex
-	);
-}
-
-template<>
-inline int Susceptibility::getKPlusQLinearIndex<true>(
-	unsigned int meshIndex,
-	const std::vector<double> &k,
-	int kLinearIndex
-) const{
-	return kPlusQLookupTable[
-		meshIndex*momentumSpaceContext->getMesh().size()
-		+ kLinearIndex/momentumSpaceContext->getNumOrbitals()
-	];
-}*/
 
 };	//End of namespace Solver
 };	//End of namespace TBTK
