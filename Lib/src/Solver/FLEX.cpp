@@ -102,6 +102,7 @@ void FLEX::run(){
 		if(callback != nullptr)
 			callback(*this);
 
+		calculateConvergenceParameter();
 		if(convergenceParameter < tolerance)
 			break;
 	}
