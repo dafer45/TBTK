@@ -404,6 +404,9 @@ TEST(Greens, addSelfEnergy){
 			}
 		}
 	}
+
+	//Todo:
+	//Implement the test to also test for Matsubara energies.
 }
 
 };	//End of namespace Solver
