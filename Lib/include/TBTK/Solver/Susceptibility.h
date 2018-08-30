@@ -23,18 +23,10 @@
 #ifndef COM_DAFER45_TBTK_SOLVER_SUSCEPTIBILITY
 #define COM_DAFER45_TBTK_SOLVER_SUSCEPTIBILITY
 
-//#include "TBTK/RPA/DualIndex.h"
-//#include "TBTK/IndexedDataTree.h"
-//#include "TBTK/InteractionAmplitude.h"
 #include "TBTK/RPA/MomentumSpaceContext.h"
-//#include "TBTK/Resource.h"
-//#include "TBTK/SerializableVector.h"
-//#include "TBTK/UnitHandler.h"
 
 #include <complex>
 #include <vector>
-
-//#include <omp.h>
 
 namespace TBTK{
 namespace Solver{
