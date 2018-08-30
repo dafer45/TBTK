@@ -256,26 +256,9 @@ Property::GreensFunction Greens::calculateInteractingGreensFunction(
 		double blockSize = intraBlockIndices.getSize();
 
 		Matrix<complex<double>> matrix(blockSize, blockSize);
-		unsigned int numEnergies;
-		switch(greensFunction->getEnergyType()){
-		case Property::EnergyResolvedProperty<complex<double>>::EnergyType::Real:
-			numEnergies = greensFunction->getResolution();
-
-			break;
-		case Property::EnergyResolvedProperty<complex<double>>::EnergyType::FermionicMatsubara:
-			numEnergies = greensFunction->getNumMatsubaraEnergies();
-
-			break;
-		default:
-			TBTKExit(
-				"Solver::GreensFunction::calculateInteractingGreensFunction()",
-				"Unknown energy type",
-				"This should never happen, contact the developer."
-			);
-		}
 		for(
 			unsigned int n = 0;
-			n < numEnergies;
+			n < greensFunction->getNumEnergies();
 			n++
 		){
 			//Convert one block of the Green's function to a
@@ -385,27 +368,9 @@ Property::GreensFunction Greens::calculateInteractingGreensFunction(
 			double blockSize = intraBlockIndices.getSize();
 
 			Matrix<complex<double>> matrix(blockSize, blockSize);
-			unsigned int numEnergies;
-			switch(greensFunction->getEnergyType()){
-			case Property::EnergyResolvedProperty<complex<double>>::EnergyType::Real:
-				numEnergies = greensFunction->getResolution();
-
-				break;
-			case Property::EnergyResolvedProperty<complex<double>>::EnergyType::FermionicMatsubara:
-				numEnergies
-					= greensFunction->getNumMatsubaraEnergies();
-
-				break;
-			default:
-				TBTKExit(
-					"Solver::GreensFunction::calculateInteractingGreensFunction()",
-					"Unknown energy type",
-					"This should never happen, contact the developer."
-				);
-			}
 			for(
 				unsigned int n = 0;
-				n < numEnergies;
+				n < greensFunction->getNumEnergies();
 				n++
 			){
 				//Convert one block of the Green's function to a

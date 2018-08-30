@@ -473,7 +473,7 @@ Property::SelfEnergy SelfEnergy2::calculateSelfEnergyAllBlocks(
 	double kT = greensFunction.getFundamentalMatsubaraEnergy()/M_PI;
 	for(unsigned int meshPoint = 0; meshPoint < mesh.size(); meshPoint++){
 		for(
-			unsigned int n = 0;
+			int n = 0;
 			n < numMatsubaraEnergiesCrossCorrelation;
 			n++
 		){
