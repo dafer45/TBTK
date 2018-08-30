@@ -71,7 +71,6 @@ void FLEX::run(){
 	//The main loop.
 	unsigned int iteration = 0;
 	while(iteration++ < maxIterations){
-		Timer::tick("One iteration");
 		//Calculate the bare susceptibility.
 		calculateBareSusceptibility();
 		state = State::BareSusceptibilityCalculated;
@@ -102,12 +101,6 @@ void FLEX::run(){
 		state = State::GreensFunctionCalculated;
 		if(callback != nullptr)
 			callback(*this);
-
-		calculateConvergenceParameter();
-		Streams::out << "Convergence parameter:\t"
-			<< convergenceParameter << "\n";
-
-		Timer::tock();
 
 		if(convergenceParameter < tolerance)
 			break;
