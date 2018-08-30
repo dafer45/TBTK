@@ -41,14 +41,6 @@ public:
 		const Property::Susceptibility &spinSusceptibility
 	);
 
-	/** Destructor. */
-//	~ElectronFluctuationVertexCalculator();
-
-	/** Create slave ElectronFluctuationVertexCalculator. The slave reuses
-	 *  internal lookup tables used to speed up the calculations and should
-	 *  not be used after the generating master have been destructed. */
-//	ElectronFluctuationVertexCalculator* createSlave();
-
 	/** Get momentum cpsace context. */
 	const MomentumSpaceContext& getMomentumSpaceContext() const;
 
@@ -57,43 +49,6 @@ public:
 
 	/** Get the spin susceptibility. */
 	const Property::Susceptibility& getSpinSusceptibility() const;
-
-	/** Enum class for indicating whether the energy is an arbitrary comlex
-	 *  number, or if it is restricted to the real or imaginary axis. */
-//	enum class EnergyType {Real, Imaginary, Complex};
-
-	/** Set self-energy energy type. */
-//	void setEnergyType(EnergyType energyType);
-
-	/** Get energy type. */
-//	EnergyType getEnergyType() const;
-
-	/** Set the energies for which the self-energy should be
-	 *  calculated. */
-/*	void setEnergies(
-		const std::vector<std::complex<double>> &energies
-	);*/
-
-	/** Set to true if the energies can be assumed to be inversion
-	 *  symmetric in the complex plane.
-	 *
-	 *  Important note:
-	 *  Only set this to true if the energies passed to setEnergies() are
-	 *  on the form (-E_n, -E_{n-1}, ..., E_{n-1}, E_{n}. Setting this flag
-	 *  to true without fullfilling this condition will result in undefined
-	 *  behavior. */
-/*	void setEnergiesAreInversionSymmetric(
-		bool energiesAreInversionSymmetric
-	);*/
-
-	/** Get wheter the energies are inversion symmetric. */
-//	bool getEnergiesAreInversionSymmetric() const;
-
-	/** Calculate self-energy vertex. */
-/*	std::vector<std::complex<double>> calculateSelfEnergyVertex(
-		const std::vector<double> &k,
-		const std::vector<int> &orbitalIndices
-	);*/
 
 	/** Calculate self-energy vertex. */
 	std::vector<std::complex<double>> calculateSelfEnergyVertex(
@@ -115,16 +70,7 @@ public:
 	/** Generate interaction amplitudes. Can be called multiple times and
 	 *  will only regenerate the interaction amplitudes when needed. */
 	void generateInteractionAmplitudes();
-
-	/** Save susceptibilities. */
-//	void saveSusceptibilities(const std::string &filename) const;
-
-	/** Load susceptibilities. */
-//	void loadSusceptibilities(const std::string &filename);
 private:
-	/** SusceptibilityCalculator. */
-//	RPASusceptibilityCalculator *rpaSusceptibilityCalculator;
-
 	/** Momentum space context. */
 	const MomentumSpaceContext &momentumSpaceContext;
 
@@ -134,17 +80,8 @@ private:
 	/** Spin susceptibility. */
 	const Property::Susceptibility &spinSusceptibility;
 
-	/** Energy type. */
-//	EnergyType energyType;
-
-	/** Energies to calculate the vertex for. */
-//	std::vector<std::complex<double>> energies;
-
 	/** Flag indicating whether the SelfEnergyCalculator is initialized. */
 	bool isInitialized;
-
-	/** IndexedDataTree storing the vertex. */
-//	IndexedDataTree<SerializableVector<std::complex<double>>> vertexTree;
 
 	/** Interaction parameters. */
 	std::complex<double> U, Up, J, Jp;
@@ -157,11 +94,6 @@ private:
 	/** Flag indicating whether the interaction amplitudes are initialized.
 	 */
 	bool interactionAmplitudesAreGenerated;
-
-	/** Slave constructor. */
-/*	ElectronFluctuationVertexCalculator(
-		RPASusceptibilityCalculator &rpaSusceptibilityCalculator
-	);*/
 };
 
 inline const MomentumSpaceContext&
@@ -178,62 +110,6 @@ inline const Property::Susceptibility&
 ElectronFluctuationVertex::getSpinSusceptibility() const{
 	return spinSusceptibility;
 }
-
-/*inline void ElectronFluctuationVertexCalculator::setEnergyType(
-	EnergyType energyType
-){
-	this->energyType = energyType;
-	switch(energyType){
-	case EnergyType::Real:
-		rpaSusceptibilityCalculator->setEnergyType(
-			RPASusceptibilityCalculator::EnergyType::Real
-		);
-		break;
-	case EnergyType::Imaginary:
-		rpaSusceptibilityCalculator->setEnergyType(
-			RPASusceptibilityCalculator::EnergyType::Imaginary
-		);
-		break;
-	case EnergyType::Complex:
-		rpaSusceptibilityCalculator->setEnergyType(
-			RPASusceptibilityCalculator::EnergyType::Complex
-		);
-		break;
-	default:
-		TBTKExit(
-			"ElectronFluctuationVertexCalculator::setEnergyType()",
-			"Unknown energy type.",
-			"This should never happen, contact the developer."
-		);
-	}
-}
-
-inline ElectronFluctuationVertexCalculator::EnergyType ElectronFluctuationVertexCalculator::getEnergyType(
-) const{
-	return energyType;
-}
-
-inline void ElectronFluctuationVertexCalculator::setEnergies(
-	const std::vector<std::complex<double>> &energies
-){
-	this->energies = energies;
-	vertexTree.clear();
-
-	rpaSusceptibilityCalculator->setEnergies(energies);
-}
-
-inline void ElectronFluctuationVertexCalculator::setEnergiesAreInversionSymmetric(
-	bool energiesAreInversionSymmetric
-){
-	rpaSusceptibilityCalculator->setEnergiesAreInversionSymmetric(
-		energiesAreInversionSymmetric
-	);
-}
-
-inline bool ElectronFluctuationVertexCalculator::getEnergiesAreInversionSymmetric(
-) const{
-	return rpaSusceptibilityCalculator->getEnergiesAreInversionSymmetric();
-}*/
 
 inline void ElectronFluctuationVertex::setU(std::complex<double> U){
 	this->U = U;
@@ -254,18 +130,6 @@ inline void ElectronFluctuationVertex::setJp(std::complex<double> Jp){
 	this->Jp = Jp;
 	interactionAmplitudesAreGenerated = false;
 }
-
-/*inline void ElectronFluctuationVertexCalculator::saveSusceptibilities(
-	const std::string &filename
-) const{
-	rpaSusceptibilityCalculator->saveSusceptibilities(filename);
-}
-
-inline void ElectronFluctuationVertexCalculator::loadSusceptibilities(
-	const std::string &filename
-){
-	rpaSusceptibilityCalculator->loadSusceptibilities(filename);
-}*/
 
 };	//End of namespace Solver
 };	//End of namespace TBTK

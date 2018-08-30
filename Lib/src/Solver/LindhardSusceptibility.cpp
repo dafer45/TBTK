@@ -69,8 +69,6 @@ LindhardSusceptibility::LindhardSusceptibility(
 }
 
 LindhardSusceptibility::~LindhardSusceptibility(){
-//	if(getIsMaster() && fermiDiracLookupTable != nullptr)
-//		delete [] fermiDiracLookupTable;
 	if(isMaster && fermiDiracLookupTable != nullptr)
 		delete [] fermiDiracLookupTable;
 	if(isMaster && kPlusQLookupTable != nullptr)

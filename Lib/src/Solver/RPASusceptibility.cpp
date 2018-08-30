@@ -221,11 +221,6 @@ vector<vector<vector<complex<double>>>> RPASusceptibility::rpaSusceptibilityMain
 			for(unsigned int d = 0; d < numOrbitals; d++){
 				int col = numOrbitals*c + d;
 
-/*				vector<complex<double>> susceptibility
-					= susceptibilityCalculator->calculateSusceptibility(
-						kDual,
-						{c1, a0, (int)d, (int)c}
-					);*/
 				const vector<complex<double>> &susceptibility
 					= bareSusceptibility.getData();
 				unsigned int offset
@@ -272,16 +267,6 @@ vector<vector<vector<complex<double>>>> RPASusceptibility::rpaSusceptibilityMain
 	//Calculate \chi_RPA = \chi_0/(1 + U\chi_0)
 	for(unsigned int c = 0; c < numOrbitals; c++){
 		for(unsigned int d = 0; d < numOrbitals; d++){
-/*			vector<complex<double>> susceptibility
-				= susceptibilityCalculator->calculateSusceptibility(
-					kDual,
-					{
-						orbitalIndices.at(0),
-						orbitalIndices.at(1),
-						(int)d,
-						(int)c
-					}
-				);*/
 			const vector<complex<double>> &susceptibility
 				= bareSusceptibility.getData();
 			unsigned int offset = bareSusceptibility.getOffset({
@@ -335,13 +320,6 @@ IndexedDataTree<vector<complex<double>>> RPASusceptibility::calculateRPASuscepti
 		components[3],
 		components[4],
 	};
-
-	//Calculate RPA-susceptibility
-/*	vector<vector<vector<complex<double>>>> rpaSusceptibility = rpaSusceptibilityMainAlgorithm(
-		kDual,
-		orbitalIndices,
-		interactionAmplitudes
-	);*/
 
 	//TODO
 	//The way intraBlockIndices[n] are used assumes that they have a single
@@ -481,18 +459,6 @@ IndexedDataTree<vector<complex<double>>> RPASusceptibility::calculateChargeRPASu
 	//Setup InteractionAmplitude
 	generateInteractionAmplitudes();
 
-	//Calculate the RPA charge-susceptibility
-/*	vector<vector<vector<complex<double>>>> rpaSusceptibility = rpaSusceptibilityMainAlgorithm(
-		kDual,
-		orbitalIndices,
-		interactionAmplitudesCharge
-	);*/
-
-/*	return rpaSusceptibilityMainAlgorithm(
-		index,
-		interactionAmplitudesCharge
-	)[intraBlockIndices[2][0]][intraBlockIndices[3][0]];*/
-
 	//TODO
 	//The way intraBlockIndices[n] are used assumes that they have a single
 	//subindex, which limits generality.
@@ -540,18 +506,6 @@ IndexedDataTree<vector<complex<double>>> RPASusceptibility::calculateSpinRPASusc
 
 	//Setup InteractionAmplitude
 	generateInteractionAmplitudes();
-
-	//Calculate RPA spin-susceptibility
-/*	vector<vector<vector<complex<double>>>> rpaSusceptibility = rpaSusceptibilityMainAlgorithm(
-		kDual,
-		orbitalIndices,
-		interactionAmplitudesSpin
-	);*/
-
-/*	return rpaSusceptibilityMainAlgorithm(
-		index,
-		interactionAmplitudesSpin
-	)[intraBlockIndices[2][0]][intraBlockIndices[3][0]];*/
 
 	//TODO
 	//The way intraBlockIndices[n] are used assumes that they have a single

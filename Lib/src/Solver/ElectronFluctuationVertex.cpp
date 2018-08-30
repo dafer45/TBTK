@@ -46,41 +46,10 @@ ElectronFluctuationVertex::ElectronFluctuationVertex(
 	J = 0.;
 	Jp = 0.;
 
-/*	rpaSusceptibilityCalculator = new RPASusceptibilityCalculator(
-		momentumSpaceContext,
-		SusceptibilityCalculator::Algorithm::Lindhard
-	);*/
-
 	interactionAmplitudesAreGenerated = false;
 
 	isInitialized = true;
 }
-
-/*ElectronFluctuationVertex::ElectronFluctuationVertex(
-	RPASusceptibilityCalculator &rpaSusceptibilityCalculator
-){
-	U = 0.;
-	Up = 0.;
-	J = 0.;
-	Jp = 0.;
-
-	this->rpaSusceptibilityCalculator = rpaSusceptibilityCalculator.createSlave();
-
-	interactionAmplitudesAreGenerated = false;
-
-	isInitialized = true;
-}
-
-ElectronFluctuationVertexCalculator::~ElectronFluctuationVertexCalculator(){
-	if(rpaSusceptibilityCalculator != nullptr)
-		delete rpaSusceptibilityCalculator;
-}
-
-ElectronFluctuationVertexCalculator* ElectronFluctuationVertexCalculator::createSlave(){
-	return new ElectronFluctuationVertexCalculator(
-		*rpaSusceptibilityCalculator
-	);
-}*/
 
 void ElectronFluctuationVertex::generateInteractionAmplitudes(){
 	if(interactionAmplitudesAreGenerated)
@@ -179,21 +148,6 @@ void ElectronFluctuationVertex::generateInteractionAmplitudes(){
 vector<complex<double>> ElectronFluctuationVertex::calculateSelfEnergyVertex(
 	const Index &index
 ){
-/*	TBTKAssert(
-		isInitialized,
-		"ElectronFLuctuationVertex::calculateSelfEnergyVertex()",
-		"ElectronFluctuationVertex not yet initialized.",
-		"Use ElectronFluctuationVertex::init() to initialize"
-		<< " the SelfEnergyCalculator."
-	);
-	TBTKAssert(
-		orbitalIndices.size() == 4,
-		"ElectronFluctuationVertex::calculateSelfEnergyVertex()",
-		"Two orbital indices required but " << orbitalIndices.size()
-		<< " supplied.",
-		""
-	);*/
-
 	TBTKAssert(
 		spinSusceptibility.getEnergyType()
 		== chargeSusceptibility.getEnergyType(),
@@ -280,35 +234,7 @@ vector<complex<double>> ElectronFluctuationVertex::calculateSelfEnergyVertex(
 
 	generateInteractionAmplitudes();
 
-//	const BrillouinZone &brillouinZone
-//		= momentumSpaceContext.getBrillouinZone();
-//	const vector<unsigned int> &numMeshPoints
-//		= momentumSpaceContext.getNumMeshPoints();
-
-	//Calculate offset
-/*	Index kIndex = brillouinZone.getMinorCellIndex(
-		k,
-		numMeshPoints
-	);
-
-	Index resultIndex = Index(
-		kIndex,
-		{
-			orbitalIndices.at(0),
-			orbitalIndices.at(1),
-			orbitalIndices.at(2),
-			orbitalIndices.at(3)
-		}
-	);
-
-	SerializableVector<complex<double>> result;
-	if(vertexTree.get(result, resultIndex))
-		return result;
-
-	DualIndex kDual(kIndex, k);*/
-
 	vector<complex<double>> selfEnergyVertex;
-//	selfEnergyVertex.reserve(energies.size());
 	selfEnergyVertex.reserve(numEnergies);
 	for(
 		unsigned int n = 0;
@@ -327,13 +253,6 @@ vector<complex<double>> ElectronFluctuationVertex::calculateSelfEnergyVertex(
 		int a0_i = incommingAmplitude.getAnnihilationOperatorIndex(0).at(0);
 		int a1_i = incommingAmplitude.getAnnihilationOperatorIndex(1).at(0);
 
-/*		if(
-			a1_i != orbitalIndices.at(3)
-			|| c0_i != orbitalIndices.at(2)
-			|| abs(amplitude_i) < 1e-10
-		){
-			continue;
-		}*/
 		if(
 			a1_i != intraBlockIndices[3][0]
 			|| c0_i != intraBlockIndices[2][0]
@@ -350,14 +269,6 @@ vector<complex<double>> ElectronFluctuationVertex::calculateSelfEnergyVertex(
 			int a0_o = outgoingAmplitude.getAnnihilationOperatorIndex(0).at(0);
 			int a1_o = outgoingAmplitude.getAnnihilationOperatorIndex(1).at(0);
 
-/*			if(
-				a0_o != orbitalIndices.at(0)
-				|| c1_o != orbitalIndices.at(1)
-				|| abs(amplitude_o) < 1e-10
-			){
-				continue;
-			}*/
-
 			if(
 				a0_o != intraBlockIndices[0][0]
 				|| c1_o != intraBlockIndices[1][0]
@@ -365,15 +276,6 @@ vector<complex<double>> ElectronFluctuationVertex::calculateSelfEnergyVertex(
 			){
 				continue;
 			}
-
-/*			vector<complex<double>> chargeSusceptibility = rpaSusceptibilityCalculator->calculateChargeRPASusceptibility(
-				kDual,
-				{c0_o, a1_o, c1_i, a0_i}
-			);
-			vector<complex<double>> spinSusceptibility = rpaSusceptibilityCalculator->calculateSpinRPASusceptibility(
-				kDual,
-				{c0_o, a1_o, c1_i, a0_i}
-			);*/
 
 			const vector<complex<double>> &chargeSusceptibilityData
 				= chargeSusceptibility.getData();
@@ -423,13 +325,6 @@ vector<complex<double>> ElectronFluctuationVertex::calculateSelfEnergyVertex(
 		int a0_i = incommingAmplitude.getAnnihilationOperatorIndex(0).at(0);
 		int a1_i = incommingAmplitude.getAnnihilationOperatorIndex(1).at(0);
 
-/*		if(
-			a1_i != orbitalIndices.at(3)
-			|| c0_i != orbitalIndices.at(2)
-			|| abs(amplitude_i) < 1e-10
-		){
-			continue;
-		}*/
 		if(
 			a1_i != intraBlockIndices[3][0]
 			|| c0_i != intraBlockIndices[2][0]
@@ -446,13 +341,6 @@ vector<complex<double>> ElectronFluctuationVertex::calculateSelfEnergyVertex(
 			int a0_o = outgoingAmplitude.getAnnihilationOperatorIndex(0).at(0);
 			int a1_o = outgoingAmplitude.getAnnihilationOperatorIndex(1).at(0);
 
-/*			if(
-				a0_o != orbitalIndices.at(0)
-				|| c1_o != orbitalIndices.at(1)
-				|| abs(amplitude_o) < 1e-10
-			){
-				continue;
-			}*/
 			if(
 				a0_o != intraBlockIndices[0][0]
 				|| c1_o != intraBlockIndices[1][0]
@@ -461,14 +349,6 @@ vector<complex<double>> ElectronFluctuationVertex::calculateSelfEnergyVertex(
 				continue;
 			}
 
-/*			vector<complex<double>> chargeSusceptibility = rpaSusceptibilityCalculator->calculateChargeRPASusceptibility(
-				kDual,
-				{c0_o, a1_o, c1_i, a0_i}
-			);
-			vector<complex<double>> spinSusceptibility = rpaSusceptibilityCalculator->calculateSpinRPASusceptibility(
-				kDual,
-				{c0_o, a1_o, c1_i, a0_i}
-			);*/
 			const vector<complex<double>> &chargeSusceptibilityData
 				= chargeSusceptibility.getData();
 			unsigned int offsetChargeSusceptibility
@@ -516,13 +396,6 @@ vector<complex<double>> ElectronFluctuationVertex::calculateSelfEnergyVertex(
 		int a0_i = incommingAmplitude.getAnnihilationOperatorIndex(0).at(0);
 		int a1_i = incommingAmplitude.getAnnihilationOperatorIndex(1).at(0);
 
-/*		if(
-			a1_i != orbitalIndices.at(3)
-			|| c0_i != orbitalIndices.at(2)
-			|| abs(amplitude_i) < 1e-10
-		){
-			continue;
-		}*/
 		if(
 			a1_i != intraBlockIndices[3][0]
 			|| c0_i != intraBlockIndices[2][0]
@@ -539,13 +412,6 @@ vector<complex<double>> ElectronFluctuationVertex::calculateSelfEnergyVertex(
 			int a0_o = outgoingAmplitude.getAnnihilationOperatorIndex(0).at(0);
 			int a1_o = outgoingAmplitude.getAnnihilationOperatorIndex(1).at(0);
 
-/*			if(
-				a0_o != orbitalIndices.at(0)
-				|| c1_o != orbitalIndices.at(1)
-				|| abs(amplitude_o) < 1e-10
-			){
-				continue;
-			}*/
 			if(
 				a0_o != intraBlockIndices[0][0]
 				|| c1_o != intraBlockIndices[1][0]
@@ -554,14 +420,6 @@ vector<complex<double>> ElectronFluctuationVertex::calculateSelfEnergyVertex(
 				continue;
 			}
 
-/*			vector<complex<double>> chargeSusceptibility = rpaSusceptibilityCalculator->calculateChargeRPASusceptibility(
-				kDual,
-				{c0_o, a1_o, c1_i, a0_i}
-			);
-			vector<complex<double>> spinSusceptibility = rpaSusceptibilityCalculator->calculateSpinRPASusceptibility(
-				kDual,
-				{c0_o, a1_o, c1_i, a0_i}
-			);*/
 			const vector<complex<double>> &chargeSusceptibilityData
 				= chargeSusceptibility.getData();
 			unsigned int offsetChargeSusceptibility
@@ -610,13 +468,6 @@ vector<complex<double>> ElectronFluctuationVertex::calculateSelfEnergyVertex(
 		int a0_i = incommingAmplitude.getAnnihilationOperatorIndex(0).at(0);
 		int a1_i = incommingAmplitude.getAnnihilationOperatorIndex(1).at(0);
 
-/*		if(
-			a1_i != orbitalIndices.at(3)
-			|| c0_i != orbitalIndices.at(2)
-			|| abs(amplitude_i) < 1e-10
-		){
-			continue;
-		}*/
 		if(
 			a1_i != intraBlockIndices[3][0]
 			|| c0_i != intraBlockIndices[2][0]
@@ -633,13 +484,6 @@ vector<complex<double>> ElectronFluctuationVertex::calculateSelfEnergyVertex(
 			int a0_o = outgoingAmplitude.getAnnihilationOperatorIndex(0).at(0);
 			int a1_o = outgoingAmplitude.getAnnihilationOperatorIndex(1).at(0);
 
-/*			if(
-				a0_o != orbitalIndices.at(0)
-				|| c1_o != orbitalIndices.at(1)
-				|| abs(amplitude_o) < 1e-10
-			){
-				continue;
-			}*/
 			if(
 				a0_o != intraBlockIndices[0][0]
 				|| c1_o != intraBlockIndices[1][0]
@@ -648,14 +492,6 @@ vector<complex<double>> ElectronFluctuationVertex::calculateSelfEnergyVertex(
 				continue;
 			}
 
-/*			vector<complex<double>> chargeSusceptibility = rpaSusceptibilityCalculator->calculatechargeRPASusceptibility(
-				kDual,
-				{c0_o, a1_o, c1_i, a0_i}
-			);
-			vector<complex<double>> spinSusceptibility = rpaSusceptibilityCalculator->calculateSpinRPASusceptibility(
-				kDual,
-				{c0_o, a1_o, c1_i, a0_i}
-			);*/
 			const vector<complex<double>> &chargeSusceptibilityData
 				= chargeSusceptibility.getData();
 			unsigned int offsetChargeSusceptibility
@@ -704,13 +540,6 @@ vector<complex<double>> ElectronFluctuationVertex::calculateSelfEnergyVertex(
 		int a0_i = incommingAmplitude.getAnnihilationOperatorIndex(0).at(0);
 		int a1_i = incommingAmplitude.getAnnihilationOperatorIndex(1).at(0);
 
-/*		if(
-			a1_i != orbitalIndices.at(3)
-			|| c0_i != orbitalIndices.at(2)
-			|| abs(amplitude_i) < 1e-10
-		){
-			continue;
-		}*/
 		if(
 			a1_i != intraBlockIndices[3][0]
 			|| c0_i != intraBlockIndices[2][0]
@@ -727,13 +556,6 @@ vector<complex<double>> ElectronFluctuationVertex::calculateSelfEnergyVertex(
 			int a0_o = outgoingAmplitude.getAnnihilationOperatorIndex(0).at(0);
 			int a1_o = outgoingAmplitude.getAnnihilationOperatorIndex(1).at(0);
 
-/*			if(
-				a0_o != orbitalIndices.at(0)
-				|| c1_o != orbitalIndices.at(1)
-				|| abs(amplitude_o) < 1e-10
-			){
-				continue;
-			}*/
 			if(
 				a0_o != intraBlockIndices[0][0]
 				|| c1_o != intraBlockIndices[1][0]
@@ -742,10 +564,6 @@ vector<complex<double>> ElectronFluctuationVertex::calculateSelfEnergyVertex(
 				continue;
 			}
 
-/*			vector<complex<double>> spinSusceptibility = rpaSusceptibilityCalculator->calculateSpinRPASusceptibility(
-				kDual,
-				{c0_o, a1_o, c1_i, a0_i}
-			);*/
 			const vector<complex<double>> &spinSusceptibilityData
 				= spinSusceptibility.getData();
 			unsigned int offsetSpinSusceptibility
@@ -768,8 +586,6 @@ vector<complex<double>> ElectronFluctuationVertex::calculateSelfEnergyVertex(
 			}
 		}
 	}
-
-//	vertexTree.add(selfEnergyVertex, resultIndex);
 
 	return selfEnergyVertex;
 }

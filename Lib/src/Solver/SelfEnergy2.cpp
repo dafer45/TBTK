@@ -329,11 +329,6 @@ Property::SelfEnergy SelfEnergy2::calculateSelfEnergyAllBlocks(
 	int upperMatsubaraEnergyIndexInteractionVertex
 		= interactionVertex.getLowerMatsubaraEnergyIndex();
 
-/*	vector<complex<double>> selfEnergy;
-	selfEnergy.reserve(numMatsubaraEnergiesSelfEnergy);
-	for(unsigned int n = 0; n < numMatsubaraEnergiesSelfEnergy; n++)
-		selfEnergy.push_back(0.);*/
-
 	const vector<vector<double>> &mesh = momentumSpaceContext.getMesh();
 	const vector<unsigned int> &numMeshPoints
 		= momentumSpaceContext.getNumMeshPoints();
@@ -551,103 +546,6 @@ Property::SelfEnergy SelfEnergy2::calculateSelfEnergyAllBlocks(
 			}
 		}
 	}
-
-/*	vector<unsigned int> kVector;
-	kVector.reserve(kIndex.getSize());
-	for(unsigned int n = 0; n < kIndex.getSize(); n++)
-		kVector.push_back(kIndex[n]);
-	vector<double> k = brillouinZone.getMinorMeshPoint(
-		kVector,
-		numMeshPoints
-	);
-
-	for(unsigned int meshPoint = 0; meshPoint < mesh.size(); meshPoint++){
-		Index qIndex = brillouinZone.getMinorCellIndex(
-			{mesh[meshPoint][0], mesh[meshPoint][1]},
-			numMeshPoints
-		);
-		Index kMinusQIndex = brillouinZone.getMinorCellIndex(
-			{k[0] - mesh[meshPoint][0], k[1] - mesh[meshPoint][1]},
-			numMeshPoints
-		);
-
-		for(
-			int selfEnergyIndex = 0;
-			selfEnergyIndex < (int)numMatsubaraEnergiesSelfEnergy;
-			selfEnergyIndex++
-		){
-			int matsubaraEnergyIndexExternal
-				= lowerMatsubaraEnergyIndex
-					+ 2*selfEnergyIndex;
-			for(
-				int firstEnergyIndex = 0;
-				firstEnergyIndex < (int)numMatsubaraEnergiesInteractionVertex;
-				firstEnergyIndex++
-			){
-				int matsubaraEnergyIndexInternal
-					= lowerMatsubaraEnergyIndexInteractionVertex
-						+ 2*firstEnergyIndex;
-
-				int differenceMatsubaraEnergyIndices
-					= matsubaraEnergyIndexExternal
-						- matsubaraEnergyIndexInternal;
-
-				if(
-					differenceMatsubaraEnergyIndices
-					< lowerMatsubaraEnergyIndexGreensFunction
-					|| differenceMatsubaraEnergyIndices
-					> upperMatsubaraEnergyIndexGreensFunction
-				){
-					continue;
-				}
-
-				int secondEnergyIndex = (
-					differenceMatsubaraEnergyIndices
-					- lowerMatsubaraEnergyIndexGreensFunction
-				)/2;
-
-				for(
-					unsigned int orbital0 = 0;
-					orbital0 < numOrbitals;
-					orbital0++
-				){
-					for(
-						unsigned int orbital1 = 0;
-						orbital1 < numOrbitals;
-						orbital1++
-					){
-						selfEnergy[selfEnergyIndex]
-							+= interactionVertex(
-								{
-									qIndex,
-									intraBlockIndices[0],
-									{orbital1},
-									{orbital0},
-									intraBlockIndices[1]
-								},
-								firstEnergyIndex
-						)*greensFunction(
-							{
-								Index(
-									kMinusQIndex,
-									{orbital1}
-								),
-								Index(
-									kMinusQIndex,
-									{orbital0}
-								)
-							},
-							secondEnergyIndex
-						);
-					}
-				}
-			}
-		}
-	}
-
-	double kT = greensFunction.getFundamentalMatsubaraEnergy()/M_PI;
-	for(unsigned int n = 0; n < numMatsubaraEnergiesSelfEnergy; n++)
-		selfEnergy[n] /= mesh.size()/kT;*/
 
 	return selfEnergy;
 }

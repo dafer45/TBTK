@@ -31,8 +31,6 @@
 
 #include <complex>
 
-//#include <omp.h>
-
 namespace TBTK{
 namespace Solver{
 
