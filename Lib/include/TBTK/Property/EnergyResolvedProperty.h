@@ -193,6 +193,14 @@ public:
 	/** Get the nth Matsubara energy. */
 	std::complex<double> getMatsubaraEnergy(unsigned int n) const;
 
+	/** Get the number of energies. The same as
+	 *  EnergyResolvedProperty::getResolution() for EnergyType::Real and
+	 *  EnergyResolvedProperty::getNumMatsubaraEnergies() for
+	 *  EnergyType::FermionicMatsubara and EnergyTpe::BosnicMatsubara.
+	 *
+	 *  @return The number of energies. */
+	unsigned int getNumEnergies() const;
+
 	/** Overrides AbstractProperty::serialize(). */
 	virtual std::string serialize(Serializable::Mode mode) const;
 private:
@@ -755,6 +763,23 @@ inline std::complex<double> EnergyResolvedProperty<
 		(descriptor.matsubaraEnergy.lowerMatsubaraEnergyIndex + 2*(int)n)
 		*descriptor.matsubaraEnergy.fundamentalMatsubaraEnergy
 	);
+}
+
+template<typename DataType>
+inline unsigned int EnergyResolvedProperty<DataType>::getNumEnergies() const{
+	switch(energyType){
+	case EnergyType::Real:
+		return getResolution();
+	case EnergyType::FermionicMatsubara:
+	case EnergyType::BosonicMatsubara:
+		return getNumMatsubaraEnergies();
+	default:
+		TBTKExit(
+			"Property::EnergyResolvedProperty::getNumEnergies()",
+			"Unknown energy type.",
+			"This should never happen, contact the developer."
+		);
+	}
 }
 
 template<typename DataType>

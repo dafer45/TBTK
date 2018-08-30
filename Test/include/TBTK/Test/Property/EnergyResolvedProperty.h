@@ -1102,6 +1102,52 @@ TEST(EnergyResolvedProperty, getMatsubaraEnergy){
 	}
 }
 
+TEST(EnergyResolvedProperty, getNumEnergies){
+	IndexTree indexTree;
+	indexTree.add({0});
+	indexTree.add({1});
+	indexTree.add({2});
+	indexTree.generateLinearMap();
+
+	//EnergyType::Real.
+	EnergyResolvedProperty<int> energyResolvedProperty(
+		indexTree,
+		-10,
+		10,
+		1000
+	);
+	EXPECT_EQ(
+		energyResolvedProperty.getNumEnergies(),
+		energyResolvedProperty.getResolution()
+	);
+
+	//EnergyType::FermionicMatsubara.
+	energyResolvedProperty = EnergyResolvedProperty<int>(
+		EnergyResolvedProperty<int>::EnergyType::FermionicMatsubara,
+		indexTree,
+		-9,
+		9,
+		1
+	);
+	EXPECT_EQ(
+		energyResolvedProperty.getNumEnergies(),
+		energyResolvedProperty.getNumMatsubaraEnergies()
+	);
+
+	//EnergyType::BosonicMatsubara.
+	energyResolvedProperty = EnergyResolvedProperty<int>(
+		EnergyResolvedProperty<int>::EnergyType::BosonicMatsubara,
+		indexTree,
+		-10,
+		10,
+		1
+	);
+	EXPECT_EQ(
+		energyResolvedProperty.getNumEnergies(),
+		energyResolvedProperty.getNumMatsubaraEnergies()
+	);
+}
+
 TEST(EnergyResolvedProperty, serialize){
 	//Already tested through EnergyResolvedProperty::SerializatToJSON().
 }
