@@ -190,6 +190,14 @@ HoppingAmplitudeSet* FileReader::readHoppingAmplitudeSet(
 }
 
 Geometry* FileReader::readGeometry(Model *model, string name, string path){
+	//Se ATTENTION comment below.
+	TBTKExit(
+		"FileReader::readGeometry()",
+		"This function is no longer supported.",
+		"The FileReader and FileWriter are deprecated. Please use"
+		<< " serialization instead."
+	);
+
 	Geometry *geometry = NULL;
 
 	try{
@@ -242,7 +250,12 @@ Geometry* FileReader::readGeometry(Model *model, string name, string path){
 		);
 		DataSpace dataspaceS = datasetS.getSpace();
 
-		hsize_t dims_internalC[2];
+		//ATTENTION: The coordinate data can no longer be easily stored
+		//by the FileWriter. The following lines are therefore not
+		//valid any longer and commented out and left here in case they
+		//are needed for future reference.
+		geometry = nullptr;
+/*		hsize_t dims_internalC[2];
 		dataspaceC.getSimpleExtentDims(dims_internalC, NULL);
 		int dimensions = dims_internalC[1];
 
@@ -254,7 +267,7 @@ Geometry* FileReader::readGeometry(Model *model, string name, string path){
 
 		datasetC.read(geometry->coordinates, PredType::NATIVE_DOUBLE, dataspaceC);
 		if(numSpecifiers != 0)
-			datasetS.read(geometry->specifiers, PredType::NATIVE_INT, dataspaceS);
+			datasetS.read(geometry->specifiers, PredType::NATIVE_INT, dataspaceS);*/
 
 		datasetC.close();
 		dataspaceC.close();

@@ -89,12 +89,14 @@ private:
 
 	/** Write coordinates. Example: (0.1, 0.2, 0.3). */
 	static void writeCoordinates(
-		const double *coordinates,
-		int numCoordinates
+//		const double *coordinates,
+		const std::vector<double> &coordinates/*,
+		int numCoordinates*/
 	);
 
 	/** Write specifiers. Example: <1 3>. */
-	static void writeSpecifiers(const int *specifiers, int numSpecifiers);
+//	static void writeSpecifiers(const int *specifiers, int numSpecifiers);
+	static void writeSpecifiers(const std::vector<int> &specifiers);
 
 	/** Write description comment. */
 	static void writeDescription(std::string description);

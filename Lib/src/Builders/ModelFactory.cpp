@@ -171,10 +171,14 @@ Model* ModelFactory::createModel(
 				states.at(n)->getContainer(),
 				states.at(n)->getIndex()
 			),
-			states.at(n)->getCoordinates(),
-			states.at(n)->getSpecifiers()
+			states.at(n)->getCoordinates()/*,
+			states.at(n)->getSpecifiers()*/
 		);
 	}
+
+	//TODO:
+	//Add specifiers to a yet missing Specifier class (should be analogous
+	//to the Geometry class but for non Geometric data.)
 
 	return model;
 }
@@ -248,10 +252,14 @@ Model* ModelFactory::createModel(
 				states.at(n)->getContainer(),
 				states.at(n)->getIndex()
 			),
-			states.at(n)->getCoordinates(),
-			states.at(n)->getSpecifiers()
+			states.at(n)->getCoordinates()/*,
+			states.at(n)->getSpecifiers()*/
 		);
 	}
+
+	//TODO:
+	//Add specifiers to a yet missing Specifier class (should be analogous
+	//to the Geometry class but for non Geometric data.)
 
 	return model;
 }
@@ -409,9 +417,9 @@ Model* ModelFactory::merge(
 			break;
 		}
 
-		if(m->getGeometry()->getNumSpecifiers() != 0){
+/*		if(m->getGeometry()->getNumSpecifiers() != 0){
 			Streams::out << "Warning in ModelFactory::merge: Specifiers ignored in model " << n << ".\n";
-		}
+		}*/
 	}
 
 	if(geometryExists){
@@ -436,7 +444,8 @@ Model* ModelFactory::merge(
 
 //				int basisIndex = m->getBasisIndex(ha->fromIndex);
 				int basisIndex = m->getBasisIndex((*iterator).getFromIndex());
-				const double *coordinates = g->getCoordinates(basisIndex);
+//				const double *coordinates = g->getCoordinates(basisIndex);
+				const vector<double>& coordinates = g->getCoordinates(model->getHoppingAmplitudeSet().getPhysicalIndex(basisIndex));
 
 				geometry->setCoordinates(newFrom, {coordinates[0], coordinates[1], coordinates[2]});
 			}

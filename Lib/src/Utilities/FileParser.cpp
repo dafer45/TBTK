@@ -285,12 +285,13 @@ void FileParser::write(const Index &index){
 }
 
 void FileParser::writeCoordinates(
-	const double *coordinates,
-	int numCoordinates
+//	const double *coordinates,
+	const vector<double> &coordinates/*,
+	int numCoordinates*/
 ){
 	stringstream ss;
 	ss << "(";
-	for(int n = 0; n < numCoordinates; n++){
+	for(unsigned int n = 0; n < coordinates.size(); n++){
 		if(n != 0)
 			ss << " ";
 		ss << coordinates[n];
@@ -300,10 +301,11 @@ void FileParser::writeCoordinates(
 	fout << ss.str();
 }
 
-void FileParser::writeSpecifiers(const int *specifiers, int numSpecifiers){
+//void FileParser::writeSpecifiers(const int *specifiers, int numSpecifiers){
+void FileParser::writeSpecifiers(const vector<int> &specifiers){
 	stringstream ss;
 	ss << "<";
-	for(int n = 0; n < numSpecifiers; n++){
+	for(unsigned int n = 0; n < specifiers.size(); n++){
 		if(n != 0)
 			ss << " ";
 		ss << specifiers[n];
@@ -393,9 +395,9 @@ void FileParser::writeGeometry(Model *model){
 	}
 
 	int dimensions = geometry->getDimensions();
-	const int numSpecifiers = geometry->getNumSpecifiers();
+//	const int numSpecifiers = geometry->getNumSpecifiers();
 	fout << left << setw(30) << "Dimensions" << "= " << dimensions << "\n";
-	fout << left << setw(30) << "Num specifiers" << "= " << numSpecifiers << "\n";
+//	fout << left << setw(30) << "Num specifiers" << "= " << numSpecifiers << "\n";
 
 	Index dummyIndex({-1});
 	Index &prevIndex = dummyIndex;//Start with dummy index
@@ -407,12 +409,15 @@ void FileParser::writeGeometry(Model *model){
 	){
 		const Index &index = (*iterator).getFromIndex();
 		if(!index.equals(prevIndex)){
-			const double *coordinates = geometry->getCoordinates(index);
-			const int *specifiers = geometry->getSpecifiers(index);
+//			const double *coordinates = geometry->getCoordinates(index);
+			const vector<double> &coordinates = geometry->getCoordinates(index);
+//			const int *specifiers = geometry->getSpecifiers(index);
 			fout << left << setw(30);
-			writeCoordinates(coordinates, dimensions);
+//			writeCoordinates(coordinates, dimensions);
+			writeCoordinates(coordinates);
 			fout << setw(20);
-			writeSpecifiers(specifiers, numSpecifiers);
+//			writeSpecifiers(specifiers, numSpecifiers);
+			writeSpecifiers({});
 			write(index);
 			writeLineBreaks(1);
 
@@ -665,7 +670,8 @@ void FileParser::readGeometry(Model *model){
 
 		Index *index = readIndex();
 
-		geometry->setCoordinates(*index, coordinates, specifiers);
+//		geometry->setCoordinates(*index, coordinates, specifiers);
+		geometry->setCoordinates(*index, coordinates);
 
 		delete index;
 

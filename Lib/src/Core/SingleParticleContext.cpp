@@ -103,7 +103,8 @@ SingleParticleContext::SingleParticleContext(
 		if(elements.at(2).compare("null") == 0)
 			geometry = nullptr;
 		else
-			geometry = new Geometry(elements.at(2), mode, hoppingAmplitudeSet);
+			geometry = new Geometry(elements.at(2), mode);
+//			geometry = new Geometry(elements.at(2), mode, hoppingAmplitudeSet);
 
 		break;
 	}
@@ -123,8 +124,8 @@ SingleParticleContext::SingleParticleContext(
 			try{
 				geometry = new Geometry(
 					j.at("geometry").dump(),
-					mode,
-					hoppingAmplitudeSet
+					mode/*,
+					hoppingAmplitudeSet*/
 				);
 			}
 			catch(nlohmann::json::exception e){
@@ -198,9 +199,9 @@ void SingleParticleContext::createGeometry(int dimensions, int numSpecifiers){
 	);
 
 	geometry = new Geometry(
-		dimensions,
+/*		dimensions,
 		numSpecifiers,
-		&hoppingAmplitudeSet
+		&hoppingAmplitudeSet*/
 	);
 }
 

@@ -184,7 +184,17 @@ void FileWriter::writeGeometry(
 	string name,
 	string path
 ){
-	TBTKAssert(
+	TBTKExit(
+		"FileWriter::writeGeometry()",
+		"This function is no longer supported.",
+		"The FileReader and FileWriter are deprecated. Please use"
+		<< " serialization instead."
+	);
+	//The coordinate data can no longer be easily stored by the FileWriter.
+	//The code blow is therefore not valid any longer and commented out and
+	//left here in case they are needed for future reference.
+
+/*	TBTKAssert(
 		path.compare("/") == 0,
 		"FileWriter::writeGeometry()",
 		"'path' not yet supported.",
@@ -266,7 +276,7 @@ void FileWriter::writeGeometry(
 			"While writing to " << name << ".",
 			""
 		);
-	}
+	}*/
 }
 
 void FileWriter::writeIndexTree(
