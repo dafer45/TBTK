@@ -58,6 +58,11 @@ public:
 	);
 
 	/** Calculates the Susceptibility. */
+	virtual Property::Susceptibility calculateRPASusceptibility(
+		std::vector<Index> patterns
+	);
+
+	/** Calculates the Susceptibility. */
 	virtual Property::Susceptibility calculateChargeSusceptibility(
 		std::vector<Index> patterns
 	);
@@ -67,6 +72,15 @@ public:
 		std::vector<Index> patterns
 	);
 private:
+	/** Calback for callculating susceptibility. */
+	static void calculateRPASusceptibilityCallback(
+		PropertyExtractor *cb_this,
+		Property::Property &property,
+		const Index &index,
+		int offset,
+		Information &information
+	);
+
 	/** Calback for callculating susceptibility. */
 	static void calculateChargeSusceptibilityCallback(
 		PropertyExtractor *cb_this,
@@ -87,6 +101,12 @@ private:
 
 	/** Solver::Diagonalizer to work on. */
 	Solver::RPASusceptibility *solver;
+
+	/** RPA susceptibility tree for storing results between calls to the
+	 *  calculateRPASusceptibilityCallback(). */
+	IndexedDataTree<
+		std::vector<std::complex<double>>
+	> rpaSusceptibilityTree;
 
 	/** Charge susceptibility tree for storing results between calls to the
 	 *  calculateChargeSusceptibilityCallback(). */

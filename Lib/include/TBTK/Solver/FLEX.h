@@ -114,8 +114,18 @@ public:
 
 	/** Set the interaction term J.
 	 *
-	 *  @param U The value of J. */
+	 *  @param J The value of J. */
 	void setJ(double J);
+
+	/** Set the interaction term Up.
+	 *
+	 *  @param Up The value of Up. */
+	void setUp(double Up);
+
+	/** Set the interaction term Jp.
+	 *
+	 *  @param Jp The value of Jp. */
+	void setJp(double Jp);
 
 	/** Get the current state.
 	 *
@@ -194,6 +204,12 @@ private:
 	/** The interaction term J. */
 	double J;
 
+	/** The interaction term Up. */
+	double Up;
+
+	/** The interaction term Jp. */
+	double Jp;
+
 	/** The current state the solver is in. */
 	State state;
 
@@ -241,6 +257,15 @@ private:
 	 *  between the previous and current Green's Function divided by the
 	 *  norm of the previous Green's function. */
 	void calculateConvergenceParameter();
+
+	/** Generate the interaction vertex for the RPA charge susceptibility.
+	 */
+	std::vector<InteractionAmplitude>
+		generateRPAChargeSusceptibilityInteractionAmplitudes();
+
+	/** Generate the interaction vertex for the RPA spin susceptibility. */
+	std::vector<InteractionAmplitude>
+		generateRPASpinSusceptibilityInteractionAmplitudes();
 };
 
 inline const MomentumSpaceContext& FLEX::getMomentumSpaceContext() const{
@@ -315,6 +340,14 @@ inline void FLEX::setU(double U){
 
 inline void FLEX::setJ(double J){
 	this->J = J;
+}
+
+inline void FLEX::setUp(double Up){
+	this->Up = Up;
+}
+
+inline void FLEX::setJp(double Jp){
+	this->Jp = Jp;
 }
 
 inline FLEX::State FLEX::getState() const{

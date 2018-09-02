@@ -48,6 +48,8 @@ FLEX::FLEX(const MomentumSpaceContext &momentumSpaceContext) :
 
 	U = 0;
 	J = 0;
+	Up = 0;
+	Jp = 0;
 
 	state = State::NotYetStarted;
 	maxIterations = 1;
@@ -113,7 +115,7 @@ void FLEX::calculateBareGreensFunction(){
 		= momentumSpaceContext.getNumMeshPoints();
 	TBTKAssert(
 		numMeshPoints.size() == 2,
-		"Solver::FLEX::run()",
+		"Solver::FLEX::calculateGreensFunction()()",
 		"Only two-dimensional block indices supported yet, but the"
 		<< " MomentumSpaceContext has a '" << numMeshPoints.size()
 		<< "'-dimensional block structure.",
@@ -188,15 +190,19 @@ void FLEX::calculateRPASusceptibilities(){
 	rpaSusceptibilitySolver.setModel(getModel());
 	rpaSusceptibilitySolver.setU(U);
 	rpaSusceptibilitySolver.setJ(J);
-	rpaSusceptibilitySolver.setUp(U - 2.*J);
-	rpaSusceptibilitySolver.setJp(J);
+	rpaSusceptibilitySolver.setUp(Up);
+	rpaSusceptibilitySolver.setJp(Jp);
 
 	PropertyExtractor::RPASusceptibility
 		rpaSusceptibilityPropertyExtractor(
 			rpaSusceptibilitySolver
 		);
+
+	rpaSusceptibilitySolver.setInteractionAmplitudes(
+		generateRPAChargeSusceptibilityInteractionAmplitudes()
+	);
 	rpaChargeSusceptibility
-		= rpaSusceptibilityPropertyExtractor.calculateChargeSusceptibility({
+		= rpaSusceptibilityPropertyExtractor.calculateRPASusceptibility({
 			{
 				{IDX_ALL, IDX_ALL},
 				{IDX_ALL},
@@ -205,8 +211,12 @@ void FLEX::calculateRPASusceptibilities(){
 				{IDX_ALL}
 			}
 		});
+
+	rpaSusceptibilitySolver.setInteractionAmplitudes(
+		generateRPASpinSusceptibilityInteractionAmplitudes()
+	);
 	rpaSpinSusceptibility
-		= rpaSusceptibilityPropertyExtractor.calculateSpinSusceptibility({
+		= rpaSusceptibilityPropertyExtractor.calculateRPASusceptibility({
 			{
 				{IDX_ALL, IDX_ALL},
 				{IDX_ALL},
@@ -228,8 +238,8 @@ void FLEX::calculateInteractionVertex(){
 	electronFluctuationVertexSolver.setModel(getModel());
 	electronFluctuationVertexSolver.setU(U);
 	electronFluctuationVertexSolver.setJ(J);
-	electronFluctuationVertexSolver.setUp(U - 2.*J);
-	electronFluctuationVertexSolver.setJp(J);
+	electronFluctuationVertexSolver.setUp(Up);
+	electronFluctuationVertexSolver.setJp(Jp);
 
 	PropertyExtractor::ElectronFluctuationVertex
 		electronFluctuationVertexPropertyExtractor(
@@ -420,6 +430,96 @@ void FLEX::calculateConvergenceParameter(){
 			"This should never happen, contact the developer."
 		);
 	}
+}
+
+vector<InteractionAmplitude>
+FLEX::generateRPAChargeSusceptibilityInteractionAmplitudes(){
+	vector<InteractionAmplitude> interactionAmplitudes;
+	unsigned int numOrbitals = momentumSpaceContext.getNumOrbitals();
+
+	for(int a = 0; a < (int)numOrbitals; a++){
+		interactionAmplitudes.push_back(
+			InteractionAmplitude(
+				U,
+				{{a},	{a}},
+				{{a},	{a}}
+			)
+		);
+
+		for(int b = 0; b < (int)numOrbitals; b++){
+			if(a == b)
+				continue;
+
+			interactionAmplitudes.push_back(
+				InteractionAmplitude(
+					2.*Up - J,
+					{{a},	{b}},
+					{{b},	{a}}
+				)
+			);
+			interactionAmplitudes.push_back(
+				InteractionAmplitude(
+					-Up + 2.*J,
+					{{a},	{b}},
+					{{a},	{b}}
+				)
+			);
+			interactionAmplitudes.push_back(
+				InteractionAmplitude(
+					Jp,
+					{{a},	{a}},
+					{{b},	{b}}
+				)
+			);
+		}
+	}
+
+	return interactionAmplitudes;
+}
+
+vector<InteractionAmplitude>
+FLEX::generateRPASpinSusceptibilityInteractionAmplitudes(){
+	vector<InteractionAmplitude> interactionAmplitudes;
+	unsigned int numOrbitals = momentumSpaceContext.getNumOrbitals();
+
+	for(int a = 0; a < (int)numOrbitals; a++){
+		interactionAmplitudes.push_back(
+			InteractionAmplitude(
+				-U,
+				{{a},	{a}},
+				{{a},	{a}}
+			)
+		);
+
+		for(int b = 0; b < (int)numOrbitals; b++){
+			if(a == b)
+				continue;
+
+			interactionAmplitudes.push_back(
+				InteractionAmplitude(
+					-J,
+					{{a},	{b}},
+					{{b},	{a}}
+				)
+			);
+			interactionAmplitudes.push_back(
+				InteractionAmplitude(
+					-Up,
+					{{a},	{b}},
+					{{a},	{b}}
+				)
+			);
+			interactionAmplitudes.push_back(
+				InteractionAmplitude(
+					-Jp,
+					{{a},	{a}},
+					{{b},	{b}}
+				)
+			);
+		}
+	}
+
+	return interactionAmplitudes;
 }
 
 }	//End of namespace Solver
