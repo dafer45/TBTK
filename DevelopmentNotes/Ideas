@@ -1,6 +1,5 @@
-- Make SingleParticleContext contain a Geometry instead of a pointer to a
-  Geometry. This should remove the need for copy and move constructors,
-  destructor, and assignment and move assignment operators.
+- Remove copy and move constructors, destructor, and assignment and move
+  assignment operators from the SingleParticleContext.
 
 - Make Model inherit from SingleParticleContext and ManyBodyContext. Update:
   Probably it is better to replace pointers by member objects instead of
