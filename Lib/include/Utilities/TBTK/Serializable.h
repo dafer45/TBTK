@@ -475,7 +475,7 @@ inline void Serializable::deserialize(
 		if(serialization.compare("FermiDirac") == 0){
 			*statistics = Statistics::FermiDirac;
 		}
-		else if(serialization.compare("BoseDirac") == 0){
+		else if(serialization.compare("BoseEinstein") == 0){
 			*statistics = Statistics::BoseEinstein;
 		}
 		else{

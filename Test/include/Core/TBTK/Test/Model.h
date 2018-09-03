@@ -34,6 +34,103 @@ TEST(Model, MoveConstructor){
 //TODO
 //...
 TEST(Model, SerializeToJSON){
+	Model model0;
+	model0.setVerbose(false);
+
+	//Add HoppingAmplitude.
+	model0 << HoppingAmplitude(1, {0, 1}, {0, 2}) + HC;
+	model0 << HoppingAmplitude(2, {1}, {1});
+	model0.construct();
+
+	//Add SourceAmplitude.
+	model0 << SourceAmplitude(3, {0, 1});
+	model0 << SourceAmplitude(4, {0, 2});
+	model0 << SourceAmplitude(5, {1});
+
+	//Set chemical potential, temperature, and statistics.
+	model0.setChemicalPotential(-1);
+	model0.setTemperature(300);
+	model0.setStatistics(Statistics::BoseEinstein);
+
+	//Add Geometric data.
+	Geometry &geometry0 = model0.getGeometry();
+	geometry0.setCoordinate({0, 1}, {0, 0, 0});
+	geometry0.setCoordinate({0, 2}, {0, 1, 2});
+	geometry0.setCoordinate({1}, {0, 1, 3});
+
+	//Serialize and deserialize.
+	Model model1(
+		model0.serialize(Serializable::Mode::JSON),
+		Serializable::Mode::JSON
+	);
+
+	//Check HoppingAmplitudes.
+	EXPECT_EQ(model1.getBasisSize(), 3);
+	HoppingAmplitudeSet::ConstIterator iteratorHA
+		= model1.getHoppingAmplitudeSet().cbegin();
+
+	EXPECT_DOUBLE_EQ(real((*iteratorHA).getAmplitude()), 1);
+	EXPECT_DOUBLE_EQ(imag((*iteratorHA).getAmplitude()), 0);
+	EXPECT_TRUE((*iteratorHA).getFromIndex().equals({0, 1}));
+	EXPECT_TRUE((*iteratorHA).getToIndex().equals({0, 2}));
+	++iteratorHA;
+
+	EXPECT_DOUBLE_EQ(real((*iteratorHA).getAmplitude()), 1);
+	EXPECT_DOUBLE_EQ(imag((*iteratorHA).getAmplitude()), 0);
+	EXPECT_TRUE((*iteratorHA).getFromIndex().equals({0, 2}));
+	EXPECT_TRUE((*iteratorHA).getToIndex().equals({0, 1}));
+	++iteratorHA;
+
+	EXPECT_DOUBLE_EQ(real((*iteratorHA).getAmplitude()), 2);
+	EXPECT_DOUBLE_EQ(imag((*iteratorHA).getAmplitude()), 0);
+	EXPECT_TRUE((*iteratorHA).getFromIndex().equals({1}));
+	EXPECT_TRUE((*iteratorHA).getToIndex().equals({1}));
+	++iteratorHA;
+	EXPECT_TRUE(iteratorHA == model1.getHoppingAmplitudeSet().cend());
+
+	//Check SourceAmplitudes.
+	SourceAmplitudeSet::ConstIterator iteratorSA
+		= model1.getSourceAmplitudeSet().cbegin();
+
+	EXPECT_DOUBLE_EQ(real((*iteratorSA).getAmplitude()), 3);
+	EXPECT_DOUBLE_EQ(imag((*iteratorSA).getAmplitude()), 0);
+	EXPECT_TRUE((*iteratorSA).getIndex().equals({0, 1}));
+	++iteratorSA;
+
+	EXPECT_DOUBLE_EQ(real((*iteratorSA).getAmplitude()), 4);
+	EXPECT_DOUBLE_EQ(imag((*iteratorSA).getAmplitude()), 0);
+	EXPECT_TRUE((*iteratorSA).getIndex().equals({0, 2}));
+	++iteratorSA;
+
+	EXPECT_DOUBLE_EQ(real((*iteratorSA).getAmplitude()), 5);
+	EXPECT_DOUBLE_EQ(imag((*iteratorSA).getAmplitude()), 0);
+	EXPECT_TRUE((*iteratorSA).getIndex().equals({1}));
+	++iteratorSA;
+	EXPECT_TRUE(iteratorSA == model1.getSourceAmplitudeSet().cend());
+
+	//Check chemical potentail, temperature, and statistics.
+	EXPECT_DOUBLE_EQ(model1.getChemicalPotential(), -1);
+	EXPECT_DOUBLE_EQ(model1.getTemperature(), 300);
+	EXPECT_TRUE(model1.getStatistics() == Statistics::BoseEinstein);
+
+	//Check the Geometry.
+	const Geometry &geometry = model1.getGeometry();
+	EXPECT_EQ(geometry.getDimensions(), 3);
+
+	std::vector<double> coordinate = geometry.getCoordinate({0, 1});
+	EXPECT_EQ(coordinate[0], 0);
+	EXPECT_EQ(coordinate[1], 0);
+	EXPECT_EQ(coordinate[2], 0);
+
+	coordinate = geometry.getCoordinate({0, 2});
+	EXPECT_EQ(coordinate[0], 0);
+	EXPECT_EQ(coordinate[1], 1);
+	EXPECT_EQ(coordinate[2], 2);
+
+	coordinate = geometry.getCoordinate({1});
+	EXPECT_EQ(coordinate[0], 0);
+	EXPECT_EQ(coordinate[1], 1);
+	EXPECT_EQ(coordinate[2], 3);
 }
 
 //TODO

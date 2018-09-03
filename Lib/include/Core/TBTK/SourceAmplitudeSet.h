@@ -23,6 +23,7 @@
 #ifndef COM_DAFER45_TBTK_SOURCE_AMPLITUDE_SET
 #define COM_DAFER45_TBTK_SOURCE_AMPLITUDE_SET
 
+#include "TBTK/SerializableVector.h"
 #include "TBTK/SourceAmplitude.h"
 #include "TBTK/IndexedDataTree.h"
 #include "TBTK/Serializable.h"
@@ -115,10 +116,10 @@ private:
 		typedef typename std::conditional<
 			isConstIterator,
 			IndexedDataTree<
-				std::vector<SourceAmplitude>
+				SerializableVector<SourceAmplitude>
 			>::ConstIterator,
 			IndexedDataTree<
-				std::vector<SourceAmplitude>
+				SerializableVector<SourceAmplitude>
 			>::Iterator
 		>::type IteratorType;
 
@@ -141,10 +142,10 @@ private:
 		typedef typename std::conditional<
 			isConstIterator,
 			const IndexedDataTree<
-				std::vector<SourceAmplitude>
+				SerializableVector<SourceAmplitude>
 			>,
 			IndexedDataTree<
-				std::vector<SourceAmplitude>
+				SerializableVector<SourceAmplitude>
 			>
 		>::type SourceAmplitudeTreeType;
 
@@ -162,7 +163,7 @@ public:
 	private:
 		Iterator(
 			IndexedDataTree<
-				std::vector<SourceAmplitude>
+				SerializableVector<SourceAmplitude>
 			> &sourceAmplitudeTree,
 			bool end = false
 		) : _Iterator(sourceAmplitudeTree, end){};
@@ -178,7 +179,7 @@ public:
 	private:
 		ConstIterator(
 			const IndexedDataTree<
-				std::vector<SourceAmplitude>
+				SerializableVector<SourceAmplitude>
 			> &sourceAmplitudeTree,
 			bool end = false
 		) : _Iterator(sourceAmplitudeTree, end){};
@@ -231,7 +232,7 @@ public:
 	unsigned int getSizeInBytes() const;
 private:
 	/** Container for the SourceAmplitudes. */
-	IndexedDataTree<std::vector<SourceAmplitude>> sourceAmplitudeTree;
+	IndexedDataTree<SerializableVector<SourceAmplitude>> sourceAmplitudeTree;
 };
 
 inline void SourceAmplitudeSet::add(

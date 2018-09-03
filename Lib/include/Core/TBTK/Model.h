@@ -198,17 +198,17 @@ public:
 	 *
 	 *  @param numSpecifiers The number of additional specifiers to use per
 	 *  Index. */
-	void createGeometry(int dimensions, int numSpecifiers = 0);
+//	void createGeometry(int dimensions, int numSpecifiers = 0);
 
 	/** Get geometry.
 	 *
 	 *  @return Pointer to the contained Geometry. */
-	Geometry* getGeometry();
+	Geometry& getGeometry();
 
 	/** Get geometry.
 	 *
 	 *  @return Pointer to the contained Geometry. */
-	const Geometry* getGeometry() const;
+	const Geometry& getGeometry() const;
 
 	/** Create ManyParticleContext. */
 	void createManyParticleContext();
@@ -349,15 +349,15 @@ inline const SourceAmplitudeSet& Model::getSourceAmplitudeSet() const{
 	return singleParticleContext->getSourceAmplitudeSet();
 }
 
-inline void Model::createGeometry(int dimensions, int numSpecifiers){
+/*inline void Model::createGeometry(int dimensions, int numSpecifiers){
 	singleParticleContext->createGeometry(dimensions, numSpecifiers);
-}
+}*/
 
-inline Geometry* Model::getGeometry(){
+inline Geometry& Model::getGeometry(){
 	return singleParticleContext->getGeometry();
 }
 
-inline const Geometry* Model::getGeometry() const{
+inline const Geometry& Model::getGeometry() const{
 	return singleParticleContext->getGeometry();
 }
 

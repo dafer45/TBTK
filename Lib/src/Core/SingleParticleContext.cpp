@@ -29,7 +29,7 @@ namespace TBTK{
 
 SingleParticleContext::SingleParticleContext(){
 	statistics = Statistics::FermiDirac;
-	geometry = nullptr;
+//	geometry = nullptr;
 }
 
 SingleParticleContext::SingleParticleContext(
@@ -38,7 +38,7 @@ SingleParticleContext::SingleParticleContext(
 	hoppingAmplitudeSet(capacity)
 {
 	statistics = Statistics::FermiDirac;
-	geometry = nullptr;
+//	geometry = nullptr;
 }
 
 SingleParticleContext::SingleParticleContext(
@@ -47,14 +47,15 @@ SingleParticleContext::SingleParticleContext(
 	hoppingAmplitudeSet(singleParticleContext.getHoppingAmplitudeSet())
 {
 	statistics = singleParticleContext.statistics;
-	if(singleParticleContext.geometry == nullptr){
+	geometry = singleParticleContext.geometry;
+/*	if(singleParticleContext.geometry == nullptr){
 		geometry = nullptr;
 	}
 	else{
 		geometry = new Geometry(
 			*singleParticleContext.geometry
 		);
-	}
+	}*/
 }
 
 SingleParticleContext::SingleParticleContext(
@@ -64,8 +65,8 @@ SingleParticleContext::SingleParticleContext(
 {
 	statistics = singleParticleContext.statistics;
 
-	geometry = singleParticleContext.geometry;
-	singleParticleContext.geometry = nullptr;
+	geometry = std::move(singleParticleContext.geometry);
+//	singleParticleContext.geometry = nullptr;
 }
 
 SingleParticleContext::SingleParticleContext(
@@ -92,7 +93,7 @@ SingleParticleContext::SingleParticleContext(
 	);
 
 	switch(mode){
-	case Mode::Debug:
+/*	case Mode::Debug:
 	{
 		string content = getContent(serialization, mode);
 
@@ -107,7 +108,7 @@ SingleParticleContext::SingleParticleContext(
 //			geometry = new Geometry(elements.at(2), mode, hoppingAmplitudeSet);
 
 		break;
-	}
+	}*/
 	case Mode::JSON:
 	{
 		try{
@@ -121,16 +122,23 @@ SingleParticleContext::SingleParticleContext(
 				j.at("hoppingAmplitudeSet").dump(),
 				mode
 			);
-			try{
+/*			try{
 				geometry = new Geometry(
 					j.at("geometry").dump(),
-					mode/*,
-					hoppingAmplitudeSet*/
+					mode
 				);
 			}
 			catch(nlohmann::json::exception e){
 				geometry = nullptr;
-			}
+			}*/
+			geometry = Geometry(
+				j.at("geometry").dump(),
+				mode
+			);
+			sourceAmplitudeSet = SourceAmplitudeSet(
+				j.at("sourceAmplitudeSet").dump(),
+				mode
+			);
 		}
 		catch(nlohmann::json::exception e){
 			TBTKExit(
@@ -154,8 +162,8 @@ SingleParticleContext::SingleParticleContext(
 }
 
 SingleParticleContext::~SingleParticleContext(){
-	if(geometry != nullptr)
-		delete geometry;
+//	if(geometry != nullptr)
+//		delete geometry;
 }
 
 SingleParticleContext& SingleParticleContext::operator=(
@@ -166,10 +174,11 @@ SingleParticleContext& SingleParticleContext::operator=(
 
 		hoppingAmplitudeSet = rhs.getHoppingAmplitudeSet();
 
-		if(rhs.geometry == nullptr)
+		geometry = rhs.geometry;
+/*		if(rhs.geometry == nullptr)
 			geometry = nullptr;
 		else
-			geometry = new Geometry(*rhs.geometry);
+			geometry = new Geometry(*rhs.geometry);*/
 	}
 
 	return *this;
@@ -183,14 +192,14 @@ SingleParticleContext& SingleParticleContext::operator=(
 
 		hoppingAmplitudeSet = rhs.getHoppingAmplitudeSet();
 
-		geometry = rhs.geometry;
-		rhs.geometry = nullptr;
+		geometry = std::move(rhs.geometry);
+//		rhs.geometry = nullptr;
 	}
 
 	return *this;
 }
 
-void SingleParticleContext::createGeometry(int dimensions, int numSpecifiers){
+/*void SingleParticleContext::createGeometry(int dimensions, int numSpecifiers){
 	TBTKAssert(
 		hoppingAmplitudeSet.getIsConstructed(),
 		"SingleParticleContext::createGeometry()",
@@ -199,15 +208,12 @@ void SingleParticleContext::createGeometry(int dimensions, int numSpecifiers){
 	);
 
 	geometry = new Geometry(
-/*		dimensions,
-		numSpecifiers,
-		&hoppingAmplitudeSet*/
 	);
-}
+}*/
 
 string SingleParticleContext::serialize(Mode mode) const{
 	switch(mode){
-	case Mode::Debug:
+/*	case Mode::Debug:
 	{
 		stringstream ss;
 		ss << "SingleParticleContext(";
@@ -220,7 +226,7 @@ string SingleParticleContext::serialize(Mode mode) const{
 		ss << ")";
 
 		return ss.str();
-	}
+	}*/
 	case Mode::JSON:
 	{
 		nlohmann::json j;
@@ -229,8 +235,14 @@ string SingleParticleContext::serialize(Mode mode) const{
 		j["hoppingAmplitudeSet"] = nlohmann::json::parse(
 			hoppingAmplitudeSet.serialize(mode)
 		);
-		if(geometry != nullptr)
-			j["geometry"] = nlohmann::json::parse(geometry->serialize(mode));
+/*		if(geometry != nullptr)
+			j["geometry"] = nlohmann::json::parse(geometry->serialize(mode));*/
+		j["geometry"] = nlohmann::json::parse(
+			geometry.serialize(mode)
+		);
+		j["sourceAmplitudeSet"] = nlohmann::json::parse(
+			sourceAmplitudeSet.serialize(mode)
+		);
 
 		return j.dump();
 	}

@@ -163,10 +163,11 @@ Model* ModelFactory::createModel(
 	}
 
 	model->construct();
-	model->createGeometry(numCoordinates, numSpecifiers);
-	Geometry *geometry = model->getGeometry();
+//	model->createGeometry(numCoordinates, numSpecifiers);
+//	Geometry *geometry = model->getGeometry();
+	Geometry &geometry = model->getGeometry();
 	for(unsigned int n = 0; n < states.size(); n++){
-		geometry->setCoordinate(
+		geometry.setCoordinate(
 			Index(
 				states.at(n)->getContainer(),
 				states.at(n)->getIndex()
@@ -244,10 +245,11 @@ Model* ModelFactory::createModel(
 	}
 
 	model->construct();
-	model->createGeometry(numCoordinates, numSpecifiers);
-	Geometry *geometry = model->getGeometry();
+//	model->createGeometry(numCoordinates, numSpecifiers);
+//	Geometry *geometry = model->getGeometry();
+	Geometry &geometry = model->getGeometry();
 	for(unsigned int n = 0; n < states.size(); n++){
-		geometry->setCoordinate(
+		geometry.setCoordinate(
 			Index(
 				states.at(n)->getContainer(),
 				states.at(n)->getIndex()
@@ -354,17 +356,18 @@ void ModelFactory::addHexagonalGeometry(
 		);
 	}
 
-	model->createGeometry(3, 0);
-	Geometry *geometry = model->getGeometry();
+//	model->createGeometry(3, 0);
+//	Geometry *geometry = model->getGeometry();
+	Geometry &geometry = model->getGeometry();
 	int sizeX = *size.begin();
 	int sizeY = *(size.begin() + 1);
 	for(int x = 0; x < sizeX; x++){
 		for(int y = 0; y < sizeY; y++){
 			for(int s = 0; s < 2; s++){
-				geometry->setCoordinate({x, y, 0, s},	{3.*x + 0.,	sqrt(3.)*y + 0.,		0.});
-				geometry->setCoordinate({x, y, 1, s},	{3.*x + 1/2.,	sqrt(3.)*y + sqrt(3.)/2.,	0.});
-				geometry->setCoordinate({x, y, 2, s},	{3.*x + 3/2.,	sqrt(3.)*y + sqrt(3.)/2.,	0.});
-				geometry->setCoordinate({x, y, 3, s},	{3.*x + 2.,	sqrt(3.)*y + 0.,		0.});
+				geometry.setCoordinate({x, y, 0, s},	{3.*x + 0.,	sqrt(3.)*y + 0.,		0.});
+				geometry.setCoordinate({x, y, 1, s},	{3.*x + 1/2.,	sqrt(3.)*y + sqrt(3.)/2.,	0.});
+				geometry.setCoordinate({x, y, 2, s},	{3.*x + 3/2.,	sqrt(3.)*y + sqrt(3.)/2.,	0.});
+				geometry.setCoordinate({x, y, 3, s},	{3.*x + 2.,	sqrt(3.)*y + 0.,		0.});
 			}
 		}
 	}
@@ -405,15 +408,33 @@ Model* ModelFactory::merge(
 	bool geometryExists = true;
 	for(unsigned int n = 0; n < models.size(); n++){
 		Model *m = *(models.begin() + n);
-		if(m->getGeometry() == NULL){
+/*		if(m->getGeometry() == NULL){
 			geometryExists = false;
 			Streams::out << "Warning in ModelFactory::merge: Geometric data connot be merged because model " << n << " lacks geometric data.\n";
 			break;
+		}*/
+		try{
+			for(int n = 0; n < m->getBasisSize(); n++){
+				m->getGeometry().getCoordinate(
+					m->getHoppingAmplitudeSet(
+					).getPhysicalIndex(n)
+				);
+			}
+		}
+		catch(ElementNotFoundException e){
+			geometryExists = false;
+			Streams::out << "Warning in ModelFactory::merge:"
+			<< " Geometric data connot be merged because model "
+			<< n << " has incomplete geometric data.\n";
+			break;
 		}
 
-		if(m->getGeometry()->getDimensions() != 3){
+		if(m->getGeometry().getDimensions() != 3){
 			geometryExists = false;
-			Streams::out << "Warning in ModelFactory::merge: Geometric data connot be merged because model " << n << " has geometric of dimension " << m->getGeometry()->getDimensions() << ".\n";
+			Streams::out << "Warning in ModelFactory::merge:"
+			<< " Geometric data connot be merged because model "
+			<< n << " has geometric of dimension "
+			<< m->getGeometry().getDimensions() << ".\n";
 			break;
 		}
 
@@ -423,12 +444,14 @@ Model* ModelFactory::merge(
 	}
 
 	if(geometryExists){
-		model->createGeometry(3, 0);
-		Geometry *geometry = model->getGeometry();
+//		model->createGeometry(3, 0);
+//		Geometry *geometry = model->getGeometry();
+		Geometry &geometry = model->getGeometry();
 
 		for(unsigned int n = 0; n < models.size(); n++){
 			Model *m = *(models.begin() + n);
-			Geometry *g = m->getGeometry();
+//			Geometry *g = m->getGeometry();
+			Geometry &g = m->getGeometry();
 			for(
 				HoppingAmplitudeSet::ConstIterator iterator
 					= m->getHoppingAmplitudeSet().begin();
@@ -446,12 +469,19 @@ Model* ModelFactory::merge(
 				int basisIndex = m->getBasisIndex((*iterator).getFromIndex());
 //				const double *coordinates = g->getCoordinates(basisIndex);
 				const vector<double>& coordinates
-					= g->getCoordinate(
+					= g.getCoordinate(
 						model->getHoppingAmplitudeSet(
 						).getPhysicalIndex(basisIndex)
 					);
 
-				geometry->setCoordinate(newFrom, {coordinates[0], coordinates[1], coordinates[2]});
+				geometry.setCoordinate(
+					newFrom,
+					{
+						coordinates[0],
+						coordinates[1],
+						coordinates[2]
+					}
+				);
 			}
 		}
 	}
@@ -559,42 +589,58 @@ void ModelFactory::addSquareGeometry1D(
 	Model *model,
 	initializer_list<int> size
 ){
-	model->createGeometry(3, 0);
-	Geometry *geometry = model->getGeometry();
+//	model->createGeometry(3, 0);
+//	Geometry *geometry = model->getGeometry();
+	Geometry &geometry = model->getGeometry();
 	int sizeX = *size.begin();
 	for(int x = 0; x < sizeX; x++)
 		for(int s = 0; s < 2; s++)
-			geometry->setCoordinate({x, s},	{1.*x, 0., 0.});
+			geometry.setCoordinate({x, s},	{1.*x, 0., 0.});
 }
 
 void ModelFactory::addSquareGeometry2D(
 	Model *model,
 	initializer_list<int> size
 ){
-	model->createGeometry(3, 0);
-	Geometry *geometry = model->getGeometry();
+//	model->createGeometry(3, 0);
+//	Geometry *geometry = model->getGeometry();
+	Geometry &geometry = model->getGeometry();
 	int sizeX = *size.begin();
 	int sizeY = *(size.begin() + 1);
-	for(int x = 0; x < sizeX; x++)
-		for(int y = 0; y < sizeY; y++)
-			for(int s = 0; s < 2; s++)
-				geometry->setCoordinate({x, y, s},	{1.*x, 1.*y, 0.});
+	for(int x = 0; x < sizeX; x++){
+		for(int y = 0; y < sizeY; y++){
+			for(int s = 0; s < 2; s++){
+				geometry.setCoordinate(
+					{x, y, s},
+					{1.*x, 1.*y, 0.}
+				);
+			}
+		}
+	}
 }
 
 void ModelFactory::addSquareGeometry3D(
 	Model *model,
 	initializer_list<int> size
 ){
-	model->createGeometry(3, 0);
-	Geometry *geometry = model->getGeometry();
+//	model->createGeometry(3, 0);
+//	Geometry *geometry = model->getGeometry();
+	Geometry &geometry = model->getGeometry();
 	int sizeX = *size.begin();
 	int sizeY = *(size.begin() + 1);
 	int sizeZ = *(size.begin() + 2);
-	for(int x = 0; x < sizeX; x++)
-		for(int y = 0; y < sizeY; y++)
-			for(int z = 0; z < sizeZ; z++)
-				for(int s = 0; s < 2; s++)
-					geometry->setCoordinate({x, y, z, s},	{1.*x, 1.*y, 1.*z});
+	for(int x = 0; x < sizeX; x++){
+		for(int y = 0; y < sizeY; y++){
+			for(int z = 0; z < sizeZ; z++){
+				for(int s = 0; s < 2; s++){
+					geometry.setCoordinate(
+						{x, y, z, s},
+						{1.*x, 1.*y, 1.*z}
+					);
+				}
+			}
+		}
+	}
 }
 
 };	//End of namespace TBTK

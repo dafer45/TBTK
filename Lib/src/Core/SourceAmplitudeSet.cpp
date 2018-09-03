@@ -42,7 +42,7 @@ SourceAmplitudeSet::SourceAmplitudeSet(
 		try{
 			nlohmann::json j = nlohmann::json::parse(serialization);
 			sourceAmplitudeTree = IndexedDataTree<
-				std::vector<SourceAmplitude>
+				SerializableVector<SourceAmplitude>
 			>(
 				j.at("sourceAmplitudeTree").dump(),
 				mode

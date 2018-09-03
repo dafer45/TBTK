@@ -37,7 +37,7 @@ namespace TBTK{
  *  The Source Amplitude is used to encode information about the source term
  *  \f$S\f$ in an equation such as \f$i\hbar\frac{\partial\Psi}{\partial t} =
  *  H\Psi + S\f$. */
-class SourceAmplitude{
+class SourceAmplitude : public Serializable{
 public:
 	/** Constructs a SourceAmplitude. */
 	SourceAmplitude();

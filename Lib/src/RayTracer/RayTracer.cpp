@@ -357,7 +357,7 @@ void RayTracer::render(
 	double scaleFactor = (focus - cameraPosition).norm()/(double)width;
 
 	//Get geometry.
-	const Geometry *geometry = model.getGeometry();
+	const Geometry &geometry = model.getGeometry();
 
 	//Setup IndexTree.
 	const IndexTree &indexTree = indexDescriptor.getIndexTree();
@@ -401,7 +401,7 @@ void RayTracer::render(
 		coordinates.push_back(Vector3d({0., 0., 0.}));
 		for(unsigned int n = 0; n < indices.size(); n++){
 //			const double *c = geometry->getCoordinates(indices.at(n));
-			const vector<double> &c = geometry->getCoordinate(indices.at(n));
+			const vector<double> &c = geometry.getCoordinate(indices.at(n));
 			coordinates.back().x += c[0]/indices.size();
 			coordinates.back().y += c[1]/indices.size();
 			coordinates.back().z += c[2]/indices.size();

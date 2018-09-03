@@ -102,10 +102,10 @@ public:
 	const SourceAmplitudeSet& getSourceAmplitudeSet() const;
 
 	/** Create Geometry. */
-	void createGeometry(int dimensions, int numSpecifiers = 0);
+//	void createGeometry(int dimensions, int numSpecifiers = 0);
 
 	/** Get Geometry. */
-	Geometry* getGeometry();
+	Geometry& getGeometry();
 
 	/** Implements Serializable::serialize(). */
 	std::string serialize(Mode mode) const;
@@ -120,7 +120,7 @@ private:
 	Statistics statistics;
 
 	/** Geometry. */
-	Geometry *geometry;
+	Geometry geometry;
 
 	/** FileReader is a friend class to allow it to write Model data. */
 	friend class FileReader;
@@ -161,7 +161,7 @@ SingleParticleContext::getSourceAmplitudeSet() const{
 	return sourceAmplitudeSet;
 }
 
-inline Geometry* SingleParticleContext::getGeometry(){
+inline Geometry& SingleParticleContext::getGeometry(){
 	return geometry;
 }
 

@@ -384,17 +384,19 @@ void FileParser::writeAmplitudes(Model *model, AmplitudeMode amplitudeMode){
 }
 
 void FileParser::writeGeometry(Model *model){
-	Geometry *geometry = model->getGeometry();
+//	Geometry *geometry = model->getGeometry();
+	Geometry &geometry = model->getGeometry();
 
-	if(geometry == NULL){
+/*	if(geometry == NULL){
 		fout << "Geometry: None\n";
 		return;
 	}
 	else{
 		fout << "Geometry:\n";
-	}
+	}*/
+	fout << "Geometry:\n";
 
-	int dimensions = geometry->getDimensions();
+	int dimensions = geometry.getDimensions();
 //	const int numSpecifiers = geometry->getNumSpecifiers();
 	fout << left << setw(30) << "Dimensions" << "= " << dimensions << "\n";
 //	fout << left << setw(30) << "Num specifiers" << "= " << numSpecifiers << "\n";
@@ -410,7 +412,7 @@ void FileParser::writeGeometry(Model *model){
 		const Index &index = (*iterator).getFromIndex();
 		if(!index.equals(prevIndex)){
 //			const double *coordinates = geometry->getCoordinates(index);
-			const vector<double> &coordinates = geometry->getCoordinate(index);
+			const vector<double> &coordinates = geometry.getCoordinate(index);
 //			const int *specifiers = geometry->getSpecifiers(index);
 			fout << left << setw(30);
 //			writeCoordinates(coordinates, dimensions);
@@ -647,8 +649,9 @@ void FileParser::readGeometry(Model *model){
 		}
 	}
 
-	model->createGeometry(dimensions, numSpecifiers);
-	Geometry *geometry = model->getGeometry();
+//	model->createGeometry(dimensions, numSpecifiers);
+//	Geometry *geometry = model->getGeometry();
+	Geometry &geometry = model->getGeometry();
 
 	while(true){
 		if(ssin.peek() == '\n' || ssin.peek() == EOF)
@@ -671,7 +674,7 @@ void FileParser::readGeometry(Model *model){
 		Index *index = readIndex();
 
 //		geometry->setCoordinates(*index, coordinates, specifiers);
-		geometry->setCoordinate(*index, coordinates);
+		geometry.setCoordinate(*index, coordinates);
 
 		delete index;
 

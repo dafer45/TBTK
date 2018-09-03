@@ -53,7 +53,7 @@ Model* FileReader::readModel(string name, string path){
 
 	ss.str("");
 	ss << name << "Geometry";
-	model->singleParticleContext->geometry = readGeometry(model, ss.str());
+	model->singleParticleContext->geometry = *readGeometry(model, ss.str());
 
 	const int NUM_DOUBLE_ATTRIBUTES = 2;
 	ss.str("");
