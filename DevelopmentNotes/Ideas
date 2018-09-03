@@ -6,10 +6,6 @@
   Probably it is better to replace pointers by member objects instead of
   inheriting.
 
-- Make Geometry use an IndexedDataTree to store the coordinates and specifiers
-  to avoid the requirement that a HoppingAmplitudeSet has been constructed
-  before the Geometry can be created and set up.
-
 - Make the SingleParticleContext contain an IndexTree that is used to perform
   the mapping between physical and Hilbert space indices to reduce the
   responsibility of the HoppingAmplitudeTree/HoppingAmplitudeSet to that solely
