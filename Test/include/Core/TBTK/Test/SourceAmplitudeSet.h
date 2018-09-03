@@ -8,14 +8,8 @@ TEST(SourceAmplitudeSet, Constructor){
 	//Not testable on its own.
 }
 
-//TODO
-//...
 TEST(SourceAmplitudeSet, SerializeToJSON){
-	//Dependent code not yet implemented in the Library
-	//Test below can be used once serialization has been implemented in
-	//IndexedDataTree<Data, false>.
-
-/*	SourceAmplitudeSet sourceAmplitudeSet0;
+	SourceAmplitudeSet sourceAmplitudeSet0;
 	sourceAmplitudeSet0.add(SourceAmplitude(1, {1, 2, 3}));
 	sourceAmplitudeSet0.add(SourceAmplitude(2, {1, 2, 4}));
 	sourceAmplitudeSet0.add(SourceAmplitude(3, {1, 2, 3}));
@@ -25,7 +19,7 @@ TEST(SourceAmplitudeSet, SerializeToJSON){
 		Serializable::Mode::JSON
 	);
 
-	//Check that all added aplitudes are possible to get.
+	//Check that all added amplitudes are possible to get.
 	const std::vector<SourceAmplitude> &sourceAmplitudes0 = sourceAmplitudeSet1.get({1, 2, 3});
 	EXPECT_EQ(sourceAmplitudes0.size(), 2);
 	EXPECT_DOUBLE_EQ(real(sourceAmplitudes0[0].getAmplitude()), 1);
@@ -39,7 +33,7 @@ TEST(SourceAmplitudeSet, SerializeToJSON){
 	EXPECT_EQ(sourceAmplitudes1.size(), 1);
 	EXPECT_DOUBLE_EQ(real(sourceAmplitudes1[0].getAmplitude()), 2);
 	EXPECT_DOUBLE_EQ(imag(sourceAmplitudes1[0].getAmplitude()), 0);
-	EXPECT_TRUE(sourceAmplitudes1[0].getIndex().equals({1, 2, 4}));*/
+	EXPECT_TRUE(sourceAmplitudes1[0].getIndex().equals({1, 2, 4}));
 }
 
 TEST(SourceAmplitudeSet, add){
