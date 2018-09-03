@@ -166,7 +166,7 @@ Model* ModelFactory::createModel(
 	model->createGeometry(numCoordinates, numSpecifiers);
 	Geometry *geometry = model->getGeometry();
 	for(unsigned int n = 0; n < states.size(); n++){
-		geometry->setCoordinates(
+		geometry->setCoordinate(
 			Index(
 				states.at(n)->getContainer(),
 				states.at(n)->getIndex()
@@ -247,7 +247,7 @@ Model* ModelFactory::createModel(
 	model->createGeometry(numCoordinates, numSpecifiers);
 	Geometry *geometry = model->getGeometry();
 	for(unsigned int n = 0; n < states.size(); n++){
-		geometry->setCoordinates(
+		geometry->setCoordinate(
 			Index(
 				states.at(n)->getContainer(),
 				states.at(n)->getIndex()
@@ -361,10 +361,10 @@ void ModelFactory::addHexagonalGeometry(
 	for(int x = 0; x < sizeX; x++){
 		for(int y = 0; y < sizeY; y++){
 			for(int s = 0; s < 2; s++){
-				geometry->setCoordinates({x, y, 0, s},	{3.*x + 0.,	sqrt(3.)*y + 0.,		0.});
-				geometry->setCoordinates({x, y, 1, s},	{3.*x + 1/2.,	sqrt(3.)*y + sqrt(3.)/2.,	0.});
-				geometry->setCoordinates({x, y, 2, s},	{3.*x + 3/2.,	sqrt(3.)*y + sqrt(3.)/2.,	0.});
-				geometry->setCoordinates({x, y, 3, s},	{3.*x + 2.,	sqrt(3.)*y + 0.,		0.});
+				geometry->setCoordinate({x, y, 0, s},	{3.*x + 0.,	sqrt(3.)*y + 0.,		0.});
+				geometry->setCoordinate({x, y, 1, s},	{3.*x + 1/2.,	sqrt(3.)*y + sqrt(3.)/2.,	0.});
+				geometry->setCoordinate({x, y, 2, s},	{3.*x + 3/2.,	sqrt(3.)*y + sqrt(3.)/2.,	0.});
+				geometry->setCoordinate({x, y, 3, s},	{3.*x + 2.,	sqrt(3.)*y + 0.,		0.});
 			}
 		}
 	}
@@ -445,9 +445,13 @@ Model* ModelFactory::merge(
 //				int basisIndex = m->getBasisIndex(ha->fromIndex);
 				int basisIndex = m->getBasisIndex((*iterator).getFromIndex());
 //				const double *coordinates = g->getCoordinates(basisIndex);
-				const vector<double>& coordinates = g->getCoordinates(model->getHoppingAmplitudeSet().getPhysicalIndex(basisIndex));
+				const vector<double>& coordinates
+					= g->getCoordinate(
+						model->getHoppingAmplitudeSet(
+						).getPhysicalIndex(basisIndex)
+					);
 
-				geometry->setCoordinates(newFrom, {coordinates[0], coordinates[1], coordinates[2]});
+				geometry->setCoordinate(newFrom, {coordinates[0], coordinates[1], coordinates[2]});
 			}
 		}
 	}
@@ -560,7 +564,7 @@ void ModelFactory::addSquareGeometry1D(
 	int sizeX = *size.begin();
 	for(int x = 0; x < sizeX; x++)
 		for(int s = 0; s < 2; s++)
-			geometry->setCoordinates({x, s},	{1.*x, 0., 0.});
+			geometry->setCoordinate({x, s},	{1.*x, 0., 0.});
 }
 
 void ModelFactory::addSquareGeometry2D(
@@ -574,7 +578,7 @@ void ModelFactory::addSquareGeometry2D(
 	for(int x = 0; x < sizeX; x++)
 		for(int y = 0; y < sizeY; y++)
 			for(int s = 0; s < 2; s++)
-				geometry->setCoordinates({x, y, s},	{1.*x, 1.*y, 0.});
+				geometry->setCoordinate({x, y, s},	{1.*x, 1.*y, 0.});
 }
 
 void ModelFactory::addSquareGeometry3D(
@@ -590,7 +594,7 @@ void ModelFactory::addSquareGeometry3D(
 		for(int y = 0; y < sizeY; y++)
 			for(int z = 0; z < sizeZ; z++)
 				for(int s = 0; s < 2; s++)
-					geometry->setCoordinates({x, y, z, s},	{1.*x, 1.*y, 1.*z});
+					geometry->setCoordinate({x, y, z, s},	{1.*x, 1.*y, 1.*z});
 }
 
 };	//End of namespace TBTK

@@ -52,8 +52,8 @@ Geometry::Geometry(
 		try{
 			nlohmann::json j = nlohmann::json::parse(serialization);
 			dimensions = j.at("dimensions").get<int>();
-			coordinates = IndexedDataTree<vector<double>>(
-				j.at("coordinates"),
+			coordinates = IndexedDataTree<SerializableVector<double>>(
+				j.at("coordinates").dump(),
 				mode
 			);
 		}
@@ -81,7 +81,7 @@ Geometry::~Geometry(
 ){
 }
 
-void Geometry::setCoordinates(
+/*void Geometry::setCoordinates(
 	const Index &index,
 	std::initializer_list<double> coordinates
 ){
@@ -93,14 +93,30 @@ void Geometry::setCoordinates(
 	const std::vector<double> &coordinates
 ){
 	this->coordinates.add(coordinates, index);
-}
+}*/
 
 void Geometry::translate(const vector<double> &translation){
-	TBTKNotYetImplemented("Geometry::translate()");
+	TBTKAssert(
+		(int)translation.size() == dimensions,
+		"Geometry::translate()",
+		"Incompatible dimensions. The coordinates have '" << dimensions
+		<< "' dimensions, but the translation has ' "
+		<< translation.size() << "' dimensions.",
+		""
+	);
+
+	for(
+		IndexedDataTree<SerializableVector<double>>::Iterator iterator
+			= coordinates.begin();
+		iterator != coordinates.end();
+		++iterator
+	){
+		for(int n = 0; n < dimensions; n++)
+			(*iterator)[n] += translation[n];
+	}
 }
 
 string Geometry::serialize(Mode mode) const{
-	TBTKNotYetImplemented("Geometry::serialize()");
 	switch(mode){
 	case Mode::JSON:
 	{

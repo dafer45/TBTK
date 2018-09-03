@@ -28,7 +28,9 @@
 #include <string>
 #include <vector>
 
-#include "TBTK/json.hpp"
+#ifndef TBTK_DISABLE_NLOHMANN_JSON
+#	include "TBTK/json.hpp"
+#endif
 
 namespace TBTK{
 
@@ -95,6 +97,8 @@ public:
 	std::string serialize(Mode mode) const;
 private:
 };
+
+#ifndef TBTK_DISABLE_NLOHMANN_JSON
 
 template<typename DataType>
 SerializableVector<DataType, false>::SerializableVector(
@@ -244,6 +248,8 @@ std::string SerializableVector<DataType, true>::serialize(Mode mode) const{
 		);
 	}
 }
+
+#endif
 
 };	//End of namespace TBTK
 

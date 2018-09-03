@@ -25,6 +25,7 @@
 
 #include "TBTK/IndexedDataTree.h"
 #include "TBTK/Serializable.h"
+#include "TBTK/SerializableVector.h"
 
 namespace TBTK{
 	class FileReader;
@@ -35,32 +36,46 @@ public:
 	/** Constructs a Geomerty. */
 	Geometry();
 
+	/** Constructs a Geometry from a serialization string.
+	 *
+	 *  @param serialization Serialization string from which to construct
+	 *  the Geometry.
+	 *
+	 *  @param mode Mode with which the string has been serialized. */
 	Geometry(
 		const std::string &serialization,
 		Mode mode
 	);
 
+	/** Destructor. */
 	virtual ~Geometry();
 
-	/** Add a coordinate for an index. */
-	void setCoordinates(
+	/** Set a coordinate for an index. The first added coordinate can have
+	 *  arbitrary number of dimensions, while the rest has to agree with
+	 *  the number of dimensions of the first.
+	 *
+	 *  @param index The Index for which to set the coordinate.
+	 *  @param coordinate The coordinate. */
+	void setCoordinate(
 		const Index &index,
-		std::initializer_list<double> coordinates
+		const std::vector<double> &coordinate
 	);
 
-	/** Add a coordinate for an index. */
-	void setCoordinates(
-		const Index &index,
-		const std::vector<double> &coordinates
-	);
+	/** Get the coordinate for a given Index.
+	 *
+	 *  @param index The Index to get the coordinate for.
+	 *  @return The coordinate for the given Index. */
+	const std::vector<double>& getCoordinate(const Index &index) const;
 
-	/** Get dimensions. */
+	/** Get the number of dimensions of the space. If no coordinate has
+	 *  been set yet, the returned value is -1.
+	 *
+	 *  @return The number of dimensions. */
 	int getDimensions() const;
 
-	/** Get Coordinates using a physical index. */
-	const std::vector<double>& getCoordinates(const Index &index) const;
-
-	/** Translate all coordinates. */
+	/** Translate all coordinates.
+	 *
+	 *  @param translation The translation to be applied. */
 	void translate(const std::vector<double> &translation);
 
 	/** Implements Serializable::serialize. */
@@ -70,20 +85,40 @@ private:
 	int dimensions;
 
 	/** Spatial dimensions. */
-	IndexedDataTree<std::vector<double>> coordinates;
+	IndexedDataTree<SerializableVector<double>> coordinates;
 
 	/** FileReader is a friend class to allow it to write Geometry data. */
 	friend class FileReader;
 };
 
-inline int Geometry::getDimensions() const{
-	return dimensions;
+inline void Geometry::setCoordinate(
+	const Index &index,
+	const std::vector<double> &coordinate
+){
+	if(dimensions == -1)
+		dimensions = coordinate.size();
+
+	TBTKAssert(
+		coordinate.size() == (unsigned int)dimensions,
+		"Geometry::setCoordinate()",
+		"Incompatible dimensions. A coordinate with dimension '"
+		<< dimensions << "' has already been added, which is"
+		<< " incompatible with the current coordinate dimension of '"
+		<< coordinate.size() << "'.",
+		""
+	);
+
+	coordinates.add(coordinate, index);
 }
 
-inline const std::vector<double>& Geometry::getCoordinates(
+inline const std::vector<double>& Geometry::getCoordinate(
 	const Index &index
 ) const{
 	return coordinates.get(index);
+}
+
+inline int Geometry::getDimensions() const{
+	return dimensions;
 }
 
 };	//End of namespace TBTK

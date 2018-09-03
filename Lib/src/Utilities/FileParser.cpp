@@ -410,7 +410,7 @@ void FileParser::writeGeometry(Model *model){
 		const Index &index = (*iterator).getFromIndex();
 		if(!index.equals(prevIndex)){
 //			const double *coordinates = geometry->getCoordinates(index);
-			const vector<double> &coordinates = geometry->getCoordinates(index);
+			const vector<double> &coordinates = geometry->getCoordinate(index);
 //			const int *specifiers = geometry->getSpecifiers(index);
 			fout << left << setw(30);
 //			writeCoordinates(coordinates, dimensions);
@@ -671,7 +671,7 @@ void FileParser::readGeometry(Model *model){
 		Index *index = readIndex();
 
 //		geometry->setCoordinates(*index, coordinates, specifiers);
-		geometry->setCoordinates(*index, coordinates);
+		geometry->setCoordinate(*index, coordinates);
 
 		delete index;
 
