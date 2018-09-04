@@ -26,7 +26,6 @@
 #include "TBTK/json.hpp"
 
 using namespace std;
-//using namespace nlohmann;
 
 namespace TBTK{
 
@@ -181,17 +180,6 @@ string HoppingAmplitude::serialize(Serializable::Mode mode) const{
 		j["fromIndex"] = nlohmann::json::parse(fromIndex.serialize(mode));
 
 		return j.dump();
-
-/*		stringstream ss;
-		ss << "{";
-		ss << "id:'HoppingAmplitude'";
-		ss << "," << "amplitude:";
-		ss << amplitude;
-		ss << "," << "to:" << toIndex.serialize(mode);
-		ss << "," << "from:" << fromIndex.serialize(mode);
-		ss << "}";
-
-		return ss.str();*/
 	}
 	default:
 		TBTKExit(

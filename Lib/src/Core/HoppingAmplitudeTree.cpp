@@ -27,7 +27,6 @@
 #include "TBTK/json.hpp"
 
 using namespace std;
-//using namespace nlohmann;
 
 namespace TBTK{
 
@@ -133,9 +132,6 @@ HoppingAmplitudeTree::HoppingAmplitudeTree(
 				"isPotentialBlockSeparator"
 			).get<bool>();
 			try{
-/*				json has = j.at(
-					"hoppingAmplitudes"
-				).get<json::array>();*/
 				nlohmann::json has = j.at("hoppingAmplitudes");
 				for(nlohmann::json::iterator it = has.begin(); it != has.end(); ++it){
 					hoppingAmplitudes.push_back(
@@ -148,9 +144,6 @@ HoppingAmplitudeTree::HoppingAmplitudeTree(
 			}
 
 			try{
-/*				json c = j.at(
-					"children"
-				).get<json>();*/
 				nlohmann::json c = j.at("children");
 				for(nlohmann::json::iterator it = c.begin(); it != c.end(); ++it){
 					children.push_back(
@@ -186,42 +179,16 @@ HoppingAmplitudeTree::HoppingAmplitudeTree(
 HoppingAmplitudeTree::~HoppingAmplitudeTree(){
 }
 
-/*vector<Index> HoppingAmplitudeTree::getIndexList(const Index &pattern) const{
-	vector<Index> indexList;
-
-	for(
-		ConstIterator iterator = cbegin();
-		iterator != cend();
-		++iterator
-	){
-		if((*iterator).getFromIndex().equals(pattern, true)){
-			if(
-				indexList.size() == 0
-				|| !indexList.back().equals((*iterator).getFromIndex(), false)
-			){
-				indexList.push_back((*iterator).getFromIndex());
-			}
-		}
-	}
-
-	return indexList;
-}*/
-
 vector<Index> HoppingAmplitudeTree::getIndexList(const Index &pattern) const{
 	vector<Index> indexList;
 
-//	bool wildcardFound = false;
 	Index subTreeIndex;
 	Index intraSubTreeIndex;
 	for(unsigned int n = 0; n < pattern.getSize(); n++){
 		if(pattern[n] < 0)
 			break;
-//			wildcardFound;
 
-//		if(wildcardFound)
-//			intraSubtreeIndex;
-//		else
-			subTreeIndex.push_back(pattern[n]);
+		subTreeIndex.push_back(pattern[n]);
 	}
 
 	const HoppingAmplitudeTree *subTree = getSubTree(subTreeIndex);
@@ -261,13 +228,11 @@ void HoppingAmplitudeTree::add(HoppingAmplitude ha){
 }
 
 void HoppingAmplitudeTree::_add(HoppingAmplitude &ha, unsigned int subindex){
-//	if(subindex < ha.fromIndex.size()){
 	if(subindex < ha.getFromIndex().getSize()){
 		//If the current subindex is not the last, the HoppingAmplitude
 		//is propagated to the next node level.
 
 		//Get current subindex
-//		int currentIndex = ha.fromIndex.at(subindex);
 		int currentIndex = ha.getFromIndex().at(subindex);
 		//Error detection:
 		//Negative indices not allowed.
@@ -305,16 +270,9 @@ void HoppingAmplitudeTree::_add(HoppingAmplitude &ha, unsigned int subindex){
 			<< " has already been added.",
 			""
 		);
-/*		if(hoppingAmplitudes.size() != 0){
-			Streams::err << "Error, incompatible amplitudes:\n";
-			ha.print();
-			hoppingAmplitudes.at(0).print();
-			exit(1);
-		}*/
 		//Ensure isPotentialBlockSeparator is set to false in case the
 		//'toIndex' and the 'fromIndex' differs in the subindex
 		//corresponding to this HoppingAmplitudeTree level.
-//		if(ha.toIndex.size() <= subindex || currentIndex != ha.toIndex.at(subindex))
 		if(ha.getToIndex().getSize() <= subindex || currentIndex != ha.getToIndex().at(subindex))
 			isPotentialBlockSeparator = false;
 		//Propagate to the next node level.
@@ -341,12 +299,6 @@ void HoppingAmplitudeTree::_add(HoppingAmplitude &ha, unsigned int subindex){
 			<< " already been added.",
 			""
 		);
-/*		if(children.size() != 0){
-			Streams::err << "Error, incompatible amplitudes:\n";
-			ha.print();
-			getFirstHA().print();
-			exit(1);
-		}*/
 		//Add HoppingAmplitude to node.
 		hoppingAmplitudes.push_back(ha);
 	}
@@ -400,12 +352,6 @@ const HoppingAmplitudeTree* HoppingAmplitudeTree::getSubTree(
 		);
 	}
 	else{
-/*		TBTKExit(
-			"HoppingAmplitudeTree::getSubTree()",
-			"Subspace index '" << subspace.toString() << "' does"
-			<< " not exist.",
-			""
-		);*/
 		return &emptyTree;
 	}
 }
@@ -441,12 +387,6 @@ bool HoppingAmplitudeTree::_isProperSubspace(
 			);
 		}
 		else{
-/*			TBTKExit(
-				"HoppingAmplitudeTree::isProperSubspace()",
-				"Subspace index '" << subspace.toString()
-				<< "' does not exist.",
-				""
-			);*/
 			//The subspace is empty and getSubTree will return
 			//HoppingAmaplitudeTree::emptyTree. The empty subspace
 			//is considered a proper subspace.
@@ -462,7 +402,6 @@ IndexTree HoppingAmplitudeTree::getSubspaceIndices() const{
 	IndexTree blockIndices;
 	if(isPotentialBlockSeparator)
 		getBlockIndices(blockIndices, Index());
-//		getBlockIndices(blockIndices, Index({}));
 	blockIndices.generateLinearMap();
 
 	return blockIndices;
@@ -660,8 +599,6 @@ class SortHelperClass{
 public:
 	static HoppingAmplitudeTree *rootNode;
 	inline bool operator() (const HoppingAmplitude& ha1, const HoppingAmplitude& ha2){
-/*		int basisIndex1 = rootNode->getBasisIndex(ha1.toIndex);
-		int basisIndex2 = rootNode->getBasisIndex(ha2.toIndex);*/
 		int basisIndex1 = rootNode->getBasisIndex(ha1.getToIndex());
 		int basisIndex2 = rootNode->getBasisIndex(ha2.getToIndex());
 		if(basisIndex1 < basisIndex2)

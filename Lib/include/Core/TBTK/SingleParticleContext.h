@@ -42,28 +42,9 @@ public:
 	/** Constructor. */
 	SingleParticleContext(const std::vector<unsigned int> &capacity);
 
-	/** Copy constructor. */
-/*	SingleParticleContext(
-		const SingleParticleContext &singleParticleContext
-	);*/
-
-	/** Move constructor. */
-/*	SingleParticleContext(
-		SingleParticleContext &&singleParticleContext
-	);*/
-
 	/** Constructor. Constructs the SingleParticleContext from a
 	 *  serializeation string. */
 	SingleParticleContext(const std::string &serialization, Mode mode);
-
-	/**Destructor. */
-//	virtual ~SingleParticleContext();
-
-	/** Assignment operator. */
-//	SingleParticleContext& operator=(const SingleParticleContext &rhs);
-
-	/** Move assignment operator. */
-//	SingleParticleContext& operator=(SingleParticleContext &&rhs);
 
 	/** Set statistics.
 	 *
@@ -100,9 +81,6 @@ public:
 	 *
 	 *  @return The contained SourceAmplitudeSet. */
 	const SourceAmplitudeSet& getSourceAmplitudeSet() const;
-
-	/** Create Geometry. */
-//	void createGeometry(int dimensions, int numSpecifiers = 0);
 
 	/** Get Geometry. */
 	Geometry& getGeometry();

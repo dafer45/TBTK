@@ -191,15 +191,6 @@ public:
 	 *  @return Reference to the contained SourceAmplitudeSet. */
 	const SourceAmplitudeSet& getSourceAmplitudeSet() const;
 
-	/** Create geometry.
-	 *
-	 *  @param dimensions Number of spatial dimensions to use for the
-	 *  Geometry.
-	 *
-	 *  @param numSpecifiers The number of additional specifiers to use per
-	 *  Index. */
-//	void createGeometry(int dimensions, int numSpecifiers = 0);
-
 	/** Get geometry.
 	 *
 	 *  @return Pointer to the contained Geometry. */
@@ -348,10 +339,6 @@ inline const HoppingAmplitudeSet& Model::getHoppingAmplitudeSet() const{
 inline const SourceAmplitudeSet& Model::getSourceAmplitudeSet() const{
 	return singleParticleContext.getSourceAmplitudeSet();
 }
-
-/*inline void Model::createGeometry(int dimensions, int numSpecifiers){
-	singleParticleContext->createGeometry(dimensions, numSpecifiers);
-}*/
 
 inline Geometry& Model::getGeometry(){
 	return singleParticleContext.getGeometry();

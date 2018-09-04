@@ -643,7 +643,6 @@ inline HoppingAmplitudeSet::_Iterator<isConstIterator>::_Iterator(
 	HoppingAmplitudeTreePointerType hoppingAmplitudeTree,
 	bool end
 ) :
-//	iterator(hoppingAmplitudeTree, end)
 	iterator(
 		(
 			end ?

@@ -25,7 +25,6 @@
 #include "TBTK/json.hpp"
 
 using namespace std;
-//using namespace nlohmann;
 
 namespace TBTK{
 
@@ -80,20 +79,6 @@ Geometry::Geometry(
 Geometry::~Geometry(
 ){
 }
-
-/*void Geometry::setCoordinates(
-	const Index &index,
-	std::initializer_list<double> coordinates
-){
-	this->coordinates.add(coordinates, index);
-}
-
-void Geometry::setCoordinates(
-	const Index &index,
-	const std::vector<double> &coordinates
-){
-	this->coordinates.add(coordinates, index);
-}*/
 
 void Geometry::translate(const vector<double> &translation){
 	TBTKAssert(
