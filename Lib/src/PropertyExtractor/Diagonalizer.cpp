@@ -321,10 +321,8 @@ Property::Density Diagonalizer::calculateDensity(
 ){
 	ensureCompliantRanges(pattern, ranges);
 
-	int lDimensions;
-	int *lRanges;
-	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
-	Property::Density density(lDimensions, lRanges);
+	vector<int> loopRanges = getLoopRanges(pattern, ranges);
+	Property::Density density(loopRanges);
 
 	Information information;
 	calculate(
@@ -405,10 +403,8 @@ Property::Magnetization Diagonalizer::calculateMagnetization(
 
 	ensureCompliantRanges(pattern, ranges);
 
-	int lDimensions;
-	int *lRanges;
-	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
-	Property::Magnetization magnetization(lDimensions, lRanges);
+	vector<int> loopRanges = getLoopRanges(pattern, ranges);
+	Property::Magnetization magnetization(loopRanges);
 
 	calculate(
 		calculateMAGCallback,
@@ -475,12 +471,9 @@ Property::LDOS Diagonalizer::calculateLDOS(
 
 	ensureCompliantRanges(pattern, ranges);
 
-	int lDimensions;
-	int *lRanges;
-	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
+	vector<int> loopRanges = getLoopRanges(pattern, ranges);
 	Property::LDOS ldos(
-		lDimensions,
-		lRanges,
+		loopRanges,
 		lowerBound,
 		upperBound,
 		energyResolution
@@ -578,12 +571,9 @@ Property::SpinPolarizedLDOS Diagonalizer::calculateSpinPolarizedLDOS(
 
 	ensureCompliantRanges(pattern, ranges);
 
-	int lDimensions;
-	int *lRanges;
-	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
+	vector<int> loopRanges = getLoopRanges(pattern, ranges);
 	Property::SpinPolarizedLDOS spinPolarizedLDOS(
-		lDimensions,
-		lRanges,
+		loopRanges,
 		lowerBound,
 		upperBound,
 		energyResolution

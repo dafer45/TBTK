@@ -252,34 +252,22 @@ void PropertyExtractor::ensureCompliantRanges(
 	}
 }
 
-void PropertyExtractor::getLoopRanges(
+vector<int> PropertyExtractor::getLoopRanges(
 	const Index &pattern,
-	const Index &ranges,
-	int *loopDimensions,
-	int **loopRanges
+	const Index &ranges
 ){
-	*loopDimensions = 0;
+	vector<int> loopRanges;
 	for(unsigned int n = 0; n < ranges.getSize(); n++){
 		if(
 			pattern.at(n) == IDX_X
 			|| pattern.at(n) == IDX_Y
 			|| pattern.at(n) == IDX_Z
 		){
-			(*loopDimensions)++;
+			loopRanges.push_back(ranges.at(n));
 		}
 	}
 
-	(*loopRanges) = new int[*loopDimensions];
-	int counter = 0;
-	for(unsigned int n = 0; n < ranges.getSize(); n++){
-		if(
-			pattern.at(n) == IDX_X
-			|| pattern.at(n) == IDX_Y
-			|| pattern.at(n) == IDX_Z
-		){
-			(*loopRanges)[counter++] = ranges.at(n);
-		}
-	}
+	return loopRanges;
 }
 
 IndexTree PropertyExtractor::generateIndexTree(

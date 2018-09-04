@@ -105,17 +105,13 @@ public:
 		PropertyExtractor::ensureCompliantRanges(pattern, ranges);
 	};
 
-	void getLoopRanges(
+	std::vector<int> getLoopRanges(
 		const Index &pattern,
-		const Index &ranges,
-		int *loopDimensions,
-		int **loopRanges
+		const Index &ranges
 	){
-		PropertyExtractor::getLoopRanges(
+		return PropertyExtractor::getLoopRanges(
 			pattern,
-			ranges,
-			loopDimensions,
-			loopRanges
+			ranges
 		);
 	}
 
@@ -557,9 +553,7 @@ TEST(PropertyExtractor, calculateRanges){
 	//Check that the callback is called for all Indices and with the
 	//correct offset when using both loop and sum specifiers as well as
 	//normal subindices.
-	const int DIMENSIONS = 3;
-	int ranges[DIMENSIONS] = {2, 1, 3};
-	Property::LDOS ldos(DIMENSIONS, ranges, -1, 1, 10);
+	Property::LDOS ldos({2, 1, 3}, -1, 1, 10);
 	for(unsigned int n = 0; n < ldos.getSize(); n++)
 		ldos.getDataRW()[n] = 0;
 	PublicPropertyExtractor::PublicInformation information;
@@ -744,20 +738,14 @@ TEST(PropertyExtractor, getLoopRanges){
 	//subindices and that their ranges are extracted.
 	Index pattern({3, IDX_ALL, 0, IDX_SPIN, 2, IDX_X, IDX_Y, IDX_Z});
 	Index ranges({2, 3, 4, 5, 6, 7, 8, 9});
-	int loopDimensions;
-	int *loopRanges;
-	propertyExtractor.getLoopRanges(
+	std::vector<int> loopRanges = propertyExtractor.getLoopRanges(
 		pattern,
-		ranges,
-		&loopDimensions,
-		&loopRanges
+		ranges
 	);
-	EXPECT_EQ(loopDimensions, 3);
+	EXPECT_EQ(loopRanges.size(), 3);
 	EXPECT_EQ(loopRanges[0], 7);
 	EXPECT_EQ(loopRanges[1], 8);
 	EXPECT_EQ(loopRanges[2], 9);
-
-	delete [] loopRanges;
 }
 
 TEST(PropertyExtractor, gnerateIndexTree){

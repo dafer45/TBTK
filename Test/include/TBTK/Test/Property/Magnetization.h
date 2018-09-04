@@ -6,8 +6,7 @@ namespace TBTK{
 namespace Property{
 
 TEST(Magnetization, Constructor0){
-	int ranges[3] = {2, 3, 4};
-	Magnetization magnetization(3, ranges);
+	Magnetization magnetization({2, 3, 4});
 	ASSERT_EQ(magnetization.getDimensions(), 3);
 	EXPECT_EQ(magnetization.getRanges()[0], 2);
 	EXPECT_EQ(magnetization.getRanges()[1], 3);
@@ -25,7 +24,6 @@ TEST(Magnetization, Constructor0){
 }
 
 TEST(Magnetization, Constructor1){
-	int ranges[3] = {2, 3, 4};
 	SpinMatrix dataInput[2*3*4];
 	for(unsigned int n = 0; n < 2*3*4; n++){
 		for(unsigned int r = 0; r < 2; r++){
@@ -34,7 +32,7 @@ TEST(Magnetization, Constructor1){
 			}
 		}
 	}
-	Magnetization magnetization(3, ranges, dataInput);
+	Magnetization magnetization({2, 3, 4}, dataInput);
 	ASSERT_EQ(magnetization.getDimensions(), 3);
 	EXPECT_EQ(magnetization.getRanges()[0], 2);
 	EXPECT_EQ(magnetization.getRanges()[1], 3);

@@ -23,25 +23,22 @@
 #include "TBTK/json.hpp"
 
 using namespace std;
-//using namespace nlohmann;
 
 namespace TBTK{
 namespace Property{
 
 Density::Density(
-	int dimensions,
-	const int *ranges
+	const std::vector<int> &ranges
 ) :
-	AbstractProperty(dimensions, ranges, 1)
+	AbstractProperty(ranges, 1)
 {
 }
 
 Density::Density(
-	int dimensions,
-	const int *ranges,
+	const std::vector<int> &ranges,
 	const double *data
 ) :
-	AbstractProperty(dimensions, ranges, 1, data)
+	AbstractProperty(ranges, 1, data)
 {
 }
 

@@ -310,22 +310,19 @@ protected:
 
 	/** Constructs an AbstractProperty with the Ranges format.
 	 *
-	 *  @param dimensions Number of dimensons for the grid.
 	 *  @param ranges A list of upper limits for the ranges of the
 	 *  different dimensions. The nth dimension will have the range [0,
 	 *  ranges[n]).
 	 *
 	 *  @param blockSize The number of data elements per block. */
 	AbstractProperty(
-		unsigned int dimensions,
-		const int *ranges,
+		const std::vector<int> &ranges,
 		unsigned int blockSize
 	);
 
 	/** Constructs an AbstractProperty with the Ranges format and fills the
 	 *  internal memory with the data provided as input.
 	 *
-	 *  @param dimensions Number of dimensons for the grid.
 	 *  @param ranges A list of upper limits for the ranges of the
 	 *  different dimensions. The nth dimension will have the range [0,
 	 *  ranges[n]).
@@ -334,8 +331,7 @@ protected:
 	 *  @param data The data stored on the raw format described in the
 	 *  detailed description of the class. */
 	AbstractProperty(
-		unsigned int dimensions,
-		const int *ranges,
+		const std::vector<int> &ranges,
 		unsigned int blockSize,
 		const DataType *data
 	);
@@ -893,15 +889,17 @@ AbstractProperty<
 	isFundamental,
 	isSerializable
 >::AbstractProperty(
-	unsigned int dimensions,
-	const int *ranges,
+//	unsigned int dimensions,
+//	const int *ranges,
+	const std::vector<int> &ranges,
 	unsigned int blockSize
 ) :
 	indexDescriptor(IndexDescriptor::Format::Ranges)
 {
 	this->blockSize = blockSize;
 
-	indexDescriptor.setRanges(ranges, dimensions);
+//	indexDescriptor.setRanges(ranges, dimensions);
+	indexDescriptor.setRanges(ranges.data(), ranges.size());
 
 	unsigned int size = blockSize*indexDescriptor.getSize();
 	data.reserve(size);
@@ -917,8 +915,9 @@ AbstractProperty<
 	isFundamental,
 	isSerializable
 >::AbstractProperty(
-	unsigned int dimensions,
-	const int *ranges,
+//	unsigned int dimensions,
+//	const int *ranges,
+	const std::vector<int> &ranges,
 	unsigned int blockSize,
 	const DataType *data
 ) :
@@ -926,7 +925,8 @@ AbstractProperty<
 {
 	this->blockSize = blockSize;
 
-	indexDescriptor.setRanges(ranges, dimensions);
+//	indexDescriptor.setRanges(ranges, dimensions);
+	indexDescriptor.setRanges(ranges.data(), ranges.size());
 
 	unsigned int size = blockSize*indexDescriptor.getSize();
 	this->data.reserve(size);

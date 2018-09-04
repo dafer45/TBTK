@@ -515,13 +515,11 @@ protected:
 	 *  @param loopDimensions Pointer to int that will hold the number of
 	 *  loop dimensions after the call has completed.
 	 *
-	 *  @param loopRanges *loopRange will point to an array of size
-	 *  *loopDimensions that contain the ranges for the loop subindices. */
-	void getLoopRanges(
+	 *  @return A vector that contains the ranges for the loop subindices.
+	 */
+	std::vector<int> getLoopRanges(
 		const Index &pattern,
-		const Index &ranges,
-		int *loopDimensions,
-		int **loopRanges
+		const Index &ranges
 	);
 
 	/** Generate an IndexTree containing all the @link Index Indices

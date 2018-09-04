@@ -657,7 +657,10 @@ Property::Density* FileReader::readDensity(string name, string path){
 				dims[n] = dims_internal[n];
 			delete [] dims_internal;
 
-			density = new Property::Density(rank, dims);
+//			density = new Property::Density(rank, dims);
+			density = new Property::Density(
+				vector<int>(dims, dims + rank)
+			);
 			delete [] dims;
 
 			dataset.read(
@@ -783,7 +786,10 @@ Property::Magnetization* FileReader::readMagnetization(
 			for(int n = 0; n < rank; n++)
 				dims[n] = dims_internal[n];
 
-			magnetization = new Property::Magnetization(rank, dims);
+//			magnetization = new Property::Magnetization(rank, dims);
+			magnetization = new Property::Magnetization(
+				vector<int>(dims, dims + rank)
+			);
 			delete [] dims;
 
 			int size = 1;
@@ -947,8 +953,7 @@ Property::LDOS* FileReader::readLDOS(string name, string path){
 				dims[n] = dims_internal[n];
 
 			ldos = new Property::LDOS(
-				rank,
-				dims,
+				vector<int>(dims, dims + rank),
 				doubleAttributes[0],
 				doubleAttributes[1],
 				intAttributes[1]
@@ -1116,7 +1121,13 @@ Property::SpinPolarizedLDOS* FileReader::readSpinPolarizedLDOS(
 			upperBound = limits[0];
 			lowerBound = limits[1];
 
-			spinPolarizedLDOS = new Property::SpinPolarizedLDOS(rank, dims, lowerBound, upperBound, resolution);
+//			spinPolarizedLDOS = new Property::SpinPolarizedLDOS(rank, dims, lowerBound, upperBound, resolution);
+			spinPolarizedLDOS = new Property::SpinPolarizedLDOS(
+				vector<int>(dims, dims + rank),
+				lowerBound,
+				upperBound,
+				resolution
+			);
 			delete [] dims;
 
 			int size = 1;

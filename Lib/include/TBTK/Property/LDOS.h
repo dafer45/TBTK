@@ -35,7 +35,6 @@ public:
 	/** Constructs LDOS on the Ranges format. [See AbstractProperty for
 	 *  detailed information about the Ranges format.]
 	 *
-	 *  @param dimensions Number of dimensions for the grid.
 	 *  @param ranges The upper limit (exclusive) for the corresponding
 	 *  dimensions.
 	 *
@@ -43,8 +42,7 @@ public:
 	 *  @param upperBound Upper bound for the energy
 	 *  @param resolution Number of points to use for the energy. */
 	LDOS(
-		int dimensions,
-		const int *ranges,
+		const std::vector<int> &ranges,
 		double lowerBound,
 		double upperBound,
 		int resolution
@@ -54,7 +52,6 @@ public:
 	 *  [See AbstractProperty for detailed information about the Ranges
 	 *  format and the raw data format.]
 	 *
-	 *  @param dimensions Number of dimensions for the grid.
 	 *  @param ranges The upper limit (exclusive) for the corresponding
 	 *  dimensions.
 	 *
@@ -63,8 +60,7 @@ public:
 	 *  @param resolution Number of points to use for the energy.
 	 *  @param data Raw data to initialize the LDOS with. */
 	LDOS(
-		int dimensions,
-		const int *ranges,
+		const std::vector<int> &ranges,
 		double lowerBound,
 		double upperBound,
 		int resolution,

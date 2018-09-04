@@ -23,25 +23,20 @@
 #include "TBTK/json.hpp"
 
 using namespace std;
-//using namespace nlohmann;
 
 namespace TBTK{
 namespace Property{
 
-Magnetization::Magnetization(
-	int dimensions,
-	const int* ranges
-) :
-	AbstractProperty(dimensions, ranges, 1)
+Magnetization::Magnetization(const vector<int> &ranges) :
+	AbstractProperty(ranges, 1)
 {
 }
 
 Magnetization::Magnetization(
-	int dimensions,
-	const int* ranges,
+	const vector<int> &ranges,
 	const SpinMatrix *data
 ) :
-	AbstractProperty(dimensions, ranges, 1, data)
+	AbstractProperty(ranges, 1, data)
 {
 }
 

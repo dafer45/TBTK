@@ -177,12 +177,9 @@ Property::LDOS ArnoldiIterator::calculateLDOS(
 
 	ensureCompliantRanges(pattern, ranges);
 
-	int lDimensions;
-	int *lRanges;
-	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
+	vector<int> loopRanges = getLoopRanges(pattern, ranges);
 	Property::LDOS ldos(
-		lDimensions,
-		lRanges,
+		loopRanges,
 		lowerBound,
 		upperBound,
 		energyResolution
@@ -284,12 +281,9 @@ Property::SpinPolarizedLDOS ArnoldiIterator::calculateSpinPolarizedLDOS(
 
 	ensureCompliantRanges(pattern, ranges);
 
-	int lDimensions;
-	int *lRanges;
-	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
+	vector<int> loopRanges = getLoopRanges(pattern, ranges);
 	Property::SpinPolarizedLDOS spinPolarizedLDOS(
-		lDimensions,
-		lRanges,
+		loopRanges,
 		lowerBound,
 		upperBound,
 		energyResolution

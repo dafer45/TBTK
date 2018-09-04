@@ -6,8 +6,7 @@ namespace TBTK{
 namespace Property{
 
 TEST(Density, Constructor0){
-	int ranges[3] = {2, 3, 4};
-	Density density(3, ranges);
+	Density density({2, 3, 4});
 	ASSERT_EQ(density.getDimensions(), 3);
 	ASSERT_EQ(density.getRanges()[0], 2);
 	ASSERT_EQ(density.getRanges()[1], 3);
@@ -21,11 +20,10 @@ TEST(Density, Constructor0){
 }
 
 TEST(Density, Constructor1){
-	int ranges[3] = {2, 3, 4};
 	double dataInput[2*3*4];
 	for(unsigned int n = 0; n < 2*3*4; n++)
 		dataInput[n] = n;
-	Density density(3, ranges, dataInput);
+	Density density({2, 3, 4}, dataInput);
 	ASSERT_EQ(density.getDimensions(), 3);
 	ASSERT_EQ(density.getRanges()[0], 2);
 	ASSERT_EQ(density.getRanges()[1], 3);
@@ -65,11 +63,10 @@ TEST(Density, Constructor3){
 
 TEST(Density, SerializeToJSON){
 	//Ranges format.
-	int ranges[3] = {2, 3, 4};
 	double dataInput[2*3*4];
 	for(unsigned int n = 0; n < 2*3*4; n++)
 		dataInput[n] = n;
-	Density density0(3, ranges, dataInput);
+	Density density0({2, 3, 4}, dataInput);
 	Density density1(
 		density0.serialize(Serializable::Mode::JSON),
 		Serializable::Mode::JSON

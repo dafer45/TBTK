@@ -58,10 +58,8 @@ Property::Density Greens::calculateDensity(
 ){
 	ensureCompliantRanges(pattern, ranges);
 
-	int lDimensions = 0;
-	int *lRanges;
-	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
-	Property::Density density(lDimensions, lRanges);
+	vector<int> loopRanges = getLoopRanges(pattern, ranges);
+	Property::Density density(loopRanges);
 
 	Information information;
 	calculate(

@@ -35,21 +35,19 @@ public:
 	/** Constructs a Density on the Ranges format. [See AbstractProperty
 	 *  for detailed information about the Ranges format.]
 	 *
-	 *  @param dimensions Number of dimensions for the grid.
 	 *  @param ranges The upper limits (exclusive) for the corresponding
 	 *  dimensions. */
-	Density(int dimensions, const int *ranges);
+	Density(const std::vector<int> &ranges);
 
 	/** Constructs a Density on the Ranges format and initializes it with
 	 *  data. [See AbstractProperty for detailed information about the
 	 *  Ranges format and the raw data format.]
 	 *
-	 *  @param dimensions Number of dimensions for the grid.
 	 *  @param ranges The upper limits (exclusive) for the corresponding
 	 *  dimensions.
 	 *
 	 *  @param data Raw data to initialize the Density with. */
-	Density(int dimensions, const int *ranges, const double *data);
+	Density(const std::vector<int> &ranges, const double *data);
 
 	/** Constructs a Density on the Custom format. [See AbstractProperty
 	 *  for detailed information about the Custom format.]

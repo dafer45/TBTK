@@ -38,25 +38,19 @@ public:
 	 *  AbstractProperty for detailed information about the Ranges
 	 *  format.]
 	 *
-	 *  @param dimensions Number of dimensions for the grid.
 	 *  @param ranges The upper limit (exclusive) for the corresponding
 	 *  dimensions. */
-	Magnetization(int dimensions, const int* ranges);
+	Magnetization(const std::vector<int> &ranges);
 
 	/** Constructs Magnetization on the Ranges format and initializes it
 	 *  with data. [See AbstractProperty for detailed information about the
 	 *  Ranges format and the raw data format.]
 	 *
-	 *  @param dimensions Number of dimensions for the grid.
 	 *  @param ranges The upper limit (exclusive) for the corresponding
 	 *  dimensions.
 	 *
 	 *  @param data Raw data to initialize the Magnetization with. */
-	Magnetization(
-		int dimensions,
-		const int* ranges,
-		const SpinMatrix *data
-	);
+	Magnetization(const std::vector<int> &ranges, const SpinMatrix *data);
 
 	/** Constructs Magnetization on the Custom format. [See
 	 *  AbstractProperty for detailed information about the Custom

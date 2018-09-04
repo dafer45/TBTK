@@ -6,8 +6,7 @@ namespace TBTK{
 namespace Property{
 
 TEST(LDOS, Constructor0){
-	int ranges[3] = {2, 3, 4};
-	LDOS ldos(3, ranges, -10, 10, 1000);
+	LDOS ldos({2, 3, 4}, -10, 10, 1000);
 	ASSERT_EQ(ldos.getDimensions(), 3);
 	EXPECT_EQ(ldos.getRanges()[0], 2);
 	EXPECT_EQ(ldos.getRanges()[1], 3);
@@ -22,11 +21,10 @@ TEST(LDOS, Constructor0){
 }
 
 TEST(LDOS, Constructor1){
-	int ranges[3] = {2, 3, 4};
 	double dataInput[1000*2*3*4];
 	for(unsigned int n = 0; n < 1000*2*3*4; n++)
 		dataInput[n] = n;
-	LDOS ldos(3, ranges, -10, 10, 1000, dataInput);
+	LDOS ldos({2, 3, 4}, -10, 10, 1000, dataInput);
 	ASSERT_EQ(ldos.getDimensions(), 3);
 	EXPECT_EQ(ldos.getRanges()[0], 2);
 	EXPECT_EQ(ldos.getRanges()[1], 3);
@@ -81,11 +79,10 @@ TEST(LDOS, Constructor3){
 
 TEST(LDOS, SerializeToJSON){
 	//IndexDescriptor::Format::Ranges.
-	int ranges[3] = {2, 3, 4};
 	double dataInput0[1000*2*3*4];
 	for(unsigned int n = 0; n < 1000*2*3*4; n++)
 		dataInput0[n] = n;
-	LDOS ldos0(3, ranges, -10, 10, 1000, dataInput0);
+	LDOS ldos0({2, 3, 4}, -10, 10, 1000, dataInput0);
 	LDOS ldos1(
 		ldos0.serialize(Serializable::Mode::JSON),
 		Serializable::Mode::JSON

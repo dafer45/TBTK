@@ -337,10 +337,8 @@ Property::Density ChebyshevExpander::calculateDensity(
 ){
 	ensureCompliantRanges(pattern, ranges);
 
-	int lDimensions = 0;
-	int *lRanges;
-	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
-	Property::Density density(lDimensions, lRanges);
+	vector<int> loopRanges = getLoopRanges(pattern, ranges);
+	Property::Density density(loopRanges);
 
 	Information information;
 	calculate(
@@ -410,10 +408,8 @@ Property::Magnetization ChebyshevExpander::calculateMagnetization(
 
 	ensureCompliantRanges(pattern, ranges);
 
-	int lDimensions;
-	int *lRanges;
-	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
-	Property::Magnetization magnetization(lDimensions, lRanges);
+	vector<int> loopRanges = getLoopRanges(pattern, ranges);
+	Property::Magnetization magnetization(loopRanges);
 
 	calculate(
 		calculateMAGCallback,
@@ -466,12 +462,9 @@ Property::LDOS ChebyshevExpander::calculateLDOS(Index pattern, Index ranges){
 	double upperBound = getUpperBound();
 	int energyResolution = getEnergyResolution();
 
-	int lDimensions;
-	int *lRanges;
-	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
+	vector<int> loopRanges = getLoopRanges(pattern, ranges);
 	Property::LDOS ldos(
-		lDimensions,
-		lRanges,
+		loopRanges,
 		lowerBound,
 		upperBound,
 		energyResolution
@@ -550,12 +543,9 @@ Property::SpinPolarizedLDOS ChebyshevExpander::calculateSpinPolarizedLDOS(
 
 	ensureCompliantRanges(pattern, ranges);
 
-	int lDimensions;
-	int *lRanges;
-	getLoopRanges(pattern, ranges, &lDimensions, &lRanges);
+	vector<int> loopRanges = getLoopRanges(pattern, ranges);
 	Property::SpinPolarizedLDOS spinPolarizedLDOS(
-		lDimensions,
-		lRanges,
+		loopRanges,
 		getLowerBound(),
 		getUpperBound(),
 		getEnergyResolution()

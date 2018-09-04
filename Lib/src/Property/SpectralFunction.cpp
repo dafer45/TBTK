@@ -28,22 +28,24 @@ namespace TBTK{
 namespace Property{
 
 SpectralFunction::SpectralFunction(
-	int dimensions,
-	const int *ranges,
+	const std::vector<int> &ranges,
 	double lowerBound,
 	double upperBound,
 	int resolution
-) : LDOS(dimensions, ranges, lowerBound, upperBound, resolution){
+) :
+	LDOS(ranges, lowerBound, upperBound, resolution)
+{
 }
 
 SpectralFunction::SpectralFunction(
-	int dimensions,
-	const int *ranges,
+	const std::vector<int> &ranges,
 	double lowerBound,
 	double upperBound,
 	int resolution,
 	const double *data
-) : LDOS(dimensions, ranges, lowerBound, upperBound, resolution, data){
+) :
+	LDOS(ranges, lowerBound, upperBound, resolution, data)
+{
 }
 
 SpectralFunction::SpectralFunction(

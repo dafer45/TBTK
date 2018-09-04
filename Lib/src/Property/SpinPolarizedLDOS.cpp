@@ -23,19 +23,17 @@
 #include "TBTK/json.hpp"
 
 using namespace std;
-//using namespace nlohmann;
 
 namespace TBTK{
 namespace Property{
 
 SpinPolarizedLDOS::SpinPolarizedLDOS(
-	int dimensions,
-	const int *ranges,
+	const std::vector<int> &ranges,
 	double lowerBound,
 	double upperBound,
 	int resolution
 ) :
-	AbstractProperty(dimensions, ranges, resolution)
+	AbstractProperty(ranges, resolution)
 {
 	this->lowerBound = lowerBound;
 	this->upperBound = upperBound;
@@ -43,14 +41,13 @@ SpinPolarizedLDOS::SpinPolarizedLDOS(
 }
 
 SpinPolarizedLDOS::SpinPolarizedLDOS(
-	int dimensions,
-	const int *ranges,
+	const std::vector<int> &ranges,
 	double lowerBound,
 	double upperBound,
 	int resolution,
 	const SpinMatrix *data
 ) :
-	AbstractProperty(dimensions, ranges, resolution, data)
+	AbstractProperty(ranges, resolution, data)
 {
 	this->lowerBound = lowerBound;
 	this->upperBound = upperBound;

@@ -33,8 +33,7 @@ class SpectralFunction : public LDOS{
 public:
 	/** Constructor. */
 	SpectralFunction(
-		int dimensions,
-		const int *ranges,
+		const std::vector<int> &ranges,
 		double lowerBound,
 		double upperBound,
 		int resolution
@@ -42,8 +41,7 @@ public:
 
 	/** Constructor. */
 	SpectralFunction(
-		int dimensions,
-		const int *ranges,
+		const std::vector<int> &ranges,
 		double lowerBound,
 		double upperBound,
 		int resolution,

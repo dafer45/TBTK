@@ -6,8 +6,7 @@ namespace TBTK{
 namespace Property{
 
 TEST(SpinPolarizedLDOS, Constructor0){
-	int ranges[3] = {2, 3, 4};
-	SpinPolarizedLDOS spinPolarizedLDOS(3, ranges, -10, 10, 1000);
+	SpinPolarizedLDOS spinPolarizedLDOS({2, 3, 4}, -10, 10, 1000);
 	ASSERT_EQ(spinPolarizedLDOS.getDimensions(), 3);
 	EXPECT_EQ(spinPolarizedLDOS.getRanges()[0], 2);
 	EXPECT_EQ(spinPolarizedLDOS.getRanges()[1], 3);
@@ -28,7 +27,6 @@ TEST(SpinPolarizedLDOS, Constructor0){
 }
 
 TEST(SpinPolarizedLDOS, Constructor1){
-	int ranges[3] = {2, 3, 4};
 	SpinMatrix *dataInput = new SpinMatrix[2*3*4*1000];
 	for(unsigned int n = 0; n < 2*3*4*1000; n++){
 		for(unsigned int r = 0; r < 2; r++){
@@ -38,8 +36,7 @@ TEST(SpinPolarizedLDOS, Constructor1){
 		}
 	}
 	SpinPolarizedLDOS spinPolarizedLDOS(
-		3,
-		ranges,
+		{2, 3, 4},
 		-10,
 		10,
 		1000,

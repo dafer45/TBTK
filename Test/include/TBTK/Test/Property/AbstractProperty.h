@@ -24,20 +24,17 @@ public:
 		AbstractProperty<DataType>(blockSize, data){}
 
 	PublicAbstractProperty(
-		unsigned int dimensions,
-		const int *ranges,
+		const std::vector<int> &ranges,
 		unsigned int blockSize
 	) :
-		AbstractProperty<DataType>(dimensions, ranges, blockSize){}
+		AbstractProperty<DataType>(ranges, blockSize){}
 
 	PublicAbstractProperty(
-		unsigned int dimensions,
-		const int *ranges,
+		const std::vector<int> &ranges,
 		unsigned int blockSize,
 		const DataType *data
 	) :
 		AbstractProperty<DataType>(
-			dimensions,
 			ranges,
 			blockSize,
 			data
@@ -123,8 +120,7 @@ TEST(AbstractProperty, Constructor2){
 
 TEST(AbstractProperty, Constructor3){
 	//Construct a Property with the Ranges format.
-	const int ranges[3] = {2, 3, 4};
-	PublicAbstractProperty<int> property(3, ranges, 10);
+	PublicAbstractProperty<int> property({2, 3, 4}, 10);
 	EXPECT_EQ(property.getBlockSize(), 10);
 	EXPECT_EQ(property.getSize(), 2*3*4*10);
 	const std::vector<int> &data = property.getData();
@@ -136,11 +132,10 @@ TEST(AbstractProperty, Constructor3){
 TEST(AbstractProperty, Constructor4){
 	//Construct a Property with the Ranges format and initialize it with
 	//provided values.
-	const int ranges[3] = {2, 3, 4};
 	int dataInput[2*3*4*10];
 	for(unsigned int n = 0; n < 2*3*4*10; n++)
 		dataInput[n] = n;
-	PublicAbstractProperty<int> property(3, ranges, 10, dataInput);
+	PublicAbstractProperty<int> property({2, 3, 4}, 10, dataInput);
 	EXPECT_EQ(property.getBlockSize(), 10);
 	EXPECT_EQ(property.getSize(), 2*3*4*10);
 	const std::vector<int> &data = property.getData();
@@ -224,11 +219,10 @@ TEST(AbstractProperty, CopyConstructor){
 	EXPECT_EQ(data1[9], 9);
 
 	//Property with Ranges format.
-	const int ranges[3] = {2, 3, 4};
 	int dataInput2[2*3*4*10];
 	for(unsigned int n = 0; n < 2*3*4*10; n++)
 		dataInput2[n] = n;
-	PublicAbstractProperty<int> property2(3, ranges, 10, dataInput2);
+	PublicAbstractProperty<int> property2({2, 3, 4}, 10, dataInput2);
 	PublicAbstractProperty<int> property3(property2);
 	EXPECT_EQ(property3.getBlockSize(), 10);
 	EXPECT_EQ(property3.getSize(), 2*3*4*10);
@@ -271,11 +265,10 @@ TEST(AbstractProperty, MoveConstructor){
 	EXPECT_EQ(data1[9], 9);
 
 	//Property with Ranges format.
-	const int ranges[3] = {2, 3, 4};
 	int dataInput2[2*3*4*10];
 	for(unsigned int n = 0; n < 2*3*4*10; n++)
 		dataInput2[n] = n;
-	PublicAbstractProperty<int> property2(3, ranges, 10, dataInput2);
+	PublicAbstractProperty<int> property2({2, 3, 4}, 10, dataInput2);
 	PublicAbstractProperty<int> property3(std::move(property2));
 	EXPECT_EQ(property3.getBlockSize(), 10);
 	EXPECT_EQ(property3.getSize(), 2*3*4*10);
@@ -330,11 +323,10 @@ TEST(AbstractProperty, OperatorAssignment){
 	EXPECT_EQ(data1[9], 9);
 
 	//Property with Ranges format.
-	const int ranges[3] = {2, 3, 4};
 	int dataInput2[2*3*4*10];
 	for(unsigned int n = 0; n < 2*3*4*10; n++)
 		dataInput2[n] = n;
-	PublicAbstractProperty<int> property2(3, ranges, 10, dataInput2);
+	PublicAbstractProperty<int> property2({2, 3, 4}, 10, dataInput2);
 	PublicAbstractProperty<int> property3;
 	property3 = property2;
 	EXPECT_EQ(property3.getBlockSize(), 10);
@@ -380,11 +372,10 @@ TEST(AbstractProperty, OperatorMoveAssignment){
 	EXPECT_EQ(data1[9], 9);
 
 	//Property with Ranges format.
-	const int ranges[3] = {2, 3, 4};
 	int dataInput2[2*3*4*10];
 	for(unsigned int n = 0; n < 2*3*4*10; n++)
 		dataInput2[n] = n;
-	PublicAbstractProperty<int> property2(3, ranges, 10, dataInput2);
+	PublicAbstractProperty<int> property2({2, 3, 4}, 10, dataInput2);
 	PublicAbstractProperty<int> property3;
 	property3 = std::move(property2);
 	EXPECT_EQ(property3.getBlockSize(), 10);
@@ -451,8 +442,7 @@ TEST(AbstractProperty, getDimensions){
 	);
 
 	//IndexDescriptor::Format::Ranges.
-	const int ranges[3] = {2, 3, 4};
-	PublicAbstractProperty<int> property1(3, ranges, 10);
+	PublicAbstractProperty<int> property1({2, 3, 4}, 10);
 	EXPECT_EQ(property1.getDimensions(), 3);
 
 	//Fail for IndexDescriptor::Format::Custom.
@@ -482,8 +472,7 @@ TEST(AbstractProperty, getRanges){
 	);
 
 	//IndexDescriptor::Format::Ranges.
-	const int rangesIn[3] = {2, 3, 4};
-	PublicAbstractProperty<int> property1(3, rangesIn, 10);
+	PublicAbstractProperty<int> property1({2, 3, 4}, 10);
 	const std::vector<int> ranges = property1.getRanges();
 	ASSERT_EQ(ranges.size(), 3);
 	EXPECT_EQ(ranges[0], 2);
@@ -517,8 +506,7 @@ TEST(AbstractProperty, getOffset){
 	);
 
 	//Fail for IndexDescriptor::Format::Ranges.
-	const int rangesIn[3] = {2, 3, 4};
-	PublicAbstractProperty<int> property1(3, rangesIn, 10);
+	PublicAbstractProperty<int> property1({2, 3, 4}, 10);
 	EXPECT_EXIT(
 		{
 			Streams::setStdMuteErr();
@@ -558,8 +546,7 @@ TEST(AbstractProperty, contains){
 	);
 
 	//Fail for IndexDescriptor::Format::Ranges.
-	const int rangesIn[3] = {2, 3, 4};
-	PublicAbstractProperty<int> property1(3, rangesIn, 10);
+	PublicAbstractProperty<int> property1({2, 3, 4}, 10);
 	EXPECT_EXIT(
 		{
 			Streams::setStdMuteErr();
@@ -621,8 +608,7 @@ TEST(AbstractProperty, operatorFunction){
 	);
 
 	//Fail to use indexed version for IndexDescriptor::Format::Ranges.
-	const int rangesIn[3] = {2, 3, 4};
-	PublicAbstractProperty<int> property1(3, rangesIn, 10);
+	PublicAbstractProperty<int> property1({2, 3, 4}, 10);
 	EXPECT_EXIT(
 		{
 			Streams::setStdMuteErr();
