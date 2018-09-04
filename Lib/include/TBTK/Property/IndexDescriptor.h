@@ -88,9 +88,6 @@ public:
 	 *  @return The Format that the IndexDescriptor describes. */
 	Format getFormat() const;
 
-	/** Set dimensions. */
-//	void setDimensions(unsigned int dimensions);
-
 	/** Set ranges. [Only works for the Ranges format.]
 	 *
 	 *  @param ranges The upper limits (exlcusive) of the grid described by
@@ -104,11 +101,7 @@ public:
 	 *
 	 *  @return The upper limits (exclusive) of the grid described by the
 	 *  IndexDescriptor. */
-//	int* getRanges();
 	std::vector<int> getRanges() const;
-
-	/** Get ranges. */
-//	const int* getRanges() const;
 
 	/** Set IndexTree. [Only works for the Custom format.]
 	 *
@@ -207,19 +200,6 @@ inline IndexDescriptor::Format IndexDescriptor::getFormat() const{
 	return format;
 }
 
-/*inline void IndexDescriptor::setDimensions(unsigned int dimensions){
-	TBTKAssert(
-		format == Format::Ranges,
-		"IndexDescriptor::setDimensions()",
-		"The IndexDescriptor is not of the format Format::Ranges.",
-		""
-	);
-	descriptor.rangeFormat.dimensions = dimensions;
-	if(descriptor.rangeFormat.ranges != NULL)
-		delete [] descriptor.rangeFormat.ranges;
-	descriptor.rangeFormat.ranges = new int[dimensions];
-}*/
-
 inline void IndexDescriptor::setRanges(const std::vector<int> &ranges){
 	TBTKAssert(
 		format == Format::Ranges,
@@ -235,7 +215,6 @@ inline void IndexDescriptor::setRanges(const std::vector<int> &ranges){
 		descriptor.rangeFormat.ranges[n] = ranges[n];
 }
 
-//inline int* IndexDescriptor::getRanges(){
 inline std::vector<int> IndexDescriptor::getRanges() const{
 	TBTKAssert(
 		format == Format::Ranges,
@@ -243,7 +222,6 @@ inline std::vector<int> IndexDescriptor::getRanges() const{
 		"The IndexDescriptor is not of the format Format::Ranges.",
 		""
 	);
-//	return descriptor.rangeFormat.ranges;
 
 	std::vector<int> ranges;
 	for(unsigned int n = 0; n < descriptor.rangeFormat.dimensions; n++)
@@ -251,16 +229,6 @@ inline std::vector<int> IndexDescriptor::getRanges() const{
 
 	return ranges;
 }
-
-/*inline const int* IndexDescriptor::getRanges() const{
-	TBTKAssert(
-		format == Format::Ranges,
-		"IndexDescriptor::setDimensions()",
-		"The IndexDescriptor is not of the format Format::Ranges.",
-		""
-	);
-	return descriptor.rangeFormat.ranges;
-}*/
 
 inline const IndexTree& IndexDescriptor::getIndexTree() const{
 	TBTKAssert(
@@ -301,18 +269,6 @@ inline int IndexDescriptor::getLinearIndex(
 	const Index &index,
 	bool returnNegativeForMissingIndex
 ) const{
-/*	TBTKAssert(
-		format == Format::Custom,
-		"IndexDescriptor::getOffset()",
-		"The IndexDescriptor is not of the format Format::Custom.",
-		""
-	);
-
-	return descriptor.customFormat.indexTree->getLinearIndex(
-		index,
-		IndexTree::SearchMode::MatchWildcards,
-		returnNegativeForMissingIndex
-	);*/
 	switch(format){
 	case Format::Custom:
 		return descriptor.customFormat.indexTree->getLinearIndex(
@@ -355,25 +311,6 @@ inline int IndexDescriptor::getLinearIndex(
 }
 
 inline bool IndexDescriptor::contains(const Index &index) const{
-/*	TBTKAssert(
-		format == Format::Custom,
-		"IndexDescriptor::contains()",
-		"The IndexDescriptor is not of the format Format::Custom.",
-		""
-	);
-
-	if(
-		descriptor.customFormat.indexTree->getLinearIndex(
-			index,
-			IndexTree::SearchMode::StrictMatch,
-			true
-		) == -1
-	){
-		return false;
-	}
-	else{
-		return true;
-	}*/
 	switch(format){
 	case Format::Custom:
 		if(

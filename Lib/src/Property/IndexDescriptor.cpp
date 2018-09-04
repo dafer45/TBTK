@@ -26,7 +26,6 @@
 #include "TBTK/json.hpp"
 
 using namespace std;
-//using namespace nlohmann;
 
 namespace TBTK{
 
