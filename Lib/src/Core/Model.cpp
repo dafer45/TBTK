@@ -39,17 +39,22 @@ Model::Model() : Communicator(true){
 	temperature = 0.;
 	chemicalPotential = 0.;
 
-	singleParticleContext = new SingleParticleContext();
+//	singleParticleContext = new SingleParticleContext();
 	manyParticleContext = NULL;
 	indexFilter = nullptr;
 	hoppingAmplitudeFilter = nullptr;
 }
 
-Model::Model(const vector<unsigned int> &capacity) : Communicator(true){
+Model::Model(
+	const vector<unsigned int> &capacity
+) :
+	Communicator(true),
+	singleParticleContext(capacity)
+{
 	temperature = 0.;
 	chemicalPotential = 0.;
 
-	singleParticleContext = new SingleParticleContext(capacity);
+//	singleParticleContext = new SingleParticleContext(capacity);
 	manyParticleContext = NULL;
 	indexFilter = nullptr;
 	hoppingAmplitudeFilter = nullptr;
@@ -59,9 +64,10 @@ Model::Model(const Model &model) : Communicator(model){
 	temperature = model.temperature;
 	chemicalPotential = model.chemicalPotential;
 
-	singleParticleContext = new SingleParticleContext(
+/*	singleParticleContext = new SingleParticleContext(
 		*model.singleParticleContext
-	);
+	);*/
+	singleParticleContext = model.singleParticleContext;
 	if(model.manyParticleContext == nullptr){
 		manyParticleContext = nullptr;
 	}
@@ -86,8 +92,8 @@ Model::Model(Model &&model) : Communicator(std::move(model)){
 	temperature = model.temperature;
 	chemicalPotential = model.chemicalPotential;
 
-	singleParticleContext = model.singleParticleContext;
-	model.singleParticleContext = nullptr;
+	singleParticleContext = std::move(model.singleParticleContext);
+//	model.singleParticleContext = nullptr;
 	manyParticleContext = model.manyParticleContext;
 	model.manyParticleContext = nullptr;
 
@@ -107,7 +113,7 @@ Model::Model(const string &serialization, Mode mode) : Communicator(true){
 	);
 
 	switch(mode){
-	case Mode::Debug:
+/*	case Mode::Debug:
 	{
 		string content = getContent(serialization, mode);
 
@@ -126,7 +132,7 @@ Model::Model(const string &serialization, Mode mode) : Communicator(true){
 		hoppingAmplitudeFilter = nullptr;
 
 		break;
-	}
+	}*/
 	case Mode::JSON:
 	{
 		try{
@@ -135,7 +141,11 @@ Model::Model(const string &serialization, Mode mode) : Communicator(true){
 			chemicalPotential = j.at(
 				"chemicalPotential"
 			).get<double>();
-			singleParticleContext = new SingleParticleContext(
+/*			singleParticleContext = new SingleParticleContext(
+				j.at("singleParticleContext").dump(),
+				mode
+			);*/
+			singleParticleContext = SingleParticleContext(
 				j.at("singleParticleContext").dump(),
 				mode
 			);
@@ -166,8 +176,8 @@ Model::Model(const string &serialization, Mode mode) : Communicator(true){
 }
 
 Model::~Model(){
-	if(singleParticleContext != nullptr)
-		delete singleParticleContext;
+//	if(singleParticleContext != nullptr)
+//		delete singleParticleContext;
 	if(manyParticleContext != nullptr)
 		delete manyParticleContext;
 	if(indexFilter != nullptr)
@@ -181,11 +191,12 @@ Model& Model::operator=(const Model &rhs){
 		temperature = rhs.temperature;
 		chemicalPotential = rhs.chemicalPotential;
 
-		if(singleParticleContext != nullptr)
+/*		if(singleParticleContext != nullptr)
 			delete singleParticleContext;
 		singleParticleContext = new SingleParticleContext(
 			*rhs.singleParticleContext
-		);
+		);*/
+		singleParticleContext = rhs.singleParticleContext;
 
 		if(manyParticleContext != nullptr)
 			delete manyParticleContext;
@@ -226,10 +237,11 @@ Model& Model::operator=(Model &&rhs){
 		temperature = rhs.temperature;
 		chemicalPotential = rhs.chemicalPotential;
 
-		if(singleParticleContext != nullptr)
+/*		if(singleParticleContext != nullptr)
 			delete singleParticleContext;
 		singleParticleContext = rhs.singleParticleContext;
-		rhs.singleParticleContext = nullptr;
+		rhs.singleParticleContext = nullptr;*/
+		singleParticleContext = std::move(rhs.singleParticleContext);
 
 		if(manyParticleContext != nullptr)
 			delete manyParticleContext;
@@ -271,7 +283,7 @@ void Model::construct(){
 	if(getGlobalVerbose() && getVerbose())
 		Streams::out << "Constructing system\n";
 
-	singleParticleContext->getHoppingAmplitudeSet().construct();
+	singleParticleContext.getHoppingAmplitudeSet().construct();
 
 	int basisSize = getBasisSize();
 
@@ -281,7 +293,7 @@ void Model::construct(){
 
 string Model::serialize(Mode mode) const{
 	switch(mode){
-	case Mode::Debug:
+/*	case Mode::Debug:
 	{
 		stringstream ss;
 		ss << "Model(";
@@ -291,7 +303,7 @@ string Model::serialize(Mode mode) const{
 		ss << ")";
 
 		return ss.str();
-	}
+	}*/
 	case Mode::JSON:
 	{
 		nlohmann::json j;
@@ -299,7 +311,7 @@ string Model::serialize(Mode mode) const{
 		j["temperature"] = temperature;
 		j["chemicalPotential"] = chemicalPotential;
 		j["singleParticleContext"] = nlohmann::json::parse(
-			singleParticleContext->serialize(mode)
+			singleParticleContext.serialize(mode)
 		);
 
 		return j.dump();

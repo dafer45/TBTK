@@ -44,7 +44,8 @@ SingleParticleContext::SingleParticleContext(
 SingleParticleContext::SingleParticleContext(
 	const SingleParticleContext &singleParticleContext
 ) :
-	hoppingAmplitudeSet(singleParticleContext.getHoppingAmplitudeSet())
+	hoppingAmplitudeSet(singleParticleContext.getHoppingAmplitudeSet()),
+	sourceAmplitudeSet(singleParticleContext.getSourceAmplitudeSet())
 {
 	statistics = singleParticleContext.statistics;
 	geometry = singleParticleContext.geometry;
@@ -61,7 +62,8 @@ SingleParticleContext::SingleParticleContext(
 SingleParticleContext::SingleParticleContext(
 	SingleParticleContext &&singleParticleContext
 ) :
-	hoppingAmplitudeSet(singleParticleContext.getHoppingAmplitudeSet())
+	hoppingAmplitudeSet(std::move(singleParticleContext.getHoppingAmplitudeSet())),
+	sourceAmplitudeSet(std::move(singleParticleContext.getSourceAmplitudeSet()))
 {
 	statistics = singleParticleContext.statistics;
 
@@ -173,6 +175,7 @@ SingleParticleContext& SingleParticleContext::operator=(
 		statistics = rhs.statistics;
 
 		hoppingAmplitudeSet = rhs.getHoppingAmplitudeSet();
+		sourceAmplitudeSet = rhs.getSourceAmplitudeSet();
 
 		geometry = rhs.geometry;
 /*		if(rhs.geometry == nullptr)
@@ -190,7 +193,8 @@ SingleParticleContext& SingleParticleContext::operator=(
 	if(this != &rhs){
 		statistics = rhs.statistics;
 
-		hoppingAmplitudeSet = rhs.getHoppingAmplitudeSet();
+		hoppingAmplitudeSet = std::move(rhs.getHoppingAmplitudeSet());
+		sourceAmplitudeSet = std::move(rhs.getSourceAmplitudeSet());
 
 		geometry = std::move(rhs.geometry);
 //		rhs.geometry = nullptr;

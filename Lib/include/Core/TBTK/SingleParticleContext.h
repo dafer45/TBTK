@@ -107,6 +107,9 @@ public:
 	/** Get Geometry. */
 	Geometry& getGeometry();
 
+	/** Get Geometry. */
+	const Geometry& getGeometry() const;
+
 	/** Implements Serializable::serialize(). */
 	std::string serialize(Mode mode) const;
 private:
@@ -162,6 +165,10 @@ SingleParticleContext::getSourceAmplitudeSet() const{
 }
 
 inline Geometry& SingleParticleContext::getGeometry(){
+	return geometry;
+}
+
+inline const Geometry& SingleParticleContext::getGeometry() const{
 	return geometry;
 }
 

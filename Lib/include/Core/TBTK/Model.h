@@ -270,7 +270,7 @@ private:
 	double chemicalPotential;
 
 	/** Single particle context. */
-	SingleParticleContext *singleParticleContext;
+	SingleParticleContext singleParticleContext;
 
 	/** Many-body context. */
 	ManyParticleContext *manyParticleContext;
@@ -286,35 +286,35 @@ private:
 };
 
 inline void Model::add(HoppingAmplitude ha){
-	singleParticleContext->getHoppingAmplitudeSet().add(ha);
+	singleParticleContext.getHoppingAmplitudeSet().add(ha);
 }
 
 inline int Model::getBasisSize() const{
-	return singleParticleContext->getHoppingAmplitudeSet().getBasisSize();
+	return singleParticleContext.getHoppingAmplitudeSet().getBasisSize();
 }
 
 inline int Model::getBasisIndex(const Index &index) const{
-	return singleParticleContext->getHoppingAmplitudeSet().getBasisIndex(index);
+	return singleParticleContext.getHoppingAmplitudeSet().getBasisIndex(index);
 }
 
 inline bool Model::getIsConstructed(){
-	return singleParticleContext->getHoppingAmplitudeSet().getIsConstructed();
+	return singleParticleContext.getHoppingAmplitudeSet().getIsConstructed();
 }
 
 inline void Model::sortHoppingAmplitudes(){
-	singleParticleContext->sortHoppingAmplitudes();
+	singleParticleContext.sortHoppingAmplitudes();
 }
 
 inline void Model::constructCOO(){
-	singleParticleContext->constructCOO();
+	singleParticleContext.constructCOO();
 }
 
 inline void Model::destructCOO(){
-	singleParticleContext->getHoppingAmplitudeSet().destructCOO();
+	singleParticleContext.getHoppingAmplitudeSet().destructCOO();
 }
 
 inline void Model::reconstructCOO(){
-	singleParticleContext->getHoppingAmplitudeSet().reconstructCOO();
+	singleParticleContext.getHoppingAmplitudeSet().reconstructCOO();
 }
 
 inline void Model::setTemperature(double temperature){
@@ -334,19 +334,19 @@ inline double Model::getChemicalPotential() const{
 }
 
 inline void Model::setStatistics(Statistics statistics){
-	singleParticleContext->setStatistics(statistics);
+	singleParticleContext.setStatistics(statistics);
 }
 
 inline Statistics Model::getStatistics() const{
-	return singleParticleContext->getStatistics();
+	return singleParticleContext.getStatistics();
 }
 
 inline const HoppingAmplitudeSet& Model::getHoppingAmplitudeSet() const{
-	return singleParticleContext->getHoppingAmplitudeSet();
+	return singleParticleContext.getHoppingAmplitudeSet();
 }
 
 inline const SourceAmplitudeSet& Model::getSourceAmplitudeSet() const{
-	return singleParticleContext->getSourceAmplitudeSet();
+	return singleParticleContext.getSourceAmplitudeSet();
 }
 
 /*inline void Model::createGeometry(int dimensions, int numSpecifiers){
@@ -354,15 +354,15 @@ inline const SourceAmplitudeSet& Model::getSourceAmplitudeSet() const{
 }*/
 
 inline Geometry& Model::getGeometry(){
-	return singleParticleContext->getGeometry();
+	return singleParticleContext.getGeometry();
 }
 
 inline const Geometry& Model::getGeometry() const{
-	return singleParticleContext->getGeometry();
+	return singleParticleContext.getGeometry();
 }
 
 inline void Model::createManyParticleContext(){
-	manyParticleContext = new ManyParticleContext(singleParticleContext);
+	manyParticleContext = new ManyParticleContext(&singleParticleContext);
 }
 
 inline ManyParticleContext* Model::getManyParticleContext(){
@@ -443,7 +443,7 @@ inline Model& Model::operator<<(const SourceAmplitude &sourceAmplitude){
 		indexFilter == nullptr
 		|| indexFilter->isIncluded(sourceAmplitude.getIndex())
 	){
-		singleParticleContext->getSourceAmplitudeSet().add(
+		singleParticleContext.getSourceAmplitudeSet().add(
 			sourceAmplitude
 		);
 	}
