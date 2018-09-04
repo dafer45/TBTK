@@ -43,27 +43,27 @@ public:
 	SingleParticleContext(const std::vector<unsigned int> &capacity);
 
 	/** Copy constructor. */
-	SingleParticleContext(
+/*	SingleParticleContext(
 		const SingleParticleContext &singleParticleContext
-	);
+	);*/
 
 	/** Move constructor. */
-	SingleParticleContext(
+/*	SingleParticleContext(
 		SingleParticleContext &&singleParticleContext
-	);
+	);*/
 
 	/** Constructor. Constructs the SingleParticleContext from a
 	 *  serializeation string. */
 	SingleParticleContext(const std::string &serialization, Mode mode);
 
 	/**Destructor. */
-	virtual ~SingleParticleContext();
+//	virtual ~SingleParticleContext();
 
 	/** Assignment operator. */
-	SingleParticleContext& operator=(const SingleParticleContext &rhs);
+//	SingleParticleContext& operator=(const SingleParticleContext &rhs);
 
 	/** Move assignment operator. */
-	SingleParticleContext& operator=(SingleParticleContext &&rhs);
+//	SingleParticleContext& operator=(SingleParticleContext &&rhs);
 
 	/** Set statistics.
 	 *

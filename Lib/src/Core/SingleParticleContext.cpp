@@ -41,7 +41,7 @@ SingleParticleContext::SingleParticleContext(
 //	geometry = nullptr;
 }
 
-SingleParticleContext::SingleParticleContext(
+/*SingleParticleContext::SingleParticleContext(
 	const SingleParticleContext &singleParticleContext
 ) :
 	hoppingAmplitudeSet(singleParticleContext.getHoppingAmplitudeSet()),
@@ -49,14 +49,6 @@ SingleParticleContext::SingleParticleContext(
 {
 	statistics = singleParticleContext.statistics;
 	geometry = singleParticleContext.geometry;
-/*	if(singleParticleContext.geometry == nullptr){
-		geometry = nullptr;
-	}
-	else{
-		geometry = new Geometry(
-			*singleParticleContext.geometry
-		);
-	}*/
 }
 
 SingleParticleContext::SingleParticleContext(
@@ -69,7 +61,7 @@ SingleParticleContext::SingleParticleContext(
 
 	geometry = std::move(singleParticleContext.geometry);
 //	singleParticleContext.geometry = nullptr;
-}
+}*/
 
 SingleParticleContext::SingleParticleContext(
 	const string &serialization,
@@ -163,7 +155,7 @@ SingleParticleContext::SingleParticleContext(
 	}
 }
 
-SingleParticleContext::~SingleParticleContext(){
+/*SingleParticleContext::~SingleParticleContext(){
 //	if(geometry != nullptr)
 //		delete geometry;
 }
@@ -178,10 +170,6 @@ SingleParticleContext& SingleParticleContext::operator=(
 		sourceAmplitudeSet = rhs.getSourceAmplitudeSet();
 
 		geometry = rhs.geometry;
-/*		if(rhs.geometry == nullptr)
-			geometry = nullptr;
-		else
-			geometry = new Geometry(*rhs.geometry);*/
 	}
 
 	return *this;
@@ -201,7 +189,7 @@ SingleParticleContext& SingleParticleContext::operator=(
 	}
 
 	return *this;
-}
+}*/
 
 /*void SingleParticleContext::createGeometry(int dimensions, int numSpecifiers){
 	TBTKAssert(
