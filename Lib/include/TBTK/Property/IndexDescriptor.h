@@ -104,7 +104,7 @@ public:
 	 *
 	 *  @param dimensions The number of dimensions of the grid. [Should be
 	 *  the same as the number of elements in ranges.) */
-	void setRanges(const int *ranges, unsigned int dimensions);
+	void setRanges(const std::vector<int> &ranges);
 
 	/** Get ranges. [Only works for the Ranges format.]
 	 *
@@ -236,18 +236,18 @@ inline unsigned int IndexDescriptor::getDimensions() const{
 	return descriptor.rangeFormat.dimensions;
 }
 
-inline void IndexDescriptor::setRanges(const int *ranges, unsigned int dimensions){
+inline void IndexDescriptor::setRanges(const std::vector<int> &ranges){
 	TBTKAssert(
 		format == Format::Ranges,
 		"IndexDescriptor::setRanges()",
 		"The IndexDescriptor is not of the format Format::Ranges.",
 		""
 	);
-	descriptor.rangeFormat.dimensions = dimensions;
+	descriptor.rangeFormat.dimensions = ranges.size();
 	if(descriptor.rangeFormat.ranges != NULL)
 		delete [] descriptor.rangeFormat.ranges;
-	descriptor.rangeFormat.ranges = new int[dimensions];
-	for(unsigned int n = 0; n < dimensions; n++)
+	descriptor.rangeFormat.ranges = new int[ranges.size()];
+	for(unsigned int n = 0; n < ranges.size(); n++)
 		descriptor.rangeFormat.ranges[n] = ranges[n];
 }
 

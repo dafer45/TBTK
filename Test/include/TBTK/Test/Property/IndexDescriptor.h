@@ -76,8 +76,7 @@ TEST(IndexDescriptor, getDimensions){
 
 	//Format::Ranges.
 	IndexDescriptor indexDescriptor(IndexDescriptor::Format::Ranges);
-	int ranges[3] = {2, 3, 4};
-	indexDescriptor.setRanges(ranges, 3);
+	indexDescriptor.setRanges({2, 3, 4});
 	EXPECT_EQ(indexDescriptor.getDimensions(), 3);
 
 	//Fail for Format::None.
@@ -108,8 +107,6 @@ TEST(IndexDescriptor, getDimensions){
 }
 
 TEST(IndexDescriptor, setRanges){
-	int ranges[3] = {2, 3, 4};
-
 	//Fail for Format::None.
 	EXPECT_EXIT(
 		{
@@ -117,7 +114,7 @@ TEST(IndexDescriptor, setRanges){
 			IndexDescriptor indexDescriptor(
 				IndexDescriptor::Format::None
 			);
-			indexDescriptor.setRanges(ranges, 3);
+			indexDescriptor.setRanges({2, 3, 4});
 		},
 		::testing::ExitedWithCode(1),
 		""
@@ -125,7 +122,7 @@ TEST(IndexDescriptor, setRanges){
 
 	//Format::Ranges.
 	IndexDescriptor indexDescriptor(IndexDescriptor::Format::Ranges);
-	indexDescriptor.setRanges(ranges, 3);
+	indexDescriptor.setRanges({2, 3, 4});
 
 	//Fail for Format::Custom.
 	EXPECT_EXIT(
@@ -134,7 +131,7 @@ TEST(IndexDescriptor, setRanges){
 			IndexDescriptor indexDescriptor(
 				IndexDescriptor::Format::Custom
 			);
-			indexDescriptor.setRanges(ranges, 3);
+			indexDescriptor.setRanges({2, 3, 4});
 		},
 		::testing::ExitedWithCode(1),
 		""
@@ -147,7 +144,7 @@ TEST(IndexDescriptor, setRanges){
 			IndexDescriptor indexDescriptor(
 				IndexDescriptor::Format::Dynamic
 			);
-			indexDescriptor.setRanges(ranges, 3);
+			indexDescriptor.setRanges({2, 3, 4});
 		},
 		::testing::ExitedWithCode(1),
 		""
@@ -170,8 +167,7 @@ TEST(IndexDescriptor, getRanges){
 
 	//Format::Ranges.
 	IndexDescriptor indexDescriptor(IndexDescriptor::Format::Ranges);
-	int rangesInput[3] = {2, 3, 4};
-	indexDescriptor.setRanges(rangesInput, 3);
+	indexDescriptor.setRanges({2, 3, 4});
 	std::vector<int> ranges = indexDescriptor.getRanges();
 	EXPECT_EQ(ranges[0], 2);
 	EXPECT_EQ(ranges[1], 3);
@@ -438,8 +434,7 @@ TEST(IndexDescriptor, getSize){
 
 	//Format::Ranges.
 	IndexDescriptor indexDescriptor1(IndexDescriptor::Format::Ranges);
-	int ranges[3] = {2, 3, 4};
-	indexDescriptor1.setRanges(ranges, 3);
+	indexDescriptor1.setRanges({2, 3, 4});
 	EXPECT_EQ(indexDescriptor1.getSize(), 2*3*4);
 
 	//Format::Custom.

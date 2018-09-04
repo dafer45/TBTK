@@ -896,7 +896,7 @@ AbstractProperty<
 {
 	this->blockSize = blockSize;
 
-	indexDescriptor.setRanges(ranges.data(), ranges.size());
+	indexDescriptor.setRanges(ranges);
 
 	unsigned int size = blockSize*indexDescriptor.getSize();
 	data.reserve(size);
@@ -920,7 +920,7 @@ AbstractProperty<
 {
 	this->blockSize = blockSize;
 
-	indexDescriptor.setRanges(ranges.data(), ranges.size());
+	indexDescriptor.setRanges(ranges);
 
 	unsigned int size = blockSize*indexDescriptor.getSize();
 	this->data.reserve(size);
