@@ -472,7 +472,7 @@ inline unsigned int AbstractProperty<
 	isFundamental,
 	isSerializable
 >::getDimensions() const{
-	return indexDescriptor.getDimensions();
+	return indexDescriptor.getRanges().size();
 }
 
 template<typename DataType, bool isFundamental, bool isSerializable>

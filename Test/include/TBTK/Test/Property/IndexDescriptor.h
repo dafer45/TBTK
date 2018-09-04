@@ -60,52 +60,6 @@ TEST(IndexDescriptor, getFormat){
 	);
 }
 
-TEST(IndexDescriptor, getDimensions){
-	//Fail for Format::None.
-	EXPECT_EXIT(
-		{
-			Streams::setStdMuteErr();
-			IndexDescriptor indexDescriptor(
-				IndexDescriptor::Format::None
-			);
-			indexDescriptor.getDimensions();
-		},
-		::testing::ExitedWithCode(1),
-		""
-	);
-
-	//Format::Ranges.
-	IndexDescriptor indexDescriptor(IndexDescriptor::Format::Ranges);
-	indexDescriptor.setRanges({2, 3, 4});
-	EXPECT_EQ(indexDescriptor.getDimensions(), 3);
-
-	//Fail for Format::None.
-	EXPECT_EXIT(
-		{
-			Streams::setStdMuteErr();
-			IndexDescriptor indexDescriptor(
-				IndexDescriptor::Format::Custom
-			);
-			indexDescriptor.getDimensions();
-		},
-		::testing::ExitedWithCode(1),
-		""
-	);
-
-	//Fail for Format::Dynamic
-	EXPECT_EXIT(
-		{
-			Streams::setStdMuteErr();
-			IndexDescriptor indexDescriptor(
-				IndexDescriptor::Format::Dynamic
-			);
-			indexDescriptor.getDimensions();
-		},
-		::testing::ExitedWithCode(1),
-		""
-	);
-}
-
 TEST(IndexDescriptor, setRanges){
 	//Fail for Format::None.
 	EXPECT_EXIT(

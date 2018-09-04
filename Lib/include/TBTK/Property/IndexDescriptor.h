@@ -91,12 +91,6 @@ public:
 	/** Set dimensions. */
 //	void setDimensions(unsigned int dimensions);
 
-	/** Get the number of dimensions for the grid described by the
-	 *  IndexDescriptor. [Only works for the Ranges format.]
-	 *
-	 *  @return The number of dimensions. */
-	unsigned int getDimensions() const;
-
 	/** Set ranges. [Only works for the Ranges format.]
 	 *
 	 *  @param ranges The upper limits (exlcusive) of the grid described by
@@ -225,16 +219,6 @@ inline IndexDescriptor::Format IndexDescriptor::getFormat() const{
 		delete [] descriptor.rangeFormat.ranges;
 	descriptor.rangeFormat.ranges = new int[dimensions];
 }*/
-
-inline unsigned int IndexDescriptor::getDimensions() const{
-	TBTKAssert(
-		format == Format::Ranges,
-		"IndexDescriptor::getDimensions()",
-		"The IndexDescriptor is not of the format Format::Ranges.",
-		""
-	);
-	return descriptor.rangeFormat.dimensions;
-}
 
 inline void IndexDescriptor::setRanges(const std::vector<int> &ranges){
 	TBTKAssert(
