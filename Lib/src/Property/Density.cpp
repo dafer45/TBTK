@@ -57,20 +57,6 @@ Density::Density(
 {
 }
 
-/*Density::Density(
-	const Density &density
-) :
-	AbstractProperty(density)
-{
-}
-
-Density::Density(
-	Density &&density
-) :
-	AbstractProperty(std::move(density))
-{
-}*/
-
 Density::Density(
 	const string &serialization,
 	Mode mode
@@ -91,23 +77,6 @@ Density::Density(
 		""
 	);
 }
-
-/*Density::~Density(){
-}
-
-Density& Density::operator=(const Density &rhs){
-	if(this != &rhs)
-		AbstractProperty::operator=(rhs);
-
-	return *this;
-}
-
-Density& Density::operator=(Density &&rhs){
-	if(this != &rhs)
-		AbstractProperty::operator=(std::move(rhs));
-
-	return *this;
-}*/
 
 double Density::getMin() const{
 	const std::vector<double> &data = getData();

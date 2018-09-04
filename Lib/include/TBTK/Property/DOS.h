@@ -51,12 +51,6 @@ public:
 		const double *data
 	);
 
-	/** Copy constructor. */
-//	DOS(const DOS &dos);
-
-	/** Move constructor. */
-//	DOS(DOS &&dos);
-
 	/** Constructor. Constructs the DOS from a serialization string.
 	 *
 	 *  @param serialization Serialization string from which to construct
@@ -64,9 +58,6 @@ public:
 	 *
 	 *  @param mode Mode with which the string has been serialized. */
 	DOS(const std::string &serialization, Mode mode);
-
-	/** Destructor. */
-//	~DOS();
 
 	/** Get lower bound for the energy.
 	 *
@@ -83,12 +74,6 @@ public:
 	 *
 	 *  @return The energy resolution. */
 	int getResolution() const;
-
-	/** Assignment operator. */
-//	DOS& operator=(const DOS &dos);
-
-	/** Move assignment operator. */
-//	DOS& operator=(DOS &&dos);
 
 	/** Overrides AbstractProperty::serialize(). */
 	virtual std::string serialize(Mode mode) const;

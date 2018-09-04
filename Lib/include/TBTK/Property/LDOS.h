@@ -24,7 +24,6 @@
 #define COM_DAFER45_TBTK_LDOS
 
 #include "TBTK/Property/AbstractProperty.h"
-//#include "IndexDescriptor.h"
 
 namespace TBTK{
 namespace Property{
@@ -102,12 +101,6 @@ public:
 		const double *data
 	);
 
-	/** Copy constructor. */
-//	LDOS(const LDOS &ldos);
-
-	/** Move constructor. */
-//	LDOS(LDOS &&ldos);
-
 	/** Constructor. Construct the LDOS from a serialization string.
 	 *
 	 *  @param serialization Serialization string from which to construct
@@ -115,9 +108,6 @@ public:
 	 *
 	 *  @param mode Mode with which the string has been serialized. */
 	LDOS(const std::string &serialization, Mode mode);
-
-	/** Destructor. */
-//	~LDOS();
 
 	/** Get lower bound for the energy.
 	 *
@@ -134,12 +124,6 @@ public:
 	 *
 	 *  @return The energy resolution. */
 	int getResolution() const;
-
-	/** Assignment operator. */
-//	LDOS& operator=(const LDOS &ldos);
-
-	/** Move assignment operator. */
-//	LDOS& operator=(LDOS &&ldos);
 
 	/** Overrides AbstractProperty::serialize(). */
 	virtual std::string serialize(Mode mode) const;

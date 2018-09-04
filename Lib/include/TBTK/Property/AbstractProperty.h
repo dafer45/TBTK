@@ -889,8 +889,6 @@ AbstractProperty<
 	isFundamental,
 	isSerializable
 >::AbstractProperty(
-//	unsigned int dimensions,
-//	const int *ranges,
 	const std::vector<int> &ranges,
 	unsigned int blockSize
 ) :
@@ -898,7 +896,6 @@ AbstractProperty<
 {
 	this->blockSize = blockSize;
 
-//	indexDescriptor.setRanges(ranges, dimensions);
 	indexDescriptor.setRanges(ranges.data(), ranges.size());
 
 	unsigned int size = blockSize*indexDescriptor.getSize();
@@ -915,8 +912,6 @@ AbstractProperty<
 	isFundamental,
 	isSerializable
 >::AbstractProperty(
-//	unsigned int dimensions,
-//	const int *ranges,
 	const std::vector<int> &ranges,
 	unsigned int blockSize,
 	const DataType *data
@@ -925,7 +920,6 @@ AbstractProperty<
 {
 	this->blockSize = blockSize;
 
-//	indexDescriptor.setRanges(ranges, dimensions);
 	indexDescriptor.setRanges(ranges.data(), ranges.size());
 
 	unsigned int size = blockSize*indexDescriptor.getSize();

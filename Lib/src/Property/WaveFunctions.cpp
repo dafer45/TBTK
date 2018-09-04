@@ -23,45 +23,9 @@
 #include "TBTK/json.hpp"
 
 using namespace std;
-//using namespace nlohmann;
 
 namespace TBTK{
 namespace Property{
-
-/*WaveFunction::WaveFunction(
-	int dimensions,
-	const int *ranges
-) :
-	AbstractProperty(dimensions, ranges, 1)
-{
-}
-
-WaveFunction::WaveFunction(
-	int dimensions,
-	const int *ranges,
-	const double *data
-) :
-	AbstractProperty(dimensions, ranges, 1, data)
-{
-}*/
-
-/*WaveFunctions::WaveFunctions(
-	const IndexTree &indexTree,
-	const initializer_list<unsigned int> &states
-) :
-	AbstractProperty(indexTree, states.size())
-{
-	for(unsigned int n = 0; n < states.size(); n++)
-		this->states.push_back(*(states.begin() + n));
-
-	isContinuous = true;
-	for(unsigned int n = 1; n < this->states.size(); n++){
-		if(this->states.at(n) != this->states.at(n-1)+1){
-			isContinuous = false;
-			break;
-		}
-	}
-}*/
 
 WaveFunctions::WaveFunctions(
 	const IndexTree &indexTree,
@@ -80,25 +44,6 @@ WaveFunctions::WaveFunctions(
 	}
 }
 
-/*WaveFunctions::WaveFunctions(
-	const IndexTree &indexTree,
-	const initializer_list<unsigned int> &states,
-	const complex<double> *data
-) :
-	AbstractProperty(indexTree, states.size(), data)
-{
-	for(unsigned int n = 0; n < states.size(); n++)
-		this->states.push_back(*(states.begin() + n));
-
-	isContinuous = true;
-	for(unsigned int n = 1; n < this->states.size(); n++){
-		if(this->states.at(n) != this->states.at(n-1)+1){
-			isContinuous = false;
-			break;
-		}
-	}
-}*/
-
 WaveFunctions::WaveFunctions(
 	const IndexTree &indexTree,
 	const vector<unsigned int> &states,
@@ -116,24 +61,6 @@ WaveFunctions::WaveFunctions(
 		}
 	}
 }
-
-/*WaveFunctions::WaveFunctions(
-	const WaveFunctions &waveFunctions
-) :
-	AbstractProperty(waveFunctions),
-	states(waveFunctions.states)
-{
-	this->isContinuous = waveFunctions.isContinuous;
-}
-
-WaveFunctions::WaveFunctions(
-	WaveFunctions &&waveFunctions
-) :
-	AbstractProperty(std::move(waveFunctions)),
-	states(std::move(waveFunctions.states))
-{
-	this->isContinuous = waveFunctions.isContinuous;
-}*/
 
 WaveFunctions::WaveFunctions(
 	const string &serialization,
@@ -183,29 +110,6 @@ WaveFunctions::WaveFunctions(
 		);
 	}
 }
-
-/*WaveFunctions::~WaveFunctions(){
-}
-
-WaveFunctions& WaveFunctions::operator=(const WaveFunctions &rhs){
-	if(this != &rhs){
-		AbstractProperty::operator=(rhs);
-		this->isContinuous = rhs.isContinuous;
-		states = rhs.states;
-	}
-
-	return *this;
-}
-
-WaveFunctions& WaveFunctions::operator=(WaveFunctions &&rhs){
-	if(this != &rhs){
-		AbstractProperty::operator=(std::move(rhs));
-		isContinuous = rhs.isContinuous;
-		states = std::move(rhs.states);
-	}
-
-	return *this;
-}*/
 
 const complex<double>& WaveFunctions::operator()(
         const Index &index,

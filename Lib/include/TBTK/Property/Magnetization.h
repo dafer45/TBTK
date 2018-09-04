@@ -73,12 +73,6 @@ public:
 		const SpinMatrix *data
 	);
 
-	/** Copy constructor. */
-//	Magnetization(const Magnetization &magnetization);
-
-	/** Move constructor. */
-//	Magnetization(Magnetization &&magnetization);
-
 	/** Constructor. Constructs the Magnetization from a serialization
 	 *  string.
 	 *
@@ -87,15 +81,6 @@ public:
 	 *
 	 *  @param mode Mode with which the string has been serialized. */
 	Magnetization(const std::string &serialization, Mode mode);
-
-	/** Destructor. */
-//	~Magnetization();
-
-	/** Assignment operator. */
-//	Magnetization& operator=(const Magnetization &magnetization);
-
-	/** Move assignment operator. */
-//	Magnetization& operator=(Magnetization &&magnetization);
 
 	/** Overrides AbstractProperty::serialize(). */
 	std::string serialize(Mode mode) const;

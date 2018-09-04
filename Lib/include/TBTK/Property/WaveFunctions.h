@@ -33,18 +33,6 @@ namespace Property{
 /** @brief Property container for wave function. */
 class WaveFunctions : public AbstractProperty<std::complex<double>>{
 public:
-	/** Constructor. */
-//	WaveFunction(int dimensions, const int *ranges);
-
-	/** Constructor. */
-//	WaveFunction(int dimensions, const int *ranges, const double *data);
-
-	/** Constructor. */
-/*	WaveFunctions(
-		const IndexTree &indexTree,
-		const std::initializer_list<unsigned int> &states
-	);*/
-
 	/** Constructs WaveFunctions on the Custom format. [See
 	 *  AbstractProperty for detailed information about the Custom format.]
 	 *
@@ -57,13 +45,6 @@ public:
 		const IndexTree &indexTree,
 		const std::vector<unsigned int> &states
 	);
-
-	/** Constructor. */
-/*	WaveFunctions(
-		const IndexTree &indexTree,
-		const std::initializer_list<unsigned int> &states,
-		const std::complex<double> *data
-	);*/
 
 	/** Constructs WaveFunctions on the Custom format and initializes it
 	 *  with data. [See AbstractProperty for detailed information about the
@@ -82,27 +63,12 @@ public:
 		const std::complex<double> *data
 	);
 
-	/** Copy constructor. */
-//	WaveFunctions(const WaveFunctions &waveFunctions);
-
-	/** Move constructor. */
-//	WaveFunctions(WaveFunctions &&waveFunctions);
-
 	/** Constructor. Constructs the WaveFunctions from a serialization
 	 *  string.
 	 *
 	 *  @param serialization Serialization string from which to construct
 	 *  the WaveFunctions. */
 	WaveFunctions(const std::string &serialization, Mode mode);
-
-	/** Destructor. */
-//	~WaveFunctions();
-
-	/** Assignment operator. */
-//	WaveFunctions& operator=(const WaveFunctions &rhs);
-
-	/** Move assignment operator. */
-//	WaveFunctions& operator=(WaveFunctions &&rhs);
 
 	/** Get the contained states.
 	 *

@@ -23,7 +23,6 @@
 #include "TBTK/json.hpp"
 
 using namespace std;
-//using namespace nlohmann;
 
 namespace TBTK{
 namespace Property{
@@ -42,20 +41,6 @@ EigenValues::EigenValues(
 	AbstractProperty(size, data)
 {
 }
-
-/*EigenValues::EigenValues(
-	const EigenValues &eigenValues
-) :
-	AbstractProperty(eigenValues)
-{
-}
-
-EigenValues::EigenValues(
-	EigenValues &&eigenValues
-) :
-	AbstractProperty(std::move(eigenValues))
-{
-}*/
 
 EigenValues::EigenValues(
 	const string &serialization,
@@ -78,23 +63,6 @@ EigenValues::EigenValues(
 		""
 	);
 }
-
-/*EigenValues::~EigenValues(){
-}
-
-EigenValues& EigenValues::operator=(const EigenValues &rhs){
-	if(this != &rhs)
-		AbstractProperty::operator=(rhs);
-
-	return *this;
-}
-
-EigenValues& EigenValues::operator=(EigenValues &&rhs){
-	if(this != &rhs)
-		AbstractProperty::operator=(std::move(rhs));
-
-	return *this;
-}*/
 
 string EigenValues::serialize(Mode mode) const{
 	switch(mode){

@@ -55,20 +55,6 @@ Magnetization::Magnetization(
 {
 }
 
-/*Magnetization::Magnetization(
-	const Magnetization &magnetization
-) :
-	AbstractProperty(magnetization)
-{
-}
-
-Magnetization::Magnetization(
-	Magnetization &&magnetization
-) :
-	AbstractProperty(std::move(magnetization))
-{
-}*/
-
 Magnetization::Magnetization(
 	const string &serialization,
 	Mode mode
@@ -90,23 +76,6 @@ Magnetization::Magnetization(
 		""
 	);
 }
-
-/*Magnetization::~Magnetization(){
-}
-
-Magnetization& Magnetization::operator=(const Magnetization &rhs){
-	if(this != &rhs)
-		AbstractProperty::operator=(rhs);
-
-	return *this;
-}
-
-Magnetization& Magnetization::operator=(Magnetization &&rhs){
-	if(this != &rhs)
-		AbstractProperty::operator=(std::move(rhs));
-
-	return *this;
-}*/
 
 string Magnetization::serialize(Mode mode) const{
 	switch(mode){

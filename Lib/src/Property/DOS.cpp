@@ -24,7 +24,6 @@
 #include "TBTK/json.hpp"
 
 using namespace std;
-//using namespace nlohmann;
 
 namespace TBTK{
 namespace Property{
@@ -53,26 +52,6 @@ DOS::DOS(
 	this->upperBound = upperBound;
 	this->resolution = resolution;
 }
-
-/*DOS::DOS(
-	const DOS &dos
-) :
-	AbstractProperty(dos)
-{
-	lowerBound = dos.lowerBound;
-	upperBound = dos.upperBound;
-	resolution = dos.resolution;
-}
-
-DOS::DOS(
-	DOS &&dos
-) :
-	AbstractProperty(std::move(dos))
-{
-	lowerBound = dos.lowerBound;
-	upperBound = dos.upperBound;
-	resolution = dos.resolution;
-}*/
 
 DOS::DOS(
 	const string &serialization, Mode mode
@@ -119,31 +98,6 @@ DOS::DOS(
 		);
 	}
 }
-
-/*DOS::~DOS(){
-}
-
-DOS& DOS::operator=(const DOS &rhs){
-	if(this != &rhs){
-		AbstractProperty::operator=(rhs);
-		lowerBound = rhs.lowerBound;
-		upperBound = rhs.upperBound;
-		resolution = rhs.resolution;
-	}
-
-	return *this;
-}
-
-DOS& DOS::operator=(DOS &&rhs){
-	if(this != &rhs){
-		AbstractProperty::operator=(std::move(rhs));
-		lowerBound = rhs.lowerBound;
-		upperBound = rhs.upperBound;
-		resolution = rhs.resolution;
-	}
-
-	return *this;
-}*/
 
 string DOS::serialize(Mode mode) const{
 	switch(mode){

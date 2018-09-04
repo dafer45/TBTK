@@ -42,12 +42,6 @@ public:
 	 *  @param data Raw data to initialize the EigenValues with. */
 	EigenValues(int size, const double *data);
 
-	/** Copy constructor. */
-//	EigenValues(const EigenValues &eigenValues);
-
-	/** Move constructor. */
-//	EigenValues(EigenValues &&eigenValues);
-
 	/** Constructor. Constructs the EigenValues from a serialization
 	 *  string.
 	 *
@@ -56,15 +50,6 @@ public:
 	 *
 	 *  @param mode Mode with which the string has been serialized. */
 	EigenValues(const std::string &serialization, Mode mode);
-
-	/** Destructor. */
-//	~EigenValues();
-
-	/** Assignment operator. */
-//	EigenValues& operator=(const EigenValues &rhs);
-
-	/** Move assignment operator. */
-//	EigenValues& operator=(EigenValues &&rhs);
 
 	/** Overrides AbstractProperty::serialize(). */
 	std::string serialize(Mode mode) const;

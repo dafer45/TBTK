@@ -81,26 +81,6 @@ SpinPolarizedLDOS::SpinPolarizedLDOS(
 	this->resolution = resolution;
 }
 
-/*SpinPolarizedLDOS::SpinPolarizedLDOS(
-	const SpinPolarizedLDOS &spinPolarizedLDOS
-) :
-	AbstractProperty(spinPolarizedLDOS)
-{
-	lowerBound = spinPolarizedLDOS.lowerBound;
-	upperBound = spinPolarizedLDOS.upperBound;
-	resolution = spinPolarizedLDOS.resolution;
-}
-
-SpinPolarizedLDOS::SpinPolarizedLDOS(
-	SpinPolarizedLDOS &&spinPolarizedLDOS
-) :
-	AbstractProperty(std::move(spinPolarizedLDOS))
-{
-	lowerBound = spinPolarizedLDOS.lowerBound;
-	upperBound = spinPolarizedLDOS.upperBound;
-	resolution = spinPolarizedLDOS.resolution;
-}*/
-
 SpinPolarizedLDOS::SpinPolarizedLDOS(
 	const string &serialization,
 	Mode mode
@@ -149,33 +129,6 @@ SpinPolarizedLDOS::SpinPolarizedLDOS(
 		);
 	}
 }
-
-/*SpinPolarizedLDOS::~SpinPolarizedLDOS(){
-}
-
-SpinPolarizedLDOS& SpinPolarizedLDOS::operator=(const SpinPolarizedLDOS &rhs){
-	if(this != &rhs){
-		AbstractProperty::operator=(rhs);
-
-		lowerBound = rhs.lowerBound;
-		upperBound = rhs.upperBound;
-		resolution = rhs.resolution;
-	}
-
-	return *this;
-}
-
-SpinPolarizedLDOS& SpinPolarizedLDOS::operator=(SpinPolarizedLDOS &&rhs){
-	if(this != &rhs){
-		AbstractProperty::operator=(std::move(rhs));
-
-		lowerBound = rhs.lowerBound;
-		upperBound = rhs.upperBound;
-		resolution = rhs.resolution;
-	}
-
-	return *this;
-}*/
 
 string SpinPolarizedLDOS::serialize(Mode mode) const{
 	switch(mode){

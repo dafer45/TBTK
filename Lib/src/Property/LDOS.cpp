@@ -81,26 +81,6 @@ LDOS::LDOS(
 	this->resolution = resolution;
 }
 
-/*LDOS::LDOS(
-	const LDOS &ldos
-) :
-	AbstractProperty(ldos)
-{
-	lowerBound = ldos.lowerBound;
-	upperBound = ldos.upperBound;
-	resolution = ldos.resolution;
-}
-
-LDOS::LDOS(
-	LDOS &&ldos
-) :
-	AbstractProperty(std::move(ldos))
-{
-	lowerBound = ldos.lowerBound;
-	upperBound = ldos.upperBound;
-	resolution = ldos.resolution;
-}*/
-
 LDOS::LDOS(
 	const string &serialization,
 	Mode mode
@@ -147,33 +127,6 @@ LDOS::LDOS(
 		);
 	}
 }
-
-/*LDOS::~LDOS(){
-}
-
-LDOS& LDOS::operator=(const LDOS &rhs){
-	if(this != &rhs){
-		AbstractProperty::operator=(rhs);
-
-		lowerBound = rhs.lowerBound;
-		upperBound = rhs.upperBound;
-		resolution = rhs.resolution;
-	}
-
-	return *this;
-}
-
-LDOS& LDOS::operator=(LDOS &&rhs){
-	if(this != &rhs){
-		AbstractProperty::operator=(std::move(rhs));
-
-		lowerBound = rhs.lowerBound;
-		upperBound = rhs.upperBound;
-		resolution = rhs.resolution;
-	}
-
-	return *this;
-}*/
 
 string LDOS::serialize(Mode mode) const{
 	switch(mode){

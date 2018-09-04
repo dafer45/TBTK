@@ -106,12 +106,6 @@ public:
 		const SpinMatrix *data
 	);
 
-	/** Copy constructor. */
-//	SpinPolarizedLDOS(const SpinPolarizedLDOS &spinPolarizedLDOS);
-
-	/** Move constructor. */
-//	SpinPolarizedLDOS(SpinPolarizedLDOS &&spinPolarizedLDOS);
-
 	/** Constructor. Construct the SpinPolarizedLDOS from a serialization
 	 *  string.
 	 *
@@ -120,9 +114,6 @@ public:
 	 *
 	 *  @param mode Mode with which the string has been serialized. */
 	SpinPolarizedLDOS(const std::string &serialization, Mode mode);
-
-	/** Destructor. */
-//	~SpinPolarizedLDOS();
 
 	/** Get lower bound for the energy.
 	 *
@@ -139,12 +130,6 @@ public:
 	 *
 	 *  @return The energy resolution. */
 	int getResolution() const;
-
-	/** Assignment operator. */
-//	SpinPolarizedLDOS& operator=(const SpinPolarizedLDOS &rhs);
-
-	/** Move assignment operator. */
-//	SpinPolarizedLDOS& operator=(SpinPolarizedLDOS &&rhs);
 
 	/** Overrides AbstractProperty::serialize(). */
 	std::string serialize(Mode mode) const;

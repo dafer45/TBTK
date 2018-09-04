@@ -66,12 +66,6 @@ public:
 	 *  @param data Raw data to initialize the Density with. */
 	Density(const IndexTree &indexTree, const double *data);
 
-	/** Copy constructor. */
-//	Density(const Density &density);
-
-	/** Move constructor. */
-//	Density(Density &&density);
-
 	/** Constructor. Constructs the Density from a serializeation string.
 	 *
 	 *  @param serialization Serialization string from which to construct
@@ -79,15 +73,6 @@ public:
 	 *
 	 *  @param mode Mode with which the string has been serialized. */
 	Density(const std::string &serialization, Mode mode);
-
-	/** Destructor. */
-//	~Density();
-
-	/** Assignment operator. */
-//	Density& operator=(const Density &rhs);
-
-	/** Move assignment operator. */
-//	Density& operator=(Density &&rhs);
 
 	/** Get the minimum value for the Density.
 	 *
