@@ -1,6 +1,5 @@
-- Make Model inherit from SingleParticleContext and ManyBodyContext. Update:
-  Probably it is better to replace pointers by member objects instead of
-  inheriting.
+- Make Model inherit from ManyBodyContext. Update: Probably it is better to
+  replace pointer by a member object instead of inheriting.
 
 - Make the SingleParticleContext contain an IndexTree that is used to perform
   the mapping between physical and Hilbert space indices to reduce the
