@@ -255,6 +255,38 @@ IndexDescriptor::~IndexDescriptor(){
 
 IndexDescriptor& IndexDescriptor::operator=(const IndexDescriptor &rhs){
 	if(this != &rhs){
+		switch(format){
+		case Format::None:
+			break;
+		case Format::Ranges:
+			if(descriptor.rangeFormat.ranges != nullptr){
+				delete [] descriptor.rangeFormat.ranges;
+				descriptor.rangeFormat.ranges = nullptr;
+			}
+
+			break;
+		case Format::Custom:
+			if(descriptor.customFormat.indexTree != nullptr){
+				delete descriptor.customFormat.indexTree;
+				descriptor.customFormat.indexTree = nullptr;
+			}
+
+			break;
+		case Format::Dynamic:
+			if(descriptor.dynamicFormat.indexedDataTree != nullptr){
+				delete descriptor.dynamicFormat.indexedDataTree;
+				descriptor.dynamicFormat.indexedDataTree = nullptr;
+			}
+
+			break;
+		default:
+			TBTKExit(
+				"IndexDescriptor::operator=()",
+				"This should never happen.",
+				"Contact the developer."
+			);
+		}
+
 		format = rhs.format;
 		switch(format){
 		case Format::None:
@@ -297,6 +329,38 @@ IndexDescriptor& IndexDescriptor::operator=(const IndexDescriptor &rhs){
 
 IndexDescriptor& IndexDescriptor::operator=(IndexDescriptor &&rhs){
 	if(this != &rhs){
+		switch(format){
+		case Format::None:
+			break;
+		case Format::Ranges:
+			if(descriptor.rangeFormat.ranges != nullptr){
+				delete [] descriptor.rangeFormat.ranges;
+				descriptor.rangeFormat.ranges = nullptr;
+			}
+
+			break;
+		case Format::Custom:
+			if(descriptor.customFormat.indexTree != nullptr){
+				delete descriptor.customFormat.indexTree;
+				descriptor.customFormat.indexTree = nullptr;
+			}
+
+			break;
+		case Format::Dynamic:
+			if(descriptor.dynamicFormat.indexedDataTree != nullptr){
+				delete descriptor.dynamicFormat.indexedDataTree;
+				descriptor.dynamicFormat.indexedDataTree = nullptr;
+			}
+
+			break;
+		default:
+			TBTKExit(
+				"IndexDescriptor::operator=()",
+				"This should never happen.",
+				"Contact the developer."
+			);
+		}
+
 		format = rhs.format;
 		switch(format){
 		case Format::None:

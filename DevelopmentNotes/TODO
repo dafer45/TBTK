@@ -17,6 +17,3 @@
   the XXXCallback-functions. Instead pass a hint parameter as argument through
   the calculate() and callback functions. This will allow the same
   PropertyExtractor to be parallelized as long as the solver allows for this.
-
-- Fix memory leaks in the IndexDescriptors copy and move constructors and
-  assignment operators.
