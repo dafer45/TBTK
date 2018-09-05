@@ -225,7 +225,9 @@ void RayTracer::plot(
 	fields.push_back(new FieldWrapper(field));
 
 	//Dummies
-	IndexDescriptor emptyIndexDescriptor(IndexDescriptor::Format::Custom);
+	IndexTree emptyIndexTree;
+	emptyIndexTree.generateLinearMap();
+	IndexDescriptor emptyIndexDescriptor(emptyIndexTree);
 	Model emptyModel;
 	emptyModel.construct();
 
@@ -248,7 +250,9 @@ void RayTracer::plot(
 	fields.push_back(new FieldWrapper(field));*/
 
 	//Dummies
-	IndexDescriptor emptyIndexDescriptor(IndexDescriptor::Format::Custom);
+	IndexTree emptyIndexTree;
+	emptyIndexTree.generateLinearMap();
+	IndexDescriptor emptyIndexDescriptor(emptyIndexTree);
 	Model emptyModel;
 	emptyModel.construct();
 

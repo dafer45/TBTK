@@ -6,13 +6,6 @@
   responsibility of the HoppingAmplitudeTree/HoppingAmplitudeSet to that solely
   related to the HoppingAmplitudes.
 
-- Remove IndexDescriptor::setRanges() and IndexDescriptor::setIndexTree() and
-  make the constructors take these as arguments instead. Because the
-  IndexDescriptor is not fully initialized until the set-calls are made, and
-  which set call that has to be made is determined by which format that is
-  specified in the constructor, unifying them will resault in a less confusing
-  interface.
-
 - Reconsider whether WaveFunctions actually should have the functions
   getMinAbs(), getMaxAbs(), getMinArg(), and getMaxArg(). These are used by the
   RayTracer, but do not seem to have general usability. Probably the RayTracer

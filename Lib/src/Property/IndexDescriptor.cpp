@@ -29,29 +29,29 @@ using namespace std;
 
 namespace TBTK{
 
-IndexDescriptor::IndexDescriptor(Format format){
-	this->format = format;
-	switch(format){
-	case Format::None:
-		break;
-	case Format::Ranges:
-		descriptor.rangeFormat.ranges = nullptr;
-		break;
-	case Format::Custom:
-		descriptor.customFormat.indexTree = new IndexTree();
-		break;
-	case Format::Dynamic:
-		descriptor.dynamicFormat.indexedDataTree
-			= new IndexedDataTree<unsigned int>();
-		descriptor.dynamicFormat.size = 0;
-		break;
-	default:
-		TBTKExit(
-			"IndexDescriptor::IndexDescriptor()",
-			"This should never happen.",
-			"Contact the developer."
-		);
-	}
+IndexDescriptor::IndexDescriptor(){
+	format = Format::None;
+}
+
+IndexDescriptor::IndexDescriptor(const std::vector<int> &ranges){
+	format = Format::Ranges;
+	descriptor.rangeFormat.ranges = nullptr;
+	descriptor.rangeFormat.dimensions = ranges.size();
+	descriptor.rangeFormat.ranges = new int[ranges.size()];
+	for(unsigned int n = 0; n < ranges.size(); n++)
+		descriptor.rangeFormat.ranges[n] = ranges[n];
+}
+
+IndexDescriptor::IndexDescriptor(const IndexTree &indexTree){
+	TBTKAssert(
+		indexTree.getLinearMapIsGenerated(),
+		"IndexDescriptor::setIndexTree()",
+		"Linear map not constructed for the IndexTree.",
+		"First call IndexTree::generateLinearMap()."
+	);
+
+	format = Format::Custom;
+	descriptor.customFormat.indexTree = new IndexTree(indexTree);
 }
 
 IndexDescriptor::IndexDescriptor(const IndexDescriptor &indexDescriptor){
@@ -332,23 +332,6 @@ IndexDescriptor& IndexDescriptor::operator=(IndexDescriptor &&rhs){
 	}
 
 	return *this;
-}
-
-void IndexDescriptor::setIndexTree(const IndexTree &indexTree){
-	TBTKAssert(
-		format == Format::Custom,
-		"IndexDescriptor::setIndexTree()",
-		"The IndexDescriptor is not of the format Format::Custom.",
-		""
-	);
-	TBTKAssert(
-		indexTree.getLinearMapIsGenerated(),
-		"IndexDescriptor::setIndexTree()",
-		"Linear map not constructed for the IndexTree.",
-		"First call IndexTree::generateLinearMap()."
-	);
-
-	descriptor.customFormat.indexTree = new IndexTree(indexTree);
 }
 
 unsigned int IndexDescriptor::getSize() const{

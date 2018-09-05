@@ -835,7 +835,7 @@ AbstractProperty<
 	isFundamental,
 	isSerializable
 >::AbstractProperty() :
-	indexDescriptor(IndexDescriptor::Format::None)
+	indexDescriptor()
 {
 	this->blockSize = 0;
 
@@ -850,7 +850,7 @@ AbstractProperty<
 >::AbstractProperty(
 	unsigned int blockSize
 ) :
-	indexDescriptor(IndexDescriptor::Format::None)
+	indexDescriptor()
 {
 	this->blockSize = blockSize;
 
@@ -871,7 +871,7 @@ AbstractProperty<
 	unsigned int blockSize,
 	const DataType *data
 ) :
-	indexDescriptor(IndexDescriptor::Format::None)
+	indexDescriptor()
 {
 	this->blockSize = blockSize;
 
@@ -892,11 +892,9 @@ AbstractProperty<
 	const std::vector<int> &ranges,
 	unsigned int blockSize
 ) :
-	indexDescriptor(IndexDescriptor::Format::Ranges)
+	indexDescriptor(ranges)
 {
 	this->blockSize = blockSize;
-
-	indexDescriptor.setRanges(ranges);
 
 	unsigned int size = blockSize*indexDescriptor.getSize();
 	data.reserve(size);
@@ -916,11 +914,9 @@ AbstractProperty<
 	unsigned int blockSize,
 	const DataType *data
 ) :
-	indexDescriptor(IndexDescriptor::Format::Ranges)
+	indexDescriptor(ranges)
 {
 	this->blockSize = blockSize;
-
-	indexDescriptor.setRanges(ranges);
 
 	unsigned int size = blockSize*indexDescriptor.getSize();
 	this->data.reserve(size);
@@ -939,7 +935,7 @@ AbstractProperty<
 	const IndexTree &indexTree,
 	unsigned int blockSize
 ) :
-	indexDescriptor(IndexDescriptor::Format::Custom)
+	indexDescriptor(indexTree)
 {
 	TBTKAssert(
 		indexTree.getLinearMapIsGenerated(),
@@ -950,8 +946,6 @@ AbstractProperty<
 	);
 
 	this->blockSize = blockSize;
-
-	indexDescriptor.setIndexTree(indexTree);
 
 	unsigned int size = blockSize*indexDescriptor.getSize();
 	data.reserve(size);
@@ -971,7 +965,7 @@ AbstractProperty<
 	unsigned int blockSize,
 	const DataType *data
 ) :
-	indexDescriptor(IndexDescriptor::Format::Custom)
+	indexDescriptor(indexTree)
 {
 	TBTKAssert(
 		indexTree.getLinearMapIsGenerated(),
@@ -982,8 +976,6 @@ AbstractProperty<
 	);
 
 	this->blockSize = blockSize;
-
-	indexDescriptor.setIndexTree(indexTree);
 
 	unsigned int size = blockSize*indexDescriptor.getSize();
 	this->data.reserve(size);

@@ -41,11 +41,21 @@ public:
 	/** Enum class determining the storage format. */
 	enum class Format {None, Ranges, Custom, Dynamic};
 
-	/** Constructs an IndexDescriptor.
+	/** Constructs an IndexDescriptor on the Format::None. */
+	IndexDescriptor();
+
+	/** Constructs an IndexDescriptor on the Format::Ranges.
 	 *
-	 *  @param format The storage format the the IndexDescriptor describes.
+	 *  @param ranges The upper limits (exlcusive) of the grid described by
+	 *  the IndexDescriptor. */
+	IndexDescriptor(const std::vector<int> &ranges);
+
+	/** Constructs an IndexDescriptor on the Format::Custom.
+	 *
+	 *  @param indexTree An IndexTree containing all the @link Index
+	 *  Indices @endlink that should be described by the IndexDescriptor.
 	 */
-	IndexDescriptor(Format format);
+	IndexDescriptor(const IndexTree &indexTree);
 
 	/** Copy constructor.
 	 *
@@ -88,27 +98,11 @@ public:
 	 *  @return The Format that the IndexDescriptor describes. */
 	Format getFormat() const;
 
-	/** Set ranges. [Only works for the Ranges format.]
-	 *
-	 *  @param ranges The upper limits (exlcusive) of the grid described by
-	 *  the IndexDescriptor.
-	 *
-	 *  @param dimensions The number of dimensions of the grid. [Should be
-	 *  the same as the number of elements in ranges.) */
-	void setRanges(const std::vector<int> &ranges);
-
 	/** Get ranges. [Only works for the Ranges format.]
 	 *
 	 *  @return The upper limits (exclusive) of the grid described by the
 	 *  IndexDescriptor. */
 	std::vector<int> getRanges() const;
-
-	/** Set IndexTree. [Only works for the Custom format.]
-	 *
-	 *  @param indexTree An IndexTree containing all the @link Index
-	 *  Indices @endlink that should be described by the IndexDescriptor.
-	 */
-	void setIndexTree(const IndexTree &indexTree);
 
 	/** Get IndexTree. [Only works for the Custom format.]
 	 *
@@ -149,7 +143,7 @@ public:
 	 *  @return True if the index descriptor contains the given index. */
 	bool contains(const Index &index) const;
 
-	/** Implements Serializable::serializea(). */
+	/** Implements Serializable::serialize(). */
 	virtual std::string serialize(Mode mode) const;
 private:
 	/** Index descriptor format. */
@@ -198,21 +192,6 @@ private:
 
 inline IndexDescriptor::Format IndexDescriptor::getFormat() const{
 	return format;
-}
-
-inline void IndexDescriptor::setRanges(const std::vector<int> &ranges){
-	TBTKAssert(
-		format == Format::Ranges,
-		"IndexDescriptor::setRanges()",
-		"The IndexDescriptor is not of the format Format::Ranges.",
-		""
-	);
-	descriptor.rangeFormat.dimensions = ranges.size();
-	if(descriptor.rangeFormat.ranges != NULL)
-		delete [] descriptor.rangeFormat.ranges;
-	descriptor.rangeFormat.ranges = new int[ranges.size()];
-	for(unsigned int n = 0; n < ranges.size(); n++)
-		descriptor.rangeFormat.ranges[n] = ranges[n];
 }
 
 inline std::vector<int> IndexDescriptor::getRanges() const{
