@@ -150,14 +150,42 @@ vector<
 			coefficients[coefficientMap[n]][0] = jIn1[n];
 //			coefficients[coefficientMap[n]*numCoefficients] = jIn1[n];
 
-	const int numHoppingAmplitudes
+/*	const int numHoppingAmplitudes
 		= hoppingAmplitudeSet.getNumMatrixElements();
 	const int *cooHARowIndices_host
 		= hoppingAmplitudeSet.getCOORowIndices();
 	const int *cooHAColIndices_host
 		= hoppingAmplitudeSet.getCOOColIndices();
 	const complex<double> *cooHAValues_host
-		= hoppingAmplitudeSet.getCOOValues();
+		= hoppingAmplitudeSet.getCOOValues();*/
+
+	SparseMatrix<complex<double>> sparseMatrix = hoppingAmplitudeSet.getSparseMatrix();
+	sparseMatrix.setStorageFormat(SparseMatrix<complex<double>>::StorageFormat::CSR);
+
+	const int numHoppingAmplitudes = sparseMatrix.getCSRNumMatrixElements();
+	const unsigned int *csrRowPointers = sparseMatrix.getCSRRowPointers();
+	const unsigned int *csrColumns = sparseMatrix.getCSRColumns();
+	const complex<double> *csrValues = sparseMatrix.getCSRValues();
+	int *cooHARowIndices_host = new int[numHoppingAmplitudes];
+	int *cooHAColIndices_host = new int[numHoppingAmplitudes];
+	complex<double> *cooHAValues_host = new complex<double>[
+		numHoppingAmplitudes
+	];
+	for(
+		unsigned int row = 0;
+		row < sparseMatrix.getNumRows();
+		row++
+	){
+		for(
+			unsigned int n = csrRowPointers[row];
+			n < csrRowPointers[row+1];
+			n++
+		){
+			cooHARowIndices_host[n] = row;
+			cooHAColIndices_host[n] = csrColumns[n];
+			cooHAValues_host[n] = csrValues[n];
+		}
+	}
 
 	//Initialize GPU
 	complex<double> *jIn1_device;
@@ -593,6 +621,9 @@ vector<
 	delete [] jIn1;
 	delete [] jIn2;
 	delete [] coefficientMap;
+	delete [] cooHARowIndices_host;
+	delete [] cooHAColIndices_host;
+	delete [] cooHAValues_host;
 
 	cudaFree(jIn1_device);
 	cudaFree(jIn2_device);

@@ -404,7 +404,6 @@ inline SparseMatrix<DataType>& SparseMatrix<DataType>::operator=(
 	SparseMatrix &&rhs
 ){
 	if(this != &rhs){
-		Streams::out << "Move assignment\n";
 		storageFormat = rhs.storageFormat;
 
 		numRows = rhs.numRows;

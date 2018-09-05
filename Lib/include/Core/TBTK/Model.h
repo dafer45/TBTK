@@ -136,20 +136,20 @@ public:
 	bool getIsConstructed();
 
 	/** Sort HoppingAmplitudes. */
-	void sortHoppingAmplitudes();
+//	void sortHoppingAmplitudes();
 
 	/** Construct Hamiltonian on COO format. */
-	void constructCOO();
+//	void constructCOO();
 
 	/** Destruct Hamiltonian on COO format. */
-	void destructCOO();
+//	void destructCOO();
 
 	/** To be called when HoppingAmplitudes need to be reevaluated. This is
 	 *  required if the HoppingAmplitudeSet in addition to its standard
 	 *  storage format also utilizes a more effective format such as COO
 	 *  format and some HoppingAmplitudes are evaluated through the use of
 	 *  callbacks. */
-	void reconstructCOO();
+//	void reconstructCOO();
 
 	/** Set temperature.
 	 *
@@ -292,11 +292,11 @@ inline bool Model::getIsConstructed(){
 	return singleParticleContext.getHoppingAmplitudeSet().getIsConstructed();
 }
 
-inline void Model::sortHoppingAmplitudes(){
+/*inline void Model::sortHoppingAmplitudes(){
 	singleParticleContext.sortHoppingAmplitudes();
-}
+}*/
 
-inline void Model::constructCOO(){
+/*inline void Model::constructCOO(){
 	singleParticleContext.constructCOO();
 }
 
@@ -306,7 +306,7 @@ inline void Model::destructCOO(){
 
 inline void Model::reconstructCOO(){
 	singleParticleContext.getHoppingAmplitudeSet().reconstructCOO();
-}
+}*/
 
 inline void Model::setTemperature(double temperature){
 	this->temperature = temperature;

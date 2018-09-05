@@ -79,7 +79,7 @@ TEST(ArnoldiIterator, setCentralValue){
 	model << HoppingAmplitude(1, {1}, {0}) + HC;
 	model << HoppingAmplitude(2, {2}, {2});
 	model.construct();
-	model.constructCOO();
+//	model.constructCOO();
 
 	ArnoldiIterator solver;
 	solver.setVerbose(false);
@@ -90,13 +90,13 @@ TEST(ArnoldiIterator, setCentralValue){
 
 	solver.setMode(ArnoldiIterator::Mode::Normal);
 	solver.run();
-	EXPECT_DOUBLE_EQ(solver.getEigenValue(0), 2);
+	EXPECT_NEAR(solver.getEigenValue(0), 2, EPSILON_100);
 	solver.setCentralValue(3);
 	solver.run();
-	EXPECT_DOUBLE_EQ(solver.getEigenValue(0), -1);
+	EXPECT_NEAR(solver.getEigenValue(0), -1, EPSILON_100);
 	solver.setCentralValue(-0.5);
 	solver.run();
-	EXPECT_DOUBLE_EQ(solver.getEigenValue(0), 2);
+	EXPECT_NEAR(solver.getEigenValue(0), 2, EPSILON_100);
 
 	solver.setMode(ArnoldiIterator::Mode::ShiftAndInvert);
 	solver.setCentralValue(-1.1);
@@ -143,7 +143,7 @@ TEST(ArnoldiIterator, getEigenValues){
 	model << HoppingAmplitude(5, {5}, {5});
 	model << HoppingAmplitude(6, {6}, {6});
 	model.construct();
-	model.constructCOO();
+//	model.constructCOO();
 
 	ArnoldiIterator solver;
 	solver.setVerbose(false);
@@ -184,7 +184,7 @@ TEST(ArnoldiIterator, getAmplitude){
 	model << HoppingAmplitude(5, {5}, {5});
 	model << HoppingAmplitude(6, {6}, {6});
 	model.construct();
-	model.constructCOO();
+//	model.constructCOO();
 
 	ArnoldiIterator solver;
 	solver.setVerbose(false);

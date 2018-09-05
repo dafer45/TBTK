@@ -155,13 +155,13 @@ public:
 	IndexTree getIndexTree(const Index &subspace) const;
 
 	/** Sort HoppingAmplitudes. */
-	void sort();
+//	void sort();
 
 	/** Construct Hamiltonian on COO format. */
-	void constructCOO();
+//	void constructCOO();
 
 	/** Destruct Hamiltonian on COO format. */
-	void destructCOO();
+//	void destructCOO();
 
 	/** Reconstruct Hamiltonian on COO format. Only has any effect if a
 	 *  Hamiltonian on COO format already is constructed. Is necessary to
@@ -169,21 +169,21 @@ public:
 	 *  returned by HoppingAmplitude-callback functions. The function is
 	 *  intended to be called by the Model whenever it is notified of
 	 *  possible changes in values returned by the callback-functions. */
-	void reconstructCOO();
+//	void reconstructCOO();
 
 	/** Get number of matrix elements in the Hamiltonian corresponding to
 	 *  the HoppingAmplitudeSet. Only used if COO format has been
 	 *  constructed. */
-	int getNumMatrixElements() const;
+//	int getNumMatrixElements() const;
 
 	/** Get row indices on COO format. */
-	const int* getCOORowIndices() const;
+//	const int* getCOORowIndices() const;
 
 	/** Get col indices on COO format. */
-	const int* getCOOColIndices() const;
+//	const int* getCOOColIndices() const;
 
 	/** Get row indices on COO format. */
-	const std::complex<double>* getCOOValues() const;
+//	const std::complex<double>* getCOOValues() const;
 
 	/** Get a sprase matrix corresponding to the HoppingAMplitudeSet. The
 	 *  basis of the matrix is the Hilbert space basis.
@@ -422,20 +422,20 @@ private:
 
 	/** Flag indicating whether the HoppingAmplitudeSet have been sorted.
 	 */
-	bool isSorted;
+//	bool isSorted;
 
 	/** Number of matrix elements in HoppingAmplitudeSet. Is only used and
 	 *  if COO format has been constructed and is otherwise -1. */
-	int numMatrixElements;
+//	int numMatrixElements;
 
 	/** COO format row indices. */
-	int *cooRowIndices;
+//	int *cooRowIndices;
 
 	/** COO format column indices. */
-	int *cooColIndices;
+//	int *cooColIndices;
 
 	/** COO format values. */
-	std::complex<double> *cooValues;
+//	std::complex<double> *cooValues;
 };
 
 inline void HoppingAmplitudeSet::construct(){
@@ -466,7 +466,7 @@ inline int HoppingAmplitudeSet::getLastIndexInBlock(
 	return HoppingAmplitudeTree::getLastIndexInSubspace(blockIndex);
 }
 
-inline void HoppingAmplitudeSet::sort(){
+/*inline void HoppingAmplitudeSet::sort(){
 	TBTKAssert(
 		isConstructed,
 		"HoppingAmplitudeSet::sort()",
@@ -478,9 +478,9 @@ inline void HoppingAmplitudeSet::sort(){
 		HoppingAmplitudeTree::sort(this);
 		isSorted = true;
 	}
-}
+}*/
 
-inline const int* HoppingAmplitudeSet::getCOORowIndices() const{
+/*inline const int* HoppingAmplitudeSet::getCOORowIndices() const{
 	return cooRowIndices;
 }
 
@@ -490,7 +490,7 @@ inline const int* HoppingAmplitudeSet::getCOOColIndices() const{
 
 inline const std::complex<double>* HoppingAmplitudeSet::getCOOValues() const{
 	return cooValues;
-}
+}*/
 
 inline SparseMatrix<std::complex<double>> HoppingAmplitudeSet::getSparseMatrix(
 ) const{
@@ -598,13 +598,13 @@ inline bool HoppingAmplitudeSet::_Iterator<isConstIterator>::operator!=(
 inline unsigned int HoppingAmplitudeSet::getSizeInBytes() const{
 	unsigned int size = sizeof(*this) - sizeof(HoppingAmplitudeTree);
 	size += HoppingAmplitudeTree::getSizeInBytes();
-	if(numMatrixElements > 0){
+/*	if(numMatrixElements > 0){
 		size += numMatrixElements*(
 			sizeof(*cooRowIndices)
 			+ sizeof(*cooColIndices)
 			+ sizeof(*cooValues)
 		);
-	}
+	}*/
 
 	return size;
 }

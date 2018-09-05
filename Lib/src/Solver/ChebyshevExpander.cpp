@@ -66,10 +66,10 @@ ChebyshevExpander::~ChebyshevExpander(){
 		destroyLookupTableGPU();
 }
 
-void ChebyshevExpander::setModel(Model &model){
+/*void ChebyshevExpander::setModel(Model &model){
 	Solver::setModel(model);
 	model.sortHoppingAmplitudes();	//Required for GPU evaluation
-}
+}*/
 
 vector<complex<double>> ChebyshevExpander::calculateCoefficientsCPU(
 	Index to,

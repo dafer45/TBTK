@@ -178,6 +178,8 @@ private:
 	/** Eigen vectors. (Arnoldi variable). */
 	std::complex<double> *eigenVectors;
 
+	SparseMatrix<std::complex<double>> matrix;
+
 	/** LUSolver. */
 	LUSolver luSolver;
 

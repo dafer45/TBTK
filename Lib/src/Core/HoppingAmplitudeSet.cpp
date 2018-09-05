@@ -30,12 +30,12 @@ namespace TBTK{
 
 HoppingAmplitudeSet::HoppingAmplitudeSet(){
 	isConstructed = false;
-	isSorted = false;
-	numMatrixElements = -1;
+//	isSorted = false;
+/*	numMatrixElements = -1;
 
 	cooRowIndices = NULL;
 	cooColIndices = NULL;
-	cooValues = NULL;
+	cooValues = NULL;*/
 }
 
 HoppingAmplitudeSet::HoppingAmplitudeSet(
@@ -44,12 +44,12 @@ HoppingAmplitudeSet::HoppingAmplitudeSet(
 	HoppingAmplitudeTree(capacity)
 {
 	isConstructed = false;
-	isSorted = false;
-	numMatrixElements = -1;
+//	isSorted = false;
+/*	numMatrixElements = -1;
 
 	cooRowIndices = NULL;
 	cooColIndices = NULL;
-	cooValues = NULL;
+	cooValues = NULL;*/
 }
 
 HoppingAmplitudeSet::HoppingAmplitudeSet(
@@ -58,8 +58,8 @@ HoppingAmplitudeSet::HoppingAmplitudeSet(
 	HoppingAmplitudeTree(hoppingAmplitudeSet)
 {
 	isConstructed = hoppingAmplitudeSet.isConstructed;
-	isSorted = hoppingAmplitudeSet.isSorted;
-	numMatrixElements = hoppingAmplitudeSet.numMatrixElements;
+//	isSorted = hoppingAmplitudeSet.isSorted;
+/*	numMatrixElements = hoppingAmplitudeSet.numMatrixElements;
 
 	if(numMatrixElements == -1){
 		cooRowIndices = nullptr;
@@ -75,7 +75,7 @@ HoppingAmplitudeSet::HoppingAmplitudeSet(
 			cooColIndices[n] = hoppingAmplitudeSet.cooColIndices[n];
 			cooValues[n] = hoppingAmplitudeSet.cooValues[n];
 		}
-	}
+	}*/
 }
 
 HoppingAmplitudeSet::HoppingAmplitudeSet(
@@ -84,8 +84,8 @@ HoppingAmplitudeSet::HoppingAmplitudeSet(
 	HoppingAmplitudeTree(hoppingAmplitudeSet)
 {
 	isConstructed = hoppingAmplitudeSet.isConstructed;
-	isSorted = hoppingAmplitudeSet.isSorted;
-	numMatrixElements = hoppingAmplitudeSet.numMatrixElements;
+//	isSorted = hoppingAmplitudeSet.isSorted;
+/*	numMatrixElements = hoppingAmplitudeSet.numMatrixElements;
 
 	cooRowIndices = hoppingAmplitudeSet.cooRowIndices;
 	hoppingAmplitudeSet.cooRowIndices = nullptr;
@@ -94,7 +94,7 @@ HoppingAmplitudeSet::HoppingAmplitudeSet(
 	hoppingAmplitudeSet.cooColIndices = nullptr;
 
 	cooValues = hoppingAmplitudeSet.cooValues;
-	hoppingAmplitudeSet.cooValues = nullptr;
+	hoppingAmplitudeSet.cooValues = nullptr;*/
 }
 
 HoppingAmplitudeSet::HoppingAmplitudeSet(
@@ -130,11 +130,11 @@ HoppingAmplitudeSet::HoppingAmplitudeSet(
 		ss.str(elements.at(1));
 		ss >> isConstructed;
 		ss.clear();
-		ss.str(elements.at(2));
-		ss >> isSorted;
-		ss.clear();
-		ss.str(elements.at(3));
-		ss >> numMatrixElements;
+//		ss.str(elements.at(2));
+//		ss >> isSorted;
+//		ss.clear();
+//		ss.str(elements.at(3));
+/*		ss >> numMatrixElements;
 		if(numMatrixElements == -1){
 			cooRowIndices = nullptr;
 			cooColIndices = nullptr;
@@ -163,7 +163,7 @@ HoppingAmplitudeSet::HoppingAmplitudeSet(
 				ss >> cooValues[n];
 				counter++;
 			}
-		}
+		}*/
 
 		break;
 	}
@@ -172,8 +172,8 @@ HoppingAmplitudeSet::HoppingAmplitudeSet(
 		try{
 			nlohmann::json j = nlohmann::json::parse(serialization);
 			isConstructed = j.at("isConstructed").get<bool>();
-			isSorted = j.at("isSorted").get<bool>();
-			numMatrixElements = j.at("numMatrixElements").get<int>();
+//			isSorted = j.at("isSorted").get<bool>();
+/*			numMatrixElements = j.at("numMatrixElements").get<int>();
 			if(numMatrixElements == -1){
 				cooRowIndices = nullptr;
 				cooColIndices = nullptr;
@@ -245,7 +245,7 @@ HoppingAmplitudeSet::HoppingAmplitudeSet(
 					deserialize(*it, &cooValues[counter], mode);
 					counter++;
 				}
-			}
+			}*/
 		}
 		catch(nlohmann::json::exception e){
 			TBTKExit(
@@ -268,12 +268,12 @@ HoppingAmplitudeSet::HoppingAmplitudeSet(
 }
 
 HoppingAmplitudeSet::~HoppingAmplitudeSet(){
-	if(cooRowIndices != NULL)
+/*	if(cooRowIndices != NULL)
 		delete [] cooRowIndices;
 	if(cooColIndices != NULL)
 		delete [] cooColIndices;
 	if(cooValues != NULL)
-		delete [] cooValues;
+		delete [] cooValues;*/
 }
 
 HoppingAmplitudeSet& HoppingAmplitudeSet::operator=(
@@ -282,8 +282,8 @@ HoppingAmplitudeSet& HoppingAmplitudeSet::operator=(
 	if(this != &rhs){
 		HoppingAmplitudeTree::operator=(rhs);
 		isConstructed = rhs.isConstructed;
-		isSorted = rhs.isSorted;
-		numMatrixElements = rhs.numMatrixElements;
+//		isSorted = rhs.isSorted;
+/*		numMatrixElements = rhs.numMatrixElements;
 
 		if(numMatrixElements == -1){
 			cooRowIndices = nullptr;
@@ -299,7 +299,7 @@ HoppingAmplitudeSet& HoppingAmplitudeSet::operator=(
 				cooColIndices[n] = rhs.cooColIndices[n];
 				cooValues[n] = rhs.cooValues[n];
 			}
-		}
+		}*/
 	}
 
 	return *this;
@@ -309,8 +309,8 @@ HoppingAmplitudeSet& HoppingAmplitudeSet::operator=(HoppingAmplitudeSet &&rhs){
 	if(this != &rhs){
 		HoppingAmplitudeTree::operator=(rhs);
 		isConstructed = rhs.isConstructed;
-		isSorted = rhs.isSorted;
-		numMatrixElements = rhs.numMatrixElements;
+//		isSorted = rhs.isSorted;
+/*		numMatrixElements = rhs.numMatrixElements;
 
 		cooRowIndices = rhs.cooRowIndices;
 		rhs.cooRowIndices = nullptr;
@@ -319,7 +319,7 @@ HoppingAmplitudeSet& HoppingAmplitudeSet::operator=(HoppingAmplitudeSet &&rhs){
 		rhs.cooColIndices = nullptr;
 
 		cooValues = rhs.cooValues;
-		rhs.cooValues = nullptr;
+		rhs.cooValues = nullptr;*/
 	}
 
 	return *this;
@@ -353,7 +353,7 @@ IndexTree HoppingAmplitudeSet::getIndexTree(const Index &subspace) const{
 	return indexTree;
 }
 
-int HoppingAmplitudeSet::getNumMatrixElements() const{
+/*int HoppingAmplitudeSet::getNumMatrixElements() const{
 	TBTKAssert(
 		numMatrixElements != -1,
 		"HoppingAmplitudeSet::getNumMatrixElements()",
@@ -460,7 +460,7 @@ void HoppingAmplitudeSet::reconstructCOO(){
 		destructCOO();
 		constructCOO();
 	}
-}
+}*/
 
 void HoppingAmplitudeSet::print(){
 	HoppingAmplitudeTree::print();
@@ -474,8 +474,8 @@ string HoppingAmplitudeSet::serialize(Mode mode) const{
 		ss << "HoppingAmplitudeSet(";
 		ss << HoppingAmplitudeTree::serialize(mode);
 		ss << "," << Serializable::serialize(isConstructed, mode);
-		ss << "," << Serializable::serialize(isSorted, mode);
-		ss << "," << Serializable::serialize(numMatrixElements, mode);
+//		ss << "," << Serializable::serialize(isSorted, mode);
+/*		ss << "," << Serializable::serialize(numMatrixElements, mode);
 		if(numMatrixElements != -1){
 			for(int n = 0; n < numMatrixElements; n++){
 				ss << "," << Serializable::serialize(
@@ -495,7 +495,7 @@ string HoppingAmplitudeSet::serialize(Mode mode) const{
 					mode
 				);
 			}
-		}
+		}*/
 		ss << ")";
 
 		return ss.str();
@@ -508,8 +508,8 @@ string HoppingAmplitudeSet::serialize(Mode mode) const{
 			HoppingAmplitudeTree::serialize(mode)
 		);
 		j["isConstructed"] = isConstructed;
-		j["isSorted"] = isSorted;
-		j["numMatrixElements"] = numMatrixElements;
+//		j["isSorted"] = isSorted;
+/*		j["numMatrixElements"] = numMatrixElements;
 		if(numMatrixElements != -1){
 			for(int n = 0; n < numMatrixElements; n++){
 				j["cooRowIndices"].push_back(cooRowIndices[n]);
@@ -521,7 +521,7 @@ string HoppingAmplitudeSet::serialize(Mode mode) const{
 					)
 				);
 			}
-		}
+		}*/
 
 		return j.dump();
 	}

@@ -57,10 +57,10 @@ public:
 	Statistics getStatistics() const;
 
 	/*** Sort HoppingAmplitudes. */
-	void sortHoppingAmplitudes();
+//	void sortHoppingAmplitudes();
 
 	/** Construct Hamiltonian on COO format. */
-	void constructCOO();
+//	void constructCOO();
 
 	/** Get the contained HoppingAmplitudeSet.
 	 *
@@ -115,14 +115,14 @@ inline Statistics SingleParticleContext::getStatistics() const{
 	return statistics;
 }
 
-inline void SingleParticleContext::sortHoppingAmplitudes(){
+/*inline void SingleParticleContext::sortHoppingAmplitudes(){
 	hoppingAmplitudeSet.sort();
-}
+}*/
 
-inline void SingleParticleContext::constructCOO(){
+/*inline void SingleParticleContext::constructCOO(){
 	hoppingAmplitudeSet.sort();
 	hoppingAmplitudeSet.constructCOO();
-}
+}*/
 
 inline HoppingAmplitudeSet& SingleParticleContext::getHoppingAmplitudeSet(){
 	return hoppingAmplitudeSet;

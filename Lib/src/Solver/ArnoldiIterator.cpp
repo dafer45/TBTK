@@ -36,7 +36,11 @@ using namespace std;
 namespace TBTK{
 namespace Solver{
 
-ArnoldiIterator::ArnoldiIterator() : Communicator(true){
+ArnoldiIterator::ArnoldiIterator(
+) :
+	Communicator(true),
+	matrix(SparseMatrix<complex<double>>::StorageFormat::CSC)
+{
 	mode = Mode::Normal;
 
 	//Arnoldi variables (ARPACK)
@@ -690,17 +694,40 @@ bool ArnoldiIterator::executeReverseCommunicationMessage(
 			for(int n = 0; n < basisSize; n++)
 				workd[(ipntr[1] - 1) + n] = 0.;
 
-			const Model &model = getModel();
+/*			const Model &model = getModel();
 			int numMatrixElements = model.getHoppingAmplitudeSet().getNumMatrixElements();
 			const int *cooRowIndices = model.getHoppingAmplitudeSet().getCOORowIndices();
 			const int *cooColIndices = model.getHoppingAmplitudeSet().getCOOColIndices();
 			const complex<double> *cooValues = model.getHoppingAmplitudeSet().getCOOValues();
 			for(int n = 0; n < numMatrixElements; n++)
-				workd[(ipntr[1] - 1) + cooRowIndices[n]] += cooValues[n]*workd[(ipntr[0] - 1) + cooColIndices[n]];
+				workd[(ipntr[1] - 1) + cooRowIndices[n]] += cooValues[n]*workd[(ipntr[0] - 1) + cooColIndices[n]];*/
+			const unsigned int *cscRowIndices = matrix.getCSCRows();
+			const unsigned int *cscColPointers = matrix.getCSCColumnPointers();
+			const complex<double> *cscValues
+				= matrix.getCSCValues();
+			for(
+				unsigned int column = 0;
+				column < matrix.getNumColumns();
+				column++
+			){
+				for(
+					unsigned int n = cscColPointers[column];
+					n < cscColPointers[column+1];
+					n++
+				){
+					workd[
+						(ipntr[1] - 1)
+						+ cscRowIndices[n]
+					] += cscValues[n]*workd[
+						(ipntr[0] - 1)
+						+ column
+					];
+				}
+			}
 
 			//Apply shift.
-			for(int n = 0; n < basisSize; n++)
-				workd[(ipntr[1] - 1) + n] -= shift*workd[(ipntr[0] - 1) + n];
+/*			for(int n = 0; n < basisSize; n++)
+				workd[(ipntr[1] - 1) + n] -= shift*workd[(ipntr[0] - 1) + n];*/
 
 			break;
 		}
@@ -774,7 +801,7 @@ void ArnoldiIterator::checkZneupdIerr(int ierr) const{
 
 void ArnoldiIterator::initNormal(){
 	//Get matrix representation on COO format
-	const Model &model = getModel();
+/*	const Model &model = getModel();
 	const int *cooRowIndices = model.getHoppingAmplitudeSet().getCOORowIndices();
 	const int *cooColIndices = model.getHoppingAmplitudeSet().getCOOColIndices();
 	TBTKAssert(
@@ -782,7 +809,31 @@ void ArnoldiIterator::initNormal(){
 		"ArnoldiIterator::initNormal()",
 		"COO format not constructed.",
 		"Use Model::constructCOO() to construct COO format."
+	);*/
+
+	const Model &model = getModel();
+
+	matrix = SparseMatrix<complex<double>>(
+		SparseMatrix<complex<double>>::StorageFormat::CSC
 	);
+
+	for(
+		HoppingAmplitudeSet::ConstIterator iterator
+			= getModel().getHoppingAmplitudeSet().cbegin();
+		iterator != getModel().getHoppingAmplitudeSet().cend();
+		++iterator
+	){
+		int from = model.getHoppingAmplitudeSet().getBasisIndex(
+			(*iterator).getFromIndex()
+		);
+		int to = model.getHoppingAmplitudeSet().getBasisIndex(
+			(*iterator).getToIndex()
+		);
+		matrix.add(to, from, (*iterator).getAmplitude());
+	}
+	for(int n = 0; n < model.getBasisSize(); n++)
+		matrix.add(n, n, -shift);
+	matrix.constructCSX();
 }
 
 void ArnoldiIterator::initShiftAndInvert(){

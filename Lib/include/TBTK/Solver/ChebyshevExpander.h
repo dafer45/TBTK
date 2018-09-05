@@ -68,7 +68,7 @@ public:
 	virtual ~ChebyshevExpander();
 
 	/** Overrides Solver::setModel(). */
-	virtual void setModel(Model &model);
+//	virtual void setModel(Model &model);
 
 	/** Sets the scale factor that rescales the Hamiltonian to ensure that
 	 *  the energy spectrum of the Hamiltonian is bounded on the interval

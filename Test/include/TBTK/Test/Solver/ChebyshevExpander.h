@@ -253,7 +253,7 @@ TEST(ChebyshevExpander, calculateCoefficients){
 
 	solver.setCalculateCoefficientsOnGPU(true);
 	#ifdef TBTK_CUDA_ENABLED
-		model.constructCOO();
+//		model.constructCOO();
 		Communicator::setGlobalVerbose(false);
 
 		//Test diagonal entry.
