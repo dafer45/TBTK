@@ -135,22 +135,6 @@ public:
 	 *  @return True if the Hilbert space basis has been constructed. */
 	bool getIsConstructed();
 
-	/** Sort HoppingAmplitudes. */
-//	void sortHoppingAmplitudes();
-
-	/** Construct Hamiltonian on COO format. */
-//	void constructCOO();
-
-	/** Destruct Hamiltonian on COO format. */
-//	void destructCOO();
-
-	/** To be called when HoppingAmplitudes need to be reevaluated. This is
-	 *  required if the HoppingAmplitudeSet in addition to its standard
-	 *  storage format also utilizes a more effective format such as COO
-	 *  format and some HoppingAmplitudes are evaluated through the use of
-	 *  callbacks. */
-//	void reconstructCOO();
-
 	/** Set temperature.
 	 *
 	 *  @param temperature The temperature. */
@@ -291,22 +275,6 @@ inline int Model::getBasisIndex(const Index &index) const{
 inline bool Model::getIsConstructed(){
 	return singleParticleContext.getHoppingAmplitudeSet().getIsConstructed();
 }
-
-/*inline void Model::sortHoppingAmplitudes(){
-	singleParticleContext.sortHoppingAmplitudes();
-}*/
-
-/*inline void Model::constructCOO(){
-	singleParticleContext.constructCOO();
-}
-
-inline void Model::destructCOO(){
-	singleParticleContext.getHoppingAmplitudeSet().destructCOO();
-}
-
-inline void Model::reconstructCOO(){
-	singleParticleContext.getHoppingAmplitudeSet().reconstructCOO();
-}*/
 
 inline void Model::setTemperature(double temperature){
 	this->temperature = temperature;

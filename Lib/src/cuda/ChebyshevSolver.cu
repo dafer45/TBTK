@@ -150,15 +150,6 @@ vector<
 			coefficients[coefficientMap[n]][0] = jIn1[n];
 //			coefficients[coefficientMap[n]*numCoefficients] = jIn1[n];
 
-/*	const int numHoppingAmplitudes
-		= hoppingAmplitudeSet.getNumMatrixElements();
-	const int *cooHARowIndices_host
-		= hoppingAmplitudeSet.getCOORowIndices();
-	const int *cooHAColIndices_host
-		= hoppingAmplitudeSet.getCOOColIndices();
-	const complex<double> *cooHAValues_host
-		= hoppingAmplitudeSet.getCOOValues();*/
-
 	SparseMatrix<complex<double>> sparseMatrix = hoppingAmplitudeSet.getSparseMatrix();
 	sparseMatrix.setStorageFormat(SparseMatrix<complex<double>>::StorageFormat::CSR);
 

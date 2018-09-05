@@ -66,23 +66,12 @@ ChebyshevExpander::~ChebyshevExpander(){
 		destroyLookupTableGPU();
 }
 
-/*void ChebyshevExpander::setModel(Model &model){
-	Solver::setModel(model);
-	model.sortHoppingAmplitudes();	//Required for GPU evaluation
-}*/
-
 vector<complex<double>> ChebyshevExpander::calculateCoefficientsCPU(
 	Index to,
 	Index from
 ){
 	const Model &model = getModel();
 
-/*	TBTKAssert(
-		model != NULL,
-		"ChebyshevExpander::calculateCoefficients()",
-		"Model not set.",
-		"Use ChebyshevExpander::setModel() to set model."
-	);*/
 	TBTKAssert(
 		scaleFactor > 0,
 		"ChebyshevExpander::calculateCoefficients()",
@@ -243,12 +232,6 @@ vector<vector<complex<double>>> ChebyshevExpander::calculateCoefficientsCPU(
 	Index from
 ){
 	const Model &model = getModel();
-/*	TBTKAssert(
-		model != NULL,
-		"ChebyshevExpander::calculateCoefficients()",
-		"Model not set.",
-		"Use ChebyshevExpander::setModel() to set model."
-	);*/
 	TBTKAssert(
 		scaleFactor > 0,
 		"ChebyshevExpander::calculateCoefficients()",
