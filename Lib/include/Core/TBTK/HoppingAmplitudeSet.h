@@ -75,16 +75,6 @@ public:
 	 *  @param capacity 'Index capacity'. */
 	HoppingAmplitudeSet(const std::vector<unsigned int> &capacity);
 
-	/** Copy constructor.
-	 *
-	 *  @param hoppingAmplitudeSet HoppingAmplitudeSet to copy. */
-	HoppingAmplitudeSet(const HoppingAmplitudeSet &hoppingAmplitudeSet);
-
-	/** Move constructor.
-	 *
-	 *  @param hoppingAMplitudeSet HoppingAmplitudeSet to move. */
-	HoppingAmplitudeSet(HoppingAmplitudeSet &&hoppingAmplitudeSet);
-
 	/** Constructor. Constructs the HoppingAmplitudeSet from a
 	 *  serialization string.
 	 *
@@ -96,20 +86,6 @@ public:
 
 	/** Destructor. */
 	virtual ~HoppingAmplitudeSet();
-
-	/** Assignment operator.
-	 *
-	 *  @param rhs HoppingAmplitude to assign to the left hand side.
-	 *
-	 *  @return Reference to the assigned HoppingAmplitudeSet. */
-	HoppingAmplitudeSet& operator=(const HoppingAmplitudeSet &rhs);
-
-	/** Move assignment operator.
-	 *
-	 *  @param rhs HoppingAmplitude to assign to the left hand side.
-	 *
-	 *  @return Reference to the assigned HoppingAmplitudeSet. */
-	HoppingAmplitudeSet& operator=(HoppingAmplitudeSet &&rhs);
 
 	/** Construct Hilbert space. No more @link HoppingAmplitude
 	 *  HoppingAmplitudes @endlink should be added after this call. */

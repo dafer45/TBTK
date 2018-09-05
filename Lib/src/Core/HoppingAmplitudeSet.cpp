@@ -41,22 +41,6 @@ HoppingAmplitudeSet::HoppingAmplitudeSet(
 }
 
 HoppingAmplitudeSet::HoppingAmplitudeSet(
-	const HoppingAmplitudeSet &hoppingAmplitudeSet
-) :
-	HoppingAmplitudeTree(hoppingAmplitudeSet)
-{
-	isConstructed = hoppingAmplitudeSet.isConstructed;
-}
-
-HoppingAmplitudeSet::HoppingAmplitudeSet(
-	HoppingAmplitudeSet &&hoppingAmplitudeSet
-) :
-	HoppingAmplitudeTree(hoppingAmplitudeSet)
-{
-	isConstructed = hoppingAmplitudeSet.isConstructed;
-}
-
-HoppingAmplitudeSet::HoppingAmplitudeSet(
 	const string &serialization,
 	Mode mode
 ) :
@@ -119,26 +103,6 @@ HoppingAmplitudeSet::HoppingAmplitudeSet(
 }
 
 HoppingAmplitudeSet::~HoppingAmplitudeSet(){
-}
-
-HoppingAmplitudeSet& HoppingAmplitudeSet::operator=(
-	const HoppingAmplitudeSet &rhs
-){
-	if(this != &rhs){
-		HoppingAmplitudeTree::operator=(rhs);
-		isConstructed = rhs.isConstructed;
-	}
-
-	return *this;
-}
-
-HoppingAmplitudeSet& HoppingAmplitudeSet::operator=(HoppingAmplitudeSet &&rhs){
-	if(this != &rhs){
-		HoppingAmplitudeTree::operator=(rhs);
-		isConstructed = rhs.isConstructed;
-	}
-
-	return *this;
 }
 
 IndexTree HoppingAmplitudeSet::getIndexTree() const{
