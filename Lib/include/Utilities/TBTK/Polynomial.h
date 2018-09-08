@@ -25,12 +25,17 @@
 
 #include "TBTK/TBTKMacros.h"
 
+#include <complex>
 #include <tuple>
 #include <vector>
 
 namespace TBTK{
 
-template<typename FieldType, typename VariableType, typename PowerType>
+template<
+	typename FieldType = std::complex<double>,
+	typename VariableType = std::complex<double>,
+	typename PowerType = int
+>
 class Polynomial{
 public:
 	/** Constructs a Polynomial.
@@ -56,14 +61,6 @@ public:
 	 *  @return The value of the polynomial evaluated at the given
 	 *  variables. */
 	VariableType operator()(const std::vector<VariableType> &variable);
-
-	/** Get the maximum degree of the polynomial.
-	 *
-	 *  @return A vector containing the maximum degree for each variable.
-	 */
-	std::vector<PowerType> getMaxDegree() const;
-
-	void print();
 private:
 	/** The number of variables. */
 	unsigned int numVariables;
@@ -122,35 +119,6 @@ VariableType Polynomial<FieldType, VariableType, PowerType>::operator()(
 	}
 
 	return value;
-}
-
-template<typename FieldType, typename VariableType, typename PowerType>
-std::vector<PowerType> Polynomial<
-	FieldType,
-	VariableType,
-	PowerType
->::getMaxDegree() const{
-	std::vector<PowerType> maxDegree;
-	for(unsigned int n = 0; n < numVariables; n++)
-		maxDegree.push_back(0.);
-	for(unsigned int n = 0; n < terms.size(); n++){
-		for(unsigned int c = 0; c < numVariables; c++){
-			if(std::get<1>(terms[n])[c] > maxDegree[c])
-				maxDegree[c] = std::get<1>(terms[n])[c];
-		}
-	}
-
-	return maxDegree;
-}
-
-template<typename FieldType, typename VariableType, typename PowerType>
-void Polynomial<FieldType, VariableType, PowerType>::print(){
-	for(unsigned int n = 0; n < terms.size(); n++){
-		Streams::out << std::get<0>(terms[n]);
-		for(unsigned int c = 0; c < numVariables; c++)
-			Streams::out << "\t" << std::get<1>(terms[n])[c];
-	}
-	Streams::out << "\n";
 }
 
 }; //End of namespace TBTK

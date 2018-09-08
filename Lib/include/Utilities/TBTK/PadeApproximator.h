@@ -33,10 +33,23 @@ namespace TBTK{
 
 class PadeApproximator{
 public:
+	/** Set the highest allowed degree for the numerator.
+	 *
+	 *  @param The highest allowed degree for the numerator. */
 	void setNumeratorDegree(unsigned int numeratorDegree);
 
-	void setDenumeratorDegree(unsigned int numeratorDegree);
+	/** Set the highest allowed degree for the denumerator.
+	 *
+	 *  @param The highest allowed degree for the denumerator. */
+	void setDenumeratorDegree(unsigned int denumeratorDegree);
 
+	/** Calculate the Padé approximation for a sampled function.
+	 *
+	 *  @param values The values of the function at the sample points.
+	 *  @param The arguments at which the function has been sampled.
+	 *
+	 *  @return A vector containing the numerator and denumerator
+	 *  Polynomial as the first and second component, respectively. */
 	std::vector<
 		Polynomial<std::complex<double>, std::complex<double>, int>
 	> approximate(
@@ -44,10 +57,13 @@ public:
 		const std::vector<std::complex<double>> &arguments
 	);
 private:
+	/** The maximum degree of the numerator. */
 	unsigned int numeratorDegree;
 
+	/** The maximum degree of the denumerator. */
 	unsigned int denumeratorDegree;
 
+	/** Execute the least square algorithm. */
 	void executeLeastSquare(
 		std::complex<double> *matrix,
 		std::complex<double> *vector,

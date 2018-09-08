@@ -74,9 +74,9 @@ vector<
 			}
 		}
 
-		vector[row] = -values[row]*pow(
+		vector[row] = values[row]*pow(
 			arguments[row],
-			denumeratorDegree + 1
+			denumeratorDegree
 		);
 	}
 
@@ -93,6 +93,7 @@ vector<
 		polynomials[0].addTerm(vector[n], {(int)n});
 	for(unsigned int n = 0; n < denumeratorDegree; n++)
 		polynomials[1].addTerm(vector[n+numeratorDegree+1], {(int)n});
+	polynomials[1].addTerm(1, {(int)denumeratorDegree});
 
 	delete [] matrix;
 	delete [] vector;
@@ -188,7 +189,6 @@ void PadeApproximator::executeLeastSquare(
 	int *IWORK = new int[max(1, LIWORK)];
 	int INFO;
 
-	Streams::out << M << "\n";
 	zgelsd_(
 		&M,
 		&N,
