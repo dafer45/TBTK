@@ -36,7 +36,14 @@ namespace Property{
 class GreensFunction : public EnergyResolvedProperty<std::complex<double>>{
 public:
 	/** Enum class for specifying the Green's function type. */
-	enum class Type{Advanced, Retarded, Principal, NonPrincipal, Matsubara};
+	enum class Type{
+		Ordinary,
+		Advanced,
+		Retarded,
+		Principal,
+		NonPrincipal,
+		Matsubara
+	};
 
 	/** Constructs an uninitialized GreensFunction. */
 	GreensFunction();
