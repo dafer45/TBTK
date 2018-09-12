@@ -74,10 +74,15 @@ vector<
 			}
 		}
 
-		vector[row] = values[row]*pow(
-			arguments[row],
-			denumeratorDegree
-		);
+		if(denumeratorDegree == 0){
+			vector[row] = values[row];
+		}
+		else{
+			vector[row] = values[row]*pow(
+				arguments[row],
+				denumeratorDegree
+			);
+		}
 	}
 
 	executeLeastSquare(matrix, vector, numRows, numColumns);
@@ -158,7 +163,7 @@ void PadeApproximator::executeLeastSquare(
 	int NRHS = 1;
 	int LDA = numRows;
 	double *S = new double[min(numRows, numColumns)];
-	double RCOND;
+	double RCOND = 0;
 	int RANK;
 	int LWORK = max(numRows, numColumns)*(2 + NRHS);
 	complex<double> *WORK = new complex<double>[max(1, LWORK)];
