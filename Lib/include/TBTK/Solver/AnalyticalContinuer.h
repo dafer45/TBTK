@@ -59,13 +59,24 @@ public:
 
 	/** Set the degree of the denumerator in the Padé approximation.
 	 *
-	 *  @param denumeratorDegree The degree of the denumerator polynomial. */
+	 *  @param denumeratorDegree The degree of the denumerator polynomial.
+	 */
 	void setDenumeratorDegree(unsigned int denumeratorDegree);
 
+	/** Set the size of the energy infinitesimal that is used to deform the
+	 *  contour in for example the Retarded and advanced Green's functions.
+	 *
+	 *  @param energyInfinitesimal The energy infinitesimal. */
+	void setEnergyInfinitesimal(double energyInfinitesimal);
+
 	/** Convert a Matsubara Green's function from the imaginary to the real
-	 *  axis. */
+	 *  axis.
+	 *
+	 *  @param greensFunction The Green's function to convert from.
+	 *  @param type The Green's function type to convert to. */
 	Property::GreensFunction convert(
-		const Property::GreensFunction &greensFunction
+		const Property::GreensFunction &greensFunction,
+		Property::GreensFunction::Type type
 	) const;
 private:
 	/** The lower bound for the energy window. */
@@ -84,6 +95,29 @@ private:
 	/** The degree of the denumerator polynomial in the Padé approximation.
 	 */
 	unsigned int denumeratorDegree;
+
+	/** Default energy infinitesimal. */
+	static constexpr double ENERGY_INFINITESIMAL = 0;
+
+	/** The energy infinitesimal \f$\delta\f$ that is used to deform the
+	 *  contour retarded and advanced Green's functions, etc. */
+	double energyInfinitesimal;
+
+	/** Returns an imaginary infinitesimal that deforms the contour
+	 *  according to the given Green's function type.
+	 *
+	 *  @param energy The real energy at which the contour should be
+	 *  deformed.
+	 *
+	 *  @param type The type of the Green's function to obtain the contour
+	 *  for.
+	 *
+	 *  @return The imaginary deformation of the contour at the given
+	 *  energy and Green's function type. */
+	std::complex<double> getContourDeformation(
+		double energy,
+		Property::GreensFunction::Type type
+	) const;
 };
 
 inline void AnalyticalContinuer::setEnergyWindow(
@@ -106,6 +140,12 @@ inline void AnalyticalContinuer::setDenumeratorDegree(
 	unsigned int denumeratorDegree
 ){
 	this->denumeratorDegree = denumeratorDegree;
+}
+
+inline void AnalyticalContinuer::setEnergyInfinitesimal(
+	double energyInfinitesimal
+){
+	this->energyInfinitesimal = energyInfinitesimal;
 }
 
 };	//End of namespace Solver

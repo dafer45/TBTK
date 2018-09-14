@@ -34,10 +34,12 @@ AnalyticalContinuer::AnalyticalContinuer() : Communicator(true){
 	lowerBound = -1;
 	upperBound = 1;
 	resolution = 1000;
+	energyInfinitesimal = ENERGY_INFINITESIMAL;
 }
 
 Property::GreensFunction AnalyticalContinuer::convert(
-	const Property::GreensFunction &greensFunction
+	const Property::GreensFunction &greensFunction,
+	Property::GreensFunction::Type newType
 ) const{
 	TBTKAssert(
 		greensFunction.getType()
@@ -55,13 +57,29 @@ Property::GreensFunction AnalyticalContinuer::convert(
 		const IndexTree &indexTree
 			= greensFunction.getIndexDescriptor().getIndexTree();
 
-		Property::GreensFunction newGreensFunction(
-			indexTree,
-			Property::GreensFunction::Type::Ordinary,
-			lowerBound,
-			upperBound,
-			resolution
-		);
+		Property::GreensFunction newGreensFunction;
+		switch(newType){
+		case Property::GreensFunction::Type::Ordinary:
+		case Property::GreensFunction::Type::Retarded:
+		case Property::GreensFunction::Type::Advanced:
+			newGreensFunction = Property::GreensFunction(
+				indexTree,
+				Property::GreensFunction::Type::Ordinary,
+				lowerBound,
+				upperBound,
+				resolution
+			);
+
+			break;
+		default:
+			TBTKExit(
+				"Solver::AnalyticalContinuer::convert()",
+				"Invalid 'newType'. Only conversion to the"
+				<< " Ordinary, Retarded, and Advanced Green's"
+				<< " function is supported yet.",
+				""
+			);
+		}
 
 		for(
 			IndexTree::ConstIterator iterator = indexTree.cbegin();
@@ -101,10 +119,16 @@ Property::GreensFunction AnalyticalContinuer::convert(
 				n++
 			){
 				double energy = newGreensFunction.getEnergy(n);
+				complex<double> contourDeformation
+					= getContourDeformation(
+						energy,
+						newType
+					);
+
 				newGreensFunction(*iterator, n)
 					= padePolynomials[0](
-						{energy}
-					)/padePolynomials[1]({energy});
+						{energy + contourDeformation}
+					)/padePolynomials[1]({energy + contourDeformation});
 			}
 		}
 
@@ -115,6 +139,33 @@ Property::GreensFunction AnalyticalContinuer::convert(
 			"Solver::AnalyticalContinuer::convert()",
 			"Only Green's functions on the custom format are"
 			<< " supported yet.",
+			""
+		);
+	}
+}
+
+
+
+complex<double> AnalyticalContinuer::getContourDeformation(
+	double energy,
+	Property::GreensFunction::Type type
+) const{
+	switch(type){
+	case Property::GreensFunction::Type::Ordinary:
+		if(energy < getModel().getChemicalPotential())
+			return complex<double>(0, -1)*energyInfinitesimal;
+		else
+			return complex<double>(0, 1)*energyInfinitesimal;
+	case Property::GreensFunction::Type::Retarded:
+		return complex<double>(0, 1)*energyInfinitesimal;
+	case Property::GreensFunction::Type::Advanced:
+		return complex<double>(0, -1)*energyInfinitesimal;
+	default:
+		TBTKExit(
+			"Solver::AnalyticalContinuer::convert()",
+			"Invalid Green's function type. Only contours for the"
+			<< " Ordinary, Retarded, and Advanced Green's"
+			<< " functions are supported yet.",
 			""
 		);
 	}
