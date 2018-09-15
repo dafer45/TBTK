@@ -35,6 +35,7 @@ AnalyticalContinuer::AnalyticalContinuer() : Communicator(true){
 	upperBound = 1;
 	resolution = 1000;
 	energyInfinitesimal = ENERGY_INFINITESIMAL;
+	energyShift = 0.;
 }
 
 Property::GreensFunction AnalyticalContinuer::convert(
@@ -97,8 +98,13 @@ Property::GreensFunction AnalyticalContinuer::convert(
 					greensFunction(*iterator, n)
 				);
 				matsubaraEnergies.push_back(
-					greensFunction.getMatsubaraEnergy(n)
-					+ getModel().getChemicalPotential()
+					(
+						greensFunction.getMatsubaraEnergy(n)
+						+ getModel().getChemicalPotential()
+						- energyShift
+					)/(
+						2.*greensFunction.getFundamentalMatsubaraEnergy()
+					)
 				);
 			}
 
@@ -127,8 +133,24 @@ Property::GreensFunction AnalyticalContinuer::convert(
 
 				newGreensFunction(*iterator, n)
 					= padePolynomials[0](
-						{energy + contourDeformation}
-					)/padePolynomials[1]({energy + contourDeformation});
+						{
+							(
+								energy
+								+ contourDeformation
+								- energyShift
+							)/(
+								2.*greensFunction.getFundamentalMatsubaraEnergy()
+							)
+						}
+					)/padePolynomials[1]({
+						(
+							energy
+							+ contourDeformation
+							- energyShift
+						)/(
+							2.*greensFunction.getFundamentalMatsubaraEnergy()
+						)
+					});
 			}
 		}
 

@@ -69,6 +69,12 @@ public:
 	 *  @param energyInfinitesimal The energy infinitesimal. */
 	void setEnergyInfinitesimal(double energyInfinitesimal);
 
+	/** Set the energy shift to be used in the polynomial expansion.
+	 *
+	 *  @param energyShift ENergy shift to be applied in the polynomial
+	 *  expansion. */
+	void setEnergyShift(std::complex<double> energyShift);
+
 	/** Convert a Matsubara Green's function from the imaginary to the real
 	 *  axis.
 	 *
@@ -102,6 +108,9 @@ private:
 	/** The energy infinitesimal \f$\delta\f$ that is used to deform the
 	 *  contour retarded and advanced Green's functions, etc. */
 	double energyInfinitesimal;
+
+	/** Energy shift to use in the polynomial expansion. */
+	std::complex<double> energyShift;
 
 	/** Returns an imaginary infinitesimal that deforms the contour
 	 *  according to the given Green's function type.
@@ -146,6 +155,12 @@ inline void AnalyticalContinuer::setEnergyInfinitesimal(
 	double energyInfinitesimal
 ){
 	this->energyInfinitesimal = energyInfinitesimal;
+}
+
+inline void AnalyticalContinuer::setEnergyShift(
+	std::complex<double> energyShift
+){
+	this->energyShift = energyShift;
 }
 
 };	//End of namespace Solver
