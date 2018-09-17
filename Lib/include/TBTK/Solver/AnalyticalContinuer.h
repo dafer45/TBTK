@@ -71,9 +71,15 @@ public:
 
 	/** Set the energy shift to be used in the polynomial expansion.
 	 *
-	 *  @param energyShift ENergy shift to be applied in the polynomial
+	 *  @param energyShift Energy shift to be applied in the polynomial
 	 *  expansion. */
 	void setEnergyShift(std::complex<double> energyShift);
+
+	/** Set the scale factor to be used in the polynomial expansion.
+	 *
+	 *  @param scaleFactor Scale factor to be applied in the polynomial
+	 *  expansion. */
+	void setScaleFactor(double scaleFactor);
 
 	/** Convert a Matsubara Green's function from the imaginary to the real
 	 *  axis.
@@ -111,6 +117,9 @@ private:
 
 	/** Energy shift to use in the polynomial expansion. */
 	std::complex<double> energyShift;
+
+	/** Scale factor to use in the polynomial expansion. */
+	double scaleFactor;
 
 	/** Returns an imaginary infinitesimal that deforms the contour
 	 *  according to the given Green's function type.
@@ -161,6 +170,10 @@ inline void AnalyticalContinuer::setEnergyShift(
 	std::complex<double> energyShift
 ){
 	this->energyShift = energyShift;
+}
+
+inline void AnalyticalContinuer::setScaleFactor(double scaleFactor){
+	this->scaleFactor = scaleFactor;
 }
 
 };	//End of namespace Solver
