@@ -18,6 +18,7 @@
  *  @author Kristofer Björnson
  */
 
+#include "TBTK/Array.h"
 #include "TBTK/PadeApproximator.h"
 #include "TBTK/Solver/AnalyticalContinuer.h"
 #include "TBTK/Streams.h"
@@ -60,12 +61,11 @@ Property::GreensFunction AnalyticalContinuer::convert(
 
 		Property::GreensFunction newGreensFunction;
 		switch(newType){
-		case Property::GreensFunction::Type::Ordinary:
 		case Property::GreensFunction::Type::Retarded:
 		case Property::GreensFunction::Type::Advanced:
 			newGreensFunction = Property::GreensFunction(
 				indexTree,
-				Property::GreensFunction::Type::Ordinary,
+				newType,
 				lowerBound,
 				upperBound,
 				resolution
@@ -76,8 +76,8 @@ Property::GreensFunction AnalyticalContinuer::convert(
 			TBTKExit(
 				"Solver::AnalyticalContinuer::convert()",
 				"Invalid 'newType'. Only conversion to the"
-				<< " Ordinary, Retarded, and Advanced Green's"
-				<< " function is supported yet.",
+				<< " retarded and advanced Green's function is"
+				<< " supported yet.",
 				""
 			);
 		}
@@ -94,6 +94,26 @@ Property::GreensFunction AnalyticalContinuer::convert(
 				n < greensFunction.getNumMatsubaraEnergies();
 				n++
 			){
+				if(newType == Property::GreensFunction::Type::Retarded){
+					if(imag(greensFunction.getMatsubaraEnergy(n)) < 0)
+						continue;
+				}
+				else if(newType == Property::GreensFunction::Type::Advanced){
+					if(imag(greensFunction.getMatsubaraEnergy(n)) > 0)
+						continue;
+				}
+				else{
+					TBTKExit(
+						"Solver::AnalyticalContinuer::convert()",
+						"Invalid 'newType'. Only"
+						<< " conversion to the"
+						<< " retarded and advanced"
+						<< " Green's function is"
+						<< " supported yet.",
+						""
+					);
+				}
+
 				matsubaraValues.push_back(
 					greensFunction(*iterator, n)
 				);
@@ -151,6 +171,7 @@ Property::GreensFunction AnalyticalContinuer::convert(
 							2.*greensFunction.getFundamentalMatsubaraEnergy()
 						)
 					});
+
 			}
 		}
 
@@ -173,11 +194,6 @@ complex<double> AnalyticalContinuer::getContourDeformation(
 	Property::GreensFunction::Type type
 ) const{
 	switch(type){
-	case Property::GreensFunction::Type::Ordinary:
-		if(energy < getModel().getChemicalPotential())
-			return complex<double>(0, -1)*energyInfinitesimal;
-		else
-			return complex<double>(0, 1)*energyInfinitesimal;
 	case Property::GreensFunction::Type::Retarded:
 		return complex<double>(0, 1)*energyInfinitesimal;
 	case Property::GreensFunction::Type::Advanced:
@@ -186,8 +202,8 @@ complex<double> AnalyticalContinuer::getContourDeformation(
 		TBTKExit(
 			"Solver::AnalyticalContinuer::convert()",
 			"Invalid Green's function type. Only contours for the"
-			<< " Ordinary, Retarded, and Advanced Green's"
-			<< " functions are supported yet.",
+			<< " retarded, and advanced Green's functions are"
+			<< " supported yet.",
 			""
 		);
 	}
