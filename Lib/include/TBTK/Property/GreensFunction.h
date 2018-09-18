@@ -37,7 +37,7 @@ class GreensFunction : public EnergyResolvedProperty<std::complex<double>>{
 public:
 	/** Enum class for specifying the Green's function type. */
 	enum class Type{
-		Ordinary,
+		TimeOrdered,
 		Advanced,
 		Retarded,
 		Principal,
