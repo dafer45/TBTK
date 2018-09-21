@@ -19,3 +19,9 @@
 - The class AbstractProperty should change name and Property::Property should
   probably take over much of the non template related responsibilities of the
   current AbstractProperty class.
+
+- Implement Event, EventHandler, and EventListener. Thought has to go into this
+  to make it thread safe and possible to scale to multiple machines. This will
+  among other things enable problem specific calculations to be deferred to
+  application specific code. For example, the handling of tails in Matsubara
+  summations.
