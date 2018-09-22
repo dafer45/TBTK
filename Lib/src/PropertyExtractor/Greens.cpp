@@ -253,7 +253,23 @@ void Greens::calculateDensityCallback(
 
 		break;
 	}
-	case Property::GreensFunction::Type::Principal:
+	case Property::GreensFunction::Type::Matsubara:
+	{
+		for(
+			unsigned int e = 0;
+			e < greensFunction.getNumMatsubaraEnergies();
+			e++
+		){
+			data[offset] += real(greensFunction({index, index}, e));
+		}
+
+		data[offset]
+			*= greensFunction.getFundamentalMatsubaraEnergy()/M_PI;
+
+		data[offset] += 1/2.;
+
+		break;
+	}
 	default:
 		TBTKExit(
 			"PropertyExtractor::Greens::calculateDensityCallback()",
@@ -311,7 +327,6 @@ void Greens::calculateLDOSCallback(
 
 		break;
 	}
-	case Property::GreensFunction::Type::Principal:
 	default:
 		TBTKExit(
 			"PropertyExtractor::Greens::calculateDensityCallback()",
