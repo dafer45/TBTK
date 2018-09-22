@@ -20,6 +20,7 @@
 
 #include "TBTK/PropertyExtractor/BlockDiagonalizer.h"
 #include "TBTK/PropertyExtractor/ElectronFluctuationVertex.h"
+#include "TBTK/PropertyExtractor/Greens.h"
 #include "TBTK/PropertyExtractor/MatsubaraSusceptibility.h"
 #include "TBTK/PropertyExtractor/RPASusceptibility.h"
 #include "TBTK/PropertyExtractor/SelfEnergy2.h"
@@ -41,6 +42,11 @@ namespace Solver{
 FLEX::FLEX(const MomentumSpaceContext &momentumSpaceContext) :
 	momentumSpaceContext(momentumSpaceContext)
 {
+	density = 0;
+	targetDensity = -1;
+	densityTolerance = 1e-5;
+	chemicalPotentialStepSize = 1e-1;
+
 	lowerFermionicMatsubaraEnergyIndex = -1;
 	upperFermionicMatsubaraEnergyIndex = 1;
 	lowerBosonicMatsubaraEnergyIndex = 0;
@@ -97,7 +103,7 @@ void FLEX::run(){
 		if(callback != nullptr)
 			callback(*this);
 
-		//Calculate the self energy.
+		//Calculate the Green's function.
 		oldGreensFunction = greensFunction;
 		calculateGreensFunction();
 		state = State::GreensFunctionCalculated;
@@ -115,7 +121,7 @@ void FLEX::calculateBareGreensFunction(){
 		= momentumSpaceContext.getNumMeshPoints();
 	TBTKAssert(
 		numMeshPoints.size() == 2,
-		"Solver::FLEX::calculateGreensFunction()()",
+		"Solver::FLEX::calculateBAreGreensFunction()()",
 		"Only two-dimensional block indices supported yet, but the"
 		<< " MomentumSpaceContext has a '" << numMeshPoints.size()
 		<< "'-dimensional block structure.",
@@ -282,13 +288,103 @@ void FLEX::calculateSelfEnergy(){
 }
 
 void FLEX::calculateGreensFunction(){
-	Greens greensSolver;
-	greensSolver.setVerbose(false);
-	greensSolver.setModel(getModel());
-	greensSolver.setGreensFunction(greensFunction0);
-	greensFunction = greensSolver.calculateInteractingGreensFunction(
-		selfEnergy
-	);
+	if(targetDensity < 0){
+		Greens greensSolver;
+		greensSolver.setVerbose(false);
+		greensSolver.setModel(getModel());
+		greensSolver.setGreensFunction(greensFunction0);
+		greensFunction = greensSolver.calculateInteractingGreensFunction(
+			selfEnergy
+		);
+	}
+	else{
+		double chemicalPotential = getModel().getChemicalPotential();
+
+		chemicalPotentialStepSize /= 2.;
+		int previousChemicalPotentialStepDirection = 0;
+		double chemicalPotentialStepMultiplier = 2.;
+		double densityDifference = 2*densityTolerance;
+		while(abs(densityDifference) > densityTolerance){
+			Greens greensSolver;
+			greensSolver.setVerbose(false);
+			greensSolver.setModel(getModel());
+			greensSolver.setGreensFunction(greensFunction0);
+			greensFunction
+				= greensSolver.calculateInteractingGreensFunction(
+					selfEnergy
+				);
+
+			calculateDensity();
+			densityDifference = density - targetDensity;
+			if(abs(densityDifference) > densityTolerance){
+				if(densityDifference > 0){
+					switch(previousChemicalPotentialStepDirection){
+					case 0:
+						previousChemicalPotentialStepDirection = -1;
+						break;
+					case 1:
+						previousChemicalPotentialStepDirection = -1;
+						chemicalPotentialStepMultiplier = 0.5;
+						break;
+					case -1:
+						previousChemicalPotentialStepDirection = -1;
+						break;
+					default:
+						TBTKExit(
+							"Solver::FLEX::calculateGreensFunction()",
+							"Unknown step"
+							<< " direction.",
+							"This should never"
+							<< " happen, contact"
+							<< " the developer."
+						);
+					}
+
+					chemicalPotentialStepSize
+						*= chemicalPotentialStepMultiplier;
+
+					chemicalPotential
+						-= chemicalPotentialStepSize;
+				}
+				else{
+					switch(previousChemicalPotentialStepDirection){
+					case 0:
+						previousChemicalPotentialStepDirection = 1;
+						break;
+					case 1:
+						previousChemicalPotentialStepDirection = 1;
+						break;
+					case -1:
+						previousChemicalPotentialStepDirection = 1;
+						chemicalPotentialStepMultiplier = 0.5;
+						break;
+					default:
+						TBTKExit(
+							"Solver::FLEX::calculateGreensFunction()",
+							"Unknown step"
+							<< " direction.",
+							"This should never"
+							<< " happen, contact"
+							<< " the developer."
+						);
+					}
+
+					chemicalPotentialStepSize
+						*= chemicalPotentialStepMultiplier;
+
+					chemicalPotential
+						+= chemicalPotentialStepSize;
+				}
+				getModel().setChemicalPotential(
+					chemicalPotential
+				);
+
+				calculateBareGreensFunction();
+			}
+
+//			Streams::out << "Density:\t" << density << "\t" << chemicalPotential << "\n";
+		}
+	}
 }
 
 void FLEX::convertSelfEnergyIndexStructure(){
@@ -520,6 +616,45 @@ FLEX::generateRPASpinSusceptibilityInteractionAmplitudes(){
 	}
 
 	return interactionAmplitudes;
+}
+
+void FLEX::calculateDensity(){
+	const vector<unsigned int> &numMeshPoints
+		= momentumSpaceContext.getNumMeshPoints();
+
+	Greens solver;
+	solver.setModel(getModel());
+	solver.setGreensFunction(greensFunction);
+
+	PropertyExtractor::Greens propertyExtractor(solver);
+	Property::Density densityProperty
+		= propertyExtractor.calculateDensity({
+			{IDX_SUM_ALL, IDX_SUM_ALL, IDX_SUM_ALL}
+		});
+	density = densityProperty({0, 0, 0});
+
+	solver.setGreensFunction(greensFunction0);
+	densityProperty = propertyExtractor.calculateDensity({
+		{IDX_SUM_ALL, IDX_SUM_ALL, IDX_SUM_ALL}
+	});
+	density -= densityProperty({0, 0, 0});
+
+	BlockDiagonalizer blockDiagonalizer;
+	blockDiagonalizer.setVerbose(false);
+	blockDiagonalizer.setModel(getModel());
+	blockDiagonalizer.run();
+
+	PropertyExtractor::BlockDiagonalizer
+		blockDiagonalizerPropertyExtractor(blockDiagonalizer);
+	densityProperty = blockDiagonalizerPropertyExtractor.calculateDensity({
+		{IDX_SUM_ALL, IDX_SUM_ALL, IDX_SUM_ALL}
+	});
+	density += densityProperty({0, 0, 0});
+
+	density *= 2./(numMeshPoints[0]*numMeshPoints[1]);
+//	Streams::out << "Density:\t" << averageDensity << "\n";
+
+//	return averageDensity;
 }
 
 }	//End of namespace Solver

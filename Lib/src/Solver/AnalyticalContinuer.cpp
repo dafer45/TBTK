@@ -166,7 +166,6 @@ Property::GreensFunction AnalyticalContinuer::convert(
 							- energyShift
 						)/scaleFactor
 					});
-
 			}
 		}
 

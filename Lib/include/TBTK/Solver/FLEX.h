@@ -127,6 +127,33 @@ public:
 	 *  @param Jp The value of Jp. */
 	void setJp(double Jp);
 
+	/** Get the density.
+	 *
+	 *  @return density. */
+	double getDensity() const;
+
+	/** Set the target density. The chemical potential is determined
+	 *  self-consistently such that the difference between the final
+	 *  density and the target density is with in the tolerance set by
+	 *  setDensityTolerance(). If the target density is set to a negative
+	 *  number (which is the default values), the chemical potential will
+	 *  not be determined self-consistently.
+	 *
+	 *  @param targetDensity The target density. */
+	void setTargetDensity(double targetDensity);
+
+	/** Set the tolerance to be used for the density when self-consistently
+	 *  determining the chemical potential.
+	 *
+	 *  @param densityTolerance The density tolerance. */
+	void setDensityTolerance(double densityTolerance);
+
+	/** Set the initial step size used to modify the chemical potential in
+	 *  the self-consistent density loop.
+	 *
+	 *  @param initialChemicalPotentialSetpSize*/
+	void setChemicalPotentialStepSize(double chemicalPotentialStepSize);
+
 	/** Get the current state.
 	 *
 	 *  @return The current state of the solver. */
@@ -185,6 +212,18 @@ private:
 
 	/** Interaction vertex. */
 	Property::SelfEnergy selfEnergy;
+
+	/** Density. */
+	double density;
+
+	/** Target density. */
+	double targetDensity;
+
+	/** The tolerance that is used in the self-consistent density loop. */
+	double densityTolerance;
+
+	/** The step size used to update the chemical potential. */
+	double chemicalPotentialStepSize;
 
 	/** The lower Fermionic Matsubara energy index. */
 	int lowerFermionicMatsubaraEnergyIndex;
@@ -266,6 +305,9 @@ private:
 	/** Generate the interaction vertex for the RPA spin susceptibility. */
 	std::vector<InteractionAmplitude>
 		generateRPASpinSusceptibilityInteractionAmplitudes();
+
+	/** Calculate the density. */
+	void calculateDensity();
 };
 
 inline const MomentumSpaceContext& FLEX::getMomentumSpaceContext() const{
@@ -295,6 +337,33 @@ inline const Property::InteractionVertex& FLEX::getInteractionVertex() const{
 
 inline const Property::SelfEnergy& FLEX::getSelfEnergy() const{
 	return selfEnergy;
+}
+
+inline double FLEX::getDensity() const{
+	TBTKAssert(
+		targetDensity >= 0,
+		"Solver::FLEX::getDensity()",
+		"This function is only available for non-negative target"
+		<< " densities.",
+		"Use Solver::FLEX::setTargetDensity() to set the target"
+		<< " density."
+	);
+
+	return density;
+}
+
+inline void FLEX::setTargetDensity(double targetDensity){
+	this->targetDensity = targetDensity;
+}
+
+inline void FLEX::setDensityTolerance(double densityTolerance){
+	this->densityTolerance = densityTolerance;
+}
+
+inline void FLEX::setChemicalPotentialStepSize(
+	double chemicalPotentialStepSize
+){
+	this->chemicalPotentialStepSize = chemicalPotentialStepSize;
 }
 
 inline void FLEX::setEnergyWindow(
