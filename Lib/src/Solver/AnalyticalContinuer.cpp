@@ -181,8 +181,6 @@ Property::GreensFunction AnalyticalContinuer::convert(
 	}
 }
 
-
-
 complex<double> AnalyticalContinuer::getContourDeformation(
 	double energy,
 	Property::GreensFunction::Type type
