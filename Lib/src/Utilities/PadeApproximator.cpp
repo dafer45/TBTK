@@ -106,6 +106,179 @@ vector<
 	return polynomials;
 }
 
+//The code below is a possible variation of the algorithm above which may have
+//better numerical properties. It aims to improve the numerical properties by
+//rescaling the powers of the arguments.
+/*vector<
+	Polynomial<complex<double>, complex<double>, int>
+> PadeApproximator::approximate(
+	const vector<complex<double>> &values,
+	const vector<complex<double>> &arguments
+){
+	TBTKAssert(
+		values.size() == arguments.size(),
+		"PadeApproximator::approximate()",
+		"Incompatible sizes. The size of 'values' (" << values.size()
+		<< ") must be the same as the size of 'arguments' ("
+		<< arguments.size() << ").",
+		""
+	);
+	TBTKAssert(
+		values.size() > numeratorDegree + denumeratorDegree,
+		"PadeApproximator::approximate()",
+		"The number of values and arguments (" << values.size() << ")"
+		<< " must be larger than 'numeratorDegree + denumeratorDegree="
+		<< numeratorDegree + denumeratorDegree << "'.",
+		""
+	);
+
+	double maxArgument = 0;
+	for(unsigned int n = 0; n < arguments.size(); n++)
+		if(abs(arguments[n]) > maxArgument)
+			maxArgument = abs(arguments[n]);
+	double minArgument = maxArgument;
+	for(unsigned int n = 0; n < arguments.size(); n++)
+		if(abs(arguments[n]) < minArgument && abs(arguments[n]) != 0)
+			minArgument = abs(arguments[n]);
+
+	unsigned int numRows = arguments.size();
+	unsigned int numColumns = 1 + numeratorDegree + denumeratorDegree;
+
+	complex<double> *matrix = new complex<double>[numRows*numColumns];
+	complex<double> *vector = new complex<double>[numRows];
+
+	for(unsigned int row = 0; row < numRows; row++){
+		for(unsigned int column = 0; column < numColumns; column++){
+			if(column == 0){
+				matrix[row + numRows*column] = 1.;
+			}
+			else if(column == 1 && numeratorDegree == 1){
+				matrix[row + numRows*column]
+					= arguments[row]/minArgument;
+			}
+			else if(column < numeratorDegree+1){
+				matrix[row + numRows*column] = pow(
+					arguments[row]/(
+						minArgument
+						+ (column - 1)*(
+							maxArgument
+							- minArgument
+						)/(numeratorDegree - 1)
+					),
+					column
+				);
+			}
+			else if(column == numeratorDegree + 1){
+				matrix[row + numRows*column] = -values[row];
+			}
+			else if(column == numeratorDegree + 2){
+				matrix[row + numRows*column]
+					= -values[row]*arguments[
+						row
+					]/minArgument;
+			}
+			else{
+				matrix[row + numRows*column]
+					= -values[row]*pow(
+						arguments[row]/(
+							minArgument
+							+ (
+								column
+								- numeratorDegree
+								- 2
+
+							)*(
+								maxArgument
+								- minArgument
+							)/(denumeratorDegree - 1)
+						),
+						column - numeratorDegree - 1
+					);
+			}
+		}
+
+		if(denumeratorDegree == 0){
+			vector[row] = values[row];
+		}
+		else{
+			vector[row] = values[row]*pow(
+				arguments[row]/maxArgument,
+				denumeratorDegree
+			);
+		}
+	}
+
+	executeLeastSquare(matrix, vector, numRows, numColumns);
+
+	std::vector<Polynomial<complex<double>, complex<double>, int>> polynomials;
+	polynomials.push_back(
+		Polynomial<complex<double>, complex<double>, int>(1)
+	);
+	polynomials.push_back(
+		Polynomial<complex<double>, complex<double>, int>(1)
+	);
+	for(unsigned int n = 0; n < numeratorDegree+1; n++){
+		if(n == 0){
+			polynomials[0].addTerm(vector[n], {(int)n});
+		}
+		else if(n == 1){
+			polynomials[0].addTerm(
+				vector[n]/minArgument,
+				{(int)n}
+			);
+		}
+		else{
+			polynomials[0].addTerm(
+				vector[n]/(
+					pow(
+						minArgument
+						+ (n - 1)*(
+							maxArgument
+							- minArgument
+						)/(
+							numeratorDegree - 1
+						),
+						n
+					)
+				),
+				{(int)n}
+			);
+		}
+	}
+	for(unsigned int n = 0; n < denumeratorDegree; n++){
+		if(n == 0){
+			polynomials[1].addTerm(
+				vector[n+numeratorDegree+1],
+				{(int)n}
+			);
+		}
+		else{
+			polynomials[1].addTerm(
+				vector[n+numeratorDegree+1]/(
+					pow(
+						minArgument
+						+ (n - 1)*(
+							maxArgument
+							- minArgument
+						)/(denumeratorDegree - 1),
+						n
+					)
+				),
+				{(int)n}
+			);
+		}
+	}
+	polynomials[1].addTerm(
+		1/pow(maxArgument, denumeratorDegree),
+		{(int)denumeratorDegree}
+	);
+
+	delete [] matrix;
+	delete [] vector;
+
+	return polynomials;
+}*/
+
 extern "C" int ilaenv_(
 	int *ISPEC,
 	char *NAME,
