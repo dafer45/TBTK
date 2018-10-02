@@ -136,6 +136,23 @@ public:
 	 *  @return The from Index. */
 	const Index& getFromIndex() const;
 
+	/** Get whether the value of the HoppingAmplitude is determined through
+	 *  a callback.
+	 *
+	 *  @return True of the value of the HoppingAmplitude is determined
+	 *  through a callback. */
+	bool getIsCallbackDependent() const;
+
+	/** Get the callback that is used to determine the value of the
+	 *  HoppingAmplitude.
+	 *
+	 *  @return The callback that is used to determine the value of the
+	 *  HoppingAmplitude. Returns nullptr if no callback is used. */
+	std::complex<double> (*getAmplitudeCallback() const)(
+		const Index &toIndex,
+		const Index &fromIndex
+	);
+
 	/** Get string representation of the HoppingAmplitude.
 	 *
 	 *  @return A string representation of the HoppingAmplitude. */
@@ -194,6 +211,20 @@ inline const Index& HoppingAmplitude::getToIndex() const{
 
 inline const Index& HoppingAmplitude::getFromIndex() const{
 	return fromIndex;
+}
+
+inline bool HoppingAmplitude::getIsCallbackDependent() const{
+	if(amplitudeCallback == nullptr)
+		return false;
+	else
+		return true;
+}
+
+inline std::complex<double> (*HoppingAmplitude::getAmplitudeCallback() const)(
+	const Index &toIndex,
+	const Index &fromIndex
+){
+	return amplitudeCallback;
 }
 
 inline std::string HoppingAmplitude::toString() const{

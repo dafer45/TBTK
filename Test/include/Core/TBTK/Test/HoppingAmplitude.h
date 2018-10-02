@@ -102,6 +102,22 @@ TEST(HoppingAmplitude, getFromIndex){
 	//Extensively tested through other tests.
 }
 
+TEST(HoppingAmplitude, getIsCallbackDependent){
+	HoppingAmplitude hoppingAmplitude0(1, {0}, {0});
+	EXPECT_FALSE(hoppingAmplitude0.getIsCallbackDependent());
+
+	HoppingAmplitude hoppingAmplitude1(amplitudeCallback, {0}, {0});
+	EXPECT_TRUE(hoppingAmplitude1.getIsCallbackDependent());
+}
+
+TEST(HoppingAmplitude, getAmplitudeCallback){
+	HoppingAmplitude hoppingAmplitude0(1, {0}, {0});
+	EXPECT_EQ(hoppingAmplitude0.getAmplitudeCallback(), nullptr);
+
+	HoppingAmplitude hoppingAmplitude1(amplitudeCallback, {0}, {0});
+	EXPECT_EQ(hoppingAmplitude1.getAmplitudeCallback(), amplitudeCallback);
+}
+
 TEST(HoppingAmplitude, toString){
 	//Not tested due to insuficient control of number formating.
 }
