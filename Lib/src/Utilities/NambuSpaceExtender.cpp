@@ -73,6 +73,33 @@ Model NambuSpaceExtender::extend(const Model &model){
 		}
 	}
 
+	if(model.getChemicalPotential() != 0){
+		for(int n = 0; n < model.getBasisSize(); n++){
+			Index index0 = model.getHoppingAmplitudeSet(
+			).getPhysicalIndex(n);
+
+			Index index1 = index0;
+
+			index0.push_back(0);
+			index1.push_back(1);
+
+			newModel << HoppingAmplitude(
+				-model.getChemicalPotential(),
+				index0,
+				index0
+			);
+			newModel << HoppingAmplitude(
+				model.getChemicalPotential(),
+				index1,
+				index1
+			);
+		}
+	}
+	newModel.setChemicalPotential(0);
+
+	newModel.setTemperature(model.getTemperature());
+	newModel.setStatistics(model.getStatistics());
+
 	return newModel;
 }
 
