@@ -154,15 +154,6 @@ private:
 	/** Pointer to array containing eigenvectors. */
 	std::complex<double> *eigenVectors;
 
-	/** Number of states per block. */
-//	std::vector<unsigned int> numStatesPerBlock;
-
-	/** Block indices for give state. */
-//	std::vector<unsigned int> stateToBlockMap;
-
-	/** The first state index in given block. */
-//	std::vector<unsigned int> blockToStateMap;
-
 	/** BlockStructureDescriptor. */
 	BlockStructureDescriptor blockStructureDescriptor;
 
@@ -218,20 +209,27 @@ inline const std::complex<double> BlockDiagonalizer::getAmplitude(
 	const Index &index
 ){
 	const Model &model = getModel();
-//	unsigned int block = stateToBlockMap.at(state);
 	unsigned int block = blockStructureDescriptor.getBlockIndex(state);
 	unsigned int offset = eigenVectorOffsets.at(block);
 	unsigned int linearIndex = model.getBasisIndex(index);
-//	unsigned int firstStateInBlock = blockToStateMap.at(block);
-	unsigned int firstStateInBlock = blockStructureDescriptor.getFirstStateInBlock(block);
-//	unsigned int lastStateInBlock = firstStateInBlock + numStatesPerBlock.at(block)-1;
-	unsigned int lastStateInBlock = firstStateInBlock + blockStructureDescriptor.getNumStatesInBlock(block)-1;
-//	offset += (state - firstStateInBlock)*numStatesPerBlock.at(block);
-	offset += (state - firstStateInBlock)*blockStructureDescriptor.getNumStatesInBlock(block);
-	if(linearIndex >= firstStateInBlock && linearIndex <= lastStateInBlock)
-		return eigenVectors[offset + (linearIndex - firstStateInBlock)];
-	else
+	unsigned int firstStateInBlock
+		= blockStructureDescriptor.getFirstStateInBlock(block);
+	unsigned int lastStateInBlock = firstStateInBlock
+		+ blockStructureDescriptor.getNumStatesInBlock(block)-1;
+	offset += (
+		state - firstStateInBlock
+	)*blockStructureDescriptor.getNumStatesInBlock(block);
+	if(
+		linearIndex >= firstStateInBlock
+		&& linearIndex <= lastStateInBlock
+	){
+		return eigenVectors[
+			offset + (linearIndex - firstStateInBlock)
+		];
+	}
+	else{
 		return 0;
+	}
 }
 
 inline const std::complex<double> BlockDiagonalizer::getAmplitude(
@@ -239,28 +237,28 @@ inline const std::complex<double> BlockDiagonalizer::getAmplitude(
 	int state,
 	const Index &intraBlockIndex
 ){
-	int firstStateInBlock = getModel().getHoppingAmplitudeSet().getFirstIndexInBlock(
-		blockIndex
+	int firstStateInBlock = getModel().getHoppingAmplitudeSet(
+	).getFirstIndexInBlock(blockIndex);
+	unsigned int block = blockStructureDescriptor.getBlockIndex(
+		firstStateInBlock
 	);
-//	unsigned int block = stateToBlockMap.at(firstStateInBlock);
-	unsigned int block = blockStructureDescriptor.getBlockIndex(firstStateInBlock);
 	TBTKAssert(
-//		state >= 0 && state < (int)numStatesPerBlock.at(block),
-		state >= 0 && state < (int)blockStructureDescriptor.getNumStatesInBlock(block),
+		state >= 0
+		&& state < (int)blockStructureDescriptor.getNumStatesInBlock(
+			block
+		),
 		"BlockDiagonalizer::getAmplitude()",
 		"Out of bound error. The block with block Index "
 		<< blockIndex.toString() << " has "
-//		<< numStatesPerBlock.at(block) << " states, but state "
-		<< blockStructureDescriptor.getNumStatesInBlock(block) << " states, but state "
-		<< state << " was requested.",
+		<< blockStructureDescriptor.getNumStatesInBlock(block)
+		<< " states, but state " << state << " was requested.",
 		""
 	);
-//	unsigned int offset = eigenVectorOffsets.at(block) + state*numStatesPerBlock.at(block);
-	unsigned int offset = eigenVectorOffsets.at(block) + state*blockStructureDescriptor.getNumStatesInBlock(block);
+	unsigned int offset = eigenVectorOffsets.at(block)
+		+ state*blockStructureDescriptor.getNumStatesInBlock(block);
 	unsigned int linearIndex = getModel().getBasisIndex(
 		Index(blockIndex, intraBlockIndex)
 	);
-//	Streams::out << linearIndex << "\t" << Index(blockIndex, intraBlockIndex).toString() << "\n";
 
 	return eigenVectors[offset + (linearIndex - firstStateInBlock)];
 }
@@ -284,10 +282,9 @@ inline unsigned int BlockDiagonalizer::getFirstStateInBlock(
 	const Index &index
 ) const{
 	unsigned int linearIndex = getModel().getBasisIndex(index);
-//	unsigned int block = stateToBlockMap.at(linearIndex);
-	unsigned int block = blockStructureDescriptor.getBlockIndex(linearIndex);
+	unsigned int block
+		= blockStructureDescriptor.getBlockIndex(linearIndex);
 
-//	return blockToStateMap.at(block);
 	return blockStructureDescriptor.getFirstStateInBlock(block);
 }
 
@@ -295,11 +292,11 @@ inline unsigned int BlockDiagonalizer::getLastStateInBlock(
 	const Index &index
 ) const{
 	unsigned int linearIndex = getModel().getBasisIndex(index);
-//	unsigned int block = stateToBlockMap.at(linearIndex);
-	unsigned int block = blockStructureDescriptor.getBlockIndex(linearIndex);
+	unsigned int block
+		= blockStructureDescriptor.getBlockIndex(linearIndex);
 
-//	return getFirstStateInBlock(index) + numStatesPerBlock.at(block)-1;
-	return getFirstStateInBlock(index) + blockStructureDescriptor.getNumStatesInBlock(block)-1;
+	return getFirstStateInBlock(index)
+		+ blockStructureDescriptor.getNumStatesInBlock(block) - 1;
 }
 
 inline void BlockDiagonalizer::setParallelExecution(

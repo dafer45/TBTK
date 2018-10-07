@@ -86,27 +86,10 @@ void BlockDiagonalizer::init(){
 	if(getGlobalVerbose() && getVerbose())
 		Streams::out << "Initializing BlockDiagonalizer\n";
 
-	//Find number of blocks and number of states per block.
+	//Setup the BlockStructureDescriptor.
 	blockStructureDescriptor = BlockStructureDescriptor(
 		getModel().getHoppingAmplitudeSet()
 	);
-/*	IndexTree blockIndices = getModel().getHoppingAmplitudeSet().getSubspaceIndices();
-	numBlocks = 0;
-	numStatesPerBlock.clear();
-	for(
-		IndexTree::ConstIterator blockIterator = blockIndices.cbegin();
-		blockIterator != blockIndices.cend();
-		++blockIterator
-	){
-		Index blockIndex = *blockIterator;
-
-		numBlocks++;
-
-		HoppingAmplitudeSet::ConstIterator iterator = getModel().getHoppingAmplitudeSet().cbegin(
-			blockIndex
-		);
-		numStatesPerBlock.push_back(iterator.getNumBasisIndices());
-	}*/
 	numBlocks = blockStructureDescriptor.getNumBlocks();
 
 	/** Calculate block sizes and blockOffsets. */
@@ -114,10 +97,13 @@ void BlockDiagonalizer::init(){
 	eigenVectorSizes.clear();
 	blockOffsets.clear();
 	eigenVectorOffsets.clear();
-//	for(unsigned int n = 0; n < numStatesPerBlock.size(); n++){
-	for(unsigned int n = 0; n < blockStructureDescriptor.getNumBlocks(); n++){
-//		unsigned int numStates = numStatesPerBlock.at(n);
-		unsigned int numStates = blockStructureDescriptor.getNumStatesInBlock(n);
+	for(
+		unsigned int n = 0;
+		n < blockStructureDescriptor.getNumBlocks();
+		n++
+	){
+		unsigned int numStates
+			= blockStructureDescriptor.getNumStatesInBlock(n);
 		blockSizes.push_back((numStates*(numStates+1))/2);
 		eigenVectorSizes.push_back(numStates*numStates);
 		if(n == 0){
@@ -129,7 +115,8 @@ void BlockDiagonalizer::init(){
 				blockOffsets.at(n-1) + blockSizes.at(n-1)
 			);
 			eigenVectorOffsets.push_back(
-				eigenVectorOffsets.at(n-1) + eigenVectorSizes.at(n-1)
+				eigenVectorOffsets.at(n-1)
+				+ eigenVectorSizes.at(n-1)
 			);
 		}
 	}
@@ -138,32 +125,16 @@ void BlockDiagonalizer::init(){
 	//Hamiltonian.
 	size_t hamiltonianSize = 0;
 	size_t eigenVectorsSize = 0;
-//	for(unsigned int n = 0; n < numStatesPerBlock.size(); n++){
-	for(unsigned int n = 0; n < blockStructureDescriptor.getNumBlocks(); n++){
-//		hamiltonianSize += (numStatesPerBlock.at(n)*(numStatesPerBlock.at(n)+1))/2;
-		hamiltonianSize += (blockStructureDescriptor.getNumStatesInBlock(n)*(blockStructureDescriptor.getNumStatesInBlock(n)+1))/2;
-//		eigenVectorsSize += numStatesPerBlock.at(n)*numStatesPerBlock.at(n);
-		eigenVectorsSize += blockStructureDescriptor.getNumStatesInBlock(n)*blockStructureDescriptor.getNumStatesInBlock(n);
+	for(
+		unsigned int n = 0;
+		n < blockStructureDescriptor.getNumBlocks();
+		n++
+	){
+		unsigned int numStatesInBlock
+			= blockStructureDescriptor.getNumStatesInBlock(n);
+		hamiltonianSize += (numStatesInBlock*(numStatesInBlock + 1))/2;
+		eigenVectorsSize += numStatesInBlock*numStatesInBlock;
 	}
-
-	//Setup maps that map a given state index to the correct block and vice
-	//versa.
-/*	unsigned int blockCounter = 0;
-	unsigned int intraBlockCounter = 0;
-	blockToStateMap.clear();
-	stateToBlockMap.clear();
-	for(int n = 0; n < getModel().getBasisSize(); n++){
-		if(intraBlockCounter >= numStatesPerBlock.at(blockCounter)){
-			intraBlockCounter = 0;
-			blockCounter++;
-		}
-
-		if(intraBlockCounter == 0)
-			blockToStateMap.push_back(n);
-
-		stateToBlockMap.push_back(blockCounter);
-		intraBlockCounter++;
-	}*/
 
 	if(getGlobalVerbose() && getVerbose()){
 		size_t numBytesHamiltonian = hamiltonianSize*sizeof(
@@ -211,7 +182,6 @@ void BlockDiagonalizer::init(){
 				<< "GB\n";
 		}
 		Streams::out << "\tNumber of blocks: "
-//			<< numStatesPerBlock.size() << "\n";
 			<< blockStructureDescriptor.getNumBlocks() << "\n";
 	}
 
@@ -233,14 +203,20 @@ void BlockDiagonalizer::update(){
 	const Model &model = getModel();
 
 	unsigned int hamiltonianSize = 0;
-//	for(unsigned int n = 0; n < numStatesPerBlock.size(); n++)
-	for(unsigned int n = 0; n < blockStructureDescriptor.getNumBlocks(); n++)
-//		hamiltonianSize += (numStatesPerBlock.at(n)*(numStatesPerBlock.at(n)+1))/2;
-		hamiltonianSize += (blockStructureDescriptor.getNumStatesInBlock(n)*(blockStructureDescriptor.getNumStatesInBlock(n)+1))/2;
+	for(
+		unsigned int n = 0;
+		n < blockStructureDescriptor.getNumBlocks();
+		n++
+	){
+		unsigned int numStatesInBlock
+			= blockStructureDescriptor.getNumStatesInBlock(n);
+		hamiltonianSize += (numStatesInBlock*(numStatesInBlock + 1))/2;
+	}
 	for(unsigned int n = 0; n < hamiltonianSize; n++)
 		hamiltonian[n] = 0.;
 
-	IndexTree blockIndices = getModel().getHoppingAmplitudeSet().getSubspaceIndices();
+	IndexTree blockIndices
+		= getModel().getHoppingAmplitudeSet().getSubspaceIndices();
 	IndexTree::ConstIterator blockIterator = blockIndices.cbegin();
 	if(parallelExecution){
 		vector<HoppingAmplitudeSet::ConstIterator> iterators;
@@ -265,19 +241,28 @@ void BlockDiagonalizer::update(){
 
 		#pragma omp parallel for
 		for(unsigned int block = 0; block < iterators.size(); block++){
-			HoppingAmplitudeSet::ConstIterator &iterator = iterators[block];
-			HoppingAmplitudeSet::ConstIterator &endIterator = endIterators[block];
+			HoppingAmplitudeSet::ConstIterator &iterator
+				= iterators[block];
+			HoppingAmplitudeSet::ConstIterator &endIterator
+				= endIterators[block];
 
 			int minBasisIndex = iterator.getMinBasisIndex();
 			while(iterator != endIterator){
-				int from = model.getHoppingAmplitudeSet().getBasisIndex(
+				int from = model.getHoppingAmplitudeSet(
+				).getBasisIndex(
 					(*iterator).getFromIndex()
 				) - minBasisIndex;
-				int to = model.getHoppingAmplitudeSet().getBasisIndex(
+				int to = model.getHoppingAmplitudeSet(
+				).getBasisIndex(
 					(*iterator).getToIndex()
 				) - minBasisIndex;
-				if(from >= to)
-					hamiltonian[blockOffsets.at(block) + to + (from*(from+1))/2] += (*iterator).getAmplitude();
+				if(from >= to){
+					hamiltonian[
+						blockOffsets.at(block)
+						+ to
+						+ (from*(from+1))/2
+					] += (*iterator).getAmplitude();
+				}
 
 				++iterator;
 			}
@@ -294,18 +279,24 @@ void BlockDiagonalizer::update(){
 				);
 			int minBasisIndex = iterator.getMinBasisIndex();
 			while(
-				iterator != getModel().getHoppingAmplitudeSet().cend(
-						blockIndex
-					)
+				iterator != getModel().getHoppingAmplitudeSet(
+				).cend(blockIndex)
 			){
-				int from = model.getHoppingAmplitudeSet().getBasisIndex(
+				int from = model.getHoppingAmplitudeSet(
+				).getBasisIndex(
 					(*iterator).getFromIndex()
 				) - minBasisIndex;
-				int to = model.getHoppingAmplitudeSet().getBasisIndex(
+				int to = model.getHoppingAmplitudeSet(
+				).getBasisIndex(
 					(*iterator).getToIndex()
 				) - minBasisIndex;
-				if(from >= to)
-					hamiltonian[blockOffsets.at(blockCounter) + to + (from*(from+1))/2] += (*iterator).getAmplitude();
+				if(from >= to){
+					hamiltonian[
+						blockOffsets.at(blockCounter)
+						+ to
+						+ (from*(from+1))/2
+					] += (*iterator).getAmplitude();
+				}
 
 				++iterator;
 			}
@@ -351,7 +342,6 @@ void BlockDiagonalizer::solve(){
 			for(int b = 1; b < numBlocks; b++){
 				eigenValuesOffsets.push_back(
 					eigenValuesOffsets[b-1]
-//					+ numStatesPerBlock[b-1]
 					+ blockStructureDescriptor.getNumStatesInBlock(b-1)
 				);
 			}
@@ -361,7 +351,6 @@ void BlockDiagonalizer::solve(){
 				//Setup zhpev to calculate...
 				char jobz = 'V';						//...eigenvalues and eigenvectors...
 				char uplo = 'U';						//...for an upper triangular...
-//				int n = numStatesPerBlock.at(b);	//...nxn-matrix.
 				int n = blockStructureDescriptor.getNumStatesInBlock(b);	//...nxn-matrix.
 				//Initialize workspaces
 				complex<double> *work = new complex<double>[(2*n-1)];
@@ -399,7 +388,6 @@ void BlockDiagonalizer::solve(){
 				//Setup zhpev to calculate...
 				char jobz = 'V';						//...eigenvalues and eigenvectors...
 				char uplo = 'U';						//...for an upper triangular...
-//				int n = numStatesPerBlock.at(b);	//...nxn-matrix.
 				int n = blockStructureDescriptor.getNumStatesInBlock(b);	//...nxn-matrix.
 				//Initialize workspaces
 				complex<double> *work = new complex<double>[(2*n-1)];
@@ -430,7 +418,6 @@ void BlockDiagonalizer::solve(){
 				delete [] work;
 				delete [] rwork;
 
-//				eigenValuesOffset += numStatesPerBlock.at(b);
 				eigenValuesOffset += blockStructureDescriptor.getNumStatesInBlock(b);
 			}
 		}
