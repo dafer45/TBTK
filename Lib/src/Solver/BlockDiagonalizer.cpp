@@ -51,13 +51,6 @@ BlockDiagonalizer::~BlockDiagonalizer(){
 }
 
 void BlockDiagonalizer::run(){
-/*	TBTKAssert(
-		getModel() != NULL,
-		"Diagonalizer::run()",
-		"Model not set.",
-		"Use Diagonalizer::setModel() to set model."
-	);*/
-
 	int iterationCounter = 0;
 	init();
 
@@ -95,21 +88,6 @@ void BlockDiagonalizer::init(){
 
 	//Find number of blocks and number of states per block.
 	IndexTree blockIndices = getModel().getHoppingAmplitudeSet().getSubspaceIndices();
-/*	IndexTree::Iterator blockIterator = blockIndices.begin();
-	numBlocks = 0;
-	numStatesPerBlock.clear();
-	while(!blockIterator.getHasReachedEnd()){
-		Index blockIndex = blockIterator.getIndex();
-
-		numBlocks++;
-
-		HoppingAmplitudeSet::ConstIterator iterator = getModel().getHoppingAmplitudeSet().cbegin(
-			blockIndex
-		);
-		numStatesPerBlock.push_back(iterator.getNumBasisIndices());
-
-		blockIterator.searchNext();
-	}*/
 	numBlocks = 0;
 	numStatesPerBlock.clear();
 	for(
@@ -149,14 +127,6 @@ void BlockDiagonalizer::init(){
 			);
 		}
 	}
-
-/*	for(unsigned int n = 0; n < blockSizes.size(); n++){
-		Streams::out
-			<< blockSizes.at(n) << "\t"
-			<< blockOffsets.at(n) << "\t"
-			<< eigenVectorSizes.at(n) << "\t"
-			<< eigenVectorOffsets.at(n) << "\n";
-	}*/
 
 	//Calculate amount of memory required to store all the blocks of the
 	//Hamiltonian.
@@ -259,79 +229,6 @@ void BlockDiagonalizer::update(){
 		hamiltonian[n] = 0.;
 
 	IndexTree blockIndices = getModel().getHoppingAmplitudeSet().getSubspaceIndices();
-/*	IndexTree::Iterator blockIterator = blockIndices.begin();
-	if(parallelExecution){
-		vector<HoppingAmplitudeSet::ConstIterator> iterators;
-		vector<HoppingAmplitudeSet::ConstIterator> endIterators;
-
-		while(!blockIterator.getHasReachedEnd()){
-			Index blockIndex = blockIterator.getIndex();
-
-			iterators.push_back(
-				getModel().getHoppingAmplitudeSet().cbegin(
-					blockIndex
-				)
-			);
-			endIterators.push_back(
-				getModel().getHoppingAmplitudeSet().cend(
-					blockIndex
-				)
-			);
-
-			blockIterator.searchNext();
-		}
-
-		#pragma omp parallel for
-		for(unsigned int block = 0; block < iterators.size(); block++){
-			HoppingAmplitudeSet::ConstIterator &iterator = iterators[block];
-			HoppingAmplitudeSet::ConstIterator &endIterator = endIterators[block];
-
-			int minBasisIndex = iterator.getMinBasisIndex();
-			while(iterator != endIterator){
-				int from = model.getHoppingAmplitudeSet().getBasisIndex(
-					(*iterator).getFromIndex()
-				) - minBasisIndex;
-				int to = model.getHoppingAmplitudeSet().getBasisIndex(
-					(*iterator).getToIndex()
-				) - minBasisIndex;
-				if(from >= to)
-					hamiltonian[blockOffsets.at(block) + to + (from*(from+1))/2] += (*iterator).getAmplitude();
-
-				++iterator;
-			}
-		}
-	}
-	else{
-		unsigned int blockCounter = 0;
-		while(!blockIterator.getHasReachedEnd()){
-			Index blockIndex = blockIterator.getIndex();
-
-			HoppingAmplitudeSet::ConstIterator iterator
-				= getModel().getHoppingAmplitudeSet().cbegin(
-					blockIndex
-				);
-			int minBasisIndex = iterator.getMinBasisIndex();
-			while(
-				iterator != getModel().getHoppingAmplitudeSet().cend(
-						blockIndex
-					)
-			){
-				int from = model.getHoppingAmplitudeSet().getBasisIndex(
-					(*iterator).getFromIndex()
-				) - minBasisIndex;
-				int to = model.getHoppingAmplitudeSet().getBasisIndex(
-					(*iterator).getToIndex()
-				) - minBasisIndex;
-				if(from >= to)
-					hamiltonian[blockOffsets.at(blockCounter) + to + (from*(from+1))/2] += (*iterator).getAmplitude();
-
-				++iterator;
-			}
-
-			blockCounter++;
-			blockIterator.searchNext();
-		}
-	}*/
 	IndexTree::ConstIterator blockIterator = blockIndices.cbegin();
 	if(parallelExecution){
 		vector<HoppingAmplitudeSet::ConstIterator> iterators;
@@ -405,28 +302,6 @@ void BlockDiagonalizer::update(){
 			++blockIterator;
 		}
 	}
-
-/*	for(int b = 0; b < numBlocks; b++){
-		unsigned int row = 0;
-		unsigned int col = 0;
-		Streams::out << "Block number:\t" << b << "\n";
-		Streams::out << "Block offsets:\t" << blockOffsets.at(b) << "\n";
-		Streams::out << "Block size:\t" << blockSizes.at(b) << "\n";
-		for(unsigned int n = 0; n < blockSizes.at(b); n++){
-			Streams::out << setw(5) << setprecision(3) << real(hamiltonian[blockOffsets.at(b) + n]);
-			col++;
-			if(col == row+1){
-				while(col < numStatesPerBlock.at(b)){
-					Streams::out << setw(5) << ".";
-					col++;
-				}
-				Streams::out << "\n";
-				row++;
-				col = 0;
-			}
-		}
-		Streams::out << "\n\n";
-	}*/
 }
 
 //Lapack function for matrix diagonalization of triangular matrix.
