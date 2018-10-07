@@ -25,3 +25,5 @@
   among other things enable problem specific calculations to be deferred to
   application specific code. For example, the handling of tails in Matsubara
   summations.
+
+- Add BlockStructureDescriptor to SingleParticleContext.
