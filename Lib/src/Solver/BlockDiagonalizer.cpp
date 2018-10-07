@@ -33,7 +33,7 @@ BlockDiagonalizer::BlockDiagonalizer() : Communicator(true){
 	hamiltonian = nullptr;
 	eigenValues = nullptr;
 	eigenVectors = nullptr;
-	numBlocks = -1;
+//	numBlocks = -1;
 
 	maxIterations = 50;
 	selfConsistencyCallback = nullptr;
@@ -90,7 +90,7 @@ void BlockDiagonalizer::init(){
 	blockStructureDescriptor = BlockStructureDescriptor(
 		getModel().getHoppingAmplitudeSet()
 	);
-	numBlocks = blockStructureDescriptor.getNumBlocks();
+//	numBlocks = blockStructureDescriptor.getNumBlocks();
 
 	/** Calculate block sizes and blockOffsets. */
 	blockSizes.clear();
@@ -339,7 +339,12 @@ void BlockDiagonalizer::solve(){
 		if(parallelExecution){
 			vector<unsigned int> eigenValuesOffsets;
 			eigenValuesOffsets.push_back(0);
-			for(int b = 1; b < numBlocks; b++){
+//			for(int b = 1; b < numBlocks; b++){
+			for(
+				unsigned int b = 1;
+				b < blockStructureDescriptor.getNumBlocks();
+				b++
+			){
 				eigenValuesOffsets.push_back(
 					eigenValuesOffsets[b-1]
 					+ blockStructureDescriptor.getNumStatesInBlock(b-1)
@@ -347,7 +352,12 @@ void BlockDiagonalizer::solve(){
 			}
 
 			#pragma omp parallel for
-			for(int b = 0; b < numBlocks; b++){
+//			for(int b = 0; b < numBlocks; b++){
+			for(
+				unsigned int b = 0;
+				b < blockStructureDescriptor.getNumBlocks();
+				b++
+			){
 				//Setup zhpev to calculate...
 				char jobz = 'V';						//...eigenvalues and eigenvectors...
 				char uplo = 'U';						//...for an upper triangular...
@@ -384,7 +394,12 @@ void BlockDiagonalizer::solve(){
 		}
 		else{
 			unsigned int eigenValuesOffset = 0;
-			for(int b = 0; b < numBlocks; b++){
+//			for(int b = 0; b < numBlocks; b++){
+			for(
+				unsigned int b = 0;
+				b < blockStructureDescriptor.getNumBlocks();
+				b++
+			){
 				//Setup zhpev to calculate...
 				char jobz = 'V';						//...eigenvalues and eigenvectors...
 				char uplo = 'U';						//...for an upper triangular...

@@ -170,7 +170,7 @@ private:
 	std::vector<unsigned int> eigenVectorOffsets;
 
 	/** Number of blocks in the Hamiltonian. */
-	int numBlocks;
+//	int numBlocks;
 
 	/** Maximum number of iterations in the self-consistency loop. */
 	int maxIterations;
