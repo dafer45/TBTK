@@ -28,7 +28,7 @@
 #include "TBTK/Property/Susceptibility.h"
 #include "TBTK/Property/InteractionVertex.h"
 #include "TBTK/Property/SelfEnergy.h"
-#include "TBTK/RPA/MomentumSpaceContext.h"
+//#include "TBTK/RPA/MomentumSpaceContext.h"
 #include "TBTK/Solver/Solver.h"
 
 namespace TBTK{
@@ -51,10 +51,10 @@ public:
 	enum class Norm{Max, L2};
 
 	/** Constructor. */
-	FLEX(const RPA::MomentumSpaceContext &momentumSpaceContext);
+	FLEX(const MomentumSpaceContext &momentumSpaceContext);
 
 	/** Get momentum cpsace context. */
-	const RPA::MomentumSpaceContext& getMomentumSpaceContext() const;
+	const MomentumSpaceContext& getMomentumSpaceContext() const;
 
 	/** Get the GreensFunction.
 	 *
@@ -128,6 +128,11 @@ public:
 	 *  @param Jp The value of Jp. */
 	void setJp(double Jp);
 
+	/** Set the number of orbitals.
+	 *
+	 *  @param numOrbitals The number of orbitals. */
+	void setNumOrbitals(unsigned int numOrbitals);
+
 	/** Get the density.
 	 *
 	 *  @return density. */
@@ -188,7 +193,7 @@ public:
 	void run();
 private:
 	/** Momentum space context (should be removed).*/
-	const RPA::MomentumSpaceContext &momentumSpaceContext;
+//	const RPA::MomentumSpaceContext &momentumSpaceContext;
 
 	/** Momentum space context (should be renamed to momentumSpaceContext
 	 *  once the RPA:MomentumSpaceContext has been removed). */
@@ -254,6 +259,9 @@ private:
 	/** The interaction term Jp. */
 	double Jp;
 
+	/** The number of orbitals. */
+	unsigned int numOrbitals;
+
 	/** The current state the solver is in. */
 	State state;
 
@@ -315,8 +323,8 @@ private:
 	void calculateDensity();
 };
 
-inline const RPA::MomentumSpaceContext& FLEX::getMomentumSpaceContext() const{
-	return momentumSpaceContext;
+inline const MomentumSpaceContext& FLEX::getMomentumSpaceContext() const{
+	return reducedMomentumSpaceContext;
 }
 
 inline const Property::GreensFunction& FLEX::getGreensFunction() const{
@@ -422,6 +430,10 @@ inline void FLEX::setUp(double Up){
 
 inline void FLEX::setJp(double Jp){
 	this->Jp = Jp;
+}
+
+inline void FLEX::setNumOrbitals(unsigned int numOrbitals){
+	this->numOrbitals = numOrbitals;
 }
 
 inline FLEX::State FLEX::getState() const{
