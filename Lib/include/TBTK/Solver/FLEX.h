@@ -50,10 +50,10 @@ public:
 	enum class Norm{Max, L2};
 
 	/** Constructor. */
-	FLEX(const MomentumSpaceContext &momentumSpaceContext);
+	FLEX(const RPA::MomentumSpaceContext &momentumSpaceContext);
 
 	/** Get momentum cpsace context. */
-	const MomentumSpaceContext& getMomentumSpaceContext() const;
+	const RPA::MomentumSpaceContext& getMomentumSpaceContext() const;
 
 	/** Get the GreensFunction.
 	 *
@@ -187,7 +187,7 @@ public:
 	void run();
 private:
 	/** Momentum space context. */
-	const MomentumSpaceContext &momentumSpaceContext;
+	const RPA::MomentumSpaceContext &momentumSpaceContext;
 
 	/** Bare Green's function. */
 	Property::GreensFunction greensFunction0;
@@ -310,7 +310,7 @@ private:
 	void calculateDensity();
 };
 
-inline const MomentumSpaceContext& FLEX::getMomentumSpaceContext() const{
+inline const RPA::MomentumSpaceContext& FLEX::getMomentumSpaceContext() const{
 	return momentumSpaceContext;
 }
 

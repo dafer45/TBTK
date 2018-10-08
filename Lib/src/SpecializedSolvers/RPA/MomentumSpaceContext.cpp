@@ -23,6 +23,7 @@
 using namespace std;
 
 namespace TBTK{
+namespace RPA{
 
 MomentumSpaceContext::MomentumSpaceContext(){
 	brillouinZone = nullptr;
@@ -150,4 +151,5 @@ void MomentumSpaceContext::init(){
 	isInitialized = true;
 }
 
+}	//End of namespace RPA
 }	//End of namesapce TBTK

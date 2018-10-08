@@ -28,6 +28,7 @@
 #include "TBTK/PropertyExtractor/BlockDiagonalizer.h"
 
 namespace TBTK{
+namespace RPA{
 
 class MomentumSpaceContext{
 public:
@@ -210,6 +211,7 @@ inline const PropertyExtractor::BlockDiagonalizer& MomentumSpaceContext::getProp
 	return *propertyExtractor;
 }
 
+};	//End of namespace RPA
 };	//End of namespace TBTK
 
 #endif

@@ -31,7 +31,7 @@ namespace TBTK{
 namespace Solver{
 
 RPASusceptibility::RPASusceptibility(
-	const MomentumSpaceContext &momentumSpaceContext,
+	const RPA::MomentumSpaceContext &momentumSpaceContext,
 	const Property::Susceptibility &bareSusceptibility
 ) :
 	Susceptibility(Algorithm::RPA, momentumSpaceContext),
@@ -138,7 +138,7 @@ vector<vector<vector<complex<double>>>> RPASusceptibility::rpaSusceptibilityMain
 		components[4],
 	};
 
-	const MomentumSpaceContext &momentumSpaceContext
+	const RPA::MomentumSpaceContext &momentumSpaceContext
 		= getMomentumSpaceContext();
 	unsigned int numOrbitals = momentumSpaceContext.getNumOrbitals();
 	unsigned int matrixDimension = numOrbitals*numOrbitals;
@@ -354,7 +354,7 @@ void RPASusceptibility::generateInteractionAmplitudes(){
 	interactionAmplitudesCharge.clear();
 	interactionAmplitudesSpin.clear();
 
-	const MomentumSpaceContext &momentumSpaceContext
+	const RPA::MomentumSpaceContext &momentumSpaceContext
 		= getMomentumSpaceContext();
 	unsigned int numOrbitals = momentumSpaceContext.getNumOrbitals();
 

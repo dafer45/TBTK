@@ -35,7 +35,7 @@ class LindhardSusceptibility : public Susceptibility{
 public:
 	/** Constructor. */
 	LindhardSusceptibility(
-		const MomentumSpaceContext &momentumSpaceContext
+		const RPA::MomentumSpaceContext &momentumSpaceContext
 	);
 
 	/** Destructor. */
@@ -57,7 +57,7 @@ private:
 
 	/** Slave constructor. */
 	LindhardSusceptibility(
-		const MomentumSpaceContext &momentumSpaceContext,
+		const RPA::MomentumSpaceContext &momentumSpaceContext,
 		int *kPlusQLookupTable,
 		double *fermiDiracLookupTable
 	);
@@ -126,7 +126,7 @@ inline int LindhardSusceptibility::getKPlusQLinearIndex<false>(
 	const std::vector<double> &k,
 	int kLinearIndex
 ) const{
-	const MomentumSpaceContext &momentumSpaceContext
+	const RPA::MomentumSpaceContext &momentumSpaceContext
 		= getMomentumSpaceContext();
 
 	const std::vector<std::vector<double>> &mesh
@@ -148,7 +148,7 @@ inline int LindhardSusceptibility::getKPlusQLinearIndex<true>(
 	const std::vector<double> &k,
 	int kLinearIndex
 ) const{
-	const MomentumSpaceContext &momentumSpaceContext
+	const RPA::MomentumSpaceContext &momentumSpaceContext
 		= getMomentumSpaceContext();
 
 	return kPlusQLookupTable[

@@ -32,7 +32,7 @@ const complex<double> i(0, 1);
 namespace TBTK{
 
 ZFactorCalculator::ZFactorCalculator(
-	const MomentumSpaceContext &momentumSpaceContext,
+	const RPA::MomentumSpaceContext &momentumSpaceContext,
 	unsigned int numWorkers
 ) : selfEnergyCalculator(momentumSpaceContext, numWorkers){
 	isInitialized = false;
@@ -146,7 +146,7 @@ void ZFactorCalculator::printMatrix(complex<double> *matrix, unsigned int dimens
 vector<complex<double>> ZFactorCalculator::calculateZFactor(
 	const vector<double> &k
 ){
-	const MomentumSpaceContext &momentumSpaceContext = selfEnergyCalculator.getMomentumSpaceContext();
+	const RPA::MomentumSpaceContext &momentumSpaceContext = selfEnergyCalculator.getMomentumSpaceContext();
 	const Model &model = momentumSpaceContext.getModel();
 	const BrillouinZone &brillouinZone = momentumSpaceContext.getBrillouinZone();
 	const vector<unsigned int> &numMeshPoints = momentumSpaceContext.getNumMeshPoints();

@@ -39,7 +39,7 @@ class RPASusceptibilityCalculator{
 public:
 	/** Constructor. */
 	RPASusceptibilityCalculator(
-		const MomentumSpaceContext &momentumSpaceContext,
+		const RPA::MomentumSpaceContext &momentumSpaceContext,
 		SusceptibilityCalculator::Algorithm algorithm
 			= SusceptibilityCalculator::Algorithm::Lindhard
 	);
@@ -57,7 +57,7 @@ public:
 	 *  most of the susceptibilities are needed. */
 	void precompute(unsigned int numWorkers = 129);
 
-	const MomentumSpaceContext& getMomentumSpaceContext() const;
+	const RPA::MomentumSpaceContext& getMomentumSpaceContext() const;
 
 	/** Set interaction amplitudes. */
 	void setInteractionAmplitudes(
@@ -239,7 +239,7 @@ private:
 	void generateInteractionAmplitudes();
 };
 
-inline const MomentumSpaceContext& RPASusceptibilityCalculator::getMomentumSpaceContext(
+inline const RPA::MomentumSpaceContext& RPASusceptibilityCalculator::getMomentumSpaceContext(
 ) const{
 	return susceptibilityCalculator->getMomentumSpaceContext();
 }

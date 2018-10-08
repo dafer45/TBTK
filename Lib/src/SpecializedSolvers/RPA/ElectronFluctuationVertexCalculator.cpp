@@ -33,7 +33,7 @@ using namespace std;
 namespace TBTK{
 
 ElectronFluctuationVertexCalculator::ElectronFluctuationVertexCalculator(
-	const MomentumSpaceContext &momentumSpaceContext
+	const RPA::MomentumSpaceContext &momentumSpaceContext
 ){
 	U = 0.;
 	Up = 0.;
@@ -84,7 +84,7 @@ void ElectronFluctuationVertexCalculator::generateInteractionAmplitudes(){
 	u2.clear();
 	u3.clear();
 
-	const MomentumSpaceContext &momentumSpaceContext = rpaSusceptibilityCalculator->getMomentumSpaceContext();
+	const RPA::MomentumSpaceContext &momentumSpaceContext = rpaSusceptibilityCalculator->getMomentumSpaceContext();
 	unsigned int numOrbitals = momentumSpaceContext.getNumOrbitals();
 
 	for(int a = 0; a < (int)numOrbitals; a++){
@@ -190,7 +190,7 @@ vector<complex<double>> ElectronFluctuationVertexCalculator::calculateSelfEnergy
 		""
 	);
 
-	const MomentumSpaceContext &momentumSpaceContext = rpaSusceptibilityCalculator->getMomentumSpaceContext();
+	const RPA::MomentumSpaceContext &momentumSpaceContext = rpaSusceptibilityCalculator->getMomentumSpaceContext();
 	const BrillouinZone &brillouinZone = momentumSpaceContext.getBrillouinZone();
 	const vector<unsigned int> &numMeshPoints = momentumSpaceContext.getNumMeshPoints();
 

@@ -33,7 +33,7 @@ class SelfEnergyCalculator{
 public:
 	/** Constructor. */
 	SelfEnergyCalculator(
-		const MomentumSpaceContext &momentumSpaceContext,
+		const RPA::MomentumSpaceContext &momentumSpaceContext,
 		unsigned int numWorkers
 	);
 
@@ -41,7 +41,7 @@ public:
 	~SelfEnergyCalculator();
 
 	/** Get momentum cpsace context. */
-	const MomentumSpaceContext& getMomentumSpaceContext() const;
+	const RPA::MomentumSpaceContext& getMomentumSpaceContext() const;
 
 	/** Initialize the SelfEnergyCalculator. */
 	void init();
@@ -145,7 +145,7 @@ private:
 	std::complex<double> U, Up, J, Jp;
 };
 
-inline const MomentumSpaceContext& SelfEnergyCalculator::getMomentumSpaceContext(
+inline const RPA::MomentumSpaceContext& SelfEnergyCalculator::getMomentumSpaceContext(
 ) const{
 	return electronFluctuationVertexCalculators[0]->getMomentumSpaceContext();
 }

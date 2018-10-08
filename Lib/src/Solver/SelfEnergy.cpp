@@ -34,7 +34,7 @@ namespace TBTK{
 namespace Solver{
 
 SelfEnergy::SelfEnergy(
-	const MomentumSpaceContext &momentumSpaceContext,
+	const RPA::MomentumSpaceContext &momentumSpaceContext,
 	const Property::InteractionVertex &interactionVertex
 ) :
 	momentumSpaceContext(momentumSpaceContext),
@@ -300,7 +300,7 @@ void SelfEnergy::selfEnergyMainLoop(
 
 	generateKMinusQLookupTable();
 
-	const MomentumSpaceContext &momentumSpaceContext
+	const RPA::MomentumSpaceContext &momentumSpaceContext
 		= this->momentumSpaceContext;
 	const Model &model = getModel();
 	const vector<vector<double>> &mesh = momentumSpaceContext.getMesh();

@@ -39,7 +39,7 @@ using namespace std;
 namespace TBTK{
 namespace Solver{
 
-FLEX::FLEX(const MomentumSpaceContext &momentumSpaceContext) :
+FLEX::FLEX(const RPA::MomentumSpaceContext &momentumSpaceContext) :
 	momentumSpaceContext(momentumSpaceContext)
 {
 	density = 0;

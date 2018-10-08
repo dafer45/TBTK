@@ -32,7 +32,7 @@ namespace Solver{
 
 Susceptibility::Susceptibility(
 	Algorithm algorithm,
-	const MomentumSpaceContext &momentumSpaceContext
+	const RPA::MomentumSpaceContext &momentumSpaceContext
 ){
 	this->algorithm = algorithm;
 	this->momentumSpaceContext = &momentumSpaceContext;

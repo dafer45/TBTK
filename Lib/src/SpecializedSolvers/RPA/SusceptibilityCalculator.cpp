@@ -33,7 +33,7 @@ namespace TBTK{
 
 SusceptibilityCalculator::SusceptibilityCalculator(
 	Algorithm algorithm,
-	const MomentumSpaceContext &momentumSpaceContext
+	const RPA::MomentumSpaceContext &momentumSpaceContext
 ){
 	this->algorithm = algorithm;
 	this->momentumSpaceContext = &momentumSpaceContext;
@@ -49,7 +49,7 @@ SusceptibilityCalculator::SusceptibilityCalculator(
 
 SusceptibilityCalculator::SusceptibilityCalculator(
 	Algorithm algorithm,
-	const MomentumSpaceContext &momentumSpaceContext,
+	const RPA::MomentumSpaceContext &momentumSpaceContext,
 	int *kPlusQLookupTable
 ){
 	this->algorithm = algorithm;

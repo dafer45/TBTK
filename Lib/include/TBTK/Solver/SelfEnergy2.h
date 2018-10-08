@@ -35,13 +35,13 @@ class SelfEnergy2 : public Solver, public Communicator{
 public:
 	/** Constructor. */
 	SelfEnergy2(
-		const MomentumSpaceContext &momentumSpaceContext,
+		const RPA::MomentumSpaceContext &momentumSpaceContext,
 		const Property::InteractionVertex &interactionVertex,
 		const Property::GreensFunction &greensFunction
 	);
 
 	/** Get momentum cpsace context. */
-	const MomentumSpaceContext& getMomentumSpaceContext() const;
+	const RPA::MomentumSpaceContext& getMomentumSpaceContext() const;
 
 	/** Get the InteractionVertex.
 	 *
@@ -68,7 +68,7 @@ public:
 	);
 private:
 	/** Momentum space context. */
-	const MomentumSpaceContext &momentumSpaceContext;
+	const RPA::MomentumSpaceContext &momentumSpaceContext;
 
 	/** Interaction vertex. */
 	const Property::InteractionVertex &interactionVertex;
@@ -77,7 +77,7 @@ private:
 	const Property::GreensFunction &greensFunction;
 };
 
-inline const MomentumSpaceContext& SelfEnergy2::getMomentumSpaceContext(
+inline const RPA::MomentumSpaceContext& SelfEnergy2::getMomentumSpaceContext(
 ) const{
 	return momentumSpaceContext;
 }

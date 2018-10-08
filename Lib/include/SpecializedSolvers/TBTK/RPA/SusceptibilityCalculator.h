@@ -54,7 +54,7 @@ public:
 	/** Constructor. */
 	SusceptibilityCalculator(
 		Algorithm algorithm,
-		const MomentumSpaceContext &momentumSpaceContext
+		const RPA::MomentumSpaceContext &momentumSpaceContext
 	);
 
 	/** Destructor. */
@@ -89,7 +89,7 @@ public:
 	 *  most of the susceptibilities are needed. */
 //	void precompute(unsigned int numWorkers = 129);
 
-	const MomentumSpaceContext& getMomentumSpaceContext() const;
+	const RPA::MomentumSpaceContext& getMomentumSpaceContext() const;
 
 	/** Generate lookup table for the k+q linear index. Can be called
 	 *  repeatedly, and the lookup table is only generated the first time.
@@ -145,7 +145,7 @@ protected:
 	/** Slave constructor. */
 	SusceptibilityCalculator(
 		Algorithm algorithm,
-		const MomentumSpaceContext &momentumSpaceContext,
+		const RPA::MomentumSpaceContext &momentumSpaceContext,
 		int *kPlusQLookupTable/*,
 		double *fermiDiracLookupTable*/
 	);
@@ -206,7 +206,7 @@ private:
 	bool energiesAreInversionSymmetric;
 
 	/** Momentum space context. */
-	const MomentumSpaceContext *momentumSpaceContext;
+	const RPA::MomentumSpaceContext *momentumSpaceContext;
 
 	/** Lookup table for calculating k+q. */
 	int *kPlusQLookupTable;
@@ -217,7 +217,7 @@ private:
 	bool isMaster;
 };
 
-inline const MomentumSpaceContext& SusceptibilityCalculator::getMomentumSpaceContext(
+inline const RPA::MomentumSpaceContext& SusceptibilityCalculator::getMomentumSpaceContext(
 ) const{
 	return *momentumSpaceContext;
 }

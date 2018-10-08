@@ -31,7 +31,7 @@ namespace TBTK{
 namespace Solver{
 
 LindhardSusceptibility::LindhardSusceptibility(
-	const MomentumSpaceContext &momentumSpaceContext
+	const RPA::MomentumSpaceContext &momentumSpaceContext
 ) :
 	Susceptibility(Algorithm::Lindhard, momentumSpaceContext)
 {
@@ -52,7 +52,7 @@ LindhardSusceptibility::LindhardSusceptibility(
 }
 
 LindhardSusceptibility::LindhardSusceptibility(
-	const MomentumSpaceContext &momentumSpaceContext,
+	const RPA::MomentumSpaceContext &momentumSpaceContext,
 	int *kPlusQLookupTable,
 	double *fermiDiracLookupTable
 ) :
@@ -231,7 +231,7 @@ vector<complex<double>> LindhardSusceptibility::calculateSusceptibilityLindhard(
 
 	vector<complex<double>> result;
 
-	const MomentumSpaceContext &momentumSpaceContext = getMomentumSpaceContext();
+	const RPA::MomentumSpaceContext &momentumSpaceContext = getMomentumSpaceContext();
 	const vector<vector<double>> &mesh = momentumSpaceContext.getMesh();
 	const vector<unsigned int> &numMeshPoints = momentumSpaceContext.getNumMeshPoints();
 	const BrillouinZone &brillouinZone = momentumSpaceContext.getBrillouinZone();
@@ -435,7 +435,7 @@ void LindhardSusceptibility::generateKPlusQLookupTable(){
 		return;
 
 	Timer::tick("Calculate k+q lookup table.");
-	const MomentumSpaceContext &momentumSpaceContext
+	const RPA::MomentumSpaceContext &momentumSpaceContext
 		= getMomentumSpaceContext();
 	const vector<vector<double>> &mesh = momentumSpaceContext.getMesh();
 	const vector<unsigned int> &numMeshPoints

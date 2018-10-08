@@ -33,7 +33,7 @@ class ZFactorCalculator{
 public:
 	/** Constructor. */
 	ZFactorCalculator(
-		const MomentumSpaceContext &momentumSpaceContext,
+		const RPA::MomentumSpaceContext &momentumSpaceContext,
 		unsigned int numWorkers = 1
 	);
 

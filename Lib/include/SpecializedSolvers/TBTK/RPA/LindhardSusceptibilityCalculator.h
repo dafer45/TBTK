@@ -36,7 +36,7 @@ class LindhardSusceptibilityCalculator : public SusceptibilityCalculator{
 public:
 	/** Constructor. */
 	LindhardSusceptibilityCalculator(
-		const MomentumSpaceContext &momentumSpaceContext
+		const RPA::MomentumSpaceContext &momentumSpaceContext
 	);
 
 	/** Destructor. */
@@ -84,7 +84,7 @@ private:
 
 	/** Slave constructor. */
 	LindhardSusceptibilityCalculator(
-		const MomentumSpaceContext &momentumSpaceContext,
+		const RPA::MomentumSpaceContext &momentumSpaceContext,
 		int *kPlusQLookupTable,
 		double *fermiDiracLookupTable
 	);

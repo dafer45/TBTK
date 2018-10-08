@@ -30,7 +30,7 @@ using namespace std;
 namespace TBTK{
 
 MatsubaraSusceptibilityCalculator::MatsubaraSusceptibilityCalculator(
-	const MomentumSpaceContext &momentumSpaceContext
+	const RPA::MomentumSpaceContext &momentumSpaceContext
 ) :
 	SusceptibilityCalculator(Algorithm::Matsubara, momentumSpaceContext)
 {
@@ -38,7 +38,7 @@ MatsubaraSusceptibilityCalculator::MatsubaraSusceptibilityCalculator(
 }
 
 MatsubaraSusceptibilityCalculator::MatsubaraSusceptibilityCalculator(
-	const MomentumSpaceContext &momentumSpaceContext,
+	const RPA::MomentumSpaceContext &momentumSpaceContext,
 	int *kPlusQLookupTable
 ) :
 	SusceptibilityCalculator(
@@ -150,7 +150,7 @@ vector<complex<double>> MatsubaraSusceptibilityCalculator::calculateSusceptibili
 
 	calculateGreensFunction();
 
-	const MomentumSpaceContext &momentumSpaceContext = getMomentumSpaceContext();
+	const RPA::MomentumSpaceContext &momentumSpaceContext = getMomentumSpaceContext();
 	const vector<vector<double>> &mesh = momentumSpaceContext.getMesh();
 	unsigned int numOrbitals = momentumSpaceContext.getNumOrbitals();
 	const Model &model = momentumSpaceContext.getModel();
@@ -237,7 +237,7 @@ void MatsubaraSusceptibilityCalculator::calculateGreensFunction(){
 		<< " to set the number of summation energies."
 	);
 
-	const MomentumSpaceContext &momentumSpaceContext = getMomentumSpaceContext();
+	const RPA::MomentumSpaceContext &momentumSpaceContext = getMomentumSpaceContext();
 	const vector<vector<double>> &mesh = momentumSpaceContext.getMesh();
 	unsigned int numOrbitals = momentumSpaceContext.getNumOrbitals();
 

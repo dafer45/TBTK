@@ -36,13 +36,13 @@ class ElectronFluctuationVertex : public Solver, public Communicator{
 public:
 	/** Constructor. */
 	ElectronFluctuationVertex(
-		const MomentumSpaceContext &momentumSpaceContext,
+		const RPA::MomentumSpaceContext &momentumSpaceContext,
 		const Property::Susceptibility &chargeSusceptibility,
 		const Property::Susceptibility &spinSusceptibility
 	);
 
 	/** Get momentum cpsace context. */
-	const MomentumSpaceContext& getMomentumSpaceContext() const;
+	const RPA::MomentumSpaceContext& getMomentumSpaceContext() const;
 
 	/** Get the charge susceptibility. */
 	const Property::Susceptibility& getChargeSusceptibility() const;
@@ -72,7 +72,7 @@ public:
 	void generateInteractionAmplitudes();
 private:
 	/** Momentum space context. */
-	const MomentumSpaceContext &momentumSpaceContext;
+	const RPA::MomentumSpaceContext &momentumSpaceContext;
 
 	/** Charge susceptibility. */
 	const Property::Susceptibility &chargeSusceptibility;
@@ -96,7 +96,7 @@ private:
 	bool interactionAmplitudesAreGenerated;
 };
 
-inline const MomentumSpaceContext&
+inline const RPA::MomentumSpaceContext&
 ElectronFluctuationVertex::getMomentumSpaceContext() const{
 	return momentumSpaceContext;
 }

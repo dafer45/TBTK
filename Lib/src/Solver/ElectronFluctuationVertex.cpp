@@ -32,7 +32,7 @@ namespace TBTK{
 namespace Solver{
 
 ElectronFluctuationVertex::ElectronFluctuationVertex(
-	const MomentumSpaceContext &momentumSpaceContext,
+	const RPA::MomentumSpaceContext &momentumSpaceContext,
 	const Property::Susceptibility &chargeSusceptibility,
 	const Property::Susceptibility &spinSusceptibility
 ) :

@@ -31,7 +31,7 @@ namespace TBTK{
 namespace Solver{
 
 SelfEnergy2::SelfEnergy2(
-	const MomentumSpaceContext &momentumSpaceContext,
+	const RPA::MomentumSpaceContext &momentumSpaceContext,
 	const Property::InteractionVertex &interactionVertex,
 	const Property::GreensFunction &greensFunction
 ) :

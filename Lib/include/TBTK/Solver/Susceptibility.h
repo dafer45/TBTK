@@ -48,7 +48,7 @@ public:
 	/** Constructor. */
 	Susceptibility(
 		Algorithm algorithm,
-		const MomentumSpaceContext &momentumSpaceContext
+		const RPA::MomentumSpaceContext &momentumSpaceContext
 	);
 
 	/** Destructor. */
@@ -60,7 +60,7 @@ public:
 		const std::vector<std::complex<double>> &energies
 	) = 0;
 
-	const MomentumSpaceContext& getMomentumSpaceContext() const;
+	const RPA::MomentumSpaceContext& getMomentumSpaceContext() const;
 
 	/** Get the algorithm used to calculate the susceptibility. */
 	Algorithm getAlgorithm() const;
@@ -91,10 +91,10 @@ private:
 	bool energiesAreInversionSymmetric;
 
 	/** Momentum space context. */
-	const MomentumSpaceContext *momentumSpaceContext;
+	const RPA::MomentumSpaceContext *momentumSpaceContext;
 };
 
-inline const MomentumSpaceContext& Susceptibility::getMomentumSpaceContext(
+inline const RPA::MomentumSpaceContext& Susceptibility::getMomentumSpaceContext(
 ) const{
 	return *momentumSpaceContext;
 }

@@ -33,7 +33,7 @@ class ElectronFluctuationVertexCalculator{
 public:
 	/** Constructor. */
 	ElectronFluctuationVertexCalculator(
-		const MomentumSpaceContext &momentumSpaceContext
+		const RPA::MomentumSpaceContext &momentumSpaceContext
 	);
 
 	/** Destructor. */
@@ -45,7 +45,7 @@ public:
 	ElectronFluctuationVertexCalculator* createSlave();
 
 	/** Get momentum cpsace context. */
-	const MomentumSpaceContext& getMomentumSpaceContext() const;
+	const RPA::MomentumSpaceContext& getMomentumSpaceContext() const;
 
 	/** Enum class for indicating whether the energy is an arbitrary comlex
 	 *  number, or if it is restricted to the real or imaginary axis. */
@@ -139,7 +139,7 @@ private:
 	);
 };
 
-inline const MomentumSpaceContext& ElectronFluctuationVertexCalculator::getMomentumSpaceContext(
+inline const RPA::MomentumSpaceContext& ElectronFluctuationVertexCalculator::getMomentumSpaceContext(
 ) const{
 	return rpaSusceptibilityCalculator->getMomentumSpaceContext();
 }

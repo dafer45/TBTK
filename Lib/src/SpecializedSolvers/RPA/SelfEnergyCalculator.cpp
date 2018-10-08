@@ -33,7 +33,7 @@ const complex<double> i(0, 1);
 namespace TBTK{
 
 SelfEnergyCalculator::SelfEnergyCalculator(
-	const MomentumSpaceContext &momentumSpaceContext,
+	const RPA::MomentumSpaceContext &momentumSpaceContext,
 	unsigned int numWorkers
 ){
 	TBTKAssert(
@@ -116,7 +116,7 @@ void SelfEnergyCalculator::generateKMinusQLookupTable(){
 		return;
 
 	Timer::tick("Calculate k-q lookup table.");
-	const MomentumSpaceContext &momentumSpaceContext = electronFluctuationVertexCalculators[0]->getMomentumSpaceContext();
+	const RPA::MomentumSpaceContext &momentumSpaceContext = electronFluctuationVertexCalculators[0]->getMomentumSpaceContext();
 	const vector<vector<double>> &mesh = momentumSpaceContext.getMesh();
 	const vector<unsigned int> &numMeshPoints = momentumSpaceContext.getNumMeshPoints();
 	const BrillouinZone &brillouinZone = momentumSpaceContext.getBrillouinZone();
@@ -209,7 +209,7 @@ inline int SelfEnergyCalculator::getKMinusQLinearIndex<false>(
 	const vector<double> &k,
 	int kLinearIndex
 ) const{
-	const MomentumSpaceContext &momentumSpaceContext = electronFluctuationVertexCalculators[0]->getMomentumSpaceContext();
+	const RPA::MomentumSpaceContext &momentumSpaceContext = electronFluctuationVertexCalculators[0]->getMomentumSpaceContext();
 	const vector<vector<double>> &mesh = momentumSpaceContext.getMesh();
 	Index kMinusQIndex = momentumSpaceContext.getBrillouinZone().getMinorCellIndex(
 		{mesh[meshIndex][0] + k[0], mesh[meshIndex][1] + k[1]},
@@ -226,7 +226,7 @@ inline int SelfEnergyCalculator::getKMinusQLinearIndex<true>(
 	const vector<double> &k,
 	int kLinearIndex
 ) const{
-	const MomentumSpaceContext &momentumSpaceContext = electronFluctuationVertexCalculators[0]->getMomentumSpaceContext();
+	const RPA::MomentumSpaceContext &momentumSpaceContext = electronFluctuationVertexCalculators[0]->getMomentumSpaceContext();
 	const vector<vector<double>> &mesh = momentumSpaceContext.getMesh();
 	unsigned int numOrbitals = momentumSpaceContext.getNumOrbitals();
 	return kMinusQLookupTable[
@@ -261,7 +261,7 @@ vector<complex<double>> SelfEnergyCalculator::calculateSelfEnergy(
 		electronFluctuationVertexCalculators[n]->generateInteractionAmplitudes();
 	}
 
-	const MomentumSpaceContext &momentumSpaceContext = electronFluctuationVertexCalculators[0]->getMomentumSpaceContext();
+	const RPA::MomentumSpaceContext &momentumSpaceContext = electronFluctuationVertexCalculators[0]->getMomentumSpaceContext();
 	const BrillouinZone &brillouinZone = momentumSpaceContext.getBrillouinZone();
 	const vector<unsigned int> &numMeshPoints = momentumSpaceContext.getNumMeshPoints();
 
@@ -368,7 +368,7 @@ void SelfEnergyCalculator::selfEnergyMainLoop(
 ){
 	generateKMinusQLookupTable();
 
-	const MomentumSpaceContext &momentumSpaceContext = electronFluctuationVertexCalculators[0]->getMomentumSpaceContext();
+	const RPA::MomentumSpaceContext &momentumSpaceContext = electronFluctuationVertexCalculators[0]->getMomentumSpaceContext();
 	const Model &model = momentumSpaceContext.getModel();
 	const vector<vector<double>> &mesh = momentumSpaceContext.getMesh();
 	unsigned int numOrbitals = momentumSpaceContext.getNumOrbitals();

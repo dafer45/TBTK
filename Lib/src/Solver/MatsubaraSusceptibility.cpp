@@ -34,7 +34,7 @@ namespace TBTK{
 namespace Solver{
 
 MatsubaraSusceptibility::MatsubaraSusceptibility(
-	const MomentumSpaceContext &momentumSpaceContext,
+	const RPA::MomentumSpaceContext &momentumSpaceContext,
 	const Property::GreensFunction &greensFunction
 ) :
 	Susceptibility(Algorithm::Lindhard, momentumSpaceContext),
@@ -137,7 +137,7 @@ vector<complex<double>> MatsubaraSusceptibility::calculateSusceptibility(
 	for(unsigned int n = 0; n < numMatsubaraEnergiesSusceptibility; n++)
 		susceptibility.push_back(0.);
 
-	const MomentumSpaceContext &momentumSpaceContext
+	const RPA::MomentumSpaceContext &momentumSpaceContext
 		= getMomentumSpaceContext();
 	const vector<vector<double>> &mesh = momentumSpaceContext.getMesh();
 	const vector<unsigned int> &numMeshPoints
@@ -294,7 +294,7 @@ Property::Susceptibility MatsubaraSusceptibility::calculateSusceptibilityAllBloc
 		""
 	);
 
-	const MomentumSpaceContext &momentumSpaceContext
+	const RPA::MomentumSpaceContext &momentumSpaceContext
 		= getMomentumSpaceContext();
 	const vector<vector<double>> &mesh = momentumSpaceContext.getMesh();
 	const vector<unsigned int> &numMeshPoints

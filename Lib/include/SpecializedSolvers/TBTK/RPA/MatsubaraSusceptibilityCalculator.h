@@ -35,7 +35,7 @@ class MatsubaraSusceptibilityCalculator : public SusceptibilityCalculator{
 public:
 	/** Constructor. */
 	MatsubaraSusceptibilityCalculator(
-		const MomentumSpaceContext &momentumSpaceContext
+		const RPA::MomentumSpaceContext &momentumSpaceContext
 	);
 
 	/** Destructor. */
@@ -70,7 +70,7 @@ private:
 
 	/** Slave constructor. */
 	MatsubaraSusceptibilityCalculator(
-		const MomentumSpaceContext &momentumSpaceContext,
+		const RPA::MomentumSpaceContext &momentumSpaceContext,
 		int *kPlusQLookupTable
 	);
 

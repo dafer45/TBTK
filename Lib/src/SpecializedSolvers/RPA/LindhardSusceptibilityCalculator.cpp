@@ -32,7 +32,7 @@ using namespace std;
 namespace TBTK{
 
 LindhardSusceptibilityCalculator::LindhardSusceptibilityCalculator(
-	const MomentumSpaceContext &momentumSpaceContext
+	const RPA::MomentumSpaceContext &momentumSpaceContext
 ) :
 	SusceptibilityCalculator(Algorithm::Lindhard, momentumSpaceContext)
 {
@@ -50,7 +50,7 @@ LindhardSusceptibilityCalculator::LindhardSusceptibilityCalculator(
 }
 
 LindhardSusceptibilityCalculator::LindhardSusceptibilityCalculator(
-	const MomentumSpaceContext &momentumSpaceContext,
+	const RPA::MomentumSpaceContext &momentumSpaceContext,
 	int *kPlusQLookupTable,
 	double *fermiDiracLookupTable
 ) :
@@ -292,7 +292,7 @@ complex<double> LindhardSusceptibilityCalculator::calculateSusceptibilityLindhar
 	const vector<int> &orbitalIndices,
 	complex<double> energy
 ){
-	const MomentumSpaceContext &momentumSpaceContext = getMomentumSpaceContext();
+	const RPA::MomentumSpaceContext &momentumSpaceContext = getMomentumSpaceContext();
 	const vector<vector<double>> &mesh = momentumSpaceContext.getMesh();
 	const vector<unsigned int> &numMeshPoints = momentumSpaceContext.getNumMeshPoints();
 	const BrillouinZone &brillouinZone = momentumSpaceContext.getBrillouinZone();
@@ -408,7 +408,7 @@ vector<complex<double>> LindhardSusceptibilityCalculator::calculateSusceptibilit
 	if(getSusceptibilityTree().get(result, resultIndex))
 		return result;
 
-	const MomentumSpaceContext &momentumSpaceContext = getMomentumSpaceContext();
+	const RPA::MomentumSpaceContext &momentumSpaceContext = getMomentumSpaceContext();
 	const vector<vector<double>> &mesh = momentumSpaceContext.getMesh();
 	const Model &model = momentumSpaceContext.getModel();
 	unsigned int numOrbitals = momentumSpaceContext.getNumOrbitals();

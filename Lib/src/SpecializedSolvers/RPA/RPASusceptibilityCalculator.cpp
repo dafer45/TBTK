@@ -33,7 +33,7 @@ using namespace std;
 namespace TBTK{
 
 RPASusceptibilityCalculator::RPASusceptibilityCalculator(
-	const MomentumSpaceContext &momentumSpaceContext,
+	const RPA::MomentumSpaceContext &momentumSpaceContext,
 	SusceptibilityCalculator::Algorithm algorithm
 ){
 	switch(algorithm){
@@ -167,7 +167,7 @@ vector<vector<vector<complex<double>>>> RPASusceptibilityCalculator::rpaSuscepti
 		""
 	);
 
-	const MomentumSpaceContext &momentumSpaceContext
+	const RPA::MomentumSpaceContext &momentumSpaceContext
 		= susceptibilityCalculator->getMomentumSpaceContext();
 	unsigned int numOrbitals = momentumSpaceContext.getNumOrbitals();
 	unsigned int matrixDimension = numOrbitals*numOrbitals;
@@ -322,7 +322,7 @@ vector<complex<double>> RPASusceptibilityCalculator::calculateRPASusceptibility(
 	);
 
 	//Cache result
-	const MomentumSpaceContext &momentumSpaceContext
+	const RPA::MomentumSpaceContext &momentumSpaceContext
 		= susceptibilityCalculator->getMomentumSpaceContext();
 	unsigned int numOrbitals = momentumSpaceContext.getNumOrbitals();
 	for(unsigned int orbital0 = 0; orbital0 < numOrbitals; orbital0++){
@@ -355,7 +355,7 @@ void RPASusceptibilityCalculator::generateInteractionAmplitudes(){
 	interactionAmplitudesCharge.clear();
 	interactionAmplitudesSpin.clear();
 
-	const MomentumSpaceContext &momentumSpaceContext
+	const RPA::MomentumSpaceContext &momentumSpaceContext
 		= susceptibilityCalculator->getMomentumSpaceContext();
 	unsigned int numOrbitals = momentumSpaceContext.getNumOrbitals();
 
@@ -461,7 +461,7 @@ vector<complex<double>> RPASusceptibilityCalculator::calculateChargeRPASusceptib
 	if(rpaChargeSusceptibilityTree.get(result, resultIndex))
 		return result;
 
-	const MomentumSpaceContext &momentumSpaceContext
+	const RPA::MomentumSpaceContext &momentumSpaceContext
 		= susceptibilityCalculator->getMomentumSpaceContext();
 	unsigned int numOrbitals = momentumSpaceContext.getNumOrbitals();
 
@@ -493,7 +493,7 @@ vector<complex<double>> RPASusceptibilityCalculator::calculateChargeRPASusceptib
 			);
 
 			//<!!!Needs proper checking!!!>
-			const MomentumSpaceContext &momentumSpaceContext
+			const RPA::MomentumSpaceContext &momentumSpaceContext
 				= susceptibilityCalculator->getMomentumSpaceContext();
 			const vector<unsigned int> &numMeshPoints = momentumSpaceContext.getNumMeshPoints();
 			const BrillouinZone &brillouinZone = momentumSpaceContext.getBrillouinZone();
@@ -566,7 +566,7 @@ vector<complex<double>> RPASusceptibilityCalculator::calculateSpinRPASusceptibil
 	if(rpaSpinSusceptibilityTree.get(result, resultIndex))
 		return result;
 
-	const MomentumSpaceContext &momentumSpaceContext
+	const RPA::MomentumSpaceContext &momentumSpaceContext
 		= susceptibilityCalculator->getMomentumSpaceContext();
 	unsigned int numOrbitals = momentumSpaceContext.getNumOrbitals();
 
@@ -598,7 +598,7 @@ vector<complex<double>> RPASusceptibilityCalculator::calculateSpinRPASusceptibil
 			);
 
 			//<!!!Needs proper checking!!!>
-			const MomentumSpaceContext &momentumSpaceContext
+			const RPA::MomentumSpaceContext &momentumSpaceContext
 				= susceptibilityCalculator->getMomentumSpaceContext();
 			const vector<unsigned int> &numMeshPoints = momentumSpaceContext.getNumMeshPoints();
 			const BrillouinZone &brillouinZone = momentumSpaceContext.getBrillouinZone();

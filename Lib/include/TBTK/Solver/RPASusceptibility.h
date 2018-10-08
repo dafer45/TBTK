@@ -38,7 +38,7 @@ class RPASusceptibility : public Susceptibility, public Communicator{
 public:
 	/** Constructor. */
 	RPASusceptibility(
-		const MomentumSpaceContext &momentumSpaceContext,
+		const RPA::MomentumSpaceContext &momentumSpaceContext,
 		const Property::Susceptibility &susceptibility
 	);
 

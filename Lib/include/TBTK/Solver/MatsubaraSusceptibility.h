@@ -37,7 +37,7 @@ class MatsubaraSusceptibility : public Susceptibility, public Communicator{
 public:
 	/** Constructor. */
 	MatsubaraSusceptibility(
-		const MomentumSpaceContext &momentumSpaceContext,
+		const RPA::MomentumSpaceContext &momentumSpaceContext,
 		const Property::GreensFunction &greensFunction
 	);
 
