@@ -275,12 +275,13 @@ void FLEX::calculateInteractionVertex(){
 
 void FLEX::calculateSelfEnergy(){
 	SelfEnergy2 selfEnergySolver(
-		momentumSpaceContext,
+		reducedMomentumSpaceContext,
 		interactionVertex,
 		greensFunction
 	);
 	selfEnergySolver.setVerbose(false);
 	selfEnergySolver.setModel(getModel());
+	selfEnergySolver.setNumOrbitals(momentumSpaceContext.getNumOrbitals());
 
 		PropertyExtractor::SelfEnergy2 selfEnergyPropertyExtractor(
 		selfEnergySolver

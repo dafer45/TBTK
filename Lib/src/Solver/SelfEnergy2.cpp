@@ -31,7 +31,7 @@ namespace TBTK{
 namespace Solver{
 
 SelfEnergy2::SelfEnergy2(
-	const RPA::MomentumSpaceContext &momentumSpaceContext,
+	const MomentumSpaceContext &momentumSpaceContext,
 	const Property::InteractionVertex &interactionVertex,
 	const Property::GreensFunction &greensFunction
 ) :
@@ -40,6 +40,7 @@ SelfEnergy2::SelfEnergy2(
 	interactionVertex(interactionVertex),
 	greensFunction(greensFunction)
 {
+	numOrbitals = 0;
 }
 
 vector<complex<double>> SelfEnergy2::calculateSelfEnergy(
@@ -138,7 +139,14 @@ vector<complex<double>> SelfEnergy2::calculateSelfEnergy(
 		= momentumSpaceContext.getNumMeshPoints();
 	const BrillouinZone &brillouinZone
 		= momentumSpaceContext.getBrillouinZone();
-	unsigned int numOrbitals = momentumSpaceContext.getNumOrbitals();
+
+	TBTKAssert(
+		numOrbitals != 0,
+		"Solver::SelfEnergy2::calculateSelfEnergy()",
+		"'numOrbitals' must be non-zero.",
+		"Use Solver::SelfEnergy2::setNumOrbitals() to set the number"
+		<< " of orbitals."
+	);
 
 	vector<unsigned int> kVector;
 	kVector.reserve(kIndex.getSize());
@@ -334,7 +342,14 @@ Property::SelfEnergy SelfEnergy2::calculateSelfEnergyAllBlocks(
 		= momentumSpaceContext.getNumMeshPoints();
 	const BrillouinZone &brillouinZone
 		= momentumSpaceContext.getBrillouinZone();
-	unsigned int numOrbitals = momentumSpaceContext.getNumOrbitals();
+
+	TBTKAssert(
+		numOrbitals != 0,
+		"Solver::SelfEnergy2::calculateSelfEnergyAllBlocks()",
+		"'numOrbitals' must be non-zero.",
+		"Use Solver::SelfEnergy2::setNumOrbitals() to set the number"
+		<< " of orbitals."
+	);
 
 	TBTKAssert(
 		numMeshPoints.size() == 2,

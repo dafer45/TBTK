@@ -23,9 +23,10 @@
 #ifndef COM_DAFER45_TBTK_SOLVER_SELF_ENERGY2
 #define COM_DAFER45_TBTK_SOLVER_SELF_ENERGY2
 
+#include "TBTK/Property/GreensFunction.h"
 #include "TBTK/Property/InteractionVertex.h"
 #include "TBTK/Property/SelfEnergy.h"
-#include "TBTK/RPA/MomentumSpaceContext.h"
+#include "TBTK/MomentumSpaceContext.h"
 #include "TBTK/Solver/Solver.h"
 
 namespace TBTK{
@@ -35,13 +36,13 @@ class SelfEnergy2 : public Solver, public Communicator{
 public:
 	/** Constructor. */
 	SelfEnergy2(
-		const RPA::MomentumSpaceContext &momentumSpaceContext,
+		const MomentumSpaceContext &momentumSpaceContext,
 		const Property::InteractionVertex &interactionVertex,
 		const Property::GreensFunction &greensFunction
 	);
 
 	/** Get momentum cpsace context. */
-	const RPA::MomentumSpaceContext& getMomentumSpaceContext() const;
+	const MomentumSpaceContext& getMomentumSpaceContext() const;
 
 	/** Get the InteractionVertex.
 	 *
@@ -52,6 +53,11 @@ public:
 	 *
 	 *  @return The GreensFunction. */
 	const Property::GreensFunction& getGreensFunction() const;
+
+	/** Set the number of orbitals.
+	 *
+	 *  @param numOrbitals The number of orbitals. */
+	void setNumOrbitals(unsigned int numOrbitals);
 
 	/** Calculate the self-energy. */
 	std::vector<std::complex<double>> calculateSelfEnergy(
@@ -68,16 +74,19 @@ public:
 	);
 private:
 	/** Momentum space context. */
-	const RPA::MomentumSpaceContext &momentumSpaceContext;
+	const MomentumSpaceContext &momentumSpaceContext;
 
 	/** Interaction vertex. */
 	const Property::InteractionVertex &interactionVertex;
 
 	/** GreensFunction. */
 	const Property::GreensFunction &greensFunction;
+
+	/** Number of orbitals. */
+	unsigned int numOrbitals;
 };
 
-inline const RPA::MomentumSpaceContext& SelfEnergy2::getMomentumSpaceContext(
+inline const MomentumSpaceContext& SelfEnergy2::getMomentumSpaceContext(
 ) const{
 	return momentumSpaceContext;
 }
@@ -90,6 +99,10 @@ inline const Property::InteractionVertex& SelfEnergy2::getInteractionVertex(
 inline const Property::GreensFunction& SelfEnergy2::getGreensFunction(
 ) const{
 	return greensFunction;
+}
+
+inline void SelfEnergy2::setNumOrbitals(unsigned int numOrbitals){
+	this->numOrbitals = numOrbitals;
 }
 
 };	//End of namespace Solver
