@@ -20,8 +20,8 @@
  *  @author Kristofer Björnson
  */
 
-#ifndef COM_DAFER45_TBTK_MOMENTUM_SPACE_CONTEXT
-#define COM_DAFER45_TBTK_MOMENTUM_SPACE_CONTEXT
+#ifndef COM_DAFER45_TBTK_RPA_MOMENTUM_SPACE_CONTEXT
+#define COM_DAFER45_TBTK_RPA_MOMENTUM_SPACE_CONTEXT
 
 #include "TBTK/BrillouinZone.h"
 #include "TBTK/Solver/BlockDiagonalizer.h"
