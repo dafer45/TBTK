@@ -23,6 +23,7 @@
 #ifndef COM_DAFER45_TBTK_SOLVER_FLEX
 #define COM_DAFER45_TBTK_SOLVER_FLEX
 
+#include "TBTK/MomentumSpaceContext.h"
 #include "TBTK/Property/GreensFunction.h"
 #include "TBTK/Property/Susceptibility.h"
 #include "TBTK/Property/InteractionVertex.h"
@@ -186,8 +187,12 @@ public:
 	/** Execute the FLEX loop. */
 	void run();
 private:
-	/** Momentum space context. */
+	/** Momentum space context (should be removed).*/
 	const RPA::MomentumSpaceContext &momentumSpaceContext;
+
+	/** Momentum space context (should be renamed to momentumSpaceContext
+	 *  once the RPA:MomentumSpaceContext has been removed). */
+	const MomentumSpaceContext reducedMomentumSpaceContext;
 
 	/** Bare Green's function. */
 	Property::GreensFunction greensFunction0;

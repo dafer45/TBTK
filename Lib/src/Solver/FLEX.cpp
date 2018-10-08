@@ -40,7 +40,11 @@ namespace TBTK{
 namespace Solver{
 
 FLEX::FLEX(const RPA::MomentumSpaceContext &momentumSpaceContext) :
-	momentumSpaceContext(momentumSpaceContext)
+	momentumSpaceContext(momentumSpaceContext),
+	reducedMomentumSpaceContext(
+		momentumSpaceContext.getBrillouinZone(),
+		momentumSpaceContext.getNumMeshPoints()
+	)
 {
 	density = 0;
 	targetDensity = -1;
@@ -159,7 +163,7 @@ void FLEX::calculateBareGreensFunction(){
 
 void FLEX::calculateBareSusceptibility(){
 	MatsubaraSusceptibility matsubaraSusceptibilitySolver(
-		momentumSpaceContext,
+		reducedMomentumSpaceContext,
 		greensFunction
 	);
 	matsubaraSusceptibilitySolver.setVerbose(false);

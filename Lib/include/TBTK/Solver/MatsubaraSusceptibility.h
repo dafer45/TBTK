@@ -23,21 +23,22 @@
 #ifndef COM_DAFER45_TBTK_SOLVER_MATSUBARA_SUSCEPTIBILITY
 #define COM_DAFER45_TBTK_SOLVER_MATSUBARA_SUSCEPTIBILITY
 
+#include "TBTK/Communicator.h"
 #include "TBTK/Property/GreensFunction.h"
-#include "TBTK/RPA/MomentumSpaceContext.h"
+#include "TBTK/MomentumSpaceContext.h"
 #include "TBTK/Property/Susceptibility.h"
-#include "TBTK/Solver/Susceptibility.h"
+#include "TBTK/Solver/Solver.h"
 
 #include <complex>
 
 namespace TBTK{
 namespace Solver{
 
-class MatsubaraSusceptibility : public Susceptibility, public Communicator{
+class MatsubaraSusceptibility : public Solver, public Communicator{
 public:
 	/** Constructor. */
 	MatsubaraSusceptibility(
-		const RPA::MomentumSpaceContext &momentumSpaceContext,
+		const MomentumSpaceContext &momentumSpaceContext,
 		const Property::GreensFunction &greensFunction
 	);
 
@@ -70,6 +71,9 @@ public:
 private:
 	/** The Green's function to calculate the Susceptibility form. */
 	const Property::GreensFunction &greensFunction;
+
+	/** MomentumSpaceContext. */
+	const MomentumSpaceContext &momentumSpaceContext;
 };
 
 inline const Property::GreensFunction&
