@@ -31,17 +31,19 @@ namespace TBTK{
 namespace Solver{
 
 RPASusceptibility::RPASusceptibility(
-	const RPA::MomentumSpaceContext &momentumSpaceContext,
+	const MomentumSpaceContext &momentumSpaceContext,
 	const Property::Susceptibility &bareSusceptibility
 ) :
-	Susceptibility(Algorithm::RPA, momentumSpaceContext),
 	Communicator(true),
-	bareSusceptibility(bareSusceptibility)
+	bareSusceptibility(bareSusceptibility),
+	momentumSpaceContext(momentumSpaceContext)
 {
 	U = 0.;
 	Up = 0.;
 	J = 0.;
 	Jp = 0.;
+
+	numOrbitals = 0;
 
 	interactionAmplitudesAreGenerated = false;
 }
@@ -138,9 +140,15 @@ vector<vector<vector<complex<double>>>> RPASusceptibility::rpaSusceptibilityMain
 		components[4],
 	};
 
-	const RPA::MomentumSpaceContext &momentumSpaceContext
-		= getMomentumSpaceContext();
-	unsigned int numOrbitals = momentumSpaceContext.getNumOrbitals();
+	TBTKAssert(
+		numOrbitals != 0,
+		"RPASusceptibility::rpaSusceptibilityMainAlgorithm()",
+		"'numOrbitals' must be non-zero.",
+		"Use RPASusceptibility::setNumOrbitals() to set the number of"
+		<< " orbitals."
+	);
+
+//	unsigned int numOrbitals = momentumSpaceContext.getNumOrbitals();
 	unsigned int matrixDimension = numOrbitals*numOrbitals;
 
 	//Setup energies.
@@ -354,9 +362,14 @@ void RPASusceptibility::generateInteractionAmplitudes(){
 	interactionAmplitudesCharge.clear();
 	interactionAmplitudesSpin.clear();
 
-	const RPA::MomentumSpaceContext &momentumSpaceContext
-		= getMomentumSpaceContext();
-	unsigned int numOrbitals = momentumSpaceContext.getNumOrbitals();
+	TBTKAssert(
+		numOrbitals != 0,
+		"RPASusceptibility::generateInteractionAmplitudes()",
+		"'numOrbitals' must be non-zero.",
+		"Use RPASusceptibility::setNumOrbitals() to set the number of"
+		<< " orbitals."
+	);
+//	unsigned int numOrbitals = momentumSpaceContext.getNumOrbitals();
 
 	//Generate charge-interaction amplitudes.
 	for(int a = 0; a < (int)numOrbitals; a++){

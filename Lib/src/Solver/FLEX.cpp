@@ -193,7 +193,7 @@ void FLEX::calculateBareSusceptibility(){
 
 void FLEX::calculateRPASusceptibilities(){
 	RPASusceptibility rpaSusceptibilitySolver(
-		momentumSpaceContext,
+		reducedMomentumSpaceContext,
 		bareSusceptibility
 	);
 	rpaSusceptibilitySolver.setVerbose(false);
@@ -202,6 +202,9 @@ void FLEX::calculateRPASusceptibilities(){
 	rpaSusceptibilitySolver.setJ(J);
 	rpaSusceptibilitySolver.setUp(Up);
 	rpaSusceptibilitySolver.setJp(Jp);
+	rpaSusceptibilitySolver.setNumOrbitals(
+		momentumSpaceContext.getNumOrbitals()
+	);
 
 	PropertyExtractor::RPASusceptibility
 		rpaSusceptibilityPropertyExtractor(

@@ -25,20 +25,20 @@
 
 #include "TBTK/InteractionAmplitude.h"
 #include "TBTK/Property/Susceptibility.h"
-#include "TBTK/RPA/MomentumSpaceContext.h"
+#include "TBTK/MomentumSpaceContext.h"
 #include "TBTK/SerializableVector.h"
-#include "TBTK/Solver/Susceptibility.h"
+#include "TBTK/Solver/Solver.h"
 
 #include <complex>
 
 namespace TBTK{
 namespace Solver{
 
-class RPASusceptibility : public Susceptibility, public Communicator{
+class RPASusceptibility : public Solver, public Communicator{
 public:
 	/** Constructor. */
 	RPASusceptibility(
-		const RPA::MomentumSpaceContext &momentumSpaceContext,
+		const MomentumSpaceContext &momentumSpaceContext,
 		const Property::Susceptibility &susceptibility
 	);
 
@@ -94,6 +94,9 @@ public:
 
 	/** Set Jp. */
 	void setJp(std::complex<double> Jp);
+
+	/** Set the number of orbitals. */
+	void setNumOrbitals(unsigned int numOrbitals);
 private:
 	/** The bare susceptibility to calculate the RPA susceptibility from. */
 	const Property::Susceptibility &bareSusceptibility;
@@ -110,6 +113,12 @@ private:
 	/** Flag indicating whether the interaction amplitudes for charge- and
 	 *  spin-susceptibilities has been initialized. */
 	bool interactionAmplitudesAreGenerated;
+
+	/** MomentumSpaceContext. */
+	const MomentumSpaceContext &momentumSpaceContext;
+
+	/** Number of orbitals. */
+	unsigned int numOrbitals;
 
 	/** Invert matix. */
 	void invertMatrix(
@@ -183,6 +192,10 @@ inline void RPASusceptibility::setJ(std::complex<double> J){
 inline void RPASusceptibility::setJp(std::complex<double> Jp){
 	this->Jp = Jp;
 	interactionAmplitudesAreGenerated = false;
+}
+
+inline void RPASusceptibility::setNumOrbitals(unsigned int numOrbitals){
+	this->numOrbitals = numOrbitals;
 }
 
 };	//End of namespace Solver
