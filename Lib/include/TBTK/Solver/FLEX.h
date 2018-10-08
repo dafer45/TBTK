@@ -28,7 +28,6 @@
 #include "TBTK/Property/Susceptibility.h"
 #include "TBTK/Property/InteractionVertex.h"
 #include "TBTK/Property/SelfEnergy.h"
-//#include "TBTK/RPA/MomentumSpaceContext.h"
 #include "TBTK/Solver/Solver.h"
 
 namespace TBTK{
@@ -192,12 +191,8 @@ public:
 	/** Execute the FLEX loop. */
 	void run();
 private:
-	/** Momentum space context (should be removed).*/
-//	const RPA::MomentumSpaceContext &momentumSpaceContext;
-
-	/** Momentum space context (should be renamed to momentumSpaceContext
-	 *  once the RPA:MomentumSpaceContext has been removed). */
-	const MomentumSpaceContext reducedMomentumSpaceContext;
+	/** Momentum space context. */
+	const MomentumSpaceContext momentumSpaceContext;
 
 	/** Bare Green's function. */
 	Property::GreensFunction greensFunction0;
@@ -324,7 +319,7 @@ private:
 };
 
 inline const MomentumSpaceContext& FLEX::getMomentumSpaceContext() const{
-	return reducedMomentumSpaceContext;
+	return momentumSpaceContext;
 }
 
 inline const Property::GreensFunction& FLEX::getGreensFunction() const{

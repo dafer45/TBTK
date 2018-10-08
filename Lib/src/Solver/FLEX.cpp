@@ -39,13 +39,10 @@ using namespace std;
 namespace TBTK{
 namespace Solver{
 
-FLEX::FLEX(const MomentumSpaceContext &momentumSpaceContext) :
-//	momentumSpaceContext(momentumSpaceContext),
-	reducedMomentumSpaceContext(
-		momentumSpaceContext
-//		momentumSpaceContext.getBrillouinZone(),
-//		momentumSpaceContext.getNumMeshPoints()
-	)
+FLEX::FLEX(
+	const MomentumSpaceContext &momentumSpaceContext
+) :
+	momentumSpaceContext(momentumSpaceContext)
 {
 	density = 0;
 	targetDensity = -1;
@@ -125,7 +122,7 @@ void FLEX::run(){
 
 void FLEX::calculateBareGreensFunction(){
 	const vector<unsigned int> &numMeshPoints
-		= reducedMomentumSpaceContext.getNumMeshPoints();
+		= momentumSpaceContext.getNumMeshPoints();
 	TBTKAssert(
 		numMeshPoints.size() == 2,
 		"Solver::FLEX::calculateBAreGreensFunction()()",
@@ -166,7 +163,7 @@ void FLEX::calculateBareGreensFunction(){
 
 void FLEX::calculateBareSusceptibility(){
 	MatsubaraSusceptibility matsubaraSusceptibilitySolver(
-		reducedMomentumSpaceContext,
+		momentumSpaceContext,
 		greensFunction
 	);
 	matsubaraSusceptibilitySolver.setVerbose(false);
@@ -196,7 +193,7 @@ void FLEX::calculateBareSusceptibility(){
 
 void FLEX::calculateRPASusceptibilities(){
 	RPASusceptibility rpaSusceptibilitySolver(
-		reducedMomentumSpaceContext,
+		momentumSpaceContext,
 		bareSusceptibility
 	);
 	rpaSusceptibilitySolver.setVerbose(false);
@@ -205,10 +202,7 @@ void FLEX::calculateRPASusceptibilities(){
 	rpaSusceptibilitySolver.setJ(J);
 	rpaSusceptibilitySolver.setUp(Up);
 	rpaSusceptibilitySolver.setJp(Jp);
-	rpaSusceptibilitySolver.setNumOrbitals(
-		numOrbitals
-//		momentumSpaceContext.getNumOrbitals()
-	);
+	rpaSusceptibilitySolver.setNumOrbitals(numOrbitals);
 
 	PropertyExtractor::RPASusceptibility
 		rpaSusceptibilityPropertyExtractor(
@@ -247,7 +241,7 @@ void FLEX::calculateRPASusceptibilities(){
 void FLEX::calculateInteractionVertex(){
 	ElectronFluctuationVertex
 		electronFluctuationVertexSolver(
-			reducedMomentumSpaceContext,
+			momentumSpaceContext,
 			rpaChargeSusceptibility,
 			rpaSpinSusceptibility
 		);
@@ -257,10 +251,7 @@ void FLEX::calculateInteractionVertex(){
 	electronFluctuationVertexSolver.setJ(J);
 	electronFluctuationVertexSolver.setUp(Up);
 	electronFluctuationVertexSolver.setJp(Jp);
-	electronFluctuationVertexSolver.setNumOrbitals(
-		numOrbitals
-//		momentumSpaceContext.getNumOrbitals()
-	);
+	electronFluctuationVertexSolver.setNumOrbitals(numOrbitals);
 
 	PropertyExtractor::ElectronFluctuationVertex
 		electronFluctuationVertexPropertyExtractor(
@@ -280,16 +271,13 @@ void FLEX::calculateInteractionVertex(){
 
 void FLEX::calculateSelfEnergy(){
 	SelfEnergy2 selfEnergySolver(
-		reducedMomentumSpaceContext,
+		momentumSpaceContext,
 		interactionVertex,
 		greensFunction
 	);
 	selfEnergySolver.setVerbose(false);
 	selfEnergySolver.setModel(getModel());
-	selfEnergySolver.setNumOrbitals(
-		numOrbitals
-//		momentumSpaceContext.getNumOrbitals()
-	);
+	selfEnergySolver.setNumOrbitals(numOrbitals);
 
 		PropertyExtractor::SelfEnergy2 selfEnergyPropertyExtractor(
 		selfEnergySolver
@@ -400,15 +388,13 @@ void FLEX::calculateGreensFunction(){
 
 				calculateBareGreensFunction();
 			}
-
-//			Streams::out << "Density:\t" << density << "\t" << chemicalPotential << "\n";
 		}
 	}
 }
 
 void FLEX::convertSelfEnergyIndexStructure(){
 	const vector<unsigned int> &numMeshPoints
-		= reducedMomentumSpaceContext.getNumMeshPoints();
+		= momentumSpaceContext.getNumMeshPoints();
 	TBTKAssert(
 		numMeshPoints.size() == 2,
 		"Solver::FLEX::convertSelfEnergyBlockStructure()",
@@ -424,7 +410,6 @@ void FLEX::convertSelfEnergyIndexStructure(){
 		"Use Solver::FLEX::setNumOrbitals() to set the number of"
 		<< " orbitals."
 	);
-//	unsigned int numOrbitals = momentumSpaceContext.getNumOrbitals();
 
 	IndexTree memoryLayout;
 	for(unsigned int kx = 0; kx < numMeshPoints[0]; kx++){
@@ -564,7 +549,6 @@ FLEX::generateRPAChargeSusceptibilityInteractionAmplitudes(){
 		"Use Solver::FLEX::setNumOrbitals() to set the number of"
 		<< " orbitals."
 	);
-//	unsigned int numOrbitals = momentumSpaceContext.getNumOrbitals();
 
 	for(int a = 0; a < (int)numOrbitals; a++){
 		interactionAmplitudes.push_back(
@@ -616,7 +600,6 @@ FLEX::generateRPASpinSusceptibilityInteractionAmplitudes(){
 		"Use Solver::FLEX::setNumOrbitals() to set the number of"
 		<< " orbitals."
 	);
-//	unsigned int numOrbitals = momentumSpaceContext.getNumOrbitals();
 
 	for(int a = 0; a < (int)numOrbitals; a++){
 		interactionAmplitudes.push_back(
@@ -660,7 +643,7 @@ FLEX::generateRPASpinSusceptibilityInteractionAmplitudes(){
 
 void FLEX::calculateDensity(){
 	const vector<unsigned int> &numMeshPoints
-		= reducedMomentumSpaceContext.getNumMeshPoints();
+		= momentumSpaceContext.getNumMeshPoints();
 
 	Greens solver;
 	solver.setModel(getModel());
@@ -692,9 +675,6 @@ void FLEX::calculateDensity(){
 	density += densityProperty({0, 0, 0});
 
 	density *= 2./(numMeshPoints[0]*numMeshPoints[1]);
-//	Streams::out << "Density:\t" << averageDensity << "\n";
-
-//	return averageDensity;
 }
 
 }	//End of namespace Solver
