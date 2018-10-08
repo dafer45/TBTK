@@ -243,7 +243,7 @@ void FLEX::calculateRPASusceptibilities(){
 void FLEX::calculateInteractionVertex(){
 	ElectronFluctuationVertex
 		electronFluctuationVertexSolver(
-			momentumSpaceContext,
+			reducedMomentumSpaceContext,
 			rpaChargeSusceptibility,
 			rpaSpinSusceptibility
 		);
@@ -253,6 +253,9 @@ void FLEX::calculateInteractionVertex(){
 	electronFluctuationVertexSolver.setJ(J);
 	electronFluctuationVertexSolver.setUp(Up);
 	electronFluctuationVertexSolver.setJp(Jp);
+	electronFluctuationVertexSolver.setNumOrbitals(
+		momentumSpaceContext.getNumOrbitals()
+	);
 
 	PropertyExtractor::ElectronFluctuationVertex
 		electronFluctuationVertexPropertyExtractor(

@@ -32,7 +32,7 @@ namespace TBTK{
 namespace Solver{
 
 ElectronFluctuationVertex::ElectronFluctuationVertex(
-	const RPA::MomentumSpaceContext &momentumSpaceContext,
+	const MomentumSpaceContext &momentumSpaceContext,
 	const Property::Susceptibility &chargeSusceptibility,
 	const Property::Susceptibility &spinSusceptibility
 ) :
@@ -45,6 +45,8 @@ ElectronFluctuationVertex::ElectronFluctuationVertex(
 	Up = 0.;
 	J = 0.;
 	Jp = 0.;
+
+	numOrbitals = 0;
 
 	interactionAmplitudesAreGenerated = false;
 
@@ -59,7 +61,14 @@ void ElectronFluctuationVertex::generateInteractionAmplitudes(){
 	u2.clear();
 	u3.clear();
 
-	unsigned int numOrbitals = momentumSpaceContext.getNumOrbitals();
+	TBTKAssert(
+		numOrbitals != 0,
+		"Solver::ElectronFluctuationVertex::generateInteractionAmplitudes()",
+		"'numOrbitals' must be non-zero.",
+		"Use Solver::ElectronFluctuationVertex::setNumOrbitals() to"
+		<< " set the number of orbitals."
+	);
+//	unsigned int numOrbitals = momentumSpaceContext.getNumOrbitals();
 
 	for(int a = 0; a < (int)numOrbitals; a++){
 		u2.push_back(

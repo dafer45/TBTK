@@ -26,8 +26,8 @@
 #include "TBTK/BrillouinZone.h"
 #include "TBTK/IndexedDataTree.h"
 #include "TBTK/Property/Susceptibility.h"
-#include "TBTK/RPA/MomentumSpaceContext.h"
-//#include "TBTK/RPA/RPASusceptibilityCalculator.h"
+#include "TBTK/MomentumSpaceContext.h"
+#include "TBTK/Solver/Solver.h"
 
 namespace TBTK{
 namespace Solver{
@@ -36,13 +36,13 @@ class ElectronFluctuationVertex : public Solver, public Communicator{
 public:
 	/** Constructor. */
 	ElectronFluctuationVertex(
-		const RPA::MomentumSpaceContext &momentumSpaceContext,
+		const MomentumSpaceContext &momentumSpaceContext,
 		const Property::Susceptibility &chargeSusceptibility,
 		const Property::Susceptibility &spinSusceptibility
 	);
 
 	/** Get momentum cpsace context. */
-	const RPA::MomentumSpaceContext& getMomentumSpaceContext() const;
+	const MomentumSpaceContext& getMomentumSpaceContext() const;
 
 	/** Get the charge susceptibility. */
 	const Property::Susceptibility& getChargeSusceptibility() const;
@@ -67,12 +67,15 @@ public:
 	/** Set Jp. */
 	void setJp(std::complex<double> Jp);
 
+	/** Srt the number of orbitals. */
+	void setNumOrbitals(unsigned int numOrbitals);
+
 	/** Generate interaction amplitudes. Can be called multiple times and
 	 *  will only regenerate the interaction amplitudes when needed. */
 	void generateInteractionAmplitudes();
 private:
 	/** Momentum space context. */
-	const RPA::MomentumSpaceContext &momentumSpaceContext;
+	const MomentumSpaceContext &momentumSpaceContext;
 
 	/** Charge susceptibility. */
 	const Property::Susceptibility &chargeSusceptibility;
@@ -91,12 +94,15 @@ private:
 	std::vector<InteractionAmplitude> u2;
 	std::vector<InteractionAmplitude> u3;
 
+	/** Number of orbitals. */
+	unsigned int numOrbitals;
+
 	/** Flag indicating whether the interaction amplitudes are initialized.
 	 */
 	bool interactionAmplitudesAreGenerated;
 };
 
-inline const RPA::MomentumSpaceContext&
+inline const MomentumSpaceContext&
 ElectronFluctuationVertex::getMomentumSpaceContext() const{
 	return momentumSpaceContext;
 }
@@ -129,6 +135,12 @@ inline void ElectronFluctuationVertex::setJ(std::complex<double> J){
 inline void ElectronFluctuationVertex::setJp(std::complex<double> Jp){
 	this->Jp = Jp;
 	interactionAmplitudesAreGenerated = false;
+}
+
+inline void ElectronFluctuationVertex::setNumOrbitals(
+	unsigned int numOrbitals
+){
+	this->numOrbitals = numOrbitals;
 }
 
 };	//End of namespace Solver
