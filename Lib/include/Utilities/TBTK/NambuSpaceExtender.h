@@ -29,13 +29,20 @@ namespace TBTK{
 
 class NambuSpaceExtender{
 public:
+	/** Enum class used to indicate the type of the extension to be
+	 *  performed. Real space extensions can be made by simply taking the
+	 *  negative transpose of the original Model as hole part, but the
+	 *  momentum space requires handling the inversion of the momentum
+	 *  vector. */
+	enum class Mode {RealSpace, MomentumSpace};
+
 	/** Creates a new Model that is the extension of the given Model to
 	 *  Nambu space.
 	 *
 	 *  @param model The Model to be extended.
 	 *
 	 *  @return The extended Model.*/
-	static Model extend(const Model &model);
+	static Model extend(const Model &model, Mode mode);
 };
 
 }; //End of namesapce TBTK

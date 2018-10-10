@@ -1,4 +1,4 @@
-/* Copyright 2018 Kristofer Björnson and Andreas Theiler
+/* Copyright 2018 Kristofer Björnson
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,16 @@ using namespace std;
 
 namespace TBTK{
 
-Model NambuSpaceExtender::extend(const Model &model){
+Model NambuSpaceExtender::extend(const Model &model, Mode mode){
+	TBTKAssert(
+		mode == Mode::RealSpace,
+		"NambuSpaceExtender::extend()",
+		"Only Mode::RealSpace supported yet.",
+		"If the Model Hamiltonian is written in momentum space, but it"
+		<< " satisfies H(k) = H(-k), the real space mode can be used"
+		<< " safetly anyway."
+	);
+
 	const HoppingAmplitudeSet &hoppingAmplitudeSet
 		= model.getHoppingAmplitudeSet();
 
