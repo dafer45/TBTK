@@ -62,7 +62,10 @@ TEST(NambuSpaceExtender, extend){
 	model1.construct();
 
 	//Nambu space model created using the NambuSpaceExtender.
-	Model model2 = NambuSpaceExtender::extend(model0);
+	Model model2 = NambuSpaceExtender::extend(
+		model0,
+		NambuSpaceExtender::Mode::RealSpace
+	);
 	model2.setVerbose(false);
 	model2.construct();
 
@@ -120,7 +123,10 @@ TEST(NambuSpaceExtender, extend){
 	model4 << HoppingAmplitude(2, {1, 1}, {1, 1});
 	model4.construct();
 
-	Model model5 = NambuSpaceExtender::extend(model3);
+	Model model5 = NambuSpaceExtender::extend(
+		model3,
+		NambuSpaceExtender::Mode::RealSpace
+	);
 	model5.setVerbose(false);
 	model5.construct();
 
