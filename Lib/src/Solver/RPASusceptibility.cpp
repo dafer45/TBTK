@@ -120,16 +120,6 @@ vector<vector<vector<complex<double>>>> RPASusceptibility::rpaSusceptibilityMain
 		for(unsigned int n = 0; n < kIndex.getSize(); n++)
 			index.popFront();
 
-		//Se NOTE below for the piece of code that needs to be fixed
-		//before this restriction can be lifted.
-/*		TBTKAssert(
-			index.getSize() == 1,
-			"Solver::RPASusceptibility::rpaSusceptibilityMainAlgorithm()",
-			"Only intra block indices with a single component"
-			<< " supported yet.",
-			""
-		);*/
-
 		intraBlockIndexList.push_back(index);
 	}
 	unsigned int matrixDimension = pow(intraBlockIndexList.size(), 2);
@@ -198,13 +188,6 @@ vector<vector<vector<complex<double>>>> RPASusceptibility::rpaSusceptibilityMain
 	for(unsigned int n = 0; n < interactionAmplitudes.size(); n++){
 		const InteractionAmplitude &interactionAmplitude = interactionAmplitudes.at(n);
 
-		//NOTE: This assumes intra block indices with a single
-		//component. Fix this to generalize the solver to multi
-		//component intra block indices.
-/*		int c0 = interactionAmplitude.getCreationOperatorIndex(0).at(0);
-		int c1 = interactionAmplitude.getCreationOperatorIndex(1).at(0);
-		int a0 = interactionAmplitude.getAnnihilationOperatorIndex(0).at(0);
-		int a1 = interactionAmplitude.getAnnihilationOperatorIndex(1).at(0);*/
 		const Index &c0 = interactionAmplitude.getCreationOperatorIndex(0);
 		const Index &c1 = interactionAmplitude.getCreationOperatorIndex(1);
 		const Index &a0 = interactionAmplitude.getAnnihilationOperatorIndex(0);
@@ -235,8 +218,6 @@ vector<vector<vector<complex<double>>>> RPASusceptibility::rpaSusceptibilityMain
 				unsigned int offset
 					= bareSusceptibility.getOffset({
 						kIndex,
-/*						intraBlockIndexList[c1],
-						intraBlockIndexList[a0],*/
 						c1,
 						a0,
 						intraBlockIndexList[d],
