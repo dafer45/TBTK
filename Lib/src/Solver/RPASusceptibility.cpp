@@ -122,13 +122,13 @@ vector<vector<vector<complex<double>>>> RPASusceptibility::rpaSusceptibilityMain
 
 		//Se NOTE below for the piece of code that needs to be fixed
 		//before this restriction can be lifted.
-		TBTKAssert(
+/*		TBTKAssert(
 			index.getSize() == 1,
 			"Solver::RPASusceptibility::rpaSusceptibilityMainAlgorithm()",
 			"Only intra block indices with a single component"
 			<< " supported yet.",
 			""
-		);
+		);*/
 
 		intraBlockIndexList.push_back(index);
 	}
@@ -201,16 +201,31 @@ vector<vector<vector<complex<double>>>> RPASusceptibility::rpaSusceptibilityMain
 		//NOTE: This assumes intra block indices with a single
 		//component. Fix this to generalize the solver to multi
 		//component intra block indices.
-		int c0 = interactionAmplitude.getCreationOperatorIndex(0).at(0);
+/*		int c0 = interactionAmplitude.getCreationOperatorIndex(0).at(0);
 		int c1 = interactionAmplitude.getCreationOperatorIndex(1).at(0);
 		int a0 = interactionAmplitude.getAnnihilationOperatorIndex(0).at(0);
-		int a1 = interactionAmplitude.getAnnihilationOperatorIndex(1).at(0);
+		int a1 = interactionAmplitude.getAnnihilationOperatorIndex(1).at(0);*/
+		const Index &c0 = interactionAmplitude.getCreationOperatorIndex(0);
+		const Index &c1 = interactionAmplitude.getCreationOperatorIndex(1);
+		const Index &a0 = interactionAmplitude.getAnnihilationOperatorIndex(0);
+		const Index &a1 = interactionAmplitude.getAnnihilationOperatorIndex(1);
 		complex<double> amplitude = interactionAmplitude.getAmplitude();
 
 		if(abs(amplitude) < 1e-10)
 			continue;
 
-		int row = intraBlockIndexList.size()*c0 + a1;
+		int c0LinearIntraBlockIndex
+			= getModel().getHoppingAmplitudeSet().getBasisIndex(
+				Index(kIndex, c0)
+			) - getModel().getHoppingAmplitudeSet(
+			).getFirstIndexInBlock(kIndex);
+		int a1LinearIntraBlockIndex
+			= getModel().getHoppingAmplitudeSet().getBasisIndex(
+				Index(kIndex, a1)
+			) - getModel().getHoppingAmplitudeSet(
+			).getFirstIndexInBlock(kIndex);
+		int row = intraBlockIndexList.size()*c0LinearIntraBlockIndex
+			+ a1LinearIntraBlockIndex;
 		for(unsigned int c = 0; c < intraBlockIndexList.size(); c++){
 			for(unsigned int d = 0; d < intraBlockIndexList.size(); d++){
 				int col = intraBlockIndexList.size()*c + d;
@@ -220,8 +235,10 @@ vector<vector<vector<complex<double>>>> RPASusceptibility::rpaSusceptibilityMain
 				unsigned int offset
 					= bareSusceptibility.getOffset({
 						kIndex,
-						intraBlockIndexList[c1],
-						intraBlockIndexList[a0],
+/*						intraBlockIndexList[c1],
+						intraBlockIndexList[a0],*/
+						c1,
+						a0,
 						intraBlockIndexList[d],
 						intraBlockIndexList[c]
 					});
