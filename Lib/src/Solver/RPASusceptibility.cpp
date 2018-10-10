@@ -38,14 +38,6 @@ RPASusceptibility::RPASusceptibility(
 	bareSusceptibility(bareSusceptibility),
 	momentumSpaceContext(momentumSpaceContext)
 {
-/*	U = 0.;
-	Up = 0.;
-	J = 0.;
-	Jp = 0.;
-
-	numOrbitals = 0;
-
-	interactionAmplitudesAreGenerated = false;*/
 }
 
 RPASusceptibility* RPASusceptibility::createSlave(){
@@ -95,31 +87,6 @@ inline void RPASusceptibility::invertMatrix(
 	delete [] work;
 }
 
-/*void RPASusceptibility::multiplyMatrices(
-	complex<double> *matrix1,
-	complex<double> *matrix2,
-	complex<double> *result,
-	unsigned int dimensions
-){
-	for(unsigned int n = 0; n < dimensions*dimensions; n++)
-		result[n] = 0.;
-
-	for(unsigned int row = 0; row < dimensions; row++)
-		for(unsigned int col = 0; col < dimensions; col++)
-			for(unsigned int n = 0; n < dimensions; n++)
-				result[dimensions*col + row] += matrix1[dimensions*n + row]*matrix2[dimensions*col + n];
-}
-
-void printMatrix(complex<double> *matrix, unsigned int dimension){
-	for(unsigned int r = 0; r < dimension; r++){
-		for(unsigned int c = 0; c < dimension; c++){
-			Streams::out << setw(20) << matrix[dimension*c + r];
-		}
-		Streams::out << "\n";
-	}
-	Streams::out << "\n";
-}*/
-
 vector<vector<vector<complex<double>>>> RPASusceptibility::rpaSusceptibilityMainAlgorithm(
 	const Index &index,
 	const vector<InteractionAmplitude> &interactionAmplitudes
@@ -140,14 +107,6 @@ vector<vector<vector<complex<double>>>> RPASusceptibility::rpaSusceptibilityMain
 		components[4],
 	};
 
-/*	TBTKAssert(
-		numOrbitals != 0,
-		"RPASusceptibility::rpaSusceptibilityMainAlgorithm()",
-		"'numOrbitals' must be non-zero.",
-		"Use RPASusceptibility::setNumOrbitals() to set the number of"
-		<< " orbitals."
-	);*/
-
 	IndexTree intraBlockIndexTree
 		= getModel().getHoppingAmplitudeSet().getIndexTree(kIndex);
 	vector<Index> intraBlockIndexList;
@@ -161,20 +120,19 @@ vector<vector<vector<complex<double>>>> RPASusceptibility::rpaSusceptibilityMain
 		for(unsigned int n = 0; n < kIndex.getSize(); n++)
 			index.popFront();
 
+		//Se NOTE below for the piece of code that needs to be fixed
+		//before this restriction can be lifted.
+		TBTKAssert(
+			index.getSize() == 1,
+			"Solver::RPASusceptibility::rpaSusceptibilityMainAlgorithm()",
+			"Only intra block indices with a single component"
+			<< " supported yet.",
+			""
+		);
+
 		intraBlockIndexList.push_back(index);
 	}
-/*	const HoppingAmplitudeSet &hoppingAmplitudeSet
-		= getModel().getHoppingAmplitudeSet();
-	unsigned int firstIndexInBlock
-		= hoppingAmplitudeSet.getFirstIndexInBlock(kIndex);
-	unsigned int lastIndexInBlock
-		= hoppingAmplitudeSet.getLastIndexInBlock(kIndex);
-	unsigned int numIntraBlockIndices
-		= lastIndexInBlock - firstIndexInBlock + 1;*/
 	unsigned int matrixDimension = pow(intraBlockIndexList.size(), 2);
-
-//	unsigned int numOrbitals = momentumSpaceContext.getNumOrbitals();
-//	unsigned int matrixDimension = numOrbitals*numOrbitals;
 
 	//Setup energies.
 	vector<complex<double>> energies;
@@ -240,6 +198,9 @@ vector<vector<vector<complex<double>>>> RPASusceptibility::rpaSusceptibilityMain
 	for(unsigned int n = 0; n < interactionAmplitudes.size(); n++){
 		const InteractionAmplitude &interactionAmplitude = interactionAmplitudes.at(n);
 
+		//NOTE: This assumes intra block indices with a single
+		//component. Fix this to generalize the solver to multi
+		//component intra block indices.
 		int c0 = interactionAmplitude.getCreationOperatorIndex(0).at(0);
 		int c1 = interactionAmplitude.getCreationOperatorIndex(1).at(0);
 		int a0 = interactionAmplitude.getAnnihilationOperatorIndex(0).at(0);
@@ -249,11 +210,9 @@ vector<vector<vector<complex<double>>>> RPASusceptibility::rpaSusceptibilityMain
 		if(abs(amplitude) < 1e-10)
 			continue;
 
-//		int row = numOrbitals*c0 + a1;
 		int row = intraBlockIndexList.size()*c0 + a1;
 		for(unsigned int c = 0; c < intraBlockIndexList.size(); c++){
 			for(unsigned int d = 0; d < intraBlockIndexList.size(); d++){
-//				int col = numOrbitals*c + d;
 				int col = intraBlockIndexList.size()*c + d;
 
 				const vector<complex<double>> &susceptibility
@@ -265,10 +224,6 @@ vector<vector<vector<complex<double>>>> RPASusceptibility::rpaSusceptibilityMain
 						intraBlockIndexList[a0],
 						intraBlockIndexList[d],
 						intraBlockIndexList[c]
-/*						{c1},
-						{a0},
-						{(int)d},
-						{(int)c}*/
 					});
 				for(
 					unsigned int i = 0;
@@ -314,8 +269,6 @@ vector<vector<vector<complex<double>>>> RPASusceptibility::rpaSusceptibilityMain
 				intraBlockIndices[1],
 				intraBlockIndexList[d],
 				intraBlockIndexList[c]
-/*				{(int)d},
-				{(int)c}*/
 			});
 			for(unsigned int orbital2 = 0; orbital2 < intraBlockIndexList.size(); orbital2++){
 				for(unsigned int orbital3 = 0; orbital3 < intraBlockIndexList.size(); orbital3++){
@@ -396,8 +349,6 @@ IndexedDataTree<vector<complex<double>>> RPASusceptibility::calculateRPASuscepti
 					intraBlockIndices[1],
 					intraBlockIndexList[n],
 					intraBlockIndexList[c]
-/*					{(int)n},
-					{(int)c}*/
 				}
 			);
 		}
@@ -405,197 +356,6 @@ IndexedDataTree<vector<complex<double>>> RPASusceptibility::calculateRPASuscepti
 
 	return indexedDataTree;
 }
-
-/*void RPASusceptibility::generateInteractionAmplitudes(){
-	if(interactionAmplitudesAreGenerated)
-		return;
-
-	interactionAmplitudesCharge.clear();
-	interactionAmplitudesSpin.clear();
-
-	TBTKAssert(
-		numOrbitals != 0,
-		"RPASusceptibility::generateInteractionAmplitudes()",
-		"'numOrbitals' must be non-zero.",
-		"Use RPASusceptibility::setNumOrbitals() to set the number of"
-		<< " orbitals."
-	);
-//	unsigned int numOrbitals = momentumSpaceContext.getNumOrbitals();
-
-	//Generate charge-interaction amplitudes.
-	for(int a = 0; a < (int)numOrbitals; a++){
-		interactionAmplitudesCharge.push_back(
-			InteractionAmplitude(
-				U,
-				{{a},	{a}},
-				{{a},	{a}}
-			)
-		);
-
-		for(int b = 0; b < (int)numOrbitals; b++){
-			if(a == b)
-				continue;
-
-			interactionAmplitudesCharge.push_back(
-				InteractionAmplitude(
-					2.*Up - J,
-					{{a},	{b}},
-					{{b},	{a}}
-				)
-			);
-			interactionAmplitudesCharge.push_back(
-				InteractionAmplitude(
-					-Up + 2.*J,
-					{{a},	{b}},
-					{{a},	{b}}
-				)
-			);
-			interactionAmplitudesCharge.push_back(
-				InteractionAmplitude(
-					Jp,
-					{{a},	{a}},
-					{{b},	{b}}
-				)
-			);
-		}
-	}
-
-	//Generate spin-interaction amplitudes.
-	for(int a = 0; a < (int)numOrbitals; a++){
-		interactionAmplitudesSpin.push_back(
-			InteractionAmplitude(
-				-U,
-				{{a},	{a}},
-				{{a},	{a}}
-			)
-		);
-
-		for(int b = 0; b < (int)numOrbitals; b++){
-			if(a == b)
-				continue;
-
-			interactionAmplitudesSpin.push_back(
-				InteractionAmplitude(
-					-J,
-					{{a},	{b}},
-					{{b},	{a}}
-				)
-			);
-			interactionAmplitudesSpin.push_back(
-				InteractionAmplitude(
-					-Up,
-					{{a},	{b}},
-					{{a},	{b}}
-				)
-			);
-			interactionAmplitudesSpin.push_back(
-				InteractionAmplitude(
-					-Jp,
-					{{a},	{a}},
-					{{b},	{b}}
-				)
-			);
-		}
-	}
-
-	interactionAmplitudesAreGenerated = true;
-}
-
-IndexedDataTree<vector<complex<double>>> RPASusceptibility::calculateChargeRPASusceptibility(
-	const Index &index
-){
-	vector<Index> components = index.split();
-	TBTKAssert(
-		components.size() == 5,
-		"SusceptibilityCalculator::calculateChargeRPASusceptibility()",
-		"The Index must be a compound Index with 5 component Indices,"
-		<< " but '" << components.size() << "' components suplied.",
-		""
-	);
-	Index kIndex = components[0];
-	Index intraBlockIndices[4] = {
-		components[1],
-		components[2],
-		components[3],
-		components[4],
-	};
-
-	//Setup InteractionAmplitude
-	generateInteractionAmplitudes();
-
-	//TODO
-	//The way intraBlockIndices[n] are used assumes that they have a single
-	//subindex, which limits generality.
-	vector<vector<vector<complex<double>>>> result = rpaSusceptibilityMainAlgorithm(
-		index,
-		interactionAmplitudesCharge
-	);
-	IndexedDataTree<vector<complex<double>>> indexedDataTree;
-	for(unsigned int n = 0; n < result.size(); n++){
-		for(unsigned int c = 0; c < result[n].size(); c++){
-			indexedDataTree.add(
-				result[n][c],
-				{
-					kIndex,
-					intraBlockIndices[0],
-					intraBlockIndices[1],
-					{(int)n},
-					{(int)c}
-				}
-			);
-		}
-	}
-
-	return indexedDataTree;
-}
-
-IndexedDataTree<vector<complex<double>>> RPASusceptibility::calculateSpinRPASusceptibility(
-	const Index &index
-){
-	vector<Index> components = index.split();
-	TBTKAssert(
-		components.size() == 5,
-		"SusceptibilityCalculator::calculateSpinRPASusceptibility()",
-		"The Index must be a compound Index with 5 component Indices,"
-		<< " but '" << components.size() << "' components suplied.",
-		""
-	);
-	Index kIndex = components[0];
-	Index intraBlockIndices[4] = {
-		components[1],
-		components[2],
-		components[3],
-		components[4],
-	};
-
-	//Setup InteractionAmplitude
-	generateInteractionAmplitudes();
-
-	//TODO
-	//The way intraBlockIndices[n] are used assumes that they have a single
-	//subindex, which limits generality.
-	vector<vector<vector<complex<double>>>> result = rpaSusceptibilityMainAlgorithm(
-		index,
-		interactionAmplitudesSpin
-	);
-	IndexedDataTree<vector<complex<double>>> indexedDataTree;
-	for(unsigned int n = 0; n < result.size(); n++){
-		for(unsigned int c = 0; c < result[n].size(); c++){
-			indexedDataTree.add(
-				result[n][c],
-				{
-					kIndex,
-					intraBlockIndices[0],
-					intraBlockIndices[1],
-					{(int)n},
-					{(int)c}
-				}
-			);
-		}
-	}
-
-	return indexedDataTree;
-}*/
 
 }	//End of namespace Solver
 }	//End of namesapce TBTK

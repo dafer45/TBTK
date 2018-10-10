@@ -198,11 +198,6 @@ void FLEX::calculateRPASusceptibilities(){
 	);
 	rpaSusceptibilitySolver.setVerbose(false);
 	rpaSusceptibilitySolver.setModel(getModel());
-/*	rpaSusceptibilitySolver.setU(U);
-	rpaSusceptibilitySolver.setJ(J);
-	rpaSusceptibilitySolver.setUp(Up);
-	rpaSusceptibilitySolver.setJp(Jp);*/
-//	rpaSusceptibilitySolver.setNumOrbitals(numOrbitals);
 
 	PropertyExtractor::RPASusceptibility
 		rpaSusceptibilityPropertyExtractor(
