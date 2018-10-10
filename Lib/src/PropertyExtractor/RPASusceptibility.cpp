@@ -399,7 +399,7 @@ Property::Susceptibility RPASusceptibility::calculateRPASusceptibility(
 	}
 }
 
-Property::Susceptibility RPASusceptibility::calculateChargeSusceptibility(
+/*Property::Susceptibility RPASusceptibility::calculateChargeSusceptibility(
 	vector<Index> patterns
 ){
 	//Calculate allIndices.
@@ -1073,7 +1073,7 @@ Property::Susceptibility RPASusceptibility::calculateSpinSusceptibility(
 			"This should never happen, contact the developer."
 		);
 	}
-}
+}*/
 
 void RPASusceptibility::calculateRPASusceptibilityCallback(
 	PropertyExtractor *cb_this,
@@ -1114,7 +1114,7 @@ void RPASusceptibility::calculateRPASusceptibilityCallback(
 		data[offset + e] += s[e];
 }
 
-void RPASusceptibility::calculateChargeSusceptibilityCallback(
+/*void RPASusceptibility::calculateChargeSusceptibilityCallback(
 	PropertyExtractor *cb_this,
 	Property::Property &property,
 	const Index &index,
@@ -1190,7 +1190,7 @@ void RPASusceptibility::calculateSpinSusceptibilityCallback(
 
 	for(unsigned int e = 0; e < s.size(); e++)
 		data[offset + e] += s[e];
-}
+}*/
 
 };	//End of namespace PropertyExtractor
 };	//End of namespace TBTK

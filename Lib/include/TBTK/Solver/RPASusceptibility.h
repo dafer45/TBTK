@@ -70,33 +70,33 @@ public:
 	);
 
 	/** Calculate charge RPA Susceptibility. */
-	IndexedDataTree<
+/*	IndexedDataTree<
 		std::vector<std::complex<double>>
 	> calculateChargeRPASusceptibility(
 		const Index &index
-	);
+	);*/
 
 	/** Calculate spin RPA Susceptibility. */
-	IndexedDataTree<
+/*	IndexedDataTree<
 		std::vector<std::complex<double>>
 	> calculateSpinRPASusceptibility(
 		const Index &index
-	);
+	);*/
 
 	/** Set U. */
-	void setU(std::complex<double> U);
+//	void setU(std::complex<double> U);
 
 	/** Set Up. */
-	void setUp(std::complex<double> Up);
+//	void setUp(std::complex<double> Up);
 
 	/** Set J. */
-	void setJ(std::complex<double> J);
+//	void setJ(std::complex<double> J);
 
 	/** Set Jp. */
-	void setJp(std::complex<double> Jp);
+//	void setJp(std::complex<double> Jp);
 
 	/** Set the number of orbitals. */
-	void setNumOrbitals(unsigned int numOrbitals);
+//	void setNumOrbitals(unsigned int numOrbitals);
 private:
 	/** The bare susceptibility to calculate the RPA susceptibility from. */
 	const Property::Susceptibility &bareSusceptibility;
@@ -105,20 +105,20 @@ private:
 	std::vector<InteractionAmplitude> interactionAmplitudes;
 
 	/** Interaction amplitudes for charge susceptibility. */
-	std::vector<InteractionAmplitude> interactionAmplitudesCharge;
+//	std::vector<InteractionAmplitude> interactionAmplitudesCharge;
 
 	/** Interaction amplitudes for charge susceptibility. */
-	std::vector<InteractionAmplitude> interactionAmplitudesSpin;
+//	std::vector<InteractionAmplitude> interactionAmplitudesSpin;
 
 	/** Flag indicating whether the interaction amplitudes for charge- and
 	 *  spin-susceptibilities has been initialized. */
-	bool interactionAmplitudesAreGenerated;
+//	bool interactionAmplitudesAreGenerated;
 
 	/** MomentumSpaceContext. */
 	const MomentumSpaceContext &momentumSpaceContext;
 
 	/** Number of orbitals. */
-	unsigned int numOrbitals;
+//	unsigned int numOrbitals;
 
 	/** Invert matix. */
 	void invertMatrix(
@@ -143,12 +143,12 @@ private:
 	);
 
 	/** Interaction parameters. */
-	std::complex<double> U, Up, J, Jp;
+//	std::complex<double> U, Up, J, Jp;
 
 	/** Generate chare- and spin-interaction amplitudes. Can be called
 	 *  multiple times and will only regenerate the interaction amplitudes
 	 *  when needed. */
-	void generateInteractionAmplitudes();
+//	void generateInteractionAmplitudes();
 };
 
 inline const Property::Susceptibility&
@@ -174,7 +174,7 @@ RPASusceptibility::calculateSusceptibility(
 	);
 }
 
-inline void RPASusceptibility::setU(std::complex<double> U){
+/*inline void RPASusceptibility::setU(std::complex<double> U){
 	this->U = U;
 	interactionAmplitudesAreGenerated = false;
 }
@@ -192,11 +192,11 @@ inline void RPASusceptibility::setJ(std::complex<double> J){
 inline void RPASusceptibility::setJp(std::complex<double> Jp){
 	this->Jp = Jp;
 	interactionAmplitudesAreGenerated = false;
-}
+}*/
 
-inline void RPASusceptibility::setNumOrbitals(unsigned int numOrbitals){
+/*inline void RPASusceptibility::setNumOrbitals(unsigned int numOrbitals){
 	this->numOrbitals = numOrbitals;
-}
+}*/
 
 };	//End of namespace Solver
 };	//End of namespace TBTK

@@ -38,14 +38,14 @@ RPASusceptibility::RPASusceptibility(
 	bareSusceptibility(bareSusceptibility),
 	momentumSpaceContext(momentumSpaceContext)
 {
-	U = 0.;
+/*	U = 0.;
 	Up = 0.;
 	J = 0.;
 	Jp = 0.;
 
 	numOrbitals = 0;
 
-	interactionAmplitudesAreGenerated = false;
+	interactionAmplitudesAreGenerated = false;*/
 }
 
 RPASusceptibility* RPASusceptibility::createSlave(){
@@ -140,16 +140,41 @@ vector<vector<vector<complex<double>>>> RPASusceptibility::rpaSusceptibilityMain
 		components[4],
 	};
 
-	TBTKAssert(
+/*	TBTKAssert(
 		numOrbitals != 0,
 		"RPASusceptibility::rpaSusceptibilityMainAlgorithm()",
 		"'numOrbitals' must be non-zero.",
 		"Use RPASusceptibility::setNumOrbitals() to set the number of"
 		<< " orbitals."
-	);
+	);*/
+
+	IndexTree intraBlockIndexTree
+		= getModel().getHoppingAmplitudeSet().getIndexTree(kIndex);
+	vector<Index> intraBlockIndexList;
+	for(
+		IndexTree::ConstIterator iterator
+			= intraBlockIndexTree.cbegin();
+		iterator != intraBlockIndexTree.cend();
+		++iterator
+	){
+		Index index = *iterator;
+		for(unsigned int n = 0; n < kIndex.getSize(); n++)
+			index.popFront();
+
+		intraBlockIndexList.push_back(index);
+	}
+/*	const HoppingAmplitudeSet &hoppingAmplitudeSet
+		= getModel().getHoppingAmplitudeSet();
+	unsigned int firstIndexInBlock
+		= hoppingAmplitudeSet.getFirstIndexInBlock(kIndex);
+	unsigned int lastIndexInBlock
+		= hoppingAmplitudeSet.getLastIndexInBlock(kIndex);
+	unsigned int numIntraBlockIndices
+		= lastIndexInBlock - firstIndexInBlock + 1;*/
+	unsigned int matrixDimension = pow(intraBlockIndexList.size(), 2);
 
 //	unsigned int numOrbitals = momentumSpaceContext.getNumOrbitals();
-	unsigned int matrixDimension = numOrbitals*numOrbitals;
+//	unsigned int matrixDimension = numOrbitals*numOrbitals;
 
 	//Setup energies.
 	vector<complex<double>> energies;
@@ -224,20 +249,26 @@ vector<vector<vector<complex<double>>>> RPASusceptibility::rpaSusceptibilityMain
 		if(abs(amplitude) < 1e-10)
 			continue;
 
-		int row = numOrbitals*c0 + a1;
-		for(unsigned int c = 0; c < numOrbitals; c++){
-			for(unsigned int d = 0; d < numOrbitals; d++){
-				int col = numOrbitals*c + d;
+//		int row = numOrbitals*c0 + a1;
+		int row = intraBlockIndexList.size()*c0 + a1;
+		for(unsigned int c = 0; c < intraBlockIndexList.size(); c++){
+			for(unsigned int d = 0; d < intraBlockIndexList.size(); d++){
+//				int col = numOrbitals*c + d;
+				int col = intraBlockIndexList.size()*c + d;
 
 				const vector<complex<double>> &susceptibility
 					= bareSusceptibility.getData();
 				unsigned int offset
 					= bareSusceptibility.getOffset({
 						kIndex,
-						{c1},
+						intraBlockIndexList[c1],
+						intraBlockIndexList[a0],
+						intraBlockIndexList[d],
+						intraBlockIndexList[c]
+/*						{c1},
 						{a0},
 						{(int)d},
-						{(int)c}
+						{(int)c}*/
 					});
 				for(
 					unsigned int i = 0;
@@ -258,9 +289,9 @@ vector<vector<vector<complex<double>>>> RPASusceptibility::rpaSusceptibilityMain
 
 	//Initialize \chi_RPA
 	vector<vector<vector<complex<double>>>> rpaSusceptibility;
-	for(unsigned int orbital2 = 0; orbital2 < numOrbitals; orbital2++){
+	for(unsigned int orbital2 = 0; orbital2 < intraBlockIndexList.size(); orbital2++){
 		rpaSusceptibility.push_back(vector<vector<complex<double>>>());
-		for(unsigned int orbital3 = 0; orbital3 < numOrbitals; orbital3++){
+		for(unsigned int orbital3 = 0; orbital3 < intraBlockIndexList.size(); orbital3++){
 			rpaSusceptibility[orbital2].push_back(vector<complex<double>>());
 			for(
 				unsigned int e = 0;
@@ -273,19 +304,21 @@ vector<vector<vector<complex<double>>>> RPASusceptibility::rpaSusceptibilityMain
 	}
 
 	//Calculate \chi_RPA = \chi_0/(1 + U\chi_0)
-	for(unsigned int c = 0; c < numOrbitals; c++){
-		for(unsigned int d = 0; d < numOrbitals; d++){
+	for(unsigned int c = 0; c < intraBlockIndexList.size(); c++){
+		for(unsigned int d = 0; d < intraBlockIndexList.size(); d++){
 			const vector<complex<double>> &susceptibility
 				= bareSusceptibility.getData();
 			unsigned int offset = bareSusceptibility.getOffset({
 				kIndex,
 				intraBlockIndices[0],
 				intraBlockIndices[1],
-				{(int)d},
-				{(int)c}
+				intraBlockIndexList[d],
+				intraBlockIndexList[c]
+/*				{(int)d},
+				{(int)c}*/
 			});
-			for(unsigned int orbital2 = 0; orbital2 < numOrbitals; orbital2++){
-				for(unsigned int orbital3 = 0; orbital3 < numOrbitals; orbital3++){
+			for(unsigned int orbital2 = 0; orbital2 < intraBlockIndexList.size(); orbital2++){
+				for(unsigned int orbital3 = 0; orbital3 < intraBlockIndexList.size(); orbital3++){
 					for(
 						unsigned int i = 0;
 						i < energies.size();
@@ -293,9 +326,9 @@ vector<vector<vector<complex<double>>>> RPASusceptibility::rpaSusceptibilityMain
 					){
 						rpaSusceptibility[orbital2][orbital3].at(i) += denominators.at(i)[
 							matrixDimension*(
-								numOrbitals*orbital2
+								intraBlockIndexList.size()*orbital2
 								+ orbital3
-							) + numOrbitals*c + d
+							) + intraBlockIndexList.size()*c + d
 						]*susceptibility.at(offset + i);
 					}
 				}
@@ -329,6 +362,22 @@ IndexedDataTree<vector<complex<double>>> RPASusceptibility::calculateRPASuscepti
 		components[4],
 	};
 
+	IndexTree intraBlockIndexTree
+		= getModel().getHoppingAmplitudeSet().getIndexTree(kIndex);
+	vector<Index> intraBlockIndexList;
+	for(
+		IndexTree::ConstIterator iterator
+			= intraBlockIndexTree.cbegin();
+		iterator != intraBlockIndexTree.cend();
+		++iterator
+	){
+		Index index = *iterator;
+		for(unsigned int n = 0; n < kIndex.getSize(); n++)
+			index.popFront();
+
+		intraBlockIndexList.push_back(index);
+	}
+
 	//TODO
 	//The way intraBlockIndices[n] are used assumes that they have a single
 	//subindex, which limits generality.
@@ -345,8 +394,10 @@ IndexedDataTree<vector<complex<double>>> RPASusceptibility::calculateRPASuscepti
 					kIndex,
 					intraBlockIndices[0],
 					intraBlockIndices[1],
-					{(int)n},
-					{(int)c}
+					intraBlockIndexList[n],
+					intraBlockIndexList[c]
+/*					{(int)n},
+					{(int)c}*/
 				}
 			);
 		}
@@ -355,7 +406,7 @@ IndexedDataTree<vector<complex<double>>> RPASusceptibility::calculateRPASuscepti
 	return indexedDataTree;
 }
 
-void RPASusceptibility::generateInteractionAmplitudes(){
+/*void RPASusceptibility::generateInteractionAmplitudes(){
 	if(interactionAmplitudesAreGenerated)
 		return;
 
@@ -544,7 +595,7 @@ IndexedDataTree<vector<complex<double>>> RPASusceptibility::calculateSpinRPASusc
 	}
 
 	return indexedDataTree;
-}
+}*/
 
 }	//End of namespace Solver
 }	//End of namesapce TBTK

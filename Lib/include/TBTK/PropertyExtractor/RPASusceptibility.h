@@ -63,14 +63,14 @@ public:
 	);
 
 	/** Calculates the Susceptibility. */
-	virtual Property::Susceptibility calculateChargeSusceptibility(
+/*	virtual Property::Susceptibility calculateChargeSusceptibility(
 		std::vector<Index> patterns
-	);
+	);*/
 
 	/** Calculates the Susceptibility. */
-	virtual Property::Susceptibility calculateSpinSusceptibility(
+/*	virtual Property::Susceptibility calculateSpinSusceptibility(
 		std::vector<Index> patterns
-	);
+	);*/
 private:
 	/** Calback for callculating susceptibility. */
 	static void calculateRPASusceptibilityCallback(
@@ -82,22 +82,22 @@ private:
 	);
 
 	/** Calback for callculating susceptibility. */
-	static void calculateChargeSusceptibilityCallback(
+/*	static void calculateChargeSusceptibilityCallback(
 		PropertyExtractor *cb_this,
 		Property::Property &property,
 		const Index &index,
 		int offset,
 		Information &information
-	);
+	);*/
 
 	/** Calback for callculating susceptibility. */
-	static void calculateSpinSusceptibilityCallback(
+/*	static void calculateSpinSusceptibilityCallback(
 		PropertyExtractor *cb_this,
 		Property::Property &property,
 		const Index &index,
 		int offset,
 		Information &information
-	);
+	);*/
 
 	/** Solver::Diagonalizer to work on. */
 	Solver::RPASusceptibility *solver;
@@ -110,15 +110,15 @@ private:
 
 	/** Charge susceptibility tree for storing results between calls to the
 	 *  calculateChargeSusceptibilityCallback(). */
-	IndexedDataTree<
+/*	IndexedDataTree<
 		std::vector<std::complex<double>>
-	> chargeSusceptibilityTree;
+	> chargeSusceptibilityTree;*/
 
 	/** Spin susceptibility tree for storing results between calls to the
 	 *  calculateSpinSusceptibilityCallback(). */
-	IndexedDataTree<
+/*	IndexedDataTree<
 		std::vector<std::complex<double>>
-	> spinSusceptibilityTree;
+	> spinSusceptibilityTree;*/
 };
 
 };	//End of namespace PropertyExtractor
