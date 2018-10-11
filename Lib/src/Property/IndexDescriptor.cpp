@@ -398,6 +398,62 @@ IndexDescriptor& IndexDescriptor::operator=(IndexDescriptor &&rhs){
 	return *this;
 }
 
+bool operator==(
+	const IndexDescriptor &lhs,
+	const IndexDescriptor &rhs
+){
+	if(lhs.format != rhs.format)
+		return false;
+
+	switch(lhs.format){
+	case IndexDescriptor::Format::None:
+		return true;
+	case IndexDescriptor::Format::Ranges:
+		if(
+			lhs.descriptor.rangeFormat.dimensions
+			!= rhs.descriptor.rangeFormat.dimensions
+		){
+			return false;
+		}
+
+		for(
+			unsigned int n = 0;
+			n < lhs.descriptor.rangeFormat.dimensions;
+			n++
+		){
+			if(
+				lhs.descriptor.rangeFormat.ranges[n]
+				!= rhs.descriptor.rangeFormat.ranges[n]
+			){
+				return false;
+			}
+		}
+
+		return true;
+	case IndexDescriptor::Format::Custom:
+	{
+		return *lhs.descriptor.customFormat.indexTree
+			== *rhs.descriptor.customFormat.indexTree;
+	}
+	case IndexDescriptor::Format::Dynamic:
+	{
+		TBTKExit(
+			"operator==(const IndexDescriptor &lhs, const"
+			<< " IndexDescriptor &rhs)",
+			"Format::Dynamic not yet implemented.",
+			""
+		);
+	}
+	default:
+		TBTKExit(
+			"operator==(const IndexDescriptor &lhs, const"
+			<< " IndexDescriptor &rhs)",
+			"Unknown Format.",
+			"This should never happen, contact the developer."
+		);
+	}
+}
+
 unsigned int IndexDescriptor::getSize() const{
 	switch(format){
 	case Format::None:

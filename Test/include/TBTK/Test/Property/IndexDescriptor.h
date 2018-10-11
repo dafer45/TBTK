@@ -57,6 +57,67 @@ TEST(IndexDescriptor, operatorAssignment){
 TEST(IndexDescriptor, operatorMoveAssignment){
 }
 
+TEST(IndexDescriptor, operatorComparison){
+	//Format::None.
+	IndexDescriptor indexDescriptorNone0;
+	IndexDescriptor indexDescriptorNone1;
+
+	EXPECT_TRUE(indexDescriptorNone0 == indexDescriptorNone1);
+	EXPECT_FALSE(indexDescriptorNone0 != indexDescriptorNone1);
+
+	//Format::Ranges.
+	IndexDescriptor indexDescriptorRanges0({1, 2, 3});
+	IndexDescriptor indexDescriptorRanges1({1, 2, 3});
+	IndexDescriptor indexDescriptorRanges2({1, 2});
+	IndexDescriptor indexDescriptorRanges3({1, 3, 2});
+
+	EXPECT_TRUE(indexDescriptorRanges0 == indexDescriptorRanges1);
+	EXPECT_FALSE(indexDescriptorRanges0 != indexDescriptorRanges1);
+	EXPECT_FALSE(indexDescriptorRanges0 == indexDescriptorRanges2);
+	EXPECT_TRUE(indexDescriptorRanges0 != indexDescriptorRanges2);
+	EXPECT_FALSE(indexDescriptorRanges0 == indexDescriptorRanges3);
+	EXPECT_TRUE(indexDescriptorRanges0 != indexDescriptorRanges3);
+
+	//Format custom.
+	IndexTree indexTree0;
+	indexTree0.add({1, 2, 3});
+	indexTree0.add({2, 2, 3});
+	indexTree0.add({2, 3, 1});
+	indexTree0.generateLinearMap();
+
+	IndexTree indexTree1;
+	indexTree1.add({1, 2, 3});
+	indexTree1.add({2, 2, 3});
+	indexTree1.add({2, 3, 1});
+	indexTree1.generateLinearMap();
+
+	IndexTree indexTree2;
+	indexTree2.add({1, 2, 3});
+	indexTree2.add({2, 3, 1});
+	indexTree2.generateLinearMap();
+
+	IndexDescriptor indexDescriptorCustom0(indexTree0);
+	IndexDescriptor indexDescriptorCustom1(indexTree1);
+	IndexDescriptor indexDescriptorCustom2(indexTree2);
+
+	EXPECT_TRUE(indexDescriptorCustom0 == indexDescriptorCustom1);
+	EXPECT_FALSE(indexDescriptorCustom0 != indexDescriptorCustom1);
+	EXPECT_FALSE(indexDescriptorCustom0 == indexDescriptorCustom2);
+	EXPECT_TRUE(indexDescriptorCustom0 != indexDescriptorCustom2);
+
+	//Different formats.
+	EXPECT_FALSE(indexDescriptorNone0 == indexDescriptorRanges0);
+	EXPECT_TRUE(indexDescriptorNone0 != indexDescriptorRanges0);
+	EXPECT_FALSE(indexDescriptorNone0 == indexDescriptorCustom0);
+	EXPECT_TRUE(indexDescriptorNone0 != indexDescriptorCustom0);
+	EXPECT_FALSE(indexDescriptorRanges0 == indexDescriptorCustom0);
+	EXPECT_TRUE(indexDescriptorRanges0 != indexDescriptorCustom0);
+}
+
+TEST(IndexDescriptor, operatorInequality){
+	//Tested through IndexDescriptor::operatorComparison
+}
+
 TEST(IndexDescriptor, getFormat){
 	IndexDescriptor indexDescriptor0;
 	EXPECT_EQ(indexDescriptor0.getFormat(), IndexDescriptor::Format::None);

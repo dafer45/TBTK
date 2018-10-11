@@ -93,6 +93,30 @@ public:
 	 *  @return Reference to the assigned IndexDescriptor. */
 	IndexDescriptor& operator=(IndexDescriptor &&rhs);
 
+	/** Comparison operator.
+	 *
+	 *  @param rhs Left hand side of the equality sign.
+	 *  @param rhs Right hand side of the equality sign.
+	 *
+	 *  @return True if the @link IndexDescriptor IndexDescriptors @endlink
+	 *  describe identical index structures, otherwise false. */
+	friend bool operator==(
+		const IndexDescriptor &lhs,
+		const IndexDescriptor &rhs
+	);
+
+	/** Inequality operator.
+	 *
+	 *  @param rhs Left hand side of the inequality sign.
+	 *  @param rhs Right hand side of the inequality sign.
+	 *
+	 *  @return False if the @link IndexDescriptor IndexDescriptors @endlink
+	 *  describe identical index structures, otherwise true. */
+	friend bool operator!=(
+		const IndexDescriptor &lhs,
+		const IndexDescriptor &rhs
+	);
+
 	/** Get format.
 	 *
 	 *  @return The Format that the IndexDescriptor describes. */
@@ -189,6 +213,10 @@ private:
 	/** Actuall descriptor. */
 	Descriptor descriptor;
 };
+
+inline bool operator!=(const IndexDescriptor &lhs, const IndexDescriptor &rhs){
+	return !(rhs == lhs);
+}
 
 inline IndexDescriptor::Format IndexDescriptor::getFormat() const{
 	return format;
