@@ -134,6 +134,43 @@ IndexTree::IndexTree(const string &serialization, Mode mode){
 IndexTree::~IndexTree(){
 }
 
+bool operator==(const IndexTree &lhs, const IndexTree &rhs){
+//	Streams::out << "Size:\t" << lhs.children.size() << "\t" << rhs.children.size() << "\n";
+	if(lhs.children.size() != rhs.children.size())
+		return false;
+
+	for(unsigned int n = 0; n < lhs.children.size(); n++){
+		if(lhs.children[n] != rhs.children[n])
+			return false;
+	}
+
+//	Streams::out << "Index included:\t" << lhs.indexIncluded << "\t" << rhs.indexIncluded << "\n";
+	if(lhs.indexIncluded != rhs.indexIncluded)
+		return false;
+
+//	Streams::out << "Wildcard index:\t" << lhs.wildcardIndex << "\t" << rhs.wildcardIndex << "\n";
+	if(lhs.wildcardIndex != rhs.wildcardIndex)
+		return false;
+
+//	Streams::out << "Wildcard type:\t" << lhs.wildcardType << "\t" << rhs.wildcardType << "\n";
+	if(lhs.wildcardType != rhs.wildcardType)
+		return false;
+
+//	Streams::out << "Index separator:\t" << lhs.indexSeparator << "\t" << rhs.indexSeparator << "\n";
+	if(lhs.indexSeparator != rhs.indexSeparator)
+		return false;
+
+//	Streams::out << "Linear index:\t" << lhs.linearIndex << "\t" << rhs.linearIndex << "\n";
+	if(lhs.linearIndex != rhs.linearIndex)
+		return false;
+
+//	Streams::out << "Size:\t" << lhs.size << "\t" << rhs.size << "\n";
+	if(lhs.size != rhs.size)
+		return false;
+
+	return true;
+}
+
 void IndexTree::add(const Index &index){
 	add(index, 0);
 }

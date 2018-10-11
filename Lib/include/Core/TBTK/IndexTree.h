@@ -47,6 +47,24 @@ public:
 	/** Destructor. */
 	virtual ~IndexTree();
 
+	/** Comparison operator.
+	 *
+	 *  @param lhs The left hand side of the comparison operator.
+	 *  @param rhs The right hand side of the comparison operator.
+	 *
+	 *  @param True if the two @link IndexTree IndexTrees @endlink describe
+	 *  identical Index structures, otherwise false. */
+	friend bool operator==(const IndexTree &lhs, const IndexTree &rhs);
+
+	/** Inequality operator.
+	 *
+	 *  @param lhs The left hand side of the comparison operator.
+	 *  @param rhs The right hand side of the comparison operator.
+	 *
+	 *  @param False if the two @link IndexTree IndexTrees @endlink describe
+	 *  identical Index structures, otherwise true. */
+	friend bool operator!=(const IndexTree &lhs, const IndexTree &rhs);
+
 	/** Add index to the IndexTree. The IndexTree allows for @link Index
 	 *  Indices @enlink with both non-negative as well as negative
 	 *  subindices to be added to the tree. For @link Index Indices
@@ -374,6 +392,10 @@ private:
 	/** Get maximum linear index of IndexTree. */
 	int getMaxIndex() const;
 };
+
+inline bool operator!=(const IndexTree &lhs, const IndexTree &rhs){
+	return !(lhs == rhs);
+}
 
 inline bool IndexTree::getLinearMapIsGenerated() const{
 	if(size == -1)

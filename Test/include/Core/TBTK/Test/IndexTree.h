@@ -123,6 +123,101 @@ TEST(IndexTree, Destructor){
 	//Not testable on its own.
 }
 
+TEST(IndexTree, operatorComparison){
+	IndexTree indexTree0;
+	IndexTree indexTree1;
+
+	EXPECT_TRUE(indexTree0 == indexTree1);
+	EXPECT_FALSE(indexTree0 != indexTree1);
+
+	indexTree0.generateLinearMap();
+	EXPECT_FALSE(indexTree0 == indexTree1);
+	EXPECT_TRUE(indexTree0 != indexTree1);
+
+	indexTree1.generateLinearMap();
+
+	EXPECT_TRUE(indexTree0 == indexTree1);
+	EXPECT_FALSE(indexTree0 != indexTree1);
+
+	IndexTree indexTree2;
+	IndexTree indexTree3;
+	IndexTree indexTree4;
+	IndexTree indexTree5;
+	IndexTree indexTree6;
+	IndexTree indexTree7;
+
+	indexTree2.add({1, 2, 3});
+	indexTree2.add({2, 2, 3});
+	indexTree2.add({1, 2, 1});
+	indexTree2.generateLinearMap();
+
+	indexTree3.add({1, 2, 3});
+	indexTree3.add({2, 2, 3});
+	indexTree3.add({1, 2, 1});
+	indexTree3.generateLinearMap();
+
+	indexTree4.add({1, 2, 3});
+	indexTree4.add({1, 2, 1});
+	indexTree4.generateLinearMap();
+
+	EXPECT_TRUE(indexTree2 == indexTree3);
+	EXPECT_FALSE(indexTree2 != indexTree3);
+	EXPECT_FALSE(indexTree2 == indexTree4);
+	EXPECT_TRUE(indexTree2 != indexTree4);
+
+	indexTree5.add({1, 2, 3});
+	indexTree5.add({2, 2, IDX_ALL});
+	indexTree5.add({1, 2, 1});
+	indexTree5.generateLinearMap();
+
+	indexTree6.add({1, 2, 3});
+	indexTree6.add({2, 2, IDX_ALL});
+	indexTree6.add({1, 2, 1});
+	indexTree6.generateLinearMap();
+
+	indexTree7.add({1, 2, 3});
+	indexTree7.add({2, 2, IDX_SUM_ALL});
+	indexTree7.add({1, 2, 1});
+	indexTree7.generateLinearMap();
+
+	EXPECT_TRUE(indexTree5 == indexTree6);
+	EXPECT_FALSE(indexTree5 != indexTree6);
+	EXPECT_FALSE(indexTree5 == indexTree7);
+	EXPECT_TRUE(indexTree5 != indexTree7);
+
+	EXPECT_FALSE(indexTree2 == indexTree5);
+	EXPECT_TRUE(indexTree2 != indexTree5);
+	EXPECT_FALSE(indexTree2 == indexTree7);
+	EXPECT_TRUE(indexTree2 != indexTree7);
+
+	IndexTree indexTree8;
+	indexTree8.add({{1, 2, 3}, {2, 3, 4}});
+	indexTree8.add({{1, 2, 3}, {2, 3, 2}});
+	indexTree8.generateLinearMap();
+
+	IndexTree indexTree9;
+	indexTree9.add({{1, 2, 3}, {2, 3, 4}});
+	indexTree9.add({{1, 2, 3}, {2, 3, 2}});
+	indexTree9.generateLinearMap();
+
+	IndexTree indexTree10;
+	indexTree10.add({{1, 2, 3}, {2, 3, 4}});
+	indexTree10.add({{1, 2, 3}, {2, 3, 3}});
+	indexTree10.generateLinearMap();
+
+	EXPECT_TRUE(indexTree8 == indexTree9);
+	EXPECT_FALSE(indexTree8 != indexTree9);
+	EXPECT_FALSE(indexTree8 == indexTree10);
+	EXPECT_TRUE(indexTree8 != indexTree10);
+
+	EXPECT_FALSE(indexTree2 == indexTree8);
+	EXPECT_TRUE(indexTree2 != indexTree8);
+}
+
+TEST(IndexTree, operatorInequality){
+	//Already tested through IndexTree::operatorComparison.
+}
+
 TEST(IndexTree, add){
 	IndexTree indexTree;
 
