@@ -399,6 +399,26 @@ protected:
 	 *
 	 *  @return Reference to the assigned AbstractProperty. */
 	AbstractProperty& operator=(AbstractProperty &&abstractProperty);
+
+	/** Addition assignment operator. Child classes that want to use this
+	 *  function must override this function and call the parents addition
+	 *  assignment operator at the beginning of it's body.
+	 *
+	 *  @param The AbstractProperty to be added to the left hand side.
+	 *
+	 *  @return The left hand side after the right hand side has been
+	 *  added. */
+	AbstractProperty& operator+=(const AbstractProperty &rhs);
+
+	/** Subtraction assignment operator. Child classes that want to use
+	 *  this function must override this function and call the parents
+	 *  subtraction assignment operator at the beginning of it's body.
+	 *
+	 *  @param The AbstractProperty to be added to the left hand side.
+	 *
+	 *  @return The left hand side after the right hand side has been
+	 *  added. */
+	AbstractProperty& operator-=(const AbstractProperty &rhs);
 private:
 	/** IndexDescriptor describing the memory layout of the data. */
 	IndexDescriptor indexDescriptor;
@@ -1262,6 +1282,124 @@ AbstractProperty<
 
 		allowIndexOutOfBoundsAccess = rhs.allowIndexOutOfBoundsAccess;
 	}
+
+	return *this;
+}
+
+template<typename DataType, bool isFundamental, bool isSerializable>
+inline AbstractProperty<DataType, isFundamental, isSerializable>&
+AbstractProperty<
+	DataType,
+	isFundamental,
+	isSerializable
+>::operator+=(
+	const AbstractProperty<DataType, isFundamental, isSerializable> &rhs
+){
+	TBTKAssert(
+		indexDescriptor == rhs.indexDescriptor,
+		"AbstractProperty::operator+=()",
+		"Incompatible Properties. The Properties does not have the"
+		<< " same index structure.",
+		""
+	);
+
+	TBTKAssert(
+		blockSize == rhs.blockSize,
+		"AbstractProperty::operator+=()",
+		"Incompatible Properties. The Properties does not have the"
+		<< " same block size.",
+		""
+	);
+
+	TBTKAssert(
+		allowIndexOutOfBoundsAccess == rhs.allowIndexOutOfBoundsAccess,
+		"AbstractProperty::operator+=()",
+		"Incompatible Properties. The Properties differ in their"
+		<< " 'index out of bounds behavior'.",
+		"Use AbstractProperty::setAllowIndexOutOfBoundsAccess() to set"
+		<< " the 'index out of bounds' behavior."
+	);
+
+	if(allowIndexOutOfBoundsAccess){
+		TBTKAssert(
+			defaultValue == rhs.defaultValue,
+			"AbstractProperty::operator+=()",
+			"Incompatible Properties. The Properties differ in"
+			<< " their default values.",
+			"Use AbstractProperty::setDefaultValue() to set the"
+			<< " default value."
+		);
+	}
+
+	TBTKAssert(
+		data.size() == rhs.data.size(),
+		"AbstractProperty::operator+=()",
+		"Incompatible Properties. The Properties have different data"
+		<< " sizes.",
+		"This should never happen, contact the developer."
+	);
+
+	for(unsigned int n = 0; n < data.size(); n++)
+		data[n] += rhs.data[n];
+
+	return *this;
+}
+
+template<typename DataType, bool isFundamental, bool isSerializable>
+inline AbstractProperty<DataType, isFundamental, isSerializable>&
+AbstractProperty<
+	DataType,
+	isFundamental,
+	isSerializable
+>::operator-=(
+	const AbstractProperty<DataType, isFundamental, isSerializable> &rhs
+){
+	TBTKAssert(
+		indexDescriptor == rhs.indexDescriptor,
+		"AbstractProperty::operator-=()",
+		"Incompatible Properties. The Properties does not have the"
+		<< " same index structure.",
+		""
+	);
+
+	TBTKAssert(
+		blockSize == rhs.blockSize,
+		"AbstractProperty::operator-=()",
+		"Incompatible Properties. The Properties does not have the"
+		<< " same block size.",
+		""
+	);
+
+	TBTKAssert(
+		allowIndexOutOfBoundsAccess == rhs.allowIndexOutOfBoundsAccess,
+		"AbstractProperty::operator-=()",
+		"Incompatible Properties. The Properties differ in their"
+		<< " 'index out of bounds behavior'.",
+		"Use AbstractProperty::setAllowIndexOutOfBoundsAccess() to set"
+		<< " the 'index out of bounds' behavior."
+	);
+
+	if(allowIndexOutOfBoundsAccess){
+		TBTKAssert(
+			defaultValue == rhs.defaultValue,
+			"AbstractProperty::operator-=()",
+			"Incompatible Properties. The Properties differ in"
+			<< " their default values.",
+			"Use AbstractProperty::setDefaultValue() to set the"
+			<< " default value."
+		);
+	}
+
+	TBTKAssert(
+		data.size() == rhs.data.size(),
+		"AbstractProperty::operator-=()",
+		"Incompatible Properties. The Properties have different data"
+		<< " sizes.",
+		"This should never happen, contact the developer."
+	);
+
+	for(unsigned int n = 0; n < data.size(); n++)
+		data[n] -= rhs.data[n];
 
 	return *this;
 }

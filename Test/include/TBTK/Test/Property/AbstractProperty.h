@@ -82,6 +82,20 @@ public:
 
 		return *this;
 	}
+	PublicAbstractProperty& operator+=(
+		const PublicAbstractProperty &publicAbstractProperty
+	){
+		AbstractProperty<DataType>::operator+=(publicAbstractProperty);
+
+		return *this;
+	}
+	PublicAbstractProperty& operator-=(
+		const PublicAbstractProperty &publicAbstractProperty
+	){
+		AbstractProperty<DataType>::operator-=(publicAbstractProperty);
+
+		return *this;
+	}
 };
 
 TEST(AbstractProperty, Constructor0){
@@ -403,6 +417,290 @@ TEST(AbstractProperty, OperatorMoveAssignment){
 	ASSERT_EQ(data5.size(), property5.getSize());
 	for(unsigned int n = 0; n < data5.size(); n++)
 		EXPECT_EQ(data5[n], n);
+}
+
+TEST(AbstractProperty, operatorAdditionAssignment){
+	//IndexDescriptor::Format::None.
+	const int dataInputNone0[3] = {0, 1, 2};
+	PublicAbstractProperty<int> propertyNone0(3, dataInputNone0);
+	const int dataInputNone1[3] = {2, 2, 3};
+	PublicAbstractProperty<int> propertyNone1(3, dataInputNone1);
+	const int dataInputNone2[2] = {2, 2};
+	PublicAbstractProperty<int> propertyNone2(2, dataInputNone2);
+
+	propertyNone0 += propertyNone1;
+	const std::vector<int> &dataNone0 = propertyNone0.getData();
+	EXPECT_EQ(dataNone0[0], 2);
+	EXPECT_EQ(dataNone0[1], 3);
+	EXPECT_EQ(dataNone0[2], 5);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			propertyNone0 += propertyNone2;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+
+	//IndexDescriptor::Format::Ranges.
+	int dataInputRanges0[2*3*4*10];
+	for(unsigned int n = 0; n < 2*3*4*10; n++)
+		dataInputRanges0[n] = n;
+	PublicAbstractProperty<int> propertyRanges0(
+		{2, 3, 4},
+		10,
+		dataInputRanges0
+	);
+	int dataInputRanges1[2*3*4*10];
+	for(unsigned int n = 0; n < 2*3*4*10; n++)
+		dataInputRanges1[n] = 2*n;
+	PublicAbstractProperty<int> propertyRanges1(
+		{2, 3, 4},
+		10,
+		dataInputRanges1
+	);
+	int dataInputRanges2[2*3*10];
+	for(unsigned int n = 0; n < 2*3*10; n++)
+		dataInputRanges2[n] = n;
+	PublicAbstractProperty<int> propertyRanges2(
+		{2, 3},
+		10,
+		dataInputRanges2
+	);
+
+	propertyRanges0 += propertyRanges1;
+	const std::vector<int> &dataRanges0 = propertyRanges0.getData();
+	for(unsigned int n = 0; n < dataRanges0.size(); n++)
+		EXPECT_EQ(dataRanges0[n], 3*n);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			propertyRanges0 += propertyRanges2;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+
+	//IndexDescriptor::Format::Custom.
+	IndexTree indexTreeCustom0;
+	indexTreeCustom0.add({0, 1});
+	indexTreeCustom0.add({1, 2});
+	indexTreeCustom0.add({1, 3});
+	int inputDataCustom0[3*10];
+	for(unsigned int n = 0; n < 3*10; n++)
+		inputDataCustom0[n] = n;
+	indexTreeCustom0.generateLinearMap();
+	PublicAbstractProperty<int> propertyCustom0(
+		indexTreeCustom0,
+		10,
+		inputDataCustom0
+	);
+
+	IndexTree indexTreeCustom1;
+	indexTreeCustom1.add({0, 1});
+	indexTreeCustom1.add({1, 2});
+	indexTreeCustom1.add({1, 3});
+	int inputDataCustom1[3*10];
+	for(unsigned int n = 0; n < 3*10; n++)
+		inputDataCustom1[n] = 2*n;
+	indexTreeCustom1.generateLinearMap();
+	PublicAbstractProperty<int> propertyCustom1(
+		indexTreeCustom1,
+		10,
+		inputDataCustom1
+	);
+
+	IndexTree indexTreeCustom2;
+	indexTreeCustom2.add({0, 1});
+	indexTreeCustom2.add({1, 2});
+	int inputDataCustom2[2*10];
+	for(unsigned int n = 0; n < 2*10; n++)
+		inputDataCustom2[n] = n;
+	indexTreeCustom2.generateLinearMap();
+	PublicAbstractProperty<int> propertyCustom2(
+		indexTreeCustom2,
+		10,
+		inputDataCustom2
+	);
+
+	propertyCustom0 += propertyCustom1;
+	const std::vector<int> &dataCustom0 = propertyCustom0.getData();
+	for(unsigned int n = 0; n < dataCustom0.size(); n++)
+		EXPECT_EQ(dataCustom0[n], 3*n);
+
+	//Fail for different types.
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			propertyNone0 += propertyRanges0;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	//Fail for different types.
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			propertyNone0 += propertyCustom0;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	//Fail for different types.
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			propertyRanges0 += propertyCustom0;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+TEST(AbstractProperty, operatorSubtractionAssignment){
+	//IndexDescriptor::Format::None.
+	const int dataInputNone0[3] = {0, 1, 2};
+	PublicAbstractProperty<int> propertyNone0(3, dataInputNone0);
+	const int dataInputNone1[3] = {2, 2, 3};
+	PublicAbstractProperty<int> propertyNone1(3, dataInputNone1);
+	const int dataInputNone2[2] = {2, 2};
+	PublicAbstractProperty<int> propertyNone2(2, dataInputNone2);
+
+	propertyNone0 -= propertyNone1;
+	const std::vector<int> &dataNone0 = propertyNone0.getData();
+	EXPECT_EQ(dataNone0[0], -2);
+	EXPECT_EQ(dataNone0[1], -1);
+	EXPECT_EQ(dataNone0[2], -1);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			propertyNone0 -= propertyNone2;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+
+	//IndexDescriptor::Format::Ranges.
+	int dataInputRanges0[2*3*4*10];
+	for(unsigned int n = 0; n < 2*3*4*10; n++)
+		dataInputRanges0[n] = n;
+	PublicAbstractProperty<int> propertyRanges0(
+		{2, 3, 4},
+		10,
+		dataInputRanges0
+	);
+	int dataInputRanges1[2*3*4*10];
+	for(unsigned int n = 0; n < 2*3*4*10; n++)
+		dataInputRanges1[n] = 2*n;
+	PublicAbstractProperty<int> propertyRanges1(
+		{2, 3, 4},
+		10,
+		dataInputRanges1
+	);
+	int dataInputRanges2[2*3*10];
+	for(unsigned int n = 0; n < 2*3*10; n++)
+		dataInputRanges2[n] = n;
+	PublicAbstractProperty<int> propertyRanges2(
+		{2, 3},
+		10,
+		dataInputRanges2
+	);
+
+	propertyRanges0 -= propertyRanges1;
+	const std::vector<int> &dataRanges0 = propertyRanges0.getData();
+	for(unsigned int n = 0; n < dataRanges0.size(); n++)
+		EXPECT_EQ(dataRanges0[n], -n);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			propertyRanges0 -= propertyRanges2;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+
+	//IndexDescriptor::Format::Custom.
+	IndexTree indexTreeCustom0;
+	indexTreeCustom0.add({0, 1});
+	indexTreeCustom0.add({1, 2});
+	indexTreeCustom0.add({1, 3});
+	int inputDataCustom0[3*10];
+	for(unsigned int n = 0; n < 3*10; n++)
+		inputDataCustom0[n] = n;
+	indexTreeCustom0.generateLinearMap();
+	PublicAbstractProperty<int> propertyCustom0(
+		indexTreeCustom0,
+		10,
+		inputDataCustom0
+	);
+
+	IndexTree indexTreeCustom1;
+	indexTreeCustom1.add({0, 1});
+	indexTreeCustom1.add({1, 2});
+	indexTreeCustom1.add({1, 3});
+	int inputDataCustom1[3*10];
+	for(unsigned int n = 0; n < 3*10; n++)
+		inputDataCustom1[n] = 2*n;
+	indexTreeCustom1.generateLinearMap();
+	PublicAbstractProperty<int> propertyCustom1(
+		indexTreeCustom1,
+		10,
+		inputDataCustom1
+	);
+
+	IndexTree indexTreeCustom2;
+	indexTreeCustom2.add({0, 1});
+	indexTreeCustom2.add({1, 2});
+	int inputDataCustom2[2*10];
+	for(unsigned int n = 0; n < 2*10; n++)
+		inputDataCustom2[n] = n;
+	indexTreeCustom2.generateLinearMap();
+	PublicAbstractProperty<int> propertyCustom2(
+		indexTreeCustom2,
+		10,
+		inputDataCustom2
+	);
+
+	propertyCustom0 -= propertyCustom1;
+	const std::vector<int> &dataCustom0 = propertyCustom0.getData();
+	for(unsigned int n = 0; n < dataCustom0.size(); n++)
+		EXPECT_EQ(dataCustom0[n], -n);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			propertyCustom0 -= propertyCustom2;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+
+	//Fail for different types.
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			propertyNone0 -= propertyRanges0;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	//Fail for different types.
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			propertyNone0 -= propertyCustom0;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	//Fail for different types.
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			propertyRanges0 -= propertyCustom0;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
 }
 
 TEST(AbstractProperty, getBlockSize){
