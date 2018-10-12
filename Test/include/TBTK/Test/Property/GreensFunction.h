@@ -7,7 +7,7 @@ namespace Property{
 
 TEST(GreensFunction, Constructor0){
 	//Just verify that this compiles.
-//	GreensFunction greensFunction;
+	GreensFunction greensFunction;
 }
 
 TEST(GreensFunction, Constructor1){

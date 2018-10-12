@@ -29,7 +29,8 @@ public:
 };
 
 TEST(EnergyResolvedProperty, Constructor0){
-	//Nothing to test since the object is uninitialized.
+	//Just verify that this compiles.
+	EnergyResolvedProperty<int> energyResolvedProperty;
 }
 
 TEST(EnergyResolvedProperty, Constructor1){
