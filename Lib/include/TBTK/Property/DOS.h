@@ -23,13 +23,13 @@
 #ifndef COM_DAFER45_TBTK_DOS
 #define COM_DAFER45_TBTK_DOS
 
-#include "TBTK/Property/AbstractProperty.h"
+#include "TBTK/Property/EnergyResolvedProperty.h"
 
 namespace TBTK{
 namespace Property{
 
 /** \brief Property container for density of states (DOS). */
-class DOS : public AbstractProperty<double>{
+class DOS : public EnergyResolvedProperty<double>{
 public:
 	/** Constructs a Density.
 	 *
@@ -62,33 +62,33 @@ public:
 	/** Get lower bound for the energy.
 	 *
 	 *  @return Lower bound for the energy. */
-	double getLowerBound() const;
+//	double getLowerBound() const;
 
 	/** Get upper bound for the energy.
 	 *
 	 *  @return Upper bound for the energy. */
-	double getUpperBound() const;
+//	double getUpperBound() const;
 
 	/** Get the energy resolution (number of points used for the energy
 	 *  axis).
 	 *
 	 *  @return The energy resolution. */
-	int getResolution() const;
+//	int getResolution() const;
 
 	/** Overrides AbstractProperty::serialize(). */
 	virtual std::string serialize(Mode mode) const;
 private:
 	/** Lower bound for the energy. */
-	double lowerBound;
+//	double lowerBound;
 
 	/** Upper bound for the energy. */
-	double upperBound;
+//	double upperBound;
 
 	/** Energy resolution. (Number of energy intervals) */
-	int resolution;
+//	int resolution;
 };
 
-inline double DOS::getLowerBound() const{
+/*inline double DOS::getLowerBound() const{
 	return lowerBound;
 }
 
@@ -98,7 +98,7 @@ inline double DOS::getUpperBound() const{
 
 inline int DOS::getResolution() const{
 	return resolution;
-}
+}*/
 
 };	//End namespace Property
 };	//End namespace TBTK

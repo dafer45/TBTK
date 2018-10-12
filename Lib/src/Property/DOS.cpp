@@ -33,11 +33,8 @@ DOS::DOS(
 	double upperBound,
 	int resolution
 ) :
-	AbstractProperty(resolution)
+	EnergyResolvedProperty<double>(lowerBound, upperBound, resolution)
 {
-	this->lowerBound = lowerBound;
-	this->upperBound = upperBound;
-	this->resolution = resolution;
 }
 
 DOS::DOS(
@@ -46,21 +43,18 @@ DOS::DOS(
 	int resolution,
 	const double *data
 ) :
-	AbstractProperty(resolution, data)
+	EnergyResolvedProperty(lowerBound, upperBound, resolution, data)
 {
-	this->lowerBound = lowerBound;
-	this->upperBound = upperBound;
-	this->resolution = resolution;
 }
 
 DOS::DOS(
 	const string &serialization, Mode mode
 ) :
-	AbstractProperty(
+	EnergyResolvedProperty(
 		Serializable::extract(
 			serialization,
 			mode,
-			"abstractProperty"
+			"energyResolvedProperty"
 		),
 		mode
 	)
@@ -74,21 +68,6 @@ DOS::DOS(
 
 	switch(mode){
 	case Mode::JSON:
-		try{
-			nlohmann::json j = nlohmann::json::parse(serialization);
-			lowerBound = j.at("lowerBound").get<double>();
-			upperBound = j.at("upperBound").get<double>();
-			resolution = j.at("resolution").get<int>();
-		}
-		catch(nlohmann::json::exception e){
-			TBTKExit(
-				"DOS::DOS()",
-				"Unable to parse string as DOS '"
-				<< serialization << "'.",
-				""
-			);
-		}
-
 		break;
 	default:
 		TBTKExit(
@@ -105,11 +84,8 @@ string DOS::serialize(Mode mode) const{
 	{
 		nlohmann::json j;
 		j["id"] = "DOS";
-		j["lowerBound"] = lowerBound;
-		j["upperBound"] = upperBound;
-		j["resolution"] = resolution;
-		j["abstractProperty"] = nlohmann::json::parse(
-			AbstractProperty::serialize(mode)
+		j["energyResolvedProperty"] = nlohmann::json::parse(
+			EnergyResolvedProperty::serialize(mode)
 		);
 
 		return j.dump();
