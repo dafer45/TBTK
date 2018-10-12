@@ -84,14 +84,14 @@ void PropertyExtractor::setEnergyWindow(
 		abs(lowerBosonicMatsubaraEnergyIndex%2) == 0,
 		"PropertyExtractor::PropertyExtractor::setEnergyWindow()",
 		"'lowerBosonicMatsubaraEnergyIndex="
-		<< lowerBosonicMatsubaraEnergyIndex << "' must be odd.",
+		<< lowerBosonicMatsubaraEnergyIndex << "' must be even.",
 		""
 	);
 	TBTKAssert(
 		abs(upperBosonicMatsubaraEnergyIndex%2) == 0,
 		"PropertyExtractor::PropertyExtractor::setEnergyWindow()",
 		"'upperBosonicMatsubaraEnergyIndex="
-		<< upperBosonicMatsubaraEnergyIndex << "' must be odd.",
+		<< upperBosonicMatsubaraEnergyIndex << "' must be even.",
 		""
 	);
 	TBTKAssert(
