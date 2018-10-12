@@ -66,25 +66,127 @@ TEST(GreensFunction, Constructor1){
 	EXPECT_EQ(greensFunction1.getType(), GreensFunction::Type::Principal);
 }
 
+TEST(GreensFunction, operatorAdditionAssignment){
+	IndexTree indexTree;
+	indexTree.add({{0, 1}, {0, 1}});
+	indexTree.add({{0, 2}, {0, 1}});
+	indexTree.add({{0, 1}, {0, 3}});
+	indexTree.generateLinearMap();
+
+	std::complex<double> inputData0[3*1000];
+	for(unsigned int n = 0; n < 3000; n++)
+		inputData0[n] = n;
+	GreensFunction greensFunction0(
+		indexTree,
+		GreensFunction::Type::Retarded,
+		-10,
+		10,
+		1000,
+		inputData0
+	);
+
+	std::complex<double> inputData1[3*1000];
+	for(unsigned int n = 0; n < 3000; n++)
+		inputData1[n] = 2*n;
+	GreensFunction greensFunction1(
+		indexTree,
+		GreensFunction::Type::Retarded,
+		-10,
+		10,
+		1000,
+		inputData1
+	);
+
+	std::complex<double> inputData2[3*1000];
+	for(unsigned int n = 0; n < 3000; n++)
+		inputData2[n] = 3*n;
+	GreensFunction greensFunction2(
+		indexTree,
+		GreensFunction::Type::Advanced,
+		-10,
+		10,
+		1000,
+		inputData2
+	);
+
+	greensFunction0 += greensFunction1;
+	std::vector<std::complex<double>> data0 = greensFunction0.getData();
+	for(unsigned int n = 0; n < 3000; n++){
+		EXPECT_DOUBLE_EQ(real(data0[n]), 3*n);
+		EXPECT_DOUBLE_EQ(imag(data0[n]), 0);
+	}
+
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			greensFunction0 += greensFunction2;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+TEST(GreensFunction, operatorSubtractionAssignment){
+	IndexTree indexTree;
+	indexTree.add({{0, 1}, {0, 1}});
+	indexTree.add({{0, 2}, {0, 1}});
+	indexTree.add({{0, 1}, {0, 3}});
+	indexTree.generateLinearMap();
+
+	std::complex<double> inputData0[3*1000];
+	for(unsigned int n = 0; n < 3000; n++)
+		inputData0[n] = n;
+	GreensFunction greensFunction0(
+		indexTree,
+		GreensFunction::Type::Retarded,
+		-10,
+		10,
+		1000,
+		inputData0
+	);
+
+	std::complex<double> inputData1[3*1000];
+	for(unsigned int n = 0; n < 3000; n++)
+		inputData1[n] = 2*n;
+	GreensFunction greensFunction1(
+		indexTree,
+		GreensFunction::Type::Retarded,
+		-10,
+		10,
+		1000,
+		inputData1
+	);
+
+	std::complex<double> inputData2[3*1000];
+	for(unsigned int n = 0; n < 3000; n++)
+		inputData2[n] = 3*n;
+	GreensFunction greensFunction2(
+		indexTree,
+		GreensFunction::Type::Advanced,
+		-10,
+		10,
+		1000,
+		inputData2
+	);
+
+	greensFunction0 -= greensFunction1;
+	std::vector<std::complex<double>> data0 = greensFunction0.getData();
+	for(int n = 0; n < 3000; n++){
+		EXPECT_DOUBLE_EQ(real(data0[n]), -n);
+		EXPECT_DOUBLE_EQ(imag(data0[n]), 0);
+	}
+
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			greensFunction0 -= greensFunction2;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
 TEST(GreensFunction, getType){
-	//Already tested through
-	//GreensFunction::Constructor0
-	//GreensFunction::Constructor1
-}
-
-TEST(GreensFunction, getLowerBound){
-	//Already tested through
-	//GreensFunction::Constructor0
-	//GreensFunction::Constructor1
-}
-
-TEST(GreensFunction, getUpperBound){
-	//Already tested through
-	//GreensFunction::Constructor0
-	//GreensFunction::Constructor1
-}
-
-TEST(GreensFunction, getResolution){
 	//Already tested through
 	//GreensFunction::Constructor0
 	//GreensFunction::Constructor1

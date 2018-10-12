@@ -39,6 +39,40 @@ TEST(EigenValues, SerializeToJSON){
 		EXPECT_DOUBLE_EQ(data[n], n);
 }
 
+TEST(EigenValues, operatorAdditionAssignment){
+	double dataInput0[1000];
+	for(unsigned int n = 0; n < 1000; n ++)
+		dataInput0[n] = n;
+	EigenValues eigenValues0(1000, dataInput0);
+
+	double dataInput1[1000];
+	for(unsigned int n = 0; n < 1000; n ++)
+		dataInput1[n] = 2*n;
+	EigenValues eigenValues1(1000, dataInput1);
+
+	eigenValues0 += eigenValues1;
+	const std::vector<double> &data0 = eigenValues0.getData();
+	for(unsigned int n = 0; n < data0.size(); n++)
+		EXPECT_DOUBLE_EQ(data0[n], 3*n);
+}
+
+TEST(EigenValues, operatorSubtractionAssignment){
+	double dataInput0[1000];
+	for(unsigned int n = 0; n < 1000; n ++)
+		dataInput0[n] = n;
+	EigenValues eigenValues0(1000, dataInput0);
+
+	double dataInput1[1000];
+	for(unsigned int n = 0; n < 1000; n ++)
+		dataInput1[n] = 2*n;
+	EigenValues eigenValues1(1000, dataInput1);
+
+	eigenValues0 -= eigenValues1;
+	const std::vector<double> &data0 = eigenValues0.getData();
+	for(int n = 0; n < (int)data0.size(); n++)
+		EXPECT_DOUBLE_EQ(data0[n], -n);
+}
+
 TEST(EigenValues, serialize){
 	//Already tested through SerializeToJSON.
 }

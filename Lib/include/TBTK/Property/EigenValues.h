@@ -51,10 +51,28 @@ public:
 	 *  @param mode Mode with which the string has been serialized. */
 	EigenValues(const std::string &serialization, Mode mode);
 
+	/** Overrides AbstractProperty::operator+=(). */
+	EigenValues& operator+=(const EigenValues &rhs);
+
+	/** Overrides AbstractProperty::operator-=(). */
+	EigenValues& operator-=(const EigenValues &rhs);
+
 	/** Overrides AbstractProperty::serialize(). */
 	std::string serialize(Mode mode) const;
 private:
 };
+
+inline EigenValues& EigenValues::operator+=(const EigenValues &rhs){
+	AbstractProperty::operator+=(rhs);
+
+	return *this;
+}
+
+inline EigenValues& EigenValues::operator-=(const EigenValues &rhs){
+	AbstractProperty::operator-=(rhs);
+
+	return *this;
+}
 
 };	//End namespace Property
 };	//End namespace TBTK

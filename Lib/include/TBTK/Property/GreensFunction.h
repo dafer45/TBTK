@@ -123,6 +123,12 @@ public:
 		const std::complex<double> *data
 	);
 
+	/** Overrides EnergyResolvedProperty::operator+=(). */
+	GreensFunction& operator+=(const GreensFunction &rhs);
+
+	/** Overrides EnergyResolvedProperty::operator-=(). */
+	GreensFunction& operator-=(const GreensFunction &rhs);
+
 	/** Get the Green's function type.
 	 *
 	 *  @return The Green's function type. */
@@ -131,6 +137,32 @@ private:
 	/** The Green's function type. */
 	Type type;
 };
+
+inline GreensFunction& GreensFunction::operator+=(const GreensFunction &rhs){
+	TBTKAssert(
+		type == rhs.type,
+		"GreensFunction::operator+=()",
+		"Incompatible Green's function types.",
+		""
+	);
+
+	EnergyResolvedProperty::operator+=(rhs);
+
+	return *this;
+}
+
+inline GreensFunction& GreensFunction::operator-=(const GreensFunction &rhs){
+	TBTKAssert(
+		type == rhs.type,
+		"GreensFunction::operator-=()",
+		"Incompatible Green's function types.",
+		""
+	);
+
+	EnergyResolvedProperty::operator-=(rhs);
+
+	return *this;
+}
 
 inline GreensFunction::Type GreensFunction::getType() const{
 	return type;
