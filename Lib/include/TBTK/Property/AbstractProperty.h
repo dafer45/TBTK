@@ -402,7 +402,9 @@ protected:
 
 	/** Addition assignment operator. Child classes that want to use this
 	 *  function must override this function and call the parents addition
-	 *  assignment operator at the beginning of it's body.
+	 *  assignment operator after having performed checks whether the
+	 *  addition is possible, and before performing the addition of the
+	 *  child class parameters.
 	 *
 	 *  @param The AbstractProperty to be added to the left hand side.
 	 *
@@ -412,7 +414,9 @@ protected:
 
 	/** Subtraction assignment operator. Child classes that want to use
 	 *  this function must override this function and call the parents
-	 *  subtraction assignment operator at the beginning of it's body.
+	 *  subtraction assignment operator after having performed checks
+	 *  whether the subtraction is possible, and before performing the
+	 *  subtraction of the child class parameters.
 	 *
 	 *  @param The AbstractProperty to be added to the left hand side.
 	 *

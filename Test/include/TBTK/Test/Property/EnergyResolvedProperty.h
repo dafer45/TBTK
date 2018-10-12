@@ -6,6 +6,28 @@
 namespace TBTK{
 namespace Property{
 
+//Makes protected members public for testing.
+template<typename DataType>
+class PublicEnergyResolvedProperty : public EnergyResolvedProperty<DataType>{
+public:
+	using EnergyResolvedProperty<DataType>::EnergyResolvedProperty;
+
+	PublicEnergyResolvedProperty& operator+=(
+		const PublicEnergyResolvedProperty &rhs
+	){
+		EnergyResolvedProperty<DataType>::operator+=(rhs);
+
+		return *this;
+	}
+	PublicEnergyResolvedProperty& operator-=(
+		const PublicEnergyResolvedProperty &rhs
+	){
+		EnergyResolvedProperty<DataType>::operator-=(rhs);
+
+		return *this;
+	}
+};
+
 TEST(EnergyResolvedProperty, Constructor0){
 	IndexTree indexTree;
 	indexTree.add({0});
@@ -1150,6 +1172,556 @@ TEST(EnergyResolvedProperty, getNumEnergies){
 
 TEST(EnergyResolvedProperty, serialize){
 	//Already tested through EnergyResolvedProperty::SerializatToJSON().
+}
+
+TEST(EnergyResolvedProperty, additionAssignmentOperator){
+	IndexTree indexTree;
+	indexTree.add({0});
+	indexTree.add({1});
+	indexTree.add({2});
+	indexTree.generateLinearMap();
+
+	int data0[3000];
+	for(unsigned int n = 0; n < 3000; n++)
+		data0[n] = n;
+	int data1[3000];
+	for(unsigned int n = 0; n < 3000; n++)
+		data1[n] = 2*n;
+	int data2[300];
+	for(unsigned int n = 0; n < 300; n++)
+		data2[n] = 3*n;
+	int data3[2997];
+	for(unsigned int n = 0; n < 2997; n++)
+		data3[n] = 3*n;
+
+	//EnergyType::Real.
+	PublicEnergyResolvedProperty<int> energyResolvedPropertyReal0(
+		indexTree,
+		-10,
+		10,
+		1000,
+		data0
+	);
+	PublicEnergyResolvedProperty<int> energyResolvedPropertyReal1(
+		indexTree,
+		-10,
+		10,
+		1000,
+		data1
+	);
+	PublicEnergyResolvedProperty<int> energyResolvedPropertyReal2(
+		indexTree,
+		-9,
+		10,
+		1000,
+		data0
+	);
+	PublicEnergyResolvedProperty<int> energyResolvedPropertyReal3(
+		indexTree,
+		-10,
+		9,
+		1000,
+		data0
+	);
+	PublicEnergyResolvedProperty<int> energyResolvedPropertyReal4(
+		indexTree,
+		-9,
+		10,
+		100,
+		data2
+	);
+
+	energyResolvedPropertyReal0 += energyResolvedPropertyReal1;
+	const std::vector<int> &dataReal0
+		= energyResolvedPropertyReal0.getData();
+	for(unsigned int n = 0; n < 3000; n++)
+		EXPECT_EQ(dataReal0[n], 3*n);
+
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			energyResolvedPropertyReal0
+				+= energyResolvedPropertyReal2;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			energyResolvedPropertyReal0
+				+= energyResolvedPropertyReal3;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			energyResolvedPropertyReal0
+				+= energyResolvedPropertyReal4;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+
+	//EnergyType::FermionicMatsubara.
+	PublicEnergyResolvedProperty<int> energyResolvedPropertyFermionicMatsubara0(
+		EnergyResolvedProperty<int>::EnergyType::FermionicMatsubara,
+		indexTree,
+		-999,
+		999,
+		1.1,
+		data0
+	);
+	PublicEnergyResolvedProperty<int> energyResolvedPropertyFermionicMatsubara1(
+		EnergyResolvedProperty<int>::EnergyType::FermionicMatsubara,
+		indexTree,
+		-999,
+		999,
+		1.1,
+		data1
+	);
+	PublicEnergyResolvedProperty<int> energyResolvedPropertyFermionicMatsubara2(
+		EnergyResolvedProperty<int>::EnergyType::FermionicMatsubara,
+		indexTree,
+		-997,
+		1001,
+		1.1,
+		data0
+	);
+	PublicEnergyResolvedProperty<int> energyResolvedPropertyFermionicMatsubara3(
+		EnergyResolvedProperty<int>::EnergyType::FermionicMatsubara,
+		indexTree,
+		-999,
+		997,
+		1.1,
+		data3
+	);
+	PublicEnergyResolvedProperty<int> energyResolvedPropertyFermionicMatsubara4(
+		EnergyResolvedProperty<int>::EnergyType::FermionicMatsubara,
+		indexTree,
+		-999,
+		999,
+		1.2,
+		data0
+	);
+
+	energyResolvedPropertyFermionicMatsubara0
+		+= energyResolvedPropertyFermionicMatsubara1;
+	const std::vector<int> &dataFermionicMatsubara0
+		= energyResolvedPropertyFermionicMatsubara0.getData();
+	for(unsigned int n = 0; n < 3000; n++)
+		EXPECT_EQ(dataFermionicMatsubara0[n], 3*n);
+
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			energyResolvedPropertyFermionicMatsubara0
+				+= energyResolvedPropertyFermionicMatsubara2;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			energyResolvedPropertyFermionicMatsubara0
+				+= energyResolvedPropertyFermionicMatsubara3;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			energyResolvedPropertyFermionicMatsubara0
+				+= energyResolvedPropertyFermionicMatsubara4;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+
+	//EnergyType::BosonicMatsubara.
+	PublicEnergyResolvedProperty<int> energyResolvedPropertyBosonicMatsubara0(
+		EnergyResolvedProperty<int>::EnergyType::BosonicMatsubara,
+		indexTree,
+		0,
+		1998,
+		1.1,
+		data0
+	);
+	PublicEnergyResolvedProperty<int> energyResolvedPropertyBosonicMatsubara1(
+		EnergyResolvedProperty<int>::EnergyType::BosonicMatsubara,
+		indexTree,
+		0,
+		1998,
+		1.1,
+		data1
+	);
+	PublicEnergyResolvedProperty<int> energyResolvedPropertyBosonicMatsubara2(
+		EnergyResolvedProperty<int>::EnergyType::BosonicMatsubara,
+		indexTree,
+		2,
+		2000,
+		1.1,
+		data0
+	);
+	PublicEnergyResolvedProperty<int> energyResolvedPropertyBosonicMatsubara3(
+		EnergyResolvedProperty<int>::EnergyType::BosonicMatsubara,
+		indexTree,
+		0,
+		1996,
+		1.1,
+		data3
+	);
+	PublicEnergyResolvedProperty<int> energyResolvedPropertyBosonicMatsubara4(
+		EnergyResolvedProperty<int>::EnergyType::BosonicMatsubara,
+		indexTree,
+		0,
+		1998,
+		1.2,
+		data0
+	);
+
+	energyResolvedPropertyBosonicMatsubara0
+		+= energyResolvedPropertyBosonicMatsubara1;
+	const std::vector<int> &dataBosonicMatsubara0
+		= energyResolvedPropertyBosonicMatsubara0.getData();
+	for(unsigned int n = 0; n < 3000; n++)
+		EXPECT_EQ(dataBosonicMatsubara0[n], 3*n);
+
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			energyResolvedPropertyBosonicMatsubara0
+				+= energyResolvedPropertyBosonicMatsubara2;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			energyResolvedPropertyBosonicMatsubara0
+				+= energyResolvedPropertyBosonicMatsubara3;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			energyResolvedPropertyBosonicMatsubara0
+				+= energyResolvedPropertyBosonicMatsubara4;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+
+	//Fail for different energy types.
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			energyResolvedPropertyReal0
+				+= energyResolvedPropertyFermionicMatsubara4;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			energyResolvedPropertyReal0
+				+= energyResolvedPropertyBosonicMatsubara4;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			energyResolvedPropertyFermionicMatsubara0
+				+= energyResolvedPropertyBosonicMatsubara4;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+TEST(EnergyResolvedProperty, subtractionAssignmentOperator){
+	IndexTree indexTree;
+	indexTree.add({0});
+	indexTree.add({1});
+	indexTree.add({2});
+	indexTree.generateLinearMap();
+
+	int data0[3000];
+	for(unsigned int n = 0; n < 3000; n++)
+		data0[n] = n;
+	int data1[3000];
+	for(unsigned int n = 0; n < 3000; n++)
+		data1[n] = 2*n;
+	int data2[300];
+	for(unsigned int n = 0; n < 300; n++)
+		data2[n] = 3*n;
+	int data3[2997];
+	for(unsigned int n = 0; n < 2997; n++)
+		data3[n] = 3*n;
+
+	//EnergyType::Real.
+	PublicEnergyResolvedProperty<int> energyResolvedPropertyReal0(
+		indexTree,
+		-10,
+		10,
+		1000,
+		data0
+	);
+	PublicEnergyResolvedProperty<int> energyResolvedPropertyReal1(
+		indexTree,
+		-10,
+		10,
+		1000,
+		data1
+	);
+	PublicEnergyResolvedProperty<int> energyResolvedPropertyReal2(
+		indexTree,
+		-9,
+		10,
+		1000,
+		data0
+	);
+	PublicEnergyResolvedProperty<int> energyResolvedPropertyReal3(
+		indexTree,
+		-10,
+		9,
+		1000,
+		data0
+	);
+	PublicEnergyResolvedProperty<int> energyResolvedPropertyReal4(
+		indexTree,
+		-9,
+		10,
+		100,
+		data2
+	);
+
+	energyResolvedPropertyReal0 -= energyResolvedPropertyReal1;
+	const std::vector<int> &dataReal0
+		= energyResolvedPropertyReal0.getData();
+	for(unsigned int n = 0; n < 3000; n++)
+		EXPECT_EQ(dataReal0[n], -n);
+
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			energyResolvedPropertyReal0
+				-= energyResolvedPropertyReal2;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			energyResolvedPropertyReal0
+				-= energyResolvedPropertyReal3;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			energyResolvedPropertyReal0
+				-= energyResolvedPropertyReal4;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+
+	//EnergyType::FermionicMatsubara.
+	PublicEnergyResolvedProperty<int> energyResolvedPropertyFermionicMatsubara0(
+		EnergyResolvedProperty<int>::EnergyType::FermionicMatsubara,
+		indexTree,
+		-999,
+		999,
+		1.1,
+		data0
+	);
+	PublicEnergyResolvedProperty<int> energyResolvedPropertyFermionicMatsubara1(
+		EnergyResolvedProperty<int>::EnergyType::FermionicMatsubara,
+		indexTree,
+		-999,
+		999,
+		1.1,
+		data1
+	);
+	PublicEnergyResolvedProperty<int> energyResolvedPropertyFermionicMatsubara2(
+		EnergyResolvedProperty<int>::EnergyType::FermionicMatsubara,
+		indexTree,
+		-997,
+		1001,
+		1.1,
+		data0
+	);
+	PublicEnergyResolvedProperty<int> energyResolvedPropertyFermionicMatsubara3(
+		EnergyResolvedProperty<int>::EnergyType::FermionicMatsubara,
+		indexTree,
+		-999,
+		997,
+		1.1,
+		data3
+	);
+	PublicEnergyResolvedProperty<int> energyResolvedPropertyFermionicMatsubara4(
+		EnergyResolvedProperty<int>::EnergyType::FermionicMatsubara,
+		indexTree,
+		-999,
+		999,
+		1.2,
+		data0
+	);
+
+	energyResolvedPropertyFermionicMatsubara0
+		-= energyResolvedPropertyFermionicMatsubara1;
+	const std::vector<int> &dataFermionicMatsubara0
+		= energyResolvedPropertyFermionicMatsubara0.getData();
+	for(unsigned int n = 0; n < 3000; n++)
+		EXPECT_EQ(dataFermionicMatsubara0[n], -n);
+
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			energyResolvedPropertyFermionicMatsubara0
+				-= energyResolvedPropertyFermionicMatsubara2;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			energyResolvedPropertyFermionicMatsubara0
+				-= energyResolvedPropertyFermionicMatsubara3;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			energyResolvedPropertyFermionicMatsubara0
+				-= energyResolvedPropertyFermionicMatsubara4;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+
+	//EnergyType::BosonicMatsubara.
+	PublicEnergyResolvedProperty<int> energyResolvedPropertyBosonicMatsubara0(
+		EnergyResolvedProperty<int>::EnergyType::BosonicMatsubara,
+		indexTree,
+		0,
+		1998,
+		1.1,
+		data0
+	);
+	PublicEnergyResolvedProperty<int> energyResolvedPropertyBosonicMatsubara1(
+		EnergyResolvedProperty<int>::EnergyType::BosonicMatsubara,
+		indexTree,
+		0,
+		1998,
+		1.1,
+		data1
+	);
+	PublicEnergyResolvedProperty<int> energyResolvedPropertyBosonicMatsubara2(
+		EnergyResolvedProperty<int>::EnergyType::BosonicMatsubara,
+		indexTree,
+		2,
+		2000,
+		1.1,
+		data0
+	);
+	PublicEnergyResolvedProperty<int> energyResolvedPropertyBosonicMatsubara3(
+		EnergyResolvedProperty<int>::EnergyType::BosonicMatsubara,
+		indexTree,
+		0,
+		1996,
+		1.1,
+		data3
+	);
+	PublicEnergyResolvedProperty<int> energyResolvedPropertyBosonicMatsubara4(
+		EnergyResolvedProperty<int>::EnergyType::BosonicMatsubara,
+		indexTree,
+		0,
+		1998,
+		1.2,
+		data0
+	);
+
+	energyResolvedPropertyBosonicMatsubara0
+		-= energyResolvedPropertyBosonicMatsubara1;
+	const std::vector<int> &dataBosonicMatsubara0
+		= energyResolvedPropertyBosonicMatsubara0.getData();
+	for(unsigned int n = 0; n < 3000; n++)
+		EXPECT_EQ(dataBosonicMatsubara0[n], -n);
+
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			energyResolvedPropertyBosonicMatsubara0
+				-= energyResolvedPropertyBosonicMatsubara2;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			energyResolvedPropertyBosonicMatsubara0
+				-= energyResolvedPropertyBosonicMatsubara3;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			energyResolvedPropertyBosonicMatsubara0
+				-= energyResolvedPropertyBosonicMatsubara4;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+
+	//Fail for different energy types.
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			energyResolvedPropertyReal0
+				-= energyResolvedPropertyFermionicMatsubara4;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			energyResolvedPropertyReal0
+				-= energyResolvedPropertyBosonicMatsubara4;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			energyResolvedPropertyFermionicMatsubara0
+				-= energyResolvedPropertyBosonicMatsubara4;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
 }
 
 };	//End of namespace Property

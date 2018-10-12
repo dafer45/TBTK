@@ -203,6 +203,12 @@ public:
 
 	/** Overrides AbstractProperty::serialize(). */
 	virtual std::string serialize(Serializable::Mode mode) const;
+protected:
+	/** Overrides AbstractProperty::operator+=(). */
+	EnergyResolvedProperty& operator+=(const EnergyResolvedProperty &rhs);
+
+	/** Overrides AbstractProperty::operator-=(). */
+	EnergyResolvedProperty& operator-=(const EnergyResolvedProperty &rhs);
 private:
 	/** The energy type for the property. */
 	EnergyType energyType;
@@ -837,6 +843,190 @@ inline std::string EnergyResolvedProperty<DataType>::serialize(Serializable::Mod
 			""
 		);
 	}
+}
+
+template<typename DataType>
+inline EnergyResolvedProperty<DataType>&
+EnergyResolvedProperty<DataType>::operator+=(
+	const EnergyResolvedProperty<DataType> &rhs
+){
+	TBTKAssert(
+		energyType == rhs.energyType,
+		"Property::EnergyResolvedProperty::operator+=()",
+		"Incompatible energy types.",
+		""
+	);
+
+	switch(energyType){
+	case EnergyType::Real:
+		TBTKAssert(
+			descriptor.realEnergy.lowerBound
+				== rhs.descriptor.realEnergy.lowerBound,
+			"Property::EnergyResolvedProperty::operator+=()",
+			"Incompatible energy bounds. The left hand side has"
+			<< " lower bound '" << descriptor.realEnergy.lowerBound
+			<< "', while the right hand side has lower bound '"
+			<< rhs.descriptor.realEnergy.lowerBound << "'.",
+			""
+		);
+		TBTKAssert(
+			descriptor.realEnergy.upperBound
+				== rhs.descriptor.realEnergy.upperBound,
+			"Property::EnergyResolvedProperty::operator+=()",
+			"Incompatible energy bounds. The left hand side has"
+			<< " upper bound '" << descriptor.realEnergy.upperBound
+			<< "', while the right hand side has upper bound '"
+			<< rhs.descriptor.realEnergy.upperBound << "'.",
+			""
+		);
+		TBTKAssert(
+			descriptor.realEnergy.resolution
+				== rhs.descriptor.realEnergy.resolution,
+			"Property::EnergyResolvedProperty::operator+=()",
+			"Incompatible energy resolution. The left hand side"
+			<< " has resolution '"
+			<< descriptor.realEnergy.resolution << "', while the"
+			<< " right hand side has resolution '"
+			<< rhs.descriptor.realEnergy.resolution << "'.",
+			""
+		);
+	case EnergyType::FermionicMatsubara:
+	case EnergyType::BosonicMatsubara:
+		TBTKAssert(
+			descriptor.matsubaraEnergy.lowerMatsubaraEnergyIndex
+				== rhs.descriptor.matsubaraEnergy.lowerMatsubaraEnergyIndex,
+			"Property::EnergyResolvedProperty::operator+=()",
+			"Incompatible Matsubara energies. The left hand side"
+			<< " has lower Matsubara energy index '"
+			<< descriptor.matsubaraEnergy.lowerMatsubaraEnergyIndex
+			<< "', while the right hand side has lower Matsubara"
+			<< " energy index '"
+			<< rhs.descriptor.matsubaraEnergy.lowerMatsubaraEnergyIndex << "'.",
+			""
+		);
+		TBTKAssert(
+			descriptor.matsubaraEnergy.numMatsubaraEnergies
+				== rhs.descriptor.matsubaraEnergy.numMatsubaraEnergies,
+			"Property::EnergyResolvedProperty::operator+=()",
+			"Incompatible Matsubara energies. The left hand side"
+			<< " has '"
+			<< descriptor.matsubaraEnergy.numMatsubaraEnergies
+			<< "' number of Matsubara energies, while the right"
+			<< " hand side has '"
+			<< rhs.descriptor.matsubaraEnergy.numMatsubaraEnergies
+			<< "' number of Matsubara energies.",
+			""
+		);
+		TBTKAssert(
+			descriptor.matsubaraEnergy.fundamentalMatsubaraEnergy
+				== rhs.descriptor.matsubaraEnergy.fundamentalMatsubaraEnergy,
+			"Property::EnergyResolvedProperty::operator+=()",
+			"Incompatible Matsubara energies. The left hand side"
+			<< " has fundamental Matsubara energy '"
+			<< descriptor.matsubaraEnergy.fundamentalMatsubaraEnergy
+			<< "', while the right hand side has fundamental Matsubara"
+			<< " energy '"
+			<< rhs.descriptor.matsubaraEnergy.fundamentalMatsubaraEnergy
+			<< "'.",
+			""
+		);
+	}
+
+	AbstractProperty<DataType>::operator+=(rhs);
+
+	return *this;
+}
+
+template<typename DataType>
+inline EnergyResolvedProperty<DataType>&
+EnergyResolvedProperty<DataType>::operator-=(
+	const EnergyResolvedProperty<DataType> &rhs
+){
+	TBTKAssert(
+		energyType == rhs.energyType,
+		"Property::EnergyResolvedProperty::operator-=()",
+		"Incompatible energy types.",
+		""
+	);
+
+	switch(energyType){
+	case EnergyType::Real:
+		TBTKAssert(
+			descriptor.realEnergy.lowerBound
+				== rhs.descriptor.realEnergy.lowerBound,
+			"Property::EnergyResolvedProperty::operator-=()",
+			"Incompatible energy bounds. The left hand side has"
+			<< " lower bound '" << descriptor.realEnergy.lowerBound
+			<< "', while the right hand side has lower bound '"
+			<< rhs.descriptor.realEnergy.lowerBound << "'.",
+			""
+		);
+		TBTKAssert(
+			descriptor.realEnergy.upperBound
+				== rhs.descriptor.realEnergy.upperBound,
+			"Property::EnergyResolvedProperty::operator-=()",
+			"Incompatible energy bounds. The left hand side has"
+			<< " upper bound '" << descriptor.realEnergy.upperBound
+			<< "', while the right hand side has upper bound '"
+			<< rhs.descriptor.realEnergy.upperBound << "'.",
+			""
+		);
+		TBTKAssert(
+			descriptor.realEnergy.resolution
+				== rhs.descriptor.realEnergy.resolution,
+			"Property::EnergyResolvedProperty::operator-=()",
+			"Incompatible energy resolution. The left hand side"
+			<< " has resolution '"
+			<< descriptor.realEnergy.resolution << "', while the"
+			<< " right hand side has resolution '"
+			<< rhs.descriptor.realEnergy.resolution << "'.",
+			""
+		);
+	case EnergyType::FermionicMatsubara:
+	case EnergyType::BosonicMatsubara:
+		TBTKAssert(
+			descriptor.matsubaraEnergy.lowerMatsubaraEnergyIndex
+				== rhs.descriptor.matsubaraEnergy.lowerMatsubaraEnergyIndex,
+			"Property::EnergyResolvedProperty::operator-=()",
+			"Incompatible Matsubara energies. The left hand side"
+			<< " has lower Matsubara energy index '"
+			<< descriptor.matsubaraEnergy.lowerMatsubaraEnergyIndex
+			<< "', while the right hand side has lower Matsubara"
+			<< " energy index '"
+			<< rhs.descriptor.matsubaraEnergy.lowerMatsubaraEnergyIndex << "'.",
+			""
+		);
+		TBTKAssert(
+			descriptor.matsubaraEnergy.numMatsubaraEnergies
+				== rhs.descriptor.matsubaraEnergy.numMatsubaraEnergies,
+			"Property::EnergyResolvedProperty::operator-=()",
+			"Incompatible Matsubara energies. The left hand side"
+			<< " has '"
+			<< descriptor.matsubaraEnergy.numMatsubaraEnergies
+			<< "' number of Matsubara energies, while the right"
+			<< " hand side has '"
+			<< rhs.descriptor.matsubaraEnergy.numMatsubaraEnergies
+			<< "' number of Matsubara energies.",
+			""
+		);
+		TBTKAssert(
+			descriptor.matsubaraEnergy.fundamentalMatsubaraEnergy
+				== rhs.descriptor.matsubaraEnergy.fundamentalMatsubaraEnergy,
+			"Property::EnergyResolvedProperty::operator-=()",
+			"Incompatible Matsubara energies. The left hand side"
+			<< " has fundamental Matsubara energy '"
+			<< descriptor.matsubaraEnergy.fundamentalMatsubaraEnergy
+			<< "', while the right hand side has fundamental Matsubara"
+			<< " energy '"
+			<< rhs.descriptor.matsubaraEnergy.fundamentalMatsubaraEnergy
+			<< "'.",
+			""
+		);
+	}
+
+	AbstractProperty<DataType>::operator-=(rhs);
+
+	return *this;
 }
 
 };	//End namespace Property
