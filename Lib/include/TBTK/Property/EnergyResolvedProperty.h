@@ -42,6 +42,35 @@ public:
 	/** Constructs an uninitialized EnergyResolvedProperty. */
 	EnergyResolvedProperty();
 
+	/** Constructs an EnergyResolvedProperty with real energies on the None
+	 *  format. [See AbstractProperty for detailed information about the
+	 *  None format.]
+	 *
+	 *  @param lowerBound Lower bound for the energy.
+	 *  @param upperBound Upper bound for the energy.
+	 *  @param resolution Number of points to use for the energy. */
+	EnergyResolvedProperty(
+		double lowerBound,
+		double upperBound,
+		unsigned int resolution
+	);
+
+	/** Constructs an EnergyResolvedProperty with real energies on the None
+	 *  format. [See AbstractProperty for detailed information about the
+	 *  None format.]
+	 *
+	 *  @param lowerBound Lower bound for the energy.
+	 *  @param upperBound Upper bound for the energy.
+	 *  @param resolution Number of points to use for the energy.
+	 *  @param data Raw data to initialize the EnergyResolvedProperty with.
+	 */
+	EnergyResolvedProperty(
+		double lowerBound,
+		double upperBound,
+		unsigned int resolution,
+		const DataType *data
+	);
+
 	/** Constructs an EnergyResolvedProperty with real energies on the
 	 *  Custom format. [See AbstractProperty for detailed information about
 	 *  the Custom format.]
@@ -249,6 +278,65 @@ private:
 
 template<typename DataType>
 EnergyResolvedProperty<DataType>::EnergyResolvedProperty(){
+}
+
+template<typename DataType>
+EnergyResolvedProperty<DataType>::EnergyResolvedProperty(
+	double lowerBound,
+	double upperBound,
+	unsigned int resolution
+) :
+	AbstractProperty<DataType>(resolution)
+{
+	TBTKAssert(
+		lowerBound <= upperBound,
+		"EnergyResolvedProperty::EnergyResolvedProperty()",
+		"Invalid energy bounds. The 'lowerBound=" << lowerBound << "'"
+		" must be less or equal to the 'upperBound=" << upperBound
+		<< "'.",
+		""
+	);
+	TBTKAssert(
+		resolution > 0,
+		"EnergyResolvedProperty::EnergyResolvedProperty()",
+		"The 'resolution' must be larger than 0.",
+		""
+	);
+
+	energyType = EnergyType::Real;
+	descriptor.realEnergy.lowerBound = lowerBound;
+	descriptor.realEnergy.upperBound = upperBound;
+	descriptor.realEnergy.resolution = resolution;
+}
+
+template<typename DataType>
+EnergyResolvedProperty<DataType>::EnergyResolvedProperty(
+	double lowerBound,
+	double upperBound,
+	unsigned int resolution,
+	const DataType *data
+) :
+	AbstractProperty<DataType>(resolution, data)
+{
+	TBTKAssert(
+		lowerBound <= upperBound,
+		"EnergyResolvedProperty::EnergyResolvedProperty()",
+		"Invalid energy bounds. The 'lowerBound=" << lowerBound << "'"
+		" must be less or equal to the 'upperBound=" << upperBound
+		<< "'.",
+		""
+	);
+	TBTKAssert(
+		resolution > 0,
+		"EnergyResolvedProperty::EnergyResolvedProperty()",
+		"The 'resolution' must be larger than 0.",
+		""
+	);
+
+	energyType = EnergyType::Real;
+	descriptor.realEnergy.lowerBound = lowerBound;
+	descriptor.realEnergy.upperBound = upperBound;
+	descriptor.realEnergy.resolution = resolution;
 }
 
 template<typename DataType>
