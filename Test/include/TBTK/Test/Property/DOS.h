@@ -45,22 +45,38 @@ TEST(DOS, SerializeToJSON){
 		EXPECT_DOUBLE_EQ(data[n], n);
 }
 
-TEST(DOS, getLowerBound){
-	//Already tested through
-	//DOS::Constructor0
-	//DOS::Constructor1
+TEST(DOS, operatorAdditionAssignment){
+	double dataInput0[1000];
+	for(unsigned int n = 0; n < 1000; n++)
+		dataInput0[n] = n;
+	DOS dos0(-10, 10, 1000, dataInput0);
+
+	double dataInput1[1000];
+	for(unsigned int n = 0; n < 1000; n++)
+		dataInput1[n] = 2*n;
+	DOS dos1(-10, 10, 1000, dataInput1);
+
+	dos0 += dos1;
+	const std::vector<double> &data0 = dos0.getData();
+	for(unsigned int n = 0; n < 1000; n++)
+		EXPECT_EQ(data0[n], 3*n);
 }
 
-TEST(DOS, getUpperBound){
-	//Already tested through
-	//DOS::Constructor0
-	//DOS::Constructor1
-}
+TEST(DOS, operatorSubtractionAssignment){
+	double dataInput0[1000];
+	for(unsigned int n = 0; n < 1000; n++)
+		dataInput0[n] = n;
+	DOS dos0(-10, 10, 1000, dataInput0);
 
-TEST(DOS, getEnergyResolution){
-	//Already tested through
-	//DOS::Constructor0
-	//DOS::Constructor1
+	double dataInput1[1000];
+	for(unsigned int n = 0; n < 1000; n++)
+		dataInput1[n] = 2*n;
+	DOS dos1(-10, 10, 1000, dataInput1);
+
+	dos0 -= dos1;
+	const std::vector<double> &data0 = dos0.getData();
+	for(int n = 0; n < 1000; n++)
+		EXPECT_EQ(data0[n], -n);
 }
 
 TEST(DOS, serialize){

@@ -59,9 +59,27 @@ public:
 	 *  @param mode Mode with which the string has been serialized. */
 	DOS(const std::string &serialization, Mode mode);
 
+	/** Overrides EnergyResolvedProperty::operator+=(). */
+	DOS& operator+=(const DOS &rhs);
+
+	/** Overrides EnergyResolvedProperty::operator-=(). */
+	DOS& operator-=(const DOS &rhs);
+
 	/** Overrides AbstractProperty::serialize(). */
 	virtual std::string serialize(Mode mode) const;
 };
+
+inline DOS& DOS::operator+=(const DOS &rhs){
+	EnergyResolvedProperty::operator+=(rhs);
+
+	return *this;
+}
+
+inline DOS& DOS::operator-=(const DOS &rhs){
+	EnergyResolvedProperty::operator-=(rhs);
+
+	return *this;
+}
 
 };	//End namespace Property
 };	//End namespace TBTK
