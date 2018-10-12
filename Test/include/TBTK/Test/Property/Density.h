@@ -99,6 +99,78 @@ TEST(Density, SerializeToJSON){
 	EXPECT_DOUBLE_EQ(density3({2, 2}), 3);
 }
 
+TEST(Density, operatorAdditionAssignment){
+	//Ranges format.
+	double dataInputRanges0[2*3*4];
+	for(unsigned int n = 0; n < 2*3*4; n++)
+		dataInputRanges0[n] = n;
+	Density densityRanges0({2, 3, 4}, dataInputRanges0);
+
+	double dataInputRanges1[2*3*4];
+	for(unsigned int n = 0; n < 2*3*4; n++)
+		dataInputRanges1[n] = 2*n;
+	Density densityRanges1({2, 3, 4}, dataInputRanges1);
+
+	densityRanges0 += densityRanges1;
+	const std::vector<double> &dataRanges0 = densityRanges0.getData();
+	for(unsigned int n = 0; n < dataRanges0.size(); n++)
+		EXPECT_DOUBLE_EQ(dataRanges0[n], 3*n);
+
+	//Custom format.
+	IndexTree indexTree;
+	indexTree.add({1, 2, 3});
+	indexTree.add({1, 2, 4});
+	indexTree.add({2, 2});
+	indexTree.generateLinearMap();
+
+	double dataCustom0[3] = {1, 2, 3};
+	Density densityCustom0(indexTree, dataCustom0);
+
+	double dataCustom1[3] = {2, 4, 6};
+	Density densityCustom1(indexTree, dataCustom1);
+
+	densityCustom0 += densityCustom1;
+	EXPECT_DOUBLE_EQ(densityCustom0({1, 2, 3}), 3);
+	EXPECT_DOUBLE_EQ(densityCustom0({1, 2, 4}), 6);
+	EXPECT_DOUBLE_EQ(densityCustom0({2, 2}), 9);
+}
+
+TEST(Density, operatorSubtractionAssignment){
+	//Ranges format.
+	double dataInputRanges0[2*3*4];
+	for(unsigned int n = 0; n < 2*3*4; n++)
+		dataInputRanges0[n] = n;
+	Density densityRanges0({2, 3, 4}, dataInputRanges0);
+
+	double dataInputRanges1[2*3*4];
+	for(unsigned int n = 0; n < 2*3*4; n++)
+		dataInputRanges1[n] = 2*n;
+	Density densityRanges1({2, 3, 4}, dataInputRanges1);
+
+	densityRanges0 -= densityRanges1;
+	const std::vector<double> &dataRanges0 = densityRanges0.getData();
+	for(int n = 0; n < (int)dataRanges0.size(); n++)
+		EXPECT_DOUBLE_EQ(dataRanges0[n], -n);
+
+	//Custom format.
+	IndexTree indexTree;
+	indexTree.add({1, 2, 3});
+	indexTree.add({1, 2, 4});
+	indexTree.add({2, 2});
+	indexTree.generateLinearMap();
+
+	double dataCustom0[3] = {1, 2, 3};
+	Density densityCustom0(indexTree, dataCustom0);
+
+	double dataCustom1[3] = {2, 4, 6};
+	Density densityCustom1(indexTree, dataCustom1);
+
+	densityCustom0 -= densityCustom1;
+	EXPECT_DOUBLE_EQ(densityCustom0({1, 2, 3}), -1);
+	EXPECT_DOUBLE_EQ(densityCustom0({1, 2, 4}), -2);
+	EXPECT_DOUBLE_EQ(densityCustom0({2, 2}), -3);
+}
+
 TEST(Density, getMin){
 	IndexTree indexTree;
 	indexTree.add({1, 2, 3});

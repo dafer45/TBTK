@@ -74,6 +74,12 @@ public:
 	 *  @param mode Mode with which the string has been serialized. */
 	Density(const std::string &serialization, Mode mode);
 
+	/** Overrides AbstractPropertye::operator+=(). */
+	Density& operator+=(const Density &rhs);
+
+	/** Overrides AbstractPropertye::operator-=(). */
+	Density& operator-=(const Density &rhs);
+
 	/** Get the minimum value for the Density.
 	 *
 	 *  @return The minimum value.*/
@@ -88,6 +94,18 @@ public:
 	virtual std::string serialize(Mode mode) const;
 private:
 };
+
+inline Density& Density::operator+=(const Density &rhs){
+	AbstractProperty::operator+=(rhs);
+
+	return *this;
+}
+
+inline Density& Density::operator-=(const Density &rhs){
+	AbstractProperty::operator-=(rhs);
+
+	return *this;
+}
 
 };	//End namespace Property
 };	//End namespace TBTK
