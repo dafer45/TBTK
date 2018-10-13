@@ -66,7 +66,9 @@ FLEX::FLEX(
 	callback = nullptr;
 
 	norm = Norm::Max;
+	tolerance = 0;
 	convergenceParameter = 0;
+	numSlices = 1;
 }
 
 void FLEX::run(){
@@ -83,29 +85,43 @@ void FLEX::run(){
 	//The main loop.
 	unsigned int iteration = 0;
 	while(iteration++ < maxIterations){
-		//Calculate the bare susceptibility.
-		calculateBareSusceptibility();
-		state = State::BareSusceptibilityCalculated;
-		if(callback != nullptr)
-			callback(*this);
+		for(unsigned int n = 0; n < numSlices; n++){
+			Timer::tick("One slice");
 
-		//Calculate the RPA charge and spin susceptibilities.
-		calculateRPASusceptibilities();
-		state = State::RPASusceptibilitiesCalculated;
-		if(callback != nullptr)
-			callback(*this);
+			Timer::tick("Bare susceptibility");
+			//Calculate the bare susceptibility.
+			calculateBareSusceptibility(n);
+			state = State::BareSusceptibilityCalculated;
+			if(callback != nullptr)
+				callback(*this);
+			Timer::tock();
 
-		//Calculate the interaction vertex.
-		calculateInteractionVertex();
-		state = State::InteractionVertexCalculated;
-		if(callback != nullptr)
-			callback(*this);
+			Timer::tick("RPA susceptibility");
+			//Calculate the RPA charge and spin susceptibilities.
+			calculateRPASusceptibilities();
+			state = State::RPASusceptibilitiesCalculated;
+			if(callback != nullptr)
+				callback(*this);
+			Timer::tock();
 
-		//Calculate the self-energy.
-		calculateSelfEnergy();
-		state = State::SelfEnergyCalculated;
-		if(callback != nullptr)
-			callback(*this);
+			Timer::tick("Interaction vertex");
+			//Calculate the interaction vertex.
+			calculateInteractionVertex();
+			state = State::InteractionVertexCalculated;
+			if(callback != nullptr)
+				callback(*this);
+			Timer::tock();
+
+			Timer::tick("Self energy");
+			//Calculate the self-energy.
+			calculateSelfEnergy(n);
+			state = State::SelfEnergyCalculated;
+			if(callback != nullptr)
+				callback(*this);
+			Timer::tock();
+
+			Timer::tock();
+		}
 
 		//Calculate the Green's function.
 		oldGreensFunction = greensFunction;
@@ -161,7 +177,7 @@ void FLEX::calculateBareGreensFunction(){
 		);
 }
 
-void FLEX::calculateBareSusceptibility(){
+void FLEX::calculateBareSusceptibility(unsigned int slice){
 	MatsubaraSusceptibility matsubaraSusceptibilitySolver(
 		momentumSpaceContext,
 		greensFunction
@@ -176,8 +192,10 @@ void FLEX::calculateBareSusceptibility(){
 	matsubaraSusceptibilityPropertyExtractor.setEnergyWindow(
 		lowerFermionicMatsubaraEnergyIndex,
 		upperFermionicMatsubaraEnergyIndex,
-		lowerBosonicMatsubaraEnergyIndex,
-		upperBosonicMatsubaraEnergyIndex
+		getLowerBosonicMatsubaraEnergyIndex(slice),
+		getUpperBosonicMatsubaraEnergyIndex(slice)
+/*		lowerBosonicMatsubaraEnergyIndex,
+		upperBosonicMatsubaraEnergyIndex*/
 	);
 	bareSusceptibility
 		= matsubaraSusceptibilityPropertyExtractor.calculateSusceptibility({
@@ -264,7 +282,7 @@ void FLEX::calculateInteractionVertex(){
 		});
 }
 
-void FLEX::calculateSelfEnergy(){
+void FLEX::calculateSelfEnergy(unsigned int slice){
 	SelfEnergy2 selfEnergySolver(
 		momentumSpaceContext,
 		interactionVertex,
@@ -283,10 +301,19 @@ void FLEX::calculateSelfEnergy(){
 		lowerBosonicMatsubaraEnergyIndex,
 		upperBosonicMatsubaraEnergyIndex
 	);
-	selfEnergy = selfEnergyPropertyExtractor.calculateSelfEnergy({
-		{{IDX_ALL, IDX_ALL}, {IDX_ALL}, {IDX_ALL}}
-	});
-	convertSelfEnergyIndexStructure();
+	if(slice == 0){
+		selfEnergy = selfEnergyPropertyExtractor.calculateSelfEnergy({
+			{{IDX_ALL, IDX_ALL}, {IDX_ALL}, {IDX_ALL}}
+		});
+	}
+	else{
+		selfEnergy += selfEnergyPropertyExtractor.calculateSelfEnergy({
+			{{IDX_ALL, IDX_ALL}, {IDX_ALL}, {IDX_ALL}}
+		});
+	}
+
+	if(slice == numSlices - 1)
+		convertSelfEnergyIndexStructure();
 }
 
 void FLEX::calculateGreensFunction(){
@@ -670,6 +697,34 @@ void FLEX::calculateDensity(){
 	density += densityProperty({0, 0, 0});
 
 	density *= 2./(numMeshPoints[0]*numMeshPoints[1]);
+}
+
+int FLEX::getLowerBosonicMatsubaraEnergyIndex(unsigned int slice){
+	unsigned int numIndices = (
+		upperBosonicMatsubaraEnergyIndex
+		- lowerBosonicMatsubaraEnergyIndex
+	)/2
+	+ 1;
+	unsigned int numIndicesPerSlice = numIndices/numSlices;
+
+	return lowerBosonicMatsubaraEnergyIndex
+		+ (int)(2*slice*numIndicesPerSlice);
+}
+
+int FLEX::getUpperBosonicMatsubaraEnergyIndex(unsigned int slice){
+	if(slice == numSlices - 1)
+		return upperBosonicMatsubaraEnergyIndex;
+
+	unsigned int numIndices = (
+		upperBosonicMatsubaraEnergyIndex
+		- lowerBosonicMatsubaraEnergyIndex
+	)/2
+	+ 1;
+	unsigned int numIndicesPerSlice = numIndices/numSlices;
+
+	return lowerBosonicMatsubaraEnergyIndex
+		+ (int)(2*(slice + 1)*numIndicesPerSlice)
+		- 2;
 }
 
 }	//End of namespace Solver

@@ -188,6 +188,16 @@ public:
 	 */
 	void setCallback(void (*callback)(FLEX &solver));
 
+	/** Set the number of energy slices to use for the calculation of the
+	 *  susceptibility, RPA susceptibilities, and interaction vertex.
+	 *  Increasing the number of slices allows for a smaller memory
+	 *  footprint by reducing the number of energies for which these
+	 *  Properties are held in memory at the same time. The default number
+	 *  of slices is one.
+	 *
+	 *  @param numSlices The number of slices to use. */
+	void setNumSlices(unsigned int numSlices);
+
 	/** Execute the FLEX loop. */
 	void run();
 private:
@@ -270,6 +280,10 @@ private:
 	 */
 	double tolerance;
 
+	/** The number of energy slices to use when calculating the
+	 *  susceptibility, RPA susceptibility, and interaction vertex. */
+	unsigned int numSlices;
+
 	/** Parameter used to indicate the degree to which the results have
 	 *  converged. */
 	double convergenceParameter;
@@ -281,7 +295,7 @@ private:
 	void calculateBareGreensFunction();
 
 	/** Calculate the bare susceptibility. */
-	void calculateBareSusceptibility();
+	void calculateBareSusceptibility(unsigned int slice);
 
 	/** Calculate the bare susceptibility. */
 	void calculateRPASusceptibilities();
@@ -290,7 +304,7 @@ private:
 	void calculateInteractionVertex();
 
 	/** Calculate the self energy. */
-	void calculateSelfEnergy();
+	void calculateSelfEnergy(unsigned int slice);
 
 	/** Calculate the Green's function. */
 	void calculateGreensFunction();
@@ -316,6 +330,14 @@ private:
 
 	/** Calculate the density. */
 	void calculateDensity();
+
+	/** Get the lower Bosonic Matsubara energy index for the given slice.
+	 */
+	int getLowerBosonicMatsubaraEnergyIndex(unsigned int slice);
+
+	/** Get the upper Bosonic Matsubara energy index for the given slice.
+	 */
+	int getUpperBosonicMatsubaraEnergyIndex(unsigned int slice);
 };
 
 inline const MomentumSpaceContext& FLEX::getMomentumSpaceContext() const{
@@ -457,6 +479,17 @@ inline void FLEX::setTolerance(double tolerance){
 
 inline void FLEX::setCallback(void (*callback)(FLEX &solver)){
 	this->callback = callback;
+}
+
+inline void FLEX::setNumSlices(unsigned int numSlices){
+	TBTKAssert(
+		numSlices != 0,
+		"Solver::FLEX::setNumSlices()",
+		"'numSlices' must be non-zero.",
+		""
+	);
+
+	this->numSlices = numSlices;
 }
 
 };	//End of namespace Solver
