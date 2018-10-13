@@ -317,6 +317,7 @@ Property::Susceptibility MatsubaraSusceptibility::calculateSusceptibilityAllBloc
 	Array<complex<double>> greensFunction0In(crossCorrelationRanges, 0);
 	Array<complex<double>> greensFunction1In(crossCorrelationRanges, 0);
 
+	#pragma omp parallel for
 	for(unsigned int meshPoint = 0; meshPoint < mesh.size(); meshPoint++){
 		Index qIndex = brillouinZone.getMinorCellIndex(
 			{mesh[meshPoint][0], mesh[meshPoint][1]},
@@ -370,7 +371,7 @@ Property::Susceptibility MatsubaraSusceptibility::calculateSusceptibilityAllBloc
 
 	IndexTree memoryLayout;
 	for(unsigned int kx = 0; kx < numMeshPoints[0]; kx++){
-		for(unsigned int ky = 0; ky < numMeshPoints[0]; ky++){
+		for(unsigned int ky = 0; ky < numMeshPoints[1]; ky++){
 			memoryLayout.add({
 				{kx, ky},
 				intraBlockIndices[0],
@@ -389,8 +390,9 @@ Property::Susceptibility MatsubaraSusceptibility::calculateSusceptibilityAllBloc
 		greensFunction.getFundamentalMatsubaraEnergy()
 	);
 
+	#pragma omp parallel for
 	for(unsigned int kx = 0; kx < numMeshPoints[0]; kx++){
-		for(unsigned int ky = 0; ky < numMeshPoints[0]; ky++){
+		for(unsigned int ky = 0; ky < numMeshPoints[1]; ky++){
 			for(
 				unsigned int n = 0;
 				n < numMatsubaraEnergiesSusceptibility;

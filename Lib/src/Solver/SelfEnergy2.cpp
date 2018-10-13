@@ -392,6 +392,7 @@ Property::SelfEnergy SelfEnergy2::calculateSelfEnergyAllBlocks(
 				0
 			);
 
+			#pragma omp parallel for
 			for(
 				unsigned int meshPoint = 0;
 				meshPoint < mesh.size();
