@@ -111,8 +111,30 @@ public:
 		double fundamentalMatsubaraEnergy,
 		const std::complex<double> *data
 	);
+
+	/** Overrides EnergyResolvedProperty::operator+=(). */
+	InteractionVertex& operator+=(const InteractionVertex &rhs);
+
+	/** Overrides EnergyResolvedProperty::operator-=(). */
+	InteractionVertex& operator-=(const InteractionVertex &rhs);
 private:
 };
+
+inline InteractionVertex& InteractionVertex::operator+=(
+	const InteractionVertex &rhs
+){
+	EnergyResolvedProperty::operator+=(rhs);
+
+	return *this;
+}
+
+inline InteractionVertex& InteractionVertex::operator-=(
+	const InteractionVertex &rhs
+){
+	EnergyResolvedProperty::operator-=(rhs);
+
+	return *this;
+}
 
 };	//End namespace Property
 };	//End namespace TBTK

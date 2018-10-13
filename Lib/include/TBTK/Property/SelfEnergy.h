@@ -110,8 +110,26 @@ public:
 		double fundamentalMatsubaraEnergy,
 		const std::complex<double> *data
 	);
+
+	/** Overrides EnergyResolvedProperty::operator+=(). */
+	SelfEnergy& operator+=(const SelfEnergy &rhs);
+
+	/** Overrides EnergyResolvedProperty::operator+=(). */
+	SelfEnergy& operator-=(const SelfEnergy &rhs);
 private:
 };
+
+inline SelfEnergy& SelfEnergy::operator+=(const SelfEnergy &rhs){
+	EnergyResolvedProperty::operator+=(rhs);
+
+	return *this;
+}
+
+inline SelfEnergy& SelfEnergy::operator-=(const SelfEnergy &rhs){
+	EnergyResolvedProperty::operator-=(rhs);
+
+	return *this;
+}
 
 };	//End namespace Property
 };	//End namespace TBTK
