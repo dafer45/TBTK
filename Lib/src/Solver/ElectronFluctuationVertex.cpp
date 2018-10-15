@@ -297,6 +297,77 @@ vector<complex<double>> ElectronFluctuationVertex::calculateSelfEnergyVertex(
 					{a0_i}
 				});
 
+/*			const vector<complex<double>> &spinSusceptibilityData
+				= spinSusceptibility.getData();
+			unsigned int offsetSpinSusceptibility
+				= spinSusceptibility.getOffset({
+					kIndex,
+					{c0_o},
+					{a1_o},
+					{c1_i},
+					{a0_i}
+			});*/
+
+			for(
+				unsigned int n = 0;
+				n < numEnergies;
+				n++
+			){
+				selfEnergyVertex.at(n) += amplitude_i*amplitude_o*(
+					chargeSusceptibilityData[
+						offsetChargeSusceptibility + n
+					]
+/*					+ spinSusceptibilityData[
+						offsetSpinSusceptibility + n
+					]*/
+				)/2.;
+			}
+		}
+	}
+
+	for(unsigned int in = 0; in < u1.size(); in++){
+		const InteractionAmplitude &incommingAmplitude = u1.at(in);
+		complex<double> amplitude_i = incommingAmplitude.getAmplitude();
+		int c0_i = incommingAmplitude.getCreationOperatorIndex(0).at(0);
+		int c1_i = incommingAmplitude.getCreationOperatorIndex(1).at(0);
+		int a0_i = incommingAmplitude.getAnnihilationOperatorIndex(0).at(0);
+		int a1_i = incommingAmplitude.getAnnihilationOperatorIndex(1).at(0);
+
+		if(
+			a1_i != intraBlockIndices[3][0]
+			|| c0_i != intraBlockIndices[2][0]
+			|| abs(amplitude_i) < 1e-10
+		){
+			continue;
+		}
+
+		for(unsigned int out = 0; out < u1.size(); out++){
+			const InteractionAmplitude &outgoingAmplitude = u1.at(out);
+			complex<double> amplitude_o = outgoingAmplitude.getAmplitude();
+			int c0_o = outgoingAmplitude.getCreationOperatorIndex(0).at(0);
+			int c1_o = outgoingAmplitude.getCreationOperatorIndex(1).at(0);
+			int a0_o = outgoingAmplitude.getAnnihilationOperatorIndex(0).at(0);
+			int a1_o = outgoingAmplitude.getAnnihilationOperatorIndex(1).at(0);
+
+			if(
+				a0_o != intraBlockIndices[0][0]
+				|| c1_o != intraBlockIndices[1][0]
+				|| abs(amplitude_o) < 1e-10
+			){
+				continue;
+			}
+
+/*			const vector<complex<double>> &chargeSusceptibilityData
+				= chargeSusceptibility.getData();
+			unsigned int offsetChargeSusceptibility
+				= chargeSusceptibility.getOffset({
+					kIndex,
+					{c0_o},
+					{a1_o},
+					{c1_i},
+					{a0_i}
+				});*/
+
 			const vector<complex<double>> &spinSusceptibilityData
 				= spinSusceptibility.getData();
 			unsigned int offsetSpinSusceptibility
@@ -314,9 +385,9 @@ vector<complex<double>> ElectronFluctuationVertex::calculateSelfEnergyVertex(
 				n++
 			){
 				selfEnergyVertex.at(n) += amplitude_i*amplitude_o*(
-					chargeSusceptibilityData[
+/*					chargeSusceptibilityData[
 						offsetChargeSusceptibility + n
-					]
+					]*/
 					+ spinSusceptibilityData[
 						offsetSpinSusceptibility + n
 					]
@@ -368,6 +439,76 @@ vector<complex<double>> ElectronFluctuationVertex::calculateSelfEnergyVertex(
 					{c1_i},
 					{a0_i}
 				});
+/*			const vector<complex<double>> &spinSusceptibilityData
+				= spinSusceptibility.getData();
+			unsigned int offsetSpinSusceptibility
+				= spinSusceptibility.getOffset({
+					kIndex,
+					{c0_o},
+					{a1_o},
+					{c1_i},
+					{a0_i}
+				});*/
+
+			for(
+				unsigned int n = 0;
+				n < numEnergies;
+				n++
+			){
+				selfEnergyVertex.at(n) += amplitude_i*amplitude_o*(
+					chargeSusceptibilityData[
+						offsetChargeSusceptibility + n
+					]
+/*					+ spinSusceptibilityData[
+						offsetSpinSusceptibility + n
+					]*/
+				)/2.;
+			}
+		}
+	}
+
+	for(unsigned int in = 0; in < u2.size(); in++){
+		const InteractionAmplitude &incommingAmplitude = u2.at(in);
+		complex<double> amplitude_i = incommingAmplitude.getAmplitude();
+		int c0_i = incommingAmplitude.getCreationOperatorIndex(0).at(0);
+		int c1_i = incommingAmplitude.getCreationOperatorIndex(1).at(0);
+		int a0_i = incommingAmplitude.getAnnihilationOperatorIndex(0).at(0);
+		int a1_i = incommingAmplitude.getAnnihilationOperatorIndex(1).at(0);
+
+		if(
+			a1_i != intraBlockIndices[3][0]
+			|| c0_i != intraBlockIndices[2][0]
+			|| abs(amplitude_i) < 1e-10
+		){
+			continue;
+		}
+
+		for(unsigned int out = 0; out < u2.size(); out++){
+			const InteractionAmplitude &outgoingAmplitude = u2.at(out);
+			complex<double> amplitude_o = outgoingAmplitude.getAmplitude();
+			int c0_o = outgoingAmplitude.getCreationOperatorIndex(0).at(0);
+			int c1_o = outgoingAmplitude.getCreationOperatorIndex(1).at(0);
+			int a0_o = outgoingAmplitude.getAnnihilationOperatorIndex(0).at(0);
+			int a1_o = outgoingAmplitude.getAnnihilationOperatorIndex(1).at(0);
+
+			if(
+				a0_o != intraBlockIndices[0][0]
+				|| c1_o != intraBlockIndices[1][0]
+				|| abs(amplitude_o) < 1e-10
+			){
+				continue;
+			}
+
+/*			const vector<complex<double>> &chargeSusceptibilityData
+				= chargeSusceptibility.getData();
+			unsigned int offsetChargeSusceptibility
+				= chargeSusceptibility.getOffset({
+					kIndex,
+					{c0_o},
+					{a1_o},
+					{c1_i},
+					{a0_i}
+				});*/
 			const vector<complex<double>> &spinSusceptibilityData
 				= spinSusceptibility.getData();
 			unsigned int offsetSpinSusceptibility
@@ -385,9 +526,9 @@ vector<complex<double>> ElectronFluctuationVertex::calculateSelfEnergyVertex(
 				n++
 			){
 				selfEnergyVertex.at(n) += amplitude_i*amplitude_o*(
-					chargeSusceptibilityData[
+/*					chargeSusceptibilityData[
 						offsetChargeSusceptibility + n
-					]
+					]*/
 					+ spinSusceptibilityData[
 						offsetSpinSusceptibility + n
 					]
@@ -440,6 +581,77 @@ vector<complex<double>> ElectronFluctuationVertex::calculateSelfEnergyVertex(
 					{a0_i}
 				});
 
+/*			const vector<complex<double>> &spinSusceptibilityData
+				= spinSusceptibility.getData();
+			unsigned int offsetSpinSusceptibility
+				= spinSusceptibility.getOffset({
+					kIndex,
+					{c0_o},
+					{a1_o},
+					{c1_i},
+					{a0_i}
+				});*/
+
+			for(
+				unsigned int n = 0;
+				n < numEnergies;
+				n++
+			){
+				selfEnergyVertex.at(n) += amplitude_i*amplitude_o*(
+					chargeSusceptibilityData[
+						offsetChargeSusceptibility + n
+					]
+/*					- spinSusceptibilityData[
+						offsetSpinSusceptibility + n
+					]*/
+				)/2.;
+			}
+		}
+	}
+
+	for(unsigned int in = 0; in < u1.size(); in++){
+		const InteractionAmplitude &incommingAmplitude = u1.at(in);
+		complex<double> amplitude_i = incommingAmplitude.getAmplitude();
+		int c0_i = incommingAmplitude.getCreationOperatorIndex(0).at(0);
+		int c1_i = incommingAmplitude.getCreationOperatorIndex(1).at(0);
+		int a0_i = incommingAmplitude.getAnnihilationOperatorIndex(0).at(0);
+		int a1_i = incommingAmplitude.getAnnihilationOperatorIndex(1).at(0);
+
+		if(
+			a1_i != intraBlockIndices[3][0]
+			|| c0_i != intraBlockIndices[2][0]
+			|| abs(amplitude_i) < 1e-10
+		){
+			continue;
+		}
+
+		for(unsigned int out = 0; out < u2.size(); out++){
+			const InteractionAmplitude &outgoingAmplitude = u2.at(out);
+			complex<double> amplitude_o = outgoingAmplitude.getAmplitude();
+			int c0_o = outgoingAmplitude.getCreationOperatorIndex(0).at(0);
+			int c1_o = outgoingAmplitude.getCreationOperatorIndex(1).at(0);
+			int a0_o = outgoingAmplitude.getAnnihilationOperatorIndex(0).at(0);
+			int a1_o = outgoingAmplitude.getAnnihilationOperatorIndex(1).at(0);
+
+			if(
+				a0_o != intraBlockIndices[0][0]
+				|| c1_o != intraBlockIndices[1][0]
+				|| abs(amplitude_o) < 1e-10
+			){
+				continue;
+			}
+
+/*			const vector<complex<double>> &chargeSusceptibilityData
+				= chargeSusceptibility.getData();
+			unsigned int offsetChargeSusceptibility
+				= chargeSusceptibility.getOffset({
+					kIndex,
+					{c0_o},
+					{a1_o},
+					{c1_i},
+					{a0_i}
+				});*/
+
 			const vector<complex<double>> &spinSusceptibilityData
 				= spinSusceptibility.getData();
 			unsigned int offsetSpinSusceptibility
@@ -457,10 +669,10 @@ vector<complex<double>> ElectronFluctuationVertex::calculateSelfEnergyVertex(
 				n++
 			){
 				selfEnergyVertex.at(n) += amplitude_i*amplitude_o*(
-					chargeSusceptibilityData[
+/*					chargeSusceptibilityData[
 						offsetChargeSusceptibility + n
-					]
-					- spinSusceptibilityData[
+					]*/
+					-spinSusceptibilityData[
 						offsetSpinSusceptibility + n
 					]
 				)/2.;
@@ -512,6 +724,77 @@ vector<complex<double>> ElectronFluctuationVertex::calculateSelfEnergyVertex(
 					{a0_i}
 				});
 
+/*			const vector<complex<double>> &spinSusceptibilityData
+				= spinSusceptibility.getData();
+			unsigned int offsetSpinSusceptibility
+				= spinSusceptibility.getOffset({
+					kIndex,
+					{c0_o},
+					{a1_o},
+					{c1_i},
+					{a0_i}
+				});*/
+
+			for(
+				unsigned int n = 0;
+				n < numEnergies;
+				n++
+			){
+				selfEnergyVertex.at(n) += amplitude_i*amplitude_o*(
+					chargeSusceptibilityData[
+						offsetChargeSusceptibility + n
+					]
+/*					- spinSusceptibilityData[
+						offsetSpinSusceptibility + n
+					]*/
+				)/2.;
+			}
+		}
+	}
+
+	for(unsigned int in = 0; in < u2.size(); in++){
+		const InteractionAmplitude &incommingAmplitude = u2.at(in);
+		complex<double> amplitude_i = incommingAmplitude.getAmplitude();
+		int c0_i = incommingAmplitude.getCreationOperatorIndex(0).at(0);
+		int c1_i = incommingAmplitude.getCreationOperatorIndex(1).at(0);
+		int a0_i = incommingAmplitude.getAnnihilationOperatorIndex(0).at(0);
+		int a1_i = incommingAmplitude.getAnnihilationOperatorIndex(1).at(0);
+
+		if(
+			a1_i != intraBlockIndices[3][0]
+			|| c0_i != intraBlockIndices[2][0]
+			|| abs(amplitude_i) < 1e-10
+		){
+			continue;
+		}
+
+		for(unsigned int out = 0; out < u1.size(); out++){
+			const InteractionAmplitude &outgoingAmplitude = u1.at(out);
+			complex<double> amplitude_o = outgoingAmplitude.getAmplitude();
+			int c0_o = outgoingAmplitude.getCreationOperatorIndex(0).at(0);
+			int c1_o = outgoingAmplitude.getCreationOperatorIndex(1).at(0);
+			int a0_o = outgoingAmplitude.getAnnihilationOperatorIndex(0).at(0);
+			int a1_o = outgoingAmplitude.getAnnihilationOperatorIndex(1).at(0);
+
+			if(
+				a0_o != intraBlockIndices[0][0]
+				|| c1_o != intraBlockIndices[1][0]
+				|| abs(amplitude_o) < 1e-10
+			){
+				continue;
+			}
+
+/*			const vector<complex<double>> &chargeSusceptibilityData
+				= chargeSusceptibility.getData();
+			unsigned int offsetChargeSusceptibility
+				= chargeSusceptibility.getOffset({
+					kIndex,
+					{c0_o},
+					{a1_o},
+					{c1_i},
+					{a0_i}
+				});*/
+
 			const vector<complex<double>> &spinSusceptibilityData
 				= spinSusceptibility.getData();
 			unsigned int offsetSpinSusceptibility
@@ -529,10 +812,10 @@ vector<complex<double>> ElectronFluctuationVertex::calculateSelfEnergyVertex(
 				n++
 			){
 				selfEnergyVertex.at(n) += amplitude_i*amplitude_o*(
-					chargeSusceptibilityData[
+/*					chargeSusceptibilityData[
 						offsetChargeSusceptibility + n
-					]
-					- spinSusceptibilityData[
+					]*/
+					-spinSusceptibilityData[
 						offsetSpinSusceptibility + n
 					]
 				)/2.;
