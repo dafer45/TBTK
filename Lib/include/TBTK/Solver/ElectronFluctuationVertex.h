@@ -100,6 +100,16 @@ private:
 	/** Flag indicating whether the interaction amplitudes are initialized.
 	 */
 	bool interactionAmplitudesAreGenerated;
+
+	/** Main algorithm for calculating the self-energy vertex.*/
+	void calculateSelfEnergyVertexMainAlgorithm(
+		std::vector<std::complex<double>> &selfEnergyVertex,
+		const Index &index,
+		const Property::Susceptibility &susceptibility,
+		const std::vector<InteractionAmplitude> &uLeft,
+		const std::vector<InteractionAmplitude> &uRight,
+		double multiplier
+	);
 };
 
 inline const MomentumSpaceContext&
