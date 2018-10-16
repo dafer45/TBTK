@@ -345,16 +345,16 @@ Property::InteractionVertex ElectronFluctuationVertex::calculateInteractionVerte
 	}
 	memoryLayout.generateLinearMap();
 
-	const Property::Susceptibility &chargeSusceptibility
-		= solver->getChargeSusceptibility();
-	switch(chargeSusceptibility.getEnergyType()){
+	const Property::Susceptibility &susceptibility
+		= solver->getSusceptibility();
+	switch(susceptibility.getEnergyType()){
 	case Property::EnergyResolvedProperty<complex<double>>::EnergyType::Real:
 	{
 		Property::InteractionVertex interactionVertex(
 			memoryLayout,
-			chargeSusceptibility.getLowerBound(),
-			chargeSusceptibility.getUpperBound(),
-			chargeSusceptibility.getResolution()
+			susceptibility.getLowerBound(),
+			susceptibility.getUpperBound(),
+			susceptibility.getResolution()
 		);
 
 		Information information;
@@ -372,9 +372,9 @@ Property::InteractionVertex ElectronFluctuationVertex::calculateInteractionVerte
 	{
 		Property::InteractionVertex interactionVertex(
 			memoryLayout,
-			chargeSusceptibility.getLowerMatsubaraEnergyIndex(),
-			chargeSusceptibility.getUpperMatsubaraEnergyIndex(),
-			chargeSusceptibility.getFundamentalMatsubaraEnergy()
+			susceptibility.getLowerMatsubaraEnergyIndex(),
+			susceptibility.getUpperMatsubaraEnergyIndex(),
+			susceptibility.getFundamentalMatsubaraEnergy()
 		);
 
 		Information information;

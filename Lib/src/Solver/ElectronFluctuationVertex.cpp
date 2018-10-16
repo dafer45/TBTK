@@ -33,27 +33,29 @@ namespace Solver{
 
 ElectronFluctuationVertex::ElectronFluctuationVertex(
 	const MomentumSpaceContext &momentumSpaceContext,
-	const Property::Susceptibility &chargeSusceptibility,
-	const Property::Susceptibility &spinSusceptibility
+	const Property::Susceptibility &susceptibility
+//	const Property::Susceptibility &chargeSusceptibility,
+//	const Property::Susceptibility &spinSusceptibility
 ) :
 	Communicator(true),
 	momentumSpaceContext(momentumSpaceContext),
-	chargeSusceptibility(chargeSusceptibility),
-	spinSusceptibility(spinSusceptibility)
+	susceptibility(susceptibility)
+//	chargeSusceptibility(chargeSusceptibility),
+//	spinSusceptibility(spinSusceptibility)
 {
-	U = 0.;
+/*	U = 0.;
 	Up = 0.;
 	J = 0.;
-	Jp = 0.;
+	Jp = 0.;*/
 
 	numOrbitals = 0;
 
-	interactionAmplitudesAreGenerated = false;
+//	interactionAmplitudesAreGenerated = false;
 
-	isInitialized = true;
+//	isInitialized = true;
 }
 
-void ElectronFluctuationVertex::generateInteractionAmplitudes(){
+/*void ElectronFluctuationVertex::generateInteractionAmplitudes(){
 	if(interactionAmplitudesAreGenerated)
 		return;
 
@@ -303,19 +305,19 @@ vector<complex<double>> ElectronFluctuationVertex::calculateSelfEnergyVertexOld(
 	);
 
 	return selfEnergyVertex;
-}
+}*/
 
 vector<complex<double>> ElectronFluctuationVertex::calculateSelfEnergyVertex(
 	const Index &index
 ){
 	unsigned int numEnergies;
-	switch(spinSusceptibility.getEnergyType()){
+	switch(susceptibility.getEnergyType()){
 	case Property::EnergyResolvedProperty<complex<double>>::EnergyType::Real:
-		numEnergies = spinSusceptibility.getResolution();
+		numEnergies = susceptibility.getResolution();
 
 		break;
 	case Property::EnergyResolvedProperty<complex<double>>::EnergyType::BosonicMatsubara:
-		numEnergies = spinSusceptibility.getNumMatsubaraEnergies();
+		numEnergies = susceptibility.getNumMatsubaraEnergies();
 
 		break;
 	default:
@@ -339,7 +341,7 @@ vector<complex<double>> ElectronFluctuationVertex::calculateSelfEnergyVertex(
 	calculateSelfEnergyVertexMainAlgorithm(
 		selfEnergyVertex,
 		index,
-		spinSusceptibility,
+		susceptibility,
 		leftInteraction,
 		rightInteraction,
 		multiplier

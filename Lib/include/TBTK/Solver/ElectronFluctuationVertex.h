@@ -37,23 +37,27 @@ public:
 	/** Constructor. */
 	ElectronFluctuationVertex(
 		const MomentumSpaceContext &momentumSpaceContext,
-		const Property::Susceptibility &chargeSusceptibility,
-		const Property::Susceptibility &spinSusceptibility
+		const Property::Susceptibility &susceptibility
+//		const Property::Susceptibility &chargeSusceptibility,
+//		const Property::Susceptibility &spinSusceptibility
 	);
 
-	/** Get momentum cpsace context. */
+	/** Get momentum space context. */
 	const MomentumSpaceContext& getMomentumSpaceContext() const;
 
+	/** Get the susceptibility. */
+	const Property::Susceptibility& getSusceptibility() const;
+
 	/** Get the charge susceptibility. */
-	const Property::Susceptibility& getChargeSusceptibility() const;
+//	const Property::Susceptibility& getChargeSusceptibility() const;
 
 	/** Get the spin susceptibility. */
-	const Property::Susceptibility& getSpinSusceptibility() const;
+//	const Property::Susceptibility& getSpinSusceptibility() const;
 
 	/** Calculate self-energy vertex. */
-	std::vector<std::complex<double>> calculateSelfEnergyVertexOld(
-		const Index &index
-	);
+//	std::vector<std::complex<double>> calculateSelfEnergyVertexOld(
+//		const Index &index
+//	);
 
 	/** Calculate self-energy vertex. */
 	std::vector<std::complex<double>> calculateSelfEnergyVertex(
@@ -73,35 +77,38 @@ public:
 	void setMultiplier(double multiplier);
 
 	/** Set U. */
-	void setU(std::complex<double> U);
+//	void setU(std::complex<double> U);
 
 	/** Set Up. */
-	void setUp(std::complex<double> Up);
+//	void setUp(std::complex<double> Up);
 
 	/** Set J. */
-	void setJ(std::complex<double> J);
+//	void setJ(std::complex<double> J);
 
 	/** Set Jp. */
-	void setJp(std::complex<double> Jp);
+//	void setJp(std::complex<double> Jp);
 
 	/** Srt the number of orbitals. */
 	void setNumOrbitals(unsigned int numOrbitals);
 
 	/** Generate interaction amplitudes. Can be called multiple times and
 	 *  will only regenerate the interaction amplitudes when needed. */
-	void generateInteractionAmplitudes();
+//	void generateInteractionAmplitudes();
 private:
 	/** Momentum space context. */
 	const MomentumSpaceContext &momentumSpaceContext;
 
+	/** Susceptibility. */
+	const Property::Susceptibility &susceptibility;
+
 	/** Charge susceptibility. */
-	const Property::Susceptibility &chargeSusceptibility;
+//	const Property::Susceptibility &chargeSusceptibility;
 
 	/** Spin susceptibility. */
-	const Property::Susceptibility &spinSusceptibility;
+//	const Property::Susceptibility &spinSusceptibility;
 
 	/** Flag indicating whether the SelfEnergyCalculator is initialized. */
-	bool isInitialized;
+//	bool isInitialized;
 
 	/** Left interaciton. */
 	std::vector<InteractionAmplitude> leftInteraction;
@@ -113,19 +120,19 @@ private:
 	double multiplier;
 
 	/** Interaction parameters. */
-	std::complex<double> U, Up, J, Jp;
+//	std::complex<double> U, Up, J, Jp;
 
 	/** Interaction amplitudes used to calculate the self-energy vertex. */
-	std::vector<InteractionAmplitude> u1;
-	std::vector<InteractionAmplitude> u2;
-	std::vector<InteractionAmplitude> u3;
+//	std::vector<InteractionAmplitude> u1;
+//	std::vector<InteractionAmplitude> u2;
+//	std::vector<InteractionAmplitude> u3;
 
 	/** Number of orbitals. */
 	unsigned int numOrbitals;
 
 	/** Flag indicating whether the interaction amplitudes are initialized.
 	 */
-	bool interactionAmplitudesAreGenerated;
+//	bool interactionAmplitudesAreGenerated;
 
 	/** Main algorithm for calculating the self-energy vertex.*/
 	void calculateSelfEnergyVertexMainAlgorithm(
@@ -144,6 +151,11 @@ ElectronFluctuationVertex::getMomentumSpaceContext() const{
 }
 
 inline const Property::Susceptibility&
+ElectronFluctuationVertex::getSusceptibility() const{
+	return susceptibility;
+}
+
+/*inline const Property::Susceptibility&
 ElectronFluctuationVertex::getChargeSusceptibility() const{
 	return chargeSusceptibility;
 }
@@ -151,7 +163,7 @@ ElectronFluctuationVertex::getChargeSusceptibility() const{
 inline const Property::Susceptibility&
 ElectronFluctuationVertex::getSpinSusceptibility() const{
 	return spinSusceptibility;
-}
+}*/
 
 inline void ElectronFluctuationVertex::setLeftInteraction(
 	const std::vector<InteractionAmplitude> &leftInteraction
@@ -169,7 +181,7 @@ inline void ElectronFluctuationVertex::setMultiplier(double multiplier){
 	this->multiplier = multiplier;
 }
 
-inline void ElectronFluctuationVertex::setU(std::complex<double> U){
+/*inline void ElectronFluctuationVertex::setU(std::complex<double> U){
 	this->U = U;
 	interactionAmplitudesAreGenerated = false;
 }
@@ -187,7 +199,7 @@ inline void ElectronFluctuationVertex::setJ(std::complex<double> J){
 inline void ElectronFluctuationVertex::setJp(std::complex<double> Jp){
 	this->Jp = Jp;
 	interactionAmplitudesAreGenerated = false;
-}
+}*/
 
 inline void ElectronFluctuationVertex::setNumOrbitals(
 	unsigned int numOrbitals

@@ -257,7 +257,6 @@ void FLEX::calculateInteractionVertex(){
 	//////////////////////////
 	ElectronFluctuationVertex electronFluctuationVertexChargeSolver(
 		momentumSpaceContext,
-		rpaChargeSusceptibility,
 		rpaChargeSusceptibility
 	);
 	electronFluctuationVertexChargeSolver.setVerbose(false);
@@ -332,7 +331,6 @@ void FLEX::calculateInteractionVertex(){
 	////////////////////////
 	ElectronFluctuationVertex electronFluctuationVertexSpinSolver(
 		momentumSpaceContext,
-		rpaSpinSusceptibility,
 		rpaSpinSusceptibility
 	);
 	electronFluctuationVertexSpinSolver.setVerbose(false);
