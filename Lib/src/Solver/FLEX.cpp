@@ -194,8 +194,6 @@ void FLEX::calculateBareSusceptibility(unsigned int slice){
 		upperFermionicMatsubaraEnergyIndex,
 		getLowerBosonicMatsubaraEnergyIndex(slice),
 		getUpperBosonicMatsubaraEnergyIndex(slice)
-/*		lowerBosonicMatsubaraEnergyIndex,
-		upperBosonicMatsubaraEnergyIndex*/
 	);
 	bareSusceptibility
 		= matsubaraSusceptibilityPropertyExtractor.calculateSusceptibility({
