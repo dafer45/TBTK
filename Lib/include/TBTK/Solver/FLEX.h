@@ -328,6 +328,15 @@ private:
 	std::vector<InteractionAmplitude>
 		generateRPASpinSusceptibilityInteractionAmplitudes();
 
+	/** Generate the U1 interaction vertex for the interaction vertex. */
+	std::vector<InteractionAmplitude> generateU1();
+
+	/** Generate the U1 interaction vertex for the interaction vertex. */
+	std::vector<InteractionAmplitude> generateU2();
+
+	/** Generate the U1 interaction vertex for the interaction vertex. */
+	std::vector<InteractionAmplitude> generateU3();
+
 	/** Calculate the density. */
 	void calculateDensity();
 

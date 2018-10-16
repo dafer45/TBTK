@@ -153,7 +153,7 @@ void ElectronFluctuationVertex::generateInteractionAmplitudes(){
 	interactionAmplitudesAreGenerated = true;
 }
 
-vector<complex<double>> ElectronFluctuationVertex::calculateSelfEnergyVertex(
+vector<complex<double>> ElectronFluctuationVertex::calculateSelfEnergyVertexOld(
 	const Index &index
 ){
 	TBTKAssert(
@@ -300,6 +300,49 @@ vector<complex<double>> ElectronFluctuationVertex::calculateSelfEnergyVertex(
 		u3,
 		u3,
 		1.
+	);
+
+	return selfEnergyVertex;
+}
+
+vector<complex<double>> ElectronFluctuationVertex::calculateSelfEnergyVertex(
+	const Index &index
+){
+	unsigned int numEnergies;
+	switch(spinSusceptibility.getEnergyType()){
+	case Property::EnergyResolvedProperty<complex<double>>::EnergyType::Real:
+		numEnergies = spinSusceptibility.getResolution();
+
+		break;
+	case Property::EnergyResolvedProperty<complex<double>>::EnergyType::BosonicMatsubara:
+		numEnergies = spinSusceptibility.getNumMatsubaraEnergies();
+
+		break;
+	default:
+		TBTKExit(
+			"Solver::ElectronFluctuationVertex::calculateSelfEnergyVertex()",
+			"Unknow EnergyType.",
+			""
+		);
+	}
+
+	vector<complex<double>> selfEnergyVertex;
+	selfEnergyVertex.reserve(numEnergies);
+	for(
+		unsigned int n = 0;
+		n < numEnergies;
+		n++
+	){
+		selfEnergyVertex.push_back(0.);
+	}
+
+	calculateSelfEnergyVertexMainAlgorithm(
+		selfEnergyVertex,
+		index,
+		spinSusceptibility,
+		leftInteraction,
+		rightInteraction,
+		multiplier
 	);
 
 	return selfEnergyVertex;

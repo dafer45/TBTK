@@ -51,9 +51,26 @@ public:
 	const Property::Susceptibility& getSpinSusceptibility() const;
 
 	/** Calculate self-energy vertex. */
+	std::vector<std::complex<double>> calculateSelfEnergyVertexOld(
+		const Index &index
+	);
+
+	/** Calculate self-energy vertex. */
 	std::vector<std::complex<double>> calculateSelfEnergyVertex(
 		const Index &index
 	);
+
+	/** Set the left interaction. */
+	void setLeftInteraction(
+		const std::vector<InteractionAmplitude> &leftInteraction
+	);
+
+	/** Set the right interaction. */
+	void setRightInteraction(
+		const std::vector<InteractionAmplitude> &rightInteraction
+	);
+
+	void setMultiplier(double multiplier);
 
 	/** Set U. */
 	void setU(std::complex<double> U);
@@ -85,6 +102,15 @@ private:
 
 	/** Flag indicating whether the SelfEnergyCalculator is initialized. */
 	bool isInitialized;
+
+	/** Left interaciton. */
+	std::vector<InteractionAmplitude> leftInteraction;
+
+	/** Left interaciton. */
+	std::vector<InteractionAmplitude> rightInteraction;
+
+	/** Multiplier. */
+	double multiplier;
 
 	/** Interaction parameters. */
 	std::complex<double> U, Up, J, Jp;
@@ -125,6 +151,22 @@ ElectronFluctuationVertex::getChargeSusceptibility() const{
 inline const Property::Susceptibility&
 ElectronFluctuationVertex::getSpinSusceptibility() const{
 	return spinSusceptibility;
+}
+
+inline void ElectronFluctuationVertex::setLeftInteraction(
+	const std::vector<InteractionAmplitude> &leftInteraction
+){
+	this->leftInteraction = leftInteraction;
+}
+
+inline void ElectronFluctuationVertex::setRightInteraction(
+	const std::vector<InteractionAmplitude> &rightInteraction
+){
+	this->rightInteraction = rightInteraction;
+}
+
+inline void ElectronFluctuationVertex::setMultiplier(double multiplier){
+	this->multiplier = multiplier;
 }
 
 inline void ElectronFluctuationVertex::setU(std::complex<double> U){

@@ -252,7 +252,7 @@ void FLEX::calculateRPASusceptibilities(){
 }
 
 void FLEX::calculateInteractionVertex(){
-	ElectronFluctuationVertex
+/*	ElectronFluctuationVertex
 		electronFluctuationVertexSolver(
 			momentumSpaceContext,
 			rpaChargeSusceptibility,
@@ -272,6 +272,172 @@ void FLEX::calculateInteractionVertex(){
 		);
 	interactionVertex
 		= electronFluctuationVertexPropertyExtractor.calculateInteractionVertex({
+			{
+				{IDX_ALL, IDX_ALL},
+				{IDX_ALL},
+				{IDX_ALL},
+				{IDX_ALL},
+				{IDX_ALL}
+			}
+		});*/
+
+	//////////////////////////
+	// Charge contributions //
+	//////////////////////////
+	ElectronFluctuationVertex electronFluctuationVertexChargeSolver(
+		momentumSpaceContext,
+		rpaChargeSusceptibility,
+		rpaChargeSusceptibility
+	);
+	electronFluctuationVertexChargeSolver.setVerbose(false);
+	electronFluctuationVertexChargeSolver.setModel(getModel());
+	electronFluctuationVertexChargeSolver.setNumOrbitals(numOrbitals);
+	PropertyExtractor::ElectronFluctuationVertex
+		electronFluctuationVertexChargePropertyExtractor(
+			electronFluctuationVertexChargeSolver
+		);
+
+	//U_1*\chi_c*U_1
+	electronFluctuationVertexChargeSolver.setLeftInteraction(generateU1());
+	electronFluctuationVertexChargeSolver.setRightInteraction(generateU1());
+	electronFluctuationVertexChargeSolver.setMultiplier(1/2.);
+	interactionVertex
+		= electronFluctuationVertexChargePropertyExtractor.calculateInteractionVertex({
+			{
+				{IDX_ALL, IDX_ALL},
+				{IDX_ALL},
+				{IDX_ALL},
+				{IDX_ALL},
+				{IDX_ALL}
+			}
+		});
+
+	//U_2*\chi_c*U_2
+	electronFluctuationVertexChargeSolver.setLeftInteraction(generateU2());
+	electronFluctuationVertexChargeSolver.setRightInteraction(generateU2());
+	electronFluctuationVertexChargeSolver.setMultiplier(1/2.);
+	interactionVertex
+		+= electronFluctuationVertexChargePropertyExtractor.calculateInteractionVertex({
+			{
+				{IDX_ALL, IDX_ALL},
+				{IDX_ALL},
+				{IDX_ALL},
+				{IDX_ALL},
+				{IDX_ALL}
+			}
+		});
+
+	//U_1*\chi_c*U_2
+	electronFluctuationVertexChargeSolver.setLeftInteraction(generateU1());
+	electronFluctuationVertexChargeSolver.setRightInteraction(generateU2());
+	electronFluctuationVertexChargeSolver.setMultiplier(1/2.);
+	interactionVertex
+		+= electronFluctuationVertexChargePropertyExtractor.calculateInteractionVertex({
+			{
+				{IDX_ALL, IDX_ALL},
+				{IDX_ALL},
+				{IDX_ALL},
+				{IDX_ALL},
+				{IDX_ALL}
+			}
+		});
+
+	//U_2*\chi_c*U_1
+	electronFluctuationVertexChargeSolver.setLeftInteraction(generateU2());
+	electronFluctuationVertexChargeSolver.setRightInteraction(generateU1());
+	electronFluctuationVertexChargeSolver.setMultiplier(1/2.);
+	interactionVertex
+		+= electronFluctuationVertexChargePropertyExtractor.calculateInteractionVertex({
+			{
+				{IDX_ALL, IDX_ALL},
+				{IDX_ALL},
+				{IDX_ALL},
+				{IDX_ALL},
+				{IDX_ALL}
+			}
+		});
+	////////////////////////
+	// Spin contributions //
+	////////////////////////
+	ElectronFluctuationVertex electronFluctuationVertexSpinSolver(
+		momentumSpaceContext,
+		rpaSpinSusceptibility,
+		rpaSpinSusceptibility
+	);
+	electronFluctuationVertexSpinSolver.setVerbose(false);
+	electronFluctuationVertexSpinSolver.setModel(getModel());
+	electronFluctuationVertexSpinSolver.setNumOrbitals(numOrbitals);
+	PropertyExtractor::ElectronFluctuationVertex
+		electronFluctuationVertexSpinPropertyExtractor(
+			electronFluctuationVertexSpinSolver
+		);
+
+	//U_1*\chi_s*U_1
+	electronFluctuationVertexSpinSolver.setLeftInteraction(generateU1());
+	electronFluctuationVertexSpinSolver.setRightInteraction(generateU1());
+	electronFluctuationVertexSpinSolver.setMultiplier(1/2.);
+	interactionVertex
+		+= electronFluctuationVertexSpinPropertyExtractor.calculateInteractionVertex({
+			{
+				{IDX_ALL, IDX_ALL},
+				{IDX_ALL},
+				{IDX_ALL},
+				{IDX_ALL},
+				{IDX_ALL}
+			}
+		});
+
+	//U_2*\chi_s*U_2
+	electronFluctuationVertexSpinSolver.setLeftInteraction(generateU2());
+	electronFluctuationVertexSpinSolver.setRightInteraction(generateU2());
+	electronFluctuationVertexSpinSolver.setMultiplier(1/2.);
+	interactionVertex
+		+= electronFluctuationVertexSpinPropertyExtractor.calculateInteractionVertex({
+			{
+				{IDX_ALL, IDX_ALL},
+				{IDX_ALL},
+				{IDX_ALL},
+				{IDX_ALL},
+				{IDX_ALL}
+			}
+		});
+
+	//U_1*\chi_s*U_2
+	electronFluctuationVertexSpinSolver.setLeftInteraction(generateU1());
+	electronFluctuationVertexSpinSolver.setRightInteraction(generateU2());
+	electronFluctuationVertexSpinSolver.setMultiplier(-1/2.);
+	interactionVertex
+		+= electronFluctuationVertexSpinPropertyExtractor.calculateInteractionVertex({
+			{
+				{IDX_ALL, IDX_ALL},
+				{IDX_ALL},
+				{IDX_ALL},
+				{IDX_ALL},
+				{IDX_ALL}
+			}
+		});
+
+	//U_2*\chi_s*U_1
+	electronFluctuationVertexSpinSolver.setLeftInteraction(generateU2());
+	electronFluctuationVertexSpinSolver.setRightInteraction(generateU1());
+	electronFluctuationVertexSpinSolver.setMultiplier(-1/2.);
+	interactionVertex
+		+= electronFluctuationVertexSpinPropertyExtractor.calculateInteractionVertex({
+			{
+				{IDX_ALL, IDX_ALL},
+				{IDX_ALL},
+				{IDX_ALL},
+				{IDX_ALL},
+				{IDX_ALL}
+			}
+		});
+
+	//U_3*\chi_s*U_3
+	electronFluctuationVertexSpinSolver.setLeftInteraction(generateU3());
+	electronFluctuationVertexSpinSolver.setRightInteraction(generateU3());
+	electronFluctuationVertexSpinSolver.setMultiplier(1);
+	interactionVertex
+		+= electronFluctuationVertexSpinPropertyExtractor.calculateInteractionVertex({
 			{
 				{IDX_ALL, IDX_ALL},
 				{IDX_ALL},
@@ -655,6 +821,141 @@ FLEX::generateRPASpinSusceptibilityInteractionAmplitudes(){
 					-Jp,
 					{{a},	{a}},
 					{{b},	{b}}
+				)
+			);
+		}
+	}
+
+	return interactionAmplitudes;
+}
+
+vector<InteractionAmplitude> FLEX::generateU1(){
+	vector<InteractionAmplitude> interactionAmplitudes;
+	TBTKAssert(
+		numOrbitals != 0,
+		"Solver::FLEX::generateU1()",
+		"'numOrbitals' must be non-zero.",
+		"Use Solver::FLEX::setNumOrbitals() to set the number of"
+		<< " orbitals."
+	);
+
+	for(int a = 0; a < (int)numOrbitals; a++){
+		for(int b = 0; b < (int)numOrbitals; b++){
+			if(a == b)
+				continue;
+
+			interactionAmplitudes.push_back(
+				InteractionAmplitude(
+					Up - J,
+					{{a}, {b}},
+					{{b}, {a}}
+				)
+			);
+			interactionAmplitudes.push_back(
+				InteractionAmplitude(
+					J - Up,
+					{{a}, {b}},
+					{{a}, {b}}
+				)
+			);
+		}
+	}
+
+	return interactionAmplitudes;
+}
+
+vector<InteractionAmplitude> FLEX::generateU2(){
+	vector<InteractionAmplitude> interactionAmplitudes;
+	TBTKAssert(
+		numOrbitals != 0,
+		"Solver::FLEX::generateU2()",
+		"'numOrbitals' must be non-zero.",
+		"Use Solver::FLEX::setNumOrbitals() to set the number of"
+		<< " orbitals."
+	);
+
+	for(int a = 0; a < (int)numOrbitals; a++){
+		interactionAmplitudes.push_back(
+			InteractionAmplitude(
+				U,
+				{{a}, {a}},
+				{{a}, {a}}
+			)
+		);
+
+		for(int b = 0; b < (int)numOrbitals; b++){
+			if(a == b)
+				continue;
+
+			interactionAmplitudes.push_back(
+				InteractionAmplitude(
+					Up,
+					{{a}, {b}},
+					{{b}, {a}}
+				)
+			);
+			interactionAmplitudes.push_back(
+				InteractionAmplitude(
+					J,
+					{{a}, {b}},
+					{{a}, {b}}
+				)
+			);
+			interactionAmplitudes.push_back(
+				InteractionAmplitude(
+					Jp,
+					{{a}, {a}},
+					{{b}, {b}}
+				)
+			);
+		}
+	}
+
+	return interactionAmplitudes;
+}
+
+vector<InteractionAmplitude> FLEX::generateU3(){
+	vector<InteractionAmplitude> interactionAmplitudes;
+	TBTKAssert(
+		numOrbitals != 0,
+		"Solver::FLEX::generateU3()",
+		"'numOrbitals' must be non-zero.",
+		"Use Solver::FLEX::setNumOrbitals() to set the number of"
+		<< " orbitals."
+	);
+
+	for(int a = 0; a < (int)numOrbitals; a++){
+		interactionAmplitudes.push_back(
+			InteractionAmplitude(
+				-U,
+				{{a}, {a}},
+				{{a}, {a}}
+			)
+		);
+
+		for(int b = 0; b < (int)numOrbitals; b++){
+			if(a == b)
+				continue;
+
+			interactionAmplitudes.push_back(
+				InteractionAmplitude(
+					-J,
+					{{a}, {b}},
+					{{b}, {a}}
+				)
+			);
+			interactionAmplitudes.push_back(
+				InteractionAmplitude(
+					-Up,
+					{{a}, {b}},
+					{{a}, {b}}
+				)
+			);
+			interactionAmplitudes.push_back(
+				InteractionAmplitude(
+					-Jp,
+					{{a}, {a}},
+					{{b}, {b}}
 				)
 			);
 		}
