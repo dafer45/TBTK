@@ -252,35 +252,6 @@ void FLEX::calculateRPASusceptibilities(){
 }
 
 void FLEX::calculateInteractionVertex(){
-/*	ElectronFluctuationVertex
-		electronFluctuationVertexSolver(
-			momentumSpaceContext,
-			rpaChargeSusceptibility,
-			rpaSpinSusceptibility
-		);
-	electronFluctuationVertexSolver.setVerbose(false);
-	electronFluctuationVertexSolver.setModel(getModel());
-	electronFluctuationVertexSolver.setU(U);
-	electronFluctuationVertexSolver.setJ(J);
-	electronFluctuationVertexSolver.setUp(Up);
-	electronFluctuationVertexSolver.setJp(Jp);
-	electronFluctuationVertexSolver.setNumOrbitals(numOrbitals);
-
-	PropertyExtractor::ElectronFluctuationVertex
-		electronFluctuationVertexPropertyExtractor(
-			electronFluctuationVertexSolver
-		);
-	interactionVertex
-		= electronFluctuationVertexPropertyExtractor.calculateInteractionVertex({
-			{
-				{IDX_ALL, IDX_ALL},
-				{IDX_ALL},
-				{IDX_ALL},
-				{IDX_ALL},
-				{IDX_ALL}
-			}
-		});*/
-
 	//////////////////////////
 	// Charge contributions //
 	//////////////////////////
