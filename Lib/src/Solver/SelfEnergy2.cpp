@@ -19,6 +19,7 @@
  */
 
 #include "TBTK/Array.h"
+#include "TBTK/BlockStructureDescriptor.h"
 #include "TBTK/Convolver.h"
 #include "TBTK/Solver/SelfEnergy2.h"
 #include "TBTK/UnitHandler.h"
@@ -40,7 +41,7 @@ SelfEnergy2::SelfEnergy2(
 	interactionVertex(interactionVertex),
 	greensFunction(greensFunction)
 {
-	numOrbitals = 0;
+//	numOrbitals = 0;
 }
 
 vector<complex<double>> SelfEnergy2::calculateSelfEnergy(
@@ -140,13 +141,14 @@ vector<complex<double>> SelfEnergy2::calculateSelfEnergy(
 	const BrillouinZone &brillouinZone
 		= momentumSpaceContext.getBrillouinZone();
 
-	TBTKAssert(
+/*	TBTKAssert(
 		numOrbitals != 0,
 		"Solver::SelfEnergy2::calculateSelfEnergy()",
 		"'numOrbitals' must be non-zero.",
 		"Use Solver::SelfEnergy2::setNumOrbitals() to set the number"
 		<< " of orbitals."
-	);
+	);*/
+	std::vector<Index> intraBlockIndexList = getIntraBlockIndexList();
 
 	vector<unsigned int> kVector;
 	kVector.reserve(kIndex.getSize());
@@ -204,12 +206,14 @@ vector<complex<double>> SelfEnergy2::calculateSelfEnergy(
 
 				for(
 					unsigned int orbital0 = 0;
-					orbital0 < numOrbitals;
+					orbital0 < intraBlockIndexList.size();
+//					orbital0 < numOrbitals;
 					orbital0++
 				){
 					for(
 						unsigned int orbital1 = 0;
-						orbital1 < numOrbitals;
+						orbital1 < intraBlockIndexList.size();
+//						orbital1 < numOrbitals;
 						orbital1++
 					){
 						selfEnergy[selfEnergyIndex]
@@ -217,8 +221,10 @@ vector<complex<double>> SelfEnergy2::calculateSelfEnergy(
 								{
 									qIndex,
 									intraBlockIndices[0],
-									{orbital1},
-									{orbital0},
+									intraBlockIndexList[orbital1],
+									intraBlockIndexList[orbital0],
+/*									{orbital1},
+									{orbital0},*/
 									intraBlockIndices[1]
 								},
 								firstEnergyIndex
@@ -226,11 +232,13 @@ vector<complex<double>> SelfEnergy2::calculateSelfEnergy(
 							{
 								Index(
 									kMinusQIndex,
-									{orbital1}
+									intraBlockIndexList[orbital1]
+//									{orbital1}
 								),
 								Index(
 									kMinusQIndex,
-									{orbital0}
+									intraBlockIndexList[orbital0]
+//									{orbital0}
 								)
 							},
 							secondEnergyIndex
@@ -343,13 +351,14 @@ Property::SelfEnergy SelfEnergy2::calculateSelfEnergyAllBlocks(
 	const BrillouinZone &brillouinZone
 		= momentumSpaceContext.getBrillouinZone();
 
-	TBTKAssert(
+/*	TBTKAssert(
 		numOrbitals != 0,
 		"Solver::SelfEnergy2::calculateSelfEnergyAllBlocks()",
 		"'numOrbitals' must be non-zero.",
 		"Use Solver::SelfEnergy2::setNumOrbitals() to set the number"
 		<< " of orbitals."
-	);
+	);*/
+	vector<Index> intraBlockIndexList = getIntraBlockIndexList();
 
 	TBTKAssert(
 		numMeshPoints.size() == 2,
@@ -377,10 +386,16 @@ Property::SelfEnergy SelfEnergy2::calculateSelfEnergyAllBlocks(
 	crossCorrelationRanges.push_back(numMatsubaraEnergiesCrossCorrelation);
 
 	Array<complex<double>> selfEnergyArray;
-	for(unsigned int orbital0 = 0; orbital0 < numOrbitals; orbital0++){
+//	for(unsigned int orbital0 = 0; orbital0 < numOrbitals; orbital0++){
+	for(
+		unsigned int orbital0 = 0;
+		orbital0 < intraBlockIndexList.size();
+		orbital0++
+	){
 		for(
 			unsigned int orbital1 = 0;
-			orbital1 < numOrbitals;
+			orbital1 < intraBlockIndexList.size();
+//			orbital1 < numOrbitals;
 			orbital1++
 		){
 			Array<complex<double>> interactionVertexArray(
@@ -424,8 +439,10 @@ Property::SelfEnergy SelfEnergy2::calculateSelfEnergyAllBlocks(
 						{
 							qIndex,
 							intraBlockIndices[0],
-							{orbital1},
-							{orbital0},
+							intraBlockIndexList[orbital1],
+							intraBlockIndexList[orbital0],
+/*							{orbital1},
+							{orbital0},*/
 							intraBlockIndices[1]
 						},
 						n
@@ -453,11 +470,13 @@ Property::SelfEnergy SelfEnergy2::calculateSelfEnergyAllBlocks(
 						{
 							Index(
 								qIndex,
-								{orbital1}
+								intraBlockIndexList[orbital1]
+//								{orbital1}
 							),
 							Index(
 								qIndex,
-								{orbital0}
+								intraBlockIndexList[orbital0]
+//								{orbital0}
 							)
 						},
 						n
@@ -564,6 +583,116 @@ Property::SelfEnergy SelfEnergy2::calculateSelfEnergyAllBlocks(
 	}
 
 	return selfEnergy;
+}
+
+unsigned int SelfEnergy2::getNumIntraBlockIndices(){
+	BlockStructureDescriptor blockStructureDescriptor(
+		getModel().getHoppingAmplitudeSet()
+	);
+	const vector<vector<double>> &mesh = momentumSpaceContext.getMesh();
+	TBTKAssert(
+		mesh.size() == blockStructureDescriptor.getNumBlocks(),
+		"Solver::SelfEnergy2::getNumIntraBlockIndices()",
+		"The number of mesh points '" << mesh.size() << "' must be the"
+		<< " same as the number of blocks '"
+		<< blockStructureDescriptor.getNumBlocks() << "' in the"
+		<< " Model.",
+		""
+	);
+
+	unsigned int numIntraBlockIndices
+		= blockStructureDescriptor.getNumStatesInBlock(0);
+	for(
+		unsigned int n = 1;
+		n < blockStructureDescriptor.getNumBlocks();
+		n++
+	){
+		TBTKAssert(
+			numIntraBlockIndices
+			== blockStructureDescriptor.getNumStatesInBlock(n),
+			"Solver::SelfEnergy2::getNumIntraBlockIndices()",
+			"Incompatible block sizes. Block '0' has '"
+			<< numIntraBlockIndices << "' intra block indices,"
+			<< " while block '" << n << "' has '"
+			<< blockStructureDescriptor.getNumStatesInBlock(n)
+			<< "'.",
+			""
+		);
+	}
+
+	return numIntraBlockIndices;
+}
+
+vector<Index> SelfEnergy2::getIntraBlockIndexList(){
+	unsigned int numIntraBlockIndices = getNumIntraBlockIndices();
+
+	BlockStructureDescriptor blockStructureDescriptor(
+		getModel().getHoppingAmplitudeSet()
+	);
+
+	vector<Index> intraBlockIndexList;
+	for(
+		unsigned int state = 0;
+		state < numIntraBlockIndices;
+		state++
+	){
+		Index index
+			= getModel().getHoppingAmplitudeSet().getPhysicalIndex(
+				blockStructureDescriptor.getFirstStateInBlock(
+					0
+				) + state
+			);
+
+		Index blockIndex
+			= getModel().getHoppingAmplitudeSet().getSubspaceIndex(
+				index
+			);
+		for(unsigned int c = 0; c < blockIndex.getSize(); c++)
+			index.popFront();
+
+		intraBlockIndexList.push_back(index);
+	}
+
+	for(
+		unsigned int block = 1;
+		block < blockStructureDescriptor.getNumBlocks();
+		block++
+	){
+		for(
+			unsigned int state = 0;
+			state < numIntraBlockIndices;
+			state++
+		){
+			Index index = getModel().getHoppingAmplitudeSet(
+			).getPhysicalIndex(
+				blockStructureDescriptor.getFirstStateInBlock(
+					block
+				) + state
+			);
+
+			Index blockIndex
+				= getModel().getHoppingAmplitudeSet(
+				).getSubspaceIndex(index);
+			for(unsigned int m = 0; m < blockIndex.getSize(); m++)
+				index.popFront();
+
+			TBTKAssert(
+				index.equals(intraBlockIndexList[state]),
+				"Solver::SelfEnergy2::getIntraBlockIndexList()",
+				"Incompatible intra block Indices. The intra"
+				<< " block Indices must be the same for each"
+				<< " block but intra block Index '" << state
+				<< "' in block '0' is '"
+				<< intraBlockIndexList[state].toString() << ","
+				<< " while intra block Index '" << state << "'"
+				<< " in block '" << block << "' is '"
+				<< index.toString() << "'.",
+				""
+			);
+		}
+	}
+
+	return intraBlockIndexList;
 }
 
 }	//End of namespace Solver

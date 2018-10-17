@@ -57,7 +57,7 @@ public:
 	/** Set the number of orbitals.
 	 *
 	 *  @param numOrbitals The number of orbitals. */
-	void setNumOrbitals(unsigned int numOrbitals);
+//	void setNumOrbitals(unsigned int numOrbitals);
 
 	/** Calculate the self-energy. */
 	std::vector<std::complex<double>> calculateSelfEnergy(
@@ -83,7 +83,13 @@ private:
 	const Property::GreensFunction &greensFunction;
 
 	/** Number of orbitals. */
-	unsigned int numOrbitals;
+//	unsigned int numOrbitals;
+
+	/** Get the number of intra block Indices. */
+	unsigned int getNumIntraBlockIndices();
+
+	/** Get a list of intra block Indices. */
+	std::vector<Index> getIntraBlockIndexList();
 };
 
 inline const MomentumSpaceContext& SelfEnergy2::getMomentumSpaceContext(
@@ -101,9 +107,9 @@ inline const Property::GreensFunction& SelfEnergy2::getGreensFunction(
 	return greensFunction;
 }
 
-inline void SelfEnergy2::setNumOrbitals(unsigned int numOrbitals){
+/*inline void SelfEnergy2::setNumOrbitals(unsigned int numOrbitals){
 	this->numOrbitals = numOrbitals;
-}
+}*/
 
 };	//End of namespace Solver
 };	//End of namespace TBTK
