@@ -39,7 +39,6 @@ ElectronFluctuationVertex::ElectronFluctuationVertex(
 	momentumSpaceContext(momentumSpaceContext),
 	susceptibility(susceptibility)
 {
-	numOrbitals = 0;
 }
 
 vector<complex<double>> ElectronFluctuationVertex::calculateSelfEnergyVertex(

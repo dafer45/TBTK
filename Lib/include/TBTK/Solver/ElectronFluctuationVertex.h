@@ -62,9 +62,6 @@ public:
 	);
 
 	void setMultiplier(double multiplier);
-
-	/** Srt the number of orbitals. */
-	void setNumOrbitals(unsigned int numOrbitals);
 private:
 	/** Momentum space context. */
 	const MomentumSpaceContext &momentumSpaceContext;
@@ -80,9 +77,6 @@ private:
 
 	/** Multiplier. */
 	double multiplier;
-
-	/** Number of orbitals. */
-	unsigned int numOrbitals;
 
 	/** Main algorithm for calculating the self-energy vertex.*/
 	void calculateSelfEnergyVertexMainAlgorithm(
@@ -119,12 +113,6 @@ inline void ElectronFluctuationVertex::setRightInteraction(
 
 inline void ElectronFluctuationVertex::setMultiplier(double multiplier){
 	this->multiplier = multiplier;
-}
-
-inline void ElectronFluctuationVertex::setNumOrbitals(
-	unsigned int numOrbitals
-){
-	this->numOrbitals = numOrbitals;
 }
 
 };	//End of namespace Solver

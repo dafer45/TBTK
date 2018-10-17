@@ -259,7 +259,6 @@ void FLEX::calculateInteractionVertex(){
 	);
 	electronFluctuationVertexChargeSolver.setVerbose(false);
 	electronFluctuationVertexChargeSolver.setModel(getModel());
-	electronFluctuationVertexChargeSolver.setNumOrbitals(numOrbitals);
 	PropertyExtractor::ElectronFluctuationVertex
 		electronFluctuationVertexChargePropertyExtractor(
 			electronFluctuationVertexChargeSolver
@@ -333,7 +332,6 @@ void FLEX::calculateInteractionVertex(){
 	);
 	electronFluctuationVertexSpinSolver.setVerbose(false);
 	electronFluctuationVertexSpinSolver.setModel(getModel());
-	electronFluctuationVertexSpinSolver.setNumOrbitals(numOrbitals);
 	PropertyExtractor::ElectronFluctuationVertex
 		electronFluctuationVertexSpinPropertyExtractor(
 			electronFluctuationVertexSpinSolver
