@@ -421,7 +421,6 @@ void FLEX::calculateSelfEnergy(unsigned int slice){
 	);
 	selfEnergySolver.setVerbose(false);
 	selfEnergySolver.setModel(getModel());
-//	selfEnergySolver.setNumOrbitals(numOrbitals);
 
 		PropertyExtractor::SelfEnergy2 selfEnergyPropertyExtractor(
 		selfEnergySolver

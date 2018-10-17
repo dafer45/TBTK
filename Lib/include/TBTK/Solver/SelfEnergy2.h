@@ -54,11 +54,6 @@ public:
 	 *  @return The GreensFunction. */
 	const Property::GreensFunction& getGreensFunction() const;
 
-	/** Set the number of orbitals.
-	 *
-	 *  @param numOrbitals The number of orbitals. */
-//	void setNumOrbitals(unsigned int numOrbitals);
-
 	/** Calculate the self-energy. */
 	std::vector<std::complex<double>> calculateSelfEnergy(
 		const Index &index,
@@ -82,9 +77,6 @@ private:
 	/** GreensFunction. */
 	const Property::GreensFunction &greensFunction;
 
-	/** Number of orbitals. */
-//	unsigned int numOrbitals;
-
 	/** Get the number of intra block Indices. */
 	unsigned int getNumIntraBlockIndices();
 
@@ -106,10 +98,6 @@ inline const Property::GreensFunction& SelfEnergy2::getGreensFunction(
 ) const{
 	return greensFunction;
 }
-
-/*inline void SelfEnergy2::setNumOrbitals(unsigned int numOrbitals){
-	this->numOrbitals = numOrbitals;
-}*/
 
 };	//End of namespace Solver
 };	//End of namespace TBTK

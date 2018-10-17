@@ -41,7 +41,6 @@ SelfEnergy2::SelfEnergy2(
 	interactionVertex(interactionVertex),
 	greensFunction(greensFunction)
 {
-//	numOrbitals = 0;
 }
 
 vector<complex<double>> SelfEnergy2::calculateSelfEnergy(
@@ -141,13 +140,6 @@ vector<complex<double>> SelfEnergy2::calculateSelfEnergy(
 	const BrillouinZone &brillouinZone
 		= momentumSpaceContext.getBrillouinZone();
 
-/*	TBTKAssert(
-		numOrbitals != 0,
-		"Solver::SelfEnergy2::calculateSelfEnergy()",
-		"'numOrbitals' must be non-zero.",
-		"Use Solver::SelfEnergy2::setNumOrbitals() to set the number"
-		<< " of orbitals."
-	);*/
 	std::vector<Index> intraBlockIndexList = getIntraBlockIndexList();
 
 	vector<unsigned int> kVector;
@@ -207,13 +199,11 @@ vector<complex<double>> SelfEnergy2::calculateSelfEnergy(
 				for(
 					unsigned int orbital0 = 0;
 					orbital0 < intraBlockIndexList.size();
-//					orbital0 < numOrbitals;
 					orbital0++
 				){
 					for(
 						unsigned int orbital1 = 0;
 						orbital1 < intraBlockIndexList.size();
-//						orbital1 < numOrbitals;
 						orbital1++
 					){
 						selfEnergy[selfEnergyIndex]
@@ -223,8 +213,6 @@ vector<complex<double>> SelfEnergy2::calculateSelfEnergy(
 									intraBlockIndices[0],
 									intraBlockIndexList[orbital1],
 									intraBlockIndexList[orbital0],
-/*									{orbital1},
-									{orbital0},*/
 									intraBlockIndices[1]
 								},
 								firstEnergyIndex
@@ -233,12 +221,10 @@ vector<complex<double>> SelfEnergy2::calculateSelfEnergy(
 								Index(
 									kMinusQIndex,
 									intraBlockIndexList[orbital1]
-//									{orbital1}
 								),
 								Index(
 									kMinusQIndex,
 									intraBlockIndexList[orbital0]
-//									{orbital0}
 								)
 							},
 							secondEnergyIndex
@@ -351,13 +337,6 @@ Property::SelfEnergy SelfEnergy2::calculateSelfEnergyAllBlocks(
 	const BrillouinZone &brillouinZone
 		= momentumSpaceContext.getBrillouinZone();
 
-/*	TBTKAssert(
-		numOrbitals != 0,
-		"Solver::SelfEnergy2::calculateSelfEnergyAllBlocks()",
-		"'numOrbitals' must be non-zero.",
-		"Use Solver::SelfEnergy2::setNumOrbitals() to set the number"
-		<< " of orbitals."
-	);*/
 	vector<Index> intraBlockIndexList = getIntraBlockIndexList();
 
 	TBTKAssert(
@@ -386,7 +365,6 @@ Property::SelfEnergy SelfEnergy2::calculateSelfEnergyAllBlocks(
 	crossCorrelationRanges.push_back(numMatsubaraEnergiesCrossCorrelation);
 
 	Array<complex<double>> selfEnergyArray;
-//	for(unsigned int orbital0 = 0; orbital0 < numOrbitals; orbital0++){
 	for(
 		unsigned int orbital0 = 0;
 		orbital0 < intraBlockIndexList.size();
@@ -395,7 +373,6 @@ Property::SelfEnergy SelfEnergy2::calculateSelfEnergyAllBlocks(
 		for(
 			unsigned int orbital1 = 0;
 			orbital1 < intraBlockIndexList.size();
-//			orbital1 < numOrbitals;
 			orbital1++
 		){
 			Array<complex<double>> interactionVertexArray(
@@ -441,8 +418,6 @@ Property::SelfEnergy SelfEnergy2::calculateSelfEnergyAllBlocks(
 							intraBlockIndices[0],
 							intraBlockIndexList[orbital1],
 							intraBlockIndexList[orbital0],
-/*							{orbital1},
-							{orbital0},*/
 							intraBlockIndices[1]
 						},
 						n
@@ -471,12 +446,10 @@ Property::SelfEnergy SelfEnergy2::calculateSelfEnergyAllBlocks(
 							Index(
 								qIndex,
 								intraBlockIndexList[orbital1]
-//								{orbital1}
 							),
 							Index(
 								qIndex,
 								intraBlockIndexList[orbital0]
-//								{orbital0}
 							)
 						},
 						n
