@@ -107,7 +107,23 @@ void ElectronFluctuationVertex::calculateSelfEnergyVertexMainAlgorithm(
 		components[3],
 		components[4]
 	};
-	for(unsigned int n = 0; n < 4; n++){
+
+/*	IndexTree intraBlockIndexTree
+		= getModel().getHoppingAmplitudeSet().getIndexTree(kIndex);
+	vector<Index> intraBlockIndexList;
+	for(
+		IndexTree::ConstIterator iterator
+			= intraBlockIndexTree.cbegin();
+		iterator != intraBlockIndexTree.cend();
+		++iterator
+	){
+		Index index = *iterator;
+		for(unsigned int n = 0; n < kIndex.getSize(); n++)
+			index.popFront();
+
+		intraBlockIndexList.push_back(index);
+	}*/
+/*	for(unsigned int n = 0; n < 4; n++){
 		TBTKAssert(
 			intraBlockIndices[n].getSize() == 1,
 			"Solver::ElectronFluctuationVertex::calculateSelfEnergyVertexMainAlgorithm()",
@@ -122,19 +138,30 @@ void ElectronFluctuationVertex::calculateSelfEnergyVertexMainAlgorithm(
 		//Rewrite code below to not depend on the intraBlockIndices
 		//having a single subindex each. The remove this assert
 		//statement.
-	}
+	}*/
 
 	for(unsigned int in = 0; in < uLeft.size(); in++){
 		const InteractionAmplitude &incommingAmplitude = uLeft.at(in);
 		complex<double> amplitude_i = incommingAmplitude.getAmplitude();
-		int c0_i = incommingAmplitude.getCreationOperatorIndex(0).at(0);
+/*		int c0_i = incommingAmplitude.getCreationOperatorIndex(0).at(0);
 		int c1_i = incommingAmplitude.getCreationOperatorIndex(1).at(0);
 		int a0_i = incommingAmplitude.getAnnihilationOperatorIndex(0).at(0);
-		int a1_i = incommingAmplitude.getAnnihilationOperatorIndex(1).at(0);
+		int a1_i = incommingAmplitude.getAnnihilationOperatorIndex(1).at(0);*/
+		const Index &c0_i = incommingAmplitude.getCreationOperatorIndex(0);
+		const Index &c1_i = incommingAmplitude.getCreationOperatorIndex(1);
+		const Index &a0_i = incommingAmplitude.getAnnihilationOperatorIndex(0);
+		const Index &a1_i = incommingAmplitude.getAnnihilationOperatorIndex(1);
 
-		if(
+/*		if(
 			a1_i != intraBlockIndices[3][0]
 			|| c0_i != intraBlockIndices[2][0]
+			|| abs(amplitude_i) < 1e-10
+		){
+			continue;
+		}*/
+		if(
+			!a1_i.equals(intraBlockIndices[3])
+			|| !c0_i.equals(intraBlockIndices[2])
 			|| abs(amplitude_i) < 1e-10
 		){
 			continue;
@@ -143,14 +170,25 @@ void ElectronFluctuationVertex::calculateSelfEnergyVertexMainAlgorithm(
 		for(unsigned int out = 0; out < uRight.size(); out++){
 			const InteractionAmplitude &outgoingAmplitude = uRight.at(out);
 			complex<double> amplitude_o = outgoingAmplitude.getAmplitude();
-			int c0_o = outgoingAmplitude.getCreationOperatorIndex(0).at(0);
+/*			int c0_o = outgoingAmplitude.getCreationOperatorIndex(0).at(0);
 			int c1_o = outgoingAmplitude.getCreationOperatorIndex(1).at(0);
 			int a0_o = outgoingAmplitude.getAnnihilationOperatorIndex(0).at(0);
-			int a1_o = outgoingAmplitude.getAnnihilationOperatorIndex(1).at(0);
+			int a1_o = outgoingAmplitude.getAnnihilationOperatorIndex(1).at(0);*/
+			const Index &c0_o = outgoingAmplitude.getCreationOperatorIndex(0);
+			const Index &c1_o = outgoingAmplitude.getCreationOperatorIndex(1);
+			const Index &a0_o = outgoingAmplitude.getAnnihilationOperatorIndex(0);
+			const Index &a1_o = outgoingAmplitude.getAnnihilationOperatorIndex(1);
 
-			if(
+/*			if(
 				a0_o != intraBlockIndices[0][0]
 				|| c1_o != intraBlockIndices[1][0]
+				|| abs(amplitude_o) < 1e-10
+			){
+				continue;
+			}*/
+			if(
+				!a0_o.equals(intraBlockIndices[0])
+				|| !c1_o.equals(intraBlockIndices[1])
 				|| abs(amplitude_o) < 1e-10
 			){
 				continue;
@@ -161,10 +199,10 @@ void ElectronFluctuationVertex::calculateSelfEnergyVertexMainAlgorithm(
 			unsigned int offsetChargeSusceptibility
 				= susceptibility.getOffset({
 					kIndex,
-					{c0_o},
-					{a1_o},
-					{c1_i},
-					{a0_i}
+					c0_o,
+					a1_o,
+					c1_i,
+					a0_i
 				});
 
 			for(
