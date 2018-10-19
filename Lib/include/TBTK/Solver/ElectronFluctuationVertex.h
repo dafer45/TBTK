@@ -61,7 +61,7 @@ public:
 		const std::vector<InteractionAmplitude> &rightInteraction
 	);
 
-	void setMultiplier(double multiplier);
+//	void setMultiplier(double multiplier);
 private:
 	/** Momentum space context. */
 	const MomentumSpaceContext &momentumSpaceContext;
@@ -76,7 +76,7 @@ private:
 	std::vector<InteractionAmplitude> rightInteraction;
 
 	/** Multiplier. */
-	double multiplier;
+//	double multiplier;
 
 	/** Main algorithm for calculating the self-energy vertex.*/
 	void calculateSelfEnergyVertexMainAlgorithm(
@@ -84,8 +84,8 @@ private:
 		const Index &index,
 		const Property::Susceptibility &susceptibility,
 		const std::vector<InteractionAmplitude> &uLeft,
-		const std::vector<InteractionAmplitude> &uRight,
-		double multiplier
+		const std::vector<InteractionAmplitude> &uRight/*,
+		double multiplier*/
 	);
 };
 
@@ -111,9 +111,9 @@ inline void ElectronFluctuationVertex::setRightInteraction(
 	this->rightInteraction = rightInteraction;
 }
 
-inline void ElectronFluctuationVertex::setMultiplier(double multiplier){
+/*inline void ElectronFluctuationVertex::setMultiplier(double multiplier){
 	this->multiplier = multiplier;
-}
+}*/
 
 };	//End of namespace Solver
 };	//End of namespace TBTK

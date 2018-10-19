@@ -268,7 +268,7 @@ void FLEX::calculateInteractionVertex(){
 	electronFluctuationVertexChargeSolver.setLeftInteraction(generateU1());
 	electronFluctuationVertexChargeSolver.setRightInteraction(generateU1());
 //	electronFluctuationVertexChargeSolver.setMultiplier(1/2.);
-	electronFluctuationVertexChargeSolver.setMultiplier(1.);
+//	electronFluctuationVertexChargeSolver.setMultiplier(1.);
 	interactionVertex
 		= (1/2.)*electronFluctuationVertexChargePropertyExtractor.calculateInteractionVertex({
 			{
@@ -342,7 +342,7 @@ void FLEX::calculateInteractionVertex(){
 	electronFluctuationVertexSpinSolver.setLeftInteraction(generateU1());
 	electronFluctuationVertexSpinSolver.setRightInteraction(generateU1());
 //	electronFluctuationVertexSpinSolver.setMultiplier(1/2.);
-	electronFluctuationVertexSpinSolver.setMultiplier(1.);
+//	electronFluctuationVertexSpinSolver.setMultiplier(1.);
 	interactionVertex
 		+= (1/2.)*electronFluctuationVertexSpinPropertyExtractor.calculateInteractionVertex({
 			{

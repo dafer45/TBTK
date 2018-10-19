@@ -77,8 +77,8 @@ vector<complex<double>> ElectronFluctuationVertex::calculateSelfEnergyVertex(
 		index,
 		susceptibility,
 		leftInteraction,
-		rightInteraction,
-		multiplier
+		rightInteraction/*,
+		multiplier*/
 	);
 
 	return selfEnergyVertex;
@@ -89,8 +89,8 @@ void ElectronFluctuationVertex::calculateSelfEnergyVertexMainAlgorithm(
 	const Index &index,
 	const Property::Susceptibility &susceptibility,
 	const vector<InteractionAmplitude> &uLeft,
-	const vector<InteractionAmplitude> &uRight,
-	double multiplier
+	const vector<InteractionAmplitude> &uRight/*,
+	double multiplier*/
 ){
 	vector<Index> components = index.split();
 	TBTKAssert(
@@ -160,7 +160,7 @@ void ElectronFluctuationVertex::calculateSelfEnergyVertexMainAlgorithm(
 					susceptibilityData[
 						offsetChargeSusceptibility + n
 					]
-				)*multiplier;
+				)/**multiplier*/;
 			}
 		}
 	}
