@@ -267,8 +267,6 @@ void FLEX::calculateInteractionVertex(){
 	//U_1*\chi_c*U_1
 	electronFluctuationVertexChargeSolver.setLeftInteraction(generateU1());
 	electronFluctuationVertexChargeSolver.setRightInteraction(generateU1());
-//	electronFluctuationVertexChargeSolver.setMultiplier(1/2.);
-//	electronFluctuationVertexChargeSolver.setMultiplier(1.);
 	interactionVertex
 		= (1/2.)*electronFluctuationVertexChargePropertyExtractor.calculateInteractionVertex({
 			{
@@ -283,7 +281,6 @@ void FLEX::calculateInteractionVertex(){
 	//U_2*\chi_c*U_2
 	electronFluctuationVertexChargeSolver.setLeftInteraction(generateU2());
 	electronFluctuationVertexChargeSolver.setRightInteraction(generateU2());
-//	electronFluctuationVertexChargeSolver.setMultiplier(1/2.);
 	interactionVertex
 		+= (1/2.)*electronFluctuationVertexChargePropertyExtractor.calculateInteractionVertex({
 			{
@@ -298,7 +295,6 @@ void FLEX::calculateInteractionVertex(){
 	//U_1*\chi_c*U_2
 	electronFluctuationVertexChargeSolver.setLeftInteraction(generateU1());
 	electronFluctuationVertexChargeSolver.setRightInteraction(generateU2());
-//	electronFluctuationVertexChargeSolver.setMultiplier(1/2.);
 	interactionVertex
 		+= (1/2.)*electronFluctuationVertexChargePropertyExtractor.calculateInteractionVertex({
 			{
@@ -313,7 +309,6 @@ void FLEX::calculateInteractionVertex(){
 	//U_2*\chi_c*U_1
 	electronFluctuationVertexChargeSolver.setLeftInteraction(generateU2());
 	electronFluctuationVertexChargeSolver.setRightInteraction(generateU1());
-//	electronFluctuationVertexChargeSolver.setMultiplier(1/2.);
 	interactionVertex
 		+= (1/2.)*electronFluctuationVertexChargePropertyExtractor.calculateInteractionVertex({
 			{
@@ -341,8 +336,6 @@ void FLEX::calculateInteractionVertex(){
 	//U_1*\chi_s*U_1
 	electronFluctuationVertexSpinSolver.setLeftInteraction(generateU1());
 	electronFluctuationVertexSpinSolver.setRightInteraction(generateU1());
-//	electronFluctuationVertexSpinSolver.setMultiplier(1/2.);
-//	electronFluctuationVertexSpinSolver.setMultiplier(1.);
 	interactionVertex
 		+= (1/2.)*electronFluctuationVertexSpinPropertyExtractor.calculateInteractionVertex({
 			{
@@ -357,7 +350,6 @@ void FLEX::calculateInteractionVertex(){
 	//U_2*\chi_s*U_2
 	electronFluctuationVertexSpinSolver.setLeftInteraction(generateU2());
 	electronFluctuationVertexSpinSolver.setRightInteraction(generateU2());
-//	electronFluctuationVertexSpinSolver.setMultiplier(1/2.);
 	interactionVertex
 		+= (1/2.)*electronFluctuationVertexSpinPropertyExtractor.calculateInteractionVertex({
 			{
@@ -372,7 +364,6 @@ void FLEX::calculateInteractionVertex(){
 	//U_1*\chi_s*U_2
 	electronFluctuationVertexSpinSolver.setLeftInteraction(generateU1());
 	electronFluctuationVertexSpinSolver.setRightInteraction(generateU2());
-//	electronFluctuationVertexSpinSolver.setMultiplier(-1/2.);
 	interactionVertex
 		+= (-1/2.)*electronFluctuationVertexSpinPropertyExtractor.calculateInteractionVertex({
 			{
@@ -387,7 +378,6 @@ void FLEX::calculateInteractionVertex(){
 	//U_2*\chi_s*U_1
 	electronFluctuationVertexSpinSolver.setLeftInteraction(generateU2());
 	electronFluctuationVertexSpinSolver.setRightInteraction(generateU1());
-//	electronFluctuationVertexSpinSolver.setMultiplier(-1/2.);
 	interactionVertex
 		+= (-1/2.)*electronFluctuationVertexSpinPropertyExtractor.calculateInteractionVertex({
 			{
@@ -402,7 +392,6 @@ void FLEX::calculateInteractionVertex(){
 	//U_3*\chi_s*U_3
 	electronFluctuationVertexSpinSolver.setLeftInteraction(generateU3());
 	electronFluctuationVertexSpinSolver.setRightInteraction(generateU3());
-//	electronFluctuationVertexSpinSolver.setMultiplier(1);
 	interactionVertex
 		+= electronFluctuationVertexSpinPropertyExtractor.calculateInteractionVertex({
 			{
