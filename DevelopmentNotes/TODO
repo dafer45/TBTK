@@ -18,4 +18,5 @@
   the calculate() and callback functions. This will allow the same
   PropertyExtractor to be parallelized as long as the solver allows for this.
 
-- Implement operator+=() and operator-=() for all Properties.
+- Implement operator+=(), operator-=(), operator*=(), and operator/() for all
+  Properties.
