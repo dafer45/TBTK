@@ -65,6 +65,12 @@ public:
 	/** Overrides EnergyResolvedProperty::operator-=(). */
 	DOS& operator-=(const DOS &rhs);
 
+	/** Overrides EnergyResolvedProperty::operator*=(). */
+	DOS& operator*=(const double &rhs);
+
+	/** Overrides EnergyResolvedProperty::operator/=(). */
+	DOS& operator/=(const double &rhs);
+
 	/** Overrides AbstractProperty::serialize(). */
 	virtual std::string serialize(Mode mode) const;
 };
@@ -77,6 +83,18 @@ inline DOS& DOS::operator+=(const DOS &rhs){
 
 inline DOS& DOS::operator-=(const DOS &rhs){
 	EnergyResolvedProperty::operator-=(rhs);
+
+	return *this;
+}
+
+inline DOS& DOS::operator*=(const double &rhs){
+	EnergyResolvedProperty::operator*=(rhs);
+
+	return *this;
+}
+
+inline DOS& DOS::operator/=(const double &rhs){
+	EnergyResolvedProperty::operator/=(rhs);
 
 	return *this;
 }

@@ -80,6 +80,12 @@ public:
 	/** Overrides AbstractPropertye::operator-=(). */
 	Density& operator-=(const Density &rhs);
 
+	/** Overrides AbstractPropertye::operator*=(). */
+	Density& operator*=(const double &rhs);
+
+	/** Overrides AbstractPropertye::operator/=(). */
+	Density& operator/=(const double &rhs);
+
 	/** Get the minimum value for the Density.
 	 *
 	 *  @return The minimum value.*/
@@ -103,6 +109,18 @@ inline Density& Density::operator+=(const Density &rhs){
 
 inline Density& Density::operator-=(const Density &rhs){
 	AbstractProperty::operator-=(rhs);
+
+	return *this;
+}
+
+inline Density& Density::operator*=(const double &rhs){
+	AbstractProperty::operator*=(rhs);
+
+	return *this;
+}
+
+inline Density& Density::operator/=(const double &rhs){
+	AbstractProperty::operator/=(rhs);
 
 	return *this;
 }

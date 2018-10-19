@@ -73,6 +73,30 @@ TEST(EigenValues, operatorSubtractionAssignment){
 		EXPECT_DOUBLE_EQ(data0[n], -n);
 }
 
+TEST(EigenValues, operatorMultiplicationAssignment){
+	double dataInput[1000];
+	for(unsigned int n = 0; n < 1000; n ++)
+		dataInput[n] = n;
+	EigenValues eigenValues(1000, dataInput);
+
+	eigenValues *= 2;
+	const std::vector<double> &data = eigenValues.getData();
+	for(int n = 0; n < (int)data.size(); n++)
+		EXPECT_DOUBLE_EQ(data[n], 2*n);
+}
+
+TEST(EigenValues, operatorDivisionAssignment){
+	double dataInput[1000];
+	for(unsigned int n = 0; n < 1000; n ++)
+		dataInput[n] = n;
+	EigenValues eigenValues(1000, dataInput);
+
+	eigenValues /= 2;
+	const std::vector<double> &data = eigenValues.getData();
+	for(int n = 0; n < (int)data.size(); n++)
+		EXPECT_DOUBLE_EQ(data[n], n/2.);
+}
+
 TEST(EigenValues, serialize){
 	//Already tested through SerializeToJSON.
 }

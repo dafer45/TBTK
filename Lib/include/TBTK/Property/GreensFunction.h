@@ -129,6 +129,12 @@ public:
 	/** Overrides EnergyResolvedProperty::operator-=(). */
 	GreensFunction& operator-=(const GreensFunction &rhs);
 
+	/** Overrides EnergyResolvedProperty::operator*=(). */
+	GreensFunction& operator*=(const std::complex<double> &rhs);
+
+	/** Overrides EnergyResolvedProperty::operator/=(). */
+	GreensFunction& operator/=(const std::complex<double> &rhs);
+
 	/** Get the Green's function type.
 	 *
 	 *  @return The Green's function type. */
@@ -160,6 +166,18 @@ inline GreensFunction& GreensFunction::operator-=(const GreensFunction &rhs){
 	);
 
 	EnergyResolvedProperty::operator-=(rhs);
+
+	return *this;
+}
+
+inline GreensFunction& GreensFunction::operator*=(const std::complex<double> &rhs){
+	EnergyResolvedProperty::operator*=(rhs);
+
+	return *this;
+}
+
+inline GreensFunction& GreensFunction::operator/=(const std::complex<double> &rhs){
+	EnergyResolvedProperty::operator/=(rhs);
 
 	return *this;
 }

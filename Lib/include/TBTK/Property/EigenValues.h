@@ -57,6 +57,12 @@ public:
 	/** Overrides AbstractProperty::operator-=(). */
 	EigenValues& operator-=(const EigenValues &rhs);
 
+	/** Overrides AbstractProperty::operator*=(). */
+	EigenValues& operator*=(const double &rhs);
+
+	/** Overrides AbstractProperty::operator/=(). */
+	EigenValues& operator/=(const double &rhs);
+
 	/** Overrides AbstractProperty::serialize(). */
 	std::string serialize(Mode mode) const;
 private:
@@ -70,6 +76,18 @@ inline EigenValues& EigenValues::operator+=(const EigenValues &rhs){
 
 inline EigenValues& EigenValues::operator-=(const EigenValues &rhs){
 	AbstractProperty::operator-=(rhs);
+
+	return *this;
+}
+
+inline EigenValues& EigenValues::operator*=(const double &rhs){
+	AbstractProperty::operator*=(rhs);
+
+	return *this;
+}
+
+inline EigenValues& EigenValues::operator/=(const double &rhs){
+	AbstractProperty::operator/=(rhs);
 
 	return *this;
 }

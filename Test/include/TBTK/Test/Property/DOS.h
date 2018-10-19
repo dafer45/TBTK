@@ -79,6 +79,30 @@ TEST(DOS, operatorSubtractionAssignment){
 		EXPECT_EQ(data0[n], -n);
 }
 
+TEST(DOS, operatorMultiplicationAssignment){
+	double dataInput[1000];
+	for(unsigned int n = 0; n < 1000; n++)
+		dataInput[n] = n;
+	DOS dos(-10, 10, 1000, dataInput);
+
+	dos *= 2;
+	const std::vector<double> &data = dos.getData();
+	for(unsigned int n = 0; n < 1000; n++)
+		EXPECT_EQ(data[n], 2*n);
+}
+
+TEST(DOS, operatorDivisionAssignment){
+	double dataInput[1000];
+	for(unsigned int n = 0; n < 1000; n++)
+		dataInput[n] = n;
+	DOS dos(-10, 10, 1000, dataInput);
+
+	dos /= 2;
+	const std::vector<double> &data = dos.getData();
+	for(unsigned int n = 0; n < 1000; n++)
+		EXPECT_EQ(data[n], n/2.);
+}
+
 TEST(DOS, serialize){
 	//Already tested through SerializeToJSON.
 }

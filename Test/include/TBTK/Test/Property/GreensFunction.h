@@ -186,6 +186,60 @@ TEST(GreensFunction, operatorSubtractionAssignment){
 	);
 }
 
+TEST(GreensFunction, operatorMultiplicationAssignment){
+	IndexTree indexTree;
+	indexTree.add({{0, 1}, {0, 1}});
+	indexTree.add({{0, 2}, {0, 1}});
+	indexTree.add({{0, 1}, {0, 3}});
+	indexTree.generateLinearMap();
+
+	std::complex<double> inputData[3*1000];
+	for(unsigned int n = 0; n < 3000; n++)
+		inputData[n] = n;
+	GreensFunction greensFunction(
+		indexTree,
+		GreensFunction::Type::Retarded,
+		-10,
+		10,
+		1000,
+		inputData
+	);
+
+	greensFunction *= 2;
+	std::vector<std::complex<double>> data = greensFunction.getData();
+	for(int n = 0; n < 3000; n++){
+		EXPECT_DOUBLE_EQ(real(data[n]), 2*n);
+		EXPECT_DOUBLE_EQ(imag(data[n]), 0);
+	}
+}
+
+TEST(GreensFunction, operatorDivisionAssignment){
+	IndexTree indexTree;
+	indexTree.add({{0, 1}, {0, 1}});
+	indexTree.add({{0, 2}, {0, 1}});
+	indexTree.add({{0, 1}, {0, 3}});
+	indexTree.generateLinearMap();
+
+	std::complex<double> inputData[3*1000];
+	for(unsigned int n = 0; n < 3000; n++)
+		inputData[n] = n;
+	GreensFunction greensFunction(
+		indexTree,
+		GreensFunction::Type::Retarded,
+		-10,
+		10,
+		1000,
+		inputData
+	);
+
+	greensFunction /= 2;
+	std::vector<std::complex<double>> data = greensFunction.getData();
+	for(int n = 0; n < 3000; n++){
+		EXPECT_DOUBLE_EQ(real(data[n]), n/2.);
+		EXPECT_DOUBLE_EQ(imag(data[n]), 0);
+	}
+}
+
 TEST(GreensFunction, getType){
 	//Already tested through
 	//GreensFunction::Constructor0
