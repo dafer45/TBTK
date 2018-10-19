@@ -418,11 +418,36 @@ protected:
 	 *  whether the subtraction is possible, and before performing the
 	 *  subtraction of the child class parameters.
 	 *
-	 *  @param The AbstractProperty to be added to the left hand side.
+	 *  @param The AbstractProperty to be subtracted from the left hand
+	 *  side.
 	 *
 	 *  @return The left hand side after the right hand side has been
-	 *  added. */
+	 *  subtracted. */
 	AbstractProperty& operator-=(const AbstractProperty &rhs);
+
+	/** Multiplication assignment operator. Child classes that want to use
+	 *  this function must override this function and call the parents
+	 *  multiplication assignment operator after having performed checks
+	 *  whether the multiplication is possible, and before performing the
+	 *  multiplication of the child class parameters.
+	 *
+	 *  @param The value to multiply the left hand side by.
+	 *
+	 *  @return The left hand side after having been multiplied by the
+	 *  right hand side. */
+	AbstractProperty& operator*=(const DataType &rhs);
+
+	/** Division assignment operator. Child classes that want to use this
+	 *  function must override this function and call the parents division
+	 *  assignment operator after having performed checks whether the
+	 *  division is possible, and before performing the division of the
+	 *  child class parameters.
+	 *
+	 *  @param The value to divide the left hand side by.
+	 *
+	 *  @return The left hand side after having been divided by the right
+	 *  hand side. */
+	AbstractProperty& operator/=(const DataType &rhs);
 private:
 	/** IndexDescriptor describing the memory layout of the data. */
 	IndexDescriptor indexDescriptor;
@@ -1404,6 +1429,42 @@ AbstractProperty<
 
 	for(unsigned int n = 0; n < data.size(); n++)
 		data[n] -= rhs.data[n];
+
+	return *this;
+}
+
+template<typename DataType, bool isFundamental, bool isSerializable>
+inline AbstractProperty<DataType, isFundamental, isSerializable>&
+AbstractProperty<
+	DataType,
+	isFundamental,
+	isSerializable
+>::operator*=(
+	const DataType &rhs
+){
+	if(allowIndexOutOfBoundsAccess)
+		defaultValue *= rhs;
+
+	for(unsigned int n = 0; n < data.size(); n++)
+		data[n] *= rhs;
+
+	return *this;
+}
+
+template<typename DataType, bool isFundamental, bool isSerializable>
+inline AbstractProperty<DataType, isFundamental, isSerializable>&
+AbstractProperty<
+	DataType,
+	isFundamental,
+	isSerializable
+>::operator/=(
+	const DataType &rhs
+){
+	if(allowIndexOutOfBoundsAccess)
+		defaultValue /= rhs;
+
+	for(unsigned int n = 0; n < data.size(); n++)
+		data[n] /= rhs;
 
 	return *this;
 }

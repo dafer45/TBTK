@@ -96,6 +96,20 @@ public:
 
 		return *this;
 	}
+	PublicAbstractProperty& operator*=(
+		const DataType &rhs
+	){
+		AbstractProperty<DataType>::operator*=(rhs);
+
+		return *this;
+	}
+	PublicAbstractProperty& operator/=(
+		const DataType &rhs
+	){
+		AbstractProperty<DataType>::operator/=(rhs);
+
+		return *this;
+	}
 };
 
 TEST(AbstractProperty, Constructor0){
@@ -701,6 +715,106 @@ TEST(AbstractProperty, operatorSubtractionAssignment){
 		::testing::ExitedWithCode(1),
 		""
 	);
+}
+
+TEST(AbstractProperty, operatorMultiplicationAssignment){
+	//IndexDescriptor::Format::None.
+	const int dataInputNone[3] = {0, 1, 2};
+	PublicAbstractProperty<int> propertyNone(3, dataInputNone);
+
+	propertyNone *= 2;
+	const std::vector<int> &dataNone = propertyNone.getData();
+	EXPECT_EQ(dataNone[0], 0);
+	EXPECT_EQ(dataNone[1], 2);
+	EXPECT_EQ(dataNone[2], 4);
+
+	//IndexDescriptor::Format::Ranges.
+	int dataInputRanges[2*3*4*10];
+	for(unsigned int n = 0; n < 2*3*4*10; n++)
+		dataInputRanges[n] = n;
+	PublicAbstractProperty<int> propertyRanges(
+		{2, 3, 4},
+		10,
+		dataInputRanges
+	);
+
+	propertyRanges *= 3;
+	const std::vector<int> &dataRanges = propertyRanges.getData();
+	for(unsigned int n = 0; n < dataRanges.size(); n++)
+		EXPECT_EQ(dataRanges[n], 3*n);
+
+	//IndexDescriptor::Format::Custom.
+	IndexTree indexTreeCustom;
+	indexTreeCustom.add({0, 1});
+	indexTreeCustom.add({1, 2});
+	indexTreeCustom.add({1, 3});
+	int inputDataCustom[3*10];
+	for(unsigned int n = 0; n < 3*10; n++)
+		inputDataCustom[n] = n;
+	indexTreeCustom.generateLinearMap();
+	PublicAbstractProperty<int> propertyCustom(
+		indexTreeCustom,
+		10,
+		inputDataCustom
+	);
+	propertyCustom.setAllowIndexOutOfBoundsAccess(true);
+	propertyCustom.setDefaultValue(8);
+
+	propertyCustom *= 4;
+	const std::vector<int> &dataCustom = propertyCustom.getData();
+	for(unsigned int n = 0; n < dataCustom.size(); n++)
+		EXPECT_EQ(dataCustom[n], 4*n);
+	EXPECT_EQ(propertyCustom({0}), 32);
+}
+
+TEST(AbstractProperty, operatorDivisionAssignment){
+	//IndexDescriptor::Format::None.
+	const int dataInputNone[3] = {0, 1, 2};
+	PublicAbstractProperty<int> propertyNone(3, dataInputNone);
+
+	propertyNone /= 2;
+	const std::vector<int> &dataNone = propertyNone.getData();
+	EXPECT_EQ(dataNone[0], 0);
+	EXPECT_EQ(dataNone[1], 0);
+	EXPECT_EQ(dataNone[2], 1);
+
+	//IndexDescriptor::Format::Ranges.
+	int dataInputRanges[2*3*4*10];
+	for(unsigned int n = 0; n < 2*3*4*10; n++)
+		dataInputRanges[n] = n;
+	PublicAbstractProperty<int> propertyRanges(
+		{2, 3, 4},
+		10,
+		dataInputRanges
+	);
+
+	propertyRanges /= 3;
+	const std::vector<int> &dataRanges = propertyRanges.getData();
+	for(unsigned int n = 0; n < dataRanges.size(); n++)
+		EXPECT_EQ(dataRanges[n], n/3);
+
+	//IndexDescriptor::Format::Custom.
+	IndexTree indexTreeCustom;
+	indexTreeCustom.add({0, 1});
+	indexTreeCustom.add({1, 2});
+	indexTreeCustom.add({1, 3});
+	int inputDataCustom[3*10];
+	for(unsigned int n = 0; n < 3*10; n++)
+		inputDataCustom[n] = n;
+	indexTreeCustom.generateLinearMap();
+	PublicAbstractProperty<int> propertyCustom(
+		indexTreeCustom,
+		10,
+		inputDataCustom
+	);
+	propertyCustom.setAllowIndexOutOfBoundsAccess(true);
+	propertyCustom.setDefaultValue(8);
+
+	propertyCustom /= 4;
+	const std::vector<int> &dataCustom = propertyCustom.getData();
+	for(unsigned int n = 0; n < dataCustom.size(); n++)
+		EXPECT_EQ(dataCustom[n], n/4);
+	EXPECT_EQ(propertyCustom({0}), 2);
 }
 
 TEST(AbstractProperty, getBlockSize){
