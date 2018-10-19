@@ -26,6 +26,20 @@ public:
 
 		return *this;
 	}
+	PublicEnergyResolvedProperty& operator*=(
+		const DataType &rhs
+	){
+		EnergyResolvedProperty<DataType>::operator*=(rhs);
+
+		return *this;
+	}
+	PublicEnergyResolvedProperty& operator/=(
+		const DataType &rhs
+	){
+		EnergyResolvedProperty<DataType>::operator/=(rhs);
+
+		return *this;
+	}
 };
 
 TEST(EnergyResolvedProperty, Constructor0){
@@ -1803,6 +1817,124 @@ TEST(EnergyResolvedProperty, subtractionAssignmentOperator){
 		::testing::ExitedWithCode(1),
 		""
 	);
+}
+
+TEST(EnergyResolvedProperty, multiplicationAssignmentOperator){
+	IndexTree indexTree;
+	indexTree.add({0});
+	indexTree.add({1});
+	indexTree.add({2});
+	indexTree.generateLinearMap();
+
+	int data[3000];
+	for(unsigned int n = 0; n < 3000; n++)
+		data[n] = n;
+
+	//EnergyType::Real.
+	PublicEnergyResolvedProperty<int> energyResolvedPropertyReal(
+		indexTree,
+		-10,
+		10,
+		1000,
+		data
+	);
+
+	energyResolvedPropertyReal *= 2;
+	const std::vector<int> &dataReal
+		= energyResolvedPropertyReal.getData();
+	for(unsigned int n = 0; n < 3000; n++)
+		EXPECT_EQ(dataReal[n], 2*n);
+
+	//EnergyType::FermionicMatsubara.
+	PublicEnergyResolvedProperty<int> energyResolvedPropertyFermionicMatsubara(
+		EnergyResolvedProperty<int>::EnergyType::FermionicMatsubara,
+		indexTree,
+		-999,
+		999,
+		1.1,
+		data
+	);
+
+	energyResolvedPropertyFermionicMatsubara *= 3;
+	const std::vector<int> &dataFermionicMatsubara
+		= energyResolvedPropertyFermionicMatsubara.getData();
+	for(unsigned int n = 0; n < 3000; n++)
+		EXPECT_EQ(dataFermionicMatsubara[n], 3*n);
+
+	//EnergyType::BosonicMatsubara.
+	PublicEnergyResolvedProperty<int> energyResolvedPropertyBosonicMatsubara(
+		EnergyResolvedProperty<int>::EnergyType::BosonicMatsubara,
+		indexTree,
+		0,
+		1998,
+		1.1,
+		data
+	);
+
+	energyResolvedPropertyBosonicMatsubara *= 4;
+	const std::vector<int> &dataBosonicMatsubara
+		= energyResolvedPropertyBosonicMatsubara.getData();
+	for(unsigned int n = 0; n < 3000; n++)
+		EXPECT_EQ(dataBosonicMatsubara[n], 4*n);
+}
+
+TEST(EnergyResolvedProperty, divisionAssignmentOperator){
+	IndexTree indexTree;
+	indexTree.add({0});
+	indexTree.add({1});
+	indexTree.add({2});
+	indexTree.generateLinearMap();
+
+	int data[3000];
+	for(unsigned int n = 0; n < 3000; n++)
+		data[n] = n;
+
+	//EnergyType::Real.
+	PublicEnergyResolvedProperty<int> energyResolvedPropertyReal(
+		indexTree,
+		-10,
+		10,
+		1000,
+		data
+	);
+
+	energyResolvedPropertyReal /= 2;
+	const std::vector<int> &dataReal
+		= energyResolvedPropertyReal.getData();
+	for(unsigned int n = 0; n < 3000; n++)
+		EXPECT_EQ(dataReal[n], n/2);
+
+	//EnergyType::FermionicMatsubara.
+	PublicEnergyResolvedProperty<int> energyResolvedPropertyFermionicMatsubara(
+		EnergyResolvedProperty<int>::EnergyType::FermionicMatsubara,
+		indexTree,
+		-999,
+		999,
+		1.1,
+		data
+	);
+
+	energyResolvedPropertyFermionicMatsubara /= 3;
+	const std::vector<int> &dataFermionicMatsubara
+		= energyResolvedPropertyFermionicMatsubara.getData();
+	for(unsigned int n = 0; n < 3000; n++)
+		EXPECT_EQ(dataFermionicMatsubara[n], n/3);
+
+	//EnergyType::BosonicMatsubara.
+	PublicEnergyResolvedProperty<int> energyResolvedPropertyBosonicMatsubara(
+		EnergyResolvedProperty<int>::EnergyType::BosonicMatsubara,
+		indexTree,
+		0,
+		1998,
+		1.1,
+		data
+	);
+
+	energyResolvedPropertyBosonicMatsubara /= 4;
+	const std::vector<int> &dataBosonicMatsubara
+		= energyResolvedPropertyBosonicMatsubara.getData();
+	for(unsigned int n = 0; n < 3000; n++)
+		EXPECT_EQ(dataBosonicMatsubara[n], n/4);
 }
 
 };	//End of namespace Property

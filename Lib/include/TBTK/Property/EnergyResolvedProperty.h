@@ -238,6 +238,12 @@ protected:
 
 	/** Overrides AbstractProperty::operator-=(). */
 	EnergyResolvedProperty& operator-=(const EnergyResolvedProperty &rhs);
+
+	/** Overrides AbstractProperty::operator*=(). */
+	EnergyResolvedProperty& operator*=(const DataType &rhs);
+
+	/** Overrides AbstractProperty::operator/=(). */
+	EnergyResolvedProperty& operator/=(const DataType &rhs);
 private:
 	/** The energy type for the property. */
 	EnergyType energyType;
@@ -1113,6 +1119,26 @@ EnergyResolvedProperty<DataType>::operator-=(
 	}
 
 	AbstractProperty<DataType>::operator-=(rhs);
+
+	return *this;
+}
+
+template<typename DataType>
+inline EnergyResolvedProperty<DataType>&
+EnergyResolvedProperty<DataType>::operator*=(
+	const DataType &rhs
+){
+	AbstractProperty<DataType>::operator*=(rhs);
+
+	return *this;
+}
+
+template<typename DataType>
+inline EnergyResolvedProperty<DataType>&
+EnergyResolvedProperty<DataType>::operator/=(
+	const DataType &rhs
+){
+	AbstractProperty<DataType>::operator/=(rhs);
 
 	return *this;
 }
