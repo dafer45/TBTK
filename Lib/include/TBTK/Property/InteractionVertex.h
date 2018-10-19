@@ -117,6 +117,36 @@ public:
 
 	/** Overrides EnergyResolvedProperty::operator-=(). */
 	InteractionVertex& operator-=(const InteractionVertex &rhs);
+
+	/** Overrides EnergyResolvedProperty::operator*=(). */
+	InteractionVertex& operator*=(const std::complex<double> &rhs);
+
+	/** Overrides EnergyResolvedProperty::operator/=(). */
+	InteractionVertex& operator/=(const std::complex<double> &rhs);
+
+	/** Multiplication operator. Multiplies an Interaction vertex by a
+	 *  number from the right.
+	 *
+	 *  @param rhs The number to multiply the InteractionVertex by.
+	 *
+	 *  @return A new InteractionVertex that is the product of the old
+	 *  InteractionVertex and the rhs. */
+	InteractionVertex operator*(const std::complex<double> &rhs) const;
+
+	/** Multiplication operator. Multiplies an Interaction vertex by a
+	 *  number from the left.
+	 *
+	 *  @param lhs The number to multiply the InteractionVertex by.
+	 *  @param rhs The InteractionVertex to be multiplied.
+	 *
+	 *  @return A new InteractionVertex that is the product of the old
+	 *  InteractionVertex and the lhs. */
+	friend InteractionVertex operator*(
+		const std::complex<double> &lhs,
+		const InteractionVertex &rhs
+	){
+		return rhs*lhs;
+	}
 private:
 };
 
@@ -134,6 +164,30 @@ inline InteractionVertex& InteractionVertex::operator-=(
 	EnergyResolvedProperty::operator-=(rhs);
 
 	return *this;
+}
+
+inline InteractionVertex& InteractionVertex::operator*=(
+	const std::complex<double> &rhs
+){
+	EnergyResolvedProperty::operator*=(rhs);
+
+	return *this;
+}
+
+inline InteractionVertex& InteractionVertex::operator/=(
+	const std::complex<double> &rhs
+){
+	EnergyResolvedProperty::operator/=(rhs);
+
+	return *this;
+}
+
+inline InteractionVertex InteractionVertex::operator*(
+	const std::complex<double> &rhs
+) const{
+	InteractionVertex interactionVertex = *this;
+
+	return interactionVertex *= rhs;
 }
 
 };	//End namespace Property
