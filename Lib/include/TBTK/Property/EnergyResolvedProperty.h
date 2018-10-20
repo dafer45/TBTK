@@ -71,6 +71,45 @@ public:
 		const DataType *data
 	);
 
+	/** Construct an EnergyResolvedProperty with real energies on the
+	 *  Ranges format. [See AbstractProperty for detailed information about
+	 *  the Ranges format.]
+	 *
+	 *  @param ranges A list of upper limits for the ranges of the
+	 *  different dimensions. The nth dimension will have the range [0,
+	 *  ranges[n]).
+	 *
+	 *  @param lowerBound Lower bound for the energy.
+	 *  @param upperBound Upper bound for the energy.
+	 *  @param resolution Number of points to use for the energy. */
+	EnergyResolvedProperty(
+		const std::vector<int> &ranges,
+		double lowerBound,
+		double upperBound,
+		unsigned int resolution
+	);
+
+	/** Construct an EnergyResolvedProperty with real energies on the
+	 *  Ranges format. [See AbstractProperty for detailed information about
+	 *  the Ranges format.]
+	 *
+	 *  @param ranges A list of upper limits for the ranges of the
+	 *  different dimensions. The nth dimension will have the range [0,
+	 *  ranges[n]).
+	 *
+	 *  @param lowerBound Lower bound for the energy.
+	 *  @param upperBound Upper bound for the energy.
+	 *  @param resolution Number of points to use for the energy.
+	 *  @param data Raw data to initialize the EnergyResolvedProperty with.
+	 */
+	EnergyResolvedProperty(
+		const std::vector<int> &ranges,
+		double lowerBound,
+		double upperBound,
+		unsigned int resolution,
+		const DataType *data
+	);
+
 	/** Constructs an EnergyResolvedProperty with real energies on the
 	 *  Custom format. [See AbstractProperty for detailed information about
 	 *  the Custom format.]
@@ -323,6 +362,67 @@ EnergyResolvedProperty<DataType>::EnergyResolvedProperty(
 	const DataType *data
 ) :
 	AbstractProperty<DataType>(resolution, data)
+{
+	TBTKAssert(
+		lowerBound <= upperBound,
+		"EnergyResolvedProperty::EnergyResolvedProperty()",
+		"Invalid energy bounds. The 'lowerBound=" << lowerBound << "'"
+		" must be less or equal to the 'upperBound=" << upperBound
+		<< "'.",
+		""
+	);
+	TBTKAssert(
+		resolution > 0,
+		"EnergyResolvedProperty::EnergyResolvedProperty()",
+		"The 'resolution' must be larger than 0.",
+		""
+	);
+
+	energyType = EnergyType::Real;
+	descriptor.realEnergy.lowerBound = lowerBound;
+	descriptor.realEnergy.upperBound = upperBound;
+	descriptor.realEnergy.resolution = resolution;
+}
+
+template<typename DataType>
+EnergyResolvedProperty<DataType>::EnergyResolvedProperty(
+	const std::vector<int> &ranges,
+	double lowerBound,
+	double upperBound,
+	unsigned int resolution
+) :
+	AbstractProperty<DataType>(ranges, resolution)
+{
+	TBTKAssert(
+		lowerBound <= upperBound,
+		"EnergyResolvedProperty::EnergyResolvedProperty()",
+		"Invalid energy bounds. The 'lowerBound=" << lowerBound << "'"
+		" must be less or equal to the 'upperBound=" << upperBound
+		<< "'.",
+		""
+	);
+	TBTKAssert(
+		resolution > 0,
+		"EnergyResolvedProperty::EnergyResolvedProperty()",
+		"The 'resolution' must be larger than 0.",
+		""
+	);
+
+	energyType = EnergyType::Real;
+	descriptor.realEnergy.lowerBound = lowerBound;
+	descriptor.realEnergy.upperBound = upperBound;
+	descriptor.realEnergy.resolution = resolution;
+}
+
+template<typename DataType>
+EnergyResolvedProperty<DataType>::EnergyResolvedProperty(
+	const std::vector<int> &ranges,
+	double lowerBound,
+	double upperBound,
+	unsigned int resolution,
+	const DataType *data
+) :
+	AbstractProperty<DataType>(ranges, resolution, data)
 {
 	TBTKAssert(
 		lowerBound <= upperBound,

@@ -116,6 +116,76 @@ TEST(EnergyResolvedProperty, Constructor2){
 }
 
 TEST(EnergyResolvedProperty, Constructor3){
+	EnergyResolvedProperty<int> energyResolvedProperty(
+		{2, 3, 4},
+		-10,
+		10,
+		1000
+	);
+	EXPECT_EQ(
+		energyResolvedProperty.getEnergyType(),
+		EnergyResolvedProperty<int>::EnergyType::Real
+	);
+	EXPECT_EQ(
+		energyResolvedProperty.getLowerBound(),
+		-10
+	);
+	EXPECT_EQ(
+		energyResolvedProperty.getUpperBound(),
+		10
+	);
+	EXPECT_EQ(
+		energyResolvedProperty.getResolution(),
+		1000
+	);
+
+	for(
+		unsigned int n = 0;
+		n < 2*3*4*1000;
+		n++
+	){
+		EXPECT_EQ(energyResolvedProperty(n), 0);
+	}
+}
+
+TEST(EnergyResolvedProperty, Constructor4){
+	int data[2*3*4*1000];
+	for(unsigned int n = 0; n < 2*3*4*1000; n++)
+		data[n] = n;
+	EnergyResolvedProperty<int> energyResolvedProperty(
+		{2, 3, 4},
+		-10,
+		10,
+		1000,
+		data
+	);
+	EXPECT_EQ(
+		energyResolvedProperty.getEnergyType(),
+		EnergyResolvedProperty<int>::EnergyType::Real
+	);
+	EXPECT_EQ(
+		energyResolvedProperty.getLowerBound(),
+		-10
+	);
+	EXPECT_EQ(
+		energyResolvedProperty.getUpperBound(),
+		10
+	);
+	EXPECT_EQ(
+		energyResolvedProperty.getResolution(),
+		1000
+	);
+
+	for(
+		unsigned int n = 0;
+		n < 2*3*4*1000;
+		n++
+	){
+		EXPECT_EQ(energyResolvedProperty(n), n);
+	}
+}
+
+TEST(EnergyResolvedProperty, Constructor5){
 	IndexTree indexTree;
 	indexTree.add({0});
 	indexTree.add({1});
@@ -155,7 +225,7 @@ TEST(EnergyResolvedProperty, Constructor3){
 	}
 }
 
-TEST(EnergyResolvedProperty, Constructor4){
+TEST(EnergyResolvedProperty, Constructor6){
 	IndexTree indexTree;
 	indexTree.add({0});
 	indexTree.add({1});
@@ -199,7 +269,7 @@ TEST(EnergyResolvedProperty, Constructor4){
 	}
 }
 
-TEST(EnergyResolvedProperty, Constructor5){
+TEST(EnergyResolvedProperty, Constructor7){
 	IndexTree indexTree;
 	indexTree.add({0});
 	indexTree.add({1});
@@ -377,7 +447,7 @@ TEST(EnergyResolvedProperty, Constructor5){
 	}
 }
 
-TEST(EnergyResolvedProperty, Constructor6){
+TEST(EnergyResolvedProperty, Constructor8){
 	IndexTree indexTree;
 	indexTree.add({0});
 	indexTree.add({1});
