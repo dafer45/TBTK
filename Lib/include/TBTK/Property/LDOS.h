@@ -109,46 +109,10 @@ public:
 	 *  @param mode Mode with which the string has been serialized. */
 	LDOS(const std::string &serialization, Mode mode);
 
-	/** Get lower bound for the energy.
-	 *
-	 *  @return Lower bound for the energy. */
-//	double getLowerBound() const;
-
-	/** Get upper bound for the energy.
-	 *
-	 *  @return Upper bound for the energy. */
-//	double getUpperBound() const;
-
-	/** Get the energy resolution (number of points used for the energy
-	 *  axis).
-	 *
-	 *  @return The energy resolution. */
-//	int getResolution() const;
-
 	/** Overrides AbstractProperty::serialize(). */
 	virtual std::string serialize(Mode mode) const;
 private:
-	/** Lower bound for the energy. */
-//	double lowerBound;
-
-	/** Upper bound for the energy. */
-//	double upperBound;
-
-	/** Energy resolution. (Number of energy intervals). */
-//	int resolution;
 };
-
-/*inline double LDOS::getLowerBound() const{
-	return lowerBound;
-}
-
-inline double LDOS::getUpperBound() const{
-	return upperBound;
-}
-
-inline int LDOS::getResolution() const{
-	return resolution;
-}*/
 
 };	//End namespace Property
 };	//End namespace TBTK
