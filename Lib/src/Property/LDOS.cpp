@@ -33,11 +33,8 @@ LDOS::LDOS(
 	double upperBound,
 	int resolution
 ) :
-	AbstractProperty(ranges, resolution)
+	EnergyResolvedProperty(ranges, lowerBound, upperBound, resolution)
 {
-	this->lowerBound = lowerBound;
-	this->upperBound = upperBound;
-	this->resolution = resolution;
 }
 
 LDOS::LDOS(
@@ -47,11 +44,14 @@ LDOS::LDOS(
 	int resolution,
 	const double *data
 ) :
-	AbstractProperty(ranges, resolution, data)
+	EnergyResolvedProperty(
+		ranges,
+		lowerBound,
+		upperBound,
+		resolution,
+		data
+	)
 {
-	this->lowerBound = lowerBound;
-	this->upperBound = upperBound;
-	this->resolution = resolution;
 }
 
 LDOS::LDOS(
@@ -60,11 +60,8 @@ LDOS::LDOS(
 	double upperBound,
 	int resolution
 ) :
-	AbstractProperty(indexTree, resolution)
+	EnergyResolvedProperty(indexTree, lowerBound, upperBound, resolution)
 {
-	this->lowerBound = lowerBound;
-	this->upperBound = upperBound;
-	this->resolution = resolution;
 }
 
 LDOS::LDOS(
@@ -74,22 +71,25 @@ LDOS::LDOS(
 	int resolution,
 	const double *data
 ) :
-	AbstractProperty(indexTree, resolution, data)
+	EnergyResolvedProperty(
+		indexTree,
+		lowerBound,
+		upperBound,
+		resolution,
+		data
+	)
 {
-	this->lowerBound = lowerBound;
-	this->upperBound = upperBound;
-	this->resolution = resolution;
 }
 
 LDOS::LDOS(
 	const string &serialization,
 	Mode mode
 ) :
-	AbstractProperty(
+	EnergyResolvedProperty(
 		Serializable::extract(
 			serialization,
 			mode,
-			"abstractProperty"
+			"energyResolvedProperty"
 		),
 		mode
 	)
@@ -103,21 +103,6 @@ LDOS::LDOS(
 
 	switch(mode){
 	case Mode::JSON:
-		try{
-			nlohmann::json j = nlohmann::json::parse(serialization);
-			lowerBound = j.at("lowerBound").get<double>();
-			upperBound = j.at("upperBound").get<double>();
-			resolution = j.at("resolution").get<int>();
-		}
-		catch(nlohmann::json::exception e){
-			TBTKExit(
-				"LDOS::LDOS()",
-				"Unable to parse string as LDOS '"
-				<< serialization << "'.",
-				""
-			);
-		}
-
 		break;
 	default:
 		TBTKExit(
@@ -134,11 +119,8 @@ string LDOS::serialize(Mode mode) const{
 	{
 		nlohmann::json j;
 		j["id"] = "LDOS";
-		j["lowerBound"] = lowerBound;
-		j["upperBound"] = upperBound;
-		j["resolution"] = resolution;
-		j["abstractProperty"] = nlohmann::json::parse(
-			AbstractProperty::serialize(mode)
+		j["energyResolvedProperty"] = nlohmann::json::parse(
+			EnergyResolvedProperty::serialize(mode)
 		);
 
 		return j.dump();

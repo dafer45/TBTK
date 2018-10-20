@@ -507,7 +507,7 @@ TEST(Diagonalizer, calculateLDOS){
 		{SIZE}
 	);
 	const std::vector<double> &data = ldos0.getData();
-	for(int n = 0; n < ldos0.getResolution(); n++){
+	for(unsigned int n = 0; n < ldos0.getResolution(); n++){
 		for(int x = 0; x < SIZE; x++){
 			EXPECT_NEAR(
 				data[RESOLUTION*x + n],

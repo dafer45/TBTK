@@ -163,7 +163,7 @@ void LDOSPanel::updatePlot(){
 		try{
 			vector<double> axis;
 			vector<double> data;
-			for(int n = 0; n < ldos->getResolution(); n++){
+			for(int n = 0; n < (int)ldos->getResolution(); n++){
 				axis.push_back(
 					ldos->getLowerBound()
 					+ (ldos->getUpperBound() - ldos->getLowerBound())/ldos->getResolution()*n

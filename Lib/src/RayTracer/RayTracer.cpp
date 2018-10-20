@@ -304,7 +304,7 @@ void RayTracer::interactivePlot(
 			double upperBound = ldos.getUpperBound();
 			unsigned int resolution = ldos.getResolution();
 			double dE = (upperBound - lowerBound)/resolution;
-			for(int n = 0; n < ldos.getResolution(); n++){
+			for(int n = 0; n < (int)ldos.getResolution(); n++){
 				data.push_back(ldos(index, n));
 				axis.push_back(lowerBound + n*dE);
 			}
