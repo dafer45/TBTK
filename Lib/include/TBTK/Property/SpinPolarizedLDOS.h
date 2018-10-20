@@ -24,7 +24,7 @@
 #ifndef COM_DAFER45_TBTK_SPIN_POLARIZED_LDOS
 #define COM_DAFER45_TBTK_SPIN_POLARIZED_LDOS
 
-#include "TBTK/Property/AbstractProperty.h"
+#include "TBTK/Property/EnergyResolvedProperty.h"
 #include "TBTK/SpinMatrix.h"
 
 #include <complex>
@@ -34,7 +34,7 @@ namespace Property{
 
 /** @brief Property container for spin-polarized local density of states
  *    (spin-polarized LDOS). */
-class SpinPolarizedLDOS : public AbstractProperty<SpinMatrix>{
+class SpinPolarizedLDOS : public EnergyResolvedProperty<SpinMatrix>{
 public:
 	/** Constructs a SpinPolarizedDOS on the Ranges format. [See
 	 *  AbstractProperty for detailed information about the Ranges format.]
@@ -118,33 +118,33 @@ public:
 	/** Get lower bound for the energy.
 	 *
 	 *  @return Lower bound for the energy. */
-	double getLowerBound() const;
+//	double getLowerBound() const;
 
 	/** Get upper bound for the energy.
 	 *
 	 *  @return Upper bound for the energy. */
-	double getUpperBound() const;
+//	double getUpperBound() const;
 
 	/** Get the energy resolution (number of points used for the energy
 	 *  axis).
 	 *
 	 *  @return The energy resolution. */
-	int getResolution() const;
+//	int getResolution() const;
 
 	/** Overrides AbstractProperty::serialize(). */
 	std::string serialize(Mode mode) const;
 private:
 	/** Lower bound for the energy. */
-	double lowerBound;
+//	double lowerBound;
 
 	/** Upper bound for the energy. */
-	double upperBound;
+//	double upperBound;
 
 	/** Energy resolution. (Number of energy intervals) */
-	int resolution;
+//	int resolution;
 };
 
-inline double SpinPolarizedLDOS::getLowerBound() const{
+/*inline double SpinPolarizedLDOS::getLowerBound() const{
 	return lowerBound;
 }
 
@@ -154,7 +154,7 @@ inline double SpinPolarizedLDOS::getUpperBound() const{
 
 inline int SpinPolarizedLDOS::getResolution() const{
 	return resolution;
-}
+}*/
 
 };	//End namespace Property
 };	//End namespace TBTK

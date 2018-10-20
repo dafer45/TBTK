@@ -80,7 +80,7 @@ TEST(SpinPolarizedLDOS, Constructor2){
 	ASSERT_EQ(spinPolarizedLDOS.getResolution(), 1000);
 	ASSERT_EQ(spinPolarizedLDOS.getSize(), 3*1000);
 	for(int n = 0; n < 3; n++){
-		for(int m = 0; m < spinPolarizedLDOS.getResolution(); m++){
+		for(unsigned int m = 0; m < spinPolarizedLDOS.getResolution(); m++){
 			for(unsigned int r = 0; r < 2; r++){
 				for(unsigned int c = 0; c < 2; c++){
 					EXPECT_DOUBLE_EQ(
@@ -137,7 +137,7 @@ TEST(SpinPolarizedLDOS, Constructor3){
 	ASSERT_EQ(spinPolarizedLDOS.getSize(), 3*1000);
 	for(int n = 0; n < 3; n++){
 		for(
-			int m = 0;
+			unsigned int m = 0;
 			m < spinPolarizedLDOS.getResolution();
 			m++
 		){

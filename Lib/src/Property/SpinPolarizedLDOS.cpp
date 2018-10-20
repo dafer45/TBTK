@@ -33,11 +33,8 @@ SpinPolarizedLDOS::SpinPolarizedLDOS(
 	double upperBound,
 	int resolution
 ) :
-	AbstractProperty(ranges, resolution)
+	EnergyResolvedProperty(ranges, lowerBound, upperBound, resolution)
 {
-	this->lowerBound = lowerBound;
-	this->upperBound = upperBound;
-	this->resolution = resolution;
 }
 
 SpinPolarizedLDOS::SpinPolarizedLDOS(
@@ -47,11 +44,8 @@ SpinPolarizedLDOS::SpinPolarizedLDOS(
 	int resolution,
 	const SpinMatrix *data
 ) :
-	AbstractProperty(ranges, resolution, data)
+	EnergyResolvedProperty(ranges, lowerBound, upperBound, resolution, data)
 {
-	this->lowerBound = lowerBound;
-	this->upperBound = upperBound;
-	this->resolution = resolution;
 }
 
 SpinPolarizedLDOS::SpinPolarizedLDOS(
@@ -61,11 +55,8 @@ SpinPolarizedLDOS::SpinPolarizedLDOS(
 	int resolution,
 	const SpinMatrix *data
 ) :
-	AbstractProperty(indexTree, resolution, data)
+	EnergyResolvedProperty(indexTree, lowerBound, upperBound, resolution, data)
 {
-	this->lowerBound = lowerBound;
-	this->upperBound = upperBound;
-	this->resolution = resolution;
 }
 
 SpinPolarizedLDOS::SpinPolarizedLDOS(
@@ -74,22 +65,19 @@ SpinPolarizedLDOS::SpinPolarizedLDOS(
 	double upperBound,
 	int resolution
 ) :
-	AbstractProperty(indexTree, resolution)
+	EnergyResolvedProperty(indexTree, lowerBound, upperBound, resolution)
 {
-	this->lowerBound = lowerBound;
-	this->upperBound = upperBound;
-	this->resolution = resolution;
 }
 
 SpinPolarizedLDOS::SpinPolarizedLDOS(
 	const string &serialization,
 	Mode mode
 ) :
-	AbstractProperty(
+	EnergyResolvedProperty(
 		Serializable::extract(
 			serialization,
 			mode,
-			"abstractProperty"
+			"energyResolvedProperty"
 		),
 		mode
 	)
@@ -104,22 +92,6 @@ SpinPolarizedLDOS::SpinPolarizedLDOS(
 
 	switch(mode){
 	case Mode::JSON:
-		try{
-			nlohmann::json j = nlohmann::json::parse(serialization);
-			lowerBound = j.at("lowerBound").get<double>();
-			upperBound = j.at("upperBound").get<double>();
-			resolution = j.at("resolution").get<int>();
-		}
-		catch(nlohmann::json::exception e){
-			TBTKExit(
-				"SpinPolarizedLDOS::SpinPolarizedLDOS()",
-				"Unable to parse the string as"
-				" SpinPolarizedLDOS '" << serialization
-				<< "'.",
-				""
-			);
-		}
-
 		break;
 	default:
 		TBTKExit(
@@ -136,11 +108,8 @@ string SpinPolarizedLDOS::serialize(Mode mode) const{
 	{
 		nlohmann::json j;
 		j["id"] = "SpinPolarizedLDOS";
-		j["lowerBound"] = lowerBound;
-		j["upperBound"] = upperBound;
-		j["resolution"] = resolution;
-		j["abstractProperty"] = nlohmann::json::parse(
-			AbstractProperty::serialize(mode)
+		j["energyResolvedProperty"] = nlohmann::json::parse(
+			EnergyResolvedProperty::serialize(mode)
 		);
 
 		return j.dump();
