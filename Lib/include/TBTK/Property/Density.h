@@ -109,7 +109,7 @@ public:
 
 	/** Multiplication operator.
 	 *
-	 *  @param lhs The right hand side of the equation.
+	 *  @param lhs The left hand side of the equation.
 	 *  @param rhs The right hand side of the equation.
 	 *
 	 *  @return A new Density that is the product of the left hand side and

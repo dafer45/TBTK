@@ -62,6 +62,23 @@ TEST(DOS, operatorAdditionAssignment){
 		EXPECT_EQ(data0[n], 3*n);
 }
 
+TEST(DOS, operatorAddition){
+	double dataInput0[1000];
+	for(unsigned int n = 0; n < 1000; n++)
+		dataInput0[n] = n;
+	DOS dos0(-10, 10, 1000, dataInput0);
+
+	double dataInput1[1000];
+	for(unsigned int n = 0; n < 1000; n++)
+		dataInput1[n] = 2*n;
+	DOS dos1(-10, 10, 1000, dataInput1);
+
+	DOS dos2 = dos0 + dos1;
+	const std::vector<double> &data2 = dos2.getData();
+	for(unsigned int n = 0; n < 1000; n++)
+		EXPECT_EQ(data2[n], 3*n);
+}
+
 TEST(DOS, operatorSubtractionAssignment){
 	double dataInput0[1000];
 	for(unsigned int n = 0; n < 1000; n++)
@@ -79,6 +96,23 @@ TEST(DOS, operatorSubtractionAssignment){
 		EXPECT_EQ(data0[n], -n);
 }
 
+TEST(DOS, operatorSubtraction){
+	double dataInput0[1000];
+	for(unsigned int n = 0; n < 1000; n++)
+		dataInput0[n] = n;
+	DOS dos0(-10, 10, 1000, dataInput0);
+
+	double dataInput1[1000];
+	for(unsigned int n = 0; n < 1000; n++)
+		dataInput1[n] = 2*n;
+	DOS dos1(-10, 10, 1000, dataInput1);
+
+	DOS dos2 = dos0 - dos1;
+	const std::vector<double> &data2 = dos2.getData();
+	for(int n = 0; n < 1000; n++)
+		EXPECT_EQ(data2[n], -n);
+}
+
 TEST(DOS, operatorMultiplicationAssignment){
 	double dataInput[1000];
 	for(unsigned int n = 0; n < 1000; n++)
@@ -91,6 +125,22 @@ TEST(DOS, operatorMultiplicationAssignment){
 		EXPECT_EQ(data[n], 2*n);
 }
 
+TEST(DOS, operatorMultiplication){
+	double dataInput[1000];
+	for(unsigned int n = 0; n < 1000; n++)
+		dataInput[n] = n;
+	DOS dos0(-10, 10, 1000, dataInput);
+
+	DOS dos1 = dos0*2;
+	DOS dos2 = 2*dos0;
+	const std::vector<double> &data1 = dos1.getData();
+	for(unsigned int n = 0; n < 1000; n++)
+		EXPECT_EQ(data1[n], 2*n);
+	const std::vector<double> &data2 = dos2.getData();
+	for(unsigned int n = 0; n < 1000; n++)
+		EXPECT_EQ(data2[n], 2*n);
+}
+
 TEST(DOS, operatorDivisionAssignment){
 	double dataInput[1000];
 	for(unsigned int n = 0; n < 1000; n++)
@@ -101,6 +151,18 @@ TEST(DOS, operatorDivisionAssignment){
 	const std::vector<double> &data = dos.getData();
 	for(unsigned int n = 0; n < 1000; n++)
 		EXPECT_EQ(data[n], n/2.);
+}
+
+TEST(DOS, operatorDivision){
+	double dataInput[1000];
+	for(unsigned int n = 0; n < 1000; n++)
+		dataInput[n] = n;
+	DOS dos0(-10, 10, 1000, dataInput);
+
+	DOS dos1 = dos0/2;
+	const std::vector<double> &data1 = dos1.getData();
+	for(unsigned int n = 0; n < 1000; n++)
+		EXPECT_EQ(data1[n], n/2.);
 }
 
 TEST(DOS, serialize){

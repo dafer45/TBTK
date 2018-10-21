@@ -62,14 +62,57 @@ public:
 	/** Overrides EnergyResolvedProperty::operator+=(). */
 	DOS& operator+=(const DOS &rhs);
 
+	/** Addition operator.
+	 *
+	 *  @param rhs The right hand side of the equation.
+	 *
+	 *  @return A new DOS that is the sum of this DOS and the right hand
+	 *  side. */
+	DOS operator+(const DOS &rhs) const;
+
 	/** Overrides EnergyResolvedProperty::operator-=(). */
 	DOS& operator-=(const DOS &rhs);
+
+	/** Subtraction operator.
+	 *
+	 *  @param rhs The right hand side of the equation.
+	 *
+	 *  @return A new DOS that is the difference between this DOS and the
+	 *  right hand side. */
+	DOS operator-(const DOS &rhs) const;
 
 	/** Overrides EnergyResolvedProperty::operator*=(). */
 	DOS& operator*=(const double &rhs);
 
+	/** Multiplication operator.
+	 *
+	 *  @param rhs The right hand side of the equation.
+	 *
+	 *  @return A new DOS that is the product of the DOS and the right hand
+	 *  side. */
+	DOS operator*(const double &rhs) const;
+
+	/** Multiplication operator.
+	 *
+	 *  @param lhs The left hand side of the equation.
+	 *  @param rhs The right hand side of the equation.
+	 *
+	 *  @return A new DOS that is the product of the left hand side and the
+	 *  DOS. */
+	friend DOS operator*(const double &lhs, const DOS &rhs){
+		return rhs*lhs;
+	}
+
 	/** Overrides EnergyResolvedProperty::operator/=(). */
 	DOS& operator/=(const double &rhs);
+
+	/** Division operator.
+	 *
+	 *  @param rhs The right hand side of the equation.
+	 *
+	 *  @return A new DOS that is the quotient the DOS and the right hand
+	 *  side. */
+	DOS operator/(const double &rhs) const;
 
 	/** Overrides AbstractProperty::serialize(). */
 	virtual std::string serialize(Mode mode) const;
@@ -81,10 +124,22 @@ inline DOS& DOS::operator+=(const DOS &rhs){
 	return *this;
 }
 
+inline DOS DOS::operator+(const DOS &rhs) const{
+	DOS dos = *this;
+
+	return dos += rhs;
+}
+
 inline DOS& DOS::operator-=(const DOS &rhs){
 	EnergyResolvedProperty::operator-=(rhs);
 
 	return *this;
+}
+
+inline DOS DOS::operator-(const DOS &rhs) const{
+	DOS dos = *this;
+
+	return dos -= rhs;
 }
 
 inline DOS& DOS::operator*=(const double &rhs){
@@ -93,10 +148,22 @@ inline DOS& DOS::operator*=(const double &rhs){
 	return *this;
 }
 
+inline DOS DOS::operator*(const double &rhs) const{
+	DOS dos = *this;
+
+	return dos *= rhs;
+}
+
 inline DOS& DOS::operator/=(const double &rhs){
 	EnergyResolvedProperty::operator/=(rhs);
 
 	return *this;
+}
+
+inline DOS DOS::operator/(const double &rhs) const{
+	DOS dos = *this;
+
+	return dos /= rhs;
 }
 
 };	//End namespace Property
