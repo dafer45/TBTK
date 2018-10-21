@@ -126,6 +126,45 @@ TEST(GreensFunction, operatorAdditionAssignment){
 	);
 }
 
+TEST(GreensFunction, operatorAddition){
+	IndexTree indexTree;
+	indexTree.add({{0, 1}, {0, 1}});
+	indexTree.add({{0, 2}, {0, 1}});
+	indexTree.add({{0, 1}, {0, 3}});
+	indexTree.generateLinearMap();
+
+	std::complex<double> inputData0[3*1000];
+	for(unsigned int n = 0; n < 3000; n++)
+		inputData0[n] = n;
+	GreensFunction greensFunction0(
+		indexTree,
+		GreensFunction::Type::Retarded,
+		-10,
+		10,
+		1000,
+		inputData0
+	);
+
+	std::complex<double> inputData1[3*1000];
+	for(unsigned int n = 0; n < 3000; n++)
+		inputData1[n] = 2*n;
+	GreensFunction greensFunction1(
+		indexTree,
+		GreensFunction::Type::Retarded,
+		-10,
+		10,
+		1000,
+		inputData1
+	);
+
+	GreensFunction greensFunction2 = greensFunction0 + greensFunction1;
+	std::vector<std::complex<double>> data2 = greensFunction2.getData();
+	for(unsigned int n = 0; n < 3000; n++){
+		EXPECT_DOUBLE_EQ(real(data2[n]), 3*n);
+		EXPECT_DOUBLE_EQ(imag(data2[n]), 0);
+	}
+}
+
 TEST(GreensFunction, operatorSubtractionAssignment){
 	IndexTree indexTree;
 	indexTree.add({{0, 1}, {0, 1}});
@@ -186,6 +225,45 @@ TEST(GreensFunction, operatorSubtractionAssignment){
 	);
 }
 
+TEST(GreensFunction, operatorSubtraction){
+	IndexTree indexTree;
+	indexTree.add({{0, 1}, {0, 1}});
+	indexTree.add({{0, 2}, {0, 1}});
+	indexTree.add({{0, 1}, {0, 3}});
+	indexTree.generateLinearMap();
+
+	std::complex<double> inputData0[3*1000];
+	for(unsigned int n = 0; n < 3000; n++)
+		inputData0[n] = n;
+	GreensFunction greensFunction0(
+		indexTree,
+		GreensFunction::Type::Retarded,
+		-10,
+		10,
+		1000,
+		inputData0
+	);
+
+	std::complex<double> inputData1[3*1000];
+	for(unsigned int n = 0; n < 3000; n++)
+		inputData1[n] = 2*n;
+	GreensFunction greensFunction1(
+		indexTree,
+		GreensFunction::Type::Retarded,
+		-10,
+		10,
+		1000,
+		inputData1
+	);
+
+	GreensFunction greensFunction2 = greensFunction0 - greensFunction1;
+	std::vector<std::complex<double>> data2 = greensFunction2.getData();
+	for(int n = 0; n < 3000; n++){
+		EXPECT_DOUBLE_EQ(real(data2[n]), -n);
+		EXPECT_DOUBLE_EQ(imag(data2[n]), 0);
+	}
+}
+
 TEST(GreensFunction, operatorMultiplicationAssignment){
 	IndexTree indexTree;
 	indexTree.add({{0, 1}, {0, 1}});
@@ -213,6 +291,39 @@ TEST(GreensFunction, operatorMultiplicationAssignment){
 	}
 }
 
+TEST(GreensFunction, operatorMultiplication){
+	IndexTree indexTree;
+	indexTree.add({{0, 1}, {0, 1}});
+	indexTree.add({{0, 2}, {0, 1}});
+	indexTree.add({{0, 1}, {0, 3}});
+	indexTree.generateLinearMap();
+
+	std::complex<double> inputData[3*1000];
+	for(unsigned int n = 0; n < 3000; n++)
+		inputData[n] = n;
+	GreensFunction greensFunction0(
+		indexTree,
+		GreensFunction::Type::Retarded,
+		-10,
+		10,
+		1000,
+		inputData
+	);
+
+	GreensFunction greensFunction1 = greensFunction0*2;
+	GreensFunction greensFunction2 = 2*greensFunction0;
+	std::vector<std::complex<double>> data1 = greensFunction1.getData();
+	for(int n = 0; n < 3000; n++){
+		EXPECT_DOUBLE_EQ(real(data1[n]), 2*n);
+		EXPECT_DOUBLE_EQ(imag(data1[n]), 0);
+	}
+	std::vector<std::complex<double>> data2 = greensFunction2.getData();
+	for(int n = 0; n < 3000; n++){
+		EXPECT_DOUBLE_EQ(real(data2[n]), 2*n);
+		EXPECT_DOUBLE_EQ(imag(data2[n]), 0);
+	}
+}
+
 TEST(GreensFunction, operatorDivisionAssignment){
 	IndexTree indexTree;
 	indexTree.add({{0, 1}, {0, 1}});
@@ -237,6 +348,33 @@ TEST(GreensFunction, operatorDivisionAssignment){
 	for(int n = 0; n < 3000; n++){
 		EXPECT_DOUBLE_EQ(real(data[n]), n/2.);
 		EXPECT_DOUBLE_EQ(imag(data[n]), 0);
+	}
+}
+
+TEST(GreensFunction, operatorDivision){
+	IndexTree indexTree;
+	indexTree.add({{0, 1}, {0, 1}});
+	indexTree.add({{0, 2}, {0, 1}});
+	indexTree.add({{0, 1}, {0, 3}});
+	indexTree.generateLinearMap();
+
+	std::complex<double> inputData[3*1000];
+	for(unsigned int n = 0; n < 3000; n++)
+		inputData[n] = n;
+	GreensFunction greensFunction0(
+		indexTree,
+		GreensFunction::Type::Retarded,
+		-10,
+		10,
+		1000,
+		inputData
+	);
+
+	GreensFunction greensFunction1 = greensFunction0/2;
+	std::vector<std::complex<double>> data1 = greensFunction1.getData();
+	for(int n = 0; n < 3000; n++){
+		EXPECT_DOUBLE_EQ(real(data1[n]), n/2.);
+		EXPECT_DOUBLE_EQ(imag(data1[n]), 0);
 	}
 }
 

@@ -126,14 +126,60 @@ public:
 	/** Overrides EnergyResolvedProperty::operator+=(). */
 	GreensFunction& operator+=(const GreensFunction &rhs);
 
+	/** Addition operator.
+	 *
+	 *  @param rhs The right hand side of the equation.
+	 *
+	 *  @return A new GreensFunction that is the sum of this GreensFunction
+	 *  and the right hand side. */
+	GreensFunction operator+(const GreensFunction &rhs) const;
+
 	/** Overrides EnergyResolvedProperty::operator-=(). */
 	GreensFunction& operator-=(const GreensFunction &rhs);
+
+	/** Subtraction operator.
+	 *
+	 *  @param rhs The right hand side of the equation.
+	 *
+	 *  @return A new GreensFunction that is the difference between this
+	 *  GreensFunction and the right hand side. */
+	GreensFunction operator-(const GreensFunction &rhs) const;
 
 	/** Overrides EnergyResolvedProperty::operator*=(). */
 	GreensFunction& operator*=(const std::complex<double> &rhs);
 
+	/** Multiplication operator.
+	 *
+	 *  @param rhs The right hand side of the equation.
+	 *
+	 *  @return A new GreensFunction that is the product of the
+	 *  GreensFunction and the right hand side. */
+	GreensFunction operator*(const std::complex<double> &rhs) const;
+
+	/** Multiplication operator.
+	 *
+	 *  @param lhs The left hand side of the equation.
+	 *  @param rhs The right hand side of the equation.
+	 *
+	 *  @return A new GreensFunction that is the product of the left hand
+	 *  side and the GreensFunction. */
+	friend GreensFunction operator*(
+		const std::complex<double> &lhs,
+		const GreensFunction &rhs
+	){
+		return rhs*lhs;
+	}
+
 	/** Overrides EnergyResolvedProperty::operator/=(). */
 	GreensFunction& operator/=(const std::complex<double> &rhs);
+
+	/** Division operator.
+	 *
+	 *  @param rhs The right hand side of the equation.
+	 *
+	 *  @return A new GreensFunction that is the quotient between the
+	 *  GreensFunction and the right hand side. */
+	GreensFunction operator/(const std::complex<double> &rhs) const;
 
 	/** Get the Green's function type.
 	 *
@@ -157,6 +203,12 @@ inline GreensFunction& GreensFunction::operator+=(const GreensFunction &rhs){
 	return *this;
 }
 
+inline GreensFunction GreensFunction::operator+(const GreensFunction &rhs) const{
+	GreensFunction greensFunction = *this;
+
+	return greensFunction += rhs;
+}
+
 inline GreensFunction& GreensFunction::operator-=(const GreensFunction &rhs){
 	TBTKAssert(
 		type == rhs.type,
@@ -170,16 +222,34 @@ inline GreensFunction& GreensFunction::operator-=(const GreensFunction &rhs){
 	return *this;
 }
 
+inline GreensFunction GreensFunction::operator-(const GreensFunction &rhs) const{
+	GreensFunction greensFunction = *this;
+
+	return greensFunction -= rhs;
+}
+
 inline GreensFunction& GreensFunction::operator*=(const std::complex<double> &rhs){
 	EnergyResolvedProperty::operator*=(rhs);
 
 	return *this;
 }
 
+inline GreensFunction GreensFunction::operator*(const std::complex<double> &rhs) const{
+	GreensFunction greensFunction = *this;
+
+	return greensFunction *= rhs;
+}
+
 inline GreensFunction& GreensFunction::operator/=(const std::complex<double> &rhs){
 	EnergyResolvedProperty::operator/=(rhs);
 
 	return *this;
+}
+
+inline GreensFunction GreensFunction::operator/(const std::complex<double> &rhs) const{
+	GreensFunction greensFunction = *this;
+
+	return greensFunction /= rhs;
 }
 
 inline GreensFunction::Type GreensFunction::getType() const{
