@@ -54,14 +54,60 @@ public:
 	/** Overrides AbstractProperty::operator+=(). */
 	EigenValues& operator+=(const EigenValues &rhs);
 
+	/** Addition operator.
+	 *
+	 *  @param rhs The right hand side of the equation.
+	 *
+	 *  @return A new EigenValues that is the sum of this EigenValues and
+	 *  the right hand side. */
+	EigenValues operator+(const EigenValues &rhs) const;
+
 	/** Overrides AbstractProperty::operator-=(). */
 	EigenValues& operator-=(const EigenValues &rhs);
+
+	/** Subtraction operator.
+	 *
+	 *  @param rhs The right hand side of the equation.
+	 *
+	 *  @return A new EigenValues that is the difference between this
+	 *  EigenValues and the right hand side. */
+	EigenValues operator-(const EigenValues &rhs) const;
 
 	/** Overrides AbstractProperty::operator*=(). */
 	EigenValues& operator*=(const double &rhs);
 
+	/** Multiplication operator.
+	 *
+	 *  @param rhs The right hand side of the equation.
+	 *
+	 *  @return A new EigenValues that is the product of the EigenValues
+	 *  and the right hand side. */
+	EigenValues operator*(const double &rhs) const;
+
+	/** Multiplication operator.
+	 *
+	 *  @param lhs The left hand side of the equation.
+	 *  @param rhs The right hand side of the equation.
+	 *
+	 *  @return A new EigenValues that is the product of the left hand side
+	 *  and the EigenValues. */
+	friend EigenValues operator*(
+		const double &lhs,
+		const EigenValues &rhs
+	){
+		return rhs*lhs;
+	}
+
 	/** Overrides AbstractProperty::operator/=(). */
 	EigenValues& operator/=(const double &rhs);
+
+	/** Division operator.
+	 *
+	 *  @param rhs The right hand side of the equation.
+	 *
+	 *  @return A new EigenValues that is the quotient between the
+	 *  EigenValues and the right hand side. */
+	EigenValues operator/(const double &rhs) const;
 
 	/** Overrides AbstractProperty::serialize(). */
 	std::string serialize(Mode mode) const;
@@ -74,10 +120,22 @@ inline EigenValues& EigenValues::operator+=(const EigenValues &rhs){
 	return *this;
 }
 
+inline EigenValues EigenValues::operator+(const EigenValues &rhs) const{
+	EigenValues eigenValues = *this;
+
+	return eigenValues += rhs;
+}
+
 inline EigenValues& EigenValues::operator-=(const EigenValues &rhs){
 	AbstractProperty::operator-=(rhs);
 
 	return *this;
+}
+
+inline EigenValues EigenValues::operator-(const EigenValues &rhs) const{
+	EigenValues eigenValues = *this;
+
+	return eigenValues -= rhs;
 }
 
 inline EigenValues& EigenValues::operator*=(const double &rhs){
@@ -86,10 +144,22 @@ inline EigenValues& EigenValues::operator*=(const double &rhs){
 	return *this;
 }
 
+inline EigenValues EigenValues::operator*(const double &rhs) const{
+	EigenValues eigenValues = *this;
+
+	return eigenValues *= rhs;
+}
+
 inline EigenValues& EigenValues::operator/=(const double &rhs){
 	AbstractProperty::operator/=(rhs);
 
 	return *this;
+}
+
+inline EigenValues EigenValues::operator/(const double &rhs) const{
+	EigenValues eigenValues = *this;
+
+	return eigenValues /= rhs;
 }
 
 };	//End namespace Property

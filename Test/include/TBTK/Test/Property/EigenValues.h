@@ -56,6 +56,23 @@ TEST(EigenValues, operatorAdditionAssignment){
 		EXPECT_DOUBLE_EQ(data0[n], 3*n);
 }
 
+TEST(EigenValues, operatorAddition){
+	double dataInput0[1000];
+	for(unsigned int n = 0; n < 1000; n ++)
+		dataInput0[n] = n;
+	EigenValues eigenValues0(1000, dataInput0);
+
+	double dataInput1[1000];
+	for(unsigned int n = 0; n < 1000; n ++)
+		dataInput1[n] = 2*n;
+	EigenValues eigenValues1(1000, dataInput1);
+
+	EigenValues eigenValues2 = eigenValues0 + eigenValues1;
+	const std::vector<double> &data2 = eigenValues2.getData();
+	for(unsigned int n = 0; n < data2.size(); n++)
+		EXPECT_DOUBLE_EQ(data2[n], 3*n);
+}
+
 TEST(EigenValues, operatorSubtractionAssignment){
 	double dataInput0[1000];
 	for(unsigned int n = 0; n < 1000; n ++)
@@ -73,6 +90,23 @@ TEST(EigenValues, operatorSubtractionAssignment){
 		EXPECT_DOUBLE_EQ(data0[n], -n);
 }
 
+TEST(EigenValues, operatorSubtraction){
+	double dataInput0[1000];
+	for(unsigned int n = 0; n < 1000; n ++)
+		dataInput0[n] = n;
+	EigenValues eigenValues0(1000, dataInput0);
+
+	double dataInput1[1000];
+	for(unsigned int n = 0; n < 1000; n ++)
+		dataInput1[n] = 2*n;
+	EigenValues eigenValues1(1000, dataInput1);
+
+	EigenValues eigenValues2 = eigenValues0 - eigenValues1;
+	const std::vector<double> &data2 = eigenValues2.getData();
+	for(int n = 0; n < (int)data2.size(); n++)
+		EXPECT_DOUBLE_EQ(data2[n], -n);
+}
+
 TEST(EigenValues, operatorMultiplicationAssignment){
 	double dataInput[1000];
 	for(unsigned int n = 0; n < 1000; n ++)
@@ -85,6 +119,22 @@ TEST(EigenValues, operatorMultiplicationAssignment){
 		EXPECT_DOUBLE_EQ(data[n], 2*n);
 }
 
+TEST(EigenValues, operatorMultiplication){
+	double dataInput[1000];
+	for(unsigned int n = 0; n < 1000; n ++)
+		dataInput[n] = n;
+	EigenValues eigenValues0(1000, dataInput);
+
+	EigenValues eigenValues1 = eigenValues0*2;
+	EigenValues eigenValues2 = 2*eigenValues0;
+	const std::vector<double> &data1 = eigenValues1.getData();
+	for(int n = 0; n < (int)data1.size(); n++)
+		EXPECT_DOUBLE_EQ(data1[n], 2*n);
+	const std::vector<double> &data2 = eigenValues2.getData();
+	for(int n = 0; n < (int)data2.size(); n++)
+		EXPECT_DOUBLE_EQ(data2[n], 2*n);
+}
+
 TEST(EigenValues, operatorDivisionAssignment){
 	double dataInput[1000];
 	for(unsigned int n = 0; n < 1000; n ++)
@@ -95,6 +145,18 @@ TEST(EigenValues, operatorDivisionAssignment){
 	const std::vector<double> &data = eigenValues.getData();
 	for(int n = 0; n < (int)data.size(); n++)
 		EXPECT_DOUBLE_EQ(data[n], n/2.);
+}
+
+TEST(EigenValues, operatorDivision){
+	double dataInput[1000];
+	for(unsigned int n = 0; n < 1000; n ++)
+		dataInput[n] = n;
+	EigenValues eigenValues0(1000, dataInput);
+
+	EigenValues eigenValues1 = eigenValues0/2;
+	const std::vector<double> &data1 = eigenValues1.getData();
+	for(int n = 0; n < (int)data1.size(); n++)
+		EXPECT_DOUBLE_EQ(data1[n], n/2.);
 }
 
 TEST(EigenValues, serialize){
