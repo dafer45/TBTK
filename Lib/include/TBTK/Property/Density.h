@@ -77,14 +77,57 @@ public:
 	/** Overrides AbstractPropertye::operator+=(). */
 	Density& operator+=(const Density &rhs);
 
+	/** Addition operator.
+	 *
+	 *  @param rhs The right hand side of the equation.
+	 *
+	 *  @return A new Density that is the sum of this Density and the right
+	 *  hand side. */
+	Density operator+(const Density &rhs) const;
+
 	/** Overrides AbstractPropertye::operator-=(). */
 	Density& operator-=(const Density &rhs);
+
+	/** Subtraction operator.
+	 *
+	 *  @param rhs The right hand side of the equation.
+	 *
+	 *  @return A new Density that is the difference between this Density
+	 *  and the right hand side. */
+	Density operator-(const Density &rhs) const;
 
 	/** Overrides AbstractPropertye::operator*=(). */
 	Density& operator*=(const double &rhs);
 
+	/** Multiplication operator.
+	 *
+	 *  @param rhs The right hand side of the equation.
+	 *
+	 *  @return A new Density that is the product of the Density and the
+	 *  right hand side. */
+	Density operator*(const double &rhs) const;
+
+	/** Multiplication operator.
+	 *
+	 *  @param lhs The right hand side of the equation.
+	 *  @param rhs The right hand side of the equation.
+	 *
+	 *  @return A new Density that is the product of the left hand side and
+	 *  the Density. */
+	friend Density operator*(const double &lhs, const Density &rhs){
+		return rhs*lhs;
+	}
+
 	/** Overrides AbstractPropertye::operator/=(). */
 	Density& operator/=(const double &rhs);
+
+	/** Division operator.
+	 *
+	 *  @param rhs The right hand side of the equation.
+	 *
+	 *  @return A new Density that is the quotient of the Density and the
+	 *  right hand side. */
+	Density operator/(const double &rhs) const;
 
 	/** Get the minimum value for the Density.
 	 *
@@ -107,10 +150,22 @@ inline Density& Density::operator+=(const Density &rhs){
 	return *this;
 }
 
+inline Density Density::operator+(const Density &rhs) const{
+	Density density = *this;
+
+	return density += rhs;
+}
+
 inline Density& Density::operator-=(const Density &rhs){
 	AbstractProperty::operator-=(rhs);
 
 	return *this;
+}
+
+inline Density Density::operator-(const Density &rhs) const{
+	Density density = *this;
+
+	return density -= rhs;
 }
 
 inline Density& Density::operator*=(const double &rhs){
@@ -119,10 +174,22 @@ inline Density& Density::operator*=(const double &rhs){
 	return *this;
 }
 
+inline Density Density::operator*(const double &rhs) const{
+	Density density = *this;
+
+	return density *= rhs;
+}
+
 inline Density& Density::operator/=(const double &rhs){
 	AbstractProperty::operator/=(rhs);
 
 	return *this;
+}
+
+inline Density Density::operator/(const double &rhs) const{
+	Density density = *this;
+
+	return density /= rhs;
 }
 
 };	//End namespace Property

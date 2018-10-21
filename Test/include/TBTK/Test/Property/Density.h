@@ -135,6 +135,42 @@ TEST(Density, operatorAdditionAssignment){
 	EXPECT_DOUBLE_EQ(densityCustom0({2, 2}), 9);
 }
 
+TEST(Density, operatorAddition){
+	//Ranges format.
+	double dataInputRanges0[2*3*4];
+	for(unsigned int n = 0; n < 2*3*4; n++)
+		dataInputRanges0[n] = n;
+	Density densityRanges0({2, 3, 4}, dataInputRanges0);
+
+	double dataInputRanges1[2*3*4];
+	for(unsigned int n = 0; n < 2*3*4; n++)
+		dataInputRanges1[n] = 2*n;
+	Density densityRanges1({2, 3, 4}, dataInputRanges1);
+
+	Density densityRanges2 = densityRanges0 + densityRanges1;
+	const std::vector<double> &dataRanges2 = densityRanges2.getData();
+	for(unsigned int n = 0; n < dataRanges2.size(); n++)
+		EXPECT_DOUBLE_EQ(dataRanges2[n], 3*n);
+
+	//Custom format.
+	IndexTree indexTree;
+	indexTree.add({1, 2, 3});
+	indexTree.add({1, 2, 4});
+	indexTree.add({2, 2});
+	indexTree.generateLinearMap();
+
+	double dataCustom0[3] = {1, 2, 3};
+	Density densityCustom0(indexTree, dataCustom0);
+
+	double dataCustom1[3] = {2, 4, 6};
+	Density densityCustom1(indexTree, dataCustom1);
+
+	Density densityCustom2 = densityCustom0 + densityCustom1;
+	EXPECT_DOUBLE_EQ(densityCustom2({1, 2, 3}), 3);
+	EXPECT_DOUBLE_EQ(densityCustom2({1, 2, 4}), 6);
+	EXPECT_DOUBLE_EQ(densityCustom2({2, 2}), 9);
+}
+
 TEST(Density, operatorSubtractionAssignment){
 	//Ranges format.
 	double dataInputRanges0[2*3*4];
@@ -171,6 +207,42 @@ TEST(Density, operatorSubtractionAssignment){
 	EXPECT_DOUBLE_EQ(densityCustom0({2, 2}), -3);
 }
 
+TEST(Density, operatorSubtraction){
+	//Ranges format.
+	double dataInputRanges0[2*3*4];
+	for(unsigned int n = 0; n < 2*3*4; n++)
+		dataInputRanges0[n] = n;
+	Density densityRanges0({2, 3, 4}, dataInputRanges0);
+
+	double dataInputRanges1[2*3*4];
+	for(unsigned int n = 0; n < 2*3*4; n++)
+		dataInputRanges1[n] = 2*n;
+	Density densityRanges1({2, 3, 4}, dataInputRanges1);
+
+	Density densityRanges2 = densityRanges0 - densityRanges1;
+	const std::vector<double> &dataRanges2 = densityRanges2.getData();
+	for(int n = 0; n < (int)dataRanges2.size(); n++)
+		EXPECT_DOUBLE_EQ(dataRanges2[n], -n);
+
+	//Custom format.
+	IndexTree indexTree;
+	indexTree.add({1, 2, 3});
+	indexTree.add({1, 2, 4});
+	indexTree.add({2, 2});
+	indexTree.generateLinearMap();
+
+	double dataCustom0[3] = {1, 2, 3};
+	Density densityCustom0(indexTree, dataCustom0);
+
+	double dataCustom1[3] = {2, 4, 6};
+	Density densityCustom1(indexTree, dataCustom1);
+
+	Density densityCustom2 = densityCustom0 - densityCustom1;
+	EXPECT_DOUBLE_EQ(densityCustom2({1, 2, 3}), -1);
+	EXPECT_DOUBLE_EQ(densityCustom2({1, 2, 4}), -2);
+	EXPECT_DOUBLE_EQ(densityCustom2({2, 2}), -3);
+}
+
 TEST(Density, operatorMultiplicationAssignment){
 	//Ranges format.
 	double dataInputRanges[2*3*4];
@@ -199,6 +271,42 @@ TEST(Density, operatorMultiplicationAssignment){
 	EXPECT_DOUBLE_EQ(densityCustom({2, 2}), 9);
 }
 
+TEST(Density, operatorMultiplication){
+	//Ranges format.
+	double dataInputRanges[2*3*4];
+	for(unsigned int n = 0; n < 2*3*4; n++)
+		dataInputRanges[n] = n;
+	Density densityRanges0({2, 3, 4}, dataInputRanges);
+
+	Density densityRanges1 = densityRanges0*2;
+	Density densityRanges2 = 2*densityRanges0;
+	const std::vector<double> &dataRanges1 = densityRanges1.getData();
+	const std::vector<double> &dataRanges2 = densityRanges2.getData();
+	for(unsigned int n = 0; n < dataRanges1.size(); n++)
+		EXPECT_DOUBLE_EQ(dataRanges1[n], 2*n);
+	for(unsigned int n = 0; n < dataRanges2.size(); n++)
+		EXPECT_DOUBLE_EQ(dataRanges2[n], 2*n);
+
+	//Custom format.
+	IndexTree indexTree;
+	indexTree.add({1, 2, 3});
+	indexTree.add({1, 2, 4});
+	indexTree.add({2, 2});
+	indexTree.generateLinearMap();
+
+	double dataCustom[3] = {1, 2, 3};
+	Density densityCustom0(indexTree, dataCustom);
+
+	Density densityCustom1 = densityCustom0*3;
+	Density densityCustom2 = 3*densityCustom0;
+	EXPECT_DOUBLE_EQ(densityCustom1({1, 2, 3}), 3);
+	EXPECT_DOUBLE_EQ(densityCustom2({1, 2, 3}), 3);
+	EXPECT_DOUBLE_EQ(densityCustom1({1, 2, 4}), 6);
+	EXPECT_DOUBLE_EQ(densityCustom2({1, 2, 4}), 6);
+	EXPECT_DOUBLE_EQ(densityCustom1({2, 2}), 9);
+	EXPECT_DOUBLE_EQ(densityCustom2({2, 2}), 9);
+}
+
 TEST(Density, operatorDivisionAssignment){
 	//Ranges format.
 	double dataInputRanges[2*3*4];
@@ -225,6 +333,34 @@ TEST(Density, operatorDivisionAssignment){
 	EXPECT_DOUBLE_EQ(densityCustom({1, 2, 3}), 1/3.);
 	EXPECT_DOUBLE_EQ(densityCustom({1, 2, 4}), 2/3.);
 	EXPECT_DOUBLE_EQ(densityCustom({2, 2}), 1);
+}
+
+TEST(Density, operatorDivision){
+	//Ranges format.
+	double dataInputRanges[2*3*4];
+	for(unsigned int n = 0; n < 2*3*4; n++)
+		dataInputRanges[n] = n;
+	Density densityRanges0({2, 3, 4}, dataInputRanges);
+
+	Density densityRanges1 = densityRanges0/2;
+	const std::vector<double> &dataRanges1 = densityRanges1.getData();
+	for(unsigned int n = 0; n < dataRanges1.size(); n++)
+		EXPECT_DOUBLE_EQ(dataRanges1[n], n/2.);
+
+	//Custom format.
+	IndexTree indexTree;
+	indexTree.add({1, 2, 3});
+	indexTree.add({1, 2, 4});
+	indexTree.add({2, 2});
+	indexTree.generateLinearMap();
+
+	double dataCustom[3] = {1, 2, 3};
+	Density densityCustom0(indexTree, dataCustom);
+
+	Density densityCustom1 = densityCustom0/3;
+	EXPECT_DOUBLE_EQ(densityCustom1({1, 2, 3}), 1/3.);
+	EXPECT_DOUBLE_EQ(densityCustom1({1, 2, 4}), 2/3.);
+	EXPECT_DOUBLE_EQ(densityCustom1({2, 2}), 1);
 }
 
 TEST(Density, getMin){
