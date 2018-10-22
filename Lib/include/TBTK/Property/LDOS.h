@@ -109,10 +109,112 @@ public:
 	 *  @param mode Mode with which the string has been serialized. */
 	LDOS(const std::string &serialization, Mode mode);
 
+	/** Overrides EnergyResolvedProperty::operator+=(). */
+	LDOS& operator+=(const LDOS &rhs);
+
+	/** Addition operator.
+	 *
+	 *  @param rhs The right hand side of the equation.
+	 *
+	 *  @return A new LDOS that is the sum of this LDOS and the right hand
+	 *  side. */
+	LDOS operator+(const LDOS &rhs) const;
+
+	/** Overrides EnergyResolvedProperty::operator-=(). */
+	LDOS& operator-=(const LDOS &rhs);
+
+	/** Subtraction operator.
+	 *
+	 *  @param rhs The right hand side of the equation.
+	 *
+	 *  @return A new LDOS that is the difference between this LDOS and the
+	 *  right hand side. */
+	LDOS operator-(const LDOS &rhs) const;
+
+	/** Overrides EnergyResolvedProperty::operator*=(). */
+	LDOS& operator*=(const double &rhs);
+
+	/** Multiplication operator.
+	 *
+	 *  @param rhs The right hand side of the equation.
+	 *
+	 *  @return A new LDOS that is product of this LDOS and the right hand
+	 *  side. */
+	LDOS operator*(const double &rhs) const;
+
+	/** Multiplication operator.
+	 *
+	 *  @param rhs The right hand side of the equation.
+	 *
+	 *  @return A new LDOS that is product of the left hand side and the
+	 *  LDOS. */
+	friend LDOS operator*(const double &lhs, const LDOS &rhs){
+		return rhs*lhs;
+	}
+
+	/** Overrides EnergyResolvedProperty::operator/=(). */
+	LDOS& operator/=(const double &rhs);
+
+	/** Division operator.
+	 *
+	 *  @param rhs The right hand side of the equation.
+	 *
+	 *  @return A new LDOS that is quotient between this LDOS and the right
+	 *  hand side. */
+	LDOS operator/(const double &rhs) const;
+
 	/** Overrides AbstractProperty::serialize(). */
 	virtual std::string serialize(Mode mode) const;
 private:
 };
+
+inline LDOS& LDOS::operator+=(const LDOS &rhs){
+	EnergyResolvedProperty::operator+=(rhs);
+
+	return *this;
+}
+
+inline LDOS LDOS::operator+(const LDOS &rhs) const{
+	LDOS ldos = *this;
+
+	return ldos += rhs;
+}
+
+inline LDOS& LDOS::operator-=(const LDOS &rhs){
+	EnergyResolvedProperty::operator-=(rhs);
+
+	return *this;
+}
+
+inline LDOS LDOS::operator-(const LDOS &rhs) const{
+	LDOS ldos = *this;
+
+	return ldos -= rhs;
+}
+
+inline LDOS& LDOS::operator*=(const double &rhs){
+	EnergyResolvedProperty::operator*=(rhs);
+
+	return *this;
+}
+
+inline LDOS LDOS::operator*(const double &rhs) const{
+	LDOS ldos = *this;
+
+	return ldos *= rhs;
+}
+
+inline LDOS& LDOS::operator/=(const double &rhs){
+	EnergyResolvedProperty::operator/=(rhs);
+
+	return *this;
+}
+
+inline LDOS LDOS::operator/(const double &rhs) const{
+	LDOS ldos = *this;
+
+	return ldos /= rhs;
+}
 
 };	//End namespace Property
 };	//End namespace TBTK
