@@ -69,16 +69,28 @@ void PlotCanvas::drawAxes(){
 	//Axes values
 	stringstream ss;
 	ss.precision(1);
-	ss << scientific << minX;
+	if((abs(minX) > 1 && abs(minX) < 1000) || minX == 0)
+		ss << fixed << minX;
+	else
+		ss << scientific << minX;
 	string minXString = ss.str();
 	ss.str("");
-	ss << scientific << maxX;
+	if((abs(maxX) > 1 && abs(maxX) < 1000) || maxX == 0)
+		ss << fixed << maxX;
+	else
+		ss << scientific << maxX;
 	string maxXString = ss.str();
 	ss.str("");
-	ss << scientific << minY;
+	if((abs(minY) > 1 && abs(minY) < 1000) || minY == 0)
+		ss << fixed << minY;
+	else
+		ss << scientific << minY;
 	string minYString = ss.str();
 	ss.str("");
-	ss << scientific << maxY;
+	if((abs(maxY) > 1 && abs(maxY) < 1000) || maxY == 0)
+		ss << fixed << maxY;
+	else
+		ss << scientific << maxY;
 	string maxYString = ss.str();
 	int minXStringBaseLine;
 	int maxXStringBaseLine;
