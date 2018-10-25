@@ -84,28 +84,27 @@ FockSpace<BitRegister>::FockSpace(
 
 	operators = new LadderOperator<BitRegister>*[hoppingAmplitudeSet->getBasisSize()];
 	for(int n = 0; n < hoppingAmplitudeSet->getBasisSize(); n++){
-		operators[n] = new LadderOperator<BitRegister>[2]{
-			LadderOperator<BitRegister>(
-				LadderOperator<BitRegister>::Type::Creation,
-				statistics,
-				hoppingAmplitudeSet,
-				n,
-				numBitsPerState,
-				maxParticlesPerState,
-				*vacuumState,
-				fermionMask
-			),
-			LadderOperator<BitRegister>(
-				LadderOperator<BitRegister>::Type::Annihilation,
-				statistics,
-				hoppingAmplitudeSet,
-				n,
-				numBitsPerState,
-				maxParticlesPerState,
-				*vacuumState,
-				fermionMask
-			)
-		};
+		operators[n] = new LadderOperator<BitRegister>[2];
+		operators[n][0] = LadderOperator<BitRegister>(
+			LadderOperator<BitRegister>::Type::Creation,
+			statistics,
+			hoppingAmplitudeSet,
+			n,
+			numBitsPerState,
+			maxParticlesPerState,
+			*vacuumState,
+			fermionMask
+		);
+		operators[n][1] = LadderOperator<BitRegister>(
+			LadderOperator<BitRegister>::Type::Annihilation,
+			statistics,
+			hoppingAmplitudeSet,
+			n,
+			numBitsPerState,
+			maxParticlesPerState,
+			*vacuumState,
+			fermionMask
+		);
 	}
 
 /*	if(numParticles < 0){
@@ -182,28 +181,27 @@ FockSpace<ExtensiveBitRegister>::FockSpace(
 
 	operators = new LadderOperator<ExtensiveBitRegister>*[hoppingAmplitudeSet->getBasisSize()];
 	for(int n = 0; n < hoppingAmplitudeSet->getBasisSize(); n++){
-		operators[n] = new LadderOperator<ExtensiveBitRegister>[2]{
-			LadderOperator<ExtensiveBitRegister>(
-				LadderOperator<ExtensiveBitRegister>::Type::Creation,
-				statistics,
-				hoppingAmplitudeSet,
-				n,
-				numBitsPerState,
-				maxParticlesPerState,
-				*vacuumState,
-				fermionMask
-			),
-			LadderOperator<ExtensiveBitRegister>(
-				LadderOperator<ExtensiveBitRegister>::Type::Annihilation,
-				statistics,
-				hoppingAmplitudeSet,
-				n,
-				numBitsPerState,
-				maxParticlesPerState,
-				*vacuumState,
-				fermionMask
-			)
-		};
+		operators[n] = new LadderOperator<ExtensiveBitRegister>[2];
+		operators[n][0] = LadderOperator<ExtensiveBitRegister>(
+			LadderOperator<ExtensiveBitRegister>::Type::Creation,
+			statistics,
+			hoppingAmplitudeSet,
+			n,
+			numBitsPerState,
+			maxParticlesPerState,
+			*vacuumState,
+			fermionMask
+		);
+		operators[n][1] = LadderOperator<ExtensiveBitRegister>(
+			LadderOperator<ExtensiveBitRegister>::Type::Annihilation,
+			statistics,
+			hoppingAmplitudeSet,
+			n,
+			numBitsPerState,
+			maxParticlesPerState,
+			*vacuumState,
+			fermionMask
+		);
 	}
 
 /*	fockStateMap = new DefaultFockStateMap<ExtensiveBitRegister>(

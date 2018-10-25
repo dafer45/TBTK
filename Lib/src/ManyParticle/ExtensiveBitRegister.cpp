@@ -24,6 +24,9 @@
 
 namespace TBTK{
 
+ExtensiveBitRegister::ExtensiveBitRegister(){
+}
+
 ExtensiveBitRegister::ExtensiveBitRegister(unsigned int numBits){
 	size = (numBits-1)/(8*sizeof(unsigned int))+1;
 	values = new unsigned int[size];

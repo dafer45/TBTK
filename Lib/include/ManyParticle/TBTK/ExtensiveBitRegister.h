@@ -33,6 +33,9 @@ namespace TBTK{
 class ExtensiveBitRegister{
 public:
 	/** Constructor. */
+	ExtensiveBitRegister();
+
+	/** Constructor. */
 	ExtensiveBitRegister(unsigned int numBits);
 
 	/** Copy constructor. */
