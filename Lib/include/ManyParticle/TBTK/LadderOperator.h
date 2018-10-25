@@ -14,6 +14,9 @@ public:
 	enum class Type {Creation, Annihilation};
 
 	/** Constructor. */
+	LadderOperator();
+
+	/** Constructor. */
 	LadderOperator(
 		Type type,
 		Statistics statistics,
@@ -73,6 +76,10 @@ private:
 	 *  than the state corresponding to this opperator. */
 	BIT_REGISTER moreSignificantFermionMask;
 };
+
+template<typename BIT_REGISTER>
+LadderOperator<BIT_REGISTER>::LadderOperator(){
+}
 
 template<typename BIT_REGISTER>
 LadderOperator<BIT_REGISTER>::LadderOperator(
