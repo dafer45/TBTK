@@ -1,7 +1,9 @@
 [![DOI](https://zenodo.org/badge/50950512.svg)](https://zenodo.org/badge/latestdoi/50950512)
 [![Build Status](https://travis-ci.org/dafer45/TBTK.svg?branch=master)](https://travis-ci.org/dafer45/TBTK)  
 <a href="https://www.patreon.com/bePatron?u=12043676" data-patreon-widget-type="become-patron-button"><img src="doc/become_a_patron_button.png"></a>  
-<b>Contact:</b> <kristofer.bjornson@gmail.com>
+**Contact:** <kristofer.bjornson@gmail.com>
+**Full documenation:** http://www.second-quantization.com/  
+**Also see:** http://www.second-tech.com
 
 # TBTK
 Welcome to TBTK, a library for modeling and solving second quantized Hamiltonians with discrete indices.
@@ -15,9 +17,6 @@ In addition to providing native solvers, TBTK also aims to enable the developmen
 Thereby allowing for seamless integration with the codebase already developed by the scientific community.
 To aid such integration, TBTK is specifically designed to allow for solution algorithms to be used interchangably with minimal amount of modification of the code.  
 <br/><br/>
-
-**Full documenation:** http://www.second-quantization.com/  
-**Also see:** http://www.second-tech.com
 
 # Example
 Consider the tight-binding Hamiltonian  
