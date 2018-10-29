@@ -5,7 +5,7 @@
 **Full documenation:** http://www.second-quantization.com/  
 **Also see:** http://www.second-tech.com
 
-*Always Work against a versioned release. See "Quickstart" below for instructions on how to checkout the latest release.*
+*Always work against a versioned release. See "Quickstart" below for instructions on how to checkout the latest release.*
 
 # TBTK
 Welcome to TBTK, a library for modeling and solving second quantized Hamiltonians with discrete indices.
