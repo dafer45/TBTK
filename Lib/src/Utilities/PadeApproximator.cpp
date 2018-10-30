@@ -39,16 +39,16 @@ vector<
 		""
 	);
 	TBTKAssert(
-		values.size() > numeratorDegree + denumeratorDegree,
+		values.size() > numeratorDegree + denominatorDegree,
 		"PadeApproximator::approximate()",
 		"The number of values and arguments (" << values.size() << ")"
-		<< " must be larger than 'numeratorDegree + denumeratorDegree="
-		<< numeratorDegree + denumeratorDegree << "'.",
+		<< " must be larger than 'numeratorDegree + denominatorDegree="
+		<< numeratorDegree + denominatorDegree << "'.",
 		""
 	);
 
 	unsigned int numRows = arguments.size();
-	unsigned int numColumns = 1 + numeratorDegree + denumeratorDegree;
+	unsigned int numColumns = 1 + numeratorDegree + denominatorDegree;
 
 	complex<double> *matrix = new complex<double>[numRows*numColumns];
 	complex<double> *vector = new complex<double>[numRows];
@@ -74,13 +74,13 @@ vector<
 			}
 		}
 
-		if(denumeratorDegree == 0){
+		if(denominatorDegree == 0){
 			vector[row] = values[row];
 		}
 		else{
 			vector[row] = values[row]*pow(
 				arguments[row],
-				denumeratorDegree
+				denominatorDegree
 			);
 		}
 	}
@@ -96,9 +96,9 @@ vector<
 	);
 	for(unsigned int n = 0; n < numeratorDegree+1; n++)
 		polynomials[0].addTerm(vector[n], {(int)n});
-	for(unsigned int n = 0; n < denumeratorDegree; n++)
+	for(unsigned int n = 0; n < denominatorDegree; n++)
 		polynomials[1].addTerm(vector[n+numeratorDegree+1], {(int)n});
-	polynomials[1].addTerm(1, {(int)denumeratorDegree});
+	polynomials[1].addTerm(1, {(int)denominatorDegree});
 
 	delete [] matrix;
 	delete [] vector;
@@ -124,11 +124,11 @@ vector<
 		""
 	);
 	TBTKAssert(
-		values.size() > numeratorDegree + denumeratorDegree,
+		values.size() > numeratorDegree + denominatorDegree,
 		"PadeApproximator::approximate()",
 		"The number of values and arguments (" << values.size() << ")"
-		<< " must be larger than 'numeratorDegree + denumeratorDegree="
-		<< numeratorDegree + denumeratorDegree << "'.",
+		<< " must be larger than 'numeratorDegree + denominatorDegree="
+		<< numeratorDegree + denominatorDegree << "'.",
 		""
 	);
 
@@ -142,7 +142,7 @@ vector<
 			minArgument = abs(arguments[n]);
 
 	unsigned int numRows = arguments.size();
-	unsigned int numColumns = 1 + numeratorDegree + denumeratorDegree;
+	unsigned int numColumns = 1 + numeratorDegree + denominatorDegree;
 
 	complex<double> *matrix = new complex<double>[numRows*numColumns];
 	complex<double> *vector = new complex<double>[numRows];
@@ -190,20 +190,20 @@ vector<
 							)*(
 								maxArgument
 								- minArgument
-							)/(denumeratorDegree - 1)
+							)/(denominatorDegree - 1)
 						),
 						column - numeratorDegree - 1
 					);
 			}
 		}
 
-		if(denumeratorDegree == 0){
+		if(denominatorDegree == 0){
 			vector[row] = values[row];
 		}
 		else{
 			vector[row] = values[row]*pow(
 				arguments[row]/maxArgument,
-				denumeratorDegree
+				denominatorDegree
 			);
 		}
 	}
@@ -245,7 +245,7 @@ vector<
 			);
 		}
 	}
-	for(unsigned int n = 0; n < denumeratorDegree; n++){
+	for(unsigned int n = 0; n < denominatorDegree; n++){
 		if(n == 0){
 			polynomials[1].addTerm(
 				vector[n+numeratorDegree+1],
@@ -260,7 +260,7 @@ vector<
 						+ (n - 1)*(
 							maxArgument
 							- minArgument
-						)/(denumeratorDegree - 1),
+						)/(denominatorDegree - 1),
 						n
 					)
 				),
@@ -269,8 +269,8 @@ vector<
 		}
 	}
 	polynomials[1].addTerm(
-		1/pow(maxArgument, denumeratorDegree),
-		{(int)denumeratorDegree}
+		1/pow(maxArgument, denominatorDegree),
+		{(int)denominatorDegree}
 	);
 
 	delete [] matrix;

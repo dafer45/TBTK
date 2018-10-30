@@ -142,7 +142,7 @@ public:
 	/** Division operator. */
 	GreensFunction operator/(std::complex<double> rhs) const;
 
-	/** Set epsilon for use in the denumerator of the Green's function.
+	/** Set epsilon for use in the denominator of the Green's function.
 	 *  Used when the Green's function is of type Type::Poles and format
 	 *  Format::Retarded or Format::Advanced. */
 	static void setEpsilon(double epsilon);
@@ -192,11 +192,11 @@ private:
 	/** Actuall storage. */
 	Storage storage;
 
-	/** Default epsilon for use in the denumerator of the Green's function.
+	/** Default epsilon for use in the denominator of the Green's function.
 	 */
 	static constexpr double DEFAULT_EPSILON = 0.00001;
 
-	/** Epsilon for use in the denumerator of the Green's function. */
+	/** Epsilon for use in the denominator of the Green's function. */
 	static double EPSILON;
 };
 

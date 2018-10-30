@@ -38,17 +38,17 @@ public:
 	 *  @param The highest allowed degree for the numerator. */
 	void setNumeratorDegree(unsigned int numeratorDegree);
 
-	/** Set the highest allowed degree for the denumerator.
+	/** Set the highest allowed degree for the denominator.
 	 *
-	 *  @param The highest allowed degree for the denumerator. */
-	void setDenumeratorDegree(unsigned int denumeratorDegree);
+	 *  @param The highest allowed degree for the denominator. */
+	void setDenominatorDegree(unsigned int denominatorDegree);
 
 	/** Calculate the Padé approximation for a sampled function.
 	 *
 	 *  @param values The values of the function at the sample points.
 	 *  @param The arguments at which the function has been sampled.
 	 *
-	 *  @return A vector containing the numerator and denumerator
+	 *  @return A vector containing the numerator and denominator
 	 *  Polynomial as the first and second component, respectively. */
 	std::vector<
 		Polynomial<std::complex<double>, std::complex<double>, int>
@@ -60,8 +60,8 @@ private:
 	/** The maximum degree of the numerator. */
 	unsigned int numeratorDegree;
 
-	/** The maximum degree of the denumerator. */
-	unsigned int denumeratorDegree;
+	/** The maximum degree of the denominator. */
+	unsigned int denominatorDegree;
 
 	/** Execute the least square algorithm. */
 	void executeLeastSquare(
@@ -76,10 +76,10 @@ inline void PadeApproximator::setNumeratorDegree(unsigned int numeratorDegree){
 	this->numeratorDegree = numeratorDegree;
 }
 
-inline void PadeApproximator::setDenumeratorDegree(
-	unsigned int denumeratorDegree
+inline void PadeApproximator::setDenominatorDegree(
+	unsigned int denominatorDegree
 ){
-	this->denumeratorDegree = denumeratorDegree;
+	this->denominatorDegree = denominatorDegree;
 }
 
 }; //End of namespace TBTK

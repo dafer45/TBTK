@@ -31,7 +31,7 @@ namespace Solver{
 
 AnalyticalContinuer::AnalyticalContinuer() : Communicator(true){
 	numeratorDegree = 0;
-	denumeratorDegree = 0;
+	denominatorDegree = 0;
 	lowerBound = -1;
 	upperBound = 1;
 	resolution = 1000;
@@ -129,8 +129,8 @@ Property::GreensFunction AnalyticalContinuer::convert(
 
 			PadeApproximator padeApproximator;
 			padeApproximator.setNumeratorDegree(numeratorDegree);
-			padeApproximator.setDenumeratorDegree(
-				denumeratorDegree
+			padeApproximator.setDenominatorDegree(
+				denominatorDegree
 			);
 			vector<Polynomial<>> padePolynomials
 				= padeApproximator.approximate(

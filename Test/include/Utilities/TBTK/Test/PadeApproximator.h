@@ -14,7 +14,7 @@ TEST(PadeApproximator, setNumeratorDegree){
 	//Not testable on its own.
 }
 
-TEST(PadeApproximator, setDenumeratorDegree){
+TEST(PadeApproximator, setDenominatorDegree){
 	//Not testable on its own.
 }
 
@@ -34,7 +34,7 @@ TEST(PadeApproximator, approximate){
 
 	PadeApproximator padeApproximator;
 	padeApproximator.setNumeratorDegree(3);
-	padeApproximator.setDenumeratorDegree(4);
+	padeApproximator.setDenominatorDegree(4);
 	std::vector<Polynomial<>> polynomials
 		= padeApproximator.approximate(values, arguments);
 

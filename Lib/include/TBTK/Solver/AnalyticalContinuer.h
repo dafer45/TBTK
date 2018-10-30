@@ -57,11 +57,11 @@ public:
 	 *  @param numeratorDegree The degree of the numerator polynomial. */
 	void setNumeratorDegree(unsigned int numeratorDegree);
 
-	/** Set the degree of the denumerator in the Padé approximation.
+	/** Set the degree of the denominator in the Padé approximation.
 	 *
-	 *  @param denumeratorDegree The degree of the denumerator polynomial.
+	 *  @param denominatorDegree The degree of the denominator polynomial.
 	 */
-	void setDenumeratorDegree(unsigned int denumeratorDegree);
+	void setDenominatorDegree(unsigned int denominatorDegree);
 
 	/** Set the size of the energy infinitesimal that is used to deform the
 	 *  contour in for example the Retarded and advanced Green's functions.
@@ -104,9 +104,9 @@ private:
 	 */
 	unsigned int numeratorDegree;
 
-	/** The degree of the denumerator polynomial in the Padé approximation.
+	/** The degree of the denominator polynomial in the Padé approximation.
 	 */
-	unsigned int denumeratorDegree;
+	unsigned int denominatorDegree;
 
 	/** Default energy infinitesimal. */
 	static constexpr double ENERGY_INFINITESIMAL = 0;
@@ -154,10 +154,10 @@ inline void AnalyticalContinuer::setNumeratorDegree(
 	this->numeratorDegree = numeratorDegree;
 }
 
-inline void AnalyticalContinuer::setDenumeratorDegree(
-	unsigned int denumeratorDegree
+inline void AnalyticalContinuer::setDenominatorDegree(
+	unsigned int denominatorDegree
 ){
-	this->denumeratorDegree = denumeratorDegree;
+	this->denominatorDegree = denominatorDegree;
 }
 
 inline void AnalyticalContinuer::setEnergyInfinitesimal(
