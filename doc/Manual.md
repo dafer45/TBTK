@@ -225,7 +225,7 @@ The code for setting the other five natural units is similar, with the word 'Ene
 
 For further simplification, it is also possible to set all six units at the same time using
 ```cpp
-	UnitHandler::setScale({"1 C", "1 pcs", "1 eV", "1 m", "1 K", "1 s"});
+	UnitHandler::setScales({"1 C", "1 pcs", "1 eV", "1 m", "1 K", "1 s"});
 ```
 Note that the units in the brackets has to come in the order charge, count, energy, length, temperature, and time.
 
