@@ -203,11 +203,11 @@ vector<complex<double>> MatsubaraSusceptibility::calculateSusceptibility(
 						{
 							Index(
 								qIndex,
-								intraBlockIndices[1]
+								intraBlockIndices[3]
 							),
 							Index(
 								qIndex,
-								intraBlockIndices[2]
+								intraBlockIndices[0]
 							)
 						},
 						firstEnergyIndex
@@ -215,11 +215,11 @@ vector<complex<double>> MatsubaraSusceptibility::calculateSusceptibility(
 						{
 							Index(
 								kPlusQIndex,
-								intraBlockIndices[3]
+								intraBlockIndices[1]
 							),
 							Index(
 								kPlusQIndex,
-								intraBlockIndices[0]
+								intraBlockIndices[2]
 							)
 						},
 						secondEnergyIndex
@@ -335,8 +335,8 @@ Property::Susceptibility MatsubaraSusceptibility::calculateSusceptibilityAllBloc
 				n
 			}] = conj(greensFunction(
 				{
-					Index(qIndex, intraBlockIndices[1]),
-					Index(qIndex, intraBlockIndices[2])
+					Index(qIndex, intraBlockIndices[3]),
+					Index(qIndex, intraBlockIndices[0])
 				},
 				n
 			));
@@ -346,8 +346,8 @@ Property::Susceptibility MatsubaraSusceptibility::calculateSusceptibilityAllBloc
 				n
 			}] = greensFunction(
 				{
-					Index(qIndex, intraBlockIndices[3]),
-					Index(qIndex, intraBlockIndices[0])
+					Index(qIndex, intraBlockIndices[1]),
+					Index(qIndex, intraBlockIndices[2])
 				},
 				n
 			);

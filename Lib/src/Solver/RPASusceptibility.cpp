@@ -87,7 +87,7 @@ inline void RPASusceptibility::invertMatrix(
 	delete [] work;
 }
 
-vector<vector<vector<complex<double>>>> RPASusceptibility::rpaSusceptibilityMainAlgorithm(
+/*vector<vector<vector<complex<double>>>> RPASusceptibility::rpaSusceptibilityMainAlgorithm(
 	const Index &index,
 	const vector<InteractionAmplitude> &interactionAmplitudes
 ){
@@ -283,6 +283,268 @@ vector<vector<vector<complex<double>>>> RPASusceptibility::rpaSusceptibilityMain
 						]*susceptibility.at(offset + i);
 					}
 				}
+			}
+		}
+	}
+
+	//Free memory allocated for denominators
+	for(unsigned int n = 0; n < energies.size(); n++)
+		delete [] denominators.at(n);
+
+	return rpaSusceptibility;
+}*/
+
+vector<vector<vector<complex<double>>>> RPASusceptibility::rpaSusceptibilityMainAlgorithm(
+	const Index &index,
+	const vector<InteractionAmplitude> &interactionAmplitudes
+){
+	vector<Index> components = index.split();
+	TBTKAssert(
+		components.size() == 5,
+		"SusceptibilityCalculator::rpaSusceptibilityMainAlgorithm()",
+		"The Index must be a compound Index with 5 component Indices,"
+		<< " but '" << components.size() << "' components suplied.",
+		""
+	);
+	Index kIndex = components[0];
+	Index intraBlockIndices[4] = {
+		components[1],
+		components[2],
+		components[3],
+		components[4],
+	};
+
+	IndexTree intraBlockIndexTree
+		= getModel().getHoppingAmplitudeSet().getIndexTree(kIndex);
+	vector<Index> intraBlockIndexList;
+	for(
+		IndexTree::ConstIterator iterator
+			= intraBlockIndexTree.cbegin();
+		iterator != intraBlockIndexTree.cend();
+		++iterator
+	){
+		Index index = *iterator;
+		for(unsigned int n = 0; n < kIndex.getSize(); n++)
+			index.popFront();
+
+		intraBlockIndexList.push_back(index);
+	}
+	unsigned int matrixDimension = pow(intraBlockIndexList.size(), 2);
+
+	//Setup energies.
+	vector<complex<double>> energies;
+	switch(bareSusceptibility.getEnergyType()){
+	case Property::EnergyResolvedProperty<complex<double>>::EnergyType::Real:
+		for(
+			unsigned int n = 0;
+			n < bareSusceptibility.getResolution();
+			n++
+		){
+			energies.push_back(bareSusceptibility.getEnergy(n));
+		}
+		break;
+	case Property::EnergyResolvedProperty<complex<double>>::EnergyType::BosonicMatsubara:
+		for(
+			unsigned int n = 0;
+			n < bareSusceptibility.getNumMatsubaraEnergies();
+			n++
+		){
+			energies.push_back(
+				bareSusceptibility.getMatsubaraEnergy(n)
+			);
+		}
+		break;
+	default:
+		TBTKExit(
+			"Solver::RPASusceptibility::calculateSusceptibilityMainAlgorithm()",
+			"Only the energy types"
+			" Property::EnergyResolvedProperty::EnergyType::Real and"
+			<< " Property::EnergyResolvedProperty::EnergyType::BosonicMatsubara"
+			<< " are supported, but the bare susceptibility has a"
+			<< " different energy type.",
+			"This should never happen, contact the developer."
+		);
+	}
+
+	//Denominator in the expression chi_RPA = chi_0/(1 - U\chi_0)
+	vector<complex<double>*> denominators;
+
+	//Initialize denominator matrices to unit matrices
+	for(
+		unsigned int e = 0;
+		e < energies.size();
+		e++
+	){
+		//Create denominator matrix
+		denominators.push_back(
+			new complex<double>[matrixDimension*matrixDimension]
+		);
+		//Initialize denominator matrices to unit matrices
+		for(
+			unsigned int c = 0;
+			c < matrixDimension*matrixDimension;
+			c++
+		){
+			denominators.at(e)[c] = 0.;
+		}
+	}
+
+	//Calculate denominator = (1 + U\chi_0)
+	for(unsigned int a = 0; a < intraBlockIndexList.size(); a++){
+		for(
+			unsigned int b = 0;
+			b < intraBlockIndexList.size();
+			b++
+		){
+			unsigned int row
+				= a*intraBlockIndexList.size() + b;
+			for(
+				unsigned int c = 0;
+				c < intraBlockIndexList.size();
+				c++
+			){
+				for(
+					unsigned int d = 0;
+					d < intraBlockIndexList.size();
+					d++
+				){
+					unsigned int column
+						= c*intraBlockIndexList.size()
+							+ d;
+
+					const vector<
+						complex<double>
+					> &bareSusceptibilityData
+						= bareSusceptibility.getData();
+					unsigned int offset
+						= bareSusceptibility.getOffset({
+							kIndex,
+							intraBlockIndexList[a],
+							intraBlockIndexList[b],
+							intraBlockIndexList[c],
+							intraBlockIndexList[d]
+						});
+					for(
+						unsigned int e = 0;
+						e < energies.size();
+						e++
+					){
+						denominators[e][
+							matrixDimension*column
+							+ row
+						] = bareSusceptibilityData[
+							offset + e
+						];
+					}
+				}
+			}
+		}
+	}
+
+	#pragma omp parallel for
+	for(
+		unsigned int e = 0;
+		e < energies.size();
+		e++
+	){
+		invertMatrix(denominators[e], matrixDimension);
+	}
+
+	for(unsigned int n = 0; n < interactionAmplitudes.size(); n++){
+		const InteractionAmplitude &interactionAmplitude = interactionAmplitudes.at(n);
+
+		const Index &c0 = interactionAmplitude.getCreationOperatorIndex(0);
+		const Index &c1 = interactionAmplitude.getCreationOperatorIndex(1);
+		const Index &a0 = interactionAmplitude.getAnnihilationOperatorIndex(0);
+		const Index &a1 = interactionAmplitude.getAnnihilationOperatorIndex(1);
+		complex<double> amplitude = interactionAmplitude.getAmplitude();
+
+		int c0LinearIntraBlockIndex
+			= getModel().getHoppingAmplitudeSet().getBasisIndex(
+				Index(kIndex, c0)
+			) - getModel().getHoppingAmplitudeSet(
+			).getFirstIndexInBlock(kIndex);
+		int a1LinearIntraBlockIndex
+			= getModel().getHoppingAmplitudeSet().getBasisIndex(
+				Index(kIndex, a1)
+			) - getModel().getHoppingAmplitudeSet(
+			).getFirstIndexInBlock(kIndex);
+		int col = intraBlockIndexList.size()*c0LinearIntraBlockIndex
+			+ a1LinearIntraBlockIndex;
+
+		int c1LinearIntraBlockIndex
+			= getModel().getHoppingAmplitudeSet().getBasisIndex(
+				Index(kIndex, c1)
+			) - getModel().getHoppingAmplitudeSet(
+			).getFirstIndexInBlock(kIndex);
+		int a0LinearIntraBlockIndex
+			= getModel().getHoppingAmplitudeSet().getBasisIndex(
+				Index(kIndex, a0)
+			) - getModel().getHoppingAmplitudeSet(
+			).getFirstIndexInBlock(kIndex);
+		int row = intraBlockIndexList.size()*c1LinearIntraBlockIndex
+			+ a0LinearIntraBlockIndex;
+
+		for(
+			unsigned int e = 0;
+			e < energies.size();
+			e++
+		){
+			denominators[e][
+				matrixDimension*col + row
+			] += amplitude;
+		}
+	}
+
+	#pragma omp parallel for
+	for(
+		unsigned int e = 0;
+		e < energies.size();
+		e++
+	){
+		invertMatrix(denominators[e], matrixDimension);
+	}
+
+	//Initialize \chi_RPA
+	vector<vector<vector<complex<double>>>> rpaSusceptibility;
+	for(unsigned int orbital2 = 0; orbital2 < intraBlockIndexList.size(); orbital2++){
+		rpaSusceptibility.push_back(vector<vector<complex<double>>>());
+		for(unsigned int orbital3 = 0; orbital3 < intraBlockIndexList.size(); orbital3++){
+			rpaSusceptibility[orbital2].push_back(vector<complex<double>>());
+			for(
+				unsigned int e = 0;
+				e < energies.size();
+				e++
+			){
+				rpaSusceptibility[orbital2][orbital3].push_back(0.);
+			}
+		}
+	}
+
+	//Calculate \chi_RPA = \chi_0/(1 + U\chi_0)
+	int linearIntraBlockIndex0
+		= getModel().getHoppingAmplitudeSet().getBasisIndex(
+			Index(kIndex, intraBlockIndices[0])
+		) - getModel().getHoppingAmplitudeSet(
+		).getFirstIndexInBlock(kIndex);
+	int linearIntraBlockIndex1
+		= getModel().getHoppingAmplitudeSet().getBasisIndex(
+			Index(kIndex, intraBlockIndices[1])
+		) - getModel().getHoppingAmplitudeSet(
+		).getFirstIndexInBlock(kIndex);
+	int row = intraBlockIndexList.size()*linearIntraBlockIndex0
+		+ linearIntraBlockIndex1;
+	for(unsigned int c = 0; c < intraBlockIndexList.size(); c++){
+		for(unsigned int d = 0; d < intraBlockIndexList.size(); d++){
+			unsigned int column = intraBlockIndexList.size()*c + d;
+			for(
+				unsigned int i = 0;
+				i < energies.size();
+				i++
+			){
+				rpaSusceptibility[c][d][i] = denominators[i][
+					matrixDimension*column + row
+				];
 			}
 		}
 	}

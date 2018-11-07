@@ -131,8 +131,8 @@ void ElectronFluctuationVertex::calculateSelfEnergyVertexMainAlgorithm(
 			const Index &a1_o = outgoingAmplitude.getAnnihilationOperatorIndex(1);
 
 			if(
-				!a0_o.equals(intraBlockIndices[0])
-				|| !c1_o.equals(intraBlockIndices[1])
+				!a0_o.equals(intraBlockIndices[1])
+				|| !c1_o.equals(intraBlockIndices[0])
 				|| abs(amplitude_o) < 1e-10
 			){
 				continue;
