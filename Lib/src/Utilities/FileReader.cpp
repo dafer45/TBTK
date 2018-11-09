@@ -341,6 +341,8 @@ IndexTree* FileReader::readIndexTree(string name, string path){
 			}
 		}
 
+		delete [] serializedIndices;
+
 		indexTree = new IndexTree();
 		for(unsigned int n = 0; n < indices.size(); n++)
 			indexTree->add(indices.at(n));
