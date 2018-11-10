@@ -515,6 +515,7 @@ Property::WaveFunctions* FileReader::readWaveFunctions(string name, string path)
 			data
 		);
 
+		delete indexTree;
 		delete [] data;
 		delete [] dims;
 
