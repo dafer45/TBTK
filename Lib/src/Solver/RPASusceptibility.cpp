@@ -432,7 +432,7 @@ vector<vector<vector<complex<double>>>> RPASusceptibility::rpaSusceptibilityMain
 						denominators[e][
 							matrixDimension*column
 							+ row
-						] = bareSusceptibilityData[
+						] += bareSusceptibilityData[
 							offset + e
 						];
 					}
