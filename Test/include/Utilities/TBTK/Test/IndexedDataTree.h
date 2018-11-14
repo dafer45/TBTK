@@ -309,6 +309,7 @@ TEST(IndexedDataTree, get0){
 	//Access non-existing element
 	EXPECT_FALSE(indexedDataTree0.get(model, {1, 2, 2}));
 	EXPECT_FALSE(indexedDataTree0.get(model, {1, 1, 3}));
+	EXPECT_FALSE(indexedDataTree0.get(model, {{1, 2, 1}, {1, 2, 3}}));
 
 	//Fail to access Index with negative Index (Except for the negative
 	//IDX_SEPARATOR already tested above).
@@ -342,6 +343,7 @@ TEST(IndexedDataTree, get0){
 	//Access non-existing element
 	EXPECT_FALSE(indexedDataTree1.get(myInt, {1, 2, 2}));
 	EXPECT_FALSE(indexedDataTree1.get(myInt, {1, 1, 3}));
+	EXPECT_FALSE(indexedDataTree1.get(myInt, {{1, 2, 1}, {1, 2, 3}}));
 
 	//Fail to access Index with negative Index (Except for the negative
 	//IDX_SEPARATOR already tested above).
@@ -400,6 +402,10 @@ TEST(IndexedDataTree, get1){
 	//Access non-existing element
 	EXPECT_THROW(indexedDataTree0.get({1, 2, 2}), ElementNotFoundException);
 	EXPECT_THROW(indexedDataTree0.get({1, 1, 3}), ElementNotFoundException);
+	EXPECT_THROW(
+		indexedDataTree0.get({{1, 2, 1}, {1, 2, 3}}),
+		ElementNotFoundException
+	);
 
 	//Fail to access Index with negative Index (Except for the negative
 	//IDX_SEPARATOR already tested above).
@@ -430,6 +436,10 @@ TEST(IndexedDataTree, get1){
 	//Access non-existing element
 	EXPECT_THROW(indexedDataTree1.get({1, 2, 2}), ElementNotFoundException);
 	EXPECT_THROW(indexedDataTree1.get({1, 1, 3}), ElementNotFoundException);
+	EXPECT_THROW(
+		indexedDataTree1.get({{1, 2, 1}, {1, 2, 3}}),
+		ElementNotFoundException
+	);
 
 	//Fail to access Index with negative Index (Except for the negative
 	//IDX_SEPARATOR already tested above).
@@ -526,10 +536,13 @@ TEST(IndexedDataTree, Iterator){
 	EXPECT_FALSE(iterator0 == indexedDataTree0.end());
 	EXPECT_TRUE(iterator0 != indexedDataTree0.end());
 	EXPECT_EQ((*iterator0).getBasisSize(), 3);
+	EXPECT_TRUE(iterator0.getCurrentIndex().equals({1, 2, 3}));
 	++iterator0;
 	EXPECT_EQ((*iterator0).getBasisSize(), 2);
+	EXPECT_TRUE(iterator0.getCurrentIndex().equals({1, 2, 4}));
 	++iterator0;
 	EXPECT_EQ((*iterator0).getBasisSize(), 4);
+	EXPECT_TRUE(iterator0.getCurrentIndex().equals({{1, 2, 5}, {1, 2, 3}}));
 	++iterator0;
 	EXPECT_TRUE(iterator0 == indexedDataTree0.end());
 	EXPECT_FALSE(iterator0 != indexedDataTree0.end());
@@ -547,16 +560,19 @@ TEST(IndexedDataTree, Iterator){
 	EXPECT_FALSE(iterator1 == indexedDataTree1.end());
 	EXPECT_TRUE(iterator1 != indexedDataTree1.end());
 	EXPECT_EQ((*iterator1), 3);
+	EXPECT_TRUE(iterator1.getCurrentIndex().equals({1, 2, 3}));
 
 	++iterator1;
 	EXPECT_FALSE(iterator1 == indexedDataTree1.end());
 	EXPECT_TRUE(iterator1 != indexedDataTree1.end());
 	EXPECT_EQ((*iterator1), 2);
+	EXPECT_TRUE(iterator1.getCurrentIndex().equals({1, 2, 4}));
 
 	++iterator1;
 	EXPECT_FALSE(iterator1 == indexedDataTree1.end());
 	EXPECT_TRUE(iterator1 != indexedDataTree1.end());
 	EXPECT_EQ((*iterator1), 4);
+	EXPECT_TRUE(iterator1.getCurrentIndex().equals({{1, 2, 5}, {1, 2, 3}}));
 
 	++iterator1;
 	EXPECT_TRUE(iterator1 == indexedDataTree1.end());
@@ -603,10 +619,13 @@ TEST(IndexedDataTree, ConstIterator){
 	EXPECT_FALSE(iterator0 == indexedDataTree0.cend());
 	EXPECT_TRUE(iterator0 != indexedDataTree0.cend());
 	EXPECT_EQ((*iterator0).getBasisSize(), 3);
+	EXPECT_TRUE(iterator0.getCurrentIndex().equals({1, 2, 3}));
 	++iterator0;
 	EXPECT_EQ((*iterator0).getBasisSize(), 2);
+	EXPECT_TRUE(iterator0.getCurrentIndex().equals({1, 2, 4}));
 	++iterator0;
 	EXPECT_EQ((*iterator0).getBasisSize(), 4);
+	EXPECT_TRUE(iterator0.getCurrentIndex().equals({{1, 2, 5}, {1, 2, 3}}));
 	++iterator0;
 	EXPECT_TRUE(iterator0 == indexedDataTree0.cend());
 	EXPECT_FALSE(iterator0 != indexedDataTree0.cend());
@@ -634,16 +653,19 @@ TEST(IndexedDataTree, ConstIterator){
 	EXPECT_FALSE(iterator1 == indexedDataTree1.cend());
 	EXPECT_TRUE(iterator1 != indexedDataTree1.cend());
 	EXPECT_EQ((*iterator1), 3);
+	EXPECT_TRUE(iterator1.getCurrentIndex().equals({1, 2, 3}));
 
 	++iterator1;
 	EXPECT_FALSE(iterator1 == indexedDataTree1.cend());
 	EXPECT_TRUE(iterator1 != indexedDataTree1.cend());
 	EXPECT_EQ((*iterator1), 2);
+	EXPECT_TRUE(iterator1.getCurrentIndex().equals({1, 2, 4}));
 
 	++iterator1;
 	EXPECT_FALSE(iterator1 == indexedDataTree1.cend());
 	EXPECT_TRUE(iterator1 != indexedDataTree1.cend());
 	EXPECT_EQ((*iterator1), 4);
+	EXPECT_TRUE(iterator1.getCurrentIndex().equals({{1, 2, 5}, {1, 2, 3}}));
 
 	++iterator1;
 	EXPECT_TRUE(iterator1 == indexedDataTree1.cend());
