@@ -698,6 +698,7 @@ Property::Density* FileReader::readDensity(string name, string path){
 
 		density = new Property::Density(*indexTree, data);
 
+		delete indexTree;
 		delete [] dims;
 		delete [] data;
 
@@ -848,6 +849,7 @@ Property::Magnetization* FileReader::readMagnetization(
 
 		magnetization = new Property::Magnetization(*indexTree, data);
 
+		delete indexTree;
 		delete [] dims;
 		delete [] data_internal;
 		delete [] data;
@@ -1006,6 +1008,7 @@ Property::LDOS* FileReader::readLDOS(string name, string path){
 			data
 		);
 
+		delete indexTree;
 		delete [] dims;
 		delete [] data;
 
@@ -1187,6 +1190,7 @@ Property::SpinPolarizedLDOS* FileReader::readSpinPolarizedLDOS(
 			data
 		);
 
+		delete indexTree;
 		delete [] dims;
 		delete [] data_internal;
 		delete [] data;
