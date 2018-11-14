@@ -198,7 +198,7 @@ They should therefore only be considered for use by experienced developers.
 ## Installation
 ```bash
 git clone http://github.com/dafer45/TBTK
-git checkout v1.0.3
+git checkout v1.1.0
 mkdir TBTKBuild
 cd TBTKBuild
 cmake ../TBTK
