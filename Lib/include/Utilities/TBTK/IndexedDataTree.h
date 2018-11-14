@@ -136,6 +136,9 @@ private:
 
 		/** Inequality operator. */
 		bool operator!=(const _Iterator &rhs) const;
+
+		/** Get the current Index. */
+		const Index& getCurrentIndex() const;
 	private:
 		/** Typedef to allow for pointers to const and non-const
 		 *  depending on Iterator type. */
@@ -341,6 +344,9 @@ private:
 
 		/** Inequality operator. */
 		bool operator!=(const _Iterator &rhs) const;
+
+		/** Get the current Index. */
+		const Index& getCurrentIndex() const;
 	private:
 		/** Typedef to allow for pointers to const and non-const
 		 *  depending on Iterator type. */
@@ -546,6 +552,9 @@ private:
 
 		/** Inequality operator. */
 		bool operator!=(const _Iterator &rhs) const;
+
+		/** Get the current Index. */
+		const Index& getCurrentIndex() const;
 	private:
 		/** Typedef to allow for pointers to const and non-const
 		 *  depending on Iterator type. */
@@ -1608,6 +1617,13 @@ bool IndexedDataTree<Data, isSerializable>::get(
 		//If the current subindex is not the last, continue to the next
 		//node level.
 
+		//Return false because this is a leaf node without the
+		//indexIncluded flag set. This means it must have been added to
+		//pad the parents child vector and not as a consequence of an
+		//actual Index having been associated with the node.
+		if(children.size() == 0 && !indexIncluded)
+			return false;
+
 		//Get current subindex.
 		int currentIndex = index.at(subindex);
 
@@ -1650,6 +1666,13 @@ bool IndexedDataTree<Data, true>::get(
 	if(subindex < index.getSize()){
 		//If the current subindex is not the last, continue to the next
 		//node level.
+
+		//Return false because this is a leaf node without the
+		//indexIncluded flag set. This means it must have been added to
+		//pad the parents child vector and not as a consequence of an
+		//actual Index having been associated with the node.
+		if(children.size() == 0 && !indexIncluded)
+			return false;
 
 		//Get current subindex.
 		int currentIndex = index.at(subindex);
@@ -1713,6 +1736,13 @@ bool IndexedDataTree<Data, false>::get(
 	if(subindex < index.getSize()){
 		//If the current subindex is not the last, continue to the next
 		//node level.
+
+		//Return false because this is a leaf node without the
+		//indexIncluded flag set. This means it must have been added to
+		//pad the parents child vector and not as a consequence of an
+		//actual Index having been associated with the node.
+		if(children.size() == 0 && !indexIncluded)
+			return false;
 
 		//Get current subindex.
 		int currentIndex = index.at(subindex);
@@ -1814,6 +1844,22 @@ const Data& IndexedDataTree<Data, true>::get(
 		//If the current subindex is not the last, continue to the next
 		//node level.
 
+		//Throw ElementNotFoundException if the Index is not included.
+		//This statement is executed if this is a leaf node without the
+		//indexIncluded flag set. This means it must have been added to
+		//pad the parents child vector and not as a consequence of an
+		//actual Index having been associated with the node.
+		if(children.size() == 0 && !indexIncluded){
+			throw ElementNotFoundException(
+				"IndexedDataTree()",
+				TBTKWhere,
+				"Tried to get element with Index '"
+				+ index.toString() + "', but no such element"
+				+ " exists.",
+				""
+			);
+		}
+
 		//Get current subindex.
 		int currentIndex = index.at(subindex);
 
@@ -1888,6 +1934,22 @@ const Data& IndexedDataTree<Data, false>::get(
 	if(subindex < index.getSize()){
 		//If the current subindex is not the last, continue to the next
 		//node level.
+
+		//Throw ElementNotFoundException if the Index is not included.
+		//This statement is executed if this is a leaf node without the
+		//indexIncluded flag set. This means it must have been added to
+		//pad the parents child vector and not as a consequence of an
+		//actual Index having been associated with the node.
+		if(children.size() == 0 && !indexIncluded){
+			throw ElementNotFoundException(
+				"IndexedDataTree()",
+				TBTKWhere,
+				"Tried to get element with Index '"
+				+ index.toString() + "', but no such element"
+				+ " exists.",
+				""
+			);
+		}
 
 		//Get current subindex.
 		int currentIndex = index.at(subindex);
@@ -2553,6 +2615,18 @@ bool IndexedDataTree<Data, false>::_Iterator<isConstIterator>::operator!=(
 	else{
 		return false;
 	}
+}
+
+template<typename Data> template<bool isConstIterator>
+const Index& IndexedDataTree<Data, true>::_Iterator<isConstIterator>::getCurrentIndex(
+) const{
+	return currentIndex;
+}
+
+template<typename Data> template<bool isConstIterator>
+const Index& IndexedDataTree<Data, false>::_Iterator<isConstIterator>::getCurrentIndex(
+) const{
+	return currentIndex;
 }
 
 template<typename Data> template<bool isConstIterator>
