@@ -111,7 +111,7 @@ HoppingAmplitude::HoppingAmplitude(
 			toIndex = Index(j["toIndex"].dump(), mode);
 			fromIndex = Index(j["fromIndex"].dump(), mode);
 		}
-		catch(nlohmann::json::exception e){
+		catch(nlohmann::json::exception &e){
 			TBTKExit(
 				"HoppingAmplitude::HoppingAmplitude()",
 				"Unable to parse string as HoppingAmplitude '"

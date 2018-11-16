@@ -65,7 +65,7 @@ bool Serializable::validate(
 			else
 				return false;
 		}
-		catch(nlohmann::json::exception e){
+		catch(nlohmann::json::exception &e){
 			return false;
 		}
 	}
@@ -94,7 +94,7 @@ bool Serializable::hasID(const string &serialization, Mode mode){
 			j.at("id");
 			return true;
 		}
-		catch(nlohmann::json::exception e){
+		catch(nlohmann::json::exception &e){
 			return false;
 		}
 	default:
@@ -126,7 +126,7 @@ string Serializable::getID(const string &serialization, Mode mode){
 			nlohmann::json j = nlohmann::json::parse(serialization);
 			return j.at("id");
 		}
-		catch(nlohmann::json::exception e){
+		catch(nlohmann::json::exception &e){
 			TBTKExit(
 				"Serializable::getID()",
 				"Unable to parse serialization string '"
@@ -163,7 +163,7 @@ string Serializable::extractComponent(
 			nlohmann::json j = nlohmann::json::parse(serialization);
 			return j.at(componentName).dump();
 		}
-		catch(nlohmann::json::exception e){
+		catch(nlohmann::json::exception &e){
 			TBTKExit(
 				"Serializable::extractComponent()",
 				"Unable to extract component with ID '"
@@ -275,7 +275,7 @@ string Serializable::extract(
 
 			return j.at(component).dump();
 		}
-		catch(nlohmann::json::exception e){
+		catch(nlohmann::json::exception &e){
 			TBTKExit(
 				"Serializable::extract()",
 				"Unable to extract '" << component << "' from"

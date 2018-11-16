@@ -133,7 +133,7 @@ SpinPolarizedLDOS::SpinPolarizedLDOS(
 			upperBound = j.at("upperBound").get<double>();
 			resolution = j.at("resolution").get<int>();
 		}
-		catch(nlohmann::json::exception e){
+		catch(nlohmann::json::exception &e){
 			TBTKExit(
 				"SpinPolarizedLDOS::SpinPolarizedLDOS()",
 				"Unable to parse the string as"

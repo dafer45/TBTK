@@ -165,7 +165,7 @@ WaveFunctions::WaveFunctions(
 			for(nlohmann::json::iterator it = s.begin(); it < s.end(); ++it)
 				states.push_back(*it);
 		}
-		catch(nlohmann::json::exception e){
+		catch(nlohmann::json::exception &e){
 			TBTKExit(
 				"WaveFunctions::WaveFuntions()",
 				"Unable to parse string as WaveFunctions '"

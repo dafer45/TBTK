@@ -112,7 +112,7 @@ Susceptibility::Susceptibility(
 	case Mode::JSON:
 		try{
 		}
-		catch(nlohmann::json::exception e){
+		catch(nlohmann::json::exception &e){
 			TBTKExit(
 				"Property::Susceptibility::Susceptibility()",
 				"Unable to parse string as"

@@ -64,7 +64,7 @@ HoppingAmplitudeList::HoppingAmplitudeList(
 				);
 			}
 		}
-		catch(nlohmann::json::exception e){
+		catch(nlohmann::json::exception &e){
 			TBTKExit(
 				"HoppingAmplitudeList::HoppingAmplitudeList()",
 				"Unable to parse string as HoppingAmplitudeList '"

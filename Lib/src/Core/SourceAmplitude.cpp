@@ -72,7 +72,7 @@ SourceAmplitude::SourceAmplitude(
 			Serializable::deserialize(j["amplitude"].get<string>(), &amplitude, mode);
 			index = Index(j["index"].dump(), mode);
 		}
-		catch(nlohmann::json::exception e){
+		catch(nlohmann::json::exception &e){
 			TBTKExit(
 				"SourceAmplitude::SourceAmplitude()",
 				"Unable to parse string as SourceAmplitude '"

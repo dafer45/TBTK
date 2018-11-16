@@ -293,7 +293,7 @@ Index::Index(const string &serialization, Serializable::Mode mode){
 			nlohmann::json j = nlohmann::json::parse(serialization);
 			indices = j.at("indices").get<vector<int>>();
 		}
-		catch(nlohmann::json::exception e){
+		catch(nlohmann::json::exception &e){
 			TBTKExit(
 				"Index::Index()",
 				"Unable to parse string as index '"

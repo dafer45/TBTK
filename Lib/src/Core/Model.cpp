@@ -145,7 +145,7 @@ Model::Model(const string &serialization, Mode mode) : Communicator(true){
 			indexFilter = nullptr;
 			hoppingAmplitudeFilter = nullptr;
 		}
-		catch(nlohmann::json::exception e){
+		catch(nlohmann::json::exception &e){
 			TBTKExit(
 				"Model::Model()",
 				"Unable to parse string as Model '"

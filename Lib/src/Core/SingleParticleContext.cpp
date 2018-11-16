@@ -127,11 +127,11 @@ SingleParticleContext::SingleParticleContext(
 					hoppingAmplitudeSet
 				);
 			}
-			catch(nlohmann::json::exception e){
+			catch(nlohmann::json::exception &e){
 				geometry = nullptr;
 			}
 		}
-		catch(nlohmann::json::exception e){
+		catch(nlohmann::json::exception &e){
 			TBTKExit(
 				"SingleParticleContext::SingleParticleContext()",
 				"Unable to parse string as"

@@ -47,7 +47,7 @@ void FileWriter::init(){
 		H5File file(filename, H5F_ACC_RDWR);
 		file.close();
 	}
-	catch(FileIException error){
+	catch(FileIException &error){
 		H5File file(filename, H5F_ACC_EXCL);
 		file.close();
 	}
@@ -150,7 +150,7 @@ void FileWriter::writeHoppingAmplitudeSet(
 
 		file.close();
 	}
-	catch(FileIException error){
+	catch(FileIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::writeHoppingAmplitudeSet()",
@@ -158,7 +158,7 @@ void FileWriter::writeHoppingAmplitudeSet(
 			""
 		);
 	}
-	catch(DataSetIException error){
+	catch(DataSetIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::writeHoppingAmplitudeSet()",
@@ -166,7 +166,7 @@ void FileWriter::writeHoppingAmplitudeSet(
 			""
 		);
 	}
-	catch(DataSpaceIException error){
+	catch(DataSpaceIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::writeHoppingAmplitudeSet()",
@@ -243,7 +243,7 @@ void FileWriter::writeGeometry(
 
 		file.close();
 	}
-	catch(FileIException error){
+	catch(FileIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::writeGeometry()",
@@ -251,7 +251,7 @@ void FileWriter::writeGeometry(
 			""
 		);
 	}
-	catch(DataSetIException error){
+	catch(DataSetIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::writeGeometry()",
@@ -259,7 +259,7 @@ void FileWriter::writeGeometry(
 			""
 		);
 	}
-	catch(DataSpaceIException error){
+	catch(DataSpaceIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::writeGeometry()",
@@ -324,7 +324,7 @@ void FileWriter::writeIndexTree(
 
 		file.close();
 	}
-	catch(FileIException error){
+	catch(FileIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::writeIndexTree()",
@@ -332,7 +332,7 @@ void FileWriter::writeIndexTree(
 			""
 		);
 	}
-	catch(DataSetIException error){
+	catch(DataSetIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::writeIndexTree()",
@@ -340,7 +340,7 @@ void FileWriter::writeIndexTree(
 			""
 		);
 	}
-	catch(DataSpaceIException error){
+	catch(DataSpaceIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::writeIndexTree()",
@@ -389,7 +389,7 @@ void FileWriter::writeEigenValues(
 
 		file.close();
 	}
-	catch(FileIException error){
+	catch(FileIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::writeEigenValues()",
@@ -397,7 +397,7 @@ void FileWriter::writeEigenValues(
 			""
 		);
 	}
-	catch(DataSetIException error){
+	catch(DataSetIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::writeEigenValues()",
@@ -405,7 +405,7 @@ void FileWriter::writeEigenValues(
 			""
 		);
 	}
-	catch(DataSpaceIException error){
+	catch(DataSpaceIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::writeEigenValues()",
@@ -528,7 +528,7 @@ void FileWriter::writeDOS(const Property::DOS &dos, string name, string path){
 
 		file.close();
 	}
-	catch(FileIException error){
+	catch(FileIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::writeDOS()",
@@ -536,7 +536,7 @@ void FileWriter::writeDOS(const Property::DOS &dos, string name, string path){
 			""
 		);
 	}
-	catch(DataSetIException error){
+	catch(DataSetIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::writeDOS()",
@@ -544,7 +544,7 @@ void FileWriter::writeDOS(const Property::DOS &dos, string name, string path){
 			""
 		);
 	}
-	catch(DataSpaceIException error){
+	catch(DataSpaceIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::writeDOS()",
@@ -612,7 +612,7 @@ void FileWriter::writeDensity(
 			dataset.close();
 			file.close();
 		}
-		catch(FileIException error){
+		catch(FileIException &error){
 			Streams::log << error.getCDetailMsg() << "\n";
 			TBTKExit(
 				"FileWriter::writeDensity()",
@@ -620,7 +620,7 @@ void FileWriter::writeDensity(
 				""
 			);
 		}
-		catch(DataSetIException error){
+		catch(DataSetIException &error){
 			Streams::log << error.getCDetailMsg() << "\n";
 			TBTKExit(
 				"FileWriter::writeDensity()",
@@ -628,7 +628,7 @@ void FileWriter::writeDensity(
 				""
 			);
 		}
-		catch(DataSpaceIException error){
+		catch(DataSpaceIException &error){
 			Streams::log << error.getCDetailMsg() << "\n";
 			TBTKExit(
 				"FileWriter::writeDensity()",
@@ -739,7 +739,7 @@ void FileWriter::writeMagnetization(
 			dataset.close();
 			file.close();
 		}
-		catch(FileIException error){
+		catch(FileIException &error){
 			Streams::log << error.getCDetailMsg() << "\n";
 			TBTKExit(
 				"FileWriter::writeMagnetization()",
@@ -747,7 +747,7 @@ void FileWriter::writeMagnetization(
 				""
 			);
 		}
-		catch(DataSetIException error){
+		catch(DataSetIException &error){
 			Streams::log << error.getCDetailMsg() << "\n";
 			TBTKExit(
 				"FileWriter::writeMagnetization()",
@@ -755,7 +755,7 @@ void FileWriter::writeMagnetization(
 				""
 			);
 		}
-		catch(DataSpaceIException error){
+		catch(DataSpaceIException &error){
 			Streams::log << error.getCDetailMsg() << "\n";
 			TBTKExit(
 				"FileWriter::writeMagnetization()",
@@ -899,7 +899,7 @@ void FileWriter::writeLDOS(
 
 			file.close();
 		}
-		catch(FileIException error){
+		catch(FileIException &error){
 			Streams::log << error.getCDetailMsg() << "\n";
 			TBTKExit(
 				"FileWriter::writeLDOS()",
@@ -907,7 +907,7 @@ void FileWriter::writeLDOS(
 				""
 			);
 		}
-		catch(DataSetIException error){
+		catch(DataSetIException &error){
 			Streams::log << error.getCDetailMsg() << "\n";
 			TBTKExit(
 				"FileWriter::writeLDOS()",
@@ -915,7 +915,7 @@ void FileWriter::writeLDOS(
 				""
 			);
 		}
-		catch(DataSpaceIException error){
+		catch(DataSpaceIException &error){
 			Streams::log << error.getCDetailMsg() << "\n";
 			TBTKExit(
 				"FileWriter::writeLDOS()",
@@ -1062,7 +1062,7 @@ void FileWriter::writeSpinPolarizedLDOS(
 			file.close();
 			dataspace.close();
 		}
-		catch(FileIException error){
+		catch(FileIException &error){
 			Streams::log << error.getCDetailMsg() << "\n";
 			TBTKExit(
 				"FileWriter::writeSpinPolarizedLDOS()",
@@ -1070,7 +1070,7 @@ void FileWriter::writeSpinPolarizedLDOS(
 				""
 			);
 		}
-		catch(DataSetIException error){
+		catch(DataSetIException &error){
 			Streams::log << error.getCDetailMsg() << "\n";
 			TBTKExit(
 				"FileWriter::writeSpinPolarizedLDOS()",
@@ -1078,7 +1078,7 @@ void FileWriter::writeSpinPolarizedLDOS(
 				""
 			);
 		}
-		catch(DataSpaceIException error){
+		catch(DataSpaceIException &error){
 			Streams::log << error.getCDetailMsg() << "\n";
 			TBTKExit(
 				"FileWriter::writeSpinPolarizedLDOS()",
@@ -1164,7 +1164,7 @@ void FileWriter::write(
 		dataset.close();
 		file.close();
 	}
-	catch(FileIException error){
+	catch(FileIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::write()",
@@ -1172,7 +1172,7 @@ void FileWriter::write(
 			""
 		);
 	}
-	catch(DataSetIException error){
+	catch(DataSetIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::write()",
@@ -1180,7 +1180,7 @@ void FileWriter::write(
 			""
 		);
 	}
-	catch(DataSpaceIException error){
+	catch(DataSpaceIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::write()",
@@ -1228,7 +1228,7 @@ void FileWriter::write(
 		dataset.close();
 		file.close();
 	}
-	catch(FileIException error){
+	catch(FileIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::write()",
@@ -1236,7 +1236,7 @@ void FileWriter::write(
 			""
 		);
 	}
-	catch(DataSetIException error){
+	catch(DataSetIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::write()",
@@ -1244,7 +1244,7 @@ void FileWriter::write(
 			""
 		);
 	}
-	catch(DataSpaceIException error){
+	catch(DataSpaceIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::write()",
@@ -1332,7 +1332,7 @@ void FileWriter::writeAttributes(
 		file.close();
 		dataspace.close();
 	}
-	catch(FileIException error){
+	catch(FileIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::writeAttributes()",
@@ -1340,7 +1340,7 @@ void FileWriter::writeAttributes(
 			""
 		);
 	}
-	catch(DataSetIException error){
+	catch(DataSetIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::writeAttributes()",
@@ -1348,7 +1348,7 @@ void FileWriter::writeAttributes(
 			""
 		);
 	}
-	catch(DataSpaceIException error){
+	catch(DataSpaceIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::writeAttributes()",
@@ -1400,7 +1400,7 @@ void FileWriter::writeAttributes(
 		file.close();
 		dataspace.close();
 	}
-	catch(FileIException error){
+	catch(FileIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::writeAttributes()",
@@ -1408,7 +1408,7 @@ void FileWriter::writeAttributes(
 			""
 		);
 	}
-	catch(DataSetIException error){
+	catch(DataSetIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::writeAttributes()",
@@ -1416,7 +1416,7 @@ void FileWriter::writeAttributes(
 			""
 		);
 	}
-	catch(DataSpaceIException error){
+	catch(DataSpaceIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileWriter::writeAttributes()",
@@ -1512,21 +1512,21 @@ void FileWriter::writeParameterSet(
 		dataset.close();
 		file.close();
 	}
-	catch(FileIException error){
+	catch(FileIException &error){
 		TBTKExit(
 			"FileWriter::writeParameterSet()",
 			"While writing to " << name << ".",
 			""
 		);
 	}
-	catch(DataSetIException error){
+	catch(DataSetIException &error){
 		TBTKExit(
 			"FileWriter::writeParameterSet()",
 			"While writing to " << name << ".",
 			""
 		);
 	}
-	catch(DataSpaceIException error){
+	catch(DataSpaceIException &error){
 		TBTKExit(
 			"FileWriter::writeParameterSet()",
 			"While writing to " << name << ".",

@@ -132,7 +132,7 @@ LDOS::LDOS(
 			upperBound = j.at("upperBound").get<double>();
 			resolution = j.at("resolution").get<int>();
 		}
-		catch(nlohmann::json::exception e){
+		catch(nlohmann::json::exception &e){
 			TBTKExit(
 				"LDOS::LDOS()",
 				"Unable to parse string as LDOS '"

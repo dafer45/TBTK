@@ -101,7 +101,7 @@ DOS::DOS(
 			upperBound = j.at("upperBound").get<double>();
 			resolution = j.at("resolution").get<int>();
 		}
-		catch(nlohmann::json::exception e){
+		catch(nlohmann::json::exception &e){
 			TBTKExit(
 				"DOS::DOS()",
 				"Unable to parse string as DOS '"
