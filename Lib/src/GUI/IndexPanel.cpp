@@ -86,7 +86,7 @@ void IndexPanel::onIndexChanged(wxCommandEvent &event){
 	try{
 		index = Index(string(event.GetString()));
 	}
-	catch(IndexException e){
+	catch(IndexException &e){
 	}
 	event.Skip();
 }

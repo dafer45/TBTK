@@ -193,7 +193,7 @@ DataManager::DataManager(const string &serialization, Mode mode){
 				this->fileTypes.push_back(*it);
 			}
 		}
-		catch(nlohmann::json::exception e){
+		catch(nlohmann::json::exception &e){
 			TBTKExit(
 				"DataManager::DataManager()",
 				"Unable to parse string as DataManager '"

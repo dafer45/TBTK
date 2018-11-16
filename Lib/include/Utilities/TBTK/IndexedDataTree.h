@@ -747,11 +747,11 @@ inline IndexedDataTree<bool, false>::IndexedDataTree(
 					);
 				}
 			}
-			catch(nlohmann::json::exception e){
+			catch(nlohmann::json::exception &e){
 				//It is valid to not have children.
 			}
 		}
-		catch(nlohmann::json::exception e){
+		catch(nlohmann::json::exception &e){
 			TBTKExit(
 				"IndexedDataTree<bool>::IndexedDataTree()",
 				"Unable to parse string as"
@@ -810,11 +810,11 @@ inline IndexedDataTree<char, false>::IndexedDataTree(
 					);
 				}
 			}
-			catch(nlohmann::json::exception e){
+			catch(nlohmann::json::exception &e){
 				//It is valid to not have children.
 			}
 		}
-		catch(nlohmann::json::exception e){
+		catch(nlohmann::json::exception &e){
 			TBTKExit(
 				"IndexedDataTree<char>::IndexedDataTree()",
 				"Unable to parse string as"
@@ -873,11 +873,11 @@ inline IndexedDataTree<int, false>::IndexedDataTree(
 					);
 				}
 			}
-			catch(nlohmann::json::exception e){
+			catch(nlohmann::json::exception &e){
 				//It is valid to not have children.
 			}
 		}
-		catch(nlohmann::json::exception e){
+		catch(nlohmann::json::exception &e){
 			TBTKExit(
 				"IndexedDataTree<int>::IndexedDataTree()",
 				"Unable to parse string as"
@@ -936,11 +936,11 @@ inline IndexedDataTree<float, false>::IndexedDataTree(
 					);
 				}
 			}
-			catch(nlohmann::json::exception e){
+			catch(nlohmann::json::exception &e){
 				//It is valid to not have children.
 			}
 		}
-		catch(nlohmann::json::exception e){
+		catch(nlohmann::json::exception &e){
 			TBTKExit(
 				"IndexedDataTree<float>::IndexedDataTree()",
 				"Unable to parse string as"
@@ -999,11 +999,11 @@ inline IndexedDataTree<double, false>::IndexedDataTree(
 					);
 				}
 			}
-			catch(nlohmann::json::exception e){
+			catch(nlohmann::json::exception &e){
 				//It is valid to not have children.
 			}
 		}
-		catch(nlohmann::json::exception e){
+		catch(nlohmann::json::exception &e){
 			TBTKExit(
 				"IndexedDataTree<double>::IndexedDataTree()",
 				"Unable to parse string as"
@@ -1065,11 +1065,11 @@ inline IndexedDataTree<std::complex<double>, false>::IndexedDataTree(
 					);
 				}
 			}
-			catch(nlohmann::json::exception e){
+			catch(nlohmann::json::exception &e){
 				//It is valid to not have children.
 			}
 		}
-		catch(nlohmann::json::exception e){
+		catch(nlohmann::json::exception &e){
 			TBTKExit(
 				"IndexedDataTree<std::complex<double>>::IndexedDataTree()",
 				"Unable to parse string as"
@@ -1130,11 +1130,11 @@ IndexedDataTree<Data, true>::IndexedDataTree(
 					);
 				}
 			}
-			catch(nlohmann::json::exception e){
+			catch(nlohmann::json::exception &e){
 				//It is valid to not have children.
 			}
 		}
-		catch(nlohmann::json::exception e){
+		catch(nlohmann::json::exception &e){
 			TBTKExit(
 				"IndexedDataTree<Data>::IndexedDataTree()",
 				"Unable to parse string as"

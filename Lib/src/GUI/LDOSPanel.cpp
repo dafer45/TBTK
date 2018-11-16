@@ -196,7 +196,7 @@ void LDOSPanel::updatePlot(){
 
 			resultPanel->setImage(plotter.getCanvas());
 		}
-		catch(IndexException e){
+		catch(IndexException &e){
 		}
 	}
 }

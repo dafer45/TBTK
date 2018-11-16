@@ -74,7 +74,7 @@ SingleParticleContext::SingleParticleContext(
 				mode
 			);
 		}
-		catch(nlohmann::json::exception e){
+		catch(nlohmann::json::exception &e){
 			TBTKExit(
 				"SingleParticleContext::SingleParticleContext()",
 				"Unable to parse string as"

@@ -79,7 +79,7 @@ Range::Range(const string &serialization, Mode mode){
 			dx = j.at("dx").get<double>();
 			resolution = j.at("resolution").get<unsigned int>();
 		}
-		catch(nlohmann::json::exception e){
+		catch(nlohmann::json::exception &e){
 			TBTKExit(
 				"Range::Range()",
 				"Unable to parse string as Range '"

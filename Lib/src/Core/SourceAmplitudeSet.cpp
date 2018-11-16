@@ -48,7 +48,7 @@ SourceAmplitudeSet::SourceAmplitudeSet(
 				mode
 			);
 		}
-		catch(nlohmann::json::exception e){
+		catch(nlohmann::json::exception &e){
 			TBTKExit(
 				"SourceAmplitudeSet::SourceAmplitudeSet()",
 				"Unable to parse string as SourceAmplitudeSet"

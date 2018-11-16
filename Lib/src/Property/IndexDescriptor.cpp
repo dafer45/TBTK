@@ -210,7 +210,7 @@ IndexDescriptor::IndexDescriptor(const std::string &serialization, Mode mode){
 				);
 			}
 		}
-		catch(nlohmann::json::exception e){
+		catch(nlohmann::json::exception &e){
 			TBTKExit(
 				"IndexDescriptor::IndexDescriptor()",
 				"Unable to parse string as IndexDescriptor '"

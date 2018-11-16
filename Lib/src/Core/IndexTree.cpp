@@ -101,7 +101,7 @@ IndexTree::IndexTree(const string &serialization, Mode mode){
 					);
 				}
 			}
-			catch(nlohmann::json::exception e){
+			catch(nlohmann::json::exception &e){
 				//It is valid to not have children.
 			}
 			indexIncluded = j.at("indexIncluded").get<bool>();
@@ -111,7 +111,7 @@ IndexTree::IndexTree(const string &serialization, Mode mode){
 			linearIndex = j.at("linearIndex").get<int>();
 			size = j.at("size").get<int>();
 		}
-		catch(nlohmann::json::exception e){
+		catch(nlohmann::json::exception &e){
 			TBTKExit(
 				"IndexTree::IndexTree()",
 				"Unable to parse string as IndexTree '"

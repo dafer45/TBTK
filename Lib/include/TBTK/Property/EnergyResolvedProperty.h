@@ -756,7 +756,7 @@ EnergyResolvedProperty<DataType>::EnergyResolvedProperty(
 					= j.at("fundamentalMatsubaraEnergy");
 			}
 		}
-		catch(nlohmann::json::exception e){
+		catch(nlohmann::json::exception &e){
 			TBTKExit(
 				"Proerty::EnergyResolvedProperty::EnergyResolvedProperty()",
 				"Unable to parse string as"

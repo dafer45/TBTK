@@ -56,7 +56,7 @@ Geometry::Geometry(
 				mode
 			);
 		}
-		catch(nlohmann::json::exception e){
+		catch(nlohmann::json::exception &e){
 			TBTKExit(
 				"Geometry::Geometry()",
 				"Unable to parse string as Geometry '"

@@ -131,7 +131,7 @@ SerializableVector<DataType, false>::SerializableVector(
 				std::vector<DataType>::push_back(value);
 			}
 		}
-		catch(nlohmann::json::exception e){
+		catch(nlohmann::json::exception &e){
 			TBTKExit(
 				"SerializableVector::SerializableVector()",
 				"Unable to parse string as SerializableVector"
@@ -177,7 +177,7 @@ SerializableVector<DataType, true>::SerializableVector(
 				);
 			}
 		}
-		catch(nlohmann::json::exception e){
+		catch(nlohmann::json::exception &e){
 			TBTKExit(
 				"SerializableVector::SerializableVector()",
 				"Unable to parse string as SerializableVector"

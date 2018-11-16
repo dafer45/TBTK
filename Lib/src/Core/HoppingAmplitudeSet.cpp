@@ -82,7 +82,7 @@ HoppingAmplitudeSet::HoppingAmplitudeSet(
 			nlohmann::json j = nlohmann::json::parse(serialization);
 			isConstructed = j.at("isConstructed").get<bool>();
 		}
-		catch(nlohmann::json::exception e){
+		catch(nlohmann::json::exception &e){
 			TBTKExit(
 				"HoppingAmplitudeSet::HoppingAmplitudeSet()",
 				"Unable to parse string as HoppingAmplitudeSet"

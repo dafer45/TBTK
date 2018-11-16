@@ -161,7 +161,7 @@ HoppingAmplitudeSet* FileReader::readHoppingAmplitudeSet(
 			);
 		}
 	}
-	catch(FileIException error){
+	catch(FileIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileReader::read()",
@@ -169,7 +169,7 @@ HoppingAmplitudeSet* FileReader::readHoppingAmplitudeSet(
 			""
 		);
 	}
-	catch(DataSetIException error){
+	catch(DataSetIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileReader::read()",
@@ -177,7 +177,7 @@ HoppingAmplitudeSet* FileReader::readHoppingAmplitudeSet(
 			""
 		);
 	}
-	catch(DataSpaceIException error){
+	catch(DataSpaceIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileReader::read()",
@@ -276,7 +276,7 @@ Geometry* FileReader::readGeometry(Model *model, string name, string path){
 
 		file.close();
 	}
-	catch(FileIException error){
+	catch(FileIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileReader::read()",
@@ -284,7 +284,7 @@ Geometry* FileReader::readGeometry(Model *model, string name, string path){
 			""
 		);
 	}
-	catch(DataSetIException error){
+	catch(DataSetIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileReader::read()",
@@ -292,7 +292,7 @@ Geometry* FileReader::readGeometry(Model *model, string name, string path){
 			""
 		);
 	}
-	catch(DataSpaceIException error){
+	catch(DataSpaceIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileReader::read()",
@@ -362,7 +362,7 @@ IndexTree* FileReader::readIndexTree(string name, string path){
 
 		indexTree->generateLinearMap();
 	}
-	catch(FileIException error){
+	catch(FileIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileReader::readIndexTree()",
@@ -370,7 +370,7 @@ IndexTree* FileReader::readIndexTree(string name, string path){
 			""
 		);
 	}
-	catch(DataSetIException error){
+	catch(DataSetIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileReader::readIndexTree()",
@@ -378,7 +378,7 @@ IndexTree* FileReader::readIndexTree(string name, string path){
 			""
 		);
 	}
-	catch(DataSpaceIException error){
+	catch(DataSpaceIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileReader::readIndexTree()",
@@ -427,7 +427,7 @@ Property::EigenValues* FileReader::readEigenValues(string name, string path){
 			dataspace
 		);
 	}
-	catch(FileIException error){
+	catch(FileIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileReader::read()",
@@ -435,7 +435,7 @@ Property::EigenValues* FileReader::readEigenValues(string name, string path){
 			""
 		);
 	}
-	catch(DataSetIException error){
+	catch(DataSetIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileReader::read()",
@@ -443,7 +443,7 @@ Property::EigenValues* FileReader::readEigenValues(string name, string path){
 			""
 		);
 	}
-	catch(DataSpaceIException error){
+	catch(DataSpaceIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileReader::read()",
@@ -577,7 +577,7 @@ Property::DOS* FileReader::readDOS(string name, string path){
 			dataspace
 		);
 	}
-	catch(FileIException error){
+	catch(FileIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileReader::read()",
@@ -585,7 +585,7 @@ Property::DOS* FileReader::readDOS(string name, string path){
 			""
 		);
 	}
-	catch(DataSetIException error){
+	catch(DataSetIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileReader::read()",
@@ -593,7 +593,7 @@ Property::DOS* FileReader::readDOS(string name, string path){
 			""
 		);
 	}
-	catch(DataSpaceIException error){
+	catch(DataSpaceIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileReader::read()",
@@ -672,7 +672,7 @@ Property::Density* FileReader::readDensity(string name, string path){
 				dataspace
 			);
 		}
-		catch(FileIException error){
+		catch(FileIException &error){
 			Streams::log << error.getCDetailMsg() << "\n";
 			TBTKExit(
 				"FileReader::read()",
@@ -680,7 +680,7 @@ Property::Density* FileReader::readDensity(string name, string path){
 				""
 			);
 		}
-		catch(DataSetIException error){
+		catch(DataSetIException &error){
 			Streams::log << error.getCDetailMsg() << "\n";
 			TBTKExit(
 				"FileReader::read()",
@@ -688,7 +688,7 @@ Property::Density* FileReader::readDensity(string name, string path){
 				""
 			);
 		}
-		catch(DataSpaceIException error){
+		catch(DataSpaceIException &error){
 			Streams::log << error.getCDetailMsg() << "\n";
 			TBTKExit(
 				"FileReader::read()",
@@ -818,7 +818,7 @@ Property::Magnetization* FileReader::readMagnetization(
 			delete [] mag_internal;
 			delete [] dims_internal;
 		}
-		catch(FileIException error){
+		catch(FileIException &error){
 			Streams::log << error.getCDetailMsg() << "\n";
 			TBTKExit(
 				"FileReader::read()",
@@ -826,7 +826,7 @@ Property::Magnetization* FileReader::readMagnetization(
 				""
 			);
 		}
-		catch(DataSetIException error){
+		catch(DataSetIException &error){
 			Streams::log << error.getCDetailMsg() << "\n";
 			TBTKExit(
 				"FileReader::read()",
@@ -834,7 +834,7 @@ Property::Magnetization* FileReader::readMagnetization(
 				""
 			);
 		}
-		catch(DataSpaceIException error){
+		catch(DataSpaceIException &error){
 			Streams::log << error.getCDetailMsg() << "\n";
 			TBTKExit(
 				"FileReader::read()",
@@ -978,7 +978,7 @@ Property::LDOS* FileReader::readLDOS(string name, string path){
 
 			delete [] dims_internal;
 		}
-		catch(FileIException error){
+		catch(FileIException &error){
 			Streams::log << error.getCDetailMsg() << "\n";
 			TBTKExit(
 				"FileReader::readLDOS()",
@@ -986,7 +986,7 @@ Property::LDOS* FileReader::readLDOS(string name, string path){
 				""
 			);
 		}
-		catch(DataSetIException error){
+		catch(DataSetIException &error){
 			Streams::log << error.getCDetailMsg() << "\n";
 			TBTKExit(
 				"FileReader::readLDOS()",
@@ -994,7 +994,7 @@ Property::LDOS* FileReader::readLDOS(string name, string path){
 				""
 			);
 		}
-		catch(DataSpaceIException error){
+		catch(DataSpaceIException &error){
 			Streams::log << error.getCDetailMsg() << "\n";
 			TBTKExit(
 				"FileReader::readLDOS()",
@@ -1158,7 +1158,7 @@ Property::SpinPolarizedLDOS* FileReader::readSpinPolarizedLDOS(
 			delete [] sp_ldos_internal;
 			delete [] dims_internal;
 		}
-		catch(FileIException error){
+		catch(FileIException &error){
 			Streams::log << error.getCDetailMsg() << "\n";
 			TBTKExit(
 				"FileReader::read()",
@@ -1166,7 +1166,7 @@ Property::SpinPolarizedLDOS* FileReader::readSpinPolarizedLDOS(
 				""
 			);
 		}
-		catch(DataSetIException error){
+		catch(DataSetIException &error){
 			Streams::log << error.getCDetailMsg() << "\n";
 			TBTKExit(
 				"FileReader::read()",
@@ -1174,7 +1174,7 @@ Property::SpinPolarizedLDOS* FileReader::readSpinPolarizedLDOS(
 				""
 			);
 		}
-		catch(DataSpaceIException error){
+		catch(DataSpaceIException &error){
 			Streams::log << error.getCDetailMsg() << "\n";
 			TBTKExit(
 				"FileReader::read()",
@@ -1276,7 +1276,7 @@ void FileReader::read(
 		*data = new int[size];
 		dataset.read(*data, PredType::NATIVE_INT, dataspace);
 	}
-	catch(FileIException error){
+	catch(FileIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileReader::read()",
@@ -1284,7 +1284,7 @@ void FileReader::read(
 			""
 		);
 	}
-	catch(DataSetIException error){
+	catch(DataSetIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileReader::read()",
@@ -1292,7 +1292,7 @@ void FileReader::read(
 			""
 		);
 	}
-	catch(DataSpaceIException error){
+	catch(DataSpaceIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileReader::read()",
@@ -1345,7 +1345,7 @@ void FileReader::read(
 		*data = new double[size];
 		dataset.read(*data, PredType::NATIVE_DOUBLE, dataspace);
 	}
-	catch(FileIException error){
+	catch(FileIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileReader::read()",
@@ -1353,7 +1353,7 @@ void FileReader::read(
 			""
 		);
 	}
-	catch(DataSetIException error){
+	catch(DataSetIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileReader::read()",
@@ -1361,7 +1361,7 @@ void FileReader::read(
 			""
 		);
 	}
-	catch(DataSpaceIException error){
+	catch(DataSpaceIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileReader::read()",
@@ -1459,7 +1459,7 @@ void FileReader::readAttributes(
 			attribute.read(PredType::NATIVE_INT, &(attributes[n]));
 		}
 	}
-	catch(FileIException error){
+	catch(FileIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileReader::read()",
@@ -1467,7 +1467,7 @@ void FileReader::readAttributes(
 			""
 		);
 	}
-	catch(DataSetIException error){
+	catch(DataSetIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileReader::read()",
@@ -1475,7 +1475,7 @@ void FileReader::readAttributes(
 			""
 		);
 	}
-	catch(DataSpaceIException error){
+	catch(DataSpaceIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileReader::read()",
@@ -1517,7 +1517,7 @@ void FileReader::readAttributes(
 			attribute.read(PredType::NATIVE_DOUBLE, &(attributes[n]));
 		}
 	}
-	catch(FileIException error){
+	catch(FileIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileReader::read()",
@@ -1525,7 +1525,7 @@ void FileReader::readAttributes(
 			""
 		);
 	}
-	catch(DataSetIException error){
+	catch(DataSetIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileReader::read()",
@@ -1533,7 +1533,7 @@ void FileReader::readAttributes(
 			""
 		);
 	}
-	catch(DataSpaceIException error){
+	catch(DataSpaceIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileReader::read()",
@@ -1666,7 +1666,7 @@ ParameterSet* FileReader::readParameterSet(
 		}
 		return ps;
 	}
-	catch(FileIException error){
+	catch(FileIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileReader::read()",
@@ -1674,7 +1674,7 @@ ParameterSet* FileReader::readParameterSet(
 			""
 		);
 	}
-	catch(DataSetIException error){
+	catch(DataSetIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileReader::read()",
@@ -1682,7 +1682,7 @@ ParameterSet* FileReader::readParameterSet(
 			""
 		);
 	}
-	catch(DataSpaceIException error){
+	catch(DataSpaceIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
 		TBTKExit(
 			"FileReader::read()",

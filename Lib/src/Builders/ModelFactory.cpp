@@ -421,7 +421,7 @@ Model* ModelFactory::merge(
 				);
 			}
 		}
-		catch(ElementNotFoundException e){
+		catch(ElementNotFoundException &e){
 			geometryExists = false;
 			Streams::out << "Warning in ModelFactory::merge:"
 			<< " Geometric data connot be merged because model "

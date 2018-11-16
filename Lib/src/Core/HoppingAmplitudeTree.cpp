@@ -139,7 +139,7 @@ HoppingAmplitudeTree::HoppingAmplitudeTree(
 					);
 				}
 			}
-			catch(nlohmann::json::exception e){
+			catch(nlohmann::json::exception &e){
 				//It is valid to not have HoppingAmplitudes.
 			}
 
@@ -151,11 +151,11 @@ HoppingAmplitudeTree::HoppingAmplitudeTree(
 					);
 				}
 			}
-			catch(nlohmann::json::exception e){
+			catch(nlohmann::json::exception &e){
 				//It is valid to not have children.
 			}
 		}
-		catch(nlohmann::json::exception e){
+		catch(nlohmann::json::exception &e){
 			TBTKExit(
 				"HoppingAmplitudeTree::HoppingAmplitudeTree()",
 				"Unable to parse string as"
