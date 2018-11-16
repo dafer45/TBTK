@@ -1071,7 +1071,7 @@ inline AbstractProperty<int, true, false>::AbstractProperty(
 			).get<bool>();
 			defaultValue = j.at("defaultValue").get<double>();
 		}
-		catch(nlohmann::json::exception e){
+		catch(nlohmann::json::exception &e){
 			TBTKExit(
 				"AbstractProperty::AbstractProperty()",
 				"Unable to parse string as AbstractProperty '"
@@ -1127,7 +1127,7 @@ inline AbstractProperty<double, true, false>::AbstractProperty(
 			).get<bool>();
 			defaultValue = j.at("defaultValue").get<double>();
 		}
-		catch(nlohmann::json::exception e){
+		catch(nlohmann::json::exception &e){
 			TBTKExit(
 				"AbstractProperty::AbstractProperty()",
 				"Unable to parse string as AbstractProperty '"
@@ -1189,7 +1189,7 @@ inline AbstractProperty<std::complex<double>, false, false>::AbstractProperty(
 				mode
 			);
 		}
-		catch(nlohmann::json::exception e){
+		catch(nlohmann::json::exception &e){
 			TBTKExit(
 				"AbstractProperty::AbstractProperty()",
 				"Unable to parse string as AbstractProperty '"
