@@ -1,6 +1,6 @@
 FIND_LIBRARY(
 	ARPACK_LIBRARY
-	NAMES arpack
+	NAMES arpack libarpack.so.2
 	PATH ${ARPACK_LIBRARY_PATH}
 	PATH_SUFFIXES lib lib32 lib64
 )
