@@ -837,7 +837,7 @@ void PropertyExtractor::calculate(
 		iterator != allIndices.end();
 		++iterator
 	){
-		Index index = *iterator;
+		const Index &index = *iterator;
 		std::vector<unsigned int> spinIndices
 			= memoryLayout.getSubindicesMatching(
 				IDX_SPIN,

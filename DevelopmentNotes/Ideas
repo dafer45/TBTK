@@ -27,3 +27,14 @@
   summations.
 
 - Add BlockStructureDescriptor to SingleParticleContext.
+
+- The IndexTree version of PropertyExtractor::calculate() scans the
+  memoryLayout for IDX_SPIN for each Index in allIndices independently of
+  whether memoryLayout contains IDX_SPIN or not. This is a potential
+  performance issue and it would be good if this check can be avoided if
+  IDX_SPIN is not present. A possible solution may be to start the function by
+  scanning memoryLayout for IDX_SPIN, and if no IDX_SPIN is found, skip the
+  search of allIndices inside the main loop. However, this comes at the cost of
+  this additional overhead. This overhead is likely at most as expensive
+  though, and often far less expensive since allIndices generally is a bigger
+  IndexTree than memoryLayout.
