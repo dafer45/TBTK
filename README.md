@@ -208,7 +208,7 @@ make
 sudo make install
 ```
 
-## Run unit tests (optional)
+## Run unit tests (optional, requires Google Test to be installed)
 ```bash
 make test
 ```
