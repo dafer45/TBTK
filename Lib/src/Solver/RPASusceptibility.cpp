@@ -366,20 +366,20 @@ vector<vector<vector<complex<double>>>> RPASusceptibility::rpaSusceptibilityMain
 		);
 	}
 
-	//Denominator in the expression chi_RPA = chi_0/(1 - U\chi_0)
+	//Denominator in the expression chi_RPA = 1/(\chi_0^{-1} + U).
 	vector<complex<double>*> denominators;
 
-	//Initialize denominator matrices to unit matrices
+	//Initialize denominator matrices to zero.
 	for(
 		unsigned int e = 0;
 		e < energies.size();
 		e++
 	){
-		//Create denominator matrix
+		//Create denominator matrix.
 		denominators.push_back(
 			new complex<double>[matrixDimension*matrixDimension]
 		);
-		//Initialize denominator matrices to unit matrices
+		//Initialize denominator matrices to unit matrices.
 		for(
 			unsigned int c = 0;
 			c < matrixDimension*matrixDimension;
@@ -389,7 +389,7 @@ vector<vector<vector<complex<double>>>> RPASusceptibility::rpaSusceptibilityMain
 		}
 	}
 
-	//Calculate denominator = (1 + U\chi_0)
+	//Setup \chi_0.
 	for(unsigned int a = 0; a < intraBlockIndexList.size(); a++){
 		for(
 			unsigned int b = 0;
@@ -441,6 +441,7 @@ vector<vector<vector<complex<double>>>> RPASusceptibility::rpaSusceptibilityMain
 		}
 	}
 
+	//Calculate \chi_0^{-1}
 	#pragma omp parallel for
 	for(
 		unsigned int e = 0;
@@ -450,6 +451,7 @@ vector<vector<vector<complex<double>>>> RPASusceptibility::rpaSusceptibilityMain
 		invertMatrix(denominators[e], matrixDimension);
 	}
 
+	//Calculate (\chi_0^{-1} + U).
 	for(unsigned int n = 0; n < interactionAmplitudes.size(); n++){
 		const InteractionAmplitude &interactionAmplitude = interactionAmplitudes.at(n);
 
@@ -496,6 +498,7 @@ vector<vector<vector<complex<double>>>> RPASusceptibility::rpaSusceptibilityMain
 		}
 	}
 
+	//calculate (\chi_0^{-1} + U)^{-1}.
 	#pragma omp parallel for
 	for(
 		unsigned int e = 0;
@@ -505,7 +508,7 @@ vector<vector<vector<complex<double>>>> RPASusceptibility::rpaSusceptibilityMain
 		invertMatrix(denominators[e], matrixDimension);
 	}
 
-	//Initialize \chi_RPA
+	//Initialize \chi_RPA.
 	vector<vector<vector<complex<double>>>> rpaSusceptibility;
 	for(unsigned int orbital2 = 0; orbital2 < intraBlockIndexList.size(); orbital2++){
 		rpaSusceptibility.push_back(vector<vector<complex<double>>>());
@@ -521,7 +524,7 @@ vector<vector<vector<complex<double>>>> RPASusceptibility::rpaSusceptibilityMain
 		}
 	}
 
-	//Calculate \chi_RPA = \chi_0/(1 + U\chi_0)
+	//Store \chi_RPA = (\chi_0^{-1} + U)^{-1}.
 	int linearIntraBlockIndex0
 		= getModel().getHoppingAmplitudeSet().getBasisIndex(
 			Index(kIndex, intraBlockIndices[0])
@@ -549,7 +552,7 @@ vector<vector<vector<complex<double>>>> RPASusceptibility::rpaSusceptibilityMain
 		}
 	}
 
-	//Free memory allocated for denominators
+	//Free memory allocated for denominators.
 	for(unsigned int n = 0; n < energies.size(); n++)
 		delete [] denominators.at(n);
 
