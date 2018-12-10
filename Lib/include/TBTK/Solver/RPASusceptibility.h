@@ -85,9 +85,9 @@ private:
 	);
 
 	/** RPA-susceptibility main algorithm. */
-	std::vector<
+	std::vector<std::vector<std::vector<
 		std::vector<std::vector<std::complex<double>>>
-	> rpaSusceptibilityMainAlgorithm(
+	>>> rpaSusceptibilityMainAlgorithm(
 		const Index &index,
 		const std::vector<InteractionAmplitude> &interactionAmpltiudes
 	);

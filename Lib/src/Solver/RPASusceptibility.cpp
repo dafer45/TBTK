@@ -294,7 +294,7 @@ inline void RPASusceptibility::invertMatrix(
 	return rpaSusceptibility;
 }*/
 
-vector<vector<vector<complex<double>>>> RPASusceptibility::rpaSusceptibilityMainAlgorithm(
+vector<vector<vector<vector<vector<complex<double>>>>>> RPASusceptibility::rpaSusceptibilityMainAlgorithm(
 	const Index &index,
 	const vector<InteractionAmplitude> &interactionAmplitudes
 ){
@@ -509,23 +509,29 @@ vector<vector<vector<complex<double>>>> RPASusceptibility::rpaSusceptibilityMain
 	}
 
 	//Initialize \chi_RPA.
-	vector<vector<vector<complex<double>>>> rpaSusceptibility;
-	for(unsigned int orbital2 = 0; orbital2 < intraBlockIndexList.size(); orbital2++){
-		rpaSusceptibility.push_back(vector<vector<complex<double>>>());
-		for(unsigned int orbital3 = 0; orbital3 < intraBlockIndexList.size(); orbital3++){
-			rpaSusceptibility[orbital2].push_back(vector<complex<double>>());
-			for(
-				unsigned int e = 0;
-				e < energies.size();
-				e++
-			){
-				rpaSusceptibility[orbital2][orbital3].push_back(0.);
+	vector<vector<vector<vector<vector<complex<double>>>>>> rpaSusceptibility;
+	for(unsigned int orbital0 = 0; orbital0 < intraBlockIndexList.size(); orbital0++){
+		rpaSusceptibility.push_back(vector<vector<vector<vector<complex<double>>>>>());
+		for(unsigned int orbital1 = 0; orbital1 < intraBlockIndexList.size(); orbital1++){
+			rpaSusceptibility[orbital0].push_back(vector<vector<vector<complex<double>>>>());
+			for(unsigned int orbital2 = 0; orbital2 < intraBlockIndexList.size(); orbital2++){
+				rpaSusceptibility[orbital0][orbital1].push_back(vector<vector<complex<double>>>());
+				for(unsigned int orbital3 = 0; orbital3 < intraBlockIndexList.size(); orbital3++){
+					rpaSusceptibility[orbital0][orbital1][orbital2].push_back(vector<complex<double>>());
+					for(
+						unsigned int e = 0;
+						e < energies.size();
+						e++
+					){
+						rpaSusceptibility[orbital0][orbital1][orbital2][orbital3].push_back(0.);
+					}
+				}
 			}
 		}
 	}
 
 	//Store \chi_RPA = (\chi_0^{-1} + U)^{-1}.
-	int linearIntraBlockIndex0
+/*	int linearIntraBlockIndex0
 		= getModel().getHoppingAmplitudeSet().getBasisIndex(
 			Index(kIndex, intraBlockIndices[0])
 		) - getModel().getHoppingAmplitudeSet(
@@ -536,18 +542,23 @@ vector<vector<vector<complex<double>>>> RPASusceptibility::rpaSusceptibilityMain
 		) - getModel().getHoppingAmplitudeSet(
 		).getFirstIndexInBlock(kIndex);
 	int row = intraBlockIndexList.size()*linearIntraBlockIndex0
-		+ linearIntraBlockIndex1;
-	for(unsigned int c = 0; c < intraBlockIndexList.size(); c++){
-		for(unsigned int d = 0; d < intraBlockIndexList.size(); d++){
-			unsigned int column = intraBlockIndexList.size()*c + d;
-			for(
-				unsigned int i = 0;
-				i < energies.size();
-				i++
-			){
-				rpaSusceptibility[c][d][i] = denominators[i][
-					matrixDimension*column + row
-				];
+		+ linearIntraBlockIndex1;*/
+	for(unsigned int a = 0; a < intraBlockIndexList.size(); a++){
+		for(unsigned int b = 0; b < intraBlockIndexList.size(); b++){
+			unsigned int row = intraBlockIndexList.size()*a + b;
+			for(unsigned int c = 0; c < intraBlockIndexList.size(); c++){
+				for(unsigned int d = 0; d < intraBlockIndexList.size(); d++){
+					unsigned int column = intraBlockIndexList.size()*c + d;
+					for(
+						unsigned int i = 0;
+						i < energies.size();
+						i++
+					){
+						rpaSusceptibility[a][b][c][d][i] = denominators[i][
+							matrixDimension*column + row
+						];
+					}
+				}
 			}
 		}
 	}
@@ -597,23 +608,27 @@ IndexedDataTree<vector<complex<double>>> RPASusceptibility::calculateRPASuscepti
 	//TODO
 	//The way intraBlockIndices[n] are used assumes that they have a single
 	//subindex, which limits generality.
-	vector<vector<vector<complex<double>>>> result = rpaSusceptibilityMainAlgorithm(
+	vector<vector<vector<vector<vector<complex<double>>>>>> result = rpaSusceptibilityMainAlgorithm(
 		index,
 		interactionAmplitudes
 	);
 	IndexedDataTree<vector<complex<double>>> indexedDataTree;
-	for(unsigned int n = 0; n < result.size(); n++){
-		for(unsigned int c = 0; c < result[n].size(); c++){
-			indexedDataTree.add(
-				result[n][c],
-				{
-					kIndex,
-					intraBlockIndices[0],
-					intraBlockIndices[1],
-					intraBlockIndexList[n],
-					intraBlockIndexList[c]
+	for(unsigned int a = 0; a < result.size(); a++){
+		for(unsigned int b = 0; b < result[a].size(); b++){
+			for(unsigned int c = 0; c < result[a][b].size(); c++){
+				for(unsigned int d = 0; d < result[a][b][c].size(); d++){
+					indexedDataTree.add(
+						result[a][b][c][d],
+						{
+							kIndex,
+							intraBlockIndexList[a],
+							intraBlockIndexList[b],
+							intraBlockIndexList[c],
+							intraBlockIndexList[d]
+						}
+					);
 				}
-			);
+			}
 		}
 	}
 

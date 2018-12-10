@@ -237,7 +237,7 @@ vector<complex<double>> SelfEnergy2::calculateSelfEnergy(
 
 	double kT = greensFunction.getFundamentalMatsubaraEnergy()/M_PI;
 	for(unsigned int n = 0; n < numMatsubaraEnergiesSelfEnergy; n++)
-		selfEnergy[n] /= -(mesh.size()/kT);
+		selfEnergy[n] /= (mesh.size()/kT);
 
 	return selfEnergy;
 }
@@ -484,7 +484,7 @@ Property::SelfEnergy SelfEnergy2::calculateSelfEnergyAllBlocks(
 			selfEnergyArray[
 				numMatsubaraEnergiesCrossCorrelation*meshPoint
 				+ n
-			] /= -(mesh.size()/kT);
+			] /= (mesh.size()/kT);
 		}
 	}
 
