@@ -616,11 +616,12 @@ vector<Index> SelfEnergy2::getIntraBlockIndexList(){
 				) + state
 			);
 
-		Index blockIndex
+/*		Index blockIndex
 			= getModel().getHoppingAmplitudeSet().getSubspaceIndex(
 				index
 			);
-		for(unsigned int c = 0; c < blockIndex.getSize(); c++)
+		for(unsigned int c = 0; c < blockIndex.getSize(); c++)*/
+		for(unsigned int c = 0; c < momentumSpaceContext.getNumMeshPoints().size(); c++)
 			index.popFront();
 
 		intraBlockIndexList.push_back(index);
@@ -643,10 +644,11 @@ vector<Index> SelfEnergy2::getIntraBlockIndexList(){
 				) + state
 			);
 
-			Index blockIndex
+/*			Index blockIndex
 				= getModel().getHoppingAmplitudeSet(
 				).getSubspaceIndex(index);
-			for(unsigned int m = 0; m < blockIndex.getSize(); m++)
+			for(unsigned int m = 0; m < blockIndex.getSize(); m++)*/
+			for(unsigned int m = 0; m < momentumSpaceContext.getNumMeshPoints().size(); m++)
 				index.popFront();
 
 			TBTKAssert(

@@ -402,6 +402,20 @@ void FLEX::calculateInteractionVertex(){
 				{IDX_ALL}
 			}
 		});
+
+/*	for(int kx = 0; kx < momentumSpaceContext.getNumMeshPoints()[0]; kx++){
+		for(int ky = 0; ky < momentumSpaceContext.getNumMeshPoints()[1]; ky++){
+			for(unsigned int n = 0; n < bareSusceptibility.getNumMatsubaraEnergies(); n++){
+				interactionVertex(
+					{{kx, ky}, {0}, {0}, {0}, {0}},
+					n
+				) -= U*U*bareSusceptibility(
+					{{kx, ky}, {0}, {0}, {0}, {0}},
+					n
+				);
+			}
+		}
+	}*/
 }
 
 void FLEX::calculateSelfEnergy(unsigned int slice){
