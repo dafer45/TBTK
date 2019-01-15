@@ -54,19 +54,51 @@ public:
 		const std::vector<PowerType> &powers
 	);
 
+	/** Add variable power term.
+	 *
+	 *  @param coefficient The coefficient of the term.
+	 *  @param powers The powers for the term. The number of powers must be
+	 *  the same as the number of variables specified in the constructor.
+	 */
+	void addTerm(
+		const FieldType &coefficient,
+		const std::initializer_list<PowerType> &powers
+	){
+		addTerm(coefficient, std::vector<PowerType>(powers));
+	}
+
+	/** Add polynomial term.
+	 *
+	 *  @param term Polynomial to add as term.
+	 *  @param power The power of the term. */
+	void addTerm(const Polynomial &term, PowerType power);
+
+	/** Add polynomial product term.
+	 *
+	 *  @param lhs The left hand side of the polynomial product.
+	 *  @param rhs The right hand side of the polynomial product. */
+	void addTerm(const Polynomial &lhs, const Polynomial &rhs);
+
+
 	/** Function operator.
 	 *
 	 *  @param variables The variables to evaluate the polynomial for.
 	 *
 	 *  @return The value of the polynomial evaluated at the given
 	 *  variables. */
-	VariableType operator()(const std::vector<VariableType> &variable);
+	VariableType operator()(const std::vector<VariableType> &variable) const;
 private:
 	/** The number of variables. */
 	unsigned int numVariables;
 
-	/** The polynomial terms. */
+	/** Terms that are powers of the variable. */
 	std::vector<std::tuple<FieldType, std::vector<PowerType>>> terms;
+
+	/** Terms that are powers of polynomials of the variable. */
+	std::vector<std::tuple<Polynomial, PowerType>> polynomialTerms;
+
+	/** Terms that are polynomial products. */
+	std::vector<std::tuple<Polynomial, Polynomial>> productTerms;
 };
 
 template<typename FieldType, typename VariableType, typename PowerType>
@@ -94,9 +126,56 @@ void Polynomial<FieldType, VariableType, PowerType>::addTerm(
 }
 
 template<typename FieldType, typename VariableType, typename PowerType>
+void Polynomial<FieldType, VariableType, PowerType>::addTerm(
+	const Polynomial &term,
+	PowerType power
+){
+	TBTKAssert(
+		term.numVariables == numVariables,
+		"Polynomial::addTerm()",
+		"The term has to have the same number of variables as the"
+		<< " total polynomial. The term has '" << term.numVariables
+		<< "' variables, while the Polynomial has '" << numVariables
+		<< "' variables.",
+		""
+	);
+
+	polynomialTerms.push_back(std::make_tuple(term, power));
+}
+
+template<typename FieldType, typename VariableType, typename PowerType>
+void Polynomial<FieldType, VariableType, PowerType>::addTerm(
+	const Polynomial &lhs,
+	const Polynomial &rhs
+){
+	TBTKAssert(
+		lhs.numVariables == numVariables,
+		"Polynomial::addTerm()",
+		"Incompatible number of variables. The left hand side is a"
+		<< " polynomial with '" << lhs.numVariables << "', while the"
+		<< " polynomial that the product is added to has '"
+		<< numVariables << "' variables. The number of variables must"
+		<< " be the same.",
+		""
+	);
+	TBTKAssert(
+		rhs.numVariables == numVariables,
+		"Polynomial::addTerm()",
+		"Incompatible number of variables. The right hand side is a"
+		<< " polynomial with '" << rhs.numVariables << "', while the"
+		<< " polynomial that the product is added to has '"
+		<< numVariables << "' variables. The number of variables must"
+		<< " be the same.",
+		""
+	);
+
+	productTerms.push_back(std::make_tuple(lhs, rhs));
+}
+
+template<typename FieldType, typename VariableType, typename PowerType>
 VariableType Polynomial<FieldType, VariableType, PowerType>::operator()(
 	const std::vector<VariableType> &variables
-){
+) const{
 	TBTKAssert(
 		variables.size() == numVariables,
 		"Polynomial::operator()",
@@ -114,6 +193,23 @@ VariableType Polynomial<FieldType, VariableType, PowerType>::operator()(
 			if(power != 0)
 				term *= pow(variables[c], power);
 		}
+
+		value += term;
+	}
+
+	for(unsigned int n = 0; n < polynomialTerms.size(); n++){
+		VariableType term = pow(
+			std::get<0>(polynomialTerms[n])(variables),
+			std::get<1>(polynomialTerms[n])
+		);
+
+		value += term;
+	}
+
+	for(unsigned int n = 0; n < productTerms.size(); n++){
+		const Polynomial &lhs = std::get<0>(productTerms[n]);
+		const Polynomial &rhs = std::get<1>(productTerms[n]);
+		VariableType term = lhs(variables)*rhs(variables);
 
 		value += term;
 	}
