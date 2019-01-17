@@ -24,6 +24,7 @@
 #define COM_DAFER45_TBTK_ARBITRARY_PRECISION_COMPLEX
 
 #include "TBTK/ArbitraryPrecision/Real.h"
+#include "TBTK/Streams.h"
 
 #include <complex>
 #include <string>
@@ -35,11 +36,35 @@ namespace ArbitraryPrecision{
 
 class Complex{
 public:
+	/** Constructor. Constructs an uninitialized Complex number. An already
+	 *  initialized Complex number has to be assigned before the number is
+	 *  ready to be used. In particular, asigning a complex<double> or a
+	 *  string to an uninitialized Real number result in undefined
+	 *  behavior. */
+	Complex();
+
 	/** Constructor.
 	 *
 	 *  @param precision The number of bits used to store each of the real
 	 *  and imaginary components. */
 	Complex(unsigned int precision);
+
+	/** Constructor.
+	 *
+	 *  @param precision The number of bits used to store each of the real
+	 *  and imaginary components.
+	 *
+	 *  @param value The value. */
+	Complex(unsigned int precision, const std::complex<double> &value);
+
+	/** Constructor.
+	 *
+	 *  @param precision The number of bits used to store each of the real
+	 *  and imaginary components.
+	 *
+	 *  @param real The real component.
+	 *  @param imag The imaginary component. */
+	Complex(unsigned int precision, double real, double imag);
 
 	/** Constructor.
 	 *
@@ -108,11 +133,33 @@ private:
 	Real imag;
 };
 
+inline Complex::Complex(){
+}
+
 inline Complex::Complex(
 	unsigned int precision
 ):
 	real(precision),
 	imag(precision)
+{
+}
+
+inline Complex::Complex(
+	unsigned int precision,
+	const std::complex<double> &value
+) :
+	real(precision, value.real()),
+	imag(precision, value.imag())
+{
+}
+
+inline Complex::Complex(
+	unsigned int precision,
+	double real,
+	double imag
+) :
+	real(precision, real),
+	imag(precision, imag)
 {
 }
 
@@ -169,6 +216,47 @@ inline const Real& Complex::getReal() const{
 
 inline const Real& Complex::getImag() const{
 	return imag;
+}
+
+//Complex pow(Complex base, long unsigned int power);
+Complex pow(Complex base, long unsigned int power){
+	Complex result;
+	if(power%2)
+		result = base;
+	else{
+		mp_bitcnt_t realPrecision = base.getReal().getPrecision();
+		mp_bitcnt_t imagPrecision = base.getReal().getPrecision();
+		if(realPrecision > imagPrecision)
+			result = Complex(realPrecision, 1);
+		else
+			result = Complex(realPrecision, 1);
+	}
+
+	while(power >>= 1){
+		//Update to *= when this has been implemented.
+		base = base*base;
+		if(power%2){
+			//Update to *= when this has been implemented.
+			result = result*base;
+		}
+	}
+
+	return result;
+}
+
+inline Complex pow(const Complex &base, long int power){
+	if(power < 0){
+		Complex result = pow(base, (long unsigned int)(-power));
+
+		return Complex(result.getReal().getPrecision(), 1)/result;
+	}
+	else{
+		return pow(base, (long unsigned int)power);
+	}
+}
+
+inline Complex pow(const Complex &base, int power){
+	return pow(base, (long int)power);
 }
 
 }; //End of namespace ArbitraryPrecision

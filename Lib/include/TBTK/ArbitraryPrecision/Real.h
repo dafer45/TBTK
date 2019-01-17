@@ -32,10 +32,26 @@ namespace ArbitraryPrecision{
 
 class Real{
 public:
+	/** Constructor. Constructs an uninitialized Real number. An already
+	 *  initialized Real number has to be assigned before the number is
+	 *  ready to be use. In particular, assigning a double or a string to
+	 *  an uninitialized Real number result in undefined behavior. */
+	Real();
+
 	/** Constructor.
 	 *
 	 *  @param precision The number of bits used to store the number. */
 	Real(unsigned int precision);
+
+	/** Constructor.
+	 *
+	 *  @param precision The number of bits used to store the number. */
+	Real(unsigned int precision, double value);
+
+	/** Constructor.
+	 *
+	 *  @param precision The number of bits used to store the number. */
+	Real(unsigned int precision, const std::string &value);
 
 	/** Assignment operator.
 	 *
@@ -51,45 +67,102 @@ public:
 	 *  @return The left hand side after the assignment. */
 	const Real& operator=(const std::string &rhs);
 
+	/** Addition assignment operator.
+	 *
+	 *  @param rhs The right hand side of the expression.
+	 *
+	 *  @return The left hand side after the assignment has occured. */
+	Real& operator+=(const Real &rhs);
+
 	/** Addition operator.
 	 *
 	 *  @param rhs The right hand side of the expression.
 	 *
 	 *  @return The result of the addition. */
-	const Real operator+(const Real &rhs) const;
+	Real operator+(const Real &rhs) const;
+
+	/** Subtraction assignment operator.
+	 *
+	 *  @param rhs The right hand side of the expression.
+	 *
+	 *  @return The left hand side after the assignment has occured. */
+	Real& operator-=(const Real &rhs);
 
 	/** Subtraction operator.
 	 *
 	 *  @param The right hand side of the expression.
 	 *
 	 *  @return The result of the subtraction. */
-	const Real operator-(const Real &rhs) const;
+	Real operator-(const Real &rhs) const;
+
+	/** Multiplication assignment operator.
+	 *
+	 *  @param rhs The right hand side of the expression.
+	 *
+	 *  @return The left hand side after the assignment has occured. */
+	Real& operator*=(const Real &rhs);
 
 	/** Multiplication operator.
 	 *
 	 *  @param rhs The right hand side of the expression.
 	 *
 	 *  @return The result of the multiplication. */
-	const Real operator*(const Real &rhs) const;
+	Real operator*(const Real &rhs) const;
+
+	/** Division assignment operator.
+	 *
+	 *  @param rhs The right hand side of the expression.
+	 *
+	 *  @return The left hand side after the assignment has occured. */
+	Real& operator/=(const Real &rhs);
 
 	/** Division operator.
 	 *
 	 *  @param rhs The right hand side of the expression.
 	 *
 	 *  @return The result of the division. */
-	const Real operator/(const Real &rhs) const;
+	Real operator/(const Real &rhs) const;
+
+	/** ostream operator.
+	 *
+	 *  @param os The ostream to write to.
+	 *  @param real The Real number to write. */
+	friend std::ostream& operator<<(std::ostream &os, const Real &real);
 
 	/** Get the value on the GMP format mpf_t.
 	 *
 	 *  @return The value as stored on mpf_t type. */
 	const mpf_t& getValue() const;
+
+	/** Get the value as a double.
+	 *
+	 *  @return The value truncated to double precision. */
+	double getDouble() const;
+
+	/** Get the precision.
+	 *
+	 *  @return The number of bits used to store the number. */
+	mp_bitcnt_t getPrecision() const;
 private:
 	/** The value. */
 	mpf_t value;
 };
 
+inline Real::Real(){
+}
+
 inline Real::Real(unsigned int precision){
 	mpf_init2(value, precision);
+}
+
+inline Real::Real(unsigned int precision, double value){
+	mpf_init2(this->value, precision);
+	operator=(value);
+}
+
+inline Real::Real(unsigned int precision, const std::string &value){
+	mpf_init2(this->value, precision);
+	operator=(value);
 }
 
 inline const Real& Real::operator=(double rhs){
@@ -104,48 +177,70 @@ inline const Real& Real::operator=(const std::string &rhs){
 	return *this;
 }
 
-inline const Real Real::operator+(const Real &rhs) const{
-	mp_bitcnt_t lhsPrecision = mpf_get_prec(value);
-	mp_bitcnt_t rhsPrecision = mpf_get_prec(value);
-	Real result((lhsPrecision > rhsPrecision) ? lhsPrecision : rhsPrecision);
+inline Real& Real::operator+=(const Real &rhs){
+	mpf_add(value, value, rhs.value);
 
-	mpf_add(result.value, value, rhs.value);
-
-	return result;
+	return *this;
 }
 
-inline const Real Real::operator-(const Real &rhs) const{
-	mp_bitcnt_t lhsPrecision = mpf_get_prec(value);
-	mp_bitcnt_t rhsPrecision = mpf_get_prec(value);
-	Real result((lhsPrecision > rhsPrecision) ? lhsPrecision : rhsPrecision);
+inline Real Real::operator+(const Real &rhs) const{
+	Real real = *this;
 
-	mpf_sub(result.value, value, rhs.value);
-
-	return result;
+	return real += rhs;
 }
 
-inline const Real Real::operator*(const Real &rhs) const{
-	mp_bitcnt_t lhsPrecision = mpf_get_prec(value);
-	mp_bitcnt_t rhsPrecision = mpf_get_prec(rhs.value);
-	Real result((lhsPrecision > rhsPrecision) ? lhsPrecision : rhsPrecision);
+inline Real& Real::operator-=(const Real &rhs){
+	mpf_sub(value, value, rhs.value);
 
-	mpf_mul(result.value, value, rhs.value);
-
-	return result;
+	return *this;
 }
 
-inline const Real Real::operator/(const Real &rhs) const{
-	mp_bitcnt_t lhsPrecision = mpf_get_prec(value);
-	mp_bitcnt_t rhsPrecision = mpf_get_prec(rhs.value);
-	Real result((lhsPrecision > rhsPrecision) ? lhsPrecision : rhsPrecision);
+inline Real Real::operator-(const Real &rhs) const{
+	Real real = *this;
 
-	mpf_div(result.value, value, rhs.value);
+	return real -= rhs;
+}
 
-	return result;
+inline Real& Real::operator*=(const Real &rhs){
+	mpf_mul(value, value, rhs.value);
+
+	return *this;
+}
+
+inline Real Real::operator*(const Real &rhs) const{
+	Real real = *this;
+
+	return real *= rhs;
+}
+
+inline Real& Real::operator/=(const Real &rhs){
+	mpf_div(value, value, rhs.value);
+
+	return *this;
+}
+
+inline Real Real::operator/(const Real &rhs) const{
+	Real real = *this;
+
+	return real /= rhs;
+}
+
+inline std::ostream& operator<<(std::ostream &os, const Real &real){
+	os << real.value;
+
+	return os;
 }
 
 inline const mpf_t& Real::getValue() const{
 	return value;
+}
+
+inline double Real::getDouble() const{
+	return mpf_get_d(value);
+}
+
+inline mp_bitcnt_t Real::getPrecision() const{
+	return mpf_get_prec(value);
 }
 
 }; //End of namespace ArbitraryPrecision
