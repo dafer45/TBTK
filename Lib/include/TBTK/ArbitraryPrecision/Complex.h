@@ -77,7 +77,7 @@ public:
 	 *  @param rhs The right hand side of the expression.
 	 *
 	 *  @return The left hand side after assignment. */
-	const Complex& operator=(const std::complex<double> &rhs);
+	Complex& operator=(const std::complex<double> &rhs);
 
 	/** Assignment operator.
 	 *
@@ -86,35 +86,69 @@ public:
 	 *  components, respectively.
 	 *
 	 *  @return The left hand side after assignment. */
-	const Complex& operator=(const std::string &rhs);
+	Complex& operator=(const std::string &rhs);
+
+	/** Addition assignment operator.
+	 *
+	 *  @param rhs The right hand side of the expression.
+	 *
+	 *  @return The left hand side after assignment. */
+	Complex& operator+=(const Complex &rhs);
 
 	/** Addition operator.
 	 *
 	 *  @param rhs The right hand side of the expression.
 	 *
 	 *  @return The result of the addition. */
-	const Complex operator+(const Complex &rhs) const;
+	Complex operator+(const Complex &rhs) const;
+
+	/** Subtraction assignment operator.
+	 *
+	 *  @param rhs The right hand side of the expression.
+	 *
+	 *  @return The left hand side after assignment. */
+	Complex& operator-=(const Complex &rhs);
 
 	/** Subtraction operator.
 	 *
 	 *  @param The right hand side of the expression.
 	 *
 	 *  @return The result of the subtraction. */
-	const Complex operator-(const Complex &rhs) const;
+	Complex operator-(const Complex &rhs) const;
+
+	/** Multiplication assignment operator.
+	 *
+	 *  @param rhs The right hand side of the expression.
+	 *
+	 *  @return The left hand side after assignment. */
+	Complex& operator*=(const Complex &rhs);
 
 	/** Multiplication operator.
 	 *
 	 *  @param rhs The right hand side of the expression.
 	 *
 	 *  @return The result of the multiplication. */
-	const Complex operator*(const Complex &rhs) const;
+	Complex operator*(const Complex &rhs) const;
+
+	/** Division assignment operator.
+	 *
+	 *  @param rhs The right hand side of the expression.
+	 *
+	 *  @return The left hand side after assignment. */
+	Complex& operator/=(const Complex &rhs);
 
 	/** Division operator.
 	 *
 	 *  @param rhs The right hand side of the expression.
 	 *
 	 *  @return The result of the division. */
-	const Complex operator/(const Complex &rhs) const;
+	Complex operator/(const Complex &rhs) const;
+
+	/** ostream operator.
+	 *
+	 *  @param os The ostream to write to.
+	 *  @param rhs The Complex number to write. */
+	friend std::ostream& operator<<(std::ostream &os, const Complex &complex);
 
 	/** Get the real component.
 	 *
@@ -172,42 +206,93 @@ inline Complex::Complex(
 {
 }
 
-inline const Complex& Complex::operator=(const std::complex<double> &rhs){
+inline Complex& Complex::operator=(const std::complex<double> &rhs){
 	real = rhs.real();
 	imag = rhs.imag();
 
 	return *this;
 }
 
-inline const Complex& Complex::operator=(const std::string &rhs){
+inline Complex& Complex::operator=(const std::string &rhs){
 	real = rhs.substr(0, rhs.find(" +"));
 	imag = rhs.substr(rhs.find("i") + 1, rhs.size());
 
 	return *this;
 }
 
-inline const Complex Complex::operator+(const Complex &rhs) const{
-	return Complex(real + rhs.real, imag + rhs.imag);
+inline Complex& Complex::operator+=(const Complex &rhs){
+	real += rhs.real;
+	imag += rhs.imag;
+
+	return *this;
 }
 
-inline const Complex Complex::operator-(const Complex &rhs) const{
-	return Complex(real - rhs.real, imag - rhs.imag);
+inline Complex Complex::operator+(const Complex &rhs) const{
+	Complex complex = *this;
+
+	return complex += rhs;
 }
 
-inline const Complex Complex::operator*(const Complex &rhs) const{
-	return Complex(
+inline Complex& Complex::operator-=(const Complex &rhs){
+	real -= rhs.real;
+	imag -= rhs.imag;
+
+	return *this;
+}
+
+inline Complex Complex::operator-(const Complex &rhs) const{
+//	return Complex(real - rhs.real, imag - rhs.imag);
+	Complex complex = *this;
+
+	return complex -= rhs;
+}
+
+inline Complex& Complex::operator*=(const Complex &rhs){
+	Real r = real;
+	Real i = imag;
+	real = r*rhs.real - i*rhs.imag;
+	imag = r*rhs.imag + i*rhs.real;
+
+	return *this;
+}
+
+inline Complex Complex::operator*(const Complex &rhs) const{
+/*	return Complex(
 		real*rhs.real - imag*rhs.imag,
 		real*rhs.imag + imag*rhs.real
-	);
+	);*/
+	Complex complex = *this;
+
+	return complex *= rhs;
 }
 
-inline const Complex Complex::operator/(const Complex &rhs) const{
+inline Complex& Complex::operator/=(const Complex &rhs){
 	Real denominator = rhs.real*rhs.real + rhs.imag*rhs.imag;
+
+	Real r = real;
+	Real i = imag;
+	real = (r*rhs.real + i*rhs.imag)/denominator;
+	imag = (i*rhs.real - r*rhs.imag)/denominator;
+
+	return *this;
+}
+
+inline Complex Complex::operator/(const Complex &rhs) const{
+/*	Real denominator = rhs.real*rhs.real + rhs.imag*rhs.imag;
 
 	return Complex(
 		(real*rhs.real + imag*rhs.imag)/denominator,
 		(imag*rhs.real - real*rhs.imag)/denominator
-	);
+	);*/
+	Complex complex = *this;
+
+	return complex /= rhs;
+}
+
+inline std::ostream& operator<<(std::ostream &os, const Complex &complex){
+	os << complex.real << " + i" << complex.imag;
+
+	return os;
 }
 
 inline const Real& Complex::getReal() const{

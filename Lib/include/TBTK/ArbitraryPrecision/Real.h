@@ -23,6 +23,8 @@
 #ifndef COM_DAFER45_TBTK_ARBITRARY_PRECISION_REAL
 #define COM_DAFER45_TBTK_ARBITRARY_PRECISION_REAL
 
+#include "TBTK/Streams.h"
+
 #include <string>
 
 #include <gmpxx.h>
@@ -37,6 +39,14 @@ public:
 	 *  ready to be use. In particular, assigning a double or a string to
 	 *  an uninitialized Real number result in undefined behavior. */
 	Real();
+
+	/** Destructor. */
+	~Real();
+
+	/** Copy constructor.
+	 *
+	 *  @param real Real number to copy. */
+	Real(const Real &real);
 
 	/** Constructor.
 	 *
@@ -57,15 +67,22 @@ public:
 	 *
 	 *  @param rhs The right hand side of the expression.
 	 *
+	 *  @return The left hand side after the assignment. */
+	Real& operator=(const Real &real);
+
+	/** Assignment operator.
+	 *
+	 *  @param rhs The right hand side of the expression.
+	 *
 	 *  @return The left hand side after assignment. */
-	const Real& operator=(double rhs);
+	Real& operator=(double rhs);
 
 	/** Assignment operator.
 	 *
 	 *  @param rhs The right hand side of the expression.
 	 *
 	 *  @return The left hand side after the assignment. */
-	const Real& operator=(const std::string &rhs);
+	Real& operator=(const std::string &rhs);
 
 	/** Addition assignment operator.
 	 *
@@ -146,32 +163,62 @@ public:
 private:
 	/** The value. */
 	mpf_t value;
+
+	/** Flag indicating whether the value has been initialized. */
+	bool isInitialized;
 };
 
 inline Real::Real(){
+	isInitialized = false;
+}
+
+inline Real::~Real(){
+	if(isInitialized)
+		mpf_clear(value);
+}
+
+inline Real::Real(const Real &real){
+	mpf_init2(value, real.getPrecision());
+	mpf_set(value, real.value);
+	isInitialized = true;
 }
 
 inline Real::Real(unsigned int precision){
 	mpf_init2(value, precision);
+	isInitialized = true;
 }
 
 inline Real::Real(unsigned int precision, double value){
 	mpf_init2(this->value, precision);
 	operator=(value);
+	isInitialized = true;
 }
 
 inline Real::Real(unsigned int precision, const std::string &value){
 	mpf_init2(this->value, precision);
 	operator=(value);
+	isInitialized = true;
 }
 
-inline const Real& Real::operator=(double rhs){
+inline Real& Real::operator=(const Real &rhs){
+	if(this != &rhs){
+		if(isInitialized)
+			mpf_clear(value);
+
+		mpf_init2(value, rhs.getPrecision());
+		mpf_set(value, rhs.value);
+	}
+
+	return *this;
+}
+
+inline Real& Real::operator=(double rhs){
 	mpf_set_d(value, rhs);
 
 	return *this;
 }
 
-inline const Real& Real::operator=(const std::string &rhs){
+inline Real& Real::operator=(const std::string &rhs){
 	mpf_set_str(value, rhs.c_str(), 10);
 
 	return *this;
