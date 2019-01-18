@@ -140,6 +140,11 @@ public:
 	 *  @return The result of the division. */
 	Real operator/(const Real &rhs) const;
 
+	/** Unary minus operator.
+	 *
+	 *  @return The negative of the Real number. */
+	Real operator-() const;
+
 	/** ostream operator.
 	 *
 	 *  @param os The ostream to write to.
@@ -270,6 +275,15 @@ inline Real Real::operator/(const Real &rhs) const{
 	Real real = *this;
 
 	return real /= rhs;
+}
+
+inline Real Real::operator-() const{
+	Real real;
+	mpf_init2(real.value, getPrecision());
+	mpf_neg(real.value, value);
+	real.isInitialized = true;
+
+	return real;
 }
 
 inline std::ostream& operator<<(std::ostream &os, const Real &real){

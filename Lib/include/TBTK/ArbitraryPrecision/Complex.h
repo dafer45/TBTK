@@ -144,6 +144,11 @@ public:
 	 *  @return The result of the division. */
 	Complex operator/(const Complex &rhs) const;
 
+	/** Unary minus operator.
+	 *
+	 *  @return The negative of the Complex number. */
+	Complex operator-() const;
+
 	/** ostream operator.
 	 *
 	 *  @param os The ostream to write to.
@@ -289,6 +294,10 @@ inline Complex Complex::operator/(const Complex &rhs) const{
 	return complex /= rhs;
 }
 
+inline Complex Complex::operator-() const{
+	return Complex(-real, -imag);
+}
+
 inline std::ostream& operator<<(std::ostream &os, const Complex &complex){
 	os << complex.real << " + i" << complex.imag;
 
@@ -304,7 +313,7 @@ inline const Real& Complex::getImag() const{
 }
 
 //Complex pow(Complex base, long unsigned int power);
-Complex pow(Complex base, long unsigned int power){
+inline Complex pow(Complex base, long unsigned int power){
 	Complex result;
 	if(power%2)
 		result = base;
