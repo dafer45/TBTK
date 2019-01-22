@@ -25,6 +25,7 @@
 
 #include "TBTK/ArbitraryPrecision/Real.h"
 #include "TBTK/Streams.h"
+#include "TBTK/TBTKMacros.h"
 
 #include <complex>
 #include <string>
@@ -155,6 +156,11 @@ public:
 	 *  @param rhs The Complex number to write. */
 	friend std::ostream& operator<<(std::ostream &os, const Complex &complex);
 
+	/** Get as std::complex.
+	 *
+	 *  @return The value on std::complex format. */
+	std::complex<double> getComplexDouble() const;
+
 	/** Get the real component.
 	 *
 	 *  @return The real component. */
@@ -219,8 +225,108 @@ inline Complex& Complex::operator=(const std::complex<double> &rhs){
 }
 
 inline Complex& Complex::operator=(const std::string &rhs){
-	real = rhs.substr(0, rhs.find(" +"));
-	imag = rhs.substr(rhs.find("i") + 1, rhs.size());
+	bool negativeSign = false;
+	size_t plusPosition = rhs.find("+");
+	if(plusPosition == std::string::npos){
+		plusPosition = rhs.find("-");
+		negativeSign = true;
+	}
+	std::string firstTerm;
+	std::string secondTerm;
+	if(plusPosition == std::string::npos){
+		firstTerm = rhs;
+		if(firstTerm.find("i") == std::string::npos)
+			secondTerm = "i0";
+		else
+			secondTerm == "0";
+	}
+	else{
+		firstTerm = rhs.substr(0, plusPosition);
+		secondTerm = "-" + rhs.substr(plusPosition + 1, rhs.size());
+	}
+
+	firstTerm.erase(
+		remove_if(firstTerm.begin(), firstTerm.end(), isspace),
+		firstTerm.end()
+	);
+	secondTerm.erase(
+		remove_if(secondTerm.begin(), secondTerm.end(), isspace),
+		secondTerm.end()
+	);
+
+	size_t iPositionFirst = firstTerm.find("i");
+	size_t iPositionSecond = secondTerm.find("i");
+	if(
+		iPositionFirst != std::string::npos
+		&& iPositionSecond == std::string::npos
+	){
+		if(iPositionFirst == 0){
+			firstTerm = firstTerm.substr(
+				iPositionFirst + 1,
+				firstTerm.size()
+			);
+		}
+		else if(iPositionFirst == firstTerm.size() - 1){
+			firstTerm = firstTerm.substr(
+				0,
+				iPositionFirst
+			);
+		}
+		else{
+			TBTKExit(
+				"ArbitraryPrecision::Complex::operator=()",
+				"Unable to parse '" << rhs << "' as a complex"
+				<< " number.",
+				"The number must be on one of the formats '1',"
+				<< " 'i1', '1 + i1', and 'i1 + 1', where '1'"
+				<< " can be replaced by arbitrary decimal"
+				<< " numbers."
+			);
+		}
+
+		real = secondTerm;
+		imag = firstTerm;
+	}
+	else if(
+		iPositionFirst == std::string::npos
+		&& iPositionSecond != std::string::npos
+	){
+		if(iPositionSecond == 0){
+			secondTerm = secondTerm.substr(
+				iPositionSecond + 1,
+				secondTerm.size()
+			);
+		}
+		else if(iPositionSecond == secondTerm.size() - 1){
+			secondTerm = secondTerm.substr(
+				0,
+				iPositionSecond
+			);
+		}
+		else{
+			TBTKExit(
+				"ArbitraryPrecision::Complex::operator=()",
+				"Unable to parse '" << rhs << "' as a complex"
+				<< " number.",
+				"The number must be on one of the formats '1',"
+				<< " 'i1', '1 + i1', and 'i1 + 1', where '1'"
+				<< " can be replaced by arbitrary decimal"
+				<< " numbers."
+			);
+		}
+
+		real = firstTerm;
+		imag = secondTerm;
+	}
+	else{
+		TBTKExit(
+			"ArbitraryPrecision::Complex::operator=()",
+			"Unable to parse '" << rhs << "' as a complex number.",
+			"The number must be on one of the formats '1', 'i1',"
+			<< " '1 + i1', and 'i1 + 1', where '1' can be replaced"
+			<< " by arbitrary decimal numbers."
+		);
+	}
 
 	return *this;
 }
@@ -246,7 +352,6 @@ inline Complex& Complex::operator-=(const Complex &rhs){
 }
 
 inline Complex Complex::operator-(const Complex &rhs) const{
-//	return Complex(real - rhs.real, imag - rhs.imag);
 	Complex complex = *this;
 
 	return complex -= rhs;
@@ -262,10 +367,6 @@ inline Complex& Complex::operator*=(const Complex &rhs){
 }
 
 inline Complex Complex::operator*(const Complex &rhs) const{
-/*	return Complex(
-		real*rhs.real - imag*rhs.imag,
-		real*rhs.imag + imag*rhs.real
-	);*/
 	Complex complex = *this;
 
 	return complex *= rhs;
@@ -283,12 +384,6 @@ inline Complex& Complex::operator/=(const Complex &rhs){
 }
 
 inline Complex Complex::operator/(const Complex &rhs) const{
-/*	Real denominator = rhs.real*rhs.real + rhs.imag*rhs.imag;
-
-	return Complex(
-		(real*rhs.real + imag*rhs.imag)/denominator,
-		(imag*rhs.real - real*rhs.imag)/denominator
-	);*/
 	Complex complex = *this;
 
 	return complex /= rhs;
@@ -299,9 +394,18 @@ inline Complex Complex::operator-() const{
 }
 
 inline std::ostream& operator<<(std::ostream &os, const Complex &complex){
-	os << complex.real << " + i" << complex.imag;
+	if(complex.imag.getDouble() >= 0){
+		os << complex.real << " + i" << complex.imag;
+	}
+	else{
+		os << complex.real << " - i" << -complex.imag;
+	}
 
 	return os;
+}
+
+inline std::complex<double> Complex::getComplexDouble() const{
+	return std::complex<double>(real.getDouble(), imag.getDouble());
 }
 
 inline const Real& Complex::getReal() const{
