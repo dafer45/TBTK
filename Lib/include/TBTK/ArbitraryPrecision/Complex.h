@@ -28,6 +28,7 @@
 #include "TBTK/TBTKMacros.h"
 
 #include <complex>
+#include <sstream>
 #include <string>
 
 #include <gmpxx.h>
@@ -225,7 +226,7 @@ inline Complex& Complex::operator=(const std::complex<double> &rhs){
 }
 
 inline Complex& Complex::operator=(const std::string &rhs){
-	bool negativeSign = false;
+/*	bool negativeSign = false;
 	size_t plusPosition = rhs.find("+");
 	if(plusPosition == std::string::npos){
 		plusPosition = rhs.find("-");
@@ -242,7 +243,7 @@ inline Complex& Complex::operator=(const std::string &rhs){
 	}
 	else{
 		firstTerm = rhs.substr(0, plusPosition);
-		secondTerm = "-" + rhs.substr(plusPosition + 1, rhs.size());
+		secondTerm = rhs.substr(plusPosition + 1, rhs.size());
 	}
 
 	firstTerm.erase(
@@ -284,7 +285,10 @@ inline Complex& Complex::operator=(const std::string &rhs){
 			);
 		}
 
-		real = secondTerm;
+		if(negativeSign)
+			real = "-" + secondTerm;
+		else
+			real = secondTerm;
 		imag = firstTerm;
 	}
 	else if(
@@ -316,7 +320,10 @@ inline Complex& Complex::operator=(const std::string &rhs){
 		}
 
 		real = firstTerm;
-		imag = secondTerm;
+		if(negativeSign)
+			imag = "-" + secondTerm;
+		else
+			imag = secondTerm;
 	}
 	else{
 		TBTKExit(
@@ -326,6 +333,234 @@ inline Complex& Complex::operator=(const std::string &rhs){
 			<< " '1 + i1', and 'i1 + 1', where '1' can be replaced"
 			<< " by arbitrary decimal numbers."
 		);
+	}*/
+
+	std::stringstream ss(rhs);
+	const int STATE_BEFORE_FIRST_TERM = 0;
+	const int STATE_READING_FIRST_TERM = 1;
+	const int STATE_AFTER_FIRST_TERM = 2;
+	const int STATE_BEFORE_SECOND_TERM = 3;
+	const int STATE_READING_SECOND_TERM = 4;
+	const int STATE_AFTER_SECOND_TERM = 5;
+	int state = STATE_BEFORE_FIRST_TERM;
+	char c;
+	std::string firstTerm;
+	std::string secondTerm;
+	bool firstTermIsReal = true;
+	bool secondTermIsReal = true;
+	std::string firstTermSign;
+	std::string secondTermSign;
+	int position = 0;
+	while(ss >> c){
+		switch(c){
+		case '0':
+		case '1':
+		case '2':
+		case '3':
+		case '4':
+		case '5':
+		case '6':
+		case '7':
+		case '8':
+		case '9':
+		case '.':
+			switch(state){
+			case STATE_BEFORE_FIRST_TERM:
+				state = STATE_READING_FIRST_TERM;
+			case STATE_READING_FIRST_TERM:
+				firstTerm += c;
+				break;
+			case STATE_BEFORE_SECOND_TERM:
+				state = STATE_READING_SECOND_TERM;
+			case STATE_READING_SECOND_TERM:
+				secondTerm += c;
+				break;
+			default:
+				TBTKExit(
+					"ArbitraryPrecision::Complex::operator=()",
+					"Unable to parse '" << rhs << "' as a"
+					<< " complex number. Found unexpected"
+					<< " tocken '" << c << "' at position"
+					<< " '" << position << "'.",
+					""
+				);
+			}
+			break;
+		case '+':
+			switch(state){
+			case STATE_BEFORE_FIRST_TERM:
+				if(firstTermSign.length() != 0){
+					TBTKExit(
+						"ArbitraryPrecision::Complex::operator=()",
+						"Unable to parse '" << rhs
+						<< "' as a complex number."
+						<< " Found unexpected tocken '"
+						<< c << "' at position" << " '"
+						<< position << "'.",
+						""
+					);
+				}
+				firstTermSign = "+";
+				break;
+			case STATE_READING_FIRST_TERM:
+			case STATE_AFTER_FIRST_TERM:
+				state = STATE_BEFORE_SECOND_TERM;
+				if(secondTermSign.length() != 0){
+					TBTKExit(
+						"ArbitraryPrecision::Complex::operator=()",
+						"Unable to parse '" << rhs
+						<< "' as a complex number."
+						<< " Found unexpected tocken '"
+						<< c << "' at position" << " '"
+						<< position << "'.",
+						""
+					);
+				}
+				secondTermSign = "+";
+				break;
+			default:
+				TBTKExit(
+					"ArbitraryPrecision::Complex::operator=()",
+					"Unable to parse '" << rhs << "' as a"
+					<< " complex number. Found unexpected"
+					<< " tocken '" << c << "' at position"
+					<< " '" << position << "'.",
+					""
+				);
+			}
+			break;
+		case '-':
+			switch(state){
+			case STATE_BEFORE_FIRST_TERM:
+				if(firstTermSign.length() != 0){
+					TBTKExit(
+						"ArbitraryPrecision::Complex::operator=()",
+						"Unable to parse '" << rhs
+						<< "' as a complex number."
+						<< " Found unexpected tocken '"
+						<< c << "' at position" << " '"
+						<< position << "'.",
+						""
+					);
+				}
+				firstTermSign = "-";
+				break;
+			case STATE_READING_FIRST_TERM:
+			case STATE_AFTER_FIRST_TERM:
+				state = STATE_BEFORE_SECOND_TERM;
+				if(secondTermSign.length() != 0){
+					TBTKExit(
+						"ArbitraryPrecision::Complex::operator=()",
+						"Unable to parse '" << rhs
+						<< "' as a complex number."
+						<< " Found unexpected tocken '"
+						<< c << "' at position" << " '"
+						<< position << "'.",
+						""
+					);
+				}
+				secondTermSign = "-";
+				break;
+			default:
+				TBTKExit(
+					"ArbitraryPrecision::Complex::operator=()",
+					"Unable to parse '" << rhs << "' as a"
+					<< " complex number. Found unexpected"
+					<< " tocken '" << c << "' at position"
+					<< " '" << position << "'.",
+					""
+				);
+			}
+			break;
+		case 'i':
+			switch(state){
+			case STATE_READING_FIRST_TERM:
+				state = STATE_AFTER_FIRST_TERM;
+			case STATE_AFTER_FIRST_TERM:
+			case STATE_BEFORE_FIRST_TERM:
+				if(!firstTermIsReal){
+					TBTKExit(
+						"ArbitraryPrecision::Complex::operator=()",
+						"Unable to parse '" << rhs
+						<< "' as a complex number."
+						<< " Found unexpected tocken '"
+						<< c << "' at position '"
+						<< position << "'.",
+						""
+					);
+				}
+				firstTermIsReal = false;
+				break;
+			case STATE_READING_SECOND_TERM:
+				state = STATE_AFTER_SECOND_TERM;
+			case STATE_AFTER_SECOND_TERM:
+			case STATE_BEFORE_SECOND_TERM:
+				if(!secondTermIsReal){
+					TBTKExit(
+						"ArbitraryPrecision::Complex::operator=()",
+						"Unable to parse '" << rhs
+						<< "' as a complex number."
+						<< " Found unexpected tocken '"
+						<< c << "' at position '"
+						<< position << "'.",
+						""
+					);
+				}
+				secondTermIsReal = false;
+				break;
+			}
+			break;
+		case ' ':
+			switch(state){
+			case STATE_BEFORE_FIRST_TERM:
+			case STATE_AFTER_FIRST_TERM:
+			case STATE_BEFORE_SECOND_TERM:
+			case STATE_AFTER_SECOND_TERM:
+				break;
+			case STATE_READING_FIRST_TERM:
+				state = STATE_AFTER_FIRST_TERM;
+				break;
+			case STATE_READING_SECOND_TERM:
+				state = STATE_AFTER_SECOND_TERM;
+				break;
+			}
+			break;
+		default:
+			TBTKExit(
+				"ArbitraryPrecision::Complex::operator=()",
+				"Unable to parse '" << rhs << "' as a complex"
+				<< " number. Found unexpected tocken '" << c
+				<< "' at position '" << position << "'.",
+				""
+			);
+		}
+
+		position++;
+	}
+
+	if(secondTerm.length() == 0 && firstTermIsReal)
+		secondTermIsReal = false;
+
+	TBTKAssert(
+		firstTermIsReal != secondTermIsReal,
+		"ArbitraryPrecision::Complex::operator=()",
+		"Unable to parse '" << rhs << "' as a complex number. The two"
+		<< " terms cannot both be real or both be imaginary.",
+		""
+	);
+
+	if(firstTermSign.compare("-") == 0)
+		firstTerm = "-" + firstTerm;
+	if(secondTermSign.compare("-") == 0)
+		secondTerm = "-" + secondTerm;
+
+	if(firstTermIsReal){
+		real = firstTerm;
+		imag = secondTerm;
+	}
+	else{
+		real = secondTerm;
+		imag = firstTerm;
 	}
 
 	return *this;
