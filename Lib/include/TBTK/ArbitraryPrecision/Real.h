@@ -27,6 +27,9 @@
 
 #include <string>
 
+//cstddef is needed to work around compilation issue. (See
+//https://gcc.gnu.org/gcc-4.9/porting_to.html)
+#include <cstddef>
 #include <gmpxx.h>
 
 namespace TBTK{
