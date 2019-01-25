@@ -226,115 +226,6 @@ inline Complex& Complex::operator=(const std::complex<double> &rhs){
 }
 
 inline Complex& Complex::operator=(const std::string &rhs){
-/*	bool negativeSign = false;
-	size_t plusPosition = rhs.find("+");
-	if(plusPosition == std::string::npos){
-		plusPosition = rhs.find("-");
-		negativeSign = true;
-	}
-	std::string firstTerm;
-	std::string secondTerm;
-	if(plusPosition == std::string::npos){
-		firstTerm = rhs;
-		if(firstTerm.find("i") == std::string::npos)
-			secondTerm = "i0";
-		else
-			secondTerm == "0";
-	}
-	else{
-		firstTerm = rhs.substr(0, plusPosition);
-		secondTerm = rhs.substr(plusPosition + 1, rhs.size());
-	}
-
-	firstTerm.erase(
-		remove_if(firstTerm.begin(), firstTerm.end(), isspace),
-		firstTerm.end()
-	);
-	secondTerm.erase(
-		remove_if(secondTerm.begin(), secondTerm.end(), isspace),
-		secondTerm.end()
-	);
-
-	size_t iPositionFirst = firstTerm.find("i");
-	size_t iPositionSecond = secondTerm.find("i");
-	if(
-		iPositionFirst != std::string::npos
-		&& iPositionSecond == std::string::npos
-	){
-		if(iPositionFirst == 0){
-			firstTerm = firstTerm.substr(
-				iPositionFirst + 1,
-				firstTerm.size()
-			);
-		}
-		else if(iPositionFirst == firstTerm.size() - 1){
-			firstTerm = firstTerm.substr(
-				0,
-				iPositionFirst
-			);
-		}
-		else{
-			TBTKExit(
-				"ArbitraryPrecision::Complex::operator=()",
-				"Unable to parse '" << rhs << "' as a complex"
-				<< " number.",
-				"The number must be on one of the formats '1',"
-				<< " 'i1', '1 + i1', and 'i1 + 1', where '1'"
-				<< " can be replaced by arbitrary decimal"
-				<< " numbers."
-			);
-		}
-
-		if(negativeSign)
-			real = "-" + secondTerm;
-		else
-			real = secondTerm;
-		imag = firstTerm;
-	}
-	else if(
-		iPositionFirst == std::string::npos
-		&& iPositionSecond != std::string::npos
-	){
-		if(iPositionSecond == 0){
-			secondTerm = secondTerm.substr(
-				iPositionSecond + 1,
-				secondTerm.size()
-			);
-		}
-		else if(iPositionSecond == secondTerm.size() - 1){
-			secondTerm = secondTerm.substr(
-				0,
-				iPositionSecond
-			);
-		}
-		else{
-			TBTKExit(
-				"ArbitraryPrecision::Complex::operator=()",
-				"Unable to parse '" << rhs << "' as a complex"
-				<< " number.",
-				"The number must be on one of the formats '1',"
-				<< " 'i1', '1 + i1', and 'i1 + 1', where '1'"
-				<< " can be replaced by arbitrary decimal"
-				<< " numbers."
-			);
-		}
-
-		real = firstTerm;
-		if(negativeSign)
-			imag = "-" + secondTerm;
-		else
-			imag = secondTerm;
-	}
-	else{
-		TBTKExit(
-			"ArbitraryPrecision::Complex::operator=()",
-			"Unable to parse '" << rhs << "' as a complex number.",
-			"The number must be on one of the formats '1', 'i1',"
-			<< " '1 + i1', and 'i1 + 1', where '1' can be replaced"
-			<< " by arbitrary decimal numbers."
-		);
-	}*/
-
 	std::stringstream ss(rhs);
 	const int STATE_BEFORE_FIRST_TERM = 0;
 	const int STATE_READING_FIRST_TERM = 1;
@@ -629,12 +520,10 @@ inline Complex Complex::operator-() const{
 }
 
 inline std::ostream& operator<<(std::ostream &os, const Complex &complex){
-	if(complex.imag.getDouble() >= 0){
+	if(complex.imag.getDouble() >= 0)
 		os << complex.real << " + i" << complex.imag;
-	}
-	else{
+	else
 		os << complex.real << " - i" << -complex.imag;
-	}
 
 	return os;
 }
