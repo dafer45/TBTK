@@ -27,6 +27,8 @@
 
 namespace TBTK{
 
+#if TBTK_WRAP_PRIMITIVE_TYPES
+
 /** @brief Integer number. */
 class Integer : PseudoSerializable{
 public:
@@ -104,6 +106,44 @@ public:
 		return *this;
 	}
 
+	/** Increment operator.
+	 *
+	 *  @return The Integer after the increment has occured. */
+	Integer& operator++(){
+		value++;
+
+		return *this;
+	}
+
+	/** Increment operator.
+	 *
+	 *  @return The Integer before the increment has occured. */
+	Integer operator++(int){
+		Integer previous(*this);
+		operator++();
+
+		return previous;
+	}
+
+	/** Decrement operator.
+	 *
+	 *  @return The Integer after the decrease has occured. */
+	Integer& operator--(){
+		value--;
+
+		return *this;
+	}
+
+	/** Decrement operator.
+	 *
+	 *  @return The Integer before the decrease has occured. */
+	Integer operator--(int){
+		Integer previous(*this);
+		operator--();
+
+		return previous;
+	}
+
 	/** Serialize Integer. Note that Integer is PseudoSerializable rather
 	 *  than Serializable. This means that the Serializable interface is
 	 *  implemented non-virtually.
@@ -143,6 +183,10 @@ inline std::string Integer::serialize(Serializable::Mode mode) const{
 		);
 	}
 }
+
+#else
+	typedef int Integer;
+#endif
 
 };	//End of namespace TBTK
 

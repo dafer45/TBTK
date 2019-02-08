@@ -16,6 +16,7 @@ LIST(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/Modules/")
 
 #Include TBTKVersionInfo.cmake
 INCLUDE(TBTKVersionInfo)
+INCLUDE(TBTKBuildOptions)
 
 #Add link directory for global install
 LINK_DIRECTORIES(${CMAKE_CURRENT_LIST_DIR}/..)

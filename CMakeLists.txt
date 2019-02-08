@@ -14,6 +14,7 @@ ENABLE_TESTING()
 LIST(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake/Modules/")
 
 INCLUDE(TBTKVersionInfo)
+INCLUDE(TBTKBuildOptions)
 
 #Detect packages
 FIND_PACKAGE(BLAS REQUIRED)
@@ -329,7 +330,8 @@ CONFIGURE_FILE(
 	COPYONLY
 )
 
-#Copy TBTKVersionInfo.cmake and TBTKGitInfo.cmake to build folder.
+#Copy TBTKVersionInfo.cmake, TBTKGitInfo.cmake, and TBTKBuildOptions to build
+#folder.
 CONFIGURE_FILE(
 	CMake/Modules/TBTKVersionInfo.cmake
 	"${CMAKE_CURRENT_BINARY_DIR}/CMake/Modules/TBTKVersionInfo.cmake"
@@ -338,6 +340,10 @@ CONFIGURE_FILE(
 CONFIGURE_FILE(
 	CMake/Modules/TBTKGitInfo.cmake
 	${CMAKE_CURRENT_BINARY_DIR}/CMake/Modules/TBTKGitInfo.cmake
+)
+CONFIGURE_FILE(
+	CMake/Modules/TBTKBuildOptions.cmake
+	${CMAKE_CURRENT_BINARY_DIR}/CMake/Modules/TBTKBuildOptions.cmake
 )
 
 #Installation rules for configuration files.

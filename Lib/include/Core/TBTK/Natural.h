@@ -27,6 +27,8 @@
 
 namespace TBTK{
 
+#if TBTK_WRAP_PRIMITIVE_TYPES
+
 /** @brief Natural number. */
 class Natural : PseudoSerializable{
 public:
@@ -104,6 +106,44 @@ public:
 		return *this;
 	}
 
+	/** Increment operator.
+	 *
+	 *  @return The Natural after the increment has occured. */
+	Natural& operator++(){
+		value++;
+
+		return *this;
+	}
+
+	/** Increment operator.
+	 *
+	 *  @return The Natural before the increment has occured. */
+	Natural operator++(int){
+		Natural previous(*this);
+		operator++();
+
+		return previous;
+	}
+
+	/** Decrement operator.
+	 *
+	 *  @return The Natural after the decrease has occured. */
+	Natural& operator--(){
+		value--;
+
+		return *this;
+	}
+
+	/** Decrement operator.
+	 *
+	 *  @return The Natural before the decrease has occured. */
+	Natural operator--(int){
+		Natural previous(*this);
+		operator--();
+
+		return previous;
+	}
+
 	/** Serialize Natural. Note that Natural is PseudoSerializable rather
 	 *  than Serializable. This means that the Serializable interface is
 	 *  implemented non-virtually.
@@ -143,6 +183,10 @@ inline std::string Natural::serialize(Serializable::Mode mode) const{
 		);
 	}
 }
+
+#else
+	typedef unsigned int Natural;
+#endif
 
 };	//End of namespace TBTK
 

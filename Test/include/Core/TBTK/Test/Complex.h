@@ -4,6 +4,8 @@
 
 namespace TBTK{
 
+#if TBTK_WRAP_PRIMITIVE_TYPES
+
 TEST(Complex, Constructor0){
 	//Not testable on its own.
 }
@@ -80,5 +82,7 @@ TEST(Complex, operatorDivisionAssignment){
 	EXPECT_EQ(std::real(c), 0);
 	EXPECT_EQ(std::imag(c), -2);
 }
+
+#endif
 
 };

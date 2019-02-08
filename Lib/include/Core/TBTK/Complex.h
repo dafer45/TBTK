@@ -30,6 +30,8 @@
 
 namespace TBTK{
 
+#if TBTK_WRAP_PRIMITIVE_TYPES
+
 /** @brief Complex number. */
 class Complex : PseudoSerializable{
 public:
@@ -157,6 +159,10 @@ inline std::string Complex::serialize(Serializable::Mode mode) const{
 		);
 	}
 }
+
+#else
+	typedef std::complex<double> Complex;
+#endif
 
 };	//End of namespace TBTK
 

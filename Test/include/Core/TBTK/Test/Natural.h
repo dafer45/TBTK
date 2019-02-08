@@ -4,6 +4,8 @@
 
 namespace TBTK{
 
+#if TBTK_WRAP_PRIMITIVE_TYPES
+
 TEST(Natural, Constructor0){
 	//Not testable on its own.
 }
@@ -64,5 +66,33 @@ TEST(Natural, operatorDivisionAssignment){
 
 	EXPECT_EQ(natural, 7);
 }
+
+TEST(Natural, operatorIncrement0){
+	Natural natural(7);
+
+	EXPECT_EQ(++natural, 8);
+}
+
+TEST(Natural, operatorIncrement1){
+	Natural natural(7);
+
+	EXPECT_EQ(natural++, 7);
+	EXPECT_EQ(natural, 8);
+}
+
+TEST(Natural, operatorDecrement0){
+	Natural natural(7);
+
+	EXPECT_EQ(--natural, 6);
+}
+
+TEST(Natural, operatorDecrement1){
+	Natural natural(7);
+
+	EXPECT_EQ(natural--, 7);
+	EXPECT_EQ(natural, 6);
+}
+
+#endif
 
 };

@@ -27,6 +27,8 @@
 
 namespace TBTK{
 
+#if TBTK_WRAP_PRIMITIVE_TYPES
+
 /** @brief Real number. */
 class Real : PseudoSerializable{
 public:
@@ -143,6 +145,10 @@ inline std::string Real::serialize(Serializable::Mode mode) const{
 		);
 	}
 }
+
+#else
+	typedef double Real;
+#endif
 
 };	//End of namespace TBTK
 

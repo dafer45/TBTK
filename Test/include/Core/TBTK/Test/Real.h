@@ -4,6 +4,8 @@
 
 namespace TBTK{
 
+#if TBTK_WRAP_PRIMITIVE_TYPES
+
 TEST(Real, Constructor0){
 	//Not testable on its own.
 }
@@ -64,5 +66,7 @@ TEST(Real, operatorDivisionAssignment){
 
 	EXPECT_EQ(real, 7);
 }
+
+#endif
 
 };
