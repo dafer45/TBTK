@@ -124,7 +124,10 @@ private:
 	std::complex<double> value;
 };
 
-inline Complex::Complex(const std::string &serialization, Serializable::Mode mode){
+inline Complex::Complex(
+	const std::string &serialization,
+	Serializable::Mode mode
+){
 	switch(mode){
 	case Serializable::Mode::JSON:
 	{

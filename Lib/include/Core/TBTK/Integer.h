@@ -157,7 +157,10 @@ private:
 	int value;
 };
 
-inline Integer::Integer(const std::string &serialization, Serializable::Mode mode){
+inline Integer::Integer(
+	const std::string &serialization,
+	Serializable::Mode mode
+){
 	switch(mode){
 	case Serializable::Mode::JSON:
 		value = stoi(serialization);

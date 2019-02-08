@@ -157,7 +157,10 @@ private:
 	unsigned int value;
 };
 
-inline Natural::Natural(const std::string &serialization, Serializable::Mode mode){
+inline Natural::Natural(
+	const std::string &serialization,
+	Serializable::Mode mode
+){
 	switch(mode){
 	case Serializable::Mode::JSON:
 		value = stoul(serialization);
