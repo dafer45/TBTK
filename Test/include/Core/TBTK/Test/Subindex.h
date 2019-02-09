@@ -6,7 +6,11 @@ namespace TBTK{
 
 #if TBTK_WRAP_PRIMITIVE_TYPES
 
-TEST(Subindex, Constructor){
+TEST(Subindex, Constructor0){
+	//Not testable on its own.
+}
+
+TEST(Subindex, Constructor1){
 	Subindex subindex0((int)7);
 	Subindex subindex1(Integer(7));
 	Subindex subindex2((unsigned int)7);
@@ -64,24 +68,84 @@ TEST(Subindex, operatorNotEqual){
 	EXPECT_TRUE(subindex0 != subindex2);
 }
 
-TEST(Subindex, operatorLessThan){
+TEST(Subindex, operatorLessThan0){
 	Subindex subindex(7);
 
-	EXPECT_TRUE(7 < 8);
-	EXPECT_FALSE(7 < 7);
-	EXPECT_FALSE(7 < 6);
+	EXPECT_TRUE(subindex < 8);
+	EXPECT_FALSE(subindex < 7);
+	EXPECT_FALSE(subindex < 6);
 }
 
-TEST(Subindex, operatorLargerThan){
+TEST(Subindex, operatorLessThan1){
 	Subindex subindex(7);
 
-	EXPECT_TRUE(7 > 6);
-	EXPECT_FALSE(7 > 7);
-	EXPECT_FALSE(7 > 8);
+	EXPECT_TRUE(6 < subindex);
+	EXPECT_FALSE(7 < subindex);
+	EXPECT_FALSE(8 < subindex);
+}
+
+TEST(Subindex, operatorLargerThan0){
+	Subindex subindex(7);
+
+	EXPECT_TRUE(subindex > 6);
+	EXPECT_FALSE(subindex > 7);
+	EXPECT_FALSE(subindex > 8);
+}
+
+TEST(Subindex, operatorLargerThan1){
+	Subindex subindex(7);
+
+	EXPECT_TRUE(8 > subindex);
+	EXPECT_FALSE(7 > subindex);
+	EXPECT_FALSE(6 > subindex);
+}
+
+TEST(Subindex, operatorLessOrEqualTo0){
+	Subindex subindex(7);
+
+	EXPECT_TRUE(subindex <= 8);
+	EXPECT_TRUE(subindex <= 7);
+	EXPECT_FALSE(subindex <= 6);
+}
+
+TEST(Subindex, operatorLessOrEqualTo1){
+	Subindex subindex(7);
+
+	EXPECT_TRUE(6 <= subindex);
+	EXPECT_TRUE(7 <= subindex);
+	EXPECT_FALSE(8 <= subindex);
+}
+
+TEST(Subindex, operatorLargerOrEqualTo0){
+	Subindex subindex(7);
+
+	EXPECT_TRUE(subindex >= 6);
+	EXPECT_TRUE(subindex >= 7);
+	EXPECT_FALSE(subindex >= 8);
+}
+
+TEST(Subindex, operatorLargerOrEqualTo1){
+	Subindex subindex(7);
+
+	EXPECT_TRUE(8 >= subindex);
+	EXPECT_TRUE(7 >= subindex);
+	EXPECT_FALSE(6 >= subindex);
 }
 
 TEST(Subindex , operatorOstream){
-	//Not testable.
+	Subindex subindex(7);
+	std::stringstream ss;
+	ss << subindex;
+
+	EXPECT_TRUE(ss.str().compare("7") == 0);
+}
+
+TEST(Subindex, operatorIstream){
+	Subindex subindex;
+	std::stringstream ss("7");
+	ss >> subindex;
+
+	EXPECT_EQ(subindex, 7);
 }
 
 #endif

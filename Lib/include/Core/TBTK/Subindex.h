@@ -34,6 +34,9 @@ namespace TBTK{
 /** @brief Subindex number. */
 class Subindex : PseudoSerializable{
 public:
+	/** Constructor. */
+	Subindex(){};
+
 	/** Constructor.
 	 *
 	 *  @param value The value to initilize the Subindex with. */
@@ -105,6 +108,16 @@ public:
 		return value < rhs.value;
 	}
 
+	/** Less than operator.
+	 *
+	 *  @param rhs The right hand side.
+	 *
+	 *  @return True if the left hand side is smaller than the right hand
+	 *  side, otherwise false. */
+	friend bool operator<(int lhs, Subindex rhs){
+		return lhs < rhs.value;
+	}
+
 	/** Larger than operator.
 	 *
 	 *  @param rhs The right hand side.
@@ -113,6 +126,56 @@ public:
 	 *  side, otherwise false */
 	bool operator>(Subindex rhs) const{
 		return value > rhs.value;
+	}
+
+	/** Larger than operator.
+	 *
+	 *  @param rhs The right hand side.
+	 *
+	 *  @return True if the left hand side is larger than the right hand
+	 *  side, otherwise false */
+	friend bool operator>(int lhs, Subindex rhs){
+		return lhs > rhs.value;
+	}
+
+	/** Less or equal to operator.
+	 *
+	 *  @param rhs The right hand side.
+	 *
+	 *  @return True if the left hand side is less or equal to the right
+	 *  hand side, otherwise false. */
+	bool operator<=(Subindex rhs) const{
+		return value <= rhs.value;
+	}
+
+	/** Less or equal to operator.
+	 *
+	 *  @param rhs The right hand side.
+	 *
+	 *  @return True if the left hand side is less or equal to the right
+	 *  hand side, otherwise false. */
+	friend bool operator<=(int lhs, Subindex rhs){
+		return lhs <= rhs.value;
+	}
+
+	/** Larger or equal to operator.
+	 *
+	 *  @param rhs The right hand side.
+	 *
+	 *  @return True if the left hand side is larger or equal to the right
+	 *  hand side, otherwise false. */
+	bool operator>=(Subindex rhs) const{
+		return value >= rhs.value;
+	}
+
+	/** Larger or equal to operator.
+	 *
+	 *  @param rhs The right hand side.
+	 *
+	 *  @return True if the left hand side is larger or equal to the right
+	 *  hand side, otherwise false. */
+	friend bool operator>=(int lhs, Subindex rhs){
+		return lhs >= rhs.value;
 	}
 
 	/** ostream operator.
@@ -125,6 +188,20 @@ public:
 		os << subindex.value;
 
 		return os;
+	}
+
+	/** istream operator.
+	 *
+	 *  @param os The istream to read from.
+	 *  @param rhs The Subindex to read to.
+	 *
+	 *  @return The istream. */
+	friend std::istream& operator>>(std::istream &is, Subindex &subindex){
+		int i;
+		is >> i;
+		subindex.value = Integer(i);
+
+		return is;
 	}
 
 	/** Serialize Subindex. Note that Subindex is PseudoSerializable rather
