@@ -16,3 +16,6 @@
 
 - Implement operator+=(), operator-=(), operator*=(), operator/=() operator+(),
   operator-(), opeartor*(), and operator/() for all Properties.
+
+- Add operator+(), operator-(), operator++(), operator--(), operator*(), and
+  operator/() to Subindex.
