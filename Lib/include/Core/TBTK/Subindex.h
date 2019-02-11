@@ -80,6 +80,140 @@ public:
 		return *this;
 	}
 
+	/** Addition asignment operator.
+	 *
+	 *  @param rhs The right hand side.
+	 *
+	 *  @return The subindex after assignment has occured. */
+	Subindex& operator+=(Subindex rhs){
+		value += rhs.value;
+
+		return *this;
+	}
+
+	/** Addition operator.
+	 *
+	 *  @param lhs The left hand side.
+	 *  @param rhs The right hand side.
+	 *
+	 *  @return The sum of the two subindices. */
+	friend Subindex operator+(Subindex lhs, Subindex rhs){
+		Subindex result(lhs);
+		result += rhs;
+
+		return result;
+	}
+
+	/** Subtraction asignment operator.
+	 *
+	 *  @param rhs The right hand side.
+	 *
+	 *  @return The subindex after assignment has occured. */
+	Subindex& operator-=(Subindex rhs){
+		value -= rhs.value;
+
+		return *this;
+	}
+
+	/** Subtraction operator.
+	 *
+	 *  @param lhs The left hand side.
+	 *  @param rhs The right hand side.
+	 *
+	 *  @return The difference between the two subindices. */
+	friend Subindex operator-(Subindex lhs, Subindex rhs){
+		Subindex result(lhs);
+		result -= rhs;
+
+		return result;
+	}
+
+	/** Multiplication asignment operator.
+	 *
+	 *  @param rhs The right hand side.
+	 *
+	 *  @return The subindex after assignment has occured. */
+	Subindex& operator*=(Subindex rhs){
+		value *= rhs.value;
+
+		return *this;
+	}
+
+	/** Multiplication operator.
+	 *
+	 *  @param lhs The left hand side.
+	 *  @param rhs The right hand side.
+	 *
+	 *  @return The product of the two subindices. */
+	friend Subindex operator*(Subindex lhs, Subindex rhs){
+		Subindex result(lhs);
+		result *= rhs;
+
+		return result;
+	}
+
+	/** Division asignment operator.
+	 *
+	 *  @param rhs The right hand side.
+	 *
+	 *  @return The subindex after assignment has occured. */
+	Subindex& operator/=(Subindex rhs){
+		value /= rhs.value;
+
+		return *this;
+	}
+
+	/** Division operator.
+	 *
+	 *  @param lhs The left hand side.
+	 *  @param rhs The right hand side.
+	 *
+	 *  @return The quotient between the two subindices. */
+	friend Subindex operator/(Subindex lhs, Subindex rhs){
+		Subindex result(lhs);
+		result /= rhs;
+
+		return result;
+	}
+
+	/** Increment operator.
+	 *
+	 *  @return The Subindex after the increment has occured. */
+	Subindex& operator++(){
+		value++;
+
+		return *this;
+	}
+
+	/** Increment operator.
+	 *
+	 *  @return The Subindex before the increment has occured. */
+	Subindex operator++(int){
+		Subindex previous(*this);
+		operator++();
+
+		return previous;
+	}
+
+	/** Decrement operator.
+	 *
+	 *  @return The Subindex after the decrement has occured. */
+	Subindex& operator--(){
+		value--;
+
+		return *this;
+	}
+
+	/** Decrement operator.
+	 *
+	 *  @return The Subindex before the decrement has occured. */
+	Subindex operator--(int){
+		Subindex previous(*this);
+		operator--();
+
+		return previous;
+	}
+
 	/** Comparison operator.
 	 *
 	 *  @param rhs The right hand side.

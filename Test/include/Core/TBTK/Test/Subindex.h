@@ -50,6 +50,88 @@ TEST(Subindex, operatorAssignment){
 	EXPECT_EQ(subindex0, subindex3);
 }
 
+TEST(Subindex, operatorAdditionAssignment){
+	Subindex subindex(7);
+	subindex += 1;
+
+	EXPECT_EQ(subindex, 8);
+}
+
+TEST(Subindex, operatorAddition){
+	Subindex subindex0(7);
+	Subindex subindex1(1);
+
+	EXPECT_EQ(subindex0 + subindex1, 8);
+}
+
+TEST(Subindex, operatorSubtractionAssignment){
+	Subindex subindex(7);
+	subindex -= 1;
+
+	EXPECT_EQ(subindex, 6);
+}
+
+TEST(Subindex, operatorSubtraction){
+	Subindex subindex0(7);
+	Subindex subindex1(1);
+
+	EXPECT_EQ(subindex0 - subindex1, 6);
+}
+
+TEST(Subindex, operatorMultiplicationAssignment){
+	Subindex subindex(7);
+	subindex *= 2;
+
+	EXPECT_EQ(subindex, 14);
+}
+
+TEST(Subindex, operatorMultiplication){
+	Subindex subindex0(7);
+	Subindex subindex1(2);
+
+	EXPECT_EQ(subindex0*subindex1, 14);
+}
+
+TEST(Subindex, operatorDivisionAssignment){
+	Subindex subindex(6);
+	subindex /= 2;
+
+	EXPECT_EQ(subindex, 3);
+}
+
+TEST(Subindex, operatorDivision){
+	Subindex subindex0(6);
+	Subindex subindex1(2);
+
+	EXPECT_EQ(subindex0/subindex1, 3);
+}
+
+TEST(Subindex, operatorIncrement0){
+	Subindex subindex(7);
+
+	EXPECT_EQ(++subindex, 8);
+}
+
+TEST(Subindex, operatorIncrement1){
+	Subindex subindex(7);
+
+	EXPECT_EQ(subindex++, 7);
+	EXPECT_EQ(subindex, 8);
+}
+
+TEST(Subindex, operatorDecrement0){
+	Subindex subindex(7);
+
+	EXPECT_EQ(--subindex, 6);
+}
+
+TEST(Subindex, operatorDecrement1){
+	Subindex subindex(7);
+
+	EXPECT_EQ(subindex--, 7);
+	EXPECT_EQ(subindex, 6);
+}
+
 TEST(Subindex, operatorComparsion){
 	Subindex subindex0(7);
 	Subindex subindex1(7);
