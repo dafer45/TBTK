@@ -25,6 +25,10 @@
 
 #include "TBTK/PseudoSerializable.h"
 
+#ifndef TBTK_DISABLE_NLOHMANN_JSON
+#	include "TBTK/json.hpp"
+#endif
+
 namespace TBTK{
 
 #if TBTK_WRAP_PRIMITIVE_TYPES
@@ -152,6 +156,16 @@ public:
 	 *
 	 *  @return Serialized string representation of the Integer. */
 	std::string serialize(Serializable::Mode mode) const;
+
+#ifndef TBTK_DISABLE_NLOHMANN_JSON
+	friend void to_json(nlohmann::json &j, const Integer &integer){
+		nlohmann::to_json(j, integer.value);
+	}
+
+	friend void from_json(const nlohmann::json &j, Integer &integer){
+		nlohmann::from_json(j, integer.value);
+	}
+#endif
 private:
 	/** Value. */
 	int value;

@@ -27,6 +27,10 @@
 #include "TBTK/Natural.h"
 #include "TBTK/PseudoSerializable.h"
 
+#ifndef TBTK_DISABLE_NLOHMANN_JSON
+#	include "TBTK/json.hpp"
+#endif
+
 namespace TBTK{
 
 #if TBTK_WRAP_PRIMITIVE_TYPES
@@ -56,7 +60,7 @@ public:
 	Subindex(const std::string &serialization, Serializable::Mode mode);
 
 	/** Type conversion operator. */
-	constexpr explicit operator int() const{ return value;	};
+	constexpr operator int() const{ return value;	};
 
 	/** Assignment operator.
 	 *
@@ -97,12 +101,12 @@ public:
 	 *  @param rhs The right hand side.
 	 *
 	 *  @return The sum of the two subindices. */
-	friend Subindex operator+(Subindex lhs, Subindex rhs){
+/*	friend Subindex operator+(Subindex lhs, Subindex rhs){
 		Subindex result(lhs);
 		result += rhs;
 
 		return result;
-	}
+	}*/
 
 	/** Subtraction asignment operator.
 	 *
@@ -121,12 +125,12 @@ public:
 	 *  @param rhs The right hand side.
 	 *
 	 *  @return The difference between the two subindices. */
-	friend Subindex operator-(Subindex lhs, Subindex rhs){
+/*	friend Subindex operator-(Subindex lhs, Subindex rhs){
 		Subindex result(lhs);
 		result -= rhs;
 
 		return result;
-	}
+	}*/
 
 	/** Multiplication asignment operator.
 	 *
@@ -145,12 +149,12 @@ public:
 	 *  @param rhs The right hand side.
 	 *
 	 *  @return The product of the two subindices. */
-	friend Subindex operator*(Subindex lhs, Subindex rhs){
+/*	friend Subindex operator*(Subindex lhs, Subindex rhs){
 		Subindex result(lhs);
 		result *= rhs;
 
 		return result;
-	}
+	}*/
 
 	/** Division asignment operator.
 	 *
@@ -169,12 +173,12 @@ public:
 	 *  @param rhs The right hand side.
 	 *
 	 *  @return The quotient between the two subindices. */
-	friend Subindex operator/(Subindex lhs, Subindex rhs){
+/*	friend Subindex operator/(Subindex lhs, Subindex rhs){
 		Subindex result(lhs);
 		result /= rhs;
 
 		return result;
-	}
+	}*/
 
 	/** Increment operator.
 	 *
@@ -219,18 +223,18 @@ public:
 	 *  @param rhs The right hand side.
 	 *
 	 *  @return True if the two subindices agree, otherwise false. */
-	bool operator==(Subindex rhs) const{
+/*	bool operator==(Subindex rhs) const{
 		return value == rhs.value;
-	}
+	}*/
 
 	/** Not equal operator.
 	 *
 	 *  @param rhs The right hand side.
 	 *
 	 *  @return False if the two subindices agree, otherwise true. */
-	bool operator!=(Subindex rhs) const{
+/*	bool operator!=(Subindex rhs) const{
 		return !operator==(rhs);
-	}
+	}*/
 
 	/** Less than operator.
 	 *
@@ -238,9 +242,9 @@ public:
 	 *
 	 *  @return True if the left hand side is smaller than the right hand
 	 *  side, otherwise false. */
-	bool operator<(Subindex rhs) const{
+/*	bool operator<(Subindex rhs) const{
 		return value < rhs.value;
-	}
+	}*/
 
 	/** Less than operator.
 	 *
@@ -248,9 +252,9 @@ public:
 	 *
 	 *  @return True if the left hand side is smaller than the right hand
 	 *  side, otherwise false. */
-	friend bool operator<(int lhs, Subindex rhs){
+/*	friend bool operator<(int lhs, Subindex rhs){
 		return lhs < rhs.value;
-	}
+	}*/
 
 	/** Larger than operator.
 	 *
@@ -258,9 +262,9 @@ public:
 	 *
 	 *  @return True if the left hand side is larger than the right hand
 	 *  side, otherwise false */
-	bool operator>(Subindex rhs) const{
+/*	bool operator>(Subindex rhs) const{
 		return value > rhs.value;
-	}
+	}*/
 
 	/** Larger than operator.
 	 *
@@ -268,9 +272,9 @@ public:
 	 *
 	 *  @return True if the left hand side is larger than the right hand
 	 *  side, otherwise false */
-	friend bool operator>(int lhs, Subindex rhs){
+/*	friend bool operator>(int lhs, Subindex rhs){
 		return lhs > rhs.value;
-	}
+	}*/
 
 	/** Less or equal to operator.
 	 *
@@ -278,9 +282,9 @@ public:
 	 *
 	 *  @return True if the left hand side is less or equal to the right
 	 *  hand side, otherwise false. */
-	bool operator<=(Subindex rhs) const{
+/*	bool operator<=(Subindex rhs) const{
 		return value <= rhs.value;
-	}
+	}*/
 
 	/** Less or equal to operator.
 	 *
@@ -288,9 +292,9 @@ public:
 	 *
 	 *  @return True if the left hand side is less or equal to the right
 	 *  hand side, otherwise false. */
-	friend bool operator<=(int lhs, Subindex rhs){
+/*	friend bool operator<=(int lhs, Subindex rhs){
 		return lhs <= rhs.value;
-	}
+	}*/
 
 	/** Larger or equal to operator.
 	 *
@@ -298,9 +302,9 @@ public:
 	 *
 	 *  @return True if the left hand side is larger or equal to the right
 	 *  hand side, otherwise false. */
-	bool operator>=(Subindex rhs) const{
+/*	bool operator>=(Subindex rhs) const{
 		return value >= rhs.value;
-	}
+	}*/
 
 	/** Larger or equal to operator.
 	 *
@@ -308,9 +312,9 @@ public:
 	 *
 	 *  @return True if the left hand side is larger or equal to the right
 	 *  hand side, otherwise false. */
-	friend bool operator>=(int lhs, Subindex rhs){
+/*	friend bool operator>=(int lhs, Subindex rhs){
 		return lhs >= rhs.value;
-	}
+	}*/
 
 	/** ostream operator.
 	 *
@@ -346,6 +350,16 @@ public:
 	 *
 	 *  @return Serialized string representation of the Subindex. */
 	std::string serialize(Serializable::Mode mode) const;
+
+#ifndef TBTK_DISABLE_NLOHMANN_JSON
+	friend void to_json(nlohmann::json &j, const Subindex &subindex){
+		to_json(j, subindex.value);
+	}
+
+	friend void from_json(const nlohmann::json &j, Subindex &subindex){
+		from_json(j, subindex.value);
+	}
+#endif
 private:
 	/** Value. */
 	Integer value;
