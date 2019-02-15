@@ -25,6 +25,10 @@
 
 #include "TBTK/PseudoSerializable.h"
 
+#ifndef TBTK_DISABLE_NLOHMANN_JSON
+#	include "TBTK/json.hpp"
+#endif
+
 namespace TBTK{
 
 #if TBTK_WRAP_PRIMITIVE_TYPES
@@ -70,6 +74,24 @@ public:
 	 *
 	 *  @return Serialized string representation of the Boolean. */
 	std::string serialize(Serializable::Mode mode) const;
+
+#ifndef TBTK_DISABLE_NLOHMANN_JSON
+	/** Implements the Nlohmann json interface for conversion to json.
+	 *
+	 *  @param j The json output.
+	 *  @param boolean The Boolean to convert. */
+	friend void to_json(nlohmann::json &j, const Boolean &boolean){
+		nlohmann::to_json(j, boolean.value);
+	}
+
+	/** Implements the Nlohmann json interface for conversion from json.
+	 *
+	 *  @param j The json input.
+	 *  @param boolean The Boolean to convert to. */
+	friend void from_json(const nlohmann::json &j, Boolean &boolean){
+		nlohmann::from_json(j, boolean.value);
+	}
+#endif
 private:
 	/** Value. */
 	bool value;

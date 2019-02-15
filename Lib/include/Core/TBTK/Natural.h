@@ -25,6 +25,10 @@
 
 #include "TBTK/PseudoSerializable.h"
 
+#ifndef TBTK_DISABLE_NLOHMANN_JSON
+#	include "TBTK/json.hpp"
+#endif
+
 namespace TBTK{
 
 #if TBTK_WRAP_PRIMITIVE_TYPES
@@ -152,6 +156,24 @@ public:
 	 *
 	 *  @return Serialized string representation of the Natural. */
 	std::string serialize(Serializable::Mode mode) const;
+
+#ifndef TBTK_DISABLE_NLOHMANN_JSON
+	/** Implements the Nlohmann interface for conversion to json.
+	 *
+	 *  @param j The json output.
+	 *  @param natural The Natural to convert. */
+	friend void to_json(nlohmann::json &j, const Natural &natural){
+		nlohmann::to_json(j, natural.value);
+	}
+
+	/** Implements the Nlohmann interface for conversion from json.
+	 *
+	 *  @param j The json input.
+	 *  @param natural The Natural to convert to. */
+	friend void from_json(const nlohmann::json &j, Natural &natural){
+		nlohmann::from_json(j, natural.value);
+	}
+#endif
 private:
 	/** Value. */
 	unsigned int value;

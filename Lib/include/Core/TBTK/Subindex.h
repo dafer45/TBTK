@@ -352,10 +352,18 @@ public:
 	std::string serialize(Serializable::Mode mode) const;
 
 #ifndef TBTK_DISABLE_NLOHMANN_JSON
+	/** Implements the Nlohmann json interface for conversion to json.
+	 *
+	 *  @param j The json output.
+	 *  @param subindex The Subindex to convert. */
 	friend void to_json(nlohmann::json &j, const Subindex &subindex){
 		to_json(j, subindex.value);
 	}
 
+	/** Implements the Nlohmann json interface for conversion from json.
+	 *
+	 *  @param j The json input.
+	 *  @param subindex The Subindex to convert to. */
 	friend void from_json(const nlohmann::json &j, Subindex &subindex){
 		from_json(j, subindex.value);
 	}
