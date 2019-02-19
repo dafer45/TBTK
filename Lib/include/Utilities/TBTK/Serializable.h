@@ -23,6 +23,7 @@
 #ifndef COM_DAFER45_TBTK_SERIALIZABLE
 #define COM_DAFER45_TBTK_SERIALIZABLE
 
+#include "TBTK/SpinMatrix.h"
 #include "TBTK/Statistics.h"
 #include "TBTK/TBTKMacros.h"
 
@@ -96,66 +97,89 @@ protected:
 		Mode mode
 	);
 
+	/** Serialize.
+	 *
+	 *  @param data The data to serialize.
+	 *  @param mode The mode with which to serialize the data.
+	 *
+	 *  @return A string containing the serialization of the data. */
+	template<typename DataType>
+	static std::string serialize(const DataType &data, Mode mode);
+
+	/** Deserialize.
+	 *
+	 *  @param serialization The serialization from which the data is to be
+	 *  deserialized.
+	 *
+	 *  @param mode The mode with which the data has been serialized.
+	 *
+	 *  @return The data after deserialization. */
+	template<typename DataType>
+	static DataType deserialize(
+		const std::string &serialization,
+		Mode mode
+	);
+private:
 	/** Serialize bool. */
-	static std::string serialize(bool b, Mode mode);
+	static std::string _serialize(bool b, Mode mode);
 
 	/** Deserialize bool. */
-	static void deserialize(
+	static void _deserialize(
 		const std::string &serialization,
 		bool *b,
 		Mode mode
 	);
 
 	/** Serialize int. */
-	static std::string serialize(int i, Mode mode);
+	static std::string _serialize(int i, Mode mode);
 
 	/** Deserialize int. */
-	static void deserialize(
+	static void _deserialize(
 		const std::string &serialization,
 		int *i,
 		Mode mode
 	);
 
 	/** Serialize unsigned int. */
-	static std::string serialize(unsigned int u, Mode mode);
+	static std::string _serialize(unsigned int u, Mode mode);
 
 	/** Deserialize unsigned int. */
-	static void deserialize(
+	static void _deserialize(
 		const std::string &serialization,
 		unsigned int *u,
 		Mode mode
 	);
 
 	/** Serialize double. */
-	static std::string serialize(double d, Mode mode);
+	static std::string _serialize(double d, Mode mode);
 
 	/** Deserialize double. */
-	static void deserialize(
+	static void _deserialize(
 		const std::string &serialization,
 		double *d,
 		Mode mode
 	);
 
 	/** Serialize complex<double>. */
-	static std::string serialize(std::complex<double> c, Mode mode);
+	static std::string _serialize(std::complex<double> c, Mode mode);
 
 	/** Deserialize complex<double>. */
-	static void deserialize(
+	static void _deserialize(
 		const std::string &serialization,
 		std::complex<double> *c,
 		Mode mode
 	);
 
 	/** Serialize Statistics. */
-	static std::string serialize(Statistics s, Mode mode);
+	static std::string _serialize(Statistics s, Mode mode);
 
 	/** Deserialize Statistics. */
-	static void deserialize(
+	static void _deserialize(
 		const std::string &serialization,
 		Statistics *s,
 		Mode mode
 	);
-
+protected:
 	/** Extracts a component of a serialization string, catching potential
 	 *  errors. In particular used to extract the serialization string for
 	 *  parents in the constructor of a child, because no try-catch block
@@ -174,7 +198,92 @@ protected:
 	friend class SourceAmplitude;
 };
 
-inline std::string Serializable::serialize(bool b, Mode mode){
+template<typename DataType>
+std::string Serializable::serialize(const DataType &data, Mode mode){
+	return data.serialize(mode);
+}
+
+template<>
+inline std::string Serializable::serialize(const bool &data, Mode mode){
+	return _serialize(data, mode);
+}
+
+template<>
+inline std::string Serializable::serialize(const double &data, Mode mode){
+	return _serialize(data, mode);
+}
+
+template<>
+inline std::string Serializable::serialize(
+	const std::complex<double> &data,
+	Mode mode
+){
+	return _serialize(data, mode);
+}
+
+template<>
+inline std::string Serializable::serialize(const int &data, Mode mode){
+	return _serialize(data, mode);
+}
+
+template<>
+inline std::string Serializable::serialize(const SpinMatrix &data, Mode mode){
+	TBTKNotYetImplemented("Serializable::serialize<SpinMatrix>()");
+}
+
+template<>
+inline std::string Serializable::serialize(const Statistics &data, Mode mode){
+	return _serialize(data, mode);
+}
+
+template<typename DataType>
+DataType Serializable::deserialize(const std::string &serialization, Mode mode){
+	return DataType(serialization, mode);
+}
+
+template<>
+inline int Serializable::deserialize(const std::string &serialization, Mode mode){
+	int i;
+	_deserialize(serialization, &i, mode);
+	return i;
+}
+
+template<>
+inline double Serializable::deserialize(const std::string &serialization, Mode mode){
+	double d;
+	_deserialize(serialization, &d, mode);
+	return d;
+}
+
+template<>
+inline std::complex<double> Serializable::deserialize(
+	const std::string &serialization,
+	Mode mode
+){
+	std::complex<double> c;
+	_deserialize(serialization, &c, mode);
+	return c;
+}
+
+template<>
+inline SpinMatrix Serializable::deserialize(
+	const std::string &serialization,
+	Mode mode
+){
+	TBTKNotYetImplemented("Serializable::deserialize<SpinMatrix>()");
+}
+
+template<>
+inline Statistics Serializable::deserialize(
+	const std::string &serialization,
+	Mode mode
+){
+	Statistics s;
+	_deserialize(serialization, &s, mode);
+	return s;
+}
+
+inline std::string Serializable::_serialize(bool b, Mode mode){
 	switch(mode){
 	case Mode::Debug:
 	case Mode::JSON:
@@ -193,7 +302,7 @@ inline std::string Serializable::serialize(bool b, Mode mode){
 	}
 }
 
-inline void Serializable::deserialize(
+inline void Serializable::_deserialize(
 	const std::string &serialization,
 	bool *b,
 	Mode mode
@@ -217,7 +326,7 @@ inline void Serializable::deserialize(
 	}
 }
 
-inline std::string Serializable::serialize(int i, Mode mode){
+inline std::string Serializable::_serialize(int i, Mode mode){
 	switch(mode){
 	case Mode::Debug:
 	case Mode::JSON:
@@ -236,7 +345,7 @@ inline std::string Serializable::serialize(int i, Mode mode){
 	}
 }
 
-inline void Serializable::deserialize(
+inline void Serializable::_deserialize(
 	const std::string &serialization,
 	int *i,
 	Mode mode
@@ -260,7 +369,7 @@ inline void Serializable::deserialize(
 	}
 }
 
-inline std::string Serializable::serialize(unsigned int u, Mode mode){
+inline std::string Serializable::_serialize(unsigned int u, Mode mode){
 	switch(mode){
 	case Mode::Debug:
 	case Mode::JSON:
@@ -279,7 +388,7 @@ inline std::string Serializable::serialize(unsigned int u, Mode mode){
 	}
 }
 
-inline void Serializable::deserialize(
+inline void Serializable::_deserialize(
 	const std::string &serialization,
 	unsigned int *u,
 	Mode mode
@@ -303,7 +412,7 @@ inline void Serializable::deserialize(
 	}
 }
 
-inline std::string Serializable::serialize(double d, Mode mode){
+inline std::string Serializable::_serialize(double d, Mode mode){
 	switch(mode){
 	case Mode::Debug:
 	case Mode::JSON:
@@ -322,7 +431,7 @@ inline std::string Serializable::serialize(double d, Mode mode){
 	}
 }
 
-inline void Serializable::deserialize(
+inline void Serializable::_deserialize(
 	const std::string &serialization,
 	double *d,
 	Mode mode
@@ -346,7 +455,7 @@ inline void Serializable::deserialize(
 	}
 }
 
-inline std::string Serializable::serialize(std::complex<double> c, Mode mode){
+inline std::string Serializable::_serialize(std::complex<double> c, Mode mode){
 	switch(mode){
 	case Mode::Debug:
 	case Mode::JSON:
@@ -365,7 +474,7 @@ inline std::string Serializable::serialize(std::complex<double> c, Mode mode){
 	}
 }
 
-inline void Serializable::deserialize(
+inline void Serializable::_deserialize(
 	const std::string &serialization,
 	std::complex<double> *c,
 	Mode mode
@@ -389,7 +498,7 @@ inline void Serializable::deserialize(
 	}
 }
 
-inline std::string Serializable::serialize(Statistics statistics, Mode mode){
+inline std::string Serializable::_serialize(Statistics statistics, Mode mode){
 	switch(mode){
 	case Mode::Debug:
 	{
@@ -438,7 +547,7 @@ inline std::string Serializable::serialize(Statistics statistics, Mode mode){
 	}
 }
 
-inline void Serializable::deserialize(
+inline void Serializable::_deserialize(
 	const std::string &serialization,
 	Statistics *statistics,
 	Mode mode

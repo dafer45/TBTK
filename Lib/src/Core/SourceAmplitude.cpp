@@ -69,7 +69,11 @@ SourceAmplitude::SourceAmplitude(
 			amplitudeCallback = nullptr;
 
 			nlohmann::json j = nlohmann::json::parse(serialization);
-			Serializable::deserialize(j["amplitude"].get<string>(), &amplitude, mode);
+//			Serializable::deserialize(j["amplitude"].get<string>(), &amplitude, mode);
+			amplitude = Serializable::deserialize<complex<double>>(
+				j["amplitude"].get<string>(),
+				mode
+			);
 			index = Index(j["index"].dump(), mode);
 		}
 		catch(nlohmann::json::exception &e){

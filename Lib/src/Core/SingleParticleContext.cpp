@@ -56,9 +56,13 @@ SingleParticleContext::SingleParticleContext(
 	{
 		try{
 			nlohmann::json j = nlohmann::json::parse(serialization);
-			deserialize(
+/*			deserialize(
 				j.at("statistics").get<string>(),
 				&statistics,
+				mode
+			);*/
+			statistics = Serializable::deserialize<Statistics>(
+				j.at("statistics").get<string>(),
 				mode
 			);
 			hoppingAmplitudeSet = HoppingAmplitudeSet(

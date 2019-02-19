@@ -106,7 +106,11 @@ HoppingAmplitude::HoppingAmplitude(
 			amplitudeCallback = nullptr;
 
 			nlohmann::json j = nlohmann::json::parse(serialization);
-			Serializable::deserialize(j["amplitude"].get<string>(), &amplitude, mode);
+//			Serializable::deserialize(j["amplitude"].get<string>(), &amplitude, mode);
+			amplitude = Serializable::deserialize<complex<double>>(
+				j["amplitude"].get<string>(),
+				mode
+			);
 			toIndex = Index(j["toIndex"].dump(), mode);
 			fromIndex = Index(j["fromIndex"].dump(), mode);
 		}

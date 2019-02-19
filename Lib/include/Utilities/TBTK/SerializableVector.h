@@ -122,13 +122,16 @@ SerializableVector<DataType, false>::SerializableVector(
 				it < elements.end();
 				++it
 			){
-				DataType value;
+/*				DataType value;
 				Serializable::deserialize(
 					*it,
 					&value,
 					mode
 				);
-				std::vector<DataType>::push_back(value);
+				std::vector<DataType>::push_back(value);*/
+				std::vector<DataType>::push_back(
+					Serializable::deserialize<DataType>(*it, mode)
+				);
 			}
 		}
 		catch(nlohmann::json::exception &e){
