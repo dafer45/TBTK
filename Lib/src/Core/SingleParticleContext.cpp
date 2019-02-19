@@ -56,11 +56,6 @@ SingleParticleContext::SingleParticleContext(
 	{
 		try{
 			nlohmann::json j = nlohmann::json::parse(serialization);
-/*			deserialize(
-				j.at("statistics").get<string>(),
-				&statistics,
-				mode
-			);*/
 			statistics = Serializable::deserialize<Statistics>(
 				j.at("statistics").get<string>(),
 				mode

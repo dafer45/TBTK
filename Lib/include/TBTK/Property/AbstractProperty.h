@@ -628,12 +628,9 @@ inline std::string AbstractProperty<DataType>::serialize(Mode mode) const{
 			//get the code to compile on Mac. Some issue with the
 			//nlohmann library on Mac. Replace by the single
 			//commented out line when it is working again.
-//			bool d = data[n];
-//			j["data"].push_back(d);
 			j["data"].push_back(
 				Serializable::serialize(data[n], mode)
 			);
-//			j["data"].push_back(data[n]);
 		}
 
 		j["allowIndexOutOfBoundsAccess"] = allowIndexOutOfBoundsAccess;
