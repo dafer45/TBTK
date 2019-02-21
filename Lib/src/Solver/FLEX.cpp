@@ -319,6 +319,7 @@ void FLEX::calculateInteractionVertex(){
 				{IDX_ALL}
 			}
 		});
+
 	////////////////////////
 	// Spin contributions //
 	////////////////////////
@@ -403,19 +404,38 @@ void FLEX::calculateInteractionVertex(){
 			}
 		});
 
-/*	for(int kx = 0; kx < momentumSpaceContext.getNumMeshPoints()[0]; kx++){
-		for(int ky = 0; ky < momentumSpaceContext.getNumMeshPoints()[1]; ky++){
-			for(unsigned int n = 0; n < bareSusceptibility.getNumMatsubaraEnergies(); n++){
-				interactionVertex(
-					{{kx, ky}, {0}, {0}, {0}, {0}},
-					n
-				) -= U*U*bareSusceptibility(
-					{{kx, ky}, {0}, {0}, {0}, {0}},
-					n
-				);
+	//////////////////////////
+	// Double counitng term //
+	//////////////////////////
+	ElectronFluctuationVertex electronFluctuationVertexDoubleCountingSolver(
+		momentumSpaceContext,
+		bareSusceptibility
+	);
+	electronFluctuationVertexDoubleCountingSolver.setVerbose(false);
+	electronFluctuationVertexDoubleCountingSolver.setModel(getModel());
+	PropertyExtractor::ElectronFluctuationVertex
+		electronFluctuationVertexDoubleCountingPropertyExtractor(
+			electronFluctuationVertexDoubleCountingSolver
+		);
+
+	//U_4*\chi_b*U_4
+	electronFluctuationVertexDoubleCountingSolver.setLeftInteraction(generateU1());
+	electronFluctuationVertexDoubleCountingSolver.setRightInteraction(generateU1());
+	interactionVertex
+		-= electronFluctuationVertexDoubleCountingPropertyExtractor.calculateInteractionVertex({
+			{
+				{IDX_ALL, IDX_ALL},
+				{IDX_ALL},
+				{IDX_ALL},
+				{IDX_ALL},
+				{IDX_ALL}
 			}
-		}
-	}*/
+		});
+
+	///////////////////////
+	// Hartree-Fock term //
+	///////////////////////
+	interactionVertex += generateHartreeFockTerm();
 }
 
 void FLEX::calculateSelfEnergy(unsigned int slice){
@@ -931,6 +951,130 @@ vector<InteractionAmplitude> FLEX::generateU3(){
 	}
 
 	return interactionAmplitudes;
+}
+
+vector<InteractionAmplitude> FLEX::generateU4(){
+	vector<InteractionAmplitude> interactionAmplitudes;
+	TBTKAssert(
+		numOrbitals != 0,
+		"Solver::FLEX::generateU4()",
+		"'numOrbitals' must be non-zero.",
+		"Use Solver::FLEX::setNumOrbitals() to set the number of"
+		<< " orbitals."
+	);
+
+	for(int a = 0; a < (int)numOrbitals; a++){
+		interactionAmplitudes.push_back(
+			InteractionAmplitude(
+				U,
+				{{a}, {a}},
+				{{a}, {a}}
+			)
+		);
+
+		for(int b = 0; b < (int)numOrbitals; b++){
+			if(a == b)
+				continue;
+
+			interactionAmplitudes.push_back(
+				InteractionAmplitude(
+					Up,
+					{{a}, {b}},
+					{{b}, {a}}
+				)
+			);
+			interactionAmplitudes.push_back(
+				InteractionAmplitude(
+					J,
+					{{a}, {b}},
+					{{a}, {b}}
+				)
+			);
+			interactionAmplitudes.push_back(
+				InteractionAmplitude(
+					Jp,
+					{{a}, {a}},
+					{{b}, {b}}
+				)
+			);
+		}
+	}
+
+	return interactionAmplitudes;
+}
+
+Property::InteractionVertex FLEX::generateHartreeFockTerm(){
+	Property::InteractionVertex hartreeFockTerm
+		= interactionVertex;
+
+	vector<complex<double>> &data = hartreeFockTerm.getDataRW();
+	for(unsigned int n = 0; n < data.size(); n++)
+		data[n] = 0;
+
+	const vector<unsigned int> &numMeshPoints
+		= momentumSpaceContext.getNumMeshPoints();
+
+	for(int kx = 0; kx < (int)numMeshPoints[0]; kx++){
+		for(int ky = 0; ky < (int)numMeshPoints[1]; ky++){
+			for(
+				unsigned int n = 0;
+				n < hartreeFockTerm.getNumEnergies();
+				n++
+			){
+				for(int a = 0; a < (int)numOrbitals; a++){
+					hartreeFockTerm(
+						{
+							{kx, ky},
+							{a},
+							{a},
+							{a},
+							{a}
+						},
+						n
+					) += U;
+					for(int b = 0; b < (int)numOrbitals; b++){
+						if(a == b)
+							continue;
+
+						hartreeFockTerm(
+							{
+								{kx, ky},
+								{a},
+								{a},
+								{b},
+								{b}
+							},
+							n
+						) += Up - 2*(Up - J);
+
+						hartreeFockTerm(
+							{
+								{kx, ky},
+								{a},
+								{b},
+								{b},
+								{a}
+							},
+							n
+						) += J - 2*(J - Up);
+
+						hartreeFockTerm(
+							{
+								{kx, ky},
+								{a},
+								{b},
+								{a},
+								{b}
+							},
+							n
+						) += Jp;
+					}
+				}
+			}
+		}
+	}
+
+	return hartreeFockTerm;
 }
 
 void FLEX::calculateDensity(){

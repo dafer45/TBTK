@@ -337,6 +337,12 @@ private:
 	/** Generate the U1 interaction vertex for the interaction vertex. */
 	std::vector<InteractionAmplitude> generateU3();
 
+	/** Generate the U4 interaction vertex for the interaction vertex. */
+	std::vector<InteractionAmplitude> generateU4();
+
+	/** Generate the Hartree-Fock term. */
+	Property::InteractionVertex generateHartreeFockTerm();
+
 	/** Calculate the density. */
 	void calculateDensity();
 
