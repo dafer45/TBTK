@@ -78,6 +78,13 @@ public:
 		const Index &ketIndex
 	) const;
 
+	/** Get whether an orthonormal basis should be assumed. This is true if
+	 *  no OverlapAmplitude has been added to the OverlapAmplitudeSet.
+	 *
+	 *  @return True if no OverlapAmplitude has been added to the
+	 *  OverlapAmplitudeSet. */
+	bool getAssumeOrthonormalBasis() const;
+
 	class Iterator;
 	class ConstIterator;
 private:
@@ -217,6 +224,11 @@ public:
 private:
 	/** Container for the OverlaAmplitudes. */
 	IndexedDataTree<OverlapAmplitude> overlapAmplitudeTree;
+
+	/** Flag indicating whether an orthogonal basis should be assumed. This
+	 *  is true until a first OverlapAmplitude is added to the
+	 *  OverlapAmplitudeSet. */
+	bool assumeOrthonormalBasis;
 };
 
 inline void OverlapAmplitudeSet::add(
@@ -229,6 +241,8 @@ inline void OverlapAmplitudeSet::add(
 			overlapAmplitude.getKetIndex()
 		}
 	);
+
+	assumeOrthonormalBasis = false;
 }
 
 inline OverlapAmplitude& OverlapAmplitudeSet::get(
@@ -243,6 +257,10 @@ inline const OverlapAmplitude& OverlapAmplitudeSet::get(
 	const Index &ketIndex
 ) const{
 	return overlapAmplitudeTree.get({braIndex, ketIndex});
+}
+
+inline bool OverlapAmplitudeSet::getAssumeOrthonormalBasis() const{
+	return assumeOrthonormalBasis;
 }
 
 inline unsigned int OverlapAmplitudeSet::getSizeInBytes() const{

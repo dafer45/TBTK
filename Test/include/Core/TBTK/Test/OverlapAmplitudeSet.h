@@ -79,6 +79,14 @@ TEST(OverlapAmplitudeSet, SerializeToJSON){
 			{4, 5, 7}
 		).getKetIndex().equals({4, 5, 7})
 	);
+
+	EXPECT_FALSE(overlapAmplitudeSet1.getAssumeOrthonormalBasis());
+	EXPECT_TRUE(
+		OverlapAmplitudeSet(
+			OverlapAmplitudeSet().serialize(Serializable::Mode::JSON),
+			Serializable::Mode::JSON
+		).getAssumeOrthonormalBasis()
+	);
 }
 
 TEST(OverlapAmplitudeSet, add){
@@ -195,6 +203,14 @@ TEST(OverlapAmplitudeSet, get){
 		::testing::ExitedWithCode(1),
 		""
 	);
+}
+
+TEST(OverlapAmplitudeSet, getAssumeOrthonormalBasis){
+	OverlapAmplitudeSet overlapAmplitudeSet;
+	EXPECT_TRUE(overlapAmplitudeSet.getAssumeOrthonormalBasis());
+
+	overlapAmplitudeSet.add(OverlapAmplitude(1, {1, 2, 3}, {4, 5, 6}));
+	EXPECT_FALSE(overlapAmplitudeSet.getAssumeOrthonormalBasis());
 }
 
 TEST(OverlapAmplitudeSet, getSizeInBytes){

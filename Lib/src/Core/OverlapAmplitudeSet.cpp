@@ -30,6 +30,7 @@ using namespace std;
 namespace TBTK{
 
 OverlapAmplitudeSet::OverlapAmplitudeSet(){
+	assumeOrthonormalBasis = true;
 }
 
 OverlapAmplitudeSet::OverlapAmplitudeSet(
@@ -46,6 +47,8 @@ OverlapAmplitudeSet::OverlapAmplitudeSet(
 					j.at("overlapAmplitudeTree").dump(),
 					mode
 				);
+			assumeOrthonormalBasis
+				= j.at("assumeOrthonormalBasis").get<bool>();
 		}
 		catch(nlohmann::json::exception &e){
 			TBTKExit(
@@ -103,6 +106,8 @@ string OverlapAmplitudeSet::serialize(Mode mode) const{
 		j["overlapAmplitudeTree"] = nlohmann::json::parse(
 			overlapAmplitudeTree.serialize(mode)
 		);
+		j["assumeOrthonormalBasis"]
+			= nlohmann::json(assumeOrthonormalBasis);
 
 		return j.dump();
 	}
