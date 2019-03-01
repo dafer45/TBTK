@@ -175,6 +175,11 @@ public:
 	 *  @return Reference to the contained SourceAmplitudeSet. */
 	const SourceAmplitudeSet& getSourceAmplitudeSet() const;
 
+	/** Get OverlapAmplitudeSet.
+	 *
+	 *  @return Reference to the contained OverlapAmplitudeSet. */
+	const OverlapAmplitudeSet& getOverlapAmplitudeSet() const;
+
 	/** Get geometry.
 	 *
 	 *  @return Pointer to the contained Geometry. */
@@ -233,6 +238,9 @@ public:
 
 	/** Operator<<. */
 	Model& operator<<(const SourceAmplitude& sourceAmplitude);
+
+	/** Operator<<. */
+	Model& operator<<(const OverlapAmplitude& overlapAmplitudeSet);
 
 	/** Implements Serializable::serialize(). Note that the
 	 *  ManyParticleContext is not yet serialized. */
@@ -306,6 +314,10 @@ inline const HoppingAmplitudeSet& Model::getHoppingAmplitudeSet() const{
 
 inline const SourceAmplitudeSet& Model::getSourceAmplitudeSet() const{
 	return singleParticleContext.getSourceAmplitudeSet();
+}
+
+inline const OverlapAmplitudeSet& Model::getOverlapAmplitudeSet() const{
+	return singleParticleContext.getOverlapAmplitudeSet();
 }
 
 inline Geometry& Model::getGeometry(){
@@ -400,6 +412,24 @@ inline Model& Model::operator<<(const SourceAmplitude &sourceAmplitude){
 	){
 		singleParticleContext.getSourceAmplitudeSet().add(
 			sourceAmplitude
+		);
+	}
+
+	return *this;
+}
+
+inline Model& Model::operator<<(const OverlapAmplitude &overlapAmplitude){
+	if(
+		indexFilter == nullptr
+		|| (
+			indexFilter->isIncluded(overlapAmplitude.getBraIndex())
+			&& indexFilter->isIncluded(
+				overlapAmplitude.getKetIndex()
+			)
+		)
+	){
+		singleParticleContext.getOverlapAmplitudeSet().add(
+			overlapAmplitude
 		);
 	}
 

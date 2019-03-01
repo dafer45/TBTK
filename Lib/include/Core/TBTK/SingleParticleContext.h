@@ -25,6 +25,7 @@
 
 #include "TBTK/Geometry.h"
 #include "TBTK/HoppingAmplitudeSet.h"
+#include "TBTK/OverlapAmplitudeSet.h"
 #include "TBTK/Serializable.h"
 #include "TBTK/SourceAmplitudeSet.h"
 #include "TBTK/Statistics.h"
@@ -76,6 +77,16 @@ public:
 	 *  @return The contained SourceAmplitudeSet. */
 	const SourceAmplitudeSet& getSourceAmplitudeSet() const;
 
+	/** Get the contained OverlapAmplitudeSet.
+	 *
+	 *  @return The contained OverlapAmplitudeSet. */
+	OverlapAmplitudeSet& getOverlapAmplitudeSet();
+
+	/** Get the contained OverlapAmplitudeSet.
+	 *
+	 *  @return The contained OverlapAmplitudeSet. */
+	const OverlapAmplitudeSet& getOverlapAmplitudeSet() const;
+
 	/** Get Geometry. */
 	Geometry& getGeometry();
 
@@ -90,6 +101,9 @@ private:
 
 	/** SourceAmplitudeSet. */
 	SourceAmplitudeSet sourceAmplitudeSet;
+
+	/** OverlapAmplitudeSet. */
+	OverlapAmplitudeSet overlapAmplitudeSet;
 
 	/** Statistics (Fermi-Dirac or Bose-Einstein).*/
 	Statistics statistics;
@@ -125,6 +139,15 @@ inline SourceAmplitudeSet& SingleParticleContext::getSourceAmplitudeSet(){
 inline const SourceAmplitudeSet&
 SingleParticleContext::getSourceAmplitudeSet() const{
 	return sourceAmplitudeSet;
+}
+
+inline OverlapAmplitudeSet& SingleParticleContext::getOverlapAmplitudeSet(){
+	return overlapAmplitudeSet;
+}
+
+inline const OverlapAmplitudeSet&
+SingleParticleContext::getOverlapAmplitudeSet() const{
+	return overlapAmplitudeSet;
 }
 
 inline Geometry& SingleParticleContext::getGeometry(){

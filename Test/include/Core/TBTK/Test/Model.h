@@ -47,6 +47,14 @@ TEST(Model, SerializeToJSON){
 	model0 << SourceAmplitude(4, {0, 2});
 	model0 << SourceAmplitude(5, {1});
 
+	//Add OverlapAmplitude.
+	model0 << OverlapAmplitude(6, {0, 1}, {0, 1});
+	model0 << OverlapAmplitude(7, {0, 1}, {0, 2});
+	model0 << OverlapAmplitude(7, {0, 2}, {0, 1});
+	model0 << OverlapAmplitude(8, {0, 2}, {0, 2});
+	model0 << OverlapAmplitude(9, {0, 1}, {1});
+	model0 << OverlapAmplitude(9, {1}, {0, 1});
+
 	//Set chemical potential, temperature, and statistics.
 	model0.setChemicalPotential(-1);
 	model0.setTemperature(300);
@@ -107,6 +115,47 @@ TEST(Model, SerializeToJSON){
 	EXPECT_TRUE((*iteratorSA).getIndex().equals({1}));
 	++iteratorSA;
 	EXPECT_TRUE(iteratorSA == model1.getSourceAmplitudeSet().cend());
+
+	//Check OverlapAmplitudes.
+	OverlapAmplitudeSet::ConstIterator iteratorOA
+		= model1.getOverlapAmplitudeSet().cbegin();
+
+	EXPECT_DOUBLE_EQ(real((*iteratorOA).getAmplitude()), 6);
+	EXPECT_DOUBLE_EQ(imag((*iteratorOA).getAmplitude()), 0);
+	EXPECT_TRUE((*iteratorOA).getBraIndex().equals({0, 1}));
+	EXPECT_TRUE((*iteratorOA).getKetIndex().equals({0, 1}));
+	++iteratorOA;
+
+	EXPECT_DOUBLE_EQ(real((*iteratorOA).getAmplitude()), 7);
+	EXPECT_DOUBLE_EQ(imag((*iteratorOA).getAmplitude()), 0);
+	EXPECT_TRUE((*iteratorOA).getBraIndex().equals({0, 1}));
+	EXPECT_TRUE((*iteratorOA).getKetIndex().equals({0, 2}));
+	++iteratorOA;
+
+	EXPECT_DOUBLE_EQ(real((*iteratorOA).getAmplitude()), 9);
+	EXPECT_DOUBLE_EQ(imag((*iteratorOA).getAmplitude()), 0);
+	EXPECT_TRUE((*iteratorOA).getBraIndex().equals({0, 1}));
+	EXPECT_TRUE((*iteratorOA).getKetIndex().equals({1}));
+	++iteratorOA;
+
+	EXPECT_DOUBLE_EQ(real((*iteratorOA).getAmplitude()), 7);
+	EXPECT_DOUBLE_EQ(imag((*iteratorOA).getAmplitude()), 0);
+	EXPECT_TRUE((*iteratorOA).getBraIndex().equals({0, 2}));
+	EXPECT_TRUE((*iteratorOA).getKetIndex().equals({0, 1}));
+	++iteratorOA;
+
+	EXPECT_DOUBLE_EQ(real((*iteratorOA).getAmplitude()), 8);
+	EXPECT_DOUBLE_EQ(imag((*iteratorOA).getAmplitude()), 0);
+	EXPECT_TRUE((*iteratorOA).getBraIndex().equals({0, 2}));
+	EXPECT_TRUE((*iteratorOA).getKetIndex().equals({0, 2}));
+	++iteratorOA;
+
+	EXPECT_DOUBLE_EQ(real((*iteratorOA).getAmplitude()), 9);
+	EXPECT_DOUBLE_EQ(imag((*iteratorOA).getAmplitude()), 0);
+	EXPECT_TRUE((*iteratorOA).getBraIndex().equals({1}));
+	EXPECT_TRUE((*iteratorOA).getKetIndex().equals({0, 1}));
+	++iteratorOA;
+	EXPECT_TRUE(iteratorOA == model1.getOverlapAmplitudeSet().cend());
 
 	//Check chemical potentail, temperature, and statistics.
 	EXPECT_DOUBLE_EQ(model1.getChemicalPotential(), -1);
@@ -385,6 +434,27 @@ TEST(Model, setFilter){
 	EXPECT_EQ(model1.getSourceAmplitudeSet().get({0, 2, 0}).size(), 1);
 	EXPECT_EQ(model1.getSourceAmplitudeSet().get({1, 0, 1}).size(), 1);
 	EXPECT_EQ(model1.getSourceAmplitudeSet().get({1, 2, 1}).size(), 1);
+
+	model1 << OverlapAmplitude(0, {0, 0, 0}, {0, 0, 0});
+	model1 << OverlapAmplitude(0, {0, 1, 0}, {0, 0, 0});
+	model1 << OverlapAmplitude(0, {0, 0, 0}, {0, 1, 0});
+	model1 << OverlapAmplitude(0, {0, 2, 0}, {0, 0, 0});
+	model1 << OverlapAmplitude(0, {0, 0, 0}, {0, 2, 0});
+	model1 << OverlapAmplitude(0, {1, 2, 1}, {1, 0, 1});
+	model1 << OverlapAmplitude(0, {1, 0, 1}, {1, 2, 1});
+	model1.getOverlapAmplitudeSet().get({0, 0, 0}, {0, 0, 0});
+	EXPECT_THROW(
+		model1.getOverlapAmplitudeSet().get({0, 1, 0}, {0, 0, 0}),
+		ElementNotFoundException
+	);
+	EXPECT_THROW(
+		model1.getOverlapAmplitudeSet().get({0, 0, 0}, {0, 1, 0}),
+		ElementNotFoundException
+	);
+	model1.getOverlapAmplitudeSet().get({0, 2, 0}, {0, 0, 0});
+	model1.getOverlapAmplitudeSet().get({0, 0, 0}, {0, 2, 0});
+	model1.getOverlapAmplitudeSet().get({1, 2, 1}, {1, 0, 1});
+	model1.getOverlapAmplitudeSet().get({1, 0, 1}, {1, 2, 1});
 }
 
 TEST(Model, operatorInsertion){

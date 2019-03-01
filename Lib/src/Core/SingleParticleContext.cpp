@@ -72,6 +72,10 @@ SingleParticleContext::SingleParticleContext(
 				j.at("sourceAmplitudeSet").dump(),
 				mode
 			);
+			overlapAmplitudeSet = OverlapAmplitudeSet(
+				j.at("overlapAmplitudeSet").dump(),
+				mode
+			);
 		}
 		catch(nlohmann::json::exception &e){
 			TBTKExit(
@@ -109,6 +113,9 @@ string SingleParticleContext::serialize(Mode mode) const{
 		);
 		j["sourceAmplitudeSet"] = nlohmann::json::parse(
 			sourceAmplitudeSet.serialize(mode)
+		);
+		j["overlapAmplitudeSet"] = nlohmann::json::parse(
+			overlapAmplitudeSet.serialize(mode)
 		);
 
 		return j.dump();

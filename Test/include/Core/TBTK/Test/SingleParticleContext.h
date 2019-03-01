@@ -90,6 +90,20 @@ TEST(SingleParticleContext, getSourceAmplitudeSet){
 	sourceAmplitudeSet1.getSizeInBytes();
 }
 
+TEST(SingleParticleContext, getOverlapAmplitudeSet){
+	SingleParticleContext singleParticleContext0;
+	OverlapAmplitudeSet &overlapAmplitudeSet0
+		= singleParticleContext0.getOverlapAmplitudeSet();
+	//Dummy call to supress warning about unused variable.
+	overlapAmplitudeSet0.getSizeInBytes();
+
+	const SingleParticleContext singleParticleContext1;
+	const OverlapAmplitudeSet &overlapAmplitudeSet1
+		= singleParticleContext1.getOverlapAmplitudeSet();
+	//Dummy call to supress warning about unused variable.
+	overlapAmplitudeSet1.getSizeInBytes();
+}
+
 //TODO
 //This function should possibly be removed from the SingleParticleContext
 //itself by makin the SingleParticleContext inherit from the
