@@ -46,13 +46,6 @@ Diagonalizer::~Diagonalizer(){
 }
 
 void Diagonalizer::run(){
-/*	TBTKAssert(
-		getModel() != NULL,
-		"Diagonalizer::run()",
-		"Model not set.",
-		"Use Diagonalizer::setModel() to set model."
-	);*/
-
 	int iterationCounter = 0;
 	init();
 
@@ -86,8 +79,6 @@ void Diagonalizer::run(){
 void Diagonalizer::init(){
 	if(getGlobalVerbose() && getVerbose())
 		Streams::out << "Initializing Diagonalizer\n";
-
-//	model->amplitudeSet.construct();
 
 	int basisSize = getModel().getBasisSize();
 	if(getGlobalVerbose() && getVerbose())
