@@ -42,7 +42,8 @@ TEST(SourceAmplitudeSet, add){
 	sourceAmplitudeSet.add(SourceAmplitude(2, {1, 2, 4}));
 	sourceAmplitudeSet.add(SourceAmplitude(3, {1, 2, 3}));
 
-	//Fail to add SourceAmplitude with conflicting Index structure (shorter).
+	//Fail to add SourceAmplitude with conflicting Index structure
+	//(shorter).
 	EXPECT_EXIT(
 		{
 			Streams::setStdMuteErr();
@@ -52,11 +53,14 @@ TEST(SourceAmplitudeSet, add){
 		""
 	);
 
-	//Fail to add SourceAmplitude with conflicting Index structure (longer).
+	//Fail to add SourceAmplitude with conflicting Index structure
+	//(longer).
 	EXPECT_EXIT(
 		{
 			Streams::setStdMuteErr();
-			sourceAmplitudeSet.add(SourceAmplitude(0, {1, 2}));
+			sourceAmplitudeSet.add(
+				SourceAmplitude(0, {1, 2, 3, 4})
+			);
 		},
 		::testing::ExitedWithCode(1),
 		""

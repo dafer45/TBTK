@@ -25,6 +25,7 @@
 
 #include "TBTK/ElementNotFoundException.h"
 #include "TBTK/Index.h"
+#include "TBTK/PseudoSerializable.h"
 #include "TBTK/Serializable.h"
 #include "TBTK/TBTKMacros.h"
 
@@ -39,7 +40,14 @@
 
 namespace TBTK{
 
-template<typename Data, bool isSerializeable = std::is_base_of<Serializable, Data>::value>
+template<
+	typename Data,
+	bool isSerializeable
+		= (
+			std::is_base_of<Serializable, Data>::value
+			|| std::is_base_of<PseudoSerializable, Data>::value
+		)
+>
 class IndexedDataTree : public Serializable{
 public:
 	/** Constructor. */

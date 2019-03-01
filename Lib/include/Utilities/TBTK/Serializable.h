@@ -196,6 +196,7 @@ protected:
 	friend class Index;
 	friend class HoppingAmplitude;
 	friend class SourceAmplitude;
+	friend class OverlapAmplitude;
 };
 
 template<typename DataType>
