@@ -98,7 +98,6 @@ void Diagonalizer::init(){
 	eigenValues = new double[basisSize];
 	eigenVectors = new complex<double>[basisSize*basisSize];
 
-	setupBasisTransformation();
 	update();
 }
 
@@ -125,6 +124,7 @@ void Diagonalizer::update(){
 			hamiltonian[to + (from*(from+1))/2] += (*iterator).getAmplitude();
 	}
 
+	setupBasisTransformation();
 	transformToOrthonormalBasis();
 }
 
