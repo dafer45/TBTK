@@ -132,6 +132,10 @@ private:
 	/** Pointer to array containing eigenvectors. */
 	std::complex<double> *eigenVectors;
 
+	/** Pointer to array containing the basis transformation. Only used for
+	 *  non-orthonormal bases.*/
+	std::complex<double> *basisTransformation;
+
 	/** Maximum number of iterations in the self-consistency loop. */
 	int maxIterations;
 
@@ -149,6 +153,15 @@ private:
 
 	/** Diagonalizes the Hamiltonian. */
 	void solve();
+
+	/** Setup the basis transformation. */
+	void setupBasisTransformation();
+
+	/** Transform the Hamiltonian to an orthonormal basis. */
+	void transformToOrthonormalBasis();
+
+	/** Transform the eigen vectors to the original basis. */
+	void transformToOriginalBasis();
 };
 
 inline void Diagonalizer::setSelfConsistencyCallback(

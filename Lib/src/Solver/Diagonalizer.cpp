@@ -28,21 +28,24 @@ namespace TBTK{
 namespace Solver{
 
 Diagonalizer::Diagonalizer() : Communicator(true){
-	hamiltonian = NULL;
-	eigenValues = NULL;
-	eigenVectors = NULL;
+	hamiltonian = nullptr;
+	eigenValues = nullptr;
+	eigenVectors = nullptr;
+	basisTransformation = nullptr;
 
 	maxIterations = 50;
-	selfConsistencyCallback = NULL;
+	selfConsistencyCallback = nullptr;
 }
 
 Diagonalizer::~Diagonalizer(){
-	if(hamiltonian != NULL)
+	if(hamiltonian != nullptr)
 		delete [] hamiltonian;
-	if(eigenValues != NULL)
+	if(eigenValues != nullptr)
 		delete [] eigenValues;
-	if(eigenVectors != NULL)
+	if(eigenVectors != nullptr)
 		delete [] eigenVectors;
+	if(basisTransformation != nullptr)
+		delete [] basisTransformation;
 }
 
 void Diagonalizer::run(){
@@ -95,6 +98,7 @@ void Diagonalizer::init(){
 	eigenValues = new double[basisSize];
 	eigenVectors = new complex<double>[basisSize*basisSize];
 
+	setupBasisTransformation();
 	update();
 }
 
@@ -120,6 +124,8 @@ void Diagonalizer::update(){
 		if(from >= to)
 			hamiltonian[to + (from*(from+1))/2] += (*iterator).getAmplitude();
 	}
+
+	transformToOrthonormalBasis();
 }
 
 //Lapack function for matrix diagonalization of triangular matrix.
@@ -148,6 +154,170 @@ extern "C" void zhbeb_(
 	complex<double> *work,	//Workspace, dimension = max(1, 2*N-1)
 	double *rwork,		//Workspace, dimension = max(1, 3*N-2)
 	int *info);		//0 = successful, <0 = -info value was illegal, >0 = info number of off-diagonal elements failed to converge.
+
+void Diagonalizer::setupBasisTransformation(){
+	//Get the OverlapAmplitudeSet.
+	const OverlapAmplitudeSet &overlapAmplitudeSet
+		= getModel().getOverlapAmplitudeSet();
+
+	//Skip if the basis is assumed to be orthonormal.
+	if(overlapAmplitudeSet.getAssumeOrthonormalBasis())
+		return;
+
+	//Fill the overlap matrix.
+	int basisSize = getModel().getBasisSize();
+	complex<double> *overlapMatrix
+		= new complex<double>[(basisSize*(basisSize+1))/2];
+	for(int n = 0; n < (basisSize*(basisSize+1))/2; n++)
+		overlapMatrix[n] = 0;
+
+	for(
+		OverlapAmplitudeSet::ConstIterator iterator
+			= overlapAmplitudeSet.cbegin();
+		iterator != overlapAmplitudeSet.cend();
+		++iterator
+	){
+		int row = getModel().getHoppingAmplitudeSet().getBasisIndex(
+			(*iterator).getBraIndex()
+		);
+		int col = getModel().getHoppingAmplitudeSet().getBasisIndex(
+			(*iterator).getKetIndex()
+		);
+		if(col >= row){
+			overlapMatrix[row + (col*(col+1))/2]
+				+= (*iterator).getAmplitude();
+		}
+	}
+
+	//Diagonalize the overlap matrix.
+	char jobz = 'V';
+	char uplo = 'U';
+	int n = basisSize;
+
+	complex<double> *work = new complex<double>[2*n-1];
+	double *rwork = new double[3*n-2];
+	int info;
+
+	double *overlapMatrixEigenValues = new double[basisSize];
+	complex<double> *overlapMatrixEigenVectors
+		= new complex<double>[basisSize*basisSize];
+
+	zhpev_(
+		&jobz,
+		&uplo,
+		&n,
+		overlapMatrix,
+		overlapMatrixEigenValues,
+		overlapMatrixEigenVectors,
+		&n,
+		work,
+		rwork,
+		&info
+	);
+
+	delete [] work;
+	delete [] rwork;
+
+	//Setup basisTransformation storage.
+	if(basisTransformation != nullptr)
+		delete [] basisTransformation;
+	basisTransformation = new complex<double>[basisSize*basisSize];
+
+	//Calculate the basis transformation using canonical orthogonalization.
+	//See for example section 3.4.5 in Moder Quantum Chemistry, Attila
+	//Szabo and Neil S. Ostlund.
+	for(int row = 0; row < basisSize; row++){
+		for(int col = 0; col < basisSize; col++){
+			basisTransformation[row + basisSize*col]
+				= overlapMatrixEigenVectors[
+					row + basisSize*col
+				]/sqrt(
+					overlapMatrixEigenValues[col]
+				);
+		}
+	}
+
+	delete [] overlapMatrixEigenValues;
+	delete [] overlapMatrixEigenVectors;
+}
+
+void Diagonalizer::transformToOrthonormalBasis(){
+	//Skip if no basis transformation has been set up (the original basis
+	//is assumed to be orthonormal).
+	if(basisTransformation == nullptr)
+		return;
+
+	int basisSize = getModel().getBasisSize();
+
+	//Perform the transformation H' = U^{\dagger}HU, where U is the
+	//transform to the orthonormal basis.
+	Matrix<complex<double>> h(basisSize, basisSize);
+	Matrix<complex<double>> U(basisSize, basisSize);
+	Matrix<complex<double>> Udagger(basisSize, basisSize);
+	for(int row = 0; row < basisSize; row++){
+		for(int col = 0; col < basisSize; col++){
+			if(col >= row){
+				h.at(row, col)
+					= hamiltonian[row + (col*(col+1))/2];
+			}
+			else{
+				h.at(row, col) = conj(
+					hamiltonian[col + (row*(row+1))/2]
+				);
+			}
+
+			U.at(row, col)
+				= basisTransformation[row + basisSize*col];
+
+			Udagger.at(row, col) = conj(
+				basisTransformation[col + basisSize*row]
+			);
+		}
+	}
+
+	Matrix<complex<double>> hp = Udagger*h*U;
+
+	for(int row = 0; row < basisSize; row++){
+		for(int col = 0; col < basisSize; col++){
+			if(col >= row){
+				hamiltonian[row + (col*(col+1))/2]
+					= hp.at(row, col);
+			}
+		}
+	}
+}
+
+void Diagonalizer::transformToOriginalBasis(){
+	//Skip if no basis transformation has been set up (the original basis
+	//is assumed to be orthonormal).
+	if(basisTransformation == nullptr)
+		return;
+
+	int basisSize = getModel().getBasisSize();
+
+	//Perform the transformation v = Uv', where U is the transformation to
+	//the orthonormal basis and v and v' are the eigenvectors in the
+	//original and orthonormal basis, respectively.
+	Matrix<complex<double>> U(basisSize, basisSize);
+	Matrix<complex<double>> Vp(basisSize, basisSize);
+	for(int row = 0; row < basisSize; row++){
+		for(int col = 0; col < basisSize; col++){
+			U.at(row, col)
+				= basisTransformation[row + basisSize*col];
+
+			Vp.at(row, col) = eigenVectors[row + basisSize*col];
+		}
+	}
+
+	Matrix<complex<double>> V = U*Vp;
+
+	for(int row = 0; row < basisSize; row++){
+		for(int col = 0; col < basisSize; col++){
+			eigenVectors[row + basisSize*col]
+				= V.at(row, col);
+		}
+	}
+}
 
 void Diagonalizer::solve(){
 	if(true){//Currently no support for banded matrices.
@@ -197,6 +367,8 @@ void Diagonalizer::solve(){
 		delete [] work;
 		delete [] rwork;
 	}*/
+
+	transformToOriginalBasis();
 }
 
 };	//End of namespace Solver

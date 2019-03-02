@@ -5,6 +5,8 @@
 namespace TBTK{
 namespace Solver{
 
+const double EPSILON_100 = 100*std::numeric_limits<double>::epsilon();
+
 TEST(Diagonalizer, Constructor){
 	//Not testable on its own.
 }
@@ -81,6 +83,31 @@ TEST(Diagonalizer, getEigenValues){
 	//performed to eigenValues1, while read is from eigenValues0).
 	eigenValues1[0] = 2;
 	EXPECT_DOUBLE_EQ(eigenValues0[0], 2);
+
+	///////////////////////////
+	// Non-orthonormal basis //
+	///////////////////////////
+	//This is the same problem as above, but using the basis [1 0],
+	//[1/sqrt(2) 1/sqrt(2)]. The eigenvalues are therefore the same.
+	Model model1;
+	model1.setVerbose(false);
+	model1 << HoppingAmplitude(1/sqrt(2), {0}, {1}) + HC;
+	model1 << HoppingAmplitude(1, {1}, {1});
+	model1.construct();
+
+	model1 << OverlapAmplitude(1, {0}, {0});
+	model1 << OverlapAmplitude(1/sqrt(2), {0}, {1});
+	model1 << OverlapAmplitude(1/sqrt(2), {1}, {0});
+	model1 << OverlapAmplitude(1, {1}, {1});
+
+	Diagonalizer solver1;
+	solver1.setVerbose(false);
+	solver1.setModel(model1);
+	solver1.run();
+
+	const double *eigenValues2 = solver1.getEigenValues();
+	EXPECT_NEAR(eigenValues2[0], -1, EPSILON_100);
+	EXPECT_NEAR(eigenValues2[1], 1, EPSILON_100);
 }
 
 TEST(Diagonalizer, getEigenValuesRW){
@@ -117,6 +144,42 @@ TEST(Diagonalizer, getEigenVectors){
 	eigenVectors1[0] = 2;
 	EXPECT_DOUBLE_EQ(real(eigenVectors0[0]), 2);
 	EXPECT_DOUBLE_EQ(imag(eigenVectors0[0]), 0);
+
+	///////////////////////////
+	// Non-orthonormal basis //
+	///////////////////////////
+	//This is the same problem as above, but using the basis [1 0],
+	//[1/sqrt(2) 1/sqrt(2)]. Since the eigen vectors in the orthonormal
+	//basis are [1/sqrt(2) -1/sqrt(2)] and [1/sqrt(2) 1/sqrt(2)], the eigen
+	//vectors in this alternative basis are given by
+	//a[1 0] + b[1/sqrt(2) 1/sqrt(2)], and thus [a b] are [sqrt(2) -1] and
+	//[0 1] for the positive and negative eigenvalues, respectively.
+	Model model1;
+	model1.setVerbose(false);
+	model1 << HoppingAmplitude(1/sqrt(2), {0}, {1}) + HC;
+	model1 << HoppingAmplitude(1, {1}, {1});
+	model1.construct();
+
+	model1 << OverlapAmplitude(1, {0}, {0});
+	model1 << OverlapAmplitude(1/sqrt(2), {0}, {1});
+	model1 << OverlapAmplitude(1/sqrt(2), {1}, {0});
+	model1 << OverlapAmplitude(1, {1}, {1});
+
+	Diagonalizer solver1;
+	solver1.setVerbose(false);
+	solver1.setModel(model1);
+	solver1.run();
+
+	const std::complex<double> *eigenVectors2 = solver1.getEigenVectors();
+	EXPECT_NEAR(real(eigenVectors2[0]), sqrt(2), EPSILON_100);
+	EXPECT_NEAR(imag(eigenVectors2[0]), 0, EPSILON_100);
+	EXPECT_NEAR(real(eigenVectors2[1]), -1, EPSILON_100);
+	EXPECT_NEAR(imag(eigenVectors2[1]), 0, EPSILON_100);
+
+	EXPECT_NEAR(real(eigenVectors2[2]), 0, EPSILON_100);
+	EXPECT_NEAR(imag(eigenVectors2[2]), 0, EPSILON_100);
+	EXPECT_NEAR(real(eigenVectors2[3]), 1, EPSILON_100);
+	EXPECT_NEAR(imag(eigenVectors2[3]), 0, EPSILON_100);
 }
 
 TEST(Diagonalizer, getEigenVectorsRW){
