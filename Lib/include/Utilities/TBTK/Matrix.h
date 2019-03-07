@@ -74,6 +74,9 @@ template<typename DataType>
 class Matrix<DataType, 0, 0>{
 public:
 	/** Constructor. */
+	Matrix();
+
+	/** Constructor. */
 	Matrix(unsigned int rows, unsigned int cols);
 
 	/** Copy constructor. */
@@ -121,6 +124,9 @@ private:
 template<>
 class Matrix<std::complex<double>, 0, 0>{
 public:
+	/** Constructor. */
+	Matrix();
+
 	/** Constructor. */
 	Matrix(unsigned int rows, unsigned int cols);
 
@@ -196,6 +202,11 @@ Matrix<DataType, ROWS, COLS>::Matrix(Matrix<DataType, ROWS, COLS> &&matrix){
 }
 
 template<typename DataType>
+Matrix<DataType, 0, 0>::Matrix(){
+	data = nullptr;
+}
+
+template<typename DataType>
 Matrix<DataType, 0, 0>::Matrix(unsigned int rows, unsigned int cols){
 	this->rows = rows;
 	this->cols = cols;
@@ -217,6 +228,10 @@ Matrix<DataType, 0, 0>::Matrix(Matrix<DataType, 0, 0> &&matrix){
 	cols = matrix.cols;
 	data = matrix.data;
 	matrix.data = nullptr;
+}
+
+inline Matrix<std::complex<double>, 0, 0>::Matrix(){
+	data = nullptr;
 }
 
 inline Matrix<std::complex<double>, 0, 0>::Matrix(unsigned int rows, unsigned int cols){
