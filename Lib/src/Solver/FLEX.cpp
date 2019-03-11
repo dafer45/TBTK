@@ -76,6 +76,8 @@ void FLEX::run(){
 	Timer::tick("Green's function 0");
 	calculateBareGreensFunction();
 	greensFunction = greensFunction0;
+	if(selfEnergy.getData().size() != 0)
+		calculateGreensFunction();
 	Timer::tock();
 
 	state = State::GreensFunctionCalculated;

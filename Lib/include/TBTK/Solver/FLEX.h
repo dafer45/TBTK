@@ -80,6 +80,11 @@ public:
 	 *  @return The InteractionVertex. */
 	const Property::InteractionVertex& getInteractionVertex() const;
 
+	/** Set the SelfEnergy.
+	 *
+	 *  @param selfEnergy The SelfEnergy to use. */
+	void setSelfEnergy(const Property::SelfEnergy &selfEnergy);
+
 	/** Get the SelfEnergy.
 	 *
 	 *  @return The SelfEnergy. */
@@ -378,6 +383,10 @@ inline const Property::Susceptibility& FLEX::getRPAChargeSusceptibility(
 
 inline const Property::InteractionVertex& FLEX::getInteractionVertex() const{
 	return interactionVertex;
+}
+
+inline void FLEX::setSelfEnergy(const Property::SelfEnergy &selfEnergy){
+	this->selfEnergy = selfEnergy;
 }
 
 inline const Property::SelfEnergy& FLEX::getSelfEnergy() const{
