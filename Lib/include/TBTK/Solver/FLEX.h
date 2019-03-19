@@ -92,10 +92,10 @@ public:
 
 	/** Set SelfEnergy mixing paramter.
 	 *
-	 *  @param selfEnergyMixingParamter Parameter specifying the fraction
+	 *  @param selfEnergyMixingParameter Parameter specifying the fraction
 	 *  of the previous solution that should be mixed together with the new
 	 *  SelfEnergy. */
-	void setSelfEnergyMixingParamter(double selfEnergyMixingParamter);
+	void setSelfEnergyMixingParameter(double selfEnergyMixingParameter);
 
 	/** Set the energy window used for the calculation.
 	 *
@@ -407,7 +407,7 @@ inline const Property::SelfEnergy& FLEX::getSelfEnergy() const{
 	return selfEnergy;
 }
 
-inline void FLEX::setSelfEnergyMixingParamter(
+inline void FLEX::setSelfEnergyMixingParameter(
 	double selfEnergyMixingParameter
 ){
 	this->selfEnergyMixingParameter = selfEnergyMixingParameter;
