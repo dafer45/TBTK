@@ -114,8 +114,60 @@ public:
 	/** Overrides EnergyResolvedProperty::operator+=(). */
 	SelfEnergy& operator+=(const SelfEnergy &rhs);
 
+	/** Addition operator.
+	 *
+	 *  @param rhs The right hand side of the equation.
+	 *
+	 *  @return A new SelfEnergy that is the sum of this SelfEnergy and the
+	 *  right hand side. */
+	SelfEnergy operator+(const SelfEnergy &rhs) const;
+
 	/** Overrides EnergyResolvedProperty::operator+=(). */
 	SelfEnergy& operator-=(const SelfEnergy &rhs);
+
+	/** Subtraction operator.
+	 *
+	 *  @param rhs The right hand side of the equation.
+	 *
+	 *  @return A new SelfEnergy that is the difference between this
+	 *  SelfEnergy and the right hand side. */
+	SelfEnergy operator-(const SelfEnergy &rhs) const;
+
+	/** Overrides EnergyResolvedProperty::operator*=(). */
+	SelfEnergy& operator*=(const std::complex<double> &rhs);
+
+	/** Multiplication operator.
+	 *
+	 *  @param rhs The right hand side of the equation.
+	 *
+	 *  @return A new SelfEnergy that is the product of the SelfEnergy and
+	 *  the right hand side. */
+	SelfEnergy operator*(const std::complex<double> &rhs) const;
+
+	/** Multiplication operator.
+	 *
+	 *  @param lhs The left hand side of the equation.
+	 *  @param rhs The right hand side of the equation.
+	 *
+	 *  @return A new SelfEnergy that is the product of the left and right
+	 *  hand side. */
+	friend SelfEnergy operator*(
+		const std::complex<double> &lhs,
+		const SelfEnergy &rhs
+	){
+		return rhs*lhs;
+	}
+
+	/** Overrides EnergyResolvedProperty::operator/=(). */
+	SelfEnergy& operator/=(const std::complex<double> &rhs);
+
+	/** Division operator.
+	 *
+	 *  @param rhs The right hand side of the equation.
+	 *
+	 *  @return A new SelfEnergy that is the quotient between this
+	 *  SelfEnergy and the right hand side. */
+	SelfEnergy operator/(const std::complex<double> &rhs) const;
 private:
 };
 
@@ -125,10 +177,48 @@ inline SelfEnergy& SelfEnergy::operator+=(const SelfEnergy &rhs){
 	return *this;
 }
 
+inline SelfEnergy SelfEnergy::operator+(const SelfEnergy &rhs) const{
+	SelfEnergy selfEnergy = *this;
+
+	return selfEnergy += rhs;
+}
+
 inline SelfEnergy& SelfEnergy::operator-=(const SelfEnergy &rhs){
 	EnergyResolvedProperty::operator-=(rhs);
 
 	return *this;
+}
+
+inline SelfEnergy SelfEnergy::operator-(const SelfEnergy &rhs) const{
+	SelfEnergy selfEnergy = *this;
+
+	return selfEnergy -= rhs;
+}
+
+inline SelfEnergy& SelfEnergy::operator*=(const std::complex<double> &rhs){
+	EnergyResolvedProperty::operator*=(rhs);
+
+	return *this;
+}
+
+inline SelfEnergy SelfEnergy::operator*(
+	const std::complex<double> &rhs
+) const{
+	SelfEnergy selfEnergy = *this;
+
+	return selfEnergy *= rhs;
+}
+
+inline SelfEnergy& SelfEnergy::operator/=(const std::complex<double> &rhs){
+	EnergyResolvedProperty::operator/=(rhs);
+
+	return *this;
+}
+
+inline SelfEnergy SelfEnergy::operator/(const std::complex<double> &rhs) const{
+	SelfEnergy selfEnergy = *this;
+
+	return selfEnergy /= rhs;
 }
 
 };	//End namespace Property

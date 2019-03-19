@@ -44,6 +44,7 @@ FLEX::FLEX(
 ) :
 	momentumSpaceContext(momentumSpaceContext)
 {
+	selfEnergyMixingParameter = 0;
 	density = 0;
 	targetDensity = -1;
 	densityTolerance = 1e-5;
@@ -459,6 +460,7 @@ void FLEX::calculateSelfEnergy(unsigned int slice){
 		upperBosonicMatsubaraEnergyIndex
 	);
 	if(slice == 0){
+		previousSelfEnergy = selfEnergy;
 		selfEnergy = selfEnergyPropertyExtractor.calculateSelfEnergy({
 			{{IDX_ALL, IDX_ALL}, {IDX_ALL}, {IDX_ALL}}
 		});
@@ -469,8 +471,17 @@ void FLEX::calculateSelfEnergy(unsigned int slice){
 		});
 	}
 
-	if(slice == numSlices - 1)
+	if(slice == numSlices - 1){
 		convertSelfEnergyIndexStructure();
+
+		if(
+			previousSelfEnergy.getData().size() != 0
+			&& selfEnergyMixingParameter != 0
+		){
+			selfEnergy = (1 - selfEnergyMixingParameter)*selfEnergy
+				+ selfEnergyMixingParameter*previousSelfEnergy;
+		}
+	}
 }
 
 void FLEX::calculateGreensFunction(){

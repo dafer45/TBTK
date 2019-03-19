@@ -90,6 +90,13 @@ public:
 	 *  @return The SelfEnergy. */
 	const Property::SelfEnergy& getSelfEnergy() const;
 
+	/** Set SelfEnergy mixing paramter.
+	 *
+	 *  @param selfEnergyMixingParamter Parameter specifying the fraction
+	 *  of the previous solution that should be mixed together with the new
+	 *  SelfEnergy. */
+	void setSelfEnergyMixingParamter(double selfEnergyMixingParamter);
+
 	/** Set the energy window used for the calculation.
 	 *
 	 *  @param lowerFermionicMatsubaraEnergyIndex The lower Fermionic
@@ -230,8 +237,15 @@ private:
 	/** Interaction vertex. */
 	Property::InteractionVertex interactionVertex;
 
-	/** Interaction vertex. */
+	/** Self-energy. */
 	Property::SelfEnergy selfEnergy;
+
+	/** Previous self-energy (for mixing). */
+	Property::SelfEnergy previousSelfEnergy;
+
+	/** Paramter specifying the fraction of the previous solution that
+	 *  should be mixed into the new SelfEnergy.*/
+	double selfEnergyMixingParameter;
 
 	/** Density. */
 	double density;
@@ -391,6 +405,12 @@ inline void FLEX::setSelfEnergy(const Property::SelfEnergy &selfEnergy){
 
 inline const Property::SelfEnergy& FLEX::getSelfEnergy() const{
 	return selfEnergy;
+}
+
+inline void FLEX::setSelfEnergyMixingParamter(
+	double selfEnergyMixingParameter
+){
+	this->selfEnergyMixingParameter = selfEnergyMixingParameter;
 }
 
 inline double FLEX::getDensity() const{
