@@ -2,6 +2,7 @@
 [![Build Status](https://travis-ci.org/dafer45/TBTK.svg?branch=master)](https://travis-ci.org/dafer45/TBTK)  
 <a href="https://www.patreon.com/bePatron?u=12043676" data-patreon-widget-type="become-patron-button"><img src="doc/become_a_patron_button.png"></a>  
 **Contact:** <kristofer.bjornson@second-tech.com>  
+**Publication:** https://doi.org/10.1016/j.softx.2019.02.005  
 **Full documenation:** http://www.second-quantization.com/  
 **Also see:** http://www.second-tech.com
 
