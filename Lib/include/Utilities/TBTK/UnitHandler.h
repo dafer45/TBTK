@@ -244,6 +244,12 @@ public:
 	/** Get the vacuum permittivity in the currently set natural units. */
 	static double getEpsilon_0N();
 
+	/** Get the Bohr radius in the currently set base units. */
+	static double getA_0B();
+
+	/** Get the Bohr radius in the currently set natural units. */
+	static double getA_0N();
+
 	/** Set temperature unit. */
 	static void setTemperatureUnit(TemperatureUnit unit);
 
@@ -354,6 +360,150 @@ public:
 
 	/** Convert count from base units to natural units. */
 	static double convertCountBtN(double count);
+
+	/** Convert temperature from arbitrary units to base units. */
+	static double convertTemperatureAtB(
+		double temperature,
+		TemperatureUnit unit
+	);
+
+	/** Convert time from arbitrary units to base units. */
+	static double convertTimeAtB(
+		double time,
+		TimeUnit unit
+	);
+
+	/** Convert length from arbitrary units to base units. */
+	static double convertLengthAtB(
+		double length,
+		LengthUnit unit
+	);
+
+	/** Convert energy from arbitrary units to base units. */
+	static double convertEnergyAtB(
+		double energy,
+		EnergyUnit unit
+	);
+
+	/** Convert charge from arbitrary units to base units. */
+	static double convertChargeAtB(
+		double charge,
+		ChargeUnit unit
+	);
+
+	/** Convert count from arbitrary units to base units. */
+	static double convertCountAtB(
+		double count,
+		CountUnit unit
+	);
+
+	/** Convert temperature from base units to arbitrary units. */
+	static double convertTemperatureBtA(
+		double temperature,
+		TemperatureUnit unit
+	);
+
+	/** Convert time from base units to arbitrary units. */
+	static double convertTimeBtA(
+		double time,
+		TimeUnit unit
+	);
+
+	/** Convert length from base units to arbitrary units. */
+	static double convertLengthBtA(
+		double length,
+		LengthUnit unit
+	);
+
+	/** Convert energy from base units to arbitrary units. */
+	static double convertEnergyBtA(
+		double energy,
+		EnergyUnit unit
+	);
+
+	/** Convert charge from base units to arbitrary units. */
+	static double convertChargeBtA(
+		double charge,
+		ChargeUnit unit
+	);
+
+	/** Convert count from base units to arbitrary units. */
+	static double convertCountBtA(
+		double count,
+		CountUnit unit
+	);
+
+	/** Convert temperature from arbitrary units to natural units. */
+	static double convertTemperatureAtN(
+		double temperature,
+		TemperatureUnit unit
+	);
+
+	/** Convert time from arbitrary units to natural units. */
+	static double convertTimeAtN(
+		double time,
+		TimeUnit unit
+	);
+
+	/** Convert length from arbitrary units to natural units. */
+	static double convertLengthAtN(
+		double length,
+		LengthUnit unit
+	);
+
+	/** Convert energy from arbitrary units to natural units. */
+	static double convertEnergyAtN(
+		double energy,
+		EnergyUnit unit
+	);
+
+	/** Convert charge from arbitrary units to natural units. */
+	static double convertChargeAtN(
+		double charge,
+		ChargeUnit unit
+	);
+
+	/** Convert count from arbitrary units to natural units. */
+	static double convertCountAtN(
+		double count,
+		CountUnit unit
+	);
+
+	/** Convert temperature from natural units to arbitrary units. */
+	static double convertTemperatureNtA(
+		double temperature,
+		TemperatureUnit unit
+	);
+
+	/** Convert time from natural units to arbitrary units. */
+	static double convertTimeNtA(
+		double time,
+		TimeUnit unit
+	);
+
+	/** Convert length from natural units to arbitrary units. */
+	static double convertLengthNtA(
+		double length,
+		LengthUnit unit
+	);
+
+	/** Convert energy from natural units to arbitrary units. */
+	static double convertEnergyNtA(
+		double energy,
+		EnergyUnit unit
+	);
+
+	/** Convert charge from natural units to arbitrary units. */
+	static double convertChargeNtA(
+		double charge,
+		ChargeUnit unit
+	);
+
+	/** Convert count from natural units to arbitrary units. */
+	static double convertCountNtA(
+		double count,
+		CountUnit unit
+	);
 
 	/** Convert mass from derived units to base units. */
 	static double convertMassDtB(double mass, MassUnit unit);
@@ -512,6 +662,11 @@ public:
 	 *  @return string representation of the unit for the vacuum
 	 *  permittivity. */
 	static std::string getEpsilon_0UnitString();
+
+	/** Get the Bohr radius unit string
+	 *
+	 *  @return string representation of the unit for the Bohr radius. */
+	static std::string getA_0UnitString();
 private:
 	/** Planck constant in default units (eVs). */
 	static constexpr double HBAR	= 6.582119514e-16;
@@ -546,6 +701,9 @@ private:
 	/** Vacuum permittivity in default units (C^2/eVm). */
 	static constexpr double EPSILON_0 = 8.854187817620e-12*1.602176565e-19;
 
+	/** Bohr radius in default units (m). */
+	static constexpr double A_0 = 5.2917721092*1e-11;
+
 	/** Planck constant in the currently set units. */
 	static double hbar;
 
@@ -578,6 +736,9 @@ private:
 
 	/** Vacuum permittivity in the currently set units. */
 	static double epsilon_0;
+
+	/** Bohr radius in the currently set units. */
+	static double a_0;
 
 	/** Conversion factor from eV to J. */
 	static constexpr double J_per_eV	= 1.602176565e-19;
@@ -679,29 +840,58 @@ private:
 	/** Update vacuum permittivity. To be called at change of units. */
 	static void updateEpsilon_0();
 
+	/** Update the Bohr radius. To be called at change of units. */
+	static void updateA_0();
+
 	/** Returns the number of degrees in the currently set unit per degree
 	 *  in default unit (K). */
 	static double getTemperatureConversionFactor();
+
+	/** Returns the number of degrees in the given unit per degree in
+	 *  default unit (K). */
+	static double getTemperatureConversionFactor(
+		TemperatureUnit temperatureUnit
+	);
 
 	/** Returns the number of unit times in the currently set unit per unit
 	 * time in the default unit (s). */
 	static double getTimeConversionFactor();
 
+	/** Returns the number of unit times in the given unit per unit time in
+	 *  the default unit (s). */
+	static double getTimeConversionFactor(TimeUnit timeUnit);
+
 	/** Returns the number of unit lengths in the currently set unit per
 	 *  unit length in the default unit (m). */
 	static double getLengthConversionFactor();
+
+	/** Returns the number of unit lengths in the given unit per unit
+	 *  length in the default unit (m). */
+	static double getLengthConversionFactor(LengthUnit lengthUnit);
 
 	/** Returns the number of unit energies in the currently set unit per
 	 *  unit energy in the default unit (eV). */
 	static double getEnergyConversionFactor();
 
+	/** Returns the number of unit energies in the given unit per unit
+	 *  energy in the default unit (eV). */
+	static double getEnergyConversionFactor(EnergyUnit energyUnit);
+
 	/** Returns the number of unit charges in the currently set unit per
 	 *  unit charge in the default unit (C). */
 	static double getChargeConversionFactor();
 
+	/** Returns the number of unit charges in the given unit per unit
+	 *  charge in the default unit (C). */
+	static double getChargeConversionFactor(ChargeUnit chargeUnit);
+
 	/** Returns the number of unit counts in the the currently set unit per
 	 *  unit count in the default unit (pcs). */
 	static double getCountConversionFactor();
+
+	/** Returns the number of unit counts in the the given unit per unit
+	 *  count in the default unit (pcs). */
+	static double getCountConversionFactor(CountUnit countUnit);
 
 	/** Returns the number of unit masses in the input unit per unit mass
 	 *  in the default unit (eVs^2/m^2). */
@@ -821,6 +1011,14 @@ inline double UnitHandler::getEpsilon_0B(){
 
 inline double UnitHandler::getEpsilon_0N(){
 	return epsilon_0*energyScale*lengthScale/(chargeScale*chargeScale);
+}
+
+inline double UnitHandler::getA_0B(){
+	return a_0;
+}
+
+inline double UnitHandler::getA_0N(){
+	return a_0/lengthScale;
 }
 
 inline void UnitHandler::setTemperatureScale(double scale, TemperatureUnit unit){
