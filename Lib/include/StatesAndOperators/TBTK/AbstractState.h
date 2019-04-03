@@ -43,7 +43,8 @@ public:
 	 *  number) to also minimize accidental clashes with other operators
 	 *  that are not (yet) supported]. */
 	enum StateID{
-		Basic = 0
+		Basic = 0,
+		STO3G = 1
 	};
 
 	/** Constructor. */
