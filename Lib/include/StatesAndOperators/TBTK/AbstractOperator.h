@@ -39,7 +39,10 @@ public:
 	 *  number) to also minimize accidental clashes with other operators
 	 *  that are not (yet) supported]. */
 	enum OperatorID{
-		Default = 0
+		Default = 0,
+		Kinetic = 1,
+		NuclearPotential = 2,
+		HartreeFockPotential = 3
 	};
 
 	/** Get operator identifier. */
