@@ -64,6 +64,24 @@ public:
 	 *  @return The currently set Statistics. */
 	Statistics getStatistics() const;
 
+	/** Generate a HoppingAmplitudeSet from the BasisStateSet.
+	 *
+	 *  @param hoppingAmplitudeCallback Callback to use as argument for the
+	 *  HoppingAmplitudes. */
+	void generateHoppingAmplitudeSet(
+		const HoppingAmplitude::AmplitudeCallback
+			&hoppingAmplitudeCallback
+	);
+
+	/** Generate a OverlapAmplitudeSet from the BasisStateSet.
+	 *
+	 *  @param overlapAmplitudeCallback Callback to use as argument for the
+	 *  OverlapAmplitudes. */
+	void generateOverlapAmplitudeSet(
+		const OverlapAmplitude::AmplitudeCallback
+			&overlapAmplitudeCallback
+	);
+
 	/** Get the contained BasisStateSet.
 	 *
 	 *  @return The contained BasisStateSet. */

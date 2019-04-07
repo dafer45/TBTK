@@ -57,6 +57,165 @@ TEST(SingleParticleContext, getStatistics){
 	EXPECT_EQ(singleParticleContext.getStatistics(), Statistics::FermiDirac);
 }
 
+//Helper class for testing
+//SingleParticleContext::generateHoppingAmplitudeSet().
+class HoppingAmplitudeCallback : public HoppingAmplitude::AmplitudeCallback{
+public:
+	HoppingAmplitudeCallback(
+		BasisStateSet &basisStateSet
+	) : basisStateSet(basisStateSet){
+	}
+
+	virtual std::complex<double> getHoppingAmplitude(
+		const Index &to,
+		const Index &from
+	) const{
+		return basisStateSet.get(to).getMatrixElement(
+			basisStateSet.get(from)
+		);
+	}
+private:
+	BasisStateSet &basisStateSet;
+};
+
+TEST(SingleParticleContext, generateHoppingAmplitudeSet){
+	SingleParticleContext singleParticleContext;
+	BasisStateSet &basisStateSet
+		= singleParticleContext.getBasisStateSet();
+
+	BasicState state0({1, 2});
+	BasicState state1({2, 3});
+
+	state0.addMatrixElement(1, {1, 2});
+	state0.addMatrixElement(2, {2, 3});
+
+	state1.addMatrixElement(2, {1, 2});
+	state1.addMatrixElement(3, {2, 3});
+
+	basisStateSet.add(state0);
+	basisStateSet.add(state1);
+
+	HoppingAmplitudeCallback hoppingAmplitudeCallback(basisStateSet);
+	singleParticleContext.generateHoppingAmplitudeSet(
+		hoppingAmplitudeCallback
+	);
+
+	HoppingAmplitudeSet &hoppingAmplitudeSet
+		= singleParticleContext.getHoppingAmplitudeSet();
+	hoppingAmplitudeSet.construct();
+	HoppingAmplitudeSet::ConstIterator iterator
+		= hoppingAmplitudeSet.cbegin();
+
+	EXPECT_TRUE(iterator != hoppingAmplitudeSet.cend());
+	EXPECT_TRUE((*iterator).getToIndex().equals({1, 2}));
+	EXPECT_TRUE((*iterator).getFromIndex().equals({1, 2}));
+	EXPECT_DOUBLE_EQ(real((*iterator).getAmplitude()), 1);
+	EXPECT_DOUBLE_EQ(imag((*iterator).getAmplitude()), 0);
+
+	++iterator;
+	EXPECT_TRUE(iterator != hoppingAmplitudeSet.cend());
+	EXPECT_TRUE((*iterator).getToIndex().equals({2, 3}));
+	EXPECT_TRUE((*iterator).getFromIndex().equals({1, 2}));
+	EXPECT_DOUBLE_EQ(real((*iterator).getAmplitude()), 2);
+	EXPECT_DOUBLE_EQ(imag((*iterator).getAmplitude()), 0);
+
+	++iterator;
+	EXPECT_TRUE(iterator != hoppingAmplitudeSet.cend());
+	EXPECT_TRUE((*iterator).getToIndex().equals({1, 2}));
+	EXPECT_TRUE((*iterator).getFromIndex().equals({2, 3}));
+	EXPECT_DOUBLE_EQ(real((*iterator).getAmplitude()), 2);
+	EXPECT_DOUBLE_EQ(imag((*iterator).getAmplitude()), 0);
+
+	++iterator;
+	EXPECT_TRUE(iterator != hoppingAmplitudeSet.cend());
+	EXPECT_TRUE((*iterator).getToIndex().equals({2, 3}));
+	EXPECT_TRUE((*iterator).getFromIndex().equals({2, 3}));
+	EXPECT_DOUBLE_EQ(real((*iterator).getAmplitude()), 3);
+	EXPECT_DOUBLE_EQ(imag((*iterator).getAmplitude()), 0);
+
+	++iterator;
+	EXPECT_TRUE(iterator == hoppingAmplitudeSet.cend());
+}
+
+//Helper class for testing
+//SingleParticleContext::generateOverlapAmplitudeSet().
+class OverlapAmplitudeCallback : public OverlapAmplitude::AmplitudeCallback{
+public:
+	OverlapAmplitudeCallback(
+		BasisStateSet &basisStateSet
+	) : basisStateSet(basisStateSet){
+	}
+
+	virtual std::complex<double> getOverlapAmplitude(
+		const Index &to,
+		const Index &from
+	) const{
+		return basisStateSet.get(to).getOverlap(
+			basisStateSet.get(from)
+		);
+	}
+private:
+	BasisStateSet &basisStateSet;
+};
+
+TEST(SingleParticleContext, generateOveralpAmplitudeSet){
+	SingleParticleContext singleParticleContext;
+	BasisStateSet &basisStateSet
+		= singleParticleContext.getBasisStateSet();
+
+	BasicState state0({1, 2});
+	BasicState state1({2, 3});
+
+	state0.addOverlap(1, {1, 2});
+	state0.addOverlap(2, {2, 3});
+
+	state1.addOverlap(2, {1, 2});
+	state1.addOverlap(3, {2, 3});
+
+	basisStateSet.add(state0);
+	basisStateSet.add(state1);
+
+	OverlapAmplitudeCallback overlapAmplitudeCallback(basisStateSet);
+	singleParticleContext.generateOverlapAmplitudeSet(
+		overlapAmplitudeCallback
+	);
+
+	OverlapAmplitudeSet &overlapAmplitudeSet
+		= singleParticleContext.getOverlapAmplitudeSet();
+	OverlapAmplitudeSet::ConstIterator iterator
+		= overlapAmplitudeSet.cbegin();
+
+	EXPECT_TRUE(iterator != overlapAmplitudeSet.cend());
+	EXPECT_TRUE((*iterator).getBraIndex().equals({1, 2}));
+	EXPECT_TRUE((*iterator).getKetIndex().equals({1, 2}));
+	EXPECT_DOUBLE_EQ(real((*iterator).getAmplitude()), 1);
+	EXPECT_DOUBLE_EQ(imag((*iterator).getAmplitude()), 0);
+
+	++iterator;
+	EXPECT_TRUE(iterator != overlapAmplitudeSet.cend());
+	EXPECT_TRUE((*iterator).getBraIndex().equals({1, 2}));
+	EXPECT_TRUE((*iterator).getKetIndex().equals({2, 3}));
+	EXPECT_DOUBLE_EQ(real((*iterator).getAmplitude()), 2);
+	EXPECT_DOUBLE_EQ(imag((*iterator).getAmplitude()), 0);
+
+	++iterator;
+	EXPECT_TRUE(iterator != overlapAmplitudeSet.cend());
+	EXPECT_TRUE((*iterator).getBraIndex().equals({2, 3}));
+	EXPECT_TRUE((*iterator).getKetIndex().equals({1, 2}));
+	EXPECT_DOUBLE_EQ(real((*iterator).getAmplitude()), 2);
+	EXPECT_DOUBLE_EQ(imag((*iterator).getAmplitude()), 0);
+
+	++iterator;
+	EXPECT_TRUE(iterator != overlapAmplitudeSet.cend());
+	EXPECT_TRUE((*iterator).getBraIndex().equals({2, 3}));
+	EXPECT_TRUE((*iterator).getKetIndex().equals({2, 3}));
+	EXPECT_DOUBLE_EQ(real((*iterator).getAmplitude()), 3);
+	EXPECT_DOUBLE_EQ(imag((*iterator).getAmplitude()), 0);
+
+	++iterator;
+	EXPECT_TRUE(iterator == overlapAmplitudeSet.cend());
+}
+
 //TODO
 //This function should possibly be removed from the SingleParticleContext
 //itself by makin the SingleParticleContext inherit from the

@@ -98,6 +98,58 @@ SingleParticleContext::SingleParticleContext(
 	}
 }
 
+void SingleParticleContext::generateHoppingAmplitudeSet(
+	const HoppingAmplitude::AmplitudeCallback &hoppingAmplitudeCallback
+){
+	for(
+		BasisStateSet::ConstIterator toIterator
+			= basisStateSet.cbegin();
+		toIterator != basisStateSet.cend();
+		++toIterator
+	){
+		for(
+			BasisStateSet::ConstIterator fromIterator
+				= basisStateSet.cbegin();
+			fromIterator != basisStateSet.cend();
+			++fromIterator
+		){
+			hoppingAmplitudeSet.add(
+				HoppingAmplitude(
+					hoppingAmplitudeCallback,
+					(*toIterator).getIndex(),
+					(*fromIterator).getIndex()
+				)
+			);
+		}
+	}
+}
+
+void SingleParticleContext::generateOverlapAmplitudeSet(
+	const OverlapAmplitude::AmplitudeCallback &overlapAmplitudeCallback
+){
+	for(
+		BasisStateSet::ConstIterator toIterator
+			= basisStateSet.cbegin();
+		toIterator != basisStateSet.cend();
+		++toIterator
+	){
+		for(
+			BasisStateSet::ConstIterator fromIterator
+				= basisStateSet.cbegin();
+			fromIterator != basisStateSet.cend();
+			++fromIterator
+		){
+			overlapAmplitudeSet.add(
+				OverlapAmplitude(
+					overlapAmplitudeCallback,
+					(*toIterator).getIndex(),
+					(*fromIterator).getIndex()
+				)
+			);
+		}
+	}
+}
+
 string SingleParticleContext::serialize(Mode mode) const{
 	switch(mode){
 	case Mode::JSON:

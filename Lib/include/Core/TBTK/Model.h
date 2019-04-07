@@ -126,6 +126,24 @@ public:
 	 *  call to Model::construct(), otherwise -1. */
 	int getBasisSize() const;
 
+	/** Generate HoppingAmplitudeSet from basis functions.
+	 *
+	 *  @param hoppingAmplitudeCallback Callback to use as argument for the
+	 *  HoppingAmplitudes. */
+	void generateHoppingAmplitudeSet(
+		const HoppingAmplitude::AmplitudeCallback
+			&hoppingAmplitudeCallback
+	);
+
+	/** Generate OverlapAmplitudeSet from basis functions.
+	 *
+	 *  @param overlapAmplitudeCallback Callback to use as argument for the
+	 *  OverlapAmplitudes. */
+	void generateOverlapAmplitudeSet(
+		const OverlapAmplitude::AmplitudeCallback
+			&overlapAmplitudeCallback
+	);
+
 	/** Construct Hilbert space. No more @link HoppingAmplitude
 	 *  HoppingAmplitudes @endlink should be added after this call. */
 	void construct();
@@ -282,6 +300,22 @@ inline void Model::add(HoppingAmplitude ha){
 
 inline int Model::getBasisSize() const{
 	return singleParticleContext.getHoppingAmplitudeSet().getBasisSize();
+}
+
+inline void Model::generateHoppingAmplitudeSet(
+	const HoppingAmplitude::AmplitudeCallback &hoppingAmplitudeCallback
+){
+	singleParticleContext.generateHoppingAmplitudeSet(
+		hoppingAmplitudeCallback
+	);
+}
+
+inline void Model::generateOverlapAmplitudeSet(
+	const OverlapAmplitude::AmplitudeCallback &overlapAmplitudeCallback
+){
+	singleParticleContext.generateOverlapAmplitudeSet(
+		overlapAmplitudeCallback
+	);
 }
 
 inline int Model::getBasisIndex(const Index &index) const{
