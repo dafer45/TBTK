@@ -38,10 +38,10 @@ SourceAmplitude::SourceAmplitude(
 };
 
 SourceAmplitude::SourceAmplitude(
-	complex<double> (*amplitudeCallback)(const Index &index),
+	const AmplitudeCallback &amplitudeCallback,
 	Index index
 ) :
-	amplitudeCallback(amplitudeCallback),
+	amplitudeCallback(&amplitudeCallback),
 	index(index)
 {
 };

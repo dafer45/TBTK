@@ -39,6 +39,23 @@ namespace TBTK{
  *  H\Psi + S\f$. */
 class SourceAmplitude : public Serializable{
 public:
+	/** Abstract base class for callbacks that allow for delayed
+	 *  determination of the SourceAmplitude's value. */
+	class AmplitudeCallback{
+	public:
+		/** Function responsible for returning the value of the
+		 *  SourceAmplitude for the given Index.
+		 *
+		 *  @param index The Index to determine the value of the
+		 *  SourceAmplitude for.
+		 *
+		 *  @return The value of the SourceAmplitude for the given
+		 *  Index. */
+		virtual std::complex<double> getSourceAmplitude(
+			const Index &index
+		) const = 0;
+	};
+
 	/** Constructs a SourceAmplitude. */
 	SourceAmplitude();
 
@@ -48,16 +65,16 @@ public:
 	 *  @param index The index for which the SourceAmplitude is defined. */
 	SourceAmplitude(std::complex<double> amplitude, Index index);
 
-	/** Constructor. Takes a callback function rather than a paramater
-	 *  value. The callback function has to be defined such that it returns
+	/** Constructor. Takes an AmplitudeCallback rather than a paramater
+	 *  value. The AmplitudeCallback has to be defined such that it returns
 	 *  a value for the given index when called at run time.
 	 *
-	 *  @param amplitudeCallback A callback function that is able to return
-	 *  a value when passed index.
+	 *  @param amplitudeCallback An AmplitudeCallback that is able to
+	 *  return a value when passed an index.
 	 *
 	 *  @param index The Index for which the SourceAmplitude is defined. */
 	SourceAmplitude(
-		std::complex<double> (*amplitudeCallback)(const Index &index),
+		const AmplitudeCallback &amplitudeCallback,
 		Index index
 	);
 
@@ -107,9 +124,9 @@ private:
 	 */
 	std::complex<double> amplitude;
 
-	/** Callback function for runtime evaluation of amplitudes. Will be
-	 *  called if not NULL. */
-	std::complex<double> (*amplitudeCallback)(const Index &index);
+	/** AmplitudeCallback for runtime evaluation of amplitudes. Will be
+	 *  called if not a nullptr. */
+	const AmplitudeCallback *amplitudeCallback;
 
 	/** Index at which the source is defined. */
 	Index index;
@@ -121,7 +138,7 @@ inline SourceAmplitude::SourceAmplitude() : amplitudeCallback(nullptr){
 
 inline std::complex<double> SourceAmplitude::getAmplitude() const{
 	if(amplitudeCallback)
-		return amplitudeCallback(index);
+		return amplitudeCallback->getSourceAmplitude(index);
 	else
 		return amplitude;
 }

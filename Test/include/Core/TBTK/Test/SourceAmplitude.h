@@ -10,12 +10,14 @@ TEST(SourceAmplitude, ConstructorAmplitude){
 	EXPECT_TRUE(sourceAmplitude.getIndex().equals({1, 2, 3}));
 }
 
-std::complex<double> amplitudeCallback(const Index &index){
-	if(index.equals({1, 2, 3}))
-		return std::complex<double>(3, 4);
-	else
-		return -1;
-}
+class AmplitudeCallback : public SourceAmplitude::AmplitudeCallback{
+	std::complex<double> getSourceAmplitude(const Index &index) const{
+		if(index.equals({1, 2, 3}))
+			return std::complex<double>(3, 4);
+		else
+			return -1;
+	}
+} amplitudeCallback;
 
 TEST(SourceAmplitude, ConstructorAmplitudeCallback){
 	SourceAmplitude sourceAmplitude(amplitudeCallback, {1, 2, 3});
