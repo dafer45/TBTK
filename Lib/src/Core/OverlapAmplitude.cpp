@@ -42,17 +42,14 @@ OverlapAmplitude::OverlapAmplitude(
 };
 
 OverlapAmplitude::OverlapAmplitude(
-	complex<double> (*amplitudeCallback)(
-		const Index &bra,
-		const Index &ket
-	),
+	const AmplitudeCallback &amplitudeCallback,
 	const Index &braIndex,
 	const Index &ketIndex
 ) :
 	braIndex(braIndex),
 	ketIndex(ketIndex)
 {
-	this->amplitudeCallback = amplitudeCallback;
+	this->amplitudeCallback = &amplitudeCallback;
 };
 
 OverlapAmplitude::OverlapAmplitude(

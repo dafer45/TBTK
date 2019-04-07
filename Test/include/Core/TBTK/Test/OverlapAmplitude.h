@@ -24,14 +24,19 @@ TEST(OverlapAmplitude, ConstructorAmplitude){
 	) << errorMessage;
 }
 
-std::complex<double> amplitudeCallback(const Index &bra, const Index &ket){
-	if(bra.equals({1, 2}))
-		return std::complex<double>(3, 4);
-	else if(ket.equals({1, 2}))
-		return std::complex<double>(3, -4);
-	else
-		return -1;
-}
+class AmplitudeCallback : public OverlapAmplitude::AmplitudeCallback{
+	std::complex<double> getOverlapAmplitude(
+		const Index &bra,
+		const Index &ket
+	) const{
+		if(bra.equals({1, 2}))
+			return std::complex<double>(3, 4);
+		else if(ket.equals({1, 2}))
+			return std::complex<double>(3, -4);
+		else
+			return -1;
+	}
+} amplitudeCallback;
 
 TEST(OverlapAmplitude, ConstructorAmplitudeCallback){
 	std::string errorMessage = "Callback constructor failed.";
@@ -142,10 +147,17 @@ TEST(OverlapAmplitude, getIsCallbackDependent){
 
 TEST(OverlapAmplitude, getAmplitudeCallback){
 	OverlapAmplitude overlapAmplitude0(1, {0}, {0});
-	EXPECT_EQ(overlapAmplitude0.getAmplitudeCallback(), nullptr);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			overlapAmplitude0.getAmplitudeCallback();
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
 
 	OverlapAmplitude overlapAmplitude1(amplitudeCallback, {0}, {0});
-	EXPECT_EQ(overlapAmplitude1.getAmplitudeCallback(), amplitudeCallback);
+	EXPECT_EQ(&overlapAmplitude1.getAmplitudeCallback(), &amplitudeCallback);
 }
 
 TEST(OverlapAmplitude, toString){

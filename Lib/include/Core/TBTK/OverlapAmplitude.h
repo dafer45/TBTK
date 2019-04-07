@@ -36,6 +36,27 @@ namespace TBTK{
 /** @brief Overlap amplitude between state 'bra' and 'ket'. */
 class OverlapAmplitude : public PseudoSerializable{
 public:
+	/** Abstract base class for callbacks that allow for delayed
+	 *  determination of the OverlapAmplitude's value. */
+	class AmplitudeCallback{
+	public:
+		/** Function responsible for returning the value of the
+		 *  OverlapAmplitude for the given indices.
+		 *
+		 *  @param braIndex The index of the bra state to determine the
+		 *  value of the OverlapAmplitude for.
+		 *
+		 *  @param bketIndex The index of the ket state to determine the
+		 *  value of the OverlapAmplitude for.
+		 *
+		 *  @return The value of the OverlapAmplitude for the given
+		 *  indices. */
+		virtual std::complex<double> getOverlapAmplitude(
+			const Index &braIndex,
+			const Index &ketIndex
+		) const = 0;
+	};
+
 	/** Constructor. */
 	OverlapAmplitude();
 
@@ -51,20 +72,17 @@ public:
 		const Index &ketIndex
 	);
 
-	/** Constructor. Takes a callback function rather than a paramater
-	 *  value. The callback function has to be defined such that it returns
+	/** Constructor. Takes an AmplitudeCallback rather than a paramater
+	 *  value. The AmplitudeCallback has to be defined such that it returns
 	 *  a value for the given indices when called at run time.
 	 *
-	 *  @param amplitudeCallback A callback function that is able to return
+	 *  @param amplitudeCallback An AmplitudeCallback that is able to return
 	 *  a value when passed bra.
 	 *
 	 *  @param braIndex The Index of the bra state.
 	 *  @param ketIndex The Index of the ket state. */
 	OverlapAmplitude(
-		std::complex<double> (*amplitudeCallback)(
-			const Index &braIndex,
-			const Index &ketIndex
-		),
+		const AmplitudeCallback &amplitudeCallback,
 		const Index &braIndex,
 		const Index &ketIndex
 	);
@@ -97,21 +115,21 @@ public:
 	const Index& getKetIndex() const;
 
 	/** Get whether the value of the OverlapAmplitude is determined through
-	 *  a callback.
+	 *  an AmplitudeCallback.
 	 *
 	 *  @return True if the value of the OverlapAmplitude is determined
-	 *  through a callback. */
+	 *  through an AmplitudeCallback. */
 	bool getIsCallbackDependent() const;
 
-	/** Get the callback that is used to determine the value of the
-	 *  OverlapAmplitude.
+	/** Get the AmplitudeCallback that is used to determine the value of
+	 *  the OverlapAmplitude. This function stops execution if no
+	 *  AmplitudeCallback is used for the OverlapAmplitude. Therefore
+	 *  always first check whether the OverlapAmplitude is callback
+	 *  dependent with getIsCallbackDependent().
 	 *
-	 *  @return The callback that is used to determine the value of the
-	 *  OverlapAmplitude. Returns nullptr if no callback is used. */
-	std::complex<double> (*getAmplitudeCallback() const)(
-		const Index &braIndex,
-		const Index &ketIndex
-	);
+	 *  @return The AmplitudeCallback that is used to determine the value
+	 *  of the OverlapAmplitude. */
+	const AmplitudeCallback& getAmplitudeCallback() const;
 
 	/** Get string representation of the OverlapAmplitude.
 	 *
@@ -137,12 +155,9 @@ private:
 	 *  if amplitudeCallback is nullptr. */
 	std::complex<double> amplitude;
 
-	/** Callback function for runtime evaluation of amplitudes. Will be
-	 *  called if not nullptr. */
-	std::complex<double> (*amplitudeCallback)(
-		const Index &braIndex,
-		const Index &ketIndex
-	);
+	/** AmplitudeCallback for runtime evaluation of amplitudes. Will be
+	 *  called if not a nullptr. */
+	const AmplitudeCallback *amplitudeCallback;
 
 	/** Index of the bra-state. */
 	Index braIndex;
@@ -157,10 +172,15 @@ inline OverlapAmplitude::OverlapAmplitude(){
 }
 
 inline std::complex<double> OverlapAmplitude::getAmplitude() const{
-	if(amplitudeCallback)
-		return amplitudeCallback(braIndex, ketIndex);
-	else
+	if(amplitudeCallback){
+		return amplitudeCallback->getOverlapAmplitude(
+			braIndex,
+			ketIndex
+		);
+	}
+	else{
 		return amplitude;
+	}
 }
 
 inline const Index& OverlapAmplitude::getBraIndex() const{
@@ -178,11 +198,19 @@ inline bool OverlapAmplitude::getIsCallbackDependent() const{
 		return true;
 }
 
-inline std::complex<double> (*OverlapAmplitude::getAmplitudeCallback() const)(
-	const Index &braIndex,
-	const Index &ketIndex
-){
-	return amplitudeCallback;
+inline const OverlapAmplitude::AmplitudeCallback&
+OverlapAmplitude::getAmplitudeCallback() const{
+	if(amplitudeCallback != nullptr){
+		return *amplitudeCallback;
+	}
+	else{
+		TBTKExit(
+			"OverlapAmplitude::getAmplitudeCallback()",
+			"Tried to access AmplitudeCallback from an"
+			<< " OverlapAmplitude without an AmplitudeCallback.",
+			""
+		);
+	}
 }
 
 inline std::string OverlapAmplitude::toString() const{
