@@ -16,3 +16,7 @@
 
 - Implement operator+=(), operator-=(), operator*=(), operator/=() operator+(),
   operator-(), opeartor*(), and operator/() for all Properties.
+
+- OverlapAmplitudeSet::_Iterator and BasisStateSet::_Iterator does probably not
+  need the members iterator and iteratorEnd. The should therefore probably be
+  rewritten to remove these.
