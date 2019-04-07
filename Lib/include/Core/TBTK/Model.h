@@ -165,6 +165,11 @@ public:
 	 *  @return The currently set Statistics. */
 	Statistics getStatistics() const;
 
+	/** Get BasisStateSet.
+	 *
+	 *  @return Reference to the contained BasisStateSet. */
+	const BasisStateSet& getBasisStateSet() const;
+
 	/** Get amplitude set.
 	 *
 	 *  @return Reference to the contained HoppingAmplitudeSet. */
@@ -224,6 +229,9 @@ public:
 	void setFilter(
 		const AbstractIndexFilter &indexFilter
 	);
+
+	/** Operator<<. */
+	Model& operator<<(const AbstractState &basisState);
 
 	/** Operator<<. */
 	Model& operator<<(const HoppingAmplitude& hoppingAmplitude);
@@ -308,6 +316,10 @@ inline Statistics Model::getStatistics() const{
 	return singleParticleContext.getStatistics();
 }
 
+inline const BasisStateSet& Model::getBasisStateSet() const{
+	return singleParticleContext.getBasisStateSet();
+}
+
 inline const HoppingAmplitudeSet& Model::getHoppingAmplitudeSet() const{
 	return singleParticleContext.getHoppingAmplitudeSet();
 }
@@ -358,6 +370,12 @@ inline void Model::setFilter(
 	this->hoppingAmplitudeFilter = new IndexBasedHoppingAmplitudeFilter(
 		indexFilter
 	);
+}
+
+inline Model& Model::operator<<(const AbstractState &basisState){
+	singleParticleContext.getBasisStateSet().add(basisState);
+
+	return *this;
 }
 
 inline Model& Model::operator<<(const HoppingAmplitude &hoppingAmplitude){
