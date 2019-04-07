@@ -37,8 +37,8 @@ using namespace TBTK;
 const complex<double> i(0, 1);
 
 //Lattice size
-const int SIZE_X = 20;
-const int SIZE_Y = 20;
+const int SIZE_X = 10;
+const int SIZE_Y = 10;
 
 //Order parameter. The two buffers are alternatively swaped by setting dCounter
 // = 0 or 1. One buffer contains the order parameter used in the previous
@@ -104,26 +104,31 @@ bool scCallback(Solver::Diagonalizer &dSolver){
 //Callback function responsible for determining the value of the order
 //parameter D_{to,from}c_{to}c_{from} where to and from are indices of the form
 //(x, y, spin).
-complex<double> fD(const Index &to, const Index &from){
-	//Obtain indices
-	int x = from.at(0);
-	int y = from.at(1);
-	int s = from.at(2);
+class DCallback : public HoppingAmplitude::AmplitudeCallback{
+	complex<double> getHoppingAmplitude(
+		const Index &to,
+		const Index &from
+	) const{
+		//Obtain indices
+		int x = from.at(0);
+		int y = from.at(1);
+		int s = from.at(2);
 
-	//Return appropriate amplitude
-	switch(s){
-		case 0:
-			return conj(D[dCounter][x][y]);
-		case 1:
-			return -conj(D[dCounter][x][y]);
-		case 2:
-			return -D[dCounter][x][y];
-		case 3:
-			return D[dCounter][x][y];
-		default://Never happens
-			return 0;
+		//Return appropriate amplitude
+		switch(s){
+			case 0:
+				return conj(D[dCounter][x][y]);
+			case 1:
+				return -conj(D[dCounter][x][y]);
+			case 2:
+				return -D[dCounter][x][y];
+			case 3:
+				return D[dCounter][x][y];
+			default://Never happens
+				return 0;
+		}
 	}
-}
+} dCallback;
 
 //Function responsible for initializing the order parameter
 void initD(){
@@ -157,7 +162,7 @@ int main(int argc, char **argv){
 					model << HoppingAmplitude(-t,	{x, (y+1)%SIZE_Y, s},	{x, y, s}) + HC;
 					model << HoppingAmplitude(t,	{x, (y+1)%SIZE_Y, s+2},	{x, y, s+2}) + HC;
 				}
-				model << HoppingAmplitude(fD,	{x, y, 3-s},	{x, y, s}) + HC;
+				model << HoppingAmplitude(dCallback,	{x, y, 3-s},	{x, y, s}) + HC;
 			}
 		}
 	}

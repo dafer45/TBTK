@@ -84,7 +84,6 @@ int main(int argc, char **argv){
 
 	//Construct model
 	model.construct();
-	model.constructCOO();
 
 	//Setup and run Solver::ArnoldiIterator
 	const int NUM_EIGEN_VALUES = 1600;

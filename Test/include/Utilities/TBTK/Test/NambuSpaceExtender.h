@@ -5,23 +5,25 @@
 namespace TBTK{
 
 //Callback used to by the test for NambuSpaceExtender::extend().
-std::complex<double> amplitudeCallback(
-	const Index &toIndex,
-	const Index &fromIndex
-){
-	if(toIndex[1] == 0){
-		if(toIndex[0] == 4)
-			return std::complex<double>(0, 4);
-		else
-			return std::complex<double>(0, -4);
+class AmplitudeCallback : public HoppingAmplitude::AmplitudeCallback{
+	virtual std::complex<double> getHoppingAmplitude(
+		const Index &toIndex,
+		const Index &fromIndex
+	) const{
+		if(toIndex[1] == 0){
+			if(toIndex[0] == 4)
+				return std::complex<double>(0, 4);
+			else
+				return std::complex<double>(0, -4);
+		}
+		else{
+			if(toIndex[0] == 4)
+				return -std::complex<double>(0, -4);
+			else
+				return -std::complex<double>(0, 4);
+		}
 	}
-	else{
-		if(toIndex[0] == 4)
-			return -std::complex<double>(0, -4);
-		else
-			return -std::complex<double>(0, 4);
-	}
-}
+};
 
 TEST(NambuSpaceExtender, extend){
 	//Normal model.
@@ -34,6 +36,7 @@ TEST(NambuSpaceExtender, extend){
 		{2},
 		{3}
 	) + HC;
+	AmplitudeCallback amplitudeCallback;
 	model0 << HoppingAmplitude(amplitudeCallback, {4}, {5}) + HC;
 	model0.construct();
 	model0.setChemicalPotential(0);

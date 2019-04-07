@@ -44,10 +44,30 @@ enum HermitianConjugate {HC};
  *  called with the parameters either in the order (from, to, value) or the
  *  order (value, to, from). The former follows the order in which the process
  *  can be thought of as happening, while the later corresponds to the order in
- *  which values and operators stands in the Hamiltonian.
- */
+ *  which values and operators stands in the Hamiltonian. */
 class HoppingAmplitude{
 public:
+	/** Abstract base class for callbacks that allow for delayed
+	 *  determination of the HoppingAmplitude's value. */
+	class AmplitudeCallback{
+	public:
+		/** Function responsible for returning the value of the
+		 *  HoppingAmplitude for the given indices.
+		 *
+		 *  @param to To-index to determine the value of the
+		 *  HoppingAmplitude for.
+		 *
+		 *  @param from From-index to determine the value of the
+		 *  HoppingAmplitude for.
+		 *
+		 *  @return The value of the HoppingAmplitude for the given
+		 *  indices. */
+		virtual std::complex<double> getHoppingAmplitude(
+			const Index &to,
+			const Index &from
+		) const = 0;
+	};
+
 	/** Constructs a HoppingAmplitude from a value and two @link Index
 	 *  Indices@endlink.
 	 *
@@ -63,11 +83,11 @@ public:
 		Index fromIndex
 	);
 
-	/** Constructor. Takes a callback function rather than a paramater
-	 *  value. The callback function has to be defined such that it returns
+	/** Constructor. Takes an AmplitudeCallback rather than a paramater
+	 *  value. The AmplitudeCallback has to be defined such that it returns
 	 *  a value for the given indices when called at run time.
 	 *
-	 *  @param amplitudeCallback A callback function able that is able to
+	 *  @param amplitudeCallback An AmplitudeCallback that is able to
 	 *  return a value when passed toIndex and fromIndex.
 	 *
 	 *  @param toIndex The left index (i or to-Index) on the
@@ -76,10 +96,7 @@ public:
 	 *  @param fromIndex The right index (j or from-Index) on the
 	 *  HoppingAmplitude. */
 	HoppingAmplitude(
-		std::complex<double> (*amplitudeCallback)(
-			const Index &to,
-			const Index &from
-		),
+		const AmplitudeCallback &callback,
 		Index toIndex,
 		Index fromIndex
 	);
@@ -137,21 +154,21 @@ public:
 	const Index& getFromIndex() const;
 
 	/** Get whether the value of the HoppingAmplitude is determined through
-	 *  a callback.
+	 *  an AmplitudeCallback.
 	 *
-	 *  @return True of the value of the HoppingAmplitude is determined
-	 *  through a callback. */
+	 *  @return True if the value of the HoppingAmplitude is determined
+	 *  through an AmplitudeCallback. */
 	bool getIsCallbackDependent() const;
 
-	/** Get the callback that is used to determine the value of the
-	 *  HoppingAmplitude.
+	/** Get the AmplitudeCallback that is used to determine the value of
+	 *  the HoppingAmplitude. This function stops execution if no
+	 *  AmplitudeCallback is used for the HoppingAmplitude. Therefore
+	 *  always first check whether the HoppingAmplitude is callback
+	 *  dependent with getIsCallbackDependent().
 	 *
-	 *  @return The callback that is used to determine the value of the
-	 *  HoppingAmplitude. Returns nullptr if no callback is used. */
-	std::complex<double> (*getAmplitudeCallback() const)(
-		const Index &toIndex,
-		const Index &fromIndex
-	);
+	 *  @return The AmplitudeCallback that is used to determine the value
+	 *  of the HoppingAmplitude. */
+	const AmplitudeCallback& getAmplitudeCallback() const;
 
 	/** Get string representation of the HoppingAmplitude.
 	 *
@@ -177,12 +194,9 @@ private:
 	 */
 	std::complex<double> amplitude;
 
-	/** Callback function for runtime evaluation of amplitudes. Will be
-	 *  called if not NULL. */
-	std::complex<double> (*amplitudeCallback)(
-		const Index &toIndex,
-		const Index &fromIndex
-	);
+	/** AmplitudeCallback for runtime evaluation of amplitudes. Will be
+	 *  called if not a nullptr. */
+	const AmplitudeCallback *amplitudeCallback;
 
 	/** Index to jump from (annihilate). */
 	Index fromIndex;
@@ -193,10 +207,15 @@ private:
 };
 
 inline std::complex<double> HoppingAmplitude::getAmplitude() const{
-	if(amplitudeCallback)
-		return amplitudeCallback(toIndex, fromIndex);
-	else
+	if(amplitudeCallback){
+		return amplitudeCallback->getHoppingAmplitude(
+			toIndex,
+			fromIndex
+		);
+	}
+	else{
 		return amplitude;
+	}
 }
 
 inline std::tuple<HoppingAmplitude, HoppingAmplitude> HoppingAmplitude::operator+(
@@ -220,11 +239,19 @@ inline bool HoppingAmplitude::getIsCallbackDependent() const{
 		return true;
 }
 
-inline std::complex<double> (*HoppingAmplitude::getAmplitudeCallback() const)(
-	const Index &toIndex,
-	const Index &fromIndex
-){
-	return amplitudeCallback;
+inline const HoppingAmplitude::AmplitudeCallback&
+HoppingAmplitude::getAmplitudeCallback() const{
+	if(amplitudeCallback != nullptr){
+		return *amplitudeCallback;
+	}
+	else{
+		TBTKExit(
+			"HoppingAmpliude::getAmplitudeCallback()",
+			"Tried to access AmplitudeCallback from a"
+			<< " HoppingAmplitude without an AmplitudeCallback.",
+			""
+		);
+	}
 }
 
 inline std::string HoppingAmplitude::toString() const{
