@@ -23,6 +23,7 @@
 #ifndef COM_DAFER45_TBTK_SINGLE_PARTICLE_CONTEXT
 #define COM_DAFER45_TBTK_SINGLE_PARTICLE_CONTEXT
 
+#include "TBTK/BasisStateSet.h"
 #include "TBTK/Geometry.h"
 #include "TBTK/HoppingAmplitudeSet.h"
 #include "TBTK/OverlapAmplitudeSet.h"
@@ -44,7 +45,13 @@ public:
 	SingleParticleContext(const std::vector<unsigned int> &capacity);
 
 	/** Constructor. Constructs the SingleParticleContext from a
-	 *  serializeation string. */
+	 *  serializeation string. Note that the BasisStateSet is not yet
+	 *  serialized.
+	 *
+	 *  @param serialization Serialization string from which to construct
+	 *  the SingleParticleContext.
+	 *
+	 *  @param mode Mode with which the string has been serialized. */
 	SingleParticleContext(const std::string &serialization, Mode mode);
 
 	/** Set statistics.
@@ -56,6 +63,16 @@ public:
 	 *
 	 *  @return The currently set Statistics. */
 	Statistics getStatistics() const;
+
+	/** Get the contained BasisStateSet.
+	 *
+	 *  @return The contained BasisStateSet. */
+	BasisStateSet& getBasisStateSet();
+
+	/** Get the contained BasisStateSet.
+	 *
+	 *  @return The contained BasisStateSet. */
+	const BasisStateSet& getBasisStateSet() const;
 
 	/** Get the contained HoppingAmplitudeSet.
 	 *
@@ -93,9 +110,13 @@ public:
 	/** Get Geometry. */
 	const Geometry& getGeometry() const;
 
-	/** Implements Serializable::serialize(). */
+	/** Implements Serializable::serialize(). Note that the BasisStateSet
+	 *  is not yet serialized. */
 	std::string serialize(Mode mode) const;
 private:
+	/** BasisStateSet. */
+	BasisStateSet basisStateSet;
+
 	/** HoppingAmplitudeSet. */
 	HoppingAmplitudeSet hoppingAmplitudeSet;
 
@@ -121,6 +142,14 @@ inline void SingleParticleContext::setStatistics(Statistics statistics){
 
 inline Statistics SingleParticleContext::getStatistics() const{
 	return statistics;
+}
+
+inline BasisStateSet& SingleParticleContext::getBasisStateSet(){
+	return basisStateSet;
+}
+
+inline const BasisStateSet& SingleParticleContext::getBasisStateSet() const{
+	return basisStateSet;
 }
 
 inline HoppingAmplitudeSet& SingleParticleContext::getHoppingAmplitudeSet(){

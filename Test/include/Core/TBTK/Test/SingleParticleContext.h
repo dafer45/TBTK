@@ -1,5 +1,7 @@
 #include "TBTK/SingleParticleContext.h"
 
+#include "TBTK/BasicState.h"
+
 #include "gtest/gtest.h"
 
 namespace TBTK{
@@ -60,6 +62,20 @@ TEST(SingleParticleContext, getStatistics){
 //itself by makin the SingleParticleContext inherit from the
 //HoppingAmplitudeSet.
 TEST(SingleParticleContext, constructCOO){
+}
+
+TEST(SingleParticleContext, getBasisStateSet){
+	SingleParticleContext singleParticleContext0;
+	BasisStateSet &basisStateSet0
+		= singleParticleContext0.getBasisStateSet();
+	//Dummy expression to supress warning about unused variable.
+	if(sizeof(basisStateSet0) == 0);
+
+	const SingleParticleContext singleParticleContext1;
+	const BasisStateSet &basisStateSet1
+		= singleParticleContext1.getBasisStateSet();
+	//Dummy expression to supress warning about unused variable.
+	if(sizeof(basisStateSet1) == 0);
 }
 
 TEST(SingleParticleContext, getHoppingAmplitudeSet){

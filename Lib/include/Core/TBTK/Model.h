@@ -77,7 +77,7 @@ public:
 	 *  that the ManyParticleContext is not yet serialized.
 	 *
 	 *  @param serialization Serialization string from which to construct
-	 *  the Index.
+	 *  the Model.
 	 *
 	 *  @param mode Mode with which the string has been serialized. */
 	Model(const std::string &serialization, Mode mode);
