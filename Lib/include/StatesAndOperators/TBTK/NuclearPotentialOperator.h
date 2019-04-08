@@ -24,6 +24,7 @@
 #define COM_DAFER45_TBTK_NUCLEAR_POTENTIAL_OPERATOR
 
 #include "TBTK/AbstractOperator.h"
+#include "TBTK/Atom.h"
 
 namespace TBTK{
 
