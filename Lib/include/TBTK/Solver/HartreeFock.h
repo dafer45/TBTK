@@ -54,6 +54,32 @@ public:
 		const HartreeFock *solver;
 	};
 
+	/** Constructs a Solver::HartreeFock. */
+	HartreeFock();
+
+	/** Destructor. */
+	virtual ~HartreeFock();
+
+	/** Set the occupation number.
+	 *
+	 *  @param occupationNumber The occupation number. */
+	void setOccupationNumber(unsigned int occupationNumber);
+
+	/** Get the total energy. */
+	double getTotalEnergy() const;
+
+	/** Get density matrix. */
+	Matrix<std::complex<double>>& getDensityMatrix();
+
+	/** Get density matrix. */
+	const Matrix<std::complex<double>>& getDensityMatrix() const;
+
+	/** Add a nuclear center. */
+	void addNuclearCenter(const Atom &atom, const Vector3d &position);
+
+	/** Run the calculation. */
+	void run();
+private:
 	class PositionedAtom : public Atom{
 	public:
 		PositionedAtom(const Atom &atom, const Vector3d &position);
@@ -63,31 +89,43 @@ public:
 		Vector3d position;
 	};
 
-	/** Constructs a Solver::HartreeFock. */
-	HartreeFock();
+	std::vector<const AbstractState*> basisStates;
 
-	/** Destructor. */
-	virtual ~HartreeFock();
-
-	/** Get the total energy. */
-	double getTotalEnergy();
-
-	/** Get density matrix. */
-	Matrix<std::complex<double>>& getDensityMatrix();
-
-	/** Get density matrix. */
-	const Matrix<std::complex<double>>& getDensityMatrix() const;
-
-	/** Get nuclear centers. */
-	std::vector<PositionedAtom>& getNuclearCenters();
-
-	/** Get nuclear centers. */
-	const std::vector<PositionedAtom>& getNuclearCenters() const;
-private:
 	Matrix<std::complex<double>> densityMatrix;
 
 	std::vector<PositionedAtom> nuclearCenters;
+
+	unsigned int occupationNumber;
+
+	double totalEnergy;
+
+	class SelfConsistencyCallback :
+		public Diagonalizer::SelfConsistencyCallback
+	{
+	public:
+		SelfConsistencyCallback(HartreeFock &solver);
+
+		virtual bool selfConsistencyCallback(
+			Diagonalizer &diagonalizer
+		);
+	private:
+		HartreeFock &solver;
+	} selfConsistencyCallback;
+
+	/** Get nuclear centers. */
+	const std::vector<PositionedAtom>& getNuclearCenters() const;
+
+	/** Calculate the total energy. */
+	void calculateTotalEnergy();
 };
+
+inline void HartreeFock::setOccupationNumber(unsigned int occupationNumber){
+	this->occupationNumber = occupationNumber;
+}
+
+inline double HartreeFock::getTotalEnergy() const{
+	return totalEnergy;
+}
 
 inline Matrix<std::complex<double>>&
 HartreeFock::getDensityMatrix(){
@@ -97,6 +135,18 @@ HartreeFock::getDensityMatrix(){
 inline const Matrix<std::complex<double>>&
 HartreeFock::getDensityMatrix() const{
 	return densityMatrix;
+}
+
+inline void HartreeFock::addNuclearCenter(
+	const Atom &atom,
+	const Vector3d &position
+){
+	nuclearCenters.push_back(PositionedAtom(atom, position));
+}
+
+inline const std::vector<HartreeFock::PositionedAtom>&
+HartreeFock::getNuclearCenters() const{
+	return nuclearCenters;
 }
 
 inline void HartreeFock::Callbacks::setSolver(const HartreeFock &solver){
@@ -114,16 +164,6 @@ inline HartreeFock::PositionedAtom::PositionedAtom(
 
 inline const Vector3d& HartreeFock::PositionedAtom::getPosition() const{
 	return position;
-}
-
-inline std::vector<HartreeFock::PositionedAtom>&
-HartreeFock::getNuclearCenters(){
-	return nuclearCenters;
-}
-
-inline const std::vector<HartreeFock::PositionedAtom>&
-HartreeFock::getNuclearCenters() const{
-	return nuclearCenters;
 }
 
 };	//End of namespace Solver

@@ -23,20 +23,23 @@
 #include "TBTK/KineticOperator.h"
 #include "TBTK/HartreeFockPotentialOperator.h"
 #include "TBTK/NuclearPotentialOperator.h"
+#include "TBTK/Property/WaveFunctions.h"
+#include "TBTK/PropertyExtractor/Diagonalizer.h"
 
 using namespace std;
 
 namespace TBTK{
 namespace Solver{
 
-HartreeFock::HartreeFock(){
-	densityMatrix = Matrix<complex<double>>(4, 4);
+HartreeFock::HartreeFock() : selfConsistencyCallback(*this){
+	occupationNumber = 0;
+	totalEnergy = 0;
 }
 
 HartreeFock::~HartreeFock(){
 }
 
-double HartreeFock::getTotalEnergy(){
+void HartreeFock::calculateTotalEnergy(){
 	complex<double> amplitude = 0;
 
 	const BasisStateSet &basisStateSet = getModel().getBasisStateSet();
@@ -155,7 +158,39 @@ double HartreeFock::getTotalEnergy(){
 		}
 	}
 
-	return real(amplitude);
+	totalEnergy = real(amplitude);
+}
+
+void HartreeFock::run(){
+	const BasisStateSet &basisStateSet = getModel().getBasisStateSet();
+	for(
+		BasisStateSet::ConstIterator iterator = basisStateSet.cbegin();
+		iterator != basisStateSet.cend();
+		++iterator
+	){
+		basisStates.push_back(&(*iterator));
+	}
+
+	TBTKAssert(
+		(int)basisStates.size() == getModel().getBasisSize(),
+		"Solver::HartreeFock::run()",
+		"The models basis size is different from the number of basis"
+		<< " functions.",
+		"Ensure that the model has been created by adding basis"
+		<< " functions to the model, followed by calls to"
+		<< " model.generateHoppingAmplitudeSet(),"
+		<< " model.generateOverlapAmplitudeSet(),"
+		<< " and model.construct()."
+	);
+
+	densityMatrix = Matrix<complex<double>>(
+		basisStates.size(),
+		basisStates.size()
+	);
+
+	setSelfConsistencyCallback(selfConsistencyCallback);
+
+	Diagonalizer::run();
 }
 
 HartreeFock::Callbacks::Callbacks(){
@@ -257,6 +292,61 @@ complex<double> HartreeFock::Callbacks::getOverlapAmplitude(
 		= solver->getModel().getBasisStateSet();
 
 	return basisStateSet.get(bra).getOverlap(basisStateSet.get(ket));
+}
+
+HartreeFock::SelfConsistencyCallback::SelfConsistencyCallback(
+	HartreeFock &solver
+) : solver(solver){
+}
+
+bool HartreeFock::SelfConsistencyCallback::selfConsistencyCallback(
+	Diagonalizer &diagonalizer
+){
+	HartreeFock &solver = (HartreeFock&)diagonalizer;
+
+	PropertyExtractor::Diagonalizer propertyExtractor(diagonalizer);
+	vector<Index> basisIndices;
+	for(unsigned int n = 0; n < solver.basisStates.size(); n++)
+		basisIndices.push_back(solver.basisStates[n]->getIndex());
+	Property::WaveFunctions waveFunctions
+		= propertyExtractor.calculateWaveFunctions(
+			basisIndices,
+			{IDX_ALL}
+		);
+
+	solver.densityMatrix = Matrix<complex<double>>(
+		basisIndices.size(),
+		basisIndices.size()
+	);
+	for(unsigned int m = 0; m < basisIndices.size(); m++){
+		for(unsigned int n = 0; n < basisIndices.size(); n++){
+			solver.densityMatrix.at(m, n) = 0;
+			for(
+				unsigned int c = 0;
+				c < solver.occupationNumber;
+				c++
+			){
+				solver.densityMatrix.at(m, n) += conj(
+					waveFunctions(
+						basisIndices[m],
+						c
+					)
+				)*waveFunctions(
+					basisIndices[n],
+					c
+				);
+			}
+		}
+	}
+
+	double oldTotalEnergy = solver.getTotalEnergy();
+	solver.calculateTotalEnergy();
+//	solver.totalEnergy = solver.getTotalEnergy();
+
+	if(abs(solver.totalEnergy - oldTotalEnergy) < 1e-6)
+		return true;
+	else
+		return false;
 }
 
 };	//End of namespace Solver

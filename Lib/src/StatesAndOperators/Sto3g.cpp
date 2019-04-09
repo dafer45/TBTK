@@ -212,8 +212,6 @@ complex<double> Sto3g::getKineticTerm(
 	//comming from \nabla^2.
 	kineticTerm /= pow(bohrRadius, 2);
 
-	Streams::out << "Kinetic: " << kineticTerm << "\n";
-
 	return kineticTerm;
 }
 
@@ -270,8 +268,6 @@ complex<double> Sto3g::getNuclearPotentialTerm(
 	//from 1/r.
 	nuclearPotentialTerm /= bohrRadius;
 
-	Streams::out << "Nuclear: " << nuclearPotentialTerm << "\n";
-
 	return nuclearPotentialTerm;
 }
 
@@ -308,8 +304,6 @@ complex<double> Sto3g::getHartreeFockPotentialTerm(
 	//from 1/r.
 	double bohrRadius = UnitHandler::getA_0N();
 	hartreeFockPotentialTerm /= bohrRadius;
-
-	Streams::out << "Hartree-Fock: " << hartreeFockPotentialTerm << "\n";
 
 	return hartreeFockPotentialTerm;
 }
@@ -449,8 +443,6 @@ complex<double> Sto3g::getSingleHartreeFockTerm(
 			}
 		}
 	}
-
-	Streams::out << "Ey!" << result << "\n";
 
 	return result;
 }
