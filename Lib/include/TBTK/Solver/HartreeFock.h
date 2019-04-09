@@ -32,25 +32,45 @@ namespace Solver{
 /** @brief Solves a Model using the Hartree-Fock method. */
 class HartreeFock : public Diagonalizer{
 public:
+	/** A callback class that acts as mediator between the Model and the
+	 *  Solver::HartreeFock. An object of this class should be passed to
+	 *  the Model to generate the HoppingAmplitudeSet and
+	 *  OverlapAmplitudeSet from a set of basis functions. These callbacks
+	 *  allows the Model to stay up to date with the solvers
+	 *  self-consistenly calculated parameters. */
 	class Callbacks :
 		public HoppingAmplitude::AmplitudeCallback,
 		public OverlapAmplitude::AmplitudeCallback
 	{
 	public:
+		/** Constructor. */
 		Callbacks();
 
+		/** Implements
+		 *  HoppingAmplitude::AmplitudeCallback::getHoppingAmplitude().
+		 */
 		virtual std::complex<double> getHoppingAmplitude(
 			const Index &to,
 			const Index &from
 		) const;
 
+		/** Implements
+		 *  OverlapAmplitude::AmplitudeCallback::getOverlapAmplitude().
+		 */
 		virtual std::complex<double> getOverlapAmplitude(
 			const Index &bra,
 			const Index &ket
 		) const;
 
+		/** Set the Hartree-Fock solver that the callbacks uses to
+		 *  update the Model parameters.
+		 *
+		 *  @param solver The Hartree-Fock solver that the callbacks
+		 *  use to update the Model parameters. */
 		void setSolver(const HartreeFock &solver);
 	private:
+		/** The Hartree-Fock solver that the callbacks use to update
+		 *  the Model parameters. */
 		const HartreeFock *solver;
 	};
 
@@ -65,54 +85,79 @@ public:
 	 *  @param occupationNumber The occupation number. */
 	void setOccupationNumber(unsigned int occupationNumber);
 
-	/** Get the total energy. */
+	/** Get the total energy.
+	 *
+	 *  @return The total energy. */
 	double getTotalEnergy() const;
 
-	/** Get density matrix. */
-	Matrix<std::complex<double>>& getDensityMatrix();
-
-	/** Get density matrix. */
-	const Matrix<std::complex<double>>& getDensityMatrix() const;
-
-	/** Add a nuclear center. */
+	/** Add a nuclear center.
+	 *
+	 *  @param atom The atom type of the nucleus.
+	 *  @param position The nucleus position. */
 	void addNuclearCenter(const Atom &atom, const Vector3d &position);
 
 	/** Run the calculation. */
 	void run();
 private:
+	/** Helper class for storing a nuclear center. */
 	class PositionedAtom : public Atom{
 	public:
+		/** Constructor.
+		 *
+		 *  @param atom The atom type of the nucleus.
+		 *  @param psoition The nucleus position. */
 		PositionedAtom(const Atom &atom, const Vector3d &position);
 
+		/** Get position.
+		 *
+		 *  @return The nucleus position. */
 		const Vector3d& getPosition() const;
 	private:
+		//Position
 		Vector3d position;
 	};
 
+	/** The basis states. */
 	std::vector<const AbstractState*> basisStates;
 
+	/** The density matrix. */
 	Matrix<std::complex<double>> densityMatrix;
 
+	/** The nuclear centers. */
 	std::vector<PositionedAtom> nuclearCenters;
 
+	/** The occupation number. */
 	unsigned int occupationNumber;
 
+	/** The total energy. */
 	double totalEnergy;
 
+	/** The slef-consistency callback. */
 	class SelfConsistencyCallback :
 		public Diagonalizer::SelfConsistencyCallback
 	{
 	public:
+		/** Constructor.
+		 *
+		 *  @param solver The solver that is associated with the
+		 *  callback. */
 		SelfConsistencyCallback(HartreeFock &solver);
 
+		/** Implements
+		 *  Solver::Diagonalizer::SelfConsistencyCallaback::selfConsistencyCallback().
+		 */
 		virtual bool selfConsistencyCallback(
 			Diagonalizer &diagonalizer
 		);
 	private:
+		/** The solver that is associated with the callback. */
 		HartreeFock &solver;
 	} selfConsistencyCallback;
 
-	/** Get nuclear centers. */
+	/** Get the density matrix. */
+	const Matrix<std::complex<double>>& getDensityMatrix() const;
+
+	/** Get the nuclear centers. */
 	const std::vector<PositionedAtom>& getNuclearCenters() const;
 
 	/** Calculate the total energy. */
@@ -125,11 +170,6 @@ inline void HartreeFock::setOccupationNumber(unsigned int occupationNumber){
 
 inline double HartreeFock::getTotalEnergy() const{
 	return totalEnergy;
-}
-
-inline Matrix<std::complex<double>>&
-HartreeFock::getDensityMatrix(){
-	return densityMatrix;
 }
 
 inline const Matrix<std::complex<double>>&

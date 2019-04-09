@@ -18,13 +18,15 @@
  *  @author Kristofer Björnson
  */
 
-#include "TBTK/Solver/HartreeFock.h"
-#include "TBTK/UnitHandler.h"
-#include "TBTK/KineticOperator.h"
+#include "TBTK/AbstractState.h"
 #include "TBTK/HartreeFockPotentialOperator.h"
+#include "TBTK/KineticOperator.h"
+#include "TBTK/MultiCounter.h"
 #include "TBTK/NuclearPotentialOperator.h"
 #include "TBTK/Property/WaveFunctions.h"
 #include "TBTK/PropertyExtractor/Diagonalizer.h"
+#include "TBTK/Solver/HartreeFock.h"
+#include "TBTK/UnitHandler.h"
 
 using namespace std;
 
@@ -37,128 +39,6 @@ HartreeFock::HartreeFock() : selfConsistencyCallback(*this){
 }
 
 HartreeFock::~HartreeFock(){
-}
-
-void HartreeFock::calculateTotalEnergy(){
-	complex<double> amplitude = 0;
-
-	const BasisStateSet &basisStateSet = getModel().getBasisStateSet();
-	const HoppingAmplitudeSet &hoppingAmplitudeSet
-		= getModel().getHoppingAmplitudeSet();
-
-	for(
-		BasisStateSet::ConstIterator iterator0
-			= basisStateSet.cbegin();
-		iterator0 != basisStateSet.cend();
-		++iterator0
-	){
-		unsigned int linearIndex0 = hoppingAmplitudeSet.getBasisIndex(
-			(*iterator0).getIndex()
-		);
-
-		for(
-			BasisStateSet::ConstIterator iterator1
-				= basisStateSet.cbegin();
-			iterator1 != basisStateSet.cend();
-			++iterator1
-		){
-			unsigned int linearIndex1
-				= hoppingAmplitudeSet.getBasisIndex(
-					(*iterator1).getIndex()
-				);
-
-			const AbstractState &braState = *iterator0;
-			const AbstractState &ketState = *iterator1;
-
-			//Kinetic term.
-			amplitude += densityMatrix.at(
-				linearIndex0,
-				linearIndex1
-			)*braState.getMatrixElement(
-				ketState,
-				KineticOperator(UnitHandler::getM_eN())
-			);
-
-			//Hartree-Fock term.
-			for(
-				BasisStateSet::ConstIterator iterator2
-					= basisStateSet.cbegin();
-				iterator2 != basisStateSet.cend();
-				++iterator2
-			){
-				unsigned int linearIndex2
-					= hoppingAmplitudeSet.getBasisIndex(
-						(*iterator2).getIndex()
-					);
-
-				for(
-					BasisStateSet::ConstIterator iterator3
-						= basisStateSet.cbegin();
-					iterator3 != basisStateSet.cend();
-					++iterator3
-				){
-					unsigned int linearIndex3
-						= hoppingAmplitudeSet.getBasisIndex(
-							(*iterator3).getIndex()
-						);
-
-					amplitude += densityMatrix.at(
-						linearIndex0,
-						linearIndex1
-					)*densityMatrix.at(
-						linearIndex2,
-						linearIndex3
-					)*braState.getMatrixElement(
-						ketState,
-						HartreeFockPotentialOperator(
-							*iterator2,
-							*iterator3
-						)
-					)/2.;
-				}
-			}
-
-			//Nuclear potential term.
-			for(
-				unsigned int n = 0;
-				n < nuclearCenters.size();
-				n++
-			){
-				amplitude += densityMatrix.at(
-					linearIndex0,
-					linearIndex1
-				)*braState.getMatrixElement(
-					ketState,
-					NuclearPotentialOperator(
-						nuclearCenters[n],
-						nuclearCenters[n].getPosition()
-					)
-				);
-			}
-		}
-	}
-
-	//Intra-nuclear potential energy.
-	double e = UnitHandler::getEN();
-	double epsilon_0 = UnitHandler::getEpsilon_0N();
-	double prefactor = pow(e, 2)/(4*M_PI*epsilon_0);
-	for(unsigned int m = 0; m < nuclearCenters.size(); m++){
-		for(unsigned int n = 0; n < nuclearCenters.size(); n++){
-			if(m == n)
-				continue;
-
-			double z0 = nuclearCenters[m].getAtomicNumber();
-			double z1 = nuclearCenters[n].getAtomicNumber();
-			double r = (
-				nuclearCenters[m].getPosition()
-				- nuclearCenters[n].getPosition()
-			).norm();
-
-			amplitude += (1/2.)*prefactor*z0*z1/r;
-		}
-	}
-
-	totalEnergy = real(amplitude);
 }
 
 void HartreeFock::run(){
@@ -191,6 +71,95 @@ void HartreeFock::run(){
 	setSelfConsistencyCallback(selfConsistencyCallback);
 
 	Diagonalizer::run();
+}
+
+void HartreeFock::calculateTotalEnergy(){
+	complex<double> complexEnergy = 0;
+
+	unsigned int basisSize = basisStates.size();
+	MultiCounter<unsigned int> counter(
+		{0, 0},
+		{basisSize, basisSize},
+		{1, 1}
+	);
+	for(counter.reset(); !counter.done(); ++counter){
+		const AbstractState &braState = *basisStates[counter[0]];
+		const AbstractState &ketState = *basisStates[counter[1]];
+
+		//Kinetic term.
+		complexEnergy += densityMatrix.at(
+			counter[0],
+			counter[1]
+		)*braState.getMatrixElement(
+			ketState,
+			KineticOperator(UnitHandler::getM_eN())
+		);
+
+		//Nuclear potential term.
+		for(
+			unsigned int n = 0;
+			n < nuclearCenters.size();
+			n++
+		){
+			complexEnergy += densityMatrix.at(
+				counter[0],
+				counter[1]
+			)*braState.getMatrixElement(
+				ketState,
+				NuclearPotentialOperator(
+					nuclearCenters[n],
+					nuclearCenters[n].getPosition()
+				)
+			);
+		}
+	}
+
+	//Hartree-Fock term.
+	counter = MultiCounter<unsigned int>(
+		{0, 0, 0, 0},
+		{basisSize, basisSize, basisSize, basisSize},
+		{1, 1, 1, 1}
+	);
+	for(counter.reset(); !counter.done(); ++counter){
+		const AbstractState &braState = *basisStates[counter[0]];
+		const AbstractState &ketState = *basisStates[counter[1]];
+
+		complexEnergy += densityMatrix.at(
+			counter[0],
+			counter[1]
+		)*densityMatrix.at(
+			counter[2],
+			counter[3]
+		)*braState.getMatrixElement(
+			ketState,
+			HartreeFockPotentialOperator(
+				*basisStates[counter[2]],
+				*basisStates[counter[3]]
+			)
+		)/2.;
+	}
+
+	//Intra-nuclear potential energy.
+	double e = UnitHandler::getEN();
+	double epsilon_0 = UnitHandler::getEpsilon_0N();
+	double prefactor = pow(e, 2)/(4*M_PI*epsilon_0);
+	for(unsigned int m = 0; m < nuclearCenters.size(); m++){
+		for(unsigned int n = 0; n < nuclearCenters.size(); n++){
+			if(m == n)
+				continue;
+
+			double z0 = nuclearCenters[m].getAtomicNumber();
+			double z1 = nuclearCenters[n].getAtomicNumber();
+			double r = (
+				nuclearCenters[m].getPosition()
+				- nuclearCenters[n].getPosition()
+			).norm();
+
+			complexEnergy += (1/2.)*prefactor*z0*z1/r;
+		}
+	}
+
+	totalEnergy = real(complexEnergy);
 }
 
 HartreeFock::Callbacks::Callbacks(){
@@ -227,36 +196,17 @@ complex<double> HartreeFock::Callbacks::getHoppingAmplitude(
 	);
 
 	//Hartree-Fock potential.
-	for(
-		BasisStateSet::ConstIterator iterator0
-			= basisStateSet.cbegin();
-		iterator0 != basisStateSet.cend();
-		++iterator0
-	){
-		unsigned int linearIndex0
-			= model.getHoppingAmplitudeSet().getBasisIndex(
-				(*iterator0).getIndex()
-			);
-
-		for(
-			BasisStateSet::ConstIterator iterator1
-				= basisStateSet.cbegin();
-			iterator1 != basisStateSet.cend();
-			++iterator1
-		){
-			unsigned int linearIndex1
-				= model.getHoppingAmplitudeSet().getBasisIndex(
-					(*iterator1).getIndex()
-				);
-
+	const vector<const AbstractState*> &basisStates = solver->basisStates;
+	for(unsigned int m = 0; m< basisStates.size(); m++){
+		for(unsigned int n = 0; n < basisStates.size(); n++){
 			amplitude += densityMatrix.at(
-				linearIndex0,
-				linearIndex1
+				m,
+				n
 			)*braState.getMatrixElement(
 				ketState,
 				HartreeFockPotentialOperator(
-					*iterator0,
-					*iterator1
+					*basisStates[m],
+					*basisStates[n]
 				)
 			);
 		}
