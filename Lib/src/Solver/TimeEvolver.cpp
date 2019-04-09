@@ -156,7 +156,9 @@ void TimeEvolver::run(){
 	}
 }
 
-bool TimeEvolver::selfConsistencyCallback(Diagonalizer &dSolver){
+bool TimeEvolver::SelfConsistencyCallback::selfConsistencyCallback(
+	Diagonalizer &dSolver
+){
 	for(unsigned int n = 0; n < dSolvers.size(); n++){
 		if(dSolvers.at(n) == &dSolver){
 			TimeEvolver *te = timeEvolvers.at(n);

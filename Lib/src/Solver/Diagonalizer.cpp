@@ -66,7 +66,7 @@ void Diagonalizer::run(){
 		solve();
 
 		if(selfConsistencyCallback){
-			if(selfConsistencyCallback(*this))
+			if(selfConsistencyCallback->selfConsistencyCallback(*this))
 				break;
 			else
 				update();

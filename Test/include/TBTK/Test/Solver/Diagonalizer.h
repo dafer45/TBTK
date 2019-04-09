@@ -15,14 +15,17 @@ TEST(Diagonalizer, Destructor){
 	//Not testable on its own.
 }
 
-int selfConsistencyCounter;
-bool selfConsistencyCallback(Diagonalizer &diagonalizer){
-	selfConsistencyCounter++;
-	if(selfConsistencyCounter == 10)
-		return true;
-	else
-		return false;
-}
+class SelfConsistencyCallback : public Diagonalizer::SelfConsistencyCallback{
+public:
+	int counter;
+	bool selfConsistencyCallback(Diagonalizer &diagonalizer){
+		counter++;
+		if(counter == 10)
+			return true;
+		else
+			return false;
+	}
+} selfConsistencyCallback;
 
 TEST(Diagonalizer, setSelfConsistencyCallback){
 	Model model;
@@ -33,16 +36,17 @@ TEST(Diagonalizer, setSelfConsistencyCallback){
 	Diagonalizer solver;
 	solver.setVerbose(false);
 	solver.setModel(model);
-	selfConsistencyCounter = 0;
+	selfConsistencyCallback.counter = 0;
 	solver.setSelfConsistencyCallback(selfConsistencyCallback);
+	solver.setMaxIterations(50);
 	solver.run();
-	EXPECT_EQ(selfConsistencyCounter, 10);
+	EXPECT_EQ(selfConsistencyCallback.counter, 10);
 
-	selfConsistencyCounter = 0;
+	selfConsistencyCallback.counter = 0;
 	solver.setSelfConsistencyCallback(selfConsistencyCallback);
 	solver.setMaxIterations(5);
 	solver.run();
-	EXPECT_EQ(selfConsistencyCounter, 5);
+	EXPECT_EQ(selfConsistencyCallback.counter, 5);
 }
 
 TEST(Diagonalizer, setMaxIterations){

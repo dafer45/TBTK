@@ -60,51 +60,55 @@ const complex<double> D_INITIAL_GUESS = 0.3;
 
 //Self-consistent callback that is to be called each time a diagonalization has
 //finished. Calculates the order parameter from the current solution.
-bool scCallback(Solver::Diagonalizer &dSolver){
-	//Clear the order parameter
-	for(int x = 0; x < SIZE_X; x++){
-		for(int y = 0; y < SIZE_Y; y++){
-			D[(dCounter+1)%2][x][y] = 0.;
-		}
-	}
-
-	//Calculate D(x, y) = <c_{x, y, \downarrow}c_{x, y, \uparrow}> = \sum_{E_n<E_F} conj(v_d^{(n)})*u_u^{(n)}
-	for(int x = 0; x < SIZE_X; x++){
-		for(int y = 0; y < SIZE_Y; y++){
-			for(int n = 0; n < dSolver.getModel().getBasisSize()/2; n++){
-				//Obtain amplitudes at site (x,y) for electron_up and hole_down components
-				complex<double> u_u = dSolver.getAmplitude(n, {0, x, y, 0});
-				complex<double> v_d = dSolver.getAmplitude(n, {0, x, y, 3});
-
-				D[(dCounter+1)%2][x][y] -= V_sc*conj(v_d)*u_u;
+class SelfConsistencyCallback :
+	public Solver::Diagonalizer::SelfConsistencyCallback
+{
+	bool selfConsistencyCallback(Solver::Diagonalizer &dSolver){
+		//Clear the order parameter
+		for(int x = 0; x < SIZE_X; x++){
+			for(int y = 0; y < SIZE_Y; y++){
+				D[(dCounter+1)%2][x][y] = 0.;
 			}
 		}
-	}
 
-	//Swap order parameter buffers
-	dCounter = (dCounter+1)%2;
+		//Calculate D(x, y) = <c_{x, y, \downarrow}c_{x, y, \uparrow}> = \sum_{E_n<E_F} conj(v_d^{(n)})*u_u^{(n)}
+		for(int x = 0; x < SIZE_X; x++){
+			for(int y = 0; y < SIZE_Y; y++){
+				for(int n = 0; n < dSolver.getModel().getBasisSize()/2; n++){
+					//Obtain amplitudes at site (x,y) for electron_up and hole_down components
+					complex<double> u_u = dSolver.getAmplitude(n, {0, x, y, 0});
+					complex<double> v_d = dSolver.getAmplitude(n, {0, x, y, 3});
 
-	//Calculate convergence parameter
-	double maxError = 0.;
-	for(int x = 0; x < SIZE_X; x++){
-		for(int y = 0; y < SIZE_Y; y++){
-			double error = 0.;
-			if(abs(D[dCounter][x][y]) == 0 && abs(D[(dCounter+1)%2][x][y]) == 0)
-				error = 0.;
-			else
-				error = abs(D[dCounter][x][y] - D[(dCounter+1)%2][x][y])/max(abs(D[dCounter][x][y]), abs(D[(dCounter+1)%2][x][y]));
-
-			if(error > maxError)
-				maxError = error;
+					D[(dCounter+1)%2][x][y] -= V_sc*conj(v_d)*u_u;
+				}
+			}
 		}
-	}
 
-	//Return true or false depending on whether the result has converged or not
-	if(maxError < CONVERGENCE_LIMIT)
-		return true;
-	else
-		return false;
-}
+		//Swap order parameter buffers
+		dCounter = (dCounter+1)%2;
+
+		//Calculate convergence parameter
+		double maxError = 0.;
+		for(int x = 0; x < SIZE_X; x++){
+			for(int y = 0; y < SIZE_Y; y++){
+				double error = 0.;
+				if(abs(D[dCounter][x][y]) == 0 && abs(D[(dCounter+1)%2][x][y]) == 0)
+					error = 0.;
+				else
+					error = abs(D[dCounter][x][y] - D[(dCounter+1)%2][x][y])/max(abs(D[dCounter][x][y]), abs(D[(dCounter+1)%2][x][y]));
+
+				if(error > maxError)
+					maxError = error;
+			}
+		}
+
+		//Return true or false depending on whether the result has converged or not
+		if(maxError < CONVERGENCE_LIMIT)
+			return true;
+		else
+			return false;
+	}
+} selfConsistencyCallback;
 
 //Callback function responsible for determining the value of the order
 //parameter D_{to,from}c_{to}c_{from} where to and from are indices of the form
@@ -204,7 +208,7 @@ int main(int argc, char **argv){
 	Solver::Diagonalizer dSolver;
 	dSolver.setModel(model);
 	dSolver.setMaxIterations(MAX_ITERATIONS);
-	dSolver.setSelfConsistencyCallback(scCallback);
+	dSolver.setSelfConsistencyCallback(selfConsistencyCallback);
 	dSolver.run();
 
 	//Set filename and remove any file already in the folder

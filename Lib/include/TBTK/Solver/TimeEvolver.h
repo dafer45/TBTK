@@ -197,7 +197,14 @@ private:
 	 *  because it does not know about the TimeEvolver. This static
 	 *  callback-function is therefore used in order to redirect the
 	 *  call to the correct TimeEvolver*/
-	static bool selfConsistencyCallback(Diagonalizer &dSolver);
+	class SelfConsistencyCallback :
+		public Diagonalizer::SelfConsistencyCallback
+	{
+	public:
+		virtual bool selfConsistencyCallback(Diagonalizer &diagonalizer);
+	};
+//	static bool selfConsistencyCallback(Diagonalizer &dSolver);
+	static SelfConsistencyCallback selfConsistencyCallback;
 
 	/** Member function to call when diagonalization is finished. Called by
 	 *  scCallback(). */
