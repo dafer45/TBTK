@@ -20,7 +20,7 @@
  *  @author Kristofer Björnson
  */
 
-#ifndef COM_DAFER45_TBTK_STO_3G
+#ifndef COM_DAFER45_TBTK_STO3G
 #define COM_DAFER45_TBTK_STO3G
 
 #include "TBTK/AbstractState.h"
