@@ -111,6 +111,14 @@ public:
 		const std::complex<double> *data
 	);
 
+	/** Constructor. Constructs the SelfEnergy from a serialization string.
+	 *
+	 *  @param serialization Serialization string from which to construct
+	 *  the SelfEnergy.
+	 *
+	 *  @param mode Mode with which the string has been serialized. */
+	SelfEnergy(const std::string &serialization, Mode mode);
+
 	/** Overrides EnergyResolvedProperty::operator+=(). */
 	SelfEnergy& operator+=(const SelfEnergy &rhs);
 
@@ -168,6 +176,9 @@ public:
 	 *  @return A new SelfEnergy that is the quotient between this
 	 *  SelfEnergy and the right hand side. */
 	SelfEnergy operator/(const std::complex<double> &rhs) const;
+
+	/** Overrides EnergyResolvedProperty::serialize(). */
+	virtual std::string serialize(Mode mode) const;
 private:
 };
 

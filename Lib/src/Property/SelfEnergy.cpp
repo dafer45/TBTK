@@ -84,5 +84,48 @@ SelfEnergy::SelfEnergy(
 {
 }
 
+SelfEnergy::SelfEnergy(
+	const string &serialization,
+	Mode mode
+) :
+	EnergyResolvedProperty(
+		Serializable::extract(
+			serialization,
+			mode,
+			"EnergyResolvedProperty"
+		),
+		mode
+	)
+{
+	TBTKAssert(
+		Serializable::validate(serialization, "SelfEnergy", mode),
+		"Property::SelfEnergy::SelfEnergy()",
+		"Unable to parse string as SelfEnergy '" << serialization
+		<< "'.",
+		""
+	);
+}
+
+string SelfEnergy::serialize(Serializable::Mode mode) const{
+	switch(mode){
+	case Serializable::Mode::JSON:
+	{
+		nlohmann::json j;
+		j["id"] = "SelfEnergy";
+		j["energyResolvedProperty"] = nlohmann::json::parse(
+			EnergyResolvedProperty::serialize(mode)
+		);
+
+		return j.dump();
+	}
+	default:
+		TBTKExit(
+			"Property::SelfEnergy::serialize()",
+			"Only Serializable::Mode::JSON is supported yet.",
+			""
+		);
+	}
+}
+
 };	//End of namespace Property
 };	//End of namespace TBTK
