@@ -92,7 +92,7 @@ SelfEnergy::SelfEnergy(
 		Serializable::extract(
 			serialization,
 			mode,
-			"EnergyResolvedProperty"
+			"energyResolvedProperty"
 		),
 		mode
 	)
