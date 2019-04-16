@@ -32,6 +32,7 @@ LIST(
 	"${CMAKE_CURRENT_SOURCE_DIR}/Solver/LinearEquationSolver.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/Solver/LUSolver.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/PropertyExtractor/ArnoldiIterator.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/StatesAndOperators/GaussianBasisGenerator.cpp"
 )
 
 IF(${COMPILE_ARNOLDI_ITERATOR})
@@ -113,6 +114,15 @@ IF(${COMPILE_GUI})
 	)
 	SET(TBTK_SRC ${TBTK_SRC} ${TBTK_GUI_SRC})
 ENDIF(${COMPILE_GUI})
+
+IF(${COMPILE_LIBINT2})
+	FILE(
+		GLOB
+		TBTK_LIBINT2_SRC
+		StatesAndOperators/GaussianBasisGenerator.cpp
+	)
+	SET(TBTK_SRC ${TBTK_SRC} ${TBTK_LIBINT2_SRC})
+ENDIF(${COMPILE_LIBINT2})
 
 IF(${COMPILE_LINEAR_EQUATION_SOLVER})
 	FILE(

@@ -44,7 +44,8 @@ public:
 	 *  that are not (yet) supported]. */
 	enum StateID{
 		Basic = 0,
-		STO3G = 1
+		STO3G = 1,
+		Gaussian = 2
 	};
 
 	/** Constructor. */
