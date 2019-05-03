@@ -25,15 +25,71 @@
 
 #include "TBTK/GaussianState.h"
 
+#include <unordered_map>
 #include <vector>
+
+#include <libint2.hpp>
 
 namespace TBTK{
 
 class GaussianBasisGenerator{
 public:
+	/** Constructor. */
+	GaussianBasisGenerator();
+
+	/** Deleted copy constructor. */
+	GaussianBasisGenerator(
+		const GaussianBasisGenerator &gaussianBasisGenerator
+	) = delete;
+
+	/** Destructor. */
+	~GaussianBasisGenerator();
+
+	/** Deleted assignment operator. */
+	GaussianBasisGenerator& operator=(
+		const GaussianBasisGenerator &rhs
+	) = delete;
+
 	/** Generate a basis of @link GaussianState GaussianStates@endling. */
-	std::vector<GaussianState> generateBasis() const;
+	std::vector<GaussianState> generateBasis();
 private:
+	std::vector<GaussianState> basisSet;
+
+	libint2::BasisSet libintBasisSet;
+
+	std::unordered_map<size_t, std::vector<size_t>> libintShellPairList;
+
+	std::vector<
+		std::vector<std::shared_ptr<libint2::ShellPair>>
+	> libintShellPairData;
+
+	std::vector<libint2::Atom> atoms;
+
+	static unsigned int instanceCounter;
+
+	/** Initialize the basis state generation algorithm. */
+	void initialize();
+
+	/** Initialize the basis set. */
+	void initializeBasisSet();
+
+	/** Calculate shell pairs. */
+	void computeShellPairs(double threshold = 1e-12);
+
+	/** Calculate single particle integral. */
+	void calculateSingleParticleTerms(
+		libint2::Operator o,
+		std::function<
+			void(
+				std::complex<double> value,
+				unsigned int linearBraIndex,
+				unsigned int linearKetIndex
+			)
+		> &&lambdaStoreResult
+	);
+
+	/** Calculate the two-body Fock integrals. */
+	void calculateTwoBodyFockTerms();
 };
 
 };	//End of namespace TBTK

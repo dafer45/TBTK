@@ -27,7 +27,7 @@ using namespace std;
 
 namespace TBTK{
 
-vector<GaussianState> GaussianBasisGenerator::generateBasis() const{
+vector<GaussianState> GaussianBasisGenerator::generateBasis(){
 	TBTKNotYetImplemented("GaussianBasisGenerator::generateBasis()");
 
 	vector<GaussianState> basis;
