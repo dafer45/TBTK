@@ -203,6 +203,14 @@ void ArnoldiIterator::arnoldiLoop(){
 		<< ").",
 		""
 	);
+	TBTKAssert(
+		numLanczosVectors <= getModel().getBasisSize(),
+		"ArnoldiIterator::arnoldiLoop()",
+		"The number of Lanczos vectors '" << numLanczosVectors << "'"
+		<< " must be smaller than the basis size '"
+		<< getModel().getBasisSize() << "'.",
+		""
+	);
 
 	const Model &model = getModel();
 	int basisSize = model.getBasisSize();
