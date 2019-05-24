@@ -422,8 +422,8 @@ void FLEX::calculateInteractionVertex(){
 		);
 
 	//U_4*\chi_b*U_4
-	electronFluctuationVertexDoubleCountingSolver.setLeftInteraction(generateU1());
-	electronFluctuationVertexDoubleCountingSolver.setRightInteraction(generateU1());
+	electronFluctuationVertexDoubleCountingSolver.setLeftInteraction(generateU4());
+	electronFluctuationVertexDoubleCountingSolver.setRightInteraction(generateU4());
 	interactionVertex
 		-= electronFluctuationVertexDoubleCountingPropertyExtractor.calculateInteractionVertex({
 			{
