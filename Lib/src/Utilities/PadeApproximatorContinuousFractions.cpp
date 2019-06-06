@@ -41,6 +41,16 @@ Polynomial<
 		""
 	);
 
+	for(unsigned int n = 0; n < values.size(); n++){
+		complex<double> value = values[n].getComplexDouble();
+		if(real(value) == 0 && imag(value) == 0)
+			return Polynomial<
+				ArbitraryPrecision::Complex,
+				ArbitraryPrecision::Complex,
+				int
+			>(1);
+	}
+
 	ArbitraryPrecision::Complex g[values.size()];
 	for(unsigned int n = 0; n < values.size(); n++)
 		g[n] = values[n];
