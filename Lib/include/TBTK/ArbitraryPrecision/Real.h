@@ -215,6 +215,7 @@ inline Real& Real::operator=(const Real &rhs){
 
 		mpf_init2(value, rhs.getPrecision());
 		mpf_set(value, rhs.value);
+		isInitialized = true;
 	}
 
 	return *this;
