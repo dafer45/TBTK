@@ -28,7 +28,7 @@ LIST(
 	"${CMAKE_CURRENT_SOURCE_DIR}/Utilities/FileReader.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/Utilities/FileWriter.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/Utilities/PadeApproximatorContinuousFractions.cpp"
-	"${CMAKE_CURRENT_SOURCE_DIR}/Utilities/AnalyticalContinuerContinuousFractions.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/Solver/AnalyticalContinuerContinuousFractions.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/Solver/ArnoldiIterator.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/Solver/LinearEquationSolver.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/Solver/LUSolver.cpp"
