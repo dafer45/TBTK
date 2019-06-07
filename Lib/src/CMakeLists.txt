@@ -28,6 +28,7 @@ LIST(
 	"${CMAKE_CURRENT_SOURCE_DIR}/Utilities/FileReader.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/Utilities/FileWriter.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/Utilities/PadeApproximatorContinuousFractions.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/Utilities/AnalyticalContinuerContinuousFractions.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/Solver/ArnoldiIterator.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/Solver/LinearEquationSolver.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/Solver/LUSolver.cpp"
@@ -54,6 +55,7 @@ IF(${COMPILE_ARBITRARY_PRECISION})
 		GLOB
 		TBTK_PADE_APPROXIMATOR_CONTINUOUS_FRACTIONS_SRC
 		Utilities/PadeApproximatorContinuousFractions.cpp
+		Solver/AnalyticalContinuerContinuousFractions.cpp
 	)
 	SET(TBTK_SRC ${TBTK_SRC} ${TBTK_PADE_APPROXIMATOR_CONTINUOUS_FRACTIONS_SRC})
 ENDIF(${COMPILE_ARBITRARY_PRECISION})
