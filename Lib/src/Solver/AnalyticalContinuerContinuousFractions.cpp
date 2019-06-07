@@ -91,7 +91,6 @@ Property::GreensFunction AnalyticalContinuerContinuousFractions::convert(
 			iterator != indexTree.cend();
 			++iterator
 		){
-			Timer::tick(0);
 			vector<ArbitraryPrecision::Complex> matsubaraValues;
 			vector<ArbitraryPrecision::Complex> matsubaraEnergies;
 			for(
@@ -135,9 +134,7 @@ Property::GreensFunction AnalyticalContinuerContinuousFractions::convert(
 					)
 				);
 			}
-			Timer::tock(0);
 
-			Timer::tick(1);
 			PadeApproximatorContinuousFractions padeApproximator;
 			Polynomial<
 				ArbitraryPrecision::Complex,
@@ -146,9 +143,7 @@ Property::GreensFunction AnalyticalContinuerContinuousFractions::convert(
 				matsubaraValues,
 				matsubaraEnergies
 			);
-			Timer::tock(1);
 
-			Timer::tick(2);
 			for(
 				unsigned int n = 0;
 				n < newGreensFunction.getResolution();
@@ -172,8 +167,6 @@ Property::GreensFunction AnalyticalContinuerContinuousFractions::convert(
 						}
 					).getComplexDouble();
 			}
-			Timer::tock(2);
-			Timer::printAccumulators();
 		}
 
 		return newGreensFunction;
