@@ -49,15 +49,23 @@ namespace TBTK{
  *  <b>IDX_SEPARATOR:</b><br>
  *    Used as Index-separator in compound indices such as {{1, 2}, {3, 4}},
  *    which is stored as {1, 2, IDX_SEPARATOR, 3, 4}. */
-enum {
-	_a_ = -1,	//Shorthand notation for IDX_ALL. Always use IDX_ALL in
-	IDX_ALL = -1,	//library code.
-	IDX_SUM_ALL = -2,
-	IDX_X = -3,
-	IDX_Y = -4,
-	IDX_Z = -5,
-	IDX_SPIN = -6,
-	IDX_SEPARATOR = -7
+enum : int{
+	//_a_ and _aX_ are shorthand notation for IDX_ALL and IDX_ALL_X. Never
+	//use shorthands in library code.
+	IDX_ALL		= (int)(0xC0000000 | 0x20000000),
+	_a_		= IDX_ALL,
+	IDX_ALL_0	= (int)(0xC0000000 | 0x10000000),
+	IDX_ALL_1	= (int)(0xC0000000 | 0x10000001),
+	IDX_ALL_2	= (int)(0xC0000000 | 0x10000002),
+	_a0_		= IDX_ALL_0,
+	_a1_		= IDX_ALL_1,
+	_a2_		= IDX_ALL_2,
+	IDX_SUM_ALL	= (int)(0xC0000000 | 0x08000000),
+	IDX_X		= (int)(0xC0000000 | 0x04000000),
+	IDX_Y		= (int)(0xC0000000 | 0x04000001),
+	IDX_Z		= (int)(0xC0000000 | 0x04000002),
+	IDX_SPIN	= (int)(0xC0000000 | 0x02000000),
+	IDX_SEPARATOR	= (int)(0xC0000000 | 0x01000000)
 };
 
 /** @brief Flexible physical index.
