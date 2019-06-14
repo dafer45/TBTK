@@ -148,6 +148,45 @@ TEST(Index, equals){
 	EXPECT_TRUE(Index({1, 2, IDX_ALL}).equals(Index({1, 2, 3}), true)) << errorMessage;
 	EXPECT_TRUE(Index({1, -1, 3}).equals(Index({1, -1, 3}))) << errorMessage;
 	EXPECT_TRUE(Index({{1, 2, 3}, {4, 5, 6}}).equals(Index({{1, 2, 3}, {4, 5, 6}}))) << errorMessage;
+	EXPECT_TRUE(
+		Index(
+			{0, IDX_ALL_0, IDX_ALL_0, IDX_ALL_1, 3, IDX_ALL_1}
+		).equals(Index({0, 1, 1, 2, 3, 2}), true)
+	) << errorMessage;
+	EXPECT_TRUE(
+		Index(
+			Index({0, 1, 1, 2, 3, 2})
+		).equals(
+			Index({
+				0,
+				IDX_ALL_0,
+				IDX_ALL_0,
+				IDX_ALL_1,
+				3,
+				IDX_ALL_1
+			}),
+			true
+		)
+	) << errorMessage;
+	EXPECT_FALSE(
+		Index(
+			{0, IDX_ALL_0, IDX_ALL_0, IDX_ALL_1, 3, IDX_ALL_1}
+		).equals(Index({0, 1, 1, 2, 3, 2}))
+	) << errorMessage;
+	EXPECT_FALSE(
+		Index(
+			Index({0, 1, 1, 2, 3, 2})
+		).equals(
+			Index({
+				0,
+				IDX_ALL_0,
+				IDX_ALL_0,
+				IDX_ALL_1,
+				3,
+				IDX_ALL_1
+			})
+		)
+	) << errorMessage;
 }
 
 TEST(Index, atAndSubscriptOperator){

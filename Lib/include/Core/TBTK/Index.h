@@ -54,9 +54,10 @@ enum : int{
 	//use shorthands in library code.
 	IDX_ALL		= (int)(0xC0000000 | 0x20000000),
 	_a_		= IDX_ALL,
-	IDX_ALL_0	= (int)(0xC0000000 | 0x10000000),
-	IDX_ALL_1	= (int)(0xC0000000 | 0x10000001),
-	IDX_ALL_2	= (int)(0xC0000000 | 0x10000002),
+	IDX_ALL_X	= (int)(0xC0000000 | 0x10000000),
+	IDX_ALL_0	= (int)(IDX_ALL_X | 0x00000000),
+	IDX_ALL_1	= (int)(IDX_ALL_X | 0x00000001),
+	IDX_ALL_2	= (int)(IDX_ALL_X | 0x00000002),
 	_a0_		= IDX_ALL_0,
 	_a1_		= IDX_ALL_1,
 	_a2_		= IDX_ALL_2,
@@ -347,10 +348,50 @@ inline bool Index::equals(const Index &index, bool allowWildcard) const{
 					if(
 						indices.at(n) == IDX_ALL ||
 						index.indices.at(n) == IDX_ALL
-					)
+					){
 						continue;
-					else
+					}
+					else if(
+						(indices.at(n) & IDX_ALL_X)
+							== IDX_ALL_X
+					){
+						for(
+							unsigned int c = 0;
+							c < indices.size();
+							c++
+						){
+							if(
+								indices.at(c)
+								== indices.at(n)
+								&& index.indices.at(c)
+								!= index.indices.at(n)
+							){
+								return false;
+							}
+						}
+					}
+					else if(
+						(index.indices.at(n) & IDX_ALL_X)
+							== IDX_ALL_X
+					){
+						for(
+							unsigned int c = 0;
+							c < indices.size();
+							c++
+						){
+							if(
+								index.indices.at(c)
+								== index.indices.at(n)
+								&& indices.at(c)
+								!= indices.at(n)
+							){
+								return false;
+							}
+						}
+					}
+					else{
 						return false;
+					}
 				}
 			}
 		}
