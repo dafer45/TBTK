@@ -613,6 +613,18 @@ TEST(IndexTree, getPhysicalIndex){
 	);
 }
 
+TEST(IndexTree, contains){
+	IndexTree indexTree;
+	indexTree.add({1, 2, 3});
+	indexTree.add({1, 2, 4});
+	indexTree.add({1, 3, 3});
+
+	EXPECT_TRUE(indexTree.contains({1, 2, 3}));
+	EXPECT_TRUE(indexTree.contains({1, 2, 3}));
+	EXPECT_TRUE(indexTree.contains({1, 3, 3}));
+	EXPECT_FALSE(indexTree.contains({1, 3, 4}));
+}
+
 TEST(IndexTree, getSize){
 	IndexTree indexTree;
 	indexTree.add({1, 2, 3});

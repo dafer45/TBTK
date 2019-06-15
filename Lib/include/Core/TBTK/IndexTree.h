@@ -164,6 +164,14 @@ public:
 	 *  Index. */
 	Index getPhysicalIndex(int linearIndex) const;
 
+	/** Check whether a given Index is contained in the IndexTree.
+	 *
+	 *  @param index
+	 *
+	 *  @return True if the IndexTree contains the given Index, otherwise
+	 *  false. */
+	bool contains(const Index &index);
+
 	/** Get size.
 	 *
 	 *  @return The number of @link Index Indices @endlink stored in the

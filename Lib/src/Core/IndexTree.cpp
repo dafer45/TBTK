@@ -497,6 +497,16 @@ Index IndexTree::getPhysicalIndex(int linearIndex) const{
 	return Index(indices);
 }
 
+bool IndexTree::contains(const Index &index){
+	try{
+		getLinearIndex(index);
+		return true;
+	}
+	catch(IndexException e){
+		return false;
+	}
+}
+
 vector<unsigned int> IndexTree::getSubindicesMatching(
 	int subindexValue,
 	const Index &index,
