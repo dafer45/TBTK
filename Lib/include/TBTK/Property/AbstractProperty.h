@@ -150,6 +150,39 @@ public:
 	 *  @raturn True if the Property contains data for the given Index. */
 	bool contains(const Index &index) const;
 
+	/** Reduces the size of the Property by only keeping values for indices
+	 *  that match the given target patterns. If a matching target pattern
+	 *  exists for a given value, the value will be stored with an Index
+	 *  that matches a corresponding new pattern. E.g., assume the target
+	 *  patterns are
+	 *  {
+	 *    {0, IDX_ALL_0, IDX_ALL_1, IDX_ALL_1},
+	 *    {1, IDX_ALL_0, IDX_ALL_0}
+	 *  }
+	 *  and the new patterns are
+	 *  {
+	 *    {0, IDX_ALL_0, IDX_ALL_1},
+	 *    {1, IDX_ALL_0}
+	 *  }.
+	 *  Then the data for indices such as {0, 1, 2, 3} and {1, 2, 3} will
+	 *  be droped since the two last subindices are not the same, which is
+	 *  required by both of the target patterns. However, the data for the
+	 *  indices {0, 1, 2, 2} and {1, 2, 2} will be kept and
+	 *  available through the new indices {0, 1, 2} and {1, 2},
+	 *  respectively. More specifically, {0, 1, 2, 2} match the first
+	 *  pattern and {1, 2, 2} matches the second pattern. {0, 1, 2, 3} is
+	 *  therefore kept and transformed to the form
+	 *  {0, IDX_ALL_0, IDX_ALL_1}, while {1, 2, 2} is kept and transformed
+	 *  to the form {1, IDX_ALL_0}.
+	 *
+	 *  @param targetPatterns List of patterns for indices to keep.
+	 *  @param newPatterns List of new patterns to convert the preserved
+	 *  indices to. */
+	void reduce(
+		const std::vector<Index> &targetPatterns,
+		const std::vector<Index> &newPatterns
+	);
+
 	/** Function call operator. Returns the data element for the given
 	 *  Index and offset. By default the Property does not accept @link
 	 *  Index Indices @endlink that are not contained in the Property.
@@ -528,6 +561,106 @@ inline bool AbstractProperty<DataType>::contains(
 	const Index &index
 ) const{
 	return indexDescriptor.contains(index);
+}
+
+template<typename DataType>
+inline void AbstractProperty<DataType>::reduce(
+	const std::vector<Index> &targetPatterns,
+	const std::vector<Index> &newPatterns
+){
+	TBTKAssert(
+		targetPatterns.size() == newPatterns.size(),
+		"AbstractProperty::reduce()",
+		"The size of targetPatterns '" << targetPatterns.size() << "'"
+		<< " must be the same as the size of newPatterns '"
+		<< newPatterns.size() << "'.",
+		""
+	);
+
+	IndexTree newIndexTree;
+	const IndexTree &oldIndexTree = indexDescriptor.getIndexTree();
+	IndexedDataTree<Index> indexMap;
+	IndexedDataTree<Index> reverseIndexMap;
+	for(
+		IndexTree::ConstIterator iterator = oldIndexTree.cbegin();
+		iterator != oldIndexTree.cend();
+		++iterator
+	){
+
+		int matchingPattern = -1;
+		for(unsigned int n = 0; n < targetPatterns.size(); n++){
+			if(targetPatterns[n].equals(*iterator, true)){
+				matchingPattern = n;
+				break;
+			}
+		}
+		if(matchingPattern == -1)
+			continue;
+
+		Index newIndex = newPatterns[matchingPattern];
+		for(unsigned int n = 0; n < newIndex.getSize(); n++){
+			if((newIndex[n] & IDX_ALL_X) == IDX_ALL_X){
+				for(
+					unsigned int c = 0;
+					c < targetPatterns[
+						matchingPattern
+					].getSize();
+					c++
+				){
+					if(
+						targetPatterns[
+							matchingPattern
+						][c] == newIndex[n]
+					){
+						newIndex[n] = (*iterator)[c];
+						break;
+					}
+				}
+			}
+		}
+		TBTKAssert(
+			!newIndexTree.contains(newIndex),
+			"AbstractProperty::reduce()",
+			"Conflicting index reductions. The indices '"
+			<< (*iterator).toString() << "' and '"
+			<< reverseIndexMap.get(newIndex).toString() << "' both"
+			<< " reduce to '" << newIndex.toString() << "'.",
+			""
+		);
+		indexMap.add(newIndex, (*iterator));
+		reverseIndexMap.add((*iterator), newIndex);
+		newIndexTree.add(newIndex);
+	}
+	newIndexTree.generateLinearMap();
+
+	IndexDescriptor newIndexDescriptor(newIndexTree);
+	std::vector<DataType> newData;
+	for(unsigned int n = 0; n < indexDescriptor.getSize()*blockSize; n++)
+		newData.push_back(0.);
+
+	for(
+		IndexedDataTree<Index>::ConstIterator iterator
+			= indexMap.cbegin();
+		iterator != indexMap.cend();
+		++iterator
+	){
+		const Index &oldIndex = iterator.getCurrentIndex();
+		const Index &newIndex = *iterator;
+		for(unsigned int n = 0; n < blockSize; n++){
+			newData[
+				blockSize*newIndexDescriptor.getLinearIndex(
+					newIndex
+				) + n
+			] = data[
+				blockSize*indexDescriptor.getLinearIndex(
+					oldIndex
+				) + n
+			];
+		}
+	}
+
+	indexDescriptor = newIndexDescriptor;
+	data = newData;
 }
 
 template<typename DataType>

@@ -981,6 +981,110 @@ TEST(AbstractProperty, contains){
 	EXPECT_FALSE(property2.contains({3}));
 }
 
+TEST(AbstractProperty, reduce){
+	PublicAbstractProperty<int> property0(10);
+	//Fail for IndexDescriptor::Format::None.
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			property0.reduce({{_a0_, _a0_}}, {{_a0_}});
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+
+	//Fail for IndexDescriptor::Format::Ranges.
+	PublicAbstractProperty<int> property1({1, 1}, 10);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			property0.reduce({{_a0_, _a0_}}, {{_a0_}});
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+
+	IndexTree indexTree;
+	for(int x = 0; x < 2; x++)
+		for(int y = 0; y < 2; y++)
+			for(int z = 0; z < 2; z++)
+				indexTree.add({0, 1, x, y, z});
+	for(int x = 0; x < 2; x++)
+		for(int y = 0; y < 2; y++)
+			indexTree.add({1, 2, x, y});
+	indexTree.generateLinearMap();
+	PublicAbstractProperty<int> property2(indexTree, 10);
+	for(int x = 0; x < 2; x++){
+		for(int y = 0; y < 2; y++){
+			for(int z = 0; z < 2; z++){
+				for(unsigned int n = 0; n < 10; n++){
+					property2({0, 1, x, y, z}, n)
+						= 10*(2*(2*x + y) + z) + n;
+				}
+			}
+		}
+	}
+	for(int x = 0; x < 2; x++){
+		for(int y = 0; y < 2; y++){
+			for(unsigned int n = 0; n < 10; n++){
+				property2({1, 2, x, y}, n)
+					= 80 + 10*(2*x + y) + n;
+			}
+		}
+	}
+	//Fail because two different Indices reduce to the same Index. For
+	//example, here {0, 1, 0, 0, 0} and {1, 2, 0, 0} both reduce to {0, 0}.
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			property2.reduce(
+				{
+					{0, 1, _a0_, _a0_, _a1_},
+					{1, 2, _a0_, _a0_}
+				},
+				{
+					{_a0_, _a1_},
+					{0, _a0_}
+				}
+			);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	//Succeed with valid reduction. For example, here {0, 1, 0, 0, 1} ->
+	//{0, 1, 0, 1} and {1, 2, 0, 0} -> {2, 0, 3}.
+	property2.reduce(
+		{
+			{0, 1, _a0_, _a0_, _a1_},
+			{1, 2, _a0_, _a0_}
+		},
+		{
+			{0, 1, _a0_, _a1_},
+			{2, _a0_, 3}
+		}
+	);
+	for(int x = 0; x < 2; x++){
+		int y = x;
+		for(int z = 0; z < 2; z++){
+			for(unsigned int n = 0; n < 10; n++){
+				EXPECT_EQ(
+					property2({0, 1, x, z}, n),
+					10*(2*(2*x + y) + z) + n
+				);
+			}
+		}
+	}
+	for(int x = 0; x < 2; x++){
+		int y = x;
+		for(unsigned int n = 0; n < 10; n++){
+			EXPECT_EQ(
+				property2({2, x, 3}, n),
+				80 + 10*(2*x + y) + n
+			);
+		}
+	}
+}
+
 TEST(AbstractProperty, operatorFunction){
 	PublicAbstractProperty<int> property0(10);
 	//Fail to use indexed version for IndexDescriptor::Format::None.
