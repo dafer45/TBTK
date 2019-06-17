@@ -236,8 +236,9 @@ TBTK is free software that is licensed under the Apache 2.0 license (see the fil
 
 ### Third party license
 #### json/TBTK/json.hpp (for serialization)
-A thrid-party library hosted at https://github.com/nlohmann/json and is licensed under
-the MIT license.
+A third-party library hosted at https://github.com/nlohmann/json and is licensed
+under the MIT license. Similarly the Boost header file gnuplot-iostream.h in
+External/TBTK/External/Boost/ is licensed under the Boost license.
 
 
 # Cite
