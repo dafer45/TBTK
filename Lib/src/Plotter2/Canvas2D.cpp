@@ -26,6 +26,7 @@ using namespace std;
 namespace TBTK{
 
 Canvas2D::Canvas2D(){
+	hold = false;
 }
 
 Canvas2D::~Canvas2D(){

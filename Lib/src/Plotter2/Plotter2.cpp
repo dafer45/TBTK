@@ -37,12 +37,23 @@ Plotter2::Plotter2(){
 Plotter2::~Plotter2(){
 }
 
-void Plotter2::plot(const vector<double> &x, const vector<double> &y){
-	canvas2D.plot(x, y);
+void Plotter2::plot(
+	const vector<double> &x,
+	const vector<double> &y,
+	const string &title,
+	const vector<unsigned char> &color,
+	unsigned int size
+){
+	canvas2D.plot(x, y, title, color, size);
 }
 
-void Plotter2::plot(const vector<double> &y){
-	canvas2D.plot(y);
+void Plotter2::plot(
+	const vector<double> &y,
+	const string &title,
+	const vector<unsigned char> &color,
+	unsigned int size
+){
+	canvas2D.plot(y, title, color, size);
 }
 
 void Plotter2::plot(

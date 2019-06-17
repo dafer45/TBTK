@@ -74,10 +74,21 @@ public:
 	void setLabelY(const std::string &labelY);
 
 	/** Plot data. */
-	void plot(const std::vector<double> &x, const std::vector<double> &y);
+	void plot(
+		const std::vector<double> &x,
+		const std::vector<double> &y,
+		const std::string &title = "",
+		const std::vector<unsigned char> &color = {0, 0, 0},
+		unsigned int size = 1
+	);
 
 	/** Plot data. */
-	void plot(const std::vector<double> &data);
+	void plot(
+		const std::vector<double> &data,
+		const std::string &title = "",
+		const std::vector<unsigned char> &color = {0, 0, 0},
+		unsigned int size = 1
+	);
 
 	/** Plot density of states. */
 	void plot(
@@ -185,7 +196,7 @@ inline void Plotter2::setLabelY(const std::string &labelY){
 }
 
 inline void Plotter2::setHold(bool hold){
-//	this->hold = hold;
+	canvas2D.setHold(hold);
 }
 
 inline void Plotter2::clear(){

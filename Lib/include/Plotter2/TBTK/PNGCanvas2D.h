@@ -44,6 +44,10 @@ public:
 	 *  @param filename The file to write the result to. */
 	void flush(const std::string &filename);
 private:
+	/** Convert a color to it's hexadecimal string representation. */
+	static std::string convertColorToHex(
+		const std::vector<unsigned char> &color
+	);
 };
 
 };	//End namespace TBTK

@@ -47,17 +47,33 @@ void PNGCanvas2D::flush(const string &filename){
 	gnuplot << "set xlabel '" << getLabelX() << "'\n";
 	gnuplot << "set ylabel '" << getLabelY() << "'\n";
 	gnuplot << "plot";
-	Streams::out << "plot";
 	for(unsigned int n = 0; n < getNumDataSets(); n++){
 		if(n != 0)
 			gnuplot << ",";
 		gnuplot << " '-' using 1:2"
-			<< " title '" << getTitle(n)
-			<< "' with lines";
+			<< " title '" << getTitle(n) << "'"
+			<< " lw " << getSize(n)
+			<< " lt rgb '" << convertColorToHex(getColor(n)) << "'"
+			<< " with lines";
 	}
 	gnuplot << "\n";
 	for(unsigned int n = 0; n < getNumDataSets(); n++)
 		gnuplot.send1d(boost::make_tuple(getX(n), getY(n)));
+}
+
+string PNGCanvas2D::convertColorToHex(const std::vector<unsigned char> &color){
+	const vector<char> hexadecimals = {
+		'0', '1', '2', '3', '4', '5', '6', '7',
+		'8', '9', 'A', 'B', 'C', 'D', 'E', 'F',
+	};
+
+	string result = "#";
+	for(unsigned int n = 0; n < 3; n++){
+		result += hexadecimals[color[n]/16];
+		result += hexadecimals[color[n]%16];
+	}
+
+	return result;
 }
 
 };	//End of namespace TBTK

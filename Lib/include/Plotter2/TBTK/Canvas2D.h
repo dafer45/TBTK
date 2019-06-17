@@ -72,14 +72,24 @@ public:
 	/** Get y-label. */
 	const std::string& getLabelY() const;
 
+	/** Set hold. */
+	void setHold(bool hold);
+
 	/** Plot data. */
-	void plot(const std::vector<double> &y, const std::string &title = "");
+	void plot(
+		const std::vector<double> &y,
+		const std::string &title = "",
+		const std::vector<unsigned char> &color = {0, 0, 0},
+		unsigned int size = 1
+	);
 
 	/** Plot data. */
 	void plot(
 		const std::vector<double> &x,
 		const std::vector<double> &y,
-		const std::string &title = ""
+		const std::string &title = "",
+		const std::vector<unsigned char> &color = {0, 0, 0},
+		unsigned int size = 1
 	);
 
 	/** Clear plot. */
@@ -110,6 +120,20 @@ protected:
 	 *
 	 *  @return The title for the given data set. */
 	const std::string& getTitle(unsigned int dataSet) const;
+
+	/** Get the color for the given data set.
+	 *
+	 *  @param dataSet The data set to get the color for.
+	 *
+	 *  @return The color for the given data set. */
+	const std::vector<unsigned char>& getColor(unsigned int dataSet) const;
+
+	/** Get the size for the given data set.
+	 *
+	 *  @param dataSet The data set to get the size for.
+	 *
+	 *  @return The size for the data set. */
+	unsigned int getSize(unsigned int dataSet) const;
 private:
 	/** Bounds. */
 	double minX, maxX, minY, maxY;
@@ -117,12 +141,18 @@ private:
 	/** Labels. */
 	std::string labelX, labelY;
 
+	/** Flag indicating whether or not to keep old data when plotting new
+	 *  data. */
+	bool hold;
+
 	/** Data. */
 	std::vector<
 		std::tuple<
-			std::vector<double>,	//x-values
-			std::vector<double>,	//y-values
-			std::string		//title
+			std::vector<double>,		//x-values
+			std::vector<double>,		//y-values
+			std::string,			//title
+			std::vector<unsigned char>,	//color
+			unsigned int			//size
 		>
 	> dataSets;
 };
@@ -211,21 +241,29 @@ inline const std::string& Canvas2D::getLabelY() const{
 	return labelY;
 }
 
+inline void Canvas2D::setHold(bool hold){
+	this->hold = hold;
+}
+
 inline void Canvas2D::plot(
 	const std::vector<double> &y,
-	const std::string &title
+	const std::string &title,
+	const std::vector<unsigned char> &color,
+	unsigned int size
 ){
 	std::vector<double> x;
 	for(unsigned int n = 0; n < y.size(); n++)
 		x.push_back(n);
 
-	plot(x, y);
+	plot(x, y, title, color, size);
 }
 
 inline void Canvas2D::plot(
 	const std::vector<double> &x,
 	const std::vector<double> &y,
-	const std::string &title
+	const std::string &title,
+	const std::vector<unsigned char> &color,
+	unsigned int size
 ){
 	TBTKAssert(
 		x.size() == y.size(),
@@ -234,8 +272,18 @@ inline void Canvas2D::plot(
 		<< x.size() << "' while y has size'" << y.size() << "'.",
 		""
 	);
+	TBTKAssert(
+		color.size() == 3,
+		"Canvas2D::plot()",
+		"The color must have three components but have '"
+		<< color.size() << "'.",
+		""
+	);
 
-	dataSets.push_back(std::make_tuple(x, y, title));
+	if(!hold)
+		dataSets.clear();
+
+	dataSets.push_back(std::make_tuple(x, y, title, color, size));
 }
 
 inline void Canvas2D::clear(){
@@ -256,6 +304,16 @@ inline const std::vector<double>& Canvas2D::getY(unsigned int dataSet) const{
 
 inline const std::string& Canvas2D::getTitle(unsigned int dataSet) const{
 	return std::get<2>(dataSets[dataSet]);
+}
+
+inline const std::vector<unsigned char>& Canvas2D::getColor(
+	unsigned int dataSet
+) const{
+	return std::get<3>(dataSets[dataSet]);
+}
+
+inline unsigned int Canvas2D::getSize(unsigned int dataSet) const{
+	return std::get<4>(dataSets[dataSet]);
 }
 
 };	//End namespace TBTK
