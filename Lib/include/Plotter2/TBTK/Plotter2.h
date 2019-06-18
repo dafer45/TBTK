@@ -25,7 +25,9 @@
 
 #include "TBTK/Array.h"
 #include "TBTK/Canvas2D.h"
+#include "TBTK/Canvas3D.h"
 #include "TBTK/PNGCanvas2D.h"
+#include "TBTK/PNGCanvas3D.h"
 #include "TBTK/Property/DOS.h"
 #include "TBTK/Property/EigenValues.h"
 #include "TBTK/Streams.h"
@@ -67,11 +69,17 @@ public:
 	/** Set auto scale. */
 	void setAutoScale(bool autoScale);
 
+	/** Set title. */
+	void setTitle(const std::string &title);
+
 	/** Set x-label. */
 	void setLabelX(const std::string &labelX);
 
 	/** Set y-label. */
 	void setLabelY(const std::string &labelY);
+
+	/** Set z-label. */
+	void setLabelZ(const std::string &labelZ);
 
 	/** Plot data. */
 	void plot(
@@ -101,10 +109,18 @@ public:
 	void plot(const Property::EigenValues &eigenValues);
 
 	/** Plot 2D data. */
-//	void plot(const std::vector<std::vector<double>> &data);
+	void plot(
+		const std::vector<std::vector<double>> &data,
+		const std::string &title = ""
+	);
 
 	/** Plot data. */
-	void plot(const Array<double> &data);
+	void plot(
+		const Array<double> &data,
+		const std::string &title = "",
+		const std::vector<unsigned char> &color = {0, 0, 0},
+		unsigned int size = 1
+	);
 
 	/** Plot data with color coded intensity. */
 /*	void plot(
@@ -121,17 +137,30 @@ public:
 	/** Set whether ot not data is plotted on top of old data. */
 	void setHold(bool hold);
 
+	/** Set whether the 3D plot should be displayed using a top view or
+	 *  not. */
+	void setTopView(bool topView);
+
 	/** Clear plot. */
 	void clear();
 
 	/** Save canvas to file. */
 	void save(std::string filename);
 private:
-	/** Canvas. */
+	/** 2D canvas. */
 	Canvas2D canvas2D;
+
+	/** 3D canvas. */
+	Canvas3D canvas3D;
+
+	/** Pointer to the current canvas. */
+	Canvas *currentCanvas;
 
 	/** Flags indicating whether to auto scale along x and y direction. */
 	bool autoScaleX, autoScaleY;
+
+	/** Set the current canvas. */
+	void setCurrentCanvas(Canvas &canvas);
 };
 
 inline void Plotter2::setWidth(unsigned int width){
@@ -187,16 +216,33 @@ inline void Plotter2::setAutoScale(bool autoScale){
 	setAutoScaleY(autoScale);
 }
 
+inline void Plotter2::setTitle(const std::string &title){
+	canvas2D.setTitle(title);
+	canvas3D.setTitle(title);
+}
+
 inline void Plotter2::setLabelX(const std::string &labelX){
 	canvas2D.setLabelX(labelX);
+	canvas3D.setLabelX(labelX);
 }
 
 inline void Plotter2::setLabelY(const std::string &labelY){
 	canvas2D.setLabelY(labelY);
+	canvas3D.setLabelY(labelY);
+}
+
+inline void Plotter2::setLabelZ(const std::string &labelZ){
+	canvas3D.setLabelZ(labelZ);
 }
 
 inline void Plotter2::setHold(bool hold){
 	canvas2D.setHold(hold);
+	canvas3D.setHold(hold);
+}
+
+inline void Plotter2::setTopView(bool topView){
+	setCurrentCanvas(canvas3D);
+	canvas3D.setTopView(topView);
 }
 
 inline void Plotter2::clear(){
@@ -220,8 +266,14 @@ inline void Plotter2::save(std::string filename){
 		tokens.back().compare("png") == 0
 		|| tokens.back().compare("PNG") == 0
 	){
-		PNGCanvas2D canvas(canvas2D);
-		canvas.flush(filename);
+		if(currentCanvas == &canvas2D){
+			PNGCanvas2D canvas(canvas2D);
+			canvas.flush(filename);
+		}
+		else if(currentCanvas == &canvas3D){
+			PNGCanvas3D canvas(canvas3D);
+			canvas.flush(filename);
+		}
 	}
 	else{
 		TBTKExit(

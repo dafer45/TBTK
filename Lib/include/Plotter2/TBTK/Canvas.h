@@ -43,11 +43,20 @@ public:
 	/** Set height. */
 	void setHeight(unsigned int height);
 
+	/** Set the title. */
+	void setTitle(const std::string &title);
+
+	/** Get the title. */
+	const std::string& getTitle() const;
+
 	/** Clear plot. */
 	virtual void clear();
 private:
 	/** Size of the resulting image. */
 	double width, height;
+
+	/** Title. */
+	std::string title;
 };
 
 inline void Canvas::setWidth(unsigned int width){
@@ -56,6 +65,14 @@ inline void Canvas::setWidth(unsigned int width){
 
 inline void Canvas::setHeight(unsigned int height){
 	this->height = height;
+}
+
+inline void Canvas::setTitle(const std::string &title){
+	this->title = title;
+}
+
+inline const std::string& Canvas::getTitle() const{
+	return title;
 }
 
 inline void Canvas::clear(){

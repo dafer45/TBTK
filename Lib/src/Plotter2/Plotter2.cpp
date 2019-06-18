@@ -31,7 +31,7 @@ namespace TBTK{
 Plotter2::Plotter2(){
 	autoScaleX = true;
 	autoScaleY = true;
-//	hold = false;
+	currentCanvas = nullptr;
 }
 
 Plotter2::~Plotter2(){
@@ -44,6 +44,8 @@ void Plotter2::plot(
 	const vector<unsigned char> &color,
 	unsigned int size
 ){
+	setCurrentCanvas(canvas2D);
+
 	canvas2D.plot(x, y, title, color, size);
 }
 
@@ -53,6 +55,7 @@ void Plotter2::plot(
 	const vector<unsigned char> &color,
 	unsigned int size
 ){
+	setCurrentCanvas(canvas2D);
 	canvas2D.plot(y, title, color, size);
 }
 
@@ -74,6 +77,7 @@ void Plotter2::plot(
 		y = Smooth::gaussian(y, scaledSigma, windowSize);
 	}
 
+	setCurrentCanvas(canvas2D);
 	canvas2D.plot(x, y);
 }
 
@@ -82,81 +86,21 @@ void Plotter2::plot(const Property::EigenValues &eigenValues){
 	for(unsigned int n = 0; n < eigenValues.getSize(); n++)
 		y.push_back(eigenValues(n));
 
+	setCurrentCanvas(canvas2D);
 	canvas2D.plot(y);
 }
 
-/*void Plotter::plot(const vector<vector<double>> &data){
-	if(data.size() == 0)
-		return;
-	if(data[0].size() == 0)
-		return;
+void Plotter2::plot(const vector<vector<double>> &z, const string &title){
+	setCurrentCanvas(canvas3D);
+	canvas3D.plot(z, title);
+}
 
-	unsigned int sizeY = data[0].size();
-	for(unsigned int x = 1; x < data.size(); x++){
-		TBTKAssert(
-			data[x].size() == sizeY,
-			"Plotter:plot()",
-			"Incompatible array dimensions. 'data[0]' has "
-				<< sizeY << " elements, while 'data[" << x
-				<< "]' has " << data[x].size() << " elements.",
-			""
-		);
-	}
-	canvas.setBounds(0, data.size()-1, 0, sizeY-1);
-
-	clearDataStorage();
-	canvas.clear();
-
-	double minValue = data[0][0];
-	double maxValue = data[0][0];
-	for(unsigned int x = 0; x < data.size(); x++){
-		for(unsigned int y = 0; y < data[x].size(); y++){
-			if(data[x][y] < minValue)
-				minValue = data[x][y];
-			if(data[x][y] > maxValue)
-				maxValue = data[x][y];
-		}
-	}
-
-	bool tempShowColorBox = canvas.getShowColorBox();
-	canvas.setShowColorBox(true);
-	canvas.setBoundsColor(minValue, maxValue);
-
-	for(unsigned int x = 0; x < data.size()-1; x++){
-		for(unsigned int y = 0; y < sizeY-1; y++){
-			double value00 = data[x][y];
-			double value01 = data[x][y+1];
-			double value10 = data[x+1][y];
-			double value11 = data[x+1][y+1];
-
-			cv::Point p00 = canvas.getCVPoint(x, y);
-			cv::Point p01 = canvas.getCVPoint(x, y+1);
-			cv::Point p10 = canvas.getCVPoint(x+1, y);
-			for(int x = p00.x; x <= p10.x; x++){
-				for(int y = p00.y; y >= p01.y; y--){
-					double distanceX = (x-p00.x)/(double)(p10.x - p00.x);
-					double distanceY = (y-p00.y)/(double)(p01.y - p00.y);
-					double value0 = value00*(1 - distanceX) + value10*distanceX;
-					double value1 = value01*(1 - distanceX) + value11*distanceX;
-					double averagedValue = value0*(1 - distanceY) + value1*distanceY;
-					canvas.setPixel(
-						x,
-						y,
-						(255 - 255*(averagedValue - minValue)/(maxValue - minValue)),
-						(255 - 255*(averagedValue - minValue)/(maxValue - minValue)),
-						255
-					);
-				}
-			}
-		}
-	}
-
-	canvas.drawAxes();
-
-	canvas.setShowColorBox(tempShowColorBox);
-}*/
-
-void Plotter2::plot(const Array<double> &data){
+void Plotter2::plot(
+	const Array<double> &data,
+	const string &title,
+	const vector<unsigned char> &color,
+	unsigned int size
+){
 	const vector<unsigned int> &ranges = data.getRanges();
 	switch(ranges.size()){
 	case 1:
@@ -164,11 +108,11 @@ void Plotter2::plot(const Array<double> &data){
 		vector<double> d;
 		for(unsigned int n = 0; n < ranges[0]; n++)
 			d.push_back(data[{n}]);
-		plot(d);
+		plot(d, title, color, size);
 
 		break;
 	}
-/*	case 2:
+	case 2:
 	{
 		vector<vector<double>> d;
 		for(unsigned int m = 0; m < ranges[0]; m++){
@@ -179,7 +123,7 @@ void Plotter2::plot(const Array<double> &data){
 		plot(d);
 
 		break;
-	}*/
+	}
 	default:
 		TBTKExit(
 			"Plotter:plot()",
@@ -305,5 +249,14 @@ void Plotter2::plot(const Array<double> &data){
 		);
 	}
 }*/
+
+void Plotter2::setCurrentCanvas(Canvas &canvas){
+	if(currentCanvas != &canvas){
+		if(currentCanvas != nullptr)
+			currentCanvas->clear();
+
+		currentCanvas = &canvas;
+	}
+}
 
 };	//End of namespace TBTK

@@ -13,12 +13,12 @@
  * limitations under the License.
  */
 
-/** @file PNGCanvas2D.cpp
+/** @file PNGCanvas3D.cpp
  *
  *  @author Kristofer Björnson
  */
 
-#include "TBTK/PNGCanvas2D.h"
+#include "TBTK/PNGCanvas3D.h"
 #include "TBTK/Smooth.h"
 
 #include "TBTK/External/Boost/gnuplot-iostream.h"
@@ -27,13 +27,13 @@ using namespace std;
 
 namespace TBTK{
 
-PNGCanvas2D::PNGCanvas2D(const Canvas2D &canvas) : Canvas2D(canvas){
+PNGCanvas3D::PNGCanvas3D(const Canvas3D &canvas) : Canvas3D(canvas){
 }
 
-PNGCanvas2D::~PNGCanvas2D(){
+PNGCanvas3D::~PNGCanvas3D(){
 }
 
-void PNGCanvas2D::flush(const string &filename){
+void PNGCanvas3D::flush(const string &filename){
 	TBTKAssert(
 		getNumDataSets() > 0,
 		"PNGCanvas2D::flush()",
@@ -47,22 +47,27 @@ void PNGCanvas2D::flush(const string &filename){
 	gnuplot << "set title '" << Canvas::getTitle() << "'\n";
 	gnuplot << "set xlabel '" << getLabelX() << "'\n";
 	gnuplot << "set ylabel '" << getLabelY() << "'\n";
-	gnuplot << "plot";
+	gnuplot << "set zlabel '" << getLabelZ() << "'\n";
+	if(getTopView())
+		gnuplot << "set view map\n";
+	gnuplot << "set pm3d hidden3d depthorder\n";
+	gnuplot << "set pm3d noborder\n";
+	gnuplot << "splot";
 	for(unsigned int n = 0; n < getNumDataSets(); n++){
 		if(n != 0)
 			gnuplot << ",";
-		gnuplot << " '-' using 1:2"
+		gnuplot << " '-'"
 			<< " title '" << getTitle(n) << "'"
-			<< " lw " << getSize(n)
-			<< " lt rgb '" << convertColorToHex(getColor(n)) << "'"
-			<< " with lines";
+			<< " with pm3d";
+		Streams::out << getTitle(n) << "\n";
 	}
 	gnuplot << "\n";
 	for(unsigned int n = 0; n < getNumDataSets(); n++)
-		gnuplot.send1d(boost::make_tuple(getX(n), getY(n)));
+		gnuplot.send2d(getZ(n));
+//		gnuplot.send2d(boost::make_tuple(getX(n), getY(n)));
 }
 
-string PNGCanvas2D::convertColorToHex(const std::vector<unsigned char> &color){
+string PNGCanvas3D::convertColorToHex(const std::vector<unsigned char> &color){
 	const vector<char> hexadecimals = {
 		'0', '1', '2', '3', '4', '5', '6', '7',
 		'8', '9', 'A', 'B', 'C', 'D', 'E', 'F',
