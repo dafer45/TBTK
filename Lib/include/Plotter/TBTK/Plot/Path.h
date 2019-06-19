@@ -20,8 +20,8 @@
  *  @author Kristofer Björnson
  */
 
-#ifndef COM_DAFER45_TBTK_PATH
-#define COM_DAFER45_TBTK_PATH
+#ifndef COM_DAFER45_TBTK_PLOT_PATH
+#define COM_DAFER45_TBTK_PLOT_PATH
 
 #include "TBTK/Plot/PlotCanvas.h"
 #include "TBTK/Plot/Coordinate.h"

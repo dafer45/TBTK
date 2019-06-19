@@ -20,8 +20,8 @@
  *  @author Kristofer Björnson
  */
 
-#ifndef COM_DAFER45_TBTK_COORDINATE
-#define COM_DAFER45_TBTK_COORDINATE
+#ifndef COM_DAFER45_TBTK_PLOT_COORDINATE
+#define COM_DAFER45_TBTK_PLOT_COORDINATE
 
 #include "TBTK/TBTKMacros.h"
 

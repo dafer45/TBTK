@@ -20,8 +20,8 @@
  *  @author Kristofer Björnson
  */
 
-#ifndef COM_DAFER45_TBTK_DECORATION
-#define COM_DAFER45_TBTK_DECORATION
+#ifndef COM_DAFER45_TBTK_PLOT_DECORATION
+#define COM_DAFER45_TBTK_PLOT_DECORATION
 
 #include <vector>
 

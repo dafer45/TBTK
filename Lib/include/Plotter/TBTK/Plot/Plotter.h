@@ -20,8 +20,8 @@
  *  @author Kristofer Björnson
  */
 
-#ifndef COM_DAFER45_TBTK_PLOTTER
-#define COM_DAFER45_TBTK_PLOTTER
+#ifndef COM_DAFER45_TBTK_PLOT_PLOTTER
+#define COM_DAFER45_TBTK_PLOT_PLOTTER
 
 #include "TBTK/Array.h"
 #include "TBTK/Plot/PlotCanvas.h"

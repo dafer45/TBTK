@@ -20,8 +20,8 @@
  *  @author Kristofer Björnson
  */
 
-#ifndef COM_DAFER45_TBTK_CANVAS
-#define COM_DAFER45_TBTK_CANVAS
+#ifndef COM_DAFER45_TBTK_PLOT_CANVAS
+#define COM_DAFER45_TBTK_PLOT_CANVAS
 
 #include "TBTK/TBTKMacros.h"
 

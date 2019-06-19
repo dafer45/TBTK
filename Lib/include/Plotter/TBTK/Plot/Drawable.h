@@ -20,8 +20,8 @@
  *  @author Kristofer Björnson
  */
 
-#ifndef COM_DAFER45_TBTK_DRAWABLE
-#define COM_DAFER45_TBTK_DRAWABLE
+#ifndef COM_DAFER45_TBTK_PLOT_DRAWABLE
+#define COM_DAFER45_TBTK_PLOT_DRAWABLE
 
 #include "TBTK/Plot/PlotCanvas.h"
 
