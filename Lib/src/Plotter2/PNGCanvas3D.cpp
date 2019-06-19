@@ -59,12 +59,21 @@ void PNGCanvas3D::flush(const string &filename){
 		gnuplot << " '-'"
 			<< " title '" << getTitle(n) << "'"
 			<< " with pm3d";
-		Streams::out << getTitle(n) << "\n";
 	}
 	gnuplot << "\n";
-	for(unsigned int n = 0; n < getNumDataSets(); n++)
-		gnuplot.send2d(getZ(n));
+	for(unsigned int n = 0; n < getNumDataSets(); n++){
+		vector<vector<double>> z = getZ(n);
+		vector<vector<double>> newZ;
+		for(unsigned int n = 0; n < z.size(); n++){
+			for(unsigned int c = 0; c < z[n].size(); c++){
+				if(n == 0)
+					newZ.push_back(vector<double>());
+				newZ[c].push_back(z[n][c]);
+			}
+		}
+		gnuplot.send2d(newZ);
 //		gnuplot.send2d(boost::make_tuple(getX(n), getY(n)));
+	}
 }
 
 string PNGCanvas3D::convertColorToHex(const std::vector<unsigned char> &color){
