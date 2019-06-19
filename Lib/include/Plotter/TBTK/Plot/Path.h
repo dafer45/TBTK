@@ -23,10 +23,10 @@
 #ifndef COM_DAFER45_TBTK_PATH
 #define COM_DAFER45_TBTK_PATH
 
-#include "TBTK/PlotCanvas.h"
-#include "TBTK/Coordinate.h"
-#include "TBTK/Decoration.h"
-#include "TBTK/Drawable.h"
+#include "TBTK/Plot/PlotCanvas.h"
+#include "TBTK/Plot/Coordinate.h"
+#include "TBTK/Plot/Decoration.h"
+#include "TBTK/Plot/Drawable.h"
 
 #include <vector>
 

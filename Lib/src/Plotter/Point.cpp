@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "TBTK/Point.h"
+#include "TBTK/Plot/Point.h"
 #include "TBTK/Streams.h"
 
 using namespace std;

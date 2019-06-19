@@ -1,8 +1,6 @@
 #include "TBTK/PadeApproximator.h"
 
 #include "TBTK/Array.h"
-#include "TBTK/Plotter.h"
-using namespace TBTK::Plot;
 
 #include "gtest/gtest.h"
 

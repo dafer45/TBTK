@@ -24,10 +24,10 @@
 #define COM_DAFER45_TBTK_PLOTTER
 
 #include "TBTK/Array.h"
-#include "TBTK/PlotCanvas.h"
-#include "TBTK/Decoration.h"
-#include "TBTK/Path.h"
-#include "TBTK/Point.h"
+#include "TBTK/Plot/PlotCanvas.h"
+#include "TBTK/Plot/Decoration.h"
+#include "TBTK/Plot/Path.h"
+#include "TBTK/Plot/Point.h"
 #include "TBTK/Property/DOS.h"
 #include "TBTK/Property/EigenValues.h"
 #include "TBTK/Streams.h"

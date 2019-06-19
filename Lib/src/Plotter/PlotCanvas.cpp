@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "TBTK/PlotCanvas.h"
+#include "TBTK/Plot/PlotCanvas.h"
 #include "TBTK/Smooth.h"
 
 #include <opencv2/core/core.hpp>

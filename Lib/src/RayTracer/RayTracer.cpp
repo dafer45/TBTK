@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "TBTK/Plotter.h"
+#include "TBTK/Plot/Plotter.h"
 #include "TBTK/RayTracer.h"
 #include "TBTK/Smooth.h"
 #include "TBTK/Streams.h"

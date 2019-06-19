@@ -19,7 +19,7 @@
  */
 
 #include "TBTK/IndexException.h"
-#include "TBTK/Plotter.h"
+#include "TBTK/Plot/Plotter.h"
 #include "TBTK/Smooth.h"
 #include "TBTK/LDOSPanel.h"
 

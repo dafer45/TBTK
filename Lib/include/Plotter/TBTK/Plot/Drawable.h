@@ -23,7 +23,7 @@
 #ifndef COM_DAFER45_TBTK_DRAWABLE
 #define COM_DAFER45_TBTK_DRAWABLE
 
-#include "TBTK/PlotCanvas.h"
+#include "TBTK/Plot/PlotCanvas.h"
 
 #include <opencv2/core/core.hpp>
 

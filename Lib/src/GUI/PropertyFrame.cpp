@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "TBTK/Plotter.h"
+#include "TBTK/Plot/Plotter.h"
 #include "TBTK/DOSPanel.h"
 #include "TBTK/LDOSPanel.h"
 #include "TBTK/PropertyFrame.h"

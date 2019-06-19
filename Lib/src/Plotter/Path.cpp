@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "TBTK/Path.h"
+#include "TBTK/Plot/Path.h"
 #include "TBTK/Smooth.h"
 #include "TBTK/Streams.h"
 

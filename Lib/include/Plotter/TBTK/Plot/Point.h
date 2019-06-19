@@ -23,10 +23,10 @@
 #ifndef COM_DAFER45_TBTK_POINT
 #define COM_DAFER45_TBTK_POINT
 
-#include "TBTK/PlotCanvas.h"
-#include "TBTK/Coordinate.h"
-#include "TBTK/Decoration.h"
-#include "TBTK/Drawable.h"
+#include "TBTK/Plot/PlotCanvas.h"
+#include "TBTK/Plot/Coordinate.h"
+#include "TBTK/Plot/Decoration.h"
+#include "TBTK/Plot/Drawable.h"
 
 namespace TBTK{
 namespace Plot{
