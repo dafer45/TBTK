@@ -183,6 +183,11 @@ public:
 		const std::vector<Index> &newPatterns
 	);
 
+	/** Turns the property into its Hermitian conjugate. Only works for the
+	 *  format Format::Custom. The Index structure also need to be such
+	 *  that every Index is a composit Index with two component Indices. */
+	void hermitianConjugate();
+
 	/** Function call operator. Returns the data element for the given
 	 *  Index and offset. By default the Property does not accept @link
 	 *  Index Indices @endlink that are not contained in the Property.
@@ -656,6 +661,61 @@ inline void AbstractProperty<DataType>::reduce(
 					oldIndex
 				) + n
 			];
+		}
+	}
+
+	indexDescriptor = newIndexDescriptor;
+	data = newData;
+}
+
+template<typename DataType>
+inline void AbstractProperty<DataType>::hermitianConjugate(){
+	IndexTree newIndexTree;
+	const IndexTree &oldIndexTree = indexDescriptor.getIndexTree();
+	IndexedDataTree<Index> indexMap;
+	IndexedDataTree<Index> transposedIndexMap;
+	for(
+		IndexTree::ConstIterator iterator = oldIndexTree.cbegin();
+		iterator != oldIndexTree.cend();
+		++iterator
+	){
+		std::vector<Index> components = (*iterator).split();
+		TBTKAssert(
+			components.size() == 2,
+			"AbstractProperty<DataType>::hermitianConjugate()",
+			"Invalid Index structure. Unable to performorm the"
+			<< " Hermitian conjugation because the Index '"
+			<< (*iterator).toString() << "' is not a compound"
+			<< " Index with two Indices.",
+			""
+		);
+		newIndexTree.add({components[1], components[0]});
+	}
+	newIndexTree.generateLinearMap();
+
+	IndexDescriptor newIndexDescriptor(newIndexTree);
+	std::vector<DataType> newData;
+	for(unsigned int n = 0; n < indexDescriptor.getSize()*blockSize; n++)
+		newData.push_back(0.);
+
+	for(
+		IndexTree::ConstIterator iterator = oldIndexTree.cbegin();
+		iterator != oldIndexTree.cend();
+		++iterator
+	){
+		for(unsigned int n = 0; n < blockSize; n++){
+			std::vector<Index> components = (*iterator).split();
+			newData[
+				blockSize*newIndexDescriptor.getLinearIndex(
+					{components[1], components[0]}
+				) + n
+			] = conj(
+				data[
+					blockSize*indexDescriptor.getLinearIndex(
+						*iterator
+					) + n
+				]
+			);
 		}
 	}
 

@@ -998,7 +998,7 @@ TEST(AbstractProperty, reduce){
 	EXPECT_EXIT(
 		{
 			Streams::setStdMuteErr();
-			property0.reduce({{_a0_, _a0_}}, {{_a0_}});
+			property1.reduce({{_a0_, _a0_}}, {{_a0_}});
 		},
 		::testing::ExitedWithCode(1),
 		""
@@ -1083,6 +1083,80 @@ TEST(AbstractProperty, reduce){
 			);
 		}
 	}
+}
+
+TEST(AbstractProperty, hermitianConjugate){
+	PublicAbstractProperty<std::complex<double>> property0(10);
+	//Fail for IndexDescriptor::Format::None.
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			property0.hermitianConjugate();
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+
+	//Fail for IndexDescriptor::Format::Ranges.
+	PublicAbstractProperty<std::complex<double>> property1({1, 1}, 10);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			property1.hermitianConjugate();
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+
+	//Fail because the IndexTree contains an Index that is not a composit
+	//Index with two component Indices.
+	IndexTree indexTree2;
+	indexTree2.add({0, 1});
+	indexTree2.generateLinearMap();
+	PublicAbstractProperty<std::complex<double>> property2(indexTree2, 10);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			property2.hermitianConjugate();
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+
+	//Suceed with valid Hermitian conjugation.
+	IndexTree indexTree3;
+	indexTree3.add({{0, 1}, {2, 3, 4}});
+	indexTree3.add({{0, 2}, {1, 2}});
+	indexTree3.add({{1, 2}, {0, 2}});
+	indexTree3.generateLinearMap();
+	PublicAbstractProperty<std::complex<double>> property3(indexTree3, 10);
+	for(unsigned int n = 0; n < 10; n++){
+		property3({{0, 1}, {2, 3, 4}}, n) = std::complex<double>(n, n);
+		property3({{0, 2}, {1, 2}}, n)
+			= std::complex<double>(2*n, 3*n);
+		property3({{1, 2}, {0, 2}}, n)
+			= std::complex<double>(4*n, 5*n);
+	}
+	property3.hermitianConjugate();
+	for(int n = 0; n < 10; n++){
+		EXPECT_DOUBLE_EQ(real(property3({{2, 3, 4}, {0, 1}}, n)), n);
+		EXPECT_DOUBLE_EQ(imag(property3({{2, 3, 4}, {0, 1}}, n)), -n);
+		EXPECT_DOUBLE_EQ(real(property3({{1, 2}, {0, 2}}, n)), 2*n);
+		EXPECT_DOUBLE_EQ(imag(property3({{1, 2}, {0, 2}}, n)), -3*n);
+		EXPECT_DOUBLE_EQ(real(property3({{0, 2}, {1, 2}}, n)), 4*n);
+		EXPECT_DOUBLE_EQ(imag(property3({{0, 2}, {1, 2}}, n)), -5*n);
+	}
+
+	//Fail to access Index present in the orginal property, but not in the
+	//Hermitian conjugated property.
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			property3({{0, 1}, {2, 3, 4}}, 0);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
 }
 
 TEST(AbstractProperty, operatorFunction){
