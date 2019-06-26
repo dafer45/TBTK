@@ -25,6 +25,7 @@
 
 #include "TBTK/Property/Property.h"
 #include "TBTK/Property/IndexDescriptor.h"
+#include "TBTK/SparseMatrix.h"
 #include "TBTK/SpinMatrix.h"
 #include "TBTK/TBTKMacros.h"
 
@@ -187,6 +188,21 @@ public:
 	 *  format Format::Custom. The Index structure also need to be such
 	 *  that every Index is a composit Index with two component Indices. */
 	void hermitianConjugate();
+
+	/** Converts the matrix to a set of @link SparseMatrix SparseMatrices
+	 *  @endlink. This only works for Properties on the Format::Custom. In
+	 *  addition, the Index structure has to be such that every Index is a
+	 *  composit Index with exactly two component Indices.
+	 *
+	 *  @param model A model that determines the maping from the physical
+	 *  indices in the Property and the linear indices in the matrix
+	 *  representation.
+	 *
+	 *  @return A vector of @link SparseMatrix SparseMatrices @endlink. One
+	 *  SparseMatrix for every block index. */
+	std::vector<SparseMatrix<DataType>> toSparseMatrices(
+		const Model &model
+	) const;
 
 	/** Function call operator. Returns the data element for the given
 	 *  Index and offset. By default the Property does not accept @link
@@ -686,7 +702,7 @@ inline void AbstractProperty<DataType>::hermitianConjugate(){
 			"Invalid Index structure. Unable to performorm the"
 			<< " Hermitian conjugation because the Index '"
 			<< (*iterator).toString() << "' is not a compound"
-			<< " Index with two Indices.",
+			<< " Index with two component Indices.",
 			""
 		);
 		newIndexTree.add({components[1], components[0]});
@@ -721,6 +737,56 @@ inline void AbstractProperty<DataType>::hermitianConjugate(){
 
 	indexDescriptor = newIndexDescriptor;
 	data = newData;
+}
+
+template<typename DataType>
+inline std::vector<SparseMatrix<DataType>> AbstractProperty<
+	DataType
+>::toSparseMatrices(
+	const Model &model
+) const{
+	const HoppingAmplitudeSet &hoppingAmplitudeSet
+		= model.getHoppingAmplitudeSet();
+
+	std::vector<SparseMatrix<DataType>> sparseMatrices;
+	for(unsigned int n = 0; n < blockSize; n++){
+		sparseMatrices.push_back(
+			SparseMatrix<DataType>(
+				SparseMatrix<DataType>::StorageFormat::CSC,
+				model.getBasisSize(),
+				model.getBasisSize()
+			)
+		);
+	}
+	const IndexTree &indexTree = indexDescriptor.getIndexTree();
+	for(
+		IndexTree::ConstIterator iterator = indexTree.cbegin();
+		iterator != indexTree.cend();
+		++iterator
+	){
+		std::vector<Index> components = (*iterator).split();
+		TBTKAssert(
+			components.size() == 2,
+			"AbstractProperty<DataType>::toSparseMatrices()",
+			"Invalid Index structure. Unable to convert to"
+			<< "SparseMatrices because the Index '"
+			<< (*iterator).toString() << "' is not a compound"
+			<< " Index with two component Indices.",
+			""
+		);
+		unsigned int row
+			= hoppingAmplitudeSet.getBasisIndex(components[0]);
+		unsigned int column
+			= hoppingAmplitudeSet.getBasisIndex(components[1]);
+		unsigned int offset
+			= blockSize*indexDescriptor.getLinearIndex(*iterator);
+		for(unsigned int n = 0; n < blockSize; n++)
+			sparseMatrices[n].add(row, column, data[offset + n]);
+	}
+	for(unsigned int n = 0; n < blockSize; n++)
+		sparseMatrices[n].construct();
+
+	return sparseMatrices;
 }
 
 template<typename DataType>
