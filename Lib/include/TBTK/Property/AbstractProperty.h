@@ -23,6 +23,7 @@
 #ifndef COM_DAFER45_TBTK_ABSTRACT_PROPERTY
 #define COM_DAFER45_TBTK_ABSTRACT_PROPERTY
 
+#include "TBTK/Model.h"
 #include "TBTK/Property/Property.h"
 #include "TBTK/Property/IndexDescriptor.h"
 #include "TBTK/SparseMatrix.h"

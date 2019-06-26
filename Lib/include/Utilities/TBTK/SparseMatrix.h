@@ -38,6 +38,9 @@ public:
 	enum class StorageFormat {CSR, CSC};
 
 	/** Constructor. */
+	SparseMatrix();
+
+	/** Constructor. */
 	SparseMatrix(StorageFormat);
 
 	/** Copy constructor. */
@@ -101,6 +104,46 @@ public:
 	/** Construct the sparse matrix. */
 	void construct();
 
+	/** Addition assignment operator.
+	 *
+	 *  @param rhs The right hand side of the expression.
+	 *
+	 *  @return The left hand side after the right hand side has been added.
+	 */
+	SparseMatrix& operator+=(const SparseMatrix &rhs);
+
+	/** Addition operator.
+	 *
+	 *  @param rhs The right hand side of the expression.
+	 *
+	 *  @return A new SparseMatrix that is the sum of this SparseMatrix and
+	 *  the right hand side. */
+	SparseMatrix operator+(const SparseMatrix &rhs) const;
+
+	/** Subtraction assignment operator.
+	 *
+	 *  @param rhs The right hand side of the expression.
+	 *
+	 *  @return The left hand side after the right hand side has been
+	 *  subtracted. */
+	SparseMatrix& operator-=(const SparseMatrix &rhs);
+
+	/** Subtraction operator.
+	 *
+	 *  @param rhs The right hand side of the expression.
+	 *
+	 *  @return A new SparseMatrix that is the difference between this
+	 *  SparseMatrix and the right hand side. */
+	SparseMatrix operator-(const SparseMatrix &rhs) const;
+
+	/** Multiplication operator.
+	 *
+	 *  @param rhs The right hand side of the expression.
+	 *
+	 *  @return A new SparseMatrix that is the product of this SparseMatrix
+	 *  and the right hand side. */
+	SparseMatrix operator*(const SparseMatrix &rhs) const;
+
 	/** Print. */
 	void print() const;
 private:
@@ -162,7 +205,26 @@ public:
 	 *  been added, or because the format of the matrix is being changed.
 	 */
 	void convertCSXToLIL();
+
+	/** Helper function for operator*() that performs the actual matrix
+	 *  multiplication.
+	 *
+	 *  @param rhs The left hand side in the matrix multiplication.
+	 *  @param rhs The right hand side in the matrix multiplication.
+	 *  @param result The SparseMatrix to store the result in. */
+	static void multiply(
+		const SparseMatrix &lhs,
+		const SparseMatrix &rhs,
+		SparseMatrix &result
+	);
 };
+
+template<typename DataType>
+inline SparseMatrix<DataType>::SparseMatrix(){
+	csxXPointers = nullptr;
+	csxY = nullptr;
+	csxValues = nullptr;
+}
 
 template<typename DataType>
 inline SparseMatrix<DataType>::SparseMatrix(StorageFormat storageFormat){
@@ -679,6 +741,328 @@ inline void SparseMatrix<DataType>::construct(){
 }
 
 template<typename DataType>
+inline SparseMatrix<DataType>& SparseMatrix<DataType>::operator+=(
+	const SparseMatrix &rhs
+){
+	TBTKAssert(
+		csxNumMatrixElements != -1 && rhs.csxNumMatrixElements != -1,
+		"SparseMatrix::operator+=()",
+		"Unable to add matrices since the matrices have not yet been"
+		<< " constructed.",
+		"Ensure that SparseMatrix::construct() has been called for"
+		<< " both matrices."
+	);
+	TBTKAssert(
+		storageFormat == rhs.storageFormat,
+		"SparseMatrix::operator+=()",
+		"The left and right hand sides must have the same storage"
+		<< " format. But the left hand side has storage format '" << (
+			storageFormat == StorageFormat::CSR
+			? "StorageFormat::CSR"
+			: "StorageFormat::CSC"
+		) << "' while the right hand side has storage format '" << (
+			rhs.storageFormat == StorageFormat::CSR
+			? "StorageFormat::CSR"
+			: "StorageFormat::CSC"
+		) << "'.",
+		""
+	);
+	TBTKAssert(
+		allowDynamicDimensions == rhs.allowDynamicDimensions,
+		"SparseMatrix::operator+=()",
+		"The left and right hand sides must either both have dynamic"
+		<< " or both not have dynamic dimensions. But the left hand"
+		<< " side " << (
+			allowDynamicDimensions
+			? "has dynamic dimensions "
+			: "does not have dynamic dimensions "
+		) << " whilte the right hand side " << (
+			allowDynamicDimensions
+			? "has dynamic dimensions."
+			: "does not have dynamic dimensions."
+		),
+		"Whether the SparseMatrix has dynamic dimensions or not"
+		<< " depends on whether the number of rows and columns are"
+		<< " passed to the SparseMatrix constructor or not."
+	);
+
+	if(!allowDynamicDimensions){
+		TBTKAssert(
+			numRows == rhs.numRows && numCols == rhs.numCols,
+			"SparseMatrix::operator+=()",
+			"The left and right hand sides must have the same"
+			<< " dimensions, but the left hand side has dimension"
+			<< " '" << numRows << "x" << numCols << "' while the"
+			<< " right hand side has dimensions '" << rhs.numRows
+			<< "x" << numCols << "'.",
+			"If both matrices have dynamic dimensions their"
+			<< " dimensions do not need to agree. To create"
+			<< " matrices with dynamic dimensions, do not pass row"
+			<< " and column numbers to the SparseMatrix"
+			<< " constructor."
+		);
+	}
+
+	convertCSXToLIL();
+
+	switch(storageFormat){
+	case StorageFormat::CSR:
+	{
+		for(int row = 0; row < rhs.numRows; row++){
+			for(
+				int n = rhs.csxXPointers[row];
+				n < rhs.csxXPointers[row+1];
+				n++
+			){
+				add(row, rhs.csxY[n], rhs.csxValues[n]);
+			}
+		}
+		break;
+	}
+	case StorageFormat::CSC:
+		for(int col = 0; col < rhs.numCols; col++){
+			for(
+				int n = rhs.csxXPointers[col];
+				n < rhs.csxXPointers[col+1];
+				n++
+			){
+				add(rhs.csxY[n], col, rhs.csxValues[n]);
+			}
+		}
+		break;
+	default:
+		TBTKExit(
+			"SparseMatrix::operator+=()",
+			"Unknown storage format.",
+			"This should never happen, contact the developer."
+		);
+	}
+
+	construct();
+
+	return *this;
+}
+
+template<typename DataType>
+inline SparseMatrix<DataType> SparseMatrix<DataType>::operator+(
+	const SparseMatrix &rhs
+) const{
+	SparseMatrix sparseMatrix = *this;
+
+	return sparseMatrix += rhs;
+}
+
+template<typename DataType>
+inline SparseMatrix<DataType>& SparseMatrix<DataType>::operator-=(
+	const SparseMatrix &rhs
+){
+	TBTKAssert(
+		csxNumMatrixElements != -1 && rhs.csxNumMatrixElements != -1,
+		"SparseMatrix::operator-=()",
+		"Unable to subtract matrices since the matrices have not yet"
+		<< " been constructed.",
+		"Ensure that SparseMatrix::construct() has been called for"
+		<< " both matrices."
+	);
+	TBTKAssert(
+		storageFormat == rhs.storageFormat,
+		"SparseMatrix::operator-=()",
+		"The left and right hand sides must have the same storage"
+		<< " format. But the left hand side has storage format '" << (
+			storageFormat == StorageFormat::CSR
+			? "StorageFormat::CSR"
+			: "StorageFormat::CSC"
+		) << "' while the right hand side has storage format '" << (
+			rhs.storageFormat == StorageFormat::CSR
+			? "StorageFormat::CSR"
+			: "StorageFormat::CSC"
+		) << "'.",
+		""
+	);
+	TBTKAssert(
+		allowDynamicDimensions == rhs.allowDynamicDimensions,
+		"SparseMatrix::operator-=()",
+		"The left and right hand sides must either both have dynamic"
+		<< " or both not have dynamic dimensions. But the left hand"
+		<< " side " << (
+			allowDynamicDimensions
+			? "has dynamic dimensions "
+			: "does not have dynamic dimensions "
+		) << " whilte the right hand side " << (
+			allowDynamicDimensions
+			? "has dynamic dimensions."
+			: "does not have dynamic dimensions."
+		),
+		"Whether the SparseMatrix has dynamic dimensions or not"
+		<< " depends on whether the number of rows and columns are"
+		<< " passed to the SparseMatrix constructor or not."
+	);
+
+	if(!allowDynamicDimensions){
+		TBTKAssert(
+			numRows == rhs.numRows && numCols == rhs.numCols,
+			"SparseMatrix::operator-=()",
+			"The left and right hand sides must have the same"
+			<< " dimensions, but the left hand side has dimension"
+			<< " '" << numRows << "x" << numCols << "' while the"
+			<< " right hand side has dimensions '" << rhs.numRows
+			<< "x" << numCols << "'.",
+			"If both matrices have dynamic dimensions their"
+			<< " dimensions do not need to agree. To create"
+			<< " matrices with dynamic dimensions, do not pass row"
+			<< " and column numbers to the SparseMatrix"
+			<< " constructor."
+		);
+	}
+
+	convertCSXToLIL();
+
+	switch(storageFormat){
+	case StorageFormat::CSR:
+	{
+		for(int row = 0; row < rhs.numRows; row++){
+			for(
+				int n = rhs.csxXPointers[row];
+				n < rhs.csxXPointers[row+1];
+				n++
+			){
+				add(row, rhs.csxY[n], -rhs.csxValues[n]);
+			}
+		}
+		break;
+	}
+	case StorageFormat::CSC:
+		for(int col = 0; col < rhs.numCols; col++){
+			for(
+				int n = rhs.csxXPointers[col];
+				n < rhs.csxXPointers[col+1];
+				n++
+			){
+				add(rhs.csxY[n], col, -rhs.csxValues[n]);
+			}
+		}
+		break;
+	default:
+		TBTKExit(
+			"SparseMatrix::operator-=()",
+			"Unknown storage format.",
+			"This should never happen, contact the developer."
+		);
+	}
+
+	construct();
+
+	return *this;
+}
+
+template<typename DataType>
+inline SparseMatrix<DataType> SparseMatrix<DataType>::operator-(
+	const SparseMatrix &rhs
+) const{
+	SparseMatrix sparseMatrix = *this;
+
+	return sparseMatrix -= rhs;
+}
+
+template<typename DataType>
+inline SparseMatrix<DataType> SparseMatrix<DataType>::operator*(
+	const SparseMatrix &rhs
+) const{
+	TBTKAssert(
+		csxNumMatrixElements != -1 && rhs.csxNumMatrixElements != -1,
+		"SparseMatrix::operator*=()",
+		"Unable to multiply matrices since the matrices have not yet"
+		<< " been constructed.",
+		"Ensure that SparseMatrix::construct() has been called for"
+		<< " both matrices."
+	);
+	TBTKAssert(
+		storageFormat == rhs.storageFormat,
+		"SparseMatrix::operator*=()",
+		"The left and right hand sides must have the same storage"
+		<< " format. But the left hand side has storage format '" << (
+			storageFormat == StorageFormat::CSR
+			? "StorageFormat::CSR"
+			: "StorageFormat::CSC"
+		) << "' while the right hand side has storage format '" << (
+			rhs.storageFormat == StorageFormat::CSR
+			? "StorageFormat::CSR"
+			: "StorageFormat::CSC"
+		) << "'.",
+		""
+	);
+	TBTKAssert(
+		allowDynamicDimensions == rhs.allowDynamicDimensions,
+		"SparseMatrix::operator*=()",
+		"The left and right hand sides must either both have dynamic,"
+		<< " or both not have dynamic dimensions. But the left hand"
+		<< " side " << (
+			allowDynamicDimensions
+			? "has dynamic dimensions "
+			: "does not have dynamic dimensions "
+		) << " whilte the right hand side " << (
+			allowDynamicDimensions
+			? "has dynamic dimensions."
+			: "does not have dynamic dimensions."
+		),
+		"Whether the SparseMatrix has dynamic dimensions or not"
+		<< " depends on whether the number of rows and columns are"
+		<< " passed to the SparseMatrix constructor or not."
+	);
+
+	if(!allowDynamicDimensions){
+		TBTKAssert(
+			numCols == rhs.numRows,
+			"SparseMatrix::operator*=()",
+			"The number of columns for the left hand side must be"
+			<< " equal to the number of rows for the right hand"
+			<< " side. But the left hand side has '" << numCols
+			<< "' columns while the right hand side has '"
+			<< rhs.numRows << "'.",
+			"If both matrices have dynamic dimensions their"
+			<< " dimensions do not need to agree. To create"
+			<< " matrices with dynamic dimensions, do not pass row"
+			<< " and column numbers to the SparseMatrix"
+			<< " constructor."
+		);
+	}
+
+	SparseMatrix result;
+	if(allowDynamicDimensions)
+		result = SparseMatrix(storageFormat);
+	else
+		result = SparseMatrix(storageFormat, numRows, rhs.numCols);
+
+	//Continue here!
+	switch(storageFormat){
+	case StorageFormat::CSR:
+	{
+		SparseMatrix rhsCSC = rhs;
+		rhsCSC.setStorageFormat(StorageFormat::CSC);
+		multiply(*this, rhsCSC, result);
+		break;
+	}
+	case StorageFormat::CSC:
+	{
+		SparseMatrix lhsCSR = *this;
+		lhsCSR.setStorageFormat(StorageFormat::CSR);
+		multiply(lhsCSR, rhs, result);
+		break;
+	}
+	default:
+		TBTKExit(
+			"SparseMatrix::operator+=()",
+			"Unknown storage format.",
+			"This should never happen, contact the developer."
+		);
+	}
+
+	result.construct();
+
+	return result;
+}
+
+template<typename DataType>
 inline void SparseMatrix<DataType>::print() const{
 	Streams::out << "### Dictionary of Keys (DOK) ###\n";
 	if(dictionaryOfKeys.size() == 0)
@@ -1052,7 +1436,71 @@ inline void SparseMatrix<DataType>::convertCSXToLIL(){
 		delete [] csxXPointers;
 		delete [] csxY;
 		delete [] csxValues;
+		csxXPointers = nullptr;
+		csxY = nullptr;
+		csxValues = nullptr;
 		csxNumMatrixElements = -1;
+	}
+}
+
+template<typename DataType>
+inline void SparseMatrix<DataType>::multiply(
+	const SparseMatrix &lhs,
+	const SparseMatrix &rhs,
+	SparseMatrix &result
+){
+	TBTKAssert(
+		(
+			lhs.storageFormat == StorageFormat::CSR
+			&& rhs.storageFormat == StorageFormat::CSC
+		),
+		"SparseMatrix::multiply()",
+		"Storage format combination not supported.",
+		"This should never happen, contact the developer."
+		//This algorithm assumes that the left hand side is on CSR
+		//format and the right hand side is on CSC format. Appropriate
+		//checks should be performed in the calling function.
+	);
+
+	for(int lhsRow = 0; lhsRow < lhs.numRows; lhsRow++){
+		for(int rhsCol = 0; rhsCol < rhs.numCols; rhsCol++){
+			DataType scalarProduct = 0;
+			int lhsElement = lhs.csxXPointers[lhsRow];
+			int rhsElement = rhs.csxXPointers[rhsCol];
+			int lhsTerminatingElement = lhs.csxXPointers[lhsRow+1];
+			int rhsTerminatingElement = rhs.csxXPointers[rhsCol+1];
+			while(true){
+				if(
+					lhsElement == lhsTerminatingElement
+					|| rhsElement == rhsTerminatingElement
+				){
+					break;
+				}
+
+				int difference = lhs.csxY[lhsElement]
+					- rhs.csxY[rhsElement];
+
+				if(difference < 0){
+					lhsElement++;
+				}
+				else if(difference > 0){
+					rhsElement++;
+				}
+				else{
+					scalarProduct += lhs.csxValues[
+						lhsElement
+					]*rhs.csxValues[
+						rhsElement
+					];
+
+					lhsElement++;
+					rhsElement++;
+				}
+			}
+
+			if(scalarProduct != 0)
+				result.add(lhsRow, rhsCol, scalarProduct);
+		}
 	}
 }
 
