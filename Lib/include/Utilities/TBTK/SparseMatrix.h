@@ -150,6 +150,11 @@ public:
 	 *  matrix. */
 	SparseMatrix hermitianConjugate() const;
 
+	/** Calculate the trace.
+	 *
+	 *  @return The trace of the matrix. */
+	DataType trace() const;
+
 	/** Print. */
 	void print() const;
 private:
@@ -929,7 +934,7 @@ inline SparseMatrix<DataType>& SparseMatrix<DataType>::operator-=(
 		for(int row = 0; row < rhs.numRows; row++){
 			for(
 				int n = rhs.csxXPointers[row];
-				n < rhs.csxXPointers[row+1];
+				n < (int)rhs.csxXPointers[row+1];
 				n++
 			){
 				add(row, rhs.csxY[n], -rhs.csxValues[n]);
@@ -941,7 +946,7 @@ inline SparseMatrix<DataType>& SparseMatrix<DataType>::operator-=(
 		for(int col = 0; col < rhs.numCols; col++){
 			for(
 				int n = rhs.csxXPointers[col];
-				n < rhs.csxXPointers[col+1];
+				n < (int)rhs.csxXPointers[col+1];
 				n++
 			){
 				add(rhs.csxY[n], col, -rhs.csxValues[n]);
@@ -1066,6 +1071,115 @@ inline SparseMatrix<DataType> SparseMatrix<DataType>::operator*(
 	result.construct();
 
 	return result;
+}
+
+template<typename DataType>
+inline SparseMatrix<DataType> SparseMatrix<DataType>::hermitianConjugate(
+) const{
+	TBTKAssert(
+		csxNumMatrixElements != -1,
+		"SparseMatrix::hermitianConjugate()",
+		"Matrix not yet constructed.",
+		"First call SparseMatrix::construct()."
+	);
+
+	SparseMatrix result;
+	if(allowDynamicDimensions)
+		result = SparseMatrix(storageFormat);
+	else
+		result = SparseMatrix(storageFormat, numRows, numCols);
+
+	switch(storageFormat){
+	case StorageFormat::CSR:
+	{
+		for(int row = 0; row < numRows; row++){
+			for(
+				int n = csxXPointers[row];
+				n < (int)csxXPointers[row+1];
+				n++
+			){
+				result.add(csxY[n], row, conj(csxValues[n]));
+			}
+		}
+
+		break;
+	}
+	case StorageFormat::CSC:
+	{
+		for(int col = 0; col < numCols; col++){
+			for(
+				int n = csxXPointers[col];
+				n < (int)csxXPointers[col+1];
+				n++
+			){
+				result.add(col, csxY[n], conj(csxValues[n]));
+			}
+		}
+
+		break;
+	}
+	default:
+		TBTKExit(
+			"SparseMatrix::hermitianConjugate()",
+			"Unknown storage format.",
+			"This should never happen, contact the developer."
+		);
+	}
+
+	result.construct();
+
+	return result;
+}
+
+template<typename DataType>
+inline DataType SparseMatrix<DataType>::trace() const{
+	TBTKAssert(
+		csxNumMatrixElements != -1,
+		"SparseMatrix::trace()",
+		"Matrix not yet constructed.",
+		"First call SparseMatrix::construct()."
+	);
+
+	switch(storageFormat){
+	case StorageFormat::CSR:
+	{
+		DataType result = 0;
+		for(int row = 0; row < numRows; row++){
+			for(
+				int n = csxXPointers[row];
+				n < (int)csxXPointers[row+1];
+				n++
+			){
+				if((unsigned int)row == csxY[n])
+					result += csxValues[n];
+			}
+		}
+
+		return result;
+	}
+	case StorageFormat::CSC:
+	{
+		DataType result = 0;
+		for(int col = 0; col < numCols; col++){
+			for(
+				int n = csxXPointers[col];
+				n < (int)csxXPointers[col+1];
+				n++
+			){
+				if(csxY[n] == (unsigned int)col)
+					result += csxValues[n];
+			}
+		}
+
+		return result;
+	}
+	default:
+		TBTKExit(
+			"SparseMatrix::trace()",
+			"Unknown storage format.",
+			"This should never happen, contact the developer."
+		);
+	}
 }
 
 template<typename DataType>
@@ -1504,68 +1618,10 @@ inline void SparseMatrix<DataType>::multiply(
 				}
 			}
 
-			if(scalarProduct != 0)
+			if(scalarProduct != DataType(0))
 				result.add(lhsRow, rhsCol, scalarProduct);
 		}
 	}
-}
-
-template<typename DataType>
-inline SparseMatrix<DataType> SparseMatrix<DataType>::hermitianConjugate(
-) const{
-	TBTKAssert(
-		csxNumMatrixElements != -1,
-		"SparseMatrix::hermitianConjugate()",
-		"Matrix not yet constructed.",
-		"First call SparseMatrix::construct()."
-	);
-
-	SparseMatrix result;
-	if(allowDynamicDimensions)
-		result = SparseMatrix(storageFormat);
-	else
-		result = SparseMatrix(storageFormat, numRows, numCols);
-
-	switch(storageFormat){
-	case StorageFormat::CSR:
-	{
-		for(int row = 0; row < numRows; row++){
-			for(
-				int n = csxXPointers[row];
-				n < csxXPointers[row+1];
-				n++
-			){
-				result.add(csxY[n], row, conj(csxValues[n]));
-			}
-		}
-
-		break;
-	}
-	case StorageFormat::CSC:
-	{
-		for(int col = 0; col < numCols; col++){
-			for(
-				int n = csxXPointers[col];
-				n < csxXPointers[col+1];
-				n++
-			){
-				result.add(col, csxY[n], conj(csxValues[n]));
-			}
-		}
-
-		break;
-	}
-	default:
-		TBTKExit(
-			"SparseMatrix::hermitianConjugate()",
-			"Unknown storage format.",
-			"This should never happen, contact the developer."
-		);
-	}
-
-	result.construct();
-
-	return result;
 }
 
 }; //End of namesapce TBTK
