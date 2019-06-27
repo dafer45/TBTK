@@ -65,6 +65,17 @@ public:
 	Property::GreensFunction calculateInteractingGreensFunction(
 		const Property::SelfEnergy &selfEnergy
 	) const;
+
+	/** Calculate the transmission.
+	 *
+	 *  @param selfEnergy0 The selfEnergy for the first lead.
+	 *  @param selfEnergy1 The selfEnergy for the second lead.
+	 *
+	 *  @return The transmission from lead one to lead two. */
+	std::vector<std::complex<double>> calculateTransmission(
+		const Property::SelfEnergy &selfEnergy0,
+		const Property::SelfEnergy &selfEnergy1
+	) const;
 private:
 	/** Green's function to use in calculations. */
 	const Property::GreensFunction *greensFunction;

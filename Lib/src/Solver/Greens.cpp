@@ -470,5 +470,123 @@ Property::GreensFunction Greens::calculateInteractingGreensFunction(
 	return interactingGreensFunction;
 }
 
+vector<complex<double>> Greens::calculateTransmission(
+	const Property::SelfEnergy &selfEnergy0,
+	const Property::SelfEnergy &selfEnergy1
+) const{
+	TBTKAssert(
+		greensFunction->getIndexDescriptor().getFormat()
+			== IndexDescriptor::Format::Custom,
+		"Solver::Greens::calculateTransmission()",
+		"The Green's function must be on the Custom format.",
+		"See Property::AbstractProperty for detailed information about"
+		<< " the storage formats. Also see the documentation for the"
+		<< " PropertyExtractor that was used to calculate the Green's"
+		<< " function for details on how to extract it on the Custom"
+		<< " format."
+	);
+	TBTKAssert(
+		selfEnergy0.getIndexDescriptor().getFormat()
+			== IndexDescriptor::Format::Custom
+		&& selfEnergy1.getIndexDescriptor().getFormat()
+			== IndexDescriptor::Format::Custom,
+		"Solver::Greens::calculateTransmission()",
+		"The self-energies must be on the Custom format.",
+		"See Property::AbstractProperty for detailed information about"
+		<< " the storage formats. Also see the documentation for the"
+		<< " PropertyExtractor that was used to calculate the"
+		<< " self-energy for details on how to extract it on the"
+		<< " Custom format."
+	);
+	TBTKAssert(
+		greensFunction->getEnergyType() == selfEnergy0.getEnergyType()
+		&& greensFunction->getEnergyType()
+			== selfEnergy1.getEnergyType(),
+		"Solver::Greens::calculateTransmission()",
+		"The GreensFunction and SelfEnergies must have the same energy"
+		<< " type.",
+		""
+	);
+	TBTKAssert(
+		greensFunction->getEnergyType()
+			== Property::EnergyResolvedProperty<complex<double>>::EnergyType::Real,
+		"Solver::Greens::calculateTransmission()",
+		"Unsupported energy type. Only"
+		<< " EnergyResolvedProperty::EnergyType::Real is supported.",
+		""
+	);
+	TBTKAssert(
+		greensFunction->getNumEnergies()
+			== selfEnergy0.getNumEnergies()
+		&& greensFunction->getNumEnergies()
+			== selfEnergy1.getNumEnergies(),
+		"Solver::Greens::calculateTransmission()",
+		"The number of energies must be the same for the Green's"
+		<< " function, selfEnergy0, and selfEnergy1. But"
+		<< " greensFunction has '" << greensFunction->getNumEnergies()
+		<< "' energies, selfEnergy0 has '"
+		<< selfEnergy0.getNumEnergies() << "' energies, and"
+		<< " selfEnergy1 has '" << selfEnergy1.getNumEnergies()
+		<< "'.",
+		""
+	);
+
+	if(getGlobalVerbose() && getVerbose())
+		Streams::out << "Solver::Greens::calculateTransmission()\n";
+
+	//Get the Green's function and self-energyies IndexTrees.
+	const IndexTree &greensFunctionIndices
+		= greensFunction->getIndexDescriptor().getIndexTree();
+	const IndexTree &selfEnergy0Indices
+		= selfEnergy0.getIndexDescriptor().getIndexTree();
+	const IndexTree &selfEnergy1Indices
+		= selfEnergy1.getIndexDescriptor().getIndexTree();
+
+	//Only supports Green's functions and self-energies with the exact same
+	//Index structure yet. Check this and print error message if this is
+	//not satisfied.
+	TBTKAssert(
+		greensFunctionIndices.equals(selfEnergy0Indices)
+		&& greensFunctionIndices.equals(selfEnergy1Indices),
+		"Solver::Greens::calculateTransmission()",
+		"Only GreensFunctions and SelfEnergies with the exact same"
+		<< " Index structure are supported yet.",
+		""
+	);
+
+	vector<SparseMatrix<complex<double>>> selfEnergy0Matrices
+		= selfEnergy0.toSparseMatrices(getModel());
+	vector<SparseMatrix<complex<double>>> selfEnergy1Matrices
+		= selfEnergy1.toSparseMatrices(getModel());
+	vector<SparseMatrix<complex<double>>> greensFunctionMatrices
+		= greensFunction->toSparseMatrices(getModel());
+
+	vector<complex<double>> transmission;
+	for(unsigned int n = 0; n < greensFunction->getNumEnergies(); n++){
+		//Strictly speaking the broadening should include a factor i.
+		//The two i's are moved to multiply the trace to avoid
+		//unnecesary multiplications.
+		SparseMatrix<complex<double>> broadening0
+			= selfEnergy0Matrices[n]
+				- selfEnergy0Matrices[n].hermitianConjugate();
+		SparseMatrix<complex<double>> broadening1
+			= selfEnergy1Matrices[n]
+				- selfEnergy1Matrices[n].hermitianConjugate();
+
+		//Gamma_0*G*Gamma_1*Gamma^{\dagger}.
+		SparseMatrix<complex<double>> product
+			= broadening0
+				*greensFunctionMatrices[n]
+				*broadening1
+				*greensFunctionMatrices[n].hermitianConjugate();
+
+		//Tr[Gamma_0*G*Gamma_1*Gamma^{\dagger}]. i^2 = -1 is taken into
+		//account here instead of in the broadenings.
+		transmission.push_back(-product.trace());
+	}
+
+	return transmission;
+}
+
 };	//End of namespace Solver
 };	//End of namespace TBTK

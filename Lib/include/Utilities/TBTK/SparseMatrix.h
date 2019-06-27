@@ -1044,7 +1044,6 @@ inline SparseMatrix<DataType> SparseMatrix<DataType>::operator*(
 	else
 		result = SparseMatrix(storageFormat, numRows, rhs.numCols);
 
-	//Continue here!
 	switch(storageFormat){
 	case StorageFormat::CSR:
 	{
@@ -1355,7 +1354,7 @@ template<typename DataType>
 inline void SparseMatrix<DataType>::constructCSX(){
 	convertCSXToLIL();
 
-	if(dictionaryOfKeys.size() != 0){
+//	if(dictionaryOfKeys.size() != 0){
 		std::vector<
 			std::vector<std::tuple<unsigned int, DataType>>
 		> listOfLists = constructLIL();
@@ -1485,7 +1484,7 @@ inline void SparseMatrix<DataType>::constructCSX(){
 			"Invalid number of matrix elements.",
 			"This should never happen, contact the developer."
 		);
-	}
+//	}
 }
 
 template<typename DataType>
