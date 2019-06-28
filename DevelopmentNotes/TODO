@@ -20,3 +20,12 @@
 - OverlapAmplitudeSet::_Iterator and BasisStateSet::_Iterator does probably not
   need the members iterator and iteratorEnd. The should therefore probably be
   rewritten to remove these.
+
+- No strict policy has been established regarding whether values between a
+  lower bound and an upper bound should include or exclude the corresponding
+  bounds. Currently it seems that inclusive lower bounds and exclusive upper
+  bounds are most common. Making both lower and upper bounds included seems the
+  most appropriate. Ensuring a single policy is established will especially
+  require going through the PropertyExtractors and making lower and upper
+  bounds inclusive and calculating dE as
+  dE = (uppwerBound - lowerBound)/(resolution - 1).
