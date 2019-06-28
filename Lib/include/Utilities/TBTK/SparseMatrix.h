@@ -144,6 +144,36 @@ public:
 	 *  and the right hand side. */
 	SparseMatrix operator*(const SparseMatrix &rhs) const;
 
+	/** Multiplication assignment operator.
+	 *
+	 *  @param rhs The right hand side of the expression.
+	 *
+	 *  @return The left hand side after the right hand side has been
+	 *  multiplied in. */
+	SparseMatrix& operator*=(const DataType &rhs);
+
+	/** Multiplication operator.
+	 *
+	 *  @param rhs The right hand side of the expression.
+	 *
+	 *  @return A new SparseMatrix that is the product of this SparseMatrix
+	 *  and the right hand side. */
+	SparseMatrix operator*(const DataType &rhs) const;
+
+	/** Multiplication operator.
+	 *
+	 *  @param lhs The left hand side of the expression.
+	 *  @param rhs The right hand side of the expression.
+	 *
+	 *  @return A new SparseMatrix that is the product of the left and
+	 *  right hand side. */
+	friend SparseMatrix operator*(
+		const DataType &lhs,
+		const SparseMatrix &rhs
+	){
+		return rhs*lhs;
+	}
+
 	/** Calculate the Hermitian conjugate of the matrix.
 	 *
 	 *  @return A new matrix containing the Hermitian cojugate of the
@@ -822,7 +852,7 @@ inline SparseMatrix<DataType>& SparseMatrix<DataType>::operator+=(
 		for(int row = 0; row < rhs.numRows; row++){
 			for(
 				int n = rhs.csxXPointers[row];
-				n < rhs.csxXPointers[row+1];
+				n < (int)rhs.csxXPointers[row+1];
 				n++
 			){
 				add(row, rhs.csxY[n], rhs.csxValues[n]);
@@ -834,7 +864,7 @@ inline SparseMatrix<DataType>& SparseMatrix<DataType>::operator+=(
 		for(int col = 0; col < rhs.numCols; col++){
 			for(
 				int n = rhs.csxXPointers[col];
-				n < rhs.csxXPointers[col+1];
+				n < (int)rhs.csxXPointers[col+1];
 				n++
 			){
 				add(rhs.csxY[n], col, rhs.csxValues[n]);
@@ -1070,6 +1100,39 @@ inline SparseMatrix<DataType> SparseMatrix<DataType>::operator*(
 	result.construct();
 
 	return result;
+}
+
+template<typename DataType>
+inline SparseMatrix<DataType>& SparseMatrix<DataType>::operator*=(
+	const DataType &rhs
+){
+	TBTKAssert(
+		csxNumMatrixElements != -1,
+		"SparseMatrix::operator*=()",
+		"Matrix not yet constructed.",
+		"First call SparseMatrix::construct()."
+	);
+
+	for(int row = 0; row < numRows; row++){
+		for(
+			int n = csxXPointers[row];
+			n < (int)csxXPointers[row+1];
+			n++
+		){
+			csxValues[n] *= rhs;
+		}
+	}
+
+	return *this;
+}
+
+template<typename DataType>
+inline SparseMatrix<DataType> SparseMatrix<DataType>::operator*(
+	const DataType &rhs
+) const{
+	SparseMatrix result = *this;
+
+	return result *= rhs;
 }
 
 template<typename DataType>
