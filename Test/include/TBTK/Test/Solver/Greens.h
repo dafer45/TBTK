@@ -1,7 +1,9 @@
+#include "TBTK/Matrix.h"
 #include "TBTK/Model.h"
 #include "TBTK/MultiCounter.h"
 #include "TBTK/PropertyExtractor/BlockDiagonalizer.h"
 #include "TBTK/PropertyExtractor/Diagonalizer.h"
+#include "TBTK/Range.h"
 #include "TBTK/Solver/BlockDiagonalizer.h"
 #include "TBTK/Solver/Diagonalizer.h"
 #include "TBTK/Solver/Greens.h"
@@ -403,6 +405,156 @@ TEST(Greens, addSelfEnergy){
 				}
 			}
 		}
+	}
+}
+
+TEST(Greens, calculateTransmission){
+	const double LOWER_BOUND = -1;
+	const double UPPER_BOUND = 1;
+	const int RESOLUTION = 10;
+	std::complex<double> i(0, 1);
+
+	Model model;
+	model.setVerbose(false);
+	for(int x = 0; x < 3; x++)
+		model << HoppingAmplitude(-1, {x+1}, {x}) + HC;
+	model.construct();
+
+	Diagonalizer solver0;
+	solver0.setVerbose(false);
+	solver0.setModel(model);
+	solver0.run();
+	PropertyExtractor::Diagonalizer propertyExtractor0(solver0);
+	propertyExtractor0.setEnergyInfinitesimal(0);
+	propertyExtractor0.setEnergyWindow(
+		LOWER_BOUND,
+		UPPER_BOUND,
+		RESOLUTION
+	);
+	Property::GreensFunction greensFunction0
+		= propertyExtractor0.calculateGreensFunction(
+			{{Index({IDX_ALL}), Index({IDX_ALL})}}
+		);
+
+	IndexTree indexTree;
+	for(int x = 0; x < 4; x++)
+		for(int xp = 0; xp < 4; xp++)
+			indexTree.add({Index({x}), Index({xp})});
+	indexTree.generateLinearMap();
+
+	Property::SelfEnergy selfEnergy0(
+		indexTree,
+		LOWER_BOUND,
+		UPPER_BOUND,
+		RESOLUTION
+	);
+	Property::SelfEnergy selfEnergy1(
+		indexTree,
+		LOWER_BOUND,
+		UPPER_BOUND,
+		RESOLUTION
+	);
+	Range energies(LOWER_BOUND, UPPER_BOUND, RESOLUTION, true, false);
+	for(unsigned int n = 0; n < RESOLUTION; n++){
+		selfEnergy0({Index({0}), Index({0})}, n) = i*1.*energies[n];
+		selfEnergy0({Index({0}), Index({1})}, n) = i*2.*energies[n];
+		selfEnergy0({Index({1}), Index({0})}, n) = i*3.*energies[n];
+		selfEnergy0({Index({1}), Index({1})}, n) = i*4.*energies[n];
+		selfEnergy1({Index({2}), Index({2})}, n) = i*5.*energies[n];
+		selfEnergy1({Index({2}), Index({3})}, n) = i*6.*energies[n];
+		selfEnergy1({Index({3}), Index({2})}, n) = i*7.*energies[n];
+		selfEnergy1({Index({3}), Index({3})}, n) = i*8.*energies[n];
+	}
+
+	Greens solver1;
+	solver1.setVerbose(false);
+	solver1.setModel(model);
+	solver1.setGreensFunction(greensFunction0);
+	Property::GreensFunction greensFunction
+		= solver1.calculateInteractingGreensFunction(
+			selfEnergy0 + selfEnergy1
+		);
+	solver1.setGreensFunction(greensFunction);
+	std::vector<double> transmission
+		= solver1.calculateTransmission(selfEnergy0, selfEnergy1);
+
+	for(int n = 0; n < RESOLUTION; n++){
+		SparseMatrix<std::complex<double>> H(
+			SparseMatrix<std::complex<double>>::StorageFormat::CSC,
+			4,
+			4
+		);
+		SparseMatrix<std::complex<double>> s0(
+			SparseMatrix<std::complex<double>>::StorageFormat::CSC,
+			4,
+			4
+		);
+		SparseMatrix<std::complex<double>> s1(
+			SparseMatrix<std::complex<double>>::StorageFormat::CSC,
+			4,
+			4
+		);
+
+		for(unsigned int x = 0; x < 3; x++){
+			H.add(x, x+1, -1);
+			H.add(x+1, x, -1);
+		}
+		s0.add(0, 0, i*1.*energies[n]);
+		s0.add(0, 1, i*2.*energies[n]);
+		s0.add(1, 0, i*3.*energies[n]);
+		s0.add(1, 1, i*4.*energies[n]);
+		s1.add(2, 2, i*5.*energies[n]);
+		s1.add(2, 3, i*6.*energies[n]);
+		s1.add(3, 2, i*7.*energies[n]);
+		s1.add(3, 3, i*8.*energies[n]);
+
+		H.construct();
+		s0.construct();
+		s1.construct();
+
+		H = H + s0 + s1;
+
+		Matrix<std::complex<double>> g(4, 4);
+		for(unsigned int x = 0; x < 4; x++){
+			for(unsigned int xp = 0; xp < 4; xp++){
+				g.at(x, xp) = 0;
+			}
+		}
+
+		const unsigned int *columnPointers = H.getCSCColumnPointers();
+		const unsigned int *rows = H.getCSCRows();
+		const std::complex<double> *values = H.getCSCValues();
+		for(unsigned int col = 0; col < H.getNumColumns(); col++){
+			for(
+				unsigned int n = columnPointers[col];
+				n < columnPointers[col+1];
+				n++
+			){
+				g.at(rows[n], col) -= values[n];
+			}
+		}
+		for(unsigned int x = 0; x < 4; x++)
+			g.at(x, x) += energies[n];
+		g.invert();
+
+		SparseMatrix<std::complex<double>> G(
+			SparseMatrix<std::complex<double>>::StorageFormat::CSC,
+			4,
+			4
+		);
+		for(unsigned int x = 0; x < 4; x++)
+			for(unsigned int xp = 0; xp < 4; xp++)
+				G.add(x, xp, g.at(x, xp));
+		G.construct();
+
+		SparseMatrix<std::complex<double>> broadening0 = i*(s0 - s0.hermitianConjugate());
+		SparseMatrix<std::complex<double>> broadening1 = i*(s1 - s1.hermitianConjugate());
+
+		SparseMatrix<std::complex<double>> product = broadening0*G*broadening1*G.hermitianConjugate();
+
+		double trace = real(product.trace());
+
+		EXPECT_NEAR(trace, transmission[n], EPSILON_100);
 	}
 }
 

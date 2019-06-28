@@ -72,7 +72,7 @@ public:
 	 *  @param selfEnergy1 The selfEnergy for the second lead.
 	 *
 	 *  @return The transmission from lead one to lead two. */
-	std::vector<std::complex<double>> calculateTransmission(
+	std::vector<double> calculateTransmission(
 		const Property::SelfEnergy &selfEnergy0,
 		const Property::SelfEnergy &selfEnergy1
 	) const;

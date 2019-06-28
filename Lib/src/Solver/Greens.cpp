@@ -470,10 +470,18 @@ Property::GreensFunction Greens::calculateInteractingGreensFunction(
 	return interactingGreensFunction;
 }
 
-vector<complex<double>> Greens::calculateTransmission(
+vector<double> Greens::calculateTransmission(
 	const Property::SelfEnergy &selfEnergy0,
 	const Property::SelfEnergy &selfEnergy1
 ) const{
+	TBTKAssert(
+		greensFunction->getType()
+			== Property::GreensFunction::Type::Retarded,
+		"Solver::Greens::calculateTransmission()",
+		"The Green's function must be of the type"
+		<< " Property::GreensFunction::Type::Retarded",
+		""
+	);
 	TBTKAssert(
 		greensFunction->getIndexDescriptor().getFormat()
 			== IndexDescriptor::Format::Custom,
@@ -561,7 +569,7 @@ vector<complex<double>> Greens::calculateTransmission(
 	vector<SparseMatrix<complex<double>>> greensFunctionMatrices
 		= greensFunction->toSparseMatrices(getModel());
 
-	vector<complex<double>> transmission;
+	vector<double> transmission;
 	for(unsigned int n = 0; n < greensFunction->getNumEnergies(); n++){
 		//Strictly speaking the broadening should include a factor i.
 		//The two i's are moved to multiply the trace to avoid
@@ -582,7 +590,7 @@ vector<complex<double>> Greens::calculateTransmission(
 
 		//Tr[Gamma_0*G*Gamma_1*Gamma^{\dagger}]. i^2 = -1 is taken into
 		//account here instead of in the broadenings.
-		transmission.push_back(-product.trace());
+		transmission.push_back(-real(product.trace()));
 	}
 
 	return transmission;
