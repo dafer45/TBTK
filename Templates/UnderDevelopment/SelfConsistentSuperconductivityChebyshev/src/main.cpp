@@ -70,17 +70,13 @@ const double SC_WEIGHT_FACTOR = 0.5;
 const double DEBYE_FREQUENCY = 10.;
 
 //Self-consistency loop
-bool scLoop(Solver::ChebyshevExpander &cSolver){
+void scLoop(Solver::ChebyshevExpander &cSolver){
 	//Setup CPropertyExtractor using GPU accelerated generation of
 	//coefficients and Green's function, and using lookup table. The
 	//Green's function is only calculated in an energy interval around E=0
 	//with a width twice of the Debye frequency.
 	PropertyExtractor::ChebyshevExpander pe(
-		cSolver,
-		NUM_COEFFICIENTS,
-		true,
-		true,
-		true
+		cSolver
 	);
 	pe.setEnergyWindow(
 		-DEBYE_FREQUENCY,
@@ -91,8 +87,6 @@ bool scLoop(Solver::ChebyshevExpander &cSolver){
 	//Self-consistency loop
 	int counter = 0;
 	while(counter++ < MAX_ITERATIONS){
-		cSolver.getModel().reconstructCOO();
-
 		//Clear the order parameter
 		for(int x = 0; x < SIZE_X; x++){
 			for(int y = 0; y < SIZE_Y; y++){
@@ -108,7 +102,7 @@ bool scLoop(Solver::ChebyshevExpander &cSolver){
 					{x, y, 3},
 					{x, y, 0}
 				);
-				const complex<double> *greensFunctionData = greensFunction.getData();
+				const vector<complex<double>> &greensFunctionData = greensFunction.getData();
 
 				//Calculate order parameter
 				for(int n = 0; n < ENERGY_RESOLUTION/2; n++){
@@ -139,6 +133,7 @@ bool scLoop(Solver::ChebyshevExpander &cSolver){
 			}
 		}
 
+		Streams::out << counter << "\t" << maxError << "\n";
 		//Exit the self-consistency loop depending on whether the
 		//result has converged or not
 		if(maxError < CONVERGENCE_LIMIT)
@@ -149,26 +144,31 @@ bool scLoop(Solver::ChebyshevExpander &cSolver){
 //Callback function responsible for determining the value of the order
 //parameter D_{to,from}c_{to}c_{from} where to and from are indices of the form
 //(x, y, spin).
-complex<double> fD(const Index &to, const Index &from){
-	//Obtain indices
-	int x = from.at(0);
-	int y = from.at(1);
-	int s = from.at(2);
+class DeltaCallback : public HoppingAmplitude::AmplitudeCallback{
+	complex<double> getHoppingAmplitude(
+		const Index &to,
+		const Index &from
+	) const{
+		//Obtain indices
+		int x = from.at(0);
+		int y = from.at(1);
+		int s = from.at(2);
 
-	//Return appropriate amplitude
-	switch(s){
-		case 0:
-			return conj(D[dCounter][x][y]);
-		case 1:
-			return -conj(D[dCounter][x][y]);
-		case 2:
-			return -D[dCounter][x][y];
-		case 3:
-			return D[dCounter][x][y];
-		default://Never happens
-			return 0;
+		//Return appropriate amplitude
+		switch(s){
+			case 0:
+				return conj(D[dCounter][x][y]);
+			case 1:
+				return -conj(D[dCounter][x][y]);
+			case 2:
+				return -D[dCounter][x][y];
+			case 3:
+				return D[dCounter][x][y];
+			default://Never happens
+				return 0;
+		}
 	}
-}
+} deltaCallback;
 
 //Function responsible for initializing the order parameter
 void initD(){
@@ -205,14 +205,13 @@ int main(int argc, char **argv){
 
 				//Add hopping amplitudes correspodning to the
 				//superconducting order parameter.
-				model <<  HoppingAmplitude(fD,	{x, y, 3-s},	{x, y, s}) + HC;
+				model <<  HoppingAmplitude(deltaCallback,	{x, y, 3-s},	{x, y, s}) + HC;
 			}
 		}
 	}
 
 	//Construct model
 	model.construct();
-	model.constructCOO();
 
 	//Initialize D
 	initD();
@@ -221,6 +220,10 @@ int main(int argc, char **argv){
 	Solver::ChebyshevExpander cSolver;
 	cSolver.setModel(model);
 	cSolver.setScaleFactor(SCALE_FACTOR);
+	cSolver.setNumCoefficients(NUM_COEFFICIENTS);
+	cSolver.setCalculateCoefficientsOnGPU(true);
+	cSolver.setGenerateGreensFunctionsOnGPU(false);
+	cSolver.setUseLookupTable(true);
 
 	//Run self-consistency loop
 	scLoop(cSolver);
