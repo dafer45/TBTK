@@ -29,3 +29,7 @@
   require going through the PropertyExtractors and making lower and upper
   bounds inclusive and calculating dE as
   dE = (uppwerBound - lowerBound)/(resolution - 1).
+  Property::EnergyResolvedProperty already implements the method getEnergy()
+  which resiles on this form of dE. Making sure that the whole code relies on
+  this standard may therefore largely be a matter of ensuring that this method
+  is used whenever possible.
