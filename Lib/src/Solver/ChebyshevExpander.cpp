@@ -25,7 +25,7 @@
 #include "TBTK/UnitHandler.h"
 
 #include <iostream>
-#include <math.h>
+#include <cmath>
 
 using namespace std;
 

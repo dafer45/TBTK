@@ -1335,6 +1335,215 @@ TEST(EnergyResolvedProperty, getNumEnergies){
 	);
 }
 
+TEST(EnergyResolvedProperty, energyWindowsAreEqual){
+	//EnergyType::Real.
+	EnergyResolvedProperty<int> energyResolvedProperty0(
+		0,
+		1,
+		10
+	);
+	EnergyResolvedProperty<int> energyResolvedProperty1(
+		-0.5,
+		1,
+		10
+	);
+	EnergyResolvedProperty<int> energyResolvedProperty2(
+		0,
+		1.5,
+		10
+	);
+	EnergyResolvedProperty<int> energyResolvedProperty3(
+		0,
+		1,
+		11
+	);
+	EnergyResolvedProperty<int> energyResolvedProperty4(
+		0,
+		1.01,
+		10
+	);
+	EnergyResolvedProperty<int> energyResolvedProperty5(
+		-0.01,
+		1,
+		10
+	);
+
+	EXPECT_FALSE(
+		energyResolvedProperty0.energyWindowsAreEqual(
+			energyResolvedProperty1
+		)
+	);
+	EXPECT_FALSE(
+		energyResolvedProperty0.energyWindowsAreEqual(
+			energyResolvedProperty2
+		)
+	);
+	EXPECT_FALSE(
+		energyResolvedProperty0.energyWindowsAreEqual(
+			energyResolvedProperty3
+		)
+	);
+	EXPECT_TRUE(
+		energyResolvedProperty0.energyWindowsAreEqual(
+			energyResolvedProperty4
+		)
+	);
+	EXPECT_TRUE(
+		energyResolvedProperty0.energyWindowsAreEqual(
+			energyResolvedProperty5
+		)
+	);
+	EXPECT_FALSE(
+		energyResolvedProperty0.energyWindowsAreEqual(
+			energyResolvedProperty4,
+			0.5e-1
+		)
+	);
+	EXPECT_TRUE(
+		energyResolvedProperty0.energyWindowsAreEqual(
+			energyResolvedProperty4,
+			1e-1
+		)
+	);
+
+	//EnergyType::FermionicMatsubara.
+	IndexTree indexTree;
+	indexTree.add({0});
+	indexTree.generateLinearMap();
+
+	EnergyResolvedProperty<int> energyResolvedProperty6(
+		EnergyResolvedProperty<int>::EnergyType::FermionicMatsubara,
+		indexTree,
+		-9,
+		9,
+		10
+	);
+	EnergyResolvedProperty<int> energyResolvedProperty7(
+		EnergyResolvedProperty<int>::EnergyType::FermionicMatsubara,
+		indexTree,
+		-11,
+		9,
+		10
+	);
+	EnergyResolvedProperty<int> energyResolvedProperty8(
+		EnergyResolvedProperty<int>::EnergyType::FermionicMatsubara,
+		indexTree,
+		-9,
+		11,
+		10
+	);
+	EnergyResolvedProperty<int> energyResolvedProperty9(
+		EnergyResolvedProperty<int>::EnergyType::FermionicMatsubara,
+		indexTree,
+		-9,
+		9,
+		11
+	);
+	EnergyResolvedProperty<int> energyResolvedProperty10(
+		EnergyResolvedProperty<int>::EnergyType::FermionicMatsubara,
+		indexTree,
+		-9,
+		9,
+		10
+	);
+
+	EXPECT_FALSE(
+		energyResolvedProperty6.energyWindowsAreEqual(
+			energyResolvedProperty7
+		)
+	);
+	EXPECT_FALSE(
+		energyResolvedProperty6.energyWindowsAreEqual(
+			energyResolvedProperty8
+		)
+	);
+	EXPECT_FALSE(
+		energyResolvedProperty6.energyWindowsAreEqual(
+			energyResolvedProperty9
+		)
+	);
+	EXPECT_TRUE(
+		energyResolvedProperty6.energyWindowsAreEqual(
+			energyResolvedProperty10
+		)
+	);
+
+	//EnergyType::BosonicMatsubara.
+	EnergyResolvedProperty<int> energyResolvedProperty11(
+		EnergyResolvedProperty<int>::EnergyType::BosonicMatsubara,
+		indexTree,
+		-10,
+		10,
+		10
+	);
+	EnergyResolvedProperty<int> energyResolvedProperty12(
+		EnergyResolvedProperty<int>::EnergyType::BosonicMatsubara,
+		indexTree,
+		-12,
+		10,
+		10
+	);
+	EnergyResolvedProperty<int> energyResolvedProperty13(
+		EnergyResolvedProperty<int>::EnergyType::BosonicMatsubara,
+		indexTree,
+		-10,
+		12,
+		10
+	);
+	EnergyResolvedProperty<int> energyResolvedProperty14(
+		EnergyResolvedProperty<int>::EnergyType::BosonicMatsubara,
+		indexTree,
+		-10,
+		10,
+		11
+	);
+	EnergyResolvedProperty<int> energyResolvedProperty15(
+		EnergyResolvedProperty<int>::EnergyType::BosonicMatsubara,
+		indexTree,
+		-10,
+		10,
+		10
+	);
+
+	EXPECT_FALSE(
+		energyResolvedProperty11.energyWindowsAreEqual(
+			energyResolvedProperty12
+		)
+	);
+	EXPECT_FALSE(
+		energyResolvedProperty11.energyWindowsAreEqual(
+			energyResolvedProperty13
+		)
+	);
+	EXPECT_FALSE(
+		energyResolvedProperty11.energyWindowsAreEqual(
+			energyResolvedProperty14
+		)
+	);
+	EXPECT_TRUE(
+		energyResolvedProperty11.energyWindowsAreEqual(
+			energyResolvedProperty15
+		)
+	);
+
+	//Return false for different energy types.
+	EXPECT_FALSE(
+		energyResolvedProperty0.energyWindowsAreEqual(
+			energyResolvedProperty6
+		)
+	);
+	EXPECT_FALSE(
+		energyResolvedProperty0.energyWindowsAreEqual(
+			energyResolvedProperty11
+		)
+	);
+	EXPECT_FALSE(
+		energyResolvedProperty6.energyWindowsAreEqual(
+			energyResolvedProperty11
+		)
+	);
+}
+
 TEST(EnergyResolvedProperty, serialize){
 	//Already tested through EnergyResolvedProperty::SerializatToJSON().
 }

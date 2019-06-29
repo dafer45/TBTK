@@ -25,7 +25,7 @@
 #include "TBTK/TBTKMacros.h"
 
 #include <fstream>
-#include <math.h>
+#include <cmath>
 #include <string>
 
 #include "TBTK/json.hpp"

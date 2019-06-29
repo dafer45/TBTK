@@ -26,6 +26,7 @@
 #include "TBTK/Property/AbstractProperty.h"
 #include "TBTK/TBTKMacros.h"
 
+#include <cmath>
 #include <complex>
 #include <vector>
 
@@ -268,6 +269,25 @@ public:
 	 *
 	 *  @return The number of energies. */
 	unsigned int getNumEnergies() const;
+
+	/** Check whether the energy windows are equal. The energy windows are
+	 *  considered equal if the number of energies are equal and the upper
+	 *  and lower bounds (upper and lower Matsubara frequencies) are the
+	 *  same within a given relative precision.
+	 *
+	 *  @param energyResolvedProperty The EnergyResolvedProperty to compare
+	 *  with.
+	 *
+	 *  @param precision The required precision with which the bounds must
+	 *  agree. A value of 1 means that the difference between the bounds
+	 *  must be no larger than the difference between two succesive energy
+	 *  points.
+	 *
+	 *  @return True if the energy windows are equal, otherwise false. */
+	bool energyWindowsAreEqual(
+		const EnergyResolvedProperty &energyResolvedProperty,
+		double precision = 1e-1
+	) const;
 
 	/** Overrides AbstractProperty::serialize(). */
 	virtual std::string serialize(Serializable::Mode mode) const;
@@ -983,7 +1003,79 @@ inline unsigned int EnergyResolvedProperty<DataType>::getNumEnergies() const{
 }
 
 template<typename DataType>
-inline std::string EnergyResolvedProperty<DataType>::serialize(Serializable::Mode mode) const{
+inline bool EnergyResolvedProperty<DataType>::energyWindowsAreEqual(
+	const EnergyResolvedProperty &energyResolvedProperty,
+	double precision
+) const{
+	if(energyType != energyResolvedProperty.energyType)
+		return false;
+
+	if(getNumEnergies() != energyResolvedProperty.getNumEnergies())
+		return false;
+
+	switch(energyType){
+	case EnergyType::Real:
+	{
+		double lowerBound0 = getLowerBound();
+		double upperBound0 = getUpperBound();
+		double lowerBound1 = energyResolvedProperty.getLowerBound();
+		double upperBound1 = energyResolvedProperty.getUpperBound();
+		double dE;
+		if(getNumEnergies() > 1)
+			dE = getEnergy(1) - getEnergy(0);
+		else
+			dE = 0;
+
+		if(std::abs(lowerBound0 - lowerBound1) > precision*dE)
+			return false;
+		if(std::abs(upperBound0 - upperBound1) > precision*dE)
+			return false;
+
+		return true;
+	}
+	case EnergyType::FermionicMatsubara:
+	case EnergyType::BosonicMatsubara:
+	{
+		double lowerMatsubaraEnergy0 = getLowerMatsubaraEnergy();
+		double upperMatsubaraEnergy0 = getUpperMatsubaraEnergy();
+		double lowerMatsubaraEnergy1
+			= energyResolvedProperty.getLowerMatsubaraEnergy();
+		double upperMatsubaraEnergy1
+			= energyResolvedProperty.getUpperMatsubaraEnergy();
+		double dE;
+		if(getNumEnergies() > 1)
+			dE = imag(getMatsubaraEnergy(1) - getMatsubaraEnergy(0));
+		else
+			dE = 0;
+
+		if(
+			std::abs(lowerMatsubaraEnergy0 - lowerMatsubaraEnergy1)
+				> precision*dE
+		){
+			return false;
+		}
+		if(
+			std::abs(upperMatsubaraEnergy0 - upperMatsubaraEnergy1)
+			> precision*dE
+		){
+			return false;
+		}
+
+		return true;
+	}
+	default:
+		TBTKExit(
+			"Property::EnergyResolvedProperty::energyWindowsAreEqual()",
+			"Unknown energy type.",
+			"This should never happen, contact the developer."
+		);
+	}
+}
+
+template<typename DataType>
+inline std::string EnergyResolvedProperty<DataType>::serialize(
+	Serializable::Mode mode
+) const{
 	switch(mode){
 	case Serializable::Mode::JSON:
 	{

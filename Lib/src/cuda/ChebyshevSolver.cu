@@ -31,7 +31,7 @@
 #include <cuComplex.h>
 #include <cusparse_v2.h>
 
-#include <math.h>
+#include <cmath>
 
 using namespace std;
 

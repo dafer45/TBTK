@@ -27,7 +27,7 @@
 
 #include <string>
 #include <vector>
-#include <math.h>
+#include <cmath>
 
 #ifdef M_E	//Avoid name clash with math.h macro M_E
 	#define M_E_temp M_E

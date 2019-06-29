@@ -27,7 +27,7 @@
 #include "TBTK/Streams.h"
 #include "TBTK/TBTKMacros.h"
 
-#include <math.h>
+#include <cmath>
 
 namespace TBTK{
 

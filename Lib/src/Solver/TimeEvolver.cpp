@@ -24,7 +24,7 @@
 #include "TBTK/Solver/TimeEvolver.h"
 
 #include <complex>
-#include <math.h>
+#include <cmath>
 
 using namespace std;
 
