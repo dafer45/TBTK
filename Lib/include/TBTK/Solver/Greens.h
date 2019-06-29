@@ -72,7 +72,7 @@ public:
 	 *  @param selfEnergy1 The selfEnergy for the second lead.
 	 *
 	 *  @return The transmission from lead one to lead two. */
-	std::vector<double> calculateTransmission(
+	Property::TransmissionRate calculateTransmission(
 		const Property::SelfEnergy &selfEnergy0,
 		const Property::SelfEnergy &selfEnergy1
 	) const;

@@ -1,6 +1,7 @@
 #include "TBTK/Matrix.h"
 #include "TBTK/Model.h"
 #include "TBTK/MultiCounter.h"
+#include "TBTK/Property/TransmissionRate.h"
 #include "TBTK/PropertyExtractor/BlockDiagonalizer.h"
 #include "TBTK/PropertyExtractor/Diagonalizer.h"
 #include "TBTK/Range.h"
@@ -414,12 +415,14 @@ TEST(Greens, calculateTransmission){
 	const int RESOLUTION = 10;
 	std::complex<double> i(0, 1);
 
+	//Setup Model to test against.
 	Model model;
 	model.setVerbose(false);
 	for(int x = 0; x < 3; x++)
 		model << HoppingAmplitude(-1, {x+1}, {x}) + HC;
 	model.construct();
 
+	//Calculate the bare Green's function.
 	Diagonalizer solver0;
 	solver0.setVerbose(false);
 	solver0.setModel(model);
@@ -436,12 +439,12 @@ TEST(Greens, calculateTransmission){
 			{{Index({IDX_ALL}), Index({IDX_ALL})}}
 		);
 
+	//Setup self-energies.
 	IndexTree indexTree;
 	for(int x = 0; x < 4; x++)
 		for(int xp = 0; xp < 4; xp++)
 			indexTree.add({Index({x}), Index({xp})});
 	indexTree.generateLinearMap();
-
 	Property::SelfEnergy selfEnergy0(
 		indexTree,
 		LOWER_BOUND,
@@ -466,6 +469,7 @@ TEST(Greens, calculateTransmission){
 		selfEnergy1({Index({3}), Index({3})}, n) = i*8.*energies[n];
 	}
 
+	//Calculate the full Green's function.
 	Greens solver1;
 	solver1.setVerbose(false);
 	solver1.setModel(model);
@@ -474,11 +478,21 @@ TEST(Greens, calculateTransmission){
 		= solver1.calculateInteractingGreensFunction(
 			selfEnergy0 + selfEnergy1
 		);
+
+	//Calculate the transmission rate.
 	solver1.setGreensFunction(greensFunction);
-	std::vector<double> transmission
+	Property::TransmissionRate transmissionRate
 		= solver1.calculateTransmission(selfEnergy0, selfEnergy1);
 
+	//Check that the energy window is correct.
+	EXPECT_DOUBLE_EQ(transmissionRate.getLowerBound(), LOWER_BOUND);
+	EXPECT_DOUBLE_EQ(transmissionRate.getUpperBound(), UPPER_BOUND);
+	EXPECT_DOUBLE_EQ(transmissionRate.getResolution(), RESOLUTION);
+
+	//Check that the transmission rate has been calculated corectly.
 	for(int n = 0; n < RESOLUTION; n++){
+		//Create Hamiltonian and self-energy matrices to perform
+		//reference calculation with.
 		SparseMatrix<std::complex<double>> H(
 			SparseMatrix<std::complex<double>>::StorageFormat::CSC,
 			4,
@@ -495,6 +509,9 @@ TEST(Greens, calculateTransmission){
 			4
 		);
 
+		//Initialize the Hamiltonian and self-energies. These values
+		//must correspond to the values fed to the Model and SelfEnergy
+		//objects above.
 		for(unsigned int x = 0; x < 3; x++){
 			H.add(x, x+1, -1);
 			H.add(x+1, x, -1);
@@ -512,15 +529,17 @@ TEST(Greens, calculateTransmission){
 		s0.construct();
 		s1.construct();
 
+		//Add self energies to the Hamiltonian.
 		H = H + s0 + s1;
 
+		//Copy the sparse matrix to a dense matrix g to prepare for
+		//inversion.
 		Matrix<std::complex<double>> g(4, 4);
 		for(unsigned int x = 0; x < 4; x++){
 			for(unsigned int xp = 0; xp < 4; xp++){
 				g.at(x, xp) = 0;
 			}
 		}
-
 		const unsigned int *columnPointers = H.getCSCColumnPointers();
 		const unsigned int *rows = H.getCSCRows();
 		const std::complex<double> *values = H.getCSCValues();
@@ -533,10 +552,13 @@ TEST(Greens, calculateTransmission){
 				g.at(rows[n], col) -= values[n];
 			}
 		}
+		//Add energies so that g takes the form (E - H - s0 - s1).
 		for(unsigned int x = 0; x < 4; x++)
 			g.at(x, x) += energies[n];
+		//Invert to get the full Green's function.
 		g.invert();
 
+		//Copy the full Green's function back to a SparseMatrix.
 		SparseMatrix<std::complex<double>> G(
 			SparseMatrix<std::complex<double>>::StorageFormat::CSC,
 			4,
@@ -547,14 +569,18 @@ TEST(Greens, calculateTransmission){
 				G.add(x, xp, g.at(x, xp));
 		G.construct();
 
+		//Calculate broadenings from self-energies.
 		SparseMatrix<std::complex<double>> broadening0 = i*(s0 - s0.hermitianConjugate());
 		SparseMatrix<std::complex<double>> broadening1 = i*(s1 - s1.hermitianConjugate());
 
+		//Calculate the broduct Gamma_0*G*Gamma_1*G^{\dagger}.
 		SparseMatrix<std::complex<double>> product = broadening0*G*broadening1*G.hermitianConjugate();
 
+		//Calculate Tr[Gamma_0*G*Gamma1*G^{\dagger}].
 		double trace = real(product.trace());
 
-		EXPECT_NEAR(trace, transmission[n], EPSILON_100);
+		//Compare the two results.
+		EXPECT_NEAR(trace, transmissionRate(n), EPSILON_100);
 	}
 }
 

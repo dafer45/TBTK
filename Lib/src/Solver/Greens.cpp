@@ -18,6 +18,7 @@
  *  @author Kristofer Björnson
  */
 
+#include "TBTK/Property/TransmissionRate.h"
 #include "TBTK/Solver/Greens.h"
 #include "TBTK/Streams.h"
 #include "TBTK/TBTKMacros.h"
@@ -470,7 +471,7 @@ Property::GreensFunction Greens::calculateInteractingGreensFunction(
 	return interactingGreensFunction;
 }
 
-vector<double> Greens::calculateTransmission(
+Property::TransmissionRate Greens::calculateTransmission(
 	const Property::SelfEnergy &selfEnergy0,
 	const Property::SelfEnergy &selfEnergy1
 ) const{
@@ -538,6 +539,70 @@ vector<double> Greens::calculateTransmission(
 		<< "'.",
 		""
 	);
+	TBTKAssert(
+		abs(
+			greensFunction->getLowerBound()
+			- selfEnergy0.getLowerBound()
+		) < 1e-1*(
+			greensFunction->getUpperBound()
+			- greensFunction->getLowerBound()
+		)/greensFunction->getResolution(),
+		"Solver::Greens::calculateTransmission()",
+		"Incompatible bounds. The greensFunction and selfEnergy0 has"
+		<< " different lower bounds. The Green's functions lower bound"
+		<< " is '" << greensFunction->getLowerBound() << "' while"
+		<< " self-energies lower bound is '"
+		<< selfEnergy0.getLowerBound() << "'.",
+		""
+	);
+	TBTKAssert(
+		abs(
+			greensFunction->getUpperBound()
+			- selfEnergy0.getUpperBound()
+		) < 1e-1*(
+			greensFunction->getUpperBound()
+			- greensFunction->getLowerBound()
+		)/greensFunction->getResolution(),
+		"Solver::Greens::calculateTransmission()",
+		"Incompatible bounds. The greensFunction and selfEnergy0 has"
+		<< " different upper bounds. The Green's functions upper bound"
+		<< " is '" << greensFunction->getLowerBound() << "' while the"
+		<< " self-energies upper bound is '"
+		<< selfEnergy0.getLowerBound() << "'.",
+		""
+	);
+	TBTKAssert(
+		abs(
+			greensFunction->getLowerBound()
+			- selfEnergy1.getLowerBound()
+		) < 1e-1*(
+			greensFunction->getUpperBound()
+			- greensFunction->getLowerBound()
+		)/greensFunction->getResolution(),
+		"Solver::Greens::calculateTransmission()",
+		"Incompatible bounds. The greensFunction and selfEnergy1 has"
+		<< " different lower bounds. The Green's functions lower bound"
+		<< " is '" << greensFunction->getLowerBound() << "' while"
+		<< " self-energies lower bound is '"
+		<< selfEnergy1.getLowerBound() << "'.",
+		""
+	);
+	TBTKAssert(
+		abs(
+			greensFunction->getUpperBound()
+			- selfEnergy1.getUpperBound()
+		) < 1e-1*(
+			greensFunction->getUpperBound()
+			- greensFunction->getLowerBound()
+		)/greensFunction->getResolution(),
+		"Solver::Greens::calculateTransmission()",
+		"Incompatible bounds. The greensFunction and selfEnergy0 has"
+		<< " different upper bounds. The Green's functions upper bound"
+		<< " is '" << greensFunction->getLowerBound() << "' while the"
+		<< " self-energies upper bound is '"
+		<< selfEnergy1.getLowerBound() << "'.",
+		""
+	);
 
 	if(getGlobalVerbose() && getVerbose())
 		Streams::out << "Solver::Greens::calculateTransmission()\n";
@@ -569,7 +634,7 @@ vector<double> Greens::calculateTransmission(
 	vector<SparseMatrix<complex<double>>> greensFunctionMatrices
 		= greensFunction->toSparseMatrices(getModel());
 
-	vector<double> transmission;
+	vector<double> transmissionRateData;
 	for(unsigned int n = 0; n < greensFunction->getNumEnergies(); n++){
 		//Strictly speaking the broadening should include a factor i.
 		//The two i's are moved to multiply the trace to avoid
@@ -590,10 +655,17 @@ vector<double> Greens::calculateTransmission(
 
 		//Tr[Gamma_0*G*Gamma_1*Gamma^{\dagger}]. i^2 = -1 is taken into
 		//account here instead of in the broadenings.
-		transmission.push_back(-real(product.trace()));
+		transmissionRateData.push_back(-real(product.trace()));
 	}
 
-	return transmission;
+	Property::TransmissionRate transmissionRate(
+		greensFunction->getLowerBound(),
+		greensFunction->getUpperBound(),
+		greensFunction->getResolution(),
+		transmissionRateData.data()
+	);
+
+	return transmissionRate;
 }
 
 };	//End of namespace Solver
