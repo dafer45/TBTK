@@ -471,7 +471,7 @@ Property::GreensFunction Greens::calculateInteractingGreensFunction(
 	return interactingGreensFunction;
 }
 
-Property::TransmissionRate Greens::calculateTransmission(
+Property::TransmissionRate Greens::calculateTransmissionRate(
 	const Property::SelfEnergy &selfEnergy0,
 	const Property::SelfEnergy &selfEnergy1
 ) const{

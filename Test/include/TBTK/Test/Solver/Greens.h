@@ -482,7 +482,7 @@ TEST(Greens, calculateTransmission){
 	//Calculate the transmission rate.
 	solver1.setGreensFunction(greensFunction);
 	Property::TransmissionRate transmissionRate
-		= solver1.calculateTransmission(selfEnergy0, selfEnergy1);
+		= solver1.calculateTransmissionRate(selfEnergy0, selfEnergy1);
 
 	//Check that the energy window is correct.
 	EXPECT_DOUBLE_EQ(transmissionRate.getLowerBound(), LOWER_BOUND);
