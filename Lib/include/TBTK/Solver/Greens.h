@@ -27,6 +27,7 @@
 #include "TBTK/Model.h"
 #include "TBTK/Property/GreensFunction.h"
 #include "TBTK/Property/SelfEnergy.h"
+#include "TBTK/Property/TransmissionRate.h"
 #include "TBTK/Solver/Solver.h"
 
 #include <complex>
