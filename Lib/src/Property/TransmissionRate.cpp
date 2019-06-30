@@ -79,6 +79,34 @@ TransmissionRate::TransmissionRate(
 	}
 }
 
+TransmissionRate& TransmissionRate::operator*=(const TransmissionRate &rhs){
+	TBTKAssert(
+		energyWindowsAreEqual(rhs),
+		"TransmissionRate::operator*=()",
+		"Incompatible energy windows.",
+		""
+	);
+
+	for(unsigned int n = 0; n < getNumEnergies(); n++)
+		operator()(n) *= rhs(n);
+
+	return *this;
+}
+
+TransmissionRate& TransmissionRate::operator/=(const TransmissionRate &rhs){
+	TBTKAssert(
+		energyWindowsAreEqual(rhs),
+		"TransmissionRate::operator/=()",
+		"Incompatible energy windows.",
+		""
+	);
+
+	for(unsigned int n = 0; n < getNumEnergies(); n++)
+		operator()(n) /= rhs(n);
+
+	return *this;
+}
+
 string TransmissionRate::serialize(Mode mode) const{
 	switch(mode){
 	case Mode::JSON:

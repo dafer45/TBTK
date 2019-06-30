@@ -115,7 +115,111 @@ TEST(TransmissionRate, operatorSubtraction){
 		EXPECT_EQ(data2[n], -n);
 }
 
-TEST(TransmissionRate, operatorMultiplicationAssignment){
+TEST(TransmissionRate, operatorMultiplicationAssignment0){
+	double dataInput0[1000];
+	for(unsigned int n = 0; n < 1000; n++)
+		dataInput0[n] = n;
+	TransmissionRate transmissionRate0(-10, 10, 1000, dataInput0);
+
+	double dataInput1[1000];
+	for(unsigned int n = 0; n < 1000; n++)
+		dataInput1[n] = 2*n;
+	TransmissionRate transmissionRate1(-10, 10, 1000, dataInput1);
+
+	transmissionRate0 *= transmissionRate1;
+	const std::vector<double> &data0 = transmissionRate0.getData();
+	for(unsigned int n = 0; n < 1000; n++)
+		EXPECT_EQ(data0[n], 2*n*n);
+
+	double dataInput2[999];
+	for(unsigned int n = 0; n < 999; n++)
+		dataInput2[n] = 2*n;
+	TransmissionRate transmissionRate2(-10, 10, 999, dataInput2);
+
+	TransmissionRate transmissionRate3(-11, 10, 999, dataInput0);
+	TransmissionRate transmissionRate4(-10, 11, 999, dataInput0);
+
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			transmissionRate0 *= transmissionRate2;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			transmissionRate0 *= transmissionRate3;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			transmissionRate0 *= transmissionRate4;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+TEST(TransmissionRate, operatorMultiplication0){
+	double dataInput0[1000];
+	for(unsigned int n = 0; n < 1000; n++)
+		dataInput0[n] = n;
+	TransmissionRate transmissionRate0(-10, 10, 1000, dataInput0);
+
+	double dataInput1[1000];
+	for(unsigned int n = 0; n < 1000; n++)
+		dataInput1[n] = 2*n;
+	TransmissionRate transmissionRate1(-10, 10, 1000, dataInput1);
+
+	TransmissionRate transmissionRate2
+		= transmissionRate0*transmissionRate1;
+	const std::vector<double> &data2 = transmissionRate2.getData();
+	for(unsigned int n = 0; n < 1000; n++)
+		EXPECT_EQ(data2[n], 2*n*n);
+
+	double dataInput3[999];
+	for(unsigned int n = 0; n < 999; n++)
+		dataInput3[n] = 2*n;
+	TransmissionRate transmissionRate3(-10, 10, 999, dataInput3);
+
+	TransmissionRate transmissionRate4(-11, 10, 999, dataInput0);
+	TransmissionRate transmissionRate5(-10, 11, 999, dataInput0);
+
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			TransmissionRate transmissionRate
+				= transmissionRate0*transmissionRate3;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			TransmissionRate transmissionRate
+				= transmissionRate0*transmissionRate4;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			TransmissionRate transmissionRate
+				= transmissionRate0*transmissionRate5;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+TEST(TransmissionRate, operatorMultiplicationAssignment1){
 	double dataInput[1000];
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput[n] = n;
@@ -127,7 +231,7 @@ TEST(TransmissionRate, operatorMultiplicationAssignment){
 		EXPECT_EQ(data[n], 2*n);
 }
 
-TEST(TransmissionRate, operatorMultiplication){
+TEST(TransmissionRate, operatorMultiplication1){
 	double dataInput[1000];
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput[n] = n;
@@ -143,7 +247,111 @@ TEST(TransmissionRate, operatorMultiplication){
 		EXPECT_EQ(data2[n], 2*n);
 }
 
-TEST(TransmissionRate, operatorDivisionAssignment){
+TEST(TransmissionRate, operatorDivisionAssignment0){
+	double dataInput0[1000];
+	for(unsigned int n = 0; n < 1000; n++)
+		dataInput0[n] = n;
+	TransmissionRate transmissionRate0(-10, 10, 1000, dataInput0);
+
+	double dataInput1[1000];
+	for(unsigned int n = 0; n < 1000; n++)
+		dataInput1[n] = 1 + 2*n;
+	TransmissionRate transmissionRate1(-10, 10, 1000, dataInput1);
+
+	transmissionRate0 /= transmissionRate1;
+	const std::vector<double> &data0 = transmissionRate0.getData();
+	for(unsigned int n = 0; n < 1000; n++)
+		EXPECT_DOUBLE_EQ(data0[n], n/(1 + 2.*n));
+
+	double dataInput2[999];
+	for(unsigned int n = 0; n < 999; n++)
+		dataInput2[n] = 1 + 2*n;
+	TransmissionRate transmissionRate2(-10, 10, 999, dataInput2);
+
+	TransmissionRate transmissionRate3(-11, 10, 999, dataInput0);
+	TransmissionRate transmissionRate4(-10, 11, 999, dataInput0);
+
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			transmissionRate0 /= transmissionRate2;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			transmissionRate0 /= transmissionRate3;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			transmissionRate0 /= transmissionRate4;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+TEST(TransmissionRate, operatorDivision0){
+	double dataInput0[1000];
+	for(unsigned int n = 0; n < 1000; n++)
+		dataInput0[n] = n;
+	TransmissionRate transmissionRate0(-10, 10, 1000, dataInput0);
+
+	double dataInput1[1000];
+	for(unsigned int n = 0; n < 1000; n++)
+		dataInput1[n] = 1 + 2*n;
+	TransmissionRate transmissionRate1(-10, 10, 1000, dataInput1);
+
+	TransmissionRate transmissionRate2
+		= transmissionRate0/transmissionRate1;
+	const std::vector<double> &data2 = transmissionRate2.getData();
+	for(unsigned int n = 0; n < 1000; n++)
+		EXPECT_DOUBLE_EQ(data2[n], n/(1 + 2.*n));
+
+	double dataInput3[999];
+	for(unsigned int n = 0; n < 999; n++)
+		dataInput3[n] = 1 + 2*n;
+	TransmissionRate transmissionRate3(-10, 10, 999, dataInput3);
+
+	TransmissionRate transmissionRate4(-11, 10, 999, dataInput0);
+	TransmissionRate transmissionRate5(-10, 11, 999, dataInput0);
+
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			TransmissionRate transmissionRate
+				= transmissionRate0/transmissionRate3;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			TransmissionRate transmissionRate
+				= transmissionRate0/transmissionRate4;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			TransmissionRate transmissionRate
+				= transmissionRate0/transmissionRate5;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+TEST(TransmissionRate, operatorDivisionAssignment1){
 	double dataInput[1000];
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput[n] = n;
@@ -155,7 +363,7 @@ TEST(TransmissionRate, operatorDivisionAssignment){
 		EXPECT_EQ(data[n], n/2.);
 }
 
-TEST(TransmissionRate, operatorDivision){
+TEST(TransmissionRate, operatorDivision1){
 	double dataInput[1000];
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput[n] = n;

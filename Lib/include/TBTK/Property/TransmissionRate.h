@@ -82,6 +82,22 @@ public:
 	 *  TransmissionRate and the right hand side. */
 	TransmissionRate operator-(const TransmissionRate &rhs) const;
 
+	/** Multiplication assignment operator.
+	 *
+	 *  @param rhs The right hand side of the expression.
+	 *
+	 *  @return The left hand side aftre the right hand side after having
+	 *  been multiplied by the right hand side. */
+	TransmissionRate& operator*=(const TransmissionRate &rhs);
+
+	/** Multiplciation operator.
+	 *
+	 *  @param rhs The right hand side of the expression.
+	 *
+	 *  @return A new TransmissionRate that is the product of this
+	 *  TransmissionRate and the right hand side. */
+	TransmissionRate operator*(const TransmissionRate &rhs) const;
+
 	/** Overrides EnergyResolvedProperty::operator*=(). */
 	TransmissionRate& operator*=(const double &rhs);
 
@@ -106,6 +122,23 @@ public:
 	){
 		return rhs*lhs;
 	}
+
+	/** Division assignment operator.
+	 *
+	 *  @param rhs The right hand side of the expression.
+	 *
+	 *  @return The left hand side after having been divided by the right
+	 *  hand side. */
+	TransmissionRate& operator/=(const TransmissionRate &rhs);
+
+	/** Division operator.
+	 *
+	 *  @param lhs The left hand side of the expression.
+	 *  @param rhs The right hand side of the expression.
+	 *
+	 *  @return A new TransmissionRate that is the quotient between the
+	 *  left hand side and the right hand side. */
+	TransmissionRate operator/(const TransmissionRate &rhs) const;
 
 	/** Overrides EnergyResolvedProperty::operator/=(). */
 	TransmissionRate& operator/=(const double &rhs);
@@ -154,6 +187,14 @@ inline TransmissionRate TransmissionRate::operator-(
 	return transmissionRate -= rhs;
 }
 
+inline TransmissionRate TransmissionRate::operator*(
+	const TransmissionRate &rhs
+) const{
+	TransmissionRate transmissionRate = *this;
+
+	return transmissionRate *= rhs;
+}
+
 inline TransmissionRate& TransmissionRate::operator*=(const double &rhs){
 	EnergyResolvedProperty::operator*=(rhs);
 
@@ -164,6 +205,14 @@ inline TransmissionRate TransmissionRate::operator*(const double &rhs) const{
 	TransmissionRate transmissionRate = *this;
 
 	return transmissionRate *= rhs;
+}
+
+inline TransmissionRate TransmissionRate::operator/(
+	const TransmissionRate &rhs
+) const{
+	TransmissionRate transmissionRate = *this;
+
+	return transmissionRate /= rhs;
 }
 
 inline TransmissionRate& TransmissionRate::operator/=(const double &rhs){
