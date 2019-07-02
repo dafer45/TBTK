@@ -1304,6 +1304,36 @@ TEST(AbstractProperty, setDefaultValue){
 	//Already tested through AbstractProperty;;operatorFunction
 }
 
+TEST(AbstractProperty, replaceValues){
+	PublicAbstractProperty<int> property0(10);
+
+	for(unsigned int n = 0; n < 10; n++)
+		property0(n) = n;
+
+	property0.replaceValues(5, 25);
+
+	for(unsigned int n = 0; n < 10; n++){
+		if(n == 5)
+			EXPECT_EQ(property0(n), 25);
+		else
+			EXPECT_EQ(property0(n), n);
+	}
+
+	PublicAbstractProperty<double> property1(4);
+	property1(0) = NAN;
+	property1(1) = -NAN;
+	property1(2) = std::numeric_limits<double>::infinity();
+	property1(3) = -std::numeric_limits<double>::infinity();
+
+	property1.replaceValues(NAN, 1);
+	property1.replaceValues(std::numeric_limits<double>::infinity(), 2);
+	property1.replaceValues(-std::numeric_limits<double>::infinity(), 3);
+	EXPECT_DOUBLE_EQ(property1(0), 1);
+	EXPECT_DOUBLE_EQ(property1(1), 1);
+	EXPECT_DOUBLE_EQ(property1(2), 2);
+	EXPECT_DOUBLE_EQ(property1(3), 3);
+}
+
 //TODO
 //This function is currently not implemented for all data types. First
 //implement full support for all primitive data types, Serializable, and

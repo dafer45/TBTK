@@ -335,6 +335,17 @@ public:
 	 *  bounds access.*/
 	void setDefaultValue(const DataType &defaultValue);
 
+	/** Replace all values with a given target value by a given replacement
+	 *  value. Can be used to for example replace NaN and inf by finite
+	 *  numbers.
+	 *
+	 *  @param targetValue The value to replace.
+	 *  @param replacementValue. The value to replace with. */
+	void replaceValues(
+		const DataType &targetValue,
+		const DataType &replacementValue
+	);
+
 	/** Implements Serializable::serialize(). */
 	virtual std::string serialize(Mode mode) const;
 protected:
@@ -870,6 +881,25 @@ inline void AbstractProperty<DataType>::setDefaultValue(
 	const DataType &defaultValue
 ){
 	this->defaultValue = defaultValue;
+}
+
+template<typename DataType>
+inline void AbstractProperty<DataType>::replaceValues(
+	const DataType &targetValue,
+	const DataType &replacementValue
+){
+	//Handle NaN values.
+	if(targetValue != targetValue){
+		for(unsigned int n = 0; n < data.size(); n++)
+			if(data[n] != data[n])
+				data[n] = replacementValue;
+
+		return;
+	}
+
+	for(unsigned int n = 0; n < data.size(); n++)
+		if(data[n] == targetValue)
+			data[n] = replacementValue;
 }
 
 template<typename DataType>

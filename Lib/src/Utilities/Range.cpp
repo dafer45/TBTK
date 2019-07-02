@@ -35,13 +35,6 @@ Range::Range(
 	bool includeUpperBound
 ){
 	TBTKAssert(
-		lowerBound < upperBound,
-		"Range::Range()",
-		"Invalid bounds.",
-		"'lowerBound' must be smaller than 'upperBound'."
-	);
-
-	TBTKAssert(
 		resolution > 1,
 		"Range::Range()",
 		"'resolution' must be larger than 1.",
