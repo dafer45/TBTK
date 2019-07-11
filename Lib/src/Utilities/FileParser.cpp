@@ -761,7 +761,7 @@ Index* FileParser::readIndex(){
 		""
 	);
 
-	vector<int> indices;
+	vector<Subindex> indices;
 	while(true){
 		int i;
 		bool foundBracket = readInt(&i, ']');

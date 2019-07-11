@@ -26,7 +26,7 @@ TEST(Index, ConstructorInitializerListUnsignedInt){
 }
 
 TEST(Index, ConstructorVectorInt){
-	std::vector<int> myVector({1, 2, 3});
+	std::vector<Subindex> myVector({1, 2, 3});
 	Index index(myVector);
 	EXPECT_EQ(index.getSize(), 3) << "Index(std::vector<int>({1, 2, 3})) does not have size 3.";
 	EXPECT_EQ(index[0], 1)<< "Index(std::vector<int>({1, 2, 3})) does not have '1' as first subindex.";
@@ -34,14 +34,14 @@ TEST(Index, ConstructorVectorInt){
 	EXPECT_EQ(index[2], 3) << "Index(std::vector<int>({1, 2, 3})) does not have '3' as third subindex.";
 }
 
-TEST(Index, ConstructorVectorUnsignedInt){
+/*TEST(Index, ConstructorVectorUnsignedInt){
 	std::vector<unsigned int> myVector({1, 2, 3});
 	Index index(myVector);
 	EXPECT_EQ(index.getSize(), 3) << "Index(std::vector<int>({1, 2, 3})) does not have size 3.";
 	EXPECT_EQ(index[0], 1)<< "Index(std::vector<int>({1, 2, 3})) does not have '1' as first subindex.";
 	EXPECT_EQ(index[1], 2) << "Index(std::vector<int>({1, 2, 3})) does not have '2' as second subindex.";
 	EXPECT_EQ(index[2], 3) << "Index(std::vector<int>({1, 2, 3})) does not have '3' as third subindex.";
-}
+}*/
 
 TEST(Index, CopyConstructor){
 	Index index({1, 2, 3});
@@ -67,8 +67,8 @@ TEST(Index, ConstructorConcatenationInitializerList){
 TEST(Index, ConstructorConcatenationVector){
 	std::string errorMessage = "Index concatenation filed.";
 
-	std::vector<int> head({1, 2});
-	std::vector<int> tail({3});
+	std::vector<Subindex> head({1, 2});
+	std::vector<Subindex> tail({3});
 	Index index(head, tail);
 	EXPECT_EQ(index.getSize(), 3) << errorMessage;
 	EXPECT_EQ(index[0], 1) << errorMessage;
@@ -107,7 +107,7 @@ TEST(Index, ConstructorCompundInitializerList){
 TEST(Index, ConstructorCompundVector){
 	std::string errorMessage = "Compund Index construction failed.";
 
-	std::vector<std::vector<int>> indices;
+	std::vector<std::vector<Subindex>> indices;
 	indices.push_back({1});
 	indices.push_back({2, 3});
 	indices.push_back({4, 5, 6});

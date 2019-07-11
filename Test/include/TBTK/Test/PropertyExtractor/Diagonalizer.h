@@ -477,7 +477,7 @@ TEST(Diagonalizer, calculateDensity){
 	});
 	ASSERT_EQ(density1.getSize(), SIZE);
 	for(unsigned int n = 0; n < density1.getSize(); n++)
-		EXPECT_NEAR(density1({n}), densityBenchmark, EPSILON_100);
+		EXPECT_NEAR(density1(n), densityBenchmark, EPSILON_100);
 }
 
 //TODO

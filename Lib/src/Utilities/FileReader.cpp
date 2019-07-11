@@ -139,7 +139,7 @@ HoppingAmplitudeSet* FileReader::readHoppingAmplitudeSet(
 
 		hoppingAmplitudeSet = new HoppingAmplitudeSet();
 		for(int n = 0; n < numHoppingAmplitudes; n++){
-			vector<int> from;
+			vector<Subindex> from;
 			for(int c = 0; c < maxIndexSize; c++){
 				int i = indices[2*maxIndexSize*n + c];
 				if(i == -1)
@@ -147,7 +147,7 @@ HoppingAmplitudeSet* FileReader::readHoppingAmplitudeSet(
 				else
 					from.push_back(i);
 			}
-			vector<int> to;
+			vector<Subindex> to;
 			for(int c = 0; c < maxIndexSize; c++){
 				int i = indices[2*maxIndexSize*n + maxIndexSize + c];
 				if(i == -1)

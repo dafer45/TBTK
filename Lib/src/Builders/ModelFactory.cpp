@@ -391,11 +391,11 @@ Model* ModelFactory::merge(
 			Index from = (*iterator).getFromIndex();
 			Index to = (*iterator).getToIndex();
 
-			vector<int> newFrom({(int)n});
+			vector<Subindex> newFrom({(int)n});
 			for(unsigned int c = 0; c < from.getSize(); c++)
 				newFrom.push_back(from.at(c));
 
-			vector<int> newTo({(int)n});
+			vector<Subindex> newTo({(int)n});
 			for(unsigned int c = 0; c < to.getSize(); c++)
 				newTo.push_back(to.at(c));
 
@@ -461,7 +461,7 @@ Model* ModelFactory::merge(
 //				Index from = ha->fromIndex;
 				Index from = (*iterator).getFromIndex();
 
-				vector<int> newFrom({(int)n});
+				vector<Subindex> newFrom({(int)n});
 				for(unsigned int c = 0; c < from.getSize(); c++)
 					newFrom.push_back(from.at(c));
 

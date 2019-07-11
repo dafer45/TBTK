@@ -51,6 +51,11 @@ public:
 	 *  @param value The value to initilize the Subindex with. */
 	constexpr Subindex(int value) : value(value) {}
 
+	/** Constructor.
+	 *
+	 *  @param value The value to initilize the Subindex with. */
+	constexpr Subindex(unsigned int value) : value(value) {}
+
 	/** Constructs a Subindex from a serialization string.
 	 *
 	 *  @param serialization Serialization string from which to construct

@@ -23,6 +23,7 @@
 #ifndef COM_DAFER45_TBTK_INDEX
 #define COM_DAFER45_TBTK_INDEX
 
+#include "TBTK/Subindex.h"
 #include "TBTK/Serializable.h"
 #include "TBTK/Streams.h"
 
@@ -83,24 +84,24 @@ public:
 	/** Constructs an Index from an initializer list.
 	 *
 	 * @param i Initializer list from which the Index is constructed. */
-	Index(std::initializer_list<int> i) : indices(i){};
+	Index(std::initializer_list<Subindex> i) : indices(i){};
 
 	/** Constructs an Index from an initializer list.
 	 *
 	 * @param i Initializer list from which the Index is constructed. */
-	Index(
+/*	Index(
 		std::initializer_list<unsigned int> i
-	) : indices(i.begin(), i.end()){};
+	) : indices(i.begin(), i.end()){};*/
 
 	/** Constructs an Index from an std::vector<int>.
 	 *
 	 *  @param i Vector from which the Index is constructed. */
-	Index(std::vector<int> i) : indices(i){};
+	Index(std::vector<Subindex> i) : indices(i){};
 
 	/** Constructs an Index from an std::vector<int>.
 	 *
 	 *  @param i Vector from which the Index is constructed. */
-	Index(std::vector<unsigned int> i) : indices(i.begin(), i.end()){};
+//	Index(std::vector<unsigned int> i) : indices(i.begin(), i.end()){};
 
 	/** Copy constructor.
 	 *
@@ -118,13 +119,13 @@ public:
 	 *  adding IDX_SEPARATOR between every index.
 	 *
 	 *  @param indexList List of indices. */
-	Index(std::initializer_list<std::initializer_list<int>> indexList);
+//	Index(std::initializer_list<std::initializer_list<Subindex>> indexList);
 
 	/** Constructs a compund Index by concatenating a list of indices,
 	 *  adding IDX_SEPARATOR between every index.
 	 *
 	 *  @param indexList List of indices. */
-	Index(const std::vector<std::vector<int>> &indexList);
+	Index(const std::vector<std::vector<Subindex>> &indexList);
 
 	/** Constructs a compound Index by Concatenating a list of indices,
 	 *  adding IDX_SEPARATOR between every index.
@@ -166,14 +167,14 @@ public:
 	 *  @param n Subindex.
 	 *
 	 *  @return Subindex at position n. */
-	int& at(unsigned int n);
+	Subindex& at(unsigned int n);
 
 	/** Get subindex n. Constant version.
 	 *
 	 *  @param n Subindex.
 	 *
 	 *  @return Subindex at position n. */
-	const int& at(unsigned int n) const;
+	const Subindex& at(unsigned int n) const;
 
 	/** Get size.
 	 *
@@ -191,17 +192,17 @@ public:
 	/** Push subindex at the back of the index.
 	 *
 	 *  @param subindex Subindex to append to the Index. */
-	void push_back(int subindex);
+	void push_back(Subindex subindex);
 
 	/** Removes and returns the first subindex.
 	 *
 	 *  @return The first subindex. */
-	int popFront();
+	Subindex popFront();
 
 	/** Removes and returns the last subindex.
 	 *
 	 *  @return The last subindex. */
-	int popBack();
+	Subindex popBack();
 
 	/** Returns an index with the same number or subindices, and each
 	 *  subindex set to 1.
@@ -258,14 +259,14 @@ public:
 	 *  @param n Subindex.
 	 *
 	 *  @return Subindex at position n. */
-	int& operator[](unsigned int subindex);
+	Subindex& operator[](unsigned int subindex);
 
 	/** Subscript operator.
 	 *
 	 *  @param n Subindex.
 	 *
 	 *  @return Subindex at position n. */
-	const int& operator[](unsigned int subindex) const;
+	const Subindex& operator[](unsigned int subindex) const;
 
 	/** Serialize Index. Note that Index is pseudo-Serializable in that it
 	 *  implements the Serializable interface, but does so non-virtually.
@@ -281,7 +282,7 @@ public:
 	unsigned int getSizeInBytes() const;
 private:
 	/** Subindex container. */
-	std::vector<int> indices;
+	std::vector<Subindex> indices;
 };
 
 inline void Index::print() const{
@@ -300,7 +301,7 @@ inline std::string Index::toString() const{
 	for(unsigned int n = 0; n < indices.size(); n++){
 /*		if(n != 0)
 			str += ", ";*/
-		int subindex = indices.at(n);
+		Subindex subindex = indices.at(n);
 		if(!isFirstIndex && subindex != IDX_SEPARATOR)
 			str += ", ";
 		else
@@ -403,11 +404,11 @@ inline bool Index::equals(const Index &index, bool allowWildcard) const{
 	return true;
 }
 
-inline int& Index::at(unsigned int n){
+inline Subindex& Index::at(unsigned int n){
 	return indices.at(n);
 }
 
-inline const int& Index::at(unsigned int n) const{
+inline const Subindex& Index::at(unsigned int n) const{
 	return indices.at(n);
 }
 
@@ -419,19 +420,19 @@ inline void Index::reserve(unsigned int size){
 	indices.reserve(size);
 }
 
-inline void Index::push_back(int subindex){
+inline void Index::push_back(Subindex subindex){
 	indices.push_back(subindex);
 }
 
-inline int Index::popFront(){
-	int first = indices.at(0);
+inline Subindex Index::popFront(){
+	Subindex first = indices.at(0);
 	indices.erase(indices.begin());
 
 	return first;
 }
 
-inline int Index::popBack(){
-	int last = indices.back();
+inline Subindex Index::popBack(){
+	Subindex last = indices.back();
 	indices.pop_back();
 
 	return last;
@@ -458,11 +459,11 @@ inline bool Index::isPatternIndex() const{
 	return false;
 }
 
-inline int& Index::operator[](unsigned int subindex){
+inline Subindex& Index::operator[](unsigned int subindex){
 	return indices[subindex];
 }
 
-inline const int& Index::operator[](unsigned int subindex) const{
+inline const Subindex& Index::operator[](unsigned int subindex) const{
 	return indices[subindex];
 }
 

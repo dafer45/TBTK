@@ -517,7 +517,7 @@ Index HoppingAmplitudeTree::getPhysicalIndex(int basisIndex) const{
 		""
 	);
 
-	vector<int> indices;
+	vector<Subindex> indices;
 	_getPhysicalIndex(basisIndex, &indices);
 
 	return Index(indices);
@@ -525,7 +525,7 @@ Index HoppingAmplitudeTree::getPhysicalIndex(int basisIndex) const{
 
 void HoppingAmplitudeTree::_getPhysicalIndex(
 	int basisIndex,
-	vector<int> *indices
+	vector<Subindex> *indices
 ) const{
 	if(this->basisIndex != -1)
 		return;

@@ -491,7 +491,7 @@ Index IndexTree::getPhysicalIndex(int linearIndex) const{
 		""
 	);
 
-	vector<int> indices;
+	vector<Subindex> indices;
 	getPhysicalIndex(linearIndex, &indices);
 
 	return Index(indices);
@@ -603,7 +603,7 @@ bool IndexTree::equals(const IndexTree &indexTree) const{
 	return (iterator0 == cend() && iterator1 == indexTree.cend());
 }
 
-void IndexTree::getPhysicalIndex(int linearIndex, vector<int> *indices) const{
+void IndexTree::getPhysicalIndex(int linearIndex, vector<Subindex> *indices) const{
 	if(this->linearIndex != -1)
 		return;
 

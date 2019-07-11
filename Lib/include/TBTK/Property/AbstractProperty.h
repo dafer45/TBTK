@@ -257,7 +257,7 @@ public:
 	 *  @param index The Index to get the data for.
 	 *
 	 *  @return The data element for the given Index. */
-	DataType& operator()(const std::initializer_list<int> &index);
+	DataType& operator()(const std::initializer_list<Subindex> &index);
 
 	/** Alias for operator()(const Index &index, unsigned int offset = 0).
 	 *  Ensures that operator()(unsigned int offset) is not called when
@@ -269,7 +269,7 @@ public:
 	 *
 	 *  @return The data element for the given Index. */
 	const DataType& operator()(
-		const std::initializer_list<int> &index
+		const std::initializer_list<Subindex> &index
 	) const;
 
 	/** Alias for operator()(const Index &index, unsigned int offset = 0).
@@ -281,7 +281,7 @@ public:
 	 *  @param index The Index to get the data for.
 	 *
 	 *  @return The data element for the given Index. */
-	DataType& operator()(const std::initializer_list<unsigned int> &index);
+//	DataType& operator()(const std::initializer_list<unsigned int> &index);
 
 	/** Alias for operator()(const Index &index, unsigned int offset = 0).
 	 *  Ensures that operator()(unsigned int offset) is not called when
@@ -292,9 +292,9 @@ public:
 	 *  @param index The Index to get the data for.
 	 *
 	 *  @return The data element for the given Index. */
-	const DataType& operator()(
+/*	const DataType& operator()(
 		const std::initializer_list<unsigned int> &index
-	) const;
+	) const;*/
 
 	/** Function call operator. Returns the data element for the given
 	 *  offset.
@@ -831,19 +831,19 @@ inline DataType& AbstractProperty<DataType>::operator()(
 
 template<typename DataType>
 inline DataType& AbstractProperty<DataType>::operator()(
-	const std::initializer_list<int> &index
+	const std::initializer_list<Subindex> &index
 ){
 	return operator()(index, 0);
 }
 
 template<typename DataType>
 inline const DataType& AbstractProperty<DataType>::operator()(
-	const std::initializer_list<int> &index
+	const std::initializer_list<Subindex> &index
 ) const{
 	return operator()(index, 0);
 }
 
-template<typename DataType>
+/*template<typename DataType>
 inline DataType& AbstractProperty<DataType>::operator()(
 	const std::initializer_list<unsigned int> &index
 ){
@@ -855,7 +855,7 @@ inline const DataType& AbstractProperty<DataType>::operator()(
 	const std::initializer_list<unsigned int> &index
 ) const{
 	return operator()(index, 0);
-}
+}*/
 
 template<typename DataType>
 inline const DataType& AbstractProperty<DataType>::operator()(

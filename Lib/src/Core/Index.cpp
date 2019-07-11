@@ -45,16 +45,16 @@ Index::Index(const Index &head, const Index &tail){
 	);
 }
 
-Index::Index(initializer_list<initializer_list<int>> indexList){
+/*Index::Index(initializer_list<initializer_list<Subindex>> indexList){
 	for(unsigned int n = 0; n < indexList.size(); n++){
 		if(n > 0)
 			indices.push_back(IDX_SEPARATOR);
 		for(unsigned int c = 0; c < (indexList.begin()+n)->size(); c++)
 			indices.push_back(*((indexList.begin() + n)->begin() + c));
 	}
-}
+}*/
 
-Index::Index(const vector<vector<int>> &indexList){
+Index::Index(const vector<vector<Subindex>> &indexList){
 	for(unsigned int n = 0; n < indexList.size(); n++){
 		if(n > 0)
 			indices.push_back(IDX_SEPARATOR);
@@ -103,7 +103,7 @@ Index::Index(const string &indexString){
 		)
 	);
 
-	vector<int> indexVector;
+	vector<Subindex> indexVector;
 	unsigned int numSeparators = 0;
 	bool parsingNumeric = false;
 	int numeric = 0;
@@ -279,7 +279,7 @@ Index::Index(const string &serialization, Serializable::Mode mode){
 
 		stringstream ss;
 		ss.str(content);
-		int subindex;
+		Subindex subindex;
 		while((ss >> subindex)){
 			indices.push_back(subindex);
 			char c;
@@ -305,7 +305,7 @@ Index::Index(const string &serialization, Serializable::Mode mode){
 
 		try{
 			nlohmann::json j = nlohmann::json::parse(serialization);
-			indices = j.at("indices").get<vector<int>>();
+			indices = j.at("indices").get<vector<Subindex>>();
 		}
 		catch(nlohmann::json::exception &e){
 			TBTKExit(
@@ -391,7 +391,7 @@ Index Index::getUnitRange(){
 }
 
 Index Index::getSubIndex(int first, int last) const{
-	vector<int> newSubindices;
+	vector<Subindex> newSubindices;
 	for(int n = first; n <= last; n++)
 		newSubindices.push_back(indices.at(n));
 

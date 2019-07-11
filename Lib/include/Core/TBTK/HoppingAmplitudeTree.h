@@ -457,7 +457,7 @@ private:
 	/** Get physical index for given Hilbert space index. Is called by the
 	 *  public HoppingAmplitudeTreee::getPhysicalIndex and is called
 	 *  recursively. */
-	void _getPhysicalIndex(int basisIndex, std::vector<int> *indices) const;
+	void _getPhysicalIndex(int basisIndex, std::vector<Subindex> *indices) const;
 
 	/** Get minimum index on HoppingAmplitudeTree. */
 	int getMinIndex() const;

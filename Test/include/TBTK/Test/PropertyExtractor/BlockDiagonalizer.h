@@ -300,7 +300,7 @@ TEST(BlockDiagonalizer, calculateWaveFunction){
 
 	//Check when some states and some indices are calculated.
 	std::vector<int> states = {1, 3, 7};
-	std::vector<std::vector<int>> sites = {{0, 0}, {3, 1}, {5, 0}};
+	std::vector<std::vector<Subindex>> sites = {{0, 0}, {3, 1}, {5, 0}};
 	Property::WaveFunctions waveFunctions1
 		= propertyExtractor.calculateWaveFunctions(
 			{sites[0], sites[1], sites[2]},
