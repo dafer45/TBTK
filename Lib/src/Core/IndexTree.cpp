@@ -492,7 +492,7 @@ Index IndexTree::getPhysicalIndex(int linearIndex) const{
 	);
 
 	vector<Subindex> indices;
-	getPhysicalIndex(linearIndex, &indices);
+	getPhysicalIndex(linearIndex, indices);
 
 	return Index(indices);
 }
@@ -603,12 +603,12 @@ bool IndexTree::equals(const IndexTree &indexTree) const{
 	return (iterator0 == cend() && iterator1 == indexTree.cend());
 }
 
-void IndexTree::getPhysicalIndex(int linearIndex, vector<Subindex> *indices) const{
+void IndexTree::getPhysicalIndex(int linearIndex, vector<Subindex> &indices) const{
 	if(this->linearIndex != -1)
 		return;
 
 	if(indexSeparator)
-		indices->push_back(IDX_SEPARATOR);
+		indices.push_back(IDX_SEPARATOR);
 
 	for(unsigned int n = 0; n < children.size(); n++){
 		int min = children.at(n).getMinIndex();
@@ -619,9 +619,9 @@ void IndexTree::getPhysicalIndex(int linearIndex, vector<Subindex> *indices) con
 
 		if(min <= linearIndex && linearIndex <= max){
 			if(wildcardIndex)
-				indices->push_back(wildcardType);
+				indices.push_back(wildcardType);
 			else
-				indices->push_back(n);
+				indices.push_back(n);
 
 			children.at(n).getPhysicalIndex(linearIndex, indices);
 			break;

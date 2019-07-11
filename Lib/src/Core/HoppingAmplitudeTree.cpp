@@ -518,14 +518,14 @@ Index HoppingAmplitudeTree::getPhysicalIndex(int basisIndex) const{
 	);
 
 	vector<Subindex> indices;
-	_getPhysicalIndex(basisIndex, &indices);
+	_getPhysicalIndex(basisIndex, indices);
 
 	return Index(indices);
 }
 
 void HoppingAmplitudeTree::_getPhysicalIndex(
 	int basisIndex,
-	vector<Subindex> *indices
+	vector<Subindex> &indices
 ) const{
 	if(this->basisIndex != -1)
 		return;
@@ -538,7 +538,7 @@ void HoppingAmplitudeTree::_getPhysicalIndex(
 			continue;
 
 		if(min <= basisIndex && basisIndex <= max){
-			indices->push_back(n);
+			indices.push_back(n);
 			children.at(n)._getPhysicalIndex(basisIndex, indices);
 			break;
 		}

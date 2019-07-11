@@ -391,7 +391,7 @@ private:
 	 *  IndexTree::getPhysicalIndex and is called recursively. */
 	void getPhysicalIndex(
 		int linearIndex,
-		std::vector<Subindex> *indices
+		std::vector<Subindex> &indices
 	) const;
 
 	/** Get minimum linear index of IndexTree. */
