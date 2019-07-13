@@ -423,27 +423,38 @@ private:
 	Integer value;
 };
 
-/** \brief Enum for special subindex values.
+/** \brief Special subindex values.
  *
- *  While non-negative subindices in an Index corresponds to normal subindices,
- *  negative subindices are reserved for special purposes.<br><br>
+ *  Negative Subindex values with the second uppermost bit set to zero are
+ *  reserved for flags.<br><br>
  *  <b>IDX_ALL = _a_:</b><br>
  *    Wildcard Used to indicate that all indices are to be considered or that
  *    the particular subindex value is of no interest. To improve
  *    self-documentation for library code, only IDX_ALL should be used in
- *    actuall library code. '_a_' is syntactic suggar meant for use in
- *    application code.<br><br>
- *  <b>IDX_X, IDX_Y, IDX_Z:</b><br>
- *    Loop indices used to indicate that a particular index should be looped
- *    over.<br><br>
+ *    library code. '_a_' is syntactic sugar meant for use in application code.
+ *    <br><br>
+ *  <b>IDX_SUM_ALL:</b><br>:
+ *    Used to indicate that a subindex should be summed over.<br><br>
  *  <b>IDX_SPIN:</b><br>
- *    Used to indicate that a certain subindex should be interpreted as a
+ *    Used to indicate that a subindex should be interpreted as a
  *    spin-subindex.<br><br>
  *  <b>IDX_SEPARATOR:</b><br>
  *    Used as Index-separator in compound indices such as {{1, 2}, {3, 4}},
- *    which is stored as {1, 2, IDX_SEPARATOR, 3, 4}. */
-//_a_ and _aX_ are shorthand notation for IDX_ALL and IDX_ALL_X. Never
-//use shorthands in library code.
+ *    which is stored as {1, 2, IDX_SEPARATOR, 3, 4}.<br><br>
+ *  <b>IDX_ALL_ = _aX_</b>:
+ *    Labeled wildcards. Are used for the same purpose as wildcard indices
+ *    (IDX_ALL), but where two or more subindices should covary. The function
+ *    call operator works together with IDX_ALL_ to create wildcards with
+ *    different labels. For example,
+ *    {IDX_ALL_(0), 1, IDX_ALL_(1), IDX_ALL_(0), IDX_ALL_(1)} indicates that
+ *    all indices of the form {m, 1, n, m, n} are of interest. To improve
+ *    self-documentation, only IDX_ALL_ should be used in library code. '_aX_'
+ *    is syntactic sugar meant for use in application code.<br><br>
+ *  <b>IDX_X, IDX_Y, IDX_Z:</b><br>
+ *    Loop indices used to indicate that a particular index should be looped
+ *    over. */
+//_a_ and _aX_ are shorthand notation for IDX_ALL and IDX_ALL_. Never use
+//shorthands in library code.
 constexpr Subindex IDX_FLAG_MASK	= (int)0x00FFFFFF;
 constexpr Subindex IDX_ALL		= (int)(0xBFFFFFFF & ~0x20000000);
 constexpr Subindex _a_			= IDX_ALL;
