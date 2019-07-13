@@ -55,6 +55,7 @@ namespace TBTK{
 enum : int{
 	//_a_ and _aX_ are shorthand notation for IDX_ALL and IDX_ALL_X. Never
 	//use shorthands in library code.
+	IDX_FLAG_MASK	= (int)0xFF000000,
 	IDX_ALL		= (int)(0xC0000000 | 0x20000000),
 	_a_		= IDX_ALL,
 	IDX_ALL_X	= (int)(0xC0000000 | 0x10000000),
@@ -65,9 +66,10 @@ enum : int{
 	_a1_		= IDX_ALL_1,
 	_a2_		= IDX_ALL_2,
 	IDX_SUM_ALL	= (int)(0xC0000000 | 0x08000000),
-	IDX_X		= (int)(0xC0000000 | 0x04000000),
-	IDX_Y		= (int)(0xC0000000 | 0x04000001),
-	IDX_Z		= (int)(0xC0000000 | 0x04000002),
+	IDX_RANGE	= (int)(0xC0000000 | 0x04000000),
+	IDX_X		= (int)(IDX_RANGE | 0x00000000),
+	IDX_Y		= (int)(IDX_RANGE | 0x00000001),
+	IDX_Z		= (int)(IDX_RANGE | 0x00000002),
 	IDX_SPIN	= (int)(0xC0000000 | 0x02000000),
 	IDX_SEPARATOR	= (int)(0xC0000000 | 0x01000000)
 };
@@ -102,6 +104,39 @@ public:
 	 *
 	 *  @param mode Mode with which the string has been serialized. */
 	Subindex(const std::string &serialization, Serializable::Mode mode);
+
+	/** Check if the Subindex is a wildcard (IDX_ALL).
+	 *
+	 *  @return True if the Subindex is a wildcard, otherwise false. */
+	bool isWildcard() const;
+
+	/** Check if the Subindex is a labeled wildcard (IDX_ALL_X).
+	 *
+	 *  @return True if the Subindex is a labeled sildcard, otherwise
+	 *  false. */
+	bool isLabeledWildcard() const;
+
+	/** Check if the Subindex is a summation index (IDX_SUM_ALL).
+	 *
+	 *  @return True if the Subindex is a summation index, otherwise false.
+	 */
+	bool isSummationIndex() const;
+
+	/** Check if the Subindex is a range index (IDX_RANGE).
+	 *
+	 *  @return True if the Subindex is a range index, otherwise false. */
+	bool isRangeIndex() const;
+
+	/** Check if the Subindex is a spin index (IDX_SPIN).
+	 *
+	 *  @return True if the SUbindex is a spin index, otherwise false. */
+	bool isSpinIndex() const;
+
+	/** Check if the Subindex is an Index separator (IDX_SEPARATOR).
+	 *
+	 *  @return True if the Subindex is an Index separator, otherwise
+	 *  false. */
+	bool isIndexSeparator() const;
 
 	/** Type conversion operator. */
 	constexpr operator int() const{ return value;	};
@@ -423,6 +458,30 @@ inline Subindex::Subindex(
 ) :
 	value(serialization, mode)
 {
+}
+
+inline bool Subindex::isWildcard() const{
+	return value == IDX_ALL;
+}
+
+inline bool Subindex::isLabeledWildcard() const{
+	return (value & IDX_FLAG_MASK) == IDX_ALL_X;
+}
+
+inline bool Subindex::isSummationIndex() const{
+	return value == IDX_SUM_ALL;
+}
+
+inline bool Subindex::isRangeIndex() const{
+	return (value & IDX_FLAG_MASK) == IDX_RANGE;
+}
+
+inline bool Subindex::isSpinIndex() const{
+	return value == IDX_SPIN;
+}
+
+inline bool Subindex::isIndexSeparator() const{
+	return value == IDX_SEPARATOR;
 }
 
 inline std::string Subindex::serialize(Serializable::Mode mode) const{

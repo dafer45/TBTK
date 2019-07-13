@@ -77,7 +77,7 @@ Property::Susceptibility MatsubaraSusceptibility::calculateSusceptibility(
 		}
 
 		for(unsigned int c = 0; c < indices[0].getSize(); c++){
-			if(indices[0][c] != IDX_ALL){
+			if(!indices[0][c].isWildcard()){
 				information.setCalculateSusceptibilityForAllBlocks(
 					false
 				);

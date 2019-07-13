@@ -49,7 +49,7 @@ Property::EigenValues Diagonalizer::getEigenValues(){
 
 Property::WaveFunctions Diagonalizer::calculateWaveFunctions(
 	vector<Index> patterns,
-	vector<int> states
+	vector<Subindex> states
 ){
 	validatePatternsNumComponents(
 		patterns,
@@ -78,7 +78,7 @@ Property::WaveFunctions Diagonalizer::calculateWaveFunctions(
 
 	vector<unsigned int> statesVector;
 	if(states.size() == 1){
-		if(*states.begin() == IDX_ALL){
+		if((*states.begin()).isWildcard()){
 			for(int n = 0; n < dSolver->getModel().getBasisSize(); n++)
 				statesVector.push_back(n);
 		}
@@ -386,7 +386,7 @@ Property::Magnetization Diagonalizer::calculateMagnetization(
 ){
 	Information information;
 	for(unsigned int n = 0; n < pattern.getSize(); n++){
-		if(pattern.at(n) == IDX_SPIN){
+		if(pattern.at(n).isSpinIndex()){
 			information.setSpinIndex(n);
 			pattern.at(n) = 0;
 			ranges.at(n) = 1;
@@ -554,7 +554,7 @@ Property::SpinPolarizedLDOS Diagonalizer::calculateSpinPolarizedLDOS(
 
 	Information information;
 	for(unsigned int n = 0; n < pattern.getSize(); n++){
-		if(pattern.at(n) == IDX_SPIN){
+		if(pattern.at(n).isSpinIndex()){
 			information.setSpinIndex(n);
 			pattern.at(n) = 0;
 			ranges.at(n) = 1;

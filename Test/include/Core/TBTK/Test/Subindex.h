@@ -29,6 +29,82 @@ TEST(Subindex, serializeToJSON){
 	EXPECT_EQ(subindex0, subindex1);
 }
 
+TEST(Subindex, isWildcard){
+	Subindex subindex0(IDX_ALL);
+	Subindex subindex1(IDX_ALL + 1);
+	Subindex subindex2(0);
+	Subindex subindex3(1);
+
+	EXPECT_TRUE(subindex0.isWildcard());
+	EXPECT_FALSE(subindex1.isWildcard());
+	EXPECT_FALSE(subindex2.isWildcard());
+	EXPECT_FALSE(subindex3.isWildcard());
+}
+
+TEST(Subindex, isLabeledWildcard){
+	Subindex subindex0(IDX_ALL_0);
+	Subindex subindex1(IDX_ALL_1);
+	Subindex subindex2(IDX_ALL);
+	Subindex subindex3(0);
+	Subindex subindex4(1);
+
+	EXPECT_TRUE(subindex0.isLabeledWildcard());
+	EXPECT_TRUE(subindex1.isLabeledWildcard());
+	EXPECT_FALSE(subindex2.isLabeledWildcard());
+	EXPECT_FALSE(subindex3.isLabeledWildcard());
+	EXPECT_FALSE(subindex4.isLabeledWildcard());
+}
+
+TEST(Subindex, isSummationIndex){
+	Subindex subindex0(IDX_SUM_ALL);
+	Subindex subindex1(IDX_SUM_ALL + 1);
+	Subindex subindex2(0);
+	Subindex subindex3(1);
+
+	EXPECT_TRUE(subindex0.isSummationIndex());
+	EXPECT_FALSE(subindex1.isSummationIndex());
+	EXPECT_FALSE(subindex2.isSummationIndex());
+	EXPECT_FALSE(subindex3.isSummationIndex());
+}
+
+TEST(Subindex, isRangeIndex){
+	Subindex subindex0(IDX_X);
+	Subindex subindex1(IDX_Y);
+	Subindex subindex2(IDX_ALL);
+	Subindex subindex3(0);
+	Subindex subindex4(1);
+
+	EXPECT_TRUE(subindex0.isRangeIndex());
+	EXPECT_TRUE(subindex1.isRangeIndex());
+	EXPECT_FALSE(subindex2.isRangeIndex());
+	EXPECT_FALSE(subindex3.isRangeIndex());
+	EXPECT_FALSE(subindex4.isRangeIndex());
+}
+
+TEST(Subindex, isSpinIndex){
+	Subindex subindex0(IDX_SPIN);
+	Subindex subindex1(IDX_SPIN + 1);
+	Subindex subindex2(0);
+	Subindex subindex3(1);
+
+	EXPECT_TRUE(subindex0.isSpinIndex());
+	EXPECT_FALSE(subindex1.isSpinIndex());
+	EXPECT_FALSE(subindex2.isSpinIndex());
+	EXPECT_FALSE(subindex3.isSpinIndex());
+}
+
+TEST(Subindex, isIndexSeparator){
+	Subindex subindex0(IDX_SEPARATOR);
+	Subindex subindex1(IDX_SEPARATOR + 1);
+	Subindex subindex2(0);
+	Subindex subindex3(1);
+
+	EXPECT_TRUE(subindex0.isIndexSeparator());
+	EXPECT_FALSE(subindex1.isIndexSeparator());
+	EXPECT_FALSE(subindex2.isIndexSeparator());
+	EXPECT_FALSE(subindex3.isIndexSeparator());
+}
+
 TEST(Subindex, operatorInt){
 	Subindex subindex(7);
 	int i = (int)subindex;

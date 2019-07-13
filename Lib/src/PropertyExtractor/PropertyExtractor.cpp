@@ -258,13 +258,8 @@ vector<int> PropertyExtractor::getLoopRanges(
 ){
 	vector<int> loopRanges;
 	for(unsigned int n = 0; n < ranges.getSize(); n++){
-		if(
-			pattern.at(n) == IDX_X
-			|| pattern.at(n) == IDX_Y
-			|| pattern.at(n) == IDX_Z
-		){
+		if(pattern.at(n).isRangeIndex())
 			loopRanges.push_back(ranges.at(n));
-		}
 	}
 
 	return loopRanges;
@@ -316,12 +311,16 @@ IndexTree PropertyExtractor::generateIndexTree(
 				for(unsigned int m = 0; m < p.getSize(); m++){
 					if(
 						keepSummationWildcards
-						&& p.at(m) == IDX_SUM_ALL
+						&& p.at(m).isSummationIndex()
 					){
 						indices.at(c).at(m) = IDX_SUM_ALL;
 					}
-					if(keepSpinWildcards && p.at(m) == IDX_SPIN)
+					if(
+						keepSpinWildcards
+						&& p.at(m).isSpinIndex()
+					){
 						indices.at(c).at(m) = IDX_SPIN;
+					}
 				}
 			}
 			for(unsigned int c = 0; c < indices.size(); c++)

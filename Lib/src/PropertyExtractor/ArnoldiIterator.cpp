@@ -49,7 +49,7 @@ Property::EigenValues ArnoldiIterator::getEigenValues(){
 
 Property::WaveFunctions ArnoldiIterator::calculateWaveFunctions(
 	vector<Index> patterns,
-	vector<int> states
+	vector<Subindex> states
 ){
 	IndexTree allIndices = generateIndexTree(
 		patterns,
@@ -67,7 +67,7 @@ Property::WaveFunctions ArnoldiIterator::calculateWaveFunctions(
 
 	vector<unsigned int> statesVector;
 	if(states.size() == 1){
-		if(*states.begin() == IDX_ALL){
+		if((*states.begin()).isWildcard()){
 			for(int n = 0; n < aSolver->getModel().getBasisSize(); n++)
 				statesVector.push_back(n);
 		}
@@ -264,7 +264,7 @@ Property::SpinPolarizedLDOS ArnoldiIterator::calculateSpinPolarizedLDOS(
 
 	Information information;
 	for(unsigned int n = 0; n < pattern.getSize(); n++){
-		if(pattern.at(n) == IDX_SPIN){
+		if(pattern.at(n).isSpinIndex()){
 			information.setSpinIndex(n);
 			pattern.at(n) = 0;
 			ranges.at(n) = 1;

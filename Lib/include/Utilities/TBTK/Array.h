@@ -97,7 +97,7 @@ public:
 	Array operator/(const DataType &rhs) const;
 
 	/** Get slice. */
-	Array<DataType> getSlice(const std::vector<int> &index) const;
+	Array<DataType> getSlice(const std::vector<Subindex> &index) const;
 
 	/** Get ranges. */
 	const std::vector<unsigned int>& getRanges() const;
@@ -123,7 +123,7 @@ private:
 	/** Fill slice. */
 	void fillSlice(
 		Array &array,
-		const std::vector<int> &index,
+		const std::vector<Subindex> &index,
 		unsigned int subindex,
 		unsigned int offsetSlice,
 		unsigned int offsetOriginal
@@ -331,7 +331,7 @@ inline Array<DataType> Array<DataType>::operator/(
 }
 
 template<typename DataType>
-Array<DataType> Array<DataType>::getSlice(const std::vector<int> &index) const{
+Array<DataType> Array<DataType>::getSlice(const std::vector<Subindex> &index) const{
 	TBTKAssert(
 		ranges.size() == index.size(),
 		"Array::getSlice()",
@@ -349,7 +349,7 @@ Array<DataType> Array<DataType>::getSlice(const std::vector<int> &index) const{
 		);
 		if(index[n] < 0){
 			TBTKAssert(
-				index[n] == IDX_ALL,
+				index[n].isWildcard(),
 				"Array::getSlice()",
 				"Invalid symbol.",
 				"'index' can only contain positive numbers or"
@@ -369,13 +369,13 @@ Array<DataType> Array<DataType>::getSlice(const std::vector<int> &index) const{
 template<typename DataType>
 void Array<DataType>::fillSlice(
 	Array &array,
-	const std::vector<int> &index,
+	const std::vector<Subindex> &index,
 	unsigned int subindex,
 	unsigned int offsetSlice,
 	unsigned int offsetOriginal
 ) const{
 	if(subindex == index.size()-1){
-		if(index[subindex] == IDX_ALL){
+		if(index[subindex].isWildcard()){
 			for(unsigned int n = 0; n < ranges[subindex]; n++){
 				array.data[offsetSlice*ranges[subindex] + n]
 					= data[
@@ -392,7 +392,7 @@ void Array<DataType>::fillSlice(
 		}
 	}
 	else{
-		if(index[subindex] == IDX_ALL){
+		if(index[subindex].isWildcard()){
 			for(unsigned int n = 0; n < ranges[subindex]; n++){
 				fillSlice(
 					array,

@@ -777,10 +777,8 @@ void PropertyExtractor::calculate(
 	else{
 		//Ensure that the specifier is valid for the Ranges format.
 		TBTKAssert(
-			pattern.at(currentSubindex) == IDX_SUM_ALL
-			|| pattern.at(currentSubindex) == IDX_X
-			|| pattern.at(currentSubindex) == IDX_Y
-			|| pattern.at(currentSubindex) == IDX_Z,
+			pattern.at(currentSubindex).isSummationIndex()
+			|| pattern.at(currentSubindex).isRangeIndex(),
 			"PropertyExtractor::calculate()",
 			"Invalid specifier found at subindex "
 			<< currentSubindex << ".",
@@ -789,13 +787,13 @@ void PropertyExtractor::calculate(
 
 		//Multiply the memory offset for non summation indices.
 		int nextOffsetMultiplier = offsetMultiplier;
-		if(pattern.at(currentSubindex) != IDX_SUM_ALL)
+		if(!pattern.at(currentSubindex).isSummationIndex())
 			nextOffsetMultiplier *= ranges.at(currentSubindex);
 
 		//Set flag indicating whether the current subindex is a
 		//summation index.
 		bool isSumIndex = false;
-		if(pattern.at(currentSubindex) == IDX_SUM_ALL)
+		if(pattern.at(currentSubindex).isSummationIndex())
 			isSumIndex = true;
 
 		//Recurively call the calculate function with the specifier at

@@ -356,7 +356,7 @@ Property::Magnetization ExactDiagonalizer::calculateMagnetization(
 ){
 	Information information;
 	for(unsigned int n = 0; n < pattern.getSize(); n++){
-		if(pattern.at(n) == IDX_SPIN){
+		if(pattern.at(n).isSpinIndex()){
 			information.setSpinIndex(n);
 			pattern.at(n) = 0;
 			ranges.at(n) = 1;
@@ -423,7 +423,7 @@ Property::SpinPolarizedLDOS ExactDiagonalizer::calculateSpinPolarizedLDOS(
 ){
 	Information information;
 	for(unsigned int n = 0; n < pattern.getSize(); n++){
-		if(pattern.at(n) == IDX_SPIN){
+		if(pattern.at(n).isSpinIndex()){
 			information.setSpinIndex(n);
 			pattern.at(n) = 0;
 			ranges.at(n) = 1;

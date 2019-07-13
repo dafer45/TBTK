@@ -181,9 +181,9 @@ void IndexTree::add(const Index &index, unsigned int subindex){
 		//propagated to the next node level.
 
 		//Get current subindex
-		int currentIndex = index.at(subindex);
+		Subindex currentIndex = index.at(subindex);
 
-		if(currentIndex == IDX_SEPARATOR){
+		if(currentIndex.isIndexSeparator()){
 			if(children.size() == 0){
 				indexSeparator = true;
 			}
@@ -372,9 +372,9 @@ int IndexTree::getLinearIndex(
 		//node level.
 
 		//Get current subindex
-		int currentIndex = index.at(subindex);
+		Subindex currentIndex = index.at(subindex);
 
-		if(currentIndex == IDX_SEPARATOR){
+		if(currentIndex.isIndexSeparator()){
 			if(indexSeparator){
 				return getLinearIndex(
 					index,
@@ -573,8 +573,8 @@ vector<Index> IndexTree::getIndexList(const Index &pattern) const{
 			//'pattern' Index should be treated as wildcards.
 			bool equalityIsValid = true;
 			for(unsigned int n = 0; n < index.getSize(); n++){
-				if(index[n] == IDX_ALL){
-					if(pattern[n] != IDX_ALL){
+				if(index[n].isWildcard()){
+					if(!pattern[n].isWildcard()){
 						equalityIsValid = false;
 						break;
 					}

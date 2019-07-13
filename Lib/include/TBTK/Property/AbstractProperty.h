@@ -632,7 +632,7 @@ inline void AbstractProperty<DataType>::reduce(
 
 		Index newIndex = newPatterns[matchingPattern];
 		for(unsigned int n = 0; n < newIndex.getSize(); n++){
-			if((newIndex[n] & IDX_ALL_X) == IDX_ALL_X){
+			if(newIndex[n].isLabeledWildcard()){
 				for(
 					unsigned int c = 0;
 					c < targetPatterns[

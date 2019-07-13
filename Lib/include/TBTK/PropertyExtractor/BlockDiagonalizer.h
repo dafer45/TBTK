@@ -119,7 +119,7 @@ public:
 	 *  numbers. */
 	Property::WaveFunctions calculateWaveFunctions(
 		std::vector<Index> patterns,
-		std::vector<int> states
+		std::vector<Subindex> states
 	);
 
 	/** Calculate the Green's function on the Custom format. [See

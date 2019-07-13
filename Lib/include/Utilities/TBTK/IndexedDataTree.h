@@ -1275,9 +1275,9 @@ void IndexedDataTree<Data, isSerializable>::add(
 		//propagated to the next node level.
 
 		//Get current subindex
-		int currentIndex = index.at(subindex);
+		Subindex currentIndex = index.at(subindex);
 
-		if(currentIndex == IDX_SEPARATOR){
+		if(currentIndex.isIndexSeparator()){
 			if(children.size() == 0){
 				indexSeparator = true;
 			}
@@ -1387,9 +1387,9 @@ void IndexedDataTree<Data, true>::add(
 		//propagated to the next node level.
 
 		//Get current subindex
-		int currentIndex = index.at(subindex);
+		Subindex currentIndex = index.at(subindex);
 
-		if(currentIndex == IDX_SEPARATOR){
+		if(currentIndex.isIndexSeparator()){
 			if(children.size() == 0){
 				indexSeparator = true;
 			}
@@ -1499,9 +1499,9 @@ void IndexedDataTree<Data, false>::add(
 		//propagated to the next node level.
 
 		//Get current subindex
-		int currentIndex = index.at(subindex);
+		Subindex currentIndex = index.at(subindex);
 
-		if(currentIndex == IDX_SEPARATOR){
+		if(currentIndex.isIndexSeparator()){
 			if(children.size() == 0){
 				indexSeparator = true;
 			}
@@ -1633,7 +1633,7 @@ bool IndexedDataTree<Data, isSerializable>::get(
 			return false;
 
 		//Get current subindex.
-		int currentIndex = index.at(subindex);
+		Subindex currentIndex = index.at(subindex);
 
 		TBTKAssert(
 			currentIndex >= 0,
@@ -1683,9 +1683,9 @@ bool IndexedDataTree<Data, true>::get(
 			return false;
 
 		//Get current subindex.
-		int currentIndex = index.at(subindex);
+		Subindex currentIndex = index.at(subindex);
 
-		if(currentIndex == IDX_SEPARATOR){
+		if(currentIndex.isIndexSeparator()){
 			if(indexSeparator){
 				return get(data, index, subindex+1);
 			}
@@ -1753,9 +1753,9 @@ bool IndexedDataTree<Data, false>::get(
 			return false;
 
 		//Get current subindex.
-		int currentIndex = index.at(subindex);
+		Subindex currentIndex = index.at(subindex);
 
-		if(currentIndex == IDX_SEPARATOR){
+		if(currentIndex.isIndexSeparator()){
 			if(indexSeparator){
 				return get(data, index, subindex+1);
 			}
@@ -1869,9 +1869,9 @@ const Data& IndexedDataTree<Data, true>::get(
 		}
 
 		//Get current subindex.
-		int currentIndex = index.at(subindex);
+		Subindex currentIndex = index.at(subindex);
 
-		if(currentIndex == IDX_SEPARATOR){
+		if(currentIndex.isIndexSeparator()){
 			if(indexSeparator){
 				return get(index, subindex+1);
 			}
@@ -1960,9 +1960,9 @@ const Data& IndexedDataTree<Data, false>::get(
 		}
 
 		//Get current subindex.
-		int currentIndex = index.at(subindex);
+		Subindex currentIndex = index.at(subindex);
 
-		if(currentIndex == IDX_SEPARATOR){
+		if(currentIndex.isIndexSeparator()){
 			if(indexSeparator){
 				return get(index, subindex+1);
 			}

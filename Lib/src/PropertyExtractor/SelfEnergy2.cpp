@@ -77,7 +77,7 @@ Property::SelfEnergy SelfEnergy2::calculateSelfEnergy(
 		}
 
 		for(unsigned int c = 0; c < components[0].getSize(); c++){
-			if(components[0][c] != IDX_ALL){
+			if(!components[0][c].isWildcard()){
 				information.setCalculateSelfEnergyForAllBlocks(
 					false
 				);

@@ -263,7 +263,7 @@ inline std::string Index::toString() const{
 /*		if(n != 0)
 			str += ", ";*/
 		Subindex subindex = indices.at(n);
-		if(!isFirstIndex && subindex != IDX_SEPARATOR)
+		if(!isFirstIndex && !subindex.isIndexSeparator())
 			str += ", ";
 		else
 			isFirstIndex = false;
@@ -308,14 +308,13 @@ inline bool Index::equals(const Index &index, bool allowWildcard) const{
 					return false;
 				else{
 					if(
-						indices.at(n) == IDX_ALL ||
-						index.indices.at(n) == IDX_ALL
+						indices.at(n).isWildcard() ||
+						index.indices.at(n).isWildcard()
 					){
 						continue;
 					}
 					else if(
-						(indices.at(n) & IDX_ALL_X)
-							== IDX_ALL_X
+						indices.at(n).isLabeledWildcard()
 					){
 						for(
 							unsigned int c = 0;
@@ -333,8 +332,7 @@ inline bool Index::equals(const Index &index, bool allowWildcard) const{
 						}
 					}
 					else if(
-						(index.indices.at(n) & IDX_ALL_X)
-							== IDX_ALL_X
+						index.indices.at(n).isLabeledWildcard()
 					){
 						for(
 							unsigned int c = 0;
@@ -403,7 +401,7 @@ inline std::vector<Index> Index::split() const{
 	std::vector<Index> components;
 	components.push_back(Index());
 	for(unsigned int n = 0; n < indices.size(); n++){
-		if(indices[n] == IDX_SEPARATOR)
+		if(indices[n].isIndexSeparator())
 			components.push_back(Index());
 		else
 			components.back().push_back(indices[n]);

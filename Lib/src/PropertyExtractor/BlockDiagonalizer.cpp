@@ -51,7 +51,7 @@ Property::EigenValues BlockDiagonalizer::getEigenValues(){
 
 Property::WaveFunctions BlockDiagonalizer::calculateWaveFunctions(
 	vector<Index> patterns,
-	vector<int> states
+	vector<Subindex> states
 ){
 	validatePatternsNumComponents(
 		patterns,
@@ -80,7 +80,7 @@ Property::WaveFunctions BlockDiagonalizer::calculateWaveFunctions(
 
 	vector<unsigned int> statesVector;
 	if(states.size() == 1){
-		if(*states.begin() == IDX_ALL){
+		if((*states.begin()).isWildcard()){
 			for(int n = 0; n < bSolver->getModel().getBasisSize(); n++)
 				statesVector.push_back(n);
 		}
