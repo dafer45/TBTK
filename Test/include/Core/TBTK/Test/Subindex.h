@@ -42,8 +42,8 @@ TEST(Subindex, isWildcard){
 }
 
 TEST(Subindex, isLabeledWildcard){
-	Subindex subindex0(IDX_ALL_0);
-	Subindex subindex1(IDX_ALL_1);
+	Subindex subindex0(IDX_ALL_(0));
+	Subindex subindex1(IDX_ALL_(1));
 	Subindex subindex2(IDX_ALL);
 	Subindex subindex3(0);
 	Subindex subindex4(1);
@@ -288,6 +288,41 @@ TEST(Subindex, operatorLargerOrEqualTo1){
 	EXPECT_TRUE(8 >= subindex);
 	EXPECT_TRUE(7 >= subindex);
 	EXPECT_FALSE(6 >= subindex);
+}
+
+TEST(Subindex, operatorFunction){
+	Subindex subindex0(IDX_ALL_);
+	Subindex subindex1(IDX_ALL);
+	Subindex subindex2(0);
+	Subindex subindex3(1);
+
+	subindex0(1);
+	EXPECT_EQ(subindex0, IDX_ALL_(1));
+
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			subindex1(1);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			subindex2(1);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			subindex3(1);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
 }
 
 TEST(Subindex , operatorOstream){

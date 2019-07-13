@@ -150,7 +150,7 @@ TEST(Index, equals){
 	EXPECT_TRUE(Index({{1, 2, 3}, {4, 5, 6}}).equals(Index({{1, 2, 3}, {4, 5, 6}}))) << errorMessage;
 	EXPECT_TRUE(
 		Index(
-			{0, IDX_ALL_0, IDX_ALL_0, IDX_ALL_1, 3, IDX_ALL_1}
+			{0, IDX_ALL_(0), IDX_ALL_(0), IDX_ALL_(1), 3, IDX_ALL_(1)}
 		).equals(Index({0, 1, 1, 2, 3, 2}), true)
 	) << errorMessage;
 	EXPECT_TRUE(
@@ -159,18 +159,18 @@ TEST(Index, equals){
 		).equals(
 			Index({
 				0,
-				IDX_ALL_0,
-				IDX_ALL_0,
-				IDX_ALL_1,
+				IDX_ALL_(0),
+				IDX_ALL_(0),
+				IDX_ALL_(1),
 				3,
-				IDX_ALL_1
+				IDX_ALL_(1)
 			}),
 			true
 		)
 	) << errorMessage;
 	EXPECT_FALSE(
 		Index(
-			{0, IDX_ALL_0, IDX_ALL_0, IDX_ALL_1, 3, IDX_ALL_1}
+			{0, IDX_ALL_(0), IDX_ALL_(0), IDX_ALL_(1), 3, IDX_ALL_(1)}
 		).equals(Index({0, 1, 1, 2, 3, 2}))
 	) << errorMessage;
 	EXPECT_FALSE(
@@ -179,11 +179,11 @@ TEST(Index, equals){
 		).equals(
 			Index({
 				0,
-				IDX_ALL_0,
-				IDX_ALL_0,
-				IDX_ALL_1,
+				IDX_ALL_(0),
+				IDX_ALL_(0),
+				IDX_ALL_(1),
 				3,
-				IDX_ALL_1
+				IDX_ALL_(1)
 			})
 		)
 	) << errorMessage;

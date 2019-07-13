@@ -987,7 +987,9 @@ TEST(AbstractProperty, reduce){
 	EXPECT_EXIT(
 		{
 			Streams::setStdMuteErr();
-			property0.reduce({{_a0_, _a0_}}, {{_a0_}});
+			property0.reduce(
+				{{IDX_ALL_(0), IDX_ALL_(0)}}, {{IDX_ALL_(0)}}
+			);
 		},
 		::testing::ExitedWithCode(1),
 		""
@@ -998,7 +1000,9 @@ TEST(AbstractProperty, reduce){
 	EXPECT_EXIT(
 		{
 			Streams::setStdMuteErr();
-			property1.reduce({{_a0_, _a0_}}, {{_a0_}});
+			property1.reduce(
+				{{IDX_ALL_(0), IDX_ALL_(0)}}, {{IDX_ALL_(0)}}
+			);
 		},
 		::testing::ExitedWithCode(1),
 		""
@@ -1039,12 +1043,18 @@ TEST(AbstractProperty, reduce){
 			Streams::setStdMuteErr();
 			property2.reduce(
 				{
-					{0, 1, _a0_, _a0_, _a1_},
-					{1, 2, _a0_, _a0_}
+					{
+						0,
+						1,
+						IDX_ALL_(0),
+						IDX_ALL_(0),
+						IDX_ALL_(1)
+					},
+					{1, 2, IDX_ALL_(0), IDX_ALL_(0)}
 				},
 				{
-					{_a0_, _a1_},
-					{0, _a0_}
+					{IDX_ALL_(0), IDX_ALL_(1)},
+					{0, IDX_ALL_(0)}
 				}
 			);
 		},
@@ -1055,12 +1065,12 @@ TEST(AbstractProperty, reduce){
 	//{0, 1, 0, 1} and {1, 2, 0, 0} -> {2, 0, 3}.
 	property2.reduce(
 		{
-			{0, 1, _a0_, _a0_, _a1_},
-			{1, 2, _a0_, _a0_}
+			{0, 1, IDX_ALL_(0), IDX_ALL_(0), IDX_ALL_(1)},
+			{1, 2, IDX_ALL_(0), IDX_ALL_(0)}
 		},
 		{
-			{0, 1, _a0_, _a1_},
-			{2, _a0_, 3}
+			{0, 1, IDX_ALL_(0), IDX_ALL_(1)},
+			{2, IDX_ALL_(0), 3}
 		}
 	);
 	for(int x = 0; x < 2; x++){

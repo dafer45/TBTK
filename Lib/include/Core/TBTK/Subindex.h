@@ -33,47 +33,6 @@
 
 namespace TBTK{
 
-/** \brief Enum for special subindex values.
- *
- *  While non-negative subindices in an Index corresponds to normal subindices,
- *  negative subindices are reserved for special purposes.<br><br>
- *  <b>IDX_ALL = _a_:</b><br>
- *    Wildcard Used to indicate that all indices are to be considered or that
- *    the particular subindex value is of no interest. To improve
- *    self-documentation for library code, only IDX_ALL should be used in
- *    actuall library code. '_a_' is syntactic suggar meant for use in
- *    application code.<br><br>
- *  <b>IDX_X, IDX_Y, IDX_Z:</b><br>
- *    Loop indices used to indicate that a particular index should be looped
- *    over.<br><br>
- *  <b>IDX_SPIN:</b><br>
- *    Used to indicate that a certain subindex should be interpreted as a
- *    spin-subindex.<br><br>
- *  <b>IDX_SEPARATOR:</b><br>
- *    Used as Index-separator in compound indices such as {{1, 2}, {3, 4}},
- *    which is stored as {1, 2, IDX_SEPARATOR, 3, 4}. */
-enum : int{
-	//_a_ and _aX_ are shorthand notation for IDX_ALL and IDX_ALL_X. Never
-	//use shorthands in library code.
-	IDX_FLAG_MASK	= (int)0x00FFFFFF,
-	IDX_ALL		= (int)(0xBFFFFFFF & ~0x20000000),
-	_a_		= IDX_ALL,
-	IDX_SUM_ALL	= (int)(0xBFFFFFFF & ~0x20000001),
-	IDX_SPIN	= (int)(0xBFFFFFFF & ~0x20000002),
-	IDX_SEPARATOR	= (int)(0xBFFFFFFF & ~0x20000003),
-	IDX_ALL_X	= (int)(0xBFFFFFFF & ~0x10000000),
-	IDX_ALL_0	= (int)(IDX_ALL_X & ~0x00000000),
-	IDX_ALL_1	= (int)(IDX_ALL_X & ~0x00000001),
-	IDX_ALL_2	= (int)(IDX_ALL_X & ~0x00000002),
-	_a0_		= IDX_ALL_0,
-	_a1_		= IDX_ALL_1,
-	_a2_		= IDX_ALL_2,
-	IDX_RANGE	= (int)(0xBFFFFFFF & ~0x08000000),
-	IDX_X		= (int)(IDX_RANGE & ~0x00000000),
-	IDX_Y		= (int)(IDX_RANGE & ~0x00000001),
-	IDX_Z		= (int)(IDX_RANGE & ~0x00000002)
-};
-
 #if TBTK_WRAP_PRIMITIVE_TYPES
 
 /** @brief Subindex number. */
@@ -395,6 +354,18 @@ public:
 		return lhs >= rhs.value;
 	}*/
 
+	/** Function call operator. Used to attach labels to predefined labeled
+	 *  Subindices. For example IDX_ALL_(n) can be used to define an nth
+	 *  labeled wildcard index. The function call fails if the Index is not
+	 *  of a type that supports labels. Note that if the label is so large
+	 *  that it has non-zero bits outside of the non-zero bits of
+	 *  IDX_FLAG_MASK, the highest valued bits will be truncted.
+	 *
+	 *  @param label The label.
+	 *
+	 *  @return A new Subindex with the label attached. */
+	Subindex operator()(unsigned int label) const;
+
 	/** ostream operator.
 	 *
 	 *  @param os The ostream to write to.
@@ -452,6 +423,40 @@ private:
 	Integer value;
 };
 
+/** \brief Enum for special subindex values.
+ *
+ *  While non-negative subindices in an Index corresponds to normal subindices,
+ *  negative subindices are reserved for special purposes.<br><br>
+ *  <b>IDX_ALL = _a_:</b><br>
+ *    Wildcard Used to indicate that all indices are to be considered or that
+ *    the particular subindex value is of no interest. To improve
+ *    self-documentation for library code, only IDX_ALL should be used in
+ *    actuall library code. '_a_' is syntactic suggar meant for use in
+ *    application code.<br><br>
+ *  <b>IDX_X, IDX_Y, IDX_Z:</b><br>
+ *    Loop indices used to indicate that a particular index should be looped
+ *    over.<br><br>
+ *  <b>IDX_SPIN:</b><br>
+ *    Used to indicate that a certain subindex should be interpreted as a
+ *    spin-subindex.<br><br>
+ *  <b>IDX_SEPARATOR:</b><br>
+ *    Used as Index-separator in compound indices such as {{1, 2}, {3, 4}},
+ *    which is stored as {1, 2, IDX_SEPARATOR, 3, 4}. */
+//_a_ and _aX_ are shorthand notation for IDX_ALL and IDX_ALL_X. Never
+//use shorthands in library code.
+constexpr Subindex IDX_FLAG_MASK	= (int)0x00FFFFFF;
+constexpr Subindex IDX_ALL		= (int)(0xBFFFFFFF & ~0x20000000);
+constexpr Subindex _a_			= IDX_ALL;
+constexpr Subindex IDX_SUM_ALL		= (int)(0xBFFFFFFF & ~0x20000001);
+constexpr Subindex IDX_SPIN		= (int)(0xBFFFFFFF & ~0x20000002);
+constexpr Subindex IDX_SEPARATOR	= (int)(0xBFFFFFFF & ~0x20000003);
+constexpr Subindex IDX_ALL_		= (int)(0xBFFFFFFF & ~0x10000000);
+constexpr Subindex _aX_			= IDX_ALL_;
+constexpr Subindex IDX_RANGE		= (int)(0xBFFFFFFF & ~0x08000000);
+constexpr Subindex IDX_X		= (int)(IDX_RANGE & ~0x00000000);
+constexpr Subindex IDX_Y		= (int)(IDX_RANGE & ~0x00000001);
+constexpr Subindex IDX_Z		= (int)(IDX_RANGE & ~0x00000002);
+
 inline Subindex::Subindex(
 	const std::string &serialization,
 	Serializable::Mode mode
@@ -465,7 +470,7 @@ inline bool Subindex::isWildcard() const{
 }
 
 inline bool Subindex::isLabeledWildcard() const{
-	return (value | IDX_FLAG_MASK) == IDX_ALL_X;
+	return (value | IDX_FLAG_MASK) == IDX_ALL_;
 }
 
 inline bool Subindex::isSummationIndex() const{
@@ -482,6 +487,18 @@ inline bool Subindex::isSpinIndex() const{
 
 inline bool Subindex::isIndexSeparator() const{
 	return value == IDX_SEPARATOR;
+}
+
+inline Subindex Subindex::operator()(unsigned int label) const{
+	TBTKAssert(
+		value == IDX_ALL_.value,
+		"Subindex::operator()",
+		"Unsupported subindex type. This function is only supported"
+		<< " for the IDX_ALL_ Subindex.",
+		""
+	);
+
+	return Subindex(value & (-(int)label | ~IDX_FLAG_MASK));
 }
 
 inline std::string Subindex::serialize(Serializable::Mode mode) const{
