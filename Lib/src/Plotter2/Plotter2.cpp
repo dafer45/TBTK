@@ -81,6 +81,46 @@ void Plotter2::plot(
 	canvas2D.plot(x, y);
 }
 
+void Plotter2::plot(
+	const Property::LDOS &ldos,
+	double sigma,
+	unsigned int windowSize
+){
+	TBTKAssert(
+		ldos.getIndexDescriptor().getFormat()
+			== IndexDescriptor::Format::Custom,
+		"Plotter2::plot()",
+		"Format not supported. The LDOS needs to be of the format"
+		<< " IndexDescriptor::Format::Custom.",
+		"Use the syntax PropertyExtractor::calculateLDOS({{...}}) to"
+		" calculate the LDOS on the custom format."
+	);
+	TBTKAssert(
+		ldos.getIndexDescriptor().getSize() == 1,
+		"Plotter2::plot()",
+		"The LDOS must contain data for exactly one Index, but this"
+		<< " LDOS contains data for '"
+		<< ldos.getIndexDescriptor().getSize() << "' Indices."
+,		""
+	);
+
+	vector<double> x;
+	vector<double> y;
+	double dE = (ldos.getUpperBound() - ldos.getLowerBound())/ldos.getResolution();
+	for(unsigned int n = 0; n < ldos.getSize(); n++){
+		x.push_back(ldos.getLowerBound() + n*dE);
+		y.push_back(ldos(n));
+	}
+
+	if(sigma != 0){
+		double scaledSigma = sigma/(ldos.getUpperBound() - ldos.getLowerBound())*ldos.getResolution();
+		y = Smooth::gaussian(y, scaledSigma, windowSize);
+	}
+
+	setCurrentCanvas(canvas2D);
+	canvas2D.plot(x, y);
+}
+
 void Plotter2::plot(const Property::EigenValues &eigenValues){
 	vector<double> y;
 	for(unsigned int n = 0; n < eigenValues.getSize(); n++)

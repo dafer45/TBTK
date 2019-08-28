@@ -30,6 +30,7 @@
 #include "TBTK/PNGCanvas3D.h"
 #include "TBTK/Property/DOS.h"
 #include "TBTK/Property/EigenValues.h"
+#include "TBTK/Property/LDOS.h"
 #include "TBTK/Streams.h"
 #include "TBTK/TBTKMacros.h"
 
@@ -101,6 +102,14 @@ public:
 	/** Plot density of states. */
 	void plot(
 		const Property::DOS &dos,
+		double sigma = 0,
+		unsigned int windowSize = 51
+	);
+
+	/** Plot local density of states (LDOS). Only works if the LDOS is of
+	 *  the format Format::Custom and contains data for a single Index. */
+	void plot(
+		const Property::LDOS &ldos,
 		double sigma = 0,
 		unsigned int windowSize = 51
 	);
