@@ -27,6 +27,7 @@
 #include "TBTK/ParallelepipedCell.h"
 #include "TBTK/Vector3d.h"
 
+#include <cmath>
 #include <initializer_list>
 #include <vector>
 
@@ -100,11 +101,16 @@ inline unsigned int WignerSeitzCell::getMajorCellIndexInternal(
 	switch(getNumDimensions()){
 	case 1:
 	{
-		TBTKExit(
-			"WignerSeitzCell::getMajorCellIndexInternal()",
-			"Not yet implemented for 1D.",
-			""
+		const Vector3d &basisVector = basisVectors.at(0);
+		double relativeMagnitude = std::abs(
+			coordinates.norm()/basisVector.norm()
 		);
+		while(relativeMagnitude > 0.5){
+			cellIndex++;
+			relativeMagnitude -= 0.5;
+		}
+
+		break;
 	}
 	case 2:
 	{
