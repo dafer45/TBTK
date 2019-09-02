@@ -325,7 +325,7 @@ vector<vector<double>> ParallelepipedCell::getMinorMesh(
 
 		for(unsigned int x = 0; x < numMeshPoints.at(0); x++){
 			mesh.push_back(vector<double>());
-			Vector3d meshPoint = b0/numMeshPoints.at(0);
+			Vector3d meshPoint = x*b0/numMeshPoints.at(0);
 			mesh.back().push_back(meshPoint.x);
 		}
 
