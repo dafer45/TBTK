@@ -29,13 +29,13 @@ TBTK can be downloaded from github, which is done by typing
 TBTK is still in a phase where changes to the core API may occur, even if most core components are relatively stable by now.
 To be able to know that a particular application compiles also in the future, it is recommended that application developers work against one of the public releases.
 A list of releases and their name tags can be found on https://github.com/dafer45/TBTK/releases.
-To use a particular version, for example v1.1.1, execute the following from the TBTK source folder
+To use a particular version, for example v1.1.2, execute the following from the TBTK source folder
 ```bash
-	git checkout v1.1.1
+	git checkout v1.1.2
 ```
 It is recommended to store a note inside projects using TBTK that tells against which version of the library it has been compiled.
 This makes it possible to anytime in the future checkout the exact same version of TBTK and recompile an application developed against it.
-If a named version such as v1.1.1 is not used, the developer should instead remember the exact git hash.
+If a named version such as v1.1.2 is not used, the developer should instead remember the exact git hash.
 
 # Install TBTK {#InstallTBTK}
 ## Unix like operating systems such as Linux and Mac OS
