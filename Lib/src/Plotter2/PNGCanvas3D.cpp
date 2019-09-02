@@ -42,7 +42,7 @@ void PNGCanvas3D::flush(const string &filename){
 	);
 
 	Gnuplot gnuplot;
-	gnuplot << "set terminal png\n";
+	gnuplot << "set terminal png size " << getWidth() << "," << getHeight() << "\n";
 	gnuplot << "set output '" << filename << "'\n";
 	gnuplot << "set title '" << Canvas::getTitle() << "'\n";
 	gnuplot << "set xlabel '" << getLabelX() << "'\n";

@@ -40,8 +40,14 @@ public:
 	/** Set width. */
 	void setWidth(unsigned int width);
 
+	/** Get width. */
+	double getWidth() const;
+
 	/** Set height. */
 	void setHeight(unsigned int height);
+
+	/** Get height. */
+	double getHeight() const;
 
 	/** Set the title. */
 	void setTitle(const std::string &title);
@@ -63,8 +69,16 @@ inline void Canvas::setWidth(unsigned int width){
 	this->width = width;
 }
 
+inline double Canvas::getWidth() const{
+	return width;
+}
+
 inline void Canvas::setHeight(unsigned int height){
 	this->height = height;
+}
+
+inline double Canvas::getHeight() const{
+	return height;
 }
 
 inline void Canvas::setTitle(const std::string &title){

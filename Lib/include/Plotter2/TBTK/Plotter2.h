@@ -174,10 +174,12 @@ private:
 
 inline void Plotter2::setWidth(unsigned int width){
 	canvas2D.setWidth(width);
+	canvas3D.setWidth(width);
 }
 
 inline void Plotter2::setHeight(unsigned int height){
 	canvas2D.setHeight(height);
+	canvas3D.setHeight(height);
 }
 
 inline void Plotter2::setBoundsX(double minX, double maxX){
