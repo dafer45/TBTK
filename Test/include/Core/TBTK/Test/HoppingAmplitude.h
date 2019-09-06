@@ -4,6 +4,18 @@
 
 namespace TBTK{
 
+TEST(HoppingAmplitude, ConstructorUninitialized){
+	HoppingAmplitude hoppingAmplitude;
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			hoppingAmplitude.getAmplitudeCallback();
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
 TEST(HoppingAmplitude, ConstructorAmplitude){
 	std::string errorMessage = "Constructor failed.";
 

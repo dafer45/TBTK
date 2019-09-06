@@ -29,6 +29,10 @@ using namespace std;
 
 namespace TBTK{
 
+HoppingAmplitude::HoppingAmplitude(){
+	this->amplitudeCallback = nullptr;
+}
+
 HoppingAmplitude::HoppingAmplitude(
 	complex<double> amplitude,
 	Index toIndex,

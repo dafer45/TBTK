@@ -68,6 +68,9 @@ public:
 		) const = 0;
 	};
 
+	/** Constructs an uninitialized HoppingAmplitude. */
+	HoppingAmplitude();
+
 	/** Constructs a HoppingAmplitude from a value and two @link Index
 	 *  Indices@endlink.
 	 *
