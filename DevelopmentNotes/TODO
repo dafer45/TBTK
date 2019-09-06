@@ -33,3 +33,5 @@
   which resiles on this form of dE. Making sure that the whole code relies on
   this standard may therefore largely be a matter of ensuring that this method
   is used whenever possible.
+
+- Make AbstractProperty constructors take data as vectors instead of c-arrays.
