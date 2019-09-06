@@ -13,13 +13,13 @@
  * limitations under the License.
  */
 
-/** @file Index.cpp
- *  @brief Generates and validates @link Index Indices@endlink.
+/** @file IndexTree.cpp
+ *  @brief Generates and validates @link IndexTree IndexTrees@endlink.
  *
  *  @author Kristofer Björnson
  */
 
-#include "TBTK/Index.h"
+#include "TBTK/IndexTree.h"
 #include "TBTK/Validation/Validation.h"
 
 #include <iostream>
@@ -32,7 +32,7 @@ int NUM_TESTS = 1;
 int main(int argc, char **argv){
 	Mode mode;
 	int id;
-	init(argc, argv, mode, id, "Index");
+	init(argc, argv, mode, id, "IndexTree");
 
 	if(mode == NumTests){
 		cout << NUM_TESTS;
@@ -40,20 +40,25 @@ int main(int argc, char **argv){
 		return 0;
 	}
 
-	Index index;
+	IndexTree indexTree;
 	switch(id){
 	case 0:
-		index = Index({{1, 2, 3}, {4, 5}});
+		indexTree.add({{1, 2}, {3, 4}});
+		indexTree.add({{1, 2}, {4, 5}});
+		indexTree.add({{2}, {1, 2}});
+		indexTree.add({3, 4, 5});
+		indexTree.generateLinearMap();
+
 		break;
 	default:
 		TBTKExit(
-			"Index",
+			"IndexTree",
 			"Unknown test id '" << id << "'.",
 			""
 		);
 	}
 
-	execute<Index>(index, mode, id, "Index");
+	execute<IndexTree>(indexTree, mode, id, "IndexTree");
 
 	return 0;
 }

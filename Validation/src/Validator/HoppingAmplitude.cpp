@@ -13,13 +13,14 @@
  * limitations under the License.
  */
 
-/** @file Index.cpp
- *  @brief Generates and validates @link Index Indices@endlink.
+/** @file HoppingAmplitude.cpp
+ *  @brief Generates and validates @link HoppingAMplitude
+ *  HoppingAmplitudes@endlink.
  *
  *  @author Kristofer Björnson
  */
 
-#include "TBTK/Index.h"
+#include "TBTK/HoppingAmplitude.h"
 #include "TBTK/Validation/Validation.h"
 
 #include <iostream>
@@ -32,7 +33,7 @@ int NUM_TESTS = 1;
 int main(int argc, char **argv){
 	Mode mode;
 	int id;
-	init(argc, argv, mode, id, "Index");
+	init(argc, argv, mode, id, "HoppingAmplitude");
 
 	if(mode == NumTests){
 		cout << NUM_TESTS;
@@ -40,20 +41,20 @@ int main(int argc, char **argv){
 		return 0;
 	}
 
-	Index index;
+	HoppingAmplitude hoppingAmplitude;
 	switch(id){
 	case 0:
-		index = Index({{1, 2, 3}, {4, 5}});
+		hoppingAmplitude = HoppingAmplitude(137, {1, 2, 3}, {4, 5, 6});
 		break;
 	default:
 		TBTKExit(
-			"Index",
+			"HoppingAmplitude",
 			"Unknown test id '" << id << "'.",
 			""
 		);
 	}
 
-	execute<Index>(index, mode, id, "Index");
+	execute<HoppingAmplitude>(hoppingAmplitude, mode, id, "HoppingAmplitude");
 
 	return 0;
 }

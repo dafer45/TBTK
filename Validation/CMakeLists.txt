@@ -2,7 +2,6 @@ MESSAGE("")
 set(TBTK_QUIET TRUE)
 FIND_PACKAGE(TBTK QUIET)
 
-FIND_PACKAGE(GTest QUIET)
 MESSAGE("")
 #MESSAGE("================================== VALIDATION ==================================")
 #MESSAGE("Validators will be built and installed.")
@@ -24,7 +23,6 @@ IF(TBTK_FOUND)
 
 		#Create executable and add to tests.
 		ADD_EXECUTABLE(${FILENAME} ${FILE})
-		ADD_TEST(NAME ${FILENAME} COMMAND ${FILENAME})
 
 		TARGET_LINK_LIBRARIES(${FILENAME} ${GTEST_BOTH_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${TBTK_LIBRARIES})
 

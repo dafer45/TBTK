@@ -13,13 +13,14 @@
  * limitations under the License.
  */
 
-/** @file Index.cpp
- *  @brief Generates and validates @link Index Indices@endlink.
+/** @file IndexDescriptor.cpp
+ *  @brief Generates and validates @link IndexDescriptor
+ *  IndexDescriptors@endlink.
  *
  *  @author Kristofer Björnson
  */
 
-#include "TBTK/Index.h"
+#include "TBTK/Property/IndexDescriptor.h"
 #include "TBTK/Validation/Validation.h"
 
 #include <iostream>
@@ -27,12 +28,12 @@
 using namespace std;
 using namespace TBTK;
 
-int NUM_TESTS = 1;
+int NUM_TESTS = 2;
 
 int main(int argc, char **argv){
 	Mode mode;
 	int id;
-	init(argc, argv, mode, id, "Index");
+	init(argc, argv, mode, id, "IndexDescriptor");
 
 	if(mode == NumTests){
 		cout << NUM_TESTS;
@@ -40,20 +41,32 @@ int main(int argc, char **argv){
 		return 0;
 	}
 
-	Index index;
+	IndexDescriptor indexDescriptor;
 	switch(id){
 	case 0:
-		index = Index({{1, 2, 3}, {4, 5}});
 		break;
+	case 1:
+	{
+		IndexTree indexTree;
+		indexTree.add({{1, 2}, {3, 4}});
+		indexTree.add({{1, 2}, {4, 5}});
+		indexTree.add({{2}, {1, 2}});
+		indexTree.add({3, 4, 5});
+		indexTree.generateLinearMap();
+
+		indexDescriptor = IndexDescriptor(indexTree);
+
+		break;
+	}
 	default:
 		TBTKExit(
-			"Index",
+			"IndexDescriptor",
 			"Unknown test id '" << id << "'.",
 			""
 		);
 	}
 
-	execute<Index>(index, mode, id, "Index");
+	execute<IndexDescriptor>(indexDescriptor, mode, id, "IndexDescriptor");
 
 	return 0;
 }
