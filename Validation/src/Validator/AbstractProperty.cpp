@@ -73,6 +73,7 @@ int main(int argc, char **argv){
 			data.push_back(n);
 
 		abstractProperty = PublicAbstractProperty(10, data.data());
+		abstractProperty.setDefaultValue(137);
 
 		break;
 	}
@@ -89,6 +90,7 @@ int main(int argc, char **argv){
 		indexTree.generateLinearMap();
 
 		abstractProperty = PublicAbstractProperty(indexTree, 10, data.data());
+		abstractProperty.setDefaultValue(137);
 
 		break;
 	}
