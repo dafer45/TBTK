@@ -119,9 +119,9 @@ Index ParallelepipedCell::getMajorCellIndex(
 			reciprocalNormals.at(n)
 		);
 		if(v > 0)
-			cellIndex.push_back((int)(v + 1/2.));
+			cellIndex.pushBack((int)(v + 1/2.));
 		else
-			cellIndex.push_back((int)(v - 1/2.));
+			cellIndex.pushBack((int)(v - 1/2.));
 	}
 
 	return cellIndex;
@@ -191,9 +191,9 @@ Index ParallelepipedCell::getMinorCellIndex(
 				reciprocalNormals.at(n)
 			);
 			if(v >= 0)
-				cellIndex.push_back((int)(v*(numMeshPoints.at(n)) + 1/2.));
+				cellIndex.pushBack((int)(v*(numMeshPoints.at(n)) + 1/2.));
 			else
-				cellIndex.push_back((int)(v*(numMeshPoints.at(n)) - 1/2.));
+				cellIndex.pushBack((int)(v*(numMeshPoints.at(n)) - 1/2.));
 		}
 		break;
 	case MeshType::Interior:
@@ -203,9 +203,9 @@ Index ParallelepipedCell::getMinorCellIndex(
 				reciprocalNormals.at(n)
 			);
 			if(v >= 0)
-				cellIndex.push_back((int)(v*(numMeshPoints.at(n))));
+				cellIndex.pushBack((int)(v*(numMeshPoints.at(n))));
 			else
-				cellIndex.push_back((int)(v*(numMeshPoints.at(n))-1));
+				cellIndex.pushBack((int)(v*(numMeshPoints.at(n))-1));
 		}
 		break;
 	default:

@@ -554,12 +554,12 @@ typename IndexTree::_Iterator<isConstIterator>::IndexType IndexTree::_Iterator<i
 	const IndexTree *indexTreeBranch = this->indexTree;
 	for(unsigned int n = 0; n < currentIndex.size()-1; n++){
 		if(indexTreeBranch->indexSeparator)
-			index.push_back(IDX_SEPARATOR);
+			index.pushBack(IDX_SEPARATOR);
 
 		if(indexTreeBranch->wildcardIndex)
-			index.push_back(indexTreeBranch->wildcardType);
+			index.pushBack(indexTreeBranch->wildcardType);
 		else
-			index.push_back(currentIndex.at(n));
+			index.pushBack(currentIndex.at(n));
 
 		if(n < currentIndex.size()-1)
 			indexTreeBranch = &indexTreeBranch->children.at(currentIndex.at(n));

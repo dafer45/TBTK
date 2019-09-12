@@ -188,7 +188,7 @@ vector<Index> HoppingAmplitudeTree::getIndexList(const Index &pattern) const{
 		if(pattern[n] < 0)
 			break;
 
-		subTreeIndex.push_back(pattern[n]);
+		subTreeIndex.pushBack(pattern[n]);
 	}
 
 	const HoppingAmplitudeTree *subTree = getSubTree(subTreeIndex);
@@ -413,7 +413,7 @@ void HoppingAmplitudeTree::getBlockIndices(
 ) const{
 	if(children.size() > 0 && isPotentialBlockSeparator){
 		for(unsigned int n = 0; n < children.size(); n++){
-			index.push_back(n);
+			index.pushBack(n);
 			children.at(n).getBlockIndices(blockIndices, index);
 			index.popBack();
 		}
@@ -436,7 +436,7 @@ void HoppingAmplitudeTree::getBlockIndex(
 	Index &blockIndex
 ) const{
 	if(children.size() > 0 && isPotentialBlockSeparator){
-		blockIndex.push_back(index[subindex]);
+		blockIndex.pushBack(index[subindex]);
 		children[index[subindex]].getBlockIndex(index, subindex+1, blockIndex);
 	}
 }

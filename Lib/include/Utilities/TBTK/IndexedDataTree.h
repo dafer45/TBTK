@@ -2047,10 +2047,10 @@ bool IndexedDataTree<Data, true>::getFirstIndex(Index &index) const{
 		return true;
 
 	if(indexSeparator)
-		index.push_back(IDX_SEPARATOR);
+		index.pushBack(IDX_SEPARATOR);
 
 	for(unsigned int n = 0; n < children.size(); n++){
-		index.push_back(n);
+		index.pushBack(n);
 		if(children[n].getFirstIndex(index))
 			return true;
 
@@ -2069,10 +2069,10 @@ bool IndexedDataTree<Data, false>::getFirstIndex(Index &index) const{
 		return true;
 
 	if(indexSeparator)
-		index.push_back(IDX_SEPARATOR);
+		index.pushBack(IDX_SEPARATOR);
 
 	for(unsigned int n = 0; n < children.size(); n++){
-		index.push_back(n);
+		index.pushBack(n);
 		if(children[n].getFirstIndex(index))
 			return true;
 
@@ -2120,7 +2120,7 @@ bool IndexedDataTree<Data, true>::getNextIndex(
 	}
 
 	if(indexSeparator)
-		nextIndex.push_back(IDX_SEPARATOR);
+		nextIndex.pushBack(IDX_SEPARATOR);
 
 	bool hasSameIndexStructure = true;
 	if(currentIndex.getSize() > nextIndex.getSize()){
@@ -2139,7 +2139,7 @@ bool IndexedDataTree<Data, true>::getNextIndex(
 	if(hasSameIndexStructure)
 		startIndex = currentIndex[nextIndex.getSize()];
 	for(unsigned int n = startIndex; n < children.size(); n++){
-		nextIndex.push_back(n);
+		nextIndex.pushBack(n);
 		if(children[n].getNextIndex(currentIndex, nextIndex))
 			return true;
 
@@ -2165,7 +2165,7 @@ bool IndexedDataTree<Data, false>::getNextIndex(
 	}
 
 	if(indexSeparator)
-		nextIndex.push_back(IDX_SEPARATOR);
+		nextIndex.pushBack(IDX_SEPARATOR);
 
 	bool hasSameIndexStructure = true;
 	if(currentIndex.getSize() > nextIndex.getSize()){
@@ -2184,7 +2184,7 @@ bool IndexedDataTree<Data, false>::getNextIndex(
 	if(hasSameIndexStructure)
 		startIndex = currentIndex[nextIndex.getSize()];
 	for(unsigned int n = startIndex; n < children.size(); n++){
-		nextIndex.push_back(n);
+		nextIndex.pushBack(n);
 		if(children[n].getNextIndex(currentIndex, nextIndex))
 			return true;
 

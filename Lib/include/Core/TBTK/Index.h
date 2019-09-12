@@ -39,9 +39,11 @@ namespace TBTK{
  */
 class Index{
 public:
+	//TBTKFeature Index.Construction.1 2019-09-12
 	/** Constructs an empty Index. */
 	Index(){};
 
+	//TBTKFeature Index.Construction.2 2019-09-12
 	/** Constructs an Index from an initializer list.
 	 *
 	 * @param i Initializer list from which the Index is constructed. */
@@ -54,6 +56,7 @@ public:
 		std::initializer_list<unsigned int> i
 	) : indices(i.begin(), i.end()){};*/
 
+	//TBTKFeature Index.Construction.3.C++ 2019-09-12
 	/** Constructs an Index from an std::vector<int>.
 	 *
 	 *  @param i Vector from which the Index is constructed. */
@@ -64,11 +67,14 @@ public:
 	 *  @param i Vector from which the Index is constructed. */
 //	Index(std::vector<unsigned int> i) : indices(i.begin(), i.end()){};
 
+	//TBTKFeature Index.Copy.1 2019-09-12
 	/** Copy constructor.
 	 *
 	 *  @param index Index to copy. */
 	Index(const Index &index) : indices(index.indices){};
 
+	//TBTKFeature Index.Construction.4 2019-09-12
+	//TBTKFeature Index.Construction.5.C++ 2019-09-12
 	/** Constructs a new Index by concatenating two indices into one total
 	 *  index of the form {head, tail}.
 	 *
@@ -82,12 +88,15 @@ public:
 	 *  @param indexList List of indices. */
 //	Index(std::initializer_list<std::initializer_list<Subindex>> indexList);
 
+	//TBTKFeature Index.Construction.8.C++ 2019-09-12
 	/** Constructs a compund Index by concatenating a list of indices,
 	 *  adding IDX_SEPARATOR between every index.
 	 *
 	 *  @param indexList List of indices. */
 	Index(const std::vector<std::vector<Subindex>> &indexList);
 
+	//TBTKFeature Index.Construction.6 2019-09-12
+	//TBTKFeature Index.Construction.7.C++ 2019-09-12
 	/** Constructs a compound Index by Concatenating a list of indices,
 	 *  adding IDX_SEPARATOR between every index.
 	 *
@@ -100,12 +109,14 @@ public:
 	 *  @param indexList List of indices. */
 	Index(std::vector<Index> indexList);
 
+	//TBTKFeature Index.Construction.9 2019-09-12
 	/** Constructs an Index from a string.
 	 *
 	 *  @param indexString String such as "{1, 2, 3} from which the Index is
 	 *  constructed. */
 	Index(const std::string &indexString);
 
+	//TBTKFeature Index.Serialization.1 2019-09-12
 	/** Constructs an Index from a serialization string.
 	 *
 	 *  @param serialization Serialization string from which to construct
@@ -114,6 +125,16 @@ public:
 	 *  @param mode Mode with which the string has been serialized. */
 	Index(const std::string &serialization, Serializable::Mode mode);
 
+	//TBTKFeature Index.Equals.1 2019-09-12
+	//TBTKFeature Index.Equals.2 2019-09-12
+	//TBTKFeature Index.Equals.3 2019-09-12
+	//TBTKFeature Index.Equals.4 2019-09-12
+	//TBTKFeature Index.Equals.5 2019-09-12
+	//TBTKFeature Index.Equals.6 2019-09-12
+	//TBTKFeature Index.Equals.7 2019-09-12
+	//TBTKFeature Index.Equals.8 2019-09-12
+	//TBTKFeature Index.Equals.9 2019-09-12
+	//TBTKFeature Index.Equals.10 2019-09-12
 	/** Compare this index with another index. Returns true if the indices
 	 *  have the same number of subindices and all subindices are equal.
 	 *
@@ -123,6 +144,7 @@ public:
 	 *  @return True if the indices are equal, otherwise false. */
 	bool equals(const Index &index, bool allowWildcard = false) const;
 
+	//TBTKFeature Index.at.1 2019-09-12
 	/** Get subindex n.
 	 *
 	 *  @param n Subindex.
@@ -130,6 +152,7 @@ public:
 	 *  @return Subindex at position n. */
 	Subindex& at(unsigned int n);
 
+	//TBTKFeature Index.at.2.C++ 2019-09-12
 	/** Get subindex n. Constant version.
 	 *
 	 *  @param n Subindex.
@@ -137,6 +160,11 @@ public:
 	 *  @return Subindex at position n. */
 	const Subindex& at(unsigned int n) const;
 
+	//TBTKFeature Index.getSize.1 2019-09-12
+	//TBTKFeature Index.getSize.2 2019-09-12
+	//TBTKFeature Index.getSize.3 2019-09-12
+	//TBTKFeature Index.getSize.4 2019-09-12
+	//TBTKFeature Index.getSize.5 2019-09-12
 	/** Get size.
 	 *
 	 *  @return Number of subindices for individual indices such as
@@ -150,27 +178,32 @@ public:
 	 *  @param Number of subindices to reserve space for. */
 	void reserve(unsigned int size);
 
+	//TBTKFeature Index.pushBack.1 2019-09-12
 	/** Push subindex at the back of the index.
 	 *
 	 *  @param subindex Subindex to append to the Index. */
-	void push_back(Subindex subindex);
+	void pushBack(Subindex subindex);
 
+	//TBTKFeature Index.popFront.1 2019-09-12
 	/** Removes and returns the first subindex.
 	 *
 	 *  @return The first subindex. */
 	Subindex popFront();
 
+	//TBTKFeature Index.popBack.1 2019-09-12
 	/** Removes and returns the last subindex.
 	 *
 	 *  @return The last subindex. */
 	Subindex popBack();
 
+	//TBTKFeature Index.getUnitRange.1 2019-09-12
 	/** Returns an index with the same number or subindices, and each
 	 *  subindex set to 1.
 	 *
 	 *  @return Index with all subindices set to 1. */
 	Index getUnitRange();
 
+	//TBTKFeature Index.getSubIndex.1 2019-09-12
 	/** Returns an Index containing the subindices from position 'first' to
 	 *  'last'.
 	 *
@@ -181,12 +214,21 @@ public:
 	 *  last (inclusive). */
 	Index getSubIndex(int first, int last) const;
 
+	//TBTKFeature Index.split.1 2019-09-12
 	/** Split a compound Index into its components.
 	 *
 	 *  @return An std::vector<Index> containing the individual @link Index
 	 *  Indices @endlink.*/
 	std::vector<Index> split() const;
 
+	//TBTKFeature Index.isPatternIndex.1 2019-09-12
+	//TBTKFeature Index.isPatternIndex.2 2019-09-12
+	//TBTKFeature Index.isPatternIndex.3 2019-09-12
+	//TBTKFeature Index.isPatternIndex.4 2019-09-12
+	//TBTKFeature Index.isPatternIndex.5 2019-09-12
+	//TBTKFeature Index.isPatternIndex.6 2019-09-12
+	//TBTKFeature Index.isPatternIndex.7 2019-09-12
+	//TBTKFeature Index.isPatternIndex.8 2019-09-12
 	/** Returns true if the Index is a pattern index. That is, if it
 	 *  contains a negative subindex.
 	 *
@@ -196,11 +238,18 @@ public:
 	/** Print index. Mainly for debuging. */
 	void print() const;
 
+	//TBTKFeature Index.toString.1 2019-09-12
+	//TBTKFeature Index.toString.2 2019-09-12
 	/** Get string representation of the Index.
 	 *
 	 *  @return A string representation of the Index. */
 	std::string toString() const;
 
+	//TBTKFeature Index.operator<.1.C++ 2019-09-12
+	//TBTKFeature Index.operator<.2.C++ 2019-09-12
+	//TBTKFeature Index.operator<.3.C++ 2019-09-12
+	//TBTKFeature Index.operator<.4.C++ 2019-09-12
+	//TBTKFeature Index.operator<.5.C++ 2019-09-12
 	/** Comparison operator. Returns false if the TreeNode structure would
 	 *  generate a smaller Hilbert space index for i1 than for i2.
 	 *
@@ -208,6 +257,11 @@ public:
 	 *  than i2. */
 	friend bool operator<(const Index &i1, const Index &i2);
 
+	//TBTKFeature Index.operator>.1.C++ 2019-09-12
+	//TBTKFeature Index.operator>.2.C++ 2019-09-12
+	//TBTKFeature Index.operator>.3.C++ 2019-09-12
+	//TBTKFeature Index.operator>.4.C++ 2019-09-12
+	//TBTKFeature Index.operator>.5.C++ 2019-09-12
 	/** Comparison operator. Returns false if the TreeNode structure would
 	 *  generate a larger Hilbert space index for i1 than for i2.
 	 *
@@ -215,6 +269,8 @@ public:
 	 *  i2. */
 	friend bool operator>(const Index &i1, const Index &i2);
 
+	//TBTKFeature Index.operator[].1.C++ 2019-09-12
+	//TBTKFeature Index.operator[].2.C++ 2019-09-12
 	/** Subscript operator.
 	 *
 	 *  @param n Subindex.
@@ -222,6 +278,8 @@ public:
 	 *  @return Subindex at position n. */
 	Subindex& operator[](unsigned int subindex);
 
+	//TBTKFeature Index.operator[].1.C++ 2019-09-12
+	//TBTKFeature Index.operator[].2.C++ 2019-09-12
 	/** Subscript operator.
 	 *
 	 *  @param n Subindex.
@@ -229,6 +287,7 @@ public:
 	 *  @return Subindex at position n. */
 	const Subindex& operator[](unsigned int subindex) const;
 
+	//TBTKFeature Index.Serialization.1 2019-09-12
 	/** Serialize Index. Note that Index is pseudo-Serializable in that it
 	 *  implements the Serializable interface, but does so non-virtually.
 	 *
@@ -379,7 +438,7 @@ inline void Index::reserve(unsigned int size){
 	indices.reserve(size);
 }
 
-inline void Index::push_back(Subindex subindex){
+inline void Index::pushBack(Subindex subindex){
 	indices.push_back(subindex);
 }
 
@@ -404,7 +463,7 @@ inline std::vector<Index> Index::split() const{
 		if(indices[n].isIndexSeparator())
 			components.push_back(Index());
 		else
-			components.back().push_back(indices[n]);
+			components.back().pushBack(indices[n]);
 	}
 
 	return components;

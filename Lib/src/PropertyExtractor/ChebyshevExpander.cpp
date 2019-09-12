@@ -182,7 +182,7 @@ Property::GreensFunction ChebyshevExpander::calculateGreensFunction(
 		){
 			Index toPattern;
 			for(unsigned int n = 0; n < *iterator; n++){
-				toPattern.push_back(IDX_ALL);
+				toPattern.pushBack(IDX_ALL);
 			}
 
 			vector<Index> matchingIndices = memoryLayout.getIndexList(
@@ -191,7 +191,7 @@ Property::GreensFunction ChebyshevExpander::calculateGreensFunction(
 			for(unsigned int n = 0; n < matchingIndices.size(); n++){
 				Index toIndex;
 				for(unsigned int c = 0; c < *iterator; c++)
-					toIndex.push_back(matchingIndices[n][c]);
+					toIndex.pushBack(matchingIndices[n][c]);
 				toIndices.push_back(toIndex);
 			}
 		}

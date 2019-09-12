@@ -50,11 +50,11 @@ Model NambuSpaceExtender::extend(const Model &model, Mode mode){
 		Index toIndex1 = fromIndex0;
 		Index fromIndex1 = toIndex0;
 
-		toIndex0.push_back(0);
-		fromIndex0.push_back(0);
+		toIndex0.pushBack(0);
+		fromIndex0.pushBack(0);
 
-		toIndex1.push_back(1);
-		fromIndex1.push_back(1);
+		toIndex1.pushBack(1);
+		fromIndex1.pushBack(1);
 
 		if((*iterator).getIsCallbackDependent()){
 			newModel << HoppingAmplitude(
@@ -89,8 +89,8 @@ Model NambuSpaceExtender::extend(const Model &model, Mode mode){
 
 			Index index1 = index0;
 
-			index0.push_back(0);
-			index1.push_back(1);
+			index0.pushBack(0);
+			index1.pushBack(1);
 
 			newModel << HoppingAmplitude(
 				-model.getChemicalPotential(),

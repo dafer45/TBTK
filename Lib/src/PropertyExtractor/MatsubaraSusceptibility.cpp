@@ -107,7 +107,7 @@ Property::Susceptibility MatsubaraSusceptibility::calculateSusceptibility(
 		//This is the restricting assumption.
 		Index kIndexPatternExtended = kIndexPattern;
 		for(unsigned int c = 0; c < indices[1].getSize(); c++)
-			kIndexPatternExtended.push_back(IDX_ALL);
+			kIndexPatternExtended.pushBack(IDX_ALL);
 
 		IndexTree kIndexTree = generateIndexTree(
 			{kIndexPatternExtended},
@@ -247,7 +247,7 @@ Property::Susceptibility MatsubaraSusceptibility::calculateSusceptibility(
 		//This is the restricting assumption.
 		Index kIndexPatternExtended = kIndexPattern;
 		for(unsigned int n = 0; n < indices[1].getSize(); n++)
-			kIndexPatternExtended.push_back(IDX_ALL);
+			kIndexPatternExtended.pushBack(IDX_ALL);
 
 		IndexTree kIndexTree = generateIndexTree(
 			{kIndexPatternExtended},

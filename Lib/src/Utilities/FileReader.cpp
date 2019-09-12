@@ -350,7 +350,7 @@ IndexTree* FileReader::readIndexTree(string name, string path){
 			}
 			else{
 				subindicesLeft--;
-				indices.back().push_back(serializedIndices[n]);
+				indices.back().pushBack(serializedIndices[n]);
 			}
 		}
 
