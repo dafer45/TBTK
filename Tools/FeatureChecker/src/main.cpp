@@ -33,6 +33,9 @@
 using namespace std;
 using namespace TBTK;
 
+const string ALL_COMPONENTS_FILENAME
+	= string(TBTK_RESOURCE_PATH) + "/all.components";
+
 vector<string> splitString(string str, char delimiter){
 	vector<string> components;
 	size_t start;
@@ -341,9 +344,8 @@ vector<unsigned int> getComponentIds(
 }
 
 void checkAllComponents(const string &filename){
-	vector<tuple<string, string>> referenceComponents = getComponentList(
-		string(TBTK_RESOURCE_PATH) + "/all.components"
-	);
+	vector<tuple<string, string>> referenceComponents
+		= getComponentList(ALL_COMPONENTS_FILENAME);
 	vector<tuple<string, string>> components = getComponentList(filename);
 
 	Streams::out << left
@@ -429,13 +431,43 @@ void checkAllComponents(const string &filename){
 	}
 }
 
+void printFeature(const string &name){
+	vector<tuple<string, string>> components
+		= getComponentList(ALL_COMPONENTS_FILENAME);
+	bool firstFeature = true;
+	for(unsigned int n = 0; n < components.size(); n++){
+		if(name.find(get<0>(components[n])) != string::npos){
+			ifstream fin(get<1>(components[n]));
+			string line;
+			while(getline(fin, line)){
+				if(line.find(name) != string::npos){
+					if(firstFeature)
+						firstFeature = false;
+					else
+						Streams::out << "\n";
+
+					Streams::out << line << "\n";
+					while(getline(fin, line)){
+						if(line.find("TBTKFeature") != string::npos)
+							break;
+						else if(line.size() != 0)
+							Streams::out << line << "\n";
+					}
+				}
+			}
+
+			break;
+		}
+	}
+}
+
 int main(int argc, char **argv){
 	switch(argc){
 	case 2:
 	{
 		string filename = argv[1];
 		vector<string> components = splitString(filename, '.');
-		TBTKAssert(
+/*		TBTKAssert(
 			components.size() > 1,
 			"TBTKFeatureChecker",
 			"Unsupported argument.",
@@ -450,9 +482,17 @@ int main(int argc, char **argv){
 			"Examples of valid uses are 'TBTKFeatureChecker"
 			<< " componentListFile.components' and"
 			<< " 'TBTKFeatureChecker Core.Index Index.h'."
-		);
+		);*/
 
-		checkAllComponents(argv[1]);
+		if(
+			components.size() > 1
+			&& components.back().compare("components") == 0
+		){
+			checkAllComponents(argv[1]);
+		}
+		else{
+			printFeature(argv[1]);
+		}
 
 		break;
 	}
