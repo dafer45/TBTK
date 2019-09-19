@@ -6,10 +6,12 @@ namespace TBTK{
 
 #if TBTK_WRAP_PRIMITIVE_TYPES
 
+//TBTKFeature Subindex.Construction.1 2019-09-19
 TEST(Subindex, Constructor0){
-	//Not testable on its own.
+	Subindex subindex;
 }
 
+//TBTKFeature Subindex.Construction.2.C++ 2019-09-19
 TEST(Subindex, Constructor1){
 	Subindex subindex0((int)7);
 	Subindex subindex1(Integer(7));
@@ -19,6 +21,7 @@ TEST(Subindex, Constructor1){
 	EXPECT_EQ(subindex0, subindex2);
 }
 
+//TBTKFeature Subindex.Construction.3 2019-09-19
 TEST(Subindex, serializeToJSON){
 	Subindex subindex0(7);
 	Subindex subindex1(

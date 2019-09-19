@@ -96,6 +96,9 @@ int main(int argc, char **argv){
 		Streams::out << "TBTKCreateApplication.\n";
 		Streams::out << "\n";
 	}
+	else if(string(argv[1]).compare("resource-path") == 0){
+		Streams::out << TBTK_RESOURCE_PATH;
+	}
 	else{
 		Streams::out << "Unknown option '" << argv[1] << "'.\n";
 	}

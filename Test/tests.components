@@ -1,0 +1,2 @@
+Core.Index	= include/Core/TBTK/Test/Index.h
+Core.Subindex	= include/Core/TBTK/Test/Subindex.h

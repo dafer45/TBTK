@@ -1,0 +1,3 @@
+Core.Index		= include/Core/TBTK/Index.h
+Core.HoppingAmplitude	= include/Core/TBTK/HoppingAmplitude.h
+Core.Subindex		= include/Core/TBTK/Subindex.h

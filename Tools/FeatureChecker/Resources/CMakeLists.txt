@@ -1,0 +1,6 @@
+ADD_SUBDIRECTORY(Core)
+
+INSTALL(
+	FILES all.components
+	DESTINATION share/TBTK
+)

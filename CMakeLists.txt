@@ -285,6 +285,9 @@ INCLUDE_DIRECTORIES(
 	Lib/include/Utilities/
 )
 
+#Resource paths
+ADD_DEFINITIONS(-DTBTK_RESOURCE_PATH="${CMAKE_INSTALL_PREFIX}/share/TBTK")
+
 IF(${COMPILE_ARNOLDI_ITERATOR})
 #	INCLUDE_DIRECTORIES(Lib/include/TBTK/Solver/ArnoldiIterator/)
 #	INCLUDE_DIRECTORIES(Lib/include/TBTK/PropertyExtractor/ArnoldiIterator/)
