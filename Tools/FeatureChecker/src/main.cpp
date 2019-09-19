@@ -183,36 +183,24 @@ vector<tuple<string, bool, bool, unsigned int>> executeFeatureCheck(const vector
 
 	vector<tuple<string, bool, bool, unsigned int>> results;
 
-//	Streams::out << left << setw(40) << "Test name" << setw(10) << "Exists" << setw(15) << "Up to date" << setw(15) << "Multiplicity" << "\n";
 	for(unsigned int n = 0; n < names[0].size(); n++){
 		const string &name = names[0][n];
-//		Streams::out << setw(40) << name;
 		bool exists = false;
 		bool isUpToDate = false;
 		unsigned int multiplicity;
 
 		vector<unsigned int> ids = getTestIds(names[1], name);
 		if(ids.size() != 0){
-//			Streams::out << setw(10) << "X";
 			exists = true;
 
 			isUpToDate = true;
-//			bool isUpToDate = true;
 			for(unsigned int c = 0; c < ids.size(); c++){
 				if(!getIsUpToDate(dates[0][n], dates[1][ids[c]]))
 					isUpToDate = false;
-			}/*
-			if(isUpToDate){
-				Streams::out << setw(15) << "X";
 			}
-			else{
-				Streams::out << setw(15) << "";
-			}
-			Streams::out << setw(15) << ids.size();*/
 		}
 		multiplicity = ids.size();
 
-//		Streams::out << "\n";
 
 		results.push_back(make_tuple(name, exists, isUpToDate, multiplicity));
 	}
@@ -234,6 +222,8 @@ void printFeatureCheckResults(
 			Streams::out << setw(10) << "X";
 			if(get<2>(results[n]))
 				Streams::out << setw(15) << "X";
+			else
+				Streams::out << setw(15) << "";
 			Streams::out << setw(15) << get<3>(results[n]);
 		}
 		Streams::out << "\n";
@@ -256,7 +246,7 @@ unsigned int getNumUpToDateFeatures(
 ){
 	unsigned int numUpToDateFeatures = 0;
 	for(unsigned int n = 0; n < results.size(); n++)
-		if(get<1>(results[n]))
+		if(get<2>(results[n]))
 			numUpToDateFeatures++;
 
 	return numUpToDateFeatures;
@@ -367,7 +357,6 @@ void checkAllComponents(const string &filename){
 	for(unsigned int n = 0; n < referenceComponents.size(); n++){
 		string componentName = get<0>(referenceComponents[n]);
 		vector<unsigned int> ids = getComponentIds(components, componentName);
-//		Streams::out << get<0>(referenceComponents[n]) << "\t" << get<1>(referenceComponents[n]) << "\n";
 		Streams::out << setw(29) << componentName << "|";
 		switch(ids.size()){
 		case 0:

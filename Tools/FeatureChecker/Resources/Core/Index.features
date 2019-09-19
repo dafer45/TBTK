@@ -1,42 +1,42 @@
-TBTKFeature Index.Construction.1 2019-09-12
+TBTKFeature Core.Index.Construction.1 2019-09-19
 	Do:
 		Create empty index.
 	Verify:
 		Size is equal to zero.
 
-TBTKFeature Index.Construction.2 2019-09-12
+TBTKFeature Core.Index.Construction.2 2019-09-19
 	Do:
 		Create Index {1, 2, 3}.
 	Verify:
 		Size is equal to 3 and the three components are {1, 2, 3}.
 
-TBTKFeature Index.Construction.3.C++ 2019-09-12
+TBTKFeature Core.Index.Construction.3.C++ 2019-09-19
 	Do:
 		Create Index {1, 2, 3} from an std::vector.	
 	Verify:
 		Size is equal to 3 and the three components are {1, 2, 3}.
 
-TBTKFeature Index.Construction.4 2019-09-12
+TBTKFeature Core.Index.Construction.4 2019-09-19
 	Do:
 		Concatenate the index {1, 2} and {3}.
 	Verify:
 		Size is equal to 3 and the three components are {1, 2, 3}.
 
-TBTKFeature Index.Construction.5.C++ 2019-09-12
+TBTKFeature Core.Index.Construction.5.C++ 2019-09-19
 	Do:
 		Concatenate the index from std::vectors with components {1, 2}
 		and {3}.
 	Verify:
 		Size is equal to 3 and the three components are {1, 2, 3}.
 
-TBTKFeature Index.Construction.6 2019-09-12
+TBTKFeature Core.Index.Construction.6 2019-09-19
 	Do:
 		Create compound Index {{1}, {2, 3}, {4, 5, 6}}.
 	Verify:
 		Size is equal to 8 and the components are
 		{{1}, {2, 3}, {4, 5, 6}}.
 
-TBTKFeature Index.Construction.7.C++ 2019-09-12
+TBTKFeature Core.Index.Construction.7.C++ 2019-09-19
 	Do:
 		Create compound Index from a std::vector of three Indices {1},
 		{2, 3}, and {4, 5, 6}.
@@ -44,7 +44,7 @@ TBTKFeature Index.Construction.7.C++ 2019-09-12
 		Size is equal to 8 and the components are
 		{{1}, {2, 3}, {4, 5, 6}}.
 
-TBTKFeature Index.Construction.8.C++ 2019-09-12
+TBTKFeature Core.Index.Construction.8.C++ 2019-09-19
 	Do:
 		Create compound Index from a std::vector of three std::vectors
 		{1}, {2, 3}, and {4, 5, 6}.
@@ -52,19 +52,19 @@ TBTKFeature Index.Construction.8.C++ 2019-09-12
 		Size is equal to 8 and the components are
 		{{1}, {2, 3}, {4, 5, 6}}.
 
-TBTKFeature Index.Construction.9 2019-09-12
+TBTKFeature Core.Index.Construction.9 2019-09-19
 	Do:
 		Create Index from string "{1, 2, 3}".
 	Verify:
 		Size is equal to 3 and the components are {1, 2, 3}.
 
-TBTKFeature Index.Copy.1 2019-09-12
+TBTKFeature Core.Index.Copy.1 2019-09-19
 	Do:
 		Copy Index with values {1, 2, 3} to a new Index.
 	Verigy:
 		Size is equal to 3 and the three components are {1, 2, 3}.
 
-TBTKFeature Index.Serialization.1 2019-09-12
+TBTKFeature Core.Index.Serialization.1 2019-09-19
 	Do:
 		Serialize the Index {1, 2, 3} and create a new index from the
 		serialization.
@@ -72,49 +72,49 @@ TBTKFeature Index.Serialization.1 2019-09-12
 		The two indices are equal according to the function
 		index.equals().
 
-TBTKFeature Index.Equals.1 2019-09-12
+TBTKFeature Core.Index.Equals.1 2019-09-19
 	Do:
 		Compare the two indices {1, 2, 3} and {1, 2, 3} using
 		index.equals().
 	Verify:
 		Return true.
 
-TBTKFeature Index.Equals.2 2019-09-12
+TBTKFeature Core.Index.Equals.2 2019-09-19
 	Do:
 		Compare the two indices {1, 2, 2} and {1, 2, 3} using
 		index.equals().
 	Verify:
 		Return false.
 
-TBTKFeature Index.Equals.3 2019-09-12
+TBTKFeature Core.Index.Equals.3 2019-09-19
 	Do:
 		Compare the two indices {1, 2, IDX_ALL} and {1, 2, 3} using
 		index.equals().
 	Verify:
 		Return false.
 
-TBTKFeature Index.Equals.4 2019-09-12
+TBTKFeature Core.Index.Equals.4 2019-09-19
 	Do:
 		Compare the two indices {1, 2, 2} and {1, 2, 3} using
 		index.equals() and the argument allowWildcards set to true.
 	Verify:
 		Return true.
 
-TBTKFeature Index.Equals.5 2019-09-12
+TBTKFeature Core.Index.Equals.5 2019-09-19
 	Do:
 		Compare the two indices {1, -1, 3} and {1, -1, 3} using
 		index.equals().
 	Verify:
 		Return true.
 
-TBTKFeature Index.Equals.6 2019-09-12
+TBTKFeature Core.Index.Equals.6 2019-09-19
 	Do:
 		Compare the two indices {{1, 2, 3}, {4, 5, 6}} and
 		{{1, 2, 3}, {4, 5, 6}} using index.equals().
 	Verify:
 		Return true.
 
-TBTKFeature Index.Equals.7 2019-09-12
+TBTKFeature Core.Index.Equals.7 2019-09-19
 	Do:
 		Compare the two indices
 		{0, IDX_ALL_(0), IDX_ALL_(0), IDX_ALL_(1), 3, IDX_ALL_(1)} and
@@ -123,7 +123,7 @@ TBTKFeature Index.Equals.7 2019-09-12
 	Verify:
 		Return true.
 
-TBTKFeature Index.Equals.8 2019-09-12
+TBTKFeature Core.Index.Equals.8 2019-09-19
 	Do:
 		Compare the two indices {0, 1, 1, 2, 3, 2} and
 		{0, IDX_ALL_(0), IDX_ALL_(0), IDX_ALL_(1), 3, IDX_ALL_(1)}
@@ -132,7 +132,7 @@ TBTKFeature Index.Equals.8 2019-09-12
 	Verify:
 		Return true.
 
-TBTKFeature Index.Equals.9 2019-09-12
+TBTKFeature Core.Index.Equals.9 2019-09-19
 	Do:
 		Compare the two indices
 		{0, IDX_ALL_(0), IDX_ALL_(0), IDX_ALL_(1), 3, IDX_ALL_(1)} and
@@ -140,7 +140,7 @@ TBTKFeature Index.Equals.9 2019-09-12
 	Verify:
 		Return false.
 
-TBTKFeature Index.Equals.10 2019-09-12
+TBTKFeature Core.Index.Equals.10 2019-09-19
 	Do:
 		Compare the two indices {0, 1, 1, 2, 3, 2} and
 		{0, IDX_ALL_(0), IDX_ALL_(0), IDX_ALL_(1), 3, IDX_ALL_(1)}
@@ -148,97 +148,97 @@ TBTKFeature Index.Equals.10 2019-09-12
 	Verify:
 		Return false.
 
-TBTKFeature Index.at.1 2019-09-12
+TBTKFeature Core.Index.at.1 2019-09-19
 	Do:
 		Create Index {1, 2, 3} and use index.at() to check the
 		component values.
 	Verify:
 		The components are {1, 2, 3}.
 
-TBTKFeature Index.at.2.C++ 2019-09-12
+TBTKFeature Core.Index.at.2.C++ 2019-09-19
 	Do:
 		Create const Index {1, 2, 3} and use index.at() to check the
 		component values.
 	Verify:
 		The components are {1, 2, 3}.
 
-TBTKFeature Index.operator[].1.C++ 2019-09-12
+TBTKFeature Core.Index.operator[].1.C++ 2019-09-19
 	Do:
 		Create Index {1, 2, 3} and use index[] to check the component
 		values.
 	Verify:
 		The components are {1, 2, 3}.
 
-TBTKFeature Index.operator[].2.C++ 2019-09-12
+TBTKFeature Core.Index.operator[].2.C++ 2019-09-19
 	Do:
 		Create const Index {1, 2, 3} and use index[] to check the
 		component values.
 	Verify:
 		The components are {1, 2, 3}.
 
-TBTKFeature Index.getSize.1 2019-09-12
+TBTKFeature Core.Index.getSize.1 2019-09-19
 	Do:
 		Check size of empty Index.
 	Verify:
 		Size is 0.
 
-TBTKFeature Index.getSize.2 2019-09-12
+TBTKFeature Core.Index.getSize.2 2019-09-19
 	Do:
 		Check size of the Index {1}.
 	Verify:
 		Size is 1.
 
-TBTKFeature Index.getSize.3 2019-09-12
+TBTKFeature Core.Index.getSize.3 2019-09-19
 	Do:
 		Check size of the Index {1, 2, 3}.
 	Verify:
 		Size is 3.
 
-TBTKFeature Index.getSize.4 2019-09-12
+TBTKFeature Core.Index.getSize.4 2019-09-19
 	Do:
 		Check size of the Index that results from concatenating {1, 2}
 		and {3, 4}.
 	Verify:
 		Size is 4.
 
-TBTKFeature Index.getSize.5 2019-09-12
+TBTKFeature Core.Index.getSize.5 2019-09-19
 	Do:
 		Check size of the Index {{1, 2}, {3, 4}}.
 	Verify:
 		Size is 5.
 
-TBTKFeature Index.pushBack.1 2019-09-12
+TBTKFeature Core.Index.pushBack.1 2019-09-19
 	Do:
 		Create empty Index and add 1, 2, and 3 using index.pushBack().
 	Verify:
 		Equals {1, 2, 3}.
 
-TBTKFeature Index.popFront.1 2019-09-12
+TBTKFeature Core.Index.popFront.1 2019-09-19
 	Do:
 		Create Index {1, 2, 3} and call index.popFront().
 	Verify:
 		Returns 1 and the index equals {2, 3}.
 
-TBTKFeature Index.popBack.1 2019-09-12
+TBTKFeature Core.Index.popBack.1 2019-09-19
 	Do:
 		Create Index {1, 2, 3} and call index.popBack().
 	Verify:
 		Returns 3 and the index equals {1, 2}.
 
-TBTKFeature Index.getUnitRange.1 2019-09-12
+TBTKFeature Core.Index.getUnitRange.1 2019-09-19
 	Do:
 		Create Index {1, 2, 3} and call index.getUnitRange().
 	Verify:
 		Returns an Index that is equal to {1, 1, 1}.
 
-TBTKFeature Index.getSubIndex.1 2019-09-12
+TBTKFeature Core.Index.getSubIndex.1 2019-09-19
 	Do:
 		Create Index {1, 2, 3, 4, 5, 6, 7, 8} and call
 		index.getSubIndex().
 	Verify:
 		Returns an Index that is equal to {4, 5, 6}.
 
-TBTKFeature Index.split.1 2019-09-12
+TBTKFeature Core.Index.split.1 2019-09-19
 	Do:
 		Create Index {{1, 2, 3}, {4, 5}, {6, 7, 8}} and call
 		index.split().
@@ -246,122 +246,122 @@ TBTKFeature Index.split.1 2019-09-12
 		Returns an array of size 3, containing the Indices {1, 2, 3},
 		{4, 5}, and {6, 7, 8}.
 
-TBTKFeature Index.isPatternIndex.1 2019-09-12
+TBTKFeature Core.Index.isPatternIndex.1 2019-09-19
 	Do:
 		Create Index {1, 2, 3} and call index.isPatternIndex().
 	Verify:
 		Return false.
 
-TBTKFeature Index.isPatternIndex.2 2019-09-12
+TBTKFeature Core.Index.isPatternIndex.2 2019-09-19
 	Do:
 		Create Index {1, IDX_ALL, 3} and call index.isPatternIndex().
 	Verify:
 		Return true.
 
-TBTKFeature Index.isPatternIndex.3 2019-09-12
+TBTKFeature Core.Index.isPatternIndex.3 2019-09-19
 	Do:
 		Create Index {1, IDX_SUM_ALL, 3} and call index.isPatternIndex().
 	Verify:
 		Return true.
 
-TBTKFeature Index.isPatternIndex.4 2019-09-12
+TBTKFeature Core.Index.isPatternIndex.4 2019-09-19
 	Do:
 		Create Index {1, IDX_X, 3} and call index.isPatternIndex().
 	Verify:
 		Return true.
 
-TBTKFeature Index.isPatternIndex.5 2019-09-12
+TBTKFeature Core.Index.isPatternIndex.5 2019-09-19
 	Do:
 		Create Index {1, IDX_Y, 3} and call index.isPatternIndex().
 	Verify:
 		Return true.
 
-TBTKFeature Index.isPatternIndex.6 2019-09-12
+TBTKFeature Core.Index.isPatternIndex.6 2019-09-19
 	Do:
 		Create Index {1, IDX_Z, 3} and call index.isPatternIndex().
 	Verify:
 		Return true.
 
-TBTKFeature Index.isPatternIndex.7 2019-09-12
+TBTKFeature Core.Index.isPatternIndex.7 2019-09-19
 	Do:
 		Create Index {1, IDX_SPIN, 3} and call index.isPatternIndex().
 	Verify:
 		Return true.
 
-TBTKFeature Index.isPatternIndex.8 2019-09-12
+TBTKFeature Core.Index.isPatternIndex.8 2019-09-19
 	Do:
 		Create Index {1, IDX_SEPARATOR, 3} and call index.isPatternIndex().
 	Verify:
 		Return true.
 
-TBTKFeature Index.toString.1 2019-09-12
+TBTKFeature Core.Index.toString.1 2019-09-19
 	Do:
 		Create Index {1, 2, 3} and call index.toString().
 	Verify:
 		Return the string "{1, 2, 3}".
 
-TBTKFeature Index.toString.2 2019-09-12
+TBTKFeature Core.Index.toString.2 2019-09-19
 	Do:
 		Create Index {{1}, {2, 3}, {4, 5, 6}} and call
 		index.toString().
 	Verify:
 		Return the string "{{1}, {2, 3}, {4, 5, 6}}".
 
-TBTKFeature Index.operator<.1.C++ 2019-09-12
+TBTKFeature Core.Index.operator<.1.C++ 2019-09-19
 	Do:
 		Compare {1, 2, 3} < {1, 2, 3}
 	Verify:
 		Return false.
 
-TBTKFeature Index.operator<.2.C++ 2019-09-12
+TBTKFeature Core.Index.operator<.2.C++ 2019-09-19
 	Do:
 		Compare {1, 2, 3} < {1, 2, 4}
 	Verify:
 		Return true.
 
-TBTKFeature Index.operator<.3.C++ 2019-09-12
+TBTKFeature Core.Index.operator<.3.C++ 2019-09-19
 	Do:
 		Compare {1, 2, 3} < {1, 1, 4}
 	Verify:
 		Return false.
 
-TBTKFeature Index.operator<.4.C++ 2019-09-12
+TBTKFeature Core.Index.operator<.4.C++ 2019-09-19
 	Do:
 		Compare {1, 2} < {1, 2, 3}
 	Verify:
 		Exit or throw exception.
 
-TBTKFeature Index.operator<.5.C++ 2019-09-12
+TBTKFeature Core.Index.operator<.5.C++ 2019-09-19
 	Do:
 		Compare {1, 2, 3} < {1, 2}
 	Verify:
 		Exit or throw exception.
 
-TBTKFeature Index.operator>.1.C++ 2019-09-12
+TBTKFeature Core.Index.operator>.1.C++ 2019-09-19
 	Do:
 		Compare {1, 2, 3} > {1, 2, 3}
 	Verify:
 		Return false.
 
-TBTKFeature Index.operator>.2.C++ 2019-09-12
+TBTKFeature Core.Index.operator>.2.C++ 2019-09-19
 	Do:
 		Compare {1, 2, 3} > {1, 2, 4}
 	Verify:
 		Return false.
 
-TBTKFeature Index.operator>.3.C++ 2019-09-12
+TBTKFeature Core.Index.operator>.3.C++ 2019-09-19
 	Do:
 		Compare {1, 2, 3} > {1, 1, 4}
 	Verify:
 		Return true.
 
-TBTKFeature Index.operator>.4.C++ 2019-09-12
+TBTKFeature Core.Index.operator>.4.C++ 2019-09-19
 	Do:
 		Compare {1, 2} > {1, 2, 3}
 	Verify:
 		Exit or throw exception.
 
-TBTKFeature Index.operator>.5.C++ 2019-09-12
+TBTKFeature Core.Index.operator>.5.C++ 2019-09-19
 	Do:
 		Compare {1, 2, 3} > {1, 2}
 	Verify:

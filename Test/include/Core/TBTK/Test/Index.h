@@ -4,13 +4,13 @@
 
 namespace TBTK{
 
-//TBTKFeature Index.Construction.1 2019-09-12
+//TBTKFeature Core.Index.Construction.1 2019-09-19
 TEST(Index, ConstructorEmpty){
 	Index index;
 	EXPECT_EQ(index.getSize(), 0) << "Empty Index does not have size 0.";
 }
 
-//TBTKFeature Index.Construction.2 2019-09-12
+//TBTKFeature Core.Index.Construction.2 2019-09-19
 TEST(Index, ConstructorInitializerListInt){
 	Index index({1, 2, 3});
 	EXPECT_EQ(index.getSize(), 3) << "Index({1, 2, 3}) does not have size 3.";
@@ -19,7 +19,7 @@ TEST(Index, ConstructorInitializerListInt){
 	EXPECT_EQ(index[2], 3) << "Index({1, 2, 3}) does not have '3' as third subindex.";
 }
 
-//TBTKFeature Index.Construction.2 2019-09-12
+//TBTKFeature Core.Index.Construction.2 2019-09-19
 TEST(Index, ConstructorInitializerListUnsignedInt){
 	Index index({(unsigned int)1, (unsigned int)2, (unsigned int)3});
 	EXPECT_EQ(index.getSize(), 3) << "Index({1, 2, 3}) does not have size 3.";
@@ -28,7 +28,7 @@ TEST(Index, ConstructorInitializerListUnsignedInt){
 	EXPECT_EQ(index[2], 3) << "Index({1, 2, 3}) does not have '3' as third subindex.";
 }
 
-//TBTKFeature Index.Construction.3.C++ 2019-09-12
+//TBTKFeature Core.Index.Construction.3.C++ 2019-09-19
 TEST(Index, ConstructorVectorInt){
 	std::vector<Subindex> myVector({1, 2, 3});
 	Index index(myVector);
@@ -47,7 +47,7 @@ TEST(Index, ConstructorVectorInt){
 	EXPECT_EQ(index[2], 3) << "Index(std::vector<int>({1, 2, 3})) does not have '3' as third subindex.";
 }*/
 
-//TBTKFeature Index.Copy.1 2019-09-12
+//TBTKFeature Core.Index.Copy.1 2019-09-19
 TEST(Index, CopyConstructor){
 	Index index({1, 2, 3});
 	Index indexCopy = index;
@@ -57,7 +57,7 @@ TEST(Index, CopyConstructor){
 	EXPECT_EQ(indexCopy[2], 3) << "Copy constructor failed.";
 }
 
-//TBTKFeature Index.Construction.4 2019-09-12
+//TBTKFeature Core.Index.Construction.4 2019-09-19
 TEST(Index, ConstructorConcatenationInitializerList){
 	std::string errorMessage = "Index concatenation filed.";
 
@@ -70,7 +70,7 @@ TEST(Index, ConstructorConcatenationInitializerList){
 	EXPECT_EQ(index[2], 3) << errorMessage;
 }
 
-//TBTKFeature Index.Construction.5.C++ 2019-09-12
+//TBTKFeature Core.Index.Construction.5.C++ 2019-09-19
 TEST(Index, ConstructorConcatenationVector){
 	std::string errorMessage = "Index concatenation filed.";
 
@@ -86,7 +86,7 @@ TEST(Index, ConstructorConcatenationVector){
 TEST(Index, ConstructorCompundInitializerList){
 	std::string errorMessage = "Compund Index construction failed.";
 
-	//TBTKFeature Index.Construction.6 2019-09-12
+	//TBTKFeature Core.Index.Construction.6 2019-09-19
 	//Using an initializer list.
 	Index index0({{1}, {2, 3}, {4, 5, 6}});
 	EXPECT_EQ(index0.getSize(), 8) << errorMessage;
@@ -99,7 +99,7 @@ TEST(Index, ConstructorCompundInitializerList){
 	EXPECT_EQ(index0[6], 5) << errorMessage;
 	EXPECT_EQ(index0[7], 6) << errorMessage;
 
-	//TBTKFeature Index.Construction.7.C++ 2019-09-12
+	//TBTKFeature Core.Index.Construction.7.C++ 2019-09-19
 	//Using a vector.
 	Index index1(std::vector<Index>({{1}, {2, 3}, {4, 5, 6}}));
 	EXPECT_EQ(index1.getSize(), 8) << errorMessage;
@@ -113,7 +113,7 @@ TEST(Index, ConstructorCompundInitializerList){
 	EXPECT_EQ(index1[7], 6) << errorMessage;
 }
 
-//TBTKFeature Index.Construction.8.C++ 2019-09-12
+//TBTKFeature Core.Index.Construction.8.C++ 2019-09-19
 TEST(Index, ConstructorCompundVector){
 	std::string errorMessage = "Compund Index construction failed.";
 
@@ -133,7 +133,7 @@ TEST(Index, ConstructorCompundVector){
 	EXPECT_EQ(index[7], 6) << errorMessage;
 }
 
-//TBTKFeature Index.Construction.9 2019-09-12
+//TBTKFeature Core.Index.Construction.9 2019-09-19
 TEST(Index, ConstructorString){
 	std::string errorMessage = "Index construction from string failed.";
 
@@ -141,7 +141,7 @@ TEST(Index, ConstructorString){
 	EXPECT_TRUE(index0.equals({1, 2, 3})) << errorMessage;
 }
 
-//TBTKFeature Index.Serialization.1 2019-09-12
+//TBTKFeature Core.Index.Serialization.1 2019-09-19
 TEST(Index, SerializeToJSON){
 	Index index0({1, 2, 3});
 	Index index1(
@@ -154,25 +154,25 @@ TEST(Index, SerializeToJSON){
 TEST(Index, equals){
 	std::string errorMessage = "Index comparison failed.";
 
-	//TBTKFeature Index.Equals.1 2019-09-12
+	//TBTKFeature Core.Index.Equals.1 2019-09-19
 	EXPECT_TRUE(Index({1, 2, 3}).equals(Index({1, 2, 3}))) << errorMessage;
-	//TBTKFeature Index.Equals.2 2019-09-12
+	//TBTKFeature Core.Index.Equals.2 2019-09-19
 	EXPECT_FALSE(Index({1, 2, 2}).equals(Index({1, 2, 3}))) << errorMessage;
-	//TBTKFeature Index.Equals.3 2019-09-12
+	//TBTKFeature Core.Index.Equals.3 2019-09-19
 	EXPECT_FALSE(Index({1, 2, IDX_ALL}).equals(Index({1, 2, 3}))) << errorMessage;
-	//TBTKFeature Index.Equals.4 2019-09-12
+	//TBTKFeature Core.Index.Equals.4 2019-09-19
 	EXPECT_TRUE(Index({1, 2, IDX_ALL}).equals(Index({1, 2, 3}), true)) << errorMessage;
-	//TBTKFeature Index.Equals.5 2019-09-12
+	//TBTKFeature Core.Index.Equals.5 2019-09-19
 	EXPECT_TRUE(Index({1, -1, 3}).equals(Index({1, -1, 3}))) << errorMessage;
-	//TBTKFeature Index.Equals.6 2019-09-12
+	//TBTKFeature Core.Index.Equals.6 2019-09-19
 	EXPECT_TRUE(Index({{1, 2, 3}, {4, 5, 6}}).equals(Index({{1, 2, 3}, {4, 5, 6}}))) << errorMessage;
-	//TBTKFeature Index.Equals.7 2019-09-12
+	//TBTKFeature Core.Index.Equals.7 2019-09-19
 	EXPECT_TRUE(
 		Index(
 			{0, IDX_ALL_(0), IDX_ALL_(0), IDX_ALL_(1), 3, IDX_ALL_(1)}
 		).equals(Index({0, 1, 1, 2, 3, 2}), true)
 	) << errorMessage;
-	//TBTKFeature Index.Equals.8 2019-09-12
+	//TBTKFeature Core.Index.Equals.8 2019-09-19
 	EXPECT_TRUE(
 		Index(
 			Index({0, 1, 1, 2, 3, 2})
@@ -188,13 +188,13 @@ TEST(Index, equals){
 			true
 		)
 	) << errorMessage;
-	//TBTKFeature Index.Equals.9 2019-09-12
+	//TBTKFeature Core.Index.Equals.9 2019-09-19
 	EXPECT_FALSE(
 		Index(
 			{0, IDX_ALL_(0), IDX_ALL_(0), IDX_ALL_(1), 3, IDX_ALL_(1)}
 		).equals(Index({0, 1, 1, 2, 3, 2}))
 	) << errorMessage;
-	//TBTKFeature Index.Equals.10 2019-09-12
+	//TBTKFeature Core.Index.Equals.10 2019-09-19
 	EXPECT_FALSE(
 		Index(
 			Index({0, 1, 1, 2, 3, 2})
@@ -211,8 +211,8 @@ TEST(Index, equals){
 	) << errorMessage;
 }
 
-//TBTKFeature Index.at.1 2019-09-12
-//TBTKFeature Index.operator[].1.C++ 2019-09-12
+//TBTKFeature Core.Index.at.1 2019-09-19
+//TBTKFeature Core.Index.operator[].1.C++ 2019-09-19
 TEST(Index, atAndSubscriptOperator){
 	std::string errorMessage = "at() and operator[] gives different results.";
 
@@ -222,8 +222,8 @@ TEST(Index, atAndSubscriptOperator){
 	EXPECT_EQ(index.at(2), index[2]) << errorMessage;
 }
 
-//TBTKFeature Index.at.2.C++ 2019-09-12
-//TBTKFeature Index.operator[].2.C++ 2019-09-12
+//TBTKFeature Core.Index.at.2.C++ 2019-09-19
+//TBTKFeature Core.Index.operator[].2.C++ 2019-09-19
 TEST(Index, atAndSubscriptOperatorConst){
 	std::string errorMessage = "at() and operator[] gives different results.";
 
@@ -236,19 +236,19 @@ TEST(Index, atAndSubscriptOperatorConst){
 TEST(Index, getSize){
 	std::string errorMessage = "getSize() failed.";
 
-	//TBTKFeature Index.getSize.1 2019-09-12
+	//TBTKFeature Core.Index.getSize.1 2019-09-19
 	EXPECT_EQ(Index().getSize(), 0) << errorMessage;
-	//TBTKFeature Index.getSize.2 2019-09-12
+	//TBTKFeature Core.Index.getSize.2 2019-09-19
 	EXPECT_EQ(Index({1}).getSize(), 1) << errorMessage;
-	//TBTKFeature Index.getSize.3 2019-09-12
+	//TBTKFeature Core.Index.getSize.3 2019-09-19
 	EXPECT_EQ(Index({1, 2, 3}).getSize(), 3) << errorMessage;
-	//TBTKFeature Index.getSize.4 2019-09-12
+	//TBTKFeature Core.Index.getSize.4 2019-09-19
 	EXPECT_EQ(Index({1, 2}, {3, 4}).getSize(), 4) << errorMessage;
-	//TBTKFeature Index.getSize.5 2019-09-12
+	//TBTKFeature Core.Index.getSize.5 2019-09-19
 	EXPECT_EQ(Index({{1, 2}, {3, 4}}).getSize(), 5) << errorMessage;
 }
 
-//TBTKFeature Index.pushBack.1 2019-09-12
+//TBTKFeature Core.Index.pushBack.1 2019-09-19
 TEST(Index, pushBack){
 	Index index;
 	index.pushBack(1);
@@ -257,7 +257,7 @@ TEST(Index, pushBack){
 	EXPECT_TRUE(index.equals({1, 2, 3})) << "push_back failed.";
 }
 
-//TBTKFeature Index.popFront.1 2019-09-12
+//TBTKFeature Core.Index.popFront.1 2019-09-19
 TEST(Index, popFront){
 	std::string errorMessage = "popFront() failed.";
 
@@ -266,7 +266,7 @@ TEST(Index, popFront){
 	EXPECT_TRUE(index.equals({2, 3})) << errorMessage;
 }
 
-//TBTKFeature Index.popBack.1 2019-09-12
+//TBTKFeature Core.Index.popBack.1 2019-09-19
 TEST(Index, popBack){
 	std::string errorMessage = "popBack() failed.";
 
@@ -275,19 +275,19 @@ TEST(Index, popBack){
 	EXPECT_TRUE(index.equals({1, 2})) << errorMessage;
 }
 
-//TBTKFeature Index.getUnitRange.1 2019-09-12
+//TBTKFeature Core.Index.getUnitRange.1 2019-09-19
 TEST(Index, getUnitRange){
 	Index index({1, 2, 3});
 	EXPECT_TRUE(index.getUnitRange().equals({1, 1, 1})) << "getUnitRange() failed.";
 }
 
-//TBTKFeature Index.getSubIndex.1 2019-09-12
+//TBTKFeature Core.Index.getSubIndex.1 2019-09-19
 TEST(Index, getSubIndex){
 	Index index({1, 2, 3, 4, 5, 6, 7, 8, 9});
 	EXPECT_TRUE(index.getSubIndex(3, 5).equals({4, 5, 6})) << "getSubIndex() failed.";
 }
 
-//TBTKFeature Index.split.1 2019-09-12
+//TBTKFeature Core.Index.split.1 2019-09-19
 TEST(Index, split){
 	Index index({{1, 2, 3}, {4, 5}, {6, 7, 8}});
 	std::vector<Index> indices = index.split();
@@ -300,45 +300,45 @@ TEST(Index, split){
 TEST(Index, isPatternIndex){
 	std::string errorMessage = "isPatternIndex() failed.";
 
-	//TBTKFeature Index.isPatternIndex.1 2019-09-12
+	//TBTKFeature Core.Index.isPatternIndex.1 2019-09-19
 	EXPECT_FALSE(Index({1, 2, 3}).isPatternIndex()) << errorMessage;
-	//TBTKFeature Index.isPatternIndex.2 2019-09-12
+	//TBTKFeature Core.Index.isPatternIndex.2 2019-09-19
 	EXPECT_TRUE(Index({1, _a_, 3}).isPatternIndex()) << errorMessage;
-	//TBTKFeature Index.isPatternIndex.2 2019-09-12
+	//TBTKFeature Core.Index.isPatternIndex.2 2019-09-19
 	EXPECT_TRUE(Index({1, IDX_ALL, 3}).isPatternIndex()) << errorMessage;
-	//TBTKFeature Index.isPatternIndex.3 2019-09-12
+	//TBTKFeature Core.Index.isPatternIndex.3 2019-09-19
 	EXPECT_TRUE(Index({1, IDX_SUM_ALL, 3}).isPatternIndex()) << errorMessage;
-	//TBTKFeature Index.isPatternIndex.4 2019-09-12
+	//TBTKFeature Core.Index.isPatternIndex.4 2019-09-19
 	EXPECT_TRUE(Index({1, IDX_X, 3}).isPatternIndex()) << errorMessage;
-	//TBTKFeature Index.isPatternIndex.5 2019-09-12
+	//TBTKFeature Core.Index.isPatternIndex.5 2019-09-19
 	EXPECT_TRUE(Index({1, IDX_Y, 3}).isPatternIndex()) << errorMessage;
-	//TBTKFeature Index.isPatternIndex.6 2019-09-12
+	//TBTKFeature Core.Index.isPatternIndex.6 2019-09-19
 	EXPECT_TRUE(Index({1, IDX_Z, 3}).isPatternIndex()) << errorMessage;
-	//TBTKFeature Index.isPatternIndex.7 2019-09-12
+	//TBTKFeature Core.Index.isPatternIndex.7 2019-09-19
 	EXPECT_TRUE(Index({1, IDX_SPIN, 3}).isPatternIndex()) << errorMessage;
-	//TBTKFeature Index.isPatternIndex.8 2019-09-12
+	//TBTKFeature Core.Index.isPatternIndex.8 2019-09-19
 	EXPECT_TRUE(Index({1, IDX_SEPARATOR, 3}).isPatternIndex()) << errorMessage;
 }
 
 TEST(Index, toString){
 	std::string errorMessage = "toString() failed.";
 
-	//TBTKFeature Index.toString.1 2019-09-12
+	//TBTKFeature Core.Index.toString.1 2019-09-19
 	EXPECT_TRUE(Index({1, 2, 3}).toString().compare("{1, 2, 3}") == 0) << errorMessage;
-	//TBTKFeature Index.toString.2 2019-09-12
+	//TBTKFeature Core.Index.toString.2 2019-09-19
 	EXPECT_TRUE(Index({{1}, {2, 3}, {4, 5, 6}}).toString().compare("{1}, {2, 3}, {4, 5, 6}") == 0) << errorMessage;
 }
 
 TEST(Index, operatorLessThan){
 	std::string errorMessage = "operator<() failed.";
 
-	//TBTKFeature Index.operator<.1.C++ 2019-09-12
+	//TBTKFeature Core.Index.operator<.1.C++ 2019-09-19
 	EXPECT_FALSE(Index({1, 2, 3}) < Index({1, 2, 3}));
-	//TBTKFeature Index.operator<.2.C++ 2019-09-12
+	//TBTKFeature Core.Index.operator<.2.C++ 2019-09-19
 	EXPECT_TRUE(Index({1, 2, 3}) < Index({1, 2, 4}));
-	//TBTKFeature Index.operator<.3.C++ 2019-09-12
+	//TBTKFeature Core.Index.operator<.3.C++ 2019-09-19
 	EXPECT_FALSE(Index({1, 2, 3}) < Index({1, 1, 4}));
-	//TBTKFeature Index.operator<.4.C++ 2019-09-12
+	//TBTKFeature Core.Index.operator<.4.C++ 2019-09-19
 	EXPECT_EXIT(
 		{
 			Streams::setStdMuteErr();
@@ -347,7 +347,7 @@ TEST(Index, operatorLessThan){
 		::testing::ExitedWithCode(1),
 		""
 	);
-	//TBTKFeature Index.operator<.5.C++ 2019-09-12
+	//TBTKFeature Core.Index.operator<.5.C++ 2019-09-19
 	EXPECT_EXIT(
 		{
 			Streams::setStdMuteErr();
@@ -361,13 +361,13 @@ TEST(Index, operatorLessThan){
 TEST(Index, operatorGreaterThan){
 	std::string errorMessage = "operator>() failed.";
 
-	//TBTKFeature Index.operator>.1.C++ 2019-09-12
+	//TBTKFeature Core.Index.operator>.1.C++ 2019-09-19
 	EXPECT_FALSE(Index({1, 2, 3}) > Index({1, 2, 3}));
-	//TBTKFeature Index.operator>.2.C++ 2019-09-12
+	//TBTKFeature Core.Index.operator>.2.C++ 2019-09-19
 	EXPECT_FALSE(Index({1, 2, 3}) > Index({1, 2, 4}));
-	//TBTKFeature Index.operator>.3.C++ 2019-09-12
+	//TBTKFeature Core.Index.operator>.3.C++ 2019-09-19
 	EXPECT_TRUE(Index({1, 2, 3}) > Index({1, 1, 4}));
-	//TBTKFeature Index.operator>.4.C++ 2019-09-12
+	//TBTKFeature Core.Index.operator>.4.C++ 2019-09-19
 	EXPECT_EXIT(
 		{
 			Streams::setStdMuteErr();
@@ -376,7 +376,7 @@ TEST(Index, operatorGreaterThan){
 		::testing::ExitedWithCode(1),
 		""
 	);
-	//TBTKFeature Index.operator>.5.C++ 2019-09-12
+	//TBTKFeature Core.Index.operator>.5.C++ 2019-09-19
 	EXPECT_EXIT(
 		{
 			Streams::setStdMuteErr();
