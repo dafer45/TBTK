@@ -355,7 +355,7 @@ void checkAllComponents(const string &filename){
 			<< left << "|"
 		<< setw(12) << "Up to date" << setw(8) << right << "(%)"
 			<< left
-		<< "\n";
+			<< "\n";
 	for(unsigned int n = 0; n < referenceComponents.size(); n++){
 		string componentName = get<0>(referenceComponents[n]);
 		vector<unsigned int> ids = getComponentIds(components, componentName);
@@ -364,8 +364,7 @@ void checkAllComponents(const string &filename){
 		case 0:
 			Streams::out << setw(8) << "" << "|"
 				<< setw(20) << "" << "|"
-				<< setw(20) << ""
-				<< "\n";
+				<< setw(20) << "";
 			break;
 		case 1:
 		{
@@ -439,7 +438,9 @@ void printFeature(const string &name){
 		if(name.find(get<0>(components[n])) != string::npos){
 			ifstream fin(get<1>(components[n]));
 			string line;
-			while(getline(fin, line)){
+			bool dontRead = false;
+			while(dontRead || getline(fin, line)){
+				dontRead = false;
 				if(line.find(name) != string::npos){
 					if(firstFeature)
 						firstFeature = false;
@@ -448,10 +449,13 @@ void printFeature(const string &name){
 
 					Streams::out << line << "\n";
 					while(getline(fin, line)){
-						if(line.find("TBTKFeature") != string::npos)
+						if(line.find("TBTKFeature") != string::npos){
+							dontRead = true;
 							break;
-						else if(line.size() != 0)
+						}
+						else if(line.size() != 0){
 							Streams::out << line << "\n";
+						}
 					}
 				}
 			}
@@ -461,8 +465,30 @@ void printFeature(const string &name){
 	}
 }
 
+void printComponents(){
+	vector<tuple<string, string>> components
+		= getComponentList(ALL_COMPONENTS_FILENAME);
+	Streams::out << left
+		<< setw(40) << "Component name"
+		<< setw(30) << "Number of documented features"
+		<< "\n";
+	for(unsigned int n = 0; n < components.size(); n++){
+		vector<tuple<string, unsigned int>> featureLines
+			= getFeatureLines(get<1>(components[n]));
+
+		Streams::out
+			<< setw(40) << get<0>(components[n])
+			<< setw(30) << featureLines.size()
+			<< "\n";
+	}
+}
+
 int main(int argc, char **argv){
 	switch(argc){
+	case 1:
+		printComponents();
+
+		break;
 	case 2:
 	{
 		string filename = argv[1];

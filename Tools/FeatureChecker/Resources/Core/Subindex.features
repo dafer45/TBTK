@@ -2,7 +2,7 @@ TBTKFeature Core.Subindex.Construction.1 2019-09-19
 	Do:
 		Create empty index.
 	Verify:
-		-
+		Creation succeeded.
 
 TBTKFeature Core.Subindex.Construction.2.C++ 2019-09-19
 	Do:
@@ -12,6 +12,91 @@ TBTKFeature Core.Subindex.Construction.2.C++ 2019-09-19
 
 TBTKFeature Core.Subindex.Construction.3 2019-09-19
 	Do:
-		Create subindex, serialize to JSON, and deserialize to new Subindex.
+		Create subindex, serialize to JSON, and deserialize to new
+		Subindex.
 	Verify:
 		The deserialization is equal to the original Subindex.
+
+TBTKFeature Core.Subindex.isWildcard.1 2019-09-20
+	Do:
+		Create subindex with the value IDX_ALL and call
+		subindex.isWildcard().
+	Verify:
+		Return true.
+
+TBTKFeature Core.Subindex.isWildcard.2 2019-09-20
+	Do:
+		Create subindex with different value from IDX_ALL and call
+		subindex.isWildcard().
+	Verify:
+		Return false.
+
+TBTKFeature Core.Subindex.isLabeledWildcard.1 2019-09-20
+	Do:
+		Create subindices with the values IDX_ALL_(0) and IDX_ALL_(1)
+		and call subindex.isLabeledWildcard().
+	Verify:
+		Return true.
+
+TBTKFeature Core.Subindex.isLabeledWildcard.2 2019-09-20
+	Do:
+		Create subindices with the values IDX_ALL, 0, and 1 and call
+		subindex.isLabeledWildcard().
+	Verify:
+		Return false.
+
+TBTKFeature Core.Subindex.isSummationIndex.1 2019-09-20
+	Do:
+		Create subindex with the values IDX_SUM_ALL and call
+		subindex.isSummationIndex().
+	Verify:
+		Return true.
+
+TBTKFeature Core.Subindex.isSummationIndex.2 2019-09-20
+	Do:
+		Create subindex with different value from IDX_SUM_ALL and call
+		subindex.isSummationIndex().
+	Verify:
+		Return false.
+
+TBTKFeature Core.Subindex.isSpinIndex.1 2019-09-20
+	Do:
+		Create subindex with the value IDX_SPIN and call
+		subindex.isSpinIndex().
+	Verify:
+		Return true.
+
+TBTKFeature Core.Subindex.isSpinIndex.2 2019-09-20
+	Do:
+		Create subindices with different values from IDX_SPIN and call
+		subindex.isSpinIndex().
+	Verify:
+		Return false.
+
+TBTKFeature Core.Subindex.isIndexSeparator.1 2019-09-20
+	Do:
+		Create subindex with the value IDX_SEPARATOR and call
+		subindex.isIndexSeparator().
+	Verify:
+		Return true.
+
+TBTKFeature Core.Subindex.isSpinIndex.2 2019-09-20
+	Do:
+		Create subindices with different values from IDX_SEPARATOR and
+		call subindex.isIndexSeparator().
+	Verify:
+		Return false.
+
+TBTKFeature Core.Subindex.operatorInt.1.C++ 2019-09-20
+	Do:
+		Create subindex(7) and convert it to an int using the (int) operator.
+	Verify:
+		The int is equal to 7.
+
+TBTKFeature Core.Subindex.operatorAssignment.1.C++ 2019-09-20
+	Do:
+		Create subindex0(7) and uninitialized subindices subindex1,
+		subindex2, and subindex3. Assign Integer(7), (int)7, and
+		(unsigned int)7.
+	Verify:
+		All three assigned subindes are equal to subindex0.

@@ -160,7 +160,7 @@ TEST(Index, equals){
 	EXPECT_FALSE(Index({1, 2, 2}).equals(Index({1, 2, 3}))) << errorMessage;
 	//TBTKFeature Core.Index.Equals.3 2019-09-19
 	EXPECT_FALSE(Index({1, 2, IDX_ALL}).equals(Index({1, 2, 3}))) << errorMessage;
-	//TBTKFeature Core.Index.Equals.4 2019-09-19
+	//TBTKFeature Core.Index.Equals.4 2019-09-21
 	EXPECT_TRUE(Index({1, 2, IDX_ALL}).equals(Index({1, 2, 3}), true)) << errorMessage;
 	//TBTKFeature Core.Index.Equals.5 2019-09-19
 	EXPECT_TRUE(Index({1, -1, 3}).equals(Index({1, -1, 3}))) << errorMessage;
@@ -281,7 +281,7 @@ TEST(Index, getUnitRange){
 	EXPECT_TRUE(index.getUnitRange().equals({1, 1, 1})) << "getUnitRange() failed.";
 }
 
-//TBTKFeature Core.Index.getSubIndex.1 2019-09-19
+//TBTKFeature Core.Index.getSubIndex.1 2019-09-21
 TEST(Index, getSubIndex){
 	Index index({1, 2, 3, 4, 5, 6, 7, 8, 9});
 	EXPECT_TRUE(index.getSubIndex(3, 5).equals({4, 5, 6})) << "getSubIndex() failed.";

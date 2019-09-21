@@ -1,2 +1,3 @@
-Core.Index	= Core/Index.features
-Core.Subindex	= Core/Subindex.features
+Core.Index		= Core/Index.features
+Core.Subindex		= Core/Subindex.features
+Core.HoppingAmplitude	= Core/HoppingAmplitude.features

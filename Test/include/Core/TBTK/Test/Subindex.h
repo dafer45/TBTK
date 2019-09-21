@@ -38,7 +38,9 @@ TEST(Subindex, isWildcard){
 	Subindex subindex2(0);
 	Subindex subindex3(1);
 
+	//TBTKFeature Core.Subindex.isWildcard.1 2019-09-21
 	EXPECT_TRUE(subindex0.isWildcard());
+	//TBTKFeature Core.Subindex.isWildcard.2 2019-09-21
 	EXPECT_FALSE(subindex1.isWildcard());
 	EXPECT_FALSE(subindex2.isWildcard());
 	EXPECT_FALSE(subindex3.isWildcard());
@@ -51,8 +53,10 @@ TEST(Subindex, isLabeledWildcard){
 	Subindex subindex3(0);
 	Subindex subindex4(1);
 
+	//TBTKFeature Core.Subindex.isLabeledWildcard.1 2019-09-21
 	EXPECT_TRUE(subindex0.isLabeledWildcard());
 	EXPECT_TRUE(subindex1.isLabeledWildcard());
+	//TBTKFeature Core.Subindex.isLabeledWildcard.2 2019-09-21
 	EXPECT_FALSE(subindex2.isLabeledWildcard());
 	EXPECT_FALSE(subindex3.isLabeledWildcard());
 	EXPECT_FALSE(subindex4.isLabeledWildcard());
@@ -64,7 +68,9 @@ TEST(Subindex, isSummationIndex){
 	Subindex subindex2(0);
 	Subindex subindex3(1);
 
+	//TBTKFeature Core.Subindex.isSummationIndex.1 2019-09-21
 	EXPECT_TRUE(subindex0.isSummationIndex());
+	//TBTKFeature Core.Subindex.isSummationIndex.1 2019-09-21
 	EXPECT_FALSE(subindex1.isSummationIndex());
 	EXPECT_FALSE(subindex2.isSummationIndex());
 	EXPECT_FALSE(subindex3.isSummationIndex());
@@ -90,7 +96,9 @@ TEST(Subindex, isSpinIndex){
 	Subindex subindex2(0);
 	Subindex subindex3(1);
 
+	//TBTKFeature Core.Subindex.isSummationIndex.1 2019-09-21
 	EXPECT_TRUE(subindex0.isSpinIndex());
+	//TBTKFeature Core.Subindex.isSummationIndex.2 2019-09-21
 	EXPECT_FALSE(subindex1.isSpinIndex());
 	EXPECT_FALSE(subindex2.isSpinIndex());
 	EXPECT_FALSE(subindex3.isSpinIndex());
@@ -102,12 +110,15 @@ TEST(Subindex, isIndexSeparator){
 	Subindex subindex2(0);
 	Subindex subindex3(1);
 
+	//TBTKFeature Core.Subindex.isIndexSeparator.1 2019-09-21
 	EXPECT_TRUE(subindex0.isIndexSeparator());
+	//TBTKFeature Core.Subindex.isIndexSeparator.2 2019-09-21
 	EXPECT_FALSE(subindex1.isIndexSeparator());
 	EXPECT_FALSE(subindex2.isIndexSeparator());
 	EXPECT_FALSE(subindex3.isIndexSeparator());
 }
 
+//TBTKFeature Core.Subindex.opeartorInt.1.C++ 2019-09-21
 TEST(Subindex, operatorInt){
 	Subindex subindex(7);
 	int i = (int)subindex;
@@ -115,6 +126,7 @@ TEST(Subindex, operatorInt){
 	EXPECT_EQ(i, 7);
 }
 
+//TBTKFeature Core.Subindex.opeartorAssignment.1.C++ 2019-09-21
 TEST(Subindex, operatorAssignment){
 	Subindex subindex0(7);
 	Subindex subindex1(0);
@@ -129,6 +141,7 @@ TEST(Subindex, operatorAssignment){
 	EXPECT_EQ(subindex0, subindex3);
 }
 
+//TBTKFeature Core.Subindex.opeartorAddition.1 2019-09-21
 TEST(Subindex, operatorAdditionAssignment){
 	Subindex subindex(7);
 	subindex += 1;

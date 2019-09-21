@@ -128,7 +128,7 @@ public:
 	//TBTKFeature Core.Index.Equals.1 2019-09-19
 	//TBTKFeature Core.Index.Equals.2 2019-09-19
 	//TBTKFeature Core.Index.Equals.3 2019-09-19
-	//TBTKFeature Core.Index.Equals.4 2019-09-19
+	//TBTKFeature Core.Index.Equals.4 2019-09-21
 	//TBTKFeature Core.Index.Equals.5 2019-09-19
 	//TBTKFeature Core.Index.Equals.6 2019-09-19
 	//TBTKFeature Core.Index.Equals.7 2019-09-19
@@ -203,7 +203,7 @@ public:
 	 *  @return Index with all subindices set to 1. */
 	Index getUnitRange();
 
-	//TBTKFeature Core.Index.getSubIndex.1 2019-09-19
+	//TBTKFeature Core.Index.getSubIndex.1 2019-09-21
 	/** Returns an Index containing the subindices from position 'first' to
 	 *  'last'.
 	 *
