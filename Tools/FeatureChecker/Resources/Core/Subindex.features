@@ -10,7 +10,7 @@ TBTKFeature Core.Subindex.Construction.2.C++ 2019-09-19
 	Verify:
 		Verify that the results are all the same.
 
-TBTKFeature Core.Subindex.Construction.3 2019-09-19
+TBTKFeature Core.Subindex.Serialization.1 2019-09-22
 	Do:
 		Create subindex, serialize to JSON, and deserialize to new
 		Subindex.
@@ -80,7 +80,7 @@ TBTKFeature Core.Subindex.isIndexSeparator.1 2019-09-20
 	Verify:
 		Return true.
 
-TBTKFeature Core.Subindex.isSpinIndex.2 2019-09-20
+TBTKFeature Core.Subindex.isIndexSeparator.2 2019-09-22
 	Do:
 		Create subindices with different values from IDX_SEPARATOR and
 		call subindex.isIndexSeparator().
@@ -100,3 +100,226 @@ TBTKFeature Core.Subindex.operatorAssignment.1.C++ 2019-09-20
 		(unsigned int)7.
 	Verify:
 		All three assigned subindes are equal to subindex0.
+
+TBTKFeature Core.Subindex.operatorAdditionAssignment.1.C++ 2019-09-22
+	Do:
+		Create subindex(7) and add one to it using the addition
+		assignment operator.
+	Verify:
+		The Subindex has the value 8.
+
+TBTKFeature Core.Subindex.operatorAddition.1.C++ 2019-09-22
+	Do:
+		Create subindex0(7) and subindex1(1) and add them.
+	Verify:
+		The resulting SUbindex has the value 8.
+
+TBTKFeature Core.Subindex.operatorSubtractionAssignment.1.C++ 2019-09-22
+	Do:
+		Create subindex(7) and subtract one from it using the addition
+		assignment operator.
+	Verify:
+		The Subindex has the value 6.
+
+TBTKFeature Core.Subindex.operatorSubtraction.1.C++ 2019-09-22
+	Do:
+		Create subindex0(7) and subindex1(1) and subtracte the later
+		from the former.
+	Verify:
+		The resulting Subindex has the value 6.
+
+TBTKFeature Core.Subindex.operatorMultiplicationAssignment.1.C++ 2019-09-22
+	Do:
+		Create subindex(7) and multiply it by 2 using the
+		multiplication assignment operator.
+	Verify:
+		The Subindex has the value 14.
+
+TBTKFeature Core.Subindex.operatorMultiplication.1.C++ 2019-09-22
+	Do:
+		Create subindex(7) and multiply it by 2 using the
+		multiplication operator.
+	Verify:
+		The resulting Subindex has the value 14.
+
+TBTKFeature Core.Subindex.operatorDivisionAssignment.1.C++ 2019-09-22
+	Do:
+		Create subindex(6) and divide it by 2 using the division
+		assignment operator.
+	Verify:
+		The Subindex has the value 3.
+
+TBTKFeature Core.Subindex.operatorDivision.1.C++ 2019-09-22
+	Do:
+		Create subindex(6) and divide it by 2 using the division
+		operator.
+	Verify:
+		The resulting Subindex has the value 3.
+
+TBTKFeature Core.Subindex.operatorPreIncrement.1.C++ 2019-09-22
+	Do:
+		Create subindex(7) and increment it with the pre-increment
+		operator.
+	Verify:
+		The Subindex has the value 8 and returns 8 at the point of
+		incrementation.
+
+TBTKFeature Core.Subindex.operatorPostIncrement.1.C++ 2019-09-22
+	Do:
+		Create subindex(7) and increment it with the post-increment
+		operator.
+	Verify:
+		The Subindex has the value 8, but returns 7 at the point of
+		incrementation.
+
+TBTKFeature Core.Subindex.operatorPreDecrement.1.C++ 2019-09-22
+	Do:
+		Create subindex(7) and decrement it with the pre-decrement
+		operator.
+	Verify:
+		The Subindex has the value 6 and returns 6 at the point of
+		incrementation.
+
+TBTKFeature Core.Subindex.operatorPostDecrement.1.C++ 2019-09-22
+	Do:
+		Create subindex(7) and decrement it with the post-decrement
+		operator.
+	Verify:
+		The Subindex has the value 6, but returns 7 at the point of
+		incrementation.
+
+TBTKFeature Core.Subindex.operatorComparison.1.C++ 2019-09-22
+	Do:
+		Create two indices with the same value and compare them using
+		the equality operator.
+	Verify:
+		Return true.
+
+TBTKFeature Core.Subindex.operatorComparison.2.C++ 2019-09-22
+	Do:
+		Create two indices with different values and compare them using
+		the equality operator.
+	Verify:
+		Return false.
+
+TBTKFeature Core.Subindex.operatorNotEqual.1.C++ 2019-09-22
+	Do:
+		Create two indices with the same value and compare them using
+		the not equal operator.
+	Verify:
+		Return false.
+
+TBTKFeature Core.Subindex.operatorNotEqual.2.C++ 2019-09-22
+	Do:
+		Create two indices with different values and compare them using
+		the not equal operator.
+	Verify:
+		Return true.
+
+TBTKFeature Core.Subindex.operatorLessThan.1.C++ 2019-09-22
+	Do:
+		Compare a Subindex with a smaller value (left hand side) to a
+		Subindex with a larger value (right hand side) using the less
+		than operator.
+	Verify:
+		Return true.
+
+TBTKFeature Core.Subindex.operatorLessThan.2.C++ 2019-09-22
+	Do:
+		Compare two Subindices with the same value using the less than
+		operator.
+	Verify:
+		Return false.
+
+TBTKFeature Core.Subindex.operatorLessThan.3.C++ 2019-09-22
+	Do:
+		Compare a Subindex with a larger value (left hand side) to a
+		Subindex with a smaller value (right hand side) using the less
+		than operator.
+	Verify:
+		Return false.
+
+TBTKFeature Core.Subindex.operatorLargerThan.1.C++ 2019-09-22
+	Do:
+		Compare a Subindex with a larger value (left hand side) to a
+		Subindex with a smaller value (right hand side) using the
+		larger than operator.
+	Verify:
+		Return true.
+
+TBTKFeature Core.Subindex.operatorLargerThan.2.C++ 2019-09-22
+	Do:
+		Compare two Subindices with the same value using the larger
+		than operator.
+	Verify:
+		Return false.
+
+TBTKFeature Core.Subindex.operatorLargerThan.3.C++ 2019-09-22
+	Do:
+		Compare a Subindex with a smaller value (left hand side) to a
+		Subindex with a larger value (right hand side) using the
+		larger than operator.
+	Verify:
+		Return false.
+
+TBTKFeature Core.Subindex.operatorLessOrEqualTo.1.C++ 2019-09-22
+	Do:
+		Compare a Subindex with a smaller value (left hand side) to a
+		Subindex with a larger value (right hand side) using the
+		less or equal to operator.
+	Verify:
+		Return true.
+
+TBTKFeature Core.Subindex.operatorLessOrEqualTo.2.C++ 2019-09-22
+	Do:
+		Compare two Subindices with the same value using the less or
+		equal to operator.
+	Verify:
+		Return true.
+
+TBTKFeature Core.Subindex.operatorLessOrEqualTo.3.C++ 2019-09-22
+	Do:
+		Compare a Subindex with a larger value (left hand side) to a
+		Subindex with a smaller value (right hand side) using the
+		less or equal to operator.
+	Verify:
+		Return false.
+
+TBTKFeature Core.Subindex.operatorLargerOrEqualTo.1.C++ 2019-09-22
+	Do:
+		Compare a Subindex with a larger value (left hand side) to a
+		Subindex with a smaller value (right hand side) using the
+		larger or equal to operator.
+	Verify:
+		Return true.
+
+TBTKFeature Core.Subindex.operatorLargerOrEqualTo.2.C++ 2019-09-22
+	Do:
+		Compare two Subindices with the same value using the larger or
+		equal to operator.
+	Verify:
+		Return true.
+
+TBTKFeature Core.Subindex.operatorLargerOrEqualTo.3.C++ 2019-09-22
+	Do:
+		Compare a Subindex with a smaller value (left hand side) to a
+		Subindex with a larger value (right hand side) using the
+		larger or equal to operator.
+	Verify:
+		Return false.
+
+TBTKFeature Core.Subindex.operatorFunction.1.C++ 2019-09-22
+	Do:
+		Create Subindex with the value IDX_ALL_ and call the function
+		operator with a label. Create another IDX_ALL_ with the same
+		label.
+	Verify:
+		The two subindices are equal.
+
+TBTKFeature Core.Subindex.operatorFunction.2.C++ 2019-09-22
+	Do:
+		Create Subindex with a different value from IDX_ALL_ (not
+		another labeled wildcard such as IDX_ALL_(n)) and call the
+		function operator.
+	Verify:
+		Exit or throw exception.

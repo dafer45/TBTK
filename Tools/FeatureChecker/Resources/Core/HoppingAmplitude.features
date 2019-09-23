@@ -1,0 +1,84 @@
+TBTKFeature Core.HoppingAmplitude.Construction.1 2019-09-22
+	Do:
+		Create empty HoppingAmplitude
+	Verify:
+		Request for amplitude callback exits or throw exception.
+
+
+TBTKFeature Core.HoppingAmplitude.Construction.2 2019-09-22
+	Do:
+		Create HoppingAmplitude with amplitude and to- and
+		from-Indices, and request the amplitude and to- and
+		from-Indices.
+	Verify:
+		The amplitude and to- and from-Indices are equal to the values
+		used to construct the HoppingAmplitude.
+
+TBTKFeature Core.HoppingAmplitude.Construction.3 2019-09-22
+	Do:
+		Create HoppingAmplitude with amplitude callback and to- and
+		from-Indices, and request the amplitude and to- and
+		from-Indices.
+	Verify:
+		The amplitude is correctly returned from the amplitude callback
+		and the to- and from-Indices are equal to the Indices used to
+		construct the HoppingAmplitude.
+
+TBTKFeature Core.HoppingAmplitude.Copy.1.C++ 2019-09-22
+	Do:
+		Create a HoppingAmplitude with a value as amplitude and copy
+		the HoppingAmplitude.
+	Verify:
+		The amplitude and to- and from-Indices agree for the two
+		HoppingAmplitudes.
+
+TBTKFeature Core.HoppingAmplitude.Copy.2.C++ 2019-09-22
+	Do:
+		Create a HoppingAmplitude with a callback function as amplitude
+		and copy the HoppingAmplitude.
+	Verify:
+		The amplitude and to- and from-Indices agree for the two
+		HoppingAmplitudes.
+
+TBTKFeature Core.HoppingAmplitude.Serialization.1 2019-09-23
+	Do:
+		Create a HoppingAmplitude with a value as amplitude. Serialize
+		it and create a new HoppingAmplitude from the serialization.
+	Verify:
+		The amplitude and to- and from-Indices agree for the two
+		HoppingAmplitudes.
+
+TBTKFeature Core.HoppingAmplitude.getHermitianConjugate.1 2019-09-23
+	Do:
+		Create a HoppingAmplitude with a value as amplitude and create
+		a new HoppingAmplitude by calling
+		hoppingAmplitude.getHermitianConjugate().
+	Verify:
+		The amplitude is the complex conjugate of the original
+		amplitude and the to- and from-Indices are interchanged.
+
+TBTKFeature Core.HoppingAmplitude.getHermitianConjugate.2 2019-09-23
+	Do:
+		Create a HoppingAmplitude with a callback function as amplitude
+		and create a new HoppingAmplitude by calling
+		hoppingAmplitude.getHermitianConjugate().
+	Verify:
+		The amplitude is the complex conjugate of the amplitude of the
+		original HoppingAmplitude and the to- and from-Indices are
+		interchanged.
+
+TBTKFeature Core.HoppingAmplitude.getAmplitude.1 2019-09-23
+	Do:
+		Create a HoppingAmplitude with a value as amplitude and call
+		hoppingAmplitude.getAmplitude().
+	Verify:
+		The returned amplitude is equal to that used to construct the
+		HoppingAmplitude.
+
+TBTKFeature Core.HoppingAmplitude.getAmplitude.2 2019-09-23
+	Do:
+		Create a HoppingAmplitude with a callback function as amplitude
+		and call hoppingAmplitude.getAmplitude().
+	Verify:
+		The returned amplitude is equal to what is expected to be
+		returned from the callback function.

@@ -373,7 +373,7 @@ void checkAllComponents(const string &filename){
 			vector<tuple<string, bool, bool, unsigned int>> results
 				= executeFeatureCheck({
 					get<1>(referenceComponents[n]),
-					get<1>(components[n])
+					get<1>(components[ids[0]])
 				});
 
 			unsigned int numImplementedFeatures

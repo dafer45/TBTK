@@ -21,7 +21,7 @@ TEST(Subindex, Constructor1){
 	EXPECT_EQ(subindex0, subindex2);
 }
 
-//TBTKFeature Core.Subindex.Construction.3 2019-09-19
+//TBTKFeature Core.Subindex.Serialization.1 2019-09-22
 TEST(Subindex, serializeToJSON){
 	Subindex subindex0(7);
 	Subindex subindex1(
@@ -70,7 +70,7 @@ TEST(Subindex, isSummationIndex){
 
 	//TBTKFeature Core.Subindex.isSummationIndex.1 2019-09-21
 	EXPECT_TRUE(subindex0.isSummationIndex());
-	//TBTKFeature Core.Subindex.isSummationIndex.1 2019-09-21
+	//TBTKFeature Core.Subindex.isSummationIndex.2 2019-09-22
 	EXPECT_FALSE(subindex1.isSummationIndex());
 	EXPECT_FALSE(subindex2.isSummationIndex());
 	EXPECT_FALSE(subindex3.isSummationIndex());
@@ -96,9 +96,9 @@ TEST(Subindex, isSpinIndex){
 	Subindex subindex2(0);
 	Subindex subindex3(1);
 
-	//TBTKFeature Core.Subindex.isSummationIndex.1 2019-09-21
+	//TBTKFeature Core.Subindex.isSpinIndex.1 2019-09-22
 	EXPECT_TRUE(subindex0.isSpinIndex());
-	//TBTKFeature Core.Subindex.isSummationIndex.2 2019-09-21
+	//TBTKFeature Core.Subindex.isSpinIndex.2 2019-09-22
 	EXPECT_FALSE(subindex1.isSpinIndex());
 	EXPECT_FALSE(subindex2.isSpinIndex());
 	EXPECT_FALSE(subindex3.isSpinIndex());
@@ -112,13 +112,13 @@ TEST(Subindex, isIndexSeparator){
 
 	//TBTKFeature Core.Subindex.isIndexSeparator.1 2019-09-21
 	EXPECT_TRUE(subindex0.isIndexSeparator());
-	//TBTKFeature Core.Subindex.isIndexSeparator.2 2019-09-21
+	//TBTKFeature Core.Subindex.isIndexSeparator.2 2019-09-22
 	EXPECT_FALSE(subindex1.isIndexSeparator());
 	EXPECT_FALSE(subindex2.isIndexSeparator());
 	EXPECT_FALSE(subindex3.isIndexSeparator());
 }
 
-//TBTKFeature Core.Subindex.opeartorInt.1.C++ 2019-09-21
+//TBTKFeature Core.Subindex.operatorInt.1.C++ 2019-09-22
 TEST(Subindex, operatorInt){
 	Subindex subindex(7);
 	int i = (int)subindex;
@@ -126,7 +126,7 @@ TEST(Subindex, operatorInt){
 	EXPECT_EQ(i, 7);
 }
 
-//TBTKFeature Core.Subindex.opeartorAssignment.1.C++ 2019-09-21
+//TBTKFeature Core.Subindex.operatorAssignment.1.C++ 2019-09-22
 TEST(Subindex, operatorAssignment){
 	Subindex subindex0(7);
 	Subindex subindex1(0);
@@ -141,7 +141,7 @@ TEST(Subindex, operatorAssignment){
 	EXPECT_EQ(subindex0, subindex3);
 }
 
-//TBTKFeature Core.Subindex.opeartorAddition.1 2019-09-21
+//TBTKFeature Core.Subindex.operatorAdditionAssignment.1.C++ 2019-09-22
 TEST(Subindex, operatorAdditionAssignment){
 	Subindex subindex(7);
 	subindex += 1;
@@ -149,6 +149,7 @@ TEST(Subindex, operatorAdditionAssignment){
 	EXPECT_EQ(subindex, 8);
 }
 
+//TBTKFeature Core.Subindex.operatorAddition.1.C++ 2019-09-22
 TEST(Subindex, operatorAddition){
 	Subindex subindex0(7);
 	Subindex subindex1(1);
@@ -156,6 +157,7 @@ TEST(Subindex, operatorAddition){
 	EXPECT_EQ(subindex0 + subindex1, 8);
 }
 
+//TBTKFeature Core.Subindex.operatorSubtractionAssignment.1.C++ 2019-09-22
 TEST(Subindex, operatorSubtractionAssignment){
 	Subindex subindex(7);
 	subindex -= 1;
@@ -163,6 +165,7 @@ TEST(Subindex, operatorSubtractionAssignment){
 	EXPECT_EQ(subindex, 6);
 }
 
+//TBTKFeature Core.Subindex.operatorSubtraction.1.C++ 2019-09-22
 TEST(Subindex, operatorSubtraction){
 	Subindex subindex0(7);
 	Subindex subindex1(1);
@@ -170,6 +173,7 @@ TEST(Subindex, operatorSubtraction){
 	EXPECT_EQ(subindex0 - subindex1, 6);
 }
 
+//TBTKFeature Core.Subindex.operatorMultiplicationAssignment.1.C++ 2019-09-22
 TEST(Subindex, operatorMultiplicationAssignment){
 	Subindex subindex(7);
 	subindex *= 2;
@@ -177,6 +181,7 @@ TEST(Subindex, operatorMultiplicationAssignment){
 	EXPECT_EQ(subindex, 14);
 }
 
+//TBTKFeature Core.Subindex.operatorMultiplication.1.C++ 2019-09-22
 TEST(Subindex, operatorMultiplication){
 	Subindex subindex0(7);
 	Subindex subindex1(2);
@@ -184,6 +189,7 @@ TEST(Subindex, operatorMultiplication){
 	EXPECT_EQ(subindex0*subindex1, 14);
 }
 
+//TBTKFeature Core.Subindex.operatorDivisionAssignment.1.C++ 2019-09-22
 TEST(Subindex, operatorDivisionAssignment){
 	Subindex subindex(6);
 	subindex /= 2;
@@ -191,6 +197,7 @@ TEST(Subindex, operatorDivisionAssignment){
 	EXPECT_EQ(subindex, 3);
 }
 
+//TBTKFeature Core.Subindex.operatorDivision.1.C++ 2019-09-22
 TEST(Subindex, operatorDivision){
 	Subindex subindex0(6);
 	Subindex subindex1(2);
@@ -198,12 +205,14 @@ TEST(Subindex, operatorDivision){
 	EXPECT_EQ(subindex0/subindex1, 3);
 }
 
+//TBTKFeature Core.Subindex.operatorPreIncrement.1.C++ 2019-09-22
 TEST(Subindex, operatorIncrement0){
 	Subindex subindex(7);
 
 	EXPECT_EQ(++subindex, 8);
 }
 
+//TBTKFeature Core.Subindex.operatorPostIncrement.1.C++ 2019-09-22
 TEST(Subindex, operatorIncrement1){
 	Subindex subindex(7);
 
@@ -211,12 +220,14 @@ TEST(Subindex, operatorIncrement1){
 	EXPECT_EQ(subindex, 8);
 }
 
+//TBTKFeature Core.Subindex.operatorPreDecrement.1.C++ 2019-09-22
 TEST(Subindex, operatorDecrement0){
 	Subindex subindex(7);
 
 	EXPECT_EQ(--subindex, 6);
 }
 
+//TBTKFeature Core.Subindex.operatorPostDecrement.1.C++ 2019-09-22
 TEST(Subindex, operatorDecrement1){
 	Subindex subindex(7);
 
@@ -229,7 +240,9 @@ TEST(Subindex, operatorComparsion){
 	Subindex subindex1(7);
 	Subindex subindex2(8);
 
+	//TBTKFeature Core.Subindex.operatorComparison.1.C++ 2019-09-22
 	EXPECT_EQ(subindex0, subindex1);
+	//TBTKFeature Core.Subindex.operatorComparison.2.C++ 2019-09-22
 	EXPECT_FALSE(subindex0 == subindex2);
 }
 
@@ -238,71 +251,97 @@ TEST(Subindex, operatorNotEqual){
 	Subindex subindex1(7);
 	Subindex subindex2(8);
 
+	//TBTKFeature Core.Subindex.operatorNotEqual.1.C++ 2019-09-22
 	EXPECT_FALSE(subindex0 != subindex1);
+	//TBTKFeature Core.Subindex.operatorNotEqual.2.C++ 2019-09-22
 	EXPECT_TRUE(subindex0 != subindex2);
 }
 
 TEST(Subindex, operatorLessThan0){
 	Subindex subindex(7);
 
+	//TBTKFeature Core.Subindex.operatorLessThan.1.C++ 2019-09-22
 	EXPECT_TRUE(subindex < 8);
+	//TBTKFeature Core.Subindex.operatorLessThan.2.C++ 2019-09-22
 	EXPECT_FALSE(subindex < 7);
+	//TBTKFeature Core.Subindex.operatorLessThan.3.C++ 2019-09-22
 	EXPECT_FALSE(subindex < 6);
 }
 
 TEST(Subindex, operatorLessThan1){
 	Subindex subindex(7);
 
+	//TBTKFeature Core.Subindex.operatorLessThan.1.C++ 2019-09-22
 	EXPECT_TRUE(6 < subindex);
+	//TBTKFeature Core.Subindex.operatorLessThan.2.C++ 2019-09-22
 	EXPECT_FALSE(7 < subindex);
+	//TBTKFeature Core.Subindex.operatorLessThan.3.C++ 2019-09-22
 	EXPECT_FALSE(8 < subindex);
 }
 
 TEST(Subindex, operatorLargerThan0){
 	Subindex subindex(7);
 
+	//TBTKFeature Core.Subindex.operatorLargerThan.1.C++ 2019-09-22
 	EXPECT_TRUE(subindex > 6);
+	//TBTKFeature Core.Subindex.operatorLargerThan.2.C++ 2019-09-22
 	EXPECT_FALSE(subindex > 7);
+	//TBTKFeature Core.Subindex.operatorLargerThan.3.C++ 2019-09-22
 	EXPECT_FALSE(subindex > 8);
 }
 
 TEST(Subindex, operatorLargerThan1){
 	Subindex subindex(7);
 
+	//TBTKFeature Core.Subindex.operatorLargerThan.1.C++ 2019-09-22
 	EXPECT_TRUE(8 > subindex);
+	//TBTKFeature Core.Subindex.operatorLargerThan.2.C++ 2019-09-22
 	EXPECT_FALSE(7 > subindex);
+	//TBTKFeature Core.Subindex.operatorLargerThan.3.C++ 2019-09-22
 	EXPECT_FALSE(6 > subindex);
 }
 
 TEST(Subindex, operatorLessOrEqualTo0){
 	Subindex subindex(7);
 
+	//TBTKFeature Core.Subindex.operatorLessOrEqualTo.1.C++ 2019-09-22
 	EXPECT_TRUE(subindex <= 8);
+	//TBTKFeature Core.Subindex.operatorLessOrEqualTo.2.C++ 2019-09-22
 	EXPECT_TRUE(subindex <= 7);
+	//TBTKFeature Core.Subindex.operatorLessOrEqualTo.3.C++ 2019-09-22
 	EXPECT_FALSE(subindex <= 6);
 }
 
 TEST(Subindex, operatorLessOrEqualTo1){
 	Subindex subindex(7);
 
+	//TBTKFeature Core.Subindex.operatorLessOrEqualTo.1.C++ 2019-09-22
 	EXPECT_TRUE(6 <= subindex);
+	//TBTKFeature Core.Subindex.operatorLessOrEqualTo.2.C++ 2019-09-22
 	EXPECT_TRUE(7 <= subindex);
+	//TBTKFeature Core.Subindex.operatorLessOrEqualTo.3.C++ 2019-09-22
 	EXPECT_FALSE(8 <= subindex);
 }
 
 TEST(Subindex, operatorLargerOrEqualTo0){
 	Subindex subindex(7);
 
+	//TBTKFeature Core.Subindex.operatorLargerOrEqualTo.1.C++ 2019-09-22
 	EXPECT_TRUE(subindex >= 6);
+	//TBTKFeature Core.Subindex.operatorLargerOrEqualTo.2.C++ 2019-09-22
 	EXPECT_TRUE(subindex >= 7);
+	//TBTKFeature Core.Subindex.operatorLargerOrEqualTo.3.C++ 2019-09-22
 	EXPECT_FALSE(subindex >= 8);
 }
 
 TEST(Subindex, operatorLargerOrEqualTo1){
 	Subindex subindex(7);
 
+	//TBTKFeature Core.Subindex.operatorLargerOrEqualTo.1.C++ 2019-09-22
 	EXPECT_TRUE(8 >= subindex);
+	//TBTKFeature Core.Subindex.operatorLargerOrEqualTo.2.C++ 2019-09-22
 	EXPECT_TRUE(7 >= subindex);
+	//TBTKFeature Core.Subindex.operatorLargerOrEqualTo.3.C++ 2019-09-22
 	EXPECT_FALSE(6 >= subindex);
 }
 
@@ -312,9 +351,11 @@ TEST(Subindex, operatorFunction){
 	Subindex subindex2(0);
 	Subindex subindex3(1);
 
+	//TBTKFeature Core.Subindex.operatorFunction.1.C++ 2019-09-22
 	subindex0(1);
 	EXPECT_EQ(subindex0, IDX_ALL_(1));
 
+	//TBTKFeature Core.Subindex.operatorFunction.2.C++ 2019-09-22
 	EXPECT_EXIT(
 		{
 			Streams::setStdMuteErr();
@@ -323,6 +364,7 @@ TEST(Subindex, operatorFunction){
 		::testing::ExitedWithCode(1),
 		""
 	);
+	//TBTKFeature Core.Subindex.operatorFunction.2.C++ 2019-09-22
 	EXPECT_EXIT(
 		{
 			Streams::setStdMuteErr();
@@ -331,6 +373,7 @@ TEST(Subindex, operatorFunction){
 		::testing::ExitedWithCode(1),
 		""
 	);
+	//TBTKFeature Core.Subindex.operatorFunction.2.C++ 2019-09-22
 	EXPECT_EXIT(
 		{
 			Streams::setStdMuteErr();

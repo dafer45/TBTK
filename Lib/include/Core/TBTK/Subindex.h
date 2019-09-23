@@ -38,24 +38,29 @@ namespace TBTK{
 /** @brief Subindex number. */
 class Subindex : PseudoSerializable{
 public:
+	//TBTKFeature Core.Subindex.Construction.1 2019-09-22
 	/** Constructor. */
 	Subindex(){};
 
+	//TBTKFeature Core.Subindex.Construction.2.C++ 2019-09-22
 	/** Constructor.
 	 *
 	 *  @param value The value to initilize the Subindex with. */
 	constexpr Subindex(Integer value) : value(value) {}
 
+	//TBTKFeature Core.Subindex.Construction.2.C++ 2019-09-22
 	/** Constructor.
 	 *
 	 *  @param value The value to initilize the Subindex with. */
 	constexpr Subindex(int value) : value(value) {}
 
+	//TBTKFeature Core.Subindex.Construction.2.C++ 2019-09-22
 	/** Constructor.
 	 *
 	 *  @param value The value to initilize the Subindex with. */
 	constexpr Subindex(unsigned int value) : value(value) {}
 
+	//TBTKFeature Core.Subindex.Serialization.1 2019-09-22
 	/** Constructs a Subindex from a serialization string.
 	 *
 	 *  @param serialization Serialization string from which to construct
@@ -64,17 +69,23 @@ public:
 	 *  @param mode Mode with which the string has been serialized. */
 	Subindex(const std::string &serialization, Serializable::Mode mode);
 
+	//TBTKFeature Core.Subindex.isWildcard.1 2019-09-22
+	//TBTKFeature Core.Subindex.isWildcard.2 2019-09-22
 	/** Check if the Subindex is a wildcard (IDX_ALL).
 	 *
 	 *  @return True if the Subindex is a wildcard, otherwise false. */
 	bool isWildcard() const;
 
+	//TBTKFeature Core.Subindex.isLabeledWildcard.1 2019-09-22
+	//TBTKFeature Core.Subindex.isLabeledWildcard.2 2019-09-22
 	/** Check if the Subindex is a labeled wildcard (IDX_ALL_X).
 	 *
 	 *  @return True if the Subindex is a labeled sildcard, otherwise
 	 *  false. */
 	bool isLabeledWildcard() const;
 
+	//TBTKFeature Core.Subindex.isSummationIndex.1 2019-09-22
+	//TBTKFeature Core.Subindex.isSummationIndex.2 2019-09-22
 	/** Check if the Subindex is a summation index (IDX_SUM_ALL).
 	 *
 	 *  @return True if the Subindex is a summation index, otherwise false.
@@ -86,20 +97,26 @@ public:
 	 *  @return True if the Subindex is a range index, otherwise false. */
 	bool isRangeIndex() const;
 
+	//TBTKFeature Core.Subindex.isSpinIndex.1 2019-09-22
+	//TBTKFeature Core.Subindex.isSpinIndex.2 2019-09-22
 	/** Check if the Subindex is a spin index (IDX_SPIN).
 	 *
 	 *  @return True if the SUbindex is a spin index, otherwise false. */
 	bool isSpinIndex() const;
 
+	//TBTKFeature Core.Subindex.isIndexSeparator.1 2019-09-22
+	//TBTKFeature Core.Subindex.isIndexSeparator.2 2019-09-22
 	/** Check if the Subindex is an Index separator (IDX_SEPARATOR).
 	 *
 	 *  @return True if the Subindex is an Index separator, otherwise
 	 *  false. */
 	bool isIndexSeparator() const;
 
+	//TBTKFeature Core.Subindex.operatorInt.1.C++ 2019-09-22
 	/** Type conversion operator. */
 	constexpr operator int() const{ return value;	};
 
+	//TBTKFeature Core.Subindex.operatorAssignment.1.C++ 2019-09-22
 	/** Assignment operator.
 	 *
 	 *  @param value The value to assign the Subindex.
@@ -111,6 +128,7 @@ public:
 		return *this;
 	}
 
+	//TBTKFeature Core.Subindex.operatorAssignment.1.C++ 2019-09-22
 	/** Assignment operator.
 	 *
 	 *  @param value The value to assign the Subindex.
@@ -122,6 +140,7 @@ public:
 		return *this;
 	}
 
+	//TBTKFeature Core.Subindex.operatorAdditionAssignment.1.C++ 2019-09-22
 	/** Addition asignment operator.
 	 *
 	 *  @param rhs The right hand side.
@@ -146,6 +165,7 @@ public:
 		return result;
 	}*/
 
+	//TBTKFeature Core.Subindex.operatorSubtractionAssignment.1.C++ 2019-09-22
 	/** Subtraction asignment operator.
 	 *
 	 *  @param rhs The right hand side.
@@ -170,6 +190,7 @@ public:
 		return result;
 	}*/
 
+	//TBTKFeature Core.Subindex.operatorMultiplicationAssignment.1.C++ 2019-09-22
 	/** Multiplication asignment operator.
 	 *
 	 *  @param rhs The right hand side.
@@ -194,6 +215,7 @@ public:
 		return result;
 	}*/
 
+	//TBTKFeature Core.Subindex.operatorDivisionAssignment.1.C++ 2019-09-22
 	/** Division asignment operator.
 	 *
 	 *  @param rhs The right hand side.
@@ -218,6 +240,7 @@ public:
 		return result;
 	}*/
 
+	//TBTKFeature Core.Subindex.operatorPreIncrement.1.C++ 2019-09-22
 	/** Increment operator.
 	 *
 	 *  @return The Subindex after the increment has occured. */
@@ -227,6 +250,7 @@ public:
 		return *this;
 	}
 
+	//TBTKFeature Core.Subindex.operatorPostIncrement.1.C++ 2019-09-22
 	/** Increment operator.
 	 *
 	 *  @return The Subindex before the increment has occured. */
@@ -237,6 +261,7 @@ public:
 		return previous;
 	}
 
+	//TBTKFeature Core.Subindex.operatorPreDecrement.1.C++ 2019-09-22
 	/** Decrement operator.
 	 *
 	 *  @return The Subindex after the decrement has occured. */
@@ -246,6 +271,7 @@ public:
 		return *this;
 	}
 
+	//TBTKFeature Core.Subindex.operatorPostIncrement.1.C++ 2019-09-22
 	/** Decrement operator.
 	 *
 	 *  @return The Subindex before the decrement has occured. */
@@ -354,6 +380,8 @@ public:
 		return lhs >= rhs.value;
 	}*/
 
+	//TBTKFeature Core.Subindex.operatorFunction.1.C++ 2019-09-22
+	//TBTKFeature Core.Subindex.operatorFunction.2.C++ 2019-09-22
 	/** Function call operator. Used to attach labels to predefined labeled
 	 *  Subindices. For example IDX_ALL_(n) can be used to define an nth
 	 *  labeled wildcard index. The function call fails if the Index is not
