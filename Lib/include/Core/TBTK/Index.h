@@ -68,6 +68,7 @@ public:
 //	Index(std::vector<unsigned int> i) : indices(i.begin(), i.end()){};
 
 	//TBTKFeature Core.Index.Copy.1 2019-09-19
+	//TBTKFeature Core.Index.Copy.2 2019-09-23
 	/** Copy constructor.
 	 *
 	 *  @param index Index to copy. */

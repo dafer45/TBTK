@@ -68,9 +68,11 @@ public:
 		) const = 0;
 	};
 
+	//TBTKFeature Core.HoppingAmplitude.Construction.1 2019-09-23
 	/** Constructs an uninitialized HoppingAmplitude. */
 	HoppingAmplitude();
 
+	//TBTKFeature Core.HoppingAmplitude.Construction.2 2019-09-23
 	/** Constructs a HoppingAmplitude from a value and two @link Index
 	 *  Indices@endlink.
 	 *
@@ -86,6 +88,7 @@ public:
 		Index fromIndex
 	);
 
+	//TBTKFeature Core.HoppingAmplitude.Construction.3 2019-09-23
 	/** Constructor. Takes an AmplitudeCallback rather than a paramater
 	 *  value. The AmplitudeCallback has to be defined such that it returns
 	 *  a value for the given indices when called at run time.
@@ -104,11 +107,14 @@ public:
 		Index fromIndex
 	);
 
+	//TBTKFeature Core.HoppingAmplitude.Copy.1 2019-09-23
+	//TBTKFeature Core.HoppingAmplitude.Copy.2 2019-09-23
 	/** Copy constructor.
 	 *
 	 *  @param ha HoppingAmplitude to copy. */
 	HoppingAmplitude(const HoppingAmplitude &ha);
 
+	//TBTKFeature Core.HoppingAmplitude.Serialization.1 2019-09-23
 	/** Constructor. Constructs the HoppingAmplitude from a serialization
 	 *  string.
 	 *
@@ -117,10 +123,12 @@ public:
 	 *
 	 *  @param mode Mode with which the string has been serialized. */
 	HoppingAmplitude(
-		const std::string &serializeation,
+		const std::string &serialization,
 		Serializable::Mode mode
 	);
 
+	//TBTKFeature Core.HoppingAmplitude.getHermitianConjugate.1 2019-09-23
+	//TBTKFeature Core.HoppingAmplitude.getHermitianConjugate.2 2019-09-23
 	/** Get the Hermitian cojugate of the HoppingAmplitude.
 	 *
 	 *  @return The Hermitian conjugate of the HoppingAmplitude. */
@@ -129,11 +137,14 @@ public:
 	/** Print HoppingAmplitude. Mainly for debugging. */
 	void print() const;
 
+	//TBTKFeature Core.HoppingAmplitude.getAmplitude.1 2019-09-23
+	//TBTKFeature Core.HoppingAmplitude.getAmplitude.2 2019-09-23
 	/** Get the amplitude value \f$a_{ij}\f$.
 	 *
 	 *  @return The value of the amplitude. */
 	std::complex<double> getAmplitude() const;
 
+	//TBTKFeature Core.HoppingAmplitude.operatorAddition.1.C++ 2019-09-23
 	/** Addition operator. Creates a tuple containing the HoppingAmplitude
 	 *  and its Hermitian conjugate. Used to allow the syntax<br>
 	 *  model << hoppingAmplitude + HC.
@@ -146,16 +157,20 @@ public:
 		const HermitianConjugate hc
 	);
 
+	//TBTKFeature Core.HoppingAmplitude.getToIndex.1 2019-09-23
 	/** Get to index.
 	 *
 	 *  @return The to-Index. */
 	const Index& getToIndex() const;
 
+	//TBTKFeature Core.HoppingAmplitude.getFromIndex.1 2019-09-23
 	/** Get from index.
 	 *
 	 *  @return The from Index. */
 	const Index& getFromIndex() const;
 
+	//TBTKFeature Core.HoppingAmplitude.getIsCallbackDependent.1 2019-09-23
+	//TBTKFeature Core.HoppingAmplitude.getIsCallbackDependent.2 2019-09-23
 	/** Get whether the value of the HoppingAmplitude is determined through
 	 *  an AmplitudeCallback.
 	 *
@@ -163,6 +178,8 @@ public:
 	 *  through an AmplitudeCallback. */
 	bool getIsCallbackDependent() const;
 
+	//TBTKFeature Core.HoppingAmplitude.getAmplitudeCallback.1 2019-09-23
+	//TBTKFeature Core.HoppingAmplitude.getAmplitudeCallback.2 2019-09-23
 	/** Get the AmplitudeCallback that is used to determine the value of
 	 *  the HoppingAmplitude. This function stops execution if no
 	 *  AmplitudeCallback is used for the HoppingAmplitude. Therefore
@@ -178,6 +195,7 @@ public:
 	 *  @return A string representation of the HoppingAmplitude. */
 	std::string toString() const;
 
+	//TBTKFeature Core.HoppingAmplitude.Serialization.1 2019-09-23
 	/** Serialize HoppingAmplitude. Note that HoppingAmplitude is
 	 *  pseudo-Serializable in that it implements the Serializable
 	 * interface, but does so non-virtually.

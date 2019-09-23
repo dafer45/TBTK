@@ -57,13 +57,13 @@ TEST(HoppingAmplitude, CopyConstructor){
 	HoppingAmplitude hoppingAmplitude0(std::complex<double>(1, 2), {1, 2, 3}, {4, 5});
 	HoppingAmplitude hoppingAmplitude1(amplitudeCallback, {1, 2}, {3, 4, 5});
 
-	//TBTKFeature Core.HoppingAmplitude.Copy.1.C++ 2019-09-22
+	//TBTKFeature Core.HoppingAmplitude.Copy.1 2019-09-22
 	HoppingAmplitude hoppingAmplitude2 = hoppingAmplitude0;
 	EXPECT_EQ(hoppingAmplitude2.getAmplitude(), std::complex<double>(1, 2)) << errorMessage;
 	EXPECT_TRUE(hoppingAmplitude2.getToIndex().equals({1, 2, 3})) << errorMessage;
 	EXPECT_TRUE(hoppingAmplitude2.getFromIndex().equals({4, 5})) << errorMessage;
 
-	//TBTKFeature Core.HoppingAmplitude.Copy.2.C++ 2019-09-22
+	//TBTKFeature Core.HoppingAmplitude.Copy.2 2019-09-22
 	HoppingAmplitude hoppingAmplitude3 = hoppingAmplitude1;
 	EXPECT_EQ(hoppingAmplitude3.getAmplitude(), std::complex<double>(3, 4)) << errorMessage;
 	EXPECT_TRUE(hoppingAmplitude3.getToIndex().equals({1, 2})) << errorMessage;
@@ -123,6 +123,8 @@ TEST(HoppingAmplitude, getAmplitude){
 	);
 }
 
+
+//TBTKFeature Core.HoppingAmplitude.operatorAddition.1.C++ 2019-09-23
 TEST(HoppingAmplitude, operatorAddition){
 	std::string errorMessage = "operator+() failed.";
 
@@ -137,22 +139,37 @@ TEST(HoppingAmplitude, operatorAddition){
 }
 
 TEST(HoppingAmplitude, getToIndex){
-	//Extensively tested through other tests.
+	//TBTKFeature Core.HoppingAmplitude.getToIndex.1 2019-09-23
+	HoppingAmplitude hoppingAmplitude(
+		std::complex<double>(1, 2),
+		{1, 2},
+		{3, 4}
+	);
+	EXPECT_TRUE(hoppingAmplitude.getToIndex().equals({1, 2}));
 }
 
 TEST(HoppingAmplitude, getFromIndex){
-	//Extensively tested through other tests.
+	//TBTKFeature Core.HoppingAmplitude.getFromIndex.1 2019-09-23
+	HoppingAmplitude hoppingAmplitude(
+		std::complex<double>(1, 2),
+		{1, 2},
+		{3, 4}
+	);
+	EXPECT_TRUE(hoppingAmplitude.getFromIndex().equals({3, 4}));
 }
 
 TEST(HoppingAmplitude, getIsCallbackDependent){
+	//TBTKFeature Core.HoppingAmplitude.getIsCallbackDependent.1 2019-09-23
 	HoppingAmplitude hoppingAmplitude0(1, {0}, {0});
 	EXPECT_FALSE(hoppingAmplitude0.getIsCallbackDependent());
 
+	//TBTKFeature Core.HoppingAmplitude.getIsCallbackDependent.2 2019-09-23
 	HoppingAmplitude hoppingAmplitude1(amplitudeCallback, {0}, {0});
 	EXPECT_TRUE(hoppingAmplitude1.getIsCallbackDependent());
 }
 
 TEST(HoppingAmplitude, getAmplitudeCallback){
+	//TBTKFeature Core.HoppingAmplitude.getAmplitudeCallback.1 2019-09-23
 	HoppingAmplitude hoppingAmplitude0(1, {0}, {0});
 	EXPECT_EXIT(
 		{
@@ -163,6 +180,7 @@ TEST(HoppingAmplitude, getAmplitudeCallback){
 		""
 	);
 
+	//TBTKFeature Core.HoppingAmplitude.getAmplitudeCallback.2 2019-09-23
 	HoppingAmplitude hoppingAmplitude1(amplitudeCallback, {0}, {0});
 	EXPECT_EQ(&hoppingAmplitude1.getAmplitudeCallback(), &amplitudeCallback);
 }
