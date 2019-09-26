@@ -1,0 +1,106 @@
+{
+	"Features":[
+		{
+			"Name": "Core.HoppingAmplitude.Construction.1",
+			"Date": "2019-09-22",
+			"Do": "Create empty HoppingAmplitude",
+			"Verify": "Request for amplitude callback exits or throw exception."
+		},
+		{
+			"Name": "Core.HoppingAmplitude.Construction.2",
+			"Date": "2019-09-22",
+			"Do": "Create HoppingAmplitude with amplitude and to- and from-Indices, and request the amplitude and to- and from-Indices.",
+			"Verify": "The amplitude and to- and from-Indices are equal to the values used to construct the HoppingAmplitude."
+		},
+		{
+			"Name": "Core.HoppingAmplitude.Construction.3",
+			"Date": "2019-09-22",
+			"Do": "Create HoppingAmplitude with amplitude callback and to- and from-Indices, and request the amplitude and to- and from-Indices.",
+			"Verify": "The amplitude is correctly returned from the amplitude callback and the to- and from-Indices are equal to the Indices used to construct the HoppingAmplitude."
+		},
+		{
+			"Name": "Core.HoppingAmplitude.Copy.1",
+			"Date": "2019-09-22",
+			"Do": "Create a HoppingAmplitude with a value as amplitude and copy the HoppingAmplitude.",
+			"Verify": "The amplitude and to- and from-Indices agree for the two HoppingAmplitudes."
+		},
+		{
+			"Name": "Core.HoppingAmplitude.Copy.2",
+			"Date": "2019-09-22",
+			"Do": "Create a HoppingAmplitude with a callback function as amplitude and copy the HoppingAmplitude.",
+			"Verify": "The amplitude and to- and from-Indices agree for the two HoppingAmplitudes."
+		},
+		{
+			"Name": "Core.HoppingAmplitude.Serialization.1",
+			"Date": "2019-09-23",
+			"Do": "Create a HoppingAmplitude with a value as amplitude. Serialize it and create a new HoppingAmplitude from the serialization.",
+			"Verify": "The amplitude and to- and from-Indices agree for the two HoppingAmplitudes."
+		},
+		{
+			"Name": "Core.HoppingAmplitude.getHermitianConjugate.1",
+			"Date": "2019-09-23",
+			"Do": "Create a HoppingAmplitude with a value as amplitude and create a new HoppingAmplitude by calling hoppingAmplitude.getHermitianConjugate().",
+			"Verify": "The amplitude is the complex conjugate of the original amplitude and the to- and from-Indices are interchanged."
+		},
+		{
+			"Name": "Core.HoppingAmplitude.getHermitianConjugate.2",
+			"Date": "2019-09-23",
+			"Do": "Create a HoppingAmplitude with a callback function as amplitude and create a new HoppingAmplitude by calling hoppingAmplitude.getHermitianConjugate().",
+			"Verify": "The amplitude is the complex conjugate of the amplitude of the original HoppingAmplitude and the to- and from-Indices are interchanged."
+		},
+		{
+			"Name": "Core.HoppingAmplitude.getAmplitude.1",
+			"Date": "2019-09-23",
+			"Do": "Create a HoppingAmplitude with a value as amplitude and call hoppingAmplitude.getAmplitude().",
+			"Verify": "The returned amplitude is equal to that used to construct the HoppingAmplitude."
+		},
+		{
+			"Name": "Core.HoppingAmplitude.getAmplitude.2",
+			"Date": "2019-09-23",
+			"Do": "Create a HoppingAmplitude with a callback function as amplitude and call hoppingAmplitude.getAmplitude().",
+			"Verify": "The returned amplitude is equal to what is expected to be returned from the callback function."
+		},
+		{
+			"Name": "Core.HoppingAmplitude.operatorAddition.1.C++",
+			"Date": "2019-09-23",
+			"Do": "Create a HoppingAmplitude pair by adding a HoppingAmplitude with HC.",
+			"Verify": "The pair contains the HoppingAmplitude and it's Hermitian conjugate."
+		},
+		{
+			"Name": "Core.HoppingAmplitude.getToIndex.1",
+			"Date": "2019-09-23",
+			"Do": "Create a HoppingAmplitude and call hoppingAmplitude.getToIndex().",
+			"Verify": "Returns the to-Index."
+		},
+		{
+			"Name": "Core.HoppingAmplitude.getFromIndex.1",
+			"Date": "2019-09-23",
+			"Do": "Create a HoppingAmplitude and call hoppingAmplitude.getFromIndex().",
+			"Verify": "Returns the from-Index."
+		},
+		{
+			"Name": "Core.HoppingAmplitude.getIsCallbackDependent.1",
+			"Date": "2019-09-23",
+			"Do": "Create a HoppingAmplitude with a value as amplitude and call hoppingAmplitude.getIsCallbackDependent().",
+			"Verify": "Returns false."
+		},
+		{
+			"Name": "Core.HoppingAmplitude.getIsCallbackDependent.2",
+			"Date": "2019-09-23",
+			"Do": "Create a HoppingAmplitude with a callback function as amplitude and call hoppingAmplitude.getIsCallbackDependent().",
+			"Verify": "Returns true."
+		},
+		{
+			"Name": "Core.HoppingAmplitude.getAmplitudeCallback.1",
+			"Date": "2019-09-23",
+			"Do": "Create a HoppingAmplitude with a value as amplitude and call hoppingAmplitude.getAmplitudeCallback().",
+			"Verify": "Exit or throw exception."
+		},
+		{
+			"Name": "Core.HoppingAmplitude.getAmplitudeCallback.2",
+			"Date": "2019-09-23",
+			"Do": "Create a HoppingAmplitude with a callback function as amplitude and call hoppingAmplitude.getAmplitudeCallback().",
+			"Verify": "Return the callback function."
+		}
+	]
+}

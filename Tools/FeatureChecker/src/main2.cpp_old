@@ -22,8 +22,6 @@
  *  @author Kristofer Björnson
  */
 
-#include "FeatureParser.h"
-
 #include "TBTK/TBTKMacros.h"
 #include "TBTK/Streams.h"
 
@@ -34,9 +32,8 @@
 
 using namespace std;
 using namespace TBTK;
-using namespace FeatureChecker;
 
-/*const string ALL_COMPONENTS_FILENAME
+const string ALL_COMPONENTS_FILENAME
 	= string(TBTK_RESOURCE_PATH) + "/all.components";
 
 vector<string> splitString(string str, char delimiter){
@@ -496,6 +493,22 @@ int main(int argc, char **argv){
 	{
 		string filename = argv[1];
 		vector<string> components = splitString(filename, '.');
+/*		TBTKAssert(
+			components.size() > 1,
+			"TBTKFeatureChecker",
+			"Unsupported argument.",
+			"Examples of valid uses are 'TBTKFeatureChecker"
+			<< " componentListFile.components' and"
+			<< " 'TBTKFeatureChecker Core.Index Index.h'."
+		);
+		TBTKAssert(
+			components.back().compare("components") == 0,
+			"TBTKFeatureChecker",
+			"Unsupported argument.",
+			"Examples of valid uses are 'TBTKFeatureChecker"
+			<< " componentListFile.components' and"
+			<< " 'TBTKFeatureChecker Core.Index Index.h'."
+		);*/
 
 		if(
 			components.size() > 1
@@ -530,17 +543,4 @@ int main(int argc, char **argv){
 	}
 
 	return 0;
-}*/
-
-int main(int argc, char **argv){
-	TBTKAssert(
-		argc == 2,
-		"TBTKFeatureChecker::main()",
-		"TBTKFeatureChecker takes one argument.",
-		""
-	);
-	vector<Feature> features = FeatureParser::parseSourceFile(argv[1]);
-	for(unsigned int n = 0; n < features.size(); n++)
-		Streams::out << features[n].getName() << "\t" << features[n].getDate() << "\t" << features[n].getDoDescription() << "\t" << features[n].getVerifyDescription() << "\n";
 }
-
