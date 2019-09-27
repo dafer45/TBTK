@@ -65,7 +65,11 @@ enum {
  *  Flexible physical index for indexing arbitrary models. Each index can
  *  contain an arbitrary number of subindices. For example {x, y, spin},
  *  {x, y, z, orbital, spin}, and {subsystem, x, y, z, orbital, spin}.
- */
+ *
+ *  <b>Example:</b>
+ *  \snippet Core/Index.cpp Index
+ *  <b>Output:</b>
+ *  \snippet output/Core/Index.output Index */
 class Index{
 public:
 	/** Constructs an empty Index. */

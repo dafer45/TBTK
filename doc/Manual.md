@@ -101,10 +101,10 @@ First, if details about the algorithm is required to be kept in mind at all leve
 Second, if the specific requirements of an algorithm determines the structure of the whole program, the whole code has to be rewritten if the choice is made to try another algorithm.
 
 To get around these problems TBTK is designed to encourage a workflow where the three stages of specifying the input, choosing the algorithm, and extracting the properties are largely independent from each other.
-To achieve this TBTK has a class called a Model that allows for general models to be setup.
-Further, algorithms are implemented in a set of different Solvers, which takes a Model and internally converts it to the format most suitable for the algorithm.
-Finally, the Solver is wrapped in a PropertyExtractor, where the different PropertyExtractors have a uniform interface.
-By using the PropertyExtractors to extract properties from the Model, rather than by calling the Solvers directly, most code do not need to be changed if the Solver is changed.
+To achieve this TBTK has a class called a @link TBTK::Model Model@endlink that allows for general models to be setup.
+Further, algorithms are implemented in a set of different @link TBTK::Solver::Solver Solvers@endlink, which takes a @link TBTK::Model Model@endlink and internally converts it to the format most suitable for the algorithm.
+Finally, the @link TBTK::Solver::Solver Solver@endlink is wrapped in a @link TBTK::PropertyExtractor::PropertyExtractor PropertyExtractor@endlink, where the different @link TBTK::PropertyExtractor::PropertyExtractor PropertyExtractors@endlink have a uniform interface.
+By using the @link TBTK::PropertyExtractor::PropertyExtractor PropertyExtractors@endlink to extract properties from the @link TBTK::Model Model@endlink, rather than by calling the @link TBTK::Solver::Solver Solvers@endlink directly, most code do not need to be changed if the @link TBTK::Solver::Solver Solver@endlink is changed.
 
 # Auxiliary tasks
 While the three questions above captures the essence of a typical scientific problem, auxiliary tasks such as reading/writing data from/to file, plotting, etc. are required to solve a problem.

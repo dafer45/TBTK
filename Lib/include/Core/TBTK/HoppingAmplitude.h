@@ -45,7 +45,11 @@ enum HermitianConjugate {HC};
  *  order (value, to, from). The former follows the order in which the process
  *  can be thought of as happening, while the later corresponds to the order in
  *  which values and operators stands in the Hamiltonian.
- */
+ *
+ *  <b>Example:</b>
+ *  \snippet Core/HoppingAmplitude.cpp HoppingAmplitude
+ *  <b>Output:</b>
+ *  \snippet output/Core/HoppingAmplitude.output HoppingAmplitude */
 class HoppingAmplitude{
 public:
 	/** Constructs a HoppingAmplitude from a value and two @link Index

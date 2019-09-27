@@ -7,6 +7,8 @@ MESSAGE("-----------------------------------------------------------------------
 IF(DOXYGEN_FOUND)
 	MESSAGE("[X] Doxygen")
 
+	ADD_SUBDIRECTORY(examples)
+
 	CONFIGURE_FILE(
 		${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile
 		${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
@@ -50,6 +52,7 @@ IF(DOXYGEN_FOUND)
 	ADD_CUSTOM_TARGET(
 		documentation
 		COMMAND ${DOXYGEN_EXECUTABLE} Doxyfile
+		DEPENDS ${TBTK_DOCUMENTATION_EXAMPLE_OUTPUTS}
 		VERBATIM
 	)
 
