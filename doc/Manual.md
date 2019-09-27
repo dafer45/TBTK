@@ -101,10 +101,10 @@ First, if details about the algorithm is required to be kept in mind at all leve
 Second, if the specific requirements of an algorithm determines the structure of the whole program, the whole code has to be rewritten if the choice is made to try another algorithm.
 
 To get around these problems TBTK is designed to encourage a workflow where the three stages of specifying the input, choosing the algorithm, and extracting the properties are largely independent from each other.
-To achieve this TBTK has a class called a @link TBTK::Model Model@endlink that allows for general models to be setup.
-Further, algorithms are implemented in a set of different @link TBTK::Solver::Solver Solvers@endlink, which takes a @link TBTK::Model Model@endlink and internally converts it to the format most suitable for the algorithm.
-Finally, the @link TBTK::Solver::Solver Solver@endlink is wrapped in a @link TBTK::PropertyExtractor::PropertyExtractor PropertyExtractor@endlink, where the different @link TBTK::PropertyExtractor::PropertyExtractor PropertyExtractors@endlink have a uniform interface.
-By using the @link TBTK::PropertyExtractor::PropertyExtractor PropertyExtractors@endlink to extract properties from the @link TBTK::Model Model@endlink, rather than by calling the @link TBTK::Solver::Solver Solvers@endlink directly, most code do not need to be changed if the @link TBTK::Solver::Solver Solver@endlink is changed.
+To achieve this TBTK has a class called a @link Model@endlink that allows for general models to be setup.
+Further, algorithms are implemented in a set of different @link Solvers@endlink, which takes a Model and internally converts it to the format most suitable for the algorithm.
+Finally, the Solver is wrapped in a @link PropertyExtractors PropertyExtractor@endlink, where the different PropertyExtractors have a uniform interface.
+By using the PropertyExtractors to extract @link Properties@endlink from the Model, rather than by calling the Solvers directly, most code do not need to be changed if the Solver is changed.
 
 # Auxiliary tasks
 While the three questions above captures the essence of a typical scientific problem, auxiliary tasks such as reading/writing data from/to file, plotting, etc. are required to solve a problem.
@@ -112,17 +112,17 @@ TBTK therefore also have a large set of tools for simplifying such tasks, allowi
 Further, a fundamental key feature of TBTK is that it also comes with a powerful method for handling units.
 While physical quantities often are expressed in terms of some specific combinations of units such as K, eV, C, etc. it is often useful to work in some for the problem at hands natural set of units.
 In high-energy physics this may mean \f$ \hbar = c = 1\f$, while in condensed matter physics it can be useful to express energies in terms of Rydbergs or some arbitrary unit set by a hopping parameter.
-For this TBTK provides a UnitHandler that enables the developer to specify the natural units for the given problem.
+For this TBTK provides a @link UnitHandler@endlink that enables the developer to specify the natural units for the given problem.
 All function calls to TBTK functions should be understood to be in terms of the specified natural units.
 
 # Implementing applications {#ImplementingApplications}
 For developers interested in implementing calculations that are meant to answer specific physical questions, which is also referred to as implementing applications, TBTK comes ready with a set of native Solvers.
 This manual is mainly intended to describe this use case and therefore covers the most important classes needed to achieve this.
-In particular, this manual outlines how to properly setup a Model, select a Solver, and to extract properties using PropertyExtractors.
+In particular, this manual outlines how to properly setup a @link Model@endlink, select a @link Solvers Solver@endlink, and to extract @link Properties@endlink using @link PropertyExtractors@endlink.
 
 # Implementing new Solvers {#ImplementingNewSolvers}
 TBTK is also intended to enable the development of new Solvers and provides many classes ment to simplify this task.
-This manual does not cover all these classes and the interested developer is instead referred to the API for a more detailed description.
+This manual does not cover all these classes and the interested developer is instead referred to the @link API for a more detailed description.
 However, developers are still encouraged to study this manual to understand the design philosophy behind TBTK, and to also use the already existing Solvers as inspiration when writing new Solvers.
 Doing so can significantly reduce the amount of overhead required to create a new Solver and makes it easier for other developers to use the new Solver in their own project.
 The development of new Solvers is greatly encouraged and if you are interested in this but do not know where to start, please contact Kristofer Björnson at kristofer.bjornson@physics.uu.se.
@@ -130,6 +130,7 @@ New Solvers can either be released as stand alone packages or be pulled into the
 In the later case the Solver will have to adhere to the main development philosophy of TBTK, but we are happy with providing help with polishing the Solver to the point that it does.
 
 @page UnitHandler UnitHandler
+@link TBTK::UnitHandler See more details about the UnitHandler in the API@endlink
 
 # Units and constants {#UnitsAndConstants}
 Most quantities of interest in physics have units, which means that the numeric value of the quantity depends on which unit it is measured in.
@@ -360,7 +361,7 @@ The original subindex order {subsystem, x, y, z, sublattice, orbital} given abov
 In general, ordering the subindices with "less local" subindices to the left should almost always resolve such issues.
 
 @page Model Model
-
+@link TBTK::Model See more details about the Model in the API@endlink
 # The Model class {#TheModelClass}
 The main class for setting up a model is the Model class, which acts as a container for model specific parameters such as the Hamiltonian, temperature, chemical potential, etc.
 For a simple example, lets consider a simple two level system described by the Hamiltonian
@@ -657,6 +658,7 @@ For a system with say three momentum subindices, one orbital subindex, and one s
 If for some reason the Index structure instead is given as {kx, ky, orbital, kz, spin}, TBTK will only be able to automatically detect kx and ky as block-indices, and will treat all of the three remaining subindices orbital, kz, and spin as internal indices for the blocks (at least as long as the Hamiltonian does not happen to also be block diagonal in the orbital subindex).
 
 @page Solvers Solvers
+@link TBTK::Solver::Solver See more details about the Solvers in the API@endlink
 
 # Limiting algorithm specific details from spreading {#LimitingAlgorithmSpecificDetailsFromSpreading}
 Depending on the Model and the properties that are sought for, different solution methods are best suited to carry out different tasks.
@@ -915,6 +917,8 @@ This is even required when the Green's function is generated on GPU, and the sol
 ```
 
 @page PropertyExtractors PropertyExtractors
+@link TBTK::PropertyExtractor::PropertyExtractor See more details about the PropertyExtractors in the API@endlink
+
 # Physical properties, not numerics {#PhysicalPropertiesNotNumerics}
 In order to allow application developers to focus on relevant physical questions rather than algorithm specific details, and to prevent algorithm specific requirements from spreading to other parts of the code, TBTK encourages the use PropertyExtractors for extracting physical quantities from the Solvers.
 PropertyExtractors are interfaces to Solvers that largely present themselves uniformly to other parts of the code.
@@ -1067,6 +1071,8 @@ Further Properties such as EigenValues, GreensFunction, SelfEnergy, and WaveFunc
 If you are interested in these quantities, do not hesitate to contact kristofer.bjornson@physics.uu.se to get further details or to request a speedy update about one or several of these Properties.
 
 @page Properties Properties
+@link TBTK::Property::AbstractProperty See more details about the Properties in the API@endlink
+
 # Properties and meta data {#PropertiesAndMetaData}
 When calculating physical properties it is common to store the result in an arrays.
 The density at (x,y) for a two-dimensional grid with dimensions (SIZE_X, SIZE_Y) can for example be stored as the array element *density[SIZE_Y*x +y]*.
