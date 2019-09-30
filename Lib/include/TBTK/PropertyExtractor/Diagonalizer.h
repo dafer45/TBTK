@@ -15,7 +15,7 @@
 
 /** @package TBTKcalc
  *  @file DPropertyExtractor.h
- *  @brief Extracts physical properties from the Diagonalizer
+ *  @brief Extracts physical properties from the Solver::Diagonalizer.
  *
  *  @author Kristofer Björnson
  */
@@ -40,9 +40,16 @@
 namespace TBTK{
 namespace PropertyExtractor{
 
-/** The PropertyExtractor::Diagonalizer extracts common physical properties
- *  such as DOS, Density, LDOS, etc. from a Diagonalizer. These can then be
- *  written to file using the FileWriter.*/
+/** @brief Extracts physical properties from the Solver::Diagonalizer.
+ *
+ *  The PropertyExtractor::Diagonalizer extracts @link
+ *  Property::AbstractProperty Properties@endlink from the
+ *  Solver::Diagonalizer.
+ *
+ *  <b>Example:</b>
+ *  \snippet PropertyExtractor/Diagonalizer.cpp Diagonalizer
+ *  <b>Output:</b>
+ *  \snippet output/PropertyExtractor/Diagonalizer.output Diagonalizer */
 class Diagonalizer : public PropertyExtractor{
 public:
 	/** Constructs a PropertyExtractor::Diagonalizer.

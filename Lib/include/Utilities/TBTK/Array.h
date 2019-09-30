@@ -101,6 +101,13 @@ public:
 
 	/** Get ranges. */
 	const std::vector<unsigned int>& getRanges() const;
+
+	/** ostream operator. */
+	template<typename DT>
+	friend std::ostream& operator<<(
+		std::ostream& stream,
+		const Array<DT> &array
+	);
 private:
 	/** Data data. */
 	DataType *data;
@@ -410,6 +417,51 @@ void Array<DataType>::fillSlice(
 template<typename DataType>
 inline const std::vector<unsigned int>& Array<DataType>::getRanges() const{
 	return ranges;
+}
+
+template<typename DataType>
+inline std::ostream& operator<<(std::ostream &stream, const Array<DataType> &array){
+	switch(array.ranges.size()){
+	case 1:
+		stream << "[";
+		for(unsigned int n = 0; n < array.ranges[0]; n++){
+			if(n != 0)
+				stream << ", ";
+			stream << array[{n}];
+		}
+		stream << "]";
+
+		break;
+	case 2:
+		stream << "[";
+		for(unsigned int row = 0; row < array.ranges[0]; row++){
+			if(row != 0)
+				stream << "\n";
+			stream << "[";
+			for(
+				unsigned int column = 0;
+				column < array.ranges[1];
+				column++
+			){
+				if(column != 0)
+					stream << ", ";
+				stream << array[{row, column}];
+			}
+			stream << "]";
+		}
+		stream << "]";
+
+		break;
+	default:
+		TBTKExit(
+			"Array::operator<<()",
+			"Unable to print Array of rank '"
+			<< array.ranges.size() << "'.",
+			""
+		);
+	}
+
+	return stream;
 }
 
 template<typename DataType>

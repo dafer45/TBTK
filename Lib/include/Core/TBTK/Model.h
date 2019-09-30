@@ -46,8 +46,13 @@ class FileReader;
 
 /** @brief Container of Model related information.
  *
- *  The Model conatins all model related information such as the Hamiltonian,
+ *  The Model contains all model related information such as the Hamiltonian,
  *  temperature, and chemical potential.
+ *
+ *  <b>Example:</b>
+ *  \snippet Core/Model.cpp Model
+ *  <b>Output:</b>
+ *  \snippet output/Core/Model.output Model
  */
 class Model : public Serializable, public Communicator{
 public:

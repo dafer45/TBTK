@@ -28,7 +28,17 @@
 namespace TBTK{
 namespace Solver{
 
-/** @brief Base class for Solvers. */
+/** @brief Base class for Solvers.
+ *
+ *  The Solver is a base class for other @link Solver Solvers@endlink. See
+ *  therefore the documentation for the Diagonalizer, BlockDiagonalizer,
+ *  ArnoldiIterator, and ChebyshevExpander examples of specific production
+ *  ready @link Solver Solvers@endlink.
+ *
+ *  <b>Example:</b>
+ *  \snippet Solver/Solver.cpp Solver
+ *  <b>Output:</b>
+ *  \snippet output/Solver/Solver.output Solver */
 class Solver{
 public:
 	/** Constructs a Solver::Solver. */

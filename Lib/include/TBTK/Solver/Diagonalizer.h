@@ -34,11 +34,19 @@ namespace Solver{
 
 /** @brief Solves a Model using diagonalization.
  *
- *  Solves a given model by Diagonalizing the Hamiltonian. The eigenvalues and
- *  eigenvectors can then either be directly extracted and used to calculate
- *  custom physical quantities, or the PropertyExtractor can be used to extract
- *  common properties. Scales as \f$O(n^3)\f$ with the dimension of the Hilbert
- *  space. */
+ *  Solves a Model by Diagonalizing the Hamiltonian. Use
+ *  PropertyExtractor::Diagonalizer to extract @link Property::AbstractProperty
+ *  Properties@endlink.
+ *
+ *  <b>Scaling behavior:</b><br />
+ *  Time: \f$O(h^3)\f$<br />
+ *  Space: \f$O(h^2)\f$
+ *
+ *  Here \f$h\f$ is the size of the Hilbert space basis.
+ *
+ *  <b>Example:</b>
+ *  \snippet Solver/Diagonalizer.cpp Diagonalizer
+ *  \snippet output/Solver/Diagonalizer.output Diagonalizer */
 class Diagonalizer : public Solver, public Communicator{
 public:
 	/** Constructs a Solver::Diagonalizer. */
