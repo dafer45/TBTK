@@ -19,6 +19,7 @@
  */
 
 #include "TBTK/Property/LDOS.h"
+#include "TBTK/UnitHandler.h"
 
 #include "TBTK/json.hpp"
 
@@ -111,6 +112,26 @@ LDOS::LDOS(
 			""
 		);
 	}
+}
+
+string LDOS::toString() const{
+	unsigned int numSites = getSize()/getBlockSize();
+	double lowerBound = getLowerBound();
+	double upperBound = getUpperBound();
+	unsigned int resolution = getResolution();
+
+	stringstream ss;
+	ss << "LDOS\n";
+	ss << "\tNumber of sites: " << numSites << "\n";
+	ss << "\tLower bound: " << UnitHandler::convertEnergyNtB(lowerBound)
+		<< " " << UnitHandler::getEnergyUnitString() << " ("
+		<< lowerBound << " b.u.)\n";
+	ss << "\tUpper bound: " << UnitHandler::convertEnergyNtB(upperBound)
+		<< " " << UnitHandler::getEnergyUnitString() << " ("
+		<< upperBound << " b.u.)\n";
+	ss << "\tResolution: " << resolution;
+
+	return ss.str();
 }
 
 string LDOS::serialize(Mode mode) const{

@@ -38,7 +38,7 @@ namespace Solver{
 
 ArnoldiIterator::ArnoldiIterator(
 ) :
-	Communicator(true),
+	Communicator(false),
 	matrix(SparseMatrix<complex<double>>::StorageFormat::CSC)
 {
 	mode = Mode::Normal;

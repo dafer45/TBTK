@@ -29,7 +29,7 @@ using namespace std;
 namespace TBTK{
 namespace Solver{
 
-BlockDiagonalizer::BlockDiagonalizer() : Communicator(true){
+BlockDiagonalizer::BlockDiagonalizer() : Communicator(false){
 	hamiltonian = nullptr;
 	eigenValues = nullptr;
 	eigenVectors = nullptr;

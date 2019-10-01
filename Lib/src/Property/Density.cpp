@@ -20,6 +20,8 @@
 
 #include "TBTK/Property/Density.h"
 
+#include <sstream>
+
 #include "TBTK/json.hpp"
 
 using namespace std;
@@ -96,6 +98,14 @@ double Density::getMax() const{
 			max = data[n];
 
 	return max;
+}
+
+string Density::toString() const{
+	stringstream ss;
+	ss << "Density\n";
+	ss << "\tNumber of sites: " << getSize();
+
+	return ss.str();
 }
 
 string Density::serialize(Mode mode) const{

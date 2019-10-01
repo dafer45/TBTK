@@ -34,6 +34,7 @@
 #include "TBTK/ManyParticleContext.h"
 #include "TBTK/Serializable.h"
 #include "TBTK/Statistics.h"
+#include "TBTK/Streamable.h"
 
 #include <complex>
 #include <fstream>
@@ -46,10 +47,14 @@ class FileReader;
 
 /** @brief Container of Model related information.
  *
- *  The Model conatins all model related information such as the Hamiltonian,
+ *  The Model contains all model related information such as the Hamiltonian,
  *  temperature, and chemical potential.
- */
-class Model : public Serializable, public Communicator{
+ *
+ *  <b>Example:</b>
+ *  \snippet Core/Model.cpp Model
+ *  <b>Output:</b>
+ *  \snippet output/Core/Model.output Model */
+class Model : public Serializable, public Communicator, public Streamable{
 public:
 	/** Constructor. */
 	Model();
@@ -267,6 +272,11 @@ public:
 
 	/** Operator<<. */
 	Model& operator<<(const OverlapAmplitude& overlapAmplitudeSet);
+
+	/** Returns a string with characteristic information about the Model.
+	 *
+	 *  @return A string with characterstic information about the Model. */
+	virtual std::string toString() const;
 
 	/** Implements Serializable::serialize(). Note that the
 	 *  ManyParticleContext is not yet serialized. */

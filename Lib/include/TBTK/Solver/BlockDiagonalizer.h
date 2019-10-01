@@ -36,11 +36,34 @@ namespace Solver{
 
 /** @brief Solves a block diagonal Model using diagonalization.
  *
- *  Solves a given model by Diagonalizing the Hamiltonian. The eigenvalues and
- *  eigenvectors can then either be directly extracted and used to calculate
- *  custom physical quantities, or the PropertyExtractor can be used to extract
- *  common properties. Scales as \f$O(n^3)\f$ with the dimension of the Hilbert
- *  space. */
+ *  @brief Solves a Model by Diagonalizing the Hamiltonian. Is similar to
+ *  Diagonalizer, but is able to take advantage of a Hamiltonian's block
+ *  diagonal structure. Use PropertyExtractor::BlockDiagonalizer to extract
+ *  @link Property::AbstractProperty Properties@endlink.
+ *
+ *  The BlockDiagonalizer is able to take advantage of a Model's block diagonal
+ *  structure if the @link Subindex Subindices@endlink that the Model is block
+ *  diagonal in appear to the left of @link Subindex Subindices@endlink that
+ *  are not block indices. Therefore, if for example kx, ky, and kz are block
+ *  labels, while sublattice and orbital are not, make sure the Model is
+ *  specified such that the Index structure is {kx, ky, kz, sublattice,
+ *  orbital} rather than {sublattice, orbital, kx, ky, kz}.
+ *
+ *  <b>Scaling behavior:</b><br />
+ *  If the Model has no blocks, the scaling behavior is the same as for the
+ *  Diagonalizer, but with a larger prefactor. If the Model consists of \f$b\f$
+ *  blocks, each of dimension \f$h\f$, the scaling behavior is:<br />
+ *  Time: \f$O(nh^3)\f$<br />
+ *  Space: \f$O(nh^2)\f$
+ *
+ *  If the Model consists of \f$b\f$ blocks of varying size, the above scaling
+ *  behavior instead becomes an upper bound, with \f$h\f$ the maximum block
+ *  dimension.
+ *
+ *  <b>Example:</b>
+ *  \snippet Solver/BlockDiagonalizer.cpp BlockDiagonalizer
+ *  <b>Output:</b>
+ *  \snippet output/Solver/BlockDiagonalizer.output BlockDiagonalizer */
 class BlockDiagonalizer : public Solver, public Communicator{
 public:
 	/** Constructs a Solver::Diagonalizer. */

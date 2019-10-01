@@ -1344,6 +1344,10 @@ TEST(AbstractProperty, replaceValues){
 	EXPECT_DOUBLE_EQ(property1(3), 3);
 }
 
+TEST(AbstractProperty, toString){
+	//Difficult to formulate a good test criterium for.
+}
+
 //TODO
 //This function is currently not implemented for all data types. First
 //implement full support for all primitive data types, Serializable, and

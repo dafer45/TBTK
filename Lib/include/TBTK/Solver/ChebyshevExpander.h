@@ -58,7 +58,14 @@ namespace Solver{
  *  coefficients. The generation of Green's functions scales as \f$O(n)\f$ with
  *  the following: Number of coefficients, energy resolution, and the number of
  *  Green's functions.
- */
+ *
+ *  Use the PropertyExtractor::ChebyshevExpander to calculate @link
+ *  Property::AbstractProperty Properties@endlink.
+ *
+ *  <b>Example:</b>
+ *  \snippet Solver/ChebyshevExpander.cpp ChebyshevExpander
+ *  <b>Output:</b>
+ *  \snippet output/Solver/ChebyshevExpander.output ChebyshevExpander */
 class ChebyshevExpander : public Solver, public Communicator{
 public:
 	/** Constructs a Solver::ChebyshevExpander. */

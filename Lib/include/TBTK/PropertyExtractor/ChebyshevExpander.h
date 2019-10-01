@@ -37,7 +37,16 @@
 namespace TBTK{
 namespace PropertyExtractor{
 
-/** Experimental class for extracting properties from a ChebyshevExpander. */
+/** @brief Extracts physical properties from Solver::ChebyshevExpander.
+ *
+ *  The PropertyExtractor::ChebyshevExpander extracts @link
+ *  Property::AbstractProperty Properties@endlink from the
+ *  Solver::ChebyshevExpander.
+ *
+ *  <b>Example:</b>
+ *  \snippet PropertyExtractor/ChebyshevExpander.cpp ChebyshevExpander
+ *  <b>Output:</b>
+ *  \snippet output/PropertyExtractor/ChebyshevExpander.output ChebyshevExpander */
 class ChebyshevExpander : public PropertyExtractor{
 public:
 	/** Constructor. */

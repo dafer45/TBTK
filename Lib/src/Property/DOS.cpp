@@ -20,6 +20,7 @@
 
 #include "TBTK/Property/DOS.h"
 #include "TBTK/Streams.h"
+#include "TBTK/UnitHandler.h"
 
 #include "TBTK/json.hpp"
 
@@ -76,6 +77,24 @@ DOS::DOS(
 			""
 		);
 	}
+}
+
+string DOS::toString() const{
+	double lowerBound = getLowerBound();
+	double upperBound = getUpperBound();
+	unsigned int resolution = getResolution();
+
+	stringstream ss;
+	ss << "DOS\n";
+	ss << "\tLower bound: " << UnitHandler::convertEnergyNtB(lowerBound)
+		<< " " << UnitHandler::getEnergyUnitString() << " ("
+		<< lowerBound << " b.u.)\n";
+	ss << "\tUpper bound: " << UnitHandler::convertEnergyNtB(upperBound)
+		<< " " << UnitHandler::getEnergyUnitString() << " ("
+		<< upperBound << " b.u.)\n";
+	ss << "\tResolution: " << resolution;
+
+	return ss.str();
 }
 
 string DOS::serialize(Mode mode) const{

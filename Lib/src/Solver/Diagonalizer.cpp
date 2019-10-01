@@ -27,7 +27,7 @@ using namespace std;
 namespace TBTK{
 namespace Solver{
 
-Diagonalizer::Diagonalizer() : Communicator(true){
+Diagonalizer::Diagonalizer() : Communicator(false){
 	hamiltonian = nullptr;
 	eigenValues = nullptr;
 	eigenVectors = nullptr;

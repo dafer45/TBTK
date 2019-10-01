@@ -436,6 +436,10 @@ TEST(LDOS, getResolution){
 	//LDOS::SerializeToJSON
 }
 
+TEST(LDOS, toString){
+	//Difficult to formulate a test criterium for.
+}
+
 TEST(LDOS, serialize){
 	//Already tested through
 	//LDOS::SerializeToJSON

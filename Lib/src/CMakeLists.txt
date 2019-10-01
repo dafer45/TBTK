@@ -11,6 +11,7 @@ FILE(
 	ManyParticle/*.cpp
 	ManyParticle/FockStateMap/*.cpp
 	ManyParticle/FockStateRule/*.cpp
+	Models/*.cpp
 	Property/*.cpp
 	PropertyExtractor/*.cpp
 #	PropertyExtractors/ArnoldiIterator/*.cpp

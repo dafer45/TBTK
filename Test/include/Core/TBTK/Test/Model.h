@@ -500,6 +500,10 @@ TEST(Model, operatorInsertion){
 	EXPECT_TRUE((*iterator).getFromIndex().equals({2}));
 }
 
+TEST(Model, toString){
+	//Difficult to formulate a good test criterium for.
+}
+
 TEST(Model, serialize){
 	//Tested through SerializeToJSON.
 }

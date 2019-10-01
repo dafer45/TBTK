@@ -139,6 +139,9 @@ public:
 	 *  @return The maximum value. */
 	double getMax() const;
 
+	/** Overrides Streamable::toString(). */
+	virtual std::string toString() const;
+
 	/** Overrides AbstractProperty::serialize(). */
 	virtual std::string serialize(Mode mode) const;
 private:

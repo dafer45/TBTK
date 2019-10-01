@@ -91,7 +91,7 @@ namespace Property{
  *  IndexTree, they appear in the order of the corresponding linear indices
  *  obtained from the IndexTree. */
 template<typename DataType>
-class AbstractProperty : public Property, public Serializable{
+class AbstractProperty : public Property, public Serializable, public Streamable{
 public:
 	/** Get block size.
 	 *
@@ -345,6 +345,9 @@ public:
 		const DataType &targetValue,
 		const DataType &replacementValue
 	);
+
+	/** Implements Serializable::toString(). */
+	virtual std::string toString() const;
 
 	/** Implements Serializable::serialize(). */
 	virtual std::string serialize(Mode mode) const;
@@ -900,6 +903,11 @@ inline void AbstractProperty<DataType>::replaceValues(
 	for(unsigned int n = 0; n < data.size(); n++)
 		if(data[n] == targetValue)
 			data[n] = replacementValue;
+}
+
+template<typename DataType>
+inline std::string AbstractProperty<DataType>::toString() const{
+	return "AbstractProperty";
 }
 
 template<typename DataType>

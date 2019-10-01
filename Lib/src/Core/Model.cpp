@@ -23,9 +23,11 @@
 #include "TBTK/Model.h"
 #include "TBTK/Streams.h"
 #include "TBTK/TBTKMacros.h"
+#include "TBTK/UnitHandler.h"
 
 #include <fstream>
 #include <cmath>
+#include <sstream>
 #include <string>
 
 #include "TBTK/json.hpp"
@@ -34,7 +36,7 @@ using namespace std;
 
 namespace TBTK{
 
-Model::Model() : Communicator(true){
+Model::Model() : Communicator(false){
 	temperature = 0.;
 	chemicalPotential = 0.;
 
@@ -247,6 +249,48 @@ void Model::construct(){
 
 	if(getGlobalVerbose() && getVerbose())
 		Streams::out << "\tBasis size: " << basisSize << "\n";
+}
+
+ostream& operator<<(ostream &stream, const Model &model){
+	stream << model.toString();
+
+	return stream;
+}
+
+string Model::toString() const{
+	stringstream stream;
+	stream << "Model\n";
+	stream << "\tTemperature: "
+		<< UnitHandler::convertTemperatureNtB(temperature)
+		<< UnitHandler::getTemperatureUnitString() << " ("
+		<< temperature << " b.u.)\n";
+	stream << "\tChemical potential: "
+		<< UnitHandler::convertEnergyNtB(chemicalPotential)
+		<< UnitHandler::getEnergyUnitString() << " ("
+		<< chemicalPotential << " b.u.)\n";
+	switch(singleParticleContext.getStatistics()){
+	case Statistics::FermiDirac:
+		stream << "\tStatistics: Fermi-Dirac\n";
+		break;
+	case Statistics::BoseEinstein:
+		stream << "\tStatistics: Bose-Einstein\n";
+		break;
+	default:
+		TBTKExit(
+			"Model::operator<<()",
+			"Unknown statistics.",
+			"This should never happen, contact the developer."
+		);
+	}
+	int basisSize = getBasisSize();
+	if(basisSize == -1){
+		stream << "\tBasis size: Not yet constructed.";
+	}
+	else{
+		stream << "\tBasis size: " << basisSize;
+	}
+
+	return stream.str();
 }
 
 string Model::serialize(Mode mode) const{

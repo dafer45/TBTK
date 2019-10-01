@@ -163,6 +163,9 @@ public:
 	 *  hand side. */
 	LDOS operator/(const double &rhs) const;
 
+	/** Implements Streamable::toString(). */
+	virtual std::string toString() const;
+
 	/** Overrides AbstractProperty::serialize(). */
 	virtual std::string serialize(Mode mode) const;
 private:

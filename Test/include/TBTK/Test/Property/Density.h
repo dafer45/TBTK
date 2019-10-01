@@ -375,6 +375,10 @@ TEST(Density, getMin){
 	EXPECT_DOUBLE_EQ(density.getMax(), 3);
 }
 
+TEST(Density, toString){
+	//Difficult to formulate a good test criterium for.
+}
+
 TEST(Denity, serialize){
 	//Already tested through SerializeToJSON
 }

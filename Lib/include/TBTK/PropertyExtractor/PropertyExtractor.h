@@ -15,7 +15,7 @@
 
 /** @package TBTKcalc
  *  @file PropertyExtractor.h
- *  @brief Base class PropertyExtractors
+ *  @brief Base class for PropertyExtractors.
  *
  *  @author Kristofer Björnson
  */
@@ -38,9 +38,13 @@
 namespace TBTK{
 namespace PropertyExtractor{
 
-/** The PropertyExtractor extracts is a base class for derived
- *  PropertyExtractors that are used to extract common physical properties such
- *  as DOS, Density, LDOS, etc. from a Solvers. */
+/** @brief Base class for PropertyExtractors.
+ *
+ *  The PropertyExtractor is a base class for other @link PropertyExtractor
+ *  PropertyExtractors@endlink. See therefore the documentation for
+ *  Diagonalizer, BlockDiagonalizer, ArnoldiIterator, and ChebyshevExpander for
+ *  examples of specific production ready @link PropertyExtractor
+ *  PropertyExtractors@endlink. */
 class PropertyExtractor{
 public:
 	/** Constructs a PropertyExtractor::PropertyExtractor. */

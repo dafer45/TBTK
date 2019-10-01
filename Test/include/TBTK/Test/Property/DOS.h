@@ -165,6 +165,10 @@ TEST(DOS, operatorDivision){
 		EXPECT_EQ(data1[n], n/2.);
 }
 
+TEST(DOS, toString){
+	//Difficult to formulate a good test criterium for.
+}
+
 TEST(DOS, serialize){
 	//Already tested through SerializeToJSON.
 }

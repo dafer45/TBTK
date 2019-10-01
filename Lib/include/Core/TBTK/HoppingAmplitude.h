@@ -44,7 +44,12 @@ enum HermitianConjugate {HC};
  *  called with the parameters either in the order (from, to, value) or the
  *  order (value, to, from). The former follows the order in which the process
  *  can be thought of as happening, while the later corresponds to the order in
- *  which values and operators stands in the Hamiltonian. */
+ *  which values and operators stands in the Hamiltonian.
+ *
+ *  <b>Example:</b>
+ *  \snippet Core/HoppingAmplitude.cpp HoppingAmplitude
+ *  <b>Output:</b>
+ *  \snippet output/Core/HoppingAmplitude.output HoppingAmplitude */
 class HoppingAmplitude{
 public:
 	/** Abstract base class for callbacks that allow for delayed
