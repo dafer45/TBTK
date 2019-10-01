@@ -40,7 +40,17 @@
 namespace TBTK{
 namespace PropertyExtractor{
 
-/** The PropertyExtractor extracts common physical properties such as DOS,
+/** @brief Extracts physical properties from the Solver::BlockDiagonalizer.
+ *
+ *  The PropertyExtractor::Diagonalizer extracts @link
+ *  Property::AbstractProperty@endlink from the Solver::BlockDiagonalizer.
+ *
+ *  <b>Example:</b>
+ *  \snippet PropertyExtractor/BlockDiagonalizer.cpp BlockDiagonalizer
+ *  <b>Output:</b>
+ *  \snippet output/PropertyExtractor/BlockDiagonalizer.output BlockDiagonalizer
+ *
+ *  The PropertyExtractor extracts common physical properties such as DOS,
  *  Density, LDOS, etc. from a BlockDiagonalizer. These can then be
  *  written to file using the FileWriter.*/
 class BlockDiagonalizer : public PropertyExtractor{

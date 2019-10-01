@@ -38,9 +38,16 @@
 namespace TBTK{
 namespace PropertyExtractor{
 
-/** The PropertyExtractor::ArnoldiIterator extracts common physical properties
- *  such as DOS, LDOS, etc. from a Solver::ArnoldiIterator. These can then be
- *  written to file using the FileWriter. */
+/** @brief Extracts physical properties from the Solver::ArnoldiIterator.
+ *
+ *  The PropertyExtractor::ArnoldiIterator extracts @link
+ *  Property::AbstractProperty Properties@endlink from the
+ *  Solver::ArnoldiIterator.
+ *
+ *  <b>Example:</b>
+ *  \snippet PropertyExtractor/ArnoldiIterator.cpp ArnoldiIterator
+ *  <b>Output:</b>
+ *  \snippet output/PropertyExtractor/ArnoldiIterator.output ArnoldiIterator */
 class ArnoldiIterator : public PropertyExtractor{
 public:
 	/** Constructs a PropertyExtractor::ArnoldiIterator.

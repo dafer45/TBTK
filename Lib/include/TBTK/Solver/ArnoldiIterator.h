@@ -34,9 +34,28 @@ namespace Solver{
 
 /** @brief Solves a Model using Arnoldi iteration.
  *
- *  The ArnoldiIterator can be used to calculate a few eigenvalues and
- *  eigenvectors around a given energy.
- */
+ *  The ArnoldiIterator calculates a selected number of eigenvalues and
+ *  eigenvectors using Arnoldi iteration. Use the
+ *  PropertyExtractor::ArnoldiIterator to extract @link
+ *  Property::AbstractProperty Properties@endlink.
+ *
+ *  The ArnoldiIterator is particularly suited for large problems where
+ *  information from a small energy interval is needed. Compared to the
+ *  Diagonalizer, the ArnoldiIterator can treat much larger problems as long as
+ *  only a few eigenvalues or eigenvectors are needed.
+ *
+ *  <b>Normal mode:</b><br />
+ *  In the normal mode, the ArnoldiIterator calculates eigenvalues and
+ *  eigenvectors with extremal eigenvalues.
+ *
+ *  <b>Shift-and-invert mode:</b><br />
+ *  In the shift-and-invert mode, the ArnoldiIterator calculates the
+ *  eigenvalues and eigenvectors closest to a given "central value".
+ *
+ *  <b>Example:</b>
+ *  \snippet Solver/ArnoldiIterator.cpp ArnoldiIterator
+ *  <b>Output:</b>
+ *  \snippet output/Solver/ArnoldiIterator.output ArnoldiIterator */
 class ArnoldiIterator : public Solver, public Communicator{
 public:
 	/** Constructs a Solver::ArnoldiIterator. */
