@@ -17,6 +17,7 @@
  *  @author Kristofer Björnson
  */
 
+#include "TBTK/AbstractIndexFilter.h"
 #include "TBTK/Models/SquareLattice.h"
 #include "TBTK/TBTKMacros.h"
 
@@ -24,6 +25,30 @@ using namespace std;
 
 namespace TBTK{
 namespace Models{
+
+class IndexFilter : public AbstractIndexFilter{
+public:
+	IndexFilter(unsigned int sizeX, unsigned int sizeY){
+		this->sizeX = sizeX;
+		this->sizeY = sizeY;
+	}
+
+	virtual IndexFilter* clone() const{
+		return new IndexFilter(sizeX, sizeY);
+	}
+
+	virtual bool isIncluded(const Index &index) const{
+		unsigned int x = index[0];
+		unsigned int y = index[1];
+		if(x >= 0 && x < sizeX && y >= 0 && y < sizeY)
+			return true;
+		else
+			return false;
+	}
+private:
+	unsigned int sizeX;
+	unsigned int sizeY;
+};
 
 SquareLattice::SquareLattice(
 	const vector<unsigned int> &size,
@@ -37,12 +62,13 @@ SquareLattice::SquareLattice(
 		""
 	);
 	TBTKAssert(
-		parameters.size() == 2,
+		parameters.size() > 1 && parameters.size() < 4,
 		"Models::SquareLattice::SquareLattice()",
-		"'parameters' must have exactly '2' components, but '"
-		<< size.size() << "' found.",
+		"'parameters' must have '2' or '3' components, but '"
+		<< size.size() << "' components found.",
 		""
 	);
+	setFilter(IndexFilter(size[0], size[1]));
 	for(unsigned int x = 0; x < size[0]; x++){
 		for(unsigned int y = 0; y < size[1]; y++){
 			*this << HoppingAmplitude(
@@ -50,17 +76,26 @@ SquareLattice::SquareLattice(
 				{x, y},
 				{x, y}
 			);
-			if(x+1 < size[0]){
+			*this << HoppingAmplitude(
+				parameters[1],
+				{x+1, y},
+				{x, y}
+			) + HC;
+			*this << HoppingAmplitude(
+				parameters[1],
+				{x, y+1},
+				{x, y}
+			) + HC;
+
+			if(parameters.size() > 2){
 				*this << HoppingAmplitude(
-					parameters[1],
-					{x+1, y},
+					parameters[2],
+					{x+1, y+1},
 					{x, y}
 				) + HC;
-			}
-			if(y+1 < size[1]){
 				*this << HoppingAmplitude(
-					parameters[1],
-					{x, y+1},
+					parameters[2],
+					{x, ((int)y)-1},
 					{x, y}
 				) + HC;
 			}

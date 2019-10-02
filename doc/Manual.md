@@ -19,70 +19,51 @@ Manual {#Manual}
 @page Introduction Introduction
 
 # Origin and scope {#OriginAndScope}
-TBTK (Tight-Binding ToolKit) originated as a toolkit for solving tight-binding models.
-However, the scope of the code has expanded beyond the area implied by its name, and is today best described as a library for building applications that solves second-quantized Hamiltonians with discrete indices  
+TBTK (Tight-Binding ToolKit) originated as a toolkit for solving tight-binding models, but has expanded in scope since then.
+Today it is best described as a framework for building applications that solve second-quantized Hamiltonians with discrete indices  
 
 <center>\f$H = \sum_{\mathbf{i}\mathbf{j}}a_{\mathbf{i}\mathbf{j}}c_{\mathbf{i}}^{\dagger}c_{\mathbf{j}} + \sum_{\mathbf{i}\mathbf{j}\mathbf{k}\mathbf{l}}V_{\mathbf{i}\mathbf{j}\mathbf{k}\mathbf{l}}c_{\mathbf{i}}^{\dagger}c_{\mathbf{j}}^{\dagger}c_{\mathbf{k}}c_{\mathbf{l}}\f$.</center>
 
-In fact, even more general interaction terms than the one displayed above is possible to model.
-However, TBTK does not yet have extensive support for solving interacting models and this manual is therefore focused on the non-interacting case.
+Even more general interaction terms than above are possible to model, but there is currently limited support for solving interacting models.
+This manual is therefore focused on the non-interacting case.
 
-Most quantum mechanical systems are described by Hamiltonians that involve a differential equation in at least some continuous variable or second quantized operators with a mix of discrete and continuous indices.
-The restriction to discrete indices may therefore seem to severely limit the applicability of the library to a few special types of problems.
-However, we note that it is very common for quantum mechanical problems with continuous variables to be described by discrete indices after proper analytical manipulations of the expressions.
-For example, the continuous Schrödinger equation in a central potential with three continuous spatial coordinates does after some analytic manipulations become a problem with two discrete indices corresponding to the spherical harmonics, and one remaining continuous variable.
-Moreover, if not handled analytically, any remaining continuous variable eventually has to be discretized.
+Note that the use of discrete indices does not imply any restrictions on the type of systems that can be modeled.
+First, a continuous description can often be turned into a discrete description by the choice of an appropriate basis.
+Second, any remaining continuous coordinate anyway has to be discretized before a numerical method is applied.
+For example, the Schrödinger equation in a central potential contains three continuous coordinates.
+By working in the basis of spherical harmonics, these are reduced to two discrete indices (\f$l \f$ and \f$m\f$) and one remaining continuous coordinate \f$r\f$.
 
-Given that the restriction to discrete indices does not imply any severe limitation to the types of problems that can be addressed, a remaining challenge is to allow for problems with arbitrary index complexity to be modeled and solved.
-TBTK solves this through a flexible and efficient index system, which combined with a sophisticated storage structure for the Hamiltonian allows for essentially arbitrary index structures to be handled without significant performance penalties compared to a highly optimized single purpose code.
-In fact, TBTK is explicitly designed to allow solution algorithms to internally use whatever data structures that are best suited for the problem at hand to optimize the calculation, without affecting the format on which the model is specified or properties are extracted.
+# A quantum mechanics framwork {#AQuantumMechanicsFramework}
 
-# Algorithms and data structures {#AlgorithmsAndDataStructures}
+TBTK is not a scientific software that can perform a specific type of calculation.
+Rather, it is a framework aimed at simplifying the development of code for performing quantum mechanical calculations.
+The main focus is on providing general purpose data structures for problems formulated in the language of second quantization.
+These data structures are designed with four goals in mind: generality, efficency, readability, and modularity.
 
-When writing software it is natural to think in terms of algorithms.
-This is particularly true in scientific computation, where the objective most of the time is to carry out a set of well defined operations on an input state to arrive at a final answer.
-Algorithm centered thinking is manifested in the imperative programing paradigm and is probably the best way to learn the basics of programming and to implement simple tasks.
-However, while algorithms are of great importance, much of the success of todays computer software can be attributed to the development of powerful data structures.
+<b>Generality</b> means that a data structure captures the general structure of the concept it represents.
+It makes it reusable for many different types of problems.
 
-Anyone who has written software that is more than a few hundred lines of code knows that a major challenge is to organize the code in such a way that the complexity do not scale up with the size of the project.
-Otherwise, when returning to a project after a few months, it can be difficult to make modifications to the code since it is hard to remember if or how it will affects other parts of the code.
-The reason for this can largely be traced back to the lack of proper attention paid to data structures.
-In particular, well designed data structures enables abstraction and encapsulation and is a core component of the object oriented programming paradigm.
+<b>Efficiency</b> means that the overhead associated with using the data structure is small.
+Wherever performance is critical, it should be easy to convert it to the data format that is most suited for the given task.
+Method developers should have complete freedom to exploit whatever representation of their data that is needed to achieve maximum performance.
 
-Abstraction is the process of dividing code into logical units that aids the thinking process by allowing the programmer to think on a higher level.
-Effective abstraction allows the programmer to forget about low level details and focus on the overarching problem at hands.
-For some analogies, mathematics and physics are rife with abstractions: derivatives are defined through limits but differential equations are written using derivative symbols, matrices are rectangles of numbers but we carry out much of the algebra manipulating letters representing whole matrices rather than individual matrix elements, etc.
-Much of mathematics is ultimately just addition, subtraction, multiplication, and division of real numbers, but through abstraction problems of much greater complexity can be tackled than if everything was formulated with those four symbols alone.
-Similarly programming is nothing but loops, conditional execution, assignment of values, function calls etc., but further abstraction allows the programmers mind to be freed from low level details to focus on the higher level aspects of much more complex problems.
+<b>Readability</b> means that it allows for highly readable code to be written.
+Application developers should be able to focus on physical questions rather than numerical details.
 
-While abstraction means dividing code into logical units that allows the programmer to think on a higher level, encapsulation means making those units largely independent of each other.
-Different parts of a program should of course interact with each other, but low level details of a specific component should to an as large degree as possible be invisible to other components.
-Instead of allowing (and requiring) other components of a code to manipulate its low level details, components should strive to present themselves to other components through an easy to use interface.
-The interface is provided through a so called application programming interface (API).
-The API is essentially a contract between a component and the outside world, where the component specifies a promise to perform a particular task in respons to a corresponding set of instructions.
-Encapsulation makes it possible to update a piece of code without remembering what other parts of the code is doing, as long as the update respects the contract specified in the API, and is key to solving the scalability issue.
-Developers mainly experienced with imperative programming likely recognize some of these concepts as being embodied in the idea of dividing code into functions.
-Object oriented programming greatly extends this powerful technique.
+<b>Modularity</b> means that the data structures have limited interdependencies.
+This makes it possible to combine them in the many different ways that are required to implement a wide range of applications.
+Modularity also allows for individual components to be broken apart whenever detailed control over the numerics is needed.
+While application developers are shielded from uneccesary numerical details, the components should be fully transparent to the developer that needs to dig deeper.
 
-Scientific computing is often computationally intensive and much thought therefore goes into the development of different algorithms for solving the same problem.
-Different algorithms may have their own strengths and weaknesses making them the preferred choice under different circumstances.
-Often such algorithms are implemented in completely different software packages with little reuse of code, even though the code for the main algorithm may be a small part of the actual code.
-This is a likely result when data structures are an afterthought and results in both replicated work and less reliable code since code that is reused in multiple projects is much more extensively tested.
-A key to handling situations like this is called polymorphism and is a principle whereby different components essentially provides identical or partly identical contracts to the outside world, even though they internally may work very differently.
-This allows for components to be used interchangeably with little changes to the rest of the code base.
+Through these principles, TBTK makes it easy to get started implementing numerical calculations.
+It provides the efficency of low level languages, while also removing the complexity barrier that otherwise often is associated with C++.
+It also aims to make the community involved in developing code for quantum mechanical calculations more integrated.
+Enabling and encouraging the sharing of code by providing a unifying framework that makes it possible to reuse other peoples code with minimal effort.
 
-TBTK is first and foremost a collection of data structures intended to enable the implementation of algorithms for solving quantum mechanical problems, but also implements several different algorithms for solving specific problems.
-
-# C++11: Performance vs. ease of use {#cpp11PerformanceVsEaseOfUse}
-
-Scientific computations are often very demanding and high performance is therefore usually a priority.
-However, while low level programming languages offer high performance, they also have a reputation of being relatively difficult to work with.
-A comparatively good understanding of how a computer works is usually required to write a program in languages such as C/C++ and FORTRAN compared to e.g. MATLAB and python.
-However, while C++ provides the ability to work on a very low level, it also provides the tools necessary to abstract away much of these details.
-A well written library can alleviate many of these issues, such as for example putting little requirement on the user to manage memory (the main source of errors for many new C/C++ programmers).
-Great progress in this direction was taken with the establishment of the C++11 standard.
-The language of choice for TBTK has therefore been C++11, and much effort has gone into developing data structures that are as simple as possible to use.
-Particular care has also been taken to avoid having the program crash without giving error messages that provide information that helps the user to resolve the problem.
+TBTK also provides utilities and build tools that are meant to streamline the build process.
+Crucially, special attention is paid to enabling reproducability of scientific results, and [semantic versioning](https://semver.org/spec/v2.0.0.html) is adopted.
+Whenever the log is enabled, the version number together with the git hash for the specific commit is written there.
+This makes it possible to rerun a calculation at a later time with the exact same version of TBTK.
 
 @page Overview Overview
 
