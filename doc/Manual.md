@@ -93,56 +93,51 @@ Therefore, TBTK comes with a @link UnitHandler@endlink that gives the applicatio
 TBTK also contains many classes for performing auxiliary tasks such as @link ImportingAndExportingData importing and exporting data@endlink, @link Streams writing logs@endlink, @link Timer profiling code@endlink, and @link Plotting plotting data@endlink.
 
 # Application development {#ApplicationDevelopment}
-For developers interested in implementing calculations that are meant to answer specific physical questions, which is also referred to as implementing applications, TBTK comes ready with a set of native Solvers.
-This manual is mainly intended to describe this use case and therefore covers the most important classes needed to achieve this.
-In particular, this manual outlines how to properly setup a @link Model@endlink, select a @link Solvers Solver@endlink, and to extract @link Properties@endlink using @link PropertyExtractors@endlink.
+This manual is aimed at application developers that want to implement calculations that answers specific physical questions.
+Together with the @link InstallationInstructions installation instructions@endlink it explains the key concepts that are needed to get started.
+For more in depth information, see the API, which can be found under "Classes" in the menu.
 
 # Method development {#MethodDevelopment}
-TBTK is also intended to enable the development of new Solvers and provides many classes ment to simplify this task.
-This manual does not cover all these classes and the interested developer is instead referred to the API for a more detailed description.
-However, developers are still encouraged to study this manual to understand the design philosophy behind TBTK, and to also use the already existing Solvers as inspiration when writing new Solvers.
-Doing so can significantly reduce the amount of overhead required to create a new Solver and makes it easier for other developers to use the new Solver in their own project.
-The development of new Solvers is greatly encouraged and if you are interested in this but do not know where to start, please contact Kristofer Björnson at kristofer.bjornson@second-tech.com.
-New Solvers can either be released as stand alone packages or be pulled into the TBTK library.
-In the later case the Solver will have to adhere to the main development philosophy of TBTK, but we are happy with providing help with polishing the Solver to the point that it does.
+A key purpose of TBTK is to make it possible to develop general purpose code that can be easily shared with the community.
+For example, implementing new Solvers, providing standardized models for different types of materials, etc.
+Such contributions can either be released as stand alone packages or be pulled into the TBTK framework itself.
+If you are interested in this, the manual is a good place to become familiar with the general workflow.
+More detailed information is provided in the API, which can be found under "Classes" in the menu.
+
+# Contact
+Please do not hesitate to send an email to kristofer.bjornson@second-tech.com if you have any questions or suggestions.
 
 @page UnitHandler UnitHandler
 @link TBTK::UnitHandler See more details about the UnitHandler in the API@endlink
 
 # Units and constants {#UnitsAndConstants}
-Most quantities of interest in physics have units, which means that the numeric value of the quantity depends on which unit it is measured in.
-Different sets of units are relevant in different situations.
-For example is meter (m) a relevant unit for length in macroscopic problems, while Ångström (Å) is more relevant on atomic scales.
-However, computers work with unitless numbers, which means that any piece of code that relies on hard coded numeric values for physical constants implicitly force the user to work in the same set of units.
-This is unacceptable for a library such as TBTK that aims at allowing physicist with different preferences for units to use the library to implement their own calculations.
-It is also very useful if the library can supply such constants in whatever units the developer prefer.
-To solve these issues, TBTK provides a @link TBTK::UnitHandler UnitHandler@endlink that allows the user to specify what units are natural to the problem at hands, and all numbers passed to TBTK functions are assumed to be given in these natural units.
+Most physical quantities have units but computers works with unitless numbers.
+A solution to this is to make the units implicit by fixing a specific software wide convention, but no single set of units are the most natural accross all of quantum mechanics.
+Therefore, TBTK provides a @link TBTK::UnitHandler UnitHandler@endlink that makes it possible to specify what units that are most natural for the given application.
+All numbers that are passed to TBTK functions are then assumed to be given in these units.
+The UnitHandler also allows the user to request values for physical constants in the given natural units.
 
 # Base units {#BaseUnits}
-The @link TBTK::UnitHandler UnitHandler@endlink borrows its terminology from the SI standard for units.
-Not by forcing the user to work in SI units, but rather through a clear division of units into base units and derived units.
-To understand what this means, consider distances and times.
-These are quantities that are defined independently from each other and can be measured in for example meters (m) and seconds (s).
-In comparison, a velocity is a measure of distance per time and cannot be defined independently from these two quantities.
-Rather, velocity can be considered a quantity that is derived from the more fundamental quantities distance and time.
-In principle, there is no reason why a given quantity has to be considered more fundamental than any other, and it is perfectly valid to e.g. view time as a quantity derived from the more fundamental quantities distance and velocity.
-However, the fact remains that for the three quantities distance, time, and velocity, only two at a time can be defined independently from each other.
-Further, among all the quantities encountered in physics, only seven can be defined independently from each other.
-By fixing seven such quantities, a set of seven corresponding base units can be defined.
-All other units are considered derived units.
+The @link TBTK::UnitHandler UnitHandler@endlink borrows its terminology from the SI standard.
+Not by forcing the user to work in SI units, but through a clear division of units into base units and derived units.
+To understand what this means, consider distance and time.
+These are independent quantities that can be measured in meters (m) and seconds (s).
+In comparison, velocity is a derived quantity that is defined as distance per time and have the derived unit m/s.
+In principle, nothing prevents us from instead consider time to be a quantity that is derived from distance and velocity.
+However, the fact remains that only two of these three quantities can be defined independently of each other.
+It turns out that in nature only seven quantities can be defined independently of each other.
+If we therefore fix seven such quantities and assigning them base units, all other quantities aquire derived units.
 
-The @link TBTK::UnitHandler UnitHandler@endlink defines the fundamental quantities to be temperature, time, length, energy, charge, and count (amount).
-This is the first point where the UnitHandler deviates from the SI system since the SI system does not define the units for energy and charge as base units, but instead the units for mass, current, and luminosity.
-Note in particular that the UnitHandler currently only defines base units for six different quantities.
-The missing quantity is due to an ambiguity regarding whether an angle should be considered a unitful or unitless quantity.
-Units for angle may therefore be added to the UnitHandler in the future.
-The decision to make the units for energy and charge base units, rather than mass and current as in the SI system, is based on a subjective perception of the former being more generally relevant in quantum mechanical calculations.
+The @link TBTK::UnitHandler UnitHandler@endlink defines the base quantities to be temperature, time, length, energy, charge, and count (amount).
+The seventh base quantity, angle, is not yet implemented.
+This is different from the SI system, which defines base units for mass, current, and luminosity instead of energy, charge, and angle.
+The choice to deviate from the SI system by making energy, charge, and angle base quantities is made since these are percieved to be of greater relevance in quantum mechanical calculations.
 
-Next, the @link TBTK::UnitHandler UnitHandler@endlink also deviates from the SI system by only fixing the base quantities rather than the base units.
-While e.g. the SI unit for length is meter (m), the UnitHandler allows the base unit for length to be set to a range of different units such as meter (m), millimeter (mm), nanometer (nm), Ångström (Å), etc.
-Similarly a range of different options are available for other quantities, such as for example Joule (J) and electronvolt (eV) for energy, and Coulomb (C) and elementary charge (e) for charge.
+The @link TBTK::UnitHandler UnitHandler@endlink also deviates from the SI system by only fixing the base quantities and not the base units.
+While the SI unit for length is meter (m), the UnitHandler allows the base unit for length to be set to, among other things, meter (m), millimeter (mm), nanometer (nm), and Ångström (Å).
+Similarly, Joule (J) and electronvolt (eV) are possible base units for energy, while Coulomb (C) and elementary charge (e) are examples of base units for charge.
 
-By default the base units are
+### Default base units
 | Quantity    | Default base unit  | UnitHandler symbol |
 |-------------|--------------------|--------------------|
 | Temperature | K (Kelvin)         | Temperature        |
@@ -152,7 +147,7 @@ By default the base units are
 | Charge      | C (Coulomb)        | Charge             |
 | Count       | pcs (pieces)       | Count              |
 
-Further, the available base units are
+### Available base units
 | Quantity    | Available base units                             |
 |-------------|--------------------------------------------------|
 | Temperature | kK, K, mK, uK, nK                                | 
@@ -162,21 +157,14 @@ Further, the available base units are
 | Charge      | kC, C, mC, uC, nC, pC, fC, aC, Te, Ge, Me, ke, e |
 | Count       | pcs, mol                                         |
 
-Most of these units should be self-explanatory, with Gx, Mx, kx, mx, etc. corresponds to giga, mega, kilo, milli, etc.
-Further, Ao corresponds to Ångström (Å), while pcs corresponds to pieces.
-If further base units are wanted, please do not hesitate to request additions.
+Here Gx, Mx, kx, mx, etc. corresponds to giga, mega, kilo, milli, etc, while Ao means Ångström (Å), and pcs means pieces.
+Additonal units can be added on request.
 
-If base units other than the default base units are wanted, it is recommended to set these at the very start of a program.
-For example at the first line in the main routine.
-This avoids ambiguities that results from changing base units in the middle of execution.
-To for example set the base units to mK, ps, Å, meV, C, and mol, type
+If base units other than the default ones are wanted, this should be specified at the very start of the application.
+This avoids ambiguities that otherwise can result from changing base units in the middle of the execution.
+To set the base units to C, mol, meV, Å, mK, and ps, type
 ```cpp
-	UnitHandler::setTemperatureUnit(UnitHandler::TemeratureUnit::mK);
-	UnitHandler::setTimeUnit(UnitHandler::TimeUnit::ps);
-	UnitHandler::setLengthUnit(UnitHandler::LengthUnit::Ao);
-	UnitHandler::setEnergyUnit(UnitHandler::EnergyUnit::meV);
-	UnitHandler::setChargeUnit(UnitHandler::ChargeUnit::C);
-	UnitHandler::setCountUnit(UnitHandler::CountUnit::mol);
+	UnitHandler::setScales({"1 C", "1 mol", "1 meV", "1 Ao", "1 mK", "1 ps"});
 ```
 
 # Natural units {#NaturalUnits}
