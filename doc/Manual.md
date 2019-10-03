@@ -67,41 +67,37 @@ This makes it possible to rerun a calculation at a later time with the exact sam
 
 @page Overview Overview
 
-# Model, Solvers, and PropertyExtractors {#ModelSolversAndPropertyExtractors}
-It is useful to think of a typical scientific numerical study as involving three relatively separate questions:
-- What is the model?
-- What method to use?
-- What properties to calculate?
+# Model, Solvers, Properties, and PropertyExtractors {#ModelSolversPropertiesAndPropertyExtractors}
+To carry out a theoretical study, three questions need to be answered:
+- What **model** is used to represent the problem?
+- What **method** is used to investigate the model?
+- What **properties** are going to be calculated?
 
-When writing code, the answer to these three questions essentially determines the input, algorithm, and output, respectively.
-To carry out studies of complex problems, it is important that it is easy to set up the model and to extract the properties, and that the underlying algorithm that performs the work is efficient.
-However, the simultaneous requirement on the algorithm to be efficient and that the calculation is easy to set up easily run contrary to each other.
-Efficiency often require low level optimization in the algorithm, which e.g. can put strict requirement on how the input and output is represented in memory.
-If this means the user is required to setup the input and extract the output on a format that requires deep knowledge about the internal workings of the algorithm, two important problems arise.
-First, if details about the algorithm is required to be kept in mind at all levels of the code it hinders the user from thinking about the problem on a higher level where numerical nuisance has been abstracted  away.
-Second, if the specific requirements of an algorithm determines the structure of the whole program, the whole code has to be rewritten if the choice is made to try another algorithm.
+In a numerical context, this determines the input, the algorithm, and the output, respectively.
+In TBTK, the model specification is performed using the @link Model@endlink class, algorithms are implemented in @link Solvers Solver@endlink classes, and a number of @link Properties Property@endlink classes exists to store information about extracted properties.
 
-To get around these problems TBTK is designed to encourage a workflow where the three stages of specifying the input, choosing the algorithm, and extracting the properties are largely independent from each other.
-To achieve this TBTK has a class called a @link Model@endlink that allows for general models to be setup.
-Further, algorithms are implemented in a set of different @link Solvers@endlink, which takes a Model and internally converts it to the format most suitable for the algorithm.
-Finally, the Solver is wrapped in a @link PropertyExtractors PropertyExtractor@endlink, where the different PropertyExtractors have a uniform interface.
-By using the PropertyExtractors to extract @link Properties@endlink from the Model, rather than by calling the Solvers directly, most code do not need to be changed if the Solver is changed.
+Typically, most of the computational time is spent executing the algorithm.
+The @link Solvers@endlink are therefore where most low level optimization is required.
+To shield application developers from uneccesary exposure to the numerical details, the Solvers can be wrapped in so called PropertyExtractors.
+These PropertyExtractors allow for Properties to be extracted from the Solvers using an interface that is independent of the Solver.
+Together, the @link Model@endlink, the @link PropertyExtractors@endlink, and the @link Properties@endlink allow the application developer to setup and run calculations using code that emphasises the physics of the problem.
+
+The clear separation between the three tasks also makes it possible to change the code accosiated with either of them without having to modify the code of the other two.
+This makes it possible to easily try multiple solution methods for the same problem.
+
+# Units {#Units}
+No single set of units are the most appropriate in all quantum mechanical problems.
+Therefore, TBTK comes with a @link UnitHandler@endlink that gives the application developer the freedom to specify what units to use.
 
 # Auxiliary tasks
-While the three questions above captures the essence of a typical scientific problem, auxiliary tasks such as reading/writing data from/to file, plotting, etc. are required to solve a problem.
-TBTK therefore also have a large set of tools for simplifying such tasks, allowing the developer to put more mental effort into the main scientific questions.
-Further, a fundamental key feature of TBTK is that it also comes with a powerful method for handling units.
-While physical quantities often are expressed in terms of some specific combinations of units such as K, eV, C, etc. it is often useful to work in some for the problem at hands natural set of units.
-In high-energy physics this may mean \f$ \hbar = c = 1\f$, while in condensed matter physics it can be useful to express energies in terms of Rydbergs or some arbitrary unit set by a hopping parameter.
-For this TBTK provides a @link UnitHandler@endlink that enables the developer to specify the natural units for the given problem.
-All function calls to TBTK functions should be understood to be in terms of the specified natural units.
+TBTK also contains many classes for performing auxiliary tasks such as @link ImportingAndExportingData importing and exporting data@endlink, @link Streams writing logs@endlink, @link Timer profiling code@endlink, and @link Plotting plotting data@endlink.
 
-# Implementing applications {#ImplementingApplications}
+# Application development {#ApplicationDevelopment}
 For developers interested in implementing calculations that are meant to answer specific physical questions, which is also referred to as implementing applications, TBTK comes ready with a set of native Solvers.
 This manual is mainly intended to describe this use case and therefore covers the most important classes needed to achieve this.
 In particular, this manual outlines how to properly setup a @link Model@endlink, select a @link Solvers Solver@endlink, and to extract @link Properties@endlink using @link PropertyExtractors@endlink.
 
-# Implementing new Solvers {#ImplementingNewSolvers}
+# Method development {#MethodDevelopment}
 TBTK is also intended to enable the development of new Solvers and provides many classes ment to simplify this task.
 This manual does not cover all these classes and the interested developer is instead referred to the API for a more detailed description.
 However, developers are still encouraged to study this manual to understand the design philosophy behind TBTK, and to also use the already existing Solvers as inspiration when writing new Solvers.
