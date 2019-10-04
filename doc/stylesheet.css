@@ -1,22 +1,29 @@
 /* Additional CSS */
 
 body, table, div, p, dl {
-	font-size: 16px;	//Modified
+	font-size: 16px;	/* Modified */
+	font: Sans-Serif;	/* Modified */
+	text-align: justify;	/* Modified */
 }
 
 h1, h2, h3, h4, h5, h6 {
-	line-height: 100%;	//Modified
+	line-height: 100%;	/* Modified */
 }
 
 div.line {
-        font-size: 16px;	//Modified
+        font-size: 16px;	/* Modified */
 }
 
 div.textblock {
-	max-width: 800px;	//Modified
+	margin: auto;		/* Modified */
+	border-style: solid;	/* Modified */
+	border-width: 1px;	/* Modified */
+	border-color: #A0A0FF;	/* Modified */
+	border-radius: 25px;	/* Modified */
+	padding: 10px;		/* Modified */
+	width: 800px;		/* Modified */
 }
 
 #nav-tree .label{
-	font-size: 14px;	//Modified
+	font-size: 14px;	/* Modified */
 }
-

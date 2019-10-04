@@ -111,11 +111,11 @@ Please do not hesitate to send an email to kristofer.bjornson@second-tech.com if
 @link TBTK::UnitHandler See more details about the UnitHandler in the API@endlink
 
 # Units and constants {#UnitsAndConstants}
-Most physical quantities have units but computers works with unitless numbers.
-A solution to this is to make the units implicit by fixing a specific software wide convention, but no single set of units are the most natural accross all of quantum mechanics.
-Therefore, TBTK provides a @link TBTK::UnitHandler UnitHandler@endlink that makes it possible to specify what units that are most natural for the given application.
-All numbers that are passed to TBTK functions are then assumed to be given in these units.
-The UnitHandler also allows the user to request values for physical constants in the given natural units.
+Most physical quantities have units, but computers work with unitless numbers.
+The units can be made implicit by specifying a software wide convention, but no single set of units are the most natural accross all of quantum mechanics.
+Therefore, TBTK provides a @link TBTK::UnitHandler UnitHandler@endlink that makes it possible to specify the units that are most natural for the given application.
+All numbers that are passed to TBTK functions are assumed to be given in these units.
+The UnitHandler also allows for physical constants to be requested in these natural units.
 
 # Base units {#BaseUnits}
 The @link TBTK::UnitHandler UnitHandler@endlink borrows its terminology from the SI standard.
@@ -166,38 +166,21 @@ To set the base units to C, mol, meV, Å, mK, and ps, type
 ```cpp
 	UnitHandler::setScales({"1 C", "1 mol", "1 meV", "1 Ao", "1 mK", "1 ps"});
 ```
-
-# Natural units {#NaturalUnits}
-It is common in physics to use natural units in which for example \f$\hbar = c = 1\f$.
-Such natural units simplify equations and allows mental effort to be concentrated on the physical phenomena rather than numerical details.
-The same is true when implementing numerical calculations and it is for example common in tight-binding calculations to measure energy in units of some hopping parameter \f$t = 1\f$, while the actual unitful value can be some arbitrary value such as \f$t = 724meV\f$.
-In TBTK all function calls are performed in natural units, except for the UnitHandler calls that specifies the natural units.
-This means that if the natural energy unit is set to e.g. \f$724meV\f$, an energy variable with say the value 1.2 that is passed to a function is internally interpreted by TBTK to have the unitful value \f$1.2\times724meV\f$.
-However, note that this conversion is not necessarily done at the point where the function call is made and may be repeatedly done at later points of execution if the variable is stored internally.
-This is why it is important to not reconfigure the @link TBTK::UnitHandler UnitHandler@endlink in the middle of a program since this introduces ambiguities.
-
-The natural unit is also known as the scale of the problem, and the code required to specify the natural energy unit (scale) to be \f$724meV\f$ is
-```cpp
-	//Set the energy base unit
-	UnitHandler::setEnergyUnit(UnitHandler::EnergyUnit::meV);
-	//Set the natural energy unit (scale) 
-	UnitHandler::setEnergyScale(724);
-```
-To simplify the notation, these two function calls can be replaced by the single call
-```cpp
-	UnitHandler::setEnergyUnit(724, UnitHandler::EnergyUnit::meV);
-```
-The code for setting the other five natural units is similar, with the word 'Energy' exchanged for the relevant quantity.
-
-For further simplification, it is also possible to set all six units at the same time using
-```cpp
-	UnitHandler::setScales({"1 C", "1 pcs", "1 eV", "1 m", "1 K", "1 s"});
-```
 Note that the units in the brackets has to come in the order charge, count, energy, length, temperature, and time.
 
+# Natural units {#NaturalUnits}
+The @link TBTK::UnitHandler UnitHandler@endlink extends the base unit concept to natural units by allowing for a numerical prefactor.
+For example, consider the following specification.
+```cpp
+	UnitHandler::setScales({"1 C", "1 pcs", "13.606 eV", "1 m", "1 K", "1 s"});
+```
+Here the natural energy unit is set to 13.606 eV.
+This means that any energy value that is passed to a TBTK function is interpreted to be given in terms of 13.606 eV.
+For example, the numeric value 1.5 is interpreted to mean 1.5*13.606 eV = 20.409 eV.
+Note the important distinction between base units and natural units: in base units the value is 20.409 eV, but in natural units it is 1.5.
+
 # Converting between base and natural units {#ConvertingBetweenBaseAndNaturalUnits}
-Because the input and output from TBTK functions are in natural units, it is convenient to have a simple way to convert between the two.
-The @link TBTK::UnitHandler UnitHandler@endlink provides such functions through a set of functions on the form
+To convert between base units and natural units, the following functions can be used.
 ```cpp
 	double quantityInBaseUnits
 		= UnitHandler::convertQuantityNtB(quantityInNaturalUnits);
@@ -207,25 +190,17 @@ The @link TBTK::UnitHandler UnitHandler@endlink provides such functions through 
 Here 'Quantity' is to be replace by the corresponding UnitHandler symbol specified in the table above, and NtB and BtN should be read 'natural to base' and 'base to natural', respectively.
 
 # Derived units {#DerivedUnits}
-Since derived units are defined in terms of the base units, it is in principle possible to use the above method to perform conversion of arbitrary derived units to and from natural units.
-However, doing so would require decomposing the derived unit into the corresponding base units, convert the base units one by one, multiply them together with the appropriate exponents, and finally multiply the quantity itself by the result.
-Moreover, even though it e.g. may be most convenient to work in the base units \f$eV\f$, \f$m\f$, and \f$s\f$ for energy, length, and time, in which case the corresponding mass unit is \f$eVs^2/m^2\f$, it may be more convenient to actual specify mass using the unit \f$kg\f$.
-For this reason the @link TBTK::UnitHandler UnitHandler@endlink also has special support for certain derived units.
-Currently this is restricted to mass, magnetic field strength, and voltage, but if more units are wanted, please do not hesitate to request additional derived units.
-The full list of possible derived units are
+To aid conversion between different units, the @link TBTK::UnitHandler UnitHandler@endlink explicitly defines units for a number of derived quantities.
+Please, do not hesitate to request additional derived units or quantities if needed.
 | Quantity                | Available derived units                      | UnitHandler symbol |
 |-------------------------|----------------------------------------------|--------------------|
 | Mass                    | kg, g, mg, ug, ng, pg, fg, ag, u             | Mass               |
 | Magnetic field strength | MT, kT, T, mT, uT, nT, GG, MG, kG, G, mG, uG | MagneticField      |
 | Voltage                 | GV, MV, kV, V, mV, uV, nV                    | Voltage            |
 
-To for example convert mass in the derived units \f$kg\f$ to and from base and natural units the following function calls can be made
+To convert mass in the derived units \f$kg\f$ to and from base units, the follwoing functions can be called.
 ```cpp
-	double massInBaseUnits    = UnitHandler::convertMassDtB(
-		massInDerivedUnits,
-		UnitHandler::MassUnit::kg
-	);
-	double massInNaturalUnits = UnitHandler::convertMassDtN(
+	double massInBaseUnits = UnitHandler::convertMassDtB(
 		massInDerivedUnits,
 		UnitHandler::MassUnit::kg
 	);
@@ -233,19 +208,23 @@ To for example convert mass in the derived units \f$kg\f$ to and from base and n
 		massInBaseUnits,
 		UnitHandler::MassUnit::kg
 	);
+```
+Similarly, it is possible to convert between derived units and natural units.
+```cpp
+	double massInNaturalUnits = UnitHandler::convertMassDtN(
+		massInDerivedUnits,
+		UnitHandler::MassUnit::kg
+	);
 	double massInDerivedUnits = UnitHandler::convertMassNtD(
 		massInNaturalUnits,
 		UnitHandler::MassUnit::kg
 	);
 ```
-Here DtB, DtN, BtD, and NtD should be read 'derived to base', 'derived to natural', 'base to derived', and 'natural to derived', respectively.
-The function calls mimic the six corresponding combinations of calls for conversion between base and natural units, with the exception that for derived units the actual derived unit has to be passed as a second argument.
+Here DtB, BtD, DtN, and NtD should be read as 'derived to base', 'base to derived', 'derived to natural', and 'natural to derived', respectively.
+The function calls mimic those for conversion between base and natural units, with the exception that the derived unit has to be passed as a second argument.
 
 # Constants {#Constants}
-The specification of physical constants is prone to errors.
-Partly because physical constants more often than not are long strings of rather random digits, and partly because it is easy to make mistakes when converting the constants to the particular units used in the calculation.
-The @link TBTK::UnitHandler UnitHandler@endlink alleviates this issue by providing a range of predefined constants that can be requested on the currently used base or natural units.
-The available constants are
+The following constants can be requested from the @link TBTK::UnitHandler UnitHandler@endlink.
 | Name                    | Symbol           | UnitHandler symbol |
 |-------------------------|------------------|--------------------|
 | Reduced Planck constant | \f$\hbar\f$      | Hbar               |
@@ -259,22 +238,21 @@ The available constants are
 | Nuclear magneton        | \f$\mu_n\f$      | Mu_n               |
 | Vacuum permeability     | \f$\mu_0\f$      | Mu_0               |
 | Vacuum permittivity     | \f$\epsilon_0\f$ | Epsilon_0          |
-Please do not hesitate to request further constants.
+Please do not hesitate to request the addition of further constants.
 
-Once the base and natural units have been specified using the calls described above, the physical constants can be requested using function calls on the form
+To get a constant value in base or natural units, perform the following calls with 'Symbol' replaced by the corresponding symbol listed in the table above.
 ```cpp
 	double constantValueInBaseUnits    = UnitHandler::getSymbolB();
 	double constantValueInNaturalUnits = UnitHandler::getSymbolN();
 ```
-Here 'Symbol' is to be replaced by the corresponding symbol listed under 'UnitHandler symbol' in the table above.
 
 # Unit strings {#UnitStrings}
-When printing values, it is useful to also print the actual unit strings.
-The @link TBTK::UnitHandler UnitHandler@endlink therefore also provides methods for requesting the base unit strings for different quantities, which is obtained through function calls on the form
+To aid with printing values to the output, the @link TBTK::UnitHandler UnitHandler@endlink provides methods for requesting the string representation of a given quantity or constants base unit.
 ```cpp
 	string unitSring = UnitHandler::getSymbolUnitString();
 ```
-Here 'Symbol' can be any of the symbols listed in the tables over base units, derived units, and constants.
+Here 'Symbol' should be replaced by one of the symbols listed in the tables over base units, derived units, and constants.
+Note that the unit string corresponds to the base units, so any output from TBTK should first be converted from natural units to base units before being printed together with the unit string.
 
 @page Indices Indices
 @link TBTK::Index See more details about the Index in the API@endlink
