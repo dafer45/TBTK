@@ -66,6 +66,7 @@ Crucially, special attention is paid to enabling reproducability of scientific r
 Whenever the log is enabled, the version number together with the git hash for the specific commit is written there.
 This makes it possible to rerun a calculation at a later time with the exact same version of TBTK.
 
+@link Overview Next: Overview@endlink
 @page Overview Overview
 
 # Model, Solvers, Properties, and PropertyExtractors {#ModelSolversPropertiesAndPropertyExtractors}
@@ -108,6 +109,7 @@ More detailed information is provided in the API, which can be found under "Clas
 # Contact
 Please do not hesitate to send an email to kristofer.bjornson@second-tech.com if you have any questions or suggestions.
 
+@link UnitHandler Next: UnitHandler@endlink
 @page UnitHandler UnitHandler
 @link TBTK::UnitHandler See more details about the UnitHandler in the API@endlink
 
@@ -255,6 +257,7 @@ To aid with printing values to the output, the @link TBTK::UnitHandler UnitHandl
 Here 'Symbol' should be replaced by one of the symbols listed in the tables over base units, derived units, and constants.
 Note that the unit string corresponds to the base units, so any output from TBTK should first be converted from natural units to base units before being printed together with the unit string.
 
+@link Indices Next: Indices@endlink
 @page Indices Indices
 @link TBTK::Index See more details about the Index in the API@endlink
 
@@ -331,6 +334,7 @@ More specifically, this is possible since the sublattice Subindex differs in val
 
 <b>*</b> In fact, by <b>rule 1</b> it is also possible for two different sites on the same sublattice to have different number of orbitals, as may be the case in a doped material.
 
+@link HoppingAmplitudes Next: HoppingAmplitudes@endlink
 @page HoppingAmplitudes HoppingAmplitudes
 @link TBTK::HoppingAmplitude See more details about the HoppingAmplitude in the API@endlink
 
@@ -429,6 +433,7 @@ With the callback defined it is possible to create a callback dependent @link TB
 	2
 ```
 
+@link Model Next: Model@endlink
 @page Model Model
 @link TBTK::Model See more details about the Model in the API@endlink
 
@@ -693,6 +698,7 @@ Namely, TBTK will automatically detect existing block structures as long as the 
 For a system with say three momentum subindices, one orbital subindex, and one spin subindex, where the Hamiltonian is block diagonal in the momentum space subindices, an appropriate Index structure is {kx, ky, kz, orbital, spin}.
 If for some reason the Index structure instead is given as {kx, ky, orbital, kz, spin}, TBTK will only be able to automatically detect kx and ky as block-indices, and will treat all of the three remaining subindices orbital, kz, and spin as internal indices for the blocks (at least as long as the Hamiltonian does not happen to also be block diagonal in the orbital subindex).
 
+@link Solvers Next: Solvers@endlink
 @page Solvers Solvers
 @link TBTK::Solver::Solver See more details about the Solvers in the API@endlink
 
@@ -952,6 +958,7 @@ This is even required when the Green's function is generated on GPU, and the sol
 	solver.setUseLookupTable(true);
 ```
 
+@link PropertyExtractors Next: PropertyExtractors@endlink
 @page PropertyExtractors PropertyExtractors
 @link TBTK::PropertyExtractor::PropertyExtractor See more details about the PropertyExtractors in the API@endlink
 
@@ -1106,6 +1113,7 @@ Note that in order to calculate the SpinPolarizedLDOS, it is necessary to specif
 Further @link Properties@endlink such as @link TBTK::Property::EigenValues EigenValues@endlink, @link TBTK::Property::GreensFunction GreensFunction@endlink, @link TBTK::Property::SelfEnergy SelfEnergy@endlink, and @link TBTK::Property::WaveFunctions WaveFunctions@endlink are also available but are not yet documented in this manual.
 If you are interested in these quantities, do not hesitate to contact kristofer.bjornson@second-tech.com to get further details or to request a speedy update about one or several of these Properties.
 
+@link Properties Next: Properties@endlink
 @page Properties Properties
 @link TBTK::Property::AbstractProperty See more details about the Properties in the API@endlink
 
@@ -1315,6 +1323,7 @@ On the Custom format a specific element can be accessed as
 ```
 where *n* is one of the numbers contained in *states*.
 
+@link ImportingAndExportingData Next: Importing and exporting data@endlink
 @page ImportingAndExportingData Importing and exporting data
 #  External storage {#ExternalStorage}
 While the classes described in the other Chapters allow data to be stored in RAM during execution, it is important to also be able to store data outside of program memory.
@@ -1464,6 +1473,7 @@ Once the ParameterSet is created, the variables can be accessed
 	string filename             = parameterSet.getString("filename");
 ```
 
+@link Streams Next: Streams@endlink
 @page Streams Streams
 @link TBTK::Streams See more details about the Streams in the API@endlink
 
@@ -1510,6 +1520,7 @@ or individual objects implementing the Communicator interface using
 	communicator.setVerbose(false);
 ```
 
+@link Timer Next: Timer@endlink
 @page Timer Timer
 @link TBTK::Timer See more details about the Timer in the API@endlink
 
@@ -1584,6 +1595,7 @@ Instead the @link TBTK::Timer Timer@endlink has a special function for printing 
 	Timer::printAccumulators();
 ```
 
+@link FourierTransform Next: FourierTransform@endlink
 @page FourierTransform FourierTransform
 @link TBTK::FourierTransform See more details about the FourierTransform in the API@endlink
 
@@ -1639,6 +1651,7 @@ Once a plan is setup, repeated transforms can be carried out on the data in the 
 	FourierTransform::transform(plan);
 ```
 
+@link Array Next: Array@endlink
 @page Array Array
 @link TBTK::Array See more details about the Array in the API@endlink
 
@@ -1689,6 +1702,7 @@ The new Array is a pure two-dimensional Array from which elements can be extract
 	DataType &element = array2D[{y, z}];
 ```
 
+@link Plotting Next: Plotting@endlink
 @page Plotting Plotting
 @link TBTK::Plot::Plotter See more details about the Plotter in the API@endlink
 
