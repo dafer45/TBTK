@@ -5,6 +5,7 @@ Manual {#Manual}
 - @subpage Overview
 - @subpage UnitHandler
 - @subpage Indices
+- @subpage HoppingAmplitudes
 - @subpage Model
 - @subpage Solvers
 - @subpage PropertyExtractors
@@ -257,142 +258,233 @@ Note that the unit string corresponds to the base units, so any output from TBTK
 @page Indices Indices
 @link TBTK::Index See more details about the Index in the API@endlink
 
-# Complex index structures {#ComplexIndexStructures}
-To get an idea about the generality of the problems that TBTK can handle, imagine a molecule on top of a graphene sheet, which in turn sits on top of a three-dimensional magnetic substrate material.
-Further assume that we can model the three individual systems in the following way
-- Molecule: A one-dimensional chain with three orbitals and two spins per site.
-- Graphene: A two-dimensional sheet with two atoms per unit cell and with a single orbital and two spins per atom.
-- Substrate: A three-dimensional bulk with three atoms per unit cell, five orbitals per atom, and a single relevant spin-species.
+# Physical indices
+Physical quantities often carry indices.
+For example, the wave function \f$\Psi_{\sigma}(x, y, z)\f$ has three spatial indices \f$x, y, z\f$ and a spin index \f$\sigma\f$.
+In TBTK, each such index is referred to as a @link TBTK::Subindex Subindex@endlink and are grouped together into an @link TBTK::Index Index@endlink such as {x, y, z, spin}.
+The wave function is therefore said to be indexed by a single Index.
+Likewise, the two operators in the Hamiltonian \f$H = \sum_{\mathbf{i}\mathbf{j}}a_{\mathbf{i}\mathbf{j}}c_{\mathbf{i}}^{\dagger}c_{\mathbf{j}}\f$ are each indexed by a single Index, while the coefficient \f$a_{\mathbf{i}\mathbf{j}}\f$ carries two Indices.
 
-To describe a system like this, we need three types of operators with three different index structures.
-We can for example introduce the operators \f$a_{xo\sigma}\f$, \f$b_{xys\sigma}\f$, and \f$c_{xyzso}\f$ for the molecule, graphene, and substrate, respectively.
-Here \f$x\f$, \f$y\f$, and \f$z\f$ are spatial indices, \f$s\f$ is a sublattice index, \f$o\f$ is an orbital index, and \f$\sigma\f$ is a spin index.
+An @link TBTK::Index Index@endlink can contain an arbitrary number of Subindices and have an arbitrary structure.
+The Indices {x, y, z, spin}, {x, y, sublattice, orbital, spin}, {kx, ky, spin}, and {spin, orbital, x, y} all have valid Index structures.
+The only limitation is that the @link TBTK::Subindex Subindices@endlink must be non-negative numbers.
 
-First we note that the number of indices per operator is not the same.
-Further, even though every operator have an \f$x\f$-index, there is not necessarily any actual relationship between the different \f$x\f$-indices.
-In particular, the molecule may be oriented along some axis which does not coincide with the natural coordinate axes of the other two materials, and even more importantly, there is no reason why \f$x\f$ should run over the same number of values in the different materials.
-Rather, the \f$x\f$-index is just a symbol indicating the first spatial index for the corresponding operator.
-Similarly, the sublattice and orbital indices for the different operators are not the same.
+# Creating indices {#CreatingIndices}
+An @link TBTK::Index Index@endlink can be created as follows
+```cpp
+	Index index({x, y, z, spin});
+```
+However, most of the time Indices enter as function arguments, in which case they commonly appear in code simply as
+```cpp
+	... {x, y, z, spin} ...
+```
+Given and Index, it is possible to get its size and compontents using
+```cpp
+	unsigned int size = index.size();
+	int x = index[0];
+	int y = index[1];
+	int z = index[2];
+	int spin = index[3];
+```
 
-In TBTK systems like this can easily be modeled using flexible indices that compounds a set of indices into a list of non-negative integers in curly braces.
-Such a compound index is usually referred to simply as an @link TBTK::Index Index@endlink, while the individual components are referred to as subindices.
-While we above used different letters to differentiate between operators with different index structures, in TBTK this is instead handled by introducing one more subsystem identifier at the front of the list of subindices.
-We can for example write typical indices as (spin up = 0, spin down = 1)
-| Index              | Description                                                                |
-|--------------------|----------------------------------------------------------------------------|
-| {0, 1, 0, 1}       | Molecule (subsystem 0), site 1, orbital 0, spin down                       |
-| {1, 2, 3, 0, 0}    | Graphene (subsystem 1), unit cell (2, 3), sublattice site 0, spin up       |
-| {2, 3, 2, 1, 2, 3} | Substrate (subsystem 2), unit cell (3, 2, 1), sublattice site 2, orbital 3 |
+# Hilbert space indices {#HilbertSpaceIndices}
+Algorithms typically work most efficiently when the indices are linear.
+For example, if the indices \f$\mathbf{i}\f$ and \f$\mathbf{j}\f$ in the Hamiltonian \f$H = \sum_{\mathbf{i}\mathbf{j}}a_{\mathbf{i}\mathbf{j}}c_{\mathbf{i}}^{\dagger}c_{\mathbf{j}}\f$ are simple row and column indices, it is straight forward to express \f$H\f$ as a matrix and diagonalize it.
+A possible linearization of {x, y, z, spin} is h = 2*(sizeX*(sizeY*x + y) + z) + spin.
+In TBTK, a linearized index such as h is referred to as a Hilbert space index.
 
-# Advanced: Limitations on the index structure {#LimitationsOnTheIndexStructure}
-A limitation that has been mentioned about the indices is that their subindices have to be non-negative numbers.
-Although this is no real restriction on what types of problems that can be modeled, negative indices abounds in quantum mechanics and this is certainly not without inconvenience.
-However, the optimizations and additional features that are enabled by this design decision has been deemed far more important in this case.
-Nevertheless, support for negative indices could be added in the future through additional "syntactic sugar".
-Any developer interested in pursuing this direction is most welcome to discuss these ideas.
+There are two major issues with hard coding a linearization like the one above.
+First, it locks the implementation to a particular system, in this case a three-dimensional lattice of size sizeX*sizeY*sizeZ.
+Second, it is a mental burden to the developer.
+The more intuitive notation {x, y, z, spin} allows for emphasis to be put on physics rather than numerics.
 
-Another restriction has to do with the fact that the subsystem index was added at the front of the indices.
-This is not strictly required, at least in case the number of \f$x\f$-indices are the same for all three operators.
-TBTK requires that systems only differ in their index structure to the right of a subindex for which they have different values.
-That is, by letting the first subsystem index be 0, 1, and 2 for the three different systems, the rest of the index structure for the three indices can be completely different.
+TBTK therefore internally linearizes the indices in a way that is both generally applicable and which generates a minimal Hilbert space size for the given problem.
+This allows application developers to specify the @link Model Models@endlink and extract @link Properties@endlink using physical @link TBTK:Index Indices@endlink alone.
+It also allows method developers to request the Model in a linear Hilbert space basis.
+Application developers can therefore focus on the physics of their particular problem, while method developers can write efficient general purpose @link Solvers@endlink that are free from Model specific assumptions.
 
-To be more precise what it means for two systems to have different subindex structure: two systems differ in their subindex structure if some specific subindex runs over different number of values for the two systems, or if a particular subindex exist in one system but not in the other.
-This puts no real restriction on the types of problems that can be solved.
-However, more tricky situations than the one above can arise.
-Let us for example consider the case where the substrate above has different number of orbitals for the different sublatice sites.
-In this case it is an error to write the indices on the form {subsystem, x, y, z, orbital, sublattice}, because the orbital subindex runs over different numbers of orbitals even though they can have identical values for all the subindices to the left of the orbital subindex.
-The original subindex order {subsystem, x, y, z, sublattice, orbital} given above does not have this problem though, since the sublattice index stands to the left of the orbital subindex and is different for the different sites.
-In general, ordering the subindices with "less local" subindices to the left should almost always resolve such issues.
+# Advanced: Complex index structures {#ComplexIndexStructures}
+When seting up a @link TBTK::Model Model@endlink, there are two rules:
+
+- <b>Rule 1:</b> For a given @link TBTK::Index Index@endlink structure, not every Index in a range needs to be included.
+- <b>Rule 2:</b> If two Indices differ in value in a Subindex, the Index structure that results from the remaining Subindices to the right of it are allowed to be completely unrelated.
+
+<b>Example 1:</b>
+Consider a square lattice with Index structure {x, y} and size 10x10.
+By <b>rule 1</b> we are allowed to exclude N lattice points from the @link Model@endlink.
+TBTK ensures that a minimal Hilbert space is generated, which in this case will have the size 100 - N.
+
+<b>Example 2:</b>
+Consider a molecule on top of a three-dimensional substrate.
+Each subsystems may be best described by {x, spin} and {x, y, z, spin}, respectively.
+Moreover, the x-@link TBTK::Subindex Subindices@endlink do not need to be related: neither by being aligned along the same direction nor by having the same ranges.
+This can be modeled using the Index structures {0, x, spin} and {1, x, y, z, spin}, where a subsystem Subindex has been prepended.
+Since the two subsystems differs in value in the first Subindex, <b>rule 2</b> implies that there needs to be no relation between the Subindices to the right of it.
+
+<b>Example 3:</b>
+Consider a two-dimensional lattice with a unit cell that contains two different types of atoms.
+An appropriate @link TBTK::Index Index@endlink structure may be {x, y, sublattice, orbital, spin}.
+By <b>rule 1</b>, there is no problem if the number of orbitals are different for the two different sublattices.<b>*</b>
+Moreover, if one of the sublattices only have one orbital, it is possible to drop the orbital @link TBTK::Subindex Subindex@endlink completely for that sublattice.
+By <b>rule 2</b>, it is possible to use the Index structures {x, y, 0, orbital, spin} and {x, y, 1, spin}.
+More specifically, this is possible since the sublattice Subindex differs in value for the two sublattices and it stands to the left of the orbital Subindex.
+
+<b>*</b> In fact, by <b>rule 1</b> it is also possible for two different sites on the same sublattice to have different number of orbitals, as may be the case in a doped material.
+
+@page HoppingAmplitudes HoppingAmplitudes
+@link TBTK::HoppingAmplitude See more details about the HoppingAmplitude in the API@endlink
+
+# Terminology {#Terminology}
+Consider the Schrödinger equation
+<center>\f$i\hbar\frac{d}{dt}|\Psi(t)\rangle = H|\Psi(t)\rangle\f$,</center>
+and the single particle Hamiltonian
+<center>\f$H = \sum_{\mathbf{i}\mathbf{j}}a_{\mathbf{i}\mathbf{j}}c_{\mathbf{i}}^{\dagger}c_{\mathbf{j}}\f$.</center>
+Using finite differences, the Schrödinger equation can be rewritten as
+<center>\f$|\Psi(t+dt)\rangle = \left(1 - i\hbar Hdt\right)|\Psi(t)\rangle\f$.</center>
+On this form it is clear that \f$a_{\mathbf{i}\mathbf{j}}\f$ is related to the rate at which single-particle processes move particles from state \f$\mathbf{j}\f$ to state \f$\mathbf{i}\f$.
+Due to TBTK's origin in tight-binding calculations, these parameters are called hopping amplitudes.
+However, we note that not all \f$a_{\mathbf{i}\mathbf{j}}\f$ corresponds to movement of particles.
+For example, \f$a_{\mathbf{i}\mathbf{i}}\f$ is related to the rate at which particles are annihilated and immediately recreated in the same state.
+Likewise, if \f$\mathbf{i}\f$ and \f$\mathbf{j}\f$ only differ in a spin index, then the hopping amplitude is related to the rate of a spin flip process.
+
+The indices \f$\mathbf{i}\f$ and \f$\mathbf{j}\f$ are the state in which the particle ends up and starts out, respectively.
+Therefore they are referred to as to-indices and from-indices, respectively, in TBTK.
+
+# The HoppingAmplitude class {#TheHoppingAmplitudeClass}
+The @link TBTK::HoppingAmplitude HoppingAmplitude@endlink class represents \f$a_{\mathbf{i}\mathbf{j}}\f$ and can be created as
+```cpp
+	HoppingAmplitude hoppingAmplitude(amplitude, toIndex, fromIndex);
+```
+Here amplitude is of the type std::complex<double> and toIndex and fromIndex are @link Indices@endlink.
+However, typically a HoppingAmplitude is created as an argument to a function with explicit Indices written out, in which case it looks more like
+```cpp
+	... HoppingAmplitude(amplitude, {x+1, y, spin}, {x, y, spin}) ...
+```
+
+Given a @link TBTK::HoppingAmplitude HoppingAmplitude@endlink, it is possible to extracte the amplitude and the to- and from-@link Indices@endlink.
+```cpp
+	complex<double> amplitude = hoppingAmplitude.getAmplitude();
+	const Index &toIndex      = hoppingAmplitude.getToIndex();
+	const Index &fromIndex    = hoppingAmplitude.getFromIndex();
+```
+
+# Advanced: Callback functions {#AdvancedCallbackFunctions}
+Sometimes it is useful to delay the specification of a @link TBTK::HoppingAmplitude HoppingAmplitudes@endlink value.
+This is for example the case when a @link Model@endlink is going to be solved multiple times for different parameter values.
+Another case is when some of the parameters in the Hamiltonian are to be determined self-consistently.
+For this reason, it is possible to pass a callback to the HoppingAmplitude instead of a value.
+
+Consider a problem with the @link Indices Index@endlink structure {x, y, spin} and let \f$J\f$ be a parameter that determines the strength of a Zeeman term.
+It is then possible to implement a callback as follows
+```cpp
+	class ZeemanCallback : public HoppingAmplitude::AmplitudeCallback{
+	public:
+		complex<double> getHoppingAmplitude(
+			const Index &to,
+			const Index &from
+		) const{
+			//Get spin index.
+			int spin = from[2];
+
+			//Return the value of the HoppingAmplitude
+			return -J*(1 - 2*spin);
+		}
+
+		void setJ(complex<double> J){
+			this->J = J;
+		}
+	private:
+		double J;
+	}
+```
+Here the function *getHoppingAmplitude()* is responsible for returning the correct value for the given combination of to- and from-Indices.
+Note that the spin is read from the from-Index.
+This is because it is assumed that this callback will only be used together with HoppingAmplitudes for which the to- and from-Indices are the same.
+In general, the implementation of *getHoppingAmplitude()* may involve looking at multiple @link TBTK::Subindex Subindices@endlink of both Indices to figure out what to return.
+Finally, the *setJ()* function allows for the J value to be changed.
+
+With the callback defined it is possible to create a callback dependent @link TBTK::HoppingAmplitude HoppingAmplitude@endlink.
+```cpp
+	ZeemanCallback zeemanCallback;
+	HoppingAmplitude up(zeemanCallback, {0, 0, 0}, {0, 0, 0});
+	HoppingAmplitude down(zeemanCallback, {0, 0, 1}, {0, 0, 1});
+
+	zeemanCallback.setJ(1);
+	Streams::out
+		<< up.getAmplitude() << "\t"
+		<< down.getAmplitude() << "\n";
+
+	Streams::out << "\n";
+	zeemanCallback.setJ(2);
+	Streams::out
+		<< up.getAmplitude() << "\t"
+		<< down.getAmplitude() << "\n";
+```
+<b>Output:</b>
+```bash
+	-1
+	1
+
+	-2
+	2
+```
 
 @page Model Model
 @link TBTK::Model See more details about the Model in the API@endlink
 
 # The Model class {#TheModelClass}
-The main class for setting up a model is the @link TBTK::Model Model@endlink class, which acts as a container for model specific parameters such as the Hamiltonian, temperature, chemical potential, etc.
-For a simple example, lets consider a simple two level system described by the Hamiltonian
+The @link TBTK::Model Model@endlink class is a container for the Hamiltonian, chemical potential, temperature, statistics, etc.
+It is best understood through an example, therefore consider a two level system described by the Hamiltonian
 <center>\f$H = U_{0}c_{0}^{\dagger}c_{0} + U_{1}c_{1}^{\dagger}c_{1} + V\left(c_{0}^{\dagger}c_{1} + H.c.\right)\f$,</center>
-which is to be studied at T = 300, and zero chemical potential.
-Before setting up the model we write the Hamiltonian on the canonical form
+which can be written
 <center>\f$H = \sum_{\mathbf{i}\mathbf{j}}a_{\mathbf{i}\mathbf{j}}c_{\mathbf{i}}^{\dagger}c_{\mathbf{j}}\f$,</center>
 where \f$a_{00} = U_0\f$, \f$a_{11} = U_1\f$, and \f$a_{01} = a_{10} = V\f$.
-Once on this form, the model is ready to be fed into a Model object, which is achieved as follows
-```cpp
-	double U_0 = 1;
-	double U_1 = 2;
-	double V = 0.5;
+Further, assume that we will study the system at temperature T = 300K, chemical potential mu = 0, and for particles with Fermi-Dirac statistics.
 
+Letting U_0, U_1, and V be the numerical symbols for \f$U_0, U_1\f$, and \f$V\f$, we can implement the model as follows.
+```cpp
+	//Create the Model.
 	Model model;
+
+	//Set the temperature, chemical potential, and statistics.
 	model.setTemperature(300);
 	model.setChemicalPotential(0);
+	model.setStatistics(Statistics::FermiDirac);
+
+	//Specify the Hamiltonian.
 	model << HoppingAmplitude(U_0, {0}, {0});
 	model << HoppingAmplitude(U_1, {1}, {1});
 	model << HoppingAmplitude(V,   {0}, {1}) + HC;
+
+	//Construct a linearized basis for the Model.
 	model.construct();
 ```
-Let us here make a note about the terminology used in TBTK.
-From the canonical form for the Hamiltonian, and if we write the time evolution of a state as
-<center>\f$\Psi(t+dt) = (1 - iHdt)\Psi(t)\f$,</center>
-it is clear that \f$a_{\mathbf{i}\mathbf{j}}\f$ is the amplitude associated with the process where an electron is removed from \f$\mathbf{j}\f$ and inserted at \f$\mathbf{i}\f$.
-That is, in tight-binding terminology, the amplitude associated with a particle hopping from \f$\mathbf{j}\f$ to \f$\mathbf{i}\f$.
-While the term hopping amplitude often is restricted to the case where the two indices actually differ from each other, in TBTK it is used to refer to any \f$a_{\mathbf{i}\mathbf{j}}\f$.
-Moreover, the indices \f$\mathbf{i}\f$ and \f$\mathbf{j}\f$ are often referred to as to- and from-indices, respectively, and a @link TBTK::HoppingAmplitude HoppingAmplitude@endlink is created as
+Here the operator<< is used to pass the @link HoppingAmplitudes@endlink to the @link TBTK::Model Model@endlink.
+Also note the use of "+ HC" in the line
 ```cpp
-	HoppingAmplitude(value, toIndex, fromIndex);
+	model << HoppingAmplitude(V, {0}, {1}) + HC;
 ```
-In the example above two such HoppingAmplitudes are created for the diagonal entries and added to the Model using the <<-operator.
-Similarly, in the second last line a HoppingAmplitude that corresponds to \f$a_{01}\f$ is created and added to the Model.
-The additional expression + *HC* at the end of the line means that also the Hermitian conjugate is added.
-The last line
+which is equivalent to
 ```cpp
-	model.construct();
+	model << HoppingAmplitude(V,       {0}, {1});
+	model << HoppingAmplitude(conj(V), {1}, {0});
 ```
-creates a mapping between the indices that have been added to the Model and a linear Hilbert space index.
-It is important that this call is performed after the HoppingAmplitudes has been added to the Model and that no more HoppingAmplitudes are added after this point.
+The final call to *model.construct()* creates a @link HilbertSpaceIndices linearized Hilbert space basis@endlink for the Indices passed into the Model.
 
-# Physical indices and Hilbert space indices {#PhysicalIndicesAndHilbertSpaceIndices}
-Although the above example is too simple to make the point since the index structure is trivial, we know from the @link Indices@endlink chapter that TBTK allows also much more complicated index structures to be used.
-One of the core features of TBTK is embodied in the call to *model.construct()*.
-To understand why, we note that although the indices in the problem above have a linear structure, this is rarely the case in general.
-In other problems, such as for example a two-dimensional lattice the index structure is not linear but is easily linearized by defining a mapping such as \f$h = L_y x + y\f$.
-The indices \f$(x, y)\f$ (or {x, y} in TBTK notation) are called physical indices, while linearized indices such as \f$h\f$ are referred to as Hilbert space indices.
+# A more complex example {#AMoreComplexExample}
+To see how a more complex @link TBTK::Model Model@endlink can be set up, consider a magnetic impurity on top of a two-dimensional substrate of size 51x51.
+We describe the substrate with the Hamiltonian
+<center>\f$H_{S} = U_S\sum_{\mathbf{i}\sigma}c_{\mathbf{i}\sigma}^{\dagger}c_{\mathbf{i}\sigma} - t\sum_{\langle\mathbf{i}\mathbf{j}\rangle\sigma}c_{\mathbf{i}\sigma}^{\dagger}c_{\mathbf{j}\sigma},\f$</center>
+where \f$\mathbf{i}\f$ is a two-dimensional index, \f$\sigma\f$ is a spin index, and \f$\langle\mathbf{i}\mathbf{j}\rangle\f$ denotes summation over nearest neighbors.
+The impurity is described by
+<center>\f$H_{Imp} = (U_{Imp} - J)d_{\uparrow}^{\dagger}d_{\uparrow} + (U_{Imp} + J)d_{\downarrow}^{\dagger}d_{\downarrow},\f$</center>
+and is connected to site (25, 25) in the substrate through
+<center>\f$H_{Int} = \delta\sum_{\sigma}c_{(25,25)\sigma}^{\dagger}d_{\sigma} + H.c.\f$</center>
+The total Hamiltonian is
+<center>\f$H = H_{S} + H_{Imp} + H_{Int}\f$.</center>
 
-So why do we need linearization?
-One important answer is that algorithms almost universally are going to be most efficient in a linear basis.
-These algorithms can be made much more general if the linearization procedure is not part of the algorithm itself.
-If a mapping such as \f$h = L_y x + y\f$ is hard coded into a @link Solvers Solver@endlink, it essentially becomes a single purpose solver.
-Possibly it can be given a few knobs to turn to adjust the system size and parameter values, but the code becomes locked to a very specific type of problem.
-On the contrary, a Solver that accepts any @link TBTK::Model Model@endlink that can provide itself on a linearized form can be reused for widely different types of problems.
-
-So why physical indices?
-Is it not better if the developer performs the linearization from the start to improve performance?
-This question is certainly very important to consider in case the automized linearization comes with a significant performance penalty.
-The mapping from physical indices to Hilbert space and back again is certainly not a computationally cheap task if implemented through a naive approach such as a lookup table.
-In fact, this would have been prohibitively expensive.
-One of the most (or simply the most) important core data structures of TBTK is a @link TBTK::HoppingAmplitudeTree tree structure@endlink in which the @link TBTK::HoppingAmplitude HoppingAmplitudes@endlink are stored.
-It allows for conversion back and forth between physical indices and Hilbert space indices with an overhead cost that is negligible in most parts of the code.
-Taking the responsibility to linearize indices of from the developer is a significant abstraction that allows mental capacity to be focused on physics instead of numerics.
-
-The one place where the overhead really is important is in the @link Solvers@endlink where most of the computational time usually is spent.
-Solvers therefore usually internally convert the @link TBTK::Model Model@endlink to some much more optimal format using the linearization provided by the Model before starting the main calculation.
-This is also the reason why, as described in the @link PropertyExtractors@endlink chapter, it is recommended to not use the Solvers immediately to extract @link Properties@endlink, but to instead wrap them in PropertyExtractors.
-The PropertyExtractors provides the interface through which Properties can be extracted from the Solvers using physical indices.
-In short, the distinction between physical indices and Hilbert space indices allows application developers to focus on the physics of the particular problem, while simultaneously allowing Solver developers to focus on numerical details and general properties rather than system specific details.
-
-# Example: A slightly more complex Model {#ExampleASlightlyMoreComplexModel}
-To appreciate the ease with which @link TBTK::Model Models@endlink can be setup in TBTK, we now consider a slightly more complex example.
-Consider a magnetic impurity on top of a two-dimensional substrate of size 51x51 described by
-<center>\f$H = H_{S} + H_{Imp} + H_{Int}\f$</center>
-where
-<center>\f{eqnarray*}{
-	H_{S} &=& U_S\sum_{\mathbf{i}\sigma}c_{\mathbf{i}\sigma}^{\dagger}c_{\mathbf{i}\sigma} - t\sum_{\langle\mathbf{i}\mathbf{j}\rangle\sigma}c_{\mathbf{i}\sigma}^{\dagger}c_{\mathbf{j}\sigma},\\
-	H_{Imp} &=& (U_{Imp} - J)d_{\uparrow}^{\dagger}d_{\uparrow} + (U_{Imp} + J)d_{\downarrow}^{\dagger}d_{\downarrow},\\
-	H_{Int} &=& \delta\sum_{\sigma}c_{(25,25)\sigma}^{\dagger}d_{\sigma} + H.c.
-\f}</center>
-Here \f$\mathbf{i}\f$ is a two-dimensional index, \f$\langle\mathbf{i}\mathbf{j}\rangle\f$ indicates summation over nearest neighbors, \f$\sigma\f$ is a spin index, and \f$c_{\mathbf{i}}\f$ and \f$d_{\sigma}\f$ are operators on the substrate and impurity, respectively.
-The parameters \f$U_S\f$ and \f$U_{Imp}\f$ are on-site energies on the substrate and impurity, respectively, while \f$t\f$ is a nearest neighbor hopping amplitude, \f$J\f$ is a Zeeman term, and \f$\delta\f$ is the coupling strength between the substrate and impurity.
-
-We first note that an appropriate index structure is {0, x, y, s} for the substrate and {1, s} for the impurity.
-Using this index structure we next tabulate the hopping parameters on the canonical form given at the beginning of this chapter.
+We first note that an appropriate @link Indices Index@endlink structure is {0, x, y, s} for the substrate and {1, s} for the impurity, where s means spin.
+Reading of the Hamiltonian terms above, we can tabulate the hopping amplitues.
 | Hopping amplitude                          | Value         | To Index         | From Index       |
 |--------------------------------------------|---------------|------------------|------------------|
 | \f$a_{(0,x,y,\sigma),(0,x,y,\sigma)}\f$    | \f$U_S\f$     | {0,   x,   y, s} | {0,   x,   y, s} |
@@ -405,15 +497,12 @@ Using this index structure we next tabulate the hopping parameters on the canoni
 | \f$a_{(1,\downarrow),(1,\downarrow)}\f$    | \f$J\f$       | {1, 1}           | {1, 1}           |
 | \f$a_{(0,25,25,\sigma),(1,\sigma)}\f$      | \f$\delta\f$  | {0,  25,  25, s} | {1, s}           |
 | \f$a_{(1,\sigma),(0,25,25,\sigma)}\f$      | \f$\delta\f$  | {1, s}           | {0,  25,  25, s} |
+The left column contains the analytic symbol, while the three other columns contain the corresponding information that is needed to create a @link HoppingAmplitudes HoppingAmplitude@endlink.
+Subindices that are not numeric values (or arrows) should be understood to be summed/looped over in the analytic/numeric expressions.
 
-Symbolic subindices should be understood to imply that the values are valid for all possible values of the corresponding subindices.
-We also note that hopping amplitudes that appear multiple times should be understood to add up to the final value.
-For example does \f$a_{(1,\uparrow),(1,\uparrow)}\f$ appear twice (sixth and seventh row) and should be understood to add to \f$U_{Imp} - J\f$.
-While the first column is the analytical representation of the symbol for the hopping amplitudes, the third and fourth column is the corresponding numerical representation.
-In particular, we note that we use 0 to mean up spin and 1 to mean down spin.
-Next we note that the table can be reduced if we take into account that row 2 and 3, 4 and 5, and 9 and 10 are each others Hermitian conjugates.
-Further, row 7 and 8 can be combined into a single row by writing the value as \f$-J(1 - 2s)\f$.
-The table can therefore if we also ignore the first column be compressed to
+The line pairs (2 and 3), (4 and 5), and (9 and 10) are the Hermitian conjugates of each other.
+Further, line 7 and 8 can be combined into a single line if we write the amplitude as -J(1 - 2s).
+Taking this into account, the table can be compressed into
 | Value            | To Index         | From Index       | Add Hermitian conjugate |
 |------------------|------------------|------------------|-------------------------|
 | \f$U_S\f$        | {0,   x,   y, s} | {0,   x,   y, s} |                         |
@@ -423,7 +512,7 @@ The table can therefore if we also ignore the first column be compressed to
 | \f$-J(1 - 2s)\f$ | {1, 0}           | {1, 0}           |                         |
 | \f$\delta\f$     | {0,  25,  25, s} | {1, s}           | Yes                     |
 
-Once on this form, it is simple to implement the @link TBTK::Model Model@endlink as follows
+It is now straight forward to implement the @link TBTK::Model Model@endlink.
 ```cpp
 	const int SIZE_X = 51;
 	const int SIZE_Y = 51;
@@ -476,15 +565,17 @@ Once on this form, it is simple to implement the @link TBTK::Model Model@endlink
 		) + HC;
 	}
 
-	//Construct model.
+	//Construct a linearized basis for the Model.
 	model.construct();
 ```
 
-For pedagogical reasons we here went through the process of converting the analytical Hamiltonian to a numerical @link TBTK::Model Model@endlink in quite some detail.
-However, with a small amount of experience the second table can be read of immediately from the Hamiltonian, cutting down the work significantly.
-A key advice is to utilize the Hermitian conjugate to their maximum like we did above.
-Note in particular that we used this to only have \f$x+1\f$ and \f$y+1\f$ in one position for the indices, respectively (and no \f$x-1\f$ or \f$y-1\f$).
-Doing so reduces the number of lines of code, improves readability, simplifies maintainance, and consequently reduces the chance of introducing errors.
+The conversion from the analytic Hamiltonian to the numeric @link TBTK::Model Model@endlink was here done in quite some detail.
+However, with a bit of experience it is possible to read of the @link HoppingAmplitudes HoppingAmplitude@endlink parameters immediately from the Hamiltonian without having to write down any tables.
+
+We finish this example with an advice to always utilize the Hermitian conjugate to its maximum as we did above.
+Note in particular that we used this to only have \f$x+1\f$ and \f$y+1\f$ in the to-@link Indices Index@endlink (and there are no \f$x-1\f$ or \f$y-1\f$).
+In short, only forward hopping terms are explicit.
+This improves readability and reduces the chance of introducing errors.
 
 # Advanced: Using IndexFilters to construct a Model {#AdvancedUsingIndexFiltersToConstructAModel}
 While the already introduced concepts significantly simplifies the modeling of complex geometries, TBTK provides further ways to simplify the modeling stage.
