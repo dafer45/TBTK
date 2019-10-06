@@ -31,8 +31,11 @@ LIST(
 	"${CMAKE_CURRENT_SOURCE_DIR}/Utilities/PadeApproximatorContinuousFractions.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/Solver/AnalyticalContinuerContinuousFractions.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/Solver/ArnoldiIterator.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/Solver/FLEX.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/Solver/MatsubaraSusceptibility.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/Solver/LinearEquationSolver.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/Solver/LUSolver.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/Solver/SelfEnergy2.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/PropertyExtractor/ArnoldiIterator.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/StatesAndOperators/GaussianBasisGenerator.cpp"
 )
@@ -106,7 +109,22 @@ IF(${COMPILE_FOURIER_TRANSFORM})
 		TBTK_FOURIER_TRANSFORM_SRC
 		FourierTransform/*.cpp
 	)
-	SET(TBTK_SRC ${TBTK_SRC} ${TBTK_FOURIER_TRANSFORM_SRC})
+	FILE(
+		GLOB
+		TBTK_FLEX_SRC
+		Solver/FLEX.cpp
+	)
+	FILE(
+		GLOB
+		TBTK_MATSUBARA_SUSCEPTIBILITY_SRC
+		Solver/MatsubaraSuceptibility.cpp
+	)
+	FILE(
+		GLOB
+		TBTK_SELF_ENERGY_2_SRC
+		Solver/FLEX.cpp
+	)
+	SET(TBTK_SRC ${TBTK_SRC} ${TBTK_FOURIER_TRANSFORM_SRC} ${TBTK_FLEX_SRC} ${TBTK_MATSUBARA_SUSCEPTIBILITY_SRC} ${TBTK_SELF_ENERGY_2_SRC})
 ENDIF(${COMPILE_FOURIER_TRANSFORM})
 
 IF(${COMPILE_GUI})
