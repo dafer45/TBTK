@@ -757,7 +757,7 @@ The Solver is now ready to be wrapped in its @link PropertyExtractors PropertyEx
 ## Space and time costs
 The required amount of space is particularly easy to estimate for the @link TBTK::Diagonalizer Diagonalizer@endlink.
 Internally the Hamiltonian is stored as an upper triangular matrix of type std::complex<double> (16 bytes per entry).
-The space required to store a Hamiltonian with basis size N is therefore roughly \f$16*(N^2/2) = 8N^2\f$ bytes.
+The space required to store a Hamiltonian with basis size N is therefore roughly \f$16(N^2/2) = 8N^2\f$ bytes.
 The eigenvectors and eigenvalues requres another \f$16N^2\f$ and \f$8N\f$ bytes, respectively.
 This adds up to about \f$24N^2\f$ bytes, which runs into the GB range around a basis size of 7000.
 
@@ -816,17 +816,36 @@ If the calculation has not converged by then it finishes anyway.
 For a complete example of a self-consistent calculation, the reader is referred to the SelfConsistentSuperconductivity template in the Templates folder.
 
 # Solver::BlockDiagonalizer {#SolverBlockDiagoanlizer}
-The @link TBTK::Solver::BlockDiagonalizer BlockDiagonalizer@endlink is similar to the @link TBTK::Solver::Diagonalizer Diagonalizer@endlink, except that it takes advantage of possible block-diagonal structures in the Hamiltonian.
-For this to work it is important that the @link Model Models@endlink index structure is chosen such that TBTK is able to automatically detect the block-diagonal structure of the Hamiltonian, as described in the Model chapter.
-The BlockDiagonalizer mimics the Diagonalizer almost perfectly, and the code for initializing and running a BlockDiagonalizer including a self-consistency callback is
+The @link TBTK::Solver::BlockDiagonalizer BlockDiagonalizer@endlink mimics the @link TBTK::Solver::Diagonalizer Diagonalizer@endlink, but is able to take advantage of a Hamiltonians @link BlockStructure block structure@endlink.
 ```cpp
-	SOlver::BlockDiagonalizer solver;
+	Solver::BlockDiagonalizer solver;
 	solver.setModel(model);
-	solver.setSelfConsistencyCallback(selfConsistencyCallback);
-	solver.setMaxIterations(100);
 	solver.run();	
 ```
-The only difference here is that the *selfConsistencyCallback* has to take a BlockDiagonalizer as argument rather than a Diagonalizer.
+
+## Advanced: Self-consistency callback
+The implementation of a compatible self-consistency callback for the @link TBTK::Solver::BlockDiagonalizer BlockDiagonalizer@endlink also closely parallels that of the @link TBTK::Solver::Diagonalizer Diagonalizer@endlink.
+```cpp
+class SelfConsistencyCallback :
+	public Solver::BlockDiagonalizer::SelfConsistencyCallback
+{
+public:
+	bool selfConsistencyCallback(Solver::BlockDiagonalizer &solver){
+		//Calculate and update the parameter(s).
+		//...
+
+		//Determine whether the solution has converged or not.
+		//...
+
+		//Return true if the solution has converged, otherwise return
+		//false.
+		if(hasConverged)
+			return true;
+		else
+			return false;
+	}
+};
+```
 
 # Solver::ArnoldiIterator {#SolverArnoldiIterator}
 The main drawback of diagonalization is that it scales poorly with system size and becomes prohibitively demanding both in terms of memory and computational time if the individual blocks have a basis size of more than a few thousands.
