@@ -96,3 +96,4 @@ The following table shows the optional libraries that are required for the diffe
 | Enable GPU execution for ChebyshevExpander |        |       |        |      |                  |           | X    |      |
 | FileReader and FileWriter                  |        |       |        |      |                  |           |      | X    |
 
+@link Manual Next: Manual@endlink

@@ -541,7 +541,8 @@ It is now straight forward to implement the @link TBTK::Model Model@endlink.
 				);
 
 				if(x+1 < SIZE_X){
-					model << HoppingAmplitude(-t,
+					model << HoppingAmplitude(
+						-t,
 						{0, x+1, y, s},
 						{0, x,   y, s}
 					) + HC;
@@ -583,62 +584,53 @@ In short, only forward hopping terms are explicit.
 This improves readability and reduces the chance of introducing errors.
 
 # Advanced: Using IndexFilters to construct a Model {#AdvancedUsingIndexFiltersToConstructAModel}
-While the already introduced concepts significantly simplifies the modeling of complex geometries, TBTK provides further ways to simplify the modeling stage.
-In particular, we note that in the example above, conditional statements had to be used in the first for-loop to ensure that @link TBTK::HoppingAmplitude HoppingAmplitudes@endlink were not added across the boundary of the system.
-For more complex structures it is useful to be able to separate the specification of such exceptions to the rule from the specification of the rule itself.
-This can be accomplished through the use of an @link TBTK::AbstractIndexFilter IndexFilter@endlink, which can be used by the @link TBTK::Model Model@endlink to accept or reject HoppingAmplitudes based on their to- and from-@link Indices@endlink.
+In the example above, if-statements were added inside the first loop to prevent @link TBTK::HoppingAmplitude HoppingAmplitudes@endlink from being added across the boundary.
+The code can be made more readable by using an @link TBTK::AbstractIndexFilter IndexFilter@endlink, which allows for the handling of such exceptions to be separated from the main @link TBTK::Model Model@endlink specification.
 
-In this example we will show how to setup a simple two-dimensional sheet like the substrate above and in addition add a hole in the center of the substrate.
-We will here assume that the size of the substrate and the radius of the hole has been specified using three global variables SIZE_X, SIZE_Y, and RADIUS.
-A good implementation would certainly remove the need for global variables, but we use this method here to highlight the core concepts since removing the global variables requires a bit of extra code that obscures the key point.
-Moreover, for many applications such parameters would be so fundamental to the calculation that it actually may be justified to use global variables to store them.
-
-The first step toward using an @link TBTK::AbstractIndexFilter IndexFilter@endlink is to create one.
-The syntax for doing so is as follows:
+We here demonstrate how an @link TBTK::AbstractIndexFilter IndexFilter@endlink can be used to create a square shaped geometry with a hole inside.
+To do so, we begin by defining the IndexFilter.
 ```cpp
 class Filter : public AbstractIndexFilter{
 public:
+	Filter(int sizeX, int sizeY, double radius){
+		this->sizeX = sizeX;
+		this->sizeY = sizeY;
+		this->radius = radius;
+	}
+
 	Filter* clone() const{
-		return new Filter();
+		return new Filter(sizeX, sizeY, radius);
 	}
 
 	bool isIncluded(const Index &index){
-		double radius = sqrt(
-			pow(index[0] - SIZE_X/2, 2)
-			+ pow(index[1] - SIZE_Y/2, 2)
+		double r = sqrt(
+			pow(index[0] - sizeX/2, 2)
+			+ pow(index[1] - sizeY/2, 2)
 		);
-		if(radius < RADIUS)
+		if(r < radius)
 			return false;
-		else if(index[0] < 0 || index[0] >= SIZE_X)
+		else if(index[0] < 0 || index[0] >= sizeX)
 			return false;
-		else if(index[1] < 0 || index[1] >= SIZE_Y)
+		else if(index[1] < 0 || index[1] >= sizeY)
 			return false;
 		else
 			return true;
 	}
+private:
+	int sizeX, sizeY;
+	double radius;
 };
 ```
-The experienced C++ programmer recognizes this as an implementation of an abstract base class and is encouraged to write more complicated filters.
-In this case we note that it is important that the function *clone()* returns a proper copy of the Filter, which in this case is trivial since there are no member variables.
-However, for the developer not familiar with such concepts, it is enough to view this as a template where the main action takes place in the function *isIncluded()*.
-This function is responsible for returning whether a given input @link Indices Index@endlink is included in the @link TBTK::Model Model@endlink or not.
-As seen we first calculate the *radius* for the Index away from the center of the sheet.
-Next we check whether the calculated *radius* is inside the specified *RADIUS* for the hole, or if it falls outside the boundaries of the sample.
-If either of these are true we return false, while otherwise we return true.
+The Filter needs to know the size of the the system and the holes radius, therefore the constructor takes these as arguments and stores them in its private variables.
+The *clone()*-function is required and should return a pointer to a copy of the Filter.
+Finally, the *isIncluded()*-function is responsible for returning true or false depending on whether the given @link Indices Index@endlink should be included in the @link TBTK::Model Model@endlink or not.
+In this example, it first checks whether the Index is inside the excluded radius and returns false if this is the case.
+Otherwise, it returns true or false depending on whether or not the Index is inside the range [0, sizeX)x[0, sizeY).
 
-<b>Note:</b> When writing a Filter it is important to take into account not only the Index structure of @link Indices@endlink that are going to be rejected, but all Indices that are passed to the @link TBTK::Model Model@endlink at the point of setup.
-If there for example would have been some Indices in the Model that only had one subindex, the Filter above would have been invalid since it may be passed such an Index and try to access *index[1]*.
-When writing filters it is therefore important to ensure they are compatible with the Model as a whole and are able to respond true or false for every possible Index in the Model.
-Since in this case we model a two-dimensional sheet where all Indices have more than two subindices this Filter is alright.
-
-Once the Filter is specified, we are ready to use it to setup a Model
+With the Filter defined, a @link TBTK::Model Model@endlink with the size 51x51 and a hole radius of 10 can be set up as follows.
 ```cpp
-	double U_s = 1;
-	double t = 1;
-
 	Model model;
-	Filter filter;
-	model.setFilter(filter);
+	model.setFilter(Filter(51, 51, 10));
 	for(int x = 0; x < SIZE_X; x++){
 		for(int y = 0; y < SIZE_Y; y++){
 			for(int s = 0; s < 2; s++){
@@ -662,173 +654,166 @@ Once the Filter is specified, we are ready to use it to setup a Model
 	}
 	model.construct();
 ```
+Note the call to *model.setFilter()* and the fact that no if-statements appear inside the loop.
 
-# Advanced: Callback functions {#AdvancedCallbackFunctions}
-Sometimes it is useful to be able to delay specification of a @link TBTK::HoppingAmplitude HoppingAmplitudes@endlink value to a later time than the creation of the @link TBTK::Model Model@endlink.
-This is for example the case if the same Model is going to be solved multiple times for different parameter values, or if some of the parameters in the Hamiltonian are going to be determined self-consistently.
-For this reason it is possible to pass a function as value argument to the HoppingAmplitude rather than a fixed value.
-If we have indices with the structure {x, y, s}, where the last index is a spin, and there exists some global parameter \f$J\f$ that determines the current strength of the Zeeman term, a typical callbackFunction looks like
+We end this section with a note about substems with @link ComplexIndexStructures complex Index strucures@endlink.
+Consider a @link TBTK::Model Model@endlink with two subsystems Indexed by {0, x, spin} and {1, x, y, z, spin}, respectively.
+The @link TBTK::AbstractIndexFilter IndexFilter@endlink needs to be able to handle both of these Index structures.
+For example, requesting *index[4]* in the *isIncluded()*-function before knowing that the Index belongs to subsystem 1 is an error.
+Therefore, an appropriate implementation of the *isIncluded()*-function would in this case look something like this.
 ```cpp
-	complex<double> callbackJ(const Index &to, const Index &from){
-		//Get spin index.
-		int s = from[2];
+	bool isIncluded(const Index &index){
+		int subsystem = index[0];
+		switch(subsystem){
+		case 0:
+			int x = index[1];
+			int spin = index[2];
+			//Do the relevant checks for subsystem 0 here.
+			//...
 
-		//Return the value of the HoppingAmplitude
-		return -J*(1 - 2*s);
+			break;
+		case 1:
+			int x = index[1];
+			int y = index[2];
+			int z = index[3];
+			int spin = index[4];
+			//Do the relevant checks for subsystem 1 here.
+			//...
+
+			break;
+		}
 	}
-```
-Just like when writing an @link TBTK::AbstractIndexFilter IndexFilter@endlink, a certain amount of @link TBTK::Model Model@endlink specific information needs to go into the specification of the callbacks.
-Here we have for example chosen to determine the spin by looking at the 'from'-Index, which should not differ from the spin-index of the *to*-Index.
-However, unlike when writing IndexFilters, the @link TBTK::HoppingAmplitude HoppingAmplitude@endlink callbacks only need to make sure that they work for the restricted Indices for which the callback is fed into the Model together with, since these are the only Indices that will ever be passed to the callback.
-
-Once the callback is defined, it is possible to use it when setting up a model as follows
-```cpp
-	model << HoppingAmplitude(callbackJ, {x, y, s}, {x, y, s});
 ```
 
 # Block structure {#BlockStructure}
-One of the most powerful methods for solving quantum mechanical problems is block diagonalization of the Hamiltonian.
-What this means is that the Hamiltonian is broken apart into smaller blocks that are decoupled from each other and thereby effectively replaces one big problem with many smaller problems.
-The smaller problems are much simpler to solve and usually far outweighs the fact that several problems have to be solved instead.
-The most obvious example of this is a Hamiltonian which when written in reciprocal space separates into independent problems for each momentum \f$\mathbf{k}\f$.
-
-To facilitate the exploitation of block diagonal Hamiltonians TBTK has restricted support for automatically detecting when it is handed a Hamiltonian with a block diagonal structure.
-However, for this to work the developer has to organize the @link Indices Index@endlink structure in such a way that TBTK is able to automatically take advantage of the block diagonal structure.
-Namely, TBTK will automatically detect existing block structures as long as the Index has the subindices that identifies the independent blocks standing to the left of the intra block indices.
-For a system with say three momentum subindices, one orbital subindex, and one spin subindex, where the Hamiltonian is block diagonal in the momentum space subindices, an appropriate Index structure is {kx, ky, kz, orbital, spin}.
-If for some reason the Index structure instead is given as {kx, ky, orbital, kz, spin}, TBTK will only be able to automatically detect kx and ky as block-indices, and will treat all of the three remaining subindices orbital, kz, and spin as internal indices for the blocks (at least as long as the Hamiltonian does not happen to also be block diagonal in the orbital subindex).
+The @link TBTK::Model Model@endlink can recognize a block diagonal Hamiltonian under the condition that the block diagonal @link TBTK::Subindex Subindices@endlink appear to the left in the @link Indices Index@endlink.
+Consider a translationally invariant system that is block-diagonal in kx, ky, and kz, but not in orbital or spin.
+If the Index structure {kx, ky, kz, orbital, spin} is used, the Model will be able to recognize the block structure.
+This can be utilized by some @link Solvers@endlink such as the @link SolverBlockDiagonalizer BlockDiagonalizer@endlink to speed up calculations.
+If instead {kx, ky, orbital, kz, spin} is used, only the kx and ky Subindices will be recognized as block indices.
 
 @link Solvers Next: Solvers@endlink
 @page Solvers Solvers
 @link TBTK::Solver::Solver See more details about the Solvers in the API@endlink
 
-# Limiting algorithm specific details from spreading {#LimitingAlgorithmSpecificDetailsFromSpreading}
-Depending on the @link Model@endlink and the @link Properties@endlink that are sought for, different solution methods are best suited to carry out different tasks.
-Sometimes it is not clear what the best method for a given task is and it is useful to be able to try different approaches for the same problem.
-However, different algorithms can vary widely in their approach to solving a problem, and specifically vary widely in how they need the data to be represented in memory to carry out their tasks.
-Without somehow limiting these differences to a restricted part of the code the specific numerical details of a @link TBTK::Solver::Solver Solver@endlink easily spreads throughout the code and makes it impossible to switch one Solver for another without rewriting the whole code.
+# Solvers and PropertyExtractors
+Algorithms for solving @link Model Models@endlink are implemented in @link TBTK::Solver Solvers@endlink.
+Since this typically is where most of the computational time is spent, low level optimization often is required.
+The purpose of the Solver is to contain these numerical details and present an intuitive interface to the application developer.
+The interface allows for the algorithm to be configured on demand, but aims to minimize the amount of method specific knowledge that is necessary to use the Solver.
 
-In TBTK the approach to solving this problem is to provide a clear separation between the algorithm implemented inside the @link TBTK::Solver::Solver Solvers@endlink, and the specification of the @link Model@endlink and the extraction of @link Properties@endlink.
-Solvers are therefore required to all accept a universal Model object and to internally convert it to whatever representation that is best suited for the algorithm.
-Solvers are then wrapped in @link PropertyExtractors@endlink which further limits the Solver specific details from spreading to other parts of the code.
-The idea is to limit the application developers exposure to the Solver as much as possible, freeing mental capacity to focus on the physical problem at hands.
-Nevertheless, a certain amount of method specific configurations are inevitable and the appropriate place to make such manipulations is through the Solver interface itself.
-This approach both limits the developers exposure to unnecessary details, while also making sure the developer understands when algorithm specific details are configured.
-
-Contrary to what it may sound like, limiting the developers exposure to the @link TBTK::Solver::Solver Solver@endlink does not mean concealing what is going on inside the Solver and to make it an impenetrable black box.
-In fact, TBTK aims at making such details as transparent as possible and to invite the interested developer to dig as deep as preferred.
-To limit the exposure as much as possible rather means that once the developer has chosen Solver and configured it, the Solver specific details should not spread further and the developers should be free to not worry about low level details.
-In order to chose the right Solver for a given task and to configure it efficiently it is useful to have an as good understanding as possible about what the algorithm actually is doing.
-Therefore we here describe what some of the native Solvers does, what their strengths and weaknesses are, and how to set up and configure them.
-In the code examples presented here it is assumed that a @link Model@endlink object has already been created.
+Internally, the @link TBTK::Solver Solver@endlink converts the @link Model@endlink to the format that is best suited for the algorithm.
+Likewise, the output of the algorithm is stored on a method specific format.
+This data can be requested from the Solver, but the Solver is not responsible for providing the output on a method independent format.
+Instead, each Solver can be wraped in a corresponding @link PropertyExtractors PropertyExtractor@endlink, through which @link Properties@endlink can be extracted using a notation that is Solver independent.
+In this chapter, we therefore only discuss how to set up, configure, and run a Solver, leaving the extraction of Properties to the @link PropertyExtractors next chapter@endlink.
 
 # Overview of native Solvers {#OverviewOfNativeSolvers}
-TBTK currently contains four production ready @link TBTK::Solver::Solver Solvers@endlink.
-These are called @link TBTK::Solver::Diagonalizer Diagonalizer@endlink, @link TBTK::Solver::BlockDiagonalizer BlockDiagonalizer@endlink, @link TBTK::Solver::ArnoldiIterator ArnoldiIterator@endlink, and @link TBTK::Solver::ChebyshevExpander ChebyshevExpander@endlink.
-The first two of these are based on diagonalization, allowing for all eigenvalues and eigenvectors to be calculated.
-Their strength is that once a problem has been diagonalized, complete knowledge about the system is available and arbitrary properties can be calculated.
+TBTK currently contains four production ready @link TBTK::Solver::Solver Solvers@endlink: the @link TBTK::Solver::Diagonalizer Diagonalizer@endlink, @link TBTK::Solver::BlockDiagonalizer BlockDiagonalizer@endlink, @link TBTK::Solver::ArnoldiIterator ArnoldiIterator@endlink, and @link TBTK::Solver::ChebyshevExpander ChebyshevExpander@endlink.
+All of these are single-particle Solvers, which is the reason that this manual at the moment only describes how to set up and solve single-particle problems.
+
+The two first @link TBTK::Solver Solvers@endlink are based on diagonalization and can calculate all eigenvalues and eigenvectors.
+Their strength is that they provide solutions with complete information about the system, allowing for arbitrary @link Properties@endlink to be calculated.
 However, diagonalization scales poorly with system size and is therefore not feasible for very large systems.
-The BlockDiagonalizer provides important improvements in this regard for large systems if they are block diagonal, in which case the BlockDiagonalizer can handle very large systems compared to the Diagonalizer.
+If the Model is @link BlockStructure block diagonal@endlink, the @link TBTK::Solver::BlockDiagonalizer BlockDiagonalizer@endlink can handle much larger systems than the @link TBTK::Solver::Diagonalizer Diagonalizer@endlink.
 
-Next, the @link TBTK::Solver::ArnoldiIterator ArnoldiIterator@endlink is similar to the Diagonalizers in the sense that it calculates eigenvalues and eigenvectors.
-However, it is what is know as an iterative Krylov space Solver, which successively builds up a subspace of the Hilbert space and performs diagonalization on this restricted subspace.
-Therefore the ArnoldiIterator only extracts a few eigenvalues and eigenvectors.
-Complete information about a system can therefore usually not be obtained with the help of the ArnoldiIterator, but it can often give access to the relevant information for very large systems if only a few eigenvalues or eigenvectors are needed.
-Arnoldi iteration is closely related to the Lanczos method and is also the underlying method used when extracting a limited number of eigenvalues and eigenvectors using MATLABS eigs-function.
+The @link TBTK::Solver::ArnoldiIterator ArnoldiIterator@endlink also calculates eigenvalues and eigenvectors, but can be used to calculate only a few of them.
+Arnoldi iteration is a so called Krylov method that iteratively builds a larger and larger subspace of the total Hilbert space.
+It then performs diagonalization on this restricted subspace.
+If only a few eigenvalues or eigenvectors are needed, they can be calculated quickly even if the Model is very large.
 
-Finally, the @link TBTK::Solver::ChebyshevExpander ChebyshevExpander@endlink is different from the other methods in that it extracts the Green's function rather than eigenvalues and eigenvectors.
-The ChebyshevExpanders strenght is also that it can be used for relatively large systems.
-Moreover, while the Diagonalizers requires that the whole system first is diagonalized, and thereby essentially solves the full problem, before any property can be extracted, the ChebyshevExpander allows for individual Green's functions to be calculated which contains only partial information about the system.
-However, the Chebyshev method is also an iterative method (but not Krylov), and would in fact require an infinite number of steps to obtain an exact solution.
+The @link TBTK::Solver::ChebyshevExpander ChebyshevExpander@endlink can calculate the Green's function \f$G_{\mathbf{i}\mathbf{j}}(E)\f$ for any given pair of @link Indices@endlink \f$\mathbf{i}\f$ and \f$\mathbf{j}\f$.
+It can be used to calculate @link Properties@endlink for very large systems when they are needed for a limited number of Indices.
+However, the method is iterative, and infinite precission along the energy axis requires an infinite number of steps.
 
 # General remarks about Solvers {#GeneralRemarksAboutSolvers}
-The Solvers all inherit from a common base class called @link TBTK::Solver::Solver@endlink.
-This Solver class is an abstract class, meaning it is not actually possible to create an object of the Solver class itself.
-However, the Solver base class forces every other Solver to implement a method for setting the @link Model@endlink that it should work on.
-The following call is therefore possible (and required) to call to initialize any given Solver called *solver*
+All Solvers inherit from the base class @link TBTK::Solver::Solver@endlink.
+This is a very simple class that only implements two functions for setting and getting the @link Model@endlink to solve.
 ```cpp
+	Solver::Solver solver;
 	solver.setModel(model);
+	const Model &referenceToModel = solver.getModel();
 ```
-The @link TBTK::Solver::Solver Solver@endlink class also provides a corresponding *getModel()* function for retreiving the @link Model@endlink.
-It is important here to note that although the Model is passed to the Solver and the Solver will remember the Model, it will not assume ownership of the Model.
-It is therefore important that the Model remains in memory throughout the lifetime of the Solver and that the caller takes responsibility for any possible cleanup work.
-The user not familiar with memory management should not worry though, as long as standard practices as outlined in this manual are observed, these issues are irrelevant.
+It is important that the Model that is passed to the Solver remains in memory for the full lifetime of the Solver.
+Therefore, do not call *solver.setModel()* with a temporary Model object.
 
-The @link TBTK::Solver::Solver Solvers@endlink are also @link TBTK::Communicator Communicators@endlink, which means that they may output information that is possible to mute.
-This can become important if a Solver for example is created or executed inside of a loop.
-In this case extensive output can be produced and it can be desired to turn this off.
-To do so, call
+@link TBTK::Solver::Solver Solvers@endlink are also @link TBTK::Communicator Communicators@endlink, which means that they can output diagnostic information that is possible to mute.
+To turn on the output, call
 ```cpp
-	solver.setVerbose(false);
+	solver.setVerbose(true);
 ```
 
 # Solver::Diagonalizer {#SolverDiagonalizer}
-The @link TBTK::Solver::Diagonalizer Diagonalizer@endlink sets up a dense matrix representing the Hamiltonian and then diagonalizes it to obtain eigenvalues and eigenvectors.
-The Diagonalizer is probably the simplest possible @link TBTK::Solver::Solver Solver@endlink to work with as long as the system sizes are small enough to make it feasible, which means Hilbert spaces with a basis size of up to a few thousands.
-A simple set up of the Diagonalizer
+The @link TBTK::Solver::Diagonalizer Diagonalizer@endlink sets up a dense matrix representing the Hamiltonian and diagonalizes it to obtain the eigenvalues and eigenvectors.
+Because of its simplicity, it is a good choice for @link Model Models@endlink with a Hilbert space size up to a few thousands.
+Setting it up and running the diagonalization is straight forward.
 ```cpp
-	//Create a Solver::Diagoanlizer.
 	Solver::Diagonalizer solver;
-	//Set the Model to work on.
 	solver.setModel(model);
-	//Diagonalize the Hamiltonian
 	solver.run();
 ```
-That's it. The problem is solved and can be passed to a corresponding @link PropertyExtractors PropertyExtractor@endlink for further processing.
+The Solver is now ready to be wrapped in its @link PropertyExtractors PropertyExtractor@endlink to allow for Properties to be extracted.
 
-## Estimating time and space requirements
-Since diagonalization is a rather simple problem conceptually, it is easy to estimate the memory and time costs for the @link TBTK::Solver::Diagonalizer Diagonalizer@endlink.
-Memory wise the Hamiltonian is stored as an upper triangular matrix with complex<double> entries each 16 bytes large.
-The storage space required for the Hamiltonian is therefore roughly \f$16N^2/2 = 8N^2\f$ bytes, where \f$N\f$ is the basis size of the Hamiltonian.
-Another \f$16N^2\f$ bytes are required to store the resulting eigenvectors, and \f$8N\f$ bytes for the eigenvalues.
-Neglecting the storage for the eigenvalues the approximate memory footprint for the Diagonalizer is \f$24N^2\f$ bytes.
-This runs into the GB range around a basis size of 7000.
+## Space and time costs
+The required amount of space is particularly easy to estimate for the @link TBTK::Diagonalizer Diagonalizer@endlink.
+Internally the Hamiltonian is stored as an upper triangular matrix of type std::complex<double> (16 bytes per entry).
+The space required to store a Hamiltonian with basis size N is therefore roughly \f$16*(N^2/2) = 8N^2\f$ bytes.
+The eigenvectors and eigenvalues requres another \f$16N^2\f$ and \f$8N\f$ bytes, respectively.
+This adds up to about \f$24N^2\f$ bytes, which runs into the GB range around a basis size of 7000.
 
-The time it takes to diagonalize a matrix cannot be estimated with the same precision since it depends on the exact specification of the computer that the calculations are done on, but as of 2018 runs into the hour range for basis sizes of a few thousands.
-However, knowing the execution time for a certain size on a certain computer, the execution can be rather accurately predicted for other system sizes using that the computation time scales as \f$N^3\f$.
+The time it takes to diagonalize a matrix cannot be estimated with the same precision since it depends on clock speed etc.
+However, as of 2018 it runs into the hour range for basis sizes of a few thousands.
+Knowing the execution time for a specific size and computer, the time required for a different size can be accurately predicted using that the time scales as \f$O(N^3)\f$.
 
 ## Advanced: Self-consistency callback
-Sometimes the value of one or several parameters that go into the Hamiltonian are not known a priori, but it is instead part of the problem to figure out the correct value.
-A common approach for solving such problems is to make an initial guess for the parameters, solve the model for the corresponding parameters, and then update the parameters with the so obtained values.
-If the problem is well behaved enough, such an approach results in the unknown parameters eventually converging to fixed values.
-Once the calculated parameter value is equal (within some tolerance) to the input parameter in the current iteration, the parameters are said to have reached self-consistency.
-That is, the calculated parameters are consistent with themselves in the sense that if they are used as input parameters, they are also the result of the calculation.
+In a self-consistent procedure, some input parameter is unknown but can be calculated as an output.
+It is therefore possible to make an initial guess, calculate the parameter, and feed the result back in as input.
+If this procedure is repeated until (and if) the input and output converge (within a given tollerance), the solution is said to be self-consistent.
 
-When using diagonalization the self-consistent procedure is very straight forward: diagonalize the Hamiltonian, calculate and update parameters, and repeat until convergence.
-The @link TBTK::Solver::Diagonalizer Diagonalizer@endlink is therefore prepared to run such a self-consistency loop.
-However, the the second step requires special knowledge about the system which the Diagonalizer cannot incorporate without essentially becoming a single purpose solver.
-The solution to this problem is to allow the application developer to supply a callback function that the Diagonalizer can call once the Hamiltonian has been diagonalized.
-This function is responsible for calculating and updating relevant parameters, as well as informing the Diagonalizer whether the solution has converged.
-The interface for such a function is
+The @link TBTK::Solver::Diagonalizer Diagonalizer@endlink is able to execute such a self-consistency loop.
+However, what parameter that is to be solved for is problem specific, and so is the meassure of tollerance.
+Therefore, after the Hamiltonian has been diagonalized, the Diagonalizer can give control back to the application developer through a self-consistency callback.
+The callback is required to calculate the relevant parameter, check for convergence, and return true or false depending on whether or not convergence has been reached.
+If the callback returns true, the Diagonalizer finishes, otherwise the Hamiltonian is rediagonalized and the procedure is repeated.
+
+A self-consistency callback is implemented as follows.
 ```cpp
+class SelfConsistencyCallback :
+	public Solver::Diagonalizer::SelfConsistencyCallback
+{
+public:
 	bool selfConsistencyCallback(Solver::Diagonalizer &solver){
-		//Calculate and update parameters.
+		//Calculate and update the parameter(s).
 		//...
 
 		//Determine whether the solution has converged or not.
 		//...
 
-		//Return true if the solution has converged, otherwise false.
+		//Return true if the solution has converged, otherwise return
+		//false.
 		if(hasConverged)
 			return true;
 		else
 			return false;
 	}
+};
 ```
-The specific details of the self-consistency callback is up to the application developer to fill in, but the general structure has to be as above.
-That is, the callback has to accept the @link TBTK::Solver::Diagonalizer Diagonalizer@endlink as an argument, perform the required work, determine whether the solution has converged and return true or false depending on whether it has or not.
-In addition to the self-consistency callback, the application developer interested in developing such a self-consistent calculation should also make use of the @link TBTK::HoppingAmplitude HoppingAmplitude@endlink callback described in the @link Model@endlink chapter for passing relevant parameters back to the Model in the next iteration step.
 
-Once a self-consistency callback is implemented, the @link TBTK::Solver::Diagonalizer Diagonalizer@endlink can be configured as follows to make use of it
+We note that for the self-consistency procedure to work, those @link HoppingAmplitudes@endlink that depend on the parameter must themselves be dependent on a @link AdvancedCallbackFunctions HoppingAmplitude callback@endlink.
+It is the application developers responsibility to make sure that the parameter that is calculated in the self-consistency callback is passed on to the HoppingAmplitude callback.
+
+With the callback defined, the self-consistent calculation can be set up.
 ```cpp
 	Solver::Diagonalizer solver;
 	solver.setModel(model);
+	SelfConsistencyCallback selfConsistencyCallback;
 	solver.setSelfConsistencyCallback(selfConsistencyCallback);
 	solver.setMaxIterations(100);
 	solver.run();
 ```
-Here the third line tells the @link TBTK::Solver::Solver Solver@endlink which function to use as a callback, while the fourth line puts an upper limit to the number of self-consistent steps the Solver will take if self-consistency is not reached.
-For a complete example of a self-consistent calculation the reader is referred to the SelfConsistentSuperconductivity template in the Template folder.
+The call to *solver.setMaxIterations(100)* caps the number of iterations at 100.
+If the calculation has not converged by then it finishes anyway.
+For a complete example of a self-consistent calculation, the reader is referred to the SelfConsistentSuperconductivity template in the Templates folder.
 
 # Solver::BlockDiagonalizer {#SolverBlockDiagoanlizer}
 The @link TBTK::Solver::BlockDiagonalizer BlockDiagonalizer@endlink is similar to the @link TBTK::Solver::Diagonalizer Diagonalizer@endlink, except that it takes advantage of possible block-diagonal structures in the Hamiltonian.
