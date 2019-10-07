@@ -882,7 +882,7 @@ To perform shift-and-invert, we need to set the "central value" \f$\lambda\f$ an
 	solver.setMode(Solver::ArnoldiIterator::Mode::ShiftAndInvert);
 ```
 
-# Solver::ChebyshevExpander {#SolverChebyshevSolver}
+# Solver::ChebyshevExpander {#SolverChebyshevExpander}
 The @link TBTK::Solver::ChebyshevExpander ChebyshevExpander@endlink calculates the Green's function on the form
 <center>\f$G_{\mathbf{i}\mathbf{j}}(E) = \frac{1}{\sqrt{s^2 - E^2}}\sum_{m=0}^{\infty}\frac{b_{\mathbf{i}\mathbf{j}}^{(m)}}{1 + \delta_{0m}}F(m\textrm{acos}(E/s))\f$.</center>
 Here \f$F(x)\f$ is one of the functions \f$\cos(x)\f$, \f$\sin(x)\f$, \f$e^{ix}\f$, and \f$e^{-ix}\f$.

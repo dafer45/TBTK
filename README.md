@@ -126,7 +126,7 @@ The following is a list of native production ready solvers.
 * [Diagonalizer](http://www.second-quantization.com/Solvers.html#SolverDiagonalizer)
 * [BlockDiagonalizer](http://www.second-quantization.com/Solvers.html#SolverBlockDiagoanlizer)
 * [ArnoldiIterator](http://www.second-quantization.com/Solvers.html#SolverArnoldiIterator)
-* [ChebyshevExpander](http://www.second-quantization.com/Solvers.html#SolverChebyshevSolver)
+* [ChebyshevExpander](http://www.second-quantization.com/Solvers.html#SolverChebyshevExpander)
 
 The list of production ready properties is.
 * [Density](http://www.second-quantization.com/Properties.html#Density)
@@ -173,17 +173,17 @@ Additional features will also be available if one or more of the following libra
 The following table shows the optional libraries that are required to enable extensions to the core capabilities.
 See the documentation for deatiled information about the corresponding components.
 
-| Extensions                                                                                                              | ARPACK | FFTW3 | OpenCV | cURL | SuperLU (v5.2.1) | CUDA | HDF5 | OpenBLAS | OpenMP | Google Test |
-|-------------------------------------------------------------------------------------------------------------------------|:------:|:-----:|:------:|:----:|:----------------:|:----:|:----:|:--------:|:------:|:-----------:|
-| [ArnoldiIterator](http://www.second-quantization.com/Solvers.html#SolverArnoldiIterator)                                | X      |       |        |      | X                |      |      |          |        |             |
-| [FourierTransform](http://www.second-quantization.com/FourierTransform.html)                                            |        | X     |        |      |                  |      |      |          |        |             |
-| [Plotter](http://www.second-quantization.com/Plotting.html)                                                             |        |       | X      |      |                  |      |      |          |        |             |
-| [Resource](http://www.second-quantization.com/ImportingAndExportingData.html)                                           |        |       |        | X    |                  |      |      |          |        |             |
-| [Enable GPU execution for the ChebyshevExpander](http://www.second-quantization.com/Solvers.html#SolverChebyshevSolver) |        |       |        |      |                  | X    |      |          |        |             |
-| [FileReader and FileWriter](http://www.second-quantization.com/ImportingAndExportingData.html#FileReaderAndFileWriter)  |        |       |        |      |                  |      | X    |          |        |             |
-| Improved linear algebra performance                                                                                     |        |       |        |      |                  |      |      | X        |        |             |
-| Parallel CPU execution of various algorithms                                                                            |        |       |        |      |                  |      |      |          | X      |             |
-| Unit testing                                                                                                            |        |       |        |      |                  |      |      |          |        | X           |
+| Extensions                                                                                                                | ARPACK | FFTW3 | OpenCV | cURL | SuperLU (v5.2.1) | CUDA | HDF5 | OpenBLAS | OpenMP | Google Test |
+|---------------------------------------------------------------------------------------------------------------------------|:------:|:-----:|:------:|:----:|:----------------:|:----:|:----:|:--------:|:------:|:-----------:|
+| [ArnoldiIterator](http://www.second-quantization.com/Solvers.html#SolverArnoldiIterator)                                  | X      |       |        |      | X                |      |      |          |        |             |
+| [FourierTransform](http://www.second-quantization.com/FourierTransform.html)                                              |        | X     |        |      |                  |      |      |          |        |             |
+| [Plotter](http://www.second-quantization.com/Plotting.html)                                                               |        |       | X      |      |                  |      |      |          |        |             |
+| [Resource](http://www.second-quantization.com/ImportingAndExportingData.html)                                             |        |       |        | X    |                  |      |      |          |        |             |
+| [Enable GPU execution for the ChebyshevExpander](http://www.second-quantization.com/Solvers.html#SolverChebyshevExpander) |        |       |        |      |                  | X    |      |          |        |             |
+| [FileReader and FileWriter](http://www.second-quantization.com/ImportingAndExportingData.html#FileReaderAndFileWriter)    |        |       |        |      |                  |      | X    |          |        |             |
+| Improved linear algebra performance                                                                                       |        |       |        |      |                  |      |      | X        |        |             |
+| Parallel CPU execution of various algorithms                                                                              |        |       |        |      |                  |      |      |          | X      |             |
+| Unit testing                                                                                                              |        |       |        |      |                  |      |      |          |        | X           |
 
 A number of experimental features are also enabled by the optional libraries.
 These components are not yet stable and rapid changes to their interfaces may occur.
@@ -245,7 +245,7 @@ External/TBTK/External/Boost/ is licensed under the Boost license.
 #### To cite TBTK, mention TBTK in the text and cite
 Kristofer Björnson, TBTK: A quantum mechanics software development kit, SoftwareX 9, 205-210 (2019).  
 
-#### If you use the ChebyshevSolver to produce results, please also cite the following references:
+#### If you use the ChebyshevExpander to produce results, please also cite the following references:
 A. Weiße, G. Wellein, A. Alvermann, and H. Fehske,  
 Rev. Mod. Phys. 78, 275 (2006).
 
