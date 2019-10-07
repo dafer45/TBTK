@@ -848,119 +848,87 @@ public:
 ```
 
 # Solver::ArnoldiIterator {#SolverArnoldiIterator}
-The main drawback of diagonalization is that it scales poorly with system size and becomes prohibitively demanding both in terms of memory and computational time if the individual blocks have a basis size of more than a few thousands.
-Arnoldi iteration instead utilizes the sparse nature of the Hamiltonian both to reduce the memory footprint and computational time and can therefore handle much larger systems.
+The @link TBTK::Solver::ArnoldiIterator ArnoldiIterator@endlink allows for a few eigenvalues and eigenvectors to be calculated quickly even if the system is very large.
+Starting with the Hamiltonian \f$H\f$ and a random vector \f$v_0\f$, it iteratively calculates \f$v_n\f$ for higher \f$n\f$.
+It does so by first calculating \f$\tilde{v}_n = Hv_{n-1}\f$ and then orthonormalizing it against \f$v_{n-1}, ..., v_{0}\f$ to obtain \f$v_n\f$.
+The product \f$Hv_{n-1}\f$ amplifies the components of \f$v_{n-1}\f$ that are eigenvectors with extremal eigenvalues.
+Therefore, the subspace spanned by \f$\{v_{n}\}\f$ quickly approximates the part of the Hilbert space that contains these extremal eigenvalues.
+Finally, performing diagonalization on this much smaller subspace, the extremal eigenvalues and eigenvectors are calculated quickly.
+The eigenvalues and eigenvectors obtained in this way are called Ritz-values and Ritz-vectors.
 
-To understand Arnoldi iteration, consider a Hamiltonian \f$H\f$ and pick a random vector \f$v_{0}\f$ in the corresponding Hilbert space.
-Next define the recursive relation \f$v_{n} = Hv_{n-1}\f$.
-While \f$v_{0}\f$ is a random vector it can be decomposed into an eigenbasis, and it is clear that the recursive relation will result in the components of \f$v_{0}\f$ with the largest eigenvalues (in magnitude) to become more and more important for increasing \f$n\f$.
-Taking the collection of \f$v_{n}\f$ generated this way for some finite \f$n\f$, it is clear that they form a (possibly overcomplete) basis for some subspace of the total Hilbert space.
-In particular, because eigenvectors with large eigenvalues are favored by the procedure, it will start to approximate the part of the Hilbert space that contains the eigenvectors with extreme eigenvalues.
-Such a procedure is called an iterative Krylov space method, where Krylov space refers to the space spanned by the generated vectors.
-
-Arnoldi iteration improves the idea by continuously performing orthonormalization of the vectors before generating the next set of vectors and is therefore numerically superior to the somewhat simpler method just described.
-Once a subspace that is deemed large enough has been generated, diagonalization is performed on this much smaller space, resulting in eigevalues and eigenvectors for the extreme part of the Hilbert space to be calculated.
-We note that since the generated subspace cannot be guaranteed to contain the eigenvectors perfectly, the procedure really generates approximate eigenvalues and eigenvectors known as Ritz-values and Ritz-vectors.
-However, the subspace often converge rather quickly to the true extreme subspace and therefore generates very good approximations to the most extreme eigenvectors.
-It is therefore convenient to think of the @link TBTK::Solver::ArnoldiIterator ArnoldiIterator@endlink simply as a solver that can calculate extreme eigenvalues and eigenvectors.
-
-With this background we are ready to understand how to create and configure a basic @link TBTK::Solver::ArnoldiIterator ArnoldiIterator@endlink
+The @link TBTK::Solver::ArnoldiIterator ArnoldiIterator@endlink can be set up as follows.
 ```cpp
 	Solver::ArnoldiIterator solver;
 	solver.setModel(model);
-	solver.setNumLancxosVectors(200);
+	solver.setNumLanczosVectors(200);
 	solver.setMaxIterations(500);
 	solver.setNumEigenVectors(100);
 	solver.setCalculateEigenVectors(true);
 	solver.run();
 ```
-As seen, line 1, 2, and 7 are similar to the Diagonalizers and require no further explanation.
-The third line specifies how many Ritz-vectors (or Lanczos vectors) that are going to be generated during the iterative procedure, while the fourth line specifies the maximum number of iterations.
-It may be surprising that the number of iterations are not the same as the number of generated Ritz-vectors, but this is due to the fact that the @link TBTK::Solver::ArnoldiIterator ArnoldiIterator@endlink is using a further improvement on the procedure called implicitly restarted Arnoldi iteration.
-For further information on this the interested reader is referred to the documentation for the ARPACK library.
-Remembering that we successively build up a larger and larger subspace starting from some random initial vector, it is expected that not all of the generated Ritz-vectors are meaningful, but only the most extreme ones.
-For this reason the fifth line is used to specify the number of vectors that actually is going to be retained at the end of the calculation.
-To understand the sixth line we finally mention that the eigenvectors used internally by the ArnoldiIterator during the iterative procedure are not in the basis of the full Hamiltonian.
-The 100 generated eigenvectors therefore has to be converted to the basis that we are interested in if we actually want to use the eigenvectors.
-The sixth line tells the ArnoldiIterator to do so.
+Here, *solver.setNumLanczosVectors()* sets the size of the subspace that is to be generated, while *solver.setNumEigenVectors()* determines the number of eigenvalues to calculate.
+The number of eigenvalues should at most be as large as the number of Lanczos vectors.
+However, since the iteration starts with a random vector, chosing a smaller number of eigenvalues results in the less accurate subspace to be ignored.
+Finally, the @link TBTK::Solver::ArnoldiIterator ArnoldiIterator@endlink uses a modified version of the procedure described above called implicitly restarted Arnoldi iteration (see the [ARPACK](https://www.caam.rice.edu/software/ARPACK/) documentation).
+This leads to more iterations being executed than the number of Lanczos vectors finally generated.
+The line *solver.setMaxIterations()* puts a cap on the number of iterations.
 
 ## Shift and invert (extracting non-extremal eigenvalues)
-It is often not the extremal eigenvalues and eigenvectors that are of interest, but rather those around some specific eigenvalue.
-With a simple trick it is possible to access also these using Arnoldi iteration.
-Namely, if we first shift the Hamiltonian by some number \f$\lambda\f$ the eigenvalues around \f$\lambda\f$ in the original matrix are shifted to lie around zero.
-Further, since the inverse of a matrix has the same eigenvectors as the original matrix, and inverse eigenvalues, the eigenvectors with eigenvalues around \f$\lambda\f$ in the original Hamiltonian becomes the new extremal eigenvectors.
-The @link TBTK::Solver::ArnoldiIterator ArnoldiIterator@endlink implements this mode of execution, which can be run by adding the following two lines before the call to *solver.run()*.
+The @link TBTK::Solver::ArnoldiIterator ArnoldiIterator@endlink can also be used to calculate eigenvalues and eigenvectors around a given value \f$\lambda\f$.
+This is done by replacing \f$H\f$ by \f$(H - \lambda)^{-1}\f$, which is referred to as shift-and-invert.
+To perform shift-and-invert, we need to set the "central value" \f$\lambda\f$ and instruct the ArnoldiIterator to work in this mode.
 ```cpp
-	solver.setCentralValue(2);
+	solver.setCentralValue(1);
 	solver.setMode(Solver::ArnoldiIterator::Mode::ShiftAndInvert);
 ```
 
-The shift can also be applied without inversion.
-This can be beneficial if extremal eigenvalues of a particular sign are of interest.
-Say that the spectrum of a Hamiltonian is known to be between -1 and 1.
-By setting the central value to -1 (shifting -1 to 0), the spectrum for the new Hamiltonian is between 0 and 2 and the @link TBTK::Solver::ArnoldiIterator ArnoldiIterator@endlink will therefore only extract the eigenvectors with positive eigenvalues.
-We note that the function is called *setCentralValue()* rather than *setShift()*, since to the user of the @link TBTK::Solver::Solver Solver@endlink the final result is not shifted.
-The shift is first applied to the Hamiltonian internally, but is also added to the resulting eigenvalues to cancel this modification of the problem, meaning that the final eigenvalues are going to have values around 1 and not 2.
-
 # Solver::ChebyshevExpander {#SolverChebyshevSolver}
-The @link TBTK::Solver::ChebyshevExpander ChebyshevExpander@endlink is a Green's function based solver that calculates Green's functions on the form
-<center>\f$G_{\mathbf{i}\mathbf{j}}(E) = \frac{1}{\sqrt{s^2 - E^2}}\sum_{m=0}^{\infty}\frac{b_{\mathbf{i}\mathbf{j}}^{(m)}}{1 + \delta_{0m}}F(m\textrm{acos}(E/s))\f$,</center>
-where \f$F(x)\f$ is one of the functions \f$\cos(x)\f$, \f$\sin(x)\f$, \f$e^{ix}\f$, and \f$e^{-ix}\f$.
-We do not go into details about this method here, but rather refer the interested reader to Phys. Rev. Lett. <b>78</b>, 275 (2006), Phys. Rev. Lett. <b>105</b>, 1 (2010), and <a href="http://urn.kb.se/resolve?urn=urn%3Anbn%3Ase%3Auu%3Adiva-305212">urn:nbn:se:uu:diva-305212</a>.
-However, we point out that the expression is a Chebyshev expansion of the Green's function, which really is nothing but Fourier expansion if we make the change of variable \f$x = \textrm{acos}(E/s)\f$.
-Since \f$\textrm{acos}(E/s)\f$ only is defined for \f$E/s \in (-1, 1)\f$, it is important that the energy \f$E\f$ is not too big.
-In fact, the number \f$s\f$ is a scale factor that has to be chosen for each system to ensure that the eigenvalues of the system are no larger in magnitude than \f$s\f$.
+The @link TBTK::Solver::ChebyshevExpander ChebyshevExpander@endlink calculates the Green's function on the form
+<center>\f$G_{\mathbf{i}\mathbf{j}}(E) = \frac{1}{\sqrt{s^2 - E^2}}\sum_{m=0}^{\infty}\frac{b_{\mathbf{i}\mathbf{j}}^{(m)}}{1 + \delta_{0m}}F(m\textrm{acos}(E/s))\f$.</center>
+Here \f$F(x)\f$ is one of the functions \f$\cos(x)\f$, \f$\sin(x)\f$, \f$e^{ix}\f$, and \f$e^{-ix}\f$.
+Further, the "scale factor" \f$s\f$ must be chosen large enough that all of the Hamiltonians eigenvalues fall inside of the range \f$|E/s| < 1\f$. 
+This is called a Chebyshev expansion of the Green's function and for more details the reader is referred to: Phys. Rev. Lett. <b>78</b>, 275 (2006), Phys. Rev. Lett. <b>105</b>, 1 (2010), and <a href="http://urn.kb.se/resolve?urn=urn%3Anbn%3Ase%3Auu%3Adiva-305212">urn:nbn:se:uu:diva-305212</a>.
 
-The main benefit of the Chebyshev expansion of the Green's function is that, in contrast to for example a straight forward Fourier expansion, the expansion coefficients \f$b_{\mathbf{i}\mathbf{j}}^{(m)}\f$ can be calculated recursively using sparse matrix-vector multiplication.
-In particular, the coefficients are given by
+The @link TBTK::Solver::ChebyshevExpander ChebyshevExpander@endlink calculates the Green's function in two steps.
+In the first step, the expansion coefficients
 <center>\f{eqnarray*}{
 	b_{\mathbf{i}\mathbf{j}}^{(m)} &=& \langle j_{\mathbf{i}}^{(0)}|j_{\mathbf{j}}^{(m)}\rangle,
 \f}</center>
-where
+are calculated using the recursive expressions
 <center>\f{eqnarray*}{
 	|j_{\mathbf{j}}^{(1)}\rangle &=& H|j_{\mathbf{j}}^{(0)}\rangle,\\
 	|j_{\mathbf{j}}^{(m)}\rangle &=& 2H|j_{\mathbf{j}}^{(m-1)}\rangle - |j_{\mathbf{j}}^{(m-2)}\rangle.
 \f}</center>
-Further, the vectors \f$|j_{\mathbf{i}}^{(0)}\rangle\f$ and \f$j_{\mathbf{j}}^{(0)}\rangle\f$ are the vectors that result from from setting every element equal to zero, except for that associated with the Index \f$\mathbf{i}\f$ and \f$\mathbf{j}\f$, respectively, which is set to one.
-Since Hamiltonians usually are very sparse, and multiplication with sparse matrices can be done relatively quickly even for very large matrices, this means that a large number of expansion coefficients can be calculated quickly for relatively large systems.
-Nevertheless, an infinite number of expansion coefficients can of course not be calculated in a finite time, and therefore the sum in the equation above has to be cut off at some number of coefficients.
-Once the coefficients have been calculated, the final step needed to generate the Green's function is to evaluate the sum at as many energy points as is needed.
+Here \f$|j_{\mathbf{i}}^{(0)}\rangle\f$ and \f$|j_{\mathbf{j}}^{(0)}\rangle\f$ are vectors with zeros everywhere, except for a one in the position associated with \f$\mathbf{i}\f$ and \f$\mathbf{j}\f$, respectively.
+Using sparse matrix-vector multiplication, these expansion coefficients can be calculated efficiently.
+However, an exact solution requires an infinite number of coefficients and a cutoff must therefore be introduced.
 
-With this background we are ready to understand how to create and initialize a @link TBTK::Solver::ChebyshevExpander ChebyshevExpander@endlink
+In the second step, the @link TBTK::Solver::ChebyshevExpander ChebyshevExpander@endlink generates the Green's function using the calculated coefficients and the expression for the Green's function above.
+
+## Setting up and configuring the solver
+A @link TBTK::Solver::ChebyshevExpander ChebyshevExpander@endlink with \f$s = 10\f$ and the number of expansion coefficients capped at 1000 can be set up as follows.
 ```cpp
-	const double SCALE_FACTOR = 10;
-	const NUM_COEFFICIENTS = 1000;
-
 	Solver::ChebyshevExpander solver;
 	solver.setModel(model);
-	solver.setScaleFactor(SCALE_FACTOR);
-	solver.setNumCoefficients(NUM_COEFFICIENTS);
+	solver.setScaleFactor(10);
+	solver.setNumCoefficients(1000);
 ```
-In contrast to for example the @link TBTK::Solver::Diagonalizer Diagonalizer@endlink, there is no *solver.run()* command for the ChebyshevExpander.
-This is because, unlike the Diagonalizer which essentially solves the whole system by diagonalizing it before properties can be extracted, the ChebyshevExpander solves the problem as the properties are extracted.
-We also note here, that in order for the ChebyshevExpander to work, it is required that one additional call is made to the @link Model@endlink.
-Namely, at the point of Model construction write
-```cpp
-	model.construct();
-	model.constructCOO();
-```
-rather than just the first line.
-This makes the Model create an internal sparse matrix representation of the Hamiltonian on a standard matrix format called COO and is required by the ChebyshevExpander.
-This requirement is slightly in conflict with the general design philosophy expressed in this manual and is intended to be removed in the future.
 
-By default the @link TBTK::Solver::ChebyshevExpander ChebyshevExpander@endlink performs calculations on the CPU, but is most efficient when run on a GPU.
-In particular, it is possible to independently configure whether the calculation of the coefficients as well as the generation of the Green's function should be performed on CPU or GPU using
+The expansion coefficeints can be efficiently calculated on a GPU.
 ```cpp
 	solver.setCalculateCoefficientsOnGPU(true);
+```
+
+Also the Green's functions can be generated on a GPU (but this is less important and runs into memory limitations relatively quickly).
+```cpp
 	solver.setGenerateGreensFunctionsOnGPU(true);
 ```
-It is recommended that the calculation of the coefficients is performed on GPU whenever possible, while the generation of the Green's function often is more conveniently done on CPU.
 
-Finally, whenever the Green's function is generated for more than a single Index pair, it is possible to speed up the calculation significantly by first generating a lookup table.
-This is even required when the Green's function is generated on GPU, and the solver can be instructed to generate such a lookup table through
+When the Green's function is generated for more than one pair of Indices, the execution time can be significantly decreased by using a precalculated lookup table.
 ```cpp
 	solver.setUseLookupTable(true);
 ```
+The lookup table is required to generate the Green's function on a GPU and the only downside of generating it is that it can consume large amounts of memory.
 
 @link PropertyExtractors Next: PropertyExtractors@endlink
 @page PropertyExtractors PropertyExtractors
