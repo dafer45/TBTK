@@ -934,28 +934,28 @@ The lookup table is required to generate the Green's function on a GPU and the o
 @page PropertyExtractors PropertyExtractors
 @link TBTK::PropertyExtractor::PropertyExtractor See more details about the PropertyExtractors in the API@endlink
 
-# Physical properties, not numerics {#PhysicalPropertiesNotNumerics}
-In order to allow application developers to focus on relevant physical questions rather than algorithm specific details, and to prevent algorithm specific requirements from spreading to other parts of the code, TBTK encourages the use @link TBTK::PropertyExtractor::PropertyExtractor PropertyExtractors@endlink for extracting physical quantities from the @link Solvers@endlink.
-PropertyExtractors are interfaces to Solvers that largely present themselves uniformly to other parts of the code.
-What this means is that code that relies on calls to a PropertyExtractor is relatively insensitive to what specific Solver that is being used.
-The application developer is therefore relatively free to change Solver at any stage in the development process.
-This is e.g. very useful when it is realized that a particular Solver is not the best one for the task.
-It is also very useful when setting up complex problems where it can be useful to benchmark results from different Solvers against each other.
-The later is especially true during the development of new Solvers.
+# A uniform interface
+A @link TBTK::PropertyExtractor::PropertyExtractor PropertyExtractor@endlink provides an interfaces to a @link Solvers Solver@endlink through which physical @link Properties@endlink can be extracted.
+Its purpose is to insulate the application developer from method specific details.
+By wraping a Solver in a PropertyExtractor, it aquires an interface that is largely uniform across different Solvers.
+This makes it possible to change Solver without having to modify the code used to extract Properties.
 
-The different @link TBTK::PropertyExtractor::PropertyExtractor PropertyExtractors@endlink can, however, not have completely identical interfaces, since some properties are simply not possible to calculate with some @link Solvers@endlink.
-Some Solvers may also make it possible to calculate very specific things that are not possible to do with any other Solver.
-The PropertyExtractors are therefore largely uniform interfaces, but not identical.
-However, for most standard properties there at least exists function calls that allow the properties to compile even if they cannot actually perform the calculation.
-The program will instead print error messages that make it clear that the particular Solver is not able to calculate the property and ask the developer to switch Solver.
-In fact, this is achieved through inheritance from a common abstract base class called PropertyExtractor::PropertyExtractor and allows for completely Solver independent code to be written that works with the abstract base class rather than the individual Solver specific PropertyExtractors.
-The experienced C++ programmer can use this to write truly portable code, while the developer unfamiliar with inheritance and abstract classes do not need to worry about these details.
-
-Each of the @link Solvers@endlink described in the Solver chapter have their own @link TBTK::PropertyExtractor::PropertyExtractor PropertyExtractor@endlink called @link TBTK::PropertyExtractor::Diagonalizer PropertyExtractor::Diagonalizer@endlink, @link TBTK::PropertyExtractor::BlockDiagonalizer PropertyExtractor::BlockDiagonalizer@endlink, @link TBTK::PropertyExtractor::ArnoldiIterator PropertyExtractor::ArnoldiIterator@endlink, and @link TBTK::PropertyExtractor::ChebyshevExpander PropertyExtractor::ChebyshevExpander@endlink.
-Using the Solver::Diagonalizer as an example, the corresponding PropertyExtractor is created using
+Each @link Solvers Solver@endlink comes with its own @link TBTK::PropertyExtractor::PropertyExtractor PropertyExtractor@endlink.
+The PropertyExtractors have the same name as the corresponding Solver, but exists in the PropertyExtractor namespace rather than the Solver namespace.
+For example, @link TBTK::Solver::Diagonalizer Solver::Diagonalizer@endlink and @link TBTK::PropertyExtractor::Diagonalizer PropertyExtractor::Diagonalizer@endlink.
+It is created as follows.
 ```cpp
 	PropertyExtractor::Diagonalizer propertyExtractor(solver);
 ```
+
+The PropertyExtractors corresponding to the other three production ready Solvers are:
+- @link TBTK::PropertyExtractor::BlockDiagonalizer PropertyExtractor::BlockDiagonalizer@endlink
+- @link TBTK::PropertyExtractor::ArnoldiIterator PropertyExtractor::ArnoldiIterator@endlink
+- @link TBTK::PropertyExtractor::ChebyshevExpander PropertyExtractor::ChebyshevExpander@endlink.
+
+Since not every @link Solvers Solver@endlink can be used to calculate every @link Properties Property@endlink, the @link TBTK::PropertyExtractor::PropertyExtractor PropertyExtractors@endlink are only approximately uniform.
+For many standard Properties the PropertyExtractors therefore fall back on printing an error message whenever a given Property cannot be calculated with the given Solver.
+These error messages help inform the application developer that another Solver may be required to achieve the goal.
 
 # Extracting Properties {#ExtractingProperties}
 In addition to the @link TBTK::PropertyExtractor::PropertyExtractor PropertyExtractors@endlink, TBTK has a set of @link Properties Property@endlink classes that are returned by the PropertyExtractors and which are more extensively described in the chapter Properties.
