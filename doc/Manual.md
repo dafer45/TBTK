@@ -934,7 +934,7 @@ The lookup table is required to generate the Green's function on a GPU and the o
 @page PropertyExtractors PropertyExtractors
 @link TBTK::PropertyExtractor::PropertyExtractor See more details about the PropertyExtractors in the API@endlink
 
-# A uniform interface
+# A uniform interface for Solvers {#AUniformInterfaceForSolvers}
 A @link TBTK::PropertyExtractor::PropertyExtractor PropertyExtractor@endlink provides an interfaces to a @link Solvers Solver@endlink through which physical @link Properties@endlink can be extracted.
 Its purpose is to insulate the application developer from method specific details.
 By wraping a Solver in a PropertyExtractor, it aquires an interface that is largely uniform across different Solvers.
@@ -954,57 +954,76 @@ The PropertyExtractors corresponding to the other three production ready Solvers
 - @link TBTK::PropertyExtractor::ChebyshevExpander PropertyExtractor::ChebyshevExpander@endlink.
 
 Since not every @link Solvers Solver@endlink can be used to calculate every @link Properties Property@endlink, the @link TBTK::PropertyExtractor::PropertyExtractor PropertyExtractors@endlink are only approximately uniform.
-For many standard Properties the PropertyExtractors therefore fall back on printing an error message whenever a given Property cannot be calculated with the given Solver.
-These error messages help inform the application developer that another Solver may be required to achieve the goal.
+For many standard Properties the PropertyExtractors therefore fall back on printing an error message whenever a given Property cannot be calculated.
+This informs the application developer that another Solver may be required for the given task.
 
 # Extracting Properties {#ExtractingProperties}
-In addition to the @link TBTK::PropertyExtractor::PropertyExtractor PropertyExtractors@endlink, TBTK has a set of @link Properties Property@endlink classes that are returned by the PropertyExtractors and which are more extensively described in the chapter Properties.
-These Property classes supports a few different storage modes internally which allows for different types of extraction.
-For example does the system in question often have some concrete structure such as a square lattice.
-In this case it is useful for properties to preserve knowledge about this structure as it can allow for example two-dimensional plots of the data to be done simply.
-Other times no such structure exists, or properties are just wanted for a few different points for which there is no unifying structure.
-These different cases require somewhat different approaches for storing the data in memory, as well as for how to instruct the PropertyExtractors how to extract the data.
-We here describe how to extract the different properties and the reader can jump to any Property of interest to see how to handle the particular situation.
-The reader is, however, advised to first read the first section about the density since this establishes most of the basic notation.
-The reader is also referred to the Properties chapter where more details about the Properties are given.
+The Properties that are extracted with the @link TBTK::PropertyExtractor::PropertyExtractor PropertyExtractors@endlink can be stored on different formats: None, Ranges, and Custom.
+This refers to how the @link Indices@endlink associated with the Properties are handled internally (more details can be found in the @link Properties@endlink chapter).
+Which format the Property is extracted on depends on the way the PropertyExtractor is called.
 
-Before continuing, we note that some @link Properties@endlink have an energy dependence.
-This means that the quantities needs to be evaluated at a certain number of energy points.
-The @link TBTK::PropertyExtractor::PropertyExtractor PropertyExtractors@endlink extracts such properties within an energy window using some energy resolution and this can be set using
+@link Properties@endlink without an @link Indices Index@endlink structure have the format None and are extracted through calls with zero arguments.
+```cpp
+	propertyExtractor.calculateProperty();
+```
+Note that *Property* in *calculateProperty()* is a placeholder for the name of the actual Property to exract.
+
+@link Properties@endlink with an @link Indices Index@endlink structure can be extracted on the Ranges format by passing in a pattern-ranges pair.
+```cpp
+	propertyExtractor.calculateProperty(pattern, ranges);
+```
+Here pattern is an Index such as {3, IDX_X, IDX_SUM_ALL, IDX_Y}.
+It tells the @link TBTK::PropertyExtractor::PropertyExtractor PropertyExtractor@endlink to extract the Property for all Indices of the form {3, *, *, *}, summing over the third Subindex.
+Similarly, ranges is an Index such as {1, 10, 5, 2}.
+It tells the PropertyExtractor that the second, third, and fourth Subindices runs over 0 to 9, 0 to 5, and 0 to 1, respectively.
+The first Subindex is ignored, but is usefully set to 1 to calrify that it takes on a single value.
+
+@link Properties@endlink with an @link Index@endlink structure can also be extracted on the Custom format by passing in a list of patterns.
+```cpp
+	propertyExtractor.calculateProperty({
+		{0, _a_, IDX_SUM_ALL},
+		{_a_, 5, IDX_SUM_ALL}
+	});
+```
+This tells the @link TBTK::PropertyExtractor::PropertyExtractor PropertyExtractor@endlink to include all Indices of the form {0, *, *} and {*, 5, *}, summing over the third Subindex.
+The list of patterns can be arbitrary long.
+We note the extra pair of curly braces next to the parantheses.
+Without these, the call would have been interpreted as an attempt to extract the Property on the Ranges format.
+
+# Energy dependent Properties {#EnergyDependentProperties}
+Many @link Properties@endlink are energy dependent.
+It is possible to set the range and resolution of the energy interval for which the PropertyExtractor calculates them.
 ```cpp
 	propertyExtractor.setEnergyWindow(
-		LOWER_BOUND,
-		UPPER_BOUND,
-		RESOLUTION
+		lowerBound,
+		upperBound,
+		resolution
 	);
 ```
-Here the two first numbers are real values satisfying LOWER_BOUND < UPPER_BOUND, and RESOLUTION is an integer specifying the number of energy points that the window is divided into.
+The *resolution* refers to the number of points between *lowerBound* and *upperBound* that the Property is calculated for.
+
+# Examples {#PropertyExtractorsExamples}
+
+## DOS
+The density of states (@link TBTK::Property::DOS DOS@endlink) has no @link Indices@endlink accoiated with it and can be extracted on the None format.
+```cpp
+	Property::DOS dos = propertyExtractor.calculateDOS();
+```
 
 ## Density
-To demonstrate two different modes for extracting properties we consider a @link Model@endlink with the @link Indices Index@endlink-structure {x, y, z, s} with dimensions SIZE_X, SIZE_Y, SIZE_Z, and two spin species.
-Next, assume that we are interested in extracting the electron density in the z = 10 plane.
-We can do this as follows
+Consider a @link Model@endlink with the @link Indices Index@endlink structure {x, y, z, spin}.
+The @link TBTK::Property::Density Density@endlink in the plane \f$y = 10\f$ can be calculated on the Ranges format using
 ```cpp
 	Property::Density density = propertyExtractor.calculateDensity(
-		{ IDX_X,  IDX_Y,     10, IDX_SUM_ALL},
-		{SIZE_X, SIZE_Y, SIZE_Z,           2}
+		{IDX_X, 10, IDX_Y, IDX_SUM_ALL},
+		{sizeX,  1, sizeZ,           2}
 	);
 ```
-Here the first curly brace specifies how the different subindices are to be treated by the @link TBTK::PropertyExtractor::PropertyExtractor PropertyExtractor@endlink.
-In this case we specify that the x and y indices are to be considered as a first and second running index.
-Note that the labels IDX_X and IDX_Y has nothing to do with the fact that the index structure has x and y variables at these positions.
-The two labels could be interchanged, in which case the y-subindex is going to be considered the first index in the @link Properties Property@endlink.
-A third specifier IDX_Z is also available and it is important that IDX_Z only is used if IDX_Y is used, and IDX_Y only is used if IDX_X is used.
-The third subindex in the first bracket specifies that the PropertyExtractor should only extract the density for z=10.
-Finally, the identifier in the fourth position instructs the PropertyExtractor to sum the contribution from all spins.
+Note that IDX_X and IDX_Y are not related to the @link TBTK::Subindex Subindices@endlink x and y.
+Rather, they are labels indicating the first and second Subindex to loop over.
 
-The second bracket specifies the range over which the subindices run, assuming that they start at {0, 0, 0, 0}.
-In this case the third subindex will not actually be used and can in principle be set to any value, for which 1 is another reasonable choice as a reminder that only one value is going to be used.
-While there currently is no way of changing the lower bound for the range, it is possible to limit the upper bound by for example passing {SIZE_X/2, SIZE_Y, SIZE_Z, 2} as second argument.
-In this case the density will only be evaluated for the lower half of the x-range.
-
-Now assume that we instead are interested in extracting the density for the z = 10 plane, the points along the line (y,z)=(5,15), and the spin down density on site (x,y,z)=(0,0,0).
-This can be achieved by passing a list of patterns to the @link TBTK::PropertyExtractor::PropertyExtractor PropertyExtractor@endlink as follows
+For a less regular set of @link Indices@endlink, we can use the Custom format instead.
+The @link TBT::Property::Density Density@endlink in the plane \f$z = 10\f$, along the line \f$(y,z)=(5,15)\f$, and the spin down Density on the site \f$(x,y,z)=(0,0,0)\f$ can be extracted using.
 ```cpp
 	Property::Density density = propertyExtractor.calculateDensity({
 		{_a_, _a_, 10, IDX_SUM_ALL},
@@ -1012,27 +1031,17 @@ This can be achieved by passing a list of patterns to the @link TBTK::PropertyEx
 		{  0,   0,  0,           1}
 	});
 ```
-First note the two curly brackets on the first and last line which means that the other brackets are passed to the function as a list of brackets rather than as individual arguments.
-This allows for an arbitrary number of patterns to be passed to the PropertyExtractor.
-The distinction becomes particularly important to keep in mind when only two patterns are supplied, since forgetting the outer brackets will result in the first mode described above to be executed instead.
-The symbol \_a\_ indicates wildcards, meaning that any Index that matches the patter will be included independently of the values in these positions.
-We note here that while the three underscores are useful for improving readability in application code, it is also possible to use the more descriptive identifier IDX_ALL.
-
-## DOS
-The density of states (@link TBTK::Property::DOS DOS@endlink) is representative for a third internal storage mode since being a system wide property it has no Index-structure.
-```cpp
-	Property::DOS dos = propertyExtractor.calculateDOS();
-```
 
 ## LDOS
-Assuming the index structure {x, y, z, s}, with dimensions SIZE_X, SIZE_Y, SIZE_Z, and two spin species, the @link TBTK::Property::LDOS LDOS@endlink can be extracted for the z = 10 plane as
+Assuming the @link Indices Index@endlink structure {x, y, z, spin}, the @link TBTK::Property::LDOS LDOS@endlink can be extracted in the \f$z = 10\f$ plane and on the Ranges format using
 ```cpp
 	Property::LDOS ldos = propertyExtractor.calculateLDOS(
 		{ IDX_X,  IDX_Y,     10, IDX_SUM_ALL},
 		{SIZE_X, SIZE_Y, SIZE_Z,           2}
 	);
 ```
-or for the plane z=10, along the line (y,z)=(5,15), and for the down spin on site (x,y,z)=(0,0,0) using
+
+The Custom format can be used to extract it in the plane \f$z=10\f$, along the line \f$(y,z)=(5,15)\f$, and for the down spin on site \f$(x,y,z)=(0,0,0)\f$.
 ```cpp
 	Property::LDOS ldos = propertyExtractor.calculateLDOS({
 		{_a_, _a_, 10, IDX_SUM_ALL},
@@ -1042,7 +1051,7 @@ or for the plane z=10, along the line (y,z)=(5,15), and for the down spin on sit
 ```
 
 ## Magnetization
-Assuming the index structure {x, y, z, s}, with dimensions SIZE_X, SIZE_Y, SIZE_Z, and two spin species, the @link TBTK::Property::Magnetization Magnetization@endlink can be extracted for the z = 10 plane as
+Assuming the @link Indices Index@endlink structure {x, y, z, spin}, the @link TBTK::Property::Magnetization Magnetization@endlink can be extracted in the \f$z = 10\f$ plane and on the Ranges format using
 ```cpp
 	Property::Magnetization magnetization
 		= propertyExtractor.calculateMagnetization(
@@ -1050,7 +1059,9 @@ Assuming the index structure {x, y, z, s}, with dimensions SIZE_X, SIZE_Y, SIZE_
 			{SIZE_X, SIZE_Y, SIZE_Z,        2}
 		);
 ```
-or for the plane z=10, along the line (y,z)=(5,15), and for the site (x,y,z)=(0,0,0) using
+Note the IDX_SPIN flag, which is necessary to indicate which @link TBTK::Subindex Subindex@endlink that corresponds to spin.
+
+The Custom format can be used to extract it in the plane \f$z=10\f$, along the line \f$(y,z)=(5,15)\f$, and on the site \f$(x,y,z)=(0,0,0)\f$.
 ```cpp
 	Property::Magnetization magnetization
 		= propertyExtractor.calculateMagnetization({
@@ -1059,10 +1070,9 @@ or for the plane z=10, along the line (y,z)=(5,15), and for the site (x,y,z)=(0,
 			{  0,   0,  0, IDX_SPIN}
 		});
 ```
-Note that in order to calculate the Magnetization, it is necessary to specify one and only one spin-subindex using IDX_SPIN.
 
 ## SpinPolairzedLDOS
-Assuming the index structure {x, y, z, s}, with dimensions SIZE_X, SIZE_Y, SIZE_Z, and two spin species, the @link TBTK::Property::SpinPolarizedLDOS SpinPolarizedLDOS@endlink can be extracted for the z = 10 plane as
+Assuming the @link Indices Index@endlink structure {x, y, z, spin}, the @link TBTK::Property::SpinPolarizedLDOS SpinPolarizedLDOS@endlink can be extracted in the \f$z = 10\f$ plane and on the Ranges format using
 ```cpp
 	Property::SpinPolarizedLDOS spinPolarizedLDOS
 		= propertyExtractor.calculateSpinPolarizedLDOS(
@@ -1070,7 +1080,9 @@ Assuming the index structure {x, y, z, s}, with dimensions SIZE_X, SIZE_Y, SIZE_
 			{SIZE_X, SIZE_Y, SIZE_Z,        2}
 		);
 ```
-or for the plane z=10, along the line (y,z)=(5,15), and for the site (x,y,z)=(0,0,0) using
+Note the IDX_SPIN flag, which is necessary to indicate which @link TBTK::Subindex Subindex@endlink that corresponds to spin.
+
+The Custom format can be used to extract it in the plane \f$z=10\f$, along the line \f$(y,z)=(5,15)\f$, and on the site \f$(x,y,z)=(0,0,0)\f$.
 ```cpp
 	Property::SpinPolarizedLDOS spinPolarizedLDOS
 		= propertyExtractor.calculateSpinPolarizedLDOS({
@@ -1079,11 +1091,6 @@ or for the plane z=10, along the line (y,z)=(5,15), and for the site (x,y,z)=(0,
 			{  0,   0,  0, IDX_SPIN}
 		});
 ```
-Note that in order to calculate the SpinPolarizedLDOS, it is necessary to specify one and only one spin-subindex using IDX_SPIN.
-
-## Further Properties
-Further @link Properties@endlink such as @link TBTK::Property::EigenValues EigenValues@endlink, @link TBTK::Property::GreensFunction GreensFunction@endlink, @link TBTK::Property::SelfEnergy SelfEnergy@endlink, and @link TBTK::Property::WaveFunctions WaveFunctions@endlink are also available but are not yet documented in this manual.
-If you are interested in these quantities, do not hesitate to contact kristofer.bjornson@second-tech.com to get further details or to request a speedy update about one or several of these Properties.
 
 @link Properties Next: Properties@endlink
 @page Properties Properties
