@@ -11,51 +11,53 @@ FIND_LIBRARY(
 	PATH_SUFFIXES lib lib32 lib64 SRC
 )
 
-SET(CMAKE_REQUIRED_INCLUDES slu_ddefs.h slu_zdefs.h)
-SET(CMAKE_REQUIRED_LIBRARIES superlu lapack blas)
-INCLUDE(CheckCXXSourceCompiles)
-CHECK_CXX_SOURCE_COMPILES(
-	"
-	#include <slu_ddefs.h>
-	#include <slu_zdefs.h>
+IF(NOT DEFINED SUPER_LU_INCLUDES-NOTFOUND AND NOT DEFINED SUPER_LU_LIBRARIES-NOTFOUND)
+	SET(CMAKE_REQUIRED_INCLUDES ${SUPER_LU_INCLUDES})
+	SET(CMAKE_REQUIRED_LIBRARIES ${SUPER_LU_LIBRARIES} lapack blas)
+	INCLUDE(CheckCXXSourceCompiles)
+	CHECK_CXX_SOURCE_COMPILES(
+		"
+		#include <slu_ddefs.h>
+		#include <slu_zdefs.h>
 
-	int main(int argc, char **argv){
-		superlu_options_t options;
-		int *etree;
-		SuperMatrix matrixCP;
-		int panelSize;
-		int relax;
-		int lwork;
-		GlobalLU_t glu;
-		int info;
+		int main(int argc, char **argv){
+			superlu_options_t options;
+			int *etree;
+			SuperMatrix matrixCP;
+			int panelSize;
+			int relax;
+			int lwork;
+			GlobalLU_t glu;
+			int info;
 
-		SuperMatrix *L;
-		SuperMatrix *U;
-		int *rowPermutations;
-		int *columnPermutations;
-		SuperLUStat_t *statistics;
+			SuperMatrix *L;
+			SuperMatrix *U;
+			int *rowPermutations;
+			int *columnPermutations;
+			SuperLUStat_t *statistics;
 
-		zgstrf(
-                        &options,
-                        &matrixCP,
-                        relax,
-                        panelSize,
-                        etree,
-                        NULL,
-                        lwork,
-                        columnPermutations,
-                        rowPermutations,
-                        L,
-                        U,
-                        &glu,
-                        statistics,
-                        &info
-                );
+			zgstrf(
+				&options,
+				&matrixCP,
+				relax,
+				panelSize,
+				etree,
+				NULL,
+				lwork,
+				columnPermutations,
+				rowPermutations,
+				L,
+				U,
+				&glu,
+				statistics,
+				&info
+			);
 
-		return 0;
-	}"
-	SUPER_LU_COMPILED
-)
+			return 0;
+		}"
+		SUPER_LU_COMPILED
+	)
+ENDIF(NOT DEFINED SUPER_LU_INCLUDES-NOTFOUND AND NOT DEFINED SUPER_LU_LIBRARIES-NOTFOUND)
 
 IF(${SUPER_LU_COMPILED})
 	INCLUDE(FindPackageHandleStandardArgs)
