@@ -1096,211 +1096,280 @@ The Custom format can be used to extract it in the plane \f$z=10\f$, along the l
 @page Properties Properties
 @link TBTK::Property::AbstractProperty See more details about the Properties in the API@endlink
 
-# Properties and meta data {#PropertiesAndMetaData}
-When calculating physical properties it is common to store the result in an arrays.
-The density at (x,y) for a two-dimensional grid with dimensions (SIZE_X, SIZE_Y) can for example be stored as the array element *density[SIZE_Y*x +y]*.
-However, there are two problems with using such a simple storage scheme.
-First, there is an implicit assumption in the way the elements are laid out in memory that is nowhere documented in actual code.
-Every time the developer needs to write new code that access an element in the array, it is up to the developer to remember that the offset to the element should be calculated as *SIZE_Y*x + y*.
-The rule is certainly easy for grid like systems like in this example, but generalizes poorly to complex structures, and moreover limits the possibility to write general purpose functions that takes the array as input.
-Second, the variables SIZE_X and SIZE_Y needs to be stored separately from the array and either be global variables or be passed independently to any function that uses the array.
+# Containers of physical Properties {#ContainerOfPhysicalProperties}
+@link TBTK::Property::AbstractProperty Properties@endlink are containers of physical properties that can be calculated from a @link Model@endlink.
+They store both the data itself and meta data such as the energy interval they have been calculated over.
+Properties can also be used as a functions of the arguments for which they have been calculated.
+This makes them convenient building blocks for applications that extends the capabilities beyond those of the standard @link Solvers@endlink.
 
-The variables SIZE_X and SIZE_Y, as well as the information that the offset should be calculated as SIZE_Y*x + y, is meta data that together with the data itself forms a self contained concept.
-In TBTK properties are therefore stored in @link TBTK::Property::AbstractProperty Property@endlink classes which acts as containers of both the data itself, as well as the relevant meta data.
-Moreover, the Properties can internally store the data in multiple different storage modes, each suitable for different types of data.
-In this chapter we describe these different storage modes, as well as the various specific properties natively supported by TBTK.
-We also note that while this chapter describes the properties themselves, the reader is referred to the @link PropertyExtractors PropertyExtractor@endlink chapter for information about how to actually create the various Properties.
+This chapter discuss the Properties themselves.
+For information on how to calculate them, see the @link PropertyExtractors@endlink chapter.
+
+# EnergyResolvedProperties {#EnergyResolvedProperties}
+Many @link TBTK::Property::AbstractProperty Properties@endlink are @link TBTK::Property::EnergyResolvedProperty EnergyResolvedProperties@endlink, which means that they contain data over some energy interval.
+It is possible to get information about the interval as follows.
+```cpp
+	double lowerBound = energyResolvedProperty.getLowerBound();
+	double upperBound = energyResolvedProperty.getUpperBound();
+	unsigned resolution = energyResolvedProperty.getResolution();
+```
+Here *resolution* is the number of points with which the data is resolved between the *lowerBound* and the *upperBound*.
 
 # Storage modes {#StorageModes}
-There currently exists three different storage modes known as None, Ranges, and Custom.
-The names correspond to the type of Index structures that they are meant for.
+There are three different storage modes for @link TBTK::Property::AbstractProperty Properties@endlink called None, Ranges, and Custom.
+Here we describe the difference between these modes.
+We also describe how the mode affects the way in which data can be accessed from the Property.
+
+Independently of the storage mode, the total number of data points contained in the Property can be retrieved using
+```cpp
+	unsigned int size = property.getSize();
+```
 
 ## None
-The storage mode None is the simplest one and is meant for @link TBTK::Property::AbstractProperty Properties@endlink that has no @link Indices Index@endlink structure at all, which is typical of global properties such as the density of states (@link TBTK::Property::DOS DOS@endlink) or @link TBTK::Property::EigenValues EigenValues@endlink.
+This storage mode is for @link TBTK::Property::AbstractProperty Properties@endlink that have no @link Indices@endlink associated with them.
+For example, the density of states (@link TBTK::Property::DOS DOS@endlink) and the @link TBTK::Property::EigenValues EigenValues@endlink.
+
+If the Property is a function of energy, it is possible to get the nth element using the notation
+```cpp
+	property(n);
+```
 
 ## Ranges
-The Ranges storage mode is the storage mode described in the first section of this chapter and is meant for Properties that are extracted on a regular grid.
-By explicitly preserving the grid structure in the @link TBTK::Property::AbstractProperty Property@endlink, other routines can make stronger assumptions about the data than it otherwise would be able to do, which can be useful in certain cases.
-This is particularly true when plotting data, since for example a density extracted on some specific two-dimensional plane in a three-dimensional grid can be plotted as a surface plot.
-In contrast, it is not clear how to plot a density extracted from a few randomly chosen points in the three-dimensional grid.
-If a common storage format that support the later possibility is chosen also in the former case, additional information will have to be provided to for example a plotter routine to tell it that it actually is more structured than it appears from the storage format alone.
-In particular, TBTK comes prepared with python scripts ready to plot many Properties, and many of these only work when the Ranges format is used.
+This storage mode is meant for extracting @link TBTK::Property::AbstractProperty Properties@endlink on a regular grid, e.g. the @link TBTK::Property::Density Density@endlink on a quadratic lattice.
+It can be particularly useful when the Property is to be immediately exported for external postprocessing.
 
-Sometimes it is useful to access the raw data rather than the @link TBTK::Property::AbstractProperty Property@endlink object as a whole.
-This can be done as follows
+When stored on this format, the data and its ranges can be extracted as follows.
 ```cpp
 	const vector<DataType> &data = property.getData();
-```
-Here DataType should be replaced by the specific data type of the property.
-There also exists a corresponding call that gives write access to the data, but it is recommended to only use this when really needed.
-```cpp
-	//Warning! Only use this if it is really needed.
-	vector<DataType> &data = property.getData();
-```
-
-When @link TBTK::Property::AbstractProperty Properties@endlink are extracted on the Ranges format, identifiers IDX_X, IDX_Y, and IDX_Z and corresponding ranges SIZE_X, SIZE_Y, and SIZE_Z are used (see the @link PropertyExtractors@endlink chapter).
-These are used to indicate which subindex that should be mapped to the first, second, and third index in the array, and their ranges.
-The ranges are stored in the Property and can be accessed using
-```cpp
 	vector<int> ranges = property.getRanges();
 ```
-Individual elements are then accessed from the array using
+Here DataType should be replaced by the particular data type of the Property's values.
+
+If the data also is a function of energy, with resolution ENERGY_RESOLUTION, then the layout is such that the data can be accessed as follows.
 ```cpp
-	data[NUM_INTERNAL_ELEMENTS*(ranges[2]*(ranges[1]*x + y) + z) + n];
+	data[ENERGY_RESOLUTION*(ranges[2]*(ranges[1]*x + y) + z) + n];
 ```
-where x, y, and z corresponds to the first second and third index, respectively.
-Further, NUM_INTERNAL_ELEMENTS refers to the number of elements in the data for each index, while n is a particular choice of internal element.
-This is needed when the data has further structure than the index structure, such as for example when for each index the data has been calculated for several energies.
-If the data has no internal structure, or fewer than three indices, the corresponding variables are removed.
-For example, if the data is two-dimensional and has no internal structure the data is accessed as
+If the data instead would be two-dimensional and without energy dependence, the data is accessed as follows.
 ```cpp
 	data[ranges[1]*x + y];
 ```
 
-We finally note that while the Ranges format retains structural information about the problem, it does not retain the actual Index structure.
-That is, although the x, y, and z variables bear resemblance to the corresponding subindices in the original Index structure, they have no real relation to each other.
-Therefore it is not possible to extract elements from a @link TBTK::Property::AbstractProperty Property@endlink on the Ranges format using the original @link Indices@endlink on the form {x, y, z, s}.
-
 ## Custom
-The Custom format allows for @link TBTK::Property::AbstractProperty Properties@endlink without a particular grid structure to be extracted.
-For example when some Property is extracted from a molecule or from a few points on a grid without any particular relation to each other.
-However, while no grid structure is imposed on the Property, the Custom format has the benefit of preserving the Index structure.
-What this means is that after a Property has been created, it is possible to request a particular element using the original Indices used to specify the @link Model@endlink.
-The interface for doing so is through the function operator, which means that the Property can be seen as a function defined over the Indices for which it has been extracted.
-To access a particular element of the Property, simply type
+This storage format is meant for @link TBTK::Property::AbstractProperty Properties@endlink that have been calculated for arbitrary @link Indices@endlink.
+If a the Property has been calculated for a given Index, say {x, y, z, spin}, it is possible to access the value as follows.
 ```cpp
-	DataType &element = property({x, y, z, s}, n);
+	property({x, y, z, spin});
 ```
-where DataType should be replaced with the particular data type for the Property, and the second argument should be ignored if the Property has no internal structure other than the @link Indices Index@endlink structure.
-
-Some properties does not have the full @link Indices Index@endlink structure of the original problem.
-For example may a @link TBTK::Property::AbstractProperty Property@endlink such as @link TBTK::Property::LDOS LDOS@endlink be calculated by summing over the spin subindex using the identifier IDX_SUM_ALL.
-Other Properties may still have the full Index structure, but the Property may have one data element associated with a range of indices.
-For example does the @link TBTK::Property::Magnetization Magnetization@endlink contain one @link TBTK::SpinMatrix SpinMatrix@endlink that contains information about both up and down spins at the same time.
-A typical case like this occurs when IDX_SPIN has been inserted in one of the subindices of the full Index structure at extraction.
-In these cases the s in {x, y, z, s} should be left unspecified, which is possible to do with help of the wildcard specifier that can be written as \_a\_ or IDX_ALL.
+If the Property is energy dependent, we instead use
 ```cpp
-	DataType &element = property({x, y, z, _a_});
+	property({x, y, z, spin}, n);
+```
+where n is an energy index.
+
+### Properties with subindex specifiers
+It is possible that a @link TBTK::Property::AbstractProperty Property@endlink has been calculated using a specifier in one of the @link TBTK::Subindex Subindices@endlink.
+Consider for example the @link Indices Index@endlink structure {x, y, z, spin}, and the @link TBTK::Property::Density Density@endlink obtained through
+```cpp
+	Property::Density density = propertyExtractor.calculateDensity({
+		{5, _a_, _a_, IDX_SUM_ALL}
+	});
+```
+Here the Density is being calculated for all possible coordinates of the form \f$(5, y, z)\f$.
+However, the subindex specifier IDX_SUM_ALL ensures the spin Subindex is summed over.
+The resulting Density retains the original Index structure, including the spin Subindex.
+To get the value of the Density at a specific point \f$(5, y, z)\f$, we call the Density with a wildcard in the spin Subindex.
+```cpp
+	density({5, y, z, _a_});
 ```
 
-By default the @link TBTK::Property::AbstractProperty Properties@endlink will generate an error if an @link Indices Index@endlink is supplied as argument for which the Property has not been extracted.
-However, sometimes it is useful to override this behavior and make the Property instead return some default value (e.g. zero) when an otherwise illegal Index is supplied.
-To do so, execute the following commands
+### Index out of bounds access
+By default, a @link TBTK::Property::AbstractProperty Property@endlink will generate an error when trying to access a value that is not contained in the Property.
+However, it is possible to configure the Property such that it instead return some default value (e.g. zero).
+This can be done as follows.
 ```cpp
 	property.setAllowIndexOutOfBoundsAccess(true);
 	property.setDefaultValue(defaultValue);
 ```
-We note that it is recommended to be cautious about turning this feature on, since out of bound access in most cases is a sign of a bug.
-Such bugs will be immediately detected at execution if out of bounds access is turned off.
+We note that it is recommended to be cautious about turning this feature on.
+Out of bounds access is often a sign that something is wrong and turning this on can therefore mask bugs.
 
-# Density {#Density}
-The @link TBTK::Property::Density Density@endlink has DataType double and can be extracted on the Ranges or Custom format.
-Assume an Index structure with two spatial subindices, one orbital subindex and one spin subindex {x, y, orbital, spin}, and that the orbital and spin subindices has been summed over using the IDX_SUM_ALL specifier at the point of extraction.
-On Ranges format a specific element can the be accessed as
+# Examples {#PropertiesExamples}
+See the @link PropertyExtractors@endlink chapter for details about the different way that @link TBTK::Property::AbstractProperty Properties@endlink can be extracted.
+
+## Density {#Density}
+Assume the Index structure {x, y, orbital, spin}.
+
+<b>Ranges</b>
 ```cpp
+	Property::Density density = propertyExtractor.calculateDensity(
+		{  _a_,   _a_, IDX_SUM_ALL, IDX_SUM_ALL},
+		{sizeX, sizeY, numOrbitals,           2}
+	);
+
 	vector<int> ranges = density.getRanges();
 	const vector<double> &data = density.getData();
-	double &d = data[ranges[1]*x + y];
-```
-while on the Custom format it can be accessed as
-```cpp
-	double &d = density({x, y, _a_, _a_});
+	double d = data[ranges[1]*x + y];
 ```
 
-# DOS {#DOS}
-The @link TBTK::Property::DOS DOS@endlink has DataType double and is a global @link TBTK::Property::AbstractProperty Property@endlink without @link Indices Index@endlink structure but with an energy variable.
-The lower and upper bound for the energy variable and the number of energy points in the interval can be extracted as
+<b>Custom</b>
 ```cpp
+	Property::Density density = propertyExtractor.calculateDensity({
+		{_a_, _a_, IDX_SUM_ALL, IDX_SUM_ALL}
+	});
+	double d = density({x, y, _a_, _a_});
+```
+
+@link TBTK::Property::Density See more details about the Density in the API@endlink
+
+## DOS {#DOS}
+<b>None</b>
+```cpp
+	Property::DOS dos = propertyExtractor.calculateDOS();
+
 	double lowerBound = dos.getLowerBound();
 	double upperBound = dos.getUpperBound();
 	double resolution = dos.getResolution();
-```
-while an individual element can be extracted as
-```cpp
-	double &d = dos(n);
-```
-where 0 <= *n* < *resolution*
 
-# EigenValues {#EigenValues}
-The @link TBTK::Property::EigenValues EigenValues@endlink @link TBTK::Property::AbstractProperty Property@endlink has DataType double and is a global Property without @link Indices Index@endlink structure.
-The number of eigenvalues can be extracted as
+	double d = dos(n);
+```
+Here 0 <= *n* < *resolution*.
+
+@link TBTK::Property::DOS See more details about the DOS in the API@endlink
+
+## EigenValues {#EigenValues}
+<b>None</b>
 ```cpp
 	unsigned int numEigenValues = eigenValues.getSize();
+	double e = eigenValues(n);
 ```
-while an individual eigen value can be extracted as
-```cpp
-	double &e = eigenValues(n);
-```
-where 0 <= *n* < *numEigenValues*.
+Here 0 <= *n* < *numEigenValues*.
 
-# LDOS {#LDOS}
-The @link TBTK::Property::LDOS LDOS@endlink has DataType double and can be extracted on the Ranges or Custom format.
-Assume an @link Indices Index@endlink structure with two spatial subindices, one orbital subindex and one spin subindex {x, y, orbital, spin}, and that the orbital and spin subindices has been summed over using the IDX_SUM_ALL specifier at the point of extraction.
-The lower and upper bound for the energy variable and the number of energy points in the interval can be extracted as
+@link TBTK::Property::EigenValues See more details about the EigenValues in the API@endlink
+
+## LDOS {#LDOS}
+Assume the @link Indices Index@endlink structure {x, y, z, spin}.
+
+<b>Ranges</b>
 ```cpp
+	Property::LDOS ldos = propertyExtractor.calculateLDOS(
+		{  _a_,   _a_, IDX_SUM_ALL, IDX_SUM_ALL},
+		{sizeX, sizeY, numOrbitals,           2}
+	);
+
 	double lowerBound = ldos.getLowerBound();
 	double upperBound = ldos.getUpperBound();
 	double resolution = ldos.getResolution();
-```
-On Ranges format a specific element can the be accessed as
-```cpp
+
 	vector<int> ranges = ldos.getRanges();
 	const vector<double> &data = ldos.getData();
-	double &d = data[resolution*(ranges[1]*x + y) + n];
+	double d = data[resolution*(ranges[1]*x + y) + n];
 ```
-where 0 <= *n* < resolution, while on the Custom format it can be accessed as
-```cpp
-	double &d = ldos({x, y, _a_, _a_}, n);
-```
+Here 0 <= *n* < resolution.
 
-# Magnetization {#Magnetization}
-The @link TBTK::Property::Magnetization Magnetization@endlink has DataType @link TBTK::SpinMatrix SpinMatrix@endlink and can be extracted on the Ranges or Custom format.
-Assume an @link Indices Index@endlink structure with two spatial subindices, one orbital subindex and one spin subindex {x, y, orbital, spin}.
-Further assume that the orbital subindex has been summed over using the IDX_SUM_ALL specifier at the point of extraction, while the spin-index has been specified using the IDX_SPIN specifier.
-On Ranges format a specific element can the be accessed as
+<b>Custom</b>
 ```cpp
+	Property::LDOS ldos = propertyExtractor.calculateLDOS({
+		{_a_, _a_, IDX_SUM_ALL, IDX_SUM_ALL}
+	});
+
+	double lowerBound = ldos.getLowerBound();
+	double upperBound = ldos.getUpperBound();
+	double resolution = ldos.getResolution();
+
+	double d = ldos({x, y, _a_, _a_}, n);
+```
+Here 0 <= *n* < resolution.
+
+@link TBTK::Property::LDOS See more details about the LDOS in the API@endlink
+
+## Magnetization {#Magnetization}
+Assume the @link Indices Index@endlink structure {x, y, orbital, spin}.
+
+<b>Ranges</b>
+```cpp
+	Property::Magnetization magnetization
+		= propertyExtractor.calculateMagnetization(
+			{  _a_,   _a_, IDX_SUM_ALL, IDX_SPIN},
+			{sizeX, sizeY, numOrbitals,        2}
+		);
+
 	vector<int> ranges = magnetiation.getRanges();
 	const vector<SpinMatrix> &data = magnetization.getData();
-	SpinMatrix &m = data[ranges[1]*x + y];
-```
-while on the Custom format it can be accessed as
-```cpp
-	SpinMatrix &m = magnetization({x, y, _a_, _a_});
+	SpinMatrix spinMatrix = data[ranges[1]*x + y];
 ```
 
-# SpinPolarizedLDOS {#SpinPolarizedLDOS}
-The @link TBTK::Property::SpinPolarizedLDOS SpinPolarizedLDOS@endlink has DataType SpinMatrix and can be extracted on the Ranges or Custom format.
-Assume an @link Indices Index@endlink structure with two spatial subindices, one orbital subindex and one spin subindex {x, y, orbital, spin}.
-Further assume that the orbital subindex has been summed over using the IDX_SUM_ALL specifier at the point of extraction, while the spin-index has been specified using the IDX_SPIN specifier.
-The lower and upper bound for the energy variable and the number of energy points in the interval can be extracted as
+<b>Custom</b>
 ```cpp
+	Property::Magnetization magnetization
+		= propertyExtractor.calculateMagnetization({
+			{_a_, _a_, IDX_SUM_ALL, IDX_SPIN}
+		});
+
+	SpinMatrix spinMatrix = magnetization({x, y, _a_, _a_});
+```
+
+@link TBTK::Property::Magnetization See more details about the Magnetization in the API@endlink<br />
+@link TBTK::SpinMatrix See more details about the SpinMatrix in the API@endlink
+
+## SpinPolarizedLDOS {#SpinPolarizedLDOS}
+Assume the @link Indices Index@endlink structure {x, y, orbital, spin}.
+
+<b>Ranges</b>
+```cpp
+	Property::SpinPolarizedLDOS spinPolarizedLDOS
+		= propertyExtractor.calculateSpinPolarizedLDOS(
+			{  _a_,   _a_, IDX_SUM_ALL, IDX_SPIN},
+			{sizeX, sizeY, numOrbitals,        2}
+		);
+
 	double lowerBound = spinPolarizedLDOS.getLowerBound();
 	double upperBound = spinPolarizedLDOS.getUpperBound();
 	double resolution = spinPolarizedLDOS.getResolution();
-```
-On Ranges format a specific element can the be accessed as
-```cpp
+
 	vector<int> ranges = spinPolarizedLDOS.getRanges();
 	const vector<SpinMatrix> &data = spinPolarizedLDOS.getData();
-	SpinMatrix &m = data[resolution*(ranges[1]*x + y) + n];
+	SpinMatrix spinMatrix = data[resolution*(ranges[1]*x + y) + n];
 ```
-where 0 <= *n* < *resolution*, while on the Custom format it can be accessed as
-```cpp
-	SpinMatrix &s = spinPolarizedLDOS({x, y, _a_, _a_}, n);
-```
+Here 0 <= *n* < *resolution*.
 
-# WaveFunctions {#WaveFunctions}
-The @link TBTK::Property::WaveFunctions WaveFunctions@endlink has DataType complex<double> and can be extracted on the Custom format.
-Assume an @link Indices Index@endlink structure with two spatial subindices, one orbital subindex and one spin subindex {x, y, orbital, spin}.
-The states for which WaveFunctions contains wave functions can be extracted as
+<b>Custom</b>
 ```cpp
-	vector<unsigned int> &states = waveFunction.getStates();
+	Property::SpinPolarizedLDOS spinPolarizedLDOS
+		= propertyExtractor.calculateSpinPolarizedLDOS({
+			{_a_, _a_, IDX_SUM_ALL, IDX_SPIN}
+		});
+
+	double lowerBound = spinPolarizedLDOS.getLowerBound();
+	double upperBound = spinPolarizedLDOS.getUpperBound();
+	double resolution = spinPolarizedLDOS.getResolution();
+
+	SpinMatrix spinMatrix = spinPolarizedLDOS({x, y, _a_, _a_}, n);
 ```
-On the Custom format a specific element can be accessed as
+Here 0 <= *n* < *resolution*.
+
+@link TBTK::Property::SpinPolarizedLDOS See more details about the SpinPolarizedLDOS in the API@endlink<br />
+@link TBTK::SpinMatrix See more details about the SpinMatrix in the API@endlink
+
+## WaveFunctions {#WaveFunctions}
+Assume the @link Indices Index@endlink structure {x, y, orbital, spin}.
+
+<b>Custom</b><br />
+The @link TBTK::Property::WaveFunctions WaveFunctions@endlink are extracted somewhat differently from all other @link TBTK::Property::AbstractProperty Properties@endlink.
+The second argument to the @link PropertyExtractors PropertyExtractor@endlink call is a list of the eigenstate indices to extract the WaveFunctions for.
+This can also be set to \_a\_ to extract all states.
 ```cpp
+	Property::WaveFunctions waveFunctions
+		= propertyExtractor.calculateWaveFunctions(
+			{{_a_, _a_, _a_, _a_}},
+			{1, 3, 7}
+		);
+
+	vector<unsigned int> &states = waveFunction.getStates();
 	complex<double> &w = waveFunctions({x, y, orbital, spin}, n);
 ```
 where *n* is one of the numbers contained in *states*.
+
+@link TBTK::Property::WaveFunctions See more details about the WaveFunctions in the API@endlink<br />
 
 @link ImportingAndExportingData Next: Importing and exporting data@endlink
 @page ImportingAndExportingData Importing and exporting data
