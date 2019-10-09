@@ -1199,7 +1199,7 @@ See the @link PropertyExtractors@endlink chapter for details about the different
 ## Density {#Density}
 Assume the Index structure {x, y, orbital, spin}.
 
-<b>Ranges</b>
+<b>Ranges format</b>
 ```cpp
 	Property::Density density = propertyExtractor.calculateDensity(
 		{  _a_,   _a_, IDX_SUM_ALL, IDX_SUM_ALL},
@@ -1211,7 +1211,7 @@ Assume the Index structure {x, y, orbital, spin}.
 	double d = data[ranges[1]*x + y];
 ```
 
-<b>Custom</b>
+<b>Custom format</b>
 ```cpp
 	Property::Density density = propertyExtractor.calculateDensity({
 		{_a_, _a_, IDX_SUM_ALL, IDX_SUM_ALL}
@@ -1222,7 +1222,7 @@ Assume the Index structure {x, y, orbital, spin}.
 @link TBTK::Property::Density See more details about the Density in the API@endlink
 
 ## DOS {#DOS}
-<b>None</b>
+<b>None format</b>
 ```cpp
 	Property::DOS dos = propertyExtractor.calculateDOS();
 
@@ -1237,7 +1237,7 @@ Here 0 <= *n* < *resolution*.
 @link TBTK::Property::DOS See more details about the DOS in the API@endlink
 
 ## EigenValues {#EigenValues}
-<b>None</b>
+<b>None format</b>
 ```cpp
 	unsigned int numEigenValues = eigenValues.getSize();
 	double e = eigenValues(n);
@@ -1249,7 +1249,7 @@ Here 0 <= *n* < *numEigenValues*.
 ## LDOS {#LDOS}
 Assume the @link Indices Index@endlink structure {x, y, z, spin}.
 
-<b>Ranges</b>
+<b>Ranges format</b>
 ```cpp
 	Property::LDOS ldos = propertyExtractor.calculateLDOS(
 		{  _a_,   _a_, IDX_SUM_ALL, IDX_SUM_ALL},
@@ -1266,7 +1266,7 @@ Assume the @link Indices Index@endlink structure {x, y, z, spin}.
 ```
 Here 0 <= *n* < resolution.
 
-<b>Custom</b>
+<b>Custom format</b>
 ```cpp
 	Property::LDOS ldos = propertyExtractor.calculateLDOS({
 		{_a_, _a_, IDX_SUM_ALL, IDX_SUM_ALL}
@@ -1285,7 +1285,7 @@ Here 0 <= *n* < resolution.
 ## Magnetization {#Magnetization}
 Assume the @link Indices Index@endlink structure {x, y, orbital, spin}.
 
-<b>Ranges</b>
+<b>Ranges format</b>
 ```cpp
 	Property::Magnetization magnetization
 		= propertyExtractor.calculateMagnetization(
@@ -1298,7 +1298,7 @@ Assume the @link Indices Index@endlink structure {x, y, orbital, spin}.
 	SpinMatrix spinMatrix = data[ranges[1]*x + y];
 ```
 
-<b>Custom</b>
+<b>Custom format</b>
 ```cpp
 	Property::Magnetization magnetization
 		= propertyExtractor.calculateMagnetization({
@@ -1314,7 +1314,7 @@ Assume the @link Indices Index@endlink structure {x, y, orbital, spin}.
 ## SpinPolarizedLDOS {#SpinPolarizedLDOS}
 Assume the @link Indices Index@endlink structure {x, y, orbital, spin}.
 
-<b>Ranges</b>
+<b>Ranges format</b>
 ```cpp
 	Property::SpinPolarizedLDOS spinPolarizedLDOS
 		= propertyExtractor.calculateSpinPolarizedLDOS(
@@ -1332,7 +1332,7 @@ Assume the @link Indices Index@endlink structure {x, y, orbital, spin}.
 ```
 Here 0 <= *n* < *resolution*.
 
-<b>Custom</b>
+<b>Custom format</b>
 ```cpp
 	Property::SpinPolarizedLDOS spinPolarizedLDOS
 		= propertyExtractor.calculateSpinPolarizedLDOS({
@@ -1353,7 +1353,7 @@ Here 0 <= *n* < *resolution*.
 ## WaveFunctions {#WaveFunctions}
 Assume the @link Indices Index@endlink structure {x, y, orbital, spin}.
 
-<b>Custom</b><br />
+<b>Custom format</b><br />
 The @link TBTK::Property::WaveFunctions WaveFunctions@endlink are extracted somewhat differently from all other @link TBTK::Property::AbstractProperty Properties@endlink.
 The second argument to the @link PropertyExtractors PropertyExtractor@endlink call is a list of the eigenstate indices to extract the WaveFunctions for.
 This can also be set to \_a\_ to extract all states.
@@ -1373,152 +1373,123 @@ where *n* is one of the numbers contained in *states*.
 
 @link ImportingAndExportingData Next: Importing and exporting data@endlink
 @page ImportingAndExportingData Importing and exporting data
-#  External storage {#ExternalStorage}
-While the classes described in the other Chapters allow data to be stored in RAM during execution, it is important to also be able to store data outside of program memory.
-This allows for data to be stored in files in between executions, to be exported to other programs, for external input to be read in, etc.
-TBTK therefore comes with two methods for writing data structures to file on a format that allows for them to later be read into the same data structures, as well as one method for reading parameter files.
 
-The first method is in the form of a @link TBTK::FileWriter FileWriter@endlink and @link TBTK::FileReader FileReader@endlink class, which allows for @link Properties@endlink and @link Model Models@endlink to be written into HDF5 files.
-The HDF5 file format (https://support.hdfgroup.org/HDF5/) is a file format specifically designed for scientific data and has wide support in many languages.
-Data written to file using the FileWriter can therefore easily be imported into for example MATLAB or python code for post-processing.
-This is particularly true for Properties stored on the Ranges format (see the Properties chapter), since the data sections in the HDF5 files will preserve the Ranges format.
-
-Many classes in TBTK can also be serialized, which mean that they are turned into strings.
-These strings can then be written to file or passed as arguments to the constructor for the corresponding class to recreate a copy of the original object.
-TBTK also contains a class called @link TBTK::Resource Resource@endlink, which allows for very general input and output of strings, including reading data immediately from the web.
-In combination these two techniques allows for very flexible export and import of data that essentially allows large parts of the current state of the program to be stored in permanent memory.
-The goal is to make almost every class serializable.
-This would essentially allow a program to be serialized in the middle of execution and restarted at a later time, or allow for truly distributed applications to communicate their current state across the Internet.
-However, this is a future vision not yet fully reached.
-
-Finally, TBTK also contains a @link TBTK::FileParser FileParser@endlink that can parse a structured parameter file and create a @link TBTK::ParameterSet ParameterSet@endlink.
-
-# FileReader and FileWriter {#FileReaderAndFileWriter}
-The HDF5 file format that is used for the @link TBTK::FileReader FileReader@endlink and @link TBTK::FileWriter FileWriter@endlink essentially implements a UNIX like file system inside a file for structured data.
-It allows for arrays of data, together with meta data called attributes, to be stored in datasets inside the file that resembles files.
-When reading and writing data using the FileReader and FileWriter, it is therefore common to write several objects into the same HDF5-file.
-The first thing to know about the FileReader and FileWriter is therefore that the current file it is using is chosen by typing
-```cpp
-	FileReader::setFileName("Filename.h5");
-```
-and similar for the FileWriter.
-It is important to note here that the FileReader and FileWriter acts as global state machines.
-What this means is that whatever change that is made to them at runtime is reflected throught the code.
-If this command is executed in some part of the code, and then some other part of the code is reading a file, it will use the file "Filename.h5" as input.
-It is possible to check whether a particular file already exists by first setting the filename and the call
-```cpp
-	bool fileExists = FileReader::exists();
-```
-and similar for the FileWriter.
-
-A second important thing to know about HDF5 is that, although it can write new datasets to an already existing file, it does not allow for data sets to be overwritten.
-If a program is meant to be run repeatedly, overwriting the previous data in the file each time it is rerun, it is therefore required to first delete the previously generated file.
-This can be done after having set the filename by typing
-```cpp
-	FileWriter::clear();
-```
-A similar call also exists for the @link TBTK::FileReader FileReader@endlink, but it may seem harder to find a logical reason for calling it on the FileReader.
-
-A @link Model@endlink or @link Properties Property@endlink can be written to file as follows
-```cpp
-	FileWriter::writeDataType(dataType);
-```
-where *DataType* should be replaced by one of the DataTypes listed below, and *data* should be an object of this data type.
-|Supported DataTypes|
-|-------------------|
-| Model             |
-| EigenValues       |
-| WaveFunction      |
-| DOS               |
-| Density           |
-| Magnetization     |
-| LDOS              |
-| SpinPolarizedLDOS |
-| ParameterSet      |
-
-By default the @link TBTK::FileWriter FileWriter@endlink writes the data to a dataset with the same name as the DataType listed above.
-However, sometimes it is useful to specify a custom name, especially if multiple data structures of the same type are going to be written to the same file.
-It is therefore possible to pass a second parameter to the write function that will be used as name for the dataset
-```cpp
-	FileWriter::writeDataType(data, "CustomName");
-```
-
-The interface for reading data is completely analogous to that for writing and takes the form
-```cpp
-	DataType data = FileReader::readDataType();
-```
-where DataType once again is a placeholder for one of the actual data type names listed in the table above.
-
-# Serializable and Resource
-Serialization is a powerful technique whereby an object is able to convert itself into a string.
-If some classes implements serialization, it is simple to write new serializable classes that consists of such classes since the new class can serialize itself by stringing together the serializations of its components.
-TBTK is designed to allow for different serialization modes.
-Some types of serialization may be simpler or more readable in case they are not meant to be imported back into TBTK, while others might be more efficient in terms of execution time and memory requirements.
-However, currently only serialization into JSON is implemented to any significant extent.
-We will therefore only describe this mode here.
-
-If a class is serializable, which means it either inherits from the @link TBTK::Serializable Serializable@endlink class, or is pseudo-serializable by implementing the *serialize()* function, it is possible to create a serialization of a corresponding object as follows
-```cpp
-	string serialization
-		= serializeabelObject.serialize(Serializable::Mode::JSON);
-```
-Currently the @link Model@endlink and all @link Properties@endlink can be serialized like this.
-For clarity considering the @link Model@endlink class, a Model can be recreated from a serialization string as follows
-```cpp
-	Model model(serialization, Serializable::Mode::JSON);
-```
-The notation for recreating other types of objects is the same, with Model replaced by the class name of the object of interest.
-
-Having a way to create serialization strings and to recreate objects from such strings, it is useful to also be able to simply write and read such strings to and from file.
-For this TBTK provides a class called @link TBTK::Resource Resource@endlink.
-The interface for writing a string to file using a resource is
-```cpp
-	Resource resource;
-	resource.setData(someString);
-	resource.write("Filename");
-```
-Similarly a string can be read from file using
-```cpp
-	resource.read("Filename");
-	const string &someString = resource.getData();
-```
-
-The @link TBTK::Resource Resource@endlink is, however, more powerful than demonstrated so far since it in fact implements an interface for the cURL library (https://curl.haxx.se).
-This means that it for example is possible to read input from a URL instead of from file.
-For example, a simple two level system is available at http://www.second-quantization.com/ExampleModel.json that can be used to construct a @link Model@endlink as follows
-```cpp
-	resource.read("http://www.second-quantization.com/ExampleModel.json");
-	Model model(resource.getData(), Serializable::Mode::JSON);
-	model.construct();
-```
+#  External memory {#ExternalMemory}
+TBTK facilitates the reading and writing of data to external memory through a few different scehems, which we describe here.
 
 # FileParser and ParameterSet {#FileParserAndParameterSet}
-While the main purpose of the other two methods is to provide methods for importing and exporting data that faithfully preserve the data structures that are used internally by TBTK, it is also often useful to read other information from files.
-In particular, it is useful to be able to pass parameter values to a program through a file, rather than to explicitly type the parameters into the code.
-Especially since the later option requires the program to be recompiled every time a parameter is updated.
-
-For this TBTK provides a @link TBTK::FileParser FileParser@endlink and a @link TBTK::ParameterSet ParameterSet@endlink.
-In particular, together they allow for files formated as follows to be read
-<pre>
+The @link TBTK::FileParser FileParser@endlink can generate a @link TBTK::ParameterSet ParameterSet@endlink by parsing a file formated as follows.
+```bash
 	int     sizeX       = 50
 	int     sizeY       = 50
 	double  radius      = 10
 	complex phaseFactor = (1, 0)
 	bool    useGPU      = true
 	string  filename    = Model.json
-</pre>
-First the file can be converted into a ParameterSet as follows
-```cpp
-	ParameterSet parameterSet = FileParser::parseParameterSet("Filename");
 ```
-Once the ParameterSet is created, the variables can be accessed
+Assume the file is called "ParameterFile".
+It is then possible to parse it and extract the values using
 ```cpp
+	ParameterSet parameterSet
+		= FileParser::parseParameterSet("ParameterFile");
+
 	int sizeX                   = parameterSet.getInt("sizeX");
 	int sizeY                   = parameterSet.getInt("sizeY");
 	double radius               = parameterSet.getDouble("radius");
 	complex<double> phaseFactor = parameterSet.getComplex("phaseFactor");
 	bool useGPU                 = parameterSet.getBool("useGPU");
 	string filename             = parameterSet.getString("filename");
+```
+
+# Serializable and Resource
+Many classes implement the @link TBTK::Serializable Serializable@endlink interface.
+This means that they can be converted into text strings that can then be converted back into objects.
+
+For example, the following code first serializes a @link Model@endlink and then recreates a copy of it from the resulting serialization string.
+```cpp
+	string serialization = model.serialize(Serializable::Mode::JSON);
+	Model copyOfModel(serialization, Serializable::Mode::JSON);
+```
+The parameter Serializable::Mode::JSON indicates that the serialization should be done to and from JSON.
+Currently, this is the only widely supported serialization format in TBTK.
+
+The power of serialization is that a string can be stored or sent anywhere.
+The @link TBTK::Resource Resource@endlink class is meant to simplify this task.
+For example, the serialization created above can be saved to a file called Model.json using
+```cpp
+	Resource resource;
+	resource.setData(serialization);
+	resource.write("Model.json");
+```
+The @link Model@endlink can then be read in and reconstructed in a different program using
+```cpp
+	Resource resource;
+	resource.read("Model.json");
+	Model model(resource.getData(), Serializable::Mode::JSON);
+```
+
+The @link TBTK::Resource Resource@endlink can also download data from a URL.
+For example, the following code creates a @link Model@endlink from a file downloaded from www.second-quantization.com.
+```cpp
+	Resource resource;
+	resource.read(
+		"http://www.second-quantization.com/v2/ExampleModel.json"
+	);
+	Model model(resource.getData(), Serializable::Mode::JSON);
+```
+
+To be able to use the @link TBTK::Resource Resource@endlink class, [cURL](https://curl.haxx.se) must be installed when TBTK is compiled.
+
+# FileReader and FileWriter {#FileReaderAndFileWriter}
+The @link TBTK::FileReader FileReader@endlink and @link TBTK::FileWriter FileWriter@endlink can import and export @link Properties@endlink stored on the Ranges format.
+They use the [HDF5](https://support.hdfgroup.org/HDF5/) file format, which is particularly suited for data with an array like structure.
+HDF5 also has wide support in languages such as python, MATLAB, Mathematica, etc., which makes it easy to export Properties on the Ranges format to other languages.
+
+Multiple @link Properties@endlink can be stored in the same HDF5 file.
+To set the filename to read from and check whether the file exists, we can use the following code.
+```cpp
+	FileReader::setFileName("Filename.h5");
+	bool fileExists = FileReader::exists();
+```
+The same code works with @link TBTK::FileReader FileReader@endlink interchanged with @link TBTK::FileWriter FileWriter@endlink.
+
+If a @link Properties Property@endlink with a given name has already been written to the HDF5 file, it is not possible to overwrite it.
+This is a limitation of the HDF5 file format itself.
+Instead, the whole file (including all Properties that have been written to it) has to be deleted.
+This is achieved through
+```cpp
+	FileWriter::clear();
+```
+
+With *DataType* replaced by a @link Properties Property@endlink name, a Property can be written to the currently selected HDF5 file using
+```cpp
+	FileWriter::writeDataType(property);
+```
+The possible Properties are the following
+|Supported DataTypes|
+|-------------------|
+| EigenValues       |
+| WaveFunctions     |
+| DOS               |
+| Density           |
+| Magnetization     |
+| LDOS              |
+| SpinPolarizedLDOS |
+
+By default, the FileWriter will write the @link Properties Property@endlink to a dataset with the same name as the Property.
+However, it is possible to choose a custom name for the dataset using
+```cpp
+	FileWriter::writeDataType(data, "CustomName");
+```
+
+It is similarly possible to read a @link Properties Property@endlink using the call
+```cpp
+	Property::DataType property = FileReader::readDataType();
+```
+Here *DataType* is to be replaced by the particular name of the Property wanted.
+To read a Property from a dataset set with a custom name, instead use
+```cpp
+	Property::DataType property = FileReader::readDataType("CustomName");
 ```
 
 @link Streams Next: Streams@endlink
