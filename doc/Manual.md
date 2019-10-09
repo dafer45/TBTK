@@ -1497,73 +1497,84 @@ To read a Property from a dataset set with a custom name, instead use
 @link TBTK::Streams See more details about the Streams in the API@endlink
 
 # Customizable Streams {#CustomizablStreams}
-It is often useful to print information to the screen during execution.
-Both for the sake of providing information about the progress of a calculation and for debuging code during development.
-It is perfectly possible to use the standard C style *printf()* or C++ style *cout* streams for these purposes.
-However, TBTK provides its own @link TBTK::Streams Stream@endlink interface that allows for customization of the output such as easy redirection of output to a logfile, etc.
-Moreover, all TBTK functions use the Stream interface, and it is therefore useful to know how to handle these Streams in order to for example mute TBTK.
+TBTK provides a number of output @link TBTK::Streams Streams@endlink that can be used to print diagnostic information etc.
+It is of course possible to use the C style *printf()* or C++ style *std::cout* for this.
+However, the TBTK Streams can be customized in ways that are useful for numerical calculations.
+Further, all information printed by TBTK is printed through these Streams.
+So even if *printf()* or *std::out* is used in application code, knowledge about these Streams is useful for tweaking the output of TBTK itself.
 
 # Streams::out, Streams::log, and Streams::err {#OutLogAndErr}
-The @link TBTK::Streams Stream@endlink interface has three different output channels called Streams::out, Streams::log, and Streams::err.
-The Streams::out and Streams::err channels are by default equivalent to *cout* and *cerr* and is meant for standard output and error output, respectively.
-In addition, the two buffers are forked to the Streams::log buffer which by default does nothing.
-However, it is possible to make Streams::log write to an output file by typing
+The @link TBTK::Streams Streams@endlink interface has three output channels called Streams::out, Streams::log, and Streams::err.
+By default, Streams::out and Streams::err are maped directly onto *std::cout* and *std::cerr*, respectively.
+These two Streams are also forked to Streams::log, which does nothing by default.
+What this means is that by default Streams::out and Streams::err works just like *std::cout* and *std::cerr*.
+
+## Opening and closing the log
+It is possible to make Streams::log write to an output file by typing
 ```cpp
 	Streams::openLog("Logfile");
 ```
-To ensure that all information is written to file at the end of a calculation, a corresponding close call should be made at the end of the program
+In addition to directing the output of both Streams::out and Streams::err to the log file, this call will also write some diagnostic information.
+This includes a timestamp and the version number and git hash of the currently installed version of TBTK.
+This is information that ensures that the results can be reproduced in the future.
+Knowing the version number makes it possible to recompile an application in the future using the exact same version of TBTK.
+The git hash is there to make this possible even if a named release is not used.
+
+A corresponding close call should be made before the application finishes to avoid losing any of the output.
 ```cpp
 	Streams::closeLog();
 ```
-It is further possible to turn of the output that is directed to *cout* as follows
+This will also write a timestamp to the log before closing it.
+
+## Muting the output to std::cout and std::cerr
+It is also possible to mute the output that is directed to *std::cout* and *std::err* as follows
 ```cpp
 	Streams::setStdMuteOut();
-```
-while the output to *cerr* is muted by
-```cpp
 	Streams::setStdMuteErr();
 ```
-We note that if a log is opened, muting any of these two channels will not turn of the output written to the logfile.
-It is therefore possible to mute any output that otherwise would have gone to the screen and only redirect it to a file.
-However, it is recommended to not mute the error stream, since *cerr* is designed to not be buffered, while the other streams are.
-This means that information written to *cerr* before a crash will be guaranteed to reach the screen, while information written to the other streams do not provide this guarantee.
+This will not mute the output of Streams::out and Streams::err to the log.
+If the log is opened, the result is therefore that the output is directed to the log file alone.
+If the application code writes immediately to *std::cout*, this can be used to direct application specific output to the terminal and TBTK output to the log file.
+We note, however, that it is recommended to not mute the output to cerr.
+Doing so can result in some error messages being lost at a crash.
 
 # Communicators {#Communicators}
-Although not part of the actual @link TBTK::Streams Stream@endlink interface, many classes implements a so called @link TBTK::Communicator Communicator@endlink interface.
-It is useful to know that in addition to muting the Streams themselves it is possible to globally mute all Communicators by typing
+Although not part of the @link TBTK::Streams Streams@endlink interface, many classes implements a @link TBTK::Communicator Communicator@endlink interface.
+Instead of muting the Streams, it is possible to mute all such Communicators using
 ```cpp
 	Communicator::setGlobalVerbose(false);
 ```
-or individual objects implementing the Communicator interface using
+It is also possible to mute individual classes that implements the Communicator interface.
 ```cpp
 	communicator.setVerbose(false);
 ```
+
+In contrast to muting the Streams, as described above, this will mute the component completely.
+A muted Communicator will therefore not even write to the log.
 
 @link Timer Next: Timer@endlink
 @page Timer Timer
 @link TBTK::Timer See more details about the Timer in the API@endlink
 
 # Profiling {#Profiling}
-In a typical program most of the execution time is spent in a small fraction of the code.
-It is therefore a good coding practice to first focus on writing a functional program and to then profile it to find eventual bottlenecks.
-Optimization effort can then be spent on those parts of the code where it really matters.
-Doing so allows for a high level of abstraction to be maintained, which reduces development time and makes the code more readable and thereby less error prone.
-To help with profiling code, TBTK has a simple to use @link TBTK::Timer Timer@endlink class which can be used either as a timestamp stack or as a set of accumulators.
-It is also possible to mix the two modes, using the timestamp stack for some measurements while simultaneously using the accumulators for other.
+In a typical program, most of the execution time is spent in a small fraction of the code.
+It is thefore useful to be able to time different parts of the code to figure out where optimization may be needed.
+The @link TBTK::Timer Timer@endlink helps with this.
+It can either be used as a timestamp stack or as a set of accumulators, or both at the same time.
 
 # Timestamp stack {#TimestampStack}
-To time a section, all that is required is to enclose it between a *Timer::tick()* and a *Timer::tock()* call
+To time a section, all that is required is to enclose it between a *Timer::tick()* and a *Timer::tock()* call.
 ```cpp
 	Timer::tick("A custom tag");
 	//Some code that is being timed.
 	//...
 	Timer::tock();
 ```
-The tag string passed to *Timer::tick()* is optional, but is useful when multiple sections are timed since it will be printed together with the actual time when *Timer::tock()* is called.
+The tag string passed to *Timer::tick()* is optional, but is useful for distinguish between different timed sections.
+When *Timer::tock()* is called, the tag together with the time that elapsed since the tick call is printed.
 
-When used as above, the @link TBTK::Timer Timer@endlink acts as a stack.
-When a call is made to *Timer::tick()*, a new timestamp and tag is pushed onto the stack, and the *Timer::tock()* call pops the latest call and prints the corresponding time and tag.
-It is therefore possible to nest Timer calls as follows
+More specifically, *Timer::tick()* pushes a timestamp and a tag onto a stack, while *Timer::tock()* pops one off from it.
+It is therefore possible to nest @link TBTK::Timer Timer@endlink calls as follows.
 ```cpp
 	Timer::tick("Full loop");
 	for(unsigned int m = 0; m < 10; m++){
@@ -1576,28 +1587,27 @@ It is therefore possible to nest Timer calls as follows
 	}
 	Timer::tock();
 ```
-This will result in the Timer timing the inner loop ten times, each time printing the execution time together with the tag 'Inner loop'.
-After the ten individual timing event have been completed, the Timer will also print the time it took for the full nested loop to execute together with the tag 'Full loop'.
+This results in the inner loop being timed ten times, each time printing the execution time together with the tag 'Inner loop'.
+The entry corresponding to 'Full loop' remains on the stack throughout execution of the two nested loops.
+When the final call to *Timer::tock()* occurs, this entry is poped from the stack and the full execution time is printed with the tag 'Full loop'.
 
 # Accumulators {#Accumulators}
-Sometimes it is useful to measure the accumulated time taken by one or several pieces of code that are not necessarily executed without other code being executed in between.
-For example, consider the following loop
+To understand the accumulators, assume that the following loop has been identified to be a bottleneck.
 ```cpp
 	for(unsigned int n = 0; n < 1000000; n++){
 		task1();
 		task2();
 	}
 ```
-This piece of code may have been identified as a bottleneck in the program, but it is not clear which of the two tasks that is responsible for it.
-Moreover, the time taken for each task may vary from call to call and therefore it is only useful to know the accumulated time taken for all 1,000,000 iterations.
-For cases like this the @link TBTK::Timer Timer@endlink provides the possibility to create accumulators as follows
+Next we want to figure out which of the two tasks that is responsible for the slow execution.
+However, task 1 and 2 may have varying execution times.
+Therefore, only the total time taken by each call over the 1,000,000 iterations is relevant.
+
+In cases like these, we can use accumulators to time the code.
 ```cpp
 	unsigned int accumulatorID1 = Timer::createAccumulator("Task 1");
 	unsigned int accumulatorID2 = Timer::createAccumulator("Task 2");
-```
-The IDs returned by these functions can then be passed to the *Timer::tick()* and *Timer::tock()* calls to make it use these accumulators instead of the stack.
-For the loop above we can now write
-```cpp
+
 	for(unsigned int n = 0; n < 1000000; n++){
 		Timer::tick(accumulatorID1);
 		task1();
@@ -1607,65 +1617,53 @@ For the loop above we can now write
 		task2();
 		Timer::tock(accumulatorID2);
 	}	
-```
-Since the accumulators are meant to accumulate time over multiple calls, there is no reason for *Timer::tock()* to print the time each time it is called.
-Instead the @link TBTK::Timer Timer@endlink has a special function for printing information about the accumulators, which will print the accumulated time and tags for all the currently created accumulators.
-```cpp
+
 	Timer::printAccumulators();
 ```
+In the first two lines, we create two accumulators called "Task 1" and "Task 2" and get an ID for each of them.
+We then pass these IDs to the tick and tock calls.
+The time taken between such a pair of tick-tack calls are added to the accumulators with the given ID.
+The final line prints a table displaying the total time accumulated in each accumulator.
 
 @link FourierTransform Next: FourierTransform@endlink
 @page FourierTransform FourierTransform
 @link TBTK::FourierTransform See more details about the FourierTransform in the API@endlink
 
 # Fast Fourier transform {#FastFourierTransform}
-One of the most commonly employed tools in physics is the Fourier transform and TBTK therefore provides a class that can carry out one-, two-, and three-dimensional Fourier transforms.
-The class is a wrapper for the FFTW3 library (http://www.fftw.org), which implements an optimized version of the fast Fourier transform (FFT).
+The @link TBTK::FourierTransform FourierTransform@endlink can calculate the one- two- and three-dimensional Fourier transform.
+This is a wrapper class for the [FFTW3](http://www.fftw.org) library, which implements an optimized version of the fast Fourier transform (FFT).
 
 ## Basic interface {#BasicInterface}
-The basic interface for executing a transform is
-```cpp
-	FourierTransform::transform(in, out, SIZE_X, SIZE_Y, SIZE_Z, SIGN);
-```
-where the SIZE_Y and SIZE_Z can be dropped depending on the dimensionality of the transform.
-Further, *in* and *out* are *complex<double>* arrays with SIZE_X*SIZE_Y*SIZE_Z elements, and SIGN should be -1 or 1 and determines the sign in the exponent of the transform.
-The normalization factor is \f$\sqrt{SIZE\_X\times SIZE\_Y\times SIZE\_Z}\f$.
-
-For simplicity the @link TBTK::FourierTransform FourierTransform@endlink also has functions with special names for the transforms with positive and negative sign.
-The transform with negative sign can be called as
+The three-dimensional Fourier transform and inverse Fourier transform an be calculated using
 ```cpp
 	FourierTransform::forward(in, out, SIZE_X, SIZE_Y, SIZE_Z);
-```
-while the transform with positive sign can be called as
-```cpp
 	FourierTransform::inverse(in, out, SIZE_X, SIZE_Y, SIZE_Z);
 ```
+Here *in* and *out* are c-arrays of type std::complex<double> with size \f$SIZE\_X\times SIZE\_Y\times SIZE\_Z\f$.
+The normalization factor for each call is \f$\sqrt{SIZE\_X\times SIZE\_Y\times SIZE\_Z}\f$.
+The one- and two-dimensional versions are obtained by droping the later arguments.
 
 ## Advanced interface {#AdvancedInterface}
-While the basic interface is very convenient, each such call involves a certain amount of overhead.
-First, the FFTW3 library requires a plan to be setup prior to executing a transform, which involves a certain amount of computation ahead of the actual transform in order to figure out the optimal configuration.
-For similar transforms it is possible to do such calculations once and reuse the same plan.
-Second, by default the transform uses a specific normalization and it can be convenient to specify a custom normalization factor, or to set the normalization factor to 1, in which case the normalization step is avoided completely.
-For this reason it is possible to setup a plan ahead of execution that both wraps the FFTW3 plan, as well as contains information about the normalization.
-
-The creation of a plan mimics the interface for performing basic transforms
+When executing multiple similar transforms, it is possible to avoid some overhead by using the advanced interface.
+This is done by first setting up a plan.
 ```cpp
-	FourierTransform::Plan<complex<double>> plan(
+	FourierTransform::ForwardPlan<complex<double>> plan(
 		in,
 		out,
 		SIZE_X,
 		SIZE_Y,
-		SIZE_Z,
-		SIGN
+		SIZE_Z
 	);
 ```
-Similar calls are available for creating forward and inverse transforms without explicitly specifying the sign and are called FourierTransform::ForwardPlan<complex<double>> and FourierTransform::InversePlan<complex<double>>, respectivley.
-The normalization factor is set using
+Plans for one- and two-dimensional transforms are obtained by droping the later arguments.
+A corresponding plan for the inverse transform can be created by replacing ForwardPlan by InversePlan.
+
+It is also possible to specify a custom normalization factor.
+If the value is set to 1, the calculation will be avoided completely.
 ```cpp
 	plan.setNormalizationFactor(1.0);
 ```
-
-Once a plan is setup, repeated transforms can be carried out on the data in the *in* and *out* arrays by simply typing
+By refilling *in* with new data between each call, multiple transforms can now be calculated using
 ```cpp
 	FourierTransform::transform(plan);
 ```
