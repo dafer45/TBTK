@@ -2,64 +2,63 @@ Installation instructions {#InstallationInstructions}
 ======
 
 # System requirements {#SystemRequirements}
-In order to install TBTK, the following software must be installed.
 | Required software           | Further information  |
 |-----------------------------|----------------------|
 | git                         | https://git-scm.com/ |
 | CMake (Minimum version 3.0) | https://cmake.org    |
 
-The following libraries are also required.
-If you are unsure whether the libraries are installed or not, you can proceed with the installation as described below.
-If a required library is missing, the call to *cmake* will fail with an error message indicating the missing library.
 | Required libraries | Further information               |
 |--------------------|-----------------------------------|
 | BLAS               | http://www.netlib.org/blas        |
 | LAPACK             | http://www.netlib.org/lapack      |
 
-There are also optional libraries that if installed will enable further components of TBTK.
-For a list of these libraries and the TBTK components that are enabled if they are installed, see the Extensions section below.
-
 # Download TBTK {#DownloadTBTK}
-TBTK can be downloaded from github, which is done by typing
-```bash
+
+```cpp
 	git clone https://github.com/dafer45/TBTK/
 ```
 
 # Select version
-TBTK is still in a phase where changes to the core API may occur, even if most core components are relatively stable by now.
-To be able to know that a particular application compiles also in the future, it is recommended that application developers work against one of the public releases.
-A list of releases and their name tags can be found on https://github.com/dafer45/TBTK/releases.
-To use a particular version, for example v1.1.2, execute the following from the TBTK source folder
-```bash
+Always work agains a public release.
+This is done by checking out the latset release using
+```cpp
 	git checkout v1.1.2
 ```
-It is recommended to store a note inside projects using TBTK that tells against which version of the library it has been compiled.
-This makes it possible to anytime in the future checkout the exact same version of TBTK and recompile an application developed against it.
-If a named version such as v1.1.2 is not used, the developer should instead remember the exact git hash.
+A full list of public releases can be found at https://github.com/dafer45/TBTK/releases.
+By remembering the version number that an application is compiled with, it is guaranted that the application will be possible to build again anytime in the future.
+
+TBTK uses [semantic versioning](https://semver.org/spec/v2.0.0.html).
+This means that any application that compiles with v1.x.y also will work with any higher version v1.x'.y'.
+An update to the first (major) version number may break older applications.
 
 # Install TBTK {#InstallTBTK}
 ## Unix like operating systems such as Linux and Mac OS
-TBTK should be built in a different folder than the source folder, therefore begin by creating a new folder outside of the TBTK folder, for example TBTKBuild.
-Then enter this folder and type
-```bash
-	cmake /path/to/TBTK
+Begin by creating a build folder in parallel with the TBTK source folder (i.e. not inside).
+```cpp
+	mkdir TBTKBuild
 ```
-where '/path/to/TBTK' is to be replaced by the actual path to the TBTK source folder.
-
-Compile the library by typing
-```bash
+The folder structure should now be
+```cpp
+	SomeFolder/
+		TBTK
+		TBTKBuild
+```
+Then do the following.
+```cpp
+	cd TBTKBuild
+	cmake ../TBTK
 	make
-```
-
-Finally, TBTK is installed by typing
-```bash
 	sudo make install
 ```
-The last command requires administrator privileges.
-If administrator privileges are not available, or a local install is preferred, see the customization options below.
+
+## Local installation
+It is possible to perform a local install if administrator privileges are not available.
+To do so, add the flag -DCMAKE_INSTALL_PREFIX=install/path/ to the *cmake* call above, where install/path/ is the preferred installation path.
+Make sure to also set the environment variables CPLUS_INCLUDE_PATH, LIBRARY_PATH, and PATH if this is done.
+The paths should be install/path/include/, install/path/lib/, and install/path/bin/, respectively.
 
 ## Customized installation
-The installation can be customized by supplying the following flags to the cmake command above
+It is possible to customize the build by passing these flags to cmake.
 | Flag                             | Description                                                                                                |
 |----------------------------------|------------------------------------------------------------------------------------------------------------|
 | -DCMAKE_INSTALL_PREFIX:PATH=XXX  | Specify a custom insallation path. For example a local path if administrator privileges are not available. |
@@ -81,7 +80,7 @@ Additional features will also be available if one or more of the following libra
 | CUDA               | https://developer.nvidia.com/cuda-downloads |
 | HDF5               | https://support.hdfgroup.org/HDF5           |
 
-The following table shows the optional libraries that are required for the different TBTK components.
+The following table shows the optional libraries that are required to enable the respective TBTK components.
 |                                            | ARPACK | FFTW3 | OpenCV | cURL | SuperLU (v5.2.1) | wxWidgets | CUDA | HDF5 |
 |--------------------------------------------|:------:|:-----:|:------:|:----:|:----------------:|:---------:|:----:|:----:|
 | ArnoldiIterator                            | X      |       |        |      | X                |           |      |      |
