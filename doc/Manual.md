@@ -1863,7 +1863,7 @@ Here *File.h5* is the file to which the FileWriter has written the Property.
 These scripts are immediately useful in a few different cases, but are more generally useful as templates.
 To customize these templates, begin by copying the corresponding file from TBTK/Visualization/python/ into the applications source directory.
 
-# Examples
+## Examples
 
 <b>Density</b><br />
 If the @link TBTK::Property::Density Density@endlink has been extracted on a two-dimensional grid, it can be plotted using
@@ -1904,4 +1904,3 @@ If the @link TBTK::Property::SpinPolarizedLDOS SpinPolarizedLDOS@endlink has bee
 ```
 Here *theta* and *phi* are the polar and azimuthal angles, respectively, of the spin-polarization axis of interest.
 Further, *sigma* is a decimal number specifying the amount of Gaussian smoothing to apply along the energy axis.
-
