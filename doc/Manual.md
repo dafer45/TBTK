@@ -1673,200 +1673,235 @@ By refilling *in* with new data between each call, multiple transforms can now b
 @link TBTK::Array See more details about the Array in the API@endlink
 
 # Multi-dimensional arrays {#MultiDimensionalArrays}
-One of the most common storage structures is the array.
-TBTK therefore has a simple @link TBTK::Array Array@endlink class that allows for multi-dimensional data to be stored.
-Such an Array can be created as follows
+## Creating an Array
+A three-dimensional @link TBTK::Array Array@endlink with the data type DataType can be created using
 ```cpp
 	Array<DataType> array({SIZE_0, SIZE_1, SIZE_2});
 ```
-where DataType should be replace by the specific data type of interest.
-While the code above will create a three-dimensional array with dimensions (SIZE_0, SIZE_1, SIZE_2), it is possible to pass an arbitrary number of arguments to the constructor to create an Array of any dimension.
+The number of arguments in the list can be changed to get an Array of different dimensionality.
 
-By default an @link TBTK::Array Array@endlink is uninitialized at creation, but it is possible to also supply a second argument at creation that will be used to initialize each element in the array.
-For example, it is possible to initialize a three-dimensional array of doubles with zeros in the following way
+By default, the @link TBTK::Array Array@endlink is uninitialized after creation, but this can be changed by passing a second argument.
+For example, an Array with type double can be initialized to zero as follows.
 ```cpp
 	Array<double> array({SIZE_0, SIZE_1, SIZE_2}, 0);
 ```
-Once created it is possible to access the ranges of the array using
+
+## Getting the Array size and accessing its elements
+The Array ranges and dimensionality can be retrieved using
 ```cpp
 	const vector<unsigned int> &ranges = array.getRanges();
+	unsigned int dimension = ranges.size();
 ```
 
-An individual element in the @link TBTK::Array Array@endlink can be accessed using
+It is also possible to access or assign values to individualt elements.
+Assuming the that the data type is double, we can use
 ```cpp
-	DataType &data = array[{x, y, z}];
+	double data = array[{x, y, z}];
+	array[{x, y, z}] = 1;
 ```
-where 0 <= x < ranges[0], 0 <= y < ranges[1], and 0 <= z < ranges[2].
+Here 0 <= x < ranges[0], 0 <= y < ranges[1], and 0 <= z < ranges[2].
 
-Given that the DataType supports the corresponding operators, it is also possible to add and subtract @link TBTK::Array Arrays@endlink from each other
+## Array operations
+
+If the DataType supports it, the following operations are possible.
+
+<b>Addition</b>
 ```cpp
-	Array<DataType> sum        = array0 + array1;
+	Array<DataType> sum = array0 + array1;
+```
+<b>Subtraction</b>
+```cpp
 	Array<DataType> difference = array0 - array1;
 ```
-as well as multiply and divide them by an *element* of the given DataType
+<b>Multiplication</b>
 ```cpp
-	Array<DataType> product  = element*array;
-	Array<DataType> quotient = array/element;
+	Array<DataType> product = multiplier*array;
 ```
+Here *multiplier* has the data type DataType.
 
-A subset of an @link TBTK::Array Array@endlink can also be extracted using
+<b>Division</b>
+```cpp
+	Array<DataType> quotient = array/divisor;
+```
+Here *divisor* has the the data type DataType.
+
+## Slicing the Array
+A lower-dimensional subset of an @link TBTK::Array Array@endlink can be extracted using
 ```cpp
 	Array<DataType> array2D = array.getSlice({x, _a_, _a_});
 ```
-which in this case will extract the two-dimensional slice of the Array for which the first index is 'x'.
-The new Array is a pure two-dimensional Array from which elements can be extracted using
+This extracts the subset of *array* for which the first entry is 'x'.
+The result is a two-dimensional Array from which we can access elements using
 ```cpp
-	DataType &element = array2D[{y, z}];
+	DataType element = array2D[{y, z}];
 ```
 
 @link Plotting Next: Plotting@endlink
 @page Plotting Plotting
 @link TBTK::Plot::Plotter See more details about the Plotter in the API@endlink
 
-# Quick and dirty {#QuickAndDirty}
-The final step in most calculations involve plotting the results and TBTK therefore have limited support for plotting.
-The current plotting abilities are restricted and rough, and currently the user is therefore recommended to use some external tool for final production plots.
-However, the currently available plotting tools can be handy for quick and dirty plotting.
-Especially, it allows for visualization to occur even in the middle of a calculation, which can be particularly useful during development.
+# Internal and external plotting tools
+TBTK provides methods for plotting both inside and outside the application.
+However, we note that these tools are currently quite limited and other software is needed to produce high quality figures.
+Nevertheless, the native plotting tools can be very useful during the development process.
+They can also be very handy for getting quick insight into calculations while they are still running.
+
+The internal plotting tool is the @link TBTK::Plotter Plotter@endlink, while the external tools consists of a number of python scripts.
+Below, we describe each of these tools in more detail.
 
 # Plotter {#Plotter}
-Plotting immediately from C++ code can be done using the @link TBTK::Plot::Plotter Plotter@endlink class and a Plotter is created as
+The @link TBTK::Plot::Plotter Plotter@endlink can plot a number of data formats.
+For example, data stored in *std::vector<double>*, @link Arrays Array@endlink, and some @link Properties@endlink.
+It exists inside the Plot namespace and below we assume that the following line has been added at the top of the code.
+```cpp
+	using namespace Plot;
+```
+
+## Setting up and configuring a Plotter
+We begin by listing some of the most common commands needed for setting up and configuring the @link TBTK::Plot::Plotter Plotter@endlink.
+
+<b>Create a Plotter</b>
 ```cpp
 	Plotter plotter;
 ```
-The Plotter currently generates pixel graphics and the width and height of the canvas can be set using
-```cpp
-	plotter.setWidth(WIDTH);
-	plotter.setHeight(HEIGHT);
-```
-where *WIDTH* and *HEIGHT* are positive integers.
-In order to save a plot type
-```cpp
-	plotter.save("FigureName.png");
-```
-Here it is important to make sure the filename ends with an image format such as '.png' for the call to succeed, as it will be used by the underlying OpenCV library to determine the file format of the resulting file.
-For an up to date list of the supported file formats the reader is referred to the OpenCV documentation (https://opencv.org/).
 
-It is possible to plot multiple data sets in the same graph, which can be done by setting *hold* to true
+<b>Setting the canvas size</b>
+```cpp
+	plotter.setWidth(width);
+	plotter.setHeight(height);
+```
+
+<b>Hold data between successive plots</b><br />
+By default, the Plotter clears the canvas between succesive calls.
+This can be changed through the following call.
 ```cpp
 	plotter.setHold(true);
 ```
-When *hold* is set to true, it is also useful to be able to clear the plot, which is done as follows
+
+<b>Clear the canvas</b>
 ```cpp
 	plotter.clear();
 ```
 
-By default the axes of a plot are automatically scaled to the bounds of the data.
-However, it is also possible to specify the bounds using
+<b>Save the canvas to file</b>
+```cpp
+	plotter.save("FigureName.png");
+```
+
+<b>Set axis bounds</b><br />
+By default, the axes automatically scales to contain the data.
+It is possible to fix the axis bounds with the following calls.
 ```cpp
 	plotter.setBoundsX(-1, 1);
 	plotter.setBoundsY(0, 10);
 ```
-or equivalently through a single call using
+These calls can also be commbind into a single call.
 ```cpp
 	plotter.setBounds(-1, 1, 0, 10);
 ```
-To return to auto scaling after bounds have been specified, use
+
+<b>Reset to auto scaling axes.</b>
 ```cpp
 	plotter.setAutoScaleX(true);
 	plotter.setAutoScaleY(true);
 ```
-or simultaneously turn on auto scaling for both axes using
+These calls can also be combined into a single call.
 ```cpp
 	plotter.setAutoScale(true);
 ```
 
-## Decoration
-Many of the plot routines also accept a Decoration object as last argument to specify line the color and line style used for the data.
+<b>Decoration</b><br />
+Many @link TBTK::Plotter Plotter@endlink routines accept a Decoration object to specify the color, line style, and line width/point size.
 A typical plot command with a Decoration object look like
 ```cpp
 	plotter.plot(
 		data,
 		Decoration(
 			{192, 64, 64},
-			Decoration::LineStyle::Line
+			Decoration::LineStyle::Line,
+			size
 		)
 	);
 ```
-Here the first argument to the Decoration object is the color in RGB format and each entry can be a value between 0 and 255.
-The second argument is the line style, and currently this argument has to be supplied independently of whether the data actually can be plotted as lines or not.
-The possible values are Decoration::LineStyle::Line and Decoration::LineStyle::Point.
+Here the first argument to Decoration is the color in RGB format, with each entry a number between 0 and 255.
+The second argument is the line style, while the third argument in the case of Decoration::LineStyle::Line is the line width.
+If the line style instead is Decoration::LineStyle::Point, the third argument is the radius of the points.
 
-## Plotting individual data points
-Individual data points can be plotted using
+## Examples
+We here provide a few examples of how the @link TBTK::Plotter Plotter@endlink can be used.
+
+<b>Individual data points</b>
 ```cpp
 	plotter.plot(x, y);
 ```
 
-## Plotting 1D data
-One-dimensional data can be plotted using
+<b>1D data</b><br />
+If *data* is an *std::vector<double>* or a one-dimensional @link Arrays Array@endlink, it can be plotted using
 ```cpp
 	plotter.plot(data);
 ```
-where *data* either is an *std::vector* or a one-dimensional @link Array@endlink.
-By default the x-axis will start at 0 and increment 1 per data point, but it is also possible to specify the x-values for the data points by instead using
+By default, the x-axis will run from 0 to the number of data points minus one.
+If *domain* has the same type and size as *data* and contains custom values for the x-axis, we can also use.
 ```cpp
-	plotter.plot(axis, data);
+	plotter.plot(domain, data);
 ```
-where *axis* is of the same type and size as *data*.
 
-## Plotting 2D data
-Two-dimensional plots can be plotted using
+<b>2D data</b><br />
+If *data* is an *std::vector<std::vector<double>>* or a two-dimensional @link Arrays Array@endlink, it can be plotted using
 ```cpp
 	plotter.plot(data);
 ```
-where *data* either is of type *std::vector<std::vector<double>>* or a two-dimensional @link Array@endlink.
 
-# Plotting scripts {#PlottingScripts}
-TBTK also have prepared plotting scripts written in python that can be used to plot @link Properties@endlink that has been saved to file using the @link TBTK::FileWriter FileWriter@endlink.
-For these plotting scripts to work, the Properties has to be extracted on the Ranges (or None) format (see the PropertyExtractor and Properties chapters).
-Some quantities can also only be plotted if they have been extracted for some particular dimensionality.
-The plotting scripts can be run immediately from the terminal using the syntax
+# External plotting scripts {#PlottingScripts}
+Some @link Properties@endlink extracted on the None or Ranges format, and saved using the @link ImportaingAndExportingData FileWriter@endlink, can be plotted using predefined python scripts.
+After installing TBTK, these plotting scripts are available immediately from the terminal using the syntax
 ```bash
-	TBTKPlotQuantity.py File.h5 parameters
+	TBTKPlotProperty.py File.h5 parameters
 ```
-where *Quantity* is a placeholder for the name of the relevant quantity, *File.h5* is the HDF5 file to which the Property has been written, and *parameters* is zero or more parameters needed to plot the data.
-These scripts are limited to a few special usage cases due to the fact that different dimensionalities require widely different types of plots to be made.
-However, they can be used in these specific cases, or the plotting scripts which are available in the folder TBTK/Visualization/python can be used as templates for writing customized plotting scripts.
+Here *File.h5* is the file to which the FileWriter has written the Property.
 
-## Density
-The @link TBTK::Property::Density Density@endlink can be plotted if it has been extracted on a two-dimensional grid using
-```bash
+These scripts are immediately useful in a few different cases, but are more generally useful as templates.
+To customize these templates, begin by copying the corresponding file from TBTK/Visualization/python/ into the applications source directory.
+
+# Examples
+
+<b>Density</b><br />
+If the @link TBTK::Property::Density Density@endlink has been extracted on a two-dimensional grid, it can be plotted using
+```cpp
 	TBTKPlotDensity.py File.h5
 ```
 
-## DOS
-The @link TBTK::Property::DOS DOS@endlink can be plotted using
-```bash
+<b>DOS</b>
+```cpp
 	TBTKPlotDOS.py File.h5 sigma
 ```
-where *sigma* is a decimal number specifying the amount of Gaussian smoothing that will be applied along the energy axis.
+Here *sigma* is a decimal number specifying the amount of Gaussian smoothing to apply along the energy axis.
 
-## EigenValues
-The @link TBTK::Property::EigenValues EigenValues@endlink can be plotted as a monotonously increasing line using
-```bash
+<b>EigenValues</b>
+```cpp
 	TBTKPlotEigenValues.py File.h5
 ```
+This will plot the eigenvalues ordered from lowest to highest along the x-axis.
 
-## LDOS
-The @link TBTK::Property::LDOS LDOS@endlink can be plotted if it has been extracted along a one-dimensional line using
-```bash
+<b>LDOS</b><br />
+If the @link TBTK::Property::LDOS LDOS@endlink has been extracted along a one-dimensional line, it can be plotted using
+```cpp
 	TBTKPlotLDOS.py File.h5 sigma
 ```
-where *sigma* is a decimal number specifying the amount of Gaussian smoothing that will be applied along the energy axis.
+Here *sigma* is a decimal number specifying the amount of Gaussian smoothing to apply along the energy axis.
 
-## Magnetization
-The @link TBTK::Property::Magnetization Magnetization@endlink can be plotted if it has been extracted on a two-dimensional grid using
-```bash
+<b>Magnetization</b><br />
+If the @link TBTK::Property::Magnetization Magnetization@endlink has been extracted on a two-dimensional grid, it can be plotted using
+```cpp
 	TBTKPlotMagnetization.py File.h5 theta phi
 ```
-where *theta* and *phi* are the polar and azimuthal angles, respectively, of the spin-polarization axis of interest.
+Here *theta* and *phi* are the polar and azimuthal angles, respectively, of the spin-polarization axis of interest.
 
-## SpinPolarizedLDOS
-The @link TBTK::Property::SpinPolarizedLDOS SpinPolarizedLDOS@endlink can be plotted if it has been extracted along a one-dimensional line using
-```bash
+<b>SpinPolarizedLDOS</b><br />
+If the @link TBTK::Property::SpinPolarizedLDOS SpinPolarizedLDOS@endlink has been extracted along a one-dimensional line, it can be plotted using
+```cpp
 	TBTKPlotSpinPolarizedLDOS.py File.h5 theta phi sigma
 ```
-where *theta* and *phi* are the polar and azimuthal angles, respectively, of the spin-polarization axis of interest.
-Further, *sigma* is a decimal number specifying the amount of Gaussian smoothing that will be applied along the energy axis.
+Here *theta* and *phi* are the polar and azimuthal angles, respectively, of the spin-polarization axis of interest.
+Further, *sigma* is a decimal number specifying the amount of Gaussian smoothing to apply along the energy axis.
 
