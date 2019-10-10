@@ -5,6 +5,7 @@ Manual {#Manual}
 - @subpage Overview
 - @subpage UnitHandler
 - @subpage Indices
+- @subpage HoppingAmplitudes
 - @subpage Model
 - @subpage Solvers
 - @subpage PropertyExtractors
@@ -19,153 +20,128 @@ Manual {#Manual}
 @page Introduction Introduction
 
 # Origin and scope {#OriginAndScope}
-TBTK (Tight-Binding ToolKit) originated as a toolkit for solving tight-binding models.
-However, the scope of the code has expanded beyond the area implied by its name, and is today best described as a library for building applications that solves second-quantized Hamiltonians with discrete indices  
+TBTK (Tight-Binding ToolKit) originated as a toolkit for solving tight-binding models but has expanded in scope since then.
+Today it is best described as a framework for building applications that solve second-quantized Hamiltonians with discrete indices  
 
 <center>\f$H = \sum_{\mathbf{i}\mathbf{j}}a_{\mathbf{i}\mathbf{j}}c_{\mathbf{i}}^{\dagger}c_{\mathbf{j}} + \sum_{\mathbf{i}\mathbf{j}\mathbf{k}\mathbf{l}}V_{\mathbf{i}\mathbf{j}\mathbf{k}\mathbf{l}}c_{\mathbf{i}}^{\dagger}c_{\mathbf{j}}^{\dagger}c_{\mathbf{k}}c_{\mathbf{l}}\f$.</center>
 
-In fact, even more general interaction terms than the one displayed above is possible to model.
-However, TBTK does not yet have extensive support for solving interacting models and this manual is therefore focused on the non-interacting case.
+Even more general interaction terms than above are possible to model, but there is currently limited support for solving interacting models.
+This manual, therefore, focuses on the non-interacting case.
 
-Most quantum mechanical systems are described by Hamiltonians that involve a differential equation in at least some continuous variable or second quantized operators with a mix of discrete and continuous indices.
-The restriction to discrete indices may therefore seem to severely limit the applicability of the library to a few special types of problems.
-However, we note that it is very common for quantum mechanical problems with continuous variables to be described by discrete indices after proper analytical manipulations of the expressions.
-For example, the continuous Schrödinger equation in a central potential with three continuous spatial coordinates does after some analytic manipulations become a problem with two discrete indices corresponding to the spherical harmonics, and one remaining continuous variable.
-Moreover, if not handled analytically, any remaining continuous variable eventually has to be discretized.
+Note that the use of discrete indices does not imply any restrictions on the type of systems that can be modeled.
+First, a continuous description can often be turned into a discrete description by choice of an appropriate basis.
+Second, any remaining continuous coordinate anyway has to be discretized before a numerical method is applied.
+For example, the Schrödinger equation in a central potential contains three continuous coordinates.
+By working in the basis of spherical harmonics, these are reduced to two discrete indices (\f$l \f$ and \f$m\f$) and one remaining continuous coordinate \f$r\f$.
 
-Given that the restriction to discrete indices does not imply any severe limitation to the types of problems that can be addressed, a remaining challenge is to allow for problems with arbitrary index complexity to be modeled and solved.
-TBTK solves this through a flexible and efficient index system, which combined with a sophisticated storage structure for the Hamiltonian allows for essentially arbitrary index structures to be handled without significant performance penalties compared to a highly optimized single purpose code.
-In fact, TBTK is explicitly designed to allow solution algorithms to internally use whatever data structures that are best suited for the problem at hand to optimize the calculation, without affecting the format on which the model is specified or properties are extracted.
+# A quantum mechanics framework {#AQuantumMechanicsFramework}
 
-# Algorithms and data structures {#AlgorithmsAndDataStructures}
+TBTK is not a scientific software that can perform a specific type of calculation.
+Rather, it is a framework aimed at simplifying the development of code for performing quantum mechanical calculations.
+The main focus is on providing general-purpose data structures for problems formulated in the language of second quantization.
+These data structures are designed with four goals in mind: generality, efficiency, readability, and modularity.
 
-When writing software it is natural to think in terms of algorithms.
-This is particularly true in scientific computation, where the objective most of the time is to carry out a set of well defined operations on an input state to arrive at a final answer.
-Algorithm centered thinking is manifested in the imperative programing paradigm and is probably the best way to learn the basics of programming and to implement simple tasks.
-However, while algorithms are of great importance, much of the success of todays computer software can be attributed to the development of powerful data structures.
+<b>Generality</b> means that a data structure captures the general structure of the concept it represents.
+It makes it reusable for many different types of problems.
 
-Anyone who has written software that is more than a few hundred lines of code knows that a major challenge is to organize the code in such a way that the complexity do not scale up with the size of the project.
-Otherwise, when returning to a project after a few months, it can be difficult to make modifications to the code since it is hard to remember if or how it will affects other parts of the code.
-The reason for this can largely be traced back to the lack of proper attention paid to data structures.
-In particular, well designed data structures enables abstraction and encapsulation and is a core component of the object oriented programming paradigm.
+<b>Efficiency</b> means that the overhead associated with using the data structure is small.
+Wherever performance is critical, it should be easy to convert it to the data format that is most suited for the given task.
+Method developers should have complete freedom to exploit whatever representation of their data that is needed to achieve maximum performance.
 
-Abstraction is the process of dividing code into logical units that aids the thinking process by allowing the programmer to think on a higher level.
-Effective abstraction allows the programmer to forget about low level details and focus on the overarching problem at hands.
-For some analogies, mathematics and physics are rife with abstractions: derivatives are defined through limits but differential equations are written using derivative symbols, matrices are rectangles of numbers but we carry out much of the algebra manipulating letters representing whole matrices rather than individual matrix elements, etc.
-Much of mathematics is ultimately just addition, subtraction, multiplication, and division of real numbers, but through abstraction problems of much greater complexity can be tackled than if everything was formulated with those four symbols alone.
-Similarly programming is nothing but loops, conditional execution, assignment of values, function calls etc., but further abstraction allows the programmers mind to be freed from low level details to focus on the higher level aspects of much more complex problems.
+<b>Readability</b> means that it allows for highly readable code to be written.
+Application developers should be able to focus on physical questions rather than numerical details.
 
-While abstraction means dividing code into logical units that allows the programmer to think on a higher level, encapsulation means making those units largely independent of each other.
-Different parts of a program should of course interact with each other, but low level details of a specific component should to an as large degree as possible be invisible to other components.
-Instead of allowing (and requiring) other components of a code to manipulate its low level details, components should strive to present themselves to other components through an easy to use interface.
-The interface is provided through a so called application programming interface (API).
-The API is essentially a contract between a component and the outside world, where the component specifies a promise to perform a particular task in respons to a corresponding set of instructions.
-Encapsulation makes it possible to update a piece of code without remembering what other parts of the code is doing, as long as the update respects the contract specified in the API, and is key to solving the scalability issue.
-Developers mainly experienced with imperative programming likely recognize some of these concepts as being embodied in the idea of dividing code into functions.
-Object oriented programming greatly extends this powerful technique.
+<b>Modularity</b> means that the data structures have limited interdependencies.
+This makes it possible to combine them in the many different ways that are required to implement a wide range of applications.
+Modularity also makes it easier for individual components to be broken apart whenever detailed control over the numerics is needed.
+This shields the application developer from unnecessary numerical details, while at the same time providing full transparency to the developer that needs to dig deeper.
 
-Scientific computing is often computationally intensive and much thought therefore goes into the development of different algorithms for solving the same problem.
-Different algorithms may have their own strengths and weaknesses making them the preferred choice under different circumstances.
-Often such algorithms are implemented in completely different software packages with little reuse of code, even though the code for the main algorithm may be a small part of the actual code.
-This is a likely result when data structures are an afterthought and results in both replicated work and less reliable code since code that is reused in multiple projects is much more extensively tested.
-A key to handling situations like this is called polymorphism and is a principle whereby different components essentially provides identical or partly identical contracts to the outside world, even though they internally may work very differently.
-This allows for components to be used interchangeably with little changes to the rest of the code base.
+Through these principles, TBTK makes it easy to get started implementing numerical calculations.
+It provides the efficiency of low-level languages, while also removing the complexity barrier that otherwise often is associated with C++.
+It also aims to make the community involved in developing code for quantum mechanical calculations more integrated.
+Thus, enabling and encouraging the sharing of code by providing a unifying framework that makes it possible to reuse other people's code with minimal effort.
 
-TBTK is first and foremost a collection of data structures intended to enable the implementation of algorithms for solving quantum mechanical problems, but also implements several different algorithms for solving specific problems.
+TBTK also provides utilities and build tools that are meant to streamline the build process.
+Crucially, special attention is paid to enabling reproducibility of scientific results, and [semantic versioning](https://semver.org/spec/v2.0.0.html) is adopted.
+Whenever the log is enabled, the version number together with the git hash for the specific commit is written there.
+This makes it possible to rerun a calculation at a later time with the exact same version of TBTK.
 
-# C++11: Performance vs. ease of use {#cpp11PerformanceVsEaseOfUse}
-
-Scientific computations are often very demanding and high performance is therefore usually a priority.
-However, while low level programming languages offer high performance, they also have a reputation of being relatively difficult to work with.
-A comparatively good understanding of how a computer works is usually required to write a program in languages such as C/C++ and FORTRAN compared to e.g. MATLAB and python.
-However, while C++ provides the ability to work on a very low level, it also provides the tools necessary to abstract away much of these details.
-A well written library can alleviate many of these issues, such as for example putting little requirement on the user to manage memory (the main source of errors for many new C/C++ programmers).
-Great progress in this direction was taken with the establishment of the C++11 standard.
-The language of choice for TBTK has therefore been C++11, and much effort has gone into developing data structures that are as simple as possible to use.
-Particular care has also been taken to avoid having the program crash without giving error messages that provide information that helps the user to resolve the problem.
-
+@link Overview Next: Overview@endlink
 @page Overview Overview
 
-# Model, Solvers, and PropertyExtractors {#ModelSolversAndPropertyExtractors}
-It is useful to think of a typical scientific numerical study as involving three relatively separate questions:
-- What is the model?
-- What method to use?
-- What properties to calculate?
+# Model, Solvers, Properties, and PropertyExtractors {#ModelSolversPropertiesAndPropertyExtractors}
+To carry out a theoretical study, three questions need to be answered:
+- What **model** is used to represent the problem?
+- What **method** is used to investigate the model?
+- What **properties** are going to be calculated?
 
-When writing code, the answer to these three questions essentially determines the input, algorithm, and output, respectively.
-To carry out studies of complex problems, it is important that it is easy to set up the model and to extract the properties, and that the underlying algorithm that performs the work is efficient.
-However, the simultaneous requirement on the algorithm to be efficient and that the calculation is easy to set up easily run contrary to each other.
-Efficiency often require low level optimization in the algorithm, which e.g. can put strict requirement on how the input and output is represented in memory.
-If this means the user is required to setup the input and extract the output on a format that requires deep knowledge about the internal workings of the algorithm, two important problems arise.
-First, if details about the algorithm is required to be kept in mind at all levels of the code it hinders the user from thinking about the problem on a higher level where numerical nuisance has been abstracted  away.
-Second, if the specific requirements of an algorithm determines the structure of the whole program, the whole code has to be rewritten if the choice is made to try another algorithm.
+In a numerical context, this determines the input, the algorithm, and the output, respectively.
+In TBTK, the model specification is performed using the @link Model@endlink class, algorithms are implemented in @link Solvers Solver@endlink classes, and several @link Properties Property@endlink classes exist to store information about extracted properties.
 
-To get around these problems TBTK is designed to encourage a workflow where the three stages of specifying the input, choosing the algorithm, and extracting the properties are largely independent from each other.
-To achieve this TBTK has a class called a @link Model@endlink that allows for general models to be setup.
-Further, algorithms are implemented in a set of different @link Solvers@endlink, which takes a Model and internally converts it to the format most suitable for the algorithm.
-Finally, the Solver is wrapped in a @link PropertyExtractors PropertyExtractor@endlink, where the different PropertyExtractors have a uniform interface.
-By using the PropertyExtractors to extract @link Properties@endlink from the Model, rather than by calling the Solvers directly, most code do not need to be changed if the Solver is changed.
+Typically, most of the computational time is spent executing the algorithm.
+The @link Solvers@endlink are, therefore, where most low-level optimization is required.
+To shield application developers from unnecessary exposure to the numerical details, the Solvers can be wrapped in so-called PropertyExtractors.
+These PropertyExtractors allow for Properties to be extracted from the Solvers using an interface that is independent of the Solver.
+Together, the @link Model@endlink, the @link PropertyExtractors@endlink, and the @link Properties@endlink allow the application developer to set up and run calculations using code that emphasizes the physics of the problem.
+
+The clear separation between the three tasks also makes it possible to change the code associated with either of them without having to modify the code of the other two.
+This makes it possible to easily try multiple solution methods for the same problem.
+
+# Units {#Units}
+No single set of units is the most appropriate in all quantum mechanical problems.
+Therefore, TBTK comes with a @link UnitHandler@endlink that gives the application developer the freedom to specify what units to use.
 
 # Auxiliary tasks
-While the three questions above captures the essence of a typical scientific problem, auxiliary tasks such as reading/writing data from/to file, plotting, etc. are required to solve a problem.
-TBTK therefore also have a large set of tools for simplifying such tasks, allowing the developer to put more mental effort into the main scientific questions.
-Further, a fundamental key feature of TBTK is that it also comes with a powerful method for handling units.
-While physical quantities often are expressed in terms of some specific combinations of units such as K, eV, C, etc. it is often useful to work in some for the problem at hands natural set of units.
-In high-energy physics this may mean \f$ \hbar = c = 1\f$, while in condensed matter physics it can be useful to express energies in terms of Rydbergs or some arbitrary unit set by a hopping parameter.
-For this TBTK provides a @link UnitHandler@endlink that enables the developer to specify the natural units for the given problem.
-All function calls to TBTK functions should be understood to be in terms of the specified natural units.
+TBTK also contains many classes for performing auxiliary tasks such as @link ImportingAndExportingData importing and exporting data@endlink, @link Streams writing logs@endlink, @link Timer profiling code@endlink, and @link Plotting plotting data@endlink.
 
-# Implementing applications {#ImplementingApplications}
-For developers interested in implementing calculations that are meant to answer specific physical questions, which is also referred to as implementing applications, TBTK comes ready with a set of native Solvers.
-This manual is mainly intended to describe this use case and therefore covers the most important classes needed to achieve this.
-In particular, this manual outlines how to properly setup a @link Model@endlink, select a @link Solvers Solver@endlink, and to extract @link Properties@endlink using @link PropertyExtractors@endlink.
+# Application development {#ApplicationDevelopment}
+This manual is aimed at application developers that want to implement calculations that answer specific physical questions.
+Together with the @link InstallationInstructions installation instructions@endlink, it explains the key concepts that are needed to get started.
+For more in-depth information, see the API, which can be found under "Classes" in the menu.
 
-# Implementing new Solvers {#ImplementingNewSolvers}
-TBTK is also intended to enable the development of new Solvers and provides many classes ment to simplify this task.
-This manual does not cover all these classes and the interested developer is instead referred to the API for a more detailed description.
-However, developers are still encouraged to study this manual to understand the design philosophy behind TBTK, and to also use the already existing Solvers as inspiration when writing new Solvers.
-Doing so can significantly reduce the amount of overhead required to create a new Solver and makes it easier for other developers to use the new Solver in their own project.
-The development of new Solvers is greatly encouraged and if you are interested in this but do not know where to start, please contact Kristofer Björnson at kristofer.bjornson@second-tech.com.
-New Solvers can either be released as stand alone packages or be pulled into the TBTK library.
-In the later case the Solver will have to adhere to the main development philosophy of TBTK, but we are happy with providing help with polishing the Solver to the point that it does.
+# Method development {#MethodDevelopment}
+A fundamental purpose of TBTK is to make it possible to develop general-purpose code that can be easily shared with the community.
+For example, implementing new Solvers, providing standardized models for different types of materials, etc.
+Such contributions can either be released as stand-alone packages or be pulled into the TBTK framework itself.
+If you are interested in this, the manual is a good place to become familiar with the general workflow.
+More detailed information is provided in the API, which can be found under "Classes" in the menu.
 
+# Contact
+Please do not hesitate to send an email to kristofer.bjornson@second-tech.com if you have any questions or suggestions.
+
+@link UnitHandler Next: UnitHandler@endlink
 @page UnitHandler UnitHandler
 @link TBTK::UnitHandler See more details about the UnitHandler in the API@endlink
 
 # Units and constants {#UnitsAndConstants}
-Most quantities of interest in physics have units, which means that the numeric value of the quantity depends on which unit it is measured in.
-Different sets of units are relevant in different situations.
-For example is meter (m) a relevant unit for length in macroscopic problems, while Ångström (Å) is more relevant on atomic scales.
-However, computers work with unitless numbers, which means that any piece of code that relies on hard coded numeric values for physical constants implicitly force the user to work in the same set of units.
-This is unacceptable for a library such as TBTK that aims at allowing physicist with different preferences for units to use the library to implement their own calculations.
-It is also very useful if the library can supply such constants in whatever units the developer prefer.
-To solve these issues, TBTK provides a @link TBTK::UnitHandler UnitHandler@endlink that allows the user to specify what units are natural to the problem at hands, and all numbers passed to TBTK functions are assumed to be given in these natural units.
+Most physical quantities have units, but computers work with unitless numbers.
+The units can be made implicit by specifying a software wide convention, but no single set of units are the most natural across all of quantum mechanics.
+Therefore, TBTK provides a @link TBTK::UnitHandler UnitHandler@endlink that makes it possible to specify the units that are most natural for the given application.
+All numbers that are passed to TBTK functions are assumed to be given in these units.
+The UnitHandler also allows for physical constants to be requested in these natural units.
 
 # Base units {#BaseUnits}
-The @link TBTK::UnitHandler UnitHandler@endlink borrows its terminology from the SI standard for units.
-Not by forcing the user to work in SI units, but rather through a clear division of units into base units and derived units.
-To understand what this means, consider distances and times.
-These are quantities that are defined independently from each other and can be measured in for example meters (m) and seconds (s).
-In comparison, a velocity is a measure of distance per time and cannot be defined independently from these two quantities.
-Rather, velocity can be considered a quantity that is derived from the more fundamental quantities distance and time.
-In principle, there is no reason why a given quantity has to be considered more fundamental than any other, and it is perfectly valid to e.g. view time as a quantity derived from the more fundamental quantities distance and velocity.
-However, the fact remains that for the three quantities distance, time, and velocity, only two at a time can be defined independently from each other.
-Further, among all the quantities encountered in physics, only seven can be defined independently from each other.
-By fixing seven such quantities, a set of seven corresponding base units can be defined.
-All other units are considered derived units.
+The @link TBTK::UnitHandler UnitHandler@endlink borrows its terminology from the SI standard.
+Not by forcing the user to work in SI units, but through a clear division of units into base units and derived units.
+To understand what this means, consider distance and time.
+These are independent quantities that can be measured in meters (m) and seconds (s).
+In comparison, velocity is a derived quantity that is defined as distance per time and have the derived unit m/s.
 
-The @link TBTK::UnitHandler UnitHandler@endlink defines the fundamental quantities to be temperature, time, length, energy, charge, and count (amount).
-This is the first point where the UnitHandler deviates from the SI system since the SI system does not define the units for energy and charge as base units, but instead the units for mass, current, and luminosity.
-Note in particular that the UnitHandler currently only defines base units for six different quantities.
-The missing quantity is due to an ambiguity regarding whether an angle should be considered a unitful or unitless quantity.
-Units for angle may therefore be added to the UnitHandler in the future.
-The decision to make the units for energy and charge base units, rather than mass and current as in the SI system, is based on a subjective perception of the former being more generally relevant in quantum mechanical calculations.
+In principle, nothing prevents us from instead consider time to be a quantity that is derived from distance and velocity.
+However, the fact remains that only two of these three quantities can be defined independently of each other.
+It turns out that in nature, only seven quantities can be defined independently of each other.
+If we, therefore, fix seven such quantities and assigning them base units, all other quantities acquire derived units.
 
-Next, the @link TBTK::UnitHandler UnitHandler@endlink also deviates from the SI system by only fixing the base quantities rather than the base units.
-While e.g. the SI unit for length is meter (m), the UnitHandler allows the base unit for length to be set to a range of different units such as meter (m), millimeter (mm), nanometer (nm), Ångström (Å), etc.
-Similarly a range of different options are available for other quantities, such as for example Joule (J) and electronvolt (eV) for energy, and Coulomb (C) and elementary charge (e) for charge.
+The @link TBTK::UnitHandler UnitHandler@endlink defines the base quantities to be temperature, time, length, energy, charge, and count (amount).
+The seventh base quantity, angle, is not yet implemented.
+This is different from the SI system, which defines base units for mass, current, and luminosity instead of energy, charge, and angle.
+The choice to deviate from the SI system by making energy, charge, and angle base quantities is made since these are perceived to be of greater relevance in quantum mechanical calculations.
 
-By default the base units are
+The @link TBTK::UnitHandler UnitHandler@endlink also deviates from the SI system by only fixing the base quantities and not the base units.
+While the SI unit for length is meter (m), the UnitHandler allows the base unit for length to be set to, among other things, meter (m), millimeter (mm), nanometer (nm), and Ångström (Å).
+Similarly, Joule (J) and electronvolt (eV) are possible base units for energy, while Coulomb (C) and elementary charge (e) are examples of base units for charge.
+
+### Default base units
 | Quantity    | Default base unit  | UnitHandler symbol |
 |-------------|--------------------|--------------------|
 | Temperature | K (Kelvin)         | Temperature        |
@@ -175,7 +151,7 @@ By default the base units are
 | Charge      | C (Coulomb)        | Charge             |
 | Count       | pcs (pieces)       | Count              |
 
-Further, the available base units are
+### Available base units
 | Quantity    | Available base units                             |
 |-------------|--------------------------------------------------|
 | Temperature | kK, K, mK, uK, nK                                | 
@@ -185,54 +161,30 @@ Further, the available base units are
 | Charge      | kC, C, mC, uC, nC, pC, fC, aC, Te, Ge, Me, ke, e |
 | Count       | pcs, mol                                         |
 
-Most of these units should be self-explanatory, with Gx, Mx, kx, mx, etc. corresponds to giga, mega, kilo, milli, etc.
-Further, Ao corresponds to Ångström (Å), while pcs corresponds to pieces.
-If further base units are wanted, please do not hesitate to request additions.
+Here Gx, Mx, kx, mx, etc. corresponds to giga, mega, kilo, milli, etc, while Ao means Ångström (Å), and pcs means pieces.
+Additional units can be added on request.
 
-If base units other than the default base units are wanted, it is recommended to set these at the very start of a program.
-For example at the first line in the main routine.
-This avoids ambiguities that results from changing base units in the middle of execution.
-To for example set the base units to mK, ps, Å, meV, C, and mol, type
+If base units other than the default ones are wanted, this should be specified at the very start of the application.
+This avoids ambiguities that otherwise can result from changing base units in the middle of the execution.
+To set the base units to C, mol, meV, Å, mK, and ps, type
 ```cpp
-	UnitHandler::setTemperatureUnit(UnitHandler::TemeratureUnit::mK);
-	UnitHandler::setTimeUnit(UnitHandler::TimeUnit::ps);
-	UnitHandler::setLengthUnit(UnitHandler::LengthUnit::Ao);
-	UnitHandler::setEnergyUnit(UnitHandler::EnergyUnit::meV);
-	UnitHandler::setChargeUnit(UnitHandler::ChargeUnit::C);
-	UnitHandler::setCountUnit(UnitHandler::CountUnit::mol);
+	UnitHandler::setScales({"1 C", "1 mol", "1 meV", "1 Ao", "1 mK", "1 ps"});
 ```
+Note that the units in the brackets have to come in the order charge, count, energy, length, temperature, and time.
 
 # Natural units {#NaturalUnits}
-It is common in physics to use natural units in which for example \f$\hbar = c = 1\f$.
-Such natural units simplify equations and allows mental effort to be concentrated on the physical phenomena rather than numerical details.
-The same is true when implementing numerical calculations and it is for example common in tight-binding calculations to measure energy in units of some hopping parameter \f$t = 1\f$, while the actual unitful value can be some arbitrary value such as \f$t = 724meV\f$.
-In TBTK all function calls are performed in natural units, except for the UnitHandler calls that specifies the natural units.
-This means that if the natural energy unit is set to e.g. \f$724meV\f$, an energy variable with say the value 1.2 that is passed to a function is internally interpreted by TBTK to have the unitful value \f$1.2\times724meV\f$.
-However, note that this conversion is not necessarily done at the point where the function call is made and may be repeatedly done at later points of execution if the variable is stored internally.
-This is why it is important to not reconfigure the @link TBTK::UnitHandler UnitHandler@endlink in the middle of a program since this introduces ambiguities.
-
-The natural unit is also known as the scale of the problem, and the code required to specify the natural energy unit (scale) to be \f$724meV\f$ is
+The @link TBTK::UnitHandler UnitHandler@endlink extends the base unit concept to natural units by allowing for a numerical prefactor.
+For example, consider the following specification.
 ```cpp
-	//Set the energy base unit
-	UnitHandler::setEnergyUnit(UnitHandler::EnergyUnit::meV);
-	//Set the natural energy unit (scale) 
-	UnitHandler::setEnergyScale(724);
+	UnitHandler::setScales({"1 C", "1 pcs", "13.606 eV", "1 m", "1 K", "1 s"});
 ```
-To simplify the notation, these two function calls can be replaced by the single call
-```cpp
-	UnitHandler::setEnergyUnit(724, UnitHandler::EnergyUnit::meV);
-```
-The code for setting the other five natural units is similar, with the word 'Energy' exchanged for the relevant quantity.
-
-For further simplification, it is also possible to set all six units at the same time using
-```cpp
-	UnitHandler::setScales({"1 C", "1 pcs", "1 eV", "1 m", "1 K", "1 s"});
-```
-Note that the units in the brackets has to come in the order charge, count, energy, length, temperature, and time.
+Here the natural energy unit is set to 13.606 eV.
+This means that any energy value that is passed to a TBTK function is interpreted to be given in terms of 13.606 eV.
+For example, the numeric value 1.5 is interpreted to mean 1.5*13.606 eV = 20.409 eV.
+Note the important distinction between base units and natural units: in base units the value is 20.409 eV, but in natural units it is 1.5.
 
 # Converting between base and natural units {#ConvertingBetweenBaseAndNaturalUnits}
-Because the input and output from TBTK functions are in natural units, it is convenient to have a simple way to convert between the two.
-The @link TBTK::UnitHandler UnitHandler@endlink provides such functions through a set of functions on the form
+To convert between base units and natural units, the following functions can be used.
 ```cpp
 	double quantityInBaseUnits
 		= UnitHandler::convertQuantityNtB(quantityInNaturalUnits);
@@ -242,25 +194,17 @@ The @link TBTK::UnitHandler UnitHandler@endlink provides such functions through 
 Here 'Quantity' is to be replace by the corresponding UnitHandler symbol specified in the table above, and NtB and BtN should be read 'natural to base' and 'base to natural', respectively.
 
 # Derived units {#DerivedUnits}
-Since derived units are defined in terms of the base units, it is in principle possible to use the above method to perform conversion of arbitrary derived units to and from natural units.
-However, doing so would require decomposing the derived unit into the corresponding base units, convert the base units one by one, multiply them together with the appropriate exponents, and finally multiply the quantity itself by the result.
-Moreover, even though it e.g. may be most convenient to work in the base units \f$eV\f$, \f$m\f$, and \f$s\f$ for energy, length, and time, in which case the corresponding mass unit is \f$eVs^2/m^2\f$, it may be more convenient to actual specify mass using the unit \f$kg\f$.
-For this reason the @link TBTK::UnitHandler UnitHandler@endlink also has special support for certain derived units.
-Currently this is restricted to mass, magnetic field strength, and voltage, but if more units are wanted, please do not hesitate to request additional derived units.
-The full list of possible derived units are
+To aid conversion between different units, the @link TBTK::UnitHandler UnitHandler@endlink explicitly defines units for several derived quantities.
+Please, do not hesitate to request additional derived units or quantities if needed.
 | Quantity                | Available derived units                      | UnitHandler symbol |
 |-------------------------|----------------------------------------------|--------------------|
 | Mass                    | kg, g, mg, ug, ng, pg, fg, ag, u             | Mass               |
 | Magnetic field strength | MT, kT, T, mT, uT, nT, GG, MG, kG, G, mG, uG | MagneticField      |
 | Voltage                 | GV, MV, kV, V, mV, uV, nV                    | Voltage            |
 
-To for example convert mass in the derived units \f$kg\f$ to and from base and natural units the following function calls can be made
+To convert mass in the derived units \f$kg\f$ to and from base units, the follwoing functions can be called.
 ```cpp
-	double massInBaseUnits    = UnitHandler::convertMassDtB(
-		massInDerivedUnits,
-		UnitHandler::MassUnit::kg
-	);
-	double massInNaturalUnits = UnitHandler::convertMassDtN(
+	double massInBaseUnits = UnitHandler::convertMassDtB(
 		massInDerivedUnits,
 		UnitHandler::MassUnit::kg
 	);
@@ -268,23 +212,27 @@ To for example convert mass in the derived units \f$kg\f$ to and from base and n
 		massInBaseUnits,
 		UnitHandler::MassUnit::kg
 	);
+```
+Similarly, it is possible to convert between derived units and natural units.
+```cpp
+	double massInNaturalUnits = UnitHandler::convertMassDtN(
+		massInDerivedUnits,
+		UnitHandler::MassUnit::kg
+	);
 	double massInDerivedUnits = UnitHandler::convertMassNtD(
 		massInNaturalUnits,
 		UnitHandler::MassUnit::kg
 	);
 ```
-Here DtB, DtN, BtD, and NtD should be read 'derived to base', 'derived to natural', 'base to derived', and 'natural to derived', respectively.
-The function calls mimic the six corresponding combinations of calls for conversion between base and natural units, with the exception that for derived units the actual derived unit has to be passed as a second argument.
+Here DtB, BtD, DtN, and NtD should be read as 'derived to base', 'base to derived', 'derived to natural', and 'natural to derived', respectively.
+The function calls mimic those for conversion between base and natural units, with the exception that the derived unit has to be passed as a second argument.
 
 # Constants {#Constants}
-The specification of physical constants is prone to errors.
-Partly because physical constants more often than not are long strings of rather random digits, and partly because it is easy to make mistakes when converting the constants to the particular units used in the calculation.
-The @link TBTK::UnitHandler UnitHandler@endlink alleviates this issue by providing a range of predefined constants that can be requested on the currently used base or natural units.
-The available constants are
+The following constants can be requested from the @link TBTK::UnitHandler UnitHandler@endlink.
 | Name                    | Symbol           | UnitHandler symbol |
 |-------------------------|------------------|--------------------|
 | Reduced Planck constant | \f$\hbar\f$      | Hbar               |
-| Boltzman constant       | \f$k_B\f$        | K_B                |
+| Boltzmann constant      | \f$k_B\f$        | K_B                |
 | Elementary charge       | \f$e\f$          | E                  |
 | Speed of light          | \f$c\f$          | C                  |
 | Avogadros number        | \f$N_A\f$        | N_A                |
@@ -294,162 +242,244 @@ The available constants are
 | Nuclear magneton        | \f$\mu_n\f$      | Mu_n               |
 | Vacuum permeability     | \f$\mu_0\f$      | Mu_0               |
 | Vacuum permittivity     | \f$\epsilon_0\f$ | Epsilon_0          |
-Please do not hesitate to request further constants.
+Please do not hesitate to request the addition of further constants.
 
-Once the base and natural units have been specified using the calls described above, the physical constants can be requested using function calls on the form
+To get a constant value in base or natural units, perform the following calls with 'Symbol' replaced by the corresponding symbol listed in the table above.
 ```cpp
 	double constantValueInBaseUnits    = UnitHandler::getSymbolB();
 	double constantValueInNaturalUnits = UnitHandler::getSymbolN();
 ```
-Here 'Symbol' is to be replaced by the corresponding symbol listed under 'UnitHandler symbol' in the table above.
 
 # Unit strings {#UnitStrings}
-When printing values, it is useful to also print the actual unit strings.
-The @link TBTK::UnitHandler UnitHandler@endlink therefore also provides methods for requesting the base unit strings for different quantities, which is obtained through function calls on the form
+To aid with printing values to the output, the @link TBTK::UnitHandler UnitHandler@endlink provides methods for requesting the string representation of a given quantity or constants base unit.
 ```cpp
-	string unitSring = UnitHandler::getSymbolUnitString();
+	string unitString = UnitHandler::getSymbolUnitString();
 ```
-Here 'Symbol' can be any of the symbols listed in the tables over base units, derived units, and constants.
+Here 'Symbol' should be replaced by one of the symbols listed in the tables over base units, derived units, and constants.
+Note that the unit string corresponds to the base units, so any output from TBTK should first be converted from natural units to base units before being printed together with the unit string.
 
+@link Indices Next: Indices@endlink
 @page Indices Indices
 @link TBTK::Index See more details about the Index in the API@endlink
 
-# Complex index structures {#ComplexIndexStructures}
-To get an idea about the generality of the problems that TBTK can handle, imagine a molecule on top of a graphene sheet, which in turn sits on top of a three-dimensional magnetic substrate material.
-Further assume that we can model the three individual systems in the following way
-- Molecule: A one-dimensional chain with three orbitals and two spins per site.
-- Graphene: A two-dimensional sheet with two atoms per unit cell and with a single orbital and two spins per atom.
-- Substrate: A three-dimensional bulk with three atoms per unit cell, five orbitals per atom, and a single relevant spin-species.
+# Physical indices
+Physical quantities often carry indices.
+For example, the wave function \f$\Psi_{\sigma}(x, y, z)\f$ has three spatial indices \f$x, y, z\f$, and a spin index \f$\sigma\f$.
+In TBTK, each such index is referred to as a subindex and are grouped into an @link TBTK::Index Index@endlink such as {x, y, z, spin}.
+The wave function is therefore said to be indexed by a single Index.
+Likewise, the two operators in the Hamiltonian \f$H = \sum_{\mathbf{i}\mathbf{j}}a_{\mathbf{i}\mathbf{j}}c_{\mathbf{i}}^{\dagger}c_{\mathbf{j}}\f$ are each indexed by a single Index, while the coefficient \f$a_{\mathbf{i}\mathbf{j}}\f$ carries two Indices.
 
-To describe a system like this, we need three types of operators with three different index structures.
-We can for example introduce the operators \f$a_{xo\sigma}\f$, \f$b_{xys\sigma}\f$, and \f$c_{xyzso}\f$ for the molecule, graphene, and substrate, respectively.
-Here \f$x\f$, \f$y\f$, and \f$z\f$ are spatial indices, \f$s\f$ is a sublattice index, \f$o\f$ is an orbital index, and \f$\sigma\f$ is a spin index.
+An @link TBTK::Index Index@endlink can contain an arbitrary number of subindices and have an arbitrary structure.
+The Indices {x, y, z, spin}, {x, y, sublattice, orbital, spin}, {kx, ky, spin}, and {spin, orbital, x, y} all have valid Index structures.
+The only limitation is that the subindices must be non-negative numbers.
 
-First we note that the number of indices per operator is not the same.
-Further, even though every operator have an \f$x\f$-index, there is not necessarily any actual relationship between the different \f$x\f$-indices.
-In particular, the molecule may be oriented along some axis which does not coincide with the natural coordinate axes of the other two materials, and even more importantly, there is no reason why \f$x\f$ should run over the same number of values in the different materials.
-Rather, the \f$x\f$-index is just a symbol indicating the first spatial index for the corresponding operator.
-Similarly, the sublattice and orbital indices for the different operators are not the same.
+# Creating indices {#CreatingIndices}
+An @link TBTK::Index Index@endlink can be created as follows
+```cpp
+	Index index({x, y, z, spin});
+```
+However, most of the time Indices enter as function arguments, in which case they commonly appear in code simply as
+```cpp
+	... {x, y, z, spin} ...
+```
+Given and Index, it is possible to get its size and compontents using
+```cpp
+	unsigned int size = index.size();
+	int x = index[0];
+	int y = index[1];
+	int z = index[2];
+	int spin = index[3];
+```
 
-In TBTK systems like this can easily be modeled using flexible indices that compounds a set of indices into a list of non-negative integers in curly braces.
-Such a compound index is usually referred to simply as an @link TBTK::Index Index@endlink, while the individual components are referred to as subindices.
-While we above used different letters to differentiate between operators with different index structures, in TBTK this is instead handled by introducing one more subsystem identifier at the front of the list of subindices.
-We can for example write typical indices as (spin up = 0, spin down = 1)
-| Index              | Description                                                                |
-|--------------------|----------------------------------------------------------------------------|
-| {0, 1, 0, 1}       | Molecule (subsystem 0), site 1, orbital 0, spin down                       |
-| {1, 2, 3, 0, 0}    | Graphene (subsystem 1), unit cell (2, 3), sublattice site 0, spin up       |
-| {2, 3, 2, 1, 2, 3} | Substrate (subsystem 2), unit cell (3, 2, 1), sublattice site 2, orbital 3 |
+# Hilbert space indices {#HilbertSpaceIndices}
+Algorithms typically work most efficiently when the indices are linear.
+For example, if the indices \f$\mathbf{i}\f$ and \f$\mathbf{j}\f$ in the Hamiltonian \f$H = \sum_{\mathbf{i}\mathbf{j}}a_{\mathbf{i}\mathbf{j}}c_{\mathbf{i}}^{\dagger}c_{\mathbf{j}}\f$ are simple row and column indices, it is straight forward to express \f$H\f$ as a matrix and diagonalize it.
+A possible linearization of {x, y, z, spin} is h = 2*(sizeX*(sizeY*x + y) + z) + spin.
+In TBTK, a linearized index such as h is referred to as a Hilbert space index.
 
-# Advanced: Limitations on the index structure {#LimitationsOnTheIndexStructure}
-A limitation that has been mentioned about the indices is that their subindices have to be non-negative numbers.
-Although this is no real restriction on what types of problems that can be modeled, negative indices abounds in quantum mechanics and this is certainly not without inconvenience.
-However, the optimizations and additional features that are enabled by this design decision has been deemed far more important in this case.
-Nevertheless, support for negative indices could be added in the future through additional "syntactic sugar".
-Any developer interested in pursuing this direction is most welcome to discuss these ideas.
+There are two major issues with hard coding a linearization like the one above.
+First, it locks the implementation to a particular system, in this case, a three-dimensional lattice of size sizeX*sizeY*sizeZ.
+Second, it is a mental burden to the developer.
+The more intuitive notation {x, y, z, spin} allows for emphasis to be put on physics rather than numerics.
 
-Another restriction has to do with the fact that the subsystem index was added at the front of the indices.
-This is not strictly required, at least in case the number of \f$x\f$-indices are the same for all three operators.
-TBTK requires that systems only differ in their index structure to the right of a subindex for which they have different values.
-That is, by letting the first subsystem index be 0, 1, and 2 for the three different systems, the rest of the index structure for the three indices can be completely different.
+Therefore, TBTK internally linearizes the indices in a way that is both generally applicable and which generates a minimal Hilbert space size for the given problem.
+This allows application developers to specify the @link Model Models@endlink and extract @link Properties@endlink using physical @link TBTK::Index Indices@endlink alone.
+It also allows method developers to request the Model in a linear Hilbert space basis.
+Application developers can, therefore, focus on the physics of their particular problem, while method developers can write efficient general-purpose @link Solvers@endlink that are free from Model specific assumptions.
 
-To be more precise what it means for two systems to have different subindex structure: two systems differ in their subindex structure if some specific subindex runs over different number of values for the two systems, or if a particular subindex exist in one system but not in the other.
-This puts no real restriction on the types of problems that can be solved.
-However, more tricky situations than the one above can arise.
-Let us for example consider the case where the substrate above has different number of orbitals for the different sublatice sites.
-In this case it is an error to write the indices on the form {subsystem, x, y, z, orbital, sublattice}, because the orbital subindex runs over different numbers of orbitals even though they can have identical values for all the subindices to the left of the orbital subindex.
-The original subindex order {subsystem, x, y, z, sublattice, orbital} given above does not have this problem though, since the sublattice index stands to the left of the orbital subindex and is different for the different sites.
-In general, ordering the subindices with "less local" subindices to the left should almost always resolve such issues.
+# Advanced: Complex index structures {#ComplexIndexStructures}
+When setting up a @link Model@endlink, there are two rules:
 
+- <b>Rule 1:</b> For a given @link TBTK::Index Index@endlink structure, not every Index in a range needs to be included.
+- <b>Rule 2:</b> If two Indices differ in value in a subindex, the Index structures that result from the remaining subindices to the right of it are allowed to be completely unrelated.
+
+<b>Example 1:</b>
+Consider a square lattice with Index structure {x, y} and size 10x10.
+By <b>rule 1</b>, we are allowed to exclude N lattice points from the @link Model@endlink.
+TBTK ensures that a minimal Hilbert space is generated, which in this case, will have the size 100 - N.
+
+<b>Example 2:</b>
+Consider a molecule on top of a three-dimensional substrate.
+Each subsystem may be best described by {x, spin} and {x, y, z, spin}, respectively.
+Moreover, the x-subindices do not need to be related: neither by being aligned along the same direction nor by having the same ranges.
+This can be modeled using the Index structures {0, x, spin} and {1, x, y, z, spin}, where a subsystem subindex has been prepended.
+Since the two subsystems differ in value in the first subindex, <b>rule 2</b> implies that there needs to be no relation between the subindices to the right of it.
+
+<b>Example 3:</b>
+Consider a two-dimensional lattice with a unit cell that contains two different types of atoms.
+An appropriate @link TBTK::Index Index@endlink structure may be {x, y, sublattice, orbital, spin}.
+By <b>rule 1</b>, there is no problem if the number of orbitals is different for the two different sublattices.<b>*</b>
+Moreover, if one of the sublattices only has one orbital, it is possible to drop the orbital subindex completely for that sublattice.
+By <b>rule 2</b>, it is possible to use the Index structures {x, y, 0, orbital, spin} and {x, y, 1, spin}.
+More specifically, this is possible since the sublattice subindex differs in value for the two sublattices and it stands to the left of the orbital subindex.
+
+<b>*</b> In fact, by <b>rule 1</b>, it is also possible for two different sites on the same sublattice to have a different number of orbitals, as may be the case in a doped material.
+
+@link HoppingAmplitudes Next: HoppingAmplitudes@endlink
+@page HoppingAmplitudes HoppingAmplitudes
+@link TBTK::HoppingAmplitude See more details about the HoppingAmplitude in the API@endlink
+
+# Terminology {#Terminology}
+Consider the Schrödinger equation
+<center>\f$i\hbar\frac{d}{dt}|\Psi(t)\rangle = H|\Psi(t)\rangle\f$,</center>
+and the single-particle Hamiltonian
+<center>\f$H = \sum_{\mathbf{i}\mathbf{j}}a_{\mathbf{i}\mathbf{j}}c_{\mathbf{i}}^{\dagger}c_{\mathbf{j}}\f$.</center>
+Using finite differences, the Schrödinger equation can be rewritten as
+<center>\f$|\Psi(t+dt)\rangle = \left(1 - i\hbar Hdt\right)|\Psi(t)\rangle\f$.</center>
+In this form, it is clear that \f$a_{\mathbf{i}\mathbf{j}}\f$ is related to the rate at which single-particle processes move particles from state \f$\mathbf{j}\f$ to state \f$\mathbf{i}\f$.
+Due to TBTK's origin in tight-binding calculations, these parameters are called hopping amplitudes.
+However, we note that not all \f$a_{\mathbf{i}\mathbf{j}}\f$ corresponds to the movement of particles.
+For example, \f$a_{\mathbf{i}\mathbf{i}}\f$ is related to the rate at which particles are annihilated and immediately recreated in the same state.
+Likewise, if \f$\mathbf{i}\f$ and \f$\mathbf{j}\f$ only differ in a spin index, then the hopping amplitude is related to the rate of a spin-flip process.
+
+The indices \f$\mathbf{i}\f$ and \f$\mathbf{j}\f$ are the state in which the particle ends up and starts out, respectively.
+Therefore they are referred to as to-indices and from-indices, respectively, in TBTK.
+
+# The HoppingAmplitude class {#TheHoppingAmplitudeClass}
+The @link TBTK::HoppingAmplitude HoppingAmplitude@endlink class represents \f$a_{\mathbf{i}\mathbf{j}}\f$ and can be created as
+```cpp
+	HoppingAmplitude hoppingAmplitude(amplitude, toIndex, fromIndex);
+```
+Here amplitude is of the type std::complex<double> and toIndex and fromIndex are @link Indices@endlink.
+However, typically a HoppingAmplitude is created as an argument to a function with explicit Indices written out, in which case it looks more like
+```cpp
+	... HoppingAmplitude(amplitude, {x+1, y, spin}, {x, y, spin}) ...
+```
+
+Given a @link TBTK::HoppingAmplitude HoppingAmplitude@endlink, it is possible to extract the amplitude and the to- and from-@link Indices@endlink.
+```cpp
+	complex<double> amplitude = hoppingAmplitude.getAmplitude();
+	const Index &toIndex      = hoppingAmplitude.getToIndex();
+	const Index &fromIndex    = hoppingAmplitude.getFromIndex();
+```
+
+# Advanced: Callback functions {#AdvancedCallbackFunctions}
+Sometimes it is useful to delay the specification of a @link TBTK::HoppingAmplitude HoppingAmplitudes@endlink value.
+This is, for example, the case when a @link Model@endlink is going to be solved multiple times for different parameter values.
+Another case is when some of the parameters in the Hamiltonian are to be determined self-consistently.
+For this reason, it is possible to pass a callback to the HoppingAmplitude instead of a value.
+
+Consider a problem with the @link Indices Index@endlink structure {x, y, spin} and let \f$J\f$ be a global parameter that determines the strength of a Zeeman term.
+It is then possible to implement a callback as follows
+```cpp
+	complex<double> zeemanCallback(
+		const Index &to,
+		const Index &from
+	) const{
+		//Get spin index.
+		int spin = from[2];
+
+		//Return the value of the HoppingAmplitude
+		return -J*(1 - 2*spin);
+	}
+```
+The function *zeemanCallback()* is responsible for returning the correct value for the given combination of to- and from-Indices.
+Note that the spin is read from the from-Index.
+This is because it is assumed that this callback will only be used together with HoppingAmplitudes for which the to- and from-Indices are the same.
+In general, the implementation of a callback function may involve looking at multiple subindices of both Indices to figure out what to return.
+
+With the callback defined it is possible to create a callback dependent @link TBTK::HoppingAmplitude HoppingAmplitude@endlink.
+```cpp
+	HoppingAmplitude up(zeemanCallback, {0, 0, 0}, {0, 0, 0});
+	HoppingAmplitude down(zeemanCallback, {0, 0, 1}, {0, 0, 1});
+
+	J = 1;
+	Streams::out
+		<< up.getAmplitude() << "\t"
+		<< down.getAmplitude() << "\n";
+
+	Streams::out << "\n";
+	J = 2;
+	Streams::out
+		<< up.getAmplitude() << "\t"
+		<< down.getAmplitude() << "\n";
+```
+<b>Output:</b>
+```bash
+	-1
+	1
+
+	-2
+	2
+```
+
+@link Model Next: Model@endlink
 @page Model Model
 @link TBTK::Model See more details about the Model in the API@endlink
 
 # The Model class {#TheModelClass}
-The main class for setting up a model is the @link TBTK::Model Model@endlink class, which acts as a container for model specific parameters such as the Hamiltonian, temperature, chemical potential, etc.
-For a simple example, lets consider a simple two level system described by the Hamiltonian
+The @link TBTK::Model Model@endlink class is a container for the Hamiltonian, chemical potential, temperature, statistics, etc.
+It is best understood through an example, therefore consider a two-level system described by the Hamiltonian
 <center>\f$H = U_{0}c_{0}^{\dagger}c_{0} + U_{1}c_{1}^{\dagger}c_{1} + V\left(c_{0}^{\dagger}c_{1} + H.c.\right)\f$,</center>
-which is to be studied at T = 300, and zero chemical potential.
-Before setting up the model we write the Hamiltonian on the canonical form
+which can be written
 <center>\f$H = \sum_{\mathbf{i}\mathbf{j}}a_{\mathbf{i}\mathbf{j}}c_{\mathbf{i}}^{\dagger}c_{\mathbf{j}}\f$,</center>
 where \f$a_{00} = U_0\f$, \f$a_{11} = U_1\f$, and \f$a_{01} = a_{10} = V\f$.
-Once on this form, the model is ready to be fed into a Model object, which is achieved as follows
-```cpp
-	double U_0 = 1;
-	double U_1 = 2;
-	double V = 0.5;
+Further, assume that we will study the system at temperature T = 300K, chemical potential mu = 0, and for particles with Fermi-Dirac statistics.
 
+Letting U_0, U_1, and V be the numerical symbols for \f$U_0, U_1\f$, and \f$V\f$, we can implement the model as follows.
+```cpp
+	//Create the Model.
 	Model model;
+
+	//Set the temperature, chemical potential, and statistics.
 	model.setTemperature(300);
 	model.setChemicalPotential(0);
+	model.setStatistics(Statistics::FermiDirac);
+
+	//Specify the Hamiltonian.
 	model << HoppingAmplitude(U_0, {0}, {0});
 	model << HoppingAmplitude(U_1, {1}, {1});
 	model << HoppingAmplitude(V,   {0}, {1}) + HC;
+
+	//Construct a linearized basis for the Model.
 	model.construct();
 ```
-Let us here make a note about the terminology used in TBTK.
-From the canonical form for the Hamiltonian, and if we write the time evolution of a state as
-<center>\f$\Psi(t+dt) = (1 - iHdt)\Psi(t)\f$,</center>
-it is clear that \f$a_{\mathbf{i}\mathbf{j}}\f$ is the amplitude associated with the process where an electron is removed from \f$\mathbf{j}\f$ and inserted at \f$\mathbf{i}\f$.
-That is, in tight-binding terminology, the amplitude associated with a particle hopping from \f$\mathbf{j}\f$ to \f$\mathbf{i}\f$.
-While the term hopping amplitude often is restricted to the case where the two indices actually differ from each other, in TBTK it is used to refer to any \f$a_{\mathbf{i}\mathbf{j}}\f$.
-Moreover, the indices \f$\mathbf{i}\f$ and \f$\mathbf{j}\f$ are often referred to as to- and from-indices, respectively, and a @link TBTK::HoppingAmplitude HoppingAmplitude@endlink is created as
+Here the operator<< is used to pass the @link HoppingAmplitudes@endlink to the @link TBTK::Model Model@endlink.
+Also note the use of "+ HC" in the line
 ```cpp
-	HoppingAmplitude(value, toIndex, fromIndex);
+	model << HoppingAmplitude(V, {0}, {1}) + HC;
 ```
-In the example above two such HoppingAmplitudes are created for the diagonal entries and added to the Model using the <<-operator.
-Similarly, in the second last line a HoppingAmplitude that corresponds to \f$a_{01}\f$ is created and added to the Model.
-The additional expression + *HC* at the end of the line means that also the Hermitian conjugate is added.
-The last line
+which is equivalent to
 ```cpp
-	model.construct();
+	model << HoppingAmplitude(V,       {0}, {1});
+	model << HoppingAmplitude(conj(V), {1}, {0});
 ```
-creates a mapping between the indices that have been added to the Model and a linear Hilbert space index.
-It is important that this call is performed after the HoppingAmplitudes has been added to the Model and that no more HoppingAmplitudes are added after this point.
+The final call to *model.construct()* creates a @link HilbertSpaceIndices linearized Hilbert space basis@endlink for the Indices passed into the Model.
 
-# Physical indices and Hilbert space indices {#PhysicalIndicesAndHilbertSpaceIndices}
-Although the above example is too simple to make the point since the index structure is trivial, we know from the @link Indices@endlink chapter that TBTK allows also much more complicated index structures to be used.
-One of the core features of TBTK is embodied in the call to *model.construct()*.
-To understand why, we note that although the indices in the problem above have a linear structure, this is rarely the case in general.
-In other problems, such as for example a two-dimensional lattice the index structure is not linear but is easily linearized by defining a mapping such as \f$h = L_y x + y\f$.
-The indices \f$(x, y)\f$ (or {x, y} in TBTK notation) are called physical indices, while linearized indices such as \f$h\f$ are referred to as Hilbert space indices.
+# A more complex example {#AMoreComplexExample}
+To see how a more complex @link TBTK::Model Model@endlink can be set up, consider a magnetic impurity on top of a two-dimensional substrate of size 51x51.
+We describe the substrate with the Hamiltonian
+<center>\f$H_{S} = U_S\sum_{\mathbf{i}\sigma}c_{\mathbf{i}\sigma}^{\dagger}c_{\mathbf{i}\sigma} - t\sum_{\langle\mathbf{i}\mathbf{j}\rangle\sigma}c_{\mathbf{i}\sigma}^{\dagger}c_{\mathbf{j}\sigma},\f$</center>
+where \f$\mathbf{i}\f$ is a two-dimensional index, \f$\sigma\f$ is a spin index, and \f$\langle\mathbf{i}\mathbf{j}\rangle\f$ denotes summation over nearest neighbors.
+The impurity is described by
+<center>\f$H_{Imp} = (U_{Imp} - J)d_{\uparrow}^{\dagger}d_{\uparrow} + (U_{Imp} + J)d_{\downarrow}^{\dagger}d_{\downarrow},\f$</center>
+and is connected to the site (25, 25) in the substrate through
+<center>\f$H_{Int} = \delta\sum_{\sigma}c_{(25,25)\sigma}^{\dagger}d_{\sigma} + H.c.\f$</center>
+The total Hamiltonian is
+<center>\f$H = H_{S} + H_{Imp} + H_{Int}\f$.</center>
 
-So why do we need linearization?
-One important answer is that algorithms almost universally are going to be most efficient in a linear basis.
-These algorithms can be made much more general if the linearization procedure is not part of the algorithm itself.
-If a mapping such as \f$h = L_y x + y\f$ is hard coded into a @link Solvers Solver@endlink, it essentially becomes a single purpose solver.
-Possibly it can be given a few knobs to turn to adjust the system size and parameter values, but the code becomes locked to a very specific type of problem.
-On the contrary, a Solver that accepts any @link TBTK::Model Model@endlink that can provide itself on a linearized form can be reused for widely different types of problems.
-
-So why physical indices?
-Is it not better if the developer performs the linearization from the start to improve performance?
-This question is certainly very important to consider in case the automized linearization comes with a significant performance penalty.
-The mapping from physical indices to Hilbert space and back again is certainly not a computationally cheap task if implemented through a naive approach such as a lookup table.
-In fact, this would have been prohibitively expensive.
-One of the most (or simply the most) important core data structures of TBTK is a @link TBTK::HoppingAmplitudeTree tree structure@endlink in which the @link TBTK::HoppingAmplitude HoppingAmplitudes@endlink are stored.
-It allows for conversion back and forth between physical indices and Hilbert space indices with an overhead cost that is negligible in most parts of the code.
-Taking the responsibility to linearize indices of from the developer is a significant abstraction that allows mental capacity to be focused on physics instead of numerics.
-
-The one place where the overhead really is important is in the @link Solvers@endlink where most of the computational time usually is spent.
-Solvers therefore usually internally convert the @link TBTK::Model Model@endlink to some much more optimal format using the linearization provided by the Model before starting the main calculation.
-This is also the reason why, as described in the @link PropertyExtractors@endlink chapter, it is recommended to not use the Solvers immediately to extract @link Properties@endlink, but to instead wrap them in PropertyExtractors.
-The PropertyExtractors provides the interface through which Properties can be extracted from the Solvers using physical indices.
-In short, the distinction between physical indices and Hilbert space indices allows application developers to focus on the physics of the particular problem, while simultaneously allowing Solver developers to focus on numerical details and general properties rather than system specific details.
-
-# Example: A slightly more complex Model {#ExampleASlightlyMoreComplexModel}
-To appreciate the ease with which @link TBTK::Model Models@endlink can be setup in TBTK, we now consider a slightly more complex example.
-Consider a magnetic impurity on top of a two-dimensional substrate of size 51x51 described by
-<center>\f$H = H_{S} + H_{Imp} + H_{Int}\f$</center>
-where
-<center>\f{eqnarray*}{
-	H_{S} &=& U_S\sum_{\mathbf{i}\sigma}c_{\mathbf{i}\sigma}^{\dagger}c_{\mathbf{i}\sigma} - t\sum_{\langle\mathbf{i}\mathbf{j}\rangle\sigma}c_{\mathbf{i}\sigma}^{\dagger}c_{\mathbf{j}\sigma},\\
-	H_{Imp} &=& (U_{Imp} - J)d_{\uparrow}^{\dagger}d_{\uparrow} + (U_{Imp} + J)d_{\downarrow}^{\dagger}d_{\downarrow},\\
-	H_{Int} &=& \delta\sum_{\sigma}c_{(25,25)\sigma}^{\dagger}d_{\sigma} + H.c.
-\f}</center>
-Here \f$\mathbf{i}\f$ is a two-dimensional index, \f$\langle\mathbf{i}\mathbf{j}\rangle\f$ indicates summation over nearest neighbors, \f$\sigma\f$ is a spin index, and \f$c_{\mathbf{i}}\f$ and \f$d_{\sigma}\f$ are operators on the substrate and impurity, respectively.
-The parameters \f$U_S\f$ and \f$U_{Imp}\f$ are on-site energies on the substrate and impurity, respectively, while \f$t\f$ is a nearest neighbor hopping amplitude, \f$J\f$ is a Zeeman term, and \f$\delta\f$ is the coupling strength between the substrate and impurity.
-
-We first note that an appropriate index structure is {0, x, y, s} for the substrate and {1, s} for the impurity.
-Using this index structure we next tabulate the hopping parameters on the canonical form given at the beginning of this chapter.
+We first note that an appropriate @link Indices Index@endlink structure is {0, x, y, s} for the substrate and {1, s} for the impurity, where s means spin.
+Reading of the Hamiltonian terms above, we can tabulate the hopping amplitudes.
 | Hopping amplitude                          | Value         | To Index         | From Index       |
 |--------------------------------------------|---------------|------------------|------------------|
 | \f$a_{(0,x,y,\sigma),(0,x,y,\sigma)}\f$    | \f$U_S\f$     | {0,   x,   y, s} | {0,   x,   y, s} |
@@ -462,15 +492,12 @@ Using this index structure we next tabulate the hopping parameters on the canoni
 | \f$a_{(1,\downarrow),(1,\downarrow)}\f$    | \f$J\f$       | {1, 1}           | {1, 1}           |
 | \f$a_{(0,25,25,\sigma),(1,\sigma)}\f$      | \f$\delta\f$  | {0,  25,  25, s} | {1, s}           |
 | \f$a_{(1,\sigma),(0,25,25,\sigma)}\f$      | \f$\delta\f$  | {1, s}           | {0,  25,  25, s} |
+The left column contains the analytic symbol, while the three other columns contain the corresponding information that is needed to create a @link HoppingAmplitudes HoppingAmplitude@endlink.
+Subindices that are not numeric values (or arrows) should be understood to be summed/looped over in the analytic/numeric expressions.
 
-Symbolic subindices should be understood to imply that the values are valid for all possible values of the corresponding subindices.
-We also note that hopping amplitudes that appear multiple times should be understood to add up to the final value.
-For example does \f$a_{(1,\uparrow),(1,\uparrow)}\f$ appear twice (sixth and seventh row) and should be understood to add to \f$U_{Imp} - J\f$.
-While the first column is the analytical representation of the symbol for the hopping amplitudes, the third and fourth column is the corresponding numerical representation.
-In particular, we note that we use 0 to mean up spin and 1 to mean down spin.
-Next we note that the table can be reduced if we take into account that row 2 and 3, 4 and 5, and 9 and 10 are each others Hermitian conjugates.
-Further, row 7 and 8 can be combined into a single row by writing the value as \f$-J(1 - 2s)\f$.
-The table can therefore if we also ignore the first column be compressed to
+The line pairs (2 and 3), (4 and 5), and (9 and 10) are the Hermitian conjugates of each other.
+Further, line 7 and 8 can be combined into a single line if we write the amplitude as -J(1 - 2s).
+Taking this into account, the table can be compressed into
 | Value            | To Index         | From Index       | Add Hermitian conjugate |
 |------------------|------------------|------------------|-------------------------|
 | \f$U_S\f$        | {0,   x,   y, s} | {0,   x,   y, s} |                         |
@@ -480,7 +507,7 @@ The table can therefore if we also ignore the first column be compressed to
 | \f$-J(1 - 2s)\f$ | {1, 0}           | {1, 0}           |                         |
 | \f$\delta\f$     | {0,  25,  25, s} | {1, s}           | Yes                     |
 
-Once on this form, it is simple to implement the @link TBTK::Model Model@endlink as follows
+It is now straight forward to implement the @link TBTK::Model Model@endlink.
 ```cpp
 	const int SIZE_X = 51;
 	const int SIZE_Y = 51;
@@ -504,7 +531,8 @@ Once on this form, it is simple to implement the @link TBTK::Model Model@endlink
 				);
 
 				if(x+1 < SIZE_X){
-					model << HoppingAmplitude(-t,
+					model << HoppingAmplitude(
+						-t,
 						{0, x+1, y, s},
 						{0, x,   y, s}
 					) + HC;
@@ -533,73 +561,66 @@ Once on this form, it is simple to implement the @link TBTK::Model Model@endlink
 		) + HC;
 	}
 
-	//Construct model.
+	//Construct a linearized basis for the Model.
 	model.construct();
 ```
 
-For pedagogical reasons we here went through the process of converting the analytical Hamiltonian to a numerical @link TBTK::Model Model@endlink in quite some detail.
-However, with a small amount of experience the second table can be read of immediately from the Hamiltonian, cutting down the work significantly.
-A key advice is to utilize the Hermitian conjugate to their maximum like we did above.
-Note in particular that we used this to only have \f$x+1\f$ and \f$y+1\f$ in one position for the indices, respectively (and no \f$x-1\f$ or \f$y-1\f$).
-Doing so reduces the number of lines of code, improves readability, simplifies maintainance, and consequently reduces the chance of introducing errors.
+The conversion from the analytic Hamiltonian to the numeric @link TBTK::Model Model@endlink was here done in quite some detail.
+However, with a bit of experience it is possible to read of the @link HoppingAmplitudes HoppingAmplitude@endlink parameters immediately from the Hamiltonian without having to write down any tables.
+
+We finish this example with the advice to always utilize the Hermitian conjugate to its maximum, as we did above.
+Note in particular that we used this to only have \f$x+1\f$ and \f$y+1\f$ in the to-@link Indices Index@endlink (and there are no \f$x-1\f$ or \f$y-1\f$).
+In short, only forward hopping terms are explicit.
+This improves readability and reduces the chance of introducing errors.
 
 # Advanced: Using IndexFilters to construct a Model {#AdvancedUsingIndexFiltersToConstructAModel}
-While the already introduced concepts significantly simplifies the modeling of complex geometries, TBTK provides further ways to simplify the modeling stage.
-In particular, we note that in the example above, conditional statements had to be used in the first for-loop to ensure that @link TBTK::HoppingAmplitude HoppingAmplitudes@endlink were not added across the boundary of the system.
-For more complex structures it is useful to be able to separate the specification of such exceptions to the rule from the specification of the rule itself.
-This can be accomplished through the use of an @link TBTK::AbstractIndexFilter IndexFilter@endlink, which can be used by the @link TBTK::Model Model@endlink to accept or reject HoppingAmplitudes based on their to- and from-@link Indices@endlink.
+In the example above, if-statements were added inside the first loop to prevent @link HoppingAmplitudes@endlink from being added across the boundary.
+The code can be made more readable by using an @link TBTK::AbstractIndexFilter IndexFilter@endlink, which allows for the handling of such exceptions to be separated from the main @link TBTK::Model Model@endlink specification.
 
-In this example we will show how to setup a simple two-dimensional sheet like the substrate above and in addition add a hole in the center of the substrate.
-We will here assume that the size of the substrate and the radius of the hole has been specified using three global variables SIZE_X, SIZE_Y, and RADIUS.
-A good implementation would certainly remove the need for global variables, but we use this method here to highlight the core concepts since removing the global variables requires a bit of extra code that obscures the key point.
-Moreover, for many applications such parameters would be so fundamental to the calculation that it actually may be justified to use global variables to store them.
-
-The first step toward using an @link TBTK::AbstractIndexFilter IndexFilter@endlink is to create one.
-The syntax for doing so is as follows:
+We here demonstrate how an @link TBTK::AbstractIndexFilter IndexFilter@endlink can be used to create a square shaped geometry with a hole inside.
+To do so, we begin by defining the IndexFilter.
 ```cpp
 class Filter : public AbstractIndexFilter{
 public:
+	Filter(int sizeX, int sizeY, double radius){
+		this->sizeX = sizeX;
+		this->sizeY = sizeY;
+		this->radius = radius;
+	}
+
 	Filter* clone() const{
-		return new Filter();
+		return new Filter(sizeX, sizeY, radius);
 	}
 
 	bool isIncluded(const Index &index){
-		double radius = sqrt(
-			pow(index[0] - SIZE_X/2, 2)
-			+ pow(index[1] - SIZE_Y/2, 2)
+		double r = sqrt(
+			pow(index[0] - sizeX/2, 2)
+			+ pow(index[1] - sizeY/2, 2)
 		);
-		if(radius < RADIUS)
+		if(r < radius)
 			return false;
-		else if(index[0] < 0 || index[0] >= SIZE_X)
+		else if(index[0] < 0 || index[0] >= sizeX)
 			return false;
-		else if(index[1] < 0 || index[1] >= SIZE_Y)
+		else if(index[1] < 0 || index[1] >= sizeY)
 			return false;
 		else
 			return true;
 	}
+private:
+	int sizeX, sizeY;
+	double radius;
 };
 ```
-The experienced C++ programmer recognizes this as an implementation of an abstract base class and is encouraged to write more complicated filters.
-In this case we note that it is important that the function *clone()* returns a proper copy of the Filter, which in this case is trivial since there are no member variables.
-However, for the developer not familiar with such concepts, it is enough to view this as a template where the main action takes place in the function *isIncluded()*.
-This function is responsible for returning whether a given input @link Indices Index@endlink is included in the @link TBTK::Model Model@endlink or not.
-As seen we first calculate the *radius* for the Index away from the center of the sheet.
-Next we check whether the calculated *radius* is inside the specified *RADIUS* for the hole, or if it falls outside the boundaries of the sample.
-If either of these are true we return false, while otherwise we return true.
+The Filter needs to know the size of the the system and the holes radius, therefore the constructor takes these as arguments and stores them in its private variables.
+The *clone()*-function is required and should return a pointer to a copy of the Filter.
+Finally, the *isIncluded()*-function is responsible for returning true or false depending on whether the given @link Indices Index@endlink should be included in the @link TBTK::Model Model@endlink or not.
+In this example, it first checks whether the Index is inside the excluded radius and returns false if this is the case.
+Otherwise, it returns true or false depending on whether or not the Index is inside the range [0, sizeX)x[0, sizeY).
 
-<b>Note:</b> When writing a Filter it is important to take into account not only the Index structure of @link Indices@endlink that are going to be rejected, but all Indices that are passed to the @link TBTK::Model Model@endlink at the point of setup.
-If there for example would have been some Indices in the Model that only had one subindex, the Filter above would have been invalid since it may be passed such an Index and try to access *index[1]*.
-When writing filters it is therefore important to ensure they are compatible with the Model as a whole and are able to respond true or false for every possible Index in the Model.
-Since in this case we model a two-dimensional sheet where all Indices have more than two subindices this Filter is alright.
-
-Once the Filter is specified, we are ready to use it to setup a Model
+With the Filter defined, a @link TBTK::Model Model@endlink with the size 51x51 and a hole radius of 10 can be set up as follows.
 ```cpp
-	double U_s = 1;
-	double t = 1;
-
 	Model model;
-	Filter filter;
-	model.setFilter(filter);
+	model.setFilter(Filter(51, 51, 10));
 	for(int x = 0; x < SIZE_X; x++){
 		for(int y = 0; y < SIZE_Y; y++){
 			for(int s = 0; s < 2; s++){
@@ -623,163 +644,148 @@ Once the Filter is specified, we are ready to use it to setup a Model
 	}
 	model.construct();
 ```
+Note the call to *model.setFilter()* and the fact that no if-statements appear inside the loop.
 
-# Advanced: Callback functions {#AdvancedCallbackFunctions}
-Sometimes it is useful to be able to delay specification of a @link TBTK::HoppingAmplitude HoppingAmplitudes@endlink value to a later time than the creation of the @link TBTK::Model Model@endlink.
-This is for example the case if the same Model is going to be solved multiple times for different parameter values, or if some of the parameters in the Hamiltonian are going to be determined self-consistently.
-For this reason it is possible to pass a function as value argument to the HoppingAmplitude rather than a fixed value.
-If we have indices with the structure {x, y, s}, where the last index is a spin, and there exists some global parameter \f$J\f$ that determines the current strength of the Zeeman term, a typical callbackFunction looks like
+We end this section with a note about substems with @link ComplexIndexStructures complex Index structures@endlink.
+Consider a @link TBTK::Model Model@endlink with two subsystems Indexed by {0, x, spin} and {1, x, y, z, spin}, respectively.
+The @link TBTK::AbstractIndexFilter IndexFilter@endlink needs to be able to handle both of these Index structures.
+For example, requesting *index[4]* in the *isIncluded()*-function before knowing that the Index belongs to subsystem 1 is an error.
+Therefore, an appropriate implementation of the *isIncluded()*-function would, in this case, look something like this.
 ```cpp
-	complex<double> callbackJ(const Index &to, const Index &from){
-		//Get spin index.
-		int s = from[2];
-
-		//Return the value of the HoppingAmplitude
-		return -J*(1 - 2*s);
+	bool isIncluded(const Index &index){
+		int subsystem = index[0];
+		switch(subsystem){
+		case 0:
+			int x = index[1];
+			int spin = index[2];
+			//Do the relevant checks for subsystem 0 here and
+			//return true or false.
+			//...
+		case 1:
+			int x = index[1];
+			int y = index[2];
+			int z = index[3];
+			int spin = index[4];
+			//Do the relevant checks for subsystem 1 here and
+			//return true or false.
+			//...
+		}
 	}
-```
-Just like when writing an @link TBTK::AbstractIndexFilter IndexFilter@endlink, a certain amount of @link TBTK::Model Model@endlink specific information needs to go into the specification of the callbacks.
-Here we have for example chosen to determine the spin by looking at the 'from'-Index, which should not differ from the spin-index of the *to*-Index.
-However, unlike when writing IndexFilters, the @link TBTK::HoppingAmplitude HoppingAmplitude@endlink callbacks only need to make sure that they work for the restricted Indices for which the callback is fed into the Model together with, since these are the only Indices that will ever be passed to the callback.
-
-Once the callback is defined, it is possible to use it when setting up a model as follows
-```cpp
-	model << HoppingAmplitude(callbackJ, {x, y, s}, {x, y, s});
 ```
 
 # Block structure {#BlockStructure}
-One of the most powerful methods for solving quantum mechanical problems is block diagonalization of the Hamiltonian.
-What this means is that the Hamiltonian is broken apart into smaller blocks that are decoupled from each other and thereby effectively replaces one big problem with many smaller problems.
-The smaller problems are much simpler to solve and usually far outweighs the fact that several problems have to be solved instead.
-The most obvious example of this is a Hamiltonian which when written in reciprocal space separates into independent problems for each momentum \f$\mathbf{k}\f$.
+The @link TBTK::Model Model@endlink can recognize a block diagonal Hamiltonian under the condition that the block diagonal subindices appear to the left in the @link Indices Index@endlink.
+Consider a translationally invariant system that is block-diagonal in kx, ky, and kz, but not in orbital or spin.
+If the Index structure {kx, ky, kz, orbital, spin} is used, the Model will be able to recognize the block structure.
+This can be utilized by some @link Solvers@endlink such as the @link SolverBlockDiagonalizer BlockDiagonalizer@endlink to speed up calculations.
+If instead {kx, ky, orbital, kz, spin} is used, only the kx and ky subindices will be recognized as block indices.
 
-To facilitate the exploitation of block diagonal Hamiltonians TBTK has restricted support for automatically detecting when it is handed a Hamiltonian with a block diagonal structure.
-However, for this to work the developer has to organize the @link Indices Index@endlink structure in such a way that TBTK is able to automatically take advantage of the block diagonal structure.
-Namely, TBTK will automatically detect existing block structures as long as the Index has the subindices that identifies the independent blocks standing to the left of the intra block indices.
-For a system with say three momentum subindices, one orbital subindex, and one spin subindex, where the Hamiltonian is block diagonal in the momentum space subindices, an appropriate Index structure is {kx, ky, kz, orbital, spin}.
-If for some reason the Index structure instead is given as {kx, ky, orbital, kz, spin}, TBTK will only be able to automatically detect kx and ky as block-indices, and will treat all of the three remaining subindices orbital, kz, and spin as internal indices for the blocks (at least as long as the Hamiltonian does not happen to also be block diagonal in the orbital subindex).
-
+@link Solvers Next: Solvers@endlink
 @page Solvers Solvers
 @link TBTK::Solver::Solver See more details about the Solvers in the API@endlink
 
-# Limiting algorithm specific details from spreading {#LimitingAlgorithmSpecificDetailsFromSpreading}
-Depending on the @link Model@endlink and the @link Properties@endlink that are sought for, different solution methods are best suited to carry out different tasks.
-Sometimes it is not clear what the best method for a given task is and it is useful to be able to try different approaches for the same problem.
-However, different algorithms can vary widely in their approach to solving a problem, and specifically vary widely in how they need the data to be represented in memory to carry out their tasks.
-Without somehow limiting these differences to a restricted part of the code the specific numerical details of a @link TBTK::Solver::Solver Solver@endlink easily spreads throughout the code and makes it impossible to switch one Solver for another without rewriting the whole code.
+# Solvers and PropertyExtractors
+Algorithms for solving @link Model Models@endlink are implemented in @link TBTK::Solver::Solver Solvers@endlink.
+Since this typically is where most of the computational time is spent, low-level optimization often is required.
+The purpose of the Solver is to contain these numerical details and present an intuitive interface to the application developer.
+The interface allows for the algorithm to be configured on-demand, but aims to minimize the amount of method-specific knowledge that is necessary to use the Solver.
 
-In TBTK the approach to solving this problem is to provide a clear separation between the algorithm implemented inside the @link TBTK::Solver::Solver Solvers@endlink, and the specification of the @link Model@endlink and the extraction of @link Properties@endlink.
-Solvers are therefore required to all accept a universal Model object and to internally convert it to whatever representation that is best suited for the algorithm.
-Solvers are then wrapped in @link PropertyExtractors@endlink which further limits the Solver specific details from spreading to other parts of the code.
-The idea is to limit the application developers exposure to the Solver as much as possible, freeing mental capacity to focus on the physical problem at hands.
-Nevertheless, a certain amount of method specific configurations are inevitable and the appropriate place to make such manipulations is through the Solver interface itself.
-This approach both limits the developers exposure to unnecessary details, while also making sure the developer understands when algorithm specific details are configured.
-
-Contrary to what it may sound like, limiting the developers exposure to the @link TBTK::Solver::Solver Solver@endlink does not mean concealing what is going on inside the Solver and to make it an impenetrable black box.
-In fact, TBTK aims at making such details as transparent as possible and to invite the interested developer to dig as deep as preferred.
-To limit the exposure as much as possible rather means that once the developer has chosen Solver and configured it, the Solver specific details should not spread further and the developers should be free to not worry about low level details.
-In order to chose the right Solver for a given task and to configure it efficiently it is useful to have an as good understanding as possible about what the algorithm actually is doing.
-Therefore we here describe what some of the native Solvers does, what their strengths and weaknesses are, and how to set up and configure them.
-In the code examples presented here it is assumed that a @link Model@endlink object has already been created.
+Internally, the @link TBTK::Solver::Solver Solver@endlink converts the @link Model@endlink to the format that is best suited for the algorithm.
+Likewise, the output of the algorithm is stored in a method-specific format.
+This data can be requested from the Solver, but the Solver is not responsible for providing the output on a method independent format.
+Instead, each Solver can be wrapped in a corresponding @link PropertyExtractors PropertyExtractor@endlink, through which @link Properties@endlink can be extracted using a notation that is Solver independent.
+In this chapter, we therefore only discuss how to set up, configure, and run a Solver, leaving the extraction of Properties to the @link PropertyExtractors next chapter@endlink.
 
 # Overview of native Solvers {#OverviewOfNativeSolvers}
-TBTK currently contains four production ready @link TBTK::Solver::Solver Solvers@endlink.
-These are called @link TBTK::Solver::Diagonalizer Diagonalizer@endlink, @link TBTK::Solver::BlockDiagonalizer BlockDiagonalizer@endlink, @link TBTK::Solver::ArnoldiIterator ArnoldiIterator@endlink, and @link TBTK::Solver::ChebyshevExpander ChebyshevExpander@endlink.
-The first two of these are based on diagonalization, allowing for all eigenvalues and eigenvectors to be calculated.
-Their strength is that once a problem has been diagonalized, complete knowledge about the system is available and arbitrary properties can be calculated.
+TBTK currently contains four production-ready @link TBTK::Solver::Solver Solvers@endlink: the @link TBTK::Solver::Diagonalizer Diagonalizer@endlink, @link TBTK::Solver::BlockDiagonalizer BlockDiagonalizer@endlink, @link TBTK::Solver::ArnoldiIterator ArnoldiIterator@endlink, and @link TBTK::Solver::ChebyshevExpander ChebyshevExpander@endlink.
+All of these are single-particle Solvers, which is the reason that this manual at the moment only describes how to set up and solve single-particle problems.
+
+The two first @link TBTK::Solver::Solver Solvers@endlink are based on diagonalization and can calculate all eigenvalues and eigenvectors.
+Their strength is that they provide solutions with complete information about the system, allowing for arbitrary @link Properties@endlink to be calculated.
 However, diagonalization scales poorly with system size and is therefore not feasible for very large systems.
-The BlockDiagonalizer provides important improvements in this regard for large systems if they are block diagonal, in which case the BlockDiagonalizer can handle very large systems compared to the Diagonalizer.
+If the Model is @link BlockStructure block-diagonal@endlink, the @link TBTK::Solver::BlockDiagonalizer BlockDiagonalizer@endlink can handle much larger systems than the @link TBTK::Solver::Diagonalizer Diagonalizer@endlink.
 
-Next, the @link TBTK::Solver::ArnoldiIterator ArnoldiIterator@endlink is similar to the Diagonalizers in the sense that it calculates eigenvalues and eigenvectors.
-However, it is what is know as an iterative Krylov space Solver, which successively builds up a subspace of the Hilbert space and performs diagonalization on this restricted subspace.
-Therefore the ArnoldiIterator only extracts a few eigenvalues and eigenvectors.
-Complete information about a system can therefore usually not be obtained with the help of the ArnoldiIterator, but it can often give access to the relevant information for very large systems if only a few eigenvalues or eigenvectors are needed.
-Arnoldi iteration is closely related to the Lanczos method and is also the underlying method used when extracting a limited number of eigenvalues and eigenvectors using MATLABS eigs-function.
+The @link TBTK::Solver::ArnoldiIterator ArnoldiIterator@endlink also calculates eigenvalues and eigenvectors but can be used to calculate only a few of them.
+Arnoldi iteration is a so-called Krylov method that iteratively builds a larger and larger subspace of the total Hilbert space.
+It then performs diagonalization on this restricted subspace.
+If only a few eigenvalues or eigenvectors are needed, they can be calculated quickly, even if the Model is very large.
 
-Finally, the @link TBTK::Solver::ChebyshevExpander ChebyshevExpander@endlink is different from the other methods in that it extracts the Green's function rather than eigenvalues and eigenvectors.
-The ChebyshevExpanders strenght is also that it can be used for relatively large systems.
-Moreover, while the Diagonalizers requires that the whole system first is diagonalized, and thereby essentially solves the full problem, before any property can be extracted, the ChebyshevExpander allows for individual Green's functions to be calculated which contains only partial information about the system.
-However, the Chebyshev method is also an iterative method (but not Krylov), and would in fact require an infinite number of steps to obtain an exact solution.
+The @link TBTK::Solver::ChebyshevExpander ChebyshevExpander@endlink can calculate the Green's function \f$G_{\mathbf{i}\mathbf{j}}(E)\f$ for any given pair of @link Indices@endlink \f$\mathbf{i}\f$ and \f$\mathbf{j}\f$.
+It can be used to calculate @link Properties@endlink for very large systems when they are needed for a limited number of Indices.
+However, the method is iterative, and infinite precision along the energy axis requires an infinite number of steps.
 
 # General remarks about Solvers {#GeneralRemarksAboutSolvers}
-The Solvers all inherit from a common base class called @link TBTK::Solver::Solver@endlink.
-This Solver class is an abstract class, meaning it is not actually possible to create an object of the Solver class itself.
-However, the Solver base class forces every other Solver to implement a method for setting the @link Model@endlink that it should work on.
-The following call is therefore possible (and required) to call to initialize any given Solver called *solver*
+All Solvers inherit from the base class @link TBTK::Solver::Solver@endlink.
+This is a very simple class that only implements two functions for setting and getting the @link Model@endlink to solve.
 ```cpp
+	Solver::Solver solver;
 	solver.setModel(model);
+	const Model &referenceToModel = solver.getModel();
 ```
-The @link TBTK::Solver::Solver Solver@endlink class also provides a corresponding *getModel()* function for retreiving the @link Model@endlink.
-It is important here to note that although the Model is passed to the Solver and the Solver will remember the Model, it will not assume ownership of the Model.
-It is therefore important that the Model remains in memory throughout the lifetime of the Solver and that the caller takes responsibility for any possible cleanup work.
-The user not familiar with memory management should not worry though, as long as standard practices as outlined in this manual are observed, these issues are irrelevant.
+It is important that the Model that is passed to the Solver remains in memory for the full lifetime of the Solver.
+Therefore, do not call *solver.setModel()* with a temporary Model object.
 
-The @link TBTK::Solver::Solver Solvers@endlink are also @link TBTK::Communicator Communicators@endlink, which means that they may output information that is possible to mute.
-This can become important if a Solver for example is created or executed inside of a loop.
-In this case extensive output can be produced and it can be desired to turn this off.
-To do so, call
+@link TBTK::Solver::Solver Solvers@endlink are also @link TBTK::Communicator Communicators@endlink, which means that they can output diagnostic information that is possible to mute.
+To turn on the output, call
 ```cpp
-	solver.setVerbose(false);
+	solver.setVerbose(true);
 ```
 
 # Solver::Diagonalizer {#SolverDiagonalizer}
-The @link TBTK::Solver::Diagonalizer Diagonalizer@endlink sets up a dense matrix representing the Hamiltonian and then diagonalizes it to obtain eigenvalues and eigenvectors.
-The Diagonalizer is probably the simplest possible @link TBTK::Solver::Solver Solver@endlink to work with as long as the system sizes are small enough to make it feasible, which means Hilbert spaces with a basis size of up to a few thousands.
-A simple set up of the Diagonalizer
+The @link TBTK::Solver::Diagonalizer Diagonalizer@endlink sets up a dense matrix representing the Hamiltonian and diagonalizes it to obtain the eigenvalues and eigenvectors.
+Because of its simplicity, it is a good choice for @link Model Models@endlink with a Hilbert space size up to a few thousands.
+Setting it up and running the diagonalization is straight forward.
 ```cpp
-	//Create a Solver::Diagoanlizer.
 	Solver::Diagonalizer solver;
-	//Set the Model to work on.
 	solver.setModel(model);
-	//Diagonalize the Hamiltonian
 	solver.run();
 ```
-That's it. The problem is solved and can be passed to a corresponding @link PropertyExtractors PropertyExtractor@endlink for further processing.
+The Solver is now ready to be wrapped in its @link PropertyExtractors PropertyExtractor@endlink to allow for Properties to be extracted.
 
-## Estimating time and space requirements
-Since diagonalization is a rather simple problem conceptually, it is easy to estimate the memory and time costs for the @link TBTK::Solver::Diagonalizer Diagonalizer@endlink.
-Memory wise the Hamiltonian is stored as an upper triangular matrix with complex<double> entries each 16 bytes large.
-The storage space required for the Hamiltonian is therefore roughly \f$16N^2/2 = 8N^2\f$ bytes, where \f$N\f$ is the basis size of the Hamiltonian.
-Another \f$16N^2\f$ bytes are required to store the resulting eigenvectors, and \f$8N\f$ bytes for the eigenvalues.
-Neglecting the storage for the eigenvalues the approximate memory footprint for the Diagonalizer is \f$24N^2\f$ bytes.
-This runs into the GB range around a basis size of 7000.
+## Space and time costs
+The required amount of space is particularly easy to estimate for the @link TBTK::Solver::Diagonalizer Diagonalizer@endlink.
+Internally the Hamiltonian is stored as an upper triangular matrix of type std::complex<double> (16 bytes per entry).
+The space required to store a Hamiltonian with basis size N is therefore roughly \f$16(N^2/2) = 8N^2\f$ bytes.
+The eigenvectors and eigenvalues require another \f$16N^2\f$ and \f$8N\f$ bytes, respectively.
+This adds up to about \f$24N^2\f$ bytes, which runs into the GB range around a basis size of 7000.
 
-The time it takes to diagonalize a matrix cannot be estimated with the same precision since it depends on the exact specification of the computer that the calculations are done on, but as of 2018 runs into the hour range for basis sizes of a few thousands.
-However, knowing the execution time for a certain size on a certain computer, the execution can be rather accurately predicted for other system sizes using that the computation time scales as \f$N^3\f$.
+The time it takes to diagonalize a matrix cannot be estimated with the same precision since it depends on clock speed etc.
+However, as of 2018 it runs into the hour range for basis sizes of a few thousands.
+Knowing the execution time for a specific size and computer, the time required for a different size can be accurately predicted using that the time scales as \f$O(N^3)\f$.
 
 ## Advanced: Self-consistency callback
-Sometimes the value of one or several parameters that go into the Hamiltonian are not known a priori, but it is instead part of the problem to figure out the correct value.
-A common approach for solving such problems is to make an initial guess for the parameters, solve the model for the corresponding parameters, and then update the parameters with the so obtained values.
-If the problem is well behaved enough, such an approach results in the unknown parameters eventually converging to fixed values.
-Once the calculated parameter value is equal (within some tolerance) to the input parameter in the current iteration, the parameters are said to have reached self-consistency.
-That is, the calculated parameters are consistent with themselves in the sense that if they are used as input parameters, they are also the result of the calculation.
+In a self-consistent procedure, some input parameter is unknown but can be calculated as an output.
+It is, therefore, possible to make an initial guess, calculate the parameter, and feed the result back in as input.
+If this procedure is repeated until (and if) the input and output converge (within a given tolerance), the solution is said to be self-consistent.
 
-When using diagonalization the self-consistent procedure is very straight forward: diagonalize the Hamiltonian, calculate and update parameters, and repeat until convergence.
-The @link TBTK::Solver::Diagonalizer Diagonalizer@endlink is therefore prepared to run such a self-consistency loop.
-However, the the second step requires special knowledge about the system which the Diagonalizer cannot incorporate without essentially becoming a single purpose solver.
-The solution to this problem is to allow the application developer to supply a callback function that the Diagonalizer can call once the Hamiltonian has been diagonalized.
-This function is responsible for calculating and updating relevant parameters, as well as informing the Diagonalizer whether the solution has converged.
-The interface for such a function is
+The @link TBTK::Solver::Diagonalizer Diagonalizer@endlink can execute such a self-consistency loop.
+However, what parameter that is to be solved for is problem-specific, and so is the measure of tolerance.
+Therefore, after the Hamiltonian has been diagonalized, the Diagonalizer can give control back to the application developer through a self-consistency callback.
+The callback is required to calculate the relevant parameter, check for convergence, and return true or false depending on whether or not convergence has been reached.
+If the callback returns true, the Diagonalizer finishes, otherwise, the Hamiltonian is rediagonalized, and the procedure is repeated.
+
+A self-consistency callback is implemented as follows.
 ```cpp
 	bool selfConsistencyCallback(Solver::Diagonalizer &solver){
-		//Calculate and update parameters.
+		//Calculate and update the parameter(s).
 		//...
 
 		//Determine whether the solution has converged or not.
 		//...
 
-		//Return true if the solution has converged, otherwise false.
+		//Return true if the solution has converged, otherwise return
+		//false.
 		if(hasConverged)
 			return true;
 		else
 			return false;
 	}
 ```
-The specific details of the self-consistency callback is up to the application developer to fill in, but the general structure has to be as above.
-That is, the callback has to accept the @link TBTK::Solver::Diagonalizer Diagonalizer@endlink as an argument, perform the required work, determine whether the solution has converged and return true or false depending on whether it has or not.
-In addition to the self-consistency callback, the application developer interested in developing such a self-consistent calculation should also make use of the @link TBTK::HoppingAmplitude HoppingAmplitude@endlink callback described in the @link Model@endlink chapter for passing relevant parameters back to the Model in the next iteration step.
 
-Once a self-consistency callback is implemented, the @link TBTK::Solver::Diagonalizer Diagonalizer@endlink can be configured as follows to make use of it
+We note that for the self-consistency procedure to work, those @link HoppingAmplitudes@endlink that depend on the parameter must themselves be dependent on a @link AdvancedCallbackFunctions HoppingAmplitude callback@endlink.
+It is the application developer's responsibility to make sure that the parameter that is calculated in the self-consistency callback is passed on to the HoppingAmplitude callback.
+
+With the callback defined, the self-consistent calculation can be set up.
 ```cpp
 	Solver::Diagonalizer solver;
 	solver.setModel(model);
@@ -787,211 +793,214 @@ Once a self-consistency callback is implemented, the @link TBTK::Solver::Diagona
 	solver.setMaxIterations(100);
 	solver.run();
 ```
-Here the third line tells the @link TBTK::Solver::Solver Solver@endlink which function to use as a callback, while the fourth line puts an upper limit to the number of self-consistent steps the Solver will take if self-consistency is not reached.
-For a complete example of a self-consistent calculation the reader is referred to the SelfConsistentSuperconductivity template in the Template folder.
+The call to *solver.setMaxIterations(100)* caps the number of iterations at 100.
+If the calculation has not converged by then it finishes anyway.
+For a complete example of a self-consistent calculation, the reader is referred to the SelfConsistentSuperconductivity template in the Templates folder.
 
-# Solver::BlockDiagonalizer {#SolverBlockDiagoanlizer}
-The @link TBTK::Solver::BlockDiagonalizer BlockDiagonalizer@endlink is similar to the @link TBTK::Solver::Diagonalizer Diagonalizer@endlink, except that it takes advantage of possible block-diagonal structures in the Hamiltonian.
-For this to work it is important that the @link Model Models@endlink index structure is chosen such that TBTK is able to automatically detect the block-diagonal structure of the Hamiltonian, as described in the Model chapter.
-The BlockDiagonalizer mimics the Diagonalizer almost perfectly, and the code for initializing and running a BlockDiagonalizer including a self-consistency callback is
+# Solver::BlockDiagonalizer {#SolverBlockDiagonalizer}
+The @link TBTK::Solver::BlockDiagonalizer BlockDiagonalizer@endlink mimics the @link TBTK::Solver::Diagonalizer Diagonalizer@endlink, but can take advantage of a Hamiltonians @link BlockStructure block structure@endlink.
 ```cpp
-	SOlver::BlockDiagonalizer solver;
+	Solver::BlockDiagonalizer solver;
 	solver.setModel(model);
-	solver.setSelfConsistencyCallback(selfConsistencyCallback);
-	solver.setMaxIterations(100);
 	solver.run();	
 ```
-The only difference here is that the *selfConsistencyCallback* has to take a BlockDiagonalizer as argument rather than a Diagonalizer.
+
+## Advanced: Self-consistency callback
+The implementation of a compatible self-consistency callback for the @link TBTK::Solver::BlockDiagonalizer BlockDiagonalizer@endlink also closely parallels that of the @link TBTK::Solver::Diagonalizer Diagonalizer@endlink.
+```cpp
+	bool selfConsistencyCallback(Solver::BlockDiagonalizer &solver){
+		//Calculate and update the parameter(s).
+		//...
+
+		//Determine whether the solution has converged or not.
+		//...
+
+		//Return true if the solution has converged, otherwise return
+		//false.
+		if(hasConverged)
+			return true;
+		else
+			return false;
+	}
+```
 
 # Solver::ArnoldiIterator {#SolverArnoldiIterator}
-The main drawback of diagonalization is that it scales poorly with system size and becomes prohibitively demanding both in terms of memory and computational time if the individual blocks have a basis size of more than a few thousands.
-Arnoldi iteration instead utilizes the sparse nature of the Hamiltonian both to reduce the memory footprint and computational time and can therefore handle much larger systems.
+The @link TBTK::Solver::ArnoldiIterator ArnoldiIterator@endlink allows for a few eigenvalues and eigenvectors to be calculated quickly, even if the system is very large.
+Starting with the Hamiltonian \f$H\f$ and a random vector \f$v_0\f$, it iteratively calculates \f$v_n\f$ for higher \f$n\f$.
+It does so by first calculating \f$\tilde{v}_n = Hv_{n-1}\f$ and then orthonormalizing it against \f$v_{n-1}, ..., v_{0}\f$ to obtain \f$v_n\f$.
+The product \f$Hv_{n-1}\f$ amplifies the components of \f$v_{n-1}\f$ that are eigenvectors with extremal eigenvalues.
+Therefore, the subspace spanned by \f$\{v_{n}\}\f$ quickly approximates the part of the Hilbert space that contains these extremal eigenvalues.
+Finally, performing diagonalization on this much smaller subspace, the extremal eigenvalues and eigenvectors are calculated quickly.
+The eigenvalues and eigenvectors obtained in this way are called Ritz-values and Ritz-vectors.
 
-To understand Arnoldi iteration, consider a Hamiltonian \f$H\f$ and pick a random vector \f$v_{0}\f$ in the corresponding Hilbert space.
-Next define the recursive relation \f$v_{n} = Hv_{n-1}\f$.
-While \f$v_{0}\f$ is a random vector it can be decomposed into an eigenbasis, and it is clear that the recursive relation will result in the components of \f$v_{0}\f$ with the largest eigenvalues (in magnitude) to become more and more important for increasing \f$n\f$.
-Taking the collection of \f$v_{n}\f$ generated this way for some finite \f$n\f$, it is clear that they form a (possibly overcomplete) basis for some subspace of the total Hilbert space.
-In particular, because eigenvectors with large eigenvalues are favored by the procedure, it will start to approximate the part of the Hilbert space that contains the eigenvectors with extreme eigenvalues.
-Such a procedure is called an iterative Krylov space method, where Krylov space refers to the space spanned by the generated vectors.
-
-Arnoldi iteration improves the idea by continuously performing orthonormalization of the vectors before generating the next set of vectors and is therefore numerically superior to the somewhat simpler method just described.
-Once a subspace that is deemed large enough has been generated, diagonalization is performed on this much smaller space, resulting in eigevalues and eigenvectors for the extreme part of the Hilbert space to be calculated.
-We note that since the generated subspace cannot be guaranteed to contain the eigenvectors perfectly, the procedure really generates approximate eigenvalues and eigenvectors known as Ritz-values and Ritz-vectors.
-However, the subspace often converge rather quickly to the true extreme subspace and therefore generates very good approximations to the most extreme eigenvectors.
-It is therefore convenient to think of the @link TBTK::Solver::ArnoldiIterator ArnoldiIterator@endlink simply as a solver that can calculate extreme eigenvalues and eigenvectors.
-
-With this background we are ready to understand how to create and configure a basic @link TBTK::Solver::ArnoldiIterator ArnoldiIterator@endlink
+The @link TBTK::Solver::ArnoldiIterator ArnoldiIterator@endlink can be set up as follows.
 ```cpp
 	Solver::ArnoldiIterator solver;
 	solver.setModel(model);
-	solver.setNumLancxosVectors(200);
+	solver.setNumLanczosVectors(200);
 	solver.setMaxIterations(500);
 	solver.setNumEigenVectors(100);
 	solver.setCalculateEigenVectors(true);
 	solver.run();
 ```
-As seen, line 1, 2, and 7 are similar to the Diagonalizers and require no further explanation.
-The third line specifies how many Ritz-vectors (or Lanczos vectors) that are going to be generated during the iterative procedure, while the fourth line specifies the maximum number of iterations.
-It may be surprising that the number of iterations are not the same as the number of generated Ritz-vectors, but this is due to the fact that the @link TBTK::Solver::ArnoldiIterator ArnoldiIterator@endlink is using a further improvement on the procedure called implicitly restarted Arnoldi iteration.
-For further information on this the interested reader is referred to the documentation for the ARPACK library.
-Remembering that we successively build up a larger and larger subspace starting from some random initial vector, it is expected that not all of the generated Ritz-vectors are meaningful, but only the most extreme ones.
-For this reason the fifth line is used to specify the number of vectors that actually is going to be retained at the end of the calculation.
-To understand the sixth line we finally mention that the eigenvectors used internally by the ArnoldiIterator during the iterative procedure are not in the basis of the full Hamiltonian.
-The 100 generated eigenvectors therefore has to be converted to the basis that we are interested in if we actually want to use the eigenvectors.
-The sixth line tells the ArnoldiIterator to do so.
+Here, *solver.setNumLanczosVectors()* sets the size of the subspace that is to be generated, while *solver.setNumEigenVectors()* determines the number of eigenvalues to calculate.
+The number of eigenvalues should at most be as large as the number of Lanczos vectors.
+However, since the iteration starts with a random vector, choosing a smaller number of eigenvalues results in the less accurate subspace to be ignored.
+Finally, the @link TBTK::Solver::ArnoldiIterator ArnoldiIterator@endlink uses a modified version of the procedure described above called implicitly restarted Arnoldi iteration (see the [ARPACK](https://www.caam.rice.edu/software/ARPACK/) documentation).
+This leads to more iterations being executed than the number of Lanczos vectors finally generated.
+The line *solver.setMaxIterations()* puts a cap on the number of iterations.
 
 ## Shift and invert (extracting non-extremal eigenvalues)
-It is often not the extremal eigenvalues and eigenvectors that are of interest, but rather those around some specific eigenvalue.
-With a simple trick it is possible to access also these using Arnoldi iteration.
-Namely, if we first shift the Hamiltonian by some number \f$\lambda\f$ the eigenvalues around \f$\lambda\f$ in the original matrix are shifted to lie around zero.
-Further, since the inverse of a matrix has the same eigenvectors as the original matrix, and inverse eigenvalues, the eigenvectors with eigenvalues around \f$\lambda\f$ in the original Hamiltonian becomes the new extremal eigenvectors.
-The @link TBTK::Solver::ArnoldiIterator ArnoldiIterator@endlink implements this mode of execution, which can be run by adding the following two lines before the call to *solver.run()*.
+The @link TBTK::Solver::ArnoldiIterator ArnoldiIterator@endlink can also be used to calculate eigenvalues and eigenvectors around a given value \f$\lambda\f$.
+This is done by replacing \f$H\f$ by \f$(H - \lambda)^{-1}\f$, which is referred to as shift-and-invert.
+To perform shift-and-invert, we need to set the "central value" \f$\lambda\f$ and instruct the ArnoldiIterator to work in this mode.
 ```cpp
-	solver.setCentralValue(2);
+	solver.setCentralValue(1);
 	solver.setMode(Solver::ArnoldiIterator::Mode::ShiftAndInvert);
 ```
 
-The shift can also be applied without inversion.
-This can be beneficial if extremal eigenvalues of a particular sign are of interest.
-Say that the spectrum of a Hamiltonian is known to be between -1 and 1.
-By setting the central value to -1 (shifting -1 to 0), the spectrum for the new Hamiltonian is between 0 and 2 and the @link TBTK::Solver::ArnoldiIterator ArnoldiIterator@endlink will therefore only extract the eigenvectors with positive eigenvalues.
-We note that the function is called *setCentralValue()* rather than *setShift()*, since to the user of the @link TBTK::Solver::Solver Solver@endlink the final result is not shifted.
-The shift is first applied to the Hamiltonian internally, but is also added to the resulting eigenvalues to cancel this modification of the problem, meaning that the final eigenvalues are going to have values around 1 and not 2.
+# Solver::ChebyshevExpander {#SolverChebyshevExpander}
+The @link TBTK::Solver::ChebyshevExpander ChebyshevExpander@endlink calculates the Green's function on the form
+<center>\f$G_{\mathbf{i}\mathbf{j}}(E) = \frac{1}{\sqrt{s^2 - E^2}}\sum_{m=0}^{\infty}\frac{b_{\mathbf{i}\mathbf{j}}^{(m)}}{1 + \delta_{0m}}F(m\textrm{acos}(E/s))\f$.</center>
+Here \f$F(x)\f$ is one of the functions \f$\cos(x)\f$, \f$\sin(x)\f$, \f$e^{ix}\f$, and \f$e^{-ix}\f$.
+Further, the "scale factor" \f$s\f$ must be chosen large enough that all of the Hamiltonian's eigenvalues fall inside of the range \f$|E/s| < 1\f$. 
+This is called a Chebyshev expansion of the Green's function, and for more details, the reader is referred to Phys. Rev. Lett. <b>78</b>, 275 (2006), Phys. Rev. Lett. <b>105</b>, 1 (2010), and <a href="http://urn.kb.se/resolve?urn=urn%3Anbn%3Ase%3Auu%3Adiva-305212">urn:nbn:se:uu:diva-305212</a>.
 
-# Solver::ChebyshevExpander {#SolverChebyshevSolver}
-The @link TBTK::Solver::ChebyshevExpander ChebyshevExpander@endlink is a Green's function based solver that calculates Green's functions on the form
-<center>\f$G_{\mathbf{i}\mathbf{j}}(E) = \frac{1}{\sqrt{s^2 - E^2}}\sum_{m=0}^{\infty}\frac{b_{\mathbf{i}\mathbf{j}}^{(m)}}{1 + \delta_{0m}}F(m\textrm{acos}(E/s))\f$,</center>
-where \f$F(x)\f$ is one of the functions \f$\cos(x)\f$, \f$\sin(x)\f$, \f$e^{ix}\f$, and \f$e^{-ix}\f$.
-We do not go into details about this method here, but rather refer the interested reader to Phys. Rev. Lett. <b>78</b>, 275 (2006), Phys. Rev. Lett. <b>105</b>, 1 (2010), and <a href="http://urn.kb.se/resolve?urn=urn%3Anbn%3Ase%3Auu%3Adiva-305212">urn:nbn:se:uu:diva-305212</a>.
-However, we point out that the expression is a Chebyshev expansion of the Green's function, which really is nothing but Fourier expansion if we make the change of variable \f$x = \textrm{acos}(E/s)\f$.
-Since \f$\textrm{acos}(E/s)\f$ only is defined for \f$E/s \in (-1, 1)\f$, it is important that the energy \f$E\f$ is not too big.
-In fact, the number \f$s\f$ is a scale factor that has to be chosen for each system to ensure that the eigenvalues of the system are no larger in magnitude than \f$s\f$.
-
-The main benefit of the Chebyshev expansion of the Green's function is that, in contrast to for example a straight forward Fourier expansion, the expansion coefficients \f$b_{\mathbf{i}\mathbf{j}}^{(m)}\f$ can be calculated recursively using sparse matrix-vector multiplication.
-In particular, the coefficients are given by
+The @link TBTK::Solver::ChebyshevExpander ChebyshevExpander@endlink calculates the Green's function in two steps.
+In the first step, the expansion coefficients
 <center>\f{eqnarray*}{
 	b_{\mathbf{i}\mathbf{j}}^{(m)} &=& \langle j_{\mathbf{i}}^{(0)}|j_{\mathbf{j}}^{(m)}\rangle,
 \f}</center>
-where
+are calculated using the recursive expressions
 <center>\f{eqnarray*}{
 	|j_{\mathbf{j}}^{(1)}\rangle &=& H|j_{\mathbf{j}}^{(0)}\rangle,\\
 	|j_{\mathbf{j}}^{(m)}\rangle &=& 2H|j_{\mathbf{j}}^{(m-1)}\rangle - |j_{\mathbf{j}}^{(m-2)}\rangle.
 \f}</center>
-Further, the vectors \f$|j_{\mathbf{i}}^{(0)}\rangle\f$ and \f$j_{\mathbf{j}}^{(0)}\rangle\f$ are the vectors that result from from setting every element equal to zero, except for that associated with the Index \f$\mathbf{i}\f$ and \f$\mathbf{j}\f$, respectively, which is set to one.
-Since Hamiltonians usually are very sparse, and multiplication with sparse matrices can be done relatively quickly even for very large matrices, this means that a large number of expansion coefficients can be calculated quickly for relatively large systems.
-Nevertheless, an infinite number of expansion coefficients can of course not be calculated in a finite time, and therefore the sum in the equation above has to be cut off at some number of coefficients.
-Once the coefficients have been calculated, the final step needed to generate the Green's function is to evaluate the sum at as many energy points as is needed.
+Here \f$|j_{\mathbf{i}}^{(0)}\rangle\f$ and \f$|j_{\mathbf{j}}^{(0)}\rangle\f$ are vectors with zeros everywhere, except for a one in the position associated with \f$\mathbf{i}\f$ and \f$\mathbf{j}\f$, respectively.
+Using sparse matrix-vector multiplication, these expansion coefficients can be calculated efficiently.
+However, an exact solution requires an infinite number of coefficients, and a cutoff must, therefore, be introduced.
 
-With this background we are ready to understand how to create and initialize a @link TBTK::Solver::ChebyshevExpander ChebyshevExpander@endlink
+In the second step, the @link TBTK::Solver::ChebyshevExpander ChebyshevExpander@endlink generates the Green's function using the calculated coefficients and the expression for the Green's function above.
+
+## Setting up and configuring the solver
+A @link TBTK::Solver::ChebyshevExpander ChebyshevExpander@endlink with \f$s = 10\f$ and the number of expansion coefficients capped at 1000 can be set up as follows.
 ```cpp
-	const double SCALE_FACTOR = 10;
-	const NUM_COEFFICIENTS = 1000;
-
 	Solver::ChebyshevExpander solver;
 	solver.setModel(model);
-	solver.setScaleFactor(SCALE_FACTOR);
-	solver.setNumCoefficients(NUM_COEFFICIENTS);
+	solver.setScaleFactor(10);
+	solver.setNumCoefficients(1000);
 ```
-In contrast to for example the @link TBTK::Solver::Diagonalizer Diagonalizer@endlink, there is no *solver.run()* command for the ChebyshevExpander.
-This is because, unlike the Diagonalizer which essentially solves the whole system by diagonalizing it before properties can be extracted, the ChebyshevExpander solves the problem as the properties are extracted.
-We also note here, that in order for the ChebyshevExpander to work, it is required that one additional call is made to the @link Model@endlink.
-Namely, at the point of Model construction write
-```cpp
-	model.construct();
-	model.constructCOO();
-```
-rather than just the first line.
-This makes the Model create an internal sparse matrix representation of the Hamiltonian on a standard matrix format called COO and is required by the ChebyshevExpander.
-This requirement is slightly in conflict with the general design philosophy expressed in this manual and is intended to be removed in the future.
 
-By default the @link TBTK::Solver::ChebyshevExpander ChebyshevExpander@endlink performs calculations on the CPU, but is most efficient when run on a GPU.
-In particular, it is possible to independently configure whether the calculation of the coefficients as well as the generation of the Green's function should be performed on CPU or GPU using
+The expansion coefficients can be efficiently calculated on a GPU.
 ```cpp
 	solver.setCalculateCoefficientsOnGPU(true);
+```
+
+Also, the Green's functions can be generated on a GPU (but this is less important and runs into memory limitations relatively quickly).
+```cpp
 	solver.setGenerateGreensFunctionsOnGPU(true);
 ```
-It is recommended that the calculation of the coefficients is performed on GPU whenever possible, while the generation of the Green's function often is more conveniently done on CPU.
 
-Finally, whenever the Green's function is generated for more than a single Index pair, it is possible to speed up the calculation significantly by first generating a lookup table.
-This is even required when the Green's function is generated on GPU, and the solver can be instructed to generate such a lookup table through
+When the Green's function is generated for more than one pair of Indices, the execution time can be significantly decreased by using a precalculated lookup table.
 ```cpp
 	solver.setUseLookupTable(true);
 ```
+The lookup table is required to generate the Green's function on a GPU, and the only downside of generating it is that it can consume large amounts of memory.
 
+@link PropertyExtractors Next: PropertyExtractors@endlink
 @page PropertyExtractors PropertyExtractors
 @link TBTK::PropertyExtractor::PropertyExtractor See more details about the PropertyExtractors in the API@endlink
 
-# Physical properties, not numerics {#PhysicalPropertiesNotNumerics}
-In order to allow application developers to focus on relevant physical questions rather than algorithm specific details, and to prevent algorithm specific requirements from spreading to other parts of the code, TBTK encourages the use @link TBTK::PropertyExtractor::PropertyExtractor PropertyExtractors@endlink for extracting physical quantities from the @link Solvers@endlink.
-PropertyExtractors are interfaces to Solvers that largely present themselves uniformly to other parts of the code.
-What this means is that code that relies on calls to a PropertyExtractor is relatively insensitive to what specific Solver that is being used.
-The application developer is therefore relatively free to change Solver at any stage in the development process.
-This is e.g. very useful when it is realized that a particular Solver is not the best one for the task.
-It is also very useful when setting up complex problems where it can be useful to benchmark results from different Solvers against each other.
-The later is especially true during the development of new Solvers.
+# A uniform interface for Solvers {#AUniformInterfaceForSolvers}
+A @link TBTK::PropertyExtractor::PropertyExtractor PropertyExtractor@endlink provides an interface to a @link Solvers Solver@endlink through which physical @link Properties@endlink can be extracted.
+Its purpose is to insulate the application developer from method-specific details.
+By wrapping a Solver in a PropertyExtractor, it acquires an interface that is largely uniform across different Solvers.
+This makes it possible to change Solver without having to modify the code used to extract Properties.
 
-The different @link TBTK::PropertyExtractor::PropertyExtractor PropertyExtractors@endlink can, however, not have completely identical interfaces, since some properties are simply not possible to calculate with some @link Solvers@endlink.
-Some Solvers may also make it possible to calculate very specific things that are not possible to do with any other Solver.
-The PropertyExtractors are therefore largely uniform interfaces, but not identical.
-However, for most standard properties there at least exists function calls that allow the properties to compile even if they cannot actually perform the calculation.
-The program will instead print error messages that make it clear that the particular Solver is not able to calculate the property and ask the developer to switch Solver.
-In fact, this is achieved through inheritance from a common abstract base class called PropertyExtractor::PropertyExtractor and allows for completely Solver independent code to be written that works with the abstract base class rather than the individual Solver specific PropertyExtractors.
-The experienced C++ programmer can use this to write truly portable code, while the developer unfamiliar with inheritance and abstract classes do not need to worry about these details.
-
-Each of the @link Solvers@endlink described in the Solver chapter have their own @link TBTK::PropertyExtractor::PropertyExtractor PropertyExtractor@endlink called @link TBTK::PropertyExtractor::Diagonalizer PropertyExtractor::Diagonalizer@endlink, @link TBTK::PropertyExtractor::BlockDiagonalizer PropertyExtractor::BlockDiagonalizer@endlink, @link TBTK::PropertyExtractor::ArnoldiIterator PropertyExtractor::ArnoldiIterator@endlink, and @link TBTK::PropertyExtractor::ChebyshevExpander PropertyExtractor::ChebyshevExpander@endlink.
-Using the Solver::Diagonalizer as an example, the corresponding PropertyExtractor is created using
+Each @link Solvers Solver@endlink comes with its own @link TBTK::PropertyExtractor::PropertyExtractor PropertyExtractor@endlink.
+The PropertyExtractors have the same name as the corresponding Solver but exists in the PropertyExtractor namespace rather than the Solver namespace.
+For example, @link TBTK::Solver::Diagonalizer Solver::Diagonalizer@endlink and @link TBTK::PropertyExtractor::Diagonalizer PropertyExtractor::Diagonalizer@endlink.
+It is created as follows.
 ```cpp
 	PropertyExtractor::Diagonalizer propertyExtractor(solver);
 ```
 
-# Extracting Properties {#ExtractingProperties}
-In addition to the @link TBTK::PropertyExtractor::PropertyExtractor PropertyExtractors@endlink, TBTK has a set of @link Properties Property@endlink classes that are returned by the PropertyExtractors and which are more extensively described in the chapter Properties.
-These Property classes supports a few different storage modes internally which allows for different types of extraction.
-For example does the system in question often have some concrete structure such as a square lattice.
-In this case it is useful for properties to preserve knowledge about this structure as it can allow for example two-dimensional plots of the data to be done simply.
-Other times no such structure exists, or properties are just wanted for a few different points for which there is no unifying structure.
-These different cases require somewhat different approaches for storing the data in memory, as well as for how to instruct the PropertyExtractors how to extract the data.
-We here describe how to extract the different properties and the reader can jump to any Property of interest to see how to handle the particular situation.
-The reader is, however, advised to first read the first section about the density since this establishes most of the basic notation.
-The reader is also referred to the Properties chapter where more details about the Properties are given.
+The PropertyExtractors corresponding to the other three production ready Solvers are:
+- @link TBTK::PropertyExtractor::BlockDiagonalizer PropertyExtractor::BlockDiagonalizer@endlink
+- @link TBTK::PropertyExtractor::ArnoldiIterator PropertyExtractor::ArnoldiIterator@endlink
+- @link TBTK::PropertyExtractor::ChebyshevExpander PropertyExtractor::ChebyshevExpander@endlink.
 
-Before continuing, we note that some @link Properties@endlink have an energy dependence.
-This means that the quantities needs to be evaluated at a certain number of energy points.
-The @link TBTK::PropertyExtractor::PropertyExtractor PropertyExtractors@endlink extracts such properties within an energy window using some energy resolution and this can be set using
+Since not every @link Solvers Solver@endlink can be used to calculate every @link Properties Property@endlink, the @link TBTK::PropertyExtractor::PropertyExtractor PropertyExtractors@endlink are only approximately uniform.
+For many standard Properties, the PropertyExtractors, therefore, fall back on printing an error message whenever a given Property cannot be calculated.
+This informs the application developer that another Solver may be required for the given task.
+
+# Extracting Properties {#ExtractingProperties}
+The Properties that are extracted with the @link TBTK::PropertyExtractor::PropertyExtractor PropertyExtractors@endlink can be stored in different formats: None, Ranges, and Custom.
+This refers to how the @link Indices@endlink associated with the Properties are handled internally (more details can be found in the @link Properties@endlink chapter).
+Which format the Property is extracted in depends on the way the PropertyExtractor is called.
+
+@link Properties@endlink without an @link Indices Index@endlink structure have the format None and are extracted through calls with zero arguments.
+```cpp
+	propertyExtractor.calculateProperty();
+```
+Note that *Property* in *calculateProperty()* is a placeholder for the name of the actual Property to extract.
+
+@link Properties@endlink with an @link Indices Index@endlink structure can be extracted on the Ranges format by passing in a pattern-ranges pair.
+```cpp
+	propertyExtractor.calculateProperty(pattern, ranges);
+```
+Here pattern is an Index such as {3, IDX_X, IDX_SUM_ALL, IDX_Y}.
+It tells the @link TBTK::PropertyExtractor::PropertyExtractor PropertyExtractor@endlink to extract the Property for all Indices of the form {3, *, *, *}, summing over the third subindex.
+Similarly, ranges is an Index such as {1, 10, 5, 2}.
+It tells the PropertyExtractor that the second, third, and fourth subindices runs over 0 to 9, 0 to 5, and 0 to 1, respectively.
+The first subindex is ignored but is usefully set to 1 to clarify that it takes on a single value.
+
+@link Properties@endlink with an @link Indices Index@endlink structure can also be extracted on the Custom format by passing in a list of patterns.
+```cpp
+	propertyExtractor.calculateProperty({
+		{0, _a_, IDX_SUM_ALL},
+		{_a_, 5, IDX_SUM_ALL}
+	});
+```
+This tells the @link TBTK::PropertyExtractor::PropertyExtractor PropertyExtractor@endlink to include all Indices of the form {0, *, *} and {*, 5, *}, summing over the third subindex.
+The list of patterns can be arbitrary long.
+We note the extra pair of curly braces next to the parentheses.
+Without these, the call would have been interpreted as an attempt to extract the Property on the Ranges format.
+
+# Energy-dependent Properties {#EnergyDependentProperties}
+Many @link Properties@endlink are energy-dependent.
+It is possible to set the range and resolution of the energy interval for which the PropertyExtractor calculates them.
 ```cpp
 	propertyExtractor.setEnergyWindow(
-		LOWER_BOUND,
-		UPPER_BOUND,
-		RESOLUTION
+		lowerBound,
+		upperBound,
+		resolution
 	);
 ```
-Here the two first numbers are real values satisfying LOWER_BOUND < UPPER_BOUND, and RESOLUTION is an integer specifying the number of energy points that the window is divided into.
+The *resolution* refers to the number of points between *lowerBound* and *upperBound* for which the Property is calculated.
+
+# Examples {#PropertyExtractorsExamples}
+
+## DOS
+The density of states (@link TBTK::Property::DOS DOS@endlink) has no @link Indices@endlink associated with it and can be extracted in the None format.
+```cpp
+	Property::DOS dos = propertyExtractor.calculateDOS();
+```
 
 ## Density
-To demonstrate two different modes for extracting properties we consider a @link Model@endlink with the @link Indices Index@endlink-structure {x, y, z, s} with dimensions SIZE_X, SIZE_Y, SIZE_Z, and two spin species.
-Next, assume that we are interested in extracting the electron density in the z = 10 plane.
-We can do this as follows
+Consider a @link Model@endlink with the @link Indices Index@endlink structure {x, y, z, spin}.
+The @link TBTK::Property::Density Density@endlink in the plane \f$y = 10\f$ can be calculated on the Ranges format using
 ```cpp
 	Property::Density density = propertyExtractor.calculateDensity(
-		{ IDX_X,  IDX_Y,     10, IDX_SUM_ALL},
-		{SIZE_X, SIZE_Y, SIZE_Z,           2}
+		{IDX_X, 10, IDX_Y, IDX_SUM_ALL},
+		{sizeX,  1, sizeZ,           2}
 	);
 ```
-Here the first curly brace specifies how the different subindices are to be treated by the @link TBTK::PropertyExtractor::PropertyExtractor PropertyExtractor@endlink.
-In this case we specify that the x and y indices are to be considered as a first and second running index.
-Note that the labels IDX_X and IDX_Y has nothing to do with the fact that the index structure has x and y variables at these positions.
-The two labels could be interchanged, in which case the y-subindex is going to be considered the first index in the @link Properties Property@endlink.
-A third specifier IDX_Z is also available and it is important that IDX_Z only is used if IDX_Y is used, and IDX_Y only is used if IDX_X is used.
-The third subindex in the first bracket specifies that the PropertyExtractor should only extract the density for z=10.
-Finally, the identifier in the fourth position instructs the PropertyExtractor to sum the contribution from all spins.
+Note that IDX_X and IDX_Y are not related to the subindices x and y.
+Rather, they are labels indicating the first and second subindex to loop over.
 
-The second bracket specifies the range over which the subindices run, assuming that they start at {0, 0, 0, 0}.
-In this case the third subindex will not actually be used and can in principle be set to any value, for which 1 is another reasonable choice as a reminder that only one value is going to be used.
-While there currently is no way of changing the lower bound for the range, it is possible to limit the upper bound by for example passing {SIZE_X/2, SIZE_Y, SIZE_Z, 2} as second argument.
-In this case the density will only be evaluated for the lower half of the x-range.
-
-Now assume that we instead are interested in extracting the density for the z = 10 plane, the points along the line (y,z)=(5,15), and the spin down density on site (x,y,z)=(0,0,0).
-This can be achieved by passing a list of patterns to the @link TBTK::PropertyExtractor::PropertyExtractor PropertyExtractor@endlink as follows
+For a less regular set of @link Indices@endlink, we can use the Custom format instead.
+The @link TBTK::Property::Density Density@endlink in the plane \f$z = 10\f$, along the line \f$(y,z)=(5,15)\f$, and the spin-down Density on the site \f$(x,y,z)=(0,0,0)\f$ can be extracted using.
 ```cpp
 	Property::Density density = propertyExtractor.calculateDensity({
 		{_a_, _a_, 10, IDX_SUM_ALL},
@@ -999,27 +1008,17 @@ This can be achieved by passing a list of patterns to the @link TBTK::PropertyEx
 		{  0,   0,  0,           1}
 	});
 ```
-First note the two curly brackets on the first and last line which means that the other brackets are passed to the function as a list of brackets rather than as individual arguments.
-This allows for an arbitrary number of patterns to be passed to the PropertyExtractor.
-The distinction becomes particularly important to keep in mind when only two patterns are supplied, since forgetting the outer brackets will result in the first mode described above to be executed instead.
-The symbol \_a\_ indicates wildcards, meaning that any Index that matches the patter will be included independently of the values in these positions.
-We note here that while the three underscores are useful for improving readability in application code, it is also possible to use the more descriptive identifier IDX_ALL.
-
-## DOS
-The density of states (@link TBTK::Property::DOS DOS@endlink) is representative for a third internal storage mode since being a system wide property it has no Index-structure.
-```cpp
-	Property::DOS dos = propertyExtractor.calculateDOS();
-```
 
 ## LDOS
-Assuming the index structure {x, y, z, s}, with dimensions SIZE_X, SIZE_Y, SIZE_Z, and two spin species, the @link TBTK::Property::LDOS LDOS@endlink can be extracted for the z = 10 plane as
+Assuming the @link Indices Index@endlink structure {x, y, z, spin}, the @link TBTK::Property::LDOS LDOS@endlink can be extracted in the \f$z = 10\f$ plane and on the Ranges format using
 ```cpp
 	Property::LDOS ldos = propertyExtractor.calculateLDOS(
 		{ IDX_X,  IDX_Y,     10, IDX_SUM_ALL},
 		{SIZE_X, SIZE_Y, SIZE_Z,           2}
 	);
 ```
-or for the plane z=10, along the line (y,z)=(5,15), and for the down spin on site (x,y,z)=(0,0,0) using
+
+The Custom format can be used to extract it in the plane \f$z=10\f$, along the line \f$(y,z)=(5,15)\f$, and for the down spin on site \f$(x,y,z)=(0,0,0)\f$.
 ```cpp
 	Property::LDOS ldos = propertyExtractor.calculateLDOS({
 		{_a_, _a_, 10, IDX_SUM_ALL},
@@ -1029,7 +1028,7 @@ or for the plane z=10, along the line (y,z)=(5,15), and for the down spin on sit
 ```
 
 ## Magnetization
-Assuming the index structure {x, y, z, s}, with dimensions SIZE_X, SIZE_Y, SIZE_Z, and two spin species, the @link TBTK::Property::Magnetization Magnetization@endlink can be extracted for the z = 10 plane as
+Assuming the @link Indices Index@endlink structure {x, y, z, spin}, the @link TBTK::Property::Magnetization Magnetization@endlink can be extracted in the \f$z = 10\f$ plane and on the Ranges format using
 ```cpp
 	Property::Magnetization magnetization
 		= propertyExtractor.calculateMagnetization(
@@ -1037,7 +1036,9 @@ Assuming the index structure {x, y, z, s}, with dimensions SIZE_X, SIZE_Y, SIZE_
 			{SIZE_X, SIZE_Y, SIZE_Z,        2}
 		);
 ```
-or for the plane z=10, along the line (y,z)=(5,15), and for the site (x,y,z)=(0,0,0) using
+Note the IDX_SPIN flag, which is necessary to indicate which subindex that corresponds to spin.
+
+The Custom format can be used to extract it in the plane \f$z=10\f$, along the line \f$(y,z)=(5,15)\f$, and on the site \f$(x,y,z)=(0,0,0)\f$.
 ```cpp
 	Property::Magnetization magnetization
 		= propertyExtractor.calculateMagnetization({
@@ -1046,10 +1047,9 @@ or for the plane z=10, along the line (y,z)=(5,15), and for the site (x,y,z)=(0,
 			{  0,   0,  0, IDX_SPIN}
 		});
 ```
-Note that in order to calculate the Magnetization, it is necessary to specify one and only one spin-subindex using IDX_SPIN.
 
 ## SpinPolairzedLDOS
-Assuming the index structure {x, y, z, s}, with dimensions SIZE_X, SIZE_Y, SIZE_Z, and two spin species, the @link TBTK::Property::SpinPolarizedLDOS SpinPolarizedLDOS@endlink can be extracted for the z = 10 plane as
+Assuming the @link Indices Index@endlink structure {x, y, z, spin}, the @link TBTK::Property::SpinPolarizedLDOS SpinPolarizedLDOS@endlink can be extracted in the \f$z = 10\f$ plane and on the Ranges format using
 ```cpp
 	Property::SpinPolarizedLDOS spinPolarizedLDOS
 		= propertyExtractor.calculateSpinPolarizedLDOS(
@@ -1057,7 +1057,9 @@ Assuming the index structure {x, y, z, s}, with dimensions SIZE_X, SIZE_Y, SIZE_
 			{SIZE_X, SIZE_Y, SIZE_Z,        2}
 		);
 ```
-or for the plane z=10, along the line (y,z)=(5,15), and for the site (x,y,z)=(0,0,0) using
+Note the IDX_SPIN flag, which is necessary to indicate which subindex that corresponds to spin.
+
+The Custom format can be used to extract it in the plane \f$z=10\f$, along the line \f$(y,z)=(5,15)\f$, and on the site \f$(x,y,z)=(0,0,0)\f$.
 ```cpp
 	Property::SpinPolarizedLDOS spinPolarizedLDOS
 		= propertyExtractor.calculateSpinPolarizedLDOS({
@@ -1066,362 +1068,308 @@ or for the plane z=10, along the line (y,z)=(5,15), and for the site (x,y,z)=(0,
 			{  0,   0,  0, IDX_SPIN}
 		});
 ```
-Note that in order to calculate the SpinPolarizedLDOS, it is necessary to specify one and only one spin-subindex using IDX_SPIN.
 
-## Further Properties
-Further @link Properties@endlink such as @link TBTK::Property::EigenValues EigenValues@endlink, @link TBTK::Property::GreensFunction GreensFunction@endlink, @link TBTK::Property::SelfEnergy SelfEnergy@endlink, and @link TBTK::Property::WaveFunctions WaveFunctions@endlink are also available but are not yet documented in this manual.
-If you are interested in these quantities, do not hesitate to contact kristofer.bjornson@second-tech.com to get further details or to request a speedy update about one or several of these Properties.
-
+@link Properties Next: Properties@endlink
 @page Properties Properties
 @link TBTK::Property::AbstractProperty See more details about the Properties in the API@endlink
 
-# Properties and meta data {#PropertiesAndMetaData}
-When calculating physical properties it is common to store the result in an arrays.
-The density at (x,y) for a two-dimensional grid with dimensions (SIZE_X, SIZE_Y) can for example be stored as the array element *density[SIZE_Y*x +y]*.
-However, there are two problems with using such a simple storage scheme.
-First, there is an implicit assumption in the way the elements are laid out in memory that is nowhere documented in actual code.
-Every time the developer needs to write new code that access an element in the array, it is up to the developer to remember that the offset to the element should be calculated as *SIZE_Y*x + y*.
-The rule is certainly easy for grid like systems like in this example, but generalizes poorly to complex structures, and moreover limits the possibility to write general purpose functions that takes the array as input.
-Second, the variables SIZE_X and SIZE_Y needs to be stored separately from the array and either be global variables or be passed independently to any function that uses the array.
+# Containers of physical Properties {#ContainerOfPhysicalProperties}
+@link TBTK::Property::AbstractProperty Properties@endlink are containers of physical properties that can be calculated from a @link Model@endlink.
+They store both the data itself and meta-data, such as the energy interval they have been calculated over.
+Properties can also be used as functions of the arguments for which they have been calculated.
+This makes them convenient building blocks for applications that extend the capabilities beyond those of the standard @link Solvers@endlink.
 
-The variables SIZE_X and SIZE_Y, as well as the information that the offset should be calculated as SIZE_Y*x + y, is meta data that together with the data itself forms a self contained concept.
-In TBTK properties are therefore stored in @link TBTK::Property::AbstractProperty Property@endlink classes which acts as containers of both the data itself, as well as the relevant meta data.
-Moreover, the Properties can internally store the data in multiple different storage modes, each suitable for different types of data.
-In this chapter we describe these different storage modes, as well as the various specific properties natively supported by TBTK.
-We also note that while this chapter describes the properties themselves, the reader is referred to the @link PropertyExtractors PropertyExtractor@endlink chapter for information about how to actually create the various Properties.
+This chapter discusses the Properties themselves.
+For information on how to calculate them, see the @link PropertyExtractors@endlink chapter.
+
+# EnergyResolvedProperties {#EnergyResolvedProperties}
+Many @link TBTK::Property::AbstractProperty Properties@endlink are @link TBTK::Property::EnergyResolvedProperty EnergyResolvedProperties@endlink, which means that they contain data over some energy interval.
+It is possible to get information about the interval as follows.
+```cpp
+	double lowerBound = energyResolvedProperty.getLowerBound();
+	double upperBound = energyResolvedProperty.getUpperBound();
+	unsigned resolution = energyResolvedProperty.getResolution();
+```
+Here *resolution* is the number of points with which the data is resolved between the *lowerBound* and the *upperBound*.
 
 # Storage modes {#StorageModes}
-There currently exists three different storage modes known as None, Ranges, and Custom.
-The names correspond to the type of Index structures that they are meant for.
+There are three different storage modes for @link TBTK::Property::AbstractProperty Properties@endlink called None, Ranges, and Custom.
+Here we describe the difference between these modes.
+We also describe how the mode affects how data can be accessed from the Property.
+
+Independently of the storage mode, the total number of data points contained in the Property can be retrieved using
+```cpp
+	unsigned int size = property.getSize();
+```
 
 ## None
-The storage mode None is the simplest one and is meant for @link TBTK::Property::AbstractProperty Properties@endlink that has no @link Indices Index@endlink structure at all, which is typical of global properties such as the density of states (@link TBTK::Property::DOS DOS@endlink) or @link TBTK::Property::EigenValues EigenValues@endlink.
+This storage mode is for @link TBTK::Property::AbstractProperty Properties@endlink that have no @link Indices@endlink associated with them.
+For example, the density of states (@link TBTK::Property::DOS DOS@endlink) and the @link TBTK::Property::EigenValues EigenValues@endlink.
+
+If the Property is a function of energy, it is possible to get the nth element using the notation
+```cpp
+	property(n);
+```
 
 ## Ranges
-The Ranges storage mode is the storage mode described in the first section of this chapter and is meant for Properties that are extracted on a regular grid.
-By explicitly preserving the grid structure in the @link TBTK::Property::AbstractProperty Property@endlink, other routines can make stronger assumptions about the data than it otherwise would be able to do, which can be useful in certain cases.
-This is particularly true when plotting data, since for example a density extracted on some specific two-dimensional plane in a three-dimensional grid can be plotted as a surface plot.
-In contrast, it is not clear how to plot a density extracted from a few randomly chosen points in the three-dimensional grid.
-If a common storage format that support the later possibility is chosen also in the former case, additional information will have to be provided to for example a plotter routine to tell it that it actually is more structured than it appears from the storage format alone.
-In particular, TBTK comes prepared with python scripts ready to plot many Properties, and many of these only work when the Ranges format is used.
+This storage mode is meant for extracting @link TBTK::Property::AbstractProperty Properties@endlink on a regular grid, e.g., the @link TBTK::Property::Density Density@endlink on a quadratic lattice.
+It can be particularly useful when the Property is to be exported for external postprocessing.
 
-Sometimes it is useful to access the raw data rather than the @link TBTK::Property::AbstractProperty Property@endlink object as a whole.
-This can be done as follows
+When stored on this format, the data and its ranges can be extracted as follows.
 ```cpp
 	const vector<DataType> &data = property.getData();
-```
-Here DataType should be replaced by the specific data type of the property.
-There also exists a corresponding call that gives write access to the data, but it is recommended to only use this when really needed.
-```cpp
-	//Warning! Only use this if it is really needed.
-	vector<DataType> &data = property.getData();
-```
-
-When @link TBTK::Property::AbstractProperty Properties@endlink are extracted on the Ranges format, identifiers IDX_X, IDX_Y, and IDX_Z and corresponding ranges SIZE_X, SIZE_Y, and SIZE_Z are used (see the @link PropertyExtractors@endlink chapter).
-These are used to indicate which subindex that should be mapped to the first, second, and third index in the array, and their ranges.
-The ranges are stored in the Property and can be accessed using
-```cpp
 	vector<int> ranges = property.getRanges();
 ```
-Individual elements are then accessed from the array using
+Here DataType should be replaced by the particular data type of the Property's values.
+
+If the data also is a function of energy, with resolution ENERGY_RESOLUTION, then the layout is such that the data can be accessed as follows.
 ```cpp
-	data[NUM_INTERNAL_ELEMENTS*(ranges[2]*(ranges[1]*x + y) + z) + n];
+	data[ENERGY_RESOLUTION*(ranges[2]*(ranges[1]*x + y) + z) + n];
 ```
-where x, y, and z corresponds to the first second and third index, respectively.
-Further, NUM_INTERNAL_ELEMENTS refers to the number of elements in the data for each index, while n is a particular choice of internal element.
-This is needed when the data has further structure than the index structure, such as for example when for each index the data has been calculated for several energies.
-If the data has no internal structure, or fewer than three indices, the corresponding variables are removed.
-For example, if the data is two-dimensional and has no internal structure the data is accessed as
+If the data instead would be two-dimensional and without energy dependence, the data is accessed as follows.
 ```cpp
 	data[ranges[1]*x + y];
 ```
 
-We finally note that while the Ranges format retains structural information about the problem, it does not retain the actual Index structure.
-That is, although the x, y, and z variables bear resemblance to the corresponding subindices in the original Index structure, they have no real relation to each other.
-Therefore it is not possible to extract elements from a @link TBTK::Property::AbstractProperty Property@endlink on the Ranges format using the original @link Indices@endlink on the form {x, y, z, s}.
-
 ## Custom
-The Custom format allows for @link TBTK::Property::AbstractProperty Properties@endlink without a particular grid structure to be extracted.
-For example when some Property is extracted from a molecule or from a few points on a grid without any particular relation to each other.
-However, while no grid structure is imposed on the Property, the Custom format has the benefit of preserving the Index structure.
-What this means is that after a Property has been created, it is possible to request a particular element using the original Indices used to specify the @link Model@endlink.
-The interface for doing so is through the function operator, which means that the Property can be seen as a function defined over the Indices for which it has been extracted.
-To access a particular element of the Property, simply type
+This storage format is meant for @link TBTK::Property::AbstractProperty Properties@endlink that have been calculated for arbitrary @link Indices@endlink.
+If the Property has been calculated for a given Index, say {x, y, z, spin}, it is possible to access the value as follows.
 ```cpp
-	DataType &element = property({x, y, z, s}, n);
+	property({x, y, z, spin});
 ```
-where DataType should be replaced with the particular data type for the Property, and the second argument should be ignored if the Property has no internal structure other than the @link Indices Index@endlink structure.
-
-Some properties does not have the full @link Indices Index@endlink structure of the original problem.
-For example may a @link TBTK::Property::AbstractProperty Property@endlink such as @link TBTK::Property::LDOS LDOS@endlink be calculated by summing over the spin subindex using the identifier IDX_SUM_ALL.
-Other Properties may still have the full Index structure, but the Property may have one data element associated with a range of indices.
-For example does the @link TBTK::Property::Magnetization Magnetization@endlink contain one @link TBTK::SpinMatrix SpinMatrix@endlink that contains information about both up and down spins at the same time.
-A typical case like this occurs when IDX_SPIN has been inserted in one of the subindices of the full Index structure at extraction.
-In these cases the s in {x, y, z, s} should be left unspecified, which is possible to do with help of the wildcard specifier that can be written as \_a\_ or IDX_ALL.
+If the Property is energy-dependent, we instead use
 ```cpp
-	DataType &element = property({x, y, z, _a_});
+	property({x, y, z, spin}, n);
+```
+where n is an energy index.
+
+### Properties with subindex specifiers
+A @link TBTK::Property::AbstractProperty Property@endlink may have been calculated using a specifier in one of the subindices.
+Consider for example the @link Indices Index@endlink structure {x, y, z, spin}, and the @link TBTK::Property::Density Density@endlink obtained through
+```cpp
+	Property::Density density = propertyExtractor.calculateDensity({
+		{5, _a_, _a_, IDX_SUM_ALL}
+	});
+```
+Here the Density is being calculated for all possible coordinates of the form \f$(5, y, z)\f$.
+However, the subindex specifier IDX_SUM_ALL ensures the spin subindex is summed over.
+The resulting Density retains the original Index structure, including the spin subindex.
+To get the value of the Density at a specific point \f$(5, y, z)\f$, we call the Density with a wildcard in the spin subindex.
+```cpp
+	density({5, y, z, _a_});
 ```
 
-By default the @link TBTK::Property::AbstractProperty Properties@endlink will generate an error if an @link Indices Index@endlink is supplied as argument for which the Property has not been extracted.
-However, sometimes it is useful to override this behavior and make the Property instead return some default value (e.g. zero) when an otherwise illegal Index is supplied.
-To do so, execute the following commands
+### Index out-of-bounds access
+By default, a @link TBTK::Property::AbstractProperty Property@endlink will generate an error when trying to access a value that is not contained in the Property.
+However, it is possible to configure the Property such that it instead return some default value (e.g. zero).
+This can be done as follows.
 ```cpp
 	property.setAllowIndexOutOfBoundsAccess(true);
 	property.setDefaultValue(defaultValue);
 ```
-We note that it is recommended to be cautious about turning this feature on, since out of bound access in most cases is a sign of a bug.
-Such bugs will be immediately detected at execution if out of bounds access is turned off.
+We note that it is recommended to be cautious about turning this feature on.
+Out-of-bounds access is often a sign that something is wrong, and turning this on can, therefore, mask bugs.
 
-# Density {#Density}
-The @link TBTK::Property::Density Density@endlink has DataType double and can be extracted on the Ranges or Custom format.
-Assume an Index structure with two spatial subindices, one orbital subindex and one spin subindex {x, y, orbital, spin}, and that the orbital and spin subindices has been summed over using the IDX_SUM_ALL specifier at the point of extraction.
-On Ranges format a specific element can the be accessed as
+# Examples {#PropertiesExamples}
+See the @link PropertyExtractors@endlink chapter for details about the different ways that @link TBTK::Property::AbstractProperty Properties@endlink can be extracted.
+
+## Density {#Density}
+Assume the Index structure {x, y, orbital, spin}.
+
+<b>Ranges format</b>
 ```cpp
+	Property::Density density = propertyExtractor.calculateDensity(
+		{  _a_,   _a_, IDX_SUM_ALL, IDX_SUM_ALL},
+		{sizeX, sizeY, numOrbitals,           2}
+	);
+
 	vector<int> ranges = density.getRanges();
 	const vector<double> &data = density.getData();
-	double &d = data[ranges[1]*x + y];
-```
-while on the Custom format it can be accessed as
-```cpp
-	double &d = density({x, y, _a_, _a_});
+	double d = data[ranges[1]*x + y];
 ```
 
-# DOS {#DOS}
-The @link TBTK::Property::DOS DOS@endlink has DataType double and is a global @link TBTK::Property::AbstractProperty Property@endlink without @link Indices Index@endlink structure but with an energy variable.
-The lower and upper bound for the energy variable and the number of energy points in the interval can be extracted as
+<b>Custom format</b>
 ```cpp
+	Property::Density density = propertyExtractor.calculateDensity({
+		{_a_, _a_, IDX_SUM_ALL, IDX_SUM_ALL}
+	});
+	double d = density({x, y, _a_, _a_});
+```
+
+@link TBTK::Property::Density See more details about the Density in the API@endlink
+
+## DOS {#DOS}
+<b>None format</b>
+```cpp
+	Property::DOS dos = propertyExtractor.calculateDOS();
+
 	double lowerBound = dos.getLowerBound();
 	double upperBound = dos.getUpperBound();
 	double resolution = dos.getResolution();
-```
-while an individual element can be extracted as
-```cpp
-	double &d = dos(n);
-```
-where 0 <= *n* < *resolution*
 
-# EigenValues {#EigenValues}
-The @link TBTK::Property::EigenValues EigenValues@endlink @link TBTK::Property::AbstractProperty Property@endlink has DataType double and is a global Property without @link Indices Index@endlink structure.
-The number of eigenvalues can be extracted as
+	double d = dos(n);
+```
+Here 0 <= *n* < *resolution*.
+
+@link TBTK::Property::DOS See more details about the DOS in the API@endlink
+
+## EigenValues {#EigenValues}
+<b>None format</b>
 ```cpp
 	unsigned int numEigenValues = eigenValues.getSize();
+	double e = eigenValues(n);
 ```
-while an individual eigen value can be extracted as
-```cpp
-	double &e = eigenValues(n);
-```
-where 0 <= *n* < *numEigenValues*.
+Here 0 <= *n* < *numEigenValues*.
 
-# LDOS {#LDOS}
-The @link TBTK::Property::LDOS LDOS@endlink has DataType double and can be extracted on the Ranges or Custom format.
-Assume an @link Indices Index@endlink structure with two spatial subindices, one orbital subindex and one spin subindex {x, y, orbital, spin}, and that the orbital and spin subindices has been summed over using the IDX_SUM_ALL specifier at the point of extraction.
-The lower and upper bound for the energy variable and the number of energy points in the interval can be extracted as
+@link TBTK::Property::EigenValues See more details about the EigenValues in the API@endlink
+
+## LDOS {#LDOS}
+Assume the @link Indices Index@endlink structure {x, y, z, spin}.
+
+<b>Ranges format</b>
 ```cpp
+	Property::LDOS ldos = propertyExtractor.calculateLDOS(
+		{  _a_,   _a_, IDX_SUM_ALL, IDX_SUM_ALL},
+		{sizeX, sizeY, numOrbitals,           2}
+	);
+
 	double lowerBound = ldos.getLowerBound();
 	double upperBound = ldos.getUpperBound();
 	double resolution = ldos.getResolution();
-```
-On Ranges format a specific element can the be accessed as
-```cpp
+
 	vector<int> ranges = ldos.getRanges();
 	const vector<double> &data = ldos.getData();
-	double &d = data[resolution*(ranges[1]*x + y) + n];
+	double d = data[resolution*(ranges[1]*x + y) + n];
 ```
-where 0 <= *n* < resolution, while on the Custom format it can be accessed as
-```cpp
-	double &d = ldos({x, y, _a_, _a_}, n);
-```
+Here 0 <= *n* < resolution.
 
-# Magnetization {#Magnetization}
-The @link TBTK::Property::Magnetization Magnetization@endlink has DataType @link TBTK::SpinMatrix SpinMatrix@endlink and can be extracted on the Ranges or Custom format.
-Assume an @link Indices Index@endlink structure with two spatial subindices, one orbital subindex and one spin subindex {x, y, orbital, spin}.
-Further assume that the orbital subindex has been summed over using the IDX_SUM_ALL specifier at the point of extraction, while the spin-index has been specified using the IDX_SPIN specifier.
-On Ranges format a specific element can the be accessed as
+<b>Custom format</b>
 ```cpp
+	Property::LDOS ldos = propertyExtractor.calculateLDOS({
+		{_a_, _a_, IDX_SUM_ALL, IDX_SUM_ALL}
+	});
+
+	double lowerBound = ldos.getLowerBound();
+	double upperBound = ldos.getUpperBound();
+	double resolution = ldos.getResolution();
+
+	double d = ldos({x, y, _a_, _a_}, n);
+```
+Here 0 <= *n* < resolution.
+
+@link TBTK::Property::LDOS See more details about the LDOS in the API@endlink
+
+## Magnetization {#Magnetization}
+Assume the @link Indices Index@endlink structure {x, y, orbital, spin}.
+
+<b>Ranges format</b>
+```cpp
+	Property::Magnetization magnetization
+		= propertyExtractor.calculateMagnetization(
+			{  _a_,   _a_, IDX_SUM_ALL, IDX_SPIN},
+			{sizeX, sizeY, numOrbitals,        2}
+		);
+
 	vector<int> ranges = magnetiation.getRanges();
 	const vector<SpinMatrix> &data = magnetization.getData();
-	SpinMatrix &m = data[ranges[1]*x + y];
-```
-while on the Custom format it can be accessed as
-```cpp
-	SpinMatrix &m = magnetization({x, y, _a_, _a_});
+	SpinMatrix spinMatrix = data[ranges[1]*x + y];
 ```
 
-# SpinPolarizedLDOS {#SpinPolarizedLDOS}
-The @link TBTK::Property::SpinPolarizedLDOS SpinPolarizedLDOS@endlink has DataType SpinMatrix and can be extracted on the Ranges or Custom format.
-Assume an @link Indices Index@endlink structure with two spatial subindices, one orbital subindex and one spin subindex {x, y, orbital, spin}.
-Further assume that the orbital subindex has been summed over using the IDX_SUM_ALL specifier at the point of extraction, while the spin-index has been specified using the IDX_SPIN specifier.
-The lower and upper bound for the energy variable and the number of energy points in the interval can be extracted as
+<b>Custom format</b>
 ```cpp
+	Property::Magnetization magnetization
+		= propertyExtractor.calculateMagnetization({
+			{_a_, _a_, IDX_SUM_ALL, IDX_SPIN}
+		});
+
+	SpinMatrix spinMatrix = magnetization({x, y, _a_, _a_});
+```
+
+@link TBTK::Property::Magnetization See more details about the Magnetization in the API@endlink<br />
+@link TBTK::SpinMatrix See more details about the SpinMatrix in the API@endlink
+
+## SpinPolarizedLDOS {#SpinPolarizedLDOS}
+Assume the @link Indices Index@endlink structure {x, y, orbital, spin}.
+
+<b>Ranges format</b>
+```cpp
+	Property::SpinPolarizedLDOS spinPolarizedLDOS
+		= propertyExtractor.calculateSpinPolarizedLDOS(
+			{  _a_,   _a_, IDX_SUM_ALL, IDX_SPIN},
+			{sizeX, sizeY, numOrbitals,        2}
+		);
+
 	double lowerBound = spinPolarizedLDOS.getLowerBound();
 	double upperBound = spinPolarizedLDOS.getUpperBound();
 	double resolution = spinPolarizedLDOS.getResolution();
-```
-On Ranges format a specific element can the be accessed as
-```cpp
+
 	vector<int> ranges = spinPolarizedLDOS.getRanges();
 	const vector<SpinMatrix> &data = spinPolarizedLDOS.getData();
-	SpinMatrix &m = data[resolution*(ranges[1]*x + y) + n];
+	SpinMatrix spinMatrix = data[resolution*(ranges[1]*x + y) + n];
 ```
-where 0 <= *n* < *resolution*, while on the Custom format it can be accessed as
-```cpp
-	SpinMatrix &s = spinPolarizedLDOS({x, y, _a_, _a_}, n);
-```
+Here 0 <= *n* < *resolution*.
 
-# WaveFunctions {#WaveFunctions}
-The @link TBTK::Property::WaveFunctions WaveFunctions@endlink has DataType complex<double> and can be extracted on the Custom format.
-Assume an @link Indices Index@endlink structure with two spatial subindices, one orbital subindex and one spin subindex {x, y, orbital, spin}.
-The states for which WaveFunctions contains wave functions can be extracted as
+<b>Custom format</b>
 ```cpp
-	vector<unsigned int> &states = waveFunction.getStates();
+	Property::SpinPolarizedLDOS spinPolarizedLDOS
+		= propertyExtractor.calculateSpinPolarizedLDOS({
+			{_a_, _a_, IDX_SUM_ALL, IDX_SPIN}
+		});
+
+	double lowerBound = spinPolarizedLDOS.getLowerBound();
+	double upperBound = spinPolarizedLDOS.getUpperBound();
+	double resolution = spinPolarizedLDOS.getResolution();
+
+	SpinMatrix spinMatrix = spinPolarizedLDOS({x, y, _a_, _a_}, n);
 ```
-On the Custom format a specific element can be accessed as
+Here 0 <= *n* < *resolution*.
+
+@link TBTK::Property::SpinPolarizedLDOS See more details about the SpinPolarizedLDOS in the API@endlink<br />
+@link TBTK::SpinMatrix See more details about the SpinMatrix in the API@endlink
+
+## WaveFunctions {#WaveFunctions}
+Assume the @link Indices Index@endlink structure {x, y, orbital, spin}.
+
+<b>Custom format</b><br />
+The @link TBTK::Property::WaveFunctions WaveFunctions@endlink are extracted somewhat differently from all other @link TBTK::Property::AbstractProperty Properties@endlink.
+The second argument to the @link PropertyExtractors PropertyExtractor@endlink call is a list of the eigenstate indices for which to extract the WaveFunctions.
+This can also be set to \_a\_ to extract all states.
 ```cpp
+	Property::WaveFunctions waveFunctions
+		= propertyExtractor.calculateWaveFunctions(
+			{{_a_, _a_, _a_, _a_}},
+			{1, 3, 7}
+		);
+
+	vector<unsigned int> &states = waveFunction.getStates();
 	complex<double> &w = waveFunctions({x, y, orbital, spin}, n);
 ```
 where *n* is one of the numbers contained in *states*.
 
+@link TBTK::Property::WaveFunctions See more details about the WaveFunctions in the API@endlink<br />
+
+@link ImportingAndExportingData Next: Importing and exporting data@endlink
 @page ImportingAndExportingData Importing and exporting data
-#  External storage {#ExternalStorage}
-While the classes described in the other Chapters allow data to be stored in RAM during execution, it is important to also be able to store data outside of program memory.
-This allows for data to be stored in files in between executions, to be exported to other programs, for external input to be read in, etc.
-TBTK therefore comes with two methods for writing data structures to file on a format that allows for them to later be read into the same data structures, as well as one method for reading parameter files.
 
-The first method is in the form of a @link TBTK::FileWriter FileWriter@endlink and @link TBTK::FileReader FileReader@endlink class, which allows for @link Properties@endlink and @link Model Models@endlink to be written into HDF5 files.
-The HDF5 file format (https://support.hdfgroup.org/HDF5/) is a file format specifically designed for scientific data and has wide support in many languages.
-Data written to file using the FileWriter can therefore easily be imported into for example MATLAB or python code for post-processing.
-This is particularly true for Properties stored on the Ranges format (see the Properties chapter), since the data sections in the HDF5 files will preserve the Ranges format.
-
-Many classes in TBTK can also be serialized, which mean that they are turned into strings.
-These strings can then be written to file or passed as arguments to the constructor for the corresponding class to recreate a copy of the original object.
-TBTK also contains a class called @link TBTK::Resource Resource@endlink, which allows for very general input and output of strings, including reading data immediately from the web.
-In combination these two techniques allows for very flexible export and import of data that essentially allows large parts of the current state of the program to be stored in permanent memory.
-The goal is to make almost every class serializable.
-This would essentially allow a program to be serialized in the middle of execution and restarted at a later time, or allow for truly distributed applications to communicate their current state across the Internet.
-However, this is a future vision not yet fully reached.
-
-Finally, TBTK also contains a @link TBTK::FileParser FileParser@endlink that can parse a structured parameter file and create a @link TBTK::ParameterSet ParameterSet@endlink.
-
-# FileReader and FileWriter {#FileReaderAndFileWriter}
-The HDF5 file format that is used for the @link TBTK::FileReader FileReader@endlink and @link TBTK::FileWriter FileWriter@endlink essentially implements a UNIX like file system inside a file for structured data.
-It allows for arrays of data, together with meta data called attributes, to be stored in datasets inside the file that resembles files.
-When reading and writing data using the FileReader and FileWriter, it is therefore common to write several objects into the same HDF5-file.
-The first thing to know about the FileReader and FileWriter is therefore that the current file it is using is chosen by typing
-```cpp
-	FileReader::setFileName("Filename.h5");
-```
-and similar for the FileWriter.
-It is important to note here that the FileReader and FileWriter acts as global state machines.
-What this means is that whatever change that is made to them at runtime is reflected throught the code.
-If this command is executed in some part of the code, and then some other part of the code is reading a file, it will use the file "Filename.h5" as input.
-It is possible to check whether a particular file already exists by first setting the filename and the call
-```cpp
-	bool fileExists = FileReader::exists();
-```
-and similar for the FileWriter.
-
-A second important thing to know about HDF5 is that, although it can write new datasets to an already existing file, it does not allow for data sets to be overwritten.
-If a program is meant to be run repeatedly, overwriting the previous data in the file each time it is rerun, it is therefore required to first delete the previously generated file.
-This can be done after having set the filename by typing
-```cpp
-	FileWriter::clear();
-```
-A similar call also exists for the @link TBTK::FileReader FileReader@endlink, but it may seem harder to find a logical reason for calling it on the FileReader.
-
-A @link Model@endlink or @link Properties Property@endlink can be written to file as follows
-```cpp
-	FileWriter::writeDataType(dataType);
-```
-where *DataType* should be replaced by one of the DataTypes listed below, and *data* should be an object of this data type.
-|Supported DataTypes|
-|-------------------|
-| Model             |
-| EigenValues       |
-| WaveFunction      |
-| DOS               |
-| Density           |
-| Magnetization     |
-| LDOS              |
-| SpinPolarizedLDOS |
-| ParameterSet      |
-
-By default the @link TBTK::FileWriter FileWriter@endlink writes the data to a dataset with the same name as the DataType listed above.
-However, sometimes it is useful to specify a custom name, especially if multiple data structures of the same type are going to be written to the same file.
-It is therefore possible to pass a second parameter to the write function that will be used as name for the dataset
-```cpp
-	FileWriter::writeDataType(data, "CustomName");
-```
-
-The interface for reading data is completely analogous to that for writing and takes the form
-```cpp
-	DataType data = FileReader::readDataType();
-```
-where DataType once again is a placeholder for one of the actual data type names listed in the table above.
-
-# Serializable and Resource
-Serialization is a powerful technique whereby an object is able to convert itself into a string.
-If some classes implements serialization, it is simple to write new serializable classes that consists of such classes since the new class can serialize itself by stringing together the serializations of its components.
-TBTK is designed to allow for different serialization modes.
-Some types of serialization may be simpler or more readable in case they are not meant to be imported back into TBTK, while others might be more efficient in terms of execution time and memory requirements.
-However, currently only serialization into JSON is implemented to any significant extent.
-We will therefore only describe this mode here.
-
-If a class is serializable, which means it either inherits from the @link TBTK::Serializable Serializable@endlink class, or is pseudo-serializable by implementing the *serialize()* function, it is possible to create a serialization of a corresponding object as follows
-```cpp
-	string serialization
-		= serializeabelObject.serialize(Serializable::Mode::JSON);
-```
-Currently the @link Model@endlink and all @link Properties@endlink can be serialized like this.
-For clarity considering the @link Model@endlink class, a Model can be recreated from a serialization string as follows
-```cpp
-	Model model(serialization, Serializable::Mode::JSON);
-```
-The notation for recreating other types of objects is the same, with Model replaced by the class name of the object of interest.
-
-Having a way to create serialization strings and to recreate objects from such strings, it is useful to also be able to simply write and read such strings to and from file.
-For this TBTK provides a class called @link TBTK::Resource Resource@endlink.
-The interface for writing a string to file using a resource is
-```cpp
-	Resource resource;
-	resource.setData(someString);
-	resource.write("Filename");
-```
-Similarly a string can be read from file using
-```cpp
-	resource.read("Filename");
-	const string &someString = resource.getData();
-```
-
-The @link TBTK::Resource Resource@endlink is, however, more powerful than demonstrated so far since it in fact implements an interface for the cURL library (https://curl.haxx.se).
-This means that it for example is possible to read input from a URL instead of from file.
-For example, a simple two level system is available at http://www.second-quantization.com/ExampleModel.json that can be used to construct a @link Model@endlink as follows
-```cpp
-	resource.read("http://www.second-quantization.com/ExampleModel.json");
-	Model model(resource.getData(), Serializable::Mode::JSON);
-	model.construct();
-```
+#  External memory {#ExternalMemory}
+TBTK facilitates the reading and writing of data to external memory through a few different schemes, which we describe here.
 
 # FileParser and ParameterSet {#FileParserAndParameterSet}
-While the main purpose of the other two methods is to provide methods for importing and exporting data that faithfully preserve the data structures that are used internally by TBTK, it is also often useful to read other information from files.
-In particular, it is useful to be able to pass parameter values to a program through a file, rather than to explicitly type the parameters into the code.
-Especially since the later option requires the program to be recompiled every time a parameter is updated.
-
-For this TBTK provides a @link TBTK::FileParser FileParser@endlink and a @link TBTK::ParameterSet ParameterSet@endlink.
-In particular, together they allow for files formated as follows to be read
-<pre>
+The @link TBTK::FileParser FileParser@endlink can generate a @link TBTK::ParameterSet ParameterSet@endlink by parsing a file formated as follows.
+```bash
 	int     sizeX       = 50
 	int     sizeY       = 50
 	double  radius      = 10
 	complex phaseFactor = (1, 0)
 	bool    useGPU      = true
 	string  filename    = Model.json
-</pre>
-First the file can be converted into a ParameterSet as follows
-```cpp
-	ParameterSet parameterSet = FileParser::parseParameterSet("Filename");
 ```
-Once the ParameterSet is created, the variables can be accessed
+Assume the file is called "ParameterFile".
+It is then possible to parse it and extract the values using
 ```cpp
+	ParameterSet parameterSet
+		= FileParser::parseParameterSet("ParameterFile");
+
 	int sizeX                   = parameterSet.getInt("sizeX");
 	int sizeY                   = parameterSet.getInt("sizeY");
 	double radius               = parameterSet.getDouble("radius");
@@ -1430,76 +1378,180 @@ Once the ParameterSet is created, the variables can be accessed
 	string filename             = parameterSet.getString("filename");
 ```
 
+# Serializable and Resource
+Many classes implement the @link TBTK::Serializable Serializable@endlink interface.
+This means that they can be converted into text strings that can then be converted back into objects.
+
+For example, the following code first serializes a @link Model@endlink and then recreates a copy of it from the resulting serialization string.
+```cpp
+	string serialization = model.serialize(Serializable::Mode::JSON);
+	Model copyOfModel(serialization, Serializable::Mode::JSON);
+```
+The parameter Serializable::Mode::JSON indicates that the serialization should be done to and from JSON.
+Currently, this is the only widely supported serialization format in TBTK.
+
+The power of serialization is that a string can be stored or sent anywhere.
+The @link TBTK::Resource Resource@endlink class is meant to simplify this task.
+For example, the serialization created above can be saved to a file called Model.json using
+```cpp
+	Resource resource;
+	resource.setData(serialization);
+	resource.write("Model.json");
+```
+The @link Model@endlink can then be read in and reconstructed in a different program using
+```cpp
+	Resource resource;
+	resource.read("Model.json");
+	Model model(resource.getData(), Serializable::Mode::JSON);
+```
+
+The @link TBTK::Resource Resource@endlink can also download data from a URL.
+For example, the following code creates a @link Model@endlink from a file downloaded from www.second-quantization.com.
+```cpp
+	Resource resource;
+	resource.read(
+		"http://www.second-quantization.com/v1/ExampleModel.json"
+	);
+	Model model(resource.getData(), Serializable::Mode::JSON);
+```
+
+To be able to use the @link TBTK::Resource Resource@endlink class, [cURL](https://curl.haxx.se) must be installed when TBTK is compiled.
+
+# FileReader and FileWriter {#FileReaderAndFileWriter}
+The @link TBTK::FileReader FileReader@endlink and @link TBTK::FileWriter FileWriter@endlink can import and export @link Properties@endlink stored on the Ranges format.
+They use the [HDF5](https://support.hdfgroup.org/HDF5/) file format, which is particularly suited for data with an array-like structure.
+HDF5 also has wide support in languages such as Python, MATLAB, Mathematica, etc., which makes it easy to export Properties on the Ranges format to other languages.
+
+Multiple @link Properties@endlink can be stored in the same HDF5 file.
+To set the filename to read from and check whether the file exists, we can use the following code.
+```cpp
+	FileReader::setFileName("Filename.h5");
+	bool fileExists = FileReader::exists();
+```
+The same code works with @link TBTK::FileReader FileReader@endlink interchanged with @link TBTK::FileWriter FileWriter@endlink.
+
+If a @link Properties Property@endlink with a given name has already been written to the HDF5 file, it is not possible to overwrite it.
+This is a limitation of the HDF5 file format itself.
+Instead, the whole file (including all Properties that have been written to it) has to be deleted.
+This is achieved through
+```cpp
+	FileWriter::clear();
+```
+
+With *DataType* replaced by a @link Properties Property@endlink name, a Property can be written to the currently selected HDF5 file using
+```cpp
+	FileWriter::writeDataType(property);
+```
+The possible Properties are the following
+|Supported DataTypes|
+|-------------------|
+| EigenValues       |
+| WaveFunctions     |
+| DOS               |
+| Density           |
+| Magnetization     |
+| LDOS              |
+| SpinPolarizedLDOS |
+
+By default, the FileWriter will write the @link Properties Property@endlink to a dataset with the same name as the Property.
+However, it is possible to choose a custom name for the dataset using
+```cpp
+	FileWriter::writeDataType(data, "CustomName");
+```
+
+It is similarly possible to read a @link Properties Property@endlink using the call
+```cpp
+	Property::DataType property = FileReader::readDataType();
+```
+Here *DataType* is to be replaced by the particular name of the Property wanted.
+To read a Property from a dataset set with a custom name, instead use
+```cpp
+	Property::DataType property = FileReader::readDataType("CustomName");
+```
+
+@link Streams Next: Streams@endlink
 @page Streams Streams
 @link TBTK::Streams See more details about the Streams in the API@endlink
 
 # Customizable Streams {#CustomizablStreams}
-It is often useful to print information to the screen during execution.
-Both for the sake of providing information about the progress of a calculation and for debuging code during development.
-It is perfectly possible to use the standard C style *printf()* or C++ style *cout* streams for these purposes.
-However, TBTK provides its own @link TBTK::Streams Stream@endlink interface that allows for customization of the output such as easy redirection of output to a logfile, etc.
-Moreover, all TBTK functions use the Stream interface, and it is therefore useful to know how to handle these Streams in order to for example mute TBTK.
+TBTK provides several output @link TBTK::Streams Streams@endlink that can be used to print diagnostic information etc.
+It is, of course, possible to use the C style *printf()* or C++ style *std::cout* for this.
+However, the TBTK Streams can be customized in ways that are useful for numerical calculations.
+Further, all information printed by TBTK is printed through these Streams.
+So even if *printf()* or *std::out* is used in application code, knowledge about these Streams is useful for tweaking the output of TBTK itself.
 
 # Streams::out, Streams::log, and Streams::err {#OutLogAndErr}
-The @link TBTK::Streams Stream@endlink interface has three different output channels called Streams::out, Streams::log, and Streams::err.
-The Streams::out and Streams::err channels are by default equivalent to *cout* and *cerr* and is meant for standard output and error output, respectively.
-In addition, the two buffers are forked to the Streams::log buffer which by default does nothing.
-However, it is possible to make Streams::log write to an output file by typing
+The @link TBTK::Streams Streams@endlink interface has three output channels called Streams::out, Streams::log, and Streams::err.
+By default, Streams::out and Streams::err are mapped directly onto *std::cout* and *std::cerr*, respectively.
+These two Streams are also forked to Streams::log, which does nothing by default.
+What this means is that by default Streams::out and Streams::err works just like *std::cout* and *std::cerr*.
+
+## Opening and closing the log
+It is possible to make Streams::log write to an output file by typing
 ```cpp
 	Streams::openLog("Logfile");
 ```
-To ensure that all information is written to file at the end of a calculation, a corresponding close call should be made at the end of the program
+In addition to directing the output of both Streams::out and Streams::err to the log file, this call will also write some diagnostic information.
+This includes a timestamp and the version number and git hash of the currently installed version of TBTK.
+This is information that ensures that the results can be reproduced in the future.
+Knowing the version number makes it possible to recompile an application in the future using the exact same version of TBTK.
+The git hash is there to make this possible even if a named release is not used.
+
+A corresponding close call should be made before the application finishes to avoid losing any of the output.
 ```cpp
 	Streams::closeLog();
 ```
-It is further possible to turn of the output that is directed to *cout* as follows
+This will also write a timestamp to the log before closing it.
+
+## Muting the output to std::cout and std::cerr
+It is also possible to mute the output that is directed to *std::cout* and *std::err* as follows
 ```cpp
 	Streams::setStdMuteOut();
-```
-while the output to *cerr* is muted by
-```cpp
 	Streams::setStdMuteErr();
 ```
-We note that if a log is opened, muting any of these two channels will not turn of the output written to the logfile.
-It is therefore possible to mute any output that otherwise would have gone to the screen and only redirect it to a file.
-However, it is recommended to not mute the error stream, since *cerr* is designed to not be buffered, while the other streams are.
-This means that information written to *cerr* before a crash will be guaranteed to reach the screen, while information written to the other streams do not provide this guarantee.
+This will not mute the output of Streams::out and Streams::err to the log.
+If the log is opened, the result is, therefore, that the output is directed to the log file alone.
+If the application code writes immediately to *std::cout*, this can be used to direct application-specific output to the terminal and TBTK output to the log file.
+We note, however, that it is recommended to not mute the output to cerr.
+Doing so can result in some error messages being lost at a crash.
 
 # Communicators {#Communicators}
-Although not part of the actual @link TBTK::Streams Stream@endlink interface, many classes implements a so called @link TBTK::Communicator Communicator@endlink interface.
-It is useful to know that in addition to muting the Streams themselves it is possible to globally mute all Communicators by typing
+Although not part of the @link TBTK::Streams Streams@endlink interface, many classes implement a @link TBTK::Communicator Communicator@endlink interface.
+Instead of muting the Streams, it is possible to mute all such Communicators using
 ```cpp
 	Communicator::setGlobalVerbose(false);
 ```
-or individual objects implementing the Communicator interface using
+It is also possible to mute individual classes that implement the Communicator interface.
 ```cpp
 	communicator.setVerbose(false);
 ```
 
+In contrast to muting the Streams, as described above, this will mute the component completely.
+A muted Communicator will, therefore, not even write to the log.
+
+@link Timer Next: Timer@endlink
 @page Timer Timer
 @link TBTK::Timer See more details about the Timer in the API@endlink
 
 # Profiling {#Profiling}
-In a typical program most of the execution time is spent in a small fraction of the code.
-It is therefore a good coding practice to first focus on writing a functional program and to then profile it to find eventual bottlenecks.
-Optimization effort can then be spent on those parts of the code where it really matters.
-Doing so allows for a high level of abstraction to be maintained, which reduces development time and makes the code more readable and thereby less error prone.
-To help with profiling code, TBTK has a simple to use @link TBTK::Timer Timer@endlink class which can be used either as a timestamp stack or as a set of accumulators.
-It is also possible to mix the two modes, using the timestamp stack for some measurements while simultaneously using the accumulators for other.
+In a typical program, most of the execution time is spent in a small fraction of the code.
+It is, therefore, useful to be able to time different parts of the code to figure out where optimization may be needed.
+The @link TBTK::Timer Timer@endlink helps with this.
+It can either be used as a timestamp stack or as a set of accumulators, or both at the same time.
 
 # Timestamp stack {#TimestampStack}
-To time a section, all that is required is to enclose it between a *Timer::tick()* and a *Timer::tock()* call
+To time a section, all that is required is to enclose it between a *Timer::tick()* and a *Timer::tock()* call.
 ```cpp
 	Timer::tick("A custom tag");
 	//Some code that is being timed.
 	//...
 	Timer::tock();
 ```
-The tag string passed to *Timer::tick()* is optional, but is useful when multiple sections are timed since it will be printed together with the actual time when *Timer::tock()* is called.
+The tag string passed to *Timer::tick()* is optional, but is useful for distinguishing between different timed sections.
+When *Timer::tock()* is called, the tag together with the time that elapsed since the tick call is printed.
 
-When used as above, the @link TBTK::Timer Timer@endlink acts as a stack.
-When a call is made to *Timer::tick()*, a new timestamp and tag is pushed onto the stack, and the *Timer::tock()* call pops the latest call and prints the corresponding time and tag.
-It is therefore possible to nest Timer calls as follows
+More specifically, *Timer::tick()* pushes a timestamp and a tag onto a stack, while *Timer::tock()* pops one off from it.
+It is, therefore, possible to nest @link TBTK::Timer Timer@endlink calls as follows.
 ```cpp
 	Timer::tick("Full loop");
 	for(unsigned int m = 0; m < 10; m++){
@@ -1512,28 +1564,27 @@ It is therefore possible to nest Timer calls as follows
 	}
 	Timer::tock();
 ```
-This will result in the Timer timing the inner loop ten times, each time printing the execution time together with the tag 'Inner loop'.
-After the ten individual timing event have been completed, the Timer will also print the time it took for the full nested loop to execute together with the tag 'Full loop'.
+This results in the inner loop being timed ten times, each time printing the execution time together with the tag 'Inner loop'.
+The entry corresponding to 'Full loop' remains on the stack throughout execution of the two nested loops.
+When the final call to *Timer::tock()* occurs, this entry is poped from the stack and the full execution time is printed with the tag 'Full loop'.
 
 # Accumulators {#Accumulators}
-Sometimes it is useful to measure the accumulated time taken by one or several pieces of code that are not necessarily executed without other code being executed in between.
-For example, consider the following loop
+To understand the accumulators, assume that the following loop has been identified to be a bottleneck.
 ```cpp
 	for(unsigned int n = 0; n < 1000000; n++){
 		task1();
 		task2();
 	}
 ```
-This piece of code may have been identified as a bottleneck in the program, but it is not clear which of the two tasks that is responsible for it.
-Moreover, the time taken for each task may vary from call to call and therefore it is only useful to know the accumulated time taken for all 1,000,000 iterations.
-For cases like this the @link TBTK::Timer Timer@endlink provides the possibility to create accumulators as follows
+Next, we want to figure out which of the two tasks that is responsible for the slow execution.
+However, task 1 and 2 may have varying execution times.
+Therefore, only the total time taken by each call over the 1,000,000 iterations is relevant.
+
+In cases like these, we can use accumulators to time the code.
 ```cpp
 	unsigned int accumulatorID1 = Timer::createAccumulator("Task 1");
 	unsigned int accumulatorID2 = Timer::createAccumulator("Task 2");
-```
-The IDs returned by these functions can then be passed to the *Timer::tick()* and *Timer::tock()* calls to make it use these accumulators instead of the stack.
-For the loop above we can now write
-```cpp
+
 	for(unsigned int n = 0; n < 1000000; n++){
 		Timer::tick(accumulatorID1);
 		task1();
@@ -1543,265 +1594,290 @@ For the loop above we can now write
 		task2();
 		Timer::tock(accumulatorID2);
 	}	
-```
-Since the accumulators are meant to accumulate time over multiple calls, there is no reason for *Timer::tock()* to print the time each time it is called.
-Instead the @link TBTK::Timer Timer@endlink has a special function for printing information about the accumulators, which will print the accumulated time and tags for all the currently created accumulators.
-```cpp
+
 	Timer::printAccumulators();
 ```
+In the first two lines, we create two accumulators called "Task 1" and "Task 2" and get an ID for each of them.
+We then pass these IDs to the tick and tock calls.
+The time taken between such a pair of tick-tack calls are added to the accumulators with the given ID.
+The final line prints a table displaying the total time accumulated in each accumulator.
 
+@link FourierTransform Next: FourierTransform@endlink
 @page FourierTransform FourierTransform
 @link TBTK::FourierTransform See more details about the FourierTransform in the API@endlink
 
 # Fast Fourier transform {#FastFourierTransform}
-One of the most commonly employed tools in physics is the Fourier transform and TBTK therefore provides a class that can carry out one-, two-, and three-dimensional Fourier transforms.
-The class is a wrapper for the FFTW3 library (http://www.fftw.org), which implements an optimized version of the fast Fourier transform (FFT).
+The @link TBTK::FourierTransform FourierTransform@endlink can calculate the one-, two- and three-dimensional Fourier transform.
+This is a wrapper class for the [FFTW3](http://www.fftw.org) library, which implements an optimized version of the fast Fourier transform (FFT).
 
 ## Basic interface {#BasicInterface}
-The basic interface for executing a transform is
-```cpp
-	FourierTransform::transform(in, out, SIZE_X, SIZE_Y, SIZE_Z, SIGN);
-```
-where the SIZE_Y and SIZE_Z can be dropped depending on the dimensionality of the transform.
-Further, *in* and *out* are *complex<double>* arrays with SIZE_X*SIZE_Y*SIZE_Z elements, and SIGN should be -1 or 1 and determines the sign in the exponent of the transform.
-The normalization factor is \f$\sqrt{SIZE\_X\times SIZE\_Y\times SIZE\_Z}\f$.
-
-For simplicity the @link TBTK::FourierTransform FourierTransform@endlink also has functions with special names for the transforms with positive and negative sign.
-The transform with negative sign can be called as
+The three-dimensional Fourier transform and inverse Fourier transform can be calculated using
 ```cpp
 	FourierTransform::forward(in, out, SIZE_X, SIZE_Y, SIZE_Z);
-```
-while the transform with positive sign can be called as
-```cpp
 	FourierTransform::inverse(in, out, SIZE_X, SIZE_Y, SIZE_Z);
 ```
+Here *in* and *out* are c-arrays of type std::complex<double> with size \f$SIZE\_X\times SIZE\_Y\times SIZE\_Z\f$.
+The normalization factor for each call is \f$\sqrt{SIZE\_X\times SIZE\_Y\times SIZE\_Z}\f$.
+The one- and two-dimensional versions are obtained by dropping the later arguments.
 
 ## Advanced interface {#AdvancedInterface}
-While the basic interface is very convenient, each such call involves a certain amount of overhead.
-First, the FFTW3 library requires a plan to be setup prior to executing a transform, which involves a certain amount of computation ahead of the actual transform in order to figure out the optimal configuration.
-For similar transforms it is possible to do such calculations once and reuse the same plan.
-Second, by default the transform uses a specific normalization and it can be convenient to specify a custom normalization factor, or to set the normalization factor to 1, in which case the normalization step is avoided completely.
-For this reason it is possible to setup a plan ahead of execution that both wraps the FFTW3 plan, as well as contains information about the normalization.
-
-The creation of a plan mimics the interface for performing basic transforms
+When executing multiple similar transforms, it is possible to avoid some overhead by using the advanced interface.
+This is done by first setting up a plan.
 ```cpp
-	FourierTransform::Plan<complex<double>> plan(
+	FourierTransform::ForwardPlan<complex<double>> plan(
 		in,
 		out,
 		SIZE_X,
 		SIZE_Y,
-		SIZE_Z,
-		SIGN
+		SIZE_Z
 	);
 ```
-Similar calls are available for creating forward and inverse transforms without explicitly specifying the sign and are called FourierTransform::ForwardPlan<complex<double>> and FourierTransform::InversePlan<complex<double>>, respectivley.
-The normalization factor is set using
+Plans for one- and two-dimensional transforms are obtained by dropping the later arguments.
+A corresponding plan for the inverse transform can be created by replacing ForwardPlan by InversePlan.
+
+It is also possible to specify a custom normalization factor.
+If the value is set to 1, the calculation will be avoided completely.
 ```cpp
 	plan.setNormalizationFactor(1.0);
 ```
-
-Once a plan is setup, repeated transforms can be carried out on the data in the *in* and *out* arrays by simply typing
+By refilling *in* with new data between each call, multiple transforms can now be calculated using
 ```cpp
 	FourierTransform::transform(plan);
 ```
 
+@link Array Next: Array@endlink
 @page Array Array
 @link TBTK::Array See more details about the Array in the API@endlink
 
 # Multi-dimensional arrays {#MultiDimensionalArrays}
-One of the most common storage structures is the array.
-TBTK therefore has a simple @link TBTK::Array Array@endlink class that allows for multi-dimensional data to be stored.
-Such an Array can be created as follows
+## Creating an Array
+A three-dimensional @link TBTK::Array Array@endlink with the data type DataType can be created using
 ```cpp
 	Array<DataType> array({SIZE_0, SIZE_1, SIZE_2});
 ```
-where DataType should be replace by the specific data type of interest.
-While the code above will create a three-dimensional array with dimensions (SIZE_0, SIZE_1, SIZE_2), it is possible to pass an arbitrary number of arguments to the constructor to create an Array of any dimension.
+The number of arguments in the list can be changed to get an Array of different dimensionality.
 
-By default an @link TBTK::Array Array@endlink is uninitialized at creation, but it is possible to also supply a second argument at creation that will be used to initialize each element in the array.
-For example, it is possible to initialize a three-dimensional array of doubles with zeros in the following way
+By default, the @link TBTK::Array Array@endlink is uninitialized after creation, but this can be changed by passing a second argument.
+For example, an Array with type double can be initialized to zero as follows.
 ```cpp
 	Array<double> array({SIZE_0, SIZE_1, SIZE_2}, 0);
 ```
-Once created it is possible to access the ranges of the array using
+
+## Getting the Array size and accessing its elements
+The Array ranges and dimensionality can be retrieved using
 ```cpp
 	const vector<unsigned int> &ranges = array.getRanges();
+	unsigned int dimension = ranges.size();
 ```
 
-An individual element in the @link TBTK::Array Array@endlink can be accessed using
+It is also possible to access or assign values to individualt elements.
+Assuming the that the data type is double, we can use
 ```cpp
-	DataType &data = array[{x, y, z}];
+	double data = array[{x, y, z}];
+	array[{x, y, z}] = 1;
 ```
-where 0 <= x < ranges[0], 0 <= y < ranges[1], and 0 <= z < ranges[2].
+Here 0 <= x < ranges[0], 0 <= y < ranges[1], and 0 <= z < ranges[2].
 
-Given that the DataType supports the corresponding operators, it is also possible to add and subtract @link TBTK::Array Arrays@endlink from each other
+## Array operations
+
+If the DataType supports it, the following operations are possible.
+
+<b>Addition</b>
 ```cpp
-	Array<DataType> sum        = array0 + array1;
+	Array<DataType> sum = array0 + array1;
+```
+<b>Subtraction</b>
+```cpp
 	Array<DataType> difference = array0 - array1;
 ```
-as well as multiply and divide them by an *element* of the given DataType
+<b>Multiplication</b>
 ```cpp
-	Array<DataType> product  = element*array;
-	Array<DataType> quotient = array/element;
+	Array<DataType> product = multiplier*array;
 ```
+Here *multiplier* has the data type DataType.
 
-A subset of an @link TBTK::Array Array@endlink can also be extracted using
+<b>Division</b>
+```cpp
+	Array<DataType> quotient = array/divisor;
+```
+Here *divisor* has the the data type DataType.
+
+## Slicing the Array
+A lower-dimensional subset of an @link TBTK::Array Array@endlink can be extracted using
 ```cpp
 	Array<DataType> array2D = array.getSlice({x, _a_, _a_});
 ```
-which in this case will extract the two-dimensional slice of the Array for which the first index is 'x'.
-The new Array is a pure two-dimensional Array from which elements can be extracted using
+This extracts the subset of *array* for which the first entry is 'x'.
+The result is a two-dimensional Array from which we can access elements using
 ```cpp
-	DataType &element = array2D[{y, z}];
+	DataType element = array2D[{y, z}];
 ```
 
+@link Plotting Next: Plotting@endlink
 @page Plotting Plotting
 @link TBTK::Plot::Plotter See more details about the Plotter in the API@endlink
 
-# Quick and dirty {#QuickAndDirty}
-The final step in most calculations involve plotting the results and TBTK therefore have limited support for plotting.
-The current plotting abilities are restricted and rough, and currently the user is therefore recommended to use some external tool for final production plots.
-However, the currently available plotting tools can be handy for quick and dirty plotting.
-Especially, it allows for visualization to occur even in the middle of a calculation, which can be particularly useful during development.
+# Internal and external plotting tools
+TBTK provides methods for plotting both inside and outside the application.
+However, we note that these tools are currently quite limited, and other software is needed to produce high-quality figures.
+Nevertheless, the native plotting tools can be handy during the development process.
+They can also be convenient for getting a quick insight into calculations while they are still running.
+
+The internal plotting tool is the @link TBTK::Plot::Plotter Plotter@endlink, while the external tools consist of several Python scripts.
+Below, we describe each of these tools in more detail.
 
 # Plotter {#Plotter}
-Plotting immediately from C++ code can be done using the @link TBTK::Plot::Plotter Plotter@endlink class and a Plotter is created as
+The @link TBTK::Plot::Plotter Plotter@endlink can plot several data formats.
+For example, data stored in *std::vector<double>*, @link Array@endlink, and some @link Properties@endlink.
+It exists inside the Plot namespace, and below we assume that the following line has been added at the top of the code.
+```cpp
+	using namespace Plot;
+```
+
+## Setting up and configuring a Plotter
+We begin by listing some of the most common commands needed for setting up and configuring the @link TBTK::Plot::Plotter Plotter@endlink.
+
+<b>Create a Plotter</b>
 ```cpp
 	Plotter plotter;
 ```
-The Plotter currently generates pixel graphics and the width and height of the canvas can be set using
-```cpp
-	plotter.setWidth(WIDTH);
-	plotter.setHeight(HEIGHT);
-```
-where *WIDTH* and *HEIGHT* are positive integers.
-In order to save a plot type
-```cpp
-	plotter.save("FigureName.png");
-```
-Here it is important to make sure the filename ends with an image format such as '.png' for the call to succeed, as it will be used by the underlying OpenCV library to determine the file format of the resulting file.
-For an up to date list of the supported file formats the reader is referred to the OpenCV documentation (https://opencv.org/).
 
-It is possible to plot multiple data sets in the same graph, which can be done by setting *hold* to true
+<b>Setting the canvas size</b>
+```cpp
+	plotter.setWidth(width);
+	plotter.setHeight(height);
+```
+
+<b>Hold data between successive plots</b><br />
+By default, the Plotter clears the canvas between successive calls.
+This can be changed through the following call.
 ```cpp
 	plotter.setHold(true);
 ```
-When *hold* is set to true, it is also useful to be able to clear the plot, which is done as follows
+
+<b>Clear the canvas</b>
 ```cpp
 	plotter.clear();
 ```
 
-By default the axes of a plot are automatically scaled to the bounds of the data.
-However, it is also possible to specify the bounds using
+<b>Save the canvas to file</b>
+```cpp
+	plotter.save("FigureName.png");
+```
+
+<b>Set axis bounds</b><br />
+By default, the axes automatically scale to contain the data.
+It is possible to fix the axis bounds with the following calls.
 ```cpp
 	plotter.setBoundsX(-1, 1);
 	plotter.setBoundsY(0, 10);
 ```
-or equivalently through a single call using
+These calls can also be combined into a single call.
 ```cpp
 	plotter.setBounds(-1, 1, 0, 10);
 ```
-To return to auto scaling after bounds have been specified, use
+
+<b>Reset to auto-scaling axes.</b>
 ```cpp
 	plotter.setAutoScaleX(true);
 	plotter.setAutoScaleY(true);
 ```
-or simultaneously turn on auto scaling for both axes using
+These calls can also be combined into a single call.
 ```cpp
 	plotter.setAutoScale(true);
 ```
 
-## Decoration
-Many of the plot routines also accept a Decoration object as last argument to specify line the color and line style used for the data.
+<b>Decoration</b><br />
+Many @link TBTK::Plot::Plotter Plotter@endlink routines accept a Decoration object to specify the color, line style, and line width/point size.
 A typical plot command with a Decoration object look like
 ```cpp
 	plotter.plot(
 		data,
 		Decoration(
 			{192, 64, 64},
-			Decoration::LineStyle::Line
+			Decoration::LineStyle::Line,
+			size
 		)
 	);
 ```
-Here the first argument to the Decoration object is the color in RGB format and each entry can be a value between 0 and 255.
-The second argument is the line style, and currently this argument has to be supplied independently of whether the data actually can be plotted as lines or not.
-The possible values are Decoration::LineStyle::Line and Decoration::LineStyle::Point.
+Here the first argument to Decoration is the color in RGB format, with each entry a number between 0 and 255.
+The second argument is the line style, while the third argument in the case of Decoration::LineStyle::Line is the line width.
+If the line style instead is Decoration::LineStyle::Point, the third argument is the radius of the points.
 
-## Plotting individual data points
-Individual data points can be plotted using
+## Examples
+We here provide a few examples of how the @link TBTK::Plot::Plotter Plotter@endlink can be used.
+
+<b>Individual data points</b>
 ```cpp
 	plotter.plot(x, y);
 ```
 
-## Plotting 1D data
-One-dimensional data can be plotted using
+<b>1D data</b><br />
+If *data* is an *std::vector<double>* or a one-dimensional @link Array@endlink, it can be plotted using
 ```cpp
 	plotter.plot(data);
 ```
-where *data* either is an *std::vector* or a one-dimensional @link Array@endlink.
-By default the x-axis will start at 0 and increment 1 per data point, but it is also possible to specify the x-values for the data points by instead using
+By default, the x-axis will run from 0 to the number of data points minus one.
+If *domain* has the same type and size as *data* and contains custom values for the x-axis, we can also use
 ```cpp
-	plotter.plot(axis, data);
+	plotter.plot(domain, data);
 ```
-where *axis* is of the same type and size as *data*.
 
-## Plotting 2D data
-Two-dimensional plots can be plotted using
+<b>2D data</b><br />
+If *data* is an *std::vector<std::vector<double>>* or a two-dimensional @link Array@endlink, it can be plotted using
 ```cpp
 	plotter.plot(data);
 ```
-where *data* either is of type *std::vector<std::vector<double>>* or a two-dimensional @link Array@endlink.
 
-# Plotting scripts {#PlottingScripts}
-TBTK also have prepared plotting scripts written in python that can be used to plot @link Properties@endlink that has been saved to file using the @link TBTK::FileWriter FileWriter@endlink.
-For these plotting scripts to work, the Properties has to be extracted on the Ranges (or None) format (see the PropertyExtractor and Properties chapters).
-Some quantities can also only be plotted if they have been extracted for some particular dimensionality.
-The plotting scripts can be run immediately from the terminal using the syntax
+# External plotting scripts {#PlottingScripts}
+Some @link Properties@endlink extracted on the None or Ranges format, and saved using the @link ImportingAndExportingData FileWriter@endlink, can be plotted using predefined python scripts.
+After installing TBTK, these plotting scripts are available immediately from the terminal using the syntax
 ```bash
-	TBTKPlotQuantity.py File.h5 parameters
+	TBTKPlotProperty.py File.h5 parameters
 ```
-where *Quantity* is a placeholder for the name of the relevant quantity, *File.h5* is the HDF5 file to which the Property has been written, and *parameters* is zero or more parameters needed to plot the data.
-These scripts are limited to a few special usage cases due to the fact that different dimensionalities require widely different types of plots to be made.
-However, they can be used in these specific cases, or the plotting scripts which are available in the folder TBTK/Visualization/python can be used as templates for writing customized plotting scripts.
+Here *File.h5* is the file to which the FileWriter has written the Property.
 
-## Density
-The @link TBTK::Property::Density Density@endlink can be plotted if it has been extracted on a two-dimensional grid using
-```bash
+These scripts are immediately useful in a few different cases but are more generally useful as templates.
+To customize these templates, begin by copying the corresponding file from TBTK/Visualization/python/ into the applications source directory.
+
+## Examples
+
+<b>Density</b><br />
+If the @link TBTK::Property::Density Density@endlink has been extracted on a two-dimensional grid, it can be plotted using
+```cpp
 	TBTKPlotDensity.py File.h5
 ```
 
-## DOS
-The @link TBTK::Property::DOS DOS@endlink can be plotted using
-```bash
+<b>DOS</b>
+```cpp
 	TBTKPlotDOS.py File.h5 sigma
 ```
-where *sigma* is a decimal number specifying the amount of Gaussian smoothing that will be applied along the energy axis.
+Here *sigma* is a decimal number specifying the amount of Gaussian smoothing to apply along the energy axis.
 
-## EigenValues
-The @link TBTK::Property::EigenValues EigenValues@endlink can be plotted as a monotonously increasing line using
-```bash
+<b>EigenValues</b>
+```cpp
 	TBTKPlotEigenValues.py File.h5
 ```
+This will plot the eigenvalues ordered from lowest to highest along the x-axis.
 
-## LDOS
-The @link TBTK::Property::LDOS LDOS@endlink can be plotted if it has been extracted along a one-dimensional line using
-```bash
+<b>LDOS</b><br />
+If the @link TBTK::Property::LDOS LDOS@endlink has been extracted along a one-dimensional line, it can be plotted using
+```cpp
 	TBTKPlotLDOS.py File.h5 sigma
 ```
-where *sigma* is a decimal number specifying the amount of Gaussian smoothing that will be applied along the energy axis.
+Here *sigma* is a decimal number specifying the amount of Gaussian smoothing to apply along the energy axis.
 
-## Magnetization
-The @link TBTK::Property::Magnetization Magnetization@endlink can be plotted if it has been extracted on a two-dimensional grid using
-```bash
+<b>Magnetization</b><br />
+If the @link TBTK::Property::Magnetization Magnetization@endlink has been extracted on a two-dimensional grid, it can be plotted using
+```cpp
 	TBTKPlotMagnetization.py File.h5 theta phi
 ```
-where *theta* and *phi* are the polar and azimuthal angles, respectively, of the spin-polarization axis of interest.
+Here *theta* and *phi* are the polar and azimuthal angles, respectively, of the spin-polarization axis of interest.
 
-## SpinPolarizedLDOS
-The @link TBTK::Property::SpinPolarizedLDOS SpinPolarizedLDOS@endlink can be plotted if it has been extracted along a one-dimensional line using
-```bash
+<b>SpinPolarizedLDOS</b><br />
+If the @link TBTK::Property::SpinPolarizedLDOS SpinPolarizedLDOS@endlink has been extracted along a one-dimensional line, it can be plotted using
+```cpp
 	TBTKPlotSpinPolarizedLDOS.py File.h5 theta phi sigma
 ```
-where *theta* and *phi* are the polar and azimuthal angles, respectively, of the spin-polarization axis of interest.
-Further, *sigma* is a decimal number specifying the amount of Gaussian smoothing that will be applied along the energy axis.
-
+Here *theta* and *phi* are the polar and azimuthal angles, respectively, of the spin-polarization axis of interest.
+Further, *sigma* is a decimal number specifying the amount of Gaussian smoothing to apply along the energy axis.
