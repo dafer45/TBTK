@@ -152,19 +152,6 @@ public:
 		return *this;
 	}
 
-	/** Addition operator.
-	 *
-	 *  @param lhs The left hand side.
-	 *  @param rhs The right hand side.
-	 *
-	 *  @return The sum of the two subindices. */
-/*	friend Subindex operator+(Subindex lhs, Subindex rhs){
-		Subindex result(lhs);
-		result += rhs;
-
-		return result;
-	}*/
-
 	//TBTKFeature Core.Subindex.operatorSubtractionAssignment.1.C++ 2019-09-22
 	/** Subtraction asignment operator.
 	 *
@@ -176,19 +163,6 @@ public:
 
 		return *this;
 	}
-
-	/** Subtraction operator.
-	 *
-	 *  @param lhs The left hand side.
-	 *  @param rhs The right hand side.
-	 *
-	 *  @return The difference between the two subindices. */
-/*	friend Subindex operator-(Subindex lhs, Subindex rhs){
-		Subindex result(lhs);
-		result -= rhs;
-
-		return result;
-	}*/
 
 	//TBTKFeature Core.Subindex.operatorMultiplicationAssignment.1.C++ 2019-09-22
 	/** Multiplication asignment operator.
@@ -202,19 +176,6 @@ public:
 		return *this;
 	}
 
-	/** Multiplication operator.
-	 *
-	 *  @param lhs The left hand side.
-	 *  @param rhs The right hand side.
-	 *
-	 *  @return The product of the two subindices. */
-/*	friend Subindex operator*(Subindex lhs, Subindex rhs){
-		Subindex result(lhs);
-		result *= rhs;
-
-		return result;
-	}*/
-
 	//TBTKFeature Core.Subindex.operatorDivisionAssignment.1.C++ 2019-09-22
 	/** Division asignment operator.
 	 *
@@ -226,19 +187,6 @@ public:
 
 		return *this;
 	}
-
-	/** Division operator.
-	 *
-	 *  @param lhs The left hand side.
-	 *  @param rhs The right hand side.
-	 *
-	 *  @return The quotient between the two subindices. */
-/*	friend Subindex operator/(Subindex lhs, Subindex rhs){
-		Subindex result(lhs);
-		result /= rhs;
-
-		return result;
-	}*/
 
 	//TBTKFeature Core.Subindex.operatorPreIncrement.1.C++ 2019-09-22
 	/** Increment operator.
@@ -281,104 +229,6 @@ public:
 
 		return previous;
 	}
-
-	/** Comparison operator.
-	 *
-	 *  @param rhs The right hand side.
-	 *
-	 *  @return True if the two subindices agree, otherwise false. */
-/*	bool operator==(Subindex rhs) const{
-		return value == rhs.value;
-	}*/
-
-	/** Not equal operator.
-	 *
-	 *  @param rhs The right hand side.
-	 *
-	 *  @return False if the two subindices agree, otherwise true. */
-/*	bool operator!=(Subindex rhs) const{
-		return !operator==(rhs);
-	}*/
-
-	/** Less than operator.
-	 *
-	 *  @param rhs The right hand side.
-	 *
-	 *  @return True if the left hand side is smaller than the right hand
-	 *  side, otherwise false. */
-/*	bool operator<(Subindex rhs) const{
-		return value < rhs.value;
-	}*/
-
-	/** Less than operator.
-	 *
-	 *  @param rhs The right hand side.
-	 *
-	 *  @return True if the left hand side is smaller than the right hand
-	 *  side, otherwise false. */
-/*	friend bool operator<(int lhs, Subindex rhs){
-		return lhs < rhs.value;
-	}*/
-
-	/** Larger than operator.
-	 *
-	 *  @param rhs The right hand side.
-	 *
-	 *  @return True if the left hand side is larger than the right hand
-	 *  side, otherwise false */
-/*	bool operator>(Subindex rhs) const{
-		return value > rhs.value;
-	}*/
-
-	/** Larger than operator.
-	 *
-	 *  @param rhs The right hand side.
-	 *
-	 *  @return True if the left hand side is larger than the right hand
-	 *  side, otherwise false */
-/*	friend bool operator>(int lhs, Subindex rhs){
-		return lhs > rhs.value;
-	}*/
-
-	/** Less or equal to operator.
-	 *
-	 *  @param rhs The right hand side.
-	 *
-	 *  @return True if the left hand side is less or equal to the right
-	 *  hand side, otherwise false. */
-/*	bool operator<=(Subindex rhs) const{
-		return value <= rhs.value;
-	}*/
-
-	/** Less or equal to operator.
-	 *
-	 *  @param rhs The right hand side.
-	 *
-	 *  @return True if the left hand side is less or equal to the right
-	 *  hand side, otherwise false. */
-/*	friend bool operator<=(int lhs, Subindex rhs){
-		return lhs <= rhs.value;
-	}*/
-
-	/** Larger or equal to operator.
-	 *
-	 *  @param rhs The right hand side.
-	 *
-	 *  @return True if the left hand side is larger or equal to the right
-	 *  hand side, otherwise false. */
-/*	bool operator>=(Subindex rhs) const{
-		return value >= rhs.value;
-	}*/
-
-	/** Larger or equal to operator.
-	 *
-	 *  @param rhs The right hand side.
-	 *
-	 *  @return True if the left hand side is larger or equal to the right
-	 *  hand side, otherwise false. */
-/*	friend bool operator>=(int lhs, Subindex rhs){
-		return lhs >= rhs.value;
-	}*/
 
 	//TBTKFeature Core.Subindex.operatorFunction.1.C++ 2019-09-22
 	//TBTKFeature Core.Subindex.operatorFunction.2.C++ 2019-09-22
