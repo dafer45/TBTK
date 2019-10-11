@@ -2,15 +2,12 @@ Installation instructions {#InstallationInstructions}
 ======
 
 # System requirements {#SystemRequirements}
-| Required software           | Further information  |
-|-----------------------------|----------------------|
-| git                         | https://git-scm.com/ |
-| CMake (Minimum version 3.0) | https://cmake.org    |
-
-| Required libraries | Further information               |
-|--------------------|-----------------------------------|
-| BLAS               | http://www.netlib.org/blas        |
-| LAPACK             | http://www.netlib.org/lapack      |
+| Required software and libraries | Further information          |
+|---------------------------------|------------------------------|
+| git                             | https://git-scm.com/         |
+| CMake (Minimum version 3.0)     | https://cmake.org            |
+| BLAS                            | http://www.netlib.org/blas   |
+| LAPACK                          | http://www.netlib.org/lapack |
 
 # Download TBTK {#DownloadTBTK}
 
