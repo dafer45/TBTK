@@ -86,7 +86,7 @@ The total Hamiltonian is
 		}
 	}
 
-	for(int s = 0; s < 2; s++){
+	for(int spin = 0; spin < 2; spin++){
 		//Setup impurity.
 		model << HoppingAmplitude(        U_Imp, {1, spin}, {1, spin});
 		model << HoppingAmplitude(-J*(1-2*spin), {1, spin}, {1, spin});
