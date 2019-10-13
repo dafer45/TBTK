@@ -19,7 +19,7 @@ Installation instructions {#InstallationInstructions}
 Always work agains a public release.
 This is done by checking out the latset release using
 ```cpp
-	git checkout v1.1.2
+	git checkout v1.2.0
 ```
 A full list of public releases can be found at https://github.com/dafer45/TBTK/releases.
 By remembering the version number that an application is compiled with, it is guaranted that the application will be possible to build again anytime in the future.
