@@ -15,7 +15,7 @@
 
 /** @package TBTKcalc
  *  @file Subindex.h
- *  @brief Subindex number.
+ *  @brief An entry in an Index.
  *
  *  @author Kristofer Björnson
  */
@@ -35,7 +35,59 @@ namespace TBTK{
 
 #if TBTK_WRAP_PRIMITIVE_TYPES
 
-/** @brief Subindex number. */
+/** @brief An entry in an Index.
+ *
+ *  A Subindex is an integer value with some added functionality and is meant
+ *  to be an entry in an Index. Conversion between Subindex and int is implicit
+ *  and the Subindex can therefore for most practical purposes be considered an
+ *  int.
+ *
+ *  Subindices can have any value in the range [-16777215, 2147483647]. Values
+ *  that are more negative than -16777215 (0x00FFFFFF) are reserved for special
+ *  purposes. The following flags can be used to specify that a given Subindex
+ *  have a special meaning:
+ *
+ *  <b>IDX_ALL = \_a\_</b><br />
+ *    Wildcard indicating that any Subindex value is acceptable. Can also be
+ *    used when a specific Subindex in an Index has lost meaning. For example,
+ *    when a Subindex has been summed over, but the resulting quantity retains
+ *    the same Index structure.
+ *
+ *    The symbol \_a\_ is meant to simplify the syntax in application code.
+ *    However, the more descriptive IDX_ALL should always be used in library code.
+ *
+ *  <b>IDX_SUM_ALL</b><br />
+ *    Indicates that the Subindex should be summed over.
+ *
+ *  <b>IDX_SPIN:</b><br />
+ *    Indicates that the Subindex corresponds to a spin Subindex.
+ *
+ *  <b>IDX_SEPARATOR</b><br />
+ *    Used to separate compound @link Index Indices@endlink such as
+ *    {{1, 2}, {3, 4}}, which is stored as {1, 2, IDX_SEPARATOR, 3, 4}.
+ *
+ *  <b>IDX_ALL_ = _aX_</b><br />
+ *    Labeled wildcard. Similar to IDX_ALL, but two labeled wildcards with the
+ *    same label are required to agree. Labels are attached using the notation
+ *    IDX_ALL_(label). For example,
+ *    {IDX_ALL_(0), 1, IDX_ALL_(1), IDX_ALL_(0), IDX_ALL_(1)} indicates that
+ *    all indices of the form {m, 1, n, m, n} are of interest.
+ *
+ *    The symbol \_a\_ is meant to simplify the syntax in application code.
+ *    However, the more descriptive IDX_ALL should always be used in library code.
+ *
+ *  <b>IDX_X, IDX_Y, IDX_Z</b><br />
+ *    Indicates that the Subindex should be looped over some range. IDX_X,
+ *    IDX_Y, and IDX_Z indicates the first, second, and third range Subindex,
+ *    respectively.
+ *
+ *  The Subindex also have functions for checking whether a given Subindex
+ *  corresponds to one of the flags above.
+ *
+ *  <b>Example</b>
+ *  \snippet Core/Subindex.cpp Subindex
+ *  <b>Output</b>
+ *  \snippet output/Core/Subindex.output Subindex */
 class Subindex : PseudoSerializable{
 public:
 	//TBTKFeature Core.Subindex.Construction.1 2019-09-22
@@ -83,6 +135,12 @@ public:
 	 *  @return True if the Subindex is a labeled sildcard, otherwise
 	 *  false. */
 	bool isLabeledWildcard() const;
+
+	/** Get the label of a labeled wildcard. Exits if the Subindex is not a
+	 *  wildcard.
+	 *
+	 *  @return The label of the wildcard. */
+	Subindex getWildcardLabel() const;
 
 	//TBTKFeature Core.Subindex.isSummationIndex.1 2019-09-22
 	//TBTKFeature Core.Subindex.isSummationIndex.2 2019-09-22
@@ -360,6 +418,20 @@ inline bool Subindex::isWildcard() const{
 
 inline bool Subindex::isLabeledWildcard() const{
 	return (value | IDX_FLAG_MASK) == IDX_ALL_;
+}
+
+inline Subindex Subindex::getWildcardLabel() const{
+	TBTKAssert(
+		isLabeledWildcard(),
+		"Subindex::getWildcardLabel()",
+		"The Subindex is not a labeled wildcard.",
+		""
+	);
+
+	if((value & IDX_FLAG_MASK) == 0)
+		return 0;
+	else
+		return Subindex(-(int)(value | ~IDX_FLAG_MASK));
 }
 
 inline bool Subindex::isSummationIndex() const{

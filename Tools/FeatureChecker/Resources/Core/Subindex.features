@@ -45,6 +45,34 @@ TBTKFeature Core.Subindex.isLabeledWildcard.2 2019-09-20
 	Verify:
 		Return false.
 
+TBTKFeature Core.Subindex.getWildcardLabel.1 2019-10-17
+	Do:
+		Create a labeled wildcard with label zero and call
+		subindex.getWildcardLabel().
+	Verify:
+		Returns 0.
+
+TBTKFeature Core.Subindex.getWildcardLabel.2 2019-10-17
+	Do:
+		Create a labeled wildcard with non-zero label and call
+		subindex.getWildcardLabel().
+	Verify:
+		Returns the label.
+
+TBTKFeature Core.Subindex.getWildcardLabel.3 2019-10-17
+	Do:
+		Create a Subindex that does not have a specifier value and call
+		subindex.getWildcardLabel().
+	Verify:
+		Exit or throw exception.
+
+TBTKFeature Core.Subindex.getWildcardLabel.4 2019-10-17
+	Do:
+		Create a specifier valued Subindex that is not a labeled
+		wildcard and call subindex.getWildcardLabel().
+	Verify:
+		Exit or throw exception.
+
 TBTKFeature Core.Subindex.isSummationIndex.1 2019-09-20
 	Do:
 		Create subindex with the values IDX_SUM_ALL and call

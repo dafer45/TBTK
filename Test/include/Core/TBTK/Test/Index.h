@@ -2,6 +2,8 @@
 
 #include "gtest/gtest.h"
 
+#include <sstream>
+
 namespace TBTK{
 
 //TBTKFeature Core.Index.Construction.1 2019-09-19
@@ -327,6 +329,15 @@ TEST(Index, toString){
 	EXPECT_TRUE(Index({1, 2, 3}).toString().compare("{1, 2, 3}") == 0) << errorMessage;
 	//TBTKFeature Core.Index.toString.2 2019-09-19
 	EXPECT_TRUE(Index({{1}, {2, 3}, {4, 5, 6}}).toString().compare("{1}, {2, 3}, {4, 5, 6}") == 0) << errorMessage;
+}
+
+//TBTKFeature Core.Index.operatorOstream.1.C++ 2019-10-17
+TEST(Index, operatorOstream){
+	Index index({1, 2, 3});
+
+	std::stringstream stream;
+	stream << index;
+	EXPECT_TRUE(stream.str().compare(index.toString()) == 0);
 }
 
 TEST(Index, operatorLessThan){

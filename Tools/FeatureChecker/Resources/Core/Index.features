@@ -307,6 +307,12 @@ TBTKFeature Core.Index.toString.2 2019-09-19
 	Verify:
 		Return the string "{{1}, {2, 3}, {4, 5, 6}}".
 
+TBTKFeature Core.operatorOstream.1.C++ 2019-10-17
+	Do:
+		Create Index {1, 2, 3} and print it to a stream.
+	Verify:
+		The stream content equivalent to Index({1, 2, 3}).toString().
+
 TBTKFeature Core.Index.operator<.1.C++ 2019-09-19
 	Do:
 		Compare {1, 2, 3} < {1, 2, 3}

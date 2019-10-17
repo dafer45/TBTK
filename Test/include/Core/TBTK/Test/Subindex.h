@@ -62,6 +62,36 @@ TEST(Subindex, isLabeledWildcard){
 	EXPECT_FALSE(subindex4.isLabeledWildcard());
 }
 
+TEST(Subindex, getWildcardLabel){
+	Subindex subindex0(IDX_ALL_(0));
+	Subindex subindex1(IDX_ALL_(1));
+	Subindex subindex2(1);
+	Subindex subindex3(IDX_ALL);
+
+	//TBTKFeature Core.Subindex.getWildcardLabel.1 2019-10-17
+	EXPECT_EQ(subindex0.getWildcardLabel(), 0);
+	//TBTKFeature Core.Subindex.getWildcardLabel.2 2019-10-17
+	EXPECT_EQ(subindex1.getWildcardLabel(), 1);
+	//TBTKFeature Core.Subindex.getWildcardLabel.3 2019-10-17
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			subindex2.getWildcardLabel();
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	//TBTKFeature Core.Subindex.getWildcardLabel.4 2019-10-17
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			subindex3.getWildcardLabel();
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
 TEST(Subindex, isSummationIndex){
 	Subindex subindex0(IDX_SUM_ALL);
 	Subindex subindex1(IDX_SUM_ALL + 1);

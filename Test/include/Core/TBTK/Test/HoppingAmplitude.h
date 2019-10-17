@@ -2,6 +2,8 @@
 
 #include "gtest/gtest.h"
 
+#include <sstream>
+
 namespace TBTK{
 
 TEST(HoppingAmplitude, ConstructorUninitialized){
@@ -187,6 +189,14 @@ TEST(HoppingAmplitude, getAmplitudeCallback){
 
 TEST(HoppingAmplitude, toString){
 	//Not tested due to insuficient control of number formating.
+}
+
+TEST(HoppingAmplitude, operatorOstream){
+	HoppingAmplitude hoppingAmplitude(1, {1, 2}, {3, 4});
+	std::stringstream stream;
+	stream << hoppingAmplitude;
+
+	EXPECT_TRUE(stream.str().compare(hoppingAmplitude.toString()) == 0);
 }
 
 TEST(HoppingAmplitude, getSizeInBytes){

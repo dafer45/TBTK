@@ -200,6 +200,17 @@ public:
 	 *  @return A string representation of the HoppingAmplitude. */
 	std::string toString() const;
 
+	/** Writes the HoppingAmplitudes toString()-representation to a stream.
+	 *
+	 *  @param stream The stream to write to.
+	 *  @param hoppingAmplitude The HoppingAmplitude to write.
+	 *
+	 *  @return Reference to the output stream just written to. */
+	friend std::ostream& operator<<(
+		std::ostream &stream,
+		const HoppingAmplitude &hoppingAmplitude
+	);
+
 	//TBTKFeature Core.HoppingAmplitude.Serialization.1 2019-09-23
 	/** Serialize HoppingAmplitude. Note that HoppingAmplitude is
 	 *  pseudo-Serializable in that it implements the Serializable
@@ -281,15 +292,33 @@ HoppingAmplitude::getAmplitudeCallback() const{
 }
 
 inline std::string HoppingAmplitude::toString() const{
-	std::string str;
-	str += "("
-			+ std::to_string(real(amplitude))
-			+ ", " + std::to_string(imag(amplitude))
-		+ ")"
-		+ ", " + toIndex.toString()
-		+ ", " + fromIndex.toString();
+	std::stringstream stream;
+	stream << "HoppingAmplitude:\n";
+	if(amplitudeCallback == nullptr){
+		stream << "\tIs callback dependent: False\n";
+		stream << "\tAmplitude: " << amplitude << "\n";
+	}
+	else{
+		stream << "\tIs callback dependent: True\n";
+		stream << "\tAmplitude: "
+			<< amplitudeCallback->getHoppingAmplitude(
+				toIndex,
+				fromIndex
+			) << "\n";
+	}
+	stream << "\tTo-Index: " << toIndex << "\n";
+	stream << "\tFrom-Index: " << fromIndex;
 
-	return str;
+	return stream.str();
+}
+
+inline std::ostream& operator<<(
+	std::ostream &stream,
+	const HoppingAmplitude &hoppingAmplitude
+){
+	stream << hoppingAmplitude.toString();
+
+	return stream;
 }
 
 inline unsigned int HoppingAmplitude::getSizeInBytes() const{

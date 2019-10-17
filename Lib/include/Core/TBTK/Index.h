@@ -250,6 +250,17 @@ public:
 	 *  @return A string representation of the Index. */
 	std::string toString() const;
 
+	/** Writes the Index toString()-representation to a stream.
+	 *
+	 *  @param stream The stream to write to.
+	 *  @param index The Index to write.
+	 *
+	 *  @return Reference to te output stream just written to. */
+	friend std::ostream& operator<<(
+		std::ostream &stream,
+		const Index &index
+	);
+
 	//TBTKFeature Core.Index.operator<.1.C++ 2019-09-19
 	//TBTKFeature Core.Index.operator<.2.C++ 2019-09-19
 	//TBTKFeature Core.Index.operator<.3.C++ 2019-09-19
@@ -324,44 +335,62 @@ inline std::string Index::toString() const{
 	std::string str = "{";
 	bool isFirstIndex = true;
 	for(unsigned int n = 0; n < indices.size(); n++){
-/*		if(n != 0)
-			str += ", ";*/
 		Subindex subindex = indices.at(n);
 		if(!isFirstIndex && !subindex.isIndexSeparator())
 			str += ", ";
 		else
 			isFirstIndex = false;
-		switch(subindex){
-		case IDX_ALL:
+		if(subindex.isWildcard()){
 			str += "IDX_ALL";
-			break;
-		case IDX_SUM_ALL:
+		}
+		else if(subindex.isSummationIndex()){
 			str += "IDX_SUM_ALL";
-			break;
-		case IDX_X:
-			str += "IDX_X";
-			break;
-		case IDX_Y:
-			str += "IDX_Y";
-			break;
-		case IDX_Z:
-			str += "IDX_Z";
-			break;
-		case IDX_SPIN:
+		}
+		else if(subindex.isRangeIndex()){
+			switch(subindex){
+			case IDX_X:
+				str += "IDX_X";
+				break;
+			case IDX_Y:
+				str += "IDX_Y";
+				break;
+			case IDX_Z:
+				str += "IDX_Z";
+				break;
+			default:
+				TBTKExit(
+					"Index::toString()",
+					"This should never happen, contact the"
+					<< " developer.",
+					""
+				);
+			}
+		}
+		else if(subindex.isSpinIndex()){
 			str += "IDX_SPIN";
-			break;
-		case IDX_SEPARATOR:
+		}
+		else if(subindex.isIndexSeparator()){
 			str += "}, {";
 			isFirstIndex = true;
-			break;
-		default:
+		}
+		else if(subindex.isLabeledWildcard()){
+			str += "IDX_ALL_(";
+			str += std::to_string(subindex.getWildcardLabel());
+			str += ")";
+		}
+		else{
 			str += std::to_string(subindex);
-			break;
 		}
 	}
 	str += "}";
 
 	return str;
+}
+
+inline std::ostream& operator<<(std::ostream &stream, const Index &index){
+	stream << index.toString();
+
+	return stream;
 }
 
 inline bool Index::equals(const Index &index, bool allowWildcard) const{

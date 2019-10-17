@@ -132,3 +132,10 @@ TBTKFeature Core.HoppingAmplitude.getAmplitudeCallback.2 2019-09-23
 		and call hoppingAmplitude.getAmplitudeCallback().
 	Verify:
 		Return the callback function.
+
+TBTKFeature Core.HoppingAmplitude.operatorOstream.1.C++ 2019-10-17
+	Do:
+		Create a HoppingAmplitude and print it to a stream.
+	Verify:
+		The stream content is equivalent to
+		hoppingAmplitude.toString();
