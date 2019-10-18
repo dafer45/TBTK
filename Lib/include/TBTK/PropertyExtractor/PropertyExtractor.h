@@ -40,11 +40,29 @@ namespace PropertyExtractor{
 
 /** @brief Base class for PropertyExtractors.
  *
- *  The PropertyExtractor is a base class for other @link PropertyExtractor
- *  PropertyExtractors@endlink. See therefore the documentation for
- *  Diagonalizer, BlockDiagonalizer, ArnoldiIterator, and ChebyshevExpander for
- *  examples of specific production ready @link PropertyExtractor
- *  PropertyExtractors@endlink. */
+ *  A PropertyExtractor can be used to extract @link Property::AbstractProperty
+ *  Properties@endlink from a @link Solver::Solver Solver@endlink. The
+ *  PropertyExtractor::PropertyExtractor is a base class for such
+ *  @link PropertyExtractor PropertyExtractors@endlink, which each corresponds
+ *  to a particular @link Solver::Solver Solver@endlink. See the documentation
+ *  for Diagonalizer, BlockDiagonalizer, ArnoldiIterator, and ChebyshevExpander
+ *  for examples of specific production ready @link PropertyExtractor
+ *  PropertyExtractors@endlink.
+ *
+ *  The @link PropertyExtractor::PropertyExtractor PropertyExtractors@endlink
+ *  provide a uniform interface to @link Solver::Solver Solvers@endlink and
+ *  allow for @link Property::AbstractProperty Properties@endlink to be
+ *  extracted with limited knowledge about @link Solver::Solver Solver@endlink
+ *  specific details. The use of @link
+ *  PropertyExtractor::AbstractPropertyExtractor PropertyExtractors@endlink
+ *  also makes it possible to switch between different @link Solver::Solver
+ *  Solvers@endlink with minimal changes to the code.
+ *
+ *  <b>Example</b>
+ *  \snippet PropertyExtractor/PropertyExtractor.cpp PropertyExtractor
+ *  <b>Output</b>
+ *  \snippet output/PropertyExtractor/PropertyExtractor.output PropertyExtractor
+ */
 class PropertyExtractor{
 public:
 	/** Constructs a PropertyExtractor::PropertyExtractor. */

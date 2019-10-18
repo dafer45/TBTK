@@ -15,7 +15,7 @@
 
 /** @package TBTKcalc
  *  @file Index.h
- *  @brief Flexible physical index.
+ *  @brief Physical index.
  *
  *  @author Kristofer Björnson
  */
@@ -31,11 +31,11 @@
 
 namespace TBTK{
 
-/** @brief Flexible physical index.
+/** @brief Physical index.
  *
- *  Flexible physical index for indexing arbitrary models. Each index can
- *  contain an arbitrary number of subindices. For example {x, y, spin},
- *  {x, y, z, orbital, spin}, and {subsystem, x, y, z, orbital, spin}.
+ *  An Index is a list of @link Subindex Subindices@endlink. For example,
+ *  {x, y, spin}, {x, y, z, orbital, spin}, and
+ *  {subsystem, x, y, z, orbital, spin}.
  *
  *  <b>Example:</b>
  *  \snippet Core/Index.cpp Index
