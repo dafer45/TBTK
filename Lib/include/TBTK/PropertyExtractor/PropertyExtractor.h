@@ -59,10 +59,7 @@ namespace PropertyExtractor{
  *  Solvers@endlink with minimal changes to the code.
  *
  *  <b>Example</b>
- *  \snippet PropertyExtractor/PropertyExtractor.cpp PropertyExtractor
- *  <b>Output</b>
- *  \snippet output/PropertyExtractor/PropertyExtractor.output PropertyExtractor
- */
+ *  \snippet PropertyExtractor/PropertyExtractor.cpp PropertyExtractor */
 class PropertyExtractor{
 public:
 	/** Constructs a PropertyExtractor::PropertyExtractor. */

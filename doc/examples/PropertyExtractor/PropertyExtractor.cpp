@@ -2,10 +2,7 @@
 TBTK::DocumentationExamples::HeaderAndFooter headerAndFooter("PropertyExtractor");
 
 //! [PropertyExtractor]
-#include "TBTK/Model.h"
-#include "TBTK/Models/SquareLattice.h"
 #include "TBTK/PropertyExtractor/PropertyExtractor.h"
-#include "TBTK/Streams.h"
 
 using namespace TBTK;
 
