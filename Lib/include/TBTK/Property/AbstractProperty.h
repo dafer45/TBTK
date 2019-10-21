@@ -37,59 +37,57 @@ namespace Property{
 
 /** @brief Abstract Property class.
  *
- *  The AbstractProperty provides a generic storage for data of different type
- *  and storage structure and enables the implementation of specific
- *  Properties. To understand the storage structure, it is important to know
- *  that the Property structures data in several layers and that each layer is
- *  customizeable to allow for Properties with relatively different structure
- *  to be stored.
+ *  The AbstractProperty provides a generic storage structure for the property
+ *  classes that inherit from it.
  *
- *  <b>DataType:</b><br/>
- *  The first layer allows for the data type of the individual data elements to
- *  be customized through the template argument DataType.
+ *  # Custom storage structure
+ *  There are three different layers at which the storage structure can be
+ *  customized to suit the needs for the specific property: the
+ *  <b>DataType</b>, the <b>block size</b>, and the <b>Index structure</b>.
  *
- *  <b>Block:</b><br/>
- *  In the next layer data is grouped into blocks of N elements. This allows
- *  for Properties to be grouped without specific knowledge about what the
- *  group structure originates from. It is up to the individual Properties to
- *  give meaning to the internal structure of the block, but a common usage
- *  case is to store an energy resolved property for a number of energies.
+ *  ## DataType
+ *  The DataType determines the data type of the individual data elements.
  *
- *  <b>Index structure:</b><br/>
- *  In the third layer data blocks are given @link Index Indices \endlink. For
- *  flexibility and the ability to optimize for different use cases, several
- *  different storage formats are available for the Index structure and
- *  internally an IndexDescriptor is used to handle the differnt formats. These
- *  formats are:
- *  <br/><br/>
- *  <i>IndexDescriptor::Format::None</i>:<br/>
- *  Used when the Property has no Index structure.
- *  <br/><br/>
- *  <i>IndexDescriptor::Format::Ranges</i>:<br/>
- *  Used to store a Property for a (possibly multi-dimensional) range of @link
- *  Index Indices @endlink. The Ranges format is particularly efficient and
- *  imposes a regular grid structure on the data that sometimes can be required
- *  to for example plotting the Property. However, it has the limitation that
- *  it cannot be used to store Properties for a few select points on a grid, or
- *  for an Index strcucture that does not have a particular grid structure.
- *  <br/><br/>
- *  IndexDescriptor::Format::Custom:<br/>
- *  The Custom format has the benefit of being able to store the Property for a
- *  custom selected set of @link Index Indices @endlink. It also allows the
- *  value of the Property to be accessed using the function notation
- *  property(index) or property(index, n). Where index is and Index and n is a
- *  number indexing into the data block for the given Index. To achieve this
- *  flexibility the Custom format comes with a slightly larger overhead than
- *  the Ranges format.
- *  <br/><br/>
- *  Sometimes it is usefull to input or access data in raw format, especially
- *  when writing custom Property classes or PropertyExtractors. In this case it
- *  is important to know that internally the data is stored in a single
- *  continous DataType array with blocks stored sequentially. The order the
- *  blocks are stored in when containing data for multiple @link Index Indices
- *  @endlink is such that if the @link Index Indices@endlink are added to an
- *  IndexTree, they appear in the order of the corresponding linear indices
- *  obtained from the IndexTree. */
+ *  ## Block size
+ *  The data is group into blocks of equal size. It is up to the individual
+ *  properties to determine the internal structure of these blocks. For
+ *  example, @link EnergyResolvedProperty EnergyResolvedProperties@endlink
+ *  stores the data points for a range of energies in a block, while the
+ *  Density has a single element per block.
+ *
+ *  ## Index structure
+ *  The Index structure determines how blocks are organized and accessed as a
+ *  function of @link Index Indices@endlink.
+ *
+ *  ### IndexDescriptor::Format::None
+ *  Used for properties that has no Index structure. For example, the DOS.
+ *
+ *  ### IndexDescriptor::Format::Ranges
+ *  Used to store properties on a regular grid. It imposes an array like
+ *  structure on the data that is easy to export to other softwares using, for
+ *  example, the FileWriter.
+ *
+ *  ### IndexDescriptor::Format::Custom
+ *  Used to store properties for arbitrary combinations of Indices. When the
+ *  Custom format is used, the data can be accessed using the function notation
+ *  property(index) or property(index, n). Here index is an Index that selects
+ *  a block, while n is a number that indexes into the given block.
+ *
+ *  # Out-of-bounds access
+ *  By default, it is an error to access property(index, n) if the Index index
+ *  is not included in the property. However, it is possible to configure the
+ *  property such that out-of-bounds access is allowed. To allow for this we
+ *  call
+ *  ```cpp
+ *      property.setAllowIndexOutOfBoundsAccess(true);
+ *      property.setDefaultValue(defaultValue);
+ *  ```
+ *  The last call specifies the value to return when out-of-bounds access
+ *  occurs.
+ *
+ *  It is recommended to not use out-of-bounds access frivolously since
+ *  out-of-bounds access typically is a sign of an error in the code. Enabling
+ *  out-of-bounds access can therefore mask faulty behavior. */
 template<typename DataType>
 class AbstractProperty : public Property, public Serializable, public Streamable{
 public:
