@@ -35,3 +35,7 @@
   is used whenever possible.
 
 - Make AbstractProperty constructors take data as vectors instead of c-arrays.
+
+- Replace std::vector by std::map in IndexedDataTree and HoppingAmplitudeTree.
+  This will both allow for negative Subindices and avoid wasted memory in for
+  sparse structures.
