@@ -30,6 +30,7 @@
 #include "TBTK/TBTKMacros.h"
 
 #include <complex>
+#include <map>
 #include <sstream>
 
 //This is used to work around incompatibilities between nlohmann::json and
@@ -231,7 +232,7 @@ public:
 	ConstIterator cend() const;
 private:
 	/** Child nodes. */
-	std::vector<IndexedDataTree> children;
+	std::map<Subindex, IndexedDataTree> children;
 
 	/** Flag indicating whether the given node corresponds to an index that
 	 *  is included in the set. */
@@ -439,7 +440,7 @@ public:
 	ConstIterator cend() const;
 private:
 	/** Child nodes. */
-	std::vector<IndexedDataTree> children;
+	std::map<Subindex, IndexedDataTree> children;
 
 	/** Flag indicating whether the given node corresponds to an index that
 	 *  is included in the set. */
@@ -647,7 +648,7 @@ public:
 	ConstIterator cend() const;
 private:
 	/** Child nodes. */
-	std::vector<IndexedDataTree> children;
+	std::map<Subindex, IndexedDataTree> children;
 
 	/** Flag indicating whether the given node corresponds to an index that
 	 *  is included in the set. */
@@ -740,23 +741,23 @@ inline IndexedDataTree<bool, false>::IndexedDataTree(
 			indexIncluded = j.at("indexIncluded").get<bool>();
 			indexSeparator = j.at("indexSeparator").get<bool>();
 			data = j.at("data").get<bool>();
-			try{
-				nlohmann::json children = j.at("children");
-				for(
-					nlohmann::json::iterator it = children.begin();
-					it != children.end();
-					++it
-				){
-					this->children.push_back(
-						IndexedDataTree<bool>(
-							it->dump(),
-							mode
-						)
-					);
-				}
-			}
-			catch(nlohmann::json::exception &e){
-				//It is valid to not have children.
+			nlohmann::json jsonChildren = j.at("children");
+			for(
+				nlohmann::json::const_iterator iterator
+					= jsonChildren.cbegin();
+				iterator != jsonChildren.cend();
+				++iterator
+			){
+				children.insert({
+					Subindex(
+						iterator.key(),
+						Serializable::Mode::JSON
+					),
+					IndexedDataTree(
+						iterator.value().dump(),
+						Serializable::Mode::JSON
+					)
+				});
 			}
 		}
 		catch(nlohmann::json::exception &e){
@@ -803,23 +804,23 @@ inline IndexedDataTree<char, false>::IndexedDataTree(
 			indexIncluded = j.at("indexIncluded").get<bool>();
 			indexSeparator = j.at("indexSeparator").get<bool>();
 			data = j.at("data").get<char>();
-			try{
-				nlohmann::json children = j.at("children");
-				for(
-					nlohmann::json::iterator it = children.begin();
-					it != children.end();
-					++it
-				){
-					this->children.push_back(
-						IndexedDataTree<char>(
-							it->dump(),
-							mode
-						)
-					);
-				}
-			}
-			catch(nlohmann::json::exception &e){
-				//It is valid to not have children.
+			nlohmann::json jsonChildren = j.at("children");
+			for(
+				nlohmann::json::const_iterator iterator
+					= jsonChildren.cbegin();
+				iterator != jsonChildren.cend();
+				++iterator
+			){
+				children.insert({
+					Subindex(
+						iterator.key(),
+						Serializable::Mode::JSON
+					),
+					IndexedDataTree(
+						iterator.value().dump(),
+						Serializable::Mode::JSON
+					)
+				});
 			}
 		}
 		catch(nlohmann::json::exception &e){
@@ -866,23 +867,23 @@ inline IndexedDataTree<int, false>::IndexedDataTree(
 			indexIncluded = j.at("indexIncluded").get<bool>();
 			indexSeparator = j.at("indexSeparator").get<bool>();
 			data = j.at("data").get<int>();
-			try{
-				nlohmann::json children = j.at("children");
-				for(
-					nlohmann::json::iterator it = children.begin();
-					it != children.end();
-					++it
-				){
-					this->children.push_back(
-						IndexedDataTree<int>(
-							it->dump(),
-							mode
-						)
-					);
-				}
-			}
-			catch(nlohmann::json::exception &e){
-				//It is valid to not have children.
+			nlohmann::json jsonChildren = j.at("children");
+			for(
+				nlohmann::json::const_iterator iterator
+					= jsonChildren.cbegin();
+				iterator != jsonChildren.cend();
+				++iterator
+			){
+				children.insert({
+					Subindex(
+						iterator.key(),
+						Serializable::Mode::JSON
+					),
+					IndexedDataTree(
+						iterator.value().dump(),
+						Serializable::Mode::JSON
+					)
+				});
 			}
 		}
 		catch(nlohmann::json::exception &e){
@@ -929,23 +930,23 @@ inline IndexedDataTree<float, false>::IndexedDataTree(
 			indexIncluded = j.at("indexIncluded").get<bool>();
 			indexSeparator = j.at("indexSeparator").get<bool>();
 			data = j.at("data").get<float>();
-			try{
-				nlohmann::json children = j.at("children");
-				for(
-					nlohmann::json::iterator it = children.begin();
-					it != children.end();
-					++it
-				){
-					this->children.push_back(
-						IndexedDataTree<float>(
-							it->dump(),
-							mode
-						)
-					);
-				}
-			}
-			catch(nlohmann::json::exception &e){
-				//It is valid to not have children.
+			nlohmann::json jsonChildren = j.at("children");
+			for(
+				nlohmann::json::const_iterator iterator
+					= jsonChildren.cbegin();
+				iterator != jsonChildren.cend();
+				++iterator
+			){
+				children.insert({
+					Subindex(
+						iterator.key(),
+						Serializable::Mode::JSON
+					),
+					IndexedDataTree(
+						iterator.value().dump(),
+						Serializable::Mode::JSON
+					)
+				});
 			}
 		}
 		catch(nlohmann::json::exception &e){
@@ -992,23 +993,23 @@ inline IndexedDataTree<double, false>::IndexedDataTree(
 			indexIncluded = j.at("indexIncluded").get<bool>();
 			indexSeparator = j.at("indexSeparator").get<bool>();
 			data = j.at("data").get<double>();
-			try{
-				nlohmann::json children = j.at("children");
-				for(
-					nlohmann::json::iterator it = children.begin();
-					it != children.end();
-					++it
-				){
-					this->children.push_back(
-						IndexedDataTree<double>(
-							it->dump(),
-							mode
-						)
-					);
-				}
-			}
-			catch(nlohmann::json::exception &e){
-				//It is valid to not have children.
+			nlohmann::json jsonChildren = j.at("children");
+			for(
+				nlohmann::json::const_iterator iterator
+					= jsonChildren.cbegin();
+				iterator != jsonChildren.cend();
+				++iterator
+			){
+				children.insert({
+					Subindex(
+						iterator.key(),
+						Serializable::Mode::JSON
+					),
+					IndexedDataTree(
+						iterator.value().dump(),
+						Serializable::Mode::JSON
+					)
+				});
 			}
 		}
 		catch(nlohmann::json::exception &e){
@@ -1057,24 +1058,23 @@ inline IndexedDataTree<std::complex<double>, false>::IndexedDataTree(
 			std::string dataString = j.at("data").get<std::string>();
 			std::stringstream ss(dataString);
 			ss >> data;
-//			data = j.at("data").get<std::complex<double>>();
-			try{
-				nlohmann::json children = j.at("children");
-				for(
-					nlohmann::json::iterator it = children.begin();
-					it != children.end();
-					++it
-				){
-					this->children.push_back(
-						IndexedDataTree<std::complex<double>>(
-							it->dump(),
-							mode
-						)
-					);
-				}
-			}
-			catch(nlohmann::json::exception &e){
-				//It is valid to not have children.
+			nlohmann::json jsonChildren = j.at("children");
+			for(
+				nlohmann::json::const_iterator iterator
+					= jsonChildren.cbegin();
+				iterator != jsonChildren.cend();
+				++iterator
+			){
+				children.insert({
+					Subindex(
+						iterator.key(),
+						Serializable::Mode::JSON
+					),
+					IndexedDataTree(
+						iterator.value().dump(),
+						Serializable::Mode::JSON
+					)
+				});
 			}
 		}
 		catch(nlohmann::json::exception &e){
@@ -1122,24 +1122,23 @@ IndexedDataTree<Data, true>::IndexedDataTree(
 			indexSeparator = j.at("indexSeparator").get<bool>();
 			std::string dataString = j.at("data").get<std::string>();
 			data = Data(dataString, mode);
-//			data = j.at("data").get<Data>();
-			try{
-				nlohmann::json children = j.at("children");
-				for(
-					nlohmann::json::iterator it = children.begin();
-					it != children.end();
-					++it
-				){
-					this->children.push_back(
-						IndexedDataTree<Data>(
-							it->dump(),
-							mode
-						)
-					);
-				}
-			}
-			catch(nlohmann::json::exception &e){
-				//It is valid to not have children.
+			nlohmann::json jsonChildren = j.at("children");
+			for(
+				nlohmann::json::const_iterator iterator
+					= jsonChildren.cbegin();
+				iterator != jsonChildren.cend();
+				++iterator
+			){
+				children.insert({
+					Subindex(
+						iterator.key(),
+						Serializable::Mode::JSON
+					),
+					IndexedDataTree(
+						iterator.value().dump(),
+						Serializable::Mode::JSON
+					)
+				});
 			}
 		}
 		catch(nlohmann::json::exception &e){
@@ -1169,63 +1168,6 @@ IndexedDataTree<Data, false>::IndexedDataTree(
 	Mode mode
 ){
 	TBTKNotYetImplemented("IndexedDataTree<Data, false>");
-/*	TBTKAssert(
-		validate(serialization, "IndexedDataTree", mode),
-		"IndexedDataTree<Data>::IndexedDataTree()",
-		"Unable to parse string as IndexedDataTree<Data> '"
-		<< serialization << "'.",
-		""
-	);
-
-	switch(mode){
-	case Mode::JSON:
-	{
-		try{
-			nlohmann::json j = nlohmann::json::parse(
-				serialization
-			);
-			indexIncluded = j.at("indexIncluded").get<bool>();
-			std::string dataString = j.at("data").get<std::string>();
-			data = Data(dataString, mode);
-//			data = j.at("data").get<Data>();
-			try{
-				nlohmann::json children = j.at("children");
-				for(
-					nlohmann::json::iterator it = children.begin();
-					it != children.end();
-					++it
-				){
-					this->children.push_back(
-						IndexedDataTree<Data>(
-							it->dump(),
-							mode
-						)
-					);
-				}
-			}
-			catch(nlohmann::json::exception e){
-				//It is valid to not have children.
-			}
-		}
-		catch(nlohmann::json::exception e){
-			TBTKExit(
-				"IndexedDataTree<Data>::IndexedDataTree()",
-				"Unable to parse string as"
-				<< " IndexedDataTree<Data> '"
-				<< serialization << "'.",
-				""
-			);
-		}
-
-		break;
-	}
-	default:
-		TBTKExit(
-			"IndexedDataTree<Data>::IndexedDataTree()",
-			"Only Serializable::Mode::JSON is supported yet.",
-			""
-		);
-	}*/
 }
 
 template<typename Data, bool isSerializable>
@@ -1328,11 +1270,6 @@ void IndexedDataTree<Data, isSerializable>::add(
 			<< " the only allowed instance of negative numbers."
 		);
 
-		//If the subindex is bigger than the current number of child
-		//nodes, create empty nodes.
-		if(currentIndex >= children.size())
-			for(int n = children.size(); n <= currentIndex; n++)
-				children.push_back(IndexedDataTree());
 		//Error detection:
 		//If the current node has the indexIncluded flag set, another
 		//Index with fewer subindices than the current Index have
@@ -1350,7 +1287,7 @@ void IndexedDataTree<Data, isSerializable>::add(
 			""
 		);
 
-		children.at(currentIndex).add(data, index, subindex+1);
+		children[currentIndex].add(data, index, subindex+1);
 	}
 	else{
 		//If the current subindex is the last, the index is marked as
@@ -1440,11 +1377,6 @@ void IndexedDataTree<Data, true>::add(
 			<< " the only allowed instance of negative numbers."
 		);
 
-		//If the subindex is bigger than the current number of child
-		//nodes, create empty nodes.
-		if((unsigned int)currentIndex >= children.size())
-			for(int n = children.size(); n <= currentIndex; n++)
-				children.push_back(IndexedDataTree());
 		//Error detection:
 		//If the current node has the indexIncluded flag set, another
 		//Index with fewer subindices than the current Index have
@@ -1462,7 +1394,7 @@ void IndexedDataTree<Data, true>::add(
 			""
 		);
 
-		children.at(currentIndex).add(data, index, subindex+1);
+		children[currentIndex].add(data, index, subindex+1);
 	}
 	else{
 		//If the current subindex is the last, the index is marked as
@@ -1552,11 +1484,6 @@ void IndexedDataTree<Data, false>::add(
 			<< " the only allowed instance of negative numbers."
 		);
 
-		//If the subindex is bigger than the current number of child
-		//nodes, create empty nodes.
-		if(currentIndex >= (int)children.size())
-			for(int n = children.size(); n <= currentIndex; n++)
-				children.push_back(IndexedDataTree());
 		//Error detection:
 		//If the current node has the indexIncluded flag set, another
 		//Index with fewer subindices than the current Index have
@@ -1574,7 +1501,7 @@ void IndexedDataTree<Data, false>::add(
 			""
 		);
 
-		children.at(currentIndex).add(data, index, subindex+1);
+		children[currentIndex].add(data, index, subindex+1);
 	}
 	else{
 		//If the current subindex is the last, the index is marked as
@@ -1644,11 +1571,12 @@ bool IndexedDataTree<Data, isSerializable>::get(
 			""
 		);
 
-		//Return false because the Index is not included.
-		if(currentIndex >= children.size())
+		try{
+			return children.at(currentIndex).get(data, index, subindex+1);
+		}
+		catch(std::out_of_range &e){
 			return false;
-
-		return children.at(currentIndex).get(data, index, subindex+1);
+		}
 	}
 	else{
 		//If the current subindex is the last, try to extract the data.
@@ -1714,11 +1642,12 @@ bool IndexedDataTree<Data, true>::get(
 			<< " the only allowed instance of negative numbers."
 		);
 
-		//Return false because the Index is not included.
-		if((unsigned int)currentIndex >= children.size())
+		try{
+			return children.at(currentIndex).get(data, index, subindex+1);
+		}
+		catch(std::out_of_range &e){
 			return false;
-
-		return children.at(currentIndex).get(data, index, subindex+1);
+		}
 	}
 	else{
 		//If the current subindex is the last, try to extract the data.
@@ -1784,11 +1713,12 @@ bool IndexedDataTree<Data, false>::get(
 			<< " the only allowed instance of negative numbers."
 		);
 
-		//Return false because the Index is not included.
-		if(currentIndex >= (int)children.size())
+		try{
+			return children.at(currentIndex).get(data, index, subindex+1);
+		}
+		catch(std::out_of_range &e){
 			return false;
-
-		return children.at(currentIndex).get(data, index, subindex+1);
+		}
 	}
 	else{
 		//If the current subindex is the last, try to extract the data.
@@ -1900,8 +1830,10 @@ const Data& IndexedDataTree<Data, true>::get(
 			<< " the only allowed instance of negative numbers."
 		);
 
-		//Throw ElementNotFoundException if the Index is not included.
-		if((unsigned int)currentIndex >= children.size()){
+		try{
+			return children.at(currentIndex).get(index, subindex+1);
+		}
+		catch(std::out_of_range &e){
 			throw ElementNotFoundException(
 				"IndexedDataTree()",
 				TBTKWhere,
@@ -1911,8 +1843,6 @@ const Data& IndexedDataTree<Data, true>::get(
 				""
 			);
 		}
-
-		return children.at(currentIndex).get(index, subindex+1);
 	}
 	else{
 		//If the current subindex is the last, try to extract the data.
@@ -1991,8 +1921,10 @@ const Data& IndexedDataTree<Data, false>::get(
 			<< " the only allowed instance of negative numbers."
 		);
 
-		//Throw ElementNotFoundException if the Index is not included.
-		if((unsigned int)currentIndex >= children.size()){
+		try{
+			return children.at(currentIndex).get(index, subindex+1);
+		}
+		catch(std::out_of_range &e){
 			throw ElementNotFoundException(
 				"IndexedDataTree()",
 				TBTKWhere,
@@ -2002,8 +1934,6 @@ const Data& IndexedDataTree<Data, false>::get(
 				""
 			);
 		}
-
-		return children.at(currentIndex).get(index, subindex+1);
 	}
 	else{
 		//If the current subindex is the last, try to extract the data.
@@ -2049,9 +1979,17 @@ bool IndexedDataTree<Data, true>::getFirstIndex(Index &index) const{
 	if(indexSeparator)
 		index.pushBack(IDX_SEPARATOR);
 
-	for(unsigned int n = 0; n < children.size(); n++){
-		index.pushBack(n);
-		if(children[n].getFirstIndex(index))
+	for(
+		typename std::map<
+			Subindex,
+			IndexedDataTree
+		>::const_iterator iterator = children.cbegin();
+		iterator != children.cend();
+		++iterator
+	){
+		Subindex subindex = iterator->first;
+		index.pushBack(subindex);
+		if(iterator->second.getFirstIndex(index))
 			return true;
 
 		index.popBack();
@@ -2071,9 +2009,17 @@ bool IndexedDataTree<Data, false>::getFirstIndex(Index &index) const{
 	if(indexSeparator)
 		index.pushBack(IDX_SEPARATOR);
 
-	for(unsigned int n = 0; n < children.size(); n++){
-		index.pushBack(n);
-		if(children[n].getFirstIndex(index))
+	for(
+		typename std::map<
+			Subindex,
+			IndexedDataTree
+		>::const_iterator iterator = children.cbegin();
+		iterator != children.cend();
+		++iterator
+	){
+		Subindex subindex = iterator->first;
+		index.pushBack(subindex);
+		if(iterator->second.getFirstIndex(index))
 			return true;
 
 		index.popBack();
@@ -2135,15 +2081,18 @@ bool IndexedDataTree<Data, true>::getNextIndex(
 		hasSameIndexStructure = false;
 	}
 
-	unsigned int startIndex = 0;
+	typename std::map<Subindex, IndexedDataTree>::const_iterator iterator;
 	if(hasSameIndexStructure)
-		startIndex = currentIndex[nextIndex.getSize()];
-	for(unsigned int n = startIndex; n < children.size(); n++){
-		nextIndex.pushBack(n);
-		if(children[n].getNextIndex(currentIndex, nextIndex))
+		iterator = children.find(currentIndex[nextIndex.getSize()]);
+	else
+		iterator = children.cbegin();
+	while(iterator != children.cend()){
+		nextIndex.pushBack(iterator->first);
+		if(iterator->second.getNextIndex(currentIndex, nextIndex))
 			return true;
-
 		nextIndex.popBack();
+
+		++iterator;
 	}
 
 	if(indexSeparator)
@@ -2180,15 +2129,18 @@ bool IndexedDataTree<Data, false>::getNextIndex(
 		hasSameIndexStructure = false;
 	}
 
-	unsigned int startIndex = 0;
+	typename std::map<Subindex, IndexedDataTree>::const_iterator iterator;
 	if(hasSameIndexStructure)
-		startIndex = currentIndex[nextIndex.getSize()];
-	for(unsigned int n = startIndex; n < children.size(); n++){
-		nextIndex.pushBack(n);
-		if(children[n].getNextIndex(currentIndex, nextIndex))
+		iterator = children.find(currentIndex[nextIndex.getSize()]);
+	else
+		iterator = children.cbegin();
+	while(iterator != children.cend()){
+		nextIndex.pushBack(iterator->first);
+		if(iterator->second.getNextIndex(currentIndex, nextIndex))
 			return true;
-
 		nextIndex.popBack();
+
+		++iterator;
 	}
 
 	if(indexSeparator)
@@ -2218,8 +2170,16 @@ void IndexedDataTree<Data, false>::clear(){
 template<typename Data, bool isSerializable>
 unsigned int IndexedDataTree<Data, isSerializable>::getSizeInBytes() const{
 	unsigned int size = sizeof(IndexedDataTree<Data>);
-	for(unsigned int n = 0; n < children.size(); n++)
-		size += children.at(n).getSizeInBytes();
+	for(
+		typename std::map<
+			Subindex,
+			IndexedDataTree
+		>::const_iterator iterator = children.cbegin();
+		iterator != children.cend();
+		++iterator
+	){
+		size += iterator->second.getSizeInBytes();
+	}
 
 	return size;
 }
@@ -2227,8 +2187,16 @@ unsigned int IndexedDataTree<Data, isSerializable>::getSizeInBytes() const{
 template<typename Data>
 unsigned int IndexedDataTree<Data, true>::getSizeInBytes() const{
 	unsigned int size = sizeof(IndexedDataTree<Data>);
-	for(unsigned int n = 0; n < children.size(); n++)
-		size += children.at(n).getSizeInBytes();
+	for(
+		typename std::map<
+			Subindex,
+			IndexedDataTree
+		>::const_iterator iterator = children.cbegin();
+		iterator != children.cend();
+		++iterator
+	){
+		size += iterator->second.getSizeInBytes();
+	}
 
 	return size;
 }
@@ -2236,8 +2204,16 @@ unsigned int IndexedDataTree<Data, true>::getSizeInBytes() const{
 template<typename Data>
 unsigned int IndexedDataTree<Data, false>::getSizeInBytes() const{
 	unsigned int size = sizeof(IndexedDataTree<Data>);
-	for(unsigned int n = 0; n < children.size(); n++)
-		size += children.at(n).getSizeInBytes();
+	for(
+		typename std::map<
+			Subindex,
+			IndexedDataTree
+		>::const_iterator iterator = children.cbegin();
+		iterator != children.cend();
+		++iterator
+	){
+		size += iterator->second.getSizeInBytes();
+	}
 
 	return size;
 }
@@ -2252,10 +2228,22 @@ inline std::string IndexedDataTree<bool, false>::serialize(Mode mode) const{
 		j["indexIncluded"] = indexIncluded;
 		j["indexSeparator"] = indexSeparator;
 		j["data"] = data;
-		for(unsigned int n = 0; n < children.size(); n++){
-			j["children"].push_back(
-				nlohmann::json::parse(
-					children.at(n).serialize(mode)
+		j["children"] = nlohmann::json();
+		for(
+			std::map<
+				Subindex,
+				IndexedDataTree
+			>::const_iterator iterator = children.cbegin();
+			iterator != children.cend();
+			++iterator
+		){
+			j["children"][
+				iterator->first.serialize(
+					Serializable::Mode::JSON
+				)
+			] = nlohmann::json::parse(
+				iterator->second.serialize(
+					Serializable::Mode::JSON
 				)
 			);
 		}
@@ -2281,10 +2269,22 @@ inline std::string IndexedDataTree<char, false>::serialize(Mode mode) const{
 		j["indexIncluded"] = indexIncluded;
 		j["indexSeparator"] = indexSeparator;
 		j["data"] = data;
-		for(unsigned int n = 0; n < children.size(); n++){
-			j["children"].push_back(
-				nlohmann::json::parse(
-					children.at(n).serialize(mode)
+		j["children"] = nlohmann::json();
+		for(
+			std::map<
+				Subindex,
+				IndexedDataTree
+			>::const_iterator iterator = children.cbegin();
+			iterator != children.cend();
+			++iterator
+		){
+			j["children"][
+				iterator->first.serialize(
+					Serializable::Mode::JSON
+				)
+			] = nlohmann::json::parse(
+				iterator->second.serialize(
+					Serializable::Mode::JSON
 				)
 			);
 		}
@@ -2310,10 +2310,22 @@ inline std::string IndexedDataTree<int, false>::serialize(Mode mode) const{
 		j["indexIncluded"] = indexIncluded;
 		j["indexSeparator"] = indexSeparator;
 		j["data"] = data;
-		for(unsigned int n = 0; n < children.size(); n++){
-			j["children"].push_back(
-				nlohmann::json::parse(
-					children.at(n).serialize(mode)
+		j["children"] = nlohmann::json();
+		for(
+			std::map<
+				Subindex,
+				IndexedDataTree
+			>::const_iterator iterator = children.cbegin();
+			iterator != children.cend();
+			++iterator
+		){
+			j["children"][
+				iterator->first.serialize(
+					Serializable::Mode::JSON
+				)
+			] = nlohmann::json::parse(
+				iterator->second.serialize(
+					Serializable::Mode::JSON
 				)
 			);
 		}
@@ -2339,10 +2351,22 @@ inline std::string IndexedDataTree<float, false>::serialize(Mode mode) const{
 		j["indexIncluded"] = indexIncluded;
 		j["indexSeparator"] = indexSeparator;
 		j["data"] = data;
-		for(unsigned int n = 0; n < children.size(); n++){
-			j["children"].push_back(
-				nlohmann::json::parse(
-					children.at(n).serialize(mode)
+		j["children"] = nlohmann::json();
+		for(
+			std::map<
+				Subindex,
+				IndexedDataTree
+			>::const_iterator iterator = children.cbegin();
+			iterator != children.cend();
+			++iterator
+		){
+			j["children"][
+				iterator->first.serialize(
+					Serializable::Mode::JSON
+				)
+			] = nlohmann::json::parse(
+				iterator->second.serialize(
+					Serializable::Mode::JSON
 				)
 			);
 		}
@@ -2368,10 +2392,22 @@ inline std::string IndexedDataTree<double, false>::serialize(Mode mode) const{
 		j["indexIncluded"] = indexIncluded;
 		j["indexSeparator"] = indexSeparator;
 		j["data"] = data;
-		for(unsigned int n = 0; n < children.size(); n++){
-			j["children"].push_back(
-				nlohmann::json::parse(
-					children.at(n).serialize(mode)
+		j["children"] = nlohmann::json();
+		for(
+			std::map<
+				Subindex,
+				IndexedDataTree
+			>::const_iterator iterator = children.cbegin();
+			iterator != children.cend();
+			++iterator
+		){
+			j["children"][
+				iterator->first.serialize(
+					Serializable::Mode::JSON
+				)
+			] = nlohmann::json::parse(
+				iterator->second.serialize(
+					Serializable::Mode::JSON
 				)
 			);
 		}
@@ -2399,10 +2435,22 @@ inline std::string IndexedDataTree<std::complex<double>, false>::serialize(Mode 
 		std::stringstream ss;
 		ss << "(" << real(data) << "," << imag(data) << ")";
 		j["data"] = ss.str();
-		for(unsigned int n = 0; n < children.size(); n++){
-			j["children"].push_back(
-				nlohmann::json::parse(
-					children.at(n).serialize(mode)
+		j["children"] = nlohmann::json();
+		for(
+			std::map<
+				Subindex,
+				IndexedDataTree
+			>::const_iterator iterator = children.cbegin();
+			iterator != children.cend();
+			++iterator
+		){
+			j["children"][
+				iterator->first.serialize(
+					Serializable::Mode::JSON
+				)
+			] = nlohmann::json::parse(
+				iterator->second.serialize(
+					Serializable::Mode::JSON
 				)
 			);
 		}
@@ -2428,10 +2476,22 @@ std::string IndexedDataTree<Data, true>::serialize(Mode mode) const{
 		j["indexIncluded"] = indexIncluded;
 		j["indexSeparator"] = indexSeparator;
 		j["data"] = data.serialize(mode);
-		for(unsigned int n = 0; n < children.size(); n++){
-			j["children"].push_back(
-				nlohmann::json::parse(
-					children.at(n).serialize(mode)
+		j["children"] = nlohmann::json();
+		for(
+			typename std::map<
+				Subindex,
+				IndexedDataTree<Data, true>
+			>::const_iterator iterator = children.cbegin();
+			iterator != children.cend();
+			++iterator
+		){
+			j["children"][
+				iterator->first.serialize(
+					Serializable::Mode::JSON
+				)
+			] = nlohmann::json::parse(
+				iterator->second.serialize(
+					Serializable::Mode::JSON
 				)
 			);
 		}
@@ -2450,31 +2510,6 @@ std::string IndexedDataTree<Data, true>::serialize(Mode mode) const{
 template<typename Data>
 std::string IndexedDataTree<Data, false>::serialize(Mode mode) const{
 	TBTKNotYetImplemented("IndexedDataTree<Data, false>");
-/*	switch(mode){
-	case Mode::JSON:
-	{
-		nlohmann::json j;
-		j["id"] = "IndexedDataTree";
-		j["indexIncluded"] = indexIncluded;
-		j["indexSeparator"] = indexSeparator;
-		j["data"] = data.serialize(mode);
-		for(unsigned int n = 0; n < children.size(); n++){
-			j["children"].push_back(
-				nlohmann::json::parse(
-					children.at(n).serialize(mode)
-				)
-			);
-		}
-
-		return j.dump();
-	}
-	default:
-		TBTKExit(
-			"IndexedDataTree<Data>::serialize()",
-			"Only Serializable::Mode::JSON is supported yet.",
-			""
-		);
-	}*/
 }
 
 template<typename Data>
