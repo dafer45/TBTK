@@ -26,6 +26,7 @@
 #include "TBTK/AbstractOperator.h"
 #include "TBTK/DefaultOperator.h"
 #include "TBTK/Index.h"
+#include "TBTK/Serializable.h"
 
 #include <complex>
 #include <initializer_list>
@@ -34,7 +35,7 @@
 
 namespace TBTK{
 
-class AbstractState{
+class AbstractState : public Serializable{
 public:
 	/** List of state identifiers. Officially supported operators are given
 	 *  unique identifiers. Operators not (yet) supported should make sure
@@ -113,6 +114,9 @@ public:
 
 	/** Returns true if the state has finite extent. */
 	bool hasFiniteExtent() const;
+
+	/** Implements Serializable::serialize(). */
+	std::string serialize(Mode mode) const;
 private:
 	/** State identifier. */
 	StateID stateID;

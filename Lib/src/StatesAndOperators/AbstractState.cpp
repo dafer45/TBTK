@@ -61,4 +61,8 @@ void AbstractState::setSpecifiers(const vector<int> &specifiers){
 		this->specifiers.push_back(*(specifiers.begin()+n));
 }
 
+std::string AbstractState::serialize(Mode mode) const{
+	TBTKNotYetImplemented("AbstractState::serialize()");
+}
+
 };	//End of namespace TBTK

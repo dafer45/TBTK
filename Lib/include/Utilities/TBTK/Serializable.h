@@ -29,6 +29,7 @@
 
 #include <complex>
 #include <sstream>
+#include <type_traits>
 #include <vector>
 
 namespace TBTK{
@@ -104,7 +105,9 @@ protected:
 	 *
 	 *  @return A string containing the serialization of the data. */
 	template<typename DataType>
-	static std::string serialize(const DataType &data, Mode mode);
+	static typename std::enable_if<!std::is_pointer<DataType>::value, std::string>::type serialize(const DataType &data, Mode mode);
+	template<typename DataType>
+	static typename std::enable_if<std::is_pointer<DataType>::value, std::string>::type serialize(const DataType &data, Mode mode);
 
 	/** Deserialize.
 	 *
@@ -199,10 +202,21 @@ protected:
 	friend class OverlapAmplitude;
 };
 
+//#ifndef TBTK_DISABLE_NLOHMANN_JSON
 template<typename DataType>
-std::string Serializable::serialize(const DataType &data, Mode mode){
+typename std::enable_if<!std::is_pointer<DataType>::value, std::string>::type Serializable::serialize(const DataType &data, Mode mode){
 	return data.serialize(mode);
 }
+
+template<typename DataType>
+typename std::enable_if<std::is_pointer<DataType>::value, std::string>::type Serializable::serialize(const DataType &data, Mode mode){
+	return data->serialize(mode);
+}
+/*template<typename DataType>
+typename std::enable_if<true, std::string>::type Serializable::serialize(const DataType &data, Mode mode){
+	return data->serialize(mode);
+}*/
+//#endif
 
 template<>
 inline std::string Serializable::serialize(const bool &data, Mode mode){
@@ -228,6 +242,11 @@ inline std::string Serializable::serialize(const int &data, Mode mode){
 }
 
 template<>
+inline std::string Serializable::serialize(const unsigned int &data, Mode mode){
+	return _serialize(data, mode);
+}
+
+template<>
 inline std::string Serializable::serialize(const SpinMatrix &data, Mode mode){
 	TBTKNotYetImplemented("Serializable::serialize<SpinMatrix>()");
 }
@@ -235,6 +254,16 @@ inline std::string Serializable::serialize(const SpinMatrix &data, Mode mode){
 template<>
 inline std::string Serializable::serialize(const Statistics &data, Mode mode){
 	return _serialize(data, mode);
+}
+
+template<>
+inline std::string Serializable::serialize(
+	const std::vector<std::complex<double>> &data,
+	Mode mode
+){
+	TBTKNotYetImplemented(
+		"Serializable::serialize<std::vector<std::complex<double>>>()"
+	);
 }
 
 template<typename DataType>
@@ -245,6 +274,13 @@ DataType Serializable::deserialize(const std::string &serialization, Mode mode){
 template<>
 inline int Serializable::deserialize(const std::string &serialization, Mode mode){
 	int i;
+	_deserialize(serialization, &i, mode);
+	return i;
+}
+
+template<>
+inline unsigned int Serializable::deserialize(const std::string &serialization, Mode mode){
+	unsigned int i;
 	_deserialize(serialization, &i, mode);
 	return i;
 }
@@ -282,6 +318,16 @@ inline Statistics Serializable::deserialize(
 	Statistics s;
 	_deserialize(serialization, &s, mode);
 	return s;
+}
+
+template<>
+inline std::vector<std::complex<double>> Serializable::deserialize(
+	const std::string &serialization,
+	Mode mode
+){
+	TBTKNotYetImplemented(
+		"Serializable::deserialize<std::vector<std::complex<double>>>()"
+	);
 }
 
 inline std::string Serializable::_serialize(bool b, Mode mode){
