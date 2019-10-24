@@ -227,7 +227,6 @@ public:
 	 *  the same @link Index Indices @endlink. */
 	bool equals(const IndexTree &indexTree) const;
 
-//	class Iterator;
 	class ConstIterator;
 private:
 	/** Base class used by Iterator and ConstIterator for iterating through
@@ -254,19 +253,6 @@ private:
 
 		/** Inequality operator. */
 		bool operator!=(const _Iterator &rhs) const;
-
-		/** Reset iterator. */
-//		void reset();
-
-		/** Advance the iterator by one. */
-//		void searchNext();
-
-		/** Get Index currently pointed at. */
-//		const Index* getIndex() const;
-//		const Index getIndex() const;
-
-		/** Returns true if the iterator has reached the end. */
-//		bool getHasReachedEnd() const;
 	private:
 		/** Typedef to allow for pointer to const and non-const
 		 *  depending on Iterator type. */
@@ -288,9 +274,6 @@ private:
 		 *  to ensure that the search moves past the Index encountered
 		 *  in the previous step. */
 		bool skipNextIndex;
-
-		/** Flag indicating that the iterator has reached the end. */
-//		bool hasReachedEnd;
 
 		/** Constructor. */
 		_Iterator(IndexTreePointerType indexTree, bool end = false);
@@ -432,10 +415,6 @@ inline int IndexTree::getSize() const{
 	return size;
 }
 
-/*inline bool IndexTree::Iterator::getHasReachedEnd() const{
-	return hasReachedEnd;
-}*/
-
 template<bool isConstIterator>
 IndexTree::_Iterator<isConstIterator>::_Iterator(IndexTreePointerType indexTree, bool end){
 	if(end){
@@ -446,33 +425,13 @@ IndexTree::_Iterator<isConstIterator>::_Iterator(IndexTreePointerType indexTree,
 		this->indexTree = indexTree;
 		currentIndex.push_back(0);
 		skipNextIndex = false;
-//		hasReachedEnd = false;
-//		if(!searchNext(this->indexTree, 0))
-//			hasReachedEnd = true;
 		searchNext(this->indexTree, 0);
 	}
 }
 
-/*void IndexTree::Iterator::reset(){
-	currentIndex.clear();
-	currentIndex.push_back(0);
-	skipNextIndex = false;
-	hasReachedEnd = false;
-	if(!searchNext(indexTree, 0))
-		hasReachedEnd = true;
-}*/
-
-/*void IndexTree::Iterator::searchNext(){
-	skipNextIndex = true;
-	if(!searchNext(indexTree, 0))
-		hasReachedEnd = true;
-}*/
-
 template<bool isConstIterator>
 void IndexTree::_Iterator<isConstIterator>::operator++(){
 	skipNextIndex = true;
-//	if(!searchNext(indexTree, 0))
-//		hasReachedEnd = true;
 	searchNext(indexTree, 0);
 }
 
@@ -503,40 +462,6 @@ bool IndexTree::_Iterator<isConstIterator>::searchNext(
 
 	return false;
 }
-
-//const Index* IndexTree::Iterator::getIndex() const{
-/*const Index IndexTree::Iterator::getIndex() const{
-//	if(currentIndex.at(0) == (int)indexTree->children.size())
-//		return NULL;
-	if(currentIndex.at(0) == (int)indexTree->children.size())
-		return Index();
-
-//	Index *index = new Index({});
-//	Index *index = new Index();
-	Index index;
-
-	const IndexTree *indexTreeBranch = this->indexTree;
-	for(unsigned int n = 0; n < currentIndex.size()-1; n++){
-//		if(indexTreeBranch->indexSeparator)
-//			index->push_back(IDX_SEPARATOR);
-		if(indexTreeBranch->indexSeparator)
-			index.push_back(IDX_SEPARATOR);
-
-//		if(indexTreeBranch->wildcardIndex)
-//			index->push_back(indexTreeBranch->wildcardType);
-//		else
-//			index->push_back(currentIndex.at(n));
-		if(indexTreeBranch->wildcardIndex)
-			index.push_back(indexTreeBranch->wildcardType);
-		else
-			index.push_back(currentIndex.at(n));
-
-		if(n < currentIndex.size()-1)
-			indexTreeBranch = &indexTreeBranch->children.at(currentIndex.at(n));
-	}
-
-	return index;
-}*/
 
 template<bool isConstIterator>
 typename IndexTree::_Iterator<isConstIterator>::IndexType IndexTree::_Iterator<isConstIterator>::operator*(){

@@ -26,7 +26,6 @@
 #include "TBTK/json.hpp"
 
 using namespace std;
-//using namespace nlohmann;
 
 namespace TBTK{
 
@@ -135,7 +134,6 @@ IndexTree::~IndexTree(){
 }
 
 bool operator==(const IndexTree &lhs, const IndexTree &rhs){
-//	Streams::out << "Size:\t" << lhs.children.size() << "\t" << rhs.children.size() << "\n";
 	if(lhs.children.size() != rhs.children.size())
 		return false;
 
@@ -144,27 +142,21 @@ bool operator==(const IndexTree &lhs, const IndexTree &rhs){
 			return false;
 	}
 
-//	Streams::out << "Index included:\t" << lhs.indexIncluded << "\t" << rhs.indexIncluded << "\n";
 	if(lhs.indexIncluded != rhs.indexIncluded)
 		return false;
 
-//	Streams::out << "Wildcard index:\t" << lhs.wildcardIndex << "\t" << rhs.wildcardIndex << "\n";
 	if(lhs.wildcardIndex != rhs.wildcardIndex)
 		return false;
 
-//	Streams::out << "Wildcard type:\t" << lhs.wildcardType << "\t" << rhs.wildcardType << "\n";
 	if(lhs.wildcardType != rhs.wildcardType)
 		return false;
 
-//	Streams::out << "Index separator:\t" << lhs.indexSeparator << "\t" << rhs.indexSeparator << "\n";
 	if(lhs.indexSeparator != rhs.indexSeparator)
 		return false;
 
-//	Streams::out << "Linear index:\t" << lhs.linearIndex << "\t" << rhs.linearIndex << "\n";
 	if(lhs.linearIndex != rhs.linearIndex)
 		return false;
 
-//	Streams::out << "Size:\t" << lhs.size << "\t" << rhs.size << "\n";
 	if(lhs.size != rhs.size)
 		return false;
 
@@ -320,10 +312,6 @@ int IndexTree::generateLinearMap(int i){
 	return i;
 }
 
-/*int IndexTree::getLinearIndex(const Index &index, bool ignoreWildcards) const{
-	return getLinearIndex(index, 0, ignoreWildcards);
-}*/
-
 int IndexTree::getLinearIndex(
 	const Index &index,
 	SearchMode searchMode,
@@ -343,20 +331,9 @@ int IndexTree::getLinearIndex(
 	SearchMode searchMode,
 	bool returnNegativeForMissingIndex
 ) const{
-/*	if(ignoreWildcards && wildcardIndex)
-		return children.at(0).getLinearIndex(index, subindex, ignoreWildcards);*/
 	switch(searchMode){
 	case SearchMode::StrictMatch:
 		break;
-/*	case SearchMode::IgnoreWildcards:
-		if(wildcardIndex)
-			return children.at(0).getLinearIndex(
-				index,
-				subindex,
-				searchMode,
-				returnNegativeForMissingIndex
-			);
-		break;*/
 	case SearchMode::MatchWildcards:
 		break;
 	default:
@@ -446,9 +423,6 @@ int IndexTree::getLinearIndex(
 					+ index.toString() + "'.",
 					""
 				);
-/*				Streams::err << "Error, index out of bound: ";
-				index.print();
-				exit(1);*/
 			}
 		}
 		//Continue to the next node level.
@@ -475,10 +449,6 @@ int IndexTree::getLinearIndex(
 				+ index.toString() + "'.",
 				""
 			);
-/*			Streams::err << "Error, index not included in the "
-				<< "IndexTree: ";
-			index.print();
-			exit(1);*/
 		}
 	}
 }
@@ -525,39 +495,6 @@ vector<unsigned int> IndexTree::getSubindicesMatching(
 vector<Index> IndexTree::getIndexList(const Index &pattern) const{
 	vector<Index> indexList;
 
-/*	Iterator iterator = begin();
-//	const Index *index;
-//	while((index = iterator.getIndex())){
-//		if(index->equals(pattern, true))
-//			indexList.push_back(*index);
-//
-//		iterator.searchNext();
-//	}
-	while(!iterator.getHasReachedEnd()){
-		Index index = iterator.getIndex();
-		if(index.equals(pattern, true)){
-			//Index::equals() has here determined that the Indices
-			//are equal up to IDX_ALL wildcards. However, we do not
-			//want to add 'index' if the match is because 'index'
-			//has an IDX_ALL wildcard in a subindex where 'pattern'
-			//has some other value. Only IDX_ALL wildcards in the
-			//'pattern' Index should be treated as wildcards.
-			bool equalityIsValid = true;
-			for(unsigned int n = 0; n < index.getSize(); n++){
-				if(index[n] == IDX_ALL){
-					if(pattern[n] != IDX_ALL){
-						equalityIsValid = false;
-						break;
-					}
-				}
-			}
-
-			if(equalityIsValid)
-				indexList.push_back(index);
-		}
-
-		iterator.searchNext();
-	}*/
 	for(
 		IndexTree::ConstIterator iterator = cbegin();
 		iterator != cend();
