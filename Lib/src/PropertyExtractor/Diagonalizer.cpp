@@ -268,9 +268,9 @@ Property::DOS Diagonalizer::calculateDOS(){
 
 	Property::DOS dos(lowerBound, upperBound, energyResolution);
 	std::vector<double> &data = dos.getDataRW();
-	double dE = (upperBound - lowerBound)/energyResolution;
+	double dE = dos.getDeltaE();
 	for(int n = 0; n < dSolver->getModel().getBasisSize(); n++){
-		int e = (int)(((ev[n] - lowerBound)/(upperBound - lowerBound))*energyResolution);
+		int e = round((ev[n] - lowerBound)/dE);
 		if(e >= 0 && e < energyResolution){
 			data[e] += 1./dE;
 		}
@@ -720,7 +720,7 @@ void Diagonalizer::calculateGreensFunctionCallback(
 		double lowerBound = pe->getLowerBound();
 		double upperBound = pe->getUpperBound();
 		int energyResolution = pe->getEnergyResolution();
-		double dE = (upperBound - lowerBound)/energyResolution;
+		double dE = greensFunction.getDeltaE();
 		double delta;
 		switch(greensFunction.getType()){
 			case Property::GreensFunction::Type::Advanced:
@@ -901,7 +901,7 @@ void Diagonalizer::calculateLDOSCallback(
 
 	const double *eigen_values = pe->dSolver->getEigenValues();
 
-	double dE = (upperBound - lowerBound)/energyResolution;
+	double dE = ldos.getDeltaE();
 	for(int n = 0; n < pe->dSolver->getModel().getBasisSize(); n++){
 		if(
 			eigen_values[n] > lowerBound
@@ -909,7 +909,7 @@ void Diagonalizer::calculateLDOSCallback(
 		){
 			complex<double> u = pe->dSolver->getAmplitude(n, index);
 
-			int e = (int)((eigen_values[n] - lowerBound)/dE);
+			int e = round((eigen_values[n] - lowerBound)/dE);
 			if(e >= energyResolution)
 				e = energyResolution - 1;
 			data[offset + e] += real(conj(u)*u)/dE;
@@ -941,7 +941,7 @@ void Diagonalizer::calculateSP_LDOSCallback(
 	Index index_d(index);
 	index_u.at(spinIndex) = 0;
 	index_d.at(spinIndex) = 1;
-	double dE = (upperBound - lowerBound)/energyResolution;
+	double dE = spinPolarizedLDOS.getDeltaE();
 	for(int n = 0; n < pe->dSolver->getModel().getBasisSize(); n++){
 		if(
 			eigen_values[n] > lowerBound

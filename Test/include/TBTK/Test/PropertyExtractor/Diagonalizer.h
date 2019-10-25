@@ -179,15 +179,18 @@ TEST(Diagonalizer, calculateGreensFunction){
 			);
 		}
 
-		EXPECT_DOUBLE_EQ(greensFunction.getLowerBound(), -5);
-		EXPECT_DOUBLE_EQ(greensFunction.getUpperBound(), 5);
+		const double LOWER_BOUND = -5;
+		const double UPPER_BOUND = 5;
+		const unsigned int RESOLUTION = 100;
+		EXPECT_DOUBLE_EQ(greensFunction.getLowerBound(), LOWER_BOUND);
+		EXPECT_DOUBLE_EQ(greensFunction.getUpperBound(), UPPER_BOUND);
 		EXPECT_EQ(greensFunction.getResolution(), 100);
 
 		std::complex<double> i(0, 1);
 		for(int x = 0; x < SIZE; x++){
 			for(int n = 0; n < 100; n++){
 				std::complex<double> gf = 0;
-				double E = -5 + 0.1*n;
+				double E = -5 + ((UPPER_BOUND - LOWER_BOUND)/(RESOLUTION - 1))*n;
 				for(unsigned int c = 0; c < SIZE; c++){
 					double E_c
 						= propertyExtractor.getEigenValue(c);
@@ -407,13 +410,9 @@ TEST(Diagonalizer, calculateDOS){
 	double dosBenchmark[1000];
 	for(unsigned int n = 0; n < RESOLUTION; n++)
 		dosBenchmark[n] = 0.;
-	double dE = (UPPER_BOUND - LOWER_BOUND)/RESOLUTION;
+	double dE = (UPPER_BOUND - LOWER_BOUND)/(RESOLUTION - 1);
 	for(unsigned int n = 0; n < SIZE; n++){
-		int e = (int)(
-			RESOLUTION*(eigenValues(n) - LOWER_BOUND)/(
-				UPPER_BOUND - LOWER_BOUND
-			)
-		);
+		int e = round((eigenValues(n) - LOWER_BOUND)/dE);
 		if(e >= 0 && e < RESOLUTION)
 			dosBenchmark[e] += 1/dE;
 	}

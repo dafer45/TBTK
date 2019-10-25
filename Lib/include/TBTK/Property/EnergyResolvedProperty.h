@@ -220,6 +220,12 @@ public:
 	 *  @return The energy resolution. */
 	unsigned int getResolution() const;
 
+	/** Get the step length \f$\Delta E\f$ between neigboring energy
+	 *  indices.
+	 *
+	 *  @return The energy step length \f$\Delta\f$. */
+	double getDeltaE() const;
+
 	/** Get the nth energy value.
 	 *
 	 *  @param n The energy index to get the energy for.
@@ -806,7 +812,7 @@ template<typename DataType>
 inline double EnergyResolvedProperty<DataType>::getLowerBound() const{
 	TBTKAssert(
 		energyType == EnergyType::Real,
-		"GreensFunction::getLowerBound()",
+		"EnergyResolvedProperty::getLowerBound()",
 		"The Property is not of the type EnergyType::Real.",
 		""
 	);
@@ -818,7 +824,7 @@ template<typename DataType>
 inline double EnergyResolvedProperty<DataType>::getUpperBound() const{
 	TBTKAssert(
 		energyType == EnergyType::Real,
-		"GreensFunction::getUpperBound()",
+		"EnergyResolvedProperty::getUpperBound()",
 		"The Property is not of the type EnergyType::Real.",
 		""
 	);
@@ -830,7 +836,7 @@ template<typename DataType>
 inline unsigned int EnergyResolvedProperty<DataType>::getResolution() const{
 	TBTKAssert(
 		energyType == EnergyType::Real,
-		"GreensFunction::getResolution()",
+		"EnergyResolvedProperty::getResolution()",
 		"The Property is not of the type EnergyType::Real.",
 		""
 	);
@@ -839,12 +845,10 @@ inline unsigned int EnergyResolvedProperty<DataType>::getResolution() const{
 }
 
 template<typename DataType>
-inline double EnergyResolvedProperty<DataType>::getEnergy(
-	unsigned int n
-) const{
+inline double EnergyResolvedProperty<DataType>::getDeltaE() const{
 	TBTKAssert(
 		energyType == EnergyType::Real,
-		"GreensFunction::getEnergy()",
+		"EnergyResolvedProperty::getDeltaE()",
 		"The Property is not of the type EnergyType::Real.",
 		""
 	);
@@ -858,7 +862,21 @@ inline double EnergyResolvedProperty<DataType>::getEnergy(
 			- descriptor.realEnergy.lowerBound
 		)/(descriptor.realEnergy.resolution - 1);
 
-	return descriptor.realEnergy.lowerBound + ((int)n)*dE;
+	return dE;
+}
+
+template<typename DataType>
+inline double EnergyResolvedProperty<DataType>::getEnergy(
+	unsigned int n
+) const{
+	TBTKAssert(
+		energyType == EnergyType::Real,
+		"EnergyResolvedProperty::getEnergy()",
+		"The Property is not of the type EnergyType::Real.",
+		""
+	);
+
+	return descriptor.realEnergy.lowerBound + ((int)n)*getDeltaE();
 }
 
 template<typename DataType>
@@ -867,7 +885,7 @@ inline int EnergyResolvedProperty<DataType>::getLowerMatsubaraEnergyIndex(
 	TBTKAssert(
 		energyType == EnergyType::FermionicMatsubara
 		|| energyType == EnergyType::BosonicMatsubara,
-		"GreensFunction::getLowerMatsubaraEnergyIndex()",
+		"EnergyResolvedProperty::getLowerMatsubaraEnergyIndex()",
 		"The Property is not of the type"
 		<< " EnergyType::FermionicMatsubara or"
 		<< " EnergyType::BosonicMatsubara.",
@@ -883,7 +901,7 @@ inline int EnergyResolvedProperty<DataType>::getUpperMatsubaraEnergyIndex(
 	TBTKAssert(
 		energyType == EnergyType::FermionicMatsubara
 		|| energyType == EnergyType::BosonicMatsubara,
-		"GreensFunction::getUpperMatsubaraEnergyIndex()",
+		"EnergyResolvedProperty::getUpperMatsubaraEnergyIndex()",
 		"The Property is not of the type"
 		<< " EnergyType::FermionicMatsubara or"
 		<< " EnergyType::BosonicMatsubara.",
@@ -899,7 +917,7 @@ inline unsigned int EnergyResolvedProperty<DataType>::getNumMatsubaraEnergies() 
 	TBTKAssert(
 		energyType == EnergyType::FermionicMatsubara
 		|| energyType == EnergyType::BosonicMatsubara,
-		"GreensFunction::getNumMatsubaraEnergies()",
+		"EnergyResolvedProperty::getNumMatsubaraEnergies()",
 		"The Property is not of the type"
 		<< " EnergyType::FermionicMatsubara or"
 		<< " EnergyType::BosonicMatsubara.",
@@ -916,7 +934,7 @@ inline double EnergyResolvedProperty<
 	TBTKAssert(
 		energyType == EnergyType::FermionicMatsubara
 		|| energyType == EnergyType::BosonicMatsubara,
-		"GreensFunction::getFundamentalMatsubaraEnergy()",
+		"EnergyResolvedProperty::getFundamentalMatsubaraEnergy()",
 		"The Property is not of the type"
 		<< " EnergyType::FermionicMatsubara or"
 		<< " EnergyType::BosonicMatsubara.",
@@ -932,7 +950,7 @@ inline double EnergyResolvedProperty<DataType>::getLowerMatsubaraEnergy(
 	TBTKAssert(
 		energyType == EnergyType::FermionicMatsubara
 		|| energyType == EnergyType::BosonicMatsubara,
-		"GreensFunction::getLowerMatsubaraEnergy()",
+		"EnergyResolvedProperty::getLowerMatsubaraEnergy()",
 		"The Property is not of the type"
 		<< " EnergyType::FermionicMatsubara or"
 		<< " EnergyType::BosonicMatsubara.",
@@ -949,7 +967,7 @@ inline double EnergyResolvedProperty<DataType>::getUpperMatsubaraEnergy(
 	TBTKAssert(
 		energyType == EnergyType::FermionicMatsubara
 		|| energyType == EnergyType::BosonicMatsubara,
-		"GreensFunction::getUpperMatsubaraEnergyIndex()",
+		"EnergyResolvedProperty::getUpperMatsubaraEnergyIndex()",
 		"The Property is not of the type"
 		<< " EnergyType::FermionicMatsubara or"
 		<< " EnergyType::BosonicMatsubara.",
@@ -971,7 +989,7 @@ inline std::complex<double> EnergyResolvedProperty<
 	TBTKAssert(
 		energyType == EnergyType::FermionicMatsubara
 		|| energyType == EnergyType::BosonicMatsubara,
-		"GreensFunction::getMatsubaraEnergy()",
+		"EnergyResolvedProperty::getMatsubaraEnergy()",
 		"The Property is not of the type"
 		<< " EnergyType::FermionicMatsubara or"
 		<< " EnergyType::BosonicMatsubara.",
@@ -1020,11 +1038,7 @@ inline bool EnergyResolvedProperty<DataType>::energyWindowsAreEqual(
 		double upperBound0 = getUpperBound();
 		double lowerBound1 = energyResolvedProperty.getLowerBound();
 		double upperBound1 = energyResolvedProperty.getUpperBound();
-		double dE;
-		if(getNumEnergies() > 1)
-			dE = getEnergy(1) - getEnergy(0);
-		else
-			dE = 0;
+		double dE = getDeltaE();
 
 		if(std::abs(lowerBound0 - lowerBound1) > precision*dE)
 			return false;

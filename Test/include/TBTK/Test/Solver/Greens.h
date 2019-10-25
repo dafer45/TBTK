@@ -113,7 +113,7 @@ TEST(Greens, addSelfEnergy){
 
 	//Check the interacting Green's function against a reference
 	//calculation.
-	double dE = (UPPER_BOUND - LOWER_BOUND)/RESOLUTION;
+	double dE = (UPPER_BOUND - LOWER_BOUND)/(RESOLUTION - 1);
 	for(
 		unsigned int e = 0;
 		e < RESOLUTION;
@@ -457,7 +457,7 @@ TEST(Greens, calculateTransmission){
 		UPPER_BOUND,
 		RESOLUTION
 	);
-	Range energies(LOWER_BOUND, UPPER_BOUND, RESOLUTION, true, false);
+	Range energies(LOWER_BOUND, UPPER_BOUND, RESOLUTION, true, true);
 	for(unsigned int n = 0; n < RESOLUTION; n++){
 		selfEnergy0({Index({0}), Index({0})}, n) = i*1.*energies[n];
 		selfEnergy0({Index({0}), Index({1})}, n) = i*2.*energies[n];

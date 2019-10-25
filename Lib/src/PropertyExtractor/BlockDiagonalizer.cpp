@@ -270,9 +270,9 @@ Property::DOS BlockDiagonalizer::calculateDOS(){
 
 	Property::DOS dos(lowerBound, upperBound, energyResolution);
 	std::vector<double> &data = dos.getDataRW();
-	double dE = (upperBound - lowerBound)/energyResolution;
+	double dE = dos.getDeltaE();
 	for(int n = 0; n < bSolver->getModel().getBasisSize(); n++){
-		int e = (int)(((bSolver->getEigenValue(n) - lowerBound)/(upperBound - lowerBound))*energyResolution);
+		int e = round((bSolver->getEigenValue(n) - lowerBound)/dE);
 		if(e >= 0 && e < energyResolution)
 			data[e] += 1./dE;
 	}
@@ -614,13 +614,13 @@ void BlockDiagonalizer::calculateGreensFunctionCallback(
 		double upperBound = propertyExtractor->getUpperBound();
 		double energyResolution
 			= propertyExtractor->getEnergyResolution();
-		double dE = (upperBound - lowerBound)/energyResolution;
+		double dE = greensFunction.getDeltaE();
 		double delta = propertyExtractor->getEnergyInfinitesimal();
 		if(greensFunction.getType() == Property::GreensFunction::Type::Advanced)
 			delta *= -1;
 
 		for(int e = 0; e < energyResolution; e++){
-			double E = lowerBound +e*dE;
+			double E = lowerBound + e*dE;
 			for(
 				int n = 0;
 				n < propertyExtractor->bSolver->getModel(
@@ -800,7 +800,7 @@ void BlockDiagonalizer::calculateLDOSCallback(
 
 	int firstStateInBlock = pe->bSolver->getFirstStateInBlock(index);
 	int lastStateInBlock = pe->bSolver->getLastStateInBlock(index);
-	double dE = (upperBound - lowerBound)/energyResolution;
+	double dE = ldos.getDeltaE();
 	for(int n = firstStateInBlock; n <= lastStateInBlock; n++){
 		double eigenValue = pe->bSolver->getEigenValue(n);
 		if(eigenValue > lowerBound && eigenValue < upperBound){
@@ -838,7 +838,7 @@ void BlockDiagonalizer::calculateSP_LDOSCallback(
 	index_d.at(spinIndex) = 1;
 	int firstStateInBlock = pe->bSolver->getFirstStateInBlock(index);
 	int lastStateInBlock = pe->bSolver->getLastStateInBlock(index);
-	double dE = (upperBound - lowerBound)/energyResolution;
+	double dE = spinPolarizedLDOS.getDeltaE();
 	for(int n = firstStateInBlock; n <= lastStateInBlock; n++){
 		double eigenValue = pe->bSolver->getEigenValue(n);
 		if(eigenValue > lowerBound && eigenValue < upperBound){

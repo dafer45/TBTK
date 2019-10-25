@@ -953,6 +953,61 @@ TEST(EnergyResolvedProperty, getResolution){
 	);
 }
 
+TEST(EnergyResolvedProperty, getDeltaE){
+	IndexTree indexTree;
+	indexTree.add({0});
+	indexTree.add({1});
+	indexTree.add({2});
+	indexTree.generateLinearMap();
+
+	//EnergyType::Real.
+	EnergyResolvedProperty<int> energyResolvedProperty(
+		-10,
+		10,
+		1000
+	);
+	EXPECT_FLOAT_EQ(energyResolvedProperty.getDeltaE(), 20/999.);
+	//Already tested through
+	//EnergyResolvedProperty::Constructor1
+	//EnergyResolvedProperty::Constructor2
+	//EnergyResolvedProperty::Constructor3
+	//EnergyResolvedProperty::Constructor4
+
+	//Fail for EnergyType::FermionicMatsubara.
+	EnergyResolvedProperty<int> energyResolvedProperty1(
+		EnergyResolvedProperty<int>::EnergyType::FermionicMatsubara,
+		indexTree,
+		-9,
+		9,
+		1000
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			energyResolvedProperty1.getResolution();
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+
+	//Fail for EnergyType::BosonicMatsubara.
+	EnergyResolvedProperty<int> energyResolvedProperty2(
+		EnergyResolvedProperty<int>::EnergyType::BosonicMatsubara,
+		indexTree,
+		-10,
+		10,
+		1000
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			energyResolvedProperty2.getResolution();
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
 TEST(EnergyResolvedProperty, getEnergy){
 	IndexTree indexTree;
 	indexTree.add({0});
