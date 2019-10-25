@@ -38,7 +38,16 @@ namespace Property{
 /** @brief Abstract Property class.
  *
  *  The AbstractProperty provides a generic storage structure for the property
- *  classes that inherit from it.
+ *  classes that inherit from it. For more information about specific
+ *  Properties, see:
+ *  - Density
+ *  - DOS
+ *  - EigenValues
+ *  - GreensFunction
+ *  - LDOS
+ *  - Magnetization
+ *  - SpinPolarizedLDOS
+ *  - WaveFunctions
  *
  *  # Custom storage structure
  *  There are three different layers at which the storage structure can be
