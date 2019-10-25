@@ -28,7 +28,22 @@
 namespace TBTK{
 namespace Property{
 
-/** \brief Property container for density of states (DOS). */
+/** \brief Property container for density of states (DOS).
+ *
+ *  The DOS is an EnergyResolvedProperty with DataType double.
+ *
+ *  # Conventions
+ *  DOS extracted by native @link PropertyExtractor PropertyExtractors@endlink
+ *  satisfies the following convention.
+ *
+ *  - The DOS is normalized such that, if it covers the full energy range, it
+ *  integrates to the Model's basis size. \f$\sum_{n}DOS(n)\Delta E\f$ = basis
+ *  size.
+ *
+ *  # Example
+ *  \snippet Property/DOS.cpp DOS
+ *  ## Output
+ *  \snippet output/Property/DOS.output DOS */
 class DOS : public EnergyResolvedProperty<double>{
 public:
 	/** Constructs a Density.

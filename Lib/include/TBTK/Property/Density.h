@@ -29,7 +29,15 @@
 namespace TBTK{
 namespace Property{
 
-/** @brief Property container for density. */
+/** @brief Property container for density.
+ *
+ *  The Density is a @link AbstractProperty Property@endlink with DataType
+ *  double and is defined for a number of @link Index Indices@endlink.
+ *
+ *  # Example
+ *  \snippet Property/Density.cpp Density
+ *  ## Output
+ *  \snippet output/Property/Density.output Density */
 class Density : public AbstractProperty<double>{
 public:
 	/** Constructs a Density on the Ranges format. [See AbstractProperty

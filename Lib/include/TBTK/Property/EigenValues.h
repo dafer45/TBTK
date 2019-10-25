@@ -28,7 +28,20 @@
 namespace TBTK{
 namespace Property{
 
-/** @brief Property container for eigen values.. */
+/** @brief Property container for eigen values.
+ *
+ *  The EigenValues is a @link AbstractProperty Property@endlink with DataType
+ *  double.
+ *
+ *  # Conventions
+ *  EigenValues extracted by native @link PropertyExtractor
+ *  PropertyExtractors@endlink satisfies the following convention.
+ *  - The eigenvalues are ordered in accending order.
+ *
+ *  # Example
+ *  \snippet Property/EigenValues.cpp EigenValues
+ *  ## Output
+ *  \snippet output/Property/EigenValues.output EigenValues */
 class EigenValues : public AbstractProperty<double>{
 public:
 	/** Constructs EigenValues.
