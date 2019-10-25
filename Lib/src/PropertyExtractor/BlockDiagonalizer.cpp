@@ -611,7 +611,6 @@ void BlockDiagonalizer::calculateGreensFunctionCallback(
 	case Property::GreensFunction::Type::Retarded:
 	{
 		double lowerBound = propertyExtractor->getLowerBound();
-		double upperBound = propertyExtractor->getUpperBound();
 		double energyResolution
 			= propertyExtractor->getEnergyResolution();
 		double dE = greensFunction.getDeltaE();

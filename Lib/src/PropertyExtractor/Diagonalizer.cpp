@@ -718,7 +718,6 @@ void Diagonalizer::calculateGreensFunctionCallback(
 	case Property::GreensFunction::Type::Retarded:
 	{
 		double lowerBound = pe->getLowerBound();
-		double upperBound = pe->getUpperBound();
 		int energyResolution = pe->getEnergyResolution();
 		double dE = greensFunction.getDeltaE();
 		double delta;
