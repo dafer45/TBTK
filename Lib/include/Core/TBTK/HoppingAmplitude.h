@@ -46,9 +46,9 @@ enum HermitianConjugate {HC};
  *  can be thought of as happening, while the later corresponds to the order in
  *  which values and operators stands in the Hamiltonian.
  *
- *  <b>Example:</b>
+ *  # Example
  *  \snippet Core/HoppingAmplitude.cpp HoppingAmplitude
- *  <b>Output:</b>
+ *  ## Output
  *  \snippet output/Core/HoppingAmplitude.output HoppingAmplitude */
 class HoppingAmplitude{
 public:

@@ -84,9 +84,9 @@ namespace TBTK{
  *  The Subindex also have functions for checking whether a given Subindex
  *  corresponds to one of the flags above.
  *
- *  <b>Example</b>
+ *  # Example
  *  \snippet Core/Subindex.cpp Subindex
- *  <b>Output</b>
+ *  ## Output
  *  \snippet output/Core/Subindex.output Subindex */
 class Subindex : PseudoSerializable{
 public:

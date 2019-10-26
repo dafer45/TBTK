@@ -52,9 +52,9 @@ namespace Solver{
  *  In the shift-and-invert mode, the ArnoldiIterator calculates the
  *  eigenvalues and eigenvectors closest to a given "central value".
  *
- *  <b>Example:</b>
+ *  # Example
  *  \snippet Solver/ArnoldiIterator.cpp ArnoldiIterator
- *  <b>Output:</b>
+ *  ## Output
  *  \snippet output/Solver/ArnoldiIterator.output ArnoldiIterator */
 class ArnoldiIterator : public Solver, public Communicator{
 public:

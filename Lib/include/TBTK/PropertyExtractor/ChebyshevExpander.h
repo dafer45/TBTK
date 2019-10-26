@@ -43,9 +43,9 @@ namespace PropertyExtractor{
  *  Property::AbstractProperty Properties@endlink from the
  *  Solver::ChebyshevExpander.
  *
- *  <b>Example:</b>
+ *  # Example
  *  \snippet PropertyExtractor/ChebyshevExpander.cpp ChebyshevExpander
- *  <b>Output:</b>
+ *  ## Output
  *  \snippet output/PropertyExtractor/ChebyshevExpander.output ChebyshevExpander */
 class ChebyshevExpander : public PropertyExtractor{
 public:

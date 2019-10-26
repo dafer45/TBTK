@@ -58,7 +58,7 @@ namespace PropertyExtractor{
  *  also makes it possible to switch between different @link Solver::Solver
  *  Solvers@endlink with minimal changes to the code.
  *
- *  <b>Example</b>
+ *  # Example
  *  \snippet PropertyExtractor/PropertyExtractor.cpp PropertyExtractor */
 class PropertyExtractor{
 public:

@@ -44,9 +44,9 @@ namespace PropertyExtractor{
  *  Property::AbstractProperty Properties@endlink from the
  *  Solver::ArnoldiIterator.
  *
- *  <b>Example:</b>
+ *  # Example
  *  \snippet PropertyExtractor/ArnoldiIterator.cpp ArnoldiIterator
- *  <b>Output:</b>
+ *  ## Output
  *  \snippet output/PropertyExtractor/ArnoldiIterator.output ArnoldiIterator */
 class ArnoldiIterator : public PropertyExtractor{
 public:

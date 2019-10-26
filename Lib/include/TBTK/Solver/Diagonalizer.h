@@ -44,8 +44,9 @@ namespace Solver{
  *
  *  Here \f$h\f$ is the size of the Hilbert space basis.
  *
- *  <b>Example:</b>
+ *  # Example
  *  \snippet Solver/Diagonalizer.cpp Diagonalizer
+ *  ## Output
  *  \snippet output/Solver/Diagonalizer.output Diagonalizer */
 class Diagonalizer : public Solver, public Communicator{
 public:

@@ -35,9 +35,9 @@ namespace Solver{
  *  ArnoldiIterator, and ChebyshevExpander examples of specific production
  *  ready @link Solver Solvers@endlink.
  *
- *  <b>Example:</b>
+ *  # Example
  *  \snippet Solver/Solver.cpp Solver
- *  <b>Output:</b>
+ *  ## Output
  *  \snippet output/Solver/Solver.output Solver */
 class Solver{
 public:

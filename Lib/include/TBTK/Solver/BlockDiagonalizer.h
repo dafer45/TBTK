@@ -60,9 +60,9 @@ namespace Solver{
  *  behavior instead becomes an upper bound, with \f$h\f$ the maximum block
  *  dimension.
  *
- *  <b>Example:</b>
+ *  # Example
  *  \snippet Solver/BlockDiagonalizer.cpp BlockDiagonalizer
- *  <b>Output:</b>
+ *  ## Output
  *  \snippet output/Solver/BlockDiagonalizer.output BlockDiagonalizer */
 class BlockDiagonalizer : public Solver, public Communicator{
 public:

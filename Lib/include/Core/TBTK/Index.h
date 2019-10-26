@@ -37,9 +37,9 @@ namespace TBTK{
  *  {x, y, spin}, {x, y, z, orbital, spin}, and
  *  {subsystem, x, y, z, orbital, spin}.
  *
- *  <b>Example:</b>
+ *  # Example
  *  \snippet Core/Index.cpp Index
- *  <b>Output:</b>
+ *  ## Output
  *  \snippet output/Core/Index.output Index */
 class Index{
 public:

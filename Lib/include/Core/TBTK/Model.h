@@ -50,9 +50,9 @@ class FileReader;
  *  The Model contains all model related information such as the Hamiltonian,
  *  temperature, and chemical potential.
  *
- *  <b>Example:</b>
+ *  # Example
  *  \snippet Core/Model.cpp Model
- *  <b>Output:</b>
+ *  ## Output
  *  \snippet output/Core/Model.output Model */
 class Model : public Serializable, public Communicator, public Streamable{
 public:

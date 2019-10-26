@@ -62,9 +62,9 @@ namespace Solver{
  *  Use the PropertyExtractor::ChebyshevExpander to calculate @link
  *  Property::AbstractProperty Properties@endlink.
  *
- *  <b>Example:</b>
+ *  # Example
  *  \snippet Solver/ChebyshevExpander.cpp ChebyshevExpander
- *  <b>Output:</b>
+ *  ## Output
  *  \snippet output/Solver/ChebyshevExpander.output ChebyshevExpander */
 class ChebyshevExpander : public Solver, public Communicator{
 public:

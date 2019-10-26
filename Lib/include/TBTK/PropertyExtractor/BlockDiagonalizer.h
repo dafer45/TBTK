@@ -45,9 +45,9 @@ namespace PropertyExtractor{
  *  The PropertyExtractor::Diagonalizer extracts @link
  *  Property::AbstractProperty@endlink from the Solver::BlockDiagonalizer.
  *
- *  <b>Example:</b>
+ *  # Example
  *  \snippet PropertyExtractor/BlockDiagonalizer.cpp BlockDiagonalizer
- *  <b>Output:</b>
+ *  ## Output
  *  \snippet output/PropertyExtractor/BlockDiagonalizer.output BlockDiagonalizer */
 class BlockDiagonalizer : public PropertyExtractor{
 public:

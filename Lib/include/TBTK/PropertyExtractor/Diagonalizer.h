@@ -45,9 +45,9 @@ namespace PropertyExtractor{
  *  Property::AbstractProperty Properties@endlink from the
  *  Solver::Diagonalizer.
  *
- *  <b>Example:</b>
+ *  # Example
  *  \snippet PropertyExtractor/Diagonalizer.cpp Diagonalizer
- *  <b>Output:</b>
+ *  ## Output
  *  \snippet output/PropertyExtractor/Diagonalizer.output Diagonalizer */
 class Diagonalizer : public PropertyExtractor{
 public:
