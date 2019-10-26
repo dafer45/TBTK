@@ -38,3 +38,7 @@
   this additional overhead. This overhead is likely at most as expensive
   though, and often far less expensive since allIndices generally is a bigger
   IndexTree than memoryLayout.
+
+- Consider whether the functions getLowerMatsubaraEnergy(),
+  getUpperMatsubaraEnergy(), and getFunamentalMatsubaraEnergy() should return a
+  complex imaginary number instead of a double.

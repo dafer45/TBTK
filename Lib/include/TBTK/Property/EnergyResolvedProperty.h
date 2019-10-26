@@ -33,7 +33,52 @@
 namespace TBTK{
 namespace Property{
 
-/** @brief Base class for energy resolved Properties. */
+/** @brief Base class for energy resolved Properties.
+ *
+ *  The EnergyResolvedProperty is a base class for energy dependent @link
+ *  AbstractProperty Properties@endlink. For more information about specific
+ *  EnergyDependentProperties, see:
+ *
+ *  - DOS
+ *  - GreensFunction
+ *  - LDOS
+ *  - SpinPolarizedLDOS
+ *
+ *  # Block structure
+ *  If the EnergyResolvedProperty has no Index structure, it contains a single
+ *  block, otherwise it contains one block per Index. Inside of a block, values
+ *  are stored for a range of energies. See AbstractProperty for more
+ *  information about blocks.
+ *
+ *  # EnergyType
+ *  The EnergyResolvedProperty can have one of three different energy types.
+ *  Depending on the EnergyType, different member functions are usefull. It is
+ *  possible to get the EnergyType using
+ *  ```cpp
+ *      EnergyResolvedProperty<DataType>::EnergyType energyType
+ *          = energyResolvedProperty.getEnergyType();
+ *  ```
+ *
+ *  ## EnergyResolvedProperty<DataType>::EnergyType::Real
+ *  The data is stored for a range of real energies on a regular grid of on an
+ *  interval [lowerBound, upperBound]. It is possible to get the lower and
+ *  upper bound and the number of points with which the energy grid is resolved
+ *  using
+ *  ```cpp
+ *      double lowerBound = energyResolvedProperty.getLowerBound();
+ *      double upperBound = energyResolvedProperty.getUpperBound();
+ *      unsigned int resolution = energyResolvedProperty.getResolution();
+ *  ```
+ *  It is also possible to get the distance \f$\Delta E\f$ between neighboring
+ *  points and the energy for specific points on the grid using
+ *  ```cpp
+ *      double dE = energyResolvedProperty.getDeltaE();
+ *      double E = energyResolvedProperty.getEnergy(n);
+ *  ```
+ *
+ *  ## EnergyResolvedProperty<DataType>::EnergyType::FermionicMatsubara
+ *  ## EnergyResolvedProperty<DataType>::EnergyType::BosonicMatsubara
+ *  Not yet publicly supported. */
 template<typename DataType>
 class EnergyResolvedProperty : public AbstractProperty<DataType>{
 public:
