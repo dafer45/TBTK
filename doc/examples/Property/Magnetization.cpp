@@ -14,11 +14,9 @@ int main(){
 	const unsigned int SIZE_X = 10;
 	const unsigned int SIZE_Y = 10;
 	const double t = 1;
-	const bool INCLUDE_SPIN_INDEX = true;
 	Model model = Models::SquareLattice(
-		{SIZE_X, SIZE_Y},
-		{0, t},
-		INCLUDE_SPIN_INDEX
+		{SIZE_X, SIZE_Y, IDX_SPIN},
+		{0, t}
 	);
 	model.construct();
 

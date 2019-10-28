@@ -28,18 +28,26 @@ namespace Models{
 
 class IndexFilter : public AbstractIndexFilter{
 public:
-	IndexFilter(unsigned int sizeX, unsigned int sizeY){
+	IndexFilter(
+		unsigned int sizeX,
+		unsigned int sizeY,
+		int spinIndex = -1
+	){
 		this->sizeX = sizeX;
 		this->sizeY = sizeY;
+		this->spinIndex = spinIndex;
 	}
 
 	virtual IndexFilter* clone() const{
-		return new IndexFilter(sizeX, sizeY);
+		return new IndexFilter(sizeX, sizeY, spinIndex);
 	}
 
 	virtual bool isIncluded(const Index &index) const{
-		unsigned int x = index[0];
-		unsigned int y = index[1];
+		Index modifiedIndex = index;
+		if(spinIndex != -1)
+			modifiedIndex.erase(spinIndex);
+		unsigned int x = modifiedIndex[0];
+		unsigned int y = modifiedIndex[1];
 		if(x >= 0 && x < sizeX && y >= 0 && y < sizeY)
 			return true;
 		else
@@ -48,93 +56,103 @@ public:
 private:
 	unsigned int sizeX;
 	unsigned int sizeY;
+	int spinIndex;
 };
 
 SquareLattice::SquareLattice(
-	const vector<unsigned int> &size,
-	const vector<complex<double>> &parameters,
-	bool includeSpinSubindex
+	const Index &size,
+	const vector<complex<double>> &parameters
 ){
-	TBTKAssert(
-		size.size() == 2,
-		"Models::SquareLattice::SquareLattice()",
-		"'size' must have exactly '2' components, but '" << size.size()
-		<< "' found.",
-		""
-	);
 	TBTKAssert(
 		parameters.size() > 1 && parameters.size() < 4,
 		"Models::SquareLattice::SquareLattice()",
 		"'parameters' must have '2' or '3' components, but '"
-		<< size.size() << "' components found.",
+		<< parameters.size() << "' components found.",
 		""
 	);
-	setFilter(IndexFilter(size[0], size[1]));
-	if(includeSpinSubindex){
-		for(unsigned int x = 0; x < size[0]; x++){
-			for(unsigned int y = 0; y < size[1]; y++){
-				for(unsigned int spin = 0; spin < 2; spin++){
-					*this << HoppingAmplitude(
-						parameters[0],
-						{x, y, spin},
-						{x, y, spin}
-					);
-					*this << HoppingAmplitude(
-						parameters[1],
-						{x+1, y, spin},
-						{x, y, spin}
-					) + HC;
-					*this << HoppingAmplitude(
-						parameters[1],
-						{x, y+1, spin},
-						{x, y, spin}
-					) + HC;
 
-					if(parameters.size() > 2){
-						*this << HoppingAmplitude(
-							parameters[2],
-							{x+1, y+1, spin},
-							{x, y, spin}
-						) + HC;
-						*this << HoppingAmplitude(
-							parameters[2],
-							{x, ((int)y)-1, spin},
-							{x, y, spin}
-						) + HC;
-					}
-				}
-			}
+	bool hasSpinIndex = false;
+	for(unsigned int n = 0; n < size.getSize(); n++){
+		if(size[n].isSpinIndex()){
+			TBTKAssert(
+				!hasSpinIndex,
+				"Models::SquareLattice::SquareLattice()",
+				"Multiple spin subindices detected in 'size'.",
+				"At most one IDX_SPIN flag is allowed."
+			);
+
+			hasSpinIndex = true;
 		}
 	}
-	else{
-		for(unsigned int x = 0; x < size[0]; x++){
-			for(unsigned int y = 0; y < size[1]; y++){
+
+	if(hasSpinIndex)
+		createModelWithSpin(size, parameters);
+	else
+		createModelWithoutSpin(size, parameters);
+}
+
+void SquareLattice::createModelWithSpin(
+	const Index &size,
+	const vector<complex<double>> &parameters
+){
+	TBTKAssert(
+		size.getSize() == 3,
+		"Models::SquareLattice::SquareLattice()",
+		"'size' must have exactly '3' components when using IDX_SPIN"
+		<< " flag, but '" << size.getSize() << "' found.",
+		""
+	);
+
+	unsigned int spinPosition;
+	for(unsigned int n = 0; n < size.getSize(); n++)
+		if(size[n].isSpinIndex())
+			spinPosition = n;
+
+	Index modifiedSize = size;
+	modifiedSize.erase(spinPosition);
+
+	IndexFilter indexFilter(size[0], size[1]);
+	setFilter(IndexFilter(size[0], size[1]));
+	for(Subindex x = 0; x < size[0]; x++){
+		for(Subindex y = 0; y < size[1]; y++){
+			for(Subindex spin = 0; spin < 2; spin++){
+				Index site = {x, y};
+				Index sitePlusX = {x+1, y};
+				Index sitePlusY = {x, y+1};
+				Index sitePlusXPlusY = {x+1, y+1};
+				Index sitePlusXMinusY = {x+1, ((int)y)-1};
+				site.insert(spinPosition, spin);
+				sitePlusX.insert(spinPosition, spin);
+				sitePlusY.insert(spinPosition, spin);
+				sitePlusXPlusY.insert(spinPosition, spin);
+				sitePlusXMinusY.insert(spinPosition, spin);
+
 				*this << HoppingAmplitude(
 					parameters[0],
-					{x, y},
-					{x, y}
+					site,
+					site
 				);
 				*this << HoppingAmplitude(
 					parameters[1],
-					{x+1, y},
-					{x, y}
+					sitePlusX,
+					site
 				) + HC;
 				*this << HoppingAmplitude(
 					parameters[1],
-					{x, y+1},
-					{x, y}
+					sitePlusY,
+					site
 				) + HC;
 
 				if(parameters.size() > 2){
 					*this << HoppingAmplitude(
 						parameters[2],
-						{x+1, y+1},
-						{x, y}
+						sitePlusXPlusY,
+						site
 					) + HC;
 					*this << HoppingAmplitude(
 						parameters[2],
-						{x, ((int)y)-1},
-						{x, y}
+						sitePlusXMinusY,
+						site
 					) + HC;
 				}
 			}
@@ -142,5 +160,51 @@ SquareLattice::SquareLattice(
 	}
 }
 
+void SquareLattice::createModelWithoutSpin(
+	const Index &size,
+	const vector<complex<double>> &parameters
+){
+	TBTKAssert(
+		size.getSize() == 2,
+		"Models::SquareLattice::SquareLattice()",
+		"'size' must have exactly '2' components when not using"
+		<< " IDX_SPIN flag, but '" << size.getSize() << "' found.",
+		""
+	);
+	setFilter(IndexFilter(size[0], size[1]));
+	for(Subindex x = 0; x < size[0]; x++){
+		for(Subindex y = 0; y < size[1]; y++){
+			*this << HoppingAmplitude(
+				parameters[0],
+				{x, y},
+				{x, y}
+			);
+			*this << HoppingAmplitude(
+				parameters[1],
+				{x+1, y},
+				{x, y}
+			) + HC;
+			*this << HoppingAmplitude(
+				parameters[1],
+				{x, y+1},
+				{x, y}
+			) + HC;
+
+			if(parameters.size() > 2){
+				*this << HoppingAmplitude(
+					parameters[2],
+					{x+1, y+1},
+					{x, y}
+				) + HC;
+				*this << HoppingAmplitude(
+					parameters[2],
+					{x+1, ((int)y)-1},
+					{x, y}
+				) + HC;
+			}
+		}
+	}
 }
-};
+
+};	//End of namespace Models
+};	//End of namespace TBTK

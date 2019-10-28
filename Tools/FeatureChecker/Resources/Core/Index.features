@@ -225,6 +225,18 @@ TBTKFeature Core.Index.popBack.1 2019-09-19
 	Verify:
 		Returns 3 and the index equals {1, 2}.
 
+TBTKFeature Core.Index.insert.1 2019-10-28
+	Do:
+		Create Index {1, 3} and call index.insert(1, 2).
+	Verify:
+		The index equals {1, 2, 3}.
+
+TBTKFeature Core.Index.erase.1 2019-10-28
+	Do:
+		Create Index {1, 2, 3} and call index.erase(1).
+	Verify:
+		Returns 2 and the index equals {1, 3}.
+
 TBTKFeature Core.Index.getUnitRange.1 2019-09-19
 	Do:
 		Create Index {1, 2, 3} and call index.getUnitRange().

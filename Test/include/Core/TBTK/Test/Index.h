@@ -277,6 +277,20 @@ TEST(Index, popBack){
 	EXPECT_TRUE(index.equals({1, 2})) << errorMessage;
 }
 
+//TBTKFeatre Core.Index.insert.1 2019-10-28
+TEST(Index, insert){
+	Index index({1, 3});
+	index.insert(1, 2);
+	EXPECT_TRUE(index.equals({1, 2, 3}));
+}
+
+//TBTKFeatre Core.Index.erase.1 2019-10-28
+TEST(Index, erase){
+	Index index({1, 2, 3});
+	EXPECT_EQ(index.erase(1), 2);
+	EXPECT_TRUE(index.equals({1, 3}));
+}
+
 //TBTKFeature Core.Index.getUnitRange.1 2019-09-19
 TEST(Index, getUnitRange){
 	Index index({1, 2, 3});

@@ -201,6 +201,21 @@ public:
 	 *  @return The last subindex. */
 	Subindex popBack();
 
+	//TBTKFeature Core.Index.insert.1 2019-10-28
+	/** Insert a Subindex at a given position.
+	 *
+	 *  @param n Subindex position to insert at.
+	 *  @param subindex Subindex to insert. */
+	void insert(unsigned int n, Subindex subindex);
+
+	//TBTKFeature Core.Index.erase.1 2019-10-28
+	/** Remove and return the Subindex at a given position.
+	 *
+	 *  @param n Subindex position to remove.
+	 *
+	 *  @return The value of the removed Subindex. */
+	Subindex erase(unsigned int n);
+
 	//TBTKFeature Core.Index.getUnitRange.1 2019-09-19
 	/** Returns an index with the same number or subindices, and each
 	 *  subindex set to 1.
@@ -488,6 +503,17 @@ inline Subindex Index::popBack(){
 	indices.pop_back();
 
 	return last;
+}
+
+inline void Index::insert(unsigned int n, Subindex subindex){
+	indices.insert(indices.begin() + n, subindex);
+}
+
+inline Subindex Index::erase(unsigned int n){
+	Subindex subindex = indices[n];
+	indices.erase(indices.begin() + n);
+
+	return subindex;
 }
 
 inline std::vector<Index> Index::split() const{
