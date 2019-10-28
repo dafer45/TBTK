@@ -255,7 +255,7 @@ public:
 	 *  @param stream The stream to write to.
 	 *  @param index The Index to write.
 	 *
-	 *  @return Reference to te output stream just written to. */
+	 *  @return Reference to the output stream just written to. */
 	friend std::ostream& operator<<(
 		std::ostream &stream,
 		const Index &index

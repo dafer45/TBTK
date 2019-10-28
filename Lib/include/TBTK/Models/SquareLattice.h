@@ -39,10 +39,13 @@ public:
 	 *  @param size The size of the lattice. Must have two components.
 	 *  @param parameters The Model parameters. Must have two components,
 	 *  where the first component is the on-site term, and the second is
-	 *  the nearest neighbor hopping amplitude. */
+	 *  the nearest neighbor hopping amplitude.
+ 	 *
+	 *  @param includeSpin If true, a spin-Subindex is appended. */
 	SquareLattice(
 		const std::vector<unsigned int> &size,
-		const std::vector<std::complex<double>> &parameters
+		const std::vector<std::complex<double>> &parameters,
+		bool includeSpin = false
 	);
 };
 

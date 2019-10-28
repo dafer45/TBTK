@@ -31,7 +31,15 @@
 namespace TBTK{
 namespace Property{
 
-/** @brief Property container for magnetization. */
+/** @brief Property container for magnetization.
+ *
+ *  The Magnetization is a @link AbstractProperty Property@endlink with
+ *  DataType SpinMatrix.
+ *
+ *  # Example
+ *  \snippet Property/Magnetization.cpp Magnetization
+ *  ## Output
+ *  \snippet output/Property/Magnetization.output Magnetization */
 class Magnetization : public AbstractProperty<SpinMatrix>{
 public:
 	/** Constructs Magnetization on the Ranges format. [See

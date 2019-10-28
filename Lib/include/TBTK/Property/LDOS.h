@@ -28,7 +28,21 @@
 namespace TBTK{
 namespace Property{
 
-/** @brief Property container for local density of states (LDOS). */
+/** @brief Property container for the local density of states (LDOS).
+ *
+ *  The LDOS is an EnergyResolvedProperty with DataType double.
+ *
+ *  # Convention
+ *  LDOS extracted by native PropertyExtractors satisfies the following
+ *  convention.
+ *
+ *  - The LDOS is normalized such that, if it covers the full energy range, it
+ *  integrates to one for any given Index. \f$\sum_n LDOS(n)\Delta E = 1\f$.
+ *
+ *  # Example
+ *  \snippet Property/LDOS.cpp LDOS
+ *  ## Output
+ *  \snippet output/Property/LDOS.output LDOS */
 class LDOS : public EnergyResolvedProperty<double>{
 public:
 	/** Constructs LDOS on the Ranges format. [See AbstractProperty for

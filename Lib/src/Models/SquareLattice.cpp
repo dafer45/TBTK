@@ -52,7 +52,8 @@ private:
 
 SquareLattice::SquareLattice(
 	const vector<unsigned int> &size,
-	const vector<complex<double>> &parameters
+	const vector<complex<double>> &parameters,
+	bool includeSpinSubindex
 ){
 	TBTKAssert(
 		size.size() == 2,
@@ -69,35 +70,73 @@ SquareLattice::SquareLattice(
 		""
 	);
 	setFilter(IndexFilter(size[0], size[1]));
-	for(unsigned int x = 0; x < size[0]; x++){
-		for(unsigned int y = 0; y < size[1]; y++){
-			*this << HoppingAmplitude(
-				parameters[0],
-				{x, y},
-				{x, y}
-			);
-			*this << HoppingAmplitude(
-				parameters[1],
-				{x+1, y},
-				{x, y}
-			) + HC;
-			*this << HoppingAmplitude(
-				parameters[1],
-				{x, y+1},
-				{x, y}
-			) + HC;
+	if(includeSpinSubindex){
+		for(unsigned int x = 0; x < size[0]; x++){
+			for(unsigned int y = 0; y < size[1]; y++){
+				for(unsigned int spin = 0; spin < 2; spin++){
+					*this << HoppingAmplitude(
+						parameters[0],
+						{x, y, spin},
+						{x, y, spin}
+					);
+					*this << HoppingAmplitude(
+						parameters[1],
+						{x+1, y, spin},
+						{x, y, spin}
+					) + HC;
+					*this << HoppingAmplitude(
+						parameters[1],
+						{x, y+1, spin},
+						{x, y, spin}
+					) + HC;
 
-			if(parameters.size() > 2){
+					if(parameters.size() > 2){
+						*this << HoppingAmplitude(
+							parameters[2],
+							{x+1, y+1, spin},
+							{x, y, spin}
+						) + HC;
+						*this << HoppingAmplitude(
+							parameters[2],
+							{x, ((int)y)-1, spin},
+							{x, y, spin}
+						) + HC;
+					}
+				}
+			}
+		}
+	}
+	else{
+		for(unsigned int x = 0; x < size[0]; x++){
+			for(unsigned int y = 0; y < size[1]; y++){
 				*this << HoppingAmplitude(
-					parameters[2],
-					{x+1, y+1},
+					parameters[0],
+					{x, y},
+					{x, y}
+				);
+				*this << HoppingAmplitude(
+					parameters[1],
+					{x+1, y},
 					{x, y}
 				) + HC;
 				*this << HoppingAmplitude(
-					parameters[2],
-					{x, ((int)y)-1},
+					parameters[1],
+					{x, y+1},
 					{x, y}
 				) + HC;
+
+				if(parameters.size() > 2){
+					*this << HoppingAmplitude(
+						parameters[2],
+						{x+1, y+1},
+						{x, y}
+					) + HC;
+					*this << HoppingAmplitude(
+						parameters[2],
+						{x, ((int)y)-1},
+						{x, y}
+					) + HC;
+				}
 			}
 		}
 	}

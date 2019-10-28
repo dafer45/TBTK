@@ -57,9 +57,34 @@ public:
 	double getDensity() const;
 
 	/** Get spin direction. */
-	Vector3d getDirection() const;
+	Vector3d getSpinVector() const;
+
+	/** Get string representation of the SpinMatrix.
+	 *
+	 *  @return A string representation of the SpinMatrix. */
+	std::string toString() const;
+
+	/** Writes the SpinMatrix toString()-representation to a stream.
+	 *
+	 *  @param stream The stream to write to.
+	 *  @param spinMatrix The SpinMatrix to write.
+	 *
+	 *  @return Reference to the output stream just written to. */
+	friend std::ostream& operator<<(
+		std::ostream &stream,
+		const SpinMatrix &spinMatrix
+	);
 private:
 };
+
+inline std::ostream& operator<<(
+	std::ostream &stream,
+	const SpinMatrix &spinMatrix
+){
+	stream << spinMatrix.toString();
+
+	return stream;
+}
 
 };	//End namespace TBTK
 

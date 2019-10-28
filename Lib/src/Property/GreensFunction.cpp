@@ -20,6 +20,7 @@
 
 #include "TBTK/Property/GreensFunction.h"
 #include "TBTK/TBTKMacros.h"
+#include "TBTK/UnitHandler.h"
 
 using namespace std;
 
@@ -101,6 +102,48 @@ GreensFunction::GreensFunction(
 	),
 	type(Type::Matsubara)
 {
+}
+
+string GreensFunction::toString() const{
+	stringstream stream;
+	stream << "GreensFunction\n";
+
+	switch(getEnergyType()){
+	case EnergyType::Real:
+	{
+		double lowerBound = getLowerBound();
+		double upperBound = getUpperBound();
+		unsigned int resolution = getResolution();
+
+		stream << "\tEnergyType: Real\n";
+		stream << "\tLower bound: "
+			<< UnitHandler::convertEnergyNtB(lowerBound) << " "
+			<< UnitHandler::getEnergyUnitString() << " ("
+			<< lowerBound << " b.u.)\n";
+		stream << "\tUpper bound: "
+			<< UnitHandler::convertEnergyNtB(upperBound) << " "
+			<< UnitHandler::getEnergyUnitString() << " ("
+			<< upperBound << " b.u.)\n";
+		stream << "\tResolution: " << resolution;
+
+		break;
+	}
+	case EnergyType::FermionicMatsubara:
+		stream << "\tEnergyType: Fermionic Matsubara";
+
+		break;
+	case EnergyType::BosonicMatsubara:
+		stream << "\tEnergyType: Bosonic Matsubara";
+		break;
+	default:
+		TBTKExit(
+			"GreensFunction::toString()",
+			"Unknown energy type.",
+			"This should never happen, contact the developer."
+		);
+	}
+
+	return stream.str();
 }
 
 };	//End of namespace Property

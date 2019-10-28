@@ -32,7 +32,15 @@
 namespace TBTK{
 namespace Property{
 
-/** @brief Property container for the Green's function. */
+/** @brief Property container for the Green's function.
+ *
+ *  The GreensFunction is an EnergyResolvedProperty with DataType
+ *  std::complex<double>.
+ *
+ *  # Example
+ *  \snippet Property/GreensFunction.cpp GreensFunction
+ *  ## Output
+ *  \snippet output/Property/GreensFunction.output GreensFunction */
 class GreensFunction : public EnergyResolvedProperty<std::complex<double>>{
 public:
 	/** Enum class for specifying the Green's function type. */
@@ -185,6 +193,9 @@ public:
 	 *
 	 *  @return The Green's function type. */
 	Type getType() const;
+
+	/** Implements Streamable::toString(). */
+	std::string toString() const;
 private:
 	/** The Green's function type. */
 	Type type;

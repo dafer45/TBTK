@@ -72,12 +72,21 @@ double SpinMatrix::getDensity() const{
 	return abs(at(0, 0) + at(1, 1));
 }
 
-Vector3d SpinMatrix::getDirection() const{
+Vector3d SpinMatrix::getSpinVector() const{
 	return Vector3d({
 		real(at(0, 1) + at(1, 0)),
 		imag(at(0, 1) - at(1, 0)),
 		real(at(0, 0) - at(1, 1))
 	});
+}
+
+std::string SpinMatrix::toString() const{
+	stringstream stream;
+	stream << "SpinMatrix\n";
+	stream << "\t" << at(0, 0) << "\t" << at(0, 1) << "\n";
+	stream << "\t" << at(1, 0) << "\t" << at(1, 1);
+
+	return stream.str();
 }
 
 };	//End of namespace TBTK

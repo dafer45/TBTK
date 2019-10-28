@@ -152,10 +152,10 @@ void RayTracer::plot(
 			const SpinMatrix& spinMatrix = magnetization(
 				hitDescriptor.getIndex()
 			);
-			Vector3d spinDirection = spinMatrix.getDirection();
+			Vector3d spinVector = spinMatrix.getSpinVector();
 			double projection = Vector3d::dotProduct(
 				directionFromObject,
-				spinDirection
+				spinVector
 			);
 //			double density = spinMatrix.getDensity();
 
