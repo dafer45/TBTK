@@ -30,8 +30,9 @@ namespace Property{
 
 /** @brief Abstract Property class.
  *
- *  Base class for AbstractProperty that currently does nothing other than
- *  provide a non template base class for all Property classes. */
+ *  Base class for AbstractProperty that allows for any Property to be
+ *  referenced using the same base class. See AbstractProperty for more details
+ *  about @link Property Properties@endlink. */
 class Property{
 public:
 protected:

@@ -33,7 +33,15 @@ namespace TBTK{
 namespace Property{
 
 /** @brief Property container for spin-polarized local density of states
- *    (spin-polarized LDOS). */
+ *    (spin-polarized LDOS).
+ *
+ *  The SpinPolarizedLDOS is an EnergyResolvedProperty with DataType
+ *  SpinMatrix.
+ *
+ *  # Example
+ *  \snippet Property/SpinPolarizedLDOS.cpp SpinPolarizedLDOS
+ *  ## Output
+ *  \snippet output/Property/SpinPolarizedLDOS.output SpinPolarizedLDOS */
 class SpinPolarizedLDOS : public EnergyResolvedProperty<SpinMatrix>{
 public:
 	/** Constructs a SpinPolarizedDOS on the Ranges format. [See
