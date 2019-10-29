@@ -1,9 +1,9 @@
 #include "HeaderAndFooter.h"
-TBTK::DocumentationExamples::HeaderAndFooter headerAndFooter("EigenValues");
+TBTK::DocumentationExamples::HeaderAndFooter headerAndFooter("WaveFunctions");
 
-//! [EigenValues]
+//! [WaveFunctions]
 #include "TBTK/Models/SquareLattice.h"
-#include "TBTK/Property/EigenValues.h"
+#include "TBTK/Property/WaveFunctions.h"
 #include "TBTK/PropertyExtractor/Diagonalizer.h"
 #include "TBTK/Solver/Diagonalizer.h"
 #include "TBTK/Streams.h"
@@ -23,11 +23,13 @@ int main(){
 
 	PropertyExtractor::Diagonalizer propertyExtractor(solver);
 
-	Property::EigenValues eigenValues
-		= propertyExtractor.getEigenValues();
+	Property::WaveFunctions waveFunctions
+		= propertyExtractor.calculateWaveFunctions(
+			{{_a_, _a_}},
+			{_a_}
+		);
 
-	Streams::out << "eigenValues(0) = " << eigenValues(0) << "\n";
-	Streams::out << "eigenValues(10) = " << eigenValues(10) << "\n";
-	Streams::out << "eigenValues(99) = " << eigenValues(99) << "\n";
+	Streams::out << "waveFunctions({5, 5}, 50) = "
+		<< waveFunctions({5, 5}, 50) << "\n";
 }
-//! [EigenValues]
+//! [WaveFunctions]

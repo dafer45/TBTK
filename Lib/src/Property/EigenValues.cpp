@@ -64,6 +64,14 @@ EigenValues::EigenValues(
 	);
 }
 
+string EigenValues::toString() const{
+	stringstream stream;
+	stream << "EigenValues\n";
+	stream << "\tNumber of eigen values: " << getBlockSize();
+
+	return stream.str();
+}
+
 string EigenValues::serialize(Mode mode) const{
 	switch(mode){
 	case Mode::JSON:

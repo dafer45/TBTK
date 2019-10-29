@@ -30,7 +30,16 @@
 namespace TBTK{
 namespace Property{
 
-/** @brief Property container for wave function. */
+/** @brief Property container for wave function.
+ *
+ *  The WaveFunctions is a @link AbstractProperty Property@endlink with
+ *  DataType std::complex<double>. It contains the wave function for a number
+ *  of states.
+ *
+ *  # Example
+ *  \snippet Property/WaveFunctions.cpp WaveFunctions
+ *  ## Output
+ *  \snippet output/Property/WaveFunctions.output WaveFunctions */
 class WaveFunctions : public AbstractProperty<std::complex<double>>{
 public:
 	/** Constructs WaveFunctions on the Custom format. [See
@@ -107,6 +116,9 @@ public:
 	 *
 	 *  @return The maximum argument value. */
 	double getMaxArg() const;
+
+	/** Overrides Streamable::toString(). */
+	virtual std::string toString() const;
 
 	/** Overrides AbstractProperty::serialize(). */
 	virtual std::string serialize(Mode mode) const;

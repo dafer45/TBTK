@@ -123,6 +123,9 @@ public:
 	 *  @param mode Mode with which the string has been serialized. */
 	SpinPolarizedLDOS(const std::string &serialization, Mode mode);
 
+	/** Overrides Serializable::toString(). */
+	virtual std::string toString() const;
+
 	/** Overrides AbstractProperty::serialize(). */
 	std::string serialize(Mode mode) const;
 private:

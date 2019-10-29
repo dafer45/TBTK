@@ -208,6 +208,14 @@ double WaveFunctions::getMaxArg() const{
 	return max;
 }
 
+string WaveFunctions::toString() const{
+	stringstream stream;
+	stream << "WaveFunctions\n";
+	stream << "\tNumber of wave functions: " << states.size();
+
+	return stream.str();
+}
+
 string WaveFunctions::serialize(Mode mode) const{
 	switch(mode){
 	case Mode::JSON:

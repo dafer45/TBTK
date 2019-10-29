@@ -19,6 +19,7 @@
  */
 
 #include "TBTK/Property/SpinPolarizedLDOS.h"
+#include "TBTK/UnitHandler.h"
 
 #include "TBTK/json.hpp"
 
@@ -100,6 +101,28 @@ SpinPolarizedLDOS::SpinPolarizedLDOS(
 			""
 		);
 	}
+}
+
+string SpinPolarizedLDOS::toString() const{
+	unsigned int numSites = getSize()/getBlockSize();
+	double lowerBound = getLowerBound();
+	double upperBound = getUpperBound();
+	unsigned int resolution = getResolution();
+
+	stringstream stream;
+	stream << "SpinPolarizedLDOS\n";
+	stream << "\tNumber of sites: " << numSites << "\n";
+	stream << "\tLower bound: "
+		<< UnitHandler::convertEnergyNtB(lowerBound) << " "
+		<< UnitHandler::getEnergyUnitString() << " (" << lowerBound
+		<< " b.u.)\n";
+	stream << "\tUpper bound: "
+		<< UnitHandler::convertEnergyNtB(upperBound) << " "
+		<< UnitHandler::getEnergyUnitString() << " (" << upperBound
+		<< " b.u.)\n";
+	stream << "\tResolution: " << resolution;
+
+	return stream.str();
 }
 
 string SpinPolarizedLDOS::serialize(Mode mode) const{

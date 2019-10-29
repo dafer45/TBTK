@@ -122,6 +122,9 @@ public:
 	 *  EigenValues and the right hand side. */
 	EigenValues operator/(const double &rhs) const;
 
+	/** Overriding Streamable::toString(). */
+	virtual std::string toString() const;
+
 	/** Overrides AbstractProperty::serialize(). */
 	std::string serialize(Mode mode) const;
 private:
