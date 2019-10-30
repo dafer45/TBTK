@@ -36,55 +36,107 @@ public:
 	/** Constructor. */
 	Array();
 
-	/** Constructor. */
+	/** Constructor.
+	 *
+	 *  @param ranges The ranges of the Array. */
 	Array(const std::vector<unsigned int> &ranges);
 
-	/** Constructor. */
+	/** Constructor.
+	 *
+	 *  @param ranges The ranges of the Array.
+	 *  @param fillValue Value to fill the Array with. */
 	Array(const std::vector<unsigned int> &ranges, const DataType &fillValue);
 
-	/** Copy constructor. */
+	/** Copy constructor.
+	 *
+	 *  @param array Array to copy. */
 	Array(const Array &array);
 
-	/** Move constructor. */
+	/** Move constructor.
+	 *
+	 *  @param array Array to move from. */
 	Array(Array &&array);
 
 	/** Destructor. */
 	~Array();
 
-	/** Assignment operator. */
+	/** Assignment operator.
+	 *
+	 *  @param rhs The right hand side of the expression.
+	 *
+	 *  @return The left hand side of the expression after assignment has
+	 *  occured. */
 	Array& operator=(const Array &rhs);
 
-	/** Move assignment operator. */
+	/** Move assignment operator.
+	 *
+	 *  @param rhs The right hand side of the expression.
+	 *
+	 *  @return The left hand side of the expression after assignment has
+	 *  occured. */
 	Array& operator=(Array &&rhs);
 
-	/** Array subscript operator. */
+	/** Array subscript operator.
+	 *
+	 *  @param index Index to get the value for.
+	 *
+	 *  @return The value for the given index. */
 	DataType& operator[](const std::initializer_list<unsigned int> &index);
 
-	/** Array subscript operator. */
+	/** Array subscript operator.
+	 *
+	 *  @param index Index to get the value for.
+	 *
+	 *  @return The value for the given index. */
 	const DataType& operator[](
 		const std::initializer_list<unsigned int> &index
 	) const;
 
 	/** Array subscript operator. Imediate access for optimization. For an
 	 *  array with size {SIZE_A, SIZE_B, SIZE_C}, the supplied index should
-	 *  be calculated as SIZE_C*SIZE_B*a + SIZE_C*b + c. */
+	 *  be calculated as n = SIZE_C*SIZE_B*a + SIZE_C*b + c.
+	 *
+	 *  @param n Entry in the array.
+	 *
+	 *  @return The value of entry n. */
 	DataType& operator[](unsigned int n);
 
 	/** Array subscript operator. Imediate access for optimization. For an
 	 *  array with size {SIZE_A, SIZE_B, SIZE_C}, the supplied index should
-	 *  be calculated as SIZE_C*SIZE_B*a + SIZE_C*b + c. */
+	 *  be calculated as n = SIZE_C*SIZE_B*a + SIZE_C*b + c.
+	 *
+	 *  @param n Entry in the array.
+	 *
+	 *  @return The value of entry n. */
 	const DataType& operator[](unsigned int n) const;
 
-	/** Addition operator. */
+	/** Addition operator.
+	 *
+	 *  @param rhs The right hand side of the expression.
+	 *
+	 *  @return The sum of the left and right hand side. */
 	Array operator+(const Array &rhs) const;
 
-	/** Subtraction operator. */
+	/** Subtraction operator.
+	 *
+	 *  @param rhs The right hand side of the expression.
+	 *
+	 *  @return The sum of the left and right hand side. */
 	Array operator-(const Array &rhs) const;
 
-	/** Multiplication operator. */
+	/** Multiplication operator.
+	 *
+	 *  @param rhs The right hand side of the expression.
+	 *
+	 *  @return The product of the left and right hand side. */
 	Array operator*(const DataType &rhs) const;
 
-	/** Multiplication operator. */
+	/** Multiplication operator.
+	 *
+	 *  @param lhs The left hand side of the expression.
+	 *  @param rhs The right hand side of the expression.
+	 *
+	 *  @return The product of the left and right hand side. */
 	friend Array operator*(const DataType &lhs, const Array &rhs){
 		Array<DataType> result(rhs.ranges);
 		for(unsigned int n = 0; n < rhs.size; n++)
@@ -93,13 +145,32 @@ public:
 		return result;
 	}
 
-	/** Division operator. */
+	/** Division operator.
+	 *
+	 *  @param rhs The right hand side of the expression.
+	 *
+	 *  @return The quotient between the left and right hand side. */
 	Array operator/(const DataType &rhs) const;
 
-	/** Get slice. */
+	/** Get a subset of the Array that results from setting one or multiple
+	 *  indices equal to given values.
+	 *
+	 *  # Example
+	 *  ```cpp
+	 *    Array array({5, 5, 5});
+	 *    Array slice = array.slice({_a_, 2, _a_});
+	 *  ```
+	 *  The result is a two-dimensional Array for which slice({x, z}) =
+	 *  array({x, 2, z}).
+	 *
+	 *  @param index Index into the Array.
+	 *
+	 *  @return An Array of lower dimension. */
 	Array<DataType> getSlice(const std::vector<Subindex> &index) const;
 
-	/** Get ranges. */
+	/** Get ranges.
+	 *
+	 *  @return The @lin Array Arrays@endlink ranges. */
 	const std::vector<unsigned int>& getRanges() const;
 
 	/** ostream operator. */
