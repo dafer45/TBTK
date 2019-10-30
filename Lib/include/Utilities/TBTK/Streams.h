@@ -30,6 +30,40 @@
 
 namespace TBTK{
 
+/** Streams for TBTK output.
+ *
+ *  The Streams class provides global functions for streaming text output. By
+ *  default the information is written to stdout and atderr, but the Streams
+ *  class allows for more customized output. All text output from TBTK is
+ *  written through the Stream interface, and can therefore be customized
+ *  through it.
+ *
+ *  # Streams::out
+ *  This is the standard output in TBTK. By default, information written to
+ *  Streams::out is forwarded to std::cout and Streams::log.
+ *
+ *  # Streams::err
+ *  This is the error output in TBTK. By default, information written to
+ *  Streams::err is forwarded to std::err and Streams::log.
+ *
+ *  # Streams::log
+ *  This is the logged output in TBTK. By default, the log does not write to
+ *  anything. However, The two commands
+ *  ```cpp
+ *    Streams::createLog("LogFilename");
+ *  ```
+ *  and
+ *  ```cpp
+ *    Streams::closeLog();
+ *  ```
+ *  can be used to open and close a log file to which everything is written.
+ *
+ *  When the log is opened, a time stamp, version number, and git hash for the
+ *  currently installed version of TBTK is added to the output. Similarly, a
+ *  time stamp is added when the log is closed. This makes it easy to document
+ *  the exact setup used to perform a calculation and provides a way for
+ *  ensuring that the results will be possible to reproduce any time in the
+ *  future. */
 class Streams{
 public:
 	/** Standard output stream. */
@@ -47,7 +81,9 @@ public:
 	/** Mute error stream. */
 	static void setStdMuteErr();
 
-	/** Open log. */
+	/** Open log.
+	 *
+	 *  @param filename The filename of the log file. */
 	static void openLog(std::string filename = "TBTKLog");
 
 	/** Close log. */
