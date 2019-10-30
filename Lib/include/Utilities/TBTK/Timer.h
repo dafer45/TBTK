@@ -15,7 +15,7 @@
 
 /** @package TBTKcalc
  *  @file Timer.h
- *  @brief Timer class providing stacked tick and tock functions.
+ *  @brief A Timer for measuring execution time.
  *
  *  @author Kristofer Björnson
  */
@@ -32,11 +32,46 @@
 
 namespace TBTK{
 
-/** A Timer for measuring execution times. A sequence of tick-tock calls will
- *  meassure and print the time from tick to tock. Multiple timestamps can be
- *  pushed onto the stack by repeated tick calls, and subsequent tock calls
- *  will return the time between the most recent tick call and then pop it.
- */
+/** @brief A Timer for measuring execution time.
+ *
+ *  # Modes
+ *  The Timer has two different modes of execution and it is possible to use
+ *  these two modes at the same time.
+ *
+ *  ## Timestamp stack
+ *  A pair of tick-tock calls (with an optional tag as argument to the tick
+ *  call) can be used to measure the time taken to execute a code segment.
+ *  ```cpp
+ *    Timer::tick("MyTag");
+ *    //Code
+ *    //...
+ *    Timer::tock();
+ *  ```
+ *  The tick call pushes a timestamp and tag onto a stack, which is poped by
+ *  the tock call. It is therefore possible to nest tick-tock calls to
+ *  simultaneously measure the execution time for a large block of code and its
+ *  smaller sections. When the timestamp is poped, the time since the tick call
+ *  and the corresponding tag is printed to Streams::out.
+ *
+ *  ## Accumulators
+ *  An accumulator can be created using
+ *  ```cpp
+ *    unsigned int id = Timer::creteAccumulator("AccumulatorTag");
+ *  ```
+ *  If the ID is passed to the tick and tock calls, the time between the calls
+ *  is added to a corresponding accumulator. This can be used to measure the
+ *  total time required to execute a specific code segment that for example is
+ *  executed inside a loop.
+ *
+ *  To print the time accumulated in the accumulators, we use
+ *  ```cpp
+ *    Timer::printAccumulators();
+ *  ```
+ *
+ *  # Example
+ *  \snippet Utilities/Timer.cpp Timer
+ *  ## Output
+ *  \snippet output/Utilities/Timer.output Timer */
 class Timer{
 public:
 	/** Push timestamp onto stack.
