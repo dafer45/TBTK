@@ -75,6 +75,7 @@ namespace TBTK{
 class Timer{
 public:
 	/** Push timestamp onto stack.
+	 *
 	 *  @param tag Optional identifier tag that will be printed together
 	 *  with the elapsed time at subsequent tock call. */
 	static void tick(std::string tag = "");
@@ -84,16 +85,28 @@ public:
 	static void tock();
 
 	/** Create an accumulator that can be used to accumulate multiple time
-	 *  measurements. */
+	 *  measurements.
+	 *
+	 *  @param tag Optional identifier tag that will be printed together
+	 *  with the accumulated time.
+	 *
+	 *  @return An id that can be passed to tick-tock calls to use the
+	 *  accumulator. */
 	static unsigned int createAccumulator(const std::string &tag = "");
 
-	/** Initiate a time interval to be added to an accumulator. */
+	/** Initiate a time interval to be added to an accumulator.
+	 *
+	 *  @param id The ID of the accumulator to use. */
 	static void tick(unsigned int id);
 
-	/** Finalize a time interval add add it to an accumulator. */
+	/** Finalize a time interval and add it to an accumulator.
+	 *
+	 *  @param id The ID of the accumulator to stop. */
 	static void tock(unsigned int id);
 
-	/** Reset accumulator. */
+	/** Reset accumulator.
+	 *
+	 *  @param id The ID of the accumulator to reset. */
 	static void resetAccumulator(unsigned int id);
 
 	/** Reset all accumulators. */
