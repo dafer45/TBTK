@@ -30,23 +30,10 @@ namespace TBTK{
 namespace Solver{
 
 BlockDiagonalizer::BlockDiagonalizer() : Communicator(false){
-	hamiltonian = nullptr;
-	eigenValues = nullptr;
-	eigenVectors = nullptr;
-
 	maxIterations = 50;
 	selfConsistencyCallback = nullptr;
 
 	parallelExecution = false;
-}
-
-BlockDiagonalizer::~BlockDiagonalizer(){
-	if(hamiltonian != nullptr)
-		delete [] hamiltonian;
-	if(eigenValues != nullptr)
-		delete [] eigenValues;
-	if(eigenVectors != nullptr)
-		delete [] eigenVectors;
 }
 
 void BlockDiagonalizer::run(){
@@ -183,16 +170,9 @@ void BlockDiagonalizer::init(){
 			<< blockStructureDescriptor.getNumBlocks() << "\n";
 	}
 
-	if(hamiltonian != nullptr)
-		delete [] hamiltonian;
-	if(eigenValues != nullptr)
-		delete [] eigenValues;
-	if(eigenVectors != nullptr)
-		delete [] eigenVectors;
-
-	hamiltonian = new complex<double>[hamiltonianSize];
-	eigenValues = new double[getModel().getBasisSize()];
-	eigenVectors = new complex<double>[eigenVectorsSize];
+	hamiltonian = CArray<complex<double>>(hamiltonianSize);
+	eigenValues = CArray<double>(getModel().getBasisSize());
+	eigenVectors = CArray<complex<double>>(eigenVectorsSize);
 
 	update();
 }
@@ -359,20 +339,23 @@ void BlockDiagonalizer::solve(){
 				char uplo = 'U';						//...for an upper triangular...
 				int n = blockStructureDescriptor.getNumStatesInBlock(b);	//...nxn-matrix.
 				//Initialize workspaces
-				complex<double> *work = new complex<double>[(2*n-1)];
-				double *rwork = new double[3*n-2];
+				CArray<complex<double>> work(2*n-1);
+				CArray<double> rwork(3*n-2);
 				int info;
 				//Solve brop
 				zhpev_(
 					&jobz,
 					&uplo,
 					&n,
-					hamiltonian + blockOffsets.at(b),
-					eigenValues + eigenValuesOffsets[b],
-					eigenVectors + eigenVectorOffsets.at(b),
+					hamiltonian.getData()
+						+ blockOffsets.at(b),
+					eigenValues.getData()
+						+ eigenValuesOffsets[b],
+					eigenVectors.getData()
+						+ eigenVectorOffsets.at(b),
 					&n,
-					work,
-					rwork,
+					work.getData(),
+					rwork.getData(),
 					&info
 				);
 
@@ -382,10 +365,6 @@ void BlockDiagonalizer::solve(){
 					"Diagonalization routine zhpev exited with INFO=" + to_string(info) + ".",
 					"See LAPACK documentation for zhpev for further information."
 				);
-
-				//Delete workspaces
-				delete [] work;
-				delete [] rwork;
 			}
 		}
 		else{
@@ -400,20 +379,23 @@ void BlockDiagonalizer::solve(){
 				char uplo = 'U';						//...for an upper triangular...
 				int n = blockStructureDescriptor.getNumStatesInBlock(b);	//...nxn-matrix.
 				//Initialize workspaces
-				complex<double> *work = new complex<double>[(2*n-1)];
-				double *rwork = new double[3*n-2];
+				CArray<complex<double>> work(2*n-1);
+				CArray<double> rwork(3*n-2);
 				int info;
 				//Solve brop
 				zhpev_(
 					&jobz,
 					&uplo,
 					&n,
-					hamiltonian + blockOffsets.at(b),
-					eigenValues + eigenValuesOffset,
-					eigenVectors + eigenVectorOffsets.at(b),
+					hamiltonian.getData()
+						+ blockOffsets.at(b),
+					eigenValues.getData()
+						+ eigenValuesOffset,
+					eigenVectors.getData()
+						+ eigenVectorOffsets.at(b),
 					&n,
-					work,
-					rwork,
+					work.getData(),
+					rwork.getData(),
 					&info
 				);
 
@@ -423,10 +405,6 @@ void BlockDiagonalizer::solve(){
 					"Diagonalization routine zhpev exited with INFO=" + to_string(info) + ".",
 					"See LAPACK documentation for zhpev for further information."
 				);
-
-				//Delete workspaces
-				delete [] work;
-				delete [] rwork;
 
 				eigenValuesOffset += blockStructureDescriptor.getNumStatesInBlock(b);
 			}

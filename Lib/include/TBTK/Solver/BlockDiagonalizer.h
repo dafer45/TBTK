@@ -24,6 +24,7 @@
 #define COM_DAFER45_TBTK_SOLVER_BLOCK_DIAGONALIZER
 
 #include "TBTK/BlockStructureDescriptor.h"
+#include "TBTK/CArray.h"
 #include "TBTK/Communicator.h"
 #include "TBTK/Model.h"
 #include "TBTK/Solver/Solver.h"
@@ -68,9 +69,6 @@ class BlockDiagonalizer : public Solver, public Communicator{
 public:
 	/** Constructs a Solver::Diagonalizer. */
 	BlockDiagonalizer();
-
-	/** Destructor. */
-	virtual ~BlockDiagonalizer();
 
 	/** Set self-consistency callback. If set to nullptr or never called,
 	 *  the self-consistency loop will not be run.
@@ -169,13 +167,13 @@ public:
 	void setParallelExecution(bool parallelExecution);
 private:
 	/** pointer to array containing Hamiltonian. */
-	std::complex<double> *hamiltonian;
+	CArray<std::complex<double>> hamiltonian;
 
 	/** Pointer to array containing eigenvalues.*/
-	double *eigenValues;
+	CArray<double> eigenValues;
 
 	/** Pointer to array containing eigenvectors. */
-	std::complex<double> *eigenVectors;
+	CArray<std::complex<double>> eigenVectors;
 
 	/** BlockStructureDescriptor. */
 	BlockStructureDescriptor blockStructureDescriptor;
