@@ -21,36 +21,6 @@ TBTKFeature Utilities.Array.construction.3 2019-10-31
 		The ranges agree with the ranges used to create the Array, the size is the product of the ranges, and the elements are equal to the
 		specified value.
 
-TBTKFeature Utilities.Array.copy.1 2019-10-31
-	Do:
-		Create an Array and fill it with data. Create a new Array as a
-		copy.
-	Verify:
-		The two Arrays have the same ranges, size, and elements.
-
-TBTKFeature Utilities.Array.move.1.C++ 2019-10-31
-	Do:
-		Create an Array and fill it with data. Create a new Array by
-		moving the original one.
-	Verify:
-		The new array has the same ranges, size, and elements as the
-		original.
-
-TBTKFeature Utilities.Array.copyAssignment.1.C++ 2019-10-31
-	Do:
-		Create an Array and fill it with data. Create a new Array as a
-		copy using the assignment operator.
-	Verify:
-		The two Arrays have the same ranges, size, and elements.
-
-TBTKFeature Utilities.Array.moveAssignment.1.C++ 2019-10-31
-	Do:
-		Create an Array and fill it with data. Create a new Array by
-		moving the original one using the assignment operator.
-	Verify:
-		The new array has the same ranges, size, and elements as the
-		original.
-
 TBTKFeature Utilities.Array.operatorArraySubscript.1 2019-10-31
 	Do:
 		Fill an Array with entries using operator[] and read of the

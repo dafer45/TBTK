@@ -85,6 +85,29 @@ TEST(CArray, operatorArraySubscript1){
 		EXPECT_EQ(constCArray[n], n);
 }
 
+//TBTKFeature Utilities.CArray.getData.1.C++ 2019-10-31
+TEST(CArray, getData0){
+	CArray<unsigned int> carray(10);
+	for(unsigned int n = 0; n < 10; n++)
+		carray[n] = n;
+
+	unsigned int *data = carray.getData();
+	for(unsigned int n = 0; n < carray.getSize(); n++)
+		EXPECT_EQ(data[n], n);
+}
+
+//TBTKFeature Utilities.CArray.getData.2.C++ 2019-10-31
+TEST(CArray, getData1){
+	CArray<unsigned int> carray(10);
+	for(unsigned int n = 0; n < 10; n++)
+		carray[n] = n;
+
+	const unsigned int *data
+		= ((const CArray<unsigned int>&)carray).getData();
+	for(unsigned int n = 0; n < carray.getSize(); n++)
+		EXPECT_EQ(data[n], n);
+}
+
 //TBTKFeature Utilities.CArray.getSize.1 2019-10-30
 TEST(CArray, getSize){
 	CArray<unsigned int> carray(10);

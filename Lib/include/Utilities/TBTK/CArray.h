@@ -87,6 +87,18 @@ public:
 	 *  @return The value at position n. */
 	const DataType& operator[](unsigned int n) const;
 
+	//TBTKFeature Utilities.CArray.getData.1.C++ 2019-10-31
+	/** Get the data as a bare c-array.
+	 *
+	 *  @return Pointer to the data array. */
+	DataType* getData();
+
+	//TBTKFeature Utilities.CArray.getData.2.C++ 2019-10-31
+	/** Get the data as a bare c-array.
+	 *
+	 *  @return Pointer to the data array. */
+	const DataType* getData() const;
+
 	/** Get size.
 	 *
 	 *  @return The size of the array. */
@@ -188,6 +200,16 @@ DataType& CArray<DataType>::operator[](unsigned int n){
 template<typename DataType>
 const DataType& CArray<DataType>::operator[](unsigned int n) const{
 	return data[n];
+}
+
+template<typename DataType>
+DataType* CArray<DataType>::getData(){
+	return data;
+}
+
+template<typename DataType>
+const DataType* CArray<DataType>::getData() const{
+	return data;
 }
 
 template<typename DataType>

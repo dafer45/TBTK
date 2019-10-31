@@ -62,6 +62,21 @@ TBTKFeature Utilities.CArray.operatorArraySubscript.2.C++ 2019-10-30
 	Verify:
 		The read of values are equal to those written.
 
+TBTKFeature Utilities.CArray.getData.1.C++ 2019-10-31
+	Do:
+		Create a CArray, fill it with data, and call carray.getData().
+	Verify:
+		The returned pointer points to an array with the data entered
+		into the CArray.
+
+TBTKFeature Utilities.CArray.getData.2.C++ 2019-10-31
+	Do:
+		Create a CArray, fill it with data, and call the constant
+		version of carray.getData().
+	Verify:
+		The returned pointer points to an array with the data entered
+		into the CArray.
+
 TBTKFeature Utilities.CArray.getSize.1 2019-10-30
 	Do:
 		Create a CArray of size N and call carray.getSize();
