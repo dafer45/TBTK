@@ -275,6 +275,33 @@ TEST(Array, getSlice){
 			EXPECT_EQ((slicedArray[{i, k}]), (array[{i, 2, k}]));
 }
 
+//TBTKFeature Utilities.Array.getData.1 2019-10-31
+TEST(Array, getData0){
+	Array<unsigned int> array({2, 3});
+	for(unsigned int i = 0; i < 2; i++)
+		for(unsigned int j = 0; j < 3; j++)
+			array[{i, j}] = i + 2*j;
+
+	CArray<unsigned int> &rawData = array.getData();
+	for(unsigned int i = 0; i < 2; i++)
+		for(unsigned int j = 0; j < 3; j++)
+			EXPECT_EQ(rawData[3*i + j], (array[{i, j}]));
+}
+
+//TBTKFeature Utilities.Array.getData.2.C++ 2019-10-31
+TEST(Array, getData1){
+	Array<unsigned int> array({2, 3});
+	for(unsigned int i = 0; i < 2; i++)
+		for(unsigned int j = 0; j < 3; j++)
+			array[{i, j}] = i + 2*j;
+
+	const CArray<unsigned int> &rawData
+		= ((const Array<unsigned int>&)array).getData();
+	for(unsigned int i = 0; i < 2; i++)
+		for(unsigned int j = 0; j < 3; j++)
+			EXPECT_EQ(rawData[3*i + j], (array[{i, j}]));
+}
+
 //TBTKFeature Utilities.Array.getSize.1 2019-10-31
 TEST(Array, getSize){
 	Array<unsigned int> array({2, 3, 4});

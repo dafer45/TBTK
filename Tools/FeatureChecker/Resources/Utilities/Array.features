@@ -132,6 +132,21 @@ TBTKFeature Utilities.Array.getSlice.1 2019-10-31
 		{2, 4} and 2*4, and the entries satisfies slicedArray({x, z}) =
 		array[{x, 2, z}].
 
+TBTKFeature Utilities::Array.getData.1 2019-10-31
+	Do:
+		Get the raw data from an Array using array.getData().
+	Verify:
+		If the ranges are {SIZE_X, SIZE_Y, SIZE_Y}, the raw data at
+		SIZE_Z*(SIZE_Y*x + y) + z is equal to array[{x, y, z}].
+
+TBTKFeature Utilities::Array.getData.2.C++ 2019-10-31
+	Do:
+		Get the raw data from an Array using the constant version of
+		array.getData().
+	Verify:
+		If the ranges are {SIZE_X, SIZE_Y, SIZE_Y}, the raw data at
+		SIZE_Z*(SIZE_Y*x + y) + z is equal to array[{x, y, z}].
+
 TBTKFeature Utilities.Array.getSize.1 2019-10-31
 	Do:
 		Create an Array with specified ranges and call array.getSize().

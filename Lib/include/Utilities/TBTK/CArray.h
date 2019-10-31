@@ -29,6 +29,16 @@
 
 namespace TBTK{
 
+/** @brief Container for a C style array.
+ *
+ *  The CArray contains a pointer to an array and its size. It provides the
+ *  same efficiency as a raw array, but without requiring manual memory
+ *  management.
+ *
+ *  # Example
+ *  \snippet Utilities/CArray.cpp CArray
+ *  ## Output
+ *  \snippet output/Utilities/CArray.output CArray */
 template<typename DataType>
 class CArray{
 public:

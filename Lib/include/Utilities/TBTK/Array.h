@@ -169,10 +169,18 @@ public:
 		const Array<DT> &array
 	);
 
-	/** Get data. */
+	//TBTKFeature Utilities.Array.getData.1 2019-10-31
+	/** Get raw data. If the array has ranges {SIZE_X, SIZE_Y, SIZE_Z},
+	 *  rawData[SIZE_Z*(SIZE_Y*x + y) + z = array[{x, y, z}].
+	 *
+	 *  @return The raw data as a linear CArray. */
 	CArray<DataType>& getData();
 
-	/** Get data. */
+	//TBTKFeature Utilities.Array.getData.2.C++ 2019-10-31
+	/** Get raw data. If the array has ranges {SIZE_X, SIZE_Y, SIZE_Z},
+	 *  rawData[SIZE_Z*(SIZE_Y*x + y) + z = array[{x, y, z}].
+	 *
+	 *  @return The raw data as a linear CArray. */
 	const CArray<DataType>& getData() const;
 
 	//TBTKFeature Utilities.Array.getSize.1 2019-10-31
