@@ -69,9 +69,6 @@ public:
 	/** Constructs a Solver::Diagonalizer. */
 	Diagonalizer();
 
-	/** Destructor. */
-	virtual ~Diagonalizer();
-
 	/** Set SelfConsistencyCallback. If set to nullptr or never called,
 	 *  the self-consistency loop will not be run.
 	 *

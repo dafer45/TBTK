@@ -32,9 +32,6 @@ Diagonalizer::Diagonalizer() : Communicator(false){
 	selfConsistencyCallback = nullptr;
 }
 
-Diagonalizer::~Diagonalizer(){
-}
-
 void Diagonalizer::run(){
 	int iterationCounter = 0;
 	init();
@@ -146,8 +143,7 @@ void Diagonalizer::setupBasisTransformation(){
 
 	//Fill the overlap matrix.
 	int basisSize = getModel().getBasisSize();
-	complex<double> *overlapMatrix
-		= new complex<double>[(basisSize*(basisSize+1))/2];
+	CArray<complex<double>> overlapMatrix((basisSize*(basisSize+1))/2);
 	for(int n = 0; n < (basisSize*(basisSize+1))/2; n++)
 		overlapMatrix[n] = 0;
 
@@ -174,29 +170,25 @@ void Diagonalizer::setupBasisTransformation(){
 	char uplo = 'U';
 	int n = basisSize;
 
-	complex<double> *work = new complex<double>[2*n-1];
-	double *rwork = new double[3*n-2];
+	CArray<complex<double>> work(2*n-1);
+	CArray<double> rwork(3*n-2);
 	int info;
 
-	double *overlapMatrixEigenValues = new double[basisSize];
-	complex<double> *overlapMatrixEigenVectors
-		= new complex<double>[basisSize*basisSize];
+	CArray<double> overlapMatrixEigenValues(basisSize);
+	CArray<complex<double>> overlapMatrixEigenVectors(basisSize*basisSize);
 
 	zhpev_(
 		&jobz,
 		&uplo,
 		&n,
-		overlapMatrix,
-		overlapMatrixEigenValues,
-		overlapMatrixEigenVectors,
+		overlapMatrix.getData(),
+		overlapMatrixEigenValues.getData(),
+		overlapMatrixEigenVectors.getData(),
 		&n,
-		work,
-		rwork,
+		work.getData(),
+		rwork.getData(),
 		&info
 	);
-
-	delete [] work;
-	delete [] rwork;
 
 	//Setup basisTransformation storage.
 	basisTransformation = CArray<complex<double>>(basisSize*basisSize);
@@ -214,9 +206,6 @@ void Diagonalizer::setupBasisTransformation(){
 				);
 		}
 	}
-
-	delete [] overlapMatrixEigenValues;
-	delete [] overlapMatrixEigenVectors;
 }
 
 void Diagonalizer::transformToOrthonormalBasis(){
@@ -304,8 +293,8 @@ void Diagonalizer::solve(){
 		char uplo = 'U';		//...for an upper triangular...
 		int n = getModel().getBasisSize();	//...nxn-matrix.
 		//Initialize workspaces
-		complex<double> *work = new complex<double>[(2*n-1)];
-		double *rwork = new double[3*n-2];
+		CArray<complex<double>> work(2*n-1);
+		CArray<double> rwork(3*n-2);
 		int info;
 		//Solve brop
 		zhpev_(
@@ -316,8 +305,8 @@ void Diagonalizer::solve(){
 			eigenValues.getData(),
 			eigenVectors.getData(),
 			&n,
-			work,
-			rwork,
+			work.getData(),
+			rwork.getData(),
 			&info
 		);
 
@@ -327,10 +316,6 @@ void Diagonalizer::solve(){
 			"Diagonalization routine zhpev exited with INFO=" + to_string(info) + ".",
 			"See LAPACK documentation for zhpev for further information."
 		);
-
-		//Delete workspaces
-		delete [] work;
-		delete [] rwork;
 	}
 /*	else{
 		int kd;
