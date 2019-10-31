@@ -191,7 +191,7 @@ public:
 
 	/** Get ranges.
 	 *
-	 *  @return The @lin Array Arrays@endlink ranges. */
+	 *  @return The @link Array Arrays@endlink ranges. */
 	const std::vector<unsigned int>& getRanges() const;
 
 	/** ostream operator. */
@@ -207,6 +207,7 @@ public:
 	/** Get data. */
 	const DataType* getData() const;
 
+	//TBTKFeature Utilities.Array.getSize.1 2019-10-31
 	/** Get the number of elements in the Array. */
 	unsigned int getSize() const;
 private:

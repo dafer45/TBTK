@@ -361,4 +361,10 @@ TEST(Array, getSlice){
 			EXPECT_EQ((slicedArray[{i, k}]), (array[{i, 2, k}]));
 }
 
+//TBTKFeature Utilities.Array.getSize.1 2019-10-31
+TEST(Array, getSize){
+	Array<unsigned int> array({2, 3, 4});
+	EXPECT_EQ(array.getSize(), 2*3*4);
+}
+
 };

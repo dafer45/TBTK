@@ -161,3 +161,10 @@ TBTKFeature Utilities.Array.getSlice.1 2019-10-31
 		The new array (in the example given here) has ranges and size
 		{2, 4} and 2*4, and the entries satisfies slicedArray({x, z}) =
 		array[{x, 2, z}].
+
+TBTKFeature Utilities.Array.getSize.1 2019-10-31
+	Do:
+		Create an Array with specified ranges and call array.getSize().
+	Verify:
+		Returns the total number of elements, which is the product of
+		the ranges.
