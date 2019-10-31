@@ -180,8 +180,8 @@ bool TimeEvolver::SelfConsistencyCallback::selfConsistencyCallback(
 }
 
 void TimeEvolver::onDiagonalizationFinished(){
-	eigenValues = dSolver.getEigenValuesRW();
-	eigenVectors = dSolver.getEigenVectorsRW();
+	eigenValues = dSolver.getEigenValuesRW().getData();
+	eigenVectors = dSolver.getEigenVectorsRW().getData();
 
 	const Model &model = getModel();
 	if(eigenVectorsMap == NULL){
@@ -303,7 +303,7 @@ void TimeEvolver::decayInterpolate(){
 
 void TimeEvolver::calculateOrthogonalityError(){
 	int basisSize = getModel().getBasisSize();
-	complex<double> *eigenVectors = dSolver.getEigenVectorsRW();
+	CArray<complex<double>> &eigenVectors = dSolver.getEigenVectorsRW();
 
 	double maxOverlap = 0;
 	for(int i = 0; i < basisSize; i++){

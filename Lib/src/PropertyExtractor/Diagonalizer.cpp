@@ -37,7 +37,7 @@ Diagonalizer::Diagonalizer(Solver::Diagonalizer &dSolver){
 
 Property::EigenValues Diagonalizer::getEigenValues(){
 	int size = dSolver->getModel().getBasisSize();
-	const double *ev = dSolver->getEigenValues();
+	const CArray<double> &ev = dSolver->getEigenValues();
 
 	Property::EigenValues eigenValues(size);
 	std::vector<double> &data = eigenValues.getDataRW();
@@ -260,7 +260,7 @@ Property::GreensFunction Diagonalizer::calculateGreensFunction(
 }
 
 Property::DOS Diagonalizer::calculateDOS(){
-	const double *ev = dSolver->getEigenValues();
+	const CArray<double> &eigenValues = dSolver->getEigenValues();
 
 	double lowerBound = getLowerBound();
 	double upperBound = getUpperBound();
@@ -270,7 +270,7 @@ Property::DOS Diagonalizer::calculateDOS(){
 	std::vector<double> &data = dos.getDataRW();
 	double dE = dos.getDeltaE();
 	for(int n = 0; n < dSolver->getModel().getBasisSize(); n++){
-		int e = round((ev[n] - lowerBound)/dE);
+		int e = round((eigenValues[n] - lowerBound)/dE);
 		if(e >= 0 && e < energyResolution){
 			data[e] += 1./dE;
 		}
@@ -807,30 +807,32 @@ void Diagonalizer::calculateDensityCallback(
 	int offset,
 	Information &information
 ){
-	Diagonalizer *pe = (Diagonalizer*)cb_this;
+	Diagonalizer *propertyExtractor = (Diagonalizer*)cb_this;
 	Property::Density &density = (Property::Density&)property;
 	vector<double> &data = density.getDataRW();
+	Solver::Diagonalizer &solver = *propertyExtractor->dSolver;
+	const Model &model = solver.getModel();
 
-	const double *eigen_values = pe->dSolver->getEigenValues();
-	Statistics statistics = pe->dSolver->getModel().getStatistics();
-	for(int n = 0; n < pe->dSolver->getModel().getBasisSize(); n++){
+	const CArray<double> &eigenValues = solver.getEigenValues();
+	Statistics statistics = model.getStatistics();
+	for(int n = 0; n < model.getBasisSize(); n++){
 		double weight;
 		if(statistics == Statistics::FermiDirac){
 			weight = Functions::fermiDiracDistribution(
-				eigen_values[n],
-				pe->dSolver->getModel().getChemicalPotential(),
-				pe->dSolver->getModel().getTemperature()
+				eigenValues[n],
+				model.getChemicalPotential(),
+				model.getTemperature()
 			);
 		}
 		else{
 			weight = Functions::boseEinsteinDistribution(
-				eigen_values[n],
-				pe->dSolver->getModel().getChemicalPotential(),
-				pe->dSolver->getModel().getTemperature()
+				eigenValues[n],
+				model.getChemicalPotential(),
+				model.getTemperature()
 			);
 		}
 
-		complex<double> u = pe->dSolver->getAmplitude(n, index);
+		complex<double> u = solver.getAmplitude(n, index);
 
 		data[offset] += pow(abs(u), 2)*weight;
 	}
@@ -843,38 +845,40 @@ void Diagonalizer::calculateMAGCallback(
 	int offset,
 	Information &information
 ){
-	Diagonalizer *pe = (Diagonalizer*)cb_this;
+	Diagonalizer *propertyExtractor = (Diagonalizer*)cb_this;
 	Property::Magnetization &magnetization
 		= (Property::Magnetization&)property;
 	vector<SpinMatrix> &data = magnetization.getDataRW();
+	Solver::Diagonalizer &solver = *propertyExtractor->dSolver;
+	const Model &model = solver.getModel();
 
-	const double *eigen_values = pe->dSolver->getEigenValues();
-	Statistics statistics = pe->dSolver->getModel().getStatistics();
+	const CArray<double> &eigenValues = solver.getEigenValues();
+	Statistics statistics = model.getStatistics();
 
 	int spinIndex = information.getSpinIndex();
 	Index index_u(index);
 	Index index_d(index);
 	index_u.at(spinIndex) = 0;
 	index_d.at(spinIndex) = 1;
-	for(int n = 0; n < pe->dSolver->getModel().getBasisSize(); n++){
+	for(int n = 0; n < model.getBasisSize(); n++){
 		double weight;
 		if(statistics == Statistics::FermiDirac){
 			weight = Functions::fermiDiracDistribution(
-				eigen_values[n],
-				pe->dSolver->getModel().getChemicalPotential(),
-				pe->dSolver->getModel().getTemperature()
+				eigenValues[n],
+				model.getChemicalPotential(),
+				model.getTemperature()
 			);
 		}
 		else{
 			weight = Functions::boseEinsteinDistribution(
-				eigen_values[n],
-				pe->dSolver->getModel().getChemicalPotential(),
-				pe->dSolver->getModel().getTemperature()
+				eigenValues[n],
+				model.getChemicalPotential(),
+				model.getTemperature()
 			);
 		}
 
-		complex<double> u_u = pe->dSolver->getAmplitude(n, index_u);
-		complex<double> u_d = pe->dSolver->getAmplitude(n, index_d);
+		complex<double> u_u = solver.getAmplitude(n, index_u);
+		complex<double> u_d = solver.getAmplitude(n, index_d);
 
 		data[offset].at(0, 0) += conj(u_u)*u_u*weight;
 		data[offset].at(0, 1) += conj(u_u)*u_d*weight;
@@ -890,25 +894,24 @@ void Diagonalizer::calculateLDOSCallback(
 	int offset,
 	Information &information
 ){
-	Diagonalizer *pe = (Diagonalizer*)cb_this;
+	Diagonalizer *propertyExtractor = (Diagonalizer*)cb_this;
 	Property::LDOS &ldos = (Property::LDOS&)property;
 	vector<double> &data = ldos.getDataRW();
+	Solver::Diagonalizer &solver = *propertyExtractor->dSolver;
+	const Model &model = solver.getModel();
 
-	double lowerBound = pe->getLowerBound();
-	double upperBound = pe->getUpperBound();
-	int energyResolution = pe->getEnergyResolution();
+	double lowerBound = propertyExtractor->getLowerBound();
+	double upperBound = propertyExtractor->getUpperBound();
+	int energyResolution = propertyExtractor->getEnergyResolution();
 
-	const double *eigen_values = pe->dSolver->getEigenValues();
+	const CArray<double> &eigenValues = solver.getEigenValues();
 
 	double dE = ldos.getDeltaE();
-	for(int n = 0; n < pe->dSolver->getModel().getBasisSize(); n++){
-		if(
-			eigen_values[n] > lowerBound
-			&& eigen_values[n] < upperBound
-		){
-			complex<double> u = pe->dSolver->getAmplitude(n, index);
+	for(int n = 0; n < model.getBasisSize(); n++){
+		if(eigenValues[n] > lowerBound && eigenValues[n] < upperBound){
+			complex<double> u = solver.getAmplitude(n, index);
 
-			int e = round((eigen_values[n] - lowerBound)/dE);
+			int e = round((eigenValues[n] - lowerBound)/dE);
 			if(e >= energyResolution)
 				e = energyResolution - 1;
 			data[offset + e] += real(conj(u)*u)/dE;
@@ -923,16 +926,18 @@ void Diagonalizer::calculateSP_LDOSCallback(
 	int offset,
 	Information &information
 ){
-	Diagonalizer *pe = (Diagonalizer*)cb_this;
+	Diagonalizer *propertyExtractor = (Diagonalizer*)cb_this;
 	Property::SpinPolarizedLDOS &spinPolarizedLDOS
 		= (Property::SpinPolarizedLDOS&)property;
 	vector<SpinMatrix> &data = spinPolarizedLDOS.getDataRW();
+	Solver::Diagonalizer &solver = *propertyExtractor->dSolver;
+	const Model &model = solver.getModel();
 
-	double lowerBound = pe->getLowerBound();
-	double upperBound = pe->getUpperBound();
-	int energyResolution = pe->getEnergyResolution();
+	double lowerBound = propertyExtractor->getLowerBound();
+	double upperBound = propertyExtractor->getUpperBound();
+	int energyResolution = propertyExtractor->getEnergyResolution();
 
-	const double *eigen_values = pe->dSolver->getEigenValues();
+	const CArray<double> &eigenValues = solver.getEigenValues();
 
 	int spinIndex = information.getSpinIndex();
 
@@ -941,15 +946,12 @@ void Diagonalizer::calculateSP_LDOSCallback(
 	index_u.at(spinIndex) = 0;
 	index_d.at(spinIndex) = 1;
 	double dE = spinPolarizedLDOS.getDeltaE();
-	for(int n = 0; n < pe->dSolver->getModel().getBasisSize(); n++){
-		if(
-			eigen_values[n] > lowerBound
-			&& eigen_values[n] < upperBound
-		){
-			complex<double> u_u = pe->dSolver->getAmplitude(n, index_u);
-			complex<double> u_d = pe->dSolver->getAmplitude(n, index_d);
+	for(int n = 0; n < model.getBasisSize(); n++){
+		if(eigenValues[n] > lowerBound && eigenValues[n] < upperBound){
+			complex<double> u_u = solver.getAmplitude(n, index_u);
+			complex<double> u_d = solver.getAmplitude(n, index_d);
 
-			int e = (int)((eigen_values[n] - lowerBound)/dE);
+			int e = (int)((eigenValues[n] - lowerBound)/dE);
 			if(e >= energyResolution)
 				e = energyResolution - 1;
 			data[offset + e].at(0, 0) += conj(u_u)*u_u/dE;

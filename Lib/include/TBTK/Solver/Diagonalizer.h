@@ -23,6 +23,7 @@
 #ifndef COM_DAFER45_TBTK_SOLVER_DIAGONALIZATION
 #define COM_DAFER45_TBTK_SOLVER_DIAGONALIZATION
 
+#include "TBTK/CArray.h"
 #include "TBTK/Communicator.h"
 #include "TBTK/Model.h"
 #include "TBTK/Solver/Solver.h"
@@ -102,13 +103,13 @@ public:
 	/** Get eigenvalues. Eigenvalues are ordered in accending order.
 	 *
 	 *  @return A pointer to the internal storage for the eigenvalues. */
-	const double* getEigenValues();
+	const CArray<double>& getEigenValues();
 
 	/** Get eigenvalues. Eigenvalues are ordered in accending order. Same
 	 *  as getEigenValues(), but with write access. Use with caution.
 	 *
 	 *  @return A pointer to the internal storage for the eigenvalues. */
-	double* getEigenValuesRW();
+	CArray<double>& getEigenValuesRW();
 
 	/** Get eigenvectors. The eigenvectors are stored successively in
 	 *  memory, with the eigenvector corresponding to the smallest
@@ -117,7 +118,7 @@ public:
 	 *  'basisSize' is the basis size of the Model.
 	 *
 	 *  @return A pointer to the internal storage for the eigenvectors. **/
-	const std::complex<double>* getEigenVectors();
+	const CArray<std::complex<double>>& getEigenVectors();
 
 	/** Get eigenvectors. The eigenvectors are stored successively in
 	 *  memory, with the eigenvector corresponding to the smallest
@@ -127,7 +128,7 @@ public:
 	 *  getEigenVectors(), but with write access. Use with caution.
 	 *
 	 *  @return A pointer to the internal storage for the eigenvectors. **/
-	std::complex<double>* getEigenVectorsRW();
+	CArray<std::complex<double>>& getEigenVectorsRW();
 
 	/** Get eigenvalue for a specific state.
 	 *
@@ -146,17 +147,17 @@ public:
 	const std::complex<double> getAmplitude(int state, const Index &index);
 private:
 	/** pointer to array containing Hamiltonian. */
-	std::complex<double> *hamiltonian;
+	CArray<std::complex<double>> hamiltonian;
 
 	/** Pointer to array containing eigenvalues.*/
-	double *eigenValues;
+	CArray<double> eigenValues;
 
 	/** Pointer to array containing eigenvectors. */
-	std::complex<double> *eigenVectors;
+	CArray<std::complex<double>> eigenVectors;
 
 	/** Pointer to array containing the basis transformation. Only used for
 	 *  non-orthonormal bases.*/
-	std::complex<double> *basisTransformation;
+	CArray<std::complex<double>> basisTransformation;
 
 	/** Maximum number of iterations in the self-consistency loop. */
 	int maxIterations;
@@ -194,19 +195,19 @@ inline void Diagonalizer::setMaxIterations(int maxIterations){
 	this->maxIterations = maxIterations;
 }
 
-inline const double* Diagonalizer::getEigenValues(){
+inline const CArray<double>& Diagonalizer::getEigenValues(){
 	return eigenValues;
 }
 
-inline double* Diagonalizer::getEigenValuesRW(){
+inline CArray<double>& Diagonalizer::getEigenValuesRW(){
 	return eigenValues;
 }
 
-inline const std::complex<double>* Diagonalizer::getEigenVectors(){
+inline const CArray<std::complex<double>>& Diagonalizer::getEigenVectors(){
 	return eigenVectors;
 }
 
-inline std::complex<double>* Diagonalizer::getEigenVectorsRW(){
+inline CArray<std::complex<double>>& Diagonalizer::getEigenVectorsRW(){
 	return eigenVectors;
 }
 

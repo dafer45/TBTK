@@ -28,24 +28,11 @@ namespace TBTK{
 namespace Solver{
 
 Diagonalizer::Diagonalizer() : Communicator(false){
-	hamiltonian = nullptr;
-	eigenValues = nullptr;
-	eigenVectors = nullptr;
-	basisTransformation = nullptr;
-
 	maxIterations = 50;
 	selfConsistencyCallback = nullptr;
 }
 
 Diagonalizer::~Diagonalizer(){
-	if(hamiltonian != nullptr)
-		delete [] hamiltonian;
-	if(eigenValues != nullptr)
-		delete [] eigenValues;
-	if(eigenVectors != nullptr)
-		delete [] eigenVectors;
-	if(basisTransformation != nullptr)
-		delete [] basisTransformation;
 }
 
 void Diagonalizer::run(){
@@ -87,16 +74,9 @@ void Diagonalizer::init(){
 	if(getGlobalVerbose() && getVerbose())
 		Streams::out << "\tBasis size: " << basisSize << "\n";
 
-	if(hamiltonian != nullptr)
-		delete [] hamiltonian;
-	if(eigenValues != nullptr)
-		delete [] eigenValues;
-	if(eigenVectors != nullptr)
-		delete [] eigenVectors;
-
-	hamiltonian = new complex<double>[(basisSize*(basisSize+1))/2];
-	eigenValues = new double[basisSize];
-	eigenVectors = new complex<double>[basisSize*basisSize];
+	hamiltonian = CArray<complex<double>>((basisSize*(basisSize+1))/2);
+	eigenValues = CArray<double>(basisSize);
+	eigenVectors = CArray<complex<double>>(basisSize*basisSize);
 
 	update();
 }
@@ -219,9 +199,7 @@ void Diagonalizer::setupBasisTransformation(){
 	delete [] rwork;
 
 	//Setup basisTransformation storage.
-	if(basisTransformation != nullptr)
-		delete [] basisTransformation;
-	basisTransformation = new complex<double>[basisSize*basisSize];
+	basisTransformation = CArray<complex<double>>(basisSize*basisSize);
 
 	//Calculate the basis transformation using canonical orthogonalization.
 	//See for example section 3.4.5 in Moder Quantum Chemistry, Attila
@@ -244,7 +222,7 @@ void Diagonalizer::setupBasisTransformation(){
 void Diagonalizer::transformToOrthonormalBasis(){
 	//Skip if no basis transformation has been set up (the original basis
 	//is assumed to be orthonormal).
-	if(basisTransformation == nullptr)
+	if(basisTransformation.getData() == nullptr)
 		return;
 
 	int basisSize = getModel().getBasisSize();
@@ -290,7 +268,7 @@ void Diagonalizer::transformToOrthonormalBasis(){
 void Diagonalizer::transformToOriginalBasis(){
 	//Skip if no basis transformation has been set up (the original basis
 	//is assumed to be orthonormal).
-	if(basisTransformation == nullptr)
+	if(basisTransformation.getData() == nullptr)
 		return;
 
 	int basisSize = getModel().getBasisSize();
@@ -330,7 +308,18 @@ void Diagonalizer::solve(){
 		double *rwork = new double[3*n-2];
 		int info;
 		//Solve brop
-		zhpev_(&jobz, &uplo, &n, hamiltonian, eigenValues, eigenVectors, &n, work, rwork, &info);
+		zhpev_(
+			&jobz,
+			&uplo,
+			&n,
+			hamiltonian.getData(),
+			eigenValues.getData(),
+			eigenVectors.getData(),
+			&n,
+			work,
+			rwork,
+			&info
+		);
 
 		TBTKAssert(
 			info == 0,

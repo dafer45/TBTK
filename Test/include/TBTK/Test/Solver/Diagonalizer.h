@@ -74,12 +74,12 @@ TEST(Diagonalizer, getEigenValues){
 	solver.run();
 
 	//Normal access.
-	const double *eigenValues0 = solver.getEigenValues();
+	const CArray<double> &eigenValues0 = solver.getEigenValues();
 	EXPECT_DOUBLE_EQ(eigenValues0[0], -1);
 	EXPECT_DOUBLE_EQ(eigenValues0[1], 1);
 
 	//Access with write permissions.
-	double *eigenValues1 = solver.getEigenValuesRW();
+	CArray<double> &eigenValues1 = solver.getEigenValuesRW();
 	EXPECT_DOUBLE_EQ(eigenValues1[0], -1);
 	EXPECT_DOUBLE_EQ(eigenValues1[1], 1);
 
@@ -109,7 +109,7 @@ TEST(Diagonalizer, getEigenValues){
 	solver1.setModel(model1);
 	solver1.run();
 
-	const double *eigenValues2 = solver1.getEigenValues();
+	const CArray<double> &eigenValues2 = solver1.getEigenValues();
 	EXPECT_NEAR(eigenValues2[0], -1, EPSILON_100);
 	EXPECT_NEAR(eigenValues2[1], 1, EPSILON_100);
 }
@@ -130,14 +130,16 @@ TEST(Diagonalizer, getEigenVectors){
 	solver.run();
 
 	//Normal access.
-	const std::complex<double> *eigenVectors0 = solver.getEigenVectors();
+	const CArray<std::complex<double>> &eigenVectors0
+		= solver.getEigenVectors();
 	EXPECT_DOUBLE_EQ(real(eigenVectors0[0]/eigenVectors0[1]), -1);
 	EXPECT_DOUBLE_EQ(imag(eigenVectors0[0]/eigenVectors0[1]), 0);
 	EXPECT_DOUBLE_EQ(real(eigenVectors0[2]/eigenVectors0[3]), 1);
 	EXPECT_DOUBLE_EQ(imag(eigenVectors0[2]/eigenVectors0[3]), 0);
 
 	//Access with write permissions.
-	std::complex<double> *eigenVectors1 = solver.getEigenVectorsRW();
+	CArray<std::complex<double>> &eigenVectors1
+		= solver.getEigenVectorsRW();
 	EXPECT_DOUBLE_EQ(real(eigenVectors1[0]/eigenVectors1[1]), -1);
 	EXPECT_DOUBLE_EQ(imag(eigenVectors1[0]/eigenVectors1[1]), 0);
 	EXPECT_DOUBLE_EQ(real(eigenVectors1[2]/eigenVectors1[3]), 1);
@@ -174,7 +176,8 @@ TEST(Diagonalizer, getEigenVectors){
 	solver1.setModel(model1);
 	solver1.run();
 
-	const std::complex<double> *eigenVectors2 = solver1.getEigenVectors();
+	const CArray<std::complex<double>> &eigenVectors2
+		= solver1.getEigenVectors();
 	EXPECT_NEAR(real(eigenVectors2[0]), sqrt(2), EPSILON_100);
 	EXPECT_NEAR(imag(eigenVectors2[0]), 0, EPSILON_100);
 	EXPECT_NEAR(real(eigenVectors2[1]), -1, EPSILON_100);

@@ -37,7 +37,7 @@ public:
 	void run(unsigned int subspace);
 
 	/** Get eigen values. */
-	const double* getEigenValues(unsigned int subspace);
+	const CArray<double>& getEigenValues(unsigned int subspace);
 
 	/** Get eigen value. */
 	const double getEigenValue(unsigned int subspace, int state);
@@ -106,7 +106,9 @@ private:
 	void setupManyParticleModel(unsigned int subspace);
 };
 
-inline const double* ExactDiagonalizer::getEigenValues(unsigned int subspace){
+inline const CArray<double>& ExactDiagonalizer::getEigenValues(
+	unsigned int subspace
+){
 	return subspaceContexts.at(subspace).dSolver->getEigenValues();
 }
 
