@@ -33,25 +33,30 @@ namespace TBTK{
 template<typename DataType>
 class Array{
 public:
+	//TBTKFeature Utilities.Array.construction.1 2019-10-31
 	/** Constructor. */
 	Array();
 
+	//TBTKFeature Utilities.Array.construction.2 2019-10-31
 	/** Constructor.
 	 *
 	 *  @param ranges The ranges of the Array. */
 	Array(const std::vector<unsigned int> &ranges);
 
+	//TBTKFeature Utilities.Array.construction.3 2019-10-31
 	/** Constructor.
 	 *
 	 *  @param ranges The ranges of the Array.
 	 *  @param fillValue Value to fill the Array with. */
 	Array(const std::vector<unsigned int> &ranges, const DataType &fillValue);
 
+	//TBTKFeature Utilities.Array.copy.1 2019-10-31
 	/** Copy constructor.
 	 *
 	 *  @param array Array to copy. */
 	Array(const Array &array);
 
+	//TBTKFeature Utilities.Array.move.1 2019-10-31
 	/** Move constructor.
 	 *
 	 *  @param array Array to move from. */
@@ -60,6 +65,7 @@ public:
 	/** Destructor. */
 	~Array();
 
+	//TBTKFeature Utilities.Array.copyAssignment.1 2019-10-31
 	/** Assignment operator.
 	 *
 	 *  @param rhs The right hand side of the expression.
@@ -68,6 +74,7 @@ public:
 	 *  occured. */
 	Array& operator=(const Array &rhs);
 
+	//TBTKFeature Utilities.Array.moveAssignment.1 2019-10-31
 	/** Move assignment operator.
 	 *
 	 *  @param rhs The right hand side of the expression.
@@ -76,6 +83,7 @@ public:
 	 *  occured. */
 	Array& operator=(Array &&rhs);
 
+	//TBTKFeature Utilities.Array.operatorArraySubscript.1 2019-10-31
 	/** Array subscript operator.
 	 *
 	 *  @param index Index to get the value for.
@@ -83,6 +91,7 @@ public:
 	 *  @return The value for the given index. */
 	DataType& operator[](const std::initializer_list<unsigned int> &index);
 
+	//TBTKFeature Utilities.Array.operatorArraySubscript.2 2019-10-31
 	/** Array subscript operator.
 	 *
 	 *  @param index Index to get the value for.
@@ -92,6 +101,7 @@ public:
 		const std::initializer_list<unsigned int> &index
 	) const;
 
+	//TBTKFeature Utilities.Array.operatorArraySubscript.3 2019-10-31
 	/** Array subscript operator. Imediate access for optimization. For an
 	 *  array with size {SIZE_A, SIZE_B, SIZE_C}, the supplied index should
 	 *  be calculated as n = SIZE_C*SIZE_B*a + SIZE_C*b + c.
@@ -101,6 +111,7 @@ public:
 	 *  @return The value of entry n. */
 	DataType& operator[](unsigned int n);
 
+	//TBTKFeature Utilities.Array.opreatorArraySubscript.4 2019-10-31
 	/** Array subscript operator. Imediate access for optimization. For an
 	 *  array with size {SIZE_A, SIZE_B, SIZE_C}, the supplied index should
 	 *  be calculated as n = SIZE_C*SIZE_B*a + SIZE_C*b + c.
@@ -110,6 +121,9 @@ public:
 	 *  @return The value of entry n. */
 	const DataType& operator[](unsigned int n) const;
 
+	//TBTKFeature Utilities.Array.operatorAddition.1 2019-10-31
+	//TBTKFeature Utilities.Array.operatorAddition.2 2019-10-31
+	//TBTKFeature Utilities.Array.operatorAddition.3 2019-10-31
 	/** Addition operator.
 	 *
 	 *  @param rhs The right hand side of the expression.
@@ -117,6 +131,9 @@ public:
 	 *  @return The sum of the left and right hand side. */
 	Array operator+(const Array &rhs) const;
 
+	//TBTKFeature Utilities.Array.operatorSubtraction.1 2019-10-31
+	//TBTKFeature Utilities.Array.operatorSubtraction.2 2019-10-31
+	//TBTKFeature Utilities.Array.operatorSubtraction.3 2019-10-31
 	/** Subtraction operator.
 	 *
 	 *  @param rhs The right hand side of the expression.
@@ -124,6 +141,7 @@ public:
 	 *  @return The sum of the left and right hand side. */
 	Array operator-(const Array &rhs) const;
 
+	//TBTKFeature Utilities.Array.operatorMultiplication.1 2019-10-31
 	/** Multiplication operator.
 	 *
 	 *  @param rhs The right hand side of the expression.
@@ -131,6 +149,7 @@ public:
 	 *  @return The product of the left and right hand side. */
 	Array operator*(const DataType &rhs) const;
 
+	//TBTKFeature Utilities.Array.operatorMultiplication.2 2019-10-31
 	/** Multiplication operator.
 	 *
 	 *  @param lhs The left hand side of the expression.
@@ -145,6 +164,7 @@ public:
 		return result;
 	}
 
+	//TBTKFeature Utilities.Array.operatorDivision.1 2019-10-31
 	/** Division operator.
 	 *
 	 *  @param rhs The right hand side of the expression.
@@ -152,6 +172,7 @@ public:
 	 *  @return The quotient between the left and right hand side. */
 	Array operator/(const DataType &rhs) const;
 
+	//TBTKFeature Utilities.Array.getSlice.1
 	/** Get a subset of the Array that results from setting one or multiple
 	 *  indices equal to given values.
 	 *

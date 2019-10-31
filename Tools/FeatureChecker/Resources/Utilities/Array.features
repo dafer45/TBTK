@@ -1,0 +1,163 @@
+TBTKFeature Utilities.Array.construction.1 2019-10-31
+	Do:
+		Create uninitialized CArray.
+	Verify:
+		Compiles.
+
+TBTKFeature Utilities.Array.construction.2 2019-10-31
+	Do:
+		Create an Array with specific ranges. Call array.getRanges()
+		and array.getSize().
+	Verify:
+		The ranges agree with the ranges used to create the Array and
+		the size is the product of the ranges.
+
+TBTKFeature Utilities.Array.construction.3 2019-10-31
+	Do:
+		Create an Array with specific ranges and a value to fill the
+		Array with. Call array.getRanges(), array.getSize(), and
+		array[n].
+	Verify:
+		The ranges agree with the ranges used to create the Array, the size is the product of the ranges, and the elements are equal to the
+		specified value.
+
+TBTKFeature Utilities.Array.copy.1 2019-10-31
+	Do:
+		Create an Array and fill it with data. Create a new Array as a
+		copy.
+	Verify:
+		The two Arrays have the same ranges, size, and elements.
+
+TBTKFeature Utilities.Array.move.1.C++ 2019-10-31
+	Do:
+		Create an Array and fill it with data. Create a new Array by
+		moving the original one.
+	Verify:
+		The new array has the same ranges, size, and elements as the
+		original.
+
+TBTKFeature Utilities.Array.copyAssignment.1.C++ 2019-10-31
+	Do:
+		Create an Array and fill it with data. Create a new Array as a
+		copy using the assignment operator.
+	Verify:
+		The two Arrays have the same ranges, size, and elements.
+
+TBTKFeature Utilities.Array.moveAssignment.1.C++ 2019-10-31
+	Do:
+		Create an Array and fill it with data. Create a new Array by
+		moving the original one using the assignment operator.
+	Verify:
+		The new array has the same ranges, size, and elements as the
+		original.
+
+TBTKFeature Utilities.Array.operatorArraySubscript.1 2019-10-31
+	Do:
+		Fill an Array with entries using operator[] and read of the
+		values using the same operator. Pass arguments of the form
+		{x, y, z}.
+	Verify:
+		The read and written values agree.
+
+TBTKFeature Utilities.Array.operatorArraySubscript.2.C++ 2019-10-31
+	Do:
+		Fill an Array with entries using operator[] and read of the
+		values using the constant version of the operator. Pass
+		arguments of the form.
+	Verify:
+		The read and written values agree.
+
+TBTKFeature Utilities.Array.operatorArraySubscriptOperator.3 2019-10-31
+	Do:
+		Fill an Array with entries using operator[] and read of the
+		values using the constant version of the operator. Pass
+		arguments of the form {x, y, z} when writng, and linear
+		arguments of the form n = RANGE_Z*(RANGE_Y*x + y) + z when
+		reading.
+	Verify:
+		The read and written values agree.
+
+TBTKFeature Utilities.Array.operatorArraySubscriptOperator.4.C++ 2019-10-31
+	Do:
+		Fill an Array with entries using operator[] and read of the
+		values using the constant version of the operator. Pass
+		arguments of the form {x, y, z} when writng, and linear
+		arguments of the form n = RANGE_Z*(RANGE_Y*x + y) + z when
+		reading. Use the constant version of the operator when reading.
+	Verify:
+		The read and written values agree.
+
+TBTKFeature Utilities.Array.operatorAddition.1 2019-10-31
+	Do:
+		Fill two Arrays with the same range and add them.
+	Verify:
+		The resulting Array is the sum of the two original Arrays.
+
+TBTKFeature Utilities.Array.operatorAddition.2 2019-10-31
+	Do:
+		Add two Arrays with different ranges size.
+	Verify:
+		Exits or throws exception.
+
+TBTKFeature Utilities.Array.operatorAddition.3 2019-10-31
+	Do:
+		Add two Arrays with the same range size but different ranges.
+	Verify:
+		Exits or throws exception.
+
+TBTKFeature Utilities.Array.operatorSubtraction.1 2019-10-31
+	Do:
+		Fill two Arrays with the same range and subtract them.
+	Verify:
+		The resulting Array is the difference between the two original
+		Arrays.
+
+TBTKFeature Utilities.Array.operatorSubtraction.2 2019-10-31
+	Do:
+		Subtract two Arrays with different ranges size.
+	Verify:
+		Exits or throws exception.
+
+TBTKFeature Utilities.Array.operatorSubtraction.3 2019-10-31
+	Do:
+		Subtract two Arrays with the same range size but different
+		ranges.
+	Verify:
+		Exits or throws exception.
+
+TBTKFeature Utilities.Array.operatorMultiplication.1 2019-10-31
+	Do:
+		Create and Array, fill it with entries, and multiply it from
+		the right with a number N of the same DataType as the Array
+		entries.
+	Verify:
+		The resulting Array has entries that are N times those of the
+		original Array.
+
+TBTKFeature Utilities.Array.operatorMultiplication.2 2019-10-31
+	Do:
+		Create and Array, fill it with entries, and multiply it from
+		the left with a number N of the same DataType as the Array
+		entries.
+	Verify:
+		The resulting Array has entries that are N times those of the
+		original Array.
+
+TBTKFeature Utilities.Array.operatorDivision.1 2019-10-31
+	Do:
+		Create and Array, fill it with entries, and divide it with a
+		number N of the same DataType as the Array entries.
+	Verify:
+		The resulting Array has entries that are N times smaller than
+		those of the original Array.
+
+TBTKFeature Utilities.Array.getSlice.1 2019-10-31
+	Do:
+		Create an Array such as Array<DataType> array({2, 3, 4}) and
+		fill it with entries. Create a new Array by slicing the
+		original using for example slicedArray = array.getSlice({_a_,
+		2, _a_})
+	Verify:
+		The new array (in the example given here) has ranges and size
+		{2, 4} and 2*4, and the entries satisfies slicedArray({x, z}) =
+		array[{x, 2, z}].
