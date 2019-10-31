@@ -1,0 +1,69 @@
+TBTKFeature Utilities.CArray.construction.1 2019-10-30
+	Do:
+		Create uninitialized CArray.
+	Verify:
+		Compiles.
+
+TBTKFeature Utilities.CArray.construction.2 2019-10-30
+	Do:
+		Create uninitialized CArray with size N.
+	Verify:
+		Compiles.
+
+TBTKFeature Utilities.CArray.copyConstruction.1.C++ 2019-10-30
+	Do:
+		Create CArray and fill it with values and create a copy of the
+		CArray.
+	Verify:
+		The size and values of the two matrices are the same.
+
+TBTKFeature Utilities.CArray.moveConstruction.1.C++ 2019-10-30
+	Do:
+		Create CArray and fill it with values and move it to a new
+		CArray.
+	Verify:
+		The size and values of the resulting CArray is equal to the
+		original.
+
+TBTKFeature Utilities.CArray.assignmentOperator.1.C++ 2019-10-30
+	Do:
+		Create CArray and fill it with values and create a copy using
+		the assignment operator.
+	Verify:
+		The size and values of the resulting CArray is equal to the
+		original.
+
+TBTKFeature Utilities.CArray.moveAssignmentOperator.1.C++ 2019-10-30
+	Do:
+		Create CArray and fill it with values and create a copy using
+		the move assignment operator.
+	Verify:
+		The size and values of the resulting CArray is equal to the
+		original.
+
+TBTKFeature Utilities.CArray.operatorArraySubscript.1.C++ 2019-10-30
+	Do:
+		Create CArray and fill it with values using operator[] and read
+		them of using the same operator.
+	Verify:
+		The read of values are equal to those written.
+
+TBTKFeature Utilities.CArray.operatorArraySubscript.2.C++ 2019-10-30
+	Do:
+		Create CArray and fill it with values using operator[] and read
+		them of using the const version of the same operator.
+	Verify:
+		The read of values are equal to those written.
+
+TBTKFeature Utilities.CArray.operatorArraySubscript.2.C++ 2019-10-30
+	Do:
+		Create CArray and fill it with values using operator[] and read
+		them of using the const version of the same operator.
+	Verify:
+		The read of values are equal to those written.
+
+TBTKFeature Utilities.CArray.getSize.1 2019-10-30
+	Do:
+		Create a CArray of size N and call carray.getSize();
+	Verify:
+		Returns N.
