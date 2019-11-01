@@ -31,6 +31,54 @@
 
 namespace TBTK{
 
+/** @brief Multi-dimensional array.
+ *
+ *  The Array provides a convenient interface for handling multi-dimensional
+ *  array.
+ *
+ *  # Indexing
+ *  An Array is created using
+ *  ```cpp
+ *    Array<DataType> array({SIZE_X, SIZE_Y, SIZE_Z});
+ *  ```
+ *  The curly braces determines the Array ranges. Any number of dimensions
+ *  is possible. Similarly, elements can be accessed using
+ *  ```cpp
+ *    array[{x, y, z}] = 10;
+ *    DataType value = array[{x, y, z}];
+ *  ```
+ *
+ *  # Arithmetics
+ *  It is possible to add and subtract Arrays with the same ranges.
+ *  ```cpp
+ *    Array<DataType> sum = array0 + array1;
+ *    Array<DataType> difference = array0 - array1;
+ *  ```
+ *  It is also possible to multiply and divide an Array by a value with the
+ *  same DataType as the Array elements.
+ *  ```cpp
+ *    DataType value = 10;
+ *    Array<DataType> product = value*array;
+ *    Array<DataType> quotient = array/value;
+ *  ```
+ *
+ *  # Slicing
+ *  Consider the code
+ *  ```cpp
+ *    Array<DataType> array({SIZE_X, SIZE_Y, SIZE_Z});
+ *    //Fill array with some values here.
+ *    //...
+ *    Array<DataType> slice = array.getSlice({_a_, 2, _a_});
+ *  ```
+ *  Here *slice* will be an Array with ranges {SIZE_X, SIZE_Z} and satsify
+ *  *slice[{x, z}] = array[{x, 2, z}].
+ *
+ *  *Note: If you write library code for TBTK, use IDX_ALL instead of \_a\_*.
+ *
+ *  # Example
+ *  \snippet Utilities/Array.cpp Array
+ *  ## Output
+ *  \snippet output/Utilities/Array.output Array */
 template<typename DataType>
 class Array{
 public:
