@@ -50,19 +50,9 @@ ArnoldiIterator::ArnoldiIterator(
 	shift = 0.;
 	tolerance = 0.;
 	maxIterations = 20;
-	residuals = NULL;
-	eigenValues = NULL;
-	eigenVectors = NULL;
 }
 
 ArnoldiIterator::~ArnoldiIterator(){
-	//Free Arnoldi variables (ARPACK)
-	if(residuals != NULL)
-		delete [] residuals;
-	if(eigenValues != NULL)
-		delete [] eigenValues;
-	if(eigenVectors != NULL)
-		delete [] eigenVectors;
 }
 
 //ARPACK function for performing single Arnoldi iteration step (double)
@@ -269,24 +259,16 @@ void ArnoldiIterator::arnoldiLoop(){
 
 		//Allocate workspaces and output
 		int worklSize = 3*numLanczosVectors*numLanczosVectors + 6*numLanczosVectors;
-		if(residuals != nullptr)
-			delete [] residuals;
-		residuals = new complex<double>[basisSize];	//Not used during ARPACK call
-		double *residualsArpack = new double[basisSize];
-		double *lanczosVectors = new double[basisSize*numLanczosVectors];
-		double *workd = new double[3*basisSize];
-		double *workl = new double[worklSize];
-		int *select = new int[numLanczosVectors];	//Need to be allocated, but not initialized as long as howMany = 'A' in call to dneupd_
-		if(eigenValues != nullptr)
-			delete [] eigenValues;
-		eigenValues = new complex<double>[numEigenValues+1];
-		if(eigenVectors != nullptr){
-			delete [] eigenVectors;
-			eigenVectors = nullptr;
-		}
+		residuals = CArray<complex<double>>(basisSize);	//Not used during ARPACK call
+		CArray<double> residualsArpack(basisSize);
+		CArray<double> lanczosVectors(basisSize*numLanczosVectors);
+		CArray<double> workd(3*basisSize);
+		CArray<double> workl(worklSize);
+		CArray<int> select(numLanczosVectors);	//Need to be allocated, but not initialized as long as howMany = 'A' in call to dneupd_
+		eigenValues = CArray<complex<double>>(numEigenValues+1);
 		if(calculateEigenVectors)
-			eigenVectors = new complex<double>[numEigenValues*model.getBasisSize()];
-		double *workev = new double[3*numLanczosVectors];
+			eigenVectors = CArray<complex<double>>(numEigenValues*model.getBasisSize());
+		CArray<double> workev(3*numLanczosVectors);
 
 		//Only used in Mode::ShiftAndInvert.
 		Matrix<double> b(basisSize, 1);
@@ -317,14 +299,14 @@ void ArnoldiIterator::arnoldiLoop(){
 				which,
 				&numEigenValues,
 				&tolerance,
-				residualsArpack,
+				residualsArpack.getData(),
 				&numLanczosVectors,
-				lanczosVectors,
+				lanczosVectors.getData(),
 				&basisSize,
 				iparam,
 				ipntr,
-				workd,
-				workl,
+				workd.getData(),
+				workl.getData(),
 				&worklSize,
 				&info
 			);
@@ -334,7 +316,7 @@ void ArnoldiIterator::arnoldiLoop(){
 				executeReverseCommunicationMessage(
 					ido,
 					basisSize,
-					workd,
+					workd.getData(),
 					ipntr,
 					b
 				)
@@ -353,39 +335,39 @@ void ArnoldiIterator::arnoldiLoop(){
 		int calculateEigenVectorsBool = calculateEigenVectors;
 
 		//Real and imaginary parts
-		double *eigenValuesReal = new double[numEigenValues+1];
-		double *eigenValuesImag = new double[numEigenValues+1];
+		CArray<double> eigenValuesReal(numEigenValues+1);
+		CArray<double> eigenValuesImag(numEigenValues+1);
 		double sigmaReal = real(sigma);
 		double sigmaImag = imag(sigma);
 
 		//Ritz vectors
-		double *ritzVectors = new double[basisSize*(numEigenValues+1)];
+		CArray<double> ritzVectors(basisSize*(numEigenValues+1));
 
 		//Extract eigenvalues and eigenvectors
 		dneupd_(
 			&calculateEigenVectorsBool,
 			&howMany,
-			select,
-			eigenValuesReal,
-			eigenValuesImag,
-			ritzVectors,
+			select.getData(),
+			eigenValuesReal.getData(),
+			eigenValuesImag.getData(),
+			ritzVectors.getData(),
 			&basisSize,
 			&sigmaReal,
 			&sigmaImag,
-			workev,
+			workev.getData(),
 			bmat,
 			&basisSize,
 			which,
 			&numEigenValues,
 			&tolerance,
-			residualsArpack,
+			residualsArpack.getData(),
 			&numLanczosVectors,
-			lanczosVectors,
+			lanczosVectors.getData(),
 			&basisSize,
 			iparam,
 			ipntr,
-			workd,
-			workl,
+			workd.getData(),
+			workl.getData(),
 			&worklSize,
 			&ierr
 		);
@@ -402,9 +384,6 @@ void ArnoldiIterator::arnoldiLoop(){
 			if(mode == Mode::Normal)
 				eigenValues[n] += sigma;
 		}
-
-		delete [] eigenValuesReal;
-		delete [] eigenValuesImag;
 
 		for(int n = 0; n < numEigenValues; n++){
 			TBTKAssert(
@@ -428,37 +407,20 @@ void ArnoldiIterator::arnoldiLoop(){
 
 		for(int n = 0; n < basisSize; n++)
 			residuals[n] = residualsArpack[n];
-
-		//Free memory
-		delete [] residualsArpack;
-		delete [] lanczosVectors;
-		delete [] workd;
-		delete [] workl;
-		delete [] select;
-		delete [] workev;
-		delete [] ritzVectors;
 	}
 	else{
 		//Allocate workspaces and output
 		int worklSize = 3*numLanczosVectors*numLanczosVectors + 5*numLanczosVectors;
-		if(residuals != nullptr)
-			delete [] residuals;
-		residuals = new complex<double>[basisSize];
-		complex<double> *lanczosVectors = new complex<double>[basisSize*numLanczosVectors];
-		complex<double> *workd = new complex<double>[3*basisSize];
-		complex<double> *workl = new complex<double>[worklSize];
-		double *rwork = new double[basisSize];
-		int *select = new int[numLanczosVectors];	//Need to be allocated, but not initialized as long as howMany = 'A' in call to zneupd_
-		if(eigenValues != nullptr)
-			delete [] eigenValues;
-		eigenValues = new complex<double>[numEigenValues+1];
-		if(eigenVectors != nullptr){
-			delete [] eigenVectors;
-			eigenVectors = nullptr;
-		}
+		residuals = CArray<complex<double>>(basisSize);
+		CArray<complex<double>> lanczosVectors(basisSize*numLanczosVectors);
+		CArray<complex<double>> workd(3*basisSize);
+		CArray<complex<double>> workl(worklSize);
+		CArray<double> rwork(basisSize);
+		CArray<int> select(numLanczosVectors);	//Need to be allocated, but not initialized as long as howMany = 'A' in call to zneupd_
+		eigenValues = CArray<complex<double>>(numEigenValues+1);
 		if(calculateEigenVectors)
-			eigenVectors = new complex<double>[numEigenValues*model.getBasisSize()];
-		complex<double> *workev = new complex<double>[2*numLanczosVectors];
+			eigenVectors = CArray<complex<double>>(numEigenValues*model.getBasisSize());
+		CArray<complex<double>> workev(2*numLanczosVectors);
 
 		//Only used in Mode::ShiftAndInvert.
 		Matrix<complex<double>> b(basisSize, 1);
@@ -489,16 +451,16 @@ void ArnoldiIterator::arnoldiLoop(){
 				which,
 				&numEigenValues,
 				&tolerance,
-				residuals,
+				residuals.getData(),
 				&numLanczosVectors,
-				lanczosVectors,
+				lanczosVectors.getData(),
 				&basisSize,
 				iparam,
 				ipntr,
-				workd,
-				workl,
+				workd.getData(),
+				workl.getData(),
 				&worklSize,
-				rwork,
+				rwork.getData(),
 				&info
 			);
 
@@ -507,7 +469,7 @@ void ArnoldiIterator::arnoldiLoop(){
 				executeReverseCommunicationMessage(
 					ido,
 					basisSize,
-					workd,
+					workd.getData(),
 					ipntr,
 					b
 				)
@@ -529,27 +491,27 @@ void ArnoldiIterator::arnoldiLoop(){
 		zneupd_(
 			&calculateEigenVectorsBool,
 			&howMany,
-			select,
-			eigenValues,
-			eigenVectors,
+			select.getData(),
+			eigenValues.getData(),
+			eigenVectors.getData(),
 			&basisSize,
 			&sigma,
-			workev,
+			workev.getData(),
 			bmat,
 			&basisSize,
 			which,
 			&numEigenValues,
 			&tolerance,
-			residuals,
+			residuals.getData(),
 			&numLanczosVectors,
-			lanczosVectors,
+			lanczosVectors.getData(),
 			&basisSize,
 			iparam,
 			ipntr,
-			workd,
-			workl,
+			workd.getData(),
+			workl.getData(),
 			&worklSize,
-			rwork,
+			rwork.getData(),
 			&ierr
 		);
 		checkZneupdIerr(ierr);
@@ -561,14 +523,6 @@ void ArnoldiIterator::arnoldiLoop(){
 				eigenValues[n] += sigma;
 		//Calculate |Ax - lambda*x| here
 		//...
-
-		//Free memory
-		delete [] lanczosVectors;
-		delete [] workd;
-		delete [] workl;
-		delete [] rwork;
-		delete [] select;
-		delete [] workev;
 	}
 
 	double numAccurateEigenValues = iparam[4]; //With respect to tolerance
@@ -873,42 +827,36 @@ void ArnoldiIterator::initShiftAndInvert(){
 }
 
 void ArnoldiIterator::sort(){
-	complex<double> *workspace = new complex<double>[numEigenValues];
+	CArray<complex<double>> workspace(numEigenValues);
 	for(int n = 0; n < numEigenValues; n++)
 		workspace[n] = eigenValues[n];
 
-	int *order = new int[numEigenValues];
-	int *orderWorkspace = new int[numEigenValues];
+	CArray<int> order(numEigenValues);
+	CArray<int> orderWorkspace(numEigenValues);
 	for(int n = 0; n < numEigenValues; n++){
 		order[n] = n;
 		orderWorkspace[n] = n;
 	}
 
 	mergeSortSplit(
-		workspace,
-		eigenValues,
-		orderWorkspace,
-		order,
+		workspace.getData(),
+		eigenValues.getData(),
+		orderWorkspace.getData(),
+		order.getData(),
 		0,
 		numEigenValues
 	);
 
 	const Model &model = getModel();
 	if(calculateEigenVectors){
-		complex<double> *eigenVectorsWorkspace = new complex<double>[numEigenValues*model.getBasisSize()];
+		CArray<complex<double>> eigenVectorsWorkspace(numEigenValues*model.getBasisSize());
 		for(int n = 0; n < numEigenValues*model.getBasisSize(); n++)
 			eigenVectorsWorkspace[n] = eigenVectors[n];
 
 		for(int n = 0; n < numEigenValues; n++)
 			for(int c = 0; c < model.getBasisSize(); c++)
 				eigenVectors[n*model.getBasisSize() + c] = eigenVectorsWorkspace[order[n]*model.getBasisSize() + c];
-
-		delete [] eigenVectorsWorkspace;
 	}
-
-	delete [] order;
-	delete [] orderWorkspace;
-	delete [] workspace;
 }
 
 void ArnoldiIterator::mergeSortSplit(

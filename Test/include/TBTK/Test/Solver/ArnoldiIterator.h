@@ -155,7 +155,8 @@ TEST(ArnoldiIterator, getEigenValues){
 	solver.setMode(ArnoldiIterator::Mode::ShiftAndInvert);
 	solver.setCentralValue(-2);
 	solver.run();
-	const std::complex<double> *eigenValues = solver.getEigenValues();
+	const CArray<std::complex<double>> &eigenValues
+		= solver.getEigenValues();
 	EXPECT_NEAR(real(eigenValues[0]), -1, 1e-5);
 	EXPECT_NEAR(imag(eigenValues[0]), 0, EPSILON_100);
 	EXPECT_NEAR(real(eigenValues[1]), 1, 1e-5);

@@ -37,7 +37,7 @@ ArnoldiIterator::ArnoldiIterator(Solver::ArnoldiIterator &aSolver){
 
 Property::EigenValues ArnoldiIterator::getEigenValues(){
 	int size = aSolver->getNumEigenValues();
-	const complex<double> *ev = aSolver->getEigenValues();
+	const CArray<complex<double>> &ev = aSolver->getEigenValues();
 
 	Property::EigenValues eigenValues(size);
 	std::vector<double> &data = eigenValues.getDataRW();
@@ -140,7 +140,7 @@ Property::WaveFunctions ArnoldiIterator::calculateWaveFunctions(
 }*/
 
 Property::DOS ArnoldiIterator::calculateDOS(){
-	const complex<double> *ev = aSolver->getEigenValues();
+	const CArray<complex<double>> &ev = aSolver->getEigenValues();
 
 	double lowerBound = getLowerBound();
 	double upperBound = getUpperBound();
@@ -148,7 +148,7 @@ Property::DOS ArnoldiIterator::calculateDOS(){
 
 	Property::DOS dos(lowerBound, upperBound, energyResolution);
 	std::vector<double> &data = dos.getDataRW();
-	double dE = (upperBound - lowerBound)/energyResolution;
+	double dE = dos.getDeltaE();
 	for(int n = 0; n < aSolver->getNumEigenValues(); n++){
 		int e = (int)(((real(ev[n]) - lowerBound)/(upperBound - lowerBound))*energyResolution);
 		if(e >= 0 && e < energyResolution){
@@ -357,14 +357,18 @@ void ArnoldiIterator::calculateWaveFunctionsCallback(
 	int offset,
 	Information &information
 ){
-	ArnoldiIterator *pe = (ArnoldiIterator*)cb_this;
+	ArnoldiIterator *propertyExtractor = (ArnoldiIterator*)cb_this;
 	Property::WaveFunctions &waveFunctions
 		= (Property::WaveFunctions&)property;
 	vector<complex<double>> &data = waveFunctions.getDataRW();
 
 	const vector<unsigned int> states = waveFunctions.getStates();
-	for(unsigned int n = 0; n < states.size(); n++)
-		data[offset + n] += pe->getAmplitude(states.at(n), index);
+	for(unsigned int n = 0; n < states.size(); n++){
+		data[offset + n] += propertyExtractor->getAmplitude(
+			states.at(n),
+			index
+		);
+	}
 }
 
 void ArnoldiIterator::calculateLDOSCallback(
@@ -374,23 +378,24 @@ void ArnoldiIterator::calculateLDOSCallback(
 	int offset,
 	Information &information
 ){
-	ArnoldiIterator *pe = (ArnoldiIterator*)cb_this;
+	ArnoldiIterator *propertyExtractor = (ArnoldiIterator*)cb_this;
 	Property::LDOS &ldos = (Property::LDOS&)property;
 	vector<double> &data = ldos.getDataRW();
+	Solver::ArnoldiIterator &solver = *propertyExtractor->aSolver;
 
-	const complex<double> *eigenValues = pe->aSolver->getEigenValues();
+	const CArray<complex<double>> &eigenValues = solver.getEigenValues();
 
-	double lowerBound = pe->getLowerBound();
-	double upperBound = pe->getUpperBound();
-	int energyResolution = pe->getEnergyResolution();
+	double lowerBound = propertyExtractor->getLowerBound();
+	double upperBound = propertyExtractor->getUpperBound();
+	int energyResolution = propertyExtractor->getEnergyResolution();
 
-	double dE = (upperBound - lowerBound)/energyResolution;
-	for(int n = 0; n < pe->aSolver->getNumEigenValues(); n++){
+	double dE = ldos.getDeltaE();
+	for(int n = 0; n < solver.getNumEigenValues(); n++){
 		if(
 			real(eigenValues[n]) > lowerBound
 			&& real(eigenValues[n]) < upperBound
 		){
-			complex<double> u = pe->aSolver->getAmplitude(n, index);
+			complex<double> u = solver.getAmplitude(n, index);
 
 			int e = (int)((real(eigenValues[n]) - lowerBound)/dE);
 			if(e >= energyResolution)
@@ -407,31 +412,32 @@ void ArnoldiIterator::calculateSpinPolarizedLDOSCallback(
 	int offset,
 	Information &information
 ){
-	ArnoldiIterator *pe = (ArnoldiIterator*)cb_this;
+	ArnoldiIterator *propertyExtractor = (ArnoldiIterator*)cb_this;
 	Property::SpinPolarizedLDOS &spinPolarizedLDOS
 		= (Property::SpinPolarizedLDOS&)property;
 	vector<SpinMatrix> &data = spinPolarizedLDOS.getDataRW();
+	Solver::ArnoldiIterator &solver = *propertyExtractor->aSolver;
 
-	const complex<double> *eigenValues = pe->aSolver->getEigenValues();
+	const CArray<complex<double>> &eigenValues = solver.getEigenValues();
 
 	int spinIndex = information.getSpinIndex();
 
-	double lowerBound = pe->getLowerBound();
-	double upperBound = pe->getUpperBound();
-	int energyResolution = pe->getEnergyResolution();
+	double lowerBound = propertyExtractor->getLowerBound();
+	double upperBound = propertyExtractor->getUpperBound();
+	int energyResolution = propertyExtractor->getEnergyResolution();
 
 	Index index_u(index);
 	Index index_d(index);
 	index_u.at(spinIndex) = 0;
 	index_d.at(spinIndex) = 1;
-	double dE = (upperBound - lowerBound)/energyResolution;
-	for(int n = 0; n < pe->aSolver->getNumEigenValues(); n++){
+	double dE = spinPolarizedLDOS.getDeltaE();
+	for(int n = 0; n < solver.getNumEigenValues(); n++){
 		if(
 			real(eigenValues[n]) > lowerBound
 			&& real(eigenValues[n]) < upperBound
 		){
-			complex<double> u_u = pe->aSolver->getAmplitude(n, index_u);
-			complex<double> u_d = pe->aSolver->getAmplitude(n, index_d);
+			complex<double> u_u = solver.getAmplitude(n, index_u);
+			complex<double> u_d = solver.getAmplitude(n, index_d);
 
 			int e = (int)((real(eigenValues[n]) - lowerBound)/dE);
 			if(e >= energyResolution)

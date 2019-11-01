@@ -23,6 +23,7 @@
 #ifndef COM_DAFER45_SOLVER_ARNOLDI_ITERATOR
 #define COM_DAFER45_SOLVER_ARNOLDI_ITERATOR
 
+#include "TBTK/CArray.h"
 #include "TBTK/Model.h"
 #include "TBTK/Solver/LUSolver.h"
 #include "TBTK/Solver/Solver.h"
@@ -151,7 +152,7 @@ public:
 	void run();
 
 	/** Get eigenValues. */
-	const std::complex<double>* getEigenValues() const;
+	const CArray<std::complex<double>>& getEigenValues() const;
 
 	/** Get eigen value. */
 	const double getEigenValue(int state) const;
@@ -189,13 +190,13 @@ private:
 	int maxIterations;
 
 	/** Residuals. (Arnoldi variable). */
-	std::complex<double> *residuals;
+	CArray<std::complex<double>> residuals;
 
 	/** Eigen values. (Arnoldi variable). */
-	std::complex<double> *eigenValues;
+	CArray<std::complex<double>> eigenValues;
 
 	/** Eigen vectors. (Arnoldi variable). */
-	std::complex<double> *eigenVectors;
+	CArray<std::complex<double>> eigenVectors;
 
 	SparseMatrix<std::complex<double>> matrix;
 
@@ -306,7 +307,7 @@ inline void ArnoldiIterator::setCentralValue(double centralValue){
 	shift = centralValue;
 }
 
-inline const std::complex<double>* ArnoldiIterator::getEigenValues() const{
+inline const CArray<std::complex<double>>& ArnoldiIterator::getEigenValues() const{
 	return eigenValues;
 }
 
