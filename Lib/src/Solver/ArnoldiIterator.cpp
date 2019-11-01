@@ -52,9 +52,6 @@ ArnoldiIterator::ArnoldiIterator(
 	maxIterations = 20;
 }
 
-ArnoldiIterator::~ArnoldiIterator(){
-}
-
 //ARPACK function for performing single Arnoldi iteration step (double)
 extern "C" void dnaupd_(
 	int			*IDO,

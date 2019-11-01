@@ -62,9 +62,6 @@ public:
 	/** Constructs a Solver::ArnoldiIterator. */
 	ArnoldiIterator();
 
-	/** Destructor. */
-	virtual ~ArnoldiIterator();
-
 	/** Enum class describing the different modes of operation.
 	 *
 	 *  Normal:
