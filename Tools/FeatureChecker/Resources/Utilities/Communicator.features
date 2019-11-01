@@ -1,0 +1,20 @@
+TBTKFeature Utilities.Array.construction.1 2019-11-01
+	Do:
+		Create Communicators with true and false arguments and call
+		communicator.getVerbose().
+	Verify:
+		Returns the same value as the Communicator was created with.
+
+TBTKFeature Utilities.Array.setGetVerbose.1 2019-11-01
+	Do:
+		Use communicator.setVerbose() to set the verbosity and
+		communicator.getVerbose() to check the value.
+	Verify:
+		The get value is the same as the set value.
+
+TBTKFeature Utilities.Array.setGetGlobalVerbose.1 2019-11-01
+	Do:
+		Use Communicator::setGlobalVerbose() to set the verbosity and
+		Communicator::getGlobalVerbose() to check the value.
+	Verify:
+		The get value is the same as the set value.

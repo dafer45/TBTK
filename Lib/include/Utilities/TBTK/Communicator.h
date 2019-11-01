@@ -15,7 +15,8 @@
 
 /** @package TBTKcalc
  *  @file Communicator.h
- *  @brief Base class that communicate their current status during execution.
+ *  @brief Base class for classes that can communicate their status during
+ *  execution.
  *
  *  @author Kristofer Björnson
  */
@@ -25,21 +26,66 @@
 
 namespace TBTK{
 
+/** @brief Base class for classes that can communicate their status during
+ *  execution.
+ *
+ *  The communicator allows for both the global verbosity and the verbosity of
+ *  individual objects to be modified. A class that inherits from Communicator
+ *  is provided with two functions for setting and getting its verbosity.
+ *  Setting the verbosity to true means the object may output text to the
+ *  Streams during execution.
+ *
+ *  The Communicator class also provides two static functions for setting the
+ *  verbosity globally. If the global verbosity set to false, no information
+ *  should be written to the Streams even if the individual objects have their
+ *  verbosity set to true. To respect this behavior, classes that derive from
+ *  the communicator should enclose any output to Streams with the statement
+ *  ```cpp
+ *    if(getVerbose() && Streams::getGlobalVerbose()){
+ *      //Output to Streams here
+ *      //...
+ *    }
+ *  ```
+ *
+ *  *Note: Error messages should not be muted.*
+ *
+ *  # Example
+ *  \snippet Utilities/Communicator.cpp Communicator
+ *  ## Output
+ *  \snippet output/Utilities/Communicator.output Communicator */
 class Communicator{
 public:
-	/** Constructor. */
+	//TBTKFeature Utilities.Communicator.construction.1 2019-11-01
+	/** Constructor.
+	 *
+	 *  @param verbose Flag indicating whether or not the communicator is
+	 *  verbose */
 	Communicator(bool verbose);
 
-	/** Set verbose. */
+	//TBTKFeature Utilities.Communicator.setGetVerbose.1 2019-11-01
+	/** Set verbose.
+	 *
+	 *  @param verbose Flag indicating whether or not the Communicator is
+	 *  verbose. */
 	void setVerbose(bool verbose);
 
-	/** Get verbose. */
+	//TBTKFeature Utilities.Communicator.setGetVerbose.1 2019-11-01
+	/** Get verbose.
+	 *
+	 *  @return True if the Communicator is verbose, otherwise false. */
 	bool getVerbose() const;
 
-	/** Set global verbose. */
+	//TBTKFeature Utilities.Communicator.setGetGlobalVerbose.1 2019-11-01
+	/** Set global verbose.
+	 *
+	 *  @param globalVerbose If set to false, Communicators will not
+	 *  communicate even if they are verbose. */
 	static void setGlobalVerbose(bool globalVerbose);
 
-	/** Get global verbose. */
+	//TBTKFeature Utilities.Communicator.setGetGlobalVerbose.1 2019-11-01
+	/** Get global verbose.
+	 *
+	 *  @return False if communication is suppressed globally. */
 	static bool getGlobalVerbose();
 private:
 	/** Flag indicating wether the communicator is verbose. */
