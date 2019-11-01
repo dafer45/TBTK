@@ -31,13 +31,12 @@ static complex<double> i(0, 1);
 namespace TBTK{
 namespace PropertyExtractor{
 
-Diagonalizer::Diagonalizer(Solver::Diagonalizer &dSolver){
-	this->dSolver = &dSolver;
+Diagonalizer::Diagonalizer(Solver::Diagonalizer &solver) : solver(solver){
 }
 
 Property::EigenValues Diagonalizer::getEigenValues(){
-	int size = dSolver->getModel().getBasisSize();
-	const CArray<double> &ev = dSolver->getEigenValues();
+	int size = solver.getModel().getBasisSize();
+	const CArray<double> &ev = solver.getEigenValues();
 
 	Property::EigenValues eigenValues(size);
 	std::vector<double> &data = eigenValues.getDataRW();
@@ -64,14 +63,14 @@ Property::WaveFunctions Diagonalizer::calculateWaveFunctions(
 
 	IndexTree allIndices = generateIndexTree(
 		patterns,
-		dSolver->getModel().getHoppingAmplitudeSet(),
+		solver.getModel().getHoppingAmplitudeSet(),
 		false,
 		false
 	);
 
 	IndexTree memoryLayout = generateIndexTree(
 		patterns,
-		dSolver->getModel().getHoppingAmplitudeSet(),
+		solver.getModel().getHoppingAmplitudeSet(),
 		true,
 		true
 	);
@@ -79,7 +78,7 @@ Property::WaveFunctions Diagonalizer::calculateWaveFunctions(
 	vector<unsigned int> statesVector;
 	if(states.size() == 1){
 		if((*states.begin()).isWildcard()){
-			for(int n = 0; n < dSolver->getModel().getBasisSize(); n++)
+			for(int n = 0; n < solver.getModel().getBasisSize(); n++)
 				statesVector.push_back(n);
 		}
 		else{
@@ -167,14 +166,14 @@ Property::GreensFunction Diagonalizer::calculateGreensFunction(
 
 	IndexTree allIndices = generateIndexTree(
 		patterns,
-		dSolver->getModel().getHoppingAmplitudeSet(),
+		solver.getModel().getHoppingAmplitudeSet(),
 		false,
 		false
 	);
 
 	IndexTree memoryLayout = generateIndexTree(
 		patterns,
-		dSolver->getModel().getHoppingAmplitudeSet(),
+		solver.getModel().getHoppingAmplitudeSet(),
 		true,
 		true
 	);
@@ -223,7 +222,7 @@ Property::GreensFunction Diagonalizer::calculateGreensFunction(
 			"This should never happen, contact the developer."
 		);
 
-		double temperature = dSolver->getModel().getTemperature();
+		double temperature = solver.getModel().getTemperature();
 		double kT = UnitHandler::getK_BN()*temperature;
 		double fundamentalMatsubaraEnergy = M_PI*kT;
 
@@ -260,7 +259,7 @@ Property::GreensFunction Diagonalizer::calculateGreensFunction(
 }
 
 Property::DOS Diagonalizer::calculateDOS(){
-	const CArray<double> &eigenValues = dSolver->getEigenValues();
+	const CArray<double> &eigenValues = solver.getEigenValues();
 
 	double lowerBound = getLowerBound();
 	double upperBound = getUpperBound();
@@ -269,7 +268,7 @@ Property::DOS Diagonalizer::calculateDOS(){
 	Property::DOS dos(lowerBound, upperBound, energyResolution);
 	std::vector<double> &data = dos.getDataRW();
 	double dE = dos.getDeltaE();
-	for(int n = 0; n < dSolver->getModel().getBasisSize(); n++){
+	for(int n = 0; n < solver.getModel().getBasisSize(); n++){
 		int e = round((eigenValues[n] - lowerBound)/dE);
 		if(e >= 0 && e < energyResolution){
 			data[e] += 1./dE;
@@ -287,27 +286,27 @@ complex<double> Diagonalizer::calculateExpectationValue(
 
 	complex<double> expectationValue = 0.;
 
-	Statistics statistics = dSolver->getModel().getStatistics();
+	Statistics statistics = solver.getModel().getStatistics();
 
-	for(int n = 0; n < dSolver->getModel().getBasisSize(); n++){
+	for(int n = 0; n < solver.getModel().getBasisSize(); n++){
 		double weight;
 		if(statistics == Statistics::FermiDirac){
 			weight = Functions::fermiDiracDistribution(
-				dSolver->getEigenValue(n),
-				dSolver->getModel().getChemicalPotential(),
-				dSolver->getModel().getTemperature()
+				solver.getEigenValue(n),
+				solver.getModel().getChemicalPotential(),
+				solver.getModel().getTemperature()
 			);
 		}
 		else{
 			weight = Functions::boseEinsteinDistribution(
-				dSolver->getEigenValue(n),
-				dSolver->getModel().getChemicalPotential(),
-				dSolver->getModel().getTemperature()
+				solver.getEigenValue(n),
+				solver.getModel().getChemicalPotential(),
+				solver.getModel().getTemperature()
 			);
 		}
 
-		complex<double> u_to = dSolver->getAmplitude(n, to);
-		complex<double> u_from = dSolver->getAmplitude(n, from);
+		complex<double> u_to = solver.getAmplitude(n, to);
+		complex<double> u_from = solver.getAmplitude(n, from);
 
 		expectationValue += weight*conj(u_to)*u_from;
 	}
@@ -354,14 +353,14 @@ Property::Density Diagonalizer::calculateDensity(
 
 	IndexTree allIndices = generateIndexTree(
 		patterns,
-		dSolver->getModel().getHoppingAmplitudeSet(),
+		solver.getModel().getHoppingAmplitudeSet(),
 		false,
 		false
 	);
 
 	IndexTree memoryLayout = generateIndexTree(
 		patterns,
-		dSolver->getModel().getHoppingAmplitudeSet(),
+		solver.getModel().getHoppingAmplitudeSet(),
 		true,
 		true
 	);
@@ -435,14 +434,14 @@ Property::Magnetization Diagonalizer::calculateMagnetization(
 
 	IndexTree allIndices = generateIndexTree(
 		patterns,
-		dSolver->getModel().getHoppingAmplitudeSet(),
+		solver.getModel().getHoppingAmplitudeSet(),
 		false,
 		true
 	);
 
 	IndexTree memoryLayout = generateIndexTree(
 		patterns,
-		dSolver->getModel().getHoppingAmplitudeSet(),
+		solver.getModel().getHoppingAmplitudeSet(),
 		true,
 		true
 	);
@@ -513,14 +512,14 @@ Property::LDOS Diagonalizer::calculateLDOS(
 
 	IndexTree allIndices = generateIndexTree(
 		patterns,
-		dSolver->getModel().getHoppingAmplitudeSet(),
+		solver.getModel().getHoppingAmplitudeSet(),
 		false,
 		true
 	);
 
 	IndexTree memoryLayout = generateIndexTree(
 		patterns,
-		dSolver->getModel().getHoppingAmplitudeSet(),
+		solver.getModel().getHoppingAmplitudeSet(),
 		true,
 		true
 	);
@@ -612,14 +611,14 @@ Property::SpinPolarizedLDOS Diagonalizer::calculateSpinPolarizedLDOS(
 
 	IndexTree allIndices = generateIndexTree(
 		patterns,
-		dSolver->getModel().getHoppingAmplitudeSet(),
+		solver.getModel().getHoppingAmplitudeSet(),
 		false,
 		true
 	);
 
 	IndexTree memoryLayout = generateIndexTree(
 		patterns,
-		dSolver->getModel().getHoppingAmplitudeSet(),
+		solver.getModel().getHoppingAmplitudeSet(),
 		true,
 		true
 	);
@@ -644,25 +643,25 @@ Property::SpinPolarizedLDOS Diagonalizer::calculateSpinPolarizedLDOS(
 }
 
 double Diagonalizer::calculateEntropy(){
-	Statistics statistics = dSolver->getModel().getStatistics();
+	Statistics statistics = solver.getModel().getStatistics();
 
 	double entropy = 0.;
-	for(int n = 0; n < dSolver->getModel().getBasisSize(); n++){
+	for(int n = 0; n < solver.getModel().getBasisSize(); n++){
 		double p;
 
 		switch(statistics){
 		case Statistics::FermiDirac:
 			p = Functions::fermiDiracDistribution(
 				getEigenValue(n),
-				dSolver->getModel().getChemicalPotential(),
-				dSolver->getModel().getTemperature()
+				solver.getModel().getChemicalPotential(),
+				solver.getModel().getTemperature()
 			);
 			break;
 		case Statistics::BoseEinstein:
 			p = Functions::boseEinsteinDistribution(
 				getEigenValue(n),
-				dSolver->getModel().getChemicalPotential(),
-				dSolver->getModel().getTemperature()
+				solver.getModel().getChemicalPotential(),
+				solver.getModel().getTemperature()
 			);
 			break;
 		default:
@@ -688,14 +687,14 @@ void Diagonalizer::calculateWaveFunctionsCallback(
 	int offset,
 	Information &information
 ){
-	Diagonalizer *pe = (Diagonalizer*)cb_this;
+	Diagonalizer *propertyExtractor = (Diagonalizer*)cb_this;
 	Property::WaveFunctions &waveFunctions
 		= (Property::WaveFunctions&)property;
 	vector<complex<double>> &data = waveFunctions.getDataRW();
 
 	const vector<unsigned int> states = waveFunctions.getStates();
 	for(unsigned int n = 0; n < states.size(); n++)
-		data[offset + n] += pe->getAmplitude(states.at(n), index);
+		data[offset + n] += propertyExtractor->getAmplitude(states.at(n), index);
 }
 
 void Diagonalizer::calculateGreensFunctionCallback(
@@ -705,7 +704,7 @@ void Diagonalizer::calculateGreensFunctionCallback(
 	int offset,
 	Information &information
 ){
-	Diagonalizer *pe = (Diagonalizer*)cb_this;
+	Diagonalizer *propertyExtractor = (Diagonalizer*)cb_this;
 
 	vector<Index> components = index.split();
 
@@ -717,16 +716,16 @@ void Diagonalizer::calculateGreensFunctionCallback(
 	case Property::GreensFunction::Type::Advanced:
 	case Property::GreensFunction::Type::Retarded:
 	{
-		double lowerBound = pe->getLowerBound();
-		int energyResolution = pe->getEnergyResolution();
+		double lowerBound = propertyExtractor->getLowerBound();
+		int energyResolution = propertyExtractor->getEnergyResolution();
 		double dE = greensFunction.getDeltaE();
 		double delta;
 		switch(greensFunction.getType()){
 			case Property::GreensFunction::Type::Advanced:
-				delta = -pe->getEnergyInfinitesimal();
+				delta = -propertyExtractor->getEnergyInfinitesimal();
 				break;
 			case Property::GreensFunction::Type::Retarded:
-				delta = pe->getEnergyInfinitesimal();
+				delta = propertyExtractor->getEnergyInfinitesimal();
 				break;
 			default:
 				TBTKExit(
@@ -741,14 +740,14 @@ void Diagonalizer::calculateGreensFunctionCallback(
 
 			for(
 				int n = 0;
-				n < pe->dSolver->getModel().getBasisSize();
+				n < propertyExtractor->solver.getModel().getBasisSize();
 				n++
 			){
-				double E_n = pe->getEigenValue(n);
+				double E_n = propertyExtractor->getEigenValue(n);
 				complex<double> amplitude0
-					= pe->getAmplitude(n, components[0]);
+					= propertyExtractor->getAmplitude(n, components[0]);
 				complex<double> amplitude1
-					= pe->getAmplitude(n, components[1]);
+					= propertyExtractor->getAmplitude(n, components[1]);
 				data[offset + e]
 					+= amplitude0*conj(amplitude1)/(
 						E - E_n + i*delta
@@ -762,7 +761,7 @@ void Diagonalizer::calculateGreensFunctionCallback(
 	{
 		unsigned int numMatsubaraEnergies
 			= greensFunction.getNumMatsubaraEnergies();
-		double chemicalPotential = pe->dSolver->getModel(
+		double chemicalPotential = propertyExtractor->solver.getModel(
 			).getChemicalPotential();
 
 		for(unsigned int e = 0; e < numMatsubaraEnergies; e++){
@@ -771,14 +770,14 @@ void Diagonalizer::calculateGreensFunctionCallback(
 
 			for(
 				int n = 0;
-				n < pe->dSolver->getModel().getBasisSize();
+				n < propertyExtractor->solver.getModel().getBasisSize();
 				n++
 			){
-				double E_n = pe->getEigenValue(n);
+				double E_n = propertyExtractor->getEigenValue(n);
 				complex<double> amplitude0
-					= pe->getAmplitude(n, components[0]);
+					= propertyExtractor->getAmplitude(n, components[0]);
 				complex<double> amplitude1
-					= pe->getAmplitude(n, components[1]);
+					= propertyExtractor->getAmplitude(n, components[1]);
 				data[offset + e]
 					+= amplitude0*conj(amplitude1)/(
 						E - E_n
@@ -810,7 +809,7 @@ void Diagonalizer::calculateDensityCallback(
 	Diagonalizer *propertyExtractor = (Diagonalizer*)cb_this;
 	Property::Density &density = (Property::Density&)property;
 	vector<double> &data = density.getDataRW();
-	Solver::Diagonalizer &solver = *propertyExtractor->dSolver;
+	Solver::Diagonalizer &solver = propertyExtractor->solver;
 	const Model &model = solver.getModel();
 
 	const CArray<double> &eigenValues = solver.getEigenValues();
@@ -849,7 +848,7 @@ void Diagonalizer::calculateMAGCallback(
 	Property::Magnetization &magnetization
 		= (Property::Magnetization&)property;
 	vector<SpinMatrix> &data = magnetization.getDataRW();
-	Solver::Diagonalizer &solver = *propertyExtractor->dSolver;
+	Solver::Diagonalizer &solver = propertyExtractor->solver;
 	const Model &model = solver.getModel();
 
 	const CArray<double> &eigenValues = solver.getEigenValues();
@@ -897,7 +896,7 @@ void Diagonalizer::calculateLDOSCallback(
 	Diagonalizer *propertyExtractor = (Diagonalizer*)cb_this;
 	Property::LDOS &ldos = (Property::LDOS&)property;
 	vector<double> &data = ldos.getDataRW();
-	Solver::Diagonalizer &solver = *propertyExtractor->dSolver;
+	Solver::Diagonalizer &solver = propertyExtractor->solver;
 	const Model &model = solver.getModel();
 
 	double lowerBound = propertyExtractor->getLowerBound();
@@ -930,7 +929,7 @@ void Diagonalizer::calculateSP_LDOSCallback(
 	Property::SpinPolarizedLDOS &spinPolarizedLDOS
 		= (Property::SpinPolarizedLDOS&)property;
 	vector<SpinMatrix> &data = spinPolarizedLDOS.getDataRW();
-	Solver::Diagonalizer &solver = *propertyExtractor->dSolver;
+	Solver::Diagonalizer &solver = propertyExtractor->solver;
 	const Model &model = solver.getModel();
 
 	double lowerBound = propertyExtractor->getLowerBound();
