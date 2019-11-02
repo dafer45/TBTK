@@ -35,15 +35,9 @@ Diagonalizer::Diagonalizer(Solver::Diagonalizer &solver) : solver(solver){
 }
 
 Property::EigenValues Diagonalizer::getEigenValues(){
-	int size = solver.getModel().getBasisSize();
 	const CArray<double> &ev = solver.getEigenValues();
 
-	Property::EigenValues eigenValues(size);
-	std::vector<double> &data = eigenValues.getDataRW();
-	for(int n = 0; n < size; n++)
-		data[n] = ev[n];
-
-	return eigenValues;
+	return Property::EigenValues(ev.getSize(), ev.getData());
 }
 
 Property::WaveFunctions Diagonalizer::calculateWaveFunctions(
