@@ -358,10 +358,10 @@ TEST(Diagonalizer, calculateWaveFunctions){
 
 	//Check when some states and some indices are calculated.
 	std::vector<Subindex> states1 = {1, 3, 7};
-	std::vector<int> sites1 = {11, 13, 19};
+	std::vector<Index> sites1 = {{11}, {13}, {19}};
 	Property::WaveFunctions waveFunctions1
 		= propertyExtractor.calculateWaveFunctions(
-			{{sites1[0]}, {sites1[1]}, {sites1[2]}},
+			sites1,
 			states1
 		);
 	for(unsigned int n = 0; n < states1.size(); n++){

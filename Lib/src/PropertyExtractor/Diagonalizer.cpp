@@ -19,6 +19,7 @@
  */
 
 #include "TBTK/PropertyExtractor/Diagonalizer.h"
+#include "TBTK/PropertyExtractor/IndexTreeGenerator.h"
 #include "TBTK/PropertyExtractor/PatternValidator.h"
 #include "TBTK/Functions.h"
 #include "TBTK/Streams.h"
@@ -56,19 +57,10 @@ Property::WaveFunctions Diagonalizer::calculateWaveFunctions(
 	);
 	patternValidator.validate(patterns);
 
-	IndexTree allIndices = generateIndexTree(
-		patterns,
-		solver.getModel().getHoppingAmplitudeSet(),
-		false,
-		false
-	);
-
-	IndexTree memoryLayout = generateIndexTree(
-		patterns,
-		solver.getModel().getHoppingAmplitudeSet(),
-		true,
-		true
-	);
+	IndexTreeGenerator indexTreeGenerator(solver.getModel());
+	IndexTree allIndices = indexTreeGenerator.generateAllIndices(patterns);
+	IndexTree memoryLayout
+		= indexTreeGenerator.generateMemoryLayout(patterns);
 
 	vector<unsigned int> statesVector;
 	if(states.size() == 1){
@@ -124,20 +116,10 @@ Property::GreensFunction Diagonalizer::calculateGreensFunction(
 	);
 	patternValidator.validate(patterns);
 
-
-	IndexTree allIndices = generateIndexTree(
-		patterns,
-		solver.getModel().getHoppingAmplitudeSet(),
-		false,
-		false
-	);
-
-	IndexTree memoryLayout = generateIndexTree(
-		patterns,
-		solver.getModel().getHoppingAmplitudeSet(),
-		true,
-		true
-	);
+	IndexTreeGenerator indexTreeGenerator(solver.getModel());
+	IndexTree allIndices = indexTreeGenerator.generateAllIndices(patterns);
+	IndexTree memoryLayout
+		= indexTreeGenerator.generateMemoryLayout(patterns);
 
 	Property::GreensFunction greensFunction;
 
@@ -306,19 +288,10 @@ Property::Density Diagonalizer::calculateDensity(
 	);
 	patternValidator.validate(patterns);
 
-	IndexTree allIndices = generateIndexTree(
-		patterns,
-		solver.getModel().getHoppingAmplitudeSet(),
-		false,
-		false
-	);
-
-	IndexTree memoryLayout = generateIndexTree(
-		patterns,
-		solver.getModel().getHoppingAmplitudeSet(),
-		true,
-		true
-	);
+	IndexTreeGenerator indexTreeGenerator(solver.getModel());
+	IndexTree allIndices = indexTreeGenerator.generateAllIndices(patterns);
+	IndexTree memoryLayout
+		= indexTreeGenerator.generateMemoryLayout(patterns);
 
 	Property::Density density(memoryLayout);
 
@@ -386,19 +359,10 @@ Property::Magnetization Diagonalizer::calculateMagnetization(
 	);
 	patternValidator.validate(patterns);
 
-	IndexTree allIndices = generateIndexTree(
-		patterns,
-		solver.getModel().getHoppingAmplitudeSet(),
-		false,
-		true
-	);
-
-	IndexTree memoryLayout = generateIndexTree(
-		patterns,
-		solver.getModel().getHoppingAmplitudeSet(),
-		true,
-		true
-	);
+	IndexTreeGenerator indexTreeGenerator(solver.getModel());
+	IndexTree allIndices = indexTreeGenerator.generateAllIndices(patterns);
+	IndexTree memoryLayout
+		= indexTreeGenerator.generateMemoryLayout(patterns);
 
 	Property::Magnetization magnetization(memoryLayout);
 
@@ -461,19 +425,10 @@ Property::LDOS Diagonalizer::calculateLDOS(
 	double upperBound = getUpperBound();
 	int energyResolution = getEnergyResolution();
 
-	IndexTree allIndices = generateIndexTree(
-		patterns,
-		solver.getModel().getHoppingAmplitudeSet(),
-		false,
-		true
-	);
-
-	IndexTree memoryLayout = generateIndexTree(
-		patterns,
-		solver.getModel().getHoppingAmplitudeSet(),
-		true,
-		true
-	);
+	IndexTreeGenerator indexTreeGenerator(solver.getModel());
+	IndexTree allIndices = indexTreeGenerator.generateAllIndices(patterns);
+	IndexTree memoryLayout
+		= indexTreeGenerator.generateMemoryLayout(patterns);
 
 	Property::LDOS ldos(
 		memoryLayout,
@@ -559,19 +514,10 @@ Property::SpinPolarizedLDOS Diagonalizer::calculateSpinPolarizedLDOS(
 	double upperBound = getUpperBound();
 	int energyResolution = getEnergyResolution();
 
-	IndexTree allIndices = generateIndexTree(
-		patterns,
-		solver.getModel().getHoppingAmplitudeSet(),
-		false,
-		true
-	);
-
-	IndexTree memoryLayout = generateIndexTree(
-		patterns,
-		solver.getModel().getHoppingAmplitudeSet(),
-		true,
-		true
-	);
+	IndexTreeGenerator indexTreeGenerator(solver.getModel());
+	IndexTree allIndices = indexTreeGenerator.generateAllIndices(patterns);
+	IndexTree memoryLayout
+		= indexTreeGenerator.generateMemoryLayout(patterns);
 
 	Property::SpinPolarizedLDOS spinPolarizedLDOS(
 		memoryLayout,

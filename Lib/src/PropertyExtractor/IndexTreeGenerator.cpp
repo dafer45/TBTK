@@ -83,8 +83,6 @@ IndexTree IndexTreeGenerator::generate(
 			}
 			for(unsigned int c = 0; c < indices.size(); c++)
 				indexTree.add(indices.at(c));
-
-			break;
 		}
 		else if(components.size() != 0){
 			IndexTree firstIndexTree = generate(
@@ -125,8 +123,6 @@ IndexTree IndexTreeGenerator::generate(
 					indexTree.add({*iterator0, *iterator1});
 				}
 			}
-
-			break;
 		}
 		else{
 			TBTKExit(

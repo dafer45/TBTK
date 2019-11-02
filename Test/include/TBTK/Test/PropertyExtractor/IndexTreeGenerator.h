@@ -180,5 +180,18 @@ TEST_F(IndexTreeGeneratorTest, generateAllIndices5){
 	}
 }
 
+//TBTKFeature PropertyExtractor.IndexTreeGenerator.generateAllIndices.6 2019-11-02
+TEST_F(IndexTreeGeneratorTest, generateAllIndices6){
+	IndexTreeGenerator indexTreeGenerator(model);
+	IndexTree indexTree = indexTreeGenerator.generateAllIndices({
+			{0, IDX_ALL, IDX_SPIN},
+			{1, IDX_ALL, IDX_SPIN}
+	});
+	EXPECT_EQ(indexTree.getSize(), 4);
+	for(unsigned int x = 0; x < 2; x++)
+		for(unsigned int y = 0; y < 2; y++)
+			EXPECT_TRUE(indexTree.contains({x, y, IDX_SPIN}));
+}
+
 };	//End of namespace PropertyExtractor
 };	//End of namespace TBTK
