@@ -36,9 +36,12 @@ Diagonalizer::Diagonalizer(Solver::Diagonalizer &solver) : solver(solver){
 }
 
 Property::EigenValues Diagonalizer::getEigenValues(){
-	const CArray<double> &ev = solver.getEigenValues();
+	const CArray<double> &eigenValues = solver.getEigenValues();
 
-	return Property::EigenValues(ev.getSize(), ev.getData());
+	return Property::EigenValues(
+		eigenValues.getSize(),
+		eigenValues.getData()
+	);
 }
 
 Property::WaveFunctions Diagonalizer::calculateWaveFunctions(
@@ -108,38 +111,6 @@ Property::WaveFunctions Diagonalizer::calculateWaveFunctions(
 
 	return waveFunctions;
 }
-
-/*Property::GreensFunction* DPropertyExtractor::calculateGreensFunction(
-	Index to,
-	Index from,
-	Property::GreensFunction::Type type
-){
-	unsigned int numPoles = dSolver->getModel().getBasisSize();
-
-	complex<double> *positions = new complex<double>[numPoles];
-	complex<double> *amplitudes = new complex<double>[numPoles];
-	for(int n = 0; n < dSolver->getModel().getBasisSize(); n++){
-		positions[n] = dSolver->getEigenValue(n);
-
-		complex<double> uTo = dSolver->getAmplitude(n, to);
-		complex<double> uFrom = dSolver->getAmplitude(n, from);
-
-		amplitudes[n] = uTo*conj(uFrom);
-	}
-
-	Property::GreensFunction *greensFunction = new Property::GreensFunction(
-		type,
-		Property::GreensFunction::Format::Poles,
-		numPoles,
-		positions,
-		amplitudes
-	);
-
-	delete [] positions;
-	delete [] amplitudes;
-
-	return greensFunction;
-}*/
 
 Property::GreensFunction Diagonalizer::calculateGreensFunction(
 	const vector<Index> &patterns,
