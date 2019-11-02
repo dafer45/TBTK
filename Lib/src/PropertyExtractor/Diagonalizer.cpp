@@ -254,19 +254,16 @@ Property::GreensFunction Diagonalizer::calculateGreensFunction(
 
 Property::DOS Diagonalizer::calculateDOS(){
 	const CArray<double> &eigenValues = solver.getEigenValues();
-
 	double lowerBound = getLowerBound();
 	double upperBound = getUpperBound();
 	int energyResolution = getEnergyResolution();
 
 	Property::DOS dos(lowerBound, upperBound, energyResolution);
-	std::vector<double> &data = dos.getDataRW();
 	double dE = dos.getDeltaE();
-	for(int n = 0; n < solver.getModel().getBasisSize(); n++){
+	for(unsigned int n = 0; n < eigenValues.getSize(); n++){
 		int e = round((eigenValues[n] - lowerBound)/dE);
-		if(e >= 0 && e < energyResolution){
-			data[e] += 1./dE;
-		}
+		if(e >= 0 && e < energyResolution)
+			dos(e) += 1./dE;
 	}
 
 	return dos;
