@@ -1,0 +1,65 @@
+TBTKFeature PropertyExtractor.PatternValidator.checkNumRequiredComponentIndices.1 2019-11-01
+	Do:
+		Call patternValidator.valdiate() with list of patterns with
+		different number of component Indices.
+	Verify:
+		Passes.
+
+TBTKFeature PropertyExtractor.PatternValidator.checkNumRequiredComponentIndices.2 2019-11-01
+	Do:
+		Set the required number of component Indices using
+		patternValidator.setRequiredComponentIndices() and call
+		validatePattern.validate() with a list of Indices that has that
+		number of components.
+	Verify:
+		Passes.
+
+TBTKFeature PropertyExtractor.PatternValidator.checkNumRequiredComponentIndices.3 2019-11-01
+	Do:
+		Set the required number of component Indices using
+		patternValidator.setRequiredComponentIndices() and call
+		validatePattern.validate() with a list of components that does
+		not have that number of components.
+	Verify:
+		Exits or throws exception.
+
+TBTKFeature PropertyExtractor.PatternValidator.checkAllowedSubindexFlags.1 2019-11-01
+	Do:
+		Call patternValidator.validate() with a list of patterns that
+		contains no Subindex flags.
+	Verify:
+		Passes.
+
+TBTKFeature PropertyExtractor.PatternValidator.checkAllowedSubindexFlags.2 2019-11-01
+	Do:
+		Call patternValidator.validate() with a list of patterns that
+		contains at least one Subindex flag.
+	Verify:
+		Exits or throws exception.
+
+TBTKFeature PropertyExtractor.PatternValidator.checkAllowedSubindexFlags.3 2019-11-01
+	Do:
+		Set a number of allowed Subindex flags using
+		patternValidator.setAllowedSubindexFlags() and call
+		patternValidator.validate() with a list of patterns that
+		contains no Subindex flags.
+	Verify:
+		Passes.
+
+TBTKFeature PropertyExtractor.PatternValidator.checkAllowedSubindexFlags.4 2019-11-01
+	Do:
+		Set a number of allowed Subindex flags using
+		patternValidator.setAllowedSubindexFlags() and call
+		patternValidator.validate() with a list of patterns that
+		contains those Subindex flags.
+	Verify:
+		Passes.
+
+TBTKFeature PropertyExtractor.PatternValidator.checkAllowedSubindexFlags.5 2019-11-01
+	Do:
+		Set a number of allowed Subindex flags using
+		patternValidator.setAllowedSubindexFlags() and call
+		patternValidator.validate() with a list of patterns that
+		contains some other Subindex flag.
+	Verify:
+		Exits or throws exception.
