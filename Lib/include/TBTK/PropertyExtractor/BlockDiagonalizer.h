@@ -56,9 +56,6 @@ public:
 	 *  @param solver The Solver to use. */
 	BlockDiagonalizer(Solver::BlockDiagonalizer &solver);
 
-	/** Destructor. */
-	virtual ~BlockDiagonalizer();
-
 	/** Get eigenvalues. The eigenvalues are ordered first by block, and
 	 *  then in accending order. This means that eigenvalues for blocks
 	 *  with smaller @link Index Indices @endlink comes before eigenvalues
@@ -234,25 +231,25 @@ private:
 	);
 
 	/** Solver::Diagonalizer to work on. */
-	Solver::BlockDiagonalizer *bSolver;
+	Solver::BlockDiagonalizer &solver;
 };
 
 inline double BlockDiagonalizer::getEigenValue(int state) const{
-	return bSolver->getEigenValue(state);
+	return solver.getEigenValue(state);
 }
 
 inline double BlockDiagonalizer::getEigenValue(
 	const Index &blockIndex,
 	int state
 ) const{
-	return bSolver->getEigenValue(blockIndex, state);
+	return solver.getEigenValue(blockIndex, state);
 }
 
 inline const std::complex<double> BlockDiagonalizer::getAmplitude(
 	int state,
 	const Index &index
 ){
-	return bSolver->getAmplitude(state, index);
+	return solver.getAmplitude(state, index);
 }
 
 inline const std::complex<double> BlockDiagonalizer::getAmplitude(
@@ -260,7 +257,7 @@ inline const std::complex<double> BlockDiagonalizer::getAmplitude(
 	int state,
 	const Index &intraBlockIndex
 ) const{
-	return bSolver->getAmplitude(blockIndex, state, intraBlockIndex);
+	return solver.getAmplitude(blockIndex, state, intraBlockIndex);
 }
 
 };	//End of namespace PropertyExtractor
