@@ -43,29 +43,32 @@ namespace PropertyExtractor{
  *  ranges and memory layout for @link Property Properties@endlink in the @link
  *  PropertyExtractor::PropertyExtractor PropertyExtractors@endlink.
  *
- *  The IndexTreeGenerator generates an IndexTree that is compatible with a
- *  given Model and set of patterns. For example, given a Model with the Index
- *  structure {x, y, z} and a pattern {IDX_ALL, 2, IDX_ALL}, an Index tree
- *  containing all @link Index Indices@endlink in the Model that has the form
- *  {x, 2, z} can be generated.
- *
- *  # Keeping wildcards
- *  It is possible to generate IndexTree with @link Index Indices@endlink that
- *  keep one or more Subindex flags.
- *
- *  ## Summation Subindex
- *  To keep summation @link Subindex Subindices@endlink, we configure the
- *  IndexTreeGenerator using
+ *  # Generate a list of all compatible @link Index Indices@endlink
+ *  Assume a Mode with Index structure {x, y, z} and a list of patterns such as
  *  ```cpp
- *    indexTreeGenerator.setKeepSummationWildcards(true);
+ *    std::vector<Index> patterns = {
+ *      {1, IDX_ALL, IDX_SUM_ALL},
+ *      {IDX_ALL, 5, IDX_SUM_ALL}
+ *    };
+ *  ```
+ *  We can get an IndexTree that contains all @link Index Indices@endlink in
+ *  the Model that are compatible with one of the patterns using
+ *  ```cpp
+ *    IndexTree allIndices = indexTreeGenerator.generateAllIndices(patterns);
  *  ```
  *
- *  ## Spin Subindex
- *  To kepp spin @link Subindex Subindices@endlink, we configure the
- *  IndexTreeGenerator using
+ *  # Generate memory layout
+ *  A Property that results from summing over one or more @link Subindex
+ *  Subindices@endlink is stored with the flag IDX_SUM_ALL in the Subindex that
+ *  is summed over. It is possible to generate such an IndexTree using
  *  ```cpp
- *    indexTreeGenerator.setKeepSpinWildcards(true);
+ *    IndexTree memoryLayout
+ *      = indexTreeGenerator.generateMemoryLayout(patterns);
  *  ```
+ *
+ *  # Spin Subindex
+ *  If IDX_SPIN is present in a Subindex, it will be preserved just like
+ *  IDX_SUM_ALL is preserved when generating a mameory layout.
  *
  *  # Example
  *  \snippet PropertyExtractor/IndexTreeGenerator.cpp IndexTreeGenerator
@@ -79,42 +82,55 @@ public:
 	 *  with. */
 	IndexTreeGenerator(const Model &model);
 
-	/** Set whether or not to keep summation wildcards.
+	/** Generate an IndexTree that contains all the @link Index
+	 *  Indices@endlink in the Model that satisfies one of the given
+	 *  patterns.
 	 *
-	 *  @param keepSummationWildcards Flag indicating whether or not to
-	 *  keep summation wildcards. */
-	void setKeepSummationWildcards(bool keepSummationWildcards);
+	 *  @param patterns Index patters to match against.
+	 *
+	 *  @return An IndexTree containing all the @link Index Indices@endlink
+	 *  in the Model that satisfies the given patterns. */
+	IndexTree generateAllIndices(const std::vector<Index> &patterns) const;
 
-	/** Set whether or not to keep spin wildcards.
+	/** Generate an IndexTree that contains all the @link Index
+	 *  Indices@endlink in the Model that satisfies one of the given
+	 *  patterns. @link Subindex Subindices@endlink marked with IDX_SUM_ALL
+	 *  will keep this flag in the coresponding position.
 	 *
-	 *  @param keepSpinWildcards Flag indicating whether or not to keep
-	 *  spin wildcards. */
-	void setKeepSpinWildcards(bool keepSpinWildcards);
-
-	/** Generate an IndexTree containing the @link Index Indices@endlink
-	 *  that satisfies on of the patterns in the given list of patterns.
+	 *  @param patterns Index patters to match against.
 	 *
-	 *  @param patterns List of patterns to match. */
-	IndexTree generate(const std::vector<Index> &patterns) const;
+	 *  @return An IndexTree containing all the @link Index Indices@endlink
+	 *  in the Model that satisfies the given patterns. */
+	IndexTree generateMemoryLayout(const std::vector<Index> &patterns) const;
 private:
 	/** Model. */
 	const Model &model;
 
-	/** Flag indicating whether or not to keep summation wildcards. */
-	bool keepSummationWildcards;
-
-	/** Flag indicating whether or not to keep spin wildcards. */
-	bool keepSpinWildcards;
+	/** Generate an IndexTree containing the @link Index Indices@endlink
+	 *  that satisfies on of the patterns in the given list of patterns.
+	 *
+	 *  @param patterns List of patterns to match.
+	 *  @param keepSummationWildcard Flag indicating whether or not to keep
+	 *  summation wildcards.
+	 *
+	 *  @return An IndexTree containing all indices in the Model that
+	 *  satisifies any of the given patterns. */
+	IndexTree generate(
+		const std::vector<Index> &patterns,
+		bool keepSummationWildcard
+	) const;
 };
 
-inline void IndexTreeGenerator::setKeepSummationWildcards(
-	bool keepSummationWildcards
-){
-	this->keepSummationWildcards = keepSummationWildcards;
+inline IndexTree IndexTreeGenerator::generateAllIndices(
+	const std::vector<Index> &patterns
+) const{
+	return generate(patterns, false);
 }
 
-inline void IndexTreeGenerator::setKeepSpinWildcards(bool keepSpinWildcards){
-	this->keepSpinWildcards = keepSpinWildcards;
+inline IndexTree IndexTreeGenerator::generateMemoryLayout(
+	const std::vector<Index> &patterns
+) const{
+	return generate(patterns, true);
 }
 
 };	//End of namespace PropertyExtractor

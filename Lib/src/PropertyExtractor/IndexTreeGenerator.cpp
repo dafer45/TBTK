@@ -27,11 +27,12 @@ namespace TBTK{
 namespace PropertyExtractor{
 
 IndexTreeGenerator::IndexTreeGenerator(const Model &model) : model(model){
-	keepSummationWildcards = false;
-	keepSpinWildcards = false;
 }
 
-IndexTree IndexTreeGenerator::generate(const vector<Index> &patterns) const{
+IndexTree IndexTreeGenerator::generate(
+	const vector<Index> &patterns,
+	bool keepSummationWildcards
+) const{
 	IndexTree indexTree;
 	const HoppingAmplitudeSet &hoppingAmplitudeSet
 		= model.getHoppingAmplitudeSet();
@@ -76,12 +77,8 @@ IndexTree IndexTreeGenerator::generate(const vector<Index> &patterns) const{
 					){
 						indices.at(c).at(m) = IDX_SUM_ALL;
 					}
-					if(
-						keepSpinWildcards
-						&& p.at(m).isSpinIndex()
-					){
+					if(p.at(m).isSpinIndex())
 						indices.at(c).at(m) = IDX_SPIN;
-					}
 				}
 			}
 			for(unsigned int c = 0; c < indices.size(); c++)
@@ -90,7 +87,10 @@ IndexTree IndexTreeGenerator::generate(const vector<Index> &patterns) const{
 			break;
 		}
 		else if(components.size() != 0){
-			IndexTree firstIndexTree = generate({components[0]});
+			IndexTree firstIndexTree = generate(
+				{components[0]},
+				keepSummationWildcards
+			);
 			Index remainingIndices;
 			for(unsigned int n = 1; n < components.size(); n++){
 				if(n != 1){
@@ -106,7 +106,10 @@ IndexTree IndexTreeGenerator::generate(const vector<Index> &patterns) const{
 					remainingIndices.pushBack(components[n][c]);
 				}
 			}
-			IndexTree remainingIndexTree = generate({remainingIndices});
+			IndexTree remainingIndexTree = generate(
+				{remainingIndices},
+				keepSummationWildcards
+			);
 			for(
 				IndexTree::ConstIterator iterator0
 					= firstIndexTree.cbegin();

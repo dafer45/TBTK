@@ -25,22 +25,27 @@ int main(){
 
 	IndexTreeGenerator indexTreeGenerator(model);
 
-	IndexTree indexTree
-		= indexTreeGenerator.generate({{1, IDX_ALL, IDX_SUM_ALL}});
+	IndexTree indexTree = indexTreeGenerator.generateAllIndices(
+		{{1, IDX_ALL, IDX_SUM_ALL}}
+	);
 	Streams::out << indexTree << "\n";
 
-	indexTreeGenerator.setKeepSummationWildcards(true);
-	indexTree = indexTreeGenerator.generate({{1, IDX_ALL, IDX_SUM_ALL}});
+	indexTree = indexTreeGenerator.generateMemoryLayout(
+		{{1, IDX_ALL, IDX_SUM_ALL}}
+	);
 	Streams::out << indexTree << "\n";
 
-	indexTree = indexTreeGenerator.generate({{1, IDX_ALL, IDX_SPIN}});
+	indexTree = indexTreeGenerator.generateAllIndices(
+		{{1, IDX_SUM_ALL, IDX_SPIN}}
+	);
 	Streams::out << indexTree << "\n";
 
-	indexTreeGenerator.setKeepSpinWildcards(true);
-	indexTree = indexTreeGenerator.generate({{1, IDX_ALL, IDX_SPIN}});
+	indexTree = indexTreeGenerator.generateMemoryLayout(
+		{{1, IDX_SUM_ALL, IDX_SPIN}}
+	);
 	Streams::out << indexTree << "\n";
 
-	indexTree = indexTreeGenerator.generate({
+	indexTree = indexTreeGenerator.generateAllIndices({
 		{{1, IDX_ALL, IDX_SPIN}, {1, IDX_ALL, IDX_SPIN}}
 	});
 	Streams::out << indexTree << "\n";
