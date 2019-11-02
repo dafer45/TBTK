@@ -54,7 +54,7 @@ IndexTree IndexTreeGenerator::generate(const vector<Index> &patterns) const{
 				default:
 					TBTKAssert(
 						pattern.at(c) >= 0,
-						"PropertyExtractor::generateIndexTree()",
+						"PropertyExtractor::IndexTreeGenerator()",
 						"Subindex " << c << " of pattern " << n << " is invalid.",
 						"Must be non-negative, IDX_ALL, IDX_SUM_ALL, or IDX_SPIN."
 					);
