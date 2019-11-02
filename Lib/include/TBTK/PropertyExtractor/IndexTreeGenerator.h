@@ -96,34 +96,6 @@ public:
 	 *
 	 *  @param patterns List of patterns to match. */
 	IndexTree generate(const std::vector<Index> &patterns) const;
-
-	/** Generate an IndexTree containing all the @link Index Indices
-	 *  @endlink in the HoppingAmplitudeSet that matches the given
-	 *  patterns. Before being added to the IndexTree, the @link Index
-	 *  Indices @endlink may be modified to replace subindices by their
-	 *  corresponding pattern value. I.e. A summation or spin subindex may
-	 *  still be labeld such in the IndexTree depending on the flags that
-	 *  are passed to the function.
-	 *
-	 *  The pattern can also be a compund Index consisting of two Indices,
-	 *  in which case the pattern matching is applied to each component
-	 *  Index separately.
-	 *
-	 *  @param patterns List of patterns to match against.
-	 *  @param The HoppingAmplitudeSet cntaining all the @link Index
-	 *  Indices @endlink that will be matched against the patterns.
-	 *
-	 *  @param keepSummationWildcards If true, summation wildcards in the
-	 *  pattern will be preserved in the IndexTree.
-	 *
-	 *  @param keepSpinWildcards If true, spin wildcards in the pattern
-	 *  will be preserved in the IndexTree. */
-/*	IndexTree generateIndexTree(
-		std::vector<Index> patterns,
-		const HoppingAmplitudeSet &hoppingAmplitudeSet,
-		bool keepSummationWildcards,
-		bool keepSpinWildcards
-	);*/
 private:
 	/** Model. */
 	const Model &model;
