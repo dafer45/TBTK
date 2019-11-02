@@ -168,5 +168,32 @@ TEST_F(IndexTreeGeneratorTest, generate8){
 	}
 }
 
+//TBTKFeature PropertyExtractor.IndexTreeGenerator.generate.9 2019-11-02
+TEST_F(IndexTreeGeneratorTest, generate9){
+	IndexTreeGenerator indexTreeGenerator(model);
+	indexTreeGenerator.setKeepSpinWildcards(true);
+	IndexTree indexTree = indexTreeGenerator.generate({
+		{
+			{1, IDX_ALL, IDX_SPIN},
+			{1, IDX_ALL, IDX_SPIN},
+			{1, IDX_ALL, IDX_SPIN}
+		}
+	});
+	EXPECT_EQ(indexTree.getSize(), 8);
+	for(unsigned int y0 = 0; y0 < 2; y0++){
+		for(unsigned int y1 = 0; y1 < 2; y1++){
+			EXPECT_TRUE(
+				indexTree.contains(
+					{
+						{1, y0, IDX_SPIN},
+						{1, y1, IDX_SPIN},
+						{1, y1, IDX_SPIN}
+					}
+				)
+			);
+		}
+	}
+}
+
 };	//End of namespace PropertyExtractor
 };	//End of namespace TBTK

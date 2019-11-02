@@ -41,9 +41,7 @@ IndexTree IndexTreeGenerator::generate(const vector<Index> &patterns) const{
 
 		vector<Index> components = pattern.split();
 
-		switch(components.size()){
-		case 1:
-		{
+		if(components.size() == 1){
 			pattern = components[0];
 
 			for(unsigned int c = 0; c < pattern.getSize(); c++){
@@ -91,10 +89,24 @@ IndexTree IndexTreeGenerator::generate(const vector<Index> &patterns) const{
 
 			break;
 		}
-		case 2:
-		{
+		else if(components.size() != 0){
 			IndexTree firstIndexTree = generate({components[0]});
-			IndexTree secondIndexTree = generate({components[1]});
+			Index remainingIndices;
+			for(unsigned int n = 1; n < components.size(); n++){
+				if(n != 1){
+					remainingIndices.pushBack(
+						IDX_SEPARATOR
+					);
+				}
+				for(
+					unsigned int c = 0;
+					c < components[n].getSize();
+					c++
+				){
+					remainingIndices.pushBack(components[n][c]);
+				}
+			}
+			IndexTree remainingIndexTree = generate({remainingIndices});
 			for(
 				IndexTree::ConstIterator iterator0
 					= firstIndexTree.cbegin();
@@ -103,8 +115,8 @@ IndexTree IndexTreeGenerator::generate(const vector<Index> &patterns) const{
 			){
 				for(
 					IndexTree::ConstIterator iterator1
-						= secondIndexTree.cbegin();
-					iterator1 != secondIndexTree.cend();
+						= remainingIndexTree.cbegin();
+					iterator1 != remainingIndexTree.cend();
 					++iterator1
 				){
 					indexTree.add({*iterator0, *iterator1});
@@ -113,14 +125,10 @@ IndexTree IndexTreeGenerator::generate(const vector<Index> &patterns) const{
 
 			break;
 		}
-		default:
+		else{
 			TBTKExit(
-				"PropertyExtractor::generateIndexTree()",
-				"Only patterns with one and two component"
-				<< " Indices are supported so far, but the"
-				<< " pattern '" << pattern.toString() << "'"
-				<< " has '" << components.size() << "'"
-				<< " components.",
+				"PropertyExtractor::IndexTreeGenerator::generate()",
+				"Invalid pattern '" << pattern << "'.",
 				""
 			);
 		}

@@ -39,3 +39,6 @@
 - Replace std::vector by std::map in IndexTree and HoppingAmplitudeTree. This
   will both allow for negative Subindices and avoid wasted memory for sparse
   structures.
+
+- Remove generateIndexTree from PropertyExtractor::PropertyExtractor and
+  replace it by calls to PropertyExtractor::IndexTreeGenerator.
