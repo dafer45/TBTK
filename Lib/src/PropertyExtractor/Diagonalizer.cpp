@@ -19,6 +19,7 @@
  */
 
 #include "TBTK/PropertyExtractor/Diagonalizer.h"
+#include "TBTK/PropertyExtractor/PatternValidator.h"
 #include "TBTK/Functions.h"
 #include "TBTK/Streams.h"
 
@@ -44,16 +45,13 @@ Property::WaveFunctions Diagonalizer::calculateWaveFunctions(
 	vector<Index> patterns,
 	vector<Subindex> states
 ){
-	validatePatternsNumComponents(
-		patterns,
-		1,
+	PatternValidator patternValidator;
+	patternValidator.setNumRequiredComponentIndices(1);
+	patternValidator.setAllowedSubindexFlags({IDX_ALL, IDX_SUM_ALL});
+	patternValidator.setCallingFunctionName(
 		"PropertyExtractor::Diagonalizer::calculateWaveFunction()"
 	);
-	validatePatternsSpecifiers(
-		patterns,
-		{IDX_ALL, IDX_SUM_ALL},
-		"PropertyExtractor::Diagonalizer::calculateWaveFunction()"
-	);
+	patternValidator.validate(patterns);
 
 	IndexTree allIndices = generateIndexTree(
 		patterns,
@@ -147,16 +145,14 @@ Property::GreensFunction Diagonalizer::calculateGreensFunction(
 	const vector<Index> &patterns,
 	Property::GreensFunction::Type type
 ){
-	validatePatternsNumComponents(
-		patterns,
-		2,
+	PatternValidator patternValidator;
+	patternValidator.setNumRequiredComponentIndices(2);
+	patternValidator.setAllowedSubindexFlags({IDX_ALL, IDX_SUM_ALL});
+	patternValidator.setCallingFunctionName(
 		"PropertyExtractor::Diagonalizer::calculateGreensFunction()"
 	);
-	validatePatternsSpecifiers(
-		patterns,
-		{IDX_ALL, IDX_SUM_ALL},
-		"PropertyExtractor::Diagonalizer::calculateGreensFunction()"
-	);
+	patternValidator.validate(patterns);
+
 
 	IndexTree allIndices = generateIndexTree(
 		patterns,
@@ -331,16 +327,13 @@ Property::Density Diagonalizer::calculateDensity(
 Property::Density Diagonalizer::calculateDensity(
 	vector<Index> patterns
 ){
-	validatePatternsNumComponents(
-		patterns,
-		1,
+	PatternValidator patternValidator;
+	patternValidator.setNumRequiredComponentIndices(1);
+	patternValidator.setAllowedSubindexFlags({IDX_ALL, IDX_SUM_ALL});
+	patternValidator.setCallingFunctionName(
 		"PropertyExtractor::Diagonalizer::calculateDensity()"
 	);
-	validatePatternsSpecifiers(
-		patterns,
-		{IDX_ALL, IDX_SUM_ALL},
-		"PropertyExtractor::Diagonalizer::calculateDensity()"
-	);
+	patternValidator.validate(patterns);
 
 	IndexTree allIndices = generateIndexTree(
 		patterns,
@@ -412,16 +405,15 @@ Property::Magnetization Diagonalizer::calculateMagnetization(
 Property::Magnetization Diagonalizer::calculateMagnetization(
 	vector<Index> patterns
 ){
-	validatePatternsNumComponents(
-		patterns,
-		1,
+	PatternValidator patternValidator;
+	patternValidator.setNumRequiredComponentIndices(1);
+	patternValidator.setAllowedSubindexFlags(
+		{IDX_ALL, IDX_SUM_ALL, IDX_SPIN}
+	);
+	patternValidator.setCallingFunctionName(
 		"PropertyExtractor::Diagonalizer::calculateMagnetization()"
 	);
-	validatePatternsSpecifiers(
-		patterns,
-		{IDX_ALL, IDX_SUM_ALL, IDX_SPIN},
-		"PropertyExtractor::Diagonalizer::calculateMagnetization()"
-	);
+	patternValidator.validate(patterns);
 
 	IndexTree allIndices = generateIndexTree(
 		patterns,
@@ -486,16 +478,13 @@ Property::LDOS Diagonalizer::calculateLDOS(
 Property::LDOS Diagonalizer::calculateLDOS(
 	vector<Index> patterns
 ){
-	validatePatternsNumComponents(
-		patterns,
-		1,
+	PatternValidator patternValidator;
+	patternValidator.setNumRequiredComponentIndices(1);
+	patternValidator.setAllowedSubindexFlags({IDX_ALL, IDX_SUM_ALL});
+	patternValidator.setCallingFunctionName(
 		"PropertyExtractor::Diagonalizer::calculateLDOS()"
 	);
-	validatePatternsSpecifiers(
-		patterns,
-		{IDX_ALL, IDX_SUM_ALL},
-		"PropertyExtractor::Diagonalizer::calculateLDOS()"
-	);
+	patternValidator.validate(patterns);
 
 	double lowerBound = getLowerBound();
 	double upperBound = getUpperBound();
@@ -585,16 +574,15 @@ Property::SpinPolarizedLDOS Diagonalizer::calculateSpinPolarizedLDOS(
 Property::SpinPolarizedLDOS Diagonalizer::calculateSpinPolarizedLDOS(
 	vector<Index> patterns
 ){
-	validatePatternsNumComponents(
-		patterns,
-		1,
+	PatternValidator patternValidator;
+	patternValidator.setNumRequiredComponentIndices(1);
+	patternValidator.setAllowedSubindexFlags(
+		{IDX_ALL, IDX_SUM_ALL, IDX_SPIN}
+	);
+	patternValidator.setCallingFunctionName(
 		"PropertyExtractor::Diagonalizer::calculateSpinPolarizedLDOS()"
 	);
-	validatePatternsSpecifiers(
-		patterns,
-		{IDX_ALL, IDX_SUM_ALL, IDX_SPIN},
-		"PropertyExtractor::Diagonalizer::calculateSpinPolarizedLDOS()"
-	);
+	patternValidator.validate(patterns);
 
 	double lowerBound = getLowerBound();
 	double upperBound = getUpperBound();

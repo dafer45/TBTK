@@ -19,6 +19,7 @@
  */
 
 #include "TBTK/PropertyExtractor/BlockDiagonalizer.h"
+#include "TBTK/PropertyExtractor/PatternValidator.h"
 #include "TBTK/Functions.h"
 #include "TBTK/Streams.h"
 
@@ -53,16 +54,13 @@ Property::WaveFunctions BlockDiagonalizer::calculateWaveFunctions(
 	vector<Index> patterns,
 	vector<Subindex> states
 ){
-	validatePatternsNumComponents(
-		patterns,
-		1,
+	PatternValidator patternValidator;
+	patternValidator.setNumRequiredComponentIndices(1);
+	patternValidator.setAllowedSubindexFlags({IDX_ALL, IDX_SUM_ALL});
+	patternValidator.setCallingFunctionName(
 		"PropertyExtractor::BlockDiagonalizer::calculateWaveFunction()"
 	);
-	validatePatternsSpecifiers(
-		patterns,
-		{IDX_ALL, IDX_SUM_ALL},
-		"PropertyExtractor::BlockDiagonalizer::calculateWaveFunction()"
-	);
+	patternValidator.validate(patterns);
 
 	IndexTree allIndices = generateIndexTree(
 		patterns,
@@ -156,16 +154,13 @@ Property::GreensFunction BlockDiagonalizer::calculateGreensFunction(
 	vector<Index> patterns,
 	Property::GreensFunction::Type type
 ){
-	validatePatternsNumComponents(
-		patterns,
-		2,
+	PatternValidator patternValidator;
+	patternValidator.setNumRequiredComponentIndices(2);
+	patternValidator.setAllowedSubindexFlags({IDX_ALL, IDX_SUM_ALL});
+	patternValidator.setCallingFunctionName(
 		"PropertyExtractor::BlockDiagonalizer::calculateGreensFunction()"
 	);
-	validatePatternsSpecifiers(
-		patterns,
-		{IDX_ALL, IDX_SUM_ALL},
-		"PropertyExtractor::BlockDiagonalizer::calculateGreensFunction()"
-	);
+	patternValidator.validate(patterns);
 
 	IndexTree allIndices = generateIndexTree(
 		patterns,
@@ -319,16 +314,13 @@ complex<double> BlockDiagonalizer::calculateExpectationValue(
 Property::Density BlockDiagonalizer::calculateDensity(
 	vector<Index> patterns
 ){
-	validatePatternsNumComponents(
-		patterns,
-		1,
+	PatternValidator patternValidator;
+	patternValidator.setNumRequiredComponentIndices(1);
+	patternValidator.setAllowedSubindexFlags({IDX_ALL, IDX_SUM_ALL});
+	patternValidator.setCallingFunctionName(
 		"PropertyExtractor::BlockDiagonalizer::calculateDensity()"
 	);
-	validatePatternsSpecifiers(
-		patterns,
-		{IDX_ALL, IDX_SUM_ALL},
-		"PropertyExtractor::BlockDiagonalizer::calculateDensity()"
-	);
+	patternValidator.validate(patterns);
 
 	IndexTree allIndices = generateIndexTree(
 		patterns,
@@ -361,16 +353,15 @@ Property::Density BlockDiagonalizer::calculateDensity(
 Property::Magnetization BlockDiagonalizer::calculateMagnetization(
 	vector<Index> patterns
 ){
-	validatePatternsNumComponents(
-		patterns,
-		1,
+	PatternValidator patternValidator;
+	patternValidator.setNumRequiredComponentIndices(1);
+	patternValidator.setAllowedSubindexFlags(
+		{IDX_ALL, IDX_SUM_ALL, IDX_SPIN}
+	);
+	patternValidator.setCallingFunctionName(
 		"PropertyExtractor::BlockDiagonalizer::calculateMagnetization()"
 	);
-	validatePatternsSpecifiers(
-		patterns,
-		{IDX_ALL, IDX_SUM_ALL, IDX_SPIN},
-		"PropertyExtractor::BlockDiagonalizer::calculateMagnetization()"
-	);
+	patternValidator.validate(patterns);
 
 	IndexTree allIndices = generateIndexTree(
 		patterns,
@@ -403,16 +394,13 @@ Property::Magnetization BlockDiagonalizer::calculateMagnetization(
 Property::LDOS BlockDiagonalizer::calculateLDOS(
 	vector<Index> patterns
 ){
-	validatePatternsNumComponents(
-		patterns,
-		1,
+	PatternValidator patternValidator;
+	patternValidator.setNumRequiredComponentIndices(1);
+	patternValidator.setAllowedSubindexFlags({IDX_ALL, IDX_SUM_ALL});
+	patternValidator.setCallingFunctionName(
 		"PropertyExtractor::BlockDiagonalizer::calculateLDOS()"
 	);
-	validatePatternsSpecifiers(
-		patterns,
-		{IDX_ALL, IDX_SUM_ALL},
-		"PropertyExtractor::BlockDiagonalizer::calculateLDOS()"
-	);
+	patternValidator.validate(patterns);
 
 	TBTKAssert(
 		getEnergyType() == EnergyType::Real,
@@ -462,16 +450,15 @@ Property::LDOS BlockDiagonalizer::calculateLDOS(
 Property::SpinPolarizedLDOS BlockDiagonalizer::calculateSpinPolarizedLDOS(
 	vector<Index> patterns
 ){
-	validatePatternsNumComponents(
-		patterns,
-		1,
+	PatternValidator patternValidator;
+	patternValidator.setNumRequiredComponentIndices(1);
+	patternValidator.setAllowedSubindexFlags(
+		{IDX_ALL, IDX_SUM_ALL, IDX_SPIN}
+	);
+	patternValidator.setCallingFunctionName(
 		"PropertyExtractor::BlockDiagonalizer::calculateSpinPolarizedLDOS()"
 	);
-	validatePatternsSpecifiers(
-		patterns,
-		{IDX_ALL, IDX_SUM_ALL, IDX_SPIN},
-		"PropertyExtractor::BlockDiagonalizer::calculateSpinPolarizedLDOS()"
-	);
+	patternValidator.validate(patterns);
 
 	TBTKAssert(
 		getEnergyType() == EnergyType::Real,

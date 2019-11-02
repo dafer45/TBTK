@@ -568,37 +568,6 @@ protected:
 		bool keepSummationWildcards,
 		bool keepSpinWildcards
 	);
-
-	/** Check that a given set of patterns has the correct number of
-	 *  component Indices per pattern. Prints error message if not.
-	 *
-	 *  @param patterns List of patterns to check.
-	 *  @param numComponents The expected number of component @link Index
-	 *  Indices @endlink.
-	 *
-	 *  @param functionName String that should contain the name of the
-	 *  function from which the function is called. Is used to print an
-	 *  error message if the validation fails. */
-	void validatePatternsNumComponents(
-		const std::vector<Index> &patterns,
-		unsigned int expectedNumComponentIndices,
-		const std::string &functionName
-	) const;
-
-	/** Check that a given set of patterns only has non-negative subindices
-	 *  or one of the allowed subindex specifiers. Prints error message if
-	 *  not.
-	 *
-	 *  @param patterns List of patterns to check.
-	 *  @param numComponents The allowed subindex specifiers.
-	 *  @param functionName String that should contain the name of the
-	 *  function from which the function is called. Is used to print an
-	 *  error message if the validation fails. */
-	void validatePatternsSpecifiers(
-		const std::vector<Index> &patterns,
-		const std::vector<int> specifiers,
-		const std::string &functionName
-	) const;
 private:
 	/** Energy type used for energy dependent quantities. */
 	EnergyType energyType;
@@ -879,68 +848,6 @@ void PropertyExtractor::calculate(
 			abstractProperty.getOffset(index),
 			information
 		);
-	}
-}
-
-inline void PropertyExtractor::validatePatternsNumComponents(
-	const std::vector<Index> &patterns,
-	unsigned int expectedNumComponentIndices,
-	const std::string &functionName
-) const{
-	for(unsigned int n = 0; n < patterns.size(); n++){
-		TBTKAssert(
-			patterns[n].split().size()
-				== expectedNumComponentIndices,
-			functionName,
-			"Unexpected number of pattern component Indices. The"
-			<< " pattern was expected to have '"
-			<< expectedNumComponentIndices << "', but the pattern"
-			<< " '" << patterns[n].toString() << "' has '"
-			<< patterns[n].split().size() << "' components.",
-			""
-		);
-	}
-}
-
-inline void PropertyExtractor::validatePatternsSpecifiers(
-	const std::vector<Index> &patterns,
-	const std::vector<int> specifiers,
-	const std::string &functionName
-) const{
-	for(unsigned int n = 0; n < patterns.size(); n++){
-		std::vector<Index> components = patterns[n].split();
-		for(unsigned int m = 0; m < components.size(); m++){
-			for(unsigned int c = 0; c < components[m].getSize(); c++){
-				int subindex = components[m][c];
-				if(subindex < 0){
-					bool isValid = false;
-					for(
-						unsigned int k = 0;
-						k < specifiers.size();
-						k++
-					){
-						if(subindex == specifiers[k]){
-							isValid = true;
-							break;
-						}
-					}
-
-					if(!isValid){
-						TBTKExit(
-							functionName,
-							"Invalid subindex at"
-							<< " position '" << c
-							<< "' in component"
-							<< " Index '" << m
-							<< "' of the pattern '"
-							<< patterns[n].toString()
-							<< "'.",
-							""
-						);
-					}
-				}
-			}
-		}
 	}
 }
 

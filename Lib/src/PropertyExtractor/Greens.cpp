@@ -19,6 +19,7 @@
  */
 
 #include "TBTK/PropertyExtractor/Greens.h"
+#include "TBTK/PropertyExtractor/PatternValidator.h"
 #include "TBTK/Functions.h"
 #include "TBTK/Streams.h"
 #include "TBTK/TBTKMacros.h"
@@ -78,16 +79,13 @@ Property::Density Greens::calculateDensity(
 Property::Density Greens::calculateDensity(
 	vector<Index> patterns
 ){
-	validatePatternsNumComponents(
-		patterns,
-		1,
+	PatternValidator patternValidator;
+	patternValidator.setNumRequiredComponentIndices(1);
+	patternValidator.setAllowedSubindexFlags({IDX_ALL, IDX_SUM_ALL});
+	patternValidator.setCallingFunctionName(
 		"PropertyExtractor::Greens::calculateDensity()"
 	);
-	validatePatternsSpecifiers(
-		patterns,
-		{IDX_ALL, IDX_SUM_ALL},
-		"PropertyExtractor::Greens::calculateDensity()"
-	);
+	patternValidator.validate(patterns);
 
 	IndexTree allIndices = generateIndexTree(
 		patterns,
@@ -120,16 +118,13 @@ Property::Density Greens::calculateDensity(
 Property::LDOS Greens::calculateLDOS(
 	vector<Index> patterns
 ){
-	validatePatternsNumComponents(
-		patterns,
-		1,
+	PatternValidator patternValidator;
+	patternValidator.setNumRequiredComponentIndices(1);
+	patternValidator.setAllowedSubindexFlags({IDX_ALL, IDX_SUM_ALL});
+	patternValidator.setCallingFunctionName(
 		"PropertyExtractor::Greens::calculateLDOS()"
 	);
-	validatePatternsSpecifiers(
-		patterns,
-		{IDX_ALL, IDX_SUM_ALL},
-		"PropertyExtractor::Greens::calculateLDOS()"
-	);
+	patternValidator.validate(patterns);
 
 	IndexTree allIndices = generateIndexTree(
 		patterns,
