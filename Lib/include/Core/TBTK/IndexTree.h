@@ -25,13 +25,14 @@
 
 #include "TBTK/Index.h"
 #include "TBTK/Serializable.h"
+#include "TBTK/Streamable.h"
 
 #include <vector>
 
 namespace TBTK{
 
 /** @brief Data structure for mapping physical indices to linear indices. */
-class IndexTree : public Serializable{
+class IndexTree : public Serializable, public Streamable{
 public:
 	/** Constructors an IndexTree. */
 	IndexTree();
@@ -323,6 +324,9 @@ public:
 	 *
 	 *  @return ConstIterator pointing to the end of the IndexTree. */
 	ConstIterator cend() const;
+
+	/** Implements Streamable::toString(). */
+	virtual std::string toString() const;
 
 	/** Implements Serializable::serialize(). */
 	std::string serialize(Mode mode) const;

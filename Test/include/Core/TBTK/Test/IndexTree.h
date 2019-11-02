@@ -794,6 +794,10 @@ TEST(IndexTree, equals){
 	EXPECT_FALSE(indexTree2.equals(indexTree3));
 }
 
+TEST(IndexTree, toString){
+	//Not tested due to incomplete control over formating.
+}
+
 TEST(IndexTree, serialize){
 	//Already tested through SerializeToJSON.
 }

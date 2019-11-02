@@ -594,6 +594,15 @@ int IndexTree::getMaxIndex() const{
 	return max;
 }
 
+string IndexTree::toString() const{
+	stringstream stream;
+	stream << "IndexTree";
+	for(ConstIterator iterator = cbegin(); iterator != cend(); ++iterator)
+		stream << "\n\t" << *iterator;
+
+	return stream.str();
+}
+
 string IndexTree::serialize(Mode mode) const{
 	switch(mode){
 	case Mode::Debug:
