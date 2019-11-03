@@ -36,7 +36,7 @@ public:
 	BitRegister(const BitRegister &bitRegister);
 
 	/** Destructor. */
-	~BitRegister();
+//	~BitRegister();
 
 	/** Bitwise or operator. */
 	const BitRegister operator|(const BitRegister &rhs) const;
@@ -138,7 +138,7 @@ public:
 	BitRegister cloneStructure() const;
 
 	/** Return the value as an unsigned int. */
-	unsigned int getAsUnsignedInt() const;
+//	unsigned int getAsUnsignedInt() const;
 private:
 	/** Value. */
 	unsigned int values;
@@ -204,7 +204,8 @@ inline const BitRegister& BitRegister::operator++(){
 }
 
 inline const BitRegister BitRegister::operator++(int){
-	unsigned int returnValue = values;
+	BitRegister returnValue;
+	returnValue = *this;
 	values++;
 	return returnValue;
 }
@@ -215,7 +216,8 @@ inline const BitRegister& BitRegister::operator--(){
 }
 
 inline const BitRegister BitRegister::operator--(int){
-	unsigned int returnValue = values;
+	BitRegister returnValue;
+	returnValue = *this;
 	values--;
 	return returnValue;
 }

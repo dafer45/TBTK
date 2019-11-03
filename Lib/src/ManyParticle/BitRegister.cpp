@@ -31,7 +31,7 @@ BitRegister::BitRegister(const BitRegister &bitRegister){
 	values = bitRegister.values;
 }
 
-BitRegister::~BitRegister(){
-}
+/*BitRegister::~BitRegister(){
+}*/
 
 };	//End of namespace TBTK
