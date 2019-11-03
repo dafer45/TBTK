@@ -29,29 +29,52 @@
 
 namespace TBTK{
 
+/** @brief Helper class for flattening nested loops.
+ *
+ *  The MultiCounter allows for multiple loop variables to be looped over using
+ *  a single loop. It can be used to flatten deeply nested loops.
+ *
+ *  # Example
+ *  \snippet Utilities/MultiCounter.cpp MultiCounter
+ *  ## Output
+ *  \snippet output/Utilities/MultiCounter.output MultiCounter */
 template<typename DataType>
 class MultiCounter{
 public:
-	/** Constructor. */
+	/** Constructor.
+	 *
+	 *  @param begin The start values for the counters.
+	 *  @param end The end of the counters. This value is not included in
+	 *  the range.
+	 *
+	 *  @param increment The increment size of the counter. */
 	MultiCounter(
 		const std::initializer_list<DataType> &begin,
 		const std::initializer_list<DataType> &end,
 		const std::initializer_list<DataType> &increment
 	);
 
-	/** Destructor. */
-	~MultiCounter();
-
-	/** Increment operator. */
+	/** Increment operator.
+	 *
+	 *  @return A reference to the MultiCounter after the increment has
+	 *  occured. */
 	MultiCounter& operator++();
 
-	/** Array subscript operator. */
+	/** Array subscript operator. Returns the current valu of the nth
+	 *  counter.
+	 *
+	 *  @param n The counter to get the value for.
+	 *
+	 *  @return The value of the nth counter. */
 	const DataType operator[](unsigned int n) const;
 
-	/** Reset. */
+	/** Reset the counter. */
 	void reset();
 
-	/** Returns true if the counter has reached the end. */
+	/** Check if the counter has reached the end.
+	 *
+	 *  @return True if the counter has reached the end, otherwise false.
+	 */
 	bool done() const;
 private:
 	/** Values at which the iteration begins. */
@@ -112,10 +135,6 @@ inline MultiCounter<DataType>::MultiCounter(
 	}
 
 	reset();
-}
-
-template<typename DataType>
-inline MultiCounter<DataType>::~MultiCounter(){
 }
 
 template<typename DataType>

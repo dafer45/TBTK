@@ -91,9 +91,6 @@ Range::Range(const string &serialization, Mode mode){
 	}
 }
 
-Range::~Range(){
-}
-
 std::string Range::serialize(Mode mode) const{
 	switch(mode){
 	case Mode::JSON:
