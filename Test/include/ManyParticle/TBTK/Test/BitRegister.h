@@ -254,7 +254,7 @@ TEST(BitRegister, toUnsignedInt1){
 	EXPECT_EQ(bitRegister.toUnsignedInt(), 0xFFFF0000);
 }
 
-//TBTKFeature ManyParticle.BitRegister.setGetValues.1 2019-11-02
+//TBTKFeature ManyParticle.BitRegister.clear.1 2019-11-02
 TEST(BitRegister, clear1){
 	BitRegister bitRegister;
 	bitRegister.setValues(0xFFFF0000);

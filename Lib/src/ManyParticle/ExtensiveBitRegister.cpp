@@ -25,6 +25,7 @@
 namespace TBTK{
 
 ExtensiveBitRegister::ExtensiveBitRegister(){
+	values = nullptr;
 }
 
 ExtensiveBitRegister::ExtensiveBitRegister(unsigned int numBits){
@@ -40,7 +41,8 @@ ExtensiveBitRegister::ExtensiveBitRegister(const ExtensiveBitRegister &extensive
 }
 
 ExtensiveBitRegister::~ExtensiveBitRegister(){
-	delete [] values;
+	if(values != nullptr)
+		delete [] values;
 }
 
 };	//End of namespace TBTK

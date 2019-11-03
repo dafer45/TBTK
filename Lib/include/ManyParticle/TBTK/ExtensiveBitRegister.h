@@ -452,7 +452,7 @@ inline bool ExtensiveBitRegister::getBit(unsigned int position) const{
 
 inline bool ExtensiveBitRegister::toBool() const{
 	for(unsigned int n = 0; n < size; n++)
-		if(values)
+		if(values[n])
 			return true;
 
 	return false;
