@@ -6,12 +6,12 @@
 
 namespace TBTK{
 
-//TBTKFeature ManyBody.BitRegister.construction.1 2019-11-02
+//TBTKFeature ManyParticle.BitRegister.construction.1 2019-11-02
 TEST(BitRegister, construction1){
 	BitRegister bitRegister;
 }
 
-//TBTKFeature ManyBody.BitRegister.copy.1 2019-11-02
+//TBTKFeature ManyParticle.BitRegister.copy.1 2019-11-02
 TEST(BitRegister, copy1){
 	BitRegister bitRegister;
 	bitRegister = 0xFF00FF00;
@@ -19,7 +19,7 @@ TEST(BitRegister, copy1){
 	EXPECT_EQ(copy.getValues(), 0xFF00FF00);
 }
 
-//TBTKFeature ManyBody.BitRegister.operatorBitwiseOr.1 2019-11-02
+//TBTKFeature ManyParticle.BitRegister.operatorBitwiseOr.1 2019-11-02
 TEST(BitRegister, operatorBitwiseOr1){
 	BitRegister bitRegister0;
 	BitRegister bitRegister1;
@@ -30,7 +30,7 @@ TEST(BitRegister, operatorBitwiseOr1){
 	EXPECT_EQ(result.getValues(), 0x0000FFF0);
 }
 
-//TBTKFeature ManyBody.BitRegister.operatorBitwiseAnd.1 2019-11-02
+//TBTKFeature ManyParticle.BitRegister.operatorBitwiseAnd.1 2019-11-02
 TEST(BitRegister, operatorBitwiseAnd1){
 	BitRegister bitRegister0;
 	BitRegister bitRegister1;
@@ -41,7 +41,7 @@ TEST(BitRegister, operatorBitwiseAnd1){
 	EXPECT_EQ(result.getValues(), 0x0000F000);
 }
 
-//TBTKFeature ManyBody.BitRegister.operatorBitwiseXor.1 2019-11-02
+//TBTKFeature ManyParticle.BitRegister.operatorBitwiseXor.1 2019-11-02
 TEST(BitRegister, operatorBitwiseXor1){
 	BitRegister bitRegister0;
 	BitRegister bitRegister1;
@@ -52,7 +52,7 @@ TEST(BitRegister, operatorBitwiseXor1){
 	EXPECT_EQ(result.getValues(), 0x00000FF0);
 }
 
-//TBTKFeature ManyBody.BitRegister.operatorAddition.1 2019-11-02
+//TBTKFeature ManyParticle.BitRegister.operatorAddition.1 2019-11-02
 TEST(BitRegister, operatorAddition1){
 	BitRegister bitRegister0;
 	BitRegister bitRegister1;
@@ -63,7 +63,7 @@ TEST(BitRegister, operatorAddition1){
 	EXPECT_EQ(result.getValues(), 0x12345678 + 0xABCD1234);
 }
 
-//TBTKFeature ManyBody.BitRegister.operatorSubtraction.1 2019-11-02
+//TBTKFeature ManyParticle.BitRegister.operatorSubtraction.1 2019-11-02
 TEST(BitRegister, operatorSubtraction1){
 	BitRegister bitRegister0;
 	BitRegister bitRegister1;
@@ -74,7 +74,7 @@ TEST(BitRegister, operatorSubtraction1){
 	EXPECT_EQ(result.getValues(), 0xABCD1234 - 0x12345678);
 }
 
-//TBTKFeature ManyBody.BitRegister.operatorLessThan.1 2019-11-02
+//TBTKFeature ManyParticle.BitRegister.operatorLessThan.1 2019-11-02
 TEST(BitRegister, operatorLessThan1){
 	BitRegister bitRegister0;
 	BitRegister bitRegister1;
@@ -86,7 +86,7 @@ TEST(BitRegister, operatorLessThan1){
 	EXPECT_FALSE(bitRegister0 < bitRegister0);
 }
 
-//TBTKFeature ManyBody.BitRegister.operatorGreaterThan.1 2019-11-02
+//TBTKFeature ManyParticle.BitRegister.operatorGreaterThan.1 2019-11-02
 TEST(BitRegister, operatorGreaterThan1){
 	BitRegister bitRegister0;
 	BitRegister bitRegister1;
@@ -98,7 +98,7 @@ TEST(BitRegister, operatorGreaterThan1){
 	EXPECT_FALSE(bitRegister0 > bitRegister0);
 }
 
-//TBTKFeature ManyBody.BitRegister.operatorEqual.1 2019-11-02
+//TBTKFeature ManyParticle.BitRegister.operatorEqual.1 2019-11-02
 TEST(BitRegister, operatorEqual1){
 	BitRegister bitRegister0;
 	BitRegister bitRegister1;
@@ -110,7 +110,7 @@ TEST(BitRegister, operatorEqual1){
 	EXPECT_TRUE(bitRegister0 == bitRegister0);
 }
 
-//TBTKFeature ManyBody.BitRegister.operatorAdditionAssignment.1 2019-11-02
+//TBTKFeature ManyParticle.BitRegister.operatorAdditionAssignment.1 2019-11-02
 TEST(BitRegister, operatorAdditionAssignment1){
 	BitRegister bitRegister0;
 	BitRegister bitRegister1;
@@ -121,7 +121,7 @@ TEST(BitRegister, operatorAdditionAssignment1){
 	EXPECT_EQ(bitRegister0.getValues(), 0x12345678 + 0xABCD1234);
 }
 
-//TBTKFeature ManyBody.BitRegister.operatorSubtractionAssignment.1 2019-11-02
+//TBTKFeature ManyParticle.BitRegister.operatorSubtractionAssignment.1 2019-11-02
 TEST(BitRegister, operatorSubtractionAssignment1){
 	BitRegister bitRegister0;
 	BitRegister bitRegister1;
@@ -132,7 +132,7 @@ TEST(BitRegister, operatorSubtractionAssignment1){
 	EXPECT_EQ(bitRegister0.getValues(), 0xABCD1234 - 0x12345678);
 }
 
-//TBTKFeature ManyBody.BitRegister.operatorPreIncrement.1 2019-11-02
+//TBTKFeature ManyParticle.BitRegister.operatorPreIncrement.1 2019-11-02
 TEST(BitRegister, operatorPreIncrement1){
 	BitRegister bitRegister;
 	bitRegister = 0xABCD1234;
@@ -140,7 +140,7 @@ TEST(BitRegister, operatorPreIncrement1){
 	EXPECT_EQ((++bitRegister).getValues(), 0xABCD1234 + 1);
 }
 
-//TBTKFeature ManyBody.BitRegister.operatorPostIncrement.1 2019-11-02
+//TBTKFeature ManyParticle.BitRegister.operatorPostIncrement.1 2019-11-02
 TEST(BitRegister, operatorPostIncrement1){
 	BitRegister bitRegister;
 	bitRegister = 0xABCD1234;
@@ -149,7 +149,7 @@ TEST(BitRegister, operatorPostIncrement1){
 	EXPECT_EQ(bitRegister.getValues(), 0xABCD1234 + 1);
 }
 
-//TBTKFeature ManyBody.BitRegister.operatorPreDecrement.1 2019-11-02
+//TBTKFeature ManyParticle.BitRegister.operatorPreDecrement.1 2019-11-02
 TEST(BitRegister, operatorPreDecrement1){
 	BitRegister bitRegister;
 	bitRegister = 0xABCD1234;
@@ -157,7 +157,7 @@ TEST(BitRegister, operatorPreDecrement1){
 	EXPECT_EQ((--bitRegister).getValues(), 0xABCD1234 - 1);
 }
 
-//TBTKFeature ManyBody.BitRegister.operatorPostDecrement.1 2019-11-02
+//TBTKFeature ManyParticle.BitRegister.operatorPostDecrement.1 2019-11-02
 TEST(BitRegister, operatorPostDecrement1){
 	BitRegister bitRegister;
 	bitRegister = 0xABCD1234;
@@ -166,7 +166,7 @@ TEST(BitRegister, operatorPostDecrement1){
 	EXPECT_EQ(bitRegister.getValues(), 0xABCD1234 - 1);
 }
 
-//TBTKFeature ManyBody.BitRegister.operatorAssignment.1 2019-11-02
+//TBTKFeature ManyParticle.BitRegister.operatorAssignment.1 2019-11-02
 TEST(BitRegister, operatorAssignment1){
 	BitRegister bitRegister;
 	bitRegister = 0xFF00FF00;
@@ -175,14 +175,14 @@ TEST(BitRegister, operatorAssignment1){
 	EXPECT_EQ(copy.getValues(), 0xFF00FF00);
 }
 
-//TBTKFeature ManyBody.BitRegister.operatorAssignmentUnsignedInt.1 2019-11-02
+//TBTKFeature ManyParticle.BitRegister.operatorAssignmentUnsignedInt.1 2019-11-02
 TEST(BitRegister, operatorAssignmentUnsignedInt1){
 	BitRegister bitRegister;
 	bitRegister = 0xFF00FF00;
 	EXPECT_EQ(bitRegister.getValues(), 0xFF00FF00);
 }
 
-//TBTKFeature ManyBody.BitRegister.operatorLeftBitshift.1 2019-11-02
+//TBTKFeature ManyParticle.BitRegister.operatorLeftBitshift.1 2019-11-02
 TEST(BitRegister, operatorLeftBitShift1){
 	BitRegister bitRegister;
 	bitRegister = 0xFF00FF00;
@@ -191,7 +191,7 @@ TEST(BitRegister, operatorLeftBitShift1){
 	EXPECT_EQ(bitRegister.getValues(), 0xFF00FF00);
 }
 
-//TBTKFeature ManyBody.BitRegister.operatorRightBitshift.1 2019-11-02
+//TBTKFeature ManyParticle.BitRegister.operatorRightBitshift.1 2019-11-02
 TEST(BitRegister, operatorRightBitShift1){
 	BitRegister bitRegister;
 	bitRegister = 0xFF00FF00;
@@ -200,7 +200,7 @@ TEST(BitRegister, operatorRightBitShift1){
 	EXPECT_EQ(bitRegister.getValues(), 0xFF00FF00);
 }
 
-//TBTKFeature ManyBody.BitRegister.setBit.1 2019-11-02
+//TBTKFeature ManyParticle.BitRegister.setBit.1 2019-11-02
 TEST(BitRegister, setBit1){
 	BitRegister bitRegister;
 	bitRegister = 0xFFFF0000;
@@ -211,7 +211,7 @@ TEST(BitRegister, setBit1){
 	EXPECT_EQ(bitRegister.getValues(), 0xFFEF0020);
 }
 
-//TBTKFeature ManyBody.BitRegister.getBit.1 2019-11-02
+//TBTKFeature ManyParticle.BitRegister.getBit.1 2019-11-02
 TEST(BitRegister, getBit1){
 	BitRegister bitRegister;
 	bitRegister = 0xFFFF0000;
@@ -221,14 +221,14 @@ TEST(BitRegister, getBit1){
 	EXPECT_EQ(bitRegister.getBit(14), 0);
 }
 
-//TBTKFeature ManyBody.BitRegister.setGetValues.1 2019-11-02
+//TBTKFeature ManyParticle.BitRegister.setGetValues.1 2019-11-02
 TEST(BitRegister, setGetValue1){
 	BitRegister bitRegister;
 	bitRegister.setValues(0xFFFF0000);
 	EXPECT_EQ(bitRegister.getValues(), 0xFFFF0000);
 }
 
-//TBTKFeature ManyBody.BitRegister.toBool.1 2019-11-02
+//TBTKFeature ManyParticle.BitRegister.toBool.1 2019-11-02
 TEST(BitRegister, toBool1){
 	BitRegister bitRegister0;
 	BitRegister bitRegister1;
@@ -247,14 +247,14 @@ TEST(BitRegister, toBool1){
 	EXPECT_TRUE(bitRegister4.toBool());
 }
 
-//TBTKFeature ManyBody.BitRegister.toUnsignedInt.1 2019-11-02
+//TBTKFeature ManyParticle.BitRegister.toUnsignedInt.1 2019-11-02
 TEST(BitRegister, toUnsignedInt1){
 	BitRegister bitRegister;
 	bitRegister.setValues(0xFFFF0000);
 	EXPECT_EQ(bitRegister.toUnsignedInt(), 0xFFFF0000);
 }
 
-//TBTKFeature ManyBody.BitRegister.setGetValues.1 2019-11-02
+//TBTKFeature ManyParticle.BitRegister.setGetValues.1 2019-11-02
 TEST(BitRegister, clear1){
 	BitRegister bitRegister;
 	bitRegister.setValues(0xFFFF0000);
@@ -266,20 +266,20 @@ TEST(BitRegister, print1){
 	//Not testable.
 }
 
-//TBTKFeature ManyBody.BitRegister.getNumBits.1 2019-11-02
+//TBTKFeature ManyParticle.BitRegister.getNumBits.1 2019-11-02
 TEST(BitRegister, getNumBits1){
 	BitRegister bitRegister;
 	EXPECT_EQ(bitRegister.getNumBits(), 8*sizeof(unsigned int));
 }
 
-//TBTKFeature ManyBody.BitRegister.getNumOneBits.1 2019-11-02
+//TBTKFeature ManyParticle.BitRegister.getNumOneBits.1 2019-11-02
 TEST(BitRegister, getNumOneBits1){
 	BitRegister bitRegister;
 	bitRegister = 0x12345678;
 	EXPECT_EQ(bitRegister.getNumOneBits(), 13);
 }
 
-//TBTKFeature ManyBody.BitRegister.getMostSignificantBit.1 2019-11-02
+//TBTKFeature ManyParticle.BitRegister.getMostSignificantBit.1 2019-11-02
 TEST(BitRegister, getMostSignificantBit1){
 	BitRegister bitRegister0;
 	BitRegister bitRegister1;
@@ -289,7 +289,7 @@ TEST(BitRegister, getMostSignificantBit1){
 	EXPECT_EQ(bitRegister1.getMostSignificantBit(), 1);
 }
 
-//TBTKFeature ManyBody.BitRegister.setMostSignificantBit.1 2019-11-02
+//TBTKFeature ManyParticle.BitRegister.setMostSignificantBit.1 2019-11-02
 TEST(BitRegister, setMostSignificantBit1){
 	BitRegister bitRegister;
 	bitRegister = 0x00000000;
@@ -297,7 +297,7 @@ TEST(BitRegister, setMostSignificantBit1){
 	EXPECT_EQ(bitRegister.getMostSignificantBit(), 1);
 }
 
-//TBTKFeature ManyBody.BitRegister.clearMostSignificantBit.1 2019-11-02
+//TBTKFeature ManyParticle.BitRegister.clearMostSignificantBit.1 2019-11-02
 TEST(BitRegister, clearMostSignificantBit1){
 	BitRegister bitRegister;
 	bitRegister = 0xFFFFFFFF;
@@ -307,7 +307,7 @@ TEST(BitRegister, clearMostSignificantBit1){
 	EXPECT_EQ(bitRegister.getMostSignificantBit(), 0);
 }
 
-//TBTKFeature ManyBody.BitRegister.cloneStructure.1 2019-11-02
+//TBTKFeature ManyParticle.BitRegister.cloneStructure.1 2019-11-02
 TEST(BitRegister, cloneStructure1){
 	BitRegister bitRegister;
 	bitRegister.cloneStructure();

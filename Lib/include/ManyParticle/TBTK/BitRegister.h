@@ -25,8 +25,19 @@
 
 #include "TBTK/Streams.h"
 
+#include <sstream>
+
 namespace TBTK{
 
+/** @brief Register of bits.
+ *
+ *  The BitRegister is provides methods or performing bitwise operations on an
+ *  underlying unsigned int.
+ *
+ *  # Example
+ *  \snippet ManyParticle/BitRegister.cpp BitRegister
+ *  ## Output
+ *  \snippet output/ManyParticle/BitRegister.output BitRegister */
 class BitRegister{
 public:
 	/** Constructor. */
@@ -34,9 +45,6 @@ public:
 
 	/** Copy constructor. */
 	BitRegister(const BitRegister &bitRegister);
-
-	/** Destructor. */
-//	~BitRegister();
 
 	/** Bitwise or operator. */
 	const BitRegister operator|(const BitRegister &rhs) const;
@@ -136,6 +144,22 @@ public:
 	 *  ensure the interface is similar with the interface for
 	 *  ExtensiveBitRegister.) */
 	BitRegister cloneStructure() const;
+
+	/** Get string representation of the BitRegister.
+	 *
+	 *  @return A string representation of the BitRegister. */
+	std::string toString() const;
+
+	/** Writes the BitRegsiter toString()-representation to a stream.
+	 *
+	 *  @param stream The stream to write to.
+	 *  @param bitRegister The BitRegister to write.
+	 *
+	 *  @return Reference to the output stream just written to. */
+	friend std::ostream& operator<<(
+		std::ostream &stream,
+		const BitRegister &bitRegister
+	);
 
 	/** Return the value as an unsigned int. */
 //	unsigned int getAsUnsignedInt() const;
@@ -306,6 +330,23 @@ inline void BitRegister::clearMostSignificantBit(){
 
 inline BitRegister BitRegister::cloneStructure() const{
 	return BitRegister(8*sizeof(unsigned int));
+}
+
+inline std::string BitRegister::toString() const{
+	std::stringstream stream;
+	for(unsigned int n = getNumBits(); n > 0; n--)
+		stream << getBit(n - 1);
+
+	return stream.str();
+}
+
+inline std::ostream& operator<<(
+	std::ostream &stream,
+	const BitRegister &bitRegister
+){
+	stream << bitRegister.toString();
+
+	return stream;
 }
 
 };	//End of namespace TBTK
