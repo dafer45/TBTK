@@ -269,7 +269,7 @@ TEST(BitRegister, print1){
 //TBTKFeature ManyBody.BitRegister.getNumBits.1 2019-11-02
 TEST(BitRegister, getNumBits1){
 	BitRegister bitRegister;
-	EXPECT_EQ(bitRegister.getNumBits(), 32);
+	EXPECT_EQ(bitRegister.getNumBits(), 8*sizeof(unsigned int));
 }
 
 //TBTKFeature ManyBody.BitRegister.getNumOneBits.1 2019-11-02
