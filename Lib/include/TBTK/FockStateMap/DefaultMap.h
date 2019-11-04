@@ -23,7 +23,7 @@
 #ifndef COM_DAFER45_TBTK_DEFAULT_MAP
 #define COM_DAFER45_TBTK_DEFAULT_MAP
 
-#include "TBTK/FockStateMap.h"
+#include "TBTK/FockStateMap/FockStateMap.h"
 #include "TBTK/BitRegister.h"
 #include "TBTK/ExtensiveBitRegister.h"
 

@@ -23,7 +23,7 @@
 #ifndef COM_DAFER45_TBTK_LOOKUP_TABLE_MAP
 #define COM_DAFER45_TBTK_LOOKUP_TABLE_MAP
 
-#include "TBTK/FockStateMap.h"
+#include "TBTK/FockStateMap/FockStateMap.h"
 #include "TBTK/BitRegister.h"
 #include "TBTK/ExtensiveBitRegister.h"
 
@@ -107,7 +107,53 @@ template<typename BIT_REGISTER>
 void LookupTableMap<BIT_REGISTER>::addState(
 	const FockState<BIT_REGISTER> &fockState
 ){
-	states.push_back(fockState);
+	if(
+		states.size() == 0
+		|| states.back().getBitRegister() < fockState.getBitRegister()
+	){
+		states.push_back(fockState);
+	}
+	else{
+		unsigned int min = 0;
+		unsigned int max = states.size()-1;
+		while(min <= max){
+			unsigned int currentState = (min+max)/2;
+			if(
+				fockState.getBitRegister()
+				> states.at(currentState).getBitRegister()
+			){
+				min = currentState + 1;
+			}
+			else if(
+				fockState.getBitRegister()
+				< states.at(currentState).getBitRegister()
+			){
+				max = currentState - 1;
+			}
+
+			if(min >= max){
+				if(
+					fockState.getBitRegister()
+						< states.at(
+							currentState
+						).getBitRegister()
+				){
+					states.insert(
+						states.begin() + currentState,
+						fockState
+					);
+				}
+				else{
+					states.insert(
+						states.begin() + currentState
+							+ 1,
+						fockState
+					);
+				}
+				break;
+			}
+		}
+	}
 }
 
 };	//End of namespace FockStateMap

@@ -25,15 +25,15 @@
 #define COM_DAFER45_TBTK_FOCK_SPACE
 
 #include "TBTK/BitRegister.h"
-#include "TBTK/DefaultMap.h"
 #include "TBTK/ExtensiveBitRegister.h"
 #include "TBTK/FockState.h"
-#include "TBTK/FockStateMap.h"
+#include "TBTK/FockStateMap/DefaultMap.h"
+#include "TBTK/FockStateMap/FockStateMap.h"
+#include "TBTK/FockStateMap/LookupTableMap.h"
 #include "TBTK/FockStateRule.h"
 #include "TBTK/FockStateRuleSet.h"
 #include "TBTK/HoppingAmplitudeSet.h"
 #include "TBTK/LadderOperator.h"
-#include "TBTK/LookupTableMap.h"
 //#include "Model.h"
 #include "TBTK/Statistics.h"
 #include "TBTK/WrapperRule.h"
