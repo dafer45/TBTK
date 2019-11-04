@@ -30,6 +30,16 @@
 
 namespace TBTK{
 
+/** @brief Register of bits.
+ *
+ *  The ExtensiveBitRegister is similar to the BitRegister, but allows for
+ *  arbitrary number of bits to be stored and operated on.
+ *
+ *  # Example
+ *  \snippet ManyParticle/ExtensiveBitRegister.cpp ExtensiveBitRegister
+ *  ## Output
+ *  \snippet output/ManyParticle/ExtensiveBitRegister.output ExtensiveBitRegister
+ */
 class ExtensiveBitRegister{
 public:
 	/** Constructor. */
@@ -145,6 +155,23 @@ public:
 
 	/** Create a new ExtensiveBitRegister with the same strucutre. */
 	ExtensiveBitRegister cloneStructure() const;
+
+	/** Get string representation of the ExtensiveBitRegister.
+	 *
+	 *  @return A string representation of the ExtensiveBitRegister. */
+	std::string toString() const;
+
+	/** Writes the ExtensiveBitRegister toString-representation to a
+	 *  stream.
+	 *
+	 *  @param stream The stream to srite to.
+	 *  @param extensiveBitRegister The ExtensiveBitRegister to write.
+	 *
+	 *  @return Reference to the output stream just written to. */
+	friend std::ostream& operator<<(
+		std::ostream &stream,
+		const ExtensiveBitRegister &extensiveBitRegister
+	);
 private:
 	/** Size of values array. */
 	unsigned int size;
@@ -500,6 +527,23 @@ inline void ExtensiveBitRegister::clearMostSignificantBit(){
 
 inline ExtensiveBitRegister ExtensiveBitRegister::cloneStructure() const{
 	return ExtensiveBitRegister(size*8*sizeof(unsigned int));
+}
+
+inline std::string ExtensiveBitRegister::toString() const{
+	std::stringstream stream;
+	for(unsigned int n = getNumBits(); n > 0; n--)
+		stream << getBit(n - 1);
+
+	return stream.str();
+}
+
+inline std::ostream& operator<<(
+	std::ostream &stream,
+	const ExtensiveBitRegister &extensiveBitRegister
+){
+	stream << extensiveBitRegister.toString();
+
+	return stream;
 }
 
 };	//End of namespace TBTK
