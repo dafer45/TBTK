@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "TBTK/FockStateRuleSet.h"
+#include "TBTK/FockStateRule/FockStateRuleSet.h"
 
 #include <algorithm>
 #include <vector>

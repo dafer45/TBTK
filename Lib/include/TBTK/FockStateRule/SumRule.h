@@ -24,7 +24,7 @@
 #define COM_DAFER45_TBTK_SUM_RULE
 
 #include "TBTK/FockSpace.h"
-#include "TBTK/FockStateRule.h"
+#include "TBTK/FockStateRule/FockStateRule.h"
 #include "TBTK/Index.h"
 
 #include <initializer_list>

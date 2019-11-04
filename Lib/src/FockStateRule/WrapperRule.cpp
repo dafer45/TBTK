@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "TBTK/WrapperRule.h"
+#include "TBTK/FockStateRule/WrapperRule.h"
 #include "TBTK/TBTKMacros.h"
 
 namespace TBTK{

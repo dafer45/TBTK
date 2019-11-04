@@ -6,6 +6,7 @@ FILE(
 	Elements/*.cpp
 	Exceptions/*.cpp
 	FockStateMap/*.cpp
+	FockStateRule/*.cpp
 	Lattice/*.cpp
 	Lattice/D2/*.cpp
 	Lattice/D3/*.cpp

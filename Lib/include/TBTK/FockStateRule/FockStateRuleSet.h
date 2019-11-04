@@ -23,8 +23,8 @@
 #ifndef COM_DAFER45_TBTK_FOCK_STATE_RULE_SET
 #define COM_DAFER45_TBTK_FOCK_STATE_RULE_SET
 
-#include "TBTK/FockStateRule.h"
-#include "TBTK/WrapperRule.h"
+#include "TBTK/FockStateRule/FockStateRule.h"
+#include "TBTK/FockStateRule/WrapperRule.h"
 
 #include <vector>
 

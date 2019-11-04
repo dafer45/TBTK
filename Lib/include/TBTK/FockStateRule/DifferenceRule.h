@@ -14,33 +14,42 @@
  */
 
 /** @package TBTKcalc
- *  @file WrapperRule.h
- *  @brief WrapperRule.
+ *  @file DifferenceRule.h
+ *  @brief DifferenceRule.
  *
  *  @author Kristofer Björnson
  */
 
-#ifndef COM_DAFER45_TBTK_WRAPPER_RULE
-#define COM_DAFER45_TBTK_WRAPPER_RULE
+#ifndef COM_DAFER45_TBTK_DIFFERENCE_RULE
+#define COM_DAFER45_TBTK_DIFFERENCE_RULE
 
-#include "TBTK/FockStateRule.h"
+#include "TBTK/FockStateRule/FockStateRule.h"
+#include "TBTK/Index.h"
 
 namespace TBTK{
 namespace FockStateRule{
 
-class WrapperRule : public FockStateRule{
+class DifferenceRule : public FockStateRule{
 public:
 	/** Constructor */
-	WrapperRule(const FockStateRule &fockStateRule);
+	DifferenceRule(
+		std::initializer_list<Index> addStateIndices,
+		std::initializer_list<Index> subtractStateIndices,
+		int difference
+	);
 
-	/** Copy constructor */
-	WrapperRule(const WrapperRule &wrapperRule);
+	/** Constructor */
+	DifferenceRule(
+		std::vector<Index> addStateIndices,
+		std::vector<Index> subtractStateIndices,
+		int difference
+	);
 
 	/** Destructor. */
-	virtual ~WrapperRule();
+	virtual ~DifferenceRule();
 
-	/** Clone WrapperRule. */
-	virtual WrapperRule* clone() const;
+	/** Clone DifferenceRule. */
+	virtual DifferenceRule* clone() const;
 
 	/** Implements FockStateRule::createNewRule(). */
 	virtual WrapperRule createNewRule(
@@ -51,9 +60,6 @@ public:
 	virtual WrapperRule createNewRule(
 		const LadderOperator<ExtensiveBitRegister> &ladderOperator
 	) const;
-
-	/** Asignment operator. */
-	WrapperRule& operator=(const WrapperRule &wrapperRule);
 
 	/** Check whether a given FockState fullfills the rule with respect to
 	 *  a particular FockSpace. */
@@ -72,45 +78,21 @@ public:
 	/** Comparison operator. */
 	virtual bool operator==(const FockStateRule &rhs) const;
 
-	/** Implements FockStateRile::print(). */
+	/** Implements FockStateRule::print(). */
 	virtual void print() const;
 private:
-	FockStateRule *fockStateRule;
+	/** Indices to add. */
+	std::vector<Index> addStateIndices;
+
+	/** Indices to subtract. */
+	std::vector<Index> subtractStateIndices;
+
+	/** Number of particles that the states corresponding to the indices
+	 *  stored in stateIndices are required to sum up to. */
+	int difference;
 };
 
-inline WrapperRule WrapperRule::createNewRule(
-	const LadderOperator<BitRegister> &ladderOperator
-) const{
-	return WrapperRule(fockStateRule->createNewRule(ladderOperator));
-}
-
-inline WrapperRule WrapperRule::createNewRule(
-	const LadderOperator<ExtensiveBitRegister> &ladderOperator
-) const{
-	return WrapperRule(fockStateRule->createNewRule(ladderOperator));
-}
-
-inline void WrapperRule::print() const{
-	fockStateRule->print();
-}
-
-//Note: Declared in FockStateRule.h
-inline WrapperRule operator*(
-	const LadderOperator<BitRegister> &ladderOperator,
-	const FockStateRule &fockStateRule
-){
-	return fockStateRule.createNewRule(ladderOperator);
-}
-
-//Note: Declared in FockStateRule.h
-inline WrapperRule operator*(
-	const LadderOperator<ExtensiveBitRegister> &ladderOperator,
-	const FockStateRule &fockStateRule
-){
-	return fockStateRule.createNewRule(ladderOperator);
-}
-
-};	//End of namespace FockSpaceRule
+};	//End of namespace FockStateRule
 };	//End of namespace TBTK
 
 #endif

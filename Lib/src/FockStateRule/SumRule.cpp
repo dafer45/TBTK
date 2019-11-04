@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "TBTK/SumRule.h"
+#include "TBTK/FockStateRule/SumRule.h"
 
 #include <algorithm>
 

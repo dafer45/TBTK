@@ -1,12 +1,12 @@
 #include "TBTK/Solver/ExactDiagonalizer.h"
 #include "TBTK/FockSpace.h"
 #include "TBTK/FileWriter.h"
+#include "TBTK/FockStateRule/DifferenceRule.h"
+#include "TBTK/FockStateRule/SumRule.h"
+#include "TBTK/FockStateRule/WrapperRule.h"
 #include "TBTK/Solver/Diagonalizer.h"
 #include "TBTK/Property/DOS.h"
 #include "TBTK/PropertyExtractor/Diagonalizer.h"
-#include "TBTK/SumRule.h"
-#include "TBTK/DifferenceRule.h"
-#include "TBTK/WrapperRule.h"
 #include "TBTK/Timer.h"
 
 using namespace std;

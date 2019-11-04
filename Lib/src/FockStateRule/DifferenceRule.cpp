@@ -18,7 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "TBTK/DifferenceRule.h"
+#include "TBTK/FockStateRule/DifferenceRule.h"
 #include "TBTK/FockSpace.h"
 
 #include <algorithm>

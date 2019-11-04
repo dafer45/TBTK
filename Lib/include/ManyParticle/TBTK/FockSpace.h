@@ -30,13 +30,13 @@
 #include "TBTK/FockStateMap/DefaultMap.h"
 #include "TBTK/FockStateMap/FockStateMap.h"
 #include "TBTK/FockStateMap/LookupTableMap.h"
-#include "TBTK/FockStateRule.h"
-#include "TBTK/FockStateRuleSet.h"
+#include "TBTK/FockStateRule/FockStateRule.h"
+#include "TBTK/FockStateRule/FockStateRuleSet.h"
+#include "TBTK/FockStateRule/WrapperRule.h"
 #include "TBTK/HoppingAmplitudeSet.h"
 #include "TBTK/LadderOperator.h"
 //#include "Model.h"
 #include "TBTK/Statistics.h"
-#include "TBTK/WrapperRule.h"
 
 namespace TBTK{
 
