@@ -44,14 +44,23 @@ template<typename BIT_REGISTER>
 class FockSpace{
 public:
 	/** Constructor. */
+	FockSpace();
+
+	/** Constructor. */
 	FockSpace(
 		const HoppingAmplitudeSet *hoppingAmplitudeSet,
 		Statistics statistics,
 		unsigned int maxParticlesPerState
 	);
 
+	/** Copy constructor. */
+	FockSpace(const FockSpace &fockSpace);
+
 	/** Destructor. */
 	~FockSpace();
+
+	/** Assignment operator. */
+	FockSpace& operator=(const FockSpace &rhs);
 
 	/** Get operators. */
 	LadderOperator<BIT_REGISTER>** getOperators() const;
@@ -128,14 +137,99 @@ private:
 
 	/** Fock state map for mapping FockStates to many-body Hilbert space
 	 *  indices, and vice versa. */
-	FockStateMap::FockStateMap<BIT_REGISTER> *fockStateMap;
+//	FockStateMap::FockStateMap<BIT_REGISTER> *fockStateMap;
 };
 
 template<typename BIT_REGISTER>
+FockSpace<BIT_REGISTER>::FockSpace(){
+	hoppingAmplitudeSet = nullptr;
+	vacuumState = nullptr;
+	operators = nullptr;
+//	fockStateMap = nullptr;
+}
+
+template<typename BIT_REGISTER>
+FockSpace<BIT_REGISTER>::FockSpace(const FockSpace &fockSpace){
+	hoppingAmplitudeSet = fockSpace.hoppingAmplitudeSet;
+	if(fockSpace.vacuumState == nullptr)
+		vacuumState = nullptr;
+	else
+		vacuumState = new FockState<BIT_REGISTER>(*fockSpace.vacuumState);
+	if(fockSpace.operators == nullptr){
+		operators = nullptr;
+	}
+	else{
+		operators = new LadderOperator<BIT_REGISTER>*[
+			hoppingAmplitudeSet->getBasisSize()
+		];
+		for(
+			unsigned int n = 0;
+			n < hoppingAmplitudeSet->getBasisSize();
+			n++
+		){
+			operators[n] = new LadderOperator<BIT_REGISTER>[2];
+			for(unsigned int c = 0; c < 2; c++)
+				operators[n][c] = fockSpace.operators[n][c];
+		}
+	}
+}
+
+template<typename BIT_REGISTER>
 FockSpace<BIT_REGISTER>::~FockSpace(){
-	for(int n = 0; n < hoppingAmplitudeSet->getBasisSize(); n++)
-		delete [] operators[n];
-	delete [] operators;
+	if(operators != nullptr){
+		for(int n = 0; n < hoppingAmplitudeSet->getBasisSize(); n++)
+			delete [] operators[n];
+		delete [] operators;
+	}
+}
+
+template<typename BIT_REGISTER>
+FockSpace<BIT_REGISTER>& FockSpace<BIT_REGISTER>::operator=(
+	const FockSpace &rhs
+){
+	if(this != &rhs){
+		if(vacuumState != nullptr)
+			delete vacuumState;
+		if(rhs.vacuumState == nullptr){
+			vacuumState = nullptr;
+		}
+		else{
+			vacuumState
+				= new FockState<BIT_REGISTER>(*rhs.vacuumState);
+		}
+
+		if(operators != nullptr){
+			for(
+				int n = 0;
+				n < hoppingAmplitudeSet->getBasisSize();
+				n++
+			){
+				delete operators[n];
+			}
+			delete operators;
+		}
+		hoppingAmplitudeSet = rhs.hoppingAmplitudeSet;
+		if(rhs.operators == nullptr){
+			operators = nullptr;
+		}
+		else{
+			operators = new LadderOperator<BIT_REGISTER>*[
+				hoppingAmplitudeSet->getBasisSize()
+			];
+			for(
+				int n = 0;
+				n < hoppingAmplitudeSet->getBasisSize();
+				n++
+			){
+				operators[n]
+					= new LadderOperator<BIT_REGISTER>[2];
+				for(unsigned int c = 0; c < 2; c++)
+					operators[n][c] = rhs.operators[n][c];
+			}
+		}
+	}
+
+	return *this;
 }
 
 template<typename BIT_REGISTER>

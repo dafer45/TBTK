@@ -45,3 +45,6 @@
 
 - Updated BitRegister::opeartor=() and ExtensiveBitRegister::operator=() to
   have the same behavior as the corresponding copy constructors.
+
+- Investiget FockStateRule::createNewRule(). The interface seems confusing and
+  potentially wrong.
