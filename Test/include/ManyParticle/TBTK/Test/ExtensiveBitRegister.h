@@ -466,11 +466,36 @@ TEST(ExtensiveBitRegister, operatorAssignment1){
 
 //TBTKFeature ManyParticle.ExtensiveBitRegister.operatorAssignment.2 2019-11-03
 TEST(ExtensiveBitRegister, operatorAssignment2){
+	ExtensiveBitRegister extensiveBitRegister(147);
+	extensiveBitRegister.clear();
+	extensiveBitRegister.setBit(1, 1);
+	extensiveBitRegister.setBit(13, 1);
+	extensiveBitRegister.setBit(47, 1);
+	extensiveBitRegister.setBit(102, 1);
+	ExtensiveBitRegister copy;
+	copy = extensiveBitRegister;
+	for(unsigned int n = 0; n < extensiveBitRegister.getNumBits(); n++){
+		switch(n){
+		case 1:
+		case 13:
+		case 47:
+		case 102:
+			EXPECT_EQ(copy.getBit(n), 1);
+			break;
+		default:
+			EXPECT_EQ(copy.getBit(n), 0);
+			break;
+		}
+	}
+}
+
+//TBTKFeature ManyParticle.ExtensiveBitRegister.operatorAssignment.3 2019-11-03
+TEST(ExtensiveBitRegister, operatorAssignment3){
 	EXPECT_EXIT(
 		{
 			Streams::setStdMuteErr();
 			ExtensiveBitRegister extensiveBitRegister(147);
-			ExtensiveBitRegister copy;
+			ExtensiveBitRegister copy(74);
 			copy = extensiveBitRegister;
 		},
 		::testing::ExitedWithCode(1),
