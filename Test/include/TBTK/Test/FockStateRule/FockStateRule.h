@@ -82,10 +82,46 @@ TEST(FockStateRule, operatorMultiplication1){
 	model << HoppingAmplitude(1, {0}, {0});
 	model.construct();
 	FockState<BitRegister> templateState(model.getBasisSize());
-	BitRegister fermionMask;
+	BitRegister fermionMask(model.getBasisSize() + 1);
 
 	LadderOperator<BitRegister> ladderOperator(
 		LadderOperator<BitRegister>::Type::Creation,
+		Statistics::FermiDirac,
+		&model.getHoppingAmplitudeSet(),
+		0,
+		1,
+		1,
+		templateState,
+		fermionMask
+	);
+
+	SumRule sumRule0(
+		{{0}},
+		0
+	);
+	SumRule sumRule1(
+		{{0}},
+		1
+	);
+
+	WrapperRule wrapperRule = ladderOperator*sumRule0;
+	EXPECT_TRUE(wrapperRule == sumRule1);
+}
+
+//TBTKFeature FockStateRule.FockStateRule.operatorMultiplication.2 2019-11-05
+TEST(FockStateRule, operatorMultiplication2){
+	//This test is very convoluted because the structure of the
+	//FockStateRules is strange. The FockStateRules should be rewritten to
+	//not mix the WrapperRule class and FockStateRule class. In particular,
+	//operator*() is defined in FockStateRule, but implemented in WrapperRule.
+	Model model;
+	model << HoppingAmplitude(1, {0}, {0});
+	model.construct();
+	FockState<ExtensiveBitRegister> templateState(model.getBasisSize());
+	ExtensiveBitRegister fermionMask(model.getBasisSize()+1);
+
+	LadderOperator<ExtensiveBitRegister> ladderOperator(
+		LadderOperator<ExtensiveBitRegister>::Type::Creation,
 		Statistics::FermiDirac,
 		&model.getHoppingAmplitudeSet(),
 		0,
