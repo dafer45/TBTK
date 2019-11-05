@@ -42,3 +42,7 @@
 - Consider whether the functions getLowerMatsubaraEnergy(),
   getUpperMatsubaraEnergy(), and getFunamentalMatsubaraEnergy() should return a
   complex imaginary number instead of a double.
+
+- Investigate how to disentangle the FockStateRule and the WrapperRule.
+  FockStateRule::operator*() is currently implemented in WrapperRule.cpp, and
+  the unit test of this operator is very convoluted.
