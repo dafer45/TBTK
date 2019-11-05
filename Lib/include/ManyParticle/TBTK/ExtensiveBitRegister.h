@@ -396,15 +396,23 @@ inline const ExtensiveBitRegister ExtensiveBitRegister::operator--(int){
 
 inline void ExtensiveBitRegister::operator=(const ExtensiveBitRegister &rhs){
 	if(this != &rhs){
-		TBTKAssert(
-			size == rhs.size,
-			"ExtensiveBitRegister::operator=()",
-			"Incompatible register sizes.",
-			""
-		);
+		if(values == nullptr){
+			size = rhs.size;
+			values = new unsigned int[size];
+			for(unsigned int n = 0; n < size; n++)
+				values[n] = rhs.values[n];
+		}
+		else{
+			TBTKAssert(
+				size == rhs.size,
+				"ExtensiveBitRegister::operator=()",
+				"Incompatible register sizes.",
+				""
+			);
 
-		for(unsigned int n = 0; n < size; n++)
-			values[n] = rhs.values[n];
+			for(unsigned int n = 0; n < size; n++)
+				values[n] = rhs.values[n];
+		}
 	}
 }
 

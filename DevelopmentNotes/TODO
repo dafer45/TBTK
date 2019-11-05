@@ -42,3 +42,6 @@
 
 - Remove generateIndexTree from PropertyExtractor::PropertyExtractor and
   replace it by calls to PropertyExtractor::IndexTreeGenerator.
+
+- Updated BitRegister::opeartor=() and ExtensiveBitRegister::operator=() to
+  have the same behavior as the corresponding copy constructors.
