@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 
-#include "TBTK/Test/FockStateRule/FockStateRuleSet.h"
+#include "TBTK/Test/FockSpace.h"
 
 int main(int argc, char **argv){
 	::testing::InitGoogleTest(&argc, argv);

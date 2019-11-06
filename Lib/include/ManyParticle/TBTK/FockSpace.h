@@ -30,8 +30,8 @@
 #include "TBTK/FockStateMap/DefaultMap.h"
 #include "TBTK/FockStateMap/FockStateMap.h"
 #include "TBTK/FockStateMap/LookupTableMap.h"
+#include "TBTK/FockStateRuleSet.h"
 #include "TBTK/FockStateRule/FockStateRule.h"
-#include "TBTK/FockStateRule/FockStateRuleSet.h"
 #include "TBTK/FockStateRule/WrapperRule.h"
 #include "TBTK/HoppingAmplitudeSet.h"
 #include "TBTK/LadderOperator.h"
@@ -63,7 +63,7 @@ public:
 	FockSpace& operator=(const FockSpace &rhs);
 
 	/** Get operators. */
-	LadderOperator<BIT_REGISTER>** getOperators() const;
+	LadderOperator<BIT_REGISTER> const* const* getOperators() const;
 
 	/** Get the vacuum state. */
 	FockState<BIT_REGISTER> getVacuumState() const;
@@ -150,6 +150,8 @@ FockSpace<BIT_REGISTER>::FockSpace(){
 
 template<typename BIT_REGISTER>
 FockSpace<BIT_REGISTER>::FockSpace(const FockSpace &fockSpace){
+	statistics = fockSpace.statistics;
+	exponentialDimension = fockSpace.exponentialDimension;
 	hoppingAmplitudeSet = fockSpace.hoppingAmplitudeSet;
 	if(fockSpace.vacuumState == nullptr)
 		vacuumState = nullptr;
@@ -163,7 +165,7 @@ FockSpace<BIT_REGISTER>::FockSpace(const FockSpace &fockSpace){
 			hoppingAmplitudeSet->getBasisSize()
 		];
 		for(
-			unsigned int n = 0;
+			int n = 0;
 			n < hoppingAmplitudeSet->getBasisSize();
 			n++
 		){
@@ -188,6 +190,8 @@ FockSpace<BIT_REGISTER>& FockSpace<BIT_REGISTER>::operator=(
 	const FockSpace &rhs
 ){
 	if(this != &rhs){
+		statistics = rhs.statistics;
+		exponentialDimension = rhs.exponentialDimension;
 		if(vacuumState != nullptr)
 			delete vacuumState;
 		if(rhs.vacuumState == nullptr){
@@ -233,7 +237,8 @@ FockSpace<BIT_REGISTER>& FockSpace<BIT_REGISTER>::operator=(
 }
 
 template<typename BIT_REGISTER>
-LadderOperator<BIT_REGISTER>** FockSpace<BIT_REGISTER>::getOperators() const{
+LadderOperator<BIT_REGISTER> const* const* FockSpace<BIT_REGISTER>::getOperators(
+) const{
 	return operators;
 }
 

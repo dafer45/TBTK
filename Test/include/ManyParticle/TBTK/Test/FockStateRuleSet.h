@@ -1,6 +1,6 @@
-#include "TBTK/FockStateRule/FockStateRuleSet.h"
 #include "TBTK/FockStateRule/DifferenceRule.h"
 #include "TBTK/FockStateRule/SumRule.h"
+#include "TBTK/FockStateRuleSet.h"
 #include "TBTK/Model.h"
 
 #include "gtest/gtest.h"

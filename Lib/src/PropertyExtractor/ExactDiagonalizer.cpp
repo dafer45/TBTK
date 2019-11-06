@@ -120,9 +120,9 @@ Property::GreensFunction* ExactDiagonalizer::calculateGreensFunction(
 	if(manyParticleContext->wrapsBitRegister()){
 		const FockSpace<BitRegister> *fockSpace = manyParticleContext->getFockSpaceBitRegister();
 		const HoppingAmplitudeSet *hoppingAmplitudeSet = fockSpace->getHoppingAmplitudeSet();
-		LadderOperator<BitRegister> **operators = fockSpace->getOperators();
-		LadderOperator<BitRegister> *fromOperator;
-		LadderOperator<BitRegister> *toOperator;
+		LadderOperator<BitRegister> const* const* operators = fockSpace->getOperators();
+		const LadderOperator<BitRegister> *fromOperator;
+		const LadderOperator<BitRegister> *toOperator;
 		double energySign = 0;
 		switch(type){
 		case Property::GreensFunction::Type::Retarded:
@@ -217,9 +217,9 @@ Property::GreensFunction* ExactDiagonalizer::calculateGreensFunction(
 	else if(manyParticleContext->wrapsExtensiveBitRegister()){
 		const FockSpace<ExtensiveBitRegister> *fockSpace = manyParticleContext->getFockSpaceExtensiveBitRegister();
 		const HoppingAmplitudeSet *hoppingAmplitudeSet = fockSpace->getHoppingAmplitudeSet();
-		LadderOperator<ExtensiveBitRegister> **operators = fockSpace->getOperators();
-		LadderOperator<ExtensiveBitRegister> *fromOperator;
-		LadderOperator<ExtensiveBitRegister> *toOperator;
+		LadderOperator<ExtensiveBitRegister> const* const* operators = fockSpace->getOperators();
+		const LadderOperator<ExtensiveBitRegister> *fromOperator;
+		const LadderOperator<ExtensiveBitRegister> *toOperator;
 		double energySign = 0;
 		switch(type){
 		case Property::GreensFunction::Type::Retarded:

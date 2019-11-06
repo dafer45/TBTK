@@ -2,7 +2,7 @@
 #define COM_DAFER45_TBTK_SOLVER_EXACT_DIAGONALIZATION
 
 #include "TBTK/Solver/Diagonalizer.h"
-#include "TBTK/FockStateRule/FockStateRuleSet.h"
+#include "TBTK/FockStateRuleSet.h"
 #include "TBTK/FockStateRule/WrapperRule.h"
 #include "TBTK/InteractionAmplitudeSet.h"
 #include "TBTK/Model.h"

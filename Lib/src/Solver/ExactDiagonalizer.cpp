@@ -60,7 +60,7 @@ void ExactDiagonalizer::run(unsigned int subspace){
 template<>
 void ExactDiagonalizer::setupManyParticleModel<BitRegister>(unsigned int subspace){
 	FockSpace<BitRegister> *fockSpace = getModel().getManyParticleContext()->getFockSpaceBitRegister();
-	LadderOperator<BitRegister> **operators = fockSpace->getOperators();
+	LadderOperator<BitRegister> const* const* operators = fockSpace->getOperators();
 	SubspaceContext &subspaceContext = subspaceContexts.at(subspace);
 	FockStateMap::FockStateMap<BitRegister> *fockStateMap = fockSpace->createFockStateMap(
 		subspaceContext.fockStateRuleSet
@@ -133,7 +133,7 @@ void ExactDiagonalizer::setupManyParticleModel<BitRegister>(unsigned int subspac
 template<>
 void ExactDiagonalizer::setupManyParticleModel<ExtensiveBitRegister>(unsigned int subspace){
 	FockSpace<ExtensiveBitRegister> *fockSpace = getModel().getManyParticleContext()->getFockSpaceExtensiveBitRegister();
-	LadderOperator<ExtensiveBitRegister> **operators = fockSpace->getOperators();
+	LadderOperator<ExtensiveBitRegister> const* const* operators = fockSpace->getOperators();
 	SubspaceContext &subspaceContext = subspaceContexts.at(subspace);
 	FockStateMap::FockStateMap<ExtensiveBitRegister> *fockStateMap = fockSpace->createFockStateMap(
 		subspaceContext.fockStateRuleSet

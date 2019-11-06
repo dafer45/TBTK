@@ -27,7 +27,7 @@
 #include "TBTK/BitRegister.h"
 #include "TBTK/ExtensiveBitRegister.h"
 #include "TBTK/FockSpace.h"
-#include "TBTK/FockStateRule/FockStateRuleSet.h"
+#include "TBTK/FockStateRuleSet.h"
 #include "TBTK/InteractionAmplitudeSet.h"
 #include "TBTK/SingleParticleContext.h"
 
