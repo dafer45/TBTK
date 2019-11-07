@@ -32,7 +32,7 @@ protected:
 	}
 };
 
-//TBTKFeature FockStateRule.FockStateRuleSet.clone.1 2019-11-05
+//TBTKFeature ManyParticle.FockStateRuleSet.clone.1 2019-11-05
 TEST_F(FockStateRuleSetTest, isSatisfied1){
 	FockStateRuleSet fockStateRuleSet;
 	fockStateRuleSet.addFockStateRule(SumRule({{0}, {1}, {2}, {3}}, 3));
@@ -48,7 +48,7 @@ TEST_F(FockStateRuleSetTest, isSatisfied1){
 	EXPECT_TRUE(fockStateRuleSet.isSatisfied(fockSpace0, fockState));
 }
 
-//TBTKFeature FockStateRule.FockStateRuleSet.clone.2 2019-11-05
+//TBTKFeature ManyParticle.FockStateRuleSet.clone.2 2019-11-05
 TEST_F(FockStateRuleSetTest, isSatisfied2){
 	FockStateRuleSet fockStateRuleSet;
 	fockStateRuleSet.addFockStateRule(SumRule({{0}, {1}, {2}, {3}}, 3));
@@ -64,7 +64,7 @@ TEST_F(FockStateRuleSetTest, isSatisfied2){
 	EXPECT_FALSE(fockStateRuleSet.isSatisfied(fockSpace0, fockState));
 }
 
-//TBTKFeature FockStateRule.FockStateRuleSet.clone.3 2019-11-05
+//TBTKFeature ManyParticle.FockStateRuleSet.clone.3 2019-11-05
 TEST_F(FockStateRuleSetTest, isSatisfied3){
 	FockStateRuleSet fockStateRuleSet;
 	fockStateRuleSet.addFockStateRule(SumRule({{0}, {1}, {2}, {3}}, 3));
@@ -78,7 +78,7 @@ TEST_F(FockStateRuleSetTest, isSatisfied3){
 	EXPECT_FALSE(fockStateRuleSet.isSatisfied(fockSpace0, fockState));
 }
 
-//TBTKFeature FockStateRule.FockStateRuleSet.clone.4 2019-11-05
+//TBTKFeature ManyParticle.FockStateRuleSet.clone.4 2019-11-05
 TEST_F(FockStateRuleSetTest, isSatisfied4){
 	FockStateRuleSet fockStateRuleSet;
 	fockStateRuleSet.addFockStateRule(SumRule({{0}, {1}, {2}, {3}}, 3));
@@ -94,7 +94,7 @@ TEST_F(FockStateRuleSetTest, isSatisfied4){
 	EXPECT_TRUE(fockStateRuleSet.isSatisfied(fockSpace1, fockState));
 }
 
-//TBTKFeature FockStateRule.FockStateRuleSet.clone.5 2019-11-05
+//TBTKFeature ManyParticle.FockStateRuleSet.clone.5 2019-11-05
 TEST_F(FockStateRuleSetTest, isSatisfied5){
 	FockStateRuleSet fockStateRuleSet;
 	fockStateRuleSet.addFockStateRule(SumRule({{0}, {1}, {2}, {3}}, 3));
@@ -110,7 +110,7 @@ TEST_F(FockStateRuleSetTest, isSatisfied5){
 	EXPECT_FALSE(fockStateRuleSet.isSatisfied(fockSpace1, fockState));
 }
 
-//TBTKFeature FockStateRule.FockStateRuleSet.clone.6 2019-11-05
+//TBTKFeature ManyParticle.FockStateRuleSet.clone.6 2019-11-05
 TEST_F(FockStateRuleSetTest, isSatisfied6){
 	FockStateRuleSet fockStateRuleSet;
 	fockStateRuleSet.addFockStateRule(SumRule({{0}, {1}, {2}, {3}}, 3));
@@ -124,8 +124,8 @@ TEST_F(FockStateRuleSetTest, isSatisfied6){
 	EXPECT_FALSE(fockStateRuleSet.isSatisfied(fockSpace1, fockState));
 }
 
-//TBTKFeature FockStateRule.FockStateRuleSet.addFockStateRule.1 2019-11-05
-//TBTKFeature FockStateRule.FockStateRuleSet.getSize.1 2019-11-05
+//TBTKFeature ManyParticle.FockStateRuleSet.addFockStateRule.1 2019-11-05
+//TBTKFeature ManyParticle.FockStateRuleSet.getSize.1 2019-11-05
 TEST(FockStateRuleSet, addFockStateRule){
 	FockStateRuleSet fockStateRuleSet;
 	fockStateRuleSet.addFockStateRule(SumRule({{0}, {1}}, 1));
@@ -133,7 +133,7 @@ TEST(FockStateRuleSet, addFockStateRule){
 	EXPECT_EQ(fockStateRuleSet.getSize(), 2);
 }
 
-//TBTKFeature FockStateRule.FockStateRuleSet.operatorEqual.1 2019-11-05
+//TBTKFeature ManyParticle.FockStateRuleSet.operatorEqual.1 2019-11-05
 TEST_F(FockStateRuleSetTest, operatorEqual1){
 	FockStateRuleSet fockStateRuleSet0;
 	fockStateRuleSet0.addFockStateRule(SumRule({{0}, {1}, {2}, {3}}, 3));
@@ -150,7 +150,7 @@ TEST_F(FockStateRuleSetTest, operatorEqual1){
 	EXPECT_EQ(fockStateRuleSet0, fockStateRuleSet1);
 }
 
-//TBTKFeature FockStateRule.FockStateRuleSet.operatorEqual.1 2019-11-05
+//TBTKFeature ManyParticle.FockStateRuleSet.operatorEqual.1 2019-11-05
 TEST_F(FockStateRuleSetTest, operatorEqual2){
 	FockStateRuleSet fockStateRuleSet0;
 	fockStateRuleSet0.addFockStateRule(SumRule({{0}, {1}, {2}, {3}}, 3));
@@ -167,7 +167,7 @@ TEST_F(FockStateRuleSetTest, operatorEqual2){
 	EXPECT_FALSE(fockStateRuleSet0 == fockStateRuleSet1);
 }
 
-//TBTKFeature FockStateRule.FockStateRuleSet.operatorMultiplication.1 2019-11-05
+//TBTKFeature ManyParticle.FockStateRuleSet.operatorMultiplication.1 2019-11-05
 TEST_F(FockStateRuleSetTest, operatorMultiplication1){
 	FockState<BitRegister> templateState(model.getBasisSize());
 	BitRegister fermionMask(model.getBasisSize()+1);
@@ -199,7 +199,7 @@ TEST_F(FockStateRuleSetTest, operatorMultiplication1){
 	EXPECT_EQ(ladderOperator*fockStateRuleSet0, fockStateRuleSet1);
 }
 
-//TBTKFeature FockStateRule.FockStateRuleSet.operatorMultiplication.2 2019-11-05
+//TBTKFeature ManyParticle.FockStateRuleSet.operatorMultiplication.2 2019-11-05
 TEST_F(FockStateRuleSetTest, operatorMultiplication2){
 	FockState<ExtensiveBitRegister> templateState(model.getBasisSize());
 	ExtensiveBitRegister fermionMask(model.getBasisSize()+1);
