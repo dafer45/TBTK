@@ -25,6 +25,9 @@ using namespace std;
 
 namespace TBTK{
 
+ManyParticleContext::ManyParticleContext(){
+}
+
 //ManyParticleContext::ManyParticleContext(FockSpace<BitRegister> *fockSpace
 ManyParticleContext::ManyParticleContext(const SingleParticleContext *singleParticleContext
 ) :

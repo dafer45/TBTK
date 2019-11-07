@@ -37,6 +37,9 @@ namespace TBTK{
 
 class ManyParticleContext{
 public:
+	/** Constructor. */
+	ManyParticleContext();
+
 	/** Constructor. The ManyParticleContext assumes ownership of the
 	 *  FockSpace and will destroy it at destrucion. */
 //	ManyParticleContext(FockSpace<BitRegister> *fockSpace);
@@ -107,10 +110,24 @@ inline bool ManyParticleContext::wrapsExtensiveBitRegister(){
 }
 
 inline FockSpace<BitRegister>* ManyParticleContext::getFockSpaceBitRegister(){
+	TBTKAssert(
+		wrapsBitRegister(),
+		"ManyParticleContext::getFockSpaceBitRegister()",
+		"Use ManyParticleContext::getFockSpaceExtensiveBitRegister()"
+		<< " instead.",
+		""
+	);
 	return brFockSpace.get();
 }
 
 inline FockSpace<ExtensiveBitRegister>* ManyParticleContext::getFockSpaceExtensiveBitRegister(){
+	TBTKAssert(
+		wrapsExtensiveBitRegister(),
+		"ManyParticleContext::getFockSpaceExtensiveBitRegister()",
+		"Use ManyParticleContext::getFockSpaceBitRegister()"
+		<< " instead.",
+		""
+	);
 	return ebrFockSpace.get();
 }
 
