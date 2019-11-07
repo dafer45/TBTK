@@ -4,6 +4,10 @@ using namespace std;
 
 namespace TBTK{
 
+InteractionAmplitude::InteractionAmplitude(){
+	amplitudeCallback = nullptr;
+}
+
 InteractionAmplitude::InteractionAmplitude(
 	complex<double> amplitude,
 	initializer_list<Index> creationOperatorIndices,

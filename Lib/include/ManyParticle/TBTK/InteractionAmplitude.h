@@ -11,6 +11,9 @@ namespace TBTK{
 class InteractionAmplitude{
 public:
 	/** Constructor. */
+	InteractionAmplitude();
+
+	/** Constructor. */
 	InteractionAmplitude(
 		std::complex<double> amplitude,
 		std::initializer_list<Index> creationOperatorIndices,
