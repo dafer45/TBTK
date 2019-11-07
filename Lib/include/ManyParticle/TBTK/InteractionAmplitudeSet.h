@@ -11,10 +11,10 @@ namespace TBTK{
 class InteractionAmplitudeSet{
 public:
 	/** Constructor. */
-	InteractionAmplitudeSet(const HoppingAmplitudeSet *hoppingAmplitudeSet);
+//	InteractionAmplitudeSet(const HoppingAmplitudeSet *hoppingAmplitudeSet);
 
 	/** Destructor. */
-	~InteractionAmplitudeSet();
+//	~InteractionAmplitudeSet();
 
 	/** Add interaction. */
 	void addIA(InteractionAmplitude ia);
@@ -28,7 +28,7 @@ public:
 	) const;
 private:
 	/** Single-particle HoppingAmplitudeSet. */
-	const HoppingAmplitudeSet *hoppingAmplitudeSet;
+//	const HoppingAmplitudeSet *hoppingAmplitudeSet;
 
 	/** Interaction amplitudes. */
 	std::vector<InteractionAmplitude> interactionAmplitudes;
