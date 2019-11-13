@@ -72,7 +72,7 @@ public:
 	 *  original vector. */
 	const Vector2d unit() const;
 
-	/** Returns a vector tha is the component of the vector that is
+	/** Returns a vector that is the component of the vector that is
 	 *  perpendicular to the argument. */
 	const Vector2d perpendicular(const Vector2d &v) const;
 

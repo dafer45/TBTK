@@ -48,3 +48,5 @@
 
 - Investiget FockStateRule::createNewRule(). The interface seems confusing and
   potentially wrong.
+
+- Remove destructor from Vector2d.
