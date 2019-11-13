@@ -111,6 +111,14 @@ TEST_F(Vector2dTest, unit1){
 	EXPECT_FLOAT_EQ(result.y, 1.5/sqrt(3.25));
 }
 
+//TBTKFeature Utilities.Vector2d.perpendicular.1 2019-11-13
+TEST_F(Vector2dTest, perpendicular1){
+	Vector2d result = u.perpendicular(v);
+
+	EXPECT_FLOAT_EQ(result.x, 2 - (29/65.)*4);
+	EXPECT_FLOAT_EQ(result.y, 3 - (29/65.)*7);
+}
+
 //TBTKFeature Utilities.Vector2d.parallel.1 2019-11-13
 TEST_F(Vector2dTest, parallel1){
 	Vector2d result = u.parallel(v);
