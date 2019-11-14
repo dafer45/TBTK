@@ -25,6 +25,10 @@ using namespace std;
 
 namespace TBTK{
 
+VectorNd::VectorNd(){
+	data = nullptr;
+}
+
 VectorNd::VectorNd(unsigned int size){
 	this->size = size;
 	data = new double[size];

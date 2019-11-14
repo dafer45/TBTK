@@ -23,6 +23,8 @@
 #ifndef COM_DAFER45_TBTK_VECTOR_ND
 #define COM_DAFER45_TBTK_VECTOR_ND
 
+#include "TBTK/TBTKMacros.h"
+
 #include <cmath>
 #include <initializer_list>
 #include <ostream>
@@ -32,6 +34,9 @@ namespace TBTK{
 
 class VectorNd{
 public:
+	/** Constructor. */
+	VectorNd();
+
 	/** Constructor. */
 	VectorNd(unsigned int size);
 
@@ -96,6 +101,9 @@ public:
 
 	/** Get a std::vector<double> representation of the vector. */
 	const std::vector<double> getStdVector() const;
+
+	/** Get size. */
+	unsigned int getSize() const;
 
 	/** operator<< for ostream. */
 	friend std::ostream& operator<<(std::ostream &stream, const VectorNd &v);
@@ -223,6 +231,10 @@ inline const std::vector<double> VectorNd::getStdVector() const{
 		result.push_back(data[n]);
 
 	return result;
+}
+
+inline unsigned int VectorNd::getSize() const{
+	return size;
 }
 
 inline std::ostream& operator<<(std::ostream &stream, const VectorNd &v){
