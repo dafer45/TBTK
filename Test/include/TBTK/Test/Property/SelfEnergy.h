@@ -103,6 +103,20 @@ TEST_F(SelfEnergyTest, serialization1){
 	EXPECT_EQ(copy.getUpperBound(), selfEnergy[0].getUpperBound());
 	EXPECT_EQ(copy.getResolution(), selfEnergy[0].getResolution());
 	EXPECT_EQ(copy.getEnergyType(), selfEnergy[0].getEnergyType());
+
+	for(int x = 0; x < 2; x++){
+		for(int y = 0; y < 2; y++){
+			for(unsigned int e = 0; e < 3; e++){
+				EXPECT_EQ(
+					copy({Index({x}), Index({y})}, e),
+					selfEnergy[0](
+						{Index({x}), Index({y})},
+						e
+					)
+				);
+			}
+		}
+	}
 }
 
 //TBTKFeature Property.SelfEnergy.serialization.2 2019-11-17
@@ -125,6 +139,20 @@ TEST_F(SelfEnergyTest, serialization2){
 		selfEnergy[1].getFundamentalMatsubaraEnergy()
 	);
 	EXPECT_EQ(copy.getEnergyType(), selfEnergy[1].getEnergyType());
+
+	for(int x = 0; x < 2; x++){
+		for(int y = 0; y < 2; y++){
+			for(unsigned int e = 0; e < 3; e++){
+				EXPECT_EQ(
+					copy({Index({x}), Index({y})}, e),
+					selfEnergy[1](
+						{Index({x}), Index({y})},
+						e
+					)
+				);
+			}
+		}
+	}
 }
 
 //TBTKFeature Property.SelfEnergy.operatorAdditionAssignment.1 2019-11-17
