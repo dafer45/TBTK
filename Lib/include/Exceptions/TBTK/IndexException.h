@@ -10,6 +10,9 @@ namespace TBTK{
 class IndexException : public Exception{
 public:
 	/** Constructor. */
+	IndexException();
+
+	/** Constructor. */
 	IndexException(
 		const std::string& function,
 		const std::string& where,

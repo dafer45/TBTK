@@ -6,6 +6,9 @@ using namespace std;
 
 namespace TBTK{
 
+Exception::Exception(){
+}
+
 Exception::Exception(
 	const string& function,
 	const string& where,

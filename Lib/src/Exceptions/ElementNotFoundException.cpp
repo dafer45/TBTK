@@ -2,6 +2,9 @@
 
 namespace TBTK{
 
+ElementNotFoundException::ElementNotFoundException(){
+}
+
 ElementNotFoundException::ElementNotFoundException(
 	const std::string& function,
 	const std::string& where,

@@ -10,6 +10,9 @@ namespace TBTK{
 class ElementNotFoundException : public Exception{
 public:
 	/** Constructor. */
+	ElementNotFoundException();
+
+	/** Constructor. */
 	ElementNotFoundException(
 		const std::string& function,
 		const std::string& where,

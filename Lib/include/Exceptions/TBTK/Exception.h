@@ -9,6 +9,9 @@ namespace TBTK{
 class Exception : public std::exception{
 public:
 	/** Constructor. */
+	Exception();
+
+	/** Constructor. */
 	Exception(
 		const std::string& function,
 		const std::string& where,

@@ -2,6 +2,9 @@
 
 namespace TBTK{
 
+IndexException::IndexException(){
+}
+
 IndexException::IndexException(
 	const std::string& function,
 	const std::string& where,
