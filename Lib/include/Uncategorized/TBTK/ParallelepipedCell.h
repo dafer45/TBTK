@@ -27,7 +27,6 @@
 #include "TBTK/SpacePartition.h"
 #include "TBTK/Vector3d.h"
 
-#include <initializer_list>
 #include <vector>
 
 namespace TBTK{
@@ -35,12 +34,6 @@ namespace TBTK{
 /** Parallelepiped cell. */
 class ParallelepipedCell : public SpacePartition{
 public:
-	/** Constructor. */
-	ParallelepipedCell(
-		std::initializer_list<std::initializer_list<double>> basisVectors,
-		MeshType meshType
-	);
-
 	/** Constructor. */
 	ParallelepipedCell(
 		const std::vector<std::vector<double>> &basisVectors,

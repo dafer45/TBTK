@@ -25,14 +25,6 @@ using namespace std;
 namespace TBTK{
 
 BrillouinZone::BrillouinZone(
-	initializer_list<initializer_list<double>> basisVectors,
-	MeshType meshType
-) :
-	WignerSeitzCell(basisVectors, meshType)
-{
-}
-
-BrillouinZone::BrillouinZone(
 	const vector<vector<double>> &basisVectors,
 	MeshType meshType
 ) :

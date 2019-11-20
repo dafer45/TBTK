@@ -26,25 +26,6 @@ using namespace std;
 namespace TBTK{
 
 ParallelepipedCell::ParallelepipedCell(
-	initializer_list<initializer_list<double>> basisVectors,
-	MeshType meshType
-) :
-	SpacePartition(basisVectors, meshType)
-{
-	const vector<Vector3d> &bv = getBasisVectors();
-	for(unsigned int n = 0; n < 3; n++){
-		const Vector3d &v0 = bv.at(n);
-		const Vector3d &v1 = bv.at((n+1)%3);
-		const Vector3d &v2 = bv.at((n+2)%3);
-
-		Vector3d normal = v1*v2;
-		normal = normal/Vector3d::dotProduct(normal, v0);
-
-		reciprocalNormals.push_back(normal);
-	}
-}
-
-ParallelepipedCell::ParallelepipedCell(
 	const vector<vector<double>> &basisVectors,
 	MeshType meshType
 ) :

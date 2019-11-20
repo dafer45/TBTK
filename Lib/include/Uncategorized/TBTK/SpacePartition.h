@@ -26,7 +26,6 @@
 #include "TBTK/Index.h"
 #include "TBTK/Vector3d.h"
 
-#include <initializer_list>
 #include <vector>
 
 namespace TBTK{
@@ -47,12 +46,6 @@ public:
 
 	/** Constructor. */
 	SpacePartition(
-		std::initializer_list<std::initializer_list<double>> basisVectors,
-		MeshType meshType
-	);
-
-	/** Constructor. */
-	SpacePartition(
 		const std::vector<std::vector<double>> &basisVectors,
 		MeshType meshType
 	);
@@ -65,39 +58,9 @@ public:
 
 	/** Returns the major index of the space partition for the given
 	 *  coordinate. */
-	Index getMajorCellIndex(
-		std::initializer_list<double> coordinate
-	) const;
-
-	/** Returns the major index of the space partition for the given
-	 *  coordinate. */
 	virtual Index getMajorCellIndex(
 		const std::vector<double> &coordinate
 	) const = 0;
-
-	/** Returns the minor index of the space partition corresponding to the
-	 *  given coordinate, where the unit cell has been subdivided into
-	 *  smaller cells specified by numMeshPoints. */
-	Index getMinorCellIndex(
-		std::initializer_list<double> coordinate,
-		std::initializer_list<unsigned int> numMeshPoints
-	) const;
-
-	/** Returns the minor index of the space partition corresponding to the
-	 *  given coordinate, where the unit cell has been subdivided into
-	 *  smaller cells specified by numMeshPoints. */
-	Index getMinorCellIndex(
-		const std::vector<double> &coordinate,
-		std::initializer_list<unsigned int> numMeshPoints
-	) const;
-
-	/** Returns the minor index of the space partition corresponding to the
-	 *  given coordinate, where the unit cell has been subdivided into
-	 *  smaller cells specified by numMeshPoints. */
-	Index getMinorCellIndex(
-		std::initializer_list<double> coordinate,
-		const std::vector<unsigned int> &numMeshPoints
-	) const;
 
 	/** Returns the minor index of the space partition corresponding to the
 	 *  given coordinate, where the unit cell has been subdivided into
@@ -109,21 +72,9 @@ public:
 
 	/** Returns an equispaced mesh spanned by the basis vectors, using
 	 *  numMeshPoints mesh points along the corresponding directions. */
-	std::vector<std::vector<double>> getMajorMesh(
-		std::initializer_list<unsigned int> numMeshPoints
-	);
-
-	/** Returns an equispaced mesh spanned by the basis vectors, using
-	 *  numMeshPoints mesh points along the corresponding directions. */
 	virtual std::vector<std::vector<double>> getMajorMesh(
 		const std::vector<unsigned int> &numMeshPoints
 	) const = 0;
-
-	/** Returns an equispaced mesh covering the unit cell, using
-	 *  numMeshPoints mesh points along the corresponding directions. */
-	std::vector<std::vector<double>> getMinorMesh(
-		std::initializer_list<unsigned int> numMeshPoints
-	);
 
 	/** Returns an equispaced mesh covering the unit cell, using
 	 *  numMeshPoints mesh points along the corresponding directions. */
@@ -163,54 +114,6 @@ private:
 
 inline unsigned int SpacePartition::getNumDimensions() const{
 	return dimensions;
-}
-
-inline Index SpacePartition::getMajorCellIndex(
-	std::initializer_list<double> coordinate
-) const{
-	return getMajorCellIndex(std::vector<double>(coordinate));
-}
-
-inline Index SpacePartition::getMinorCellIndex(
-	std::initializer_list<double> coordinate,
-	std::initializer_list<unsigned int> numMeshPoints
-) const{
-	return getMinorCellIndex(
-		std::vector<double>(coordinate),
-		std::vector<unsigned int>(numMeshPoints)
-	);
-}
-
-inline Index SpacePartition::getMinorCellIndex(
-	const std::vector<double> &coordinate,
-	std::initializer_list<unsigned int> numMeshPoints
-) const{
-	return getMinorCellIndex(
-		coordinate,
-		std::vector<unsigned int>(numMeshPoints)
-	);
-}
-
-inline Index SpacePartition::getMinorCellIndex(
-	const std::initializer_list<double> coordinate,
-	const std::vector<unsigned int> &numMeshPoints
-) const{
-	return getMinorCellIndex(
-		std::vector<double>(coordinate),
-		numMeshPoints
-	);
-}
-
-inline std::vector<std::vector<double>> SpacePartition::getMajorMesh(
-	std::initializer_list<unsigned int> numMeshPoints
-){
-	return getMajorMesh(std::vector<unsigned int>(numMeshPoints));
-}
-
-inline std::vector<std::vector<double>> SpacePartition::getMinorMesh(
-	std::initializer_list<unsigned int> numMeshPoints
-){
-	return getMinorMesh(std::vector<unsigned int>(numMeshPoints));
 }
 
 inline const std::vector<Vector3d>& SpacePartition::getBasisVectors() const{

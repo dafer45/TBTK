@@ -28,7 +28,6 @@
 #include "TBTK/Vector3d.h"
 
 #include <cmath>
-#include <initializer_list>
 #include <vector>
 
 namespace TBTK{
@@ -36,12 +35,6 @@ namespace TBTK{
 /** Wigner-Seitz cell. */
 class WignerSeitzCell : public ParallelepipedCell{
 public:
-	/** Constructor. */
-	WignerSeitzCell(
-		std::initializer_list<std::initializer_list<double>> basisVectors,
-		MeshType meshType
-	);
-
 	/** Constructor. */
 	WignerSeitzCell(
 		const std::vector<std::vector<double>> &basisVectors,

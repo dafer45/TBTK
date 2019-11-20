@@ -33,7 +33,7 @@ class ParallelepipedArrayState : public ArrayState, public Field<std::complex<do
 public:
 	/** Constructor. */
 	ParallelepipedArrayState(
-		std::initializer_list<std::initializer_list<double>> basisVectors,
+		const std::vector<std::vector<double>> &basisVectors,
 		std::initializer_list<unsigned int> numMeshPoints
 	);
 

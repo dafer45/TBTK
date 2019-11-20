@@ -25,7 +25,6 @@
 
 #include "TBTK/WignerSeitzCell.h"
 
-#include <initializer_list>
 #include <vector>
 
 namespace TBTK{
@@ -33,12 +32,6 @@ namespace TBTK{
 /** Brillouin zone. */
 class BrillouinZone : public WignerSeitzCell{
 public:
-	/** Constructor. */
-	BrillouinZone(
-		std::initializer_list<std::initializer_list<double>> basisVectors,
-		MeshType meshType
-	);
-
 	/** Constructor. */
 	BrillouinZone(
 		const std::vector<std::vector<double>> &basisVectors,

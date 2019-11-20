@@ -48,7 +48,7 @@ public:
 		unsigned int resolutionY,
 		unsigned int resolutionZ,
 		unsigned int numStates,
-		std::initializer_list<std::initializer_list<double>> basisVectors
+		const std::vector<std::vector<double>> &basisVectors
 	);
 
 	/** Parse WannierFunctions. */

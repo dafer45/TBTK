@@ -26,60 +26,11 @@ using namespace std;
 namespace TBTK{
 
 SpacePartition::SpacePartition(
-	initializer_list<initializer_list<double>> basisVectors,
-	MeshType meshType
-){
-	this->dimensions = basisVectors.size();
-	this->meshType = meshType;
-
-	TBTKAssert(
-		dimensions == 1
-		|| dimensions == 2
-		|| dimensions == 3,
-		"SpacePartition::SpacePartition()",
-		"Basis dimension not supported.",
-		"Only 1-3 basis vectors are supported, but "
-		<< basisVectors.size() << " basis vectors supplied."
-	);
-
-	for(unsigned int n = 0; n < dimensions; n++){
-		TBTKAssert(
-			(basisVectors.begin() + n)->size() == dimensions,
-			"SpacePartition::SpacePartition()",
-			"Incompatible dimensions.",
-			"The number of basis vectors must agree with the number"
-			<< " of components of the basis vectors. The number of"
-			<< " basis vectors are '" << dimensions << "',"
-			<< " but encountered basis vector with '"
-			<< (basisVectors.begin() + n)->size() << "' components."
-		);
-
-		vector<double> paddedBasisVector;
-		for(unsigned int c = 0; c < dimensions; c++)
-			paddedBasisVector.push_back(*((basisVectors.begin() + n)->begin() + c));
-		for(unsigned int c = dimensions; c < 3; c++)
-			paddedBasisVector.push_back(0.);
-
-		this->basisVectors.push_back(Vector3d(paddedBasisVector));
-	}
-	for(unsigned int n = dimensions; n < 3; n++){
-		vector<double> vector;
-		for(unsigned int c = 0; c < 3; c++){
-			if(c == n)
-				vector.push_back(1.);
-			else
-				vector.push_back(0.);
-		}
-
-		this->basisVectors.push_back(Vector3d(vector));
-	}
-}
-
-SpacePartition::SpacePartition(
 	const vector<vector<double>> &basisVectors,
 	MeshType meshType
 ){
 	this->dimensions = basisVectors.size();
+	this->meshType = meshType;
 
 	TBTKAssert(
 		dimensions == 1

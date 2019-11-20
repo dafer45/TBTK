@@ -26,14 +26,6 @@ using namespace std;
 namespace TBTK{
 
 WignerSeitzCell::WignerSeitzCell(
-	initializer_list<initializer_list<double>> basisVectors,
-	MeshType meshType
-) :
-	ParallelepipedCell(basisVectors, meshType)
-{
-}
-
-WignerSeitzCell::WignerSeitzCell(
 	const vector<vector<double>> &basisVectors,
 	MeshType meshType
 ) :

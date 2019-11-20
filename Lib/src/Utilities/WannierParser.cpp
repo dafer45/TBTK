@@ -205,7 +205,7 @@ vector<ParallelepipedArrayState*> WannierParser::parseWannierFunctions(
 	unsigned int resolutionY,
 	unsigned int resolutionZ,
 	unsigned int numStates,
-	initializer_list<initializer_list<double>> basisVectors
+	const vector<vector<double>> &basisVectors
 ){
 	stringstream ss;
 	ss.str(resource.getData());

@@ -26,7 +26,7 @@ using namespace std;
 namespace TBTK{
 
 ParallelepipedArrayState::ParallelepipedArrayState(
-	initializer_list<initializer_list<double>> basisVectors,
+	const vector<vector<double>> &basisVectors,
 	initializer_list<unsigned int> numMeshPoints
 ) :
 	ArrayState(numMeshPoints),
