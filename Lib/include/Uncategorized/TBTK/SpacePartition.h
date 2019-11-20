@@ -45,6 +45,9 @@ public:
 	enum class MeshType {Nodal, Interior};
 
 	/** Constructor. */
+	SpacePartition();
+
+	/** Constructor. */
 	SpacePartition(
 		const std::vector<std::vector<double>> &basisVectors,
 		MeshType meshType

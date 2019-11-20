@@ -25,6 +25,9 @@ using namespace std;
 
 namespace TBTK{
 
+SpacePartition::SpacePartition(){
+}
+
 SpacePartition::SpacePartition(
 	const vector<vector<double>> &basisVectors,
 	MeshType meshType

@@ -22,6 +22,7 @@ IF(GTest_FOUND)
 			include/FiniteDifferences
 			include/FourierTransform
 			include/ManyParticle
+			include/Uncategorized
 			include/Utilities
 		)
 
