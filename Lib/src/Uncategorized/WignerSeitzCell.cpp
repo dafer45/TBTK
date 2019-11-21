@@ -25,6 +25,9 @@ using namespace std;
 
 namespace TBTK{
 
+WignerSeitzCell::WignerSeitzCell(){
+}
+
 WignerSeitzCell::WignerSeitzCell(
 	const vector<vector<double>> &basisVectors,
 	MeshType meshType

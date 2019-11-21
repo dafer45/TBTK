@@ -35,6 +35,9 @@ namespace TBTK{
 class ParallelepipedCell : public SpacePartition{
 public:
 	/** Constructor. */
+	ParallelepipedCell();
+
+	/** Constructor. */
 	ParallelepipedCell(
 		const std::vector<std::vector<double>> &basisVectors,
 		MeshType meshType

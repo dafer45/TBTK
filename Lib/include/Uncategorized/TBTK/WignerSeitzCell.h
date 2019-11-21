@@ -36,6 +36,9 @@ namespace TBTK{
 class WignerSeitzCell : public ParallelepipedCell{
 public:
 	/** Constructor. */
+	WignerSeitzCell();
+
+	/** Constructor. */
 	WignerSeitzCell(
 		const std::vector<std::vector<double>> &basisVectors,
 		MeshType meshType

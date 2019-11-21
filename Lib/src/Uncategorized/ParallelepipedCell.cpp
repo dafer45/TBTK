@@ -25,6 +25,9 @@ using namespace std;
 
 namespace TBTK{
 
+ParallelepipedCell::ParallelepipedCell(){
+}
+
 ParallelepipedCell::ParallelepipedCell(
 	const vector<vector<double>> &basisVectors,
 	MeshType meshType

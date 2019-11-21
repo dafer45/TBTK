@@ -53,3 +53,7 @@
 
 - Replace raw pointer by CArray in VectorNd and remove copy and move
   constructor, copy and move assignment operators, and destructor.
+
+- Complete tests for ParallelepipedCell.
+
+- Complete tests for WignerSeitzCell.
