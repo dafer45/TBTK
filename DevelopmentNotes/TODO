@@ -57,6 +57,8 @@
 - Complete tests for WignerSeitzCell.
 
 - ParallelepipedCell seems to treat the MeshType::Nodal and MeshType::Iterior
-  similar in cases where they should be treated differently. Determine what the
-  correct behavior should be. The current unit tests are testing the current
-  behavior, but may need to be updated to reflect the intended behavior.
+  similar in cases where they should be treated differently. Possibly, Nodal
+  and Interior behavior are even interchanged where it is applied. Determine
+  what the correct behavior should be. The current unit tests are testing the
+  current behavior, but may need to be updated to reflect the intended
+  behavior.
