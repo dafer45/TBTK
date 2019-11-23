@@ -1,0 +1,5 @@
+INSTALL(
+	DIRECTORY .
+	DESTINATION include/TBTK/Visualization/MatPlotLib
+	FILES_MATCHING PATTERN *.h
+)
