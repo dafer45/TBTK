@@ -228,7 +228,7 @@ vector<vector<double>> ParallelepipedCell::getMajorMesh(
 
 		for(unsigned int x = 0; x < numMeshPoints.at(0); x++){
 			mesh.push_back(vector<double>());
-			mesh.back().push_back(b0.x);
+			mesh.back().push_back(x*b0.x);
 		}
 
 		break;

@@ -54,6 +54,9 @@
 - Replace raw pointer by CArray in VectorNd and remove copy and move
   constructor, copy and move assignment operators, and destructor.
 
-- Complete tests for ParallelepipedCell.
-
 - Complete tests for WignerSeitzCell.
+
+- ParallelepipedCell seems to treat the MeshType::Nodal and MeshType::Iterior
+  similar in cases where they should be treated differently. Determine what the
+  correct behavior should be. The current unit tests are testing the current
+  behavior, but may need to be updated to reflect the intended behavior.

@@ -869,222 +869,85 @@ TEST_F(ParallelepipedCellTest, getMinorCellIndex5){
 
 //TBTKFeature Uncategorized.ParallelepipedCell.getMinorCellIndex.6 2019-11-22
 TEST_F(ParallelepipedCellTest, getMinorCellIndex6){
-	//TODO
-/*	Vector3d u({2/3., 0, 0});
+	Vector3d u({2/3., 0, 0});
 	Vector3d v({-1/2., sqrt(3)/2, 0});
 	Vector3d w({0, 0, 1/2.});
 
 	std::vector<std::vector<double>> points = {
-		{(u+v-w).x/2. - d, (u+v+w).y/2. - d, (u+v+w).z/2. - d},
-		{(u+v-w).x/2. + d, (u+v+w).y/2. - d, (u+v+w).z/2. - d},
-		{(u+v-w).x/2. + d, (u+v+w).y/2. + d, (u+v+w).z/2. - d},
-		{(u+v-w).x/2. - d, (u+v+w).y/2. + d, (u+v+w).z/2. - d},
-		{(u+v-w).x/2. - d, (u+v+w).y/2. - d, (u+v+w).z/2. + d},
-		{(u+v-w).x/2. + d, (u+v+w).y/2. - d, (u+v+w).z/2. + d},
-		{(u+v-w).x/2. + d, (u+v+w).y/2. + d, (u+v+w).z/2. + d},
-		{(u+v-w).x/2. - d, (u+v+w).y/2. + d, (u+v+w).z/2. + d},
-		{(-u+v-w).x/2. + d, (-u+v+w).y/2. - d, (-u+v+w).z/2. - d},
-		{(-u+v-w).x/2. + d, (-u+v+w).y/2. + d, (-u+v+w).z/2. - d},
-		{(-u+v-w).x/2. - d, (-u+v+w).y/2. + d, (-u+v+w).z/2. - d},
-		{(-u+v-w).x/2. - d, (-u+v+w).y/2. - d, (-u+v+w).z/2. - d},
-		{(-u+v-w).x/2. + d, (-u+v+w).y/2. - d, (-u+v+w).z/2. + d},
-		{(-u+v-w).x/2. + d, (-u+v+w).y/2. + d, (-u+v+w).z/2. + d},
-		{(-u+v-w).x/2. - d, (-u+v+w).y/2. + d, (-u+v+w).z/2. + d},
-		{(-u+v-w).x/2. - d, (-u+v+w).y/2. - d, (-u+v+w).z/2. + d},
-		{(-u-v-w).x/2. + d, (-u-v+w).y/2. + d, (-u-v+w).z/2. - d},
-		{(-u-v-w).x/2. - d, (-u-v+w).y/2. + d, (-u-v+w).z/2. - d},
-		{(-u-v-w).x/2. - d, (-u-v+w).y/2. - d, (-u-v+w).z/2. - d},
-		{(-u-v-w).x/2. + d, (-u-v+w).y/2. - d, (-u-v+w).z/2. - d},
-		{(-u-v-w).x/2. + d, (-u-v+w).y/2. + d, (-u-v+w).z/2. + d},
-		{(-u-v-w).x/2. - d, (-u-v+w).y/2. + d, (-u-v+w).z/2. + d},
-		{(-u-v-w).x/2. - d, (-u-v+w).y/2. - d, (-u-v+w).z/2. + d},
-		{(-u-v-w).x/2. + d, (-u-v+w).y/2. - d, (-u-v+w).z/2. + d},
-		{(u-v-w).x/2. - d, (u-v+w).y/2. + d, (u-v+w).z/2. - d},
-		{(u-v-w).x/2. - d, (u-v+w).y/2. - d, (u-v+w).z/2. - d},
-		{(u-v-w).x/2. + d, (u-v+w).y/2. - d, (u-v+w).z/2. - d},
-		{(u-v-w).x/2. + d, (u-v+w).y/2. + d, (u-v+w).z/2. - d},
-		{(u-v-w).x/2. - d, (u-v+w).y/2. + d, (u-v+w).z/2. + d},
-		{(u-v-w).x/2. - d, (u-v+w).y/2. - d, (u-v+w).z/2. + d},
-		{(u-v-w).x/2. + d, (u-v+w).y/2. - d, (u-v+w).z/2. + d},
-		{(u-v-w).x/2. + d, (u-v+w).y/2. + d, (u-v+w).z/2. + d},
-		{(5*u+7*v-9*w).x/2. - d, (5*u+7*v+9*w).y/2. - d, (5*u+7*v+9*w).z/2. - d},
-		{(5*u+7*v-9*w).x/2. + d, (5*u+7*v+9*w).y/2. - d, (5*u+7*v+9*w).z/2. - d},
-		{(5*u+7*v-9*w).x/2. + d, (5*u+7*v+9*w).y/2. + d, (5*u+7*v+9*w).z/2. - d},
-		{(5*u+7*v-9*w).x/2. - d, (5*u+7*v+9*w).y/2. + d, (5*u+7*v+9*w).z/2. - d},
-		{(5*u+7*v-9*w).x/2. - d, (5*u+7*v+9*w).y/2. - d, (5*u+7*v+9*w).z/2. + d},
-		{(5*u+7*v-9*w).x/2. + d, (5*u+7*v+9*w).y/2. - d, (5*u+7*v+9*w).z/2. + d},
-		{(5*u+7*v-9*w).x/2. + d, (5*u+7*v+9*w).y/2. + d, (5*u+7*v+9*w).z/2. + d},
-		{(5*u+7*v-9*w).x/2. - d, (5*u+7*v+9*w).y/2. + d, (5*u+7*v+9*w).z/2. + d},
-		{(-5*u+7*v-9*w).x/2. + d, (-5*u+7*v+9*w).y/2. - d, (-5*u+7*v+9*w).z/2. - d},
-		{(-5*u+7*v-9*w).x/2. + d, (-5*u+7*v+9*w).y/2. + d, (-5*u+7*v+9*w).z/2. - d},
-		{(-5*u+7*v-9*w).x/2. - d, (-5*u+7*v+9*w).y/2. + d, (-5*u+7*v+9*w).z/2. - d},
-		{(-5*u+7*v-9*w).x/2. - d, (-5*u+7*v+9*w).y/2. - d, (-5*u+7*v+9*w).z/2. - d},
-		{(-5*u+7*v-9*w).x/2. + d, (-5*u+7*v+9*w).y/2. - d, (-5*u+7*v+9*w).z/2. + d},
-		{(-5*u+7*v-9*w).x/2. + d, (-5*u+7*v+9*w).y/2. + d, (-5*u+7*v+9*w).z/2. + d},
-		{(-5*u+7*v-9*w).x/2. - d, (-5*u+7*v+9*w).y/2. + d, (-5*u+7*v+9*w).z/2. + d},
-		{(-5*u+7*v-9*w).x/2. - d, (-5*u+7*v+9*w).y/2. - d, (-5*u+7*v+9*w).z/2. + d},
-		{(-5*u-7*v-9*w).x/2. + d, (-5*u-7*v+9*w).y/2. + d, (-5*u-7*v+9*w).z/2. - d},
-		{(-5*u-7*v-9*w).x/2. - d, (-5*u-7*v+9*w).y/2. + d, (-5*u-7*v+9*w).z/2. - d},
-		{(-5*u-7*v-9*w).x/2. - d, (-5*u-7*v+9*w).y/2. - d, (-5*u-7*v+9*w).z/2. - d},
-		{(-5*u-7*v-9*w).x/2. + d, (-5*u-7*v+9*w).y/2. - d, (-5*u-7*v+9*w).z/2. - d},
-		{(-5*u-7*v-9*w).x/2. + d, (-5*u-7*v+9*w).y/2. + d, (-5*u-7*v+9*w).z/2. + d},
-		{(-5*u-7*v-9*w).x/2. - d, (-5*u-7*v+9*w).y/2. + d, (-5*u-7*v+9*w).z/2. + d},
-		{(-5*u-7*v-9*w).x/2. - d, (-5*u-7*v+9*w).y/2. - d, (-5*u-7*v+9*w).z/2. + d},
-		{(-5*u-7*v-9*w).x/2. + d, (-5*u-7*v+9*w).y/2. - d, (-5*u-7*v+9*w).z/2. + d},
-		{(5*u-7*v-9*w).x/2. - d, (5*u-7*v+9*w).y/2. + d, (5*u-7*v+9*w).z/2. - d},
-		{(5*u-7*v-9*w).x/2. - d, (5*u-7*v+9*w).y/2. - d, (5*u-7*v+9*w).z/2. - d},
-		{(5*u-7*v-9*w).x/2. + d, (5*u-7*v+9*w).y/2. - d, (5*u-7*v+9*w).z/2. - d},
-		{(5*u-7*v-9*w).x/2. + d, (5*u-7*v+9*w).y/2. + d, (5*u-7*v+9*w).z/2. - d},
-		{(5*u-7*v-9*w).x/2. - d, (5*u-7*v+9*w).y/2. + d, (5*u-7*v+9*w).z/2. + d},
-		{(5*u-7*v-9*w).x/2. - d, (5*u-7*v+9*w).y/2. - d, (5*u-7*v+9*w).z/2. + d},
-		{(5*u-7*v-9*w).x/2. + d, (5*u-7*v+9*w).y/2. - d, (5*u-7*v+9*w).z/2. + d},
-		{(5*u-7*v-9*w).x/2. + d, (5*u-7*v+9*w).y/2. + d, (5*u-7*v+9*w).z/2. + d},
-		{(u+v-w).x/2. - d, (u+v-w).y/2. - d, (u+v-w).z/2. + d},
-		{(u+v-w).x/2. + d, (u+v-w).y/2. - d, (u+v-w).z/2. + d},
-		{(u+v-w).x/2. + d, (u+v-w).y/2. + d, (u+v-w).z/2. + d},
-		{(u+v-w).x/2. - d, (u+v-w).y/2. + d, (u+v-w).z/2. + d},
-		{(u+v-w).x/2. - d, (u+v-w).y/2. - d, (u+v-w).z/2. - d},
-		{(u+v-w).x/2. + d, (u+v-w).y/2. - d, (u+v-w).z/2. - d},
-		{(u+v-w).x/2. + d, (u+v-w).y/2. + d, (u+v-w).z/2. - d},
-		{(u+v-w).x/2. - d, (u+v-w).y/2. + d, (u+v-w).z/2. - d},
-		{(-u+v-w).x/2. + d, (-u+v-w).y/2. - d, (-u+v-w).z/2. + d},
-		{(-u+v-w).x/2. + d, (-u+v-w).y/2. + d, (-u+v-w).z/2. + d},
-		{(-u+v-w).x/2. - d, (-u+v-w).y/2. + d, (-u+v-w).z/2. + d},
-		{(-u+v-w).x/2. - d, (-u+v-w).y/2. - d, (-u+v-w).z/2. + d},
-		{(-u+v-w).x/2. + d, (-u+v-w).y/2. - d, (-u+v-w).z/2. - d},
-		{(-u+v-w).x/2. + d, (-u+v-w).y/2. + d, (-u+v-w).z/2. - d},
-		{(-u+v-w).x/2. - d, (-u+v-w).y/2. + d, (-u+v-w).z/2. - d},
-		{(-u+v-w).x/2. - d, (-u+v-w).y/2. - d, (-u+v-w).z/2. - d},
-		{(-u-v-w).x/2. + d, (-u-v-w).y/2. + d, (-u-v-w).z/2. + d},
-		{(-u-v-w).x/2. - d, (-u-v-w).y/2. + d, (-u-v-w).z/2. + d},
-		{(-u-v-w).x/2. - d, (-u-v-w).y/2. - d, (-u-v-w).z/2. + d},
-		{(-u-v-w).x/2. + d, (-u-v-w).y/2. - d, (-u-v-w).z/2. + d},
-		{(-u-v-w).x/2. + d, (-u-v-w).y/2. + d, (-u-v-w).z/2. - d},
-		{(-u-v-w).x/2. - d, (-u-v-w).y/2. + d, (-u-v-w).z/2. - d},
-		{(-u-v-w).x/2. - d, (-u-v-w).y/2. - d, (-u-v-w).z/2. - d},
-		{(-u-v-w).x/2. + d, (-u-v-w).y/2. - d, (-u-v-w).z/2. - d},
-		{(u-v-w).x/2. - d, (u-v-w).y/2. + d, (u-v-w).z/2. + d},
-		{(u-v-w).x/2. - d, (u-v-w).y/2. - d, (u-v-w).z/2. + d},
-		{(u-v-w).x/2. + d, (u-v-w).y/2. - d, (u-v-w).z/2. + d},
-		{(u-v-w).x/2. + d, (u-v-w).y/2. + d, (u-v-w).z/2. + d},
-		{(u-v-w).x/2. - d, (u-v-w).y/2. + d, (u-v-w).z/2. - d},
-		{(u-v-w).x/2. - d, (u-v-w).y/2. - d, (u-v-w).z/2. - d},
-		{(u-v-w).x/2. + d, (u-v-w).y/2. - d, (u-v-w).z/2. - d},
-		{(u-v-w).x/2. + d, (u-v-w).y/2. + d, (u-v-w).z/2. - d},
-		{(5*u+7*v-9*w).x/2. - d, (5*u+7*v-9*w).y/2. - d, (5*u+7*v-9*w).z/2. + d},
-		{(5*u+7*v-9*w).x/2. + d, (5*u+7*v-9*w).y/2. - d, (5*u+7*v-9*w).z/2. + d},
-		{(5*u+7*v-9*w).x/2. + d, (5*u+7*v-9*w).y/2. + d, (5*u+7*v-9*w).z/2. + d},
-		{(5*u+7*v-9*w).x/2. - d, (5*u+7*v-9*w).y/2. + d, (5*u+7*v-9*w).z/2. + d},
-		{(5*u+7*v-9*w).x/2. - d, (5*u+7*v-9*w).y/2. - d, (5*u+7*v-9*w).z/2. - d},
-		{(5*u+7*v-9*w).x/2. + d, (5*u+7*v-9*w).y/2. - d, (5*u+7*v-9*w).z/2. - d},
-		{(5*u+7*v-9*w).x/2. + d, (5*u+7*v-9*w).y/2. + d, (5*u+7*v-9*w).z/2. - d},
-		{(5*u+7*v-9*w).x/2. - d, (5*u+7*v-9*w).y/2. + d, (5*u+7*v-9*w).z/2. - d},
-		{(-5*u+7*v-9*w).x/2. + d, (-5*u+7*v-9*w).y/2. - d, (-5*u+7*v-9*w).z/2. + d},
-		{(-5*u+7*v-9*w).x/2. + d, (-5*u+7*v-9*w).y/2. + d, (-5*u+7*v-9*w).z/2. + d},
-		{(-5*u+7*v-9*w).x/2. - d, (-5*u+7*v-9*w).y/2. + d, (-5*u+7*v-9*w).z/2. + d},
-		{(-5*u+7*v-9*w).x/2. - d, (-5*u+7*v-9*w).y/2. - d, (-5*u+7*v-9*w).z/2. + d},
-		{(-5*u+7*v-9*w).x/2. + d, (-5*u+7*v-9*w).y/2. - d, (-5*u+7*v-9*w).z/2. - d},
-		{(-5*u+7*v-9*w).x/2. + d, (-5*u+7*v-9*w).y/2. + d, (-5*u+7*v-9*w).z/2. - d},
-		{(-5*u+7*v-9*w).x/2. - d, (-5*u+7*v-9*w).y/2. + d, (-5*u+7*v-9*w).z/2. - d},
-		{(-5*u+7*v-9*w).x/2. - d, (-5*u+7*v-9*w).y/2. - d, (-5*u+7*v-9*w).z/2. - d},
-		{(-5*u-7*v-9*w).x/2. + d, (-5*u-7*v-9*w).y/2. + d, (-5*u-7*v-9*w).z/2. + d},
-		{(-5*u-7*v-9*w).x/2. - d, (-5*u-7*v-9*w).y/2. + d, (-5*u-7*v-9*w).z/2. + d},
-		{(-5*u-7*v-9*w).x/2. - d, (-5*u-7*v-9*w).y/2. - d, (-5*u-7*v-9*w).z/2. + d},
-		{(-5*u-7*v-9*w).x/2. + d, (-5*u-7*v-9*w).y/2. - d, (-5*u-7*v-9*w).z/2. + d},
-		{(-5*u-7*v-9*w).x/2. + d, (-5*u-7*v-9*w).y/2. + d, (-5*u-7*v-9*w).z/2. - d},
-		{(-5*u-7*v-9*w).x/2. - d, (-5*u-7*v-9*w).y/2. + d, (-5*u-7*v-9*w).z/2. - d},
-		{(-5*u-7*v-9*w).x/2. - d, (-5*u-7*v-9*w).y/2. - d, (-5*u-7*v-9*w).z/2. - d},
-		{(-5*u-7*v-9*w).x/2. + d, (-5*u-7*v-9*w).y/2. - d, (-5*u-7*v-9*w).z/2. - d},
-		{(5*u-7*v-9*w).x/2. - d, (5*u-7*v-9*w).y/2. + d, (5*u-7*v-9*w).z/2. + d},
-		{(5*u-7*v-9*w).x/2. - d, (5*u-7*v-9*w).y/2. - d, (5*u-7*v-9*w).z/2. + d},
-		{(5*u-7*v-9*w).x/2. + d, (5*u-7*v-9*w).y/2. - d, (5*u-7*v-9*w).z/2. + d},
-		{(5*u-7*v-9*w).x/2. + d, (5*u-7*v-9*w).y/2. + d, (5*u-7*v-9*w).z/2. + d},
-		{(5*u-7*v-9*w).x/2. - d, (5*u-7*v-9*w).y/2. + d, (5*u-7*v-9*w).z/2. - d},
-		{(5*u-7*v-9*w).x/2. - d, (5*u-7*v-9*w).y/2. - d, (5*u-7*v-9*w).z/2. - d},
-		{(5*u-7*v-9*w).x/2. + d, (5*u-7*v-9*w).y/2. - d, (5*u-7*v-9*w).z/2. - d},
-		{(5*u-7*v-9*w).x/2. + d, (5*u-7*v-9*w).y/2. + d, (5*u-7*v-9*w).z/2. - d}
+		{d, d, d},
+		{-d, d, d},
+		{-d, -d, d},
+		{d, -d, d},
+		{d, d, -d},
+		{-d, d, -d},
+		{-d, -d, -d},
+		{d, -d, -d},
+		{(5*u+7*v+9*w).x + d, (5*u+7*v+9*w).y + d, (5*u+7*v+9*w).z + d},
+		{(5*u+7*v+9*w).x - d, (5*u+7*v+9*w).y + d, (5*u+7*v+9*w).z + d},
+		{(5*u+7*v+9*w).x - d, (5*u+7*v+9*w).y - d, (5*u+7*v+9*w).z + d},
+		{(5*u+7*v+9*w).x + d, (5*u+7*v+9*w).y - d, (5*u+7*v+9*w).z + d},
+		{(5*u+7*v+9*w).x + d, (5*u+7*v+9*w).y + d, (5*u+7*v+9*w).z - d},
+		{(5*u+7*v+9*w).x - d, (5*u+7*v+9*w).y + d, (5*u+7*v+9*w).z - d},
+		{(5*u+7*v+9*w).x - d, (5*u+7*v+9*w).y - d, (5*u+7*v+9*w).z - d},
+		{(5*u+7*v+9*w).x + d, (5*u+7*v+9*w).y - d, (5*u+7*v+9*w).z - d},
+		{(-5*u+7*v+9*w).x + d, (-5*u+7*v+9*w).y + d, (-5*u+7*v+9*w).z + d},
+		{(-5*u+7*v+9*w).x - d, (-5*u+7*v+9*w).y + d, (-5*u+7*v+9*w).z + d},
+		{(-5*u+7*v+9*w).x - d, (-5*u+7*v+9*w).y - d, (-5*u+7*v+9*w).z + d},
+		{(-5*u+7*v+9*w).x + d, (-5*u+7*v+9*w).y - d, (-5*u+7*v+9*w).z + d},
+		{(-5*u+7*v+9*w).x + d, (-5*u+7*v+9*w).y + d, (-5*u+7*v+9*w).z - d},
+		{(-5*u+7*v+9*w).x - d, (-5*u+7*v+9*w).y + d, (-5*u+7*v+9*w).z - d},
+		{(-5*u+7*v+9*w).x - d, (-5*u+7*v+9*w).y - d, (-5*u+7*v+9*w).z - d},
+		{(-5*u+7*v+9*w).x + d, (-5*u+7*v+9*w).y - d, (-5*u+7*v+9*w).z - d},
+		{(-5*u-7*v+9*w).x + d, (-5*u-7*v+9*w).y + d, (-5*u-7*v+9*w).z + d},
+		{(-5*u-7*v+9*w).x - d, (-5*u-7*v+9*w).y + d, (-5*u-7*v+9*w).z + d},
+		{(-5*u-7*v+9*w).x - d, (-5*u-7*v+9*w).y - d, (-5*u-7*v+9*w).z + d},
+		{(-5*u-7*v+9*w).x + d, (-5*u-7*v+9*w).y - d, (-5*u-7*v+9*w).z + d},
+		{(-5*u-7*v+9*w).x + d, (-5*u-7*v+9*w).y + d, (-5*u-7*v+9*w).z - d},
+		{(-5*u-7*v+9*w).x - d, (-5*u-7*v+9*w).y + d, (-5*u-7*v+9*w).z - d},
+		{(-5*u-7*v+9*w).x - d, (-5*u-7*v+9*w).y - d, (-5*u-7*v+9*w).z - d},
+		{(-5*u-7*v+9*w).x + d, (-5*u-7*v+9*w).y - d, (-5*u-7*v+9*w).z - d},
+		{(5*u-7*v+9*w).x + d, (5*u-7*v+9*w).y + d, (5*u-7*v+9*w).z + d},
+		{(5*u-7*v+9*w).x - d, (5*u-7*v+9*w).y + d, (5*u-7*v+9*w).z + d},
+		{(5*u-7*v+9*w).x - d, (5*u-7*v+9*w).y - d, (5*u-7*v+9*w).z + d},
+		{(5*u-7*v+9*w).x + d, (5*u-7*v+9*w).y - d, (5*u-7*v+9*w).z + d},
+		{(5*u-7*v+9*w).x + d, (5*u-7*v+9*w).y + d, (5*u-7*v+9*w).z - d},
+		{(5*u-7*v+9*w).x - d, (5*u-7*v+9*w).y + d, (5*u-7*v+9*w).z - d},
+		{(5*u-7*v+9*w).x - d, (5*u-7*v+9*w).y - d, (5*u-7*v+9*w).z - d},
+		{(5*u-7*v+9*w).x + d, (5*u-7*v+9*w).y - d, (5*u-7*v+9*w).z - d},
+		{(5*u+7*v-9*w).x + d, (5*u+7*v-9*w).y + d, (5*u+7*v-9*w).z - d},
+		{(5*u+7*v-9*w).x - d, (5*u+7*v-9*w).y + d, (5*u+7*v-9*w).z - d},
+		{(5*u+7*v-9*w).x - d, (5*u+7*v-9*w).y - d, (5*u+7*v-9*w).z - d},
+		{(5*u+7*v-9*w).x + d, (5*u+7*v-9*w).y - d, (5*u+7*v-9*w).z - d},
+		{(5*u+7*v-9*w).x + d, (5*u+7*v-9*w).y + d, (5*u+7*v-9*w).z + d},
+		{(5*u+7*v-9*w).x - d, (5*u+7*v-9*w).y + d, (5*u+7*v-9*w).z + d},
+		{(5*u+7*v-9*w).x - d, (5*u+7*v-9*w).y - d, (5*u+7*v-9*w).z + d},
+		{(5*u+7*v-9*w).x + d, (5*u+7*v-9*w).y - d, (5*u+7*v-9*w).z + d},
+		{(-5*u+7*v-9*w).x + d, (-5*u+7*v-9*w).y + d, (-5*u+7*v-9*w).z - d},
+		{(-5*u+7*v-9*w).x - d, (-5*u+7*v-9*w).y + d, (-5*u+7*v-9*w).z - d},
+		{(-5*u+7*v-9*w).x - d, (-5*u+7*v-9*w).y - d, (-5*u+7*v-9*w).z - d},
+		{(-5*u+7*v-9*w).x + d, (-5*u+7*v-9*w).y - d, (-5*u+7*v-9*w).z - d},
+		{(-5*u+7*v-9*w).x + d, (-5*u+7*v-9*w).y + d, (-5*u+7*v-9*w).z + d},
+		{(-5*u+7*v-9*w).x - d, (-5*u+7*v-9*w).y + d, (-5*u+7*v-9*w).z + d},
+		{(-5*u+7*v-9*w).x - d, (-5*u+7*v-9*w).y - d, (-5*u+7*v-9*w).z + d},
+		{(-5*u+7*v-9*w).x + d, (-5*u+7*v-9*w).y - d, (-5*u+7*v-9*w).z + d},
+		{(-5*u-7*v-9*w).x + d, (-5*u-7*v-9*w).y + d, (-5*u-7*v-9*w).z - d},
+		{(-5*u-7*v-9*w).x - d, (-5*u-7*v-9*w).y + d, (-5*u-7*v-9*w).z - d},
+		{(-5*u-7*v-9*w).x - d, (-5*u-7*v-9*w).y - d, (-5*u-7*v-9*w).z - d},
+		{(-5*u-7*v-9*w).x + d, (-5*u-7*v-9*w).y - d, (-5*u-7*v-9*w).z - d},
+		{(-5*u-7*v-9*w).x + d, (-5*u-7*v-9*w).y + d, (-5*u-7*v-9*w).z + d},
+		{(-5*u-7*v-9*w).x - d, (-5*u-7*v-9*w).y + d, (-5*u-7*v-9*w).z + d},
+		{(-5*u-7*v-9*w).x - d, (-5*u-7*v-9*w).y - d, (-5*u-7*v-9*w).z + d},
+		{(-5*u-7*v-9*w).x + d, (-5*u-7*v-9*w).y - d, (-5*u-7*v-9*w).z + d},
+		{(5*u-7*v-9*w).x + d, (5*u-7*v-9*w).y + d, (5*u-7*v-9*w).z - d},
+		{(5*u-7*v-9*w).x - d, (5*u-7*v-9*w).y + d, (5*u-7*v-9*w).z - d},
+		{(5*u-7*v-9*w).x - d, (5*u-7*v-9*w).y - d, (5*u-7*v-9*w).z - d},
+		{(5*u-7*v-9*w).x + d, (5*u-7*v-9*w).y - d, (5*u-7*v-9*w).z - d},
+		{(5*u-7*v-9*w).x + d, (5*u-7*v-9*w).y + d, (5*u-7*v-9*w).z + d},
+		{(5*u-7*v-9*w).x - d, (5*u-7*v-9*w).y + d, (5*u-7*v-9*w).z + d},
+		{(5*u-7*v-9*w).x - d, (5*u-7*v-9*w).y - d, (5*u-7*v-9*w).z + d},
+		{(5*u-7*v-9*w).x + d, (5*u-7*v-9*w).y - d, (5*u-7*v-9*w).z + d}
 	};
 	std::vector<Index> expectedMinorCells = {
-		{0, 0, 0},
-		{1, 0, 0},
-		{1, 1, 0},
-		{0, 1, 0},
-		{0, 0, 1},
-		{1, 0, 1},
-		{1, 1, 1},
-		{0, 1, 1},
-		{0, 0, 0},
-		{0, 1, 0},
-		{-1, 1, 0},
-		{-1, 0, 0},
-		{0, 0, 1},
-		{0, 1, 1},
-		{-1, 1, 1},
-		{-1, 0, 1},
-		{0, 0, 0},
-		{-1, 0, 0},
-		{-1, -1, 0},
-		{0, -1, 0},
-		{0, 0, 1},
-		{-1, 0, 1},
-		{-1, -1, 1},
-		{0, -1, 1},
-		{0, 0, 0},
-		{0, -1, 0},
-		{1, -1, 0},
-		{1, 0, 0},
-		{0, 0, 1},
-		{0, -1, 1},
-		{1, -1, 1},
-		{1, 0, 1},
-		{2, 3, 4},
-		{3, 3, 4},
-		{3, 4, 4},
-		{2, 4, 4},
-		{2, 3, 5},
-		{3, 3, 5},
-		{3, 4, 5},
-		{2, 4, 5},
-		{-2, 3, 4},
-		{-2, 4, 4},
-		{-3, 4, 4},
-		{-3, 3, 4},
-		{-2, 3, 5},
-		{-2, 4, 5},
-		{-3, 4, 5},
-		{-3, 3, 5},
-		{-2, -3, 4},
-		{-3, -3, 4},
-		{-3, -4, 4},
-		{-2, -4, 4},
-		{-2, -3, 5},
-		{-3, -3, 5},
-		{-3, -4, 5},
-		{-2, -4, 5},
-		{2, -3, 4},
-		{2, -4, 4},
-		{3, -4, 4},
-		{3, -3, 4},
-		{2, -3, 5},
-		{2, -4, 5},
-		{3, -4, 5},
-		{3, -3, 5},
-		{0, 0, 0},
-		{1, 0, 0},
-		{1, 1, 0},
-		{0, 1, 0},
-		{0, 0, -1},
-		{1, 0, -1},
-		{1, 1, -1},
-		{0, 1, -1},
-		{0, 0, 0},
-		{0, 1, 0},
-		{-1, 1, 0},
-		{-1, 0, 0},
-		{0, 0, -1},
-		{0, 1, -1},
-		{-1, 1, -1},
-		{-1, 0, -1},
 		{0, 0, 0},
 		{-1, 0, 0},
 		{-1, -1, 0},
@@ -1093,46 +956,71 @@ TEST_F(ParallelepipedCellTest, getMinorCellIndex6){
 		{-1, 0, -1},
 		{-1, -1, -1},
 		{0, -1, -1},
-		{0, 0, 0},
-		{0, -1, 0},
-		{1, -1, 0},
-		{1, 0, 0},
-		{0, 0, -1},
-		{0, -1, -1},
-		{1, -1, -1},
-		{1, 0, -1},
-		{2, 3, -4},
-		{3, 3, -4},
-		{3, 4, -4},
-		{2, 4, -4},
-		{2, 3, -5},
-		{3, 3, -5},
-		{3, 4, -5},
-		{2, 4, -5},
-		{-2, 3, -4},
-		{-2, 4, -4},
-		{-3, 4, -4},
-		{-3, 3, -4},
-		{-2, 3, -5},
-		{-2, 4, -5},
-		{-3, 4, -5},
-		{-3, 3, -5},
-		{-2, -3, -4},
-		{-3, -3, -4},
-		{-3, -4, -4},
-		{-2, -4, -4},
-		{-2, -3, -5},
-		{-3, -3, -5},
-		{-3, -4, -5},
-		{-2, -4, -5},
-		{2, -3, -4},
-		{2, -4, -4},
-		{3, -4, -4},
-		{3, -3, -4},
-		{2, -3, -5},
-		{2, -4, -5},
-		{3, -4, -5},
-		{3, -3, -5}
+		{5, 7, 9},
+		{4, 7, 9},
+		{4, 6, 9},
+		{5, 6, 9},
+		{5, 7, 8},
+		{4, 7, 8},
+		{4, 6, 8},
+		{5, 6, 8},
+		{-5, 7, 9},
+		{-6, 7, 9},
+		{-6, 6, 9},
+		{-5, 6, 9},
+		{-5, 7, 8},
+		{-6, 7, 8},
+		{-6, 6, 8},
+		{-5, 6, 8},
+		{-5, -7, 9},
+		{-6, -7, 9},
+		{-6, -8, 9},
+		{-5, -8, 9},
+		{-5, -7, 8},
+		{-6, -7, 8},
+		{-6, -8, 8},
+		{-5, -8, 8},
+		{5, -7, 9},
+		{4, -7, 9},
+		{4, -8, 9},
+		{5, -8, 9},
+		{5, -7, 8},
+		{4, -7, 8},
+		{4, -8, 8},
+		{5, -8, 8},
+
+		{5, 7, -10},
+		{4, 7, -10},
+		{4, 6, -10},
+		{5, 6, -10},
+		{5, 7, -9},
+		{4, 7, -9},
+		{4, 6, -9},
+		{5, 6, -9},
+		{-5, 7, -10},
+		{-6, 7, -10},
+		{-6, 6, -10},
+		{-5, 6, -10},
+		{-5, 7, -9},
+		{-6, 7, -9},
+		{-6, 6, -9},
+		{-5, 6, -9},
+		{-5, -7, -10},
+		{-6, -7, -10},
+		{-6, -8, -10},
+		{-5, -8, -10},
+		{-5, -7, -9},
+		{-6, -7, -9},
+		{-6, -8, -9},
+		{-5, -8, -9},
+		{5, -7, -10},
+		{4, -7, -10},
+		{4, -8, -10},
+		{5, -8, -10},
+		{5, -7, -9},
+		{4, -7, -9},
+		{4, -8, -9},
+		{5, -8, -9}
 	};
 	for(unsigned int n = 0; n < points.size(); n++){
 //		Streams::out << n << "\t" << parallelepipedCell[5].getMinorCellIndex(points[n], {3, 2, 4}) << "\n";
@@ -1142,13 +1030,278 @@ TEST_F(ParallelepipedCellTest, getMinorCellIndex6){
 				{3, 2, 4}
 			).equals(expectedMinorCells[n])
 		);
-	}*/
+	}
 }
 
-// TODO:
-// - Implement getMinorCellIndex6.
-// - Tests for getMajorMesh.
-// - Tests for getMinorMesh.
-// - Tests for getMinorMeshPoints.
+//TBTKFeature Uncategorized.ParallelepipedCell.getMinorCellIndex.7 2019-11-22
+TEST_F(ParallelepipedCellTest, getMinorCellIndex7){
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			parallelepipedCell[0].getMinorCellIndex(
+				{2, 3},	//Wrong length.
+				{5}
+			);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+//TBTKFeature Uncategorized.ParallelepipedCell.getMinorCellIndex.8 2019-11-22
+TEST_F(ParallelepipedCellTest, getMinorCellIndex8){
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			parallelepipedCell[0].getMinorCellIndex(
+				{2},
+				{5, 5}	//Wrong length.
+			);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+//TBTKFeature Uncategorized.ParallelepipedCell.getMajorMesh.1 2019-11-22
+TEST_F(ParallelepipedCellTest, getMajorMesh1){
+	for(unsigned int n = 0; n < 2; n++){
+		std::vector<std::vector<double>> mesh
+			= parallelepipedCell[n].getMajorMesh({3});
+
+		EXPECT_EQ(mesh.size(), 3);
+		for(unsigned int c = 0; c < mesh.size(); c++){
+			EXPECT_EQ(mesh[c].size(), 1);
+			EXPECT_FLOAT_EQ(mesh[c][0], 2*c);
+		}
+	}
+}
+
+//TBTKFeature Uncategorized.ParallelepipedCell.getMajorMesh.2 2019-11-22
+TEST_F(ParallelepipedCellTest, getMajorMesh2){
+	Vector2d u({2, 0});
+	Vector2d v({-1, sqrt(3)});
+
+	for(unsigned int n = 2; n < 4; n++){
+		std::vector<std::vector<double>> mesh
+			= parallelepipedCell[n].getMajorMesh({3, 4});
+
+		EXPECT_EQ(mesh.size(), 3*4);
+		for(unsigned int c = 0; c < mesh.size(); c++){
+			unsigned int x = c/4;
+			unsigned int y = c%4;
+
+			EXPECT_EQ(mesh[c].size(), 2);
+			EXPECT_FLOAT_EQ(mesh[c][0], (x*u+y*v).x);
+			EXPECT_FLOAT_EQ(mesh[c][1], (x*u+y*v).y);
+		}
+	}
+}
+
+//TBTKFeature Uncategorized.ParallelepipedCell.getMajorMesh.3 2019-11-22
+TEST_F(ParallelepipedCellTest, getMajorMesh3){
+	Vector3d u({2, 0, 0});
+	Vector3d v({-1, sqrt(3), 0});
+	Vector3d w({0, 0, 2});
+
+	for(unsigned int n = 4; n < 6; n++){
+		std::vector<std::vector<double>> mesh
+			= parallelepipedCell[n].getMajorMesh({3, 4, 5});
+
+		EXPECT_EQ(mesh.size(), 3*4*5);
+		for(unsigned int c = 0; c < mesh.size(); c++){
+			unsigned int x = c/(4*5);
+			unsigned int y = (c/5)%4;
+			unsigned int z = c%5;
+
+			EXPECT_EQ(mesh[c].size(), 3);
+			EXPECT_FLOAT_EQ(mesh[c][0], (x*u+y*v+z*w).x);
+			EXPECT_FLOAT_EQ(mesh[c][1], (x*u+y*v+z*w).y);
+			EXPECT_FLOAT_EQ(mesh[c][2], (x*u+y*v+z*w).z);
+		}
+	}
+}
+
+//TBTKFeature Uncategorized.ParallelepipedCell.getMajorMesh.4 2019-11-22
+TEST_F(ParallelepipedCellTest, getMajorMesh4){
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			//Wrong argument length.
+			parallelepipedCell[0].getMajorMesh({2, 3});
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+//TBTKFeature Uncategorized.ParallelepipedCell.getMinorMesh.1 2019-11-22
+TEST_F(ParallelepipedCellTest, getMinorMesh1){
+	for(unsigned int n = 0; n < 2; n++){
+		std::vector<std::vector<double>> mesh
+			= parallelepipedCell[n].getMinorMesh({3});
+
+		EXPECT_EQ(mesh.size(), 3);
+		for(unsigned int c = 0; c < mesh.size(); c++){
+			EXPECT_EQ(mesh[c].size(), 1);
+			EXPECT_FLOAT_EQ(mesh[c][0], c*(2/3.));
+		}
+	}
+}
+
+//TBTKFeature Uncategorized.ParallelepipedCell.getMinorMesh.2 2019-11-22
+TEST_F(ParallelepipedCellTest, getMinorMesh2){
+	Vector2d u({2, 0});
+	Vector2d v({-1, sqrt(3)});
+
+	u = u/3;
+	v = v/4;
+
+	for(unsigned int n = 2; n < 4; n++){
+		std::vector<std::vector<double>> mesh
+			= parallelepipedCell[n].getMinorMesh({3, 4});
+
+		EXPECT_EQ(mesh.size(), 3*4);
+		for(unsigned int c = 0; c < mesh.size(); c++){
+			unsigned int x = c/4;
+			unsigned int y = c%4;
+
+			EXPECT_EQ(mesh[c].size(), 2);
+			EXPECT_FLOAT_EQ(mesh[c][0], (x*u+y*v).x);
+			EXPECT_FLOAT_EQ(mesh[c][1], (x*u+y*v).y);
+		}
+	}
+}
+
+//TBTKFeature Uncategorized.ParallelepipedCell.getMinorMesh.3 2019-11-22
+TEST_F(ParallelepipedCellTest, getMinorMesh3){
+	Vector3d u({2, 0, 0});
+	Vector3d v({-1, sqrt(3), 0});
+	Vector3d w({0, 0, 2});
+
+	u = u/3;
+	v = v/4;
+	w = w/5;
+
+	for(unsigned int n = 4; n < 6; n++){
+		std::vector<std::vector<double>> mesh
+			= parallelepipedCell[n].getMinorMesh({3, 4, 5});
+
+		EXPECT_EQ(mesh.size(), 3*4*5);
+		for(unsigned int c = 0; c < mesh.size(); c++){
+			unsigned int x = c/(4*5);
+			unsigned int y = (c/5)%4;
+			unsigned int z = c%5;
+
+			EXPECT_EQ(mesh[c].size(), 3);
+			EXPECT_FLOAT_EQ(mesh[c][0], (x*u+y*v+z*w).x);
+			EXPECT_FLOAT_EQ(mesh[c][1], (x*u+y*v+z*w).y);
+			EXPECT_FLOAT_EQ(mesh[c][2], (x*u+y*v+z*w).z);
+		}
+	}
+}
+
+//TBTKFeature Uncategorized.ParallelepipedCell.getMinorMesh.4 2019-11-22
+TEST_F(ParallelepipedCellTest, getMinorMesh4){
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			//Wrong argument length.
+			parallelepipedCell[0].getMinorMesh({2, 3});
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+//TBTKFeature Uncategorized.ParallelepipedCell.getMinorMeshPoint.1 2019-11-22
+TEST_F(ParallelepipedCellTest, getMinorMeshPoint1){
+	for(unsigned int n = 0; n < 2; n++){
+		std::vector<std::vector<double>> mesh
+			= parallelepipedCell[n].getMinorMesh({3});
+
+		for(unsigned int x = 0; x < 3; x++){
+			std::vector<double> point
+				= parallelepipedCell[n].getMinorMeshPoint(
+					{x},
+					{3}
+				);
+
+			EXPECT_EQ(point.size(), 1);
+			EXPECT_FLOAT_EQ(point[0], x*2/3.);
+		}
+	}
+}
+
+//TBTKFeature Uncategorized.ParallelepipedCell.getMinorMeshPoint.2 2019-11-22
+TEST_F(ParallelepipedCellTest, getMinorMeshPoint2){
+	Vector2d u({2, 0});
+	Vector2d v({-1, sqrt(3)});
+
+	u = u/3;
+	v = v/4;
+
+	for(unsigned int n = 2; n < 4; n++){
+		std::vector<std::vector<double>> mesh
+			= parallelepipedCell[n].getMinorMesh({3, 4});
+
+		for(unsigned int x = 0; x < 3; x++){
+			for(unsigned int y = 0; y < 4; y++){
+				std::vector<double> point
+					= parallelepipedCell[
+						n
+					].getMinorMeshPoint({x, y}, {3, 4});
+
+				EXPECT_EQ(point.size(), 2);
+				EXPECT_FLOAT_EQ(point[0], (x*u+y*v).x);
+				EXPECT_FLOAT_EQ(point[1], (x*u+y*v).y);
+			}
+		}
+	}
+}
+
+//TBTKFeature Uncategorized.ParallelepipedCell.getMinorMeshPoint.3 2019-11-22
+TEST_F(ParallelepipedCellTest, getMinorMeshPoint3){
+	Vector3d u({2, 0, 0});
+	Vector3d v({-1, sqrt(3), 0});
+	Vector3d w({0, 0, 2});
+
+	u = u/3;
+	v = v/4;
+	w = w/5;
+
+	for(unsigned int n = 4; n < 6; n++){
+		std::vector<std::vector<double>> mesh
+			= parallelepipedCell[n].getMinorMesh({3, 4, 5});
+
+		for(unsigned int x = 0; x < 3; x++){
+			for(unsigned int y = 0; y < 4; y++){
+				for(unsigned int z = 0; z < 5; z++){
+					std::vector<double> point
+						= parallelepipedCell[
+							n
+						].getMinorMeshPoint(
+							{x, y, z},
+							{3, 4, 5}
+						);
+
+					EXPECT_EQ(point.size(), 3);
+					EXPECT_FLOAT_EQ(
+						point[0],
+						(x*u+y*v+z*w).x
+					);
+					EXPECT_FLOAT_EQ(
+						point[1],
+						(x*u+y*v+z*w).y
+					);
+					EXPECT_FLOAT_EQ(
+						point[2],
+						(x*u+y*v+z*w).z
+					);
+				}
+			}
+		}
+	}
+}
 
 };
