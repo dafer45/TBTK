@@ -1,5 +1,12 @@
 #pragma once
 
+//Allow for inclusion in multiple translation units
+#ifndef TBTK_NUMPY_INITIALIZING_TRANSLATION_UNIT
+#  define NO_IMPORT_ARRAY
+#endif
+#define PY_ARRAY_UNIQUE_SYMBOL TBTK_PY_ARRAY_API
+#define PY_UFUNC_UNIQUE_SYMBOL TBTK_PY_UFUNC_API
+
 #include <vector>
 #include <map>
 #include <array>
@@ -40,7 +47,7 @@
 namespace matplotlibcpp {
 namespace detail {
 
-static std::string s_backend;
+extern std::string s_backend;
 
 struct _interpreter {
     PyObject *s_python_function_show;
@@ -94,10 +101,7 @@ struct _interpreter {
         http://bytes.com/topic/python/answers/793370-multiple-independent-python-interpreters-c-c-program
        */
 
-    static _interpreter& get() {
-        static _interpreter ctx;
-        return ctx;
-    }
+    static _interpreter& get();
 
     PyObject* safe_import(PyObject* module, std::string fname) {
         PyObject* fn = PyObject_GetAttrString(module, fname.c_str());
@@ -116,16 +120,16 @@ private:
 #ifndef WITHOUT_NUMPY
 #  if PY_MAJOR_VERSION >= 3
 
-    void *import_numpy() {
+    void *import_numpy();/* {
         import_array(); // initialize C-API
         return NULL;
-    }
+    }*/
 
 #  else
 
-    void import_numpy() {
+    void import_numpy();/* {
         import_array(); // initialize C-API
-    }
+    }*/
 
 #  endif
 #endif
