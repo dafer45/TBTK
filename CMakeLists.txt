@@ -242,7 +242,6 @@ ENDIF(OpenBLAS_FOUND)
 
 IF(Python_FOUND)
 	MESSAGE("[X] matplotlib-cpp")
-	SET(MATPLOTLIB_ENABLED TRUE)
 	SET(COMPILE_MATPLOTLIB_PLOTTER TRUE)
 ELSE(Python_FOUND)
 	MESSAGE("[ ] matplotlib-cpp")
@@ -357,10 +356,6 @@ ADD_SUBDIRECTORY(Visualization/python/)
 ADD_SUBDIRECTORY(Validation/)
 ADD_SUBDIRECTORY(Test/)
 ADD_SUBDIRECTORY(doc/)
-
-IF(${MATPLOTLIB_ENABLED})
-	ADD_SUBDIRECTORY(External/TBTK/External/MatPlotLibCpp)
-ENDIF(${MATPLOTLIB_ENABLED})
 
 #Create TBTKVersion.cmake.
 INCLUDE(CMakePackageConfigHelpers)
