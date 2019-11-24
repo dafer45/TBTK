@@ -35,20 +35,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE. */
 
-#define TBTK_NUMPY_INITIALIZING_TRANSLATION_UNIT
+/*#define TBTK_NUMPY_INITIALIZING_TRANSLATION_UNIT
 #include "TBTK/Visualization/MatPlotLib/matplotlibcpp.h"
 
 namespace matplotlibcpp{
 namespace detail{
 
-std::string s_backend;
+std::string s_backend;*/
 
 /* For now, _interpreter is implemented as a singleton since its currently not possible to have
   multiple independent embedded python interpreters without patching the python source code
   or starting a separate process for each.
   http://bytes.com/topic/python/answers/793370-multiple-independent-python-interpreters-c-c-program
  */
-_interpreter& _interpreter::get(){
+/*_interpreter& _interpreter::get(){
 	static _interpreter ctx;
 	return ctx;
 }
@@ -67,4 +67,4 @@ void _interpreter::import_numpy(){
 #endif
 
 };	//End of namespace detail
-};	//End of namespace matplotlibcpp
+};	//End of namespace matplotlibcpp*/
