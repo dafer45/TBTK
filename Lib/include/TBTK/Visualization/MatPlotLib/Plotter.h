@@ -33,7 +33,7 @@
 #include <tuple>
 #include <vector>
 
-#include "TBTK/External/MatPlotLibCpp/matplotlibcpp.h"
+#include "TBTK/Visualization/MatPlotLib/matplotlibcpp.h"
 
 namespace TBTK{
 namespace Visualization{

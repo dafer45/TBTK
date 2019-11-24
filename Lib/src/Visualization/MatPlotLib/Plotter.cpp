@@ -24,8 +24,6 @@
 
 #include <sstream>
 
-#include "TBTK/External/MatPlotLibCpp/matplotlibcpp.h"
-
 using namespace std;
 
 namespace TBTK{
