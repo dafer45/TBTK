@@ -16,6 +16,7 @@ IF(PYTHON_INCLUDES AND PYTHON_LIBRARIES)
 	CHECK_CXX_SOURCE_COMPILES(
 		"
 		#include <Python.h>
+		#include <numpy/arrayobject.h>
 
 		int main(int argc, char **argv){
 			PyTuple_New(0);
