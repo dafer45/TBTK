@@ -120,58 +120,6 @@ void Plotter::plot(
 			""
 		);
 	}
-/*	canvas.setBounds(0, data.size()-1, 0, sizeY-1);
-
-	clearDataStorage();
-	canvas.clear();
-
-	double minValue = data[0][0];
-	double maxValue = data[0][0];
-	for(unsigned int x = 0; x < data.size(); x++){
-		for(unsigned int y = 0; y < data[x].size(); y++){
-			if(data[x][y] < minValue)
-				minValue = data[x][y];
-			if(data[x][y] > maxValue)
-				maxValue = data[x][y];
-		}
-	}
-
-	bool tempShowColorBox = canvas.getShowColorBox();
-	canvas.setShowColorBox(true);
-	canvas.setBoundsColor(minValue, maxValue);
-
-	for(unsigned int x = 0; x < data.size()-1; x++){
-		for(unsigned int y = 0; y < sizeY-1; y++){
-			double value00 = data[x][y];
-			double value01 = data[x][y+1];
-			double value10 = data[x+1][y];
-			double value11 = data[x+1][y+1];
-
-			cv::Point p00 = canvas.getCVPoint(x, y);
-			cv::Point p01 = canvas.getCVPoint(x, y+1);
-			cv::Point p10 = canvas.getCVPoint(x+1, y);
-			for(int x = p00.x; x <= p10.x; x++){
-				for(int y = p00.y; y >= p01.y; y--){
-					double distanceX = (x-p00.x)/(double)(p10.x - p00.x);
-					double distanceY = (y-p00.y)/(double)(p01.y - p00.y);
-					double value0 = value00*(1 - distanceX) + value10*distanceX;
-					double value1 = value01*(1 - distanceX) + value11*distanceX;
-					double averagedValue = value0*(1 - distanceY) + value1*distanceY;
-					canvas.setPixel(
-						x,
-						y,
-						(255 - 255*(averagedValue - minValue)/(maxValue - minValue)),
-						(255 - 255*(averagedValue - minValue)/(maxValue - minValue)),
-						255
-					);
-				}
-			}
-		}
-	}
-
-	canvas.drawAxes();
-
-	canvas.setShowColorBox(tempShowColorBox);*/
 
 	vector<vector<double>> x , y;
 	for(unsigned int X = 0; X < data.size(); X++){
@@ -337,51 +285,6 @@ void Plotter::plot(
 			<< " plotter."
 		);
 	}
-}
-
-void Plotter::drawDataStorage(){
-	if(dataStorage.size() == 0)
-		return;
-
-	if(autoScaleX){
-		double minX = dataStorage[0]->getMinX();
-		double maxX = dataStorage[0]->getMaxX();
-		for(unsigned int n = 1; n < dataStorage.size(); n++){
-			double min = dataStorage[n]->getMinX();
-			double max = dataStorage[n]->getMaxX();
-			if(min < minX)
-				minX = min;
-			if(max > maxX)
-				maxX = max;
-		}
-		canvas.setBoundsX(minX, maxX);
-	}
-	if(autoScaleY){
-		double minY = dataStorage[0]->getMinY();
-		double maxY = dataStorage[0]->getMaxY();
-		for(unsigned int n = 1; n < dataStorage.size(); n++){
-			double min = dataStorage[n]->getMinY();
-			double max = dataStorage[n]->getMaxY();
-			if(min < minY)
-				minY = min;
-			if(max > maxY)
-				maxY = max;
-		}
-		canvas.setBoundsY(minY, maxY);
-	}
-
-	canvas.clear();
-
-	for(unsigned int n = 0; n < dataStorage.size(); n++)
-		dataStorage[n]->draw(canvas);
-}
-
-void Plotter::show() const{
-	matplotlibcpp::show();
-}
-
-void Plotter::save(const string &filename) const{
-	matplotlibcpp::save(filename);
 }*/
 
 };	//End of namespace MatPlotLib

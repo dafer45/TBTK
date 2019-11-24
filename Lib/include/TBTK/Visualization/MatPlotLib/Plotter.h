@@ -41,12 +41,6 @@ namespace MatPlotLib{
 
 class Plotter{
 public:
-	/** Set width. */
-//	void setWidth(unsigned int width);
-
-	/** Set height. */
-//	void setHeight(unsigned int height);
-
 	/** Set size. */
 	void setSize(unsigned int width, unsigned int height);
 
@@ -139,28 +133,6 @@ public:
 	void save(const std::string &filename) const;
 };
 
-/*inline void Plotter::setWidth(unsigned int width){
-	canvas.setWidth(width);
-}
-
-inline void Plotter::setHeight(unsigned int height){
-	canvas.setHeight(height);
-}
-
-inline void Plotter::setPadding(
-	double paddingLeft,
-	double paddingRight,
-	double paddingBottom,
-	double paddingTop
-){
-	canvas.setPadding(
-		paddingLeft,
-		paddingRight,
-		paddingBottom,
-		paddingTop
-	);
-}*/
-
 inline void Plotter::setBoundsX(
 	double minX,
 	double maxX
@@ -218,20 +190,7 @@ inline void Plotter::setLabelY(const std::string &labelY){
 	matplotlibcpp::ylabel(labelY);
 }
 
-/*inline void Plotter::setCanvas(cv::Mat &canvas){
-	this->canvas.setCanvas(canvas);
-}
-
-inline const cv::Mat& Plotter::getCanvas(){
-	if(dataStorage.size() != 0){
-		drawDataStorage();
-		canvas.drawAxes();
-	}
-
-	return canvas.getCanvas();
-}
-
-inline void Plotter::setHold(bool hold){
+/*inline void Plotter::setHold(bool hold){
 	this->hold = hold;
 }*/
 
@@ -246,12 +205,6 @@ inline void Plotter::show() const{
 inline void Plotter::save(const std::string &filename) const{
 	matplotlibcpp::save(filename);
 }
-
-/*inline void Plotter::clearDataStorage(){
-	for(unsigned int n = 0; n < dataStorage.size(); n++)
-		delete dataStorage[n];
-	dataStorage.clear();
-}*/
 
 };	//End namespace MatPlotLib
 };	//End namespace Visualization
