@@ -85,7 +85,7 @@ namespace detail {
 
 extern std::string s_backend;
 
-struct _interpreter {
+struct Interpreter {
 	PyObject *s_python_function_show;
 	PyObject *s_python_function_close;
 	PyObject *s_python_function_draw;
@@ -130,7 +130,7 @@ struct _interpreter {
 	PyObject *s_python_function_bar;
 	PyObject *s_python_function_subplots_adjust;
 
-	static _interpreter& get();
+	static Interpreter& get();
 
 	PyObject* safe_import(PyObject* module, std::string fname);
 private:
@@ -141,9 +141,9 @@ private:
 	void import_numpy();
 #	endif
 #endif
-    _interpreter();
+    Interpreter();
 
-    ~_interpreter();
+    ~Interpreter();
 };
 
 } // end namespace detail

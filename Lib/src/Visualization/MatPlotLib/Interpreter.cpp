@@ -57,17 +57,17 @@ extern std::string s_backend;
 
 std::string s_backend;
 
-/* For now, _interpreter is implemented as a singleton since its currently not possible to have
+/* For now, Interpreter is implemented as a singleton since its currently not possible to have
   multiple independent embedded python interpreters without patching the python source code
   or starting a separate process for each.
   http://bytes.com/topic/python/answers/793370-multiple-independent-python-interpreters-c-c-program
  */
-_interpreter& _interpreter::get(){
-        static _interpreter ctx;
+Interpreter& Interpreter::get(){
+        static Interpreter ctx;
         return ctx;
 }
 
-PyObject* _interpreter::safe_import(PyObject* module, std::string fname) {
+PyObject* Interpreter::safe_import(PyObject* module, std::string fname) {
 	PyObject* fn = PyObject_GetAttrString(module, fname.c_str());
 
 	if (!fn)
@@ -79,7 +79,7 @@ PyObject* _interpreter::safe_import(PyObject* module, std::string fname) {
 	return fn;
 }
 
-_interpreter::_interpreter() {
+Interpreter::Interpreter() {
 	// optional but recommended
 #if PY_MAJOR_VERSION >= 3
 	wchar_t name[] = L"plotting";
@@ -170,18 +170,18 @@ _interpreter::_interpreter() {
 	s_python_empty_tuple = PyTuple_New(0);
 }
 
-_interpreter::~_interpreter() {
+Interpreter::~Interpreter() {
 	Py_Finalize();
 }
 
 #ifndef WITHOUT_NUMPY
 #       if PY_MAJOR_VERSION >= 3
-void* _interpreter::import_numpy(){
+void* Interpreter::import_numpy(){
         import_array();
         return NULL;
 }
 #       else
-void _interpreter::import_numpy(){
+void Interpreter::import_numpy(){
         import_array();
 }
 #       endif
