@@ -64,28 +64,29 @@ void Plotter::plot(
 	matplotlibcpp::plot(y, arguments);
 }
 
-/*void Plotter::plot(
+void Plotter::plot(
 	const Property::DOS &dos,
 	double sigma,
 	unsigned int windowSize
 ){
-	vector<double> data;
-	vector<double> axis;
-	double dE = (dos.getUpperBound() - dos.getLowerBound())/dos.getResolution();
+	vector<double> y;
+	vector<double> x;
+//	double dE = (dos.getUpperBound() - dos.getLowerBound())/dos.getResolution();
+	double dE = dos.getDeltaE();
 	for(unsigned int n = 0; n < dos.getSize(); n++){
-		axis.push_back(dos.getLowerBound() + n*dE);
-		data.push_back(dos(n));
+		x.push_back(dos.getLowerBound() + n*dE);
+		y.push_back(dos(n));
 	}
 
 	if(sigma != 0){
 		double scaledSigma = sigma/(dos.getUpperBound() - dos.getLowerBound())*dos.getResolution();
-		data = Smooth::gaussian(data, scaledSigma, windowSize);
+		y = Smooth::gaussian(y, scaledSigma, windowSize);
 	}
 
-	plot(axis, data);
+	plot(x, y);
 }
 
-void Plotter::plot(const Property::EigenValues &eigenValues){
+/*void Plotter::plot(const Property::EigenValues &eigenValues){
 	vector<double> data;
 	for(unsigned int n = 0; n < eigenValues.getSize(); n++)
 		data.push_back(eigenValues(n));
@@ -97,9 +98,12 @@ void Plotter::plot(const Property::EigenValues &eigenValues){
 			Decoration::LineStyle::Point
 		)
 	);
-}
+}*/
 
-void Plotter::plot(const vector<vector<double>> &data){
+void Plotter::plot(
+	const vector<vector<double>> &data,
+	const std::string &arguments
+){
 	if(data.size() == 0)
 		return;
 	if(data[0].size() == 0)
@@ -116,7 +120,7 @@ void Plotter::plot(const vector<vector<double>> &data){
 			""
 		);
 	}
-	canvas.setBounds(0, data.size()-1, 0, sizeY-1);
+/*	canvas.setBounds(0, data.size()-1, 0, sizeY-1);
 
 	clearDataStorage();
 	canvas.clear();
@@ -167,12 +171,23 @@ void Plotter::plot(const vector<vector<double>> &data){
 
 	canvas.drawAxes();
 
-	canvas.setShowColorBox(tempShowColorBox);
+	canvas.setShowColorBox(tempShowColorBox);*/
+
+	vector<vector<double>> x , y;
+	for(unsigned int X = 0; X < data.size(); X++){
+		x.push_back(vector<double>());
+		y.push_back(vector<double>());
+		for(unsigned int Y = 0; Y < data[X].size(); Y++){
+			x[X].push_back(X);
+			y[X].push_back(Y);
+		}
+	}
+	matplotlibcpp::plot_surface(x, y, data);
 }
 
 void Plotter::plot(
 	const Array<double> &data,
-	const Decoration &decoration
+	const string &arguments
 ){
 	const vector<unsigned int> &ranges = data.getRanges();
 	switch(ranges.size()){
@@ -181,7 +196,7 @@ void Plotter::plot(
 		vector<double> d;
 		for(unsigned int n = 0; n < ranges[0]; n++)
 			d.push_back(data[{n}]);
-		plot(d, decoration);
+		plot(d, arguments);
 
 		break;
 	}
@@ -193,7 +208,7 @@ void Plotter::plot(
 			for(unsigned int n = 0; n < ranges[1]; n++)
 				d[m].push_back(data[{m, n}]);
 		}
-		plot(d);
+		plot(d, arguments);
 
 		break;
 	}
@@ -207,7 +222,7 @@ void Plotter::plot(
 	}
 }
 
-void Plotter::plot(
+/*void Plotter::plot(
 	const vector<vector<double>> &data,
 	const vector<vector<double>> &intensities,
 	const Decoration &decoration
@@ -359,7 +374,7 @@ void Plotter::drawDataStorage(){
 
 	for(unsigned int n = 0; n < dataStorage.size(); n++)
 		dataStorage[n]->draw(canvas);
-}*/
+}
 
 void Plotter::show() const{
 	matplotlibcpp::show();
@@ -367,7 +382,7 @@ void Plotter::show() const{
 
 void Plotter::save(const string &filename) const{
 	matplotlibcpp::save(filename);
-}
+}*/
 
 };	//End of namespace MatPlotLib
 };	//End of namespace Visualization

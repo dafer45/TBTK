@@ -51,13 +51,13 @@ public:
 	void setSize(unsigned int width, unsigned int height);
 
 	/** Set bounds. */
-//	void setBoundsX(double minX, double maxX);
+	void setBoundsX(double minX, double maxX);
 
 	/** Set bounds. */
-//	void setBoundsY(double minY, double maxY);
+	void setBoundsY(double minY, double maxY);
 
 	/** Set bounds. */
-//	void setBounds(double minX, double maxX, double minY, double maxY);
+	void setBounds(double minX, double maxX, double minY, double maxY);
 
 	/** Set auto scale. */
 //	void setAutoScaleX(bool autoScaleX);
@@ -69,10 +69,10 @@ public:
 //	void setAutoScale(bool autoScale);
 
 	/** Set x-label. */
-//	void setLabelX(const std::string &labelX);
+	void setLabelX(const std::string &labelX);
 
 	/** Set y-label. */
-//	void setLabelY(const std::string &labelY);
+	void setLabelY(const std::string &labelY);
 
 	/** Plot point. */
 //	void plot(double x, double y, const std::string &arguments);
@@ -85,23 +85,32 @@ public:
 	);
 
 	/** Plot data. */
-	void plot(const std::vector<double> &y, const std::string &arguments);
+	void plot(
+		const std::vector<double> &y,
+		const std::string &arguments = ""
+	);
 
 	/** Plot density of states. */
-/*	void plot(
+	void plot(
 		const Property::DOS &dos,
 		double sigma = 0,
 		unsigned int windowSize = 51
-	);*/
+	);
 
 	/** Plot eigenvalues. */
 //	void plot(const Property::EigenValues &eigenValues);
 
 	/** Plot 2D data. */
-//	void plot(const std::vector<std::vector<double>> &data);
+	void plot(
+		const std::vector<std::vector<double>> &data,
+		const std::string &arguments
+	);
 
 	/** Plot data. */
-//	void plot(const Array<double> &data, const std::string &arguments);
+	void plot(
+		const Array<double> &data,
+		const std::string &arguments = ""
+	);
 
 	/** Plot data with color coded intensity. */
 /*	void plot(
@@ -121,7 +130,7 @@ public:
 //	void setHold(bool hold);
 
 	/** Clear plot. */
-//	void clear();
+	void clear();
 
 	/** Show the plot. */
 	void show() const;
@@ -150,7 +159,7 @@ inline void Plotter::setPadding(
 		paddingBottom,
 		paddingTop
 	);
-}
+}*/
 
 inline void Plotter::setBoundsX(
 	double minX,
@@ -162,8 +171,7 @@ inline void Plotter::setBoundsX(
 		"minX has to be smaller than maxX",
 		""
 	);
-	this->autoScaleX = false;
-	canvas.setBoundsX(minX, maxX);
+	matplotlibcpp::xlim(minX, maxX);
 }
 
 inline void Plotter::setBoundsY(
@@ -176,8 +184,7 @@ inline void Plotter::setBoundsY(
 		"minY has to be smaller than maxY",
 		""
 	);
-	this->autoScaleY = false;
-	canvas.setBoundsY(minY, maxY);
+	matplotlibcpp::ylim(minY, maxY);
 }
 
 inline void Plotter::setBounds(
@@ -190,7 +197,7 @@ inline void Plotter::setBounds(
 	setBoundsY(minY, maxY);
 }
 
-inline void Plotter::setAutoScaleX(bool autoScaleX){
+/*inline void Plotter::setAutoScaleX(bool autoScaleX){
 	this->autoScaleX = autoScaleX;
 }
 
@@ -201,17 +208,17 @@ inline void Plotter::setAutoScaleY(bool autoScaleY){
 inline void Plotter::setAutoScale(bool autoScale){
 	setAutoScaleX(autoScale);
 	setAutoScaleY(autoScale);
-}
+}*/
 
 inline void Plotter::setLabelX(const std::string &labelX){
-	canvas.setLabelX(labelX);
+	matplotlibcpp::xlabel(labelX);
 }
 
 inline void Plotter::setLabelY(const std::string &labelY){
-	canvas.setLabelY(labelY);
+	matplotlibcpp::ylabel(labelY);
 }
 
-inline void Plotter::setCanvas(cv::Mat &canvas){
+/*inline void Plotter::setCanvas(cv::Mat &canvas){
 	this->canvas.setCanvas(canvas);
 }
 
@@ -226,27 +233,21 @@ inline const cv::Mat& Plotter::getCanvas(){
 
 inline void Plotter::setHold(bool hold){
 	this->hold = hold;
-}
+}*/
 
 inline void Plotter::clear(){
-	clearDataStorage();
-	canvas.clear();
+	matplotlibcpp::clf();
 }
 
 inline void Plotter::show() const{
 	matplotlibcpp::show();
 }
 
-inline void Plotter::save(std::string filename){
-	if(dataStorage.size() != 0){
-		drawDataStorage();
-		canvas.drawAxes();
-	}
-
-	canvas.save(filename);
+inline void Plotter::save(const std::string &filename) const{
+	matplotlibcpp::save(filename);
 }
 
-inline void Plotter::clearDataStorage(){
+/*inline void Plotter::clearDataStorage(){
 	for(unsigned int n = 0; n < dataStorage.size(); n++)
 		delete dataStorage[n];
 	dataStorage.clear();
