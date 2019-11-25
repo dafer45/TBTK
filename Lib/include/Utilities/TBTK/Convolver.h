@@ -86,8 +86,10 @@ Array<DataType> Convolver::convolve(
 		);
 	}
 
-	Array<DataType> array0Out(array0.getRanges());
-	Array<DataType> array1Out(array1.getRanges());
+	Array<DataType> array0Out
+		= Array<DataType>::create(array0.getRanges());
+	Array<DataType> array1Out
+		= Array<DataType>::create(array1.getRanges());
 
 	FourierTransform::ForwardPlan<DataType> plan0(
 		array0.getData().getData(),
@@ -105,7 +107,7 @@ Array<DataType> Convolver::convolve(
 	FourierTransform::transform(plan0);
 	FourierTransform::transform(plan1);
 
-	Array<DataType> result(array0.getRanges());
+	Array<DataType> result = Array<DataType>::create(array0.getRanges());
 	for(unsigned int n = 0; n < result.getSize(); n++)
 		result[n] = array0Out[n]*array1Out[n];
 
@@ -152,8 +154,10 @@ Array<DataType> Convolver::crossCorrelate(
 		);
 	}
 
-	Array<DataType> array0Out(array0.getRanges());
-	Array<DataType> array1Out(array1.getRanges());
+	Array<DataType> array0Out
+		= Array<DataType>::create(array0.getRanges());
+	Array<DataType> array1Out
+		= Array<DataType>::create(array1.getRanges());
 
 	FourierTransform::ForwardPlan<DataType> plan0(
 		array0.getData().getData(),
@@ -171,7 +175,7 @@ Array<DataType> Convolver::crossCorrelate(
 	FourierTransform::transform(plan0);
 	FourierTransform::transform(plan1);
 
-	Array<DataType> result(array0.getRanges());
+	Array<DataType> result = Array<DataType>::create(array0.getRanges());
 	for(unsigned int n = 0; n < result.getSize(); n++)
 		result[n] = conj(array0Out[n])*array1Out[n];
 

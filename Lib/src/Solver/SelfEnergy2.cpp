@@ -375,14 +375,16 @@ Property::SelfEnergy SelfEnergy2::calculateSelfEnergyAllBlocks(
 			orbital1 < intraBlockIndexList.size();
 			orbital1++
 		){
-			Array<complex<double>> interactionVertexArray(
-				crossCorrelationRanges,
-				0
-			);
-			Array<complex<double>> greensFunctionArray(
-				crossCorrelationRanges,
-				0
-			);
+			Array<complex<double>> interactionVertexArray
+				= Array<complex<double>>::create(
+					crossCorrelationRanges,
+					0
+				);
+			Array<complex<double>> greensFunctionArray
+				= Array<complex<double>>::create(
+					crossCorrelationRanges,
+					0
+				);
 
 			#pragma omp parallel for
 			for(

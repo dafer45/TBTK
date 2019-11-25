@@ -39,6 +39,39 @@ TEST(Array, constructor2){
 	EXPECT_EQ(array.getSize(), 2*3*4);
 }
 
+//TBTKFeature Utilities.Array.create.1 2019-11-25
+TEST(Array, create1){
+	Array<unsigned int> array0({2, 3, 4});
+	Array<unsigned int> array1 = Array<unsigned int>::create(
+		std::vector<unsigned int>({2, 3, 4})
+	);
+
+	const std::vector<unsigned int> &ranges0 = array0.getRanges();
+	const std::vector<unsigned int> &ranges1 = array1.getRanges();
+	EXPECT_EQ(ranges0.size(), ranges1.size());
+	for(unsigned int n = 0; n < ranges0.size(); n++)
+		EXPECT_EQ(ranges0[n], ranges1[n]);
+}
+
+//TBTKFeature Utilities.Array.create.2 2019-11-25
+TEST(Array, create2){
+	Array<unsigned int> array0({2, 3, 4}, 5);
+	Array<unsigned int> array1 = Array<unsigned int>::create(
+		std::vector<unsigned int>({2, 3, 4}),
+		5
+	);
+
+	const std::vector<unsigned int> &ranges0 = array0.getRanges();
+	const std::vector<unsigned int> &ranges1 = array1.getRanges();
+	EXPECT_EQ(ranges0.size(), ranges1.size());
+	for(unsigned int n = 0; n < ranges0.size(); n++)
+		EXPECT_EQ(ranges0[n], ranges1[n]);
+	for(unsigned int i = 0; i < 2; i++)
+		for(unsigned int j = 0; j < 3; j++)
+			for(unsigned int k = 0; k < 4; k++)
+				EXPECT_EQ((array0[{i, j, k}]), (array1[{i, j, k}]));
+}
+
 //TBTKFeature Utilities.Array.operatorArraySubscript.1 2019-10-31
 TEST(Array, operatorArraySubscript0){
 	Array<unsigned int> array({2, 3});

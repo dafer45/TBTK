@@ -90,14 +90,37 @@ public:
 	/** Constructor.
 	 *
 	 *  @param ranges The ranges of the Array. */
-	Array(const std::vector<unsigned int> &ranges);
+	Array(const std::initializer_list<unsigned int> &ranges);
 
 	//TBTKFeature Utilities.Array.construction.3 2019-10-31
 	/** Constructor.
 	 *
 	 *  @param ranges The ranges of the Array.
 	 *  @param fillValue Value to fill the Array with. */
-	Array(const std::vector<unsigned int> &ranges, const DataType &fillValue);
+	Array(
+		const std::initializer_list<unsigned int> &ranges,
+		const DataType &fillValue
+	);
+
+	/** Create an array with a vector of ranges. Identical to calling the
+	 *  constructor using an std::initializer_list, but using a std::vector
+	 *  instead. Allows for the creation of an Arrays with dynamically
+	 *  assigned ranges.
+	 *
+	 *  @param ranges The ranges of the Array. */
+	static Array create(const std::vector<unsigned int> &ranges);
+
+	/** Create an array with a vector of ranges. Identical to calling the
+	 *  constructor using an std::initializer_list, but using a std::vector
+	 *  instead. Allows for the creation of an Arrays with dynamically
+	 *  assigned ranges.
+	 *
+	 *  @param ranges The ranges of the Array.
+	 *  @param fillValue Value to fill the Array with. */
+	static Array create(
+		const std::vector<unsigned int> &ranges,
+		const DataType &fillValue
+	);
 
 	//TBTKFeature Utilities.Array.operatorArraySubscript.1 2019-10-31
 	/** Array subscript operator.
@@ -173,7 +196,7 @@ public:
 	 *
 	 *  @return The product of the left and right hand side. */
 	friend Array operator*(const DataType &lhs, const Array &rhs){
-		Array<DataType> result(rhs.ranges);
+		Array<DataType> result = Array<DataType>::create(rhs.ranges);
 		for(unsigned int n = 0; n < rhs.getSize(); n++)
 			result.data[n] = lhs*rhs.data[n];
 
@@ -262,17 +285,17 @@ Array<DataType>::Array(){
 }
 
 template<typename DataType>
-Array<DataType>::Array(const std::vector<unsigned int> &ranges){
+Array<DataType>::Array(const std::initializer_list<unsigned int> &ranges){
 	this->ranges = ranges;
 	unsigned int size = 1;
-	for(unsigned int n = 0; n < ranges.size(); n++){
+	for(unsigned int n = 0; n < this->ranges.size(); n++){
 		TBTKAssert(
-			ranges[n] > 0,
+			this->ranges[n] > 0,
 			"Array::Array()",
 			"Invalid ranges.",
 			"'ranges' must only contain positive numbers."
 		);
-		size *= ranges[n];
+		size *= this->ranges[n];
 	}
 
 	data = CArray<DataType>(size);
@@ -280,25 +303,73 @@ Array<DataType>::Array(const std::vector<unsigned int> &ranges){
 
 template<typename DataType>
 Array<DataType>::Array(
-	const std::vector<unsigned int> &ranges,
+	const std::initializer_list<unsigned int> &ranges,
 	const DataType &fillValue
 ){
 	this->ranges = ranges;
 	unsigned int size = 1;
-	for(unsigned int n = 0; n < ranges.size(); n++){
+	for(unsigned int n = 0; n < this->ranges.size(); n++){
 		TBTKAssert(
-			ranges[n] > 0,
+			this->ranges[n] > 0,
 			"Array::Array()",
 			"Invalid ranges.",
 			"'ranges' must only contain positive numbers."
 		);
-		size *= ranges[n];
+		size *= this->ranges[n];
 	}
 
 	data = CArray<DataType>(size);
 
 	for(unsigned int n = 0; n < size; n++)
 		data[n] = fillValue;
+}
+
+template<typename DataType>
+Array<DataType> Array<DataType>::create(
+	const std::vector<unsigned int> &ranges
+){
+	Array<DataType> array;
+	array.ranges = ranges;
+	unsigned int size = 1;
+	for(unsigned int n = 0; n < array.ranges.size(); n++){
+		TBTKAssert(
+			array.ranges[n] > 0,
+			"Array::Array()",
+			"Invalid ranges.",
+			"'ranges' must only contain positive numbers."
+		);
+		size *= array.ranges[n];
+	}
+
+	array.data = CArray<DataType>(size);
+
+	return array;
+}
+
+template<typename DataType>
+Array<DataType> Array<DataType>::create(
+	const std::vector<unsigned int> &ranges,
+	const DataType &fillValue
+){
+	Array<DataType> array;
+	array.ranges = ranges;
+	unsigned int size = 1;
+	for(unsigned int n = 0; n < array.ranges.size(); n++){
+		TBTKAssert(
+			array.ranges[n] > 0,
+			"Array::Array()",
+			"Invalid ranges.",
+			"'ranges' must only contain positive numbers."
+		);
+		size *= array.ranges[n];
+	}
+
+	array.data = CArray<DataType>(size);
+
+	for(unsigned int n = 0; n < size; n++)
+		array.data[n] = fillValue;
+
+	return array;
 }
 
 template<typename DataType>
@@ -345,7 +416,7 @@ inline Array<DataType> Array<DataType>::operator+(
 ) const{
 	assertCompatibleRanges(rhs, "operator+()");
 
-	Array<DataType> result(ranges);
+	Array<DataType> result = Array<DataType>::create(ranges);
 	for(unsigned int n = 0; n < data.getSize(); n++)
 		result.data[n] = data[n] + rhs.data[n];
 
@@ -358,7 +429,7 @@ inline Array<DataType> Array<DataType>::operator-(
 ) const{
 	assertCompatibleRanges(rhs, "operator+()");
 
-	Array<DataType> result(ranges);
+	Array<DataType> result = Array<DataType>::create(ranges);
 	for(unsigned int n = 0; n < data.getSize(); n++)
 		result.data[n] = data[n] - rhs.data[n];
 
@@ -369,7 +440,7 @@ template<typename DataType>
 inline Array<DataType> Array<DataType>::operator*(
 	const DataType &rhs
 ) const{
-	Array<DataType> result(ranges);
+	Array<DataType> result = Array<DataType>::create(ranges);
 	for(unsigned int n = 0; n < data.getSize(); n++)
 		result.data[n] = data[n]*rhs;
 
@@ -380,7 +451,7 @@ template<typename DataType>
 inline Array<DataType> Array<DataType>::operator/(
 	const DataType &rhs
 ) const{
-	Array<DataType> result(ranges);
+	Array<DataType> result = Array<DataType>::create(ranges);
 	for(unsigned int n = 0; n < data.getSize(); n++)
 		result.data[n] = data[n]/rhs;
 
@@ -416,7 +487,7 @@ Array<DataType> Array<DataType>::getSlice(const std::vector<Subindex> &index) co
 		}
 	}
 
-	Array array(newRanges);
+	Array array = Array::create(newRanges);
 
 	fillSlice(array, index, 0, 0, 0);
 

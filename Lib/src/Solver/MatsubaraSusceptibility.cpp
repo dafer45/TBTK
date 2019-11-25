@@ -314,8 +314,10 @@ Property::Susceptibility MatsubaraSusceptibility::calculateSusceptibilityAllBloc
 		crossCorrelationRanges.push_back(numMeshPoints[n]);
 	crossCorrelationRanges.push_back(2*numMatsubaraEnergiesGreensFunction);
 
-	Array<complex<double>> greensFunction0In(crossCorrelationRanges, 0);
-	Array<complex<double>> greensFunction1In(crossCorrelationRanges, 0);
+	Array<complex<double>> greensFunction0In
+		= Array<complex<double>>::create(crossCorrelationRanges, 0);
+	Array<complex<double>> greensFunction1In
+		= Array<complex<double>>::create(crossCorrelationRanges, 0);
 
 	#pragma omp parallel for
 	for(unsigned int meshPoint = 0; meshPoint < mesh.size(); meshPoint++){
