@@ -102,6 +102,16 @@ public:
 		const DataType &fillValue
 	);
 
+	/** Constructs and Array from an std::vector.
+	 *
+	 *  @param vector The std::vector to copy from. */
+	Array(const std::vector<DataType> &vector);
+
+	/** Constructs and Array from an std::vector.
+	 *
+	 *  @param vector The std::vector to copy from. */
+	Array(const std::vector<std::vector<DataType>> &vector);
+
 	/** Create an array with a vector of ranges. Identical to calling the
 	 *  constructor using an std::initializer_list, but using a std::vector
 	 *  instead. Allows for the creation of an Arrays with dynamically
@@ -322,6 +332,56 @@ Array<DataType>::Array(
 
 	for(unsigned int n = 0; n < size; n++)
 		data[n] = fillValue;
+}
+
+template<typename DataType>
+Array<DataType>::Array(const std::vector<DataType> &vector){
+	TBTKAssert(
+		vector.size() != 0,
+		"Array::Array()",
+		"Invalid input.",
+		"Unable to create an Array from an empty vector."
+	);
+
+	ranges.push_back(vector.size());
+	data = CArray<DataType>(ranges[0]);
+	for(unsigned int n = 0; n < ranges[0]; n++)
+		data[n] = vector[n];
+}
+
+template<typename DataType>
+Array<DataType>::Array(const std::vector<std::vector<DataType>> &vector){
+	TBTKAssert(
+		vector.size() != 0,
+		"Array::Array()",
+		"Invalid input. Unable to create an Array from an empty"
+		<< " vector.",
+		""
+	);
+	TBTKAssert(
+		vector[0].size() != 0,
+		"Array::Array()",
+		"Invalid input. Unable to create an Array from a vector with"
+		<< " an empty row.",
+		""
+	);
+	ranges.push_back(vector.size());
+	ranges.push_back(vector[0].size());
+
+	for(unsigned int n = 1; n < vector.size(); n++){
+		TBTKAssert(
+			vector[n].size() == vector[0].size(),
+			"Array::Array()",
+			"Invalid input. vector[" << n << "] has a different"
+			<< " size than vector[0]",
+			""
+		);
+	}
+
+	data = CArray<DataType>(ranges[0]*ranges[1]);
+	for(unsigned int x = 0; x < ranges[0]; x++)
+		for(unsigned int y = 0; y < ranges[1]; y++)
+			data[ranges[1]*x + y] = vector[x][y];
 }
 
 template<typename DataType>

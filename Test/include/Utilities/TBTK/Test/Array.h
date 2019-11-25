@@ -39,6 +39,58 @@ TEST(Array, constructor2){
 	EXPECT_EQ(array.getSize(), 2*3*4);
 }
 
+//TBTKFeature Utilities.Array.construction.4 2019-10-31
+TEST(Array, constructor3){
+	std::vector<unsigned int> vector({2, 3, 4});
+	Array<unsigned int> array(vector);
+
+	const std::vector<unsigned int> &ranges = array.getRanges();
+	EXPECT_EQ(ranges.size(), 1);
+	EXPECT_EQ(ranges[0], 3);
+	for(unsigned int n = 0; n < ranges[0]; n++)
+		EXPECT_EQ(array[{n}], vector[n]);
+
+	EXPECT_EQ(array.getSize(), 3);
+}
+
+//TBTKFeature Utilities.Array.construction.5 2019-10-31
+TEST(Array, constructor4){
+	std::vector<std::vector<unsigned int>> vector(
+		2,
+		std::vector<unsigned int>(3)
+	);
+	for(unsigned int x = 0; x < vector.size(); x++)
+		for(unsigned int y = 0; y < vector[x].size(); y++)
+			vector[x][y] = x*y;
+	Array<unsigned int> array(vector);
+
+	const std::vector<unsigned int> &ranges = array.getRanges();
+	EXPECT_EQ(ranges.size(), 2);
+	EXPECT_EQ(ranges[0], 2);
+	EXPECT_EQ(ranges[1], 3);
+	for(unsigned int x = 0; x < ranges[0]; x++)
+		for(unsigned int y = 0; y < ranges[1]; y++)
+			EXPECT_EQ((array[{x, y}]), vector[x][y]);
+
+	EXPECT_EQ(array.getSize(), 2*3);
+}
+
+//TBTKFeature Utilities.Array.construction.6 2019-10-31
+TEST(Array, constructor5){
+	std::vector<std::vector<unsigned int>> vector(2);
+	vector[0] = std::vector<unsigned int>(3);
+	vector[1] = std::vector<unsigned int>(4);
+
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			Array<unsigned int> array(vector);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
 //TBTKFeature Utilities.Array.create.1 2019-11-25
 TEST(Array, create1){
 	Array<unsigned int> array0({2, 3, 4});
