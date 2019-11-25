@@ -71,19 +71,6 @@ public:
 	/** Plot point. */
 //	void plot(double x, double y, const std::string &arguments);
 
-	/** Plot data. */
-	void plot(
-		const std::vector<double> &x,
-		const std::vector<double> &y,
-		const std::string &arguments = ""
-	);
-
-	/** Plot data. */
-	void plot(
-		const std::vector<double> &y,
-		const std::string &arguments = ""
-	);
-
 	/** Plot density of states. */
 	void plot(
 		const Property::DOS &dos,
@@ -92,18 +79,59 @@ public:
 	);
 
 	/** Plot eigenvalues. */
-//	void plot(const Property::EigenValues &eigenValues);
-
-	/** Plot 2D data. */
-	void plot(
-		const std::vector<std::vector<double>> &data
-	);
+	void plot(const Property::EigenValues &eigenValues);
 
 	/** Plot data. */
 	void plot(
 		const Array<double> &data,
 		const std::string &arguments = ""
 	);
+
+	/** Plot data. */
+	void plot(
+		const std::initializer_list<double> &data,
+		const std::string &arguments = ""
+	){
+		plot(std::vector<double>(data), arguments);
+	}
+
+	/** Plot data. */
+	void plot(
+		const Array<double> &x,
+		const Array<double> &y,
+		const std::string &arguments = ""
+	);
+
+	/** Plot data. */
+	void plot(
+		const std::initializer_list<double> &x,
+		const Array<double> &y,
+		const std::string &arguments = ""
+	){
+		plot(std::vector<double>(x), y, arguments);
+	}
+
+	/** Plot data. */
+	void plot(
+		const Array<double> &x,
+		const std::initializer_list<double> &y,
+		const std::string &arguments = ""
+	){
+		plot(x, std::vector<double>(y), arguments);
+	}
+
+	/** Plot data. */
+	void plot(
+		const std::initializer_list<double> &x,
+		const std::initializer_list<double> &y,
+		const std::string &arguments = ""
+	){
+		plot(
+			std::vector<double>(x),
+			std::vector<double>(y),
+			arguments
+		);
+	}
 
 	/** Plot data with color coded intensity. */
 /*	void plot(
@@ -130,6 +158,22 @@ public:
 
 	/** Save canvas to file. */
 	void save(const std::string &filename) const;
+private:
+	/** Plot data. */
+	void plot1D(
+		const std::vector<double> &y,
+		const std::string &arguments = ""
+	);
+
+	/** Plot data. */
+	void plot1D(
+		const std::vector<double> &x,
+		const std::vector<double> &y,
+		const std::string &arguments = ""
+	);
+
+	/** Plot 2D data. */
+	void plot2D(const std::vector<std::vector<double>> &data);
 };
 
 inline void Plotter::setBoundsX(

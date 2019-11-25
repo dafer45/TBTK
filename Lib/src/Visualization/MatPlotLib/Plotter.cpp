@@ -42,29 +42,6 @@ void Plotter::setSize(unsigned int width, unsigned int height){
 }*/
 
 void Plotter::plot(
-	const vector<double> &x,
-	const vector<double> &y,
-	const string &arguments
-){
-	TBTKAssert(
-		x.size() == y.size(),
-		"Plotter::plot()",
-		"Incompatible 'x' and 'y'. 'x' has size " << x.size()
-		<< " while 'y' has size " << y.size() << ".",
-		""
-	);
-
-	matplotlibcpp::plot(x, y, arguments);
-}
-
-void Plotter::plot(
-	const vector<double> &y,
-	const string &arguments
-){
-	matplotlibcpp::plot(y, arguments);
-}
-
-void Plotter::plot(
 	const Property::DOS &dos,
 	double sigma,
 	unsigned int windowSize
@@ -83,53 +60,12 @@ void Plotter::plot(
 		y = Smooth::gaussian(y, scaledSigma, windowSize);
 	}
 
-	plot(x, y);
+	plot1D(x, y);
 }
 
-/*void Plotter::plot(const Property::EigenValues &eigenValues){
-	vector<double> data;
+void Plotter::plot(const Property::EigenValues &eigenValues){
 	for(unsigned int n = 0; n < eigenValues.getSize(); n++)
-		data.push_back(eigenValues(n));
-
-	plot(
-		data,
-		Decoration(
-			{0, 0, 0},
-			Decoration::LineStyle::Point
-		)
-	);
-}*/
-
-void Plotter::plot(
-	const vector<vector<double>> &data
-){
-	if(data.size() == 0)
-		return;
-	if(data[0].size() == 0)
-		return;
-
-	unsigned int sizeY = data[0].size();
-	for(unsigned int x = 1; x < data.size(); x++){
-		TBTKAssert(
-			data[x].size() == sizeY,
-			"Plotter:plot()",
-			"Incompatible array dimensions. 'data[0]' has "
-				<< sizeY << " elements, while 'data[" << x
-				<< "]' has " << data[x].size() << " elements.",
-			""
-		);
-	}
-
-	vector<vector<double>> x , y;
-	for(unsigned int X = 0; X < data.size(); X++){
-		x.push_back(vector<double>());
-		y.push_back(vector<double>());
-		for(unsigned int Y = 0; Y < data[X].size(); Y++){
-			x[X].push_back(X);
-			y[X].push_back(Y);
-		}
-	}
-	matplotlibcpp::plot_surface(x, y, data);
+		plot1D({eigenValues(n), eigenValues(n)}, "black");
 }
 
 void Plotter::plot(
@@ -143,7 +79,7 @@ void Plotter::plot(
 		vector<double> d;
 		for(unsigned int n = 0; n < ranges[0]; n++)
 			d.push_back(data[{n}]);
-		plot(d, arguments);
+		plot1D(d, arguments);
 
 		break;
 	}
@@ -155,7 +91,7 @@ void Plotter::plot(
 			for(unsigned int n = 0; n < ranges[1]; n++)
 				d[m].push_back(data[{m, n}]);
 		}
-		plot(d);
+		plot2D(d);
 
 		break;
 	}
@@ -165,6 +101,51 @@ void Plotter::plot(
 			"Array size not supported.",
 			"Only arrays with one or two dimensions can be"
 			<< " plotter."
+		);
+	}
+}
+
+void Plotter::plot(
+	const Array<double> &x,
+	const Array<double> &y,
+	const string &arguments
+){
+	const vector<unsigned int> &xRanges = x.getRanges();
+	const vector<unsigned int> &yRanges = y.getRanges();
+	TBTKAssert(
+		xRanges.size() == yRanges.size(),
+		"Plotter::plot()",
+		"Incompatible ranges. 'x' and 'y' must have the same ranges.",
+		""
+	);
+	for(unsigned int n = 0; n < xRanges.size(); n++){
+		TBTKAssert(
+			xRanges[n] == yRanges[n],
+			"Plotter::plot()",
+			"Incompatible ranges. 'x' and 'y' must have the same"
+			<< " ranges.",
+			""
+		);
+	}
+
+	switch(xRanges.size()){
+	case 1:
+	{
+		vector<double> X, Y;
+		for(unsigned int n = 0; n < xRanges[0]; n++){
+			X.push_back(x[{n}]);
+			Y.push_back(y[{n}]);
+		}
+		plot1D(X, Y, arguments);
+
+		break;
+	}
+	default:
+		TBTKExit(
+			"Plotter:plot()",
+			"Array size not supported.",
+			"This function can only be used with one-dimensional"
+			<< " arrays."
 		);
 	}
 }
@@ -285,6 +266,59 @@ void Plotter::plot(
 		);
 	}
 }*/
+
+void Plotter::plot1D(
+	const vector<double> &x,
+	const vector<double> &y,
+	const string &arguments
+){
+	TBTKAssert(
+		x.size() == y.size(),
+		"Plotter::plot1D()",
+		"Incompatible 'x' and 'y'. 'x' has size " << x.size()
+		<< " while 'y' has size " << y.size() << ".",
+		""
+	);
+
+	matplotlibcpp::plot(x, y, arguments);
+}
+
+void Plotter::plot1D(
+	const vector<double> &y,
+	const string &arguments
+){
+	matplotlibcpp::plot(y, arguments);
+}
+
+void Plotter::plot2D(const vector<vector<double>> &data){
+	if(data.size() == 0)
+		return;
+	if(data[0].size() == 0)
+		return;
+
+	unsigned int sizeY = data[0].size();
+	for(unsigned int x = 1; x < data.size(); x++){
+		TBTKAssert(
+			data[x].size() == sizeY,
+			"Plotter:plot2D()",
+			"Incompatible array dimensions. 'data[0]' has "
+				<< sizeY << " elements, while 'data[" << x
+				<< "]' has " << data[x].size() << " elements.",
+			""
+		);
+	}
+
+	vector<vector<double>> x , y;
+	for(unsigned int X = 0; X < data.size(); X++){
+		x.push_back(vector<double>());
+		y.push_back(vector<double>());
+		for(unsigned int Y = 0; Y < data[X].size(); Y++){
+			x[X].push_back(X);
+			y[X].push_back(Y);
+		}
+	}
+	matplotlibcpp::plot_surface(x, y, data);
+}
 
 };	//End of namespace MatPlotLib
 };	//End of namespace Visualization

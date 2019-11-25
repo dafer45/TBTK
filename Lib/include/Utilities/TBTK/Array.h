@@ -90,7 +90,7 @@ public:
 	/** Constructor.
 	 *
 	 *  @param ranges The ranges of the Array. */
-	Array(const std::initializer_list<unsigned int> &ranges);
+	explicit Array(const std::initializer_list<unsigned int> &ranges);
 
 	//TBTKFeature Utilities.Array.construction.3 2019-10-31
 	/** Constructor.
@@ -102,12 +102,12 @@ public:
 		const DataType &fillValue
 	);
 
-	/** Constructs and Array from an std::vector.
+	/** Constructs an Array from an std::vector.
 	 *
 	 *  @param vector The std::vector to copy from. */
 	Array(const std::vector<DataType> &vector);
 
-	/** Constructs and Array from an std::vector.
+	/** Constructs an Array from an std::vector.
 	 *
 	 *  @param vector The std::vector to copy from. */
 	Array(const std::vector<std::vector<DataType>> &vector);
