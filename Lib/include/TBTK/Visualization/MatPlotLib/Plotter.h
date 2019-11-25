@@ -24,6 +24,7 @@
 #define COM_DAFER45_TBTK_VISUALIZATION_MAT_PLOT_LIB_PLOTTER
 
 #include "TBTK/Array.h"
+#include "TBTK/Property/Density.h"
 #include "TBTK/Property/DOS.h"
 #include "TBTK/Property/EigenValues.h"
 #include "TBTK/Streams.h"
@@ -70,6 +71,12 @@ public:
 
 	/** Plot point. */
 //	void plot(double x, double y, const std::string &arguments);
+
+	/** Plot density. */
+	void plot(const Property::Density &density);
+
+	/** Plot density. */
+	void plot(const Property::Density &density, const Index &pattern);
 
 	/** Plot density of states. */
 	void plot(
