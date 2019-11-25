@@ -101,8 +101,7 @@ void Plotter::plot(
 }*/
 
 void Plotter::plot(
-	const vector<vector<double>> &data,
-	const std::string &arguments
+	const vector<vector<double>> &data
 ){
 	if(data.size() == 0)
 		return;
@@ -156,7 +155,7 @@ void Plotter::plot(
 			for(unsigned int n = 0; n < ranges[1]; n++)
 				d[m].push_back(data[{m, n}]);
 		}
-		plot(d, arguments);
+		plot(d);
 
 		break;
 	}

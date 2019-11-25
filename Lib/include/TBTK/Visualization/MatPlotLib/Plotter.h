@@ -96,8 +96,7 @@ public:
 
 	/** Plot 2D data. */
 	void plot(
-		const std::vector<std::vector<double>> &data,
-		const std::string &arguments
+		const std::vector<std::vector<double>> &data
 	);
 
 	/** Plot data. */
