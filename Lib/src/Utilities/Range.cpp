@@ -1,4 +1,4 @@
-/* Copyright 2017 Kristofer Björnson and Andreas Theiler
+/* Copyright 2017 Kristofer Björnson
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
