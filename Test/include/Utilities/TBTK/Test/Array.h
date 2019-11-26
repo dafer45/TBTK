@@ -339,6 +339,51 @@ TEST(Array, operatorDivision0){
 			EXPECT_EQ((product[{i, j}]), (i + 2*j)/3);
 }
 
+//TBTKFeature Utilities.Array.operatorComparison.1 2019-11-26
+TEST(Array, operatorComparison0){
+	Array<unsigned int> array0({2, 3});
+	Array<unsigned int> array1({2, 3});
+	for(unsigned int x = 0; x < 2; x++){
+		for(unsigned int y = 0; y < 3; y++){
+			array0[{x, y}] = x*y;
+			array1[{x, y}] = x*y;
+		}
+	}
+
+	EXPECT_EQ(array0, array1);
+}
+
+//TBTKFeature Utilities.Array.operatorComparison.2 2019-11-26
+TEST(Array, operatorComparison1){
+	Array<unsigned int> array0({2, 3});
+	Array<unsigned int> array1({2});
+
+	EXPECT_FALSE(array0 == array1);
+}
+
+//TBTKFeature Utilities.Array.operatorComparison.3 2019-11-26
+TEST(Array, operatorComparison2){
+	Array<unsigned int> array0({2, 3});
+	Array<unsigned int> array1({2, 2});
+
+	EXPECT_FALSE(array0 == array1);
+}
+
+//TBTKFeature Utilities.Array.operatorComparison.4 2019-11-26
+TEST(Array, operatorComparison3){
+	Array<unsigned int> array0({2, 3});
+	Array<unsigned int> array1({2, 3});
+	for(unsigned int x = 0; x < 2; x++){
+		for(unsigned int y = 0; y < 3; y++){
+			array0[{x, y}] = x*y;
+			array1[{x, y}] = x*y;
+		}
+	}
+	array1[{1,1}] = 100;
+
+	EXPECT_FALSE(array0 == array1);
+}
+
 //TBTKFeature Utilities.Array.getSlice.1 2019-10-31
 TEST(Array, getSlice){
 	Array<unsigned int> array({2, 3, 4});

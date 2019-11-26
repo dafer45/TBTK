@@ -221,6 +221,14 @@ public:
 	 *  @return The quotient between the left and right hand side. */
 	Array operator/(const DataType &rhs) const;
 
+	/** Comparison operator.
+	 *
+	 *  @param rhs The right hand side of the expression.
+	 *
+	 *  @return True if the size and individual entries of the left and
+	 *  right hand sides are equal, otherwise false. */
+	bool operator==(const Array &rhs) const;
+
 	//TBTKFeature Utilities.Array.getSlice.1
 	/** Get a subset of the Array that results from setting one or multiple
 	 *  indices equal to given values.
@@ -508,14 +516,27 @@ inline Array<DataType> Array<DataType>::operator*(
 }
 
 template<typename DataType>
-inline Array<DataType> Array<DataType>::operator/(
-	const DataType &rhs
-) const{
+inline Array<DataType> Array<DataType>::operator/(const DataType &rhs) const{
 	Array<DataType> result = Array<DataType>::create(ranges);
 	for(unsigned int n = 0; n < data.getSize(); n++)
 		result.data[n] = data[n]/rhs;
 
 	return result;
+}
+
+template<typename DataType>
+inline bool Array<DataType>::operator==(const Array<DataType> &rhs) const{
+	if(ranges.size() != rhs.ranges.size())
+		return false;
+	for(unsigned int n = 0; n < ranges.size(); n++)
+		if(ranges[n] != rhs.ranges[n])
+			return false;
+
+	for(unsigned int n = 0; n < getSize(); n++)
+		if(data[n] != rhs.data[n])
+			return false;
+
+	return true;
 }
 
 template<typename DataType>
