@@ -40,6 +40,9 @@ namespace Property{
  *  \snippet output/Property/Density.output Density */
 class Density : public AbstractProperty<double>{
 public:
+	/** Constructs an uninitialized Density. */
+	Density();
+
 	/** Constructs a Density on the Ranges format. [See AbstractProperty
 	 *  for detailed information about the Ranges format.]
 	 *
@@ -154,6 +157,9 @@ public:
 	virtual std::string serialize(Mode mode) const;
 private:
 };
+
+inline Density::Density(){
+}
 
 inline Density& Density::operator+=(const Density &rhs){
 	AbstractProperty::operator+=(rhs);

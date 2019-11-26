@@ -45,6 +45,9 @@ namespace Property{
  *  \snippet output/Property/LDOS.output LDOS */
 class LDOS : public EnergyResolvedProperty<double>{
 public:
+	/** Constructs an uninitialized LDOS. */
+	LDOS();
+
 	/** Constructs LDOS on the Ranges format. [See AbstractProperty for
 	 *  detailed information about the Ranges format.]
 	 *
@@ -184,6 +187,9 @@ public:
 	virtual std::string serialize(Mode mode) const;
 private:
 };
+
+inline LDOS::LDOS(){
+}
 
 inline LDOS& LDOS::operator+=(const LDOS &rhs){
 	EnergyResolvedProperty::operator+=(rhs);

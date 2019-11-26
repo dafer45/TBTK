@@ -62,3 +62,8 @@
   what the correct behavior should be. The current unit tests are testing the
   current behavior, but may need to be updated to reflect the intended
   behavior.
+
+- IndexDescriptor::RangeFormat::ranges has type int* but unsigned int* seems to
+  make more sense. Check whether changing this breaks anything and change if
+  not. Update PropertyConverter::convert() to not have to perform the
+  conversion from ranges to rangesUnsignedInt once this is fixed.

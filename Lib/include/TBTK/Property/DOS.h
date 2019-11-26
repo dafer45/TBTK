@@ -46,6 +46,9 @@ namespace Property{
  *  \snippet output/Property/DOS.output DOS */
 class DOS : public EnergyResolvedProperty<double>{
 public:
+	/** Constructs an uninitialized DOS. */
+	DOS();
+
 	/** Constructs a Density.
 	 *
 	 *  @param lowerBound Lower bound for the energy.
@@ -135,6 +138,9 @@ public:
 	/** Overrides AbstractProperty::serialize(). */
 	virtual std::string serialize(Mode mode) const;
 };
+
+inline DOS::DOS(){
+}
 
 inline DOS& DOS::operator+=(const DOS &rhs){
 	EnergyResolvedProperty::operator+=(rhs);
