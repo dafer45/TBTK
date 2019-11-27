@@ -18,9 +18,11 @@
  *  @author Kristofer Björnson
  */
 
-#include "TBTK/Visualization/MatPlotLib/Plotter.h"
+#include "TBTK/AnnotatedArray.h"
+#include "TBTK/PropertyConverter.h"
 #include "TBTK/Smooth.h"
 #include "TBTK/Streams.h"
+#include "TBTK/Visualization/MatPlotLib/Plotter.h"
 
 #include <sstream>
 
@@ -42,171 +44,11 @@ void Plotter::setSize(unsigned int width, unsigned int height){
 }*/
 
 void Plotter::plot(const Property::Density &density){
-	TBTKAssert(
-		density.getIndexDescriptor().getFormat()
-			== IndexDescriptor::Format::Ranges,
-		"Plotter::plot()",
-		"Invalid format. The density must be on the format"
-		<< " IndexDescriptor::Format::Ranges.",
-		"See the documentation for the PropertyExtractors to see how"
-		<< " to extract the density on this format."
-	);
-
-	const std::vector<int> ranges = density.getRanges();
-	switch(ranges.size()){
-	case 1:
-	{
-		const std::vector<double> &data = density.getData();
-		Array<double> dataArray({(unsigned int)ranges[0]});
-		for(unsigned int x = 0; x < (unsigned int)ranges[0]; x++)
-			dataArray[{x}] = data[x];
-		plot(dataArray);
-		break;
-	}
-	case 2:
-	{
-		const std::vector<double> &data = density.getData();
-		Array<double> dataArray(
-			{(unsigned int)ranges[0], (unsigned int)ranges[1]}
-		);
-		for(unsigned int x = 0; x < (unsigned int)ranges[0]; x++){
-			for(
-				unsigned int y = 0;
-				y < (unsigned int)ranges[1];
-				y++
-			){
-				dataArray[{x, y}] = data[ranges[1]*x + y];
-			}
-		}
-		plot(dataArray);
-		break;
-	}
-	default:
-		TBTKExit(
-			"Plotter::plot()",
-			"Unsupported number of ranges. Only one- and"
-			<< " two-dimensional data supported.",
-			""
-		);
-	}
+	plot(PropertyConverter::convert(density));
 }
 
 void Plotter::plot(const Property::Density &density, const Index &pattern){
-	TBTKAssert(
-		density.getIndexDescriptor().getFormat()
-			== IndexDescriptor::Format::Custom,
-		"Plotter::plot()",
-		"Invalid format. The density must be on the format"
-		<< " IndexDescriptor::Format::Custom.",
-		"See the documentation for the PropertyExtractors to see how"
-		<< " to extract the density on this format."
-	);
-
-	std::vector<unsigned int> wildcardPositions;
-	for(unsigned int n = 0; n < pattern.getSize(); n++)
-		if(pattern[n] == IDX_ALL)
-			wildcardPositions.push_back(n);
-
-	const IndexTree &indexTree
-		= density.getIndexDescriptor().getIndexTree();
-	std::vector<Index> indexList = indexTree.getIndexList(pattern);
-
-	switch(wildcardPositions.size()){
-	case 1:
-	{
-		Subindex minX = indexList[0][wildcardPositions[0]];
-		Subindex maxX = indexList[0][wildcardPositions[0]];
-		for(unsigned int n = 1; n < indexList.size(); n++){
-			Subindex x = indexList[n][wildcardPositions[0]];
-			if(minX > x)
-				minX = x;
-			if(maxX < x)
-				maxX = x;
-		}
-		Array<double> X({(unsigned int)(maxX - minX + 1)});
-		Array<double> Y({(unsigned int)(maxX - minX + 1)}, 0);
-		for(
-			unsigned int n = 0;
-			n < (unsigned int)(maxX - minX + 1);
-			n++
-		){
-			X[{n}] = minX + n;
-		}
-		for(unsigned int n = 0; n < indexList.size(); n++){
-			Subindex x = indexList[n][wildcardPositions[0]];
-			Y[{(unsigned int)(x - minX)}] = density(indexList[n]);
-		}
-
-		plot(X, Y);
-		break;
-	}
-	case 2:
-	{
-		Subindex minX = indexList[0][wildcardPositions[0]];
-		Subindex maxX = indexList[0][wildcardPositions[0]];
-		Subindex minY = indexList[0][wildcardPositions[1]];
-		Subindex maxY = indexList[0][wildcardPositions[1]];
-		for(unsigned int n = 1; n < indexList.size(); n++){
-			Subindex x = indexList[n][wildcardPositions[0]];
-			Subindex y = indexList[n][wildcardPositions[1]];
-			if(minX > x)
-				minX = x;
-			if(maxX < x)
-				maxX = x;
-			if(minY > y)
-				minY = y;
-			if(maxY < y)
-				maxY = y;
-		}
-		Array<double> X({
-			(unsigned int)(maxX - minX + 1),
-			(unsigned int)(maxY - minY + 1)
-		});
-		Array<double> Y({
-			(unsigned int)(maxX - minX + 1),
-			(unsigned int)(maxY - minY + 1)
-		});
-		Array<double> Z(
-			{
-				(unsigned int)(maxX - minX + 1),
-				(unsigned int)(maxY - minY + 1)
-			},
-			0
-		);
-		for(
-			unsigned int x = 0;
-			x < (unsigned int)(maxX - minX + 1);
-			x++
-		){
-			for(
-				unsigned int y = 0;
-				y < (unsigned int)(maxY - minY + 1);
-				y++
-			){
-				X[{x, y}] = minX + x;
-				Y[{x, y}] = minY + y;
-			}
-		}
-		for(unsigned int n = 0; n < indexList.size(); n++){
-			Subindex x = indexList[n][wildcardPositions[0]];
-			Subindex y = indexList[n][wildcardPositions[1]];
-			Z[{(unsigned int)(x - minX), (unsigned int)(y - minY)}]
-				= density(indexList[n]);
-		}
-
-//		plot(X, Y);
-		plot(Z);
-		break;
-	}
-	default:
-		TBTKExit(
-			"Plotter::plot()",
-			"Unsupported number of wildcards. Only one or two"
-			<< " wildcards are supported but found '"
-			<< wildcardPositions.size() << "'.",
-			""
-		);
-	}
+	plot(PropertyConverter::convert(density, pattern));
 }
 
 void Plotter::plot(
@@ -234,6 +76,14 @@ void Plotter::plot(
 void Plotter::plot(const Property::EigenValues &eigenValues){
 	for(unsigned int n = 0; n < eigenValues.getSize(); n++)
 		plot1D({eigenValues(n), eigenValues(n)}, "black");
+}
+
+void Plotter::plot(const Property::LDOS &ldos){
+	plot(PropertyConverter::convert(ldos));
+}
+
+void Plotter::plot(const Property::LDOS &ldos, const Index &pattern){
+	plot(PropertyConverter::convert(ldos, pattern));
 }
 
 void Plotter::plot(

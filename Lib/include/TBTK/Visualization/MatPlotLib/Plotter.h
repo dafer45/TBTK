@@ -27,6 +27,7 @@
 #include "TBTK/Property/Density.h"
 #include "TBTK/Property/DOS.h"
 #include "TBTK/Property/EigenValues.h"
+#include "TBTK/Property/LDOS.h"
 #include "TBTK/Streams.h"
 #include "TBTK/TBTKMacros.h"
 
@@ -87,6 +88,12 @@ public:
 
 	/** Plot eigenvalues. */
 	void plot(const Property::EigenValues &eigenValues);
+
+	/** Plot LDOS. */
+	void plot(const Property::LDOS &ldos);
+
+	/** Plot LDOS. */
+	void plot(const Property::LDOS &ldos, const Index &index);
 
 	/** Plot data. */
 	void plot(
