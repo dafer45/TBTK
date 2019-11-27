@@ -138,7 +138,7 @@ public:
 	 *  @param index Index to get the value for.
 	 *
 	 *  @return The value for the given index. */
-	DataType& operator[](const std::initializer_list<unsigned int> &index);
+	DataType& operator[](const std::vector<unsigned int> &index);
 
 	//TBTKFeature Utilities.Array.operatorArraySubscript.2 2019-10-31
 	/** Array subscript operator.
@@ -147,7 +147,7 @@ public:
 	 *
 	 *  @return The value for the given index. */
 	const DataType& operator[](
-		const std::initializer_list<unsigned int> &index
+		const std::vector<unsigned int> &index
 	) const;
 
 	//TBTKFeature Utilities.Array.operatorArraySubscript.3 2019-10-31
@@ -442,13 +442,13 @@ Array<DataType> Array<DataType>::create(
 
 template<typename DataType>
 inline DataType& Array<DataType>::operator[](
-	const std::initializer_list<unsigned int> &index
+	const std::vector<unsigned int> &index
 ){
 	unsigned int idx = 0;
 	for(unsigned int n = 0; n < index.size(); n++){
 		if(n != 0)
 			idx *= ranges[n];
-		idx += *(index.begin() + n);
+		idx += index[n];
 	}
 
 	return data[idx];
@@ -456,13 +456,13 @@ inline DataType& Array<DataType>::operator[](
 
 template<typename DataType>
 inline const DataType& Array<DataType>::operator[](
-	const std::initializer_list<unsigned int> &index
+	const std::vector<unsigned int> &index
 ) const{
 	unsigned int idx = 0;
 	for(unsigned int n = 0; n < index.size(); n++){
 		if(n != 0)
 			idx *= ranges[n];
-		idx += *(index.begin() + n);
+		idx += index[n];
 	}
 
 	return data[idx];
