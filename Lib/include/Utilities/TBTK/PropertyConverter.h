@@ -34,10 +34,41 @@ class PropertyConverter{
 public:
 	/** Converts an AbstractProperty on the format
 	 *  IndexDescriptor::Format::None or IndexDescriptor::Format::Ranges to
-	 *  an AnnotatedArray. */
+	 *  an AnnotatedArray.
+	 *
+	 *  @param abstractProperty The property to convert. */
 	template<typename DataType>
 	static AnnotatedArray<DataType, Subindex> convert(
 		const Property::AbstractProperty<DataType> &abstractProperty
+	);
+
+	/** Converts an AbstractProperty on the format
+	 *  IndexDescriptor::Format::Custom to an AnnotatedArray. The data for
+	 *  all points matching a given pattern Index will be extracted.
+	 *
+	 *  The dimension of the resulting AnnotatedArray will be equal to the
+	 *  number of wild cards (plus one if the block size is larger than
+	 *  one). The size of a given dimension is given by the difference
+	 *  between the largest and smallest Subindex for the corresponding
+	 *  Subindex position. For example, if the pattern is {_a_, 5, _a_} and
+	 *  the property contains data for {3, 5, 4}, {7, 5, 5}, {4, 5, 9}, the
+	 *  first dimension will range from 0 to 4 (= 7-3) and the second
+	 *  dimension will range from 0 to 6 (= 9-4). The corresponding axes
+	 *  will contain {3, 4, 5, 6, 7} and {4, 5, 6, 7, 8, 9}. If the
+	 *  property has a block size, the last dimension ranges from 0 to
+	 *  blockSize, with the corresponding axis containing
+	 *  {0, ..., blockSize-1}.
+	 *
+	 *  If the @link Index Indices@endlink are not dense, AnnotatedArray
+	 *  elements corresponding to "missing Indices" will be set to zero.
+	 *
+	 *  @param abstractProperty The property to convert.
+	 *  @param pattern Pattern that determines which points to extract the
+	 *  data for. */
+	template<typename DataType>
+	static AnnotatedArray<DataType, Subindex> convert(
+		const Property::AbstractProperty<DataType> &abstractProperty,
+		const Index &pattern
 	);
 };
 
@@ -78,6 +109,113 @@ AnnotatedArray<DataType, Subindex> PropertyConverter::convert(
 		for(unsigned int n = 0; n < ranges.size(); n++)
 			for(unsigned int c = 0; c < (unsigned int)ranges[n]; c++)
 				axes[n].push_back(c);
+
+		return AnnotatedArray<DataType, Subindex>(array, axes);
+	}
+	default:
+		TBTKExit(
+			"PropertyConverter::convert()",
+			"Unsupported format. Only IndexDescriptor::Format::None and"
+			<< " IndexDescriptor::Format::Ranges supported.",
+			""
+		);
+	}
+}
+
+template<typename DataType>
+AnnotatedArray<DataType, Subindex> PropertyConverter::convert(
+	const Property::AbstractProperty<DataType> &abstractProperty,
+	const Index &pattern
+){
+	IndexDescriptor::Format format
+		= abstractProperty.getIndexDescriptor().getFormat();
+
+	switch(format){
+	case IndexDescriptor::Format::Custom:
+	{
+		std::vector<unsigned int> wildcardPositions;
+		for(unsigned int n = 0; n < pattern.getSize(); n++)
+			if(pattern[n] == IDX_ALL)
+				wildcardPositions.push_back(n);
+
+		const IndexTree &indexTree
+			= abstractProperty.getIndexDescriptor().getIndexTree();
+		std::vector<Index> indexList = indexTree.getIndexList(pattern);
+
+		std::vector<Subindex> minSubindices;
+		std::vector<Subindex> maxSubindices;
+		for(unsigned int n = 0; n < wildcardPositions.size(); n++){
+			Subindex min = indexList[0][wildcardPositions[n]];
+			Subindex max = indexList[0][wildcardPositions[n]];
+			for(unsigned int c = 1; c < indexList.size(); c++){
+				Subindex subindex
+					= indexList[c][wildcardPositions[n]];
+				if(min > subindex)
+					min = subindex;
+				if(max < subindex)
+					max = subindex;
+			}
+			minSubindices.push_back(min);
+			maxSubindices.push_back(max);
+		}
+		if(abstractProperty.getBlockSize() > 1){
+			minSubindices.push_back(0);
+			maxSubindices.push_back(
+				abstractProperty.getBlockSize() - 1
+			);
+		}
+
+		std::vector<unsigned int> ranges;
+		for(unsigned int n = 0; n < minSubindices.size(); n++){
+			ranges.push_back(
+				maxSubindices[n] - minSubindices[n] + 1
+			);
+		}
+		Array<DataType> array = Array<DataType>::create(ranges, 0);
+		for(unsigned int n = 0; n < indexList.size(); n++){
+			const Index index = indexList[n];
+			std::vector<unsigned int> arrayIndices;
+			for(unsigned int c = 0; c < wildcardPositions.size(); c++){
+				arrayIndices.push_back(
+					index[wildcardPositions[c]]
+					- minSubindices[c]
+				);
+			}
+			if(abstractProperty.getBlockSize() > 1){
+				for(
+					unsigned int c = 0;
+					c < abstractProperty.getBlockSize();
+					c++
+				){
+					std::vector<
+						unsigned int
+					> blockExtendedArrayIndices
+						= arrayIndices;
+					blockExtendedArrayIndices.push_back(c);
+
+					array[blockExtendedArrayIndices]
+						= abstractProperty(index, c);
+				}
+			}
+			else{
+				array[arrayIndices] = abstractProperty(index);
+			}
+		}
+
+		std::vector<std::vector<Subindex>> axes(ranges.size());
+		for(
+			unsigned int n = 0;
+			n < ranges.size();
+			n++
+		){
+			for(
+				unsigned int c = 0;
+				c < (unsigned int)ranges[n];
+				c++
+			){
+				axes[n].push_back(minSubindices[n] + c);
+			}
+		}
 
 		return AnnotatedArray<DataType, Subindex>(array, axes);
 	}
