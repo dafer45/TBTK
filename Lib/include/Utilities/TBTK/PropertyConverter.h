@@ -16,7 +16,7 @@
 /** @package TBTKcalc
  *  @file PropertyConverter.h
  *  @brief Converts @link Property Properties@endlink to @link AnnotatedArray
- *  AnnotatedArrays@endlin
+ *  AnnotatedArrays@endlink.
  *
  *  @author Kristofer Björnson
  */
@@ -30,6 +30,44 @@
 
 namespace TBTK{
 
+/** @brief Convert @link Property Properties@endlink to @link AnnotatedArray
+ *  AnnotatedArrays@endlink.
+ *
+ *  If the @link Property::AbstractPropert Property@endlink is on the format
+ *  Index::Descriptor::Format::None or IndexDescriptor::Format::Ranges, it can
+ *  be converted to an AnnotatedArray using
+ *  ```cpp
+ *    AnnotatedArray<DataType, Subindex> array
+ *      = PropertyConverter::convert(property);
+ *  ```
+ *  where *DataType* is the data type of the Propertys data elements. If the
+ *  property has a block structure, the last array subindex corresponds to this
+ *  block index. For example, for a Property::EnergyResolvedProperty, the last
+ *  subindex corresponds to energy.
+ *
+ *  Similart to above, if the @link Property::AbstractProperty Property@endlink
+ *  is on the format IndexDescriptor::Format::Custom, it can be converted to an
+ *  AnnotatedArray using
+ *  ```cpp
+ *    AnnotatedArray<DataType, Subindex> array
+ *      = PropertyConverter::convert(property, pattern);
+ *  ```
+ *  Here *pattern* is an Index that will be matched against every Index in the
+ *  *property* to determine whether it should be included in the output or not.
+ *  The resulting AnnotatedArray will have minimal possible ranges to conver
+ *  all included @link Index Indices@endlink. The ranges for the AnnotatedArray
+ *  start from zero, but the axes that can be obtained using
+ *  ```cpp
+ *    const std::vector<std::vector<Subindex>> &axes = array.getAxes();
+ *  ```
+ *  contains information about which Subindex that corresponds to which array
+ *  entry. The @link Subindex Subindices@endlink for the nth dimension is
+ *  contained in axes[n].
+ *
+ *  # Example
+ *  \snippet Utilities/PropertyConverter.cpp PropertyConverter
+ *  ## Output
+ *  \snippet output/Utilities/PropertyConverter.output PropertyConverter */
 class PropertyConverter{
 public:
 	/** Converts an AbstractProperty on the format
