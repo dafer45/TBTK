@@ -30,12 +30,13 @@
 #include "TBTK/Property/LDOS.h"
 #include "TBTK/Streams.h"
 #include "TBTK/TBTKMacros.h"
+#include "TBTK/Visualization/MatPlotLib/Argument.h"
+#include "TBTK/Visualization/MatPlotLib/matplotlibcpp.h"
 
 #include <string>
 #include <tuple>
 #include <vector>
 
-#include "TBTK/Visualization/MatPlotLib/matplotlibcpp.h"
 
 namespace TBTK{
 namespace Visualization{
@@ -74,76 +75,91 @@ public:
 //	void plot(double x, double y, const std::string &arguments);
 
 	/** Plot density. */
-	void plot(const Property::Density &density);
+	void plot(
+		const Property::Density &density,
+		const Argument &argument = ""
+	);
 
 	/** Plot density. */
-	void plot(const Property::Density &density, const Index &pattern);
+	void plot(
+		const Index &pattern,
+		const Property::Density &density,
+		const Argument &argument = ""
+	);
 
 	/** Plot density of states. */
 	void plot(
 		const Property::DOS &dos,
 		double sigma = 0,
-		unsigned int windowSize = 51
+		unsigned int windowSize = 51,
+		const Argument &argument = ""
 	);
 
 	/** Plot eigenvalues. */
-	void plot(const Property::EigenValues &eigenValues);
+	void plot(
+		const Property::EigenValues &eigenValues,
+		const Argument &argument = "black"
+	);
 
 	/** Plot LDOS. */
-	void plot(const Property::LDOS &ldos);
+	void plot(const Property::LDOS &ldos, const Argument &argument = "");
 
 	/** Plot LDOS. */
-	void plot(const Property::LDOS &ldos, const Index &index);
+	void plot(
+		const Index &pattern,
+		const Property::LDOS &ldos,
+		const Argument &argument = ""
+	);
 
 	/** Plot data. */
 	void plot(
 		const Array<double> &data,
-		const std::string &arguments = ""
+		const Argument &argument = ""
 	);
 
 	/** Plot data. */
 	void plot(
 		const std::initializer_list<double> &data,
-		const std::string &arguments = ""
+		const Argument &argument = ""
 	){
-		plot(std::vector<double>(data), arguments);
+		plot(std::vector<double>(data), argument);
 	}
 
 	/** Plot data. */
 	void plot(
 		const Array<double> &x,
 		const Array<double> &y,
-		const std::string &arguments = ""
+		const Argument &argument = ""
 	);
 
 	/** Plot data. */
 	void plot(
 		const std::initializer_list<double> &x,
 		const Array<double> &y,
-		const std::string &arguments = ""
+		const Argument &argument = ""
 	){
-		plot(std::vector<double>(x), y, arguments);
+		plot(std::vector<double>(x), y, argument);
 	}
 
 	/** Plot data. */
 	void plot(
 		const Array<double> &x,
 		const std::initializer_list<double> &y,
-		const std::string &arguments = ""
+		const Argument &argument = ""
 	){
-		plot(x, std::vector<double>(y), arguments);
+		plot(x, std::vector<double>(y), argument);
 	}
 
 	/** Plot data. */
 	void plot(
 		const std::initializer_list<double> &x,
 		const std::initializer_list<double> &y,
-		const std::string &arguments = ""
+		const Argument &argument = ""
 	){
 		plot(
 			std::vector<double>(x),
 			std::vector<double>(y),
-			arguments
+			argument
 		);
 	}
 
@@ -176,18 +192,21 @@ private:
 	/** Plot data. */
 	void plot1D(
 		const std::vector<double> &y,
-		const std::string &arguments = ""
+		const Argument &argument = ""
 	);
 
 	/** Plot data. */
 	void plot1D(
 		const std::vector<double> &x,
 		const std::vector<double> &y,
-		const std::string &arguments = ""
+		const Argument &argument = ""
 	);
 
 	/** Plot 2D data. */
-	void plot2D(const std::vector<std::vector<double>> &data);
+	void plot2D(
+		const std::vector<std::vector<double>> &data,
+		const Argument &argument = ""
+	);
 };
 
 inline void Plotter::setBoundsX(

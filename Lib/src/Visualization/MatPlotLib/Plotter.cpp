@@ -43,18 +43,23 @@ void Plotter::setSize(unsigned int width, unsigned int height){
 ){
 }*/
 
-void Plotter::plot(const Property::Density &density){
-	plot(PropertyConverter::convert(density));
+void Plotter::plot(const Property::Density &density, const Argument &argument){
+	plot(PropertyConverter::convert(density), argument);
 }
 
-void Plotter::plot(const Property::Density &density, const Index &pattern){
-	plot(PropertyConverter::convert(density, pattern));
+void Plotter::plot(
+	const Index &pattern,
+	const Property::Density &density,
+	const Argument &argument
+){
+	plot(PropertyConverter::convert(density, pattern), argument);
 }
 
 void Plotter::plot(
 	const Property::DOS &dos,
 	double sigma,
-	unsigned int windowSize
+	unsigned int windowSize,
+	const Argument &argument
 ){
 	vector<double> y;
 	vector<double> x;
@@ -70,25 +75,32 @@ void Plotter::plot(
 		y = Smooth::gaussian(y, scaledSigma, windowSize);
 	}
 
-	plot1D(x, y);
+	plot1D(x, y, argument);
 }
 
-void Plotter::plot(const Property::EigenValues &eigenValues){
+void Plotter::plot(
+	const Property::EigenValues &eigenValues,
+	const Argument &argument
+){
 	for(unsigned int n = 0; n < eigenValues.getSize(); n++)
-		plot1D({eigenValues(n), eigenValues(n)}, "black");
+		plot1D({eigenValues(n), eigenValues(n)}, argument);
 }
 
-void Plotter::plot(const Property::LDOS &ldos){
-	plot(PropertyConverter::convert(ldos));
+void Plotter::plot(const Property::LDOS &ldos, const Argument &argument){
+	plot(PropertyConverter::convert(ldos), argument);
 }
 
-void Plotter::plot(const Property::LDOS &ldos, const Index &pattern){
-	plot(PropertyConverter::convert(ldos, pattern));
+void Plotter::plot(
+	const Index &pattern,
+	const Property::LDOS &ldos,
+	const Argument &argument
+){
+	plot(PropertyConverter::convert(ldos, pattern), argument);
 }
 
 void Plotter::plot(
 	const Array<double> &data,
-	const string &arguments
+	const Argument &argument
 ){
 	const vector<unsigned int> &ranges = data.getRanges();
 	switch(ranges.size()){
@@ -97,7 +109,7 @@ void Plotter::plot(
 		vector<double> d;
 		for(unsigned int n = 0; n < ranges[0]; n++)
 			d.push_back(data[{n}]);
-		plot1D(d, arguments);
+		plot1D(d, argument);
 
 		break;
 	}
@@ -109,7 +121,7 @@ void Plotter::plot(
 			for(unsigned int n = 0; n < ranges[1]; n++)
 				d[m].push_back(data[{m, n}]);
 		}
-		plot2D(d);
+		plot2D(d, argument);
 
 		break;
 	}
@@ -126,7 +138,7 @@ void Plotter::plot(
 void Plotter::plot(
 	const Array<double> &x,
 	const Array<double> &y,
-	const string &arguments
+	const Argument &argument
 ){
 	const vector<unsigned int> &xRanges = x.getRanges();
 	const vector<unsigned int> &yRanges = y.getRanges();
@@ -154,7 +166,7 @@ void Plotter::plot(
 			X.push_back(x[{n}]);
 			Y.push_back(y[{n}]);
 		}
-		plot1D(X, Y, arguments);
+		plot1D(X, Y, argument);
 
 		break;
 	}
@@ -288,7 +300,7 @@ void Plotter::plot(
 void Plotter::plot1D(
 	const vector<double> &x,
 	const vector<double> &y,
-	const string &arguments
+	const Argument &argument
 ){
 	TBTKAssert(
 		x.size() == y.size(),
@@ -298,17 +310,26 @@ void Plotter::plot1D(
 		""
 	);
 
-	matplotlibcpp::plot(x, y, arguments);
+	if(argument.getArgumentMap().size() == 0)
+		matplotlibcpp::plot(x, y, argument.getArgumentString());
+	else
+		matplotlibcpp::plot(x, y, argument.getArgumentMap());
 }
 
 void Plotter::plot1D(
 	const vector<double> &y,
-	const string &arguments
+	const Argument &argument
 ){
-	matplotlibcpp::plot(y, arguments);
+	if(argument.getArgumentMap().size() == 0)
+		matplotlibcpp::plot(y, argument.getArgumentString());
+	else
+		matplotlibcpp::plot(y, argument.getArgumentMap());
 }
 
-void Plotter::plot2D(const vector<vector<double>> &data){
+void Plotter::plot2D(
+	const vector<vector<double>> &data,
+	const Argument &argument
+){
 	if(data.size() == 0)
 		return;
 	if(data[0].size() == 0)
@@ -335,7 +356,8 @@ void Plotter::plot2D(const vector<vector<double>> &data){
 			y[X].push_back(Y);
 		}
 	}
-	matplotlibcpp::plot_surface(x, y, data);
+
+	matplotlibcpp::plot_surface(x, y, data, argument.getArgumentMap());
 }
 
 };	//End of namespace MatPlotLib
