@@ -129,6 +129,10 @@ struct Interpreter {
 	PyObject *s_python_function_suptitle;
 	PyObject *s_python_function_bar;
 	PyObject *s_python_function_subplots_adjust;
+	//<Added>
+	PyObject *s_python_function_gcf;
+	PyObject *s_python_function_gca;
+	//</Added>
 
 	static Interpreter& get();
 

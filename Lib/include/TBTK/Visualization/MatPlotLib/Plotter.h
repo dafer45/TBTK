@@ -177,6 +177,9 @@ public:
 		const std::string &arguments
 	);*/
 
+	/** Set rotation angels. */
+	void setRotation(int elevation, int azimuthal);
+
 	/** Set whether ot not data is plotted on top of old data. */
 //	void setHold(bool hold);
 
@@ -264,6 +267,13 @@ inline void Plotter::setLabelX(const std::string &labelX){
 
 inline void Plotter::setLabelY(const std::string &labelY){
 	matplotlibcpp::ylabel(labelY);
+}
+
+inline void Plotter::setRotation(int elevation, int azimuthal){
+	matplotlibcpp::view_init({
+		{"elev", std::to_string(elevation)},
+		{"azim", std::to_string(azimuthal)}
+	});
 }
 
 /*inline void Plotter::setHold(bool hold){

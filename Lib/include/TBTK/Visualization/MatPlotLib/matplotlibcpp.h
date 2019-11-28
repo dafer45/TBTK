@@ -304,6 +304,37 @@ void plot_surface(const std::vector<::std::vector<Numeric>> &x,
   Py_DECREF(kwargs);
   if (res) Py_DECREF(res);
 }
+
+//template <typename Numeric>
+inline void view_init(
+  const std::map<std::string, std::string> &keywords =
+    std::map<std::string, std::string>())
+{
+  PyObject *axis = PyObject_CallObject(
+    detail::Interpreter::get().s_python_function_gca,
+    detail::Interpreter::get().s_python_empty_tuple
+  );
+
+  PyObject *view_init_kwargs = PyDict_New();
+  std::string elev = keywords.at("elev");
+  std::string azim = keywords.at("azim");
+  PyDict_SetItemString(view_init_kwargs, "elev", PyInt_FromString((char*)elev.c_str(), nullptr, 0));
+  PyDict_SetItemString(view_init_kwargs, "azim", PyInt_FromString((char*)azim.c_str(), nullptr, 0));
+
+  PyObject *view_init = PyObject_GetAttrString(axis, "view_init");
+  if (!view_init) throw std::runtime_error("No view_init");
+  Py_INCREF(view_init);
+  PyObject *res = PyObject_Call(
+    view_init,
+    detail::Interpreter::get().s_python_empty_tuple,
+    view_init_kwargs
+  );
+  if (!res) throw std::runtime_error("failed view_init");
+  Py_DECREF(view_init);
+  if (res) Py_DECREF(res);
+
+  Py_DECREF(axis);
+}
 #endif // WITHOUT_NUMPY
 
 

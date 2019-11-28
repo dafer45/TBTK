@@ -164,6 +164,10 @@ Interpreter::Interpreter() {
 	s_python_function_suptitle = safe_import(pymod, "suptitle");
 	s_python_function_bar = safe_import(pymod,"bar");
 	s_python_function_subplots_adjust = safe_import(pymod,"subplots_adjust");
+	//<Added>
+	s_python_function_gcf = safe_import(pymod, "gcf");
+	s_python_function_gca = safe_import(pymod, "gca");
+	//</Added>
 #ifndef WITHOUT_NUMPY
 	s_python_function_imshow = safe_import(pymod, "imshow");
 #endif
