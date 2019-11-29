@@ -74,6 +74,9 @@ public:
 	/** Set y-label. */
 	void setLabelY(const std::string &labelY);
 
+	/** Set z-label. */
+	void setLabelZ(const std::string &labelZ);
+
 	/** Plot point. */
 //	void plot(double x, double y, const std::string &arguments);
 
@@ -217,6 +220,18 @@ private:
 	/** Azimuthal angle for 3D plots. */
 	int azimuthal;
 
+	/** Title. */
+	std::string title;
+
+	/** x-label. */
+	std::string labelX;
+
+	/** y-label. */
+	std::string labelY;
+
+	/** z-label. */
+	std::string labelZ;
+
 	/** Plot data. */
 	void plot1D(
 		const std::vector<double> &y,
@@ -294,11 +309,17 @@ inline void Plotter::setAutoScale(bool autoScale){
 }*/
 
 inline void Plotter::setLabelX(const std::string &labelX){
+	this->labelX = labelX;
 	matplotlibcpp::xlabel(labelX);
 }
 
 inline void Plotter::setLabelY(const std::string &labelY){
+	this->labelY = labelY;
 	matplotlibcpp::ylabel(labelY);
+}
+
+inline void Plotter::setLabelZ(const std::string &labelZ){
+	this->labelZ = labelZ;
 }
 
 inline void Plotter::setPlotMethod3D(const std::string &plotMethod3D){

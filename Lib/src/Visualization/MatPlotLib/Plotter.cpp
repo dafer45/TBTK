@@ -314,6 +314,8 @@ void Plotter::plot1D(
 		matplotlibcpp::plot(x, y, argument.getArgumentString());
 	else
 		matplotlibcpp::plot(x, y, argument.getArgumentMap());
+	matplotlibcpp::xlabel(labelX);
+	matplotlibcpp::ylabel(labelY);
 
 	currentPlotType = CurrentPlotType::Plot1D;
 }
@@ -326,6 +328,8 @@ void Plotter::plot1D(
 		matplotlibcpp::plot(y, argument.getArgumentString());
 	else
 		matplotlibcpp::plot(y, argument.getArgumentMap());
+	matplotlibcpp::xlabel(labelX);
+	matplotlibcpp::ylabel(labelY);
 
 	currentPlotType = CurrentPlotType::Plot1D;
 }
@@ -381,6 +385,9 @@ void Plotter::plot2D(
 			"This should never happen, contact the developer."
 		);
 	}
+
+	matplotlibcpp::xlabel(labelX);
+	matplotlibcpp::ylabel(labelY);
 }
 
 };	//End of namespace MatPlotLib
