@@ -44,6 +44,9 @@ namespace MatPlotLib{
 
 class Plotter{
 public:
+	/** Default constructor. */
+	Plotter();
+
 	/** Set size. */
 	void setSize(unsigned int width, unsigned int height);
 
@@ -192,6 +195,18 @@ public:
 	/** Save canvas to file. */
 	void save(const std::string &filename) const;
 private:
+	/** Enum class for keeping track of the current type of plot. */
+	enum class CurrentPlotType{None, Plot1D, PlotSurface};
+
+	/** Current plot type. */
+	CurrentPlotType currentPlotType;
+
+	/** Elevation angle for 3D plots. */
+	int elevation;
+
+	/** Azimuthal angle for 3D plots. */
+	int azimuthal;
+
 	/** Plot data. */
 	void plot1D(
 		const std::vector<double> &y,
@@ -211,6 +226,12 @@ private:
 		const Argument &argument = ""
 	);
 };
+
+inline Plotter::Plotter(){
+	currentPlotType = CurrentPlotType::None;
+	elevation = 30;
+	azimuthal = -60;
+}
 
 inline void Plotter::setBoundsX(
 	double minX,
@@ -270,10 +291,17 @@ inline void Plotter::setLabelY(const std::string &labelY){
 }
 
 inline void Plotter::setRotation(int elevation, int azimuthal){
-	matplotlibcpp::view_init({
-		{"elev", std::to_string(elevation)},
-		{"azim", std::to_string(azimuthal)}
-	});
+	this->elevation = elevation;
+	this->azimuthal = azimuthal;
+	switch(currentPlotType){
+	case CurrentPlotType::PlotSurface:
+		matplotlibcpp::view_init({
+			{"elev", std::to_string(elevation)},
+			{"azim", std::to_string(azimuthal)}
+		});
+	default:
+		break;
+	}
 }
 
 /*inline void Plotter::setHold(bool hold){

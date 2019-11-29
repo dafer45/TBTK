@@ -314,6 +314,8 @@ void Plotter::plot1D(
 		matplotlibcpp::plot(x, y, argument.getArgumentString());
 	else
 		matplotlibcpp::plot(x, y, argument.getArgumentMap());
+
+	currentPlotType = CurrentPlotType::Plot1D;
 }
 
 void Plotter::plot1D(
@@ -324,6 +326,8 @@ void Plotter::plot1D(
 		matplotlibcpp::plot(y, argument.getArgumentString());
 	else
 		matplotlibcpp::plot(y, argument.getArgumentMap());
+
+	currentPlotType = CurrentPlotType::Plot1D;
 }
 
 void Plotter::plot2D(
@@ -358,6 +362,12 @@ void Plotter::plot2D(
 	}
 
 	matplotlibcpp::plot_surface(x, y, data, argument.getArgumentMap());
+	matplotlibcpp::view_init({
+		{"elev", std::to_string(elevation)},
+		{"azim", std::to_string(azimuthal)},
+	});
+
+	currentPlotType = CurrentPlotType::PlotSurface;
 }
 
 };	//End of namespace MatPlotLib
