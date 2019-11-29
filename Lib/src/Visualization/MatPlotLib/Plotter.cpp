@@ -351,7 +351,7 @@ void Plotter::plot2D(
 		);
 	}
 
-	vector<vector<double>> x , y;
+	vector<vector<double>> x, y;
 	for(unsigned int X = 0; X < data.size(); X++){
 		x.push_back(vector<double>());
 		y.push_back(vector<double>());
@@ -361,13 +361,26 @@ void Plotter::plot2D(
 		}
 	}
 
-	matplotlibcpp::plot_surface(x, y, data, argument.getArgumentMap());
-	matplotlibcpp::view_init({
-		{"elev", std::to_string(elevation)},
-		{"azim", std::to_string(azimuthal)},
-	});
-
-	currentPlotType = CurrentPlotType::PlotSurface;
+	switch(plotMethod3D){
+	case PlotMethod3D::PlotSurface:
+		matplotlibcpp::plot_surface(x, y, data, argument.getArgumentMap());
+		matplotlibcpp::view_init({
+			{"elev", std::to_string(elevation)},
+			{"azim", std::to_string(azimuthal)},
+		});
+		currentPlotType = CurrentPlotType::PlotSurface;
+		break;
+	case PlotMethod3D::Contourf:
+		matplotlibcpp::contourf(x, y, data, argument.getArgumentMap());
+		currentPlotType = CurrentPlotType::Contourf;
+		break;
+	default:
+		TBTKExit(
+			"Plotter::plot2D()",
+			"Unkown plot method.",
+			"This should never happen, contact the developer."
+		);
+	}
 }
 
 };	//End of namespace MatPlotLib

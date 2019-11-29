@@ -180,6 +180,9 @@ public:
 		const std::string &arguments
 	);*/
 
+	/** Set plot method to use for 3D data. */
+	void setPlotMethod3D(const std::string &plotMethod3D);
+
 	/** Set rotation angels. */
 	void setRotation(int elevation, int azimuthal);
 
@@ -196,10 +199,17 @@ public:
 	void save(const std::string &filename) const;
 private:
 	/** Enum class for keeping track of the current type of plot. */
-	enum class CurrentPlotType{None, Plot1D, PlotSurface};
+	enum class CurrentPlotType{None, Plot1D, PlotSurface, Contourf};
 
 	/** Current plot type. */
 	CurrentPlotType currentPlotType;
+
+	/** Enum class for keeping track of the plot method to use for 3D data.
+	 */
+	enum class PlotMethod3D{PlotSurface, Contourf};
+
+	/** The plot method to use for 3D data. */
+	PlotMethod3D plotMethod3D;
 
 	/** Elevation angle for 3D plots. */
 	int elevation;
@@ -229,6 +239,7 @@ private:
 
 inline Plotter::Plotter(){
 	currentPlotType = CurrentPlotType::None;
+	plotMethod3D = PlotMethod3D::PlotSurface;
 	elevation = 30;
 	azimuthal = -60;
 }
@@ -288,6 +299,22 @@ inline void Plotter::setLabelX(const std::string &labelX){
 
 inline void Plotter::setLabelY(const std::string &labelY){
 	matplotlibcpp::ylabel(labelY);
+}
+
+inline void Plotter::setPlotMethod3D(const std::string &plotMethod3D){
+	if(plotMethod3D.compare("plot_surface") == 0){
+		this->plotMethod3D = PlotMethod3D::PlotSurface;
+	}
+	else if(plotMethod3D.compare("contourf") == 0){
+		this->plotMethod3D = PlotMethod3D::Contourf;
+	}
+	else{
+		TBTKExit(
+			"Plotter::setPlotMethod3D()",
+			"Unknown plot method.",
+			"Must be 'plot_surface' or 'contourf'."
+		);
+	}
 }
 
 inline void Plotter::setRotation(int elevation, int azimuthal){
