@@ -314,8 +314,7 @@ void Plotter::plot1D(
 		matplotlibcpp::plot(x, y, argument.getArgumentString());
 	else
 		matplotlibcpp::plot(x, y, argument.getArgumentMap());
-	matplotlibcpp::xlabel(labelX);
-	matplotlibcpp::ylabel(labelY);
+	plotParameters.flush();
 
 	currentPlotType = CurrentPlotType::Plot1D;
 }
@@ -328,8 +327,7 @@ void Plotter::plot1D(
 		matplotlibcpp::plot(y, argument.getArgumentString());
 	else
 		matplotlibcpp::plot(y, argument.getArgumentMap());
-	matplotlibcpp::xlabel(labelX);
-	matplotlibcpp::ylabel(labelY);
+	plotParameters.flush();
 
 	currentPlotType = CurrentPlotType::Plot1D;
 }
@@ -368,14 +366,12 @@ void Plotter::plot2D(
 	switch(plotMethod3D){
 	case PlotMethod3D::PlotSurface:
 		matplotlibcpp::plot_surface(x, y, data, argument.getArgumentMap());
-		matplotlibcpp::view_init({
-			{"elev", std::to_string(elevation)},
-			{"azim", std::to_string(azimuthal)},
-		});
+		plotSurfaceParameters.flush();
 		currentPlotType = CurrentPlotType::PlotSurface;
 		break;
 	case PlotMethod3D::Contourf:
 		matplotlibcpp::contourf(x, y, data, argument.getArgumentMap());
+		contourfParameters.flush();
 		currentPlotType = CurrentPlotType::Contourf;
 		break;
 	default:
@@ -385,9 +381,6 @@ void Plotter::plot2D(
 			"This should never happen, contact the developer."
 		);
 	}
-
-	matplotlibcpp::xlabel(labelX);
-	matplotlibcpp::ylabel(labelY);
 }
 
 };	//End of namespace MatPlotLib

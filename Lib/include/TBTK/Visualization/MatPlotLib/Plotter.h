@@ -31,7 +31,10 @@
 #include "TBTK/Streams.h"
 #include "TBTK/TBTKMacros.h"
 #include "TBTK/Visualization/MatPlotLib/Argument.h"
+#include "TBTK/Visualization/MatPlotLib/ContourfParameters.h"
 #include "TBTK/Visualization/MatPlotLib/matplotlibcpp.h"
+#include "TBTK/Visualization/MatPlotLib/PlotParameters.h"
+#include "TBTK/Visualization/MatPlotLib/PlotSurfaceParameters.h"
 
 #include <string>
 #include <tuple>
@@ -67,6 +70,9 @@ public:
 
 	/** Set auto scale. */
 //	void setAutoScale(bool autoScale);
+
+	/** Set title. */
+	void setTitle(const std::string &title);
 
 	/** Set x-label. */
 	void setLabelX(const std::string &labelX);
@@ -214,23 +220,14 @@ private:
 	/** The plot method to use for 3D data. */
 	PlotMethod3D plotMethod3D;
 
-	/** Elevation angle for 3D plots. */
-	int elevation;
+	/** Parameters for plots using plot. */
+	PlotParameters plotParameters;
 
-	/** Azimuthal angle for 3D plots. */
-	int azimuthal;
+	/** Parameters for plots using plot_surface. */
+	PlotSurfaceParameters plotSurfaceParameters;
 
-	/** Title. */
-	std::string title;
-
-	/** x-label. */
-	std::string labelX;
-
-	/** y-label. */
-	std::string labelY;
-
-	/** z-label. */
-	std::string labelZ;
+	/** Parameters for plots using contourf. */
+	ContourfParameters contourfParameters;
 
 	/** Plot data. */
 	void plot1D(
@@ -255,8 +252,6 @@ private:
 inline Plotter::Plotter(){
 	currentPlotType = CurrentPlotType::None;
 	plotMethod3D = PlotMethod3D::PlotSurface;
-	elevation = 30;
-	azimuthal = -60;
 }
 
 inline void Plotter::setBoundsX(
@@ -308,18 +303,29 @@ inline void Plotter::setAutoScale(bool autoScale){
 	setAutoScaleY(autoScale);
 }*/
 
+inline void Plotter::setTitle(const std::string &title){
+	plotParameters.setTitle(title);
+	plotSurfaceParameters.setTitle(title);
+	contourfParameters.setTitle(title);
+	matplotlibcpp::title(title);
+}
+
 inline void Plotter::setLabelX(const std::string &labelX){
-	this->labelX = labelX;
+	plotParameters.setLabelX(labelX);
+	plotSurfaceParameters.setLabelX(labelX);
+	contourfParameters.setLabelX(labelX);
 	matplotlibcpp::xlabel(labelX);
 }
 
 inline void Plotter::setLabelY(const std::string &labelY){
-	this->labelY = labelY;
+	plotParameters.setLabelY(labelY);
+	plotSurfaceParameters.setLabelY(labelY);
+	contourfParameters.setLabelY(labelY);
 	matplotlibcpp::ylabel(labelY);
 }
 
 inline void Plotter::setLabelZ(const std::string &labelZ){
-	this->labelZ = labelZ;
+	plotSurfaceParameters.setLabelZ(labelZ);
 }
 
 inline void Plotter::setPlotMethod3D(const std::string &plotMethod3D){
@@ -339,7 +345,15 @@ inline void Plotter::setPlotMethod3D(const std::string &plotMethod3D){
 }
 
 inline void Plotter::setRotation(int elevation, int azimuthal){
-	this->elevation = elevation;
+	plotSurfaceParameters.setRotation(elevation, azimuthal);
+	switch(currentPlotType){
+	case CurrentPlotType::PlotSurface:
+		plotSurfaceParameters.flush();
+		break;
+	default:
+		break;
+	}
+/*	this->elevation = elevation;
 	this->azimuthal = azimuthal;
 	switch(currentPlotType){
 	case CurrentPlotType::PlotSurface:
@@ -349,7 +363,7 @@ inline void Plotter::setRotation(int elevation, int azimuthal){
 		});
 	default:
 		break;
-	}
+	}*/
 }
 
 /*inline void Plotter::setHold(bool hold){
