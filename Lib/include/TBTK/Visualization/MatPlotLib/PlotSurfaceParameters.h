@@ -39,22 +39,25 @@ public:
 	PlotSurfaceParameters();
 
 	/** Set title. */
-	void setTitle(const std::string &title);
+	void setTitle(const std::string &title, bool overwrite = true);
 
 	/** Set x-label. */
-	void setLabelX(const std::string &labelX);
+	void setLabelX(const std::string &labelX, bool overwrite = true);
 
 	/** Set y-label. */
-	void setLabelY(const std::string &labelY);
+	void setLabelY(const std::string &labelY, bool overwrite = true);
 
 	/** Set z-label. */
-	void setLabelZ(const std::string &labelZ);
+	void setLabelZ(const std::string &labelZ, bool overwrite = true);
 
 	/** Set rotation. */
-	void setRotation(int elevation, int azimuthal);
+	void setRotation(int elevation, int azimuthal, bool overwrite = true);
 
 	/** Flush parameters to matplotlib. */
 	void flush() const;
+
+	/** Clear parameters. */
+	void clear();
 private:
 	std::pair<bool, std::string> title;
 	std::pair<bool, std::string> labelX;
@@ -75,25 +78,47 @@ inline PlotSurfaceParameters::PlotSurfaceParameters(
 {
 }
 
-inline void PlotSurfaceParameters::setTitle(const std::string &title){
-	this->title = {true, title};
+inline void PlotSurfaceParameters::setTitle(
+	const std::string &title,
+	bool overwrite
+){
+	if(overwrite || !this->title.first)
+		this->title = {true, title};
 }
 
-inline void PlotSurfaceParameters::setLabelX(const std::string &labelX){
-	this->labelX = {true, labelX};
+inline void PlotSurfaceParameters::setLabelX(
+	const std::string &labelX,
+	bool overwrite
+){
+	if(overwrite || !this->labelX.first)
+		this->labelX = {true, labelX};
 }
 
-inline void PlotSurfaceParameters::setLabelY(const std::string &labelY){
-	this->labelY = {true, labelY};
+inline void PlotSurfaceParameters::setLabelY(
+	const std::string &labelY,
+	bool overwrite
+){
+	if(overwrite || !this->labelY.first)
+		this->labelY = {true, labelY};
 }
 
-inline void PlotSurfaceParameters::setLabelZ(const std::string &labelZ){
-	this->labelZ = {true, labelZ};
+inline void PlotSurfaceParameters::setLabelZ(
+	const std::string &labelZ,
+	bool overwrite
+){
+	if(overwrite || !this->labelZ.first)
+		this->labelZ = {true, labelZ};
 }
 
-inline void PlotSurfaceParameters::setRotation(int elevation, int azimuthal){
-	this->elevation = {true, std::to_string(elevation)};
-	this->azimuthal = {true, std::to_string(azimuthal)};
+inline void PlotSurfaceParameters::setRotation(
+	int elevation,
+	int azimuthal,
+	bool overwrite
+){
+	if(overwrite || !this->elevation.first){
+		this->elevation = {true, std::to_string(elevation)};
+		this->azimuthal = {true, std::to_string(azimuthal)};
+	}
 }
 
 inline void PlotSurfaceParameters::flush() const{
@@ -109,6 +134,15 @@ inline void PlotSurfaceParameters::flush() const{
 			{"azim", azimuthal.second}
 		});
 	}
+}
+
+inline void PlotSurfaceParameters::clear(){
+	title = {false, ""};
+	labelX = {false, ""};
+	labelY = {false, ""};
+	labelZ = {false, ""};
+	elevation = {false, ""};
+	azimuthal = {false, ""};
 }
 
 };	//End namespace MatPlotLib

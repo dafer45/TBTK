@@ -39,16 +39,19 @@ public:
 	ContourfParameters();
 
 	/** Set title. */
-	void setTitle(const std::string &title);
+	void setTitle(const std::string &title, bool overwrite = true);
 
 	/** Set x-label. */
-	void setLabelX(const std::string &labelX);
+	void setLabelX(const std::string &labelX, bool overwrite = true);
 
 	/** Set y-label. */
-	void setLabelY(const std::string &labelY);
+	void setLabelY(const std::string &labelY, bool overwrite = true);
 
 	/** Flush parameters to matplotlib. */
 	void flush() const;
+
+	/** Clear parameters. */
+	void clear();
 private:
 	std::pair<bool, std::string> title;
 	std::pair<bool, std::string> labelX;
@@ -63,16 +66,28 @@ inline ContourfParameters::ContourfParameters(
 {
 }
 
-inline void ContourfParameters::setTitle(const std::string &title){
-	this->title = {true, title};
+inline void ContourfParameters::setTitle(
+	const std::string &title,
+	bool overwrite
+){
+	if(overwrite || !this->title.first)
+		this->title = {true, title};
 }
 
-inline void ContourfParameters::setLabelX(const std::string &labelX){
-	this->labelX = {true, labelX};
+inline void ContourfParameters::setLabelX(
+	const std::string &labelX,
+	bool overwrite
+){
+	if(overwrite || !this->labelX.first)
+		this->labelX = {true, labelX};
 }
 
-inline void ContourfParameters::setLabelY(const std::string &labelY){
-	this->labelY = {true, labelY};
+inline void ContourfParameters::setLabelY(
+	const std::string &labelY,
+	bool overwrite
+){
+	if(overwrite || !this->labelY.first)
+		this->labelY = {true, labelY};
 }
 
 inline void ContourfParameters::flush() const{
@@ -82,6 +97,12 @@ inline void ContourfParameters::flush() const{
 		matplotlibcpp::xlabel(labelX.second);
 	if(labelY.first)
 		matplotlibcpp::ylabel(labelY.second);
+}
+
+inline void ContourfParameters::clear(){
+	title = {false, ""};
+	labelX = {false, ""};
+	labelY = {false, ""};
 }
 
 };	//End namespace MatPlotLib

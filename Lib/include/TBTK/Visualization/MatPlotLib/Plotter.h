@@ -72,16 +72,16 @@ public:
 //	void setAutoScale(bool autoScale);
 
 	/** Set title. */
-	void setTitle(const std::string &title);
+	void setTitle(const std::string &title, bool overwrite = true);
 
 	/** Set x-label. */
-	void setLabelX(const std::string &labelX);
+	void setLabelX(const std::string &labelX, bool overwrite = true);
 
 	/** Set y-label. */
-	void setLabelY(const std::string &labelY);
+	void setLabelY(const std::string &labelY, bool overwrite = true);
 
 	/** Set z-label. */
-	void setLabelZ(const std::string &labelZ);
+	void setLabelZ(const std::string &labelZ, bool overwrite = true);
 
 	/** Plot point. */
 //	void plot(double x, double y, const std::string &arguments);
@@ -193,7 +193,7 @@ public:
 	void setPlotMethod3D(const std::string &plotMethod3D);
 
 	/** Set rotation angels. */
-	void setRotation(int elevation, int azimuthal);
+	void setRotation(int elevation, int azimuthal, bool overwrite = true);
 
 	/** Set whether ot not data is plotted on top of old data. */
 //	void setHold(bool hold);
@@ -303,29 +303,29 @@ inline void Plotter::setAutoScale(bool autoScale){
 	setAutoScaleY(autoScale);
 }*/
 
-inline void Plotter::setTitle(const std::string &title){
-	plotParameters.setTitle(title);
-	plotSurfaceParameters.setTitle(title);
-	contourfParameters.setTitle(title);
+inline void Plotter::setTitle(const std::string &title, bool overwrite){
+	plotParameters.setTitle(title, overwrite);
+	plotSurfaceParameters.setTitle(title, overwrite);
+	contourfParameters.setTitle(title, overwrite);
 	matplotlibcpp::title(title);
 }
 
-inline void Plotter::setLabelX(const std::string &labelX){
-	plotParameters.setLabelX(labelX);
-	plotSurfaceParameters.setLabelX(labelX);
-	contourfParameters.setLabelX(labelX);
+inline void Plotter::setLabelX(const std::string &labelX, bool overwrite){
+	plotParameters.setLabelX(labelX, overwrite);
+	plotSurfaceParameters.setLabelX(labelX, overwrite);
+	contourfParameters.setLabelX(labelX, overwrite);
 	matplotlibcpp::xlabel(labelX);
 }
 
-inline void Plotter::setLabelY(const std::string &labelY){
-	plotParameters.setLabelY(labelY);
-	plotSurfaceParameters.setLabelY(labelY);
-	contourfParameters.setLabelY(labelY);
+inline void Plotter::setLabelY(const std::string &labelY, bool overwrite){
+	plotParameters.setLabelY(labelY, overwrite);
+	plotSurfaceParameters.setLabelY(labelY, overwrite);
+	contourfParameters.setLabelY(labelY, overwrite);
 	matplotlibcpp::ylabel(labelY);
 }
 
-inline void Plotter::setLabelZ(const std::string &labelZ){
-	plotSurfaceParameters.setLabelZ(labelZ);
+inline void Plotter::setLabelZ(const std::string &labelZ, bool overwrite){
+	plotSurfaceParameters.setLabelZ(labelZ, overwrite);
 }
 
 inline void Plotter::setPlotMethod3D(const std::string &plotMethod3D){
@@ -344,8 +344,8 @@ inline void Plotter::setPlotMethod3D(const std::string &plotMethod3D){
 	}
 }
 
-inline void Plotter::setRotation(int elevation, int azimuthal){
-	plotSurfaceParameters.setRotation(elevation, azimuthal);
+inline void Plotter::setRotation(int elevation, int azimuthal, bool overwrite){
+	plotSurfaceParameters.setRotation(elevation, azimuthal, overwrite);
 	switch(currentPlotType){
 	case CurrentPlotType::PlotSurface:
 		plotSurfaceParameters.flush();
@@ -371,6 +371,9 @@ inline void Plotter::setRotation(int elevation, int azimuthal){
 }*/
 
 inline void Plotter::clear(){
+	plotParameters.clear();
+	plotSurfaceParameters.clear();
+	contourfParameters.clear();
 	matplotlibcpp::clf();
 }
 

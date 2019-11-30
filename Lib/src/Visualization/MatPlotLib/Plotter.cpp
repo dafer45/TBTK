@@ -44,7 +44,22 @@ void Plotter::setSize(unsigned int width, unsigned int height){
 }*/
 
 void Plotter::plot(const Property::Density &density, const Argument &argument){
-	plot(PropertyConverter::convert(density), argument);
+	AnnotatedArray<double, Subindex> annotatedArray
+		= PropertyConverter::convert(density);
+
+	setTitle("Density", false);
+	switch(annotatedArray.getRanges().size()){
+	case 1:
+		setLabelX("x", false);
+		setLabelY("Density", false);
+		break;
+	default:
+		setLabelX("x", false);
+		setLabelY("y", false);
+		break;
+	}
+
+	plot(annotatedArray, argument);
 }
 
 void Plotter::plot(
@@ -52,7 +67,22 @@ void Plotter::plot(
 	const Property::Density &density,
 	const Argument &argument
 ){
-	plot(PropertyConverter::convert(density, pattern), argument);
+	AnnotatedArray<double, Subindex> annotatedArray
+		= PropertyConverter::convert(density, pattern);
+
+	setTitle("Density", false);
+	switch(annotatedArray.getRanges().size()){
+	case 1:
+		setLabelX("x", false);
+		setLabelY("Density", false);
+		break;
+	default:
+		setLabelX("x", false);
+		setLabelY("y", false);
+		break;
+	}
+
+	plot(annotatedArray, argument);
 }
 
 void Plotter::plot(
@@ -61,6 +91,10 @@ void Plotter::plot(
 	unsigned int windowSize,
 	const Argument &argument
 ){
+	setTitle("DOS", false);
+	setLabelX("Energy", false);
+	setLabelY("DOS", false);
+
 	vector<double> y;
 	vector<double> x;
 //	double dE = (dos.getUpperBound() - dos.getLowerBound())/dos.getResolution();
@@ -82,12 +116,28 @@ void Plotter::plot(
 	const Property::EigenValues &eigenValues,
 	const Argument &argument
 ){
+	setTitle("Eigenvalues", false);
+	setLabelX("", false);
+	setLabelY("Energy", false);
 	for(unsigned int n = 0; n < eigenValues.getSize(); n++)
 		plot1D({eigenValues(n), eigenValues(n)}, argument);
 }
 
 void Plotter::plot(const Property::LDOS &ldos, const Argument &argument){
-	plot(PropertyConverter::convert(ldos), argument);
+	AnnotatedArray<double, Subindex> annotatedArray
+		= PropertyConverter::convert(ldos);
+
+	setTitle("LDOS", false);
+	switch(annotatedArray.getRanges().size()){
+	case 2:
+		setLabelX("x", false);
+		setLabelY("Energy", false);
+		break;
+	default:
+		break;
+	}
+
+	plot(annotatedArray, argument);
 }
 
 void Plotter::plot(
@@ -95,7 +145,20 @@ void Plotter::plot(
 	const Property::LDOS &ldos,
 	const Argument &argument
 ){
-	plot(PropertyConverter::convert(ldos, pattern), argument);
+	AnnotatedArray<double, Subindex> annotatedArray
+		= PropertyConverter::convert(ldos, pattern);
+
+	setTitle("LDOS", false);
+	switch(annotatedArray.getRanges().size()){
+	case 2:
+		setLabelX("x", false);
+		setLabelY("Energy", false);
+		break;
+	default:
+		break;
+	}
+
+	plot(annotatedArray, argument);
 }
 
 void Plotter::plot(

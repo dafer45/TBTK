@@ -38,16 +38,19 @@ public:
 	PlotParameters();
 
 	/** Set title. */
-	void setTitle(const std::string &title);
+	void setTitle(const std::string &title, bool overwrite = true);
 
 	/** Set x-label. */
-	void setLabelX(const std::string &labelX);
+	void setLabelX(const std::string &labelX, bool overwrite = true);
 
 	/** Set y-label. */
-	void setLabelY(const std::string &labelY);
+	void setLabelY(const std::string &labelY, bool overwrite = true);
 
 	/** Flush parameters to matplotlib. */
 	void flush() const;
+
+	/** Clear parameters. */
+	void clear();
 private:
 	std::pair<bool, std::string> title;
 	std::pair<bool, std::string> labelX;
@@ -61,16 +64,25 @@ inline PlotParameters::PlotParameters(
 {
 }
 
-inline void PlotParameters::setTitle(const std::string &title){
-	this->title = {true, title};
+inline void PlotParameters::setTitle(const std::string &title, bool overwrite){
+	if(overwrite || !this->title.first)
+		this->title = {true, title};
 }
 
-inline void PlotParameters::setLabelX(const std::string &labelX){
-	this->labelX = {true, labelX};
+inline void PlotParameters::setLabelX(
+	const std::string &labelX,
+	bool overwrite
+){
+	if(overwrite || !this->labelX.first)
+		this->labelX = {true, labelX};
 }
 
-inline void PlotParameters::setLabelY(const std::string &labelY){
-	this->labelY = {true, labelY};
+inline void PlotParameters::setLabelY(
+	const std::string &labelY,
+	bool overwrite
+){
+	if(overwrite || !this->labelY.first)
+		this->labelY = {true, labelY};
 }
 
 inline void PlotParameters::flush() const{
@@ -80,6 +92,12 @@ inline void PlotParameters::flush() const{
 		matplotlibcpp::xlabel(labelX.second);
 	if(labelY.first)
 		matplotlibcpp::ylabel(labelY.second);
+}
+
+inline void PlotParameters::clear(){
+	title = {false, ""};
+	labelX = {false, ""};
+	labelY = {false, ""};
 }
 
 };	//End namespace MatPlotLib
