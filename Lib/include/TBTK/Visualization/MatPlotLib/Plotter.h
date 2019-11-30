@@ -273,6 +273,20 @@ private:
 		const std::vector<std::vector<double>> &z,
 		const Argument &argument = ""
 	);
+
+	/** Convert an AnnotatedArray with Subindex axes to an AnnotatedArray
+	 *  with custom double valued axes. By default, axis values are simply
+	 *  converted from Subindex to double. A list of values such as
+	 *  {axisID, {lowerBound, upperBound}} can be supplied to change the
+	 *  values for individual axes. Here axisID is the axis to modify,
+	 *  while lowerBound and upperBound are the new bounds for the
+	 *  corresponding axis. */
+	AnnotatedArray<double, double> convertAxes(
+		const AnnotatedArray<double, Subindex> &annotatedArray,
+		const std::initializer_list<
+			std::pair<unsigned int, std::pair<double, double>>
+		> &axisReplacement = {}
+	);
 };
 
 inline Plotter::Plotter(){

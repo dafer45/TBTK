@@ -126,6 +126,19 @@ void Plotter::plot(
 void Plotter::plot(const Property::LDOS &ldos, const Argument &argument){
 	AnnotatedArray<double, Subindex> annotatedArray
 		= PropertyConverter::convert(ldos);
+	AnnotatedArray<double, double> annotatedArrayWithDoubleAxes
+		= convertAxes(
+			annotatedArray,
+			{
+				{
+					annotatedArray.getAxes().size()-1,
+					{
+						ldos.getLowerBound(),
+						ldos.getUpperBound()
+					}
+				}
+			}
+		);
 
 	setTitle("LDOS", false);
 	switch(annotatedArray.getRanges().size()){
@@ -137,7 +150,7 @@ void Plotter::plot(const Property::LDOS &ldos, const Argument &argument){
 		break;
 	}
 
-	plot(annotatedArray, argument);
+	plot(annotatedArrayWithDoubleAxes, argument);
 }
 
 void Plotter::plot(
@@ -147,6 +160,19 @@ void Plotter::plot(
 ){
 	AnnotatedArray<double, Subindex> annotatedArray
 		= PropertyConverter::convert(ldos, pattern);
+	AnnotatedArray<double, double> annotatedArrayWithDoubleAxes
+		= convertAxes(
+			annotatedArray,
+			{
+				{
+					annotatedArray.getAxes().size()-1,
+					{
+						ldos.getLowerBound(),
+						ldos.getUpperBound()
+					}
+				}
+			}
+		);
 
 	setTitle("LDOS", false);
 	switch(annotatedArray.getRanges().size()){
@@ -158,7 +184,7 @@ void Plotter::plot(
 		break;
 	}
 
-	plot(annotatedArray, argument);
+	plot(annotatedArrayWithDoubleAxes, argument);
 }
 
 void Plotter::plot(
@@ -619,6 +645,51 @@ void Plotter::plot2D(
 			"This should never happen, contact the developer."
 		);
 	}
+}
+
+AnnotatedArray<double, double> Plotter::convertAxes(
+	const AnnotatedArray<double, Subindex> &annotatedArray,
+	const initializer_list<
+		pair<unsigned int, pair<double, double>>
+	> &axisReplacement
+){
+	const vector<vector<Subindex>> &axes = annotatedArray.getAxes();
+	vector<vector<double>> newAxes(axes.size());
+	for(unsigned int n = 0; n < axes.size(); n++)
+		for(unsigned int c = 0; c < axes[n].size(); c++)
+			newAxes[n].push_back(axes[n][c]);
+
+	for(
+		initializer_list<
+			pair<unsigned int, pair<double, double>>
+		>::const_iterator iterator = axisReplacement.begin();
+		iterator != axisReplacement.end();
+		++iterator
+	){
+		unsigned int axisID = iterator->first;
+		TBTKAssert(
+			axisID < axes.size(),
+			"Plotter::convertAxes()",
+			"'axisID' cannot be larger than the number of axes,"
+			<< " but 'axisID' is '" << axisID << "', while the"
+			<< " number of axes are '" << axes.size() << "'.",
+			""
+		);
+		double lowerBound = iterator->second.first;
+		double upperBound = iterator->second.second;
+		if(newAxes[axisID].size() == 1){
+			newAxes[axisID][0] = lowerBound;
+		}
+		else{
+			unsigned int numSteps = newAxes[axisID].size();
+			double stepLength
+				= (upperBound - lowerBound)/(numSteps - 1);
+			for(unsigned int n = 0; n < numSteps; n++)
+				newAxes[axisID][n] = lowerBound + n*stepLength;
+		}
+	}
+
+	return AnnotatedArray<double, double>(annotatedArray, newAxes);
 }
 
 };	//End of namespace MatPlotLib
