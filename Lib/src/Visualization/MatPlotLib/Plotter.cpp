@@ -162,9 +162,62 @@ void Plotter::plot(
 }
 
 void Plotter::plot(
-	const Array<double> &data,
+	const AnnotatedArray<double, double> &data,
 	const Argument &argument
 ){
+	const vector<unsigned int> &ranges = data.getRanges();
+	const vector<vector<double>> &axes = data.getAxes();
+	switch(ranges.size()){
+	case 1:
+	{
+		Array<double> X = Array<double>::create(ranges);
+		Array<double> Y = Array<double>::create(ranges);
+		for(unsigned int x = 0; x < ranges[0]; x++){
+			X[{x}] = axes[0][x];
+			Y[{x}] = data[x];
+		}
+		plot(X, Y, argument);
+		break;
+	}
+	case 2:
+	{
+		Array<double> X = Array<double>::create(ranges);
+		Array<double> Y = Array<double>::create(ranges);
+		Array<double> Z = Array<double>::create(ranges);
+		for(unsigned int x = 0; x < ranges[0]; x++){
+			for(unsigned int y = 0; y < ranges[1]; y++){
+				X[{x, y}] = axes[0][x];
+				Y[{x, y}] = axes[1][y];
+				Z[{x, y}] = data[{x, y}];
+			}
+		}
+		plot(X, Y, Z, argument);
+		break;
+	}
+	default:
+		TBTKExit(
+			"Plotter:plot()",
+			"Array size not supported.",
+			"Only arrays with one and two dimensions can be"
+			<< " plotted."
+		);
+	}
+}
+
+void Plotter::plot(
+	const AnnotatedArray<double, Subindex> &data,
+	const Argument &argument
+){
+	const vector<vector<Subindex>> &axes = data.getAxes();;
+	vector<vector<double>> newAxes(axes.size());
+	for(unsigned int n = 0; n < axes.size(); n++)
+		for(unsigned int c = 0; c < axes[n].size(); c++)
+			newAxes[n].push_back(axes[n][c]);
+
+	plot(AnnotatedArray<double, double>(data, newAxes), argument);
+}
+
+void Plotter::plot(const Array<double> &data, const Argument &argument){
 	const vector<unsigned int> &ranges = data.getRanges();
 	switch(ranges.size()){
 	case 1:
@@ -193,7 +246,7 @@ void Plotter::plot(
 			"Plotter:plot()",
 			"Array size not supported.",
 			"Only arrays with one or two dimensions can be"
-			<< " plotter."
+			<< " plotted."
 		);
 	}
 }
@@ -238,6 +291,71 @@ void Plotter::plot(
 			"Plotter:plot()",
 			"Array size not supported.",
 			"This function can only be used with one-dimensional"
+			<< " arrays."
+		);
+	}
+}
+
+void Plotter::plot(
+	const Array<double> &x,
+	const Array<double> &y,
+	const Array<double> &z,
+	const Argument &argument
+){
+	const vector<unsigned int> &xRanges = x.getRanges();
+	const vector<unsigned int> &yRanges = y.getRanges();
+	const vector<unsigned int> &zRanges = z.getRanges();
+	TBTKAssert(
+		xRanges.size() == yRanges.size()
+		&& xRanges.size() == zRanges.size(),
+		"Plotter::plot()",
+		"Incompatible ranges. 'x', 'y', and 'z' must have the same"
+		<< " ranges.",
+		""
+	);
+	for(unsigned int n = 0; n < xRanges.size(); n++){
+		if(xRanges[n] == 0)
+			return;
+
+		TBTKAssert(
+			xRanges[n] == yRanges[n] && xRanges[n] == zRanges[n],
+			"Plotter::plot()",
+			"Incompatible ranges. 'x', 'y', and 'z' must have the"
+			<< " same ranges.",
+			""
+		);
+	}
+
+	switch(xRanges.size()){
+	case 2:
+	{
+		vector<vector<double>> X(
+			xRanges[0],
+			vector<double>(xRanges[1])
+		);
+		vector<vector<double>> Y(
+			xRanges[0],
+			vector<double>(xRanges[1])
+		);
+		vector<vector<double>> Z(
+			xRanges[0],
+			vector<double>(xRanges[1])
+		);
+		for(unsigned int i = 0; i < xRanges[0]; i++){
+			for(unsigned int j = 0; j < xRanges[1]; j++){
+				X[i][j] = x[{i, j}];
+				Y[i][j] = y[{i, j}];
+				Z[i][j] = z[{i, j}];
+			}
+		}
+		plot2D(X, Y, Z, argument);
+		break;
+	}
+	default:
+		TBTKExit(
+			"Plotter:plot()",
+			"Array size not supported.",
+			"This function can only be used with two-dimensional"
 			<< " arrays."
 		);
 	}
@@ -396,44 +514,101 @@ void Plotter::plot1D(
 }
 
 void Plotter::plot2D(
-	const vector<vector<double>> &data,
+	const vector<vector<double>> &z,
 	const Argument &argument
 ){
-	if(data.size() == 0)
+	if(z.size() == 0)
 		return;
-	if(data[0].size() == 0)
+	if(z[0].size() == 0)
 		return;
 
-	unsigned int sizeY = data[0].size();
-	for(unsigned int x = 1; x < data.size(); x++){
+	unsigned int sizeY = z[0].size();
+	for(unsigned int x = 1; x < z.size(); x++){
 		TBTKAssert(
-			data[x].size() == sizeY,
+			z[x].size() == sizeY,
 			"Plotter:plot2D()",
-			"Incompatible array dimensions. 'data[0]' has "
-				<< sizeY << " elements, while 'data[" << x
-				<< "]' has " << data[x].size() << " elements.",
+			"Incompatible array dimensions. 'z[0]' has " << sizeY
+			<< " elements, while 'z[" << x << "]' has "
+			<< z[x].size() << " elements.",
 			""
 		);
 	}
 
 	vector<vector<double>> x, y;
-	for(unsigned int X = 0; X < data.size(); X++){
+	for(unsigned int X = 0; X < z.size(); X++){
 		x.push_back(vector<double>());
 		y.push_back(vector<double>());
-		for(unsigned int Y = 0; Y < data[X].size(); Y++){
+		for(unsigned int Y = 0; Y < z[X].size(); Y++){
 			x[X].push_back(X);
 			y[X].push_back(Y);
 		}
 	}
 
+	plot2D(x, y, z, argument);
+}
+
+void Plotter::plot2D(
+	const vector<vector<double>> &x,
+	const vector<vector<double>> &y,
+	const vector<vector<double>> &z,
+	const Argument &argument
+){
+	TBTKAssert(
+		x.size() == y.size() && x.size() == z.size(),
+		"Plotter::plot2D()",
+		"Incompatible array dimensions. 'x' has '" << x.size() << "'"
+		<< " elements, 'y' has '" << y.size() << "' elements, and 'z'"
+		<< " has '" << z.size() << "' elements.",
+		""
+	);
+
+	unsigned int size[3];
+	size[0] = z.size();
+	if(size[0] == 0)
+		return;
+	size[1] = z[0].size();
+	for(unsigned int X = 0; X < z.size(); X++){
+		TBTKAssert(
+			x[X].size() == size[1],
+			"Plotter::plot2D()",
+			"Incompatible array dimensions. 'x[" << X << "]' has '"
+			<< x[X].size() << "' elements, but 'z[0]' has '"
+			<< size[1] << "' elements.",
+			""
+		);
+		TBTKAssert(
+			y[X].size() == size[1],
+			"Plotter::plot2D()",
+			"Incompatible array dimensions. 'y[" << X << "]' has '"
+			<< y[X].size() << "' elements, but 'z[0]' has '"
+			<< size[1] << "' elements.",
+			""
+		);
+		TBTKAssert(
+			z[X].size() == size[1],
+			"Plotter::plot2D()",
+			"Incompatible array dimensions. 'z[" << X << "]' has '"
+			<< z[X].size() << "' elements, but 'z[0]' has '"
+			<< size[1] << "' elements.",
+			""
+		);
+	}
+	if(size[1] == 0)
+		return;
+
 	switch(plotMethod3D){
 	case PlotMethod3D::PlotSurface:
-		matplotlibcpp::plot_surface(x, y, data, argument.getArgumentMap());
+		matplotlibcpp::plot_surface(
+			x,
+			y,
+			z,
+			argument.getArgumentMap()
+		);
 		plotSurfaceParameters.flush();
 		currentPlotType = CurrentPlotType::PlotSurface;
 		break;
 	case PlotMethod3D::Contourf:
-		matplotlibcpp::contourf(x, y, data, argument.getArgumentMap());
+		matplotlibcpp::contourf(x, y, z, argument.getArgumentMap());
 		contourfParameters.flush();
 		currentPlotType = CurrentPlotType::Contourf;
 		break;

@@ -23,6 +23,7 @@
 #ifndef COM_DAFER45_TBTK_VISUALIZATION_MAT_PLOT_LIB_PLOTTER
 #define COM_DAFER45_TBTK_VISUALIZATION_MAT_PLOT_LIB_PLOTTER
 
+#include "TBTK/AnnotatedArray.h"
 #include "TBTK/Array.h"
 #include "TBTK/Property/Density.h"
 #include "TBTK/Property/DOS.h"
@@ -125,9 +126,18 @@ public:
 
 	/** Plot data. */
 	void plot(
-		const Array<double> &data,
+		const AnnotatedArray<double, double> &data,
 		const Argument &argument = ""
 	);
+
+	/** Plot data. */
+	void plot(
+		const AnnotatedArray<double, Subindex> &data,
+		const Argument &argument = ""
+	);
+
+	/** Plot data. */
+	void plot(const Array<double> &data, const Argument &argument = "");
 
 	/** Plot data. */
 	void plot(
@@ -174,6 +184,14 @@ public:
 			argument
 		);
 	}
+
+	/** Plot data. */
+	void plot(
+		const Array<double> &x,
+		const Array<double> &y,
+		const Array<double> &z,
+		const Argument &argument = ""
+	);
 
 	/** Plot data with color coded intensity. */
 /*	void plot(
@@ -244,7 +262,15 @@ private:
 
 	/** Plot 2D data. */
 	void plot2D(
-		const std::vector<std::vector<double>> &data,
+		const std::vector<std::vector<double>> &z,
+		const Argument &argument = ""
+	);
+
+	/** Plot 2D data. */
+	void plot2D(
+		const std::vector<std::vector<double>> &x,
+		const std::vector<std::vector<double>> &y,
+		const std::vector<std::vector<double>> &z,
 		const Argument &argument = ""
 	);
 };
