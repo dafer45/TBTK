@@ -291,7 +291,7 @@ private:
 
 inline Plotter::Plotter(){
 	currentPlotType = CurrentPlotType::None;
-	plotMethod3D = PlotMethod3D::PlotSurface;
+	plotMethod3D = PlotMethod3D::Contourf;
 }
 
 inline void Plotter::setBoundsX(
