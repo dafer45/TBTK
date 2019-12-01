@@ -25,6 +25,7 @@
 
 #include "TBTK/Array.h"
 #include "TBTK/Property/DOS.h"
+#include "TBTK/Property/LDOS.h"
 #include "TBTK/TBTKMacros.h"
 
 #include <cmath>
