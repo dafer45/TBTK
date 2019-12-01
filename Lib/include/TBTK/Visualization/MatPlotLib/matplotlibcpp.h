@@ -401,7 +401,23 @@ void contourf(
   Py_INCREF(contourf);
   PyObject *res = PyObject_Call(contourf, args, kwargs);
   if (!res) throw std::runtime_error("failed surface");
+
+  PyObject *colorbar_kwargs = PyDict_New();
+  PyDict_SetItemString(colorbar_kwargs, "mappable", res);
+  PyDict_SetItemString(colorbar_kwargs, "ax", axis);
+  PyObject *colorbar = PyObject_GetAttrString(fig, "colorbar");
+  if(!colorbar) throw std::runtime_error("No colorbar");
+  Py_INCREF(colorbar);
+  PyObject *res2 = PyObject_Call(
+    colorbar,
+    detail::Interpreter::get().s_python_empty_tuple,
+    colorbar_kwargs
+  );
+  if(!res2) throw std::runtime_error("failed colorbar");
+  Py_DECREF(res2);
+
   Py_DECREF(contourf);
+
 
   Py_DECREF(axis);
   Py_DECREF(args);
