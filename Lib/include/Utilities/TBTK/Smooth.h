@@ -62,6 +62,13 @@ public:
 		double sigma,
 		int windowSize
 	);
+
+	/** Gaussian smoothing of LDOS. */
+	static Property::LDOS gaussian(
+		const Property::LDOS &dos,
+		double sigma,
+		int windowSize
+	);
 private:
 };
 
@@ -204,6 +211,40 @@ inline Property::DOS Smooth::gaussian(
 		resolution,
 		smoothedData.data()
 	);
+}
+
+inline Property::LDOS Smooth::gaussian(
+	const Property::LDOS &ldos,
+	double sigma,
+	int windowSize
+){
+	Property::LDOS newLdos = ldos;
+	std::vector<double> &newData = newLdos.getDataRW();
+
+	const std::vector<double> &data = ldos.getData();
+	unsigned int blockSize = ldos.getBlockSize();
+	unsigned int numBlocks = ldos.getSize()/blockSize;
+	double lowerBound = ldos.getLowerBound();
+	double upperBound = ldos.getUpperBound();
+	int resolution = ldos.getResolution();
+	double scaledSigma = sigma/(upperBound - lowerBound)*resolution;
+	for(unsigned int block = 0; block < numBlocks; block++){
+		std::vector<double> blockData(blockSize);
+		for(unsigned int n = 0; n < blockSize; n++)
+			blockData[n] = data[block*blockSize + n];
+
+
+		std::vector<double> smoothedData = gaussian(
+			blockData,
+			scaledSigma,
+			windowSize
+		);
+
+		for(unsigned int n = 0; n < blockSize; n++)
+			newData[block*blockSize + n] = smoothedData[n];
+	}
+
+	return newLdos;
 }
 
 };	//End of namespace TBTK
