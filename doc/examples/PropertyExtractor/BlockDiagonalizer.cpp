@@ -59,6 +59,7 @@ int main(){
 	});
 	Streams::out << density << "\n";
 	plotter.clear();
+	plotter.setAxes({{0, {0, 2*M_PI}}});
 	plotter.plot({_a_, IDX_SUM_ALL}, density);
 	plotter.setLabelX("k");
 	plotter.save("figures/Density.png");
