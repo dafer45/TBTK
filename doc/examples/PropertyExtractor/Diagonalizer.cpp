@@ -40,10 +40,10 @@ int main(){
 	);
 
 	Plotter plotter;
-
-	Property::DOS dos = propertyExtractor.calculateDOS();
 	const double SMOOTHING_SIGMA = 0.2;
 	const unsigned int SMOOTHING_WINDOW = 51;
+
+	Property::DOS dos = propertyExtractor.calculateDOS();
 	dos = Smooth::gaussian(dos, SMOOTHING_SIGMA, SMOOTHING_WINDOW);
 	Streams::out << dos << "\n";
 	plotter.plot(dos);

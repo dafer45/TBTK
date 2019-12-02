@@ -49,9 +49,9 @@ namespace PropertyExtractor{
  *  \snippet PropertyExtractor/Diagonalizer.cpp Diagonalizer
  *  ## Output
  *  \snippet output/PropertyExtractor/Diagonalizer.output Diagonalizer
- *  \image html output/PropertyExtractor/Diagonalizer/figures/DOS.png
- *  \image html output/PropertyExtractor/Diagonalizer/figures/Density.png
- *  \image html output/PropertyExtractor/Diagonalizer/figures/LDOS.png */
+ *  \image html output/PropertyExtractor/Diagonalizer/figures/PropertyExtractorDiagonalizerDOS.png
+ *  \image html output/PropertyExtractor/Diagonalizer/figures/PropertyExtractorDiagonalizerDensity.png
+ *  \image html output/PropertyExtractor/Diagonalizer/figures/PropertyExtractorDiagonalizerLDOS.png */
 class Diagonalizer : public PropertyExtractor{
 public:
 	/** Constructs a PropertyExtractor::Diagonalizer.

@@ -48,7 +48,9 @@ namespace PropertyExtractor{
  *  # Example
  *  \snippet PropertyExtractor/BlockDiagonalizer.cpp BlockDiagonalizer
  *  ## Output
- *  \snippet output/PropertyExtractor/BlockDiagonalizer.output BlockDiagonalizer */
+ *  \snippet output/PropertyExtractor/BlockDiagonalizer.output BlockDiagonalizer
+ *  \image html output/PropertyExtractor/BlockDiagonalizer/figures/PropertyExtractorBlockDiagonalizerDOS.png
+ *  \image html output/PropertyExtractor/BlockDiagonalizer/figures/PropertyExtractorBlockDiagonalizerDensity.png */
 class BlockDiagonalizer : public PropertyExtractor{
 public:
 	/** Constructs a PropertyExtractor::BlockDiagonalizer.
