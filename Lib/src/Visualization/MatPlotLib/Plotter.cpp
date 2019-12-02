@@ -23,7 +23,9 @@
 #include "Python.h"
 
 #include "TBTK/AnnotatedArray.h"
+#include "TBTK/MultiCounter.h"
 #include "TBTK/PropertyConverter.h"
+#include "TBTK/Range.h"
 #include "TBTK/Smooth.h"
 #include "TBTK/Streams.h"
 #include "TBTK/Visualization/MatPlotLib/Plotter.h"
@@ -282,7 +284,7 @@ void Plotter::plot(const Array<double> &data, const Argument &argument){
 }
 
 void Plotter::plot(
-	const Array<double> &x,
+	Array<double> x,
 	const Array<double> &y,
 	const Argument &argument
 ){
@@ -303,6 +305,7 @@ void Plotter::plot(
 			""
 		);
 	}
+	x = getNonDefaultAxis(x, 0);
 
 	switch(xRanges.size()){
 	case 1:
@@ -327,8 +330,8 @@ void Plotter::plot(
 }
 
 void Plotter::plot(
-	const Array<double> &x,
-	const Array<double> &y,
+	Array<double> x,
+	Array<double> y,
 	const Array<double> &z,
 	const Argument &argument
 ){
@@ -355,6 +358,8 @@ void Plotter::plot(
 			""
 		);
 	}
+	x = getNonDefaultAxis(x, 0);
+	y = getNonDefaultAxis(y, 1);
 
 	switch(xRanges.size()){
 	case 2:
@@ -534,13 +539,10 @@ void Plotter::plot1D(
 	const vector<double> &y,
 	const Argument &argument
 ){
-	if(argument.getArgumentMap().size() == 0)
-		matplotlibcpp::plot(y, argument.getArgumentString());
-	else
-		matplotlibcpp::plot(y, argument.getArgumentMap());
-	plotParameters.flush();
-
-	currentPlotType = CurrentPlotType::Plot1D;
+	vector<double> x(y.size());
+	for(unsigned int n = 0; n < x.size(); n++)
+		x[n] = n;
+	plot1D(x, y, argument);
 }
 
 void Plotter::plot2D(
@@ -694,6 +696,71 @@ AnnotatedArray<double, double> Plotter::convertAxes(
 	}
 
 	return AnnotatedArray<double, double>(annotatedArray, newAxes);
+}
+
+Array<double> Plotter::getNonDefaultAxis(
+	const Array<double> &axis,
+	unsigned int axisID
+) const{
+	const vector<unsigned int> &ranges = axis.getRanges();
+	TBTKAssert(
+		axisID < ranges.size(),
+		"Plotter::getNonDefaultAxis()",
+		"Unable to calculate non-default axis because 'axisID="
+		<< axisID << "', but the data only has '"
+		<< ranges.size() << "' mutable axes.",
+		""
+	);
+	Array<double> result = axis;
+	for(unsigned int n = 0; n < axes.size(); n++){
+		if(axisID != axes[n].first)
+			continue;
+
+		vector<unsigned int> begin;
+		vector<unsigned int> end;
+		vector<unsigned int> increment;
+		for(unsigned int c = 0; c < ranges.size(); c++){
+			begin.push_back(0);
+			end.push_back(ranges[c]);
+			increment.push_back(1);
+		}
+		MultiCounter<unsigned int> counter(begin, end, increment);
+		switch(axes[n].second.size()){
+		case 2:
+		{
+			const vector<double> &bounds = axes[n].second;
+			Range ticks(
+				bounds[0],
+				bounds[1],
+				ranges[axisID],
+				true,
+				true
+			);
+			for(counter.reset(); !counter.done(); ++counter)
+				result[counter] = ticks[counter[axisID]];
+			break;
+		}
+		default:
+		{
+			const vector<double> &ticks = axes[n].second;
+			TBTKAssert(
+				ticks.size() == ranges[axisID],
+				"Plotter::getNonDefaultAxis()",
+				"Incompatible ticks and axis data. The number"
+				" of ticks for the axis with 'axisID="
+				<< axisID << "' is " << ticks.size() << ", but"
+				<< " the supplied axis runs over '"
+				<< ranges[axisID] << "' values.",
+				""
+			);
+			for(counter.reset(); !counter.done(); ++counter)
+				result[counter] = ticks[counter[axisID]];
+			break;
+		}
+		}
+	}
+
+	return result;
 }
 
 };	//End of namespace MatPlotLib

@@ -72,6 +72,35 @@ public:
 	/** Set auto scale. */
 //	void setAutoScale(bool autoScale);
 
+	/** Set axes values. These axes will override the default axes values.
+	 *  A call can take the following form.
+	 *  ```cpp
+	 *  plotter.setAxes({
+	 *    {axisID0, {lowerBound, upperBound}},
+	 *    {axisID1, {tick0, tick1, tick2}}
+	 *  });
+	 *  ```
+	 *  Each line corresponds to a separate axis, where the axisID
+	 *  specifies the axis for which to override the default behavior.
+	 *
+	 *  If the length of the list corresponding to a given axisID is equal
+	 *  to two, the values will be interpreted as the lower and upper
+	 *  bounds for the plot. If a subsequntly plotted data has N entries
+	 *  for the given axis, element 0 will correspond to the tick value
+	 *  lowerBound, while element N-1 will correspond to upperBound.
+	 *
+	 *  If the length of the list corresponding to a given axisID is
+	 *  different from two, the values will be interpreted as tick values.
+	 *  The number of elements in the subsequently plotted data must have
+	 *  the same number of elements for the given axis.
+	 *
+	 *  @param axes List of axes to override the default axes with. */
+	void setAxes(
+		const std::vector<
+			std::pair<unsigned int, std::vector<double>>
+		> &axes
+	);
+
 	/** Set title. */
 	void setTitle(const std::string &title, bool overwrite = true);
 
@@ -149,7 +178,7 @@ public:
 
 	/** Plot data. */
 	void plot(
-		const Array<double> &x,
+		Array<double> x,
 		const Array<double> &y,
 		const Argument &argument = ""
 	);
@@ -187,8 +216,8 @@ public:
 
 	/** Plot data. */
 	void plot(
-		const Array<double> &x,
-		const Array<double> &y,
+		Array<double> x,
+		Array<double> y,
 		const Array<double> &z,
 		const Argument &argument = ""
 	);
@@ -247,6 +276,9 @@ private:
 	/** Parameters for plots using contourf. */
 	ContourfParameters contourfParameters;
 
+	/** Axes to use instead of the default axes. */
+	std::vector<std::pair<unsigned int, std::vector<double>>> axes;
+
 	/** Plot data. */
 	void plot1D(
 		const std::vector<double> &y,
@@ -287,6 +319,15 @@ private:
 			std::pair<unsigned int, std::pair<double, double>>
 		> &axisReplacement = {}
 	);
+
+	/** Returns an Array containing the axis data that should be used when
+	 *  plotting. If non-default axes have been set for the given axisID,
+	 *  an axis will be returned that reflects the non-default axis.
+	 *  Otherwise, axis will be returned. */
+	Array<double> getNonDefaultAxis(
+		const Array<double> &axis,
+		unsigned int axisID
+	) const;
 };
 
 inline Plotter::Plotter(){
@@ -342,6 +383,14 @@ inline void Plotter::setAutoScale(bool autoScale){
 	setAutoScaleX(autoScale);
 	setAutoScaleY(autoScale);
 }*/
+
+inline void Plotter::setAxes(
+	const std::vector<
+		std::pair<unsigned int, std::vector<double>>
+	> &axes
+){
+	this->axes = axes;
+}
 
 inline void Plotter::setTitle(const std::string &title, bool overwrite){
 	plotParameters.setTitle(title, overwrite);
@@ -414,6 +463,7 @@ inline void Plotter::clear(){
 	plotParameters.clear();
 	plotSurfaceParameters.clear();
 	contourfParameters.clear();
+	axes.clear();
 	matplotlibcpp::clf();
 }
 
