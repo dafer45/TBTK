@@ -3,20 +3,20 @@ TBTK::DocumentationExamples::HeaderAndFooter headerAndFooter("ChebyshevExpander"
 
 //! [ChebyshevExpander]
 #include "TBTK/Model.h"
+#include "TBTK/Models/SquareLattice.h"
 #include "TBTK/PropertyExtractor/ChebyshevExpander.h"
 #include "TBTK/Solver/ChebyshevExpander.h"
 #include "TBTK/Streams.h"
+#include "TBTK/Visualization/MatPlotLib/Plotter.h"
 
 using namespace TBTK;
+using namespace Visualization::MatPlotLib;
 
 int main(){
-	Model model;
-	for(int x = 0; x < 10; x++){
-		for(int y = 0; y < 10; y++){
-			model << HoppingAmplitude(1, {x+1, y}, {x, y}) + HC;
-			model << HoppingAmplitude(1, {x, y+1}, {x, y}) + HC;
-		}
-	}
+	const unsigned int SIZE_X = 100;
+	const unsigned int SIZE_Y = 100;
+	double t = 1;
+	Model model = Models::SquareLattice({SIZE_X, SIZE_Y}, {0, t});
 	model.construct();
 
 	Solver::ChebyshevExpander solver;
@@ -25,11 +25,11 @@ int main(){
 	solver.setCalculateCoefficientsOnGPU(false);
 	solver.setGenerateGreensFunctionsOnGPU(false);
 	solver.setUseLookupTable(true);
-	solver.setNumCoefficients(10);
+	solver.setNumCoefficients(200);
 
-	const double LOWER_BOUND = -1;
-	const double UPPER_BOUND = 1;
-	const int RESOLUTION = 10;
+	const double LOWER_BOUND = -5;
+	const double UPPER_BOUND = 5;
+	const int RESOLUTION = 200;
 	PropertyExtractor::ChebyshevExpander propertyExtractor(solver);
 	propertyExtractor.setEnergyWindow(
 		LOWER_BOUND,
@@ -37,7 +37,11 @@ int main(){
 		RESOLUTION
 	);
 
-	Property::LDOS ldos = propertyExtractor.calculateLDOS({{5, 5}});
+	Property::LDOS ldos = propertyExtractor.calculateLDOS({{50, 50}});
 	Streams::out << ldos << "\n";
+
+	Plotter plotter;
+	plotter.plot({50, 50}, ldos);
+	plotter.save("figures/LDOS.png");
 }
 //! [ChebyshevExpander]

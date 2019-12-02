@@ -46,7 +46,8 @@ namespace PropertyExtractor{
  *  # Example
  *  \snippet PropertyExtractor/ChebyshevExpander.cpp ChebyshevExpander
  *  ## Output
- *  \snippet output/PropertyExtractor/ChebyshevExpander.output ChebyshevExpander */
+ *  \snippet output/PropertyExtractor/ChebyshevExpander.output ChebyshevExpander
+ *  \image html output/PropertyExtractor/ChebyshevExpander/figures/PropertyExtractorChebyshevExpanderLDOS.png */
 class ChebyshevExpander : public PropertyExtractor{
 public:
 	/** Constructor. */

@@ -148,6 +148,9 @@ void Plotter::plot(const Property::LDOS &ldos, const Argument &argument){
 
 	setTitle("LDOS", false);
 	switch(annotatedArray.getRanges().size()){
+	case 1:
+		setLabelX("Energy", false);
+		break;
 	case 2:
 		setLabelX("x", false);
 		setLabelY("Energy", false);
@@ -182,6 +185,9 @@ void Plotter::plot(
 
 	setTitle("LDOS", false);
 	switch(annotatedArray.getRanges().size()){
+	case 1:
+		setLabelX("Energy");
+		break;
 	case 2:
 		setLabelX("x", false);
 		setLabelY("Energy", false);
