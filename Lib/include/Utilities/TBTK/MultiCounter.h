@@ -25,7 +25,7 @@
 
 #include "TBTK/TBTKMacros.h"
 
-#include <initializer_list>
+#include <vector>
 
 namespace TBTK{
 
@@ -49,9 +49,9 @@ public:
 	 *
 	 *  @param increment The increment size of the counter. */
 	MultiCounter(
-		const std::initializer_list<DataType> &begin,
-		const std::initializer_list<DataType> &end,
-		const std::initializer_list<DataType> &increment
+		const std::vector<DataType> &begin,
+		const std::vector<DataType> &end,
+		const std::vector<DataType> &increment
 	);
 
 	/** Increment operator.
@@ -67,6 +67,9 @@ public:
 	 *
 	 *  @return The value of the nth counter. */
 	const DataType operator[](unsigned int n) const;
+
+	/** */
+	operator std::vector<DataType>() const;
 
 	/** Reset the counter. */
 	void reset();
@@ -92,9 +95,9 @@ private:
 
 template<typename DataType>
 inline MultiCounter<DataType>::MultiCounter(
-	const std::initializer_list<DataType> &begin,
-	const std::initializer_list<DataType> &end,
-	const std::initializer_list<DataType> &increment
+	const std::vector<DataType> &begin,
+	const std::vector<DataType> &end,
+	const std::vector<DataType> &increment
 ){
 	TBTKAssert(
 		begin.size() == end.size(),
@@ -155,6 +158,11 @@ inline MultiCounter<DataType>& MultiCounter<DataType>::operator++(){
 template<typename DataType>
 inline const DataType MultiCounter<DataType>::operator[](unsigned int n) const{
 	return counter[n];
+}
+
+template<typename DataType>
+inline MultiCounter<DataType>::operator std::vector<DataType>() const{
+	return counter;
 }
 
 template<typename DataType>
