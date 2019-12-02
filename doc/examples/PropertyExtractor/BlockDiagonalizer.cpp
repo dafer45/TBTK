@@ -4,6 +4,7 @@ TBTK::DocumentationExamples::HeaderAndFooter headerAndFooter("BlockDiagonalizer"
 //! [BlockDiagonalizer]
 #include "TBTK/Model.h"
 #include "TBTK/PropertyExtractor/BlockDiagonalizer.h"
+#include "TBTK/Range.h"
 #include "TBTK/Smooth.h"
 #include "TBTK/Solver/BlockDiagonalizer.h"
 #include "TBTK/Streams.h"
@@ -18,15 +19,12 @@ using namespace Visualization::MatPlotLib;
 
 int main(){
 	const int NUM_K_POINTS = 10000;
+	double a = 1;
 
 	Model model;
-	for(int k = 0; k < NUM_K_POINTS; k++){
-		model << HoppingAmplitude(
-			cos(2*M_PI*k/(double)NUM_K_POINTS),
-			{k, 0},
-			{k, 1}
-		) + HC;
-	}
+	Range K(0, 2*M_PI, NUM_K_POINTS);
+	for(int k = 0; k < NUM_K_POINTS; k++)
+		model << HoppingAmplitude(cos(K[k]*a), {k, 0}, {k, 1}) + HC;
 	model.setChemicalPotential(-0.5);
 	model.setTemperature(300);
 	model.construct();

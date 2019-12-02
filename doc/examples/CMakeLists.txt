@@ -65,7 +65,7 @@ FOREACH(FILE ${TBTK_DOCUMENTATION_EXAMPLE_SRC})
 		OUTPUT ${TBTK_DOCUMENTATION_EXAMPLE_OUTPUT}
 		COMMAND ${CMAKE_CURRENT_BINARY_DIR}/build/${PATH}/${NAME} > ${TBTK_DOCUMENTATION_EXAMPLE_OUTPUT}
 #		COMMAND mv ${CMAKE_CURRENT_BINARY_DIR}/figures/* ${CMAKE_CURRENT_BINARY_DIR}/output/${PATH}/${NAME}/figures/ 2> /dev/null \; true
-		COMMAND for filename in figures/* \; do [ -e \"$$filename\" ] || continue \; name=$$\(basename $$filename\)\; echo $$name\; mv $$filename output/${PATH}/${NAME}/figures/${PATH_WITHOUT_SLASH}${NAME}$$name \; done \; true
+		COMMAND for filename in figures/* \; do [ -e \"$$filename\" ] || continue \; name=$$\(basename $$filename\)\; mv $$filename output/${PATH}/${NAME}/figures/${PATH_WITHOUT_SLASH}${NAME}$$name \; done \; true
 		DEPENDS ${APPLICATION_NAME}
 	)
 	STRING(REPLACE "/" "_" TBTK_DOCUMENTATION_EXAMPLE_TARGET ${TBTK_DOCUMENTATION_EXAMPLE_OUTPUT})
