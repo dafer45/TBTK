@@ -18,6 +18,10 @@
  *  @author Kristofer Björnson
  */
 
+//Python is explicitly included before all other libraries to avoid warning
+//that _POSIX_C_SOURCE is redefined.
+#include "Python.h"
+
 #include "TBTK/AnnotatedArray.h"
 #include "TBTK/PropertyConverter.h"
 #include "TBTK/Smooth.h"

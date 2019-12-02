@@ -44,6 +44,11 @@
 #define PY_ARRAY_UNIQUE_SYMBOL TBTK_PY_ARRAY_API
 #define PY_UFUNC_UNIQUE_SYMBOL TBTK_PY_UFUNC_API
 
+//The convention of putting third party libraries after TBTK and std libraries
+//is here ignored. Pyhton.h has to be included first to avoid warning that
+//_POSIX_C_SOURCE is redefined.
+#include <Python.h>
+
 #include <vector>
 #include <map>
 #include <array>
@@ -53,8 +58,6 @@
 #include <iostream>
 #include <cstdint> // <cstdint> requires c++11 support
 #include <functional>
-
-#include <Python.h>
 
 #ifndef WITHOUT_NUMPY
 #	define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
