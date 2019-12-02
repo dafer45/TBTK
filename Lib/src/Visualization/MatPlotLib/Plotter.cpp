@@ -640,10 +640,16 @@ void Plotter::plot2D(
 		currentPlotType = CurrentPlotType::PlotSurface;
 		break;
 	case PlotMethod3D::Contourf:
-		matplotlibcpp::contourf(x, y, z, argument.getArgumentMap());
+	{
+		std::map<string, string> argumentMap
+			= argument.getArgumentMap();
+		if(argumentMap.find("cmap") == argumentMap.end())
+			argumentMap.insert({"cmap", "inferno"});
+		matplotlibcpp::contourf(x, y, z, argumentMap);
 		contourfParameters.flush();
 		currentPlotType = CurrentPlotType::Contourf;
 		break;
+	}
 	default:
 		TBTKExit(
 			"Plotter::plot2D()",

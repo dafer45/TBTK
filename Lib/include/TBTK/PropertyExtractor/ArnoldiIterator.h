@@ -47,7 +47,9 @@ namespace PropertyExtractor{
  *  # Example
  *  \snippet PropertyExtractor/ArnoldiIterator.cpp ArnoldiIterator
  *  ## Output
- *  \snippet output/PropertyExtractor/ArnoldiIterator.output ArnoldiIterator */
+ *  \snippet output/PropertyExtractor/ArnoldiIterator.output ArnoldiIterator
+ *  \image html output/PropertyExtractor/ArnoldiIterator/figures/PropertyExtractorArnoldiIteratorDOS.png
+ *  \image html output/PropertyExtractor/ArnoldiIterator/figures/PropertyExtractorArnoldiIteratorLDOS.png */
 class ArnoldiIterator : public PropertyExtractor{
 public:
 	/** Constructs a PropertyExtractor::ArnoldiIterator.
