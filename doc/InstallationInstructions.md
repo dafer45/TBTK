@@ -5,7 +5,7 @@ Installation instructions {#InstallationInstructions}
 | Required software and libraries | Further information          |
 |---------------------------------|------------------------------|
 | git                             | https://git-scm.com/         |
-| CMake (Minimum version 3.0)     | https://cmake.org            |
+| CMake (Minimum version 3.1)     | https://cmake.org            |
 | BLAS                            | http://www.netlib.org/blas   |
 | LAPACK                          | http://www.netlib.org/lapack |
 

@@ -144,10 +144,10 @@ For more examples and complete applications, see http://second-tech.com/wordpres
 * gcc (v4.9 and up)
 * clang (exact version number not known at the moment).  
 
-| Required software  | Further information  |
-|--------------------|----------------------|
-| git                | https://git-scm.com/ |
-| CMake              | https://cmake.org/   |
+| Required software           | Further information  |
+|-----------------------------|----------------------|
+| git                         | https://git-scm.com/ |
+| CMake (Minimum version 3.1) | https://cmake.org/   |
 
 | Required libraries | Further information          |
 |--------------------|------------------------------|
@@ -201,7 +201,7 @@ They should therefore only be considered for use by experienced developers.
 ## Installation
 ```bash
 git clone http://github.com/dafer45/TBTK
-git checkout v1.1.2
+git checkout v1.2.0
 mkdir TBTKBuild
 cd TBTKBuild
 cmake ../TBTK
