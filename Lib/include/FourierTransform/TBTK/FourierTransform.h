@@ -23,6 +23,7 @@
 #ifndef COM_DAFER45_TBTK_FOURIER_TRANSFORM
 #define COM_DAFER45_TBTK_FOURIER_TRANSFORM
 
+#include "TBTK/CArray.h"
 #include "TBTK/Index.h"
 
 #include <fftw3.h>
@@ -40,16 +41,16 @@ public:
 	public:
 		/** Constructor. */
 		Plan(
-			const DataType *in,
-			DataType *out,
+			const CArray<DataType> &in,
+			CArray<DataType> &out,
 			int sizeX,
 			int sign
 		);
 
 		/** Constructor. */
 		Plan(
-			const DataType *in,
-			DataType *out,
+			const CArray<DataType> &in,
+			CArray<DataType> &out,
 			int sizeX,
 			int sizeY,
 			int sign
@@ -57,8 +58,8 @@ public:
 
 		/** Constructor. */
 		Plan(
-			const DataType *in,
-			DataType *out,
+			const CArray<DataType> &in,
+			CArray<DataType> &out,
 			int sizeX,
 			int sizeY,
 			int sizeZ,
@@ -67,8 +68,8 @@ public:
 
 		/** Constructor. */
 		Plan(
-			const DataType *in,
-			DataType *out,
+			const CArray<DataType> &in,
+			CArray<DataType> &out,
 			const std::vector<unsigned int> &ranges,
 			int sign
 		);
@@ -104,10 +105,10 @@ public:
 		unsigned int size;
 
 		/** Input data. */
-		const DataType *input;
+		const CArray<DataType> &input;
 
 		/** Output data. */
-		DataType *output;
+		CArray<DataType> &output;
 
 		/** Get FFTW3 plan. */
 		fftw_plan& getFFTWPlan();
@@ -116,10 +117,10 @@ public:
 		unsigned int getSize() const;
 
 		/** Get input data. */
-		DataType* getInput();
+		CArray<DataType>& getInput();
 
 		/** Get output data. */
-		DataType* getOutput();
+		CArray<DataType>& getOutput();
 
 		/** Make FourierTransform a friend class. */
 		friend class FourierTransform;
@@ -131,8 +132,8 @@ public:
 	public:
 		/** Constructor. */
 		ForwardPlan(
-			const DataType *in,
-			DataType *out,
+			const CArray<DataType> &in,
+			CArray<DataType> &out,
 			int sizeX
 		) : Plan<DataType>(
 			in,
@@ -143,8 +144,8 @@ public:
 
 		/** Constructor. */
 		ForwardPlan(
-			const DataType *in,
-			DataType *out,
+			const CArray<DataType> &in,
+			CArray<DataType> &out,
 			int sizeX,
 			int sizeY
 		) : Plan<DataType>(
@@ -157,8 +158,8 @@ public:
 
 		/** Constructor. */
 		ForwardPlan(
-			const DataType *in,
-			DataType *out,
+			const CArray<DataType> &in,
+			CArray<DataType> &out,
 			int sizeX,
 			int sizeY,
 			int sizeZ
@@ -173,8 +174,8 @@ public:
 
 		/** Constructor. */
 		ForwardPlan(
-			const DataType *in,
-			DataType *out,
+			const CArray<DataType> &in,
+			CArray<DataType> &out,
 			const std::vector<unsigned int> &ranges
 		) : Plan<DataType>(
 			in,
@@ -190,8 +191,8 @@ public:
 	public:
 		/** Constructor. */
 		InversePlan(
-			const DataType *in,
-			DataType *out,
+			const CArray<DataType> &in,
+			CArray<DataType> &out,
 			int sizeX
 		) : Plan<DataType>(
 			in,
@@ -202,8 +203,8 @@ public:
 
 		/** Constructor. */
 		InversePlan(
-			const DataType *in,
-			DataType *out,
+			const CArray<DataType> &in,
+			CArray<DataType> &out,
 			int sizeX,
 			int sizeY
 		) : Plan<DataType>(
@@ -216,8 +217,8 @@ public:
 
 		/** Constructor. */
 		InversePlan(
-			const DataType *in,
-			DataType *out,
+			const CArray<DataType> &in,
+			CArray<DataType> &out,
 			int sizeX,
 			int sizeY,
 			int sizeZ
@@ -232,8 +233,8 @@ public:
 
 		/** Constructor. */
 		InversePlan(
-			const DataType *in,
-			DataType *out,
+			const CArray<DataType> &in,
+			CArray<DataType> &out,
 			const std::vector<unsigned int> &ranges
 		) : Plan<DataType>(
 			in,
@@ -251,8 +252,8 @@ public:
 	 *  @param sign The sign to use in the exponent of the Fourier
 	 *  transform. */
 	static void transform(
-		const std::complex<double> *in,
-		std::complex<double> *out,
+		const CArray<std::complex<double>> &in,
+		CArray<std::complex<double>> &out,
 		int sizeX,
 		int sign
 	);
@@ -266,8 +267,8 @@ public:
 	 *  @param sign The sign to use in the exponent of the Fourier
 	 *  transform. */
 	static void transform(
-		const std::complex<double> *in,
-		std::complex<double> *out,
+		const CArray<std::complex<double>> &in,
+		CArray<std::complex<double>> &out,
 		int sizeX,
 		int sizeY,
 		int sign
@@ -283,8 +284,8 @@ public:
 	 *  @param sign The sign to use in the exponent of the Fourier
 	 *  transform. */
 	static void transform(
-		const std::complex<double> *in,
-		std::complex<double> *out,
+		const CArray<std::complex<double>> &in,
+		CArray<std::complex<double>> &out,
 		int sizeX,
 		int sizeY,
 		int sizeZ,
@@ -299,8 +300,8 @@ public:
 	 *  @param sign The sign to use in the exponent of the Fourier
 	 *  transform. */
 	static void transform(
-		const std::complex<double> *in,
-		std::complex<double> *out,
+		const CArray<std::complex<double>> &in,
+		CArray<std::complex<double>> &out,
 		const std::vector<unsigned int> &ranges,
 		int sign
 	);
@@ -317,8 +318,8 @@ public:
 	 *  @param out Pointer to array that will contain the output.
 	 *  @param sizeX The size of the data. */
 	static void forward(
-		const std::complex<double> *in,
-		std::complex<double> *out,
+		const CArray<std::complex<double>> &in,
+		CArray<std::complex<double>> &out,
 		int sizeX
 	);
 
@@ -329,8 +330,8 @@ public:
 	 *  @param sizeX The range of the first dimension.
 	 *  @param sizeY The range of the second dimension. */
 	static void forward(
-		const std::complex<double> *in,
-		std::complex<double> *out,
+		const CArray<std::complex<double>> &in,
+		CArray<std::complex<double>> &out,
 		int sizeX,
 		int sizeY
 	);
@@ -343,8 +344,8 @@ public:
 	 *  @param sizeY The range of the second dimension.
 	 *  @param sizeZ The range of the third dimension. */
 	static void forward(
-		const std::complex<double> *in,
-		std::complex<double> *out,
+		const CArray<std::complex<double>> &in,
+		CArray<std::complex<double>> &out,
 		int sizeX,
 		int sizeY,
 		int sizeZ
@@ -356,8 +357,8 @@ public:
 	 *  @param out Pointer to array that will contain the output.
 	 *  @param ranges The dimensions of the data. */
 	static void forward(
-		const std::complex<double> *in,
-		std::complex<double> *out,
+		const CArray<std::complex<double>> &in,
+		CArray<std::complex<double>> &out,
 		const std::vector<unsigned int> &ranges
 	);
 
@@ -367,8 +368,8 @@ public:
 	 *  @param out Pointer to array that will contain the output.
 	 *  @param sizeX The size of the data. */
 	static void inverse(
-		const std::complex<double> *in,
-		std::complex<double> *out,
+		const CArray<std::complex<double>> &in,
+		CArray<std::complex<double>> &out,
 		int sizeX
 	);
 
@@ -379,8 +380,8 @@ public:
 	 *  @param sizeX The range of the first dimension.
 	 *  @param sizeY The range of the second dimension. */
 	static void inverse(
-		const std::complex<double> *in,
-		std::complex<double> *out,
+		const CArray<std::complex<double>> &in,
+		CArray<std::complex<double>> &out,
 		int sizeX,
 		int sizeY
 	);
@@ -393,8 +394,8 @@ public:
 	 *  @param sizeY The range of the second dimension.
 	 *  @param sizeZ The range of the third dimension. */
 	static void inverse(
-		const std::complex<double> *in,
-		std::complex<double> *out,
+		const CArray<std::complex<double>> &in,
+		CArray<std::complex<double>> &out,
 		int sizeX,
 		int sizeY,
 		int sizeZ
@@ -406,8 +407,8 @@ public:
 	 *  @param out Pointer to array that will contain the output.
 	 *  @param ranges The dimensions of the data. */
 	static void inverse(
-		const std::complex<double> *in,
-		std::complex<double> *out,
+		const CArray<std::complex<double>> &in,
+		CArray<std::complex<double>> &out,
 		const std::vector<unsigned int> &ranges
 	);
 
@@ -420,23 +421,23 @@ inline void FourierTransform::transform(Plan<DataType> &plan){
 
 	double normalizationFactor = plan.getNormalizationFactor();
 	if(normalizationFactor != 1.){
-		DataType *output = plan.getOutput();
+		CArray<DataType> &output = plan.getOutput();
 		for(unsigned int n = 0; n < plan.getSize(); n++)
 			output[n] /= normalizationFactor;
 	}
 }
 
 inline void FourierTransform::forward(
-	const std::complex<double> *in,
-	std::complex<double> *out,
+	const CArray<std::complex<double>> &in,
+	CArray<std::complex<double>> &out,
 	int sizeX
 ){
 	transform(in, out, sizeX, -1);
 }
 
 inline void FourierTransform::forward(
-	const std::complex<double> *in,
-	std::complex<double> *out,
+	const CArray<std::complex<double>> &in,
+	CArray<std::complex<double>> &out,
 	int sizeX,
 	int sizeY
 ){
@@ -444,8 +445,8 @@ inline void FourierTransform::forward(
 }
 
 inline void FourierTransform::forward(
-	const std::complex<double> *in,
-	std::complex<double> *out,
+	const CArray<std::complex<double>> &in,
+	CArray<std::complex<double>> &out,
 	int sizeX,
 	int sizeY,
 	int sizeZ
@@ -454,24 +455,24 @@ inline void FourierTransform::forward(
 }
 
 inline void FourierTransform::forward(
-	const std::complex<double> *in,
-	std::complex<double> *out,
+	const CArray<std::complex<double>> &in,
+	CArray<std::complex<double>> &out,
 	const std::vector<unsigned int> &ranges
 ){
 	transform(in, out, ranges, -1);
 }
 
 inline void FourierTransform::inverse(
-	const std::complex<double> *in,
-	std::complex<double> *out,
+	const CArray<std::complex<double>> &in,
+	CArray<std::complex<double>> &out,
 	int sizeX
 ){
 	transform(in, out, sizeX, 1);
 }
 
 inline void FourierTransform::inverse(
-	const std::complex<double> *in,
-	std::complex<double> *out,
+	const CArray<std::complex<double>> &in,
+	CArray<std::complex<double>> &out,
 	int sizeX,
 	int sizeY
 ){
@@ -479,8 +480,8 @@ inline void FourierTransform::inverse(
 }
 
 inline void FourierTransform::inverse(
-	const std::complex<double> *in,
-	std::complex<double> *out,
+	const CArray<std::complex<double>> &in,
+	CArray<std::complex<double>> &out,
 	int sizeX,
 	int sizeY,
 	int sizeZ
@@ -489,8 +490,8 @@ inline void FourierTransform::inverse(
 }
 
 inline void FourierTransform::inverse(
-	const std::complex<double> *in,
-	std::complex<double> *out,
+	const CArray<std::complex<double>> &in,
+	CArray<std::complex<double>> &out,
 	const std::vector<unsigned int> &ranges
 ){
 	transform(in, out, ranges, 1);
@@ -564,12 +565,12 @@ inline unsigned int FourierTransform::Plan<DataType>::getSize() const{
 }
 
 template<typename DataType>
-inline DataType* FourierTransform::Plan<DataType>::getInput(){
+inline CArray<DataType>& FourierTransform::Plan<DataType>::getInput(){
 	return input;
 }
 
 template<typename DataType>
-inline DataType* FourierTransform::Plan<DataType>::getOutput(){
+inline CArray<DataType>& FourierTransform::Plan<DataType>::getOutput(){
 	return output;
 }
 

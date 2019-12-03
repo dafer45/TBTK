@@ -26,8 +26,8 @@ using namespace std;
 namespace TBTK{
 
 void FourierTransform::transform(
-	const complex<double> *in,
-	complex<double> *out,
+	const CArray<complex<double>> &in,
+	CArray<complex<double>> &out,
 	int sizeX,
 	int sign
 ){
@@ -38,9 +38,9 @@ void FourierTransform::transform(
 	plan = fftw_plan_dft_1d(
 		sizeX,
 		const_cast<fftw_complex*>(
-			reinterpret_cast<const fftw_complex*>(in)
+			reinterpret_cast<const fftw_complex*>(in.getData())
 		),
-		reinterpret_cast<fftw_complex*>(out),
+		reinterpret_cast<fftw_complex*>(out.getData()),
 		sign,
 		FFTW_ESTIMATE
 	);
@@ -55,8 +55,8 @@ void FourierTransform::transform(
 }
 
 void FourierTransform::transform(
-	const complex<double> *in,
-	complex<double> *out,
+	const CArray<complex<double>> &in,
+	CArray<complex<double>> &out,
 	int sizeX,
 	int sizeY,
 	int sign
@@ -69,9 +69,9 @@ void FourierTransform::transform(
 		sizeX,
 		sizeY,
 		const_cast<fftw_complex*>(
-			reinterpret_cast<const fftw_complex*>(in)
+			reinterpret_cast<const fftw_complex*>(in.getData())
 		),
-		reinterpret_cast<fftw_complex*>(out),
+		reinterpret_cast<fftw_complex*>(out.getData()),
 		sign,
 		FFTW_ESTIMATE
 	);
@@ -86,8 +86,8 @@ void FourierTransform::transform(
 }
 
 void FourierTransform::transform(
-	const complex<double> *in,
-	complex<double> *out,
+	const CArray<complex<double>> &in,
+	CArray<complex<double>> &out,
 	int sizeX,
 	int sizeY,
 	int sizeZ,
@@ -102,9 +102,9 @@ void FourierTransform::transform(
 		sizeY,
 		sizeZ,
 		const_cast<fftw_complex*>(
-			reinterpret_cast<const fftw_complex*>(in)
+			reinterpret_cast<const fftw_complex*>(in.getData())
 		),
-		reinterpret_cast<fftw_complex*>(out),
+		reinterpret_cast<fftw_complex*>(out.getData()),
 		sign,
 		FFTW_ESTIMATE
 	);
@@ -119,8 +119,8 @@ void FourierTransform::transform(
 }
 
 void FourierTransform::transform(
-	const complex<double> *in,
-	complex<double> *out,
+	const CArray<complex<double>> &in,
+	CArray<complex<double>> &out,
 	const vector<unsigned int> &ranges,
 	int sign
 ){
@@ -132,9 +132,9 @@ void FourierTransform::transform(
 		ranges.size(),
 		(int*)ranges.data(),
 		const_cast<fftw_complex*>(
-			reinterpret_cast<const fftw_complex*>(in)
+			reinterpret_cast<const fftw_complex*>(in.getData())
 		),
-		reinterpret_cast<fftw_complex*>(out),
+		reinterpret_cast<fftw_complex*>(out.getData()),
 		sign,
 		FFTW_ESTIMATE
 	);
@@ -154,11 +154,14 @@ void FourierTransform::transform(
 
 template<>
 FourierTransform::Plan<complex<double>>::Plan(
-	const complex<double> *in,
-	complex<double> *out,
+	const CArray<complex<double>> &in,
+	CArray<complex<double>> &out,
 	int sizeX,
 	int sign
-){
+) :
+	input(in),
+	output(out)
+{
 	plan = new fftw_plan();
 
 	//Const cast is OK since FFTW3 does not modify the input.
@@ -166,27 +169,28 @@ FourierTransform::Plan<complex<double>>::Plan(
 	*plan = fftw_plan_dft_1d(
 		sizeX,
 		const_cast<fftw_complex*>(
-			reinterpret_cast<const fftw_complex*>(in)
+			reinterpret_cast<const fftw_complex*>(in.getData())
 		),
-		reinterpret_cast<fftw_complex*>(out),
+		reinterpret_cast<fftw_complex*>(out.getData()),
 		sign,
 		FFTW_ESTIMATE
 	);
 
-	input = in;
-	output = out;
 	size = sizeX;
 	normalizationFactor = sqrt(sizeX);
 }
 
 template<>
 FourierTransform::Plan<complex<double>>::Plan(
-	const complex<double> *in,
-	complex<double> *out,
+	const CArray<complex<double>> &in,
+	CArray<complex<double>> &out,
 	int sizeX,
 	int sizeY,
 	int sign
-){
+) :
+	input(in),
+	output(out)
+{
 	plan = new fftw_plan();
 
 	//Const cast is OK since FFTW3 does not modify the input.
@@ -195,28 +199,29 @@ FourierTransform::Plan<complex<double>>::Plan(
 		sizeX,
 		sizeY,
 		const_cast<fftw_complex*>(
-			reinterpret_cast<const fftw_complex*>(in)
+			reinterpret_cast<const fftw_complex*>(in.getData())
 		),
-		reinterpret_cast<fftw_complex*>(out),
+		reinterpret_cast<fftw_complex*>(out.getData()),
 		sign,
 		FFTW_ESTIMATE
 	);
 
-	input = in;
-	output = out;
 	size = sizeX*sizeY;
 	normalizationFactor = sqrt(sizeX*sizeY);
 }
 
 template<>
 FourierTransform::Plan<complex<double>>::Plan(
-	const complex<double> *in,
-	complex<double> *out,
+	const CArray<complex<double>> &in,
+	CArray<complex<double>> &out,
 	int sizeX,
 	int sizeY,
 	int sizeZ,
 	int sign
-){
+) :
+	input(in),
+	output(out)
+{
 	plan = new fftw_plan();
 
 	//Const cast is OK since FFTW3 does not modify the input.
@@ -226,26 +231,27 @@ FourierTransform::Plan<complex<double>>::Plan(
 		sizeY,
 		sizeZ,
 		const_cast<fftw_complex*>(
-			reinterpret_cast<const fftw_complex*>(in)
+			reinterpret_cast<const fftw_complex*>(in.getData())
 		),
-		reinterpret_cast<fftw_complex*>(out),
+		reinterpret_cast<fftw_complex*>(out.getData()),
 		sign,
 		FFTW_ESTIMATE
 	);
 
-	input = in;
-	output = out;
 	size = sizeX*sizeY*sizeZ;
 	normalizationFactor = sqrt(sizeX*sizeY*sizeZ);
 }
 
 template<>
 FourierTransform::Plan<complex<double>>::Plan(
-	const complex<double> *in,
-	complex<double> *out,
+	const CArray<complex<double>> &in,
+	CArray<complex<double>> &out,
 	const std::vector<unsigned int> &ranges,
 	int sign
-){
+) :
+	input(in),
+	output(out)
+{
 	plan = new fftw_plan();
 
 	//Const cast is OK since FFTW3 does not modify the input.
@@ -254,15 +260,13 @@ FourierTransform::Plan<complex<double>>::Plan(
 		ranges.size(),
 		(int*)ranges.data(),
 		const_cast<fftw_complex*>(
-			reinterpret_cast<const fftw_complex*>(in)
+			reinterpret_cast<const fftw_complex*>(in.getData())
 		),
-		reinterpret_cast<fftw_complex*>(out),
+		reinterpret_cast<fftw_complex*>(out.getData()),
 		sign,
 		FFTW_ESTIMATE
 	);
 
-	input = in;
-	output = out;
 	size = 1;
 	for(unsigned int n = 0; n < ranges.size(); n++)
 		size *= ranges[n];

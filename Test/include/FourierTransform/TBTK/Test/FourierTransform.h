@@ -31,8 +31,8 @@ TEST(FourierTransform, transform1D){
 	for(int sign = -1; sign < 2; sign += 2){
 		//Perform FFT.
 		FourierTransform::transform(
-			input.getData().getData(),
-			output.getData().getData(),
+			input.getData(),
+			output.getData(),
 			10,
 			sign
 		);
@@ -82,8 +82,8 @@ TEST(FourierTransform, transform2D){
 	for(int sign = -1; sign < 2; sign += 2){
 		//Perform FFT.
 		FourierTransform::transform(
-			input.getData().getData(),
-			output.getData().getData(),
+			input.getData(),
+			output.getData(),
 			10,
 			5,
 			sign
@@ -148,8 +148,8 @@ TEST(FourierTransform, transform3D){
 	for(int sign = -1; sign < 2; sign += 2){
 		//Perform FFT.
 		FourierTransform::transform(
-			input.getData().getData(),
-			output.getData().getData(),
+			input.getData(),
+			output.getData(),
 			10,
 			5,
 			3,
@@ -238,16 +238,16 @@ TEST(FourierTransform, transformND){
 	for(int sign = -1; sign < 2; sign += 2){
 		//Perform FFT.
 		FourierTransform::transform(
-			input.getData().getData(),
-			output.getData().getData(),
+			input.getData(),
+			output.getData(),
 			{10, 5},
 			sign
 		);
 
 		//Calculate reference solution.
 		FourierTransform::transform(
-			input.getData().getData(),
-			reference.getData().getData(),
+			input.getData(),
+			reference.getData(),
 			10,
 			5,
 			sign
@@ -290,8 +290,8 @@ TEST(FourierTransform, transformPlan){
 	for(int sign = -1; sign < 2; sign += 2){
 		//Setup plan.
 		FourierTransform::Plan<std::complex<double>> plan(
-			input.getData().getData(),
-			output.getData().getData(),
+			input.getData(),
+			output.getData(),
 			{10, 5},
 			sign
 		);
@@ -308,8 +308,8 @@ TEST(FourierTransform, transformPlan){
 
 		//Calculate reference solution.
 		FourierTransform::transform(
-			input.getData().getData(),
-			reference.getData().getData(),
+			input.getData(),
+			reference.getData(),
 			10,
 			5,
 			sign
@@ -347,15 +347,15 @@ TEST(FourierTransform, forward1D){
 
 	//Perform FFT.
 	FourierTransform::forward(
-		input.getData().getData(),
-		output.getData().getData(),
+		input.getData(),
+		output.getData(),
 		10
 	);
 
 	//Calculate reference solution.
 	FourierTransform::transform(
-		input.getData().getData(),
-		reference.getData().getData(),
+		input.getData(),
+		reference.getData(),
 		10,
 		-1
 	);
@@ -390,16 +390,16 @@ TEST(FourierTransform, forward2D){
 
 	//Perform FFT.
 	FourierTransform::forward(
-		input.getData().getData(),
-		output.getData().getData(),
+		input.getData(),
+		output.getData(),
 		10,
 		5
 	);
 
 	//Calculate reference solution.
 	FourierTransform::transform(
-		input.getData().getData(),
-		reference.getData().getData(),
+		input.getData(),
+		reference.getData(),
 		10,
 		5,
 		-1
@@ -438,8 +438,8 @@ TEST(FourierTransform, forward3D){
 
 	//Perform FFT.
 	FourierTransform::forward(
-		input.getData().getData(),
-		output.getData().getData(),
+		input.getData(),
+		output.getData(),
 		10,
 		5,
 		3
@@ -447,8 +447,8 @@ TEST(FourierTransform, forward3D){
 
 	//Calculate reference solution.
 	FourierTransform::transform(
-		input.getData().getData(),
-		reference.getData().getData(),
+		input.getData(),
+		reference.getData(),
 		10,
 		5,
 		3,
@@ -492,15 +492,15 @@ TEST(FourierTransform, forwardND){
 
 	//Perform FFT.
 	FourierTransform::forward(
-		input.getData().getData(),
-		output.getData().getData(),
+		input.getData(),
+		output.getData(),
 		{10, 5}
 	);
 
 	//Calculate reference solution.
 	FourierTransform::forward(
-		input.getData().getData(),
-		reference.getData().getData(),
+		input.getData(),
+		reference.getData(),
 		10,
 		5
 	);
@@ -540,8 +540,8 @@ TEST(FourierTransform, forwardPlan){
 
 	//Setup plan.
 	FourierTransform::ForwardPlan<std::complex<double>> plan(
-		input.getData().getData(),
-		output.getData().getData(),
+		input.getData(),
+		output.getData(),
 		{10, 5}
 	);
 	plan.setNormalizationFactor(2);
@@ -557,8 +557,8 @@ TEST(FourierTransform, forwardPlan){
 
 	//Calculate reference solution.
 	FourierTransform::forward(
-		input.getData().getData(),
-		reference.getData().getData(),
+		input.getData(),
+		reference.getData(),
 		10,
 		5
 	);
@@ -594,15 +594,15 @@ TEST(FourierTransform, inverse1D){
 
 	//Perform FFT.
 	FourierTransform::inverse(
-		input.getData().getData(),
-		output.getData().getData(),
+		input.getData(),
+		output.getData(),
 		10
 	);
 
 	//Calculate reference solution.
 	FourierTransform::transform(
-		input.getData().getData(),
-		reference.getData().getData(),
+		input.getData(),
+		reference.getData(),
 		10,
 		1
 	);
@@ -637,16 +637,16 @@ TEST(FourierTransform, inversed2D){
 
 	//Perform FFT.
 	FourierTransform::inverse(
-		input.getData().getData(),
-		output.getData().getData(),
+		input.getData(),
+		output.getData(),
 		10,
 		5
 	);
 
 	//Calculate reference solution.
 	FourierTransform::transform(
-		input.getData().getData(),
-		reference.getData().getData(),
+		input.getData(),
+		reference.getData(),
 		10,
 		5,
 		1
@@ -685,8 +685,8 @@ TEST(FourierTransform, inverse3D){
 
 	//Perform FFT.
 	FourierTransform::inverse(
-		input.getData().getData(),
-		output.getData().getData(),
+		input.getData(),
+		output.getData(),
 		10,
 		5,
 		3
@@ -694,8 +694,8 @@ TEST(FourierTransform, inverse3D){
 
 	//Calculate reference solution.
 	FourierTransform::transform(
-		input.getData().getData(),
-		reference.getData().getData(),
+		input.getData(),
+		reference.getData(),
 		10,
 		5,
 		3,
@@ -739,15 +739,15 @@ TEST(FourierTransform, inverseND){
 
 	//Perform FFT.
 	FourierTransform::inverse(
-		input.getData().getData(),
-		output.getData().getData(),
+		input.getData(),
+		output.getData(),
 		{10, 5}
 	);
 
 	//Calculate reference solution.
 	FourierTransform::inverse(
-		input.getData().getData(),
-		reference.getData().getData(),
+		input.getData(),
+		reference.getData(),
 		10,
 		5
 	);
@@ -787,8 +787,8 @@ TEST(FourierTransform, inversePlan){
 
 	//Setup plan.
 	FourierTransform::InversePlan<std::complex<double>> plan(
-		input.getData().getData(),
-		output.getData().getData(),
+		input.getData(),
+		output.getData(),
 		{10, 5}
 	);
 	plan.setNormalizationFactor(2);
@@ -804,8 +804,8 @@ TEST(FourierTransform, inversePlan){
 
 	//Calculate reference solution.
 	FourierTransform::inverse(
-		input.getData().getData(),
-		reference.getData().getData(),
+		input.getData(),
+		reference.getData(),
 		10,
 		5
 	);
