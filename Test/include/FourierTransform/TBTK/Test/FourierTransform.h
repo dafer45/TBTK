@@ -216,57 +216,6 @@ TEST(FourierTransform, transform3D){
 	}
 }
 
-TEST(FourierTransform, transformND){
-	//Test against the explicitly 2-dimensional transform that has already
-	//been test in the Test FourierTransform::transform2D.
-
-	//Setup input array.
-	Array<std::complex<double>> input({10, 5});
-	for(unsigned int x = 0; x < 10; x++)
-		for(unsigned int y = 0; y < 5; y++)
-			input[{x, y}] = x*y;
-
-	//Create output array.
-	Array<std::complex<double>> output({10, 5});
-
-	//Create reference array.
-	Array<std::complex<double>> reference({10, 5});
-
-	for(int sign = -1; sign < 2; sign += 2){
-		//Perform FFT.
-		FourierTransform::transform(
-			input.getData(),
-			output.getData(),
-			{10, 5},
-			sign
-		);
-
-		//Calculate reference solution.
-		FourierTransform::transform(
-			input.getData(),
-			reference.getData(),
-			{10, 5},
-			sign
-		);
-
-		//Check the output against the reference solution.
-		for(unsigned int kx = 0; kx < 10; kx++){
-			for(unsigned int ky = 0; ky < 5; ky++){
-				EXPECT_NEAR(
-					real(output[{kx, ky}]),
-					real(reference[{kx, ky}]),
-					EPSILON_10000
-				);
-				EXPECT_NEAR(
-					imag(output[{kx, ky}]),
-					imag(reference[{kx, ky}]),
-					EPSILON_10000
-				);
-			}
-		}
-	}
-}
-
 TEST(FourierTransform, transformPlan){
 	//Test against the explicitly 2-dimensional transform that has already
 	//been test in the Test FourierTransform::transform2D.
@@ -463,53 +412,6 @@ TEST(FourierTransform, forward3D){
 	}
 }
 
-TEST(FourierTransform, forwardND){
-	//Test against the explicitly 2-dimensional transform that has already
-	//been test in the Test FourierTransform::forward2D.
-
-	//Setup input array.
-	Array<std::complex<double>> input({10, 5});
-	for(unsigned int x = 0; x < 10; x++)
-		for(unsigned int y = 0; y < 5; y++)
-			input[{x, y}] = x*y;
-
-	//Create output array.
-	Array<std::complex<double>> output({10, 5});
-
-	//Create reference array.
-	Array<std::complex<double>> reference({10, 5});
-
-	//Perform FFT.
-	FourierTransform::forward(
-		input.getData(),
-		output.getData(),
-		{10, 5}
-	);
-
-	//Calculate reference solution.
-	FourierTransform::forward(
-		input.getData(),
-		reference.getData(),
-		{10, 5}
-	);
-
-	//Check the output against the reference solution.
-	for(unsigned int kx = 0; kx < 10; kx++){
-		for(unsigned int ky = 0; ky < 5; ky++){
-			EXPECT_NEAR(
-				real(output[{kx, ky}]),
-				real(reference[{kx, ky}]),
-				EPSILON_10000
-			);
-			EXPECT_NEAR(
-				imag(output[{kx, ky}]),
-				imag(reference[{kx, ky}]),
-				EPSILON_10000
-			);
-		}
-	}
-}
-
 TEST(FourierTransform, forwardPlan){
 	//Test against the explicitly 2-dimensional transform that has already
 	//been test in the Test FourierTransform::forward2D.
@@ -698,53 +600,6 @@ TEST(FourierTransform, inverse3D){
 					EPSILON_10000
 				);
 			}
-		}
-	}
-}
-
-TEST(FourierTransform, inverseND){
-	//Test against the explicitly 2-dimensional transform that has already
-	//been test in the Test FourierTransform::inverse2D.
-
-	//Setup input array.
-	Array<std::complex<double>> input({10, 5});
-	for(unsigned int x = 0; x < 10; x++)
-		for(unsigned int y = 0; y < 5; y++)
-			input[{x, y}] = x*y;
-
-	//Create output array.
-	Array<std::complex<double>> output({10, 5});
-
-	//Create reference array.
-	Array<std::complex<double>> reference({10, 5});
-
-	//Perform FFT.
-	FourierTransform::inverse(
-		input.getData(),
-		output.getData(),
-		{10, 5}
-	);
-
-	//Calculate reference solution.
-	FourierTransform::inverse(
-		input.getData(),
-		reference.getData(),
-		{10, 5}
-	);
-
-	//Check the output against the reference solution.
-	for(unsigned int kx = 0; kx < 10; kx++){
-		for(unsigned int ky = 0; ky < 5; ky++){
-			EXPECT_NEAR(
-				real(output[{kx, ky}]),
-				real(reference[{kx, ky}]),
-				EPSILON_10000
-			);
-			EXPECT_NEAR(
-				imag(output[{kx, ky}]),
-				imag(reference[{kx, ky}]),
-				EPSILON_10000
-			);
 		}
 	}
 }
