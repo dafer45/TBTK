@@ -43,7 +43,8 @@ namespace Property{
  *  # Example
  *  \snippet Property/DOS.cpp DOS
  *  ## Output
- *  \snippet output/Property/DOS.output DOS */
+ *  \snippet output/Property/DOS.output DOS
+ *  \image html output/Property/DOS/figures/PropertyDOSDOS.png */
 class DOS : public EnergyResolvedProperty<double>{
 public:
 	/** Constructs an uninitialized DOS. */

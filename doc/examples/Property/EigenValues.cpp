@@ -7,8 +7,10 @@ TBTK::DocumentationExamples::HeaderAndFooter headerAndFooter("EigenValues");
 #include "TBTK/PropertyExtractor/Diagonalizer.h"
 #include "TBTK/Solver/Diagonalizer.h"
 #include "TBTK/Streams.h"
+#include "TBTK/Visualization/MatPlotLib/Plotter.h"
 
 using namespace TBTK;
+using namespace Visualization::MatPlotLib;
 
 int main(){
 	const unsigned int SIZE_X = 10;
@@ -29,5 +31,9 @@ int main(){
 	Streams::out << "eigenValues(0) = " << eigenValues(0) << "\n";
 	Streams::out << "eigenValues(10) = " << eigenValues(10) << "\n";
 	Streams::out << "eigenValues(99) = " << eigenValues(99) << "\n";
+
+	Plotter plotter;
+	plotter.plot(eigenValues);
+	plotter.save("figures/EigenValues.png");
 }
 //! [EigenValues]

@@ -41,7 +41,8 @@ namespace Property{
  *  # Example
  *  \snippet Property/EigenValues.cpp EigenValues
  *  ## Output
- *  \snippet output/Property/EigenValues.output EigenValues */
+ *  \snippet output/Property/EigenValues.output EigenValues
+ *  \image html output/Property/EigenValues/figures/PropertyEigenValuesEigenValues.png */
 class EigenValues : public AbstractProperty<double>{
 public:
 	/** Constructs EigenValues.

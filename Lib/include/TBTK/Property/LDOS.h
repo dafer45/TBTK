@@ -42,7 +42,9 @@ namespace Property{
  *  # Example
  *  \snippet Property/LDOS.cpp LDOS
  *  ## Output
- *  \snippet output/Property/LDOS.output LDOS */
+ *  \snippet output/Property/LDOS.output LDOS
+ *  \image html output/Property/LDOS/figures/PropertyLDOSLDOS0.png
+ *  \image html output/Property/LDOS/figures/PropertyLDOSLDOS1.png */
 class LDOS : public EnergyResolvedProperty<double>{
 public:
 	/** Constructs an uninitialized LDOS. */
