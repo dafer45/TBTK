@@ -651,7 +651,7 @@ void Plotter::plot2D(
 			= argument.getArgumentMap();
 		if(argumentMap.find("cmap") == argumentMap.end())
 			argumentMap.insert({"cmap", "inferno"});
-		matplotlibcpp::contourf(x, y, z, argumentMap);
+		matplotlibcpp::contourf(x, y, z, numContours, argumentMap);
 		contourfParameters.flush();
 		currentPlotType = CurrentPlotType::Contourf;
 		break;

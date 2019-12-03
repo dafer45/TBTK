@@ -342,6 +342,7 @@ void contourf(
   const std::vector<::std::vector<Numeric>> &x,
   const std::vector<::std::vector<Numeric>> &y,
   const std::vector<::std::vector<Numeric>> &z,
+  unsigned int levels = 8,
   const std::map<std::string, std::string> &keywords =
     std::map<std::string, std::string>()
 ){
@@ -354,10 +355,11 @@ void contourf(
   PyObject *zarray = get_2darray(z);
 
   // construct positional args
-  PyObject *args = PyTuple_New(3);
+  PyObject *args = PyTuple_New(4);
   PyTuple_SetItem(args, 0, xarray);
   PyTuple_SetItem(args, 1, yarray);
   PyTuple_SetItem(args, 2, zarray);
+  PyTuple_SetItem(args, 3, PyInt_FromLong(levels));
 
   // Build up the kw args.
   PyObject *kwargs = PyDict_New();

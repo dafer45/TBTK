@@ -242,6 +242,9 @@ public:
 	/** Set rotation angels. */
 	void setRotation(int elevation, int azimuthal, bool overwrite = true);
 
+	/** Set the number of contours to use when plotting contour plots. */
+	void setNumContours(unsigned int numContours);
+
 	/** Set whether ot not data is plotted on top of old data. */
 //	void setHold(bool hold);
 
@@ -278,6 +281,9 @@ private:
 
 	/** Axes to use instead of the default axes. */
 	std::vector<std::pair<unsigned int, std::vector<double>>> axes;
+
+	/** The number of contours to use when plotting contour plots. */
+	unsigned int numContours;
 
 	/** Plot data. */
 	void plot1D(
@@ -333,6 +339,7 @@ private:
 inline Plotter::Plotter(){
 	currentPlotType = CurrentPlotType::None;
 	plotMethod3D = PlotMethod3D::Contourf;
+	numContours = 8;
 }
 
 inline void Plotter::setBoundsX(
@@ -455,6 +462,10 @@ inline void Plotter::setRotation(int elevation, int azimuthal, bool overwrite){
 	}*/
 }
 
+inline void Plotter::setNumContours(unsigned int numContours){
+	this->numContours = numContours;
+}
+
 /*inline void Plotter::setHold(bool hold){
 	this->hold = hold;
 }*/
@@ -464,6 +475,7 @@ inline void Plotter::clear(){
 	plotSurfaceParameters.clear();
 	contourfParameters.clear();
 	axes.clear();
+	numContours = 8;
 	matplotlibcpp::clf();
 }
 
