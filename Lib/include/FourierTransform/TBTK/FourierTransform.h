@@ -43,33 +43,6 @@ public:
 		Plan(
 			const CArray<DataType> &in,
 			CArray<DataType> &out,
-			int sizeX,
-			int sign
-		);
-
-		/** Constructor. */
-		Plan(
-			const CArray<DataType> &in,
-			CArray<DataType> &out,
-			int sizeX,
-			int sizeY,
-			int sign
-		);
-
-		/** Constructor. */
-		Plan(
-			const CArray<DataType> &in,
-			CArray<DataType> &out,
-			int sizeX,
-			int sizeY,
-			int sizeZ,
-			int sign
-		);
-
-		/** Constructor. */
-		Plan(
-			const CArray<DataType> &in,
-			CArray<DataType> &out,
 			const std::vector<unsigned int> &ranges,
 			int sign
 		);
@@ -134,55 +107,8 @@ public:
 		ForwardPlan(
 			const CArray<DataType> &in,
 			CArray<DataType> &out,
-			int sizeX
-		) : Plan<DataType>(
-			in,
-			out,
-			sizeX,
-			-1
-		){}
-
-		/** Constructor. */
-		ForwardPlan(
-			const CArray<DataType> &in,
-			CArray<DataType> &out,
-			int sizeX,
-			int sizeY
-		) : Plan<DataType>(
-			in,
-			out,
-			sizeX,
-			sizeY,
-			-1
-		){}
-
-		/** Constructor. */
-		ForwardPlan(
-			const CArray<DataType> &in,
-			CArray<DataType> &out,
-			int sizeX,
-			int sizeY,
-			int sizeZ
-		) : Plan<DataType>(
-			in,
-			out,
-			sizeX,
-			sizeY,
-			sizeZ,
-			-1
-		){}
-
-		/** Constructor. */
-		ForwardPlan(
-			const CArray<DataType> &in,
-			CArray<DataType> &out,
 			const std::vector<unsigned int> &ranges
-		) : Plan<DataType>(
-			in,
-			out,
-			ranges,
-			-1
-		){}
+		) : Plan<DataType>(in, out, ranges, -1){}
 	};
 
 	/** Plan for executing inverse Fourier-transform. */
@@ -193,104 +119,10 @@ public:
 		InversePlan(
 			const CArray<DataType> &in,
 			CArray<DataType> &out,
-			int sizeX
-		) : Plan<DataType>(
-			in,
-			out,
-			sizeX,
-			1
-		){}
-
-		/** Constructor. */
-		InversePlan(
-			const CArray<DataType> &in,
-			CArray<DataType> &out,
-			int sizeX,
-			int sizeY
-		) : Plan<DataType>(
-			in,
-			out,
-			sizeX,
-			sizeY,
-			1
-		){}
-
-		/** Constructor. */
-		InversePlan(
-			const CArray<DataType> &in,
-			CArray<DataType> &out,
-			int sizeX,
-			int sizeY,
-			int sizeZ
-		) : Plan<DataType>(
-			in,
-			out,
-			sizeX,
-			sizeY,
-			sizeZ,
-			1
-		){}
-
-		/** Constructor. */
-		InversePlan(
-			const CArray<DataType> &in,
-			CArray<DataType> &out,
 			const std::vector<unsigned int> &ranges
-		) : Plan<DataType>(
-			in,
-			out,
-			ranges,
-			1
+		) : Plan<DataType>(in, out, ranges, 1
 		){}
 	};
-
-	/** One-dimensional complex Fourier transform.
-	 *
-	 *  @param in Pointer to array containing the input.
-	 *  @param out Pointer to array that will contain the output.
-	 *  @param sizeX The size of the data.
-	 *  @param sign The sign to use in the exponent of the Fourier
-	 *  transform. */
-	static void transform(
-		const CArray<std::complex<double>> &in,
-		CArray<std::complex<double>> &out,
-		int sizeX,
-		int sign
-	);
-
-	/** Two-dimensional complex Fourier transform.
-	 *
-	 *  @param in Pointer to array containing the input.
-	 *  @param out Pointer to array that will contain the output.
-	 *  @param sizeX The range of the first dimension.
-	 *  @param sizeY The range of the second dimension.
-	 *  @param sign The sign to use in the exponent of the Fourier
-	 *  transform. */
-	static void transform(
-		const CArray<std::complex<double>> &in,
-		CArray<std::complex<double>> &out,
-		int sizeX,
-		int sizeY,
-		int sign
-	);
-
-	/** Three-dimensional complex Fourier transform.
-	 *
-	 *  @param in Pointer to array containing the input.
-	 *  @param out Pointer to array that will contain the output.
-	 *  @param sizeX The range of the first dimension.
-	 *  @param sizeY The range of the second dimension.
-	 *  @param sizeZ The range of the third dimension.
-	 *  @param sign The sign to use in the exponent of the Fourier
-	 *  transform. */
-	static void transform(
-		const CArray<std::complex<double>> &in,
-		CArray<std::complex<double>> &out,
-		int sizeX,
-		int sizeY,
-		int sizeZ,
-		int sign
-	);
 
 	/** N-dimensional complex Fourier transform.
 	 *
@@ -312,45 +144,6 @@ public:
 	template<typename DataType>
 	static void transform(Plan<DataType> &plan);
 
-	/** One-dimensional complex forward Fourier transform.
-	 *
-	 *  @param in Pointer to array containing the input.
-	 *  @param out Pointer to array that will contain the output.
-	 *  @param sizeX The size of the data. */
-	static void forward(
-		const CArray<std::complex<double>> &in,
-		CArray<std::complex<double>> &out,
-		int sizeX
-	);
-
-	/** Two-dimensional complex forward Fourier transform.
-	 *
-	 *  @param in Pointer to array containing the input.
-	 *  @param out Pointer to array that will contain the output.
-	 *  @param sizeX The range of the first dimension.
-	 *  @param sizeY The range of the second dimension. */
-	static void forward(
-		const CArray<std::complex<double>> &in,
-		CArray<std::complex<double>> &out,
-		int sizeX,
-		int sizeY
-	);
-
-	/** Three-dimensional complex forward Fourier transform.
-	 *
-	 *  @param in Pointer to array containing the input.
-	 *  @param out Pointer to array that will contain the output.
-	 *  @param sizeX The range of the first dimension.
-	 *  @param sizeY The range of the second dimension.
-	 *  @param sizeZ The range of the third dimension. */
-	static void forward(
-		const CArray<std::complex<double>> &in,
-		CArray<std::complex<double>> &out,
-		int sizeX,
-		int sizeY,
-		int sizeZ
-	);
-
 	/** N-dimensional complex forward Fourier transform.
 	 *
 	 *  @param in Pointer to array containing the input.
@@ -360,45 +153,6 @@ public:
 		const CArray<std::complex<double>> &in,
 		CArray<std::complex<double>> &out,
 		const std::vector<unsigned int> &ranges
-	);
-
-	/** One-dimensional complex inverse Fourier transform.
-	 *
-	 *  @param in Pointer to array containing the input.
-	 *  @param out Pointer to array that will contain the output.
-	 *  @param sizeX The size of the data. */
-	static void inverse(
-		const CArray<std::complex<double>> &in,
-		CArray<std::complex<double>> &out,
-		int sizeX
-	);
-
-	/** Two-dimensional complex inverse Fourier transform.
-	 *
-	 *  @param in Pointer to array containing the input.
-	 *  @param out Pointer to array that will contain the output.
-	 *  @param sizeX The range of the first dimension.
-	 *  @param sizeY The range of the second dimension. */
-	static void inverse(
-		const CArray<std::complex<double>> &in,
-		CArray<std::complex<double>> &out,
-		int sizeX,
-		int sizeY
-	);
-
-	/** Three-dimensional complex inverse Fourier transform.
-	 *
-	 *  @param in Pointer to array containing the input.
-	 *  @param out Pointer to array that will contain the output.
-	 *  @param sizeX The range of the first dimension.
-	 *  @param sizeY The range of the second dimension.
-	 *  @param sizeZ The range of the third dimension. */
-	static void inverse(
-		const CArray<std::complex<double>> &in,
-		CArray<std::complex<double>> &out,
-		int sizeX,
-		int sizeY,
-		int sizeZ
 	);
 
 	/** N-dimensional complex inverse Fourier transform.
@@ -430,63 +184,9 @@ inline void FourierTransform::transform(Plan<DataType> &plan){
 inline void FourierTransform::forward(
 	const CArray<std::complex<double>> &in,
 	CArray<std::complex<double>> &out,
-	int sizeX
-){
-	transform(in, out, sizeX, -1);
-}
-
-inline void FourierTransform::forward(
-	const CArray<std::complex<double>> &in,
-	CArray<std::complex<double>> &out,
-	int sizeX,
-	int sizeY
-){
-	transform(in, out, sizeX, sizeY, -1);
-}
-
-inline void FourierTransform::forward(
-	const CArray<std::complex<double>> &in,
-	CArray<std::complex<double>> &out,
-	int sizeX,
-	int sizeY,
-	int sizeZ
-){
-	transform(in, out, sizeX, sizeY, sizeZ, -1);
-}
-
-inline void FourierTransform::forward(
-	const CArray<std::complex<double>> &in,
-	CArray<std::complex<double>> &out,
 	const std::vector<unsigned int> &ranges
 ){
 	transform(in, out, ranges, -1);
-}
-
-inline void FourierTransform::inverse(
-	const CArray<std::complex<double>> &in,
-	CArray<std::complex<double>> &out,
-	int sizeX
-){
-	transform(in, out, sizeX, 1);
-}
-
-inline void FourierTransform::inverse(
-	const CArray<std::complex<double>> &in,
-	CArray<std::complex<double>> &out,
-	int sizeX,
-	int sizeY
-){
-	transform(in, out, sizeX, sizeY, 1);
-}
-
-inline void FourierTransform::inverse(
-	const CArray<std::complex<double>> &in,
-	CArray<std::complex<double>> &out,
-	int sizeX,
-	int sizeY,
-	int sizeZ
-){
-	transform(in, out, sizeX, sizeY, sizeZ, 1);
 }
 
 inline void FourierTransform::inverse(

@@ -33,7 +33,7 @@ TEST(FourierTransform, transform1D){
 		FourierTransform::transform(
 			input.getData(),
 			output.getData(),
-			10,
+			{10},
 			sign
 		);
 
@@ -84,8 +84,7 @@ TEST(FourierTransform, transform2D){
 		FourierTransform::transform(
 			input.getData(),
 			output.getData(),
-			10,
-			5,
+			{10, 5},
 			sign
 		);
 
@@ -150,9 +149,7 @@ TEST(FourierTransform, transform3D){
 		FourierTransform::transform(
 			input.getData(),
 			output.getData(),
-			10,
-			5,
-			3,
+			{10, 5, 3},
 			sign
 		);
 
@@ -248,8 +245,7 @@ TEST(FourierTransform, transformND){
 		FourierTransform::transform(
 			input.getData(),
 			reference.getData(),
-			10,
-			5,
+			{10, 5},
 			sign
 		);
 
@@ -310,8 +306,7 @@ TEST(FourierTransform, transformPlan){
 		FourierTransform::transform(
 			input.getData(),
 			reference.getData(),
-			10,
-			5,
+			{10, 5},
 			sign
 		);
 
@@ -349,14 +344,14 @@ TEST(FourierTransform, forward1D){
 	FourierTransform::forward(
 		input.getData(),
 		output.getData(),
-		10
+		{10}
 	);
 
 	//Calculate reference solution.
 	FourierTransform::transform(
 		input.getData(),
 		reference.getData(),
-		10,
+		{10},
 		-1
 	);
 
@@ -392,16 +387,14 @@ TEST(FourierTransform, forward2D){
 	FourierTransform::forward(
 		input.getData(),
 		output.getData(),
-		10,
-		5
+		{10, 5}
 	);
 
 	//Calculate reference solution.
 	FourierTransform::transform(
 		input.getData(),
 		reference.getData(),
-		10,
-		5,
+		{10, 5},
 		-1
 	);
 
@@ -440,18 +433,14 @@ TEST(FourierTransform, forward3D){
 	FourierTransform::forward(
 		input.getData(),
 		output.getData(),
-		10,
-		5,
-		3
+		{10, 5, 3}
 	);
 
 	//Calculate reference solution.
 	FourierTransform::transform(
 		input.getData(),
 		reference.getData(),
-		10,
-		5,
-		3,
+		{10, 5, 3},
 		-1
 	);
 
@@ -501,8 +490,7 @@ TEST(FourierTransform, forwardND){
 	FourierTransform::forward(
 		input.getData(),
 		reference.getData(),
-		10,
-		5
+		{10, 5}
 	);
 
 	//Check the output against the reference solution.
@@ -559,8 +547,7 @@ TEST(FourierTransform, forwardPlan){
 	FourierTransform::forward(
 		input.getData(),
 		reference.getData(),
-		10,
-		5
+		{10, 5}
 	);
 
 	//Check the output against the reference solution.
@@ -596,14 +583,14 @@ TEST(FourierTransform, inverse1D){
 	FourierTransform::inverse(
 		input.getData(),
 		output.getData(),
-		10
+		{10}
 	);
 
 	//Calculate reference solution.
 	FourierTransform::transform(
 		input.getData(),
 		reference.getData(),
-		10,
+		{10},
 		1
 	);
 
@@ -639,16 +626,14 @@ TEST(FourierTransform, inversed2D){
 	FourierTransform::inverse(
 		input.getData(),
 		output.getData(),
-		10,
-		5
+		{10, 5}
 	);
 
 	//Calculate reference solution.
 	FourierTransform::transform(
 		input.getData(),
 		reference.getData(),
-		10,
-		5,
+		{10, 5},
 		1
 	);
 
@@ -687,18 +672,14 @@ TEST(FourierTransform, inverse3D){
 	FourierTransform::inverse(
 		input.getData(),
 		output.getData(),
-		10,
-		5,
-		3
+		{10, 5, 3}
 	);
 
 	//Calculate reference solution.
 	FourierTransform::transform(
 		input.getData(),
 		reference.getData(),
-		10,
-		5,
-		3,
+		{10, 5, 3},
 		1
 	);
 
@@ -748,8 +729,7 @@ TEST(FourierTransform, inverseND){
 	FourierTransform::inverse(
 		input.getData(),
 		reference.getData(),
-		10,
-		5
+		{10, 5}
 	);
 
 	//Check the output against the reference solution.
@@ -806,8 +786,7 @@ TEST(FourierTransform, inversePlan){
 	FourierTransform::inverse(
 		input.getData(),
 		reference.getData(),
-		10,
-		5
+		{10, 5}
 	);
 
 	//Check the output against the reference solution.
