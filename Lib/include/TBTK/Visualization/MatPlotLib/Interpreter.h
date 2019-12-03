@@ -83,6 +83,9 @@
 #	define PyString_FromString PyUnicode_FromString
 #endif
 
+namespace TBTK {
+namespace Visualization {
+namespace MatPlotLib {
 namespace matplotlibcpp {
 namespace detail {
 
@@ -155,3 +158,6 @@ private:
 
 } // end namespace detail
 } // end namespace matplotlibcpp
+} // end namespace MatPlotLib
+} // end namespace Visualization
+} // end namespace TBTK

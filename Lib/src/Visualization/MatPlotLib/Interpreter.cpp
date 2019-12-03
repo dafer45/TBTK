@@ -50,6 +50,9 @@
 
 #include <Python.h>
 
+namespace TBTK {
+namespace Visualization {
+namespace MatPlotLib {
 namespace matplotlibcpp {
 namespace detail {
 
@@ -193,3 +196,6 @@ void Interpreter::import_numpy(){
 
 } // end namespace detail
 } // end namespace matplotlibcpp
+} // end namespace MatPlotLib
+} // end namespace Visualization
+} // end namespace TBTK

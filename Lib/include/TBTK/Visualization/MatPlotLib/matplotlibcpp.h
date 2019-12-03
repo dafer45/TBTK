@@ -76,6 +76,9 @@
 #endif
 
 
+namespace TBTK {
+namespace Visualization {
+namespace MatPlotLib {
 namespace matplotlibcpp {
 
 // must be called before the first regular call to matplotlib to have any effect
@@ -1864,3 +1867,6 @@ private:
 };
 
 } // end namespace matplotlibcpp
+} // end namespace MatPlotLib
+} // end namespace Visualization
+} // end namespace TBTK
