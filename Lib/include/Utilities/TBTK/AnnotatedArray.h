@@ -57,6 +57,7 @@ public:
 	 *  @return The axes of the AnnotatedArray. */
 	const std::vector<std::vector<AxesType>>& getAxes() const;
 private:
+	/** The array axes. */
 	std::vector<std::vector<AxesType>> axes;
 };
 
