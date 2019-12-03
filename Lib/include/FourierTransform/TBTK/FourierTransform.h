@@ -126,8 +126,8 @@ public:
 
 	/** N-dimensional complex Fourier transform.
 	 *
-	 *  @param in Pointer to array containing the input.
-	 *  @param out Pointer to array that will contain the output.
+	 *  @param in Input data.
+	 *  @param out Output data.
 	 *  @param ranges The dimensions of the data.
 	 *  @param sign The sign to use in the exponent of the Fourier
 	 *  transform. */
@@ -146,8 +146,8 @@ public:
 
 	/** N-dimensional complex forward Fourier transform.
 	 *
-	 *  @param in Pointer to array containing the input.
-	 *  @param out Pointer to array that will contain the output.
+	 *  @param in Input data.
+	 *  @param out Output data.
 	 *  @param ranges The dimensions of the data. */
 	static void forward(
 		const CArray<std::complex<double>> &in,
@@ -157,8 +157,8 @@ public:
 
 	/** N-dimensional complex inverse Fourier transform.
 	 *
-	 *  @param in Pointer to array containing the input.
-	 *  @param out Pointer to array that will contain the output.
+	 *  @param in Input data.
+	 *  @param out Output data.
 	 *  @param ranges The dimensions of the data. */
 	static void inverse(
 		const CArray<std::complex<double>> &in,
