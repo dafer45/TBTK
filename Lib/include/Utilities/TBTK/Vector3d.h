@@ -50,9 +50,6 @@ public:
 	/** Constructor. */
 	Vector3d(const std::vector<double> &components);
 
-	/** Destructor. */
-	~Vector3d();
-
 	/** Addition operator. */
 	const Vector3d operator+(const Vector3d &rhs) const;
 

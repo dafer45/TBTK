@@ -54,7 +54,4 @@ Vector2d::Vector2d(const vector<double> &components){
 	y = *(components.begin() + 1);
 }
 
-Vector2d::~Vector2d(){
-}
-
 };	//End of namespace TBTK

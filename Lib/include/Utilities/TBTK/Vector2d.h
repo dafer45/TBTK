@@ -47,9 +47,6 @@ public:
 	/** Constructor. */
 	Vector2d(const std::vector<double> &components);
 
-	/** Destructor. */
-	~Vector2d();
-
 	/** Addition operator. */
 	const Vector2d operator+(const Vector2d &rhs) const;
 

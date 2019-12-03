@@ -26,65 +26,23 @@ using namespace std;
 namespace TBTK{
 
 VectorNd::VectorNd(){
-	data = nullptr;
 }
 
-VectorNd::VectorNd(unsigned int size){
-	this->size = size;
-	data = new double[size];
+VectorNd::VectorNd(unsigned int size) : data(size){
 }
 
-VectorNd::VectorNd(initializer_list<double> components){
-	size = components.size();
-	data = new double[size];
-	for(unsigned int n = 0; n < size; n++)
+VectorNd::VectorNd(
+	initializer_list<double> components
+) :
+	data(components.size())
+{
+	for(unsigned int n = 0; n < data.getSize(); n++)
 		data[n] = *(components.begin() + n);
 }
 
-VectorNd::VectorNd(const vector<double> &components){
-	size = components.size();
-	data = new double[size];
-	for(unsigned int n = 0; n < size; n++)
+VectorNd::VectorNd(const vector<double> &components) : data(components.size()){
+	for(unsigned int n = 0; n < data.getSize(); n++)
 		data[n] = components.at(n);
-}
-
-VectorNd::VectorNd(const VectorNd &vectorNd){
-	size = vectorNd.size;
-	data = new double[size];
-	for(unsigned int n = 0; n < size; n++)
-		data[n] = vectorNd.data[n];
-}
-
-VectorNd::VectorNd(VectorNd &&vectorNd){
-	size = vectorNd.size;
-	data = vectorNd.data;
-	vectorNd.data = nullptr;
-}
-
-VectorNd::~VectorNd(){
-	if(data != nullptr)
-		delete [] data;
-}
-
-VectorNd& VectorNd::operator=(const VectorNd &rhs){
-	if(this != &rhs){
-		size = rhs.size;
-		data = new double[size];
-		for(unsigned int n = 0; n < size; n++)
-			data[n] = rhs.data[n];
-	}
-
-	return *this;
-}
-
-VectorNd& VectorNd::operator=(VectorNd &&rhs){
-	if(this != &rhs){
-		size = rhs.size;
-		data = rhs.data;
-		rhs.data = nullptr;
-	}
-
-	return *this;
 }
 
 };	//End of namespace TBTK

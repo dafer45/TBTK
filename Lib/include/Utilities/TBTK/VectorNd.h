@@ -23,6 +23,7 @@
 #ifndef COM_DAFER45_TBTK_VECTOR_ND
 #define COM_DAFER45_TBTK_VECTOR_ND
 
+#include "TBTK/CArray.h"
 #include "TBTK/TBTKMacros.h"
 
 #include <cmath>
@@ -40,26 +41,11 @@ public:
 	/** Constructor. */
 	VectorNd(unsigned int size);
 
-	/** Copy constructor. */
-	VectorNd(const VectorNd &vectorNd);
-
-	/** Move constructor. */
-	VectorNd(VectorNd &&vectorNd);
-
 	/** Constructor. */
 	VectorNd(std::initializer_list<double> components);
 
 	/** Constructor. */
 	VectorNd(const std::vector<double> &components);
-
-	/** Destructor. */
-	~VectorNd();
-
-	/** Assignment operator. */
-	VectorNd& operator=(const VectorNd &vectorNd);
-
-	/** Move assignment operator. */
-	VectorNd& operator=(VectorNd &&vectorNd);
 
 	/** Accessor operator. */
 	double& operator[](unsigned int n);
@@ -108,11 +94,8 @@ public:
 	/** operator<< for ostream. */
 	friend std::ostream& operator<<(std::ostream &stream, const VectorNd &v);
 private:
-	/** Data size. */
-	unsigned int size;
-
 	/** Data. */
-	double *data;
+	CArray<double> data;
 };
 
 inline double& VectorNd::operator[](unsigned int n){
@@ -125,16 +108,16 @@ inline const double& VectorNd::operator[](unsigned int n) const{
 
 inline const VectorNd VectorNd::operator+(const VectorNd &rhs) const{
 	TBTKAssert(
-		size == rhs.size,
+		data.getSize() == rhs.data.getSize(),
 		"VectorNd::operator+()",
-		"Incompatible dimensions. Left hand side has " << size
-		<< " components, while the right hand side has " << rhs.size
-		<< " components.",
+		"Incompatible dimensions. Left hand side has "
+		<< data.getSize() << " components, while the right hand side"
+		<< " has " << rhs.getSize() << " components.",
 		""
 	);
 
-	VectorNd result(size);
-	for(unsigned int n = 0; n < size; n++)
+	VectorNd result(data.getSize());
+	for(unsigned int n = 0; n < data.getSize(); n++)
 		result.data[n] = data[n] + rhs.data[n];
 
 	return result;
@@ -142,48 +125,48 @@ inline const VectorNd VectorNd::operator+(const VectorNd &rhs) const{
 
 inline const VectorNd VectorNd::operator-(const VectorNd &rhs) const{
 	TBTKAssert(
-		size == rhs.size,
+		data.getSize() == rhs.data.getSize(),
 		"VectorNd::operator-()",
-		"Incompatible dimensions. Left hand side has " << size
-		<< " components, while the right hand side has " << rhs.size
-		<< " components.",
+		"Incompatible dimensions. Left hand side has "
+		<< data.getSize() << " components, while the right hand side"
+		<< " has " << rhs.data.getSize() << " components.",
 		""
 	);
 
-	VectorNd result(size);
-	for(unsigned int n = 0; n < size; n++)
+	VectorNd result(data.getSize());
+	for(unsigned int n = 0; n < data.getSize(); n++)
 		result.data[n] = data[n] - rhs.data[n];
 
 	return result;
 }
 
 inline const VectorNd VectorNd::operator-() const{
-	VectorNd result(size);
-	for(unsigned int n = 0; n < size; n++)
+	VectorNd result(data.getSize());
+	for(unsigned int n = 0; n < data.getSize(); n++)
 		result.data[n] = -data[n];
 
 	return result;
 }
 
 inline const VectorNd VectorNd::operator*(double rhs) const{
-	VectorNd result(size);
-	for(unsigned int n = 0; n < size; n++)
+	VectorNd result(data.getSize());
+	for(unsigned int n = 0; n < data.getSize(); n++)
 		result.data[n] = data[n]*rhs;
 
 	return result;
 }
 
 inline const VectorNd operator*(double lhs, const VectorNd &rhs){
-	VectorNd result(rhs.size);
-	for(unsigned int n = 0; n < rhs.size; n++)
+	VectorNd result(rhs.data.getSize());
+	for(unsigned int n = 0; n < rhs.data.getSize(); n++)
 		result.data[n] = lhs*rhs.data[n];
 
 	return result;
 }
 
 inline const VectorNd VectorNd::operator/(double rhs) const{
-	VectorNd result(size);
-	for(unsigned int n = 0; n < size; n++)
+	VectorNd result(data.getSize());
+	for(unsigned int n = 0; n < data.getSize(); n++)
 		result.data[n] = data[n]/rhs;
 
 	return result;
@@ -195,7 +178,7 @@ inline const VectorNd VectorNd::unit() const{
 
 inline const VectorNd VectorNd::parallel(const VectorNd &v) const{
 	TBTKAssert(
-		size == v.size,
+		data.getSize() == v.data.getSize(),
 		"VectorNd::parallel()",
 		"Incompatible dimensions.",
 		""
@@ -210,16 +193,16 @@ inline double VectorNd::norm() const{
 
 inline double VectorNd::dotProduct(const VectorNd &lhs, const VectorNd &rhs){
 	TBTKAssert(
-		lhs.size == rhs.size,
+		lhs.data.getSize() == rhs.data.getSize(),
 		"VectorNd::dotProduct()",
-		"Incompatible dimensions. Left hand side has " << lhs.size
-		<< " components, while the right hand side has " << rhs.size
-		<< " components.",
+		"Incompatible dimensions. Left hand side has "
+		<< lhs.data.getSize() << " components, while the right hand"
+		<< " side has " << rhs.data.getSize() << " components.",
 		""
 	);
 
 	double dp = 0;
-	for(unsigned int n = 0; n < lhs.size; n++)
+	for(unsigned int n = 0; n < lhs.data.getSize(); n++)
 		dp += lhs.data[n]*rhs.data[n];
 
 	return dp;
@@ -227,19 +210,19 @@ inline double VectorNd::dotProduct(const VectorNd &lhs, const VectorNd &rhs){
 
 inline const std::vector<double> VectorNd::getStdVector() const{
 	std::vector<double> result;
-	for(unsigned int n = 0; n < size; n++)
+	for(unsigned int n = 0; n < data.getSize(); n++)
 		result.push_back(data[n]);
 
 	return result;
 }
 
 inline unsigned int VectorNd::getSize() const{
-	return size;
+	return data.getSize();
 }
 
 inline std::ostream& operator<<(std::ostream &stream, const VectorNd &v){
 	stream << "(";
-	for(unsigned int n = 0; n < v.size; n++){
+	for(unsigned int n = 0; n < v.data.getSize(); n++){
 		if(n != 0)
 			stream << ", ";
 		stream << v.data[n];

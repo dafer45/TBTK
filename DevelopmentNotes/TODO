@@ -49,11 +49,6 @@
 - Investiget FockStateRule::createNewRule(). The interface seems confusing and
   potentially wrong.
 
-- Remove destructor from Vector2d and Vector3d.
-
-- Replace raw pointer by CArray in VectorNd and remove copy and move
-  constructor, copy and move assignment operators, and destructor.
-
 - Complete tests for WignerSeitzCell.
 
 - ParallelepipedCell seems to treat the MeshType::Nodal and MeshType::Iterior

@@ -56,7 +56,4 @@ Vector3d::Vector3d(const vector<double> &components){
 	z = *(components.begin() + 2);
 }
 
-Vector3d::~Vector3d(){
-}
-
 };	//End of namespace TBTK
