@@ -185,8 +185,10 @@ namespace MatPlotLib{
  *  \snippet Visualization/MatPlotLib/Plotter.cpp Plotter
  *  ## Output
  *  \image html output/Visualization/MatPlotLib/Plotter/figures/VisualizationMatPlotLibPlotterArray1D.png
+ *  \image html output/Visualization/MatPlotLib/Plotter/figures/VisualizationMatPlotLibPlotterDefaultLineStyles.png
  *  \image html output/Visualization/MatPlotLib/Plotter/figures/VisualizationMatPlotLibPlotterContourf.png
  *  \image html output/Visualization/MatPlotLib/Plotter/figures/VisualizationMatPlotLibPlotterPlotSurface.png
+ *  \image html output/Visualization/MatPlotLib/Plotter/figures/VisualizationMatPlotLibPlotterCustomAxes.png
  *  \image html output/Visualization/MatPlotLib/Plotter/figures/VisualizationMatPlotLibPlotterFullDensity.png
  *  \image html output/Visualization/MatPlotLib/Plotter/figures/VisualizationMatPlotLibPlotterDensityCut.png */
 class Plotter{
@@ -398,19 +400,6 @@ public:
 	 *  such as {{"linewidth", "2"}, {"color", "red"}}. */
 	void plot(const Array<double> &data, const Argument &argument = "");
 
-	/** Plot arbitrary data.
-	 *
-	 *  @param data The data to plot.
-	 *  @param argument A list of arguments to pass to the underlying
-	 *  matplotlib function. Can either be a single string value or a list
-	 *  such as {{"linewidth", "2"}, {"color", "red"}}. */
-	void plot(
-		const std::initializer_list<double> &data,
-		const Argument &argument = ""
-	){
-		plot(std::vector<double>(data), argument);
-	}
-
 	/** Plot arbitrary data stored in @link Array Arrays@endlink.
 	 *
 	 *  @param x The data for the x-axis.
@@ -423,55 +412,6 @@ public:
 		const Array<double> &y,
 		const Argument &argument = ""
 	);
-
-	/** Plot arbitrary data.
-	 *
-	 *  @param x The data for the x-axis.
-	 *  @param y The data for the y-axis.
-	 *  @param argument A list of arguments to pass to the underlying
-	 *  matplotlib function. Can either be a single string value or a list
-	 *  such as {{"linewidth", "2"}, {"color", "red"}}. */
-	void plot(
-		const std::initializer_list<double> &x,
-		const Array<double> &y,
-		const Argument &argument = ""
-	){
-		plot(std::vector<double>(x), y, argument);
-	}
-
-	/** Plot arbitrary data.
-	 *
-	 *  @param x The data for the x-axis.
-	 *  @param y The data for the y-axis.
-	 *  @param argument A list of arguments to pass to the underlying
-	 *  matplotlib function. Can either be a single string value or a list
-	 *  such as {{"linewidth", "2"}, {"color", "red"}}. */
-	void plot(
-		const Array<double> &x,
-		const std::initializer_list<double> &y,
-		const Argument &argument = ""
-	){
-		plot(x, std::vector<double>(y), argument);
-	}
-
-	/** Plot arbitrary data.
-	 *
-	 *  @param x The data for the x-axis.
-	 *  @param y The data for the y-axis.
-	 *  @param argument A list of arguments to pass to the underlying
-	 *  matplotlib function. Can either be a single string value or a list
-	 *  such as {{"linewidth", "2"}, {"color", "red"}}. */
-	void plot(
-		const std::initializer_list<double> &x,
-		const std::initializer_list<double> &y,
-		const Argument &argument = ""
-	){
-		plot(
-			std::vector<double>(x),
-			std::vector<double>(y),
-			argument
-		);
-	}
 
 	/** Plot arbitrary data stored in an Array.
 	 *
@@ -536,6 +476,55 @@ public:
 	 *
 	 *  @param filename The file to save the canvas to. */
 	void save(const std::string &filename) const;
+
+	/** @name Ambiguity resolution
+	 *  @{
+	 *  These functions resolves otherwise ambiguous function calls.
+	 *  */
+	void plot(
+		const Array<double> &data,
+		const std::initializer_list<
+			std::pair<std::string, std::string>
+		> &argument
+	){
+		plot(data, Argument(argument));
+	}
+
+	void plot(
+		const std::initializer_list<double> &data,
+		const Argument &argument = ""
+	){
+		plot(std::vector<double>(data), argument);
+	}
+
+	void plot(
+		const std::initializer_list<double> &x,
+		const Array<double> &y,
+		const Argument &argument = ""
+	){
+		plot(std::vector<double>(x), y, argument);
+	}
+
+	void plot(
+		const Array<double> &x,
+		const std::initializer_list<double> &y,
+		const Argument &argument = ""
+	){
+		plot(x, std::vector<double>(y), argument);
+	}
+
+	void plot(
+		const std::initializer_list<double> &x,
+		const std::initializer_list<double> &y,
+		const Argument &argument = ""
+	){
+		plot(
+			std::vector<double>(x),
+			std::vector<double>(y),
+			argument
+		);
+	}
+	/** @} */
 private:
 	/** Enum class for keeping track of the current type of plot. */
 	enum class CurrentPlotType{None, Plot1D, PlotSurface, Contourf};
@@ -561,6 +550,9 @@ private:
 
 	/** Axes to use instead of the default axes. */
 	std::vector<std::pair<unsigned int, std::vector<double>>> axes;
+
+	/** Number of currently ploted lines. */
+	unsigned int numLines;
 
 	/** The number of contours to use when plotting contour plots. */
 	unsigned int numContours;
@@ -614,12 +606,20 @@ private:
 		const Array<double> &axis,
 		unsigned int axisID
 	) const;
+
+	/** Convert a color to hexdecimal. */
+	std::string colorToHex(const Array<double> &color) const;
+
+	/** Convert double to hexadecimal value. */
+	std::string doubleToHex(double value) const;
 };
 
 inline Plotter::Plotter(){
 	currentPlotType = CurrentPlotType::None;
 	plotMethod3D = PlotMethod3D::Contourf;
+	numLines = 0;
 	numContours = 8;
+	clear();
 }
 
 inline void Plotter::setBoundsX(
@@ -632,7 +632,9 @@ inline void Plotter::setBoundsX(
 		"minX has to be smaller than maxX",
 		""
 	);
-	matplotlibcpp::xlim(minX, maxX);
+	plotParameters.setBoundsX(minX, maxX);
+	contourfParameters.setBoundsX(minX, maxX);
+	plotSurfaceParameters.setBoundsX(minX, maxX);
 }
 
 inline void Plotter::setBoundsY(
@@ -645,7 +647,9 @@ inline void Plotter::setBoundsY(
 		"minY has to be smaller than maxY",
 		""
 	);
-	matplotlibcpp::ylim(minY, maxY);
+	plotParameters.setBoundsY(minY, maxY);
+	contourfParameters.setBoundsY(minY, maxY);
+	plotSurfaceParameters.setBoundsY(minY, maxY);
 }
 
 inline void Plotter::setBounds(
@@ -744,6 +748,7 @@ inline void Plotter::clear(){
 	plotSurfaceParameters.clear();
 	contourfParameters.clear();
 	axes.clear();
+	numLines = 0;
 	numContours = 8;
 	matplotlibcpp::clf();
 }

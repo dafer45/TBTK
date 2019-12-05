@@ -46,6 +46,12 @@ public:
 	/** Set y-label. */
 	void setLabelY(const std::string &labelY, bool overwrite = true);
 
+	/** Set the bounds for the x-axis. */
+	void setBoundsX(double minX, double maxX, bool overwrite = true);
+
+	/** Set the bounds for the y-axis. */
+	void setBoundsY(double minY, double maxY, bool overwrite = true);
+
 	/** Flush parameters to matplotlib. */
 	void flush() const;
 
@@ -55,12 +61,21 @@ private:
 	std::pair<bool, std::string> title;
 	std::pair<bool, std::string> labelX;
 	std::pair<bool, std::string> labelY;
+	std::pair<bool, double> minX;
+	std::pair<bool, double> maxX;
+	std::pair<bool, double> minY;
+	std::pair<bool, double> maxY;
 };
 
 inline PlotParameters::PlotParameters(
 ) :
+	title(false, ""),
 	labelX(false, ""),
-	labelY(false, "")
+	labelY(false, ""),
+	minX(false, 0),
+	maxX(false, 1),
+	minY(false, 0),
+	maxY(false, 1)
 {
 }
 
@@ -85,6 +100,28 @@ inline void PlotParameters::setLabelY(
 		this->labelY = {true, labelY};
 }
 
+inline void PlotParameters::setBoundsX(
+	double minX,
+	double maxX,
+	bool overwrite
+){
+	if(overwrite || !this->minX.first)
+		this->minX = {true, minX};
+	if(overwrite || !this->maxX.first)
+		this->maxX = {true, maxX};
+}
+
+inline void PlotParameters::setBoundsY(
+	double minY,
+	double maxY,
+	bool overwrite
+){
+	if(overwrite || !this->minY.first)
+		this->minY = {true, minY};
+	if(overwrite || !this->maxY.first)
+		this->maxY = {true, maxY};
+}
+
 inline void PlotParameters::flush() const{
 	if(title.first)
 		matplotlibcpp::title(title.second);
@@ -92,12 +129,20 @@ inline void PlotParameters::flush() const{
 		matplotlibcpp::xlabel(labelX.second);
 	if(labelY.first)
 		matplotlibcpp::ylabel(labelY.second);
+	if(minX.first)
+		matplotlibcpp::xlim(minX.second, maxX.second);
+	if(minY.first)
+		matplotlibcpp::ylim(minY.second, maxY.second);
 }
 
 inline void PlotParameters::clear(){
 	title = {false, ""};
 	labelX = {false, ""};
 	labelY = {false, ""};
+	minX = {false, 0};
+	maxX = {false, 1};
+	minY = {false, 0};
+	maxY = {false, 1};
 }
 
 };	//End namespace MatPlotLib

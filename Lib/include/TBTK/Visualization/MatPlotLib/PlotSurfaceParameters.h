@@ -50,6 +50,12 @@ public:
 	/** Set z-label. */
 	void setLabelZ(const std::string &labelZ, bool overwrite = true);
 
+	/** Set the bounds for the x-axis. */
+	void setBoundsX(double minX, double maxX, bool overwrite = true);
+
+	/** Set the bounds for the y-axis. */
+	void setBoundsY(double minY, double maxY, bool overwrite = true);
+
 	/** Set rotation. */
 	void setRotation(int elevation, int azimuthal, bool overwrite = true);
 
@@ -65,6 +71,10 @@ private:
 	std::pair<bool, std::string> labelZ;
 	std::pair<bool, std::string> elevation;
 	std::pair<bool, std::string> azimuthal;
+	std::pair<bool, double> minX;
+	std::pair<bool, double> maxX;
+	std::pair<bool, double> minY;
+	std::pair<bool, double> maxY;
 };
 
 inline PlotSurfaceParameters::PlotSurfaceParameters(
@@ -74,7 +84,11 @@ inline PlotSurfaceParameters::PlotSurfaceParameters(
 	labelY(false, ""),
 	labelZ(false, ""),
 	elevation(false, "30"),
-	azimuthal(false, "-60")
+	azimuthal(false, "-60"),
+	minX(false, 0),
+	maxX(false, 1),
+	minY(false, 0),
+	maxY(false, 1)
 {
 }
 
@@ -121,6 +135,28 @@ inline void PlotSurfaceParameters::setRotation(
 	}
 }
 
+inline void PlotSurfaceParameters::setBoundsX(
+	double minX,
+	double maxX,
+	bool overwrite
+){
+	if(overwrite || !this->minX.first)
+		this->minX = {true, minX};
+	if(overwrite || !this->maxX.first)
+		this->maxX = {true, maxX};
+}
+
+inline void PlotSurfaceParameters::setBoundsY(
+	double minY,
+	double maxY,
+	bool overwrite
+){
+	if(overwrite || !this->minY.first)
+		this->minY = {true, minY};
+	if(overwrite || !this->maxY.first)
+		this->maxY = {true, maxY};
+}
+
 inline void PlotSurfaceParameters::flush() const{
 	if(title.first)
 		matplotlibcpp::title(title.second);
@@ -134,6 +170,10 @@ inline void PlotSurfaceParameters::flush() const{
 			{"azim", azimuthal.second}
 		});
 	}
+	if(minX.first)
+		matplotlibcpp::xlim(minX.second, maxX.second);
+	if(minY.first)
+		matplotlibcpp::ylim(minY.second, maxY.second);
 }
 
 inline void PlotSurfaceParameters::clear(){

@@ -28,6 +28,7 @@
 #include "TBTK/Range.h"
 #include "TBTK/Smooth.h"
 #include "TBTK/Streams.h"
+#include "TBTK/Visualization/MatPlotLib/ColorMap.h"
 #include "TBTK/Visualization/MatPlotLib/Plotter.h"
 
 #include <sstream>
@@ -511,6 +512,44 @@ void Plotter::plot(
 	}
 }*/
 
+string Plotter::colorToHex(const Array<double> &color) const{
+	const vector<unsigned int> &ranges = color.getRanges();
+	TBTKAssert(
+		ranges.size() == 1,
+		"Plotter::colorToHex()",
+		"Invalid color. The number of ranges must be 1, but is '"
+		<< ranges.size() << "'.",
+		""
+	);
+	TBTKAssert(
+		ranges[0] == 3,
+		"Plotter::colorToHex()",
+		"Invalid color. The number of colors must be 3, but is '"
+		<< ranges[0] << "'.",
+		""
+	);
+	string hexString = "#";
+	for(unsigned int n = 0; n < ranges[0]; n++)
+		hexString += doubleToHex(color[{n}]);
+
+	return hexString;
+}
+
+string Plotter::doubleToHex(double value) const{
+	if(value < 0)
+		return "00";
+	if(value >= 1)
+		return "FF";
+
+	char digits[] = "0123456789ABCDEF";
+	int x = 256*value;
+	string result;
+	result += digits[(x/16)];
+	result += digits[x%16];
+
+	return result;
+}
+
 void Plotter::plot1D(
 	const vector<double> &x,
 	const vector<double> &y,
@@ -524,13 +563,49 @@ void Plotter::plot1D(
 		""
 	);
 
-	if(argument.getArgumentMap().size() == 0)
+	if(argument.getArgumentString().compare("") != 0){
 		matplotlibcpp::plot(x, y, argument.getArgumentString());
-	else
-		matplotlibcpp::plot(x, y, argument.getArgumentMap());
+	}
+	else{
+		std::map<string, string> argumentMap
+			= argument.getArgumentMap();
+		if(argumentMap.find("color") == argumentMap.end()){
+			unsigned int colorID = (ColorMap::inferno.getRanges()[0]*11/15.)*numLines;
+			colorID %= ColorMap::inferno.getRanges()[0];
+			argumentMap.insert({
+				"color",
+				colorToHex(
+					ColorMap::inferno.getSlice(
+						{colorID, IDX_ALL}
+					)
+				)
+			});
+		}
+		if(argumentMap.find("linestyle") == argumentMap.end()){
+			unsigned int lineStyleID = (numLines/6)%3;
+			string lineStyle;
+			switch(lineStyleID){
+			case 0:
+				lineStyle = "-";
+				break;
+			case 1:
+				lineStyle = "--";
+				break;
+			case 2:
+				lineStyle = "-.";
+				break;
+			}
+			argumentMap.insert({
+				"linestyle",
+				lineStyle
+			});
+		}
+		matplotlibcpp::plot(x, y, argumentMap);
+	}
 	plotParameters.flush();
 
 	currentPlotType = CurrentPlotType::Plot1D;
+	numLines++;
 }
 
 void Plotter::plot1D(
@@ -628,15 +703,16 @@ void Plotter::plot2D(
 
 	switch(plotMethod3D){
 	case PlotMethod3D::PlotSurface:
-		matplotlibcpp::plot_surface(
-			x,
-			y,
-			z,
-			argument.getArgumentMap()
-		);
+	{
+		std::map<string, string> argumentMap
+			= argument.getArgumentMap();
+		if(argumentMap.find("cmap") == argumentMap.end())
+			argumentMap.insert({"cmap", "inferno"});
+		matplotlibcpp::plot_surface(x, y, z, argumentMap);
 		plotSurfaceParameters.flush();
 		currentPlotType = CurrentPlotType::PlotSurface;
 		break;
+	}
 	case PlotMethod3D::Contourf:
 	{
 		std::map<string, string> argumentMap
