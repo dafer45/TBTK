@@ -1637,12 +1637,12 @@ This is a wrapper class for the [FFTW3](http://www.fftw.org) library, which impl
 ## Basic interface {#BasicInterface}
 The three-dimensional Fourier transform and inverse Fourier transform can be calculated using
 ```cpp
-	FourierTransform::forward(in, out, SIZE_X, SIZE_Y, SIZE_Z);
-	FourierTransform::inverse(in, out, SIZE_X, SIZE_Y, SIZE_Z);
+	FourierTransform::forward(in, out, {SIZE_X, SIZE_Y, SIZE_Z});
+	FourierTransform::inverse(in, out, {SIZE_X, SIZE_Y, SIZE_Z});
 ```
 Here *in* and *out* are c-arrays of type std::complex<double> with size \f$SIZE\_X\times SIZE\_Y\times SIZE\_Z\f$.
 The normalization factor for each call is \f$\sqrt{SIZE\_X\times SIZE\_Y\times SIZE\_Z}\f$.
-The one- and two-dimensional versions are obtained by dropping the later arguments.
+The transform for other dimensions is done by supplying a different number of size arguments.
 
 ## Advanced interface {#AdvancedInterface}
 When executing multiple similar transforms, it is possible to avoid some overhead by using the advanced interface.
@@ -1651,12 +1651,10 @@ This is done by first setting up a plan.
 	FourierTransform::ForwardPlan<complex<double>> plan(
 		in,
 		out,
-		SIZE_X,
-		SIZE_Y,
-		SIZE_Z
+		{SIZE_X, SIZE_Y, SIZE_Z}
 	);
 ```
-Plans for one- and two-dimensional transforms are obtained by dropping the later arguments.
+Plans for different dimensionality are obtained by supplying a different number of size arguments.
 A corresponding plan for the inverse transform can be created by replacing ForwardPlan by InversePlan.
 
 It is also possible to specify a custom normalization factor.

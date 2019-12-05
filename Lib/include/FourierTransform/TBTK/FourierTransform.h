@@ -33,6 +33,15 @@
 
 namespace TBTK{
 
+/** @brief Fourier transform
+ *
+ *  # Example
+ *  \snippet FourierTransform/FourierTransform.cpp FourierTransform
+ *  ## Output
+ *  \image html output/FourierTransform/FourierTransform/figures/FourierTransformFourierTransform1D.png
+ *  \image html output/FourierTransform/FourierTransform/figures/FourierTransformFourierTransform2DReal.png
+ *  \image html output/FourierTransform/FourierTransform/figures/FourierTransformFourierTransform2DImaginary.png
+ *  \image html output/FourierTransform/FourierTransform/figures/FourierTransformFourierTransformWithPlan.png */
 class FourierTransform{
 public:
 	/** Plan for executing the Fourier-transform. */
