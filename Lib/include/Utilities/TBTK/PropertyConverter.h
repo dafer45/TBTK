@@ -173,7 +173,7 @@ AnnotatedArray<DataType, Subindex> PropertyConverter::convert(
 	{
 		std::vector<unsigned int> wildcardPositions;
 		for(unsigned int n = 0; n < pattern.getSize(); n++)
-			if(pattern[n] == IDX_ALL)
+			if(pattern[n].isWildcard())
 				wildcardPositions.push_back(n);
 
 		const IndexTree &indexTree
