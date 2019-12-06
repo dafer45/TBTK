@@ -43,6 +43,13 @@ IF(PYTHON_INCLUDES AND PYTHON_LIBRARIES)
 			if(!matplotlib)
 				exit(1);
 
+			PyObject_CallMethod(
+				matplotlib,
+				const_cast<char*>(\"use\"),
+				const_cast<char*>(\"s\"),
+				\"Agg\"
+			);
+
 			PyObject *pyplotName = PyString_FromString(\"matplotlib.pyplot\");
 			PyObject *pyplot = PyImport_Import(pyplotName);
 			if(!pyplot)
