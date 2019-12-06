@@ -58,7 +58,7 @@ namespace detail {
 
 extern std::string s_backend;
 
-std::string s_backend;
+std::string s_backend = "Agg";
 
 /* For now, Interpreter is implemented as a singleton since its currently not possible to have
   multiple independent embedded python interpreters without patching the python source code

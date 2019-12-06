@@ -600,6 +600,11 @@ void Plotter::plot1D(
 				lineStyle
 			});
 		}
+		if(argumentMap.find("linewidth") == argumentMap.end()){
+			argumentMap.insert({
+				{"linewidth", "2"}
+			});
+		}
 		matplotlibcpp::plot(x, y, argumentMap);
 	}
 	plotParameters.flush();
