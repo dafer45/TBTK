@@ -201,7 +201,16 @@ bool plot(const std::vector<Numeric> &x, const std::vector<Numeric> &y, const st
     PyObject* kwargs = PyDict_New();
     for(std::map<std::string, std::string>::const_iterator it = keywords.begin(); it != keywords.end(); ++it)
     {
-        PyDict_SetItemString(kwargs, it->first.c_str(), PyString_FromString(it->second.c_str()));
+        if(it->first.compare("linewidth") == 0){
+            char value[it->second.size()+1];
+            for(unsigned int n = 0; n < it->second.size(); n++)
+                value[n] = it->second[n];
+            value[it->second.size()] = '\0';
+            PyDict_SetItemString(kwargs, it->first.c_str(), PyInt_FromString(value, nullptr, 0));
+        }
+        else{
+            PyDict_SetItemString(kwargs, it->first.c_str(), PyString_FromString(it->second.c_str()));
+        }
     }
 
     PyObject* res = PyObject_Call(detail::Interpreter::get().s_python_function_plot, args, kwargs);

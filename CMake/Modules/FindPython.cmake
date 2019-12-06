@@ -31,22 +31,33 @@ IF(PYTHON_INCLUDES AND PYTHON_LIBRARIES)
 #endif
 
 		int main(int argc, char **argv){
-			PyTuple_New(0);
+			PyObject *emptyTuple = PyTuple_New(0);
 
 			Py_SetProgramName(\"plotting\");
 			Py_Initialize();
 			import_numpy();
 
-			PyObject *matplotlibname = PyString_FromString(\"matplotlib\");
-			PyObject *matplotlib = PyImport_Import(matplotlibname);
-			Py_DECREF(matplotlibname);
+			PyObject *matplotlibName = PyString_FromString(\"matplotlib\");
+			PyObject *matplotlib = PyImport_Import(matplotlibName);
+			Py_DECREF(matplotlibName);
 			if(!matplotlib)
 				exit(1);
 
-			PyObject *pyplotname = PyString_FromString(\"matplotlib.pyplot\");
-			PyObject *pymod = PyImport_Import(pyplotname);
-			if(!pymod)
+			PyObject *pyplotName = PyString_FromString(\"matplotlib.pyplot\");
+			PyObject *pyplot = PyImport_Import(pyplotName);
+			if(!pyplot)
 				exit(1);
+
+			PyObject *clf = PyObject_GetAttrString(pyplot, \"clf\");
+			PyObject *clfReturnValue = PyObject_CallObject(
+				clf,
+				emptyTuple
+			);
+			if(!clfReturnValue)
+				exit(1);
+			Py_DECREF(clfReturnValue);
+
+			Py_Finalize();
 
 			return 0;
 		}"

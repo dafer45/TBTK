@@ -595,16 +595,10 @@ void Plotter::plot1D(
 				lineStyle = "-.";
 				break;
 			}
-			argumentMap.insert({
-				"linestyle",
-				lineStyle
-			});
+			argumentMap.insert({"linestyle", lineStyle});
 		}
-		if(argumentMap.find("linewidth") == argumentMap.end()){
-			argumentMap.insert({
-				{"linewidth", "2"}
-			});
-		}
+		if(argumentMap.find("linewidth") == argumentMap.end())
+			argumentMap.insert({"linewidth", "2"});
 		matplotlibcpp::plot(x, y, argumentMap);
 	}
 	plotParameters.flush();
