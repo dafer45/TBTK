@@ -12,15 +12,41 @@ FIND_LIBRARY(
 IF(PYTHON_INCLUDES AND PYTHON_LIBRARIES)
 	SET(CMAKE_REQUIRED_INCLUDES ${PYTHON_INCLUDES})
 	SET(CMAKE_REQUIRED_LIBRARIES ${PYTHON_LIBRARIES})
-	INCLUDE(CheckCXXSourceCompiles)
+	INCLUDE(CheckCXXSourceRuns)
 	UNSET(PYTHON_COMPILED CACHE)
-	CHECK_CXX_SOURCE_COMPILES(
+	CHECK_CXX_SOURCE_RUNS(
 		"
 		#include <Python.h>
 		#include <numpy/arrayobject.h>
 
+#if PY_MAJOR_VERSION >= 3
+		void* import_numpy(){
+			import_array();
+			return nullptr;
+		}
+#else
+		void import_numpy(){
+			import_array();
+		}
+#endif
+
 		int main(int argc, char **argv){
 			PyTuple_New(0);
+
+			Py_SetProgramName(\"plotting\");
+			Py_Initialize();
+			import_numpy();
+
+			PyObject *matplotlibname = PyString_FromString(\"matplotlib\");
+			PyObject *matplotlib = PyImport_Import(matplotlibname);
+			Py_DECREF(matplotlibname);
+			if(!matplotlib)
+				exit(1);
+
+			PyObject *pyplotname = PyString_FromString(\"matplotlib.pyplot\");
+			PyObject *pymod = PyImport_Import(pyplotname);
+			if(!pymod)
+				exit(1);
 
 			return 0;
 		}"
