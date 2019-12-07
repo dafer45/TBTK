@@ -39,7 +39,8 @@ namespace Property{
  *  # Example
  *  \snippet Property/Magnetization.cpp Magnetization
  *  ## Output
- *  \snippet output/Property/Magnetization.output Magnetization */
+ *  \snippet output/Property/Magnetization.output Magnetization
+ *  \image html output/Property/Magnetization/figures/PropertyMagnetizationMagnetizationZ.png */
 class Magnetization : public AbstractProperty<SpinMatrix>{
 public:
 	/** Constructs Magnetization on the Ranges format. [See

@@ -209,7 +209,10 @@ AnnotatedArray<DataType, Subindex> PropertyConverter::convert(
 				maxSubindices[n] - minSubindices[n] + 1
 			);
 		}
-		Array<DataType> array = Array<DataType>::create(ranges, 0);
+		Array<DataType> array = Array<DataType>::create(
+			ranges,
+			DataType(0)
+		);
 		for(unsigned int n = 0; n < indexList.size(); n++){
 			const Index index = indexList[n];
 			std::vector<unsigned int> arrayIndices;

@@ -193,6 +193,59 @@ void Plotter::plot(
 }
 
 void Plotter::plot(
+	const Vector3d &direction,
+	const Property::Magnetization &magnetization,
+	const Argument &argument
+){
+	AnnotatedArray<SpinMatrix, Subindex> annotatedArray
+		= PropertyConverter::convert(magnetization);
+	AnnotatedArray<double, Subindex> annotatedArrayWithDoubleValues
+		= convertSpinMatrixToDouble(annotatedArray, direction);
+
+	setTitle("Magnetization", false);
+	switch(annotatedArrayWithDoubleValues.getRanges().size()){
+	case 1:
+		setLabelX("x", false);
+		break;
+	case 2:
+		setLabelX("x", false);
+		setLabelY("y", false);
+		break;
+	default:
+		break;
+	}
+
+	plot(annotatedArrayWithDoubleValues, argument);
+}
+
+void Plotter::plot(
+	const Index &pattern,
+	const Vector3d &direction,
+	const Property::Magnetization &magnetization,
+	const Argument &argument
+){
+	AnnotatedArray<SpinMatrix, Subindex> annotatedArray
+		= PropertyConverter::convert(magnetization, pattern);
+	AnnotatedArray<double, Subindex> annotatedArrayWithDoubleValues
+		= convertSpinMatrixToDouble(annotatedArray, direction);
+
+	setTitle("Magnetization", false);
+	switch(annotatedArrayWithDoubleValues.getRanges().size()){
+	case 1:
+		setLabelX("x");
+		break;
+	case 2:
+		setLabelX("x", false);
+		setLabelY("y", false);
+		break;
+	default:
+		break;
+	}
+
+	plot(annotatedArrayWithDoubleValues, argument);
+}
+
+void Plotter::plot(
 	const AnnotatedArray<double, double> &data,
 	const Argument &argument
 ){
@@ -775,6 +828,25 @@ AnnotatedArray<double, double> Plotter::convertAxes(
 	}
 
 	return AnnotatedArray<double, double>(annotatedArray, newAxes);
+}
+
+AnnotatedArray<double, Subindex> Plotter::convertSpinMatrixToDouble(
+	const AnnotatedArray<SpinMatrix, Subindex> &annotatedArray,
+	const Vector3d &direction
+) const{
+	Array<double> result
+		= Array<double>::create(annotatedArray.getRanges());
+	for(unsigned int n = 0; n < result.getSize(); n++){
+		result[n] = Vector3d::dotProduct(
+			direction,
+			annotatedArray[n].getSpinVector()
+		);
+	}
+
+	return AnnotatedArray<double, Subindex>(
+		result,
+		annotatedArray.getAxes()
+	);
 }
 
 Array<double> Plotter::getNonDefaultAxis(

@@ -29,6 +29,7 @@
 #include "TBTK/Property/DOS.h"
 #include "TBTK/Property/EigenValues.h"
 #include "TBTK/Property/LDOS.h"
+#include "TBTK/Property/Magnetization.h"
 #include "TBTK/Streams.h"
 #include "TBTK/TBTKMacros.h"
 #include "TBTK/Visualization/MatPlotLib/Argument.h"
@@ -353,7 +354,7 @@ public:
 	void plot(const Property::LDOS &ldos, const Argument &argument = "");
 
 	/** Plot local density of states (LDOS) on the
-	 *  IndexDescriptor::Format::Ranges format.
+	 *  IndexDescriptor::Format::Custom format.
 	 *
 	 *  @param pattern An Index pattern that will be used to extract data
 	 *  from the LDOS. For example, if the Index structure of the data
@@ -367,6 +368,39 @@ public:
 	void plot(
 		const Index &pattern,
 		const Property::LDOS &ldos,
+		const Argument &argument = ""
+	);
+
+	/** Plot magnetization on the IndexDescriptor::Format::Ranges format.
+	 *
+	 *  @param direction The quantization axis to use.
+	 *  @param magnetization The Property::Magnetization to plot.
+	 *  @param argument A list of arguments to pass to the underlying
+	 *  matplotlib function. Can either be a single string value or a list
+	 *  such as {{"linewidth", "2"}, {"color", "red"}}. */
+	void plot(
+		const Vector3d &direction,
+		const Property::Magnetization &magnetization,
+		const Argument &argument = ""
+	);
+
+	/** Plot magnetization on the IndexDescriptor::Format::Ranges format.
+	 *
+	 *  @param pattern An Index pattern that will be used to extract data
+	 *  from the Magnetization. For example, if the Index structure of the
+	 *  data contained in the Magnetization is {x, y, z}, the pattern
+	 *  {5, _a_, 10} will result in a plot of the LDOS along the line
+	 *  (x, z) = (5, 10).
+	 *
+	 *  @param direction The quantization axis to use.
+	 *  @param magnetization The Property::Magnetization to plot.
+	 *  @param argument A list of arguments to pass to the underlying
+	 *  matplotlib function. Can either be a single string value or a list
+	 *  such as {{"linewidth", "2"}, {"color", "red"}}. */
+	void plot(
+		const Index &pattern,
+		const Vector3d &direction,
+		const Property::Magnetization &magnetization,
 		const Argument &argument = ""
 	);
 
@@ -605,6 +639,14 @@ private:
 	Array<double> getNonDefaultAxis(
 		const Array<double> &axis,
 		unsigned int axisID
+	) const;
+
+	/** Converts a SpinMatrix valued AnnotatedArray to a double valued
+	 *  AnnotatedArray by projecting the spin matrix on a give quantization
+	 *  axis. */
+	AnnotatedArray<double, Subindex> convertSpinMatrixToDouble(
+		const AnnotatedArray<SpinMatrix, Subindex> &annotatedArray,
+		const Vector3d &direction
 	) const;
 
 	/** Convert a color to hexdecimal. */

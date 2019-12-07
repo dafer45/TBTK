@@ -42,9 +42,7 @@ public:
 	 *
 	 *  @param parameters The Model parameters. Must have two components,
 	 *  where the first component is the on-site term, and the second is
-	 *  the nearest neighbor hopping amplitude.
- 	 *
-	 *  @param includeSpin If true, a spin-Subindex is appended. */
+	 *  the nearest neighbor hopping amplitude. */
 	SquareLattice(
 		const Index &size,
 		const std::vector<std::complex<double>> &parameters
