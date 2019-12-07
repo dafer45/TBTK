@@ -99,6 +99,66 @@ IF(PYTHON_INCLUDES AND PYTHON_LIBRARIES)
 		PYTHON_COMPILED
 	)
 	IF(${PYTHON_COMPILED})
+		CHECK_CXX_SOURCE_RUNS(
+			"
+			#include <Python.h>
+			#include <numpy/arrayobject.h>
+
+#if PY_MAJOR_VERSION >= 3
+#			define PyString_FromString PyUnicode_FromString
+
+			void* import_numpy(){
+				import_array();
+				return NULL;
+			}
+#else
+			void import_numpy(){
+				import_array();
+			}
+#endif
+
+			int main(int argc, char **argv){
+				PyObject *emptyTuple = PyTuple_New(0);
+
+#if PY_MAJOR_VERSION >= 3
+				wchar_t name[] = L\"plotting\";
+#else
+				char name[] = \"plotting\";
+#endif
+				Py_SetProgramName(name);
+				Py_Initialize();
+				import_numpy();
+
+				PyObject *matplotlibName = PyString_FromString(\"matplotlib\");
+				PyObject *matplotlib = PyImport_Import(matplotlibName);
+				Py_DECREF(matplotlibName);
+				if(!matplotlib)
+					exit(1);
+
+				PyObject *pyplotName = PyString_FromString(\"matplotlib.pyplot\");
+				PyObject *pyplot = PyImport_Import(pyplotName);
+				if(!pyplot)
+					exit(1);
+
+				PyObject *clf = PyObject_GetAttrString(pyplot, \"clf\");
+				PyObject *clfReturnValue = PyObject_CallObject(
+					clf,
+					emptyTuple
+				);
+				if(!clfReturnValue)
+					exit(1);
+				Py_DECREF(clfReturnValue);
+
+				Py_Finalize();
+
+				return 0;
+			}"
+			TBTK_MATPLOTLIB_DO_NOT_FORCE_AGG
+		)
+		IF(TBTK_MATPLOTLIB_DO_NOT_FORCE_AGG)
+			ADD_DEFINITIONS(-DTBTK_MATPLOTLIB_DO_NOT_FORCE_AGG)
+		ENDIF(TBTK_MATPLOTLIB_DO_NOT_FORCE_AGG)
+
 		INCLUDE(FindPackageHandleStandardArgs)
 		FIND_PACKAGE_HANDLE_STANDARD_ARGS(
 			Python FOUND_VAR Python_FOUND
