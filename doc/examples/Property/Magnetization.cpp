@@ -13,8 +13,8 @@ using namespace TBTK;
 using namespace Visualization::MatPlotLib;
 
 int main(){
-	const unsigned int SIZE_X = 10;
-	const unsigned int SIZE_Y = 10;
+	const unsigned int SIZE_X = 11;
+	const unsigned int SIZE_Y = 11;
 	double t = 1;
 	double J = 1;
 	Model model
