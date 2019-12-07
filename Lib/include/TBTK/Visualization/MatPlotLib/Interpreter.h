@@ -139,9 +139,13 @@ struct Interpreter {
 	//<Added>
 	PyObject *s_python_function_gcf;
 	PyObject *s_python_function_gca;
+	PyObject *mpl_toolkitsmod;
+	PyObject *axis3dmod;
 	//</Added>
 
 	static Interpreter& get();
+
+	void initializeMPLToolkits();
 
 	PyObject* safe_import(PyObject* module, std::string fname);
 private:

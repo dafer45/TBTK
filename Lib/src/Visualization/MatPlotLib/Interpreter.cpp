@@ -86,6 +86,34 @@ PyObject* Interpreter::safe_import(PyObject* module, std::string fname) {
 	return fn;
 }
 
+void Interpreter::initializeMPLToolkits(){
+	if(!mpl_toolkitsmod){
+		PyObject *mpl_toolkits = PyString_FromString("mpl_toolkits");
+		PyObject *axis3d = PyString_FromString("mpl_toolkits.mplot3d");
+		if(!mpl_toolkits || !axis3d){
+			throw std::runtime_error(
+				"mpl toolkits: couldn't create string"
+			);
+		}
+
+		mpl_toolkitsmod = PyImport_Import(mpl_toolkits);
+		Py_DECREF(mpl_toolkits);
+		if(!mpl_toolkitsmod){
+			throw std::runtime_error(
+				"Error loading module mpl_toolkits."
+			);
+		}
+
+		axis3dmod = PyImport_Import(axis3d);
+		Py_DECREF(axis3d);
+		if(!axis3dmod){
+			throw std::runtime_error(
+				"Error loading module mpl_toolkits.mplot3d."
+			);
+		}
+	}
+}
+
 Interpreter::Interpreter() {
 	// optional but recommended
 #if PY_MAJOR_VERSION >= 3
@@ -174,6 +202,8 @@ Interpreter::Interpreter() {
 	//<Added>
 	s_python_function_gcf = safe_import(pymod, "gcf");
 	s_python_function_gca = safe_import(pymod, "gca");
+	mpl_toolkitsmod = nullptr;
+	axis3dmod = nullptr;
 	//</Added>
 #ifndef WITHOUT_NUMPY
 	s_python_function_imshow = safe_import(pymod, "imshow");

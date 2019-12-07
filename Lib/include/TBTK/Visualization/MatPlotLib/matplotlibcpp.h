@@ -236,7 +236,7 @@ void plot_surface(const std::vector<::std::vector<Numeric>> &x,
   // because I'm not sure that we can assume "matplotlib installed" implies
   // "mpl_toolkits installed" on all platforms, and we don't want to require
   // it for people who don't need 3d plots.
-  static PyObject *mpl_toolkitsmod = nullptr, *axis3dmod = nullptr;
+/*  static PyObject *mpl_toolkitsmod = nullptr, *axis3dmod = nullptr;
   if (!mpl_toolkitsmod) {
     detail::Interpreter::get();
 
@@ -251,7 +251,8 @@ void plot_surface(const std::vector<::std::vector<Numeric>> &x,
     axis3dmod = PyImport_Import(axis3d);
     Py_DECREF(axis3d);
     if (!axis3dmod) { throw std::runtime_error("Error loading module mpl_toolkits.mplot3d!"); }
-  }
+  }*/
+  detail::Interpreter::get().initializeMPLToolkits();
 
   assert(x.size() == y.size());
   assert(y.size() == z.size());
