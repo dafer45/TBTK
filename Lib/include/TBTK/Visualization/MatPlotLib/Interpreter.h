@@ -81,6 +81,7 @@
 #	define PyString_FromString PyUnicode_FromString
 #	define PyInt_FromLong PyLong_FromLong
 #	define PyString_FromString PyUnicode_FromString
+#	define PyInt_FromString PyLong_FromString
 #endif
 
 namespace TBTK {

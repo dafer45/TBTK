@@ -1,13 +1,34 @@
+UNSET(PYTHON_INCLUDES CACHE)
+UNSET(PYTHON_LIBRARIES CACHE)
 FIND_PATH(
 	PYTHON_INCLUDES
 	NAMES Python.h
-	PATH_SUFFIXES python2.7
+	PATH_SUFFIXES python3.0 python3.1 python3.2 python3.4 python3.5 python3.6 python3.7 python3.8
 )
 FIND_LIBRARY(
 	PYTHON_LIBRARIES
-	NAMES python2.7
+	NAMES python3.0m python3.1 python3.2 python3.4 python3.5 python3.6 python3.7 python3.8 python3.0m python3.1m python3.2m python3.4m python3.5m python3.6m python3.7m python3.8m python3.0m python3.1d python3.2d python3.4d python3.5d python3.6d python3.7d python3.8d python3.0m python3.1u python3.2u python3.4u python3.5u python3.6u python3.7u python3.8u
 	PATH_SUFFIXES lib lib32 lib64
 )
+IF((NOT DEFINED PYTHON_INCLUDES) OR (NOT DEFINED PYTHON_LIBRARIES))
+	UNSET(PYTHON_INCLUDES CACHE)
+	UNSET(PYTHON_LIBRARIES CACHE)
+	FIND_PATH(
+		PYTHON_INCLUDES
+		NAMES Python.h
+		PATH_SUFFIXES python2.7
+	)
+	FIND_LIBRARY(
+		PYTHON_LIBRARIES
+		NAMES python2.7
+		PATH_SUFFIXES lib lib32 lib64
+	)
+	IF(PYTHON_INCLUDES AND PYTHON_LIBRARIES)
+		SET(TBTK_PYTHON_VERSION 2)
+	ENDIF(PYTHON_INCLUDES AND PYTHON_LIBRARIES)
+ELSE((NOT DEFINED PYTHON_INCLUDES) OR (NOT DEFINED PYTHON_LIBRARIES))
+	SET(TBTK_PYTHON_VERSION 3)
+ENDIF((NOT DEFINED PYTHON_INCLUDES) OR (NOT DEFINED PYTHON_LIBRARIES))
 
 IF(PYTHON_INCLUDES AND PYTHON_LIBRARIES)
 	SET(CMAKE_REQUIRED_INCLUDES ${PYTHON_INCLUDES})
@@ -20,9 +41,11 @@ IF(PYTHON_INCLUDES AND PYTHON_LIBRARIES)
 		#include <numpy/arrayobject.h>
 
 #if PY_MAJOR_VERSION >= 3
+#		define PyString_FromString PyUnicode_FromString
+
 		void* import_numpy(){
 			import_array();
-			return nullptr;
+			return NULL;
 		}
 #else
 		void import_numpy(){
@@ -33,7 +56,12 @@ IF(PYTHON_INCLUDES AND PYTHON_LIBRARIES)
 		int main(int argc, char **argv){
 			PyObject *emptyTuple = PyTuple_New(0);
 
-			Py_SetProgramName(\"plotting\");
+#if PY_MAJOR_VERSION >= 3
+			wchar_t name[] = L\"plotting\";
+#else
+			char name[] = \"plotting\";
+#endif
+			Py_SetProgramName(name);
 			Py_Initialize();
 			import_numpy();
 
