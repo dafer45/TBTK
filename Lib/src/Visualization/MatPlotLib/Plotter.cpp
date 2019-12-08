@@ -327,6 +327,170 @@ void Plotter::plot(
 }
 
 void Plotter::plot(
+	unsigned int state,
+	const Property::WaveFunctions &waveFunctions,
+	const Argument &argument
+){
+	const vector<unsigned int> &states = waveFunctions.getStates();
+	unsigned int stateID;
+	bool foundState = false;
+	for(unsigned int n = 0; n < states.size(); n++){
+		if(states[n] == state){
+			stateID = n;
+			foundState = true;
+			break;
+		}
+	}
+	TBTKAssert(
+		foundState,
+		"Plotter::plot()",
+		"State '" << state << "' is not included in 'waveFunctions'.",
+		""
+	);
+
+	AnnotatedArray<std::complex<double>, Subindex> annotatedArray
+		= PropertyConverter::convert(waveFunctions);
+
+	vector<Subindex> slicePattern(annotatedArray.getRanges().size());
+	for(unsigned int n = 0; n < slicePattern.size()-1; n++)
+		slicePattern[n] = IDX_ALL;
+	slicePattern.back() = stateID;
+
+	vector<vector<Subindex>> axes = annotatedArray.getAxes();
+	axes.pop_back();
+
+	annotatedArray = AnnotatedArray<complex<double>, Subindex>(
+		annotatedArray.getSlice(slicePattern),
+		axes
+	);
+
+	setTitle("Wave function (state = " + to_string(state) +  ")", false);
+	switch(annotatedArray.getRanges().size()){
+	case 1:
+	{
+		AnnotatedArray<double, Subindex> annotatedArrayReal(
+			Array<double>::create(annotatedArray.getRanges()),
+			annotatedArray.getAxes()
+		);
+		AnnotatedArray<double, Subindex> annotatedArrayImaginary(
+			Array<double>::create(annotatedArray.getRanges()),
+			annotatedArray.getAxes()
+		);
+		for(unsigned int n = 0; n < annotatedArray.getSize(); n++){
+			annotatedArrayReal[n] = real(annotatedArray[n]);
+			annotatedArrayImaginary[n] = imag(annotatedArray[n]);
+		}
+
+		setLabelX("x", false);
+		setLabelY("Amplitude (real and imaginary)", false);
+		plot(annotatedArrayReal, argument);
+		plot(annotatedArrayImaginary, argument);
+		break;
+	}
+	case 2:
+	{
+		AnnotatedArray<double, Subindex> annotatedArrayDensity(
+			Array<double>::create(annotatedArray.getRanges()),
+			annotatedArray.getAxes()
+		);
+		for(unsigned int n = 0; n < annotatedArray.getSize(); n++)
+			annotatedArrayDensity[n] = pow(abs(annotatedArray[n]), 2);
+
+		setLabelX("x", false);
+		setLabelX("y", false);
+		setLabelY("Amplitude (absolute squared)", false);
+		plot(annotatedArrayDensity, argument);
+		break;
+	}
+	default:
+		break;
+	}
+}
+
+void Plotter::plot(
+	const Index &pattern,
+	unsigned int state,
+	const Property::WaveFunctions &waveFunctions,
+	const Argument &argument
+){
+	const vector<unsigned int> &states = waveFunctions.getStates();
+	unsigned int stateID;
+	bool foundState = false;
+	for(unsigned int n = 0; n < states.size(); n++){
+		if(states[n] == state){
+			stateID = n;
+			foundState = true;
+			break;
+		}
+	}
+	TBTKAssert(
+		foundState,
+		"Plotter::plot()",
+		"State '" << state << "' is not included in 'waveFunctions'.",
+		""
+	);
+
+	AnnotatedArray<complex<double>, Subindex> annotatedArray
+		= PropertyConverter::convert(waveFunctions, pattern);
+
+	vector<Subindex> slicePattern(annotatedArray.getRanges().size());
+	for(unsigned int n = 0; n < slicePattern.size()-1; n++)
+		slicePattern[n] = IDX_ALL;
+	slicePattern.back() = stateID;
+
+	vector<vector<Subindex>> axes = annotatedArray.getAxes();
+	axes.pop_back();
+
+	annotatedArray = AnnotatedArray<complex<double>, Subindex>(
+		annotatedArray.getSlice(slicePattern),
+		axes
+	);
+
+	setTitle("Wave function (state = " + to_string(state) + ")", false);
+	switch(annotatedArray.getRanges().size()){
+	case 1:
+	{
+		AnnotatedArray<double, Subindex> annotatedArrayReal(
+			Array<double>::create(annotatedArray.getRanges()),
+			annotatedArray.getAxes()
+		);
+		AnnotatedArray<double, Subindex> annotatedArrayImaginary(
+			Array<double>::create(annotatedArray.getRanges()),
+			annotatedArray.getAxes()
+		);
+		for(unsigned int n = 0; n < annotatedArray.getSize(); n++){
+			annotatedArrayReal[n] = real(annotatedArray[n]);
+			annotatedArrayImaginary[n] = imag(annotatedArray[n]);
+		}
+
+
+		setLabelX("x");
+		setLabelY("Amplitude (real and imaginary)");
+		plot(annotatedArrayReal, argument);
+		plot(annotatedArrayImaginary, argument);
+		break;
+	}
+	case 2:
+	{
+		AnnotatedArray<double, Subindex> annotatedArrayDensity(
+			Array<double>::create(annotatedArray.getRanges()),
+			annotatedArray.getAxes()
+		);
+		for(unsigned int n = 0; n < annotatedArray.getSize(); n++)
+			annotatedArrayDensity[n] = pow(abs(annotatedArray[n]), 2);
+
+		setLabelX("x", false);
+		setLabelX("y", false);
+		setLabelY("Amplitude (absolute squared)", false);
+		plot(annotatedArrayDensity, argument);
+		break;
+	}
+	default:
+		break;
+	}
+}
+
+void Plotter::plot(
 	const AnnotatedArray<double, double> &data,
 	const Argument &argument
 ){

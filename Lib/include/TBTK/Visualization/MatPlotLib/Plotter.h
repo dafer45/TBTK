@@ -31,6 +31,7 @@
 #include "TBTK/Property/LDOS.h"
 #include "TBTK/Property/Magnetization.h"
 #include "TBTK/Property/SpinPolarizedLDOS.h"
+#include "TBTK/Property/WaveFunctions.h"
 #include "TBTK/Streams.h"
 #include "TBTK/TBTKMacros.h"
 #include "TBTK/Visualization/MatPlotLib/Argument.h"
@@ -409,7 +410,7 @@ public:
 	 *  IndexDescriptor::Format::Ranges format.
 	 *
 	 *  @param direction The quantization axis to use.
-	 *  @param spinPolarizedLDOS The Property::PsinPolarizedLDOS to plot.
+	 *  @param spinPolarizedLDOS The Property::SpinPolarizedLDOS to plot.
 	 *  @param argument A list of arguments to pass to the underlying
 	 *  matplotlib function. Can either be a single string value or a list
 	 *  such as {{"linewidth", "2"}, {"color", "red"}}. */
@@ -437,6 +438,39 @@ public:
 		const Index &pattern,
 		const Vector3d &direction,
 		const Property::SpinPolarizedLDOS &spinPolarizedLDOS,
+		const Argument &argument = ""
+	);
+
+	/** Plot wave function on the IndexDescriptor::Format::Ranges format.
+	 *
+	 *  @param state The state number to plot the wave function for.
+	 *  @param waveFunctions The Property::WaveFunctions to plot from.
+	 *  @param argument A list of arguments to pass to the underlying
+	 *  matplotlib function. Can either be a single string value or a list
+	 *  such as {{"linewidth", "2"}, {"color", "red"}}. */
+	void plot(
+		unsigned int state,
+		const Property::WaveFunctions &waveFunctions,
+		const Argument &argument = ""
+	);
+
+	/** Plot wave function on the IndexDescriptor::Format::Ranges format.
+	 *
+	 *  @param pattern An Index pattern that will be used to extract data
+	 *  from the WaveFunctions. For example, if the Index structure of the
+	 *  data contained in the WaveFunctions is {x, y, z}, the pattern
+	 *  {5, _a_, 10} will result in a plot of the WaveFunctions along the
+	 *  line (x, z) = (5, 10).
+	 *
+	 *  @param state The state number to plot the wave function for.
+	 *  @param waveFunctions The Property::WaveFunctions to plot.
+	 *  @param argument A list of arguments to pass to the underlying
+	 *  matplotlib function. Can either be a single string value or a list
+	 *  such as {{"linewidth", "2"}, {"color", "red"}}. */
+	void plot(
+		const Index &pattern,
+		unsigned int state,
+		const Property::WaveFunctions &waveFunctions,
 		const Argument &argument = ""
 	);
 
