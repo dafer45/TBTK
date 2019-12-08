@@ -169,6 +169,38 @@ PyObject* get_2darray(const std::vector<::std::vector<Numeric>>& v)
     return reinterpret_cast<PyObject *>(varray);
 }
 
+template<typename Numeric>
+PyObject* get_3darray(const std::vector<std::vector<::std::vector<Numeric>>>& v)
+{
+    detail::Interpreter::get();    //interpreter needs to be initialized for the numpy commands to work
+    if (v.size() < 1) throw std::runtime_error("get_3d_array v too small");
+    if (v[0].size() < 1) throw std::runtime_error("get_3d_array v too small");
+    for(unsigned int n = 0; n < v.size(); n++)
+        if (v[n].size() != v[0].size()) throw std::runtime_error("get_3d_array v too small");
+
+    npy_intp vsize[3] = {
+        static_cast<npy_intp>(v.size()),
+        static_cast<npy_intp>(v[0].size()),
+        static_cast<npy_intp>(v[0][0].size())
+    };
+
+    PyArrayObject *varray =
+        (PyArrayObject *)PyArray_SimpleNew(3, vsize, NPY_DOUBLE);
+
+    double *vd_begin = static_cast<double *>(PyArray_DATA(varray));
+
+    for (const ::std::vector<::std::vector<Numeric>> &v_x : v) {
+      if (v_x.size() != static_cast<size_t>(vsize[1]))
+        throw std::runtime_error("Missmatched array size");
+      for (const ::std::vector<Numeric> &v_y : v_x) {
+        std::copy(v_y.begin(), v_y.end(), vd_begin);
+        vd_begin += vsize[2];
+      }
+    }
+
+    return reinterpret_cast<PyObject *>(varray);
+}
+
 #else // fallback if we don't have numpy: copy every element of the given vector
 
 template<typename Numeric>
@@ -311,6 +343,128 @@ void plot_surface(const std::vector<::std::vector<Numeric>> &x,
   PyObject *res = PyObject_Call(plot_surface, args, kwargs);
   if (!res) throw std::runtime_error("failed surface");
   Py_DECREF(plot_surface);
+
+  Py_DECREF(axis);
+  Py_DECREF(args);
+  Py_DECREF(kwargs);
+  if (res) Py_DECREF(res);
+}
+
+template <typename Numeric>
+void quiver(
+    const std::vector<std::vector<::std::vector<Numeric>>> &x,
+    const std::vector<std::vector<::std::vector<Numeric>>> &y,
+    const std::vector<std::vector<::std::vector<Numeric>>> &z,
+    const std::vector<std::vector<::std::vector<Numeric>>> &u,
+    const std::vector<std::vector<::std::vector<Numeric>>> &v,
+    const std::vector<std::vector<::std::vector<Numeric>>> &w,
+    const std::map<std::string, std::string> &keywords =
+    std::map<std::string, std::string>()
+){
+  // We lazily load the modules here the first time this function is called
+  // because I'm not sure that we can assume "matplotlib installed" implies
+  // "mpl_toolkits installed" on all platforms, and we don't want to require
+  // it for people who don't need 3d plots.
+  detail::Interpreter::get().initializeMPLToolkits();
+
+  assert(x.size() == y.size());
+  assert(x.size() == z.size());
+  assert(x.size() == u.size());
+  assert(x.size() == v.size());
+  assert(x.size() == z.size());
+  for(unsigned int n = 0; n < x.size(); n++){
+    assert(x[0].size() == x[n].size());
+    assert(x[0].size() == y[n].size());
+    assert(x[0].size() == z[n].size());
+    assert(x[0].size() == u[n].size());
+    assert(x[0].size() == v[n].size());
+    assert(x[0].size() == w[n].size());
+    for(unsigned int c = 0; c < x[0].size(); c++){
+      assert(x[n][0].size() == x[n][c].size());
+      assert(x[n][0].size() == y[n][c].size());
+      assert(x[n][0].size() == z[n][c].size());
+      assert(x[n][0].size() == u[n][c].size());
+      assert(x[n][0].size() == v[n][c].size());
+      assert(x[n][0].size() == w[n][c].size());
+    }
+  }
+
+  // using numpy arrays
+  PyObject *xarray = get_3darray(x);
+  PyObject *yarray = get_3darray(y);
+  PyObject *zarray = get_3darray(z);
+  PyObject *uarray = get_3darray(u);
+  PyObject *varray = get_3darray(v);
+  PyObject *warray = get_3darray(w);
+
+  // construct positional args
+  PyObject *args = PyTuple_New(6);
+  PyTuple_SetItem(args, 0, xarray);
+  PyTuple_SetItem(args, 1, yarray);
+  PyTuple_SetItem(args, 2, zarray);
+  PyTuple_SetItem(args, 3, uarray);
+  PyTuple_SetItem(args, 4, varray);
+  PyTuple_SetItem(args, 5, warray);
+
+  // Build up the kw args.
+  PyObject *kwargs = PyDict_New();
+//  PyDict_SetItemString(kwargs, "rstride", PyInt_FromLong(1));
+//  PyDict_SetItemString(kwargs, "cstride", PyInt_FromLong(1));
+
+//  PyObject *python_colormap_coolwarm = PyObject_GetAttrString(
+//      detail::Interpreter::get().s_python_colormap, "coolwarm");
+
+//  PyDict_SetItemString(kwargs, "cmap", python_colormap_coolwarm);
+
+  for (std::map<std::string, std::string>::const_iterator it = keywords.begin();
+       it != keywords.end(); ++it) {
+    if(it->first.compare("length") == 0){
+      char value[it->second.size()+1];
+      for(unsigned int n = 0; n < it->second.size(); n++)
+        value[n] = it->second[n];
+      value[it->second.size()] = '\0';
+      PyDict_SetItemString(
+        kwargs,
+        it->first.c_str(),
+        PyFloat_FromString(PyString_FromString(value))
+      );
+    }
+    else{
+      PyDict_SetItemString(
+        kwargs,
+        it->first.c_str(),
+        PyString_FromString(it->second.c_str())
+      );
+    }
+  }
+
+
+  PyObject *fig =
+      PyObject_CallObject(detail::Interpreter::get().s_python_function_figure,
+                          detail::Interpreter::get().s_python_empty_tuple);
+  if (!fig) throw std::runtime_error("Call to figure() failed.");
+
+  PyObject *gca_kwargs = PyDict_New();
+  PyDict_SetItemString(gca_kwargs, "projection", PyString_FromString("3d"));
+
+  PyObject *gca = PyObject_GetAttrString(fig, "gca");
+  if (!gca) throw std::runtime_error("No gca");
+  Py_INCREF(gca);
+  PyObject *axis = PyObject_Call(
+      gca, detail::Interpreter::get().s_python_empty_tuple, gca_kwargs);
+
+  if (!axis) throw std::runtime_error("No axis");
+  Py_INCREF(axis);
+
+  Py_DECREF(gca);
+  Py_DECREF(gca_kwargs);
+
+  PyObject *quiver = PyObject_GetAttrString(axis, "quiver");
+  if (!quiver) throw std::runtime_error("No quiver");
+  Py_INCREF(quiver);
+  PyObject *res = PyObject_Call(quiver, args, kwargs);
+  if (!res) throw std::runtime_error("failed quiver");
+  Py_DECREF(quiver);
 
   Py_DECREF(axis);
   Py_DECREF(args);
