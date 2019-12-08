@@ -246,6 +246,87 @@ void Plotter::plot(
 }
 
 void Plotter::plot(
+	const Vector3d &direction,
+	const Property::SpinPolarizedLDOS &spinPolarizedLDOS,
+	const Argument &argument
+){
+	AnnotatedArray<SpinMatrix, Subindex> annotatedArray
+		= PropertyConverter::convert(spinPolarizedLDOS);
+	AnnotatedArray<double, Subindex> annotatedArrayWithDoubleValues
+		= convertSpinMatrixToDouble(annotatedArray, direction);
+	AnnotatedArray<double, double> annotatedArrayWithDoubleAxes
+		= convertAxes(
+			annotatedArrayWithDoubleValues,
+			{
+				{
+					annotatedArrayWithDoubleValues.getAxes(
+					).size()-1,
+					{
+						spinPolarizedLDOS.getLowerBound(),
+						spinPolarizedLDOS.getUpperBound()
+					}
+				}
+			}
+		);
+
+	setTitle("Spin-polarized LDOS", false);
+	switch(annotatedArrayWithDoubleAxes.getRanges().size()){
+	case 1:
+		setLabelX("Energy", false);
+		break;
+	case 2:
+		setLabelX("x", false);
+		setLabelY("Energy", false);
+		break;
+	default:
+		break;
+	}
+
+	plot(annotatedArrayWithDoubleAxes, argument);
+}
+
+void Plotter::plot(
+	const Index &pattern,
+	const Vector3d &direction,
+	const Property::SpinPolarizedLDOS &spinPolarizedLDOS,
+	const Argument &argument
+){
+	AnnotatedArray<SpinMatrix, Subindex> annotatedArray
+		= PropertyConverter::convert(spinPolarizedLDOS, pattern);
+	AnnotatedArray<double, Subindex> annotatedArrayWithDoubleValues
+		= convertSpinMatrixToDouble(annotatedArray, direction);
+	AnnotatedArray<double, double> annotatedArrayWithDoubleAxes
+		= convertAxes(
+			annotatedArrayWithDoubleValues,
+			{
+				{
+					annotatedArrayWithDoubleValues.getAxes(
+					).size()-1,
+					{
+						spinPolarizedLDOS.getLowerBound(),
+						spinPolarizedLDOS.getUpperBound()
+					}
+				}
+			}
+		);
+
+	setTitle("Spin-polarized LDOS", false);
+	switch(annotatedArrayWithDoubleAxes.getRanges().size()){
+	case 1:
+		setLabelX("Energy");
+		break;
+	case 2:
+		setLabelX("x", false);
+		setLabelY("Energy", false);
+		break;
+	default:
+		break;
+	}
+
+	plot(annotatedArrayWithDoubleAxes, argument);
+}
+
+void Plotter::plot(
 	const AnnotatedArray<double, double> &data,
 	const Argument &argument
 ){

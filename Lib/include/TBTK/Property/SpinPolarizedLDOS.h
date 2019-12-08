@@ -41,7 +41,8 @@ namespace Property{
  *  # Example
  *  \snippet Property/SpinPolarizedLDOS.cpp SpinPolarizedLDOS
  *  ## Output
- *  \snippet output/Property/SpinPolarizedLDOS.output SpinPolarizedLDOS */
+ *  \snippet output/Property/SpinPolarizedLDOS.output SpinPolarizedLDOS
+ *  \image html output/Property/SpinPolarizedLDOS/figures/PropertySpinPolarizedLDOSSpinPolarizedLDOS.png */
 class SpinPolarizedLDOS : public EnergyResolvedProperty<SpinMatrix>{
 public:
 	/** Constructs a SpinPolarizedDOS on the Ranges format. [See

@@ -30,6 +30,7 @@
 #include "TBTK/Property/EigenValues.h"
 #include "TBTK/Property/LDOS.h"
 #include "TBTK/Property/Magnetization.h"
+#include "TBTK/Property/SpinPolarizedLDOS.h"
 #include "TBTK/Streams.h"
 #include "TBTK/TBTKMacros.h"
 #include "TBTK/Visualization/MatPlotLib/Argument.h"
@@ -389,8 +390,8 @@ public:
 	 *  @param pattern An Index pattern that will be used to extract data
 	 *  from the Magnetization. For example, if the Index structure of the
 	 *  data contained in the Magnetization is {x, y, z}, the pattern
-	 *  {5, _a_, 10} will result in a plot of the LDOS along the line
-	 *  (x, z) = (5, 10).
+	 *  {5, _a_, 10} will result in a plot of the Magnetization along the
+	 *  line (x, z) = (5, 10).
 	 *
 	 *  @param direction The quantization axis to use.
 	 *  @param magnetization The Property::Magnetization to plot.
@@ -401,6 +402,41 @@ public:
 		const Index &pattern,
 		const Vector3d &direction,
 		const Property::Magnetization &magnetization,
+		const Argument &argument = ""
+	);
+
+	/** Plot spin-polarized local density of states (LDOS) on the
+	 *  IndexDescriptor::Format::Ranges format.
+	 *
+	 *  @param direction The quantization axis to use.
+	 *  @param spinPolarizedLDOS The Property::PsinPolarizedLDOS to plot.
+	 *  @param argument A list of arguments to pass to the underlying
+	 *  matplotlib function. Can either be a single string value or a list
+	 *  such as {{"linewidth", "2"}, {"color", "red"}}. */
+	void plot(
+		const Vector3d &direction,
+		const Property::SpinPolarizedLDOS &spinPolarizedLDOS,
+		const Argument &argument = ""
+	);
+
+	/** Plot spin-polarized local density of states (LDOS) on the
+	 *  IndexDescriptor::Format::Ranges format.
+	 *
+	 *  @param pattern An Index pattern that will be used to extract data
+	 *  from the SpinPolarizedLDOS. For example, if the Index structure of
+	 *  the data contained in the SpinPolarizedLDOS is {x, y, z}, the
+	 *  pattern {5, _a_, 10} will result in a plot of the SpinPolarizedLDOS
+	 *  along the line (x, z) = (5, 10).
+	 *
+	 *  @param direction The quantization axis to use.
+	 *  @param spinPolarizedLDOS The Property::SpinPolarizedLDOS to plot.
+	 *  @param argument A list of arguments to pass to the underlying
+	 *  matplotlib function. Can either be a single string value or a list
+	 *  such as {{"linewidth", "2"}, {"color", "red"}}. */
+	void plot(
+		const Index &pattern,
+		const Vector3d &direction,
+		const Property::SpinPolarizedLDOS &spinPolarizedLDOS,
 		const Argument &argument = ""
 	);
 
