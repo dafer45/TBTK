@@ -26,6 +26,7 @@
 #include "TBTK/Array.h"
 #include "TBTK/Property/DOS.h"
 #include "TBTK/Property/LDOS.h"
+#include "TBTK/Property/SpinPolarizedLDOS.h"
 #include "TBTK/TBTKMacros.h"
 
 #include <cmath>
@@ -36,22 +37,25 @@ namespace TBTK{
 class Smooth{
 public:
 	/** Gaussian smoothing of custom data. */
-	static Array<double> gaussian(
-		const Array<double> &data,
+	template<typename DataType>
+	static Array<DataType> gaussian(
+		const Array<DataType> &data,
 		double sigma,
 		int windowSize
 	);
 
 	/** Gaussian smoothing of custom data. */
-	static std::vector<double> gaussian(
-		const std::vector<double> &data,
+	template<typename DataType>
+	static std::vector<DataType> gaussian(
+		const std::vector<DataType> &data,
 		double sigma,
 		int windowSize
 	);
 
 	/** Gaussian smoothing of custom data. */
-	static std::vector<double> gaussian(
-		const double *data,
+	template<typename DataType>
+	static std::vector<DataType> gaussian(
+		const DataType *data,
 		unsigned int size,
 		double sigma,
 		int windowSize
@@ -66,15 +70,23 @@ public:
 
 	/** Gaussian smoothing of LDOS. */
 	static Property::LDOS gaussian(
-		const Property::LDOS &dos,
+		const Property::LDOS &ldos,
+		double sigma,
+		int windowSize
+	);
+
+	/** Gaussian smoothing of LDOS. */
+	static Property::SpinPolarizedLDOS gaussian(
+		const Property::SpinPolarizedLDOS &ldos,
 		double sigma,
 		int windowSize
 	);
 private:
 };
 
-inline Array<double> Smooth::gaussian(
-	const Array<double> &data,
+template<typename DataType>
+inline Array<DataType> Smooth::gaussian(
+	const Array<DataType> &data,
 	double sigma,
 	int windowSize
 ){
@@ -98,13 +110,13 @@ inline Array<double> Smooth::gaussian(
 		""
 	);
 
-	double normalization = 0;
+	DataType normalization = 0;
 	for(int n = -windowSize/2; n <= windowSize/2; n++){
 		normalization += exp(-n*n/(2*sigma*sigma));
 	}
-	normalization = 1/normalization;
+	normalization = DataType(1)/normalization;
 
-	Array<double> result({data.getRanges()[0]}, 0);
+	Array<DataType> result({data.getRanges()[0]}, 0);
 	for(int n = 0; n < (int)data.getRanges()[0]; n++){
 		for(
 			int c = std::max(0, (int)n - (int)windowSize/2);
@@ -125,8 +137,9 @@ inline Array<double> Smooth::gaussian(
 	return result;
 }
 
-inline std::vector<double> Smooth::gaussian(
-	const std::vector<double> &data,
+template<typename DataType>
+inline std::vector<DataType> Smooth::gaussian(
+	const std::vector<DataType> &data,
 	double sigma,
 	int windowSize
 ){
@@ -143,13 +156,13 @@ inline std::vector<double> Smooth::gaussian(
 		""
 	);
 
-	double normalization = 0;
+	DataType normalization = 0;
 	for(int n = -windowSize/2; n <= windowSize/2; n++){
 		normalization += exp(-n*n/(2*sigma*sigma));
 	}
-	normalization = 1/normalization;
+	normalization = DataType(1)/normalization;
 
-	std::vector<double> result;
+	std::vector<DataType> result;
 	for(int n = 0; n < (int)data.size(); n++){
 		result.push_back(0);
 		for(
@@ -168,13 +181,14 @@ inline std::vector<double> Smooth::gaussian(
 	return result;
 }
 
-inline std::vector<double> Smooth::gaussian(
-	const double *data,
+template<typename DataType>
+inline std::vector<DataType> Smooth::gaussian(
+	const DataType *data,
 	unsigned int size,
 	double sigma,
 	int windowSize
 ){
-	std::vector<double> dataVector;
+	std::vector<DataType> dataVector;
 	for(unsigned int n = 0; n < size; n++)
 		dataVector.push_back(data[n]);
 
@@ -246,6 +260,62 @@ inline Property::LDOS Smooth::gaussian(
 	}
 
 	return newLdos;
+}
+
+inline Property::SpinPolarizedLDOS Smooth::gaussian(
+	const Property::SpinPolarizedLDOS &spinPolarizedLDOS,
+	double sigma,
+	int windowSize
+){
+	Property::SpinPolarizedLDOS newSpinPolarizedLDOS = spinPolarizedLDOS;
+	std::vector<SpinMatrix> &newData = newSpinPolarizedLDOS.getDataRW();
+
+	const std::vector<SpinMatrix> &data = spinPolarizedLDOS.getData();
+	unsigned int blockSize = spinPolarizedLDOS.getBlockSize();
+	unsigned int numBlocks = spinPolarizedLDOS.getSize()/blockSize;
+	double lowerBound = spinPolarizedLDOS.getLowerBound();
+	double upperBound = spinPolarizedLDOS.getUpperBound();
+	int resolution = spinPolarizedLDOS.getResolution();
+	double scaledSigma = sigma/(upperBound - lowerBound)*resolution;
+	for(unsigned int block = 0; block < numBlocks; block++){
+		std::vector<SpinMatrix> blockData(blockSize);
+		for(unsigned int n = 0; n < blockSize; n++)
+			blockData[n] = data[block*blockSize + n];
+
+		std::vector<
+			std::vector<std::complex<double>>
+		> spinMatrixComponents(
+			4,
+			std::vector<std::complex<double>>(blockSize)
+		);
+		for(unsigned int n = 0; n < blockSize; n++){
+			spinMatrixComponents[0][n] = blockData[n].at(0, 0);
+			spinMatrixComponents[1][n] = blockData[n].at(0, 1);
+			spinMatrixComponents[2][n] = blockData[n].at(1, 0);
+			spinMatrixComponents[3][n] = blockData[n].at(1, 1);
+		}
+
+		for(unsigned int n = 0; n < 4; n++){
+			spinMatrixComponents[n] = gaussian(
+				spinMatrixComponents[n],
+				scaledSigma,
+				windowSize
+			);
+		}
+
+		for(unsigned int n = 0; n < blockSize; n++){
+			newData[block*blockSize + n].at(0, 0)
+				= spinMatrixComponents[0][n];
+			newData[block*blockSize + n].at(0, 1)
+				= spinMatrixComponents[1][n];
+			newData[block*blockSize + n].at(1, 0)
+				= spinMatrixComponents[2][n];
+			newData[block*blockSize + n].at(1, 1)
+				= spinMatrixComponents[3][n];
+		}
+	}
+
+	return newSpinPolarizedLDOS;
 }
 
 };	//End of namespace TBTK
