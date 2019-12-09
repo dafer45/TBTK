@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file MomentumSpaceContext.h
  *  @brief Container of information about the momentum space.
@@ -85,3 +86,4 @@ inline Index MomentumSpaceContext::getKIndex(
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file D2TetragonalPrimitive.h
  *  @brief Tetragonal primitive Bravais lattices.
@@ -51,3 +52,4 @@ public:
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

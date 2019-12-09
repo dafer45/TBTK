@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file GaussianBasisGenerator.h
  *  @brief Generates a basis of @link GaussianState GaussianStates @endlink.
@@ -95,3 +96,4 @@ private:
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

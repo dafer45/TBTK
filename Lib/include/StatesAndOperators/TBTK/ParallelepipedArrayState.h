@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file ParallelepipedArrayState.h
  *  @brief State class with parallelepiped array based overlap evaluation.
@@ -85,3 +86,4 @@ private:
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

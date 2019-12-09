@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file ZFactorCalculator.h
  *  @brief Calculates the Z-factor using the RPA approximation.
@@ -157,3 +158,4 @@ inline void ZFactorCalculator::loadSusceptibilities(
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

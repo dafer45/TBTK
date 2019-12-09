@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file SelfEnergyCalculator.h
  *  @brief Calculates the self-energy using the RPA approximation.
@@ -109,3 +110,4 @@ inline void ElectronFluctuationVertex::setRightInteraction(
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file SuscesptibilityCalculator.h
  *  @brief Property container for density
@@ -362,3 +363,4 @@ inline const IndexedDataTree<SerializableVector<std::complex<double>>>& Suscepti
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

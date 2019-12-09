@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file FockSpcae.h
  *  @brief Fock space.
@@ -395,3 +396,4 @@ const HoppingAmplitudeSet* FockSpace<BIT_REGISTER>::getHoppingAmplitudeSet() con
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

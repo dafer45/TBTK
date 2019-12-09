@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file ArrayState.h
  *  @brief State class with array based overlap evaluation.
@@ -273,3 +274,4 @@ inline const std::vector<unsigned int>& ArrayState::Storage::getResolution() con
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

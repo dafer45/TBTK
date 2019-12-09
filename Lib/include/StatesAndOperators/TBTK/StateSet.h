@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file StateSet.h
  *  @brief Container for States.
@@ -71,3 +72,4 @@ inline unsigned int StateSet::getNumStates() const{
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

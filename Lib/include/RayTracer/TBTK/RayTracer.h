@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file RayTracer.h
  *  @brief Creates figures of properties using ray tracing.
@@ -772,3 +773,4 @@ inline void RayTracer::EventHandler::onMouseChange(
 };	//End namespace TBTK
 
 #endif
+/// @endcond

@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file ParametrizedLine.h
  *  @brief Parametrized line.
@@ -72,3 +73,4 @@ inline const std::vector<double> ParametrizedLine::operator()(
 };	//End namespace TBTK
 
 #endif
+/// @endcond

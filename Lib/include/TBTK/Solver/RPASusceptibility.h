@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file RPASuscesptibility.h
  *  @brief Calculates the RPA susceptibility.
@@ -120,3 +121,4 @@ RPASusceptibility::calculateSusceptibility(
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

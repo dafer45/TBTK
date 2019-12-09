@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file GPUResourceManager.h
  *  @brief GPU resource manager.
@@ -79,3 +80,4 @@ inline int GPUResourceManager::getNumDevices(){
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

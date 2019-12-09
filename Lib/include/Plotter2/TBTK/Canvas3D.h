@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file Canvas3D.h
  *  @brief Canvas3D
@@ -421,3 +422,4 @@ inline const std::vector<unsigned char>& Canvas3D::getColor(
 };	//End namespace TBTK
 
 #endif
+/// @endcond

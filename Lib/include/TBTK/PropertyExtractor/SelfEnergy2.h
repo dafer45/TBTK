@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file SelfEnergy2.h
  *  @brief Extracts physical properties from the
@@ -99,3 +100,4 @@ inline bool SelfEnergy2::SelfEnergyBlockInformation::getCalculateSelfEnergyForAl
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file InteractionVertex.h
  *  @brief Property container for an InteractionVertex.
@@ -194,3 +195,4 @@ inline InteractionVertex& InteractionVertex::operator/=(
 };	//End namespace TBTK
 
 #endif
+/// @endcond

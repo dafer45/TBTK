@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file LDOS.h
  *  @brief Property container for spectral function.
@@ -89,3 +90,4 @@ private:
 };	//End namespace TBTK
 
 #endif
+/// @endcond

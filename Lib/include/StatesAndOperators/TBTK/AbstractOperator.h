@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file AbstractOperator.h
  *  @brief Abstract operator class from which other operators inherit.
@@ -62,3 +63,4 @@ inline AbstractOperator::OperatorID AbstractOperator::getOperatorID() const{
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

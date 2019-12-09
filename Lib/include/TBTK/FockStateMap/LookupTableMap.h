@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file LookupTableMap.h
  *  @brief LookupTableMap.
@@ -160,3 +161,4 @@ void LookupTableMap<BIT_REGISTER>::addState(
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

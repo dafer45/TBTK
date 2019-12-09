@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file ArrayManiager.h
  *  @brief Provides methods for manipulation of arrays.
@@ -235,3 +236,4 @@ void ArrayManager<T>::printRecursive(void *array, Index ranges){
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

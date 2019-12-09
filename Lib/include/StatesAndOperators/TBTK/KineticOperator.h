@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file KineticOperator.h
  *  @brief Kinetic energy operator.
@@ -57,3 +58,4 @@ inline double KineticOperator::getMass() const{
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

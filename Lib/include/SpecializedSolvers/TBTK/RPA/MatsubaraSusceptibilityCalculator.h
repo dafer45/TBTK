@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file SuscesptibilityCalculator.h
  *  @brief Property container for density
@@ -164,3 +165,4 @@ inline std::complex<double>& MatsubaraSusceptibilityCalculator::getGreensFunctio
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

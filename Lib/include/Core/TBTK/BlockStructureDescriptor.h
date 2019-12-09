@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file BlockStructureDescriptor.h
  *  @brief Describes the block structure of a Hamiltonian.
@@ -98,3 +99,4 @@ inline unsigned int BlockStructureDescriptor::getFirstStateInBlock(
 }; //End of namesapce TBTK
 
 #endif
+/// @endcond

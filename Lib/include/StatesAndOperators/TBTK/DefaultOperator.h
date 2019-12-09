@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file DefaultOperator.h
  *  @brief Default (dummy) operator class for indicating default behavior.
@@ -39,3 +40,4 @@ public:
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

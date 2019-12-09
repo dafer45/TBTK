@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file Greens.h
  *  @brief Calculates properties from a Green's function.
@@ -180,3 +181,4 @@ inline void AnalyticalContinuer::setScaleFactor(double scaleFactor){
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

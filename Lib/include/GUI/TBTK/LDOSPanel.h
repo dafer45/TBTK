@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file LDOSPanel.h
  *  @brief Panel for displaying LDOS.
@@ -160,3 +161,4 @@ inline const Index& LDOSPanel::ControlPanel::getIndex() const{
 };	//End namespace TBTK
 
 #endif
+/// @endcond

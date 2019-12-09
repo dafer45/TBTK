@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file SelfEnergy2.h
  *  @brief Calculates the self-energy.
@@ -103,3 +104,4 @@ inline const Property::GreensFunction& SelfEnergy2::getGreensFunction(
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

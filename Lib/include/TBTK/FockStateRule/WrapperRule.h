@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file WrapperRule.h
  *  @brief WrapperRule.
@@ -114,3 +115,4 @@ inline WrapperRule operator*(
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file ParameterSlider.h
  *  @brief Panel for selecting and displaying a parameter.
@@ -96,3 +97,4 @@ inline unsigned int ParameterSliderPanel::getTick() const{
 };	//End namespace TBTK
 
 #endif
+/// @endcond

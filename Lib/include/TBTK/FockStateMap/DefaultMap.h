@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file DefaultMap.h
  *  @brief DefaultMap.
@@ -71,3 +72,4 @@ unsigned int DefaultMap<BIT_REGISTER>::getBasisSize() const{
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file Greens.h
  *  @brief Extracts physical properties from the Solver::Greens.
@@ -96,3 +97,4 @@ private:
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

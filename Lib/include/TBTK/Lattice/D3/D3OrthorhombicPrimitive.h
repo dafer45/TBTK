@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file D3OrthorhombicPrimitive.h
  *  @brief Orthorhombic primitive Bravais lattices.
@@ -56,3 +57,4 @@ public:
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

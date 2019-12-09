@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file UnitCell.h
  *  @brief Unit cell that act as container of States.
@@ -66,3 +67,4 @@ inline const std::vector<std::vector<double>>& UnitCell::getLatticeVectors() con
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file SerializableVector.h
  *  @brief Serializable wrapper of std::vector.
@@ -250,3 +251,4 @@ std::string SerializableVector<DataType, true>::serialize(Mode mode) const{
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

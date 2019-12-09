@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file Polynomial.h
  *  @brief Class for storing polynomial expressions.
@@ -85,3 +86,4 @@ inline void PadeApproximator::setDenominatorDegree(
 }; //End of namespace TBTK
 
 #endif
+/// @endcond

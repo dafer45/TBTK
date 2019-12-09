@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file Real.h
  *  @brief Arbitrary precision real number.
@@ -312,3 +313,4 @@ inline mp_bitcnt_t Real::getPrecision() const{
 }; //End of namesapce TBTK
 
 #endif
+/// @endcond

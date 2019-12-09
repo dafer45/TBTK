@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file HexagonalRhombohedralDiagonal.h
  *  @brief Hexagonal rhombohedral-diagonal Bravais lattices.
@@ -62,3 +63,4 @@ public:
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

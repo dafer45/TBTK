@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file SelfEnergy.h
  *  @brief Extracts physical properties from the
@@ -68,3 +69,4 @@ private:
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

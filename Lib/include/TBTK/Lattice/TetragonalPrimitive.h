@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file MonoclinicPrimitive.h
  *  @brief Two- and three-dimensional tetragonal primitive Bravais lattices.
@@ -27,3 +28,4 @@
 #include "TBTK/Lattice/D3/D3TetragonalPrimitive.h"
 
 #endif
+/// @endcond

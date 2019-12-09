@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file ImagePanel.h
  *  @brief Panel for displaying images.
@@ -84,3 +85,4 @@ inline void ImagePanel::setImage(const cv::Mat &image){
 };	//End namespace TBTK
 
 #endif
+/// @endcond

@@ -13,6 +13,8 @@
  * limitations under the License.
  */
 
+
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file ReciprocalLattice.h
  *  @brief A ReciprocalLattice allows for the creation of a momentum space
@@ -133,3 +135,4 @@ inline unsigned int ReciprocalLattice::getNumBands() const{
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

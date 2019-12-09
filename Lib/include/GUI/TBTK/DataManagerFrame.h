@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file DataManagerFrame.h
  *  @brief Frame for displaying content handeld by a DataManager.
@@ -97,3 +98,4 @@ private:
 };	//End namespace TBTK
 
 #endif
+/// @endcond

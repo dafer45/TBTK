@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file DataManager.h
  *  @brief Manages data.
@@ -219,3 +220,4 @@ inline const std::string& DataManager::getPath() const{
 };	//End namespace TBTK
 
 #endif
+/// @endcond

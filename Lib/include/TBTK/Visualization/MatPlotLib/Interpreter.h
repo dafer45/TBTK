@@ -35,6 +35,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE. */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 #pragma once
 
 //Allow for inclusion in multiple translation units
@@ -166,3 +167,4 @@ private:
 } // end namespace MatPlotLib
 } // end namespace Visualization
 } // end namespace TBTK
+/// @endcond

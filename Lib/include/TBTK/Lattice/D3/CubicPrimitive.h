@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file CubicPrimitive.h
  *  @brief Cubic primitive Bravais lattices.
@@ -54,3 +55,4 @@ public:
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

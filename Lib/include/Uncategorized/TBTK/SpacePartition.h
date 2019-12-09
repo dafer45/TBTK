@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file SpacePartition.h
  *  @brief Base class for space partitions.
@@ -130,3 +131,4 @@ inline SpacePartition::MeshType SpacePartition::getMeshType() const{
 };	//End namespace TBTK
 
 #endif
+/// @endcond

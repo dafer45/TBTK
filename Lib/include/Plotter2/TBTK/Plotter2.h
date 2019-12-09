@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file Plotter2.h
  *  @brief Plotter2
@@ -298,3 +299,4 @@ inline void Plotter2::save(std::string filename){
 };	//End namespace TBTK
 
 #endif
+/// @cond TBTK_FULL_DOCUMENTATION

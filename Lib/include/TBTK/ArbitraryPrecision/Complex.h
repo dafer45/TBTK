@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file Complex.h
  *  @brief Arbitrary precision complex number.
@@ -585,3 +586,4 @@ inline Complex pow(const Complex &base, int power){
 }; //End of namesapce TBTK
 
 #endif
+/// @endcond

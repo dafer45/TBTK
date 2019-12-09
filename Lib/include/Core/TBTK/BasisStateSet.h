@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file BasisStateSet.h
  *  @brief Basis state container.
@@ -269,3 +270,4 @@ bool BasisStateSet::_Iterator<isConstIterator>::operator!=(
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

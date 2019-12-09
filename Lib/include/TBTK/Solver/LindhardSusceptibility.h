@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTTION
 /** @package TBTKcalc
  *  @file LindhardSuscesptibility.h
  *  @brief Property container for density
@@ -161,3 +162,4 @@ inline int LindhardSusceptibility::getKPlusQLinearIndex<true>(
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

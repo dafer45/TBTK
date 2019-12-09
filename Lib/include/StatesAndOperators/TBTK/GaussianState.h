@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file GaussianState.h
  *  @brief State formed as a contraction of Gaussians.
@@ -132,3 +133,4 @@ inline void GaussianState::setNuclearTerm(
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

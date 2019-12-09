@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file MatsubaraSusceptibility.h
  *  @brief Extracts physical properties from the
@@ -103,3 +104,4 @@ inline bool MatsubaraSusceptibility::SusceptibilityBlockInformation::getCalculat
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

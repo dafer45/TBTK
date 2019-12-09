@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file HartreeFockPotentialOperator.h
  *  @brief Hartree-Fock potential operator.
@@ -125,3 +126,4 @@ HartreeFockPotentialOperator::getSecondState() const{
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

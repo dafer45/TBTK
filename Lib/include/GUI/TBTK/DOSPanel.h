@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file DOSPanel.h
  *  @brief Panel for DOS.
@@ -150,3 +151,4 @@ inline double DOSPanel::ControlPanel::getMax() const{
 };	//End namespace TBTK
 
 #endif
+/// @endcond

@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file Polynomial.h
  *  @brief Class for storing polynomial expressions.
@@ -50,3 +51,4 @@ public:
 }; //End of namespace TBTK
 
 #endif
+/// @endcond

@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file MatsubaraSuscesptibility.h
  *  @brief Calculates the Susceptibility using a Matsubara summation.
@@ -85,3 +86,4 @@ MatsubaraSusceptibility::getGreensFunction() const{
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

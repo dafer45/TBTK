@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file HartreeFock.h
  *  @brief Solves a Model using the Hartree-Fock method.
@@ -210,3 +211,4 @@ inline const Vector3d& HartreeFock::PositionedAtom::getPosition() const{
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

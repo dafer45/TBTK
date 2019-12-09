@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file FockState.h
  *  @brief FockState.
@@ -137,3 +138,4 @@ void FockState<BIT_REGISTER>::print() const{
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file HALinkedList.h
  *  @brief Support data structure for ChebyshevSolver
@@ -85,3 +86,4 @@ inline void HALinkedList::rescaleAmplitudes(double scaleFactor){
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

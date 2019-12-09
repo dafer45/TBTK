@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file Field.h
  *  @brief Wrapper class for a Field.
@@ -120,3 +121,4 @@ inline double FieldWrapper::getExtent<std::complex<double>, double>() const{
 };	//End namespace TBTK
 
 #endif
+/// @endcond

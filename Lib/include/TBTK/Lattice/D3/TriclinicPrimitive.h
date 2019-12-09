@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file TriclinicPrimitive.h
  *  @brief Triclinic primitive Bravais lattices.
@@ -59,3 +60,4 @@ public:
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

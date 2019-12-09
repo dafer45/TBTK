@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file BravaisLattice.h
  *  @brief Base class for Bravais lattices.
@@ -99,3 +100,4 @@ inline const std::vector<std::vector<double>>& BravaisLattice::getAdditionalSite
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

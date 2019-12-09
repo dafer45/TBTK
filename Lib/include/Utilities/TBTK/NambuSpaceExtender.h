@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file NambuSpaceExtender.h
  *  @brief Extends a Model to Nambu space.
@@ -48,3 +49,4 @@ public:
 }; //End of namesapce TBTK
 
 #endif
+/// @endcond

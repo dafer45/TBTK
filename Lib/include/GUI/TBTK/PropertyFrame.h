@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file PropertyFrame.h
  *  @brief Frame for displaying properties.
@@ -88,3 +89,4 @@ private:
 };	//End namespace TBTK
 
 #endif
+/// @endcond

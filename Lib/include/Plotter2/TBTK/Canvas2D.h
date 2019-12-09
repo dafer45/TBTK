@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file Canvas2D.h
  *  @brief Canvas2D
@@ -319,3 +320,4 @@ inline unsigned int Canvas2D::getSize(unsigned int dataSet) const{
 };	//End namespace TBTK
 
 #endif
+/// @endcond

@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file OrthorhombicFaceCentered.h
  *  @brief Orthorhombic face-centered Bravais lattices.
@@ -64,3 +65,4 @@ public:
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

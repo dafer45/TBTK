@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file SelfEnergy.h
  *  @brief Calculates the self-energy.
@@ -113,3 +114,4 @@ inline const Property::InteractionVertex& SelfEnergy::getInteractionVertex(
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

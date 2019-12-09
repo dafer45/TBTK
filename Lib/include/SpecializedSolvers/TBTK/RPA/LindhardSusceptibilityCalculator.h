@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file SuscesptibilityCalculator.h
  *  @brief Property container for density
@@ -132,3 +133,4 @@ inline bool LindhardSusceptibilityCalculator::getSusceptibilityIsSafeFromPoles()
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

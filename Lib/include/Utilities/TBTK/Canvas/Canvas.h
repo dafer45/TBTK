@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file Canvas.h
  *  @brief Canvas
@@ -245,3 +246,4 @@ inline void Canvas<CoordinateType>::calculateNorms(){
 };	//End namespace TBTK
 
 #endif
+/// @endcond

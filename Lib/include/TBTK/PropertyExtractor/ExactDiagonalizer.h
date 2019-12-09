@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file ExactDiagonalizer.h
  *  @brief Extracts physical properties from the Diagonalizer
@@ -121,3 +122,4 @@ private:
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

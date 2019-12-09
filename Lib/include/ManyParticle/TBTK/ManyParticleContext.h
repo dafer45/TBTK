@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file ManyParticleContext.h
  *  @brief Many-particle context.
@@ -150,3 +151,4 @@ inline const FockStateRuleSet& ManyParticleContext::getFockStateRuleSet() const{
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

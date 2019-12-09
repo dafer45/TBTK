@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file FockStateSumRule.h
  *  @brief FockStateSumRule.
@@ -95,3 +96,4 @@ private:
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

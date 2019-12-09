@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file SelfEnergy.h
  *  @brief Property container for the SelfEnergy.
@@ -236,3 +237,4 @@ inline SelfEnergy SelfEnergy::operator/(const std::complex<double> &rhs) const{
 };	//End namespace TBTK
 
 #endif
+/// @endcond

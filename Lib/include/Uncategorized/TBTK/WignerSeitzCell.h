@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file WignerSeitzCell.h
  *  @brief Wiegner-Seitz cell.
@@ -238,3 +239,4 @@ inline Vector3d WignerSeitzCell::getFirstCellCoordinates(Vector3d coordinates) c
 };	//End namespace TBTK
 
 #endif
+/// @endcond

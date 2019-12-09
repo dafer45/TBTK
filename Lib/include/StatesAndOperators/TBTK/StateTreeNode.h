@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file StateTreeNode.h
  *  @brief Tree structure for quick access of multiple States.
@@ -126,3 +127,4 @@ private:
 };	//End namespace TBTK
 
 #endif
+/// @endcond

@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file TransmissionRate.h
  *  @brief Property container for transmission rates.
@@ -231,3 +232,4 @@ inline TransmissionRate TransmissionRate::operator/(const double &rhs) const{
 };	//End namespace TBTK
 
 #endif
+/// @endcond

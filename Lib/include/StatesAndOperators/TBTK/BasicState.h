@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file BasisState.h
  *  @brief State class with index and unit cell based overlap evaluation.
@@ -143,3 +144,4 @@ inline bool BasicState::Storage::release(){
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

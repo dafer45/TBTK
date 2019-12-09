@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file CubicBodyCentered.h
  *  @brief Cubic body-centered Bravais lattices.
@@ -60,3 +61,4 @@ public:
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

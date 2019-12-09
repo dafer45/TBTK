@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file DifferenceRule.h
  *  @brief DifferenceRule.
@@ -96,3 +97,4 @@ private:
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

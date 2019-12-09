@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file Sto3g.h
  *  @brief STO-3G state.
@@ -145,3 +146,4 @@ inline Sto3g* Sto3g::clone() const{
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

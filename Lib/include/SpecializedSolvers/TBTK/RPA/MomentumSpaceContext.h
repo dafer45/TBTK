@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file MomentumSpaceContext.h
  *  @brief Property container for density
@@ -215,3 +216,4 @@ inline const PropertyExtractor::BlockDiagonalizer& MomentumSpaceContext::getProp
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file Susceptibility.h
  *  @brief Property container for the Susceptiility.
@@ -129,3 +130,4 @@ private:
 };	//End namespace TBTK
 
 #endif
+/// @endcond

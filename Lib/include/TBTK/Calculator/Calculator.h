@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file Calculator.h
  *  @brief Base class Calculators
@@ -39,3 +40,4 @@ public:
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

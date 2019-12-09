@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file Field.h
  *  @brief Abstract base class for fields.
@@ -86,3 +87,4 @@ ArgumentType Field<DataType, ArgumentType>::getExtent() const{
 };	//End namespace TBTK
 
 #endif
+/// @endcond

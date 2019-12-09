@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file ParallelepipedCell.h
  *  @brief Parallelepiped cell.
@@ -84,3 +85,4 @@ private:
 };	//End namespace TBTK
 
 #endif
+/// @endcond

@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file HoppingAmplitudePanel.h
  *  @brief Panel for displaying a HoppingAmplitude.
@@ -89,3 +90,4 @@ inline const HoppingAmplitude& HoppingAmplitudePanel::getHoppingAmplitude() cons
 };	//End namespace TBTK
 
 #endif
+/// @endcond

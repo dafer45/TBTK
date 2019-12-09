@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file PNGCanvas3D.h
  *  @brief PNGCanvas3D
@@ -53,3 +54,4 @@ private:
 };	//End namespace TBTK
 
 #endif
+/// @endcond

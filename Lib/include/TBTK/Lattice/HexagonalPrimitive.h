@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file HexagonalPrimitive.h
  *  @brief Two- and three-dimensional hexagonal primitive Bravais lattices.
@@ -27,3 +28,4 @@
 #include "TBTK/Lattice/D3/D3HexagonalPrimitive.h"
 
 #endif
+/// @endcond

@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file DualIndex.h
  *  @brief Extends an Index with a continuous representation of the index.
@@ -74,3 +75,4 @@ inline DualIndex::~DualIndex(){
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file FLEX.h
  *  @brief Executes the fluctuation exchange (FLEX) loop.
@@ -540,3 +541,4 @@ inline void FLEX::setNumSlices(unsigned int numSlices){
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

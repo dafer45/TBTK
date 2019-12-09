@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file NuclearPotentialOperator.h
  *  @brief Nuclear potential operator.
@@ -74,3 +75,4 @@ inline const Vector3d& NuclearPotentialOperator::getPosition() const{
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

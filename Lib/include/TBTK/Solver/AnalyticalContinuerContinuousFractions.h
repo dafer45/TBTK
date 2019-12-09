@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file AnalyticalContinuerContinuousFractions.h
  *  @brief Perfroms analytical continuation of EnergyResolved properties using
@@ -122,3 +123,4 @@ inline void AnalyticalContinuerContinuousFractions::setEnergyInfinitesimal(
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file FockStateRuleSet.h
  *  @brief FockStateRuleSet.
@@ -136,3 +137,4 @@ inline void FockStateRuleSet::print() const{
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

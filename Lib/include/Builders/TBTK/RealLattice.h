@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file RealLattice.h
  *  @brief A RealLattice allows for repeated replication of UnitCells.
@@ -54,3 +55,4 @@ private:
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

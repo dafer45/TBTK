@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file BrillouinZone.h
  *  @brief Brillouin zone.
@@ -45,3 +46,4 @@ public:
 };	//End namespace TBTK
 
 #endif
+/// @endcond

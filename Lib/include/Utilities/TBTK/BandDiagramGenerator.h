@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file BandDiagramGenerator.h
  *  @brief Generator of band diagrams.
@@ -58,3 +59,4 @@ inline void BandDiagramGenerator::setReciprocalLattice(
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

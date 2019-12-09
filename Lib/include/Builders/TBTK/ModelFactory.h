@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file ModelFactor.h
  *  @brief Class for generating common models.
@@ -195,3 +196,4 @@ private:
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

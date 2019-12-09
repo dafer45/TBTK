@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file IndexPanel.h
  *  @brief Panel for displaying an Index.
@@ -77,3 +78,4 @@ inline const Index& IndexPanel::getIndex() const{
 };	//End namespace TBTK
 
 #endif
+/// @endcond

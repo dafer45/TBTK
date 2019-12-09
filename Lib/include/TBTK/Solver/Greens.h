@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file Greens.h
  *  @brief Calculates properties from a Green's function.
@@ -96,3 +97,4 @@ inline const Property::GreensFunction& Greens::getGreensFunction() const{
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file TimeEvolver.h
  *  @brief Time evolves a ground state.
@@ -310,3 +311,4 @@ inline double TimeEvolver::getOrthogonalityError(){
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

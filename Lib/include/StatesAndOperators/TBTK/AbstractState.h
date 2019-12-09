@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file AbstractState.h
  *  @brief Abstract state class from which other states inherit.
@@ -184,3 +185,4 @@ inline bool AbstractState::hasFiniteExtent() const{
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

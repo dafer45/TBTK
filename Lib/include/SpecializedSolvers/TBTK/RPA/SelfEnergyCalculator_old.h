@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file SelfEnergyCalculator.h
  *  @brief Calculates the self-energy using the RPA approximation.
@@ -323,3 +324,4 @@ inline void SelfEnergyCalculator::loadSusceptibilities(
 };	//End of namespace TBTK
 
 #endif
+/// @endcond

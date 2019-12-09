@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file ParametrizedLine3d.h
  *  @brief Parametrized line in three dimensions.
@@ -59,3 +60,4 @@ inline const Vector3d ParametrizedLine3d::operator()(double lambda) const{
 };	//End namespace TBTK
 
 #endif
+/// @endcond
