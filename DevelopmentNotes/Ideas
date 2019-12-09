@@ -43,3 +43,7 @@
 - Investigate how to disentangle the FockStateRule and the WrapperRule.
   FockStateRule::operator*() is currently implemented in WrapperRule.cpp, and
   the unit test of this operator is very convoluted.
+
+- Update TBTKAssert and TBTKExit to not take function name string. Instead
+  print __PRETTY_FUNCTION__ for gcc and clang, and some other macro for other
+  compilers (possibly the less informative __func__).
