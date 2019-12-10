@@ -23,8 +23,13 @@ protected:
 	//https://physics.nist.gov/cuu/Constants/index.html
 	constexpr static const double m_e = 9.1093837015*1e-31;		//kg = J s^2 / m^2
 	constexpr static const double m_p = 1.67262192369*1e-27;	//kg = J s^2 / m^2
+	constexpr static const double mu_0 = 1.25663706212*1e-6;	//N / A^2 = J s^2 / m C^2
+	constexpr static const double epsilon_0 = 8.8541878128*1e-12;	//F / m = C^2 / J m
+	constexpr static const double a_0 = 5.29177210903*1e-11;	//m
 
 	constexpr static const double hbar = 6.62607015*1e-34/(2*M_PI);	//m^2 kg / s
+	constexpr static const double mu_B = e*hbar/(2*m_e);		//C m^2 / s
+	constexpr static const double mu_n = e*hbar/(2*m_p);		//C m^2 / s
 
 	constexpr static const double J_per_eV = e;
 	constexpr static const double pcs_per_mol = N_A;
@@ -137,8 +142,7 @@ TEST_F(UnitHandlerTest, getN_ANatural1){
 
 //TBTKFeature Utilities.UnitHandler.getM_eBase.1 2019-12-09
 TEST_F(UnitHandlerTest, getM_eBase1){
-	//[m_e] = GeV as^2/Ao^2
-	// = (J_per_GeV*(s_per_as)^2/(m_per_Ao)^2) Js^2/m^2
+	//[m_e] = GeV as^2/Ao^2 = J_per_GeV*(s_per_as)^2/(m_per_Ao)^2 Js^2/m^2
 	double J_per_GeV = J_per_eV*1e9;
 	double s_per_as = 1e-18;
 	double m_per_Ao = 1e-10;
@@ -154,7 +158,7 @@ TEST_F(UnitHandlerTest, getM_eBase1){
 //TBTKFeature Utilities.UnitHandler.getM_eNatural.1 2019-12-09
 TEST_F(UnitHandlerTest, getM_eNatural1){
 	//[m_e] = 1.3*1.6^2/1.4^2 GeV as^2/Ao^2
-	// = 1.3*1.6^2/1.4^2(J_per_GeV*(s_per_as)^2/(m_per_Ao)^2) Js^2/m^2
+	// = 1.3*1.6^2/1.4^2 J_per_GeV*(s_per_as)^2/(m_per_Ao)^2 Js^2/m^2
 	double J_per_GeV = J_per_eV*1e9;
 	double s_per_as = 1e-18;
 	double m_per_Ao = 1e-10;
@@ -169,8 +173,7 @@ TEST_F(UnitHandlerTest, getM_eNatural1){
 
 //TBTKFeature Utilities.UnitHandler.getM_pBase.1 2019-12-09
 TEST_F(UnitHandlerTest, getM_pBase1){
-	//[m_p] = GeV as^2/Ao^2
-	// = (J_per_GeV*(s_per_as)^2/(m_per_Ao)^2) Js^2/m^2
+	//[m_p] = GeV as^2/Ao^2 = J_per_GeV*(s_per_as)^2/(m_per_Ao)^2 Js^2/m^2
 	double J_per_GeV = J_per_eV*1e9;
 	double s_per_as = 1e-18;
 	double m_per_Ao = 1e-10;
@@ -186,7 +189,7 @@ TEST_F(UnitHandlerTest, getM_pBase1){
 //TBTKFeature Utilities.UnitHandler.getM_pNatural.1 2019-12-09
 TEST_F(UnitHandlerTest, getM_pNatural1){
 	//[m_p] = 1.3*1.6^2/1.4^2 GeV as^2/Ao^2
-	// = 1.3*1.6^2/1.4^2(J_per_GeV*(s_per_as)^2/(m_per_Ao)^2) Js^2/m^2
+	// = 1.3*1.6^2/1.4^2 J_per_GeV*(s_per_as)^2/(m_per_Ao)^2 Js^2/m^2
 	double J_per_GeV = J_per_eV*1e9;
 	double s_per_as = 1e-18;
 	double m_per_Ao = 1e-10;
@@ -196,6 +199,148 @@ TEST_F(UnitHandlerTest, getM_pNatural1){
 		)/((1.4*m_per_Ao)*(1.4*m_per_Ao)),
 		m_p,
 		m_p*EPSILON
+	);
+}
+
+//TBTKFeature Utilities.UnitHandler.getMu_BBase.1 2019-12-09
+TEST_F(UnitHandlerTest, getMu_BBase1){
+	//[mu_B] = kC Ao^2/as = C_per_kC*(m_per_Ao)^2/s_per_as C m^2/s
+	double C_per_kC = 1e3;
+	double m_per_Ao = 1e-10;
+	double s_per_as = 1e-18;
+	EXPECT_NEAR(
+		UnitHandler::getMu_BB()*C_per_kC*m_per_Ao*m_per_Ao/s_per_as,
+		mu_B,
+		mu_B*EPSILON
+	);
+}
+
+//TBTKFeature Utilities.UnitHandler.getMu_BNatural.1 2019-12-09
+TEST_F(UnitHandlerTest, getMu_BNatural1){
+	//[mu_B] = kC Ao^2/as = C_per_kC*(m_per_Ao)^2/s_per_as C m^2/s
+	double C_per_kC = 1e3;
+	double m_per_Ao = 1e-10;
+	double s_per_as = 1e-18;
+	EXPECT_NEAR(
+		UnitHandler::getMu_BN()*(1.1*C_per_kC)*(1.4*m_per_Ao)*(
+			1.4*m_per_Ao
+		)/(1.6*s_per_as),
+		mu_B,
+		mu_B*EPSILON
+	);
+}
+
+//TBTKFeature Utilities.UnitHandler.getMu_nBase.1 2019-12-09
+TEST_F(UnitHandlerTest, getMu_nBase1){
+	//[mu_n] = kC Ao^2/as = C_per_kC*(m_per_Ao)^2/s_per_as C m^2/s
+	double C_per_kC = 1e3;
+	double m_per_Ao = 1e-10;
+	double s_per_as = 1e-18;
+	EXPECT_NEAR(
+		UnitHandler::getMu_nB()*C_per_kC*m_per_Ao*m_per_Ao/s_per_as,
+		mu_n,
+		mu_n*EPSILON
+	);
+}
+
+//TBTKFeature Utilities.UnitHandler.getMu_nNatural.1 2019-12-09
+TEST_F(UnitHandlerTest, getMu_nNatural1){
+	//[mu_n] = kC Ao^2/as = C_per_kC*(m_per_Ao)^2/s_per_as C m^2/s
+	double C_per_kC = 1e3;
+	double m_per_Ao = 1e-10;
+	double s_per_as = 1e-18;
+	EXPECT_NEAR(
+		UnitHandler::getMu_nN()*(1.1*C_per_kC)*(1.4*m_per_Ao)*(
+			1.4*m_per_Ao
+		)/(1.6*s_per_as),
+		mu_n,
+		mu_n*EPSILON
+	);
+}
+
+//TBTKFeature Utilities.UnitHandler.getMu_0Base.1 2019-12-09
+TEST_F(UnitHandlerTest, getMu_0Base1){
+	//[mu_0] = GeV as^2/Ao kC^2
+	//= J_per_GeV*s_per_as^2/(m_per_ao*C_per_kC^2) J s^2 / m C^2
+	double J_per_GeV = J_per_eV*1e9;
+	double s_per_as = 1e-18;
+	double m_per_Ao = 1e-10;
+	double C_per_kC = 1e3;
+	EXPECT_NEAR(
+		UnitHandler::getMu_0B()*J_per_GeV*s_per_as*s_per_as/(m_per_Ao*C_per_kC*C_per_kC),
+		mu_0,
+		mu_0*EPSILON
+	);
+}
+
+//TBTKFeature Utilities.UnitHandler.getMu_0Natural.1 2019-12-09
+TEST_F(UnitHandlerTest, getMu_0Natural1){
+	//[mu_0] = 1.3*1.6^2/(1.4*1.1^2) GeV as^2/Ao kC^2
+	// = 1.3*1.6^2/(1.4*1.1^2) J_per_GeV*s_per_as^2/(m_per_ao*C_per_kC^2)
+	// J s^2 / m C^2
+	double J_per_GeV = J_per_eV*1e9;
+	double s_per_as = 1e-18;
+	double m_per_Ao = 1e-10;
+	double C_per_kC = 1e3;
+	EXPECT_NEAR(
+		UnitHandler::getMu_0N()*(1.3*J_per_GeV)*(1.6*s_per_as)*(
+			1.6*s_per_as
+		)/((1.4*m_per_Ao)*(1.1*C_per_kC)*(1.1*C_per_kC)),
+		mu_0,
+		mu_0*EPSILON
+	);
+}
+
+//TBTKFeature Utilities.UnitHandler.getEpsilon_0Base.1 2019-12-09
+TEST_F(UnitHandlerTest, getEpsilon_0Base1){
+	//[epsilon_0] = kC^2/GeV Ao = C_per_kC^2/(J_per_GeV*m_per_Ao) C^2/J m
+	double C_per_kC = 1e3;
+	double J_per_GeV = J_per_eV*1e9;
+	double m_per_Ao = 1e-10;
+	EXPECT_NEAR(
+		UnitHandler::getEpsilon_0B()*C_per_kC*C_per_kC/(
+			J_per_GeV*m_per_Ao
+		),
+		epsilon_0,
+		epsilon_0*EPSILON
+	);
+}
+
+//TBTKFeature Utilities.UnitHandler.getEpsilon_0Natural.1 2019-12-09
+TEST_F(UnitHandlerTest, getEpsilon_0Natural1){
+	//[epsilon_0] = 1.1^2/(1.3*1.4) kC^2/GeV Ao
+	// = 1.1^2/(1.3*1.4) C_per_kC^2/(J_per_GeV*m_per_Ao) C^2/J m
+	double C_per_kC = 1e3;
+	double J_per_GeV = J_per_eV*1e9;
+	double m_per_Ao = 1e-10;
+	EXPECT_NEAR(
+		UnitHandler::getEpsilon_0N()*(1.1*C_per_kC)*(1.1*C_per_kC)/(
+			(1.3*J_per_GeV)*(1.4*m_per_Ao)
+		),
+		epsilon_0,
+		epsilon_0*EPSILON
+	);
+}
+
+//TBTKFeature Utilities.UnitHandler.getA_0Base.1 2019-12-09
+TEST_F(UnitHandlerTest, getA_0Base1){
+	//[a_0] = Ao = m_per_Ao m
+	double m_per_Ao = 1e-10;
+	EXPECT_NEAR(
+		UnitHandler::getA_0B()*m_per_Ao,
+		a_0,
+		a_0*EPSILON
+	);
+}
+
+//TBTKFeature Utilities.UnitHandler.getA_0Natural.1 2019-12-09
+TEST_F(UnitHandlerTest, getA_0Natural1){
+	//[a_0] = 1.4 Ao = 1.4 m_per_Ao m
+	double m_per_Ao = 1e-10;
+	EXPECT_NEAR(
+		UnitHandler::getA_0N()*1.4*m_per_Ao,
+		a_0,
+		a_0*EPSILON
 	);
 }
 
