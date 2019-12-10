@@ -250,78 +250,6 @@ public:
 	/** Get the Bohr radius in the currently set natural units. */
 	static double getA_0N();
 
-	/** Set temperature unit. */
-	static void setTemperatureUnit(TemperatureUnit unit);
-
-	/** Set time unit. */
-	static void setTimeUnit(TimeUnit unit);
-
-	/** Set length unit. */
-	static void setLengthUnit(LengthUnit unit);
-
-	/** Set energy unit. */
-	static void setEnergyUnit(EnergyUnit unit);
-
-	/** Set charge unit. */
-	static void setChargeUnit(ChargeUnit unit);
-
-	/** Set counting unit. */
-	static void setCountUnit(CountUnit unit);
-
-	/** Set temperature scale. */
-	static void setTemperatureScale(double scale);
-
-	/** Set time scale. */
-	static void setTimeScale(double scale);
-
-	/** Set length scale. */
-	static void setLengthScale(double scale);
-
-	/** Set energy scale. */
-	static void setEnergyScale(double scale);
-
-	/** Set charge scale. */
-	static void setChargeScale(double scale);
-
-	/** Set count unit. */
-	static void setCountScale(double scale);
-
-	/** Set temperature scale. */
-	static void setTemperatureScale(double scale, TemperatureUnit unit);
-
-	/** Set time scale. */
-	static void setTimeScale(double scale, TimeUnit unit);
-
-	/** Set length scale. */
-	static void setLengthScale(double scale, LengthUnit unit);
-
-	/** Set energy scale. */
-	static void setEnergyScale(double scale, EnergyUnit unit);
-
-	/** Set charge scale. */
-	static void setChargeScale(double scale, ChargeUnit unit);
-
-	/** Set count scale. */
-	static void setCountScale(double scale, CountUnit unit);
-
-	/** Set temperature scale. */
-	static void setTemperatureScale(std::string scale);
-
-	/** Set time scale. */
-	static void setTimeScale(std::string scale);
-
-	/** Set length scale. */
-	static void setLengthScale(std::string scale);
-
-	/** Set energy scale. */
-	static void setEnergyScale(std::string scale);
-
-	/** Set charge scale. */
-	static void setChargeScale(std::string scale);
-
-	/** Set count scale. */
-	static void setCountScale(std::string scale);
-
 	/** Set scales. */
 	static void setScales(const std::vector<std::string> &scales);
 
@@ -806,6 +734,78 @@ private:
 
 	/** Currently set count scale. */
 	static double countScale;
+
+	/** Set temperature unit. */
+	static void setTemperatureUnit(TemperatureUnit unit);
+
+	/** Set time unit. */
+	static void setTimeUnit(TimeUnit unit);
+
+	/** Set length unit. */
+	static void setLengthUnit(LengthUnit unit);
+
+	/** Set energy unit. */
+	static void setEnergyUnit(EnergyUnit unit);
+
+	/** Set charge unit. */
+	static void setChargeUnit(ChargeUnit unit);
+
+	/** Set counting unit. */
+	static void setCountUnit(CountUnit unit);
+
+	/** Set temperature scale. */
+	static void setTemperatureScale(double scale);
+
+	/** Set time scale. */
+	static void setTimeScale(double scale);
+
+	/** Set length scale. */
+	static void setLengthScale(double scale);
+
+	/** Set energy scale. */
+	static void setEnergyScale(double scale);
+
+	/** Set charge scale. */
+	static void setChargeScale(double scale);
+
+	/** Set count unit. */
+	static void setCountScale(double scale);
+
+	/** Set temperature scale. */
+	static void setTemperatureScale(double scale, TemperatureUnit unit);
+
+	/** Set time scale. */
+	static void setTimeScale(double scale, TimeUnit unit);
+
+	/** Set length scale. */
+	static void setLengthScale(double scale, LengthUnit unit);
+
+	/** Set energy scale. */
+	static void setEnergyScale(double scale, EnergyUnit unit);
+
+	/** Set charge scale. */
+	static void setChargeScale(double scale, ChargeUnit unit);
+
+	/** Set count scale. */
+	static void setCountScale(double scale, CountUnit unit);
+
+	/** Set temperature scale. */
+	static void setTemperatureScale(std::string scale);
+
+	/** Set time scale. */
+	static void setTimeScale(std::string scale);
+
+	/** Set length scale. */
+	static void setLengthScale(std::string scale);
+
+	/** Set energy scale. */
+	static void setEnergyScale(std::string scale);
+
+	/** Set charge scale. */
+	static void setChargeScale(std::string scale);
+
+	/** Set count scale. */
+	static void setCountScale(std::string scale);
 
 	/** Update Planck constant. To be called at change of units. */
 	static void updateHbar();
