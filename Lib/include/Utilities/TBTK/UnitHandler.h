@@ -609,7 +609,8 @@ private:
 	static constexpr double C	= 2.99792458e8;
 
 	/** Avogadros number in default units (pcs). */
-	static constexpr double N_A = 6.022140857e23;
+//	static constexpr double N_A = 6.022140857e23;
+	static constexpr double N_A = 6.02214076e23;
 
 	/** Electron mass in default units (eVs^2/m^2). */
 	static constexpr double M_E	= 5.109989461e5/(C*C);
@@ -669,7 +670,8 @@ private:
 	static double a_0;
 
 	/** Conversion factor from eV to J. */
-	static constexpr double J_per_eV	= 1.602176565e-19;
+//	static constexpr double J_per_eV	= 1.602176565e-19;
+	static constexpr double J_per_eV	= 1.602176634e-19;
 
 	/** Conversion factor from eV to J. */
 	static constexpr double eV_per_J	= 1./J_per_eV;

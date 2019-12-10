@@ -368,14 +368,18 @@ double UnitHandler::convertTemperatureAtB(
 	double temperature,
 	TemperatureUnit unit
 ){
-	return temperature/getTemperatureConversionFactor(unit);
+	return temperature*getTemperatureConversionFactor(
+		temperatureUnit
+	)/getTemperatureConversionFactor(unit);
 }
 
 double UnitHandler::convertTemperatureBtA(
 	double temperature,
 	TemperatureUnit unit
 ){
-	return temperature*getTemperatureConversionFactor(unit);
+	return temperature*getTemperatureConversionFactor(
+		unit
+	)/getTemperatureConversionFactor(temperatureUnit);
 }
 
 double UnitHandler::convertTemperatureAtN(
@@ -383,7 +387,9 @@ double UnitHandler::convertTemperatureAtN(
 	TemperatureUnit unit
 ){
 	double temperatureInDefaultBaseUnits
-		= temperature/getTemperatureConversionFactor(unit);
+		= temperature*getTemperatureConversionFactor(
+			temperatureUnit
+		)/getTemperatureConversionFactor(unit);
 
 	return temperatureInDefaultBaseUnits/temperatureScale;
 }
@@ -392,7 +398,10 @@ double UnitHandler::convertTemperatureNtA(
 	double temperature,
 	TemperatureUnit unit
 ){
-	double temperatureInDefaultBaseUnits = temperature/temperatureScale;
+	double temperatureInDefaultBaseUnits
+		= temperature*temperatureScale/getTemperatureConversionFactor(
+			temperatureUnit
+		);
 	return temperatureInDefaultBaseUnits*getTemperatureConversionFactor(unit);
 }
 
@@ -400,14 +409,16 @@ double UnitHandler::convertTimeAtB(
 	double time,
 	TimeUnit unit
 ){
-	return time/getTimeConversionFactor(unit);
+	return time*getTimeConversionFactor(timeUnit)/getTimeConversionFactor(unit);
 }
 
 double UnitHandler::convertTimeBtA(
 	double time,
 	TimeUnit unit
 ){
-	return time*getTimeConversionFactor(unit);
+	return time*getTimeConversionFactor(unit)/getTimeConversionFactor(
+		timeUnit
+	);
 }
 
 double UnitHandler::convertTimeAtN(
@@ -415,7 +426,9 @@ double UnitHandler::convertTimeAtN(
 	TimeUnit unit
 ){
 	double timeInDefaultBaseUnits
-		= time/getTimeConversionFactor(unit);
+		= time*getTimeConversionFactor(
+			timeUnit
+		)/getTimeConversionFactor(unit);
 
 	return timeInDefaultBaseUnits/timeScale;
 }
@@ -424,7 +437,8 @@ double UnitHandler::convertTimeNtA(
 	double time,
 	TimeUnit unit
 ){
-	double timeInDefaultBaseUnits = time/timeScale;
+	double timeInDefaultBaseUnits
+		= time*timeScale/getTimeConversionFactor(timeUnit);
 	return timeInDefaultBaseUnits*getTimeConversionFactor(unit);
 }
 
@@ -432,14 +446,18 @@ double UnitHandler::convertLengthAtB(
 	double length,
 	LengthUnit unit
 ){
-	return length/getLengthConversionFactor(unit);
+	return length*getLengthConversionFactor(
+		lengthUnit
+	)/getLengthConversionFactor(unit);
 }
 
 double UnitHandler::convertLengthBtA(
 	double length,
 	LengthUnit unit
 ){
-	return length*getLengthConversionFactor(unit);
+	return length*getLengthConversionFactor(
+		unit
+	)/getLengthConversionFactor(lengthUnit);
 }
 
 double UnitHandler::convertLengthAtN(
@@ -447,7 +465,9 @@ double UnitHandler::convertLengthAtN(
 	LengthUnit unit
 ){
 	double lengthInDefaultBaseUnits
-		= length/getLengthConversionFactor(unit);
+		= length*getLengthConversionFactor(
+			lengthUnit
+		)/getLengthConversionFactor(unit);
 
 	return lengthInDefaultBaseUnits/lengthScale;
 }
@@ -456,7 +476,8 @@ double UnitHandler::convertLengthNtA(
 	double length,
 	LengthUnit unit
 ){
-	double lengthInDefaultBaseUnits = length/lengthScale;
+	double lengthInDefaultBaseUnits
+		= length*lengthScale/getLengthConversionFactor(lengthUnit);
 	return lengthInDefaultBaseUnits*getLengthConversionFactor(unit);
 }
 
@@ -464,14 +485,18 @@ double UnitHandler::convertEnergyAtB(
 	double energy,
 	EnergyUnit unit
 ){
-	return energy/getEnergyConversionFactor(unit);
+	return energy*getEnergyConversionFactor(
+		energyUnit
+	)/getEnergyConversionFactor(unit);
 }
 
 double UnitHandler::convertEnergyBtA(
 	double energy,
 	EnergyUnit unit
 ){
-	return energy*getEnergyConversionFactor(unit);
+	return energy*getEnergyConversionFactor(
+		unit
+	)/getEnergyConversionFactor(energyUnit);
 }
 
 double UnitHandler::convertEnergyAtN(
@@ -479,7 +504,9 @@ double UnitHandler::convertEnergyAtN(
 	EnergyUnit unit
 ){
 	double energyInDefaultBaseUnits
-		= energy/getEnergyConversionFactor(unit);
+		= energy*getEnergyConversionFactor(
+			energyUnit
+		)/getEnergyConversionFactor(unit);
 
 	return energyInDefaultBaseUnits/energyScale;
 }
@@ -488,7 +515,8 @@ double UnitHandler::convertEnergyNtA(
 	double energy,
 	EnergyUnit unit
 ){
-	double energyInDefaultBaseUnits = energy/energyScale;
+	double energyInDefaultBaseUnits
+		= energy*energyScale/getEnergyConversionFactor(energyUnit);
 	return energyInDefaultBaseUnits*getEnergyConversionFactor(unit);
 }
 
@@ -496,14 +524,18 @@ double UnitHandler::convertChargeAtB(
 	double charge,
 	ChargeUnit unit
 ){
-	return charge/getChargeConversionFactor(unit);
+	return charge*getChargeConversionFactor(
+		chargeUnit
+	)/getChargeConversionFactor(unit);
 }
 
 double UnitHandler::convertChargeBtA(
 	double charge,
 	ChargeUnit unit
 ){
-	return charge*getChargeConversionFactor(unit);
+	return charge*getChargeConversionFactor(
+		unit
+	)/getChargeConversionFactor(chargeUnit);
 }
 
 double UnitHandler::convertChargeAtN(
@@ -511,7 +543,9 @@ double UnitHandler::convertChargeAtN(
 	ChargeUnit unit
 ){
 	double chargeInDefaultBaseUnits
-		= charge/getChargeConversionFactor(unit);
+		= charge*getChargeConversionFactor(
+			chargeUnit
+		)/getChargeConversionFactor(unit);
 
 	return chargeInDefaultBaseUnits/chargeScale;
 }
@@ -520,7 +554,8 @@ double UnitHandler::convertChargeNtA(
 	double charge,
 	ChargeUnit unit
 ){
-	double chargeInDefaultBaseUnits = charge/chargeScale;
+	double chargeInDefaultBaseUnits
+		= charge*chargeScale/getChargeConversionFactor(chargeUnit);
 	return chargeInDefaultBaseUnits*getChargeConversionFactor(unit);
 }
 
@@ -528,14 +563,18 @@ double UnitHandler::convertCountAtB(
 	double count,
 	CountUnit unit
 ){
-	return count/getCountConversionFactor(unit);
+	return count*getCountConversionFactor(
+		countUnit
+	)/getCountConversionFactor(unit);
 }
 
 double UnitHandler::convertCountBtA(
 	double count,
 	CountUnit unit
 ){
-	return count*getCountConversionFactor(unit);
+	return count*getCountConversionFactor(unit)/getCountConversionFactor(
+		countUnit
+	);
 }
 
 double UnitHandler::convertCountAtN(
@@ -543,7 +582,9 @@ double UnitHandler::convertCountAtN(
 	CountUnit unit
 ){
 	double countInDefaultBaseUnits
-		= count/getCountConversionFactor(unit);
+		= count*getCountConversionFactor(
+			countUnit
+		)/getCountConversionFactor(unit);
 
 	return countInDefaultBaseUnits/countScale;
 }
@@ -552,7 +593,8 @@ double UnitHandler::convertCountNtA(
 	double count,
 	CountUnit unit
 ){
-	double countInDefaultBaseUnits = count/countScale;
+	double countInDefaultBaseUnits
+		= count*countScale/getCountConversionFactor(countUnit);
 	return countInDefaultBaseUnits*getCountConversionFactor(unit);
 }
 

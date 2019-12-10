@@ -404,4 +404,272 @@ TEST_F(UnitHandlerTest, convertCountBaseToNatural1){
 	EXPECT_DOUBLE_EQ(UnitHandler::convertCountBtN(10), 10/1.2);
 }
 
+//TBTKFeature Utilities.UnitHandler.convertTemperatureArbitraryToBase.1 2019-12-10
+TEST_F(UnitHandlerTest, convertTemperatureArbitraryToBase1){
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertTemperatureAtB(
+			10,
+			UnitHandler::TemperatureUnit::uK
+		),
+		10*1e-9
+	);
+}
+
+//TBTKFeature Utilities.UnitHandler.convertTimeArbitraryToBase.1 2019-12-10
+TEST_F(UnitHandlerTest, convertTimeArbitraryToBase1){
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertTimeAtB(
+			10,
+			UnitHandler::TimeUnit::ns
+		),
+		10*1e9
+	);
+}
+
+//TBTKFeature Utilities.UnitHandler.convertLengthArbitraryToBase.1 2019-12-10
+TEST_F(UnitHandlerTest, convertLengthArbitraryToBase1){
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertLengthAtB(
+			10,
+			UnitHandler::LengthUnit::mm
+		),
+		10*1e7
+	);
+}
+
+//TBTKFeature Utilities.UnitHandler.convertEnergyArbitraryToBase.1 2019-12-10
+TEST_F(UnitHandlerTest, convertEnergyArbitraryToBase1){
+	double eV_per_J = 1/J_per_eV;
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertEnergyAtB(
+			10,
+			UnitHandler::EnergyUnit::J
+		),
+		10*eV_per_J*1e-9
+	);
+}
+
+//TBTKFeature Utilities.UnitHandler.convertChargeArbitraryToBase.1 2019-12-10
+TEST_F(UnitHandlerTest, convertChargeArbitraryToBase1){
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertChargeAtB(
+			10,
+			UnitHandler::ChargeUnit::uC
+		),
+		10*1e-9
+	);
+}
+
+//TBTKFeature Utilities.UnitHandler.convertCountArbitraryToBase.1 2019-12-10
+TEST_F(UnitHandlerTest, convertCountArbitraryToBase1){
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertCountAtB(
+			10,
+			UnitHandler::CountUnit::mol
+		),
+		10*N_A
+	);
+}
+
+//TBTKFeature Utilities.UnitHandler.convertTemperatureBaseToArbitrary.1 2019-12-10
+TEST_F(UnitHandlerTest, convertTemperatureBaseToArbitrary1){
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertTemperatureBtA(
+			10,
+			UnitHandler::TemperatureUnit::uK
+		),
+		10/1e-9
+	);
+}
+
+//TBTKFeature Utilities.UnitHandler.convertTimeBaseToArbitrary.1 2019-12-10
+TEST_F(UnitHandlerTest, convertTimeBaseToArbitrary1){
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertTimeBtA(
+			10,
+			UnitHandler::TimeUnit::ns
+		),
+		10/1e9
+	);
+}
+
+//TBTKFeature Utilities.UnitHandler.convertLengthBaseToArbitrary.1 2019-12-10
+TEST_F(UnitHandlerTest, convertLengthBaseToArbitrary1){
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertLengthBtA(
+			10,
+			UnitHandler::LengthUnit::mm
+		),
+		10/1e7
+	);
+}
+
+//TBTKFeature Utilities.UnitHandler.convertEnergyBaseToArbitrary.1 2019-12-10
+TEST_F(UnitHandlerTest, convertEnergyBaseToArbitrary1){
+	double eV_per_J = 1/J_per_eV;
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertEnergyBtA(
+			10,
+			UnitHandler::EnergyUnit::J
+		),
+		10/(eV_per_J*1e-9)
+	);
+}
+
+//TBTKFeature Utilities.UnitHandler.convertChargeBaseToArbitrary.1 2019-12-10
+TEST_F(UnitHandlerTest, convertChargeBaseToArbitrary1){
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertChargeBtA(
+			10,
+			UnitHandler::ChargeUnit::uC
+		),
+		10/1e-9
+	);
+}
+
+//TBTKFeature Utilities.UnitHandler.convertCountBaseToArbitrary.1 2019-12-10
+TEST_F(UnitHandlerTest, convertCountBaseToArbitrary1){
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertCountBtA(
+			10,
+			UnitHandler::CountUnit::mol
+		),
+		10/N_A
+	);
+}
+
+//TBTKFeature Utilities.UnitHandler.convertTemperatureArbitraryToNatural.1 2019-12-10
+TEST_F(UnitHandlerTest, convertTemperatureArbitraryToNatural1){
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertTemperatureAtN(
+			10,
+			UnitHandler::TemperatureUnit::uK
+		),
+		10*1e-9/1.5
+	);
+}
+
+//TBTKFeature Utilities.UnitHandler.convertTimeArbitraryToNatural.1 2019-12-10
+TEST_F(UnitHandlerTest, convertTimeArbitraryToNatural1){
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertTimeAtN(
+			10,
+			UnitHandler::TimeUnit::ns
+		),
+		10*1e9/1.6
+	);
+}
+
+//TBTKFeature Utilities.UnitHandler.convertLengthArbitraryToNatural.1 2019-12-10
+TEST_F(UnitHandlerTest, convertLengthArbitraryToNatural1){
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertLengthAtN(
+			10,
+			UnitHandler::LengthUnit::mm
+		),
+		10*1e7/1.4
+	);
+}
+
+//TBTKFeature Utilities.UnitHandler.convertEnergyArbitraryToNatural.1 2019-12-10
+TEST_F(UnitHandlerTest, convertEnergyArbitraryToNatural1){
+	double eV_per_J = 1/J_per_eV;
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertEnergyAtN(
+			10,
+			UnitHandler::EnergyUnit::J
+		),
+		10*eV_per_J*1e-9/1.3
+	);
+}
+
+//TBTKFeature Utilities.UnitHandler.convertChargeArbitraryToNatural.1 2019-12-10
+TEST_F(UnitHandlerTest, convertChargeArbitraryToNatural1){
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertChargeAtN(
+			10,
+			UnitHandler::ChargeUnit::uC
+		),
+		10*1e-9/1.1
+	);
+}
+
+//TBTKFeature Utilities.UnitHandler.convertCountArbitraryToNatural.1 2019-12-10
+TEST_F(UnitHandlerTest, convertCountArbitraryToNatural1){
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertCountAtN(
+			10,
+			UnitHandler::CountUnit::mol
+		),
+		10*N_A/1.2
+	);
+}
+
+//TBTKFeature Utilities.UnitHandler.convertTemperatureNaturalToArbitrary.1 2019-12-10
+TEST_F(UnitHandlerTest, convertTemperatureNaturalToArbitrary1){
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertTemperatureNtA(
+			10,
+			UnitHandler::TemperatureUnit::uK
+		),
+		1.5*10/1e-9
+	);
+}
+
+//TBTKFeature Utilities.UnitHandler.convertTimeNaturalToArbitrary.1 2019-12-10
+TEST_F(UnitHandlerTest, convertTimeNaturalToArbitrary1){
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertTimeNtA(
+			10,
+			UnitHandler::TimeUnit::ns
+		),
+		1.6*10/1e9
+	);
+}
+
+//TBTKFeature Utilities.UnitHandler.convertLengthNaturalToArbitrary.1 2019-12-10
+TEST_F(UnitHandlerTest, convertLengthNaturalToArbitrary1){
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertLengthNtA(
+			10,
+			UnitHandler::LengthUnit::mm
+		),
+		1.4*10/1e7
+	);
+}
+
+//TBTKFeature Utilities.UnitHandler.convertEnergyNaturalToArbitrary.1 2019-12-10
+TEST_F(UnitHandlerTest, convertEnergyNaturalToArbitrary1){
+	double eV_per_J = 1/J_per_eV;
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertEnergyNtA(
+			10,
+			UnitHandler::EnergyUnit::J
+		),
+		1.3*10/(eV_per_J*1e-9)
+	);
+}
+
+//TBTKFeature Utilities.UnitHandler.convertChargeNaturalToArbitrary.1 2019-12-10
+TEST_F(UnitHandlerTest, convertChargeNaturalToArbitrary1){
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertChargeNtA(
+			10,
+			UnitHandler::ChargeUnit::uC
+		),
+		1.1*10/1e-9
+	);
+}
+
+//TBTKFeature Utilities.UnitHandler.convertCountNaturalToArbitrary.1 2019-12-10
+TEST_F(UnitHandlerTest, convertCountNaturalToArbitrary1){
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertCountNtA(
+			10,
+			UnitHandler::CountUnit::mol
+		),
+		1.2*10/N_A
+	);
+}
+
 };
