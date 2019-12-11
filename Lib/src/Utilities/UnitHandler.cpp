@@ -623,9 +623,9 @@ double UnitHandler::convertMassDtN(double mass, MassUnit unit){
 }
 
 double UnitHandler::convertMassNtD(double mass, MassUnit unit){
-	double cfE = getEnergyConversionFactor()*energyScale;
-	double cfT = getTimeConversionFactor()*timeScale;
-	double cfL = getLengthConversionFactor()*lengthScale;
+	double cfE = getEnergyConversionFactor()/energyScale;
+	double cfT = getTimeConversionFactor()/timeScale;
+	double cfL = getLengthConversionFactor()/lengthScale;
 	double massInDefaultBaseUnits = mass*cfL*cfL/(cfE*cfT*cfT);
 	return massInDefaultBaseUnits*getMassConversionFactor(unit);
 }

@@ -672,4 +672,207 @@ TEST_F(UnitHandlerTest, convertCountNaturalToArbitrary1){
 	);
 }
 
+//TBTKFeature Utilities.UnitHandler.convertMassDerivedToBase.1 2019-12-11
+TEST_F(UnitHandlerTest, convertMassDerivedToBase1){
+	//[mass] = ug = 10^-9 J s^2/m^2
+	// = 10^-9 GeV_per_J*as_per_s^2/Ao_per_m^2 GeV as^2/Ao^2
+	double GeV_per_J = 1e-9/J_per_eV;
+	double as_per_s = 1e18;
+	double Ao_per_m = 1e10;
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertMassDtB(
+			10,
+			UnitHandler::MassUnit::ug
+		),
+		10*1e-9*GeV_per_J*as_per_s*as_per_s/(Ao_per_m*Ao_per_m)
+	);
+}
+
+//TBTKFeature Utilities.UnitHandler.convertMassBaseToDerived.1 2019-12-11
+TEST_F(UnitHandlerTest, convertMassBaseToDerived1){
+	//[mass] = GeV as^2/Ao^2 = J_per_GeV*s_per_as^2/m_per_Ao^2 J s^2/m^2
+	// = J_per_GeV*s_per_as^2/m_per_Ao^2 kg
+	// = 10^9 J_per_GeV*s_per_as^2/m_per_Ao^2 ug
+	double J_per_GeV = J_per_eV*1e9;
+	double s_per_as = 1e-18;
+	double m_per_Ao = 1e-10;
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertMassBtD(
+			10,
+			UnitHandler::MassUnit::ug
+		),
+		10*1e9*J_per_GeV*s_per_as*s_per_as/(m_per_Ao*m_per_Ao)
+	);
+}
+
+//TBTKFeature Utilities.UnitHandler.convertMassDerivedToNatural.1 2019-12-11
+TEST_F(UnitHandlerTest, convertMassDerivedToNatural1){
+	//[mass] = ug = 10^-9 J s^2/m^2
+	// = 10^-9/(1.3*1.6^2/1.4^2) GeV_per_J*as_per_s^2/Ao_per_m^2
+	// (1.3*1.6^2/1.4^2 GeV as^2/Ao^2)
+	double GeV_per_J = 1e-9/J_per_eV;
+	double as_per_s = 1e18;
+	double Ao_per_m = 1e10;
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertMassDtN(
+			10,
+			UnitHandler::MassUnit::ug
+		),
+		10*1e-9/(1.3*1.6*1.6/(1.4*1.4))*GeV_per_J*as_per_s*as_per_s/(Ao_per_m*Ao_per_m)
+	);
+}
+
+//TBTKFeature Utilities.UnitHandler.convertMassNaturalToDerived.1 2019-12-11
+TEST_F(UnitHandlerTest, convertMassNaturalToDerived1){
+	//[mass] = 1.3*1.6^2/1.4^2 GeV as^2/Ao^2
+	// = 1.3*1.6^2/1.4^2 J_per_GeV*s_per_as^2/m_per_Ao^2 J s^2/m^2
+	// = 1.3*1.6^2/1.4^2 J_per_GeV*s_per_as^2/m_per_Ao^2 kg
+	// = 10^9*1.3*1.6^2/1.4^2 J_per_GeV*s_per_as^2/m_per_Ao^2 ug
+	double J_per_GeV = J_per_eV*1e9;
+	double s_per_as = 1e-18;
+	double m_per_Ao = 1e-10;
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertMassNtD(
+			10,
+			UnitHandler::MassUnit::ug
+		),
+		10*1e9*(1.3*1.6*1.6/(1.4*1.4))*J_per_GeV*s_per_as*s_per_as/(
+			m_per_Ao*m_per_Ao
+		)
+	);
+}
+
+//TBTKFeature Utilities.UnitHandler.convertMagneticFieldDerivedToBase.1 2019-12-11
+TEST_F(UnitHandlerTest, convertMagneticFieldDerivedToBase1){
+	//[magnetic field] = uT = 10^-6 Js/Cm^2
+	// = 10^-6 GeV_per_J*as_per_s/(kC_per_C*Ao_per_m^2) GeV as/kC Ao^2
+	double GeV_per_J = 1e-9/J_per_eV;
+	double as_per_s = 1e18;
+	double kC_per_C = 1e-3;
+	double Ao_per_m = 1e10;
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertMagneticFieldDtB(
+			10,
+			UnitHandler::MagneticFieldUnit::uT
+		),
+		10*1e-6*GeV_per_J*as_per_s/(kC_per_C*Ao_per_m*Ao_per_m)
+	);
+}
+
+//TBTKFeature Utilities.UnitHandler.convertMagneticFieldBaseToDerived.1 2019-12-11
+TEST_F(UnitHandlerTest, convertMagneticFieldBaseToDerived1){
+	//[magnetic field] = GeV as/kC Ao^2
+	// = J_per_GeV*s_per_as/(C_per_kC*m_per_Ao^2) Js/Cm^2
+	// = 10^6 J_per_GeV*s_per_as/(C_per_kC*m_per_Ao^2) uT
+	double J_per_GeV = 1e9*J_per_eV;
+	double s_per_as = 1e-18;
+	double C_per_kC = 1e3;
+	double m_per_Ao = 1e-10;
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertMagneticFieldBtD(
+			10,
+			UnitHandler::MagneticFieldUnit::uT
+		),
+		10*1e6*J_per_GeV*s_per_as/(C_per_kC*m_per_Ao*m_per_Ao)
+	);
+}
+
+//TBTKFeature Utilities.UnitHandler.convertMagneticFieldDerivedToNatural.1 2019-12-11
+TEST_F(UnitHandlerTest, convertMagneticFieldDerivedToNatural1){
+	//[magnetic field] = uT = 10^-6 Js/Cm^2
+	// = 10^-6/(1.3*1.6/(1.1*1.4^2))
+	// GeV_per_J*as_per_s/(kC_per_C*Ao_per_m^2)
+	// (1.3*1.6/(1.1*1.4^2) GeV as/kC Ao^2)
+	double GeV_per_J = 1e-9/J_per_eV;
+	double as_per_s = 1e18;
+	double kC_per_C = 1e-3;
+	double Ao_per_m = 1e10;
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertMagneticFieldDtN(
+			10,
+			UnitHandler::MagneticFieldUnit::uT
+		),
+		10*1e-6/(1.3*1.6/(1.1*1.4*1.4))*GeV_per_J*as_per_s/(
+			kC_per_C*Ao_per_m*Ao_per_m
+		)
+	);
+}
+
+//TBTKFeature Utilities.UnitHandler.convertMagneticFieldNaturalToDerived.1 2019-12-11
+TEST_F(UnitHandlerTest, convertMagneticFieldNaturalToDerived1){
+	//[magnetic field] = 1.3*1.6/(1.1*1.4^2) GeV as/kC Ao^2
+	// = 1.3*1.6/(1.1*1.4^2) J_per_GeV*s_per_as/(C_per_kC*m_per_Ao^2) Js/Cm^2
+	// = 10^6*1.3*1.6/(1.1*1.4^2) J_per_GeV*s_per_as/(C_per_kC*m_per_Ao^2) uT
+	double J_per_GeV = 1e9*J_per_eV;
+	double s_per_as = 1e-18;
+	double C_per_kC = 1e3;
+	double m_per_Ao = 1e-10;
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertMagneticFieldNtD(
+			10,
+			UnitHandler::MagneticFieldUnit::uT
+		),
+		10*1e6*(1.3*1.6/(1.1*1.4*1.4))*J_per_GeV*s_per_as/(
+			C_per_kC*m_per_Ao*m_per_Ao
+		)
+	);
+}
+
+//TBTKFeature Utilities.UnitHandler.convertVoltageDerivedToBase.1 2019-12-11
+TEST_F(UnitHandlerTest, convertVoltageDerivedToBase1){
+	//[voltage] = uV = 10^-6 J/C = 10^-6 GeV_per_J/kC_per_C GeV/kC
+	double GeV_per_J = 1e-9/J_per_eV;
+	double kC_per_C = 1e-3;
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertVoltageDtB(
+			10,
+			UnitHandler::VoltageUnit::uV
+		),
+		10*1e-6*GeV_per_J/kC_per_C
+	);
+}
+
+//TBTKFeature Utilities.UnitHandler.convertVoltageBaseToDerived.1 2019-12-11
+TEST_F(UnitHandlerTest, convertVoltageBaseToDerived1){
+	//[voltage] = GeV/kC = 10^6 J_per_GeV/C_per_kC uV
+	double J_per_GeV = 1e9*J_per_eV;
+	double C_per_kC = 1e3;
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertVoltageBtD(
+			10,
+			UnitHandler::VoltageUnit::uV
+		),
+		10*1e6*J_per_GeV/C_per_kC
+	);
+}
+
+//TBTKFeature Utilities.UnitHandler.convertVoltageDerivedToNatural.1 2019-12-11
+TEST_F(UnitHandlerTest, convertVoltageDerivedToNatural1){
+	//[voltage] = uV = 10^-6 J/C
+	// = 10^-6/(1.3/1.1) GeV_per_J/kC_per_C (1.3/1.1 GeV/kC)
+	double GeV_per_J = 1e-9/J_per_eV;
+	double kC_per_C = 1e-3;
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertVoltageDtN(
+			10,
+			UnitHandler::VoltageUnit::uV
+		),
+		10*1e-6/(1.3/1.1)*GeV_per_J/kC_per_C
+	);
+}
+
+//TBTKFeature Utilities.UnitHandler.convertVoltageNaturalToDerived.1 2019-12-11
+TEST_F(UnitHandlerTest, convertVoltageNaturalToDerived1){
+	//[voltage] = GeV/kC = 10^6 J_per_GeV/C_per_kC uV
+	double J_per_GeV = 1e9*J_per_eV;
+	double C_per_kC = 1e3;
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertVoltageNtD(
+			10,
+			UnitHandler::VoltageUnit::uV
+		),
+		10*1e6*(1.3/1.1)*J_per_GeV/C_per_kC
+	);
+}
+
 };

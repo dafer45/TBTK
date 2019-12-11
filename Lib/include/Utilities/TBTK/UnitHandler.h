@@ -677,7 +677,8 @@ private:
 	static constexpr double eV_per_J	= 1./J_per_eV;
 
 	/** Conversion factor from eVs^2/m^2 to kg. */
-	static constexpr double kg_per_baseMass = 1.602176565e-19;
+//	static constexpr double kg_per_baseMass = 1.602176565e-19;
+	static constexpr double kg_per_baseMass = 1.602176634e-19;
 
 	/** Conversion factor from kg to eVs^2/m^2. */
 	static constexpr double baseMass_per_kg = 1./kg_per_baseMass;
@@ -690,13 +691,15 @@ private:
 	static constexpr double baseMass_per_u = 1./u_per_baseMass;
 
 	/** Conversion factor from eVs/Cm^2 to T. */
-	static constexpr double T_per_baseMagneticField = 1.602176565e-19;
+//	static constexpr double T_per_baseMagneticField = 1.602176565e-19;
+	static constexpr double T_per_baseMagneticField = 1.602176634e-19;
 
 	/** Conversion factor from T to eVs/Cm^2. */
 	static constexpr double baseMagneticField_per_T = 1./T_per_baseMagneticField;
 
 	/** Conversion factor from V to eV/C. */
-	static constexpr double V_per_baseVoltage = 1.602176565e-19;
+//	static constexpr double V_per_baseVoltage = 1.602176565e-19;
+	static constexpr double V_per_baseVoltage = 1.602176634e-19;
 
 	/** Conversion factor from eV/C to V. */
 	static constexpr double baseVoltage_per_V = 1./V_per_baseVoltage;
