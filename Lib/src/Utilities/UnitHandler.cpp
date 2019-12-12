@@ -1634,36 +1634,42 @@ UnitHandler::CountUnit UnitHandler::getCountUnit(string unit){
 
 UnitHandler::StaticConstructor::StaticConstructor(){
 	constantsDefaultUnits = {
-		{"hbar",	{6.582119514e-16,			{{"eV", 1}, {"s", 1}}}},
-		{"k_B",		{8.6173324e-5,				{{"eV", 1}, {"K", -1}}}},
-		{"e",		{1.6021766208e-19,			{{"C", 1}}}},
+		{"e",		{1.602176634e-19,			{{"C", 1}}}},
 		{"c",		{2.99792458e8,				{{"m", 1}, {"s", -1}}}},
 		{"N_A",		{6.02214076e23,				{{"pcs", 1}}}},
-		{"mu_0",	{4*M_PI*1e-7/1.602176565e-19,		{{"eV", 1}, {"s", 2}, {"C", -2}, {"m", -1}}}},
-		{"epsilon_0",	{8.854187817620e-12*1.602176565e-19,	{{"C", 2}, {"eV", -1}, {"m", -1}}}},
-		{"a_0",		{5.2917721092*1e-11, 			{{"m", 1}}}}
+		{"a_0",		{5.29177210903*1e-11, 			{{"m", 1}}}}
 	};
-	double c = constantsDefaultUnits["c"].first;
-	constantsDefaultUnits["m_e"] = {5.109989461e5/(c*c),		{{"eV", 1}, {"s", 2}, {"m", -2}}};
-	constantsDefaultUnits["m_p"] = {9.38272046e8/(c*c),		{{"eV", 1}, {"s", 2}, {"m", -2}}};
-
 	double e = constantsDefaultUnits["e"].first;
+	//Source "The International System of Units (SI) 9th Edition. Bureau
+	//International des Poids et Mesures. 2019."
+	constantsDefaultUnits["h"] =		{6.62607015e-34/e,		{{"eV", 1}, {"s", 1}}};
+	constantsDefaultUnits["k_B"] =		{1.380649e-23/e,		{{"eV", 1}, {"K", -1}}};
+
+	double c = constantsDefaultUnits["c"].first;
+	//Source "The NIST reference on Constants, Units, and Uncertainty."
+	//https://physics.nist.gov/cuu/Constants/index.html
+	constantsDefaultUnits["m_e"] =		{9.1093837015e-31/e,		{{"eV", 1}, {"s", 2}, {"m", -2}}};
+	constantsDefaultUnits["m_p"] =		{1.67262192369e-27/e,		{{"eV", 1}, {"s", 2}, {"m", -2}}};
+	constantsDefaultUnits["mu_0"] =		{1.25663706212e-6/e,		{{"eV", 1}, {"s", 2}, {"C", -2}, {"m", -1}}};
+	constantsDefaultUnits["epsilon_0"] =	{8.8541878128e-12*e,		{{"C", 2}, {"eV", -1}, {"m", -1}}};
+
+	double h = constantsDefaultUnits["h"].first;
+	constantsDefaultUnits["hbar"] =		{h/(2*M_PI),			{{"eV", 1}, {"s", 1}}};
 	double hbar = constantsDefaultUnits["hbar"].first;
 	double m_e = constantsDefaultUnits["m_e"].first;
 	double m_p = constantsDefaultUnits["m_p"].first;
-	constantsDefaultUnits["mu_B"] = {e*hbar/(2*m_e),		{{"C", 1}, {"m", 2}, {"s", -1}}};
-	constantsDefaultUnits["mu_N"] = {e*hbar/(2*m_p),		{{"C", 1}, {"m", 2}, {"s", -1}}};
+	constantsDefaultUnits["mu_B"] =		{e*hbar/(2*m_e),		{{"C", 1}, {"m", 2}, {"s", -1}}};
+	constantsDefaultUnits["mu_N"] =		{e*hbar/(2*m_p),		{{"C", 1}, {"m", 2}, {"s", -1}}};
 
-	J_per_eV			= 1.602176634e-19;
+	J_per_eV			= e;
 	eV_per_J			= 1./J_per_eV;
-	kg_per_baseMass			= 1.602176634e-19;
+	kg_per_baseMass			= e;
 	baseMass_per_kg			= 1./kg_per_baseMass;
 	u_per_baseMass			= (c*c)/9.31494095e8;
-//	u_per_baseMass			= (C*C)/9.31494095e8;
 	baseMass_per_u			= 1./u_per_baseMass;
-	T_per_baseMagneticField		= 1.602176634e-19;
+	T_per_baseMagneticField		= e;
 	baseMagneticField_per_T		= 1./T_per_baseMagneticField;
-	V_per_baseVoltage		= 1.602176634e-19;
+	V_per_baseVoltage		= e;
 	baseVoltage_per_V		= 1./V_per_baseVoltage;
 
 	updateConstants();

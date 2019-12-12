@@ -9,7 +9,7 @@ namespace TBTK{
 class UnitHandlerTest : public ::testing::Test{
 protected:
 	//Error margin.
-	constexpr static const double EPSILON = 1e-6;
+	constexpr static const double EPSILON = 1e-15;
 
 	//Source "The International System of Units (SI) 9th Edition. Bureau
 	//International des Poids et Mesures. 2019."
