@@ -87,7 +87,7 @@ public:
 	 *	mK - millikelvin<br/>
 	 *	uK - microkelvin<br/>
 	 *	nK - nanokelvin*/
-	enum class TemperatureUnit {kK, K, mK, uK, nK};
+//	enum class TemperatureUnit {kK, K, mK, uK, nK};
 
 	/* Time units (base unit):<br/>
 	 *	s - second<br/>
@@ -97,7 +97,7 @@ public:
 	 *	ps - picosecond<br/>
 	 *	fs - femtosecond<br/>
 	 *	as - attosecond */
-	enum class TimeUnit {s, ms, us, ns, ps, fs, as};
+//	enum class TimeUnit {s, ms, us, ns, ps, fs, as};
 
 	/** Length units (base unit):<br/>
 	 *	m - meter<br/>
@@ -108,7 +108,7 @@ public:
 	 *	fm - femtometer<br/>
 	 *	am - attometer<br/>
 	 *	Ao - Angstrom */
-	enum class LengthUnit{m, mm, um, nm, pm, fm, am, Ao};
+//	enum class LengthUnit{m, mm, um, nm, pm, fm, am, Ao};
 
 	/** Energy units (base unit):<br/>
 	 *	GeV - gigaelectron Volt<br/>
@@ -118,7 +118,7 @@ public:
 	 *	meV - millielectron Volt<br/>
 	 *	ueV - microelectron Volt<br/>
 	 *	J - Joule */
-	enum class EnergyUnit{GeV, MeV, keV, eV, meV, ueV, J};
+//	enum class EnergyUnit{GeV, MeV, keV, eV, meV, ueV, J};
 
 	/** Charge units (base unit):<br/>
 	 *	kC - kilocoulomb<br/>
@@ -134,14 +134,14 @@ public:
 	 *	Me - megae<br/>
 	 *	ke - kiloe<br/>
 	 *	e - e (elementary charge) */
-	enum class ChargeUnit{
+/*	enum class ChargeUnit{
 		kC, C, mC, uC, nC, pC, fC, aC, Te, Ge, Me, ke, e
-	};
+	};*/
 
 	/** Count unit (base unit):
 	 *	pcs - pieces
 	 *	mol - Mole */
-	enum class CountUnit{pcs, mol};
+//	enum class CountUnit{pcs, mol};
 
 	/** Mass units (derived unit):<br/>
 	 *	kg - kilogram<br/>
@@ -240,145 +240,145 @@ public:
 	/** Convert temperature from arbitrary units to base units. */
 	static double convertTemperatureArbitraryToBase(
 		double temperature,
-		TemperatureUnit unit
+		Quantity::Temperature::Unit unit
 	);
 
 	/** Convert time from arbitrary units to base units. */
 	static double convertTimeArbitraryToBase(
 		double time,
-		TimeUnit unit
+		Quantity::Time::Unit unit
 	);
 
 	/** Convert length from arbitrary units to base units. */
 	static double convertLengthArbitraryToBase(
 		double length,
-		LengthUnit unit
+		Quantity::Length::Unit unit
 	);
 
 	/** Convert energy from arbitrary units to base units. */
 	static double convertEnergyArbitraryToBase(
 		double energy,
-		EnergyUnit unit
+		Quantity::Energy::Unit unit
 	);
 
 	/** Convert charge from arbitrary units to base units. */
 	static double convertChargeArbitraryToBase(
 		double charge,
-		ChargeUnit unit
+		Quantity::Charge::Unit unit
 	);
 
 	/** Convert count from arbitrary units to base units. */
 	static double convertCountArbitraryToBase(
 		double count,
-		CountUnit unit
+		Quantity::Count::Unit unit
 	);
 
 	/** Convert temperature from base units to arbitrary units. */
 	static double convertTemperatureBaseToArbitrary(
 		double temperature,
-		TemperatureUnit unit
+		Quantity::Temperature::Unit unit
 	);
 
 	/** Convert time from base units to arbitrary units. */
 	static double convertTimeBaseToArbitrary(
 		double time,
-		TimeUnit unit
+		Quantity::Time::Unit unit
 	);
 
 	/** Convert length from base units to arbitrary units. */
 	static double convertLengthBaseToArbitrary(
 		double length,
-		LengthUnit unit
+		Quantity::Length::Unit unit
 	);
 
 	/** Convert energy from base units to arbitrary units. */
 	static double convertEnergyBaseToArbitrary(
 		double energy,
-		EnergyUnit unit
+		Quantity::Energy::Unit unit
 	);
 
 	/** Convert charge from base units to arbitrary units. */
 	static double convertChargeBaseToArbitrary(
 		double charge,
-		ChargeUnit unit
+		Quantity::Charge::Unit unit
 	);
 
 	/** Convert count from base units to arbitrary units. */
 	static double convertCountBaseToArbitrary(
 		double count,
-		CountUnit unit
+		Quantity::Count::Unit unit
 	);
 
 	/** Convert temperature from arbitrary units to natural units. */
 	static double convertTemperatureArbitraryToNatural(
 		double temperature,
-		TemperatureUnit unit
+		Quantity::Temperature::Unit unit
 	);
 
 	/** Convert time from arbitrary units to natural units. */
 	static double convertTimeArbitraryToNatural(
 		double time,
-		TimeUnit unit
+		Quantity::Time::Unit unit
 	);
 
 	/** Convert length from arbitrary units to natural units. */
 	static double convertLengthArbitraryToNatural(
 		double length,
-		LengthUnit unit
+		Quantity::Length::Unit unit
 	);
 
 	/** Convert energy from arbitrary units to natural units. */
 	static double convertEnergyArbitraryToNatural(
 		double energy,
-		EnergyUnit unit
+		Quantity::Energy::Unit unit
 	);
 
 	/** Convert charge from arbitrary units to natural units. */
 	static double convertChargeArbitraryToNatural(
 		double charge,
-		ChargeUnit unit
+		Quantity::Charge::Unit unit
 	);
 
 	/** Convert count from arbitrary units to natural units. */
 	static double convertCountArbitraryToNatural(
 		double count,
-		CountUnit unit
+		Quantity::Count::Unit unit
 	);
 
 	/** Convert temperature from natural units to arbitrary units. */
 	static double convertTemperatureNaturalToArbitrary(
 		double temperature,
-		TemperatureUnit unit
+		Quantity::Temperature::Unit unit
 	);
 
 	/** Convert time from natural units to arbitrary units. */
 	static double convertTimeNaturalToArbitrary(
 		double time,
-		TimeUnit unit
+		Quantity::Time::Unit unit
 	);
 
 	/** Convert length from natural units to arbitrary units. */
 	static double convertLengthNaturalToArbitrary(
 		double length,
-		LengthUnit unit
+		Quantity::Length::Unit unit
 	);
 
 	/** Convert energy from natural units to arbitrary units. */
 	static double convertEnergyNaturalToArbitrary(
 		double energy,
-		EnergyUnit unit
+		Quantity::Energy::Unit unit
 	);
 
 	/** Convert charge from natural units to arbitrary units. */
 	static double convertChargeNaturalToArbitrary(
 		double charge,
-		ChargeUnit unit
+		Quantity::Charge::Unit unit
 	);
 
 	/** Convert count from natural units to arbitrary units. */
 	static double convertCountNaturalToArbitrary(
 		double count,
-		CountUnit unit
+		Quantity::Count::Unit unit
 	);
 
 	/** Convert mass from derived units to base units. */
@@ -596,22 +596,22 @@ private:
 	static double baseVoltage_per_V;
 
 	/** Currently set temperature unit. */
-	static TemperatureUnit temperatureUnit;
+	static Quantity::Temperature::Unit temperatureUnit;
 
 	/** Currently set time unit. */
-	static TimeUnit timeUnit;
+	static Quantity::Time::Unit timeUnit;
 
 	/** Currently set length unit. */
-	static LengthUnit lengthUnit;
+	static Quantity::Length::Unit lengthUnit;
 
 	/** Currently set energy unit. */
-	static EnergyUnit energyUnit;
+	static Quantity::Energy::Unit energyUnit;
 
 	/** Currently set charge unit. */
-	static ChargeUnit chargeUnit;
+	static Quantity::Charge::Unit chargeUnit;
 
 	/**Currently set count unit. */
-	static CountUnit countUnit;
+	static Quantity::Count::Unit countUnit;
 
 	/** Currently set temperature scale. */
 	static double temperatureScale;
@@ -632,22 +632,22 @@ private:
 	static double countScale;
 
 	/** Set temperature unit. */
-	static void setTemperatureUnit(TemperatureUnit unit);
+	static void setTemperatureUnit(Quantity::Temperature::Unit unit);
 
 	/** Set time unit. */
-	static void setTimeUnit(TimeUnit unit);
+	static void setTimeUnit(Quantity::Time::Unit unit);
 
 	/** Set length unit. */
-	static void setLengthUnit(LengthUnit unit);
+	static void setLengthUnit(Quantity::Length::Unit unit);
 
 	/** Set energy unit. */
-	static void setEnergyUnit(EnergyUnit unit);
+	static void setEnergyUnit(Quantity::Energy::Unit unit);
 
 	/** Set charge unit. */
-	static void setChargeUnit(ChargeUnit unit);
+	static void setChargeUnit(Quantity::Charge::Unit unit);
 
 	/** Set counting unit. */
-	static void setCountUnit(CountUnit unit);
+	static void setCountUnit(Quantity::Count::Unit unit);
 
 	/** Set temperature scale. */
 	static void setTemperatureScale(double scale);
@@ -668,22 +668,25 @@ private:
 	static void setCountScale(double scale);
 
 	/** Set temperature scale. */
-	static void setTemperatureScale(double scale, TemperatureUnit unit);
+	static void setTemperatureScale(
+		double scale,
+		Quantity::Temperature::Unit unit
+	);
 
 	/** Set time scale. */
-	static void setTimeScale(double scale, TimeUnit unit);
+	static void setTimeScale(double scale, Quantity::Time::Unit unit);
 
 	/** Set length scale. */
-	static void setLengthScale(double scale, LengthUnit unit);
+	static void setLengthScale(double scale, Quantity::Length::Unit unit);
 
 	/** Set energy scale. */
-	static void setEnergyScale(double scale, EnergyUnit unit);
+	static void setEnergyScale(double scale, Quantity::Energy::Unit unit);
 
 	/** Set charge scale. */
-	static void setChargeScale(double scale, ChargeUnit unit);
+	static void setChargeScale(double scale, Quantity::Charge::Unit unit);
 
 	/** Set count scale. */
-	static void setCountScale(double scale, CountUnit unit);
+	static void setCountScale(double scale, Quantity::Count::Unit unit);
 
 	/** Set temperature scale. */
 	static void setTemperatureScale(std::string scale);
@@ -717,7 +720,7 @@ private:
 	/** Returns the number of degrees in the given unit per degree in
 	 *  default unit (K). */
 	static double getTemperatureConversionFactor(
-		TemperatureUnit temperatureUnit
+		Quantity::Temperature::Unit temperatureUnit
 	);
 
 	/** Returns the number of unit times in the currently set unit per unit
@@ -726,7 +729,7 @@ private:
 
 	/** Returns the number of unit times in the given unit per unit time in
 	 *  the default unit (s). */
-	static double getTimeConversionFactor(TimeUnit timeUnit);
+	static double getTimeConversionFactor(Quantity::Time::Unit timeUnit);
 
 	/** Returns the number of unit lengths in the currently set unit per
 	 *  unit length in the default unit (m). */
@@ -734,7 +737,9 @@ private:
 
 	/** Returns the number of unit lengths in the given unit per unit
 	 *  length in the default unit (m). */
-	static double getLengthConversionFactor(LengthUnit lengthUnit);
+	static double getLengthConversionFactor(
+		Quantity::Length::Unit lengthUnit
+	);
 
 	/** Returns the number of unit energies in the currently set unit per
 	 *  unit energy in the default unit (eV). */
@@ -742,7 +747,9 @@ private:
 
 	/** Returns the number of unit energies in the given unit per unit
 	 *  energy in the default unit (eV). */
-	static double getEnergyConversionFactor(EnergyUnit energyUnit);
+	static double getEnergyConversionFactor(
+		Quantity::Energy::Unit energyUnit
+	);
 
 	/** Returns the number of unit charges in the currently set unit per
 	 *  unit charge in the default unit (C). */
@@ -750,7 +757,9 @@ private:
 
 	/** Returns the number of unit charges in the given unit per unit
 	 *  charge in the default unit (C). */
-	static double getChargeConversionFactor(ChargeUnit chargeUnit);
+	static double getChargeConversionFactor(
+		Quantity::Charge::Unit chargeUnit
+	);
 
 	/** Returns the number of unit counts in the the currently set unit per
 	 *  unit count in the default unit (pcs). */
@@ -758,7 +767,9 @@ private:
 
 	/** Returns the number of unit counts in the the given unit per unit
 	 *  count in the default unit (pcs). */
-	static double getCountConversionFactor(CountUnit countUnit);
+	static double getCountConversionFactor(
+		Quantity::Count::Unit countUnit
+	);
 
 	/** Returns the number of unit masses in the input unit per unit mass
 	 *  in the default unit (eVs^2/m^2). */
@@ -774,22 +785,22 @@ private:
 	static double getVoltageConversionFactor(VoltageUnit unit);
 
 	/** Converts a string into a TemperatureUnit. */
-	static TemperatureUnit getTemperatureUnit(std::string unit);
+	static Quantity::Temperature::Unit getTemperatureUnit(std::string unit);
 
 	/** Converts a string into a TimeUnit. */
-	static TimeUnit getTimeUnit(std::string unit);
+	static Quantity::Time::Unit getTimeUnit(std::string unit);
 
 	/** Converts a string into a LengthUnit. */
-	static LengthUnit getLengthUnit(std::string unit);
+	static Quantity::Length::Unit getLengthUnit(std::string unit);
 
 	/** Converts a string into a EnergyUnit. */
-	static EnergyUnit getEnergyUnit(std::string unit);
+	static Quantity::Energy::Unit getEnergyUnit(std::string unit);
 
 	/** Converts a string into a ChargeUnit. */
-	static ChargeUnit getChargeUnit(std::string unit);
+	static Quantity::Charge::Unit getChargeUnit(std::string unit);
 
 	/** Converts a string into a CountUnit. */
-	static CountUnit getCountUnit(std::string unit);
+	static Quantity::Count::Unit getCountUnit(std::string unit);
 
 	/** Static constructor. */
 	static class StaticConstructor{
@@ -798,32 +809,47 @@ private:
 	} staticConstructor;
 };
 
-inline void UnitHandler::setTemperatureScale(double scale, TemperatureUnit unit){
+inline void UnitHandler::setTemperatureScale(
+	double scale,
+	Quantity::Temperature::Unit unit
+){
 	setTemperatureUnit(unit);
 	setTemperatureScale(scale);
 }
 
-inline void UnitHandler::setTimeScale(double scale, TimeUnit unit){
+inline void UnitHandler::setTimeScale(double scale, Quantity::Time::Unit unit){
 	setTimeUnit(unit);
 	setTimeScale(scale);
 }
 
-inline void UnitHandler::setLengthScale(double scale, LengthUnit unit){
+inline void UnitHandler::setLengthScale(
+	double scale,
+	Quantity::Length::Unit unit
+){
 	setLengthUnit(unit);
 	setLengthScale(scale);
 }
 
-inline void UnitHandler::setEnergyScale(double scale, EnergyUnit unit){
+inline void UnitHandler::setEnergyScale(
+	double scale,
+	Quantity::Energy::Unit unit
+){
 	setEnergyUnit(unit);
 	setEnergyScale(scale);
 }
 
-inline void UnitHandler::setChargeScale(double scale, ChargeUnit unit){
+inline void UnitHandler::setChargeScale(
+	double scale,
+	Quantity::Charge::Unit unit
+){
 	setChargeUnit(unit);
 	setChargeScale(scale);
 }
 
-inline void UnitHandler::setCountScale(double scale, CountUnit unit){
+inline void UnitHandler::setCountScale(
+	double scale,
+	Quantity::Count::Unit unit
+){
 	setCountUnit(unit);
 	setCountScale(scale);
 }

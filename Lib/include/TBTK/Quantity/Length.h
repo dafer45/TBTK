@@ -42,6 +42,17 @@ public:
 
 	/** Constructs a Quantity from a double. */
 	Length(double value) : Real(value){};
+
+	/** Length units (base unit):
+	 *  - m - meter
+	 *  - mm - millimeter
+	 *  - um - micrometer
+	 *  - nm - nanometer
+	 *  - pm - picometer
+	 *  - fm - femtometer
+	 *  - am - attometer
+	 *  - Ao - Angstrom */
+	enum class Unit {m, mm, um, nm, pm, fm, am, Ao};
 };
 
 }; //End of namesapce Length

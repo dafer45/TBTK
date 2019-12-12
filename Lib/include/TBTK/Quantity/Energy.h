@@ -42,6 +42,16 @@ public:
 
 	/** Constructs a Quantity from a double. */
 	Energy(double value) : Real(value){};
+
+	/** Energy units (base unit):
+	 *  - GeV - gigaelectron Volt
+	 *  - MeV - megaelectron Volt
+	 *  - keV - kiloelectron Volt
+	 *  - eV - electron Volt
+	 *  - meV - millielectron Volt
+	 *  - ueV - microelectron Volt
+	 *  - J - Joule */
+	enum class Unit {GeV, MeV, keV, eV, meV, ueV, J};
 };
 
 }; //End of namesapce Energy

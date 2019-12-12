@@ -42,6 +42,16 @@ public:
 
 	/** Constructs a Quantity from a double. */
 	Time(double value) : Real(value){};
+
+	/** Time units (base unit):
+	 *  - s - second
+	 *  - ms - millisecond
+	 *  - us - microsecond
+	 *  - ns - nanosecond
+	 *  - ps - picosecond
+	 *  - fs - femtosecond
+	 *  - as - attosecond */
+	enum class Unit {s, ms, us, ns, ps, fs, as};
 };
 
 }; //End of namesapce Time

@@ -472,7 +472,7 @@ TEST_F(UnitHandlerTest, convertTemperatureArbitraryToBase1){
 	EXPECT_DOUBLE_EQ(
 		UnitHandler::convertTemperatureArbitraryToBase(
 			10,
-			UnitHandler::TemperatureUnit::uK
+			Quantity::Temperature::Unit::uK
 		),
 		10*1e-9
 	);
@@ -483,7 +483,7 @@ TEST_F(UnitHandlerTest, convertTimeArbitraryToBase1){
 	EXPECT_DOUBLE_EQ(
 		UnitHandler::convertTimeArbitraryToBase(
 			10,
-			UnitHandler::TimeUnit::ns
+			Quantity::Time::Unit::ns
 		),
 		10*1e9
 	);
@@ -494,7 +494,7 @@ TEST_F(UnitHandlerTest, convertLengthArbitraryToBase1){
 	EXPECT_DOUBLE_EQ(
 		UnitHandler::convertLengthArbitraryToBase(
 			10,
-			UnitHandler::LengthUnit::mm
+			Quantity::Length::Unit::mm
 		),
 		10*1e7
 	);
@@ -506,7 +506,7 @@ TEST_F(UnitHandlerTest, convertEnergyArbitraryToBase1){
 	EXPECT_DOUBLE_EQ(
 		UnitHandler::convertEnergyArbitraryToBase(
 			10,
-			UnitHandler::EnergyUnit::J
+			Quantity::Energy::Unit::J
 		),
 		10*eV_per_J*1e-9
 	);
@@ -517,7 +517,7 @@ TEST_F(UnitHandlerTest, convertChargeArbitraryToBase1){
 	EXPECT_DOUBLE_EQ(
 		UnitHandler::convertChargeArbitraryToBase(
 			10,
-			UnitHandler::ChargeUnit::uC
+			Quantity::Charge::Unit::uC
 		),
 		10*1e-9
 	);
@@ -528,7 +528,7 @@ TEST_F(UnitHandlerTest, convertCountArbitraryToBase1){
 	EXPECT_DOUBLE_EQ(
 		UnitHandler::convertCountArbitraryToBase(
 			10,
-			UnitHandler::CountUnit::mol
+			Quantity::Count::Unit::mol
 		),
 		10*N_A
 	);
@@ -539,7 +539,7 @@ TEST_F(UnitHandlerTest, convertTemperatureBaseToArbitrary1){
 	EXPECT_DOUBLE_EQ(
 		UnitHandler::convertTemperatureBaseToArbitrary(
 			10,
-			UnitHandler::TemperatureUnit::uK
+			Quantity::Temperature::Unit::uK
 		),
 		10/1e-9
 	);
@@ -550,7 +550,7 @@ TEST_F(UnitHandlerTest, convertTimeBaseToArbitrary1){
 	EXPECT_DOUBLE_EQ(
 		UnitHandler::convertTimeBaseToArbitrary(
 			10,
-			UnitHandler::TimeUnit::ns
+			Quantity::Time::Unit::ns
 		),
 		10/1e9
 	);
@@ -561,7 +561,7 @@ TEST_F(UnitHandlerTest, convertLengthBaseToArbitrary1){
 	EXPECT_DOUBLE_EQ(
 		UnitHandler::convertLengthBaseToArbitrary(
 			10,
-			UnitHandler::LengthUnit::mm
+			Quantity::Length::Unit::mm
 		),
 		10/1e7
 	);
@@ -573,7 +573,7 @@ TEST_F(UnitHandlerTest, convertEnergyBaseToArbitrary1){
 	EXPECT_DOUBLE_EQ(
 		UnitHandler::convertEnergyBaseToArbitrary(
 			10,
-			UnitHandler::EnergyUnit::J
+			Quantity::Energy::Unit::J
 		),
 		10/(eV_per_J*1e-9)
 	);
@@ -584,7 +584,7 @@ TEST_F(UnitHandlerTest, convertChargeBaseToArbitrary1){
 	EXPECT_DOUBLE_EQ(
 		UnitHandler::convertChargeBaseToArbitrary(
 			10,
-			UnitHandler::ChargeUnit::uC
+			Quantity::Charge::Unit::uC
 		),
 		10/1e-9
 	);
@@ -595,7 +595,7 @@ TEST_F(UnitHandlerTest, convertCountBaseToArbitrary1){
 	EXPECT_DOUBLE_EQ(
 		UnitHandler::convertCountBaseToArbitrary(
 			10,
-			UnitHandler::CountUnit::mol
+			Quantity::Count::Unit::mol
 		),
 		10/N_A
 	);
@@ -606,7 +606,7 @@ TEST_F(UnitHandlerTest, convertTemperatureArbitraryToNatural1){
 	EXPECT_DOUBLE_EQ(
 		UnitHandler::convertTemperatureArbitraryToNatural(
 			10,
-			UnitHandler::TemperatureUnit::uK
+			Quantity::Temperature::Unit::uK
 		),
 		10*1e-9/1.5
 	);
@@ -617,7 +617,7 @@ TEST_F(UnitHandlerTest, convertTimeArbitraryToNatural1){
 	EXPECT_DOUBLE_EQ(
 		UnitHandler::convertTimeArbitraryToNatural(
 			10,
-			UnitHandler::TimeUnit::ns
+			Quantity::Time::Unit::ns
 		),
 		10*1e9/1.6
 	);
@@ -628,7 +628,7 @@ TEST_F(UnitHandlerTest, convertLengthArbitraryToNatural1){
 	EXPECT_DOUBLE_EQ(
 		UnitHandler::convertLengthArbitraryToNatural(
 			10,
-			UnitHandler::LengthUnit::mm
+			Quantity::Length::Unit::mm
 		),
 		10*1e7/1.4
 	);
@@ -640,7 +640,7 @@ TEST_F(UnitHandlerTest, convertEnergyArbitraryToNatural1){
 	EXPECT_DOUBLE_EQ(
 		UnitHandler::convertEnergyArbitraryToNatural(
 			10,
-			UnitHandler::EnergyUnit::J
+			Quantity::Energy::Unit::J
 		),
 		10*eV_per_J*1e-9/1.3
 	);
@@ -651,7 +651,7 @@ TEST_F(UnitHandlerTest, convertChargeArbitraryToNatural1){
 	EXPECT_DOUBLE_EQ(
 		UnitHandler::convertChargeArbitraryToNatural(
 			10,
-			UnitHandler::ChargeUnit::uC
+			Quantity::Charge::Unit::uC
 		),
 		10*1e-9/1.1
 	);
@@ -662,7 +662,7 @@ TEST_F(UnitHandlerTest, convertCountArbitraryToNatural1){
 	EXPECT_DOUBLE_EQ(
 		UnitHandler::convertCountArbitraryToNatural(
 			10,
-			UnitHandler::CountUnit::mol
+			Quantity::Count::Unit::mol
 		),
 		10*N_A/1.2
 	);
@@ -673,7 +673,7 @@ TEST_F(UnitHandlerTest, convertTemperatureNaturalToArbitrary1){
 	EXPECT_DOUBLE_EQ(
 		UnitHandler::convertTemperatureNaturalToArbitrary(
 			10,
-			UnitHandler::TemperatureUnit::uK
+			Quantity::Temperature::Unit::uK
 		),
 		1.5*10/1e-9
 	);
@@ -684,7 +684,7 @@ TEST_F(UnitHandlerTest, convertTimeNaturalToArbitrary1){
 	EXPECT_DOUBLE_EQ(
 		UnitHandler::convertTimeNaturalToArbitrary(
 			10,
-			UnitHandler::TimeUnit::ns
+			Quantity::Time::Unit::ns
 		),
 		1.6*10/1e9
 	);
@@ -695,7 +695,7 @@ TEST_F(UnitHandlerTest, convertLengthNaturalToArbitrary1){
 	EXPECT_DOUBLE_EQ(
 		UnitHandler::convertLengthNaturalToArbitrary(
 			10,
-			UnitHandler::LengthUnit::mm
+			Quantity::Length::Unit::mm
 		),
 		1.4*10/1e7
 	);
@@ -707,7 +707,7 @@ TEST_F(UnitHandlerTest, convertEnergyNaturalToArbitrary1){
 	EXPECT_DOUBLE_EQ(
 		UnitHandler::convertEnergyNaturalToArbitrary(
 			10,
-			UnitHandler::EnergyUnit::J
+			Quantity::Energy::Unit::J
 		),
 		1.3*10/(eV_per_J*1e-9)
 	);
@@ -718,7 +718,7 @@ TEST_F(UnitHandlerTest, convertChargeNaturalToArbitrary1){
 	EXPECT_DOUBLE_EQ(
 		UnitHandler::convertChargeNaturalToArbitrary(
 			10,
-			UnitHandler::ChargeUnit::uC
+			Quantity::Charge::Unit::uC
 		),
 		1.1*10/1e-9
 	);
@@ -729,7 +729,7 @@ TEST_F(UnitHandlerTest, convertCountNaturalToArbitrary1){
 	EXPECT_DOUBLE_EQ(
 		UnitHandler::convertCountNaturalToArbitrary(
 			10,
-			UnitHandler::CountUnit::mol
+			Quantity::Count::Unit::mol
 		),
 		1.2*10/N_A
 	);

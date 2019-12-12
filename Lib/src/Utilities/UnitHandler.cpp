@@ -51,12 +51,12 @@ double UnitHandler::baseMagneticField_per_T;
 double UnitHandler::V_per_baseVoltage;
 double UnitHandler::baseVoltage_per_V;
 
-UnitHandler::TemperatureUnit 	UnitHandler::temperatureUnit	= UnitHandler::TemperatureUnit::K;
-UnitHandler::TimeUnit 		UnitHandler::timeUnit		= UnitHandler::TimeUnit::s;
-UnitHandler::LengthUnit		UnitHandler::lengthUnit		= UnitHandler::LengthUnit::m;
-UnitHandler::EnergyUnit		UnitHandler::energyUnit		= UnitHandler::EnergyUnit::eV;
-UnitHandler::ChargeUnit		UnitHandler::chargeUnit		= UnitHandler::ChargeUnit::C;
-UnitHandler::CountUnit		UnitHandler::countUnit		= UnitHandler::CountUnit::pcs;
+Quantity::Temperature::Unit 	UnitHandler::temperatureUnit	= Quantity::Temperature::Unit::K;
+Quantity::Time::Unit 		UnitHandler::timeUnit		= Quantity::Time::Unit::s;
+Quantity::Length::Unit		UnitHandler::lengthUnit		= Quantity::Length::Unit::m;
+Quantity::Energy::Unit		UnitHandler::energyUnit		= Quantity::Energy::Unit::eV;
+Quantity::Charge::Unit		UnitHandler::chargeUnit		= Quantity::Charge::Unit::C;
+Quantity::Count::Unit		UnitHandler::countUnit		= Quantity::Count::Unit::pcs;
 
 double UnitHandler::temperatureScale	= 1.;
 double UnitHandler::timeScale		= 1.;
@@ -140,7 +140,7 @@ double UnitHandler::getConstantNaturalUnits(const std::string &name){
 	return value;
 }
 
-void UnitHandler::setTemperatureUnit(TemperatureUnit unit){
+void UnitHandler::setTemperatureUnit(Quantity::Temperature::Unit unit){
 	double oldConversionFactor = getTemperatureConversionFactor();
 	temperatureUnit = unit;
 	double newConversionFactor = getTemperatureConversionFactor();
@@ -149,7 +149,7 @@ void UnitHandler::setTemperatureUnit(TemperatureUnit unit){
 	updateConstants();
 }
 
-void UnitHandler::setTimeUnit(TimeUnit unit){
+void UnitHandler::setTimeUnit(Quantity::Time::Unit unit){
 	double oldConversionFactor = getTimeConversionFactor();
 	timeUnit = unit;
 	double newConversionFactor = getTimeConversionFactor();
@@ -158,7 +158,7 @@ void UnitHandler::setTimeUnit(TimeUnit unit){
 	updateConstants();
 }
 
-void UnitHandler::setLengthUnit(LengthUnit unit){
+void UnitHandler::setLengthUnit(Quantity::Length::Unit unit){
 	double oldConversionFactor = getLengthConversionFactor();
 	lengthUnit = unit;
 	double newConversionFactor = getLengthConversionFactor();
@@ -167,7 +167,7 @@ void UnitHandler::setLengthUnit(LengthUnit unit){
 	updateConstants();
 }
 
-void UnitHandler::setEnergyUnit(EnergyUnit unit){
+void UnitHandler::setEnergyUnit(Quantity::Energy::Unit unit){
 	double oldConversionFactor = getEnergyConversionFactor();
 	energyUnit = unit;
 	double newConversionFactor = getEnergyConversionFactor();
@@ -176,7 +176,7 @@ void UnitHandler::setEnergyUnit(EnergyUnit unit){
 	updateConstants();
 }
 
-void UnitHandler::setChargeUnit(ChargeUnit unit){
+void UnitHandler::setChargeUnit(Quantity::Charge::Unit unit){
 	double oldConversionFactor = getChargeConversionFactor();
 	chargeUnit = unit;
 	double newConversionFactor = getChargeConversionFactor();
@@ -185,7 +185,7 @@ void UnitHandler::setChargeUnit(ChargeUnit unit){
 	updateConstants();
 }
 
-void UnitHandler::setCountUnit(CountUnit unit){
+void UnitHandler::setCountUnit(Quantity::Count::Unit unit){
 	double oldConversionFactor = getCountConversionFactor();
 	countUnit = unit;
 	double newConversionFactor = getCountConversionFactor();
@@ -247,7 +247,7 @@ void UnitHandler::setTemperatureScale(string scale){
 		);
 	}
 
-	TemperatureUnit unit = getTemperatureUnit(components[1]);
+	Quantity::Temperature::Unit unit = getTemperatureUnit(components[1]);
 
 	setTemperatureScale(s, unit);
 }
@@ -281,7 +281,7 @@ void UnitHandler::setTimeScale(string scale){
 		);
 	}
 
-	TimeUnit unit = getTimeUnit(components[1]);
+	Quantity::Time::Unit unit = getTimeUnit(components[1]);
 
 	setTimeScale(s, unit);
 }
@@ -315,7 +315,7 @@ void UnitHandler::setLengthScale(string scale){
 		);
 	}
 
-	LengthUnit unit = getLengthUnit(components[1]);
+	Quantity::Length::Unit unit = getLengthUnit(components[1]);
 
 	setLengthScale(s, unit);
 }
@@ -349,7 +349,7 @@ void UnitHandler::setEnergyScale(string scale){
 		);
 	}
 
-	EnergyUnit unit = getEnergyUnit(components[1]);
+	Quantity::Energy::Unit unit = getEnergyUnit(components[1]);
 
 	setEnergyScale(s, unit);
 }
@@ -383,7 +383,7 @@ void UnitHandler::setChargeScale(string scale){
 		);
 	}
 
-	ChargeUnit unit = getChargeUnit(components[1]);
+	Quantity::Charge::Unit unit = getChargeUnit(components[1]);
 
 	setChargeScale(s, unit);
 }
@@ -417,14 +417,14 @@ void UnitHandler::setCountScale(string scale){
 		);
 	}
 
-	CountUnit unit = getCountUnit(components[1]);
+	Quantity::Count::Unit unit = getCountUnit(components[1]);
 
 	setCountScale(s, unit);
 }
 
 double UnitHandler::convertTemperatureArbitraryToBase(
 	double temperature,
-	TemperatureUnit unit
+	Quantity::Temperature::Unit unit
 ){
 	return temperature*getTemperatureConversionFactor(
 		temperatureUnit
@@ -433,7 +433,7 @@ double UnitHandler::convertTemperatureArbitraryToBase(
 
 double UnitHandler::convertTemperatureBaseToArbitrary(
 	double temperature,
-	TemperatureUnit unit
+	Quantity::Temperature::Unit unit
 ){
 	return temperature*getTemperatureConversionFactor(
 		unit
@@ -442,7 +442,7 @@ double UnitHandler::convertTemperatureBaseToArbitrary(
 
 double UnitHandler::convertTemperatureArbitraryToNatural(
 	double temperature,
-	TemperatureUnit unit
+	Quantity::Temperature::Unit unit
 ){
 	double temperatureInDefaultBaseUnits
 		= temperature*getTemperatureConversionFactor(
@@ -454,7 +454,7 @@ double UnitHandler::convertTemperatureArbitraryToNatural(
 
 double UnitHandler::convertTemperatureNaturalToArbitrary(
 	double temperature,
-	TemperatureUnit unit
+	Quantity::Temperature::Unit unit
 ){
 	double temperatureInDefaultBaseUnits
 		= temperature*temperatureScale/getTemperatureConversionFactor(
@@ -465,14 +465,14 @@ double UnitHandler::convertTemperatureNaturalToArbitrary(
 
 double UnitHandler::convertTimeArbitraryToBase(
 	double time,
-	TimeUnit unit
+	Quantity::Time::Unit unit
 ){
 	return time*getTimeConversionFactor(timeUnit)/getTimeConversionFactor(unit);
 }
 
 double UnitHandler::convertTimeBaseToArbitrary(
 	double time,
-	TimeUnit unit
+	Quantity::Time::Unit unit
 ){
 	return time*getTimeConversionFactor(unit)/getTimeConversionFactor(
 		timeUnit
@@ -481,7 +481,7 @@ double UnitHandler::convertTimeBaseToArbitrary(
 
 double UnitHandler::convertTimeArbitraryToNatural(
 	double time,
-	TimeUnit unit
+	Quantity::Time::Unit unit
 ){
 	double timeInDefaultBaseUnits
 		= time*getTimeConversionFactor(
@@ -493,7 +493,7 @@ double UnitHandler::convertTimeArbitraryToNatural(
 
 double UnitHandler::convertTimeNaturalToArbitrary(
 	double time,
-	TimeUnit unit
+	Quantity::Time::Unit unit
 ){
 	double timeInDefaultBaseUnits
 		= time*timeScale/getTimeConversionFactor(timeUnit);
@@ -502,7 +502,7 @@ double UnitHandler::convertTimeNaturalToArbitrary(
 
 double UnitHandler::convertLengthArbitraryToBase(
 	double length,
-	LengthUnit unit
+	Quantity::Length::Unit unit
 ){
 	return length*getLengthConversionFactor(
 		lengthUnit
@@ -511,7 +511,7 @@ double UnitHandler::convertLengthArbitraryToBase(
 
 double UnitHandler::convertLengthBaseToArbitrary(
 	double length,
-	LengthUnit unit
+	Quantity::Length::Unit unit
 ){
 	return length*getLengthConversionFactor(
 		unit
@@ -520,7 +520,7 @@ double UnitHandler::convertLengthBaseToArbitrary(
 
 double UnitHandler::convertLengthArbitraryToNatural(
 	double length,
-	LengthUnit unit
+	Quantity::Length::Unit unit
 ){
 	double lengthInDefaultBaseUnits
 		= length*getLengthConversionFactor(
@@ -532,7 +532,7 @@ double UnitHandler::convertLengthArbitraryToNatural(
 
 double UnitHandler::convertLengthNaturalToArbitrary(
 	double length,
-	LengthUnit unit
+	Quantity::Length::Unit unit
 ){
 	double lengthInDefaultBaseUnits
 		= length*lengthScale/getLengthConversionFactor(lengthUnit);
@@ -541,7 +541,7 @@ double UnitHandler::convertLengthNaturalToArbitrary(
 
 double UnitHandler::convertEnergyArbitraryToBase(
 	double energy,
-	EnergyUnit unit
+	Quantity::Energy::Unit unit
 ){
 	return energy*getEnergyConversionFactor(
 		energyUnit
@@ -550,7 +550,7 @@ double UnitHandler::convertEnergyArbitraryToBase(
 
 double UnitHandler::convertEnergyBaseToArbitrary(
 	double energy,
-	EnergyUnit unit
+	Quantity::Energy::Unit unit
 ){
 	return energy*getEnergyConversionFactor(
 		unit
@@ -559,7 +559,7 @@ double UnitHandler::convertEnergyBaseToArbitrary(
 
 double UnitHandler::convertEnergyArbitraryToNatural(
 	double energy,
-	EnergyUnit unit
+	Quantity::Energy::Unit unit
 ){
 	double energyInDefaultBaseUnits
 		= energy*getEnergyConversionFactor(
@@ -571,7 +571,7 @@ double UnitHandler::convertEnergyArbitraryToNatural(
 
 double UnitHandler::convertEnergyNaturalToArbitrary(
 	double energy,
-	EnergyUnit unit
+	Quantity::Energy::Unit unit
 ){
 	double energyInDefaultBaseUnits
 		= energy*energyScale/getEnergyConversionFactor(energyUnit);
@@ -580,7 +580,7 @@ double UnitHandler::convertEnergyNaturalToArbitrary(
 
 double UnitHandler::convertChargeArbitraryToBase(
 	double charge,
-	ChargeUnit unit
+	Quantity::Charge::Unit unit
 ){
 	return charge*getChargeConversionFactor(
 		chargeUnit
@@ -589,7 +589,7 @@ double UnitHandler::convertChargeArbitraryToBase(
 
 double UnitHandler::convertChargeBaseToArbitrary(
 	double charge,
-	ChargeUnit unit
+	Quantity::Charge::Unit unit
 ){
 	return charge*getChargeConversionFactor(
 		unit
@@ -598,7 +598,7 @@ double UnitHandler::convertChargeBaseToArbitrary(
 
 double UnitHandler::convertChargeArbitraryToNatural(
 	double charge,
-	ChargeUnit unit
+	Quantity::Charge::Unit unit
 ){
 	double chargeInDefaultBaseUnits
 		= charge*getChargeConversionFactor(
@@ -610,7 +610,7 @@ double UnitHandler::convertChargeArbitraryToNatural(
 
 double UnitHandler::convertChargeNaturalToArbitrary(
 	double charge,
-	ChargeUnit unit
+	Quantity::Charge::Unit unit
 ){
 	double chargeInDefaultBaseUnits
 		= charge*chargeScale/getChargeConversionFactor(chargeUnit);
@@ -619,7 +619,7 @@ double UnitHandler::convertChargeNaturalToArbitrary(
 
 double UnitHandler::convertCountArbitraryToBase(
 	double count,
-	CountUnit unit
+	Quantity::Count::Unit unit
 ){
 	return count*getCountConversionFactor(
 		countUnit
@@ -628,7 +628,7 @@ double UnitHandler::convertCountArbitraryToBase(
 
 double UnitHandler::convertCountBaseToArbitrary(
 	double count,
-	CountUnit unit
+	Quantity::Count::Unit unit
 ){
 	return count*getCountConversionFactor(unit)/getCountConversionFactor(
 		countUnit
@@ -637,7 +637,7 @@ double UnitHandler::convertCountBaseToArbitrary(
 
 double UnitHandler::convertCountArbitraryToNatural(
 	double count,
-	CountUnit unit
+	Quantity::Count::Unit unit
 ){
 	double countInDefaultBaseUnits
 		= count*getCountConversionFactor(
@@ -649,7 +649,7 @@ double UnitHandler::convertCountArbitraryToNatural(
 
 double UnitHandler::convertCountNaturalToArbitrary(
 	double count,
-	CountUnit unit
+	Quantity::Count::Unit unit
 ){
 	double countInDefaultBaseUnits
 		= count*countScale/getCountConversionFactor(countUnit);
@@ -778,15 +778,15 @@ double UnitHandler::convertVoltageNaturalToDerived(
 
 string UnitHandler::getTemperatureUnitString(){
 	switch(temperatureUnit){
-		case TemperatureUnit::kK:
+		case Quantity::Temperature::Unit::kK:
 			return "kK";
-		case TemperatureUnit::K:
+		case Quantity::Temperature::Unit::K:
 			return "K";
-		case TemperatureUnit::mK:
+		case Quantity::Temperature::Unit::mK:
 			return "mK";
-		case TemperatureUnit::uK:
+		case Quantity::Temperature::Unit::uK:
 			return "uK";
-		case TemperatureUnit::nK:
+		case Quantity::Temperature::Unit::nK:
 			return "nK";
 		default:
 			return "Unknown unit";
@@ -795,19 +795,19 @@ string UnitHandler::getTemperatureUnitString(){
 
 string UnitHandler::getTimeUnitString(){
 	switch(timeUnit){
-		case TimeUnit::s:
+		case Quantity::Time::Unit::s:
 			return "s";
-		case TimeUnit::ms:
+		case Quantity::Time::Unit::ms:
 			return "ms";
-		case TimeUnit::us:
+		case Quantity::Time::Unit::us:
 			return "us";
-		case TimeUnit::ns:
+		case Quantity::Time::Unit::ns:
 			return "ns";
-		case TimeUnit::ps:
+		case Quantity::Time::Unit::ps:
 			return "ps";
-		case TimeUnit::fs:
+		case Quantity::Time::Unit::fs:
 			return "fs";
-		case TimeUnit::as:
+		case Quantity::Time::Unit::as:
 			return "as";
 		default:
 			return "Unknown unit";
@@ -816,21 +816,21 @@ string UnitHandler::getTimeUnitString(){
 
 string UnitHandler::getLengthUnitString(){
 	switch(lengthUnit){
-		case LengthUnit::m:
+		case Quantity::Length::Unit::m:
 			return "m";
-		case LengthUnit::mm:
+		case Quantity::Length::Unit::mm:
 			return "mm";
-		case LengthUnit::um:
+		case Quantity::Length::Unit::um:
 			return "um";
-		case LengthUnit::nm:
+		case Quantity::Length::Unit::nm:
 			return "nm";
-		case LengthUnit::pm:
+		case Quantity::Length::Unit::pm:
 			return "pm";
-		case LengthUnit::fm:
+		case Quantity::Length::Unit::fm:
 			return "fm";
-		case LengthUnit::am:
+		case Quantity::Length::Unit::am:
 			return "am";
-		case LengthUnit::Ao:
+		case Quantity::Length::Unit::Ao:
 			return "Ao";
 		default:
 			return "Unknown unit";
@@ -839,19 +839,19 @@ string UnitHandler::getLengthUnitString(){
 
 string UnitHandler::getEnergyUnitString(){
 	switch(energyUnit){
-		case EnergyUnit::GeV:
+		case Quantity::Energy::Unit::GeV:
 			return "GeV";
-		case EnergyUnit::MeV:
+		case Quantity::Energy::Unit::MeV:
 			return "MeV";
-		case EnergyUnit::keV:
+		case Quantity::Energy::Unit::keV:
 			return "keV";
-		case EnergyUnit::eV:
+		case Quantity::Energy::Unit::eV:
 			return "eV";
-		case EnergyUnit::meV:
+		case Quantity::Energy::Unit::meV:
 			return "meV";
-		case EnergyUnit::ueV:
+		case Quantity::Energy::Unit::ueV:
 			return "ueV";
-		case EnergyUnit::J:
+		case Quantity::Energy::Unit::J:
 			return "J";
 		default:
 			return "Unknown unit";
@@ -860,31 +860,31 @@ string UnitHandler::getEnergyUnitString(){
 
 string UnitHandler::getChargeUnitString(){
 	switch(chargeUnit){
-		case ChargeUnit::kC:
+		case Quantity::Charge::Unit::kC:
 			return "kC";
-		case ChargeUnit::C:
+		case Quantity::Charge::Unit::C:
 			return "C";
-		case ChargeUnit::mC:
+		case Quantity::Charge::Unit::mC:
 			return "mC";
-		case ChargeUnit::uC:
+		case Quantity::Charge::Unit::uC:
 			return "uC";
-		case ChargeUnit::nC:
+		case Quantity::Charge::Unit::nC:
 			return "nC";
-		case ChargeUnit::pC:
+		case Quantity::Charge::Unit::pC:
 			return "pC";
-		case ChargeUnit::fC:
+		case Quantity::Charge::Unit::fC:
 			return "fC";
-		case ChargeUnit::aC:
+		case Quantity::Charge::Unit::aC:
 			return "aC";
-		case ChargeUnit::Te:
+		case Quantity::Charge::Unit::Te:
 			return "Te";
-		case ChargeUnit::Ge:
+		case Quantity::Charge::Unit::Ge:
 			return "Ge";
-		case ChargeUnit::Me:
+		case Quantity::Charge::Unit::Me:
 			return "Me";
-		case ChargeUnit::ke:
+		case Quantity::Charge::Unit::ke:
 			return "ke";
-		case ChargeUnit::e:
+		case Quantity::Charge::Unit::e:
 			return "e";
 		default:
 			return "Unknown unit";
@@ -893,9 +893,9 @@ string UnitHandler::getChargeUnitString(){
 
 string UnitHandler::getCountUnitString(){
 	switch(countUnit){
-		case CountUnit::pcs:
+		case Quantity::Count::Unit::pcs:
 			return "pcs";
-		case CountUnit::mol:
+		case Quantity::Count::Unit::mol:
 			return "mol";
 		default:
 			return "Unkown unit";
@@ -1073,17 +1073,19 @@ double UnitHandler::getTemperatureConversionFactor(){
 	return getTemperatureConversionFactor(temperatureUnit);
 }
 
-double UnitHandler::getTemperatureConversionFactor(TemperatureUnit temperatureUnit){
+double UnitHandler::getTemperatureConversionFactor(
+	Quantity::Temperature::Unit temperatureUnit
+){
 	switch(temperatureUnit){
-		case TemperatureUnit::kK:	//1e-3 kK per K
+		case Quantity::Temperature::Unit::kK:	//1e-3 kK per K
 			return 1e-3;
-		case TemperatureUnit::K:	//Reference scale
+		case Quantity::Temperature::Unit::K:	//Reference scale
 			return 1.;
-		case TemperatureUnit::mK:
+		case Quantity::Temperature::Unit::mK:
 			return 1e3;
-		case TemperatureUnit::uK:
+		case Quantity::Temperature::Unit::uK:
 			return 1e6;
-		case TemperatureUnit::nK:
+		case Quantity::Temperature::Unit::nK:
 			return 1e9;
 		default:	//Should never happen, hard error generated for quick bug detection
 			TBTKExit(
@@ -1098,21 +1100,21 @@ double UnitHandler::getTimeConversionFactor(){
 	return getTimeConversionFactor(timeUnit);
 }
 
-double UnitHandler::getTimeConversionFactor(TimeUnit timeUnit){
+double UnitHandler::getTimeConversionFactor(Quantity::Time::Unit timeUnit){
 	switch(timeUnit){
-		case TimeUnit::s:	//Reference scale
+		case Quantity::Time::Unit::s:	//Reference scale
 			return 1.;
-		case TimeUnit::ms:
+		case Quantity::Time::Unit::ms:
 			return 1e3;	//1e3 ms per second
-		case TimeUnit::us:
+		case Quantity::Time::Unit::us:
 			return 1e6;
-		case TimeUnit::ns:
+		case Quantity::Time::Unit::ns:
 			return 1e9;
-		case TimeUnit::ps:
+		case Quantity::Time::Unit::ps:
 			return 1e12;
-		case TimeUnit::fs:
+		case Quantity::Time::Unit::fs:
 			return 1e15;
-		case TimeUnit::as:
+		case Quantity::Time::Unit::as:
 			return 1e18;
 		default:	//Should never happen, hard error generated for quick bug detection
 			TBTKExit(
@@ -1127,23 +1129,25 @@ double UnitHandler::getLengthConversionFactor(){
 	return getLengthConversionFactor(lengthUnit);
 }
 
-double UnitHandler::getLengthConversionFactor(LengthUnit lengthUnit){
+double UnitHandler::getLengthConversionFactor(
+	Quantity::Length::Unit lengthUnit
+){
 	switch(lengthUnit){
-		case LengthUnit::m:	//Reference scale
+		case Quantity::Length::Unit::m:	//Reference scale
 			return 1.;
-		case LengthUnit::mm:	//1e3 mm per m
+		case Quantity::Length::Unit::mm:	//1e3 mm per m
 			return 1e3;
-		case LengthUnit::um:
+		case Quantity::Length::Unit::um:
 			return 1e6;
-		case LengthUnit::nm:
+		case Quantity::Length::Unit::nm:
 			return 1e9;
-		case LengthUnit::pm:
+		case Quantity::Length::Unit::pm:
 			return 1e12;
-		case LengthUnit::fm:
+		case Quantity::Length::Unit::fm:
 			return 1e15;
-		case LengthUnit::am:
+		case Quantity::Length::Unit::am:
 			return 1e18;
-		case LengthUnit::Ao:
+		case Quantity::Length::Unit::Ao:
 			return 1e10;
 		default:	//Should never happen, hard error generated for quick bug detection
 			TBTKExit(
@@ -1158,21 +1162,23 @@ double UnitHandler::getEnergyConversionFactor(){
 	return getEnergyConversionFactor(energyUnit);
 }
 
-double UnitHandler::getEnergyConversionFactor(EnergyUnit energyUnit){
+double UnitHandler::getEnergyConversionFactor(
+	Quantity::Energy::Unit energyUnit
+){
 	switch(energyUnit){
-		case EnergyUnit::GeV:	//1e-9 GeV per eV
+		case Quantity::Energy::Unit::GeV:	//1e-9 GeV per eV
 			return 1e-9;
-		case EnergyUnit::MeV:
+		case Quantity::Energy::Unit::MeV:
 			return 1e-6;
-		case EnergyUnit::keV:
+		case Quantity::Energy::Unit::keV:
 			return 1e-3;
-		case EnergyUnit::eV:	//Reference scale
+		case Quantity::Energy::Unit::eV:	//Reference scale
 			return 1.;
-		case EnergyUnit::meV:
+		case Quantity::Energy::Unit::meV:
 			return 1e3;
-		case EnergyUnit::ueV:
+		case Quantity::Energy::Unit::ueV:
 			return 1e6;
-		case EnergyUnit::J:
+		case Quantity::Energy::Unit::J:
 			return J_per_eV;
 		default:	//Should never happen, hard error generated for quick bug detection
 			TBTKExit(
@@ -1187,34 +1193,36 @@ double UnitHandler::getChargeConversionFactor(){
 	return getChargeConversionFactor(chargeUnit);
 }
 
-double UnitHandler::getChargeConversionFactor(ChargeUnit chargeUnit){
+double UnitHandler::getChargeConversionFactor(
+	Quantity::Charge::Unit chargeUnit
+){
 	double E = constantsDefaultUnits.at("e").first;
 	switch(chargeUnit){
-		case ChargeUnit::kC:	//1e-3 kC per C
+		case Quantity::Charge::Unit::kC:	//1e-3 kC per C
 			return 1e-3;
-		case ChargeUnit::C:	//Reference scale
+		case Quantity::Charge::Unit::C:	//Reference scale
 			return 1.;
-		case ChargeUnit::mC:
+		case Quantity::Charge::Unit::mC:
 			return 1e3;
-		case ChargeUnit::uC:
+		case Quantity::Charge::Unit::uC:
 			return 1e6;
-		case ChargeUnit::nC:
+		case Quantity::Charge::Unit::nC:
 			return 1e9;
-		case ChargeUnit::pC:
+		case Quantity::Charge::Unit::pC:
 			return 1e12;
-		case ChargeUnit::fC:
+		case Quantity::Charge::Unit::fC:
 			return 1e15;
-		case ChargeUnit::aC:
+		case Quantity::Charge::Unit::aC:
 			return 1e18;
-		case ChargeUnit::Te:
+		case Quantity::Charge::Unit::Te:
 			return 1e-12/E;
-		case ChargeUnit::Ge:
+		case Quantity::Charge::Unit::Ge:
 			return 1e-9/E;
-		case ChargeUnit::Me:
+		case Quantity::Charge::Unit::Me:
 			return 13-6/E;
-		case ChargeUnit::ke:
+		case Quantity::Charge::Unit::ke:
 			return 1e-3/E;
-		case ChargeUnit::e:
+		case Quantity::Charge::Unit::e:
 			return 1./E;
 		default:	//Should never happen, hard error generated for quick bug detection
 			TBTKExit(
@@ -1229,12 +1237,12 @@ double UnitHandler::getCountConversionFactor(){
 	return getCountConversionFactor(countUnit);
 }
 
-double UnitHandler::getCountConversionFactor(CountUnit countUnit){
+double UnitHandler::getCountConversionFactor(Quantity::Count::Unit countUnit){
 	double N_A = constantsDefaultUnits.at("N_A").first;
 	switch(countUnit){
-		case CountUnit::pcs:
+		case Quantity::Count::Unit::pcs:
 			return 1.;	//Reference scale
-		case CountUnit::mol:	//1/N_A mol per pcs
+		case Quantity::Count::Unit::mol:	//1/N_A mol per pcs
 			return 1./N_A;
 		default:	//Should never happen, hard error generated for quick bug detection
 			TBTKExit(
@@ -1328,21 +1336,21 @@ double UnitHandler::getVoltageConversionFactor(VoltageUnit unit){
 	}
 }
 
-UnitHandler::TemperatureUnit UnitHandler::getTemperatureUnit(string unit){
+Quantity::Temperature::Unit UnitHandler::getTemperatureUnit(string unit){
 	if(unit.compare("kK") == 0){
-		return TemperatureUnit::kK;
+		return Quantity::Temperature::Unit::kK;
 	}
 	else if(unit.compare("K") == 0){
-		return TemperatureUnit::K;
+		return Quantity::Temperature::Unit::K;
 	}
 	else if(unit.compare("mK") == 0){
-		return TemperatureUnit::mK;
+		return Quantity::Temperature::Unit::mK;
 	}
 	else if(unit.compare("uK") == 0){
-		return TemperatureUnit::uK;
+		return Quantity::Temperature::Unit::uK;
 	}
 	else if(unit.compare("nK") == 0){
-		return TemperatureUnit::nK;
+		return Quantity::Temperature::Unit::nK;
 	}
 	else{
 		TBTKExit(
@@ -1353,27 +1361,27 @@ UnitHandler::TemperatureUnit UnitHandler::getTemperatureUnit(string unit){
 	}
 }
 
-UnitHandler::TimeUnit UnitHandler::getTimeUnit(string unit){
+Quantity::Time::Unit UnitHandler::getTimeUnit(string unit){
 	if(unit.compare("s") == 0){
-		return TimeUnit::s;
+		return Quantity::Time::Unit::s;
 	}
 	else if(unit.compare("ms") == 0){
-		return TimeUnit::ms;
+		return Quantity::Time::Unit::ms;
 	}
 	else if(unit.compare("us") == 0){
-		return TimeUnit::us;
+		return Quantity::Time::Unit::us;
 	}
 	else if(unit.compare("ns") == 0){
-		return TimeUnit::ns;
+		return Quantity::Time::Unit::ns;
 	}
 	else if(unit.compare("ps") == 0){
-		return TimeUnit::ps;
+		return Quantity::Time::Unit::ps;
 	}
 	else if(unit.compare("fs") == 0){
-		return TimeUnit::fs;
+		return Quantity::Time::Unit::fs;
 	}
 	else if(unit.compare("as") == 0){
-		return TimeUnit::as;
+		return Quantity::Time::Unit::as;
 	}
 	else{
 		TBTKExit(
@@ -1384,30 +1392,30 @@ UnitHandler::TimeUnit UnitHandler::getTimeUnit(string unit){
 	}
 }
 
-UnitHandler::LengthUnit UnitHandler::getLengthUnit(string unit){
+Quantity::Length::Unit UnitHandler::getLengthUnit(string unit){
 	if(unit.compare("m") == 0){
-		return LengthUnit::m;
+		return Quantity::Length::Unit::m;
 	}
 	else if(unit.compare("mm") == 0){
-		return LengthUnit::mm;
+		return Quantity::Length::Unit::mm;
 	}
 	else if(unit.compare("um") == 0){
-		return LengthUnit::um;
+		return Quantity::Length::Unit::um;
 	}
 	else if(unit.compare("nm") == 0){
-		return LengthUnit::nm;
+		return Quantity::Length::Unit::nm;
 	}
 	else if(unit.compare("pm") == 0){
-		return LengthUnit::pm;
+		return Quantity::Length::Unit::pm;
 	}
 	else if(unit.compare("fm") == 0){
-		return LengthUnit::fm;
+		return Quantity::Length::Unit::fm;
 	}
 	else if(unit.compare("am") == 0){
-		return LengthUnit::am;
+		return Quantity::Length::Unit::am;
 	}
 	else if(unit.compare("Ao") == 0){
-		return LengthUnit::Ao;
+		return Quantity::Length::Unit::Ao;
 	}
 	else{
 		TBTKExit(
@@ -1418,27 +1426,27 @@ UnitHandler::LengthUnit UnitHandler::getLengthUnit(string unit){
 	}
 }
 
-UnitHandler::EnergyUnit UnitHandler::getEnergyUnit(string unit){
+Quantity::Energy::Unit UnitHandler::getEnergyUnit(string unit){
 	if(unit.compare("GeV") == 0){
-		return EnergyUnit::GeV;
+		return Quantity::Energy::Unit::GeV;
 	}
 	else if(unit.compare("MeV") == 0){
-		return EnergyUnit::MeV;
+		return Quantity::Energy::Unit::MeV;
 	}
 	else if(unit.compare("keV") == 0){
-		return EnergyUnit::keV;
+		return Quantity::Energy::Unit::keV;
 	}
 	else if(unit.compare("eV") == 0){
-		return EnergyUnit::eV;
+		return Quantity::Energy::Unit::eV;
 	}
 	else if(unit.compare("meV") == 0){
-		return EnergyUnit::meV;
+		return Quantity::Energy::Unit::meV;
 	}
 	else if(unit.compare("ueV") == 0){
-		return EnergyUnit::ueV;
+		return Quantity::Energy::Unit::ueV;
 	}
 	else if(unit.compare("J") == 0){
-		return EnergyUnit::J;
+		return Quantity::Energy::Unit::J;
 	}
 	else{
 		TBTKExit(
@@ -1449,45 +1457,45 @@ UnitHandler::EnergyUnit UnitHandler::getEnergyUnit(string unit){
 	}
 }
 
-UnitHandler::ChargeUnit UnitHandler::getChargeUnit(string unit){
+Quantity::Charge::Unit UnitHandler::getChargeUnit(string unit){
 	if(unit.compare("kC") == 0){
-		return ChargeUnit::kC;
+		return Quantity::Charge::Unit::kC;
 	}
 	else if(unit.compare("C") == 0){
-		return ChargeUnit::C;
+		return Quantity::Charge::Unit::C;
 	}
 	else if(unit.compare("mC") == 0){
-		return ChargeUnit::mC;
+		return Quantity::Charge::Unit::mC;
 	}
 	else if(unit.compare("uC") == 0){
-		return ChargeUnit::uC;
+		return Quantity::Charge::Unit::uC;
 	}
 	else if(unit.compare("nC") == 0){
-		return ChargeUnit::nC;
+		return Quantity::Charge::Unit::nC;
 	}
 	else if(unit.compare("pC") == 0){
-		return ChargeUnit::pC;
+		return Quantity::Charge::Unit::pC;
 	}
 	else if(unit.compare("fC") == 0){
-		return ChargeUnit::fC;
+		return Quantity::Charge::Unit::fC;
 	}
 	else if(unit.compare("aC") == 0){
-		return ChargeUnit::aC;
+		return Quantity::Charge::Unit::aC;
 	}
 	else if(unit.compare("Te") == 0){
-		return ChargeUnit::Te;
+		return Quantity::Charge::Unit::Te;
 	}
 	else if(unit.compare("Ge") == 0){
-		return ChargeUnit::Ge;
+		return Quantity::Charge::Unit::Ge;
 	}
 	else if(unit.compare("Me") == 0){
-		return ChargeUnit::Me;
+		return Quantity::Charge::Unit::Me;
 	}
 	else if(unit.compare("ke") == 0){
-		return ChargeUnit::ke;
+		return Quantity::Charge::Unit::ke;
 	}
 	else if(unit.compare("e") == 0){
-		return ChargeUnit::e;
+		return Quantity::Charge::Unit::e;
 	}
 	else{
 		TBTKExit(
@@ -1498,12 +1506,12 @@ UnitHandler::ChargeUnit UnitHandler::getChargeUnit(string unit){
 	}
 }
 
-UnitHandler::CountUnit UnitHandler::getCountUnit(string unit){
+Quantity::Count::Unit UnitHandler::getCountUnit(string unit){
 	if(unit.compare("pcs") == 0){
-		return CountUnit::pcs;
+		return Quantity::Count::Unit::pcs;
 	}
 	else if(unit.compare("mol") == 0){
-		return CountUnit::mol;
+		return Quantity::Count::Unit::mol;
 	}
 	else{
 		TBTKExit(

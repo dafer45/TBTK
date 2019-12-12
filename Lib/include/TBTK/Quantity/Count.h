@@ -42,9 +42,15 @@ public:
 
 	/** Constructs a Quantity from a double. */
 	Count(double value) : Real(value){};
+
+	/** Count unit (base unit):
+	 * - pcs - pieces
+	 * - mol - Mole */
+	enum class Unit{pcs, mol};
 };
 
 }; //End of namesapce Quantity
 }; //End of namesapce TBTK
 
 #endif
+

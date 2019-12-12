@@ -42,6 +42,14 @@ public:
 
 	/** Constructs a Quantity from a double. */
 	Temperature(double value) : Real(value){};
+
+	/** Temperature units (base unit):
+	 *  - kK - kilokelvin
+	 *  - K - Kelvin
+	 *  - mK - millikelvin
+	 *  - uK - microkelvin
+	 *  - nK - nanokelvin */
+	enum class Unit {kK, K, mK, uK, nK};
 };
 
 }; //End of namesapce Temperature

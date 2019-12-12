@@ -42,6 +42,22 @@ public:
 
 	/** Constructs a Quantity from a double. */
 	Charge(double value) : Real(value){};
+
+	/** Charge units (base unit):
+	 * - kC - kilocoulomb
+	 * - C - Coulomb
+	 * - mC - millicoulomb
+	 * - uC - microcoulomb
+	 * - nC - nanocoulomb
+	 * - pC - picocoulomb
+	 * - fC - femtocoulomb
+	 * - aC - attocoulomb
+	 * - Te - terrae
+	 * - Ge - gigae
+	 * - Me - megae
+	 * - ke - kiloe
+	 * - e - e (elementary charge) */
+	enum class Unit{kC, C, mC, uC, nC, pC, fC, aC, Te, Ge, Me, ke, e};
 };
 
 }; //End of namesapce Quantity
