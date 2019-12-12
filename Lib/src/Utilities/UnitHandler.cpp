@@ -40,19 +40,6 @@ map<
 > UnitHandler::constantsDefaultUnits;
 map<string, double> UnitHandler::constantsBaseUnits;
 
-/*double UnitHandler::hbar	= HBAR;
-double UnitHandler::k_B		= K_B;
-double UnitHandler::e		= E;
-double UnitHandler::c		= C;
-double UnitHandler::n_A		= N_A;
-double UnitHandler::m_e		= M_E;
-double UnitHandler::m_p		= M_P;
-double UnitHandler::mu_B	= MU_B;
-double UnitHandler::mu_n	= MU_N;
-double UnitHandler::mu_0	= MU_0;
-double UnitHandler::epsilon_0	= EPSILON_0;
-double UnitHandler::a_0		= A_0;*/
-
 double UnitHandler::J_per_eV;
 double UnitHandler::eV_per_J;
 double UnitHandler::kg_per_baseMass;
@@ -158,7 +145,6 @@ void UnitHandler::setTemperatureUnit(TemperatureUnit unit){
 	double newConversionFactor = getTemperatureConversionFactor();
 	temperatureScale *= newConversionFactor/oldConversionFactor;
 
-//	updateK_B();
 	updateConstants();
 }
 
@@ -168,13 +154,6 @@ void UnitHandler::setTimeUnit(TimeUnit unit){
 	double newConversionFactor = getTimeConversionFactor();
 	timeScale *= newConversionFactor/oldConversionFactor;
 
-/*	updateHbar();
-	updateC();
-	updateM_e();
-	updateM_p();
-	updateMu_B();
-	updateMu_n();
-	updateMu_0();*/
 	updateConstants();
 }
 
@@ -184,14 +163,6 @@ void UnitHandler::setLengthUnit(LengthUnit unit){
 	double newConversionFactor = getLengthConversionFactor();
 	lengthScale *= newConversionFactor/oldConversionFactor;
 
-/*	updateC();
-	updateM_e();
-	updateM_p();
-	updateMu_B();
-	updateMu_n();
-	updateMu_0();
-	updateEpsilon_0();
-	updateA_0();*/
 	updateConstants();
 }
 
@@ -201,12 +172,6 @@ void UnitHandler::setEnergyUnit(EnergyUnit unit){
 	double newConversionFactor = getEnergyConversionFactor();
 	energyScale *= newConversionFactor/oldConversionFactor;
 
-/*	updateHbar();
-	updateK_B();
-	updateM_e();
-	updateM_p();
-	updateMu_0();
-	updateEpsilon_0();*/
 	updateConstants();
 }
 
@@ -216,11 +181,6 @@ void UnitHandler::setChargeUnit(ChargeUnit unit){
 	double newConversionFactor = getChargeConversionFactor();
 	chargeScale *= newConversionFactor/oldConversionFactor;
 
-/*	updateE();
-	updateMu_B();
-	updateMu_n();
-	updateMu_0();
-	updateEpsilon_0();*/
 	updateConstants();
 }
 
@@ -230,7 +190,6 @@ void UnitHandler::setCountUnit(CountUnit unit){
 	double newConversionFactor = getCountConversionFactor();
 	countScale *= newConversionFactor/oldConversionFactor;
 
-//	updateN_A();
 	updateConstants();
 }
 
@@ -1107,85 +1066,7 @@ void UnitHandler::updateConstants(){
 		}
 		constantsBaseUnits[name] = value;
 	}
-//	for(auto constant : constantsBaseUnits)
-//		Streams::out << constant.first << "\t" << constant.second << "\n";
 }
-
-/*void UnitHandler::updateHbar(){
-	hbar = HBAR;
-	hbar *= getEnergyConversionFactor();
-	hbar *= getTimeConversionFactor();
-}
-
-void UnitHandler::updateK_B(){
-	k_B = K_B;
-	k_B *= getEnergyConversionFactor();
-	k_B /= getTemperatureConversionFactor();
-}
-
-void UnitHandler::updateE(){
-	e = E;
-	e *= getChargeConversionFactor();
-}
-
-void UnitHandler::updateC(){
-	c = C;
-	c *= getLengthConversionFactor();
-	c /= getTimeConversionFactor();
-}
-
-void UnitHandler::updateN_A(){
-	n_A = N_A;
-	n_A *= getCountConversionFactor();
-}
-
-void UnitHandler::updateM_e(){
-	m_e = M_E;
-	m_e *= getEnergyConversionFactor();
-	m_e *= getTimeConversionFactor()*getTimeConversionFactor();
-	m_e /= getLengthConversionFactor()*getLengthConversionFactor();
-}
-
-void UnitHandler::updateM_p(){
-	m_p = M_P;
-	m_p *= getEnergyConversionFactor();
-	m_p *= getTimeConversionFactor()*getTimeConversionFactor();
-	m_p /= getLengthConversionFactor()*getLengthConversionFactor();
-}
-
-void UnitHandler::updateMu_B(){
-	mu_B = MU_B;
-	mu_B *= getChargeConversionFactor();
-	mu_B *= getLengthConversionFactor()*getLengthConversionFactor();
-	mu_B /= getTimeConversionFactor();
-}
-
-void UnitHandler::updateMu_n(){
-	mu_n = MU_N;
-	mu_n *= getChargeConversionFactor();
-	mu_n *= getLengthConversionFactor()*getLengthConversionFactor();
-	mu_n /= getTimeConversionFactor();
-}
-
-void UnitHandler::updateMu_0(){
-	mu_0 = MU_0;
-	mu_0 *= getEnergyConversionFactor();
-	mu_0 *= getTimeConversionFactor()*getTimeConversionFactor();
-	mu_0 /= getChargeConversionFactor()*getChargeConversionFactor();
-	mu_0 /= getLengthConversionFactor();
-}
-
-void UnitHandler::updateEpsilon_0(){
-	epsilon_0 = EPSILON_0;
-	epsilon_0 *= getChargeConversionFactor()*getChargeConversionFactor();
-	epsilon_0 /= getEnergyConversionFactor();
-	epsilon_0 /= getLengthConversionFactor();
-}
-
-void UnitHandler::updateA_0(){
-	a_0 = A_0;
-	a_0 *= getLengthConversionFactor();
-}*/
 
 double UnitHandler::getTemperatureConversionFactor(){
 	return getTemperatureConversionFactor(temperatureUnit);
