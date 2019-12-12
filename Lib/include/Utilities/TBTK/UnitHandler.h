@@ -81,68 +81,6 @@ namespace TBTK{
  *  eVs^2/m^2. */
 class UnitHandler{
 public:
-	/** Temperature units (base unit):<br/>
-	 *	kK - kilokelvin<br/>
-	 *	K - Kelvin<br/>
-	 *	mK - millikelvin<br/>
-	 *	uK - microkelvin<br/>
-	 *	nK - nanokelvin*/
-//	enum class TemperatureUnit {kK, K, mK, uK, nK};
-
-	/* Time units (base unit):<br/>
-	 *	s - second<br/>
-	 *	ms - millisecond<br/>
-	 *	us - microsecond<br/>
-	 *	ns - nanosecond<br/>
-	 *	ps - picosecond<br/>
-	 *	fs - femtosecond<br/>
-	 *	as - attosecond */
-//	enum class TimeUnit {s, ms, us, ns, ps, fs, as};
-
-	/** Length units (base unit):<br/>
-	 *	m - meter<br/>
-	 *	mm - millimeter<br/>
-	 *	um - micrometer<br/>
-	 *	nm - nanometer<br/>
-	 *	pm - picometer<br/>
-	 *	fm - femtometer<br/>
-	 *	am - attometer<br/>
-	 *	Ao - Angstrom */
-//	enum class LengthUnit{m, mm, um, nm, pm, fm, am, Ao};
-
-	/** Energy units (base unit):<br/>
-	 *	GeV - gigaelectron Volt<br/>
-	 *	MeV - megaelectron Volt<br/>
-	 *	keV - kiloelectron Volt<br/>
-	 *	eV - electron Volt<br/>
-	 *	meV - millielectron Volt<br/>
-	 *	ueV - microelectron Volt<br/>
-	 *	J - Joule */
-//	enum class EnergyUnit{GeV, MeV, keV, eV, meV, ueV, J};
-
-	/** Charge units (base unit):<br/>
-	 *	kC - kilocoulomb<br/>
-	 *	C - Coulomb<br/>
-	 *	mC - millicoulomb<br/>
-	 *	uC - microcoulomb<br/>
-	 *	nC - nanocoulomb<br/>
-	 *	pC - picocoulomb<br/>
-	 *	fC - femtocoulomb<br/>
-	 *	aC - attocoulomb<br/>
-	 *	Te - terrae<br/>
-	 *	Ge - gigae<br/>
-	 *	Me - megae<br/>
-	 *	ke - kiloe<br/>
-	 *	e - e (elementary charge) */
-/*	enum class ChargeUnit{
-		kC, C, mC, uC, nC, pC, fC, aC, Te, Ge, Me, ke, e
-	};*/
-
-	/** Count unit (base unit):
-	 *	pcs - pieces
-	 *	mol - Mole */
-//	enum class CountUnit{pcs, mol};
-
 	/** Mass units (derived unit):<br/>
 	 *	kg - kilogram<br/>
 	 *	g - gram<br/>
@@ -197,45 +135,9 @@ public:
 	template<typename Quantity>
 	static double convertNaturalToBase(double value);
 
-	/** Convert temperature from natural units to base units. */
-//	static double convertTemperatureNaturalToBase(double temperature);
-
-	/** Convert time to from natural units to base units. */
-//	static double convertTimeNaturalToBase(double time);
-
-	/** Convert length from natural units to base units. */
-//	static double convertLengthNaturalToBase(double length);
-
-	/** Convert energy from natural units to base units */
-//	static double convertEnergyNaturalToBase(double energy);
-
-	/** Convert charge from natural units to base units. */
-//	static double convertChargeNaturalToBase(double charge);
-
-	/** Conver counting from natural units to base units. */
-//	static double convertCountNaturalToBase(double count);
-
 	/** Convert from base units to natural units. */
 	template<typename Quantity>
 	static double convertBaseToNatural(double value);
-
-	/** Convert temperature from base units to natural units. */
-//	static double convertTemperatureBaseToNatural(double temperature);
-
-	/** Convert time from base units to natural units. */
-//	static double convertTimeBaseToNatural(double time);
-
-	/** Convert length from base units to natural units. */
-//	static double convertLengthBaseToNatural(double length);
-
-	/** Convert energy from base units to natural units. */
-//	static double convertEnergyBaseToNatural(double energy);
-
-	/** Convert charge from base units to natural units. */
-//	static double convertChargeBaseToNatural(double charge);
-
-	/** Convert count from base units to natural units. */
-//	static double convertCountBaseToNatural(double count);
 
 	/** Convert temperature from arbitrary units to base units. */
 	static double convertTemperatureArbitraryToBase(
@@ -876,58 +778,10 @@ double UnitHandler::convertNaturalToBase(double value){
 	return value*getScaleFactor<Quantity>();
 }
 
-/*inline double UnitHandler::convertTemperatureNaturalToBase(double temperature){
-	return temperature*temperatureScale;
-}
-
-inline double UnitHandler::convertTimeNaturalToBase(double time){
-	return time*timeScale;
-}
-
-inline double UnitHandler::convertLengthNaturalToBase(double length){
-	return length*lengthScale;
-}
-
-inline double UnitHandler::convertEnergyNaturalToBase(double energy){
-	return energy*energyScale;
-}
-
-inline double UnitHandler::convertChargeNaturalToBase(double charge){
-	return charge*chargeScale;
-}
-
-inline double UnitHandler::convertCountNaturalToBase(double count){
-	return count*countScale;
-}*/
-
 template<typename Quantity>
 double UnitHandler::convertBaseToNatural(double value){
 	return value/getScaleFactor<Quantity>();
 }
-
-/*inline double UnitHandler::convertTemperatureBaseToNatural(double temperature){
-	return temperature/temperatureScale;
-}
-
-inline double UnitHandler::convertTimeBaseToNatural(double time){
-	return time/timeScale;
-}
-
-inline double UnitHandler::convertLengthBaseToNatural(double length){
-	return length/lengthScale;
-}
-
-inline double UnitHandler::convertEnergyBaseToNatural(double energy){
-	return energy/energyScale;
-}
-
-inline double UnitHandler::convertChargeBaseToNatural(double charge){
-	return charge/chargeScale;
-}
-
-inline double UnitHandler::convertCountBaseToNatural(double count){
-	return count/countScale;
-}*/
 
 template<>
 inline double UnitHandler::getScaleFactor<Quantity::Charge>(){
