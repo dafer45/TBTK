@@ -15,7 +15,7 @@
 
 /** @package TBTKcalc
  *  @file UnitHandler.h
- *  @brief Handles conversions between different units
+ *  @brief Handles conversions between different units.
  *
  *  @author Kristofer Björnson
  */
@@ -38,9 +38,7 @@
 
 namespace TBTK{
 
-/** !!! Note: Numerica values are picked from Wikipedia, and have not yet been
- *  checked agains an authoritative source. Some values that should be the same
- *  are even known to differ in some of the least significant digits. !!!
+/** @brief Handles conversion between different units.
  *
  *  The UnitHandler handles conversion between the 'natural units' used in the
  *  calculations and standard 'base units'. The base quantities are
