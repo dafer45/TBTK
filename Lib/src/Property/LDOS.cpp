@@ -123,10 +123,10 @@ string LDOS::toString() const{
 	stringstream ss;
 	ss << "LDOS\n";
 	ss << "\tNumber of sites: " << numSites << "\n";
-	ss << "\tLower bound: " << UnitHandler::convertEnergyNtB(lowerBound)
+	ss << "\tLower bound: " << UnitHandler::convertEnergyNaturalToBase(lowerBound)
 		<< " " << UnitHandler::getEnergyUnitString() << " ("
 		<< lowerBound << " b.u.)\n";
-	ss << "\tUpper bound: " << UnitHandler::convertEnergyNtB(upperBound)
+	ss << "\tUpper bound: " << UnitHandler::convertEnergyNaturalToBase(upperBound)
 		<< " " << UnitHandler::getEnergyUnitString() << " ("
 		<< upperBound << " b.u.)\n";
 	ss << "\tResolution: " << resolution;

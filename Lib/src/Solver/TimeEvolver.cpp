@@ -132,7 +132,11 @@ void TimeEvolver::run(){
 		#pragma omp parallel for
 		for(int n = 0; n < basisSize; n++){
 			for(int c = 0; c < basisSize; c++)
-				eigenVectorsMap[n][c] -= i*dPsi[basisSize*n + c]*UnitHandler::convertTimeNtB(dt)/hbar;
+				eigenVectorsMap[n][c] -= i*dPsi[
+					basisSize*n + c
+				]*UnitHandler::convertTimeNaturalToBase(
+					dt
+				)/hbar;
 		}
 
 		sort();

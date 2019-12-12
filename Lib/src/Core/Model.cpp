@@ -261,11 +261,11 @@ string Model::toString() const{
 	stringstream stream;
 	stream << "Model\n";
 	stream << "\tTemperature: "
-		<< UnitHandler::convertTemperatureNtB(temperature)
+		<< UnitHandler::convertTemperatureNaturalToBase(temperature)
 		<< UnitHandler::getTemperatureUnitString() << " ("
 		<< temperature << " b.u.)\n";
 	stream << "\tChemical potential: "
-		<< UnitHandler::convertEnergyNtB(chemicalPotential)
+		<< UnitHandler::convertEnergyNaturalToBase(chemicalPotential)
 		<< UnitHandler::getEnergyUnitString() << " ("
 		<< chemicalPotential << " b.u.)\n";
 	switch(singleParticleContext.getStatistics()){

@@ -47,7 +47,7 @@ ZFactorCalculator::ZFactorCalculator(
 	const Model &model = momentumSpaceContext.getModel();
 
 	//Calculate kT
-	double temperature = UnitHandler::convertTemperatureNtB(
+	double temperature = UnitHandler::convertTemperatureNaturalToBase(
 		model.getTemperature()
 	);
 	double kT = UnitHandler::getConstantBaseUnits("k_B")*temperature;
@@ -155,7 +155,7 @@ vector<complex<double>> ZFactorCalculator::calculateZFactor(
 		= momentumSpaceContext.getPropertyExtractorBlockDiagonalizer();
 
 	//Calculate kT
-	double temperature = UnitHandler::convertTemperatureNtB(
+	double temperature = UnitHandler::convertTemperatureNaturalToBase(
 		model.getTemperature()
 	);
 	double kT = UnitHandler::getConstantBaseUnits("k_B")*temperature;

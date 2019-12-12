@@ -54,8 +54,8 @@ inline double Functions::fermiDiracDistribution(
 	double mu,
 	double temperature
 ){
-	double e = UnitHandler::convertEnergyNtB(energy - mu);
-	double t = UnitHandler::convertTemperatureNtB(temperature);
+	double e = UnitHandler::convertEnergyNaturalToBase(energy - mu);
+	double t = UnitHandler::convertTemperatureNaturalToBase(temperature);
 	if(t != 0.){
 		return 1./(
 			exp(
@@ -78,8 +78,8 @@ inline double Functions::boseEinsteinDistribution(
 	double mu,
 	double temperature
 ){
-	double e = UnitHandler::convertEnergyNtB(energy - mu);
-	double t = UnitHandler::convertTemperatureNtB(temperature);
+	double e = UnitHandler::convertEnergyNaturalToBase(energy - mu);
+	double t = UnitHandler::convertTemperatureNaturalToBase(temperature);
 
 	if(t != 0.){
 		return 1./(

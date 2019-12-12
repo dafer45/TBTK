@@ -117,11 +117,11 @@ string GreensFunction::toString() const{
 
 		stream << "\tEnergyType: Real\n";
 		stream << "\tLower bound: "
-			<< UnitHandler::convertEnergyNtB(lowerBound) << " "
+			<< UnitHandler::convertEnergyNaturalToBase(lowerBound) << " "
 			<< UnitHandler::getEnergyUnitString() << " ("
 			<< lowerBound << " b.u.)\n";
 		stream << "\tUpper bound: "
-			<< UnitHandler::convertEnergyNtB(upperBound) << " "
+			<< UnitHandler::convertEnergyNaturalToBase(upperBound) << " "
 			<< UnitHandler::getEnergyUnitString() << " ("
 			<< upperBound << " b.u.)\n";
 		stream << "\tResolution: " << resolution;

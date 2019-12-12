@@ -113,11 +113,11 @@ string SpinPolarizedLDOS::toString() const{
 	stream << "SpinPolarizedLDOS\n";
 	stream << "\tNumber of sites: " << numSites << "\n";
 	stream << "\tLower bound: "
-		<< UnitHandler::convertEnergyNtB(lowerBound) << " "
+		<< UnitHandler::convertEnergyNaturalToBase(lowerBound) << " "
 		<< UnitHandler::getEnergyUnitString() << " (" << lowerBound
 		<< " b.u.)\n";
 	stream << "\tUpper bound: "
-		<< UnitHandler::convertEnergyNtB(upperBound) << " "
+		<< UnitHandler::convertEnergyNaturalToBase(upperBound) << " "
 		<< UnitHandler::getEnergyUnitString() << " (" << upperBound
 		<< " b.u.)\n";
 	stream << "\tResolution: " << resolution;

@@ -257,10 +257,10 @@ inline complex<double> LindhardSusceptibilityCalculator::getPoleTimesTwoFermi(
 	unsigned int numOrbitals
 ) const{
 	if(abs(energy + e2 - e1) < 1e-10){
-		double e = UnitHandler::convertEnergyNtB(
+		double e = UnitHandler::convertEnergyNaturalToBase(
 			(e1 + e2)/2. - chemicalPotential
 		);
-		double t = UnitHandler::convertTemperatureNtB(temperature);
+		double t = UnitHandler::convertTemperatureNaturalToBase(temperature);
 		double kT = UnitHandler::getConstantBaseUnits("k_B")*t;
 
 		//Ratio between derivatives of numerator and denominator
