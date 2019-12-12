@@ -150,7 +150,7 @@ void UnitHandler::setTemperatureUnit(TemperatureUnit unit){
 }
 
 void UnitHandler::setTimeUnit(TimeUnit unit){
-	double oldConversionFactor = getTimeConversionFactor();	
+	double oldConversionFactor = getTimeConversionFactor();
 	timeUnit = unit;
 	double newConversionFactor = getTimeConversionFactor();
 	timeScale *= newConversionFactor/oldConversionFactor;
