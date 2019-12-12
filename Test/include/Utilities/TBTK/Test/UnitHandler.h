@@ -470,7 +470,7 @@ TEST_F(UnitHandlerTest, convertCountBaseToNatural1){
 //TBTKFeature Utilities.UnitHandler.convertTemperatureArbitraryToBase.1 2019-12-10
 TEST_F(UnitHandlerTest, convertTemperatureArbitraryToBase1){
 	EXPECT_DOUBLE_EQ(
-		UnitHandler::convertTemperatureArbitraryToBase(
+		UnitHandler::convertArbitraryToBase<Quantity::Temperature>(
 			10,
 			Quantity::Temperature::Unit::uK
 		),
@@ -481,7 +481,7 @@ TEST_F(UnitHandlerTest, convertTemperatureArbitraryToBase1){
 //TBTKFeature Utilities.UnitHandler.convertTimeArbitraryToBase.1 2019-12-10
 TEST_F(UnitHandlerTest, convertTimeArbitraryToBase1){
 	EXPECT_DOUBLE_EQ(
-		UnitHandler::convertTimeArbitraryToBase(
+		UnitHandler::convertArbitraryToBase<Quantity::Time>(
 			10,
 			Quantity::Time::Unit::ns
 		),
@@ -492,7 +492,7 @@ TEST_F(UnitHandlerTest, convertTimeArbitraryToBase1){
 //TBTKFeature Utilities.UnitHandler.convertLengthArbitraryToBase.1 2019-12-10
 TEST_F(UnitHandlerTest, convertLengthArbitraryToBase1){
 	EXPECT_DOUBLE_EQ(
-		UnitHandler::convertLengthArbitraryToBase(
+		UnitHandler::convertArbitraryToBase<Quantity::Length>(
 			10,
 			Quantity::Length::Unit::mm
 		),
@@ -504,7 +504,7 @@ TEST_F(UnitHandlerTest, convertLengthArbitraryToBase1){
 TEST_F(UnitHandlerTest, convertEnergyArbitraryToBase1){
 	double eV_per_J = 1/J_per_eV;
 	EXPECT_DOUBLE_EQ(
-		UnitHandler::convertEnergyArbitraryToBase(
+		UnitHandler::convertArbitraryToBase<Quantity::Energy>(
 			10,
 			Quantity::Energy::Unit::J
 		),
@@ -515,7 +515,7 @@ TEST_F(UnitHandlerTest, convertEnergyArbitraryToBase1){
 //TBTKFeature Utilities.UnitHandler.convertChargeArbitraryToBase.1 2019-12-10
 TEST_F(UnitHandlerTest, convertChargeArbitraryToBase1){
 	EXPECT_DOUBLE_EQ(
-		UnitHandler::convertChargeArbitraryToBase(
+		UnitHandler::convertArbitraryToBase<Quantity::Charge>(
 			10,
 			Quantity::Charge::Unit::uC
 		),
@@ -526,7 +526,7 @@ TEST_F(UnitHandlerTest, convertChargeArbitraryToBase1){
 //TBTKFeature Utilities.UnitHandler.convertCountArbitraryToBase.1 2019-12-10
 TEST_F(UnitHandlerTest, convertCountArbitraryToBase1){
 	EXPECT_DOUBLE_EQ(
-		UnitHandler::convertCountArbitraryToBase(
+		UnitHandler::convertArbitraryToBase<Quantity::Count>(
 			10,
 			Quantity::Count::Unit::mol
 		),
@@ -537,7 +537,7 @@ TEST_F(UnitHandlerTest, convertCountArbitraryToBase1){
 //TBTKFeature Utilities.UnitHandler.convertTemperatureBaseToArbitrary.1 2019-12-10
 TEST_F(UnitHandlerTest, convertTemperatureBaseToArbitrary1){
 	EXPECT_DOUBLE_EQ(
-		UnitHandler::convertTemperatureBaseToArbitrary(
+		UnitHandler::convertBaseToArbitrary<Quantity::Temperature>(
 			10,
 			Quantity::Temperature::Unit::uK
 		),
@@ -548,7 +548,7 @@ TEST_F(UnitHandlerTest, convertTemperatureBaseToArbitrary1){
 //TBTKFeature Utilities.UnitHandler.convertTimeBaseToArbitrary.1 2019-12-10
 TEST_F(UnitHandlerTest, convertTimeBaseToArbitrary1){
 	EXPECT_DOUBLE_EQ(
-		UnitHandler::convertTimeBaseToArbitrary(
+		UnitHandler::convertBaseToArbitrary<Quantity::Time>(
 			10,
 			Quantity::Time::Unit::ns
 		),
@@ -559,7 +559,7 @@ TEST_F(UnitHandlerTest, convertTimeBaseToArbitrary1){
 //TBTKFeature Utilities.UnitHandler.convertLengthBaseToArbitrary.1 2019-12-10
 TEST_F(UnitHandlerTest, convertLengthBaseToArbitrary1){
 	EXPECT_DOUBLE_EQ(
-		UnitHandler::convertLengthBaseToArbitrary(
+		UnitHandler::convertBaseToArbitrary<Quantity::Length>(
 			10,
 			Quantity::Length::Unit::mm
 		),
@@ -571,7 +571,7 @@ TEST_F(UnitHandlerTest, convertLengthBaseToArbitrary1){
 TEST_F(UnitHandlerTest, convertEnergyBaseToArbitrary1){
 	double eV_per_J = 1/J_per_eV;
 	EXPECT_DOUBLE_EQ(
-		UnitHandler::convertEnergyBaseToArbitrary(
+		UnitHandler::convertBaseToArbitrary<Quantity::Energy>(
 			10,
 			Quantity::Energy::Unit::J
 		),
@@ -582,7 +582,7 @@ TEST_F(UnitHandlerTest, convertEnergyBaseToArbitrary1){
 //TBTKFeature Utilities.UnitHandler.convertChargeBaseToArbitrary.1 2019-12-10
 TEST_F(UnitHandlerTest, convertChargeBaseToArbitrary1){
 	EXPECT_DOUBLE_EQ(
-		UnitHandler::convertChargeBaseToArbitrary(
+		UnitHandler::convertBaseToArbitrary<Quantity::Charge>(
 			10,
 			Quantity::Charge::Unit::uC
 		),
@@ -593,7 +593,7 @@ TEST_F(UnitHandlerTest, convertChargeBaseToArbitrary1){
 //TBTKFeature Utilities.UnitHandler.convertCountBaseToArbitrary.1 2019-12-10
 TEST_F(UnitHandlerTest, convertCountBaseToArbitrary1){
 	EXPECT_DOUBLE_EQ(
-		UnitHandler::convertCountBaseToArbitrary(
+		UnitHandler::convertBaseToArbitrary<Quantity::Count>(
 			10,
 			Quantity::Count::Unit::mol
 		),

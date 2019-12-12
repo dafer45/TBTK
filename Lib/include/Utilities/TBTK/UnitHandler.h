@@ -139,77 +139,91 @@ public:
 	template<typename Quantity>
 	static double convertBaseToNatural(double value);
 
+	/** Convert arbitrary units to base units. */
+	template<typename Quantity>
+	static double convertArbitraryToBase(
+		double value,
+		typename Quantity::Unit unit
+	);
+
 	/** Convert temperature from arbitrary units to base units. */
-	static double convertTemperatureArbitraryToBase(
+/*	static double convertTemperatureArbitraryToBase(
 		double temperature,
 		Quantity::Temperature::Unit unit
-	);
+	);*/
 
 	/** Convert time from arbitrary units to base units. */
-	static double convertTimeArbitraryToBase(
+/*	static double convertTimeArbitraryToBase(
 		double time,
 		Quantity::Time::Unit unit
-	);
+	);*/
 
 	/** Convert length from arbitrary units to base units. */
-	static double convertLengthArbitraryToBase(
+/*	static double convertLengthArbitraryToBase(
 		double length,
 		Quantity::Length::Unit unit
-	);
+	);*/
 
 	/** Convert energy from arbitrary units to base units. */
-	static double convertEnergyArbitraryToBase(
+/*	static double convertEnergyArbitraryToBase(
 		double energy,
 		Quantity::Energy::Unit unit
-	);
+	);*/
 
 	/** Convert charge from arbitrary units to base units. */
-	static double convertChargeArbitraryToBase(
+/*	static double convertChargeArbitraryToBase(
 		double charge,
 		Quantity::Charge::Unit unit
-	);
+	);*/
 
 	/** Convert count from arbitrary units to base units. */
-	static double convertCountArbitraryToBase(
+/*	static double convertCountArbitraryToBase(
 		double count,
 		Quantity::Count::Unit unit
+	);*/
+
+	/** Convert arbitrary units to base units. */
+	template<typename Quantity>
+	static double convertBaseToArbitrary(
+		double value,
+		typename Quantity::Unit unit
 	);
 
 	/** Convert temperature from base units to arbitrary units. */
-	static double convertTemperatureBaseToArbitrary(
+/*	static double convertTemperatureBaseToArbitrary(
 		double temperature,
 		Quantity::Temperature::Unit unit
-	);
+	);*/
 
 	/** Convert time from base units to arbitrary units. */
-	static double convertTimeBaseToArbitrary(
+/*	static double convertTimeBaseToArbitrary(
 		double time,
 		Quantity::Time::Unit unit
-	);
+	);*/
 
 	/** Convert length from base units to arbitrary units. */
-	static double convertLengthBaseToArbitrary(
+/*	static double convertLengthBaseToArbitrary(
 		double length,
 		Quantity::Length::Unit unit
-	);
+	);*/
 
 	/** Convert energy from base units to arbitrary units. */
-	static double convertEnergyBaseToArbitrary(
+/*	static double convertEnergyBaseToArbitrary(
 		double energy,
 		Quantity::Energy::Unit unit
-	);
+	);*/
 
 	/** Convert charge from base units to arbitrary units. */
-	static double convertChargeBaseToArbitrary(
+/*	static double convertChargeBaseToArbitrary(
 		double charge,
 		Quantity::Charge::Unit unit
-	);
+	);*/
 
 	/** Convert count from base units to arbitrary units. */
-	static double convertCountBaseToArbitrary(
+/*	static double convertCountBaseToArbitrary(
 		double count,
 		Quantity::Count::Unit unit
-	);
+	);*/
 
 	/** Convert temperature from arbitrary units to natural units. */
 	static double convertTemperatureArbitraryToNatural(
@@ -615,6 +629,16 @@ private:
 	/** Update contants to reflect the current base units. */
 	static void updateConstants();
 
+	/** Get the conversion factor needed to go from the default unit to the
+	 *  currently set unit. */
+	template<typename Quantity>
+	static double getConversionFactor();
+
+	/** Get the conversion factor needed to go from the default unit to the
+	 *  given unit. */
+	template<typename Quantity>
+	static double getConversionFactor(typename Quantity::Unit unit);
+
 	/** Returns the number of degrees in the currently set unit per degree
 	 *  in default unit (K). */
 	static double getTemperatureConversionFactor();
@@ -781,6 +805,97 @@ double UnitHandler::convertNaturalToBase(double value){
 template<typename Quantity>
 double UnitHandler::convertBaseToNatural(double value){
 	return value/getScaleFactor<Quantity>();
+}
+
+template<typename Quantity>
+double UnitHandler::convertArbitraryToBase(
+	double value,
+	typename Quantity::Unit unit
+){
+	return value*getConversionFactor<Quantity>(
+	)/getConversionFactor<Quantity>(unit);
+}
+
+template<typename Quantity>
+double UnitHandler::convertBaseToArbitrary(
+	double value,
+	typename Quantity::Unit unit
+){
+	return value*getConversionFactor<Quantity>(
+		unit
+	)/getConversionFactor<Quantity>();
+}
+
+template<>
+inline double UnitHandler::getConversionFactor<Quantity::Charge>(){
+	return getChargeConversionFactor(chargeUnit);
+}
+
+template<>
+inline double UnitHandler::getConversionFactor<Quantity::Count>(){
+	return getCountConversionFactor(countUnit);
+}
+
+template<>
+inline double UnitHandler::getConversionFactor<Quantity::Energy>(){
+	return getEnergyConversionFactor(energyUnit);
+}
+
+template<>
+inline double UnitHandler::getConversionFactor<Quantity::Length>(){
+	return getLengthConversionFactor(lengthUnit);
+}
+
+template<>
+inline double UnitHandler::getConversionFactor<Quantity::Temperature>(){
+	return getTemperatureConversionFactor(temperatureUnit);
+}
+
+template<>
+inline double UnitHandler::getConversionFactor<Quantity::Time>(){
+	return getTimeConversionFactor(timeUnit);
+}
+
+template<>
+inline double UnitHandler::getConversionFactor<Quantity::Charge>(
+	typename Quantity::Charge::Unit unit
+){
+	return getChargeConversionFactor(unit);
+}
+
+template<>
+inline double UnitHandler::getConversionFactor<Quantity::Count>(
+	typename Quantity::Count::Unit unit
+){
+	return getCountConversionFactor(unit);
+}
+
+template<>
+inline double UnitHandler::getConversionFactor<Quantity::Energy>(
+	typename Quantity::Energy::Unit unit
+){
+	return getEnergyConversionFactor(unit);
+}
+
+template<>
+inline double UnitHandler::getConversionFactor<Quantity::Length>(
+	typename Quantity::Length::Unit unit
+){
+	return getLengthConversionFactor(unit);
+}
+
+template<>
+inline double UnitHandler::getConversionFactor<Quantity::Temperature>(
+	typename Quantity::Temperature::Unit unit
+){
+	return getTemperatureConversionFactor(unit);
+}
+
+template<>
+inline double UnitHandler::getConversionFactor<Quantity::Time>(
+	typename Quantity::Time::Unit unit
+){
+	return getTimeConversionFactor(unit);
 }
 
 template<>
