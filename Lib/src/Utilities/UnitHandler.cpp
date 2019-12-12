@@ -87,39 +87,67 @@ double UnitHandler::getConstantBaseUnits(const std::string &name){
 double UnitHandler::getConstantNaturalUnits(const std::string &name){
 	double value = getConstantBaseUnits(name);
 
-/*	const vector<pair<string, int>> &units constantsDefaultUnits[name].second;
+	const vector<pair<string, int>> &units = constantsDefaultUnits[name].second;
 	for(unsigned int n = 0; n < units.size(); n++){
 		const string &unit = units[n].first;
 		int exponent = units[n].second;
 		for(int c = 0; c < exponent; c++){
 			if(unit.compare("K") == 0){
-				value *= getTemperatureConversionFactor();
+				value /= temperatureScale;
 			}
 			else if(unit.compare("s") == 0){
-				value *= getTimeConversionFactor();
+				value /= timeScale;
 			}
 			else if(unit.compare("m") == 0){
-				value *= getLengthConversionFactor();
+				value /= lengthScale;
 			}
 			else if(unit.compare("eV") == 0){
-				value *= getEnergyConversionFactor();
+				value /= energyScale;
 			}
 			else if(unit.compare("C") == 0){
-				value *= getChargeConversionFactor();
+				value /= chargeScale;
 			}
 			else if(unit.compare("pcs") == 0){
-				value *= getCountConversionFactor();
+				value /= countScale;
 			}
 			else{
 				TBTKExit(
-					"UnitHandler::updateConstants()",
+					"UnitHandler::getConstantNaturalUnits()",
 					"Unknown default unit.",
 					"This should never happen,"
 					<< " contact the developer."
 				);
 			}
 		}
-	}*/
+		for(int c = 0; c < -exponent; c++){
+			if(unit.compare("K") == 0){
+				value *= temperatureScale;
+			}
+			else if(unit.compare("s") == 0){
+				value *= timeScale;
+			}
+			else if(unit.compare("m") == 0){
+				value *= lengthScale;
+			}
+			else if(unit.compare("eV") == 0){
+				value *= energyScale;
+			}
+			else if(unit.compare("C") == 0){
+				value *= chargeScale;
+			}
+			else if(unit.compare("pcs") == 0){
+				value *= countScale;
+			}
+			else{
+				TBTKExit(
+					"UnitHandler::getConstantNaturalUnits()",
+					"Unknown default unit.",
+					"This should never happen,"
+					<< " contact the developer."
+				);
+			}
+		}
+	}
 
 	return value;
 }

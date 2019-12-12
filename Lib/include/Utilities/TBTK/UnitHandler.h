@@ -190,73 +190,73 @@ public:
 //	static double getHbarB();
 
 	/** Get the Planck constant in the currently set natural units. */
-	static double getHbarN();
+//	static double getHbarN();
 
 	/** Get the Boltzmann constant in the currently set base units. */
 //	static double getK_BB();
 
 	/** Get the Boltzmann constant in the currently set natural units. */
-	static double getK_BN();
+//	static double getK_BN();
 
 	/** Get the elementary charge in the currently set base units. */
 //	static double getEB();
 
 	/** Get the elementary charge in the currently set natural units. */
-	static double getEN();
+//	static double getEN();
 
 	/** Get the speed of light in the curently set base units. */
 //	static double getCB();
 
 	/** Get the speed of light in the curently set natural units. */
-	static double getCN();
+//	static double getCN();
 
 	/** Get Avogadros number in the currently set base units. */
 //	static double getN_AB();
 
 	/** Get Avogadros number in the currently set natural units. */
-	static double getN_AN();
+//	static double getN_AN();
 
 	/** Get the electron mass in the currently set base units. */
 //	static double getM_eB();
 
 	/** Get the electron mass in the currently set natural units. */
-	static double getM_eN();
+//	static double getM_eN();
 
 	/** Get the proton mass in the currently set base units. */
 //	static double getM_pB();
 
 	/** Get the proton mass in the currently set natural units. */
-	static double getM_pN();
+//	static double getM_pN();
 
 	/** Get the Bohr magneton in the currently set base units. */
 //	static double getMu_BB();
 
 	/** Get the Bohr magneton in the currently set natural units. */
-	static double getMu_BN();
+//	static double getMu_BN();
 
 	/** Get the nuclear magneton in the currently set base units. */
 //	static double getMu_nB();
 
 	/** Get the nuclear magneton in the currently set natural units. */
-	static double getMu_nN();
+//	static double getMu_nN();
 
 	/** Get the vacuum permeability in the currently set base units. */
 //	static double getMu_0B();
 
 	/** Get the vacuum permeability in the currently set natural units. */
-	static double getMu_0N();
+//	static double getMu_0N();
 
 	/** Get the vacuum permittivity in the currently set base units. */
 //	static double getEpsilon_0B();
 
 	/** Get the vacuum permittivity in the currently set natural units. */
-	static double getEpsilon_0N();
+//	static double getEpsilon_0N();
 
 	/** Get the Bohr radius in the currently set base units. */
 //	static double getA_0B();
 
 	/** Get the Bohr radius in the currently set natural units. */
-	static double getA_0N();
+//	static double getA_0N();
 
 	/** Set scales. */
 	static void setScales(const std::vector<std::string> &scales);
@@ -971,120 +971,120 @@ private:
 	return constantsBaseUnits["hbar"];
 }*/
 
-inline double UnitHandler::getHbarN(){
+/*inline double UnitHandler::getHbarN(){
 //	return hbar/(energyScale*timeScale);
 	return constantsBaseUnits["hbar"]/(energyScale*timeScale);
-}
+}*/
 
 /*inline double UnitHandler::getK_BB(){
 //	return k_B;
 	return constantsBaseUnits["k_B"];
 }*/
 
-inline double UnitHandler::getK_BN(){
+/*inline double UnitHandler::getK_BN(){
 //	return k_B*temperatureScale/energyScale;
 	return constantsBaseUnits["k_B"]*temperatureScale/energyScale;
-}
+}*/
 
 /*inline double UnitHandler::getEB(){
 //	return e;
 	return constantsBaseUnits["e"];
 }*/
 
-inline double UnitHandler::getEN(){
+/*inline double UnitHandler::getEN(){
 //	return e/chargeScale;
 	return constantsBaseUnits["e"]/chargeScale;
-}
+}*/
 
 /*inline double UnitHandler::getCB(){
 //	return c;
 	return constantsBaseUnits["c"];
 }*/
 
-inline double UnitHandler::getCN(){
+/*inline double UnitHandler::getCN(){
 //	return c*timeScale/lengthScale;
 	return constantsBaseUnits["c"]*timeScale/lengthScale;
-}
+}*/
 
 /*inline double UnitHandler::getN_AB(){
 //	return n_A;
 	return constantsBaseUnits["N_A"];
 }*/
 
-inline double UnitHandler::getN_AN(){
+/*inline double UnitHandler::getN_AN(){
 //	return n_A/countScale;
 	return constantsBaseUnits["N_A"]/countScale;
-}
+}*/
 
 /*inline double UnitHandler::getM_eB(){
 //	return m_e;
 	return constantsBaseUnits["m_e"];
 }*/
 
-inline double UnitHandler::getM_eN(){
+/*inline double UnitHandler::getM_eN(){
 //	return m_e*lengthScale*lengthScale/(energyScale*timeScale*timeScale);
 	return constantsBaseUnits["m_e"]*lengthScale*lengthScale/(energyScale*timeScale*timeScale);
-}
+}*/
 
 /*inline double UnitHandler::getM_pB(){
 //	return m_p;
 	return constantsBaseUnits["m_p"];
 }*/
 
-inline double UnitHandler::getM_pN(){
+/*inline double UnitHandler::getM_pN(){
 //	return m_p*lengthScale*lengthScale/(energyScale*timeScale*timeScale);
 	return constantsBaseUnits["m_p"]*lengthScale*lengthScale/(energyScale*timeScale*timeScale);
-}
+}*/
 
 /*inline double UnitHandler::getMu_BB(){
 //	return mu_B;
 	return constantsBaseUnits["mu_B"];
 }*/
 
-inline double UnitHandler::getMu_BN(){
+/*inline double UnitHandler::getMu_BN(){
 //	return mu_B*timeScale/(chargeScale*lengthScale*lengthScale);
 	return constantsBaseUnits["mu_B"]*timeScale/(chargeScale*lengthScale*lengthScale);
-}
+}*/
 
 /*inline double UnitHandler::getMu_nB(){
 //	return mu_n;
 	return constantsBaseUnits["mu_N"];
 }*/
 
-inline double UnitHandler::getMu_nN(){
+/*inline double UnitHandler::getMu_nN(){
 //	return mu_n*timeScale/(chargeScale*lengthScale*lengthScale);
 	return constantsBaseUnits["mu_N"]*timeScale/(chargeScale*lengthScale*lengthScale);
-}
+}*/
 
 /*inline double UnitHandler::getMu_0B(){
 //	return mu_0;
 	return constantsBaseUnits["mu_0"];
 }*/
 
-inline double UnitHandler::getMu_0N(){
+/*inline double UnitHandler::getMu_0N(){
 //	return mu_0*chargeScale*chargeScale*lengthScale/(energyScale*timeScale*timeScale);
 	return constantsBaseUnits["mu_0"]*chargeScale*chargeScale*lengthScale/(energyScale*timeScale*timeScale);
-}
+}*/
 
 /*inline double UnitHandler::getEpsilon_0B(){
 //	return epsilon_0;
 	return constantsBaseUnits["epsilon_0"];
 }*/
 
-inline double UnitHandler::getEpsilon_0N(){
+/*inline double UnitHandler::getEpsilon_0N(){
 //	return epsilon_0*energyScale*lengthScale/(chargeScale*chargeScale);
 	return constantsBaseUnits["epsilon_0"]*energyScale*lengthScale/(chargeScale*chargeScale);
-}
+}*/
 
 /*inline double UnitHandler::getA_0B(){
 //	return a_0;
 	return constantsBaseUnits["a_0"];
 }*/
 
-inline double UnitHandler::getA_0N(){
+/*inline double UnitHandler::getA_0N(){
 //	return a_0/lengthScale;
 	return constantsBaseUnits["a_0"]/lengthScale;
-}
+}*/
 
 inline void UnitHandler::setTemperatureScale(double scale, TemperatureUnit unit){
 	setTemperatureUnit(unit);

@@ -290,7 +290,7 @@ Property::SelfEnergy SelfEnergy::calculateSelfEnergy(
 		)/2 + 1;
 
 		double temperature = solver->getModel().getTemperature();
-		double kT = UnitHandler::getK_BN()*temperature;
+		double kT = UnitHandler::getConstantNaturalUnits("k_B")*temperature;
 		double fundamentalMatsubaraEnergy = M_PI*kT;
 
 		energies.reserve(numMatsubaraEnergies);

@@ -464,7 +464,8 @@ TEST(BlockDiagonalizer, calculateGreensFunction){
 	//Check the calculation of the Matsubara Green's function against
 	//results for the Diagonalizer.
 	const double TEMPERATURE = 1;
-	const double KT = UnitHandler::getK_BN()*TEMPERATURE;
+	const double KT
+		= UnitHandler::getConstantNaturalUnits("k_B")*TEMPERATURE;
 	const std::complex<double> FUNDAMENTAL_MATSUBARA_ENERGY
 		= std::complex<double>(0, 1)*M_PI*KT;
 	model.setTemperature(TEMPERATURE);

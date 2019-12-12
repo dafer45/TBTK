@@ -200,7 +200,7 @@ Property::GreensFunction BlockDiagonalizer::calculateGreensFunction(
 		);
 
 		double temperature = solver.getModel().getTemperature();
-		double kT = UnitHandler::getK_BN()*temperature;
+		double kT = UnitHandler::getConstantNaturalUnits("k_B")*temperature;
 		double fundamentalMatsubaraEnergy = M_PI*kT;
 
 		Property::GreensFunction greensFunction(
@@ -483,7 +483,7 @@ double BlockDiagonalizer::calculateEntropy(){
 		entropy -= p*log(p);
 	}
 
-	entropy *= UnitHandler::getK_BN();
+	entropy *= UnitHandler::getConstantNaturalUnits("k_B");
 
 	return entropy;
 }
