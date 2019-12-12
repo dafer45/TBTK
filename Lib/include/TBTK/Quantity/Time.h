@@ -52,7 +52,31 @@ public:
 	 *  - fs - femtosecond
 	 *  - as - attosecond */
 	enum class Unit {s, ms, us, ns, ps, fs, as};
+
+	/** Get unit string. */
+	static std::string getUnitString(Unit unit);
 };
+
+inline std::string Time::getUnitString(Unit unit){
+	switch(unit){
+		case Quantity::Time::Unit::s:
+			return "s";
+		case Quantity::Time::Unit::ms:
+			return "ms";
+		case Quantity::Time::Unit::us:
+			return "us";
+		case Quantity::Time::Unit::ns:
+			return "ns";
+		case Quantity::Time::Unit::ps:
+			return "ps";
+		case Quantity::Time::Unit::fs:
+			return "fs";
+		case Quantity::Time::Unit::as:
+			return "as";
+		default:
+			return "Unknown unit";
+	};
+}
 
 }; //End of namesapce Time
 }; //End of namesapce TBTK

@@ -47,7 +47,21 @@ public:
 	 * - pcs - pieces
 	 * - mol - Mole */
 	enum class Unit{pcs, mol};
+
+	/** Get unit string. */
+	static std::string getUnitString(Unit unit);
 };
+
+inline std::string Count::getUnitString(Unit unit){
+	switch(unit){
+		case Quantity::Count::Unit::pcs:
+			return "pcs";
+		case Quantity::Count::Unit::mol:
+			return "mol";
+		default:
+			return "Unkown unit";
+	}
+}
 
 }; //End of namesapce Quantity
 }; //End of namesapce TBTK

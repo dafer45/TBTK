@@ -543,129 +543,27 @@ double UnitHandler::convertVoltageNaturalToDerived(
 }
 
 string UnitHandler::getTemperatureUnitString(){
-	switch(temperatureUnit){
-		case Quantity::Temperature::Unit::kK:
-			return "kK";
-		case Quantity::Temperature::Unit::K:
-			return "K";
-		case Quantity::Temperature::Unit::mK:
-			return "mK";
-		case Quantity::Temperature::Unit::uK:
-			return "uK";
-		case Quantity::Temperature::Unit::nK:
-			return "nK";
-		default:
-			return "Unknown unit";
-	};
+	return Quantity::Temperature::getUnitString(temperatureUnit);
 }
 
 string UnitHandler::getTimeUnitString(){
-	switch(timeUnit){
-		case Quantity::Time::Unit::s:
-			return "s";
-		case Quantity::Time::Unit::ms:
-			return "ms";
-		case Quantity::Time::Unit::us:
-			return "us";
-		case Quantity::Time::Unit::ns:
-			return "ns";
-		case Quantity::Time::Unit::ps:
-			return "ps";
-		case Quantity::Time::Unit::fs:
-			return "fs";
-		case Quantity::Time::Unit::as:
-			return "as";
-		default:
-			return "Unknown unit";
-	};
+	return Quantity::Time::getUnitString(timeUnit);
 }
 
 string UnitHandler::getLengthUnitString(){
-	switch(lengthUnit){
-		case Quantity::Length::Unit::m:
-			return "m";
-		case Quantity::Length::Unit::mm:
-			return "mm";
-		case Quantity::Length::Unit::um:
-			return "um";
-		case Quantity::Length::Unit::nm:
-			return "nm";
-		case Quantity::Length::Unit::pm:
-			return "pm";
-		case Quantity::Length::Unit::fm:
-			return "fm";
-		case Quantity::Length::Unit::am:
-			return "am";
-		case Quantity::Length::Unit::Ao:
-			return "Ao";
-		default:
-			return "Unknown unit";
-	};
+	return Quantity::Length::getUnitString(lengthUnit);
 }
 
 string UnitHandler::getEnergyUnitString(){
-	switch(energyUnit){
-		case Quantity::Energy::Unit::GeV:
-			return "GeV";
-		case Quantity::Energy::Unit::MeV:
-			return "MeV";
-		case Quantity::Energy::Unit::keV:
-			return "keV";
-		case Quantity::Energy::Unit::eV:
-			return "eV";
-		case Quantity::Energy::Unit::meV:
-			return "meV";
-		case Quantity::Energy::Unit::ueV:
-			return "ueV";
-		case Quantity::Energy::Unit::J:
-			return "J";
-		default:
-			return "Unknown unit";
-	};
+	return Quantity::Energy::getUnitString(energyUnit);
 }
 
 string UnitHandler::getChargeUnitString(){
-	switch(chargeUnit){
-		case Quantity::Charge::Unit::kC:
-			return "kC";
-		case Quantity::Charge::Unit::C:
-			return "C";
-		case Quantity::Charge::Unit::mC:
-			return "mC";
-		case Quantity::Charge::Unit::uC:
-			return "uC";
-		case Quantity::Charge::Unit::nC:
-			return "nC";
-		case Quantity::Charge::Unit::pC:
-			return "pC";
-		case Quantity::Charge::Unit::fC:
-			return "fC";
-		case Quantity::Charge::Unit::aC:
-			return "aC";
-		case Quantity::Charge::Unit::Te:
-			return "Te";
-		case Quantity::Charge::Unit::Ge:
-			return "Ge";
-		case Quantity::Charge::Unit::Me:
-			return "Me";
-		case Quantity::Charge::Unit::ke:
-			return "ke";
-		case Quantity::Charge::Unit::e:
-			return "e";
-		default:
-			return "Unknown unit";
-	}
+	return Quantity::Charge::getUnitString(chargeUnit);
 }
 
 string UnitHandler::getCountUnitString(){
-	switch(countUnit){
-		case Quantity::Count::Unit::pcs:
-			return "pcs";
-		case Quantity::Count::Unit::mol:
-			return "mol";
-		default:
-			return "Unkown unit";
-	}
+	return Quantity::Count::getUnitString(countUnit);
 }
 
 string UnitHandler::getMassUnitString(){

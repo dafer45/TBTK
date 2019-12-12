@@ -50,7 +50,27 @@ public:
 	 *  - uK - microkelvin
 	 *  - nK - nanokelvin */
 	enum class Unit {kK, K, mK, uK, nK};
+
+	/** Get unit string. */
+	static std::string getUnitString(Unit unit);
 };
+
+inline std::string Temperature::getUnitString(Unit unit){
+	switch(unit){
+		case Quantity::Temperature::Unit::kK:
+			return "kK";
+		case Quantity::Temperature::Unit::K:
+			return "K";
+		case Quantity::Temperature::Unit::mK:
+			return "mK";
+		case Quantity::Temperature::Unit::uK:
+			return "uK";
+		case Quantity::Temperature::Unit::nK:
+			return "nK";
+		default:
+			return "Unknown unit";
+	};
+}
 
 }; //End of namesapce Temperature
 }; //End of namesapce TBTK
