@@ -422,7 +422,7 @@ void UnitHandler::setCountScale(string scale){
 	setCountScale(s, unit);
 }
 
-double UnitHandler::convertTemperatureAtB(
+double UnitHandler::convertTemperatureArbitraryToBase(
 	double temperature,
 	TemperatureUnit unit
 ){
@@ -431,7 +431,7 @@ double UnitHandler::convertTemperatureAtB(
 	)/getTemperatureConversionFactor(unit);
 }
 
-double UnitHandler::convertTemperatureBtA(
+double UnitHandler::convertTemperatureBaseToArbitrary(
 	double temperature,
 	TemperatureUnit unit
 ){
@@ -440,7 +440,7 @@ double UnitHandler::convertTemperatureBtA(
 	)/getTemperatureConversionFactor(temperatureUnit);
 }
 
-double UnitHandler::convertTemperatureAtN(
+double UnitHandler::convertTemperatureArbitraryToNatural(
 	double temperature,
 	TemperatureUnit unit
 ){
@@ -452,7 +452,7 @@ double UnitHandler::convertTemperatureAtN(
 	return temperatureInDefaultBaseUnits/temperatureScale;
 }
 
-double UnitHandler::convertTemperatureNtA(
+double UnitHandler::convertTemperatureNaturalToArbitrary(
 	double temperature,
 	TemperatureUnit unit
 ){
@@ -463,14 +463,14 @@ double UnitHandler::convertTemperatureNtA(
 	return temperatureInDefaultBaseUnits*getTemperatureConversionFactor(unit);
 }
 
-double UnitHandler::convertTimeAtB(
+double UnitHandler::convertTimeArbitraryToBase(
 	double time,
 	TimeUnit unit
 ){
 	return time*getTimeConversionFactor(timeUnit)/getTimeConversionFactor(unit);
 }
 
-double UnitHandler::convertTimeBtA(
+double UnitHandler::convertTimeBaseToArbitrary(
 	double time,
 	TimeUnit unit
 ){
@@ -479,7 +479,7 @@ double UnitHandler::convertTimeBtA(
 	);
 }
 
-double UnitHandler::convertTimeAtN(
+double UnitHandler::convertTimeArbitraryToNatural(
 	double time,
 	TimeUnit unit
 ){
@@ -491,7 +491,7 @@ double UnitHandler::convertTimeAtN(
 	return timeInDefaultBaseUnits/timeScale;
 }
 
-double UnitHandler::convertTimeNtA(
+double UnitHandler::convertTimeNaturalToArbitrary(
 	double time,
 	TimeUnit unit
 ){
@@ -500,7 +500,7 @@ double UnitHandler::convertTimeNtA(
 	return timeInDefaultBaseUnits*getTimeConversionFactor(unit);
 }
 
-double UnitHandler::convertLengthAtB(
+double UnitHandler::convertLengthArbitraryToBase(
 	double length,
 	LengthUnit unit
 ){
@@ -509,7 +509,7 @@ double UnitHandler::convertLengthAtB(
 	)/getLengthConversionFactor(unit);
 }
 
-double UnitHandler::convertLengthBtA(
+double UnitHandler::convertLengthBaseToArbitrary(
 	double length,
 	LengthUnit unit
 ){
@@ -518,7 +518,7 @@ double UnitHandler::convertLengthBtA(
 	)/getLengthConversionFactor(lengthUnit);
 }
 
-double UnitHandler::convertLengthAtN(
+double UnitHandler::convertLengthArbitraryToNatural(
 	double length,
 	LengthUnit unit
 ){
@@ -530,7 +530,7 @@ double UnitHandler::convertLengthAtN(
 	return lengthInDefaultBaseUnits/lengthScale;
 }
 
-double UnitHandler::convertLengthNtA(
+double UnitHandler::convertLengthNaturalToArbitrary(
 	double length,
 	LengthUnit unit
 ){
@@ -539,7 +539,7 @@ double UnitHandler::convertLengthNtA(
 	return lengthInDefaultBaseUnits*getLengthConversionFactor(unit);
 }
 
-double UnitHandler::convertEnergyAtB(
+double UnitHandler::convertEnergyArbitraryToBase(
 	double energy,
 	EnergyUnit unit
 ){
@@ -548,7 +548,7 @@ double UnitHandler::convertEnergyAtB(
 	)/getEnergyConversionFactor(unit);
 }
 
-double UnitHandler::convertEnergyBtA(
+double UnitHandler::convertEnergyBaseToArbitrary(
 	double energy,
 	EnergyUnit unit
 ){
@@ -557,7 +557,7 @@ double UnitHandler::convertEnergyBtA(
 	)/getEnergyConversionFactor(energyUnit);
 }
 
-double UnitHandler::convertEnergyAtN(
+double UnitHandler::convertEnergyArbitraryToNatural(
 	double energy,
 	EnergyUnit unit
 ){
@@ -569,7 +569,7 @@ double UnitHandler::convertEnergyAtN(
 	return energyInDefaultBaseUnits/energyScale;
 }
 
-double UnitHandler::convertEnergyNtA(
+double UnitHandler::convertEnergyNaturalToArbitrary(
 	double energy,
 	EnergyUnit unit
 ){
@@ -578,7 +578,7 @@ double UnitHandler::convertEnergyNtA(
 	return energyInDefaultBaseUnits*getEnergyConversionFactor(unit);
 }
 
-double UnitHandler::convertChargeAtB(
+double UnitHandler::convertChargeArbitraryToBase(
 	double charge,
 	ChargeUnit unit
 ){
@@ -587,7 +587,7 @@ double UnitHandler::convertChargeAtB(
 	)/getChargeConversionFactor(unit);
 }
 
-double UnitHandler::convertChargeBtA(
+double UnitHandler::convertChargeBaseToArbitrary(
 	double charge,
 	ChargeUnit unit
 ){
@@ -596,7 +596,7 @@ double UnitHandler::convertChargeBtA(
 	)/getChargeConversionFactor(chargeUnit);
 }
 
-double UnitHandler::convertChargeAtN(
+double UnitHandler::convertChargeArbitraryToNatural(
 	double charge,
 	ChargeUnit unit
 ){
@@ -608,7 +608,7 @@ double UnitHandler::convertChargeAtN(
 	return chargeInDefaultBaseUnits/chargeScale;
 }
 
-double UnitHandler::convertChargeNtA(
+double UnitHandler::convertChargeNaturalToArbitrary(
 	double charge,
 	ChargeUnit unit
 ){
@@ -617,7 +617,7 @@ double UnitHandler::convertChargeNtA(
 	return chargeInDefaultBaseUnits*getChargeConversionFactor(unit);
 }
 
-double UnitHandler::convertCountAtB(
+double UnitHandler::convertCountArbitraryToBase(
 	double count,
 	CountUnit unit
 ){
@@ -626,7 +626,7 @@ double UnitHandler::convertCountAtB(
 	)/getCountConversionFactor(unit);
 }
 
-double UnitHandler::convertCountBtA(
+double UnitHandler::convertCountBaseToArbitrary(
 	double count,
 	CountUnit unit
 ){
@@ -635,7 +635,7 @@ double UnitHandler::convertCountBtA(
 	);
 }
 
-double UnitHandler::convertCountAtN(
+double UnitHandler::convertCountArbitraryToNatural(
 	double count,
 	CountUnit unit
 ){
@@ -647,7 +647,7 @@ double UnitHandler::convertCountAtN(
 	return countInDefaultBaseUnits/countScale;
 }
 
-double UnitHandler::convertCountNtA(
+double UnitHandler::convertCountNaturalToArbitrary(
 	double count,
 	CountUnit unit
 ){
@@ -656,7 +656,7 @@ double UnitHandler::convertCountNtA(
 	return countInDefaultBaseUnits*getCountConversionFactor(unit);
 }
 
-double UnitHandler::convertMassDtB(double mass, MassUnit unit){
+double UnitHandler::convertMassDerivedToBase(double mass, MassUnit unit){
 	double massInDefaultBaseUnits = mass/getMassConversionFactor(unit);
 	double cfE = getEnergyConversionFactor();
 	double cfT = getTimeConversionFactor();
@@ -664,7 +664,7 @@ double UnitHandler::convertMassDtB(double mass, MassUnit unit){
 	return massInDefaultBaseUnits*cfE*cfT*cfT/(cfL*cfL);
 }
 
-double UnitHandler::convertMassBtD(double mass, MassUnit unit){
+double UnitHandler::convertMassBaseToDerived(double mass, MassUnit unit){
 	double cfE = getEnergyConversionFactor();
 	double cfT = getTimeConversionFactor();
 	double cfL = getLengthConversionFactor();
@@ -672,7 +672,7 @@ double UnitHandler::convertMassBtD(double mass, MassUnit unit){
 	return massInDefaultBaseUnits*getMassConversionFactor(unit);
 }
 
-double UnitHandler::convertMassDtN(double mass, MassUnit unit){
+double UnitHandler::convertMassDerivedToNatural(double mass, MassUnit unit){
 	double massInDefaultBaseUnits = mass/getMassConversionFactor(unit);
 	double cfE = getEnergyConversionFactor()/energyScale;
 	double cfT = getTimeConversionFactor()/timeScale;
@@ -680,7 +680,7 @@ double UnitHandler::convertMassDtN(double mass, MassUnit unit){
 	return massInDefaultBaseUnits*cfE*cfT*cfT/(cfL*cfL);
 }
 
-double UnitHandler::convertMassNtD(double mass, MassUnit unit){
+double UnitHandler::convertMassNaturalToDerived(double mass, MassUnit unit){
 	double cfE = getEnergyConversionFactor()/energyScale;
 	double cfT = getTimeConversionFactor()/timeScale;
 	double cfL = getLengthConversionFactor()/lengthScale;
@@ -688,7 +688,7 @@ double UnitHandler::convertMassNtD(double mass, MassUnit unit){
 	return massInDefaultBaseUnits*getMassConversionFactor(unit);
 }
 
-double UnitHandler::convertMagneticFieldDtB(
+double UnitHandler::convertMagneticFieldDerivedToBase(
 	double field,
 	MagneticFieldUnit unit
 ){
@@ -700,7 +700,7 @@ double UnitHandler::convertMagneticFieldDtB(
 	return magneticFieldInDefaultBaseUnits*cfE*cfT/(cfC*cfL*cfL);
 }
 
-double UnitHandler::convertMagneticFieldBtD(
+double UnitHandler::convertMagneticFieldBaseToDerived(
 	double field,
 	MagneticFieldUnit unit
 ){
@@ -712,7 +712,7 @@ double UnitHandler::convertMagneticFieldBtD(
 	return magneticFieldInDefaultBaseUnits*getMagneticFieldConversionFactor(unit);
 }
 
-double UnitHandler::convertMagneticFieldDtN(
+double UnitHandler::convertMagneticFieldDerivedToNatural(
 	double field,
 	MagneticFieldUnit unit
 ){
@@ -724,7 +724,7 @@ double UnitHandler::convertMagneticFieldDtN(
 	return magneticFieldInDefaultBaseUnits*cfE*cfT/(cfC*cfL*cfL);
 }
 
-double UnitHandler::convertMagneticFieldNtD(
+double UnitHandler::convertMagneticFieldNaturalToDerived(
 	double field,
 	MagneticFieldUnit unit
 ){
@@ -736,7 +736,7 @@ double UnitHandler::convertMagneticFieldNtD(
 	return magneticFieldInDefaultBaseUnits*getMagneticFieldConversionFactor(unit);
 }
 
-double UnitHandler::convertVoltageDtB(
+double UnitHandler::convertVoltageDerivedToBase(
 	double voltage,
 	VoltageUnit unit
 ){
@@ -746,7 +746,7 @@ double UnitHandler::convertVoltageDtB(
 	return voltageInDefaultBaseUnits*cfE/cfC;
 }
 
-double UnitHandler::convertVoltageBtD(
+double UnitHandler::convertVoltageBaseToDerived(
 	double voltage,
 	VoltageUnit unit
 ){
@@ -756,7 +756,7 @@ double UnitHandler::convertVoltageBtD(
 	return voltageInDefaultBaseUnits*getVoltageConversionFactor(unit);
 }
 
-double UnitHandler::convertVoltageDtN(
+double UnitHandler::convertVoltageDerivedToNatural(
 	double voltage,
 	VoltageUnit unit
 ){
@@ -766,7 +766,7 @@ double UnitHandler::convertVoltageDtN(
 	return voltageInDefaultBaseUnits*cfE/cfC;
 }
 
-double UnitHandler::convertVoltageNtD(
+double UnitHandler::convertVoltageNaturalToDerived(
 	double voltage,
 	VoltageUnit unit
 ){

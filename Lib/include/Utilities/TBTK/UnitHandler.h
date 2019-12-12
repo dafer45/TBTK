@@ -188,232 +188,244 @@ public:
 	static void setScales(const std::vector<std::string> &scales);
 
 	/** Convert temperature from natural units to base units. */
-	static double convertTemperatureNtB(double temperature);
+	static double convertTemperatureNaturalToBase(double temperature);
 
 	/** Convert time to from natural units to base units. */
-	static double convertTimeNtB(double time);
+	static double convertTimeNaturalToBase(double time);
 
 	/** Convert length from natural units to base units. */
-	static double convertLengthNtB(double length);
+	static double convertLengthNaturalToBase(double length);
 
 	/** Convert energy from natural units to base units */
-	static double convertEnergyNtB(double energy);
+	static double convertEnergyNaturalToBase(double energy);
 
 	/** Convert charge from natural units to base units. */
-	static double convertChargeNtB(double charge);
+	static double convertChargeNaturalToBase(double charge);
 
 	/** Conver counting from natural units to base units. */
-	static double convertCountNtB(double count);
+	static double convertCountNaturalToBase(double count);
 
 	/** Convert temperature from base units to natural units. */
-	static double convertTemperatureBtN(double temperature);
+	static double convertTemperatureBaseToNatural(double temperature);
 
 	/** Convert time from base units to natural units. */
-	static double convertTimeBtN(double time);
+	static double convertTimeBaseToNatural(double time);
 
 	/** Convert length from base units to natural units. */
-	static double convertLengthBtN(double length);
+	static double convertLengthBaseToNatural(double length);
 
 	/** Convert energy from base units to natural units. */
-	static double convertEnergyBtN(double energy);
+	static double convertEnergyBaseToNatural(double energy);
 
 	/** Convert charge from base units to natural units. */
-	static double convertChargeBtN(double charge);
+	static double convertChargeBaseToNatural(double charge);
 
 	/** Convert count from base units to natural units. */
-	static double convertCountBtN(double count);
+	static double convertCountBaseToNatural(double count);
 
 	/** Convert temperature from arbitrary units to base units. */
-	static double convertTemperatureAtB(
+	static double convertTemperatureArbitraryToBase(
 		double temperature,
 		TemperatureUnit unit
 	);
 
 	/** Convert time from arbitrary units to base units. */
-	static double convertTimeAtB(
+	static double convertTimeArbitraryToBase(
 		double time,
 		TimeUnit unit
 	);
 
 	/** Convert length from arbitrary units to base units. */
-	static double convertLengthAtB(
+	static double convertLengthArbitraryToBase(
 		double length,
 		LengthUnit unit
 	);
 
 	/** Convert energy from arbitrary units to base units. */
-	static double convertEnergyAtB(
+	static double convertEnergyArbitraryToBase(
 		double energy,
 		EnergyUnit unit
 	);
 
 	/** Convert charge from arbitrary units to base units. */
-	static double convertChargeAtB(
+	static double convertChargeArbitraryToBase(
 		double charge,
 		ChargeUnit unit
 	);
 
 	/** Convert count from arbitrary units to base units. */
-	static double convertCountAtB(
+	static double convertCountArbitraryToBase(
 		double count,
 		CountUnit unit
 	);
 
 	/** Convert temperature from base units to arbitrary units. */
-	static double convertTemperatureBtA(
+	static double convertTemperatureBaseToArbitrary(
 		double temperature,
 		TemperatureUnit unit
 	);
 
 	/** Convert time from base units to arbitrary units. */
-	static double convertTimeBtA(
+	static double convertTimeBaseToArbitrary(
 		double time,
 		TimeUnit unit
 	);
 
 	/** Convert length from base units to arbitrary units. */
-	static double convertLengthBtA(
+	static double convertLengthBaseToArbitrary(
 		double length,
 		LengthUnit unit
 	);
 
 	/** Convert energy from base units to arbitrary units. */
-	static double convertEnergyBtA(
+	static double convertEnergyBaseToArbitrary(
 		double energy,
 		EnergyUnit unit
 	);
 
 	/** Convert charge from base units to arbitrary units. */
-	static double convertChargeBtA(
+	static double convertChargeBaseToArbitrary(
 		double charge,
 		ChargeUnit unit
 	);
 
 	/** Convert count from base units to arbitrary units. */
-	static double convertCountBtA(
+	static double convertCountBaseToArbitrary(
 		double count,
 		CountUnit unit
 	);
 
 	/** Convert temperature from arbitrary units to natural units. */
-	static double convertTemperatureAtN(
+	static double convertTemperatureArbitraryToNatural(
 		double temperature,
 		TemperatureUnit unit
 	);
 
 	/** Convert time from arbitrary units to natural units. */
-	static double convertTimeAtN(
+	static double convertTimeArbitraryToNatural(
 		double time,
 		TimeUnit unit
 	);
 
 	/** Convert length from arbitrary units to natural units. */
-	static double convertLengthAtN(
+	static double convertLengthArbitraryToNatural(
 		double length,
 		LengthUnit unit
 	);
 
 	/** Convert energy from arbitrary units to natural units. */
-	static double convertEnergyAtN(
+	static double convertEnergyArbitraryToNatural(
 		double energy,
 		EnergyUnit unit
 	);
 
 	/** Convert charge from arbitrary units to natural units. */
-	static double convertChargeAtN(
+	static double convertChargeArbitraryToNatural(
 		double charge,
 		ChargeUnit unit
 	);
 
 	/** Convert count from arbitrary units to natural units. */
-	static double convertCountAtN(
+	static double convertCountArbitraryToNatural(
 		double count,
 		CountUnit unit
 	);
 
 	/** Convert temperature from natural units to arbitrary units. */
-	static double convertTemperatureNtA(
+	static double convertTemperatureNaturalToArbitrary(
 		double temperature,
 		TemperatureUnit unit
 	);
 
 	/** Convert time from natural units to arbitrary units. */
-	static double convertTimeNtA(
+	static double convertTimeNaturalToArbitrary(
 		double time,
 		TimeUnit unit
 	);
 
 	/** Convert length from natural units to arbitrary units. */
-	static double convertLengthNtA(
+	static double convertLengthNaturalToArbitrary(
 		double length,
 		LengthUnit unit
 	);
 
 	/** Convert energy from natural units to arbitrary units. */
-	static double convertEnergyNtA(
+	static double convertEnergyNaturalToArbitrary(
 		double energy,
 		EnergyUnit unit
 	);
 
 	/** Convert charge from natural units to arbitrary units. */
-	static double convertChargeNtA(
+	static double convertChargeNaturalToArbitrary(
 		double charge,
 		ChargeUnit unit
 	);
 
 	/** Convert count from natural units to arbitrary units. */
-	static double convertCountNtA(
+	static double convertCountNaturalToArbitrary(
 		double count,
 		CountUnit unit
 	);
 
 	/** Convert mass from derived units to base units. */
-	static double convertMassDtB(double mass, MassUnit unit);
+	static double convertMassDerivedToBase(double mass, MassUnit unit);
 
 	/** Convert mass from base units to derived units. */
-	static double convertMassBtD(double mass, MassUnit unit);
+	static double convertMassBaseToDerived(double mass, MassUnit unit);
 
 	/** Convert mass from derived units to natural units. */
-	static double convertMassDtN(double mass, MassUnit unit);
+	static double convertMassDerivedToNatural(double mass, MassUnit unit);
 
 	/** Convert mass from natural units to derived units. */
-	static double convertMassNtD(double mass, MassUnit unit);
+	static double convertMassNaturalToDerived(double mass, MassUnit unit);
 
 	/** Convert magnetic field from derived units to base units. */
-	static double convertMagneticFieldDtB(
+	static double convertMagneticFieldDerivedToBase(
 		double field,
 		MagneticFieldUnit unit
 	);
 
 	/** Convert magnetic field from base units to derived units. */
-	static double convertMagneticFieldBtD(
+	static double convertMagneticFieldBaseToDerived(
 		double field,
 		MagneticFieldUnit unit
 	);
 
 	/** Convert magnetic field from derived units to natural units. */
-	static double convertMagneticFieldDtN(
+	static double convertMagneticFieldDerivedToNatural(
 		double field,
 		MagneticFieldUnit unit
 	);
 
 	/** Convert magnetic field from natural units to derived units. */
-	static double convertMagneticFieldNtD(
+	static double convertMagneticFieldNaturalToDerived(
 		double field,
 		MagneticFieldUnit unit
 	);
 
 	/** Convert voltage from derived units to base units. */
-	static double convertVoltageDtB(double voltage, VoltageUnit unit);
+	static double convertVoltageDerivedToBase(
+		double voltage,
+		VoltageUnit unit
+	);
 
 	/** Convert voltage from base units to derived units. */
-	static double convertVoltageBtD(double voltage, VoltageUnit unit);
+	static double convertVoltageBaseToDerived(
+		double voltage,
+		VoltageUnit unit
+	);
 
 	/** Convert voltage from derived units to natural units. */
-	static double convertVoltageDtN(double voltage, VoltageUnit unit);
+	static double convertVoltageDerivedToNatural(
+		double voltage,
+		VoltageUnit unit
+	);
 
 	/** Convert voltage from natural units to derived units. */
-	static double convertVoltageNtD(double voltage, VoltageUnit unit);
+	static double convertVoltageNaturalToDerived(
+		double voltage,
+		VoltageUnit unit
+	);
 
 	/** Get temperature unit string
 	 *
@@ -815,51 +827,51 @@ inline void UnitHandler::setScales(const std::vector<std::string> &scales){
 	updateConstants();
 }
 
-inline double UnitHandler::convertTemperatureNtB(double temperature){
+inline double UnitHandler::convertTemperatureNaturalToBase(double temperature){
 	return temperature*temperatureScale;
 }
 
-inline double UnitHandler::convertTimeNtB(double time){
+inline double UnitHandler::convertTimeNaturalToBase(double time){
 	return time*timeScale;
 }
 
-inline double UnitHandler::convertLengthNtB(double length){
+inline double UnitHandler::convertLengthNaturalToBase(double length){
 	return length*lengthScale;
 }
 
-inline double UnitHandler::convertEnergyNtB(double energy){
+inline double UnitHandler::convertEnergyNaturalToBase(double energy){
 	return energy*energyScale;
 }
 
-inline double UnitHandler::convertChargeNtB(double charge){
+inline double UnitHandler::convertChargeNaturalToBase(double charge){
 	return charge*chargeScale;
 }
 
-inline double UnitHandler::convertCountNtB(double count){
+inline double UnitHandler::convertCountNaturalToBase(double count){
 	return count*countScale;
 }
 
-inline double UnitHandler::convertTemperatureBtN(double temperature){
+inline double UnitHandler::convertTemperatureBaseToNatural(double temperature){
 	return temperature/temperatureScale;
 }
 
-inline double UnitHandler::convertTimeBtN(double time){
+inline double UnitHandler::convertTimeBaseToNatural(double time){
 	return time/timeScale;
 }
 
-inline double UnitHandler::convertLengthBtN(double length){
+inline double UnitHandler::convertLengthBaseToNatural(double length){
 	return length/lengthScale;
 }
 
-inline double UnitHandler::convertEnergyBtN(double energy){
+inline double UnitHandler::convertEnergyBaseToNatural(double energy){
 	return energy/energyScale;
 }
 
-inline double UnitHandler::convertChargeBtN(double charge){
+inline double UnitHandler::convertChargeBaseToNatural(double charge){
 	return charge/chargeScale;
 }
 
-inline double UnitHandler::convertCountBtN(double count){
+inline double UnitHandler::convertCountBaseToNatural(double count){
 	return count/countScale;
 }
 
