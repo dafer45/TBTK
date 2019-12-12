@@ -25,9 +25,11 @@
 
 #include "TBTKMacros.h"
 
-#include <string>
-#include <vector>
 #include <cmath>
+#include <map>
+#include <string>
+#include <utility>
+#include <vector>
 
 #ifdef M_E	//Avoid name clash with math.h macro M_E
 	#define M_E_temp M_E
@@ -177,6 +179,9 @@ public:
 	enum class VoltageUnit{
 		GV, MV, kV, V, mV, uV, nV
 	};
+
+	/** Get physical constant in base units. */
+	static double getConstantBaseUnits(const std::string &name);
 
 	/** Get the Planck constant in the currently set base units. */
 	static double getHbarB();
@@ -596,113 +601,132 @@ public:
 	 *  @return string representation of the unit for the Bohr radius. */
 	static std::string getA_0UnitString();
 private:
+	/** Physical constants in the default units K, s, m, eV, C, pcs. */
+	static std::map<
+		std::string,
+		std::pair<double, std::vector<std::pair<std::string, int>>>
+	> constantsDefaultUnits;
+
+	/** Physical constans in the current base units. */
+	static std::map<std::string, double> constantsBaseUnits;
+
 	/** Planck constant in default units (eVs). */
-	static constexpr double HBAR	= 6.582119514e-16;
+//	static constexpr double HBAR	= 6.582119514e-16;
 
 	/** Boltzmann constant in default units (eV/K). */
-	static constexpr double K_B	= 8.6173324e-5;
+//	static constexpr double K_B	= 8.6173324e-5;
 
 	/** Elementary charge in default units (C). */
-	static constexpr double E	= 1.6021766208e-19;
+//	static constexpr double E	= 1.6021766208e-19;
 
 	/** Speed of light in default units (m/s). */
-	static constexpr double C	= 2.99792458e8;
+//	static constexpr double C	= 2.99792458e8;
 
 	/** Avogadros number in default units (pcs). */
 //	static constexpr double N_A = 6.022140857e23;
-	static constexpr double N_A = 6.02214076e23;
+//	static constexpr double N_A = 6.02214076e23;
 
 	/** Electron mass in default units (eVs^2/m^2). */
-	static constexpr double M_E	= 5.109989461e5/(C*C);
+//	static constexpr double M_E	= 5.109989461e5/(C*C);
 
 	/** Proton mass in default units (eVs^2/m^2). */
-	static constexpr double M_P	= 9.38272046e8/(C*C);
+//	static constexpr double M_P	= 9.38272046e8/(C*C);
 
 	/** Bohr magneton in default units (Cm^2/s). */
-	static constexpr double MU_B	= E*HBAR/(2.*M_E);
+//	static constexpr double MU_B	= E*HBAR/(2.*M_E);
 
 	/** Nuclear magneton in default units (Cm^2/s). */
-	static constexpr double MU_N	= E*HBAR/(2*M_P);
+//	static constexpr double MU_N	= E*HBAR/(2*M_P);
 
 	/** Vacuum permeability in default units (eVs^2/C^2m). */
-	static constexpr double MU_0 = 4*M_PI*1e-7/1.602176565e-19;
+//	static constexpr double MU_0 = 4*M_PI*1e-7/1.602176565e-19;
 
 	/** Vacuum permittivity in default units (C^2/eVm). */
-	static constexpr double EPSILON_0 = 8.854187817620e-12*1.602176565e-19;
+//	static constexpr double EPSILON_0 = 8.854187817620e-12*1.602176565e-19;
 
 	/** Bohr radius in default units (m). */
-	static constexpr double A_0 = 5.2917721092*1e-11;
+//	static constexpr double A_0 = 5.2917721092*1e-11;
 
 	/** Planck constant in the currently set units. */
-	static double hbar;
+//	static double hbar;
 
 	/** Boltzmann constant in the currently set units. */
-	static double k_B;
+//	static double k_B;
 
 	/** Elementary charge in the currently set units. */
-	static double e;
+//	static double e;
 
 	/** Speed of light in the currently set units. */
-	static double c;
+//	static double c;
 
 	/** Avogadros number in the currently set units. */
-	static double n_A;
+//	static double n_A;
 
 	/** Electron mass in the currently set units. */
-	static double m_e;
+//	static double m_e;
 
 	/** Electron mass in the currently set units. */
-	static double m_p;
+//	static double m_p;
 
 	/** Bohr magneton in the currently set units. */
-	static double mu_B;
+//	static double mu_B;
 
 	/** Nuclear magneton in the currently set units. */
-	static double mu_n;
+//	static double mu_n;
 
 	/** Vacuum permeability in the currently set units. */
-	static double mu_0;
+//	static double mu_0;
 
 	/** Vacuum permittivity in the currently set units. */
-	static double epsilon_0;
+//	static double epsilon_0;
 
 	/** Bohr radius in the currently set units. */
-	static double a_0;
+//	static double a_0;
 
 	/** Conversion factor from eV to J. */
 //	static constexpr double J_per_eV	= 1.602176565e-19;
-	static constexpr double J_per_eV	= 1.602176634e-19;
+//	static constexpr double J_per_eV	= 1.602176634e-19;
+	static double J_per_eV;
 
 	/** Conversion factor from eV to J. */
-	static constexpr double eV_per_J	= 1./J_per_eV;
+//	static constexpr double eV_per_J	= 1./J_per_eV;
+	static double eV_per_J;
 
 	/** Conversion factor from eVs^2/m^2 to kg. */
 //	static constexpr double kg_per_baseMass = 1.602176565e-19;
-	static constexpr double kg_per_baseMass = 1.602176634e-19;
+//	static constexpr double kg_per_baseMass = 1.602176634e-19;
+	static double kg_per_baseMass;
 
 	/** Conversion factor from kg to eVs^2/m^2. */
-	static constexpr double baseMass_per_kg = 1./kg_per_baseMass;
+//	static constexpr double baseMass_per_kg = 1./kg_per_baseMass;
+	static double baseMass_per_kg;
 
 	/** Conversion factor from eVs^2/m^2 to u. */
 //	static constexpr double u_per_baseMass = 9.31494095e8/(C*C);
-	static constexpr double u_per_baseMass = (C*C)/9.31494095e8;
+//	static constexpr double u_per_baseMass = (C*C)/9.31494095e8;
+	static double u_per_baseMass;
 
 	/** Conversion factor from u to eVs^2/m^2. */
-	static constexpr double baseMass_per_u = 1./u_per_baseMass;
+//	static constexpr double baseMass_per_u = 1./u_per_baseMass;
+	static double baseMass_per_u;
 
 	/** Conversion factor from eVs/Cm^2 to T. */
 //	static constexpr double T_per_baseMagneticField = 1.602176565e-19;
-	static constexpr double T_per_baseMagneticField = 1.602176634e-19;
+//	static constexpr double T_per_baseMagneticField = 1.602176634e-19;
+	static double T_per_baseMagneticField;
 
 	/** Conversion factor from T to eVs/Cm^2. */
-	static constexpr double baseMagneticField_per_T = 1./T_per_baseMagneticField;
+//	static constexpr double baseMagneticField_per_T = 1./T_per_baseMagneticField;
+	static double baseMagneticField_per_T;
 
 	/** Conversion factor from V to eV/C. */
 //	static constexpr double V_per_baseVoltage = 1.602176565e-19;
-	static constexpr double V_per_baseVoltage = 1.602176634e-19;
+//	static constexpr double V_per_baseVoltage = 1.602176634e-19;
+	static double V_per_baseVoltage;
 
 	/** Conversion factor from eV/C to V. */
-	static constexpr double baseVoltage_per_V = 1./V_per_baseVoltage;
+//	static constexpr double baseVoltage_per_V = 1./V_per_baseVoltage;
+	static double baseVoltage_per_V;
 
 	/** Currently set temperature unit. */
 	static TemperatureUnit temperatureUnit;
@@ -812,41 +836,44 @@ private:
 	/** Set count scale. */
 	static void setCountScale(std::string scale);
 
+	/** Update contants to reflect the current base units. */
+	static void updateConstants();
+
 	/** Update Planck constant. To be called at change of units. */
-	static void updateHbar();
+//	static void updateHbar();
 
 	/** Update Boltzmann constant. To be called at change of units. */
-	static void updateK_B();
+//	static void updateK_B();
 
 	/** Update elementary charge. To be called at change of units. */
-	static void updateE();
+//	static void updateE();
 
 	/** Update speed of light. To be called at change of units. */
-	static void updateC();
+//	static void updateC();
 
 	/** Update Avogadros number. To be called at change of units. */
-	static void updateN_A();
+//	static void updateN_A();
 
 	/** Update electron mass. To be called at change of units. */
-	static void updateM_e();
+//	static void updateM_e();
 
 	/** Update proton mass. To be called at change of units. */
-	static void updateM_p();
+//	static void updateM_p();
 
 	/** Update Bohr magneton. To be called at change of units. */
-	static void updateMu_B();
+//	static void updateMu_B();
 
 	/** Update nuclear magneton. To be called at change of units. */
-	static void updateMu_n();
+//	static void updateMu_n();
 
 	/** Update vacuum permeability. To be called at change of units. */
-	static void updateMu_0();
+//	static void updateMu_0();
 
 	/** Update vacuum permittivity. To be called at change of units. */
-	static void updateEpsilon_0();
+//	static void updateEpsilon_0();
 
 	/** Update the Bohr radius. To be called at change of units. */
-	static void updateA_0();
+//	static void updateA_0();
 
 	/** Returns the number of degrees in the currently set unit per degree
 	 *  in default unit (K). */
@@ -928,102 +955,132 @@ private:
 
 	/** Converts a string into a CountUnit. */
 	static CountUnit getCountUnit(std::string unit);
+
+	/** Static constructor. */
+	static class StaticConstructor{
+	public:
+		StaticConstructor();
+	} staticConstructor;
 };
 
 inline double UnitHandler::getHbarB(){
-	return hbar;
+//	return hbar;
+	return constantsBaseUnits["hbar"];
 }
 
 inline double UnitHandler::getHbarN(){
-	return hbar/(energyScale*timeScale);
+//	return hbar/(energyScale*timeScale);
+	return constantsBaseUnits["hbar"]/(energyScale*timeScale);
 }
 
 inline double UnitHandler::getK_BB(){
-	return k_B;
+//	return k_B;
+	return constantsBaseUnits["k_B"];
 }
 
 inline double UnitHandler::getK_BN(){
-	return k_B*temperatureScale/energyScale;
+//	return k_B*temperatureScale/energyScale;
+	return constantsBaseUnits["k_B"]*temperatureScale/energyScale;
 }
 
 inline double UnitHandler::getEB(){
-	return e;
+//	return e;
+	return constantsBaseUnits["e"];
 }
 
 inline double UnitHandler::getEN(){
-	return e/chargeScale;
+//	return e/chargeScale;
+	return constantsBaseUnits["e"]/chargeScale;
 }
 
 inline double UnitHandler::getCB(){
-	return c;
+//	return c;
+	return constantsBaseUnits["c"];
 }
 
 inline double UnitHandler::getCN(){
-	return c*timeScale/lengthScale;
+//	return c*timeScale/lengthScale;
+	return constantsBaseUnits["c"]*timeScale/lengthScale;
 }
 
 inline double UnitHandler::getN_AB(){
-	return n_A;
+//	return n_A;
+	return constantsBaseUnits["N_A"];
 }
 
 inline double UnitHandler::getN_AN(){
-	return n_A/countScale;
+//	return n_A/countScale;
+	return constantsBaseUnits["N_A"]/countScale;
 }
 
 inline double UnitHandler::getM_eB(){
-	return m_e;
+//	return m_e;
+	return constantsBaseUnits["m_e"];
 }
 
 inline double UnitHandler::getM_eN(){
-	return m_e*lengthScale*lengthScale/(energyScale*timeScale*timeScale);
+//	return m_e*lengthScale*lengthScale/(energyScale*timeScale*timeScale);
+	return constantsBaseUnits["m_e"]*lengthScale*lengthScale/(energyScale*timeScale*timeScale);
 }
 
 inline double UnitHandler::getM_pB(){
-	return m_p;
+//	return m_p;
+	return constantsBaseUnits["m_p"];
 }
 
 inline double UnitHandler::getM_pN(){
-	return m_p*lengthScale*lengthScale/(energyScale*timeScale*timeScale);
+//	return m_p*lengthScale*lengthScale/(energyScale*timeScale*timeScale);
+	return constantsBaseUnits["m_p"]*lengthScale*lengthScale/(energyScale*timeScale*timeScale);
 }
 
 inline double UnitHandler::getMu_BB(){
-	return mu_B;
+//	return mu_B;
+	return constantsBaseUnits["mu_B"];
 }
 
 inline double UnitHandler::getMu_BN(){
-	return mu_B*timeScale/(chargeScale*lengthScale*lengthScale);
+//	return mu_B*timeScale/(chargeScale*lengthScale*lengthScale);
+	return constantsBaseUnits["mu_B"]*timeScale/(chargeScale*lengthScale*lengthScale);
 }
 
 inline double UnitHandler::getMu_nB(){
-	return mu_n;
+//	return mu_n;
+	return constantsBaseUnits["mu_N"];
 }
 
 inline double UnitHandler::getMu_nN(){
-	return mu_n*timeScale/(chargeScale*lengthScale*lengthScale);
+//	return mu_n*timeScale/(chargeScale*lengthScale*lengthScale);
+	return constantsBaseUnits["mu_N"]*timeScale/(chargeScale*lengthScale*lengthScale);
 }
 
 inline double UnitHandler::getMu_0B(){
-	return mu_0;
+//	return mu_0;
+	return constantsBaseUnits["mu_0"];
 }
 
 inline double UnitHandler::getMu_0N(){
-	return mu_0*chargeScale*chargeScale*lengthScale/(energyScale*timeScale*timeScale);
+//	return mu_0*chargeScale*chargeScale*lengthScale/(energyScale*timeScale*timeScale);
+	return constantsBaseUnits["mu_0"]*chargeScale*chargeScale*lengthScale/(energyScale*timeScale*timeScale);
 }
 
 inline double UnitHandler::getEpsilon_0B(){
-	return epsilon_0;
+//	return epsilon_0;
+	return constantsBaseUnits["epsilon_0"];
 }
 
 inline double UnitHandler::getEpsilon_0N(){
-	return epsilon_0*energyScale*lengthScale/(chargeScale*chargeScale);
+//	return epsilon_0*energyScale*lengthScale/(chargeScale*chargeScale);
+	return constantsBaseUnits["epsilon_0"]*energyScale*lengthScale/(chargeScale*chargeScale);
 }
 
 inline double UnitHandler::getA_0B(){
-	return a_0;
+//	return a_0;
+	return constantsBaseUnits["a_0"];
 }
 
 inline double UnitHandler::getA_0N(){
-	return a_0/lengthScale;
+//	return a_0/lengthScale;
+	return constantsBaseUnits["a_0"]/lengthScale;
 }
 
 inline void UnitHandler::setTemperatureScale(double scale, TemperatureUnit unit){
@@ -1070,6 +1127,7 @@ inline void UnitHandler::setScales(const std::vector<std::string> &scales){
 	setLengthScale(scales[3]);
 	setTemperatureScale(scales[4]);
 	setTimeScale(scales[5]);
+	updateConstants();
 }
 
 inline double UnitHandler::convertTemperatureNtB(double temperature){

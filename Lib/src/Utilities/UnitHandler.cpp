@@ -22,6 +22,7 @@
 #include "TBTK/TBTKMacros.h"
 #include "TBTK/UnitHandler.h"
 
+#include <iostream>
 #include <sstream>
 
 #ifdef M_E	//Avoid name clash with math.h macro M_E
@@ -33,7 +34,13 @@ using namespace std;
 
 namespace TBTK{
 
-double UnitHandler::hbar	= HBAR;
+map<
+	string,
+	pair<double, vector<pair<string, int>>>
+> UnitHandler::constantsDefaultUnits;
+map<string, double> UnitHandler::constantsBaseUnits;
+
+/*double UnitHandler::hbar	= HBAR;
 double UnitHandler::k_B		= K_B;
 double UnitHandler::e		= E;
 double UnitHandler::c		= C;
@@ -44,7 +51,18 @@ double UnitHandler::mu_B	= MU_B;
 double UnitHandler::mu_n	= MU_N;
 double UnitHandler::mu_0	= MU_0;
 double UnitHandler::epsilon_0	= EPSILON_0;
-double UnitHandler::a_0		= A_0;
+double UnitHandler::a_0		= A_0;*/
+
+double UnitHandler::J_per_eV;
+double UnitHandler::eV_per_J;
+double UnitHandler::kg_per_baseMass;
+double UnitHandler::baseMass_per_kg;
+double UnitHandler::u_per_baseMass;
+double UnitHandler::baseMass_per_u;
+double UnitHandler::T_per_baseMagneticField;
+double UnitHandler::baseMagneticField_per_T;
+double UnitHandler::V_per_baseVoltage;
+double UnitHandler::baseVoltage_per_V;
 
 UnitHandler::TemperatureUnit 	UnitHandler::temperatureUnit	= UnitHandler::TemperatureUnit::K;
 UnitHandler::TimeUnit 		UnitHandler::timeUnit		= UnitHandler::TimeUnit::s;
@@ -60,13 +78,20 @@ double UnitHandler::energyScale		= 1.;
 double UnitHandler::chargeScale		= 1.;
 double UnitHandler::countScale		= 1.;
 
+UnitHandler::StaticConstructor  UnitHandler::staticConstructor;
+
+double UnitHandler::getConstantBaseUnits(const std::string &name){
+	return constantsBaseUnits[name];
+}
+
 void UnitHandler::setTemperatureUnit(TemperatureUnit unit){
 	double oldConversionFactor = getTemperatureConversionFactor();
 	temperatureUnit = unit;
 	double newConversionFactor = getTemperatureConversionFactor();
 	temperatureScale *= newConversionFactor/oldConversionFactor;
 
-	updateK_B();
+//	updateK_B();
+	updateConstants();
 }
 
 void UnitHandler::setTimeUnit(TimeUnit unit){
@@ -75,13 +100,14 @@ void UnitHandler::setTimeUnit(TimeUnit unit){
 	double newConversionFactor = getTimeConversionFactor();
 	timeScale *= newConversionFactor/oldConversionFactor;
 
-	updateHbar();
+/*	updateHbar();
 	updateC();
 	updateM_e();
 	updateM_p();
 	updateMu_B();
 	updateMu_n();
-	updateMu_0();
+	updateMu_0();*/
+	updateConstants();
 }
 
 void UnitHandler::setLengthUnit(LengthUnit unit){
@@ -90,14 +116,15 @@ void UnitHandler::setLengthUnit(LengthUnit unit){
 	double newConversionFactor = getLengthConversionFactor();
 	lengthScale *= newConversionFactor/oldConversionFactor;
 
-	updateC();
+/*	updateC();
 	updateM_e();
 	updateM_p();
 	updateMu_B();
 	updateMu_n();
 	updateMu_0();
 	updateEpsilon_0();
-	updateA_0();
+	updateA_0();*/
+	updateConstants();
 }
 
 void UnitHandler::setEnergyUnit(EnergyUnit unit){
@@ -106,12 +133,13 @@ void UnitHandler::setEnergyUnit(EnergyUnit unit){
 	double newConversionFactor = getEnergyConversionFactor();
 	energyScale *= newConversionFactor/oldConversionFactor;
 
-	updateHbar();
+/*	updateHbar();
 	updateK_B();
 	updateM_e();
 	updateM_p();
 	updateMu_0();
-	updateEpsilon_0();
+	updateEpsilon_0();*/
+	updateConstants();
 }
 
 void UnitHandler::setChargeUnit(ChargeUnit unit){
@@ -120,11 +148,12 @@ void UnitHandler::setChargeUnit(ChargeUnit unit){
 	double newConversionFactor = getChargeConversionFactor();
 	chargeScale *= newConversionFactor/oldConversionFactor;
 
-	updateE();
+/*	updateE();
 	updateMu_B();
 	updateMu_n();
 	updateMu_0();
-	updateEpsilon_0();
+	updateEpsilon_0();*/
+	updateConstants();
 }
 
 void UnitHandler::setCountUnit(CountUnit unit){
@@ -133,7 +162,8 @@ void UnitHandler::setCountUnit(CountUnit unit){
 	double newConversionFactor = getCountConversionFactor();
 	countScale *= newConversionFactor/oldConversionFactor;
 
-	updateN_A();
+//	updateN_A();
+	updateConstants();
 }
 
 void UnitHandler::setTemperatureScale(double scale){
@@ -940,7 +970,80 @@ string UnitHandler::getA_0UnitString(){
 	return getLengthUnitString();
 }
 
-void UnitHandler::updateHbar(){
+void UnitHandler::updateConstants(){
+	constantsBaseUnits.clear();
+	for(auto constant : constantsDefaultUnits){
+		const string &name = constant.first;
+		double value = constant.second.first;
+		const vector<pair<string, int>> &units
+			= constant.second.second;
+		for(unsigned int n = 0; n < units.size(); n++){
+			const string &unit = units[n].first;
+			int exponent = units[n].second;
+			for(int c = 0; c < exponent; c++){
+				if(unit.compare("K") == 0){
+					value *= getTemperatureConversionFactor();
+				}
+				else if(unit.compare("s") == 0){
+					value *= getTimeConversionFactor();
+				}
+				else if(unit.compare("m") == 0){
+					value *= getLengthConversionFactor();
+				}
+				else if(unit.compare("eV") == 0){
+					value *= getEnergyConversionFactor();
+				}
+				else if(unit.compare("C") == 0){
+					value *= getChargeConversionFactor();
+				}
+				else if(unit.compare("pcs") == 0){
+					value *= getCountConversionFactor();
+				}
+				else{
+					TBTKExit(
+						"UnitHandler::updateConstants()",
+						"Unknown default unit.",
+						"This should never happen,"
+						<< " contact the developer."
+					);
+				}
+			}
+			for(int c = 0; c < -exponent; c++){
+				if(unit.compare("K") == 0){
+					value /= getTemperatureConversionFactor();
+				}
+				else if(unit.compare("s") == 0){
+					value /= getTimeConversionFactor();
+				}
+				else if(unit.compare("m") == 0){
+					value /= getLengthConversionFactor();
+				}
+				else if(unit.compare("eV") == 0){
+					value /= getEnergyConversionFactor();
+				}
+				else if(unit.compare("C") == 0){
+					value /= getChargeConversionFactor();
+				}
+				else if(unit.compare("pcs") == 0){
+					value /= getCountConversionFactor();
+				}
+				else{
+					TBTKExit(
+						"UnitHandler::updateConstants()",
+						"Unknown default unit.",
+						"This should never happen,"
+						<< " contact the developer."
+					);
+				}
+			}
+		}
+		constantsBaseUnits[name] = value;
+	}
+//	for(auto constant : constantsBaseUnits)
+//		Streams::out << constant.first << "\t" << constant.second << "\n";
+}
+
+/*void UnitHandler::updateHbar(){
 	hbar = HBAR;
 	hbar *= getEnergyConversionFactor();
 	hbar *= getTimeConversionFactor();
@@ -1014,7 +1117,7 @@ void UnitHandler::updateEpsilon_0(){
 void UnitHandler::updateA_0(){
 	a_0 = A_0;
 	a_0 *= getLengthConversionFactor();
-}
+}*/
 
 double UnitHandler::getTemperatureConversionFactor(){
 	return getTemperatureConversionFactor(temperatureUnit);
@@ -1135,6 +1238,7 @@ double UnitHandler::getChargeConversionFactor(){
 }
 
 double UnitHandler::getChargeConversionFactor(ChargeUnit chargeUnit){
+	double E = constantsDefaultUnits["e"].first;
 	switch(chargeUnit){
 		case ChargeUnit::kC:	//1e-3 kC per C
 			return 1e-3;
@@ -1176,6 +1280,7 @@ double UnitHandler::getCountConversionFactor(){
 }
 
 double UnitHandler::getCountConversionFactor(CountUnit countUnit){
+	double N_A = constantsDefaultUnits["N_A"].first;
 	switch(countUnit){
 		case CountUnit::pcs:
 			return 1.;	//Reference scale
@@ -1457,6 +1562,43 @@ UnitHandler::CountUnit UnitHandler::getCountUnit(string unit){
 			""
 		);
 	}
+}
+
+UnitHandler::StaticConstructor::StaticConstructor(){
+	constantsDefaultUnits = {
+		{"hbar",	{6.582119514e-16,			{{"eV", 1}, {"s", 1}}}},
+		{"k_B",		{8.6173324e-5,				{{"eV", 1}, {"K", -1}}}},
+		{"e",		{1.6021766208e-19,			{{"C", 1}}}},
+		{"c",		{2.99792458e8,				{{"m", 1}, {"s", -1}}}},
+		{"N_A",		{6.02214076e23,				{{"pcs", 1}}}},
+		{"mu_0",	{4*M_PI*1e-7/1.602176565e-19,		{{"eV", 1}, {"s", 2}, {"C", -2}, {"m", -1}}}},
+		{"epsilon_0",	{8.854187817620e-12*1.602176565e-19,	{{"C", 2}, {"eV", -1}, {"m", -1}}}},
+		{"a_0",		{5.2917721092*1e-11, 			{{"m", 1}}}}
+	};
+	double c = constantsDefaultUnits["c"].first;
+	constantsDefaultUnits["m_e"] = {5.109989461e5/(c*c),		{{"eV", 1}, {"s", 2}, {"m", -2}}};
+	constantsDefaultUnits["m_p"] = {9.38272046e8/(c*c),		{{"eV", 1}, {"s", 2}, {"m", -2}}};
+
+	double e = constantsDefaultUnits["e"].first;
+	double hbar = constantsDefaultUnits["hbar"].first;
+	double m_e = constantsDefaultUnits["m_e"].first;
+	double m_p = constantsDefaultUnits["m_p"].first;
+	constantsDefaultUnits["mu_B"] = {e*hbar/(2*m_e),		{{"C", 1}, {"m", 2}, {"s", -1}}};
+	constantsDefaultUnits["mu_N"] = {e*hbar/(2*m_p),		{{"C", 1}, {"m", 2}, {"s", -1}}};
+
+	J_per_eV			= 1.602176634e-19;
+	eV_per_J			= 1./J_per_eV;
+	kg_per_baseMass			= 1.602176634e-19;
+	baseMass_per_kg			= 1./kg_per_baseMass;
+	u_per_baseMass			= (c*c)/9.31494095e8;
+//	u_per_baseMass			= (C*C)/9.31494095e8;
+	baseMass_per_u			= 1./u_per_baseMass;
+	T_per_baseMagneticField		= 1.602176634e-19;
+	baseMagneticField_per_T		= 1./T_per_baseMagneticField;
+	V_per_baseVoltage		= 1.602176634e-19;
+	baseVoltage_per_V		= 1./V_per_baseVoltage;
+
+	updateConstants();
 }
 
 };
