@@ -68,13 +68,14 @@ double UnitHandler::countScale		= 1.;
 UnitHandler::StaticConstructor  UnitHandler::staticConstructor;
 
 double UnitHandler::getConstantBaseUnits(const std::string &name){
-	return constantsBaseUnits[name];
+	return constantsBaseUnits.at(name);
 }
 
 double UnitHandler::getConstantNaturalUnits(const std::string &name){
 	double value = getConstantBaseUnits(name);
 
-	const vector<pair<string, int>> &units = constantsDefaultUnits[name].second;
+	const vector<pair<string, int>> &units
+		= constantsDefaultUnits.at(name).second;
 	for(unsigned int n = 0; n < units.size(); n++){
 		const string &unit = units[n].first;
 		int exponent = units[n].second;
@@ -1187,7 +1188,7 @@ double UnitHandler::getChargeConversionFactor(){
 }
 
 double UnitHandler::getChargeConversionFactor(ChargeUnit chargeUnit){
-	double E = constantsDefaultUnits["e"].first;
+	double E = constantsDefaultUnits.at("e").first;
 	switch(chargeUnit){
 		case ChargeUnit::kC:	//1e-3 kC per C
 			return 1e-3;
@@ -1229,7 +1230,7 @@ double UnitHandler::getCountConversionFactor(){
 }
 
 double UnitHandler::getCountConversionFactor(CountUnit countUnit){
-	double N_A = constantsDefaultUnits["N_A"].first;
+	double N_A = constantsDefaultUnits.at("N_A").first;
 	switch(countUnit){
 		case CountUnit::pcs:
 			return 1.;	//Reference scale
@@ -1520,13 +1521,13 @@ UnitHandler::StaticConstructor::StaticConstructor(){
 		{"N_A",		{6.02214076e23,				{{"pcs", 1}}}},
 		{"a_0",		{5.29177210903*1e-11, 			{{"m", 1}}}}
 	};
-	double e = constantsDefaultUnits["e"].first;
+	double e = constantsDefaultUnits.at("e").first;
 	//Source "The International System of Units (SI) 9th Edition. Bureau
 	//International des Poids et Mesures. 2019."
 	constantsDefaultUnits["h"] =		{6.62607015e-34/e,		{{"eV", 1}, {"s", 1}}};
 	constantsDefaultUnits["k_B"] =		{1.380649e-23/e,		{{"eV", 1}, {"K", -1}}};
 
-	double c = constantsDefaultUnits["c"].first;
+	double c = constantsDefaultUnits.at("c").first;
 	//Source "The NIST reference on Constants, Units, and Uncertainty."
 	//https://physics.nist.gov/cuu/Constants/index.html
 	constantsDefaultUnits["m_e"] =		{9.1093837015e-31/e,		{{"eV", 1}, {"s", 2}, {"m", -2}}};
@@ -1534,11 +1535,11 @@ UnitHandler::StaticConstructor::StaticConstructor(){
 	constantsDefaultUnits["mu_0"] =		{1.25663706212e-6/e,		{{"eV", 1}, {"s", 2}, {"C", -2}, {"m", -1}}};
 	constantsDefaultUnits["epsilon_0"] =	{8.8541878128e-12*e,		{{"C", 2}, {"eV", -1}, {"m", -1}}};
 
-	double h = constantsDefaultUnits["h"].first;
+	double h = constantsDefaultUnits.at("h").first;
 	constantsDefaultUnits["hbar"] =		{h/(2*M_PI),			{{"eV", 1}, {"s", 1}}};
-	double hbar = constantsDefaultUnits["hbar"].first;
-	double m_e = constantsDefaultUnits["m_e"].first;
-	double m_p = constantsDefaultUnits["m_p"].first;
+	double hbar = constantsDefaultUnits.at("hbar").first;
+	double m_e = constantsDefaultUnits.at("m_e").first;
+	double m_p = constantsDefaultUnits.at("m_p").first;
 	constantsDefaultUnits["mu_B"] =		{e*hbar/(2*m_e),		{{"C", 1}, {"m", 2}, {"s", -1}}};
 	constantsDefaultUnits["mu_N"] =		{e*hbar/(2*m_p),		{{"C", 1}, {"m", 2}, {"s", -1}}};
 
