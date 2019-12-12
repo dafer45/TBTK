@@ -604,7 +604,7 @@ TEST_F(UnitHandlerTest, convertCountBaseToArbitrary1){
 //TBTKFeature Utilities.UnitHandler.convertTemperatureArbitraryToNatural.1 2019-12-10
 TEST_F(UnitHandlerTest, convertTemperatureArbitraryToNatural1){
 	EXPECT_DOUBLE_EQ(
-		UnitHandler::convertTemperatureArbitraryToNatural(
+		UnitHandler::convertArbitraryToNatural<Quantity::Temperature>(
 			10,
 			Quantity::Temperature::Unit::uK
 		),
@@ -615,7 +615,7 @@ TEST_F(UnitHandlerTest, convertTemperatureArbitraryToNatural1){
 //TBTKFeature Utilities.UnitHandler.convertTimeArbitraryToNatural.1 2019-12-10
 TEST_F(UnitHandlerTest, convertTimeArbitraryToNatural1){
 	EXPECT_DOUBLE_EQ(
-		UnitHandler::convertTimeArbitraryToNatural(
+		UnitHandler::convertArbitraryToNatural<Quantity::Time>(
 			10,
 			Quantity::Time::Unit::ns
 		),
@@ -626,7 +626,7 @@ TEST_F(UnitHandlerTest, convertTimeArbitraryToNatural1){
 //TBTKFeature Utilities.UnitHandler.convertLengthArbitraryToNatural.1 2019-12-10
 TEST_F(UnitHandlerTest, convertLengthArbitraryToNatural1){
 	EXPECT_DOUBLE_EQ(
-		UnitHandler::convertLengthArbitraryToNatural(
+		UnitHandler::convertArbitraryToNatural<Quantity::Length>(
 			10,
 			Quantity::Length::Unit::mm
 		),
@@ -638,7 +638,7 @@ TEST_F(UnitHandlerTest, convertLengthArbitraryToNatural1){
 TEST_F(UnitHandlerTest, convertEnergyArbitraryToNatural1){
 	double eV_per_J = 1/J_per_eV;
 	EXPECT_DOUBLE_EQ(
-		UnitHandler::convertEnergyArbitraryToNatural(
+		UnitHandler::convertArbitraryToNatural<Quantity::Energy>(
 			10,
 			Quantity::Energy::Unit::J
 		),
@@ -649,7 +649,7 @@ TEST_F(UnitHandlerTest, convertEnergyArbitraryToNatural1){
 //TBTKFeature Utilities.UnitHandler.convertChargeArbitraryToNatural.1 2019-12-10
 TEST_F(UnitHandlerTest, convertChargeArbitraryToNatural1){
 	EXPECT_DOUBLE_EQ(
-		UnitHandler::convertChargeArbitraryToNatural(
+		UnitHandler::convertArbitraryToNatural<Quantity::Charge>(
 			10,
 			Quantity::Charge::Unit::uC
 		),
@@ -660,7 +660,7 @@ TEST_F(UnitHandlerTest, convertChargeArbitraryToNatural1){
 //TBTKFeature Utilities.UnitHandler.convertCountArbitraryToNatural.1 2019-12-10
 TEST_F(UnitHandlerTest, convertCountArbitraryToNatural1){
 	EXPECT_DOUBLE_EQ(
-		UnitHandler::convertCountArbitraryToNatural(
+		UnitHandler::convertArbitraryToNatural<Quantity::Count>(
 			10,
 			Quantity::Count::Unit::mol
 		),
@@ -671,7 +671,7 @@ TEST_F(UnitHandlerTest, convertCountArbitraryToNatural1){
 //TBTKFeature Utilities.UnitHandler.convertTemperatureNaturalToArbitrary.1 2019-12-10
 TEST_F(UnitHandlerTest, convertTemperatureNaturalToArbitrary1){
 	EXPECT_DOUBLE_EQ(
-		UnitHandler::convertTemperatureNaturalToArbitrary(
+		UnitHandler::convertNaturalToArbitrary<Quantity::Temperature>(
 			10,
 			Quantity::Temperature::Unit::uK
 		),
@@ -682,7 +682,7 @@ TEST_F(UnitHandlerTest, convertTemperatureNaturalToArbitrary1){
 //TBTKFeature Utilities.UnitHandler.convertTimeNaturalToArbitrary.1 2019-12-10
 TEST_F(UnitHandlerTest, convertTimeNaturalToArbitrary1){
 	EXPECT_DOUBLE_EQ(
-		UnitHandler::convertTimeNaturalToArbitrary(
+		UnitHandler::convertNaturalToArbitrary<Quantity::Time>(
 			10,
 			Quantity::Time::Unit::ns
 		),
@@ -693,7 +693,7 @@ TEST_F(UnitHandlerTest, convertTimeNaturalToArbitrary1){
 //TBTKFeature Utilities.UnitHandler.convertLengthNaturalToArbitrary.1 2019-12-10
 TEST_F(UnitHandlerTest, convertLengthNaturalToArbitrary1){
 	EXPECT_DOUBLE_EQ(
-		UnitHandler::convertLengthNaturalToArbitrary(
+		UnitHandler::convertNaturalToArbitrary<Quantity::Length>(
 			10,
 			Quantity::Length::Unit::mm
 		),
@@ -705,7 +705,7 @@ TEST_F(UnitHandlerTest, convertLengthNaturalToArbitrary1){
 TEST_F(UnitHandlerTest, convertEnergyNaturalToArbitrary1){
 	double eV_per_J = 1/J_per_eV;
 	EXPECT_DOUBLE_EQ(
-		UnitHandler::convertEnergyNaturalToArbitrary(
+		UnitHandler::convertNaturalToArbitrary<Quantity::Energy>(
 			10,
 			Quantity::Energy::Unit::J
 		),
@@ -716,7 +716,7 @@ TEST_F(UnitHandlerTest, convertEnergyNaturalToArbitrary1){
 //TBTKFeature Utilities.UnitHandler.convertChargeNaturalToArbitrary.1 2019-12-10
 TEST_F(UnitHandlerTest, convertChargeNaturalToArbitrary1){
 	EXPECT_DOUBLE_EQ(
-		UnitHandler::convertChargeNaturalToArbitrary(
+		UnitHandler::convertNaturalToArbitrary<Quantity::Charge>(
 			10,
 			Quantity::Charge::Unit::uC
 		),
@@ -727,7 +727,7 @@ TEST_F(UnitHandlerTest, convertChargeNaturalToArbitrary1){
 //TBTKFeature Utilities.UnitHandler.convertCountNaturalToArbitrary.1 2019-12-10
 TEST_F(UnitHandlerTest, convertCountNaturalToArbitrary1){
 	EXPECT_DOUBLE_EQ(
-		UnitHandler::convertCountNaturalToArbitrary(
+		UnitHandler::convertNaturalToArbitrary<Quantity::Count>(
 			10,
 			Quantity::Count::Unit::mol
 		),

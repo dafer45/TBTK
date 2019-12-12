@@ -182,7 +182,7 @@ public:
 		Quantity::Count::Unit unit
 	);*/
 
-	/** Convert arbitrary units to base units. */
+	/** Convert base units to arbitrary units. */
 	template<typename Quantity>
 	static double convertBaseToArbitrary(
 		double value,
@@ -225,77 +225,91 @@ public:
 		Quantity::Count::Unit unit
 	);*/
 
+	/** Convert arbitrary units to natural units. */
+	template<typename Quantity>
+	static double convertArbitraryToNatural(
+		double value,
+		typename Quantity::Unit unit
+	);
+
 	/** Convert temperature from arbitrary units to natural units. */
-	static double convertTemperatureArbitraryToNatural(
+/*	static double convertTemperatureArbitraryToNatural(
 		double temperature,
 		Quantity::Temperature::Unit unit
-	);
+	);*/
 
 	/** Convert time from arbitrary units to natural units. */
-	static double convertTimeArbitraryToNatural(
+/*	static double convertTimeArbitraryToNatural(
 		double time,
 		Quantity::Time::Unit unit
-	);
+	);*/
 
 	/** Convert length from arbitrary units to natural units. */
-	static double convertLengthArbitraryToNatural(
+/*	static double convertLengthArbitraryToNatural(
 		double length,
 		Quantity::Length::Unit unit
-	);
+	);*/
 
 	/** Convert energy from arbitrary units to natural units. */
-	static double convertEnergyArbitraryToNatural(
+/*	static double convertEnergyArbitraryToNatural(
 		double energy,
 		Quantity::Energy::Unit unit
-	);
+	);*/
 
 	/** Convert charge from arbitrary units to natural units. */
-	static double convertChargeArbitraryToNatural(
+/*	static double convertChargeArbitraryToNatural(
 		double charge,
 		Quantity::Charge::Unit unit
-	);
+	);*/
 
 	/** Convert count from arbitrary units to natural units. */
-	static double convertCountArbitraryToNatural(
+/*	static double convertCountArbitraryToNatural(
 		double count,
 		Quantity::Count::Unit unit
+	);*/
+
+	/** Convert natural units to arbitrary units. */
+	template<typename Quantity>
+	static double convertNaturalToArbitrary(
+		double value,
+		typename Quantity::Unit unit
 	);
 
 	/** Convert temperature from natural units to arbitrary units. */
-	static double convertTemperatureNaturalToArbitrary(
+/*	static double convertTemperatureNaturalToArbitrary(
 		double temperature,
 		Quantity::Temperature::Unit unit
-	);
+	);*/
 
 	/** Convert time from natural units to arbitrary units. */
-	static double convertTimeNaturalToArbitrary(
+/*	static double convertTimeNaturalToArbitrary(
 		double time,
 		Quantity::Time::Unit unit
-	);
+	);*/
 
 	/** Convert length from natural units to arbitrary units. */
-	static double convertLengthNaturalToArbitrary(
+/*	static double convertLengthNaturalToArbitrary(
 		double length,
 		Quantity::Length::Unit unit
-	);
+	);*/
 
 	/** Convert energy from natural units to arbitrary units. */
-	static double convertEnergyNaturalToArbitrary(
+/*	static double convertEnergyNaturalToArbitrary(
 		double energy,
 		Quantity::Energy::Unit unit
-	);
+	);*/
 
 	/** Convert charge from natural units to arbitrary units. */
-	static double convertChargeNaturalToArbitrary(
+/*	static double convertChargeNaturalToArbitrary(
 		double charge,
 		Quantity::Charge::Unit unit
-	);
+	);*/
 
 	/** Convert count from natural units to arbitrary units. */
-	static double convertCountNaturalToArbitrary(
+/*	static double convertCountNaturalToArbitrary(
 		double count,
 		Quantity::Count::Unit unit
-	);
+	);*/
 
 	/** Convert mass from derived units to base units. */
 	static double convertMassDerivedToBase(double mass, MassUnit unit);
@@ -822,6 +836,25 @@ double UnitHandler::convertBaseToArbitrary(
 	typename Quantity::Unit unit
 ){
 	return value*getConversionFactor<Quantity>(
+		unit
+	)/getConversionFactor<Quantity>();
+}
+
+template<typename Quantity>
+double UnitHandler::convertArbitraryToNatural(
+	double value,
+	typename Quantity::Unit unit
+){
+	return value*getConversionFactor<Quantity>(
+	)/(getConversionFactor<Quantity>(unit)*getScaleFactor<Quantity>());
+}
+
+template<typename Quantity>
+double UnitHandler::convertNaturalToArbitrary(
+	double value,
+	typename Quantity::Unit unit
+){
+	return value*getScaleFactor<Quantity>()*getConversionFactor<Quantity>(
 		unit
 	)/getConversionFactor<Quantity>();
 }

@@ -438,7 +438,7 @@ double UnitHandler::convertTemperatureBaseToArbitrary(
 	return temperature*getTemperatureConversionFactor(
 		unit
 	)/getTemperatureConversionFactor(temperatureUnit);
-}*/
+}
 
 double UnitHandler::convertTemperatureArbitraryToNatural(
 	double temperature,
@@ -461,7 +461,7 @@ double UnitHandler::convertTemperatureNaturalToArbitrary(
 			temperatureUnit
 		);
 	return temperatureInDefaultBaseUnits*getTemperatureConversionFactor(unit);
-}
+}*/
 
 /*double UnitHandler::convertTimeArbitraryToBase(
 	double time,
@@ -477,7 +477,7 @@ double UnitHandler::convertTimeBaseToArbitrary(
 	return time*getTimeConversionFactor(unit)/getTimeConversionFactor(
 		timeUnit
 	);
-}*/
+}
 
 double UnitHandler::convertTimeArbitraryToNatural(
 	double time,
@@ -498,7 +498,7 @@ double UnitHandler::convertTimeNaturalToArbitrary(
 	double timeInDefaultBaseUnits
 		= time*timeScale/getTimeConversionFactor(timeUnit);
 	return timeInDefaultBaseUnits*getTimeConversionFactor(unit);
-}
+}*/
 
 /*double UnitHandler::convertLengthArbitraryToBase(
 	double length,
@@ -516,7 +516,7 @@ double UnitHandler::convertLengthBaseToArbitrary(
 	return length*getLengthConversionFactor(
 		unit
 	)/getLengthConversionFactor(lengthUnit);
-}*/
+}
 
 double UnitHandler::convertLengthArbitraryToNatural(
 	double length,
@@ -537,7 +537,7 @@ double UnitHandler::convertLengthNaturalToArbitrary(
 	double lengthInDefaultBaseUnits
 		= length*lengthScale/getLengthConversionFactor(lengthUnit);
 	return lengthInDefaultBaseUnits*getLengthConversionFactor(unit);
-}
+}*/
 
 /*double UnitHandler::convertEnergyArbitraryToBase(
 	double energy,
@@ -555,7 +555,7 @@ double UnitHandler::convertEnergyBaseToArbitrary(
 	return energy*getEnergyConversionFactor(
 		unit
 	)/getEnergyConversionFactor(energyUnit);
-}*/
+}
 
 double UnitHandler::convertEnergyArbitraryToNatural(
 	double energy,
@@ -576,7 +576,7 @@ double UnitHandler::convertEnergyNaturalToArbitrary(
 	double energyInDefaultBaseUnits
 		= energy*energyScale/getEnergyConversionFactor(energyUnit);
 	return energyInDefaultBaseUnits*getEnergyConversionFactor(unit);
-}
+}*/
 
 /*double UnitHandler::convertChargeArbitraryToBase(
 	double charge,
@@ -594,7 +594,7 @@ double UnitHandler::convertChargeBaseToArbitrary(
 	return charge*getChargeConversionFactor(
 		unit
 	)/getChargeConversionFactor(chargeUnit);
-}*/
+}
 
 double UnitHandler::convertChargeArbitraryToNatural(
 	double charge,
@@ -615,7 +615,7 @@ double UnitHandler::convertChargeNaturalToArbitrary(
 	double chargeInDefaultBaseUnits
 		= charge*chargeScale/getChargeConversionFactor(chargeUnit);
 	return chargeInDefaultBaseUnits*getChargeConversionFactor(unit);
-}
+}*/
 
 /*double UnitHandler::convertCountArbitraryToBase(
 	double count,
@@ -633,7 +633,7 @@ double UnitHandler::convertCountBaseToArbitrary(
 	return count*getCountConversionFactor(unit)/getCountConversionFactor(
 		countUnit
 	);
-}*/
+}
 
 double UnitHandler::convertCountArbitraryToNatural(
 	double count,
@@ -654,7 +654,7 @@ double UnitHandler::convertCountNaturalToArbitrary(
 	double countInDefaultBaseUnits
 		= count*countScale/getCountConversionFactor(countUnit);
 	return countInDefaultBaseUnits*getCountConversionFactor(unit);
-}
+}*/
 
 double UnitHandler::convertMassDerivedToBase(double mass, MassUnit unit){
 	double massInDefaultBaseUnits = mass/getMassConversionFactor(unit);
