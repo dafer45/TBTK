@@ -50,7 +50,7 @@ ZFactorCalculator::ZFactorCalculator(
 	double temperature = UnitHandler::convertTemperatureNtB(
 		model.getTemperature()
 	);
-	double kT = UnitHandler::getK_BB()*temperature;
+	double kT = UnitHandler::getConstantBaseUnits("k_B")*temperature;
 
 	//Setup self-energy energies
 /*	selfEnergyCalculator.setEnergyType(
@@ -158,7 +158,7 @@ vector<complex<double>> ZFactorCalculator::calculateZFactor(
 	double temperature = UnitHandler::convertTemperatureNtB(
 		model.getTemperature()
 	);
-	double kT = UnitHandler::getK_BB()*temperature;
+	double kT = UnitHandler::getConstantBaseUnits("k_B")*temperature;
 
 	Index kIndex = brillouinZone.getMinorCellIndex(
 		k,

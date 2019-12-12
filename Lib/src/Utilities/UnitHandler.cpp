@@ -84,6 +84,46 @@ double UnitHandler::getConstantBaseUnits(const std::string &name){
 	return constantsBaseUnits[name];
 }
 
+double UnitHandler::getConstantNaturalUnits(const std::string &name){
+	double value = getConstantBaseUnits(name);
+
+/*	const vector<pair<string, int>> &units constantsDefaultUnits[name].second;
+	for(unsigned int n = 0; n < units.size(); n++){
+		const string &unit = units[n].first;
+		int exponent = units[n].second;
+		for(int c = 0; c < exponent; c++){
+			if(unit.compare("K") == 0){
+				value *= getTemperatureConversionFactor();
+			}
+			else if(unit.compare("s") == 0){
+				value *= getTimeConversionFactor();
+			}
+			else if(unit.compare("m") == 0){
+				value *= getLengthConversionFactor();
+			}
+			else if(unit.compare("eV") == 0){
+				value *= getEnergyConversionFactor();
+			}
+			else if(unit.compare("C") == 0){
+				value *= getChargeConversionFactor();
+			}
+			else if(unit.compare("pcs") == 0){
+				value *= getCountConversionFactor();
+			}
+			else{
+				TBTKExit(
+					"UnitHandler::updateConstants()",
+					"Unknown default unit.",
+					"This should never happen,"
+					<< " contact the developer."
+				);
+			}
+		}
+	}*/
+
+	return value;
+}
+
 void UnitHandler::setTemperatureUnit(TemperatureUnit unit){
 	double oldConversionFactor = getTemperatureConversionFactor();
 	temperatureUnit = unit;

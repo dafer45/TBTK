@@ -86,7 +86,7 @@ void SelfEnergyCalculator::init(){
 		electronFluctuationVertexCalculators[0]->getMomentumSpaceContext(
 		).getModel().getTemperature()
 	);
-	double kT = UnitHandler::getK_BB()*temperature;
+	double kT = UnitHandler::getConstantBaseUnits("k_B")*temperature;
 
 	//Initialize summation energies
 	for(
@@ -495,7 +495,7 @@ void SelfEnergyCalculator::selfEnergyMainLoop(
 		electronFluctuationVertexCalculators[0]->getMomentumSpaceContext(
 		).getModel().getTemperature()
 	);
-	double kT = UnitHandler::getK_BB()*temperature;
+	double kT = UnitHandler::getConstantBaseUnits("k_B")*temperature;
 
 	for(unsigned int n = 0; n < selfEnergyEnergies.size(); n++)
 		result.at(n) *= kT/mesh.size();

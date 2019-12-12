@@ -116,8 +116,8 @@ inline void MatsubaraSusceptibilityCalculator::setNumSummationEnergies(
 	double temperature = UnitHandler::convertTemperatureNtB(
 		getMomentumSpaceContext().getModel().getTemperature()
 	);
-	double kT = UnitHandler::getK_BB()*temperature;
-	double hbar = UnitHandler::getHbarB();
+	double kT = UnitHandler::getConstantBaseUnits("k_B")*temperature;
+	double hbar = UnitHandler::getConstantBaseUnits("hbar");
 
 	summationEnergies.clear();
 	for(unsigned int n = 0; n < numSummationEnergies; n++){

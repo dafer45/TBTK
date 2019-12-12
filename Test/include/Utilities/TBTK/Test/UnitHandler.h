@@ -52,7 +52,7 @@ TEST_F(UnitHandlerTest, getHbarBase1){
 	double J_per_GeV = J_per_eV*1e9;
 	double s_per_as = 1e-18;
 	EXPECT_NEAR(
-		UnitHandler::getHbarB()*J_per_GeV*s_per_as,
+		UnitHandler::getConstantBaseUnits("hbar")*J_per_GeV*s_per_as,
 		hbar,
 		hbar*EPSILON
 	);
@@ -76,7 +76,7 @@ TEST_F(UnitHandlerTest, getK_BBase1){
 	double J_per_GeV = J_per_eV*1e9;
 	double K_per_kK = 1e3;
 	EXPECT_NEAR(
-		UnitHandler::getK_BB()*J_per_GeV/K_per_kK,
+		UnitHandler::getConstantBaseUnits("k_B")*J_per_GeV/K_per_kK,
 		k_B,
 		k_B*EPSILON
 	);
@@ -98,7 +98,11 @@ TEST_F(UnitHandlerTest, getK_BNatural1){
 TEST_F(UnitHandlerTest, getEBase1){
 	//[k_B] = kC = C_per_kC C
 	double C_per_kC = 1e3;
-	EXPECT_NEAR(UnitHandler::getEB()*C_per_kC, e, e*EPSILON);
+	EXPECT_NEAR(
+		UnitHandler::getConstantBaseUnits("e")*C_per_kC,
+		e,
+		e*EPSILON
+	);
 }
 
 //TBTKFeature Utilities.UnitHandler.getENatural.1 2019-12-09
@@ -113,7 +117,11 @@ TEST_F(UnitHandlerTest, getCBase1){
 	//[k_B] = Ao/as = m_per_Ao/s_per_as m/s
 	double m_per_Ao = 1e-10;
 	double s_per_as = 1e-18;
-	EXPECT_NEAR(UnitHandler::getCB()*m_per_Ao/s_per_as, c, c*EPSILON);
+	EXPECT_NEAR(
+		UnitHandler::getConstantBaseUnits("c")*m_per_Ao/s_per_as,
+		c,
+		c*EPSILON
+	);
 }
 
 //TBTKFeature Utilities.UnitHandler.getCNatural.1 2019-12-09
@@ -131,7 +139,7 @@ TEST_F(UnitHandlerTest, getCNatural1){
 //TBTKFeature Utilities.UnitHandler.getN_ABase.1 2019-12-09
 TEST_F(UnitHandlerTest, getN_ABase1){
 	//[N_A] = pcs/mol
-	EXPECT_NEAR(UnitHandler::getN_AB(), N_A, N_A*EPSILON);
+	EXPECT_NEAR(UnitHandler::getConstantBaseUnits("N_A"), N_A, N_A*EPSILON);
 }
 
 //TBTKFeature Utilities.UnitHandler.getN_ANatural.1 2019-12-09
@@ -147,9 +155,9 @@ TEST_F(UnitHandlerTest, getM_eBase1){
 	double s_per_as = 1e-18;
 	double m_per_Ao = 1e-10;
 	EXPECT_NEAR(
-		UnitHandler::getM_eB()*J_per_GeV*s_per_as*s_per_as/(
-			m_per_Ao*m_per_Ao
-		),
+		UnitHandler::getConstantBaseUnits(
+			"m_e"
+		)*J_per_GeV*s_per_as*s_per_as/(m_per_Ao*m_per_Ao),
 		m_e,
 		m_e*EPSILON
 	);
@@ -178,9 +186,9 @@ TEST_F(UnitHandlerTest, getM_pBase1){
 	double s_per_as = 1e-18;
 	double m_per_Ao = 1e-10;
 	EXPECT_NEAR(
-		UnitHandler::getM_pB()*J_per_GeV*s_per_as*s_per_as/(
-			m_per_Ao*m_per_Ao
-		),
+		UnitHandler::getConstantBaseUnits(
+			"m_p"
+		)*J_per_GeV*s_per_as*s_per_as/(m_per_Ao*m_per_Ao),
 		m_p,
 		m_p*EPSILON
 	);
@@ -209,7 +217,9 @@ TEST_F(UnitHandlerTest, getMu_BBase1){
 	double m_per_Ao = 1e-10;
 	double s_per_as = 1e-18;
 	EXPECT_NEAR(
-		UnitHandler::getMu_BB()*C_per_kC*m_per_Ao*m_per_Ao/s_per_as,
+		UnitHandler::getConstantBaseUnits(
+			"mu_B"
+		)*C_per_kC*m_per_Ao*m_per_Ao/s_per_as,
 		mu_B,
 		mu_B*EPSILON
 	);
@@ -237,7 +247,9 @@ TEST_F(UnitHandlerTest, getMu_nBase1){
 	double m_per_Ao = 1e-10;
 	double s_per_as = 1e-18;
 	EXPECT_NEAR(
-		UnitHandler::getMu_nB()*C_per_kC*m_per_Ao*m_per_Ao/s_per_as,
+		UnitHandler::getConstantBaseUnits(
+			"mu_N"
+		)*C_per_kC*m_per_Ao*m_per_Ao/s_per_as,
 		mu_n,
 		mu_n*EPSILON
 	);
@@ -267,7 +279,9 @@ TEST_F(UnitHandlerTest, getMu_0Base1){
 	double m_per_Ao = 1e-10;
 	double C_per_kC = 1e3;
 	EXPECT_NEAR(
-		UnitHandler::getMu_0B()*J_per_GeV*s_per_as*s_per_as/(m_per_Ao*C_per_kC*C_per_kC),
+		UnitHandler::getConstantBaseUnits(
+			"mu_0"
+		)*J_per_GeV*s_per_as*s_per_as/(m_per_Ao*C_per_kC*C_per_kC),
 		mu_0,
 		mu_0*EPSILON
 	);
@@ -298,9 +312,9 @@ TEST_F(UnitHandlerTest, getEpsilon_0Base1){
 	double J_per_GeV = J_per_eV*1e9;
 	double m_per_Ao = 1e-10;
 	EXPECT_NEAR(
-		UnitHandler::getEpsilon_0B()*C_per_kC*C_per_kC/(
-			J_per_GeV*m_per_Ao
-		),
+		UnitHandler::getConstantBaseUnits(
+			"epsilon_0"
+		)*C_per_kC*C_per_kC/(J_per_GeV*m_per_Ao),
 		epsilon_0,
 		epsilon_0*EPSILON
 	);
@@ -327,7 +341,7 @@ TEST_F(UnitHandlerTest, getA_0Base1){
 	//[a_0] = Ao = m_per_Ao m
 	double m_per_Ao = 1e-10;
 	EXPECT_NEAR(
-		UnitHandler::getA_0B()*m_per_Ao,
+		UnitHandler::getConstantBaseUnits("a_0")*m_per_Ao,
 		a_0,
 		a_0*EPSILON
 	);

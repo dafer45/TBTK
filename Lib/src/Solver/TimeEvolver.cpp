@@ -95,6 +95,7 @@ void TimeEvolver::run(){
 		}
 	}
 
+	double hbar = UnitHandler::getConstantBaseUnits("hbar");
 	complex<double> *dPsi = new complex<double>[basisSize*basisSize];
 	for(int t = 0; t < numTimeSteps; t++){
 		currentTimeStep = t;
@@ -131,7 +132,7 @@ void TimeEvolver::run(){
 		#pragma omp parallel for
 		for(int n = 0; n < basisSize; n++){
 			for(int c = 0; c < basisSize; c++)
-				eigenVectorsMap[n][c] -= i*dPsi[basisSize*n + c]*UnitHandler::convertTimeNtB(dt)/UnitHandler::getHbarB();
+				eigenVectorsMap[n][c] -= i*dPsi[basisSize*n + c]*UnitHandler::convertTimeNtB(dt)/hbar;
 		}
 
 		sort();
