@@ -82,8 +82,9 @@ void SelfEnergyCalculator::init(){
 	}
 
 	//Calculate kT
-	double temperature = UnitHandler::convertTemperatureNaturalToBase(
-		electronFluctuationVertexCalculators[0]->getMomentumSpaceContext(
+	double temperature
+		= UnitHandler::convertNaturalToBase<Quantity::Temperature>(
+			electronFluctuationVertexCalculators[0]->getMomentumSpaceContext(
 		).getModel().getTemperature()
 	);
 	double kT = UnitHandler::getConstantBaseUnits("k_B")*temperature;
@@ -491,8 +492,9 @@ void SelfEnergyCalculator::selfEnergyMainLoop(
 			result[c] += results[n][c];
 
 	//Calculate kT
-	double temperature = UnitHandler::convertTemperatureNaturalToBase(
-		electronFluctuationVertexCalculators[0]->getMomentumSpaceContext(
+	double temperature
+		= UnitHandler::convertNaturalToBase<Quantity::Temperature>(
+			electronFluctuationVertexCalculators[0]->getMomentumSpaceContext(
 		).getModel().getTemperature()
 	);
 	double kT = UnitHandler::getConstantBaseUnits("k_B")*temperature;

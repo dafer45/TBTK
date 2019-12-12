@@ -23,7 +23,13 @@
 #ifndef COM_DAFER45_TBTK_UNIT_HANDLER
 #define COM_DAFER45_TBTK_UNIT_HANDLER
 
-#include "TBTKMacros.h"
+#include "TBTK/Quantity/Charge.h"
+#include "TBTK/Quantity/Count.h"
+#include "TBTK/Quantity/Energy.h"
+#include "TBTK/Quantity/Length.h"
+#include "TBTK/Quantity/Temperature.h"
+#include "TBTK/Quantity/Time.h"
+#include "TBTK/TBTKMacros.h"
 
 #include <cmath>
 #include <map>
@@ -187,41 +193,49 @@ public:
 	/** Set scales. */
 	static void setScales(const std::vector<std::string> &scales);
 
+	/** Convert from natural units to base units. */
+	template<typename Quantity>
+	static double convertNaturalToBase(double value);
+
 	/** Convert temperature from natural units to base units. */
-	static double convertTemperatureNaturalToBase(double temperature);
+//	static double convertTemperatureNaturalToBase(double temperature);
 
 	/** Convert time to from natural units to base units. */
-	static double convertTimeNaturalToBase(double time);
+//	static double convertTimeNaturalToBase(double time);
 
 	/** Convert length from natural units to base units. */
-	static double convertLengthNaturalToBase(double length);
+//	static double convertLengthNaturalToBase(double length);
 
 	/** Convert energy from natural units to base units */
-	static double convertEnergyNaturalToBase(double energy);
+//	static double convertEnergyNaturalToBase(double energy);
 
 	/** Convert charge from natural units to base units. */
-	static double convertChargeNaturalToBase(double charge);
+//	static double convertChargeNaturalToBase(double charge);
 
 	/** Conver counting from natural units to base units. */
-	static double convertCountNaturalToBase(double count);
+//	static double convertCountNaturalToBase(double count);
+
+	/** Convert from base units to natural units. */
+	template<typename Quantity>
+	static double convertBaseToNatural(double value);
 
 	/** Convert temperature from base units to natural units. */
-	static double convertTemperatureBaseToNatural(double temperature);
+//	static double convertTemperatureBaseToNatural(double temperature);
 
 	/** Convert time from base units to natural units. */
-	static double convertTimeBaseToNatural(double time);
+//	static double convertTimeBaseToNatural(double time);
 
 	/** Convert length from base units to natural units. */
-	static double convertLengthBaseToNatural(double length);
+//	static double convertLengthBaseToNatural(double length);
 
 	/** Convert energy from base units to natural units. */
-	static double convertEnergyBaseToNatural(double energy);
+//	static double convertEnergyBaseToNatural(double energy);
 
 	/** Convert charge from base units to natural units. */
-	static double convertChargeBaseToNatural(double charge);
+//	static double convertChargeBaseToNatural(double charge);
 
 	/** Convert count from base units to natural units. */
-	static double convertCountBaseToNatural(double count);
+//	static double convertCountBaseToNatural(double count);
 
 	/** Convert temperature from arbitrary units to base units. */
 	static double convertTemperatureArbitraryToBase(
@@ -689,6 +703,10 @@ private:
 	/** Set count scale. */
 	static void setCountScale(std::string scale);
 
+	/** Get the scale factor for the corresponding quantity. */
+	template<typename Quantity>
+	static double getScaleFactor();
+
 	/** Update contants to reflect the current base units. */
 	static void updateConstants();
 
@@ -827,7 +845,12 @@ inline void UnitHandler::setScales(const std::vector<std::string> &scales){
 	updateConstants();
 }
 
-inline double UnitHandler::convertTemperatureNaturalToBase(double temperature){
+template<typename Quantity>
+double UnitHandler::convertNaturalToBase(double value){
+	return value*getScaleFactor<Quantity>();
+}
+
+/*inline double UnitHandler::convertTemperatureNaturalToBase(double temperature){
 	return temperature*temperatureScale;
 }
 
@@ -849,9 +872,14 @@ inline double UnitHandler::convertChargeNaturalToBase(double charge){
 
 inline double UnitHandler::convertCountNaturalToBase(double count){
 	return count*countScale;
+}*/
+
+template<typename Quantity>
+double UnitHandler::convertBaseToNatural(double value){
+	return value/getScaleFactor<Quantity>();
 }
 
-inline double UnitHandler::convertTemperatureBaseToNatural(double temperature){
+/*inline double UnitHandler::convertTemperatureBaseToNatural(double temperature){
 	return temperature/temperatureScale;
 }
 
@@ -873,6 +901,36 @@ inline double UnitHandler::convertChargeBaseToNatural(double charge){
 
 inline double UnitHandler::convertCountBaseToNatural(double count){
 	return count/countScale;
+}*/
+
+template<>
+inline double UnitHandler::getScaleFactor<Quantity::Charge>(){
+	return chargeScale;
+}
+
+template<>
+inline double UnitHandler::getScaleFactor<Quantity::Count>(){
+	return countScale;
+}
+
+template<>
+inline double UnitHandler::getScaleFactor<Quantity::Energy>(){
+	return energyScale;
+}
+
+template<>
+inline double UnitHandler::getScaleFactor<Quantity::Length>(){
+	return lengthScale;
+}
+
+template<>
+inline double UnitHandler::getScaleFactor<Quantity::Temperature>(){
+	return temperatureScale;
+}
+
+template<>
+inline double UnitHandler::getScaleFactor<Quantity::Time>(){
+	return timeScale;
 }
 
 };

@@ -374,64 +374,97 @@ TEST_F(UnitHandlerTest, getA_0Natural1){
 //TBTKFeature Utilities.UnitHandler.convertTemperatureNaturalToBase.1 2019-12-10
 TEST_F(UnitHandlerTest, convertTemperatureNaturalToBase1){
 	EXPECT_DOUBLE_EQ(
-		UnitHandler::convertTemperatureNaturalToBase(10),
+		UnitHandler::convertNaturalToBase<Quantity::Temperature>(10),
 		10*1.5
 	);
 }
 
 //TBTKFeature Utilities.UnitHandler.convertTimeNaturalToBase.1 2019-12-10
 TEST_F(UnitHandlerTest, convertTimeNaturalToBase1){
-	EXPECT_DOUBLE_EQ(UnitHandler::convertTimeNaturalToBase(10), 10*1.6);
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertNaturalToBase<Quantity::Time>(10),
+		10*1.6
+	);
 }
 
 //TBTKFeature Utilities.UnitHandler.convertLengthNaturalToBase.1 2019-12-10
 TEST_F(UnitHandlerTest, convertLengthNaturalToBase1){
-	EXPECT_DOUBLE_EQ(UnitHandler::convertLengthNaturalToBase(10), 10*1.4);
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertNaturalToBase<Quantity::Length>(10),
+		10*1.4
+	);
 }
 
 //TBTKFeature Utilities.UnitHandler.convertEnergyNaturalToBase.1 2019-12-10
 TEST_F(UnitHandlerTest, convertEnergyNaturalToBase1){
-	EXPECT_DOUBLE_EQ(UnitHandler::convertEnergyNaturalToBase(10), 10*1.3);
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertNaturalToBase<Quantity::Energy>(10),
+		10*1.3
+	);
 }
 
 //TBTKFeature Utilities.UnitHandler.convertChargeNaturalToBase.1 2019-12-10
 TEST_F(UnitHandlerTest, convertChargeNaturalToBase1){
-	EXPECT_DOUBLE_EQ(UnitHandler::convertChargeNaturalToBase(10), 10*1.1);
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertNaturalToBase<Quantity::Charge>(10),
+		10*1.1
+	);
 }
 
 //TBTKFeature Utilities.UnitHandler.convertCountNaturalToBase.1 2019-12-10
 TEST_F(UnitHandlerTest, convertCountNaturalToBase1){
-	EXPECT_DOUBLE_EQ(UnitHandler::convertCountNaturalToBase(10), 10*1.2);
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertNaturalToBase<Quantity::Count>(10),
+		10*1.2
+	);
 }
 
 //TBTKFeature Utilities.UnitHandler.convertTemperatureBaseToNatural.1 2019-12-10
 TEST_F(UnitHandlerTest, convertTemperatureBaseToNatural1){
-	EXPECT_DOUBLE_EQ(UnitHandler::convertTemperatureBaseToNatural(10), 10/1.5);
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertBaseToNatural<Quantity::Temperature>(10),
+		10/1.5
+	);
 }
 
 //TBTKFeature Utilities.UnitHandler.convertTimeBaseToNatural.1 2019-12-10
 TEST_F(UnitHandlerTest, convertTimeBaseToNatural1){
-	EXPECT_DOUBLE_EQ(UnitHandler::convertTimeBaseToNatural(10), 10/1.6);
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertBaseToNatural<Quantity::Time>(10),
+		10/1.6
+	);
 }
 
 //TBTKFeature Utilities.UnitHandler.convertLengthBaseToNatural.1 2019-12-10
 TEST_F(UnitHandlerTest, convertLengthBaseToNatural1){
-	EXPECT_DOUBLE_EQ(UnitHandler::convertLengthBaseToNatural(10), 10/1.4);
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertBaseToNatural<Quantity::Length>(10),
+		10/1.4
+	);
 }
 
 //TBTKFeature Utilities.UnitHandler.convertEnergyBaseToNatural.1 2019-12-10
 TEST_F(UnitHandlerTest, convertEnergyBaseToNatural1){
-	EXPECT_DOUBLE_EQ(UnitHandler::convertEnergyBaseToNatural(10), 10/1.3);
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertBaseToNatural<Quantity::Energy>(10),
+		10/1.3
+	);
 }
 
 //TBTKFeature Utilities.UnitHandler.convertChargeBaseToNatural.1 2019-12-10
 TEST_F(UnitHandlerTest, convertChargeBaseToNatural1){
-	EXPECT_DOUBLE_EQ(UnitHandler::convertChargeBaseToNatural(10), 10/1.1);
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertBaseToNatural<Quantity::Charge>(10),
+		10/1.1
+	);
 }
 
 //TBTKFeature Utilities.UnitHandler.convertCountBaseToNatural.1 2019-12-10
 TEST_F(UnitHandlerTest, convertCountBaseToNatural1){
-	EXPECT_DOUBLE_EQ(UnitHandler::convertCountBaseToNatural(10), 10/1.2);
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertBaseToNatural<Quantity::Count>(10),
+		10/1.2
+	);
 }
 
 //TBTKFeature Utilities.UnitHandler.convertTemperatureArbitraryToBase.1 2019-12-10

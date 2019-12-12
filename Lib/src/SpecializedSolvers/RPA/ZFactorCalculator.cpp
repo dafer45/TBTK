@@ -47,9 +47,10 @@ ZFactorCalculator::ZFactorCalculator(
 	const Model &model = momentumSpaceContext.getModel();
 
 	//Calculate kT
-	double temperature = UnitHandler::convertTemperatureNaturalToBase(
-		model.getTemperature()
-	);
+	double temperature
+		= UnitHandler::convertNaturalToBase<Quantity::Temperature>(
+			model.getTemperature()
+		);
 	double kT = UnitHandler::getConstantBaseUnits("k_B")*temperature;
 
 	//Setup self-energy energies
@@ -155,9 +156,10 @@ vector<complex<double>> ZFactorCalculator::calculateZFactor(
 		= momentumSpaceContext.getPropertyExtractorBlockDiagonalizer();
 
 	//Calculate kT
-	double temperature = UnitHandler::convertTemperatureNaturalToBase(
-		model.getTemperature()
-	);
+	double temperature
+		= UnitHandler::convertNaturalToBase<Quantity::Temperature>(
+			model.getTemperature()
+		);
 	double kT = UnitHandler::getConstantBaseUnits("k_B")*temperature;
 
 	Index kIndex = brillouinZone.getMinorCellIndex(

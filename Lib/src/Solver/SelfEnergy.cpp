@@ -453,9 +453,10 @@ void SelfEnergy::selfEnergyMainLoop(
 			result[c] += results[n][c];
 
 	//Calculate kT
-	double temperature = UnitHandler::convertTemperatureNaturalToBase(
-		getModel().getTemperature()
-	);
+	double temperature
+		= UnitHandler::convertNaturalToBase<Quantity::Temperature>(
+			getModel().getTemperature()
+		);
 	double kT = UnitHandler::getConstantBaseUnits("k_B")*temperature;
 
 	for(unsigned int n = 0; n < selfEnergyEnergies.size(); n++)

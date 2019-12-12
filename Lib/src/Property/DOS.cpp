@@ -86,11 +86,15 @@ string DOS::toString() const{
 
 	stringstream ss;
 	ss << "DOS\n";
-	ss << "\tLower bound: " << UnitHandler::convertEnergyNaturalToBase(lowerBound)
-		<< " " << UnitHandler::getEnergyUnitString() << " ("
+	ss << "\tLower bound: "
+		<< UnitHandler::convertNaturalToBase<Quantity::Energy>(
+			lowerBound
+		) << " " << UnitHandler::getEnergyUnitString() << " ("
 		<< lowerBound << " b.u.)\n";
-	ss << "\tUpper bound: " << UnitHandler::convertEnergyNaturalToBase(upperBound)
-		<< " " << UnitHandler::getEnergyUnitString() << " ("
+	ss << "\tUpper bound: "
+		<< UnitHandler::convertNaturalToBase<Quantity::Energy>(
+			upperBound
+		) << " " << UnitHandler::getEnergyUnitString() << " ("
 		<< upperBound << " b.u.)\n";
 	ss << "\tResolution: " << resolution;
 

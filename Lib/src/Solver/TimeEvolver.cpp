@@ -134,9 +134,9 @@ void TimeEvolver::run(){
 			for(int c = 0; c < basisSize; c++)
 				eigenVectorsMap[n][c] -= i*dPsi[
 					basisSize*n + c
-				]*UnitHandler::convertTimeNaturalToBase(
-					dt
-				)/hbar;
+				]*UnitHandler::convertNaturalToBase<
+					Quantity::Time
+				>(dt)/hbar;
 		}
 
 		sort();
