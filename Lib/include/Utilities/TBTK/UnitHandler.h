@@ -146,84 +146,12 @@ public:
 		typename Quantity::Unit unit
 	);
 
-	/** Convert temperature from arbitrary units to base units. */
-/*	static double convertTemperatureArbitraryToBase(
-		double temperature,
-		Quantity::Temperature::Unit unit
-	);*/
-
-	/** Convert time from arbitrary units to base units. */
-/*	static double convertTimeArbitraryToBase(
-		double time,
-		Quantity::Time::Unit unit
-	);*/
-
-	/** Convert length from arbitrary units to base units. */
-/*	static double convertLengthArbitraryToBase(
-		double length,
-		Quantity::Length::Unit unit
-	);*/
-
-	/** Convert energy from arbitrary units to base units. */
-/*	static double convertEnergyArbitraryToBase(
-		double energy,
-		Quantity::Energy::Unit unit
-	);*/
-
-	/** Convert charge from arbitrary units to base units. */
-/*	static double convertChargeArbitraryToBase(
-		double charge,
-		Quantity::Charge::Unit unit
-	);*/
-
-	/** Convert count from arbitrary units to base units. */
-/*	static double convertCountArbitraryToBase(
-		double count,
-		Quantity::Count::Unit unit
-	);*/
-
 	/** Convert base units to arbitrary units. */
 	template<typename Quantity>
 	static double convertBaseToArbitrary(
 		double value,
 		typename Quantity::Unit unit
 	);
-
-	/** Convert temperature from base units to arbitrary units. */
-/*	static double convertTemperatureBaseToArbitrary(
-		double temperature,
-		Quantity::Temperature::Unit unit
-	);*/
-
-	/** Convert time from base units to arbitrary units. */
-/*	static double convertTimeBaseToArbitrary(
-		double time,
-		Quantity::Time::Unit unit
-	);*/
-
-	/** Convert length from base units to arbitrary units. */
-/*	static double convertLengthBaseToArbitrary(
-		double length,
-		Quantity::Length::Unit unit
-	);*/
-
-	/** Convert energy from base units to arbitrary units. */
-/*	static double convertEnergyBaseToArbitrary(
-		double energy,
-		Quantity::Energy::Unit unit
-	);*/
-
-	/** Convert charge from base units to arbitrary units. */
-/*	static double convertChargeBaseToArbitrary(
-		double charge,
-		Quantity::Charge::Unit unit
-	);*/
-
-	/** Convert count from base units to arbitrary units. */
-/*	static double convertCountBaseToArbitrary(
-		double count,
-		Quantity::Count::Unit unit
-	);*/
 
 	/** Convert arbitrary units to natural units. */
 	template<typename Quantity>
@@ -232,84 +160,12 @@ public:
 		typename Quantity::Unit unit
 	);
 
-	/** Convert temperature from arbitrary units to natural units. */
-/*	static double convertTemperatureArbitraryToNatural(
-		double temperature,
-		Quantity::Temperature::Unit unit
-	);*/
-
-	/** Convert time from arbitrary units to natural units. */
-/*	static double convertTimeArbitraryToNatural(
-		double time,
-		Quantity::Time::Unit unit
-	);*/
-
-	/** Convert length from arbitrary units to natural units. */
-/*	static double convertLengthArbitraryToNatural(
-		double length,
-		Quantity::Length::Unit unit
-	);*/
-
-	/** Convert energy from arbitrary units to natural units. */
-/*	static double convertEnergyArbitraryToNatural(
-		double energy,
-		Quantity::Energy::Unit unit
-	);*/
-
-	/** Convert charge from arbitrary units to natural units. */
-/*	static double convertChargeArbitraryToNatural(
-		double charge,
-		Quantity::Charge::Unit unit
-	);*/
-
-	/** Convert count from arbitrary units to natural units. */
-/*	static double convertCountArbitraryToNatural(
-		double count,
-		Quantity::Count::Unit unit
-	);*/
-
 	/** Convert natural units to arbitrary units. */
 	template<typename Quantity>
 	static double convertNaturalToArbitrary(
 		double value,
 		typename Quantity::Unit unit
 	);
-
-	/** Convert temperature from natural units to arbitrary units. */
-/*	static double convertTemperatureNaturalToArbitrary(
-		double temperature,
-		Quantity::Temperature::Unit unit
-	);*/
-
-	/** Convert time from natural units to arbitrary units. */
-/*	static double convertTimeNaturalToArbitrary(
-		double time,
-		Quantity::Time::Unit unit
-	);*/
-
-	/** Convert length from natural units to arbitrary units. */
-/*	static double convertLengthNaturalToArbitrary(
-		double length,
-		Quantity::Length::Unit unit
-	);*/
-
-	/** Convert energy from natural units to arbitrary units. */
-/*	static double convertEnergyNaturalToArbitrary(
-		double energy,
-		Quantity::Energy::Unit unit
-	);*/
-
-	/** Convert charge from natural units to arbitrary units. */
-/*	static double convertChargeNaturalToArbitrary(
-		double charge,
-		Quantity::Charge::Unit unit
-	);*/
-
-	/** Convert count from natural units to arbitrary units. */
-/*	static double convertCountNaturalToArbitrary(
-		double count,
-		Quantity::Count::Unit unit
-	);*/
 
 	/** Convert mass from derived units to base units. */
 	static double convertMassDerivedToBase(double mass, MassUnit unit);
