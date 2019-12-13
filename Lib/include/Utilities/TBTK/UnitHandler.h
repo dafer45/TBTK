@@ -358,23 +358,15 @@ private:
 	/** Conversion factor from eV/C to V. */
 	static double baseVoltage_per_V;
 
-	/** Currently set temperature unit. */
-	static Quantity::Temperature::Unit temperatureUnit;
-
-	/** Currently set time unit. */
-	static Quantity::Time::Unit timeUnit;
-
-	/** Currently set length unit. */
-	static Quantity::Length::Unit lengthUnit;
-
-	/** Currently set energy unit. */
-	static Quantity::Energy::Unit energyUnit;
-
-	/** Currently set charge unit. */
-	static Quantity::Charge::Unit chargeUnit;
-
-	/**Currently set count unit. */
-	static Quantity::Count::Unit countUnit;
+	/** Currently set units. */
+	static std::tuple<
+		Quantity::Charge::Unit,
+		Quantity::Count::Unit,
+		Quantity::Energy::Unit,
+		Quantity::Length::Unit,
+		Quantity::Temperature::Unit,
+		Quantity::Time::Unit
+	> units;
 
 	/** Currently set temperature scale. */
 	static double temperatureScale;
@@ -414,6 +406,11 @@ private:
 
 	/** Set temperature scale. */
 	static void setTemperatureScale(double scale);
+
+	/** Function for indexing into the tuple units using compile time
+	 *  Quatity names. */
+	template<typename Quantity>
+	constexpr static typename Quantity::Unit& getUnit();
 
 	/** Set time scale. */
 	static void setTimeScale(double scale);
@@ -582,6 +579,43 @@ private:
 	} staticConstructor;
 };
 
+template<>
+inline constexpr Quantity::Charge::Unit& UnitHandler::getUnit<Quantity::Charge>(
+){
+	return std::get<0>(units);
+}
+
+template<>
+inline constexpr Quantity::Count::Unit& UnitHandler::getUnit<Quantity::Count>(
+){
+	return std::get<1>(units);
+}
+
+template<>
+inline constexpr Quantity::Energy::Unit& UnitHandler::getUnit<Quantity::Energy>(
+){
+	return std::get<2>(units);
+}
+
+template<>
+inline constexpr Quantity::Length::Unit& UnitHandler::getUnit<Quantity::Length>(
+){
+	return std::get<3>(units);
+}
+
+template<>
+inline constexpr Quantity::Temperature::Unit& UnitHandler::getUnit<
+	Quantity::Temperature
+>(){
+	return std::get<4>(units);
+}
+
+template<>
+inline constexpr Quantity::Time::Unit& UnitHandler::getUnit<Quantity::Time>(
+){
+	return std::get<5>(units);
+}
+
 inline void UnitHandler::setTemperatureScale(
 	double scale,
 	Quantity::Temperature::Unit unit
@@ -694,32 +728,34 @@ double UnitHandler::convertNaturalToArbitrary(
 
 template<>
 inline double UnitHandler::getConversionFactor<Quantity::Charge>(){
-	return getChargeConversionFactor(chargeUnit);
+	return getChargeConversionFactor(getUnit<Quantity::Charge>());
 }
 
 template<>
 inline double UnitHandler::getConversionFactor<Quantity::Count>(){
-	return getCountConversionFactor(countUnit);
+	return getCountConversionFactor(getUnit<Quantity::Count>());
 }
 
 template<>
 inline double UnitHandler::getConversionFactor<Quantity::Energy>(){
-	return getEnergyConversionFactor(energyUnit);
+	return getEnergyConversionFactor(getUnit<Quantity::Energy>());
 }
 
 template<>
 inline double UnitHandler::getConversionFactor<Quantity::Length>(){
-	return getLengthConversionFactor(lengthUnit);
+	return getLengthConversionFactor(getUnit<Quantity::Length>());
 }
 
 template<>
 inline double UnitHandler::getConversionFactor<Quantity::Temperature>(){
-	return getTemperatureConversionFactor(temperatureUnit);
+	return getTemperatureConversionFactor(
+		getUnit<Quantity::Temperature>()
+	);
 }
 
 template<>
 inline double UnitHandler::getConversionFactor<Quantity::Time>(){
-	return getTimeConversionFactor(timeUnit);
+	return getTimeConversionFactor(getUnit<Quantity::Time>());
 }
 
 template<>
@@ -796,32 +832,34 @@ inline double UnitHandler::getScaleFactor<Quantity::Time>(){
 
 template<>
 inline std::string UnitHandler::getUnitString<Quantity::Charge>(){
-	return Quantity::Charge::getUnitString(chargeUnit);
+	return Quantity::Charge::getUnitString(getUnit<Quantity::Charge>());
 }
 
 template<>
 inline std::string UnitHandler::getUnitString<Quantity::Count>(){
-	return Quantity::Count::getUnitString(countUnit);
+	return Quantity::Count::getUnitString(getUnit<Quantity::Count>());
 }
 
 template<>
 inline std::string UnitHandler::getUnitString<Quantity::Energy>(){
-	return Quantity::Energy::getUnitString(energyUnit);
+	return Quantity::Energy::getUnitString(getUnit<Quantity::Energy>());
 }
 
 template<>
 inline std::string UnitHandler::getUnitString<Quantity::Length>(){
-	return Quantity::Length::getUnitString(lengthUnit);
+	return Quantity::Length::getUnitString(getUnit<Quantity::Length>());
 }
 
 template<>
 inline std::string UnitHandler::getUnitString<Quantity::Temperature>(){
-	return Quantity::Temperature::getUnitString(temperatureUnit);
+	return Quantity::Temperature::getUnitString(
+		getUnit<Quantity::Temperature>()
+	);
 }
 
 template<>
 inline std::string UnitHandler::getUnitString<Quantity::Time>(){
-	return Quantity::Time::getUnitString(timeUnit);
+	return Quantity::Time::getUnitString(getUnit<Quantity::Time>());
 }
 
 };

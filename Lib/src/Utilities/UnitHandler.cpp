@@ -51,12 +51,21 @@ double UnitHandler::baseMagneticField_per_T;
 double UnitHandler::V_per_baseVoltage;
 double UnitHandler::baseVoltage_per_V;
 
-Quantity::Temperature::Unit 	UnitHandler::temperatureUnit	= Quantity::Temperature::Unit::K;
-Quantity::Time::Unit 		UnitHandler::timeUnit		= Quantity::Time::Unit::s;
-Quantity::Length::Unit		UnitHandler::lengthUnit		= Quantity::Length::Unit::m;
-Quantity::Energy::Unit		UnitHandler::energyUnit		= Quantity::Energy::Unit::eV;
-Quantity::Charge::Unit		UnitHandler::chargeUnit		= Quantity::Charge::Unit::C;
-Quantity::Count::Unit		UnitHandler::countUnit		= Quantity::Count::Unit::pcs;
+tuple<
+	Quantity::Charge::Unit,
+	Quantity::Count::Unit,
+	Quantity::Energy::Unit,
+	Quantity::Length::Unit,
+	Quantity::Temperature::Unit,
+	Quantity::Time::Unit
+> UnitHandler::units = make_tuple(
+	Quantity::Charge::Unit::C,
+	Quantity::Count::Unit::pcs,
+	Quantity::Energy::Unit::eV,
+	Quantity::Length::Unit::m,
+	Quantity::Temperature::Unit::K,
+	Quantity::Time::Unit::s
+);
 
 double UnitHandler::temperatureScale	= 1.;
 double UnitHandler::timeScale		= 1.;
@@ -142,7 +151,7 @@ double UnitHandler::getConstantNaturalUnits(const std::string &name){
 
 void UnitHandler::setTemperatureUnit(Quantity::Temperature::Unit unit){
 	double oldConversionFactor = getTemperatureConversionFactor();
-	temperatureUnit = unit;
+	getUnit<Quantity::Temperature>() = unit;
 	double newConversionFactor = getTemperatureConversionFactor();
 	temperatureScale *= newConversionFactor/oldConversionFactor;
 
@@ -151,7 +160,7 @@ void UnitHandler::setTemperatureUnit(Quantity::Temperature::Unit unit){
 
 void UnitHandler::setTimeUnit(Quantity::Time::Unit unit){
 	double oldConversionFactor = getTimeConversionFactor();
-	timeUnit = unit;
+	getUnit<Quantity::Time>() = unit;
 	double newConversionFactor = getTimeConversionFactor();
 	timeScale *= newConversionFactor/oldConversionFactor;
 
@@ -160,7 +169,7 @@ void UnitHandler::setTimeUnit(Quantity::Time::Unit unit){
 
 void UnitHandler::setLengthUnit(Quantity::Length::Unit unit){
 	double oldConversionFactor = getLengthConversionFactor();
-	lengthUnit = unit;
+	getUnit<Quantity::Length>() = unit;
 	double newConversionFactor = getLengthConversionFactor();
 	lengthScale *= newConversionFactor/oldConversionFactor;
 
@@ -169,7 +178,7 @@ void UnitHandler::setLengthUnit(Quantity::Length::Unit unit){
 
 void UnitHandler::setEnergyUnit(Quantity::Energy::Unit unit){
 	double oldConversionFactor = getEnergyConversionFactor();
-	energyUnit = unit;
+	getUnit<Quantity::Energy>() = unit;
 	double newConversionFactor = getEnergyConversionFactor();
 	energyScale *= newConversionFactor/oldConversionFactor;
 
@@ -178,7 +187,7 @@ void UnitHandler::setEnergyUnit(Quantity::Energy::Unit unit){
 
 void UnitHandler::setChargeUnit(Quantity::Charge::Unit unit){
 	double oldConversionFactor = getChargeConversionFactor();
-	chargeUnit = unit;
+	getUnit<Quantity::Charge>() = unit;
 	double newConversionFactor = getChargeConversionFactor();
 	chargeScale *= newConversionFactor/oldConversionFactor;
 
@@ -187,7 +196,7 @@ void UnitHandler::setChargeUnit(Quantity::Charge::Unit unit){
 
 void UnitHandler::setCountUnit(Quantity::Count::Unit unit){
 	double oldConversionFactor = getCountConversionFactor();
-	countUnit = unit;
+	getUnit<Quantity::Count>() = unit;
 	double newConversionFactor = getCountConversionFactor();
 	countScale *= newConversionFactor/oldConversionFactor;
 
@@ -710,7 +719,9 @@ void UnitHandler::updateConstants(){
 }
 
 double UnitHandler::getTemperatureConversionFactor(){
-	return getTemperatureConversionFactor(temperatureUnit);
+	return getTemperatureConversionFactor(
+		getUnit<Quantity::Temperature>()
+	);
 }
 
 double UnitHandler::getTemperatureConversionFactor(
@@ -737,7 +748,7 @@ double UnitHandler::getTemperatureConversionFactor(
 }
 
 double UnitHandler::getTimeConversionFactor(){
-	return getTimeConversionFactor(timeUnit);
+	return getTimeConversionFactor(getUnit<Quantity::Time>());
 }
 
 double UnitHandler::getTimeConversionFactor(Quantity::Time::Unit timeUnit){
@@ -766,7 +777,7 @@ double UnitHandler::getTimeConversionFactor(Quantity::Time::Unit timeUnit){
 }
 
 double UnitHandler::getLengthConversionFactor(){
-	return getLengthConversionFactor(lengthUnit);
+	return getLengthConversionFactor(getUnit<Quantity::Length>());
 }
 
 double UnitHandler::getLengthConversionFactor(
@@ -799,7 +810,7 @@ double UnitHandler::getLengthConversionFactor(
 }
 
 double UnitHandler::getEnergyConversionFactor(){
-	return getEnergyConversionFactor(energyUnit);
+	return getEnergyConversionFactor(getUnit<Quantity::Energy>());
 }
 
 double UnitHandler::getEnergyConversionFactor(
@@ -830,7 +841,7 @@ double UnitHandler::getEnergyConversionFactor(
 }
 
 double UnitHandler::getChargeConversionFactor(){
-	return getChargeConversionFactor(chargeUnit);
+	return getChargeConversionFactor(getUnit<Quantity::Charge>());
 }
 
 double UnitHandler::getChargeConversionFactor(
@@ -874,7 +885,7 @@ double UnitHandler::getChargeConversionFactor(
 }
 
 double UnitHandler::getCountConversionFactor(){
-	return getCountConversionFactor(countUnit);
+	return getCountConversionFactor(getUnit<Quantity::Count>());
 }
 
 double UnitHandler::getCountConversionFactor(Quantity::Count::Unit countUnit){
