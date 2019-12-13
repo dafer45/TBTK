@@ -542,30 +542,6 @@ double UnitHandler::convertVoltageNaturalToDerived(
 	return voltageInDefaultBaseUnits*getVoltageConversionFactor(unit);
 }
 
-/*string UnitHandler::getTemperatureUnitString(){
-	return Quantity::Temperature::getUnitString(temperatureUnit);
-}
-
-string UnitHandler::getTimeUnitString(){
-	return Quantity::Time::getUnitString(timeUnit);
-}
-
-string UnitHandler::getLengthUnitString(){
-	return Quantity::Length::getUnitString(lengthUnit);
-}
-
-string UnitHandler::getEnergyUnitString(){
-	return Quantity::Energy::getUnitString(energyUnit);
-}
-
-string UnitHandler::getChargeUnitString(){
-	return Quantity::Charge::getUnitString(chargeUnit);
-}
-
-string UnitHandler::getCountUnitString(){
-	return Quantity::Count::getUnitString(countUnit);
-}*/
-
 string UnitHandler::getMassUnitString(){
 	stringstream ss;
 	ss << getUnitString<Quantity::Energy>() << getUnitString<Quantity::Time>() << "^2" << "/" << getUnitString<Quantity::Length>() << "^2";

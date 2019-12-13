@@ -235,37 +235,6 @@ public:
 	template<typename Quantity>
 	static std::string getUnitString();
 
-	/** Get temperature unit string
-	 *
-	 *  @return string representation of the currently set temperature unit.
-	 */
-//	static std::string getTemperatureUnitString();
-
-	/** Get time unit string
-	 *
-	 *  @return string representation of the currently set time unit. */
-//	static std::string getTimeUnitString();
-
-	/** Get length unit string
-	 *
-	 *  @return string representation of the currently set length unit. */
-//	static std::string getLengthUnitString();
-
-	/** Get energy unit string
-	 *
-	 *  @return string representation of the currently set energy unit. */
-//	static std::string getEnergyUnitString();
-
-	/** Get charge unit string
-	 *
-	 *  @return string representation of the currently set charge unit. */
-//	static std::string getChargeUnitString();
-
-	/** Get count unit string
-	 *
-	 * @return string representation of the current set count unit. */
-//	static std::string getCountUnitString();
-
 	/** Get mass unit string.
 	 *
 	 *  @return string representation of the derived mass unit in terms of
