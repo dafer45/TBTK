@@ -378,57 +378,29 @@ private:
 		double
 	> scales;
 
-	/** Set temperature unit. */
-	static void setTemperatureUnit(Quantity::Temperature::Unit unit);
-
-	/** Set time unit. */
-	static void setTimeUnit(Quantity::Time::Unit unit);
-
-	/** Set length unit. */
-	static void setLengthUnit(Quantity::Length::Unit unit);
-
-	/** Set energy unit. */
-	static void setEnergyUnit(Quantity::Energy::Unit unit);
-
-	/** Set charge unit. */
-	static void setChargeUnit(Quantity::Charge::Unit unit);
-
-	/** Set counting unit. */
-	static void setCountUnit(Quantity::Count::Unit unit);
-
-	/** Set temperature scale. */
-	static void setTemperatureScale(double scale);
+	/** Set unit. */
+	template<typename Quantity>
+	static void setUnit(typename Quantity::Unit unit);
 
 	/** Function for indexing into the tuple units using compile time
 	 *  Quatity names. */
 	template<typename Quantity>
 	constexpr static typename Quantity::Unit& getUnit();
 
-	/** Set time scale. */
-	static void setTimeScale(double scale);
+	/** Set scale. */
+	template<typename Quantity>
+	static void setScale(double scale);
 
-	/** Set length scale. */
-	static void setLengthScale(double scale);
-
-	/** Set energy scale. */
-	static void setEnergyScale(double scale);
-
-	/** Set charge scale. */
-	static void setChargeScale(double scale);
-
-	/** Set count unit. */
-	static void setCountScale(double scale);
+	/** Function for indexing into the tuple scales using compile time
+	 *  Quatity names. */
+	template<typename Quantity>
+	constexpr static double& getScale();
 
 	/** Set temperature scale. */
 	static void setTemperatureScale(
 		double scale,
 		Quantity::Temperature::Unit unit
 	);
-
-	/** Function for indexing into the tuple scales using compile time
-	 *  Quatity names. */
-	template<typename Quantity>
-	constexpr static double& getScale();
 
 	/** Set time scale. */
 	static void setTimeScale(double scale, Quantity::Time::Unit unit);
@@ -572,6 +544,15 @@ private:
 	} staticConstructor;
 };
 
+template<typename Quantity>
+void UnitHandler::setUnit(typename Quantity::Unit unit){
+	double oldConversionFactor = getConversionFactor<Quantity>();
+	getUnit<Quantity>() = unit;
+	double newConversionFactor = getConversionFactor<Quantity>();
+	getScale<Quantity>() *= newConversionFactor/oldConversionFactor;
+	updateConstants();
+}
+
 template<>
 inline constexpr Quantity::Charge::Unit& UnitHandler::getUnit<Quantity::Charge>(
 ){
@@ -613,45 +594,45 @@ inline void UnitHandler::setTemperatureScale(
 	double scale,
 	Quantity::Temperature::Unit unit
 ){
-	setTemperatureUnit(unit);
-	setTemperatureScale(scale);
+	setUnit<Quantity::Temperature>(unit);
+	setScale<Quantity::Temperature>(scale);
 }
 
 inline void UnitHandler::setTimeScale(double scale, Quantity::Time::Unit unit){
-	setTimeUnit(unit);
-	setTimeScale(scale);
+	setUnit<Quantity::Time>(unit);
+	setScale<Quantity::Time>(scale);
 }
 
 inline void UnitHandler::setLengthScale(
 	double scale,
 	Quantity::Length::Unit unit
 ){
-	setLengthUnit(unit);
-	setLengthScale(scale);
+	setUnit<Quantity::Length>(unit);
+	setScale<Quantity::Length>(scale);
 }
 
 inline void UnitHandler::setEnergyScale(
 	double scale,
 	Quantity::Energy::Unit unit
 ){
-	setEnergyUnit(unit);
-	setEnergyScale(scale);
+	setUnit<Quantity::Energy>(unit);
+	setScale<Quantity::Energy>(scale);
 }
 
 inline void UnitHandler::setChargeScale(
 	double scale,
 	Quantity::Charge::Unit unit
 ){
-	setChargeUnit(unit);
-	setChargeScale(scale);
+	setUnit<Quantity::Charge>(unit);
+	setScale<Quantity::Charge>(scale);
 }
 
 inline void UnitHandler::setCountScale(
 	double scale,
 	Quantity::Count::Unit unit
 ){
-	setCountUnit(unit);
-	setCountScale(scale);
+	setUnit<Quantity::Count>(unit);
+	setScale<Quantity::Count>(scale);
 }
 
 inline void UnitHandler::setScales(const std::vector<std::string> &scales){
@@ -791,6 +772,11 @@ inline double UnitHandler::getConversionFactor<Quantity::Time>(
 	typename Quantity::Time::Unit unit
 ){
 	return getTimeConversionFactor(unit);
+}
+
+template<typename Quantity>
+inline void UnitHandler::setScale(double scale){
+	getScale<Quantity>() = scale;
 }
 
 template<>
