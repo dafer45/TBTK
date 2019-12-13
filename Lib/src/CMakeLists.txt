@@ -17,6 +17,7 @@ FILE(
 	Property/*.cpp
 	PropertyExtractor/*.cpp
 #	PropertyExtractors/ArnoldiIterator/*.cpp
+	Quantity/*.cpp
 	Solver/*.cpp
 #	Solvers/ArnoldiIterator/*.cpp
 	SpecializedSolvers/RPA/*.cpp

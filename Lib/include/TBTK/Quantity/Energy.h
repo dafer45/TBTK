@@ -26,7 +26,8 @@
 #include "TBTK/Real.h"
 #include "TBTK/TBTKMacros.h"
 
-#include "TBTK/json.hpp"
+#include <map>
+#include <string>
 
 namespace TBTK{
 namespace Quantity{
@@ -55,28 +56,10 @@ public:
 
 	/** Get unit string. */
 	static std::string getUnitString(Unit unit);
+private:
+	static std::map<Unit, std::string> unitToString;
+	static std::map<std::string, Unit> stringToUnit;
 };
-
-inline std::string Energy::getUnitString(Unit unit){
-	switch(unit){
-		case Quantity::Energy::Unit::GeV:
-			return "GeV";
-		case Quantity::Energy::Unit::MeV:
-			return "MeV";
-		case Quantity::Energy::Unit::keV:
-			return "keV";
-		case Quantity::Energy::Unit::eV:
-			return "eV";
-		case Quantity::Energy::Unit::meV:
-			return "meV";
-		case Quantity::Energy::Unit::ueV:
-			return "ueV";
-		case Quantity::Energy::Unit::J:
-			return "J";
-		default:
-			return "Unknown unit";
-	};
-}
 
 }; //End of namesapce Energy
 }; //End of namesapce TBTK

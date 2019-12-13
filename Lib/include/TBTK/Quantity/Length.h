@@ -26,7 +26,8 @@
 #include "TBTK/Real.h"
 #include "TBTK/TBTKMacros.h"
 
-#include "TBTK/json.hpp"
+#include <map>
+#include <string>
 
 namespace TBTK{
 namespace Quantity{
@@ -56,30 +57,10 @@ public:
 
 	/** Get unit string. */
 	static std::string getUnitString(Unit unit);
+private:
+	static std::map<Unit, std::string> unitToString;
+	static std::map<std::string, Unit> stringToUnit;
 };
-
-inline std::string Length::getUnitString(Unit unit){
-	switch(unit){
-		case Quantity::Length::Unit::m:
-			return "m";
-		case Quantity::Length::Unit::mm:
-			return "mm";
-		case Quantity::Length::Unit::um:
-			return "um";
-		case Quantity::Length::Unit::nm:
-			return "nm";
-		case Quantity::Length::Unit::pm:
-			return "pm";
-		case Quantity::Length::Unit::fm:
-			return "fm";
-		case Quantity::Length::Unit::am:
-			return "am";
-		case Quantity::Length::Unit::Ao:
-			return "Ao";
-		default:
-			return "Unknown unit";
-	};
-}
 
 }; //End of namesapce Length
 }; //End of namesapce TBTK

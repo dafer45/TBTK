@@ -26,7 +26,8 @@
 #include "TBTK/Real.h"
 #include "TBTK/TBTKMacros.h"
 
-#include "TBTK/json.hpp"
+#include <map>
+#include <string>
 
 namespace TBTK{
 namespace Quantity{
@@ -53,24 +54,10 @@ public:
 
 	/** Get unit string. */
 	static std::string getUnitString(Unit unit);
+private:
+	static std::map<Unit, std::string> unitToString;
+	static std::map<std::string, Unit> stringToUnit;
 };
-
-inline std::string Temperature::getUnitString(Unit unit){
-	switch(unit){
-		case Quantity::Temperature::Unit::kK:
-			return "kK";
-		case Quantity::Temperature::Unit::K:
-			return "K";
-		case Quantity::Temperature::Unit::mK:
-			return "mK";
-		case Quantity::Temperature::Unit::uK:
-			return "uK";
-		case Quantity::Temperature::Unit::nK:
-			return "nK";
-		default:
-			return "Unknown unit";
-	};
-}
 
 }; //End of namesapce Temperature
 }; //End of namesapce TBTK
