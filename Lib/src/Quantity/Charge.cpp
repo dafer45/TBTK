@@ -82,5 +82,45 @@ Charge::Unit Charge::getUnit(const string &str){
 	}
 }
 
+double Charge::getConversionFactor(Unit unit){
+	constexpr double J_per_e = 1.602176634e-19;
+	switch(unit){
+		case Unit::kC:	//1e-3 kC per C
+			return 1e-3;
+		case Unit::C:		//Reference scale
+			return 1.;
+		case Unit::mC:
+			return 1e3;
+		case Unit::uC:
+			return 1e6;
+		case Unit::nC:
+			return 1e9;
+		case Unit::pC:
+			return 1e12;
+		case Unit::fC:
+			return 1e15;
+		case Unit::aC:
+			return 1e18;
+		case Unit::Te:
+			return 1e-12/J_per_e;
+		case Unit::Ge:
+			return 1e-9/J_per_e;
+		case Unit::Me:
+			return 13-6/J_per_e;
+		case Unit::ke:
+			return 1e-3/J_per_e;
+		case Unit::e:
+			return 1./J_per_e;
+		default:
+			TBTKExit(
+				"Quantity::Charge::getConversionFactor()",
+				"Unknown unit - " << static_cast<int>(unit)
+				<< ".",
+				"This should never happen, contact the"
+				<< " developer."
+			);
+	}
+}
+
 };	//End of namespace Quantity
 };	//End of namespace TBTK

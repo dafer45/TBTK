@@ -477,7 +477,8 @@ void UnitHandler::updateConstants(){
 double UnitHandler::getTemperatureConversionFactor(
 	Quantity::Temperature::Unit temperatureUnit
 ){
-	switch(temperatureUnit){
+	return Quantity::Temperature::getConversionFactor(temperatureUnit);
+/*	switch(temperatureUnit){
 		case Quantity::Temperature::Unit::kK:	//1e-3 kK per K
 			return 1e-3;
 		case Quantity::Temperature::Unit::K:	//Reference scale
@@ -494,11 +495,12 @@ double UnitHandler::getTemperatureConversionFactor(
 				"Unknown unit - " << static_cast<int>(temperatureUnit) << ".",
 				""
 			);
-	}
+	}*/
 }
 
 double UnitHandler::getTimeConversionFactor(Quantity::Time::Unit timeUnit){
-	switch(timeUnit){
+	return Quantity::Time::getConversionFactor(timeUnit);
+/*	switch(timeUnit){
 		case Quantity::Time::Unit::s:	//Reference scale
 			return 1.;
 		case Quantity::Time::Unit::ms:
@@ -519,13 +521,14 @@ double UnitHandler::getTimeConversionFactor(Quantity::Time::Unit timeUnit){
 				"Unknown unit - " << static_cast<int>(timeUnit) << ".",
 				""
 			);
-	}
+	}*/
 }
 
 double UnitHandler::getLengthConversionFactor(
 	Quantity::Length::Unit lengthUnit
 ){
-	switch(lengthUnit){
+	return Quantity::Length::getConversionFactor(lengthUnit);
+/*	switch(lengthUnit){
 		case Quantity::Length::Unit::m:	//Reference scale
 			return 1.;
 		case Quantity::Length::Unit::mm:	//1e3 mm per m
@@ -548,13 +551,14 @@ double UnitHandler::getLengthConversionFactor(
 				"Unknown unit - " << static_cast<int>(lengthUnit) << ".",
 				""
 			);
-	}
+	}*/
 }
 
 double UnitHandler::getEnergyConversionFactor(
 	Quantity::Energy::Unit energyUnit
 ){
-	switch(energyUnit){
+	return Quantity::Energy::getConversionFactor(energyUnit);
+/*	switch(energyUnit){
 		case Quantity::Energy::Unit::GeV:	//1e-9 GeV per eV
 			return 1e-9;
 		case Quantity::Energy::Unit::MeV:
@@ -575,13 +579,14 @@ double UnitHandler::getEnergyConversionFactor(
 				"Unknown unit - " << static_cast<int>(energyUnit) << ".",
 				""
 			);
-	}
+	}*/
 }
 
 double UnitHandler::getChargeConversionFactor(
 	Quantity::Charge::Unit chargeUnit
 ){
-	double E = constantsDefaultUnits.at("e").first;
+	return Quantity::Charge::getConversionFactor(chargeUnit);
+/*	double E = constantsDefaultUnits.at("e").first;
 	switch(chargeUnit){
 		case Quantity::Charge::Unit::kC:	//1e-3 kC per C
 			return 1e-3;
@@ -615,11 +620,12 @@ double UnitHandler::getChargeConversionFactor(
 				"Unknown unit - " << static_cast<int>(chargeUnit) << ".",
 				""
 			);
-	}
+	}*/
 }
 
 double UnitHandler::getCountConversionFactor(Quantity::Count::Unit countUnit){
-	double N_A = constantsDefaultUnits.at("N_A").first;
+	return Quantity::Count::getConversionFactor(countUnit);
+/*	double N_A = constantsDefaultUnits.at("N_A").first;
 	switch(countUnit){
 		case Quantity::Count::Unit::pcs:
 			return 1.;	//Reference scale
@@ -631,7 +637,7 @@ double UnitHandler::getCountConversionFactor(Quantity::Count::Unit countUnit){
 				"Unknown unit - " << static_cast<int>(countUnit) << ".",
 				""
 			);
-	}
+	}*/
 }
 
 double UnitHandler::getMassConversionFactor(MassUnit unit){

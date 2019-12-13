@@ -72,5 +72,34 @@ Length::Unit Length::getUnit(const string &str){
 	}
 }
 
+double Length::getConversionFactor(Unit unit){
+	switch(unit){
+		case Unit::m:	//Reference scale
+			return 1.;
+		case Unit::mm:	//1e3 mm per m
+			return 1e3;
+		case Unit::um:
+			return 1e6;
+		case Unit::nm:
+			return 1e9;
+		case Unit::pm:
+			return 1e12;
+		case Unit::fm:
+			return 1e15;
+		case Unit::am:
+			return 1e18;
+		case Unit::Ao:
+			return 1e10;
+		default:
+			TBTKExit(
+				"Quantity::Length::getConversionFactor()",
+				"Unknown unit - " << static_cast<int>(unit)
+				<< ".",
+				"This should never happen, contact the"
+				<< " developer."
+			);
+	}
+}
+
 };	//End of namespace Quantity
 };	//End of namespace TBTK

@@ -70,5 +70,32 @@ Time::Unit Time::getUnit(const string &str){
 	}
 }
 
+double Time::getConversionFactor(Unit unit){
+	switch(unit){
+		case Unit::s:		//Reference scale
+			return 1.;
+		case Unit::ms:
+			return 1e3;	//1e3 ms per second
+		case Unit::us:
+			return 1e6;
+		case Unit::ns:
+			return 1e9;
+		case Unit::ps:
+			return 1e12;
+		case Unit::fs:
+			return 1e15;
+		case Unit::as:
+			return 1e18;
+		default:
+			TBTKExit(
+				"Quantity::Time::getConversionFactor()",
+				"Unknown unit - " << static_cast<int>(unit)
+				<< ".",
+				"This should never happen, contact the"
+				<< " developer."
+			);
+	}
+}
+
 };	//End of namespace Quantity
 };	//End of namespace TBTK

@@ -66,5 +66,28 @@ Temperature::Unit Temperature::getUnit(const string &str){
 	}
 }
 
+double Temperature::getConversionFactor(Unit unit){
+	switch(unit){
+		case Unit::kK:	//1e-3 kK per K
+			return 1e-3;
+		case Unit::K:	//Reference scale
+			return 1.;
+		case Unit::mK:
+			return 1e3;
+		case Unit::uK:
+			return 1e6;
+		case Unit::nK:
+			return 1e9;
+		default:
+			TBTKExit(
+				"Quantity::Temperature::getConversionUnit()",
+				"Unknown unit - " << static_cast<int>(unit)
+				<< ".",
+				"This should never happen, contact the"
+				<< " developer."
+			);
+	}
+}
+
 };	//End of namespace Quantity
 };	//End of namespace TBTK

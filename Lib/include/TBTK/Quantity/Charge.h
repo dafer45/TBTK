@@ -65,6 +65,10 @@ public:
 
 	/** Convert a string to a Unit. */
 	static Unit getUnit(const std::string &str);
+
+	/** Get the conversion factor for converting from the reference unit to
+	 *  the given unit. */
+	static double getConversionFactor(Unit unit);
 private:
 	static std::map<Unit, std::string> unitToString;
 	static std::map<std::string, Unit> stringToUnit;

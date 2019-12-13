@@ -70,5 +70,33 @@ Energy::Unit Energy::getUnit(const string &str){
 	}
 }
 
+double Energy::getConversionFactor(Unit unit){
+	constexpr double J_per_eV = 1.602176634e-19;
+	switch(unit){
+		case Unit::GeV:	//1e-9 GeV per eV
+			return 1e-9;
+		case Unit::MeV:
+			return 1e-6;
+		case Unit::keV:
+			return 1e-3;
+		case Unit::eV:	//Reference scale
+			return 1.;
+		case Unit::meV:
+			return 1e3;
+		case Unit::ueV:
+			return 1e6;
+		case Unit::J:
+			return J_per_eV;
+		default:
+			TBTKExit(
+				"Quantity::Energy::getConversionFactor()",
+				"Unknown unit - " << static_cast<int>(unit)
+				<< ".",
+				"This should never happen, contact the"
+				<< " developer."
+			);
+	}
+}
+
 };	//End of namespace Quantity
 };	//End of namespace TBTK

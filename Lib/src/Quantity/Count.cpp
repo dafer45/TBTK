@@ -60,5 +60,23 @@ Count::Unit Count::getUnit(const string &str){
 	}
 }
 
+double Count::getConversionFactor(Unit unit){
+	constexpr double pcs_per_mol = 6.02214076e23;
+	switch(unit){
+		case Unit::pcs:
+			return 1.;	//Reference scale
+		case Unit::mol:	//1/N_A mol per pcs
+			return 1./pcs_per_mol;
+		default:
+			TBTKExit(
+				"Quantity::Count::getConversionFactor()",
+				"Unknown unit - " << static_cast<int>(unit)
+				<< ".",
+				"This should never happen, contact the"
+				<< " developer."
+			);
+	}
+}
+
 };	//End of namespace Quantity
 };	//End of namespace TBTK
