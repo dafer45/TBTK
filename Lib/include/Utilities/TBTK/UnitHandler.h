@@ -378,24 +378,6 @@ private:
 		double
 	> scales;
 
-	/** Currently set temperature scale. */
-//	static double temperatureScale;
-
-	/** Currently set time scale. */
-//	static double timeScale;
-
-	/** Currently set length scale. */
-//	static double lengthScale;
-
-	/** Currently set energy scale. */
-//	static double energyScale;
-
-	/** Currently set charge scale. */
-//	static double chargeScale;
-
-	/** Currently set count scale. */
-//	static double countScale;
-
 	/** Set temperature unit. */
 	static void setTemperatureUnit(Quantity::Temperature::Unit unit);
 
@@ -480,10 +462,6 @@ private:
 
 	/** Set count scale. */
 	static void setCountScale(std::string scale);
-
-	/** Get the scale factor for the corresponding quantity. */
-//	template<typename Quantity>
-//	static double getScaleFactor();
 
 	/** Update contants to reflect the current base units. */
 	static void updateConstants();
@@ -815,12 +793,6 @@ inline double UnitHandler::getConversionFactor<Quantity::Time>(
 	return getTimeConversionFactor(unit);
 }
 
-/*template<>
-inline constexpr Quantity::Charge::Unit& UnitHandler::getUnit<Quantity::Charge>(
-){
-	return std::get<0>(units);
-}*/
-
 template<>
 inline constexpr double& UnitHandler::getScale<Quantity::Charge>(){
 	return std::get<0>(scales);
@@ -850,36 +822,6 @@ template<>
 inline constexpr double& UnitHandler::getScale<Quantity::Time>(){
 	return std::get<5>(scales);
 }
-
-/*template<>
-inline double UnitHandler::getScaleFactor<Quantity::Charge>(){
-	return chargeScale;
-}
-
-template<>
-inline double UnitHandler::getScaleFactor<Quantity::Count>(){
-	return countScale;
-}
-
-template<>
-inline double UnitHandler::getScaleFactor<Quantity::Energy>(){
-	return energyScale;
-}
-
-template<>
-inline double UnitHandler::getScaleFactor<Quantity::Length>(){
-	return lengthScale;
-}
-
-template<>
-inline double UnitHandler::getScaleFactor<Quantity::Temperature>(){
-	return temperatureScale;
-}
-
-template<>
-inline double UnitHandler::getScaleFactor<Quantity::Time>(){
-	return timeScale;
-}*/
 
 template<>
 inline std::string UnitHandler::getUnitString<Quantity::Charge>(){

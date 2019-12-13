@@ -67,12 +67,6 @@ tuple<
 	Quantity::Time::Unit::s
 );
 
-/*double UnitHandler::temperatureScale	= 1.;
-double UnitHandler::timeScale		= 1.;
-double UnitHandler::lengthScale		= 1.;
-double UnitHandler::energyScale		= 1.;
-double UnitHandler::chargeScale		= 1.;
-double UnitHandler::countScale		= 1.;*/
 tuple<double, double, double, double, double, double> UnitHandler::scales
 	= make_tuple(1, 1, 1, 1, 1, 1);
 
