@@ -400,23 +400,9 @@ private:
 	template<typename Quantity>
 	static void setScale(double scale, typename Quantity::Unit unit);
 
-	/** Set temperature scale. */
-	static void setTemperatureScale(std::string scale);
-
-	/** Set time scale. */
-	static void setTimeScale(std::string scale);
-
-	/** Set length scale. */
-	static void setLengthScale(std::string scale);
-
-	/** Set energy scale. */
-	static void setEnergyScale(std::string scale);
-
-	/** Set charge scale. */
-	static void setChargeScale(std::string scale);
-
-	/** Set count scale. */
-	static void setCountScale(std::string scale);
+	/** Set scale. */
+	template<typename Quantity>
+	static void setScale(const std::string &scale);
 
 	/** Update contants to reflect the current base units. */
 	static void updateConstants();
@@ -549,12 +535,12 @@ inline void UnitHandler::setScales(const std::vector<std::string> &scales){
 		""
 	);
 
-	setChargeScale(scales[0]);
-	setCountScale(scales[1]);
-	setEnergyScale(scales[2]);
-	setLengthScale(scales[3]);
-	setTemperatureScale(scales[4]);
-	setTimeScale(scales[5]);
+	setScale<Quantity::Charge>(scales[0]);
+	setScale<Quantity::Count>(scales[1]);
+	setScale<Quantity::Energy>(scales[2]);
+	setScale<Quantity::Length>(scales[3]);
+	setScale<Quantity::Temperature>(scales[4]);
+	setScale<Quantity::Time>(scales[5]);
 	updateConstants();
 }
 
@@ -683,6 +669,40 @@ inline double UnitHandler::getConversionFactor<Quantity::Time>(
 template<typename Quantity>
 inline void UnitHandler::setScale(double scale){
 	getScale<Quantity>() = scale;
+}
+
+template<typename Quantity>
+inline void UnitHandler::setScale(const std::string &scale){
+	std::stringstream stream(scale);
+	std::vector<std::string> components;
+	std::string word;
+	while(std::getline(stream, word, ' '))
+		components.push_back(word);
+
+	TBTKAssert(
+		components.size() == 2,
+		"UnitHandler::setScale()",
+		"Invalid scale string '" << scale << "'.",
+		"The string must be on the format '[scale] [unit]', e.g. '1 K'"
+	);
+
+	double value;
+	try{
+		value = stod(components[0]);
+	}
+	catch(const std::exception &e){
+		TBTKExit(
+			"UnitHandler::setScale()",
+			"Unable to parse '" << components[0] << "' as a"
+			<< " double.",
+			"The string has to be on the format '[scale] [unit]',"
+			<< " e.g. '1 K'."
+		);
+	}
+
+	typename Quantity::Unit unit = getUnit<Quantity>(components[1]);
+
+	setScale<Quantity>(value, unit);
 }
 
 template<>
