@@ -368,23 +368,33 @@ private:
 		Quantity::Time::Unit
 	> units;
 
+	/** Currently set scales. */
+	static std::tuple<
+		double,
+		double,
+		double,
+		double,
+		double,
+		double
+	> scales;
+
 	/** Currently set temperature scale. */
-	static double temperatureScale;
+//	static double temperatureScale;
 
 	/** Currently set time scale. */
-	static double timeScale;
+//	static double timeScale;
 
 	/** Currently set length scale. */
-	static double lengthScale;
+//	static double lengthScale;
 
 	/** Currently set energy scale. */
-	static double energyScale;
+//	static double energyScale;
 
 	/** Currently set charge scale. */
-	static double chargeScale;
+//	static double chargeScale;
 
 	/** Currently set count scale. */
-	static double countScale;
+//	static double countScale;
 
 	/** Set temperature unit. */
 	static void setTemperatureUnit(Quantity::Temperature::Unit unit);
@@ -433,6 +443,11 @@ private:
 		Quantity::Temperature::Unit unit
 	);
 
+	/** Function for indexing into the tuple scales using compile time
+	 *  Quatity names. */
+	template<typename Quantity>
+	constexpr static double& getScale();
+
 	/** Set time scale. */
 	static void setTimeScale(double scale, Quantity::Time::Unit unit);
 
@@ -467,8 +482,8 @@ private:
 	static void setCountScale(std::string scale);
 
 	/** Get the scale factor for the corresponding quantity. */
-	template<typename Quantity>
-	static double getScaleFactor();
+//	template<typename Quantity>
+//	static double getScaleFactor();
 
 	/** Update contants to reflect the current base units. */
 	static void updateConstants();
@@ -680,12 +695,12 @@ inline void UnitHandler::setScales(const std::vector<std::string> &scales){
 
 template<typename Quantity>
 double UnitHandler::convertNaturalToBase(double value){
-	return value*getScaleFactor<Quantity>();
+	return value*getScale<Quantity>();
 }
 
 template<typename Quantity>
 double UnitHandler::convertBaseToNatural(double value){
-	return value/getScaleFactor<Quantity>();
+	return value/getScale<Quantity>();
 }
 
 template<typename Quantity>
@@ -713,7 +728,7 @@ double UnitHandler::convertArbitraryToNatural(
 	typename Quantity::Unit unit
 ){
 	return value*getConversionFactor<Quantity>(
-	)/(getConversionFactor<Quantity>(unit)*getScaleFactor<Quantity>());
+	)/(getConversionFactor<Quantity>(unit)*getScale<Quantity>());
 }
 
 template<typename Quantity>
@@ -721,7 +736,7 @@ double UnitHandler::convertNaturalToArbitrary(
 	double value,
 	typename Quantity::Unit unit
 ){
-	return value*getScaleFactor<Quantity>()*getConversionFactor<Quantity>(
+	return value*getScale<Quantity>()*getConversionFactor<Quantity>(
 		unit
 	)/getConversionFactor<Quantity>();
 }
@@ -800,7 +815,43 @@ inline double UnitHandler::getConversionFactor<Quantity::Time>(
 	return getTimeConversionFactor(unit);
 }
 
+/*template<>
+inline constexpr Quantity::Charge::Unit& UnitHandler::getUnit<Quantity::Charge>(
+){
+	return std::get<0>(units);
+}*/
+
 template<>
+inline constexpr double& UnitHandler::getScale<Quantity::Charge>(){
+	return std::get<0>(scales);
+}
+
+template<>
+inline constexpr double& UnitHandler::getScale<Quantity::Count>(){
+	return std::get<1>(scales);
+}
+
+template<>
+inline constexpr double& UnitHandler::getScale<Quantity::Energy>(){
+	return std::get<2>(scales);
+}
+
+template<>
+inline constexpr double& UnitHandler::getScale<Quantity::Length>(){
+	return std::get<3>(scales);
+}
+
+template<>
+inline constexpr double& UnitHandler::getScale<Quantity::Temperature>(){
+	return std::get<4>(scales);
+}
+
+template<>
+inline constexpr double& UnitHandler::getScale<Quantity::Time>(){
+	return std::get<5>(scales);
+}
+
+/*template<>
 inline double UnitHandler::getScaleFactor<Quantity::Charge>(){
 	return chargeScale;
 }
@@ -828,7 +879,7 @@ inline double UnitHandler::getScaleFactor<Quantity::Temperature>(){
 template<>
 inline double UnitHandler::getScaleFactor<Quantity::Time>(){
 	return timeScale;
-}
+}*/
 
 template<>
 inline std::string UnitHandler::getUnitString<Quantity::Charge>(){

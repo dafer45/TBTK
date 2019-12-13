@@ -67,12 +67,14 @@ tuple<
 	Quantity::Time::Unit::s
 );
 
-double UnitHandler::temperatureScale	= 1.;
+/*double UnitHandler::temperatureScale	= 1.;
 double UnitHandler::timeScale		= 1.;
 double UnitHandler::lengthScale		= 1.;
 double UnitHandler::energyScale		= 1.;
 double UnitHandler::chargeScale		= 1.;
-double UnitHandler::countScale		= 1.;
+double UnitHandler::countScale		= 1.;*/
+tuple<double, double, double, double, double, double> UnitHandler::scales
+	= make_tuple(1, 1, 1, 1, 1, 1);
 
 UnitHandler::StaticConstructor  UnitHandler::staticConstructor;
 
@@ -90,22 +92,22 @@ double UnitHandler::getConstantNaturalUnits(const std::string &name){
 		int exponent = units[n].second;
 		for(int c = 0; c < exponent; c++){
 			if(unit.compare("K") == 0){
-				value /= temperatureScale;
+				value /= getScale<Quantity::Temperature>();
 			}
 			else if(unit.compare("s") == 0){
-				value /= timeScale;
+				value /= getScale<Quantity::Time>();
 			}
 			else if(unit.compare("m") == 0){
-				value /= lengthScale;
+				value /= getScale<Quantity::Length>();
 			}
 			else if(unit.compare("eV") == 0){
-				value /= energyScale;
+				value /= getScale<Quantity::Energy>();
 			}
 			else if(unit.compare("C") == 0){
-				value /= chargeScale;
+				value /= getScale<Quantity::Charge>();
 			}
 			else if(unit.compare("pcs") == 0){
-				value /= countScale;
+				value /= getScale<Quantity::Count>();
 			}
 			else{
 				TBTKExit(
@@ -118,22 +120,22 @@ double UnitHandler::getConstantNaturalUnits(const std::string &name){
 		}
 		for(int c = 0; c < -exponent; c++){
 			if(unit.compare("K") == 0){
-				value *= temperatureScale;
+				value *= getScale<Quantity::Temperature>();
 			}
 			else if(unit.compare("s") == 0){
-				value *= timeScale;
+				value *= getScale<Quantity::Time>();
 			}
 			else if(unit.compare("m") == 0){
-				value *= lengthScale;
+				value *= getScale<Quantity::Length>();
 			}
 			else if(unit.compare("eV") == 0){
-				value *= energyScale;
+				value *= getScale<Quantity::Energy>();
 			}
 			else if(unit.compare("C") == 0){
-				value *= chargeScale;
+				value *= getScale<Quantity::Charge>();
 			}
 			else if(unit.compare("pcs") == 0){
-				value *= countScale;
+				value *= getScale<Quantity::Count>();
 			}
 			else{
 				TBTKExit(
@@ -153,7 +155,8 @@ void UnitHandler::setTemperatureUnit(Quantity::Temperature::Unit unit){
 	double oldConversionFactor = getTemperatureConversionFactor();
 	getUnit<Quantity::Temperature>() = unit;
 	double newConversionFactor = getTemperatureConversionFactor();
-	temperatureScale *= newConversionFactor/oldConversionFactor;
+	getScale<Quantity::Temperature>()
+		*= newConversionFactor/oldConversionFactor;
 
 	updateConstants();
 }
@@ -162,7 +165,7 @@ void UnitHandler::setTimeUnit(Quantity::Time::Unit unit){
 	double oldConversionFactor = getTimeConversionFactor();
 	getUnit<Quantity::Time>() = unit;
 	double newConversionFactor = getTimeConversionFactor();
-	timeScale *= newConversionFactor/oldConversionFactor;
+	getScale<Quantity::Time>() *= newConversionFactor/oldConversionFactor;
 
 	updateConstants();
 }
@@ -171,7 +174,8 @@ void UnitHandler::setLengthUnit(Quantity::Length::Unit unit){
 	double oldConversionFactor = getLengthConversionFactor();
 	getUnit<Quantity::Length>() = unit;
 	double newConversionFactor = getLengthConversionFactor();
-	lengthScale *= newConversionFactor/oldConversionFactor;
+	getScale<Quantity::Length>()
+		*= newConversionFactor/oldConversionFactor;
 
 	updateConstants();
 }
@@ -180,7 +184,8 @@ void UnitHandler::setEnergyUnit(Quantity::Energy::Unit unit){
 	double oldConversionFactor = getEnergyConversionFactor();
 	getUnit<Quantity::Energy>() = unit;
 	double newConversionFactor = getEnergyConversionFactor();
-	energyScale *= newConversionFactor/oldConversionFactor;
+	getScale<Quantity::Energy>()
+		*= newConversionFactor/oldConversionFactor;
 
 	updateConstants();
 }
@@ -189,7 +194,8 @@ void UnitHandler::setChargeUnit(Quantity::Charge::Unit unit){
 	double oldConversionFactor = getChargeConversionFactor();
 	getUnit<Quantity::Charge>() = unit;
 	double newConversionFactor = getChargeConversionFactor();
-	chargeScale *= newConversionFactor/oldConversionFactor;
+	getScale<Quantity::Charge>()
+		*= newConversionFactor/oldConversionFactor;
 
 	updateConstants();
 }
@@ -198,33 +204,33 @@ void UnitHandler::setCountUnit(Quantity::Count::Unit unit){
 	double oldConversionFactor = getCountConversionFactor();
 	getUnit<Quantity::Count>() = unit;
 	double newConversionFactor = getCountConversionFactor();
-	countScale *= newConversionFactor/oldConversionFactor;
+	getScale<Quantity::Count>() *= newConversionFactor/oldConversionFactor;
 
 	updateConstants();
 }
 
 void UnitHandler::setTemperatureScale(double scale){
-	temperatureScale = scale;
+	getScale<Quantity::Temperature>() = scale;
 }
 
 void UnitHandler::setTimeScale(double scale){
-	timeScale = scale;
+	getScale<Quantity::Time>() = scale;
 }
 
 void UnitHandler::setLengthScale(double scale){
-	lengthScale = scale;
+	getScale<Quantity::Length>() = scale;
 }
 
 void UnitHandler::setEnergyScale(double scale){
-	energyScale = scale;
+	getScale<Quantity::Energy>() = scale;
 }
 
 void UnitHandler::setChargeScale(double scale){
-	chargeScale = scale;
+	getScale<Quantity::Charge>() = scale;
 }
 
 void UnitHandler::setCountScale(double scale){
-	countScale = scale;
+	getScale<Quantity::Count>() = scale;
 }
 
 void UnitHandler::setTemperatureScale(string scale){
@@ -449,16 +455,16 @@ double UnitHandler::convertMassBaseToDerived(double mass, MassUnit unit){
 
 double UnitHandler::convertMassDerivedToNatural(double mass, MassUnit unit){
 	double massInDefaultBaseUnits = mass/getMassConversionFactor(unit);
-	double cfE = getEnergyConversionFactor()/energyScale;
-	double cfT = getTimeConversionFactor()/timeScale;
-	double cfL = getLengthConversionFactor()/lengthScale;
+	double cfE = getEnergyConversionFactor()/getScale<Quantity::Energy>();
+	double cfT = getTimeConversionFactor()/getScale<Quantity::Time>();
+	double cfL = getLengthConversionFactor()/getScale<Quantity::Length>();
 	return massInDefaultBaseUnits*cfE*cfT*cfT/(cfL*cfL);
 }
 
 double UnitHandler::convertMassNaturalToDerived(double mass, MassUnit unit){
-	double cfE = getEnergyConversionFactor()/energyScale;
-	double cfT = getTimeConversionFactor()/timeScale;
-	double cfL = getLengthConversionFactor()/lengthScale;
+	double cfE = getEnergyConversionFactor()/getScale<Quantity::Energy>();
+	double cfT = getTimeConversionFactor()/getScale<Quantity::Time>();
+	double cfL = getLengthConversionFactor()/getScale<Quantity::Length>();
 	double massInDefaultBaseUnits = mass*cfL*cfL/(cfE*cfT*cfT);
 	return massInDefaultBaseUnits*getMassConversionFactor(unit);
 }
@@ -492,10 +498,10 @@ double UnitHandler::convertMagneticFieldDerivedToNatural(
 	MagneticFieldUnit unit
 ){
 	double magneticFieldInDefaultBaseUnits = field/getMagneticFieldConversionFactor(unit);
-	double cfE = getEnergyConversionFactor()/energyScale;
-	double cfT = getTimeConversionFactor()/timeScale;
-	double cfC = getChargeConversionFactor()/chargeScale;
-	double cfL = getLengthConversionFactor()/lengthScale;
+	double cfE = getEnergyConversionFactor()/getScale<Quantity::Energy>();
+	double cfT = getTimeConversionFactor()/getScale<Quantity::Time>();
+	double cfC = getChargeConversionFactor()/getScale<Quantity::Charge>();
+	double cfL = getLengthConversionFactor()/getScale<Quantity::Length>();
 	return magneticFieldInDefaultBaseUnits*cfE*cfT/(cfC*cfL*cfL);
 }
 
@@ -503,10 +509,10 @@ double UnitHandler::convertMagneticFieldNaturalToDerived(
 	double field,
 	MagneticFieldUnit unit
 ){
-	double cfE = getEnergyConversionFactor()/energyScale;
-	double cfT = getTimeConversionFactor()/timeScale;
-	double cfC = getChargeConversionFactor()/chargeScale;
-	double cfL = getLengthConversionFactor()/lengthScale;
+	double cfE = getEnergyConversionFactor()/getScale<Quantity::Energy>();
+	double cfT = getTimeConversionFactor()/getScale<Quantity::Time>();
+	double cfC = getChargeConversionFactor()/getScale<Quantity::Charge>();
+	double cfL = getLengthConversionFactor()/getScale<Quantity::Length>();
 	double magneticFieldInDefaultBaseUnits = field*cfC*cfL*cfL/(cfE*cfT);
 	return magneticFieldInDefaultBaseUnits*getMagneticFieldConversionFactor(unit);
 }
@@ -536,8 +542,8 @@ double UnitHandler::convertVoltageDerivedToNatural(
 	VoltageUnit unit
 ){
 	double voltageInDefaultBaseUnits = voltage/getVoltageConversionFactor(unit);
-	double cfE = getEnergyConversionFactor()/energyScale;
-	double cfC = getChargeConversionFactor()/chargeScale;
+	double cfE = getEnergyConversionFactor()/getScale<Quantity::Energy>();
+	double cfC = getChargeConversionFactor()/getScale<Quantity::Charge>();
 	return voltageInDefaultBaseUnits*cfE/cfC;
 }
 
@@ -545,8 +551,8 @@ double UnitHandler::convertVoltageNaturalToDerived(
 	double voltage,
 	VoltageUnit unit
 ){
-	double cfE = getEnergyConversionFactor()/energyScale;
-	double cfC = getChargeConversionFactor()/chargeScale;
+	double cfE = getEnergyConversionFactor()/getScale<Quantity::Energy>();
+	double cfC = getChargeConversionFactor()/getScale<Quantity::Charge>();
 	double voltageInDefaultBaseUnits = voltage*cfC/cfE;
 	return voltageInDefaultBaseUnits*getVoltageConversionFactor(unit);
 }
