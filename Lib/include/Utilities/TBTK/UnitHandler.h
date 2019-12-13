@@ -227,36 +227,44 @@ public:
 		VoltageUnit unit
 	);
 
+	/** Get the unit string for the given Quantity in the currently set
+	 *  base units.
+	 *
+	 *  @return string representation of the currently set unit for the
+	 *  given Quantity. */
+	template<typename Quantity>
+	static std::string getUnitString();
+
 	/** Get temperature unit string
 	 *
 	 *  @return string representation of the currently set temperature unit.
 	 */
-	static std::string getTemperatureUnitString();
+//	static std::string getTemperatureUnitString();
 
 	/** Get time unit string
 	 *
 	 *  @return string representation of the currently set time unit. */
-	static std::string getTimeUnitString();
+//	static std::string getTimeUnitString();
 
 	/** Get length unit string
 	 *
 	 *  @return string representation of the currently set length unit. */
-	static std::string getLengthUnitString();
+//	static std::string getLengthUnitString();
 
 	/** Get energy unit string
 	 *
 	 *  @return string representation of the currently set energy unit. */
-	static std::string getEnergyUnitString();
+//	static std::string getEnergyUnitString();
 
 	/** Get charge unit string
 	 *
 	 *  @return string representation of the currently set charge unit. */
-	static std::string getChargeUnitString();
+//	static std::string getChargeUnitString();
 
 	/** Get count unit string
 	 *
 	 * @return string representation of the current set count unit. */
-	static std::string getCountUnitString();
+//	static std::string getCountUnitString();
 
 	/** Get mass unit string.
 	 *
@@ -815,6 +823,36 @@ inline double UnitHandler::getScaleFactor<Quantity::Temperature>(){
 template<>
 inline double UnitHandler::getScaleFactor<Quantity::Time>(){
 	return timeScale;
+}
+
+template<>
+inline std::string UnitHandler::getUnitString<Quantity::Charge>(){
+	return Quantity::Charge::getUnitString(chargeUnit);
+}
+
+template<>
+inline std::string UnitHandler::getUnitString<Quantity::Count>(){
+	return Quantity::Count::getUnitString(countUnit);
+}
+
+template<>
+inline std::string UnitHandler::getUnitString<Quantity::Energy>(){
+	return Quantity::Energy::getUnitString(energyUnit);
+}
+
+template<>
+inline std::string UnitHandler::getUnitString<Quantity::Length>(){
+	return Quantity::Length::getUnitString(lengthUnit);
+}
+
+template<>
+inline std::string UnitHandler::getUnitString<Quantity::Temperature>(){
+	return Quantity::Temperature::getUnitString(temperatureUnit);
+}
+
+template<>
+inline std::string UnitHandler::getUnitString<Quantity::Time>(){
+	return Quantity::Time::getUnitString(timeUnit);
 }
 
 };

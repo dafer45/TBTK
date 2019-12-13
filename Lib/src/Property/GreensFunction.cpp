@@ -119,13 +119,15 @@ string GreensFunction::toString() const{
 		stream << "\tLower bound: "
 			<< UnitHandler::convertNaturalToBase<Quantity::Energy>(
 				lowerBound
-			) << " " << UnitHandler::getEnergyUnitString() << " ("
-			<< lowerBound << " b.u.)\n";
+			) << " "
+			<< UnitHandler::getUnitString<Quantity::Energy>()
+			<< " (" << lowerBound << " b.u.)\n";
 		stream << "\tUpper bound: "
 			<< UnitHandler::convertNaturalToBase<Quantity::Energy>(
 				upperBound
-			) << " " << UnitHandler::getEnergyUnitString() << " ("
-			<< upperBound << " b.u.)\n";
+			) << " "
+			<< UnitHandler::getUnitString<Quantity::Energy>()
+			<< " (" << upperBound << " b.u.)\n";
 		stream << "\tResolution: " << resolution;
 
 		break;

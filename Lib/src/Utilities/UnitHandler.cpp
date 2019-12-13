@@ -542,7 +542,7 @@ double UnitHandler::convertVoltageNaturalToDerived(
 	return voltageInDefaultBaseUnits*getVoltageConversionFactor(unit);
 }
 
-string UnitHandler::getTemperatureUnitString(){
+/*string UnitHandler::getTemperatureUnitString(){
 	return Quantity::Temperature::getUnitString(temperatureUnit);
 }
 
@@ -564,102 +564,102 @@ string UnitHandler::getChargeUnitString(){
 
 string UnitHandler::getCountUnitString(){
 	return Quantity::Count::getUnitString(countUnit);
-}
+}*/
 
 string UnitHandler::getMassUnitString(){
 	stringstream ss;
-	ss << getEnergyUnitString() << getTimeUnitString() << "^2" << "/" << getLengthUnitString() << "^2";
+	ss << getUnitString<Quantity::Energy>() << getUnitString<Quantity::Time>() << "^2" << "/" << getUnitString<Quantity::Length>() << "^2";
 
 	return ss.str();
 }
 
 string UnitHandler::getMagneticFieldUnitString(){
 	stringstream ss;
-	ss << getEnergyUnitString() << getTimeUnitString() << "/" << getChargeUnitString() << getLengthUnitString() << "^2";
+	ss << getUnitString<Quantity::Energy>() << getUnitString<Quantity::Time>() << "/" << getUnitString<Quantity::Charge>() << getUnitString<Quantity::Length>() << "^2";
 
 	return ss.str();
 }
 
 string UnitHandler::getVoltageUnitString(){
 	stringstream ss;
-	ss << getEnergyUnitString() << "/" << getChargeUnitString();
+	ss << getUnitString<Quantity::Energy>() << "/" << getUnitString<Quantity::Charge>();
 
 	return ss.str();
 }
 
 string UnitHandler::getHBARUnitString(){
 	stringstream ss;
-	ss << getEnergyUnitString() << getTimeUnitString();
+	ss << getUnitString<Quantity::Energy>() << getUnitString<Quantity::Time>();
 
 	return ss.str();
 }
 
 string UnitHandler::getK_BUnitString(){
 	stringstream ss;
-	ss << getEnergyUnitString() << "/" << getTemperatureUnitString();
+	ss << getUnitString<Quantity::Energy>() << "/" << getUnitString<Quantity::Temperature>();
 
 	return ss.str();
 }
 
 string UnitHandler::getEUnitString(){
-	return getChargeUnitString();
+	return getUnitString<Quantity::Charge>();
 }
 
 string UnitHandler::getCUnitString(){
 	stringstream ss;
-	ss << getLengthUnitString() << "^2" << "/" << getTimeUnitString() << "^2";
+	ss << getUnitString<Quantity::Length>() << "^2" << "/" << getUnitString<Quantity::Time>() << "^2";
 
 	return ss.str();
 }
 
 string UnitHandler::getN_AUnitString(){
-	return getCountUnitString();
+	return getUnitString<Quantity::Count>();
 }
 
 string UnitHandler::getM_eUnitString(){
 	stringstream ss;
-	ss << getEnergyUnitString() << getTimeUnitString() << "^2" << "/" << getLengthUnitString() << "^2";
+	ss << getUnitString<Quantity::Energy>() << getUnitString<Quantity::Time>() << "^2" << "/" << getUnitString<Quantity::Length>() << "^2";
 
 	return ss.str();
 }
 
 string UnitHandler::getM_pUnitString(){
 	stringstream ss;
-	ss << getEnergyUnitString() << getTimeUnitString() << "^2" << "/" << getLengthUnitString() << "^2";
+	ss << getUnitString<Quantity::Energy>() << getUnitString<Quantity::Time>() << "^2" << "/" << getUnitString<Quantity::Length>() << "^2";
 
 	return ss.str();
 }
 
 string UnitHandler::getMu_BUnitString(){
 	stringstream ss;
-	ss << getChargeUnitString() << getLengthUnitString() << "^2" << "/" << getTimeUnitString();
+	ss << getUnitString<Quantity::Charge>() << getUnitString<Quantity::Length>() << "^2" << "/" << getUnitString<Quantity::Time>();
 
 	return ss.str();
 }
 
 string UnitHandler::getMu_nUnitString(){
 	stringstream ss;
-	ss << getChargeUnitString() << getLengthUnitString() << "^2" << "/" << getTimeUnitString();
+	ss << getUnitString<Quantity::Charge>() << getUnitString<Quantity::Length>() << "^2" << "/" << getUnitString<Quantity::Time>();
 
 	return ss.str();
 }
 
 string UnitHandler::getMu_0UnitString(){
 	stringstream ss;
-	ss << getEnergyUnitString() << getTimeUnitString() << "^2" << "/" << getChargeUnitString() << "^2" << getLengthUnitString();
+	ss << getUnitString<Quantity::Energy>() << getUnitString<Quantity::Time>() << "^2" << "/" << getUnitString<Quantity::Charge>() << "^2" << getUnitString<Quantity::Length>();
 
 	return ss.str();
 }
 
 string UnitHandler::getEpsilon_0UnitString(){
 	stringstream ss;
-	ss << getChargeUnitString() << "^2" << "/" << getEnergyUnitString() << getLengthUnitString();
+	ss << getUnitString<Quantity::Charge>() << "^2" << "/" << getUnitString<Quantity::Energy>() << getUnitString<Quantity::Length>();
 
 	return ss.str();
 }
 
 string UnitHandler::getA_0UnitString(){
-	return getLengthUnitString();
+	return getUnitString<Quantity::Length>();
 }
 
 void UnitHandler::updateConstants(){

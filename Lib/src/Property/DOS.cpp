@@ -89,13 +89,13 @@ string DOS::toString() const{
 	ss << "\tLower bound: "
 		<< UnitHandler::convertNaturalToBase<Quantity::Energy>(
 			lowerBound
-		) << " " << UnitHandler::getEnergyUnitString() << " ("
-		<< lowerBound << " b.u.)\n";
+		) << " " << UnitHandler::getUnitString<Quantity::Energy>()
+		<< " (" << lowerBound << " b.u.)\n";
 	ss << "\tUpper bound: "
 		<< UnitHandler::convertNaturalToBase<Quantity::Energy>(
 			upperBound
-		) << " " << UnitHandler::getEnergyUnitString() << " ("
-		<< upperBound << " b.u.)\n";
+		) << " " << UnitHandler::getUnitString<Quantity::Energy>()
+		<< " (" << upperBound << " b.u.)\n";
 	ss << "\tResolution: " << resolution;
 
 	return ss.str();

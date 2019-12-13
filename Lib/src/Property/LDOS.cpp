@@ -126,12 +126,12 @@ string LDOS::toString() const{
 	ss << "\tLower bound: "
 		<< UnitHandler::convertNaturalToBase<Quantity::Energy>(
 			lowerBound
-		) << " " << UnitHandler::getEnergyUnitString() << " ("
+		) << " " << UnitHandler::getUnitString<Quantity::Energy>() << " ("
 		<< lowerBound << " b.u.)\n";
 	ss << "\tUpper bound: "
 		<< UnitHandler::convertNaturalToBase<Quantity::Energy>(
 			upperBound
-		) << " " << UnitHandler::getEnergyUnitString() << " ("
+		) << " " << UnitHandler::getUnitString<Quantity::Energy>() << " ("
 		<< upperBound << " b.u.)\n";
 	ss << "\tResolution: " << resolution;
 
