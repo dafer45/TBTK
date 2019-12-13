@@ -448,27 +448,15 @@ private:
 	template<typename Quantity>
 	static double getConversionFactor(typename Quantity::Unit unit);
 
-	/** Returns the number of degrees in the currently set unit per degree
-	 *  in default unit (K). */
-	static double getTemperatureConversionFactor();
-
 	/** Returns the number of degrees in the given unit per degree in
 	 *  default unit (K). */
 	static double getTemperatureConversionFactor(
 		Quantity::Temperature::Unit temperatureUnit
 	);
 
-	/** Returns the number of unit times in the currently set unit per unit
-	 * time in the default unit (s). */
-	static double getTimeConversionFactor();
-
 	/** Returns the number of unit times in the given unit per unit time in
 	 *  the default unit (s). */
 	static double getTimeConversionFactor(Quantity::Time::Unit timeUnit);
-
-	/** Returns the number of unit lengths in the currently set unit per
-	 *  unit length in the default unit (m). */
-	static double getLengthConversionFactor();
 
 	/** Returns the number of unit lengths in the given unit per unit
 	 *  length in the default unit (m). */
@@ -476,29 +464,17 @@ private:
 		Quantity::Length::Unit lengthUnit
 	);
 
-	/** Returns the number of unit energies in the currently set unit per
-	 *  unit energy in the default unit (eV). */
-	static double getEnergyConversionFactor();
-
 	/** Returns the number of unit energies in the given unit per unit
 	 *  energy in the default unit (eV). */
 	static double getEnergyConversionFactor(
 		Quantity::Energy::Unit energyUnit
 	);
 
-	/** Returns the number of unit charges in the currently set unit per
-	 *  unit charge in the default unit (C). */
-	static double getChargeConversionFactor();
-
 	/** Returns the number of unit charges in the given unit per unit
 	 *  charge in the default unit (C). */
 	static double getChargeConversionFactor(
 		Quantity::Charge::Unit chargeUnit
 	);
-
-	/** Returns the number of unit counts in the the currently set unit per
-	 *  unit count in the default unit (pcs). */
-	static double getCountConversionFactor();
 
 	/** Returns the number of unit counts in the the given unit per unit
 	 *  count in the default unit (pcs). */
@@ -809,36 +785,9 @@ inline constexpr double& UnitHandler::getScale<Quantity::Time>(){
 	return std::get<5>(scales);
 }
 
-template<>
-inline std::string UnitHandler::getUnitString<Quantity::Charge>(){
-	return Quantity::Charge::getUnitString(getUnit<Quantity::Charge>());
-}
-
-template<>
-inline std::string UnitHandler::getUnitString<Quantity::Count>(){
-	return Quantity::Count::getUnitString(getUnit<Quantity::Count>());
-}
-
-template<>
-inline std::string UnitHandler::getUnitString<Quantity::Energy>(){
-	return Quantity::Energy::getUnitString(getUnit<Quantity::Energy>());
-}
-
-template<>
-inline std::string UnitHandler::getUnitString<Quantity::Length>(){
-	return Quantity::Length::getUnitString(getUnit<Quantity::Length>());
-}
-
-template<>
-inline std::string UnitHandler::getUnitString<Quantity::Temperature>(){
-	return Quantity::Temperature::getUnitString(
-		getUnit<Quantity::Temperature>()
-	);
-}
-
-template<>
-inline std::string UnitHandler::getUnitString<Quantity::Time>(){
-	return Quantity::Time::getUnitString(getUnit<Quantity::Time>());
+template<typename Quantity>
+inline std::string UnitHandler::getUnitString(){
+	return Quantity::getUnitString(getUnit<Quantity>());
 }
 
 };
