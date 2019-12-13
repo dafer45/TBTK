@@ -174,7 +174,8 @@ void UnitHandler::setTemperatureScale(string scale){
 		);
 	}
 
-	Quantity::Temperature::Unit unit = getTemperatureUnit(components[1]);
+	Quantity::Temperature::Unit unit
+		= getUnit<Quantity::Temperature>(components[1]);
 
 	setScale<Quantity::Temperature>(s, unit);
 }
@@ -208,7 +209,7 @@ void UnitHandler::setTimeScale(string scale){
 		);
 	}
 
-	Quantity::Time::Unit unit = getTimeUnit(components[1]);
+	Quantity::Time::Unit unit = getUnit<Quantity::Time>(components[1]);
 
 	setScale<Quantity::Time>(s, unit);
 }
@@ -242,7 +243,7 @@ void UnitHandler::setLengthScale(string scale){
 		);
 	}
 
-	Quantity::Length::Unit unit = getLengthUnit(components[1]);
+	Quantity::Length::Unit unit = getUnit<Quantity::Length>(components[1]);
 
 	setScale<Quantity::Length>(s, unit);
 }
@@ -276,7 +277,7 @@ void UnitHandler::setEnergyScale(string scale){
 		);
 	}
 
-	Quantity::Energy::Unit unit = getEnergyUnit(components[1]);
+	Quantity::Energy::Unit unit = getUnit<Quantity::Energy>(components[1]);
 
 	setScale<Quantity::Energy>(s, unit);
 }
@@ -310,7 +311,7 @@ void UnitHandler::setChargeScale(string scale){
 		);
 	}
 
-	Quantity::Charge::Unit unit = getChargeUnit(components[1]);
+	Quantity::Charge::Unit unit = getUnit<Quantity::Charge>(components[1]);
 
 	setScale<Quantity::Charge>(s, unit);
 }
@@ -344,7 +345,7 @@ void UnitHandler::setCountScale(string scale){
 		);
 	}
 
-	Quantity::Count::Unit unit = getCountUnit(components[1]);
+	Quantity::Count::Unit unit = getUnit<Quantity::Count>(components[1]);
 
 	setScale<Quantity::Count>(s, unit);
 }
@@ -919,198 +920,6 @@ double UnitHandler::getVoltageConversionFactor(VoltageUnit unit){
 				""
 			);
 	}
-}
-
-Quantity::Temperature::Unit UnitHandler::getTemperatureUnit(string unit){
-	return Quantity::Temperature::getUnit(unit);
-/*	if(unit.compare("kK") == 0){
-		return Quantity::Temperature::Unit::kK;
-	}
-	else if(unit.compare("K") == 0){
-		return Quantity::Temperature::Unit::K;
-	}
-	else if(unit.compare("mK") == 0){
-		return Quantity::Temperature::Unit::mK;
-	}
-	else if(unit.compare("uK") == 0){
-		return Quantity::Temperature::Unit::uK;
-	}
-	else if(unit.compare("nK") == 0){
-		return Quantity::Temperature::Unit::nK;
-	}
-	else{
-		TBTKExit(
-			"UnitHandler::getTemperatureUnit()",
-			"Invalid temperature unit '" << unit << "'",
-			""
-		);
-	}*/
-}
-
-Quantity::Time::Unit UnitHandler::getTimeUnit(string unit){
-	return Quantity::Time::getUnit(unit);
-/*	if(unit.compare("s") == 0){
-		return Quantity::Time::Unit::s;
-	}
-	else if(unit.compare("ms") == 0){
-		return Quantity::Time::Unit::ms;
-	}
-	else if(unit.compare("us") == 0){
-		return Quantity::Time::Unit::us;
-	}
-	else if(unit.compare("ns") == 0){
-		return Quantity::Time::Unit::ns;
-	}
-	else if(unit.compare("ps") == 0){
-		return Quantity::Time::Unit::ps;
-	}
-	else if(unit.compare("fs") == 0){
-		return Quantity::Time::Unit::fs;
-	}
-	else if(unit.compare("as") == 0){
-		return Quantity::Time::Unit::as;
-	}
-	else{
-		TBTKExit(
-			"UnitHandler::getTimeUnit()",
-			"Invalid time unit '" << unit << "'",
-			""
-		);
-	}*/
-}
-
-Quantity::Length::Unit UnitHandler::getLengthUnit(string unit){
-	return Quantity::Length::getUnit(unit);
-/*	if(unit.compare("m") == 0){
-		return Quantity::Length::Unit::m;
-	}
-	else if(unit.compare("mm") == 0){
-		return Quantity::Length::Unit::mm;
-	}
-	else if(unit.compare("um") == 0){
-		return Quantity::Length::Unit::um;
-	}
-	else if(unit.compare("nm") == 0){
-		return Quantity::Length::Unit::nm;
-	}
-	else if(unit.compare("pm") == 0){
-		return Quantity::Length::Unit::pm;
-	}
-	else if(unit.compare("fm") == 0){
-		return Quantity::Length::Unit::fm;
-	}
-	else if(unit.compare("am") == 0){
-		return Quantity::Length::Unit::am;
-	}
-	else if(unit.compare("Ao") == 0){
-		return Quantity::Length::Unit::Ao;
-	}
-	else{
-		TBTKExit(
-			"UnitHandler::getLengthUnit()",
-			"Invalid length unit '" << unit << "'",
-			""
-		);
-	}*/
-}
-
-Quantity::Energy::Unit UnitHandler::getEnergyUnit(string unit){
-	return Quantity::Energy::getUnit(unit);
-/*	if(unit.compare("GeV") == 0){
-		return Quantity::Energy::Unit::GeV;
-	}
-	else if(unit.compare("MeV") == 0){
-		return Quantity::Energy::Unit::MeV;
-	}
-	else if(unit.compare("keV") == 0){
-		return Quantity::Energy::Unit::keV;
-	}
-	else if(unit.compare("eV") == 0){
-		return Quantity::Energy::Unit::eV;
-	}
-	else if(unit.compare("meV") == 0){
-		return Quantity::Energy::Unit::meV;
-	}
-	else if(unit.compare("ueV") == 0){
-		return Quantity::Energy::Unit::ueV;
-	}
-	else if(unit.compare("J") == 0){
-		return Quantity::Energy::Unit::J;
-	}
-	else{
-		TBTKExit(
-			"UnitHandler::getEnergyUnit()",
-			"Invalid energy unit '" << unit << "'",
-			""
-		);
-	}*/
-}
-
-Quantity::Charge::Unit UnitHandler::getChargeUnit(string unit){
-	return Quantity::Charge::getUnit(unit);
-/*	if(unit.compare("kC") == 0){
-		return Quantity::Charge::Unit::kC;
-	}
-	else if(unit.compare("C") == 0){
-		return Quantity::Charge::Unit::C;
-	}
-	else if(unit.compare("mC") == 0){
-		return Quantity::Charge::Unit::mC;
-	}
-	else if(unit.compare("uC") == 0){
-		return Quantity::Charge::Unit::uC;
-	}
-	else if(unit.compare("nC") == 0){
-		return Quantity::Charge::Unit::nC;
-	}
-	else if(unit.compare("pC") == 0){
-		return Quantity::Charge::Unit::pC;
-	}
-	else if(unit.compare("fC") == 0){
-		return Quantity::Charge::Unit::fC;
-	}
-	else if(unit.compare("aC") == 0){
-		return Quantity::Charge::Unit::aC;
-	}
-	else if(unit.compare("Te") == 0){
-		return Quantity::Charge::Unit::Te;
-	}
-	else if(unit.compare("Ge") == 0){
-		return Quantity::Charge::Unit::Ge;
-	}
-	else if(unit.compare("Me") == 0){
-		return Quantity::Charge::Unit::Me;
-	}
-	else if(unit.compare("ke") == 0){
-		return Quantity::Charge::Unit::ke;
-	}
-	else if(unit.compare("e") == 0){
-		return Quantity::Charge::Unit::e;
-	}
-	else{
-		TBTKExit(
-			"UnitHandler::getChargeUnit()",
-			"Invalid charge unit '" << unit << "'",
-			""
-		);
-	}*/
-}
-
-Quantity::Count::Unit UnitHandler::getCountUnit(string unit){
-	return Quantity::Count::getUnit(unit);
-/*	if(unit.compare("pcs") == 0){
-		return Quantity::Count::Unit::pcs;
-	}
-	else if(unit.compare("mol") == 0){
-		return Quantity::Count::Unit::mol;
-	}
-	else{
-		TBTKExit(
-			"UnitHandler::getCountUnit()",
-			"Invalid count unit '" << unit << "'",
-			""
-		);
-	}*/
 }
 
 UnitHandler::StaticConstructor::StaticConstructor(){

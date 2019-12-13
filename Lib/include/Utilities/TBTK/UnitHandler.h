@@ -478,23 +478,9 @@ private:
 	 *  voltage in the default unit (eV/C). */
 	static double getVoltageConversionFactor(VoltageUnit unit);
 
-	/** Converts a string into a TemperatureUnit. */
-	static Quantity::Temperature::Unit getTemperatureUnit(std::string unit);
-
-	/** Converts a string into a TimeUnit. */
-	static Quantity::Time::Unit getTimeUnit(std::string unit);
-
-	/** Converts a string into a LengthUnit. */
-	static Quantity::Length::Unit getLengthUnit(std::string unit);
-
-	/** Converts a string into a EnergyUnit. */
-	static Quantity::Energy::Unit getEnergyUnit(std::string unit);
-
-	/** Converts a string into a ChargeUnit. */
-	static Quantity::Charge::Unit getChargeUnit(std::string unit);
-
-	/** Converts a string into a CountUnit. */
-	static Quantity::Count::Unit getCountUnit(std::string unit);
+	/** Converts a string into a corresponding Unit. */
+	template<typename Quantity>
+	static typename Quantity::Unit getUnit(const std::string &unit);
 
 	/** Static constructor. */
 	static class StaticConstructor{
@@ -732,6 +718,11 @@ inline constexpr double& UnitHandler::getScale<Quantity::Time>(){
 template<typename Quantity>
 inline std::string UnitHandler::getUnitString(){
 	return Quantity::getUnitString(getUnit<Quantity>());
+}
+
+template<typename Quantity>
+typename Quantity::Unit UnitHandler::getUnit(const std::string &unit){
+	return Quantity::getUnit(unit);
 }
 
 };
