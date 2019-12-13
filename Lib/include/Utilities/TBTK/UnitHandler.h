@@ -396,26 +396,9 @@ private:
 	template<typename Quantity>
 	constexpr static double& getScale();
 
-	/** Set temperature scale. */
-	static void setTemperatureScale(
-		double scale,
-		Quantity::Temperature::Unit unit
-	);
-
-	/** Set time scale. */
-	static void setTimeScale(double scale, Quantity::Time::Unit unit);
-
-	/** Set length scale. */
-	static void setLengthScale(double scale, Quantity::Length::Unit unit);
-
-	/** Set energy scale. */
-	static void setEnergyScale(double scale, Quantity::Energy::Unit unit);
-
-	/** Set charge scale. */
-	static void setChargeScale(double scale, Quantity::Charge::Unit unit);
-
-	/** Set count scale. */
-	static void setCountScale(double scale, Quantity::Count::Unit unit);
+	/** Set scale. */
+	template<typename Quantity>
+	static void setScale(double scale, typename Quantity::Unit unit);
 
 	/** Set temperature scale. */
 	static void setTemperatureScale(std::string scale);
@@ -566,49 +549,10 @@ inline constexpr Quantity::Time::Unit& UnitHandler::getUnit<Quantity::Time>(
 	return std::get<5>(units);
 }
 
-inline void UnitHandler::setTemperatureScale(
-	double scale,
-	Quantity::Temperature::Unit unit
-){
-	setUnit<Quantity::Temperature>(unit);
-	setScale<Quantity::Temperature>(scale);
-}
-
-inline void UnitHandler::setTimeScale(double scale, Quantity::Time::Unit unit){
-	setUnit<Quantity::Time>(unit);
-	setScale<Quantity::Time>(scale);
-}
-
-inline void UnitHandler::setLengthScale(
-	double scale,
-	Quantity::Length::Unit unit
-){
-	setUnit<Quantity::Length>(unit);
-	setScale<Quantity::Length>(scale);
-}
-
-inline void UnitHandler::setEnergyScale(
-	double scale,
-	Quantity::Energy::Unit unit
-){
-	setUnit<Quantity::Energy>(unit);
-	setScale<Quantity::Energy>(scale);
-}
-
-inline void UnitHandler::setChargeScale(
-	double scale,
-	Quantity::Charge::Unit unit
-){
-	setUnit<Quantity::Charge>(unit);
-	setScale<Quantity::Charge>(scale);
-}
-
-inline void UnitHandler::setCountScale(
-	double scale,
-	Quantity::Count::Unit unit
-){
-	setUnit<Quantity::Count>(unit);
-	setScale<Quantity::Count>(scale);
+template <typename Quantity>
+void UnitHandler::setScale(double scale, typename Quantity::Unit unit){
+	setUnit<Quantity>(unit);
+	setScale<Quantity>(scale);
 }
 
 inline void UnitHandler::setScales(const std::vector<std::string> &scales){

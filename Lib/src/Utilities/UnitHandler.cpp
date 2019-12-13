@@ -176,7 +176,7 @@ void UnitHandler::setTemperatureScale(string scale){
 
 	Quantity::Temperature::Unit unit = getTemperatureUnit(components[1]);
 
-	setTemperatureScale(s, unit);
+	setScale<Quantity::Temperature>(s, unit);
 }
 
 void UnitHandler::setTimeScale(string scale){
@@ -210,7 +210,7 @@ void UnitHandler::setTimeScale(string scale){
 
 	Quantity::Time::Unit unit = getTimeUnit(components[1]);
 
-	setTimeScale(s, unit);
+	setScale<Quantity::Time>(s, unit);
 }
 
 void UnitHandler::setLengthScale(string scale){
@@ -244,7 +244,7 @@ void UnitHandler::setLengthScale(string scale){
 
 	Quantity::Length::Unit unit = getLengthUnit(components[1]);
 
-	setLengthScale(s, unit);
+	setScale<Quantity::Length>(s, unit);
 }
 
 void UnitHandler::setEnergyScale(string scale){
@@ -278,7 +278,7 @@ void UnitHandler::setEnergyScale(string scale){
 
 	Quantity::Energy::Unit unit = getEnergyUnit(components[1]);
 
-	setEnergyScale(s, unit);
+	setScale<Quantity::Energy>(s, unit);
 }
 
 void UnitHandler::setChargeScale(string scale){
@@ -312,7 +312,7 @@ void UnitHandler::setChargeScale(string scale){
 
 	Quantity::Charge::Unit unit = getChargeUnit(components[1]);
 
-	setChargeScale(s, unit);
+	setScale<Quantity::Charge>(s, unit);
 }
 
 void UnitHandler::setCountScale(string scale){
@@ -346,7 +346,7 @@ void UnitHandler::setCountScale(string scale){
 
 	Quantity::Count::Unit unit = getCountUnit(components[1]);
 
-	setCountScale(s, unit);
+	setScale<Quantity::Count>(s, unit);
 }
 
 double UnitHandler::convertMassDerivedToBase(double mass, MassUnit unit){
