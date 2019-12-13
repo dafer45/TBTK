@@ -478,166 +478,32 @@ double UnitHandler::getTemperatureConversionFactor(
 	Quantity::Temperature::Unit temperatureUnit
 ){
 	return Quantity::Temperature::getConversionFactor(temperatureUnit);
-/*	switch(temperatureUnit){
-		case Quantity::Temperature::Unit::kK:	//1e-3 kK per K
-			return 1e-3;
-		case Quantity::Temperature::Unit::K:	//Reference scale
-			return 1.;
-		case Quantity::Temperature::Unit::mK:
-			return 1e3;
-		case Quantity::Temperature::Unit::uK:
-			return 1e6;
-		case Quantity::Temperature::Unit::nK:
-			return 1e9;
-		default:	//Should never happen, hard error generated for quick bug detection
-			TBTKExit(
-				"UnitHandler::getTemperatureConversionUnit()",
-				"Unknown unit - " << static_cast<int>(temperatureUnit) << ".",
-				""
-			);
-	}*/
 }
 
 double UnitHandler::getTimeConversionFactor(Quantity::Time::Unit timeUnit){
 	return Quantity::Time::getConversionFactor(timeUnit);
-/*	switch(timeUnit){
-		case Quantity::Time::Unit::s:	//Reference scale
-			return 1.;
-		case Quantity::Time::Unit::ms:
-			return 1e3;	//1e3 ms per second
-		case Quantity::Time::Unit::us:
-			return 1e6;
-		case Quantity::Time::Unit::ns:
-			return 1e9;
-		case Quantity::Time::Unit::ps:
-			return 1e12;
-		case Quantity::Time::Unit::fs:
-			return 1e15;
-		case Quantity::Time::Unit::as:
-			return 1e18;
-		default:	//Should never happen, hard error generated for quick bug detection
-			TBTKExit(
-				"UnitHandler::getTimeConversionFactor()",
-				"Unknown unit - " << static_cast<int>(timeUnit) << ".",
-				""
-			);
-	}*/
 }
 
 double UnitHandler::getLengthConversionFactor(
 	Quantity::Length::Unit lengthUnit
 ){
 	return Quantity::Length::getConversionFactor(lengthUnit);
-/*	switch(lengthUnit){
-		case Quantity::Length::Unit::m:	//Reference scale
-			return 1.;
-		case Quantity::Length::Unit::mm:	//1e3 mm per m
-			return 1e3;
-		case Quantity::Length::Unit::um:
-			return 1e6;
-		case Quantity::Length::Unit::nm:
-			return 1e9;
-		case Quantity::Length::Unit::pm:
-			return 1e12;
-		case Quantity::Length::Unit::fm:
-			return 1e15;
-		case Quantity::Length::Unit::am:
-			return 1e18;
-		case Quantity::Length::Unit::Ao:
-			return 1e10;
-		default:	//Should never happen, hard error generated for quick bug detection
-			TBTKExit(
-				"UnitHandler::getLengthConversionFactor()",
-				"Unknown unit - " << static_cast<int>(lengthUnit) << ".",
-				""
-			);
-	}*/
 }
 
 double UnitHandler::getEnergyConversionFactor(
 	Quantity::Energy::Unit energyUnit
 ){
 	return Quantity::Energy::getConversionFactor(energyUnit);
-/*	switch(energyUnit){
-		case Quantity::Energy::Unit::GeV:	//1e-9 GeV per eV
-			return 1e-9;
-		case Quantity::Energy::Unit::MeV:
-			return 1e-6;
-		case Quantity::Energy::Unit::keV:
-			return 1e-3;
-		case Quantity::Energy::Unit::eV:	//Reference scale
-			return 1.;
-		case Quantity::Energy::Unit::meV:
-			return 1e3;
-		case Quantity::Energy::Unit::ueV:
-			return 1e6;
-		case Quantity::Energy::Unit::J:
-			return J_per_eV;
-		default:	//Should never happen, hard error generated for quick bug detection
-			TBTKExit(
-				"UnitHandler::getEnergyConversionFactor()",
-				"Unknown unit - " << static_cast<int>(energyUnit) << ".",
-				""
-			);
-	}*/
 }
 
 double UnitHandler::getChargeConversionFactor(
 	Quantity::Charge::Unit chargeUnit
 ){
 	return Quantity::Charge::getConversionFactor(chargeUnit);
-/*	double E = constantsDefaultUnits.at("e").first;
-	switch(chargeUnit){
-		case Quantity::Charge::Unit::kC:	//1e-3 kC per C
-			return 1e-3;
-		case Quantity::Charge::Unit::C:	//Reference scale
-			return 1.;
-		case Quantity::Charge::Unit::mC:
-			return 1e3;
-		case Quantity::Charge::Unit::uC:
-			return 1e6;
-		case Quantity::Charge::Unit::nC:
-			return 1e9;
-		case Quantity::Charge::Unit::pC:
-			return 1e12;
-		case Quantity::Charge::Unit::fC:
-			return 1e15;
-		case Quantity::Charge::Unit::aC:
-			return 1e18;
-		case Quantity::Charge::Unit::Te:
-			return 1e-12/E;
-		case Quantity::Charge::Unit::Ge:
-			return 1e-9/E;
-		case Quantity::Charge::Unit::Me:
-			return 13-6/E;
-		case Quantity::Charge::Unit::ke:
-			return 1e-3/E;
-		case Quantity::Charge::Unit::e:
-			return 1./E;
-		default:	//Should never happen, hard error generated for quick bug detection
-			TBTKExit(
-				"UnitHandler::getChargeConversionFactor()",
-				"Unknown unit - " << static_cast<int>(chargeUnit) << ".",
-				""
-			);
-	}*/
 }
 
 double UnitHandler::getCountConversionFactor(Quantity::Count::Unit countUnit){
 	return Quantity::Count::getConversionFactor(countUnit);
-/*	double N_A = constantsDefaultUnits.at("N_A").first;
-	switch(countUnit){
-		case Quantity::Count::Unit::pcs:
-			return 1.;	//Reference scale
-		case Quantity::Count::Unit::mol:	//1/N_A mol per pcs
-			return 1./N_A;
-		default:	//Should never happen, hard error generated for quick bug detection
-			TBTKExit(
-				"UnitHandler::getCountConversionFactor()",
-				"Unknown unit - " << static_cast<int>(countUnit) << ".",
-				""
-			);
-	}*/
 }
 
 double UnitHandler::getMassConversionFactor(MassUnit unit){
