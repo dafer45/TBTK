@@ -49,8 +49,11 @@ public:
 	 * - mol - Mole */
 	enum class Unit{pcs, mol};
 
-	/** Get unit string. */
+	/** Get unit string for the given Unit. */
 	static std::string getUnitString(Unit unit);
+
+	/** Convert a string to a Unit. */
+	static Unit getUnit(const std::string &str);
 private:
 	static std::map<Unit, std::string> unitToString;
 	static std::map<std::string, Unit> stringToUnit;

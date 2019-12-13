@@ -35,16 +35,16 @@ map<Time::Unit, string> Time::unitToString = {
 	{Time::Unit::as, "as"}
 };
 map<string, Time::Unit> Time::stringToUnit = {
-	{"", Time::Unit::s},
-	{"", Time::Unit::ms},
-	{"", Time::Unit::us},
-	{"", Time::Unit::ns},
-	{"", Time::Unit::ps},
-	{"", Time::Unit::fs},
-	{"", Time::Unit::as}
+	{"s", Time::Unit::s},
+	{"ms", Time::Unit::ms},
+	{"us", Time::Unit::us},
+	{"ns", Time::Unit::ns},
+	{"ps", Time::Unit::ps},
+	{"fs", Time::Unit::fs},
+	{"as", Time::Unit::as}
 };
 
-std::string Time::getUnitString(Unit unit){
+string Time::getUnitString(Unit unit){
 	try{
 		return unitToString.at(unit);
 	}
@@ -53,6 +53,19 @@ std::string Time::getUnitString(Unit unit){
 			"Quantity::Time::getUnitString()",
 			"Unknown unit '" << static_cast<int>(unit) << "'.",
 			"This should never happen, contact the developer."
+		);
+	}
+}
+
+Time::Unit Time::getUnit(const string &str){
+	try{
+		return stringToUnit.at(str);
+	}
+	catch(std::out_of_range e){
+		TBTKExit(
+			"Quantity::Time::getUnit()",
+			"Unknown unit '" << str << "'.",
+			""
 		);
 	}
 }

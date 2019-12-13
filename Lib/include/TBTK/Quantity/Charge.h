@@ -60,8 +60,11 @@ public:
 	 * - e - e (elementary charge) */
 	enum class Unit{kC, C, mC, uC, nC, pC, fC, aC, Te, Ge, Me, ke, e};
 
-	/** Get unit string. */
+	/** Get unit string for the given Unit. */
 	static std::string getUnitString(Unit unit);
+
+	/** Convert a string to a Unit. */
+	static Unit getUnit(const std::string &str);
 private:
 	static std::map<Unit, std::string> unitToString;
 	static std::map<std::string, Unit> stringToUnit;

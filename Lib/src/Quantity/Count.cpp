@@ -34,7 +34,7 @@ map<string, Count::Unit> Count::stringToUnit = {
 	{"mol", Count::Unit::mol}
 };
 
-std::string Count::getUnitString(Unit unit){
+string Count::getUnitString(Unit unit){
 	try{
 		return unitToString.at(unit);
 	}
@@ -43,6 +43,19 @@ std::string Count::getUnitString(Unit unit){
 			"Quantity::Charge::getUnitString()",
 			"Unknown unit '" << static_cast<int>(unit) << "'.",
 			"This should never happen, contact the developer."
+		);
+	}
+}
+
+Count::Unit Count::getUnit(const string &str){
+	try{
+		return stringToUnit.at(str);
+	}
+	catch(std::out_of_range e){
+		TBTKExit(
+			"Quantity::Charge::getUnit()",
+			"Unknown unit '" << str << "'.",
+			""
 		);
 	}
 }

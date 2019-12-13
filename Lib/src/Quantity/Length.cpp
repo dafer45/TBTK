@@ -46,7 +46,7 @@ map<string, Length::Unit> Length::stringToUnit = {
 	{"Ao", Length::Unit::Ao}
 };
 
-std::string Length::getUnitString(Unit unit){
+string Length::getUnitString(Unit unit){
 	try{
 		return unitToString.at(unit);
 	}
@@ -55,6 +55,19 @@ std::string Length::getUnitString(Unit unit){
 			"Quantity::Length::getUnitString()",
 			"Unknown unit '" << static_cast<int>(unit) << "'.",
 			"This should never happen, contact the developer."
+		);
+	}
+}
+
+Length::Unit Length::getUnit(const string &str){
+	try{
+		return stringToUnit.at(str);
+	}
+	catch(std::out_of_range e){
+		TBTKExit(
+			"Quantity::Length::getUnit()",
+			"Unknown unit '" << str << "'.",
+			""
 		);
 	}
 }

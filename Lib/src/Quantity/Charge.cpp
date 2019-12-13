@@ -56,7 +56,7 @@ map<string, Charge::Unit> Charge::stringToUnit = {
 	{"e", Charge::Unit::e}
 };
 
-std::string Charge::getUnitString(Unit unit){
+string Charge::getUnitString(Unit unit){
 	try{
 		return unitToString.at(unit);
 	}
@@ -65,6 +65,19 @@ std::string Charge::getUnitString(Unit unit){
 			"Quantity::Charge::getUnitString()",
 			"Unknown unit '" << static_cast<int>(unit) << "'.",
 			"This should never happen, contact the developer."
+		);
+	}
+}
+
+Charge::Unit Charge::getUnit(const string &str){
+	try{
+		return stringToUnit.at(str);
+	}
+	catch(std::out_of_range e){
+		TBTKExit(
+			"Quantity::Charge::getUnit()",
+			"Unknown unit '" << str << "'.",
+			""
 		);
 	}
 }

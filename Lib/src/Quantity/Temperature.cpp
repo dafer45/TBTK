@@ -53,5 +53,18 @@ std::string Temperature::getUnitString(Unit unit){
 	}
 }
 
+Temperature::Unit Temperature::getUnit(const string &str){
+	try{
+		return stringToUnit.at(str);
+	}
+	catch(std::out_of_range e){
+		TBTKExit(
+			"Quantity::Temperature::getUnit()",
+			"Unknown unit '" << str << "'.",
+			""
+		);
+	}
+}
+
 };	//End of namespace Quantity
 };	//End of namespace TBTK

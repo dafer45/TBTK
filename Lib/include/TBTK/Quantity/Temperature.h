@@ -52,8 +52,11 @@ public:
 	 *  - nK - nanokelvin */
 	enum class Unit {kK, K, mK, uK, nK};
 
-	/** Get unit string. */
+	/** Get unit string for the given Unit. */
 	static std::string getUnitString(Unit unit);
+
+	/** Convert a string to a Unit. */
+	static Unit getUnit(const std::string &str);
 private:
 	static std::map<Unit, std::string> unitToString;
 	static std::map<std::string, Unit> stringToUnit;

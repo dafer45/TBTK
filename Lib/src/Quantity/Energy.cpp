@@ -44,7 +44,7 @@ map<string, Energy::Unit> Energy::stringToUnit = {
 	{"J", Energy::Unit::J}
 };
 
-std::string Energy::getUnitString(Unit unit){
+string Energy::getUnitString(Unit unit){
 	try{
 		return unitToString.at(unit);
 	}
@@ -53,6 +53,19 @@ std::string Energy::getUnitString(Unit unit){
 			"Quantity::Energy::getUnitString()",
 			"Unkown unit '" << static_cast<int>(unit) << "'.",
 			"This should never happen, contact the developer."
+		);
+	}
+}
+
+Energy::Unit Energy::getUnit(const string &str){
+	try{
+		return stringToUnit.at(str);
+	}
+	catch(std::out_of_range e){
+		TBTKExit(
+			"Quantity::Energy::getUnit()",
+			"Unkown unit '" << str << "'.",
+			""
 		);
 	}
 }

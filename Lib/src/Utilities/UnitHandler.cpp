@@ -922,7 +922,8 @@ double UnitHandler::getVoltageConversionFactor(VoltageUnit unit){
 }
 
 Quantity::Temperature::Unit UnitHandler::getTemperatureUnit(string unit){
-	if(unit.compare("kK") == 0){
+	return Quantity::Temperature::getUnit(unit);
+/*	if(unit.compare("kK") == 0){
 		return Quantity::Temperature::Unit::kK;
 	}
 	else if(unit.compare("K") == 0){
@@ -943,11 +944,12 @@ Quantity::Temperature::Unit UnitHandler::getTemperatureUnit(string unit){
 			"Invalid temperature unit '" << unit << "'",
 			""
 		);
-	}
+	}*/
 }
 
 Quantity::Time::Unit UnitHandler::getTimeUnit(string unit){
-	if(unit.compare("s") == 0){
+	return Quantity::Time::getUnit(unit);
+/*	if(unit.compare("s") == 0){
 		return Quantity::Time::Unit::s;
 	}
 	else if(unit.compare("ms") == 0){
@@ -974,11 +976,12 @@ Quantity::Time::Unit UnitHandler::getTimeUnit(string unit){
 			"Invalid time unit '" << unit << "'",
 			""
 		);
-	}
+	}*/
 }
 
 Quantity::Length::Unit UnitHandler::getLengthUnit(string unit){
-	if(unit.compare("m") == 0){
+	return Quantity::Length::getUnit(unit);
+/*	if(unit.compare("m") == 0){
 		return Quantity::Length::Unit::m;
 	}
 	else if(unit.compare("mm") == 0){
@@ -1008,11 +1011,12 @@ Quantity::Length::Unit UnitHandler::getLengthUnit(string unit){
 			"Invalid length unit '" << unit << "'",
 			""
 		);
-	}
+	}*/
 }
 
 Quantity::Energy::Unit UnitHandler::getEnergyUnit(string unit){
-	if(unit.compare("GeV") == 0){
+	return Quantity::Energy::getUnit(unit);
+/*	if(unit.compare("GeV") == 0){
 		return Quantity::Energy::Unit::GeV;
 	}
 	else if(unit.compare("MeV") == 0){
@@ -1039,11 +1043,12 @@ Quantity::Energy::Unit UnitHandler::getEnergyUnit(string unit){
 			"Invalid energy unit '" << unit << "'",
 			""
 		);
-	}
+	}*/
 }
 
 Quantity::Charge::Unit UnitHandler::getChargeUnit(string unit){
-	if(unit.compare("kC") == 0){
+	return Quantity::Charge::getUnit(unit);
+/*	if(unit.compare("kC") == 0){
 		return Quantity::Charge::Unit::kC;
 	}
 	else if(unit.compare("C") == 0){
@@ -1088,11 +1093,12 @@ Quantity::Charge::Unit UnitHandler::getChargeUnit(string unit){
 			"Invalid charge unit '" << unit << "'",
 			""
 		);
-	}
+	}*/
 }
 
 Quantity::Count::Unit UnitHandler::getCountUnit(string unit){
-	if(unit.compare("pcs") == 0){
+	return Quantity::Count::getUnit(unit);
+/*	if(unit.compare("pcs") == 0){
 		return Quantity::Count::Unit::pcs;
 	}
 	else if(unit.compare("mol") == 0){
@@ -1104,7 +1110,7 @@ Quantity::Count::Unit UnitHandler::getCountUnit(string unit){
 			"Invalid count unit '" << unit << "'",
 			""
 		);
-	}
+	}*/
 }
 
 UnitHandler::StaticConstructor::StaticConstructor(){
