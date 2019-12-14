@@ -558,7 +558,13 @@ double UnitHandler::convertNaturalToArbitrary(
 	)/getConversionFactor<Quantity>();
 }
 
-template<>
+template<typename Quantity>
+double UnitHandler::getConversionFactor(){
+
+	return Quantity::getConversionFactor(getUnit<Quantity>());
+}
+
+/*template<>
 inline double UnitHandler::getConversionFactor<Quantity::Charge>(){
 	return Quantity::Charge::getConversionFactor(
 		getUnit<Quantity::Charge>()
@@ -596,9 +602,14 @@ inline double UnitHandler::getConversionFactor<Quantity::Temperature>(){
 template<>
 inline double UnitHandler::getConversionFactor<Quantity::Time>(){
 	return Quantity::Time::getConversionFactor(getUnit<Quantity::Time>());
+}*/
+
+template<typename Quantity>
+double UnitHandler::getConversionFactor(typename Quantity::Unit unit){
+	return Quantity::getConversionFactor(unit);
 }
 
-template<>
+/*template<>
 inline double UnitHandler::getConversionFactor<Quantity::Charge>(
 	typename Quantity::Charge::Unit unit
 ){
@@ -638,7 +649,7 @@ inline double UnitHandler::getConversionFactor<Quantity::Time>(
 	typename Quantity::Time::Unit unit
 ){
 	return Quantity::Time::getConversionFactor(unit);
-}
+}*/
 
 template<typename Quantity>
 inline void UnitHandler::setScale(double scale){
