@@ -25,6 +25,7 @@
 
 #include "TBTK/Quantity/Charge.h"
 #include "TBTK/Quantity/Count.h"
+#include "TBTK/Quantity/Derived.h"
 #include "TBTK/Quantity/Energy.h"
 #include "TBTK/Quantity/Length.h"
 #include "TBTK/Quantity/Temperature.h"
@@ -91,7 +92,7 @@ public:
 	 *	fg - femtogram<br/>
 	 *	ag - attogram<br/>
 	 *	u - atomic mass */
-	enum class MassUnit{kg, g, mg, ug, ng, pg, fg, ag, u};
+//	enum class MassUnit{kg, g, mg, ug, ng, pg, fg, ag, u};
 
 	/** Magnetic unit (derived unit):<br/>
 	 *	MT - megatesla<br/>
@@ -167,17 +168,45 @@ public:
 		typename Quantity::Unit unit
 	);
 
+	/** Convert from derived units to base units. */
+	template<typename Quantity>
+	static double convertDerivedToBase(
+		double value,
+		typename Quantity::Unit unit
+	);
+
+	/** Convert from base units to derived units. */
+	template<typename Quantity>
+	static double convertBaseToDerived(
+		double value,
+		typename Quantity::Unit unit
+	);
+
+	/** Convert from derived units to natural units. */
+	template<typename Quantity>
+	static double convertDerivedToNatural(
+		double value,
+		typename Quantity::Unit unit
+	);
+
+	/** Convert from natural units to derived units. */
+	template<typename Quantity>
+	static double convertNaturalToDerived(
+		double value,
+		typename Quantity::Unit unit
+	);
+
 	/** Convert mass from derived units to base units. */
-	static double convertMassDerivedToBase(double mass, MassUnit unit);
+//	static double convertMassDerivedToBase(double mass, MassUnit unit);
 
 	/** Convert mass from base units to derived units. */
-	static double convertMassBaseToDerived(double mass, MassUnit unit);
+//	static double convertMassBaseToDerived(double mass, MassUnit unit);
 
 	/** Convert mass from derived units to natural units. */
-	static double convertMassDerivedToNatural(double mass, MassUnit unit);
+//	static double convertMassDerivedToNatural(double mass, MassUnit unit);
 
 	/** Convert mass from natural units to derived units. */
-	static double convertMassNaturalToDerived(double mass, MassUnit unit);
+//	static double convertMassNaturalToDerived(double mass, MassUnit unit);
 
 	/** Convert magnetic field from derived units to base units. */
 	static double convertMagneticFieldDerivedToBase(
@@ -413,7 +442,7 @@ private:
 
 	/** Returns the number of unit masses in the input unit per unit mass
 	 *  in the default unit (eVs^2/m^2). */
-	static double getMassConversionFactor(MassUnit unit);
+//	static double getMassConversionFactor(MassUnit unit);
 
 	/** Returns the amount of unit magnetic field strength in the input
 	 *  unit per unit magnetic field strength in the default unit
@@ -550,6 +579,124 @@ double UnitHandler::convertNaturalToArbitrary(
 	return value*getScale<Quantity>()*getConversionFactor<Quantity>(
 		unit
 	)/getConversionFactor<Quantity>();
+}
+
+template<typename Quantity>
+double UnitHandler::convertDerivedToBase(
+	double value,
+	typename Quantity::Unit unit
+){
+	return value*Quantity::getConversionFactor(
+		getUnit<TBTK::Quantity::Charge>(),
+		getUnit<TBTK::Quantity::Count>(),
+		getUnit<TBTK::Quantity::Energy>(),
+		getUnit<TBTK::Quantity::Length>(),
+		getUnit<TBTK::Quantity::Temperature>(),
+		getUnit<TBTK::Quantity::Time>()
+	)/Quantity::getConversionFactor(unit);
+}
+
+template<typename Quantity>
+double UnitHandler::convertBaseToDerived(
+	double value,
+	typename Quantity::Unit unit
+){
+	return value*Quantity::getConversionFactor(
+		unit
+	)/Quantity::getConversionFactor(
+		getUnit<TBTK::Quantity::Charge>(),
+		getUnit<TBTK::Quantity::Count>(),
+		getUnit<TBTK::Quantity::Energy>(),
+		getUnit<TBTK::Quantity::Length>(),
+		getUnit<TBTK::Quantity::Temperature>(),
+		getUnit<TBTK::Quantity::Time>()
+	);
+}
+
+template<typename Quantity>
+double UnitHandler::convertDerivedToNatural(
+	double value,
+	typename Quantity::Unit unit
+){
+	double result = value*Quantity::getConversionFactor(
+		getUnit<TBTK::Quantity::Charge>(),
+		getUnit<TBTK::Quantity::Count>(),
+		getUnit<TBTK::Quantity::Energy>(),
+		getUnit<TBTK::Quantity::Length>(),
+		getUnit<TBTK::Quantity::Temperature>(),
+		getUnit<TBTK::Quantity::Time>()
+	)/Quantity::getConversionFactor(unit);
+
+	result /= pow(
+		getScale<TBTK::Quantity::Charge>(),
+		Quantity::getExponent(TBTK::Quantity::Charge())
+	);
+	result /= pow(
+		getScale<TBTK::Quantity::Count>(),
+		Quantity::getExponent(TBTK::Quantity::Count())
+	);
+	result /= pow(
+		getScale<TBTK::Quantity::Energy>(),
+		Quantity::getExponent(TBTK::Quantity::Energy())
+	);
+	result /= pow(
+		getScale<TBTK::Quantity::Length>(),
+		Quantity::getExponent(TBTK::Quantity::Length())
+	);
+	result /= pow(
+		getScale<TBTK::Quantity::Temperature>(),
+		Quantity::getExponent(TBTK::Quantity::Temperature())
+	);
+	result /= pow(
+		getScale<TBTK::Quantity::Time>(),
+		Quantity::getExponent(TBTK::Quantity::Time())
+	);
+
+	return result;
+}
+
+template<typename Quantity>
+double UnitHandler::convertNaturalToDerived(
+	double value,
+	typename Quantity::Unit unit
+){
+	double result = value*Quantity::getConversionFactor(
+		unit
+	)/Quantity::getConversionFactor(
+		getUnit<TBTK::Quantity::Charge>(),
+		getUnit<TBTK::Quantity::Count>(),
+		getUnit<TBTK::Quantity::Energy>(),
+		getUnit<TBTK::Quantity::Length>(),
+		getUnit<TBTK::Quantity::Temperature>(),
+		getUnit<TBTK::Quantity::Time>()
+	);
+
+	result *= pow(
+		getScale<TBTK::Quantity::Charge>(),
+		Quantity::getExponent(TBTK::Quantity::Charge())
+	);
+	result *= pow(
+		getScale<TBTK::Quantity::Count>(),
+		Quantity::getExponent(TBTK::Quantity::Count())
+	);
+	result *= pow(
+		getScale<TBTK::Quantity::Energy>(),
+		Quantity::getExponent(TBTK::Quantity::Energy())
+	);
+	result *= pow(
+		getScale<TBTK::Quantity::Length>(),
+		Quantity::getExponent(TBTK::Quantity::Length())
+	);
+	result *= pow(
+		getScale<TBTK::Quantity::Temperature>(),
+		Quantity::getExponent(TBTK::Quantity::Temperature())
+	);
+	result *= pow(
+		getScale<TBTK::Quantity::Time>(),
+		Quantity::getExponent(TBTK::Quantity::Time())
+	);
+
+	return result;
 }
 
 template<typename Quantity>

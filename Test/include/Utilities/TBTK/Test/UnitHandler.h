@@ -743,9 +743,9 @@ TEST_F(UnitHandlerTest, convertMassDerivedToBase1){
 	double as_per_s = 1e18;
 	double Ao_per_m = 1e10;
 	EXPECT_DOUBLE_EQ(
-		UnitHandler::convertMassDerivedToBase(
+		UnitHandler::convertDerivedToBase<Quantity::Mass>(
 			10,
-			UnitHandler::MassUnit::ug
+			Quantity::Mass::Unit::ug
 		),
 		10*1e-9*GeV_per_J*as_per_s*as_per_s/(Ao_per_m*Ao_per_m)
 	);
@@ -760,9 +760,9 @@ TEST_F(UnitHandlerTest, convertMassBaseToDerived1){
 	double s_per_as = 1e-18;
 	double m_per_Ao = 1e-10;
 	EXPECT_DOUBLE_EQ(
-		UnitHandler::convertMassBaseToDerived(
+		UnitHandler::convertBaseToDerived<Quantity::Mass>(
 			10,
-			UnitHandler::MassUnit::ug
+			Quantity::Mass::Unit::ug
 		),
 		10*1e9*J_per_GeV*s_per_as*s_per_as/(m_per_Ao*m_per_Ao)
 	);
@@ -777,9 +777,9 @@ TEST_F(UnitHandlerTest, convertMassDerivedToNatural1){
 	double as_per_s = 1e18;
 	double Ao_per_m = 1e10;
 	EXPECT_DOUBLE_EQ(
-		UnitHandler::convertMassDerivedToNatural(
+		UnitHandler::convertDerivedToNatural<Quantity::Mass>(
 			10,
-			UnitHandler::MassUnit::ug
+			Quantity::Mass::Unit::ug
 		),
 		10*1e-9/(1.3*1.6*1.6/(1.4*1.4))*GeV_per_J*as_per_s*as_per_s/(Ao_per_m*Ao_per_m)
 	);
@@ -795,9 +795,9 @@ TEST_F(UnitHandlerTest, convertMassNaturalToDerived1){
 	double s_per_as = 1e-18;
 	double m_per_Ao = 1e-10;
 	EXPECT_DOUBLE_EQ(
-		UnitHandler::convertMassNaturalToDerived(
+		UnitHandler::convertNaturalToDerived<Quantity::Mass>(
 			10,
-			UnitHandler::MassUnit::ug
+			Quantity::Mass::Unit::ug
 		),
 		10*1e9*(1.3*1.6*1.6/(1.4*1.4))*J_per_GeV*s_per_as*s_per_as/(
 			m_per_Ao*m_per_Ao

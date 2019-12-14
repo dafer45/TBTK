@@ -143,7 +143,7 @@ double UnitHandler::getConstantNaturalUnits(const std::string &name){
 	return value;
 }
 
-double UnitHandler::convertMassDerivedToBase(double mass, MassUnit unit){
+/*double UnitHandler::convertMassDerivedToBase(double mass, MassUnit unit){
 	double massInDefaultBaseUnits = mass/getMassConversionFactor(unit);
 	double cfE = getConversionFactor<Quantity::Energy>();
 	double cfT = getConversionFactor<Quantity::Time>();
@@ -179,7 +179,7 @@ double UnitHandler::convertMassNaturalToDerived(double mass, MassUnit unit){
 		)/getScale<Quantity::Length>();
 	double massInDefaultBaseUnits = mass*cfL*cfL/(cfE*cfT*cfT);
 	return massInDefaultBaseUnits*getMassConversionFactor(unit);
-}
+}*/
 
 double UnitHandler::convertMagneticFieldDerivedToBase(
 	double field,
@@ -472,7 +472,7 @@ void UnitHandler::updateConstants(){
 	}
 }
 
-double UnitHandler::getMassConversionFactor(MassUnit unit){
+/*double UnitHandler::getMassConversionFactor(MassUnit unit){
 	switch(unit){
 		case MassUnit::kg:
 			return kg_per_baseMass;
@@ -493,7 +493,7 @@ double UnitHandler::getMassConversionFactor(MassUnit unit){
 				""
 			);
 	}
-}
+}*/
 
 double UnitHandler::getMagneticFieldConversionFactor(MagneticFieldUnit unit){
 	switch(unit){

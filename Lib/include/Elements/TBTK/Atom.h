@@ -330,9 +330,9 @@ inline std::string Atom::getName() const{
 }
 
 inline double Atom::getStandardWeight() const{
-	return UnitHandler::convertMassDerivedToBase(
+	return UnitHandler::convertDerivedToBase<Quantity::Mass>(
 		standardWeights[atomicNumber],
-		UnitHandler::MassUnit::u
+		Quantity::Mass::Unit::u
 	);
 }
 

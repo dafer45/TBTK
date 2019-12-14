@@ -74,6 +74,24 @@ public:
 		Quantity::Temperature::Unit temperatureUnit,
 		Quantity::Time::Unit timeUnit
 	);
+
+	/** Get the exponent for the given Quantity. */
+	static int getExponent(Quantity::Charge);
+
+	/** Get the exponent for the given Quantity. */
+	static int getExponent(Quantity::Count);
+
+	/** Get the exponent for the given Quantity. */
+	static int getExponent(Quantity::Energy);
+
+	/** Get the exponent for the given Quantity. */
+	static int getExponent(Quantity::Length);
+
+	/** Get the exponent for the given Quantity. */
+	static int getExponent(Quantity::Temperature);
+
+	/** Get the exponent for the given Quantity. */
+	static int getExponent(Quantity::Time);
 private:
 	static class ConversionTable{
 	public:
@@ -134,23 +152,53 @@ double Derived<Units, Exponents>::getConversionFactor(
 ){
 	return pow(
 		Charge::getConversionFactor(chargeUnit),
-		Exponent::Charge
+		static_cast<int>(Exponent::Charge)
 	)*pow(
 		Count::getConversionFactor(countUnit),
-		Exponent::Count
+		static_cast<int>(Exponent::Count)
 	)*pow(
 		Energy::getConversionFactor(energyUnit),
-		Exponent::Energy
+		static_cast<int>(Exponent::Energy)
 	)*pow(
 		Length::getConversionFactor(lengthUnit),
-		Exponent::Length
+		static_cast<int>(Exponent::Length)
 	)*pow(
 		Temperature::getConversionFactor(temperatureUnit),
-		Exponent::Temperature
+		static_cast<int>(Exponent::Temperature)
 	)*pow(
 		Time::getConversionFactor(timeUnit),
-		Exponent::Time
+		static_cast<int>(Exponent::Time)
 	);
+}
+
+template<typename Units, typename Exponents>
+int Derived<Units, Exponents>::getExponent(Quantity::Charge){
+	return static_cast<int>(Exponents::Charge);
+}
+
+template<typename Units, typename Exponents>
+int Derived<Units, Exponents>::getExponent(Quantity::Count){
+	return static_cast<int>(Exponents::Count);
+}
+
+template<typename Units, typename Exponents>
+int Derived<Units, Exponents>::getExponent(Quantity::Energy){
+	return static_cast<int>(Exponents::Energy);
+}
+
+template<typename Units, typename Exponents>
+int Derived<Units, Exponents>::getExponent(Quantity::Length){
+	return static_cast<int>(Exponents::Length);
+}
+
+template<typename Units, typename Exponents>
+int Derived<Units, Exponents>::getExponent(Quantity::Temperature){
+	return static_cast<int>(Exponents::Temperature);
+}
+
+template<typename Units, typename Exponents>
+int Derived<Units, Exponents>::getExponent(Quantity::Time){
+	return static_cast<int>(Exponents::Time);
 }
 
 enum class MassUnit {kg, g, mg, ug, ng, pg, fg, ag, u};
