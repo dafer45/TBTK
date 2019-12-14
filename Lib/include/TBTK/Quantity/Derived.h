@@ -201,6 +201,7 @@ int Derived<Units, Exponents>::getExponent(Quantity::Time){
 	return static_cast<int>(Exponents::Time);
 }
 
+//Mass
 enum class MassUnit {kg, g, mg, ug, ng, pg, fg, ag, u};
 enum class MassExponent {
 	Charge = 0,
@@ -211,6 +212,30 @@ enum class MassExponent {
 	Time = 2
 };
 typedef Derived<MassUnit, MassExponent> Mass;
+
+//MagneticField
+enum class MagneticFieldUnit {MT, kT, T, mT, uT, nT, GG, MG, kG, G, mG, uG};
+enum class MagneticFieldExponent {
+	Charge = -1,
+	Count = 0,
+	Energy = 1,
+	Length = -2,
+	Temperature = 0,
+	Time = 1
+};
+typedef Derived<MagneticFieldUnit, MagneticFieldExponent> MagneticField;
+
+//Voltage
+enum class VoltageUnit {GV, MV, kV, V, mV, uV, nV};
+enum class VoltageExponent {
+	Charge = -1,
+	Count = 0,
+	Energy = 1,
+	Length = 0,
+	Temperature = 0,
+	Time = 0
+};
+typedef Derived<VoltageUnit, VoltageExponent> Voltage;
 
 }; //End of namesapce Quantity
 }; //End of namesapce TBTK

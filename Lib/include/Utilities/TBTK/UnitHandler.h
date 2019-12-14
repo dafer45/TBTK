@@ -107,9 +107,9 @@ public:
 	 *	G - Gauss<br/>
 	 *	mG - milligauss<br/>
 	 *	uG - microgauss */
-	enum class MagneticFieldUnit{
+/*	enum class MagneticFieldUnit{
 		MT, kT, T, mT, uT, nT, GG, MG, kG, G, mG, uG
-	};
+	};*/
 
 	/** Voltage unit (derived unit):<br/>
 	 *	GV - kilovolt<br/>
@@ -119,9 +119,9 @@ public:
 	 *	mV - millivolt</br>
 	 *	uV - millivolt<br/>
 	 *	nV - millivolt */
-	enum class VoltageUnit{
+/*	enum class VoltageUnit{
 		GV, MV, kV, V, mV, uV, nV
-	};
+	};*/
 
 	/** Get physical constant in base units. */
 	static double getConstantBaseUnits(const std::string &name);
@@ -209,52 +209,52 @@ public:
 //	static double convertMassNaturalToDerived(double mass, MassUnit unit);
 
 	/** Convert magnetic field from derived units to base units. */
-	static double convertMagneticFieldDerivedToBase(
+/*	static double convertMagneticFieldDerivedToBase(
 		double field,
 		MagneticFieldUnit unit
-	);
+	);*/
 
 	/** Convert magnetic field from base units to derived units. */
-	static double convertMagneticFieldBaseToDerived(
+/*	static double convertMagneticFieldBaseToDerived(
 		double field,
 		MagneticFieldUnit unit
-	);
+	);*/
 
 	/** Convert magnetic field from derived units to natural units. */
-	static double convertMagneticFieldDerivedToNatural(
+/*	static double convertMagneticFieldDerivedToNatural(
 		double field,
 		MagneticFieldUnit unit
-	);
+	);*/
 
 	/** Convert magnetic field from natural units to derived units. */
-	static double convertMagneticFieldNaturalToDerived(
+/*	static double convertMagneticFieldNaturalToDerived(
 		double field,
 		MagneticFieldUnit unit
-	);
+	);*/
 
 	/** Convert voltage from derived units to base units. */
-	static double convertVoltageDerivedToBase(
+/*	static double convertVoltageDerivedToBase(
 		double voltage,
 		VoltageUnit unit
-	);
+	);*/
 
 	/** Convert voltage from base units to derived units. */
-	static double convertVoltageBaseToDerived(
+/*	static double convertVoltageBaseToDerived(
 		double voltage,
 		VoltageUnit unit
-	);
+	);*/
 
 	/** Convert voltage from derived units to natural units. */
-	static double convertVoltageDerivedToNatural(
+/*	static double convertVoltageDerivedToNatural(
 		double voltage,
 		VoltageUnit unit
-	);
+	);*/
 
 	/** Convert voltage from natural units to derived units. */
-	static double convertVoltageNaturalToDerived(
+/*	static double convertVoltageNaturalToDerived(
 		double voltage,
 		VoltageUnit unit
-	);
+	);*/
 
 	/** Get the unit string for the given Quantity in the currently set
 	 *  base units.
@@ -447,11 +447,11 @@ private:
 	/** Returns the amount of unit magnetic field strength in the input
 	 *  unit per unit magnetic field strength in the default unit
 	 *  (eVs/Cm^2). */
-	static double getMagneticFieldConversionFactor(MagneticFieldUnit unit);
+//	static double getMagneticFieldConversionFactor(MagneticFieldUnit unit);
 
 	/** Returns the amount of unit voltage in the input unit per unit
 	 *  voltage in the default unit (eV/C). */
-	static double getVoltageConversionFactor(VoltageUnit unit);
+//	static double getVoltageConversionFactor(VoltageUnit unit);
 
 	/** Converts a string into a corresponding Unit. */
 	template<typename Quantity>

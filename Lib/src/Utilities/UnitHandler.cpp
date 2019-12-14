@@ -179,7 +179,7 @@ double UnitHandler::convertMassNaturalToDerived(double mass, MassUnit unit){
 		)/getScale<Quantity::Length>();
 	double massInDefaultBaseUnits = mass*cfL*cfL/(cfE*cfT*cfT);
 	return massInDefaultBaseUnits*getMassConversionFactor(unit);
-}*/
+}
 
 double UnitHandler::convertMagneticFieldDerivedToBase(
 	double field,
@@ -279,7 +279,7 @@ double UnitHandler::convertVoltageNaturalToDerived(
 		)/getScale<Quantity::Charge>();
 	double voltageInDefaultBaseUnits = voltage*cfC/cfE;
 	return voltageInDefaultBaseUnits*getVoltageConversionFactor(unit);
-}
+}*/
 
 string UnitHandler::getMassUnitString(){
 	stringstream ss;
@@ -493,7 +493,7 @@ void UnitHandler::updateConstants(){
 				""
 			);
 	}
-}*/
+}
 
 double UnitHandler::getMagneticFieldConversionFactor(MagneticFieldUnit unit){
 	switch(unit){
@@ -553,7 +553,7 @@ double UnitHandler::getVoltageConversionFactor(VoltageUnit unit){
 				""
 			);
 	}
-}
+}*/
 
 UnitHandler::StaticConstructor::StaticConstructor(){
 	constantsDefaultUnits = {

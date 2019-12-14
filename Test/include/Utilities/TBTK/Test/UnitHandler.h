@@ -814,9 +814,9 @@ TEST_F(UnitHandlerTest, convertMagneticFieldDerivedToBase1){
 	double kC_per_C = 1e-3;
 	double Ao_per_m = 1e10;
 	EXPECT_DOUBLE_EQ(
-		UnitHandler::convertMagneticFieldDerivedToBase(
+		UnitHandler::convertDerivedToBase<Quantity::MagneticField>(
 			10,
-			UnitHandler::MagneticFieldUnit::uT
+			Quantity::MagneticField::Unit::uT
 		),
 		10*1e-6*GeV_per_J*as_per_s/(kC_per_C*Ao_per_m*Ao_per_m)
 	);
@@ -832,9 +832,9 @@ TEST_F(UnitHandlerTest, convertMagneticFieldBaseToDerived1){
 	double C_per_kC = 1e3;
 	double m_per_Ao = 1e-10;
 	EXPECT_DOUBLE_EQ(
-		UnitHandler::convertMagneticFieldBaseToDerived(
+		UnitHandler::convertBaseToDerived<Quantity::MagneticField>(
 			10,
-			UnitHandler::MagneticFieldUnit::uT
+			Quantity::MagneticField::Unit::uT
 		),
 		10*1e6*J_per_GeV*s_per_as/(C_per_kC*m_per_Ao*m_per_Ao)
 	);
@@ -850,14 +850,17 @@ TEST_F(UnitHandlerTest, convertMagneticFieldDerivedToNatural1){
 	double as_per_s = 1e18;
 	double kC_per_C = 1e-3;
 	double Ao_per_m = 1e10;
-	EXPECT_DOUBLE_EQ(
-		UnitHandler::convertMagneticFieldDerivedToNatural(
+	EXPECT_NEAR(
+		UnitHandler::convertDerivedToNatural<Quantity::MagneticField>(
 			10,
-			UnitHandler::MagneticFieldUnit::uT
+			Quantity::MagneticField::Unit::uT
 		),
 		10*1e-6/(1.3*1.6/(1.1*1.4*1.4))*GeV_per_J*as_per_s/(
 			kC_per_C*Ao_per_m*Ao_per_m
-		)
+		),
+		10*1e-6/(1.3*1.6/(1.1*1.4*1.4))*GeV_per_J*as_per_s/(
+			kC_per_C*Ao_per_m*Ao_per_m
+		)*EPSILON
 	);
 }
 
@@ -871,9 +874,9 @@ TEST_F(UnitHandlerTest, convertMagneticFieldNaturalToDerived1){
 	double C_per_kC = 1e3;
 	double m_per_Ao = 1e-10;
 	EXPECT_DOUBLE_EQ(
-		UnitHandler::convertMagneticFieldNaturalToDerived(
+		UnitHandler::convertNaturalToDerived<Quantity::MagneticField>(
 			10,
-			UnitHandler::MagneticFieldUnit::uT
+			Quantity::MagneticField::Unit::uT
 		),
 		10*1e6*(1.3*1.6/(1.1*1.4*1.4))*J_per_GeV*s_per_as/(
 			C_per_kC*m_per_Ao*m_per_Ao
@@ -886,12 +889,13 @@ TEST_F(UnitHandlerTest, convertVoltageDerivedToBase1){
 	//[voltage] = uV = 10^-6 J/C = 10^-6 GeV_per_J/kC_per_C GeV/kC
 	double GeV_per_J = 1e-9/J_per_eV;
 	double kC_per_C = 1e-3;
-	EXPECT_DOUBLE_EQ(
-		UnitHandler::convertVoltageDerivedToBase(
+	EXPECT_NEAR(
+		UnitHandler::convertDerivedToBase<Quantity::Voltage>(
 			10,
-			UnitHandler::VoltageUnit::uV
+			Quantity::Voltage::Unit::uV
 		),
-		10*1e-6*GeV_per_J/kC_per_C
+		10*1e-6*GeV_per_J/kC_per_C,
+		10*1e-6*GeV_per_J/kC_per_C*EPSILON
 	);
 }
 
@@ -901,9 +905,9 @@ TEST_F(UnitHandlerTest, convertVoltageBaseToDerived1){
 	double J_per_GeV = 1e9*J_per_eV;
 	double C_per_kC = 1e3;
 	EXPECT_DOUBLE_EQ(
-		UnitHandler::convertVoltageBaseToDerived(
+		UnitHandler::convertBaseToDerived<Quantity::Voltage>(
 			10,
-			UnitHandler::VoltageUnit::uV
+			Quantity::Voltage::Unit::uV
 		),
 		10*1e6*J_per_GeV/C_per_kC
 	);
@@ -916,9 +920,9 @@ TEST_F(UnitHandlerTest, convertVoltageDerivedToNatural1){
 	double GeV_per_J = 1e-9/J_per_eV;
 	double kC_per_C = 1e-3;
 	EXPECT_DOUBLE_EQ(
-		UnitHandler::convertVoltageDerivedToNatural(
+		UnitHandler::convertDerivedToNatural<Quantity::Voltage>(
 			10,
-			UnitHandler::VoltageUnit::uV
+			Quantity::Voltage::Unit::uV
 		),
 		10*1e-6/(1.3/1.1)*GeV_per_J/kC_per_C
 	);
@@ -930,9 +934,9 @@ TEST_F(UnitHandlerTest, convertVoltageNaturalToDerived1){
 	double J_per_GeV = 1e9*J_per_eV;
 	double C_per_kC = 1e3;
 	EXPECT_DOUBLE_EQ(
-		UnitHandler::convertVoltageNaturalToDerived(
+		UnitHandler::convertNaturalToDerived<Quantity::Voltage>(
 			10,
-			UnitHandler::VoltageUnit::uV
+			Quantity::Voltage::Unit::uV
 		),
 		10*1e6*(1.3/1.1)*J_per_GeV/C_per_kC
 	);
