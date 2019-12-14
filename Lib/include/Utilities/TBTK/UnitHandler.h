@@ -328,12 +328,6 @@ private:
 	/** Physical constans in the current base units. */
 	static std::map<std::string, double> constantsBaseUnits;
 
-	/** Conversion factor from eV to J. */
-	static double J_per_eV;
-
-	/** Conversion factor from eV to J. */
-	static double eV_per_J;
-
 	/** Conversion factor from eVs^2/m^2 to kg. */
 	static double kg_per_baseMass;
 

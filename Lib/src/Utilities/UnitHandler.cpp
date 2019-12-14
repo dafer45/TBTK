@@ -40,8 +40,6 @@ map<
 > UnitHandler::constantsDefaultUnits;
 map<string, double> UnitHandler::constantsBaseUnits;
 
-double UnitHandler::J_per_eV;
-double UnitHandler::eV_per_J;
 double UnitHandler::kg_per_baseMass;
 double UnitHandler::baseMass_per_kg;
 double UnitHandler::u_per_baseMass;
@@ -586,8 +584,6 @@ UnitHandler::StaticConstructor::StaticConstructor(){
 	constantsDefaultUnits["mu_B"] =		{e*hbar/(2*m_e),		{{"C", 1}, {"m", 2}, {"s", -1}}};
 	constantsDefaultUnits["mu_N"] =		{e*hbar/(2*m_p),		{{"C", 1}, {"m", 2}, {"s", -1}}};
 
-	J_per_eV			= e;
-	eV_per_J			= 1./J_per_eV;
 	kg_per_baseMass			= e;
 	baseMass_per_kg			= 1./kg_per_baseMass;
 	u_per_baseMass			= (c*c)/9.31494095e8;
