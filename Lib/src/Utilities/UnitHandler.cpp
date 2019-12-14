@@ -474,38 +474,6 @@ void UnitHandler::updateConstants(){
 	}
 }
 
-/*double UnitHandler::getTemperatureConversionFactor(
-	Quantity::Temperature::Unit temperatureUnit
-){
-	return Quantity::Temperature::getConversionFactor(temperatureUnit);
-}
-
-double UnitHandler::getTimeConversionFactor(Quantity::Time::Unit timeUnit){
-	return Quantity::Time::getConversionFactor(timeUnit);
-}
-
-double UnitHandler::getLengthConversionFactor(
-	Quantity::Length::Unit lengthUnit
-){
-	return Quantity::Length::getConversionFactor(lengthUnit);
-}
-
-double UnitHandler::getEnergyConversionFactor(
-	Quantity::Energy::Unit energyUnit
-){
-	return Quantity::Energy::getConversionFactor(energyUnit);
-}
-
-double UnitHandler::getChargeConversionFactor(
-	Quantity::Charge::Unit chargeUnit
-){
-	return Quantity::Charge::getConversionFactor(chargeUnit);
-}
-
-double UnitHandler::getCountConversionFactor(Quantity::Count::Unit countUnit){
-	return Quantity::Count::getConversionFactor(countUnit);
-}*/
-
 double UnitHandler::getMassConversionFactor(MassUnit unit){
 	switch(unit){
 		case MassUnit::kg:

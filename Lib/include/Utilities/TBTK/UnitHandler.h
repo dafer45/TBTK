@@ -417,40 +417,6 @@ private:
 	template<typename Quantity>
 	static double getConversionFactor(typename Quantity::Unit unit);
 
-	/** Returns the number of degrees in the given unit per degree in
-	 *  default unit (K). */
-/*	static double getTemperatureConversionFactor(
-		Quantity::Temperature::Unit temperatureUnit
-	);*/
-
-	/** Returns the number of unit times in the given unit per unit time in
-	 *  the default unit (s). */
-//	static double getTimeConversionFactor(Quantity::Time::Unit timeUnit);
-
-	/** Returns the number of unit lengths in the given unit per unit
-	 *  length in the default unit (m). */
-/*	static double getLengthConversionFactor(
-		Quantity::Length::Unit lengthUnit
-	);*/
-
-	/** Returns the number of unit energies in the given unit per unit
-	 *  energy in the default unit (eV). */
-/*	static double getEnergyConversionFactor(
-		Quantity::Energy::Unit energyUnit
-	);*/
-
-	/** Returns the number of unit charges in the given unit per unit
-	 *  charge in the default unit (C). */
-/*	static double getChargeConversionFactor(
-		Quantity::Charge::Unit chargeUnit
-	);*/
-
-	/** Returns the number of unit counts in the the given unit per unit
-	 *  count in the default unit (pcs). */
-/*	static double getCountConversionFactor(
-		Quantity::Count::Unit countUnit
-	);*/
-
 	/** Returns the number of unit masses in the input unit per unit mass
 	 *  in the default unit (eVs^2/m^2). */
 	static double getMassConversionFactor(MassUnit unit);
