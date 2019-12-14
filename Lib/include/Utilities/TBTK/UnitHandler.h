@@ -196,66 +196,6 @@ public:
 		typename Quantity::Unit unit
 	);
 
-	/** Convert mass from derived units to base units. */
-//	static double convertMassDerivedToBase(double mass, MassUnit unit);
-
-	/** Convert mass from base units to derived units. */
-//	static double convertMassBaseToDerived(double mass, MassUnit unit);
-
-	/** Convert mass from derived units to natural units. */
-//	static double convertMassDerivedToNatural(double mass, MassUnit unit);
-
-	/** Convert mass from natural units to derived units. */
-//	static double convertMassNaturalToDerived(double mass, MassUnit unit);
-
-	/** Convert magnetic field from derived units to base units. */
-/*	static double convertMagneticFieldDerivedToBase(
-		double field,
-		MagneticFieldUnit unit
-	);*/
-
-	/** Convert magnetic field from base units to derived units. */
-/*	static double convertMagneticFieldBaseToDerived(
-		double field,
-		MagneticFieldUnit unit
-	);*/
-
-	/** Convert magnetic field from derived units to natural units. */
-/*	static double convertMagneticFieldDerivedToNatural(
-		double field,
-		MagneticFieldUnit unit
-	);*/
-
-	/** Convert magnetic field from natural units to derived units. */
-/*	static double convertMagneticFieldNaturalToDerived(
-		double field,
-		MagneticFieldUnit unit
-	);*/
-
-	/** Convert voltage from derived units to base units. */
-/*	static double convertVoltageDerivedToBase(
-		double voltage,
-		VoltageUnit unit
-	);*/
-
-	/** Convert voltage from base units to derived units. */
-/*	static double convertVoltageBaseToDerived(
-		double voltage,
-		VoltageUnit unit
-	);*/
-
-	/** Convert voltage from derived units to natural units. */
-/*	static double convertVoltageDerivedToNatural(
-		double voltage,
-		VoltageUnit unit
-	);*/
-
-	/** Convert voltage from natural units to derived units. */
-/*	static double convertVoltageNaturalToDerived(
-		double voltage,
-		VoltageUnit unit
-	);*/
-
 	/** Get the unit string for the given Quantity in the currently set
 	 *  base units.
 	 *
@@ -439,19 +379,6 @@ private:
 	 *  given unit. */
 	template<typename Quantity>
 	static double getConversionFactor(typename Quantity::Unit unit);
-
-	/** Returns the number of unit masses in the input unit per unit mass
-	 *  in the default unit (eVs^2/m^2). */
-//	static double getMassConversionFactor(MassUnit unit);
-
-	/** Returns the amount of unit magnetic field strength in the input
-	 *  unit per unit magnetic field strength in the default unit
-	 *  (eVs/Cm^2). */
-//	static double getMagneticFieldConversionFactor(MagneticFieldUnit unit);
-
-	/** Returns the amount of unit voltage in the input unit per unit
-	 *  voltage in the default unit (eV/C). */
-//	static double getVoltageConversionFactor(VoltageUnit unit);
 
 	/** Converts a string into a corresponding Unit. */
 	template<typename Quantity>
