@@ -256,30 +256,6 @@ private:
 	/** Physical constans in the current base units. */
 	static std::map<std::string, double> constantsBaseUnits;
 
-	/** Conversion factor from eVs^2/m^2 to kg. */
-//	static double kg_per_baseMass;
-
-	/** Conversion factor from kg to eVs^2/m^2. */
-//	static double baseMass_per_kg;
-
-	/** Conversion factor from eVs^2/m^2 to u. */
-//	static double u_per_baseMass;
-
-	/** Conversion factor from u to eVs^2/m^2. */
-//	static double baseMass_per_u;
-
-	/** Conversion factor from eVs/Cm^2 to T. */
-//	static double T_per_baseMagneticField;
-
-	/** Conversion factor from T to eVs/Cm^2. */
-//	static double baseMagneticField_per_T;
-
-	/** Conversion factor from V to eV/C. */
-//	static double V_per_baseVoltage;
-
-	/** Conversion factor from eV/C to V. */
-//	static double baseVoltage_per_V;
-
 	/** Currently set units. */
 	static std::tuple<
 		Quantity::Charge::Unit,
