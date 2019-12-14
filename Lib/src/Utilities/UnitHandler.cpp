@@ -40,15 +40,6 @@ map<
 > UnitHandler::constantsDefaultUnits;
 map<string, double> UnitHandler::constantsBaseUnits;
 
-double UnitHandler::kg_per_baseMass;
-double UnitHandler::baseMass_per_kg;
-double UnitHandler::u_per_baseMass;
-double UnitHandler::baseMass_per_u;
-double UnitHandler::T_per_baseMagneticField;
-double UnitHandler::baseMagneticField_per_T;
-double UnitHandler::V_per_baseVoltage;
-double UnitHandler::baseVoltage_per_V;
-
 tuple<
 	Quantity::Charge::Unit,
 	Quantity::Count::Unit,
@@ -347,7 +338,6 @@ UnitHandler::StaticConstructor::StaticConstructor(){
 	constantsDefaultUnits["h"] =		{6.62607015e-34/e,		{{"eV", 1}, {"s", 1}}};
 	constantsDefaultUnits["k_B"] =		{1.380649e-23/e,		{{"eV", 1}, {"K", -1}}};
 
-	double c = constantsDefaultUnits.at("c").first;
 	//Source "The NIST reference on Constants, Units, and Uncertainty."
 	//https://physics.nist.gov/cuu/Constants/index.html
 	constantsDefaultUnits["m_e"] =		{9.1093837015e-31/e,		{{"eV", 1}, {"s", 2}, {"m", -2}}};
@@ -362,15 +352,6 @@ UnitHandler::StaticConstructor::StaticConstructor(){
 	double m_p = constantsDefaultUnits.at("m_p").first;
 	constantsDefaultUnits["mu_B"] =		{e*hbar/(2*m_e),		{{"C", 1}, {"m", 2}, {"s", -1}}};
 	constantsDefaultUnits["mu_N"] =		{e*hbar/(2*m_p),		{{"C", 1}, {"m", 2}, {"s", -1}}};
-
-	kg_per_baseMass			= e;
-	baseMass_per_kg			= 1./kg_per_baseMass;
-	u_per_baseMass			= (c*c)/9.31494095e8;
-	baseMass_per_u			= 1./u_per_baseMass;
-	T_per_baseMagneticField		= e;
-	baseMagneticField_per_T		= 1./T_per_baseMagneticField;
-	V_per_baseVoltage		= e;
-	baseVoltage_per_V		= 1./V_per_baseVoltage;
 
 	updateConstants();
 }
