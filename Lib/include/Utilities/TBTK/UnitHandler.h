@@ -564,92 +564,10 @@ double UnitHandler::getConversionFactor(){
 	return Quantity::getConversionFactor(getUnit<Quantity>());
 }
 
-/*template<>
-inline double UnitHandler::getConversionFactor<Quantity::Charge>(){
-	return Quantity::Charge::getConversionFactor(
-		getUnit<Quantity::Charge>()
-	);
-}
-
-template<>
-inline double UnitHandler::getConversionFactor<Quantity::Count>(){
-	return Quantity::Count::getConversionFactor(
-		getUnit<Quantity::Count>()
-	);
-}
-
-template<>
-inline double UnitHandler::getConversionFactor<Quantity::Energy>(){
-	return Quantity::Energy::getConversionFactor(
-		getUnit<Quantity::Energy>()
-	);
-}
-
-template<>
-inline double UnitHandler::getConversionFactor<Quantity::Length>(){
-	return Quantity::Length::getConversionFactor(
-		getUnit<Quantity::Length>()
-	);
-}
-
-template<>
-inline double UnitHandler::getConversionFactor<Quantity::Temperature>(){
-	return Quantity::Temperature::getConversionFactor(
-		getUnit<Quantity::Temperature>()
-	);
-}
-
-template<>
-inline double UnitHandler::getConversionFactor<Quantity::Time>(){
-	return Quantity::Time::getConversionFactor(getUnit<Quantity::Time>());
-}*/
-
 template<typename Quantity>
 double UnitHandler::getConversionFactor(typename Quantity::Unit unit){
 	return Quantity::getConversionFactor(unit);
 }
-
-/*template<>
-inline double UnitHandler::getConversionFactor<Quantity::Charge>(
-	typename Quantity::Charge::Unit unit
-){
-	return Quantity::Charge::getConversionFactor(unit);
-}
-
-template<>
-inline double UnitHandler::getConversionFactor<Quantity::Count>(
-	typename Quantity::Count::Unit unit
-){
-	return Quantity::Count::getConversionFactor(unit);
-}
-
-template<>
-inline double UnitHandler::getConversionFactor<Quantity::Energy>(
-	typename Quantity::Energy::Unit unit
-){
-	return Quantity::Energy::getConversionFactor(unit);
-}
-
-template<>
-inline double UnitHandler::getConversionFactor<Quantity::Length>(
-	typename Quantity::Length::Unit unit
-){
-	return Quantity::Length::getConversionFactor(unit);
-}
-
-template<>
-inline double UnitHandler::getConversionFactor<Quantity::Temperature>(
-	typename Quantity::Temperature::Unit unit
-){
-	return Quantity::Temperature::getConversionFactor(unit);
-}
-
-template<>
-inline double UnitHandler::getConversionFactor<Quantity::Time>(
-	typename Quantity::Time::Unit unit
-){
-	return Quantity::Time::getConversionFactor(unit);
-}*/
 
 template<typename Quantity>
 inline void UnitHandler::setScale(double scale){
