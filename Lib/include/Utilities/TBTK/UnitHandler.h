@@ -82,47 +82,6 @@ namespace TBTK{
  *  eVs^2/m^2. */
 class UnitHandler{
 public:
-	/** Mass units (derived unit):<br/>
-	 *	kg - kilogram<br/>
-	 *	g - gram<br/>
-	 *	mg - milligram<br/>
-	 *	ug - microgram<br/>
-	 *	ng - nanogram<br/>
-	 *	pg - picogram<br/>
-	 *	fg - femtogram<br/>
-	 *	ag - attogram<br/>
-	 *	u - atomic mass */
-//	enum class MassUnit{kg, g, mg, ug, ng, pg, fg, ag, u};
-
-	/** Magnetic unit (derived unit):<br/>
-	 *	MT - megatesla<br/>
-	 *	kT - kilotesla<br/>
-	 *	T - Tesla<br/>
-	 *	mT - millitesla<br/>
-	 *	uT - microtesla<br/>
-	 *	nT - nanotesla<br/>
-	 *	GG - gigagauss<br/>
-	 *	MG - megagauss<br/>
-	 *	kG - kilogauss<br/>
-	 *	G - Gauss<br/>
-	 *	mG - milligauss<br/>
-	 *	uG - microgauss */
-/*	enum class MagneticFieldUnit{
-		MT, kT, T, mT, uT, nT, GG, MG, kG, G, mG, uG
-	};*/
-
-	/** Voltage unit (derived unit):<br/>
-	 *	GV - kilovolt<br/>
-	 *	MV - kilovolt<br/>
-	 *	kV - kilovolt<br/>
-	 *	V - volt<br/>
-	 *	mV - millivolt</br>
-	 *	uV - millivolt<br/>
-	 *	nV - millivolt */
-/*	enum class VoltageUnit{
-		GV, MV, kV, V, mV, uV, nV
-	};*/
-
 	/** Get physical constant in base units. */
 	static double getConstantBaseUnits(const std::string &name);
 
