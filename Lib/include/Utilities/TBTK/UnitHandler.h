@@ -419,37 +419,37 @@ private:
 
 	/** Returns the number of degrees in the given unit per degree in
 	 *  default unit (K). */
-	static double getTemperatureConversionFactor(
+/*	static double getTemperatureConversionFactor(
 		Quantity::Temperature::Unit temperatureUnit
-	);
+	);*/
 
 	/** Returns the number of unit times in the given unit per unit time in
 	 *  the default unit (s). */
-	static double getTimeConversionFactor(Quantity::Time::Unit timeUnit);
+//	static double getTimeConversionFactor(Quantity::Time::Unit timeUnit);
 
 	/** Returns the number of unit lengths in the given unit per unit
 	 *  length in the default unit (m). */
-	static double getLengthConversionFactor(
+/*	static double getLengthConversionFactor(
 		Quantity::Length::Unit lengthUnit
-	);
+	);*/
 
 	/** Returns the number of unit energies in the given unit per unit
 	 *  energy in the default unit (eV). */
-	static double getEnergyConversionFactor(
+/*	static double getEnergyConversionFactor(
 		Quantity::Energy::Unit energyUnit
-	);
+	);*/
 
 	/** Returns the number of unit charges in the given unit per unit
 	 *  charge in the default unit (C). */
-	static double getChargeConversionFactor(
+/*	static double getChargeConversionFactor(
 		Quantity::Charge::Unit chargeUnit
-	);
+	);*/
 
 	/** Returns the number of unit counts in the the given unit per unit
 	 *  count in the default unit (pcs). */
-	static double getCountConversionFactor(
+/*	static double getCountConversionFactor(
 		Quantity::Count::Unit countUnit
-	);
+	);*/
 
 	/** Returns the number of unit masses in the input unit per unit mass
 	 *  in the default unit (eVs^2/m^2). */
@@ -594,76 +594,84 @@ double UnitHandler::convertNaturalToArbitrary(
 
 template<>
 inline double UnitHandler::getConversionFactor<Quantity::Charge>(){
-	return getChargeConversionFactor(getUnit<Quantity::Charge>());
+	return Quantity::Charge::getConversionFactor(
+		getUnit<Quantity::Charge>()
+	);
 }
 
 template<>
 inline double UnitHandler::getConversionFactor<Quantity::Count>(){
-	return getCountConversionFactor(getUnit<Quantity::Count>());
+	return Quantity::Count::getConversionFactor(
+		getUnit<Quantity::Count>()
+	);
 }
 
 template<>
 inline double UnitHandler::getConversionFactor<Quantity::Energy>(){
-	return getEnergyConversionFactor(getUnit<Quantity::Energy>());
+	return Quantity::Energy::getConversionFactor(
+		getUnit<Quantity::Energy>()
+	);
 }
 
 template<>
 inline double UnitHandler::getConversionFactor<Quantity::Length>(){
-	return getLengthConversionFactor(getUnit<Quantity::Length>());
+	return Quantity::Length::getConversionFactor(
+		getUnit<Quantity::Length>()
+	);
 }
 
 template<>
 inline double UnitHandler::getConversionFactor<Quantity::Temperature>(){
-	return getTemperatureConversionFactor(
+	return Quantity::Temperature::getConversionFactor(
 		getUnit<Quantity::Temperature>()
 	);
 }
 
 template<>
 inline double UnitHandler::getConversionFactor<Quantity::Time>(){
-	return getTimeConversionFactor(getUnit<Quantity::Time>());
+	return Quantity::Time::getConversionFactor(getUnit<Quantity::Time>());
 }
 
 template<>
 inline double UnitHandler::getConversionFactor<Quantity::Charge>(
 	typename Quantity::Charge::Unit unit
 ){
-	return getChargeConversionFactor(unit);
+	return Quantity::Charge::getConversionFactor(unit);
 }
 
 template<>
 inline double UnitHandler::getConversionFactor<Quantity::Count>(
 	typename Quantity::Count::Unit unit
 ){
-	return getCountConversionFactor(unit);
+	return Quantity::Count::getConversionFactor(unit);
 }
 
 template<>
 inline double UnitHandler::getConversionFactor<Quantity::Energy>(
 	typename Quantity::Energy::Unit unit
 ){
-	return getEnergyConversionFactor(unit);
+	return Quantity::Energy::getConversionFactor(unit);
 }
 
 template<>
 inline double UnitHandler::getConversionFactor<Quantity::Length>(
 	typename Quantity::Length::Unit unit
 ){
-	return getLengthConversionFactor(unit);
+	return Quantity::Length::getConversionFactor(unit);
 }
 
 template<>
 inline double UnitHandler::getConversionFactor<Quantity::Temperature>(
 	typename Quantity::Temperature::Unit unit
 ){
-	return getTemperatureConversionFactor(unit);
+	return Quantity::Temperature::getConversionFactor(unit);
 }
 
 template<>
 inline double UnitHandler::getConversionFactor<Quantity::Time>(
 	typename Quantity::Time::Unit unit
 ){
-	return getTimeConversionFactor(unit);
+	return Quantity::Time::getConversionFactor(unit);
 }
 
 template<typename Quantity>

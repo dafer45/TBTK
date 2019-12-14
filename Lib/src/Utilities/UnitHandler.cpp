@@ -474,7 +474,7 @@ void UnitHandler::updateConstants(){
 	}
 }
 
-double UnitHandler::getTemperatureConversionFactor(
+/*double UnitHandler::getTemperatureConversionFactor(
 	Quantity::Temperature::Unit temperatureUnit
 ){
 	return Quantity::Temperature::getConversionFactor(temperatureUnit);
@@ -504,7 +504,7 @@ double UnitHandler::getChargeConversionFactor(
 
 double UnitHandler::getCountConversionFactor(Quantity::Count::Unit countUnit){
 	return Quantity::Count::getConversionFactor(countUnit);
-}
+}*/
 
 double UnitHandler::getMassConversionFactor(MassUnit unit){
 	switch(unit){
