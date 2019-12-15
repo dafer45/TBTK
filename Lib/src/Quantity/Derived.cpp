@@ -73,5 +73,29 @@ Voltage::ConversionTable Voltage::conversionTable({
 	{Voltage::Unit::nV,	{"nV",	V_per_baseVoltage*1e9}},
 });
 
+//Velocity
+template<>
+Velocity::ConversionTable Velocity::conversionTable({});
+
+//Planck
+template<>
+Planck::ConversionTable Planck::conversionTable({});
+
+//Boltzmann
+template<>
+Boltzmann::ConversionTable Boltzmann::conversionTable({});
+
+//Permeability
+template<>
+Permeability::ConversionTable Permeability::conversionTable({});
+
+//Permittivity
+template<>
+Permittivity::ConversionTable Permittivity::conversionTable({});
+
+//Magneton
+template<>
+Magneton::ConversionTable Magneton::conversionTable({});
+
 };	//End of namespace Quantity
 };	//End of namespace TBTK

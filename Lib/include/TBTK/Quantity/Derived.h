@@ -237,6 +237,78 @@ enum class VoltageExponent {
 };
 typedef Derived<VoltageUnit, VoltageExponent> Voltage;
 
+//Velocity
+enum class VelocityUnit {};
+enum class VelocityExponent {
+	Charge = 0,
+	Count = 0,
+	Energy = 0,
+	Length = 1,
+	Temperature = 0,
+	Time = -1
+};
+typedef Derived<VelocityUnit, VelocityExponent> Velocity;
+
+//Planck
+enum class PlanckUnit {};
+enum class PlanckExponent {
+	Charge = 0,
+	Count = 0,
+	Energy = 1,
+	Length = 0,
+	Temperature = 0,
+	Time = -1
+};
+typedef Derived<PlanckUnit, PlanckExponent> Planck;
+
+//Boltzmann
+enum class BoltzmannUnit {};
+enum class BoltzmannExponent{
+	Charge = 0,
+	Count = 0,
+	Energy = 1,
+	Length = 1,
+	Temperature = -1,
+	Time = 0
+};
+typedef Derived<BoltzmannUnit, BoltzmannExponent> Boltzmann;
+
+//Permeability
+enum class PermeabilityUnit {};
+enum class PermeabilityExponent {
+	Charge = -2,
+	Count = 0,
+	Energy = 1,
+	Length = -1,
+	Temperature = 0,
+	Time = 2
+};
+typedef Derived<PermeabilityUnit, PermeabilityExponent> Permeability;
+
+//Permittivity
+enum class PermittivityUnit {};
+enum class PermittivityExponent{
+	Charge = 2,
+	Count = 0,
+	Energy = -1,
+	Length = -1,
+	Temperature = 0,
+	Time = 0
+};
+typedef Derived<PermittivityUnit, PermittivityExponent> Permittivity;
+
+//Magneton
+enum class MagnetonUnit {};
+enum class MagnetonExponent{
+	Charge = 1,
+	Count = 0,
+	Energy = 0,
+	Length = 2,
+	Temperature = 0,
+	Time = -1
+};
+typedef Derived<MagnetonUnit, MagnetonExponent> Magneton;
+
 }; //End of namesapce Quantity
 }; //End of namesapce TBTK
 
