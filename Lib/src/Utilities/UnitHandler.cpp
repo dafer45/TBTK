@@ -59,8 +59,6 @@ tuple<
 tuple<double, double, double, double, double, double> UnitHandler::scales
 	= make_tuple(1, 1, 1, 1, 1, 1);
 
-UnitHandler::StaticConstructor  UnitHandler::staticConstructor;
-
 double UnitHandler::getConstantBaseUnits(const std::string &name){
 	return constantsBaseUnits.at(name);
 }
@@ -325,7 +323,7 @@ void UnitHandler::updateConstants(){
 	}
 }
 
-UnitHandler::StaticConstructor::StaticConstructor(){
+void UnitHandler::initialize(){
 	constantsDefaultUnits = {
 		{"e",		{1.602176634e-19,			{{"C", 1}}}},
 		{"c",		{2.99792458e8,				{{"m", 1}, {"s", -1}}}},

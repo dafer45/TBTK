@@ -23,6 +23,7 @@
 #ifndef COM_DAFER45_TBTK_UNIT_HANDLER
 #define COM_DAFER45_TBTK_UNIT_HANDLER
 
+#include "TBTK/TBTK.h"
 #include "TBTK/Quantity/Charge.h"
 #include "TBTK/Quantity/Count.h"
 #include "TBTK/Quantity/Derived.h"
@@ -319,11 +320,12 @@ private:
 	template<typename Quantity>
 	static typename Quantity::Unit getUnit(const std::string &unit);
 
-	/** Static constructor. */
-	static class StaticConstructor{
-	public:
-		StaticConstructor();
-	} staticConstructor;
+	/** Initialize the UnitHandler. */
+	static void initialize();
+
+	/** The Context is a friend of the UnitHandler to allow it to
+	 *  initialize the UnitHandler. */
+	friend void Initialize();
 };
 
 template<typename Quantity>
