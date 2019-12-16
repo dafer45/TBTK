@@ -2,8 +2,9 @@
 TBTK::DocumentationExamples::HeaderAndFooter headerAndFooter("Argument");
 
 //! [Argument]
-#include "TBTK/Visualization/MatPlotLib/Argument.h"
 #include "TBTK/Streams.h"
+#include "TBTK/TBTK.h"
+#include "TBTK/Visualization/MatPlotLib/Argument.h"
 
 using namespace std;
 using namespace TBTK;
@@ -26,6 +27,8 @@ void print(const Argument &argument){
 }
 
 int main(){
+	Initialize();
+
 	Streams::out << "Argument string:\n";
 	print("Argument");
 

@@ -6,10 +6,13 @@ TBTK::DocumentationExamples::HeaderAndFooter headerAndFooter("Diagonalizer");
 #include "TBTK/PropertyExtractor/Diagonalizer.h"
 #include "TBTK/Solver/Diagonalizer.h"
 #include "TBTK/Streams.h"
+#include "TBTK/TBTK.h"
 
 using namespace TBTK;
 
 int main(){
+	Initialize();
+
 	Model model;
 	model << HoppingAmplitude(1, {0}, {1});
 	model << HoppingAmplitude(1, {1}, {0});

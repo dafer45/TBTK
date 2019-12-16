@@ -7,6 +7,7 @@ TBTK::DocumentationExamples::HeaderAndFooter headerAndFooter("ArnoldiIterator");
 #include "TBTK/Smooth.h"
 #include "TBTK/Solver/ArnoldiIterator.h"
 #include "TBTK/Streams.h"
+#include "TBTK/TBTK.h"
 #include "TBTK/Visualization/MatPlotLib/Plotter.h"
 
 #include <complex>
@@ -18,6 +19,8 @@ using namespace Visualization::MatPlotLib;
 complex<double> i(0, 1);
 
 int main(){
+	Initialize();
+
 	Model model;
 	for(unsigned int x = 0; x < 400; x++){
 		model << HoppingAmplitude(-1, {x+1, 0}, {x, 0}) + HC;

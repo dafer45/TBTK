@@ -4,10 +4,13 @@ TBTK::DocumentationExamples::HeaderAndFooter headerAndFooter("BitRegister");
 //! [BitRegister]
 #include "TBTK/BitRegister.h"
 #include "TBTK/Streams.h"
+#include "TBTK/TBTK.h"
 
 using namespace TBTK;
 
 int main(){
+	Initialize();
+
 	BitRegister bitRegister[2];
 
 	Streams::out << "Assignment\n";

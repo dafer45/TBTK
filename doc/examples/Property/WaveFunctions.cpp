@@ -7,12 +7,15 @@ TBTK::DocumentationExamples::HeaderAndFooter headerAndFooter("WaveFunctions");
 #include "TBTK/PropertyExtractor/Diagonalizer.h"
 #include "TBTK/Solver/Diagonalizer.h"
 #include "TBTK/Streams.h"
+#include "TBTK/TBTK.h"
 #include "TBTK/Visualization/MatPlotLib/Plotter.h"
 
 using namespace TBTK;
 using namespace Visualization::MatPlotLib;
 
 int main(){
+	Initialize();
+
 #ifdef TBTK_DOCUMENTATION_NICE
 	const unsigned int SIZE_X = 41;
 	const unsigned int SIZE_Y = 41;

@@ -6,10 +6,13 @@ TBTK::DocumentationExamples::HeaderAndFooter headerAndFooter("ArnoldiIterator");
 #include "TBTK/PropertyExtractor/ArnoldiIterator.h"
 #include "TBTK/Solver/ArnoldiIterator.h"
 #include "TBTK/Streams.h"
+#include "TBTK/TBTK.h"
 
 using namespace TBTK;
 
 int main(){
+	Initialize();
+
 	Model model;
 	for(unsigned int x = 0; x < 200; x++)
 		model << HoppingAmplitude(1, {x+1}, {x}) + HC;

@@ -10,6 +10,7 @@ TBTK::DocumentationExamples::HeaderAndFooter headerAndFooter("Plotter");
 #include "TBTK/Range.h"
 #include "TBTK/Solver/Diagonalizer.h"
 #include "TBTK/Streams.h"
+#include "TBTK/TBTK.h"
 #include "TBTK/Visualization/MatPlotLib/Plotter.h"
 
 using namespace std;
@@ -139,6 +140,8 @@ void plotDensity(){
 }
 
 int main(){
+	Initialize();
+
 	plotArray1D();
 	plotDefaultLineStyles();
 	plotArray2D();

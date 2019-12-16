@@ -4,6 +4,7 @@ TBTK::DocumentationExamples::HeaderAndFooter headerAndFooter("Range");
 //! [Range]
 #include "TBTK/Range.h"
 #include "TBTK/Streams.h"
+#include "TBTK/TBTK.h"
 
 using namespace std;
 using namespace TBTK;
@@ -17,6 +18,8 @@ void print(const Range &range){
 }
 
 int main(){
+	Initialize();
+
 	Streams::out << "Range [-1, 1]: ";
 	Range range(-1, 1, 5);
 	print(range);

@@ -4,6 +4,7 @@ TBTK::DocumentationExamples::HeaderAndFooter headerAndFooter("Array");
 //! [Array]
 #include "TBTK/Array.h"
 #include "TBTK/Streams.h"
+#include "TBTK/TBTK.h"
 
 #include <vector>
 
@@ -11,6 +12,8 @@ using namespace std;
 using namespace TBTK;
 
 int main(){
+	Initialize();
+
 	//Create Arrays.
 	Array<unsigned int> array0({2, 3, 4});
 	Array<unsigned int> array1({2, 3, 4});

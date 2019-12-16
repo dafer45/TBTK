@@ -4,10 +4,13 @@ TBTK::DocumentationExamples::HeaderAndFooter headerAndFooter("CArray");
 //! [CArray]
 #include "TBTK/CArray.h"
 #include "TBTK/Streams.h"
+#include "TBTK/TBTK.h"
 
 using namespace TBTK;
 
 int main(){
+	Initialize();
+
 	CArray<unsigned int> carray(10);
 	for(unsigned int n = 0; n < carray.getSize(); n++)
 		carray[n] = n;

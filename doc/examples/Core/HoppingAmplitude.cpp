@@ -4,6 +4,7 @@ TBTK::DocumentationExamples::HeaderAndFooter headerAndFooter("HoppingAmplitude")
 //! [HoppingAmplitude]
 #include "TBTK/HoppingAmplitude.h"
 #include "TBTK/Streams.h"
+#include "TBTK/TBTK.h"
 
 #include <complex>
 
@@ -11,6 +12,8 @@ using namespace std;
 using namespace TBTK;
 
 int main(){
+	Initialize();
+
 	HoppingAmplitude hoppingAmplitude(1, {1, 2, 3}, {4, 5});
 	Streams::out << hoppingAmplitude << "\n";
 

@@ -4,6 +4,7 @@ TBTK::DocumentationExamples::HeaderAndFooter headerAndFooter("Model");
 //! [Model]
 #include "TBTK/Model.h"
 #include "TBTK/Streams.h"
+#include "TBTK/TBTK.h"
 
 #include <complex>
 
@@ -14,6 +15,8 @@ using namespace TBTK;
 //amplitude t, chemical potential mu, temperature T, and Fermi-Dirac
 //statistics.
 int main(){
+	Initialize();
+
 	//Parameters.
 	complex<double> U = 1;
 	complex<double> t = 1;

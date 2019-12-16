@@ -4,11 +4,14 @@ TBTK::DocumentationExamples::HeaderAndFooter headerAndFooter("IndexTreeGenerator
 //! [IndexTreeGenerator]
 #include "TBTK/Model.h"
 #include "TBTK/PropertyExtractor/IndexTreeGenerator.h"
+#include "TBTK/TBTK.h"
 
 using namespace TBTK;
 using namespace PropertyExtractor;
 
 int main(){
+	Initialize();
+
 	Model model;
 	for(unsigned int x = 0; x < 2; x++){
 		for(unsigned int y = 0; y < 2; y++){

@@ -6,10 +6,13 @@ TBTK::DocumentationExamples::HeaderAndFooter headerAndFooter("ChebyshevExpander"
 #include "TBTK/PropertyExtractor/ChebyshevExpander.h"
 #include "TBTK/Solver/ChebyshevExpander.h"
 #include "TBTK/Streams.h"
+#include "TBTK/TBTK.h"
 
 using namespace TBTK;
 
 int main(){
+	Initialize();
+
 	Model model;
 	for(int x = 0; x < 10; x++){
 		for(int y = 0; y < 10; y++){

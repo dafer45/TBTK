@@ -7,12 +7,15 @@ TBTK::DocumentationExamples::HeaderAndFooter headerAndFooter("ChebyshevExpander"
 #include "TBTK/PropertyExtractor/ChebyshevExpander.h"
 #include "TBTK/Solver/ChebyshevExpander.h"
 #include "TBTK/Streams.h"
+#include "TBTK/TBTK.h"
 #include "TBTK/Visualization/MatPlotLib/Plotter.h"
 
 using namespace TBTK;
 using namespace Visualization::MatPlotLib;
 
 int main(){
+	Initialize();
+
 	const unsigned int SIZE_X = 100;
 	const unsigned int SIZE_Y = 100;
 	double t = 1;

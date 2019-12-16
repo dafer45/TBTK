@@ -4,6 +4,7 @@ TBTK::DocumentationExamples::HeaderAndFooter headerAndFooter("Communicator");
 //! [Communicator]
 #include "TBTK/Communicator.h"
 #include "TBTK/Streams.h"
+#include "TBTK/TBTK.h"
 
 #include <vector>
 
@@ -22,6 +23,8 @@ public:
 };
 
 int main(){
+	Initialize();
+
 	MyCommunicator myCommunicator;
 	myCommunicator.setVerbose(false);
 	myCommunicator.say("Don't say this");

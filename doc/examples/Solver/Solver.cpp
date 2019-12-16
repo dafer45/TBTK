@@ -5,10 +5,13 @@ TBTK::DocumentationExamples::HeaderAndFooter headerAndFooter("Solver");
 #include "TBTK/Model.h"
 #include "TBTK/Solver/Solver.h"
 #include "TBTK/Streams.h"
+#include "TBTK/TBTK.h"
 
 using namespace TBTK;
 
 int main(){
+	Initialize();
+
 	Model model;
 	model.setChemicalPotential(10);
 	model.setTemperature(300);

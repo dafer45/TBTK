@@ -3,10 +3,13 @@ TBTK::DocumentationExamples::HeaderAndFooter headerAndFooter("PropertyExtractor"
 
 //! [PropertyExtractor]
 #include "TBTK/PropertyExtractor/PropertyExtractor.h"
+#include "TBTK/TBTK.h"
 
 using namespace TBTK;
 
 int main(){
+	Initialize();
+
 	PropertyExtractor::PropertyExtractor propertyExtractor;
 
 	//Set the energy window for which to extract energy dependent

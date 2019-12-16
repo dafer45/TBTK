@@ -7,6 +7,7 @@ TBTK::DocumentationExamples::HeaderAndFooter headerAndFooter("PropertyConverter"
 #include "TBTK/PropertyConverter.h"
 #include "TBTK/PropertyExtractor/Diagonalizer.h"
 #include "TBTK/Streams.h"
+#include "TBTK/TBTK.h"
 
 #include <vector>
 
@@ -14,6 +15,8 @@ using namespace std;
 using namespace TBTK;
 
 int main(){
+	Initialize();
+
 	//Create Model.
 	const unsigned int SIZE_X = 2;
 	const unsigned int SIZE_Y = 3;

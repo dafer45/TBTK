@@ -4,11 +4,14 @@ TBTK::DocumentationExamples::HeaderAndFooter headerAndFooter("MultiCounter");
 //! [MultiCounter]
 #include "TBTK/MultiCounter.h"
 #include "TBTK/Streams.h"
+#include "TBTK/TBTK.h"
 
 using namespace std;
 using namespace TBTK;
 
 int main(){
+	Initialize();
+
 	Streams::out << "Three level nested loop:\n";
 	for(unsigned int x = 0; x < 3; x++){
 		for(unsigned int y = 1; y < 7; y += 2){

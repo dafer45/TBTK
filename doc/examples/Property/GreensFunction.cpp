@@ -7,10 +7,13 @@ TBTK::DocumentationExamples::HeaderAndFooter headerAndFooter("GreensFunction");
 #include "TBTK/PropertyExtractor/Diagonalizer.h"
 #include "TBTK/Solver/Diagonalizer.h"
 #include "TBTK/Streams.h"
+#include "TBTK/TBTK.h"
 
 using namespace TBTK;
 
 int main(){
+	Initialize();
+
 	const unsigned int SIZE_X = 10;
 	const unsigned int SIZE_Y = 10;
 	double t = 1;

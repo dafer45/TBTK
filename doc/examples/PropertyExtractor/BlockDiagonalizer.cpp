@@ -8,6 +8,7 @@ TBTK::DocumentationExamples::HeaderAndFooter headerAndFooter("BlockDiagonalizer"
 #include "TBTK/Smooth.h"
 #include "TBTK/Solver/BlockDiagonalizer.h"
 #include "TBTK/Streams.h"
+#include "TBTK/TBTK.h"
 #include "TBTK/Visualization/MatPlotLib/Plotter.h"
 
 #include <complex>
@@ -18,6 +19,8 @@ using namespace TBTK;
 using namespace Visualization::MatPlotLib;
 
 int main(){
+	Initialize();
+
 	const int NUM_K_POINTS = 10000;
 	double a = 1;
 

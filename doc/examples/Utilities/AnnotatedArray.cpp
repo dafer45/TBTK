@@ -4,6 +4,7 @@ TBTK::DocumentationExamples::HeaderAndFooter headerAndFooter("AnnotatedArray");
 //! [AnnotatedArray]
 #include "TBTK/AnnotatedArray.h"
 #include "TBTK/Streams.h"
+#include "TBTK/TBTK.h"
 
 #include <vector>
 
@@ -11,6 +12,8 @@ using namespace std;
 using namespace TBTK;
 
 int main(){
+	Initialize();
+
 	//Create Arrays and axes.
 	Array<unsigned int> array({2, 3});
 	std::vector<std::vector<double>> axes = {

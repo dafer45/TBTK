@@ -5,10 +5,13 @@ TBTK::DocumentationExamples::HeaderAndFooter headerAndFooter("Subindex");
 #include "TBTK/Index.h"
 #include "TBTK/Subindex.h"
 #include "TBTK/Streams.h"
+#include "TBTK/TBTK.h"
 
 using namespace TBTK;
 
 int main(){
+	Initialize();
+
 	Index index({1, 2, IDX_ALL, IDX_SUM_ALL, IDX_SPIN, IDX_X, IDX_ALL_(1)});
 	Streams::out << index << "\n";
 

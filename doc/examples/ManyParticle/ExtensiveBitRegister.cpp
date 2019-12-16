@@ -4,10 +4,13 @@ TBTK::DocumentationExamples::HeaderAndFooter headerAndFooter("ExtensiveBitRegist
 //! [ExtensiveBitRegister]
 #include "TBTK/ExtensiveBitRegister.h"
 #include "TBTK/Streams.h"
+#include "TBTK/TBTK.h"
 
 using namespace TBTK;
 
 int main(){
+	Initialize();
+
 	ExtensiveBitRegister bitRegister0(64);
 	ExtensiveBitRegister bitRegister1(64);
 

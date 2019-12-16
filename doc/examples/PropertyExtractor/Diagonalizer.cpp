@@ -8,12 +8,15 @@ TBTK::DocumentationExamples::HeaderAndFooter headerAndFooter("Diagonalizer");
 #include "TBTK/Smooth.h"
 #include "TBTK/Solver/Diagonalizer.h"
 #include "TBTK/Streams.h"
+#include "TBTK/TBTK.h"
 #include "TBTK/Visualization/MatPlotLib/Plotter.h"
 
 using namespace TBTK;
 using namespace Visualization::MatPlotLib;
 
 int main(){
+	Initialize();
+
 #ifdef TBTK_DOCUMENTATION_NICE
 	const int SIZE_X = 40;
 	const int SIZE_Y = 40;

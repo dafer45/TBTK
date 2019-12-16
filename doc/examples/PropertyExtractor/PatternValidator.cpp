@@ -3,11 +3,14 @@ TBTK::DocumentationExamples::HeaderAndFooter headerAndFooter("PatternValidator")
 
 //! [PatternValidator]
 #include "TBTK/PropertyExtractor/PatternValidator.h"
+#include "TBTK/TBTK.h"
 
 using namespace TBTK;
 using namespace PropertyExtractor;
 
 int main(){
+	Initialize();
+
 	PatternValidator patternValidator;
 	patternValidator.setNumRequiredComponentIndices(2);
 	patternValidator.setAllowedSubindexFlags({IDX_ALL, IDX_SPIN});

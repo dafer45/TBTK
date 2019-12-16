@@ -4,6 +4,7 @@ TBTK::DocumentationExamples::HeaderAndFooter headerAndFooter("Timer");
 //! [Timer]
 #include "TBTK/Timer.h"
 #include "TBTK/Streams.h"
+#include "TBTK/TBTK.h"
 
 #include <complex>
 
@@ -50,6 +51,7 @@ void accumulators(){
 }
 
 int main(){
+	Initialize();
 	timestampStack();
 	accumulators();
 }

@@ -7,12 +7,15 @@ TBTK::DocumentationExamples::HeaderAndFooter headerAndFooter("Magnetization");
 #include "TBTK/PropertyExtractor/Diagonalizer.h"
 #include "TBTK/Solver/Diagonalizer.h"
 #include "TBTK/Streams.h"
+#include "TBTK/TBTK.h"
 #include "TBTK/Visualization/MatPlotLib/Plotter.h"
 
 using namespace TBTK;
 using namespace Visualization::MatPlotLib;
 
 int main(){
+	Initialize();
+
 	const unsigned int SIZE_X = 11;
 	const unsigned int SIZE_Y = 11;
 	double t = 1;

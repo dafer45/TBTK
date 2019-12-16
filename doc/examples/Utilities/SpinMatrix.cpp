@@ -4,6 +4,7 @@ TBTK::DocumentationExamples::HeaderAndFooter headerAndFooter("SpinMatrix");
 //! [SpinMatrix]
 #include "TBTK/SpinMatrix.h"
 #include "TBTK/Streams.h"
+#include "TBTK/TBTK.h"
 
 #include <complex>
 
@@ -11,6 +12,8 @@ using namespace std;
 using namespace TBTK;
 
 int main(){
+	Initialize();
+
 	complex<double> i(0, 1);
 	double rho = 1;
 	double S_x = 0.1;

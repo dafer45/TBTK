@@ -3,6 +3,7 @@ TBTK::DocumentationExamples::HeaderAndFooter headerAndFooter("FourierTransform")
 
 //! [FourierTransform]
 #include "TBTK/FourierTransform.h"
+#include "TBTK/TBTK.h"
 #include "TBTK/Visualization/MatPlotLib/Plotter.h"
 
 #include <complex>
@@ -129,6 +130,8 @@ void examplePlan(){
 }
 
 int main(){
+	Initialize();
+
 	example1D();
 	example2D();
 	examplePlan();

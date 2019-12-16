@@ -7,6 +7,7 @@ TBTK::DocumentationExamples::HeaderAndFooter headerAndFooter("BlockDiagonalizer"
 #include "TBTK/PropertyExtractor/BlockDiagonalizer.h"
 #include "TBTK/Solver/BlockDiagonalizer.h"
 #include "TBTK/Streams.h"
+#include "TBTK/TBTK.h"
 
 #include <complex>
 
@@ -14,6 +15,8 @@ using namespace std;
 using namespace TBTK;
 
 int main(){
+	Initialize();
+
 	Model model;
 	//Block 0.
 	model << HoppingAmplitude(1, {0, 0}, {0, 1});
