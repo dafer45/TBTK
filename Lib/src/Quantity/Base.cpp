@@ -25,12 +25,59 @@ using namespace std;
 namespace TBTK{
 namespace Quantity{
 
-template<> Charge::ConversionTable Charge::conversionTable({});
-template<> Count::ConversionTable Count::conversionTable({});
-template<> Energy::ConversionTable Energy::conversionTable({});
-template<> Length::ConversionTable Length::conversionTable({});
-template<> Temperature::ConversionTable Temperature::conversionTable({});
-template<> Time::ConversionTable Time::conversionTable({});
+template<>
+Quantity<
+	ChargeUnit,
+	ChargeExponent
+>::ConversionTable Quantity<
+	ChargeUnit,
+	ChargeExponent
+>::conversionTable({});
+
+template<>
+Quantity<
+	CountUnit,
+	CountExponent
+>::ConversionTable Quantity<
+	Count::Unit,
+	CountExponent
+>::conversionTable({});
+
+template<>
+Quantity<
+	EnergyUnit,
+	EnergyExponent
+>::ConversionTable Quantity<
+	EnergyUnit,
+	EnergyExponent
+>::conversionTable({});
+
+template<>
+Quantity<
+	LengthUnit,
+	LengthExponent
+>::ConversionTable Quantity<
+	LengthUnit,
+	LengthExponent
+>::conversionTable({});
+
+template<>
+Quantity<
+	TemperatureUnit,
+	TemperatureExponent
+>::ConversionTable Quantity<
+	TemperatureUnit,
+	TemperatureExponent
+>::conversionTable({});
+
+template<>
+Quantity<
+	TimeUnit,
+	TimeExponent
+>::ConversionTable Quantity<
+	TimeUnit,
+	TimeExponent
+>::conversionTable({});
 
 void initializeBaseQuantities(){
 	constexpr double J_per_eV = 1.602176634e-19;

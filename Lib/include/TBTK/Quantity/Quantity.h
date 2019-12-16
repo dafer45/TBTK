@@ -59,7 +59,7 @@ public:
 	/** Get the conversion factor for converting from the reference unit to
 	 *  the given unit. */
 	static double getConversionFactor(Unit unit);
-private:
+protected:
 	static class ConversionTable{
 	public:
 		std::map<Unit, std::string> unitToString;

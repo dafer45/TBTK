@@ -30,6 +30,12 @@ namespace Quantity{
 
 void initializeBaseQuantities();
 
+template<typename Units, typename Exponents>
+class Base : public Quantity<Units, Exponents>{
+public:
+	using Quantity<Units, Exponents>::Quantity;
+};
+
 //Charge
 enum class ChargeUnit{kC, C, mC, uC, nC, pC, fC, aC, Te, Ge, Me, ke, e};
 enum class ChargeExponent{
@@ -40,7 +46,7 @@ enum class ChargeExponent{
 	Temperature = 0,
 	Time = 0
 };
-typedef Quantity<ChargeUnit, ChargeExponent> Charge;
+typedef Base<ChargeUnit, ChargeExponent> Charge;
 
 //Count
 enum class CountUnit{pcs, mol};
@@ -52,7 +58,7 @@ enum class CountExponent{
 	Temperature = 0,
 	Time = 0
 };
-typedef Quantity<CountUnit, CountExponent> Count;
+typedef Base<CountUnit, CountExponent> Count;
 
 //Energy
 enum class EnergyUnit{GeV, MeV, keV, eV, meV, ueV, J};
@@ -64,7 +70,7 @@ enum class EnergyExponent{
 	Temperature = 0,
 	Time = 0
 };
-typedef Quantity<EnergyUnit, EnergyExponent> Energy;
+typedef Base<EnergyUnit, EnergyExponent> Energy;
 
 //Length
 enum class LengthUnit{m, mm, um, nm, pm, fm, am, Ao};
@@ -76,7 +82,7 @@ enum class LengthExponent{
 	Temperature = 0,
 	Time = 0
 };
-typedef Quantity<LengthUnit, LengthExponent> Length;
+typedef Base<LengthUnit, LengthExponent> Length;
 
 //Temperature
 enum class TemperatureUnit{kK, K, mK, uK, nK};
@@ -88,7 +94,7 @@ enum class TemperatureExponent{
 	Temperature = 1,
 	Time = 0
 };
-typedef Quantity<TemperatureUnit, TemperatureExponent> Temperature;
+typedef Base<TemperatureUnit, TemperatureExponent> Temperature;
 
 //Time
 enum class TimeUnit{s, ms, us, ns, ps, fs, as};
@@ -100,7 +106,7 @@ enum class TimeExponent{
 	Temperature = 0,
 	Time = 1
 };
-typedef Quantity<TimeUnit, TimeExponent> Time;
+typedef Base<TimeUnit, TimeExponent> Time;
 
 }; //End of namesapce Quantity
 }; //End of namesapce TBTK
