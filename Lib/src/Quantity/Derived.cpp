@@ -29,42 +29,96 @@ namespace Quantity{
 constexpr double kg_per_baseMass = 1.602176634e-19;
 constexpr double u_per_baseMass = 2.99792458e8*2.99792458e8/9.31494095e8;
 template<>
-Mass::ConversionTable Mass::conversionTable({});
+Quantity<
+	MassUnit,
+	MassExponent
+>::ConversionTable Quantity<
+	MassUnit,
+	MassExponent
+>::conversionTable({});
 
 //MagneticField.
 constexpr double T_per_baseMagneticField = 1.602176634e-19;
 constexpr double G_per_baseMagneticField = 1.602176634e-19*1e4;
 template<>
-MagneticField::ConversionTable MagneticField::conversionTable({});
+Quantity<
+	MagneticFieldUnit,
+	MagneticFieldExponent
+>::ConversionTable Quantity<
+	MagneticFieldUnit,
+	MagneticFieldExponent
+>::conversionTable({});
 
 //Voltage.
 constexpr double V_per_baseVoltage = 1.602176634e-19;
 template<>
-Voltage::ConversionTable Voltage::conversionTable({});
+Quantity<
+	VoltageUnit,
+	VoltageExponent
+>::ConversionTable Quantity<
+	VoltageUnit,
+	VoltageExponent
+>::conversionTable({});
 
 //Velocity
 template<>
-Velocity::ConversionTable Velocity::conversionTable({});
+Quantity<
+	VelocityUnit,
+	VelocityExponent
+>::ConversionTable Quantity<
+	VelocityUnit,
+	VelocityExponent
+>::conversionTable({});
 
 //Planck
 template<>
-Planck::ConversionTable Planck::conversionTable({});
+Quantity<
+	PlanckUnit,
+	PlanckExponent
+>::ConversionTable Quantity<
+	PlanckUnit,
+	PlanckExponent
+>::conversionTable({});
 
 //Boltzmann
 template<>
-Boltzmann::ConversionTable Boltzmann::conversionTable({});
+Quantity<
+	BoltzmannUnit,
+	BoltzmannExponent
+>::ConversionTable Quantity<
+	BoltzmannUnit,
+	BoltzmannExponent
+>::conversionTable({});
 
 //Permeability
 template<>
-Permeability::ConversionTable Permeability::conversionTable({});
+Quantity<
+	PermeabilityUnit,
+	PermeabilityExponent
+>::ConversionTable Quantity<
+	PermeabilityUnit,
+	PermeabilityExponent
+>::conversionTable({});
 
 //Permittivity
 template<>
-Permittivity::ConversionTable Permittivity::conversionTable({});
+Quantity<
+	PermittivityUnit,
+	PermittivityExponent
+>::ConversionTable Quantity<
+	PermittivityUnit,
+	PermittivityExponent
+>::conversionTable({});
 
 //Magneton
 template<>
-Magneton::ConversionTable Magneton::conversionTable({});
+Quantity<
+	MagnetonUnit,
+	MagnetonExponent
+>::ConversionTable Quantity<
+	MagnetonUnit,
+	MagnetonExponent
+>::conversionTable({});
 
 void initializeDerivedQuantities(){
 	Mass::conversionTable = Mass::ConversionTable({
