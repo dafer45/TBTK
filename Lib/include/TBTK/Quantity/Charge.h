@@ -23,7 +23,7 @@
 #ifndef COM_DAFER45_TBTK_QUANTITY_CHARGE
 #define COM_DAFER45_TBTK_QUANTITY_CHARGE
 
-#include "TBTK/Real.h"
+#include "TBTK/Quantity/Quantity.h"
 #include "TBTK/TBTKMacros.h"
 
 #include <map>
@@ -32,17 +32,28 @@
 namespace TBTK{
 namespace Quantity{
 
+enum class ChargeUnit{kC, C, mC, uC, nC, pC, fC, aC, Te, Ge, Me, ke, e};
+enum class ChargeExponent{
+	Charge = 1,
+	Count = 0,
+	Energy = 0,
+	Length = 0,
+	Temperature = 0,
+	Time = 0
+};
+typedef Quantity<ChargeUnit, ChargeExponent> Charge;
+
 /** @brief Charge.
  *
  *  A Charge is a Real value which implicitly is assumed to have units of
  *  charge. */
-class Charge : public Real{
-public:
+//class Charge : public Real{
+//public:
 	/** Default constructor. */
-	Charge(){};
+//	Charge(){};
 
 	/** Constructs a Quantity from a double. */
-	Charge(double value) : Real(value){};
+//	Charge(double value) : Real(value){};
 
 	/** Charge units (base unit):
 	 * - kC - kilocoulomb
@@ -58,21 +69,21 @@ public:
 	 * - Me - megae
 	 * - ke - kiloe
 	 * - e - e (elementary charge) */
-	enum class Unit{kC, C, mC, uC, nC, pC, fC, aC, Te, Ge, Me, ke, e};
+//	enum class Unit{kC, C, mC, uC, nC, pC, fC, aC, Te, Ge, Me, ke, e};
 
 	/** Get unit string for the given Unit. */
-	static std::string getUnitString(Unit unit);
+//	static std::string getUnitString(Unit unit);
 
 	/** Convert a string to a Unit. */
-	static Unit getUnit(const std::string &str);
+//	static Unit getUnit(const std::string &str);
 
 	/** Get the conversion factor for converting from the reference unit to
 	 *  the given unit. */
-	static double getConversionFactor(Unit unit);
-private:
-	static std::map<Unit, std::string> unitToString;
-	static std::map<std::string, Unit> stringToUnit;
-};
+//	static double getConversionFactor(Unit unit);
+//private:
+//	static std::map<Unit, std::string> unitToString;
+//	static std::map<std::string, Unit> stringToUnit;
+//};
 
 }; //End of namesapce Quantity
 }; //End of namesapce TBTK

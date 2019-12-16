@@ -23,7 +23,7 @@
 #ifndef COM_DAFER45_TBTK_QUANTITY_ENERGY
 #define COM_DAFER45_TBTK_QUANTITY_ENERGY
 
-#include "TBTK/Real.h"
+#include "TBTK/Quantity/Quantity.h"
 #include "TBTK/TBTKMacros.h"
 
 #include <map>
@@ -32,17 +32,28 @@
 namespace TBTK{
 namespace Quantity{
 
+enum class EnergyUnit{GeV, MeV, keV, eV, meV, ueV, J};
+enum class EnergyExponent{
+	Charge = 0,
+	Count = 0,
+	Energy = 1,
+	Length = 0,
+	Temperature = 0,
+	Time = 0
+};
+typedef Quantity<EnergyUnit, EnergyExponent> Energy;
+
 /** @brief Energy.
  *
  *  A Energy is a Real value which implicitly is assumed to have units of
  *  energy. */
-class Energy : public Real{
-public:
+//class Energy : public Real{
+//public:
 	/** Default constructor. */
-	Energy(){};
+//	Energy(){};
 
 	/** Constructs a Quantity from a double. */
-	Energy(double value) : Real(value){};
+//	Energy(double value) : Real(value){};
 
 	/** Energy units (base unit):
 	 *  - GeV - gigaelectron Volt
@@ -52,21 +63,21 @@ public:
 	 *  - meV - millielectron Volt
 	 *  - ueV - microelectron Volt
 	 *  - J - Joule */
-	enum class Unit {GeV, MeV, keV, eV, meV, ueV, J};
+//	enum class Unit {GeV, MeV, keV, eV, meV, ueV, J};
 
 	/** Get unit string for the given Unit. */
-	static std::string getUnitString(Unit unit);
+//	static std::string getUnitString(Unit unit);
 
 	/** Convert a string to a Unit. */
-	static Unit getUnit(const std::string &str);
+//	static Unit getUnit(const std::string &str);
 
 	/** Get the conversion factor for converting from the reference unit to
 	 *  the given unit. */
-	static double getConversionFactor(Unit unit);
-private:
-	static std::map<Unit, std::string> unitToString;
-	static std::map<std::string, Unit> stringToUnit;
-};
+//	static double getConversionFactor(Unit unit);
+//private:
+//	static std::map<Unit, std::string> unitToString;
+//	static std::map<std::string, Unit> stringToUnit;
+//};
 
 }; //End of namesapce Energy
 }; //End of namesapce TBTK

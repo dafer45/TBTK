@@ -29,49 +29,18 @@ namespace Quantity{
 constexpr double kg_per_baseMass = 1.602176634e-19;
 constexpr double u_per_baseMass = 2.99792458e8*2.99792458e8/9.31494095e8;
 template<>
-Mass::ConversionTable Mass::conversionTable({
-	{Mass::Unit::kg,	{"kg",	kg_per_baseMass}},
-	{Mass::Unit::g,		{"g",	kg_per_baseMass*1e3}},
-	{Mass::Unit::mg,	{"mg",	kg_per_baseMass*1e6}},
-	{Mass::Unit::ug,	{"ug",	kg_per_baseMass*1e9}},
-	{Mass::Unit::ng,	{"ng",	kg_per_baseMass*1e12}},
-	{Mass::Unit::pg,	{"pg",	kg_per_baseMass*1e15}},
-	{Mass::Unit::fg,	{"fg",	kg_per_baseMass*1e18}},
-	{Mass::Unit::ag,	{"ag",	kg_per_baseMass*1e21}},
-	{Mass::Unit::ag,	{"u",	u_per_baseMass*1e21}}
-});
+Mass::ConversionTable Mass::conversionTable({});
 
 //MagneticField.
 constexpr double T_per_baseMagneticField = 1.602176634e-19;
 constexpr double G_per_baseMagneticField = 1.602176634e-19*1e4;
 template<>
-MagneticField::ConversionTable MagneticField::conversionTable({
-	{MagneticField::Unit::MT,	{"MT",	T_per_baseMagneticField*1e-6}},
-	{MagneticField::Unit::kT,	{"kT",	T_per_baseMagneticField*1e-3}},
-	{MagneticField::Unit::T,	{"T",	T_per_baseMagneticField}},
-	{MagneticField::Unit::mT,	{"mT",	T_per_baseMagneticField*1e3}},
-	{MagneticField::Unit::uT,	{"uT",	T_per_baseMagneticField*1e6}},
-	{MagneticField::Unit::nT,	{"nT",	T_per_baseMagneticField*1e9}},
-	{MagneticField::Unit::GG,	{"GG",	G_per_baseMagneticField*1e-9}},
-	{MagneticField::Unit::MG,	{"MG",	G_per_baseMagneticField*1e-6}},
-	{MagneticField::Unit::kG,	{"kG",	G_per_baseMagneticField*1e-3}},
-	{MagneticField::Unit::G,	{"G",	G_per_baseMagneticField}},
-	{MagneticField::Unit::mG,	{"mG",	G_per_baseMagneticField*1e3}},
-	{MagneticField::Unit::uG,	{"uG",	G_per_baseMagneticField*1e6}}
-});
+MagneticField::ConversionTable MagneticField::conversionTable({});
 
 //Voltage.
 constexpr double V_per_baseVoltage = 1.602176634e-19;
 template<>
-Voltage::ConversionTable Voltage::conversionTable({
-	{Voltage::Unit::GV,	{"GV",	V_per_baseVoltage*1e-9}},
-	{Voltage::Unit::MV,	{"MV",	V_per_baseVoltage*1e-6}},
-	{Voltage::Unit::kV,	{"kV",	V_per_baseVoltage*1e-3}},
-	{Voltage::Unit::V,	{"V",	V_per_baseVoltage}},
-	{Voltage::Unit::mV,	{"mV",	V_per_baseVoltage*1e3}},
-	{Voltage::Unit::uV,	{"uV",	V_per_baseVoltage*1e6}},
-	{Voltage::Unit::nV,	{"nV",	V_per_baseVoltage*1e9}},
-});
+Voltage::ConversionTable Voltage::conversionTable({});
 
 //Velocity
 template<>
@@ -96,6 +65,45 @@ Permittivity::ConversionTable Permittivity::conversionTable({});
 //Magneton
 template<>
 Magneton::ConversionTable Magneton::conversionTable({});
+
+void initializeDerivedQuantities(){
+	Mass::conversionTable = Mass::ConversionTable({
+		{Mass::Unit::kg,	{"kg",	kg_per_baseMass}},
+		{Mass::Unit::g,		{"g",	kg_per_baseMass*1e3}},
+		{Mass::Unit::mg,	{"mg",	kg_per_baseMass*1e6}},
+		{Mass::Unit::ug,	{"ug",	kg_per_baseMass*1e9}},
+		{Mass::Unit::ng,	{"ng",	kg_per_baseMass*1e12}},
+		{Mass::Unit::pg,	{"pg",	kg_per_baseMass*1e15}},
+		{Mass::Unit::fg,	{"fg",	kg_per_baseMass*1e18}},
+		{Mass::Unit::ag,	{"ag",	kg_per_baseMass*1e21}},
+		{Mass::Unit::ag,	{"u",	u_per_baseMass*1e21}}
+	});
+
+	MagneticField::conversionTable = MagneticField::ConversionTable({
+		{MagneticField::Unit::MT,	{"MT",	T_per_baseMagneticField*1e-6}},
+		{MagneticField::Unit::kT,	{"kT",	T_per_baseMagneticField*1e-3}},
+		{MagneticField::Unit::T,	{"T",	T_per_baseMagneticField}},
+		{MagneticField::Unit::mT,	{"mT",	T_per_baseMagneticField*1e3}},
+		{MagneticField::Unit::uT,	{"uT",	T_per_baseMagneticField*1e6}},
+		{MagneticField::Unit::nT,	{"nT",	T_per_baseMagneticField*1e9}},
+		{MagneticField::Unit::GG,	{"GG",	G_per_baseMagneticField*1e-9}},
+		{MagneticField::Unit::MG,	{"MG",	G_per_baseMagneticField*1e-6}},
+		{MagneticField::Unit::kG,	{"kG",	G_per_baseMagneticField*1e-3}},
+		{MagneticField::Unit::G,	{"G",	G_per_baseMagneticField}},
+		{MagneticField::Unit::mG,	{"mG",	G_per_baseMagneticField*1e3}},
+		{MagneticField::Unit::uG,	{"uG",	G_per_baseMagneticField*1e6}}
+	});
+
+	Voltage::conversionTable = Voltage::ConversionTable({
+		{Voltage::Unit::GV,	{"GV",	V_per_baseVoltage*1e-9}},
+		{Voltage::Unit::MV,	{"MV",	V_per_baseVoltage*1e-6}},
+		{Voltage::Unit::kV,	{"kV",	V_per_baseVoltage*1e-3}},
+		{Voltage::Unit::V,	{"V",	V_per_baseVoltage}},
+		{Voltage::Unit::mV,	{"mV",	V_per_baseVoltage*1e3}},
+		{Voltage::Unit::uV,	{"uV",	V_per_baseVoltage*1e6}},
+		{Voltage::Unit::nV,	{"nV",	V_per_baseVoltage*1e9}},
+	});
+}
 
 };	//End of namespace Quantity
 };	//End of namespace TBTK

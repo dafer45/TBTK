@@ -25,7 +25,7 @@ using namespace std;
 namespace TBTK{
 namespace Quantity{
 
-map<Charge::Unit, string> Charge::unitToString = {
+/*map<Charge::Unit, string> Charge::unitToString = {
 	{Charge::Unit::kC, "kC"},
 	{Charge::Unit::C, "C"},
 	{Charge::Unit::mC, "mC"},
@@ -120,7 +120,7 @@ double Charge::getConversionFactor(Unit unit){
 				<< " developer."
 			);
 	}
-}
+}*/
 
 };	//End of namespace Quantity
 };	//End of namespace TBTK

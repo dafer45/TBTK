@@ -25,7 +25,7 @@ using namespace std;
 namespace TBTK{
 namespace Quantity{
 
-map<Time::Unit, string> Time::unitToString = {
+/*map<Time::Unit, string> Time::unitToString = {
 	{Time::Unit::s, "s"},
 	{Time::Unit::ms, "ms"},
 	{Time::Unit::us, "us"},
@@ -95,7 +95,7 @@ double Time::getConversionFactor(Unit unit){
 				<< " developer."
 			);
 	}
-}
+}*/
 
 };	//End of namespace Quantity
 };	//End of namespace TBTK

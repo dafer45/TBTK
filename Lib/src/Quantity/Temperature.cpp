@@ -25,7 +25,7 @@ using namespace std;
 namespace TBTK{
 namespace Quantity{
 
-map<Temperature::Unit, string> Temperature::unitToString = {
+/*map<Temperature::Unit, string> Temperature::unitToString = {
 	{Temperature::Unit::kK, "kK"},
 	{Temperature::Unit::K, "K"},
 	{Temperature::Unit::mK, "mK"},
@@ -87,7 +87,7 @@ double Temperature::getConversionFactor(Unit unit){
 				<< " developer."
 			);
 	}
-}
+}*/
 
 };	//End of namespace Quantity
 };	//End of namespace TBTK

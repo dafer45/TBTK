@@ -25,7 +25,7 @@ using namespace std;
 namespace TBTK{
 namespace Quantity{
 
-map<Count::Unit, string> Count::unitToString = {
+/*map<Count::Unit, string> Count::unitToString = {
 	{Count::Unit::pcs, "pcs"},
 	{Count::Unit::mol, "mol"}
 };
@@ -76,7 +76,7 @@ double Count::getConversionFactor(Unit unit){
 				<< " developer."
 			);
 	}
-}
+}*/
 
 };	//End of namespace Quantity
 };	//End of namespace TBTK

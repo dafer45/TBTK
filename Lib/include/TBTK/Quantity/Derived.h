@@ -32,11 +32,15 @@
 #include "TBTK/Real.h"
 #include "TBTK/TBTKMacros.h"
 
+#include <iostream>
 #include <map>
 #include <string>
 
 namespace TBTK{
 namespace Quantity{
+
+/** Initialize the Derived Quantitites. */
+void initializeDerivedQuantities();
 
 /** @brief Derived.
  *
@@ -67,31 +71,31 @@ public:
 	/** Get the conversion factor for converting from the reference unit to
 	 *  the given units. */
 	static double getConversionFactor(
-		Quantity::Charge::Unit chargeUnit,
-		Quantity::Count::Unit countUnit,
-		Quantity::Energy::Unit energyUnit,
-		Quantity::Length::Unit lengthUnit,
-		Quantity::Temperature::Unit temperatureUnit,
-		Quantity::Time::Unit timeUnit
+		TBTK::Quantity::Charge::Unit chargeUnit,
+		TBTK::Quantity::Count::Unit countUnit,
+		TBTK::Quantity::Energy::Unit energyUnit,
+		TBTK::Quantity::Length::Unit lengthUnit,
+		TBTK::Quantity::Temperature::Unit temperatureUnit,
+		TBTK::Quantity::Time::Unit timeUnit
 	);
 
 	/** Get the exponent for the given Quantity. */
-	static int getExponent(Quantity::Charge);
+	static int getExponent(TBTK::Quantity::Charge);
 
 	/** Get the exponent for the given Quantity. */
-	static int getExponent(Quantity::Count);
+	static int getExponent(TBTK::Quantity::Count);
 
 	/** Get the exponent for the given Quantity. */
-	static int getExponent(Quantity::Energy);
+	static int getExponent(TBTK::Quantity::Energy);
 
 	/** Get the exponent for the given Quantity. */
-	static int getExponent(Quantity::Length);
+	static int getExponent(TBTK::Quantity::Length);
 
 	/** Get the exponent for the given Quantity. */
-	static int getExponent(Quantity::Temperature);
+	static int getExponent(TBTK::Quantity::Temperature);
 
 	/** Get the exponent for the given Quantity. */
-	static int getExponent(Quantity::Time);
+	static int getExponent(TBTK::Quantity::Time);
 private:
 	static class ConversionTable{
 	public:
@@ -113,6 +117,8 @@ private:
 			}
 		}
 	} conversionTable;
+
+	friend void initializeDerivedQuantities();
 };
 
 template<typename Units, typename Exponents>
@@ -172,32 +178,32 @@ double Derived<Units, Exponents>::getConversionFactor(
 }
 
 template<typename Units, typename Exponents>
-int Derived<Units, Exponents>::getExponent(Quantity::Charge){
+int Derived<Units, Exponents>::getExponent(TBTK::Quantity::Charge){
 	return static_cast<int>(Exponents::Charge);
 }
 
 template<typename Units, typename Exponents>
-int Derived<Units, Exponents>::getExponent(Quantity::Count){
+int Derived<Units, Exponents>::getExponent(TBTK::Quantity::Count){
 	return static_cast<int>(Exponents::Count);
 }
 
 template<typename Units, typename Exponents>
-int Derived<Units, Exponents>::getExponent(Quantity::Energy){
+int Derived<Units, Exponents>::getExponent(TBTK::Quantity::Energy){
 	return static_cast<int>(Exponents::Energy);
 }
 
 template<typename Units, typename Exponents>
-int Derived<Units, Exponents>::getExponent(Quantity::Length){
+int Derived<Units, Exponents>::getExponent(TBTK::Quantity::Length){
 	return static_cast<int>(Exponents::Length);
 }
 
 template<typename Units, typename Exponents>
-int Derived<Units, Exponents>::getExponent(Quantity::Temperature){
+int Derived<Units, Exponents>::getExponent(TBTK::Quantity::Temperature){
 	return static_cast<int>(Exponents::Temperature);
 }
 
 template<typename Units, typename Exponents>
-int Derived<Units, Exponents>::getExponent(Quantity::Time){
+int Derived<Units, Exponents>::getExponent(TBTK::Quantity::Time){
 	return static_cast<int>(Exponents::Time);
 }
 

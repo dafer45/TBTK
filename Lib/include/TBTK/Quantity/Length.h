@@ -23,7 +23,7 @@
 #ifndef COM_DAFER45_TBTK_QUANTITY_LENGTH
 #define COM_DAFER45_TBTK_QUANTITY_LENGTH
 
-#include "TBTK/Real.h"
+#include "TBTK/Quantity/Quantity.h"
 #include "TBTK/TBTKMacros.h"
 
 #include <map>
@@ -32,17 +32,28 @@
 namespace TBTK{
 namespace Quantity{
 
+enum class LengthUnit{m, mm, um, nm, pm, fm, am, Ao};
+enum class LengthExponent{
+	Charge = 0,
+	Count = 0,
+	Energy = 0,
+	Length = 1,
+	Temperature = 0,
+	Time = 0
+};
+typedef Quantity<LengthUnit, LengthExponent> Length;
+
 /** @brief Length.
  *
  *  A Length is a Real value which implicitly is assumed to have units of
  *  length. */
-class Length : public Real{
-public:
+//class Length : public Real{
+//public:
 	/** Default constructor. */
-	Length(){};
+//	Length(){};
 
 	/** Constructs a Quantity from a double. */
-	Length(double value) : Real(value){};
+//	Length(double value) : Real(value){};
 
 	/** Length units (base unit):
 	 *  - m - meter
@@ -53,21 +64,21 @@ public:
 	 *  - fm - femtometer
 	 *  - am - attometer
 	 *  - Ao - Angstrom */
-	enum class Unit {m, mm, um, nm, pm, fm, am, Ao};
+//	enum class Unit {m, mm, um, nm, pm, fm, am, Ao};
 
 	/** Get unit string for the given unit. */
-	static std::string getUnitString(Unit unit);
+//	static std::string getUnitString(Unit unit);
 
 	/** Convert a string to a Unit. */
-	static Unit getUnit(const std::string &str);
+//	static Unit getUnit(const std::string &str);
 
 	/** Get the conversion factor for converting from the reference unit to
 	 *  the given unit. */
-	static double getConversionFactor(Unit unit);
-private:
-	static std::map<Unit, std::string> unitToString;
-	static std::map<std::string, Unit> stringToUnit;
-};
+//	static double getConversionFactor(Unit unit);
+//private:
+//	static std::map<Unit, std::string> unitToString;
+//	static std::map<std::string, Unit> stringToUnit;
+//};
 
 }; //End of namesapce Length
 }; //End of namesapce TBTK

@@ -25,7 +25,7 @@ using namespace std;
 namespace TBTK{
 namespace Quantity{
 
-map<Length::Unit, string> Length::unitToString = {
+/*map<Length::Unit, string> Length::unitToString = {
 	{Length::Unit::m, "m"},
 	{Length::Unit::mm, "mm"},
 	{Length::Unit::um, "um"},
@@ -99,7 +99,7 @@ double Length::getConversionFactor(Unit unit){
 				<< " developer."
 			);
 	}
-}
+}*/
 
 };	//End of namespace Quantity
 };	//End of namespace TBTK

@@ -23,7 +23,7 @@
 #ifndef COM_DAFER45_TBTK_QUANTITY_TEMPERATURE
 #define COM_DAFER45_TBTK_QUANTITY_TEMPERATURE
 
-#include "TBTK/Real.h"
+#include "TBTK/Quantity/Quantity.h"
 #include "TBTK/TBTKMacros.h"
 
 #include <map>
@@ -32,17 +32,28 @@
 namespace TBTK{
 namespace Quantity{
 
+enum class TemperatureUnit{kK, K, mK, uK, nK};
+enum class TemperatureExponent{
+	Charge = 0,
+	Count = 0,
+	Energy = 0,
+	Length = 0,
+	Temperature = 1,
+	Time = 0
+};
+typedef Quantity<TemperatureUnit, TemperatureExponent> Temperature;
+
 /** @brief Temperature.
  *
  *  A Temperature is a Real value which implicitly is assumed to have units of
  *  temperature. */
-class Temperature : public Real{
-public:
+//class Temperature : public Real{
+//public:
 	/** Default constructor. */
-	Temperature(){};
+//	Temperature(){};
 
 	/** Constructs a Quantity from a double. */
-	Temperature(double value) : Real(value){};
+//	Temperature(double value) : Real(value){};
 
 	/** Temperature units (base unit):
 	 *  - kK - kilokelvin
@@ -50,21 +61,21 @@ public:
 	 *  - mK - millikelvin
 	 *  - uK - microkelvin
 	 *  - nK - nanokelvin */
-	enum class Unit {kK, K, mK, uK, nK};
+//	enum class Unit {kK, K, mK, uK, nK};
 
 	/** Get unit string for the given Unit. */
-	static std::string getUnitString(Unit unit);
+//	static std::string getUnitString(Unit unit);
 
 	/** Convert a string to a Unit. */
-	static Unit getUnit(const std::string &str);
+//	static Unit getUnit(const std::string &str);
 
 	/** Get the conversion factor for converting from the reference unit to
 	 *  the given unit. */
-	static double getConversionFactor(Unit unit);
-private:
-	static std::map<Unit, std::string> unitToString;
-	static std::map<std::string, Unit> stringToUnit;
-};
+//	static double getConversionFactor(Unit unit);
+//private:
+//	static std::map<Unit, std::string> unitToString;
+//	static std::map<std::string, Unit> stringToUnit;
+//};
 
 }; //End of namesapce Temperature
 }; //End of namesapce TBTK

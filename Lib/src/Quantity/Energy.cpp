@@ -25,7 +25,7 @@ using namespace std;
 namespace TBTK{
 namespace Quantity{
 
-map<Energy::Unit, string> Energy::unitToString = {
+/*map<Energy::Unit, string> Energy::unitToString = {
 	{Energy::Unit::GeV, "GeV"},
 	{Energy::Unit::MeV, "MeV"},
 	{Energy::Unit::keV, "keV"},
@@ -96,7 +96,7 @@ double Energy::getConversionFactor(Unit unit){
 				<< " developer."
 			);
 	}
-}
+}*/
 
 };	//End of namespace Quantity
 };	//End of namespace TBTK
