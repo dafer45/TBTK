@@ -24,13 +24,7 @@
 #ifndef COM_DAFER45_TBTK_QUANTITY_CONSTANTS
 #define COM_DAFER45_TBTK_QUANTITY_CONSTANTS
 
-#include "TBTK/Quantity/Charge.h"
-#include "TBTK/Quantity/Count.h"
 #include "TBTK/Quantity/Derived.h"
-#include "TBTK/Quantity/Energy.h"
-#include "TBTK/Quantity/Length.h"
-#include "TBTK/Quantity/Temperature.h"
-#include "TBTK/Quantity/Time.h"
 #include "TBTK/UnitHandler.h"
 
 #include <cmath>

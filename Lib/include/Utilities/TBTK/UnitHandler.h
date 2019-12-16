@@ -24,13 +24,7 @@
 #define COM_DAFER45_TBTK_UNIT_HANDLER
 
 #include "TBTK/TBTK.h"
-#include "TBTK/Quantity/Charge.h"
-#include "TBTK/Quantity/Count.h"
 #include "TBTK/Quantity/Derived.h"
-#include "TBTK/Quantity/Energy.h"
-#include "TBTK/Quantity/Length.h"
-#include "TBTK/Quantity/Temperature.h"
-#include "TBTK/Quantity/Time.h"
 #include "TBTK/TBTKMacros.h"
 
 #include <cmath>
