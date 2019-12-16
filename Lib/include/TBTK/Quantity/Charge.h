@@ -32,7 +32,7 @@
 namespace TBTK{
 namespace Quantity{
 
-enum class ChargeUnit{kC, C, mC, uC, nC, pC, fC, aC, Te, Ge, Me, ke, e};
+/*enum class ChargeUnit{kC, C, mC, uC, nC, pC, fC, aC, Te, Ge, Me, ke, e};
 enum class ChargeExponent{
 	Charge = 1,
 	Count = 0,
@@ -41,7 +41,7 @@ enum class ChargeExponent{
 	Temperature = 0,
 	Time = 0
 };
-typedef Quantity<ChargeUnit, ChargeExponent> Charge;
+typedef Quantity<ChargeUnit, ChargeExponent> Charge;*/
 
 /** @brief Charge.
  *

@@ -32,7 +32,7 @@
 namespace TBTK{
 namespace Quantity{
 
-enum class EnergyUnit{GeV, MeV, keV, eV, meV, ueV, J};
+/*enum class EnergyUnit{GeV, MeV, keV, eV, meV, ueV, J};
 enum class EnergyExponent{
 	Charge = 0,
 	Count = 0,
@@ -41,7 +41,7 @@ enum class EnergyExponent{
 	Temperature = 0,
 	Time = 0
 };
-typedef Quantity<EnergyUnit, EnergyExponent> Energy;
+typedef Quantity<EnergyUnit, EnergyExponent> Energy;*/
 
 /** @brief Energy.
  *

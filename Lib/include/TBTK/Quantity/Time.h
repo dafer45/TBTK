@@ -32,7 +32,7 @@
 namespace TBTK{
 namespace Quantity{
 
-enum class TimeUnit{s, ms, us, ns, ps, fs, as};
+/*enum class TimeUnit{s, ms, us, ns, ps, fs, as};
 enum class TimeExponent{
 	Charge = 0,
 	Count = 0,
@@ -41,7 +41,7 @@ enum class TimeExponent{
 	Temperature = 0,
 	Time = 1
 };
-typedef Quantity<TimeUnit, TimeExponent> Time;
+typedef Quantity<TimeUnit, TimeExponent> Time;*/
 
 /** @brief Time.
  *

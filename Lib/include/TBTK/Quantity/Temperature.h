@@ -32,7 +32,7 @@
 namespace TBTK{
 namespace Quantity{
 
-enum class TemperatureUnit{kK, K, mK, uK, nK};
+/*enum class TemperatureUnit{kK, K, mK, uK, nK};
 enum class TemperatureExponent{
 	Charge = 0,
 	Count = 0,
@@ -41,7 +41,7 @@ enum class TemperatureExponent{
 	Temperature = 1,
 	Time = 0
 };
-typedef Quantity<TemperatureUnit, TemperatureExponent> Temperature;
+typedef Quantity<TemperatureUnit, TemperatureExponent> Temperature;*/
 
 /** @brief Temperature.
  *

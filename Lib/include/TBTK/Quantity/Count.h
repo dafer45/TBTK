@@ -32,7 +32,7 @@
 namespace TBTK{
 namespace Quantity{
 
-enum class CountUnit{pcs, mol};
+/*enum class CountUnit{pcs, mol};
 enum class CountExponent{
 	Charge = 0,
 	Count = 1,
@@ -41,7 +41,7 @@ enum class CountExponent{
 	Temperature = 0,
 	Time = 0
 };
-typedef Quantity<CountUnit, CountExponent> Count;
+typedef Quantity<CountUnit, CountExponent> Count;*/
 
 /** @brief Count.
  *

@@ -23,12 +23,7 @@
 #ifndef COM_DAFER45_TBTK_QUANTITY_DERIVED
 #define COM_DAFER45_TBTK_QUANTITY_DERIVED
 
-#include "TBTK/Quantity/Charge.h"
-#include "TBTK/Quantity/Count.h"
-#include "TBTK/Quantity/Energy.h"
-#include "TBTK/Quantity/Length.h"
-#include "TBTK/Quantity/Temperature.h"
-#include "TBTK/Quantity/Time.h"
+#include "TBTK/Quantity/Base.h"
 #include "TBTK/Real.h"
 #include "TBTK/TBTKMacros.h"
 

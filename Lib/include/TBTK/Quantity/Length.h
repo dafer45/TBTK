@@ -32,7 +32,7 @@
 namespace TBTK{
 namespace Quantity{
 
-enum class LengthUnit{m, mm, um, nm, pm, fm, am, Ao};
+/*enum class LengthUnit{m, mm, um, nm, pm, fm, am, Ao};
 enum class LengthExponent{
 	Charge = 0,
 	Count = 0,
@@ -41,7 +41,7 @@ enum class LengthExponent{
 	Temperature = 0,
 	Time = 0
 };
-typedef Quantity<LengthUnit, LengthExponent> Length;
+typedef Quantity<LengthUnit, LengthExponent> Length;*/
 
 /** @brief Length.
  *

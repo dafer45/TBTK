@@ -18,13 +18,7 @@
  *  @author Kristofer Björnson
  */
 
-#include "TBTK/Quantity/Quantity.h"
-#include "TBTK/Quantity/Charge.h"
-#include "TBTK/Quantity/Count.h"
-#include "TBTK/Quantity/Energy.h"
-#include "TBTK/Quantity/Length.h"
-#include "TBTK/Quantity/Temperature.h"
-#include "TBTK/Quantity/Time.h"
+#include "TBTK/Quantity/Base.h"
 
 using namespace std;
 
