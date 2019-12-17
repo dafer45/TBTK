@@ -683,30 +683,12 @@ inline std::string UnitHandler::getUnitString(
 	int timeExponent
 ){
 	std::string result;
-	if(chargeExponent != 0){
-		result += getUnitString<Quantity::Charge>(chargeExponent);
-		result += " ";
-	}
-	if(countExponent != 0){
-		result += getUnitString<Quantity::Count>(countExponent) + " ";
-	}
-	if(energyExponent != 0){
-		result += getUnitString<Quantity::Energy>(energyExponent);
-		result += " ";
-	}
-	if(lengthExponent != 0){
-		result += getUnitString<Quantity::Length>(lengthExponent);
-		result += " ";
-	}
-	if(temperatureExponent != 0){
-		result += getUnitString<Quantity::Temperature>(
-			temperatureExponent
-		);
-		result += " ";
-	}
-	if(timeExponent != 0){
-		result += getUnitString<Quantity::Time>(timeExponent) + " ";
-	}
+	result += getUnitString<Quantity::Charge>(chargeExponent);
+	result += getUnitString<Quantity::Count>(countExponent);
+	result += getUnitString<Quantity::Energy>(energyExponent);
+	result += getUnitString<Quantity::Length>(lengthExponent);
+	result += getUnitString<Quantity::Temperature>(temperatureExponent);
+	result += getUnitString<Quantity::Time>(timeExponent);
 
 	if(result.size() != 0)
 		result.pop_back();
@@ -724,6 +706,7 @@ inline typename std::enable_if<
 		result += getUnitString<Quantity>();
 		if(exponent != 1)
 			result += "^" + std::to_string(exponent);
+		result += " ";
 	}
 	return result;
 }
