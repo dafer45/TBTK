@@ -24,7 +24,9 @@
 #ifndef COM_DAFER45_TBTK_QUANTITY_CONSTANTS
 #define COM_DAFER45_TBTK_QUANTITY_CONSTANTS
 
+#include "TBTK/Quantity/Base.h"
 #include "TBTK/Quantity/Derived.h"
+#include "TBTK/TBTK.h"
 #include "TBTK/UnitHandler.h"
 
 #include <cmath>
@@ -42,8 +44,6 @@ namespace Quantity{
  *  scope. Therefore, request constants through the UnitHandler for all other
  *  purposes. */
 class Constants{
-public:
-	double get(const std::string &symbol);
 private:
 	//Source "The International System of Units (SI) 9th Edition. Bureau
 	//International des Poids et Mesures. 2019."
@@ -65,6 +65,15 @@ private:
 	static std::pair<std::string, Planck> hbar;// = h/(2*M_PI);
 	static std::pair<std::string, Magneton> mu_B;// = e*hbar/(2*m_e);
 	static std::pair<std::string, Magneton> mu_N;// = e*hbar/(2*m_p);
+
+	static void initialize();
+	static double getValue(const std::string &symbol);
+	static std::vector<int> getExponents();
+
+	friend void TBTK::Initialize();
+	friend void TBTK::Quantity::initializeBaseQuantities();
+	friend void TBTK::Quantity::initializeDerivedQuantities();
+	friend class UnitHandler;
 };
 
 }; //End of namesapce Quantity

@@ -17,6 +17,7 @@
  *  @author Kristofer Björnson
  */
 
+#include "TBTK/Quantity/Constants.h"
 #include "TBTK/Quantity/Derived.h"
 #include "TBTK/Quantity/Quantity.h"
 #include "TBTK/TBTK.h"
@@ -25,6 +26,7 @@
 namespace TBTK{
 
 void Initialize(){
+	Quantity::Constants::initialize();
 	Quantity::initializeBaseQuantities();
 	Quantity::initializeDerivedQuantities();
 	UnitHandler::initialize();
