@@ -185,91 +185,100 @@ public:
 	 *  @return string representation of the currently set unit for the
 	 *  given Quantity. */
 	template<typename Quantity>
-	static std::string getUnitString();
+	static typename std::enable_if<Quantity::IsBaseQuantity::value, std::string>::type getUnitString();
+	template<typename Quantity>
+	static typename std::enable_if<!Quantity::IsBaseQuantity::value, std::string>::type getUnitString();
+
+	/** Get the unit string for the given constant.
+	 *
+	 *  @param constantName The name of the constant.
+	 *
+	 *  @return The unit string in the current base units. */
+	static std::string getUnitString(const std::string &constantName);
 
 	/** Get mass unit string.
 	 *
 	 *  @return string representation of the derived mass unit in terms of
 	 *  the currently set base units. */
-	static std::string getMassUnitString();
+//	static std::string getMassUnitString();
 
 	/** Get mass unit string.
 	 *
 	 *  @return string representation of the derived magnetic field unit in
 	 *  terms of the currently set base units. */
-	static std::string getMagneticFieldUnitString();
+//	static std::string getMagneticFieldUnitString();
 
 	/** Get voltage unit string.
 	 *
 	 *  @return string representation of the derived voltage unit in terms
 	 *  of the currently set base units. */
-	static std::string getVoltageUnitString();
+//	static std::string getVoltageUnitString();
 
 	/** Get Planck constant unit string
 	 *
 	 *  @return string representation of the unit for the Planck constant.
 	 */
-	static std::string getHBARUnitString();
+//	static std::string getHBARUnitString();
 
 	/** Get Boltzmann constant unit string.
 	 *
 	 *  @return string representation of the unit for the Boltzmann
 	 *  constant. */
-	static std::string getK_BUnitString();
+//	static std::string getK_BUnitString();
 
 	/** Get elementary charge unit string.
 	 *
 	 *  @return string representation of the unit for the elementary
 	 *  charge.*/
-	static std::string getEUnitString();
+//	static std::string getEUnitString();
 
 	/** Get speed of light unit string.
 	 *
 	 *  @return string representation of the unit for the speed of light.
 	 */
-	static std::string getCUnitString();
+//	static std::string getCUnitString();
 
 	/** GetAvogadros number unit string.
 	 *
 	 *  @return string representation of the unit for Avogadros number. */
-	static std::string getN_AUnitString();
+//	static std::string getN_AUnitString();
 
 	/** Get electron mass unit string.
 	 *
 	 *  @return string representation of the unit for the electron mass. */
-	static std::string getM_eUnitString();
+//	static std::string getM_eUnitString();
 
 	/** Get proton mass unit string.
 	 *
 	 *  @return string representation of the unit for the proton mass. */
-	static std::string getM_pUnitString();
+//	static std::string getM_pUnitString();
 
 	/** Get Bohr magneton unit string.
 	 *
 	 *  @return string representation of the unit for the Bohr magneton. */
-	static std::string getMu_BUnitString();
+//	static std::string getMu_BUnitString();
 
 	/** Get nuclear magneton unit string.
 	 *
 	 *  @return string representation of the unit for the nuclear magneton. */
-	static std::string getMu_nUnitString();
+//	static std::string getMu_nUnitString();
 
 	/** Get vacuum permeability unit string.
 	 *
 	 *  @return string representation of the unit for the vacuum
 	 *  permeability. */
-	static std::string getMu_0UnitString();
+//	static std::string getMu_0UnitString();
 
 	/** Get vacuum permittivity unit string
 	 *
 	 *  @return string representation of the unit for the vacuum
 	 *  permittivity. */
-	static std::string getEpsilon_0UnitString();
+//	static std::string getEpsilon_0UnitString();
 
 	/** Get the Bohr radius unit string
 	 *
 	 *  @return string representation of the unit for the Bohr radius. */
-	static std::string getA_0UnitString();
+//	static std::string getA_0UnitString();
 private:
 	/** Physical constants in the default units K, s, m, eV, C, pcs. */
 	static std::map<
@@ -307,7 +316,7 @@ private:
 	/** Function for indexing into the tuple units using compile time
 	 *  Quatity names. */
 	template<typename Quantity>
-	constexpr static typename Quantity::Unit& getUnit();
+	constexpr static typename std::enable_if<Quantity::IsBaseQuantity::value, typename Quantity::Unit&>::type getUnit();
 
 	/** Set scale. */
 	template<typename Quantity>
@@ -691,8 +700,65 @@ inline constexpr double& UnitHandler::getScale<Quantity::Time>(){
 }
 
 template<typename Quantity>
-inline std::string UnitHandler::getUnitString(){
+inline typename std::enable_if<Quantity::IsBaseQuantity::value, std::string>::type UnitHandler::getUnitString(){
 	return Quantity::getUnitString(getUnit<Quantity>());
+}
+
+template<typename Quantity>
+inline typename std::enable_if<!Quantity::IsBaseQuantity::value, std::string>::type UnitHandler::getUnitString(){
+	std::string result;
+
+	int chargeExponent = static_cast<int>(Quantity::Exponent::Charge);
+	int countExponent = static_cast<int>(Quantity::Exponent::Count);
+	int energyExponent = static_cast<int>(Quantity::Exponent::Energy);
+	int lengthExponent = static_cast<int>(Quantity::Exponent::Length);
+	int temperatureExponent = static_cast<int>(Quantity::Exponent::Temperature);
+	int timeExponent = static_cast<int>(Quantity::Exponent::Time);
+
+	if(chargeExponent != 0){
+		result += getUnitString<TBTK::Quantity::Charge>();
+		if(chargeExponent != 1)
+			result += "^" + std::to_string(chargeExponent);
+
+		result += " ";
+	}
+	if(countExponent != 0){
+		result += getUnitString<TBTK::Quantity::Count>();
+		if(countExponent != 1)
+			result += "^" + std::to_string(countExponent);
+
+		result += " ";
+	}
+	if(energyExponent != 0){
+		result += getUnitString<TBTK::Quantity::Energy>();
+		if(energyExponent != 1)
+			result += "^" + std::to_string(energyExponent);
+
+		result += " ";
+	}
+	if(lengthExponent != 0){
+		result += getUnitString<TBTK::Quantity::Length>();
+		if(lengthExponent != 1)
+			result += "^" + std::to_string(lengthExponent);
+
+		result += " ";
+	}
+	if(temperatureExponent != 0){
+		result += getUnitString<TBTK::Quantity::Temperature>();
+		if(temperatureExponent != 1)
+			result += "^" + std::to_string(temperatureExponent);
+
+		result += " ";
+	}
+	if(timeExponent != 0){
+		result += getUnitString<TBTK::Quantity::Time>();
+		if(timeExponent != 1)
+			result += "^" + std::to_string(timeExponent);
+
+		result += " ";
+	}
+
+	return result;
 }
 
 template<typename Quantity>
