@@ -656,76 +656,14 @@ inline typename std::enable_if<
 	!Quantity::IsBaseQuantity::value,
 	std::string
 >::type UnitHandler::getUnitString(){
-	std::string result;
-
-	int chargeExponent = static_cast<int>(Quantity::Exponent::Charge);
-	int countExponent = static_cast<int>(Quantity::Exponent::Count);
-	int energyExponent = static_cast<int>(Quantity::Exponent::Energy);
-	int lengthExponent = static_cast<int>(Quantity::Exponent::Length);
-	int temperatureExponent
-		= static_cast<int>(Quantity::Exponent::Temperature);
-	int timeExponent = static_cast<int>(Quantity::Exponent::Time);
-
-/*	result += getUnitString<TBTK::Quantity::Charge>(chargeExponent);
-	result += getUnitString<TBTK::Quantity::Count>(countExponent);
-	result += getUnitString<TBTK::Quantity::Energy>(energyExponent);
-	result += getUnitString<TBTK::Quantity::Length>(lengthExponent);
-	result += getUnitString<TBTK::Quantity::Temperature>(temperatureExponent);
-	result += getUnitString<TBTK::Quantity::Time>(timeExponent);*/
-
 	return getUnitString(
-		chargeExponent,
-		countExponent,
-		energyExponent,
-		lengthExponent,
-		temperatureExponent,
-		timeExponent
+		static_cast<int>(Quantity::Exponent::Charge),
+		static_cast<int>(Quantity::Exponent::Count),
+		static_cast<int>(Quantity::Exponent::Energy),
+		static_cast<int>(Quantity::Exponent::Length),
+		static_cast<int>(Quantity::Exponent::Temperature),
+		static_cast<int>(Quantity::Exponent::Time)
 	);
-
-/*	if(chargeExponent != 0){
-		result += getUnitString<TBTK::Quantity::Charge>();
-		if(chargeExponent != 1)
-			result += "^" + std::to_string(chargeExponent);
-
-		result += " ";
-	}
-	if(countExponent != 0){
-		result += getUnitString<TBTK::Quantity::Count>();
-		if(countExponent != 1)
-			result += "^" + std::to_string(countExponent);
-
-		result += " ";
-	}
-	if(energyExponent != 0){
-		result += getUnitString<TBTK::Quantity::Energy>();
-		if(energyExponent != 1)
-			result += "^" + std::to_string(energyExponent);
-
-		result += " ";
-	}
-	if(lengthExponent != 0){
-		result += getUnitString<TBTK::Quantity::Length>();
-		if(lengthExponent != 1)
-			result += "^" + std::to_string(lengthExponent);
-
-		result += " ";
-	}
-	if(temperatureExponent != 0){
-		result += getUnitString<TBTK::Quantity::Temperature>();
-		if(temperatureExponent != 1)
-			result += "^" + std::to_string(temperatureExponent);
-
-		result += " ";
-	}
-	if(timeExponent != 0){
-		result += getUnitString<TBTK::Quantity::Time>();
-		if(timeExponent != 1)
-			result += "^" + std::to_string(timeExponent);
-
-		result += " ";
-	}*/
-
-	return result;
 }
 
 template<typename Quantity>

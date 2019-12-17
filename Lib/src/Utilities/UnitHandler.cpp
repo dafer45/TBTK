@@ -104,78 +104,16 @@ double UnitHandler::getConstantNaturalUnits(const std::string &name){
 
 string UnitHandler::getUnitString(const std::string &constantName){
 	try{
-//		string result;
-
 		Quantity::Constant constant
 			= constantsDefaultUnits.at(constantName);
-
-		int chargeExponent = constant.getExponent<Quantity::Charge>();
-		int countExponent = constant.getExponent<Quantity::Count>();
-		int energyExponent = constant.getExponent<Quantity::Energy>();
-		int lengthExponent = constant.getExponent<Quantity::Length>();
-		int temperatureExponent
-			= constant.getExponent<Quantity::Temperature>();
-		int timeExponent = constant.getExponent<Quantity::Time>();
-
 		return getUnitString(
-			chargeExponent,
-			countExponent,
-			energyExponent,
-			lengthExponent,
-			temperatureExponent,
-			timeExponent
+			constant.getExponent<Quantity::Charge>(),
+			constant.getExponent<Quantity::Count>(),
+			constant.getExponent<Quantity::Energy>(),
+			constant.getExponent<Quantity::Length>(),
+			constant.getExponent<Quantity::Temperature>(),
+			constant.getExponent<Quantity::Time>()
 		);
-/*		result += getUnitString<Quantity::Charge>(chargeExponent);
-		result += getUnitString<Quantity::Count>(countExponent);
-		result += getUnitString<Quantity::Energy>(energyExponent);
-		result += getUnitString<Quantity::Length>(lengthExponent);
-		result += getUnitString<Quantity::Temperature>(
-			temperatureExponent
-		);
-		result += getUnitString<Quantity::Time>(timeExponent);*/
-/*		if(chargeExponent != 0){
-			result += getUnitString<Quantity::Charge>();
-			if(chargeExponent != 1)
-				result += "^" + to_string(chargeExponent);
-
-			result += " ";
-		}
-		if(countExponent != 0){
-			result += getUnitString<Quantity::Count>();
-			if(countExponent != 1)
-				result += "^" + to_string(countExponent);
-
-			result += " ";
-		}
-		if(energyExponent != 0){
-			result += getUnitString<Quantity::Energy>();
-			if(energyExponent != 1)
-				result += "^" + to_string(energyExponent);
-
-			result += " ";
-		}
-		if(lengthExponent != 0){
-			result += getUnitString<Quantity::Length>();
-			if(lengthExponent != 1)
-				result += "^" + to_string(lengthExponent);
-
-			result += " ";
-		}
-		if(temperatureExponent != 0){
-			result += getUnitString<Quantity::Temperature>();
-			if(temperatureExponent != 1)
-				result += "^" + to_string(temperatureExponent);
-
-			result += " ";
-		}
-		if(timeExponent != 0){
-			result += getUnitString<Quantity::Time>();
-			if(timeExponent != 1)
-				result += "^" + to_string(timeExponent);
-
-			result += " ";
-		}*/
-//		return result;
 	}
 	catch(const out_of_range &e){
 		TBTKExit(
