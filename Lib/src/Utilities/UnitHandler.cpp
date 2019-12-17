@@ -104,7 +104,7 @@ double UnitHandler::getConstantNaturalUnits(const std::string &name){
 
 string UnitHandler::getUnitString(const std::string &constantName){
 	try{
-		string result;
+//		string result;
 
 		Quantity::Constant constant
 			= constantsDefaultUnits.at(constantName);
@@ -116,7 +116,24 @@ string UnitHandler::getUnitString(const std::string &constantName){
 		int temperatureExponent
 			= constant.getExponent<Quantity::Temperature>();
 		int timeExponent = constant.getExponent<Quantity::Time>();
-		if(chargeExponent != 0){
+
+		return getUnitString(
+			chargeExponent,
+			countExponent,
+			energyExponent,
+			lengthExponent,
+			temperatureExponent,
+			timeExponent
+		);
+/*		result += getUnitString<Quantity::Charge>(chargeExponent);
+		result += getUnitString<Quantity::Count>(countExponent);
+		result += getUnitString<Quantity::Energy>(energyExponent);
+		result += getUnitString<Quantity::Length>(lengthExponent);
+		result += getUnitString<Quantity::Temperature>(
+			temperatureExponent
+		);
+		result += getUnitString<Quantity::Time>(timeExponent);*/
+/*		if(chargeExponent != 0){
 			result += getUnitString<Quantity::Charge>();
 			if(chargeExponent != 1)
 				result += "^" + to_string(chargeExponent);
@@ -157,8 +174,8 @@ string UnitHandler::getUnitString(const std::string &constantName){
 				result += "^" + to_string(timeExponent);
 
 			result += " ";
-		}
-		return result;
+		}*/
+//		return result;
 	}
 	catch(const out_of_range &e){
 		TBTKExit(

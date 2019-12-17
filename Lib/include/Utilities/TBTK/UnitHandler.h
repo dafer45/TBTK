@@ -277,6 +277,25 @@ private:
 	template<typename Quantity>
 	static typename Quantity::Unit getUnit(const std::string &unit);
 
+	/** Get the unit string for the given combination of Base Quantity
+	 *  exponents in the currently set base units. */
+	static std::string getUnitString(
+		int chargeExponent,
+		int countExponent,
+		int energyExponent,
+		int lengthExponent,
+		int temperatureExponent,
+		int timeExponent
+	);
+
+	/** Get the unit string for the given Base Quantity in the currently
+	 *  set base units. */
+	template<typename Quantity>
+	static typename std::enable_if<
+		Quantity::IsBaseQuantity::value,
+		std::string
+	>::type getUnitString(int exponent);
+
 	/** Initialize the UnitHandler. */
 	static void initialize();
 
@@ -647,7 +666,23 @@ inline typename std::enable_if<
 		= static_cast<int>(Quantity::Exponent::Temperature);
 	int timeExponent = static_cast<int>(Quantity::Exponent::Time);
 
-	if(chargeExponent != 0){
+/*	result += getUnitString<TBTK::Quantity::Charge>(chargeExponent);
+	result += getUnitString<TBTK::Quantity::Count>(countExponent);
+	result += getUnitString<TBTK::Quantity::Energy>(energyExponent);
+	result += getUnitString<TBTK::Quantity::Length>(lengthExponent);
+	result += getUnitString<TBTK::Quantity::Temperature>(temperatureExponent);
+	result += getUnitString<TBTK::Quantity::Time>(timeExponent);*/
+
+	return getUnitString(
+		chargeExponent,
+		countExponent,
+		energyExponent,
+		lengthExponent,
+		temperatureExponent,
+		timeExponent
+	);
+
+/*	if(chargeExponent != 0){
 		result += getUnitString<TBTK::Quantity::Charge>();
 		if(chargeExponent != 1)
 			result += "^" + std::to_string(chargeExponent);
@@ -688,7 +723,7 @@ inline typename std::enable_if<
 			result += "^" + std::to_string(timeExponent);
 
 		result += " ";
-	}
+	}*/
 
 	return result;
 }
@@ -696,6 +731,60 @@ inline typename std::enable_if<
 template<typename Quantity>
 typename Quantity::Unit UnitHandler::getUnit(const std::string &unit){
 	return Quantity::getUnit(unit);
+}
+
+inline std::string UnitHandler::getUnitString(
+	int chargeExponent,
+	int countExponent,
+	int energyExponent,
+	int lengthExponent,
+	int temperatureExponent,
+	int timeExponent
+){
+	std::string result;
+	if(chargeExponent != 0){
+		result += getUnitString<Quantity::Charge>(chargeExponent);
+		result += " ";
+	}
+	if(countExponent != 0){
+		result += getUnitString<Quantity::Count>(countExponent) + " ";
+	}
+	if(energyExponent != 0){
+		result += getUnitString<Quantity::Energy>(energyExponent);
+		result += " ";
+	}
+	if(lengthExponent != 0){
+		result += getUnitString<Quantity::Length>(lengthExponent);
+		result += " ";
+	}
+	if(temperatureExponent != 0){
+		result += getUnitString<Quantity::Temperature>(
+			temperatureExponent
+		);
+		result += " ";
+	}
+	if(timeExponent != 0){
+		result += getUnitString<Quantity::Time>(timeExponent) + " ";
+	}
+
+	if(result.size() != 0)
+		result.pop_back();
+
+	return result;
+}
+
+template<typename Quantity>
+inline typename std::enable_if<
+	Quantity::IsBaseQuantity::value,
+	std::string
+>::type UnitHandler::getUnitString(int exponent){
+	std::string result;
+	if(exponent != 0){
+		result += getUnitString<Quantity>();
+		if(exponent != 1)
+			result += "^" + std::to_string(exponent);
+	}
+	return result;
 }
 
 };
