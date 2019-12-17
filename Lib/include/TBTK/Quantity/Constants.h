@@ -45,18 +45,35 @@ namespace Quantity{
  *  scope. Therefore, request constants through the UnitHandler for all other
  *  purposes. */
 class Constants{
+public:
+	/** Get a constant with a given name.
+	 *
+	 *  @param name The name of the constant. */
+	static Constant get(const std::string &name);
 private:
+	/** Container for the constants. */
 	static std::map<std::string, Constant> constants;
 
+	/** Function to be called from TBTKs global initialization function. */
 	static void initialize();
-	static double getValue(const std::string &symbol);
-	static std::vector<int> getExponents();
 
+	/** The global initialization function is a friend to allow for
+	 *  initialization of the constants. */
 	friend void TBTK::Initialize();
-	friend void TBTK::Quantity::initializeBaseQuantities();
-	friend void TBTK::Quantity::initializeDerivedQuantities();
-	friend class UnitHandler;
 };
+
+inline Constant Constants::get(const std::string &name){
+	try{
+		return constants.at(name);
+	}
+	catch(const std::out_of_range &e){
+		TBTKExit(
+			"Constants::get()",
+			"Unknown constant '" << name << "'.",
+			""
+		);
+	}
+}
 
 }; //End of namesapce Quantity
 }; //End of namesapce TBTK
