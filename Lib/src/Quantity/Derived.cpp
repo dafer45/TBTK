@@ -18,6 +18,7 @@
  *  @author Kristofer Björnson
  */
 
+#include "TBTK/Quantity/Constants.h"
 #include "TBTK/Quantity/Derived.h"
 
 using namespace std;
@@ -26,8 +27,6 @@ namespace TBTK{
 namespace Quantity{
 
 //Mass.
-constexpr double kg_per_baseMass = 1.602176634e-19;
-constexpr double u_per_baseMass = 2.99792458e8*2.99792458e8/9.31494095e8;
 template<>
 Quantity<
 	MassUnit,
@@ -38,8 +37,6 @@ Quantity<
 >::conversionTable({});
 
 //MagneticField.
-constexpr double T_per_baseMagneticField = 1.602176634e-19;
-constexpr double G_per_baseMagneticField = 1.602176634e-19*1e4;
 template<>
 Quantity<
 	MagneticFieldUnit,
@@ -50,7 +47,6 @@ Quantity<
 >::conversionTable({});
 
 //Voltage.
-constexpr double V_per_baseVoltage = 1.602176634e-19;
 template<>
 Quantity<
 	VoltageUnit,
@@ -121,6 +117,12 @@ Quantity<
 >::conversionTable({});
 
 void initializeDerivedQuantities(){
+	double kg_per_baseMass = Constants::e.second;
+	double u_per_baseMass = 2.99792458e8*2.99792458e8/9.31494095e8;
+	double T_per_baseMagneticField = Constants::e.second;
+	double G_per_baseMagneticField = T_per_baseMagneticField*1e4;
+	double V_per_baseVoltage = Constants::e.second;
+
 	Mass::conversionTable = Mass::ConversionTable({
 		{Mass::Unit::kg,	{"kg",	kg_per_baseMass}},
 		{Mass::Unit::g,		{"g",	kg_per_baseMass*1e3}},
