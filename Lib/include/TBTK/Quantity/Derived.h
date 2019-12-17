@@ -44,6 +44,7 @@ void initializeDerivedQuantities();
 template<typename Units, typename Exponents>
 class Derived : public Quantity<Units, Exponents>{
 public:
+	using IsBaseQuantity = std::false_type;
 	using Quantity<Units, Exponents>::Quantity;
 	using Quantity<Units, Exponents>::getConversionFactor;
 	using Unit = typename Quantity<Units, Exponents>::Unit;

@@ -94,61 +94,117 @@ public:
 	template<typename Quantity>
 	static double convertBaseToNatural(double value);
 
-	/** Convert arbitrary units to base units. */
+	/** @name Convert arbitrary to base
+	 *  @{
+	 *  Convert from arbitrary units to base units. */
 	template<typename Quantity>
-	static double convertArbitraryToBase(
+	static typename std::enable_if<
+		Quantity::IsBaseQuantity::value,
+		double
+	>::type convertArbitraryToBase(
 		double value,
 		typename Quantity::Unit unit
 	);
+	template<typename Quantity>
+	static typename std::enable_if<
+		!Quantity::IsBaseQuantity::value,
+		double
+	>::type convertArbitraryToBase(
+		double value,
+		typename Quantity::Unit unit
+	);
+	/** @} */
 
-	/** Convert base units to arbitrary units. */
+	/** @name Convert base to arbitrary
+	 *  @{
+	 * Convert from base units to arbitrary units. */
 	template<typename Quantity>
-	static double convertBaseToArbitrary(
+	static typename std::enable_if<
+		Quantity::IsBaseQuantity::value,
+		double
+	>::type convertBaseToArbitrary(
 		double value,
 		typename Quantity::Unit unit
 	);
+	template<typename Quantity>
+	static typename std::enable_if<
+		!Quantity::IsBaseQuantity::value,
+		double
+	>::type convertBaseToArbitrary(
+		double value,
+		typename Quantity::Unit unit
+	);
+	/** @} */
 
-	/** Convert arbitrary units to natural units. */
+	/** @name Convert arbitrary to natural
+	 *  @{
+	 * Convert from arbitrary units to natural units. */
 	template<typename Quantity>
-	static double convertArbitraryToNatural(
+	static typename std::enable_if<
+		Quantity::IsBaseQuantity::value,
+		double
+	>::type convertArbitraryToNatural(
 		double value,
 		typename Quantity::Unit unit
 	);
+	template<typename Quantity>
+	static typename std::enable_if<
+		!Quantity::IsBaseQuantity::value,
+		double
+	>::type convertArbitraryToNatural(
+		double value,
+		typename Quantity::Unit unit
+	);
+	/** @} */
 
-	/** Convert natural units to arbitrary units. */
+	/** @name Convert natural to arbitrary
+	 *  @{
+	 * Convert from natural units to arbitrary units. */
 	template<typename Quantity>
-	static double convertNaturalToArbitrary(
+	static typename std::enable_if<
+		Quantity::IsBaseQuantity::value,
+		double
+	>::type convertNaturalToArbitrary(
 		double value,
 		typename Quantity::Unit unit
 	);
+	template<typename Quantity>
+	static typename std::enable_if<
+		!Quantity::IsBaseQuantity::value,
+		double
+	>::type convertNaturalToArbitrary(
+		double value,
+		typename Quantity::Unit unit
+	);
+	/** @} */
 
 	/** Convert from derived units to base units. */
-	template<typename Quantity>
+/*	template<typename Quantity>
 	static double convertDerivedToBase(
 		double value,
 		typename Quantity::Unit unit
-	);
+	);*/
 
 	/** Convert from base units to derived units. */
-	template<typename Quantity>
+/*	template<typename Quantity>
 	static double convertBaseToDerived(
 		double value,
 		typename Quantity::Unit unit
-	);
+	);*/
 
 	/** Convert from derived units to natural units. */
-	template<typename Quantity>
+/*	template<typename Quantity>
 	static double convertDerivedToNatural(
 		double value,
 		typename Quantity::Unit unit
-	);
+	);*/
 
 	/** Convert from natural units to derived units. */
-	template<typename Quantity>
+/*	template<typename Quantity>
 	static double convertNaturalToDerived(
 		double value,
 		typename Quantity::Unit unit
-	);
+	);*/
 
 	/** Get the unit string for the given Quantity in the currently set
 	 *  base units.
@@ -402,7 +458,10 @@ double UnitHandler::convertBaseToNatural(double value){
 }
 
 template<typename Quantity>
-double UnitHandler::convertArbitraryToBase(
+typename std::enable_if<
+	Quantity::IsBaseQuantity::value,
+	double
+>::type UnitHandler::convertArbitraryToBase(
 	double value,
 	typename Quantity::Unit unit
 ){
@@ -411,7 +470,28 @@ double UnitHandler::convertArbitraryToBase(
 }
 
 template<typename Quantity>
-double UnitHandler::convertBaseToArbitrary(
+typename std::enable_if<
+	!Quantity::IsBaseQuantity::value,
+	double
+>::type UnitHandler::convertArbitraryToBase(
+	double value,
+	typename Quantity::Unit unit
+){
+	return value*Quantity::getConversionFactor(
+		getUnit<TBTK::Quantity::Charge>(),
+		getUnit<TBTK::Quantity::Count>(),
+		getUnit<TBTK::Quantity::Energy>(),
+		getUnit<TBTK::Quantity::Length>(),
+		getUnit<TBTK::Quantity::Temperature>(),
+		getUnit<TBTK::Quantity::Time>()
+	)/Quantity::getConversionFactor(unit);
+}
+
+template<typename Quantity>
+typename std::enable_if<
+	Quantity::IsBaseQuantity::value,
+	double
+>::type UnitHandler::convertBaseToArbitrary(
 	double value,
 	typename Quantity::Unit unit
 ){
@@ -421,7 +501,30 @@ double UnitHandler::convertBaseToArbitrary(
 }
 
 template<typename Quantity>
-double UnitHandler::convertArbitraryToNatural(
+typename std::enable_if<
+	!Quantity::IsBaseQuantity::value,
+	double
+>::type UnitHandler::convertBaseToArbitrary(
+	double value,
+	typename Quantity::Unit unit
+){
+	return value*Quantity::getConversionFactor(
+		unit
+	)/Quantity::getConversionFactor(
+		getUnit<TBTK::Quantity::Charge>(),
+		getUnit<TBTK::Quantity::Count>(),
+		getUnit<TBTK::Quantity::Energy>(),
+		getUnit<TBTK::Quantity::Length>(),
+		getUnit<TBTK::Quantity::Temperature>(),
+		getUnit<TBTK::Quantity::Time>()
+	);
+}
+
+template<typename Quantity>
+typename std::enable_if<
+	Quantity::IsBaseQuantity::value,
+	double
+>::type UnitHandler::convertArbitraryToNatural(
 	double value,
 	typename Quantity::Unit unit
 ){
@@ -430,7 +533,55 @@ double UnitHandler::convertArbitraryToNatural(
 }
 
 template<typename Quantity>
-double UnitHandler::convertNaturalToArbitrary(
+typename std::enable_if<
+	!Quantity::IsBaseQuantity::value,
+	double
+>::type UnitHandler::convertArbitraryToNatural(
+	double value,
+	typename Quantity::Unit unit
+){
+	double result = value*Quantity::getConversionFactor(
+		getUnit<TBTK::Quantity::Charge>(),
+		getUnit<TBTK::Quantity::Count>(),
+		getUnit<TBTK::Quantity::Energy>(),
+		getUnit<TBTK::Quantity::Length>(),
+		getUnit<TBTK::Quantity::Temperature>(),
+		getUnit<TBTK::Quantity::Time>()
+	)/Quantity::getConversionFactor(unit);
+
+	result /= pow(
+		getScale<TBTK::Quantity::Charge>(),
+		Quantity::getExponent(TBTK::Quantity::Charge())
+	);
+	result /= pow(
+		getScale<TBTK::Quantity::Count>(),
+		Quantity::getExponent(TBTK::Quantity::Count())
+	);
+	result /= pow(
+		getScale<TBTK::Quantity::Energy>(),
+		Quantity::getExponent(TBTK::Quantity::Energy())
+	);
+	result /= pow(
+		getScale<TBTK::Quantity::Length>(),
+		Quantity::getExponent(TBTK::Quantity::Length())
+	);
+	result /= pow(
+		getScale<TBTK::Quantity::Temperature>(),
+		Quantity::getExponent(TBTK::Quantity::Temperature())
+	);
+	result /= pow(
+		getScale<TBTK::Quantity::Time>(),
+		Quantity::getExponent(TBTK::Quantity::Time())
+	);
+
+	return result;
+}
+
+template<typename Quantity>
+typename std::enable_if<
+	Quantity::IsBaseQuantity::value,
+	double
+>::type UnitHandler::convertNaturalToArbitrary(
 	double value,
 	typename Quantity::Unit unit
 ){
@@ -440,6 +591,53 @@ double UnitHandler::convertNaturalToArbitrary(
 }
 
 template<typename Quantity>
+typename std::enable_if<
+	!Quantity::IsBaseQuantity::value,
+	double
+>::type UnitHandler::convertNaturalToArbitrary(
+	double value,
+	typename Quantity::Unit unit
+){
+	double result = value*Quantity::getConversionFactor(
+		unit
+	)/Quantity::getConversionFactor(
+		getUnit<TBTK::Quantity::Charge>(),
+		getUnit<TBTK::Quantity::Count>(),
+		getUnit<TBTK::Quantity::Energy>(),
+		getUnit<TBTK::Quantity::Length>(),
+		getUnit<TBTK::Quantity::Temperature>(),
+		getUnit<TBTK::Quantity::Time>()
+	);
+
+	result *= pow(
+		getScale<TBTK::Quantity::Charge>(),
+		Quantity::getExponent(TBTK::Quantity::Charge())
+	);
+	result *= pow(
+		getScale<TBTK::Quantity::Count>(),
+		Quantity::getExponent(TBTK::Quantity::Count())
+	);
+	result *= pow(
+		getScale<TBTK::Quantity::Energy>(),
+		Quantity::getExponent(TBTK::Quantity::Energy())
+	);
+	result *= pow(
+		getScale<TBTK::Quantity::Length>(),
+		Quantity::getExponent(TBTK::Quantity::Length())
+	);
+	result *= pow(
+		getScale<TBTK::Quantity::Temperature>(),
+		Quantity::getExponent(TBTK::Quantity::Temperature())
+	);
+	result *= pow(
+		getScale<TBTK::Quantity::Time>(),
+		Quantity::getExponent(TBTK::Quantity::Time())
+	);
+
+	return result;
+}
+
+/*template<typename Quantity>
 double UnitHandler::convertDerivedToBase(
 	double value,
 	typename Quantity::Unit unit
@@ -555,7 +753,7 @@ double UnitHandler::convertNaturalToDerived(
 	);
 
 	return result;
-}
+}*/
 
 template<typename Quantity>
 double UnitHandler::getConversionFactor(){

@@ -33,6 +33,7 @@ void initializeBaseQuantities();
 template<typename Units, typename Exponents>
 class Base : public Quantity<Units, Exponents>{
 public:
+	using IsBaseQuantity = std::true_type;
 	using Quantity<Units, Exponents>::Quantity;
 };
 

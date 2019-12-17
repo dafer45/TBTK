@@ -118,11 +118,6 @@ typename Quantity<Units, Exponents>::Unit Quantity<Units, Exponents>::getUnit(
 template<typename Units, typename Exponents>
 double Quantity<Units, Exponents>::getConversionFactor(Unit unit){
 	try{
-		Streams::out << "1\t" << &conversionTable << "\n";
-		for(auto entry : conversionTable.conversionFactors)
-			Streams::out << static_cast<int>(entry.first) << "\t" << entry.second << "\n";
-		Streams::out << "2\n";
-
 		return conversionTable.conversionFactors.at(unit);
 	}
 	catch(const std::out_of_range &e){

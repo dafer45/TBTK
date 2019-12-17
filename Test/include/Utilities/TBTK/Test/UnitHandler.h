@@ -735,15 +735,15 @@ TEST_F(UnitHandlerTest, convertCountNaturalToArbitrary1){
 	);
 }
 
-//TBTKFeature Utilities.UnitHandler.convertMassDerivedToBase.1 2019-12-11
-TEST_F(UnitHandlerTest, convertMassDerivedToBase1){
+//TBTKFeature Utilities.UnitHandler.convertMassArbitraryToBase.2 2019-12-11
+TEST_F(UnitHandlerTest, convertMassArbitraryToBase2){
 	//[mass] = ug = 10^-9 J s^2/m^2
 	// = 10^-9 GeV_per_J*as_per_s^2/Ao_per_m^2 GeV as^2/Ao^2
 	double GeV_per_J = 1e-9/J_per_eV;
 	double as_per_s = 1e18;
 	double Ao_per_m = 1e10;
 	EXPECT_DOUBLE_EQ(
-		UnitHandler::convertDerivedToBase<Quantity::Mass>(
+		UnitHandler::convertArbitraryToBase<Quantity::Mass>(
 			10,
 			Quantity::Mass::Unit::ug
 		),
@@ -751,8 +751,8 @@ TEST_F(UnitHandlerTest, convertMassDerivedToBase1){
 	);
 }
 
-//TBTKFeature Utilities.UnitHandler.convertMassBaseToDerived.1 2019-12-11
-TEST_F(UnitHandlerTest, convertMassBaseToDerived1){
+//TBTKFeature Utilities.UnitHandler.convertMassBaseToArbitrary.2 2019-12-11
+TEST_F(UnitHandlerTest, convertMassBaseToArbitrary2){
 	//[mass] = GeV as^2/Ao^2 = J_per_GeV*s_per_as^2/m_per_Ao^2 J s^2/m^2
 	// = J_per_GeV*s_per_as^2/m_per_Ao^2 kg
 	// = 10^9 J_per_GeV*s_per_as^2/m_per_Ao^2 ug
@@ -760,7 +760,7 @@ TEST_F(UnitHandlerTest, convertMassBaseToDerived1){
 	double s_per_as = 1e-18;
 	double m_per_Ao = 1e-10;
 	EXPECT_DOUBLE_EQ(
-		UnitHandler::convertBaseToDerived<Quantity::Mass>(
+		UnitHandler::convertBaseToArbitrary<Quantity::Mass>(
 			10,
 			Quantity::Mass::Unit::ug
 		),
@@ -768,8 +768,8 @@ TEST_F(UnitHandlerTest, convertMassBaseToDerived1){
 	);
 }
 
-//TBTKFeature Utilities.UnitHandler.convertMassDerivedToNatural.1 2019-12-11
-TEST_F(UnitHandlerTest, convertMassDerivedToNatural1){
+//TBTKFeature Utilities.UnitHandler.convertMassArbitraryToNatural.2 2019-12-11
+TEST_F(UnitHandlerTest, convertMassArbitraryToNatural2){
 	//[mass] = ug = 10^-9 J s^2/m^2
 	// = 10^-9/(1.3*1.6^2/1.4^2) GeV_per_J*as_per_s^2/Ao_per_m^2
 	// (1.3*1.6^2/1.4^2 GeV as^2/Ao^2)
@@ -777,7 +777,7 @@ TEST_F(UnitHandlerTest, convertMassDerivedToNatural1){
 	double as_per_s = 1e18;
 	double Ao_per_m = 1e10;
 	EXPECT_DOUBLE_EQ(
-		UnitHandler::convertDerivedToNatural<Quantity::Mass>(
+		UnitHandler::convertArbitraryToNatural<Quantity::Mass>(
 			10,
 			Quantity::Mass::Unit::ug
 		),
@@ -785,8 +785,8 @@ TEST_F(UnitHandlerTest, convertMassDerivedToNatural1){
 	);
 }
 
-//TBTKFeature Utilities.UnitHandler.convertMassNaturalToDerived.1 2019-12-11
-TEST_F(UnitHandlerTest, convertMassNaturalToDerived1){
+//TBTKFeature Utilities.UnitHandler.convertMassNaturalToArbitrary.2 2019-12-11
+TEST_F(UnitHandlerTest, convertMassNaturalToArbitrary2){
 	//[mass] = 1.3*1.6^2/1.4^2 GeV as^2/Ao^2
 	// = 1.3*1.6^2/1.4^2 J_per_GeV*s_per_as^2/m_per_Ao^2 J s^2/m^2
 	// = 1.3*1.6^2/1.4^2 J_per_GeV*s_per_as^2/m_per_Ao^2 kg
@@ -795,7 +795,7 @@ TEST_F(UnitHandlerTest, convertMassNaturalToDerived1){
 	double s_per_as = 1e-18;
 	double m_per_Ao = 1e-10;
 	EXPECT_DOUBLE_EQ(
-		UnitHandler::convertNaturalToDerived<Quantity::Mass>(
+		UnitHandler::convertNaturalToArbitrary<Quantity::Mass>(
 			10,
 			Quantity::Mass::Unit::ug
 		),
@@ -805,8 +805,8 @@ TEST_F(UnitHandlerTest, convertMassNaturalToDerived1){
 	);
 }
 
-//TBTKFeature Utilities.UnitHandler.convertMagneticFieldDerivedToBase.1 2019-12-11
-TEST_F(UnitHandlerTest, convertMagneticFieldDerivedToBase1){
+//TBTKFeature Utilities.UnitHandler.convertMagneticFieldArbitraryToBase.2 2019-12-11
+TEST_F(UnitHandlerTest, convertMagneticFieldArbitraryToBase2){
 	//[magnetic field] = uT = 10^-6 Js/Cm^2
 	// = 10^-6 GeV_per_J*as_per_s/(kC_per_C*Ao_per_m^2) GeV as/kC Ao^2
 	double GeV_per_J = 1e-9/J_per_eV;
@@ -814,7 +814,7 @@ TEST_F(UnitHandlerTest, convertMagneticFieldDerivedToBase1){
 	double kC_per_C = 1e-3;
 	double Ao_per_m = 1e10;
 	EXPECT_DOUBLE_EQ(
-		UnitHandler::convertDerivedToBase<Quantity::MagneticField>(
+		UnitHandler::convertArbitraryToBase<Quantity::MagneticField>(
 			10,
 			Quantity::MagneticField::Unit::uT
 		),
@@ -822,8 +822,8 @@ TEST_F(UnitHandlerTest, convertMagneticFieldDerivedToBase1){
 	);
 }
 
-//TBTKFeature Utilities.UnitHandler.convertMagneticFieldBaseToDerived.1 2019-12-11
-TEST_F(UnitHandlerTest, convertMagneticFieldBaseToDerived1){
+//TBTKFeature Utilities.UnitHandler.convertMagneticFieldBaseToArbitrary.2 2019-12-11
+TEST_F(UnitHandlerTest, convertMagneticFieldBaseToArbitrary2){
 	//[magnetic field] = GeV as/kC Ao^2
 	// = J_per_GeV*s_per_as/(C_per_kC*m_per_Ao^2) Js/Cm^2
 	// = 10^6 J_per_GeV*s_per_as/(C_per_kC*m_per_Ao^2) uT
@@ -832,7 +832,7 @@ TEST_F(UnitHandlerTest, convertMagneticFieldBaseToDerived1){
 	double C_per_kC = 1e3;
 	double m_per_Ao = 1e-10;
 	EXPECT_DOUBLE_EQ(
-		UnitHandler::convertBaseToDerived<Quantity::MagneticField>(
+		UnitHandler::convertBaseToArbitrary<Quantity::MagneticField>(
 			10,
 			Quantity::MagneticField::Unit::uT
 		),
@@ -840,8 +840,8 @@ TEST_F(UnitHandlerTest, convertMagneticFieldBaseToDerived1){
 	);
 }
 
-//TBTKFeature Utilities.UnitHandler.convertMagneticFieldDerivedToNatural.1 2019-12-11
-TEST_F(UnitHandlerTest, convertMagneticFieldDerivedToNatural1){
+//TBTKFeature Utilities.UnitHandler.convertMagneticFieldArbitraryToNatural.2 2019-12-11
+TEST_F(UnitHandlerTest, convertMagneticFieldArbitraryToNatural2){
 	//[magnetic field] = uT = 10^-6 Js/Cm^2
 	// = 10^-6/(1.3*1.6/(1.1*1.4^2))
 	// GeV_per_J*as_per_s/(kC_per_C*Ao_per_m^2)
@@ -851,7 +851,7 @@ TEST_F(UnitHandlerTest, convertMagneticFieldDerivedToNatural1){
 	double kC_per_C = 1e-3;
 	double Ao_per_m = 1e10;
 	EXPECT_NEAR(
-		UnitHandler::convertDerivedToNatural<Quantity::MagneticField>(
+		UnitHandler::convertArbitraryToNatural<Quantity::MagneticField>(
 			10,
 			Quantity::MagneticField::Unit::uT
 		),
@@ -864,8 +864,8 @@ TEST_F(UnitHandlerTest, convertMagneticFieldDerivedToNatural1){
 	);
 }
 
-//TBTKFeature Utilities.UnitHandler.convertMagneticFieldNaturalToDerived.1 2019-12-11
-TEST_F(UnitHandlerTest, convertMagneticFieldNaturalToDerived1){
+//TBTKFeature Utilities.UnitHandler.convertMagneticFieldNaturalToArbitrary.2 2019-12-11
+TEST_F(UnitHandlerTest, convertMagneticFieldNaturalToArbitrary2){
 	//[magnetic field] = 1.3*1.6/(1.1*1.4^2) GeV as/kC Ao^2
 	// = 1.3*1.6/(1.1*1.4^2) J_per_GeV*s_per_as/(C_per_kC*m_per_Ao^2) Js/Cm^2
 	// = 10^6*1.3*1.6/(1.1*1.4^2) J_per_GeV*s_per_as/(C_per_kC*m_per_Ao^2) uT
@@ -874,7 +874,7 @@ TEST_F(UnitHandlerTest, convertMagneticFieldNaturalToDerived1){
 	double C_per_kC = 1e3;
 	double m_per_Ao = 1e-10;
 	EXPECT_DOUBLE_EQ(
-		UnitHandler::convertNaturalToDerived<Quantity::MagneticField>(
+		UnitHandler::convertNaturalToArbitrary<Quantity::MagneticField>(
 			10,
 			Quantity::MagneticField::Unit::uT
 		),
@@ -884,13 +884,13 @@ TEST_F(UnitHandlerTest, convertMagneticFieldNaturalToDerived1){
 	);
 }
 
-//TBTKFeature Utilities.UnitHandler.convertVoltageDerivedToBase.1 2019-12-11
-TEST_F(UnitHandlerTest, convertVoltageDerivedToBase1){
+//TBTKFeature Utilities.UnitHandler.convertVoltageArbitraryToBase.2 2019-12-11
+TEST_F(UnitHandlerTest, convertVoltageArbitraryToBase2){
 	//[voltage] = uV = 10^-6 J/C = 10^-6 GeV_per_J/kC_per_C GeV/kC
 	double GeV_per_J = 1e-9/J_per_eV;
 	double kC_per_C = 1e-3;
 	EXPECT_NEAR(
-		UnitHandler::convertDerivedToBase<Quantity::Voltage>(
+		UnitHandler::convertArbitraryToBase<Quantity::Voltage>(
 			10,
 			Quantity::Voltage::Unit::uV
 		),
@@ -899,13 +899,13 @@ TEST_F(UnitHandlerTest, convertVoltageDerivedToBase1){
 	);
 }
 
-//TBTKFeature Utilities.UnitHandler.convertVoltageBaseToDerived.1 2019-12-11
-TEST_F(UnitHandlerTest, convertVoltageBaseToDerived1){
+//TBTKFeature Utilities.UnitHandler.convertVoltageBaseToArbitrary.2 2019-12-11
+TEST_F(UnitHandlerTest, convertVoltageBaseToArbitrary2){
 	//[voltage] = GeV/kC = 10^6 J_per_GeV/C_per_kC uV
 	double J_per_GeV = 1e9*J_per_eV;
 	double C_per_kC = 1e3;
 	EXPECT_DOUBLE_EQ(
-		UnitHandler::convertBaseToDerived<Quantity::Voltage>(
+		UnitHandler::convertBaseToArbitrary<Quantity::Voltage>(
 			10,
 			Quantity::Voltage::Unit::uV
 		),
@@ -920,7 +920,7 @@ TEST_F(UnitHandlerTest, convertVoltageDerivedToNatural1){
 	double GeV_per_J = 1e-9/J_per_eV;
 	double kC_per_C = 1e-3;
 	EXPECT_DOUBLE_EQ(
-		UnitHandler::convertDerivedToNatural<Quantity::Voltage>(
+		UnitHandler::convertArbitraryToNatural<Quantity::Voltage>(
 			10,
 			Quantity::Voltage::Unit::uV
 		),
@@ -934,7 +934,7 @@ TEST_F(UnitHandlerTest, convertVoltageNaturalToDerived1){
 	double J_per_GeV = 1e9*J_per_eV;
 	double C_per_kC = 1e3;
 	EXPECT_DOUBLE_EQ(
-		UnitHandler::convertNaturalToDerived<Quantity::Voltage>(
+		UnitHandler::convertNaturalToArbitrary<Quantity::Voltage>(
 			10,
 			Quantity::Voltage::Unit::uV
 		),
