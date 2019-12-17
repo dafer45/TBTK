@@ -185,9 +185,15 @@ public:
 	 *  @return string representation of the currently set unit for the
 	 *  given Quantity. */
 	template<typename Quantity>
-	static typename std::enable_if<Quantity::IsBaseQuantity::value, std::string>::type getUnitString();
+	static typename std::enable_if<
+		Quantity::IsBaseQuantity::value,
+		std::string
+	>::type getUnitString();
 	template<typename Quantity>
-	static typename std::enable_if<!Quantity::IsBaseQuantity::value, std::string>::type getUnitString();
+	static typename std::enable_if<
+		!Quantity::IsBaseQuantity::value,
+		std::string
+	>::type getUnitString();
 
 	/** Get the unit string for the given constant.
 	 *
@@ -232,7 +238,10 @@ private:
 	/** Function for indexing into the tuple units using compile time
 	 *  Quatity names. */
 	template<typename Quantity>
-	constexpr static typename std::enable_if<Quantity::IsBaseQuantity::value, typename Quantity::Unit&>::type getUnit();
+	constexpr static typename std::enable_if<
+		Quantity::IsBaseQuantity::value,
+		typename Quantity::Unit&
+	>::type getUnit();
 
 	/** Set scale. */
 	template<typename Quantity>
@@ -616,19 +625,26 @@ inline constexpr double& UnitHandler::getScale<Quantity::Time>(){
 }
 
 template<typename Quantity>
-inline typename std::enable_if<Quantity::IsBaseQuantity::value, std::string>::type UnitHandler::getUnitString(){
+inline typename std::enable_if<
+	Quantity::IsBaseQuantity::value,
+	std::string
+>::type UnitHandler::getUnitString(){
 	return Quantity::getUnitString(getUnit<Quantity>());
 }
 
 template<typename Quantity>
-inline typename std::enable_if<!Quantity::IsBaseQuantity::value, std::string>::type UnitHandler::getUnitString(){
+inline typename std::enable_if<
+	!Quantity::IsBaseQuantity::value,
+	std::string
+>::type UnitHandler::getUnitString(){
 	std::string result;
 
 	int chargeExponent = static_cast<int>(Quantity::Exponent::Charge);
 	int countExponent = static_cast<int>(Quantity::Exponent::Count);
 	int energyExponent = static_cast<int>(Quantity::Exponent::Energy);
 	int lengthExponent = static_cast<int>(Quantity::Exponent::Length);
-	int temperatureExponent = static_cast<int>(Quantity::Exponent::Temperature);
+	int temperatureExponent
+		= static_cast<int>(Quantity::Exponent::Temperature);
 	int timeExponent = static_cast<int>(Quantity::Exponent::Time);
 
 	if(chargeExponent != 0){

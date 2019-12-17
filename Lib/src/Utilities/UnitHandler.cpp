@@ -113,7 +113,8 @@ string UnitHandler::getUnitString(const std::string &constantName){
 		int countExponent = constant.getExponent<Quantity::Count>();
 		int energyExponent = constant.getExponent<Quantity::Energy>();
 		int lengthExponent = constant.getExponent<Quantity::Length>();
-		int temperatureExponent = constant.getExponent<Quantity::Temperature>();
+		int temperatureExponent
+			= constant.getExponent<Quantity::Temperature>();
 		int timeExponent = constant.getExponent<Quantity::Time>();
 		if(chargeExponent != 0){
 			result += getUnitString<Quantity::Charge>();
@@ -178,7 +179,8 @@ void UnitHandler::updateConstants(){
 		int countExponent = constant.getExponent<Quantity::Count>();
 		int energyExponent = constant.getExponent<Quantity::Energy>();
 		int lengthExponent = constant.getExponent<Quantity::Length>();
-		int temperatureExponent = constant.getExponent<Quantity::Temperature>();
+		int temperatureExponent
+			= constant.getExponent<Quantity::Temperature>();
 		int timeExponent = constant.getExponent<Quantity::Time>();
 		for(int n = 0; n < chargeExponent; n++)
 			value *= getConversionFactor<Quantity::Charge>();
@@ -219,7 +221,8 @@ void UnitHandler::initialize(){
 	constantsDefaultUnits["m_e"] = Quantity::Constants::get("m_e");
 	constantsDefaultUnits["m_p"] = Quantity::Constants::get("m_p");
 	constantsDefaultUnits["mu_0"] = Quantity::Constants::get("mu_0");
-	constantsDefaultUnits["epsilon_0"] = Quantity::Constants::get("epsilon_0");
+	constantsDefaultUnits["epsilon_0"]
+		= Quantity::Constants::get("epsilon_0");
 	constantsDefaultUnits["hbar"] = Quantity::Constants::get("hbar");
 	constantsDefaultUnits["mu_B"] = Quantity::Constants::get("mu_B");
 	constantsDefaultUnits["mu_N"] = Quantity::Constants::get("mu_N");
