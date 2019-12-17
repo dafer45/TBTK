@@ -313,7 +313,7 @@ private:
 	static void setScale(double scale);
 
 	/** Function for indexing into the tuple scales using compile time
-	 *  Quatity names. */
+	 *  Quantity names. */
 	template<typename Quantity>
 	constexpr static double& getScale();
 
