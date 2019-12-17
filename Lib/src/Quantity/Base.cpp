@@ -81,8 +81,6 @@ Quantity<
 >::conversionTable({});
 
 void initializeBaseQuantities(){
-//	constexpr double J_per_eV = 1.602176634e-19;
-//	constexpr double pcs_per_mol = 6.02214076e23;
 	double J_per_eV = Constants::e.second;
 	double pcs_per_mol = Constants::N_A.second;
 	Charge::conversionTable = Charge::ConversionTable({
