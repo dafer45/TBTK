@@ -95,7 +95,7 @@ void TimeEvolver::run(){
 		}
 	}
 
-	double hbar = UnitHandler::getConstantBaseUnits("hbar");
+	double hbar = UnitHandler::getConstantInBaseUnits("hbar");
 	complex<double> *dPsi = new complex<double>[basisSize*basisSize];
 	for(int t = 0; t < numTimeSteps; t++){
 		currentTimeStep = t;

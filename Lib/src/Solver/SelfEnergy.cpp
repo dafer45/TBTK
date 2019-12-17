@@ -457,7 +457,7 @@ void SelfEnergy::selfEnergyMainLoop(
 		= UnitHandler::convertNaturalToBase<Quantity::Temperature>(
 			getModel().getTemperature()
 		);
-	double kT = UnitHandler::getConstantBaseUnits("k_B")*temperature;
+	double kT = UnitHandler::getConstantInBaseUnits("k_B")*temperature;
 
 	for(unsigned int n = 0; n < selfEnergyEnergies.size(); n++)
 		result.at(n) *= kT/mesh.size();

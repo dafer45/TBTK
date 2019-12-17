@@ -63,7 +63,7 @@ inline double Functions::fermiDiracDistribution(
 	if(t != 0.){
 		return 1./(
 			exp(
-				e/(UnitHandler::getConstantBaseUnits("k_B")*t)
+				e/(UnitHandler::getConstantInBaseUnits("k_B")*t)
 			) + 1.
 		);
 	}
@@ -92,7 +92,7 @@ inline double Functions::boseEinsteinDistribution(
 	if(t != 0.){
 		return 1./(
 			exp(
-				e/(UnitHandler::getConstantBaseUnits("k_B")*t)
+				e/(UnitHandler::getConstantInBaseUnits("k_B")*t)
 			) - 1.
 		);
 	}

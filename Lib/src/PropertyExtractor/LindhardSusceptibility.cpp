@@ -378,7 +378,7 @@ Property::Susceptibility LindhardSusceptibility::calculateSusceptibility(
 		)/2 + 1;
 
 		double temperature = solver->getModel().getTemperature();
-		double kT = UnitHandler::getConstantNaturalUnits("k_B")*temperature;
+		double kT = UnitHandler::getConstantInNaturalUnits("k_B")*temperature;
 		double fundamentalMatsubaraEnergy = M_PI*kT;
 
 		energies.clear();

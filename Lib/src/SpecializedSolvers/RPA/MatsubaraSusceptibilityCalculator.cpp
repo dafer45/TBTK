@@ -210,7 +210,7 @@ vector<complex<double>> MatsubaraSusceptibilityCalculator::calculateSusceptibili
 		= UnitHandler::convertNaturalToBase<Quantity::Temperature>(
 			momentumSpaceContext.getModel().getTemperature()
 		);
-	double kT = UnitHandler::getConstantBaseUnits("k_B")*temperature;
+	double kT = UnitHandler::getConstantInBaseUnits("k_B")*temperature;
 	for(unsigned int n = 0; n < energies.size(); n++)
 		result[n] /= mesh.size()*kT;
 

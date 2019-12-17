@@ -52,7 +52,7 @@ TEST_F(UnitHandlerTest, getHbarBase1){
 	double J_per_GeV = J_per_eV*1e9;
 	double s_per_as = 1e-18;
 	EXPECT_NEAR(
-		UnitHandler::getConstantBaseUnits("hbar")*J_per_GeV*s_per_as,
+		UnitHandler::getConstantInBaseUnits("hbar")*J_per_GeV*s_per_as,
 		hbar,
 		hbar*EPSILON
 	);
@@ -64,7 +64,7 @@ TEST_F(UnitHandlerTest, getHbarNatural1){
 	double J_per_GeV = J_per_eV*1e9;
 	double s_per_as = 1e-18;
 	EXPECT_NEAR(
-		UnitHandler::getConstantNaturalUnits("hbar")*(1.3*J_per_GeV*1.6*s_per_as),
+		UnitHandler::getConstantInNaturalUnits("hbar")*(1.3*J_per_GeV*1.6*s_per_as),
 		hbar,
 		hbar*EPSILON
 	);
@@ -76,7 +76,7 @@ TEST_F(UnitHandlerTest, getK_BBase1){
 	double J_per_GeV = J_per_eV*1e9;
 	double K_per_kK = 1e3;
 	EXPECT_NEAR(
-		UnitHandler::getConstantBaseUnits("k_B")*J_per_GeV/K_per_kK,
+		UnitHandler::getConstantInBaseUnits("k_B")*J_per_GeV/K_per_kK,
 		k_B,
 		k_B*EPSILON
 	);
@@ -88,7 +88,7 @@ TEST_F(UnitHandlerTest, getK_BNatural1){
 	double J_per_GeV = J_per_eV*1e9;
 	double K_per_kK = 1e3;
 	EXPECT_NEAR(
-		UnitHandler::getConstantNaturalUnits("k_B")*(1.3*J_per_GeV)/(
+		UnitHandler::getConstantInNaturalUnits("k_B")*(1.3*J_per_GeV)/(
 			1.5*K_per_kK
 		),
 		k_B,
@@ -101,7 +101,7 @@ TEST_F(UnitHandlerTest, getEBase1){
 	//[k_B] = kC = C_per_kC C
 	double C_per_kC = 1e3;
 	EXPECT_NEAR(
-		UnitHandler::getConstantBaseUnits("e")*C_per_kC,
+		UnitHandler::getConstantInBaseUnits("e")*C_per_kC,
 		e,
 		e*EPSILON
 	);
@@ -112,7 +112,7 @@ TEST_F(UnitHandlerTest, getENatural1){
 	//[k_B] = 1.1 kC = 1. 1C_per_kC C
 	double C_per_kC = 1e3;
 	EXPECT_NEAR(
-		UnitHandler::getConstantNaturalUnits("e")*1.1*C_per_kC,
+		UnitHandler::getConstantInNaturalUnits("e")*1.1*C_per_kC,
 		e,
 		e*EPSILON
 	);
@@ -124,7 +124,7 @@ TEST_F(UnitHandlerTest, getCBase1){
 	double m_per_Ao = 1e-10;
 	double s_per_as = 1e-18;
 	EXPECT_NEAR(
-		UnitHandler::getConstantBaseUnits("c")*m_per_Ao/s_per_as,
+		UnitHandler::getConstantInBaseUnits("c")*m_per_Ao/s_per_as,
 		c,
 		c*EPSILON
 	);
@@ -136,7 +136,7 @@ TEST_F(UnitHandlerTest, getCNatural1){
 	double m_per_Ao = 1e-10;
 	double s_per_as = 1e-18;
 	EXPECT_NEAR(
-		UnitHandler::getConstantNaturalUnits("c")*(1.4*m_per_Ao)/(
+		UnitHandler::getConstantInNaturalUnits("c")*(1.4*m_per_Ao)/(
 			1.6*s_per_as
 		),
 		c,
@@ -147,14 +147,14 @@ TEST_F(UnitHandlerTest, getCNatural1){
 //TBTKFeature Utilities.UnitHandler.getN_ABase.1 2019-12-09
 TEST_F(UnitHandlerTest, getN_ABase1){
 	//[N_A] = pcs/mol
-	EXPECT_NEAR(UnitHandler::getConstantBaseUnits("N_A"), N_A, N_A*EPSILON);
+	EXPECT_NEAR(UnitHandler::getConstantInBaseUnits("N_A"), N_A, N_A*EPSILON);
 }
 
 //TBTKFeature Utilities.UnitHandler.getN_ANatural.1 2019-12-09
 TEST_F(UnitHandlerTest, getN_ANatural1){
 	//[N_A] = 1.2 pcs/mol
 	EXPECT_NEAR(
-		UnitHandler::getConstantNaturalUnits("N_A")*1.2,
+		UnitHandler::getConstantInNaturalUnits("N_A")*1.2,
 		N_A,
 		N_A*EPSILON
 	);
@@ -167,7 +167,7 @@ TEST_F(UnitHandlerTest, getM_eBase1){
 	double s_per_as = 1e-18;
 	double m_per_Ao = 1e-10;
 	EXPECT_NEAR(
-		UnitHandler::getConstantBaseUnits(
+		UnitHandler::getConstantInBaseUnits(
 			"m_e"
 		)*J_per_GeV*s_per_as*s_per_as/(m_per_Ao*m_per_Ao),
 		m_e,
@@ -183,7 +183,7 @@ TEST_F(UnitHandlerTest, getM_eNatural1){
 	double s_per_as = 1e-18;
 	double m_per_Ao = 1e-10;
 	EXPECT_NEAR(
-		UnitHandler::getConstantNaturalUnits("m_e")*(1.3*J_per_GeV)*(
+		UnitHandler::getConstantInNaturalUnits("m_e")*(1.3*J_per_GeV)*(
 			1.6*s_per_as
 		)*(1.6*s_per_as)/((1.4*m_per_Ao)*(1.4*m_per_Ao)),
 		m_e,
@@ -198,7 +198,7 @@ TEST_F(UnitHandlerTest, getM_pBase1){
 	double s_per_as = 1e-18;
 	double m_per_Ao = 1e-10;
 	EXPECT_NEAR(
-		UnitHandler::getConstantBaseUnits(
+		UnitHandler::getConstantInBaseUnits(
 			"m_p"
 		)*J_per_GeV*s_per_as*s_per_as/(m_per_Ao*m_per_Ao),
 		m_p,
@@ -214,7 +214,7 @@ TEST_F(UnitHandlerTest, getM_pNatural1){
 	double s_per_as = 1e-18;
 	double m_per_Ao = 1e-10;
 	EXPECT_NEAR(
-		UnitHandler::getConstantNaturalUnits("m_p")*(1.3*J_per_GeV)*(
+		UnitHandler::getConstantInNaturalUnits("m_p")*(1.3*J_per_GeV)*(
 			1.6*s_per_as
 		)*(1.6*s_per_as)/((1.4*m_per_Ao)*(1.4*m_per_Ao)),
 		m_p,
@@ -229,7 +229,7 @@ TEST_F(UnitHandlerTest, getMu_BBase1){
 	double m_per_Ao = 1e-10;
 	double s_per_as = 1e-18;
 	EXPECT_NEAR(
-		UnitHandler::getConstantBaseUnits(
+		UnitHandler::getConstantInBaseUnits(
 			"mu_B"
 		)*C_per_kC*m_per_Ao*m_per_Ao/s_per_as,
 		mu_B,
@@ -244,7 +244,7 @@ TEST_F(UnitHandlerTest, getMu_BNatural1){
 	double m_per_Ao = 1e-10;
 	double s_per_as = 1e-18;
 	EXPECT_NEAR(
-		UnitHandler::getConstantNaturalUnits("mu_B")*(1.1*C_per_kC)*(
+		UnitHandler::getConstantInNaturalUnits("mu_B")*(1.1*C_per_kC)*(
 			1.4*m_per_Ao
 		)*(1.4*m_per_Ao)/(1.6*s_per_as),
 		mu_B,
@@ -259,7 +259,7 @@ TEST_F(UnitHandlerTest, getMu_nBase1){
 	double m_per_Ao = 1e-10;
 	double s_per_as = 1e-18;
 	EXPECT_NEAR(
-		UnitHandler::getConstantBaseUnits(
+		UnitHandler::getConstantInBaseUnits(
 			"mu_N"
 		)*C_per_kC*m_per_Ao*m_per_Ao/s_per_as,
 		mu_n,
@@ -274,7 +274,7 @@ TEST_F(UnitHandlerTest, getMu_nNatural1){
 	double m_per_Ao = 1e-10;
 	double s_per_as = 1e-18;
 	EXPECT_NEAR(
-		UnitHandler::getConstantNaturalUnits("mu_N")*(1.1*C_per_kC)*(
+		UnitHandler::getConstantInNaturalUnits("mu_N")*(1.1*C_per_kC)*(
 			1.4*m_per_Ao)*(1.4*m_per_Ao)/(1.6*s_per_as),
 		mu_n,
 		mu_n*EPSILON
@@ -290,7 +290,7 @@ TEST_F(UnitHandlerTest, getMu_0Base1){
 	double m_per_Ao = 1e-10;
 	double C_per_kC = 1e3;
 	EXPECT_NEAR(
-		UnitHandler::getConstantBaseUnits(
+		UnitHandler::getConstantInBaseUnits(
 			"mu_0"
 		)*J_per_GeV*s_per_as*s_per_as/(m_per_Ao*C_per_kC*C_per_kC),
 		mu_0,
@@ -308,7 +308,7 @@ TEST_F(UnitHandlerTest, getMu_0Natural1){
 	double m_per_Ao = 1e-10;
 	double C_per_kC = 1e3;
 	EXPECT_NEAR(
-		UnitHandler::getConstantNaturalUnits("mu_0")*(1.3*J_per_GeV)*(
+		UnitHandler::getConstantInNaturalUnits("mu_0")*(1.3*J_per_GeV)*(
 			1.6*s_per_as
 		)*(1.6*s_per_as)/((1.4*m_per_Ao)*(
 			1.1*C_per_kC)*(1.1*C_per_kC)
@@ -325,7 +325,7 @@ TEST_F(UnitHandlerTest, getEpsilon_0Base1){
 	double J_per_GeV = J_per_eV*1e9;
 	double m_per_Ao = 1e-10;
 	EXPECT_NEAR(
-		UnitHandler::getConstantBaseUnits(
+		UnitHandler::getConstantInBaseUnits(
 			"epsilon_0"
 		)*C_per_kC*C_per_kC/(J_per_GeV*m_per_Ao),
 		epsilon_0,
@@ -341,7 +341,7 @@ TEST_F(UnitHandlerTest, getEpsilon_0Natural1){
 	double J_per_GeV = J_per_eV*1e9;
 	double m_per_Ao = 1e-10;
 	EXPECT_NEAR(
-		UnitHandler::getConstantNaturalUnits("epsilon_0")*(
+		UnitHandler::getConstantInNaturalUnits("epsilon_0")*(
 			1.1*C_per_kC
 		)*(1.1*C_per_kC)/((1.3*J_per_GeV)*(1.4*m_per_Ao)),
 		epsilon_0,
@@ -354,7 +354,7 @@ TEST_F(UnitHandlerTest, getA_0Base1){
 	//[a_0] = Ao = m_per_Ao m
 	double m_per_Ao = 1e-10;
 	EXPECT_NEAR(
-		UnitHandler::getConstantBaseUnits("a_0")*m_per_Ao,
+		UnitHandler::getConstantInBaseUnits("a_0")*m_per_Ao,
 		a_0,
 		a_0*EPSILON
 	);
@@ -365,7 +365,7 @@ TEST_F(UnitHandlerTest, getA_0Natural1){
 	//[a_0] = 1.4 Ao = 1.4 m_per_Ao m
 	double m_per_Ao = 1e-10;
 	EXPECT_NEAR(
-		UnitHandler::getConstantNaturalUnits("a_0")*1.4*m_per_Ao,
+		UnitHandler::getConstantInNaturalUnits("a_0")*1.4*m_per_Ao,
 		a_0,
 		a_0*EPSILON
 	);

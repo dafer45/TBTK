@@ -93,7 +93,7 @@ void HartreeFock::calculateTotalEnergy(){
 		)*braState.getMatrixElement(
 			ketState,
 			KineticOperator(
-				UnitHandler::getConstantNaturalUnits("m_e")
+				UnitHandler::getConstantInNaturalUnits("m_e")
 			)
 		);
 
@@ -142,8 +142,8 @@ void HartreeFock::calculateTotalEnergy(){
 	}
 
 	//Intra-nuclear potential energy.
-	double e = UnitHandler::getConstantNaturalUnits("e");
-	double epsilon_0 = UnitHandler::getConstantNaturalUnits("epsilon_0");
+	double e = UnitHandler::getConstantInNaturalUnits("e");
+	double epsilon_0 = UnitHandler::getConstantInNaturalUnits("epsilon_0");
 	double prefactor = pow(e, 2)/(4*M_PI*epsilon_0);
 	for(unsigned int m = 0; m < nuclearCenters.size(); m++){
 		for(unsigned int n = 0; n < nuclearCenters.size(); n++){
@@ -194,7 +194,7 @@ complex<double> HartreeFock::Callbacks::getHoppingAmplitude(
 	//Kinetic term.
 	amplitude += braState.getMatrixElement(
 		ketState,
-		KineticOperator(UnitHandler::getConstantNaturalUnits("m_e"))
+		KineticOperator(UnitHandler::getConstantInNaturalUnits("m_e"))
 	);
 
 	//Hartree-Fock potential.

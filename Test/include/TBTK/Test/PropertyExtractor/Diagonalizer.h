@@ -240,7 +240,7 @@ TEST(Diagonalizer, calculateGreensFunction){
 	//Verify that the Matsubara Green's function is calculated correctly.
 	const double TEMPERATURE = 1;
 	const double KT
-		= UnitHandler::getConstantNaturalUnits("k_B")*TEMPERATURE;
+		= UnitHandler::getConstantInNaturalUnits("k_B")*TEMPERATURE;
 	const double FUNDAMENTAL_MATSUBARA_ENERGY = M_PI*KT;
 	model.setTemperature(TEMPERATURE);
 	const int LOWER_MATSUBARA_ENERGY_INDEX = -11;

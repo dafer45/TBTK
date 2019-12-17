@@ -60,12 +60,12 @@ tuple<
 tuple<double, double, double, double, double, double> UnitHandler::scales
 	= make_tuple(1, 1, 1, 1, 1, 1);
 
-double UnitHandler::getConstantBaseUnits(const std::string &name){
+double UnitHandler::getConstantInBaseUnits(const std::string &name){
 	return constantsBaseUnits.at(name);
 }
 
-double UnitHandler::getConstantNaturalUnits(const std::string &name){
-	double value = getConstantBaseUnits(name);
+double UnitHandler::getConstantInNaturalUnits(const std::string &name){
+	double value = getConstantInBaseUnits(name);
 
 	Quantity::Constant constant = constantsDefaultUnits.at(name);
 	int chargeExponent = constant.getExponent<Quantity::Charge>();

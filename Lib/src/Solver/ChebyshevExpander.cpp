@@ -874,8 +874,8 @@ complex<double> ChebyshevExpander::getMonolopoulosABCDamping(
 		return 0.;
 	}
 	else if(distanceToBoundary < boundarySize){
-		double hbar = UnitHandler::getConstantNaturalUnits("hbar");
-		double m = UnitHandler::getConstantNaturalUnits("m_e");
+		double hbar = UnitHandler::getConstantInNaturalUnits("hbar");
+		double m = UnitHandler::getConstantInNaturalUnits("m_e");
 		double y = c*(boundarySize - distanceToBoundary)/boundarySize;
 		double f = 4./pow(c-y, 2) + 4./pow(c+y, 2) - 8./pow(c, 2);
 		gamma = asinh(e*(pow(hbar, 2)/(2*m))*pow(2*M_PI/boundarySize, 2)*(f/scaleFactor));

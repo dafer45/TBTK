@@ -79,10 +79,10 @@ namespace TBTK{
 class UnitHandler{
 public:
 	/** Get physical constant in base units. */
-	static double getConstantBaseUnits(const std::string &name);
+	static double getConstantInBaseUnits(const std::string &name);
 
 	/** Get physical constant in natural units. */
-	static double getConstantNaturalUnits(const std::string &name);
+	static double getConstantInNaturalUnits(const std::string &name);
 
 	/** Set scales. */
 	static void setScales(const std::vector<std::string> &scales);

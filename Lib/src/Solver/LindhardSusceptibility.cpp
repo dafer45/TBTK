@@ -102,7 +102,7 @@ inline complex<double> LindhardSusceptibility::getPoleTimesTwoFermi(
 		double t = UnitHandler::convertNaturalToBase<
 			Quantity::Temperature
 		>(temperature);
-		double kT = UnitHandler::getConstantBaseUnits("k_B")*t;
+		double kT = UnitHandler::getConstantInBaseUnits("k_B")*t;
 
 		//Ratio between derivatives of numerator and denominator
 //		return -1./(kT*pow(exp(e/(2.*kT)) + exp(-e/(2.*kT)), 2));

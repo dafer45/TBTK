@@ -80,7 +80,7 @@ complex<double> Sto3g::getOverlap(const AbstractState &ket) const{
 	//The implemented equations assumes that distances are given in terms
 	//of the Bohr radius. Therefore distances have to be converted to this
 	//unit.
-	double bohrRadius = UnitHandler::getConstantNaturalUnits("a_0");
+	double bohrRadius = UnitHandler::getConstantInNaturalUnits("a_0");
 
 	//Calculate the distance between the two states.
 	Vector3d braR = Vector3d(getCoordinates())/bohrRadius;
@@ -172,7 +172,7 @@ complex<double> Sto3g::getKineticTerm(
 	//The implemented equations assumes that distances are given in terms
 	//of the Bohr radius. Therefore distances have to be converted to this
 	//unit.
-	double bohrRadius = UnitHandler::getConstantNaturalUnits("a_0");
+	double bohrRadius = UnitHandler::getConstantInNaturalUnits("a_0");
 
 	Vector3d braR = Vector3d(getCoordinates())/bohrRadius;
 	Vector3d ketR = Vector3d(ket.getCoordinates())/bohrRadius;
@@ -205,7 +205,7 @@ complex<double> Sto3g::getKineticTerm(
 
 	//Multiply by the prefactor hbra^2/m. (1/2 is included in the
 	//expression above)
-	double hbar = UnitHandler::getConstantNaturalUnits("hbar");
+	double hbar = UnitHandler::getConstantInNaturalUnits("hbar");
 	kineticTerm *= pow(hbar, 2)/o.getMass();
 
 	//Divide by the Bohr radius squared to account for the scale factor
@@ -227,7 +227,7 @@ complex<double> Sto3g::getNuclearPotentialTerm(
 	//The implemented equations assumes that distances are given in terms
 	//of the Bohr radius. Therefore distances have to be converted to this
 	//unit.
-	double bohrRadius = UnitHandler::getConstantNaturalUnits("a_0");
+	double bohrRadius = UnitHandler::getConstantInNaturalUnits("a_0");
 
 	Vector3d braR = Vector3d(getCoordinates())/bohrRadius;
 	Vector3d ketR = Vector3d(ket.getCoordinates())/bohrRadius;
@@ -260,8 +260,8 @@ complex<double> Sto3g::getNuclearPotentialTerm(
 	}
 
 	//Multiply by the prefactor e^2/(4\pi\epsilon_0).
-	double e = UnitHandler::getConstantNaturalUnits("e");
-	double epsilon_0 = UnitHandler::getConstantNaturalUnits("epsilon_0");
+	double e = UnitHandler::getConstantInNaturalUnits("e");
+	double epsilon_0 = UnitHandler::getConstantInNaturalUnits("epsilon_0");
 	nuclearPotentialTerm *= pow(e, 2)/(4*M_PI*epsilon_0);
 
 	//Divide by the Bohr radius to account for the scale factor comming
@@ -296,13 +296,13 @@ complex<double> Sto3g::getHartreeFockPotentialTerm(
 		);
 
 	//Multiply by the prefactor e^2/(4\pi\epsilon_0).
-	double e = UnitHandler::getConstantNaturalUnits("e");
-	double epsilon_0 = UnitHandler::getConstantNaturalUnits("epsilon_0");
+	double e = UnitHandler::getConstantInNaturalUnits("e");
+	double epsilon_0 = UnitHandler::getConstantInNaturalUnits("epsilon_0");
 	hartreeFockPotentialTerm *= pow(e, 2)/(4*M_PI*epsilon_0);
 
 	//Divide by the Bohr radius to account for the scale factor comming
 	//from 1/r.
-	double bohrRadius = UnitHandler::getConstantNaturalUnits("a_0");
+	double bohrRadius = UnitHandler::getConstantInNaturalUnits("a_0");
 	hartreeFockPotentialTerm /= bohrRadius;
 
 	return hartreeFockPotentialTerm;
@@ -350,7 +350,7 @@ complex<double> Sto3g::getSingleHartreeFockTerm(
 	//The implemented equations assumes that distances are given in terms
 	//of the Bohr radius. Therefore distances have to be converted to this
 	//unit.
-	double bohrRadius = UnitHandler::getConstantNaturalUnits("a_0");
+	double bohrRadius = UnitHandler::getConstantInNaturalUnits("a_0");
 
 	Vector3d state0R = Vector3d(state0.getCoordinates())/bohrRadius;
 	Vector3d state1R = Vector3d(state1.getCoordinates())/bohrRadius;
