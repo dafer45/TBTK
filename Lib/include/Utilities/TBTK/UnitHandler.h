@@ -24,6 +24,7 @@
 #define COM_DAFER45_TBTK_UNIT_HANDLER
 
 #include "TBTK/TBTK.h"
+#include "TBTK/Quantity/Constant.h"
 #include "TBTK/Quantity/Derived.h"
 #include "TBTK/TBTKMacros.h"
 
@@ -273,7 +274,7 @@ private:
 	/** Physical constants in the default units K, s, m, eV, C, pcs. */
 	static std::map<
 		std::string,
-		std::pair<double, std::vector<std::pair<std::string, int>>>
+		Quantity::Constant
 	> constantsDefaultUnits;
 
 	/** Physical constans in the current base units. */

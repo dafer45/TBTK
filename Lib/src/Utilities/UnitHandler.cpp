@@ -18,6 +18,7 @@
  *  @author Kristofer Björnson
  */
 
+#include "TBTK/Quantity/Constants.h"
 #include "TBTK/Streams.h"
 #include "TBTK/TBTKMacros.h"
 #include "TBTK/UnitHandler.h"
@@ -36,7 +37,7 @@ namespace TBTK{
 
 map<
 	string,
-	pair<double, vector<pair<string, int>>>
+	Quantity::Constant
 > UnitHandler::constantsDefaultUnits;
 map<string, double> UnitHandler::constantsBaseUnits;
 
@@ -66,9 +67,40 @@ double UnitHandler::getConstantBaseUnits(const std::string &name){
 double UnitHandler::getConstantNaturalUnits(const std::string &name){
 	double value = getConstantBaseUnits(name);
 
-	const vector<pair<string, int>> &units
-		= constantsDefaultUnits.at(name).second;
-	for(unsigned int n = 0; n < units.size(); n++){
+	Quantity::Constant constant = constantsDefaultUnits.at(name);
+	int chargeExponent = constant.getExponent<Quantity::Charge>();
+	int countExponent = constant.getExponent<Quantity::Count>();
+	int energyExponent = constant.getExponent<Quantity::Energy>();
+	int lengthExponent = constant.getExponent<Quantity::Length>();
+	int temperatureExponent = constant.getExponent<Quantity::Temperature>();
+	int timeExponent = constant.getExponent<Quantity::Time>();
+	for(int n = 0; n < chargeExponent; n++)
+		value /= getScale<Quantity::Charge>();
+	for(int n = 0; n < -chargeExponent; n++)
+		value *= getScale<Quantity::Charge>();
+	for(int n = 0; n < countExponent; n++)
+		value /= getScale<Quantity::Count>();
+	for(int n = 0; n < -countExponent; n++)
+		value *= getScale<Quantity::Count>();
+	for(int n = 0; n < energyExponent; n++)
+		value /= getScale<Quantity::Energy>();
+	for(int n = 0; n < -energyExponent; n++)
+		value *= getScale<Quantity::Energy>();
+	for(int n = 0; n < lengthExponent; n++)
+		value /= getScale<Quantity::Length>();
+	for(int n = 0; n < -lengthExponent; n++)
+		value *= getScale<Quantity::Length>();
+	for(int n = 0; n < temperatureExponent; n++)
+		value /= getScale<Quantity::Temperature>();
+	for(int n = 0; n < -temperatureExponent; n++)
+		value *= getScale<Quantity::Temperature>();
+	for(int n = 0; n < timeExponent; n++)
+		value /= getScale<Quantity::Time>();
+	for(int n = 0; n < -timeExponent; n++)
+		value *= getScale<Quantity::Time>();
+//	const vector<pair<string, int>> &units
+//		= constantsDefaultUnits.at(name).second;
+/*	for(unsigned int n = 0; n < units.size(); n++){
 		const string &unit = units[n].first;
 		int exponent = units[n].second;
 		for(int c = 0; c < exponent; c++){
@@ -127,7 +159,7 @@ double UnitHandler::getConstantNaturalUnits(const std::string &name){
 				);
 			}
 		}
-	}
+	}*/
 
 	return value;
 }
@@ -230,10 +262,50 @@ string UnitHandler::getA_0UnitString(){
 
 void UnitHandler::updateConstants(){
 	constantsBaseUnits.clear();
-	for(auto constant : constantsDefaultUnits){
-		const string &name = constant.first;
-		double value = constant.second.first;
-		const vector<pair<string, int>> &units
+	for(auto c : constantsDefaultUnits){
+		const string &name = c.first;
+		Quantity::Constant constant = c.second;
+		double value = constant;
+		int chargeExponent = constant.getExponent<Quantity::Charge>();
+		int countExponent = constant.getExponent<Quantity::Count>();
+		int energyExponent = constant.getExponent<Quantity::Energy>();
+		int lengthExponent = constant.getExponent<Quantity::Length>();
+		int temperatureExponent = constant.getExponent<Quantity::Temperature>();
+		int timeExponent = constant.getExponent<Quantity::Time>();
+/*		Streams::out << c.first << "\t"
+			<< value << "\t"
+			<< chargeExponent << "\t"
+			<< countExponent << "\t"
+			<< energyExponent << "\t"
+			<< lengthExponent << "\t"
+			<< temperatureExponent << "\t"
+			<< timeExponent << "\n";*/
+		for(int n = 0; n < chargeExponent; n++)
+			value *= getConversionFactor<Quantity::Charge>();
+		for(int n = 0; n < -chargeExponent; n++)
+			value /= getConversionFactor<Quantity::Charge>();
+		for(int n = 0; n < countExponent; n++)
+			value *= getConversionFactor<Quantity::Count>();
+		for(int n = 0; n < -countExponent; n++)
+			value /= getConversionFactor<Quantity::Count>();
+		for(int n = 0; n < energyExponent; n++)
+			value *= getConversionFactor<Quantity::Energy>();
+		for(int n = 0; n < -energyExponent; n++)
+			value /= getConversionFactor<Quantity::Energy>();
+		for(int n = 0; n < lengthExponent; n++)
+			value *= getConversionFactor<Quantity::Length>();
+		for(int n = 0; n < -lengthExponent; n++)
+			value /= getConversionFactor<Quantity::Length>();
+		for(int n = 0; n < temperatureExponent; n++)
+			value *= getConversionFactor<Quantity::Temperature>();
+		for(int n = 0; n < -temperatureExponent; n++)
+			value /= getConversionFactor<Quantity::Temperature>();
+		for(int n = 0; n < timeExponent; n++)
+			value *= getConversionFactor<Quantity::Time>();
+		for(int n = 0; n < -timeExponent; n++)
+			value /= getConversionFactor<Quantity::Time>();
+
+/*		const vector<pair<string, int>> &units
 			= constant.second.second;
 		for(unsigned int n = 0; n < units.size(); n++){
 			const string &unit = units[n].first;
@@ -318,13 +390,26 @@ void UnitHandler::updateConstants(){
 					);
 				}
 			}
-		}
+		}*/
 		constantsBaseUnits[name] = value;
 	}
 }
 
 void UnitHandler::initialize(){
-	constantsDefaultUnits = {
+	constantsDefaultUnits["e"] = Quantity::Constants::get("e");
+	constantsDefaultUnits["c"] = Quantity::Constants::get("c");
+	constantsDefaultUnits["N_A"] = Quantity::Constants::get("N_A");
+	constantsDefaultUnits["a_0"] = Quantity::Constants::get("a_0");
+	constantsDefaultUnits["h"] = Quantity::Constants::get("h");
+	constantsDefaultUnits["k_B"] = Quantity::Constants::get("k_B");
+	constantsDefaultUnits["m_e"] = Quantity::Constants::get("m_e");
+	constantsDefaultUnits["m_p"] = Quantity::Constants::get("m_p");
+	constantsDefaultUnits["mu_0"] = Quantity::Constants::get("mu_0");
+	constantsDefaultUnits["epsilon_0"] = Quantity::Constants::get("epsilon_0");
+	constantsDefaultUnits["hbar"] = Quantity::Constants::get("hbar");
+	constantsDefaultUnits["mu_B"] = Quantity::Constants::get("mu_B");
+	constantsDefaultUnits["mu_N"] = Quantity::Constants::get("mu_N");
+/*	constantsDefaultUnits = {
 		{"e",		{1.602176634e-19,			{{"C", 1}}}},
 		{"c",		{2.99792458e8,				{{"m", 1}, {"s", -1}}}},
 		{"N_A",		{6.02214076e23,				{{"pcs", 1}}}},
@@ -349,7 +434,7 @@ void UnitHandler::initialize(){
 	double m_e = constantsDefaultUnits.at("m_e").first;
 	double m_p = constantsDefaultUnits.at("m_p").first;
 	constantsDefaultUnits["mu_B"] =		{e*hbar/(2*m_e),		{{"C", 1}, {"m", 2}, {"s", -1}}};
-	constantsDefaultUnits["mu_N"] =		{e*hbar/(2*m_p),		{{"C", 1}, {"m", 2}, {"s", -1}}};
+	constantsDefaultUnits["mu_N"] =		{e*hbar/(2*m_p),		{{"C", 1}, {"m", 2}, {"s", -1}}};*/
 
 	updateConstants();
 }

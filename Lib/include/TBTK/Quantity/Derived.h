@@ -198,7 +198,7 @@ enum class PlanckExponent {
 	Energy = 1,
 	Length = 0,
 	Temperature = 0,
-	Time = -1
+	Time = 1
 };
 typedef Derived<PlanckUnit, PlanckExponent> Planck;
 
@@ -208,7 +208,7 @@ enum class BoltzmannExponent{
 	Charge = 0,
 	Count = 0,
 	Energy = 1,
-	Length = 1,
+	Length = 0,
 	Temperature = -1,
 	Time = 0
 };
