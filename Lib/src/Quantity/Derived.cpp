@@ -117,11 +117,11 @@ Quantity<
 >::conversionTable({});
 
 void initializeDerivedQuantities(){
-	double kg_per_baseMass = Constants::e.second;
+	double kg_per_baseMass = Constants::constants["e"];
 	double u_per_baseMass = 2.99792458e8*2.99792458e8/9.31494095e8;
-	double T_per_baseMagneticField = Constants::e.second;
+	double T_per_baseMagneticField = Constants::constants["e"];
 	double G_per_baseMagneticField = T_per_baseMagneticField*1e4;
-	double V_per_baseVoltage = Constants::e.second;
+	double V_per_baseVoltage = Constants::constants["e"];
 
 	Mass::conversionTable = Mass::ConversionTable({
 		{Mass::Unit::kg,	{"kg",	kg_per_baseMass}},

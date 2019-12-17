@@ -81,8 +81,8 @@ Quantity<
 >::conversionTable({});
 
 void initializeBaseQuantities(){
-	double J_per_eV = Constants::e.second;
-	double pcs_per_mol = Constants::N_A.second;
+	double J_per_eV = Constants::constants["e"];
+	double pcs_per_mol = Constants::constants["N_A"];
 	Charge::conversionTable = Charge::ConversionTable({
 		{Charge::Unit::kC,	{"kC",	1e-3}},
 		{Charge::Unit::C,	{"C",	1}},
