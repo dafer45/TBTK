@@ -264,12 +264,12 @@ string Model::toString() const{
 		<< UnitHandler::convertNaturalToBase<Quantity::Temperature>(
 			temperature
 		) << UnitHandler::getUnitString<Quantity::Temperature>()
-		<< " (" << temperature << " b.u.)\n";
+		<< " (" << temperature << " n.u.)\n";
 	stream << "\tChemical potential: "
 		<< UnitHandler::convertNaturalToBase<Quantity::Energy>(
 			chemicalPotential
 		) << UnitHandler::getUnitString<Quantity::Energy>() << " ("
-		<< chemicalPotential << " b.u.)\n";
+		<< chemicalPotential << " n.u.)\n";
 	switch(singleParticleContext.getStatistics()){
 	case Statistics::FermiDirac:
 		stream << "\tStatistics: Fermi-Dirac\n";
