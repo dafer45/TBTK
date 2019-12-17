@@ -179,7 +179,9 @@ public:
 	);
 	/** @} */
 
-	/** Get the unit string for the given Quantity in the currently set
+	/** @name Get unit string for quantity
+	 *  @{
+	 *  Get the unit string for the given Quantity in the currently set
 	 *  base units.
 	 *
 	 *  @return string representation of the currently set unit for the
@@ -194,6 +196,7 @@ public:
 		!Quantity::IsBaseQuantity::value,
 		std::string
 	>::type getUnitString();
+	/** @} */
 
 	/** Get the unit string for the given constant.
 	 *
