@@ -32,9 +32,7 @@
 namespace TBTK{
 namespace Quantity{
 
-void initializeBaseQuantities();
-
-/** @brief Base class for @link Quantity Quantitits@endlink.
+/** @brief Base class for @link Quantity Quantitis@endlink.
  *
  *  A Quantity is a Real number that carries compile time information about
  *  units. While it is possible to create Quantity object, their main purpose
@@ -44,7 +42,8 @@ void initializeBaseQuantities();
  *  *Note: The Quantity template is not meant to be instatiated directly.
  *  Instead the Base and Derived classes that inherit from Quantity are meant
  *  to be instatiated. However, the syntax for instantiating such Quantities is
- *  the same as instantiating a Quantity directly.*
+ *  the same as instantiating a Quantity directly. The instantiation procedure
+ *  is therefore outlined here.*
  *
  *  ## Units and exponents
  *  To instantiate a Quantity, we first need to define a set of units for the
@@ -52,11 +51,12 @@ void initializeBaseQuantities();
  *  ```cpp
  *    enum class VoltageUnit {V, mV};
  *  ```
- *  We also need to define the exponents for the base units Charge, Count,
- *  Energy, Length, Temperature, and Time. In the case of voltage, this is V =
- *  J/C, or Energy/Charge.
+ *  We also need to define the exponents for the base units Angle, Charge,
+ *  Count, Energy, Length, Temperature, and Time. In the case of voltage, this
+ *  is V = J/C, or Energy/Charge.
  *  ```cpp
  *    enum class Voltage{
+ *      Angle = 0,
  *      Charge = -1,
  *      Count = 0,
  *      Energy = 1,
@@ -82,8 +82,8 @@ void initializeBaseQuantities();
  *  We also need to define a table that can be used to convert between string
  *  and enum class representations of the units. The conversion table should
  *  also contain a conversion factor that specifies the amount in the given
- *  unit that corresponds to a single unit of the Quantity in the base default
- *  base units. The default base units are C, pcs, eV, m, K, and s.
+ *  unit that corresponds to a single unit of the Quantity in the default base
+ *  units. The default base units are rad, C, pcs, eV, m, K, and s.
  *
  *  The unit for voltage is V = J/C = 1.602176634e-19. We can therefore define
  *  the conversion table as follows.
@@ -100,19 +100,21 @@ void initializeBaseQuantities();
  *    });
  *  ```
  *    <b>Notes:
- *      - This definition has to be made in a .cpp-file rather than a .h-file
- *      to avoid multiple definitions.
- *      - Even though actual Quantities should by instantiated from the Base
- *      and Derived classes, this definition should always contain the keyword
- *      Quantity. Note the difference with how the typedef is done, where
- *      Quantity is to be replaced by Base or Derived.
- *      - The initialization performed above is only possible if the numerical
- *      constants are hard coded and can be used when defining custom Derived
- *      units. However, the Base and Derived Quantities defined in TBTK uses
- *      constants from Quantity::Constants rather than specifying numerical
- *      values directly. These values are not available until Constants have
- *      been initialized. The conversion table definition and initialization is
- *      therefore separated into two parts as shown below.
+ *      - This definition has to be made in a .cpp-file to avoid multiple
+ *      definitions.
+ *      - Even though Quantities should be instantiated from the Base and
+ *      Derived classes, this definition should always contain the keyword
+ *      Quantity. Note the difference with the typedef above, where Quantity is
+ *      to be replaced by Base or Derived.
+ *      - It is only possible to initialize the conversion table as is done
+ *      above if the numerical constants are specified as numbers or using
+ *      variables defined in the same translation unit (source file). It can be
+ *      used when defining custom Derived units. However, the Base and Derived
+ *      Quantities defined in TBTK uses constants from Constants instead of
+ *      specifying numerical values directly. These values are not available
+ *      until Constants have been initialized. The conversion table definition
+ *      and initialization is therefore separated into two parts as described
+ *      below.
  *
  *    </b>
  *
@@ -204,8 +206,6 @@ protected:
 			}
 		}
 	} conversionTable;
-
-	friend void initializeBaseQuantities();
 };
 
 template<typename Units, typename Exponents>
