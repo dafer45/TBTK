@@ -53,6 +53,7 @@ public:
 	/** Get the conversion factor for converting from the reference unit to
 	 *  the given units. */
 	static double getConversionFactor(
+		Angle::Unit angleUnit,
 		Charge::Unit chargeUnit,
 		Count::Unit countUnit,
 		Energy::Unit energyUnit,
@@ -60,6 +61,9 @@ public:
 		Temperature::Unit temperatureUnit,
 		Time::Unit timeUnit
 	);
+
+	/** Get the exponent for the given Quantity. */
+	static int getExponent(Angle);
 
 	/** Get the exponent for the given Quantity. */
 	static int getExponent(Charge);
@@ -84,6 +88,7 @@ private:
 
 template<typename Units, typename Exponents>
 double Derived<Units, Exponents>::getConversionFactor(
+	Angle::Unit angleUnit,
 	Charge::Unit chargeUnit,
 	Count::Unit countUnit,
 	Energy::Unit energyUnit,
@@ -92,6 +97,9 @@ double Derived<Units, Exponents>::getConversionFactor(
 	Time::Unit timeUnit
 ){
 	return pow(
+		Angle::getConversionFactor(angleUnit),
+		static_cast<int>(Exponent::Angle)
+	)*pow(
 		Charge::getConversionFactor(chargeUnit),
 		static_cast<int>(Exponent::Charge)
 	)*pow(
@@ -110,6 +118,11 @@ double Derived<Units, Exponents>::getConversionFactor(
 		Time::getConversionFactor(timeUnit),
 		static_cast<int>(Exponent::Time)
 	);
+}
+
+template<typename Units, typename Exponents>
+int Derived<Units, Exponents>::getExponent(Angle){
+	return static_cast<int>(Exponents::Angle);
 }
 
 template<typename Units, typename Exponents>
@@ -145,6 +158,7 @@ int Derived<Units, Exponents>::getExponent(Time){
 //Mass
 enum class MassUnit {kg, g, mg, ug, ng, pg, fg, ag, u};
 enum class MassExponent {
+	Angle = 0,
 	Charge = 0,
 	Count = 0,
 	Energy = 1,
@@ -157,6 +171,7 @@ typedef Derived<MassUnit, MassExponent> Mass;
 //MagneticField
 enum class MagneticFieldUnit {MT, kT, T, mT, uT, nT, GG, MG, kG, G, mG, uG};
 enum class MagneticFieldExponent {
+	Angle = 0,
 	Charge = -1,
 	Count = 0,
 	Energy = 1,
@@ -169,6 +184,7 @@ typedef Derived<MagneticFieldUnit, MagneticFieldExponent> MagneticField;
 //Voltage
 enum class VoltageUnit {GV, MV, kV, V, mV, uV, nV};
 enum class VoltageExponent {
+	Angle = 0,
 	Charge = -1,
 	Count = 0,
 	Energy = 1,
@@ -181,6 +197,7 @@ typedef Derived<VoltageUnit, VoltageExponent> Voltage;
 //Velocity
 enum class VelocityUnit {};
 enum class VelocityExponent {
+	Angle = 0,
 	Charge = 0,
 	Count = 0,
 	Energy = 0,
@@ -193,6 +210,7 @@ typedef Derived<VelocityUnit, VelocityExponent> Velocity;
 //Planck
 enum class PlanckUnit {};
 enum class PlanckExponent {
+	Angle = 0,
 	Charge = 0,
 	Count = 0,
 	Energy = 1,
@@ -205,6 +223,7 @@ typedef Derived<PlanckUnit, PlanckExponent> Planck;
 //Boltzmann
 enum class BoltzmannUnit {};
 enum class BoltzmannExponent{
+	Angle = 0,
 	Charge = 0,
 	Count = 0,
 	Energy = 1,
@@ -217,6 +236,7 @@ typedef Derived<BoltzmannUnit, BoltzmannExponent> Boltzmann;
 //Permeability
 enum class PermeabilityUnit {};
 enum class PermeabilityExponent {
+	Angle = 0,
 	Charge = -2,
 	Count = 0,
 	Energy = 1,
@@ -229,6 +249,7 @@ typedef Derived<PermeabilityUnit, PermeabilityExponent> Permeability;
 //Permittivity
 enum class PermittivityUnit {};
 enum class PermittivityExponent{
+	Angle = 0,
 	Charge = 2,
 	Count = 0,
 	Energy = -1,
@@ -241,6 +262,7 @@ typedef Derived<PermittivityUnit, PermittivityExponent> Permittivity;
 //Magneton
 enum class MagnetonUnit {};
 enum class MagnetonExponent{
+	Angle = 0,
 	Charge = 1,
 	Count = 0,
 	Energy = 0,

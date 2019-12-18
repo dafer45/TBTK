@@ -36,6 +36,7 @@ protected:
 
 	void SetUp() override{
 		UnitHandler::setScales({
+			"1.0 rad",
 			"1.1 kC",
 			"1.2 pcs",
 			"1.3 GeV",

@@ -37,9 +37,28 @@ public:
 	using Quantity<Units, Exponents>::Quantity;
 };
 
+//Angle
+enum class AngleUnit{rad, degree};
+enum class AngleExponent{
+	Angle = 1,
+	Charge = 0,
+	Count = 0,
+	Energy = 0,
+	Length = 0,
+	Temperature = 0,
+	Time = 0
+};
+/** @relates Base
+ *  The Quantity::Angle is a Quantity::Base with the following predefined base
+ *  units
+ *  - Quantity::Angle::Unit::degree
+ *  - Quantity::Charge::Unit::rad */
+typedef Base<AngleUnit, AngleExponent> Angle;
+
 //Charge
 enum class ChargeUnit{kC, C, mC, uC, nC, pC, fC, aC, Te, Ge, Me, ke, e};
 enum class ChargeExponent{
+	Angle = 0,
 	Charge = 1,
 	Count = 0,
 	Energy = 0,
@@ -68,6 +87,7 @@ typedef Base<ChargeUnit, ChargeExponent> Charge;
 //Count
 enum class CountUnit{pcs, mol};
 enum class CountExponent{
+	Angle = 0,
 	Charge = 0,
 	Count = 1,
 	Energy = 0,
@@ -85,6 +105,7 @@ typedef Base<CountUnit, CountExponent> Count;
 //Energy
 enum class EnergyUnit{GeV, MeV, keV, eV, meV, ueV, J};
 enum class EnergyExponent{
+	Angle = 0,
 	Charge = 0,
 	Count = 0,
 	Energy = 1,
@@ -107,6 +128,7 @@ typedef Base<EnergyUnit, EnergyExponent> Energy;
 //Length
 enum class LengthUnit{m, mm, um, nm, pm, fm, am, Ao};
 enum class LengthExponent{
+	Angle = 0,
 	Charge = 0,
 	Count = 0,
 	Energy = 0,
@@ -130,6 +152,7 @@ typedef Base<LengthUnit, LengthExponent> Length;
 //Temperature
 enum class TemperatureUnit{kK, K, mK, uK, nK};
 enum class TemperatureExponent{
+	Angle = 0,
 	Charge = 0,
 	Count = 0,
 	Energy = 0,
@@ -150,6 +173,7 @@ typedef Base<TemperatureUnit, TemperatureExponent> Temperature;
 //Time
 enum class TimeUnit{s, ms, us, ns, ps, fs, as};
 enum class TimeExponent{
+	Angle = 0,
 	Charge = 0,
 	Count = 0,
 	Energy = 0,

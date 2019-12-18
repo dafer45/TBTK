@@ -45,16 +45,16 @@ namespace TBTK{
  *
  *  # Base units and natural units
  *  TBTK does not enforce the use of a specific set of units. Instead it
- *  defines the six base quantities charge, count, energy, length, temperature,
- *  and time. The UnitHandler allows for six corresponding base and natural
- *  units to be set for these quantities.
+ *  defines the seven base quantities angle, charge, count, energy, length,
+ *  temperature, and time. The UnitHandler allows for seven corresponding base
+ *  and natural units to be set for these quantities.
  *
- *  For example, in the following example the base units are set to Colomb (C),
- *  pieces (pcs), milli electron Volt (meV), meter (m), Kelvin (K), and
- *  femtosecond (fs).
+ *  For example, in the following example the base units are set to radians
+ *  (rad), Colomb (C), pieces (pcs), milli electron Volt (meV), meter (m),
+ *  Kelvin (K), and femtosecond (fs).
  *  ```cpp
  *    UnitHandler::setScales(
- *      {"1.5 C", "5 pcs", "1 meV", "0.3048 m", "1 K", "15 fs"}
+ *      {"1 rad", "1.5 C", "5 pcs", "1 meV", "0.3048 m", "1 K", "15 fs"}
  *    );
  *  ```
  *  The natural units are similar to the base units, but also take into account
@@ -63,30 +63,31 @@ namespace TBTK{
  *
  *  In TBTK, all numbers are interpreted in terms of natural units. This means
  *  that TBTK assumes that any number passed to one of its functions is given
- *  in natural units. The default natural units are 1 C, 1 pcs, 1 eV, 1 m, 1 K,
- *  and 1 s. If another set of natural units is preferred, the call to
- *  *UnitHandler::setScales()* should occur at the start of the program, just
- *  after TBTK has been initialized.
+ *  in natural units. The default natural units are 1 rad, 1 C, 1 pcs, 1 eV,
+ *  1 m, 1 K, and 1 s. If another set of natural units is preferred, the call
+ *  to *UnitHandler::setScales()* should occur at the start of the program,
+ *  just after TBTK has been initialized.
  *
  *  # Base units
- *  TBTK defines a number of base units. Each can be refered to using its
- *  string representation as above, or using an enum class variable. The later
- *  is used in functions that are potentially performance critical. For
- *  exampel, it is possible to use either Joule (J) or (eV) as base unit. The
- *  string representations for these are "J" and "eV", while the corresponding
- *  enum class representations are Quantity::Energy::Unit::J and
- *  Quantity::Energy::Unit::eV. For a complete list of base units, see the
- *  documentation for Quantity::Base.
+ *  TBTK defines a number of base units for the six @link Quantity::Base Base
+ *  Qauntities@endlink. Each can be refered to using its string representation
+ *  as above, or using an enum class variable. The later is used in functions
+ *  that are potentially performance critical. For exampel, it is possible to
+ *  use either Joule (J) or (eV) as base unit for the @link Quantity::Base Base
+ *  Quantity@endlink Energy. The string representations for these are "J" and
+ *  "eV", while the corresponding enum class representations are
+ *  Quantity::Energy::Unit::J and Quantity::Energy::Unit::eV. For a complete
+ *  list of base units, see the documentation for Quantity::Base.
  *
  *  # Derived units
  *  In addition to the base units, TBTK also defines derived units for
- *  quantities such as mass and voltage. The units are called derived since
- *  they can be defined in terms of base units. For example, kg ~ eV m^-2 s^2
- *  and V = eV/e. Some derived units also have string and enum class
- *  representations, such as Quantity::Mass::Unit::kg and "kg" for mass or
- *  Quantity::Voltage::Unit::V and "V" for voltage. A full list of drived
- *  quantities and their corresponding units, see the documentation for
- *  Quantity::Derived.
+ *  @link Quantity::Derived Derived Quantities@endlink such as mass and
+ *  voltage. The units are called derived since they can be defined in terms of
+ *  base units. For example, kg ~ eV m^-2 s^2 and V = eV/e. Some derived units
+ *  also have string and enum class representations, such as
+ *  Quantity::Mass::Unit::kg and "kg" for mass or Quantity::Voltage::Unit::V
+ *  and "V" for voltage. A full list of derived quantities and their
+ *  corresponding units, see the documentation for Quantity::Derived.
  *
  *  # Requesting constants
  *  It is possible to request the value of constants in the currently set base
@@ -327,6 +328,7 @@ private:
 
 	/** Currently set units. */
 	static std::tuple<
+		Quantity::Angle::Unit,
 		Quantity::Charge::Unit,
 		Quantity::Count::Unit,
 		Quantity::Energy::Unit,
@@ -337,6 +339,7 @@ private:
 
 	/** Currently set scales. */
 	static std::tuple<
+		double,
 		double,
 		double,
 		double,
@@ -394,6 +397,7 @@ private:
 	/** Get the unit string for the given combination of Base Quantity
 	 *  exponents in the currently set base units. */
 	static std::string getUnitString(
+		int angleExponent,
 		int chargeExponent,
 		int countExponent,
 		int energyExponent,
@@ -428,40 +432,46 @@ void UnitHandler::setUnit(typename Quantity::Unit unit){
 }
 
 template<>
-inline constexpr Quantity::Charge::Unit& UnitHandler::getUnit<Quantity::Charge>(
+inline constexpr Quantity::Angle::Unit& UnitHandler::getUnit<Quantity::Angle>(
 ){
 	return std::get<0>(units);
 }
 
 template<>
-inline constexpr Quantity::Count::Unit& UnitHandler::getUnit<Quantity::Count>(
+inline constexpr Quantity::Charge::Unit& UnitHandler::getUnit<Quantity::Charge>(
 ){
 	return std::get<1>(units);
 }
 
 template<>
-inline constexpr Quantity::Energy::Unit& UnitHandler::getUnit<Quantity::Energy>(
+inline constexpr Quantity::Count::Unit& UnitHandler::getUnit<Quantity::Count>(
 ){
 	return std::get<2>(units);
 }
 
 template<>
-inline constexpr Quantity::Length::Unit& UnitHandler::getUnit<Quantity::Length>(
+inline constexpr Quantity::Energy::Unit& UnitHandler::getUnit<Quantity::Energy>(
 ){
 	return std::get<3>(units);
+}
+
+template<>
+inline constexpr Quantity::Length::Unit& UnitHandler::getUnit<Quantity::Length>(
+){
+	return std::get<4>(units);
 }
 
 template<>
 inline constexpr Quantity::Temperature::Unit& UnitHandler::getUnit<
 	Quantity::Temperature
 >(){
-	return std::get<4>(units);
+	return std::get<5>(units);
 }
 
 template<>
 inline constexpr Quantity::Time::Unit& UnitHandler::getUnit<Quantity::Time>(
 ){
-	return std::get<5>(units);
+	return std::get<6>(units);
 }
 
 template <typename Quantity>
@@ -472,18 +482,19 @@ void UnitHandler::setScale(double scale, typename Quantity::Unit unit){
 
 inline void UnitHandler::setScales(const std::vector<std::string> &scales){
 	TBTKAssert(
-		scales.size() == 6,
+		scales.size() == 7,
 		"UnitHandler::setScales()",
 		"'scales' must contain six strings.",
 		""
 	);
 
-	setScale<Quantity::Charge>(scales[0]);
-	setScale<Quantity::Count>(scales[1]);
-	setScale<Quantity::Energy>(scales[2]);
-	setScale<Quantity::Length>(scales[3]);
-	setScale<Quantity::Temperature>(scales[4]);
-	setScale<Quantity::Time>(scales[5]);
+	setScale<Quantity::Angle>(scales[0]);
+	setScale<Quantity::Charge>(scales[1]);
+	setScale<Quantity::Count>(scales[2]);
+	setScale<Quantity::Energy>(scales[3]);
+	setScale<Quantity::Length>(scales[4]);
+	setScale<Quantity::Temperature>(scales[5]);
+	setScale<Quantity::Time>(scales[6]);
 	updateConstants();
 }
 
@@ -518,6 +529,7 @@ typename std::enable_if<
 	typename Quantity::Unit unit
 ){
 	return value*Quantity::getConversionFactor(
+		getUnit<TBTK::Quantity::Angle>(),
 		getUnit<TBTK::Quantity::Charge>(),
 		getUnit<TBTK::Quantity::Count>(),
 		getUnit<TBTK::Quantity::Energy>(),
@@ -551,6 +563,7 @@ typename std::enable_if<
 	return value*Quantity::getConversionFactor(
 		unit
 	)/Quantity::getConversionFactor(
+		getUnit<TBTK::Quantity::Angle>(),
 		getUnit<TBTK::Quantity::Charge>(),
 		getUnit<TBTK::Quantity::Count>(),
 		getUnit<TBTK::Quantity::Energy>(),
@@ -581,6 +594,7 @@ typename std::enable_if<
 	typename Quantity::Unit unit
 ){
 	double result = value*Quantity::getConversionFactor(
+		getUnit<TBTK::Quantity::Angle>(),
 		getUnit<TBTK::Quantity::Charge>(),
 		getUnit<TBTK::Quantity::Count>(),
 		getUnit<TBTK::Quantity::Energy>(),
@@ -589,6 +603,10 @@ typename std::enable_if<
 		getUnit<TBTK::Quantity::Time>()
 	)/Quantity::getConversionFactor(unit);
 
+	result /= pow(
+		getScale<TBTK::Quantity::Angle>(),
+		Quantity::getExponent(TBTK::Quantity::Angle())
+	);
 	result /= pow(
 		getScale<TBTK::Quantity::Charge>(),
 		Quantity::getExponent(TBTK::Quantity::Charge())
@@ -641,6 +659,7 @@ typename std::enable_if<
 	double result = value*Quantity::getConversionFactor(
 		unit
 	)/Quantity::getConversionFactor(
+		getUnit<TBTK::Quantity::Angle>(),
 		getUnit<TBTK::Quantity::Charge>(),
 		getUnit<TBTK::Quantity::Count>(),
 		getUnit<TBTK::Quantity::Energy>(),
@@ -649,6 +668,10 @@ typename std::enable_if<
 		getUnit<TBTK::Quantity::Time>()
 	);
 
+	result *= pow(
+		getScale<TBTK::Quantity::Angle>(),
+		Quantity::getExponent(TBTK::Quantity::Angle())
+	);
 	result *= pow(
 		getScale<TBTK::Quantity::Charge>(),
 		Quantity::getExponent(TBTK::Quantity::Charge())
@@ -728,6 +751,11 @@ inline void UnitHandler::setScale(const std::string &scale){
 }
 
 template<>
+inline constexpr double& UnitHandler::getScale<Quantity::Angle>(){
+	return std::get<0>(scales);
+}
+
+template<>
 inline constexpr double& UnitHandler::getScale<Quantity::Charge>(){
 	return std::get<0>(scales);
 }
@@ -771,6 +799,7 @@ inline typename std::enable_if<
 	std::string
 >::type UnitHandler::getUnitString(){
 	return getUnitString(
+		static_cast<int>(Quantity::Exponent::Angle),
 		static_cast<int>(Quantity::Exponent::Charge),
 		static_cast<int>(Quantity::Exponent::Count),
 		static_cast<int>(Quantity::Exponent::Energy),
@@ -786,6 +815,7 @@ typename Quantity::Unit UnitHandler::getUnit(const std::string &unit){
 }
 
 inline std::string UnitHandler::getUnitString(
+	int angleExponent,
 	int chargeExponent,
 	int countExponent,
 	int energyExponent,
@@ -794,6 +824,7 @@ inline std::string UnitHandler::getUnitString(
 	int timeExponent
 ){
 	std::string result;
+	result += getUnitString<Quantity::Angle>(angleExponent);
 	result += getUnitString<Quantity::Charge>(chargeExponent);
 	result += getUnitString<Quantity::Count>(countExponent);
 	result += getUnitString<Quantity::Energy>(energyExponent);

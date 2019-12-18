@@ -59,44 +59,50 @@ Constant::Constant(
 	Quantity
 ) :
 	value(value),
-	exponents(6)
+	exponents(7)
 {
-	exponents[0] = static_cast<int>(Quantity::Exponent::Charge);
-	exponents[1] = static_cast<int>(Quantity::Exponent::Count);
-	exponents[2] = static_cast<int>(Quantity::Exponent::Energy);
-	exponents[3] = static_cast<int>(Quantity::Exponent::Length);
-	exponents[4] = static_cast<int>(Quantity::Exponent::Temperature);
-	exponents[5] = static_cast<int>(Quantity::Exponent::Time);
+	exponents[0] = static_cast<int>(Quantity::Exponent::Angle);
+	exponents[1] = static_cast<int>(Quantity::Exponent::Charge);
+	exponents[2] = static_cast<int>(Quantity::Exponent::Count);
+	exponents[3] = static_cast<int>(Quantity::Exponent::Energy);
+	exponents[4] = static_cast<int>(Quantity::Exponent::Length);
+	exponents[5] = static_cast<int>(Quantity::Exponent::Temperature);
+	exponents[6] = static_cast<int>(Quantity::Exponent::Time);
 }
 
 template<>
-inline int Constant::getExponent<Charge>() const{
+inline int Constant::getExponent<Angle>() const{
 	return exponents[0];
 }
 
 template<>
-inline int Constant::getExponent<Count>() const{
+inline int Constant::getExponent<Charge>() const{
 	return exponents[1];
 }
 
 template<>
-inline int Constant::getExponent<Energy>() const{
+inline int Constant::getExponent<Count>() const{
 	return exponents[2];
 }
 
 template<>
-inline int Constant::getExponent<Length>() const{
+inline int Constant::getExponent<Energy>() const{
 	return exponents[3];
 }
 
 template<>
-inline int Constant::getExponent<Temperature>() const{
+inline int Constant::getExponent<Length>() const{
 	return exponents[4];
 }
 
 template<>
-inline int Constant::getExponent<Time>() const{
+inline int Constant::getExponent<Temperature>() const{
 	return exponents[5];
+}
+
+template<>
+inline int Constant::getExponent<Time>() const{
+	return exponents[6];
 }
 
 }; //End of namesapce Quantity

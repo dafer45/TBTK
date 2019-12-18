@@ -2,6 +2,7 @@
 
 #include "TBTK/TBTK.h"
 #include "TBTK/Test/UnitHandler.h"
+#include "TBTK/Streams.h"
 
 int main(int argc, char **argv){
 	TBTK::Initialize();

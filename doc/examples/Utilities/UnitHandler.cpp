@@ -11,9 +11,11 @@ using namespace TBTK;
 int main(){
 	Initialize();
 
-	//Initialize the scales. The base units are set to C, pcs, eV, m, K,
-	//and s. The natural length scale is set to 1 feet.
-	UnitHandler::setScales({"1 C", "1 pcs", "1 eV", "0.3048 m", "1 K", "1 s"});
+	//Initialize the scales. The base units are set to rad, C, pcs, eV, m,
+	//K, and s. The natural length scale is set to 1 feet.
+	UnitHandler::setScales(
+		{"1 rad", "1 C", "1 pcs", "1 eV", "0.3048 m", "1 K", "1 s"}
+	);
 
 	//Print the speed of light in the base units (m/s).
 	Streams::out << "The speed of light is "

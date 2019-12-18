@@ -28,6 +28,15 @@ namespace Quantity{
 
 template<>
 Quantity<
+	AngleUnit,
+	AngleExponent
+>::ConversionTable Quantity<
+	AngleUnit,
+	AngleExponent
+>::conversionTable({});
+
+template<>
+Quantity<
 	ChargeUnit,
 	ChargeExponent
 >::ConversionTable Quantity<
@@ -83,6 +92,12 @@ Quantity<
 void initializeBaseQuantities(){
 	double J_per_eV = Constants::get("e");
 	double pcs_per_mol = Constants::get("N_A");
+
+	Angle::conversionTable = Angle::ConversionTable({
+		{Angle::Unit::rad,	{"rad", 1}},
+		{Angle::Unit::rad,	{"degree", 360/(2*M_PI)}}
+	});
+
 	Charge::conversionTable = Charge::ConversionTable({
 		{Charge::Unit::kC,	{"kC",	1e-3}},
 		{Charge::Unit::C,	{"C",	1}},

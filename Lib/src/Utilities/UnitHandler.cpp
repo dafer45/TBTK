@@ -42,6 +42,7 @@ map<
 map<string, double> UnitHandler::constantsBaseUnits;
 
 tuple<
+	Quantity::Angle::Unit,
 	Quantity::Charge::Unit,
 	Quantity::Count::Unit,
 	Quantity::Energy::Unit,
@@ -49,6 +50,7 @@ tuple<
 	Quantity::Temperature::Unit,
 	Quantity::Time::Unit
 > UnitHandler::units = make_tuple(
+	Quantity::Angle::Unit::rad,
 	Quantity::Charge::Unit::C,
 	Quantity::Count::Unit::pcs,
 	Quantity::Energy::Unit::eV,
@@ -57,8 +59,15 @@ tuple<
 	Quantity::Time::Unit::s
 );
 
-tuple<double, double, double, double, double, double> UnitHandler::scales
-	= make_tuple(1, 1, 1, 1, 1, 1);
+tuple<
+	double,
+	double,
+	double,
+	double,
+	double,
+	double,
+	double
+> UnitHandler::scales = make_tuple(1, 1, 1, 1, 1, 1, 1);
 
 double UnitHandler::getConstantInBaseUnits(const std::string &name){
 	return constantsBaseUnits.at(name);
@@ -68,12 +77,17 @@ double UnitHandler::getConstantInNaturalUnits(const std::string &name){
 	double value = getConstantInBaseUnits(name);
 
 	Quantity::Constant constant = constantsDefaultUnits.at(name);
+	int angleExponent = constant.getExponent<Quantity::Angle>();
 	int chargeExponent = constant.getExponent<Quantity::Charge>();
 	int countExponent = constant.getExponent<Quantity::Count>();
 	int energyExponent = constant.getExponent<Quantity::Energy>();
 	int lengthExponent = constant.getExponent<Quantity::Length>();
 	int temperatureExponent = constant.getExponent<Quantity::Temperature>();
 	int timeExponent = constant.getExponent<Quantity::Time>();
+	for(int n = 0; n < angleExponent; n++)
+		value /= getScale<Quantity::Angle>();
+	for(int n = 0; n < -angleExponent; n++)
+		value *= getScale<Quantity::Angle>();
 	for(int n = 0; n < chargeExponent; n++)
 		value /= getScale<Quantity::Charge>();
 	for(int n = 0; n < -chargeExponent; n++)
@@ -107,6 +121,7 @@ string UnitHandler::getUnitString(const std::string &constantName){
 		Quantity::Constant constant
 			= constantsDefaultUnits.at(constantName);
 		return getUnitString(
+			constant.getExponent<Quantity::Angle>(),
 			constant.getExponent<Quantity::Charge>(),
 			constant.getExponent<Quantity::Count>(),
 			constant.getExponent<Quantity::Energy>(),
@@ -130,6 +145,7 @@ void UnitHandler::updateConstants(){
 		const string &name = c.first;
 		Quantity::Constant constant = c.second;
 		double value = constant;
+		int angleExponent = constant.getExponent<Quantity::Angle>();
 		int chargeExponent = constant.getExponent<Quantity::Charge>();
 		int countExponent = constant.getExponent<Quantity::Count>();
 		int energyExponent = constant.getExponent<Quantity::Energy>();
@@ -137,6 +153,10 @@ void UnitHandler::updateConstants(){
 		int temperatureExponent
 			= constant.getExponent<Quantity::Temperature>();
 		int timeExponent = constant.getExponent<Quantity::Time>();
+		for(int n = 0; n < angleExponent; n++)
+			value *= getConversionFactor<Quantity::Angle>();
+		for(int n = 0; n < -angleExponent; n++)
+			value /= getConversionFactor<Quantity::Angle>();
 		for(int n = 0; n < chargeExponent; n++)
 			value *= getConversionFactor<Quantity::Charge>();
 		for(int n = 0; n < -chargeExponent; n++)
