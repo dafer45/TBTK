@@ -15,7 +15,7 @@
 
 /** @package TBTKcalc
  *  @file Derived.h
- *  @brief Derived.
+ *  @brief Derived Quantity.
  *
  *  @author Kristofer Björnson
  */
@@ -37,10 +37,41 @@ namespace Quantity{
 /** Initialize the Derived Quantitites. */
 void initializeDerivedQuantities();
 
-/** @brief Derived.
+/** @brief Derived Quantity.
  *
- *  Derived provides the means for defining derived Quantities.
- */
+ *  The Derived Quantity is a Quantity with the compile time directive
+ *  IsBaseQuantity set to std::true_false to differentiate it from Base
+ *  Quantities. The Derived extends the Quantity with functions for getting the
+ *  conversion factor and exponents. For more information, see Quantity and the
+ *  individual typedefs below.
+ *
+ *  # Get conversion factor
+ *  Since the Derived unit is defined in terms of Base units, the conversion
+ *  factor from the reference unit is dependent on all of the Base units. The
+ *  Derived Quantity therefore provides an additional function for retreiving
+ *  the conversion factor. For example, the conversion factor between the
+ *  default base unit for Mass and the units rad, C, pcs, eV, nm, K, and s can
+ *  be obtained using.
+ *  ```cpp
+ *    double conversionFactor = Quantity::Mass::getConversionFactor(
+ *      Quantity::Angle::Unit::rad,
+ *      Quantity::Charge::Unit::C,
+ *      Quantity::Count::Unit::pcs,
+ *      Quantity::Energy::Unit::eV,
+ *      Quantity::Length::Unit::nm,
+ *      Quantity::Temperature::Unit::K,
+ *      Quantity::Time::Unit::s
+ *    );
+ *  ```
+ *
+ *  # Get exponent
+ *  The Derived units are product of exponents of the Base unit. For example,
+ *  Velocity (m/s) corresponds to the exponents 1 and -1 for Length and Time.
+ *  The exponents can be obtained as follows.
+ *  ```cpp
+ *    int lengthExponent = Quantity::Velocity::getExponent(Quantity::Length);
+ *    int timeExponent = Quantity::Velocity::getExponent(Quantity::Time);
+ *  ``` */
 template<typename Units, typename Exponents>
 class Derived : public Quantity<Units, Exponents>{
 public:
@@ -51,7 +82,15 @@ public:
 	using Exponent = typename Quantity<Units, Exponents>::Exponent;
 
 	/** Get the conversion factor for converting from the reference unit to
-	 *  the given units. */
+	 *  the given units.
+	 *
+	 *  @param angleUnit The unit of angle to convert to.
+	 *  @param chargeUnit The unit of charge to convert to.
+	 *  @param countUnit The unit of charge to convert to.
+	 *  @param energyUnit The unit of energy to convert to.
+	 *  @param lengthUnit The unit of length to convert to.
+	 *  @param temperatureUnit The unit of temeprature to convert to.
+	 *  @param timeUnit The unit of time to convert to. */
 	static double getConversionFactor(
 		Angle::Unit angleUnit,
 		Charge::Unit chargeUnit,
@@ -166,6 +205,20 @@ enum class MassExponent {
 	Temperature = 0,
 	Time = 2
 };
+/** @relates Derived
+ *  The Quantity::Mass is a Quantity::Quantity with the following predefined
+ *  derived units.
+ *  - Quantity::Mass::Unit::kg
+ *  - Quantity::Mass::Unit::g
+ *  - Quantity::Mass::Unit::mg
+ *  - Quantity::Mass::Unit::ug
+ *  - Quantity::Mass::Unit::ng
+ *  - Quantity::Mass::Unit::pg
+ *  - Quantity::Mass::Unit::fg
+ *  - Quantity::Mass::Unit::ag
+ *  - Quantity::Mass::Unit::u
+ *
+ *  The default base unit signature is eV m^-2 s^2. */
 typedef Derived<MassUnit, MassExponent> Mass;
 
 //MagneticField
@@ -179,6 +232,23 @@ enum class MagneticFieldExponent {
 	Temperature = 0,
 	Time = 1
 };
+/** @relates Derived
+ *  The Quantity::MagneticField is a Quantity::Quantity with the following
+ *  predefined derived units.
+ *  - Quantity::MagneticField::Unit::MT
+ *  - Quantity::MagneticField::Unit::kT
+ *  - Quantity::MagneticField::Unit::T
+ *  - Quantity::MagneticField::Unit::mT
+ *  - Quantity::MagneticField::Unit::uT
+ *  - Quantity::MagneticField::Unit::nT
+ *  - Quantity::MagneticField::Unit::GG
+ *  - Quantity::MagneticField::Unit::MG
+ *  - Quantity::MagneticField::Unit::kG
+ *  - Quantity::MagneticField::Unit::G
+ *  - Quantity::MagneticField::Unit::mG
+ *  - Quantity::MagneticField::Unit::uG
+ *
+ *  The default base unit signature is C^-1 eV m^-2 s. */
 typedef Derived<MagneticFieldUnit, MagneticFieldExponent> MagneticField;
 
 //Voltage
@@ -192,6 +262,18 @@ enum class VoltageExponent {
 	Temperature = 0,
 	Time = 0
 };
+/** @relates Derived
+ *  The Quantity::Voltage is a Quantity::Quantity with the following predefined
+ *  derived units.
+ *  - Quantity::Voltage::Unit::GV
+ *  - Quantity::Voltage::Unit::MV
+ *  - Quantity::Voltage::Unit::kV
+ *  - Quantity::Voltage::Unit::V
+ *  - Quantity::Voltage::Unit::mV
+ *  - Quantity::Voltage::Unit::uV
+ *  - Quantity::Voltage::Unit::nV
+ *
+ *  The default base unit signature is C^-1 eV. */
 typedef Derived<VoltageUnit, VoltageExponent> Voltage;
 
 //Velocity
@@ -205,6 +287,11 @@ enum class VelocityExponent {
 	Temperature = 0,
 	Time = -1
 };
+/** @relates Derived
+ *  The Quantity::Velocity is a Quantity::Quantity without any predefined
+ *  units.
+ *
+ *  The default base unit signature is m s^-1. */
 typedef Derived<VelocityUnit, VelocityExponent> Velocity;
 
 //Planck
@@ -218,6 +305,10 @@ enum class PlanckExponent {
 	Temperature = 0,
 	Time = 1
 };
+/** @relates Derived
+ *  The Quantity::Planck is a Quantity::Quantity without any predefined units.
+ *
+ *  The default base unit signature is eV s. */
 typedef Derived<PlanckUnit, PlanckExponent> Planck;
 
 //Boltzmann
@@ -231,6 +322,11 @@ enum class BoltzmannExponent{
 	Temperature = -1,
 	Time = 0
 };
+/** @relates Derived
+ *  The Quantity::Boltzmann is a Quantity::Quantity without any predefined
+ *  units.
+ *
+ *  The default base unit signature is eV K^-1. */
 typedef Derived<BoltzmannUnit, BoltzmannExponent> Boltzmann;
 
 //Permeability
@@ -244,6 +340,11 @@ enum class PermeabilityExponent {
 	Temperature = 0,
 	Time = 2
 };
+/** @relates Derived
+ *  The Quantity::Permeability is a Quantity::Quantity without any predefined
+ *  units.
+ *
+ *  The default base unit signature is C^-2 eV m^-1 s^2. */
 typedef Derived<PermeabilityUnit, PermeabilityExponent> Permeability;
 
 //Permittivity
@@ -257,6 +358,11 @@ enum class PermittivityExponent{
 	Temperature = 0,
 	Time = 0
 };
+/** @relates Derived
+ *  The Quantity::Permittivity is a Quantity::Quantity without any predefined
+ *  units.
+ *
+ *  The default base unit signature is C^2 eV^-1 m^-1. */
 typedef Derived<PermittivityUnit, PermittivityExponent> Permittivity;
 
 //Magneton
@@ -270,6 +376,11 @@ enum class MagnetonExponent{
 	Temperature = 0,
 	Time = -1
 };
+/** @relates Derived
+ *  The Quantity::Magneton is a Quantity::Quantity without any predefined
+ *  units.
+ *
+ *  The default base unit signature is C m^2 s^-1. */
 typedef Derived<MagnetonUnit, MagnetonExponent> Magneton;
 
 }; //End of namesapce Quantity

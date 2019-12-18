@@ -173,17 +173,32 @@ public:
 	/** Default constructor. */
 	Quantity(){};
 
-	/** Constructs a Quantity from a double. */
+	/** Constructs a Quantity from a double.
+	 *
+	 *  @param value The value fo the Quantity. */
 	Quantity(double value) : Real(value){};
 
-	/** Get unit string for the given Unit. */
+	/** Get unit string for the given Unit.
+	 *
+	 *  @param unit The unit to get the string for.
+	 *
+	 *  @return String representation of the unit. */
 	static std::string getUnitString(Unit unit);
 
-	/** Convert a string to a Unit. */
+	/** Convert a string to a Unit.
+	 *
+	 *  @param unit A unit string.
+	 *
+	 *  @return The unit corresponding to the string. */
 	static Unit getUnit(const std::string &unit);
 
 	/** Get the conversion factor for converting from the reference unit to
-	 *  the given unit. */
+	 *  the given unit.
+	 *
+	 *  @param unit The unit to get the conversion factor for.
+	 *
+	 *  @return The conversion factor for converting from the reference
+	 *  unit to the given unit. */
 	static double getConversionFactor(Unit unit);
 protected:
 	static class ConversionTable{

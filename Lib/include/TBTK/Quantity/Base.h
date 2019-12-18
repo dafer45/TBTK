@@ -31,6 +31,14 @@ namespace Quantity{
 /** Initialize the Base Quantities. */
 void initializeBaseQuantities();
 
+/** @brief Base Quantity.
+ *
+ *  The Base Quantity is a Quantity with the compile time directive
+ *  IsBaseQuantity set to std::true_type to differentiate it from Derived
+ *  Quantities. The Base Quantity is instantiated by the seven Base Quantities
+ *  Angle, Charge, Count, Energy, Length, Temperature, and Time. For more
+ *  information, see Quantity and the individual typedefs below.
+ */
 template<typename Units, typename Exponents>
 class Base : public Quantity<Units, Exponents>{
 public:
@@ -55,7 +63,7 @@ enum class AngleExponent{
  *  The Quantity::Angle is a Quantity::Base with the following predefined base
  *  units
  *  - Quantity::Angle::Unit::degree
- *  - Quantity::Charge::Unit::rad */
+ *  - Quantity::Angle::Unit::rad */
 typedef Base<AngleUnit, AngleExponent> Angle;
 
 //Charge
