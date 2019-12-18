@@ -404,6 +404,14 @@ TEST_F(UnitHandlerTest, convertEnergyNaturalToBase1){
 	);
 }
 
+//TBTKFeature Utilities.UnitHandler.convertAngleNaturalToBase.1 2019-12-10
+TEST_F(UnitHandlerTest, convertAngleNaturalToBase1){
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertNaturalToBase<Quantity::Angle>(10),
+		10*1.1
+	);
+}
+
 //TBTKFeature Utilities.UnitHandler.convertChargeNaturalToBase.1 2019-12-10
 TEST_F(UnitHandlerTest, convertChargeNaturalToBase1){
 	EXPECT_DOUBLE_EQ(
@@ -449,6 +457,14 @@ TEST_F(UnitHandlerTest, convertEnergyBaseToNatural1){
 	EXPECT_DOUBLE_EQ(
 		UnitHandler::convertBaseToNatural<Quantity::Energy>(10),
 		10/1.4
+	);
+}
+
+//TBTKFeature Utilities.UnitHandler.convertAngleBaseToNatural.1 2019-12-10
+TEST_F(UnitHandlerTest, convertAngleBaseToNatural1){
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertBaseToNatural<Quantity::Angle>(10),
+		10/1.1
 	);
 }
 
@@ -510,6 +526,17 @@ TEST_F(UnitHandlerTest, convertEnergyArbitraryToBase1){
 			Quantity::Energy::Unit::J
 		),
 		10*eV_per_J*1e-9
+	);
+}
+
+//TBTKFeature Utilities.UnitHandler.convertAngleArbitraryToBase.1 2019-12-10
+TEST_F(UnitHandlerTest, convertAngleArbitraryToBase1){
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertArbitraryToBase<Quantity::Angle>(
+			10,
+			Quantity::Angle::Unit::degree
+		),
+		10/360.*2*M_PI
 	);
 }
 
@@ -580,6 +607,17 @@ TEST_F(UnitHandlerTest, convertEnergyBaseToArbitrary1){
 	);
 }
 
+//TBTKFeature Utilities.UnitHandler.convertAngleBaseToArbitrary.1 2019-12-10
+TEST_F(UnitHandlerTest, convertAngleBaseToArbitrary1){
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertBaseToArbitrary<Quantity::Angle>(
+			10,
+			Quantity::Angle::Unit::degree
+		),
+		10/(2*M_PI)*360
+	);
+}
+
 //TBTKFeature Utilities.UnitHandler.convertChargeBaseToArbitrary.1 2019-12-10
 TEST_F(UnitHandlerTest, convertChargeBaseToArbitrary1){
 	EXPECT_DOUBLE_EQ(
@@ -647,6 +685,17 @@ TEST_F(UnitHandlerTest, convertEnergyArbitraryToNatural1){
 	);
 }
 
+//TBTKFeature Utilities.UnitHandler.convertAngleArbitraryToNatural.1 2019-12-10
+TEST_F(UnitHandlerTest, convertAngleArbitraryToNatural1){
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertArbitraryToNatural<Quantity::Angle>(
+			10,
+			Quantity::Angle::Unit::degree
+		),
+		10/360.*2*M_PI/1.1
+	);
+}
+
 //TBTKFeature Utilities.UnitHandler.convertChargeArbitraryToNatural.1 2019-12-10
 TEST_F(UnitHandlerTest, convertChargeArbitraryToNatural1){
 	EXPECT_DOUBLE_EQ(
@@ -711,6 +760,17 @@ TEST_F(UnitHandlerTest, convertEnergyNaturalToArbitrary1){
 			Quantity::Energy::Unit::J
 		),
 		1.4*10/(eV_per_J*1e-9)
+	);
+}
+
+//TBTKFeature Utilities.UnitHandler.convertAngleNaturalToArbitrary.1 2019-12-10
+TEST_F(UnitHandlerTest, convertAngleNaturalToArbitrary1){
+	EXPECT_DOUBLE_EQ(
+		UnitHandler::convertNaturalToArbitrary<Quantity::Angle>(
+			10,
+			Quantity::Angle::Unit::degree
+		),
+		1.1*10/(2*M_PI)*360
 	);
 }
 

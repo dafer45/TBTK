@@ -95,7 +95,7 @@ void initializeBaseQuantities(){
 
 	Angle::conversionTable = Angle::ConversionTable({
 		{Angle::Unit::rad,	{"rad", 1}},
-		{Angle::Unit::rad,	{"degree", 360/(2*M_PI)}}
+		{Angle::Unit::degree,	{"degree", 360/(2*M_PI)}}
 	});
 
 	Charge::conversionTable = Charge::ConversionTable({
