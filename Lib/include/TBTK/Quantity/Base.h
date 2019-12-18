@@ -47,6 +47,22 @@ enum class ChargeExponent{
 	Temperature = 0,
 	Time = 0
 };
+/** @relates Base
+ *  The Quantity::Charge is a Quantity::Base with the following predefined base
+ *  units
+ *  - Quantity::Charge::Unit::kC
+ *  - Quantity::Charge::Unit::C
+ *  - Quantity::Charge::Unit::mC
+ *  - Quantity::Charge::Unit::uC
+ *  - Quantity::Charge::Unit::nC
+ *  - Quantity::Charge::Unit::pC
+ *  - Quantity::Charge::Unit::fC
+ *  - Quantity::Charge::Unit::aC
+ *  - Quantity::Charge::Unit::Te
+ *  - Quantity::Charge::Unit::Ge
+ *  - Quantity::Charge::Unit::Me
+ *  - Quantity::Charge::Unit::ke
+ *  - Quantity::Charge::Unit::e */
 typedef Base<ChargeUnit, ChargeExponent> Charge;
 
 //Count
@@ -59,6 +75,11 @@ enum class CountExponent{
 	Temperature = 0,
 	Time = 0
 };
+/** @relates Base
+ *  The Quantity::Count is a Quantity::Base with the following predefined base
+ *  units
+ *  - Quantity::Count::Unit::pcs
+ *  - Quantity::Count::Unit::mol */
 typedef Base<CountUnit, CountExponent> Count;
 
 //Energy
@@ -71,6 +92,16 @@ enum class EnergyExponent{
 	Temperature = 0,
 	Time = 0
 };
+/** @relates Base
+ *  The Quantity::Energy is a Quantity::Base with the following predefined base
+ *  units
+ *  - Quantity::Energy::Unit::GeV
+ *  - Quantity::Energy::Unit::MeV
+ *  - Quantity::Energy::Unit::keV
+ *  - Quantity::Energy::Unit::eV
+ *  - Quantity::Energy::Unit::meV
+ *  - Quantity::Energy::Unit::ueV
+ *  - Quantity::Energy::Unit::J */
 typedef Base<EnergyUnit, EnergyExponent> Energy;
 
 //Length
@@ -83,6 +114,17 @@ enum class LengthExponent{
 	Temperature = 0,
 	Time = 0
 };
+/** @relates Base
+ *  The Quantity::Length is a Quantity::Base with the following predefined base
+ *  units
+ *  - Quantity::Length::Unit::m
+ *  - Quantity::Length::Unit::mm
+ *  - Quantity::Length::Unit::um
+ *  - Quantity::Length::Unit::nm
+ *  - Quantity::Length::Unit::pm
+ *  - Quantity::Length::Unit::fm
+ *  - Quantity::Length::Unit::am
+ *  - Quantity::Length::Unit::Ao */
 typedef Base<LengthUnit, LengthExponent> Length;
 
 //Temperature
@@ -95,6 +137,14 @@ enum class TemperatureExponent{
 	Temperature = 1,
 	Time = 0
 };
+/** @relates Base
+ *  The Quantity::Temperature is a Quantity::Base with the following predefined
+ *  base units
+ *  - Quantity::Temperature::Unit::kK
+ *  - Quantity::Temperature::Unit::K
+ *  - Quantity::Temperature::Unit::mK
+ *  - Quantity::Temperature::Unit::uK
+ *  - Quantity::Temperature::Unit::nK */
 typedef Base<TemperatureUnit, TemperatureExponent> Temperature;
 
 //Time
@@ -107,6 +157,16 @@ enum class TimeExponent{
 	Temperature = 0,
 	Time = 1
 };
+/** @relates Base
+ *  The Quantity::Time is a Quantity::Base with the following predefined base
+ *  units
+ *  - Quantity::Time::Unit::s
+ *  - Quantity::Time::Unit::ms
+ *  - Quantity::Time::Unit::us
+ *  - Quantity::Time::Unit::ns
+ *  - Quantity::Time::Unit::ps
+ *  - Quantity::Time::Unit::fs
+ *  - Quantity::Time::Unit::as */
 typedef Base<TimeUnit, TimeExponent> Time;
 
 }; //End of namesapce Quantity

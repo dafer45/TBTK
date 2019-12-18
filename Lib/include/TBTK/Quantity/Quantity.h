@@ -15,7 +15,7 @@
 
 /** @package TBTKcalc
  *  @file Quantity.h
- *  @brief Quantity.
+ *  @brief Base class for @link Quantity Quantities@endlink.
  *
  *  @author Kristofer Björnson
  */
@@ -34,10 +34,134 @@ namespace Quantity{
 
 void initializeBaseQuantities();
 
-/** @brief Quantity.
+/** @brief Base class for @link Quantity Quantitits@endlink.
  *
- *  Base class for Quantities.
- */
+ *  A Quantity is a Real number that carries compile time information about
+ *  units. While it is possible to create Quantity object, their main purpose
+ *  is to act as template parameter for the UnitHandler functions.
+ *
+ *  # Defining new Quantities
+ *  *Note: The Quantity template is not meant to be instatiated directly.
+ *  Instead the Base and Derived classes that inherit from Quantity are meant
+ *  to be instatiated. However, the syntax for instantiating such Quantities is
+ *  the same as instantiating a Quantity directly.*
+ *
+ *  ## Units and exponents
+ *  To instantiate a Quantity, we first need to define a set of units for the
+ *  Quantity. This is done with the help of an enum class.
+ *  ```cpp
+ *    enum class VoltageUnit {V, mV};
+ *  ```
+ *  We also need to define the exponents for the base units Charge, Count,
+ *  Energy, Length, Temperature, and Time. In the case of voltage, this is V =
+ *  J/C, or Energy/Charge.
+ *  ```cpp
+ *    enum class Voltage{
+ *      Charge = -1,
+ *      Count = 0,
+ *      Energy = 1,
+ *      Length = 0,
+ *      Temperature = 0,
+ *      Time = 0
+ *    };
+ *  ```
+ *  Having defined these two enum classes, we can define Voltage using
+ *  ```cpp
+ *    typedef Quantity<VoltageUnit, VoltageExponent> Voltage;
+ *  ```
+ *  <b>Note that when instantiating Base and Derived units, Quantity in the
+ *  line above is replaced by Base and Derived, respectively.</b>
+ *
+ *  With these definitions, the following symbols that are relevant for
+ *  UnitHandler calls are defined:
+ *  - Quantity::Voltage
+ *  - Quantity::Voltage::Unit::V
+ *  - Quantity::Voltage::Unit::mV
+ *
+ *  ## Creating and initializing a conversion table
+ *  We also need to define a table that can be used to convert between string
+ *  and enum class representations of the units. The conversion table should
+ *  also contain a conversion factor that specifies the amount in the given
+ *  unit that corresponds to a single unit of the Quantity in the base default
+ *  base units. The default base units are C, pcs, eV, m, K, and s.
+ *
+ *  The unit for voltage is V = J/C = 1.602176634e-19. We can therefore define
+ *  the conversion table as follows.
+ *  ```cpp
+ *    Quantity<
+ *      VoltageUnit,
+ *      VoltageExponent
+ *    >::ConversionTable Quantity<
+ *      VoltageUnit,
+ *      VoltageExponent
+ *    >::conversionTable({
+ *      {Quantity::Voltage::Unit::V, {"V", 1.602176634e-19}},
+ *      {Quantity::Voltage::Unit::mV, {"mV", 1.602176634e-19*1e3}},
+ *    });
+ *  ```
+ *    <b>Notes:
+ *      - This definition has to be made in a .cpp-file rather than a .h-file
+ *      to avoid multiple definitions.
+ *      - Even though actual Quantities should by instantiated from the Base
+ *      and Derived classes, this definition should always contain the keyword
+ *      Quantity. Note the difference with how the typedef is done, where
+ *      Quantity is to be replaced by Base or Derived.
+ *      - The initialization performed above is only possible if the numerical
+ *      constants are hard coded and can be used when defining custom Derived
+ *      units. However, the Base and Derived Quantities defined in TBTK uses
+ *      constants from Quantity::Constants rather than specifying numerical
+ *      values directly. These values are not available until Constants have
+ *      been initialized. The conversion table definition and initialization is
+ *      therefore separated into two parts as shown below.
+ *
+ *    </b>
+ *
+ *  The conversionTable is defined as follows. (Note the empty curly brace,
+ *  these are necessary to ensure that the conversion table is created.)
+ *  ```cpp
+ *    Quantity<
+ *      VoltageUnit,
+ *      VoltageExponent
+ *    >::ConversionTable Quantity<
+ *      VoltageUnit,
+ *      VoltageExponent
+ *    >::conversionTable({});
+ *  ```
+ *  The following code is then put into the function
+ *  *initializeDerivedQuantities()* to initialize the conversion table.
+ *  ```cpp
+ *    Voltage::conversionTable = Voltage::ConversionTable({
+ *      {Voltage::Unit::V, {"V", 1.602176634e-19}},
+ *      {Voltage::Unit::mV, {"mV", 1.602176634e-19*1e3}},
+ *    });
+ *  ```
+ *  The conversion tables for Base units are similarly initialized in
+ *  *initializeBaseQuantities()*.
+ *
+ *  It is not possible to define custom Derived units and initialize them from
+ *  another function that *initializeDerivedQuantities()*. Custom defined
+ *  Derived units therefore either have to be defined using hard coded
+ *  constants or be defined by extending the Derived.h and Derived.cpp files
+ *  directly.
+ *
+ *  # Conversion
+ *  ## Unit string to unit
+ *
+ *  ```cpp
+ *    Quantity::Voltage::Unit unit = Quantity::Voltage::getUnit("V");
+ *  ```
+ *  ## Unit to unit string
+ *
+ *  ```cpp
+ *    std::string unitString
+ *      = Quantity::Voltage::getUnitString(Quantity::Voltage::Unit::V);
+ *  ```
+ *  ## Get conversion factor from the default base units to the given unit
+ *  ```cpp
+ *    double conversionFactor
+ *      = Quantity::Voltage::getConversionFactor(Quantity::Voltage::Unit::V);
+ *  ```
+ *  */
 template<typename Units, typename Exponents>
 class Quantity : public Real{
 public:
