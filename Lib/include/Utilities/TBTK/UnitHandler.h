@@ -43,39 +43,150 @@ namespace TBTK{
 
 /** @brief Handles conversion between different units.
  *
- *  The UnitHandler handles conversion between the 'natural units' used in the
- *  calculations and standard 'base units'. The base quantities are
- *  Temperature, time, length, energy, charge, and count, and the default
- *  units are Kelvin (K), second (s), meter (m), electron Volt (eV),
- *  Coulomb (C), and pieces (pcs).
+ *  # Base units and natural units
+ *  TBTK does not enforce the use of a specific set of units. Instead it
+ *  defines the six base quantities charge, count, energy, length, temperature,
+ *  and time. The UnitHandler allows for six corresponding base and natural
+ *  units to be set for these quantities.
  *
- *  The current base units can be changed with setXXXUnit(), where \f$ XXX \in
- *  \{Temperature, Time, Length, Energy, Charge, Count\}\f$, and subsequent
- *  calls will take input paramaters and return output parameters in
- *  corresponding units.
+ *  For example, in the following example the base units are set to Colomb (C),
+ *  pieces (pcs), milli electron Volt (meV), meter (m), Kelvin (K), and
+ *  femtosecond (fs).
+ *  ```cpp
+ *    UnitHandler::setScales(
+ *      {"1.5 C", "5 pcs", "1 meV", "0.3048 m", "1 K", "15 fs"}
+ *    );
+ *  ```
+ *  The natural units are similar to the base units, but also take into account
+ *  the scale factor in front of the unit symbols. This means that 3 Colomb
+ *  corresponds to three base units, but only two natural units.
  *
- *  The functions setXXXScale() can be used to specify the scale of the 'ruler'
- *  with which parameters in the calculation are meassured. This sets the
- *  scale which relates the natrual units to the base units. For example:
+ *  In TBTK, all numbers are interpreted in terms of natural units. This means
+ *  that TBTK assumes that any number passed to one of its functions is given
+ *  in natural units. The default natural units are 1 C, 1 pcs, 1 eV, 1 m, 1 K,
+ *  and 1 s. If another set of natural units is preferred, the call to
+ *  *UnitHandler::setScales()* should occur at the start of the program, just
+ *  after TBTK has been initialized.
  *
- *  UnitHandler::setEnergyUnits(UnitHandler::EnergyUnit:meV);
- *  UnitHandler::setEnergyScale(1.47);
+ *  # Base units
+ *  TBTK defines a number of base units. Each can be refered to using its
+ *  string representation as above, or using an enum class variable. The later
+ *  is used in functions that are potentially performance critical. For
+ *  exampel, it is possible to use either Joule (J) or (eV) as base unit. The
+ *  string representations for these are "J" and "eV", while the corresponding
+ *  enum class representations are Quantity::Energy::Unit::J and
+ *  Quantity::Energy::Unit::eV. For a complete list of base units, see the
+ *  documentation for Quantity::Base.
  *
- *  Here the energy base unit is first set to meV, and the scale subsequently
- *  set to 1.47meV. The natural unit 1.0, now corresponds to the base unit
- *  1.47meV. An energy parameter with value 1.0 will therefore be
- *  interpreted as having the physical value 1.47meV whenever a multiplication
- *  with a physical constant is required to generate a unitless number.
+ *  # Derived units
+ *  In addition to the base units, TBTK also defines derived units for
+ *  quantities such as mass and voltage. The units are called derived since
+ *  they can be defined in terms of base units. For example, kg ~ eV m^-2 s^2
+ *  and V = eV/e. Some derived units also have string and enum class
+ *  representations, such as Quantity::Mass::Unit::kg and "kg" for mass or
+ *  Quantity::Voltage::Unit::V and "V" for voltage. A full list of drived
+ *  quantities and their corresponding units, see the documentation for
+ *  Quantity::Derived.
  *
- *  Note that the order of the above calls are important. Setting the energy
- *  scale to 1.47 while the default energy unit eV is used and then changing to
- *  meV as units will result in the scale becoming 1.47eV = 1470meV.
+ *  # Requesting constants
+ *  It is possible to request the value of constants in the currently set base
+ *  and natural units using
+ *  ```cpp
+ *    double boltzmannConstantInBaseUnits
+ *      = UnitHandler::getConstantInBaseUnits("k_B");
+ *    double boltzmannConstantInNaturalUnits
+ *      = UnitHandler::getConstantInNaturalUnits("k_B");
+ *  ```
+ *  The value in base and natural units will differ by a product of scale
+ *  factors that accounts for the difference between the two types of units.
+ *  The currently available constants are
+ *  Constant                | Symbol      | Source*
+ *  ------------------------|-------------|-------
+ *  Unit charge (positive)  | "e"         | 1
+ *  Speed of light          | "c"         | 1
+ *  Avogadros number        | "N_A"       | 1
+ *  Bohr radius             | "a_0"       | 1
+ *  Planck constant         | "h"         | 1
+ *  Boltzmann constant      | "k_B"       | 1
+ *  Electron mass           | "m_e"       | 2
+ *  Proton mass             | "m_p"       | 2
+ *  Vacuum permeability     | "mu_0"      | 2
+ *  Vacuum permittivity     | "epsilon_0" | 2
+ *  Reduced Planck constant | "hbar"      | 3
+ *  Bohr magneton           | "mu_B"      | 3
+ *  Nuclear magneton        | "mu_N"      | 3
  *
- *  In addition to base units and natural units, there are also derived units.
- *  These are used to convert to and from units not included among the base
- *  units, such as kg for mass. That a u unit is derived means that it can be
- *  expressed in terms of the already existing base units. For example: kg =
- *  eVs^2/m^2. */
+ *  *The sources for the constants are:
+ *  -# The International System of Units (SI) 9th Edition. Bureau International
+ *  des Poids et Mesures. 2019.
+ *  -# The NIST reference on Constants, Units, and Uncertainty.
+ *  https://physics.nist.gov/cuu/Constants/index.html.
+ *  -# Calculated from the other constants.
+ *
+ *  # Converting between base and natural units.
+ *  Assume that the scales have been set such that the base unit is 1 m and
+ *  the natural unit is 1 foot (0.3048 m). It is then possible to convert
+ *  between the two units as follows.
+ *  ```cpp
+ *    double tenMetersInFeet
+ *      = UnitHandler::convertBaseToNatural<Quantity::Length>(10);
+ *    double tenFeetInMeters
+ *      = UnitHandler::convertNaturalToBase<Quantity::Length>(10);
+ *  ```
+ *  Similar calls can be used to convert between other quantities between base
+ *  and natural units by replacing Quantity::Length with the corresponding
+ *  Quantity.
+ *
+ *  # Conversion between arbitrary units and base and natural units
+ *  It is also posible to convert between an arbitrary (not currently set) unit
+ *  and the (currently set) base and natural units. For example, from "nm" to
+ *  "ft", or "V" to C^-1 meV. The functions for this are
+ *  ```cpp
+ *    double oneVoltInBaseUnits
+ *      = UnitHandler::convertArbitraryToBase<Quantity::Voltage>(
+ *        1,
+ *        Quantity::Voltage::Unit::V
+ *      );
+ *    double oneVoltInNaturalUnits
+ *      = UnitHandler::convertArbitraryToNatural<Quantity::Voltage>(
+ *        1,
+ *        Quantity::Voltage::Unit::V
+ *      );
+ *    double oneBaseUnitOfVoltageInVolt
+ *      = UnitHandler::convertBaseToVoltage<Quantity::Voltage>(
+ *        1,
+ *        Quantity::Voltage::Unit::V
+ *      );
+ *    double oneNaturalVoltageUnitInVolt
+ *      = UnitHandler::convertNaturalToArbitrary<Quantity::Voltage>(
+ *        1,
+ *        Quantity::Voltage::Unit::V
+ *      );
+ *  ```
+ *
+ *  # Unit strings
+ *  The UnitHandler also allows for a string representation of the base unit
+ *  for constants and Quantities to be extracted. Since natural units can come
+ *  with an arbitrary numerical factor, unit strings can not be obtained for
+ *  natural units. This is on of the reasons why conversion to and from base
+ *  units is of interest. All calculations are done in natural units, but
+ *  automatic generation of unit strings can only be done for base units. Note,
+ *  however, that as long as no scale factor is used, the base and natural
+ *  units are the same.
+ *
+ *  For example, the unit string for Boltzmann constant can be obtained using
+ *  ```cpp
+ *    std::string unitString = UnitHandler::getUnitString("k_B");
+ *  ```
+ *  The unit string for voltage can be obtained using
+ *  ```cpp
+ *    std::string unitString = UnitHandler::getUnitString<Quantity::Voltage>();
+ *  ```
+ *
+ *  # Example
+ *  \snippet Utilities/UnitHandler.cpp UnitHandler
+ *  ## Output
+ *  \snippet output/Utilities/UnitHandler.output UnitHandler */
 class UnitHandler{
 public:
 	/** Get physical constant in base units. */
