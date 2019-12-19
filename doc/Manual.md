@@ -127,15 +127,14 @@ To understand what this means, consider distance and time.
 These are independent quantities that can be measured in meters (m) and seconds (s).
 In comparison, velocity is a derived quantity that is defined as distance per time and have the derived unit m/s.
 
-In principle, nothing prevents us from instead consider time to be a quantity that is derived from distance and velocity.
+In principle, nothing prevents us from instead considering time to be a quantity that is derived from distance and velocity.
 However, the fact remains that only two of these three quantities can be defined independently of each other.
 It turns out that in nature, only seven quantities can be defined independently of each other.
 If we, therefore, fix seven such quantities and assigning them base units, all other quantities acquire derived units.
 
-The @link TBTK::UnitHandler UnitHandler@endlink defines the base quantities to be temperature, time, length, energy, charge, and count (amount).
-The seventh base quantity, angle, is not yet implemented.
-This is different from the SI system, which defines base units for mass, current, and luminosity instead of energy, charge, and angle.
-The choice to deviate from the SI system by making energy, charge, and angle base quantities is made since these are perceived to be of greater relevance in quantum mechanical calculations.
+The @link TBTK::UnitHandler UnitHandler@endlink defines the base quantities to be angle, charge, count (amount), energy. length, temperature, and time.
+This is different from the SI system, which defines base units for luminocity, current, and mass instead of angle, charge, and energy.
+The choice to deviate from the SI system by making angle, charge, and energy base quantities is made since these are perceived to be of greater relevance in quantum mechanical calculations.
 
 The @link TBTK::UnitHandler UnitHandler@endlink also deviates from the SI system by only fixing the base quantities and not the base units.
 While the SI unit for length is meter (m), the UnitHandler allows the base unit for length to be set to, among other things, meter (m), millimeter (mm), nanometer (nm), and Ångström (Å).
@@ -144,39 +143,45 @@ Similarly, Joule (J) and electronvolt (eV) are possible base units for energy, w
 ### Default base units
 | Quantity    | Default base unit  | UnitHandler symbol |
 |-------------|--------------------|--------------------|
-| Temperature | K (Kelvin)         | Temperature        |
-| Time        | s (seconds)        | Time               |
-| Length      | m (meter)          | Length             |
-| Energy      | eV (electron Volt) | Energy             |
+| Angle       | rad (radians)      | Angle              |
 | Charge      | C (Coulomb)        | Charge             |
 | Count       | pcs (pieces)       | Count              |
+| Energy      | eV (electron Volt) | Energy             |
+| Length      | m (meter)          | Length             |
+| Temperature | K (Kelvin)         | Temperature        |
+| Time        | s (seconds)        | Time               |
 
 ### Available base units
 | Quantity    | Available base units                             |
 |-------------|--------------------------------------------------|
-| Temperature | kK, K, mK, uK, nK                                | 
-| Time        | s, ms, us, ns, ps, fs, as                        |
-| Length      | m, mm, um, nm, pm, fm, am, Ao                    |
-| Energy      | GeV, MeV, keV, eV, meV, ueV, J                   |
+| Angle       | rad, degree                                      |
 | Charge      | kC, C, mC, uC, nC, pC, fC, aC, Te, Ge, Me, ke, e |
 | Count       | pcs, mol                                         |
+| Energy      | GeV, MeV, keV, eV, meV, ueV, J                   |
+| Length      | m, mm, um, nm, pm, fm, am, Ao                    |
+| Temperature | kK, K, mK, uK, nK                                |
+| Time        | s, ms, us, ns, ps, fs, as                        |
 
 Here Gx, Mx, kx, mx, etc. corresponds to giga, mega, kilo, milli, etc, while Ao means Ångström (Å), and pcs means pieces.
 Additional units can be added on request.
 
-If base units other than the default ones are wanted, this should be specified at the very start of the application.
+If base units other than the default ones are wanted, this should be specified at start of the application, just after TBTK has been initialized.
 This avoids ambiguities that otherwise can result from changing base units in the middle of the execution.
-To set the base units to C, mol, meV, Å, mK, and ps, type
+To set the base units to rad, C, mol, meV, Å, mK, and ps, type
 ```cpp
-	UnitHandler::setScales({"1 C", "1 mol", "1 meV", "1 Ao", "1 mK", "1 ps"});
+	UnitHandler::setScales(
+		{"1 rad", "1 C", "1 mol", "1 meV", "1 Ao", "1 mK", "1 ps"}
+	);
 ```
-Note that the units in the brackets have to come in the order charge, count, energy, length, temperature, and time.
+Note that the units in the brackets have to come in the order angle, charge, count, energy, length, temperature, and time.
 
 # Natural units {#NaturalUnits}
 The @link TBTK::UnitHandler UnitHandler@endlink extends the base unit concept to natural units by allowing for a numerical prefactor.
 For example, consider the following specification.
 ```cpp
-	UnitHandler::setScales({"1 C", "1 pcs", "13.606 eV", "1 m", "1 K", "1 s"});
+	UnitHandler::setScales(
+		{"1 rad ", "1 C", "1 pcs", "13.606 eV", "1 m", "1 K", "1 s"}
+	);
 ```
 Here the natural energy unit is set to 13.606 eV.
 This means that any energy value that is passed to a TBTK function is interpreted to be given in terms of 13.606 eV.
@@ -184,17 +189,49 @@ For example, the numeric value 1.5 is interpreted to mean 1.5*13.606 eV = 20.409
 Note the important distinction between base units and natural units: in base units the value is 20.409 eV, but in natural units it is 1.5.
 
 # Converting between base and natural units {#ConvertingBetweenBaseAndNaturalUnits}
-To convert between base units and natural units, the following functions can be used.
+To convert a length between base and natural units, the following functions can be used.
 ```cpp
-	double quantityInBaseUnits
-		= UnitHandler::convertQuantityNtB(quantityInNaturalUnits);
-	double quantityInNaturalUnits
-		= UnitHandler::convertQuantityBtN(quantityInBaseUnits);
+	double lengthInBaseUnits
+		= UnitHandler::convertNaturalToBase<Quantity::Length>(
+			quantityInNaturalUnits
+		);
+	double lengthInNaturalUnits
+		= UnitHandler::convertBaseToNatural<Quantity::Length>(
+			quantityInBaseUnits
+		);
 ```
-Here 'Quantity' is to be replace by the corresponding UnitHandler symbol specified in the table above, and NtB and BtN should be read 'natural to base' and 'base to natural', respectively.
+To convert other Quantities, replace Quantity::Length by the relevant Quantity.
+
+It is also possible to convert between an arbitrary (not currently set) unit and the natural and base units.
+For example, we can convert energy between meV and the currently set base units as follows.
+```cpp
+	double energyInBaseUnits
+		= UnitHandler::convertArbitraryToBase<Quantity::Energy>(
+			energyInMilliElectronVolt,
+			Quantity::Energy::Unit::meV
+		);
+	double energyIntMilliElectronVolt
+		= UnitHandler::convertBaseToArbitrary<Quantity::Energy>(
+			energyInBaseUnits,
+			Quantity::Energy::Unit::meV
+		);
+```
+Similarly, it is possible to convert between arbitrary and natural units.
+```cpp
+	double energyInNaturalUnits
+		= UnitHandler::convertArbitraryToNatural<Quantity::Energy>(
+			energyInDerivedUnits,
+			Quantity::Energy::Unit::meV
+		);
+	double energyInMilliElectronVolt
+		= UnitHandler::convertNaturalToArbitrary<Quantity::Energy>(
+			energyInNaturalUnits,
+			Quantity::Energy::Unit::meV
+		);
+```
 
 # Derived units {#DerivedUnits}
-To aid conversion between different units, the @link TBTK::UnitHandler UnitHandler@endlink explicitly defines units for several derived quantities.
+To aid conversion between different units, TBTK also defines units for several derived quantities.
 Please, do not hesitate to request additional derived units or quantities if needed.
 | Quantity                | Available derived units                      | UnitHandler symbol |
 |-------------------------|----------------------------------------------|--------------------|
@@ -202,61 +239,68 @@ Please, do not hesitate to request additional derived units or quantities if nee
 | Magnetic field strength | MT, kT, T, mT, uT, nT, GG, MG, kG, G, mG, uG | MagneticField      |
 | Voltage                 | GV, MV, kV, V, mV, uV, nV                    | Voltage            |
 
-To convert mass in the derived units \f$kg\f$ to and from base units, the follwoing functions can be called.
+These quantities and units can be used together with the conversion functions explained above.
+For example, to convert mass in the derived units \f$kg\f$ to and from base units, the follwoing functions can be called.
 ```cpp
-	double massInBaseUnits = UnitHandler::convertMassDtB(
+	double massInBaseUnits = UnitHandler::convertArbitraryToBase<Quantity::Mass>(
 		massInDerivedUnits,
-		UnitHandler::MassUnit::kg
+		Quantity::Mass::Unit::kg
 	);
-	double massInDerivedUnits = UnitHandler::convertMassBtD(
+	double massInDerivedUnits = UnitHandler::convertBaseToArbitrary(
 		massInBaseUnits,
-		UnitHandler::MassUnit::kg
+		Quantity::Mass::Unit::kg
 	);
 ```
 Similarly, it is possible to convert between derived units and natural units.
 ```cpp
-	double massInNaturalUnits = UnitHandler::convertMassDtN(
-		massInDerivedUnits,
-		UnitHandler::MassUnit::kg
-	);
-	double massInDerivedUnits = UnitHandler::convertMassNtD(
-		massInNaturalUnits,
-		UnitHandler::MassUnit::kg
-	);
+	double massInNaturalUnits
+		= UnitHandler::convertArbitraryToNatural<Quantity::Mass>(
+			massInKiloGram,
+			Quantity::Mass::Unit::kg
+		);
+	double massInKiloGram
+		= UnitHandler::convertNaturalToArbitrary<Quantity::Mass>(
+			massInNaturalUnits,
+			Quantity::Mass::Unit::kg
+		);
 ```
-Here DtB, BtD, DtN, and NtD should be read as 'derived to base', 'base to derived', 'derived to natural', and 'natural to derived', respectively.
-The function calls mimic those for conversion between base and natural units, with the exception that the derived unit has to be passed as a second argument.
 
 # Constants {#Constants}
 The following constants can be requested from the @link TBTK::UnitHandler UnitHandler@endlink.
 | Name                    | Symbol           | UnitHandler symbol |
 |-------------------------|------------------|--------------------|
+| Planck constant         | \f$h\f$          | h                  |
 | Reduced Planck constant | \f$\hbar\f$      | Hbar               |
-| Boltzmann constant      | \f$k_B\f$        | K_B                |
+| Boltzmann constant      | \f$k_B\f$        | k_B                |
 | Elementary charge       | \f$e\f$          | E                  |
 | Speed of light          | \f$c\f$          | C                  |
 | Avogadros number        | \f$N_A\f$        | N_A                |
 | Electron mass           | \f$m_e\f$        | M_e                |
 | Proton mass             | \f$m_p\f$        | M_p                |
 | Bohr magneton           | \f$\mu_B\f$      | Mu_B               |
-| Nuclear magneton        | \f$\mu_n\f$      | Mu_n               |
+| Nuclear magneton        | \f$\mu_N\f$      | Mu_N               |
 | Vacuum permeability     | \f$\mu_0\f$      | Mu_0               |
 | Vacuum permittivity     | \f$\epsilon_0\f$ | Epsilon_0          |
+We can, for example, get the Boltzmann constant in base and natural units as follows.
+```cpp
+	double constantValueInBaseUnits
+		= UnitHandler::getConstantInBaseUnits("k_B");
+	double constantValueInNaturalUnits
+		= UnitHandler::getConstantInNaturalUnits("k_B");
+```
 Please do not hesitate to request the addition of further constants.
 
-To get a constant value in base or natural units, perform the following calls with 'Symbol' replaced by the corresponding symbol listed in the table above.
-```cpp
-	double constantValueInBaseUnits    = UnitHandler::getSymbolB();
-	double constantValueInNaturalUnits = UnitHandler::getSymbolN();
-```
-
 # Unit strings {#UnitStrings}
-To aid with printing values to the output, the @link TBTK::UnitHandler UnitHandler@endlink provides methods for requesting the string representation of a given quantity or constants base unit.
+To aid with printing values to the output, the @link TBTK::UnitHandler UnitHandler@endlink provides methods for requesting the string representation of the base unit for a given quantity or constant.
+The unit string for a quantity can be obtained as follows.
 ```cpp
-	string unitString = UnitHandler::getSymbolUnitString();
+	string unitString = UnitHandler::getUnitString<Quantity::Length>();
 ```
-Here 'Symbol' should be replaced by one of the symbols listed in the tables over base units, derived units, and constants.
-Note that the unit string corresponds to the base units, so any output from TBTK should first be converted from natural units to base units before being printed together with the unit string.
+The unit string for a constant can be obtained as follows.
+```cpp
+	string unitString = UnitHandler::getUnitString("k_B");
+```
+<b>Note: The unit string corresponds to the base units, so any output from TBTK should first be converted from natural units to base units before being printed together with the unit string.</b>
 
 @link Indices Next: Indices@endlink
 @page Indices Indices
