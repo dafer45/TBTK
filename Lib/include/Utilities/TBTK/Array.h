@@ -25,6 +25,7 @@
 
 #include "TBTK/CArray.h"
 #include "TBTK/Index.h"
+#include "TBTK/MultiCounter.h"
 #include "TBTK/TBTKMacros.h"
 
 #include <vector>
@@ -245,6 +246,17 @@ public:
 	 *
 	 *  @return An Array of lower dimension. */
 	Array<DataType> getSlice(const std::vector<Subindex> &index) const;
+
+	/** Get a new Array with permuted ranges.
+	 *
+	 *  @param permutation A list of integers from 0 to N-1, where N is the
+	 *  number of ranges.
+	 *
+	 *  @return A new Array where the nth Subindex corresponds to the
+	 *  original Subindex in position permutation[n]. */
+	Array<DataType> getPermutation(
+		const std::vector<unsigned int> &permutation
+	) const;
 
 	/** Get ranges.
 	 *
@@ -573,6 +585,67 @@ Array<DataType> Array<DataType>::getSlice(const std::vector<Subindex> &index) co
 	fillSlice(array, index, 0, 0, 0);
 
 	return array;
+}
+
+template<typename DataType>
+Array<DataType> Array<DataType>::getPermutation(
+	const std::vector<unsigned int> &permutation
+) const{
+	TBTKAssert(
+		permutation.size() == ranges.size(),
+		"Array::getPermutation()",
+		"The number of permutation indices '" << permutation.size()
+		<< "' must be the same a the number of ranges '"
+		<< ranges.size() << "'.",
+		""
+	);
+
+	std::vector<bool> rangeIncluded(permutation.size(), false);
+	for(unsigned int n = 0; n < permutation.size(); n++){
+		TBTKAssert(
+			permutation[n] >= 0
+			&& permutation[n] < permutation.size(),
+			"Array::getPermutation()",
+			"Invalid permutation values 'permutation[" << n << "]"
+			<< " = " << permutation[n] << "'. Must be a number"
+			<< " between 0 and N-1, where N is the number of"
+			<< " ranges.",
+			""
+		);
+		rangeIncluded[permutation[n]] = true;
+	}
+	for(unsigned int n = 0; n < rangeIncluded.size(); n++){
+		TBTKAssert(
+			rangeIncluded[n],
+			"Array::getPermutation()",
+			"Invalid permutation. Missing permutation index '" << n
+			<< "'.",
+			""
+		);
+	}
+
+	std::vector<unsigned int> newRanges;
+	for(unsigned int n = 0; n < ranges.size(); n++)
+		newRanges.push_back(ranges[permutation[n]]);
+	Array<DataType> newArray = Array<DataType>::create(newRanges);
+
+	std::vector<unsigned int> begin = newRanges;
+	std::vector<unsigned int> end = newRanges;
+	std::vector<unsigned int> increment = newRanges;
+	for(unsigned int n = 0; n < newRanges.size(); n++){
+		begin[n] = 0;
+		increment[n] = 1;
+	}
+	MultiCounter<unsigned int> counter(begin, end, increment);
+	for(counter.reset(); !counter.done(); ++counter){
+		std::vector<unsigned int> newArrayIndex = counter;
+		std::vector<unsigned int> arrayIndex(newArrayIndex.size());
+		for(unsigned int c = 0; c < newArrayIndex.size(); c++)
+			arrayIndex[permutation[c]] = newArrayIndex[c];
+		newArray[newArrayIndex] = (*this)[arrayIndex];
+	}
+
+	return newArray;
 }
 
 template<typename DataType>
