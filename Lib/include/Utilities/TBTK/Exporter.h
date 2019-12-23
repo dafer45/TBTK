@@ -27,7 +27,9 @@
 #include "TBTK/MultiCounter.h"
 #include "TBTK/Property/AbstractProperty.h"
 #include "TBTK/PropertyConverter.h"
+#include "TBTK/SpinMatrix.h"
 
+#include <complex>
 #include <fstream>
 #include <string>
 #include <vector>
@@ -40,8 +42,9 @@ namespace TBTK{
  *  Property::AbstractProperty Properties@endlink to a comma separated file.
  *
  *  # Output format
- *  By default, the data is written to file on column major order. This means
- *  that the right most Subindex increments the fastest, while the left most
+ *  ## Row major order
+ *  By default, the data is written to file on row major order. This means that
+ *  the right most Subindex increments the fastest, while the left most
  *  subindex changes the slowest. For @link Property::AbstractProperty
  *  Properties@endlink with a block structure, the intra block index should be
  *  understood as standing to the left of any Index. Similarly, any data type
@@ -53,9 +56,87 @@ namespace TBTK{
  *  thought of as being {x, y, n, c}, where c=0 and c=1 corresponds to real and
  *  imaginary part, respectively. If the dimensions are given by {SIZE_X,
  *  SIZE_Y, BLOCK_SIZE, 2}, the element order is given by
- *  <center>\f$2*(BLOCK\_SIZE*(SIZE\_Y*x + y) + n) + c\f$.</center> */
+ *  <center>\f$2*(BLOCK\_SIZE*(SIZE\_Y*x + y) + n) + c\f$.</center>
+ *
+ *  ## Column major order
+ *  Languages such as Fortran and MATLAB use column major order. To simplify
+ *  import to such languages, it is also possible to export the data on column
+ *  major order. To do so, set the format to column major before exporting the
+ *  data.
+ *  ```cpp
+ *    exporter.setFormat(Exporter::Format::ColumnMajor);
+ *  ```
+ *
+ *  # Arrays
+ *  Arrays are exported as follows
+ *  ```cpp
+ *    Exporter exporter;
+ *    exporter.save(array, "Filename.csv");
+ *  ```
+ *
+ *  # Properties on the None and Ranges format
+ *  Properties that are on the formats IndexDescriptor::Format::None and
+ *  IndexDescriptor::Format::Ranges can be exported as follows.
+ *  ```cpp
+ *    Exporter exporter;
+ *    exporter.save(property, "Filename.csv");
+ *  ```
+ *
+ *  # Properties on the Custom format
+ *  Properties that are on the formats IndexDescriptor::Format::Custom can be
+ *  exported as follows.
+ *  ```cpp
+ *    Exporter exporter;
+ *    exporter.save({_a_, 5, _a_}, property, "Filename.csv");
+ *  ```
+ *  Here it is assumed that *property* has the index structure {x, y, z} and
+ *  that the data for all indices satisfying the pattern {x, 5, z}. are to be
+ *  exported.
+ *
+ *  # Export to external languages
+ *  We here demonstrate how data can be exported and imported to other
+ *  languages. Assume here that we want to export a density with the index
+ *  structure {x, y, z} and number of elements are {SIZE_X, SIZE_Y, SIZE_Z}.
+ *  ## MATLAB
+ *
+ *  ### Export from C++
+ *
+ *  ```cpp
+ *    Exporter exporter;
+ *    exporter.setFormat(Exporter::Format::ColumnMajor);
+ *    exporter.save({_a_, _a_, _a_}, density, "Filename.csv");
+ *  ```
+ *
+ *  ### Import to MATLAB
+ *
+ *  ```matlab
+ *    data = dlmread('Filename.csv')
+ *    density = reshape(data, [SIZE_X, SIZE_Y, SIZE_Z])
+ *  ```
+ *
+ *  ## Python
+ *
+ *  ### Export from C++
+ *
+ *  ```cpp
+ *    Exporter exporter;
+ *    exporter.save({_a_, _a_, _a_}, density, "Filename.csv");
+ *  ```
+ *
+ *  ### Import to Python
+ *
+ *  ```python
+ *    import numpy as np
+ *    density = np.loadtxt("Filename.csv").reshape(SIZE_X, SIZE_Y, SIZE_Z)
+ *  ``` */
 class Exporter{
 public:
+	/** Enum class for */
+	enum class Format {RowMajor, ColumnMajor};
+
+	/** Default constructor. */
+	Exporter();
+
 	/** Export a @link Property::AbstractProperty Property@endlink on the
 	 *  format IndexDescriptor::Format::None or
 	 *  IndexDescriptor::Format::Ranges.
@@ -96,7 +177,23 @@ public:
 		const Array<DataType> &array,
 		const std::string &filename
 	) const;
+
+	/** Set the output format. The default value is Format::RowMajor
+	 *
+	 *  @param format The output format to use.*/
+	void setFormat(Format format);
+private:
+	/** The output format. */
+	Format format;
+
+	/** Write double to output stream. */
+	template<typename DataType>
+	void write(std::ofstream &stream, const DataType &value) const;
 };
+
+inline Exporter::Exporter(){
+	format = Format::RowMajor;
+}
 
 template<typename DataType>
 void Exporter::save(
@@ -126,6 +223,22 @@ void Exporter::save(
 	const Array<DataType> &array,
 	const std::string &filename
 ) const{
+	Array<DataType> outputArray;
+	switch(format){
+	case Format::RowMajor:
+		outputArray = array;
+		break;
+	case Format::ColumnMajor:
+		outputArray = array.getArrayWithReversedIndices();
+		break;
+	default:
+		TBTKExit(
+			"Exporter::save()",
+			"Unknown format '" << static_cast<int>(format) << "'.",
+			""
+		);
+	}
+
 	std::ofstream fout(filename);
 	if(!fout){
 		TBTKExit(
@@ -134,7 +247,7 @@ void Exporter::save(
 			""
 		);
 	}
-	const std::vector<unsigned int> &ranges = array.getRanges();
+	const std::vector<unsigned int> &ranges = outputArray.getRanges();
 	std::vector<unsigned int> begin = ranges;
 	std::vector<unsigned int> end = ranges;
 	std::vector<unsigned int> increment = ranges;
@@ -143,26 +256,54 @@ void Exporter::save(
 		increment[n] = 1;
 	}
 	MultiCounter<unsigned int> counter(begin, end, increment);
-	switch(ranges.size()){
-	case 2:
-	{
-		unsigned int x =  0;
-		for(counter.reset(); !counter.done(); ++counter){
-			if(x != counter[0]){
-				x = counter[0];
-				fout << "\n";
-			}
-			if(counter[1] != 0)
-				fout << ", ";
-			fout << array[counter];
-		}
-		break;
-	}
-	default:
-		for(counter.reset(); !counter.done(); ++counter)
-			fout << array[counter] << "\n";
-	}
+	for(counter.reset(); !counter.done(); ++counter)
+		write(fout, outputArray[counter]);
 	fout.close();
+}
+
+inline void Exporter::setFormat(Format format){
+	this->format = format;
+}
+
+template<typename DataType>
+void Exporter::write(std::ofstream &stream, const DataType &value) const{
+	stream << value << "\n";
+}
+
+template<>
+inline void Exporter::write<std::complex<double>>(
+	std::ofstream &stream,
+	const std::complex<double> &value
+) const{
+	stream << real(value) << "\n";
+	stream << imag(value) << "\n";
+}
+
+template<>
+inline void Exporter::write<SpinMatrix>(
+	std::ofstream &stream,
+	const SpinMatrix &value
+) const{
+	switch(format){
+	case Format::RowMajor:
+		write(stream, value.at(0, 0));
+		write(stream, value.at(0, 1));
+		write(stream, value.at(1, 0));
+		write(stream, value.at(1, 1));
+		break;
+	case Format::ColumnMajor:
+		write(stream, value.at(0, 0));
+		write(stream, value.at(1, 0));
+		write(stream, value.at(0, 1));
+		write(stream, value.at(1, 1));
+		break;
+	default:
+		TBTKExit(
+			"Exporter::write()",
+			"This should never happen, contact the developer.",
+			""
+		);
+	}
 }
 
 }; //End of namesapce TBTK
