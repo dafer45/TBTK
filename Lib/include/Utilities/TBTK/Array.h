@@ -247,16 +247,21 @@ public:
 	 *  @return An Array of lower dimension. */
 	Array<DataType> getSlice(const std::vector<Subindex> &index) const;
 
-	/** Get a new Array with permuted ranges.
+	/** Get a new Array with permuted indices.
 	 *
 	 *  @param permutation A list of integers from 0 to N-1, where N is the
-	 *  number of ranges.
+	 *  number of indices.
 	 *
 	 *  @return A new Array where the nth Subindex corresponds to the
 	 *  original Subindex in position permutation[n]. */
-	Array<DataType> getPermutation(
+	Array<DataType> getArrayWithPermutedIndices(
 		const std::vector<unsigned int> &permutation
 	) const;
+
+	/** Get a new Array with the indices in reverse order.
+	 *
+	 *  @return A new Array where the indices occurs in reverse order. */
+	Array<DataType> getArrayWithReversedIndices() const;
 
 	/** Get ranges.
 	 *
@@ -588,36 +593,36 @@ Array<DataType> Array<DataType>::getSlice(const std::vector<Subindex> &index) co
 }
 
 template<typename DataType>
-Array<DataType> Array<DataType>::getPermutation(
+Array<DataType> Array<DataType>::getArrayWithPermutedIndices(
 	const std::vector<unsigned int> &permutation
 ) const{
 	TBTKAssert(
 		permutation.size() == ranges.size(),
-		"Array::getPermutation()",
+		"Array::getArrayWithPermutedIndices()",
 		"The number of permutation indices '" << permutation.size()
 		<< "' must be the same a the number of ranges '"
 		<< ranges.size() << "'.",
 		""
 	);
 
-	std::vector<bool> rangeIncluded(permutation.size(), false);
+	std::vector<bool> indexIncluded(permutation.size(), false);
 	for(unsigned int n = 0; n < permutation.size(); n++){
 		TBTKAssert(
 			permutation[n] >= 0
 			&& permutation[n] < permutation.size(),
-			"Array::getPermutation()",
+			"Array::getArrayWithPermutedIndices()",
 			"Invalid permutation values 'permutation[" << n << "]"
 			<< " = " << permutation[n] << "'. Must be a number"
 			<< " between 0 and N-1, where N is the number of"
 			<< " ranges.",
 			""
 		);
-		rangeIncluded[permutation[n]] = true;
+		indexIncluded[permutation[n]] = true;
 	}
-	for(unsigned int n = 0; n < rangeIncluded.size(); n++){
+	for(unsigned int n = 0; n < indexIncluded.size(); n++){
 		TBTKAssert(
-			rangeIncluded[n],
-			"Array::getPermutation()",
+			indexIncluded[n],
+			"Array::getArrayWithPermutedIndices()",
 			"Invalid permutation. Missing permutation index '" << n
 			<< "'.",
 			""
@@ -646,6 +651,15 @@ Array<DataType> Array<DataType>::getPermutation(
 	}
 
 	return newArray;
+}
+
+template<typename DataType>
+Array<DataType> Array<DataType>::getArrayWithReversedIndices() const{
+	std::vector<unsigned int> permutation;
+	for(unsigned int n = 0; n < ranges.size(); n++)
+		permutation.push_back(ranges.size() - n - 1);
+
+	return getArrayWithPermutedIndices(permutation);
 }
 
 template<typename DataType>

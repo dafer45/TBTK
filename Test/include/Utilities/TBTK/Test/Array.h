@@ -405,8 +405,8 @@ TEST(Array, getSlice){
 			EXPECT_EQ((slicedArray[{i, k}]), (array[{i, 2, k}]));
 }
 
-//TBTKFeature Utilities.Array.getPermutation.1 2019-12-22
-TEST(Array, getPermutation1){
+//TBTKFeature Utilities.Array.getArrayWithPermutedIndices.1 2019-12-22
+TEST(Array, getArrayWithPermutedIndices1){
 	Array<int> array({2, 3, 4, 5});
 	int counter = 0;
 	for(unsigned int k = 0; k < 2; k++)
@@ -415,7 +415,8 @@ TEST(Array, getPermutation1){
 				for(unsigned int n = 0; n < 5; n++)
 					array[{k, l, m, n}] = counter++;
 
-	Array<int> permutation = array.getPermutation({2, 3, 1, 0});
+	Array<int> permutation
+		= array.getArrayWithPermutedIndices({2, 3, 1, 0});
 	const std::vector<unsigned int> &ranges = permutation.getRanges();
 	EXPECT_EQ(ranges.size(), 4);
 	EXPECT_EQ(ranges[0], 4);
@@ -438,56 +439,86 @@ TEST(Array, getPermutation1){
 	}
 }
 
-//TBTKFeature Utilities.Array.getPermutation.2 2019-12-22
-TEST(Array, getPermutation2){
+//TBTKFeature Utilities.Array.getArrayWithPermutedIndices.2 2019-12-22
+TEST(Array, getArrayWithPermutedIndices2){
 	Array<int> array({2, 3, 4, 5});
 	EXPECT_EXIT(
 		{
 			Streams::setStdMuteErr();
-			array.getPermutation({0, 1, 2});
+			array.getArrayWithPermutedIndices({0, 1, 2});
 		},
 		::testing::ExitedWithCode(1),
 		""
 	);
 }
 
-//TBTKFeature Utilities.Array.getPermutation.3 2019-12-22
-TEST(Array, getPermutation3){
+//TBTKFeature Utilities.Array.getArrayWithPermutedIndices.3 2019-12-22
+TEST(Array, getArrayWithPermutedIndices3){
 	Array<int> array({2, 3, 4, 5});
 	EXPECT_EXIT(
 		{
 			Streams::setStdMuteErr();
-			array.getPermutation({0, 1, 2, 3, 4});
+			array.getArrayWithPermutedIndices({0, 1, 2, 3, 4});
 		},
 		::testing::ExitedWithCode(1),
 		""
 	);
 }
 
-//TBTKFeature Utilities.Array.getPermutation.4 2019-12-22
-TEST(Array, getPermutation4){
+//TBTKFeature Utilities.Array.getArrayWithPermutedIndices.4 2019-12-22
+TEST(Array, getArrayWithPermutedIndices4){
 	Array<int> array({2, 3, 4, 5});
 	EXPECT_EXIT(
 		{
 			Streams::setStdMuteErr();
-			array.getPermutation({0, 1, 4, 3});
+			array.getArrayWithPermutedIndices({0, 1, 4, 3});
 		},
 		::testing::ExitedWithCode(1),
 		""
 	);
 }
 
-//TBTKFeature Utilities.Array.getPermutation.5 2019-12-22
-TEST(Array, getPermutation5){
+//TBTKFeature Utilities.Array.getArrayWithPermutedIndices.5 2019-12-22
+TEST(Array, getArrayWithPermutedIndices5){
 	Array<int> array({2, 3, 4, 5});
 	EXPECT_EXIT(
 		{
 			Streams::setStdMuteErr();
-			array.getPermutation({0, 1, 1, 2});
+			array.getArrayWithPermutedIndices({0, 1, 1, 2});
 		},
 		::testing::ExitedWithCode(1),
 		""
 	);
+}
+
+//TBTKFeature Utilities.Array.getArrayWithReversedIndices.1 2019-12-22
+TEST(Array, getArrayWithReveredIndices1){
+	Array<int> array({2, 3, 4, 5});
+	int counter = 0;
+	for(unsigned int k = 0; k < 2; k++)
+		for(unsigned int l = 0; l < 3; l++)
+			for(unsigned int m = 0; m < 4; m++)
+				for(unsigned int n = 0; n < 5; n++)
+					array[{k, l, m, n}] = counter++;
+
+	Array<int> result = array.getArrayWithReversedIndices();
+	const std::vector<unsigned int> &ranges = result.getRanges();
+	EXPECT_EQ(ranges[0], 5);
+	EXPECT_EQ(ranges[1], 4);
+	EXPECT_EQ(ranges[2], 3);
+	EXPECT_EQ(ranges[3], 2);
+	for(unsigned int k = 0; k < 2; k++){
+		for(unsigned int l = 0; l < 3; l++){
+			for(unsigned int m = 0; m < 4; m++){
+				for(unsigned int n = 0; n < 5; n++){
+					EXPECT_EQ(
+						(result[{n, m, l, k}]),
+						(array[{k, l, m, n}])
+					);
+				}
+			}
+		}
+	}
 }
 
 //TBTKFeature Utilities.Array.getData.1 2019-10-31
