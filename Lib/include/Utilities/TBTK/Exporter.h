@@ -39,7 +39,7 @@ namespace TBTK{
 /** @brief Exports data on human readable format.
  *
  *  The Exporter can write @link Array Arrays@endlink and @link
- *  Property::AbstractProperty Properties@endlink to a comma separated file.
+ *  Property::AbstractProperty Properties@endlink to file.
  *
  *  # Output format
  *  ## Row major order
@@ -47,14 +47,14 @@ namespace TBTK{
  *  the right most Subindex increments the fastest, while the left most
  *  subindex changes the slowest. For @link Property::AbstractProperty
  *  Properties@endlink with a block structure, the intra block index should be
- *  understood as standing to the left of any Index. Similarly, any data type
- *  with indexable internal structure should be understood as having it's
+ *  understood as standing to the right of any Index. Similarly, any data type
+ *  with indexable internal structure should be understood as having its
  *  indices to the right of any Index and intra block index.
  *
- *  For example, if the property has index structure {x, y}, a block index n,
- *  and data type std::complexa<double>. The total index structure can be
- *  thought of as being {x, y, n, c}, where c=0 and c=1 corresponds to real and
- *  imaginary part, respectively. If the dimensions are given by {SIZE_X,
+ *  For example, assume the property has index structure {x, y}, a block index
+ *  n, and data type std::complexa<double>. The total index structure can then
+ *  be thought of as being {x, y, n, c}, where c=0 and c=1 corresponds to real
+ *  and imaginary part, respectively. If the dimensions are given by {SIZE_X,
  *  SIZE_Y, BLOCK_SIZE, 2}, the element order is given by
  *  <center>\f$2*(BLOCK\_SIZE*(SIZE\_Y*x + y) + n) + c\f$.</center>
  *
@@ -68,35 +68,36 @@ namespace TBTK{
  *  ```
  *
  *  # Arrays
- *  Arrays are exported as follows
+ *  @link Array Arrays@endlink are exported as follows
  *  ```cpp
  *    Exporter exporter;
- *    exporter.save(array, "Filename.csv");
+ *    exporter.save(array, "Filename");
  *  ```
  *
  *  # Properties on the None and Ranges format
- *  Properties that are on the formats IndexDescriptor::Format::None and
- *  IndexDescriptor::Format::Ranges can be exported as follows.
- *  ```cpp
- *    Exporter exporter;
- *    exporter.save(property, "Filename.csv");
- *  ```
- *
- *  # Properties on the Custom format
- *  Properties that are on the formats IndexDescriptor::Format::Custom can be
+ *  @link Property::AbstractProperty Properties@endlink that are on the formats
+ *  IndexDescriptor::Format::None and IndexDescriptor::Format::Ranges can be
  *  exported as follows.
  *  ```cpp
  *    Exporter exporter;
- *    exporter.save({_a_, 5, _a_}, property, "Filename.csv");
+ *    exporter.save(property, "Filename");
+ *  ```
+ *
+ *  # Properties on the Custom format
+ *  @link Property::AbstractProperty Properties@endlink that are on the format
+ *  IndexDescriptor::Format::Custom can be exported as follows.
+ *  ```cpp
+ *    Exporter exporter;
+ *    exporter.save({_a_, 5, _a_}, property, "Filename");
  *  ```
  *  Here it is assumed that *property* has the index structure {x, y, z} and
  *  that the data for all indices satisfying the pattern {x, 5, z}. are to be
  *  exported.
  *
  *  # Export to external languages
- *  We here demonstrate how data can be exported and imported to other
- *  languages. Assume here that we want to export a density with the index
- *  structure {x, y, z} and number of elements are {SIZE_X, SIZE_Y, SIZE_Z}.
+ *  Below we demonstrate how to export data to other languages. The example is
+ *  for a density with the index structure {x, y, z} and with the number of
+ *  elements for the corresponding dimensions being {SIZE_X, SIZE_Y, SIZE_Z}.
  *  ## MATLAB
  *
  *  ### Export from C++
@@ -104,13 +105,13 @@ namespace TBTK{
  *  ```cpp
  *    Exporter exporter;
  *    exporter.setFormat(Exporter::Format::ColumnMajor);
- *    exporter.save({_a_, _a_, _a_}, density, "Filename.csv");
+ *    exporter.save({_a_, _a_, _a_}, density, "Filename");
  *  ```
  *
  *  ### Import to MATLAB
  *
  *  ```matlab
- *    data = dlmread('Filename.csv')
+ *    data = dlmread('Filename')
  *    density = reshape(data, [SIZE_X, SIZE_Y, SIZE_Z])
  *  ```
  *
@@ -120,14 +121,14 @@ namespace TBTK{
  *
  *  ```cpp
  *    Exporter exporter;
- *    exporter.save({_a_, _a_, _a_}, density, "Filename.csv");
+ *    exporter.save({_a_, _a_, _a_}, density, "Filename");
  *  ```
  *
  *  ### Import to Python
  *
  *  ```python
  *    import numpy as np
- *    density = np.loadtxt("Filename.csv").reshape(SIZE_X, SIZE_Y, SIZE_Z)
+ *    density = np.loadtxt("Filename").reshape(SIZE_X, SIZE_Y, SIZE_Z)
  *  ``` */
 class Exporter{
 public:
