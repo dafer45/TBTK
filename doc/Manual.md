@@ -1419,8 +1419,9 @@ where *n* is one of the numbers contained in *states*.
 @link ImportingAndExportingData Next: Importing and exporting data@endlink
 @page ImportingAndExportingData Importing and exporting data
 
-#  External memory {#ExternalMemory}
-TBTK facilitates the reading and writing of data to external memory through a few different schemes, which we describe here.
+# Importing and exporting data {#ImportingAndExportingData}
+TBTK provides a number of methods for reading and writing to external memory.
+We describe these methods here.
 
 # FileParser and ParameterSet {#FileParserAndParameterSet}
 The @link TBTK::FileParser FileParser@endlink can generate a @link TBTK::ParameterSet ParameterSet@endlink by parsing a file formated as follows.
@@ -1485,57 +1486,41 @@ For example, the following code creates a @link Model@endlink from a file downlo
 
 To be able to use the @link TBTK::Resource Resource@endlink class, [cURL](https://curl.haxx.se) must be installed when TBTK is compiled.
 
-# FileReader and FileWriter {#FileReaderAndFileWriter}
-The @link TBTK::FileReader FileReader@endlink and @link TBTK::FileWriter FileWriter@endlink can import and export @link Properties@endlink stored on the Ranges format.
-They use the [HDF5](https://support.hdfgroup.org/HDF5/) file format, which is particularly suited for data with an array-like structure.
-HDF5 also has wide support in languages such as Python, MATLAB, Mathematica, etc., which makes it easy to export Properties on the Ranges format to other languages.
-
-Multiple @link Properties@endlink can be stored in the same HDF5 file.
-To set the filename to read from and check whether the file exists, we can use the following code.
+# Exporter {#Exporter}
+The @link TBTK::Exporter Exporter@endlink can be used to export @link TBTK::Array Arrays@endlink and @link TBTK::Property::AbstractProperty Properties@endlink to plain text files.
+The purpose is to make it easy to transfer data to, for example, Python or MATLAB for post-processing.
+An Array or Property on the None or Ranges format can be exported as follows.
 ```cpp
-	FileReader::setFileName("Filename.h5");
-	bool fileExists = FileReader::exists();
+	Exporter exporter;
+	exporter.save(property, "Filename");
 ```
-The same code works with @link TBTK::FileReader FileReader@endlink interchanged with @link TBTK::FileWriter FileWriter@endlink.
-
-If a @link Properties Property@endlink with a given name has already been written to the HDF5 file, it is not possible to overwrite it.
-This is a limitation of the HDF5 file format itself.
-Instead, the whole file (including all Properties that have been written to it) has to be deleted.
-This is achieved through
+If the Property is on the Custom format, an additional pattern @link TBTK::Index Index@endlink is needed to determine the set of Indices to export the Property for.
+For example, it is possible to export a Property with the index structure {x, y, z} for all Indices of the form {x, 5, z} as follows.
 ```cpp
-	FileWriter::clear();
+	Exporter exporter;
+	exporter.save({_a_, 5, _a_}, property, "Filename");
 ```
 
-With *DataType* replaced by a @link Properties Property@endlink name, a Property can be written to the currently selected HDF5 file using
+By default, the @link TBTK::Exporter Exporter@endlink exports data using row major order.
+Some other languages, e.g. MATLAB and Fortran, uses column major order and it is, therefore, possible to change the output format.
+This is done through the following command.
 ```cpp
-	FileWriter::writeDataType(property);
-```
-The possible Properties are the following
-|Supported DataTypes|
-|-------------------|
-| EigenValues       |
-| WaveFunctions     |
-| DOS               |
-| Density           |
-| Magnetization     |
-| LDOS              |
-| SpinPolarizedLDOS |
-
-By default, the FileWriter will write the @link Properties Property@endlink to a dataset with the same name as the Property.
-However, it is possible to choose a custom name for the dataset using
-```cpp
-	FileWriter::writeDataType(data, "CustomName");
+	exporter.setFormat(Exporter::Format::ColumnMajor);
 ```
 
-It is similarly possible to read a @link Properties Property@endlink using the call
-```cpp
-	Property::DataType property = FileReader::readDataType();
+The following code can be used to import the data into Python
 ```
-Here *DataType* is to be replaced by the particular name of the Property wanted.
-To read a Property from a dataset set with a custom name, instead use
-```cpp
-	Property::DataType property = FileReader::readDataType("CustomName");
+	import numpy as np
+	property = np.loadtxt("Filename").reshape(SIZE_X, SIZE_Y, SIZE_Z)
 ```
+Here it is assumed that the data is three-dimensional with size SIZE_X, SIZE_Y, and SIZE_Z, and that the data has been exported on the row major order format (default).
+
+Similarly, the following code can be used to import the data into MATLAB
+```
+	data = dlmread('Filename')
+	property = reshape(data, [SIZE_X, SIZE_Y, SIZE_Z])
+```
+Here it is assumed that the data is three-dimensional with size SIZE_X, SIZE_Y, and SIZE_Z, and that the data has been exported on the column major order format.
 
 @link Streams Next: Streams@endlink
 @page Streams Streams
