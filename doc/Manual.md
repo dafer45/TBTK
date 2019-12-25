@@ -1783,7 +1783,7 @@ We begin by listing some of the most common commands needed for setting up and c
 ```cpp
 	Plotter plotter;
 ```
-*Note: All Plotter objects use the same matplotlib instance as backend and can therefore interfere with each other if multiple Plotter object are used.*
+*Note: All Plotter objects use the same matplotlib instance as backend and can therefore interfere with each other when used simultaneously.*
 
 <b>Setting the canvas size</b>
 ```cpp
