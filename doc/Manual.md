@@ -1766,44 +1766,28 @@ The result is a two-dimensional Array from which we can access elements using
 
 @link Plotting Next: Plotting@endlink
 @page Plotting Plotting
-@link TBTK::Plot::Plotter See more details about the Plotter in the API@endlink
+@link TBTK::Visualization::MatPlotLib::Plotter See more details about the Plotter in the API@endlink
 
-# Internal and external plotting tools
-TBTK provides methods for plotting both inside and outside the application.
-However, we note that these tools are currently quite limited, and other software is needed to produce high-quality figures.
-Nevertheless, the native plotting tools can be handy during the development process.
-They can also be convenient for getting a quick insight into calculations while they are still running.
-
-The internal plotting tool is the @link TBTK::Plot::Plotter Plotter@endlink, while the external tools consist of several Python scripts.
-Below, we describe each of these tools in more detail.
-
-# Plotter {#Plotter}
-The @link TBTK::Plot::Plotter Plotter@endlink can plot several data formats.
-For example, data stored in *std::vector<double>*, @link Array@endlink, and some @link Properties@endlink.
-It exists inside the Plot namespace, and below we assume that the following line has been added at the top of the code.
+# Plotting with Matplotlib as backend
+If Python, Matplotlib, and NumPy is installed, TBTK allows for data to be plotted immediately from C++.
+The @link TBTK::Visualization::MatPlotLib::Plotter Plotter@endlink exists in the namespace TBTK::Visualization::MatPlotLib and below we assume that the following lines have been added at the top of the code.
 ```cpp
-	using namespace Plot;
+	using namespace TBTK;
+	using namespace Visualization::MatPlotLib;
 ```
 
 ## Setting up and configuring a Plotter
-We begin by listing some of the most common commands needed for setting up and configuring the @link TBTK::Plot::Plotter Plotter@endlink.
+We begin by listing some of the most common commands needed for setting up and configuring the @link TBTK::Visualization::MatPlotLib::Plotter Plotter@endlink.
 
 <b>Create a Plotter</b>
 ```cpp
 	Plotter plotter;
 ```
+*Note: All Plotter objects use the same matplotlib instance as backend and can therefore interfere with each other if multiple Plotter object are used.*
 
 <b>Setting the canvas size</b>
 ```cpp
-	plotter.setWidth(width);
-	plotter.setHeight(height);
-```
-
-<b>Hold data between successive plots</b><br />
-By default, the Plotter clears the canvas between successive calls.
-This can be changed through the following call.
-```cpp
-	plotter.setHold(true);
+	plotter.setSize(width, height);
 ```
 
 <b>Clear the canvas</b>
@@ -1828,40 +1812,9 @@ These calls can also be combined into a single call.
 	plotter.setBounds(-1, 1, 0, 10);
 ```
 
-<b>Reset to auto-scaling axes.</b>
-```cpp
-	plotter.setAutoScaleX(true);
-	plotter.setAutoScaleY(true);
-```
-These calls can also be combined into a single call.
-```cpp
-	plotter.setAutoScale(true);
-```
-
-<b>Decoration</b><br />
-Many @link TBTK::Plot::Plotter Plotter@endlink routines accept a Decoration object to specify the color, line style, and line width/point size.
-A typical plot command with a Decoration object look like
-```cpp
-	plotter.plot(
-		data,
-		Decoration(
-			{192, 64, 64},
-			Decoration::LineStyle::Line,
-			size
-		)
-	);
-```
-Here the first argument to Decoration is the color in RGB format, with each entry a number between 0 and 255.
-The second argument is the line style, while the third argument in the case of Decoration::LineStyle::Line is the line width.
-If the line style instead is Decoration::LineStyle::Point, the third argument is the radius of the points.
-
 ## Examples
-We here provide a few examples of how the @link TBTK::Plot::Plotter Plotter@endlink can be used.
-
-<b>Individual data points</b>
-```cpp
-	plotter.plot(x, y);
-```
+We here provide a few examples of how the @link TBTK::Visualization::MatPlotLib::Plotter Plotter@endlink can be used.
+For more examples, including how to plot @link TBTK::Property::AbstractProperty Properties@endlink, see the @link TBTK::Visualization::MatPlotLib::Plotter API@endlink.
 
 <b>1D data</b><br />
 If *data* is an *std::vector<double>* or a one-dimensional @link Array@endlink, it can be plotted using
@@ -1879,56 +1832,3 @@ If *data* is an *std::vector<std::vector<double>>* or a two-dimensional @link Ar
 ```cpp
 	plotter.plot(data);
 ```
-
-# External plotting scripts {#PlottingScripts}
-Some @link Properties@endlink extracted on the None or Ranges format, and saved using the @link ImportingAndExportingData FileWriter@endlink, can be plotted using predefined python scripts.
-After installing TBTK, these plotting scripts are available immediately from the terminal using the syntax
-```bash
-	TBTKPlotProperty.py File.h5 parameters
-```
-Here *File.h5* is the file to which the FileWriter has written the Property.
-
-These scripts are immediately useful in a few different cases but are more generally useful as templates.
-To customize these templates, begin by copying the corresponding file from TBTK/Visualization/python/ into the applications source directory.
-
-## Examples
-
-<b>Density</b><br />
-If the @link TBTK::Property::Density Density@endlink has been extracted on a two-dimensional grid, it can be plotted using
-```cpp
-	TBTKPlotDensity.py File.h5
-```
-
-<b>DOS</b>
-```cpp
-	TBTKPlotDOS.py File.h5 sigma
-```
-Here *sigma* is a decimal number specifying the amount of Gaussian smoothing to apply along the energy axis.
-
-<b>EigenValues</b>
-```cpp
-	TBTKPlotEigenValues.py File.h5
-```
-This will plot the eigenvalues ordered from lowest to highest along the x-axis.
-
-<b>LDOS</b><br />
-If the @link TBTK::Property::LDOS LDOS@endlink has been extracted along a one-dimensional line, it can be plotted using
-```cpp
-	TBTKPlotLDOS.py File.h5 sigma
-```
-Here *sigma* is a decimal number specifying the amount of Gaussian smoothing to apply along the energy axis.
-
-<b>Magnetization</b><br />
-If the @link TBTK::Property::Magnetization Magnetization@endlink has been extracted on a two-dimensional grid, it can be plotted using
-```cpp
-	TBTKPlotMagnetization.py File.h5 theta phi
-```
-Here *theta* and *phi* are the polar and azimuthal angles, respectively, of the spin-polarization axis of interest.
-
-<b>SpinPolarizedLDOS</b><br />
-If the @link TBTK::Property::SpinPolarizedLDOS SpinPolarizedLDOS@endlink has been extracted along a one-dimensional line, it can be plotted using
-```cpp
-	TBTKPlotSpinPolarizedLDOS.py File.h5 theta phi sigma
-```
-Here *theta* and *phi* are the polar and azimuthal angles, respectively, of the spin-polarization axis of interest.
-Further, *sigma* is a decimal number specifying the amount of Gaussian smoothing to apply along the energy axis.
