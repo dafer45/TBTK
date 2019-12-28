@@ -484,7 +484,7 @@ inline void UnitHandler::setScales(const std::vector<std::string> &scales){
 	TBTKAssert(
 		scales.size() == 7,
 		"UnitHandler::setScales()",
-		"'scales' must contain six strings.",
+		"'scales' must contain seven strings.",
 		""
 	);
 
