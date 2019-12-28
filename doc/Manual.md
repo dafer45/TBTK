@@ -470,7 +470,7 @@ With the callback defined it is possible to create a callback dependent @link TB
 		<< down.getAmplitude() << "\n";
 ```
 <b>Output:</b>
-```bash
+```txt
 	-1
 	1
 
@@ -1425,7 +1425,7 @@ We describe these methods here.
 
 # FileParser and ParameterSet {#FileParserAndParameterSet}
 The @link TBTK::FileParser FileParser@endlink can generate a @link TBTK::ParameterSet ParameterSet@endlink by parsing a file formated as follows.
-```bash
+```txt
 	int     sizeX       = 50
 	int     sizeY       = 50
 	double  radius      = 10
@@ -1509,14 +1509,14 @@ This is done through the following command.
 ```
 
 The following code can be used to import the data into Python
-```
+```txt
 	import numpy as np
 	property = np.loadtxt("Filename").reshape(SIZE_X, SIZE_Y, SIZE_Z)
 ```
 Here it is assumed that the data is three-dimensional with size SIZE_X, SIZE_Y, and SIZE_Z, and that the data has been exported on the row major order format (default).
 
 Similarly, the following code can be used to import the data into MATLAB
-```
+```txt
 	data = dlmread('Filename')
 	property = reshape(data, [SIZE_X, SIZE_Y, SIZE_Z])
 ```
