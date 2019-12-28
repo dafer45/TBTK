@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file Decoration.h
  *  @brief Decoration
@@ -114,3 +115,4 @@ inline unsigned int Decoration::getSize() const{
 };	//End namespace TBTK
 
 #endif
+/// @endcond

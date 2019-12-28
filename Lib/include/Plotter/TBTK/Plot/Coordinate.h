@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file Coordinate.h
  *  @brief Coordinate
@@ -71,3 +72,4 @@ inline Coordinate::~Coordinate(){
 };	//End namespace TBTK
 
 #endif
+/// @endcond

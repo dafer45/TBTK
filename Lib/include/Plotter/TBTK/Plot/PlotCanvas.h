@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file Canvas.h
  *  @brief Canvas
@@ -409,3 +410,4 @@ inline void PlotCanvas::save(std::string filename) const{
 };	//End namespace TBTK
 
 #endif
+/// @endcond

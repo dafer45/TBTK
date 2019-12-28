@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file Path.h
  *  @brief Path
@@ -148,3 +149,4 @@ inline double Path::getMaxY() const{
 };	//End namespace TBTK
 
 #endif
+/// @endcond

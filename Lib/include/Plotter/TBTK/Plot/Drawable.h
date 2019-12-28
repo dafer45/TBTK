@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file Drawable.h
  *  @brief Drawable
@@ -67,3 +68,4 @@ inline Drawable::~Drawable(){
 };	//End namespace TBTK
 
 #endif
+/// @endcond

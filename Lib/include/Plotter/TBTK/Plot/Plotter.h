@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file Plotter.h
  *  @brief Plotter
@@ -313,3 +314,4 @@ inline void Plotter::clearDataStorage(){
 };	//End namespace TBTK
 
 #endif
+///@ endcond
