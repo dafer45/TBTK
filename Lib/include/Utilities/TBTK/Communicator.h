@@ -52,7 +52,7 @@ namespace TBTK{
  *  # Example
  *  \snippet Utilities/Communicator.cpp Communicator
  *  ## Output
- *  \snippet output/Utilities/Communicator.output Communicator */
+ *  \snippet output/Utilities/Communicator.txt Communicator */
 class Communicator{
 public:
 	//TBTKFeature Utilities.Communicator.construction.1 2019-11-01

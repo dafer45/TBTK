@@ -69,7 +69,7 @@ namespace PropertyExtractor{
  *  # Example
  *  \snippet PropertyExtractor/PatternValidator.cpp PatternValidator
  *  ## Output
- *  \snippet output/PropertyExtractor/PatternValidator.output PatternValidator
+ *  \snippet output/PropertyExtractor/PatternValidator.txt PatternValidator
  */
 class PatternValidator{
 public:

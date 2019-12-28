@@ -73,7 +73,7 @@ namespace PropertyExtractor{
  *  # Example
  *  \snippet PropertyExtractor/IndexTreeGenerator.cpp IndexTreeGenerator
  *  ##Output
- *  \snippet output/PropertyExtractor/IndexTreeGenerator.output IndexTreeGenerator */
+ *  \snippet output/PropertyExtractor/IndexTreeGenerator.txt IndexTreeGenerator */
 class IndexTreeGenerator{
 public:
 	/** Constructs a PropertyExtractor::PropertyExtractor.

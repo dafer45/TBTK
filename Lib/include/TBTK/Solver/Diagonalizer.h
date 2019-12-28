@@ -48,7 +48,7 @@ namespace Solver{
  *  # Example
  *  \snippet Solver/Diagonalizer.cpp Diagonalizer
  *  ## Output
- *  \snippet output/Solver/Diagonalizer.output Diagonalizer */
+ *  \snippet output/Solver/Diagonalizer.txt Diagonalizer */
 class Diagonalizer : public Solver, public Communicator{
 public:
 	/** Abstract base class for self-consistency callbacks. */

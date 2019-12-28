@@ -38,7 +38,7 @@ namespace TBTK{
  *  # Example
  *  \snippet Utilities/CArray.cpp CArray
  *  ## Output
- *  \snippet output/Utilities/CArray.output CArray */
+ *  \snippet output/Utilities/CArray.txt CArray */
 template<typename DataType>
 class CArray{
 public:

@@ -53,7 +53,7 @@ class FileReader;
  *  # Example
  *  \snippet Core/Model.cpp Model
  *  ## Output
- *  \snippet output/Core/Model.output Model */
+ *  \snippet output/Core/Model.txt Model */
 class Model : public Serializable, public Communicator, public Streamable{
 public:
 	/** Constructor. */

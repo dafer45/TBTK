@@ -64,7 +64,7 @@ namespace Solver{
  *  # Example
  *  \snippet Solver/BlockDiagonalizer.cpp BlockDiagonalizer
  *  ## Output
- *  \snippet output/Solver/BlockDiagonalizer.output BlockDiagonalizer */
+ *  \snippet output/Solver/BlockDiagonalizer.txt BlockDiagonalizer */
 class BlockDiagonalizer : public Solver, public Communicator{
 public:
 	/** Constructs a Solver::Diagonalizer. */

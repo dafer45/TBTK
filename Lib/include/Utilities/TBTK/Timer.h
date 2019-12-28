@@ -71,7 +71,7 @@ namespace TBTK{
  *  # Example
  *  \snippet Utilities/Timer.cpp Timer
  *  ## Output
- *  \snippet output/Utilities/Timer.output Timer */
+ *  \snippet output/Utilities/Timer.txt Timer */
 class Timer{
 public:
 	/** Push timestamp onto stack.

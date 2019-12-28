@@ -39,7 +39,7 @@ namespace Property{
  *  # Example
  *  \snippet Property/WaveFunctions.cpp WaveFunctions
  *  ## Output
- *  \snippet output/Property/WaveFunctions.output WaveFunctions
+ *  \snippet output/Property/WaveFunctions.txt WaveFunctions
  *  \image html output/Property/WaveFunctions/figures/PropertyWaveFunctionsWaveFunction1D.png
  *  \image html output/Property/WaveFunctions/figures/PropertyWaveFunctionsWaveFunction2D.png */
 class WaveFunctions : public AbstractProperty<std::complex<double>>{

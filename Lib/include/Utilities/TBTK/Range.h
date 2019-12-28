@@ -48,7 +48,7 @@ namespace TBTK{
  *  # Example
  *  \snippet Utilities/Range.cpp Range
  *  ## Output
- *  \snippet output/Utilities/Range.output Range */
+ *  \snippet output/Utilities/Range.txt Range */
 class Range : public Serializable{
 public:
 	/** Constructor.

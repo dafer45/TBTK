@@ -38,7 +38,7 @@ namespace TBTK{
  *  # Example
  *  \snippet ManyParticle/ExtensiveBitRegister.cpp ExtensiveBitRegister
  *  ## Output
- *  \snippet output/ManyParticle/ExtensiveBitRegister.output ExtensiveBitRegister
+ *  \snippet output/ManyParticle/ExtensiveBitRegister.txt ExtensiveBitRegister
  */
 class ExtensiveBitRegister{
 public:

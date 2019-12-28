@@ -36,7 +36,7 @@ namespace TBTK{
  *  # Example
  *  \snippet Utilities/AnnotatedArray.cpp AnnotatedArray
  *  ## Output
- *  \snippet output/Utilities/AnnotatedArray.output AnnotatedArray */
+ *  \snippet output/Utilities/AnnotatedArray.txt AnnotatedArray */
 template<typename DataType, typename AxesType>
 class AnnotatedArray : public Array<DataType>{
 public:

@@ -67,7 +67,7 @@ namespace TBTK{
  *  # Example
  *  \snippet Utilities/PropertyConverter.cpp PropertyConverter
  *  ## Output
- *  \snippet output/Utilities/PropertyConverter.output PropertyConverter */
+ *  \snippet output/Utilities/PropertyConverter.txt PropertyConverter */
 class PropertyConverter{
 public:
 	/** Converts an AbstractProperty on the format

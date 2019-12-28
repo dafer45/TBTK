@@ -55,7 +55,7 @@ namespace MatPlotLib{
  *  # Example
  *  \snippet Visualization/MatPlotLib/Argument.cpp Argument
  *  ## Output
- *  \snippet output/Visualization/MatPlotLib/Argument.output Argument */
+ *  \snippet output/Visualization/MatPlotLib/Argument.txt Argument */
 class Argument{
 public:
 	/** Constructs an uninitialized Argument. */

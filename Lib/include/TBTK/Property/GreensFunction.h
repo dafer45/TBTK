@@ -40,7 +40,7 @@ namespace Property{
  *  # Example
  *  \snippet Property/GreensFunction.cpp GreensFunction
  *  ## Output
- *  \snippet output/Property/GreensFunction.output GreensFunction */
+ *  \snippet output/Property/GreensFunction.txt GreensFunction */
 class GreensFunction : public EnergyResolvedProperty<std::complex<double>>{
 public:
 	/** Enum class for specifying the Green's function type. */

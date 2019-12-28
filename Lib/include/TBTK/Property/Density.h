@@ -37,7 +37,7 @@ namespace Property{
  *  # Example
  *  \snippet Property/Density.cpp Density
  *  ## Output
- *  \snippet output/Property/Density.output Density
+ *  \snippet output/Property/Density.txt Density
  *  \image html output/Property/Density/figures/PropertyDensityDensity.png
  *  \image html output/Property/Density/figures/PropertyDensityDensityCut.png */
 class Density : public AbstractProperty<double>{

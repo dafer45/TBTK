@@ -52,7 +52,7 @@ namespace TBTK{
  *  # Example
  *  \snippet Utilities/SpinMatrix.cpp SpinMatrix
  *  ## Output
- *  \snippet output/Utilities/SpinMatrix.output SpinMatrix */
+ *  \snippet output/Utilities/SpinMatrix.txt SpinMatrix */
 class SpinMatrix : public Matrix<std::complex<double>, 2, 2>{
 public:
 	/** Constructor. */

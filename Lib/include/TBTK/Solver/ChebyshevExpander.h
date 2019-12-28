@@ -65,7 +65,7 @@ namespace Solver{
  *  # Example
  *  \snippet Solver/ChebyshevExpander.cpp ChebyshevExpander
  *  ## Output
- *  \snippet output/Solver/ChebyshevExpander.output ChebyshevExpander */
+ *  \snippet output/Solver/ChebyshevExpander.txt ChebyshevExpander */
 class ChebyshevExpander : public Solver, public Communicator{
 public:
 	/** Constructs a Solver::ChebyshevExpander. */

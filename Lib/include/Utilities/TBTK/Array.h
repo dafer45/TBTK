@@ -79,7 +79,7 @@ namespace TBTK{
  *  # Example
  *  \snippet Utilities/Array.cpp Array
  *  ## Output
- *  \snippet output/Utilities/Array.output Array */
+ *  \snippet output/Utilities/Array.txt Array */
 template<typename DataType>
 class Array{
 public:

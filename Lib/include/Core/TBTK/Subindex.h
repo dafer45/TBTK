@@ -87,7 +87,7 @@ namespace TBTK{
  *  # Example
  *  \snippet Core/Subindex.cpp Subindex
  *  ## Output
- *  \snippet output/Core/Subindex.output Subindex */
+ *  \snippet output/Core/Subindex.txt Subindex */
 class Subindex : PseudoSerializable{
 public:
 	//TBTKFeature Core.Subindex.Construction.1 2019-09-22

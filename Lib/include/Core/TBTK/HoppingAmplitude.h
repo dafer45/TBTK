@@ -49,7 +49,7 @@ enum HermitianConjugate {HC};
  *  # Example
  *  \snippet Core/HoppingAmplitude.cpp HoppingAmplitude
  *  ## Output
- *  \snippet output/Core/HoppingAmplitude.output HoppingAmplitude */
+ *  \snippet output/Core/HoppingAmplitude.txt HoppingAmplitude */
 class HoppingAmplitude{
 public:
 	/** Abstract base class for callbacks that allow for delayed

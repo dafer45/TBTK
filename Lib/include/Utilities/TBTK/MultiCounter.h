@@ -37,7 +37,7 @@ namespace TBTK{
  *  # Example
  *  \snippet Utilities/MultiCounter.cpp MultiCounter
  *  ## Output
- *  \snippet output/Utilities/MultiCounter.output MultiCounter */
+ *  \snippet output/Utilities/MultiCounter.txt MultiCounter */
 template<typename DataType>
 class MultiCounter{
 public:

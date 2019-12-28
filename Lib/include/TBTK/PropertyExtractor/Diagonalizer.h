@@ -48,7 +48,7 @@ namespace PropertyExtractor{
  *  # Example
  *  \snippet PropertyExtractor/Diagonalizer.cpp Diagonalizer
  *  ## Output
- *  \snippet output/PropertyExtractor/Diagonalizer.output Diagonalizer
+ *  \snippet output/PropertyExtractor/Diagonalizer.txt Diagonalizer
  *  \image html output/PropertyExtractor/Diagonalizer/figures/PropertyExtractorDiagonalizerDOS.png
  *  \image html output/PropertyExtractor/Diagonalizer/figures/PropertyExtractorDiagonalizerDensity.png
  *  \image html output/PropertyExtractor/Diagonalizer/figures/PropertyExtractorDiagonalizerLDOS.png */

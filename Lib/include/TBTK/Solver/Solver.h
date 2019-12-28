@@ -38,7 +38,7 @@ namespace Solver{
  *  # Example
  *  \snippet Solver/Solver.cpp Solver
  *  ## Output
- *  \snippet output/Solver/Solver.output Solver */
+ *  \snippet output/Solver/Solver.txt Solver */
 class Solver{
 public:
 	/** Constructs a Solver::Solver. */

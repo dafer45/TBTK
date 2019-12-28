@@ -187,7 +187,7 @@ namespace TBTK{
  *  # Example
  *  \snippet Utilities/UnitHandler.cpp UnitHandler
  *  ## Output
- *  \snippet output/Utilities/UnitHandler.output UnitHandler */
+ *  \snippet output/Utilities/UnitHandler.txt UnitHandler */
 class UnitHandler{
 public:
 	/** Get physical constant in base units. */

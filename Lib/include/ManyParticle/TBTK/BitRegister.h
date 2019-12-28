@@ -37,7 +37,7 @@ namespace TBTK{
  *  # Example
  *  \snippet ManyParticle/BitRegister.cpp BitRegister
  *  ## Output
- *  \snippet output/ManyParticle/BitRegister.output BitRegister */
+ *  \snippet output/ManyParticle/BitRegister.txt BitRegister */
 class BitRegister{
 public:
 	/** Constructor. */

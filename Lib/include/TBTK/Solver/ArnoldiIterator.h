@@ -56,7 +56,7 @@ namespace Solver{
  *  # Example
  *  \snippet Solver/ArnoldiIterator.cpp ArnoldiIterator
  *  ## Output
- *  \snippet output/Solver/ArnoldiIterator.output ArnoldiIterator */
+ *  \snippet output/Solver/ArnoldiIterator.txt ArnoldiIterator */
 class ArnoldiIterator : public Solver, public Communicator{
 public:
 	/** Constructs a Solver::ArnoldiIterator. */

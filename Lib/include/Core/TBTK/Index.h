@@ -40,7 +40,7 @@ namespace TBTK{
  *  # Example
  *  \snippet Core/Index.cpp Index
  *  ## Output
- *  \snippet output/Core/Index.output Index */
+ *  \snippet output/Core/Index.txt Index */
 class Index{
 public:
 	//TBTKFeature Core.Index.Construction.1 2019-09-19
