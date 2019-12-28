@@ -8,6 +8,7 @@ body, table, div, p, dl {
 
 h1, h2, h3, h4, h5, h6 {
 	line-height: 100%;		/* Modified */
+	text-shadow: 1px 1px 2px #8888FF;
 }
 
 div.line {
@@ -23,8 +24,35 @@ div.textblock {
 	padding: 10px;			/* Modified */
 	width: 800px;			/* Modified */
 	background-color: #F8F8FF;	/* Modified */
+	box-shadow: 5px 5px 3px;
+	margin-bottom: 10px;
 }
 
 #nav-tree .label{
 	font-size: 14px;		/* Modified */
+}
+
+#side-nav {
+	box-shadow: 5px 0px 3px;
+}
+
+.headertitle {
+	text-shadow: 2px 2px 5px #8888FF;
+}
+
+#projectname {
+	text-shadow: 2px 2px 5px #8888FF;
+}
+
+.fragment {
+	box-shadow: 2px 2px 3px;
+}
+
+.image {
+	margin-bottom: 5px;
+	box-shadow: 2px 2px 3px;
+}
+
+.doxtable {
+	box-shadow: 2px 2px 3px;
 }
