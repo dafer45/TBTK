@@ -1,0 +1,6 @@
+Additional CMake flags that can be enabled:
+	-DTBTK_ENABLE_ALL_OPTIONS=true
+		Enables experimental parts of the API.
+	-DTBTK_DOCUMENTATION_NICE=true
+		Enables high resolution output for some documentation examples.
+		Meant to be used when producing the final documentation.
