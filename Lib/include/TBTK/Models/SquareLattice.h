@@ -31,7 +31,32 @@
 namespace TBTK{
 namespace Models{
 
-/** @brief Square lattice model. */
+/** @brief Square lattice model.
+ *
+ *  The Square lattice allows for nearest-neighbor or next nearest-neighbor
+ *  Models on a square lattice to be set up easily. A Model with the side
+ *  lengths SIZE_X and SIZE_Y is created as follows.
+ *  ```cpp
+ *    Model model = Models::SquareLattice({SIZE_X, SIZE_Y}, {U, t, tp});
+ *  ```
+ *  Here U is the on-site potential, t is the nearest neighbor hopping
+ *  amplitude, and tp is an optional next-nearest neighbor hopping amplitude.
+ *
+ *  It is also possible to create a spinful model by adding a IDX_SPIN flag as
+ *  follows.
+ *  ```cpp
+ *    Model model = Models::SquareLattice(
+ *      {SIZE_X, SIZE_Y, IDX_SPIN},
+ *      {U, t, tp}
+ *    );
+ *  ```
+ *
+ *  The resulting Model has not yet been *constructed*, which means that it is
+ *  possible to add further @link HoppingAmplitude HoppingAmplitudes@endlink to
+ *  it. Before using it, remember to call
+ *  ```cpp
+ *    model.construct();
+ *  ``` */
 class SquareLattice : public Model{
 public:
 	/** Constructs a square lattice.
