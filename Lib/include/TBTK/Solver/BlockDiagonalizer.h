@@ -67,22 +67,32 @@ namespace Solver{
  *  \snippet output/Solver/BlockDiagonalizer.txt BlockDiagonalizer */
 class BlockDiagonalizer : public Solver, public Communicator{
 public:
+	/** Abstract base class for self-consistency callbacks. */
+	class SelfConsistencyCallback{
+	public:
+		/** Function that is called after the Hamiltonian has been
+		 *  diagonalized and is responsible for carrying out the
+		 *  self-consistency step. The function should return true if
+		 *  the result has converged and false otherwise. */
+		virtual bool selfConsistencyCallback(
+			BlockDiagonalizer &blockDiagonalizer
+		) = 0;
+	};
+
 	/** Constructs a Solver::Diagonalizer. */
 	BlockDiagonalizer();
 
-	/** Set self-consistency callback. If set to nullptr or never called,
-	 *  the self-consistency loop will not be run.
+	/** Set SelfCOnsistencyCallback. If never called, the self-consistency
+	 *  loop will not be run.
 	 *
-	 *  @param selfConsistencyCallback A callback function that will be
-	 *  called after the Model has been diagonalized. The function should
-	 *  calculate relevant quantities, modify the Model if necessary, and
-	 *  return false if further iteration is necessary. If true is
-	 *  returned, self-consistency is considered to be reached and the
-	 *  iteration stops. */
+	 *  @param selfConsistencyCallback A SelfConsistencyCallback that will
+	 *  be called after the Model has been diagonalized. The callback
+	 *  should calculate relevant quantities, modify the Model if
+	 *  necessary, and return false if further iteration is necessary. If
+	 *  true is returned, self-consistency is considered to be reached and
+	 *  the iteration stops. */
 	void setSelfConsistencyCallback(
-		bool (*selfConsistencyCallback)(
-			BlockDiagonalizer &blockDiagonalizer
-		)
+		SelfConsistencyCallback &selfConsistencyCallback
 	);
 
 	/** Set maximum number of iterations for the self-consistency loop.
@@ -198,7 +208,7 @@ private:
 
 	/** Callback function to call each time a diagonalization has been
 	 *  completed. */
-	bool (*selfConsistencyCallback)(BlockDiagonalizer &blockDiagonalizer);
+	SelfConsistencyCallback *selfConsistencyCallback;
 
 	/** Allocates space for Hamiltonian etc. */
 	void init();
@@ -211,11 +221,9 @@ private:
 };
 
 inline void BlockDiagonalizer::setSelfConsistencyCallback(
-	bool (*selfConsistencyCallback)(
-		BlockDiagonalizer &blockDiagonalizer
-	)
+	SelfConsistencyCallback &selfConsistencyCallback
 ){
-	this->selfConsistencyCallback = selfConsistencyCallback;
+	this->selfConsistencyCallback = &selfConsistencyCallback;
 }
 
 inline void BlockDiagonalizer::setMaxIterations(int maxIterations){

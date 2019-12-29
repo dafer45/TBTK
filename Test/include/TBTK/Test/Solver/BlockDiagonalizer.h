@@ -13,14 +13,20 @@ TEST(BlockDiagonalizer, Destructor){
 	//Not testable on its own.
 }
 
-int selfConsistencyCounter;
-bool selfConsistencyCallback(BlockDiagonalizer &diagonalizer){
-	selfConsistencyCounter++;
-	if(selfConsistencyCounter == 10)
-		return true;
-	else
-		return false;
-}
+class SelfConsistencyCallback :
+	public BlockDiagonalizer::SelfConsistencyCallback
+{
+public:
+	int selfConsistencyCounter;
+
+	bool selfConsistencyCallback(BlockDiagonalizer &diagonalizer){
+		selfConsistencyCounter++;
+		if(selfConsistencyCounter == 10)
+			return true;
+		else
+			return false;
+	}
+} selfConsistencyCallback;
 
 TEST(BlockDiagonalizer, setSelfConsistencyCallback){
 	Model model;
@@ -36,16 +42,16 @@ TEST(BlockDiagonalizer, setSelfConsistencyCallback){
 			solver.setParallelExecution(true);
 		solver.setVerbose(false);
 		solver.setModel(model);
-		selfConsistencyCounter = 0;
+		selfConsistencyCallback.selfConsistencyCounter = 0;
 		solver.setSelfConsistencyCallback(selfConsistencyCallback);
 		solver.run();
-		EXPECT_EQ(selfConsistencyCounter, 10);
+		EXPECT_EQ(selfConsistencyCallback.selfConsistencyCounter, 10);
 
-		selfConsistencyCounter = 0;
+		selfConsistencyCallback.selfConsistencyCounter = 0;
 		solver.setSelfConsistencyCallback(selfConsistencyCallback);
 		solver.setMaxIterations(5);
 		solver.run();
-		EXPECT_EQ(selfConsistencyCounter, 5);
+		EXPECT_EQ(selfConsistencyCallback.selfConsistencyCounter, 5);
 	}
 }
 

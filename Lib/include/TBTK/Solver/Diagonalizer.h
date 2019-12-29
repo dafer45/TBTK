@@ -69,8 +69,8 @@ public:
 	/** Constructs a Solver::Diagonalizer. */
 	Diagonalizer();
 
-	/** Set SelfConsistencyCallback. If set to nullptr or never called,
-	 *  the self-consistency loop will not be run.
+	/** Set SelfConsistencyCallback. If never called, the self-consistency
+	 *  loop will not be run.
 	 *
 	 *  @param selfConsistencyCallback A SelfConsistencyCallback that will
 	 *  be called after the Model has been diagonalized. The callback
