@@ -8,8 +8,10 @@ Examples {#Examples}
 - @subpage SquareLattice2D
 - @subpage CubicLattice3D
 
-## Subperconductivity
+## Superconductivity
 - @subpage Superconductivity
+- @subpage SuperconductingVortex
+- @subpage SuperconductivityMagneticImpurity
 
 ## Topological superconductivity
 - @subpage KitaevModel
@@ -49,13 +51,46 @@ Examples {#Examples}
 
 @page Superconductivity Superconductivity
 # Hamiltonian {#SuperconductivityHamiltonian}
-<center>\f$H = -\mu\sum_{\mathbf{i}}\left(c_{\mathbf{i}}^{\dagger}c_{\mathbf{i}} - c_{\mathbf{i}}c_{\mathbf{i}}^{\dagger}\right) + t\sum_{\langle\mathbf{i}\mathbf{j}\rangle}\left(c_{\mathbf{i}}^{\dagger}c_{\mathbf{j}} - c_{\mathbf{i}}c_{\mathbf{j}}^{\dagger}\right) + \sum_{\mathbf{i}}\left(\Delta c_{\mathbf{i}}c_{\mathbf{i}} + \Delta^{*}c_{\mathbf{i}}^{\dagger}c_{\mathbf{i}}^{\dagger}\right)\f$</center>
+<center>\f$H = -\mu\sum_{\mathbf{i}}\left(c_{\mathbf{i}\uparrow}^{\dagger}c_{\mathbf{i}\uparrow} - c_{\mathbf{i}\downarrow}c_{\mathbf{i}\downarrow}^{\dagger}\right) + t\sum_{\langle\mathbf{i}\mathbf{j}\rangle}\left(c_{\mathbf{i}\uparrow}^{\dagger}c_{\mathbf{j}\uparrow} - c_{\mathbf{i}\downarrow}c_{\mathbf{j}\downarrow}^{\dagger}\right) + \sum_{\mathbf{i}}\left(\Delta c_{\mathbf{i}\downarrow}c_{\mathbf{i}\downarrow} + \Delta^{*}c_{\mathbf{i}\uparrow}^{\dagger}c_{\mathbf{i}\uparrow}^{\dagger}\right)\f$</center>
+
+# Note
+For ordinary s-wave superconductivity, only spin-up electrons and spin-down holes are considered.
+This is why the Hamiltonian above has up-spin indices on the electron operators (creation if it is to the left and annihilation if it is to the right) and down-spin indices on the hole operators (annihilation if it is to the left and creation if it is to the right).
+
+By introducing the notation \f$a_{\mathbf{i}0} = c_{\mathbf{i}\uparrow}\f$ and \f$a_{\mathbf{i}1} = c_{\mathbf{i}\downarrow}^{\dagger}\f$, we can rewrite the Hamiltonian as
+<center>\f$H = -\mu\sum_{\mathbf{i}}\left(a_{\mathbf{i}0}^{\dagger}a_{\mathbf{i}0} - a_{\mathbf{i}1}^{\dagger}a_{\mathbf{i}1}\right) + t\sum_{\langle\mathbf{i}\mathbf{j}\rangle}\left(a_{\mathbf{i}0}^{\dagger}a_{\mathbf{j}0} - a_{\mathbf{i}1}^{\dagger}a_{\mathbf{j}1}\right) + \sum_{\mathbf{i}}\left(\Delta a_{\mathbf{i}0}^{\dagger}a_{\mathbf{i}1} + \Delta^{*}a_{\mathbf{i}1}^{\dagger}a_{\mathbf{i}0}\right)\f$</center>
+This is on the same form as an ordinary bilinear Hamiltonian and therefore allows us to solve the problem as such.
 
 # Code {#SuperconductivityCode}
 \snippet Examples/Superconductivity.cpp Superconductivity
 
 # Output {#SuperconductivityOutput}
 \image html output/Examples/Superconductivity/figures/ExamplesSuperconductivityDOS.png
+
+@page SuperconductingVortex Superconducting vortex (Caroli-de Gennes-Matricon)
+# Hamiltonian {#SuperconductingVortexHamiltonian}
+<center>\f$H = -\mu\sum_{\mathbf{i}}\left(c_{\mathbf{i}\uparrow}^{\dagger}c_{\mathbf{i}\uparrow} - c_{\mathbf{i}\downarrow}c_{\mathbf{i}\downarrow}^{\dagger}\right) + t\sum_{\langle\mathbf{i}\mathbf{j}\rangle}\left(c_{\mathbf{i}\uparrow}^{\dagger}c_{\mathbf{j}\uparrow} - c_{\mathbf{i}\downarrow}c_{\mathbf{j}\downarrow}^{\dagger}\right) + \sum_{\mathbf{i}}\left(\Delta(\mathbf{i}) c_{\mathbf{i}\downarrow}c_{\mathbf{i}\downarrow} + \Delta^{*}(\mathbf{i})c_{\mathbf{i}\uparrow}^{\dagger}c_{\mathbf{i}\uparrow}^{\dagger}\right)\f$</center>
+
+# Code {#SuperconductingVortexCode}
+\snippet Examples/SuperconductingVortex.cpp SuperconductingVortex
+
+# Output {#SuperconductingVortexOutput}
+\image html output/Examples/SuperconductingVortex/figures/ExamplesSuperconductingVortexLDOS.png
+
+@page SuperconductivityMagneticImpurity Magnetic impurity (Yu-Shiba-Rusinov)
+# Hamiltonian {#SuperconductivityMagneticImpurityHamiltonian}
+<center>\f{eqnarray*}{
+	H &=& \sum_{\mathbf{i}}\left(\left(J - \mu\right)c_{\mathbf{i}\uparrow}^{\dagger}c_{\mathbf{i}\uparrow} + \left(J + \mu\right)c_{\mathbf{i}\downarrow}c_{\mathbf{i}\downarrow}^{\dagger}\right)\\
+	&+& t\sum_{\langle\mathbf{i}\mathbf{j}\rangle}\left(c_{\mathbf{i}\uparrow}^{\dagger}c_{\mathbf{j}\uparrow} - c_{\mathbf{i}\downarrow}c_{\mathbf{j}\downarrow}^{\dagger}\right)\\
+	&+& \sum_{\mathbf{i}}\left(\Delta c_{\mathbf{i}\downarrow}c_{\mathbf{i}\downarrow} + \Delta^{*}c_{\mathbf{i}\uparrow}^{\dagger}c_{\mathbf{i}\uparrow}^{\dagger}\right)
+\f}</center>
+
+# Code {#SuperconductivityMagneticImpurityCode}
+\snippet Examples/SuperconductivityMagneticImpurity.cpp SuperconductivityMagneticImpurity
+
+# Output {#SuperconductivityMagneticImpurityOutput}
+\image html output/Examples/SuperconductivityMagneticImpurity/figures/ExamplesSuperconductivityMagneticImpurityLDOS.png
+\image html output/Examples/SuperconductivityMagneticImpurity/figures/ExamplesSuperconductivityMagneticImpurityEigenValues.png
 
 @page KitaevModel Kitaev Model
 # Hamiltonian {#KitaevModelHamiltonian}
