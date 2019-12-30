@@ -31,84 +31,89 @@ int main(){
 #endif //TBTK_DOCUMENTATION_NICE
 	const double t = -1;
 	const double mu = -2;
-	const double Delta = 0.5;
 
-	//Set up the Model.
-	Model model;
-	for(unsigned int x = 0; x < SIZE_X; x++){
-		for(unsigned int y = 0; y < SIZE_Y; y++){
-			for(unsigned int ph = 0; ph < 2; ph++){
-				model << HoppingAmplitude(
-					-mu*(1 - 2*ph),
-					{x, y, ph},
-					{x, y, ph}
-				);
-
-				if(x+1 < SIZE_X){
-					model << HoppingAmplitude(
-						t*(1 - 2*ph),
-						{x+1, y, ph},
-						{x, y, ph}
-					) + HC;
-				}
-				if(y+1 < SIZE_Y){
-					model << HoppingAmplitude(
-						t*(1 - 2*ph),
-						{x, y+1, ph},
-						{x, y, ph}
-					) + HC;
-				}
-			}
-
-			model << HoppingAmplitude(
-				Delta,
-				{x, y, 1},
-				{x, y, 0}
-			) + HC;
-		}
-	}
-	model.construct();
-	model.setChemicalPotential(mu);
-
-	//Set up the Solver.
-	Solver::Diagonalizer solver;
-	solver.setModel(model);
-	solver.run();
-
-	//Set up the PropertyExtractor.
-	const double LOWER_BOUND = -5;
-	const double UPPER_BOUND = 5;
-	const unsigned int RESOLUTION = 1000;
-	PropertyExtractor::Diagonalizer propertyExtractor(solver);
-	propertyExtractor.setEnergyWindow(
-		LOWER_BOUND,
-		UPPER_BOUND,
-		RESOLUTION
-	);
-
-	//Calculate the density of states (DOS).
-	Property::DOS dos = propertyExtractor.calculateDOS();
-
-	//Smooth the DOS.
-	const double SMOOTHING_SIGMA = 0.1;
-	const unsigned int SMOOTHING_WINDOW = 101;
-	dos = Smooth::gaussian(dos, SMOOTHING_SIGMA, SMOOTHING_WINDOW);
-
-	//Plot the DOS.
 	Plotter plotter;
-	plotter.plot(dos);
-	plotter.save("figures/DOS.png");
+	for(unsigned int n = 0; n < 2; n++){
+		double Delta;
+		if(n == 0)
+			Delta = 0.5;
+		else
+			Delta = 0;
 
-	//Calculate the wave functions.
-/*	Property::WaveFunctions waveFunctions
-		= propertyExtractor.calculateWaveFunctions(
-			{{_a_, _a_, _a_}},
-			{_a_}
+		//Set up the Model.
+		Model model;
+		for(unsigned int x = 0; x < SIZE_X; x++){
+			for(unsigned int y = 0; y < SIZE_Y; y++){
+				for(unsigned int ph = 0; ph < 2; ph++){
+					model << HoppingAmplitude(
+						-mu*(1. - 2*ph),
+						{x, y, ph},
+						{x, y, ph}
+					);
+
+					if(x+1 < SIZE_X){
+						model << HoppingAmplitude(
+							t*(1. - 2*ph),
+							{x+1, y, ph},
+							{x, y, ph}
+						) + HC;
+					}
+					if(y+1 < SIZE_Y){
+						model << HoppingAmplitude(
+							t*(1. - 2*ph),
+							{x, y+1, ph},
+							{x, y, ph}
+						) + HC;
+					}
+				}
+
+				model << HoppingAmplitude(
+					Delta,
+					{x, y, 1},
+					{x, y, 0}
+				) + HC;
+			}
+		}
+		model.construct();
+
+		//Set up the Solver.
+		Solver::Diagonalizer solver;
+		solver.setModel(model);
+		solver.run();
+
+		//Set up the PropertyExtractor.
+		const double LOWER_BOUND = -1.5;
+		const double UPPER_BOUND = 1.5;
+		const unsigned int RESOLUTION = 1000;
+		PropertyExtractor::Diagonalizer propertyExtractor(solver);
+		propertyExtractor.setEnergyWindow(
+			LOWER_BOUND,
+			UPPER_BOUND,
+			RESOLUTION
 		);
 
-	//Plot the wave function for state 37.
-	plotter.clear();
-	plotter.plot({_a_, _a_}, 37, waveFunctions);
-	plotter.save("figures/WaveFunction.png");*/
+		//Calculate the density of states (DOS).
+		Property::DOS dos = propertyExtractor.calculateDOS();
+
+		//Smooth the DOS.
+		const double SMOOTHING_SIGMA = 0.1;
+		const unsigned int SMOOTHING_WINDOW = 201;
+		dos = Smooth::gaussian(dos, SMOOTHING_SIGMA, SMOOTHING_WINDOW);
+
+		//Plot the DOS.
+		if(n == 0){
+			plotter.plot(
+				dos,
+				{{"linestyle", "-"}, {"color", "black"}}
+			);
+		}
+		else{
+			plotter.plot(
+				dos,
+				{{"linestyle", "--"}, {"color", "black"}}
+			);
+		}
+	}
+	plotter.save("figures/DOS.png");
 }
 //! [Superconductivity]
