@@ -551,22 +551,26 @@ void Plotter::plot(const Array<double> &data, const Argument &argument){
 	switch(ranges.size()){
 	case 1:
 	{
-		vector<double> d;
+		Array<double> x({ranges[0]});
 		for(unsigned int n = 0; n < ranges[0]; n++)
-			d.push_back(data[{n}]);
-		plot1D(d, argument);
+			x[{n}] = n;
+		x = getNonDefaultAxis(x, 0);
+		plot(x, data, argument);
 
 		break;
 	}
 	case 2:
 	{
-		vector<vector<double>> d;
-		for(unsigned int m = 0; m < ranges[0]; m++){
-			d.push_back(vector<double>());
-			for(unsigned int n = 0; n < ranges[1]; n++)
-				d[m].push_back(data[{m, n}]);
+		Array<double> x({ranges[0], ranges[1]});
+		Array<double> y({ranges[0], ranges[1]});
+		for(unsigned int X = 0; X < ranges[0]; X++){
+			for(unsigned int Y = 0; Y < ranges[1]; Y++){
+				x[{X, Y}] = X;
+				y[{X, Y}] = Y;
+			}
 		}
-		plot2D(d, argument);
+
+		plot(x, y, data, argument);
 
 		break;
 	}
