@@ -100,15 +100,15 @@ void Plotter::plot(
 	setLabelX("Energy", false);
 	setLabelY("DOS", false);
 
-	vector<double> y;
-	vector<double> x;
+	Array<double> x({dos.getSize()});
+	Array<double> y({dos.getSize()});
 	double dE = dos.getDeltaE();
 	for(unsigned int n = 0; n < dos.getSize(); n++){
-		x.push_back(dos.getLowerBound() + n*dE);
-		y.push_back(dos(n));
+		x[{n}] = dos.getLowerBound() + n*dE;
+		y[{n}] = dos(n);
 	}
 
-	plot1D(x, y, argument);
+	plot(x, y, argument);
 }
 
 void Plotter::plot(
