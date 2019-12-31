@@ -802,14 +802,13 @@ void Diagonalizer::calculateLDOSCallback(
 	const CArray<double> &eigenValues = solver.getEigenValues();
 
 	double dE = ldos.getDeltaE();
-	for(int n = 0; n < model.getBasisSize(); n++){
+	for(int n = 0; n < eigenValues.getSize(); n++){
 		if(eigenValues[n] > lowerBound && eigenValues[n] < upperBound){
 			complex<double> u = solver.getAmplitude(n, index);
 
 			int e = round((eigenValues[n] - lowerBound)/dE);
-			if(e >= energyResolution)
-				e = energyResolution - 1;
-			data[offset + e] += real(conj(u)*u)/dE;
+			if(e >= 0 && e < energyResolution)
+				data[offset + e] += real(conj(u)*u)/dE;
 		}
 	}
 }
