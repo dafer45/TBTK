@@ -33,6 +33,7 @@ int main(){
 	const double mu = -2;
 
 	Plotter plotter;
+	plotter.setBoundsX(-1.5, 1.5);
 	for(unsigned int n = 0; n < 2; n++){
 		double Delta;
 		if(n == 0)
@@ -82,8 +83,8 @@ int main(){
 		solver.run();
 
 		//Set up the PropertyExtractor.
-		const double LOWER_BOUND = -1.5;
-		const double UPPER_BOUND = 1.5;
+		const double LOWER_BOUND = -2;
+		const double UPPER_BOUND = 2;
 		const unsigned int RESOLUTION = 1000;
 		PropertyExtractor::Diagonalizer propertyExtractor(solver);
 		propertyExtractor.setEnergyWindow(
