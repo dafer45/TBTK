@@ -48,8 +48,8 @@ int main(){
 
 	//Parameters.
 #ifdef TBTK_DOCUMENTATION_NICE
-	const unsigned int SIZE_X = 15;
-	const unsigned int SIZE_Y = 15;
+	const unsigned int SIZE_X = 11;
+	const unsigned int SIZE_Y = 11;
 #else //TBTK_DOCUMENTATION_NICE
 	const unsigned int SIZE_X = 5;
 	const unsigned int SIZE_Y = 5;
