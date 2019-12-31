@@ -51,7 +51,7 @@ Examples {#Examples}
 
 @page Superconductivity Superconductivity
 # Hamiltonian {#SuperconductivityHamiltonian}
-<center>\f$H = -\mu\sum_{\mathbf{i}}\left(c_{\mathbf{i}\uparrow}^{\dagger}c_{\mathbf{i}\uparrow} - c_{\mathbf{i}\downarrow}c_{\mathbf{i}\downarrow}^{\dagger}\right) + t\sum_{\langle\mathbf{i}\mathbf{j}\rangle}\left(c_{\mathbf{i}\uparrow}^{\dagger}c_{\mathbf{j}\uparrow} - c_{\mathbf{i}\downarrow}c_{\mathbf{j}\downarrow}^{\dagger}\right) + \sum_{\mathbf{i}}\left(\Delta c_{\mathbf{i}\downarrow}c_{\mathbf{i}\downarrow} + \Delta^{*}c_{\mathbf{i}\uparrow}^{\dagger}c_{\mathbf{i}\uparrow}^{\dagger}\right)\f$</center>
+<center>\f$H = -\mu\sum_{\mathbf{i}}\left(c_{\mathbf{i}\uparrow}^{\dagger}c_{\mathbf{i}\uparrow} - c_{\mathbf{i}\downarrow}c_{\mathbf{i}\downarrow}^{\dagger}\right) + t\sum_{\langle\mathbf{i}\mathbf{j}\rangle}\left(c_{\mathbf{i}\uparrow}^{\dagger}c_{\mathbf{j}\uparrow} - c_{\mathbf{i}\downarrow}c_{\mathbf{j}\downarrow}^{\dagger}\right) + \sum_{\mathbf{i}}\left(\Delta c_{\mathbf{i}\uparrow}^{\dagger}c_{\mathbf{i}\downarrow}^{\dagger} + \Delta^{*}c_{\mathbf{i}\downarrow}c_{\mathbf{i}\uparrow}\right)\f$</center>
 
 # Note
 For ordinary s-wave superconductivity, only spin-up electrons and spin-down holes are considered.
@@ -69,7 +69,7 @@ This is on the same form as an ordinary bilinear Hamiltonian and therefore allow
 
 @page SuperconductingVortex Superconducting vortex (Caroli-de Gennes-Matricon)
 # Hamiltonian {#SuperconductingVortexHamiltonian}
-<center>\f$H = -\mu\sum_{\mathbf{i}}\left(c_{\mathbf{i}\uparrow}^{\dagger}c_{\mathbf{i}\uparrow} - c_{\mathbf{i}\downarrow}c_{\mathbf{i}\downarrow}^{\dagger}\right) + t\sum_{\langle\mathbf{i}\mathbf{j}\rangle}\left(c_{\mathbf{i}\uparrow}^{\dagger}c_{\mathbf{j}\uparrow} - c_{\mathbf{i}\downarrow}c_{\mathbf{j}\downarrow}^{\dagger}\right) + \sum_{\mathbf{i}}\left(\Delta(\mathbf{i}) c_{\mathbf{i}\downarrow}c_{\mathbf{i}\downarrow} + \Delta^{*}(\mathbf{i})c_{\mathbf{i}\uparrow}^{\dagger}c_{\mathbf{i}\uparrow}^{\dagger}\right)\f$</center>
+<center>\f$H = -\mu\sum_{\mathbf{i}}\left(c_{\mathbf{i}\uparrow}^{\dagger}c_{\mathbf{i}\uparrow} - c_{\mathbf{i}\downarrow}c_{\mathbf{i}\downarrow}^{\dagger}\right) + t\sum_{\langle\mathbf{i}\mathbf{j}\rangle}\left(c_{\mathbf{i}\uparrow}^{\dagger}c_{\mathbf{j}\uparrow} - c_{\mathbf{i}\downarrow}c_{\mathbf{j}\downarrow}^{\dagger}\right) + \sum_{\mathbf{i}}\left(\Delta(\mathbf{i}) c_{\mathbf{i}\uparrow}^{\dagger}c_{\mathbf{i}\downarrow}^{\dagger} + \Delta^{*}(\mathbf{i})c_{\mathbf{i}\downarrow}c_{\mathbf{i}\uparrow}\right)\f$</center>
 
 # Code {#SuperconductingVortexCode}
 \snippet Examples/SuperconductingVortex.cpp SuperconductingVortex
@@ -80,10 +80,11 @@ This is on the same form as an ordinary bilinear Hamiltonian and therefore allow
 @page SuperconductivityMagneticImpurity Magnetic impurity (Yu-Shiba-Rusinov)
 # Hamiltonian {#SuperconductivityMagneticImpurityHamiltonian}
 <center>\f{eqnarray*}{
-	H &=& \sum_{\mathbf{i}}\left(\left(J - \mu\right)c_{\mathbf{i}\uparrow}^{\dagger}c_{\mathbf{i}\uparrow} + \left(J + \mu\right)c_{\mathbf{i}\downarrow}c_{\mathbf{i}\downarrow}^{\dagger}\right)\\
-	&+& t\sum_{\langle\mathbf{i}\mathbf{j}\rangle}\left(c_{\mathbf{i}\uparrow}^{\dagger}c_{\mathbf{j}\uparrow} - c_{\mathbf{i}\downarrow}c_{\mathbf{j}\downarrow}^{\dagger}\right)\\
-	&+& \sum_{\mathbf{i}}\left(\Delta c_{\mathbf{i}\downarrow}c_{\mathbf{i}\downarrow} + \Delta^{*}c_{\mathbf{i}\uparrow}^{\dagger}c_{\mathbf{i}\uparrow}^{\dagger}\right)
+	H &=& \sum_{\mathbf{i}\sigma}\left(\left(\delta_{\mathbf{i}\mathbf{I}}J\left(\sigma_z\right)_{\sigma\sigma} - \mu\right)c_{\mathbf{i}\sigma}^{\dagger}c_{\mathbf{i}\sigma} - \left(\delta_{\mathbf{i}\mathbf{I}}J\left(\sigma_{z}\right)_{\sigma\sigma} - \mu\right)c_{\mathbf{i}\sigma}c_{\mathbf{i}\sigma}^{\dagger}\right)\\
+	&+& t\sum_{\langle\mathbf{i}\mathbf{j}\rangle\sigma}\left(c_{\mathbf{i}\sigma}^{\dagger}c_{\mathbf{j}\sigma} - c_{\mathbf{i}\sigma}c_{\mathbf{j}\sigma}^{\dagger}\right)\\
+	&+& \sum_{\mathbf{i}}\left(\Delta c_{\mathbf{i}\uparrow}c_{\mathbf{i}\downarrow} - \Delta c_{\mathbf{i}\downarrow}c_{\mathbf{i}\uparrow} + H.c.\right),
 \f}</center>
+where \f$\mathbf{I}\f$ is the impurity site.
 
 # Code {#SuperconductivityMagneticImpurityCode}
 \snippet Examples/SuperconductivityMagneticImpurity.cpp SuperconductivityMagneticImpurity
