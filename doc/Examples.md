@@ -8,6 +8,9 @@ Examples {#Examples}
 - @subpage SquareLattice2D
 - @subpage CubicLattice3D
 
+## Magnetisim
+- @subpage Magnetism
+
 ## Superconductivity
 - @subpage Superconductivity
 - @subpage SuperconductingVortex
@@ -48,6 +51,17 @@ Examples {#Examples}
 # Output {#CubicLattice3DOutput}
 \image html output/Examples/CubicLattice3D/figures/ExamplesCubicLattice3DDOS.png
 \image html output/Examples/CubicLattice3D/figures/ExamplesCubicLattice3DWaveFunction.png
+
+@page Magnetism Magnetism
+# Hamiltonian {#MagnetismHamiltonian}
+<center>\f$H = -\mu\sum_{\mathbf{i}\sigma}c_{\mathbf{i}\sigma}^{\dagger}c_{\mathbf{i}\sigma} + t\sum_{\langle\mathbf{i}\mathbf{j}\rangle\sigma}c_{\mathbf{i}\sigma}^{\dagger}c_{\mathbf{j}\sigma} + J\sum_{\mathbf{i}\sigma}\left(\sigma_z\right)_{\sigma\sigma}c_{\mathbf{i}\sigma}^{\dagger}c_{\mathbf{i}\sigma}\f$</center>
+
+# Code {#MagnetismCode}
+\snippet Examples/Magnetism.cpp Magnetism
+
+# Output {#MagnetismOutput}
+\image html output/Examples/Magnetism/figures/ExamplesMagnetismDOS.png
+\image html output/Examples/Magnetism/figures/ExamplesMagnetismMagnetization.png
 
 @page Superconductivity Superconductivity
 # Hamiltonian {#SuperconductivityHamiltonian}
