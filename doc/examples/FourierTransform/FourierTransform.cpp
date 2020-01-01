@@ -35,8 +35,14 @@ void example1D(){
 
 	Plotter plotter;
 	plotter.setTitle("1D");
-	plotter.plot(outputReal, {{"linewidth", "2"}});
-	plotter.plot(outputImaginary, {{"linewidth", "2"}});
+	plotter.plot(outputReal, {{"linewidth", "2"}, {"label", "Real"}});
+	plotter.plot(
+		outputImaginary,
+		{
+			{"linewidth", "2"},
+			{"label", "Imaginary"}
+		}
+	);
 	plotter.save("figures/1D.png");
 }
 
@@ -109,22 +115,44 @@ void examplePlan(){
 			outputImaginary[{n}] = imag(output[n]);
 		}
 
-		plotter.plot(
-			outputReal,
-			{
-				{"linewidth", "2"},
-				{"color", "black"},
-				{"linestyle", "-"}
-			}
-		);
-		plotter.plot(
-			outputImaginary,
-			{
-				{"linewidth", "2"},
-				{"color", "orangered"},
-				{"linestyle", "-"}
-			}
-		);
+		if(n == 0){
+			plotter.plot(
+				outputReal,
+				{
+					{"linewidth", "2"},
+					{"color", "black"},
+					{"linestyle", "-"},
+					{"label", "Real"}
+				}
+			);
+			plotter.plot(
+				outputImaginary,
+				{
+					{"linewidth", "2"},
+					{"color", "orangered"},
+					{"linestyle", "-"},
+					{"label", "Imaginary"}
+				}
+			);
+		}
+		else{
+			plotter.plot(
+				outputReal,
+				{
+					{"linewidth", "2"},
+					{"color", "black"},
+					{"linestyle", "-"}
+				}
+			);
+			plotter.plot(
+				outputImaginary,
+				{
+					{"linewidth", "2"},
+					{"color", "orangered"},
+					{"linestyle", "-"}
+				}
+			);
+		}
 	}
 	plotter.save("figures/WithPlan.png");
 }

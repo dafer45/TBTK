@@ -30,8 +30,23 @@ void plotArray1D(){
 	plotter.setTitle("Array 1D");
 	plotter.setLabelX("x-axis");
 	plotter.setLabelY("y-axis");
-	plotter.plot(x, y, {{"linewidth", "2"}, {"linestyle", "--"}});
-	plotter.plot(y, {{"linewidth", "2"}, {"linestyle", "-."}});
+	plotter.plot(
+		x,
+		y,
+		{
+			{"linewidth", "2"},
+			{"linestyle", "--"},
+			{"label", "Custom x-values"}
+		}
+	);
+	plotter.plot(
+		y,
+		{
+			{"linewidth", "2"},
+			{"linestyle", "-."},
+			{"label", "Default x-values"}
+		}
+	);
 	plotter.save("figures/Array1D.png");
 }
 
