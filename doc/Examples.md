@@ -13,6 +13,7 @@ Examples {#Examples}
 - @subpage ArnoldiIterator
 - @subpage BlockDiagonalizer
 - @subpage ChebyshevExpander
+- @subpage Diagonalizer
 
 ## Magnetisim
 - @subpage Magnetism
@@ -102,6 +103,17 @@ Examples {#Examples}
 
 # Output {#ChebyshevExpanderOutput}
 \image html output/Examples/ChebyshevExpander/figures/ExamplesChebyshevExpanderLDOS.png
+
+@page Diagonalizer Diagonalizer
+# Hamiltonian {#DiagonalizerHamiltonian}
+<center>\f$H = -\mu\sum_{\mathbf{i}}c_{\mathbf{i}}^{\dagger}c_{\mathbf{i}} + t\sum_{\langle \mathbf{i}\mathbf{j}\rangle}c_{\mathbf{i}}^{\dagger}c_{\mathbf{j}}\f$</center>
+
+# Code {#DiagonalizerCode}
+\snippet Examples/Diagonalizer.cpp Diagonalizer
+
+# Output {#DiagonalizerOutput}
+\image html output/Examples/Diagonalizer/figures/ExamplesDiagonalizerDOS.png
+\image html output/Examples/Diagonalizer/figures/ExamplesDiagonalizerWaveFunction.png
 
 @page Magnetism Magnetism
 # Hamiltonian {#MagnetismHamiltonian}
