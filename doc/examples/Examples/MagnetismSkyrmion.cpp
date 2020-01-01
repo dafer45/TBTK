@@ -81,8 +81,8 @@ int main(){
 	const unsigned int SIZE_X = 21;
 	const unsigned int SIZE_Y = 21;
 #else //TBTK_DOCUMENTATION_NICE
-	const unsigned int SIZE_X = 21;
-	const unsigned int SIZE_Y = 21;
+	const unsigned int SIZE_X = 11;
+	const unsigned int SIZE_Y = 11;
 #endif //TBTK_DOCUMENTATION_NICE
 	const double t = -1;
 	const double mu = 0;
