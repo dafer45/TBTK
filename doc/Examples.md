@@ -11,6 +11,7 @@ Examples {#Examples}
 
 ## Solvers
 - @subpage ArnoldiIterator
+- @subpage BlockDiagonalizer
 - @subpage ChebyshevExpander
 
 ## Magnetisim
@@ -80,6 +81,17 @@ Examples {#Examples}
 \image html output/Examples/ArnoldiIterator/figures/ExamplesArnoldiIteratorEigenValues.png
 \image html output/Examples/ArnoldiIterator/figures/ExamplesArnoldiIteratorDOS.png
 \image html output/Examples/ArnoldiIterator/figures/ExamplesArnoldiIteratorLDOS.png
+
+@page BlockDiagonalizer BlockDiagonalizer
+# Hamiltonian {#BlockDiagonalizerHamiltonian}
+<center>\f$H = -\mu\sum_{\mathbf{i}}c_{\mathbf{i}}^{\dagger}c_{\mathbf{i}} + t\sum_{\langle \mathbf{i}\mathbf{j}\rangle}c_{\mathbf{i}}^{\dagger}c_{\mathbf{j}}\f$</center>
+
+# Code {#BlockDiagonalizerCode}
+\snippet Examples/BlockDiagonalizer.cpp BlockDiagonalizer
+
+# Output {#BlockDiagonalizerOutput}
+\image html output/Examples/BlockDiagonalizer/figures/ExamplesBlockDiagonalizerDOS.png
+\image html output/Examples/BlockDiagonalizer/figures/ExamplesBlockDiagonalizerDensity.png
 
 @page ChebyshevExpander ChebyshevExpander
 # Hamiltonian {#ChebyshevExpanderHamiltonian}
