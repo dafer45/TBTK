@@ -66,7 +66,7 @@ Examples {#Examples}
 
 @page MagnetismSkyrmion Skyrmion
 # Hamiltonian {#MagnetismSkyrmionHamiltonian}
-<center>\f$H = -\mu\sum_{\mathbf{i}\sigma}c_{\mathbf{i}\sigma}^{\dagger}c_{\mathbf{i}\sigma} + t\sum_{\langle\mathbf{i}\mathbf{j}\rangle\sigma}c_{\mathbf{i}\sigma}^{\dagger}c_{\mathbf{j}\sigma} + J\sum_{\mathbf{i}\sigma}\left(\sigma_z\right)_{\sigma\sigma}c_{\mathbf{i}\sigma}^{\dagger}c_{\mathbf{i}\sigma}\f$</center>
+<center>\f$H = -\mu\sum_{\mathbf{i}\sigma}c_{\mathbf{i}\sigma}^{\dagger}c_{\mathbf{i}\sigma} + t\sum_{\langle\mathbf{i}\mathbf{j}\rangle\sigma}c_{\mathbf{i}\sigma}^{\dagger}c_{\mathbf{j}\sigma} + J\sum_{\mathbf{i}\sigma\sigma'}\left(\mathbf{S}(\mathbf{i})\cdot\boldsymbol{\sigma}\right)_{\sigma\sigma'}c_{\mathbf{i}\sigma}^{\dagger}c_{\mathbf{i}\sigma'}\f$</center>
 
 # Code {#MagnetismSkyrmionCode}
 \snippet Examples/MagnetismSkyrmion.cpp MagnetismSkyrmion
