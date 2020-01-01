@@ -902,6 +902,9 @@ void Plotter::plot1D(
 		if(argumentMap.find("linewidth") == argumentMap.end())
 			argumentMap.insert({"linewidth", "2"});
 		matplotlibcpp::plot(x, y, argumentMap);
+
+		if(argumentMap.find("label") != argumentMap.end())
+			matplotlibcpp::legend();
 	}
 	plotParameters.flush();
 
