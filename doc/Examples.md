@@ -10,6 +10,7 @@ Examples {#Examples}
 
 ## Magnetisim
 - @subpage Magnetism
+- @subpage MagnetismSkyrmion
 
 ## Superconductivity
 - @subpage Superconductivity
@@ -62,6 +63,18 @@ Examples {#Examples}
 # Output {#MagnetismOutput}
 \image html output/Examples/Magnetism/figures/ExamplesMagnetismDOS.png
 \image html output/Examples/Magnetism/figures/ExamplesMagnetismMagnetization.png
+
+@page MagnetismSkyrmion Skyrmion
+# Hamiltonian {#MagnetismSkyrmionHamiltonian}
+<center>\f$H = -\mu\sum_{\mathbf{i}\sigma}c_{\mathbf{i}\sigma}^{\dagger}c_{\mathbf{i}\sigma} + t\sum_{\langle\mathbf{i}\mathbf{j}\rangle\sigma}c_{\mathbf{i}\sigma}^{\dagger}c_{\mathbf{j}\sigma} + J\sum_{\mathbf{i}\sigma}\left(\sigma_z\right)_{\sigma\sigma}c_{\mathbf{i}\sigma}^{\dagger}c_{\mathbf{i}\sigma}\f$</center>
+
+# Code {#MagnetismSkyrmionCode}
+\snippet Examples/MagnetismSkyrmion.cpp MagnetismSkyrmion
+
+# Output {#MagnetismSkyrmionOutput}
+\image html output/Examples/MagnetismSkyrmion/figures/ExamplesMagnetismSkyrmionMagnetizationX.png
+\image html output/Examples/MagnetismSkyrmion/figures/ExamplesMagnetismSkyrmionMagnetizationY.png
+\image html output/Examples/MagnetismSkyrmion/figures/ExamplesMagnetismSkyrmionMagnetizationZ.png
 
 @page Superconductivity Superconductivity
 # Hamiltonian {#SuperconductivityHamiltonian}
