@@ -793,7 +793,6 @@ void Diagonalizer::calculateLDOSCallback(
 	Property::LDOS &ldos = (Property::LDOS&)property;
 	vector<double> &data = ldos.getDataRW();
 	Solver::Diagonalizer &solver = propertyExtractor->solver;
-	const Model &model = solver.getModel();
 
 	double lowerBound = propertyExtractor->getLowerBound();
 	double upperBound = propertyExtractor->getUpperBound();
@@ -802,7 +801,7 @@ void Diagonalizer::calculateLDOSCallback(
 	const CArray<double> &eigenValues = solver.getEigenValues();
 
 	double dE = ldos.getDeltaE();
-	for(int n = 0; n < eigenValues.getSize(); n++){
+	for(unsigned int n = 0; n < eigenValues.getSize(); n++){
 		if(eigenValues[n] > lowerBound && eigenValues[n] < upperBound){
 			complex<double> u = solver.getAmplitude(n, index);
 
