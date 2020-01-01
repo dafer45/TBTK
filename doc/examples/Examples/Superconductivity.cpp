@@ -105,13 +105,21 @@ int main(){
 		if(n == 0){
 			plotter.plot(
 				dos,
-				{{"linestyle", "-"}, {"color", "black"}}
+				{
+					{"linestyle", "-"},
+					{"color", "black"},
+					{"label", "Superconducting state"}
+				}
 			);
 		}
 		else{
 			plotter.plot(
 				dos,
-				{{"linestyle", "--"}, {"color", "black"}}
+				{
+					{"linestyle", "--"},
+					{"color", "black"},
+					{"label", "Normal state"}
+				}
 			);
 		}
 	}

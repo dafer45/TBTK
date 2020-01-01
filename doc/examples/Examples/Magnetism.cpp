@@ -165,21 +165,29 @@ int main(){
 
 			//Plot the DOS.
 			Plotter plotter;
-			plotter.setTitle("DOS and spin-polarized DOS");
+			plotter.setTitle("DOS");
 			plotter.setLabelX("Energy");
 			plotter.setLabelY("DOS");
-			plotter.plot(dos);
+			plotter.plot(dos, {{"label", "Total"}});
 
 			//Plot the LDOS.
 			plotter.plot(
 				{IDX_SUM_ALL, IDX_SUM_ALL, 0},
 				ldos,
-				{{"color", "red"}, {"linestyle", "--"}}
+				{
+					{"color", "red"},
+					{"linestyle", "--"},
+					{"label", "Spin up"}
+				}
 			);
 			plotter.plot(
 				{IDX_SUM_ALL, IDX_SUM_ALL, 1},
 				ldos,
-				{{"color", "blue"}, {"linestyle", "--"}}
+				{
+					{"color", "blue"},
+					{"linestyle", "--"},
+					{"label", "Spin down"}
+				}
 			);
 
 			//Save the plot.
