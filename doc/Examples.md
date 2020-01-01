@@ -7,6 +7,7 @@ Examples {#Examples}
 - @subpage Chain1D
 - @subpage SquareLattice2D
 - @subpage CubicLattice3D
+- @subpage AndersonDisorder
 
 ## Magnetisim
 - @subpage Magnetism
@@ -52,6 +53,17 @@ Examples {#Examples}
 # Output {#CubicLattice3DOutput}
 \image html output/Examples/CubicLattice3D/figures/ExamplesCubicLattice3DDOS.png
 \image html output/Examples/CubicLattice3D/figures/ExamplesCubicLattice3DWaveFunction.png
+
+@page AndersonDisorder Anderson disorder
+# Hamiltonian {#AndersonDisorderHamiltonian}
+<center>\f$H = \sum_{\mathbf{i}}\left(U(\mathbf{i}) - \mu\right)c_{\mathbf{i}}^{\dagger}c_{\mathbf{i}} + t\sum_{\langle \mathbf{i}\mathbf{j}\rangle}c_{\mathbf{i}}^{\dagger}c_{\mathbf{j}}\f$</center>
+
+# Code {#AndersonDisorderCode}
+\snippet Examples/AndersonDisorder.cpp AndersonDisorder
+
+# Output {#AndersonDisorderOutput}
+\image html output/Examples/AndersonDisorder/figures/ExamplesAndersonDisorderDOS.png
+\image html output/Examples/AndersonDisorder/figures/ExamplesAndersonDisorderDensity.png
 
 @page Magnetism Magnetism
 # Hamiltonian {#MagnetismHamiltonian}
