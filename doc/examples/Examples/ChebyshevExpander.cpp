@@ -78,12 +78,7 @@ int main(){
 	//Calculate the local density of states(LDOS).
 	Property::LDOS ldos = propertyExtractor.calculateLDOS({{_a_, _a_}});
 
-	//Smooth the LDOS.
-//	const double SMOOTHING_SIGMA = 0.1;
-//	const unsigned int SMOOTHING_WINDOW = 101;
-//	dos = Smooth::gaussian(dos, SMOOTHING_SIGMA, SMOOTHING_WINDOW);
-
-	//Plot the wave function for state 37.
+	//Plot the LDOS.
 	Plotter plotter;
 	plotter.plot({_a_, SIZE_Y/2}, ldos);
 	plotter.save("figures/LDOS.png");
