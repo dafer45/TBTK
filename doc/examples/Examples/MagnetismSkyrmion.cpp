@@ -31,7 +31,6 @@ public:
 		Subindex toSpin = to[2];
 		Subindex fromSpin = from[2];
 
-
 		double X = x - sizeX/2.;
 		double Y = y - sizeY/2.;
 		double r = sqrt(X*X + Y*Y);
@@ -40,6 +39,11 @@ public:
 		double S_X = sin(2*M_PI*r/radius)*cos(theta);
 		double S_Y = sin(2*M_PI*r/radius)*sin(theta);
 		double S_Z = cos(2*M_PI*r/radius);
+		if(r > radius){
+			S_X = 0;
+			S_Y = 0;
+			S_Z = 1;
+		}
 
 		if(toSpin == 0 && fromSpin == 0)
 			return J*S_Z;
