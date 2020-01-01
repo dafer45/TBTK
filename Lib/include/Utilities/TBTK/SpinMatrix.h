@@ -37,8 +37,8 @@ namespace TBTK{
  *
  *  \f[
  *    \frac{1}{2}\left[\begin{array}{cc}
- *      \rho + S_z	& S_x - iS_y\\
- *      S_x + iS_y	& \rho - S_z
+ *      \rho + S_z	& S_x + iS_y\\
+ *      S_x - iS_y	& \rho - S_z
  *    \end{array}\right]
  *  \f]
  *
@@ -48,6 +48,32 @@ namespace TBTK{
  *  then undefined behavior to use any of the SpinMatrix functions. For such
  *  matrices, only those methods derived from Matrix<std::complex> should be
  *  used.
+ *
+ *  Note that the convention for the spin matrix is equal to \f$\rho
+ *  + S_x\sigma_x - S_y\sigma_y + S_z\sigma_z\f$ rather than \f$\rho +
+ *  S_x\sigma_x + S_y\sigma_y + S_z\sigma_z\f$. The convention follows from the
+ *  SpinMatrix being used to store values of the form
+ *  \f[
+ *    \left[\begin{array}{cc}
+ *      \langle c_{\uparrow}^{\dagger}c_{\uparrow}\rangle
+ *        & \langle c_{\uparrow}^{\dagger}c_{\downarrow}\rangle\\
+ *      \langle c_{\downarrow}^{\dagger}c_{\uparrow}\rangle
+ *        & \langle c_{\downarrow}^{\dagger}c_{\downarrow}\rangle\\
+ *    \end{array}\right]
+ *  \f]
+ *  and these expectation values are related to \f$\rho, S_x, S_y\f$, and
+ *  \f$S_z\f$ through
+ *  \f{eqnarray*}{
+ *    \rho &=& \langle c_{\uparrow}^{\dagger}c_{\uparrow}\rangle
+ *      + \langle c_{\downarrow}^{\dagger}c_{\downarrow}\rangle\\
+ *    S_x &=& \langle c_{\uparrow}^{\dagger}c_{\downarrow}\rangle
+ *      + \langle c_{\downarrow}^{\dagger}c_{\uparrow}\rangle\\
+ *    S_y &=& \textrm{Im}\left(
+ *      \langle c_{\uparrow}^{\dagger}c_{\downarrow}\rangle
+ *      - \langle c_{\downarrow}^{\dagger}c_{\uparrow}\rangle\right)\\
+ *    S_z &=& \langle c_{\uparrow}^{\dagger}c_{\uparrow}\rangle
+ *      - \langle c_{\downarrow}^{\dagger}c_{\downarrow}\rangle\\
+ *  \f}
  *
  *  # Example
  *  \snippet Utilities/SpinMatrix.cpp SpinMatrix
