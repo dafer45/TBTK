@@ -9,6 +9,10 @@ Examples {#Examples}
 - @subpage CubicLattice3D
 - @subpage AndersonDisorder
 
+## Solvers
+- @subpage ArnoldiIterator
+- @subpage ChebyshevExpander
+
 ## Magnetisim
 - @subpage Magnetism
 - @subpage MagnetismSkyrmion
@@ -64,6 +68,28 @@ Examples {#Examples}
 # Output {#AndersonDisorderOutput}
 \image html output/Examples/AndersonDisorder/figures/ExamplesAndersonDisorderDOS.png
 \image html output/Examples/AndersonDisorder/figures/ExamplesAndersonDisorderDensity.png
+
+@page ArnoldiIterator ArnoldiIterator
+# Hamiltonian {#ArnoldiIteratorHamiltonian}
+<center>\f$H = -\mu\sum_{\mathbf{i}}c_{\mathbf{i}}^{\dagger}c_{\mathbf{i}} + t\sum_{\langle \mathbf{i}\mathbf{j}\rangle}c_{\mathbf{i}}^{\dagger}c_{\mathbf{j}}\f$</center>
+
+# Code {#ArnoldiIteratorCode}
+\snippet Examples/ArnoldiIterator.cpp ArnoldiIterator
+
+# Output {#ArnoldiIteratorOutput}
+\image html output/Examples/ArnoldiIterator/figures/ExamplesArnoldiIteratorEigenValues.png
+\image html output/Examples/ArnoldiIterator/figures/ExamplesArnoldiIteratorDOS.png
+\image html output/Examples/ArnoldiIterator/figures/ExamplesArnoldiIteratorLDOS.png
+
+@page ChebyshevExpander ChebyshevExpander
+# Hamiltonian {#ChebyshevExpanderHamiltonian}
+<center>\f$H = -\mu\sum_{\mathbf{i}}c_{\mathbf{i}}^{\dagger}c_{\mathbf{i}} + t\sum_{\langle \mathbf{i}\mathbf{j}\rangle}c_{\mathbf{i}}^{\dagger}c_{\mathbf{j}}\f$</center>
+
+# Code {#ChebyshevExpanderCode}
+\snippet Examples/ChebyshevExpander.cpp ChebyshevExpander
+
+# Output {#ChebyshevExpanderOutput}
+\image html output/Examples/ChebyshevExpander/figures/ExamplesChebyshevExpanderLDOS.png
 
 @page Magnetism Magnetism
 # Hamiltonian {#MagnetismHamiltonian}
