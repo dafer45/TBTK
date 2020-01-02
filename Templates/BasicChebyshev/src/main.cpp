@@ -18,31 +18,33 @@
  *  @brief Basic Chebyshev example
  *
  *  Basic example of using the Chebyshev method to solve a 2D tight-binding
- *  model with t = 1 and mu = -1. Lattice with edges and a size of 40x40 sites.
- *  Using 5000 Chebyshev coefficients and evaluating the Green's function with
- *  an energy resolution of 10000. Calculates LDOS at SIZE_X = 40 sites along
- *  the line y = SIZE_Y/2 = 20.
+ *  model with t = 1 and mu = -1. Lattice with edges and a size of 100x100
+ *  sites. Using 500 Chebyshev coefficients and evaluating the Green's function
+ *  with an energy resolution of 1000. Calculates LDOS along the line y =
+ *  SIZE_Y/2 = 20.
  *
  *  @author Kristofer Björnson
  */
 
-#include "TBTK/FileWriter.h"
 #include "TBTK/Model.h"
 #include "TBTK/Property/LDOS.h"
 #include "TBTK/PropertyExtractor/ChebyshevExpander.h"
+#include "TBTK/Smooth.h"
 #include "TBTK/Solver/ChebyshevExpander.h"
+#include "TBTK/Visualization/MatPlotLib/Plotter.h"
 
 #include <complex>
 
 using namespace std;
 using namespace TBTK;
+using namespace Visualization::MatPlotLib;
 
 const complex<double> i(0, 1);
 
 int main(int argc, char **argv){
 	//Lattice size
-	const int SIZE_X = 40;
-	const int SIZE_Y = 40;
+	const int SIZE_X = 100;
+	const int SIZE_Y = 100;
 
 	//Model parameters.
 	complex<double> mu = -1.0;
@@ -83,8 +85,8 @@ int main(int argc, char **argv){
 	model.construct();
 
 	//Chebyshev expansion parameters.
-	const int NUM_COEFFICIENTS = 5000;
-	const int ENERGY_RESOLUTION = 10000;
+	const int NUM_COEFFICIENTS = 500;
+	const int ENERGY_RESOLUTION = 1000;
 	const double SCALE_FACTOR = 5.;
 
 	//Setup Solver::ChebyshevExpander
@@ -95,10 +97,6 @@ int main(int argc, char **argv){
 	solver.setGenerateGreensFunctionsOnGPU(false);
 	solver.setUseLookupTable(true);
 	solver.setNumCoefficients(NUM_COEFFICIENTS);
-
-	//Set filename and remove any file already in the folder
-	FileWriter::setFileName("TBTKResults.h5");
-	FileWriter::clear();
 
 	//Create PropertyExtractor. The parameter are in order: The
 	//ChebyshevSolver, number of expansion coefficients used in the
@@ -112,12 +110,15 @@ int main(int argc, char **argv){
 	PropertyExtractor::ChebyshevExpander pe(solver);
 	pe.setEnergyWindow(-SCALE_FACTOR, SCALE_FACTOR, ENERGY_RESOLUTION);
 
-	//Extract local density of states and write to file
-	Property::LDOS ldos = pe.calculateLDOS(
-		{IDX_X, SIZE_Y/2, IDX_SUM_ALL},
-		{SIZE_X, 1, 2}
-	);
-	FileWriter::writeLDOS(ldos);
+	//Extract local density of states (LDOS).
+	Property::LDOS ldos = pe.calculateLDOS({
+		{_a_, SIZE_Y/2, IDX_SUM_ALL}
+	});
+
+	//Plot the LDOS.
+	Plotter plotter;
+	plotter.plot({_a_, SIZE_Y/2, IDX_SUM_ALL}, ldos);
+	plotter.save("figures/LDOS.png");
 
 	return 0;
 }
