@@ -98,20 +98,16 @@ int main(int argc, char **argv){
 	solver.setUseLookupTable(true);
 	solver.setNumCoefficients(NUM_COEFFICIENTS);
 
-	//Create PropertyExtractor. The parameter are in order: The
-	//ChebyshevSolver, number of expansion coefficients used in the
-	//Cebyshev expansion, energy resolution with which the Green's function
-	// is evaluated, whether calculate expansion functions using a GPU or
-	//not, whether to evaluate the Green's function using a GPU or not,
-	//whether to use a lookup table for the Green's function or not
-	//(required if the Green's function is evaluated on a GPU), and the
-	//lower and upper bound between which the Green's function is evaluated
-	//(has to be inside the interval [-SCALE_FACTOR, SCALE_FACTOR]).
-	PropertyExtractor::ChebyshevExpander pe(solver);
-	pe.setEnergyWindow(-SCALE_FACTOR, SCALE_FACTOR, ENERGY_RESOLUTION);
+	//Set up the PropertyExtractor.
+	PropertyExtractor::ChebyshevExpander propertyExtractor(solver);
+	propertyExtractor.setEnergyWindow(
+		-SCALE_FACTOR,
+		SCALE_FACTOR,
+		ENERGY_RESOLUTION
+	);
 
 	//Extract local density of states (LDOS).
-	Property::LDOS ldos = pe.calculateLDOS({
+	Property::LDOS ldos = propertyExtractor.calculateLDOS({
 		{_a_, SIZE_Y/2, IDX_SUM_ALL}
 	});
 
