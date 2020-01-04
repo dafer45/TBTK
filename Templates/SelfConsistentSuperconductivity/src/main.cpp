@@ -162,23 +162,19 @@ class DeltaCallback : public HoppingAmplitude::AmplitudeCallback{
 		const Index &from
 	) const{
 		//Obtain indices
-		unsigned int x = from.at(0);
-		unsigned int y = from.at(1);
-		unsigned int s = from.at(2);
+		unsigned int x = from[0];
+		unsigned int y = from[1];
+		unsigned int spin = from[2];
+		unsigned int particleHole = from[3];
 
-		//Return appropriate amplitude
-		switch(s){
-			case 0:
-				return conj(Delta[{deltaCounter, x, y}]);
-			case 1:
-				return -conj(Delta[{deltaCounter, x, y}]);
-			case 2:
-				return -Delta[{deltaCounter, x, y}];
-			case 3:
-				return Delta[{deltaCounter, x, y}];
-			default://Never happens
-				return 0;
-		}
+		if(spin == 0 && particleHole == 0)
+			return conj(Delta[{deltaCounter, x, y}]);
+		else if(spin == 1 && particleHole == 0)
+			return -conj(Delta[{deltaCounter, x, y}]);
+		else if(spin == 0 && particleHole == 1)
+			return -Delta[{deltaCounter, x, y}];
+		else
+			return Delta[{deltaCounter, x, y}];
 	}
 } deltaCallback;
 
