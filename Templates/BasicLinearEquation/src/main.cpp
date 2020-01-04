@@ -22,20 +22,26 @@
  *  @author Kristofer Björnson
  */
 
+#include "TBTK/Array.h"
 #include "TBTK/Model.h"
 #include "TBTK/MatrixElement.h"
-#include "TBTK/Plotter.h"
 #include "TBTK/Solver/LinearEquationSolver.h"
+#include "TBTK/TBTK.h"
+#include "TBTK/Visualization/MatPlotLib/Plotter.h"
 
 #include <complex>
 
 using namespace std;
 using namespace TBTK;
-using namespace Plot;
+using namespace Visualization::MatPlotLib;
 
 const complex<double> i(0, 1);
 
 int main(int argc, char **argv){
+	//Initialize TBTK.
+	Initialize();
+
+	//Parameter.
 	int NUM_SITES = 1000;
 
 	//Setup Model.
@@ -65,9 +71,9 @@ int main(int argc, char **argv){
 	for(unsigned int n = 0; n < result0.getNumRows(); n++)
 		result.push_back(result0.at(n, 0));
 
-	vector<double> data;
+	Array<double> data({(unsigned int)result.size()});
 	for(unsigned int n = 0; n < result.size(); n++)
-		data.push_back(real(result[n]));
+		data[{n}] = real(result[n]);
 
 	//Plot.
 	Plotter plotter;

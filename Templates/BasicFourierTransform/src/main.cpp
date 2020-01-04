@@ -24,6 +24,7 @@
 
 #include "TBTK/Array.h"
 #include "TBTK/FourierTransform.h"
+#include "TBTK/TBTK.h"
 #include "TBTK/Visualization/MatPlotLib/Plotter.h"
 
 #include <iostream>
@@ -34,6 +35,9 @@ using namespace TBTK;
 using namespace Visualization::MatPlotLib;
 
 int main(int agrc, char **argv){
+	//Initialize TBTK.
+	Initialize();
+
 	//Parameters.
 	const int SIZE_X = 100;
 	const int SIZE_Y = 200;

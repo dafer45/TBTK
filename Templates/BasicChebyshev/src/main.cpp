@@ -31,6 +31,7 @@
 #include "TBTK/PropertyExtractor/ChebyshevExpander.h"
 #include "TBTK/Smooth.h"
 #include "TBTK/Solver/ChebyshevExpander.h"
+#include "TBTK/TBTK.h"
 #include "TBTK/Visualization/MatPlotLib/Plotter.h"
 
 #include <complex>
@@ -42,6 +43,9 @@ using namespace Visualization::MatPlotLib;
 const complex<double> i(0, 1);
 
 int main(int argc, char **argv){
+	//Initialize TBTK.
+	Initialize();
+
 	//Lattice size
 	const int SIZE_X = 100;
 	const int SIZE_Y = 100;
