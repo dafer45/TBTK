@@ -22,81 +22,100 @@
  *  @author Kristofer Björnson
  */
 
-#include "TBTK/FileWriter.h"
+#include "TBTK/Array.h"
 #include "TBTK/FourierTransform.h"
+#include "TBTK/Visualization/MatPlotLib/Plotter.h"
 
 #include <iostream>
 #include <math.h>
 
 using namespace std;
 using namespace TBTK;
+using namespace Visualization::MatPlotLib;
 
 int main(int agrc, char **argv){
+	//Parameters.
 	const int SIZE_X = 100;
 	const int SIZE_Y = 200;
 
-	FileWriter::clear();
-
 	//Setup one-dimensional function f.
-	complex<double> *f = new complex<double>[SIZE_X];
-	for(int n = 0; n < SIZE_X; n++)
-		f[n] = cos(2.*M_PI*3.*n/(double)SIZE_X) + cos(2.*M_PI*5.*n/(double)SIZE_X);
+	Array<complex<double>> f({SIZE_X});
+	for(unsigned int n = 0; n < SIZE_X; n++){
+		f[{n}] = cos(2.*M_PI*3.*n/(double)SIZE_X)
+			+ cos(2.*M_PI*5.*n/(double)SIZE_X);
+	}
 
 	//Calculate the transforms f -> F, and inverse transform F -> f.
-	complex<double> *F = new complex<double>[SIZE_X];
-	FourierTransform::forward(f, F, SIZE_X);
-	FourierTransform::inverse(F, f, SIZE_X);
+	Array<complex<double>> F({SIZE_X});
+	FourierTransform::forward(f.getData(), F.getData(), {SIZE_X});
+	FourierTransform::inverse(F.getData(), f.getData(), {SIZE_X});
 
 	//Split f and F into real and imaginary parts.
-	double *fR = new double[SIZE_X];
-	double *fI = new double[SIZE_X];
-	double *FR = new double[SIZE_X];
-	double *FI = new double[SIZE_X];
-	for(int n = 0; n < SIZE_X; n++){
-		fR[n] = real(f[n]);
-		fI[n] = imag(f[n]);
-		FR[n] = real(F[n]);
-		FI[n] = imag(F[n]);
+	Array<double> fReal({SIZE_X});
+	Array<double> fImaginary({SIZE_X});
+	Array<double> FReal({SIZE_X});
+	Array<double> FImaginary({SIZE_X});
+	for(unsigned int n = 0; n < SIZE_X; n++){
+		fReal[{n}] = real(f[{n}]);
+		fImaginary[{n}] = imag(f[{n}]);
+		FReal[{n}] = real(F[{n}]);
+		FImaginary[{n}] = imag(F[{n}]);
 	}
 
-	//Write real and imaginary parts of f and F to file.
-	const int RANK = 1;
-	int dims[RANK] = {SIZE_X};
-	FileWriter::write(fR, RANK, dims, "fR");
-	FileWriter::write(fI, RANK, dims, "fI");
-	FileWriter::write(FR, RANK, dims, "FR");
-	FileWriter::write(FI, RANK, dims, "FI");
+	//Plot the result.
+	Plotter plotter;
+	plotter.plot(fReal, {{"label", "Real"}});
+	plotter.plot(fImaginary, {{"label", "Imaginary"}});
+	plotter.save("figures/f.png");
+	plotter.clear();
+	plotter.plot(FReal, {{"label", "Real"}});
+	plotter.plot(FImaginary, {{"label", "Imaginary"}});
+	plotter.save("figures/F.png");
 
-	//Setup two-dimensional function g
-	complex<double> *g = new complex<double>[SIZE_X*SIZE_Y];
-	for(int x = 0; x < SIZE_X; x++)
-		for(int y = 0; y < SIZE_Y; y++)
-			g[x*SIZE_Y + y] = sin(2.*M_PI*3.*x/(double)SIZE_X)*sin(2.*M_PI*7.*y/(double)SIZE_Y) - sin(2.*M_PI*5.*x/(double)SIZE_X)*sin(2.*M_PI*9.*y/(double)SIZE_Y);
+	//Setup two-dimensional function g.
+	Array<complex<double>> g({SIZE_X, SIZE_Y});
+	for(unsigned int x = 0; x < SIZE_X; x++){
+		for(unsigned int y = 0; y < SIZE_Y; y++){
+			g[{x, y}] = sin(2.*M_PI*3.*x/(double)SIZE_X)*sin(
+				2.*M_PI*7.*y/(double)SIZE_Y
+			) - sin(2.*M_PI*5.*x/(double)SIZE_X)*sin(
+				2.*M_PI*9.*y/(double)SIZE_Y
+			);
+		}
+	}
 
 	//Calculate the transforms g -> G, and inverse transform G -> g.
-	complex<double> *G = new complex<double>[SIZE_X*SIZE_Y];
-	FourierTransform::forward(g, G, SIZE_X, SIZE_Y);
-	FourierTransform::inverse(G, g, SIZE_X, SIZE_Y);
+	Array<complex<double>> G({SIZE_X, SIZE_Y});
+	FourierTransform::forward(g.getData(), G.getData(), {SIZE_X, SIZE_Y});
+	FourierTransform::inverse(G.getData(), g.getData(), {SIZE_X, SIZE_Y});
 
 	//Split g and G into real and imaginary parts.
-	double *gR = new double[SIZE_X*SIZE_Y];
-	double *gI = new double[SIZE_X*SIZE_Y];
-	double *GR = new double[SIZE_X*SIZE_Y];
-	double *GI = new double[SIZE_X*SIZE_Y];
-	for(int n = 0; n < SIZE_X*SIZE_Y; n++){
-		gR[n] = real(g[n]);
-		gI[n] = imag(g[n]);
-		GR[n] = real(G[n]);
-		GI[n] = imag(G[n]);
+	Array<double> gReal({SIZE_X, SIZE_Y});
+	Array<double> gImaginary({SIZE_X, SIZE_Y});
+	Array<double> GReal({SIZE_X, SIZE_Y});
+	Array<double> GImaginary({SIZE_X, SIZE_Y});
+	for(unsigned int x = 0; x < SIZE_X; x++){
+		for(unsigned int y = 0; y < SIZE_Y; y++){
+			gReal[{x, y}] = real(g[{x, y}]);
+			gImaginary[{x, y}] = imag(g[{x, y}]);
+			GReal[{x, y}] = real(G[{x, y}]);
+			GImaginary[{x, y}] = imag(G[{x, y}]);
+		}
 	}
 
-	//Write real and imaginary parts of g and G to file.
-	const int RANK2 = 2;
-	int dims2[RANK2] = {SIZE_X, SIZE_Y};
-	FileWriter::write(gR, RANK2, dims2, "gR");
-	FileWriter::write(gI, RANK2, dims2, "gI");
-	FileWriter::write(GR, RANK2, dims2, "GR");
-	FileWriter::write(GI, RANK2, dims2, "GI");
+	//Plot the result.
+	plotter.clear();
+	plotter.plot(gReal);
+	plotter.save("figures/gReal.png");
+	plotter.clear();
+	plotter.plot(gImaginary);
+	plotter.save("figures/gImaginary.png");
+	plotter.clear();
+	plotter.plot(GReal);
+	plotter.save("figures/GReal.png");
+	plotter.clear();
+	plotter.plot(GImaginary);
+	plotter.save("figures/GImaginary.png");
 
 	return 0;
 }
