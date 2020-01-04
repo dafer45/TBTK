@@ -34,24 +34,23 @@
  *  @author Kristofer Björnson
  */
 
-#include "TBTK/DifferenceRule.h"
-#include "TBTK/FileWriter.h"
+#include "TBTK/FockStateRule/DifferenceRule.h"
+#include "TBTK/FockStateRule/SumRule.h"
 #include "TBTK/Model.h"
 #include "TBTK/PropertyExtractor/ExactDiagonalizer.h"
+#include "TBTK/Smooth.h"
 #include "TBTK/Solver/ExactDiagonalizer.h"
-#include "TBTK/SumRule.h"
+#include "TBTK/Visualization/MatPlotLib/Plotter.h"
 
 #include <complex>
 
 using namespace std;
 using namespace TBTK;
+using namespace Visualization::MatPlotLib;
 
 complex<double> i(0, 1);
 
 int main(int argc, char **argv){
-	//Clear folder to prepare for writing new data
-	FileWriter::clear();
-
 	//Model Parameters for Hubbard model
 	const int SIZE_X = 3;
 	const int SIZE_Y = 2;
@@ -123,20 +122,33 @@ int main(int argc, char **argv){
 	);
 
 	//Create exact diagonalization solver. Notation will be simplified.
-	Solver::ExactDiagonalizer edSolver;
-	edSolver.setModel(model);
+	Solver::ExactDiagonalizer solver;
+	solver.setModel(model);
 
 	//Create and initialize PropertyExtractor.
-	PropertyExtractor::ExactDiagonalizer pe(edSolver);
+	PropertyExtractor::ExactDiagonalizer propertyExtractor(solver);
 	const int ENERGY_RESOLUTION = 1000;
 	double LOWER_BOUND = -6.;
 	double UPPER_BOUND = 6.;
-	pe.setEnergyWindow(LOWER_BOUND, UPPER_BOUND, ENERGY_RESOLUTION);
-
-	//Calculate LDOS and write to file.
-	Property::LDOS ldos = pe.calculateLDOS(
-		{IDX_X, 0, IDX_SUM_ALL},
-		{SIZE_X, SIZE_Y, 2}
+	propertyExtractor.setEnergyWindow(
+		LOWER_BOUND,
+		UPPER_BOUND,
+		ENERGY_RESOLUTION
 	);
-	FileWriter::writeLDOS(ldos);
+
+	//Calculate the local density of states (LDOS).
+	Property::LDOS ldos = propertyExtractor.calculateLDOS(
+		{IDX_X, 0, IDX_SUM_ALL},
+		{SIZE_X, 1, 2}
+	);
+
+	//Smooth the LDOS.
+	const double SMOOTHING_SIGMA = 0.1;
+	const unsigned int SMOOTHING_WINDOW = 101;
+	ldos = Smooth::gaussian(ldos, SMOOTHING_SIGMA, SMOOTHING_WINDOW);
+
+	//Plot the LDOS.
+	Plotter plotter;
+	plotter.plot(ldos);
+	plotter.save("figures/LDOS.png");
 }
