@@ -24,84 +24,122 @@
  *  @author Kristofer Björnson
  */
 
-#include "TBTK/FileWriter.h"
 #include "TBTK/Model.h"
 #include "TBTK/Property/DOS.h"
 #include "TBTK/Property/EigenValues.h"
 #include "TBTK/PropertyExtractor/Diagonalizer.h"
+#include "TBTK/Smooth.h"
 #include "TBTK/Solver/Diagonalizer.h"
+#include "TBTK/TBTK.h"
+#include "TBTK/Visualization/MatPlotLib/Plotter.h"
 
 #include <complex>
 #include <iostream>
 
 using namespace std;
 using namespace TBTK;
+using namespace Visualization::MatPlotLib;
 
 const complex<double> i(0, 1);
 
 int main(int argc, char **argv){
-	//Lattice size
+	//Initialize TBTK.
+	Initialize();
+
+	//Lattice size.
 	const int SIZE_X = 10;
 	const int SIZE_Y = 10;
 
-	//Parameters
-	complex<double> mu = 0.0;
+	//Parameters.
+	double mu = 0.0;
 	complex<double> t = 1.0;
 
-	//Create model and set up hopping parameters
+	//Create model and set up hopping parameters.
 	Model model;
 	for(int x = 0; x < SIZE_X; x++){
 		for(int y = 0; y < SIZE_Y; y++){
 			for(int s = 0; s < 2; s++){
-				//Add hopping amplitudes corresponding to chemical potential
-				model << HoppingAmplitude(-mu,	{x, y, 0, s},	{x, y, 0, s});
-				model << HoppingAmplitude(-mu,	{x, y, 1, s},	{x, y, 1, s});
-				model << HoppingAmplitude(-mu,	{x, y, 2, s},	{x, y, 2, s});
-				model << HoppingAmplitude(-mu,	{x, y, 3, s},	{x, y, 3, s});
-
-				//Add hopping parameters corresponding to t
-				model << HoppingAmplitude(-t,		{x, y, 1, s},			{x, y, 0, s}) + HC;
-				model << HoppingAmplitude(-t,		{x, y, 2, s},			{x, y, 1, s}) + HC;
-				model << HoppingAmplitude(-t,		{x, y, 3, s},			{x, y, 2, s}) + HC;
+				//Add hopping parameters corresponding to t.
+				model << HoppingAmplitude(
+					-t,
+					{x, y, 1, s},
+					{x, y, 0, s}
+				) + HC;
+				model << HoppingAmplitude(
+					-t,
+					{x, y, 2, s},
+					{x, y, 1, s}
+				) + HC;
+				model << HoppingAmplitude(
+					-t,
+					{x, y, 3, s},
+					{x, y, 2, s}
+				) + HC;
 				if(x+1 < SIZE_X){
-					model << HoppingAmplitude(-t,	{(x+1)%SIZE_X, y, 0, s},	{x, y, 3, s}) + HC;
+					model << HoppingAmplitude(
+						-t,
+						{(x+1)%SIZE_X, y, 0, s},
+						{x, y, 3, s}
+					) + HC;
 				}
 				if(y+1 < SIZE_Y){
-					model << HoppingAmplitude(-t,	{x, (y+1)%SIZE_Y, 0, s},	{x, y, 1, s}) + HC;
-					model << HoppingAmplitude(-t,	{x, (y+1)%SIZE_Y, 3, s},	{x, y, 2, s}) + HC;
+					model << HoppingAmplitude(
+						-t,
+						{x, (y+1)%SIZE_Y, 0, s},
+						{x, y, 1, s}
+					) + HC;
+					model << HoppingAmplitude(
+						-t,
+						{x, (y+1)%SIZE_Y, 3, s},
+						{x, y, 2, s}
+					) + HC;
 				}
 			}
 		}
 	}
+	model.setChemicalPotential(mu);
 
-	//Construct model
+	//Construct model.
 	model.construct();
 
-	//Setup and run Solver::Diagonalizer
-	Solver::Diagonalizer dSolver;
-	dSolver.setModel(model);
-	dSolver.run();
+	//Setup and run Solver::Diagonalizer.
+	Solver::Diagonalizer solver;
+	solver.setModel(model);
+	solver.run();
 
-	//Set filename and remove any file already in the folder
-	FileWriter::setFileName("TBTKResults.h5");
-	FileWriter::clear();
+	//Create PropertyExtractor.
+	PropertyExtractor::Diagonalizer propertyExtractor(solver);
 
-	//Create PropertyExtractor
-	PropertyExtractor::Diagonalizer pe(dSolver);
-
-	//Setup energy window
+	//Setup energy window.
 	const double LOWER_BOUND = -5.;
 	const double UPPER_BOUND = 5.;
 	const int RESOLUTION = 1000;
-	pe.setEnergyWindow(LOWER_BOUND, UPPER_BOUND, RESOLUTION);
+	propertyExtractor.setEnergyWindow(
+		LOWER_BOUND,
+		UPPER_BOUND,
+		RESOLUTION
+	);
 
-	//Extract eigenvalues and write these to file
-	Property::EigenValues ev = pe.getEigenValues();
-	FileWriter::writeEigenValues(ev);
+	//Extract eigenvalues.
+	Property::EigenValues eigenValues = propertyExtractor.getEigenValues();
 
-	//Extract DOS and write to file
-	Property::DOS dos = pe.calculateDOS();
-	FileWriter::writeDOS(dos);
+	//Plot eigenvalues.
+	Plotter plotter;
+	plotter.plot(eigenValues);
+	plotter.save("figures/EigenValues.png");
+
+	//Extract the density fo states (DOS).
+	Property::DOS dos = propertyExtractor.calculateDOS();
+
+	//Smooth the DOS.
+	const double SMOOTHING_SIGMA = 0.1;
+	const unsigned int SMOOTHING_WINDOW = 51;
+	dos = Smooth::gaussian(dos, SMOOTHING_SIGMA, SMOOTHING_WINDOW);
+
+	//Plot the DOS.
+	plotter.clear();
+	plotter.plot(dos);
+	plotter.save("figures/DOS.png");
 
 	return 0;
 }
