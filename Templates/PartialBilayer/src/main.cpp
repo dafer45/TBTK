@@ -18,51 +18,48 @@
  *  @brief Partial bilayer using diagonalization
  *
  *  Basic example of diagonalization of a 2D tight-binding model with t = 1 and
- *  mu = -1. Bilayer lattice with edges. First layers size is 20x20 sites, while
- *  the second layer is 20x10.
+ *  mu = -1. Bilayer lattice with edges. First layers size is 20x20 sites,
+ *  while the second layer is 20x10.
  *
  *  @author Kristofer Björnson
  */
 
-#include "TBTK/FileWriter.h"
 #include "TBTK/Model.h"
 #include "TBTK/Property/DOS.h"
 #include "TBTK/Property/EigenValues.h"
 #include "TBTK/PropertyExtractor/Diagonalizer.h"
+#include "TBTK/Smooth.h"
 #include "TBTK/Solver/Diagonalizer.h"
+#include "TBTK/TBTK.h"
+#include "TBTK/Visualization/MatPlotLib/Plotter.h"
 
 #include <complex>
 #include <iostream>
 
 using namespace std;
 using namespace TBTK;
+using namespace Visualization::MatPlotLib;
 
 const complex<double> i(0, 1);
 
 int main(int argc, char **argv){
-	//Lattice size
+	//Initialize TBTK.
+	Initialize();
+
+	//Parameters.
 	const int SIZE_X = 20;
 	const int SIZE_Y_LAYER_BOTTOM = 20;
 	const int SIZE_Y_LAYER_TOP = 10;
-
-	//Parameters
-	complex<double> mu = -1.0;
+	double mu = -1.0;
 	complex<double> t = 1.0;
 
-	//Create model and set up hopping parameters
+	//Create model and set up hopping parameters.
 	Model model;
 	//First layer
 	for(int x = 0; x < SIZE_X; x++){
 		for(int y = 0; y < SIZE_Y_LAYER_BOTTOM; y++){
 			for(int s = 0; s < 2; s++){
-				//Add hopping amplitudes corresponding to chemical potential
-				model << HoppingAmplitude(
-					-mu,
-					{0, x, y, s},
-					{0, x, y, s}
-				);
-
-				//Add hopping parameters corresponding to t
+				//Add hopping parameters corresponding to t.
 				if(x+1 < SIZE_X){
 					model << HoppingAmplitude(
 						-t,
@@ -84,21 +81,14 @@ int main(int argc, char **argv){
 	for(int x = 0; x < SIZE_X; x++){
 		for(int y = 0; y < SIZE_Y_LAYER_TOP; y++){
 			for(int s = 0; s < 2; s++){
-				//Add hopping amplitudes corresponding to chemical potential
-				model << HoppingAmplitude(
-					-mu,
-					{1, x, y, s},
-					{1, x, y, s}
-				);
-
-				//Add hopping amplitudes between layer 0 and 1
+				//Add hopping amplitudes between layer 0 and 1.
 				model << HoppingAmplitude(
 					-t,
 					{1, x, y, s},
 					{0, x, y, s}
 				) + HC;
 
-				//Add hopping amplitudes corresponding to t
+				//Add hopping amplitudes corresponding to t.
 				if(x+1 < SIZE_X){
 					model << HoppingAmplitude(
 						-t,
@@ -116,35 +106,49 @@ int main(int argc, char **argv){
 			}
 		}
 	}
+	model.setChemicalPotential(mu);
 
-	//Construct model
+	//Construct model.
 	model.construct();
 
-	//Setup and run Solver::Diagonalizer
-	Solver::Diagonalizer dSolver;
-	dSolver.setModel(model);
-	dSolver.run();
+	//Setup and run Solver::Diagonalizer.
+	Solver::Diagonalizer solver;
+	solver.setModel(model);
+	solver.run();
 
-	//Set filename and remove any file already in the folder
-	FileWriter::setFileName("TBTKResults.h5");
-	FileWriter::clear();
+	//Create PropertyExtractor.
+	PropertyExtractor::Diagonalizer propertyExtractor(solver);
 
-	//Create PropertyExtractor
-	PropertyExtractor::Diagonalizer pe(dSolver);
-
-	//Setup energy window
+	//Setup the energy window.
 	const double LOWER_BOUND = -5.;
 	const double UPPER_BOUND = 7.;
 	const int RESOLUTION = 1000;
-	pe.setEnergyWindow(LOWER_BOUND, UPPER_BOUND, RESOLUTION);
+	propertyExtractor.setEnergyWindow(
+		LOWER_BOUND,
+		UPPER_BOUND,
+		RESOLUTION
+	);
 
 	//Extract eigenvalues and write these to file
-	Property::EigenValues ev = pe.getEigenValues();
-	FileWriter::writeEigenValues(ev);
+	Property::EigenValues eigenValues = propertyExtractor.getEigenValues();
 
-	//Extract DOS and write to file
-	Property::DOS dos = pe.calculateDOS();
-	FileWriter::writeDOS(dos);
+	//Plot the eigenvalues.
+	Plotter plotter;
+	plotter.plot(eigenValues);
+	plotter.save("figures/EigenValues.png");
+
+	//Extract the density of states (DOS).
+	Property::DOS dos = propertyExtractor.calculateDOS();
+
+	//Smooth the DOS.
+	const double SMOOTHING_SIGMA = 0.1;
+	const unsigned int SMOOTHING_WINDOW = 51;
+	dos = Smooth::gaussian(dos, SMOOTHING_SIGMA, SMOOTHING_WINDOW);
+
+	//Plot the DOS.
+	plotter.clear();
+	plotter.plot(dos);
+	plotter.save("figures/DOS.png");
 
 	return 0;
 }
