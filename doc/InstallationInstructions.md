@@ -66,30 +66,28 @@ where XXX is to be replaced by the relevant path.
 
 # Extensions {#Extensions}
 Additional features will also be available if one or more of the following libraries are installed.
-| Optional libraries | Further information                         |
-|--------------------|---------------------------------------------|
-| ARPACK             | http://www.caam.rice.edu/software/ARPACK    |
-| FFTW3              | http://www.fftw.org                         |
-| OpenCV             | https://opencv.org                          |
-| cURL               | https://curl.haxx.se                        |
-| SuperLU (v5.2.1)   | http://crd-legacy.lbl.gov/~xiaoye/SuperLU   |
-| wxWidgets          | https://www.wxwidgets.org                   |
-| CUDA               | https://developer.nvidia.com/cuda-downloads |
-| HDF5               | https://support.hdfgroup.org/HDF5           |
+| Optional libraries               | Further information                         |
+|----------------------------------|---------------------------------------------|
+| ARPACK                           | http://www.caam.rice.edu/software/ARPACK    |
+| CUDA                             | https://developer.nvidia.com/cuda-downloads |
+| cURL                             | https://curl.haxx.se                        |
+| FFTW3                            | http://www.fftw.org                         |
+| GMP                              | https://gmplib.org/                         |
+| Matplotlib (Python)              | https://matplotlib.org/                     |
+| NumPy (Python)                   | https://numpy.org/                          |
+| Python                           | https://www.python.org/                     |
+| SuperLU (v5.2.1)                 | http://crd-legacy.lbl.gov/~xiaoye/SuperLU   |
 
 The following table shows the optional libraries that are required to enable the respective TBTK components.
-|                                            | ARPACK | FFTW3 | OpenCV | cURL | SuperLU (v5.2.1) | wxWidgets | CUDA | HDF5 |
-|--------------------------------------------|:------:|:-----:|:------:|:----:|:----------------:|:---------:|:----:|:----:|
-| ArnoldiIterator                            | X      |       |        |      | X                |           |      |      |
-| FourierTransform                           |        | X     |        |      |                  |           |      |      |
-| Plotter                                    |        |       | X      |      |                  |           |      |      |
-| RayTracer                                  |        |       | X      |      |                  |           |      |      |
-| Resource                                   |        |       |        | X    |                  |           |      |      |
-| DataManager                                |        |       |        | X    |                  |           |      |      |
-| LinnearEquationSolver                      |        |       |        |      | X                |           |      |      |
-| LUSolver                                   |        |       |        |      | X                |           |      |      |
-| GUI                                        |        |       |        |      |                  | X         |      |      |
-| Enable GPU execution for ChebyshevExpander |        |       |        |      |                  |           | X    |      |
-| FileReader and FileWriter                  |        |       |        |      |                  |           |      | X    |
+|                                   | ARPACK | CUDA | cURL | FFTW3 | GMP | Python with matplotlib and numpy | SuperLU (v5.2.1) |
+|-----------------------------------|:------:|:----:|:----:|:-----:|:---:|:--------------------------------:|:----------------:|
+| ArbitraryPrecision                |        |      |      |       | X   |                                  |                  |
+| ArnoldiIterator                   | X      |      |      |       |     |                                  | X                |
+| ChebyshevExpander (GPU execution) |        | X    |      |       |     |                                  |                  |
+| FourierTransform                  |        |      |      | X     |     |                                  |                  |
+| LinnearEquationSolver             |        |      |      |       |     |                                  | X                |
+| LUSolver                          |        |      |      |       |     |                                  | X                |
+| Plotter                           |        |      |      |       |     | X                                |                  |
+| Resource                          |        |      | X    |       |     |                                  |                  |
 
 @link Manual Next: Manual@endlink
