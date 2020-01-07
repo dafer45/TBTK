@@ -2,7 +2,8 @@ Tutorials {#Tutorials}
 ======
 
 These tutorials assume that TBTK has already been installed as described in the [Installation instructions](@ref InstallationInstructions).
-The tutorials are written for physicists that not necessarily are familiar with C++ and therefore introduces both TBTK as well as C++ in the first couple of tutorials.
+The tutorials are written for physicists that are not necessarily familiar with C++ and therefore introduces both TBTK and C++.
+See the Examples for quicker information about how to implement specific problems.
 
 # Getting started
 - @subpage CreatingANewApplication
@@ -12,39 +13,38 @@ The tutorials are written for physicists that not necessarily are familiar with 
 
 @page CreatingANewApplication Creating a new application (Unix like operating systems such as Linux and Mac OS)
 # Purpose and learning outcome {#CreatingANewApplicationPurposeAndLearningOutcome}
-In this tutorial we learn how to create a new project and how to build and execute an application.
-We also go through the file and folder structure of a basic project and learn to create more complex template projects.
-At the end of this tutorial the reader should be comfortable with the support structure inside which an application is built and be ready to learn how to write actual applications.
+In this tutorial we learn how to create, build and execute an application.
+We also describe the default folder structure and learn how to create template projects.
+At the end of this tutorial you should be comfortable with setting up a new project and be ready to learn how to implement an applications.
 
 # Creating, building, and executing a first application {#CreatingBuildingAndExecutingAFirstApplication}
-## Project creation using TBTKCreateApplication
-One of the main issues when writing code in a language such as C++ is the need to manage both source files and dependencies in terms of other libraries.
-In addition to the main source code, a full project therefore requires one or several supporting files and folders.
-TBTK therefore comes with an executable called TBTKCreateApplication that helps setup the relevant support structure, and which in combination with CMake allows the developer to focus on developing the actual application.
-Before creating a project, it is recommended to have a folder called for example *TBTKApplications* inside which applications are created.
-This can be created on the command line using
-```bash
+## Create an application
+We begin by creating a folder within which applications will be created.
+To create this folder and enter it, we type the following on the command line.
+```txt
 	mkdir TBTKApplications
-```
-Then, to enter this folder and create a new application, type
-```bash
 	cd TBTKApplications
+```
+
+Once inside the folder we type
+```txt
 	TBTKCreateApplication ApplicationName
 ```
-where *ApplicationName* can be any valid folder name (no spaces).
-This will create a new folder named *ApplicationName* that contains all the relevant files for building and running a TBTK application.
+where *ApplicationName* can be any valid folder name (without spaces).
+This creates a new folder named *ApplicationName* that contains all the relevant files for building and running a TBTK application.
+
 ## Build executable
 To enter the project folder and build the application, type
-```bash
+```txt
 	cd ApplicationName
 	cmake .
 	make
 ```
 Here the second line creates the relevant files required to build the application, while the third line builds the actual executable.
 
-It can also be useful to build the application in a separate folder from source code.
+It can also be useful to build the application in a separate folder that is separate from the source code.
 This can be achieved by instead typing
-```bash
+```txt
 	mkdir ApplicationNameBuild
 	cd ApplicationNameBuild
 	cmake ../ApplicationName
@@ -53,12 +53,13 @@ This can be achieved by instead typing
 
 ## Execute the application
 The application can now be executed by typing
-```bash
+```txt
 	./build/Application
 ```
+That's it, you have now created, built, and executed your first application.
 
 # Default application folder structure {#DefaultApplicationFolderStructure}
-When creating an application using TBTKCreateApplication, a number of files and folders are created.
+When running TBTKCreateApplication, a number of files and folders are created inside the new application folder.
 The purpose of the folders are
 | Folder name | Description                                |
 |-------------|--------------------------------------------|
@@ -74,7 +75,6 @@ However, descriptions are provided to aid developers interested in customizing t
 | File name                                      | Description                                                                                                      |
 |------------------------------------------------|------------------------------------------------------------------------------------------------------------------|
 | <span style="color:gray">CMakeLists.txt</span> | <span style="color:gray">File used by CMake to setup the build system. The file used by the *cmake* call.</span> |
-| plot.sh                                        | File intended for python plot commands to be listed in (see TBTK/Templates for examples).                        |
 | src/main.cpp                                   | The file in which the code for the actual application is written.                                                |
 
 Once *cmake* is executed, a number of additional files are created
@@ -87,17 +87,19 @@ Once *cmake* is executed, a number of additional files are created
 
 # Template applications {#TemplateApplications}
 ## More complex templates
-While the usage of TBTKCreateApplication as presented above is useful for starting projects from scratch, it is also possible to start from more complex projects by typing
-```bash
+So far we have shown how to create an application from scratch using TBTKCreateApplication.
+It is also possible to create one of several template projects by instead typing
+```txt
 	TBTKCreateApplication ApplicationName TemplateName
 ```
-where *TemplateName* can be any of
+where *TemplateName* can be any of the following
 | TemplateName                    | Description                                                                                                              |
 |---------------------------------|--------------------------------------------------------------------------------------------------------------------------|
-| BasicArnoldi                    | Demonstrates how to use the ArnoldiIterator.                                                                             |
-| BasicChebyshev                  | Demonstrates how to use the ChebyshevExapnder.                                                                           |
-| BasicDiagonalization            | Demonstrates how to use the Diagonalizer.                                                                                |
+| BasicArnoldi                    | Demonstrates how to use the Solver::ArnoldiIterator.                                                                     |
+| BasicChebyshev                  | Demonstrates how to use the Solver::ChebyshevExapnder.                                                                   |
+| BasicDiagonalization            | Demonstrates how to use the Solver::Diagonalizer.                                                                        |
 | BasicFourierTransform           | Demonstrates how to use the FourierTransform.                                                                            |
+| BasicLinearEquation             | Demonstrates how to use the Solver::BasicLinearEquation.                                                                 |
 | CarbonNanotube                  | Demonstrates how to set up a carbon nanotube.                                                                            |
 | HexagonalLattice                | Demonstrates how to set up a hexagonal lattice.                                                                          |
 | PartialBilayer                  | Demonstrates how to set up a partial bilayer.                                                                            |
@@ -105,42 +107,19 @@ where *TemplateName* can be any of
 | WireOnSuperconductor            | Demonstrates how to set up a magnetic wire on top of a two-dimensional superconducting layer.                            |
 
 ## Example: BasicDiagonalization
-To demonstrate the use of template projects, lets build and execute BasicDiagonalization.
-Before beginning we note that this template uses the FileWriter and therefore requires that HDF5 is installed and detected by TBTK.
-Therefore make sure the HDF5 box is checked in the output from *cmake* below.
+To demonstrate the use of template projects, let's build and execute BasicDiagonalization.
+We note that this template uses the Plotter and, therefore, requires that Python with matplotlib and numpy is installed and detected by TBTK.
+Therefore, make sure that the Python box is checked in the output from the *cmake* command below before proceeding to line four and five.
+
 Starting from the folder TBTKApplication, we type
-```bash
+```txt
 	TBTKCreateApplication MyDiagonalizationApplication BasicDiagonalization
 	cd MyDiagonalizationApplication
 	cmake .
 	make
 	./build/Application
 ```
-The application should run and output
-```bash
-	Constructing system
-		Basis size: 800
-	Initializing Diagonalizer
-		Basis size: 800
-	Running Diagonalizer
-
-	.
-```
-Taking a look at the code in *src/main.cpp*, we see several lines for example reading
-```cpp
-	FileWriter::writeDensity(density);
-```
-These lines writes the results to a file called *TBTKResults.h5* (set by *FileWriter::setFileName("TBTKResults.h5")*) which will contain the results of the calculation.
-Next, taking a look in the file *plot.sh*, we see several corresponding lines for example reading
-```bash
-	TBTKPlotDensity.py TBTKResults.h5
-```
-These reads the results from *TBTKResults.h5* and plots the result in files stored in the folder *figures*.
-Therefore type
-```bash
-	bash plot.sh
-```
-and view the results in the *figures* folder.
+The application should run and save six figures in the figures folder.
 
 @page BuildingAFirstApplicationTwoLevelSystem Building a first application (two level system)
 # Purpose and learning outcome {#BuildingAFirstApplicationTwoLevelSystemPurposeAndLearningOutcome}
