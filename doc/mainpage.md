@@ -1,5 +1,7 @@
 # Start Page {#mainpage}
 
+\image html Logo.png"
+
 # Welcome to the documentation for TBTK!
 TBTK is an open-source C++ framework for modeling and solving problems formulated using the language of second quantization.
 It can be used to set up general models with little effort and provides a variety of native solution methods.

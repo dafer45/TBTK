@@ -38,6 +38,16 @@ IF(DOXYGEN_FOUND)
 		COPYONLY
 	)
 	CONFIGURE_FILE(
+		${CMAKE_CURRENT_SOURCE_DIR}/figures/Logo.png
+		${CMAKE_CURRENT_BINARY_DIR}/figures/Logo.png
+		COPYONLY
+	)
+	CONFIGURE_FILE(
+		${CMAKE_CURRENT_SOURCE_DIR}/figures/LogoAtom.png
+		${CMAKE_CURRENT_BINARY_DIR}/figures/LogoAtom.png
+		COPYONLY
+	)
+	CONFIGURE_FILE(
 		${CMAKE_CURRENT_SOURCE_DIR}/InstallationInstructions.md
 		${CMAKE_CURRENT_BINARY_DIR}/InstallationInstructions.md
 		COPYONLY
