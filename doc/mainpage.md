@@ -6,7 +6,7 @@
 TBTK is an open-source C++ framework for modeling and solving problems formulated using the language of second quantization.
 It can be used to set up general models with little effort and provides a variety of native solution methods.
 
-To get started, see the [installation instructions](@ref InstallationInstructions), the [manual](@ref Manual), and the [tutorials](@ref Tutorials).
+To get started, see the [installation instructions](@ref InstallationInstructions), [manual](@ref Manual), [examples](@ref Examples) and [tutorials](@ref Tutorials).
 Also, see the blog posts and other resources collected on [second-tech.com](http://second-tech.com/wordpress/index.php/tbtk/).
 
 ## Download TBTK
