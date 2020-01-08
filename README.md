@@ -31,6 +31,7 @@ Moreover, let the chemical potential be *mu = -1 eV*, the temperature be *T = 30
 ```cpp
 const int SIZE_X                = 30;
 const int SIZE_Y                = 30;
+const double mu                 = 0;
 const double t                  = 1;
 const double J                  = 0.5;
 const double T                  = 300;
@@ -95,18 +96,29 @@ Property::Magnetization magnetization
         = propertyExtractor.calculateMagnetization({{_a_, _a_, IDX_SPIN}});
 ```
 
-## Plot and print results  
-The DOS is a one-dimensional function of the energy and can easily be plotted.
-We here do so using a Gaussian smoothing with standard deviation 0.07.  
+## Smooth the DOS  
 ```cpp
+const double SMOOTHING_SIGMA = 0.07;
+const unsigned int SMOOTHING_WINDOW = 51;
+dos = Smooth::gaussian(dos, SMOOTHING_SIGMA, SMOOTHING_WINDOW);
+```
+
+## Plot and print results  
+```cpp
+//Create a Plotter.
 Plotter plotter;
-plotter.setLabelX("Energy");
-plotter.setLabelY("DOS");
-plotter.plot(dos, 0.07);
+
+//Plot the DOS.
+plotter.plot(dos);
 plotter.save("figures/DOS.png");
+
+//Plot the Magnetization along the z-axis.
+plotter.clear({_a_, _a_, IDX_SPIN}, {0, 0, 1}, magnetization)
+plotter.save("figures/Magnetization.png");
 ```
 **Result:**
-<p align="center"><img src="doc/DOS.png" /></p>  
+<p align="center"><img src="doc/figures/DOS.png" /></p>  
+<p align="center"><img src="doc/figures/Magnetization.png" /></p>  
 
 For each point (x, y) on the lattice, the magnetization is a two-by-two complex matrix called a SpinMatrix.
 The up and down components of the spin are given by the two diagonal entries.
