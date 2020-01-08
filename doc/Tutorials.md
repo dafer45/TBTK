@@ -141,8 +141,8 @@ Further, at zero temperature and non-zero magnetic field strength, the system wi
 However, at finite temperatures both the ground state and the excited state will have a finite occupation determined by the Fermi-Dirac distribution.
 We therefore also invstigate how the magnetization varies with magnetic field strength and temperature.
 
-# Rewriting the Hamiltonian on second-quantized form {#RewritingTheHamiltonianOnSecondQuantizedForm}
-Before implementing the problem we need to rewrite the Hamiltonian on the second-quantized form
+# Rewriting the Hamiltonian on second quantized form {#RewritingTheHamiltonianOnSecondQuantizedForm}
+Before implementing the problem we need to rewrite the Hamiltonian on the second quantized form
 <center>\f$H = \sum_{\mathbf{i}\mathbf{j}}a_{\mathbf{i}\mathbf{j}}c_{\mathbf{i}}^{\dagger}c_{\mathbf{j}}\f$.</center>
 For the Hamiltonian above this is particularly simple.
 First of all the indices \f$\mathbf{i}\f$ and \f$\mathbf{j}\f$ are simply \f$\uparrow\f$ and \f$\downarrow\f$ for up and down spins, respectively.
