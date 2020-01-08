@@ -153,7 +153,7 @@ For more examples and complete applications, see http://second-tech.com/wordpres
 
 # System requirements
 **Verified to work with:**  
-* gcc (v4.9 and up)
+* gcc (v5.4 and up)
 * clang (exact version number not known at the moment).  
 
 | Required software           | Further information  |
@@ -168,34 +168,35 @@ For more examples and complete applications, see http://second-tech.com/wordpres
 
 Additional features will also be available if one or more of the following libraries are installed.
 
-| Optional libraries | Further information                         |
-|--------------------|---------------------------------------------|
-| ARPACK             | http://www.caam.rice.edu/software/ARPACK    |
-| FFTW3              | http://www.fftw.org                         |
-| OpenCV             | https://opencv.org                          |
-| cURL               | https://curl.haxx.se                        |
-| SuperLU (v5.2.1)   | http://crd-legacy.lbl.gov/~xiaoye/SuperLU   |
-| wxWidgets          | https://www.wxwidgets.org                   |
-| CUDA               | https://developer.nvidia.com/cuda-downloads |
-| HDF5               | https://support.hdfgroup.org/HDF5           |
-| OpenBLAS           | https://www.openblas.net/                   |
-| OpenMP             | https://www.openmp.org/                     |
-| Google Test        | https://github.com/google/googletest        |
+| Optional libraries  | Further information                         |
+|---------------------|---------------------------------------------|
+| ARPACK              | http://www.caam.rice.edu/software/ARPACK    |
+| CUDA                | https://developer.nvidia.com/cuda-downloads |
+| cURL                | https://curl.haxx.se                        |
+| FFTW3               | http://www.fftw.org                         |
+| GMP                 | https://gmplib.org/                         |
+| Google Test         | https://github.com/google/googletest        |
+| HDF5                | https://support.hdfgroup.org/HDF5           |
+| Matplotlib (Python) | https://matplotlib.org/                     |
+| NumPy (Python)      | https://numpy.org/                          |
+| OpenCV              | https://opencv.org                          |
+| OpenMP              | https://www.openmp.org/                     |
+| Python              | https://www.python.org/                     |
+| SuperLU (v5.2.1)    | http://crd-legacy.lbl.gov/~xiaoye/SuperLU   |
 
 The following table shows the optional libraries that are required to enable extensions to the core capabilities.
 See the documentation for deatiled information about the corresponding components.
 
-| Extensions                                                                                                                | ARPACK | FFTW3 | OpenCV | cURL | SuperLU (v5.2.1) | CUDA | HDF5 | OpenBLAS | OpenMP | Google Test |
-|---------------------------------------------------------------------------------------------------------------------------|:------:|:-----:|:------:|:----:|:----------------:|:----:|:----:|:--------:|:------:|:-----------:|
-| [ArnoldiIterator](http://www.second-quantization.com/Solvers.html#SolverArnoldiIterator)                                  | X      |       |        |      | X                |      |      |          |        |             |
-| [FourierTransform](http://www.second-quantization.com/FourierTransform.html)                                              |        | X     |        |      |                  |      |      |          |        |             |
-| [Plotter](http://www.second-quantization.com/Plotting.html)                                                               |        |       | X      |      |                  |      |      |          |        |             |
-| [Resource](http://www.second-quantization.com/ImportingAndExportingData.html)                                             |        |       |        | X    |                  |      |      |          |        |             |
-| [Enable GPU execution for the ChebyshevExpander](http://www.second-quantization.com/Solvers.html#SolverChebyshevExpander) |        |       |        |      |                  | X    |      |          |        |             |
-| [FileReader and FileWriter](http://www.second-quantization.com/ImportingAndExportingData.html#FileReaderAndFileWriter)    |        |       |        |      |                  |      | X    |          |        |             |
-| Improved linear algebra performance                                                                                       |        |       |        |      |                  |      |      | X        |        |             |
-| Parallel CPU execution of various algorithms                                                                              |        |       |        |      |                  |      |      |          | X      |             |
-| Unit testing                                                                                                              |        |       |        |      |                  |      |      |          |        | X           |
+| Extensions                                                                                                             | ARPACK | CUDA | cURL | FFTW3 | GMP | Python with matplotlib and numpy | SuperLU (v5.2.1) | OpenMP | Google Test |
+|------------------------------------------------------------------------------------------------------------------------|:------:|:----:|:----:|:-----:|:---:|:--------------------------------:|:----------------:|:------:|:-----------:|
+| ArbitraryPrecision                                                                                                     |        |      |      |       | X   |                                  |        |             |
+| [ArnoldiIterator](http://www.second-quantization.com/Solvers.html#SolverArnoldiIterator)                               | X      |      |      |       |     |                                  | X                |        |             |
+| [ChebyshevExapnder (GPU execution)](http://www.second-quantization.com/Solvers.html#SolverChebyshevExpander)           |        | X    |      |       |     |                                  |                  |        |             |
+| [FourierTransform](http://www.second-quantization.com/FourierTransform.html)                                           |        |      |      | X     |     |                                  |                  |        |             |
+| Parallel CPU execution of various algorithms                                                                           |        |      |      |       |     |                                  |                  | X      |             |
+| [Plotter](http://www.second-quantization.com/Plotting.html)                                                            |        |      |      |       |     | X                                |                  |        |             |
+| [Resource](http://www.second-quantization.com/ImportingAndExportingData.html)                                          |        |      | X    |       |     |                                  |                  |        |             |
+| Unit testing                                                                                                           |        |      |      |       |     |                                  |                  |        | X           |
 
 A number of experimental features are also enabled by the optional libraries.
 These components are not yet stable and rapid changes to their interfaces may occur.
