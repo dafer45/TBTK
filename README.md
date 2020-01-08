@@ -1,6 +1,8 @@
 [![DOI](https://zenodo.org/badge/50950512.svg)](https://zenodo.org/badge/latestdoi/50950512)
 [![Build Status](https://travis-ci.org/dafer45/TBTK.svg?branch=master)](https://travis-ci.org/dafer45/TBTK)  
 <a href="https://www.patreon.com/bePatron?u=12043676" data-patreon-widget-type="become-patron-button"><img src="doc/become_a_patron_button.png"></a>  
+<p align="center"><img src="doc/figures/Logo.png" /></p>  
+
 **Contact:** <kristofer.bjornson@second-tech.com>  
 **Publication:** https://doi.org/10.1016/j.softx.2019.02.005  
 **Full documenation:** http://www.second-quantization.com/  
@@ -31,6 +33,7 @@ Moreover, let the chemical potential be *mu = -1 eV*, the temperature be *T = 30
 ```cpp
 const int SIZE_X                = 30;
 const int SIZE_Y                = 30;
+const double mu                 = 0;
 const double t                  = 1;
 const double J                  = 0.5;
 const double T                  = 300;
@@ -95,18 +98,29 @@ Property::Magnetization magnetization
         = propertyExtractor.calculateMagnetization({{_a_, _a_, IDX_SPIN}});
 ```
 
-## Plot and print results  
-The DOS is a one-dimensional function of the energy and can easily be plotted.
-We here do so using a Gaussian smoothing with standard deviation 0.07.  
+## Smooth the DOS  
 ```cpp
+const double SMOOTHING_SIGMA = 0.07;
+const unsigned int SMOOTHING_WINDOW = 51;
+dos = Smooth::gaussian(dos, SMOOTHING_SIGMA, SMOOTHING_WINDOW);
+```
+
+## Plot and print results  
+```cpp
+//Create a Plotter.
 Plotter plotter;
-plotter.setLabelX("Energy");
-plotter.setLabelY("DOS");
-plotter.plot(dos, 0.07);
+
+//Plot the DOS.
+plotter.plot(dos);
 plotter.save("figures/DOS.png");
+
+//Plot the Magnetization along the z-axis.
+plotter.clear({_a_, _a_, IDX_SPIN}, {0, 0, 1}, magnetization)
+plotter.save("figures/Magnetization.png");
 ```
 **Result:**
-<p align="center"><img src="doc/DOS.png" /></p>  
+<p align="center"><img src="doc/figures/DOS.png" /></p>  
+<p align="center"><img src="doc/figures/Magnetization.png" /></p>  
 
 For each point (x, y) on the lattice, the magnetization is a two-by-two complex matrix called a SpinMatrix.
 The up and down components of the spin are given by the two diagonal entries.
@@ -141,7 +155,7 @@ For more examples and complete applications, see http://second-tech.com/wordpres
 
 # System requirements
 **Verified to work with:**  
-* gcc (v4.9 and up)
+* gcc (v5.4 and up)
 * clang (exact version number not known at the moment).  
 
 | Required software           | Further information  |
@@ -155,53 +169,43 @@ For more examples and complete applications, see http://second-tech.com/wordpres
 | LAPACK             | http://www.netlib.org/lapack |
 
 Additional features will also be available if one or more of the following libraries are installed.
+(**Note: some of these libraries enable experimental components not yet listed in the public API.
+Only entries marked in bold below are relevant for one or more official components to work.**)
 
-| Optional libraries | Further information                         |
-|--------------------|---------------------------------------------|
-| ARPACK             | http://www.caam.rice.edu/software/ARPACK    |
-| FFTW3              | http://www.fftw.org                         |
-| OpenCV             | https://opencv.org                          |
-| cURL               | https://curl.haxx.se                        |
-| SuperLU (v5.2.1)   | http://crd-legacy.lbl.gov/~xiaoye/SuperLU   |
-| wxWidgets          | https://www.wxwidgets.org                   |
-| CUDA               | https://developer.nvidia.com/cuda-downloads |
-| HDF5               | https://support.hdfgroup.org/HDF5           |
-| OpenBLAS           | https://www.openblas.net/                   |
-| OpenMP             | https://www.openmp.org/                     |
-| Google Test        | https://github.com/google/googletest        |
+| Optional libraries/softwares      | Further information                         |
+|-----------------------------------|---------------------------------------------|
+| **ARPACK**                        | http://www.caam.rice.edu/software/ARPACK    |
+| **CUDA**                          | https://developer.nvidia.com/cuda-downloads |
+| **cURL**                          | https://curl.haxx.se                        |
+| **FFTW3**                         | http://www.fftw.org                         |
+| GMP                               | https://gmplib.org/                         |
+| Google Test                       | https://github.com/google/googletest        |
+| HDF5                              | https://support.hdfgroup.org/HDF5           |
+| **Matplotlib (Python)**           | https://matplotlib.org/                     |
+| **NumPy (Python)**                | https://numpy.org/                          |
+| OpenCV                            | https://opencv.org                          |
+| **OpenMP**                        | https://www.openmp.org/                     |
+| **Python**                        | https://www.python.org/                     |
+| **SuperLU (v5.2.1)**              | http://crd-legacy.lbl.gov/~xiaoye/SuperLU   |
 
 The following table shows the optional libraries that are required to enable extensions to the core capabilities.
 See the documentation for deatiled information about the corresponding components.
 
-| Extensions                                                                                                                | ARPACK | FFTW3 | OpenCV | cURL | SuperLU (v5.2.1) | CUDA | HDF5 | OpenBLAS | OpenMP | Google Test |
-|---------------------------------------------------------------------------------------------------------------------------|:------:|:-----:|:------:|:----:|:----------------:|:----:|:----:|:--------:|:------:|:-----------:|
-| [ArnoldiIterator](http://www.second-quantization.com/Solvers.html#SolverArnoldiIterator)                                  | X      |       |        |      | X                |      |      |          |        |             |
-| [FourierTransform](http://www.second-quantization.com/FourierTransform.html)                                              |        | X     |        |      |                  |      |      |          |        |             |
-| [Plotter](http://www.second-quantization.com/Plotting.html)                                                               |        |       | X      |      |                  |      |      |          |        |             |
-| [Resource](http://www.second-quantization.com/ImportingAndExportingData.html)                                             |        |       |        | X    |                  |      |      |          |        |             |
-| [Enable GPU execution for the ChebyshevExpander](http://www.second-quantization.com/Solvers.html#SolverChebyshevExpander) |        |       |        |      |                  | X    |      |          |        |             |
-| [FileReader and FileWriter](http://www.second-quantization.com/ImportingAndExportingData.html#FileReaderAndFileWriter)    |        |       |        |      |                  |      | X    |          |        |             |
-| Improved linear algebra performance                                                                                       |        |       |        |      |                  |      |      | X        |        |             |
-| Parallel CPU execution of various algorithms                                                                              |        |       |        |      |                  |      |      |          | X      |             |
-| Unit testing                                                                                                              |        |       |        |      |                  |      |      |          |        | X           |
-
-A number of experimental features are also enabled by the optional libraries.
-These components are not yet stable and rapid changes to their interfaces may occur.
-They should therefore only be considered for use by experienced developers.
-
-| Experimental extensions | OpenCV | cURL | SuperLU (v5.2.1) | wxWidgets |
-|-------------------------|:------:|:----:|:----------------:|:---------:|
-| RayTracer               | X      |      |                  |           |
-| DataManager             |        | X    |                  |           |
-| LinnearEquationSolver   |        |      | X                |           |
-| LUSolver                |        |      | X                |           |
-| GUI                     |        |      |                  | X         |
+| Extensions                                                                                                             | ARPACK | CUDA | cURL | FFTW3 | Python with matplotlib and numpy | SuperLU (v5.2.1) | OpenMP | Google Test |
+|------------------------------------------------------------------------------------------------------------------------|:------:|:----:|:----:|:-----:|:--------------------------------:|:----------------:|:------:|:-----------:|
+| [ArnoldiIterator](http://www.second-quantization.com/Solvers.html#SolverArnoldiIterator)                               | X      |      |      |       |                                  | X                |        |             |
+| [ChebyshevExapnder (GPU execution)](http://www.second-quantization.com/Solvers.html#SolverChebyshevExpander)           |        | X    |      |       |                                  |                  |        |             |
+| [FourierTransform](http://www.second-quantization.com/FourierTransform.html)                                           |        |      |      | X     |                                  |                  |        |             |
+| Parallel CPU execution of various algorithms                                                                           |        |      |      |       |                                  |                  | X      |             |
+| [Plotter](http://www.second-quantization.com/Plotting.html)                                                            |        |      |      |       | X                                |                  |        |             |
+| [Resource](http://www.second-quantization.com/ImportingAndExportingData.html)                                          |        |      | X    |       |                                  |                  |        |             |
+| Unit testing                                                                                                           |        |      |      |       |                                  |                  |        | X           |
 
 # Quickstart
 ## Installation
 ```bash
 git clone http://github.com/dafer45/TBTK
-git checkout v1.2.0
+git checkout v2.0.0
 mkdir TBTKBuild
 cd TBTKBuild
 cmake ../TBTK
@@ -237,12 +241,13 @@ TBTK is free software that is licensed under the Apache 2.0 license (see the fil
 ### Third party licenses
 #### json/TBTK/json.hpp (for serialization)
 A third-party library hosted at https://github.com/nlohmann/json and is licensed
-under the MIT license. Similarly the Boost header file gnuplot-iostream.h in
-External/TBTK/External/Boost/ is licensed under the Boost license. A rewritten
-version of matplotlib-cpp (https://github.com/lava/matplotlib-cpp) is also
-included in External/TBTK/External/MatPlotLibCpp and
-Lib/src/Visualization/MatPlotLib/. matplotlib-cpp is originally licensed under
-the MIT license.
+under the MIT license.
+
+#### External/TBTK/External/Boost/gnuplot-iostream.h (for an exeprimental plotter)
+This Boost header file is licensed under the Boost license.
+
+#### Lib/include/TBTK/Visualization/MatPlotLib/ (for the Matplotlib based plotter)
+Some of the files in this and the corresponding source folder are based on a rewritten version of matplotlib-cpp (https://github.com/lava/matplotlib-cpp), which originally is licensed under the MIT license.
 
 
 # Cite
