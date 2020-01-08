@@ -187,34 +187,21 @@ Additional features will also be available if one or more of the following libra
 The following table shows the optional libraries that are required to enable extensions to the core capabilities.
 See the documentation for deatiled information about the corresponding components.
 
-| Extensions                                                                                                             | ARPACK | CUDA | cURL | FFTW3 | GMP | Python with matplotlib and numpy | SuperLU (v5.2.1) | OpenMP | Google Test |
-|------------------------------------------------------------------------------------------------------------------------|:------:|:----:|:----:|:-----:|:---:|:--------------------------------:|:----------------:|:------:|:-----------:|
-| ArbitraryPrecision                                                                                                     |        |      |      |       | X   |                                  |        |             |
-| [ArnoldiIterator](http://www.second-quantization.com/Solvers.html#SolverArnoldiIterator)                               | X      |      |      |       |     |                                  | X                |        |             |
-| [ChebyshevExapnder (GPU execution)](http://www.second-quantization.com/Solvers.html#SolverChebyshevExpander)           |        | X    |      |       |     |                                  |                  |        |             |
-| [FourierTransform](http://www.second-quantization.com/FourierTransform.html)                                           |        |      |      | X     |     |                                  |                  |        |             |
-| Parallel CPU execution of various algorithms                                                                           |        |      |      |       |     |                                  |                  | X      |             |
-| [Plotter](http://www.second-quantization.com/Plotting.html)                                                            |        |      |      |       |     | X                                |                  |        |             |
-| [Resource](http://www.second-quantization.com/ImportingAndExportingData.html)                                          |        |      | X    |       |     |                                  |                  |        |             |
-| Unit testing                                                                                                           |        |      |      |       |     |                                  |                  |        | X           |
-
-A number of experimental features are also enabled by the optional libraries.
-These components are not yet stable and rapid changes to their interfaces may occur.
-They should therefore only be considered for use by experienced developers.
-
-| Experimental extensions | OpenCV | cURL | SuperLU (v5.2.1) | wxWidgets |
-|-------------------------|:------:|:----:|:----------------:|:---------:|
-| RayTracer               | X      |      |                  |           |
-| DataManager             |        | X    |                  |           |
-| LinnearEquationSolver   |        |      | X                |           |
-| LUSolver                |        |      | X                |           |
-| GUI                     |        |      |                  | X         |
+| Extensions                                                                                                             | ARPACK | CUDA | cURL | FFTW3 | Python with matplotlib and numpy | SuperLU (v5.2.1) | OpenMP | Google Test |
+|------------------------------------------------------------------------------------------------------------------------|:------:|:----:|:----:|:-----:|:--------------------------------:|:----------------:|:------:|:-----------:|
+| [ArnoldiIterator](http://www.second-quantization.com/Solvers.html#SolverArnoldiIterator)                               | X      |      |      |       |                                  | X                |        |             |
+| [ChebyshevExapnder (GPU execution)](http://www.second-quantization.com/Solvers.html#SolverChebyshevExpander)           |        | X    |      |       |                                  |                  |        |             |
+| [FourierTransform](http://www.second-quantization.com/FourierTransform.html)                                           |        |      |      | X     |                                  |                  |        |             |
+| Parallel CPU execution of various algorithms                                                                           |        |      |      |       |                                  |                  | X      |             |
+| [Plotter](http://www.second-quantization.com/Plotting.html)                                                            |        |      |      |       | X                                |                  |        |             |
+| [Resource](http://www.second-quantization.com/ImportingAndExportingData.html)                                          |        |      | X    |       |                                  |                  |        |             |
+| Unit testing                                                                                                           |        |      |      |       |                                  |                  |        | X           |
 
 # Quickstart
 ## Installation
 ```bash
 git clone http://github.com/dafer45/TBTK
-git checkout v1.2.0
+git checkout v2.0.0
 mkdir TBTKBuild
 cd TBTKBuild
 cmake ../TBTK
