@@ -241,10 +241,10 @@ TBTK is free software that is licensed under the Apache 2.0 license (see the fil
 A third-party library hosted at https://github.com/nlohmann/json and is licensed
 under the MIT license.
 
-#### External/TBTK/External/Boost/gnuplot-iostream.h (exeprimental plotter)
+#### External/TBTK/External/Boost/gnuplot-iostream.h (for an exeprimental plotter)
 This Boost header file is licensed under the Boost license.
 
-#### Lib/include/TBTK/Visualization/MatPlotLib/ (Matplotlib based plotter)
+#### Lib/include/TBTK/Visualization/MatPlotLib/ (for the Matplotlib based plotter)
 Some of the files in this and the corresponding source folder are based on a rewritten version of matplotlib-cpp (https://github.com/lava/matplotlib-cpp), which originally is licensed under the MIT license.
 
 
