@@ -182,7 +182,7 @@ where \f$\mathbf{I}\f$ is the impurity site.
 \image html output/Examples/SuperconductivityMagneticImpurity/figures/ExamplesSuperconductivityMagneticImpurityLDOS.png
 \image html output/Examples/SuperconductivityMagneticImpurity/figures/ExamplesSuperconductivityMagneticImpurityEigenValues.png
 
-@page KitaevModel Kitaev Model
+@page KitaevModel Kitaev model
 # Hamiltonian {#KitaevModelHamiltonian}
 <center>\f$H = t\sum_{x}\left(c_{x+1}^{\dagger}c_{x} - c_{x+1}x_{x}^{\dagger}\right) + \frac{i}{10}\sum_{x}c_{x+1}c_{x} + H.c.\f$</center>
 
