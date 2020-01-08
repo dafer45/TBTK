@@ -167,8 +167,8 @@ For more examples and complete applications, see http://second-tech.com/wordpres
 | LAPACK             | http://www.netlib.org/lapack |
 
 Additional features will also be available if one or more of the following libraries are installed.
-**Note: some of these libraries enable experimental components not yet listed in the public API.
-Only entries marked in bold below are relevant for one or more official components to work.**
+(**Note: some of these libraries enable experimental components not yet listed in the public API.
+Only entries marked in bold below are relevant for one or more official components to work.**)
 
 | Optional libraries/softwares      | Further information                         |
 |-----------------------------------|---------------------------------------------|
