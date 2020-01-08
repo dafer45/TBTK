@@ -19,13 +19,13 @@ Installation instructions {#InstallationInstructions}
 Always work agains a public release.
 This is done by checking out the latset release using
 ```cpp
-	git checkout v1.0.0
+	git checkout v2.0.0
 ```
 A full list of public releases can be found at https://github.com/dafer45/TBTK/releases.
 By remembering the version number that an application is compiled with, it is guaranted that the application will be possible to build again anytime in the future.
 
 TBTK uses [semantic versioning](https://semver.org/spec/v2.0.0.html).
-This means that any application that compiles with v1.x.y also will work with any higher version v1.x'.y'.
+This means that any application that compiles with v2.x.y also will work with any higher version v2.x'.y'.
 An update to the first (major) version number may break older applications.
 
 # Install TBTK {#InstallTBTK}
