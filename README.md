@@ -167,22 +167,24 @@ For more examples and complete applications, see http://second-tech.com/wordpres
 | LAPACK             | http://www.netlib.org/lapack |
 
 Additional features will also be available if one or more of the following libraries are installed.
+**Note: some of these libraries enable experimental components not yet listed in the public API.
+Only entries marked in bold below are relevant for one or more official components to work.**
 
-| Optional libraries  | Further information                         |
-|---------------------|---------------------------------------------|
-| ARPACK              | http://www.caam.rice.edu/software/ARPACK    |
-| CUDA                | https://developer.nvidia.com/cuda-downloads |
-| cURL                | https://curl.haxx.se                        |
-| FFTW3               | http://www.fftw.org                         |
-| GMP                 | https://gmplib.org/                         |
-| Google Test         | https://github.com/google/googletest        |
-| HDF5                | https://support.hdfgroup.org/HDF5           |
-| Matplotlib (Python) | https://matplotlib.org/                     |
-| NumPy (Python)      | https://numpy.org/                          |
-| OpenCV              | https://opencv.org                          |
-| OpenMP              | https://www.openmp.org/                     |
-| Python              | https://www.python.org/                     |
-| SuperLU (v5.2.1)    | http://crd-legacy.lbl.gov/~xiaoye/SuperLU   |
+| Optional libraries/softwares      | Further information                         |
+|-----------------------------------|---------------------------------------------|
+| **ARPACK**                        | http://www.caam.rice.edu/software/ARPACK    |
+| **CUDA**                          | https://developer.nvidia.com/cuda-downloads |
+| **cURL**                          | https://curl.haxx.se                        |
+| **FFTW3**                         | http://www.fftw.org                         |
+| GMP                               | https://gmplib.org/                         |
+| Google Test                       | https://github.com/google/googletest        |
+| HDF5                              | https://support.hdfgroup.org/HDF5           |
+| **Matplotlib (Python)**           | https://matplotlib.org/                     |
+| **NumPy (Python)**                | https://numpy.org/                          |
+| OpenCV                            | https://opencv.org                          |
+| **OpenMP**                        | https://www.openmp.org/                     |
+| **Python**                        | https://www.python.org/                     |
+| **SuperLU (v5.2.1)**              | http://crd-legacy.lbl.gov/~xiaoye/SuperLU   |
 
 The following table shows the optional libraries that are required to enable extensions to the core capabilities.
 See the documentation for deatiled information about the corresponding components.
