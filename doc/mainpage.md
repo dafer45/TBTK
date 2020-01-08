@@ -27,26 +27,34 @@ See the [installation instructions](@ref InstallationInstructions) to make sure 
 - @link SolverArnoldiIterator Arnoldi iteration@endlink
 - @link SolverChebyshevExpander Chebyshev expansion@endlink
 
-# Example
-## Problem formulation
-Consider a two-dimensional substrate of size 21x21 described by the Hamiltonian
-<center>\f$ H_{S} = \left(U_S - \mu\right)\sum_{\mathbf{i}\sigma}c_{\mathbf{i}\sigma}^{\dagger}c_{\mathbf{i}\sigma} - t\sum_{\langle\mathbf{i}\mathbf{j}\rangle\sigma}c_{\mathbf{i}\sigma}^{\dagger}c_{\mathbf{j}\sigma}\f$.</center>
-Here \f$\mathbf{i}\f$ is a two-dimensional index, \f$\sigma\f$ is a spin index, and \f$\langle\mathbf{i}\mathbf{j}\rangle\f$ denotes summation over nearest-neighbors.
-Further, consider a magnetic impurity on top of the substrate described by the Hamiltonian
-<center>\f$ H_{Imp} = (U_{Imp} - J - \mu)d_{\uparrow}^{\dagger}d_{\uparrow} + (U_{Imp} + J - \mu)d_{\downarrow}^{\dagger}d_{\downarrow}.\f$</center>
-Finally, the impurity connects to the site (10, 10) in the substrate through the term
-<center>\f$ H_{Int} = \delta\sum_{\sigma}c_{(10,10)\sigma}^{\dagger}d_{\sigma} + H.c.\f$</center>
-
-The total Hamiltonian is
-<center>\f$H = H_{S} + H_{Imp} + H_{Int}\f$.</center>
-
-<!--<img src="MainPageModel.png" style="max-width: 800px" />  
-<i>A magnetic impurity on top of a square lattice. Image generated using the built in RayTracer (currently in experimental development stage).</i>  -->
-
-<b>Question:</b> What is the spin-polarized LDOS and magnetization in the substrate as a function of \f$U_S, U_{Imp}, t, J, \delta\f$, and \f$\mu\f$?
-
-## Numerical solution
-\snippet MainPage/MainPage.cpp MainPage
-## Output
-\image html output/MainPage/MainPage/figures/MainPageMainPageSpinPolarizedLDOS.png
-\image html output/MainPage/MainPage/figures/MainPageMainPageMagnetization.png
+# Examples
+<table border="0">
+	<tr>
+		<td>
+			[Superconductivity](@ref Superconductivity)
+			<img src="ExamplesSuperconductivityDOS.png" style="width:250px" />
+		</tr>
+		<td>
+			[Caroli-de Gennes-Matricon](@ref SuperconductingVortex)
+			<img src="ExamplesSuperconductingVortexLDOS.png" style="width:250px" />
+		</td>
+		<td>
+			[Magnetism](@ref Magnetism)
+			<img src="ExamplesMagnetismDOS.png" style="width:250px" />
+		</tr>
+	</tr>
+	<tr>
+		<td>
+			[Kitaev model](@ref KitaevModel)
+			<img src="ExamplesKitaevModelLDOS.png" style="width:250px" />
+		</td>
+		<td>
+			[Anderson disorder](@ref AndersonDisorder)
+			<img src="ExamplesAndersonDisorderDOS.png" style="width:250px" />
+		</td>
+		<td>
+			[Yu-Shiba-Rusinov](@ref SuperconductivityMagneticImpurity)
+			<img src="ExamplesSuperconductivityMagneticImpurityLDOS.png" style="width:250px" />
+		</td>
+	</tr>
+</table>
