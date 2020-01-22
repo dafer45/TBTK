@@ -48,6 +48,11 @@ IF(DOXYGEN_FOUND)
 		COPYONLY
 	)
 	CONFIGURE_FILE(
+		${CMAKE_CURRENT_SOURCE_DIR}/Acknowledgement.md
+		${CMAKE_CURRENT_BINARY_DIR}/Acknowledgement.md
+		COPYONLY
+	)
+	CONFIGURE_FILE(
 		${CMAKE_CURRENT_SOURCE_DIR}/InstallationInstructions.md
 		${CMAKE_CURRENT_BINARY_DIR}/InstallationInstructions.md
 		COPYONLY
