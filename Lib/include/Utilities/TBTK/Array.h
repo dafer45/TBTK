@@ -26,6 +26,7 @@
 #include "TBTK/CArray.h"
 #include "TBTK/Index.h"
 #include "TBTK/MultiCounter.h"
+#include "TBTK/Serializable.h"
 #include "TBTK/TBTKMacros.h"
 
 #include <vector>
@@ -81,7 +82,7 @@ namespace TBTK{
  *  ## Output
  *  \snippet output/Utilities/Array.txt Array */
 template<typename DataType>
-class Array{
+class Array : public Serializable{
 public:
 	//TBTKFeature Utilities.Array.construction.1 2019-10-31
 	/** Constructor. */
@@ -112,6 +113,14 @@ public:
 	 *
 	 *  @param vector The std::vector to copy from. */
 	Array(const std::vector<std::vector<DataType>> &vector);
+
+	/** Constructs an Array from a serialization string.
+	 *
+	 *  @param serialization Serialization string from which to construct
+	 *  the Array.
+	 *
+	 *  @param mode The mode with which the string has been serialized. */
+	Array(const std::string &serialization, Mode mode);
 
 	/** Create an array with a vector of ranges. Identical to calling the
 	 *  constructor using an std::initializer_list, but using a std::vector
@@ -292,6 +301,9 @@ public:
 	//TBTKFeature Utilities.Array.getSize.1 2019-10-31
 	/** Get the number of elements in the Array. */
 	unsigned int getSize() const;
+
+	/** Implementes Serializable::serialize(). */
+	std::string serialize(Mode mode) const;
 private:
 	/** Data data. */
 	CArray<DataType> data;
@@ -407,6 +419,45 @@ Array<DataType>::Array(const std::vector<std::vector<DataType>> &vector){
 	for(unsigned int x = 0; x < ranges[0]; x++)
 		for(unsigned int y = 0; y < ranges[1]; y++)
 			data[ranges[1]*x + y] = vector[x][y];
+}
+
+template<typename DataType>
+Array<DataType>::Array(const std::string &serialization, Mode mode){
+	TBTKAssert(
+		validate(serialization, "Array", mode),
+		"Array::Array()",
+		"Unable to parse string as Array '" << serialization << "'.",
+		""
+	);
+
+	switch(mode){
+	case Mode::JSON:
+	{
+		try{
+			nlohmann::json j
+				= nlohmann::json::parse(serialization);
+			data = CArray<DataType>(j.at("data"), mode);
+			ranges = j.at("ranges").get<std::vector<unsigned int>>();
+		}
+		catch(nlohmann::json::exception &e){
+			TBTKExit(
+				"Array::Array()",
+				"Unable to parse string as Array '"
+				<< serialization << "'.",
+				""
+			);
+		}
+
+		break;
+	}
+	default:
+		TBTKExit(
+			"Array::Array()",
+			"Unable to parse string as Array '" << serialization
+			<< "'.",
+			""
+		);
+	}
 }
 
 template<typename DataType>
@@ -778,6 +829,27 @@ inline const CArray<DataType>& Array<DataType>::getData() const{
 template<typename DataType>
 inline unsigned int Array<DataType>::getSize() const{
 	return data.getSize();
+}
+
+template<typename DataType>
+inline std::string Array<DataType>::serialize(Mode mode) const{
+	switch(mode){
+	case Mode::JSON:
+	{
+		nlohmann::json j;
+		j["id"] = "Array";
+		j["data"] = data.serialize(mode);
+		j["ranges"] = ranges;
+
+		return j.dump();
+	}
+	default:
+		TBTKExit(
+			"Array::serialize()",
+			"Only Serializable::Mode::JSON is supported yet.",
+			""
+		);
+	}
 }
 
 template<typename DataType>
