@@ -50,7 +50,7 @@ namespace TBTK{
  *  This is the logged output in TBTK. By default, the log does not write to
  *  anything. However, The two commands
  *  ```cpp
- *    Streams::createLog("LogFilename");
+ *    Streams::openLog("LogFilename");
  *  ```
  *  and
  *  ```cpp

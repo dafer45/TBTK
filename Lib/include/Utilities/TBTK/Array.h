@@ -43,6 +43,12 @@ namespace TBTK{
  *  ```cpp
  *    Array<DataType> array({SIZE_X, SIZE_Y, SIZE_Z});
  *  ```
+ *  or alternatively
+ *  ```cpp
+ *    Array<DataType> array({SIZE_X, SIZE_Y, SIZE_Z}, value);
+ *  ```
+ *  to initialize each element to 'value'.
+ *
  *  The curly braces determines the Array ranges. Any number of dimensions
  *  is possible. Similarly, elements can be accessed using
  *  ```cpp
