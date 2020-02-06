@@ -38,6 +38,7 @@ namespace TBTK{
 //the Serializable interface non-virtually).
 class Index;
 class HoppingAmplitude;
+template<typename DataType> class CArray;
 
 class Serializable{
 public:
@@ -200,6 +201,7 @@ protected:
 	friend class HoppingAmplitude;
 	friend class SourceAmplitude;
 	friend class OverlapAmplitude;
+	template<typename DataType> friend class CArray;
 };
 
 //#ifndef TBTK_DISABLE_NLOHMANN_JSON

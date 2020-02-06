@@ -93,4 +93,21 @@ TEST_F(AnnotatedArrayTest, constructor3){
 	}
 }
 
+//TBTKFeature Utilities.AnnotatedArray.serializeToJSON.1
+TEST_F(AnnotatedArrayTest, serializeToJSON1){
+	AnnotatedArray<unsigned int, double> copy(
+		annotatedArray.serialize(Serializable::Mode::JSON),
+		Serializable::Mode::JSON
+	);
+
+	EXPECT_EQ(copy, array);
+	const std::vector<std::vector<double>> copyAxes = copy.getAxes();
+	EXPECT_EQ(axes.size(), copyAxes.size());
+	for(unsigned int n = 0; n < axes.size(); n++){
+		EXPECT_EQ(axes[n].size(), copyAxes[n].size());
+		for(unsigned int c = 0; c < axes[n].size(); c++)
+			EXPECT_FLOAT_EQ(axes[n][c], copyAxes[n][c]);
+	}
+}
+
 };

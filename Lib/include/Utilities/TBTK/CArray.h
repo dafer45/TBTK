@@ -23,6 +23,7 @@
 #ifndef COM_DAFER45_TBTK_C_ARRAY
 #define COM_DAFER45_TBTK_C_ARRAY
 
+#include "TBTK/Serializable.h"
 #include "TBTK/TBTKMacros.h"
 
 #include "TBTK/json.hpp"
@@ -63,6 +64,14 @@ public:
 	 *
 	 *  @param carray The carray to move. */
 	CArray(CArray &&carray);
+
+	/** Constructs a CArray from a serialization string.
+	 *
+	 *  @param serialization Serialization string from which to construct
+	 *  the CArray.
+	 *
+	 *  @param mode Mode with which the string has been serialized. */
+	CArray(const std::string &serialization, Serializable::Mode mode);
 
 	/** Destructor. */
 	~CArray();
@@ -113,6 +122,15 @@ public:
 	 *
 	 *  @return The size of the array. */
 	unsigned int getSize() const;
+
+	/** Serialize the CArray. Note that CArray is pseudo-Serializable in
+	 *  that it implements Serializable interface, but does so
+	 *  non-virtually.
+	 *
+	 *  @param mode Serialization mode to use.
+	 *
+	 *  @return Serialized string representation of the CArray. */
+	std::string serialize(Serializable::Mode mode) const;
 private:
 	/** Size. */
 	unsigned int size;
@@ -154,6 +172,75 @@ CArray<DataType>::CArray(CArray &&carray){
 	else{
 		data = carray.data;
 		carray.data = nullptr;
+	}
+}
+
+template<typename DataType>
+CArray<DataType>::CArray(
+	const std::string &serialization,
+	Serializable::Mode mode
+){
+	TBTKAssert(
+		Serializable::validate(
+			serialization,
+			"CArray",
+			mode
+		),
+		"CArray::CArray()",
+		"Unable to parse string as CArray '" << serialization << "'.",
+		""
+	);
+
+	switch(mode){
+	case Serializable::Mode::JSON:
+	{
+		try{
+			nlohmann::json j
+				= nlohmann::json::parse(serialization);
+			size = j.at("size").get<unsigned int>();
+			nlohmann::json d = j.at("data");
+			std::vector<DataType> tempData;
+			for(
+				nlohmann::json::iterator iterator = d.begin();
+				iterator != d.end();
+				++iterator
+			){
+				tempData.push_back(
+					Serializable::deserialize<DataType>(
+						*iterator,
+						mode
+					)
+				);
+			}
+			TBTKAssert(
+				size == tempData.size(),
+				"CArray::CArray()",
+				"Unable to deserialize CArray. The number of"
+				<< "data elements does not agree with the size"
+				<< " '" << serialization << "'.",
+				""
+			);
+			data = new DataType[size];
+			for(unsigned int n = 0; n < size; n++)
+				data[n] = tempData[n];
+		}
+		catch(nlohmann::json::exception &e){
+			TBTKExit(
+				"CArray::CArray()",
+				"Unable to parse string as CArray '"
+				<< serialization << "'.",
+				""
+			);
+		}
+
+		break;
+	}
+	default:
+		TBTKExit(
+			"CArray::CArray()",
+			"Only Serializable::Mode::JSON is supported yet.",
+			""
+		);
 	}
 }
 
@@ -225,6 +312,32 @@ const DataType* CArray<DataType>::getData() const{
 template<typename DataType>
 unsigned int CArray<DataType>::getSize() const{
 	return size;
+}
+
+template<typename DataType>
+std::string CArray<DataType>::serialize(Serializable::Mode mode) const{
+	switch(mode){
+	case Serializable::Mode::JSON:
+	{
+		nlohmann::json j;
+		j["id"] = "CArray";
+		j["size"] = size;
+		j["data"] = nlohmann::json();
+		for(unsigned int n = 0; n < size; n++){
+			j["data"].push_back(
+				Serializable::serialize(data[n], mode)
+			);
+		}
+
+		return j.dump();
+	}
+	default:
+		TBTKExit(
+			"CArray::serialize()",
+			"Only Serializable::Mode::JSON is supported yet.",
+			""
+		);
+	}
 }
 
 }; //End of namesapce TBTK

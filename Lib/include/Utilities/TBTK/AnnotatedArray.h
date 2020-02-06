@@ -52,10 +52,24 @@ public:
 		const std::vector<std::vector<AxesType>> &axes
 	);
 
+	/** Constructs an AnnotatedArray from a serialization string.
+	 *
+	 *  @param serialization Serialization string from which to construct
+	 *  the AnnotatedArray.
+	 *
+	 *  @param mode The mode with which the string has been serialized. */
+	AnnotatedArray(
+		const std::string &serialization,
+		Serializable::Mode mode
+	);
+
 	/** Return the axes of the AnnotatedArray.
 	 *
 	 *  @return The axes of the AnnotatedArray. */
 	const std::vector<std::vector<AxesType>>& getAxes() const;
+
+	/** Implements Serilizable::serialize(). */
+	std::string serialize(Serializable::Mode mode) const;
 private:
 	/** The array axes. */
 	std::vector<std::vector<AxesType>> axes;
@@ -95,11 +109,124 @@ AnnotatedArray<DataType, AxesType>::AnnotatedArray(
 }
 
 template<typename DataType, typename AxesType>
+AnnotatedArray<DataType, AxesType>::AnnotatedArray(
+	const std::string &serialization,
+	Serializable::Mode mode
+) :
+	Array<DataType>(
+		Serializable::extractComponent(
+			serialization,
+			"AnnotatedArray",
+			"Array",
+			"array",
+			mode
+		),
+		mode
+	)
+{
+	TBTKAssert(
+		Serializable::validate(serialization, "AnnotatedArray", mode),
+		"AnnotatedArray::AnnotatedArray()",
+		"Unable to parse string as AnnotatedArray '" << serialization
+		<< "'.",
+		""
+	);
+
+	switch(mode){
+	case Serializable::Mode::JSON:
+	{
+		try{
+			nlohmann::json j
+				= nlohmann::json::parse(serialization);
+			nlohmann::json jsonAxes = j.at("axes");
+			for(
+				nlohmann::json::iterator axisIterator
+					= jsonAxes.begin();
+				axisIterator != jsonAxes.end();
+				++axisIterator
+			){
+				unsigned int axisId
+					= atoi(axisIterator.key().c_str());
+				for(unsigned int n = axes.size(); n <= axisId; n++)
+					axes.push_back(std::vector<AxesType>());
+				for(
+					nlohmann::json::iterator iterator
+						= axisIterator->begin();
+					iterator != axisIterator->end();
+					++iterator
+				){
+					axes.back().push_back(
+						Serializable::deserialize<
+							AxesType
+						>(*iterator, mode)
+					);
+				}
+			}
+		}
+		catch(nlohmann::json::exception &e){
+			TBTKExit(
+				"AnnotatedArray::AnnotatedArray()",
+				"Unable to parse string as AnnotatedArray '"
+				<< serialization << "'.",
+				""
+			);
+		}
+
+		break;
+	}
+	default:
+		TBTKExit(
+			"AnnotatedArray::AnnotatedArray()",
+			"Unable to parse string as AnnotatedArray '"
+			<< serialization << "'.",
+			""
+		);
+	}
+}
+
+template<typename DataType, typename AxesType>
 const std::vector<std::vector<AxesType>>& AnnotatedArray<
 	DataType,
 	AxesType
 >::getAxes() const{
 	return axes;
+}
+
+template<typename DataType, typename AxesType>
+std::string AnnotatedArray<DataType, AxesType>::serialize(
+	Serializable::Mode mode
+) const{
+	switch(mode){
+	case Serializable::Mode::JSON:
+	{
+		nlohmann::json j;
+		j["id"] = "AnnotatedArray";
+		j["array"] = nlohmann::json::parse(
+			Array<DataType>::serialize(mode)
+		);
+		j["axes"] = nlohmann::json();
+		for(unsigned int n = 0; n < axes.size(); n++){
+			std::string index = std::to_string(n);
+			j["axes"][index] = nlohmann::json();
+			for(unsigned int c = 0; c < axes[n].size(); c++){
+				j["axes"][index].push_back(
+					Serializable::serialize(
+						axes[n][c],
+						mode
+					)
+				);
+			}
+		}
+
+		return j.dump();
+	}
+	default:
+		TBTKExit(
+			"AnnotatedArray::serialize()",
+			"Only Serializable::Mode::JSON is supported yet.",
+			""
+		);
+	}
 }
 
 }; //End of namesapce TBTK

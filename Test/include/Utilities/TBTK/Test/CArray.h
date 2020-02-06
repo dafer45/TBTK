@@ -38,6 +38,21 @@ TEST(CArray, moveConstructor0){
 	EXPECT_EQ(movedCArray.getSize(), 10);
 }
 
+//TBTKFeature Utilities.CArray.serializeToJSON.1 2020-02-03
+TEST(CArray, serializeToJSON0){
+	CArray<unsigned int> carray(10);
+	for(unsigned int n = 0; n < 10; n++)
+		carray[n] = n;
+
+	CArray<unsigned int> copy(
+		carray.serialize(Serializable::Mode::JSON),
+		Serializable::Mode::JSON
+	);
+	EXPECT_EQ(copy.getSize(), carray.getSize());
+	for(unsigned int n = 0; n < copy.getSize(); n++)
+		EXPECT_EQ(copy[n], carray[n]);
+}
+
 //TBTKFeature Utilities.CArray.asignmentOperator.1.C++ 2019-10-30
 TEST(CArray, assignmentOperator){
 	CArray<unsigned int> carray(10);

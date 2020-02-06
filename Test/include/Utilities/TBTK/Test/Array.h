@@ -91,6 +91,26 @@ TEST(Array, constructor5){
 	);
 }
 
+//TBTKFeature Utilities.Array.serializeToJSON.1 2020-02-03
+TEST(Array, serializeToJSON1){
+	Array<unsigned int> array({2, 4});
+	for(unsigned int n = 0; n < 2; n++)
+		for(unsigned int c = 0; c < 4; c++)
+			array[{n, c}] = n*c;
+
+	Array<unsigned int> copy(
+		array.serialize(Serializable::Mode::JSON),
+		Serializable::Mode::JSON
+	);
+
+	const std::vector<unsigned int> &ranges = copy.getRanges();
+	EXPECT_EQ(ranges[0], 2);
+	EXPECT_EQ(ranges[1], 4);
+	for(unsigned int n = 0; n < 2; n++)
+		for(unsigned int c = 0; c < 4; c++)
+			EXPECT_EQ((copy[{n, c}]), (array[{n, c}]));
+}
+
 //TBTKFeature Utilities.Array.create.1 2019-11-25
 TEST(Array, create1){
 	Array<unsigned int> array0({2, 3, 4});
