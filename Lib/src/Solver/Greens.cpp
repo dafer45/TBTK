@@ -28,7 +28,7 @@ using namespace std;
 namespace TBTK{
 namespace Solver{
 
-Greens::Greens() : Communicator(true){
+Greens::Greens() : Communicator(false){
 }
 
 Greens::~Greens(){
@@ -92,137 +92,13 @@ Property::GreensFunction Greens::calculateInteractingGreensFunction(
 
 	//Check whether the Green's function is restricted to intra block Index
 	//pairs and extract those blocks.
-	bool isBlockRestricted = true;
-	bool globalBlockContained = false;
-	IndexTree containedBlocks;
-	for(
-		IndexTree::ConstIterator iterator = greensFunctionIndices.cbegin();
-		iterator != greensFunctionIndices.cend();
-		++iterator
-	){
-		vector<Index> components = (*iterator).split();
-		Index block0 = hoppingAmplitudeSet.getSubspaceIndex(
-			components[0]
-		);
-		Index block1 = hoppingAmplitudeSet.getSubspaceIndex(
-			components[1]
-		);
+	BlockStructure blockStructure = getBlockStructure();
 
-		if(!block0.equals(block1)){
-			isBlockRestricted = false;
-			break;
-		}
-		if(block0.equals({})){
-			globalBlockContained = true;
-			break;
-		}
-
-		containedBlocks.add(block0);
-	}
-	containedBlocks.generateLinearMap();
+	//Verify that the block structure contains all Index pairs for those
+	//blocks that contains at least one Index pair.
+	verifyBlockStructure(blockStructure);
 
 	Property::GreensFunction interactingGreensFunction;
-
-	if(globalBlockContained){
-		//Print whether the Green's function is block restricted.
-		if(getGlobalVerbose() && getVerbose()){
-			Streams::out << "\tThe Green's function has a single"
-				<< " global block.\n";
-		}
-
-		//Check that all Index pairs are present.
-		IndexTree intraBlockIndices
-			= hoppingAmplitudeSet.getIndexTree();
-		for(
-			IndexTree::ConstIterator iterator0
-				= intraBlockIndices.cbegin();
-			iterator0 != intraBlockIndices.cend();
-			++iterator0
-		){
-			for(
-				IndexTree::ConstIterator iterator1
-					= intraBlockIndices.cbegin();
-				iterator1 != intraBlockIndices.cend();
-				++iterator1
-			){
-				Index compoundIndex({*iterator0, *iterator1});
-				TBTKAssert(
-					greensFunction->contains(
-						compoundIndex
-					),
-					"Solver::Greens::calculateInteractingGreensFunction()",
-					"Missing Index. The Index '"
-					<< compoundIndex.toString() << "' is"
-					<< " missing in the Green's function.",
-					""
-				);
-			}
-		}
-	}
-	else{
-		//Print whether the Green's function is block restricted.
-		if(getGlobalVerbose() && getVerbose()){
-			Streams::out << "\tThe Green's function is block restricted:\t"
-				<< (isBlockRestricted ? "True" : "False")
-				<< "\n";
-		}
-
-		//Only block restricted Green's functions supported yet. Print error
-		//message if this is not fulfilled.
-		if(!isBlockRestricted){
-			TBTKExit(
-				"Greens::calculateInteractingGreensFunction()",
-				"Only Green's functions with Index pairs that are"
-				<< " restricted to intra block pairs are supported"
-				<< " yet.",
-				""
-			);
-		}
-
-		//Check that all intra block Index pairs are present for those blocks
-		//for which at least one Index pair is present.
-		for(
-			IndexTree::ConstIterator iterator = containedBlocks.cbegin();
-			iterator != containedBlocks.cend();
-			++iterator
-		){
-			const Index &blockIndex = (*iterator);
-			IndexTree intraBlockIndices = hoppingAmplitudeSet.getIndexTree(
-				blockIndex
-			);
-			for(
-				IndexTree::ConstIterator iterator0
-					= intraBlockIndices.cbegin();
-				iterator0 != intraBlockIndices.cend();
-				++iterator0
-			){
-				for(
-					IndexTree::ConstIterator iterator1
-						= intraBlockIndices.cbegin();
-					iterator1 != intraBlockIndices.cend();
-					++iterator1
-				){
-					Index compoundIndex({*iterator0, *iterator1});
-					TBTKAssert(
-						greensFunction->contains(compoundIndex),
-						"Solver::Greens::calculateInteractingGreensFunction()",
-						"Missing Index. The Green's function"
-						<< " has at least one component in the"
-						<< " block '" << blockIndex.toString()
-						<< "', but '"
-						<< compoundIndex.toString() << "' is"
-						<< " not contained.",
-						"Make sure that the GreenFunction"
-						<< " contains all intra block Index"
-						<< " pairs for those blocks that it"
-						<< " contains at least one intra block"
-						<< " Index pair."
-					);
-				}
-			}
-		}
-	}
-
 	switch(greensFunction->getEnergyType()){
 	case Property::EnergyResolvedProperty<complex<double>>::EnergyType::Real:
 		interactingGreensFunction = Property::GreensFunction(
@@ -251,7 +127,7 @@ Property::GreensFunction Greens::calculateInteractingGreensFunction(
 		);
 	}
 
-	if(globalBlockContained){
+	if(blockStructure.globalBlockIsContained){
 		IndexTree intraBlockIndices
 			= hoppingAmplitudeSet.getIndexTree();
 		double blockSize = intraBlockIndices.getSize();
@@ -358,8 +234,9 @@ Property::GreensFunction Greens::calculateInteractingGreensFunction(
 	}
 	else{
 		for(
-			IndexTree::ConstIterator iterator = containedBlocks.cbegin();
-			iterator != containedBlocks.cend();
+			IndexTree::ConstIterator iterator
+				= blockStructure.containedBlocks.cbegin();
+			iterator != blockStructure.containedBlocks.cend();
 			++iterator
 		){
 			const Index &blockIndex = (*iterator);
@@ -666,6 +543,153 @@ Property::TransmissionRate Greens::calculateTransmissionRate(
 	);
 
 	return transmissionRate;
+}
+
+Greens::BlockStructure Greens::getBlockStructure() const{
+	BlockStructure blockStructure;
+	blockStructure.isBlockRestricted = true;
+	blockStructure.globalBlockIsContained = false;
+
+	const IndexTree &greensFunctionIndices
+		= greensFunction->getIndexDescriptor().getIndexTree();
+	const HoppingAmplitudeSet &hoppingAmplitudeSet
+		= getModel().getHoppingAmplitudeSet();
+	for(
+		IndexTree::ConstIterator iterator
+			= greensFunctionIndices.cbegin();
+		iterator != greensFunctionIndices.cend();
+		++iterator
+	){
+		vector<Index> components = (*iterator).split();
+		Index block0 = hoppingAmplitudeSet.getSubspaceIndex(
+			components[0]
+		);
+		Index block1 = hoppingAmplitudeSet.getSubspaceIndex(
+			components[1]
+		);
+
+		if(!block0.equals(block1)){
+			blockStructure.isBlockRestricted = false;
+			break;
+		}
+		if(block0.equals({})){
+			blockStructure.globalBlockIsContained = true;
+			break;
+		}
+
+		blockStructure.containedBlocks.add(block0);
+	}
+	blockStructure.containedBlocks.generateLinearMap();
+
+	return blockStructure;
+}
+
+void Greens::verifyBlockStructure(const BlockStructure &blockStructure) const{
+	const HoppingAmplitudeSet &hoppingAmplitudeSet
+		= getModel().getHoppingAmplitudeSet();
+	if(blockStructure.globalBlockIsContained){
+		//Print whether the Green's function is block restricted.
+		if(getGlobalVerbose() && getVerbose()){
+			Streams::out << "\tThe Green's function has a single"
+				<< " global block.\n";
+		}
+
+		//Check that all Index pairs are present.
+		IndexTree intraBlockIndices
+			= hoppingAmplitudeSet.getIndexTree();
+		for(
+			IndexTree::ConstIterator iterator0
+				= intraBlockIndices.cbegin();
+			iterator0 != intraBlockIndices.cend();
+			++iterator0
+		){
+			for(
+				IndexTree::ConstIterator iterator1
+					= intraBlockIndices.cbegin();
+				iterator1 != intraBlockIndices.cend();
+				++iterator1
+			){
+				Index compoundIndex({*iterator0, *iterator1});
+				TBTKAssert(
+					greensFunction->contains(
+						compoundIndex
+					),
+					"Solver::Greens::calculateInteractingGreensFunction()",
+					"Missing Index. The Index '"
+					<< compoundIndex.toString() << "' is"
+					<< " missing in the Green's function.",
+					""
+				);
+			}
+		}
+	}
+	else{
+		//Print whether the Green's function is block restricted.
+		if(getGlobalVerbose() && getVerbose()){
+			Streams::out << "\tThe Green's function is block"
+				<< " restricted:\t" << (
+					blockStructure.isBlockRestricted
+					? "True" : "False"
+				) << "\n";
+		}
+
+		//Only block restricted Green's functions supported yet. Print error
+		//message if this is not fulfilled.
+		if(!blockStructure.isBlockRestricted){
+			TBTKExit(
+				"Greens::calculateInteractingGreensFunction()",
+				"Only Green's functions with Index pairs that are"
+				<< " restricted to intra block pairs are supported"
+				<< " yet.",
+				""
+			);
+		}
+
+		//Check that all intra block Index pairs are present for those blocks
+		//for which at least one Index pair is present.
+		for(
+			IndexTree::ConstIterator iterator
+				= blockStructure.containedBlocks.cbegin();
+			iterator != blockStructure.containedBlocks.cend();
+			++iterator
+		){
+			const Index &blockIndex = (*iterator);
+			IndexTree intraBlockIndices
+				= hoppingAmplitudeSet.getIndexTree(
+					blockIndex
+				);
+			for(
+				IndexTree::ConstIterator iterator0
+					= intraBlockIndices.cbegin();
+				iterator0 != intraBlockIndices.cend();
+				++iterator0
+			){
+				for(
+					IndexTree::ConstIterator iterator1
+						= intraBlockIndices.cbegin();
+					iterator1 != intraBlockIndices.cend();
+					++iterator1
+				){
+					Index compoundIndex({*iterator0, *iterator1});
+					TBTKAssert(
+						greensFunction->contains(compoundIndex),
+						"Solver::Greens::calculateInteractingGreensFunction()",
+						"Missing Index. The Green's function"
+						<< " has at least one component in the"
+						<< " block '" << blockIndex.toString()
+						<< "', but '"
+						<< compoundIndex.toString() << "' is"
+						<< " not contained.",
+						"Make sure that the GreenFunction"
+						<< " contains all intra block Index"
+						<< " pairs for those blocks that it"
+						<< " contains at least one intra block"
+						<< " Index pair."
+					);
+				}
+			}
+		}
+	}
 }
 
 };	//End of namespace Solver

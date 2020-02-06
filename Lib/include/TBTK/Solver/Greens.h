@@ -81,6 +81,22 @@ public:
 private:
 	/** Green's function to use in calculations. */
 	const Property::GreensFunction *greensFunction;
+
+	/** Helper class that can contain information about the block
+	 *  structure. */
+	class BlockStructure{
+	public:
+		bool isBlockRestricted;
+		bool globalBlockIsContained;
+		IndexTree containedBlocks;
+	};
+
+	/** Extract information about the Green's functions block structure. */
+	BlockStructure getBlockStructure() const;
+
+	/** Verify that the block structure contains all index pairs for those
+	 *  blocks that share at least one index pair. */
+	void verifyBlockStructure(const BlockStructure &blockStructure) const;
 };
 
 inline void Greens::setGreensFunction(
