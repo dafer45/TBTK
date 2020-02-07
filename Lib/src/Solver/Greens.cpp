@@ -378,7 +378,7 @@ void Greens::verifyBlockStructure(const BlockStructure &blockStructure) const{
 				greensFunction->contains(
 					compoundIndex
 				),
-				"Solver::Greens::calculateInteractingGreensFunction()",
+				"Solver::Greens::verifyBlockStructure()",
 				"Missing Index. The Index '"
 				<< compoundIndex.toString() << "' is"
 				<< " missing in the Green's function.",
@@ -400,10 +400,10 @@ void Greens::verifyBlockStructure(const BlockStructure &blockStructure) const{
 		//message if this is not fulfilled.
 		if(!blockStructure.isBlockRestricted){
 			TBTKExit(
-				"Greens::calculateInteractingGreensFunction()",
-				"Only Green's functions with Index pairs that are"
-				<< " restricted to intra block pairs are supported"
-				<< " yet.",
+				"Greens::verifyBlockStructure()",
+				"Only Green's functions with Index pairs that"
+				<< " are restricted to intra block pairs are"
+				<< " supported yet.",
 				""
 			);
 		}
