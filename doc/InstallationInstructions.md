@@ -98,7 +98,7 @@ We here assume that TBTK has been downloaded and built in two parallel folders T
 	git pull
 	git checkout v2.0.0
 	cd ../TBTKBuild
-	cmake ../TBTKBuild
+	cmake ../TBTK
 	make
 	sudo make install
 ```
