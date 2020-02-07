@@ -107,6 +107,32 @@ private:
 	/** Create a new Green's function with the same structure as the
 	 *  Green's function that is used as input. */
 	Property::GreensFunction createNewGreensFunction() const;
+
+	/** Convert Green's function to matrix for the given energy index and
+	 *  Indices. */
+	void convertGreensFunctionToMatrix(
+		Matrix<std::complex<double>> &matrix,
+		unsigned int energy,
+		const IndexTree &intraBlockIndices
+	) const;
+
+	/** Add the self-energy to the Greens'f unction matrix for the given
+	 *  energy index and Indices. */
+	void addSelfEnergyToGreensFunctionMatrix(
+		Matrix<std::complex<double>> &matrix,
+		const Property::SelfEnergy &selfEnergy,
+		unsigned int energy,
+		const IndexTree &intraBlockIndices
+	) const;
+
+	/** Write a Green's function matrix back to an interacting Green's
+	 *  function for the given energy index and Indices. */
+	void writeGreensFunctionMatrixToInteractingGreensFunction(
+		Property::GreensFunction &interactingGreensFunction,
+		const Matrix<std::complex<double>> &matrix,
+		unsigned int energy,
+		const IndexTree &intraBlockIndices
+	) const;
 };
 
 inline void Greens::setGreensFunction(

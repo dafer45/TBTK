@@ -114,96 +114,34 @@ Property::GreensFunction Greens::calculateInteractingGreensFunction(
 		){
 			//Convert one block of the Green's function to a
 			//matrix.
-			unsigned int row = 0;
-			for(
-				IndexTree::ConstIterator iterator0
-					= intraBlockIndices.cbegin();
-				iterator0 != intraBlockIndices.cend();
-				++iterator0
-			){
-				unsigned int column = 0;
-				for(
-					IndexTree::ConstIterator iterator1
-						= intraBlockIndices.cbegin();
-					iterator1 != intraBlockIndices.cend();
-					++iterator1
-				){
-					Index compoundIndex = {*iterator0, *iterator1};
-
-					matrix.at(row, column)
-						= (*greensFunction)(
-							compoundIndex,
-							n
-						);
-
-					column++;
-				}
-
-				row++;
-			}
+			convertGreensFunctionToMatrix(
+				matrix,
+				n,
+				intraBlockIndices
+			);
 
 			//Invert the matrix.
 			matrix.invert();
 
 			//Add the self energy.
-			row = 0;
-			for(
-				IndexTree::ConstIterator iterator0
-					= intraBlockIndices.cbegin();
-				iterator0 != intraBlockIndices.cend();
-				++iterator0
-			){
-				unsigned int column = 0;
-				for(
-					IndexTree::ConstIterator iterator1
-						= intraBlockIndices.cbegin();
-					iterator1 != intraBlockIndices.cend();
-					++iterator1
-				){
-					Index compoundIndex = {*iterator0, *iterator1};
-
-					matrix.at(row, column) -= selfEnergy(
-						compoundIndex,
-						n
-					);
-
-					column++;
-				}
-
-				row++;
-			}
+			addSelfEnergyToGreensFunctionMatrix(
+				matrix,
+				selfEnergy,
+				n,
+				intraBlockIndices
+			);
 
 			//Invert matrix.
 			matrix.invert();
 
 			//Write the matrix back into the corresponding block of
 			//the full Green's function.
-			row = 0;
-			for(
-				IndexTree::ConstIterator iterator0
-					= intraBlockIndices.cbegin();
-				iterator0 != intraBlockIndices.cend();
-				++iterator0
-			){
-				unsigned int column = 0;
-				for(
-					IndexTree::ConstIterator iterator1
-						= intraBlockIndices.cbegin();
-					iterator1 != intraBlockIndices.cend();
-					++iterator1
-				){
-					Index compoundIndex = {*iterator0, *iterator1};
-
-					interactingGreensFunction(
-						compoundIndex,
-						n
-					) = matrix.at(row, column);
-
-					column++;
-				}
-
-				row++;
-			}
+			writeGreensFunctionMatrixToInteractingGreensFunction(
+				interactingGreensFunction,
+				matrix,
+				n,
+				intraBlockIndices
+			);
 		}
 	}
 	else{
@@ -227,94 +165,34 @@ Property::GreensFunction Greens::calculateInteractingGreensFunction(
 			){
 				//Convert one block of the Green's function to a
 				//matrix.
-				unsigned int row = 0;
-				for(
-					IndexTree::ConstIterator iterator0
-						= intraBlockIndices.cbegin();
-					iterator0 != intraBlockIndices.cend();
-					++iterator0
-				){
-					unsigned int column = 0;
-					for(
-						IndexTree::ConstIterator iterator1
-							= intraBlockIndices.cbegin();
-						iterator1 != intraBlockIndices.cend();
-						++iterator1
-					){
-						Index compoundIndex = {*iterator0, *iterator1};
-
-						matrix.at(row, column)
-							= (*greensFunction)(
-								compoundIndex,
-								n
-							);
-
-						column++;
-					}
-
-					row++;
-				}
+				convertGreensFunctionToMatrix(
+					matrix,
+					n,
+					intraBlockIndices
+				);
 
 				//Invert the matrix.
 				matrix.invert();
 
 				//Add the self energy.
-				row = 0;
-				for(
-					IndexTree::ConstIterator iterator0
-						= intraBlockIndices.cbegin();
-					iterator0 != intraBlockIndices.cend();
-					++iterator0
-				){
-					unsigned int column = 0;
-					for(
-						IndexTree::ConstIterator iterator1
-							= intraBlockIndices.cbegin();
-						iterator1 != intraBlockIndices.cend();
-						++iterator1
-					){
-						Index compoundIndex = {*iterator0, *iterator1};
-
-						matrix.at(row, column) -= selfEnergy(
-							compoundIndex,
-							n
-						);
-
-						column++;
-					}
-
-					row++;
-				}
+				addSelfEnergyToGreensFunctionMatrix(
+					matrix,
+					selfEnergy,
+					n,
+					intraBlockIndices
+				);
 
 				//Invert matrix.
 				matrix.invert();
 
 				//Write the matrix back into the corresponding block of
 				//the full Green's function.
-				row = 0;
-				for(
-					IndexTree::ConstIterator iterator0
-						= intraBlockIndices.cbegin();
-					iterator0 != intraBlockIndices.cend();
-					++iterator0
-				){
-					unsigned int column = 0;
-					for(
-						IndexTree::ConstIterator iterator1
-							= intraBlockIndices.cbegin();
-						iterator1 != intraBlockIndices.cend();
-						++iterator1
-					){
-						Index compoundIndex = {*iterator0, *iterator1};
-
-						interactingGreensFunction(compoundIndex, n)
-							= matrix.at(row, column);
-
-						column++;
-					}
-
-					row++;
-				}
+				writeGreensFunctionMatrixToInteractingGreensFunction(
+					interactingGreensFunction,
+					matrix,
+					n,
+					intraBlockIndices
+				);
 			}
 		}
 	}
@@ -687,6 +565,78 @@ Property::GreensFunction Greens::createNewGreensFunction() const{
 	}
 
 	return result;
+}
+
+void Greens::convertGreensFunctionToMatrix(
+	Matrix<complex<double>> &matrix,
+	unsigned int energy,
+	const IndexTree &intraBlockIndices
+) const{
+	unsigned int row = 0;
+	for(auto iterator0 : intraBlockIndices){
+		unsigned int column = 0;
+		for(auto iterator1 : intraBlockIndices){
+			Index compoundIndex = {iterator0, iterator1};
+
+			matrix.at(row, column) = (*greensFunction)(
+				compoundIndex,
+				energy
+			);
+
+			column++;
+		}
+
+		row++;
+	}
+}
+
+void Greens::addSelfEnergyToGreensFunctionMatrix(
+	Matrix<complex<double>> &matrix,
+	const Property::SelfEnergy &selfEnergy,
+	unsigned int energy,
+	const IndexTree &intraBlockIndices
+) const{
+	unsigned int row = 0;
+	for(auto iterator0 : intraBlockIndices){
+		unsigned int column = 0;
+		for(auto iterator1 : intraBlockIndices){
+			Index compoundIndex = {iterator0, iterator1};
+
+			matrix.at(row, column) -= selfEnergy(
+				compoundIndex,
+				energy
+			);
+
+			column++;
+		}
+
+		row++;
+	}
+}
+
+
+void Greens::writeGreensFunctionMatrixToInteractingGreensFunction(
+	Property::GreensFunction &interactingGreensFunction,
+	const Matrix<complex<double>> &matrix,
+	unsigned int energy,
+	const IndexTree &intraBlockIndices
+) const{
+	unsigned int row = 0;
+	for(auto iterator0 : intraBlockIndices){
+		unsigned int column = 0;
+		for(auto iterator1 : intraBlockIndices){
+			Index compoundIndex = {iterator0, iterator1};
+
+			interactingGreensFunction(
+				compoundIndex,
+				energy
+			) = matrix.at(row, column);
+
+			column++;
+		}
+
+		row++;
+	}
 }
 
 };	//End of namespace Solver
