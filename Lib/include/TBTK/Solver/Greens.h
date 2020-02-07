@@ -97,6 +97,16 @@ private:
 	/** Verify that the block structure contains all index pairs for those
 	 *  blocks that share at least one index pair. */
 	void verifyBlockStructure(const BlockStructure &blockStructure) const;
+
+	/** Verify that the Green's function contains all Index pairs in the
+	 *  block formed by the given Indices. */
+	void verifyGreensFunctionContainsAllIndicesInBlock(
+		const IndexTree &intraBlockIndices
+	) const;
+
+	/** Create a new Green's function with the same structure as the
+	 *  Green's function that is used as input. */
+	Property::GreensFunction createNewGreensFunction() const;
 };
 
 inline void Greens::setGreensFunction(

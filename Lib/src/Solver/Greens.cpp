@@ -98,34 +98,8 @@ Property::GreensFunction Greens::calculateInteractingGreensFunction(
 	//blocks that contains at least one Index pair.
 	verifyBlockStructure(blockStructure);
 
-	Property::GreensFunction interactingGreensFunction;
-	switch(greensFunction->getEnergyType()){
-	case Property::EnergyResolvedProperty<complex<double>>::EnergyType::Real:
-		interactingGreensFunction = Property::GreensFunction(
-			greensFunctionIndices,
-			greensFunction->getType(),
-			greensFunction->getLowerBound(),
-			greensFunction->getUpperBound(),
-			greensFunction->getResolution()
-		);
-
-		break;
-	case Property::EnergyResolvedProperty<complex<double>>::EnergyType::FermionicMatsubara:
-		interactingGreensFunction = Property::GreensFunction(
-			greensFunctionIndices,
-			greensFunction->getLowerMatsubaraEnergyIndex(),
-			greensFunction->getUpperMatsubaraEnergyIndex(),
-			greensFunction->getFundamentalMatsubaraEnergy()
-		);
-
-		break;
-	default:
-		TBTKExit(
-			"Solver::GreensFunction::calculateInteractingGreensFunction()",
-			"Unknown energy type",
-			"This should never happen, contact the developer."
-		);
-	}
+	Property::GreensFunction interactingGreensFunction
+		= createNewGreensFunction();
 
 	if(blockStructure.globalBlockIsContained){
 		IndexTree intraBlockIndices
@@ -595,32 +569,22 @@ void Greens::verifyBlockStructure(const BlockStructure &blockStructure) const{
 		}
 
 		//Check that all Index pairs are present.
-		IndexTree intraBlockIndices
-			= hoppingAmplitudeSet.getIndexTree();
-		for(
-			IndexTree::ConstIterator iterator0
-				= intraBlockIndices.cbegin();
-			iterator0 != intraBlockIndices.cend();
-			++iterator0
-		){
-			for(
-				IndexTree::ConstIterator iterator1
-					= intraBlockIndices.cbegin();
-				iterator1 != intraBlockIndices.cend();
-				++iterator1
-			){
-				Index compoundIndex({*iterator0, *iterator1});
-				TBTKAssert(
-					greensFunction->contains(
-						compoundIndex
-					),
-					"Solver::Greens::calculateInteractingGreensFunction()",
-					"Missing Index. The Index '"
-					<< compoundIndex.toString() << "' is"
-					<< " missing in the Green's function.",
-					""
-				);
-			}
+		try{
+			verifyGreensFunctionContainsAllIndicesInBlock(
+				hoppingAmplitudeSet.getIndexTree()
+			);
+		}
+		catch(const Index &compoundIndex){
+			TBTKAssert(
+				greensFunction->contains(
+					compoundIndex
+				),
+				"Solver::Greens::calculateInteractingGreensFunction()",
+				"Missing Index. The Index '"
+				<< compoundIndex.toString() << "' is"
+				<< " missing in the Green's function.",
+				""
+			);
 		}
 	}
 	else{
@@ -647,49 +611,82 @@ void Greens::verifyBlockStructure(const BlockStructure &blockStructure) const{
 
 		//Check that all intra block Index pairs are present for those blocks
 		//for which at least one Index pair is present.
-		for(
-			IndexTree::ConstIterator iterator
-				= blockStructure.containedBlocks.cbegin();
-			iterator != blockStructure.containedBlocks.cend();
-			++iterator
-		){
-			const Index &blockIndex = (*iterator);
-			IndexTree intraBlockIndices
-				= hoppingAmplitudeSet.getIndexTree(
-					blockIndex
+		for(auto blockIndex : blockStructure.containedBlocks){
+			try{
+				verifyGreensFunctionContainsAllIndicesInBlock(
+					hoppingAmplitudeSet.getIndexTree(
+						blockIndex
+					)
 				);
-			for(
-				IndexTree::ConstIterator iterator0
-					= intraBlockIndices.cbegin();
-				iterator0 != intraBlockIndices.cend();
-				++iterator0
-			){
-				for(
-					IndexTree::ConstIterator iterator1
-						= intraBlockIndices.cbegin();
-					iterator1 != intraBlockIndices.cend();
-					++iterator1
-				){
-					Index compoundIndex({*iterator0, *iterator1});
-					TBTKAssert(
-						greensFunction->contains(compoundIndex),
-						"Solver::Greens::calculateInteractingGreensFunction()",
-						"Missing Index. The Green's function"
-						<< " has at least one component in the"
-						<< " block '" << blockIndex.toString()
-						<< "', but '"
-						<< compoundIndex.toString() << "' is"
-						<< " not contained.",
-						"Make sure that the GreenFunction"
-						<< " contains all intra block Index"
-						<< " pairs for those blocks that it"
-						<< " contains at least one intra block"
-						<< " Index pair."
-					);
-				}
+			}
+			catch(Index &compoundIndex){
+				TBTKAssert(
+					greensFunction->contains(compoundIndex),
+					"Solver::Greens::calculateInteractingGreensFunction()",
+					"Missing Index. The Green's function"
+					<< " has at least one component in the"
+					<< " block '" << blockIndex.toString()
+					<< "', but '"
+					<< compoundIndex.toString() << "' is"
+					<< " not contained.",
+					"Make sure that the GreenFunction"
+					<< " contains all intra block Index"
+					<< " pairs for those blocks that it"
+					<< " contains at least one intra block"
+					<< " Index pair."
+				);
 			}
 		}
 	}
+}
+
+void Greens::verifyGreensFunctionContainsAllIndicesInBlock(
+	const IndexTree &intraBlockIndices
+) const{
+	for(auto iterator0 : intraBlockIndices){
+		for(auto iterator1 : intraBlockIndices){
+			Index compoundIndex({iterator0, iterator1});
+			if(!greensFunction->contains(compoundIndex))
+				throw compoundIndex;
+		}
+	}
+}
+
+Property::GreensFunction Greens::createNewGreensFunction() const{
+	Property::GreensFunction result;
+
+	const IndexTree &greensFunctionIndices
+		= greensFunction->getIndexDescriptor().getIndexTree();
+
+	switch(greensFunction->getEnergyType()){
+	case Property::EnergyResolvedProperty<complex<double>>::EnergyType::Real:
+		result = Property::GreensFunction(
+			greensFunctionIndices,
+			greensFunction->getType(),
+			greensFunction->getLowerBound(),
+			greensFunction->getUpperBound(),
+			greensFunction->getResolution()
+		);
+
+		break;
+	case Property::EnergyResolvedProperty<complex<double>>::EnergyType::FermionicMatsubara:
+		result = Property::GreensFunction(
+			greensFunctionIndices,
+			greensFunction->getLowerMatsubaraEnergyIndex(),
+			greensFunction->getUpperMatsubaraEnergyIndex(),
+			greensFunction->getFundamentalMatsubaraEnergy()
+		);
+
+		break;
+	default:
+		TBTKExit(
+			"Solver::GreensFunction::createNewGreensFunction()",
+			"Unknown energy type",
+			"This should never happen, contact the developer."
+		);
+	}
+
+	return result;
 }
 
 };	//End of namespace Solver
