@@ -90,4 +90,17 @@ The following table shows the optional libraries that are required to enable the
 | Plotter                           |        |      |      |       |     | X                                |                  |
 | Resource                          |        |      | X    |       |     |                                  |                  |
 
+# Update TBTK {#UpdateTBTK}
+If TBTK is already installed, it can be updated to v2.0.0 as follows.
+We here assume that TBTK has been downloaded and built in two parallel folders TBTK and TBTKBuild, as described above.
+```cpp
+        cd TBTK
+        git pull
+        git checkout v1.0.0
+        cd ../TBTKBuild
+        cmake ../TBTKBuild
+        make
+        sudo make install
+```
+
 @link Manual Next: Manual@endlink
