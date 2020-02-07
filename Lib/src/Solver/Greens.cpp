@@ -102,98 +102,19 @@ Property::GreensFunction Greens::calculateInteractingGreensFunction(
 		= createNewGreensFunction();
 
 	if(blockStructure.globalBlockIsContained){
-		IndexTree intraBlockIndices
-			= hoppingAmplitudeSet.getIndexTree();
-		double blockSize = intraBlockIndices.getSize();
-
-		Matrix<complex<double>> matrix(blockSize, blockSize);
-		for(
-			unsigned int n = 0;
-			n < greensFunction->getNumEnergies();
-			n++
-		){
-			//Convert one block of the Green's function to a
-			//matrix.
-			convertGreensFunctionToMatrix(
-				matrix,
-				n,
-				intraBlockIndices
-			);
-
-			//Invert the matrix.
-			matrix.invert();
-
-			//Add the self energy.
-			addSelfEnergyToGreensFunctionMatrix(
-				matrix,
-				selfEnergy,
-				n,
-				intraBlockIndices
-			);
-
-			//Invert matrix.
-			matrix.invert();
-
-			//Write the matrix back into the corresponding block of
-			//the full Green's function.
-			writeGreensFunctionMatrixToInteractingGreensFunction(
-				interactingGreensFunction,
-				matrix,
-				n,
-				intraBlockIndices
-			);
-		}
+		calculateInteractingGreensFunctionSingleBlock(
+			interactingGreensFunction,
+			selfEnergy,
+			hoppingAmplitudeSet.getIndexTree()
+		);
 	}
 	else{
-		for(
-			IndexTree::ConstIterator iterator
-				= blockStructure.containedBlocks.cbegin();
-			iterator != blockStructure.containedBlocks.cend();
-			++iterator
-		){
-			const Index &blockIndex = (*iterator);
-			IndexTree intraBlockIndices = hoppingAmplitudeSet.getIndexTree(
-				blockIndex
+		for(auto blockIndex : blockStructure.containedBlocks){
+			calculateInteractingGreensFunctionSingleBlock(
+				interactingGreensFunction,
+				selfEnergy,
+				hoppingAmplitudeSet.getIndexTree(blockIndex)
 			);
-			double blockSize = intraBlockIndices.getSize();
-
-			Matrix<complex<double>> matrix(blockSize, blockSize);
-			for(
-				unsigned int n = 0;
-				n < greensFunction->getNumEnergies();
-				n++
-			){
-				//Convert one block of the Green's function to a
-				//matrix.
-				convertGreensFunctionToMatrix(
-					matrix,
-					n,
-					intraBlockIndices
-				);
-
-				//Invert the matrix.
-				matrix.invert();
-
-				//Add the self energy.
-				addSelfEnergyToGreensFunctionMatrix(
-					matrix,
-					selfEnergy,
-					n,
-					intraBlockIndices
-				);
-
-				//Invert matrix.
-				matrix.invert();
-
-				//Write the matrix back into the corresponding block of
-				//the full Green's function.
-				writeGreensFunctionMatrixToInteractingGreensFunction(
-					interactingGreensFunction,
-					matrix,
-					n,
-					intraBlockIndices
-				);
-			}
 		}
 	}
 
@@ -636,6 +557,51 @@ void Greens::writeGreensFunctionMatrixToInteractingGreensFunction(
 		}
 
 		row++;
+	}
+}
+
+void Greens::calculateInteractingGreensFunctionSingleBlock(
+	Property::GreensFunction &interactingGreensFunction,
+	const Property::SelfEnergy &selfEnergy,
+	const IndexTree &intraBlockIndices
+) const{
+	double blockSize = intraBlockIndices.getSize();
+	Matrix<complex<double>> matrix(blockSize, blockSize);
+	for(
+		unsigned int n = 0;
+		n < greensFunction->getNumEnergies();
+		n++
+	){
+		//Convert one block of the Green's function to a
+		//matrix.
+		convertGreensFunctionToMatrix(
+			matrix,
+			n,
+			intraBlockIndices
+		);
+
+		//Invert the matrix.
+		matrix.invert();
+
+		//Add the self energy.
+		addSelfEnergyToGreensFunctionMatrix(
+			matrix,
+			selfEnergy,
+			n,
+			intraBlockIndices
+		);
+
+		//Invert matrix.
+		matrix.invert();
+
+		//Write the matrix back into the corresponding block of
+		//the full Green's function.
+		writeGreensFunctionMatrixToInteractingGreensFunction(
+			interactingGreensFunction,
+			matrix,
+			n,
+			intraBlockIndices
+		);
 	}
 }
 

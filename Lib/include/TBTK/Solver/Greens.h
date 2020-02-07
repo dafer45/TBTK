@@ -133,6 +133,13 @@ private:
 		unsigned int energy,
 		const IndexTree &intraBlockIndices
 	) const;
+
+	/** Calculate a single block of the interacting Green's function. */
+	void calculateInteractingGreensFunctionSingleBlock(
+		Property::GreensFunction &interactingGreensFunction,
+		const Property::SelfEnergy &selfEnergy,
+		const IndexTree &intraBlockIndices
+	) const;
 };
 
 inline void Greens::setGreensFunction(
