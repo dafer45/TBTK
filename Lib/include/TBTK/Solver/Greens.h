@@ -28,6 +28,7 @@
 #include "TBTK/Model.h"
 #include "TBTK/Property/GreensFunction.h"
 #include "TBTK/Property/SelfEnergy.h"
+#include "TBTK/Property/SpectralFunction.h"
 #include "TBTK/Property/TransmissionRate.h"
 #include "TBTK/Solver/Solver.h"
 
@@ -67,6 +68,9 @@ public:
 	Property::GreensFunction calculateInteractingGreensFunction(
 		const Property::SelfEnergy &selfEnergy
 	) const;
+
+	/** Calculate the spectral function. */
+	Property::SpectralFunction calculateSpectralFunction() const;
 
 	/** Calculate the transmission.
 	 *

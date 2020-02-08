@@ -409,6 +409,98 @@ TEST(Greens, addSelfEnergy){
 	}
 }
 
+TEST(Greens, calculateSpectralFunction){
+	double LOWER_BOUND = -5;
+	double UPPER_BOUND = 5;
+	const int RESOLUTION = 10;
+
+	////////////////////////////////////
+	// Test for single block problem. //
+	////////////////////////////////////
+
+	//Setup the model.
+	Model model;
+	model.setVerbose(false);
+	model << HoppingAmplitude(-1, {1, 0}, {0, 0}) + HC;
+	model << HoppingAmplitude(-1, {0, 1}, {0, 0}) + HC;
+	model << HoppingAmplitude(-1, {1, 1}, {0, 1}) + HC;
+	model << HoppingAmplitude(-1, {1, 1}, {1, 0}) + HC;
+	model.construct();
+
+	//Setup and run the solver.
+	Diagonalizer diagonalizer;
+	diagonalizer.setVerbose(false);
+	diagonalizer.setModel(model);
+	diagonalizer.run();
+
+	//Setup the property extractor and calculate the non-interacting
+	//Green's function.
+	PropertyExtractor::Diagonalizer propertyExtractor(diagonalizer);
+	propertyExtractor.setEnergyWindow(
+		LOWER_BOUND,
+		UPPER_BOUND,
+		RESOLUTION
+	);
+	double infinitesimal = 1;
+	propertyExtractor.setEnergyInfinitesimal(infinitesimal);
+	Property::GreensFunction greensFunction
+		= propertyExtractor.calculateGreensFunction(
+			{{{IDX_ALL, IDX_ALL}, {IDX_ALL, IDX_ALL}}},
+			Property::GreensFunction::Type::Retarded
+		);
+
+	Greens solver;
+	solver.setGreensFunction(greensFunction);
+	Property::SpectralFunction spectralFunction
+		= solver.calculateSpectralFunction();
+
+	EXPECT_EQ(
+		spectralFunction.getLowerBound(),
+		greensFunction.getLowerBound()
+	);
+	EXPECT_EQ(
+		spectralFunction.getUpperBound(),
+		greensFunction.getUpperBound()
+	);
+	EXPECT_EQ(
+		spectralFunction.getResolution(),
+		greensFunction.getResolution()
+	);
+
+	std::complex<double> i(0, 1);
+	IndexTree indexTree = model.getHoppingAmplitudeSet().getIndexTree();
+	for(auto iterator0 : indexTree){
+		for(auto iterator1 : indexTree){
+			for(
+				unsigned int n = 0;
+				n < spectralFunction.getResolution();
+				n++
+			){
+				EXPECT_EQ(
+					spectralFunction(
+						{iterator0, iterator1},
+						n
+					),
+					i*(
+						greensFunction(
+							{iterator0, iterator1},
+							n
+						) - conj(
+							 greensFunction(
+								{
+									iterator1,
+									iterator0
+								},
+								n
+							)
+						)
+					)
+				);
+			}
+		}
+	}
+}
+
 TEST(Greens, calculateTransmission){
 	const double LOWER_BOUND = -1;
 	const double UPPER_BOUND = 1;

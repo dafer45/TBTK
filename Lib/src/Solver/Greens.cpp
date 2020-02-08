@@ -121,6 +121,80 @@ Property::GreensFunction Greens::calculateInteractingGreensFunction(
 	return interactingGreensFunction;
 }
 
+Property::SpectralFunction Greens::calculateSpectralFunction() const{
+	TBTKAssert(
+		greensFunction->getType()
+			== Property::GreensFunction::Type::Retarded,
+		"Solver::Greens::calculateSpectralFunction()",
+		"The Green's function must be of the type"
+		<< " Property::GreensFunction::Type::Retarded",
+		""
+	);
+	TBTKAssert(
+		greensFunction->getIndexDescriptor().getFormat()
+			== IndexDescriptor::Format::Custom,
+		"Solver::Greens::calculateSpectralFunction()",
+		"The Green's function must be on the Custom format.",
+		"See Property::AbstractProperty for detailed information about"
+		<< " the storage formats. Also see the documentation for the"
+		<< " PropertyExtractor that was used to calculate the Green's"
+		<< " function for details on how to extract it on the Custom"
+		<< " format."
+	);
+
+	IndexTree indexTree
+		= greensFunction->getIndexDescriptor().getIndexTree();
+	for(auto index : indexTree){
+		vector<Index> components = index.split();
+		TBTKAssert(
+			components.size() == 2,
+			"Solver::Greens::calculateSpectralFunction()",
+			"The Green's function contains the Index '" << index
+			<< "' that is not a compound index with two"
+			<< " components.",
+			""
+		);
+		TBTKAssert(
+			greensFunction->contains(
+				{components[1], components[0]}
+			),
+			"Solver::Greens::calculateSpectralFunction()",
+			"Missing Index. The Green's function contains '"
+			<< index << "' but not '"
+			<< Index({components[1], components[1]}) << "'.",
+			""
+		);
+	}
+
+	Property::SpectralFunction spectralFunction(
+		indexTree,
+		greensFunction->getLowerBound(),
+		greensFunction->getUpperBound(),
+		greensFunction->getResolution()
+	);
+	complex<double> i(0, 1);
+	for(auto index : indexTree){
+		for(
+			unsigned int energy = 0;
+			energy < spectralFunction.getResolution();
+			energy++
+		){
+			vector<Index> components = index.split();
+			spectralFunction(index, energy) = i*(
+				(*greensFunction)(index, energy)
+				- conj(
+					(*greensFunction)(
+						{components[1], components[0]},
+						energy
+					)
+				)
+			);
+		}
+	}
+
+	return spectralFunction;
+}
+
 Property::TransmissionRate Greens::calculateTransmissionRate(
 	const Property::SelfEnergy &selfEnergy0,
 	const Property::SelfEnergy &selfEnergy1
