@@ -27,6 +27,9 @@ using namespace std;
 namespace TBTK{
 namespace Property{
 
+SpectralFunction::SpectralFunction() : EnergyResolvedProperty(){
+}
+
 SpectralFunction::SpectralFunction(
 	const IndexTree &indexTree,
 	double lowerBound,

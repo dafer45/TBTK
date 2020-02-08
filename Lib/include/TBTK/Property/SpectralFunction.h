@@ -35,6 +35,9 @@ namespace Property{
 class SpectralFunction : public EnergyResolvedProperty<std::complex<double>>{
 public:
 	/** Constructor. */
+	SpectralFunction();
+
+	/** Constructor. */
 	SpectralFunction(
 		const IndexTree &indexTree,
 		double lowerBound,

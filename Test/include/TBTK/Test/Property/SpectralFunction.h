@@ -1,4 +1,4 @@
-#include "TBTK/Property/SpectralFunctionn.h"
+#include "TBTK/Property/SpectralFunction.h"
 
 #include "gtest/gtest.h"
 
@@ -64,7 +64,7 @@ TEST(GreensFunction, Constructor3){
 	indexTree.add({{0, 2}, {0, 1}});
 	indexTree.add({{0, 1}, {0, 3}});
 	indexTree.generateLinearMap();
-	complex<double> data[3000];
+	std::complex<double> data[3000];
 	for(unsigned int n = 0; n < 3000; n++)
 		data[n] = n;
 	SpectralFunction spectralFunction(
@@ -87,19 +87,19 @@ TEST(GreensFunction, Constructor3){
 			0
 		);
 		EXPECT_DOUBLE_EQ(
-			real(spectralFunction({{0, 2}, {0, 1}}, n)),
+			real(spectralFunction({{0, 1}, {0, 3}}, n)),
 			n + 1000
 		);
 		EXPECT_DOUBLE_EQ(
-			imag(spectralFunction({{0, 2}, {0, 1}}, n)),
+			imag(spectralFunction({{0, 1}, {0, 3}}, n)),
 			0
 		);
 		EXPECT_DOUBLE_EQ(
-			real(spectralFunction({{0, 1}, {0, 3}}, n)),
+			real(spectralFunction({{0, 2}, {0, 1}}, n)),
 			n + 2000
 		);
 		EXPECT_DOUBLE_EQ(
-			imag(spectralFunction({{0, 1}, {0, 3}}, n)),
+			imag(spectralFunction({{0, 2}, {0, 1}}, n)),
 			0
 		);
 	}

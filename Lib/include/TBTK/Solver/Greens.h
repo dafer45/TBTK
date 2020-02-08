@@ -13,7 +13,6 @@
  * limitations under the License.
  */
 
-/// @cond TBTK_FULL_DOCUMENTATION
 /** @package TBTKcalc
  *  @file Greens.h
  *  @brief Calculates properties from a Green's function.
@@ -64,12 +63,14 @@ public:
 	 *  @param selfEnergy The self-energy \f$\Sigma\f$ to add to the
 	 *  original Green's function.
 	 *
-	 *  @return \f$G = (G_0^{-1} + \Sigma)^{-1}\f$*/
+	 *  @return \f$G = (G_0^{-1} + \Sigma)^{-1}\f$ */
 	Property::GreensFunction calculateInteractingGreensFunction(
 		const Property::SelfEnergy &selfEnergy
 	) const;
 
-	/** Calculate the spectral function. */
+	/** Calculate the spectral function.
+	 *
+	 *  @return \f$A = i\left(G - G^{\dagger}\right)\f$. */
 	Property::SpectralFunction calculateSpectralFunction() const;
 
 	/** Calculate the transmission.
@@ -160,4 +161,3 @@ inline const Property::GreensFunction& Greens::getGreensFunction() const{
 };	//End of namespace TBTK
 
 #endif
-/// @endcond
