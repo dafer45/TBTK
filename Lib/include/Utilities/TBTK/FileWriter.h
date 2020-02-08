@@ -118,13 +118,6 @@ public:
 		std::string path = "/"
 	);
 
-	/** Write spectral function to file. */
-	static void writeSpectralFunction(
-		const Property::SpectralFunction &spectralFunction,
-		std::string name = "SpectralFunction",
-		std::string path = "/"
-	);
-
 	/** Write spin-polarized local density of states to file. */
 	static void writeSpinPolarizedLDOS(
 		const Property::SpinPolarizedLDOS &spinPolarizedLDOS,
@@ -204,14 +197,6 @@ private:
 	/** File name of file to write to. */
 	static std::string filename;
 };
-
-inline void FileWriter::writeSpectralFunction(
-		const Property::SpectralFunction &spectralFunction,
-		std::string name,
-		std::string path
-){
-	writeLDOS(spectralFunction, name, path);
-}
 
 inline void FileWriter::setFileName(std::string filename){
 	FileWriter::filename = filename;

@@ -28,32 +28,17 @@ namespace TBTK{
 namespace Property{
 
 SpectralFunction::SpectralFunction(
-	const std::vector<int> &ranges,
-	double lowerBound,
-	double upperBound,
-	int resolution
-) :
-	LDOS(ranges, lowerBound, upperBound, resolution)
-{
-}
-
-SpectralFunction::SpectralFunction(
-	const std::vector<int> &ranges,
-	double lowerBound,
-	double upperBound,
-	int resolution,
-	const double *data
-) :
-	LDOS(ranges, lowerBound, upperBound, resolution, data)
-{
-}
-
-SpectralFunction::SpectralFunction(
 	const IndexTree &indexTree,
 	double lowerBound,
 	double upperBound,
 	int resolution
-) : LDOS(indexTree, lowerBound, upperBound, resolution){
+) :
+	EnergyResolvedProperty<complex<double>>(
+		indexTree,
+		lowerBound,
+		upperBound,
+		resolution
+){
 }
 
 SpectralFunction::SpectralFunction(
@@ -61,39 +46,15 @@ SpectralFunction::SpectralFunction(
 	double lowerBound,
 	double upperBound,
 	int resolution,
-	const double *data
-) : LDOS(indexTree, lowerBound, upperBound, resolution, data){
-}
-
-SpectralFunction::SpectralFunction(
-	const SpectralFunction &spectralFunction
+	const complex<double> *data
 ) :
-	LDOS(spectralFunction)
-{
-}
-
-SpectralFunction::SpectralFunction(
-	SpectralFunction &&spectralFunction
-) :
-	LDOS(std::move(spectralFunction))
-{
-}
-
-SpectralFunction::~SpectralFunction(){
-}
-
-SpectralFunction& SpectralFunction::operator=(const SpectralFunction &rhs){
-	if(this != &rhs)
-		LDOS::operator=(rhs);
-
-	return *this;
-}
-
-SpectralFunction& SpectralFunction::operator=(SpectralFunction &&rhs){
-	if(this != &rhs)
-		LDOS::operator=(std::move(rhs));
-
-	return *this;
+	EnergyResolvedProperty<complex<double>>(
+		indexTree,
+		lowerBound,
+		upperBound,
+		resolution,
+		data
+){
 }
 
 string SpectralFunction::serialize(Mode mode) const{

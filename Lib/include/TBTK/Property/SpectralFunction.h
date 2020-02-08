@@ -24,33 +24,18 @@
 #ifndef COM_DAFER45_TBTK_SPECTRAL_FUNCTION
 #define COM_DAFER45_TBTK_SPECTRAL_FUNCTION
 
-#include "TBTK/Property/LDOS.h"
+#include "TBTK/Property/EnergyResolvedProperty.h"
+
+#include <complex>
 
 namespace TBTK{
 namespace Property{
 
 /** @brief Property container for spectral function. */
-class SpectralFunction : public LDOS{
+class SpectralFunction : public EnergyResolvedProperty<std::complex<double>>{
 public:
 	/** Constructor. */
 	SpectralFunction(
-		const std::vector<int> &ranges,
-		double lowerBound,
-		double upperBound,
-		int resolution
-	);
-
-	/** Constructor. */
-	SpectralFunction(
-		const std::vector<int> &ranges,
-		double lowerBound,
-		double upperBound,
-		int resolution,
-		const double *data
-	);
-
-	/** Constructor. */
-	SpectralFunction(
 		const IndexTree &indexTree,
 		double lowerBound,
 		double upperBound,
@@ -63,23 +48,8 @@ public:
 		double lowerBound,
 		double upperBound,
 		int resolution,
-		const double *data
+		const std::complex<double> *data
 	);
-
-	/** Copy constructor. */
-	SpectralFunction(const SpectralFunction &spectralFunction);
-
-	/** Move constructor. */
-	SpectralFunction(SpectralFunction &&spectralFunction);
-
-	/** Destructor. */
-	~SpectralFunction();
-
-	/** Assignment operator. */
-	SpectralFunction& operator=(const SpectralFunction &rhs);
-
-	/** Move assignment operator. */
-	SpectralFunction& operator=(SpectralFunction &&rhs);
 
 	/** Overrider LDOS::serialize(). */
 	virtual std::string serialize(Mode mode) const;
