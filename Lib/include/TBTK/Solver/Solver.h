@@ -75,7 +75,7 @@ inline Model& Solver::getModel(){
 		model != nullptr,
 		"Solver::getModel()",
 		"Model not set.",
-		"Use Solver::setSolver() to set model."
+		"Use Solver::setModel() to set model."
 	);
 	return *model;
 }
@@ -85,7 +85,7 @@ inline const Model& Solver::getModel() const{
 		model != nullptr,
 		"Solver::getModel()",
 		"Model not set.",
-		"Use Solver::setSolver() to set model."
+		"Use Solver::setModel() to set model."
 	);
 	return *model;
 }
