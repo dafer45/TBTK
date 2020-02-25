@@ -60,9 +60,9 @@ public:
 	/** Calculate transmission rate.
 	 *
 	 *  @return The transmission rate. */
-	Property::TransmissionRate calculateTransmissionRate(
-		unsigned int lead0,
-		unsigned int lead1
+	double calculateCurrent(
+		unsigned int lead0/*,
+		unsigned int lead1*/
 	);
 private:
 	/** Green's function to use in calculations. */
@@ -84,6 +84,8 @@ private:
 		Property::SelfEnergy selfEnergy;
 		Property::SelfEnergy broadening;
 		Property::SelfEnergy inscattering;
+		Property::EnergyResolvedProperty<double> energyResolvedCurrent;
+		double current;
 		double chemicalPotential;
 		double temperature;
 	};
@@ -96,6 +98,13 @@ private:
 
 	/** Full inscattering. */
 	Property::SelfEnergy fullInscattering;
+
+	/** Correlation function. (See for example Eq. 11.1.5 in Quantum
+	 *  Transport: Atom to Transistor by S. Datta, where the correlation
+	 *  function also is denoted by the symbol G^{n}.) */
+	Property::EnergyResolvedProperty<
+		std::complex<double>
+	> correlationFunction;
 
 	/** Energy resolution. */
 	Range energyRange;
@@ -122,6 +131,18 @@ private:
 	Property::SelfEnergy expandSelfEnergyIndexRange(
 		const Property::SelfEnergy &selfEnergy
 	) const;
+
+	/** Calculate the correlation function. */
+	void calculateCorrelationFunction();
+
+	/** Calculate the spectra function. */
+	void calculateSpectralFunction();
+
+	/** Calculate the energy-resolved currents. */
+	void calculateEnergyResolvedCurrents();
+
+	/** Calculate currents. */
+	void calculateCurrents();
 };
 
 inline void Transport::setEnergyWindow(

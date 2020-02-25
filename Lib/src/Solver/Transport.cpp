@@ -39,9 +39,9 @@ Transport::Transport(
 {
 }
 
-Property::TransmissionRate Transport::calculateTransmissionRate(
-	unsigned int lead0,
-	unsigned int lead1
+double Transport::calculateCurrent(
+	unsigned int lead0/*,
+	unsigned int lead1*/
 ){
 	TBTKAssert(
 		lead0 < leads.size(),
@@ -51,28 +51,34 @@ Property::TransmissionRate Transport::calculateTransmissionRate(
 		<< " number of leads is '" << leads.size() << "'.",
 		""
 	);
-	TBTKAssert(
+/*	TBTKAssert(
 		lead1 < leads.size(),
 		"Solver::Transport::calculateTransmissionRate()",
 		"'lead1' must be a number between 0 and one less than the"
 		<< " number of leads, but 'lead1=" << lead1 << "' and the"
 		<< " number of leads is '" << leads.size() << "'.",
 		""
-	);
+	);*/
 
 	calculateGreensFunction();
 	calculateInteractingGreensFunction();
 	calculateBroadenings();
 	calculateInscatterings();
 	calculateFullInscattering();
+	calculateCorrelationFunction();
+	calculateSpectralFunction();
+	calculateEnergyResolvedCurrents();
+	calculateCurrents();
 
-	Greens solver;
+/*	Greens solver;
 	solver.setModel(getModel());
 	solver.setGreensFunction(interactingGreensFunction);
 	return solver.calculateTransmissionRate(
 			expandSelfEnergyIndexRange(leads[lead0].selfEnergy),
 			expandSelfEnergyIndexRange(leads[lead1].selfEnergy)
-		);
+		);*/
+
+	return leads[lead0].current;
 }
 
 void Transport::calculateGreensFunction(){
@@ -176,7 +182,7 @@ void Transport::calculateBroadenings(){
 				hermitianConjugate(
 					{components[1], components[0]},
 					energy
-				) = lead.selfEnergy(index, energy);
+				) = conj(lead.selfEnergy(index, energy));
 			}
 		}
 
@@ -262,6 +268,7 @@ void Transport::calculateFullInscattering(){
 Property::SelfEnergy Transport::expandSelfEnergyIndexRange(
 	const Property::SelfEnergy &selfEnergy
 ) const{
+	Timer::tick("Expand self energy index range");
 	Property::SelfEnergy expandedSelfEnergy(
 		greensFunction.getIndexDescriptor().getIndexTree(),
 		greensFunction.getLowerBound(),
@@ -279,7 +286,139 @@ Property::SelfEnergy Transport::expandSelfEnergyIndexRange(
 		}
 	}
 
+	Timer::tock();
+
 	return expandedSelfEnergy;
+}
+
+void Transport::calculateCorrelationFunction(){
+	Timer::tick("Calculate correlation function");
+	vector<SparseMatrix<complex<double>>> G
+		= greensFunction.toSparseMatrices(getModel());
+	vector<SparseMatrix<complex<double>>> sigmaIn
+		= fullInscattering.toSparseMatrices(getModel());
+	vector<SparseMatrix<complex<double>>> GDagger;
+	for(unsigned int n = 0; n < G.size(); n++)
+		GDagger.push_back(G[n].hermitianConjugate());
+
+	correlationFunction = Property::EnergyResolvedProperty<complex<double>>(
+		greensFunction.getIndexDescriptor().getIndexTree(),
+		greensFunction.getLowerBound(),
+		greensFunction.getUpperBound(),
+		greensFunction.getResolution()
+	);
+	for(unsigned int energy = 0; energy < greensFunction.getResolution(); energy++){
+		SparseMatrix<complex<double>> product
+			= G[energy]*sigmaIn[energy]*GDagger[energy];
+
+		product.setStorageFormat(
+			SparseMatrix<complex<double>>::StorageFormat::CSC
+		);
+		const unsigned int *cscColumnPointers
+			= product.getCSCColumnPointers();
+		const unsigned int *cscRows = product.getCSCRows();
+		const complex<double> *values = product.getCSCValues();
+
+		for(
+			unsigned int column = 0;
+			column < product.getNumColumns();
+			column++
+		){
+			Index columnIndex = getModel().getHoppingAmplitudeSet(
+			).getPhysicalIndex(column);
+			for(
+				unsigned int n = cscColumnPointers[column];
+				n < cscColumnPointers[column+1];
+				n++
+			){
+				unsigned int row = cscRows[n];
+				Index rowIndex
+					= getModel().getHoppingAmplitudeSet(
+					).getPhysicalIndex(row);
+				correlationFunction(
+					{rowIndex, columnIndex},
+					energy
+				) = values[n];
+			}
+		}
+	}
+
+	Timer::tock();
+}
+
+void Transport::calculateSpectralFunction(){
+	Timer::tick("Calculate spectral function");
+	Greens solver;
+	solver.setGreensFunction(interactingGreensFunction);
+	spectralFunction = solver.calculateSpectralFunction();
+	Timer::tock();
+}
+
+void Transport::calculateEnergyResolvedCurrents(){
+	Timer::tick("Calculate energy-resolved current");
+	double hbar = UnitHandler::getConstantInNaturalUnits("hbar");
+	double e = UnitHandler::getConstantInNaturalUnits("e");
+	for(auto &lead : leads){
+		lead.energyResolvedCurrent
+			= Property::EnergyResolvedProperty<double>(
+				greensFunction.getLowerBound(),
+				greensFunction.getUpperBound(),
+				greensFunction.getResolution()
+			);
+
+		vector<SparseMatrix<complex<double>>> sigmaIn
+			= lead.inscattering.toSparseMatrices(getModel());
+		vector<SparseMatrix<complex<double>>> A
+			= spectralFunction.toSparseMatrices(getModel());
+		TBTKAssert(
+			sigmaIn.size() == A.size(),
+			"Solver::Transport::calculateEnergyResolvedCurrents()",
+			"Incompatible energy ranges for the inscattering and"
+			<< " the spectral function.",
+			"This should never happen, contact the developer."
+		);
+		for(unsigned int n = 0; n < sigmaIn.size(); n++){
+			lead.energyResolvedCurrent(n)
+				= real((sigmaIn[n]*A[n]).trace());
+		}
+
+		vector<SparseMatrix<complex<double>>> Gamma
+			= lead.broadening.toSparseMatrices(getModel());
+		vector<SparseMatrix<complex<double>>> G
+			= correlationFunction.toSparseMatrices(getModel());
+		TBTKAssert(
+			sigmaIn.size() == Gamma.size()
+			&& Gamma.size() == G.size(),
+			"Solver::Transport::calculateEnergyResolvedCurrents()",
+			"Incompatible energy ranges for the inscattering,"
+			<< " broadening, and correlation function.",
+			"This should never happen, contact the developer."
+		);
+		for(unsigned int n = 0; n < Gamma.size(); n++){
+			lead.energyResolvedCurrent(n)
+				-= real((Gamma[n]*G[n]).trace());
+		}
+
+		for(unsigned int n = 0; n < Gamma.size(); n++)
+			lead.energyResolvedCurrent(n) *= e/(2*M_PI*hbar);
+	}
+	Timer::tock();
+}
+
+void Transport::calculateCurrents(){
+	Timer::tick("Calculate currents");
+	for(auto &lead : leads){
+		lead.current = 0;
+		double dE = lead.energyResolvedCurrent.getDeltaE();
+		for(
+			unsigned int n = 0;
+			n < lead.energyResolvedCurrent.getResolution();
+			n++
+		){
+			lead.current += lead.energyResolvedCurrent(n)*dE;
+		}
+	}
+	Timer::tock();
 }
 
 };	//End of namespace Solver
