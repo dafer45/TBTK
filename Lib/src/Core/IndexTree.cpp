@@ -472,7 +472,7 @@ bool IndexTree::contains(const Index &index){
 		getLinearIndex(index);
 		return true;
 	}
-	catch(IndexException e){
+	catch(const IndexException &e){
 		return false;
 	}
 }
