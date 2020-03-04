@@ -329,17 +329,17 @@ void SelfEnergy::selfEnergyMainLoop(
 	#pragma omp parallel for default(none) shared( \
 		mesh, \
 		kLinearIndex, \
-		/*k,*/ \
-		/*kIndex,*/ \
 		numOrbitals, \
-		/*intraBlockIndices0,*/ \
-		/*intraBlockIndices1,*/ \
 		momentumSpaceContext, \
 		model, \
 		results, \
 		brillouinZone, \
 		numMeshPoints, \
 		selfEnergyEnergies \
+	) firstprivate( \
+		k, \
+		intraBlockIndices0, \
+		intraBlockIndices1 \
 	)
 	for(unsigned int worker = 0; worker < NUM_WORKERS; worker++){
 		unsigned int blockSize = mesh.size()/NUM_WORKERS;
