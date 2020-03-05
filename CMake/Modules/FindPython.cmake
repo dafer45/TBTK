@@ -58,8 +58,6 @@ IF(PYTHON_INCLUDES AND PYTHON_LIBRARIES)
 #endif
 
 		int main(int argc, char **argv){
-			PyObject *emptyTuple = PyTuple_New(0);
-
 #if PY_MAJOR_VERSION >= 3
 			wchar_t name[] = L\"plotting\";
 #else
@@ -86,6 +84,8 @@ IF(PYTHON_INCLUDES AND PYTHON_LIBRARIES)
 			PyObject *pyplot = PyImport_Import(pyplotName);
 			if(!pyplot)
 				exit(1);
+
+			PyObject *emptyTuple = PyTuple_New(0);
 
 			PyObject *clf = PyObject_GetAttrString(pyplot, \"clf\");
 			PyObject *clfReturnValue = PyObject_CallObject(
@@ -123,8 +123,6 @@ IF(PYTHON_INCLUDES AND PYTHON_LIBRARIES)
 #endif
 
 			int main(int argc, char **argv){
-				PyObject *emptyTuple = PyTuple_New(0);
-
 #if PY_MAJOR_VERSION >= 3
 				wchar_t name[] = L\"plotting\";
 #else
@@ -144,6 +142,8 @@ IF(PYTHON_INCLUDES AND PYTHON_LIBRARIES)
 				PyObject *pyplot = PyImport_Import(pyplotName);
 				if(!pyplot)
 					exit(1);
+
+				PyObject *emptyTuple = PyTuple_New(0);
 
 				PyObject *clf = PyObject_GetAttrString(pyplot, \"clf\");
 				PyObject *clfReturnValue = PyObject_CallObject(
