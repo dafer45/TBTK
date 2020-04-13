@@ -367,7 +367,7 @@ private:
 	/** Function for indexing into the tuple scales using compile time
 	 *  Quantity names. */
 	template<typename Quantity>
-	constexpr static double& getScale();
+	static double& getScale();
 
 	/** Set scale. */
 	template<typename Quantity>
@@ -751,37 +751,37 @@ inline void UnitHandler::setScale(const std::string &scale){
 }
 
 template<>
-inline constexpr double& UnitHandler::getScale<Quantity::Angle>(){
+inline double& UnitHandler::getScale<Quantity::Angle>(){
 	return std::get<0>(scales);
 }
 
 template<>
-inline constexpr double& UnitHandler::getScale<Quantity::Charge>(){
+inline double& UnitHandler::getScale<Quantity::Charge>(){
 	return std::get<1>(scales);
 }
 
 template<>
-inline constexpr double& UnitHandler::getScale<Quantity::Count>(){
+inline double& UnitHandler::getScale<Quantity::Count>(){
 	return std::get<2>(scales);
 }
 
 template<>
-inline constexpr double& UnitHandler::getScale<Quantity::Energy>(){
+inline double& UnitHandler::getScale<Quantity::Energy>(){
 	return std::get<3>(scales);
 }
 
 template<>
-inline constexpr double& UnitHandler::getScale<Quantity::Length>(){
+inline double& UnitHandler::getScale<Quantity::Length>(){
 	return std::get<4>(scales);
 }
 
 template<>
-inline constexpr double& UnitHandler::getScale<Quantity::Temperature>(){
+inline double& UnitHandler::getScale<Quantity::Temperature>(){
 	return std::get<5>(scales);
 }
 
 template<>
-inline constexpr double& UnitHandler::getScale<Quantity::Time>(){
+inline double& UnitHandler::getScale<Quantity::Time>(){
 	return std::get<6>(scales);
 }
 

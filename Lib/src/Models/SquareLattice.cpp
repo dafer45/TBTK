@@ -46,12 +46,17 @@ public:
 		Index modifiedIndex = index;
 		if(spinIndex != -1)
 			modifiedIndex.erase(spinIndex);
-		unsigned int x = modifiedIndex[0];
-		unsigned int y = modifiedIndex[1];
-		if(x >= 0 && x < sizeX && y >= 0 && y < sizeY)
+		Subindex x = modifiedIndex[0];
+		Subindex y = modifiedIndex[1];
+		if(
+			x >= 0 && x < (Subindex)sizeX
+			&& y >= 0 && y < (Subindex)sizeY
+		){
 			return true;
-		else
+		}
+		else{
 			return false;
+		}
 	}
 private:
 	unsigned int sizeX;
