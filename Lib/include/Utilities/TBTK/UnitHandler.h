@@ -355,7 +355,7 @@ private:
 	/** Function for indexing into the tuple units using compile time
 	 *  Quatity names. */
 	template<typename Quantity>
-	constexpr static typename std::enable_if<
+	static typename std::enable_if<
 		Quantity::IsBaseQuantity::value,
 		typename Quantity::Unit&
 	>::type getUnit();
@@ -432,44 +432,44 @@ void UnitHandler::setUnit(typename Quantity::Unit unit){
 }
 
 template<>
-inline constexpr Quantity::Angle::Unit& UnitHandler::getUnit<Quantity::Angle>(
+inline Quantity::Angle::Unit& UnitHandler::getUnit<Quantity::Angle>(
 ){
 	return std::get<0>(units);
 }
 
 template<>
-inline constexpr Quantity::Charge::Unit& UnitHandler::getUnit<Quantity::Charge>(
+inline Quantity::Charge::Unit& UnitHandler::getUnit<Quantity::Charge>(
 ){
 	return std::get<1>(units);
 }
 
 template<>
-inline constexpr Quantity::Count::Unit& UnitHandler::getUnit<Quantity::Count>(
+inline Quantity::Count::Unit& UnitHandler::getUnit<Quantity::Count>(
 ){
 	return std::get<2>(units);
 }
 
 template<>
-inline constexpr Quantity::Energy::Unit& UnitHandler::getUnit<Quantity::Energy>(
+inline Quantity::Energy::Unit& UnitHandler::getUnit<Quantity::Energy>(
 ){
 	return std::get<3>(units);
 }
 
 template<>
-inline constexpr Quantity::Length::Unit& UnitHandler::getUnit<Quantity::Length>(
+inline Quantity::Length::Unit& UnitHandler::getUnit<Quantity::Length>(
 ){
 	return std::get<4>(units);
 }
 
 template<>
-inline constexpr Quantity::Temperature::Unit& UnitHandler::getUnit<
+inline Quantity::Temperature::Unit& UnitHandler::getUnit<
 	Quantity::Temperature
 >(){
 	return std::get<5>(units);
 }
 
 template<>
-inline constexpr Quantity::Time::Unit& UnitHandler::getUnit<Quantity::Time>(
+inline Quantity::Time::Unit& UnitHandler::getUnit<Quantity::Time>(
 ){
 	return std::get<6>(units);
 }
