@@ -38,6 +38,53 @@ IF(PYTHON_INCLUDES AND PYTHON_LIBRARIES)
 	SET(CMAKE_REQUIRED_INCLUDES ${PYTHON_INCLUDES})
 	SET(CMAKE_REQUIRED_LIBRARIES ${PYTHON_LIBRARIES})
 	INCLUDE(CheckCXXSourceRuns)
+	UNSET(TBTK_PYTHON_COMPILED CACHE)
+	CHECK_CXX_SOURCE_RUNS(
+		"
+		#include <Python.h>
+		int main(int argc, char **argv){
+			return 0;
+		}
+		"
+		TBTK_PYTHON_COMPILED
+	)
+	UNSET(TBTK_PYTHON_NUMPY_COMPILED CACHE)
+	CHECK_CXX_SOURCE_RUNS(
+		"
+		#include <Python.h>
+		#include <numpy/arrayobject.h>
+		int main(int argc, char **argv){
+			return 0;
+		}
+		"
+		TBTK_PYTHON_NUMPY_COMPILED
+	)
+	UNSET(TBTK_PYTHON_MATPLOTLIB_COMPILED CACHE)
+	CHECK_CXX_SOURCE_RUNS(
+		"
+		#include <Python.h>
+		#include <numpy/arrayobject.h>
+#if PY_MAJOR_VERSION >= 3
+#		define PyString_FromString PyUnicode_FromString
+#endif
+		int main(int argc, char **argv){
+#if PY_MAJOR_VERSION >= 3
+			wchar_t name[] = L\"plotting\";
+#else
+			char name[] = \"plotting\";
+#endif
+			Py_SetProgramName(name);
+			Py_Initialize();
+			PyObject *matplotlibName = PyString_FromString(\"matplotlib\");
+			PyObject *matplotlib = PyImport_Import(matplotlibName);
+			Py_DECREF(matplotlibName);
+			if(!matplotlib)
+				exit(1);
+			return 0;
+		}
+		"
+		TBTK_PYTHON_MATPLOTLIB_COMPILED
+	)
 	UNSET(PYTHON_COMPILED CACHE)
 	CHECK_CXX_SOURCE_RUNS(
 		"
