@@ -468,6 +468,15 @@ TEST_F(FockSpaceTest, createFockStateMap6){
 		= fockSpaceFermion.createFockStateMap(fockStateRuleSet);
 
 	BitRegister expectedResult[2];
+	for(unsigned int n = 0; n < 2; n++){
+		for(
+			unsigned int c = 0;
+			c < expectedResult[n].getNumBits();
+			c++
+		){
+			expectedResult[n].setBit(c, 0);
+		}
+	}
 	expectedResult[0].setBit(0, 1);
 	expectedResult[0].setBit(1, 1);
 	expectedResult[0].setBit(2, 1);

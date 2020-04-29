@@ -295,17 +295,14 @@ TEST_F(PropertyConverterTest, convert8){
 	const std::vector<std::vector<Subindex>> &axes = result.getAxes();
 	EXPECT_EQ(ranges.size(), 1);
 	EXPECT_EQ(ranges[0], SIZE);
-	for(unsigned int x = 0; x < ranges[0]; x++){
-		for(unsigned int y = 0; y < ranges[1]; y++){
-			Subindex X = axes[0][x];
-			Subindex Y = axes[1][y];
-			if(X == 2 && Y == 2)
-				EXPECT_FLOAT_EQ((result[{x, y}]), 2);
-			else if(X == 2 && Y == 3)
-				EXPECT_FLOAT_EQ((result[{x, y}]), 3);
-			else
-				EXPECT_FLOAT_EQ((result[{x, y}]), 0);
-		}
+	for(unsigned int y = 0; y < ranges[0]; y++){
+		Subindex Y = axes[0][y];
+		if(Y == 2)
+			EXPECT_FLOAT_EQ((result[{y}]), 2);
+		else if(Y == 3)
+			EXPECT_FLOAT_EQ((result[{y}]), 3);
+		else
+			EXPECT_FLOAT_EQ((result[{y}]), 0);
 	}
 
 	EXPECT_EQ(axes.size(), 1);

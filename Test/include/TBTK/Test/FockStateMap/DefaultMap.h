@@ -3,6 +3,8 @@
 
 #include "gtest/gtest.h"
 
+#include <cmath>
+
 namespace TBTK{
 namespace FockStateMap{
 
