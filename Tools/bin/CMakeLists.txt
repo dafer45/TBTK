@@ -2,6 +2,7 @@ IF(UNIX)
 	CONFIGURE_FILE(
 		TBTKCreateApplication
 		TBTKCreateApplication
+		@ONLY
 	)
 	INSTALL(
 		FILES ${CMAKE_CURRENT_BINARY_DIR}/TBTKCreateApplication

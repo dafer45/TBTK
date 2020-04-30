@@ -1,14 +1,76 @@
 #!/bin/bash
 
+help=false
+initExisting=false
+overwrite=false
+
+PARAMS=""
+while(("$#"));
+do
+	case "$1" in
+		--help)
+			help=true
+			shift
+			;;
+		--init-existing)
+			initExisting=true
+			shift
+			;;
+		--overwrite)
+			overwrite=true
+			shift
+			;;
+		-*)
+			echo "Error: Unknown flag $1" >&2
+			exit 1
+			;;
+		*)
+			PARAMS="$PARAMS $1"
+			shift
+			;;
+	esac
+done
+eval set -- "$PARAMS"
+
+printHelp () {
+		echo "Usage: TBTKCreateApplication [OPTIONS] applicationName [templateName]"
+		echo ""
+		echo "Available templates:"
+		echo -e "\tBasicArnoldi"
+		echo -e "\tBasicChebyshev"
+		echo -e "\tBasicDiagonalization"
+		echo -e "\tBasicFourierTransform"
+		echo -e "\tBasicLinearEquation"
+		echo -e "\tCarbonNanotube"
+		echo -e "\tEmptyProject (default choice)"
+		echo -e "\tHexagonalLattice"
+		echo -e "\tPartialBilayer"
+		echo -e "\tSelfConsistentSuperconductivity"
+		echo -e "\tWireOnSuperconductor"
+		echo ""
+		echo "Options"
+		echo -e "\t--help\t\t\tDisplay this help and exit."
+		echo -e "\t--init-existing\t\tAllow initialization of already existing folder."
+		echo -e "\t--overwrite\t\tWhen used together with --init-existing, files"
+		echo -e "\t\t\t\tthat already exist will be overwriten by the"
+		echo -e "\t\t\t\tdefault initialization files."
+}
+
+if $help
+then
+	printHelp
+	exit
+fi
+
 newProjectName=$1
 if [ -z "$newProjectName" ]
 then
-	echo "Error: Missing project name (first argument)"
+	printHelp
 	exit
 fi
 
 templateProjectName=$2
-templateProjectPath=${CMAKE_INSTALL_PREFIX}/TBTK/Templates
+templateProjectPath=@CMAKE_INSTALL_PREFIX@/TBTK/Templates
 if [ -z "$templateProjectName" ]
 then
 	templateProjectName=EmtpyProject
@@ -23,9 +85,21 @@ else
 	fi
 fi
 
+newProjectName=${newProjectName%/}
 if [ -d "$newProjectName" ]
 then
-	echo "Error: A folder with the name '$newProjectName' already exists."
+	if $initExisting
+	then
+		if $overwrite
+		then
+			cp -r $templateProjectPath/* $newProjectName/
+		else
+			cp -rn $templateProjectPath/* $newProjectName/
+		fi
+	else
+		echo "Error: A folder with the name '$newProjectName' already exists. Use --init-existing to"
+		echo -e "\tinitialize an already existing folder."
+	fi
 else
 	cp -r $templateProjectPath $newProjectName
 	echo "Created new project '$newProjectName' from the template '$templateProjectName'."
