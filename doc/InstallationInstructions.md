@@ -70,11 +70,11 @@ Additional features will also be available if one or more of the following libra
 |----------------------------------|---------------------------------------------|
 | ARPACK                           | http://www.caam.rice.edu/software/ARPACK    |
 | CUDA                             | https://developer.nvidia.com/cuda-downloads |
-| cURL                             | https://curl.haxx.se                        |
+| cURL (libcurl)                   | https://curl.haxx.se                        |
 | FFTW3                            | http://www.fftw.org                         |
 | GMP                              | https://gmplib.org/                         |
 | Matplotlib (Python)              | https://matplotlib.org/                     |
-| NumPy (Python)                   | https://numpy.org/                          |
+| NumPy (Python, C library)        | https://numpy.org/                          |
 | Python                           | https://www.python.org/                     |
 | SuperLU (v5.2.1)                 | http://crd-legacy.lbl.gov/~xiaoye/SuperLU   |
 
