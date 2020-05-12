@@ -19,7 +19,7 @@ Installation instructions {#InstallationInstructions}
 Always work agains a public release.
 This is done by checking out the latset release using
 ```cpp
-	git checkout v2.1.4
+	git checkout v2.2.0
 ```
 A full list of public releases can be found at https://github.com/dafer45/TBTK/releases.
 By remembering the version number that an application is compiled with, it is guaranted that the application will be possible to build again anytime in the future.
@@ -91,12 +91,12 @@ The following table shows the optional libraries that are required to enable the
 | Resource                          |        |      | X    |       |     |                                  |                  |
 
 # Update TBTK {#UpdateTBTK}
-If TBTK is already installed, it can be updated to v2.1.4 as follows.
+If TBTK is already installed, it can be updated to v2.2.0 as follows.
 We here assume that TBTK has been downloaded and built in two parallel folders TBTK and TBTKBuild, as described above.
 ```cpp
 	cd TBTK
 	git pull
-	git checkout v2.1.4
+	git checkout v2.2.0
 	cd ../TBTKBuild
 	cmake ../TBTK
 	make
