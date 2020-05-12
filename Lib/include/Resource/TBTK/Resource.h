@@ -15,7 +15,7 @@
 
 /** @package TBTKcalc
  *  @file Resource.h
- *  @brief Allows Serializable objects to be saved and loaded using URI.
+ *  @brief Read and write string resources from file, URL, etc.
  *
  *  @author Kristofer Björnson
  */
@@ -30,6 +30,38 @@
 
 namespace TBTK{
 
+/** @brief Read and write string resources from file, URL, etc.
+ *
+ *  The Resource provides the means for reading input data from files, URL's
+ *  etc. It thus provides a unified mechanism for reading data that is agnostic
+ *  of the underlying storage medium. Files can be accessed from the local disc
+ *  or through any of the protocols supported by cURL (https://curl.haxx.se/).
+ *  At the moment, it is only possible to write to a local file.
+ *
+ *  @link Resource Resources@endlink are particularly useful in combination
+ *  with serialization for storing and reading in TBTK objects. An empty
+ *  resource is created using
+ *  ```cpp
+ *    Resource resource;
+ *  ```
+ *  Once created, it is possible to read a serialized Model from file
+ *  ```cpp
+ *    resource.read("Model.json");
+ *  ```
+ *  or a URL
+ *  ```cpp
+ *    resource.read("http://www.second-quantization.com/v2/ExampleModel.json");
+ *  ```
+ *  Finally, we get the content of the resource using 'resource.getData()' and
+ *  can use it to reconstruct a Model from its serialization
+ *  ```cpp
+ *    Model model(resource.getData(), Serializable::Mode::JSON);
+ *  ```
+ *
+ *  # Example
+ *  \snippet Resource/Resource.cpp Resource
+ *  ## Output
+ *  \snippet output/Resource/Resource.txt Resource */
 class Resource{
 public:
 	/** Constructor. */
@@ -38,16 +70,27 @@ public:
 	/** Destructor. */
 	~Resource();
 
-	/** Set resource. */
+	/** Set the data of the Resource.
+	 *
+	 *  @param data The data the resource should contain. */
 	void setData(const std::string &data);
 
-	/** Get serialization. */
+	/** Get the data from the resource.
+	 *
+	 *  @return The content of the resource. */
 	const std::string& getData() const;
 
-	/** Write resource. */
+	/** Write the resource to destination. Currently the destination can
+	 *  only be a local file.
+	 *
+	 *  @param uri The unique resource identifier (URI) of the destination.
+	 *  Should be the name of the file when writing to a local file. */
 	void write(const std::string &uri);
 
-	/** Read resource. */
+	/** Read a resource from a source.
+	 *
+	 *  @param uri THE unique resource identifier (URI) of the source.
+	 *  Should be the name of the file when reading from a local file. */
 	void read(const std::string &uri);
 private:
 	/** Serialized resource. */
