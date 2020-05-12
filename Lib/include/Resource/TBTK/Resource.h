@@ -89,7 +89,7 @@ public:
 
 	/** Read a resource from a source.
 	 *
-	 *  @param uri THE unique resource identifier (URI) of the source.
+	 *  @param uri The unique resource identifier (URI) of the source.
 	 *  Should be the name of the file when reading from a local file. */
 	void read(const std::string &uri);
 private:
