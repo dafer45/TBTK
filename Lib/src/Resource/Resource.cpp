@@ -81,6 +81,7 @@ void Resource::read(const string &uri){
 		return;
 	}
 
+	data.clear();
 	CURL *easyHandle = curl_easy_init();
 	curl_easy_setopt(easyHandle, CURLOPT_URL, uri.c_str());
 	curl_easy_setopt(easyHandle, CURLOPT_WRITEFUNCTION, readCallback);
