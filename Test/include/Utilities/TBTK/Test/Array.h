@@ -404,6 +404,239 @@ TEST(Array, operatorComparison3){
 	EXPECT_FALSE(array0 == array1);
 }
 
+//TBTKFeature Utilities.Array.contract.1 2020-05-17
+TEST(Array, contract1){
+	Array<unsigned int> B({2, 3, 4, 5});
+	Array<unsigned int> C({4, 6, 3});
+	for(unsigned int i = 0; i < 2; i++)
+		for(unsigned int j = 0; j < 3; j++)
+			for(unsigned int k = 0; k < 2; k++)
+				for(unsigned int l = 0; l < 2; l++)
+					B[{i, j, k, l}] = i*j*k*l;
+	for(unsigned int i = 0; i < 4; i++)
+		for(unsigned int j = 0; j < 6; j++)
+			for(unsigned int k = 0; k < 5; k++)
+				C[{i, j, k}] = i*j*k;
+
+	Array<unsigned int> A = Array<unsigned int>::contract(
+		B,
+		{IDX_ALL, IDX_ALL_(1), IDX_ALL_(0), IDX_ALL},
+		C,
+		{IDX_ALL_(0), IDX_ALL, IDX_ALL_(1)}
+	);
+
+	const std::vector<unsigned int> &ranges = A.getRanges();
+	EXPECT_EQ(ranges.size(), 3);
+	EXPECT_EQ(ranges[0], 2);
+	EXPECT_EQ(ranges[1], 5);
+	EXPECT_EQ(ranges[2], 6);
+	for(unsigned int i = 0; i < 2; i++){
+		for(unsigned int j = 0; j < 5; j++){
+			for(unsigned int k = 0; k < 6; k++){
+				unsigned int result = 0;
+				for(unsigned int m = 0; m < 4; m++){
+					for(unsigned int n = 0; n < 3; n++){
+						result += B[{i, n, m, j}]*C[
+							{m, k, n}
+						];
+					}
+				}
+				EXPECT_EQ((A[{i, j, k}]), result);
+			}
+		}
+	}
+}
+
+//TBTKFeature Utilities.Array.contract.2 2020-05-17
+TEST(Array, contract2){
+	Array<unsigned int> B({2, 3, 4, 5});
+	Array<unsigned int> C({4, 6, 3});
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			Array<unsigned int> A = Array<unsigned int>::contract(
+				B,
+				{IDX_ALL, IDX_ALL_(0), IDX_ALL_(1), IDX_ALL},
+				C,
+				{IDX_ALL_(0), IDX_ALL, IDX_ALL_(1)}
+			);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+//TBTKFeature Utilities.Array.contract.3 2020-05-17
+TEST(Array, contract3){
+	Array<unsigned int> B({2, 3, 4, 5});
+	Array<unsigned int> C({4, 6, 3});
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			Array<unsigned int> A = Array<unsigned int>::contract(
+				B,
+				{IDX_ALL, IDX_ALL, IDX_ALL_(0), IDX_ALL},
+				C,
+				{IDX_ALL_(0), IDX_ALL, IDX_ALL_(1)}
+			);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+//TBTKFeature Utilities.Array.contract.4 2020-05-17
+TEST(Array, contract4){
+	Array<unsigned int> B({2, 3, 4, 5});
+	Array<unsigned int> C({4, 6, 3});
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			Array<unsigned int> A = Array<unsigned int>::contract(
+				B,
+				{IDX_ALL, IDX_ALL_(1), IDX_ALL_(0), IDX_ALL},
+				C,
+				{IDX_ALL_(0), IDX_ALL, IDX_ALL}
+			);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+//TBTKFeature Utilities.Array.contract.5 2020-05-17
+TEST(Array, contract5){
+	Array<unsigned int> B({2, 3, 4, 5});
+	Array<unsigned int> C({4, 6, 3});
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			Array<unsigned int> A = Array<unsigned int>::contract(
+				B,
+				{IDX_ALL, IDX_ALL_(1), IDX_ALL_(0), IDX_ALL},
+				C,
+				{IDX_ALL_(0), IDX_ALL, IDX_ALL_(2)}
+			);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+//TBTKFeature Utilities.Array.contract.6 2020-05-17
+TEST(Array, contract6){
+	Array<unsigned int> B({2, 3, 4, 5});
+	Array<unsigned int> C({4, 6, 3});
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			Array<unsigned int> A = Array<unsigned int>::contract(
+				B,
+				{IDX_ALL, IDX_ALL_(1), IDX_ALL_(0), IDX_ALL, IDX_ALL},
+				C,
+				{IDX_ALL_(0), IDX_ALL, IDX_ALL_(2)}
+			);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+//TBTKFeature Utilities.Array.contract.7 2020-05-17
+TEST(Array, contract7){
+	Array<unsigned int> B({2, 3, 4, 5});
+	Array<unsigned int> C({4, 6, 3});
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			Array<unsigned int> A = Array<unsigned int>::contract(
+				B,
+				{IDX_ALL, IDX_ALL_(1), IDX_ALL_(0), IDX_ALL},
+				C,
+				{IDX_ALL_(0), IDX_ALL, IDX_ALL_(2), IDX_ALL}
+			);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+//TBTKFeature Utilities.Array.contract.8 2020-05-17
+TEST(Array, contract8){
+	Array<unsigned int> B({2, 3, 4, 5});
+	Array<unsigned int> C({4, 6, 3});
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			Array<unsigned int> A = Array<unsigned int>::contract(
+				B,
+				{IDX_ALL, IDX_ALL_(1), IDX_ALL_(0), 0},
+				C,
+				{IDX_ALL_(0), IDX_ALL, IDX_ALL_(2), IDX_ALL}
+			);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+//TBTKFeature Utilities.Array.contract.9 2020-05-17
+TEST(Array, contract9){
+	Array<unsigned int> B({2, 3, 4, 5});
+	Array<unsigned int> C({4, 6, 3});
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			Array<unsigned int> A = Array<unsigned int>::contract(
+				B,
+				{IDX_ALL, IDX_ALL_(1), IDX_ALL_(0), IDX_ALL},
+				C,
+				{IDX_ALL_(0), IDX_ALL, IDX_ALL_(2), 0}
+			);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+//TBTKFeature Utilities.Array.contract.10 2020-05-17
+TEST(Array, contract10){
+	Array<unsigned int> B({2, 3, 4, 5});
+	Array<unsigned int> C({4, 6, 3});
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			Array<unsigned int> A = Array<unsigned int>::contract(
+				B,
+				{IDX_ALL, IDX_ALL_(0), IDX_ALL_(0), IDX_ALL},
+				C,
+				{IDX_ALL_(0), IDX_ALL, IDX_ALL_(1), 0}
+			);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+//TBTKFeature Utilities.Array.contract.11 2020-05-17
+TEST(Array, contract11){
+	Array<unsigned int> B({2, 3, 4, 5});
+	Array<unsigned int> C({4, 6, 3});
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			Array<unsigned int> A = Array<unsigned int>::contract(
+				B,
+				{IDX_ALL, IDX_ALL_(1), IDX_ALL_(0), IDX_ALL},
+				C,
+				{IDX_ALL_(0), IDX_ALL, IDX_ALL_(0), 0}
+			);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
 //TBTKFeature Utilities.Array.getSlice.1 2019-10-31
 TEST(Array, getSlice){
 	Array<unsigned int> array({2, 3, 4});

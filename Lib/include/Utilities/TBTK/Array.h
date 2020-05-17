@@ -245,6 +245,49 @@ public:
 	 *  right hand sides are equal, otherwise false. */
 	bool operator==(const Array &rhs) const;
 
+	/** Contract two @link Array Arrays @endlink by summing over one or
+	 *  more common indices.
+	 *
+	 *  \f$ A_{ijk} = \sum_{ab}B_{ijab}C_{akb}\f$
+	 *
+	 *  The function takes two @link Array Arrays
+	 *  @endlink and two patterns. The patterns must have the same number
+	 *  of @link Subindex Subindices @endlink as the corresponding Array
+	 *  and contain either wildcards or labeled wildcards (see Subindex).
+	 *
+	 *  Labeled wildcards in the two patterns are identified and the
+	 *  corresponding indices are summed over. The @link Subindex
+	 *  Subindices@endlink of the resulting Array is ordered in the same
+	 *  order as the original @link Array Arrays@endlink, with the @link
+	 *  Subindex Subindices@endlink of the first Array coming before those
+	 *  of the second.
+	 *
+	 *  If B and C are two @linkArray Arrays@endlink with four and three
+	 *  @link SUbindex Subindices@endlink each, the expression above is
+	 *  calculated using
+	 *  ```cpp
+	 *    Array<DataType> A = Array<DataType>::contract(
+	 *      B,
+	 *      {_a_, _a_, _aX_(0), _aX_(1)}},
+	 *      C,
+	 *      {_aX_(0), _a_, _aX_(1)}
+	 *    );
+	 *  ```
+	 *
+	 *  @param array0 The first array.
+	 *  @param pattern0 The pattern associated with the first Array.
+	 *  @param array1 The second Array.
+	 *  @param pattern1 The pattern associated with the second Array.
+	 *
+	 *  @return A new Array resulting from contracting the labled wildcards
+	 *  in the two Array. */
+	static Array contract(
+		const Array &array0,
+		const std::vector<Subindex> &pattern0,
+		const Array &array1,
+		const std::vector<Subindex> &pattern1
+	);
+
 	//TBTKFeature Utilities.Array.getSlice.1
 	/** Get a subset of the Array that results from setting one or multiple
 	 *  indices equal to given values.
@@ -611,6 +654,241 @@ inline bool Array<DataType>::operator==(const Array<DataType> &rhs) const{
 			return false;
 
 	return true;
+}
+
+template<typename DataType>
+Array<DataType> Array<DataType>::contract(
+	const Array &array0,
+	const std::vector<Subindex> &pattern0,
+	const Array &array1,
+	const std::vector<Subindex> &pattern1
+){
+	const std::vector<unsigned int> &ranges0 = array0.getRanges();
+	const std::vector<unsigned int> &ranges1 = array1.getRanges();
+	TBTKAssert(
+		ranges0.size() == pattern0.size(),
+		"Array::contract()",
+		"Incompatible pattern size. The number of elements in"
+		<< " 'pattern0' must be the same as the number of ranges in"
+		<< " 'array0', but 'pattern0' has '" << pattern0.size() << "'"
+		<< " elements while 'array0' has '"
+		<< ranges0.size() << "' ranges.",
+		""
+	);
+	TBTKAssert(
+		ranges1.size() == pattern1.size(),
+		"Array::contract()",
+		"Incompatible pattern size. The number of elements in"
+		<< " 'pattern1' must be the same as the number of ranges in"
+		<< " 'array1', but 'pattern1' has '" << pattern1.size() << "'"
+		<< " elements while 'array1' has '"
+		<< ranges1.size() << "' ranges.",
+		""
+	);
+	for(unsigned int n = 0; n < pattern0.size(); n++){
+		TBTKAssert(
+			pattern0[n].isWildcard()
+			|| pattern0[n].isLabeledWildcard(),
+			"Array::contract()",
+			"Invalid pattern. The patterns must only contain"
+			" wildcards or labeled wildcards, but found '"
+			<< pattern0[n] << "' in position '" << n << "' of"
+			<< " 'pattern0'.",
+			""
+		);
+	}
+	for(unsigned int n = 0; n < pattern1.size(); n++){
+		TBTKAssert(
+			pattern1[n].isWildcard()
+			|| pattern1[n].isLabeledWildcard(),
+			"Array::contract()",
+			"Invalid pattern. The patterns must only contain"
+			" wildcards or labeled wildcards, but found '"
+			<< pattern1[n] << "' in position '" << n << "' of"
+			<< " 'pattern1'.",
+			""
+		);
+	}
+
+	std::vector<unsigned int> summationIndices0;
+	std::vector<Subindex> wildcards0;
+	for(unsigned int n = 0; n < pattern0.size(); n++){
+		if(pattern0[n].isLabeledWildcard()){
+			summationIndices0.push_back(n);
+			wildcards0.push_back(pattern0[n]);
+		}
+	}
+	std::vector<unsigned int> summationIndices1;
+	std::vector<Subindex> wildcards1;
+	for(unsigned int n = 0; n < pattern1.size(); n++){
+		if(pattern1[n].isLabeledWildcard()){
+			summationIndices1.push_back(n);
+			wildcards1.push_back(pattern1[n]);
+		}
+	}
+
+	TBTKAssert(
+		wildcards0.size() == wildcards1.size(),
+		"Array::contract()",
+		"Incompatible patterns. The number of labeled wildcards are"
+		<< " different in 'pattern0' and 'pattern1'.",
+		""
+	);
+	for(unsigned int n = 0; n < wildcards0.size(); n++){
+		for(unsigned int c = n+1; c < wildcards0.size(); c++){
+			TBTKAssert(
+				wildcards0[n] != wildcards0[c],
+				"Array::contract()",
+				"Repeated labeled wildcard in 'pattern0'",
+				""
+			);
+		}
+	}
+	for(unsigned int n = 0; n < wildcards1.size(); n++){
+		for(unsigned int c = n+1; c < wildcards1.size(); c++){
+			TBTKAssert(
+				wildcards1[n] != wildcards1[c],
+				"Array::contract()",
+				"Repeated labeled wildcard in 'pattern1'",
+				""
+			);
+		}
+	}
+
+	std::vector<unsigned int> summationIndicesMap;
+	for(unsigned int n = 0; n < wildcards0.size(); n++){
+		for(unsigned int c = 0; c < wildcards1.size(); c++){
+			if(wildcards0[n] == wildcards1[c]){
+				summationIndicesMap.push_back(
+					summationIndices1[c]
+				);
+				break;
+			}
+		}
+		TBTKAssert(
+			summationIndicesMap.size() == n + 1,
+			"Array::contract()",
+			"Incompatible patterns. The labeled wildcard at"
+			<< " position '" << summationIndices0[n] << " in"
+			<< " 'pattern0' is missing in 'pattern1'.",
+			""
+		);
+	}
+
+	std::vector<unsigned int> summationRanges;
+	for(unsigned int n = 0; n < summationIndices0.size(); n++){
+		TBTKAssert(
+			ranges0[summationIndices0[n]]
+				== ranges1[summationIndicesMap[n]],
+			"Array::contract()",
+			"Incompatible summation indices. Unable to contract"
+			<< " the Subindex at position '"
+			<< summationIndices0[n] << "' in 'array0' with the"
+			<< " Subindex at position '" << summationIndicesMap[n]
+			<< "' in 'array1' since they have different range.",
+			""
+		);
+		summationRanges.push_back(ranges0[summationIndices0[n]]);
+	}
+
+	std::vector<unsigned int> resultRanges;
+	for(unsigned int n = 0; n < ranges0.size(); n++)
+		if(pattern0[n].isWildcard())
+			resultRanges.push_back(ranges0[n]);
+	for(unsigned int n = 0; n < ranges1.size(); n++)
+		if(pattern1[n].isWildcard())
+			resultRanges.push_back(ranges1[n]);
+
+	Array result = Array::create(resultRanges, 0);
+
+	std::vector<unsigned int> resultInitialValues(resultRanges.size(), 0);
+	std::vector<unsigned int> resultIncrements(resultRanges.size(), 1);
+	MultiCounter<unsigned int> resultCounter(
+		resultInitialValues,
+		resultRanges,
+		resultIncrements
+	);
+
+	std::vector<unsigned int> summationInitialValues(
+		summationRanges.size(),
+		0
+	);
+	std::vector<unsigned int> summationIncrements(
+		summationRanges.size(),
+		1
+	);
+	MultiCounter<unsigned int> summationCounter(
+		summationInitialValues,
+		summationRanges,
+		summationIncrements
+	);
+	std::vector<unsigned int> offsets0;
+	for(unsigned int n = 0; n < summationIndices0.size(); n++){
+		offsets0.push_back(1);
+		for(
+			unsigned int c = ranges0.size()-1;
+			c > summationIndices0[n];
+			c--
+		){
+			offsets0[n] *= ranges0[c];
+		}
+	}
+	std::vector<unsigned int> offsets1;
+	for(unsigned int n = 0; n < summationIndices0.size(); n++){
+		offsets1.push_back(1);
+		for(
+			unsigned int c = ranges1.size()-1;
+			c > summationIndicesMap[n];
+			c--
+		){
+			offsets1[n] *= ranges1[c];
+		}
+	}
+	for(resultCounter.reset(); !resultCounter.done(); ++resultCounter){
+		std::vector<unsigned int> resultIndex
+			= (std::vector<unsigned int>)resultCounter;
+		for(
+			summationCounter.reset();
+			!summationCounter.done();
+			++summationCounter
+		){
+			std::vector<unsigned int> index0(
+				resultIndex.begin(),
+				resultIndex.begin() + ranges0.size()
+					- summationIndices0.size()
+			);
+			std::vector<unsigned int> index1(
+				resultIndex.begin() + ranges0.size()
+					- summationIndices0.size(),
+				resultIndex.end()
+			);
+			for(
+				unsigned int n = 0;
+				n < summationCounter.getSize();
+				n++
+			){
+				index1.insert(
+					index1.begin() + summationIndices1[n],
+					0
+				);
+			}
+			for(
+				unsigned int n = 0;
+				n < summationCounter.getSize();
+				n++
+			){
+				index0.insert(
+					index0.begin() + summationIndices0[n],
+					summationCounter[n]
+				);
+				index1[summationIndicesMap[n]]
+					= summationCounter[n];
+			}
+			result[resultCounter] += array0[index0]*array1[index1];
+		}
+	}
+
+	return result;
 }
 
 template<typename DataType>
