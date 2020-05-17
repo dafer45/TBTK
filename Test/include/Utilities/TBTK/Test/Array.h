@@ -346,6 +346,164 @@ TEST(Array, operatorMultiplication1){
 			EXPECT_EQ((product[{i, j}]), 3*(i + 2*j));
 }
 
+//TBTKFeature Utilities.Array.operatorMultiplication.3 2020-05-17
+TEST(Array, operatorMultiplication3){
+	Array<unsigned int> u({3});
+	Array<unsigned int> v({3});
+	for(unsigned int n = 0; n < 3; n++){
+		u[{n}] = n;
+		v[{n}] = 2*n;
+	}
+	Array<unsigned int> s = u*v;
+
+	const std::vector<unsigned int> &ranges = s.getRanges();
+	EXPECT_EQ(ranges.size(), 1);
+	EXPECT_EQ(ranges[0], 1);
+	EXPECT_EQ(s[{0}], 10);
+}
+
+//TBTKFeature Utilities.Array.operatorMultiplication.4 2020-05-17
+TEST(Array, operatorMultiplication4){
+	Array<unsigned int> u({3});
+	Array<unsigned int> v({4});
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			u*v;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+//TBTKFeature Utilities.Array.operatorMultiplication.5 2020-05-17
+TEST(Array, operatorMultiplication5){
+	Array<unsigned int> u({3});
+	Array<unsigned int> M({3, 2});
+	for(unsigned int n = 0; n < 3; n++){
+		u[{n}] = n;
+		for(unsigned int c = 0; c < 2; c++)
+			M[{n, c}] = n*(c+1);
+	}
+	Array<unsigned int> w = u*M;
+
+	const std::vector<unsigned int> &ranges = w.getRanges();
+	EXPECT_EQ(ranges.size(), 1);
+	EXPECT_EQ(ranges[0], 2);
+	EXPECT_EQ(w[{0}], 5);
+	EXPECT_EQ(w[{1}], 10);
+}
+
+//TBTKFeature Utilities.Array.operatorMultiplication.6 2020-05-17
+TEST(Array, operatorMultiplication6){
+	Array<unsigned int> u({3});
+	Array<unsigned int> M({4, 3});
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			u*M;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+//TBTKFeature Utilities.Array.operatorMultiplication.7 2020-05-17
+TEST(Array, operatorMultiplication7){
+	Array<unsigned int> u({3});
+	Array<unsigned int> M({2, 3});
+	for(unsigned int n = 0; n < 3; n++){
+		u[{n}] = n;
+		for(unsigned int c = 0; c < 2; c++)
+			M[{c, n}] = n*(c+1);
+	}
+	Array<unsigned int> w = M*u;
+
+	const std::vector<unsigned int> &ranges = w.getRanges();
+	EXPECT_EQ(ranges.size(), 1);
+	EXPECT_EQ(ranges[0], 2);
+	EXPECT_EQ(w[{0}], 5);
+	EXPECT_EQ(w[{1}], 10);
+}
+
+//TBTKFeature Utilities.Array.operatorMultiplication.8 2020-05-17
+TEST(Array, operatorMultiplication8){
+	Array<unsigned int> u({3});
+	Array<unsigned int> M({3, 4});
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			M*u;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+//TBTKFeature Utilities.Array.operatorMultiplication.9 2020-05-17
+TEST(Array, operatorMultiplication9){
+	Array<unsigned int> M({2, 3});
+	Array<unsigned int> N({3, 4});
+	for(unsigned int n = 0; n < 2; n++)
+		for(unsigned int c = 0; c < 3; c++)
+			M[{n, c}] = (n+1)*c;
+	for(unsigned int n = 0; n < 3; n++)
+		for(unsigned int c = 0; c < 4; c++)
+			N[{n, c}] = (n+1)*(c+1);
+
+	Array<unsigned int> A = M*N;
+
+	const std::vector<unsigned int> &ranges = A.getRanges();
+	EXPECT_EQ(ranges.size(), 2);
+	EXPECT_EQ(ranges[0], 2);
+	EXPECT_EQ(ranges[1], 4);
+	for(unsigned int n = 0; n < 2; n++)
+		for(unsigned int c = 0; c < 4; c++)
+			EXPECT_EQ((A[{n, c}]), 8*(n+1)*(c+1));
+}
+
+//TBTKFeature Utilities.Array.operatorMultiplication.10 2020-05-17
+TEST(Array, operatorMultiplication10){
+	Array<unsigned int> M({2, 3});
+	Array<unsigned int> N({4, 4});
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			M*N;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+//TBTKFeature Utilities.Array.operatorMultiplication.11 2020-05-17
+TEST(Array, operatorMultiplication11){
+	Array<unsigned int> u({2});
+	Array<unsigned int> N({2, 3, 4});
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			u*N;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+//TBTKFeature Utilities.Array.operatorMultiplication.12 2020-05-17
+TEST(Array, operatorMultiplication12){
+	Array<unsigned int> u({4});
+	Array<unsigned int> N({2, 3, 4});
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			N*u;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
 //TBTKFeature Utilities.Array.operatorDivision.1 2019-10-31
 TEST(Array, operatorDivision0){
 	Array<unsigned int> array({2, 3});
@@ -635,6 +793,30 @@ TEST(Array, contract11){
 		::testing::ExitedWithCode(1),
 		""
 	);
+}
+
+//TBTKFeature Utilities.Array.contract.12 2020-05-17
+TEST(Array, contract12){
+	Array<unsigned int> B({2, 3});
+	Array<unsigned int> C({3, 2});
+	double contraction = 0;
+	for(unsigned int i = 0; i < 2; i++){
+		for(unsigned int j = 0; j < 3; j++){
+			B[{i, j}] = i+j;
+			C[{j, i}] = i+2*j;
+			contraction += (i+j)*(i+2*j);
+		}
+	}
+	Array<unsigned int> A = Array<unsigned int>::contract(
+		B,
+		{IDX_ALL_(0), IDX_ALL_(1)},
+		C,
+		{IDX_ALL_(1), IDX_ALL_(0)}
+	);
+	const std::vector<unsigned int> &ranges = A.getRanges();
+	EXPECT_EQ(ranges.size(), 1);
+	EXPECT_EQ(ranges[0], 1);
+	EXPECT_EQ(A[{0}], contraction);
 }
 
 //TBTKFeature Utilities.Array.getSlice.1 2019-10-31

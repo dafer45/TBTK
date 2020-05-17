@@ -229,6 +229,42 @@ public:
 		return result;
 	}
 
+	/** Multiplication operator. Multiplies two @link Array Arrays@endlink
+	 *  of rank one or two. If \f$u_i\f$ and \f$v_i\f$ are @link Array
+	 *  Arrays@endlink with a single Subindex and \f$M_{ij}\f$ and
+	 *  \f$N_{ij}\f$ are @link Array Arrays@endlink with two @link Subindex
+	 *  Subindices@endlink, the possible products are
+	 *
+	 *  **Rank 1 times rank 1:**
+	 *
+	 *  \f$\sum_{i}u_{i}v_{i}\f$
+	 *
+	 *  The result is an Array with rank 1 and a single element.
+	 *
+	 *  **Rank 1 times rank 2:**
+	 *
+	 *  \f$\sum_{i}u_{i}M_{ij}\f$
+	 *
+	 *  The result is an Array with rank 1.
+	 *
+	 *  **Rank 2 times rank 1:**
+	 *
+	 *  \f$\sum_{j}M_{ij}u_{j}\f$
+	 *
+	 *  The result is an Array with rank 1.
+	 *
+	 *  **Rank 2 times rank 2:**
+	 *
+	 *  \f$\sum_{j}M_{ij}N_{jk}\f$
+	 *
+	 *  The result is an Array with rank 2.
+	 *
+	 *  @param rhs The right hand side of the expression.
+	 *
+	 *  @return An Array containing the product of the two @link Array
+	 *  Arrays@endlink. */
+	Array operator*(const Array &rhs) const;
+
 	//TBTKFeature Utilities.Array.operatorDivision.1 2019-10-31
 	/** Division operator.
 	 *
@@ -633,6 +669,73 @@ inline Array<DataType> Array<DataType>::operator*(
 }
 
 template<typename DataType>
+Array<DataType> Array<DataType>::operator*(const Array<DataType> &rhs) const{
+	switch(ranges.size()){
+	case 1:
+		switch(rhs.ranges.size()){
+		case 1:
+			return contract(
+				*this,
+				{IDX_ALL_(0)},
+				rhs,
+				{IDX_ALL_(0)}
+			);
+		case 2:
+			return contract(
+				*this,
+				{IDX_ALL_(0)},
+				rhs,
+				{IDX_ALL_(0), IDX_ALL}
+			);
+		default:
+			TBTKExit(
+				"Array::operator*()",
+				"Unsupported Array rank. Multiplication is"
+				<< " only possible for Arrays of rank one or"
+				<< " two, but the left hand side has rank '"
+				<< ranges.size() << "'.",
+				""
+			);
+		}
+	case 2:
+		switch(rhs.ranges.size()){
+		case 1:
+			return contract(
+				*this,
+				{IDX_ALL, IDX_ALL_(0)},
+				rhs,
+				{IDX_ALL_(0)}
+			);
+		case 2:
+			return contract(
+				*this,
+				{IDX_ALL, IDX_ALL_(0)},
+				rhs,
+				{IDX_ALL_(0), IDX_ALL}
+			);
+		default:
+			TBTKExit(
+				"Array::operator*()",
+				"Unsupported Array rank. Multiplication is"
+				<< " only possible for Arrays of rank one or"
+				<< " two, but the left hand side has rank '"
+				<< ranges.size() << "'.",
+				""
+			);
+		}
+	default:
+		TBTKExit(
+			"Array::operator*()",
+			"Unsupported Array rank. Multiplication is only"
+			<< " possible for Arrays of rank one or two, but the"
+			<< " left hand side has rank '" << ranges.size()
+			<< "'.",
+			""
+		);
+	}
+}
+
+template<typename DataType>
 inline Array<DataType> Array<DataType>::operator/(const DataType &rhs) const{
 	Array<DataType> result = Array<DataType>::create(ranges);
 	for(unsigned int n = 0; n < data.getSize(); n++)
@@ -799,92 +902,119 @@ Array<DataType> Array<DataType>::contract(
 		if(pattern1[n].isWildcard())
 			resultRanges.push_back(ranges1[n]);
 
-	Array result = Array::create(resultRanges, 0);
+	Array result;
+	if(resultRanges.size() == 0){
+		result = Array({1}, 0);
 
-	std::vector<unsigned int> resultInitialValues(resultRanges.size(), 0);
-	std::vector<unsigned int> resultIncrements(resultRanges.size(), 1);
-	MultiCounter<unsigned int> resultCounter(
-		resultInitialValues,
-		resultRanges,
-		resultIncrements
-	);
-
-	std::vector<unsigned int> summationInitialValues(
-		summationRanges.size(),
-		0
-	);
-	std::vector<unsigned int> summationIncrements(
-		summationRanges.size(),
-		1
-	);
-	MultiCounter<unsigned int> summationCounter(
-		summationInitialValues,
-		summationRanges,
-		summationIncrements
-	);
-	std::vector<unsigned int> offsets0;
-	for(unsigned int n = 0; n < summationIndices0.size(); n++){
-		offsets0.push_back(1);
-		for(
-			unsigned int c = ranges0.size()-1;
-			c > summationIndices0[n];
-			c--
-		){
-			offsets0[n] *= ranges0[c];
-		}
-	}
-	std::vector<unsigned int> offsets1;
-	for(unsigned int n = 0; n < summationIndices0.size(); n++){
-		offsets1.push_back(1);
-		for(
-			unsigned int c = ranges1.size()-1;
-			c > summationIndicesMap[n];
-			c--
-		){
-			offsets1[n] *= ranges1[c];
-		}
-	}
-	for(resultCounter.reset(); !resultCounter.done(); ++resultCounter){
-		std::vector<unsigned int> resultIndex
-			= (std::vector<unsigned int>)resultCounter;
+		std::vector<unsigned int> summationInitialValues(
+			summationRanges.size(),
+			0
+		);
+		std::vector<unsigned int> summationIncrements(
+			summationRanges.size(),
+			1
+		);
+		MultiCounter<unsigned int> summationCounter(
+			summationInitialValues,
+			summationRanges,
+			summationIncrements
+		);
 		for(
 			summationCounter.reset();
 			!summationCounter.done();
 			++summationCounter
 		){
 			std::vector<unsigned int> index0(
-				resultIndex.begin(),
-				resultIndex.begin() + ranges0.size()
-					- summationIndices0.size()
+				summationCounter.getSize()
 			);
 			std::vector<unsigned int> index1(
-				resultIndex.begin() + ranges0.size()
-					- summationIndices0.size(),
-				resultIndex.end()
+				summationCounter.getSize()
 			);
 			for(
 				unsigned int n = 0;
 				n < summationCounter.getSize();
 				n++
 			){
-				index1.insert(
-					index1.begin() + summationIndices1[n],
-					0
-				);
-			}
-			for(
-				unsigned int n = 0;
-				n < summationCounter.getSize();
-				n++
-			){
-				index0.insert(
-					index0.begin() + summationIndices0[n],
-					summationCounter[n]
-				);
+				index0[summationIndices0[n]]
+					= summationCounter[n];
 				index1[summationIndicesMap[n]]
 					= summationCounter[n];
 			}
-			result[resultCounter] += array0[index0]*array1[index1];
+			result[{0}] += array0[index0]*array1[index1];
+		}
+	}
+	else{
+		result = Array::create(resultRanges, 0);
+
+		std::vector<unsigned int> resultInitialValues(
+			resultRanges.size(),
+			0
+		);
+		std::vector<unsigned int> resultIncrements(
+			resultRanges.size(),
+			1
+		);
+		MultiCounter<unsigned int> resultCounter(
+			resultInitialValues,
+			resultRanges,
+			resultIncrements
+		);
+
+		std::vector<unsigned int> summationInitialValues(
+		summationRanges.size(),
+		0
+		);
+		std::vector<unsigned int> summationIncrements(
+			summationRanges.size(),
+			1
+		);
+		MultiCounter<unsigned int> summationCounter(
+			summationInitialValues,
+			summationRanges,
+			summationIncrements
+		);
+		for(resultCounter.reset(); !resultCounter.done(); ++resultCounter){
+			std::vector<unsigned int> resultIndex
+				= (std::vector<unsigned int>)resultCounter;
+			for(
+				summationCounter.reset();
+				!summationCounter.done();
+				++summationCounter
+			){
+				std::vector<unsigned int> index0(
+					resultIndex.begin(),
+					resultIndex.begin() + ranges0.size()
+						- summationIndices0.size()
+				);
+				std::vector<unsigned int> index1(
+					resultIndex.begin() + ranges0.size()
+						- summationIndices0.size(),
+					resultIndex.end()
+				);
+				for(
+					unsigned int n = 0;
+					n < summationCounter.getSize();
+					n++
+				){
+					index1.insert(
+						index1.begin() + summationIndices1[n],
+						0
+					);
+				}
+				for(
+					unsigned int n = 0;
+					n < summationCounter.getSize();
+					n++
+				){
+					index0.insert(
+						index0.begin() + summationIndices0[n],
+						summationCounter[n]
+					);
+					index1[summationIndicesMap[n]]
+						= summationCounter[n];
+				}
+				result[resultCounter] += array0[index0]*array1[index1];
+			}
 		}
 	}
 
