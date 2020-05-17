@@ -62,3 +62,6 @@
   make more sense. Check whether changing this breaks anything and change if
   not. Update PropertyConverter::convert() to not have to perform the
   conversion from ranges to rangesUnsignedInt once this is fixed.
+
+- Array::contract() can probably be made a lot more efficient that the current
+  implementation.

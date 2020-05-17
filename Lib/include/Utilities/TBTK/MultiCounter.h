@@ -79,6 +79,11 @@ public:
 	 *  @return True if the counter has reached the end, otherwise false.
 	 */
 	bool done() const;
+
+	/** Get the number of counters.
+	 *
+	 *  @return The number of counters. */
+	unsigned int getSize() const;
 private:
 	/** Values at which the iteration begins. */
 	std::vector<DataType> begin;
@@ -173,6 +178,11 @@ inline void MultiCounter<DataType>::reset(){
 template<typename DataType>
 inline bool MultiCounter<DataType>::done() const{
 	return counter[0] >= end[0];
+}
+
+template<typename DataType>
+inline unsigned int MultiCounter<DataType>::getSize() const{
+	return begin.size();
 }
 
 }; //End of namesapce TBTK

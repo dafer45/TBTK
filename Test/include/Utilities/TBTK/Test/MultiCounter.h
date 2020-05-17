@@ -4,7 +4,7 @@
 
 namespace TBTK{
 
-//TBTKFeature Utilities.Array.construction.1 2019-11-02
+//TBTKFeature Utilities.MultiCounter.construction.1 2019-11-02
 TEST(MultiCounter, construction1){
 	MultiCounter<unsigned int> multiCounter(
 		{0, 1, 2},
@@ -16,7 +16,7 @@ TEST(MultiCounter, construction1){
 	EXPECT_EQ(multiCounter[2], 2);
 }
 
-//TBTKFeature Utilities.Array.operatorIncrement.1 2019-11-02
+//TBTKFeature Utilities.MultiCounter.operatorIncrement.1 2019-11-02
 TEST(MultiCounter, operatorIncrement1){
 	MultiCounter<unsigned int> multiCounter(
 		{0, 1, 2},
@@ -35,7 +35,7 @@ TEST(MultiCounter, operatorIncrement1){
 	}
 }
 
-//TBTKFeature Utilities.Array.operatorStdVector.1 2019-12-02
+//TBTKFeature Utilities.MultiCounter.operatorStdVector.1 2019-12-02
 TEST(MultiCounter, operatorStdVector1){
 	MultiCounter<unsigned int> multiCounter(
 		{0, 1, 2},
@@ -55,7 +55,7 @@ TEST(MultiCounter, operatorStdVector1){
 	}
 }
 
-//TBTKFeature Utilities.Array.reset.1 2019-11-02
+//TBTKFeature Utilities.MultiCounter.reset.1 2019-11-02
 TEST(MultiCounter, reset1){
 	MultiCounter<unsigned int> multiCounter(
 		{0, 1, 2},
@@ -69,7 +69,7 @@ TEST(MultiCounter, reset1){
 	EXPECT_EQ(multiCounter[2], 2);
 }
 
-//TBTKFeature Utilities.Array.deon.1 2019-11-02
+//TBTKFeature Utilities.MultiCounter.done.1 2019-11-02
 TEST(MultiCounter, done1){
 	MultiCounter<unsigned int> multiCounter(
 		{0, 1, 2},
@@ -85,6 +85,16 @@ TEST(MultiCounter, done1){
 		}
 	}
 	EXPECT_TRUE(multiCounter.done());
+}
+
+//TBTKFeature Utilities.MultiCounter.getSize.1 2020-05-17
+TEST(MultiCounter, getSize1){
+	MultiCounter<unsigned int> multiCounter(
+		{0, 1, 2},
+		{5, 7, 8},
+		{1, 2, 3}
+	);
+	EXPECT_EQ(multiCounter.getSize(), 3);
 }
 
 };
