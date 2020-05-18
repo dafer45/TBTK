@@ -148,6 +148,14 @@ public:
 		const DataType &fillValue
 	);
 
+	/** Type cast operator. Creates a copy of the Array with the data type
+	 *  changed to the cast type.
+	 *
+	 *  @return A new Array with the data type of the elements changed to
+	 *  CastType. */
+	template<typename CastType>
+	operator Array<CastType>() const;
+
 	//TBTKFeature Utilities.Array.operatorArraySubscript.1 2019-10-31
 	/** Array subscript operator.
 	 *
@@ -591,6 +599,17 @@ Array<DataType> Array<DataType>::create(
 		array.data[n] = fillValue;
 
 	return array;
+}
+
+template<typename DataType>
+template<typename CastType>
+inline Array<DataType>::operator Array<CastType>() const{
+	Array<CastType> result = Array<CastType>::create(ranges);
+	CArray<CastType> &resultData = result.getData();
+	for(unsigned int n = 0; n < data.getSize(); n++)
+		resultData[n] = (CastType)data[n];
+
+	return result;
 }
 
 template<typename DataType>

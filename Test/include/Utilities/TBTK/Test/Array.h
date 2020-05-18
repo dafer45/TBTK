@@ -144,6 +144,26 @@ TEST(Array, create2){
 				EXPECT_EQ((array0[{i, j, k}]), (array1[{i, j, k}]));
 }
 
+//TBTKFeature Utilities.Array.operatorTypeCast.1 2020-05-18
+TEST(Array, operatorTypeCast1){
+	Array<unsigned int> array0({2, 3, 4});
+	for(unsigned int i = 0; i < 2; i++)
+		for(unsigned int j = 0; j < 3; j++)
+			for(unsigned int k = 0; k < 4; k++)
+				array0[{i, j, k}] = i*j*k;
+
+	Array<int> array1 = array0;
+	const std::vector<unsigned int> &ranges = array1.getRanges();
+	EXPECT_EQ(ranges.size(), 3);
+	EXPECT_EQ(ranges[0], 2);
+	EXPECT_EQ(ranges[1], 3);
+	EXPECT_EQ(ranges[2], 4);
+	for(unsigned int i = 0; i < 2; i++)
+		for(unsigned int j = 0; j < 3; j++)
+			for(unsigned int k = 0; k < 4; k++)
+				EXPECT_EQ((array1[{i, j, k}]), (int)(i*j*k));
+}
+
 //TBTKFeature Utilities.Array.operatorArraySubscript.1 2019-10-31
 TEST(Array, operatorArraySubscript0){
 	Array<unsigned int> array({2, 3});
