@@ -91,6 +91,19 @@ TEST(Array, constructor5){
 	);
 }
 
+//TBTKFeature Utilities.Array.construction.7 2020-05-19
+TEST(Array, construction6){
+	for(unsigned int n = 0; n < 4; n++){
+		Range range(1, 2, 10, (bool)(n%2), (bool)(n/2));
+		Array<double> array = range;
+		const std::vector<unsigned int> &ranges = array.getRanges();
+		EXPECT_EQ(ranges.size(), 1);
+		EXPECT_EQ(ranges[0], 10);
+		for(unsigned int c = 0; c < ranges[0]; c++)
+			EXPECT_EQ(array[{c}], range[c]);
+	}
+}
+
 //TBTKFeature Utilities.Array.serializeToJSON.1 2020-02-03
 TEST(Array, serializeToJSON1){
 	Array<unsigned int> array({2, 4});

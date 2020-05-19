@@ -26,6 +26,7 @@
 #include "TBTK/CArray.h"
 #include "TBTK/Index.h"
 #include "TBTK/MultiCounter.h"
+#include "TBTK/Range.h"
 #include "TBTK/Serializable.h"
 #include "TBTK/TBTKMacros.h"
 
@@ -125,6 +126,16 @@ public:
 	 *
 	 *  @param vector The std::vector to copy from. */
 	Array(const std::vector<std::vector<DataType>> &vector);
+
+	/** Construct an Array from a Range. The created Array has the same
+	 *  number of elements as the resolution of the Range. The elements are
+	 *  initialized so that the first and last elements corresponds to the
+	 *  upper and lower bound of the range, and the intermediate values are
+	 *  equispaced between these bounds.
+	 *
+	 *  @param range A Range object that specifies the number of elements
+	 *  and lower and upper bound. */
+	Array(const Range &range);
 
 	/** Constructs an Array from a serialization string.
 	 *
@@ -521,6 +532,14 @@ Array<DataType>::Array(const std::vector<std::vector<DataType>> &vector){
 	for(unsigned int x = 0; x < ranges[0]; x++)
 		for(unsigned int y = 0; y < ranges[1]; y++)
 			data[ranges[1]*x + y] = vector[x][y];
+}
+
+template<typename DataType>
+Array<DataType>::Array(const Range &range){
+	ranges.push_back(range.getResolution());
+	data = CArray<DataType>(range.getResolution());
+	for(unsigned int n = 0; n < range.getResolution(); n++)
+		data[n] = (DataType)range[n];
 }
 
 template<typename DataType>
