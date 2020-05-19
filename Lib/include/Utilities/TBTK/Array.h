@@ -33,6 +33,12 @@
 
 namespace TBTK{
 
+//Forward declation
+namespace Math{
+	template<typename DataType>
+	class ArrayAlgorithms;
+}; //End of namespace Math
+
 /** @brief Multi-dimensional array.
  *
  *  The Array provides a convenient interface for handling multi-dimensional
@@ -418,6 +424,9 @@ private:
 		const Array &array,
 		std::string functionName
 	) const;
+
+	/** Friend class. */
+	friend class Math::ArrayAlgorithms<DataType>;
 };
 
 template<typename DataType>
