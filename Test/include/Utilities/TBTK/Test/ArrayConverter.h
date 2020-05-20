@@ -122,4 +122,52 @@ TEST(Array, splitRowsToVector3d1){
 	);
 }
 
+//TBTKFeature Utilities.ArrayConverter.toArray.0 2020-05-20
+TEST(Array, toArray){
+	Array<double> array = ArrayConverter::toArray(Vector3d({0, 1, 2}));
+	const std::vector<unsigned int> &ranges = array.getRanges();
+	EXPECT_EQ(ranges.size(), 1);
+	EXPECT_EQ(ranges[0], 3);
+	for(unsigned int n = 0; n < ranges[0]; n++)
+		EXPECT_EQ(array[{n}], n);
+}
+
+//TBTKFeature Utilities.ArrayConverter.toVector3d.0 2020-05-20
+TEST(Array, toVector3d0){
+	Array<double> array({3});
+	for(unsigned int n = 0; n < 3; n++)
+		array[{n}] = n;
+
+	Vector3d v = ArrayConverter::toVector3d(array);
+	EXPECT_EQ(v.x, 0);
+	EXPECT_EQ(v.y, 1);
+	EXPECT_EQ(v.z, 2);
+}
+
+//TBTKFeature Utilities.ArrayConverter.toVector3d.1 2020-05-20
+TEST(Array, toVector3d1){
+	Array<double> array({3, 3});
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			ArrayConverter::toVector3d(array);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+//TBTKFeature Utilities.ArrayConverter.toVector3d.2 2020-05-20
+TEST(Array, toVector3d2){
+	Array<double> array({4});
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			ArrayConverter::toVector3d(array);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
 };
