@@ -231,6 +231,12 @@ public:
 	 *  @return The sum of the left and right hand side. */
 	Array operator-(const Array &rhs) const;
 
+	/** Negative operator.
+	 *
+	 *  @return An Array with all elements the negative of the original
+	 *  one. */
+	Array operator-() const;
+
 	//TBTKFeature Utilities.Array.operatorMultiplication.1 2019-10-31
 	/** Multiplication operator.
 	 *
@@ -700,6 +706,15 @@ inline Array<DataType> Array<DataType>::operator-(
 	Array<DataType> result = Array<DataType>::create(ranges);
 	for(unsigned int n = 0; n < data.getSize(); n++)
 		result.data[n] = data[n] - rhs.data[n];
+
+	return result;
+}
+
+template<typename DataType>
+inline Array<DataType> Array<DataType>::operator-() const{
+	Array<DataType> result = Array<DataType>::create(ranges);
+	for(unsigned int n = 0; n < data.getSize(); n++)
+		result.data[n] = -data[n];
 
 	return result;
 }

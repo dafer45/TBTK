@@ -353,6 +353,28 @@ TEST(Array, operatorSubtraction2){
 	);
 }
 
+//TBTKFeature Utilities.Array.operatorNegative.1 2020-05-24
+TEST(Array, operatorNegative){
+	Array<int> array({2, 3});
+	for(int n = 0; n < 2; n++)
+		for(int c = 0; c < 3; c++)
+			array[{(unsigned int)n, (unsigned int)c}] = 3*n + c;
+
+	Array<int> result = -array;
+	const std::vector<unsigned int> &ranges = result.getRanges();
+	EXPECT_EQ(ranges.size(), 2);
+	EXPECT_EQ(ranges[0], 2);
+	EXPECT_EQ(ranges[1], 3);
+	for(int n = 0; n < 2; n++){
+		for(int c = 0; c < 3; c++){
+			EXPECT_EQ(
+				(result[{(unsigned int)n, (unsigned int)c}]),
+				-(3*n + c)
+			);
+		}
+	}
+}
+
 //TBTKFeature Utilities.Array.operatorMultiplication.1 2019-10-31
 TEST(Array, operatorMultiplication0){
 	Array<unsigned int> array({2, 3});
