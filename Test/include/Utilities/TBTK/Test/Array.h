@@ -227,6 +227,69 @@ TEST(Array, operatorArraySubscript3){
 			EXPECT_EQ(constArray[3*i + j], i + 2*j);
 }
 
+//TBTKFeature Utilities.Array.operatorAdditionEquality.1 2020-05-25
+TEST(Array, operatorAdditionEquality1){
+	Array<unsigned int> array0({2, 3});
+	Array<unsigned int> array1({2, 3});
+	for(unsigned int i = 0; i < 2; i++){
+		for(unsigned int j = 0; j < 3; j++){
+			array0[{i, j}] = i;
+			array1[{i, j}] = 2*j;
+		}
+	}
+
+	array0 += array1;
+	for(unsigned int i = 0; i < 2; i++)
+		for(unsigned int j = 0; j < 3; j++)
+			EXPECT_EQ((array0[{i, j}]), i + 2*j);
+}
+
+//TBTKFeature Utilities.Array.operatorAdditionEquality.2 2020-05-25
+TEST(Array, operatorAdditionEquality2){
+	Array<unsigned int> array0({2, 3});
+	Array<unsigned int> array1({2, 3, 4});
+
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			array0 += array1;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			array1 += array0;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+//TBTKFeature Utilities.Array.operatorAdditionEquality.3 2020-05-25
+TEST(Array, operatorAddition3){
+	Array<unsigned int> array0({2, 3});
+	Array<unsigned int> array1({2, 4});
+
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			array0 += array1;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			array1 += array0;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
 //TBTKFeature Utilities.Array.operatorAddition.1 2019-10-31
 TEST(Array, operatorAddition0){
 	Array<unsigned int> array0({2, 3});
@@ -284,6 +347,69 @@ TEST(Array, operatorAddition2){
 		{
 			Streams::setStdMuteErr();
 			array1 + array0;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+//TBTKFeature Utilities.Array.operatorSubtractionEquality.1 2020-05-25
+TEST(Array, operatorSubtractionEquality0){
+	Array<int> array0({2, 3});
+	Array<int> array1({2, 3});
+	for(unsigned int i = 0; i < 2; i++){
+		for(unsigned int j = 0; j < 3; j++){
+			array0[{i, j}] = i;
+			array1[{i, j}] = 2*j;
+		}
+	}
+
+	array0 -= array1;
+	for(unsigned int i = 0; i < 2; i++)
+		for(unsigned int j = 0; j < 3; j++)
+			EXPECT_EQ((array0[{i, j}]), (int)i - (int)2*j);
+}
+
+//TBTKFeature Utilities.Array.operatorSubtractionEquality.2 2020-05-25
+TEST(Array, operatorSubtractionEquality1){
+	Array<int> array0({2, 3});
+	Array<int> array1({2, 3, 4});
+
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			array0 -= array1;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			array1 -= array0;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+//TBTKFeature Utilities.Array.operatorSubtractionEquality.3 2020-05-25
+TEST(Array, operatorSubtractionEqiality2){
+	Array<int> array0({2, 3});
+	Array<int> array1({2, 4});
+
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			array0 -= array1;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			array1 -= array0;
 		},
 		::testing::ExitedWithCode(1),
 		""
@@ -373,6 +499,19 @@ TEST(Array, operatorNegative){
 			);
 		}
 	}
+}
+
+//TBTKFeature Utilities.Array.operatorMultiplicationEquality.1 2020-05-25
+TEST(Array, operatorMultiplicationEquality0){
+	Array<unsigned int> array({2, 3});
+	for(unsigned int i = 0; i < 2; i++)
+		for(unsigned int j = 0; j < 3; j++)
+			array[{i, j}] = i + 2*j;
+
+	array *= 3;
+	for(unsigned int i = 0; i < 2; i++)
+		for(unsigned int j = 0; j < 3; j++)
+			EXPECT_EQ((array[{i, j}]), 3*(i + 2*j));
 }
 
 //TBTKFeature Utilities.Array.operatorMultiplication.1 2019-10-31
@@ -570,6 +709,19 @@ TEST(Array, operatorDivision0){
 	for(unsigned int i = 0; i < 2; i++)
 		for(unsigned int j = 0; j < 3; j++)
 			EXPECT_EQ((product[{i, j}]), (i + 2*j)/3);
+}
+
+//TBTKFeature Utilities.Array.operatorDivisionEquality.1 2020-05-25
+TEST(Array, operatorDivisionEquality0){
+	Array<unsigned int> array({2, 3});
+	for(unsigned int i = 0; i < 2; i++)
+		for(unsigned int j = 0; j < 3; j++)
+			array[{i, j}] = i + 2*j;
+
+	array /= 3;
+	for(unsigned int i = 0; i < 2; i++)
+		for(unsigned int j = 0; j < 3; j++)
+			EXPECT_EQ((array[{i, j}]), (i + 2*j)/3);
 }
 
 //TBTKFeature Utilities.Array.operatorComparison.1 2019-11-26

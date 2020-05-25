@@ -211,6 +211,13 @@ public:
 	 *  @return The value of entry n. */
 	const DataType& operator[](unsigned int n) const;
 
+	/** Addition equality operator.
+	 *
+	 *  @param rhs The right hand side of the expression.
+	 *
+	 *  @return The Array after the right hand side has been added. */
+	Array operator+=(const Array &rhs);
+
 	//TBTKFeature Utilities.Array.operatorAddition.1 2019-10-31
 	//TBTKFeature Utilities.Array.operatorAddition.2 2019-10-31
 	//TBTKFeature Utilities.Array.operatorAddition.3 2019-10-31
@@ -219,7 +226,18 @@ public:
 	 *  @param rhs The right hand side of the expression.
 	 *
 	 *  @return The sum of the left and right hand side. */
-	Array operator+(const Array &rhs) const;
+	Array operator+(const Array &rhs) const{
+		Array result = *this;
+
+		return result += rhs;
+	}
+
+	/** Subtraction equality operator.
+	 *
+	 *  @param rhs The right hand side of the expression.
+	 *
+	 *  @return The Array after the right hand side has been subtracted. */
+	Array operator-=(const Array &rhs);
 
 	//TBTKFeature Utilities.Array.operatorSubtraction.1 2019-10-31
 	//TBTKFeature Utilities.Array.operatorSubtraction.2 2019-10-31
@@ -229,7 +247,11 @@ public:
 	 *  @param rhs The right hand side of the expression.
 	 *
 	 *  @return The sum of the left and right hand side. */
-	Array operator-(const Array &rhs) const;
+	Array operator-(const Array &rhs) const{
+		Array result = *this;
+
+		return result -= rhs;
+	}
 
 	/** Negative operator.
 	 *
@@ -237,13 +259,24 @@ public:
 	 *  one. */
 	Array operator-() const;
 
+	/** Multiplication equality operator.
+	 *
+	 *  @param rhs The right hand side of the expression.
+	 *
+	 *  @return The Array after multiplication by the right hand side. */
+	Array operator*=(const DataType &rhs);
+
 	//TBTKFeature Utilities.Array.operatorMultiplication.1 2019-10-31
 	/** Multiplication operator.
 	 *
 	 *  @param rhs The right hand side of the expression.
 	 *
 	 *  @return The product of the left and right hand side. */
-	Array operator*(const DataType &rhs) const;
+	Array operator*(const DataType &rhs) const{
+		Array result = *this;
+
+		return result *= rhs;
+	}
 
 	//TBTKFeature Utilities.Array.operatorMultiplication.2 2019-10-31
 	/** Multiplication operator.
@@ -296,13 +329,24 @@ public:
 	 *  Arrays@endlink. */
 	Array operator*(const Array &rhs) const;
 
+	/** Division equality operator.
+	 *
+	 *  @param rhs The right hand side of the expression.
+	 *
+	 *  @return The Array after division by the right hand side. */
+	Array operator/=(const DataType &rhs);
+
 	//TBTKFeature Utilities.Array.operatorDivision.1 2019-10-31
 	/** Division operator.
 	 *
 	 *  @param rhs The right hand side of the expression.
 	 *
 	 *  @return The quotient between the left and right hand side. */
-	Array operator/(const DataType &rhs) const;
+	Array operator/(const DataType &rhs) const{
+		Array result = *this;
+
+		return result /= rhs;
+	}
 
 	/** Comparison operator.
 	 *
@@ -685,29 +729,27 @@ inline const DataType& Array<DataType>::operator[](unsigned int n) const{
 }
 
 template<typename DataType>
-inline Array<DataType> Array<DataType>::operator+(
+inline Array<DataType> Array<DataType>::operator+=(
 	const Array<DataType> &rhs
-) const{
+){
 	assertCompatibleRanges(rhs, "operator+()");
 
-	Array<DataType> result = Array<DataType>::create(ranges);
 	for(unsigned int n = 0; n < data.getSize(); n++)
-		result.data[n] = data[n] + rhs.data[n];
+		data[n] += rhs.data[n];
 
-	return result;
+	return *this;
 }
 
 template<typename DataType>
-inline Array<DataType> Array<DataType>::operator-(
+inline Array<DataType> Array<DataType>::operator-=(
 	const Array<DataType> &rhs
-) const{
+){
 	assertCompatibleRanges(rhs, "operator+()");
 
-	Array<DataType> result = Array<DataType>::create(ranges);
 	for(unsigned int n = 0; n < data.getSize(); n++)
-		result.data[n] = data[n] - rhs.data[n];
+		data[n] -= rhs.data[n];
 
-	return result;
+	return *this;
 }
 
 template<typename DataType>
@@ -720,14 +762,13 @@ inline Array<DataType> Array<DataType>::operator-() const{
 }
 
 template<typename DataType>
-inline Array<DataType> Array<DataType>::operator*(
+inline Array<DataType> Array<DataType>::operator*=(
 	const DataType &rhs
-) const{
-	Array<DataType> result = Array<DataType>::create(ranges);
+){
 	for(unsigned int n = 0; n < data.getSize(); n++)
-		result.data[n] = data[n]*rhs;
+		data[n] *= rhs;
 
-	return result;
+	return *this;
 }
 
 template<typename DataType>
@@ -798,12 +839,11 @@ Array<DataType> Array<DataType>::operator*(const Array<DataType> &rhs) const{
 }
 
 template<typename DataType>
-inline Array<DataType> Array<DataType>::operator/(const DataType &rhs) const{
-	Array<DataType> result = Array<DataType>::create(ranges);
+inline Array<DataType> Array<DataType>::operator/=(const DataType &rhs){
 	for(unsigned int n = 0; n < data.getSize(); n++)
-		result.data[n] = data[n]/rhs;
+		data[n] /= rhs;
 
-	return result;
+	return *this;
 }
 
 template<typename DataType>
