@@ -227,6 +227,70 @@ TEST(Array, operatorArraySubscript3){
 			EXPECT_EQ(constArray[3*i + j], i + 2*j);
 }
 
+//TBTKFeature Utilities.Array.operatorFunction.1 2020-05-25
+TEST(Array, operatorFunction1){
+	Array<unsigned int> array({2, 3});
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			array({2, 3, 4});
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+//TBTKFeature Utilities.Array.operatorFunction.2 2020-05-25
+TEST(Array, operatorFunction2){
+	Array<unsigned int> array({2, 3});
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			array({2, 4});
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+//TBTKFeature Utilities.Array.operatorFunction.3 2020-05-25
+TEST(Array, operatorFunction3){
+	Array<unsigned int> array({2, 3});
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			array({2, IDX_SPIN});
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+//TBTKFeature Utilities.Array.operatorFunction.4 2020-05-25
+TEST(Array, operatorFunction4){
+	Array<unsigned int> array({2, 3, 2});
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			array({_aX_(0), _aX_(0), 0});
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+//TBTKFeature Utilities.Array.operatorFunction.5 2020-05-25
+TEST(Array, operatorFunction5){
+	Array<unsigned int> array({2, 3, 2});
+	array({_aX_(0), _aX_(1), 0});
+}
+
+//TBTKFeature Utilities.Array.operatorFunction.6 2020-05-25
+TEST(Array, operatorFunction6){
+	Array<unsigned int> array({2, 3, 2});
+	array({_aX_(0), 0, _aX_(0)});
+}
+
 //TBTKFeature Utilities.Array.operatorAdditionEquality.1 2020-05-25
 TEST(Array, operatorAdditionEquality1){
 	Array<unsigned int> array0({2, 3});
@@ -1194,6 +1258,91 @@ TEST(Array, getData1){
 TEST(Array, getSize){
 	Array<unsigned int> array({2, 3, 4});
 	EXPECT_EQ(array.getSize(), 2*3*4);
+}
+
+//TBTKFeature Utilities.Array.Modifier.operatorEquality.1 2020-05-25
+TEST(ArrayModifier, operatorEquality1){
+	Array<unsigned int> array({2, 3, 4, 5, 2, 6}, 0);
+	array({_aX_(0), 1, _aX_(1), _a_, _aX_(0), _a_}) = 1;
+	MultiCounter<unsigned int> counter(
+		{0, 0, 0, 0, 0, 0},
+		{2, 3, 4, 5, 2, 6},
+		{1, 1, 1, 1, 1, 1}
+	);
+	for(counter.reset(); !counter.done(); ++counter){
+		if(counter[1] != 1 || counter[0] != counter[4])
+			EXPECT_EQ(array[counter], 0);
+		else
+			EXPECT_EQ(array[counter], 1);
+	}
+}
+
+//TBTKFeature Utilities.Array.Modifier.operatorAdditionEquality.1 2020-05-25
+TEST(ArrayModifier, operatorAdditionEquality1){
+	Array<unsigned int> array({2, 3, 4, 5, 2, 6}, 1);
+	array({_aX_(0), 1, _aX_(1), _a_, _aX_(0), _a_}) += 2;
+	MultiCounter<unsigned int> counter(
+		{0, 0, 0, 0, 0, 0},
+		{2, 3, 4, 5, 2, 6},
+		{1, 1, 1, 1, 1, 1}
+	);
+	for(counter.reset(); !counter.done(); ++counter){
+		if(counter[1] != 1 || counter[0] != counter[4])
+			EXPECT_EQ(array[counter], 1);
+		else
+			EXPECT_EQ(array[counter], 3);
+	}
+}
+
+//TBTKFeature Utilities.Array.Modifier.operatorSubtractionEquality.1 2020-05-25
+TEST(ArrayModifier, operatorSubtractionEquality1){
+	Array<unsigned int> array({2, 3, 4, 5, 2, 6}, 3);
+	array({_aX_(0), 1, _aX_(1), _a_, _aX_(0), _a_}) -= 2;
+	MultiCounter<unsigned int> counter(
+		{0, 0, 0, 0, 0, 0},
+		{2, 3, 4, 5, 2, 6},
+		{1, 1, 1, 1, 1, 1}
+	);
+	for(counter.reset(); !counter.done(); ++counter){
+		if(counter[1] != 1 || counter[0] != counter[4])
+			EXPECT_EQ(array[counter], 3);
+		else
+			EXPECT_EQ(array[counter], 1);
+	}
+}
+
+//TBTKFeature Utilities.Array.Modifier.operatorMultiplicationEquality.1 2020-05-25
+TEST(ArrayModifier, operatorMultiplicationEquality1){
+	Array<unsigned int> array({2, 3, 4, 5, 2, 6}, 3);
+	array({_aX_(0), 1, _aX_(1), _a_, _aX_(0), _a_}) *= 4;
+	MultiCounter<unsigned int> counter(
+		{0, 0, 0, 0, 0, 0},
+		{2, 3, 4, 5, 2, 6},
+		{1, 1, 1, 1, 1, 1}
+	);
+	for(counter.reset(); !counter.done(); ++counter){
+		if(counter[1] != 1 || counter[0] != counter[4])
+			EXPECT_EQ(array[counter], 3);
+		else
+			EXPECT_EQ(array[counter], 12);
+	}
+}
+
+//TBTKFeature Utilities.Array.Modifier.operatorDivisionEquality.1 2020-05-25
+TEST(ArrayModifier, operatorDivisionEquality1){
+	Array<unsigned int> array({2, 3, 4, 5, 2, 6}, 20);
+	array({_aX_(0), 1, _aX_(1), _a_, _aX_(0), _a_}) /= 5;
+	MultiCounter<unsigned int> counter(
+		{0, 0, 0, 0, 0, 0},
+		{2, 3, 4, 5, 2, 6},
+		{1, 1, 1, 1, 1, 1}
+	);
+	for(counter.reset(); !counter.done(); ++counter){
+		if(counter[1] != 1 || counter[0] != counter[4])
+			EXPECT_EQ(array[counter], 20);
+		else
+			EXPECT_EQ(array[counter], 4);
+	}
 }
 
 };

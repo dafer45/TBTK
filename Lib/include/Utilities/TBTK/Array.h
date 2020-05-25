@@ -97,6 +97,70 @@ namespace Math{
 template<typename DataType>
 class Array : public Serializable{
 public:
+	class Modifier{
+	public:
+		/** Assignment operator. Assigns the right hand side to the
+		 *  section of the corresponding Array that the Modifier is
+		 *  Modifying.
+		 *
+		 *  @param rhs The right hand side of the expression.
+		 *
+		 *  @return The Modifier itself. */
+		Modifier& operator=(const DataType &rhs);
+
+		/** Addition assignment operator. Adds the the right hand side
+		 *  to the section of the corresponding Array that the Modifier
+		 *  is Modifying.
+		 *
+		 *  @param rhs The right hand side of the expression.
+		 *
+		 *  @return The Modifier itself. */
+		Modifier& operator+=(const DataType &rhs);
+
+		/** Subtraction assignment operator. Subtracts the right hand
+		 *  side from the section of the corresponding Array that the
+		 *  Modifier is Modifying.
+		 *
+		 *  @param rhs The right hand side of the expression.
+		 *
+		 *  @return The Modifier itself. */
+		Modifier& operator-=(const DataType &rhs);
+
+		/** Multiplication assignment operator. Multiplies the right
+		 *  hand side into the section of the corresponding Array that
+		 *  the Modifier is Modifying.
+		 *
+		 *  @param rhs The right hand side of the expression.
+		 *
+		 *  @return The Modifier itself. */
+		Modifier& operator*=(const DataType &rhs);
+
+		/** Division assignment operator. Divides the section of the
+		 *  correpsonding Array that the Modifier is modifying by the
+		 *  right hand side.
+		 *
+		 *  @param rhs The right hand side of the expression.
+		 *
+		 *  @return The Modifier itself. */
+		Modifier& operator/=(const DataType &rhs);
+	private:
+		/** The array to modify. */
+		Array &array;
+
+		/** The pattern to modify according to. */
+		std::vector<Subindex> pattern;
+
+		/** Constructor. */
+		Modifier(Array &array, const std::vector<Subindex> &pattern);
+
+		std::vector<
+			std::vector<unsigned int>
+		> getAllCompatibleIndices() const;
+
+		/** Friend class. */
+		friend class Array;
+	};
+
 	//TBTKFeature Utilities.Array.construction.1 2019-10-31
 	/** Constructor. */
 	Array();
@@ -211,12 +275,22 @@ public:
 	 *  @return The value of entry n. */
 	const DataType& operator[](unsigned int n) const;
 
+	/** Function operator. Returns an Array::Modifier object that can be
+	 *  used to modify multiple Array elements at once. The pattern can
+	 *  contain wildcards that determine which elements to modify.
+	 *
+	 *  @param pattern A pattern specifying the indices to modify.
+	 *
+	 *  @return An Array::Modifier object that can be used to modify
+	 *  multiple elements in the Array at once. */
+	Modifier operator()(const std::vector<Subindex> &pattern);
+
 	/** Addition equality operator.
 	 *
 	 *  @param rhs The right hand side of the expression.
 	 *
 	 *  @return The Array after the right hand side has been added. */
-	Array operator+=(const Array &rhs);
+	Array& operator+=(const Array &rhs);
 
 	//TBTKFeature Utilities.Array.operatorAddition.1 2019-10-31
 	//TBTKFeature Utilities.Array.operatorAddition.2 2019-10-31
@@ -237,7 +311,7 @@ public:
 	 *  @param rhs The right hand side of the expression.
 	 *
 	 *  @return The Array after the right hand side has been subtracted. */
-	Array operator-=(const Array &rhs);
+	Array& operator-=(const Array &rhs);
 
 	//TBTKFeature Utilities.Array.operatorSubtraction.1 2019-10-31
 	//TBTKFeature Utilities.Array.operatorSubtraction.2 2019-10-31
@@ -264,7 +338,7 @@ public:
 	 *  @param rhs The right hand side of the expression.
 	 *
 	 *  @return The Array after multiplication by the right hand side. */
-	Array operator*=(const DataType &rhs);
+	Array& operator*=(const DataType &rhs);
 
 	//TBTKFeature Utilities.Array.operatorMultiplication.1 2019-10-31
 	/** Multiplication operator.
@@ -334,7 +408,7 @@ public:
 	 *  @param rhs The right hand side of the expression.
 	 *
 	 *  @return The Array after division by the right hand side. */
-	Array operator/=(const DataType &rhs);
+	Array& operator/=(const DataType &rhs);
 
 	//TBTKFeature Utilities.Array.operatorDivision.1 2019-10-31
 	/** Division operator.
@@ -729,7 +803,66 @@ inline const DataType& Array<DataType>::operator[](unsigned int n) const{
 }
 
 template<typename DataType>
-inline Array<DataType> Array<DataType>::operator+=(
+inline typename Array<DataType>::Modifier Array<DataType>::operator()(
+	const std::vector<Subindex> &pattern
+){
+	TBTKAssert(
+		pattern.size() == ranges.size(),
+		"Array::operator()",
+		"Invalid pattern. The pattern must have the same number of"
+		" elements as the Array rank. But the pattern has '"
+		<< pattern.size() << "' elements, while the Array has rank '"
+		<< ranges.size() << "'.",
+		""
+	);
+	for(unsigned int n = 0; n < pattern.size(); n++){
+		if(pattern[n].isWildcard() || pattern[n].isLabeledWildcard())
+			continue;
+
+		TBTKAssert(
+			pattern[n] >= 0,
+			"Array::operator()",
+			"Invalid pattern. Subindices must be wildcards, labled"
+			<< " wildcards, or positive number, but '"
+			<< pattern[n] << "' found in position '" << n << "'.",
+			""
+		);
+		TBTKAssert(
+			pattern[n] < (Subindex)ranges[n],
+			"Arrau::operator()",
+			"Invalid pattern. The value '" << pattern[n] << "' was"
+			<< " found in position '" << n << "', which is larger"
+			<< " or equal to the corresponding range '"
+			<< ranges[n]-1 << "'.",
+			""
+		);
+	}
+	for(unsigned int n = 0; n < pattern.size(); n++){
+		if(pattern[n].isLabeledWildcard()){
+			for(unsigned int c = n+1; c < pattern.size(); c++){
+				if(pattern[n] == pattern[c]){
+					TBTKAssert(
+						ranges[n] == ranges[c],
+						"Array::operator()",
+						"Invalid pattern. Found"
+						<< " labeled wildcards with"
+						<< " the same label in"
+						<< " position '" << n << "'"
+						<< " and '" << c << "', but"
+						<< " the ranges are different"
+						<< " for these positions.",
+						""
+					);
+				}
+			}
+		}
+	}
+
+	return Modifier(*this, pattern);
+}
+
+template<typename DataType>
+inline Array<DataType>& Array<DataType>::operator+=(
 	const Array<DataType> &rhs
 ){
 	assertCompatibleRanges(rhs, "operator+()");
@@ -741,7 +874,7 @@ inline Array<DataType> Array<DataType>::operator+=(
 }
 
 template<typename DataType>
-inline Array<DataType> Array<DataType>::operator-=(
+inline Array<DataType>& Array<DataType>::operator-=(
 	const Array<DataType> &rhs
 ){
 	assertCompatibleRanges(rhs, "operator+()");
@@ -762,7 +895,7 @@ inline Array<DataType> Array<DataType>::operator-() const{
 }
 
 template<typename DataType>
-inline Array<DataType> Array<DataType>::operator*=(
+inline Array<DataType>& Array<DataType>::operator*=(
 	const DataType &rhs
 ){
 	for(unsigned int n = 0; n < data.getSize(); n++)
@@ -839,7 +972,7 @@ Array<DataType> Array<DataType>::operator*(const Array<DataType> &rhs) const{
 }
 
 template<typename DataType>
-inline Array<DataType> Array<DataType>::operator/=(const DataType &rhs){
+inline Array<DataType>& Array<DataType>::operator/=(const DataType &rhs){
 	for(unsigned int n = 0; n < data.getSize(); n++)
 		data[n] /= rhs;
 
@@ -1388,6 +1521,161 @@ inline void Array<DataType>::assertCompatibleRanges(
 			"Left and right hand sides must have the same ranges."
 		);
 	}
+}
+
+template<typename DataType>
+Array<DataType>::Modifier::Modifier(
+	Array &array,
+	const std::vector<Subindex> &pattern
+) :
+	array(array),
+	pattern(pattern)
+{
+}
+
+template<typename DataType>
+typename Array<DataType>::Modifier& Array<DataType>::Modifier::operator=(
+	const DataType &rhs
+){
+	std::vector<std::vector<unsigned int>> indices
+		= getAllCompatibleIndices();
+	for(auto index : indices)
+		array[index] = rhs;
+
+	return *this;
+}
+
+template<typename DataType>
+typename Array<DataType>::Modifier& Array<DataType>::Modifier::operator+=(
+	const DataType &rhs
+){
+	std::vector<std::vector<unsigned int>> indices
+		= getAllCompatibleIndices();
+	for(auto index : indices)
+		array[index] += rhs;
+
+	return *this;
+}
+
+template<typename DataType>
+typename Array<DataType>::Modifier& Array<DataType>::Modifier::operator-=(
+	const DataType &rhs
+){
+	std::vector<std::vector<unsigned int>> indices
+		= getAllCompatibleIndices();
+	for(auto index : indices)
+		array[index] -= rhs;
+
+	return *this;
+}
+
+template<typename DataType>
+typename Array<DataType>::Modifier& Array<DataType>::Modifier::operator*=(
+	const DataType &rhs
+){
+	std::vector<std::vector<unsigned int>> indices
+		= getAllCompatibleIndices();
+	for(auto index : indices)
+		array[index] *= rhs;
+
+	return *this;
+}
+
+template<typename DataType>
+typename Array<DataType>::Modifier& Array<DataType>::Modifier::operator/=(
+	const DataType &rhs
+){
+	std::vector<std::vector<unsigned int>> indices
+		= getAllCompatibleIndices();
+	for(auto index : indices)
+		array[index] /= rhs;
+
+	return *this;
+}
+
+template<typename DataType>
+std::vector<
+	std::vector<unsigned int>
+> Array<DataType>::Modifier::getAllCompatibleIndices(
+) const{
+	std::vector<Subindex> patternCopy = pattern;
+	std::vector<std::vector<unsigned int>> wildcardPositions;
+	for(unsigned int n = 0; n < patternCopy.size(); n++){
+		if(patternCopy[n].isWildcard()){
+			wildcardPositions.push_back(
+				std::vector<unsigned int>()
+			);
+			wildcardPositions.back().push_back(n);
+		}
+		else if(patternCopy[n].isLabeledWildcard()){
+			wildcardPositions.push_back(
+				std::vector<unsigned int>()
+			);
+			wildcardPositions.back().push_back(n);
+			for(
+				unsigned int c = n + 1;
+				c < patternCopy.size();
+				c++
+			){
+				if(patternCopy[n] == patternCopy[c]){
+					wildcardPositions.back().push_back(c);
+					patternCopy[c] = 0;
+				}
+			}
+		}
+	}
+
+	const std::vector<unsigned int> &ranges = array.getRanges();
+	std::vector<unsigned int> limits;
+	for(unsigned int n = 0; n < wildcardPositions.size(); n++)
+		limits.push_back(ranges[wildcardPositions[n][0]]);
+
+	std::vector<std::vector<unsigned int>> compatibleIndices;
+	MultiCounter<unsigned int> wildcardCounter(
+		std::vector<unsigned int>(wildcardPositions.size(), 0),
+		limits,
+		std::vector<unsigned int>(wildcardPositions.size(), 1)
+	);
+	for(
+		wildcardCounter.reset();
+		!wildcardCounter.done();
+		++wildcardCounter
+	){
+		std::vector<unsigned int> index;
+		for(unsigned int n = 0; n < pattern.size(); n++){
+			if(pattern[n] >= 0){
+				index.push_back((unsigned int)pattern[n]);
+			}
+			else if(
+				pattern[n].isWildcard()
+				|| pattern[n].isLabeledWildcard()
+			){
+				index.push_back(0);
+			}
+			else{
+				TBTKExit(
+					"Array::Modifier::getAllCompatibleIndices()",
+					"Invalid pattern Subindex.",
+					"This should never happen, contact the"
+					<< " developer."
+				);
+			}
+		}
+		for(unsigned int n = 0; n < wildcardPositions.size(); n++){
+			for(
+				unsigned int c = 0;
+				c < wildcardPositions[n].size();
+				c++
+			){
+				index[wildcardPositions[n][c]]
+					= wildcardCounter[n];
+			}
+		}
+
+		compatibleIndices.push_back(index);
+	}
+
+	return compatibleIndices;
 }
 
 }; //End of namesapce TBTK
