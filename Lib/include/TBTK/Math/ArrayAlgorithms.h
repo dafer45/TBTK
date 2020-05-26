@@ -852,6 +852,12 @@ DataType min(const Array<DataType> &array){
 	return ArrayAlgorithms<DataType>::min(array);
 }
 
+/** Trace of Array.
+ *
+ *  @param array The Array to calculate the trace for. Must be a
+ *  two-dimensional square Array.
+ *
+ *  @return The trace of the Array. */
 template<typename DataType>
 DataType trace(const Array<DataType> &array){
 	const std::vector<unsigned int> &ranges = array.getRanges();
@@ -875,6 +881,24 @@ DataType trace(const Array<DataType> &array){
 		result += array[{n, n}];
 
 	return result;
+}
+
+/** Norm of Array. \f$\sqrt[p]{\sum_{i}|a_i|^{p}}, where \f$a_i\f$ are the
+ *  Array elements and \f$p\f$ is the power of the norm. For example, for the
+ *  L2-norm, \f$p=2\f$.
+ *
+ *  @param array The Array to calculate the norm form.
+ *  @param power The power of the norm.
+ *
+ *  @return The norm of the Array. */
+template<typename DataType>
+DataType norm(const Array<DataType> &array, double power = 2){
+	const CArray<DataType> &data = array.getData();
+	double result = 0;
+	for(unsigned int n = 0; n < data.getSize(); n++)
+		result += std::pow(data[n], power);
+
+	return std::pow(result, 1/power);
 }
 
 }; //End of namespace Math
