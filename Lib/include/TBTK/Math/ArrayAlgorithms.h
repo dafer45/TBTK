@@ -852,6 +852,31 @@ DataType min(const Array<DataType> &array){
 	return ArrayAlgorithms<DataType>::min(array);
 }
 
+template<typename DataType>
+DataType trace(const Array<DataType> &array){
+	const std::vector<unsigned int> &ranges = array.getRanges();
+	TBTKAssert(
+		ranges.size() == 2,
+		"Math::trace()",
+		"Unsuported Array rank. The Array must have rank '2', but"
+		<< " 'array' has rank '" << ranges.size() << "'.",
+		""
+	);
+	TBTKAssert(
+		ranges[0] == ranges[1],
+		"Math::trace()",
+		"Invalid dimension. The Array must be square, but 'array' has"
+		<< " dimensions '" << ranges[0] << "x" << ranges[1] << "'.",
+		""
+	);
+
+	DataType result = 0;
+	for(unsigned int n = 0; n < ranges[0]; n++)
+		result += array[{n, n}];
+
+	return result;
+}
+
 }; //End of namespace Math
 }; //End of namespace TBTK
 

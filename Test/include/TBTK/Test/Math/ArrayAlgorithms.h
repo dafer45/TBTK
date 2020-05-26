@@ -518,5 +518,41 @@ TEST_F(ArrayAlgorithmsTest, min0){
 	EXPECT_EQ(min(A), 1);
 }
 
+//TBTKFeature Math.ArrayAlgorithms.trace.0 2020-05-26
+TEST(ArrayAlgorithms, trace0){
+	Array<unsigned int> array({3, 3});
+	for(unsigned int row = 0; row < 3; row++)
+		for(unsigned int column = 0; column < 3; column++)
+			array[{row, column}] = 3*row + column;
+
+	EXPECT_EQ(trace(array), 12);
+}
+
+//TBTKFeature Math.ArrayAlgorithms.trace.1 2020-05-26
+TEST(ArrayAlgorithms, trace1){
+	Array<unsigned int> array({3, 2});
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			trace(array);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+//TBTKFeature Math.ArrayAlgorithms.trace.2 2020-05-26
+TEST(ArrayAlgorithms, trace2){
+	Array<unsigned int> array({3, 3, 3});
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			trace(array);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
 };	//End of namespace Math
 };	//End of namespace TBTK
