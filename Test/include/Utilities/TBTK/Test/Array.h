@@ -332,7 +332,7 @@ TEST(Array, operatorAdditionEquality2){
 }
 
 //TBTKFeature Utilities.Array.operatorAdditionEquality.3 2020-05-25
-TEST(Array, operatorAddition3){
+TEST(Array, operatorAdditionEquality3){
 	Array<unsigned int> array0({2, 3});
 	Array<unsigned int> array1({2, 4});
 
@@ -352,6 +352,15 @@ TEST(Array, operatorAddition3){
 		::testing::ExitedWithCode(1),
 		""
 	);
+}
+
+//TBTKFeature Utilities.operatorAdditionEquality.4 2020-05-25
+TEST(Array, operatorAdditionEquality4){
+	Array<unsigned int> array({2, 3}, 5);
+	array += 2;
+	for(unsigned int i = 0; i < 2; i++)
+		for(unsigned int j = 0; j < 3; j++)
+			EXPECT_EQ((array[{i, j}]), 7);
 }
 
 //TBTKFeature Utilities.Array.operatorAddition.1 2019-10-31
@@ -417,6 +426,19 @@ TEST(Array, operatorAddition2){
 	);
 }
 
+//TBTKFeature Utilities.operatorAddition.4 2020-05-25
+TEST(Array, operatorAddition3){
+	Array<unsigned int> array0({2, 3}, 5);
+	Array<unsigned int> array1 = array0 + 2;
+	const std::vector<unsigned int> &ranges = array1.getRanges();
+	EXPECT_EQ(ranges.size(), 2);
+	EXPECT_EQ(ranges[0], 2);
+	EXPECT_EQ(ranges[1], 3);
+	for(unsigned int i = 0; i < 2; i++)
+		for(unsigned int j = 0; j < 3; j++)
+			EXPECT_EQ((array1[{i, j}]), 7);
+}
+
 //TBTKFeature Utilities.Array.operatorSubtractionEquality.1 2020-05-25
 TEST(Array, operatorSubtractionEquality0){
 	Array<int> array0({2, 3});
@@ -480,6 +502,15 @@ TEST(Array, operatorSubtractionEqiality2){
 	);
 }
 
+//TBTKFeature Utilities.operatorSubtractionEquality.4 2020-05-25
+TEST(Array, operatorSubtractionEquality3){
+	Array<unsigned int> array({2, 3}, 5);
+	array -= 2;
+	for(unsigned int i = 0; i < 2; i++)
+		for(unsigned int j = 0; j < 3; j++)
+			EXPECT_EQ((array[{i, j}]), 3);
+}
+
 //TBTKFeature Utilities.Array.operatorSubtraction.1 2019-10-31
 TEST(Array, operatorSubtraction0){
 	Array<int> array0({2, 3});
@@ -541,6 +572,19 @@ TEST(Array, operatorSubtraction2){
 		::testing::ExitedWithCode(1),
 		""
 	);
+}
+
+//TBTKFeature Utilities.operatorSubtraction.4 2020-05-25
+TEST(Array, operatorSubtraction3){
+	Array<unsigned int> array0({2, 3}, 5);
+	Array<unsigned int> array1 = array0 - 2;
+	const std::vector<unsigned int> &ranges = array1.getRanges();
+	EXPECT_EQ(ranges.size(), 2);
+	EXPECT_EQ(ranges[0], 2);
+	EXPECT_EQ(ranges[1], 3);
+	for(unsigned int i = 0; i < 2; i++)
+		for(unsigned int j = 0; j < 3; j++)
+			EXPECT_EQ((array1[{i, j}]), 3);
 }
 
 //TBTKFeature Utilities.Array.operatorNegative.1 2020-05-24

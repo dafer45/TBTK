@@ -292,6 +292,14 @@ public:
 	 *  @return The Array after the right hand side has been added. */
 	Array& operator+=(const Array &rhs);
 
+	/** Addition equality operator.
+	 *
+	 *  @param rhs The right hand side of the expression.
+	 *
+	 *  @return The Array after the right hand side has been added to each
+	 *  element. */
+	Array& operator+=(const DataType &rhs);
+
 	//TBTKFeature Utilities.Array.operatorAddition.1 2019-10-31
 	//TBTKFeature Utilities.Array.operatorAddition.2 2019-10-31
 	//TBTKFeature Utilities.Array.operatorAddition.3 2019-10-31
@@ -306,12 +314,32 @@ public:
 		return result += rhs;
 	}
 
+	/** Addition operator.
+	 *
+	 *  @param rhs The right hand side of the expression.
+	 *
+	 *  @return A new Array with the right hand side added to each element.
+	 */
+	Array operator+(const DataType &rhs){
+		Array result = *this;
+
+		return result += rhs;
+	}
+
 	/** Subtraction equality operator.
 	 *
 	 *  @param rhs The right hand side of the expression.
 	 *
 	 *  @return The Array after the right hand side has been subtracted. */
 	Array& operator-=(const Array &rhs);
+
+	/** Subtraction equality operator.
+	 *
+	 *  @param rhs The right hand side of the expression.
+	 *
+	 *  @return The Array after the right hand side has been subtracted
+	 *  from each element. */
+	Array& operator-=(const DataType &rhs);
 
 	//TBTKFeature Utilities.Array.operatorSubtraction.1 2019-10-31
 	//TBTKFeature Utilities.Array.operatorSubtraction.2 2019-10-31
@@ -327,6 +355,17 @@ public:
 		return result -= rhs;
 	}
 
+	/** Subtraction operator.
+	 *
+	 *  @param rhs The right hand side of the expression.
+	 *
+	 *  @return A new Array with the right hand side subtracted from each
+	 *  element. */
+	Array operator-(const DataType &rhs){
+		Array result = *this;
+
+		return result -= rhs;
+	}
 	/** Negative operator.
 	 *
 	 *  @return An Array with all elements the negative of the original
@@ -865,7 +904,7 @@ template<typename DataType>
 inline Array<DataType>& Array<DataType>::operator+=(
 	const Array<DataType> &rhs
 ){
-	assertCompatibleRanges(rhs, "operator+()");
+	assertCompatibleRanges(rhs, "operator+=()");
 
 	for(unsigned int n = 0; n < data.getSize(); n++)
 		data[n] += rhs.data[n];
@@ -874,13 +913,31 @@ inline Array<DataType>& Array<DataType>::operator+=(
 }
 
 template<typename DataType>
+inline Array<DataType>& Array<DataType>::operator+=(const DataType &rhs){
+	for(unsigned int n = 0; n < data.getSize(); n++)
+		data[n] += rhs;
+
+	return *this;
+}
+
+template<typename DataType>
 inline Array<DataType>& Array<DataType>::operator-=(
 	const Array<DataType> &rhs
 ){
-	assertCompatibleRanges(rhs, "operator+()");
+	assertCompatibleRanges(rhs, "operator-=()");
 
 	for(unsigned int n = 0; n < data.getSize(); n++)
 		data[n] -= rhs.data[n];
+
+	return *this;
+}
+
+template<typename DataType>
+inline Array<DataType>& Array<DataType>::operator-=(
+	const DataType &rhs
+){
+	for(unsigned int n = 0; n < data.getSize(); n++)
+		data[n] -= rhs;
 
 	return *this;
 }
