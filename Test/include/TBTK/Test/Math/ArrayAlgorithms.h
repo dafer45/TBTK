@@ -556,7 +556,7 @@ TEST(ArrayAlgorithms, trace2){
 
 //TBTKFeature Math.ArrayAlgorithms.norm.0 2020-05-26
 TEST_F(ArrayAlgorithmsTest, norm0){
-	EXPECT_NEAR(norm(A), std::sqrt(1 + 4 + 9 + 16 + 25 + 36), EPSILON_100);
+	EXPECT_NEAR(norm(C), std::sqrt(1 + 4 + 9 + 16 + 25 + 36), EPSILON_100);
 }
 
 //TBTKFeature Math.ArrayAlgorithms.norm.1 2020-05-26
@@ -566,7 +566,7 @@ TEST_F(ArrayAlgorithmsTest, norm1){
 		reference += std::pow(n, 3.5);
 	reference = std::pow(reference, 1/3.5);
 
-	EXPECT_NEAR(norm(A, 3.5), reference, EPSILON_100);
+	EXPECT_NEAR(norm(C, 3.5), reference, EPSILON_100);
 }
 
 };	//End of namespace Math

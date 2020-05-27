@@ -896,7 +896,7 @@ DataType norm(const Array<DataType> &array, double power = 2){
 	const CArray<DataType> &data = array.getData();
 	double result = 0;
 	for(unsigned int n = 0; n < data.getSize(); n++)
-		result += std::pow(data[n], power);
+		result += std::pow(std::abs(data[n]), power);
 
 	return std::pow(result, 1/power);
 }
