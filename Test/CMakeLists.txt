@@ -24,6 +24,7 @@ IF(GTest_FOUND)
 			include/ManyParticle
 			include/Uncategorized
 			include/Utilities
+			include/StatesAndOperators
 		)
 
 		FILE(GLOB_RECURSE SRC src/*.cpp)

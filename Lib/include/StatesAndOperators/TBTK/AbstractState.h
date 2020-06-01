@@ -47,7 +47,8 @@ public:
 	enum StateID{
 		Basic = 0,
 		STO3G = 1,
-		Gaussian = 2
+		Gaussian = 2,
+		SlaterKoster = 3
 	};
 
 	/** Constructor. */
