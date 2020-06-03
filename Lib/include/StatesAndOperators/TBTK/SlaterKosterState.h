@@ -76,6 +76,20 @@ public:
 			Orbital orbital1,
 			Bond bond
 		) const = 0;
+
+		/** Get on-site term. The derived class must implement this
+		 *  function to be possible to use together with a
+		 *  SlaterKosterState. The function should return the on-site
+		 *  energies for the s, p, eg, and t2g basis functions.
+		 *
+		 *  @param orbital The orbital to return the value for. The
+		 *  implementing class should accept the inputs "s", "p", "eg",
+		 *  and "t2g".
+		 *
+		 *  @return The on-site energy for the given orbital. */
+		virtual std::complex<double> getOnSiteTerm(
+			const std::string &orbital
+		) const = 0;
 	};
 
 	SlaterKosterState();

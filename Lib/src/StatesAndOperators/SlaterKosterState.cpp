@@ -114,6 +114,25 @@ complex<double> SlaterKosterState::getMatrixElement(
 	const SlaterKosterState &b = (const SlaterKosterState&)bra;
 	Vector3d difference = position - b.position;
 	double distance = difference.norm();
+	if(distance < numeric_limits<double>::epsilon()){
+		if(b.orbital != orbital)
+			return 0;
+		switch(orbital){
+		case Orbital::s:
+			return radialFunction->getOnSiteTerm("s");
+		case Orbital::x:
+		case Orbital::y:
+		case Orbital::z:
+			return radialFunction->getOnSiteTerm("p");
+		case Orbital::xy:
+		case Orbital::yz:
+		case Orbital::zx:
+			return radialFunction->getOnSiteTerm("t2g");
+		case Orbital::x2my2:
+		case Orbital::z2mr2:
+			return radialFunction->getOnSiteTerm("eg");
+		}
+	}
 	double l = difference.x/difference.norm();
 	double m = difference.y/difference.norm();
 	double n = difference.z/difference.norm();
