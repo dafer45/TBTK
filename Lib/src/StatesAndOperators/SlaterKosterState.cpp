@@ -119,18 +119,23 @@ complex<double> SlaterKosterState::getMatrixElement(
 			return 0;
 		switch(orbital){
 		case Orbital::s:
-			return radialFunction->getOnSiteTerm("s");
+			return radialFunction->getOnSiteTerm(
+				RadialFunction::Orbital::s
+			);
 		case Orbital::x:
 		case Orbital::y:
 		case Orbital::z:
-			return radialFunction->getOnSiteTerm("p");
+			return radialFunction->getOnSiteTerm(
+				RadialFunction::Orbital::p
+			);
 		case Orbital::xy:
 		case Orbital::yz:
 		case Orbital::zx:
-			return radialFunction->getOnSiteTerm("t2g");
 		case Orbital::x2my2:
 		case Orbital::z2mr2:
-			return radialFunction->getOnSiteTerm("eg");
+			return radialFunction->getOnSiteTerm(
+				RadialFunction::Orbital::d
+			);
 		}
 	}
 	double l = difference.x/difference.norm();

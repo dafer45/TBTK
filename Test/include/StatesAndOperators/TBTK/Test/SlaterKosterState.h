@@ -22,8 +22,7 @@ protected:
 	constexpr static double V_ddD = 10;
 	constexpr static double E_s = 11;
 	constexpr static double E_p = 12;
-	constexpr static double E_t2g = 13;
-	constexpr static double E_eg = 14;
+	constexpr static double E_d = 13;
 	class TestRadialFunction : public SlaterKosterState::RadialFunction{
 	public:
 		virtual TestRadialFunction* clone() const{
@@ -165,23 +164,18 @@ protected:
 			}
 		}
 
-		virtual std::complex<double> getOnSiteTerm(const std::string &orbital) const{
-			if(orbital.compare("s") == 0){
+		virtual std::complex<double> getOnSiteTerm(Orbital orbital) const{
+			switch(orbital){
+			case Orbital::s:
 				return E_s;
-			}
-			else if(orbital.compare("p") == 0){
+			case Orbital::p:
 				return E_p;
-			}
-			else if(orbital.compare("t2g") == 0){
-				return E_t2g;
-			}
-			else if(orbital.compare("eg") == 0){
-				return E_eg;
-			}
-			else{
+			case Orbital::d:
+				return E_d;
+			default:
 				TBTKExit(
 					"SlaterKosterStateTest::TestRadialFunction::getOnSiteTerm()",
-					"Unknown orbital '" << orbital << "'.",
+					"Unknown orbital.",
 					"This should never happen, contact the"
 					<< " developer."
 				);
@@ -1156,7 +1150,7 @@ TEST_F(SlaterKosterStateTest, getMatrixElement40){
 			std::complex<double> result
 				= d[i][0].getMatrixElement(d[j][0]);
 			if(i == j){
-				EXPECT_NEAR(real(result), E_t2g, EPSILON_100);
+				EXPECT_NEAR(real(result), E_d, EPSILON_100);
 			}
 			else{
 				double l = getL(positions[i], positions[j]);
@@ -1382,7 +1376,7 @@ TEST_F(SlaterKosterStateTest, getMatrixElement50){
 			std::complex<double> result
 				= d[i][1].getMatrixElement(d[j][1]);
 			if(i == j){
-				EXPECT_NEAR(real(result), E_t2g, EPSILON_100);
+				EXPECT_NEAR(real(result), E_d, EPSILON_100);
 			}
 			else{
 				double l = getL(positions[i], positions[j]);
@@ -1609,7 +1603,7 @@ TEST_F(SlaterKosterStateTest, getMatrixElement60){
 			std::complex<double> result
 				= d[i][2].getMatrixElement(d[j][2]);
 			if(i == j){
-				EXPECT_NEAR(real(result), E_t2g, EPSILON_100);
+				EXPECT_NEAR(real(result), E_d, EPSILON_100);
 			}
 			else{
 				double l = getL(positions[i], positions[j]);
@@ -1835,7 +1829,7 @@ TEST_F(SlaterKosterStateTest, getMatrixElement70){
 			std::complex<double> result
 				= d[i][3].getMatrixElement(d[j][3]);
 			if(i == j){
-				EXPECT_NEAR(real(result), E_eg, EPSILON_100);
+				EXPECT_NEAR(real(result), E_d, EPSILON_100);
 			}
 			else{
 				double l = getL(positions[i], positions[j]);
@@ -2065,7 +2059,7 @@ TEST_F(SlaterKosterStateTest, getMatrixElement80){
 			std::complex<double> result
 				= d[i][4].getMatrixElement(d[j][4]);
 			if(i == j){
-				EXPECT_NEAR(real(result), E_eg, EPSILON_100);
+				EXPECT_NEAR(real(result), E_d, EPSILON_100);
 			}
 			else{
 				double l = getL(positions[i], positions[j]);

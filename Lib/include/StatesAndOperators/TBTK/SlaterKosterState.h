@@ -83,12 +83,12 @@ public:
 		 *  energies for the s, p, eg, and t2g basis functions.
 		 *
 		 *  @param orbital The orbital to return the value for. The
-		 *  implementing class should accept the inputs "s", "p", "eg",
+		 *  implementing class should accept the inputs "s", "p", "d",
 		 *  and "t2g".
 		 *
 		 *  @return The on-site energy for the given orbital. */
 		virtual std::complex<double> getOnSiteTerm(
-			const std::string &orbital
+			Orbital orbital
 		) const = 0;
 	};
 
