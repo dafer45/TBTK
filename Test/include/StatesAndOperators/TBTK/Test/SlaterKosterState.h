@@ -23,56 +23,55 @@ protected:
 	constexpr static double E_s = 11;
 	constexpr static double E_p = 12;
 	constexpr static double E_d = 13;
-	class TestRadialFunction : public SlaterKosterState::RadialFunction{
+	class TestParametrization : public SlaterKosterState::Parametrization{
 	public:
-		virtual TestRadialFunction* clone() const{
-			return new TestRadialFunction();
+		virtual TestParametrization* clone() const{
+			return new TestParametrization();
 		}
 
-		virtual std::complex<double> operator()(
+		virtual std::complex<double> getParameter(
 			double distance,
-			SlaterKosterState::RadialFunction::Orbital orbital0,
-			SlaterKosterState::RadialFunction::Orbital orbital1,
-			SlaterKosterState::RadialFunction::Bond bond
+			SlaterKosterState::Parametrization::Orbital orbital0,
+			SlaterKosterState::Parametrization::Orbital orbital1,
+			SlaterKosterState::Parametrization::Bond bond
 		) const{
-//			Streams::out << static_cast<int>(orbital0) << "\t" << static_cast<int>(orbital1) << "\t" << static_cast<int>(bond) << "\n";
 			double R = 2 - distance;
 			switch(orbital0){
-			case SlaterKosterState::RadialFunction::Orbital::s:
+			case SlaterKosterState::Parametrization::Orbital::s:
 				switch(orbital1){
-				case SlaterKosterState::RadialFunction::Orbital::s:
+				case SlaterKosterState::Parametrization::Orbital::s:
 					switch(bond){
-					case SlaterKosterState::RadialFunction::Bond::Sigma:
+					case SlaterKosterState::Parametrization::Bond::Sigma:
 						return V_ssS*R;
 					default:
 						TBTKExit(
-							"SlaterKosterStateTest::TestRadialFunction::operator()",
+							"SlaterKosterStateTest::TestParametrization::operator()",
 							"Unknown orbital.",
 							"This should never"
 							<< " happen, contact"
 							<< " the developer."
 						);
 					}
-				case SlaterKosterState::RadialFunction::Orbital::p:
+				case SlaterKosterState::Parametrization::Orbital::p:
 					switch(bond){
-					case SlaterKosterState::RadialFunction::Bond::Sigma:
+					case SlaterKosterState::Parametrization::Bond::Sigma:
 						return V_spS*R;
 					default:
 						TBTKExit(
-							"SlaterKosterStateTest::TestRadialFunction::operator()",
+							"SlaterKosterStateTest::TestParametrization::operator()",
 							"Unknown orbital.",
 							"This should never"
 							<< " happen, contact"
 							<< " the developer."
 						);
 					}
-				case SlaterKosterState::RadialFunction::Orbital::d:
+				case SlaterKosterState::Parametrization::Orbital::d:
 					switch(bond){
-					case SlaterKosterState::RadialFunction::Bond::Sigma:
+					case SlaterKosterState::Parametrization::Bond::Sigma:
 						return V_sdS*R;
 					default:
 						TBTKExit(
-							"SlaterKosterStateTest::TestRadialFunction::operator()",
+							"SlaterKosterStateTest::TestParametrization::operator()",
 							"Unknown orbital.",
 							"This should never"
 							<< " happen, contact"
@@ -81,38 +80,38 @@ protected:
 					}
 				default:
 					TBTKExit(
-						"SlaterKosterStateTest::TestRadialFunction::operator()",
+						"SlaterKosterStateTest::TestParametrization::operator()",
 						"Unknown orbital.",
 						"This should never happen, contact the"
 						<< " developer."
 					);
 				}
-			case SlaterKosterState::RadialFunction::Orbital::p:
+			case SlaterKosterState::Parametrization::Orbital::p:
 				switch(orbital1){
-				case SlaterKosterState::RadialFunction::Orbital::p:
+				case SlaterKosterState::Parametrization::Orbital::p:
 					switch(bond){
-					case SlaterKosterState::RadialFunction::Bond::Sigma:
+					case SlaterKosterState::Parametrization::Bond::Sigma:
 						return V_ppS*R;
-					case SlaterKosterState::RadialFunction::Bond::Pi:
+					case SlaterKosterState::Parametrization::Bond::Pi:
 						return V_ppP*R;
 					default:
 						TBTKExit(
-							"SlaterKosterStateTest::TestRadialFunction::operator()",
+							"SlaterKosterStateTest::TestParametrization::operator()",
 							"Unknown orbital.",
 							"This should never"
 							<< " happen, contact"
 							<< " the developer."
 						);
 					}
-				case SlaterKosterState::RadialFunction::Orbital::d:
+				case SlaterKosterState::Parametrization::Orbital::d:
 					switch(bond){
-					case SlaterKosterState::RadialFunction::Bond::Sigma:
+					case SlaterKosterState::Parametrization::Bond::Sigma:
 						return V_pdS*R;
-					case SlaterKosterState::RadialFunction::Bond::Pi:
+					case SlaterKosterState::Parametrization::Bond::Pi:
 						return V_pdP*R;
 					default:
 						TBTKExit(
-							"SlaterKosterStateTest::TestRadialFunction::operator()",
+							"SlaterKosterStateTest::TestParametrization::operator()",
 							"Unknown orbital.",
 							"This should never"
 							<< " happen, contact"
@@ -121,25 +120,25 @@ protected:
 					}
 				default:
 					TBTKExit(
-						"SlaterKosterStateTest::TestRadialFunction::operator()",
+						"SlaterKosterStateTest::TestParametrization::operator()",
 						"Unknown orbital.",
 						"This should never happen, contact the"
 						<< " developer."
 					);
 				}
-			case SlaterKosterState::RadialFunction::Orbital::d:
+			case SlaterKosterState::Parametrization::Orbital::d:
 				switch(orbital1){
-				case SlaterKosterState::RadialFunction::Orbital::d:
+				case SlaterKosterState::Parametrization::Orbital::d:
 					switch(bond){
-					case SlaterKosterState::RadialFunction::Bond::Sigma:
+					case SlaterKosterState::Parametrization::Bond::Sigma:
 						return V_ddS*R;
-					case SlaterKosterState::RadialFunction::Bond::Pi:
+					case SlaterKosterState::Parametrization::Bond::Pi:
 						return V_ddP*R;
-					case SlaterKosterState::RadialFunction::Bond::Delta:
+					case SlaterKosterState::Parametrization::Bond::Delta:
 						return V_ddD*R;
 					default:
 						TBTKExit(
-							"SlaterKosterStateTest::TestRadialFunction::operator()",
+							"SlaterKosterStateTest::TestParametrization::operator()",
 							"Unknown orbital.",
 							"This should never"
 							<< " happen, contact"
@@ -148,7 +147,7 @@ protected:
 					}
 				default:
 					TBTKExit(
-						"SlaterKosterStateTest::TestRadialFunction::operator()",
+						"SlaterKosterStateTest::TestParametrization::operator()",
 						"Unknown orbital.",
 						"This should never happen, contact the"
 						<< " developer."
@@ -156,7 +155,7 @@ protected:
 				}
 			default:
 				TBTKExit(
-					"SlaterKosterStateTest::TestRadialFunction::operator()",
+					"SlaterKosterStateTest::TestParametrization::operator()",
 					"Unknown orbital.",
 					"This should never happen, contact the"
 					<< " developer."
@@ -174,7 +173,7 @@ protected:
 				return E_d;
 			default:
 				TBTKExit(
-					"SlaterKosterStateTest::TestRadialFunction::getOnSiteTerm()",
+					"SlaterKosterStateTest::TestParametirzation::getOnSiteTerm()",
 					"Unknown orbital.",
 					"This should never happen, contact the"
 					<< " developer."
@@ -193,47 +192,47 @@ protected:
 			s[n][0] = SlaterKosterState(
 				positions[n],
 				"s",
-				TestRadialFunction()
+				TestParametrization()
 			);
 			p[n][0] = SlaterKosterState(
 				positions[n],
 				"x",
-				TestRadialFunction()
+				TestParametrization()
 			);
 			p[n][1] = SlaterKosterState(
 				positions[n],
 				"y",
-				TestRadialFunction()
+				TestParametrization()
 			);
 			p[n][2] = SlaterKosterState(
 				positions[n],
 				"z",
-				TestRadialFunction()
+				TestParametrization()
 			);
 			d[n][0] = SlaterKosterState(
 				positions[n],
 				"xy",
-				TestRadialFunction()
+				TestParametrization()
 			);
 			d[n][1] = SlaterKosterState(
 				positions[n],
 				"yz",
-				TestRadialFunction()
+				TestParametrization()
 			);
 			d[n][2] = SlaterKosterState(
 				positions[n],
 				"zx",
-				TestRadialFunction()
+				TestParametrization()
 			);
 			d[n][3] = SlaterKosterState(
 				positions[n],
 				"x^2-y^2",
-				TestRadialFunction()
+				TestParametrization()
 			);
 			d[n][4] = SlaterKosterState(
 				positions[n],
 				"3z^2-r^2",
-				TestRadialFunction()
+				TestParametrization()
 			);
 		}
 	}

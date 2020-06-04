@@ -37,10 +37,10 @@ namespace TBTK{
 /** @brief Slater-Koster @link AbstractState State@endlink. */
 class SlaterKosterState : public AbstractState{
 public:
-	/** The RadialFunction provides an interface for implementing the
+	/** The Parametrization provides an interface for implementing the
 	 *  radial behavior of the Slater-Koster parameters. The derived
 	 *  class must implement clone() and operator(). */
-	class RadialFunction{
+	class Parametrization{
 	public:
 		/** Enum class for specifying the orbital type. */
 		enum class Orbital{s, p, d};
@@ -49,17 +49,18 @@ public:
 		enum class Bond{Sigma, Pi, Delta};
 
 		/** Destructor. */
-		virtual ~RadialFunction();
+		virtual ~Parametrization();
 
 		/** The derived class should return a clone of the
 		 *  corresponding object.
 		 *
 		 *  @return A pointer to a clone of the object. */
-		virtual RadialFunction* clone() const = 0;
+		virtual Parametrization* clone() const = 0;
 
-		/** Function call operator. The derived class must implement
-		 *  this function to be possible to use together with a
-		 *  SlaterKosterState. The function should return the
+		/** Get the Slater-Koster parameter for a given distance,
+		 *  orbital, and bond combination. The derived class must
+		 *  implement this function to be possible to use together with
+		 *  a SlaterKosterState. The function should return the
 		 *  Slater-Koster parameter \f$V_{o_1o_2b}\f$, where \f$o_1\f$
 		 *  and \f$o_2\f$ are orbital indices and \f$b\f$ is a bond
 		 *  type.
@@ -70,7 +71,7 @@ public:
 		 *  @param orbital0 The orbital type of the first state.
 		 *  @param orbital1 The orbital type of the second state.
 		 *  @param bond The bond type. */
-		virtual std::complex<double> operator()(
+		virtual std::complex<double> getParameter(
 			double distance,
 			Orbital orbital0,
 			Orbital orbital1,
@@ -80,11 +81,9 @@ public:
 		/** Get on-site term. The derived class must implement this
 		 *  function to be possible to use together with a
 		 *  SlaterKosterState. The function should return the on-site
-		 *  energies for the s, p, eg, and t2g basis functions.
+		 *  energies for the s, p, and d orbitals.
 		 *
-		 *  @param orbital The orbital to return the value for. The
-		 *  implementing class should accept the inputs "s", "p", "d",
-		 *  and "t2g".
+		 *  @param orbital The orbital to return the value for.
 		 *
 		 *  @return The on-site energy for the given orbital. */
 		virtual std::complex<double> getOnSiteTerm(
@@ -98,7 +97,7 @@ public:
 	SlaterKosterState(
 		const Vector3d &position,
 		const std::string &orbital,
-		const RadialFunction &radialFunction
+		const Parametrization &parametrization
 	);
 
 	/** Copy constructor. */
@@ -131,14 +130,14 @@ private:
 	/** Orbital. */
 	Orbital orbital;
 
-	/** Radial function. */
-	RadialFunction *radialFunction;
+	/** Parametrization. */
+	Parametrization *parametrization;
 
 	/** Constructor. */
 	SlaterKosterState(
 		const Vector3d &position,
 		Orbital orbital,
-		const RadialFunction &radialFunction
+		const Parametrization &parametrization
 	);
 
 	/** Convert string to orbital. */

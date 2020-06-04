@@ -30,31 +30,31 @@ namespace TBTK{
 SlaterKosterState::SlaterKosterState(
 ) :
 	AbstractState(AbstractState::StateID::SlaterKoster),
-	radialFunction(nullptr)
+	parametrization(nullptr)
 {
 }
 
 SlaterKosterState::SlaterKosterState(
 	const Vector3d &position,
 	const string &orbital,
-	const RadialFunction &radialFunction
+	const Parametrization &parametrization
 ) :
 	AbstractState(AbstractState::StateID::SlaterKoster),
 	position(position),
 	orbital(getOrbital(orbital)),
-	radialFunction(radialFunction.clone())
+	parametrization(parametrization.clone())
 {
 }
 
 SlaterKosterState::SlaterKosterState(
 	const Vector3d &position,
 	Orbital orbital,
-	const RadialFunction &radialFunction
+	const Parametrization &parametrization
 ) :
 	AbstractState(AbstractState::StateID::SlaterKoster),
 	position(position),
 	orbital(orbital),
-	radialFunction(radialFunction.clone())
+	parametrization(parametrization.clone())
 {
 }
 
@@ -65,15 +65,15 @@ SlaterKosterState::SlaterKosterState(
 	position(slaterKosterState.position),
 	orbital(slaterKosterState.orbital)
 {
-	if(slaterKosterState.radialFunction == nullptr)
-		radialFunction = nullptr;
+	if(slaterKosterState.parametrization == nullptr)
+		parametrization = nullptr;
 	else
-		radialFunction = slaterKosterState.radialFunction->clone();
+		parametrization = slaterKosterState.parametrization->clone();
 }
 
 SlaterKosterState::~SlaterKosterState(){
-	if(radialFunction != nullptr)
-		delete radialFunction;
+	if(parametrization != nullptr)
+		delete parametrization;
 }
 
 SlaterKosterState& SlaterKosterState::operator=(const SlaterKosterState &rhs){
@@ -81,20 +81,20 @@ SlaterKosterState& SlaterKosterState::operator=(const SlaterKosterState &rhs){
 		position = rhs.position;
 		orbital = rhs.orbital;
 
-		if(radialFunction != nullptr)
-			delete radialFunction;
+		if(parametrization != nullptr)
+			delete parametrization;
 
-		if(rhs.radialFunction == nullptr)
-			radialFunction = nullptr;
+		if(rhs.parametrization == nullptr)
+			parametrization = nullptr;
 		else
-			radialFunction = rhs.radialFunction->clone();
+			parametrization = rhs.parametrization->clone();
 	}
 
 	return *this;
 }
 
 SlaterKosterState* SlaterKosterState::clone() const{
-	return new SlaterKosterState(position, orbital, *radialFunction);
+	return new SlaterKosterState(position, orbital, *parametrization);
 }
 
 complex<double> SlaterKosterState::getOverlap(const AbstractState &bra) const{
@@ -119,22 +119,22 @@ complex<double> SlaterKosterState::getMatrixElement(
 			return 0;
 		switch(orbital){
 		case Orbital::s:
-			return radialFunction->getOnSiteTerm(
-				RadialFunction::Orbital::s
+			return parametrization->getOnSiteTerm(
+				Parametrization::Orbital::s
 			);
 		case Orbital::x:
 		case Orbital::y:
 		case Orbital::z:
-			return radialFunction->getOnSiteTerm(
-				RadialFunction::Orbital::p
+			return parametrization->getOnSiteTerm(
+				Parametrization::Orbital::p
 			);
 		case Orbital::xy:
 		case Orbital::yz:
 		case Orbital::zx:
 		case Orbital::x2my2:
 		case Orbital::z2mr2:
-			return radialFunction->getOnSiteTerm(
-				RadialFunction::Orbital::d
+			return parametrization->getOnSiteTerm(
+				Parametrization::Orbital::d
 			);
 		}
 	}
@@ -146,67 +146,67 @@ complex<double> SlaterKosterState::getMatrixElement(
 	case Orbital::s:
 		switch(orbital){
 		case Orbital::s:
-			return (*radialFunction)(
+			return parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::s,
-				RadialFunction::Orbital::s,
-				RadialFunction::Bond::Sigma
+				Parametrization::Orbital::s,
+				Parametrization::Orbital::s,
+				Parametrization::Bond::Sigma
 			);
 		case Orbital::x:
-			return l*(*radialFunction)(
+			return l*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::s,
-				RadialFunction::Orbital::p,
-				RadialFunction::Bond::Sigma
+				Parametrization::Orbital::s,
+				Parametrization::Orbital::p,
+				Parametrization::Bond::Sigma
 			);
 		case Orbital::y:
-			return m*(*radialFunction)(
+			return m*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::s,
-				RadialFunction::Orbital::p,
-				RadialFunction::Bond::Sigma
+				Parametrization::Orbital::s,
+				Parametrization::Orbital::p,
+				Parametrization::Bond::Sigma
 			);
 		case Orbital::z:
-			return n*(*radialFunction)(
+			return n*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::s,
-				RadialFunction::Orbital::p,
-				RadialFunction::Bond::Sigma
+				Parametrization::Orbital::s,
+				Parametrization::Orbital::p,
+				Parametrization::Bond::Sigma
 			);
 		case Orbital::xy:
-			return sqrt(3.)*l*m*(*radialFunction)(
+			return sqrt(3.)*l*m*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::s,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
+				Parametrization::Orbital::s,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
 			);
 		case Orbital::yz:
-			return sqrt(3.)*m*n*(*radialFunction)(
+			return sqrt(3.)*m*n*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::s,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
+				Parametrization::Orbital::s,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
 			);
 		case Orbital::zx:
-			return sqrt(3.)*n*l*(*radialFunction)(
+			return sqrt(3.)*n*l*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::s,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
+				Parametrization::Orbital::s,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
 			);
 		case Orbital::x2my2:
-			return (sqrt(3.)/2.)*(l*l - m*m)*(*radialFunction)(
+			return (sqrt(3.)/2.)*(l*l - m*m)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::s,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
+				Parametrization::Orbital::s,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
 			);
 		case Orbital::z2mr2:
-			return (n*n - (l*l + m*m)/2.)*(*radialFunction)(
+			return (n*n - (l*l + m*m)/2.)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::s,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
+				Parametrization::Orbital::s,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
 			);
 		default:
 			TBTKExit(
@@ -219,107 +219,107 @@ complex<double> SlaterKosterState::getMatrixElement(
 	case Orbital::x:
 		switch(orbital){
 		case Orbital::s:
-			return -l*(*radialFunction)(
+			return -l*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::s,
-				RadialFunction::Orbital::p,
-				RadialFunction::Bond::Sigma
+				Parametrization::Orbital::s,
+				Parametrization::Orbital::p,
+				Parametrization::Bond::Sigma
 			);
 		case Orbital::x:
-			return l*l*(*radialFunction)(
+			return l*l*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::p,
-				RadialFunction::Bond::Sigma
-			) + (1 - l*l)*(*radialFunction)(
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::p,
+				Parametrization::Bond::Sigma
+			) + (1 - l*l)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::p,
-				RadialFunction::Bond::Pi
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::p,
+				Parametrization::Bond::Pi
 			);
 		case Orbital::y:
-			return l*m*(*radialFunction)(
+			return l*m*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::p,
-				RadialFunction::Bond::Sigma
-			) - l*m*(*radialFunction)(
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::p,
+				Parametrization::Bond::Sigma
+			) - l*m*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::p,
-				RadialFunction::Bond::Pi
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::p,
+				Parametrization::Bond::Pi
 			);
 		case Orbital::z:
-			return l*n*(*radialFunction)(
+			return l*n*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::p,
-				RadialFunction::Bond::Sigma
-			) - l*n*(*radialFunction)(
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::p,
+				Parametrization::Bond::Sigma
+			) - l*n*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::p,
-				RadialFunction::Bond::Pi
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::p,
+				Parametrization::Bond::Pi
 			);
 		case Orbital::xy:
-			return sqrt(3.)*l*l*m*(*radialFunction)(
+			return sqrt(3.)*l*l*m*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
-			) + m*(1 - 2*l*l)*(*radialFunction)(
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
+			) + m*(1 - 2*l*l)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Pi
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Pi
 			);
 		case Orbital::yz:
-			return sqrt(3.)*l*m*n*(*radialFunction)(
+			return sqrt(3.)*l*m*n*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
-			) - 2*l*m*n*(*radialFunction)(
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
+			) - 2*l*m*n*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Pi
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Pi
 			);
 		case Orbital::zx:
-			return sqrt(3.)*l*l*n*(*radialFunction)(
+			return sqrt(3.)*l*l*n*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
-			) + n*(1 - 2*l*l)*(*radialFunction)(
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
+			) + n*(1 - 2*l*l)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Pi
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Pi
 			);
 		case Orbital::x2my2:
-			return (sqrt(3.)/2.)*l*(l*l - m*m)*(*radialFunction)(
+			return (sqrt(3.)/2.)*l*(l*l - m*m)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
-			) + l*(1 - l*l + m*m)*(*radialFunction)(
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
+			) + l*(1 - l*l + m*m)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Pi
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Pi
 			);
 		case Orbital::z2mr2:
-			return l*(n*n - (l*l + m*m)/2.)*(*radialFunction)(
+			return l*(n*n - (l*l + m*m)/2.)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
-			) - sqrt(3.)*l*n*n*(*radialFunction)(
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
+			) - sqrt(3.)*l*n*n*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Pi
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Pi
 			);
 		default:
 			TBTKExit(
@@ -332,107 +332,107 @@ complex<double> SlaterKosterState::getMatrixElement(
 	case Orbital::y:
 		switch(orbital){
 		case Orbital::s:
-			return -m*(*radialFunction)(
+			return -m*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::s,
-				RadialFunction::Orbital::p,
-				RadialFunction::Bond::Sigma
+				Parametrization::Orbital::s,
+				Parametrization::Orbital::p,
+				Parametrization::Bond::Sigma
 			);
 		case Orbital::x:
-			return m*l*(*radialFunction)(
+			return m*l*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::p,
-				RadialFunction::Bond::Sigma
-			) - m*l*(*radialFunction)(
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::p,
+				Parametrization::Bond::Sigma
+			) - m*l*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::p,
-				RadialFunction::Bond::Pi
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::p,
+				Parametrization::Bond::Pi
 			);
 		case Orbital::y:
-			return m*m*(*radialFunction)(
+			return m*m*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::p,
-				RadialFunction::Bond::Sigma
-			) + (1 - m*m)*(*radialFunction)(
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::p,
+				Parametrization::Bond::Sigma
+			) + (1 - m*m)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::p,
-				RadialFunction::Bond::Pi
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::p,
+				Parametrization::Bond::Pi
 			);
 		case Orbital::z:
-			return m*n*(*radialFunction)(
+			return m*n*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::p,
-				RadialFunction::Bond::Sigma
-			) - m*n*(*radialFunction)(
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::p,
+				Parametrization::Bond::Sigma
+			) - m*n*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::p,
-				RadialFunction::Bond::Pi
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::p,
+				Parametrization::Bond::Pi
 			);
 		case Orbital::xy:
-			return sqrt(3.)*m*m*l*(*radialFunction)(
+			return sqrt(3.)*m*m*l*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
-			) + l*(1 - 2*m*m)*(*radialFunction)(
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
+			) + l*(1 - 2*m*m)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Pi
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Pi
 			);
 		case Orbital::yz:
-			return sqrt(3.)*m*m*n*(*radialFunction)(
+			return sqrt(3.)*m*m*n*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
-			) + n*(1 - 2*m*m)*(*radialFunction)(
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
+			) + n*(1 - 2*m*m)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Pi
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Pi
 			);
 		case Orbital::zx:
-			return sqrt(3.)*m*n*l*(*radialFunction)(
+			return sqrt(3.)*m*n*l*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
-			) - 2*m*n*l*(*radialFunction)(
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
+			) - 2*m*n*l*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Pi
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Pi
 			);
 		case Orbital::x2my2:
-			return (sqrt(3.)/2.)*m*(l*l - m*m)*(*radialFunction)(
+			return (sqrt(3.)/2.)*m*(l*l - m*m)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
-			) - m*(1 + l*l - m*m)*(*radialFunction)(
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
+			) - m*(1 + l*l - m*m)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Pi
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Pi
 			);
 		case Orbital::z2mr2:
-			return m*(n*n - (l*l + m*m)/2.)*(*radialFunction)(
+			return m*(n*n - (l*l + m*m)/2.)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
-			) - sqrt(3.)*m*n*n*(*radialFunction)(
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
+			) - sqrt(3.)*m*n*n*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Pi
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Pi
 			);
 		default:
 			TBTKExit(
@@ -445,107 +445,107 @@ complex<double> SlaterKosterState::getMatrixElement(
 	case Orbital::z:
 		switch(orbital){
 		case Orbital::s:
-			return -n*(*radialFunction)(
+			return -n*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::s,
-				RadialFunction::Orbital::p,
-				RadialFunction::Bond::Sigma
+				Parametrization::Orbital::s,
+				Parametrization::Orbital::p,
+				Parametrization::Bond::Sigma
 			);
 		case Orbital::x:
-			return n*l*(*radialFunction)(
+			return n*l*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::p,
-				RadialFunction::Bond::Sigma
-			) - n*l*(*radialFunction)(
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::p,
+				Parametrization::Bond::Sigma
+			) - n*l*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::p,
-				RadialFunction::Bond::Pi
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::p,
+				Parametrization::Bond::Pi
 			);
 		case Orbital::y:
-			return n*m*(*radialFunction)(
+			return n*m*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::p,
-				RadialFunction::Bond::Sigma
-			) - n*m*(*radialFunction)(
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::p,
+				Parametrization::Bond::Sigma
+			) - n*m*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::p,
-				RadialFunction::Bond::Pi
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::p,
+				Parametrization::Bond::Pi
 			);
 		case Orbital::z:
-			return n*n*(*radialFunction)(
+			return n*n*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::p,
-				RadialFunction::Bond::Sigma
-			) + (1 - n*n)*(*radialFunction)(
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::p,
+				Parametrization::Bond::Sigma
+			) + (1 - n*n)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::p,
-				RadialFunction::Bond::Pi
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::p,
+				Parametrization::Bond::Pi
 			);
 		case Orbital::xy:
-			return sqrt(3.)*n*l*m*(*radialFunction)(
+			return sqrt(3.)*n*l*m*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
-			) - 2*n*l*m*(*radialFunction)(
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
+			) - 2*n*l*m*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Pi
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Pi
 			);
 		case Orbital::yz:
-			return sqrt(3.)*n*n*m*(*radialFunction)(
+			return sqrt(3.)*n*n*m*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
-			) + m*(1 - 2*n*n)*(*radialFunction)(
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
+			) + m*(1 - 2*n*n)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Pi
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Pi
 			);
 		case Orbital::zx:
-			return sqrt(3.)*n*n*l*(*radialFunction)(
+			return sqrt(3.)*n*n*l*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
-			) + l*(1 - 2*n*n)*(*radialFunction)(
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
+			) + l*(1 - 2*n*n)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Pi
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Pi
 			);
 		case Orbital::x2my2:
-			return (sqrt(3.)/2.)*n*(l*l - m*m)*(*radialFunction)(
+			return (sqrt(3.)/2.)*n*(l*l - m*m)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
-			) - n*(l*l - m*m)*(*radialFunction)(
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
+			) - n*(l*l - m*m)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Pi
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Pi
 			);
 		case Orbital::z2mr2:
-			return n*(n*n - (l*l + m*m)/2.)*(*radialFunction)(
+			return n*(n*n - (l*l + m*m)/2.)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
-			) + sqrt(3.)*n*(l*l + m*m)*(*radialFunction)(
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
+			) + sqrt(3.)*n*(l*l + m*m)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Pi
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Pi
 			);
 		default:
 			TBTKExit(
@@ -558,133 +558,133 @@ complex<double> SlaterKosterState::getMatrixElement(
 	case Orbital::xy:
 		switch(orbital){
 		case Orbital::s:
-			return sqrt(3.)*l*m*(*radialFunction)(
+			return sqrt(3.)*l*m*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::s,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
+				Parametrization::Orbital::s,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
 			);
 		case Orbital::x:
-			return -sqrt(3.)*l*l*m*(*radialFunction)(
+			return -sqrt(3.)*l*l*m*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
-			) - m*(1 - 2*l*l)*(*radialFunction)(
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
+			) - m*(1 - 2*l*l)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Pi
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Pi
 			);
 		case Orbital::y:
-			return -sqrt(3.)*m*m*l*(*radialFunction)(
+			return -sqrt(3.)*m*m*l*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
-			) - l*(1 - 2*m*m)*(*radialFunction)(
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
+			) - l*(1 - 2*m*m)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Pi
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Pi
 			);
 		case Orbital::z:
-			return -sqrt(3.)*n*l*m*(*radialFunction)(
+			return -sqrt(3.)*n*l*m*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
-			) + 2*n*l*m*(*radialFunction)(
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
+			) + 2*n*l*m*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Pi
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Pi
 			);
 		case Orbital::xy:
-			return 3*l*l*m*m*(*radialFunction)(
+			return 3*l*l*m*m*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::d,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
-			) + (l*l + m*m - 4*l*l*m*m)*(*radialFunction)(
+				Parametrization::Orbital::d,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
+			) + (l*l + m*m - 4*l*l*m*m)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::d,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Pi
-			) + (n*n + l*l*m*m)*(*radialFunction)(
+				Parametrization::Orbital::d,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Pi
+			) + (n*n + l*l*m*m)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::d,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Delta
+				Parametrization::Orbital::d,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Delta
 			);
 		case Orbital::yz:
-			return 3*l*m*m*n*(*radialFunction)(
+			return 3*l*m*m*n*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::d,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
-			) + l*n*(1 - 4*m*m)*(*radialFunction)(
+				Parametrization::Orbital::d,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
+			) + l*n*(1 - 4*m*m)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::d,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Pi
-			) + l*n*(m*m - 1)*(*radialFunction)(
+				Parametrization::Orbital::d,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Pi
+			) + l*n*(m*m - 1)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::d,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Delta
+				Parametrization::Orbital::d,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Delta
 			);
 		case Orbital::zx:
-			return 3*l*l*m*n*(*radialFunction)(
+			return 3*l*l*m*n*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::d,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
-			) + m*n*(1 - 4*l*l)*(*radialFunction)(
+				Parametrization::Orbital::d,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
+			) + m*n*(1 - 4*l*l)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::d,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Pi
-			) + m*n*(l*l - 1)*(*radialFunction)(
+				Parametrization::Orbital::d,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Pi
+			) + m*n*(l*l - 1)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::d,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Delta
+				Parametrization::Orbital::d,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Delta
 			);
 		case Orbital::x2my2:
-			return (3./2.)*l*m*(l*l - m*m)*(*radialFunction)(
+			return (3./2.)*l*m*(l*l - m*m)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::d,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
-			) + 2*l*m*(m*m - l*l)*(*radialFunction)(
+				Parametrization::Orbital::d,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
+			) + 2*l*m*(m*m - l*l)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::d,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Pi
-			) + (l*m*(l*l - m*m)/2.)*(*radialFunction)(
+				Parametrization::Orbital::d,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Pi
+			) + (l*m*(l*l - m*m)/2.)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::d,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Delta
+				Parametrization::Orbital::d,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Delta
 			);
 		case Orbital::z2mr2:
 			return sqrt(3.)*(
-				l*m*(n*n - (l*l + m*m)/2.)*(*radialFunction)(
+				l*m*(n*n - (l*l + m*m)/2.)*parametrization->getParameter(
 					distance,
-					RadialFunction::Orbital::d,
-					RadialFunction::Orbital::d,
-					RadialFunction::Bond::Sigma
-				) - 2*l*m*n*n*(*radialFunction)(
+					Parametrization::Orbital::d,
+					Parametrization::Orbital::d,
+					Parametrization::Bond::Sigma
+				) - 2*l*m*n*n*parametrization->getParameter(
 					distance,
-					RadialFunction::Orbital::d,
-					RadialFunction::Orbital::d,
-					RadialFunction::Bond::Pi
-				) + (l*m*(1 + n*n)/2.)*(*radialFunction)(
+					Parametrization::Orbital::d,
+					Parametrization::Orbital::d,
+					Parametrization::Bond::Pi
+				) + (l*m*(1 + n*n)/2.)*parametrization->getParameter(
 					distance,
-					RadialFunction::Orbital::d,
-					RadialFunction::Orbital::d,
-					RadialFunction::Bond::Delta
+					Parametrization::Orbital::d,
+					Parametrization::Orbital::d,
+					Parametrization::Bond::Delta
 				)
 			);
 		default:
@@ -698,133 +698,133 @@ complex<double> SlaterKosterState::getMatrixElement(
 	case Orbital::yz:
 		switch(orbital){
 		case Orbital::s:
-			return sqrt(3.)*m*n*(*radialFunction)(
+			return sqrt(3.)*m*n*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::s,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
+				Parametrization::Orbital::s,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
 			);
 		case Orbital::x:
-			return -sqrt(3.)*l*m*n*(*radialFunction)(
+			return -sqrt(3.)*l*m*n*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
-			) + 2*l*m*n*(*radialFunction)(
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
+			) + 2*l*m*n*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Pi
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Pi
 			);
 		case Orbital::y:
-			return -sqrt(3.)*m*m*n*(*radialFunction)(
+			return -sqrt(3.)*m*m*n*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
-			) - n*(1 - 2*m*m)*(*radialFunction)(
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
+			) - n*(1 - 2*m*m)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Pi
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Pi
 			);
 		case Orbital::z:
-			return -sqrt(3.)*n*n*m*(*radialFunction)(
+			return -sqrt(3.)*n*n*m*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
-			) - m*(1 - 2*n*n)*(*radialFunction)(
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
+			) - m*(1 - 2*n*n)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Pi
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Pi
 			);
 		case Orbital::xy:
-			return 3*l*m*m*n*(*radialFunction)(
+			return 3*l*m*m*n*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::d,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
-			) + l*n*(1 - 4*m*m)*(*radialFunction)(
+				Parametrization::Orbital::d,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
+			) + l*n*(1 - 4*m*m)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::d,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Pi
-			) + l*n*(m*m - 1)*(*radialFunction)(
+				Parametrization::Orbital::d,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Pi
+			) + l*n*(m*m - 1)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::d,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Delta
+				Parametrization::Orbital::d,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Delta
 			);
 		case Orbital::yz:
-			return 3*m*m*n*n*(*radialFunction)(
+			return 3*m*m*n*n*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::d,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
-			) + (m*m + n*n - 4*m*m*n*n)*(*radialFunction)(
+				Parametrization::Orbital::d,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
+			) + (m*m + n*n - 4*m*m*n*n)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::d,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Pi
-			) + (l*l + m*m*n*n)*(*radialFunction)(
+				Parametrization::Orbital::d,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Pi
+			) + (l*l + m*m*n*n)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::d,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Delta
+				Parametrization::Orbital::d,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Delta
 			);
 		case Orbital::zx:
-			return 3*m*n*n*l*(*radialFunction)(
+			return 3*m*n*n*l*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::d,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
-			) + m*l*(1 - 4*n*n)*(*radialFunction)(
+				Parametrization::Orbital::d,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
+			) + m*l*(1 - 4*n*n)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::d,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Pi
-			) + m*l*(n*n - 1)*(*radialFunction)(
+				Parametrization::Orbital::d,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Pi
+			) + m*l*(n*n - 1)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::d,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Delta
+				Parametrization::Orbital::d,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Delta
 			);
 		case Orbital::x2my2:
-			return (3./2.)*m*n*(l*l - m*m)*(*radialFunction)(
+			return (3./2.)*m*n*(l*l - m*m)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::d,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
-			) - m*n*(1 + 2*(l*l - m*m))*(*radialFunction)(
+				Parametrization::Orbital::d,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
+			) - m*n*(1 + 2*(l*l - m*m))*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::d,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Pi
-			) + m*n*(1 + (l*l - m*m)/2.)*(*radialFunction)(
+				Parametrization::Orbital::d,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Pi
+			) + m*n*(1 + (l*l - m*m)/2.)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::d,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Delta
+				Parametrization::Orbital::d,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Delta
 			);
 		case Orbital::z2mr2:
 			return sqrt(3.)*(
-				m*n*(n*n - (l*l + m*m)/2.)*(*radialFunction)(
+				m*n*(n*n - (l*l + m*m)/2.)*parametrization->getParameter(
 					distance,
-					RadialFunction::Orbital::d,
-					RadialFunction::Orbital::d,
-					RadialFunction::Bond::Sigma
-				) + m*n*(l*l + m*m - n*n)*(*radialFunction)(
+					Parametrization::Orbital::d,
+					Parametrization::Orbital::d,
+					Parametrization::Bond::Sigma
+				) + m*n*(l*l + m*m - n*n)*parametrization->getParameter(
 					distance,
-					RadialFunction::Orbital::d,
-					RadialFunction::Orbital::d,
-					RadialFunction::Bond::Pi
-				) - (m*n*(l*l + m*m)/2.)*(*radialFunction)(
+					Parametrization::Orbital::d,
+					Parametrization::Orbital::d,
+					Parametrization::Bond::Pi
+				) - (m*n*(l*l + m*m)/2.)*parametrization->getParameter(
 					distance,
-					RadialFunction::Orbital::d,
-					RadialFunction::Orbital::d,
-					RadialFunction::Bond::Delta
+					Parametrization::Orbital::d,
+					Parametrization::Orbital::d,
+					Parametrization::Bond::Delta
 				)
 			);
 		default:
@@ -838,133 +838,133 @@ complex<double> SlaterKosterState::getMatrixElement(
 	case Orbital::zx:
 		switch(orbital){
 		case Orbital::s:
-			return sqrt(3.)*n*l*(*radialFunction)(
+			return sqrt(3.)*n*l*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::s,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
+				Parametrization::Orbital::s,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
 			);
 		case Orbital::x:
-			return -sqrt(3.)*l*l*n*(*radialFunction)(
+			return -sqrt(3.)*l*l*n*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
-			) - n*(1 - 2*l*l)*(*radialFunction)(
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
+			) - n*(1 - 2*l*l)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Pi
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Pi
 			);
 		case Orbital::y:
-			return -sqrt(3.)*m*n*l*(*radialFunction)(
+			return -sqrt(3.)*m*n*l*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
-			) + 2*m*n*l*(*radialFunction)(
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
+			) + 2*m*n*l*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Pi
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Pi
 			);
 		case Orbital::z:
-			return -sqrt(3.)*n*n*l*(*radialFunction)(
+			return -sqrt(3.)*n*n*l*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
-			) - l*(1 - 2*n*n)*(*radialFunction)(
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
+			) - l*(1 - 2*n*n)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Pi
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Pi
 			);
 		case Orbital::xy:
-			return 3*l*l*m*n*(*radialFunction)(
+			return 3*l*l*m*n*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::d,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
-			) + m*n*(1 - 4*l*l)*(*radialFunction)(
+				Parametrization::Orbital::d,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
+			) + m*n*(1 - 4*l*l)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::d,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Pi
-			) + m*n*(l*l - 1)*(*radialFunction)(
+				Parametrization::Orbital::d,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Pi
+			) + m*n*(l*l - 1)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::d,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Delta
+				Parametrization::Orbital::d,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Delta
 			);
 		case Orbital::yz:
-			return 3*m*n*n*l*(*radialFunction)(
+			return 3*m*n*n*l*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::d,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
-			) + m*l*(1 - 4*n*n)*(*radialFunction)(
+				Parametrization::Orbital::d,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
+			) + m*l*(1 - 4*n*n)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::d,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Pi
-			) + m*l*(n*n - 1)*(*radialFunction)(
+				Parametrization::Orbital::d,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Pi
+			) + m*l*(n*n - 1)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::d,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Delta
+				Parametrization::Orbital::d,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Delta
 			);
 		case Orbital::zx:
-			return 3*n*n*l*l*(*radialFunction)(
+			return 3*n*n*l*l*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::d,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
-			) + (n*n + l*l - 4*n*n*l*l)*(*radialFunction)(
+				Parametrization::Orbital::d,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
+			) + (n*n + l*l - 4*n*n*l*l)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::d,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Pi
-			) + (m*m + n*n*l*l)*(*radialFunction)(
+				Parametrization::Orbital::d,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Pi
+			) + (m*m + n*n*l*l)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::d,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Delta
+				Parametrization::Orbital::d,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Delta
 			);
 		case Orbital::x2my2:
-			return (3./2.)*n*l*(l*l - m*m)*(*radialFunction)(
+			return (3./2.)*n*l*(l*l - m*m)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::d,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
-			) + n*l*(1 - 2*(l*l - m*m))*(*radialFunction)(
+				Parametrization::Orbital::d,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
+			) + n*l*(1 - 2*(l*l - m*m))*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::d,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Pi
-			) - n*l*(1 - (l*l - m*m)/2.)*(*radialFunction)(
+				Parametrization::Orbital::d,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Pi
+			) - n*l*(1 - (l*l - m*m)/2.)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::d,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Delta
+				Parametrization::Orbital::d,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Delta
 			);
 		case Orbital::z2mr2:
 			return sqrt(3.)*(
-				l*n*(n*n - (l*l + m*m)/2.)*(*radialFunction)(
+				l*n*(n*n - (l*l + m*m)/2.)*parametrization->getParameter(
 					distance,
-					RadialFunction::Orbital::d,
-					RadialFunction::Orbital::d,
-					RadialFunction::Bond::Sigma
-				) + l*n*(l*l + m*m - n*n)*(*radialFunction)(
+					Parametrization::Orbital::d,
+					Parametrization::Orbital::d,
+					Parametrization::Bond::Sigma
+				) + l*n*(l*l + m*m - n*n)*parametrization->getParameter(
 					distance,
-					RadialFunction::Orbital::d,
-					RadialFunction::Orbital::d,
-					RadialFunction::Bond::Pi
-				) - (l*n*(l*l + m*m)/2.)*(*radialFunction)(
+					Parametrization::Orbital::d,
+					Parametrization::Orbital::d,
+					Parametrization::Bond::Pi
+				) - (l*n*(l*l + m*m)/2.)*parametrization->getParameter(
 					distance,
-					RadialFunction::Orbital::d,
-					RadialFunction::Orbital::d,
-					RadialFunction::Bond::Delta
+					Parametrization::Orbital::d,
+					Parametrization::Orbital::d,
+					Parametrization::Bond::Delta
 				)
 			);
 		default:
@@ -978,133 +978,133 @@ complex<double> SlaterKosterState::getMatrixElement(
 	case Orbital::x2my2:
 		switch(orbital){
 		case Orbital::s:
-			return (sqrt(3.)/2.)*(l*l - m*m)*(*radialFunction)(
+			return (sqrt(3.)/2.)*(l*l - m*m)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::s,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
+				Parametrization::Orbital::s,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
 			);
 		case Orbital::x:
-			return -(sqrt(3.)/2.)*l*(l*l - m*m)*(*radialFunction)(
+			return -(sqrt(3.)/2.)*l*(l*l - m*m)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
-			) - l*(1 - l*l + m*m)*(*radialFunction)(
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
+			) - l*(1 - l*l + m*m)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Pi
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Pi
 			);
 		case Orbital::y:
-			return -(sqrt(3.)/2.)*m*(l*l - m*m)*(*radialFunction)(
+			return -(sqrt(3.)/2.)*m*(l*l - m*m)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
-			) + m*(1 + l*l - m*m)*(*radialFunction)(
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
+			) + m*(1 + l*l - m*m)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Pi
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Pi
 			);
 		case Orbital::z:
-			return -(sqrt(3.)/2.)*n*(l*l - m*m)*(*radialFunction)(
+			return -(sqrt(3.)/2.)*n*(l*l - m*m)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
-			) + n*(l*l - m*m)*(*radialFunction)(
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
+			) + n*(l*l - m*m)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Pi
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Pi
 			);
 		case Orbital::xy:
-			return (3./2.)*l*m*(l*l - m*m)*(*radialFunction)(
+			return (3./2.)*l*m*(l*l - m*m)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::d,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
-			) + 2*l*m*(m*m - l*l)*(*radialFunction)(
+				Parametrization::Orbital::d,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
+			) + 2*l*m*(m*m - l*l)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::d,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Pi
-			) + (l*m*(l*l - m*m)/2.)*(*radialFunction)(
+				Parametrization::Orbital::d,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Pi
+			) + (l*m*(l*l - m*m)/2.)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::d,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Delta
+				Parametrization::Orbital::d,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Delta
 			);
 		case Orbital::yz:
-			return (3./2.)*m*n*(l*l - m*m)*(*radialFunction)(
+			return (3./2.)*m*n*(l*l - m*m)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::d,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
-			) - m*n*(1 + 2*(l*l - m*m))*(*radialFunction)(
+				Parametrization::Orbital::d,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
+			) - m*n*(1 + 2*(l*l - m*m))*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::d,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Pi
-			) + m*n*(1 + (l*l - m*m)/2.)*(*radialFunction)(
+				Parametrization::Orbital::d,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Pi
+			) + m*n*(1 + (l*l - m*m)/2.)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::d,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Delta
+				Parametrization::Orbital::d,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Delta
 			);
 		case Orbital::zx:
-			return (3./2.)*n*l*(l*l - m*m)*(*radialFunction)(
+			return (3./2.)*n*l*(l*l - m*m)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::d,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
-			) + n*l*(1 - 2*(l*l - m*m))*(*radialFunction)(
+				Parametrization::Orbital::d,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
+			) + n*l*(1 - 2*(l*l - m*m))*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::d,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Pi
-			) - n*l*(1 - (l*l - m*m)/2.)*(*radialFunction)(
+				Parametrization::Orbital::d,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Pi
+			) - n*l*(1 - (l*l - m*m)/2.)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::d,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Delta
+				Parametrization::Orbital::d,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Delta
 			);
 		case Orbital::x2my2:
-			return (3./4.)*(l*l - m*m)*(l*l - m*m)*(*radialFunction)(
+			return (3./4.)*(l*l - m*m)*(l*l - m*m)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::d,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
-			) + (l*l + m*m - (l*l - m*m)*(l*l - m*m))*(*radialFunction)(
+				Parametrization::Orbital::d,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
+			) + (l*l + m*m - (l*l - m*m)*(l*l - m*m))*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::d,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Pi
-			) + (n*n + (l*l - m*m)*(l*l - m*m)/4.)*(*radialFunction)(
+				Parametrization::Orbital::d,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Pi
+			) + (n*n + (l*l - m*m)*(l*l - m*m)/4.)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::d,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Delta
+				Parametrization::Orbital::d,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Delta
 			);
 		case Orbital::z2mr2:
 			return sqrt(3.)*(
-				(l*l - m*m)*(n*n - (l*l + m*m)/2.)*(*radialFunction)(
+				(l*l - m*m)*(n*n - (l*l + m*m)/2.)*parametrization->getParameter(
 					distance,
-					RadialFunction::Orbital::d,
-					RadialFunction::Orbital::d,
-					RadialFunction::Bond::Sigma
-				)/2. + n*n*(m*m - l*l)*(*radialFunction)(
+					Parametrization::Orbital::d,
+					Parametrization::Orbital::d,
+					Parametrization::Bond::Sigma
+				)/2. + n*n*(m*m - l*l)*parametrization->getParameter(
 					distance,
-					RadialFunction::Orbital::d,
-					RadialFunction::Orbital::d,
-					RadialFunction::Bond::Pi
-				) + ((1 + n*n)*(l*l - m*m)/4.)*(*radialFunction)(
+					Parametrization::Orbital::d,
+					Parametrization::Orbital::d,
+					Parametrization::Bond::Pi
+				) + ((1 + n*n)*(l*l - m*m)/4.)*parametrization->getParameter(
 					distance,
-					RadialFunction::Orbital::d,
-					RadialFunction::Orbital::d,
-					RadialFunction::Bond::Delta
+					Parametrization::Orbital::d,
+					Parametrization::Orbital::d,
+					Parametrization::Bond::Delta
 				)
 			);
 		default:
@@ -1118,140 +1118,140 @@ complex<double> SlaterKosterState::getMatrixElement(
 	case Orbital::z2mr2:
 		switch(orbital){
 		case Orbital::s:
-			return (n*n - (l*l + m*m)/2.)*(*radialFunction)(
+			return (n*n - (l*l + m*m)/2.)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::s,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
+				Parametrization::Orbital::s,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
 			);
 		case Orbital::x:
-			return -l*(n*n - (l*l + m*m)/2.)*(*radialFunction)(
+			return -l*(n*n - (l*l + m*m)/2.)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
-			) + sqrt(3.)*l*n*n*(*radialFunction)(
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
+			) + sqrt(3.)*l*n*n*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Pi
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Pi
 			);
 		case Orbital::y:
-			return -m*(n*n - (l*l + m*m)/2.)*(*radialFunction)(
+			return -m*(n*n - (l*l + m*m)/2.)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
-			) + sqrt(3.)*m*n*n*(*radialFunction)(
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
+			) + sqrt(3.)*m*n*n*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Pi
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Pi
 			);
 		case Orbital::z:
-			return -n*(n*n - (l*l + m*m)/2.)*(*radialFunction)(
+			return -n*(n*n - (l*l + m*m)/2.)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
-			) - sqrt(3.)*n*(l*l + m*m)*(*radialFunction)(
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
+			) - sqrt(3.)*n*(l*l + m*m)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::p,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Pi
+				Parametrization::Orbital::p,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Pi
 			);
 		case Orbital::xy:
 			return sqrt(3.)*(
-				l*m*(n*n - (l*l + m*m)/2.)*(*radialFunction)(
+				l*m*(n*n - (l*l + m*m)/2.)*parametrization->getParameter(
 					distance,
-					RadialFunction::Orbital::d,
-					RadialFunction::Orbital::d,
-					RadialFunction::Bond::Sigma
-				) - 2*l*m*n*n*(*radialFunction)(
+					Parametrization::Orbital::d,
+					Parametrization::Orbital::d,
+					Parametrization::Bond::Sigma
+				) - 2*l*m*n*n*parametrization->getParameter(
 					distance,
-					RadialFunction::Orbital::d,
-					RadialFunction::Orbital::d,
-					RadialFunction::Bond::Pi
-				) + (l*m*(1 + n*n)/2.)*(*radialFunction)(
+					Parametrization::Orbital::d,
+					Parametrization::Orbital::d,
+					Parametrization::Bond::Pi
+				) + (l*m*(1 + n*n)/2.)*parametrization->getParameter(
 					distance,
-					RadialFunction::Orbital::d,
-					RadialFunction::Orbital::d,
-					RadialFunction::Bond::Delta
+					Parametrization::Orbital::d,
+					Parametrization::Orbital::d,
+					Parametrization::Bond::Delta
 				)
 			);
 		case Orbital::yz:
 			return sqrt(3.)*(
-				m*n*(n*n - (l*l + m*m)/2.)*(*radialFunction)(
+				m*n*(n*n - (l*l + m*m)/2.)*parametrization->getParameter(
 					distance,
-					RadialFunction::Orbital::d,
-					RadialFunction::Orbital::d,
-					RadialFunction::Bond::Sigma
-				) + m*n*(l*l + m*m - n*n)*(*radialFunction)(
+					Parametrization::Orbital::d,
+					Parametrization::Orbital::d,
+					Parametrization::Bond::Sigma
+				) + m*n*(l*l + m*m - n*n)*parametrization->getParameter(
 					distance,
-					RadialFunction::Orbital::d,
-					RadialFunction::Orbital::d,
-					RadialFunction::Bond::Pi
-				) - (m*n*(l*l + m*m)/2.)*(*radialFunction)(
+					Parametrization::Orbital::d,
+					Parametrization::Orbital::d,
+					Parametrization::Bond::Pi
+				) - (m*n*(l*l + m*m)/2.)*parametrization->getParameter(
 					distance,
-					RadialFunction::Orbital::d,
-					RadialFunction::Orbital::d,
-					RadialFunction::Bond::Delta
+					Parametrization::Orbital::d,
+					Parametrization::Orbital::d,
+					Parametrization::Bond::Delta
 				)
 			);
 		case Orbital::zx:
 			return sqrt(3.)*(
-				l*n*(n*n - (l*l + m*m)/2.)*(*radialFunction)(
+				l*n*(n*n - (l*l + m*m)/2.)*parametrization->getParameter(
 					distance,
-					RadialFunction::Orbital::d,
-					RadialFunction::Orbital::d,
-					RadialFunction::Bond::Sigma
-				) + l*n*(l*l + m*m - n*n)*(*radialFunction)(
+					Parametrization::Orbital::d,
+					Parametrization::Orbital::d,
+					Parametrization::Bond::Sigma
+				) + l*n*(l*l + m*m - n*n)*parametrization->getParameter(
 					distance,
-					RadialFunction::Orbital::d,
-					RadialFunction::Orbital::d,
-					RadialFunction::Bond::Pi
-				) - (l*n*(l*l + m*m)/2.)*(*radialFunction)(
+					Parametrization::Orbital::d,
+					Parametrization::Orbital::d,
+					Parametrization::Bond::Pi
+				) - (l*n*(l*l + m*m)/2.)*parametrization->getParameter(
 					distance,
-					RadialFunction::Orbital::d,
-					RadialFunction::Orbital::d,
-					RadialFunction::Bond::Delta
+					Parametrization::Orbital::d,
+					Parametrization::Orbital::d,
+					Parametrization::Bond::Delta
 				)
 			);
 		case Orbital::x2my2:
 			return sqrt(3.)*(
-				(l*l - m*m)*(n*n - (l*l + m*m)/2.)*(*radialFunction)(
+				(l*l - m*m)*(n*n - (l*l + m*m)/2.)*parametrization->getParameter(
 					distance,
-					RadialFunction::Orbital::d,
-					RadialFunction::Orbital::d,
-					RadialFunction::Bond::Sigma
-				)/2. + n*n*(m*m - l*l)*(*radialFunction)(
+					Parametrization::Orbital::d,
+					Parametrization::Orbital::d,
+					Parametrization::Bond::Sigma
+				)/2. + n*n*(m*m - l*l)*parametrization->getParameter(
 					distance,
-					RadialFunction::Orbital::d,
-					RadialFunction::Orbital::d,
-					RadialFunction::Bond::Pi
-				) + ((1 + n*n)*(l*l - m*m)/4.)*(*radialFunction)(
+					Parametrization::Orbital::d,
+					Parametrization::Orbital::d,
+					Parametrization::Bond::Pi
+				) + ((1 + n*n)*(l*l - m*m)/4.)*parametrization->getParameter(
 					distance,
-					RadialFunction::Orbital::d,
-					RadialFunction::Orbital::d,
-					RadialFunction::Bond::Delta
+					Parametrization::Orbital::d,
+					Parametrization::Orbital::d,
+					Parametrization::Bond::Delta
 				)
 			);
 		case Orbital::z2mr2:
-			return pow(n*n - (l*l + m*m)/2., 2)*(*radialFunction)(
+			return pow(n*n - (l*l + m*m)/2., 2)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::d,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Sigma
-			) + 3*n*n*(l*l + m*m)*(*radialFunction)(
+				Parametrization::Orbital::d,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Sigma
+			) + 3*n*n*(l*l + m*m)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::d,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Pi
-			) + (3./4.)*pow(l*l +m*m, 2)*(*radialFunction)(
+				Parametrization::Orbital::d,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Pi
+			) + (3./4.)*pow(l*l +m*m, 2)*parametrization->getParameter(
 				distance,
-				RadialFunction::Orbital::d,
-				RadialFunction::Orbital::d,
-				RadialFunction::Bond::Delta
+				Parametrization::Orbital::d,
+				Parametrization::Orbital::d,
+				Parametrization::Bond::Delta
 			);
 		default:
 			TBTKExit(
@@ -1300,7 +1300,7 @@ SlaterKosterState::Orbital SlaterKosterState::getOrbital(
 	);
 }
 
-SlaterKosterState::RadialFunction::~RadialFunction(){
+SlaterKosterState::Parametrization::~Parametrization(){
 }
 
 };	//End of namespace TBTK
