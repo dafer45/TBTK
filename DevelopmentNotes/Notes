@@ -13,3 +13,12 @@
   AbstractProperty::serialize<bool, true, false>(). The refference is first
   explicitly converted to a bool before being passed to the push_back()
   function.
+
+- It would be good if a scheme that would enforce that PersistentObject always
+  is virtually inherited and that all deriving classes would include the
+  TBTK_DYNAMIC_TYPE_INFORMATION. Currently nothing is done to enforce virtual
+  inheritance. That TBTK_DYNAMIC_TYPE_INFORMATION is declared in every deriving
+  class is weakly enforced by checking that typeid(DataType).name() and
+  DataType::getTypeidName() are equal when used in Context::create(). This
+  means that any object that is ever create in the Context will be checked to
+  have its class declare TBTK_DYNAMIC_TYPE_INFORMATION.

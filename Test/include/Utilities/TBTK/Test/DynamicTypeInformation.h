@@ -9,18 +9,21 @@ namespace TBTK{
 
 class BaseA{
 public:
-	TBTK_DYNAMIC_TYPE_INFORMATION
+	TBTK_DYNAMIC_TYPE_INFORMATION(BaseA)
 private:
 };
 
 class BaseB{
 public:
-	TBTK_DYNAMIC_TYPE_INFORMATION
+	TBTK_DYNAMIC_TYPE_INFORMATION(BaseB)
 private:
 };
 
 class Derived : public BaseA, public BaseB{
-	TBTK_DYNAMIC_TYPE_INFORMATION
+	TBTK_DYNAMIC_TYPE_INFORMATION(Derived)
+};
+
+class MissingMacro : public Derived{
 };
 
 DynamicTypeInformation BaseA::dynamicTypeInformation("BaseA", {});
@@ -72,6 +75,16 @@ TEST(DynamicTypeInformation, getParent0){
 	EXPECT_EQ(
 		Derived::dynamicTypeInformation.getParent(1).getName(),
 		"BaseB"
+	);
+}
+
+//TBTKFeature Utilities:DynamicTypeInformation.getTypeidName.0 2020-06-06
+TEST(DynamicTypeInformation, getTypeidName0){
+	EXPECT_EQ(BaseA::getTypeidName(), typeid(BaseA).name());
+	EXPECT_EQ(BaseB::getTypeidName(), typeid(BaseB).name());
+	EXPECT_EQ(Derived::getTypeidName(), typeid(Derived).name());
+	EXPECT_FALSE(
+		MissingMacro::getTypeidName() == typeid(MissingMacro).name()
 	);
 }
 

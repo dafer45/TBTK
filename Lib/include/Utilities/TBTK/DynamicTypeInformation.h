@@ -80,12 +80,23 @@ inline const DynamicTypeInformation& DynamicTypeInformation::getParent(
 	return *parents[n];
 }
 
-#define TBTK_DYNAMIC_TYPE_INFORMATION \
+#define TBTK_DYNAMIC_TYPE_INFORMATION(type) \
 public: \
+	/** Dynamic type information. */ \
 	static DynamicTypeInformation dynamicTypeInformation; \
+	/** Get the DynamicTypeInformation. \
+	 * \
+	 *  @return Returns the DynamicTypeInformation associated with the \
+	 *  class. */ \
 	virtual const DynamicTypeInformation& getDynamicTypeInformation( \
 	) const{ \
 		return dynamicTypeInformation; \
+	} \
+	/** Get the type name returned by typeid(DataType).name(). \
+	 * \
+	 *  @return The type name returned by typeid(DataType).name(). */ \
+	static std::string getTypeidName(){ \
+		return typeid(type).name(); \
 	}
 /*#define TBTK_DYNAMIC_TYPE_INFORMATION \
 public: \

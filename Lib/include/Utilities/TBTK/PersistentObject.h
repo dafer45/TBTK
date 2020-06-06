@@ -34,7 +34,7 @@ namespace TBTK{
 
 /** @brief Base class for objects that can be added to a Context. */
 class PersistentObject : public Serializable{
-	TBTK_DYNAMIC_TYPE_INFORMATION
+	TBTK_DYNAMIC_TYPE_INFORMATION(PersistentObject)
 public:
 	/** Destructor. */
 	virtual ~PersistentObject() = 0;

@@ -7,7 +7,7 @@
 namespace TBTK{
 
 class BaseA : virtual public PersistentObject{
-	TBTK_DYNAMIC_TYPE_INFORMATION
+	TBTK_DYNAMIC_TYPE_INFORMATION(BaseA)
 public:
 	std::string serialize(Mode mode) const{
 		return "";
@@ -17,7 +17,7 @@ private:
 };
 
 class BaseB : virtual public PersistentObject{
-	TBTK_DYNAMIC_TYPE_INFORMATION
+	TBTK_DYNAMIC_TYPE_INFORMATION(BaseB)
 public:
 	std::string serialize(Mode mode) const{
 		return "";
@@ -27,7 +27,7 @@ private:
 };
 
 class Derived : public BaseA, public BaseB{
-	TBTK_DYNAMIC_TYPE_INFORMATION
+	TBTK_DYNAMIC_TYPE_INFORMATION(Derived)
 public:
 	std::string serialize(Mode mode) const{
 		return "";
@@ -39,6 +39,15 @@ private:
 class NonPersistent{
 private:
 	unsigned int n;
+};
+
+class MissingDynamicTypeInformation : virtual public PersistentObject{
+public:
+	std::string serialize(Mode mode) const{
+		return "";
+	}
+private:
+	float m;
 };
 
 DynamicTypeInformation BaseA::dynamicTypeInformation("BaseA", {});
@@ -89,6 +98,21 @@ TEST_F(ContextTest, create1){
 	BaseA &baseA = context.create<BaseA>("TempBaseA");
 	EXPECT_EQ(baseA.getDynamicTypeInformation().getName(), "BaseA");
 	context.erase("TempBaseA");
+}
+
+//TBTKFeature Core.Context.create.2 2020-06-06
+TEST_F(ContextTest, create2){
+	Context &context = Context::getContext();
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			context.create<MissingDynamicTypeInformation>(
+				"TempBaseA"
+			);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
 }
 
 //TBTKFeature Core.Context.erase.0 2020-06-06

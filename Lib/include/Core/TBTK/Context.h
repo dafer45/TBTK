@@ -84,6 +84,21 @@ DataType& Context::create(const std::string &name){
 		" PersistentObject."
 	);
 	TBTKAssert(
+		//This check is performed to provide a weak enforcement of
+		//TBTK_DYNAMIC_TYPE_INFORMATION being declared in every
+		//PersistentObject. A strong test that automatically tests this
+		//on every deriving class would be preferable, but no such
+		//solution is currently known. See also DevelopmentNotes/Notes.
+		//This test ensures that every class that is ever used together
+		//with the Context has declared TBTK_DYNAMIC_TYPE_INFORMATION
+		//or will alert the user of it missing.
+		DataType::getTypeidName() == typeid(DataType).name(),
+		"Context::create()",
+		"Missing dynamic type data.",
+		"Make sure TBTK_DYNAMIC_TYPE_INFORMATION(DataType) is declared"
+		<< " at the top of this class declaration."
+	);
+	TBTKAssert(
 		objects.count(name) == 0,
 		"Context::create()",
 		"Unable to create object with name '" << name << "'"
