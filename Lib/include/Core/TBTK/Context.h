@@ -42,6 +42,11 @@ public:
 	template<typename DataType>
 	DataType& create(const std::string &name);
 
+	/** Erase an object from the Context.
+	 *
+	 *  @param name The name of the object to delete. */
+	void erase(const std::string &name);
+
 	/** Get object from the Context.
 	 *
 	 *  @param name The name of the object.
@@ -89,6 +94,21 @@ DataType& Context::create(const std::string &name){
 	objects[name] = new DataType();
 
 	return *dynamic_cast<DataType*>(objects[name]);
+}
+
+inline void Context::erase(const std::string &name){
+	try{
+		delete objects.at(name);
+		objects.erase(name);
+	}
+	catch(...){
+		TBTKExit(
+			"Context::erase()",
+			"No object with the name '" << name << "'"
+			<< " exists in the Context.",
+			""
+		);
+	}
 }
 
 template<typename DataType>

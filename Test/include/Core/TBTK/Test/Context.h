@@ -83,6 +83,31 @@ TEST_F(ContextTest, create0){
 	);
 }
 
+//TBTKFeature Core.Context.create.1 2020-06-06
+TEST_F(ContextTest, create1){
+	Context &context = Context::getContext();
+	BaseA &baseA = context.create<BaseA>("TempBaseA");
+	EXPECT_EQ(baseA.getDynamicTypeInformation().getName(), "BaseA");
+	context.erase("TempBaseA");
+}
+
+//TBTKFeature Core.Context.erase.0 2020-06-06
+TEST_F(ContextTest, rease0){
+	Context &context = Context::getContext();
+	context.create<Derived>("ToBeErased");
+	Derived &derived = context.get<Derived>("ToBeErased");
+	EXPECT_EQ(derived.getDynamicTypeInformation().getName(), "ToBeErased");
+	context.erase("ToBeErased");
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			context.get<Derived>("ToBeErased");
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
 //TBTKFeature Core.Context.get.0 2020-06-06
 TEST_F(ContextTest, get0){
 	Context &context = Context::getContext();
