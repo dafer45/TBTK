@@ -24,6 +24,7 @@
 #define COM_DAFER45_TBTK_DYNAMIC_TYPE_INFORMATION
 
 #include <string>
+#include <typeinfo>
 #include <vector>
 
 namespace TBTK{
