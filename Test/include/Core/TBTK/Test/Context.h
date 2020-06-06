@@ -92,11 +92,11 @@ TEST_F(ContextTest, create1){
 }
 
 //TBTKFeature Core.Context.erase.0 2020-06-06
-TEST_F(ContextTest, rease0){
+TEST_F(ContextTest, erase0){
 	Context &context = Context::getContext();
 	context.create<Derived>("ToBeErased");
 	Derived &derived = context.get<Derived>("ToBeErased");
-	EXPECT_EQ(derived.getDynamicTypeInformation().getName(), "ToBeErased");
+	EXPECT_EQ(derived.getDynamicTypeInformation().getName(), "Derived");
 	context.erase("ToBeErased");
 	EXPECT_EXIT(
 		{
