@@ -40,24 +40,7 @@ public:
 	 *
 	 *  @return A reference to the newly created object. */
 	template<typename DataType>
-	DataType& create(const std::string &name){
-		static_assert(
-			std::is_base_of<PersistentObject, DataType>::value,
-			"Unable to create object that is not derived from"
-			" PersistentObject."
-		);
-		TBTKAssert(
-			objects.count(name) == 0,
-			"Context::create()",
-			"Unable to create object with name '" << name << "'"
-			<< " since and object with the same name already"
-			<< " exists in this Context.",
-			""
-		);
-		objects[name] = new DataType();
-
-		return *dynamic_cast<DataType*>(objects[name]);
-	}
+	DataType& create(const std::string &name);
 
 	/** Get object from the Context.
 	 *
@@ -65,35 +48,7 @@ public:
 	 *
 	 *  @return The object with the given name. */
 	template<typename DataType>
-	DataType& get(const std::string &name){
-		static_assert(
-			std::is_base_of<PersistentObject, DataType>::value,
-			"Unable to get object that is not derived from"
-			" PersistentObject."
-		);
-		try{
-			PersistentObject* object = objects.at(name);
-			DataType *castObject = dynamic_cast<DataType*>(object);
-			TBTKAssert(
-				castObject != nullptr,
-				"Context::get()",
-				"Invalid type. '" << name << "' cannot be cast"
-				<< " to '"
-				<< object->getDynamicTypeInformation(
-				).getName() << "'.",
-				""
-			);
-			return *castObject;
-		}
-		catch(...){
-			TBTKExit(
-				"Context::get()",
-				"No object with the name '" << name << "'"
-				<< " exists in the Context.",
-				""
-			);
-		}
-	}
+	DataType& get(const std::string &name);
 
 	/** Get the Context.
 	 *
@@ -115,6 +70,57 @@ private:
 	/** Destructor. */
 	~Context();
 };
+
+template<typename DataType>
+DataType& Context::create(const std::string &name){
+	static_assert(
+		std::is_base_of<PersistentObject, DataType>::value,
+		"Unable to create object that is not derived from"
+		" PersistentObject."
+	);
+	TBTKAssert(
+		objects.count(name) == 0,
+		"Context::create()",
+		"Unable to create object with name '" << name << "'"
+		<< " since and object with the same name already"
+		<< " exists in this Context.",
+		""
+	);
+	objects[name] = new DataType();
+
+	return *dynamic_cast<DataType*>(objects[name]);
+}
+
+template<typename DataType>
+DataType& Context::get(const std::string &name){
+	static_assert(
+		std::is_base_of<PersistentObject, DataType>::value,
+		"Unable to get object that is not derived from"
+		" PersistentObject."
+	);
+	try{
+		PersistentObject* object = objects.at(name);
+		DataType *castObject = dynamic_cast<DataType*>(object);
+		TBTKAssert(
+			castObject != nullptr,
+			"Context::get()",
+			"Invalid type. '" << name << "' cannot be cast"
+			<< " to '"
+			<< object->getDynamicTypeInformation(
+			).getName() << "'.",
+			""
+		);
+		return *castObject;
+	}
+	catch(...){
+		TBTKExit(
+			"Context::get()",
+			"No object with the name '" << name << "'"
+			<< " exists in the Context.",
+			""
+		);
+	}
+}
 
 };	//End of namespace TBTK
 
