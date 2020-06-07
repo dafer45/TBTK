@@ -33,6 +33,11 @@ using namespace std;
 namespace TBTK{
 namespace Solver{
 
+DynamicTypeInformation HartreeFock::dynamicTypeInformation(
+	"Solver::HartreeFock",
+	{&Solver::dynamicTypeInformation}
+);
+
 HartreeFock::HartreeFock() : selfConsistencyCallback(*this){
 	occupationNumber = 0;
 	totalEnergy = 0;

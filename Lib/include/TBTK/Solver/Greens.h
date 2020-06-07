@@ -38,6 +38,7 @@ namespace Solver{
 
 /** @brief Calculates properties from a Green's function. */
 class Greens : public Solver, public Communicator{
+	TBTK_DYNAMIC_TYPE_INFORMATION(Greens)
 public:
 	/** Constructs a Solver::Greens. */
 	Greens();

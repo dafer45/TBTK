@@ -32,6 +32,7 @@ namespace Solver{
 
 /** @brief Solves a Model using the Hartree-Fock method. */
 class HartreeFock : public Diagonalizer{
+	TBTK_DYNAMIC_TYPE_INFORMATION(HartreeFock)
 public:
 	/** A callback class that acts as mediator between the Model and the
 	 *  Solver::HartreeFock. An object of this class should be passed to

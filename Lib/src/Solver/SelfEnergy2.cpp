@@ -31,6 +31,11 @@ using namespace std;
 namespace TBTK{
 namespace Solver{
 
+DynamicTypeInformation SelfEnergy2::dynamicTypeInformation(
+	"Solver::SelfEnergy2",
+	{&Solver::dynamicTypeInformation}
+);
+
 SelfEnergy2::SelfEnergy2(
 	const MomentumSpaceContext &momentumSpaceContext,
 	const Property::InteractionVertex &interactionVertex,

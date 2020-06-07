@@ -14,6 +14,11 @@ using namespace std;
 namespace TBTK{
 namespace Solver{
 
+DynamicTypeInformation ExactDiagonalizer::dynamicTypeInformation(
+	"Solver::ExactDiagonalizer",
+	{&Solver::dynamicTypeInformation}
+);
+
 ExactDiagonalizer::ExactDiagonalizer(/*Model *model*/){
 //	this->model = model;
 }

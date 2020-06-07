@@ -29,6 +29,11 @@ using namespace std;
 namespace TBTK{
 namespace Solver{
 
+DynamicTypeInformation AnalyticalContinuer::dynamicTypeInformation(
+	"Solver::AnalyticalContinuer",
+	{&Solver::dynamicTypeInformation}
+);
+
 AnalyticalContinuer::AnalyticalContinuer() : Communicator(true){
 	numeratorDegree = 0;
 	denominatorDegree = 0;

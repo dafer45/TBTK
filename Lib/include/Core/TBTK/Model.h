@@ -30,9 +30,9 @@
 #include "TBTK/HoppingAmplitudeList.h"
 #include "TBTK/HoppingAmplitudeSet.h"
 #include "TBTK/IndexBasedHoppingAmplitudeFilter.h"
-#include "TBTK/SingleParticleContext.h"
 #include "TBTK/ManyParticleContext.h"
-#include "TBTK/Serializable.h"
+#include "TBTK/PersistentObject.h"
+#include "TBTK/SingleParticleContext.h"
 #include "TBTK/Statistics.h"
 #include "TBTK/Streamable.h"
 
@@ -54,7 +54,12 @@ class FileReader;
  *  \snippet Core/Model.cpp Model
  *  ## Output
  *  \snippet output/Core/Model.txt Model */
-class Model : public Serializable, public Communicator, public Streamable{
+class Model :
+	virtual public PersistentObject,
+	public Communicator,
+	public Streamable
+{
+	TBTK_DYNAMIC_TYPE_INFORMATION(Model)
 public:
 	/** Constructor. */
 	Model();

@@ -66,6 +66,7 @@ namespace Solver{
  *  ## Output
  *  \snippet output/Solver/BlockDiagonalizer.txt BlockDiagonalizer */
 class BlockDiagonalizer : public Solver, public Communicator{
+	TBTK_DYNAMIC_TYPE_INFORMATION(BlockDiagonalizer)
 public:
 	/** Abstract base class for self-consistency callbacks. */
 	class SelfConsistencyCallback{

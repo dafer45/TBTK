@@ -58,6 +58,7 @@ namespace Solver{
  *  ## Output
  *  \snippet output/Solver/ArnoldiIterator.txt ArnoldiIterator */
 class ArnoldiIterator : public Solver, public Communicator{
+	TBTK_DYNAMIC_TYPE_INFORMATION(ArnoldiIterator)
 public:
 	/** Constructs a Solver::ArnoldiIterator. */
 	ArnoldiIterator();

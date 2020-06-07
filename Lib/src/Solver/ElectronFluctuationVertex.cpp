@@ -31,6 +31,11 @@ using namespace std;
 namespace TBTK{
 namespace Solver{
 
+DynamicTypeInformation ElectronFluctuationVertex::dynamicTypeInformation(
+	"Solver::ElectronFluctuationVertex",
+	{&Solver::dynamicTypeInformation}
+);
+
 ElectronFluctuationVertex::ElectronFluctuationVertex(
 	const MomentumSpaceContext &momentumSpaceContext,
 	const Property::Susceptibility &susceptibility

@@ -36,6 +36,7 @@ namespace TBTK{
 namespace Solver{
 
 class RPASusceptibility : public Solver, public Communicator{
+	TBTK_DYNAMIC_TYPE_INFORMATION(RPASusceptibility)
 public:
 	/** Constructor. */
 	RPASusceptibility(

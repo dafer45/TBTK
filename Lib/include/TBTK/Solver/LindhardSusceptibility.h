@@ -33,6 +33,7 @@ namespace TBTK{
 namespace Solver{
 
 class LindhardSusceptibility : public Susceptibility{
+	TBTK_DYNAMIC_TYPE_INFORMATION(LindhardSusceptibility)
 public:
 	/** Constructor. */
 	LindhardSusceptibility(

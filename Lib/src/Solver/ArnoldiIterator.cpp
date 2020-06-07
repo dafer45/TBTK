@@ -36,6 +36,11 @@ using namespace std;
 namespace TBTK{
 namespace Solver{
 
+DynamicTypeInformation ArnoldiIterator::dynamicTypeInformation(
+	"Solver::ArnoldiIterator",
+	{&Solver::dynamicTypeInformation}
+);
+
 ArnoldiIterator::ArnoldiIterator(
 ) :
 	Communicator(false),

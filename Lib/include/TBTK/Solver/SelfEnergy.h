@@ -34,6 +34,7 @@ namespace TBTK{
 namespace Solver{
 
 class SelfEnergy : public Solver{
+	TBTK_DYNAMIC_TYPE_INFORMATION(SelfEnergy)
 public:
 	/** Constructor. */
 	SelfEnergy(

@@ -33,6 +33,11 @@ using namespace std;
 namespace TBTK{
 namespace Solver{
 
+DynamicTypeInformation SelfEnergy::dynamicTypeInformation(
+	"Solver::SelfEnergy",
+	{&Solver::dynamicTypeInformation}
+);
+
 SelfEnergy::SelfEnergy(
 	const RPA::MomentumSpaceContext &momentumSpaceContext,
 	const Property::InteractionVertex &interactionVertex

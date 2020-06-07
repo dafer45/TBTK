@@ -33,6 +33,11 @@ using namespace std;
 namespace TBTK{
 namespace Solver{
 
+DynamicTypeInformation MatsubaraSusceptibility::dynamicTypeInformation(
+	"Solver::MatsubaraSusceptibility",
+	{&Solver::dynamicTypeInformation}
+);
+
 MatsubaraSusceptibility::MatsubaraSusceptibility(
 	const MomentumSpaceContext &momentumSpaceContext,
 	const Property::GreensFunction &greensFunction

@@ -28,6 +28,11 @@ using namespace std;
 namespace TBTK{
 namespace Solver{
 
+DynamicTypeInformation Greens::dynamicTypeInformation(
+	"Solver::Greens",
+	{&Solver::dynamicTypeInformation}
+);
+
 Greens::Greens() : Communicator(false){
 }
 

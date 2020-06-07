@@ -39,6 +39,7 @@ namespace Solver{
 
 /** @brief Calculates transport properties. */
 class Transport : public Solver, public Communicator{
+	TBTK_DYNAMIC_TYPE_INFORMATION(Transport)
 public:
 	/** Constructs a Solver::Transport. */
 	Transport();

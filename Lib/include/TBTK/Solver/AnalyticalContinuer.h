@@ -37,6 +37,7 @@ namespace Solver{
 
 /** @brief Performs analytical continuation of EnergyResolved properties. */
 class AnalyticalContinuer : public Solver, public Communicator{
+	TBTK_DYNAMIC_TYPE_INFORMATION(AnalyticalContinuer)
 public:
 	/** Constructs a Solver::AnalyticalContinuer. */
 	AnalyticalContinuer();

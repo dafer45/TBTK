@@ -36,6 +36,7 @@ namespace TBTK{
 namespace Solver{
 
 class MatsubaraSusceptibility : public Solver, public Communicator{
+	TBTK_DYNAMIC_TYPE_INFORMATION(MatsubaraSusceptibility)
 public:
 	/** Constructor. */
 	MatsubaraSusceptibility(

@@ -30,6 +30,12 @@ using namespace std;
 namespace TBTK{
 namespace Solver{
 
+DynamicTypeInformation
+AnalyticalContinuerContinuousFractions::dynamicTypeInformation(
+	"Solver::AnalyticalContinuerContinuousFractions",
+	{&Solver::dynamicTypeInformation}
+);
+
 AnalyticalContinuerContinuousFractions::AnalyticalContinuerContinuousFractions(
 ) :
 	Communicator(true)

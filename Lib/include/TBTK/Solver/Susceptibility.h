@@ -33,6 +33,7 @@ namespace TBTK{
 namespace Solver{
 
 class Susceptibility : public Solver{
+	TBTK_DYNAMIC_TYPE_INFORMATION(Susceptibility)
 public:
 	/** List of algorithm identifiers. Officilly supported algorithms are
 	 *  given unique identifiers. Algorithms not (yet) supported should

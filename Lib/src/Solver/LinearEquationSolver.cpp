@@ -26,6 +26,11 @@ using namespace std;
 namespace TBTK{
 namespace Solver{
 
+DynamicTypeInformation LinearEquationSolver::dynamicTypeInformation(
+	"Solver::LinearEquationSolver",
+	{&Solver::dynamicTypeInformation}
+);
+
 LinearEquationSolver::LinearEquationSolver() : Communicator(true), source(0, 0){
 }
 

@@ -36,6 +36,7 @@ namespace Solver{
 
 /** @brief Time evloves a ground state. */
 class TimeEvolver : public Solver{
+	TBTK_DYNAMIC_TYPE_INFORMATION(TimeEvolver)
 public:
 	/** Constructor. */
 	TimeEvolver();

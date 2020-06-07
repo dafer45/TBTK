@@ -32,6 +32,11 @@ using namespace std;
 namespace TBTK{
 namespace Solver{
 
+DynamicTypeInformation ChebyshevExpander::dynamicTypeInformation(
+	"Solver::ChebyshevExpander",
+	{&Solver::dynamicTypeInformation}
+);
+
 namespace{
 	const complex<double> i(0, 1);
 }

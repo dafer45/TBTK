@@ -30,6 +30,11 @@ using namespace std;
 namespace TBTK{
 namespace Solver{
 
+DynamicTypeInformation RPASusceptibility::dynamicTypeInformation(
+	"Solver::RPASusceptibility",
+	{&Solver::dynamicTypeInformation}
+);
+
 RPASusceptibility::RPASusceptibility(
 	const MomentumSpaceContext &momentumSpaceContext,
 	const Property::Susceptibility &bareSusceptibility

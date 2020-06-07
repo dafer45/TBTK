@@ -34,6 +34,7 @@ namespace TBTK{
 namespace Solver{
 
 class ElectronFluctuationVertex : public Solver, public Communicator{
+	TBTK_DYNAMIC_TYPE_INFORMATION(ElectronFluctuationVertex)
 public:
 	/** Constructor. */
 	ElectronFluctuationVertex(

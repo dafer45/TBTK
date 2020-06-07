@@ -67,6 +67,7 @@ namespace Solver{
  *  ## Output
  *  \snippet output/Solver/ChebyshevExpander.txt ChebyshevExpander */
 class ChebyshevExpander : public Solver, public Communicator{
+	TBTK_DYNAMIC_TYPE_INFORMATION(ChebyshevExpander)
 public:
 	/** Constructs a Solver::ChebyshevExpander. */
 	ChebyshevExpander();

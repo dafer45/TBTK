@@ -29,6 +29,11 @@ using namespace std;
 namespace TBTK{
 namespace Solver{
 
+DynamicTypeInformation BlockDiagonalizer::dynamicTypeInformation(
+	"Solver::BlockDiagonalizer",
+	{&Solver::dynamicTypeInformation}
+);
+
 BlockDiagonalizer::BlockDiagonalizer() : Communicator(false){
 	maxIterations = 50;
 	selfConsistencyCallback = nullptr;

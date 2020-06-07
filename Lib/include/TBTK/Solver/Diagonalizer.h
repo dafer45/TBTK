@@ -50,6 +50,7 @@ namespace Solver{
  *  ## Output
  *  \snippet output/Solver/Diagonalizer.txt Diagonalizer */
 class Diagonalizer : public Solver, public Communicator{
+	TBTK_DYNAMIC_TYPE_INFORMATION(Diagonalizer)
 public:
 	/** Abstract base class for self-consistency callbacks. */
 	class SelfConsistencyCallback{

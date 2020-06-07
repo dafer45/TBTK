@@ -25,11 +25,43 @@ using namespace std;
 namespace TBTK{
 namespace Solver{
 
+DynamicTypeInformation Solver::dynamicTypeInformation(
+	"Solver::Solver",
+	{}
+);
+
 Solver::Solver(){
 	model = NULL;
 }
 
 Solver::~Solver(){
+}
+
+std::string Solver::serialize(Mode mode) const{
+	//Need to serialize the Model before this is done. If the Model is
+	//added to the Context instead of passed into the Solver directly, it
+	//can be serialized in the Context and the name be added as the
+	//serialization in the Solver.
+	TBTKNotYetImplemented("Solver::Solver::serialize()");
+
+	switch(mode){
+	case Mode::JSON:
+	{
+		nlohmann::json j;
+		j["id"] = "Solver::Solver";
+		//Serialize the Model here. Se comment above and
+		//DevelopmentsNotes/Ideas.
+		//...
+		j["persistentObject"] = PersistentObject::serialize(mode);
+		return j.dump();
+	}
+	default:
+		TBTKExit(
+			"Solver::Solver::serialize()",
+			"Only Serializable::Mode::JSON is supported yet.",
+			""
+		);
+	}
 }
 
 };	//End of namespace Solver

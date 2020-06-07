@@ -36,6 +36,8 @@ using namespace std;
 
 namespace TBTK{
 
+DynamicTypeInformation Model::dynamicTypeInformation("Model", {});
+
 Model::Model() : Communicator(false){
 	temperature = 0.;
 	chemicalPotential = 0.;

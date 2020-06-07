@@ -38,6 +38,7 @@ namespace TBTK{
 namespace Solver{
 
 class ExactDiagonalizer : public Solver{
+	TBTK_DYNAMIC_TYPE_INFORMATION(ExactDiagonalizer)
 public:
 	/** Constructor. */
 	ExactDiagonalizer(

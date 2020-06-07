@@ -30,6 +30,11 @@ using namespace std;
 namespace TBTK{
 namespace Solver{
 
+DynamicTypeInformation LindhardSusceptibility::dynamicTypeInformation(
+	"Solver::LindhardSuceptibility",
+	{&Solver::dynamicTypeInformation}
+);
+
 LindhardSusceptibility::LindhardSusceptibility(
 	const RPA::MomentumSpaceContext &momentumSpaceContext
 ) :

@@ -30,6 +30,11 @@ using namespace std;
 namespace TBTK{
 namespace Solver{
 
+DynamicTypeInformation Susceptibility::dynamicTypeInformation(
+	"Solver::Susceptibility",
+	{&Solver::dynamicTypeInformation}
+);
+
 Susceptibility::Susceptibility(
 	Algorithm algorithm,
 	const RPA::MomentumSpaceContext &momentumSpaceContext

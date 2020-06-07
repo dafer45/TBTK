@@ -31,6 +31,11 @@ using namespace std;
 namespace TBTK{
 namespace Solver{
 
+DynamicTypeInformation TimeEvolver::dynamicTypeInformation(
+	"Solver::TimerEvolver",
+	{&Solver::dynamicTypeInformation}
+);
+
 const complex<double> i(0, 1);
 
 vector<TimeEvolver*> TimeEvolver::timeEvolvers;

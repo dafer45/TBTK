@@ -35,6 +35,7 @@ namespace TBTK{
 namespace Solver{
 
 class FLEX : public Solver{
+	TBTK_DYNAMIC_TYPE_INFORMATION(FLEX)
 public:
 	/** Enum class for specifying the current state of the solver. */
 	enum class State {

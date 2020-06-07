@@ -39,6 +39,11 @@ using namespace std;
 namespace TBTK{
 namespace Solver{
 
+DynamicTypeInformation FLEX::dynamicTypeInformation(
+	"Solver::FLEX",
+	{&Solver::dynamicTypeInformation}
+);
+
 FLEX::FLEX(
 	const MomentumSpaceContext &momentumSpaceContext
 ) :

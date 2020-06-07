@@ -32,6 +32,11 @@ using namespace std;
 namespace TBTK{
 namespace Solver{
 
+DynamicTypeInformation Transport::dynamicTypeInformation(
+	"Solver::Transport",
+	{&Solver::dynamicTypeInformation}
+);
+
 Transport::Transport(
 ) :
 	Communicator(false),

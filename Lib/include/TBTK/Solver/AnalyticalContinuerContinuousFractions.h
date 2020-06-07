@@ -38,6 +38,7 @@ namespace Solver{
 /** @brief Performs analytical continuation of EnergyResolved properties using
  *  continuous fracitons. */
 class AnalyticalContinuerContinuousFractions : public Solver, public Communicator{
+	TBTK_DYNAMIC_TYPE_INFORMATION(AnalyticalContinuerContinuousFractions)
 public:
 	/** Constructs a Solver::AnalyticalContinuerContinuousFractions. */
 	AnalyticalContinuerContinuousFractions();

@@ -39,7 +39,8 @@ namespace Solver{
  *  \snippet Solver/Solver.cpp Solver
  *  ## Output
  *  \snippet output/Solver/Solver.txt Solver */
-class Solver{
+class Solver : virtual public PersistentObject{
+	TBTK_DYNAMIC_TYPE_INFORMATION(Solver)
 public:
 	/** Constructs a Solver::Solver. */
 	Solver();
@@ -61,6 +62,9 @@ public:
 	 *
 	 *  @return The Model that the Solver is solving. */
 	const Model& getModel() const;
+
+	/** Implements Serializable::serialize(). */
+	virtual std::string serialize(Mode mode) const;
 private:
 	/** Model to work on. */
 	Model *model;
