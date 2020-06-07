@@ -159,7 +159,7 @@ public:
 	 *  \f$x\f$: \f$\Psi_{n}(x)\f$.
 	 *  @param state Eigen state number \f$n\f$.
 	 *  @param index Physical index \f$\f$. */
-	const std::complex<double> getAmplitude(int state, const Index &index);
+	const std::complex<double> getAmplitude(int state, const Index &index) const;
 private:
 	/** Mode of operation. */
 	Mode mode;
@@ -316,7 +316,7 @@ inline const double ArnoldiIterator::getEigenValue(int state) const{
 inline const std::complex<double> ArnoldiIterator::getAmplitude(
 	int state,
 	const Index &index
-){
+) const{
 	const Model &model = getModel();
 	return eigenVectors[model.getBasisSize()*state + model.getBasisIndex(index)];
 }
