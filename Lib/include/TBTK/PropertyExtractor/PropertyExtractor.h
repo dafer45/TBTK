@@ -25,12 +25,14 @@
 
 #include "TBTK/HoppingAmplitudeSet.h"
 #include "TBTK/Index.h"
+#include "TBTK/PersistentObjectReference.h"
 #include "TBTK/Property/AbstractProperty.h"
 #include "TBTK/Property/Density.h"
 #include "TBTK/Property/DOS.h"
 #include "TBTK/Property/LDOS.h"
 #include "TBTK/Property/Magnetization.h"
 #include "TBTK/Property/SpinPolarizedLDOS.h"
+#include "TBTK/Solver/Solver.h"
 
 #include <complex>
 //#include <initializer_list>
@@ -568,6 +570,19 @@ protected:
 		bool keepSummationWildcards,
 		bool keepSpinWildcards
 	);
+
+	/** Set the Solver.
+	 *
+	 *  @param solver The @link Solver::Solver Solver@endlink the
+	 *  PropertyExtractor uses. */
+	void setSolver(Solver::Solver &solver);
+
+	/** Get the Solver. The Solver is dynamically cast to the type
+	 *  specified by the template parameter SolverType.
+	 *
+	 *  @return The Solver cast to SolverType. */
+	template<typename SolverType>
+	SolverType& getSolver();
 private:
 	/** Energy type used for energy dependent quantities. */
 	EnergyType energyType;
@@ -627,6 +642,9 @@ private:
 	/** The nergy infinitesimal \f$\delta\f$ that for example can be used
 	 *  in the denominator of the Green's function as \f$i\delta\f$. */
 	double energyInfinitesimal;
+
+	/** Reference to solver. */
+	PersistentObjectReference<Solver::Solver> solver;
 };
 
 inline PropertyExtractor::EnergyType PropertyExtractor::getEnergyType() const{
@@ -849,6 +867,15 @@ void PropertyExtractor::calculate(
 			information
 		);
 	}
+}
+
+inline void PropertyExtractor::setSolver(Solver::Solver &solver){
+	this->solver.set(solver);
+}
+
+template<typename SolverType>
+SolverType& PropertyExtractor::getSolver(){
+	return solver.get<SolverType>();
 }
 
 inline void PropertyExtractor::Information::setSpinIndex(int spinIndex){

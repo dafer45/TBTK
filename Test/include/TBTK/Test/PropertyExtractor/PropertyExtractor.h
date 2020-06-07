@@ -1,4 +1,6 @@
 #include "TBTK/PropertyExtractor/PropertyExtractor.h"
+#include "TBTK/Solver/ArnoldiIterator.h"
+#include "TBTK/Solver/Diagonalizer.h"
 
 #include "gtest/gtest.h"
 
@@ -127,6 +129,15 @@ public:
 			keepSummationWildcards,
 			keepSpinWildcards
 		);
+	}
+
+	void setSolver(Solver::Solver &solver){
+		PropertyExtractor::setSolver(solver);
+	}
+
+	template<typename SolverType>
+	SolverType& getSolver(){
+		return PropertyExtractor::getSolver<SolverType>();
 	}
 
 	//Helper function for TEST(PropertyExtractor, calculateRanges).
@@ -876,6 +887,64 @@ TEST(PropertyExtractor, gnerateIndexTree){
 	EXPECT_TRUE((*iterator4).equals({{0, 0, 2}, {0, 0, 2}}));
 	++iterator4;
 	EXPECT_TRUE(iterator4 == indexTree4.cend());
+}
+
+//TBTKFeature PropertyExtractor.PropertyExtractor.setSolver.0 2020-06-07
+TEST(PropertyExtractor, setSolver0){
+	//Tested through PropertyExtractor::getSolver
+}
+
+//TBTKFeature PropertyExtractor.PropertyExtractor.getSolver.0 2020-06-07
+TEST(PropertyExtractor, getSolver0){
+	PublicPropertyExtractor propertyExtractor;
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			propertyExtractor.getSolver<Solver::Solver>();
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+//TBTKFeature PropertyExtractor.PropertyExtractor.getSolver.1 2020-06-07
+TEST(PropertyExtractor, getSolver1){
+	Solver::Diagonalizer solver;
+	PublicPropertyExtractor propertyExtractor;
+	propertyExtractor.setSolver(solver);
+	Solver::Solver &retrievedSolver
+		= propertyExtractor.getSolver<Solver::Solver>();
+
+	EXPECT_EQ(
+		&dynamic_cast<Solver::Diagonalizer&>(retrievedSolver),
+		&solver
+	);
+}
+
+//TBTKFeature PropertyExtractor.PropertyExtractor.getSolver.2 2020-06-07
+TEST(PropertyExtractor, getSolver2){
+	Solver::Diagonalizer solver;
+	PublicPropertyExtractor propertyExtractor;
+	propertyExtractor.setSolver(solver);
+	Solver::Diagonalizer &retrievedSolver
+		= propertyExtractor.getSolver<Solver::Diagonalizer>();
+
+	EXPECT_EQ(&retrievedSolver, &solver);
+}
+
+//TBTKFeature PropertyExtractor.PropertyExtractor.getSolver.3 2020-06-07
+TEST(PropertyExtractor, getSolver3){
+	Solver::Diagonalizer solver;
+	PublicPropertyExtractor propertyExtractor;
+	propertyExtractor.setSolver(solver);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			propertyExtractor.getSolver<Solver::ArnoldiIterator>();
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
 }
 
 TEST(PropertyExtractor, Information){
