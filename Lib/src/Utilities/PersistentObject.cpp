@@ -46,12 +46,4 @@ PersistentObject::~PersistentObject(){
 	Context::getContext().deregisterPersistentObject(*this);
 }
 
-PersistentObject& PersistentObject::operator=(const PersistentObject &rhs){
-	return *this;
-}
-
-PersistentObject& PersistentObject::operator=(const PersistentObject &&rhs){
-	return *this;
-}
-
 };	//End of namespace TBTK

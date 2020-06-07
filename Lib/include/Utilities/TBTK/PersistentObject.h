@@ -55,12 +55,15 @@ public:
 	/** Assignment operator.
 	 *
 	 *  @param rhs The right hand side of the expression. */
-	PersistentObject& operator=(const PersistentObject &rhs);
-
-	/** Move assignment operator.
-	 *
-	 *  @param rhs The right hand side of the expression. */
-	PersistentObject& operator=(const PersistentObject &&rhs);
+	//Using = default here disables the move assignment operator, which can
+	//cause trouble when PersistentObject is virtually inherited from
+	//multiple parents. Move assignment is not guaranteed to be called only
+	//once when virtually inherited by multiple parents, and can therefore
+	//result in an already moved object being moved. This is not a problem
+	//for PersistentObject itself, since it has no members that are moved,
+	//but it generates a compiler warning and could be problematic if a
+	//parent class later adds members that need to be moved.
+	PersistentObject& operator=(const PersistentObject &rhs) = default;
 private:
 };
 
