@@ -101,7 +101,7 @@ public:
 	/** Get eigenvalues. Eigenvalues are ordered in accending order.
 	 *
 	 *  @return A pointer to the internal storage for the eigenvalues. */
-	const CArray<double>& getEigenValues();
+	const CArray<double>& getEigenValues() const;
 
 	/** Get eigenvalues. Eigenvalues are ordered in accending order. Same
 	 *  as getEigenValues(), but with write access. Use with caution.
@@ -116,7 +116,7 @@ public:
 	 *  'basisSize' is the basis size of the Model.
 	 *
 	 *  @return A pointer to the internal storage for the eigenvectors. **/
-	const CArray<std::complex<double>>& getEigenVectors();
+	const CArray<std::complex<double>>& getEigenVectors() const;
 
 	/** Get eigenvectors. The eigenvectors are stored successively in
 	 *  memory, with the eigenvector corresponding to the smallest
@@ -133,7 +133,7 @@ public:
 	 *  @param state The state number, ordered in accending order.
 	 *
 	 *  @return The eigenvalue for the given state. */
-	const double getEigenValue(int state);
+	const double getEigenValue(int state) const;
 
 	/** Get amplitude for given eigenvector \f$n\f$ and physical index
 	 * \f$x\f$: \f$\Psi_{n}(x)\f$.
@@ -142,7 +142,10 @@ public:
 	 *  @param index Physical index \f$x\f$.
 	 *
 	 *  @return The amplitude \f$\Psi_{n}(x)\f$. */
-	const std::complex<double> getAmplitude(int state, const Index &index);
+	const std::complex<double> getAmplitude(
+		int state,
+		const Index &index
+	) const;
 private:
 	/** pointer to array containing Hamiltonian. */
 	CArray<std::complex<double>> hamiltonian;
@@ -193,7 +196,7 @@ inline void Diagonalizer::setMaxIterations(int maxIterations){
 	this->maxIterations = maxIterations;
 }
 
-inline const CArray<double>& Diagonalizer::getEigenValues(){
+inline const CArray<double>& Diagonalizer::getEigenValues() const{
 	return eigenValues;
 }
 
@@ -201,7 +204,7 @@ inline CArray<double>& Diagonalizer::getEigenValuesRW(){
 	return eigenValues;
 }
 
-inline const CArray<std::complex<double>>& Diagonalizer::getEigenVectors(){
+inline const CArray<std::complex<double>>& Diagonalizer::getEigenVectors() const{
 	return eigenVectors;
 }
 
@@ -212,12 +215,12 @@ inline CArray<std::complex<double>>& Diagonalizer::getEigenVectorsRW(){
 inline const std::complex<double> Diagonalizer::getAmplitude(
 	int state,
 	const Index &index
-){
+) const{
 	const Model &model = getModel();
 	return eigenVectors[model.getBasisSize()*state + model.getBasisIndex(index)];
 }
 
-inline const double Diagonalizer::getEigenValue(int state){
+inline const double Diagonalizer::getEigenValue(int state) const{
 	return eigenValues[state];
 }
 
