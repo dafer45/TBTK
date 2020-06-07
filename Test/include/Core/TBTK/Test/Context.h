@@ -192,4 +192,9 @@ TEST_F(ContextTest, get3){
 	);
 }
 
+//TBTKFeature Core.Context.toString.0 2020-06-07
+TEST_F(ContextTest, toString0){
+	//Difficult to formulate a good test criterion for.
+}
+
 };

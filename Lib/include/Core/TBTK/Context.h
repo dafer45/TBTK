@@ -24,15 +24,17 @@
 #define COM_DAFER45_TBTK_CONTEXT
 
 #include "TBTK/PersistentObject.h"
+#include "TBTK/Streamable.h"
 #include "TBTK/TBTKMacros.h"
 
 #include <map>
+#include <mutex>
 #include <string>
 
 namespace TBTK{
 
 /** @brief Application context. */
-class Context{
+class Context : public Streamable{
 public:
 	/** Create a new object and add it to the Context.
 	 *
@@ -59,9 +61,28 @@ public:
 	 *
 	 *  @return The Context Singleton. */
 	static Context& getContext();
+
+	/** Returns a string with characteristic information about the Context.
+	 *
+	 *  @return A string with characteristic information about the Context.
+	 */
+	virtual std::string toString() const;
 private:
 	/** Key-value list of objects contained in the Context. */
 	std::map<std::string, PersistentObject*> objects;
+
+	/** Kay-value list of all PersistentObjects that currently exists.
+	 *  Every PersistentObject registers itself using
+	 *  registerPersistentObject() in its constructor. */
+	std::map<std::string, const PersistentObject*> allObjects;
+
+	/** Mutex to lock the Context during insertion and removal of
+	 *  PersistentObjects from objects. */
+	mutable std::mutex mutexObjects;
+
+	/** Mutex to lock the Context during insertion and removal of
+	 *  PersistentObjects from allObjects. */
+	mutable std::mutex mutexAllObjects;
 
 	/** Constructor. */
 	Context();
@@ -74,6 +95,20 @@ private:
 
 	/** Destructor. */
 	~Context();
+
+	/** Register a PersistentObject. */
+	void registerPersistentObject(
+		const PersistentObject &persistentObject
+	);
+
+	/** Deregister a PersistentObject. */
+	void deregisterPersistentObject(
+		const PersistentObject &persistentObject
+	);
+
+	/** PersistentObject is declare friend in order for it to be able to
+	 *  register itself. */
+	friend class PersistentObject;
 };
 
 template<typename DataType>
@@ -98,25 +133,35 @@ DataType& Context::create(const std::string &name){
 		"Make sure TBTK_DYNAMIC_TYPE_INFORMATION(DataType) is declared"
 		<< " at the top of this class declaration."
 	);
-	TBTKAssert(
-		objects.count(name) == 0,
-		"Context::create()",
-		"Unable to create object with name '" << name << "'"
-		<< " since and object with the same name already"
-		<< " exists in this Context.",
-		""
-	);
-	objects[name] = new DataType();
+	mutexObjects.lock();
+	if(objects.count(name) == 0){
+		DataType *object = new DataType();
+		objects[name] = object;
+		mutexObjects.unlock();
 
-	return *dynamic_cast<DataType*>(objects[name]);
+		return *dynamic_cast<DataType*>(object);
+	}
+	else{
+		mutexObjects.unlock();
+		TBTKExit(
+			"Context::create()",
+			"Unable to create object with name '" << name << "'"
+			<< " since and object with the same name already"
+			<< " exists in this Context.",
+			""
+		);
+	}
 }
 
 inline void Context::erase(const std::string &name){
 	try{
+		mutexObjects.lock();
 		delete objects.at(name);
 		objects.erase(name);
+		mutexObjects.unlock();
 	}
 	catch(...){
+		mutexObjects.unlock();
 		TBTKExit(
 			"Context::erase()",
 			"No object with the name '" << name << "'"
@@ -134,7 +179,9 @@ DataType& Context::get(const std::string &name){
 		" PersistentObject."
 	);
 	try{
+		mutexObjects.lock();
 		PersistentObject* object = objects.at(name);
+		mutexObjects.unlock();
 		DataType *castObject = dynamic_cast<DataType*>(object);
 		TBTKAssert(
 			castObject != nullptr,
@@ -148,6 +195,7 @@ DataType& Context::get(const std::string &name){
 		return *castObject;
 	}
 	catch(...){
+		mutexObjects.unlock();
 		TBTKExit(
 			"Context::get()",
 			"No object with the name '" << name << "'"
@@ -155,6 +203,43 @@ DataType& Context::get(const std::string &name){
 			""
 		);
 	}
+}
+
+inline void Context::registerPersistentObject(
+	const PersistentObject &persistentObject
+){
+	std::stringstream ss;
+	ss << &persistentObject;
+	std::string name = ss.str();
+	mutexAllObjects.lock();
+	TBTKAssert(
+		allObjects.count(name) == 0,
+		"Context::registerPersistentObject()",
+		"Unable to register object with name '" << name << "' since"
+		<< " an object with the same name already exists in this"
+		<< " Context.",
+		"This should never happen, contact the developer."
+	);
+	allObjects[name] = &persistentObject;
+	mutexAllObjects.unlock();
+}
+
+inline void Context::deregisterPersistentObject(
+	const PersistentObject &persistentObject
+){
+	std::stringstream ss;
+	ss << &persistentObject;
+	std::string name = ss.str();
+	mutexAllObjects.lock();
+	TBTKAssert(
+		allObjects.count(name) == 1,
+		"Context::registerPersistentObject()",
+		"Unable to deregister object with name '" << name << "' since"
+		<< " no object with this name exists in this Context.",
+		"This should never happen, contact the developer."
+	);
+	allObjects.erase(name);
+	mutexAllObjects.unlock();
 }
 
 };	//End of namespace TBTK

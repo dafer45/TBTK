@@ -18,6 +18,7 @@
  *  @author Kristofer Björnson
  */
 
+#include "TBTK/Context.h"
 #include "TBTK/PersistentObject.h"
 
 using namespace std;
@@ -28,5 +29,29 @@ DynamicTypeInformation PersistentObject::dynamicTypeInformation(
 	"PersistentObject",
 	{}
 );
+
+PersistentObject::PersistentObject(){
+	Context::getContext().registerPersistentObject(*this);
+}
+
+PersistentObject::PersistentObject(const PersistentObject &persistentObject){
+	Context::getContext().registerPersistentObject(*this);
+}
+
+PersistentObject::PersistentObject(const PersistentObject &&persistentObject){
+	Context::getContext().registerPersistentObject(*this);
+}
+
+PersistentObject::~PersistentObject(){
+	Context::getContext().deregisterPersistentObject(*this);
+}
+
+PersistentObject& PersistentObject::operator=(const PersistentObject &rhs){
+	return *this;
+}
+
+PersistentObject& PersistentObject::operator=(const PersistentObject &&rhs){
+	return *this;
+}
 
 };	//End of namespace TBTK

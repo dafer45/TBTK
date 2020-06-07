@@ -36,13 +36,33 @@ namespace TBTK{
 class PersistentObject : public Serializable{
 	TBTK_DYNAMIC_TYPE_INFORMATION(PersistentObject)
 public:
+	/** Constructor. */
+	PersistentObject();
+
+	/** Copy constructor.
+	 *
+	 *  @param persistentObject The PersistentObject to copy. */
+	PersistentObject(const PersistentObject &persisntentObject);
+
+	/** Move constructor.
+	 *
+	 *  @param persistentObject The PersistentObject to move. */
+	PersistentObject(const PersistentObject &&persistentObject);
+
 	/** Destructor. */
 	virtual ~PersistentObject() = 0;
+
+	/** Assignment operator.
+	 *
+	 *  @param rhs The right hand side of the expression. */
+	PersistentObject& operator=(const PersistentObject &rhs);
+
+	/** Move assignment operator.
+	 *
+	 *  @param rhs The right hand side of the expression. */
+	PersistentObject& operator=(const PersistentObject &&rhs);
 private:
 };
-
-inline PersistentObject::~PersistentObject(){
-}
 
 };	//End of namespace TBTK
 

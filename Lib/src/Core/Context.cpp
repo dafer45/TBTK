@@ -19,6 +19,9 @@
 
 #include "TBTK/Context.h"
 
+#include <iomanip>
+#include <string>
+
 using namespace std;
 
 namespace TBTK{
@@ -27,13 +30,39 @@ Context::Context(){
 }
 
 Context::~Context(){
+	//Wait if someone is currently holding a lock.
+	mutexObjects.lock();
 	for(auto object : objects)
 		delete object.second;
+	mutexObjects.unlock();
 }
 
 Context& Context::getContext(){
 	static Context context;
 	return context;
+}
+
+string Context::toString() const{
+	mutexAllObjects.lock();
+	stringstream stream;
+	stream << "Context";
+	for(auto object : allObjects){
+		stream << "\n\t" << std::setw(35) << object.first << "\t"
+			<< std::setw(35)
+			<< object.second->getDynamicTypeInformation(
+			).getName();
+	}
+	mutexAllObjects.unlock();
+	mutexObjects.lock();
+	for(auto object : objects){
+		stream << "\n\t" << std::setw(35) << object.first << "\t"
+			<< std::setw(35)
+			<< object.second->getDynamicTypeInformation(
+			).getName();
+	}
+	mutexObjects.unlock();
+
+	return stream.str();
 }
 
 };
