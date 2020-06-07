@@ -4,7 +4,7 @@
 
 namespace TBTK{
 
-class ImplementedPersistentObject : public PersistentObject{
+class ImplementedPersistentObject : virtual public PersistentObject{
 public:
 	std::string serialize(Mode mode) const{
 		return "";
