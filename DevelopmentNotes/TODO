@@ -65,3 +65,7 @@
 
 - Array::contract() can probably be made a lot more efficient that the current
   implementation.
+
+- Implement unit tests for PropertyExtractor::ChebyshevExpander. Then remove
+  the Solver argument from the constructor for
+  PropertyExtractor::ChebyshevExpander and replace this by a setSolver() call.
