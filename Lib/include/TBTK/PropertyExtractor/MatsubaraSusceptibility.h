@@ -81,11 +81,14 @@ private:
 		Information &information
 	);
 
-	/** Solver::Diagonalizer to work on. */
-	Solver::MatsubaraSusceptibility *solver;
-
 	/** Energies. */
 	std::vector<std::complex<double>> energies;
+
+	/** Get the Solver. */
+	Solver::MatsubaraSusceptibility& getSolver();
+
+	/** Get the Solver. */
+	const Solver::MatsubaraSusceptibility& getSolver() const;
 };
 
 inline void MatsubaraSusceptibility::SusceptibilityBlockInformation::setCalculateSusceptibilityForAllBlocks(
@@ -98,6 +101,15 @@ inline void MatsubaraSusceptibility::SusceptibilityBlockInformation::setCalculat
 inline bool MatsubaraSusceptibility::SusceptibilityBlockInformation::getCalculateSusceptibilityForAllBlocks(
 ) const{
 	return calculateSusceptibilityForAllBlocks;
+}
+
+inline Solver::MatsubaraSusceptibility& MatsubaraSusceptibility::getSolver(){
+	return PropertyExtractor::getSolver<Solver::MatsubaraSusceptibility>();
+}
+
+inline const Solver::MatsubaraSusceptibility&
+MatsubaraSusceptibility::getSolver() const{
+	return PropertyExtractor::getSolver<Solver::MatsubaraSusceptibility>();
 }
 
 };	//End of namespace PropertyExtractor

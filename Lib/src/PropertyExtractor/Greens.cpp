@@ -32,7 +32,7 @@ namespace TBTK{
 namespace PropertyExtractor{
 
 Greens::Greens(Solver::Greens &solver){
-	this->solver = &solver;
+	setSolver(solver);
 }
 
 Greens::~Greens(){
@@ -87,16 +87,17 @@ Property::Density Greens::calculateDensity(
 	);
 	patternValidator.validate(patterns);
 
+	const Solver::Greens &solver = getSolver();
 	IndexTree allIndices = generateIndexTree(
 		patterns,
-		solver->getModel().getHoppingAmplitudeSet(),
+		solver.getModel().getHoppingAmplitudeSet(),
 		false,
 		false
 	);
 
 	IndexTree memoryLayout = generateIndexTree(
 		patterns,
-		solver->getModel().getHoppingAmplitudeSet(),
+		solver.getModel().getHoppingAmplitudeSet(),
 		true,
 		true
 	);
@@ -126,25 +127,26 @@ Property::LDOS Greens::calculateLDOS(
 	);
 	patternValidator.validate(patterns);
 
+	const Solver::Greens &solver = getSolver();
 	IndexTree allIndices = generateIndexTree(
 		patterns,
-		solver->getModel().getHoppingAmplitudeSet(),
+		solver.getModel().getHoppingAmplitudeSet(),
 		false,
 		true
 	);
 
 	IndexTree memoryLayout = generateIndexTree(
 		patterns,
-		solver->getModel().getHoppingAmplitudeSet(),
+		solver.getModel().getHoppingAmplitudeSet(),
 		true,
 		true
 	);
 
 	Property::LDOS ldos(
 		memoryLayout,
-		solver->getGreensFunction().getLowerBound(),
-		solver->getGreensFunction().getUpperBound(),
-		solver->getGreensFunction().getResolution()
+		solver.getGreensFunction().getLowerBound(),
+		solver.getGreensFunction().getUpperBound(),
+		solver.getGreensFunction().getResolution()
 	);
 
 	Information information;
@@ -167,13 +169,14 @@ void Greens::calculateDensityCallback(
 	Information &information
 ){
 	Greens *propertyExtractor = (Greens*)cb_this;
+	const Solver::Greens &solver = propertyExtractor->getSolver();
 	Property::Density &density = (Property::Density&)property;
 	vector<double> &data = density.getDataRW();
 
 	const Property::GreensFunction &greensFunction
-		= propertyExtractor->solver->getGreensFunction();
+		= solver.getGreensFunction();
 
-	Statistics statistics = propertyExtractor->solver->getModel().getStatistics();
+	Statistics statistics = solver.getModel().getStatistics();
 
 	switch(greensFunction.getType()){
 	case Property::GreensFunction::Type::Retarded:
@@ -190,18 +193,17 @@ void Greens::calculateDensityCallback(
 			if(statistics == Statistics::FermiDirac){
 				weight = Functions::fermiDiracDistribution(
 					E,
-					propertyExtractor->solver->getModel(
+					solver.getModel(
 					).getChemicalPotential(),
-					propertyExtractor->solver->getModel(
-					).getTemperature()
+					solver.getModel().getTemperature()
 				);
 			}
 			else{
 				weight = Functions::boseEinsteinDistribution(
 					E,
-					propertyExtractor->solver->getModel(
+					solver.getModel(
 					).getChemicalPotential(),
-					propertyExtractor->solver->getModel().getTemperature()
+					solver.getModel().getTemperature()
 				);
 			}
 
@@ -227,17 +229,17 @@ void Greens::calculateDensityCallback(
 			if(statistics == Statistics::FermiDirac){
 				weight = Functions::fermiDiracDistribution(
 					E,
-					propertyExtractor->solver->getModel(
+					solver.getModel(
 					).getChemicalPotential(),
-					propertyExtractor->solver->getModel().getTemperature()
+					solver.getModel().getTemperature()
 				);
 			}
 			else{
 				weight = Functions::boseEinsteinDistribution(
 					E,
-					propertyExtractor->solver->getModel(
+					solver.getModel(
 					).getChemicalPotential(),
-					propertyExtractor->solver->getModel().getTemperature()
+					solver.getModel().getTemperature()
 				);
 			}
 
@@ -284,11 +286,12 @@ void Greens::calculateLDOSCallback(
 	Information &information
 ){
 	Greens *propertyExtractor = (Greens*)cb_this;
+	const Solver::Greens &solver = propertyExtractor->getSolver();
 	Property::LDOS &ldos = (Property::LDOS&)property;
 	vector<double> &data = ldos.getDataRW();
 
 	const Property::GreensFunction &greensFunction
-		= propertyExtractor->solver->getGreensFunction();
+		= solver.getGreensFunction();
 
 	switch(greensFunction.getType()){
 	case Property::GreensFunction::Type::Retarded:

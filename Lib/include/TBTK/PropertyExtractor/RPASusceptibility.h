@@ -100,14 +100,17 @@ private:
 		Information &information
 	);*/
 
-	/** Solver::Diagonalizer to work on. */
-	Solver::RPASusceptibility *solver;
-
 	/** RPA susceptibility tree for storing results between calls to the
 	 *  calculateRPASusceptibilityCallback(). */
 	IndexedDataTree<
 		std::vector<std::complex<double>>
 	> rpaSusceptibilityTree;
+
+	/** Get the Solver. */
+	Solver::RPASusceptibility& getSolver();
+
+	/** Get the Solver. */
+	const Solver::RPASusceptibility& getSolver() const;
 
 	/** Charge susceptibility tree for storing results between calls to the
 	 *  calculateChargeSusceptibilityCallback(). */
@@ -121,6 +124,14 @@ private:
 		std::vector<std::complex<double>>
 	> spinSusceptibilityTree;*/
 };
+
+inline Solver::RPASusceptibility& RPASusceptibility::getSolver(){
+	return PropertyExtractor::getSolver<Solver::RPASusceptibility>();
+}
+
+inline const Solver::RPASusceptibility& RPASusceptibility::getSolver() const{
+	return PropertyExtractor::getSolver<Solver::RPASusceptibility>();
+}
 
 };	//End of namespace PropertyExtractor
 };	//End of namespace TBTK

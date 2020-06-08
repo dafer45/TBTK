@@ -30,10 +30,8 @@ using namespace std;
 namespace TBTK{
 namespace PropertyExtractor{
 
-SelfEnergy2::SelfEnergy2(
-	Solver::SelfEnergy2 &solver
-){
-	this->solver = &solver;
+SelfEnergy2::SelfEnergy2(Solver::SelfEnergy2 &solver){
+	setSolver(solver);
 }
 
 Property::SelfEnergy SelfEnergy2::calculateSelfEnergy(
@@ -86,6 +84,7 @@ Property::SelfEnergy SelfEnergy2::calculateSelfEnergy(
 	}
 
 	//Calculate allIndices.
+	const Solver::SelfEnergy2 &solver = getSolver();
 	IndexTree allIndices;
 	for(unsigned int n = 0; n < patterns.size(); n++){
 		const Index &pattern = *(patterns.begin() + n);
@@ -111,7 +110,7 @@ Property::SelfEnergy SelfEnergy2::calculateSelfEnergy(
 
 		IndexTree kIndexTree = generateIndexTree(
 			{kIndexPatternExtended},
-			solver->getModel().getHoppingAmplitudeSet(),
+			solver.getModel().getHoppingAmplitudeSet(),
 			false,
 			false
 		);
@@ -139,7 +138,7 @@ Property::SelfEnergy SelfEnergy2::calculateSelfEnergy(
 			for(unsigned int n = 0; n < 2; n++){
 				intraBlockIndicesTree[n] = generateIndexTree(
 					{intraBlockIndices[n]},
-					solver->getModel(
+					solver.getModel(
 					).getHoppingAmplitudeSet(),
 					false,
 					false
@@ -223,7 +222,7 @@ Property::SelfEnergy SelfEnergy2::calculateSelfEnergy(
 
 		IndexTree kIndexTree = generateIndexTree(
 			{kIndexPatternExtended},
-			solver->getModel().getHoppingAmplitudeSet(),
+			solver.getModel().getHoppingAmplitudeSet(),
 			true,
 			false
 		);
@@ -252,7 +251,7 @@ Property::SelfEnergy SelfEnergy2::calculateSelfEnergy(
 			for(unsigned int n = 0; n < 2; n++){
 				intraBlockIndicesTree[n] = generateIndexTree(
 					{intraBlockIndices[n]},
-					solver->getModel(
+					solver.getModel(
 					).getHoppingAmplitudeSet(),
 					true,
 					false
@@ -294,7 +293,7 @@ Property::SelfEnergy SelfEnergy2::calculateSelfEnergy(
 	memoryLayout.generateLinearMap();
 
 	const Property::InteractionVertex &interactionVertex
-		= solver->getInteractionVertex();
+		= solver.getInteractionVertex();
 	switch(interactionVertex.getEnergyType()){
 	case Property::EnergyResolvedProperty<complex<double>>::EnergyType::BosonicMatsubara:
 	{
@@ -314,7 +313,7 @@ Property::SelfEnergy SelfEnergy2::calculateSelfEnergy(
 			"This should never happen, contact the developer."
 		);
 
-		double temperature = solver->getModel().getTemperature();
+		double temperature = solver.getModel().getTemperature();
 		double kT = UnitHandler::getConstantInNaturalUnits(
 			"k_B"
 		)*temperature;
@@ -356,6 +355,7 @@ void SelfEnergy2::calculateSelfEnergyCallback(
 ){
 	SelfEnergy2 *propertyExtractor
 		= (SelfEnergy2*)cb_this;
+	Solver::SelfEnergy2 &solver = propertyExtractor->getSolver();
 	Property::SelfEnergy &selfEnergy = (Property::SelfEnergy&)property;
 	vector<complex<double>> &data = selfEnergy.getDataRW();
 
@@ -370,7 +370,7 @@ void SelfEnergy2::calculateSelfEnergyCallback(
 			vector<Index> components = index.split();
 
 			Property::SelfEnergy s
-				= propertyExtractor->solver->calculateSelfEnergyAllBlocks(
+				= solver.calculateSelfEnergyAllBlocks(
 					{components[1], components[2]},
 					propertyExtractor->getLowerFermionicMatsubaraEnergyIndex(),
 					propertyExtractor->getUpperFermionicMatsubaraEnergyIndex()
@@ -392,7 +392,7 @@ void SelfEnergy2::calculateSelfEnergyCallback(
 		}
 		else{
 			vector<complex<double>> se
-				= propertyExtractor->solver->calculateSelfEnergy(
+				= solver.calculateSelfEnergy(
 					index,
 					selfEnergy.getLowerMatsubaraEnergyIndex(),
 					selfEnergy.getUpperMatsubaraEnergyIndex()

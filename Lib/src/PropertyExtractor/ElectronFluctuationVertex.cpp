@@ -33,7 +33,7 @@ namespace PropertyExtractor{
 ElectronFluctuationVertex::ElectronFluctuationVertex(
 	Solver::ElectronFluctuationVertex &solver
 ){
-	this->solver = &solver;
+	setSolver(solver);
 }
 
 void ElectronFluctuationVertex::setEnergyWindow(
@@ -64,6 +64,7 @@ void ElectronFluctuationVertex::setEnergyWindow(
 Property::InteractionVertex ElectronFluctuationVertex::calculateInteractionVertex(
 	vector<Index> patterns
 ){
+	const Solver::ElectronFluctuationVertex &solver = getSolver();
 	//Calculate allIndices.
 	IndexTree allIndices;
 	for(unsigned int n = 0; n < patterns.size(); n++){
@@ -107,7 +108,7 @@ Property::InteractionVertex ElectronFluctuationVertex::calculateInteractionVerte
 
 		IndexTree kIndexTree = generateIndexTree(
 			{kIndexPatternExtended},
-			solver->getModel().getHoppingAmplitudeSet(),
+			solver.getModel().getHoppingAmplitudeSet(),
 			false,
 			false
 		);
@@ -135,7 +136,7 @@ Property::InteractionVertex ElectronFluctuationVertex::calculateInteractionVerte
 			for(unsigned int n = 0; n < 4; n++){
 				intraBlockIndicesTree[n] = generateIndexTree(
 					{intraBlockIndices[n]},
-					solver->getModel(
+					solver.getModel(
 					).getHoppingAmplitudeSet(),
 					false,
 					false
@@ -247,7 +248,7 @@ Property::InteractionVertex ElectronFluctuationVertex::calculateInteractionVerte
 
 		IndexTree kIndexTree = generateIndexTree(
 			{kIndexPatternExtended},
-			solver->getModel().getHoppingAmplitudeSet(),
+			solver.getModel().getHoppingAmplitudeSet(),
 			true,
 			false
 		);
@@ -276,7 +277,7 @@ Property::InteractionVertex ElectronFluctuationVertex::calculateInteractionVerte
 			for(unsigned int n = 0; n < 4; n++){
 				intraBlockIndicesTree[n] = generateIndexTree(
 					{intraBlockIndices[n]},
-					solver->getModel(
+					solver.getModel(
 					).getHoppingAmplitudeSet(),
 					true,
 					false
@@ -346,7 +347,7 @@ Property::InteractionVertex ElectronFluctuationVertex::calculateInteractionVerte
 	memoryLayout.generateLinearMap();
 
 	const Property::Susceptibility &susceptibility
-		= solver->getSusceptibility();
+		= solver.getSusceptibility();
 	switch(susceptibility.getEnergyType()){
 	case Property::EnergyResolvedProperty<complex<double>>::EnergyType::Real:
 	{
@@ -406,12 +407,14 @@ void ElectronFluctuationVertex::calculateInteractionVertexCallback(
 ){
 	ElectronFluctuationVertex *propertyExtractor
 		= (ElectronFluctuationVertex*)cb_this;
+	Solver::ElectronFluctuationVertex &solver
+		= propertyExtractor->getSolver();
 	Property::InteractionVertex &interactionVertex
 		= (Property::InteractionVertex&)property;
 	vector<complex<double>> &data = interactionVertex.getDataRW();
 
 	vector<complex<double>> iv
-		= propertyExtractor->solver->calculateSelfEnergyVertex(
+		= solver.calculateSelfEnergyVertex(
 			index
 		);
 

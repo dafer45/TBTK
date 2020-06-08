@@ -30,10 +30,8 @@ using namespace std;
 namespace TBTK{
 namespace PropertyExtractor{
 
-RPASusceptibility::RPASusceptibility(
-	Solver::RPASusceptibility &solver
-){
-	this->solver = &solver;
+RPASusceptibility::RPASusceptibility(Solver::RPASusceptibility &solver){
+	setSolver(solver);
 }
 
 void RPASusceptibility::setEnergyWindow(
@@ -64,6 +62,8 @@ void RPASusceptibility::setEnergyWindow(
 Property::Susceptibility RPASusceptibility::calculateRPASusceptibility(
 	vector<Index> patterns
 ){
+	const Solver::RPASusceptibility &solver = getSolver();
+
 	//Calculate allIndices.
 	IndexTree allIndices;
 	for(unsigned int n = 0; n < patterns.size(); n++){
@@ -107,7 +107,7 @@ Property::Susceptibility RPASusceptibility::calculateRPASusceptibility(
 
 		IndexTree kIndexTree = generateIndexTree(
 			{kIndexPatternExtended},
-			solver->getModel().getHoppingAmplitudeSet(),
+			solver.getModel().getHoppingAmplitudeSet(),
 			false,
 			false
 		);
@@ -135,7 +135,7 @@ Property::Susceptibility RPASusceptibility::calculateRPASusceptibility(
 			for(unsigned int n = 0; n < 4; n++){
 				intraBlockIndicesTree[n] = generateIndexTree(
 					{intraBlockIndices[n]},
-					solver->getModel(
+					solver.getModel(
 					).getHoppingAmplitudeSet(),
 					false,
 					false
@@ -247,7 +247,7 @@ Property::Susceptibility RPASusceptibility::calculateRPASusceptibility(
 
 		IndexTree kIndexTree = generateIndexTree(
 			{kIndexPatternExtended},
-			solver->getModel().getHoppingAmplitudeSet(),
+			solver.getModel().getHoppingAmplitudeSet(),
 			true,
 			false
 		);
@@ -276,7 +276,7 @@ Property::Susceptibility RPASusceptibility::calculateRPASusceptibility(
 			for(unsigned int n = 0; n < 4; n++){
 				intraBlockIndicesTree[n] = generateIndexTree(
 					{intraBlockIndices[n]},
-					solver->getModel(
+					solver.getModel(
 					).getHoppingAmplitudeSet(),
 					true,
 					false
@@ -346,7 +346,7 @@ Property::Susceptibility RPASusceptibility::calculateRPASusceptibility(
 	memoryLayout.generateLinearMap();
 
 	const Property::Susceptibility &bareSusceptibility
-		= solver->getBareSusceptibility();
+		= solver.getBareSusceptibility();
 	switch(bareSusceptibility.getEnergyType()){
 	case Property::EnergyResolvedProperty<complex<double>>::EnergyType::Real:
 	{
@@ -408,6 +408,8 @@ void RPASusceptibility::calculateRPASusceptibilityCallback(
 ){
 	RPASusceptibility *propertyExtractor
 		= (RPASusceptibility*)cb_this;
+	Solver::RPASusceptibility &solver
+		= propertyExtractor->getSolver();
 	Property::Susceptibility &susceptibility
 		= (Property::Susceptibility&)property;
 	vector<complex<double>> &data = susceptibility.getDataRW();
@@ -415,9 +417,7 @@ void RPASusceptibility::calculateRPASusceptibilityCallback(
 	vector<complex<double>> s;
 	if(!propertyExtractor->rpaSusceptibilityTree.get(s, index)){
 		propertyExtractor->rpaSusceptibilityTree
-			= propertyExtractor->solver->calculateRPASusceptibility(
-				index
-			);
+			= solver.calculateRPASusceptibility(index);
 		if(
 			!propertyExtractor->rpaSusceptibilityTree.get(
 				s,

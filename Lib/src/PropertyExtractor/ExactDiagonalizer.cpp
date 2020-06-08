@@ -7,8 +7,8 @@ static complex<double> i(0, 1);
 namespace TBTK{
 namespace PropertyExtractor{
 
-ExactDiagonalizer::ExactDiagonalizer(Solver::ExactDiagonalizer &edSolver){
-	this->edSolver = &edSolver;
+ExactDiagonalizer::ExactDiagonalizer(Solver::ExactDiagonalizer &solver){
+	setSolver(solver);
 }
 
 ExactDiagonalizer::~ExactDiagonalizer(){
@@ -111,10 +111,11 @@ Property::GreensFunction* ExactDiagonalizer::calculateGreensFunction(
 		break;
 	}
 
-	ManyParticleContext *manyParticleContext = edSolver->getModel().getManyParticleContext();
+	Solver::ExactDiagonalizer &solver = getSolver();
+	ManyParticleContext *manyParticleContext = solver.getModel().getManyParticleContext();
 
 	const FockStateRuleSet ruleSet0 = manyParticleContext->getFockStateRuleSet();
-	unsigned int subspaceID0 = edSolver->addSubspace(ruleSet0);
+	unsigned int subspaceID0 = solver.addSubspace(ruleSet0);
 
 	unsigned int subspaceID1;
 	if(manyParticleContext->wrapsBitRegister()){
@@ -144,10 +145,10 @@ Property::GreensFunction* ExactDiagonalizer::calculateGreensFunction(
 		}
 
 		FockStateRuleSet ruleSet1 = (*fromOperator)*ruleSet0;
-		subspaceID1 = edSolver->addSubspace(ruleSet1);
+		subspaceID1 = solver.addSubspace(ruleSet1);
 
-		edSolver->run(subspaceID0);
-		edSolver->run(subspaceID1);
+		solver.run(subspaceID0);
+		solver.run(subspaceID1);
 
 		FockStateMap::FockStateMap<BitRegister> *fockStateMap0 = fockSpace->createFockStateMap(
 			ruleSet0
@@ -160,9 +161,9 @@ Property::GreensFunction* ExactDiagonalizer::calculateGreensFunction(
 		for(int n = 0; n < energyResolution; n++)
 			greensFunctionData[n] = 0;
 
-		double groundStateEnergy = edSolver->getEigenValue(subspaceID0, 0);
+		double groundStateEnergy = solver.getEigenValue(subspaceID0, 0);
 		for(unsigned int n = 0; n < fockStateMap1->getBasisSize(); n++){
-			double E = edSolver->getEigenValue(subspaceID1, n);
+			double E = solver.getEigenValue(subspaceID1, n);
 
 			complex<double> amplitude0 = 0.;
 			for(unsigned int c = 0; c < fockStateMap0->getBasisSize(); c++){
@@ -173,8 +174,8 @@ Property::GreensFunction* ExactDiagonalizer::calculateGreensFunction(
 
 				unsigned int subspace1Index = fockStateMap1->getBasisIndex(psi);
 
-				complex<double> a0 = edSolver->getAmplitude(subspaceID0, 0, {(int)c});
-				complex<double> a1 = edSolver->getAmplitude(subspaceID1, n, {(int)subspace1Index});
+				complex<double> a0 = solver.getAmplitude(subspaceID0, 0, {(int)c});
+				complex<double> a1 = solver.getAmplitude(subspaceID1, n, {(int)subspace1Index});
 
 				amplitude0 += conj(a1)*a0*(double)psi.getPrefactor();
 			}
@@ -187,8 +188,8 @@ Property::GreensFunction* ExactDiagonalizer::calculateGreensFunction(
 
 				unsigned int subspace0Index = fockStateMap0->getBasisIndex(psi);
 
-				complex<double> a0 = edSolver->getAmplitude(subspaceID1, n, {(int)c});
-				complex<double> a1 = edSolver->getAmplitude(subspaceID0, 0, {(int)subspace0Index});
+				complex<double> a0 = solver.getAmplitude(subspaceID1, n, {(int)c});
+				complex<double> a1 = solver.getAmplitude(subspaceID0, 0, {(int)subspace0Index});
 
 				amplitude1 += conj(a1)*a0*(double)psi.getPrefactor();
 			}
@@ -241,10 +242,10 @@ Property::GreensFunction* ExactDiagonalizer::calculateGreensFunction(
 		}
 
 		FockStateRuleSet ruleSet1 = (*fromOperator)*ruleSet0;
-		subspaceID1 = edSolver->addSubspace(ruleSet1);
+		subspaceID1 = solver.addSubspace(ruleSet1);
 
-		edSolver->run(subspaceID0);
-		edSolver->run(subspaceID1);
+		solver.run(subspaceID0);
+		solver.run(subspaceID1);
 
 		FockStateMap::FockStateMap<ExtensiveBitRegister> *fockStateMap0 = fockSpace->createFockStateMap(
 			ruleSet0
@@ -257,9 +258,9 @@ Property::GreensFunction* ExactDiagonalizer::calculateGreensFunction(
 		for(int n = 0; n < energyResolution; n++)
 			greensFunctionData[n] = 0;
 
-		double groundStateEnergy = edSolver->getEigenValue(subspaceID0, 0);
+		double groundStateEnergy = solver.getEigenValue(subspaceID0, 0);
 		for(unsigned int n = 0; n < fockStateMap1->getBasisSize(); n++){
-			double E = edSolver->getEigenValue(subspaceID1, n);
+			double E = solver.getEigenValue(subspaceID1, n);
 
 			complex<double> amplitude0 = 0.;
 			for(unsigned int c = 0; c < fockStateMap0->getBasisSize(); c++){
@@ -270,8 +271,8 @@ Property::GreensFunction* ExactDiagonalizer::calculateGreensFunction(
 
 				unsigned int subspace1Index = fockStateMap1->getBasisIndex(psi);
 
-				complex<double> a0 = edSolver->getAmplitude(subspaceID0, 0, {(int)c});
-				complex<double> a1 = edSolver->getAmplitude(subspaceID1, n, {(int)subspace1Index});
+				complex<double> a0 = solver.getAmplitude(subspaceID0, 0, {(int)c});
+				complex<double> a1 = solver.getAmplitude(subspaceID1, n, {(int)subspace1Index});
 
 				amplitude0 += conj(a1)*a0*(double)psi.getPrefactor();
 			}
@@ -284,8 +285,8 @@ Property::GreensFunction* ExactDiagonalizer::calculateGreensFunction(
 
 				unsigned int subspace0Index = fockStateMap0->getBasisIndex(psi);
 
-				complex<double> a0 = edSolver->getAmplitude(subspaceID1, n, {(int)c});
-				complex<double> a1 = edSolver->getAmplitude(subspaceID0, 0, {(int)subspace0Index});
+				complex<double> a0 = solver.getAmplitude(subspaceID1, n, {(int)c});
+				complex<double> a1 = solver.getAmplitude(subspaceID0, 0, {(int)subspace0Index});
 
 				amplitude1 += conj(a1)*a0*(double)psi.getPrefactor();
 			}

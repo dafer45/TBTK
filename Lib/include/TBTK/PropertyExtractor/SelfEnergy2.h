@@ -80,8 +80,11 @@ private:
 		Information &information
 	);
 
-	/** Solver::SelfEnergy2 to work on. */
-	Solver::SelfEnergy2 *solver;
+	/** Get the Solver. */
+	Solver::SelfEnergy2& getSolver();
+
+	/** Get the Solver. */
+	const Solver::SelfEnergy2& getSolver() const;
 };
 
 inline void SelfEnergy2::SelfEnergyBlockInformation::setCalculateSelfEnergyForAllBlocks(

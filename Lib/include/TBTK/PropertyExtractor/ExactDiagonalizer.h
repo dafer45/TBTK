@@ -36,7 +36,7 @@ namespace PropertyExtractor{
 class ExactDiagonalizer : public PropertyExtractor{
 public:
 	/** Constructor. */
-	ExactDiagonalizer(Solver::ExactDiagonalizer &edSolver);
+	ExactDiagonalizer(Solver::ExactDiagonalizer &solver);
 
 	/** Destructor. */
 	~ExactDiagonalizer();
@@ -75,9 +75,6 @@ public:
 		Index ranges
 	);
 private:
-	/** Diagonalizer to work on. */
-	Solver::ExactDiagonalizer *edSolver;
-
 	/** Callback for calculating density. Used by calculateDensity(). */
 	static void calculateDensityCallback(
 		PropertyExtractor *cb_this,
@@ -116,7 +113,21 @@ private:
 		int offset,
 		Information &information
 	);
+
+	/** Get the Solver. */
+	Solver::ExactDiagonalizer& getSolver();
+
+	/** Get the Solver. */
+	const Solver::ExactDiagonalizer& getSolver() const;
 };
+
+inline Solver::ExactDiagonalizer& ExactDiagonalizer::getSolver(){
+	return PropertyExtractor::getSolver<Solver::ExactDiagonalizer>();
+}
+
+inline const Solver::ExactDiagonalizer& ExactDiagonalizer::getSolver() const{
+	return PropertyExtractor::getSolver<Solver::ExactDiagonalizer>();
+}
 
 };	//End of namespace PropertyExtractor
 };	//End of namespace TBTK

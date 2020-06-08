@@ -42,7 +42,7 @@ namespace PropertyExtractor{
 class Greens : public PropertyExtractor{
 public:
 	/** Constructor. */
-	Greens(Solver::Greens &cSolver);
+	Greens(Solver::Greens &solver);
 
 	/** Destructor. */
 	virtual ~Greens();
@@ -70,9 +70,6 @@ public:
 		std::vector<Index> patterns
 	);
 private:
-	/** ChebyshevExpander to work on. */
-	Solver::Greens *solver;
-
 	/** Callback for calculating the density. Used by calculateDensity. */
 	static void calculateDensityCallback(
 		PropertyExtractor *cb_this,
@@ -91,7 +88,21 @@ private:
 		int offset,
 		Information &information
 	);
+
+	/** Get the Solver. */
+	Solver::Greens& getSolver();
+
+	/** Get the Solver. */
+	const Solver::Greens& getSolver() const;
 };
+
+inline Solver::Greens& Greens::getSolver(){
+	return PropertyExtractor::getSolver<Solver::Greens>();
+}
+
+inline const Solver::Greens& Greens::getSolver() const{
+	return PropertyExtractor::getSolver<Solver::Greens>();
+}
 
 };	//End of namespace PropertyExtractor
 };	//End of namespace TBTK

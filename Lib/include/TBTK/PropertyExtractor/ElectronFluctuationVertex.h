@@ -73,9 +73,26 @@ private:
 		Information &information
 	);
 
-	/** Solver::ElectronFluctautionVertex to work on. */
-	Solver::ElectronFluctuationVertex *solver;
+	/** Get the Solver. */
+	Solver::ElectronFluctuationVertex& getSolver();
+
+	/** Get the Solver. */
+	const Solver::ElectronFluctuationVertex& getSolver() const;
 };
+
+inline Solver::ElectronFluctuationVertex& ElectronFluctuationVertex::getSolver(
+){
+	return PropertyExtractor::getSolver<
+		Solver::ElectronFluctuationVertex
+	>();
+}
+
+inline const Solver::ElectronFluctuationVertex& ElectronFluctuationVertex::getSolver(
+) const{
+	return PropertyExtractor::getSolver<
+		Solver::ElectronFluctuationVertex
+	>();
+}
 
 };	//End of namespace PropertyExtractor
 };	//End of namespace TBTK

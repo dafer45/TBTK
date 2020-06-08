@@ -30,15 +30,15 @@ using namespace std;
 namespace TBTK{
 namespace PropertyExtractor{
 
-SelfEnergy::SelfEnergy(
-	Solver::SelfEnergy &solver
-){
-	this->solver = &solver;
+SelfEnergy::SelfEnergy(Solver::SelfEnergy &solver){
+	setSolver(solver);
 }
 
 Property::SelfEnergy SelfEnergy::calculateSelfEnergy(
 	vector<Index> patterns
 ){
+	const Solver::SelfEnergy &solver = getSolver();
+
 	//Calculate allIndices.
 	IndexTree allIndices;
 	for(unsigned int n = 0; n < patterns.size(); n++){
@@ -82,7 +82,7 @@ Property::SelfEnergy SelfEnergy::calculateSelfEnergy(
 
 		IndexTree kIndexTree = generateIndexTree(
 			{kIndexPatternExtended},
-			solver->getModel().getHoppingAmplitudeSet(),
+			solver.getModel().getHoppingAmplitudeSet(),
 			false,
 			false
 		);
@@ -110,7 +110,7 @@ Property::SelfEnergy SelfEnergy::calculateSelfEnergy(
 			for(unsigned int n = 0; n < 2; n++){
 				intraBlockIndicesTree[n] = generateIndexTree(
 					{intraBlockIndices[n]},
-					solver->getModel(
+					solver.getModel(
 					).getHoppingAmplitudeSet(),
 					false,
 					false
@@ -194,7 +194,7 @@ Property::SelfEnergy SelfEnergy::calculateSelfEnergy(
 
 		IndexTree kIndexTree = generateIndexTree(
 			{kIndexPatternExtended},
-			solver->getModel().getHoppingAmplitudeSet(),
+			solver.getModel().getHoppingAmplitudeSet(),
 			true,
 			false
 		);
@@ -223,7 +223,7 @@ Property::SelfEnergy SelfEnergy::calculateSelfEnergy(
 			for(unsigned int n = 0; n < 2; n++){
 				intraBlockIndicesTree[n] = generateIndexTree(
 					{intraBlockIndices[n]},
-					solver->getModel(
+					solver.getModel(
 					).getHoppingAmplitudeSet(),
 					true,
 					false
@@ -265,7 +265,7 @@ Property::SelfEnergy SelfEnergy::calculateSelfEnergy(
 	memoryLayout.generateLinearMap();
 
 	const Property::InteractionVertex &interactionVertex
-		= solver->getInteractionVertex();
+		= solver.getInteractionVertex();
 	switch(interactionVertex.getEnergyType()){
 	case Property::EnergyResolvedProperty<complex<double>>::EnergyType::BosonicMatsubara:
 	{
@@ -289,7 +289,7 @@ Property::SelfEnergy SelfEnergy::calculateSelfEnergy(
 			- lowerFermionicMatsubaraEnergyIndex
 		)/2 + 1;
 
-		double temperature = solver->getModel().getTemperature();
+		double temperature = solver.getModel().getTemperature();
 		double kT = UnitHandler::getConstantInNaturalUnits("k_B")*temperature;
 		double fundamentalMatsubaraEnergy = M_PI*kT;
 
@@ -339,11 +339,12 @@ void SelfEnergy::calculateSelfEnergyCallback(
 ){
 	SelfEnergy *propertyExtractor
 		= (SelfEnergy*)cb_this;
+	Solver::SelfEnergy &solver = propertyExtractor->getSolver();
 	Property::SelfEnergy &selfEnergy = (Property::SelfEnergy&)property;
 	vector<complex<double>> &data = selfEnergy.getDataRW();
 
 	vector<complex<double>> se
-		= propertyExtractor->solver->calculateSelfEnergy(
+		= solver.calculateSelfEnergy(
 			index,
 			propertyExtractor->energies
 		);

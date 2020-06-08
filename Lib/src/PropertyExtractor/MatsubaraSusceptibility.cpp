@@ -33,7 +33,7 @@ namespace PropertyExtractor{
 MatsubaraSusceptibility::MatsubaraSusceptibility(
 	Solver::MatsubaraSusceptibility &solver
 ){
-	this->solver = &solver;
+	setSolver(solver);
 }
 
 Property::Susceptibility MatsubaraSusceptibility::calculateSusceptibility(
@@ -86,6 +86,7 @@ Property::Susceptibility MatsubaraSusceptibility::calculateSusceptibility(
 	}
 
 	//Calculate allIndices.
+	const Solver::MatsubaraSusceptibility &solver = getSolver();
 	IndexTree allIndices;
 	for(unsigned int n = 0; n < patterns.size(); n++){
 		const Index &pattern = *(patterns.begin() + n);
@@ -111,7 +112,7 @@ Property::Susceptibility MatsubaraSusceptibility::calculateSusceptibility(
 
 		IndexTree kIndexTree = generateIndexTree(
 			{kIndexPatternExtended},
-			solver->getModel().getHoppingAmplitudeSet(),
+			solver.getModel().getHoppingAmplitudeSet(),
 			false,
 			false
 		);
@@ -139,7 +140,7 @@ Property::Susceptibility MatsubaraSusceptibility::calculateSusceptibility(
 			for(unsigned int n = 0; n < 4; n++){
 				intraBlockIndicesTree[n] = generateIndexTree(
 					{intraBlockIndices[n]},
-					solver->getModel(
+					solver.getModel(
 					).getHoppingAmplitudeSet(),
 					false,
 					false
@@ -251,7 +252,7 @@ Property::Susceptibility MatsubaraSusceptibility::calculateSusceptibility(
 
 		IndexTree kIndexTree = generateIndexTree(
 			{kIndexPatternExtended},
-			solver->getModel().getHoppingAmplitudeSet(),
+			solver.getModel().getHoppingAmplitudeSet(),
 			true,
 			false
 		);
@@ -280,7 +281,7 @@ Property::Susceptibility MatsubaraSusceptibility::calculateSusceptibility(
 			for(unsigned int n = 0; n < 4; n++){
 				intraBlockIndicesTree[n] = generateIndexTree(
 					{intraBlockIndices[n]},
-					solver->getModel(
+					solver.getModel(
 					).getHoppingAmplitudeSet(),
 					true,
 					false
@@ -376,7 +377,7 @@ Property::Susceptibility MatsubaraSusceptibility::calculateSusceptibility(
 			memoryLayout,
 			getLowerBosonicMatsubaraEnergyIndex(),
 			getUpperBosonicMatsubaraEnergyIndex(),
-			solver->getGreensFunction(
+			solver.getGreensFunction(
 			).getFundamentalMatsubaraEnergy()
 		);
 
@@ -413,6 +414,8 @@ void MatsubaraSusceptibility::calculateSusceptibilityCallback(
 	){
 		MatsubaraSusceptibility *propertyExtractor
 			= (MatsubaraSusceptibility*)cb_this;
+		Solver::MatsubaraSusceptibility &solver
+			= propertyExtractor->getSolver();
 		Property::Susceptibility &susceptibility
 			= (Property::Susceptibility&)property;
 		vector<complex<double>> &data = susceptibility.getDataRW();
@@ -420,7 +423,7 @@ void MatsubaraSusceptibility::calculateSusceptibilityCallback(
 		vector<Index> components = index.split();
 
 		Property::Susceptibility s
-			= propertyExtractor->solver->calculateSusceptibilityAllBlocks(
+			= solver.calculateSusceptibilityAllBlocks(
 				{
 					components[1],
 					components[2],
@@ -448,12 +451,14 @@ void MatsubaraSusceptibility::calculateSusceptibilityCallback(
 	else{
 		MatsubaraSusceptibility *propertyExtractor
 			= (MatsubaraSusceptibility*)cb_this;
+		Solver::MatsubaraSusceptibility &solver
+			= propertyExtractor->getSolver();
 		Property::Susceptibility &susceptibility
 			= (Property::Susceptibility&)property;
 		vector<complex<double>> &data = susceptibility.getDataRW();
 
 		vector<complex<double>> s
-			= propertyExtractor->solver->calculateSusceptibility(
+			= solver.calculateSusceptibility(
 				index,
 				propertyExtractor->getLowerBosonicMatsubaraEnergyIndex(),
 				propertyExtractor->getUpperBosonicMatsubaraEnergyIndex()

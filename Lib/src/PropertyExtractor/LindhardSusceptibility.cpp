@@ -33,12 +33,14 @@ namespace PropertyExtractor{
 LindhardSusceptibility::LindhardSusceptibility(
 	Solver::LindhardSusceptibility &solver
 ){
-	this->solver = &solver;
+	setSolver(solver);
 }
 
 Property::Susceptibility LindhardSusceptibility::calculateSusceptibility(
 	vector<Index> patterns
 ){
+	const Solver::LindhardSusceptibility &solver = getSolver();
+
 	//Calculate allIndices.
 	IndexTree allIndices;
 	for(unsigned int n = 0; n < patterns.size(); n++){
@@ -82,7 +84,7 @@ Property::Susceptibility LindhardSusceptibility::calculateSusceptibility(
 
 		IndexTree kIndexTree = generateIndexTree(
 			{kIndexPatternExtended},
-			solver->getModel().getHoppingAmplitudeSet(),
+			solver.getModel().getHoppingAmplitudeSet(),
 			false,
 			false
 		);
@@ -110,7 +112,7 @@ Property::Susceptibility LindhardSusceptibility::calculateSusceptibility(
 			for(unsigned int n = 0; n < 4; n++){
 				intraBlockIndicesTree[n] = generateIndexTree(
 					{intraBlockIndices[n]},
-					solver->getModel(
+					solver.getModel(
 					).getHoppingAmplitudeSet(),
 					false,
 					false
@@ -222,7 +224,7 @@ Property::Susceptibility LindhardSusceptibility::calculateSusceptibility(
 
 		IndexTree kIndexTree = generateIndexTree(
 			{kIndexPatternExtended},
-			solver->getModel().getHoppingAmplitudeSet(),
+			solver.getModel().getHoppingAmplitudeSet(),
 			true,
 			false
 		);
@@ -251,7 +253,7 @@ Property::Susceptibility LindhardSusceptibility::calculateSusceptibility(
 			for(unsigned int n = 0; n < 4; n++){
 				intraBlockIndicesTree[n] = generateIndexTree(
 					{intraBlockIndices[n]},
-					solver->getModel(
+					solver.getModel(
 					).getHoppingAmplitudeSet(),
 					true,
 					false
@@ -377,7 +379,7 @@ Property::Susceptibility LindhardSusceptibility::calculateSusceptibility(
 			- lowerBosonicMatsubaraEnergyIndex
 		)/2 + 1;
 
-		double temperature = solver->getModel().getTemperature();
+		double temperature = solver.getModel().getTemperature();
 		double kT = UnitHandler::getConstantInNaturalUnits("k_B")*temperature;
 		double fundamentalMatsubaraEnergy = M_PI*kT;
 
@@ -431,8 +433,10 @@ void LindhardSusceptibility::calculateSusceptibilityCallback(
 		= (Property::Susceptibility&)property;
 	vector<complex<double>> &data = susceptibility.getDataRW();
 
+	Solver::LindhardSusceptibility &solver
+		= propertyExtractor->getSolver();
 	vector<complex<double>> s
-		= propertyExtractor->solver->calculateSusceptibility(
+		= solver.calculateSusceptibility(
 			index,
 			propertyExtractor->energies
 		);

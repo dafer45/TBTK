@@ -57,12 +57,24 @@ private:
 		Information &information
 	);
 
-	/** Solver::Diagonalizer to work on. */
-	Solver::LindhardSusceptibility *solver;
-
 	/** Energies. */
 	std::vector<std::complex<double>> energies;
+
+	/** Get the Solver. */
+	Solver::LindhardSusceptibility& getSolver();
+
+	/** Get the Solver. */
+	const Solver::LindhardSusceptibility& getSolver() const;
 };
+
+inline Solver::LindhardSusceptibility& LindhardSusceptibility::getSolver(){
+	return PropertyExtractor::getSolver<Solver::LindhardSusceptibility>();
+}
+
+inline const Solver::LindhardSusceptibility& LindhardSusceptibility::getSolver(
+) const{
+	return PropertyExtractor::getSolver<Solver::LindhardSusceptibility>();
+}
 
 };	//End of namespace PropertyExtractor
 };	//End of namespace TBTK

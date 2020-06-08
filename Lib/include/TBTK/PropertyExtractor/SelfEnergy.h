@@ -58,11 +58,14 @@ private:
 		Information &information
 	);
 
-	/** Solver::SelfEnergy to work on. */
-	Solver::SelfEnergy *solver;
-
 	/** Energies. */
 	std::vector<std::complex<double>> energies;
+
+	/** Get the Solver. */
+	Solver::SelfEnergy& getSolver();
+
+	/** Get the Solver. */
+	const Solver::SelfEnergy& getSolver() const;
 };
 
 };	//End of namespace PropertyExtractor
