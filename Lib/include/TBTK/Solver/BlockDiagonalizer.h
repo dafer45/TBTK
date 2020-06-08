@@ -120,7 +120,7 @@ public:
 	 *  @param state The state number.
 	 *
 	 *  @return The eigenvalue for the given state. */
-	const double getEigenValue(int state);
+	const double getEigenValue(int state) const;
 
 	/** Get eigenvalue for specific block. Note that in contrast to
 	 *  getEigenValue(int state), 'state' here is relative to the first
@@ -130,7 +130,7 @@ public:
 	 *  @param state State index relative to the block in accending order.
 	 *
 	 *  @return The eigenvalue for the given state in the given block. */
-	const double getEigenValue(const Index &blockIndex, int state);
+	const double getEigenValue(const Index &blockIndex, int state) const;
 
 	/** Get amplitude for given eigenvector \f$n\f$ and physical index
 	 * \f$x\f$: \f$\Psi_{n}(x)\f$.
@@ -139,7 +139,7 @@ public:
 	 *  @param index Physical index \f$x\f$.
 	 *
 	 *  @return The amplitude \f$\Psi_{n}(\mathbf{x})\f$. */
-	const std::complex<double> getAmplitude(int state, const Index &index);
+	const std::complex<double> getAmplitude(int state, const Index &index) const;
 
 	/** Get amplitude for given eigenvector \f$n\f$, block index \f$b\f$,
 	 *  and physical index \f$x\f$: \f$\Psi_{nb}(x)\f$.
@@ -153,7 +153,7 @@ public:
 		const Index &blockIndex,
 		int state,
 		const Index &intraBlockIndex
-	);
+	) const;
 
 	/** Get first state in the block corresponding to the given Index.
 	 *
@@ -234,7 +234,7 @@ inline void BlockDiagonalizer::setMaxIterations(int maxIterations){
 inline const std::complex<double> BlockDiagonalizer::getAmplitude(
 	int state,
 	const Index &index
-){
+) const{
 	const Model &model = getModel();
 	unsigned int block = blockStructureDescriptor.getBlockIndex(state);
 	unsigned int offset = eigenVectorOffsets.at(block);
@@ -263,7 +263,7 @@ inline const std::complex<double> BlockDiagonalizer::getAmplitude(
 	const Index &blockIndex,
 	int state,
 	const Index &intraBlockIndex
-){
+) const{
 	int firstStateInBlock = getModel().getHoppingAmplitudeSet(
 	).getFirstIndexInBlock(blockIndex);
 	unsigned int block = blockStructureDescriptor.getBlockIndex(
@@ -290,14 +290,14 @@ inline const std::complex<double> BlockDiagonalizer::getAmplitude(
 	return eigenVectors[offset + (linearIndex - firstStateInBlock)];
 }
 
-inline const double BlockDiagonalizer::getEigenValue(int state){
+inline const double BlockDiagonalizer::getEigenValue(int state) const{
 	return eigenValues[state];
 }
 
 inline const double BlockDiagonalizer::getEigenValue(
 	const Index &blockIndex,
 	int state
-){
+) const{
 	int offset = getModel().getHoppingAmplitudeSet().getFirstIndexInBlock(
 		blockIndex
 	);

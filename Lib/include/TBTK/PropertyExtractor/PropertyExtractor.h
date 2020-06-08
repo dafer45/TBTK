@@ -583,6 +583,13 @@ protected:
 	 *  @return The Solver cast to SolverType. */
 	template<typename SolverType>
 	SolverType& getSolver();
+
+	/** Get the Solver. The Solver is dynamically cast to the type
+	 *  specified by the template parameter SolverType.
+	 *
+	 *  @return The Solver cast to SolverType. */
+	template<typename SolverType>
+	const SolverType& getSolver() const;
 private:
 	/** Energy type used for energy dependent quantities. */
 	EnergyType energyType;
@@ -875,6 +882,11 @@ inline void PropertyExtractor::setSolver(Solver::Solver &solver){
 
 template<typename SolverType>
 SolverType& PropertyExtractor::getSolver(){
+	return solver.get<SolverType>();
+}
+
+template<typename SolverType>
+const SolverType& PropertyExtractor::getSolver() const{
 	return solver.get<SolverType>();
 }
 
