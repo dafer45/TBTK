@@ -51,7 +51,7 @@ namespace PropertyExtractor{
 class ChebyshevExpander : public PropertyExtractor{
 public:
 	/** Constructor. */
-	ChebyshevExpander(Solver::ChebyshevExpander &cSolver);
+	ChebyshevExpander(Solver::ChebyshevExpander &solver);
 
 	/** Destructor. */
 	virtual ~ChebyshevExpander();
@@ -130,9 +130,6 @@ public:
 		std::vector<Index> patterns
 	);
 private:
-	/** ChebyshevExpander to work on. */
-	Solver::ChebyshevExpander *cSolver;
-
 	/** !!!Not tested!!! Callback for calculating density.
 	 *  Used by calculateDensity. */
 	static void calculateDensityCallback(
@@ -172,7 +169,21 @@ private:
 		int offset,
 		Information &information
 	);
+
+	/** Get the Solver. */
+	Solver::ChebyshevExpander& getSolver();
+
+	/** Get the Solver. */
+	const Solver::ChebyshevExpander& getSolver() const;
 };
+
+inline Solver::ChebyshevExpander& ChebyshevExpander::getSolver(){
+	return PropertyExtractor::getSolver<Solver::ChebyshevExpander>();
+}
+
+inline const Solver::ChebyshevExpander& ChebyshevExpander::getSolver() const{
+	return PropertyExtractor::getSolver<Solver::ChebyshevExpander>();
+}
 
 };	//End of namespace PropertyExtractor
 };	//End of namespace TBTK

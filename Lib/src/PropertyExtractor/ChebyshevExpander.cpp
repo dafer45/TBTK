@@ -32,7 +32,7 @@ static complex<double> i(0, 1);
 namespace TBTK{
 namespace PropertyExtractor{
 
-ChebyshevExpander::ChebyshevExpander(Solver::ChebyshevExpander &cSolver){
+ChebyshevExpander::ChebyshevExpander(Solver::ChebyshevExpander &solver){
 	double lowerBound = getLowerBound();
 	double upperBound = getUpperBound();
 	int energyResolution = getEnergyResolution();
@@ -50,23 +50,23 @@ ChebyshevExpander::ChebyshevExpander(Solver::ChebyshevExpander &cSolver){
 		""
 	);
 	TBTKAssert(
-		lowerBound >= -cSolver.getScaleFactor(),
+		lowerBound >= -solver.getScaleFactor(),
 		"PropertyExtractor::ChebyshevExpander::ChebyshevExpander()",
-		"Argument lowerBound has to be larger than -cSolver->getScaleFactor().",
+		"Argument lowerBound has to be larger than -solver->getScaleFactor().",
 		"Use Solver::ChebyshevExpander::setScaleFactor() to set a larger scale factor."
 	);
 	TBTKAssert(
-		upperBound <= cSolver.getScaleFactor(),
+		upperBound <= solver.getScaleFactor(),
 		"PropertyExtractor::ChebyshevExapnder::ChebysheExpander()",
-		"Argument upperBound has to be smaller than cSolver->getScaleFactor().",
+		"Argument upperBound has to be smaller than solver->getScaleFactor().",
 		"Use Solver::ChebyshevExpnader::setScaleFactor() to set a larger scale factor."
 	);
 
-	this->cSolver = &cSolver;
+	setSolver(solver);
 
 	setEnergyWindow(
-		-cSolver.getScaleFactor(),
-		cSolver.getScaleFactor(),
+		-solver.getScaleFactor(),
+		solver.getScaleFactor(),
 		energyResolution
 	);
 
@@ -86,9 +86,10 @@ void ChebyshevExpander::setEnergyWindow(
 		energyResolution
 	);
 
-	cSolver->setLowerBound(lowerBound);
-	cSolver->setUpperBound(upperBound);
-	cSolver->setEnergyResolution(energyResolution);
+	Solver::ChebyshevExpander &solver = getSolver();
+	solver.setLowerBound(lowerBound);
+	solver.setUpperBound(upperBound);
+	solver.setEnergyResolution(energyResolution);
 }
 
 Property::GreensFunction ChebyshevExpander::calculateGreensFunction(
@@ -109,6 +110,7 @@ Property::GreensFunction ChebyshevExpander::calculateGreensFunction(
 	IndexTree memoryLayout;
 	IndexTree fromIndices;
 	set<unsigned int> toIndexSizes;
+	const Solver::ChebyshevExpander &solver = getSolver();
 	for(unsigned int n = 0; n < patterns.size(); n++){
 		const vector<Index>& pattern = *(patterns.begin() + n);
 
@@ -128,13 +130,13 @@ Property::GreensFunction ChebyshevExpander::calculateGreensFunction(
 
 		IndexTree toTree = generateIndexTree(
 			{toPattern},
-			cSolver->getModel().getHoppingAmplitudeSet(),
+			solver.getModel().getHoppingAmplitudeSet(),
 			true,
 			true
 		);
 		IndexTree fromTree = generateIndexTree(
 			{fromPattern},
-			cSolver->getModel().getHoppingAmplitudeSet(),
+			solver.getModel().getHoppingAmplitudeSet(),
 			true,
 			true
 		);
@@ -231,7 +233,8 @@ Property::GreensFunction ChebyshevExpander::calculateGreensFunctions(
 	Index from,
 	Property::GreensFunction::Type type
 ){
-	vector<vector<complex<double>>> coefficients = cSolver->calculateCoefficients(
+	Solver::ChebyshevExpander &solver = getSolver();
+	vector<vector<complex<double>>> coefficients = solver.calculateCoefficients(
 		to,
 		from
 	);
@@ -273,7 +276,7 @@ Property::GreensFunction ChebyshevExpander::calculateGreensFunctions(
 
 	#pragma omp parallel for
 	for(unsigned int n = 0; n < to.size(); n++){
-		vector<complex<double>> greensFunctionData = cSolver->generateGreensFunction(
+		vector<complex<double>> greensFunctionData = solver.generateGreensFunction(
 			coefficients[n],
 			chebyshevType
 		);
@@ -301,7 +304,8 @@ complex<double> ChebyshevExpander::calculateExpectationValue(
 	const std::vector<complex<double>> &greensFunctionData
 		= greensFunction.getData();
 
-	Statistics statistics = cSolver->getModel().getStatistics();
+	const Solver::ChebyshevExpander &solver = getSolver();
+	Statistics statistics = solver.getModel().getStatistics();
 
 	double lowerBound = getLowerBound();
 	double upperBound = getUpperBound();
@@ -313,15 +317,15 @@ complex<double> ChebyshevExpander::calculateExpectationValue(
 		if(statistics == Statistics::FermiDirac){
 			weight = Functions::fermiDiracDistribution(
 				lowerBound + (e/(double)energyResolution)*(upperBound - lowerBound),
-				cSolver->getModel().getChemicalPotential(),
-				cSolver->getModel().getTemperature()
+				solver.getModel().getChemicalPotential(),
+				solver.getModel().getTemperature()
 			);
 		}
 		else{
 			weight = Functions::boseEinsteinDistribution(
 				lowerBound + (e/(double)energyResolution)*(upperBound - lowerBound),
-				cSolver->getModel().getChemicalPotential(),
-				cSolver->getModel().getTemperature()
+				solver.getModel().getChemicalPotential(),
+				solver.getModel().getTemperature()
 			);
 		}
 
@@ -357,16 +361,17 @@ Property::Density ChebyshevExpander::calculateDensity(
 Property::Density ChebyshevExpander::calculateDensity(
 	vector<Index> patterns
 ){
+	const Solver::ChebyshevExpander &solver = getSolver();
 	IndexTree allIndices = generateIndexTree(
 		patterns,
-		cSolver->getModel().getHoppingAmplitudeSet(),
+		solver.getModel().getHoppingAmplitudeSet(),
 		false,
 		false
 	);
 
 	IndexTree memoryLayout = generateIndexTree(
 		patterns,
-		cSolver->getModel().getHoppingAmplitudeSet(),
+		solver.getModel().getHoppingAmplitudeSet(),
 		true,
 		true
 	);
@@ -427,16 +432,17 @@ Property::Magnetization ChebyshevExpander::calculateMagnetization(
 Property::Magnetization ChebyshevExpander::calculateMagnetization(
 	vector<Index> patterns
 ){
+	const Solver::ChebyshevExpander &solver = getSolver();
 	IndexTree allIndices = generateIndexTree(
 		patterns,
-		cSolver->getModel().getHoppingAmplitudeSet(),
+		solver.getModel().getHoppingAmplitudeSet(),
 		false,
 		true
 	);
 
 	IndexTree memoryLayout = generateIndexTree(
 		patterns,
-		cSolver->getModel().getHoppingAmplitudeSet(),
+		solver.getModel().getHoppingAmplitudeSet(),
 		true,
 		true
 	);
@@ -487,16 +493,17 @@ Property::LDOS ChebyshevExpander::calculateLDOS(Index pattern, Index ranges){
 Property::LDOS ChebyshevExpander::calculateLDOS(
 	vector<Index> patterns
 ){
+	const Solver::ChebyshevExpander &solver = getSolver();
 	IndexTree allIndices = generateIndexTree(
 		patterns,
-		cSolver->getModel().getHoppingAmplitudeSet(),
+		solver.getModel().getHoppingAmplitudeSet(),
 		false,
 		true
 	);
 
 	IndexTree memoryLayout = generateIndexTree(
 		patterns,
-		cSolver->getModel().getHoppingAmplitudeSet(),
+		solver.getModel().getHoppingAmplitudeSet(),
 		true,
 		true
 	);
@@ -567,16 +574,17 @@ Property::SpinPolarizedLDOS ChebyshevExpander::calculateSpinPolarizedLDOS(
 Property::SpinPolarizedLDOS ChebyshevExpander::calculateSpinPolarizedLDOS(
 	vector<Index> patterns
 ){
+	const Solver::ChebyshevExpander &solver = getSolver();
 	IndexTree allIndices = generateIndexTree(
 		patterns,
-		cSolver->getModel().getHoppingAmplitudeSet(),
+		solver.getModel().getHoppingAmplitudeSet(),
 		false,
 		true
 	);
 
 	IndexTree memoryLayout = generateIndexTree(
 		patterns,
-		cSolver->getModel().getHoppingAmplitudeSet(),
+		solver.getModel().getHoppingAmplitudeSet(),
 		true,
 		true
 	);
@@ -607,23 +615,25 @@ void ChebyshevExpander::calculateDensityCallback(
 	int offset,
 	Information &information
 ){
-	ChebyshevExpander *pe = (ChebyshevExpander*)cb_this;
+	ChebyshevExpander *propertyExtractor = (ChebyshevExpander*)cb_this;
 	Property::Density &density = (Property::Density&)property;
 	vector<double> &data = density.getDataRW();
 
-	Property::GreensFunction greensFunction = pe->calculateGreensFunction(
-		index,
-		index,
-		Property::GreensFunction::Type::NonPrincipal
-	);
+	Property::GreensFunction greensFunction
+		= propertyExtractor->calculateGreensFunction(
+			index,
+			index,
+			Property::GreensFunction::Type::NonPrincipal
+		);
 	const std::vector<complex<double>> &greensFunctionData
 		= greensFunction.getData();
 
-	Statistics statistics = pe->cSolver->getModel().getStatistics();
+	const Solver::ChebyshevExpander &solver = propertyExtractor->getSolver();
+	Statistics statistics = solver.getModel().getStatistics();
 
-	double lowerBound = pe->getLowerBound();
-	double upperBound = pe->getUpperBound();
-	int energyResolution = pe->getEnergyResolution();
+	double lowerBound = propertyExtractor->getLowerBound();
+	double upperBound = propertyExtractor->getUpperBound();
+	int energyResolution = propertyExtractor->getEnergyResolution();
 
 	const double dE = (upperBound - lowerBound)/energyResolution;
 	for(int e = 0; e < energyResolution; e++){
@@ -631,15 +641,15 @@ void ChebyshevExpander::calculateDensityCallback(
 		if(statistics == Statistics::FermiDirac){
 			weight = Functions::fermiDiracDistribution(
 				lowerBound + (e/(double)energyResolution)*(upperBound - lowerBound),
-				pe->cSolver->getModel().getChemicalPotential(),
-				pe->cSolver->getModel().getTemperature()
+				solver.getModel().getChemicalPotential(),
+				solver.getModel().getTemperature()
 			);
 		}
 		else{
 			weight = Functions::boseEinsteinDistribution(
 				lowerBound + (e/(double)energyResolution)*(upperBound - lowerBound),
-				pe->cSolver->getModel().getChemicalPotential(),
-				pe->cSolver->getModel().getTemperature()
+				solver.getModel().getChemicalPotential(),
+				solver.getModel().getTemperature()
 			);
 		}
 
@@ -654,7 +664,8 @@ void ChebyshevExpander::calculateMAGCallback(
 	int offset,
 	Information &information
 ){
-	ChebyshevExpander *pe = (ChebyshevExpander*)cb_this;
+	ChebyshevExpander *propertyExtractor = (ChebyshevExpander*)cb_this;
+	const Solver::ChebyshevExpander &solver = propertyExtractor->getSolver();
 	Property::Magnetization &magnetization
 		= (Property::Magnetization&)property;
 	vector<SpinMatrix> &data = magnetization.getDataRW();
@@ -662,18 +673,18 @@ void ChebyshevExpander::calculateMAGCallback(
 	int spinIndex = information.getSpinIndex();
 	Index to(index);
 	Index from(index);
-	Statistics statistics = pe->cSolver->getModel().getStatistics();
+	Statistics statistics = solver.getModel().getStatistics();
 
-	double lowerBound = pe->getLowerBound();
-	double upperBound = pe->getUpperBound();
-	int energyResolution = pe->getEnergyResolution();
+	double lowerBound = propertyExtractor->getLowerBound();
+	double upperBound = propertyExtractor->getUpperBound();
+	int energyResolution = propertyExtractor->getEnergyResolution();
 
 	const double dE = (upperBound - lowerBound)/energyResolution;
 	for(int n = 0; n < 4; n++){
 		to.at(spinIndex) = n/2;		//up, up, down, down
 		from.at(spinIndex) = n%2;	//up, down, up, down
 		Property::GreensFunction greensFunction
-			= pe->calculateGreensFunction(
+			= propertyExtractor->calculateGreensFunction(
 				to,
 				from,
 				Property::GreensFunction::Type::NonPrincipal
@@ -686,15 +697,15 @@ void ChebyshevExpander::calculateMAGCallback(
 			if(statistics == Statistics::FermiDirac){
 				weight = Functions::fermiDiracDistribution(
 					lowerBound + (e/(double)energyResolution)*(upperBound - lowerBound),
-					pe->cSolver->getModel().getChemicalPotential(),
-					pe->cSolver->getModel().getTemperature()
+					solver.getModel().getChemicalPotential(),
+					solver.getModel().getTemperature()
 				);
 			}
 			else{
 				weight = Functions::boseEinsteinDistribution(
 					lowerBound + (e/(double)energyResolution)*(upperBound - lowerBound),
-					pe->cSolver->getModel().getChemicalPotential(),
-					pe->cSolver->getModel().getTemperature()
+					solver.getModel().getChemicalPotential(),
+					solver.getModel().getTemperature()
 				);
 			}
 
