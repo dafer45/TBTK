@@ -67,7 +67,8 @@ TEST(BlockDiagonalizer, getEigenValues){
 	SETUP_MODEL();
 	SETUP_AND_RUN_SOLVER();
 
-	BlockDiagonalizer propertyExtractor(solver);
+	BlockDiagonalizer propertyExtractor;
+	propertyExtractor.setSolver(solver);
 	Property::EigenValues eigenValues = propertyExtractor.getEigenValues();
 
 	for(int k = 0; k < SIZE; k++){
@@ -94,7 +95,8 @@ TEST(BlockDiagonalizer, getEigenValue0){
 	SETUP_MODEL();
 	SETUP_AND_RUN_SOLVER();
 
-	BlockDiagonalizer propertyExtractor(solver);
+	BlockDiagonalizer propertyExtractor;
+	propertyExtractor.setSolver(solver);
 	for(int k = 0; k < SIZE; k++){
 		Diagonalizer propertyExtractorDiagonalizer(
 			solverDiagonalizer[k]
@@ -117,7 +119,8 @@ TEST(BlockDiagonalizer, getEigenValue1){
 	SETUP_MODEL();
 	SETUP_AND_RUN_SOLVER();
 
-	BlockDiagonalizer propertyExtractor(solver);
+	BlockDiagonalizer propertyExtractor;
+	propertyExtractor.setSolver(solver);
 	for(int k = 0; k < SIZE; k++){
 		Diagonalizer propertyExtractorDiagonalizer(
 			solverDiagonalizer[k]
@@ -140,7 +143,8 @@ TEST(BlockDiagonalizer, getAmplitude0){
 	SETUP_MODEL();
 	SETUP_AND_RUN_SOLVER();
 
-	BlockDiagonalizer propertyExtractor(solver);
+	BlockDiagonalizer propertyExtractor;
+	propertyExtractor.setSolver(solver);
 	for(int k = 0; k < SIZE; k++){
 		Diagonalizer propertyExtractorDiagonalizer(
 			solverDiagonalizer[k]
@@ -216,7 +220,8 @@ TEST(BlockDiagonalizer, getAmplitude1){
 	SETUP_MODEL();
 	SETUP_AND_RUN_SOLVER();
 
-	BlockDiagonalizer propertyExtractor(solver);
+	BlockDiagonalizer propertyExtractor;
+	propertyExtractor.setSolver(solver);
 	for(int k = 0; k < SIZE; k++){
 		Diagonalizer propertyExtractorDiagonalizer(
 			solverDiagonalizer[k]
@@ -266,7 +271,8 @@ TEST(BlockDiagonalizer, calculateWaveFunction){
 	SETUP_AND_RUN_SOLVER();
 
 	//Check when all states are calculated.
-	BlockDiagonalizer propertyExtractor(solver);
+	BlockDiagonalizer propertyExtractor;
+	propertyExtractor.setSolver(solver);
 	Property::WaveFunctions waveFunctions0
 		= propertyExtractor.calculateWaveFunctions(
 			{{IDX_ALL, IDX_ALL}},
@@ -350,7 +356,8 @@ TEST(BlockDiagonalizer, calculateGreensFunction){
 
 	for(int n = 0; n < 2; n++){
 		//Setup the PropertyExtractor
-		BlockDiagonalizer propertyExtractor(solver);
+		BlockDiagonalizer propertyExtractor;
+		propertyExtractor.setSolver(solver);
 		propertyExtractor.setEnergyWindow(
 			LOWER_BOUND,
 			UPPER_BOUND,
@@ -474,7 +481,8 @@ TEST(BlockDiagonalizer, calculateGreensFunction){
 	const int NUM_MATSUBARA_ENERGIES = 12;
 
 	//Setup the PropertyExtractor.
-	BlockDiagonalizer propertyExtractor(solver);
+	BlockDiagonalizer propertyExtractor;
+	propertyExtractor.setSolver(solver);
 	propertyExtractor.setEnergyWindow(
 		LOWER_MATSUBARA_ENERGY_INDEX,
 		UPPER_MATSUBARA_ENERGY_INDEX,
@@ -573,7 +581,8 @@ TEST(BlockDiagonalizer, calculateDOS){
 	const int RESOLUTION = 1000;
 
 	//Calculate the DOS.
-	BlockDiagonalizer propertyExtractor(solver);
+	BlockDiagonalizer propertyExtractor;
+	propertyExtractor.setSolver(solver);
 	propertyExtractor.setEnergyWindow(
 		LOWER_BOUND,
 		UPPER_BOUND,

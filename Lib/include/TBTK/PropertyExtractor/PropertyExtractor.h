@@ -355,6 +355,12 @@ public:
 	 *
 	 *  @return The entropy. */
 	virtual double calculateEntropy();
+
+	/** Set the Solver.
+	 *
+	 *  @param solver The @link Solver::Solver Solver@endlink the
+	 *  PropertyExtractor uses. */
+	void setSolver(Solver::Solver &solver);
 protected:
 	/** Energy type. */
 	enum class EnergyType{Real, Matsubara};
@@ -570,12 +576,6 @@ protected:
 		bool keepSummationWildcards,
 		bool keepSpinWildcards
 	);
-
-	/** Set the Solver.
-	 *
-	 *  @param solver The @link Solver::Solver Solver@endlink the
-	 *  PropertyExtractor uses. */
-	void setSolver(Solver::Solver &solver);
 
 	/** Get the Solver. The Solver is dynamically cast to the type
 	 *  specified by the template parameter SolverType.

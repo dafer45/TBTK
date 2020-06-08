@@ -52,10 +52,8 @@ namespace PropertyExtractor{
  *  \image html output/PropertyExtractor/ArnoldiIterator/figures/PropertyExtractorArnoldiIteratorLDOS.png */
 class ArnoldiIterator : public PropertyExtractor{
 public:
-	/** Constructs a PropertyExtractor::ArnoldiIterator.
-	 *
-	 *  @param solver Solver to use. */
-	ArnoldiIterator(Solver::ArnoldiIterator &solver);
+	/** Constructs a PropertyExtractor::ArnoldiIterator. */
+	ArnoldiIterator();
 
 	/** Get eigenvalues. */
 	Property::EigenValues getEigenValues();

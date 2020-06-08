@@ -171,7 +171,8 @@ void FLEX::calculateBareGreensFunction(){
 	}
 
 	PropertyExtractor::BlockDiagonalizer
-		blockDiagonalizerPropertyExtractor(blockDiagonalizer);
+		blockDiagonalizerPropertyExtractor;
+	blockDiagonalizerPropertyExtractor.setSolver(blockDiagonalizer);
 	blockDiagonalizerPropertyExtractor.setEnergyWindow(
 		lowerFermionicMatsubaraEnergyIndex,
 		upperFermionicMatsubaraEnergyIndex,
@@ -1122,7 +1123,8 @@ void FLEX::calculateDensity(){
 	blockDiagonalizer.run();
 
 	PropertyExtractor::BlockDiagonalizer
-		blockDiagonalizerPropertyExtractor(blockDiagonalizer);
+		blockDiagonalizerPropertyExtractor;
+	blockDiagonalizerPropertyExtractor.setSolver(blockDiagonalizer);
 	densityProperty = blockDiagonalizerPropertyExtractor.calculateDensity({
 		{IDX_SUM_ALL, IDX_SUM_ALL, IDX_SUM_ALL}
 	});

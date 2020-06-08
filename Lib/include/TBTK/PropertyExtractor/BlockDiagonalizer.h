@@ -56,7 +56,7 @@ public:
 	/** Constructs a PropertyExtractor::BlockDiagonalizer.
 	 *
 	 *  @param solver The Solver to use. */
-	BlockDiagonalizer(Solver::BlockDiagonalizer &solver);
+	BlockDiagonalizer();
 
 	/** Get eigenvalues. The eigenvalues are ordered first by block, and
 	 *  then in accending order. This means that eigenvalues for blocks

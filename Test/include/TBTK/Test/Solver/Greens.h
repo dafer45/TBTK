@@ -233,7 +233,8 @@ TEST(Greens, addSelfEnergy){
 
 	//Setup the property extractor and calculate the non-interacting
 	//Green's function.
-	PropertyExtractor::BlockDiagonalizer propertyExtractorB(blockDiagonalizer);
+	PropertyExtractor::BlockDiagonalizer propertyExtractorB;
+	propertyExtractorB.setSolver(blockDiagonalizer);
 	propertyExtractorB.setEnergyWindow(
 		LOWER_BOUND,
 		UPPER_BOUND,

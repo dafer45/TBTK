@@ -31,8 +31,7 @@ namespace{
 	complex<double> i(0,1);
 }
 
-ArnoldiIterator::ArnoldiIterator(Solver::ArnoldiIterator &solver){
-	setSolver(solver);
+ArnoldiIterator::ArnoldiIterator(){
 }
 
 Property::EigenValues ArnoldiIterator::getEigenValues(){

@@ -31,7 +31,8 @@ int main(){
 	solver.setModel(model);
 	solver.run();
 
-	PropertyExtractor::BlockDiagonalizer propertyExtractor(solver);
+	PropertyExtractor::BlockDiagonalizer propertyExtractor;
+	propertyExtractor.setSolver(solver);
 
 	Streams::out << "----------------\n";
 

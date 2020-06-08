@@ -42,7 +42,8 @@ int main(){
 	const double LOWER_BOUND = -1;
 	const double UPPER_BOUND = 1;
 	const int RESOLUTION = 200;
-	PropertyExtractor::ArnoldiIterator propertyExtractor(solver);
+	PropertyExtractor::ArnoldiIterator propertyExtractor;
+	propertyExtractor.setSolver(solver);
 	propertyExtractor.setEnergyWindow(
 		LOWER_BOUND,
 		UPPER_BOUND,

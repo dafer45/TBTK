@@ -100,7 +100,8 @@ void MomentumSpaceContext::init(){
 
 	if(propertyExtractor != nullptr)
 		delete propertyExtractor;
-	propertyExtractor = new PropertyExtractor::BlockDiagonalizer(solver);
+	propertyExtractor = new PropertyExtractor::BlockDiagonalizer();
+	propertyExtractor->setSolver(solver);
 
 	if(energies != nullptr)
 		delete [] energies;

@@ -44,7 +44,8 @@ int main(){
 	const double LOWER_BOUND = -2;
 	const double UPPER_BOUND = 2;
 	const int RESOLUTION = 200;
-	PropertyExtractor::BlockDiagonalizer propertyExtractor(solver);
+	PropertyExtractor::BlockDiagonalizer propertyExtractor;
+	propertyExtractor.setSolver(solver);
 	propertyExtractor.setEnergyWindow(
 		LOWER_BOUND,
 		UPPER_BOUND,

@@ -32,7 +32,8 @@ int main(){
 	Streams::out << "----------------\n";
 
 	//Print the eigenvalues and the amplitude on site 50.
-	PropertyExtractor::ArnoldiIterator propertyExtractor(solver);
+	PropertyExtractor::ArnoldiIterator propertyExtractor;
+	propertyExtractor.setSolver(solver);
 	for(int n = 0; n < 10; n++){
 		Streams::out
 			<< propertyExtractor.getEigenValue(n) << "\t"
