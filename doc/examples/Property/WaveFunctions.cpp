@@ -31,7 +31,8 @@ int main(){
 	solver.setModel(model);
 	solver.run();
 
-	PropertyExtractor::Diagonalizer propertyExtractor(solver);
+	PropertyExtractor::Diagonalizer propertyExtractor;
+	propertyExtractor.setSolver(solver);
 
 	Property::WaveFunctions waveFunctions
 		= propertyExtractor.calculateWaveFunctions(

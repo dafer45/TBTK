@@ -261,7 +261,8 @@ bool HartreeFock::SelfConsistencyCallback::selfConsistencyCallback(
 ){
 	HartreeFock &solver = (HartreeFock&)diagonalizer;
 
-	PropertyExtractor::Diagonalizer propertyExtractor(diagonalizer);
+	PropertyExtractor::Diagonalizer propertyExtractor;
+	propertyExtractor.setSolver(diagonalizer);
 	vector<Index> basisIndices;
 	for(unsigned int n = 0; n < solver.basisStates.size(); n++)
 		basisIndices.push_back(solver.basisStates[n]->getIndex());

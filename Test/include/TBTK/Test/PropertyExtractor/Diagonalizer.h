@@ -47,7 +47,8 @@ TEST(Diagonalizer, getEigenValues){
 	SETUP_AND_RUN_SOLVER();
 	SETUP_ANALYTICAL_EIGEN_VALUES();
 
-	Diagonalizer propertyExtractor(solver);
+	Diagonalizer propertyExtractor;
+	propertyExtractor.setSolver(solver);
 	Property::EigenValues eigenValues = propertyExtractor.getEigenValues();
 
 	for(unsigned int n = 0; n < SIZE; n++)
@@ -59,7 +60,8 @@ TEST(Diagonalizer, getEigenValue){
 	SETUP_AND_RUN_SOLVER();
 	SETUP_ANALYTICAL_EIGEN_VALUES();
 
-	Diagonalizer propertyExtractor(solver);
+	Diagonalizer propertyExtractor;
+	propertyExtractor.setSolver(solver);
 	for(unsigned int n = 0; n < SIZE; n++){
 		EXPECT_NEAR(
 			propertyExtractor.getEigenValue(n),
@@ -73,7 +75,8 @@ TEST(Diagonalizer, getAmplitude){
 	SETUP_MODEL();
 	SETUP_AND_RUN_SOLVER();
 
-	Diagonalizer propertyExtractor(solver);
+	Diagonalizer propertyExtractor;
+	propertyExtractor.setSolver(solver);
 
 	//Check that the states are normalized.
 	for(unsigned int n = 0; n < SIZE; n++){
@@ -141,7 +144,8 @@ TEST(Diagonalizer, calculateGreensFunction){
 	SETUP_MODEL();
 	SETUP_AND_RUN_SOLVER();
 
-	Diagonalizer propertyExtractor(solver);
+	Diagonalizer propertyExtractor;
+	propertyExtractor.setSolver(solver);
 	propertyExtractor.setEnergyWindow(-5, 5, 100);
 	double delta = 0.1;
 	propertyExtractor.setEnergyInfinitesimal(delta);
@@ -332,7 +336,8 @@ TEST(Diagonalizer, calculateWaveFunctions){
 	SETUP_MODEL();
 	SETUP_AND_RUN_SOLVER();
 
-	Diagonalizer propertyExtractor(solver);
+	Diagonalizer propertyExtractor;
+	propertyExtractor.setSolver(solver);
 
 	//Check when all states are calculated.
 	std::vector<unsigned int> states0;
@@ -397,7 +402,8 @@ TEST(Diagonalizer, calculateDOS){
 	const double UPPER_BOUND = 10;
 	const int RESOLUTION = 1000;
 
-	Diagonalizer propertyExtractor(solver);
+	Diagonalizer propertyExtractor;
+	propertyExtractor.setSolver(solver);
 	propertyExtractor.setEnergyWindow(
 		LOWER_BOUND,
 		UPPER_BOUND,
@@ -445,7 +451,8 @@ TEST(Diagonalizer, calculateDensity){
 	SETUP_MODEL();
 	SETUP_AND_RUN_SOLVER();
 
-	Diagonalizer propertyExtractor(solver);
+	Diagonalizer propertyExtractor;
+	propertyExtractor.setSolver(solver);
 
 	//Calculate density to compare to. getEigenValue() and getAmplitude()
 	//has already been checked using Diagonalizer::getEigenValue() and
@@ -492,7 +499,8 @@ TEST(Diagonalizer, calculateLDOS){
 	const double UPPER_BOUND = 10;
 	const int RESOLUTION = 1000;
 
-	Diagonalizer propertyExtractor(solver);
+	Diagonalizer propertyExtractor;
+	propertyExtractor.setSolver(solver);
 	propertyExtractor.setEnergyWindow(
 		LOWER_BOUND,
 		UPPER_BOUND,

@@ -139,7 +139,8 @@ void plotDensity(){
 	solver.setModel(model);
 	solver.run();
 
-	PropertyExtractor::Diagonalizer propertyExtractor(solver);
+	PropertyExtractor::Diagonalizer propertyExtractor;
+	propertyExtractor.setSolver(solver);
 	Property::Density density
 		= propertyExtractor.calculateDensity({{_a_, _a_}});
 

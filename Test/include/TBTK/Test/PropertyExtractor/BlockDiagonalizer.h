@@ -72,9 +72,8 @@ TEST(BlockDiagonalizer, getEigenValues){
 	Property::EigenValues eigenValues = propertyExtractor.getEigenValues();
 
 	for(int k = 0; k < SIZE; k++){
-		Diagonalizer propertyExtractorDiagonalizer(
-			solverDiagonalizer[k]
-		);
+		Diagonalizer propertyExtractorDiagonalizer;
+		propertyExtractorDiagonalizer.setSolver(solverDiagonalizer[k]);
 
 		Property::EigenValues eigenValuesDiagonalizer
 			= propertyExtractorDiagonalizer.getEigenValues();
@@ -98,9 +97,8 @@ TEST(BlockDiagonalizer, getEigenValue0){
 	BlockDiagonalizer propertyExtractor;
 	propertyExtractor.setSolver(solver);
 	for(int k = 0; k < SIZE; k++){
-		Diagonalizer propertyExtractorDiagonalizer(
-			solverDiagonalizer[k]
-		);
+		Diagonalizer propertyExtractorDiagonalizer;
+		propertyExtractorDiagonalizer.setSolver(solverDiagonalizer[k]);
 
 		EXPECT_NEAR(
 			propertyExtractor.getEigenValue(2*k + 0),
@@ -122,9 +120,8 @@ TEST(BlockDiagonalizer, getEigenValue1){
 	BlockDiagonalizer propertyExtractor;
 	propertyExtractor.setSolver(solver);
 	for(int k = 0; k < SIZE; k++){
-		Diagonalizer propertyExtractorDiagonalizer(
-			solverDiagonalizer[k]
-		);
+		Diagonalizer propertyExtractorDiagonalizer;
+		propertyExtractorDiagonalizer.setSolver(solverDiagonalizer[k]);
 
 		EXPECT_NEAR(
 			propertyExtractor.getEigenValue({k}, 0),
@@ -146,9 +143,8 @@ TEST(BlockDiagonalizer, getAmplitude0){
 	BlockDiagonalizer propertyExtractor;
 	propertyExtractor.setSolver(solver);
 	for(int k = 0; k < SIZE; k++){
-		Diagonalizer propertyExtractorDiagonalizer(
-			solverDiagonalizer[k]
-		);
+		Diagonalizer propertyExtractorDiagonalizer;
+		propertyExtractorDiagonalizer.setSolver(solverDiagonalizer[k]);
 
 		for(unsigned int state = 0; state < 2; state++){
 			for(int n = 0; n < 2; n++){
@@ -223,9 +219,8 @@ TEST(BlockDiagonalizer, getAmplitude1){
 	BlockDiagonalizer propertyExtractor;
 	propertyExtractor.setSolver(solver);
 	for(int k = 0; k < SIZE; k++){
-		Diagonalizer propertyExtractorDiagonalizer(
-			solverDiagonalizer[k]
-		);
+		Diagonalizer propertyExtractorDiagonalizer;
+		propertyExtractorDiagonalizer.setSolver(solverDiagonalizer[k]);
 
 		for(unsigned int state = 0; state < 2; state++){
 			for(int n = 0; n < 2; n++){
@@ -391,7 +386,8 @@ TEST(BlockDiagonalizer, calculateGreensFunction){
 		//Diagonalizer.
 		for(int k = 0; k < SIZE; k++){
 			//Setup the PropertyExtractor for the Diagonalizer.
-			Diagonalizer propertyExtractorDiagonalizer(
+			Diagonalizer propertyExtractorDiagonalizer;
+			propertyExtractorDiagonalizer.setSolver(
 				solverDiagonalizer[k]
 			);
 			propertyExtractorDiagonalizer.setEnergyWindow(
@@ -522,9 +518,8 @@ TEST(BlockDiagonalizer, calculateGreensFunction){
 		modelDiagonalizer[k].setTemperature(TEMPERATURE);
 
 		//Setup the PropertyExtractor for the Diagonalizer.
-		Diagonalizer propertyExtractorDiagonalizer(
-			solverDiagonalizer[k]
-		);
+		Diagonalizer propertyExtractorDiagonalizer;
+		propertyExtractorDiagonalizer.setSolver(solverDiagonalizer[k]);
 		propertyExtractorDiagonalizer.setEnergyWindow(
 			LOWER_MATSUBARA_ENERGY_INDEX,
 			UPPER_MATSUBARA_ENERGY_INDEX,
@@ -591,7 +586,8 @@ TEST(BlockDiagonalizer, calculateDOS){
 	Property::DOS dos = propertyExtractor.calculateDOS();
 
 	//Calculate DOS to compare to using the Diagonalizer.
-	Diagonalizer propertyExtractorDiagonalizer(solverDiagonalizer[0]);
+	Diagonalizer propertyExtractorDiagonalizer;
+	propertyExtractorDiagonalizer.setSolver(solverDiagonalizer[0]);
 	propertyExtractorDiagonalizer.setEnergyWindow(
 		LOWER_BOUND,
 		UPPER_BOUND,
@@ -600,7 +596,8 @@ TEST(BlockDiagonalizer, calculateDOS){
 	Property::DOS dosDiagonalizer
 		= propertyExtractorDiagonalizer.calculateDOS();
 	for(int k = 1; k < SIZE; k++){
-		Diagonalizer propertyExtractorDiagonalizer(solverDiagonalizer[k]);
+		Diagonalizer propertyExtractorDiagonalizer;
+		propertyExtractorDiagonalizer.setSolver(solverDiagonalizer[k]);
 		propertyExtractorDiagonalizer.setEnergyWindow(
 			LOWER_BOUND,
 			UPPER_BOUND,

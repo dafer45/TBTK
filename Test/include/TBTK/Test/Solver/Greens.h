@@ -57,7 +57,8 @@ TEST(Greens, addSelfEnergy){
 
 	//Setup the property extractor and calculate the non-interacting
 	//Green's function.
-	PropertyExtractor::Diagonalizer propertyExtractorA(diagonalizer);
+	PropertyExtractor::Diagonalizer propertyExtractorA;
+	propertyExtractorA.setSolver(diagonalizer);
 	propertyExtractorA.setEnergyWindow(
 		LOWER_BOUND,
 		UPPER_BOUND,
@@ -306,9 +307,8 @@ TEST(Greens, addSelfEnergy){
 
 		//Setup reference solver and extract the reference
 		//non-interacting Green's function.
-		PropertyExtractor::Diagonalizer referencePropertyExtractor(
-			referenceDiagonalizer
-		);
+		PropertyExtractor::Diagonalizer referencePropertyExtractor;
+		referencePropertyExtractor.setSolver(referenceDiagonalizer);
 		referencePropertyExtractor.setEnergyWindow(
 			LOWER_BOUND,
 			UPPER_BOUND,
@@ -436,7 +436,8 @@ TEST(Greens, calculateSpectralFunction){
 
 	//Setup the property extractor and calculate the non-interacting
 	//Green's function.
-	PropertyExtractor::Diagonalizer propertyExtractor(diagonalizer);
+	PropertyExtractor::Diagonalizer propertyExtractor;
+	propertyExtractor.setSolver(diagonalizer);
 	propertyExtractor.setEnergyWindow(
 		LOWER_BOUND,
 		UPPER_BOUND,
@@ -520,7 +521,8 @@ TEST(Greens, calculateTransmission){
 	solver0.setVerbose(false);
 	solver0.setModel(model);
 	solver0.run();
-	PropertyExtractor::Diagonalizer propertyExtractor0(solver0);
+	PropertyExtractor::Diagonalizer propertyExtractor0;
+	propertyExtractor0.setSolver(solver0);
 	propertyExtractor0.setEnergyInfinitesimal(0);
 	propertyExtractor0.setEnergyWindow(
 		LOWER_BOUND,

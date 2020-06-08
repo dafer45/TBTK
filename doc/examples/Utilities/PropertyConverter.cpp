@@ -30,7 +30,8 @@ int main(){
 	solver.run();
 
 	//Set up the PropertyExtractor.
-	PropertyExtractor::Diagonalizer propertyExtractor(solver);
+	PropertyExtractor::Diagonalizer propertyExtractor;
+	propertyExtractor.setSolver(solver);
 	propertyExtractor.setEnergyWindow(-10, 10, 5);
 
 	//Calculate Properties.

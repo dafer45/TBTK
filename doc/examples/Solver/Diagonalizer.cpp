@@ -25,7 +25,8 @@ int main(){
 
 	Streams::out << "--- Results ----\n";
 
-	PropertyExtractor::Diagonalizer propertyExtractor(solver);
+	PropertyExtractor::Diagonalizer propertyExtractor;
+	propertyExtractor.setSolver(solver);
 	for(int n = 0; n < solver.getModel().getBasisSize(); n++){
 		Streams::out
 			<< propertyExtractor.getEigenValue(n) << "\t["

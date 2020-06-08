@@ -57,7 +57,7 @@ public:
 	/** Constructs a PropertyExtractor::Diagonalizer.
 	 *
 	 *  @param solver The Solver to use. */
-	Diagonalizer(Solver::Diagonalizer &solver);
+	Diagonalizer();
 
 	/** Get eigenvalues.
 	 *

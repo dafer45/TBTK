@@ -131,7 +131,8 @@ int main(){
 		solver.run();
 
 		//Set up the PropertyExtractor.
-		PropertyExtractor::Diagonalizer propertyExtractor(solver);
+		PropertyExtractor::Diagonalizer propertyExtractor;
+		propertyExtractor.setSolver(solver);
 
 		//Calculate the eigenvalues.
 		Property::EigenValues eigenValues

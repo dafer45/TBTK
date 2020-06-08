@@ -83,7 +83,8 @@ int main(int argc, char **argv){
 	solver.run();
 
 	//Extract the spin-polarized LDOS in the substrate.
-	PropertyExtractor::Diagonalizer propertyExtractor(solver);
+	PropertyExtractor::Diagonalizer propertyExtractor;
+	propertyExtractor.setSolver(solver);
 	propertyExtractor.setEnergyWindow(-5, 5, 1000);
 	Property::SpinPolarizedLDOS spinPolarizedLDOS
 		= propertyExtractor.calculateSpinPolarizedLDOS(

@@ -33,8 +33,7 @@ static complex<double> i(0, 1);
 namespace TBTK{
 namespace PropertyExtractor{
 
-Diagonalizer::Diagonalizer(Solver::Diagonalizer &solver){
-	setSolver(solver);
+Diagonalizer::Diagonalizer(){
 }
 
 Property::EigenValues Diagonalizer::getEigenValues(){

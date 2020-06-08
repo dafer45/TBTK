@@ -92,7 +92,9 @@ void Transport::calculateGreensFunction(){
 	solver.setModel(getModel());
 	solver.run();
 
-	PropertyExtractor::Diagonalizer propertyExtractor(solver);
+	PropertyExtractor::Diagonalizer propertyExtractor;
+	propertyExtractor.setSolver(solver);
+	propertyExtractor.setSolver(solver);
 	Property::EigenValues eigenValues = propertyExtractor.getEigenValues();
 	propertyExtractor.setEnergyInfinitesimal(1e-10);
 	propertyExtractor.setEnergyWindow(
