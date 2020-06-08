@@ -30,10 +30,7 @@ using namespace std;
 namespace TBTK{
 namespace PropertyExtractor{
 
-ElectronFluctuationVertex::ElectronFluctuationVertex(
-	Solver::ElectronFluctuationVertex &solver
-){
-	setSolver(solver);
+ElectronFluctuationVertex::ElectronFluctuationVertex(){
 }
 
 void ElectronFluctuationVertex::setEnergyWindow(

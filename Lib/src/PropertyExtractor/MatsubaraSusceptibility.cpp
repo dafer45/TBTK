@@ -30,10 +30,7 @@ using namespace std;
 namespace TBTK{
 namespace PropertyExtractor{
 
-MatsubaraSusceptibility::MatsubaraSusceptibility(
-	Solver::MatsubaraSusceptibility &solver
-){
-	setSolver(solver);
+MatsubaraSusceptibility::MatsubaraSusceptibility(){
 }
 
 Property::Susceptibility MatsubaraSusceptibility::calculateSusceptibility(

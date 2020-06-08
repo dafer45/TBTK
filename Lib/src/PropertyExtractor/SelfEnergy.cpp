@@ -30,8 +30,7 @@ using namespace std;
 namespace TBTK{
 namespace PropertyExtractor{
 
-SelfEnergy::SelfEnergy(Solver::SelfEnergy &solver){
-	setSolver(solver);
+SelfEnergy::SelfEnergy(){
 }
 
 Property::SelfEnergy SelfEnergy::calculateSelfEnergy(

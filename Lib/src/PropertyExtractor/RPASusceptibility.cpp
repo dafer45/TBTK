@@ -30,8 +30,7 @@ using namespace std;
 namespace TBTK{
 namespace PropertyExtractor{
 
-RPASusceptibility::RPASusceptibility(Solver::RPASusceptibility &solver){
-	setSolver(solver);
+RPASusceptibility::RPASusceptibility(){
 }
 
 void RPASusceptibility::setEnergyWindow(

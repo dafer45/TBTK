@@ -31,8 +31,7 @@ using namespace std;
 namespace TBTK{
 namespace PropertyExtractor{
 
-Greens::Greens(Solver::Greens &solver){
-	setSolver(solver);
+Greens::Greens(){
 }
 
 Greens::~Greens(){

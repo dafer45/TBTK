@@ -41,7 +41,7 @@ public:
 	/** Constructs a PropertyExtractor::RPASusceptibility.
 	 *
 	 *  @param solver The Solver to use. */
-	RPASusceptibility(Solver::RPASusceptibility &solver);
+	RPASusceptibility();
 
 	/** Overrides PropertyExtractor::setEnergyWindow(). */
 	virtual void setEnergyWindow(

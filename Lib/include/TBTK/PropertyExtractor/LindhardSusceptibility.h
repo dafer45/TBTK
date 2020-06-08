@@ -41,7 +41,7 @@ public:
 	/** Constructs a PropertyExtractor::Diagonalizer.
 	 *
 	 *  @param solver The Solver to use. */
-	LindhardSusceptibility(Solver::LindhardSusceptibility &solver);
+	LindhardSusceptibility();
 
 	/** Calculates the Susceptibility. */
 	virtual Property::Susceptibility calculateSusceptibility(

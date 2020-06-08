@@ -41,7 +41,7 @@ public:
 	/** Constructs a PropertyExtractor::MatsubaraSusceptibility.
 	 *
 	 *  @param solver The Solver to use. */
-	MatsubaraSusceptibility(Solver::MatsubaraSusceptibility &solver);
+	MatsubaraSusceptibility();
 
 	/** Calculates the Susceptibility. */
 	virtual Property::Susceptibility calculateSusceptibility(

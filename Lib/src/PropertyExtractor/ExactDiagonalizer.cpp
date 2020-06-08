@@ -7,8 +7,7 @@ static complex<double> i(0, 1);
 namespace TBTK{
 namespace PropertyExtractor{
 
-ExactDiagonalizer::ExactDiagonalizer(Solver::ExactDiagonalizer &solver){
-	setSolver(solver);
+ExactDiagonalizer::ExactDiagonalizer(){
 }
 
 ExactDiagonalizer::~ExactDiagonalizer(){

@@ -41,7 +41,7 @@ public:
 	/** Constructs a PropertyExtractor::SelfEnergy2.
 	 *
 	 *  @param solver The Solver to use. */
-	SelfEnergy2(Solver::SelfEnergy2 &solver);
+	SelfEnergy2();
 
 	/** Calculates the Susceptibility. */
 	virtual Property::SelfEnergy calculateSelfEnergy(

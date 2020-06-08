@@ -195,9 +195,10 @@ void FLEX::calculateBareSusceptibility(unsigned int slice){
 	matsubaraSusceptibilitySolver.setModel(getModel());
 
 	PropertyExtractor::MatsubaraSusceptibility
-		matsubaraSusceptibilityPropertyExtractor(
-			matsubaraSusceptibilitySolver
-		);
+		matsubaraSusceptibilityPropertyExtractor;
+	matsubaraSusceptibilityPropertyExtractor.setSolver(
+		matsubaraSusceptibilitySolver
+	);
 	matsubaraSusceptibilityPropertyExtractor.setEnergyWindow(
 		lowerFermionicMatsubaraEnergyIndex,
 		upperFermionicMatsubaraEnergyIndex,
@@ -225,9 +226,8 @@ void FLEX::calculateRPASusceptibilities(){
 	rpaSusceptibilitySolver.setModel(getModel());
 
 	PropertyExtractor::RPASusceptibility
-		rpaSusceptibilityPropertyExtractor(
-			rpaSusceptibilitySolver
-		);
+		rpaSusceptibilityPropertyExtractor;
+	rpaSusceptibilityPropertyExtractor.setSolver(rpaSusceptibilitySolver);
 
 	rpaSusceptibilitySolver.setInteractionAmplitudes(
 		generateRPAChargeSusceptibilityInteractionAmplitudes()
@@ -269,9 +269,10 @@ void FLEX::calculateInteractionVertex(){
 	electronFluctuationVertexChargeSolver.setVerbose(false);
 	electronFluctuationVertexChargeSolver.setModel(getModel());
 	PropertyExtractor::ElectronFluctuationVertex
-		electronFluctuationVertexChargePropertyExtractor(
-			electronFluctuationVertexChargeSolver
-		);
+		electronFluctuationVertexChargePropertyExtractor;
+	electronFluctuationVertexChargePropertyExtractor.setSolver(
+		electronFluctuationVertexChargeSolver
+	);
 
 	//U_1*\chi_c*U_1
 	electronFluctuationVertexChargeSolver.setLeftInteraction(generateU1());
@@ -339,9 +340,10 @@ void FLEX::calculateInteractionVertex(){
 	electronFluctuationVertexSpinSolver.setVerbose(false);
 	electronFluctuationVertexSpinSolver.setModel(getModel());
 	PropertyExtractor::ElectronFluctuationVertex
-		electronFluctuationVertexSpinPropertyExtractor(
-			electronFluctuationVertexSpinSolver
-		);
+		electronFluctuationVertexSpinPropertyExtractor;
+	electronFluctuationVertexSpinPropertyExtractor.setSolver(
+		electronFluctuationVertexSpinSolver
+	);
 
 	//U_1*\chi_s*U_1
 	electronFluctuationVertexSpinSolver.setLeftInteraction(generateU1());
@@ -423,9 +425,10 @@ void FLEX::calculateInteractionVertex(){
 	electronFluctuationVertexDoubleCountingSolver.setVerbose(false);
 	electronFluctuationVertexDoubleCountingSolver.setModel(getModel());
 	PropertyExtractor::ElectronFluctuationVertex
-		electronFluctuationVertexDoubleCountingPropertyExtractor(
-			electronFluctuationVertexDoubleCountingSolver
-		);
+		electronFluctuationVertexDoubleCountingPropertyExtractor;
+	electronFluctuationVertexDoubleCountingPropertyExtractor.setSolver(
+		electronFluctuationVertexDoubleCountingSolver
+	);
 
 	//U_4*\chi_b*U_4
 	electronFluctuationVertexDoubleCountingSolver.setLeftInteraction(generateU4());
@@ -456,9 +459,8 @@ void FLEX::calculateSelfEnergy(unsigned int slice){
 	selfEnergySolver.setVerbose(false);
 	selfEnergySolver.setModel(getModel());
 
-		PropertyExtractor::SelfEnergy2 selfEnergyPropertyExtractor(
-		selfEnergySolver
-	);
+	PropertyExtractor::SelfEnergy2 selfEnergyPropertyExtractor;
+	selfEnergyPropertyExtractor.setSolver(selfEnergySolver);
 	selfEnergyPropertyExtractor.setEnergyWindow(
 		lowerFermionicMatsubaraEnergyIndex,
 		upperFermionicMatsubaraEnergyIndex,
@@ -1104,7 +1106,8 @@ void FLEX::calculateDensity(){
 	solver.setModel(getModel());
 	solver.setGreensFunction(greensFunction);
 
-	PropertyExtractor::Greens propertyExtractor(solver);
+	PropertyExtractor::Greens propertyExtractor;
+	propertyExtractor.setSolver(solver);
 	Property::Density densityProperty
 		= propertyExtractor.calculateDensity({
 			{IDX_SUM_ALL, IDX_SUM_ALL, IDX_SUM_ALL}

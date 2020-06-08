@@ -42,7 +42,7 @@ public:
 	/** Constructs a PropertyExtractor::ELectronFluctuationVertex.
 	 *
 	 *  @param solver The Solver to use. */
-	ElectronFluctuationVertex(Solver::ElectronFluctuationVertex &solver);
+	ElectronFluctuationVertex();
 
 	/** Overrides PropertyExtractor::setEnergyWindow(). */
 	virtual void setEnergyWindow(

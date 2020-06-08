@@ -36,7 +36,7 @@ namespace PropertyExtractor{
 class ExactDiagonalizer : public PropertyExtractor{
 public:
 	/** Constructor. */
-	ExactDiagonalizer(Solver::ExactDiagonalizer &solver);
+	ExactDiagonalizer();
 
 	/** Destructor. */
 	~ExactDiagonalizer();

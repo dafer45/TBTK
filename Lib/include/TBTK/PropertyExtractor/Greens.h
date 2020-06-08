@@ -42,7 +42,7 @@ namespace PropertyExtractor{
 class Greens : public PropertyExtractor{
 public:
 	/** Constructor. */
-	Greens(Solver::Greens &solver);
+	Greens();
 
 	/** Destructor. */
 	virtual ~Greens();

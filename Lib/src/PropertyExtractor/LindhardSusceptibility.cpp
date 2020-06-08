@@ -30,10 +30,7 @@ using namespace std;
 namespace TBTK{
 namespace PropertyExtractor{
 
-LindhardSusceptibility::LindhardSusceptibility(
-	Solver::LindhardSusceptibility &solver
-){
-	setSolver(solver);
+LindhardSusceptibility::LindhardSusceptibility(){
 }
 
 Property::Susceptibility LindhardSusceptibility::calculateSusceptibility(
