@@ -223,19 +223,23 @@ private:
 		Information &information
 	);
 
-	/** Solver::Diagonalizer to work on. */
-	Solver::Diagonalizer &solver;
+	/** Get the Solver. */
+	Solver::Diagonalizer& getSolver();
 };
 
 inline double Diagonalizer::getEigenValue(int state){
-	return solver.getEigenValue(state);
+	return getSolver().getEigenValue(state);
 }
 
 inline const std::complex<double> Diagonalizer::getAmplitude(
 	int state,
 	const Index &index
 ){
-	return solver.getAmplitude(state, index);
+	return getSolver().getAmplitude(state, index);
+}
+
+inline Solver::Diagonalizer& Diagonalizer::getSolver(){
+	return PropertyExtractor::getSolver<Solver::Diagonalizer>();
 }
 
 };	//End of namespace PropertyExtractor

@@ -137,19 +137,23 @@ private:
 		Information &information
 	);
 
-	/** Solver::ArnoldiIterator to work on. */
-	Solver::ArnoldiIterator *aSolver;
+	/** Get the Solver. */
+	Solver::ArnoldiIterator& getSolver();
 };
 
 inline double ArnoldiIterator::getEigenValue(int state){
-	return aSolver->getEigenValue(state);
+	return getSolver().getEigenValue(state);
 }
 
 inline const std::complex<double> ArnoldiIterator::getAmplitude(
 	int state,
 	const Index &index
 ){
-	return aSolver->getAmplitude(state, index);
+	return getSolver().getAmplitude(state, index);
+}
+
+inline Solver::ArnoldiIterator& ArnoldiIterator::getSolver(){
+	return PropertyExtractor::getSolver<Solver::ArnoldiIterator>();
 }
 
 };	//End of namespace PropertyExtractor

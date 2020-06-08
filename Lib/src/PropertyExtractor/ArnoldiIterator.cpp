@@ -31,13 +31,14 @@ namespace{
 	complex<double> i(0,1);
 }
 
-ArnoldiIterator::ArnoldiIterator(Solver::ArnoldiIterator &aSolver){
-	this->aSolver = &aSolver;
+ArnoldiIterator::ArnoldiIterator(Solver::ArnoldiIterator &solver){
+	setSolver(solver);
 }
 
 Property::EigenValues ArnoldiIterator::getEigenValues(){
-	int size = aSolver->getNumEigenValues();
-	const CArray<complex<double>> &ev = aSolver->getEigenValues();
+	const Solver::ArnoldiIterator &solver = getSolver();
+	int size = solver.getNumEigenValues();
+	const CArray<complex<double>> &ev = solver.getEigenValues();
 
 	Property::EigenValues eigenValues(size);
 	std::vector<double> &data = eigenValues.getDataRW();
@@ -51,16 +52,18 @@ Property::WaveFunctions ArnoldiIterator::calculateWaveFunctions(
 	vector<Index> patterns,
 	vector<Subindex> states
 ){
+	const Solver::ArnoldiIterator &solver = getSolver();
+
 	IndexTree allIndices = generateIndexTree(
 		patterns,
-		aSolver->getModel().getHoppingAmplitudeSet(),
+		solver.getModel().getHoppingAmplitudeSet(),
 		false,
 		false
 	);
 
 	IndexTree memoryLayout = generateIndexTree(
 		patterns,
-		aSolver->getModel().getHoppingAmplitudeSet(),
+		solver.getModel().getHoppingAmplitudeSet(),
 		true,
 		true
 	);
@@ -68,7 +71,7 @@ Property::WaveFunctions ArnoldiIterator::calculateWaveFunctions(
 	vector<unsigned int> statesVector;
 	if(states.size() == 1){
 		if((*states.begin()).isWildcard()){
-			for(int n = 0; n < aSolver->getModel().getBasisSize(); n++)
+			for(int n = 0; n < solver.getModel().getBasisSize(); n++)
 				statesVector.push_back(n);
 		}
 		else{
@@ -140,7 +143,8 @@ Property::WaveFunctions ArnoldiIterator::calculateWaveFunctions(
 }*/
 
 Property::DOS ArnoldiIterator::calculateDOS(){
-	const CArray<complex<double>> &ev = aSolver->getEigenValues();
+	const Solver::ArnoldiIterator &solver = getSolver();
+	const CArray<complex<double>> &eigenValues = solver.getEigenValues();
 
 	double lowerBound = getLowerBound();
 	double upperBound = getUpperBound();
@@ -149,8 +153,8 @@ Property::DOS ArnoldiIterator::calculateDOS(){
 	Property::DOS dos(lowerBound, upperBound, energyResolution);
 	std::vector<double> &data = dos.getDataRW();
 	double dE = dos.getDeltaE();
-	for(int n = 0; n < aSolver->getNumEigenValues(); n++){
-		int e = (int)(((real(ev[n]) - lowerBound)/(upperBound - lowerBound))*energyResolution);
+	for(int n = 0; n < solver.getNumEigenValues(); n++){
+		int e = (int)(((real(eigenValues[n]) - lowerBound)/(upperBound - lowerBound))*energyResolution);
 		if(e >= 0 && e < energyResolution){
 			data[e] += 1./dE;
 		}
@@ -163,8 +167,9 @@ Property::LDOS ArnoldiIterator::calculateLDOS(
 	Index pattern,
 	Index ranges
 ){
+	const Solver::ArnoldiIterator &solver = getSolver();
 	TBTKAssert(
-		aSolver->getCalculateEigenVectors(),
+		solver.getCalculateEigenVectors(),
 		"PropertyExtractor::ArnoldiIterator::calculateLDOS()",
 		"Eigen vectors not calculated.",
 		"Use Solver::ArnoldiIterator::setCalculateEigenVectors() to"
@@ -202,8 +207,9 @@ Property::LDOS ArnoldiIterator::calculateLDOS(
 Property::LDOS ArnoldiIterator::calculateLDOS(
 	vector<Index> patterns
 ){
+	const Solver::ArnoldiIterator &solver = getSolver();
 	TBTKAssert(
-		aSolver->getCalculateEigenVectors(),
+		solver.getCalculateEigenVectors(),
 		"PropertyExtractor::ArnoldiIterator::calculateLDOS()",
 		"Eigen vectors not calculated.",
 		"Use Solver::ArnoldiIterator::setCalculateEigenVectors() to ensure eigen vectors are calculated."
@@ -215,14 +221,14 @@ Property::LDOS ArnoldiIterator::calculateLDOS(
 
 	IndexTree allIndices = generateIndexTree(
 		patterns,
-		aSolver->getModel().getHoppingAmplitudeSet(),
+		solver.getModel().getHoppingAmplitudeSet(),
 		false,
 		true
 	);
 
 	IndexTree memoryLayout = generateIndexTree(
 		patterns,
-		aSolver->getModel().getHoppingAmplitudeSet(),
+		solver.getModel().getHoppingAmplitudeSet(),
 		true,
 		true
 	);
@@ -250,8 +256,9 @@ Property::SpinPolarizedLDOS ArnoldiIterator::calculateSpinPolarizedLDOS(
 	Index pattern,
 	Index ranges
 ){
+	const Solver::ArnoldiIterator &solver = getSolver();
 	TBTKAssert(
-		aSolver->getCalculateEigenVectors(),
+		solver.getCalculateEigenVectors(),
 		"ArnoldiIterator::calculateSpinPolarizedLDOS()",
 		"Eigen vectors not calculated.",
 		"Use Solver::ArnoldiIterator::setCalculateEigenVectors() to"
@@ -305,8 +312,9 @@ Property::SpinPolarizedLDOS ArnoldiIterator::calculateSpinPolarizedLDOS(
 Property::SpinPolarizedLDOS ArnoldiIterator::calculateSpinPolarizedLDOS(
 	vector<Index> patterns
 ){
+	const Solver::ArnoldiIterator &solver = getSolver();
 	TBTKAssert(
-		aSolver->getCalculateEigenVectors(),
+		solver.getCalculateEigenVectors(),
 		"PropertyExtractor::ArnoldiIterator::calculateSpinPolarizedLDOS()",
 		"Eigen vectors not calculated.",
 		"Use Solver::ArnoldiIterator::setCalculateEigenVectors() to"
@@ -319,14 +327,14 @@ Property::SpinPolarizedLDOS ArnoldiIterator::calculateSpinPolarizedLDOS(
 
 	IndexTree allIndices = generateIndexTree(
 		patterns,
-		aSolver->getModel().getHoppingAmplitudeSet(),
+		solver.getModel().getHoppingAmplitudeSet(),
 		false,
 		true
 	);
 
 	IndexTree memoryLayout = generateIndexTree(
 		patterns,
-		aSolver->getModel().getHoppingAmplitudeSet(),
+		solver.getModel().getHoppingAmplitudeSet(),
 		true,
 		true
 	);
@@ -381,7 +389,7 @@ void ArnoldiIterator::calculateLDOSCallback(
 	ArnoldiIterator *propertyExtractor = (ArnoldiIterator*)cb_this;
 	Property::LDOS &ldos = (Property::LDOS&)property;
 	vector<double> &data = ldos.getDataRW();
-	Solver::ArnoldiIterator &solver = *propertyExtractor->aSolver;
+	const Solver::ArnoldiIterator &solver = propertyExtractor->getSolver();
 
 	const CArray<complex<double>> &eigenValues = solver.getEigenValues();
 
@@ -416,7 +424,7 @@ void ArnoldiIterator::calculateSpinPolarizedLDOSCallback(
 	Property::SpinPolarizedLDOS &spinPolarizedLDOS
 		= (Property::SpinPolarizedLDOS&)property;
 	vector<SpinMatrix> &data = spinPolarizedLDOS.getDataRW();
-	Solver::ArnoldiIterator &solver = *propertyExtractor->aSolver;
+	const Solver::ArnoldiIterator &solver = propertyExtractor->getSolver();
 
 	const CArray<complex<double>> &eigenValues = solver.getEigenValues();
 

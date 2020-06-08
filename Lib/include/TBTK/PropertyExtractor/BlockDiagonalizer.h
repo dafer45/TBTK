@@ -232,26 +232,29 @@ private:
 		Information &information
 	);
 
-	/** Solver::Diagonalizer to work on. */
-	Solver::BlockDiagonalizer &solver;
+	/** Get the Solver. */
+	Solver::BlockDiagonalizer& getSolver();
+
+	/** Get the Solver. */
+	const Solver::BlockDiagonalizer& getSolver() const;
 };
 
 inline double BlockDiagonalizer::getEigenValue(int state) const{
-	return solver.getEigenValue(state);
+	return getSolver().getEigenValue(state);
 }
 
 inline double BlockDiagonalizer::getEigenValue(
 	const Index &blockIndex,
 	int state
 ) const{
-	return solver.getEigenValue(blockIndex, state);
+	return getSolver().getEigenValue(blockIndex, state);
 }
 
 inline const std::complex<double> BlockDiagonalizer::getAmplitude(
 	int state,
 	const Index &index
 ){
-	return solver.getAmplitude(state, index);
+	return getSolver().getAmplitude(state, index);
 }
 
 inline const std::complex<double> BlockDiagonalizer::getAmplitude(
@@ -259,7 +262,15 @@ inline const std::complex<double> BlockDiagonalizer::getAmplitude(
 	int state,
 	const Index &intraBlockIndex
 ) const{
-	return solver.getAmplitude(blockIndex, state, intraBlockIndex);
+	return getSolver().getAmplitude(blockIndex, state, intraBlockIndex);
+}
+
+inline Solver::BlockDiagonalizer& BlockDiagonalizer::getSolver(){
+	return PropertyExtractor::getSolver<Solver::BlockDiagonalizer>();
+}
+
+inline const Solver::BlockDiagonalizer& BlockDiagonalizer::getSolver() const{
+	return PropertyExtractor::getSolver<Solver::BlockDiagonalizer>();
 }
 
 };	//End of namespace PropertyExtractor

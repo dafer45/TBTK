@@ -33,10 +33,12 @@ static complex<double> i(0, 1);
 namespace TBTK{
 namespace PropertyExtractor{
 
-Diagonalizer::Diagonalizer(Solver::Diagonalizer &solver) : solver(solver){
+Diagonalizer::Diagonalizer(Solver::Diagonalizer &solver){
+	setSolver(solver);
 }
 
 Property::EigenValues Diagonalizer::getEigenValues(){
+	const Solver::Diagonalizer &solver = getSolver();
 	const CArray<double> &eigenValues = solver.getEigenValues();
 
 	return Property::EigenValues(
@@ -57,6 +59,7 @@ Property::WaveFunctions Diagonalizer::calculateWaveFunctions(
 	);
 	patternValidator.validate(patterns);
 
+	const Solver::Diagonalizer &solver = getSolver();
 	IndexTreeGenerator indexTreeGenerator(solver.getModel());
 	IndexTree allIndices = indexTreeGenerator.generateAllIndices(patterns);
 	IndexTree memoryLayout
@@ -116,6 +119,7 @@ Property::GreensFunction Diagonalizer::calculateGreensFunction(
 	);
 	patternValidator.validate(patterns);
 
+	const Solver::Diagonalizer &solver = getSolver();
 	IndexTreeGenerator indexTreeGenerator(solver.getModel());
 	IndexTree allIndices = indexTreeGenerator.generateAllIndices(patterns);
 	IndexTree memoryLayout
@@ -202,6 +206,7 @@ Property::GreensFunction Diagonalizer::calculateGreensFunction(
 }
 
 Property::DOS Diagonalizer::calculateDOS(){
+	const Solver::Diagonalizer &solver = getSolver();
 	const CArray<double> &eigenValues = solver.getEigenValues();
 	double lowerBound = getLowerBound();
 	double upperBound = getUpperBound();
@@ -226,6 +231,7 @@ complex<double> Diagonalizer::calculateExpectationValue(
 
 	complex<double> expectationValue = 0.;
 
+	const Solver::Diagonalizer &solver = getSolver();
 	Statistics statistics = solver.getModel().getStatistics();
 
 	for(int n = 0; n < solver.getModel().getBasisSize(); n++){
@@ -288,6 +294,7 @@ Property::Density Diagonalizer::calculateDensity(
 	);
 	patternValidator.validate(patterns);
 
+	const Solver::Diagonalizer &solver = getSolver();
 	IndexTreeGenerator indexTreeGenerator(solver.getModel());
 	IndexTree allIndices = indexTreeGenerator.generateAllIndices(patterns);
 	IndexTree memoryLayout
@@ -359,6 +366,7 @@ Property::Magnetization Diagonalizer::calculateMagnetization(
 	);
 	patternValidator.validate(patterns);
 
+	const Solver::Diagonalizer &solver = getSolver();
 	IndexTreeGenerator indexTreeGenerator(solver.getModel());
 	IndexTree allIndices = indexTreeGenerator.generateAllIndices(patterns);
 	IndexTree memoryLayout
@@ -425,6 +433,7 @@ Property::LDOS Diagonalizer::calculateLDOS(
 	double upperBound = getUpperBound();
 	int energyResolution = getEnergyResolution();
 
+	const Solver::Diagonalizer &solver = getSolver();
 	IndexTreeGenerator indexTreeGenerator(solver.getModel());
 	IndexTree allIndices = indexTreeGenerator.generateAllIndices(patterns);
 	IndexTree memoryLayout
@@ -514,6 +523,7 @@ Property::SpinPolarizedLDOS Diagonalizer::calculateSpinPolarizedLDOS(
 	double upperBound = getUpperBound();
 	int energyResolution = getEnergyResolution();
 
+	const Solver::Diagonalizer &solver = getSolver();
 	IndexTreeGenerator indexTreeGenerator(solver.getModel());
 	IndexTree allIndices = indexTreeGenerator.generateAllIndices(patterns);
 	IndexTree memoryLayout
@@ -539,6 +549,7 @@ Property::SpinPolarizedLDOS Diagonalizer::calculateSpinPolarizedLDOS(
 }
 
 double Diagonalizer::calculateEntropy(){
+	const Solver::Diagonalizer &solver = getSolver();
 	Statistics statistics = solver.getModel().getStatistics();
 
 	double entropy = 0.;
@@ -601,6 +612,7 @@ void Diagonalizer::calculateGreensFunctionCallback(
 	Information &information
 ){
 	Diagonalizer *propertyExtractor = (Diagonalizer*)cb_this;
+	const Solver::Diagonalizer &solver = propertyExtractor->getSolver();
 
 	vector<Index> components = index.split();
 
@@ -636,7 +648,7 @@ void Diagonalizer::calculateGreensFunctionCallback(
 
 			for(
 				int n = 0;
-				n < propertyExtractor->solver.getModel().getBasisSize();
+				n < solver.getModel().getBasisSize();
 				n++
 			){
 				double E_n = propertyExtractor->getEigenValue(n);
@@ -657,7 +669,7 @@ void Diagonalizer::calculateGreensFunctionCallback(
 	{
 		unsigned int numMatsubaraEnergies
 			= greensFunction.getNumMatsubaraEnergies();
-		double chemicalPotential = propertyExtractor->solver.getModel(
+		double chemicalPotential = solver.getModel(
 			).getChemicalPotential();
 
 		for(unsigned int e = 0; e < numMatsubaraEnergies; e++){
@@ -666,7 +678,7 @@ void Diagonalizer::calculateGreensFunctionCallback(
 
 			for(
 				int n = 0;
-				n < propertyExtractor->solver.getModel().getBasisSize();
+				n < solver.getModel().getBasisSize();
 				n++
 			){
 				double E_n = propertyExtractor->getEigenValue(n);
@@ -705,7 +717,7 @@ void Diagonalizer::calculateDensityCallback(
 	Diagonalizer *propertyExtractor = (Diagonalizer*)cb_this;
 	Property::Density &density = (Property::Density&)property;
 	vector<double> &data = density.getDataRW();
-	Solver::Diagonalizer &solver = propertyExtractor->solver;
+	const Solver::Diagonalizer &solver = propertyExtractor->getSolver();
 	const Model &model = solver.getModel();
 
 	const CArray<double> &eigenValues = solver.getEigenValues();
@@ -744,7 +756,7 @@ void Diagonalizer::calculateMAGCallback(
 	Property::Magnetization &magnetization
 		= (Property::Magnetization&)property;
 	vector<SpinMatrix> &data = magnetization.getDataRW();
-	Solver::Diagonalizer &solver = propertyExtractor->solver;
+	const Solver::Diagonalizer &solver = propertyExtractor->getSolver();
 	const Model &model = solver.getModel();
 
 	const CArray<double> &eigenValues = solver.getEigenValues();
@@ -792,7 +804,7 @@ void Diagonalizer::calculateLDOSCallback(
 	Diagonalizer *propertyExtractor = (Diagonalizer*)cb_this;
 	Property::LDOS &ldos = (Property::LDOS&)property;
 	vector<double> &data = ldos.getDataRW();
-	Solver::Diagonalizer &solver = propertyExtractor->solver;
+	const Solver::Diagonalizer &solver = propertyExtractor->getSolver();
 
 	double lowerBound = propertyExtractor->getLowerBound();
 	double upperBound = propertyExtractor->getUpperBound();
@@ -823,7 +835,7 @@ void Diagonalizer::calculateSP_LDOSCallback(
 	Property::SpinPolarizedLDOS &spinPolarizedLDOS
 		= (Property::SpinPolarizedLDOS&)property;
 	vector<SpinMatrix> &data = spinPolarizedLDOS.getDataRW();
-	Solver::Diagonalizer &solver = propertyExtractor->solver;
+	const Solver::Diagonalizer &solver = propertyExtractor->getSolver();
 	const Model &model = solver.getModel();
 
 	double lowerBound = propertyExtractor->getLowerBound();
