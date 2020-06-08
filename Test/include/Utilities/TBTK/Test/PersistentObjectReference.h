@@ -110,4 +110,58 @@ TEST(PersistentObject, get4){
 	);
 }
 
+//TBTKFeature Utilities.PersistentObjectReference.get.5 2020-06-07
+TEST(PersistentObject, get5){
+	Base base;
+	PersistentObjectReference<Base> reference;
+	reference.set(base);
+	((const PersistentObjectReference<Base>&)reference).get<Base>();
+}
+
+//TBTKFeature Utilities.PersistentObjectReference.get.6 2020-06-07
+TEST(PersistentObject, get6){
+	Derived derived;
+	PersistentObjectReference<Derived> reference;
+	reference.set(derived);
+	((const PersistentObjectReference<Derived>&)reference).get<Derived>();
+}
+
+//TBTKFeature Utilities.PersistentObjectReference.get.7 2020-06-07
+TEST(PersistentObject, get7){
+	Base base;
+	PersistentObjectReference<Base> reference;
+	reference.set(base);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			((const PersistentObjectReference<Base>&)reference).get<Derived>();
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+//TBTKFeature Utilities.PersistentObjectReference.get.8 2020-06-07
+TEST(PersistentObject, get8){
+	Derived derived;
+	PersistentObjectReference<Derived> reference;
+	reference.set(derived);
+	((const PersistentObjectReference<Derived>&)reference).get<Base>();
+}
+
+//TBTKFeature Utilities.PersistentObjectReference.get.9 2020-06-07
+TEST(PersistentObject, get9){
+	Base base;
+	PersistentObjectReference<Base> reference;
+	reference.set(base);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			((const PersistentObjectReference<Base>&)reference).get<Other>();
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
 };

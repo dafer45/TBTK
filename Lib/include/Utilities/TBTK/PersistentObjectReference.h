@@ -47,6 +47,15 @@ public:
 	 */
 	template<typename CastType>
 	CastType& get();
+
+	/** Get the referenced object. The function takes a template parameter
+	 *  that allows the object to be cast to any compatible type. If the
+	 *  cast is not valid, an error is generated.
+	 *
+	 *  @return The referenced object, dynamically casted to the CastType.
+	 */
+	template<typename CastType>
+	const CastType& get() const;
 private:
 	DataType *data;
 };
@@ -64,6 +73,25 @@ void PersistentObjectReference<DataType>::set(DataType &data){
 template<typename DataType>
 template<typename CastType>
 CastType& PersistentObjectReference<DataType>::get(){
+	TBTKAssert(
+		data != nullptr,
+		"PersistentObjectReference::get()",
+		"The PersistentObjectReference is empty.",
+		""
+	);
+	CastType *castData = dynamic_cast<CastType*>(data);
+	TBTKAssert(
+		castData != nullptr,
+		"PersistentObjectReference::get()",
+		"Unable to cast data tp CastType.",
+		""
+	);
+	return *castData;
+}
+
+template<typename DataType>
+template<typename CastType>
+const CastType& PersistentObjectReference<DataType>::get() const{
 	TBTKAssert(
 		data != nullptr,
 		"PersistentObjectReference::get()",
