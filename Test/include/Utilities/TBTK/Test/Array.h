@@ -439,6 +439,19 @@ TEST(Array, operatorAddition3){
 			EXPECT_EQ((array1[{i, j}]), 7);
 }
 
+//TBTKFeature Utilities.operatorAddition.5 2020-05-25
+TEST(Array, operatorAddition4){
+	Array<unsigned int> array0({2, 3}, 5);
+	Array<unsigned int> array1 = 2 + array0;
+	const std::vector<unsigned int> &ranges = array1.getRanges();
+	EXPECT_EQ(ranges.size(), 2);
+	EXPECT_EQ(ranges[0], 2);
+	EXPECT_EQ(ranges[1], 3);
+	for(unsigned int i = 0; i < 2; i++)
+		for(unsigned int j = 0; j < 3; j++)
+			EXPECT_EQ((array1[{i, j}]), 7);
+}
+
 //TBTKFeature Utilities.Array.operatorSubtractionEquality.1 2020-05-25
 TEST(Array, operatorSubtractionEquality0){
 	Array<int> array0({2, 3});
@@ -578,6 +591,19 @@ TEST(Array, operatorSubtraction2){
 TEST(Array, operatorSubtraction3){
 	Array<unsigned int> array0({2, 3}, 5);
 	Array<unsigned int> array1 = array0 - 2;
+	const std::vector<unsigned int> &ranges = array1.getRanges();
+	EXPECT_EQ(ranges.size(), 2);
+	EXPECT_EQ(ranges[0], 2);
+	EXPECT_EQ(ranges[1], 3);
+	for(unsigned int i = 0; i < 2; i++)
+		for(unsigned int j = 0; j < 3; j++)
+			EXPECT_EQ((array1[{i, j}]), 3);
+}
+
+//TBTKFeature Utilities.operatorSubtraction.5 2020-05-25
+TEST(Array, operatorSubtraction4){
+	Array<unsigned int> array0({2, 3}, 2);
+	Array<unsigned int> array1 = 5 - array0;
 	const std::vector<unsigned int> &ranges = array1.getRanges();
 	EXPECT_EQ(ranges.size(), 2);
 	EXPECT_EQ(ranges[0], 2);

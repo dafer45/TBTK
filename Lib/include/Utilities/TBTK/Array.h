@@ -371,6 +371,19 @@ public:
 		return result += rhs;
 	}
 
+	/** Addition operator.
+	 *
+	 *  @param lhs The left hand side of the expression.
+	 *  @param rhs The right hand side of the expression.
+	 *
+	 *  @return A new Array with the left hand side added to each element
+	 *  of the right hand side. */
+	friend Array operator+(const DataType &lhs, const Array &rhs){
+		Array result = rhs;
+
+		return result += lhs;
+	}
+
 	/** Subtraction equality operator.
 	 *
 	 *  @param rhs The right hand side of the expression.
@@ -411,6 +424,20 @@ public:
 
 		return result -= rhs;
 	}
+
+	/** Subtraction operator.
+	 *
+	 *  @param lhs The left hand side of the expression.
+	 *  @param rhs The right hand side of the expression.
+	 *
+	 *  @return A new Array with each element of the right hand side
+	 *  subtracted from the left hand side. */
+	friend Array operator-(const DataType &lhs, const Array &rhs){
+		Array result = -rhs;
+
+		return result += lhs;
+	}
+
 	/** Negative operator.
 	 *
 	 *  @return An Array with all elements the negative of the original
