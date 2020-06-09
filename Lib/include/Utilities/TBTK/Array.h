@@ -161,6 +161,51 @@ public:
 		friend class Array;
 	};
 
+	class Ranges : public std::vector<unsigned int>{
+	public:
+		/** Constructor. */
+		Ranges(){};
+
+		/** Construct a Ranges from an std::vector<unsigned int>.
+		 *
+		 *  @param ranges The vector to construct the ranges from. */
+		Ranges(
+			const std::vector<unsigned int> &ranges
+		) :
+			std::vector<unsigned int>(ranges)
+		{
+		}
+
+		/** Construct a Ranges from an
+		 *  std::initializer_list<unsigned int>.
+		 *
+		 *  @param ranges The initializer_list to construct the ranges
+		 *  from. */
+		Ranges(
+			const std::initializer_list<unsigned int> &ranges
+		) :
+			std::vector<unsigned int>(ranges)
+		{
+		}
+
+		/** Compare two Ranges.
+		 *
+		 *  @param rhs The right hand side of the expression.
+		 *
+		 *  @return True if the two Ranges have the same number of
+		 *  elements and each element is equal, otherwise false. */
+		bool operator==(const Ranges &rhs) const;
+
+		/** Compare two Ranges for inequality.
+		 *
+		 *  @param rhs The right hand side of the expression.
+		 *
+		 *  @return False if the two Ranges have the same number of
+		 *  elements and each element is equal, otherwise true. */
+		bool operator!=(const Ranges &rhs) const;
+	private:
+	};
+
 	//TBTKFeature Utilities.Array.construction.1 2019-10-31
 	/** Constructor. */
 	Array();
@@ -548,7 +593,7 @@ public:
 	/** Get ranges.
 	 *
 	 *  @return The @link Array Arrays@endlink ranges. */
-	const std::vector<unsigned int>& getRanges() const;
+	const Ranges& getRanges() const;
 
 	/** ostream operator. */
 	template<typename DT>
@@ -582,7 +627,7 @@ private:
 	CArray<DataType> data;
 
 	/** Ranges. */
-	std::vector<unsigned int> ranges;
+	Ranges ranges;
 
 	/** Fill slice. */
 	void fillSlice(
@@ -1470,7 +1515,7 @@ void Array<DataType>::fillSlice(
 }
 
 template<typename DataType>
-inline const std::vector<unsigned int>& Array<DataType>::getRanges() const{
+inline const typename Array<DataType>::Ranges& Array<DataType>::getRanges() const{
 	return ranges;
 }
 
@@ -1733,6 +1778,23 @@ std::vector<
 	}
 
 	return compatibleIndices;
+}
+
+template<typename DataType>
+bool Array<DataType>::Ranges::operator==(const Ranges &rhs) const{
+	if(size() != rhs.size())
+		return false;
+
+	for(unsigned int n = 0; n < size(); n++)
+		if((*this)[n] != rhs[n])
+			return false;
+
+	return true;
+}
+
+template<typename DataType>
+bool Array<DataType>::Ranges::operator!=(const Ranges &rhs) const{
+	return !(*this == rhs);
 }
 
 }; //End of namesapce TBTK

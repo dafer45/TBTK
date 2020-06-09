@@ -1389,4 +1389,82 @@ TEST(ArrayModifier, operatorDivisionEquality1){
 	}
 }
 
+//TBTKFeature Utilities.Array.Ranges.construction.1 2020-06-09
+TEST(ArrayRanges, construction1){
+	Array<int>::Ranges ranges;
+	EXPECT_EQ(ranges.size(), 0);
+}
+
+//TBTKFeature Utilities.Array.Ranges.construction.2 2020-06-09
+TEST(ArrayRanges, construction2){
+	Array<int>::Ranges ranges({1, 2, 3});
+	EXPECT_EQ(ranges.size(), 3);
+	for(unsigned int n = 0; n < ranges.size(); n++)
+		EXPECT_EQ(ranges[n], n+1);
+}
+
+//TBTKFeature Utilities.Array.Ranges.construction.3 2020-06-09
+TEST(ArrayRanges, construction3){
+	Array<int>::Ranges ranges(std::vector<unsigned int>({1, 2, 3}));
+	EXPECT_EQ(ranges.size(), 3);
+	for(unsigned int n = 0; n < ranges.size(); n++)
+		EXPECT_EQ(ranges[n], n+1);
+}
+
+//TBTKFeature Utilities.Array.Ranges.operatorEqual.1 2020-06-09
+TEST(ArrayRanges, operatorEqual1){
+	EXPECT_TRUE(
+		Array<int>::Ranges({1, 2, 3}) == Array<int>::Ranges({1, 2, 3})
+	);
+}
+
+//TBTKFeature Utilities.Array.Ranges.operatorEqual.2 2020-06-09
+TEST(ArrayRanges, operatorEqual2){
+	EXPECT_FALSE(
+		Array<int>::Ranges({1, 2, 3}) == Array<int>::Ranges({1, 2})
+	);
+}
+
+//TBTKFeature Utilities.Array.Ranges.operatorEqual.3 2020-06-09
+TEST(ArrayRanges, operatorEqual3){
+	EXPECT_FALSE(
+		Array<int>::Ranges({1, 2}) == Array<int>::Ranges({1, 2, 3})
+	);
+}
+
+//TBTKFeature Utilities.Array.Ranges.operatorEqual.4 2020-06-09
+TEST(ArrayRanges, operatorEqual4){
+	EXPECT_FALSE(
+		Array<int>::Ranges({1, 2, 3}) == Array<int>::Ranges({1, 2, 4})
+	);
+}
+
+//TBTKFeature Utilities.Array.Ranges.operatorNotEqual.1 2020-06-09
+TEST(ArrayRanges, operatorNotEqual1){
+	EXPECT_FALSE(
+		Array<int>::Ranges({1, 2, 3}) != Array<int>::Ranges({1, 2, 3})
+	);
+}
+
+//TBTKFeature Utilities.Array.Ranges.operatorNotEqual.2 2020-06-09
+TEST(ArrayRanges, operatorNotEqual2){
+	EXPECT_TRUE(
+		Array<int>::Ranges({1, 2, 3}) != Array<int>::Ranges({1, 2})
+	);
+}
+
+//TBTKFeature Utilities.Array.Ranges.operatorNotEqual.3 2020-06-09
+TEST(ArrayRanges, operatorNotEqual3){
+	EXPECT_TRUE(
+		Array<int>::Ranges({1, 2}) != Array<int>::Ranges({1, 2, 3})
+	);
+}
+
+//TBTKFeature Utilities.Array.Ranges.operatorNotEqual.4 2020-06-09
+TEST(ArrayRanges, operatorNotEqual4){
+	EXPECT_TRUE(
+		Array<int>::Ranges({1, 2, 3}) != Array<int>::Ranges({1, 2, 4})
+	);
+}
+
 };
