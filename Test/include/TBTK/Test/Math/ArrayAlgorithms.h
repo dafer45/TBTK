@@ -569,5 +569,130 @@ TEST_F(ArrayAlgorithmsTest, norm1){
 	EXPECT_NEAR(norm(C, 3.5), reference, EPSILON_100);
 }
 
+//TBTKFeature Math.ArrayAlgorithms.norm.0 2020-06-09
+TEST_F(ArrayAlgorithmsTest, multiply0){
+	Array<double> product = multiply(A, C);
+	for(unsigned int row = 0; row < 2; row++){
+		for(unsigned int column = 0; column < 3; column++){
+			EXPECT_NEAR(
+				(product[{row, column}]),
+				(A[{row, column}]*C[{row, column}]),
+				EPSILON_100
+			);
+		}
+	}
+}
+
+//TBTKFeature Math.ArrayAlgorithms.norm.1 2020-06-09
+TEST_F(ArrayAlgorithmsTest, multiply1){
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			multiply(Array<double>({2, 4}), A);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+//TBTKFeature Math.ArrayAlgorithms.norm.2 2020-06-09
+TEST_F(ArrayAlgorithmsTest, multiply2){
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			multiply(A, Array<double>({2, 4}));
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+//TBTKFeature Math.ArrayAlgorithms.norm.3 2020-06-09
+TEST_F(ArrayAlgorithmsTest, multiply3){
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			multiply(Array<double>({2}), A);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+//TBTKFeature Math.ArrayAlgorithms.norm.4 2020-06-09
+TEST_F(ArrayAlgorithmsTest, multiply4){
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			multiply(A, Array<double>({2}));
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+//TBTKFeature Math.ArrayAlgorithms.norm.0 2020-06-09
+TEST_F(ArrayAlgorithmsTest, divide0){
+	Array<double> product = divide(A, C);
+	for(unsigned int row = 0; row < 2; row++){
+		for(unsigned int column = 0; column < 3; column++){
+			EXPECT_NEAR(
+				(product[{row, column}]),
+				(A[{row, column}]/C[{row, column}]),
+				EPSILON_100
+			);
+		}
+	}
+}
+
+//TBTKFeature Math.ArrayAlgorithms.norm.1 2020-06-09
+TEST_F(ArrayAlgorithmsTest, divide1){
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			divide(Array<double>({2, 4}), A);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+//TBTKFeature Math.ArrayAlgorithms.norm.2 2020-06-09
+TEST_F(ArrayAlgorithmsTest, divide2){
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			divide(A, Array<double>({2, 4}));
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+//TBTKFeature Math.ArrayAlgorithms.norm.3 2020-06-09
+TEST_F(ArrayAlgorithmsTest, divide3){
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			divide(Array<double>({2}), A);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+//TBTKFeature Math.ArrayAlgorithms.norm.4 2020-06-09
+TEST_F(ArrayAlgorithmsTest, divide4){
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			divide(A, Array<double>({2}));
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
 };	//End of namespace Math
 };	//End of namespace TBTK
+

@@ -901,6 +901,54 @@ DataType norm(const Array<DataType> &array, double power = 2){
 	return std::pow(result, 1/power);
 }
 
+/** Elementwise multiplication of two Arrays. The Arrays must have the same
+ *  rank and dimensions.
+ *
+ *  @param lhs The left hand side of the expression.
+ *  @param rhs The right hand side of the expression.
+ *
+ *  @return A new Array consisting of the elementwise products of the left and
+ *  right hand side. */
+template<typename DataType>
+Array<DataType> multiply(const Array<DataType> &lhs, const Array<DataType> &rhs){
+	TBTKAssert(
+		lhs.getRanges() == rhs.getRanges(),
+		"Math::multiply()",
+		"Incompatible ranges. 'lhs' and 'rhs' must have the same rank"
+		<< " and dimensions.",
+		""
+	);
+	Array<DataType> result = Array<DataType>::create(lhs.getRanges());
+	for(unsigned int n = 0; n < lhs.getSize(); n++)
+		result[n] = lhs[n]*rhs[n];
+
+	return result;
+}
+
+/** Elementwise division of two Arrays. The Arrays must have the same rank and
+ *  dimensions.
+ *
+ *  @param lhs The left hand side of the expression.
+ *  @param rhs The right hand side of the expression.
+ *
+ *  @return A new Array consisting of the elementwise ratio between the left
+ *  and right hand side. */
+template<typename DataType>
+Array<DataType> divide(const Array<DataType> &lhs, const Array<DataType> &rhs){
+	TBTKAssert(
+		lhs.getRanges() == rhs.getRanges(),
+		"Math::multiply()",
+		"Incompatible ranges. 'lhs' and 'rhs' must have the same rank"
+		<< " and dimensions.",
+		""
+	);
+	Array<DataType> result = Array<DataType>::create(lhs.getRanges());
+	for(unsigned int n = 0; n < lhs.getSize(); n++)
+		result[n] = lhs[n]/rhs[n];
+
+	return result;
+}
+
 }; //End of namespace Math
 }; //End of namespace TBTK
 
