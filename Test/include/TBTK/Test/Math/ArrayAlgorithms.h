@@ -693,6 +693,15 @@ TEST_F(ArrayAlgorithmsTest, divide4){
 	);
 }
 
+//TBTKFeature Math.ArrayAlgorithms.sum.0 2020-06-25
+TEST_F(ArrayAlgorithmsTest, sum0){
+	EXPECT_NEAR(sum(A), 21, EPSILON_100);
+	EXPECT_NEAR(sum(B), 2.1, EPSILON_100);
+	EXPECT_NEAR(sum(C), -9, EPSILON_100);
+	EXPECT_NEAR(real(sum(D)), -3, EPSILON_100);
+	EXPECT_NEAR(imag(sum(D)), -9, EPSILON_100);
+}
+
 };	//End of namespace Math
 };	//End of namespace TBTK
 

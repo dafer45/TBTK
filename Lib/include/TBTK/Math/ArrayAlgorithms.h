@@ -949,6 +949,16 @@ Array<DataType> divide(const Array<DataType> &lhs, const Array<DataType> &rhs){
 	return result;
 }
 
+/** Calculate the sum of all the elements in the Array. */
+template<typename DataType>
+DataType sum(const Array<DataType> &array){
+	DataType result = 0;
+	for(unsigned int n = 0; n < array.getSize(); n++)
+		result += array[n];
+
+	return result;
+}
+
 }; //End of namespace Math
 }; //End of namespace TBTK
 
