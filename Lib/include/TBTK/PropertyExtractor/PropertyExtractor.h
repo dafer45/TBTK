@@ -85,6 +85,12 @@ public:
 	);
 
 	/** Set the energy window used for energy dependent quantities. The
+	 *  energy window is set to be real.
+	 *
+	 *  @param energyWindow Range specifiying the energy window. */
+	virtual void setEnergyWindow(const Range &energyWindow);
+
+	/** Set the energy window used for energy dependent quantities. The
 	 *  energy window is set to consist of Matsubara energies.
 	 *
 	 *  @param lowerFermionicMatsubaraEnergyIndex The lower Fermionic
@@ -646,6 +652,11 @@ private:
 	/** Reference to solver. */
 	PersistentObjectReference<Solver::Solver> solver;
 };
+
+inline void PropertyExtractor::setEnergyWindow(const Range &energyWindow){
+	energyType = EnergyType::Real;
+	this->energyWindow = energyWindow;
+}
 
 inline PropertyExtractor::EnergyType PropertyExtractor::getEnergyType() const{
 	return energyType;

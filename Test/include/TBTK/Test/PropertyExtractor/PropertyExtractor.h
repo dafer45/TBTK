@@ -187,11 +187,55 @@ TEST(PropertyExtractor, Destructor){
 	//Not testable on its own.
 }
 
-TEST(PropertyExtractor, setEnergyWindowReal){
+TEST(PropertyExtractor, setEnergyWindowReal0){
 	PublicPropertyExtractor propertyExtractor;
 
 	//Verify that the energy windows is properly set.
 	propertyExtractor.setEnergyWindow(-10, 10, 100);
+	EXPECT_DOUBLE_EQ(propertyExtractor.getLowerBound(), -10);
+	EXPECT_DOUBLE_EQ(propertyExtractor.getUpperBound(), 10);
+	EXPECT_EQ(propertyExtractor.getEnergyResolution(), 100);
+
+	//Print error message when accessing Matsubara quantities.
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			propertyExtractor.getLowerFermionicMatsubaraEnergyIndex();
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			propertyExtractor.getUpperFermionicMatsubaraEnergyIndex();
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			propertyExtractor.getLowerBosonicMatsubaraEnergyIndex();
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			propertyExtractor.getUpperBosonicMatsubaraEnergyIndex();
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+TEST(PropertyExtractor, setEnergyWindowReal1){
+	PublicPropertyExtractor propertyExtractor;
+
+	//Verify that the energy windows is properly set.
+	propertyExtractor.setEnergyWindow(Range(-10, 10, 100));
 	EXPECT_DOUBLE_EQ(propertyExtractor.getLowerBound(), -10);
 	EXPECT_DOUBLE_EQ(propertyExtractor.getUpperBound(), 10);
 	EXPECT_EQ(propertyExtractor.getEnergyResolution(), 100);
