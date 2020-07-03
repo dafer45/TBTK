@@ -32,6 +32,7 @@
 #include "TBTK/Property/LDOS.h"
 #include "TBTK/Property/Magnetization.h"
 #include "TBTK/Property/SpinPolarizedLDOS.h"
+#include "TBTK/Range.h"
 #include "TBTK/Solver/Solver.h"
 
 #include <complex>
@@ -597,23 +598,15 @@ private:
 	/** Default energy resolution. */
 	static constexpr int ENERGY_RESOLUTION = 1000;
 
-	/** Energy resolution used for energy dependent quantities when the
-	 *  energy type is EnergyType::Real. */
-	int energyResolution;
+	/** Energy range used for energy dependent quantities when the energy
+	 *  type is EnergyType::Real. */
+	Range energyWindow;
 
 	/** Default lower bound. */
 	static constexpr double LOWER_BOUND = -1.;
 
-	/** Lower bound used for energy dependent quantities when the energy
-	 *  type is EnergyType::Real. */
-	double lowerBound;
-
 	/** Default upper bound. */
 	static constexpr double UPPER_BOUND = 1.;
-
-	/** Upper bound used for energy dependent quantities when the energy
-	 *  type is EnergyType::Real. */
-	double upperBound;
 
 	/** Default lower Fermionic Matsubara energy index. */
 	static constexpr int LOWER_FERMIONIC_MATSUBARA_ENERGY_INDEX = -1;
@@ -669,7 +662,7 @@ inline int PropertyExtractor::getEnergyResolution() const{
 		<< " PropertyExtractor."
 	);
 
-	return energyResolution;
+	return energyWindow.getResolution();
 }
 
 inline double PropertyExtractor::getLowerBound() const{
@@ -683,7 +676,7 @@ inline double PropertyExtractor::getLowerBound() const{
 		<< " PropertyExtractor."
 	);
 
-	return lowerBound;
+	return energyWindow[0];
 }
 
 inline double PropertyExtractor::getUpperBound() const{
@@ -697,7 +690,7 @@ inline double PropertyExtractor::getUpperBound() const{
 		<< " PropertyExtractor."
 	);
 
-	return upperBound;
+	return energyWindow[energyWindow.getResolution()-1];
 }
 
 inline int PropertyExtractor::getLowerFermionicMatsubaraEnergyIndex() const{

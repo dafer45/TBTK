@@ -27,12 +27,11 @@ namespace TBTK{
 namespace PropertyExtractor{
 
 PropertyExtractor::PropertyExtractor(
-){
+) :
+	energyWindow(LOWER_BOUND, UPPER_BOUND, ENERGY_RESOLUTION)
+{
 	this->energyType = EnergyType::Real;
 
-	this->energyResolution = ENERGY_RESOLUTION;
-	this->lowerBound = LOWER_BOUND;
-	this->upperBound = UPPER_BOUND;
 	this->energyInfinitesimal = ENERGY_INFINITESIMAL;
 
 	this->lowerFermionicMatsubaraEnergyIndex
@@ -55,9 +54,7 @@ void PropertyExtractor::setEnergyWindow(
 ){
 	this->energyType = EnergyType::Real;
 
-	this->energyResolution = energyResolution;
-	this->lowerBound = lowerBound;
-	this->upperBound = upperBound;
+	energyWindow = Range(lowerBound, upperBound, energyResolution);
 }
 
 void PropertyExtractor::setEnergyWindow(
