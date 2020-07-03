@@ -61,4 +61,10 @@ TEST(Range, operatorArraySubscript1){
 		EXPECT_FLOAT_EQ(range[n], -10 + n*20/(double)99);
 }
 
+//TBTKFeature Utilities.Range.getLast.1 2020-07-03
+TEST(Range, getLast1){
+	Range range(-10, 10, 100);
+	EXPECT_FLOAT_EQ(range.getLast(), range[99]);
+}
+
 };

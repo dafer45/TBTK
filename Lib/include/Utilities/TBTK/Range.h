@@ -91,6 +91,11 @@ public:
 	 *  @return The nth entry in the Range. */
 	double operator[](unsigned int n) const;
 
+	/** Get the last element.
+	 *
+	 *  @return The last element. */
+	double getLast() const;
+
 	/** Serilaize.
 	 *
 	 *  @param mode The mode to use.
@@ -114,6 +119,10 @@ inline double Range::operator[](unsigned int n) const{
 
 inline unsigned int Range::getResolution() const{
 	return resolution;
+}
+
+inline double Range::getLast() const{
+	return start + (resolution - 1)*dx;
 }
 
 }; //End of namesapce TBTK
