@@ -23,6 +23,7 @@
 #ifndef COM_DAFER45_TBTK_PROPERTY_EXTRACTOR_PROPERTY_EXTRACTOR
 #define COM_DAFER45_TBTK_PROPERTY_EXTRACTOR_PROPERTY_EXTRACTOR
 
+#include "TBTK/Functions.h"
 #include "TBTK/HoppingAmplitudeSet.h"
 #include "TBTK/Index.h"
 #include "TBTK/PersistentObjectReference.h"
@@ -587,6 +588,17 @@ protected:
 	 *  @return The Solver cast to SolverType. */
 	template<typename SolverType>
 	const SolverType& getSolver() const;
+
+	/** Get the occupation number for a given eigenstate. Returns the
+	 *  occupation number according to the Fermi-Dirac or Bose-Einstein
+	 *  distribution depending on the statistics of the Model.
+	 *
+	 *  @param energy The energy to get the occupation for.
+	 *  @param model The Model that determines the statistics. */
+	static double getThermodynamicEquilibriumOccupation(
+		double energy,
+		const Model &model
+	);
 private:
 	/** Energy type used for energy dependent quantities. */
 	EnergyType energyType;
@@ -854,6 +866,32 @@ SolverType& PropertyExtractor::getSolver(){
 template<typename SolverType>
 const SolverType& PropertyExtractor::getSolver() const{
 	return solver.get<SolverType>();
+}
+
+inline double PropertyExtractor::getThermodynamicEquilibriumOccupation(
+	double energy,
+	const Model &model
+){
+	switch(model.getStatistics()){
+	case Statistics::FermiDirac:
+		return Functions::fermiDiracDistribution(
+			energy,
+			model.getChemicalPotential(),
+			model.getTemperature()
+		);
+	case Statistics::BoseEinstein:
+		return Functions::boseEinsteinDistribution(
+			energy,
+			model.getChemicalPotential(),
+			model.getTemperature()
+		);
+	default:
+		TBTKExit(
+			"PropertyExtractor::PropertyExtractor::getThermodynamicEquilibriumOccupation()",
+			"Unkown statistics.",
+			"This should never happen, contact the developer."
+		);
+	}
 }
 
 inline void PropertyExtractor::Information::setSpinIndex(int spinIndex){

@@ -1,3 +1,4 @@
+#include "TBTK/Functions.h"
 #include "TBTK/PropertyExtractor/PropertyExtractor.h"
 #include "TBTK/Solver/ArnoldiIterator.h"
 #include "TBTK/Solver/Diagonalizer.h"
@@ -130,6 +131,16 @@ public:
 	template<typename SolverType>
 	SolverType& getSolver(){
 		return PropertyExtractor::getSolver<SolverType>();
+	}
+
+	static double getThermodynamicEquilibriumOccupation(
+		double energy,
+		const Model &model
+	){
+		return PropertyExtractor::getThermodynamicEquilibriumOccupation(
+			energy,
+			model
+		);
 	}
 
 	//Helper function for TEST(PropertyExtractor, calculateRanges).
@@ -965,6 +976,58 @@ TEST(PropertyExtractor, getSolver3){
 		::testing::ExitedWithCode(1),
 		""
 	);
+}
+
+//TBTKFeature PropertyExtractor.PropertyExtractor.getThermodynamicEquilibriumOccupation.0 2020-07-04
+TEST(PropertyExtractor, getThermodynamicEquilibirumOccupation0){
+	const double CHEMICAL_POTENTIAL = 7;
+	const double TEMPERATURE = 18;
+	Model model;
+	model.setStatistics(Statistics::FermiDirac);
+	model.setChemicalPotential(CHEMICAL_POTENTIAL);
+	model.setTemperature(TEMPERATURE);
+
+	for(int n = 0; n < 10; n++){
+		double energy = CHEMICAL_POTENTIAL + (n-5)/1000.;
+		EXPECT_NEAR(
+			PublicPropertyExtractor::getThermodynamicEquilibriumOccupation(
+				energy,
+				model
+			),
+			Functions::fermiDiracDistribution(
+				energy,
+				CHEMICAL_POTENTIAL,
+				TEMPERATURE
+			),
+			EPSILON_100
+		);
+	}
+}
+
+//TBTKFeature PropertyExtractor.PropertyExtractor.getThermodynamicEquilibriumOccupation.1 2020-07-04
+TEST(PropertyExtractor, getThermodynamicEquilibirumOccupation1){
+	const double CHEMICAL_POTENTIAL = 7;
+	const double TEMPERATURE = 18;
+	Model model;
+	model.setStatistics(Statistics::BoseEinstein);
+	model.setChemicalPotential(CHEMICAL_POTENTIAL);
+	model.setTemperature(TEMPERATURE);
+
+	for(int n = 0; n < 10; n++){
+		double energy = CHEMICAL_POTENTIAL + (n+1)/1000.;
+		EXPECT_NEAR(
+			PublicPropertyExtractor::getThermodynamicEquilibriumOccupation(
+				energy,
+				model
+			),
+			Functions::boseEinsteinDistribution(
+				energy,
+				CHEMICAL_POTENTIAL,
+				TEMPERATURE
+			),
+			EPSILON_100
+		);
+	}
 }
 
 TEST(PropertyExtractor, Information){
