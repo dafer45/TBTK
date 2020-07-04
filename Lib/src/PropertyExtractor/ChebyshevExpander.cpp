@@ -310,27 +310,15 @@ complex<double> ChebyshevExpander::calculateExpectationValue(
 	const std::vector<complex<double>> &greensFunctionData
 		= greensFunction.getData();
 
-	const Solver::ChebyshevExpander &solver = getSolver();
-	Statistics statistics = solver.getModel().getStatistics();
+	const Model& model = getSolver().getModel();
 
 	const Range &energyWindow = getEnergyWindow();
 	const double dE = (energyWindow[1] - energyWindow[0]);
 	for(unsigned int e = 0; e < energyWindow.getResolution(); e++){
-		double weight;
-		if(statistics == Statistics::FermiDirac){
-			weight = Functions::fermiDiracDistribution(
-				energyWindow[e],
-				solver.getModel().getChemicalPotential(),
-				solver.getModel().getTemperature()
-			);
-		}
-		else{
-			weight = Functions::boseEinsteinDistribution(
-				energyWindow[e],
-				solver.getModel().getChemicalPotential(),
-				solver.getModel().getTemperature()
-			);
-		}
+		double weight = getThermodynamicEquilibriumOccupation(
+			energyWindow[e],
+			model
+		);
 
 		expectationValue -= weight*conj(i*greensFunctionData[e])*dE/M_PI;
 	}
@@ -613,27 +601,15 @@ void ChebyshevExpander::calculateDensityCallback(
 	const std::vector<complex<double>> &greensFunctionData
 		= greensFunction.getData();
 
-	const Solver::ChebyshevExpander &solver = propertyExtractor->getSolver();
-	Statistics statistics = solver.getModel().getStatistics();
+	const Model &model = propertyExtractor->getSolver().getModel();
 
 	const Range &energyWindow = propertyExtractor->getEnergyWindow();
 	const double dE = energyWindow[1] - energyWindow[0];
 	for(unsigned int e = 0; e < energyWindow.getResolution(); e++){
-		double weight;
-		if(statistics == Statistics::FermiDirac){
-			weight = Functions::fermiDiracDistribution(
-				energyWindow[e],
-				solver.getModel().getChemicalPotential(),
-				solver.getModel().getTemperature()
-			);
-		}
-		else{
-			weight = Functions::boseEinsteinDistribution(
-				energyWindow[e],
-				solver.getModel().getChemicalPotential(),
-				solver.getModel().getTemperature()
-			);
-		}
+		double weight = getThermodynamicEquilibriumOccupation(
+			energyWindow[e],
+			model
+		);
 
 		data[offset] += weight*imag(greensFunctionData[e])/M_PI*dE;
 	}
@@ -647,7 +623,7 @@ void ChebyshevExpander::calculateMAGCallback(
 	Information &information
 ){
 	ChebyshevExpander *propertyExtractor = (ChebyshevExpander*)cb_this;
-	const Solver::ChebyshevExpander &solver = propertyExtractor->getSolver();
+	const Model &model = propertyExtractor->getSolver().getModel();
 	Property::Magnetization &magnetization
 		= (Property::Magnetization&)property;
 	vector<SpinMatrix> &data = magnetization.getDataRW();
@@ -655,7 +631,6 @@ void ChebyshevExpander::calculateMAGCallback(
 	int spinIndex = information.getSpinIndex();
 	Index to(index);
 	Index from(index);
-	Statistics statistics = solver.getModel().getStatistics();
 
 	const Range &energyWindow = propertyExtractor->getEnergyWindow();
 	const double dE = energyWindow[1] - energyWindow[0];
@@ -672,21 +647,10 @@ void ChebyshevExpander::calculateMAGCallback(
 			= greensFunction.getData();
 
 		for(unsigned int e = 0; e < energyWindow.getResolution(); e++){
-			double weight;
-			if(statistics == Statistics::FermiDirac){
-				weight = Functions::fermiDiracDistribution(
-					energyWindow[e],
-					solver.getModel().getChemicalPotential(),
-					solver.getModel().getTemperature()
-				);
-			}
-			else{
-				weight = Functions::boseEinsteinDistribution(
-					energyWindow[e],
-					solver.getModel().getChemicalPotential(),
-					solver.getModel().getTemperature()
-				);
-			}
+			double weight = getThermodynamicEquilibriumOccupation(
+				energyWindow[e],
+				model
+			);
 
 			data[offset].at(n/2, n%2)
 				+= weight*(-i)*greensFunctionData[e]/M_PI*dE;

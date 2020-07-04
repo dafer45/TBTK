@@ -257,34 +257,18 @@ complex<double> BlockDiagonalizer::calculateExpectationValue(
 	Index to,
 	Index from
 ){
-	const complex<double> i(0, 1);
-
 	complex<double> expectationValue = 0.;
+	const Model &model = getSolver().getModel();
+	for(int n = 0; n < model.getBasisSize(); n++){
+		double weight = getThermodynamicEquilibriumOccupation(
+			getEigenValue(n),
+			model
+		);
 
-	const Solver::BlockDiagonalizer &solver = getSolver();
-	Statistics statistics = solver.getModel().getStatistics();
+		complex<double> amplitudeTo = getAmplitude(n, to);
+		complex<double> amplitudeFrom = getAmplitude(n, from);
 
-	for(int n = 0; n < solver.getModel().getBasisSize(); n++){
-		double weight;
-		if(statistics == Statistics::FermiDirac){
-			weight = Functions::fermiDiracDistribution(
-				solver.getEigenValue(n),
-				solver.getModel().getChemicalPotential(),
-				solver.getModel().getTemperature()
-			);
-		}
-		else{
-			weight = Functions::boseEinsteinDistribution(
-				solver.getEigenValue(n),
-				solver.getModel().getChemicalPotential(),
-				solver.getModel().getTemperature()
-			);
-		}
-
-		complex<double> u_to = solver.getAmplitude(n, to);
-		complex<double> u_from = solver.getAmplitude(n, from);
-
-		expectationValue += weight*conj(u_to)*u_from;
+		expectationValue += weight*conj(amplitudeTo)*amplitudeFrom;
 	}
 
 	return expectationValue;
@@ -301,8 +285,7 @@ Property::Density BlockDiagonalizer::calculateDensity(
 	);
 	patternValidator.validate(patterns);
 
-	const Solver::BlockDiagonalizer &solver = getSolver();
-	IndexTreeGenerator indexTreeGenerator(solver.getModel());
+	IndexTreeGenerator indexTreeGenerator(getSolver().getModel());
 	IndexTree allIndices = indexTreeGenerator.generateAllIndices(patterns);
 	IndexTree memoryLayout
 		= indexTreeGenerator.generateMemoryLayout(patterns);
@@ -334,8 +317,7 @@ Property::Magnetization BlockDiagonalizer::calculateMagnetization(
 	);
 	patternValidator.validate(patterns);
 
-	const Solver::BlockDiagonalizer &solver = getSolver();
-	IndexTreeGenerator indexTreeGenerator(solver.getModel());
+	IndexTreeGenerator indexTreeGenerator(getSolver().getModel());
 	IndexTree allIndices = indexTreeGenerator.generateAllIndices(patterns);
 	IndexTree memoryLayout
 		= indexTreeGenerator.generateMemoryLayout(patterns);
@@ -373,8 +355,7 @@ Property::LDOS BlockDiagonalizer::calculateLDOS(
 		<< " to set a real energy window."
 	);
 
-	const Solver::BlockDiagonalizer &solver = getSolver();
-	IndexTreeGenerator indexTreeGenerator(solver.getModel());
+	IndexTreeGenerator indexTreeGenerator(getSolver().getModel());
 	IndexTree allIndices = indexTreeGenerator.generateAllIndices(patterns);
 	IndexTree memoryLayout
 		= indexTreeGenerator.generateMemoryLayout(patterns);
@@ -414,8 +395,7 @@ Property::SpinPolarizedLDOS BlockDiagonalizer::calculateSpinPolarizedLDOS(
 		<< " to set a real energy window."
 	);
 
-	const Solver::BlockDiagonalizer &solver = getSolver();
-	IndexTreeGenerator indexTreeGenerator(solver.getModel());
+	IndexTreeGenerator indexTreeGenerator(getSolver().getModel());
 	IndexTree allIndices = indexTreeGenerator.generateAllIndices(patterns);
 	IndexTree memoryLayout
 		= indexTreeGenerator.generateMemoryLayout(patterns);
@@ -438,36 +418,13 @@ Property::SpinPolarizedLDOS BlockDiagonalizer::calculateSpinPolarizedLDOS(
 }
 
 double BlockDiagonalizer::calculateEntropy(){
-	const Solver::BlockDiagonalizer &solver = getSolver();
-	Statistics statistics = solver.getModel().getStatistics();
-
 	double entropy = 0.;
-	for(int n = 0; n < solver.getModel().getBasisSize(); n++){
-		double p;
-
-		switch(statistics){
-		case Statistics::FermiDirac:
-			p = Functions::fermiDiracDistribution(
-				getEigenValue(n),
-				solver.getModel().getChemicalPotential(),
-				solver.getModel().getTemperature()
-			);
-			break;
-		case Statistics::BoseEinstein:
-			p = Functions::boseEinsteinDistribution(
-				getEigenValue(n),
-				solver.getModel().getChemicalPotential(),
-				solver.getModel().getTemperature()
-			);
-			break;
-		default:
-			TBTKExit(
-				"PropertyExtractor::BlockDiagonalizer::calculateEntropy()",
-				"Unknow statistsics.",
-				"This should never happen, contact the developer."
-			);
-		}
-
+	const Model &model = getSolver().getModel();
+	for(int n = 0; n < model.getBasisSize(); n++){
+		double p = getThermodynamicEquilibriumOccupation(
+			getEigenValue(n),
+			model
+		);
 		entropy -= p*log(p);
 	}
 
@@ -483,14 +440,14 @@ void BlockDiagonalizer::calculateWaveFunctionsCallback(
 	int offset,
 	Information &information
 ){
-	BlockDiagonalizer *pe = (BlockDiagonalizer*)cb_this;
+	BlockDiagonalizer *propertyExtractor = (BlockDiagonalizer*)cb_this;
 	Property::WaveFunctions &waveFunctions
 		= (Property::WaveFunctions&)property;
 	vector<complex<double>> &data = waveFunctions.getDataRW();
 
 	const vector<unsigned int> states = waveFunctions.getStates();
 	for(unsigned int n = 0; n < states.size(); n++)
-		data[offset + n] += pe->getAmplitude(states.at(n), index);
+		data[offset + n] += propertyExtractor->getAmplitude(states.at(n), index);
 }
 
 void BlockDiagonalizer::calculateGreensFunctionCallback(
@@ -613,26 +570,13 @@ void BlockDiagonalizer::calculateDensityCallback(
 	Property::Density &density = (Property::Density&)property;
 	vector<double> &data = density.getDataRW();
 
-	Statistics statistics = solver.getModel().getStatistics();
 	int firstStateInBlock = solver.getFirstStateInBlock(index);
 	int lastStateInBlock = solver.getLastStateInBlock(index);
 	for(int n = firstStateInBlock; n <= lastStateInBlock; n++){
-		double weight;
-		if(statistics == Statistics::FermiDirac){
-			weight = Functions::fermiDiracDistribution(
-				solver.getEigenValue(n),
-				solver.getModel().getChemicalPotential(),
-				solver.getModel().getTemperature()
-			);
-		}
-		else{
-			weight = Functions::boseEinsteinDistribution(
-				solver.getEigenValue(n),
-				solver.getModel().getChemicalPotential(),
-				solver.getModel().getTemperature()
-			);
-		}
-
+		double weight = getThermodynamicEquilibriumOccupation(
+			solver.getEigenValue(n),
+			solver.getModel()
+		);
 		complex<double> u = solver.getAmplitude(n, index);
 
 		data[offset] += pow(abs(u), 2)*weight;
@@ -652,8 +596,6 @@ void BlockDiagonalizer::calculateMagnetizationCallback(
 		= (Property::Magnetization&)property;
 	vector<SpinMatrix> &data = magnetization.getDataRW();
 
-	Statistics statistics = solver.getModel().getStatistics();
-
 	int spinIndex = information.getSpinIndex();
 	Index index_u(index);
 	Index index_d(index);
@@ -662,21 +604,10 @@ void BlockDiagonalizer::calculateMagnetizationCallback(
 	int firstStateInBlock = solver.getFirstStateInBlock(index);
 	int lastStateInBlock = solver.getLastStateInBlock(index);
 	for(int n = firstStateInBlock; n <= lastStateInBlock; n++){
-		double weight;
-		if(statistics == Statistics::FermiDirac){
-			weight = Functions::fermiDiracDistribution(
-				solver.getEigenValue(n),
-				solver.getModel().getChemicalPotential(),
-				solver.getModel().getTemperature()
-			);
-		}
-		else{
-			weight = Functions::boseEinsteinDistribution(
-				solver.getEigenValue(n),
-				solver.getModel().getChemicalPotential(),
-				solver.getModel().getTemperature()
-			);
-		}
+		double weight = getThermodynamicEquilibriumOccupation(
+			solver.getEigenValue(n),
+			solver.getModel()
+		);
 
 		complex<double> u_u = solver.getAmplitude(n, index_u);
 		complex<double> u_d = solver.getAmplitude(n, index_d);

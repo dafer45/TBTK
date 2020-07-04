@@ -177,8 +177,7 @@ void Greens::calculateDensityCallback(
 	const Property::GreensFunction &greensFunction
 		= solver.getGreensFunction();
 
-	Statistics statistics = solver.getModel().getStatistics();
-
+	const Model &model = solver.getModel();
 	switch(greensFunction.getType()){
 	case Property::GreensFunction::Type::Retarded:
 	{
@@ -190,23 +189,10 @@ void Greens::calculateDensityCallback(
 		for(int e = 0; e < energyResolution; e++){
 			double E = lowerBound + e*dE;
 
-			double weight;
-			if(statistics == Statistics::FermiDirac){
-				weight = Functions::fermiDiracDistribution(
-					E,
-					solver.getModel(
-					).getChemicalPotential(),
-					solver.getModel().getTemperature()
-				);
-			}
-			else{
-				weight = Functions::boseEinsteinDistribution(
-					E,
-					solver.getModel(
-					).getChemicalPotential(),
-					solver.getModel().getTemperature()
-				);
-			}
+			double weight = getThermodynamicEquilibriumOccupation(
+				E,
+				model
+			);
 
 			data[offset] += -weight*imag(
 				greensFunction({index, index}, e)
@@ -226,23 +212,10 @@ void Greens::calculateDensityCallback(
 		for(int e = 0; e < energyResolution; e++){
 			double E = lowerBound + e*dE;
 
-			double weight;
-			if(statistics == Statistics::FermiDirac){
-				weight = Functions::fermiDiracDistribution(
-					E,
-					solver.getModel(
-					).getChemicalPotential(),
-					solver.getModel().getTemperature()
-				);
-			}
-			else{
-				weight = Functions::boseEinsteinDistribution(
-					E,
-					solver.getModel(
-					).getChemicalPotential(),
-					solver.getModel().getTemperature()
-				);
-			}
+			double weight = getThermodynamicEquilibriumOccupation(
+				E,
+				model
+			);
 
 			data[offset] += weight*imag(
 				greensFunction({index, index}, e)

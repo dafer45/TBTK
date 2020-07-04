@@ -215,34 +215,17 @@ complex<double> Diagonalizer::calculateExpectationValue(
 	Index to,
 	Index from
 ){
-	const complex<double> i(0, 1);
-
 	complex<double> expectationValue = 0.;
-
 	const Model &model = getSolver().getModel();
-	Statistics statistics = model.getStatistics();
-
 	for(int n = 0; n < model.getBasisSize(); n++){
-		double weight;
-		if(statistics == Statistics::FermiDirac){
-			weight = Functions::fermiDiracDistribution(
-				getEigenValue(n),
-				model.getChemicalPotential(),
-				model.getTemperature()
-			);
-		}
-		else{
-			weight = Functions::boseEinsteinDistribution(
-				getEigenValue(n),
-				model.getChemicalPotential(),
-				model.getTemperature()
-			);
-		}
+		double weight = getThermodynamicEquilibriumOccupation(
+			getEigenValue(n),
+			model
+		);
+		complex<double> amplitudeTo = getAmplitude(n, to);
+		complex<double> amplitudeFrom = getAmplitude(n, from);
 
-		complex<double> u_to = getAmplitude(n, to);
-		complex<double> u_from = getAmplitude(n, from);
-
-		expectationValue += weight*conj(u_to)*u_from;
+		expectationValue += weight*conj(amplitudeTo)*amplitudeFrom;
 	}
 
 	return expectationValue;
@@ -271,9 +254,7 @@ Property::Density Diagonalizer::calculateDensity(
 	return density;
 }
 
-Property::Density Diagonalizer::calculateDensity(
-	vector<Index> patterns
-){
+Property::Density Diagonalizer::calculateDensity(vector<Index> patterns){
 	PatternValidator patternValidator;
 	patternValidator.setNumRequiredComponentIndices(1);
 	patternValidator.setAllowedSubindexFlags({IDX_ALL, IDX_SUM_ALL});
@@ -282,8 +263,7 @@ Property::Density Diagonalizer::calculateDensity(
 	);
 	patternValidator.validate(patterns);
 
-	const Solver::Diagonalizer &solver = getSolver();
-	IndexTreeGenerator indexTreeGenerator(solver.getModel());
+	IndexTreeGenerator indexTreeGenerator(getSolver().getModel());
 	IndexTree allIndices = indexTreeGenerator.generateAllIndices(patterns);
 	IndexTree memoryLayout
 		= indexTreeGenerator.generateMemoryLayout(patterns);
@@ -504,36 +484,13 @@ Property::SpinPolarizedLDOS Diagonalizer::calculateSpinPolarizedLDOS(
 }
 
 double Diagonalizer::calculateEntropy(){
-	const Model &model = getSolver().getModel();
-	Statistics statistics = model.getStatistics();
-
 	double entropy = 0.;
+	const Model &model = getSolver().getModel();
 	for(int n = 0; n < model.getBasisSize(); n++){
-		double p;
-
-		switch(statistics){
-		case Statistics::FermiDirac:
-			p = Functions::fermiDiracDistribution(
-				getEigenValue(n),
-				model.getChemicalPotential(),
-				model.getTemperature()
-			);
-			break;
-		case Statistics::BoseEinstein:
-			p = Functions::boseEinsteinDistribution(
-				getEigenValue(n),
-				model.getChemicalPotential(),
-				model.getTemperature()
-			);
-			break;
-		default:
-			TBTKExit(
-				"PropertyExtractor::Diagonalizer::calculateEntropy()",
-				"Unknown statistics.",
-				"This should never happen, contact the developer."
-			);
-		}
-
+		double p = getThermodynamicEquilibriumOccupation(
+			getEigenValue(n),
+			model
+		);
 		entropy -= p*log(p);
 	}
 
@@ -667,24 +624,11 @@ void Diagonalizer::calculateDensityCallback(
 	const Model &model = solver.getModel();
 
 	const CArray<double> &eigenValues = solver.getEigenValues();
-	Statistics statistics = model.getStatistics();
 	for(int n = 0; n < model.getBasisSize(); n++){
-		double weight;
-		if(statistics == Statistics::FermiDirac){
-			weight = Functions::fermiDiracDistribution(
-				eigenValues[n],
-				model.getChemicalPotential(),
-				model.getTemperature()
-			);
-		}
-		else{
-			weight = Functions::boseEinsteinDistribution(
-				eigenValues[n],
-				model.getChemicalPotential(),
-				model.getTemperature()
-			);
-		}
-
+		double weight = getThermodynamicEquilibriumOccupation(
+			eigenValues[n],
+			model
+		);
 		complex<double> u = solver.getAmplitude(n, index);
 
 		data[offset] += pow(abs(u), 2)*weight;
@@ -706,7 +650,6 @@ void Diagonalizer::calculateMAGCallback(
 	const Model &model = solver.getModel();
 
 	const CArray<double> &eigenValues = solver.getEigenValues();
-	Statistics statistics = model.getStatistics();
 
 	int spinIndex = information.getSpinIndex();
 	Index index_u(index);
@@ -714,21 +657,10 @@ void Diagonalizer::calculateMAGCallback(
 	index_u.at(spinIndex) = 0;
 	index_d.at(spinIndex) = 1;
 	for(int n = 0; n < model.getBasisSize(); n++){
-		double weight;
-		if(statistics == Statistics::FermiDirac){
-			weight = Functions::fermiDiracDistribution(
-				eigenValues[n],
-				model.getChemicalPotential(),
-				model.getTemperature()
-			);
-		}
-		else{
-			weight = Functions::boseEinsteinDistribution(
-				eigenValues[n],
-				model.getChemicalPotential(),
-				model.getTemperature()
-			);
-		}
+		double weight = getThermodynamicEquilibriumOccupation(
+			eigenValues[n],
+			model
+		);
 
 		complex<double> u_u = solver.getAmplitude(n, index_u);
 		complex<double> u_d = solver.getAmplitude(n, index_d);
