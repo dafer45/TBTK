@@ -133,10 +133,8 @@ Property::GreensFunction Diagonalizer::calculateGreensFunction(
 		greensFunction = Property::GreensFunction(
 			memoryLayout,
 			type,
-			getLowerBound(),
-			getUpperBound(),
-			getEnergyResolution()
-		);
+			getEnergyWindow()
+	);
 
 		Information information;
 		calculate(
@@ -207,15 +205,13 @@ Property::GreensFunction Diagonalizer::calculateGreensFunction(
 Property::DOS Diagonalizer::calculateDOS(){
 	const Solver::Diagonalizer &solver = getSolver();
 	const CArray<double> &eigenValues = solver.getEigenValues();
-	double lowerBound = getLowerBound();
-	double upperBound = getUpperBound();
-	int energyResolution = getEnergyResolution();
 
-	Property::DOS dos(lowerBound, upperBound, energyResolution);
+	const Range &energyWindow = getEnergyWindow();
+	Property::DOS dos(energyWindow);
 	double dE = dos.getDeltaE();
 	for(unsigned int n = 0; n < eigenValues.getSize(); n++){
-		int e = round((eigenValues[n] - lowerBound)/dE);
-		if(e >= 0 && e < energyResolution)
+		int e = round((eigenValues[n] - energyWindow[0])/dE);
+		if(e >= 0 && e < (int)energyWindow.getResolution())
 			dos(e) += 1./dE;
 	}
 
@@ -389,19 +385,10 @@ Property::LDOS Diagonalizer::calculateLDOS(
 	Index pattern,
 	Index ranges
 ){
-	double lowerBound = getLowerBound();
-	double upperBound = getUpperBound();
-	int energyResolution = getEnergyResolution();
-
 	ensureCompliantRanges(pattern, ranges);
 
 	vector<int> loopRanges = getLoopRanges(pattern, ranges);
-	Property::LDOS ldos(
-		loopRanges,
-		lowerBound,
-		upperBound,
-		energyResolution
-	);
+	Property::LDOS ldos(loopRanges, getEnergyWindow());
 
 	Information information;
 	calculate(
@@ -410,7 +397,7 @@ Property::LDOS Diagonalizer::calculateLDOS(
 		pattern,
 		ranges,
 		0,
-		energyResolution,
+		getEnergyWindow().getResolution(),
 		information
 	);
 
@@ -428,22 +415,13 @@ Property::LDOS Diagonalizer::calculateLDOS(
 	);
 	patternValidator.validate(patterns);
 
-	double lowerBound = getLowerBound();
-	double upperBound = getUpperBound();
-	int energyResolution = getEnergyResolution();
-
 	const Solver::Diagonalizer &solver = getSolver();
 	IndexTreeGenerator indexTreeGenerator(solver.getModel());
 	IndexTree allIndices = indexTreeGenerator.generateAllIndices(patterns);
 	IndexTree memoryLayout
 		= indexTreeGenerator.generateMemoryLayout(patterns);
 
-	Property::LDOS ldos(
-		memoryLayout,
-		lowerBound,
-		upperBound,
-		energyResolution
-	);
+	Property::LDOS ldos(memoryLayout, getEnergyWindow());
 
 	Information information;
 	calculate(
@@ -461,10 +439,6 @@ Property::SpinPolarizedLDOS Diagonalizer::calculateSpinPolarizedLDOS(
 	Index pattern,
 	Index ranges
 ){
-	double lowerBound = getLowerBound();
-	double upperBound = getUpperBound();
-	int energyResolution = getEnergyResolution();
-
 	Information information;
 	for(unsigned int n = 0; n < pattern.getSize(); n++){
 		if(pattern.at(n).isSpinIndex()){
@@ -487,9 +461,7 @@ Property::SpinPolarizedLDOS Diagonalizer::calculateSpinPolarizedLDOS(
 	vector<int> loopRanges = getLoopRanges(pattern, ranges);
 	Property::SpinPolarizedLDOS spinPolarizedLDOS(
 		loopRanges,
-		lowerBound,
-		upperBound,
-		energyResolution
+		getEnergyWindow()
 	);
 
 	calculate(
@@ -498,7 +470,7 @@ Property::SpinPolarizedLDOS Diagonalizer::calculateSpinPolarizedLDOS(
 		pattern,
 		ranges,
 		0,
-		energyResolution,
+		getEnergyWindow().getResolution(),
 		information
 	);
 
@@ -518,10 +490,6 @@ Property::SpinPolarizedLDOS Diagonalizer::calculateSpinPolarizedLDOS(
 	);
 	patternValidator.validate(patterns);
 
-	double lowerBound = getLowerBound();
-	double upperBound = getUpperBound();
-	int energyResolution = getEnergyResolution();
-
 	const Solver::Diagonalizer &solver = getSolver();
 	IndexTreeGenerator indexTreeGenerator(solver.getModel());
 	IndexTree allIndices = indexTreeGenerator.generateAllIndices(patterns);
@@ -530,9 +498,7 @@ Property::SpinPolarizedLDOS Diagonalizer::calculateSpinPolarizedLDOS(
 
 	Property::SpinPolarizedLDOS spinPolarizedLDOS(
 		memoryLayout,
-		lowerBound,
-		upperBound,
-		energyResolution
+		getEnergyWindow()
 	);
 
 	Information information;
@@ -623,9 +589,8 @@ void Diagonalizer::calculateGreensFunctionCallback(
 	case Property::GreensFunction::Type::Advanced:
 	case Property::GreensFunction::Type::Retarded:
 	{
-		double lowerBound = propertyExtractor->getLowerBound();
-		int energyResolution = propertyExtractor->getEnergyResolution();
-		double dE = greensFunction.getDeltaE();
+		const Range &energyWindow
+			= propertyExtractor->getEnergyWindow();
 		double delta;
 		switch(greensFunction.getType()){
 			case Property::GreensFunction::Type::Advanced:
@@ -642,8 +607,8 @@ void Diagonalizer::calculateGreensFunctionCallback(
 				);
 		}
 
-		for(int e = 0; e < energyResolution; e++){
-			double E = lowerBound + e*dE;
+		for(unsigned int e = 0; e < energyWindow.getResolution(); e++){
+			double E = energyWindow[e];;
 
 			for(
 				int n = 0;
@@ -805,19 +770,16 @@ void Diagonalizer::calculateLDOSCallback(
 	vector<double> &data = ldos.getDataRW();
 	const Solver::Diagonalizer &solver = propertyExtractor->getSolver();
 
-	double lowerBound = propertyExtractor->getLowerBound();
-	double upperBound = propertyExtractor->getUpperBound();
-	int energyResolution = propertyExtractor->getEnergyResolution();
-
 	const CArray<double> &eigenValues = solver.getEigenValues();
 
+	const Range &energyWindow = propertyExtractor->getEnergyWindow();
 	double dE = ldos.getDeltaE();
 	for(unsigned int n = 0; n < eigenValues.getSize(); n++){
-		if(eigenValues[n] > lowerBound && eigenValues[n] < upperBound){
+		if(eigenValues[n] > energyWindow[0] && eigenValues[n] < energyWindow.getLast()){
 			complex<double> u = solver.getAmplitude(n, index);
 
-			int e = round((eigenValues[n] - lowerBound)/dE);
-			if(e >= 0 && e < energyResolution)
+			int e = round((eigenValues[n] - energyWindow[0])/dE);
+			if(e >= 0 && e < (int)energyWindow.getResolution())
 				data[offset + e] += real(conj(u)*u)/dE;
 		}
 	}
@@ -837,10 +799,6 @@ void Diagonalizer::calculateSP_LDOSCallback(
 	const Solver::Diagonalizer &solver = propertyExtractor->getSolver();
 	const Model &model = solver.getModel();
 
-	double lowerBound = propertyExtractor->getLowerBound();
-	double upperBound = propertyExtractor->getUpperBound();
-	int energyResolution = propertyExtractor->getEnergyResolution();
-
 	const CArray<double> &eigenValues = solver.getEigenValues();
 
 	int spinIndex = information.getSpinIndex();
@@ -849,15 +807,21 @@ void Diagonalizer::calculateSP_LDOSCallback(
 	Index index_d(index);
 	index_u.at(spinIndex) = 0;
 	index_d.at(spinIndex) = 1;
+	const Range &energyWindow = propertyExtractor->getEnergyWindow();
 	double dE = spinPolarizedLDOS.getDeltaE();
 	for(int n = 0; n < model.getBasisSize(); n++){
-		if(eigenValues[n] > lowerBound && eigenValues[n] < upperBound){
+		if(
+			eigenValues[n] > energyWindow[0]
+			&& eigenValues[n] < energyWindow.getLast()
+		){
 			complex<double> u_u = solver.getAmplitude(n, index_u);
 			complex<double> u_d = solver.getAmplitude(n, index_d);
 
-			int e = (int)((eigenValues[n] - lowerBound)/dE);
-			if(e >= energyResolution)
-				e = energyResolution - 1;
+			unsigned int e = (unsigned int)(
+				(eigenValues[n] - energyWindow[0])/dE
+			);
+			if(e >= energyWindow.getResolution())
+				e = energyWindow.getResolution() - 1;
 			data[offset + e].at(0, 0) += conj(u_u)*u_u/dE;
 			data[offset + e].at(0, 1) += conj(u_u)*u_d/dE;
 			data[offset + e].at(1, 0) += conj(u_d)*u_u/dE;

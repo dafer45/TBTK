@@ -6,6 +6,8 @@
 namespace TBTK{
 namespace Property{
 
+const double EPSILON_100 = 100*std::numeric_limits<double>::epsilon();
+
 class SusceptibilityTest : public ::testing::Test{
 protected:
 	const double LOWER_BOUND = -10;
@@ -48,9 +50,7 @@ protected:
 
 		susceptibility[0] = Susceptibility(
 			indexTree,
-			LOWER_BOUND,
-			UPPER_BOUND,
-			RESOLUTION,
+			Range(LOWER_BOUND, UPPER_BOUND, RESOLUTION),
 			data
 		);
 		susceptibility[1] = Susceptibility(
@@ -67,13 +67,11 @@ protected:
 TEST_F(SusceptibilityTest, construction1){
 	Susceptibility susceptibility0(
 		indexTree,
-		LOWER_BOUND,
-		UPPER_BOUND,
-		RESOLUTION
+		Range(LOWER_BOUND, UPPER_BOUND, RESOLUTION)
 	);
 
-	EXPECT_EQ(susceptibility0.getLowerBound(), LOWER_BOUND);
-	EXPECT_EQ(susceptibility0.getUpperBound(), UPPER_BOUND);
+	EXPECT_NEAR(susceptibility0.getLowerBound(), LOWER_BOUND, EPSILON_100);
+	EXPECT_NEAR(susceptibility0.getUpperBound(), UPPER_BOUND, EPSILON_100);
 	EXPECT_EQ(susceptibility0.getResolution(), RESOLUTION);
 	EXPECT_EQ(
 		susceptibility0.getEnergyType(),
@@ -115,8 +113,8 @@ TEST_F(SusceptibilityTest, serialization1){
 		Serializable::Mode::JSON
 	);
 
-	EXPECT_EQ(copy.getLowerBound(), susceptibility[0].getLowerBound());
-	EXPECT_EQ(copy.getUpperBound(), susceptibility[0].getUpperBound());
+	EXPECT_NEAR(copy.getLowerBound(), susceptibility[0].getLowerBound(), EPSILON_100);
+	EXPECT_NEAR(copy.getUpperBound(), susceptibility[0].getUpperBound(), EPSILON_100);
 	EXPECT_EQ(copy.getResolution(), susceptibility[0].getResolution());
 	EXPECT_EQ(copy.getEnergyType(), susceptibility[0].getEnergyType());
 

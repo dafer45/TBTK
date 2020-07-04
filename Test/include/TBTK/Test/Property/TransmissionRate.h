@@ -5,10 +5,12 @@
 namespace TBTK{
 namespace Property{
 
+const double EPSILON_100 = 100*std::numeric_limits<double>::epsilon();
+
 TEST(TransmissionRate, Constructor0){
-	TransmissionRate transmissionRate(-10, 10, 1000);
-	EXPECT_EQ(transmissionRate.getLowerBound(), -10);
-	EXPECT_EQ(transmissionRate.getUpperBound(), 10);
+	TransmissionRate transmissionRate(Range(-10, 10, 1000));
+	EXPECT_NEAR(transmissionRate.getLowerBound(), -10, EPSILON_100);
+	EXPECT_NEAR(transmissionRate.getUpperBound(), 10, EPSILON_100);
 	ASSERT_EQ(transmissionRate.getResolution(), 1000);
 	const std::vector<double> &data = transmissionRate.getData();
 	for(unsigned int n = 0; n < data.size(); n++)
@@ -19,9 +21,9 @@ TEST(TransmissionRate, Constructor1){
 	double dataInput[1000];
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput[n] = n;
-	TransmissionRate transmissionRate(-10, 10, 1000, dataInput);
-	EXPECT_EQ(transmissionRate.getLowerBound(), -10);
-	EXPECT_EQ(transmissionRate.getUpperBound(), 10);
+	TransmissionRate transmissionRate(Range(-10, 10, 1000), dataInput);
+	EXPECT_NEAR(transmissionRate.getLowerBound(), -10, EPSILON_100);
+	EXPECT_NEAR(transmissionRate.getUpperBound(), 10, EPSILON_100);
 	ASSERT_EQ(transmissionRate.getResolution(), 1000);
 	const std::vector<double> &data = transmissionRate.getData();
 	for(unsigned int n = 0; n < data.size(); n++)
@@ -32,13 +34,13 @@ TEST(TransmissionRate, SerializeToJSON){
 	double dataInput[1000];
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput[n] = n;
-	TransmissionRate transmissionRate0(-10, 10, 1000, dataInput);
+	TransmissionRate transmissionRate0(Range(-10, 10, 1000), dataInput);
 	TransmissionRate transmissionRate1(
 		transmissionRate0.serialize(Serializable::Mode::JSON),
 		Serializable::Mode::JSON
 	);
-	EXPECT_EQ(transmissionRate1.getLowerBound(), -10);
-	EXPECT_EQ(transmissionRate1.getUpperBound(), 10);
+	EXPECT_NEAR(transmissionRate1.getLowerBound(), -10, EPSILON_100);
+	EXPECT_NEAR(transmissionRate1.getUpperBound(), 10, EPSILON_100);
 	ASSERT_EQ(transmissionRate1.getResolution(), 1000);
 	const std::vector<double> &data = transmissionRate1.getData();
 	for(unsigned int n = 0; n < data.size(); n++)
@@ -49,12 +51,12 @@ TEST(TransmissionRate, operatorAdditionAssignment){
 	double dataInput0[1000];
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput0[n] = n;
-	TransmissionRate transmissionRate0(-10, 10, 1000, dataInput0);
+	TransmissionRate transmissionRate0(Range(-10, 10, 1000), dataInput0);
 
 	double dataInput1[1000];
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput1[n] = 2*n;
-	TransmissionRate transmissionRate1(-10, 10, 1000, dataInput1);
+	TransmissionRate transmissionRate1(Range(-10, 10, 1000), dataInput1);
 
 	transmissionRate0 += transmissionRate1;
 	const std::vector<double> &data0 = transmissionRate0.getData();
@@ -66,12 +68,12 @@ TEST(TransmissionRate, operatorAddition){
 	double dataInput0[1000];
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput0[n] = n;
-	TransmissionRate transmissionRate0(-10, 10, 1000, dataInput0);
+	TransmissionRate transmissionRate0(Range(-10, 10, 1000), dataInput0);
 
 	double dataInput1[1000];
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput1[n] = 2*n;
-	TransmissionRate transmissionRate1(-10, 10, 1000, dataInput1);
+	TransmissionRate transmissionRate1(Range(-10, 10, 1000), dataInput1);
 
 	TransmissionRate transmissionRate2
 		= transmissionRate0 + transmissionRate1;
@@ -84,12 +86,12 @@ TEST(TransmissionRate, operatorSubtractionAssignment){
 	double dataInput0[1000];
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput0[n] = n;
-	TransmissionRate transmissionRate0(-10, 10, 1000, dataInput0);
+	TransmissionRate transmissionRate0(Range(-10, 10, 1000), dataInput0);
 
 	double dataInput1[1000];
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput1[n] = 2*n;
-	TransmissionRate transmissionRate1(-10, 10, 1000, dataInput1);
+	TransmissionRate transmissionRate1(Range(-10, 10, 1000), dataInput1);
 
 	transmissionRate0 -= transmissionRate1;
 	const std::vector<double> &data0 = transmissionRate0.getData();
@@ -101,12 +103,12 @@ TEST(TransmissionRate, operatorSubtraction){
 	double dataInput0[1000];
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput0[n] = n;
-	TransmissionRate transmissionRate0(-10, 10, 1000, dataInput0);
+	TransmissionRate transmissionRate0(Range(-10, 10, 1000), dataInput0);
 
 	double dataInput1[1000];
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput1[n] = 2*n;
-	TransmissionRate transmissionRate1(-10, 10, 1000, dataInput1);
+	TransmissionRate transmissionRate1(Range(-10, 10, 1000), dataInput1);
 
 	TransmissionRate transmissionRate2
 		= transmissionRate0 - transmissionRate1;
@@ -119,12 +121,12 @@ TEST(TransmissionRate, operatorMultiplicationAssignment0){
 	double dataInput0[1000];
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput0[n] = n;
-	TransmissionRate transmissionRate0(-10, 10, 1000, dataInput0);
+	TransmissionRate transmissionRate0(Range(-10, 10, 1000), dataInput0);
 
 	double dataInput1[1000];
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput1[n] = 2*n;
-	TransmissionRate transmissionRate1(-10, 10, 1000, dataInput1);
+	TransmissionRate transmissionRate1(Range(-10, 10, 1000), dataInput1);
 
 	transmissionRate0 *= transmissionRate1;
 	const std::vector<double> &data0 = transmissionRate0.getData();
@@ -134,10 +136,10 @@ TEST(TransmissionRate, operatorMultiplicationAssignment0){
 	double dataInput2[999];
 	for(unsigned int n = 0; n < 999; n++)
 		dataInput2[n] = 2*n;
-	TransmissionRate transmissionRate2(-10, 10, 999, dataInput2);
+	TransmissionRate transmissionRate2(Range(-10, 10, 999), dataInput2);
 
-	TransmissionRate transmissionRate3(-11, 10, 999, dataInput0);
-	TransmissionRate transmissionRate4(-10, 11, 999, dataInput0);
+	TransmissionRate transmissionRate3(Range(-11, 10, 999), dataInput0);
+	TransmissionRate transmissionRate4(Range(-10, 11, 999), dataInput0);
 
 	EXPECT_EXIT(
 		{
@@ -169,12 +171,12 @@ TEST(TransmissionRate, operatorMultiplication0){
 	double dataInput0[1000];
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput0[n] = n;
-	TransmissionRate transmissionRate0(-10, 10, 1000, dataInput0);
+	TransmissionRate transmissionRate0(Range(-10, 10, 1000), dataInput0);
 
 	double dataInput1[1000];
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput1[n] = 2*n;
-	TransmissionRate transmissionRate1(-10, 10, 1000, dataInput1);
+	TransmissionRate transmissionRate1(Range(-10, 10, 1000), dataInput1);
 
 	TransmissionRate transmissionRate2
 		= transmissionRate0*transmissionRate1;
@@ -185,10 +187,10 @@ TEST(TransmissionRate, operatorMultiplication0){
 	double dataInput3[999];
 	for(unsigned int n = 0; n < 999; n++)
 		dataInput3[n] = 2*n;
-	TransmissionRate transmissionRate3(-10, 10, 999, dataInput3);
+	TransmissionRate transmissionRate3(Range(-10, 10, 999), dataInput3);
 
-	TransmissionRate transmissionRate4(-11, 10, 999, dataInput0);
-	TransmissionRate transmissionRate5(-10, 11, 999, dataInput0);
+	TransmissionRate transmissionRate4(Range(-11, 10, 999), dataInput0);
+	TransmissionRate transmissionRate5(Range(-10, 11, 999), dataInput0);
 
 	EXPECT_EXIT(
 		{
@@ -223,7 +225,7 @@ TEST(TransmissionRate, operatorMultiplicationAssignment1){
 	double dataInput[1000];
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput[n] = n;
-	TransmissionRate transmissionRate(-10, 10, 1000, dataInput);
+	TransmissionRate transmissionRate(Range(-10, 10, 1000), dataInput);
 
 	transmissionRate *= 2;
 	const std::vector<double> &data = transmissionRate.getData();
@@ -235,7 +237,7 @@ TEST(TransmissionRate, operatorMultiplication1){
 	double dataInput[1000];
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput[n] = n;
-	TransmissionRate transmissionRate0(-10, 10, 1000, dataInput);
+	TransmissionRate transmissionRate0(Range(-10, 10, 1000), dataInput);
 
 	TransmissionRate transmissionRate1 = transmissionRate0*2;
 	TransmissionRate transmissionRate2 = 2*transmissionRate0;
@@ -251,12 +253,12 @@ TEST(TransmissionRate, operatorDivisionAssignment0){
 	double dataInput0[1000];
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput0[n] = n;
-	TransmissionRate transmissionRate0(-10, 10, 1000, dataInput0);
+	TransmissionRate transmissionRate0(Range(-10, 10, 1000), dataInput0);
 
 	double dataInput1[1000];
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput1[n] = 1 + 2*n;
-	TransmissionRate transmissionRate1(-10, 10, 1000, dataInput1);
+	TransmissionRate transmissionRate1(Range(-10, 10, 1000), dataInput1);
 
 	transmissionRate0 /= transmissionRate1;
 	const std::vector<double> &data0 = transmissionRate0.getData();
@@ -266,10 +268,10 @@ TEST(TransmissionRate, operatorDivisionAssignment0){
 	double dataInput2[999];
 	for(unsigned int n = 0; n < 999; n++)
 		dataInput2[n] = 1 + 2*n;
-	TransmissionRate transmissionRate2(-10, 10, 999, dataInput2);
+	TransmissionRate transmissionRate2(Range(-10, 10, 999), dataInput2);
 
-	TransmissionRate transmissionRate3(-11, 10, 999, dataInput0);
-	TransmissionRate transmissionRate4(-10, 11, 999, dataInput0);
+	TransmissionRate transmissionRate3(Range(-11, 10, 999), dataInput0);
+	TransmissionRate transmissionRate4(Range(-10, 11, 999), dataInput0);
 
 	EXPECT_EXIT(
 		{
@@ -301,12 +303,12 @@ TEST(TransmissionRate, operatorDivision0){
 	double dataInput0[1000];
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput0[n] = n;
-	TransmissionRate transmissionRate0(-10, 10, 1000, dataInput0);
+	TransmissionRate transmissionRate0(Range(-10, 10, 1000), dataInput0);
 
 	double dataInput1[1000];
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput1[n] = 1 + 2*n;
-	TransmissionRate transmissionRate1(-10, 10, 1000, dataInput1);
+	TransmissionRate transmissionRate1(Range(-10, 10, 1000), dataInput1);
 
 	TransmissionRate transmissionRate2
 		= transmissionRate0/transmissionRate1;
@@ -317,10 +319,10 @@ TEST(TransmissionRate, operatorDivision0){
 	double dataInput3[999];
 	for(unsigned int n = 0; n < 999; n++)
 		dataInput3[n] = 1 + 2*n;
-	TransmissionRate transmissionRate3(-10, 10, 999, dataInput3);
+	TransmissionRate transmissionRate3(Range(-10, 10, 999), dataInput3);
 
-	TransmissionRate transmissionRate4(-11, 10, 999, dataInput0);
-	TransmissionRate transmissionRate5(-10, 11, 999, dataInput0);
+	TransmissionRate transmissionRate4(Range(-11, 10, 999), dataInput0);
+	TransmissionRate transmissionRate5(Range(-10, 11, 999), dataInput0);
 
 	EXPECT_EXIT(
 		{
@@ -355,7 +357,7 @@ TEST(TransmissionRate, operatorDivisionAssignment1){
 	double dataInput[1000];
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput[n] = n;
-	TransmissionRate transmissionRate(-10, 10, 1000, dataInput);
+	TransmissionRate transmissionRate(Range(-10, 10, 1000), dataInput);
 
 	transmissionRate /= 2;
 	const std::vector<double> &data = transmissionRate.getData();
@@ -367,7 +369,7 @@ TEST(TransmissionRate, operatorDivision1){
 	double dataInput[1000];
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput[n] = n;
-	TransmissionRate transmissionRate0(-10, 10, 1000, dataInput);
+	TransmissionRate transmissionRate0(Range(-10, 10, 1000), dataInput);
 
 	TransmissionRate transmissionRate1 = transmissionRate0/2;
 	const std::vector<double> &data1 = transmissionRate1.getData();

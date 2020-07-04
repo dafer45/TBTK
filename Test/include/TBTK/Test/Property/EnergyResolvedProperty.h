@@ -6,6 +6,8 @@
 namespace TBTK{
 namespace Property{
 
+const double EPSILON_100 = 100*std::numeric_limits<double>::epsilon();
+
 //Makes protected members public for testing.
 template<typename DataType>
 class PublicEnergyResolvedProperty : public EnergyResolvedProperty<DataType>{
@@ -48,27 +50,15 @@ TEST(EnergyResolvedProperty, Constructor0){
 }
 
 TEST(EnergyResolvedProperty, Constructor1){
-	EnergyResolvedProperty<int> energyResolvedProperty(
-		-10,
-		10,
-		1000
-	);
+	EnergyResolvedProperty<int> energyResolvedProperty(Range(-10, 10, 1000));
+	EnergyResolvedProperty<int> copy(energyResolvedProperty);
 	EXPECT_EQ(
-		energyResolvedProperty.getEnergyType(),
+		copy.getEnergyType(),
 		EnergyResolvedProperty<int>::EnergyType::Real
 	);
-	EXPECT_EQ(
-		energyResolvedProperty.getLowerBound(),
-		-10
-	);
-	EXPECT_EQ(
-		energyResolvedProperty.getUpperBound(),
-		10
-	);
-	EXPECT_EQ(
-		energyResolvedProperty.getResolution(),
-		1000
-	);
+	EXPECT_EQ(copy.getLowerBound(), -10);
+	EXPECT_EQ(copy.getUpperBound(), 10);
+	EXPECT_EQ(copy.getResolution(), 1000);
 
 	for(
 		unsigned int n = 0;
@@ -80,13 +70,103 @@ TEST(EnergyResolvedProperty, Constructor1){
 }
 
 TEST(EnergyResolvedProperty, Constructor2){
+	IndexTree indexTree;
+	indexTree.add({0});
+	indexTree.add({1});
+	indexTree.add({2});
+	indexTree.generateLinearMap();
+
+	EnergyResolvedProperty<int> energyResolvedProperty(
+		EnergyResolvedProperty<int>::EnergyType::FermionicMatsubara,
+		indexTree,
+		-9,
+		9,
+		2
+	);
+	EnergyResolvedProperty<int> copy(energyResolvedProperty);
+	EXPECT_EQ(
+		copy.getEnergyType(),
+		EnergyResolvedProperty<int>::EnergyType::FermionicMatsubara
+	);
+	EXPECT_EQ(copy.getLowerMatsubaraEnergyIndex(), -9);
+	EXPECT_EQ(copy.getUpperMatsubaraEnergyIndex(), 9);
+	EXPECT_EQ(copy.getNumMatsubaraEnergies(), 10);
+	EXPECT_DOUBLE_EQ(copy.getFundamentalMatsubaraEnergy(), 2);
+	EXPECT_DOUBLE_EQ(copy.getLowerMatsubaraEnergy(), -9*2);
+	EXPECT_DOUBLE_EQ(copy.getUpperMatsubaraEnergy(), 9*2);
+
+	for(int n = 0; n < 3; n++)
+		for(unsigned int c = 0; c < 10; c++)
+			EXPECT_EQ(copy({n}, c), 0);
+}
+
+TEST(EnergyResolvedProperty, Constructor3){
+	IndexTree indexTree;
+	indexTree.add({0});
+	indexTree.add({1});
+	indexTree.add({2});
+	indexTree.generateLinearMap();
+
+	EnergyResolvedProperty<int> energyResolvedProperty(
+		EnergyResolvedProperty<int>::EnergyType::BosonicMatsubara,
+		indexTree,
+		-10,
+		10,
+		2
+	);
+	EnergyResolvedProperty<int> copy(energyResolvedProperty);
+	EXPECT_EQ(
+		copy.getEnergyType(),
+		EnergyResolvedProperty<int>::EnergyType::BosonicMatsubara
+	);
+	EXPECT_EQ(copy.getLowerMatsubaraEnergyIndex(), -10);
+	EXPECT_EQ(copy.getUpperMatsubaraEnergyIndex(), 10);
+	EXPECT_EQ(copy.getNumMatsubaraEnergies(), 11);
+	EXPECT_DOUBLE_EQ(copy.getFundamentalMatsubaraEnergy(), 2);
+	EXPECT_DOUBLE_EQ(copy.getLowerMatsubaraEnergy(), -10*2);
+	EXPECT_DOUBLE_EQ(copy.getUpperMatsubaraEnergy(), 10*2);
+
+	for(int n = 0; n < 3; n++)
+		for(unsigned int c = 0; c < 10; c++)
+			EXPECT_EQ(copy({n}, c), 0);
+}
+
+TEST(EnergyResolvedProperty, Constructor4){
+	EnergyResolvedProperty<int> energyResolvedProperty(
+		Range(-10, 10, 1000)
+	);
+	EXPECT_EQ(
+		energyResolvedProperty.getEnergyType(),
+		EnergyResolvedProperty<int>::EnergyType::Real
+	);
+	EXPECT_EQ(
+		energyResolvedProperty.getLowerBound(),
+		-10
+	);
+	EXPECT_EQ(
+		energyResolvedProperty.getUpperBound(),
+		10
+	);
+	EXPECT_EQ(
+		energyResolvedProperty.getResolution(),
+		1000
+	);
+
+	for(
+		unsigned int n = 0;
+		n < 1000;
+		n++
+	){
+		EXPECT_EQ(energyResolvedProperty(n), 0);
+	}
+}
+
+TEST(EnergyResolvedProperty, Constructor5){
 	int data[1000];
 	for(unsigned int n = 0; n < 1000; n++)
 		data[n] = n;
 	EnergyResolvedProperty<int> energyResolvedProperty(
-		-10,
-		10,
-		1000,
+		Range(-10, 10, 1000),
 		data
 	);
 	EXPECT_EQ(
@@ -115,12 +195,10 @@ TEST(EnergyResolvedProperty, Constructor2){
 	}
 }
 
-TEST(EnergyResolvedProperty, Constructor3){
+TEST(EnergyResolvedProperty, Constructor6){
 	EnergyResolvedProperty<int> energyResolvedProperty(
 		{2, 3, 4},
-		-10,
-		10,
-		1000
+		Range(-10, 10, 1000)
 	);
 	EXPECT_EQ(
 		energyResolvedProperty.getEnergyType(),
@@ -148,15 +226,13 @@ TEST(EnergyResolvedProperty, Constructor3){
 	}
 }
 
-TEST(EnergyResolvedProperty, Constructor4){
+TEST(EnergyResolvedProperty, Constructor7){
 	int data[2*3*4*1000];
 	for(unsigned int n = 0; n < 2*3*4*1000; n++)
 		data[n] = n;
 	EnergyResolvedProperty<int> energyResolvedProperty(
 		{2, 3, 4},
-		-10,
-		10,
-		1000,
+		Range(-10, 10, 1000),
 		data
 	);
 	EXPECT_EQ(
@@ -185,7 +261,7 @@ TEST(EnergyResolvedProperty, Constructor4){
 	}
 }
 
-TEST(EnergyResolvedProperty, Constructor5){
+TEST(EnergyResolvedProperty, Constructor8){
 	IndexTree indexTree;
 	indexTree.add({0});
 	indexTree.add({1});
@@ -193,9 +269,7 @@ TEST(EnergyResolvedProperty, Constructor5){
 	indexTree.generateLinearMap();
 	EnergyResolvedProperty<int> energyResolvedProperty(
 		indexTree,
-		-10,
-		10,
-		1000
+		Range(-10, 10, 1000)
 	);
 	EXPECT_EQ(
 		energyResolvedProperty.getEnergyType(),
@@ -225,7 +299,7 @@ TEST(EnergyResolvedProperty, Constructor5){
 	}
 }
 
-TEST(EnergyResolvedProperty, Constructor6){
+TEST(EnergyResolvedProperty, Constructor9){
 	IndexTree indexTree;
 	indexTree.add({0});
 	indexTree.add({1});
@@ -236,9 +310,7 @@ TEST(EnergyResolvedProperty, Constructor6){
 		data[n] = n;
 	EnergyResolvedProperty<int> energyResolvedProperty(
 		indexTree,
-		-10,
-		10,
-		1000,
+		Range(-10, 10, 1000),
 		data
 	);
 	EXPECT_EQ(
@@ -269,7 +341,7 @@ TEST(EnergyResolvedProperty, Constructor6){
 	}
 }
 
-TEST(EnergyResolvedProperty, Constructor7){
+TEST(EnergyResolvedProperty, Constructor10){
 	IndexTree indexTree;
 	indexTree.add({0});
 	indexTree.add({1});
@@ -447,7 +519,7 @@ TEST(EnergyResolvedProperty, Constructor7){
 	}
 }
 
-TEST(EnergyResolvedProperty, Constructor8){
+TEST(EnergyResolvedProperty, Constructor11){
 	IndexTree indexTree;
 	indexTree.add({0});
 	indexTree.add({1});
@@ -649,9 +721,7 @@ TEST(EnergyResolvedProerty, SerializeToJSON){
 		data[n] = n;
 	EnergyResolvedProperty<int> energyResolvedProperty0(
 		indexTree,
-		-10,
-		10,
-		1000,
+		Range(-10, 10, 1000),
 		data
 	);
 	EnergyResolvedProperty<int> energyResolvedProperty1(
@@ -662,13 +732,15 @@ TEST(EnergyResolvedProerty, SerializeToJSON){
 		energyResolvedProperty1.getEnergyType(),
 		EnergyResolvedProperty<int>::EnergyType::Real
 	);
-	EXPECT_EQ(
+	EXPECT_NEAR(
 		energyResolvedProperty1.getLowerBound(),
-		-10
+		-10,
+		EPSILON_100
 	);
-	EXPECT_EQ(
+	EXPECT_NEAR(
 		energyResolvedProperty1.getUpperBound(),
-		10
+		10,
+		EPSILON_100
 	);
 	EXPECT_EQ(
 		energyResolvedProperty1.getResolution(),
@@ -794,6 +866,91 @@ TEST(EnergyResolvedProerty, SerializeToJSON){
 			EXPECT_EQ(energyResolvedProperty5({n}, c), 11*n + c);
 		}
 	}
+}
+
+TEST(EnergyResolvedProperty, operatorAssignment0){
+	EnergyResolvedProperty<int> energyResolvedProperty(Range(-10, 10, 1000));
+	EnergyResolvedProperty<int> copy;
+	copy = energyResolvedProperty;
+	EXPECT_EQ(
+		copy.getEnergyType(),
+		EnergyResolvedProperty<int>::EnergyType::Real
+	);
+	EXPECT_EQ(copy.getLowerBound(), -10);
+	EXPECT_EQ(copy.getUpperBound(), 10);
+	EXPECT_EQ(copy.getResolution(), 1000);
+
+	for(
+		unsigned int n = 0;
+		n < 1000;
+		n++
+	){
+		EXPECT_EQ(energyResolvedProperty(n), 0);
+	}
+}
+
+TEST(EnergyResolvedProperty, operatorAssignment1){
+	IndexTree indexTree;
+	indexTree.add({0});
+	indexTree.add({1});
+	indexTree.add({2});
+	indexTree.generateLinearMap();
+
+	EnergyResolvedProperty<int> energyResolvedProperty(
+		EnergyResolvedProperty<int>::EnergyType::FermionicMatsubara,
+		indexTree,
+		-9,
+		9,
+		2
+	);
+	EnergyResolvedProperty<int> copy;
+	copy = energyResolvedProperty;
+	EXPECT_EQ(
+		copy.getEnergyType(),
+		EnergyResolvedProperty<int>::EnergyType::FermionicMatsubara
+	);
+	EXPECT_EQ(copy.getLowerMatsubaraEnergyIndex(), -9);
+	EXPECT_EQ(copy.getUpperMatsubaraEnergyIndex(), 9);
+	EXPECT_EQ(copy.getNumMatsubaraEnergies(), 10);
+	EXPECT_DOUBLE_EQ(copy.getFundamentalMatsubaraEnergy(), 2);
+	EXPECT_DOUBLE_EQ(copy.getLowerMatsubaraEnergy(), -9*2);
+	EXPECT_DOUBLE_EQ(copy.getUpperMatsubaraEnergy(), 9*2);
+
+	for(int n = 0; n < 3; n++)
+		for(unsigned int c = 0; c < 10; c++)
+			EXPECT_EQ(copy({n}, c), 0);
+}
+
+TEST(EnergyResolvedProperty, operatorAssignment2){
+	IndexTree indexTree;
+	indexTree.add({0});
+	indexTree.add({1});
+	indexTree.add({2});
+	indexTree.generateLinearMap();
+
+	EnergyResolvedProperty<int> energyResolvedProperty(
+		EnergyResolvedProperty<int>::EnergyType::BosonicMatsubara,
+		indexTree,
+		-10,
+		10,
+		2
+	);
+	EnergyResolvedProperty<int> copy;
+	copy = energyResolvedProperty;
+	EXPECT_EQ(
+		copy.getEnergyType(),
+		EnergyResolvedProperty<int>::EnergyType::BosonicMatsubara
+	);
+	EXPECT_EQ(copy.getLowerMatsubaraEnergyIndex(), -10);
+	EXPECT_EQ(copy.getUpperMatsubaraEnergyIndex(), 10);
+	EXPECT_EQ(copy.getNumMatsubaraEnergies(), 11);
+	EXPECT_DOUBLE_EQ(copy.getFundamentalMatsubaraEnergy(), 2);
+	EXPECT_DOUBLE_EQ(copy.getLowerMatsubaraEnergy(), -10*2);
+	EXPECT_DOUBLE_EQ(copy.getUpperMatsubaraEnergy(), 10*2);
+
+	for(int n = 0; n < 3; n++)
+		for(unsigned int c = 0; c < 10; c++)
+			EXPECT_EQ(copy({n}, c), 0);
 }
 
 TEST(EnergyResolvedProperty, getEnergyType){
@@ -962,9 +1119,7 @@ TEST(EnergyResolvedProperty, getDeltaE){
 
 	//EnergyType::Real.
 	EnergyResolvedProperty<int> energyResolvedProperty(
-		-10,
-		10,
-		1000
+		Range(-10, 10, 1000)
 	);
 	EXPECT_FLOAT_EQ(energyResolvedProperty.getDeltaE(), 20/999.);
 	//Already tested through
@@ -1018,9 +1173,7 @@ TEST(EnergyResolvedProperty, getEnergy){
 	//EnergyType::Real.
 	EnergyResolvedProperty<int> energyResolvedProperty(
 		indexTree,
-		-10,
-		10,
-		1000
+		Range(-10, 10, 1000)
 	);
 	for(unsigned int n = 0; n < 1000; n++){
 		EXPECT_DOUBLE_EQ(
@@ -1074,9 +1227,7 @@ TEST(EnergyResolvedProperty, getLowerMatsubaraEnergyIndex){
 	//Fail for EnergyType::Real.
 	EnergyResolvedProperty<int> energyResolvedProperty(
 		indexTree,
-		-10,
-		10,
-		1000
+		Range(-10, 10, 1000)
 	);
 	EXPECT_EXIT(
 		{
@@ -1109,9 +1260,7 @@ TEST(EnergyResolvedProperty, getUpperMatsubaraEnergyIndex){
 	//Fail for EnergyType::Real.
 	EnergyResolvedProperty<int> energyResolvedProperty(
 		indexTree,
-		-10,
-		10,
-		1000
+		Range(-10, 10, 1000)
 	);
 	EXPECT_EXIT(
 		{
@@ -1144,9 +1293,7 @@ TEST(EnergyResolvedProperty, getNumMatsubaraEnergies){
 	//Fail for EnergyType::Real.
 	EnergyResolvedProperty<int> energyResolvedProperty(
 		indexTree,
-		-10,
-		10,
-		1000
+		Range(-10, 10, 1000)
 	);
 	EXPECT_EXIT(
 		{
@@ -1179,9 +1326,7 @@ TEST(EnergyResolvedProperty, getFundamentalMatsubaraEnergy){
 	//Fail for EnergyType::Real.
 	EnergyResolvedProperty<int> energyResolvedProperty(
 		indexTree,
-		-10,
-		10,
-		1000
+		Range(-10, 10, 1000)
 	);
 	EXPECT_EXIT(
 		{
@@ -1214,9 +1359,7 @@ TEST(EnergyResolvedProperty, getLowerMatsubaraEnergy){
 	//Fail for EnergyType::Real.
 	EnergyResolvedProperty<int> energyResolvedProperty(
 		indexTree,
-		-10,
-		10,
-		1000
+		Range(-10, 10, 1000)
 	);
 	EXPECT_EXIT(
 		{
@@ -1249,9 +1392,7 @@ TEST(EnergyResolvedProperty, getUpperMatsubaraEnergy){
 	//Fail for EnergyType::Real.
 	EnergyResolvedProperty<int> energyResolvedProperty(
 		indexTree,
-		-10,
-		10,
-		1000
+		Range(-10, 10, 1000)
 	);
 	EXPECT_EXIT(
 		{
@@ -1286,9 +1427,7 @@ TEST(EnergyResolvedProperty, getMatsubaraEnergy){
 		{
 			EnergyResolvedProperty<int> energyResolvedProperty(
 				indexTree,
-				-10,
-				10,
-				1000
+				Range(-10, 10, 1000)
 			);
 			Streams::setStdMuteErr();
 			energyResolvedProperty.getLowerMatsubaraEnergy();
@@ -1354,9 +1493,7 @@ TEST(EnergyResolvedProperty, getNumEnergies){
 	//EnergyType::Real.
 	EnergyResolvedProperty<int> energyResolvedProperty(
 		indexTree,
-		-10,
-		10,
-		1000
+		Range(-10, 10, 1000)
 	);
 	EXPECT_EQ(
 		energyResolvedProperty.getNumEnergies(),
@@ -1392,35 +1529,19 @@ TEST(EnergyResolvedProperty, getNumEnergies){
 
 TEST(EnergyResolvedProperty, energyWindowsAreEqual){
 	//EnergyType::Real.
-	EnergyResolvedProperty<int> energyResolvedProperty0(
-		0,
-		1,
-		10
-	);
+	EnergyResolvedProperty<int> energyResolvedProperty0(Range(0, 1, 10));
 	EnergyResolvedProperty<int> energyResolvedProperty1(
-		-0.5,
-		1,
-		10
+		Range(-0.5, 1, 10)
 	);
 	EnergyResolvedProperty<int> energyResolvedProperty2(
-		0,
-		1.5,
-		10
+		Range(0, 1.5, 10)
 	);
-	EnergyResolvedProperty<int> energyResolvedProperty3(
-		0,
-		1,
-		11
-	);
+	EnergyResolvedProperty<int> energyResolvedProperty3(Range(0, 1, 11));
 	EnergyResolvedProperty<int> energyResolvedProperty4(
-		0,
-		1.01,
-		10
+		Range(0, 1.01, 10)
 	);
 	EnergyResolvedProperty<int> energyResolvedProperty5(
-		-0.01,
-		1,
-		10
+		Range(-0.01, 1, 10)
 	);
 
 	EXPECT_FALSE(
@@ -1626,37 +1747,27 @@ TEST(EnergyResolvedProperty, additionAssignmentOperator){
 	//EnergyType::Real.
 	PublicEnergyResolvedProperty<int> energyResolvedPropertyReal0(
 		indexTree,
-		-10,
-		10,
-		1000,
+		Range(-10, 10, 1000),
 		data0
 	);
 	PublicEnergyResolvedProperty<int> energyResolvedPropertyReal1(
 		indexTree,
-		-10,
-		10,
-		1000,
+		Range(-10, 10, 1000),
 		data1
 	);
 	PublicEnergyResolvedProperty<int> energyResolvedPropertyReal2(
 		indexTree,
-		-9,
-		10,
-		1000,
+		Range(-9, 10, 1000),
 		data0
 	);
 	PublicEnergyResolvedProperty<int> energyResolvedPropertyReal3(
 		indexTree,
-		-10,
-		9,
-		1000,
+		Range(-10, 9, 1000),
 		data0
 	);
 	PublicEnergyResolvedProperty<int> energyResolvedPropertyReal4(
 		indexTree,
-		-9,
-		10,
-		100,
+		Range(-9, 10, 100),
 		data2
 	);
 
@@ -1901,37 +2012,27 @@ TEST(EnergyResolvedProperty, subtractionAssignmentOperator){
 	//EnergyType::Real.
 	PublicEnergyResolvedProperty<int> energyResolvedPropertyReal0(
 		indexTree,
-		-10,
-		10,
-		1000,
+		Range(-10, 10, 1000),
 		data0
 	);
 	PublicEnergyResolvedProperty<int> energyResolvedPropertyReal1(
 		indexTree,
-		-10,
-		10,
-		1000,
+		Range(-10, 10, 1000),
 		data1
 	);
 	PublicEnergyResolvedProperty<int> energyResolvedPropertyReal2(
 		indexTree,
-		-9,
-		10,
-		1000,
+		Range(-9, 10, 1000),
 		data0
 	);
 	PublicEnergyResolvedProperty<int> energyResolvedPropertyReal3(
 		indexTree,
-		-10,
-		9,
-		1000,
+		Range(-10, 9, 1000),
 		data0
 	);
 	PublicEnergyResolvedProperty<int> energyResolvedPropertyReal4(
 		indexTree,
-		-9,
-		10,
-		100,
+		Range(-9, 10, 100),
 		data2
 	);
 
@@ -2167,9 +2268,7 @@ TEST(EnergyResolvedProperty, multiplicationAssignmentOperator){
 	//EnergyType::Real.
 	PublicEnergyResolvedProperty<int> energyResolvedPropertyReal(
 		indexTree,
-		-10,
-		10,
-		1000,
+		Range(-10, 10, 1000),
 		data
 	);
 
@@ -2226,9 +2325,7 @@ TEST(EnergyResolvedProperty, divisionAssignmentOperator){
 	//EnergyType::Real.
 	PublicEnergyResolvedProperty<int> energyResolvedPropertyReal(
 		indexTree,
-		-10,
-		10,
-		1000,
+		Range(-10, 10, 1000),
 		data
 	);
 

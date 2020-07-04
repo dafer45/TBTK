@@ -19,9 +19,7 @@ TEST(GreensFunction, Constructor1){
 	GreensFunction greensFunction0(
 		indexTree,
 		GreensFunction::Type::Retarded,
-		-10,
-		10,
-		1000
+		Range(-10, 10, 1000)
 	);
 	ASSERT_EQ(greensFunction0.getBlockSize(), 1000);
 	ASSERT_EQ(greensFunction0.getResolution(), 1000);
@@ -59,9 +57,7 @@ TEST(GreensFunction, Constructor1){
 	GreensFunction greensFunction1(
 		indexTree,
 		GreensFunction::Type::Principal,
-		-10,
-		10,
-		1000
+		Range(-10, 10, 1000)
 	);
 	EXPECT_EQ(greensFunction1.getType(), GreensFunction::Type::Principal);
 }
@@ -79,9 +75,7 @@ TEST(GreensFunction, operatorAdditionAssignment){
 	GreensFunction greensFunction0(
 		indexTree,
 		GreensFunction::Type::Retarded,
-		-10,
-		10,
-		1000,
+		Range(-10, 10, 1000),
 		inputData0
 	);
 
@@ -91,9 +85,7 @@ TEST(GreensFunction, operatorAdditionAssignment){
 	GreensFunction greensFunction1(
 		indexTree,
 		GreensFunction::Type::Retarded,
-		-10,
-		10,
-		1000,
+		Range(-10, 10, 1000),
 		inputData1
 	);
 
@@ -103,9 +95,7 @@ TEST(GreensFunction, operatorAdditionAssignment){
 	GreensFunction greensFunction2(
 		indexTree,
 		GreensFunction::Type::Advanced,
-		-10,
-		10,
-		1000,
+		Range(-10, 10, 1000),
 		inputData2
 	);
 
@@ -139,9 +129,7 @@ TEST(GreensFunction, operatorAddition){
 	GreensFunction greensFunction0(
 		indexTree,
 		GreensFunction::Type::Retarded,
-		-10,
-		10,
-		1000,
+		Range(-10, 10, 1000),
 		inputData0
 	);
 
@@ -151,9 +139,7 @@ TEST(GreensFunction, operatorAddition){
 	GreensFunction greensFunction1(
 		indexTree,
 		GreensFunction::Type::Retarded,
-		-10,
-		10,
-		1000,
+		Range(-10, 10, 1000),
 		inputData1
 	);
 
@@ -178,9 +164,7 @@ TEST(GreensFunction, operatorSubtractionAssignment){
 	GreensFunction greensFunction0(
 		indexTree,
 		GreensFunction::Type::Retarded,
-		-10,
-		10,
-		1000,
+		Range(-10, 10, 1000),
 		inputData0
 	);
 
@@ -190,9 +174,7 @@ TEST(GreensFunction, operatorSubtractionAssignment){
 	GreensFunction greensFunction1(
 		indexTree,
 		GreensFunction::Type::Retarded,
-		-10,
-		10,
-		1000,
+		Range(-10, 10, 1000),
 		inputData1
 	);
 
@@ -202,9 +184,7 @@ TEST(GreensFunction, operatorSubtractionAssignment){
 	GreensFunction greensFunction2(
 		indexTree,
 		GreensFunction::Type::Advanced,
-		-10,
-		10,
-		1000,
+		Range(-10, 10, 1000),
 		inputData2
 	);
 
@@ -238,9 +218,7 @@ TEST(GreensFunction, operatorSubtraction){
 	GreensFunction greensFunction0(
 		indexTree,
 		GreensFunction::Type::Retarded,
-		-10,
-		10,
-		1000,
+		Range(-10, 10, 1000),
 		inputData0
 	);
 
@@ -250,9 +228,7 @@ TEST(GreensFunction, operatorSubtraction){
 	GreensFunction greensFunction1(
 		indexTree,
 		GreensFunction::Type::Retarded,
-		-10,
-		10,
-		1000,
+		Range(-10, 10, 1000),
 		inputData1
 	);
 
@@ -277,9 +253,7 @@ TEST(GreensFunction, operatorMultiplicationAssignment){
 	GreensFunction greensFunction(
 		indexTree,
 		GreensFunction::Type::Retarded,
-		-10,
-		10,
-		1000,
+		Range(-10, 10, 1000),
 		inputData
 	);
 
@@ -304,9 +278,7 @@ TEST(GreensFunction, operatorMultiplication){
 	GreensFunction greensFunction0(
 		indexTree,
 		GreensFunction::Type::Retarded,
-		-10,
-		10,
-		1000,
+		Range(-10, 10, 1000),
 		inputData
 	);
 
@@ -337,9 +309,7 @@ TEST(GreensFunction, operatorDivisionAssignment){
 	GreensFunction greensFunction(
 		indexTree,
 		GreensFunction::Type::Retarded,
-		-10,
-		10,
-		1000,
+		Range(-10, 10, 1000),
 		inputData
 	);
 
@@ -364,9 +334,7 @@ TEST(GreensFunction, operatorDivision){
 	GreensFunction greensFunction0(
 		indexTree,
 		GreensFunction::Type::Retarded,
-		-10,
-		10,
-		1000,
+		Range(-10, 10, 1000),
 		inputData
 	);
 

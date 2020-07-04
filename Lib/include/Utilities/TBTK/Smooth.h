@@ -221,9 +221,11 @@ inline Property::DOS Smooth::gaussian(
 	);
 
 	return Property::DOS(
-		lowerBound,
-		upperBound,
-		resolution,
+		Range(
+			lowerBound,
+			upperBound,
+			resolution
+		),
 		smoothedData.data()
 	);
 }

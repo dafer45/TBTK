@@ -6,7 +6,7 @@ namespace TBTK{
 namespace Property{
 
 TEST(SpinPolarizedLDOS, Constructor0){
-	SpinPolarizedLDOS spinPolarizedLDOS({2, 3, 4}, -10, 10, 1000);
+	SpinPolarizedLDOS spinPolarizedLDOS({2, 3, 4}, Range(-10, 10, 1000));
 	ASSERT_EQ(spinPolarizedLDOS.getDimensions(), 3);
 	EXPECT_EQ(spinPolarizedLDOS.getRanges()[0], 2);
 	EXPECT_EQ(spinPolarizedLDOS.getRanges()[1], 3);
@@ -37,9 +37,7 @@ TEST(SpinPolarizedLDOS, Constructor1){
 	}
 	SpinPolarizedLDOS spinPolarizedLDOS(
 		{2, 3, 4},
-		-10,
-		10,
-		1000,
+		Range(-10, 10, 1000),
 		dataInput
 	);
 	delete [] dataInput;
@@ -74,7 +72,7 @@ TEST(SpinPolarizedLDOS, Constructor2){
 	indexTree.add({1});
 	indexTree.add({2});
 	indexTree.generateLinearMap();
-	SpinPolarizedLDOS spinPolarizedLDOS(indexTree, -10, 10, 1000);
+	SpinPolarizedLDOS spinPolarizedLDOS(indexTree, Range(-10, 10, 1000));
 	EXPECT_DOUBLE_EQ(spinPolarizedLDOS.getLowerBound(), -10);
 	EXPECT_DOUBLE_EQ(spinPolarizedLDOS.getUpperBound(), 10);
 	ASSERT_EQ(spinPolarizedLDOS.getResolution(), 1000);
@@ -126,9 +124,7 @@ TEST(SpinPolarizedLDOS, Constructor3){
 	}
 	SpinPolarizedLDOS spinPolarizedLDOS(
 		indexTree,
-		-10,
-		10,
-		1000,
+		Range(-10, 10, 1000),
 		dataInput
 	);
 	EXPECT_DOUBLE_EQ(spinPolarizedLDOS.getLowerBound(), -10);

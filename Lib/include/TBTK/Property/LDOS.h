@@ -56,15 +56,12 @@ public:
 	 *  @param ranges The upper limit (exclusive) for the corresponding
 	 *  dimensions.
 	 *
-	 *  @param lowerBound Lower bound for the energy.
+	 *  @param energyWindow The energy window over which the LDOS is
+	 *  defined.
+	 *
 	 *  @param upperBound Upper bound for the energy
 	 *  @param resolution Number of points to use for the energy. */
-	LDOS(
-		const std::vector<int> &ranges,
-		double lowerBound,
-		double upperBound,
-		int resolution
-	);
+	LDOS(const std::vector<int> &ranges, const Range &energyWindow);
 
 	/** Constructs LDOS on the Ranges format and initializes it with data.
 	 *  [See AbstractProperty for detailed information about the Ranges
@@ -73,15 +70,13 @@ public:
 	 *  @param ranges The upper limit (exclusive) for the corresponding
 	 *  dimensions.
 	 *
-	 *  @param lowerBound Lower bound for the energy.
-	 *  @param upperBound Upper bound for the energy
-	 *  @param resolution Number of points to use for the energy.
+	 *  @param energyWindow The energy window over which the LDOS is
+	 *  defined.
+	 *
 	 *  @param data Raw data to initialize the LDOS with. */
 	LDOS(
 		const std::vector<int> &ranges,
-		double lowerBound,
-		double upperBound,
-		int resolution,
+		const Range &energyWindow,
 		const double *data
 	);
 
@@ -91,15 +86,9 @@ public:
 	 *  @param indexTree IndexTree containing the @link Index Indices
 	 *  @endlink for which the LDOS should be contained.
 	 *
-	 *  @param lowerBound Lower bound for the energy.
-	 *  @param upperBound Upper bound for the energy
-	 *  @param resolution Number of points to use for the energy. */
-	LDOS(
-		const IndexTree &indexTree,
-		double lowerBound,
-		double upperBound,
-		int resolution
-	);
+	 *  @param energyWindow The energy window over which the LDOS is
+	 *  defined. */
+	LDOS(const IndexTree &indexTree, const Range &energyWindow);
 
 	/** Constructs LDOS on the Custom format and initializes it with data.
 	 *  [See AbstractProperty for detailed information about the Custom
@@ -108,15 +97,13 @@ public:
 	 *  @param indexTree IndexTree containing the @link Index Indices
 	 *  @endlink for which the LDOS should be contained.
 	 *
-	 *  @param lowerBound Lower bound for the energy.
-	 *  @param upperBound Upper bound for the energy
-	 *  @param resolution Number of points to use for the energy.
+	 *  @param energyWindow The energy window over which the LDOS is
+	 *  defined.
+	 *
 	 *  @param data Raw data to initialize the LDOS with. */
 	LDOS(
 		const IndexTree &indexTree,
-		double lowerBound,
-		double upperBound,
-		int resolution,
+		const Range &energyWindow,
 		const double *data
 	);
 

@@ -9,12 +9,10 @@ namespace TBTK{
 
 class PropertyConverterTest : public ::testing::Test{
 protected:
-	double ENERGY_LOWER_BOUND;
-	double ENERGY_UPPER_BOUND;
-	int ENERGY_RESOLUTION;
 	unsigned int RANGES_SIZE_X;
 	unsigned int RANGES_SIZE_Y;
 
+	Range energyWindow;
 	Property::DOS dos;
 	Property::Density densityRanges;
 	Property::Density densityCustom;
@@ -22,11 +20,16 @@ protected:
 	Property::LDOS ldosCustom;
 
 	void SetUp() override{
-		ENERGY_LOWER_BOUND = -10;
-		ENERGY_UPPER_BOUND = 10;
-		ENERGY_RESOLUTION = 10;
+		double ENERGY_LOWER_BOUND = -10;
+		double ENERGY_UPPER_BOUND = 10;
+		unsigned int ENERGY_RESOLUTION = 10;
 		RANGES_SIZE_X = 2;
 		RANGES_SIZE_Y = 3;
+		energyWindow = Range(
+			ENERGY_LOWER_BOUND,
+			ENERGY_UPPER_BOUND,
+			ENERGY_RESOLUTION
+		);
 
 		SetUpDOS();
 		SetUpDensityRanges();
@@ -36,11 +39,7 @@ protected:
 	}
 
 	void SetUpDOS(){
-		dos = Property::DOS(
-			ENERGY_LOWER_BOUND,
-			ENERGY_UPPER_BOUND,
-			ENERGY_RESOLUTION
-		);
+		dos = Property::DOS(energyWindow);
 		for(unsigned int n = 0; n < 10; n++)
 			dos(n) = n;
 	}
@@ -54,7 +53,7 @@ protected:
 			for(unsigned int y = 0; y < RANGES_SIZE_Y; y++){
 				for(
 					unsigned int e = 0;
-					e < (unsigned int)ENERGY_RESOLUTION;
+					e < energyWindow.getResolution();
 					e++
 				){
 					data[RANGES_SIZE_Y*x + y] = x*y;
@@ -79,20 +78,18 @@ protected:
 	void SetUpLDOSRanges(){
 		ldosRanges = Property::LDOS(
 			{(int)RANGES_SIZE_X, (int)RANGES_SIZE_Y},
-			ENERGY_LOWER_BOUND,
-			ENERGY_UPPER_BOUND,
-			ENERGY_RESOLUTION
+			energyWindow
 		);
 		std::vector<double> &data = ldosRanges.getDataRW();
 		for(unsigned int x = 0; x < RANGES_SIZE_X; x++){
 			for(unsigned int y = 0; y < RANGES_SIZE_Y; y++){
 				for(
 					unsigned int e = 0;
-					e < (unsigned int)ENERGY_RESOLUTION;
+					e < energyWindow.getResolution();
 					e++
 				){
 					data[
-						ENERGY_RESOLUTION*(
+						energyWindow.getResolution()*(
 							RANGES_SIZE_Y*x + y
 						) + e
 					] = x*y*e;
@@ -107,18 +104,9 @@ protected:
 		indexTree.add({2, 2});
 		indexTree.add({2, 3});
 		indexTree.generateLinearMap();
-		ldosCustom = Property::LDOS(
-			indexTree,
-			ENERGY_LOWER_BOUND,
-			ENERGY_UPPER_BOUND,
-			ENERGY_RESOLUTION
-		);
+		ldosCustom = Property::LDOS(indexTree, energyWindow);
 
-		for(
-			unsigned int n = 0;
-			n < (unsigned int)ENERGY_RESOLUTION;
-			n++
-		){
+		for(unsigned int n = 0; n < energyWindow.getResolution(); n++){
 			ldosCustom({1, 4}, n) = 1*n;
 			ldosCustom({2, 2}, n) = 2*n;
 			ldosCustom({2, 3}, n) = 3*n;
@@ -174,12 +162,12 @@ TEST_F(PropertyConverterTest, convert3){
 	EXPECT_EQ(ranges.size(), 3);
 	EXPECT_EQ(ranges[0], RANGES_SIZE_X);
 	EXPECT_EQ(ranges[1], RANGES_SIZE_Y);
-	EXPECT_EQ(ranges[2], ENERGY_RESOLUTION);
+	EXPECT_EQ(ranges[2], energyWindow.getResolution());
 	for(unsigned int x = 0; x < RANGES_SIZE_X; x++){
 		for(unsigned int y = 0; y < RANGES_SIZE_Y; y++){
 			for(
 				unsigned int e = 0;
-				e < (unsigned int)ENERGY_RESOLUTION;
+				e < energyWindow.getResolution();
 				e++
 			){
 				EXPECT_FLOAT_EQ((result[{x, y, e}]), x*y*e);
@@ -191,7 +179,7 @@ TEST_F(PropertyConverterTest, convert3){
 	EXPECT_EQ(axes.size(), 3);
 	EXPECT_EQ(axes[0].size(), RANGES_SIZE_X);
 	EXPECT_EQ(axes[1].size(), RANGES_SIZE_Y);
-	EXPECT_EQ(axes[2].size(), ENERGY_RESOLUTION);
+	EXPECT_EQ(axes[2].size(), energyWindow.getResolution());
 	for(unsigned int n = 0; n < axes.size(); n++)
 		for(unsigned int c = 0; c < axes[n].size(); c++)
 			EXPECT_EQ(axes[n][c], c);
@@ -319,11 +307,11 @@ TEST_F(PropertyConverterTest, convert9){
 
 	//The Indices are {1, 4}, {2, 2}, {2, 3}.
 	Subindex LOWER[3] = {1, 2, 0};
-	Subindex UPPER[3] = {2, 4, ENERGY_RESOLUTION-1};
+	Subindex UPPER[3] = {2, 4, energyWindow.getResolution()-1};
 	Subindex SIZE[3] = {
 		UPPER[0] - LOWER[0] + 1,
 		UPPER[1] - LOWER[1] + 1,
-		ENERGY_RESOLUTION
+		energyWindow.getResolution()
 	};
 
 	const std::vector<unsigned int> &ranges = result.getRanges();
@@ -337,7 +325,7 @@ TEST_F(PropertyConverterTest, convert9){
 			Subindex Y = axes[1][y];
 			for(
 				unsigned int e = 0;
-				e < (unsigned int)ENERGY_RESOLUTION;
+				e < energyWindow.getResolution();
 				e++
 			){
 				if(X == 1 && Y == 4)
@@ -367,10 +355,10 @@ TEST_F(PropertyConverterTest, convert10){
 
 	//The compatible Index is {1, 4}.
 	Subindex LOWER[2] = {1, 0};
-	Subindex UPPER[2] = {1, ENERGY_RESOLUTION-1};
+	Subindex UPPER[2] = {1, energyWindow.getResolution()-1};
 	Subindex SIZE[2] = {
 		UPPER[0] - LOWER[0] + 1,
-		ENERGY_RESOLUTION
+		energyWindow.getResolution()
 	};
 
 	const std::vector<unsigned int> &ranges = result.getRanges();
@@ -380,11 +368,7 @@ TEST_F(PropertyConverterTest, convert10){
 		EXPECT_EQ(ranges[n], SIZE[n]);
 	for(unsigned int x = 0; x < ranges[0]; x++){
 		Subindex X = axes[0][x];
-		for(
-			unsigned int e = 0;
-			e < (unsigned int)ENERGY_RESOLUTION;
-			e++
-		){
+		for(unsigned int e = 0; e < energyWindow.getResolution(); e++){
 			if(X == 1)
 				EXPECT_FLOAT_EQ((result[{x, e}]), 1*e);
 			else

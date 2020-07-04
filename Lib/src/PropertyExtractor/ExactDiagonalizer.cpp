@@ -18,10 +18,6 @@ Property::GreensFunction* ExactDiagonalizer::calculateGreensFunction(
 	Index from,
 	Property::GreensFunction::Type type
 ){
-	double lowerBound = getLowerBound();
-	double upperBound = getUpperBound();
-	int energyResolution = getEnergyResolution();
-
 	IndexTree memoryLayout;
 	memoryLayout.add({to, from});
 	memoryLayout.generateLinearMap();
@@ -46,21 +42,25 @@ Property::GreensFunction* ExactDiagonalizer::calculateGreensFunction(
 		const std::vector<complex<double>> &greensFunctionRData
 			= greensFunctionR->getData();
 
-		complex<double> *greensFunctionData = new complex<double>[energyResolution];
-		for(int n = 0; n < energyResolution; n++)
-			greensFunctionData[n] = (greensFunctionAData[n] + greensFunctionRData[n])/2.;
+		const Range &energyWindow = getEnergyWindow();
+		complex<double> *greensFunctionData
+			= new complex<double>[energyWindow.getResolution()];
+		for(unsigned int n = 0; n < energyWindow.getResolution(); n++){
+			greensFunctionData[n] = (
+				greensFunctionAData[n] + greensFunctionRData[n]
+			)/2.;
+		}
 
 		delete greensFunctionA;
 		delete greensFunctionR;
 
-		Property::GreensFunction *greensFunction = new Property::GreensFunction(
-			memoryLayout,
-			type,
-			lowerBound,
-			upperBound,
-			energyResolution,
-			greensFunctionData
-		);
+		Property::GreensFunction *greensFunction
+			= new Property::GreensFunction(
+				memoryLayout,
+				type,
+				energyWindow,
+				greensFunctionData
+			);
 
 		delete [] greensFunctionData;
 
@@ -85,22 +85,25 @@ Property::GreensFunction* ExactDiagonalizer::calculateGreensFunction(
 		const std::vector<complex<double>> &greensFunctionRData
 			= greensFunctionR->getData();
 
+		const Range &energyWindow = getEnergyWindow();
 		complex<double> *greensFunctionData
-			= new complex<double>[energyResolution];
-		for(int n = 0; n < energyResolution; n++)
-			greensFunctionData[n] = (greensFunctionAData[n] - greensFunctionRData[n])/2.;
+			= new complex<double>[energyWindow.getResolution()];
+		for(unsigned int n = 0; n < energyWindow.getResolution(); n++){
+			greensFunctionData[n] = (
+				greensFunctionAData[n] - greensFunctionRData[n]
+			)/2.;
+		}
 
 		delete greensFunctionA;
 		delete greensFunctionR;
 
-		Property::GreensFunction *greensFunction = new Property::GreensFunction(
-			memoryLayout,
-			type,
-			lowerBound,
-			upperBound,
-			energyResolution,
-			greensFunctionData
-		);
+		Property::GreensFunction *greensFunction
+			= new Property::GreensFunction(
+				memoryLayout,
+				type,
+				energyWindow,
+				greensFunctionData
+			);
 
 		delete [] greensFunctionData;
 
@@ -156,8 +159,10 @@ Property::GreensFunction* ExactDiagonalizer::calculateGreensFunction(
 			ruleSet1
 		);
 
-		complex<double> *greensFunctionData = new complex<double>[energyResolution];
-		for(int n = 0; n < energyResolution; n++)
+		const Range &energyWindow = getEnergyWindow();
+		complex<double> *greensFunctionData
+			= new complex<double>[energyWindow.getResolution()];
+		for(unsigned int n = 0; n < energyWindow.getResolution(); n++)
 			greensFunctionData[n] = 0;
 
 		double groundStateEnergy = solver.getEigenValue(subspaceID0, 0);
@@ -193,22 +198,21 @@ Property::GreensFunction* ExactDiagonalizer::calculateGreensFunction(
 				amplitude1 += conj(a1)*a0*(double)psi.getPrefactor();
 			}
 
-			int e = energyResolution*((-lowerBound + energySign*(E - groundStateEnergy))/(upperBound - lowerBound));
-			if(e >= 0 && e < energyResolution)
+			int e = energyWindow.getResolution()*((-energyWindow[0] + energySign*(E - groundStateEnergy))/(energyWindow.getLast() - energyWindow[0]));
+			if(e >= 0 && e < (int)energyWindow.getResolution())
 				greensFunctionData[e] += amplitude1*amplitude0;
 		}
 
-		for(int n = 0; n < energyResolution; n++)
+		for(unsigned int n = 0; n < energyWindow.getResolution(); n++)
 			greensFunctionData[n] *= -i;
 
-		Property::GreensFunction *greensFunction = new Property::GreensFunction(
-			memoryLayout,
-			type,
-			lowerBound,
-			upperBound,
-			energyResolution,
-			greensFunctionData
-		);
+		Property::GreensFunction *greensFunction
+			= new Property::GreensFunction(
+				memoryLayout,
+				type,
+				energyWindow,
+				greensFunctionData
+			);
 
 		delete [] greensFunctionData;
 
@@ -253,8 +257,10 @@ Property::GreensFunction* ExactDiagonalizer::calculateGreensFunction(
 			ruleSet1
 		);
 
-		complex<double> *greensFunctionData = new complex<double>[energyResolution];
-		for(int n = 0; n < energyResolution; n++)
+		const Range &energyWindow = getEnergyWindow();
+		complex<double> *greensFunctionData
+			= new complex<double>[energyWindow.getResolution()];
+		for(unsigned int n = 0; n < energyWindow.getResolution(); n++)
 			greensFunctionData[n] = 0;
 
 		double groundStateEnergy = solver.getEigenValue(subspaceID0, 0);
@@ -290,22 +296,21 @@ Property::GreensFunction* ExactDiagonalizer::calculateGreensFunction(
 				amplitude1 += conj(a1)*a0*(double)psi.getPrefactor();
 			}
 
-			int e = energyResolution*((-lowerBound + energySign*(E - groundStateEnergy))/(upperBound - lowerBound));
-			if(e >= 0 && e < energyResolution)
+			int e = energyWindow.getResolution()*((-energyWindow[0] + energySign*(E - groundStateEnergy))/(energyWindow.getLast() - energyWindow[0]));
+			if(e >= 0 && e < (int)energyWindow.getResolution())
 				greensFunctionData[e] += amplitude1*amplitude0;
 		}
 
-		for(int n = 0; n < energyResolution; n++)
+		for(unsigned int n = 0; n < energyWindow.getResolution(); n++)
 			greensFunctionData[n] *= -i;
 
-		Property::GreensFunction *greensFunction = new Property::GreensFunction(
-			memoryLayout,
-			type,
-			lowerBound,
-			upperBound,
-			energyResolution,
-			greensFunctionData
-		);
+		Property::GreensFunction *greensFunction
+			= new Property::GreensFunction(
+				memoryLayout,
+				type,
+				energyWindow,
+				greensFunctionData
+			);
 
 		delete [] greensFunctionData;
 
@@ -396,12 +401,7 @@ Property::LDOS ExactDiagonalizer::calculateLDOS(
 	ensureCompliantRanges(pattern, ranges);
 
 	vector<int> loopRanges = getLoopRanges(pattern, ranges);
-	Property::LDOS ldos(
-		loopRanges,
-		getLowerBound(),
-		getUpperBound(),
-		getEnergyResolution()
-	);
+	Property::LDOS ldos(loopRanges, getEnergyWindow());
 
 	Information information;
 	calculate(
@@ -443,9 +443,7 @@ Property::SpinPolarizedLDOS ExactDiagonalizer::calculateSpinPolarizedLDOS(
 	vector<int> loopRanges = getLoopRanges(pattern, ranges);
 	Property::SpinPolarizedLDOS spinPolarizedLDOS(
 		loopRanges,
-		getLowerBound(),
-		getUpperBound(),
-		getEnergyResolution()
+		getEnergyWindow()
 	);
 
 	calculate(
@@ -488,25 +486,23 @@ void ExactDiagonalizer::calculateLDOSCallback(
 	int offset,
 	Information &information
 ){
-	ExactDiagonalizer *pe = (ExactDiagonalizer*)cb_this;
+	ExactDiagonalizer *propertyExtractor = (ExactDiagonalizer*)cb_this;
 	Property::LDOS &ldos = (Property::LDOS&)property;
 	vector<double> &data = ldos.getDataRW();
 
-	Property::GreensFunction *greensFunction = pe->calculateGreensFunction(
-		index,
-		index,
-		Property::GreensFunction::Type::NonPrincipal
-	);
+	Property::GreensFunction *greensFunction
+		= propertyExtractor->calculateGreensFunction(
+			index,
+			index,
+			Property::GreensFunction::Type::NonPrincipal
+		);
 	const std::vector<complex<double>> &greensFunctionData
 		= greensFunction->getData();
 
-	double lowerBound = pe->getLowerBound();
-	double upperBound = pe->getUpperBound();
-	int energyResolution = pe->getEnergyResolution();
-
-	const double dE = (upperBound - lowerBound)/energyResolution;
-	for(int n = 0; n < energyResolution; n++){
-		data[energyResolution*offset + n]
+	const Range &energyWindow = propertyExtractor->getEnergyWindow();
+	const double dE = energyWindow[1] - energyWindow[0];
+	for(unsigned int n = 0; n < energyWindow.getResolution(); n++){
+		data[energyWindow.getResolution()*offset + n]
 			+= imag(greensFunctionData[n])/M_PI*dE;
 	}
 

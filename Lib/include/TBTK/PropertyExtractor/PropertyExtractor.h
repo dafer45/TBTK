@@ -377,20 +377,10 @@ protected:
 	 *  @return The EnergyType for the energy window. */
 	EnergyType getEnergyType() const;
 
-	/** Get the energy resolution.
+	/** Get the energy window. Only works for EnergyType::Real.
 	 *
-	 *  @return The energy resolution for the energy window. */
-	int getEnergyResolution() const;
-
-	/** Get lower bound for the energy window.
-	 *
-	 *  @return The lower bound for the energy window. */
-	double getLowerBound() const;
-
-	/** Get the upper bound for the energy window.
-	 *
-	 *  @return The upper bound for the energy window. */
-	double getUpperBound() const;
+	 *  @return The energy window. */
+	const Range& getEnergyWindow() const;
 
 	/** Get the lower Fermionic Matsubara energy index.
 	 *
@@ -662,46 +652,18 @@ inline PropertyExtractor::EnergyType PropertyExtractor::getEnergyType() const{
 	return energyType;
 }
 
-inline int PropertyExtractor::getEnergyResolution() const{
+inline const Range& PropertyExtractor::getEnergyWindow() const{
 	TBTKAssert(
 		energyType == EnergyType::Real,
-		"PropertyExtractor::PropertyExtractor::getEnergyResolution()",
-		"The energy resolution cannot be accessed when the energy type"
+		"PropertyExtractor::PropertyExtractor::getEnergyWindow()",
+		"The energy window cannot be accessed when the energy type"
 		<< " is Matsubara.",
 		"Use PropertyExtractor::PropertyExtractor::setEnergyWindow()"
 		<< " with three arguments if real energies are wanted for the"
 		<< " PropertyExtractor."
 	);
 
-	return energyWindow.getResolution();
-}
-
-inline double PropertyExtractor::getLowerBound() const{
-	TBTKAssert(
-		energyType == EnergyType::Real,
-		"PropertyExtractor::PropertyExtractor::getLowerBound()",
-		"The lower bound cannot be accessed when the energy type is"
-		<< " Matsubara.",
-		"Use PropertyExtractor::PropertyExtractor::setEnergyWindow()"
-		<< " with three arguments if real energies are wanted for the"
-		<< " PropertyExtractor."
-	);
-
-	return energyWindow[0];
-}
-
-inline double PropertyExtractor::getUpperBound() const{
-	TBTKAssert(
-		energyType == EnergyType::Real,
-		"PropertyExtractor::PropertyExtractor::getUpperBound()",
-		"The upper bound cannot be accessed when the energy type is"
-		<< " Matsubara.",
-		"Use PropertyExtractor::PropertyExtractor::setEnergyWindow()"
-		<< " with three arguments if real energies are wanted for the"
-		<< " PropertyExtractor."
-	);
-
-	return energyWindow[energyWindow.getResolution()-1];
+	return energyWindow;
 }
 
 inline int PropertyExtractor::getLowerFermionicMatsubaraEnergyIndex() const{

@@ -30,43 +30,35 @@ namespace Property{
 
 SpinPolarizedLDOS::SpinPolarizedLDOS(
 	const std::vector<int> &ranges,
-	double lowerBound,
-	double upperBound,
-	int resolution
+	const Range &energyWindow
 ) :
-	EnergyResolvedProperty(ranges, lowerBound, upperBound, resolution)
+	EnergyResolvedProperty(ranges, energyWindow)
 {
 }
 
 SpinPolarizedLDOS::SpinPolarizedLDOS(
 	const std::vector<int> &ranges,
-	double lowerBound,
-	double upperBound,
-	int resolution,
+	const Range &energyWindow,
 	const SpinMatrix *data
 ) :
-	EnergyResolvedProperty(ranges, lowerBound, upperBound, resolution, data)
+	EnergyResolvedProperty(ranges, energyWindow, data)
 {
 }
 
 SpinPolarizedLDOS::SpinPolarizedLDOS(
 	const IndexTree &indexTree,
-	double lowerBound,
-	double upperBound,
-	int resolution,
+	const Range &energyWindow,
 	const SpinMatrix *data
 ) :
-	EnergyResolvedProperty(indexTree, lowerBound, upperBound, resolution, data)
+	EnergyResolvedProperty(indexTree, energyWindow, data)
 {
 }
 
 SpinPolarizedLDOS::SpinPolarizedLDOS(
 	const IndexTree &indexTree,
-	double lowerBound,
-	double upperBound,
-	int resolution
+	const Range &energyWindow
 ) :
-	EnergyResolvedProperty(indexTree, lowerBound, upperBound, resolution)
+	EnergyResolvedProperty(indexTree, energyWindow)
 {
 }
 

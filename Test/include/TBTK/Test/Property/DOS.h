@@ -5,8 +5,10 @@
 namespace TBTK{
 namespace Property{
 
+const double EPSILON_100 = 100*std::numeric_limits<double>::epsilon();
+
 TEST(DOS, Constructor0){
-	DOS dos(-10, 10, 1000);
+	DOS dos(Range(-10, 10, 1000));
 	EXPECT_EQ(dos.getLowerBound(), -10);
 	EXPECT_EQ(dos.getUpperBound(), 10);
 	ASSERT_EQ(dos.getResolution(), 1000);
@@ -19,7 +21,7 @@ TEST(DOS, Constructor1){
 	double dataInput[1000];
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput[n] = n;
-	DOS dos(-10, 10, 1000, dataInput);
+	DOS dos(Range(-10, 10, 1000), dataInput);
 	EXPECT_EQ(dos.getLowerBound(), -10);
 	EXPECT_EQ(dos.getUpperBound(), 10);
 	ASSERT_EQ(dos.getResolution(), 1000);
@@ -32,13 +34,13 @@ TEST(DOS, SerializeToJSON){
 	double dataInput[1000];
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput[n] = n;
-	DOS dos0(-10, 10, 1000, dataInput);
+	DOS dos0(Range(-10, 10, 1000), dataInput);
 	DOS dos1(
 		dos0.serialize(Serializable::Mode::JSON),
 		Serializable::Mode::JSON
 	);
-	EXPECT_EQ(dos1.getLowerBound(), -10);
-	EXPECT_EQ(dos1.getUpperBound(), 10);
+	EXPECT_NEAR(dos1.getLowerBound(), -10, EPSILON_100);
+	EXPECT_NEAR(dos1.getUpperBound(), 10, EPSILON_100);
 	ASSERT_EQ(dos1.getResolution(), 1000);
 	const std::vector<double> &data = dos1.getData();
 	for(unsigned int n = 0; n < data.size(); n++)
@@ -49,12 +51,12 @@ TEST(DOS, operatorAdditionAssignment){
 	double dataInput0[1000];
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput0[n] = n;
-	DOS dos0(-10, 10, 1000, dataInput0);
+	DOS dos0(Range(-10, 10, 1000), dataInput0);
 
 	double dataInput1[1000];
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput1[n] = 2*n;
-	DOS dos1(-10, 10, 1000, dataInput1);
+	DOS dos1(Range(-10, 10, 1000), dataInput1);
 
 	dos0 += dos1;
 	const std::vector<double> &data0 = dos0.getData();
@@ -66,12 +68,12 @@ TEST(DOS, operatorAddition){
 	double dataInput0[1000];
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput0[n] = n;
-	DOS dos0(-10, 10, 1000, dataInput0);
+	DOS dos0(Range(-10, 10, 1000), dataInput0);
 
 	double dataInput1[1000];
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput1[n] = 2*n;
-	DOS dos1(-10, 10, 1000, dataInput1);
+	DOS dos1(Range(-10, 10, 1000), dataInput1);
 
 	DOS dos2 = dos0 + dos1;
 	const std::vector<double> &data2 = dos2.getData();
@@ -83,12 +85,12 @@ TEST(DOS, operatorSubtractionAssignment){
 	double dataInput0[1000];
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput0[n] = n;
-	DOS dos0(-10, 10, 1000, dataInput0);
+	DOS dos0(Range(-10, 10, 1000), dataInput0);
 
 	double dataInput1[1000];
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput1[n] = 2*n;
-	DOS dos1(-10, 10, 1000, dataInput1);
+	DOS dos1(Range(-10, 10, 1000), dataInput1);
 
 	dos0 -= dos1;
 	const std::vector<double> &data0 = dos0.getData();
@@ -100,12 +102,12 @@ TEST(DOS, operatorSubtraction){
 	double dataInput0[1000];
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput0[n] = n;
-	DOS dos0(-10, 10, 1000, dataInput0);
+	DOS dos0(Range(-10, 10, 1000), dataInput0);
 
 	double dataInput1[1000];
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput1[n] = 2*n;
-	DOS dos1(-10, 10, 1000, dataInput1);
+	DOS dos1(Range(-10, 10, 1000), dataInput1);
 
 	DOS dos2 = dos0 - dos1;
 	const std::vector<double> &data2 = dos2.getData();
@@ -117,7 +119,7 @@ TEST(DOS, operatorMultiplicationAssignment){
 	double dataInput[1000];
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput[n] = n;
-	DOS dos(-10, 10, 1000, dataInput);
+	DOS dos(Range(-10, 10, 1000), dataInput);
 
 	dos *= 2;
 	const std::vector<double> &data = dos.getData();
@@ -129,7 +131,7 @@ TEST(DOS, operatorMultiplication){
 	double dataInput[1000];
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput[n] = n;
-	DOS dos0(-10, 10, 1000, dataInput);
+	DOS dos0(Range(-10, 10, 1000), dataInput);
 
 	DOS dos1 = dos0*2;
 	DOS dos2 = 2*dos0;
@@ -145,7 +147,7 @@ TEST(DOS, operatorDivisionAssignment){
 	double dataInput[1000];
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput[n] = n;
-	DOS dos(-10, 10, 1000, dataInput);
+	DOS dos(Range(-10, 10, 1000), dataInput);
 
 	dos /= 2;
 	const std::vector<double> &data = dos.getData();
@@ -157,7 +159,7 @@ TEST(DOS, operatorDivision){
 	double dataInput[1000];
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput[n] = n;
-	DOS dos0(-10, 10, 1000, dataInput);
+	DOS dos0(Range(-10, 10, 1000), dataInput);
 
 	DOS dos1 = dos0/2;
 	const std::vector<double> &data1 = dos1.getData();

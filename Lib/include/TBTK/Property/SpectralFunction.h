@@ -40,17 +40,13 @@ public:
 	/** Constructor. */
 	SpectralFunction(
 		const IndexTree &indexTree,
-		double lowerBound,
-		double upperBound,
-		int resolution
+		const Range &energyWindow
 	);
 
 	/** Constructor. */
 	SpectralFunction(
 		const IndexTree &indexTree,
-		double lowerBound,
-		double upperBound,
-		int resolution,
+		const Range &energyWindow,
 		const std::complex<double> *data
 	);
 

@@ -51,14 +51,11 @@ public:
 	 *  @param ranges The upper limits (exclusive) for the corresponding
 	 *  dimensions.
 	 *
-	 *  @param lowerBound Lower bound for the energy.
-	 *  @param upperBound Upper bound for the energy.
-	 *  @param resolution Number of points to use for the energy. */
+	 *  @param energyWindow The energy window over which the
+	 *  SpinPolarizedLDOS is defined. */
 	SpinPolarizedLDOS(
 		const std::vector<int> &ranges,
-		double lowerBound,
-		double upperBound,
-		int resolution
+		const Range &energyWindow
 	);
 
 	/** Constructs a SpinPolarizedDOS on the Ranges format and initializes
@@ -68,15 +65,13 @@ public:
 	 *  @param ranges The upper limits (exclusive) for the corresponding
 	 *  dimensions.
 	 *
-	 *  @param lowerBound Lower bound for the energy.
-	 *  @param upperBound Upper bound for the energy.
-	 *  @param resolution Number of points to use for the energy.
+	 *  @param energyWindow The energy window over which the
+	 *  SpinPolarizedLDOS is defined.
+	 *
 	 *  @param data Raw data to initialize the SpinPolarizedLDOS with. */
 	SpinPolarizedLDOS(
 		const std::vector<int> &ranges,
-		double lowerBound,
-		double upperBound,
-		int resolution,
+		const Range &energyWindow,
 		const SpinMatrix *data
 	);
 
@@ -86,14 +81,11 @@ public:
 	 *  @param indexTree IndexTree containing the @link Index Indices
 	 *  @endlink for which the SpinPolarizedLDOS is contained.
 	 *
-	 *  @param lowerBound Lower bound for the energy.
-	 *  @param upperBound Upper bound for the energy.
-	 *  @param resolution Number of points to use for the energy. */
+	 *  @param energyWindow The energy window over which the
+	 *  SpinPolarizedLDOS is defined. */
 	SpinPolarizedLDOS(
 		const IndexTree &indexTree,
-		double lowerBound,
-		double upperBound,
-		int resolution
+		const Range &energyWindow
 	);
 
 	/** Constructs a SpinPolarizedDOS on the Custom format and initialize
@@ -103,15 +95,12 @@ public:
 	 *  @param indexTree IndexTree containing the @link Index Indices
 	 *  @endlink for which the SpinPolarizedLDOS is contained.
 	 *
-	 *  @param lowerBound Lower bound for the energy.
-	 *  @param upperBound Upper bound for the energy.
-	 *  @param resolution Number of points to use for the energy.
+	 *  @param energyWindow The energy window over which the
+	 *  SpinPolarizedLDOS is defined.
 	 *  @param data Raw data to initialize the SpinPolarizedLDOS with. */
 	SpinPolarizedLDOS(
 		const IndexTree &indexTree,
-		double lowerBound,
-		double upperBound,
-		int resolution,
+		const Range &energyWindow,
 		const SpinMatrix *data
 	);
 

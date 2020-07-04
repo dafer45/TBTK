@@ -145,16 +145,19 @@ Property::DOS ArnoldiIterator::calculateDOS(){
 	const Solver::ArnoldiIterator &solver = getSolver();
 	const CArray<complex<double>> &eigenValues = solver.getEigenValues();
 
-	double lowerBound = getLowerBound();
-	double upperBound = getUpperBound();
-	int energyResolution = getEnergyResolution();
-
-	Property::DOS dos(lowerBound, upperBound, energyResolution);
+	const Range &energyWindow = getEnergyWindow();
+	Property::DOS dos(energyWindow);
 	std::vector<double> &data = dos.getDataRW();
 	double dE = dos.getDeltaE();
 	for(int n = 0; n < solver.getNumEigenValues(); n++){
-		int e = (int)(((real(eigenValues[n]) - lowerBound)/(upperBound - lowerBound))*energyResolution);
-		if(e >= 0 && e < energyResolution){
+		int e = (int)(
+			(
+				(
+					real(eigenValues[n]) - energyWindow[0]
+				)/(energyWindow.getLast() - energyWindow[0])
+			)*energyWindow.getResolution()
+		);
+		if(e >= 0 && e < (int)energyWindow.getResolution()){
 			data[e] += 1./dE;
 		}
 	}
@@ -175,19 +178,10 @@ Property::LDOS ArnoldiIterator::calculateLDOS(
 		<< " ensure eigen vectors are calculated."
 	);
 
-	double lowerBound = getLowerBound();
-	double upperBound = getUpperBound();
-	double energyResolution = getEnergyResolution();
-
 	ensureCompliantRanges(pattern, ranges);
 
 	vector<int> loopRanges = getLoopRanges(pattern, ranges);
-	Property::LDOS ldos(
-		loopRanges,
-		lowerBound,
-		upperBound,
-		energyResolution
-	);
+	Property::LDOS ldos(loopRanges, getEnergyWindow());
 
 	Information information;
 	calculate(
@@ -196,7 +190,7 @@ Property::LDOS ArnoldiIterator::calculateLDOS(
 		pattern,
 		ranges,
 		0,
-		energyResolution,
+		getEnergyWindow().getResolution(),
 		information
 	);
 
@@ -214,10 +208,6 @@ Property::LDOS ArnoldiIterator::calculateLDOS(
 		"Use Solver::ArnoldiIterator::setCalculateEigenVectors() to ensure eigen vectors are calculated."
 	);
 
-	double lowerBound = getLowerBound();
-	double upperBound = getUpperBound();
-	int energyResolution = getEnergyResolution();
-
 	IndexTree allIndices = generateIndexTree(
 		patterns,
 		solver.getModel().getHoppingAmplitudeSet(),
@@ -232,12 +222,7 @@ Property::LDOS ArnoldiIterator::calculateLDOS(
 		true
 	);
 
-	Property::LDOS ldos(
-		memoryLayout,
-		lowerBound,
-		upperBound,
-		energyResolution
-	);
+	Property::LDOS ldos(memoryLayout, getEnergyWindow());
 
 	Information information;
 	calculate(
@@ -264,10 +249,6 @@ Property::SpinPolarizedLDOS ArnoldiIterator::calculateSpinPolarizedLDOS(
 		<< " ensure eigen vectors are calculated."
 	);
 
-	double lowerBound = getLowerBound();
-	double upperBound = getUpperBound();
-	int energyResolution = getEnergyResolution();
-
 	Information information;
 	for(unsigned int n = 0; n < pattern.getSize(); n++){
 		if(pattern.at(n).isSpinIndex()){
@@ -290,9 +271,7 @@ Property::SpinPolarizedLDOS ArnoldiIterator::calculateSpinPolarizedLDOS(
 	vector<int> loopRanges = getLoopRanges(pattern, ranges);
 	Property::SpinPolarizedLDOS spinPolarizedLDOS(
 		loopRanges,
-		lowerBound,
-		upperBound,
-		energyResolution
+		getEnergyWindow()
 	);
 
 	calculate(
@@ -301,7 +280,7 @@ Property::SpinPolarizedLDOS ArnoldiIterator::calculateSpinPolarizedLDOS(
 		pattern,
 		ranges,
 		0,
-		energyResolution,
+		getEnergyWindow().getResolution(),
 		information
 	);
 
@@ -320,10 +299,6 @@ Property::SpinPolarizedLDOS ArnoldiIterator::calculateSpinPolarizedLDOS(
 		<< " ensure eigen vectors are calculated."
 	);
 
-	double lowerBound = getLowerBound();
-	double upperBound = getUpperBound();
-	int energyResolution = getEnergyResolution();
-
 	IndexTree allIndices = generateIndexTree(
 		patterns,
 		solver.getModel().getHoppingAmplitudeSet(),
@@ -340,9 +315,7 @@ Property::SpinPolarizedLDOS ArnoldiIterator::calculateSpinPolarizedLDOS(
 
 	Property::SpinPolarizedLDOS spinPolarizedLDOS(
 		memoryLayout,
-		lowerBound,
-		upperBound,
-		energyResolution
+		getEnergyWindow()
 	);
 
 	Information information;
@@ -392,21 +365,18 @@ void ArnoldiIterator::calculateLDOSCallback(
 
 	const CArray<complex<double>> &eigenValues = solver.getEigenValues();
 
-	double lowerBound = propertyExtractor->getLowerBound();
-	double upperBound = propertyExtractor->getUpperBound();
-	int energyResolution = propertyExtractor->getEnergyResolution();
-
+	const Range &energyWindow = propertyExtractor->getEnergyWindow();
 	double dE = ldos.getDeltaE();
 	for(int n = 0; n < solver.getNumEigenValues(); n++){
 		if(
-			real(eigenValues[n]) > lowerBound
-			&& real(eigenValues[n]) < upperBound
+			real(eigenValues[n]) > energyWindow[0]
+			&& real(eigenValues[n]) < energyWindow.getLast()
 		){
 			complex<double> u = solver.getAmplitude(n, index);
 
-			int e = (int)((real(eigenValues[n]) - lowerBound)/dE);
-			if(e >= energyResolution)
-				e = energyResolution - 1;
+			int e = (int)((real(eigenValues[n]) - energyWindow[0])/dE);
+			if(e >= (int)energyWindow.getResolution())
+				e = energyWindow.getResolution() - 1;
 			data[offset + e] += real(conj(u)*u)/dE;
 		}
 	}
@@ -429,26 +399,23 @@ void ArnoldiIterator::calculateSpinPolarizedLDOSCallback(
 
 	int spinIndex = information.getSpinIndex();
 
-	double lowerBound = propertyExtractor->getLowerBound();
-	double upperBound = propertyExtractor->getUpperBound();
-	int energyResolution = propertyExtractor->getEnergyResolution();
-
 	Index index_u(index);
 	Index index_d(index);
 	index_u.at(spinIndex) = 0;
 	index_d.at(spinIndex) = 1;
+	const Range &energyWindow = propertyExtractor->getEnergyWindow();
 	double dE = spinPolarizedLDOS.getDeltaE();
 	for(int n = 0; n < solver.getNumEigenValues(); n++){
 		if(
-			real(eigenValues[n]) > lowerBound
-			&& real(eigenValues[n]) < upperBound
+			real(eigenValues[n]) > energyWindow[0]
+			&& real(eigenValues[n]) < energyWindow.getLast()
 		){
 			complex<double> u_u = solver.getAmplitude(n, index_u);
 			complex<double> u_d = solver.getAmplitude(n, index_d);
 
-			int e = (int)((real(eigenValues[n]) - lowerBound)/dE);
-			if(e >= energyResolution)
-				e = energyResolution - 1;
+			int e = (int)((real(eigenValues[n]) - energyWindow[0])/dE);
+			if(e >= (int)energyWindow.getResolution())
+				e = energyWindow.getResolution() - 1;
 			data[offset + e].at(0, 0) += conj(u_u)*u_u/dE;
 			data[offset + e].at(0, 1) += conj(u_u)*u_d/dE;
 			data[offset + e].at(1, 0) += conj(u_d)*u_u/dE;

@@ -25,16 +25,8 @@ public:
 		}
 	};
 
-	double getLowerBound() const{
-		return PropertyExtractor::getLowerBound();
-	}
-
-	double getUpperBound() const{
-		return PropertyExtractor::getUpperBound();
-	}
-
-	double getEnergyResolution() const{
-		return PropertyExtractor::getEnergyResolution();
+	const Range& getEnergyWindow() const{
+		return PropertyExtractor::getEnergyWindow();
 	}
 
 	int getLowerFermionicMatsubaraEnergyIndex() const{
@@ -192,9 +184,10 @@ TEST(PropertyExtractor, setEnergyWindowReal0){
 
 	//Verify that the energy windows is properly set.
 	propertyExtractor.setEnergyWindow(-10, 10, 100);
-	EXPECT_DOUBLE_EQ(propertyExtractor.getLowerBound(), -10);
-	EXPECT_DOUBLE_EQ(propertyExtractor.getUpperBound(), 10);
-	EXPECT_EQ(propertyExtractor.getEnergyResolution(), 100);
+	const Range &energyWindow = propertyExtractor.getEnergyWindow();
+	EXPECT_DOUBLE_EQ(energyWindow[0], -10);
+	EXPECT_DOUBLE_EQ(energyWindow.getLast(), 10);
+	EXPECT_EQ(energyWindow.getResolution(), 100);
 
 	//Print error message when accessing Matsubara quantities.
 	EXPECT_EXIT(
@@ -236,9 +229,10 @@ TEST(PropertyExtractor, setEnergyWindowReal1){
 
 	//Verify that the energy windows is properly set.
 	propertyExtractor.setEnergyWindow(Range(-10, 10, 100));
-	EXPECT_DOUBLE_EQ(propertyExtractor.getLowerBound(), -10);
-	EXPECT_DOUBLE_EQ(propertyExtractor.getUpperBound(), 10);
-	EXPECT_EQ(propertyExtractor.getEnergyResolution(), 100);
+	const Range &energyWindow = propertyExtractor.getEnergyWindow();
+	EXPECT_DOUBLE_EQ(energyWindow[0], -10);
+	EXPECT_DOUBLE_EQ(energyWindow.getLast(), 10);
+	EXPECT_EQ(energyWindow.getResolution(), 100);
 
 	//Print error message when accessing Matsubara quantities.
 	EXPECT_EXIT(
@@ -355,23 +349,7 @@ TEST(PropertyExtractor, setEnergyWindowMatsubara){
 	EXPECT_EXIT(
 		{
 			Streams::setStdMuteErr();
-			propertyExtractor.getLowerBound();
-		},
-		::testing::ExitedWithCode(1),
-		""
-	);
-	EXPECT_EXIT(
-		{
-			Streams::setStdMuteErr();
-			propertyExtractor.getUpperBound();
-		},
-		::testing::ExitedWithCode(1),
-		""
-	);
-	EXPECT_EXIT(
-		{
-			Streams::setStdMuteErr();
-			propertyExtractor.getEnergyResolution();
+			propertyExtractor.getEnergyWindow();
 		},
 		::testing::ExitedWithCode(1),
 		""
@@ -584,7 +562,7 @@ TEST(PropertyExtractor, calculateRanges){
 	//Check that the callback is called for all Indices and with the
 	//correct offset when using both loop and sum specifiers as well as
 	//normal subindices.
-	Property::LDOS ldos({2, 1, 3}, -1, 1, 10);
+	Property::LDOS ldos({2, 1, 3}, Range(-1, 1, 10));
 	for(unsigned int n = 0; n < ldos.getSize(); n++)
 		ldos.getDataRW()[n] = 0;
 	PublicPropertyExtractor::PublicInformation information;
@@ -677,9 +655,7 @@ TEST(PropertyExtractor, calculateCustom){
 	//Create the property.
 	Property::SpinPolarizedLDOS spinPolarizedLDOS(
 		memoryLayout,
-		-10,
-		10,
-		100
+		Range(-10, 10, 100)
 	);
 
 	//Run calculation.

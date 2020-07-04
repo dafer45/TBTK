@@ -52,23 +52,17 @@ public:
 
 	/** Constructs a Density.
 	 *
-	 *  @param lowerBound Lower bound for the energy.
-	 *  @param upperBound Upper bound for the energy.
-	 *  @param resolution Number of points to us for the energy. */
-	DOS(double lowerBound, double upperBound, int resolution);
+	 *  @param energyWindow The energy window over which the DOS is
+	 *  defined. */
+	DOS(const Range &energyWindow);
 
 	/** Constructs a Density and initializes it with data.
 	 *
-	 *  @param lowerBound Lower bound for the energy.
-	 *  @param upperBound Upper bound for the energy.
-	 *  @param resolution Number of points to us for the energy.
+	 *  @param energyWindow The energy window over which the DOS is
+	 *  defined.
+	 *
 	 *  @param data Raw data to initialize the DOS with. */
-	DOS(
-		double lowerBound,
-		double upperBound,
-		int resolution,
-		const double *data
-	);
+	DOS(const Range &energyWindow, const double *data);
 
 	/** Constructor. Constructs the DOS from a serialization string.
 	 *

@@ -33,22 +33,18 @@ Susceptibility::Susceptibility() : EnergyResolvedProperty(){
 
 Susceptibility::Susceptibility(
 	const IndexTree &indexTree,
-	double lowerBound,
-	double upperBound,
-	unsigned int resolution
+	const Range &energyWindow
 ) :
-	EnergyResolvedProperty(indexTree, lowerBound, upperBound, resolution)
+	EnergyResolvedProperty(indexTree, energyWindow)
 {
 }
 
 Susceptibility::Susceptibility(
 	const IndexTree &indexTree,
-	double lowerBound,
-	double upperBound,
-	unsigned int resolution,
+	const Range &energyWindow,
 	const complex<double> *data
 ) :
-	EnergyResolvedProperty(indexTree, lowerBound, upperBound, resolution, data)
+	EnergyResolvedProperty(indexTree, energyWindow, data)
 {
 }
 

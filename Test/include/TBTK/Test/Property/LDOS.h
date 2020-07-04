@@ -5,8 +5,10 @@
 namespace TBTK{
 namespace Property{
 
+const double EPSILON_100 = 100*std::numeric_limits<double>::epsilon();
+
 TEST(LDOS, Constructor0){
-	LDOS ldos({2, 3, 4}, -10, 10, 1000);
+	LDOS ldos({2, 3, 4}, Range(-10, 10, 1000));
 	ASSERT_EQ(ldos.getDimensions(), 3);
 	EXPECT_EQ(ldos.getRanges()[0], 2);
 	EXPECT_EQ(ldos.getRanges()[1], 3);
@@ -24,7 +26,7 @@ TEST(LDOS, Constructor1){
 	double dataInput[1000*2*3*4];
 	for(unsigned int n = 0; n < 1000*2*3*4; n++)
 		dataInput[n] = n;
-	LDOS ldos({2, 3, 4}, -10, 10, 1000, dataInput);
+	LDOS ldos({2, 3, 4}, Range(-10, 10, 1000), dataInput);
 	ASSERT_EQ(ldos.getDimensions(), 3);
 	EXPECT_EQ(ldos.getRanges()[0], 2);
 	EXPECT_EQ(ldos.getRanges()[1], 3);
@@ -44,7 +46,7 @@ TEST(LDOS, Constructor2){
 	indexTree.add({1});
 	indexTree.add({2});
 	indexTree.generateLinearMap();
-	LDOS ldos(indexTree, -10, 10, 1000);
+	LDOS ldos(indexTree, Range(-10, 10, 1000));
 	EXPECT_DOUBLE_EQ(ldos.getLowerBound(), -10);
 	EXPECT_DOUBLE_EQ(ldos.getUpperBound(), 10);
 	ASSERT_EQ(ldos.getResolution(), 1000);
@@ -65,7 +67,7 @@ TEST(LDOS, Constructor3){
 	double dataInput[1000*3];
 	for(unsigned int n = 0; n < 1000*3; n++)
 		dataInput[n] = n;
-	LDOS ldos(indexTree, -10, 10, 1000, dataInput);
+	LDOS ldos(indexTree, Range(-10, 10, 1000), dataInput);
 	EXPECT_DOUBLE_EQ(ldos.getLowerBound(), -10);
 	EXPECT_DOUBLE_EQ(ldos.getUpperBound(), 10);
 	ASSERT_EQ(ldos.getResolution(), 1000);
@@ -82,12 +84,12 @@ TEST(LDOS, operatorAdditionAssignment){
 	double dataInputRanges0[2*3*4*10];
 	for(unsigned int n = 0; n < 2*3*4*10; n++)
 		dataInputRanges0[n] = n;
-	LDOS ldosRanges0({2, 3, 4}, -10, 10, 10, dataInputRanges0);
+	LDOS ldosRanges0({2, 3, 4}, Range(-10, 10, 10), dataInputRanges0);
 
 	double dataInputRanges1[2*3*4*10];
 	for(unsigned int n = 0; n < 2*3*4*10; n++)
 		dataInputRanges1[n] = 2*n;
-	LDOS ldosRanges1({2, 3, 4}, -10, 10, 10, dataInputRanges1);
+	LDOS ldosRanges1({2, 3, 4}, Range(-10, 10, 10), dataInputRanges1);
 
 	ldosRanges0 += ldosRanges1;
 	const std::vector<double> dataRanges0 = ldosRanges0.getData();
@@ -104,12 +106,12 @@ TEST(LDOS, operatorAdditionAssignment){
 	double dataInputCustom0[3*10];
 	for(unsigned int n = 0; n < 3*10; n++)
 		dataInputCustom0[n] = n;
-	LDOS ldosCustom0(indexTree, -10, 10, 10, dataInputCustom0);
+	LDOS ldosCustom0(indexTree, Range(-10, 10, 10), dataInputCustom0);
 
 	double dataInputCustom1[3*10];
 	for(unsigned int n = 0; n < 3*10; n++)
 		dataInputCustom1[n] = 2*n;
-	LDOS ldosCustom1(indexTree, -10, 10, 10, dataInputCustom1);
+	LDOS ldosCustom1(indexTree, Range(-10, 10, 10), dataInputCustom1);
 
 	ldosCustom0 += ldosCustom1;
 	const std::vector<double> dataCustom0 = ldosCustom0.getData();
@@ -122,12 +124,12 @@ TEST(LDOS, operatorAddition){
 	double dataInputRanges0[2*3*4*10];
 	for(unsigned int n = 0; n < 2*3*4*10; n++)
 		dataInputRanges0[n] = n;
-	LDOS ldosRanges0({2, 3, 4}, -10, 10, 10, dataInputRanges0);
+	LDOS ldosRanges0({2, 3, 4}, Range(-10, 10, 10), dataInputRanges0);
 
 	double dataInputRanges1[2*3*4*10];
 	for(unsigned int n = 0; n < 2*3*4*10; n++)
 		dataInputRanges1[n] = 2*n;
-	LDOS ldosRanges1({2, 3, 4}, -10, 10, 10, dataInputRanges1);
+	LDOS ldosRanges1({2, 3, 4}, Range(-10, 10, 10), dataInputRanges1);
 
 	LDOS ldosRanges2 = ldosRanges0 + ldosRanges1;
 	const std::vector<double> dataRanges2 = ldosRanges2.getData();
@@ -144,12 +146,12 @@ TEST(LDOS, operatorAddition){
 	double dataInputCustom0[3*10];
 	for(unsigned int n = 0; n < 3*10; n++)
 		dataInputCustom0[n] = n;
-	LDOS ldosCustom0(indexTree, -10, 10, 10, dataInputCustom0);
+	LDOS ldosCustom0(indexTree, Range(-10, 10, 10), dataInputCustom0);
 
 	double dataInputCustom1[3*10];
 	for(unsigned int n = 0; n < 3*10; n++)
 		dataInputCustom1[n] = 2*n;
-	LDOS ldosCustom1(indexTree, -10, 10, 10, dataInputCustom1);
+	LDOS ldosCustom1(indexTree, Range(-10, 10, 10), dataInputCustom1);
 
 	LDOS ldosCustom2 = ldosCustom0 + ldosCustom1;
 	const std::vector<double> dataCustom2 = ldosCustom2.getData();
@@ -162,12 +164,12 @@ TEST(LDOS, operatorSubtractionAssignment){
 	double dataInputRanges0[2*3*4*10];
 	for(unsigned int n = 0; n < 2*3*4*10; n++)
 		dataInputRanges0[n] = n;
-	LDOS ldosRanges0({2, 3, 4}, -10, 10, 10, dataInputRanges0);
+	LDOS ldosRanges0({2, 3, 4}, Range(-10, 10, 10), dataInputRanges0);
 
 	double dataInputRanges1[2*3*4*10];
 	for(unsigned int n = 0; n < 2*3*4*10; n++)
 		dataInputRanges1[n] = 2*n;
-	LDOS ldosRanges1({2, 3, 4}, -10, 10, 10, dataInputRanges1);
+	LDOS ldosRanges1({2, 3, 4}, Range(-10, 10, 10), dataInputRanges1);
 
 	ldosRanges0 -= ldosRanges1;
 	const std::vector<double> dataRanges0 = ldosRanges0.getData();
@@ -184,12 +186,12 @@ TEST(LDOS, operatorSubtractionAssignment){
 	double dataInputCustom0[3*10];
 	for(unsigned int n = 0; n < 3*10; n++)
 		dataInputCustom0[n] = n;
-	LDOS ldosCustom0(indexTree, -10, 10, 10, dataInputCustom0);
+	LDOS ldosCustom0(indexTree, Range(-10, 10, 10), dataInputCustom0);
 
 	double dataInputCustom1[3*10];
 	for(unsigned int n = 0; n < 3*10; n++)
 		dataInputCustom1[n] = 2*n;
-	LDOS ldosCustom1(indexTree, -10, 10, 10, dataInputCustom1);
+	LDOS ldosCustom1(indexTree, Range(-10, 10, 10), dataInputCustom1);
 
 	ldosCustom0 -= ldosCustom1;
 	const std::vector<double> dataCustom0 = ldosCustom0.getData();
@@ -202,12 +204,12 @@ TEST(LDOS, operatorSubtraction){
 	double dataInputRanges0[2*3*4*10];
 	for(unsigned int n = 0; n < 2*3*4*10; n++)
 		dataInputRanges0[n] = n;
-	LDOS ldosRanges0({2, 3, 4}, -10, 10, 10, dataInputRanges0);
+	LDOS ldosRanges0({2, 3, 4}, Range(-10, 10, 10), dataInputRanges0);
 
 	double dataInputRanges1[2*3*4*10];
 	for(unsigned int n = 0; n < 2*3*4*10; n++)
 		dataInputRanges1[n] = 2*n;
-	LDOS ldosRanges1({2, 3, 4}, -10, 10, 10, dataInputRanges1);
+	LDOS ldosRanges1({2, 3, 4}, Range(-10, 10, 10), dataInputRanges1);
 
 	LDOS ldosRanges2 = ldosRanges0 - ldosRanges1;
 	const std::vector<double> dataRanges2 = ldosRanges2.getData();
@@ -224,12 +226,12 @@ TEST(LDOS, operatorSubtraction){
 	double dataInputCustom0[3*10];
 	for(unsigned int n = 0; n < 3*10; n++)
 		dataInputCustom0[n] = n;
-	LDOS ldosCustom0(indexTree, -10, 10, 10, dataInputCustom0);
+	LDOS ldosCustom0(indexTree, Range(-10, 10, 10), dataInputCustom0);
 
 	double dataInputCustom1[3*10];
 	for(unsigned int n = 0; n < 3*10; n++)
 		dataInputCustom1[n] = 2*n;
-	LDOS ldosCustom1(indexTree, -10, 10, 10, dataInputCustom1);
+	LDOS ldosCustom1(indexTree, Range(-10, 10, 10), dataInputCustom1);
 
 	LDOS ldosCustom2 = ldosCustom0 - ldosCustom1;
 	const std::vector<double> dataCustom2 = ldosCustom2.getData();
@@ -242,7 +244,7 @@ TEST(LDOS, operatorMultiplicationAssignment){
 	double dataInputRanges0[2*3*4*10];
 	for(unsigned int n = 0; n < 2*3*4*10; n++)
 		dataInputRanges0[n] = n;
-	LDOS ldosRanges0({2, 3, 4}, -10, 10, 10, dataInputRanges0);
+	LDOS ldosRanges0({2, 3, 4}, Range(-10, 10, 10), dataInputRanges0);
 
 	ldosRanges0 *= 2;
 	const std::vector<double> dataRanges0 = ldosRanges0.getData();
@@ -259,7 +261,7 @@ TEST(LDOS, operatorMultiplicationAssignment){
 	double dataInputCustom0[3*10];
 	for(unsigned int n = 0; n < 3*10; n++)
 		dataInputCustom0[n] = n;
-	LDOS ldosCustom0(indexTree, -10, 10, 10, dataInputCustom0);
+	LDOS ldosCustom0(indexTree, Range(-10, 10, 10), dataInputCustom0);
 
 	ldosCustom0 *= 3;
 	const std::vector<double> dataCustom0 = ldosCustom0.getData();
@@ -272,7 +274,7 @@ TEST(LDOS, operatorMultiplication){
 	double dataInputRanges0[2*3*4*10];
 	for(unsigned int n = 0; n < 2*3*4*10; n++)
 		dataInputRanges0[n] = n;
-	LDOS ldosRanges0({2, 3, 4}, -10, 10, 10, dataInputRanges0);
+	LDOS ldosRanges0({2, 3, 4}, Range(-10, 10, 10), dataInputRanges0);
 
 	LDOS ldosRanges1 = ldosRanges0*2;
 	LDOS ldosRanges2 = 2*ldosRanges0;
@@ -293,7 +295,7 @@ TEST(LDOS, operatorMultiplication){
 	double dataInputCustom0[3*10];
 	for(unsigned int n = 0; n < 3*10; n++)
 		dataInputCustom0[n] = n;
-	LDOS ldosCustom0(indexTree, -10, 10, 10, dataInputCustom0);
+	LDOS ldosCustom0(indexTree, Range(-10, 10, 10), dataInputCustom0);
 
 	LDOS ldosCustom1 = ldosCustom0*3;
 	LDOS ldosCustom2 = 3*ldosCustom0;
@@ -307,7 +309,7 @@ TEST(LDOS, operatorDivisionAssignment){
 	double dataInputRanges0[2*3*4*10];
 	for(unsigned int n = 0; n < 2*3*4*10; n++)
 		dataInputRanges0[n] = n;
-	LDOS ldosRanges0({2, 3, 4}, -10, 10, 10, dataInputRanges0);
+	LDOS ldosRanges0({2, 3, 4}, Range(-10, 10, 10), dataInputRanges0);
 
 	ldosRanges0 /= 2;
 	const std::vector<double> dataRanges0 = ldosRanges0.getData();
@@ -324,7 +326,7 @@ TEST(LDOS, operatorDivisionAssignment){
 	double dataInputCustom0[3*10];
 	for(unsigned int n = 0; n < 3*10; n++)
 		dataInputCustom0[n] = n;
-	LDOS ldosCustom0(indexTree, -10, 10, 10, dataInputCustom0);
+	LDOS ldosCustom0(indexTree, Range(-10, 10, 10), dataInputCustom0);
 
 	ldosCustom0 /= 3;
 	const std::vector<double> dataCustom0 = ldosCustom0.getData();
@@ -337,7 +339,7 @@ TEST(LDOS, operatorDivision){
 	double dataInputRanges0[2*3*4*10];
 	for(unsigned int n = 0; n < 2*3*4*10; n++)
 		dataInputRanges0[n] = n;
-	LDOS ldosRanges0({2, 3, 4}, -10, 10, 10, dataInputRanges0);
+	LDOS ldosRanges0({2, 3, 4}, Range(-10, 10, 10), dataInputRanges0);
 
 	LDOS ldosRanges1 = ldosRanges0/2;
 	const std::vector<double> dataRanges1 = ldosRanges1.getData();
@@ -354,7 +356,7 @@ TEST(LDOS, operatorDivision){
 	double dataInputCustom0[3*10];
 	for(unsigned int n = 0; n < 3*10; n++)
 		dataInputCustom0[n] = n;
-	LDOS ldosCustom0(indexTree, -10, 10, 10, dataInputCustom0);
+	LDOS ldosCustom0(indexTree, Range(-10, 10, 10), dataInputCustom0);
 
 	LDOS ldosCustom1 = ldosCustom0/3;
 	const std::vector<double> dataCustom1 = ldosCustom1.getData();
@@ -367,7 +369,7 @@ TEST(LDOS, SerializeToJSON){
 	double dataInput0[1000*2*3*4];
 	for(unsigned int n = 0; n < 1000*2*3*4; n++)
 		dataInput0[n] = n;
-	LDOS ldos0({2, 3, 4}, -10, 10, 1000, dataInput0);
+	LDOS ldos0({2, 3, 4}, Range(-10, 10, 1000), dataInput0);
 	LDOS ldos1(
 		ldos0.serialize(Serializable::Mode::JSON),
 		Serializable::Mode::JSON
@@ -376,8 +378,8 @@ TEST(LDOS, SerializeToJSON){
 	EXPECT_EQ(ldos1.getRanges()[0], 2);
 	EXPECT_EQ(ldos1.getRanges()[1], 3);
 	EXPECT_EQ(ldos1.getRanges()[2], 4);
-	EXPECT_DOUBLE_EQ(ldos1.getLowerBound(), -10);
-	EXPECT_DOUBLE_EQ(ldos1.getUpperBound(), 10);
+	EXPECT_NEAR(ldos1.getLowerBound(), -10, EPSILON_100);
+	EXPECT_NEAR(ldos1.getUpperBound(), 10, EPSILON_100);
 	ASSERT_EQ(ldos1.getResolution(), 1000);
 	ASSERT_EQ(ldos1.getSize(), 1000*2*3*4);
 	const std::vector<double> &data1 = ldos1.getData();
@@ -393,13 +395,13 @@ TEST(LDOS, SerializeToJSON){
 	double dataInput2[1000*3];
 	for(unsigned int n = 0; n < 1000*3; n++)
 		dataInput2[n] = n;
-	LDOS ldos2(indexTree, -10, 10, 1000, dataInput2);
+	LDOS ldos2(indexTree, Range(-10, 10, 1000), dataInput2);
 	LDOS ldos3(
 		ldos2.serialize(Serializable::Mode::JSON),
 		Serializable::Mode::JSON
 	);
-	EXPECT_DOUBLE_EQ(ldos3.getLowerBound(), -10);
-	EXPECT_DOUBLE_EQ(ldos3.getUpperBound(), 10);
+	EXPECT_NEAR(ldos3.getLowerBound(), -10, EPSILON_100);
+	EXPECT_NEAR(ldos3.getUpperBound(), 10, EPSILON_100);
 	ASSERT_EQ(ldos3.getResolution(), 1000);
 	ASSERT_EQ(ldos3.getSize(), 1000*3);
 	for(unsigned int n = 0; n < ldos3.getResolution(); n++){

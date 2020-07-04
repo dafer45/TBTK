@@ -46,15 +46,9 @@ public:
 	 *  @param indexTree IndexTree containing the @link Index Indices
 	 *  @endlink for which the Susceptibility should be contained.
 	 *
-	 *  @param lowerBound Lower bound for the energy.
-	 *  @param upperBound Upper bound for the energy.
-	 *  @param resolution Number of points to use for the energy. */
-	Susceptibility(
-		const IndexTree &indexTree,
-		double lowerBound,
-		double upperBound,
-		unsigned int resolution
-	);
+	 *  @param energyWindow The energy windo over which the Susceptibility
+	 *  is defined. */
+	Susceptibility(const IndexTree &indexTree, const Range &energyWindow);
 
 	/** Constructs a Susceptibility with real energies on the Custom format
 	 *  and initializes it with data. [See AbstractProperty for detailed
@@ -63,15 +57,13 @@ public:
 	 *  @param indexTree IndexTree containing the @link Index Indices
 	 *  @endlink for which the Susceptibility should be contained.
 	 *
-	 *  @param lowerBound Lower bound for the energy.
-	 *  @param upperBound Upper bound for the energy.
-	 *  @param resolution Number of points to use for the energy.
+	 *  @param energyWindow The energy window over which the Susceptibility
+	 *  is defined.
+	 *
 	 *  @param data Raw data to initialize the GreensFunction with. */
 	Susceptibility(
 		const IndexTree &indexTree,
-		double lowerBound,
-		double upperBound,
-		unsigned int resolution,
+		const Range &energyWindow,
 		const std::complex<double> *data
 	);
 

@@ -33,33 +33,34 @@ namespace TBTK{
 namespace PropertyExtractor{
 
 ChebyshevExpander::ChebyshevExpander(Solver::ChebyshevExpander &solver){
-	double lowerBound = getLowerBound();
-	double upperBound = getUpperBound();
-	int energyResolution = getEnergyResolution();
-
+	const Range &energyWindow = getEnergyWindow();
 	TBTKAssert(
-		energyResolution > 0,
+		energyWindow.getResolution() > 0,
 		"PropertyExtractor::ChebyshevExpander::ChebyshevExpander()",
-		"Argument energyResolution has to be a positive number.",
+		"The energy resolution has to be a positive number.",
 		""
 	);
 	TBTKAssert(
-		lowerBound < upperBound,
+		energyWindow[0] < energyWindow.getLast(),
 		"PropertyExtractor::ChebyshevExpander::ChebyshevExpander()",
-		"Argument lowerBound has to be smaller than argument upperBound.",
+		"The energy window must be accending.",
 		""
 	);
 	TBTKAssert(
-		lowerBound >= -solver.getScaleFactor(),
+		energyWindow[0] >= -solver.getScaleFactor(),
 		"PropertyExtractor::ChebyshevExpander::ChebyshevExpander()",
-		"Argument lowerBound has to be larger than -solver->getScaleFactor().",
-		"Use Solver::ChebyshevExpander::setScaleFactor() to set a larger scale factor."
+		"The lower bound for the energy window has to be larger than"
+		<< " -solver->getScaleFactor().",
+		"Use Solver::ChebyshevExpander::setScaleFactor() to set a"
+		<< " larger scale factor."
 	);
 	TBTKAssert(
-		upperBound <= solver.getScaleFactor(),
+		energyWindow.getLast() <= solver.getScaleFactor(),
 		"PropertyExtractor::ChebyshevExapnder::ChebysheExpander()",
-		"Argument upperBound has to be smaller than solver->getScaleFactor().",
-		"Use Solver::ChebyshevExpnader::setScaleFactor() to set a larger scale factor."
+		"The upper bound for the energy window has to be smaller than"
+		<< " solver->getScaleFactor().",
+		"Use Solver::ChebyshevExpnader::setScaleFactor() to set a"
+		<< " larger scale factor."
 	);
 
 	setSolver(solver);
@@ -67,7 +68,7 @@ ChebyshevExpander::ChebyshevExpander(Solver::ChebyshevExpander &solver){
 	setEnergyWindow(
 		-solver.getScaleFactor(),
 		solver.getScaleFactor(),
-		energyResolution
+		energyWindow.getResolution()
 	);
 
 }
@@ -165,9 +166,7 @@ Property::GreensFunction ChebyshevExpander::calculateGreensFunction(
 	Property::GreensFunction greensFunction(
 		memoryLayout,
 		type,
-		getLowerBound(),
-		getUpperBound(),
-		getEnergyResolution()
+		getEnergyWindow()
 	);
 
 	for(
@@ -219,7 +218,11 @@ Property::GreensFunction ChebyshevExpander::calculateGreensFunction(
 				compoundIndex
 			);
 
-			for(int c = 0; c < getEnergyResolution(); c++){
+			for(
+				unsigned int c = 0;
+				c < getEnergyWindow().getResolution();
+				c++
+			){
 				data[offset + c] = dataGF[offsetGF + c];
 			}
 		}
@@ -268,9 +271,7 @@ Property::GreensFunction ChebyshevExpander::calculateGreensFunctions(
 	Property::GreensFunction greensFunction(
 		memoryLayout,
 		type,
-		getLowerBound(),
-		getUpperBound(),
-		getEnergyResolution()
+		getEnergyWindow()
 	);
 	std::vector<complex<double>> &data = greensFunction.getDataRW();
 
@@ -281,8 +282,13 @@ Property::GreensFunction ChebyshevExpander::calculateGreensFunctions(
 			chebyshevType
 		);
 		unsigned int offset = greensFunction.getOffset({to[n], from});
-		for(int c = 0; c < getEnergyResolution(); c++)
+		for(
+			unsigned int c = 0;
+			c < getEnergyWindow().getResolution();
+			c++
+		){
 			data[offset + c] = greensFunctionData[c];
+		}
 	}
 
 	return greensFunction;
@@ -307,23 +313,20 @@ complex<double> ChebyshevExpander::calculateExpectationValue(
 	const Solver::ChebyshevExpander &solver = getSolver();
 	Statistics statistics = solver.getModel().getStatistics();
 
-	double lowerBound = getLowerBound();
-	double upperBound = getUpperBound();
-	int energyResolution = getEnergyResolution();
-
-	const double dE = (upperBound - lowerBound)/energyResolution;
-	for(int e = 0; e < energyResolution; e++){
+	const Range &energyWindow = getEnergyWindow();
+	const double dE = (energyWindow[1] - energyWindow[0]);
+	for(unsigned int e = 0; e < energyWindow.getResolution(); e++){
 		double weight;
 		if(statistics == Statistics::FermiDirac){
 			weight = Functions::fermiDiracDistribution(
-				lowerBound + (e/(double)energyResolution)*(upperBound - lowerBound),
+				energyWindow[e],
 				solver.getModel().getChemicalPotential(),
 				solver.getModel().getTemperature()
 			);
 		}
 		else{
 			weight = Functions::boseEinsteinDistribution(
-				lowerBound + (e/(double)energyResolution)*(upperBound - lowerBound),
+				energyWindow[e],
 				solver.getModel().getChemicalPotential(),
 				solver.getModel().getTemperature()
 			);
@@ -464,17 +467,8 @@ Property::Magnetization ChebyshevExpander::calculateMagnetization(
 Property::LDOS ChebyshevExpander::calculateLDOS(Index pattern, Index ranges){
 	ensureCompliantRanges(pattern, ranges);
 
-	double lowerBound = getLowerBound();
-	double upperBound = getUpperBound();
-	int energyResolution = getEnergyResolution();
-
 	vector<int> loopRanges = getLoopRanges(pattern, ranges);
-	Property::LDOS ldos(
-		loopRanges,
-		lowerBound,
-		upperBound,
-		energyResolution
-	);
+	Property::LDOS ldos(loopRanges, getEnergyWindow());
 
 	Information information;
 	calculate(
@@ -483,7 +477,7 @@ Property::LDOS ChebyshevExpander::calculateLDOS(Index pattern, Index ranges){
 		pattern,
 		ranges,
 		0,
-		energyResolution,
+		getEnergyWindow().getResolution(),
 		information
 	);
 
@@ -508,12 +502,7 @@ Property::LDOS ChebyshevExpander::calculateLDOS(
 		true
 	);
 
-	Property::LDOS ldos(
-		memoryLayout,
-		getLowerBound(),
-		getUpperBound(),
-		getEnergyResolution()
-	);
+	Property::LDOS ldos(memoryLayout, getEnergyWindow());
 
 	Information information;
 	calculate(
@@ -553,9 +542,7 @@ Property::SpinPolarizedLDOS ChebyshevExpander::calculateSpinPolarizedLDOS(
 	vector<int> loopRanges = getLoopRanges(pattern, ranges);
 	Property::SpinPolarizedLDOS spinPolarizedLDOS(
 		loopRanges,
-		getLowerBound(),
-		getUpperBound(),
-		getEnergyResolution()
+		getEnergyWindow()
 	);
 
 	calculate(
@@ -564,7 +551,7 @@ Property::SpinPolarizedLDOS ChebyshevExpander::calculateSpinPolarizedLDOS(
 		pattern,
 		ranges,
 		0,
-		getEnergyResolution(),
+		getEnergyWindow().getResolution(),
 		information
 	);
 
@@ -591,9 +578,7 @@ Property::SpinPolarizedLDOS ChebyshevExpander::calculateSpinPolarizedLDOS(
 
 	Property::SpinPolarizedLDOS spinPolarizedLDOS(
 		memoryLayout,
-		getLowerBound(),
-		getUpperBound(),
-		getEnergyResolution()
+		getEnergyWindow()
 	);
 
 	Information information;
@@ -631,23 +616,20 @@ void ChebyshevExpander::calculateDensityCallback(
 	const Solver::ChebyshevExpander &solver = propertyExtractor->getSolver();
 	Statistics statistics = solver.getModel().getStatistics();
 
-	double lowerBound = propertyExtractor->getLowerBound();
-	double upperBound = propertyExtractor->getUpperBound();
-	int energyResolution = propertyExtractor->getEnergyResolution();
-
-	const double dE = (upperBound - lowerBound)/energyResolution;
-	for(int e = 0; e < energyResolution; e++){
+	const Range &energyWindow = propertyExtractor->getEnergyWindow();
+	const double dE = energyWindow[1] - energyWindow[0];
+	for(unsigned int e = 0; e < energyWindow.getResolution(); e++){
 		double weight;
 		if(statistics == Statistics::FermiDirac){
 			weight = Functions::fermiDiracDistribution(
-				lowerBound + (e/(double)energyResolution)*(upperBound - lowerBound),
+				energyWindow[e],
 				solver.getModel().getChemicalPotential(),
 				solver.getModel().getTemperature()
 			);
 		}
 		else{
 			weight = Functions::boseEinsteinDistribution(
-				lowerBound + (e/(double)energyResolution)*(upperBound - lowerBound),
+				energyWindow[e],
 				solver.getModel().getChemicalPotential(),
 				solver.getModel().getTemperature()
 			);
@@ -675,11 +657,8 @@ void ChebyshevExpander::calculateMAGCallback(
 	Index from(index);
 	Statistics statistics = solver.getModel().getStatistics();
 
-	double lowerBound = propertyExtractor->getLowerBound();
-	double upperBound = propertyExtractor->getUpperBound();
-	int energyResolution = propertyExtractor->getEnergyResolution();
-
-	const double dE = (upperBound - lowerBound)/energyResolution;
+	const Range &energyWindow = propertyExtractor->getEnergyWindow();
+	const double dE = energyWindow[1] - energyWindow[0];
 	for(int n = 0; n < 4; n++){
 		to.at(spinIndex) = n/2;		//up, up, down, down
 		from.at(spinIndex) = n%2;	//up, down, up, down
@@ -692,18 +671,18 @@ void ChebyshevExpander::calculateMAGCallback(
 		const std::vector<complex<double>> &greensFunctionData
 			= greensFunction.getData();
 
-		for(int e = 0; e < energyResolution; e++){
+		for(unsigned int e = 0; e < energyWindow.getResolution(); e++){
 			double weight;
 			if(statistics == Statistics::FermiDirac){
 				weight = Functions::fermiDiracDistribution(
-					lowerBound + (e/(double)energyResolution)*(upperBound - lowerBound),
+					energyWindow[e],
 					solver.getModel().getChemicalPotential(),
 					solver.getModel().getTemperature()
 				);
 			}
 			else{
 				weight = Functions::boseEinsteinDistribution(
-					lowerBound + (e/(double)energyResolution)*(upperBound - lowerBound),
+					energyWindow[e],
 					solver.getModel().getChemicalPotential(),
 					solver.getModel().getTemperature()
 				);
@@ -722,24 +701,22 @@ void ChebyshevExpander::calculateLDOSCallback(
 	int offset,
 	Information &information
 ){
-	ChebyshevExpander *pe = (ChebyshevExpander*)cb_this;
+	ChebyshevExpander *propertyExtractor = (ChebyshevExpander*)cb_this;
 	Property::LDOS &ldos = (Property::LDOS&)property;
 	vector<double> &data = ldos.getDataRW();
 
-	Property::GreensFunction greensFunction = pe->calculateGreensFunction(
-		index,
-		index,
-		Property::GreensFunction::Type::NonPrincipal
-	);
+	Property::GreensFunction greensFunction
+		= propertyExtractor->calculateGreensFunction(
+			index,
+			index,
+			Property::GreensFunction::Type::NonPrincipal
+		);
 	const std::vector<complex<double>> &greensFunctionData
 		= greensFunction.getData();
 
-	double lowerBound = pe->getLowerBound();
-	double upperBound = pe->getUpperBound();
-	int energyResolution = pe->getEnergyResolution();
-
-	const double dE = (upperBound - lowerBound)/energyResolution;
-	for(int n = 0; n < energyResolution; n++)
+	const Range &energyWindow = propertyExtractor->getEnergyWindow();
+	const double dE = energyWindow[1] - energyWindow[0];
+	for(unsigned int n = 0; n < energyWindow.getResolution(); n++)
 		data[offset + n] += imag(greensFunctionData[n])/M_PI*dE;
 }
 
@@ -750,7 +727,7 @@ void ChebyshevExpander::calculateSP_LDOSCallback(
 	int offset,
 	Information &information
 ){
-	ChebyshevExpander *pe = (ChebyshevExpander*)cb_this;
+	ChebyshevExpander *propertyExtractor = (ChebyshevExpander*)cb_this;
 	Property::SpinPolarizedLDOS &spinPolarizedLDOS
 		= (Property::SpinPolarizedLDOS&)property;
 	vector<SpinMatrix> &data = spinPolarizedLDOS.getDataRW();
@@ -759,24 +736,24 @@ void ChebyshevExpander::calculateSP_LDOSCallback(
 	Index to(index);
 	Index from(index);
 
-	double lowerBound = pe->getLowerBound();
-	double upperBound = pe->getUpperBound();
-	int energyResolution = pe->getEnergyResolution();
-
-	const double dE = (upperBound - lowerBound)/energyResolution;
+	const Range &energyWindow = propertyExtractor->getEnergyWindow();
+	const double dE = energyWindow[1] - energyWindow[0];
 	for(int n = 0; n < 4; n++){
 		to.at(spinIndex) = n/2;		//up, up, down, down
 		from.at(spinIndex) = n%2;	//up, down, up, down
-		Property::GreensFunction greensFunction = pe->calculateGreensFunction(
-			to,
-			from,
-			Property::GreensFunction::Type::NonPrincipal
-		);
+		Property::GreensFunction greensFunction
+			= propertyExtractor->calculateGreensFunction(
+				to,
+				from,
+				Property::GreensFunction::Type::NonPrincipal
+			);
 		const std::vector<complex<double>> &greensFunctionData
 			= greensFunction.getData();
 
-		for(int e = 0; e < energyResolution; e++)
-			data[offset + e].at(n/2, n%2) += -i*greensFunctionData[e]/M_PI*dE;
+		for(unsigned int e = 0; e < energyWindow.getResolution(); e++){
+			data[offset + e].at(n/2, n%2)
+				+= -i*greensFunctionData[e]/M_PI*dE;
+		}
 	}
 }
 

@@ -29,21 +29,17 @@ namespace TBTK{
 namespace Property{
 
 TransmissionRate::TransmissionRate(
-	double lowerBound,
-	double upperBound,
-	int resolution
+	const Range &energyWindow
 ) :
-	EnergyResolvedProperty<double>(lowerBound, upperBound, resolution)
+	EnergyResolvedProperty<double>(energyWindow)
 {
 }
 
 TransmissionRate::TransmissionRate(
-	double lowerBound,
-	double upperBound,
-	int resolution,
+	const Range &energyWindow,
 	const double *data
 ) :
-	EnergyResolvedProperty(lowerBound, upperBound, resolution, data)
+	EnergyResolvedProperty(energyWindow, data)
 {
 }
 

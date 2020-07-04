@@ -31,22 +31,18 @@ InteractionVertex::InteractionVertex() : EnergyResolvedProperty(){
 
 InteractionVertex::InteractionVertex(
 	const IndexTree &indexTree,
-	double lowerBound,
-	double upperBound,
-	unsigned int resolution
+	const Range &energyWindow
 ) :
-	EnergyResolvedProperty(indexTree, lowerBound, upperBound, resolution)
+	EnergyResolvedProperty(indexTree, energyWindow)
 {
 }
 
 InteractionVertex::InteractionVertex(
 	const IndexTree &indexTree,
-	double lowerBound,
-	double upperBound,
-	unsigned int resolution,
+	const Range &energyWindow,
 	const complex<double> *data
 ) :
-	EnergyResolvedProperty(indexTree, lowerBound, upperBound, resolution, data)
+	EnergyResolvedProperty(indexTree, energyWindow, data)
 {
 }
 

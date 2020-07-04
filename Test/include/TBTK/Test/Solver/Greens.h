@@ -82,9 +82,7 @@ TEST(Greens, addSelfEnergy){
 	memoryLayoutA.generateLinearMap();
 	Property::SelfEnergy selfEnergyA(
 		memoryLayoutA,
-		LOWER_BOUND,
-		UPPER_BOUND,
-		RESOLUTION
+		Range(LOWER_BOUND, UPPER_BOUND, RESOLUTION)
 	);
 	for(unsigned int n = 0; n < RESOLUTION; n++){
 		for(int x = 0; x < 2; x++){
@@ -260,9 +258,7 @@ TEST(Greens, addSelfEnergy){
 	memoryLayoutB.generateLinearMap();
 	Property::SelfEnergy selfEnergyB(
 		memoryLayoutB,
-		LOWER_BOUND,
-		UPPER_BOUND,
-		RESOLUTION
+		Range(LOWER_BOUND, UPPER_BOUND, RESOLUTION)
 	);
 	for(int k = 0; k < 10; k++){
 		for(int m = 0; m < 2; m++){
@@ -333,9 +329,7 @@ TEST(Greens, addSelfEnergy){
 		referenceMemoryLayout.generateLinearMap();
 		Property::SelfEnergy referenceSelfEnergy(
 			referenceMemoryLayout,
-			LOWER_BOUND,
-			UPPER_BOUND,
-			RESOLUTION
+			Range(LOWER_BOUND, UPPER_BOUND, RESOLUTION)
 		);
 		for(int m = 0; m < 2; m++){
 			for(int n = 0; n < 2; n++){
@@ -542,15 +536,11 @@ TEST(Greens, calculateTransmission){
 	indexTree.generateLinearMap();
 	Property::SelfEnergy selfEnergy0(
 		indexTree,
-		LOWER_BOUND,
-		UPPER_BOUND,
-		RESOLUTION
+		Range(LOWER_BOUND, UPPER_BOUND, RESOLUTION)
 	);
 	Property::SelfEnergy selfEnergy1(
 		indexTree,
-		LOWER_BOUND,
-		UPPER_BOUND,
-		RESOLUTION
+		Range(LOWER_BOUND, UPPER_BOUND, RESOLUTION)
 	);
 	Range energies(LOWER_BOUND, UPPER_BOUND, RESOLUTION, true, true);
 	for(unsigned int n = 0; n < RESOLUTION; n++){

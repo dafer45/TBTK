@@ -569,7 +569,7 @@ Property::DOS* FileReader::readDOS(string name, string path){
 		upperBound = limits[0];
 		lowerBound = limits[1];
 
-		dos = new Property::DOS(lowerBound, upperBound, resolution);
+		dos = new Property::DOS(Range(lowerBound, upperBound, resolution));
 
 		dataset.read(
 			dos->getDataRW().data(),
@@ -959,9 +959,11 @@ Property::LDOS* FileReader::readLDOS(string name, string path){
 
 			ldos = new Property::LDOS(
 				vector<int>(dims, dims + rank),
-				doubleAttributes[0],
-				doubleAttributes[1],
-				intAttributes[1]
+				Range(
+					doubleAttributes[0],
+					doubleAttributes[1],
+					intAttributes[1]
+				)
 			);
 			delete [] dims;
 
@@ -1021,9 +1023,11 @@ Property::LDOS* FileReader::readLDOS(string name, string path){
 
 		ldos = new Property::LDOS(
 			*indexTree,
-			doubleAttributes[0],
-			doubleAttributes[1],
-			intAttributes[1],
+			Range(
+				doubleAttributes[0],
+				doubleAttributes[1],
+				intAttributes[1]
+			),
 			data
 		);
 
@@ -1130,9 +1134,11 @@ Property::SpinPolarizedLDOS* FileReader::readSpinPolarizedLDOS(
 //			spinPolarizedLDOS = new Property::SpinPolarizedLDOS(rank, dims, lowerBound, upperBound, resolution);
 			spinPolarizedLDOS = new Property::SpinPolarizedLDOS(
 				vector<int>(dims, dims + rank),
-				lowerBound,
-				upperBound,
-				resolution
+				Range(
+					lowerBound,
+					upperBound,
+					resolution
+				)
 			);
 			delete [] dims;
 
@@ -1209,9 +1215,11 @@ Property::SpinPolarizedLDOS* FileReader::readSpinPolarizedLDOS(
 
 		spinPolarizedLDOS = new Property::SpinPolarizedLDOS(
 			*indexTree,
-			doubleAttributes[0],
-			doubleAttributes[1],
-			intAttributes[1],
+			Range(
+				doubleAttributes[0],
+				doubleAttributes[1],
+				intAttributes[1]
+			),
 			data
 		);
 

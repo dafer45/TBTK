@@ -34,23 +34,16 @@ class TransmissionRate : public EnergyResolvedProperty<double>{
 public:
 	/** Constructs a TransmissionRate.
 	 *
-	 *  @param lowerBound Lower bound for the energy.
-	 *  @param upperBound Upper bound for the energy.
-	 *  @param resolution Number of points to us for the energy. */
-	TransmissionRate(double lowerBound, double upperBound, int resolution);
+	 *  @param energyWindow The energy window over which the Transmission
+	 *  is defined. */
+	TransmissionRate(const Range &energyWindow);
 
 	/** Constructs a TransmissionRate and initializes it with data.
 	 *
-	 *  @param lowerBound Lower bound for the energy.
-	 *  @param upperBound Upper bound for the energy.
-	 *  @param resolution Number of points to us for the energy.
+	 *  @param energyWindow The energy window over which the Transmission
+	 *  is defined.
 	 *  @param data Raw data to initialize the TransmissionRate with. */
-	TransmissionRate(
-		double lowerBound,
-		double upperBound,
-		int resolution,
-		const double *data
-	);
+	TransmissionRate(const Range &energyWindow, const double *data);
 
 	/** Constructor. Constructs the TransmissionRate from a serialization
 	 *  string.

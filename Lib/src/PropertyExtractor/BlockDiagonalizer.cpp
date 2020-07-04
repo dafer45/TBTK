@@ -165,9 +165,7 @@ Property::GreensFunction BlockDiagonalizer::calculateGreensFunction(
 		Property::GreensFunction greensFunction(
 			memoryLayout,
 			type,
-			getLowerBound(),
-			getUpperBound(),
-			getEnergyResolution()
+			getEnergyWindow()
 		);
 
 		Information information;
@@ -241,17 +239,14 @@ Property::DOS BlockDiagonalizer::calculateDOS(){
 		<< " to set a real energy window."
 	);
 
-	double lowerBound = getLowerBound();
-	double upperBound = getUpperBound();
-	int energyResolution = getEnergyResolution();
-
-	Property::DOS dos(lowerBound, upperBound, energyResolution);
+	const Range &energyWindow = getEnergyWindow();
+	Property::DOS dos(energyWindow);
 	std::vector<double> &data = dos.getDataRW();
 	double dE = dos.getDeltaE();
 	const Solver::BlockDiagonalizer &solver = getSolver();
 	for(int n = 0; n < solver.getModel().getBasisSize(); n++){
-		int e = round((solver.getEigenValue(n) - lowerBound)/dE);
-		if(e >= 0 && e < energyResolution)
+		int e = round((solver.getEigenValue(n) - energyWindow[0])/dE);
+		if(e >= 0 && e < (int)energyWindow.getResolution())
 			data[e] += 1./dE;
 	}
 
@@ -378,22 +373,13 @@ Property::LDOS BlockDiagonalizer::calculateLDOS(
 		<< " to set a real energy window."
 	);
 
-	double lowerBound = getLowerBound();
-	double upperBound = getUpperBound();
-	int energyResolution = getEnergyResolution();
-
 	const Solver::BlockDiagonalizer &solver = getSolver();
 	IndexTreeGenerator indexTreeGenerator(solver.getModel());
 	IndexTree allIndices = indexTreeGenerator.generateAllIndices(patterns);
 	IndexTree memoryLayout
 		= indexTreeGenerator.generateMemoryLayout(patterns);
 
-	Property::LDOS ldos(
-		memoryLayout,
-		lowerBound,
-		upperBound,
-		energyResolution
-	);
+	Property::LDOS ldos(memoryLayout, getEnergyWindow());
 
 	Information information;
 	calculate(
@@ -428,10 +414,6 @@ Property::SpinPolarizedLDOS BlockDiagonalizer::calculateSpinPolarizedLDOS(
 		<< " to set a real energy window."
 	);
 
-	double lowerBound = getLowerBound();
-	double upperBound = getUpperBound();
-	int energyResolution = getEnergyResolution();
-
 	const Solver::BlockDiagonalizer &solver = getSolver();
 	IndexTreeGenerator indexTreeGenerator(solver.getModel());
 	IndexTree allIndices = indexTreeGenerator.generateAllIndices(patterns);
@@ -440,9 +422,7 @@ Property::SpinPolarizedLDOS BlockDiagonalizer::calculateSpinPolarizedLDOS(
 
 	Property::SpinPolarizedLDOS spinPolarizedLDOS(
 		memoryLayout,
-		lowerBound,
-		upperBound,
-		energyResolution
+		getEnergyWindow()
 	);
 
 	Information information;
@@ -539,16 +519,14 @@ void BlockDiagonalizer::calculateGreensFunctionCallback(
 	case Property::GreensFunction::Type::Advanced:
 	case Property::GreensFunction::Type::Retarded:
 	{
-		double lowerBound = propertyExtractor->getLowerBound();
-		double energyResolution
-			= propertyExtractor->getEnergyResolution();
-		double dE = greensFunction.getDeltaE();
+		const Range &energyWindow
+			= propertyExtractor->getEnergyWindow();
 		double delta = propertyExtractor->getEnergyInfinitesimal();
 		if(greensFunction.getType() == Property::GreensFunction::Type::Advanced)
 			delta *= -1;
 
-		for(int e = 0; e < energyResolution; e++){
-			double E = lowerBound + e*dE;
+		for(unsigned int e = 0; e < energyWindow.getResolution(); e++){
+			double E = energyWindow[e];
 			for(
 				int n = 0;
 				n < solver.getModel().getBasisSize();
@@ -722,21 +700,21 @@ void BlockDiagonalizer::calculateLDOSCallback(
 	Property::LDOS &ldos = (Property::LDOS&)property;
 	vector<double> &data = ldos.getDataRW();
 
-	double lowerBound = propertyExtractor->getLowerBound();
-	double upperBound = propertyExtractor->getUpperBound();
-	int energyResolution = propertyExtractor->getEnergyResolution();
-
 	int firstStateInBlock = solver.getFirstStateInBlock(index);
 	int lastStateInBlock = solver.getLastStateInBlock(index);
 	double dE = ldos.getDeltaE();
+	const Range &energyWindow = propertyExtractor->getEnergyWindow();
 	for(int n = firstStateInBlock; n <= lastStateInBlock; n++){
 		double eigenValue = solver.getEigenValue(n);
-		if(eigenValue > lowerBound && eigenValue < upperBound){
+		if(
+			eigenValue > energyWindow[0]
+			&& eigenValue < energyWindow.getLast()
+		){
 			complex<double> u = solver.getAmplitude(n, index);
 
-			int e = (int)((eigenValue - lowerBound)/dE);
-			if(e >= energyResolution)
-				e = energyResolution - 1;
+			int e = (int)((eigenValue - energyWindow[0])/dE);
+			if(e >= (int)energyWindow.getResolution())
+				e = energyWindow.getResolution() - 1;
 			data[offset + e] += real(conj(u)*u)/dE;
 		}
 	}
@@ -757,10 +735,6 @@ void BlockDiagonalizer::calculateSP_LDOSCallback(
 
 	int spinIndex = information.getSpinIndex();
 
-	double lowerBound = propertyExtractor->getLowerBound();
-	double upperBound = propertyExtractor->getUpperBound();
-	int energyResolution = propertyExtractor->getEnergyResolution();
-
 	Index index_u(index);
 	Index index_d(index);
 	index_u.at(spinIndex) = 0;
@@ -768,15 +742,19 @@ void BlockDiagonalizer::calculateSP_LDOSCallback(
 	int firstStateInBlock = solver.getFirstStateInBlock(index);
 	int lastStateInBlock = solver.getLastStateInBlock(index);
 	double dE = spinPolarizedLDOS.getDeltaE();
+	const Range &energyWindow = propertyExtractor->getEnergyWindow();
 	for(int n = firstStateInBlock; n <= lastStateInBlock; n++){
 		double eigenValue = solver.getEigenValue(n);
-		if(eigenValue > lowerBound && eigenValue < upperBound){
+		if(
+			eigenValue > energyWindow[0]
+			&& eigenValue < energyWindow.getLast()
+		){
 			complex<double> u_u = solver.getAmplitude(n, index_u);
 			complex<double> u_d = solver.getAmplitude(n, index_d);
 
-			int e = (int)((eigenValue - lowerBound)/dE);
-			if(e >= energyResolution)
-				e = energyResolution - 1;
+			int e = (int)((eigenValue - energyWindow[0])/dE);
+			if(e >= (int)energyWindow.getResolution())
+				e = energyWindow.getResolution() - 1;
 			data[offset + e].at(0, 0) += conj(u_u)*u_u/dE;
 			data[offset + e].at(0, 1) += conj(u_u)*u_d/dE;
 			data[offset + e].at(1, 0) += conj(u_d)*u_u/dE;

@@ -5,6 +5,8 @@
 namespace TBTK{
 namespace Property{
 
+const double EPSILON_100 = 100*std::numeric_limits<double>::epsilon();
+
 class SelfEnergyTest : public ::testing::Test{
 protected:
 	const double LOWER_BOUND = -10;
@@ -32,9 +34,7 @@ protected:
 
 		selfEnergy[0] = SelfEnergy(
 			indexTree,
-			LOWER_BOUND,
-			UPPER_BOUND,
-			RESOLUTION,
+			Range(LOWER_BOUND, UPPER_BOUND, RESOLUTION),
 			data
 		);
 		selfEnergy[1] = SelfEnergy(
@@ -51,13 +51,11 @@ protected:
 TEST_F(SelfEnergyTest, construction1){
 	SelfEnergy selfEnergy0(
 		indexTree,
-		LOWER_BOUND,
-		UPPER_BOUND,
-		RESOLUTION
+		Range(LOWER_BOUND, UPPER_BOUND, RESOLUTION)
 	);
 
-	EXPECT_EQ(selfEnergy0.getLowerBound(), LOWER_BOUND);
-	EXPECT_EQ(selfEnergy0.getUpperBound(), UPPER_BOUND);
+	EXPECT_NEAR(selfEnergy0.getLowerBound(), LOWER_BOUND, EPSILON_100);
+	EXPECT_NEAR(selfEnergy0.getUpperBound(), UPPER_BOUND, EPSILON_100);
 	EXPECT_EQ(selfEnergy0.getResolution(), RESOLUTION);
 	EXPECT_EQ(
 		selfEnergy0.getEnergyType(),

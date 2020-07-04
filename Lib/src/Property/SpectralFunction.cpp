@@ -32,32 +32,19 @@ SpectralFunction::SpectralFunction() : EnergyResolvedProperty(){
 
 SpectralFunction::SpectralFunction(
 	const IndexTree &indexTree,
-	double lowerBound,
-	double upperBound,
-	int resolution
+	const Range &energyWindow
 ) :
-	EnergyResolvedProperty<complex<double>>(
-		indexTree,
-		lowerBound,
-		upperBound,
-		resolution
-){
+	EnergyResolvedProperty<complex<double>>(indexTree, energyWindow)
+{
 }
 
 SpectralFunction::SpectralFunction(
 	const IndexTree &indexTree,
-	double lowerBound,
-	double upperBound,
-	int resolution,
+	const Range &energyWindow,
 	const complex<double> *data
 ) :
-	EnergyResolvedProperty<complex<double>>(
-		indexTree,
-		lowerBound,
-		upperBound,
-		resolution,
-		data
-){
+	EnergyResolvedProperty<complex<double>>(indexTree, energyWindow, data)
+{
 }
 
 string SpectralFunction::serialize(Mode mode) const{

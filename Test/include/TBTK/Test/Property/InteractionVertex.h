@@ -50,9 +50,7 @@ protected:
 
 		interactionVertex[0] = InteractionVertex(
 			indexTree,
-			LOWER_BOUND,
-			UPPER_BOUND,
-			RESOLUTION,
+			Range(LOWER_BOUND, UPPER_BOUND, RESOLUTION),
 			data
 		);
 		interactionVertex[1] = InteractionVertex(
@@ -69,9 +67,7 @@ protected:
 TEST_F(InteractionVertexTest, construction1){
 	InteractionVertex interactionVertex0(
 		indexTree,
-		LOWER_BOUND,
-		UPPER_BOUND,
-		RESOLUTION
+		Range(LOWER_BOUND, UPPER_BOUND, RESOLUTION)
 	);
 
 	EXPECT_EQ(interactionVertex0.getLowerBound(), LOWER_BOUND);

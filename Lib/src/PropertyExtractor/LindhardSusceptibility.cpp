@@ -322,19 +322,11 @@ Property::Susceptibility LindhardSusceptibility::calculateSusceptibility(
 	switch(getEnergyType()){
 	case EnergyType::Real:
 	{
-		double lowerBound = getLowerBound();
-		double upperBound = getUpperBound();
-		int energyResolution = getEnergyResolution();
-
+		const Range &energyWindow = getEnergyWindow();
 		energies.clear();
-		energies.reserve(energyResolution);
-		double dE;
-		if(energyResolution == 1)
-			dE = 0;
-		else
-			dE = (upperBound - lowerBound)/(energyResolution-1);
-		for(int n = 0; n < energyResolution; n++)
-			energies.push_back(lowerBound + n*dE);
+		energies.reserve(energyWindow.getResolution());
+		for(unsigned int n = 0; n < energyWindow.getResolution(); n++)
+			energies.push_back(energyWindow[n]);
 
 		Property::Susceptibility susceptibility(
 			memoryLayout,

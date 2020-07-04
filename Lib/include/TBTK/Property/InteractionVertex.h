@@ -46,14 +46,11 @@ public:
 	 *  @param indexTree IndexTree containing the @link Index Indices
 	 *  @endlink for which the Susceptibility should be contained.
 	 *
-	 *  @param lowerBound Lower bound for the energy.
-	 *  @param upperBound Upper bound for the energy.
-	 *  @param resolution Number of points to use for the energy. */
+	 *  @param energyWindow The energy window over which the
+	 *  InteractionVertex is defined. */
 	InteractionVertex(
 		const IndexTree &indexTree,
-		double lowerBound,
-		double upperBound,
-		unsigned int resolution
+		const Range &energyWindow
 	);
 
 	/** Constructs an InteractionVertex with real energies on the Custom
@@ -64,15 +61,13 @@ public:
 	 *  @param indexTree IndexTree containing the @link Index Indices
 	 *  @endlink for which the InteractionVertex should be contained.
 	 *
-	 *  @param lowerBound Lower bound for the energy.
-	 *  @param upperBound Upper bound for the energy.
-	 *  @param resolution Number of points to use for the energy.
+	 *  @param energyWindow The energy window over which the
+	 *  InteractionVertex is defined.
+	 *
 	 *  @param data Raw data to initialize the InteractionVertex with. */
 	InteractionVertex(
 		const IndexTree &indexTree,
-		double lowerBound,
-		double upperBound,
-		unsigned int resolution,
+		const Range &energyWindow,
 		const std::complex<double> *data
 	);
 

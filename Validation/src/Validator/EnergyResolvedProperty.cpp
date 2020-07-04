@@ -50,9 +50,7 @@ int main(int argc, char **argv){
 			data.push_back(n);
 
 		energyResolvedProperty = Property::EnergyResolvedProperty<int>(
-			-5,
-			5,
-			10,
+			Range(-5, 5, 10),
 			data.data()
 		);
 		energyResolvedProperty.setDefaultValue(137);
@@ -73,9 +71,7 @@ int main(int argc, char **argv){
 
 		energyResolvedProperty = Property::EnergyResolvedProperty<int>(
 			indexTree,
-			-5,
-			5,
-			10,
+			Range(-5, 5, 10),
 			data.data()
 		);
 		energyResolvedProperty.setDefaultValue(137);

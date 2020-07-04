@@ -143,9 +143,11 @@ Property::LDOS Greens::calculateLDOS(
 
 	Property::LDOS ldos(
 		memoryLayout,
-		solver.getGreensFunction().getLowerBound(),
-		solver.getGreensFunction().getUpperBound(),
-		solver.getGreensFunction().getResolution()
+		Range(
+			solver.getGreensFunction().getLowerBound(),
+			solver.getGreensFunction().getUpperBound(),
+			solver.getGreensFunction().getResolution()
+		)
 	);
 
 	Information information;

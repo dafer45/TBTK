@@ -20,9 +20,7 @@ TEST(GreensFunction, Constructor2){
 	indexTree.generateLinearMap();
 	SpectralFunction spectralFunction(
 		indexTree,
-		-10,
-		10,
-		1000
+		Range(-10, 10, 1000)
 	);
 	ASSERT_EQ(spectralFunction.getBlockSize(), 1000);
 	ASSERT_EQ(spectralFunction.getResolution(), 1000);
@@ -69,9 +67,7 @@ TEST(GreensFunction, Constructor3){
 		data[n] = n;
 	SpectralFunction spectralFunction(
 		indexTree,
-		-10,
-		10,
-		1000,
+		Range(-10, 10, 1000),
 		data
 	);
 	ASSERT_EQ(spectralFunction.getBlockSize(), 1000);

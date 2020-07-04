@@ -33,11 +33,9 @@ GreensFunction::GreensFunction() : EnergyResolvedProperty(){
 GreensFunction::GreensFunction(
 	const IndexTree &indexTree,
 	Type type,
-	double lowerBound,
-	double upperBound,
-	unsigned int resolution
+	const Range &energyWindow
 ) :
-	EnergyResolvedProperty(indexTree, lowerBound, upperBound, resolution),
+	EnergyResolvedProperty(indexTree, energyWindow),
 	type(type)
 {
 }
@@ -45,16 +43,12 @@ GreensFunction::GreensFunction(
 GreensFunction::GreensFunction(
 	const IndexTree &indexTree,
 	Type type,
-	double lowerBound,
-	double upperBound,
-	unsigned int resolution,
+	const Range &energyWindow,
 	const complex<double> *data
 ) :
 	EnergyResolvedProperty(
 		indexTree,
-		lowerBound,
-		upperBound,
-		resolution,
+		energyWindow,
 		data
 	),
 	type(type)

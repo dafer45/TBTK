@@ -173,9 +173,11 @@ Property::SpectralFunction Greens::calculateSpectralFunction() const{
 
 	Property::SpectralFunction spectralFunction(
 		indexTree,
-		greensFunction->getLowerBound(),
-		greensFunction->getUpperBound(),
-		greensFunction->getResolution()
+		Range(
+			greensFunction->getLowerBound(),
+			greensFunction->getUpperBound(),
+			greensFunction->getResolution()
+		)
 	);
 	complex<double> i(0, 1);
 	for(auto index : indexTree){
@@ -388,9 +390,11 @@ Property::TransmissionRate Greens::calculateTransmissionRate(
 	}
 
 	Property::TransmissionRate transmissionRate(
-		greensFunction->getLowerBound(),
-		greensFunction->getUpperBound(),
-		greensFunction->getResolution(),
+		Range(
+			greensFunction->getLowerBound(),
+			greensFunction->getUpperBound(),
+			greensFunction->getResolution()
+		),
 		transmissionRateData.data()
 	);
 
@@ -541,9 +545,11 @@ Property::GreensFunction Greens::createNewGreensFunction() const{
 		result = Property::GreensFunction(
 			greensFunctionIndices,
 			greensFunction->getType(),
-			greensFunction->getLowerBound(),
-			greensFunction->getUpperBound(),
-			greensFunction->getResolution()
+			Range(
+				greensFunction->getLowerBound(),
+				greensFunction->getUpperBound(),
+				greensFunction->getResolution()
+			)
 		);
 
 		break;

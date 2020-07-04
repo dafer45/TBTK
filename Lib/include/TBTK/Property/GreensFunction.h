@@ -63,15 +63,12 @@ public:
 	 *  @param indexTree IndexTree containing the @link Index Indices
 	 *  @endlink for which the GreensFunction should be contained.
 	 *
-	 *  @param lowerBound Lower bound for the energy.
-	 *  @param upperBound Upper bound for the energy.
-	 *  @param resolution Number of points to use for the energy. */
+	 *  @param energyWindow The energy window over which the GreensFunction
+	 *  is defined. */
 	GreensFunction(
 		const IndexTree &indexTree,
 		Type type,
-		double lowerBound,
-		double upperBound,
-		unsigned int resolution
+		const Range &energyWindow
 	);
 
 	/** Constructs a GreensFunction with real energies on the Custom format
@@ -81,16 +78,14 @@ public:
 	 *  @param indexTree IndexTree containing the @link Index Indices
 	 *  @endlink for which the GreensFunction should be contained.
 	 *
-	 *  @param lowerBound Lower bound for the energy.
-	 *  @param upperBound Upper bound for the energy.
-	 *  @param resolution Number of points to use for the energy.
+	 *  @param energyWindow The energy window over which the GreensFunction
+	 *  is defined.
+	 *
 	 *  @param data Raw data to initialize the GreensFunction with. */
 	GreensFunction(
 		const IndexTree &indexTree,
 		Type type,
-		double lowerBound,
-		double upperBound,
-		unsigned int resolution,
+		const Range &energyRange,
 		const std::complex<double> *data
 	);
 

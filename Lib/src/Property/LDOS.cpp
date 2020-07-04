@@ -30,55 +30,35 @@ namespace Property{
 
 LDOS::LDOS(
 	const std::vector<int> &ranges,
-	double lowerBound,
-	double upperBound,
-	int resolution
+	const Range &energyWindow
 ) :
-	EnergyResolvedProperty(ranges, lowerBound, upperBound, resolution)
+	EnergyResolvedProperty(ranges, energyWindow)
 {
 }
 
 LDOS::LDOS(
 	const std::vector<int> &ranges,
-	double lowerBound,
-	double upperBound,
-	int resolution,
+	const Range &energyWindow,
 	const double *data
 ) :
-	EnergyResolvedProperty(
-		ranges,
-		lowerBound,
-		upperBound,
-		resolution,
-		data
-	)
+	EnergyResolvedProperty(ranges, energyWindow, data)
 {
 }
 
 LDOS::LDOS(
 	const IndexTree &indexTree,
-	double lowerBound,
-	double upperBound,
-	int resolution
+	const Range &energyWindow
 ) :
-	EnergyResolvedProperty(indexTree, lowerBound, upperBound, resolution)
+	EnergyResolvedProperty(indexTree, energyWindow)
 {
 }
 
 LDOS::LDOS(
 	const IndexTree &indexTree,
-	double lowerBound,
-	double upperBound,
-	int resolution,
+	const Range &energyWindow,
 	const double *data
 ) :
-	EnergyResolvedProperty(
-		indexTree,
-		lowerBound,
-		upperBound,
-		resolution,
-		data
-	)
+	EnergyResolvedProperty(indexTree, energyWindow, data)
 {
 }
 

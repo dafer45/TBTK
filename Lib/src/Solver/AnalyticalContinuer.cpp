@@ -72,9 +72,11 @@ Property::GreensFunction AnalyticalContinuer::convert(
 			newGreensFunction = Property::GreensFunction(
 				indexTree,
 				newType,
-				lowerBound,
-				upperBound,
-				resolution
+				Range(
+					lowerBound,
+					upperBound,
+					resolution
+				)
 			);
 
 			break;

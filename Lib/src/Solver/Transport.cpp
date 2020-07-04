@@ -308,12 +308,15 @@ void Transport::calculateCorrelationFunction(){
 	for(unsigned int n = 0; n < G.size(); n++)
 		GDagger.push_back(G[n].hermitianConjugate());
 
-	correlationFunction = Property::EnergyResolvedProperty<complex<double>>(
-		greensFunction.getIndexDescriptor().getIndexTree(),
-		greensFunction.getLowerBound(),
-		greensFunction.getUpperBound(),
-		greensFunction.getResolution()
-	);
+	correlationFunction
+		= Property::EnergyResolvedProperty<complex<double>>(
+			greensFunction.getIndexDescriptor().getIndexTree(),
+			Range(
+				greensFunction.getLowerBound(),
+				greensFunction.getUpperBound(),
+				greensFunction.getResolution()
+			)
+		);
 	for(unsigned int energy = 0; energy < greensFunction.getResolution(); energy++){
 		SparseMatrix<complex<double>> product
 			= G[energy]*sigmaIn[energy]*GDagger[energy];
@@ -368,9 +371,11 @@ void Transport::calculateEnergyResolvedCurrents(){
 	for(auto &lead : leads){
 		lead.energyResolvedCurrent
 			= Property::EnergyResolvedProperty<double>(
-				greensFunction.getLowerBound(),
-				greensFunction.getUpperBound(),
-				greensFunction.getResolution()
+				Range(
+					greensFunction.getLowerBound(),
+					greensFunction.getUpperBound(),
+					greensFunction.getResolution()
+				)
 			);
 
 		vector<SparseMatrix<complex<double>>> sigmaIn
