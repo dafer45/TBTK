@@ -100,6 +100,18 @@ public:
 		const std::vector<Subindex> &allowedSubindexFlags
 	);
 
+	/** Specify a list of Subindex required flags and their multiplicity
+	 *  (per component Index).
+	 *
+	 *  @param requiredSubindexFlags List of allowed Subindex flags and
+	 *  their required multiplicity. If the multiplicity is set to zero,
+	 *  any non-zero number of flags are accepted. */
+	void setRequiredSubindexFlags(
+		const std::vector<
+			std::pair<Subindex, unsigned int>
+		> &requiredSubindexFlags
+	);
+
 	/** Set the name of the calling function. Will be included in the error
 	 *  message if the validation fails.
 	 *
@@ -116,12 +128,89 @@ public:
 	//TBTKFeature PropertyExtractor.PatternValidator.checkAllowedSubindexFlags.5 2019-11-01
 	/** Validate patterns. */
 	void validate(const std::vector<Index> &patterns) const;
+
+	/** Validate WaveFunction patterns.
+	 *
+	 *  Requirements:
+	 *  - Single component Index such as {x, y} and not {{x, y}, {a, b}}.
+	 *
+	 *  - Allowed wildcards: IDX_ALL, IDX_SUM_ALL.
+	 *
+	 *  @param patterns The patterns to validate. */
+	static void validateWaveFunctionPatterns(
+		const std::vector<Index> &patterns
+	);
+
+	/** Validate GreensFunction pattern.
+	 *
+	 *  Requirements:
+	 *  - Double component Index such as {{x, y}, {a, b}} and not {x, y}.
+	 *
+	 *  - Allowed wildcards: IDX_ALL, IDX_SUM_ALL.
+	 *
+	 *  @param patterns The patterns to validate. */
+	static void validateGreensFunctionPatterns(
+		const std::vector<Index> &patterns
+	);
+
+	/** Validate Density patterns.
+	 *
+	 *  Requirements:
+	 *  - Single component Index such as {x, y} and not {{x, y}, {a, b}}.
+	 *
+	 *  - Allowed wildcards: IDX_ALL, IDX_SUM_ALL.
+	 *
+	 *  @param patterns The patterns to validate. */
+	static void validateDensityPatterns(
+		const std::vector<Index> &patterns
+	);
+
+	/** Validate Magnetization patterns.
+	 *
+	 *  Requirements:
+	 *  - Single component Index such as {x, y} and not {{x, y}, {a, b}}.
+	 *
+	 *  - Allowed wildcards: IDX_ALL, IDX_SUM_ALL.
+	 *
+	 *  - Required wildcards (multiplicity): IDX_SPIN (1).
+	 *
+	 *  @param patterns The patterns to validate. */
+	static void validateMagnetizationPatterns(
+		const std::vector<Index> &patterns
+	);
+
+	/** Validate LDOS patterns.
+	 *
+	 *  Requirements:
+	 *  - Single component Index such as {x, y} and not {{x, y}, {a, b}}.
+	 *
+	 *  - Allowed wildcards: IDX_ALL, IDX_SUM_ALL.
+	 *
+	 *  @param patterns The patterns to validate. */
+	static void validateLDOSPatterns(const std::vector<Index> &patterns);
+
+	/** Validate SpinPolarizedLDOS patterns.
+	 *
+	 *  Requirements:
+	 *  - Single component Index such as {x, y} and not {{x, y}, {a, b}}.
+	 *
+	 *  - Allowed wildcards: IDX_ALL, IDX_SUM_ALL.
+	 *
+	 *  - Required wildcards (multiplicity): IDX_SPIN (1).
+	 *
+	 *  @param patterns The patterns to validate. */
+	static void validateSpinPolarizedLDOSPatterns(
+		const std::vector<Index> &patterns
+	);
 private:
 	/** Number of required component Indices. -1 means no requirement. */
 	int numRequiredComponentIndices;
 
 	/** The allowed Subindex flags. */
 	std::vector<Subindex> allowedSubindexFlags;
+
+	/** The required Subindex flags. */
+	std::vector<std::pair<Subindex, unsigned int>> requiredSubindexFlags;
 
 	/** The name of the calling function to includd in error messages. */
 	std::string callingFunctionName;
@@ -154,6 +243,14 @@ inline void PatternValidator::setAllowedSubindexFlags(
 	const std::vector<Subindex> &allowedSubindexFlags
 ){
 	this->allowedSubindexFlags = allowedSubindexFlags;
+}
+
+inline void PatternValidator::setRequiredSubindexFlags(
+	const std::vector<
+		std::pair<Subindex, unsigned int>
+	> &requiredSubindexFlags
+){
+	this->requiredSubindexFlags = requiredSubindexFlags;
 }
 
 inline void PatternValidator::setCallingFunctionName(
@@ -194,6 +291,10 @@ inline void PatternValidator::validateAllowedSubindexFlags(
 	for(unsigned int n = 0; n < patterns.size(); n++){
 		std::vector<Index> components = patterns[n].split();
 		for(unsigned int m = 0; m < components.size(); m++){
+			std::vector<unsigned int> requiredSubindexFlagsCounter(
+				requiredSubindexFlags.size(),
+				0
+			);
 			for(unsigned int c = 0; c < components[m].getSize(); c++){
 				int subindex = components[m][c];
 				if(subindex < 0){
@@ -212,6 +313,21 @@ inline void PatternValidator::validateAllowedSubindexFlags(
 						}
 					}
 
+					for(
+						unsigned int k = 0;
+						k < requiredSubindexFlags.size();
+						k++
+					){
+						if(
+							subindex == std::get<0>(
+								requiredSubindexFlags[k]
+							)
+						){
+							isValid = true;
+							requiredSubindexFlagsCounter[k]++;
+						}
+					}
+
 					if(!isValid){
 						TBTKExit(
 							callingFunctionName,
@@ -225,6 +341,48 @@ inline void PatternValidator::validateAllowedSubindexFlags(
 							""
 						);
 					}
+				}
+			}
+			for(
+				unsigned int c = 0;
+				c < requiredSubindexFlags.size();
+				c++
+			){
+				if(std::get<1>(requiredSubindexFlags[c]) == 0){
+					TBTKAssert(
+						requiredSubindexFlagsCounter[c]
+							> 0,
+						callingFunctionName,
+						"Missing Subindex '"
+						<< std::get<0>(
+							requiredSubindexFlags[c]
+						) << "' in component Index '"
+						<< m << "' of the pattern '"
+						<< patterns[n].toString()
+						<< "'.",
+						""
+					);
+				}
+				else{
+					TBTKAssert(
+						requiredSubindexFlagsCounter[c]
+						== std::get<1>(
+							requiredSubindexFlags[c]
+						),
+						callingFunctionName,
+						"Requires '" << std::get<1>(
+							requiredSubindexFlags[c]
+						) << "' of Subindex flag '"
+						<< std::get<0>(
+							requiredSubindexFlags[c]
+						) << "' but found '"
+						<< requiredSubindexFlagsCounter[c]
+						<< "' in component Index '"
+						<< m << "' of the pattern '"
+						<< patterns[n].toString()
+						<< "'.",
+						""
+					);
 				}
 			}
 		}
