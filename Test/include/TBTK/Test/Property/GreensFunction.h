@@ -69,7 +69,7 @@ TEST(GreensFunction, operatorAdditionAssignment){
 	indexTree.add({{0, 1}, {0, 3}});
 	indexTree.generateLinearMap();
 
-	std::complex<double> inputData0[3*1000];
+	CArray<std::complex<double>> inputData0(3*1000);
 	for(unsigned int n = 0; n < 3000; n++)
 		inputData0[n] = n;
 	GreensFunction greensFunction0(
@@ -79,7 +79,7 @@ TEST(GreensFunction, operatorAdditionAssignment){
 		inputData0
 	);
 
-	std::complex<double> inputData1[3*1000];
+	CArray<std::complex<double>> inputData1(3*1000);
 	for(unsigned int n = 0; n < 3000; n++)
 		inputData1[n] = 2*n;
 	GreensFunction greensFunction1(
@@ -89,7 +89,7 @@ TEST(GreensFunction, operatorAdditionAssignment){
 		inputData1
 	);
 
-	std::complex<double> inputData2[3*1000];
+	CArray<std::complex<double>> inputData2(3*1000);
 	for(unsigned int n = 0; n < 3000; n++)
 		inputData2[n] = 3*n;
 	GreensFunction greensFunction2(
@@ -123,7 +123,7 @@ TEST(GreensFunction, operatorAddition){
 	indexTree.add({{0, 1}, {0, 3}});
 	indexTree.generateLinearMap();
 
-	std::complex<double> inputData0[3*1000];
+	CArray<std::complex<double>> inputData0(3*1000);
 	for(unsigned int n = 0; n < 3000; n++)
 		inputData0[n] = n;
 	GreensFunction greensFunction0(
@@ -133,7 +133,7 @@ TEST(GreensFunction, operatorAddition){
 		inputData0
 	);
 
-	std::complex<double> inputData1[3*1000];
+	CArray<std::complex<double>> inputData1(3*1000);
 	for(unsigned int n = 0; n < 3000; n++)
 		inputData1[n] = 2*n;
 	GreensFunction greensFunction1(
@@ -158,7 +158,7 @@ TEST(GreensFunction, operatorSubtractionAssignment){
 	indexTree.add({{0, 1}, {0, 3}});
 	indexTree.generateLinearMap();
 
-	std::complex<double> inputData0[3*1000];
+	CArray<std::complex<double>> inputData0(3*1000);
 	for(unsigned int n = 0; n < 3000; n++)
 		inputData0[n] = n;
 	GreensFunction greensFunction0(
@@ -168,7 +168,7 @@ TEST(GreensFunction, operatorSubtractionAssignment){
 		inputData0
 	);
 
-	std::complex<double> inputData1[3*1000];
+	CArray<std::complex<double>> inputData1(3*1000);
 	for(unsigned int n = 0; n < 3000; n++)
 		inputData1[n] = 2*n;
 	GreensFunction greensFunction1(
@@ -178,7 +178,7 @@ TEST(GreensFunction, operatorSubtractionAssignment){
 		inputData1
 	);
 
-	std::complex<double> inputData2[3*1000];
+	CArray<std::complex<double>> inputData2(3*1000);
 	for(unsigned int n = 0; n < 3000; n++)
 		inputData2[n] = 3*n;
 	GreensFunction greensFunction2(
@@ -212,7 +212,7 @@ TEST(GreensFunction, operatorSubtraction){
 	indexTree.add({{0, 1}, {0, 3}});
 	indexTree.generateLinearMap();
 
-	std::complex<double> inputData0[3*1000];
+	CArray<std::complex<double>> inputData0(3*1000);
 	for(unsigned int n = 0; n < 3000; n++)
 		inputData0[n] = n;
 	GreensFunction greensFunction0(
@@ -222,7 +222,7 @@ TEST(GreensFunction, operatorSubtraction){
 		inputData0
 	);
 
-	std::complex<double> inputData1[3*1000];
+	CArray<std::complex<double>> inputData1(3*1000);
 	for(unsigned int n = 0; n < 3000; n++)
 		inputData1[n] = 2*n;
 	GreensFunction greensFunction1(
@@ -247,7 +247,7 @@ TEST(GreensFunction, operatorMultiplicationAssignment){
 	indexTree.add({{0, 1}, {0, 3}});
 	indexTree.generateLinearMap();
 
-	std::complex<double> inputData[3*1000];
+	CArray<std::complex<double>> inputData(3*1000);
 	for(unsigned int n = 0; n < 3000; n++)
 		inputData[n] = n;
 	GreensFunction greensFunction(
@@ -272,7 +272,7 @@ TEST(GreensFunction, operatorMultiplication){
 	indexTree.add({{0, 1}, {0, 3}});
 	indexTree.generateLinearMap();
 
-	std::complex<double> inputData[3*1000];
+	CArray<std::complex<double>> inputData(3*1000);
 	for(unsigned int n = 0; n < 3000; n++)
 		inputData[n] = n;
 	GreensFunction greensFunction0(
@@ -303,7 +303,7 @@ TEST(GreensFunction, operatorDivisionAssignment){
 	indexTree.add({{0, 1}, {0, 3}});
 	indexTree.generateLinearMap();
 
-	std::complex<double> inputData[3*1000];
+	CArray<std::complex<double>> inputData(3*1000);
 	for(unsigned int n = 0; n < 3000; n++)
 		inputData[n] = n;
 	GreensFunction greensFunction(
@@ -328,7 +328,7 @@ TEST(GreensFunction, operatorDivision){
 	indexTree.add({{0, 1}, {0, 3}});
 	indexTree.generateLinearMap();
 
-	std::complex<double> inputData[3*1000];
+	CArray<std::complex<double>> inputData(3*1000);
 	for(unsigned int n = 0; n < 3000; n++)
 		inputData[n] = n;
 	GreensFunction greensFunction0(

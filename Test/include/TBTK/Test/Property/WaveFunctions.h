@@ -120,7 +120,7 @@ TEST(WaveFunctions, Constructor1){
 	indexTree.add({2, 5});
 	indexTree.generateLinearMap();
 
-	std::complex<double> data[3*3];
+	CArray<std::complex<double>> data(3*3);
 	for(unsigned int n = 0; n < 3*3; n++)
 		data[n] = n;
 
@@ -231,7 +231,7 @@ TEST(WaveFunctions, SerializeToJSON){
 	indexTree.add({2, 5});
 	indexTree.generateLinearMap();
 
-	std::complex<double> data[3*3];
+	CArray<std::complex<double>> data(3*3);
 	for(unsigned int n = 0; n < 3*3; n++)
 		data[n] = n;
 

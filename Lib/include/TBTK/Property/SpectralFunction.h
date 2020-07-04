@@ -47,7 +47,7 @@ public:
 	SpectralFunction(
 		const IndexTree &indexTree,
 		const Range &energyWindow,
-		const std::complex<double> *data
+		const CArray<std::complex<double>> &data
 	);
 
 	/** Overrider LDOS::serialize(). */

@@ -64,7 +64,7 @@ public:
 	Susceptibility(
 		const IndexTree &indexTree,
 		const Range &energyWindow,
-		const std::complex<double> *data
+		const CArray<std::complex<double>> &data
 	);
 
 	/** Constructs a Susceptibility with Matsubara energies on the Custom
@@ -101,7 +101,7 @@ public:
 		int lowerMatsubaraEnergyIndex,
 		int upperMatsubaraEnergyIndex,
 		double fundamentalMatsubaraEnergy,
-		const std::complex<double> *data
+		const CArray<std::complex<double>> &data
 	);
 
 	/** Constructor. Constructs the Susceptibility from a serialization

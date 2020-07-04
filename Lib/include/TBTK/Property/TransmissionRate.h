@@ -43,7 +43,10 @@ public:
 	 *  @param energyWindow The energy window over which the Transmission
 	 *  is defined.
 	 *  @param data Raw data to initialize the TransmissionRate with. */
-	TransmissionRate(const Range &energyWindow, const double *data);
+	TransmissionRate(
+		const Range &energyWindow,
+		const CArray<double> &data
+	);
 
 	/** Constructor. Constructs the TransmissionRate from a serialization
 	 *  string.

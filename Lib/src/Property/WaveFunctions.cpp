@@ -47,7 +47,7 @@ WaveFunctions::WaveFunctions(
 WaveFunctions::WaveFunctions(
 	const IndexTree &indexTree,
 	const vector<unsigned int> &states,
-	const complex<double> *data
+	const CArray<complex<double>> &data
 ) :
 	AbstractProperty(indexTree, states.size(), data)
 {

@@ -21,7 +21,7 @@ protected:
 	IndexTree indexTree;
 
 	void SetUp() override{
-		std::complex<double> data[2*2*3];
+		CArray<std::complex<double>> data(2*2*3);
 
 		for(int x = 0; x < 2; x++){
 			for(int y = 0; y < 2; y++){

@@ -34,7 +34,7 @@ Magnetization::Magnetization(const vector<int> &ranges) :
 
 Magnetization::Magnetization(
 	const vector<int> &ranges,
-	const SpinMatrix *data
+	const CArray<SpinMatrix> &data
 ) :
 	AbstractProperty(ranges, 1, data)
 {
@@ -49,7 +49,7 @@ Magnetization::Magnetization(
 
 Magnetization::Magnetization(
 	const IndexTree &indexTree,
-	const SpinMatrix *data
+	const CArray<SpinMatrix> &data
 ) :
 	AbstractProperty(indexTree, 1, data)
 {

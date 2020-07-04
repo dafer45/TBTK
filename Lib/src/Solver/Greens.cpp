@@ -365,7 +365,7 @@ Property::TransmissionRate Greens::calculateTransmissionRate(
 	vector<SparseMatrix<complex<double>>> greensFunctionMatrices
 		= greensFunction->toSparseMatrices(getModel());
 
-	vector<double> transmissionRateData;
+	CArray<double> transmissionRateData(greensFunction->getNumEnergies());
 	for(unsigned int n = 0; n < greensFunction->getNumEnergies(); n++){
 		//Strictly speaking the broadening should include a factor i.
 		//The two i's are moved to multiply the trace to avoid
@@ -386,7 +386,7 @@ Property::TransmissionRate Greens::calculateTransmissionRate(
 
 		//Tr[Gamma_0*G*Gamma_1*Gamma^{\dagger}]. i^2 = -1 is taken into
 		//account here instead of in the broadenings.
-		transmissionRateData.push_back(-real(product.trace()));
+		transmissionRateData[n] = -real(product.trace());
 	}
 
 	Property::TransmissionRate transmissionRate(
@@ -395,7 +395,7 @@ Property::TransmissionRate Greens::calculateTransmissionRate(
 			greensFunction->getUpperBound(),
 			greensFunction->getResolution()
 		),
-		transmissionRateData.data()
+		transmissionRateData
 	);
 
 	return transmissionRate;

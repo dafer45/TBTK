@@ -27,7 +27,7 @@ TEST(SpinPolarizedLDOS, Constructor0){
 }
 
 TEST(SpinPolarizedLDOS, Constructor1){
-	SpinMatrix *dataInput = new SpinMatrix[2*3*4*1000];
+	CArray<SpinMatrix> dataInput(2*3*4*1000);
 	for(unsigned int n = 0; n < 2*3*4*1000; n++){
 		for(unsigned int r = 0; r < 2; r++){
 			for(unsigned int c = 0; c < 2; c++){
@@ -40,7 +40,6 @@ TEST(SpinPolarizedLDOS, Constructor1){
 		Range(-10, 10, 1000),
 		dataInput
 	);
-	delete [] dataInput;
 	ASSERT_EQ(spinPolarizedLDOS.getDimensions(), 3);
 	EXPECT_EQ(spinPolarizedLDOS.getRanges()[0], 2);
 	EXPECT_EQ(spinPolarizedLDOS.getRanges()[1], 3);
@@ -111,7 +110,7 @@ TEST(SpinPolarizedLDOS, Constructor3){
 	indexTree.add({1});
 	indexTree.add({2});
 	indexTree.generateLinearMap();
-	SpinMatrix dataInput[3*1000];
+	CArray<SpinMatrix> dataInput(3*1000);
 	for(unsigned int n = 0; n < 3; n++){
 		for(unsigned int m = 0; m < 1000; m++){
 			for(unsigned int r = 0; r < 2; r++){

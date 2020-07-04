@@ -14,6 +14,13 @@ TEST(CArray, constructor1){
 	CArray<unsigned int> carray(10);
 }
 
+//TBTKFeature Utilities.CArray.construction.3 2020-07-04
+TEST(CArray, constructor2){
+	CArray<unsigned int> carray = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+	for(unsigned int n = 0; n < 10; n++)
+		EXPECT_EQ(carray[n], n);
+}
+
 //TBTKFeature Utilities.CArray.copyConstruction.1.C++ 2019-10-30
 TEST(CArray, copyConstructor0){
 	CArray<unsigned int> carray(10);

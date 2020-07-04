@@ -68,7 +68,7 @@ public:
 	InteractionVertex(
 		const IndexTree &indexTree,
 		const Range &energyWindow,
-		const std::complex<double> *data
+		const CArray<std::complex<double>> &data
 	);
 
 	/** Constructs an InteractionVertex with Matsubara energies on the
@@ -105,7 +105,7 @@ public:
 		int lowerMatsubaraEnergyIndex,
 		int upperMatsubaraEnergyIndex,
 		double fundamentalMatsubaraEnergy,
-		const std::complex<double> *data
+		const CArray<std::complex<double>> &data
 	);
 
 	/** Overrides EnergyResolvedProperty::operator+=(). */

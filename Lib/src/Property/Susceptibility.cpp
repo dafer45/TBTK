@@ -42,7 +42,7 @@ Susceptibility::Susceptibility(
 Susceptibility::Susceptibility(
 	const IndexTree &indexTree,
 	const Range &energyWindow,
-	const complex<double> *data
+	const CArray<complex<double>> &data
 ) :
 	EnergyResolvedProperty(indexTree, energyWindow, data)
 {
@@ -69,7 +69,7 @@ Susceptibility::Susceptibility(
 	int lowerMatsubaraEnergyIndex,
 	int upperMatsubaraEnergyIndex,
 	double fundamentalMatsubaraEnergy,
-	const complex<double> *data
+	const CArray<complex<double>> &data
 ) :
 	EnergyResolvedProperty(
 		EnergyType::BosonicMatsubara,

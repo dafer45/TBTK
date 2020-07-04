@@ -23,6 +23,7 @@
 #ifndef COM_DAFER45_TBTK_ABSTRACT_PROPERTY
 #define COM_DAFER45_TBTK_ABSTRACT_PROPERTY
 
+#include "TBTK/CArray.h"
 #include "TBTK/Model.h"
 #include "TBTK/Property/Property.h"
 #include "TBTK/Property/IndexDescriptor.h"
@@ -377,7 +378,7 @@ protected:
 	 *  detailed description of the class. */
 	AbstractProperty(
 		unsigned int blockSize,
-		const DataType *data
+		const CArray<DataType> &data
 	);
 
 	/** Constructs an AbstractProperty with the Ranges format.
@@ -405,7 +406,7 @@ protected:
 	AbstractProperty(
 		const std::vector<int> &ranges,
 		unsigned int blockSize,
-		const DataType *data
+		const CArray<DataType> &data
 	);
 
 	/** Constructs and AbstractProperty with the Custom format.
@@ -430,7 +431,7 @@ protected:
 	AbstractProperty(
 		const IndexTree &indexTree,
 		unsigned int blockSize,
-		const DataType *data
+		const CArray<DataType> &data
 	);
 
 	/** Copy constructor.
@@ -978,7 +979,7 @@ AbstractProperty<DataType>::AbstractProperty(
 template<typename DataType>
 AbstractProperty<DataType>::AbstractProperty(
 	unsigned int blockSize,
-	const DataType *data
+	const CArray<DataType> &data
 ) :
 	indexDescriptor()
 {
@@ -1013,7 +1014,7 @@ template<typename DataType>
 AbstractProperty<DataType>::AbstractProperty(
 	const std::vector<int> &ranges,
 	unsigned int blockSize,
-	const DataType *data
+	const CArray<DataType> &data
 ) :
 	indexDescriptor(ranges)
 {
@@ -1056,7 +1057,7 @@ template<typename DataType>
 AbstractProperty<DataType>::AbstractProperty(
 	const IndexTree &indexTree,
 	unsigned int blockSize,
-	const DataType *data
+	const CArray<DataType> &data
 ) :
 	indexDescriptor(indexTree)
 {

@@ -43,8 +43,9 @@ Property::GreensFunction* ExactDiagonalizer::calculateGreensFunction(
 			= greensFunctionR->getData();
 
 		const Range &energyWindow = getEnergyWindow();
-		complex<double> *greensFunctionData
-			= new complex<double>[energyWindow.getResolution()];
+		CArray<complex<double>> greensFunctionData(
+			energyWindow.getResolution()
+		);
 		for(unsigned int n = 0; n < energyWindow.getResolution(); n++){
 			greensFunctionData[n] = (
 				greensFunctionAData[n] + greensFunctionRData[n]
@@ -61,8 +62,6 @@ Property::GreensFunction* ExactDiagonalizer::calculateGreensFunction(
 				energyWindow,
 				greensFunctionData
 			);
-
-		delete [] greensFunctionData;
 
 		return greensFunction;
 	}
@@ -86,8 +85,9 @@ Property::GreensFunction* ExactDiagonalizer::calculateGreensFunction(
 			= greensFunctionR->getData();
 
 		const Range &energyWindow = getEnergyWindow();
-		complex<double> *greensFunctionData
-			= new complex<double>[energyWindow.getResolution()];
+		CArray<complex<double>> greensFunctionData(
+			energyWindow.getResolution()
+		);
 		for(unsigned int n = 0; n < energyWindow.getResolution(); n++){
 			greensFunctionData[n] = (
 				greensFunctionAData[n] - greensFunctionRData[n]
@@ -104,8 +104,6 @@ Property::GreensFunction* ExactDiagonalizer::calculateGreensFunction(
 				energyWindow,
 				greensFunctionData
 			);
-
-		delete [] greensFunctionData;
 
 		return greensFunction;
 	}
@@ -160,8 +158,9 @@ Property::GreensFunction* ExactDiagonalizer::calculateGreensFunction(
 		);
 
 		const Range &energyWindow = getEnergyWindow();
-		complex<double> *greensFunctionData
-			= new complex<double>[energyWindow.getResolution()];
+		CArray<complex<double>> greensFunctionData(
+			energyWindow.getResolution()
+		);
 		for(unsigned int n = 0; n < energyWindow.getResolution(); n++)
 			greensFunctionData[n] = 0;
 
@@ -214,8 +213,6 @@ Property::GreensFunction* ExactDiagonalizer::calculateGreensFunction(
 				greensFunctionData
 			);
 
-		delete [] greensFunctionData;
-
 		return greensFunction;
 	}
 	else if(manyParticleContext->wrapsExtensiveBitRegister()){
@@ -258,8 +255,9 @@ Property::GreensFunction* ExactDiagonalizer::calculateGreensFunction(
 		);
 
 		const Range &energyWindow = getEnergyWindow();
-		complex<double> *greensFunctionData
-			= new complex<double>[energyWindow.getResolution()];
+		CArray<complex<double>> greensFunctionData(
+			energyWindow.getResolution()
+		);
 		for(unsigned int n = 0; n < energyWindow.getResolution(); n++)
 			greensFunctionData[n] = 0;
 
@@ -311,8 +309,6 @@ Property::GreensFunction* ExactDiagonalizer::calculateGreensFunction(
 				energyWindow,
 				greensFunctionData
 			);
-
-		delete [] greensFunctionData;
 
 		return greensFunction;
 	}

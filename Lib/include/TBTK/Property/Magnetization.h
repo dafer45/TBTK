@@ -59,7 +59,10 @@ public:
 	 *  dimensions.
 	 *
 	 *  @param data Raw data to initialize the Magnetization with. */
-	Magnetization(const std::vector<int> &ranges, const SpinMatrix *data);
+	Magnetization(
+		const std::vector<int> &ranges,
+		const CArray<SpinMatrix> &data
+	);
 
 	/** Constructs Magnetization on the Custom format. [See
 	 *  AbstractProperty for detailed information about the Custom
@@ -79,7 +82,7 @@ public:
 	 *  @param data Raw data to initialize the Magnetization with. */
 	Magnetization(
 		const IndexTree &indexTree,
-		const SpinMatrix *data
+		const CArray<SpinMatrix> &data
 	);
 
 	/** Constructor. Constructs the Magnetization from a serialization

@@ -20,7 +20,7 @@ TEST(Density, Constructor0){
 }
 
 TEST(Density, Constructor1){
-	double dataInput[2*3*4];
+	CArray<double> dataInput(2*3*4);
 	for(unsigned int n = 0; n < 2*3*4; n++)
 		dataInput[n] = n;
 	Density density({2, 3, 4}, dataInput);
@@ -54,7 +54,7 @@ TEST(Density, Constructor3){
 	indexTree.add({1, 2, 4});
 	indexTree.add({2, 2});
 	indexTree.generateLinearMap();
-	double data[3] = {1, 2, 3};
+	CArray<double> data = {1, 2, 3};
 	Density density(indexTree, data);
 	EXPECT_DOUBLE_EQ(density({1, 2, 3}), 1);
 	EXPECT_DOUBLE_EQ(density({1, 2, 4}), 2);
@@ -63,7 +63,7 @@ TEST(Density, Constructor3){
 
 TEST(Density, SerializeToJSON){
 	//Ranges format.
-	double dataInput[2*3*4];
+	CArray<double> dataInput(2*3*4);
 	for(unsigned int n = 0; n < 2*3*4; n++)
 		dataInput[n] = n;
 	Density density0({2, 3, 4}, dataInput);
@@ -88,7 +88,7 @@ TEST(Density, SerializeToJSON){
 	indexTree.add({1, 2, 4});
 	indexTree.add({2, 2});
 	indexTree.generateLinearMap();
-	double data2[3] = {1, 2, 3};
+	CArray<double> data2 = {1, 2, 3};
 	Density density2(indexTree, data2);
 	Density density3(
 		density2.serialize(Serializable::Mode::JSON),
@@ -101,12 +101,12 @@ TEST(Density, SerializeToJSON){
 
 TEST(Density, operatorAdditionAssignment){
 	//Ranges format.
-	double dataInputRanges0[2*3*4];
+	CArray<double> dataInputRanges0(2*3*4);
 	for(unsigned int n = 0; n < 2*3*4; n++)
 		dataInputRanges0[n] = n;
 	Density densityRanges0({2, 3, 4}, dataInputRanges0);
 
-	double dataInputRanges1[2*3*4];
+	CArray<double> dataInputRanges1(2*3*4);
 	for(unsigned int n = 0; n < 2*3*4; n++)
 		dataInputRanges1[n] = 2*n;
 	Density densityRanges1({2, 3, 4}, dataInputRanges1);
@@ -123,10 +123,10 @@ TEST(Density, operatorAdditionAssignment){
 	indexTree.add({2, 2});
 	indexTree.generateLinearMap();
 
-	double dataCustom0[3] = {1, 2, 3};
+	CArray<double> dataCustom0 = {1, 2, 3};
 	Density densityCustom0(indexTree, dataCustom0);
 
-	double dataCustom1[3] = {2, 4, 6};
+	CArray<double> dataCustom1 = {2, 4, 6};
 	Density densityCustom1(indexTree, dataCustom1);
 
 	densityCustom0 += densityCustom1;
@@ -137,12 +137,12 @@ TEST(Density, operatorAdditionAssignment){
 
 TEST(Density, operatorAddition){
 	//Ranges format.
-	double dataInputRanges0[2*3*4];
+	CArray<double> dataInputRanges0(2*3*4);
 	for(unsigned int n = 0; n < 2*3*4; n++)
 		dataInputRanges0[n] = n;
 	Density densityRanges0({2, 3, 4}, dataInputRanges0);
 
-	double dataInputRanges1[2*3*4];
+	CArray<double> dataInputRanges1(2*3*4);
 	for(unsigned int n = 0; n < 2*3*4; n++)
 		dataInputRanges1[n] = 2*n;
 	Density densityRanges1({2, 3, 4}, dataInputRanges1);
@@ -159,10 +159,10 @@ TEST(Density, operatorAddition){
 	indexTree.add({2, 2});
 	indexTree.generateLinearMap();
 
-	double dataCustom0[3] = {1, 2, 3};
+	CArray<double> dataCustom0 = {1, 2, 3};
 	Density densityCustom0(indexTree, dataCustom0);
 
-	double dataCustom1[3] = {2, 4, 6};
+	CArray<double> dataCustom1 = {2, 4, 6};
 	Density densityCustom1(indexTree, dataCustom1);
 
 	Density densityCustom2 = densityCustom0 + densityCustom1;
@@ -173,12 +173,12 @@ TEST(Density, operatorAddition){
 
 TEST(Density, operatorSubtractionAssignment){
 	//Ranges format.
-	double dataInputRanges0[2*3*4];
+	CArray<double> dataInputRanges0(2*3*4);
 	for(unsigned int n = 0; n < 2*3*4; n++)
 		dataInputRanges0[n] = n;
 	Density densityRanges0({2, 3, 4}, dataInputRanges0);
 
-	double dataInputRanges1[2*3*4];
+	CArray<double> dataInputRanges1(2*3*4);
 	for(unsigned int n = 0; n < 2*3*4; n++)
 		dataInputRanges1[n] = 2*n;
 	Density densityRanges1({2, 3, 4}, dataInputRanges1);
@@ -195,10 +195,10 @@ TEST(Density, operatorSubtractionAssignment){
 	indexTree.add({2, 2});
 	indexTree.generateLinearMap();
 
-	double dataCustom0[3] = {1, 2, 3};
+	CArray<double> dataCustom0 = {1, 2, 3};
 	Density densityCustom0(indexTree, dataCustom0);
 
-	double dataCustom1[3] = {2, 4, 6};
+	CArray<double> dataCustom1 = {2, 4, 6};
 	Density densityCustom1(indexTree, dataCustom1);
 
 	densityCustom0 -= densityCustom1;
@@ -209,12 +209,12 @@ TEST(Density, operatorSubtractionAssignment){
 
 TEST(Density, operatorSubtraction){
 	//Ranges format.
-	double dataInputRanges0[2*3*4];
+	CArray<double> dataInputRanges0(2*3*4);
 	for(unsigned int n = 0; n < 2*3*4; n++)
 		dataInputRanges0[n] = n;
 	Density densityRanges0({2, 3, 4}, dataInputRanges0);
 
-	double dataInputRanges1[2*3*4];
+	CArray<double> dataInputRanges1(2*3*4);
 	for(unsigned int n = 0; n < 2*3*4; n++)
 		dataInputRanges1[n] = 2*n;
 	Density densityRanges1({2, 3, 4}, dataInputRanges1);
@@ -231,10 +231,10 @@ TEST(Density, operatorSubtraction){
 	indexTree.add({2, 2});
 	indexTree.generateLinearMap();
 
-	double dataCustom0[3] = {1, 2, 3};
+	CArray<double> dataCustom0 = {1, 2, 3};
 	Density densityCustom0(indexTree, dataCustom0);
 
-	double dataCustom1[3] = {2, 4, 6};
+	CArray<double> dataCustom1 = {2, 4, 6};
 	Density densityCustom1(indexTree, dataCustom1);
 
 	Density densityCustom2 = densityCustom0 - densityCustom1;
@@ -245,7 +245,7 @@ TEST(Density, operatorSubtraction){
 
 TEST(Density, operatorMultiplicationAssignment){
 	//Ranges format.
-	double dataInputRanges[2*3*4];
+	CArray<double> dataInputRanges(2*3*4);
 	for(unsigned int n = 0; n < 2*3*4; n++)
 		dataInputRanges[n] = n;
 	Density densityRanges({2, 3, 4}, dataInputRanges);
@@ -262,7 +262,7 @@ TEST(Density, operatorMultiplicationAssignment){
 	indexTree.add({2, 2});
 	indexTree.generateLinearMap();
 
-	double dataCustom[3] = {1, 2, 3};
+	CArray<double> dataCustom = {1, 2, 3};
 	Density densityCustom(indexTree, dataCustom);
 
 	densityCustom *= 3;
@@ -273,7 +273,7 @@ TEST(Density, operatorMultiplicationAssignment){
 
 TEST(Density, operatorMultiplication){
 	//Ranges format.
-	double dataInputRanges[2*3*4];
+	CArray<double> dataInputRanges(2*3*4);
 	for(unsigned int n = 0; n < 2*3*4; n++)
 		dataInputRanges[n] = n;
 	Density densityRanges0({2, 3, 4}, dataInputRanges);
@@ -294,7 +294,7 @@ TEST(Density, operatorMultiplication){
 	indexTree.add({2, 2});
 	indexTree.generateLinearMap();
 
-	double dataCustom[3] = {1, 2, 3};
+	CArray<double> dataCustom = {1, 2, 3};
 	Density densityCustom0(indexTree, dataCustom);
 
 	Density densityCustom1 = densityCustom0*3;
@@ -309,7 +309,7 @@ TEST(Density, operatorMultiplication){
 
 TEST(Density, operatorDivisionAssignment){
 	//Ranges format.
-	double dataInputRanges[2*3*4];
+	CArray<double> dataInputRanges(2*3*4);
 	for(unsigned int n = 0; n < 2*3*4; n++)
 		dataInputRanges[n] = n;
 	Density densityRanges({2, 3, 4}, dataInputRanges);
@@ -326,7 +326,7 @@ TEST(Density, operatorDivisionAssignment){
 	indexTree.add({2, 2});
 	indexTree.generateLinearMap();
 
-	double dataCustom[3] = {1, 2, 3};
+	CArray<double> dataCustom = {1, 2, 3};
 	Density densityCustom(indexTree, dataCustom);
 
 	densityCustom /= 3;
@@ -337,7 +337,7 @@ TEST(Density, operatorDivisionAssignment){
 
 TEST(Density, operatorDivision){
 	//Ranges format.
-	double dataInputRanges[2*3*4];
+	CArray<double> dataInputRanges(2*3*4);
 	for(unsigned int n = 0; n < 2*3*4; n++)
 		dataInputRanges[n] = n;
 	Density densityRanges0({2, 3, 4}, dataInputRanges);
@@ -354,7 +354,7 @@ TEST(Density, operatorDivision){
 	indexTree.add({2, 2});
 	indexTree.generateLinearMap();
 
-	double dataCustom[3] = {1, 2, 3};
+	CArray<double> dataCustom = {1, 2, 3};
 	Density densityCustom0(indexTree, dataCustom);
 
 	Density densityCustom1 = densityCustom0/3;
@@ -369,7 +369,7 @@ TEST(Density, getMin){
 	indexTree.add({1, 2, 4});
 	indexTree.add({2, 2});
 	indexTree.generateLinearMap();
-	double data[3] = {1, 2, 3};
+	CArray<double> data = {1, 2, 3};
 	Density density(indexTree, data);
 	EXPECT_DOUBLE_EQ(density.getMin(), 1);
 	EXPECT_DOUBLE_EQ(density.getMax(), 3);

@@ -162,7 +162,7 @@ TEST(EnergyResolvedProperty, Constructor4){
 }
 
 TEST(EnergyResolvedProperty, Constructor5){
-	int data[1000];
+	CArray<int> data(1000);
 	for(unsigned int n = 0; n < 1000; n++)
 		data[n] = n;
 	EnergyResolvedProperty<int> energyResolvedProperty(
@@ -227,7 +227,7 @@ TEST(EnergyResolvedProperty, Constructor6){
 }
 
 TEST(EnergyResolvedProperty, Constructor7){
-	int data[2*3*4*1000];
+	CArray<int> data(2*3*4*1000);
 	for(unsigned int n = 0; n < 2*3*4*1000; n++)
 		data[n] = n;
 	EnergyResolvedProperty<int> energyResolvedProperty(
@@ -305,7 +305,7 @@ TEST(EnergyResolvedProperty, Constructor9){
 	indexTree.add({1});
 	indexTree.add({2});
 	indexTree.generateLinearMap();
-	int data[3000];
+	CArray<int> data(3000);
 	for(unsigned int n = 0; n < 3000; n++)
 		data[n] = n;
 	EnergyResolvedProperty<int> energyResolvedProperty(
@@ -543,7 +543,7 @@ TEST(EnergyResolvedProperty, Constructor11){
 	);
 
 	//Fail for EnergyType::FermionicMatsubara with even index.
-	int data0[3*10];
+	CArray<int> data0(3*10);
 	for(unsigned int n = 0; n < 3*10; n++)
 		data0[n] = n;
 	EXPECT_EXIT(
@@ -626,7 +626,7 @@ TEST(EnergyResolvedProperty, Constructor11){
 	}
 
 	//Fail for EnergyType::BosonicMatsubara with odd index.
-	int data1[3*11];
+	CArray<int> data1(3*11);
 	for(unsigned int n = 0; n < 3*11; n++)
 		data1[n] = n;
 	EXPECT_EXIT(
@@ -716,7 +716,7 @@ TEST(EnergyResolvedProerty, SerializeToJSON){
 	indexTree.add({1});
 	indexTree.add({2});
 	indexTree.generateLinearMap();
-	int data[3000];
+	CArray<int> data(3000);
 	for(unsigned int n = 0; n < 3000; n++)
 		data[n] = n;
 	EnergyResolvedProperty<int> energyResolvedProperty0(
@@ -758,7 +758,7 @@ TEST(EnergyResolvedProerty, SerializeToJSON){
 	}
 
 	//EnergyType::FermionicMatsubara.
-	int data2[3*10];
+	CArray<int> data2(3*10);
 	for(unsigned int n = 0; n < 3*10; n++)
 		data2[n] = n;
 	EnergyResolvedProperty<int> energyResolvedProperty2(
@@ -813,7 +813,7 @@ TEST(EnergyResolvedProerty, SerializeToJSON){
 	}
 
 	//EnergyType::BosonicMatsubara.
-	int data4[3*11];
+	CArray<int> data4(3*11);
 	for(unsigned int n = 0; n < 3*11; n++)
 		data4[n] = n;
 	EnergyResolvedProperty<int> energyResolvedProperty4(
@@ -1731,16 +1731,16 @@ TEST(EnergyResolvedProperty, additionAssignmentOperator){
 	indexTree.add({2});
 	indexTree.generateLinearMap();
 
-	int data0[3000];
+	CArray<int> data0(3000);
 	for(unsigned int n = 0; n < 3000; n++)
 		data0[n] = n;
-	int data1[3000];
+	CArray<int> data1(3000);
 	for(unsigned int n = 0; n < 3000; n++)
 		data1[n] = 2*n;
-	int data2[300];
+	CArray<int> data2(300);
 	for(unsigned int n = 0; n < 300; n++)
 		data2[n] = 3*n;
-	int data3[2997];
+	CArray<int> data3(2997);
 	for(unsigned int n = 0; n < 2997; n++)
 		data3[n] = 3*n;
 
@@ -1996,16 +1996,16 @@ TEST(EnergyResolvedProperty, subtractionAssignmentOperator){
 	indexTree.add({2});
 	indexTree.generateLinearMap();
 
-	int data0[3000];
+	CArray<int> data0(3000);
 	for(unsigned int n = 0; n < 3000; n++)
 		data0[n] = n;
-	int data1[3000];
+	CArray<int> data1(3000);
 	for(unsigned int n = 0; n < 3000; n++)
 		data1[n] = 2*n;
-	int data2[300];
+	CArray<int> data2(300);
 	for(unsigned int n = 0; n < 300; n++)
 		data2[n] = 3*n;
-	int data3[2997];
+	CArray<int> data3(2997);
 	for(unsigned int n = 0; n < 2997; n++)
 		data3[n] = 3*n;
 
@@ -2261,7 +2261,7 @@ TEST(EnergyResolvedProperty, multiplicationAssignmentOperator){
 	indexTree.add({2});
 	indexTree.generateLinearMap();
 
-	int data[3000];
+	CArray<int> data(3000);
 	for(unsigned int n = 0; n < 3000; n++)
 		data[n] = n;
 
@@ -2318,7 +2318,7 @@ TEST(EnergyResolvedProperty, divisionAssignmentOperator){
 	indexTree.add({2});
 	indexTree.generateLinearMap();
 
-	int data[3000];
+	CArray<int> data(3000);
 	for(unsigned int n = 0; n < 3000; n++)
 		data[n] = n;
 

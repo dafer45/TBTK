@@ -36,7 +36,7 @@ EigenValues::EigenValues(
 
 EigenValues::EigenValues(
 	int size,
-	const double *data
+	const CArray<double> &data
 ) :
 	AbstractProperty(size, data)
 {

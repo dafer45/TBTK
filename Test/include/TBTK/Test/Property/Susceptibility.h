@@ -22,7 +22,7 @@ protected:
 	IndexTree indexTree;
 
 	void SetUp() override{
-		std::complex<double> data[2*2*2*2*3];
+		CArray<std::complex<double>> data(2*2*2*2*3);
 
 		MultiCounter<unsigned int> counter(
 			{0, 0, 0, 0},

@@ -37,7 +37,7 @@ DOS::DOS(
 
 DOS::DOS(
 	const Range &energyWindow,
-	const double *data
+	const CArray<double> &data
 ) :
 	EnergyResolvedProperty(energyWindow, data)
 {

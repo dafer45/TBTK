@@ -77,7 +77,7 @@ public:
 	LDOS(
 		const std::vector<int> &ranges,
 		const Range &energyWindow,
-		const double *data
+		const CArray<double> &data
 	);
 
 	/** Constructs LDOS on the Custom format. [See AbstractProperty for
@@ -104,7 +104,7 @@ public:
 	LDOS(
 		const IndexTree &indexTree,
 		const Range &energyWindow,
-		const double *data
+		const CArray<double> &data
 	);
 
 	/** Constructor. Construct the LDOS from a serialization string.

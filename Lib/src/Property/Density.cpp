@@ -38,7 +38,7 @@ Density::Density(
 
 Density::Density(
 	const std::vector<int> &ranges,
-	const double *data
+	const CArray<double> &data
 ) :
 	AbstractProperty(ranges, 1, data)
 {
@@ -53,7 +53,7 @@ Density::Density(
 
 Density::Density(
 	const IndexTree &indexTree,
-	const double *data
+	const CArray<double> &data
 ) :
 	AbstractProperty(indexTree, 1, data)
 {

@@ -72,7 +72,7 @@ public:
 	SpinPolarizedLDOS(
 		const std::vector<int> &ranges,
 		const Range &energyWindow,
-		const SpinMatrix *data
+		const CArray<SpinMatrix> &data
 	);
 
 	/** Constructs a SpinPolarizedDOS on the Custom format. [See
@@ -101,7 +101,7 @@ public:
 	SpinPolarizedLDOS(
 		const IndexTree &indexTree,
 		const Range &energyWindow,
-		const SpinMatrix *data
+		const CArray<SpinMatrix> &data
 	);
 
 	/** Constructor. Construct the SpinPolarizedLDOS from a serialization

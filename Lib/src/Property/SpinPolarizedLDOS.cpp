@@ -39,7 +39,7 @@ SpinPolarizedLDOS::SpinPolarizedLDOS(
 SpinPolarizedLDOS::SpinPolarizedLDOS(
 	const std::vector<int> &ranges,
 	const Range &energyWindow,
-	const SpinMatrix *data
+	const CArray<SpinMatrix> &data
 ) :
 	EnergyResolvedProperty(ranges, energyWindow, data)
 {
@@ -48,7 +48,7 @@ SpinPolarizedLDOS::SpinPolarizedLDOS(
 SpinPolarizedLDOS::SpinPolarizedLDOS(
 	const IndexTree &indexTree,
 	const Range &energyWindow,
-	const SpinMatrix *data
+	const CArray<SpinMatrix> &data
 ) :
 	EnergyResolvedProperty(indexTree, energyWindow, data)
 {

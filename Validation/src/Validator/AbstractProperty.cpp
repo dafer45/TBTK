@@ -35,14 +35,14 @@ public:
 
 	PublicAbstractProperty(
 		unsigned int blockSize,
-		const int *data
+		const CArray<int> &data
 	) :
 		AbstractProperty<int>(blockSize, data){}
 
 	PublicAbstractProperty(
 		const IndexTree &indexTree,
 		unsigned int blockSize,
-		const int *data
+		const CArray<int> &data
 	) :
 		AbstractProperty<int>(indexTree, blockSize, data){}
 
@@ -68,20 +68,20 @@ int main(int argc, char **argv){
 	switch(id){
 	case 0:
 	{
-		vector<int> data;
+		CArray<int> data(10);
 		for(unsigned int n = 0; n < 10; n++)
-			data.push_back(n);
+			data[n] = n;
 
-		abstractProperty = PublicAbstractProperty(10, data.data());
+		abstractProperty = PublicAbstractProperty(10, data);
 		abstractProperty.setDefaultValue(137);
 
 		break;
 	}
 	case 1:
 	{
-		vector<int> data;
+		CArray<int> data(30);
 		for(unsigned int n = 0; n < 30; n++)
-			data.push_back(n);
+			data[n] = n;
 
 		IndexTree indexTree;
 		indexTree.add({1, 2, 3});
@@ -89,7 +89,7 @@ int main(int argc, char **argv){
 		indexTree.add({2, 3});
 		indexTree.generateLinearMap();
 
-		abstractProperty = PublicAbstractProperty(indexTree, 10, data.data());
+		abstractProperty = PublicAbstractProperty(indexTree, 10, data);
 		abstractProperty.setDefaultValue(137);
 
 		break;

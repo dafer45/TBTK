@@ -18,7 +18,7 @@ TEST(TransmissionRate, Constructor0){
 }
 
 TEST(TransmissionRate, Constructor1){
-	double dataInput[1000];
+	CArray<double> dataInput(1000);
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput[n] = n;
 	TransmissionRate transmissionRate(Range(-10, 10, 1000), dataInput);
@@ -31,7 +31,7 @@ TEST(TransmissionRate, Constructor1){
 }
 
 TEST(TransmissionRate, SerializeToJSON){
-	double dataInput[1000];
+	CArray<double> dataInput(1000);
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput[n] = n;
 	TransmissionRate transmissionRate0(Range(-10, 10, 1000), dataInput);
@@ -48,12 +48,12 @@ TEST(TransmissionRate, SerializeToJSON){
 }
 
 TEST(TransmissionRate, operatorAdditionAssignment){
-	double dataInput0[1000];
+	CArray<double> dataInput0(1000);
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput0[n] = n;
 	TransmissionRate transmissionRate0(Range(-10, 10, 1000), dataInput0);
 
-	double dataInput1[1000];
+	CArray<double> dataInput1(1000);
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput1[n] = 2*n;
 	TransmissionRate transmissionRate1(Range(-10, 10, 1000), dataInput1);
@@ -65,12 +65,12 @@ TEST(TransmissionRate, operatorAdditionAssignment){
 }
 
 TEST(TransmissionRate, operatorAddition){
-	double dataInput0[1000];
+	CArray<double> dataInput0(1000);
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput0[n] = n;
 	TransmissionRate transmissionRate0(Range(-10, 10, 1000), dataInput0);
 
-	double dataInput1[1000];
+	CArray<double> dataInput1(1000);
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput1[n] = 2*n;
 	TransmissionRate transmissionRate1(Range(-10, 10, 1000), dataInput1);
@@ -83,12 +83,12 @@ TEST(TransmissionRate, operatorAddition){
 }
 
 TEST(TransmissionRate, operatorSubtractionAssignment){
-	double dataInput0[1000];
+	CArray<double> dataInput0(1000);
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput0[n] = n;
 	TransmissionRate transmissionRate0(Range(-10, 10, 1000), dataInput0);
 
-	double dataInput1[1000];
+	CArray<double> dataInput1(1000);
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput1[n] = 2*n;
 	TransmissionRate transmissionRate1(Range(-10, 10, 1000), dataInput1);
@@ -100,12 +100,12 @@ TEST(TransmissionRate, operatorSubtractionAssignment){
 }
 
 TEST(TransmissionRate, operatorSubtraction){
-	double dataInput0[1000];
+	CArray<double> dataInput0(1000);
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput0[n] = n;
 	TransmissionRate transmissionRate0(Range(-10, 10, 1000), dataInput0);
 
-	double dataInput1[1000];
+	CArray<double> dataInput1(1000);
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput1[n] = 2*n;
 	TransmissionRate transmissionRate1(Range(-10, 10, 1000), dataInput1);
@@ -118,12 +118,12 @@ TEST(TransmissionRate, operatorSubtraction){
 }
 
 TEST(TransmissionRate, operatorMultiplicationAssignment0){
-	double dataInput0[1000];
+	CArray<double> dataInput0(1000);
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput0[n] = n;
 	TransmissionRate transmissionRate0(Range(-10, 10, 1000), dataInput0);
 
-	double dataInput1[1000];
+	CArray<double> dataInput1(1000);
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput1[n] = 2*n;
 	TransmissionRate transmissionRate1(Range(-10, 10, 1000), dataInput1);
@@ -133,7 +133,7 @@ TEST(TransmissionRate, operatorMultiplicationAssignment0){
 	for(unsigned int n = 0; n < 1000; n++)
 		EXPECT_EQ(data0[n], 2*n*n);
 
-	double dataInput2[999];
+	CArray<double> dataInput2(999);
 	for(unsigned int n = 0; n < 999; n++)
 		dataInput2[n] = 2*n;
 	TransmissionRate transmissionRate2(Range(-10, 10, 999), dataInput2);
@@ -168,12 +168,12 @@ TEST(TransmissionRate, operatorMultiplicationAssignment0){
 }
 
 TEST(TransmissionRate, operatorMultiplication0){
-	double dataInput0[1000];
+	CArray<double> dataInput0(1000);
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput0[n] = n;
 	TransmissionRate transmissionRate0(Range(-10, 10, 1000), dataInput0);
 
-	double dataInput1[1000];
+	CArray<double> dataInput1(1000);
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput1[n] = 2*n;
 	TransmissionRate transmissionRate1(Range(-10, 10, 1000), dataInput1);
@@ -184,7 +184,7 @@ TEST(TransmissionRate, operatorMultiplication0){
 	for(unsigned int n = 0; n < 1000; n++)
 		EXPECT_EQ(data2[n], 2*n*n);
 
-	double dataInput3[999];
+	CArray<double> dataInput3(999);
 	for(unsigned int n = 0; n < 999; n++)
 		dataInput3[n] = 2*n;
 	TransmissionRate transmissionRate3(Range(-10, 10, 999), dataInput3);
@@ -222,7 +222,7 @@ TEST(TransmissionRate, operatorMultiplication0){
 }
 
 TEST(TransmissionRate, operatorMultiplicationAssignment1){
-	double dataInput[1000];
+	CArray<double> dataInput(1000);
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput[n] = n;
 	TransmissionRate transmissionRate(Range(-10, 10, 1000), dataInput);
@@ -234,7 +234,7 @@ TEST(TransmissionRate, operatorMultiplicationAssignment1){
 }
 
 TEST(TransmissionRate, operatorMultiplication1){
-	double dataInput[1000];
+	CArray<double> dataInput(1000);
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput[n] = n;
 	TransmissionRate transmissionRate0(Range(-10, 10, 1000), dataInput);
@@ -250,12 +250,12 @@ TEST(TransmissionRate, operatorMultiplication1){
 }
 
 TEST(TransmissionRate, operatorDivisionAssignment0){
-	double dataInput0[1000];
+	CArray<double> dataInput0(1000);
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput0[n] = n;
 	TransmissionRate transmissionRate0(Range(-10, 10, 1000), dataInput0);
 
-	double dataInput1[1000];
+	CArray<double> dataInput1(1000);
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput1[n] = 1 + 2*n;
 	TransmissionRate transmissionRate1(Range(-10, 10, 1000), dataInput1);
@@ -265,7 +265,7 @@ TEST(TransmissionRate, operatorDivisionAssignment0){
 	for(unsigned int n = 0; n < 1000; n++)
 		EXPECT_DOUBLE_EQ(data0[n], n/(1 + 2.*n));
 
-	double dataInput2[999];
+	CArray<double> dataInput2(999);
 	for(unsigned int n = 0; n < 999; n++)
 		dataInput2[n] = 1 + 2*n;
 	TransmissionRate transmissionRate2(Range(-10, 10, 999), dataInput2);
@@ -300,12 +300,12 @@ TEST(TransmissionRate, operatorDivisionAssignment0){
 }
 
 TEST(TransmissionRate, operatorDivision0){
-	double dataInput0[1000];
+	CArray<double> dataInput0(1000);
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput0[n] = n;
 	TransmissionRate transmissionRate0(Range(-10, 10, 1000), dataInput0);
 
-	double dataInput1[1000];
+	CArray<double> dataInput1(1000);
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput1[n] = 1 + 2*n;
 	TransmissionRate transmissionRate1(Range(-10, 10, 1000), dataInput1);
@@ -316,7 +316,7 @@ TEST(TransmissionRate, operatorDivision0){
 	for(unsigned int n = 0; n < 1000; n++)
 		EXPECT_DOUBLE_EQ(data2[n], n/(1 + 2.*n));
 
-	double dataInput3[999];
+	CArray<double> dataInput3(999);
 	for(unsigned int n = 0; n < 999; n++)
 		dataInput3[n] = 1 + 2*n;
 	TransmissionRate transmissionRate3(Range(-10, 10, 999), dataInput3);
@@ -354,7 +354,7 @@ TEST(TransmissionRate, operatorDivision0){
 }
 
 TEST(TransmissionRate, operatorDivisionAssignment1){
-	double dataInput[1000];
+	CArray<double> dataInput(1000);
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput[n] = n;
 	TransmissionRate transmissionRate(Range(-10, 10, 1000), dataInput);
@@ -366,7 +366,7 @@ TEST(TransmissionRate, operatorDivisionAssignment1){
 }
 
 TEST(TransmissionRate, operatorDivision1){
-	double dataInput[1000];
+	CArray<double> dataInput(1000);
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput[n] = n;
 	TransmissionRate transmissionRate0(Range(-10, 10, 1000), dataInput);

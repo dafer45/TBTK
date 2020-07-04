@@ -62,7 +62,7 @@ public:
 	 *  defined.
 	 *
 	 *  @param data Raw data to initialize the DOS with. */
-	DOS(const Range &energyWindow, const double *data);
+	DOS(const Range &energyWindow, const CArray<double> &data);
 
 	/** Constructor. Constructs the DOS from a serialization string.
 	 *

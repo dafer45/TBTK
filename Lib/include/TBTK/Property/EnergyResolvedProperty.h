@@ -113,7 +113,7 @@ public:
 	 *  EnergyResolvedProperty is defined. */
 	EnergyResolvedProperty(
 		const Range &energyWindow,
-		const DataType *data
+		const CArray<DataType> &data
 	);
 
 	/** Construct an EnergyResolvedProperty with real energies on the
@@ -147,7 +147,7 @@ public:
 	EnergyResolvedProperty(
 		const std::vector<int> &ranges,
 		const Range &energyWindow,
-		const DataType *data
+		const CArray<DataType> &data
 	);
 
 	/** Constructs an EnergyResolvedProperty with real energies on the
@@ -180,7 +180,7 @@ public:
 	EnergyResolvedProperty(
 		const IndexTree &indexTree,
 		const Range &energyWindow,
-		const DataType *data
+		const CArray<DataType> &data
 	);
 
 	/** Constructs an EnergyResolvedProperty with Matsubara energies
@@ -220,7 +220,7 @@ public:
 		int lowerMatsubaraEnergyIndex,
 		int upperMatsubaraEnergtIndex,
 		double fundamentalMatsubaraEnergy,
-		const DataType *data
+		const CArray<DataType> &data
 	);
 
 	/** Constructor. Constructs the EnergyResolvedProperty from a
@@ -443,7 +443,7 @@ EnergyResolvedProperty<DataType>::EnergyResolvedProperty(
 template<typename DataType>
 EnergyResolvedProperty<DataType>::EnergyResolvedProperty(
 	const Range &energyWindow,
-	const DataType *data
+	const CArray<DataType> &data
 ) :
 	AbstractProperty<DataType>(energyWindow.getResolution(), data)
 {
@@ -492,7 +492,7 @@ template<typename DataType>
 EnergyResolvedProperty<DataType>::EnergyResolvedProperty(
 	const std::vector<int> &ranges,
 	const Range &energyWindow,
-	const DataType *data
+	const CArray<DataType> &data
 ) :
 	AbstractProperty<DataType>(ranges, energyWindow.getResolution(), data)
 {
@@ -541,7 +541,7 @@ template<typename DataType>
 EnergyResolvedProperty<DataType>::EnergyResolvedProperty(
 	const IndexTree &indexTree,
 	const Range &energyWindow,
-	const DataType *data
+	const CArray<DataType> &data
 ) :
 	AbstractProperty<DataType>(
 		indexTree,
@@ -670,7 +670,7 @@ EnergyResolvedProperty<DataType>::EnergyResolvedProperty(
 	int lowerMatsubaraEnergyIndex,
 	int upperMatsubaraEnergyIndex,
 	double fundamentalMatsubaraEnergy,
-	const DataType *data
+	const CArray<DataType> &data
 ) :
 	AbstractProperty<DataType>(
 		indexTree,

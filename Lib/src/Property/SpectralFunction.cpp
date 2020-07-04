@@ -41,7 +41,7 @@ SpectralFunction::SpectralFunction(
 SpectralFunction::SpectralFunction(
 	const IndexTree &indexTree,
 	const Range &energyWindow,
-	const complex<double> *data
+	const CArray<complex<double>> &data
 ) :
 	EnergyResolvedProperty<complex<double>>(indexTree, energyWindow, data)
 {

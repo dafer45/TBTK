@@ -54,7 +54,7 @@ public:
 	 *
 	 *  @param size The number of eigenvalues.
 	 *  @param data Raw data to initialize the EigenValues with. */
-	EigenValues(int size, const double *data);
+	EigenValues(int size, const CArray<double> &data);
 
 	/** Constructor. Constructs the EigenValues from a serialization
 	 *  string.

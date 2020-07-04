@@ -37,13 +37,8 @@ Diagonalizer::Diagonalizer(){
 }
 
 Property::EigenValues Diagonalizer::getEigenValues(){
-	const Solver::Diagonalizer &solver = getSolver();
-	const CArray<double> &eigenValues = solver.getEigenValues();
-
-	return Property::EigenValues(
-		eigenValues.getSize(),
-		eigenValues.getData()
-	);
+	const CArray<double> &eigenValues = getSolver().getEigenValues();
+	return Property::EigenValues(eigenValues.getSize(), eigenValues);
 }
 
 Property::WaveFunctions Diagonalizer::calculateWaveFunctions(

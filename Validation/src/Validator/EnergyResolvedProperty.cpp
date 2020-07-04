@@ -45,13 +45,13 @@ int main(int argc, char **argv){
 	switch(id){
 	case 0:
 	{
-		vector<int> data;
+		CArray<int> data(10);
 		for(unsigned int n = 0; n < 10; n++)
-			data.push_back(n);
+			data[n] = n;
 
 		energyResolvedProperty = Property::EnergyResolvedProperty<int>(
 			Range(-5, 5, 10),
-			data.data()
+			data
 		);
 		energyResolvedProperty.setDefaultValue(137);
 
@@ -59,9 +59,9 @@ int main(int argc, char **argv){
 	}
 	case 1:
 	{
-		vector<int> data;
+		CArray<int> data(30);
 		for(unsigned int n = 0; n < 30; n++)
-			data.push_back(n);
+			data[n] = n;
 
 		IndexTree indexTree;
 		indexTree.add({1, 2, 3});
@@ -72,7 +72,7 @@ int main(int argc, char **argv){
 		energyResolvedProperty = Property::EnergyResolvedProperty<int>(
 			indexTree,
 			Range(-5, 5, 10),
-			data.data()
+			data
 		);
 		energyResolvedProperty.setDefaultValue(137);
 
@@ -80,9 +80,9 @@ int main(int argc, char **argv){
 	}
 	case 2:
 	{
-		vector<int> data;
+		CArray<int> data(18);
 		for(unsigned int n = 0; n < 18; n++)
-			data.push_back(n);
+			data[n] = n;
 
 		IndexTree indexTree;
 		indexTree.add({1, 2, 3});
@@ -96,7 +96,7 @@ int main(int argc, char **argv){
 			-5,
 			5,
 			10,
-			data.data()
+			data
 		);
 		energyResolvedProperty.setDefaultValue(137);
 
@@ -104,9 +104,9 @@ int main(int argc, char **argv){
 	}
 	case 3:
 	{
-		vector<int> data;
+		CArray<int> data(21);
 		for(unsigned int n = 0; n < 21; n++)
-			data.push_back(n);
+			data[n] = n;
 
 		IndexTree indexTree;
 		indexTree.add({1, 2, 3});
@@ -120,7 +120,7 @@ int main(int argc, char **argv){
 			-6,
 			6,
 			10,
-			data.data()
+			data
 		);
 		energyResolvedProperty.setDefaultValue(137);
 

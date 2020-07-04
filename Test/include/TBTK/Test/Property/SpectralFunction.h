@@ -62,7 +62,7 @@ TEST(GreensFunction, Constructor3){
 	indexTree.add({{0, 2}, {0, 1}});
 	indexTree.add({{0, 1}, {0, 3}});
 	indexTree.generateLinearMap();
-	std::complex<double> data[3000];
+	CArray<std::complex<double>> data(3000);
 	for(unsigned int n = 0; n < 3000; n++)
 		data[n] = n;
 	SpectralFunction spectralFunction(

@@ -14,7 +14,7 @@ TEST(EigenValues, Constructor0){
 }
 
 TEST(EigenValues, Constructor1){
-	double dataInput[1000];
+	CArray<double> dataInput(1000);
 	for(unsigned int n = 0; n < 1000; n ++)
 		dataInput[n] = n;
 	EigenValues eigenValues(1000, dataInput);
@@ -25,7 +25,7 @@ TEST(EigenValues, Constructor1){
 }
 
 TEST(EigenValues, SerializeToJSON){
-	double dataInput[1000];
+	CArray<double> dataInput(1000);
 	for(unsigned int n = 0; n < 1000; n ++)
 		dataInput[n] = n;
 	EigenValues eigenValues0(1000, dataInput);
@@ -40,12 +40,12 @@ TEST(EigenValues, SerializeToJSON){
 }
 
 TEST(EigenValues, operatorAdditionAssignment){
-	double dataInput0[1000];
+	CArray<double> dataInput0(1000);
 	for(unsigned int n = 0; n < 1000; n ++)
 		dataInput0[n] = n;
 	EigenValues eigenValues0(1000, dataInput0);
 
-	double dataInput1[1000];
+	CArray<double> dataInput1(1000);
 	for(unsigned int n = 0; n < 1000; n ++)
 		dataInput1[n] = 2*n;
 	EigenValues eigenValues1(1000, dataInput1);
@@ -57,12 +57,12 @@ TEST(EigenValues, operatorAdditionAssignment){
 }
 
 TEST(EigenValues, operatorAddition){
-	double dataInput0[1000];
+	CArray<double> dataInput0(1000);
 	for(unsigned int n = 0; n < 1000; n ++)
 		dataInput0[n] = n;
 	EigenValues eigenValues0(1000, dataInput0);
 
-	double dataInput1[1000];
+	CArray<double> dataInput1(1000);
 	for(unsigned int n = 0; n < 1000; n ++)
 		dataInput1[n] = 2*n;
 	EigenValues eigenValues1(1000, dataInput1);
@@ -74,12 +74,12 @@ TEST(EigenValues, operatorAddition){
 }
 
 TEST(EigenValues, operatorSubtractionAssignment){
-	double dataInput0[1000];
+	CArray<double> dataInput0(1000);
 	for(unsigned int n = 0; n < 1000; n ++)
 		dataInput0[n] = n;
 	EigenValues eigenValues0(1000, dataInput0);
 
-	double dataInput1[1000];
+	CArray<double> dataInput1(1000);
 	for(unsigned int n = 0; n < 1000; n ++)
 		dataInput1[n] = 2*n;
 	EigenValues eigenValues1(1000, dataInput1);
@@ -91,12 +91,12 @@ TEST(EigenValues, operatorSubtractionAssignment){
 }
 
 TEST(EigenValues, operatorSubtraction){
-	double dataInput0[1000];
+	CArray<double> dataInput0(1000);
 	for(unsigned int n = 0; n < 1000; n ++)
 		dataInput0[n] = n;
 	EigenValues eigenValues0(1000, dataInput0);
 
-	double dataInput1[1000];
+	CArray<double> dataInput1(1000);
 	for(unsigned int n = 0; n < 1000; n ++)
 		dataInput1[n] = 2*n;
 	EigenValues eigenValues1(1000, dataInput1);
@@ -108,7 +108,7 @@ TEST(EigenValues, operatorSubtraction){
 }
 
 TEST(EigenValues, operatorMultiplicationAssignment){
-	double dataInput[1000];
+	CArray<double> dataInput(1000);
 	for(unsigned int n = 0; n < 1000; n ++)
 		dataInput[n] = n;
 	EigenValues eigenValues(1000, dataInput);
@@ -120,7 +120,7 @@ TEST(EigenValues, operatorMultiplicationAssignment){
 }
 
 TEST(EigenValues, operatorMultiplication){
-	double dataInput[1000];
+	CArray<double> dataInput(1000);
 	for(unsigned int n = 0; n < 1000; n ++)
 		dataInput[n] = n;
 	EigenValues eigenValues0(1000, dataInput);
@@ -136,7 +136,7 @@ TEST(EigenValues, operatorMultiplication){
 }
 
 TEST(EigenValues, operatorDivisionAssignment){
-	double dataInput[1000];
+	CArray<double> dataInput(1000);
 	for(unsigned int n = 0; n < 1000; n ++)
 		dataInput[n] = n;
 	EigenValues eigenValues(1000, dataInput);
@@ -148,7 +148,7 @@ TEST(EigenValues, operatorDivisionAssignment){
 }
 
 TEST(EigenValues, operatorDivision){
-	double dataInput[1000];
+	CArray<double> dataInput(1000);
 	for(unsigned int n = 0; n < 1000; n ++)
 		dataInput[n] = n;
 	EigenValues eigenValues0(1000, dataInput);

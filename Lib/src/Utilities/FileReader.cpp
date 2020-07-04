@@ -488,10 +488,10 @@ Property::WaveFunctions* FileReader::readWaveFunctions(string name, string path)
 
 		ss.str("");
 		ss << name << "States";
-		int *serializedStates;
+		CArray<int> serializedStates;
 		int statesRank;
 		int *statesDims;
-		read(&serializedStates, &statesRank, &statesDims, ss.str(), path);
+		read(serializedStates, &statesRank, &statesDims, ss.str(), path);
 		TBTKAssert(
 			statesRank == 1,
 			"FileReader::readWaveFunctions()",
@@ -501,13 +501,12 @@ Property::WaveFunctions* FileReader::readWaveFunctions(string name, string path)
 		vector<unsigned int> states;
 		for(int n = 0; n < statesDims[0]; n++)
 			states.push_back(serializedStates[n]);
-		delete [] serializedStates;
 		delete [] statesDims;
 
-		complex<double> *data;
+		CArray<complex<double>> data;
 		int rank;
 		int *dims;
-		read(&data, &rank, &dims, name, path);
+		read(data, &rank, &dims, name, path);
 
 		waveFunctions = new Property::WaveFunctions(
 			*indexTree,
@@ -516,7 +515,6 @@ Property::WaveFunctions* FileReader::readWaveFunctions(string name, string path)
 		);
 
 		delete indexTree;
-		delete [] data;
 		delete [] dims;
 
 		break;
@@ -710,14 +708,13 @@ Property::Density* FileReader::readDensity(string name, string path){
 
 		int rank;
 		int *dims;
-		double *data;
-		read(&data, &rank, &dims, name, path);
+		CArray<double> data;
+		read(data, &rank, &dims, name, path);
 
 		density = new Property::Density(*indexTree, data);
 
 		delete indexTree;
 		delete [] dims;
-		delete [] data;
 
 		break;
 	}
@@ -856,10 +853,10 @@ Property::Magnetization* FileReader::readMagnetization(
 
 		int rank;
 		int *dims;
-		complex<double> *data_internal;
-		read(&data_internal, &rank, &dims, name, path);
+		CArray<complex<double>> data_internal;
+		read(data_internal, &rank, &dims, name, path);
 
-		SpinMatrix *data = new SpinMatrix[dims[0]/4];
+		CArray<SpinMatrix> data(dims[0]/4);
 		for(int n = 0; n < dims[0]/4; n++){
 			data[n].at(0, 0) = data_internal[4*n + 0];
 			data[n].at(0, 1) = data_internal[4*n + 1];
@@ -871,8 +868,6 @@ Property::Magnetization* FileReader::readMagnetization(
 
 		delete indexTree;
 		delete [] dims;
-		delete [] data_internal;
-		delete [] data;
 
 		break;
 	}
@@ -1018,8 +1013,8 @@ Property::LDOS* FileReader::readLDOS(string name, string path){
 
 		int rank;
 		int *dims;
-		double *data;
-		read(&data, &rank, &dims, name, path);
+		CArray<double> data;
+		read(data, &rank, &dims, name, path);
 
 		ldos = new Property::LDOS(
 			*indexTree,
@@ -1033,7 +1028,6 @@ Property::LDOS* FileReader::readLDOS(string name, string path){
 
 		delete indexTree;
 		delete [] dims;
-		delete [] data;
 
 		break;
 	}
@@ -1202,10 +1196,10 @@ Property::SpinPolarizedLDOS* FileReader::readSpinPolarizedLDOS(
 
 		int rank;
 		int *dims;
-		complex<double> *data_internal;
-		read(&data_internal, &rank, &dims, name, path);
+		CArray<complex<double>> data_internal;
+		read(data_internal, &rank, &dims, name, path);
 
-		SpinMatrix *data = new SpinMatrix[dims[0]/4];
+		CArray<SpinMatrix> data(dims[0]/4);
 		for(int n = 0; n < dims[0]/4; n++){
 			data[n].at(0, 0) = data_internal[4*n + 0];
 			data[n].at(0, 1) = data_internal[4*n + 1];
@@ -1225,8 +1219,6 @@ Property::SpinPolarizedLDOS* FileReader::readSpinPolarizedLDOS(
 
 		delete indexTree;
 		delete [] dims;
-		delete [] data_internal;
-		delete [] data;
 
 		break;
 	}
@@ -1242,7 +1234,7 @@ Property::SpinPolarizedLDOS* FileReader::readSpinPolarizedLDOS(
 }
 
 void FileReader::read(
-	int **data,
+	CArray<int> &data,
 	int *rank,
 	int **dims,
 	string name,
@@ -1281,8 +1273,8 @@ void FileReader::read(
 		for(int n = 0; n < *rank; n++)
 			size *= (*dims)[n];
 
-		*data = new int[size];
-		dataset.read(*data, PredType::NATIVE_INT, dataspace);
+		data = CArray<int>(size);
+		dataset.read(data.getData(), PredType::NATIVE_INT, dataspace);
 	}
 	catch(FileIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
@@ -1311,7 +1303,7 @@ void FileReader::read(
 }
 
 void FileReader::read(
-	double **data,
+	CArray<double> &data,
 	int *rank,
 	int **dims,
 	string name,
@@ -1350,8 +1342,8 @@ void FileReader::read(
 		for(int n = 0; n < *rank; n++)
 			size *= (*dims)[n];
 
-		*data = new double[size];
-		dataset.read(*data, PredType::NATIVE_DOUBLE, dataspace);
+		data = CArray<double>(size);
+		dataset.read(data.getData(), PredType::NATIVE_DOUBLE, dataspace);
 	}
 	catch(FileIException &error){
 		Streams::log << error.getCDetailMsg() << "\n";
@@ -1380,14 +1372,14 @@ void FileReader::read(
 }
 
 void FileReader::read(
-	complex<double> **data,
+	CArray<complex<double>> &data,
 	int *rank,
 	int **dims,
 	string name,
 	string path
 ){
-	double *realData;
-	double *imagData;
+	CArray<double> realData;
+	CArray<double> imagData;
 	int realRank;
 	int imagRank;
 	int *realDims;
@@ -1395,10 +1387,10 @@ void FileReader::read(
 
 	stringstream ss;
 	ss << name << "Real";
-	read(&realData, &realRank, &realDims, ss.str(), path);
+	read(realData, &realRank, &realDims, ss.str(), path);
 	ss.str("");
 	ss << name << "Imag";
-	read(&imagData, &imagRank, &imagDims, ss.str(), path);
+	read(imagData, &imagRank, &imagDims, ss.str(), path);
 
 	TBTKAssert(
 		realRank == imagRank,
@@ -1425,12 +1417,10 @@ void FileReader::read(
 	for(int n = 0; n < *rank; n++)
 		size *= (*dims)[n];
 
-	*data = new complex<double>[size];
+	data = CArray<complex<double>>(size);
 	for(unsigned int n = 0; n < size; n++)
-		(*data)[n] = realData[n] + complex<double>(0, 1.)*imagData[n];
+		data[n] = realData[n] + complex<double>(0, 1.)*imagData[n];
 
-	delete [] realData;
-	delete [] imagData;
 	delete [] realDims;
 	delete [] imagDims;
 }

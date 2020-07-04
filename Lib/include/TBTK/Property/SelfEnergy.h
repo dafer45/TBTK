@@ -64,7 +64,7 @@ public:
 	SelfEnergy(
 		const IndexTree &indexTree,
 		const Range &energyWindow,
-		const std::complex<double> *data
+		const CArray<std::complex<double>> &data
 	);
 
 	/** Constructs a SelfEnergy with Matsubara energies on the Custom
@@ -101,7 +101,7 @@ public:
 		int lowerMatsubaraEnergyIndex,
 		int upperMatsubaraEnergyIndex,
 		double fundamentalMatsubaraEnergy,
-		const std::complex<double> *data
+		const CArray<std::complex<double>> &data
 	);
 
 	/** Constructor. Constructs the SelfEnergy from a serialization string.

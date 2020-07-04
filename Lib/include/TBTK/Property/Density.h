@@ -60,7 +60,7 @@ public:
 	 *  dimensions.
 	 *
 	 *  @param data Raw data to initialize the Density with. */
-	Density(const std::vector<int> &ranges, const double *data);
+	Density(const std::vector<int> &ranges, const CArray<double> &data);
 
 	/** Constructs a Density on the Custom format. [See AbstractProperty
 	 *  for detailed information about the Custom format.]
@@ -77,7 +77,7 @@ public:
 	 *  @endlink for which the Density should be contained.
 	 *
 	 *  @param data Raw data to initialize the Density with. */
-	Density(const IndexTree &indexTree, const double *data);
+	Density(const IndexTree &indexTree, const CArray<double> &data);
 
 	/** Constructor. Constructs the Density from a serializeation string.
 	 *

@@ -24,7 +24,7 @@ TEST(Magnetization, Constructor0){
 }
 
 TEST(Magnetization, Constructor1){
-	SpinMatrix dataInput[2*3*4];
+	CArray<SpinMatrix> dataInput(2*3*4);
 	for(unsigned int n = 0; n < 2*3*4; n++){
 		for(unsigned int r = 0; r < 2; r++){
 			for(unsigned int c = 0; c < 2; c++){
@@ -85,7 +85,7 @@ TEST(Magnetization, Constructor3){
 	indexTree.add({1});
 	indexTree.add({2});
 	indexTree.generateLinearMap();
-	SpinMatrix dataInput[3];
+	CArray<SpinMatrix> dataInput(3);
 	for(unsigned int n = 0; n < 3; n++){
 		for(unsigned int r = 0; r < 2; r++){
 			for(unsigned int c = 0; c < 2; c++){

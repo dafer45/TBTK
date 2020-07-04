@@ -18,7 +18,7 @@ TEST(DOS, Constructor0){
 }
 
 TEST(DOS, Constructor1){
-	double dataInput[1000];
+	CArray<double> dataInput(1000);
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput[n] = n;
 	DOS dos(Range(-10, 10, 1000), dataInput);
@@ -31,7 +31,7 @@ TEST(DOS, Constructor1){
 }
 
 TEST(DOS, SerializeToJSON){
-	double dataInput[1000];
+	CArray<double> dataInput(1000);
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput[n] = n;
 	DOS dos0(Range(-10, 10, 1000), dataInput);
@@ -48,12 +48,12 @@ TEST(DOS, SerializeToJSON){
 }
 
 TEST(DOS, operatorAdditionAssignment){
-	double dataInput0[1000];
+	CArray<double> dataInput0(1000);
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput0[n] = n;
 	DOS dos0(Range(-10, 10, 1000), dataInput0);
 
-	double dataInput1[1000];
+	CArray<double> dataInput1(1000);
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput1[n] = 2*n;
 	DOS dos1(Range(-10, 10, 1000), dataInput1);
@@ -65,12 +65,12 @@ TEST(DOS, operatorAdditionAssignment){
 }
 
 TEST(DOS, operatorAddition){
-	double dataInput0[1000];
+	CArray<double> dataInput0(1000);
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput0[n] = n;
 	DOS dos0(Range(-10, 10, 1000), dataInput0);
 
-	double dataInput1[1000];
+	CArray<double> dataInput1(1000);
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput1[n] = 2*n;
 	DOS dos1(Range(-10, 10, 1000), dataInput1);
@@ -82,12 +82,12 @@ TEST(DOS, operatorAddition){
 }
 
 TEST(DOS, operatorSubtractionAssignment){
-	double dataInput0[1000];
+	CArray<double> dataInput0(1000);
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput0[n] = n;
 	DOS dos0(Range(-10, 10, 1000), dataInput0);
 
-	double dataInput1[1000];
+	CArray<double> dataInput1(1000);
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput1[n] = 2*n;
 	DOS dos1(Range(-10, 10, 1000), dataInput1);
@@ -99,12 +99,12 @@ TEST(DOS, operatorSubtractionAssignment){
 }
 
 TEST(DOS, operatorSubtraction){
-	double dataInput0[1000];
+	CArray<double> dataInput0(1000);
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput0[n] = n;
 	DOS dos0(Range(-10, 10, 1000), dataInput0);
 
-	double dataInput1[1000];
+	CArray<double> dataInput1(1000);
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput1[n] = 2*n;
 	DOS dos1(Range(-10, 10, 1000), dataInput1);
@@ -116,7 +116,7 @@ TEST(DOS, operatorSubtraction){
 }
 
 TEST(DOS, operatorMultiplicationAssignment){
-	double dataInput[1000];
+	CArray<double> dataInput(1000);
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput[n] = n;
 	DOS dos(Range(-10, 10, 1000), dataInput);
@@ -128,7 +128,7 @@ TEST(DOS, operatorMultiplicationAssignment){
 }
 
 TEST(DOS, operatorMultiplication){
-	double dataInput[1000];
+	CArray<double> dataInput(1000);
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput[n] = n;
 	DOS dos0(Range(-10, 10, 1000), dataInput);
@@ -144,7 +144,7 @@ TEST(DOS, operatorMultiplication){
 }
 
 TEST(DOS, operatorDivisionAssignment){
-	double dataInput[1000];
+	CArray<double> dataInput(1000);
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput[n] = n;
 	DOS dos(Range(-10, 10, 1000), dataInput);
@@ -156,7 +156,7 @@ TEST(DOS, operatorDivisionAssignment){
 }
 
 TEST(DOS, operatorDivision){
-	double dataInput[1000];
+	CArray<double> dataInput(1000);
 	for(unsigned int n = 0; n < 1000; n++)
 		dataInput[n] = n;
 	DOS dos0(Range(-10, 10, 1000), dataInput);

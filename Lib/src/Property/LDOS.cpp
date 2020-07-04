@@ -39,7 +39,7 @@ LDOS::LDOS(
 LDOS::LDOS(
 	const std::vector<int> &ranges,
 	const Range &energyWindow,
-	const double *data
+	const CArray<double> &data
 ) :
 	EnergyResolvedProperty(ranges, energyWindow, data)
 {
@@ -56,7 +56,7 @@ LDOS::LDOS(
 LDOS::LDOS(
 	const IndexTree &indexTree,
 	const Range &energyWindow,
-	const double *data
+	const CArray<double> &data
 ) :
 	EnergyResolvedProperty(indexTree, energyWindow, data)
 {

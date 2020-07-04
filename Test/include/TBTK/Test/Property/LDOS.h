@@ -23,7 +23,7 @@ TEST(LDOS, Constructor0){
 }
 
 TEST(LDOS, Constructor1){
-	double dataInput[1000*2*3*4];
+	CArray<double> dataInput(1000*2*3*4);
 	for(unsigned int n = 0; n < 1000*2*3*4; n++)
 		dataInput[n] = n;
 	LDOS ldos({2, 3, 4}, Range(-10, 10, 1000), dataInput);
@@ -64,7 +64,7 @@ TEST(LDOS, Constructor3){
 	indexTree.add({1});
 	indexTree.add({2});
 	indexTree.generateLinearMap();
-	double dataInput[1000*3];
+	CArray<double> dataInput(1000*3);
 	for(unsigned int n = 0; n < 1000*3; n++)
 		dataInput[n] = n;
 	LDOS ldos(indexTree, Range(-10, 10, 1000), dataInput);
@@ -81,12 +81,12 @@ TEST(LDOS, Constructor3){
 
 TEST(LDOS, operatorAdditionAssignment){
 	//Ranges format.
-	double dataInputRanges0[2*3*4*10];
+	CArray<double> dataInputRanges0(2*3*4*10);
 	for(unsigned int n = 0; n < 2*3*4*10; n++)
 		dataInputRanges0[n] = n;
 	LDOS ldosRanges0({2, 3, 4}, Range(-10, 10, 10), dataInputRanges0);
 
-	double dataInputRanges1[2*3*4*10];
+	CArray<double> dataInputRanges1(2*3*4*10);
 	for(unsigned int n = 0; n < 2*3*4*10; n++)
 		dataInputRanges1[n] = 2*n;
 	LDOS ldosRanges1({2, 3, 4}, Range(-10, 10, 10), dataInputRanges1);
@@ -103,12 +103,12 @@ TEST(LDOS, operatorAdditionAssignment){
 	indexTree.add({2, 2});
 	indexTree.generateLinearMap();
 
-	double dataInputCustom0[3*10];
+	CArray<double> dataInputCustom0(3*10);
 	for(unsigned int n = 0; n < 3*10; n++)
 		dataInputCustom0[n] = n;
 	LDOS ldosCustom0(indexTree, Range(-10, 10, 10), dataInputCustom0);
 
-	double dataInputCustom1[3*10];
+	CArray<double> dataInputCustom1(3*10);
 	for(unsigned int n = 0; n < 3*10; n++)
 		dataInputCustom1[n] = 2*n;
 	LDOS ldosCustom1(indexTree, Range(-10, 10, 10), dataInputCustom1);
@@ -121,12 +121,12 @@ TEST(LDOS, operatorAdditionAssignment){
 
 TEST(LDOS, operatorAddition){
 	//Ranges format.
-	double dataInputRanges0[2*3*4*10];
+	CArray<double> dataInputRanges0(2*3*4*10);
 	for(unsigned int n = 0; n < 2*3*4*10; n++)
 		dataInputRanges0[n] = n;
 	LDOS ldosRanges0({2, 3, 4}, Range(-10, 10, 10), dataInputRanges0);
 
-	double dataInputRanges1[2*3*4*10];
+	CArray<double> dataInputRanges1(2*3*4*10);
 	for(unsigned int n = 0; n < 2*3*4*10; n++)
 		dataInputRanges1[n] = 2*n;
 	LDOS ldosRanges1({2, 3, 4}, Range(-10, 10, 10), dataInputRanges1);
@@ -143,12 +143,12 @@ TEST(LDOS, operatorAddition){
 	indexTree.add({2, 2});
 	indexTree.generateLinearMap();
 
-	double dataInputCustom0[3*10];
+	CArray<double> dataInputCustom0(3*10);
 	for(unsigned int n = 0; n < 3*10; n++)
 		dataInputCustom0[n] = n;
 	LDOS ldosCustom0(indexTree, Range(-10, 10, 10), dataInputCustom0);
 
-	double dataInputCustom1[3*10];
+	CArray<double> dataInputCustom1(3*10);
 	for(unsigned int n = 0; n < 3*10; n++)
 		dataInputCustom1[n] = 2*n;
 	LDOS ldosCustom1(indexTree, Range(-10, 10, 10), dataInputCustom1);
@@ -161,12 +161,12 @@ TEST(LDOS, operatorAddition){
 
 TEST(LDOS, operatorSubtractionAssignment){
 	//Ranges format.
-	double dataInputRanges0[2*3*4*10];
+	CArray<double> dataInputRanges0(2*3*4*10);
 	for(unsigned int n = 0; n < 2*3*4*10; n++)
 		dataInputRanges0[n] = n;
 	LDOS ldosRanges0({2, 3, 4}, Range(-10, 10, 10), dataInputRanges0);
 
-	double dataInputRanges1[2*3*4*10];
+	CArray<double> dataInputRanges1(2*3*4*10);
 	for(unsigned int n = 0; n < 2*3*4*10; n++)
 		dataInputRanges1[n] = 2*n;
 	LDOS ldosRanges1({2, 3, 4}, Range(-10, 10, 10), dataInputRanges1);
@@ -183,12 +183,12 @@ TEST(LDOS, operatorSubtractionAssignment){
 	indexTree.add({2, 2});
 	indexTree.generateLinearMap();
 
-	double dataInputCustom0[3*10];
+	CArray<double> dataInputCustom0(3*10);
 	for(unsigned int n = 0; n < 3*10; n++)
 		dataInputCustom0[n] = n;
 	LDOS ldosCustom0(indexTree, Range(-10, 10, 10), dataInputCustom0);
 
-	double dataInputCustom1[3*10];
+	CArray<double> dataInputCustom1(3*10);
 	for(unsigned int n = 0; n < 3*10; n++)
 		dataInputCustom1[n] = 2*n;
 	LDOS ldosCustom1(indexTree, Range(-10, 10, 10), dataInputCustom1);
@@ -201,12 +201,12 @@ TEST(LDOS, operatorSubtractionAssignment){
 
 TEST(LDOS, operatorSubtraction){
 	//Ranges format.
-	double dataInputRanges0[2*3*4*10];
+	CArray<double> dataInputRanges0(2*3*4*10);
 	for(unsigned int n = 0; n < 2*3*4*10; n++)
 		dataInputRanges0[n] = n;
 	LDOS ldosRanges0({2, 3, 4}, Range(-10, 10, 10), dataInputRanges0);
 
-	double dataInputRanges1[2*3*4*10];
+	CArray<double> dataInputRanges1(2*3*4*10);
 	for(unsigned int n = 0; n < 2*3*4*10; n++)
 		dataInputRanges1[n] = 2*n;
 	LDOS ldosRanges1({2, 3, 4}, Range(-10, 10, 10), dataInputRanges1);
@@ -223,12 +223,12 @@ TEST(LDOS, operatorSubtraction){
 	indexTree.add({2, 2});
 	indexTree.generateLinearMap();
 
-	double dataInputCustom0[3*10];
+	CArray<double> dataInputCustom0(3*10);
 	for(unsigned int n = 0; n < 3*10; n++)
 		dataInputCustom0[n] = n;
 	LDOS ldosCustom0(indexTree, Range(-10, 10, 10), dataInputCustom0);
 
-	double dataInputCustom1[3*10];
+	CArray<double> dataInputCustom1(3*10);
 	for(unsigned int n = 0; n < 3*10; n++)
 		dataInputCustom1[n] = 2*n;
 	LDOS ldosCustom1(indexTree, Range(-10, 10, 10), dataInputCustom1);
@@ -241,7 +241,7 @@ TEST(LDOS, operatorSubtraction){
 
 TEST(LDOS, operatorMultiplicationAssignment){
 	//Ranges format.
-	double dataInputRanges0[2*3*4*10];
+	CArray<double> dataInputRanges0(2*3*4*10);
 	for(unsigned int n = 0; n < 2*3*4*10; n++)
 		dataInputRanges0[n] = n;
 	LDOS ldosRanges0({2, 3, 4}, Range(-10, 10, 10), dataInputRanges0);
@@ -258,7 +258,7 @@ TEST(LDOS, operatorMultiplicationAssignment){
 	indexTree.add({2, 2});
 	indexTree.generateLinearMap();
 
-	double dataInputCustom0[3*10];
+	CArray<double> dataInputCustom0(3*10);
 	for(unsigned int n = 0; n < 3*10; n++)
 		dataInputCustom0[n] = n;
 	LDOS ldosCustom0(indexTree, Range(-10, 10, 10), dataInputCustom0);
@@ -271,7 +271,7 @@ TEST(LDOS, operatorMultiplicationAssignment){
 
 TEST(LDOS, operatorMultiplication){
 	//Ranges format.
-	double dataInputRanges0[2*3*4*10];
+	CArray<double> dataInputRanges0(2*3*4*10);
 	for(unsigned int n = 0; n < 2*3*4*10; n++)
 		dataInputRanges0[n] = n;
 	LDOS ldosRanges0({2, 3, 4}, Range(-10, 10, 10), dataInputRanges0);
@@ -292,7 +292,7 @@ TEST(LDOS, operatorMultiplication){
 	indexTree.add({2, 2});
 	indexTree.generateLinearMap();
 
-	double dataInputCustom0[3*10];
+	CArray<double> dataInputCustom0(3*10);
 	for(unsigned int n = 0; n < 3*10; n++)
 		dataInputCustom0[n] = n;
 	LDOS ldosCustom0(indexTree, Range(-10, 10, 10), dataInputCustom0);
@@ -306,7 +306,7 @@ TEST(LDOS, operatorMultiplication){
 
 TEST(LDOS, operatorDivisionAssignment){
 	//Ranges format.
-	double dataInputRanges0[2*3*4*10];
+	CArray<double> dataInputRanges0(2*3*4*10);
 	for(unsigned int n = 0; n < 2*3*4*10; n++)
 		dataInputRanges0[n] = n;
 	LDOS ldosRanges0({2, 3, 4}, Range(-10, 10, 10), dataInputRanges0);
@@ -323,7 +323,7 @@ TEST(LDOS, operatorDivisionAssignment){
 	indexTree.add({2, 2});
 	indexTree.generateLinearMap();
 
-	double dataInputCustom0[3*10];
+	CArray<double> dataInputCustom0(3*10);
 	for(unsigned int n = 0; n < 3*10; n++)
 		dataInputCustom0[n] = n;
 	LDOS ldosCustom0(indexTree, Range(-10, 10, 10), dataInputCustom0);
@@ -336,7 +336,7 @@ TEST(LDOS, operatorDivisionAssignment){
 
 TEST(LDOS, operatorDivision){
 	//Ranges format.
-	double dataInputRanges0[2*3*4*10];
+	CArray<double> dataInputRanges0(2*3*4*10);
 	for(unsigned int n = 0; n < 2*3*4*10; n++)
 		dataInputRanges0[n] = n;
 	LDOS ldosRanges0({2, 3, 4}, Range(-10, 10, 10), dataInputRanges0);
@@ -353,7 +353,7 @@ TEST(LDOS, operatorDivision){
 	indexTree.add({2, 2});
 	indexTree.generateLinearMap();
 
-	double dataInputCustom0[3*10];
+	CArray<double> dataInputCustom0(3*10);
 	for(unsigned int n = 0; n < 3*10; n++)
 		dataInputCustom0[n] = n;
 	LDOS ldosCustom0(indexTree, Range(-10, 10, 10), dataInputCustom0);
@@ -366,7 +366,7 @@ TEST(LDOS, operatorDivision){
 
 TEST(LDOS, SerializeToJSON){
 	//IndexDescriptor::Format::Ranges.
-	double dataInput0[1000*2*3*4];
+	CArray<double> dataInput0(1000*2*3*4);
 	for(unsigned int n = 0; n < 1000*2*3*4; n++)
 		dataInput0[n] = n;
 	LDOS ldos0({2, 3, 4}, Range(-10, 10, 1000), dataInput0);
@@ -392,7 +392,7 @@ TEST(LDOS, SerializeToJSON){
 	indexTree.add({1});
 	indexTree.add({2});
 	indexTree.generateLinearMap();
-	double dataInput2[1000*3];
+	CArray<double> dataInput2(1000*3);
 	for(unsigned int n = 0; n < 1000*3; n++)
 		dataInput2[n] = n;
 	LDOS ldos2(indexTree, Range(-10, 10, 1000), dataInput2);

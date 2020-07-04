@@ -86,7 +86,7 @@ public:
 		const IndexTree &indexTree,
 		Type type,
 		const Range &energyRange,
-		const std::complex<double> *data
+		const CArray<std::complex<double>> &data
 	);
 
 	/** Constructs a GreensFunction with Matsubara energies on the Custom
@@ -123,7 +123,7 @@ public:
 		int lowerMatsubaraEnergyIndex,
 		int upperMatsubaraEnergyIndex,
 		double fundamentalMatsubaraEnergy,
-		const std::complex<double> *data
+		const CArray<std::complex<double>> &data
 	);
 
 	/** Overrides EnergyResolvedProperty::operator+=(). */

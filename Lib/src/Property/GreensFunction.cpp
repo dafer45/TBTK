@@ -44,7 +44,7 @@ GreensFunction::GreensFunction(
 	const IndexTree &indexTree,
 	Type type,
 	const Range &energyWindow,
-	const complex<double> *data
+	const CArray<complex<double>> &data
 ) :
 	EnergyResolvedProperty(
 		indexTree,
@@ -84,7 +84,7 @@ GreensFunction::GreensFunction(
 	int lowerMatsubaraEnergyIndex,
 	int upperMatsubaraEnergyIndex,
 	double fundamentalMatsubaraEnergy,
-	const complex<double> *data
+	const CArray<complex<double>> &data
 ) :
 	EnergyResolvedProperty(
 		EnergyType::FermionicMatsubara,

@@ -54,9 +54,8 @@ public:
 
 	/** Gaussian smoothing of custom data. */
 	template<typename DataType>
-	static std::vector<DataType> gaussian(
-		const DataType *data,
-		unsigned int size,
+	static CArray<DataType> gaussian(
+		const CArray<DataType> &data,
 		double sigma,
 		int windowSize
 	);
@@ -182,21 +181,26 @@ inline std::vector<DataType> Smooth::gaussian(
 }
 
 template<typename DataType>
-inline std::vector<DataType> Smooth::gaussian(
-	const DataType *data,
-	unsigned int size,
+inline CArray<DataType> Smooth::gaussian(
+	const CArray<DataType> &data,
 	double sigma,
 	int windowSize
 ){
 	std::vector<DataType> dataVector;
-	for(unsigned int n = 0; n < size; n++)
+	for(unsigned int n = 0; n < data.getSize(); n++)
 		dataVector.push_back(data[n]);
 
-	return gaussian(
+	std::vector<DataType> resultVector = gaussian(
 		dataVector,
 		sigma,
 		windowSize
 	);
+
+	CArray<DataType> result(resultVector.size());
+	for(unsigned int n = 0; n < resultVector.size(); n++)
+		result[n] = resultVector[n];
+
+	return result;
 }
 
 inline Property::DOS Smooth::gaussian(
@@ -205,17 +209,17 @@ inline Property::DOS Smooth::gaussian(
 	int windowSize
 ){
 	const std::vector<double> &data = dos.getData();
-	std::vector<double> dataVector;
+	CArray<double> dataCArray(data.size());
 	for(unsigned int n = 0; n < data.size(); n++)
-		dataVector.push_back(data[n]);
+		dataCArray[n] = data[n];
 
 	double lowerBound = dos.getLowerBound();
 	double upperBound = dos.getUpperBound();
 	int resolution = dos.getResolution();
 	double scaledSigma = sigma/(upperBound - lowerBound)*resolution;
 
-	std::vector<double> smoothedData = gaussian(
-		dataVector,
+	CArray<double> smoothedData = gaussian(
+		dataCArray,
 		scaledSigma,
 		windowSize
 	);
@@ -226,7 +230,7 @@ inline Property::DOS Smooth::gaussian(
 			upperBound,
 			resolution
 		),
-		smoothedData.data()
+		smoothedData
 	);
 }
 

@@ -26,6 +26,8 @@
 #include "TBTK/Serializable.h"
 #include "TBTK/TBTKMacros.h"
 
+#include <initializer_list>
+
 #include "TBTK/json.hpp"
 
 namespace TBTK{
@@ -64,6 +66,11 @@ public:
 	 *
 	 *  @param carray The carray to move. */
 	CArray(CArray &&carray);
+
+	/** Constructor.
+	 *
+	 *  @param data The data to initialize the CArray with. */
+	CArray(const std::initializer_list<DataType> &data);
 
 	/** Constructs a CArray from a serialization string.
 	 *
@@ -173,6 +180,14 @@ CArray<DataType>::CArray(CArray &&carray){
 		data = carray.data;
 		carray.data = nullptr;
 	}
+}
+
+template<typename DataType>
+CArray<DataType>::CArray(const std::initializer_list<DataType> &data){
+	size = data.size();
+	this->data = new DataType[size];
+	for(unsigned int n = 0; n < data.size(); n++)
+		this->data[n] = *(data.begin() + n);
 }
 
 template<typename DataType>

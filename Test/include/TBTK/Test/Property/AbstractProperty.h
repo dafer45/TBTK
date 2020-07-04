@@ -19,7 +19,7 @@ public:
 
 	PublicAbstractProperty(
 		unsigned int blockSize,
-		const DataType *data
+		const CArray<DataType> &data
 	) :
 		AbstractProperty<DataType>(blockSize, data){}
 
@@ -32,7 +32,7 @@ public:
 	PublicAbstractProperty(
 		const std::vector<int> &ranges,
 		unsigned int blockSize,
-		const DataType *data
+		const CArray<DataType> &data
 	) :
 		AbstractProperty<DataType>(
 			ranges,
@@ -49,7 +49,7 @@ public:
 	PublicAbstractProperty(
 		const IndexTree &indexTree,
 		unsigned int blockSize,
-		const DataType *data
+		const CArray<DataType> &data
 	) :
 		AbstractProperty<DataType>(indexTree, blockSize, data){}
 
@@ -134,7 +134,7 @@ TEST(AbstractProperty, Constructor1){
 TEST(AbstractProperty, Constructor2){
 	//Construct a Property with a single data block and initialize it with
 	//provided values.
-	const int dataInput[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+	const CArray<int> dataInput = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 	PublicAbstractProperty<int> property(10, dataInput);
 	ASSERT_EQ(property.getBlockSize(), 10);
 	ASSERT_EQ(property.getSize(), 10);
@@ -160,7 +160,7 @@ TEST(AbstractProperty, Constructor3){
 TEST(AbstractProperty, Constructor4){
 	//Construct a Property with the Ranges format and initialize it with
 	//provided values.
-	int dataInput[2*3*4*10];
+	CArray<int> dataInput(2*3*4*10);
 	for(unsigned int n = 0; n < 2*3*4*10; n++)
 		dataInput[n] = n;
 	PublicAbstractProperty<int> property({2, 3, 4}, 10, dataInput);
@@ -207,7 +207,7 @@ TEST(AbstractProperty, Constructor6){
 	indexTree.add({0, 1});
 	indexTree.add({1, 2});
 	indexTree.add({1, 3});
-	int inputData[3*10];
+	CArray<int> inputData(3*10);
 	for(unsigned int n = 0; n < 3*10; n++)
 		inputData[n] = n;
 
@@ -234,7 +234,7 @@ TEST(AbstractProperty, Constructor6){
 
 TEST(AbstractProperty, CopyConstructor){
 	//Property with a single block.
-	const int dataInput0[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+	const CArray<int> dataInput0 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 	PublicAbstractProperty<int> property0(10, dataInput0);
 	PublicAbstractProperty<int> property1(property0);
 	ASSERT_EQ(property1.getBlockSize(), 10);
@@ -247,7 +247,7 @@ TEST(AbstractProperty, CopyConstructor){
 	EXPECT_EQ(data1[9], 9);
 
 	//Property with Ranges format.
-	int dataInput2[2*3*4*10];
+	CArray<int> dataInput2(2*3*4*10);
 	for(unsigned int n = 0; n < 2*3*4*10; n++)
 		dataInput2[n] = n;
 	PublicAbstractProperty<int> property2({2, 3, 4}, 10, dataInput2);
@@ -264,7 +264,7 @@ TEST(AbstractProperty, CopyConstructor){
 	indexTree.add({0, 1});
 	indexTree.add({1, 2});
 	indexTree.add({1, 3});
-	int inputData4[3*10];
+	CArray<int> inputData4(3*10);
 	for(unsigned int n = 0; n < 3*10; n++)
 		inputData4[n] = n;
 	indexTree.generateLinearMap();
@@ -280,7 +280,7 @@ TEST(AbstractProperty, CopyConstructor){
 
 TEST(AbstractProperty, MoveConstructor){
 	//Property with a single block.
-	const int dataInput0[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+	const CArray<int> dataInput0 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 	PublicAbstractProperty<int> property0(10, dataInput0);
 	PublicAbstractProperty<int> property1(std::move(property0));
 	ASSERT_EQ(property1.getBlockSize(), 10);
@@ -293,7 +293,7 @@ TEST(AbstractProperty, MoveConstructor){
 	EXPECT_EQ(data1[9], 9);
 
 	//Property with Ranges format.
-	int dataInput2[2*3*4*10];
+	CArray<int> dataInput2(2*3*4*10);
 	for(unsigned int n = 0; n < 2*3*4*10; n++)
 		dataInput2[n] = n;
 	PublicAbstractProperty<int> property2({2, 3, 4}, 10, dataInput2);
@@ -310,7 +310,7 @@ TEST(AbstractProperty, MoveConstructor){
 	indexTree.add({0, 1});
 	indexTree.add({1, 2});
 	indexTree.add({1, 3});
-	int inputData4[3*10];
+	CArray<int> inputData4(3*10);
 	for(unsigned int n = 0; n < 3*10; n++)
 		inputData4[n] = n;
 	indexTree.generateLinearMap();
@@ -337,7 +337,7 @@ TEST(AbstractProperty, Destructor){
 
 TEST(AbstractProperty, OperatorAssignment){
 	//Property with a single block.
-	const int dataInput0[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+	const CArray<int> dataInput0 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 	PublicAbstractProperty<int> property0(10, dataInput0);
 	PublicAbstractProperty<int> property1;
 	property1 = property0;
@@ -351,7 +351,7 @@ TEST(AbstractProperty, OperatorAssignment){
 	EXPECT_EQ(data1[9], 9);
 
 	//Property with Ranges format.
-	int dataInput2[2*3*4*10];
+	CArray<int> dataInput2(2*3*4*10);
 	for(unsigned int n = 0; n < 2*3*4*10; n++)
 		dataInput2[n] = n;
 	PublicAbstractProperty<int> property2({2, 3, 4}, 10, dataInput2);
@@ -369,7 +369,7 @@ TEST(AbstractProperty, OperatorAssignment){
 	indexTree.add({0, 1});
 	indexTree.add({1, 2});
 	indexTree.add({1, 3});
-	int inputData4[3*10];
+	CArray<int> inputData4(3*10);
 	for(unsigned int n = 0; n < 3*10; n++)
 		inputData4[n] = n;
 	indexTree.generateLinearMap();
@@ -386,7 +386,7 @@ TEST(AbstractProperty, OperatorAssignment){
 
 TEST(AbstractProperty, OperatorMoveAssignment){
 	//Property with a single block.
-	const int dataInput0[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+	const CArray<int> dataInput0 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 	PublicAbstractProperty<int> property0(10, dataInput0);
 	PublicAbstractProperty<int> property1;
 	property1 = std::move(property0);
@@ -400,7 +400,7 @@ TEST(AbstractProperty, OperatorMoveAssignment){
 	EXPECT_EQ(data1[9], 9);
 
 	//Property with Ranges format.
-	int dataInput2[2*3*4*10];
+	CArray<int> dataInput2(2*3*4*10);
 	for(unsigned int n = 0; n < 2*3*4*10; n++)
 		dataInput2[n] = n;
 	PublicAbstractProperty<int> property2({2, 3, 4}, 10, dataInput2);
@@ -418,7 +418,7 @@ TEST(AbstractProperty, OperatorMoveAssignment){
 	indexTree.add({0, 1});
 	indexTree.add({1, 2});
 	indexTree.add({1, 3});
-	int inputData4[3*10];
+	CArray<int> inputData4(3*10);
 	for(unsigned int n = 0; n < 3*10; n++)
 		inputData4[n] = n;
 	indexTree.generateLinearMap();
@@ -435,11 +435,11 @@ TEST(AbstractProperty, OperatorMoveAssignment){
 
 TEST(AbstractProperty, operatorAdditionAssignment){
 	//IndexDescriptor::Format::None.
-	const int dataInputNone0[3] = {0, 1, 2};
+	const CArray<int> dataInputNone0 = {0, 1, 2};
 	PublicAbstractProperty<int> propertyNone0(3, dataInputNone0);
-	const int dataInputNone1[3] = {2, 2, 3};
+	const CArray<int> dataInputNone1 = {2, 2, 3};
 	PublicAbstractProperty<int> propertyNone1(3, dataInputNone1);
-	const int dataInputNone2[2] = {2, 2};
+	const CArray<int> dataInputNone2 = {2, 2};
 	PublicAbstractProperty<int> propertyNone2(2, dataInputNone2);
 
 	propertyNone0 += propertyNone1;
@@ -457,7 +457,7 @@ TEST(AbstractProperty, operatorAdditionAssignment){
 	);
 
 	//IndexDescriptor::Format::Ranges.
-	int dataInputRanges0[2*3*4*10];
+	CArray<int> dataInputRanges0(2*3*4*10);
 	for(unsigned int n = 0; n < 2*3*4*10; n++)
 		dataInputRanges0[n] = n;
 	PublicAbstractProperty<int> propertyRanges0(
@@ -465,7 +465,7 @@ TEST(AbstractProperty, operatorAdditionAssignment){
 		10,
 		dataInputRanges0
 	);
-	int dataInputRanges1[2*3*4*10];
+	CArray<int> dataInputRanges1(2*3*4*10);
 	for(unsigned int n = 0; n < 2*3*4*10; n++)
 		dataInputRanges1[n] = 2*n;
 	PublicAbstractProperty<int> propertyRanges1(
@@ -473,7 +473,7 @@ TEST(AbstractProperty, operatorAdditionAssignment){
 		10,
 		dataInputRanges1
 	);
-	int dataInputRanges2[2*3*10];
+	CArray<int> dataInputRanges2(2*3*10);
 	for(unsigned int n = 0; n < 2*3*10; n++)
 		dataInputRanges2[n] = n;
 	PublicAbstractProperty<int> propertyRanges2(
@@ -500,7 +500,7 @@ TEST(AbstractProperty, operatorAdditionAssignment){
 	indexTreeCustom0.add({0, 1});
 	indexTreeCustom0.add({1, 2});
 	indexTreeCustom0.add({1, 3});
-	int inputDataCustom0[3*10];
+	CArray<int> inputDataCustom0(3*10);
 	for(unsigned int n = 0; n < 3*10; n++)
 		inputDataCustom0[n] = n;
 	indexTreeCustom0.generateLinearMap();
@@ -514,7 +514,7 @@ TEST(AbstractProperty, operatorAdditionAssignment){
 	indexTreeCustom1.add({0, 1});
 	indexTreeCustom1.add({1, 2});
 	indexTreeCustom1.add({1, 3});
-	int inputDataCustom1[3*10];
+	CArray<int> inputDataCustom1(3*10);
 	for(unsigned int n = 0; n < 3*10; n++)
 		inputDataCustom1[n] = 2*n;
 	indexTreeCustom1.generateLinearMap();
@@ -527,7 +527,7 @@ TEST(AbstractProperty, operatorAdditionAssignment){
 	IndexTree indexTreeCustom2;
 	indexTreeCustom2.add({0, 1});
 	indexTreeCustom2.add({1, 2});
-	int inputDataCustom2[2*10];
+	CArray<int> inputDataCustom2(2*10);
 	for(unsigned int n = 0; n < 2*10; n++)
 		inputDataCustom2[n] = n;
 	indexTreeCustom2.generateLinearMap();
@@ -573,11 +573,11 @@ TEST(AbstractProperty, operatorAdditionAssignment){
 
 TEST(AbstractProperty, operatorSubtractionAssignment){
 	//IndexDescriptor::Format::None.
-	const int dataInputNone0[3] = {0, 1, 2};
+	const CArray<int> dataInputNone0 = {0, 1, 2};
 	PublicAbstractProperty<int> propertyNone0(3, dataInputNone0);
-	const int dataInputNone1[3] = {2, 2, 3};
+	const CArray<int> dataInputNone1 = {2, 2, 3};
 	PublicAbstractProperty<int> propertyNone1(3, dataInputNone1);
-	const int dataInputNone2[2] = {2, 2};
+	const CArray<int> dataInputNone2 = {2, 2};
 	PublicAbstractProperty<int> propertyNone2(2, dataInputNone2);
 
 	propertyNone0 -= propertyNone1;
@@ -595,7 +595,7 @@ TEST(AbstractProperty, operatorSubtractionAssignment){
 	);
 
 	//IndexDescriptor::Format::Ranges.
-	int dataInputRanges0[2*3*4*10];
+	CArray<int> dataInputRanges0(2*3*4*10);
 	for(unsigned int n = 0; n < 2*3*4*10; n++)
 		dataInputRanges0[n] = n;
 	PublicAbstractProperty<int> propertyRanges0(
@@ -603,7 +603,7 @@ TEST(AbstractProperty, operatorSubtractionAssignment){
 		10,
 		dataInputRanges0
 	);
-	int dataInputRanges1[2*3*4*10];
+	CArray<int> dataInputRanges1(2*3*4*10);
 	for(unsigned int n = 0; n < 2*3*4*10; n++)
 		dataInputRanges1[n] = 2*n;
 	PublicAbstractProperty<int> propertyRanges1(
@@ -611,7 +611,7 @@ TEST(AbstractProperty, operatorSubtractionAssignment){
 		10,
 		dataInputRanges1
 	);
-	int dataInputRanges2[2*3*10];
+	CArray<int> dataInputRanges2(2*3*10);
 	for(unsigned int n = 0; n < 2*3*10; n++)
 		dataInputRanges2[n] = n;
 	PublicAbstractProperty<int> propertyRanges2(
@@ -638,7 +638,7 @@ TEST(AbstractProperty, operatorSubtractionAssignment){
 	indexTreeCustom0.add({0, 1});
 	indexTreeCustom0.add({1, 2});
 	indexTreeCustom0.add({1, 3});
-	int inputDataCustom0[3*10];
+	CArray<int> inputDataCustom0(3*10);
 	for(unsigned int n = 0; n < 3*10; n++)
 		inputDataCustom0[n] = n;
 	indexTreeCustom0.generateLinearMap();
@@ -652,7 +652,7 @@ TEST(AbstractProperty, operatorSubtractionAssignment){
 	indexTreeCustom1.add({0, 1});
 	indexTreeCustom1.add({1, 2});
 	indexTreeCustom1.add({1, 3});
-	int inputDataCustom1[3*10];
+	CArray<int> inputDataCustom1(3*10);
 	for(unsigned int n = 0; n < 3*10; n++)
 		inputDataCustom1[n] = 2*n;
 	indexTreeCustom1.generateLinearMap();
@@ -665,7 +665,7 @@ TEST(AbstractProperty, operatorSubtractionAssignment){
 	IndexTree indexTreeCustom2;
 	indexTreeCustom2.add({0, 1});
 	indexTreeCustom2.add({1, 2});
-	int inputDataCustom2[2*10];
+	CArray<int> inputDataCustom2(2*10);
 	for(unsigned int n = 0; n < 2*10; n++)
 		inputDataCustom2[n] = n;
 	indexTreeCustom2.generateLinearMap();
@@ -719,7 +719,7 @@ TEST(AbstractProperty, operatorSubtractionAssignment){
 
 TEST(AbstractProperty, operatorMultiplicationAssignment){
 	//IndexDescriptor::Format::None.
-	const int dataInputNone[3] = {0, 1, 2};
+	const CArray<int> dataInputNone = {0, 1, 2};
 	PublicAbstractProperty<int> propertyNone(3, dataInputNone);
 
 	propertyNone *= 2;
@@ -729,7 +729,7 @@ TEST(AbstractProperty, operatorMultiplicationAssignment){
 	EXPECT_EQ(dataNone[2], 4);
 
 	//IndexDescriptor::Format::Ranges.
-	int dataInputRanges[2*3*4*10];
+	CArray<int> dataInputRanges(2*3*4*10);
 	for(unsigned int n = 0; n < 2*3*4*10; n++)
 		dataInputRanges[n] = n;
 	PublicAbstractProperty<int> propertyRanges(
@@ -748,7 +748,7 @@ TEST(AbstractProperty, operatorMultiplicationAssignment){
 	indexTreeCustom.add({0, 1});
 	indexTreeCustom.add({1, 2});
 	indexTreeCustom.add({1, 3});
-	int inputDataCustom[3*10];
+	CArray<int> inputDataCustom(3*10);
 	for(unsigned int n = 0; n < 3*10; n++)
 		inputDataCustom[n] = n;
 	indexTreeCustom.generateLinearMap();
@@ -769,7 +769,7 @@ TEST(AbstractProperty, operatorMultiplicationAssignment){
 
 TEST(AbstractProperty, operatorDivisionAssignment){
 	//IndexDescriptor::Format::None.
-	const int dataInputNone[3] = {0, 1, 2};
+	const CArray<int> dataInputNone = {0, 1, 2};
 	PublicAbstractProperty<int> propertyNone(3, dataInputNone);
 
 	propertyNone /= 2;
@@ -779,7 +779,7 @@ TEST(AbstractProperty, operatorDivisionAssignment){
 	EXPECT_EQ(dataNone[2], 1);
 
 	//IndexDescriptor::Format::Ranges.
-	int dataInputRanges[2*3*4*10];
+	CArray<int> dataInputRanges(2*3*4*10);
 	for(unsigned int n = 0; n < 2*3*4*10; n++)
 		dataInputRanges[n] = n;
 	PublicAbstractProperty<int> propertyRanges(
@@ -798,7 +798,7 @@ TEST(AbstractProperty, operatorDivisionAssignment){
 	indexTreeCustom.add({0, 1});
 	indexTreeCustom.add({1, 2});
 	indexTreeCustom.add({1, 3});
-	int inputDataCustom[3*10];
+	CArray<int> inputDataCustom(3*10);
 	for(unsigned int n = 0; n < 3*10; n++)
 		inputDataCustom[n] = n;
 	indexTreeCustom.generateLinearMap();

@@ -71,7 +71,7 @@ public:
 	WaveFunctions(
 		const IndexTree &indexTree,
 		const std::vector<unsigned int> &states,
-		const std::complex<double> *data
+		const CArray<std::complex<double>> &data
 	);
 
 	/** Constructor. Constructs the WaveFunctions from a serialization

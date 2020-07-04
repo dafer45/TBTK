@@ -130,7 +130,7 @@ public:
 
 	/** Read custom n-dimensional arrays from file of type int. */
 	static void read(
-		int **data,
+		CArray<int> &data,
 		int *rank,
 		int **dims,
 		std::string name,
@@ -139,7 +139,7 @@ public:
 
 	/** Read custom n-dimensional arrays from file of type double. */
 	static void read(
-		double **data,
+		CArray<double> &data,
 		int *rank,
 		int **dims,
 		std::string name,
@@ -149,7 +149,7 @@ public:
 	/** Read custom n-dimensional arrays from file of type complex<double>.
 	 */
 	static void read(
-		std::complex<double> **data,
+		CArray<std::complex<double>> &data,
 		int *rank,
 		int **dims,
 		std::string name,
