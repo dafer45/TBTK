@@ -53,8 +53,8 @@ Property::WaveFunctions Diagonalizer::calculateWaveFunctions(
 	);
 	patternValidator.validate(patterns);
 
-	const Solver::Diagonalizer &solver = getSolver();
-	IndexTreeGenerator indexTreeGenerator(solver.getModel());
+	const Model &model = getSolver().getModel();
+	IndexTreeGenerator indexTreeGenerator(model);
 	IndexTree allIndices = indexTreeGenerator.generateAllIndices(patterns);
 	IndexTree memoryLayout
 		= indexTreeGenerator.generateMemoryLayout(patterns);
@@ -62,7 +62,7 @@ Property::WaveFunctions Diagonalizer::calculateWaveFunctions(
 	vector<unsigned int> statesVector;
 	if(states.size() == 1){
 		if((*states.begin()).isWildcard()){
-			for(int n = 0; n < solver.getModel().getBasisSize(); n++)
+			for(int n = 0; n < model.getBasisSize(); n++)
 				statesVector.push_back(n);
 		}
 		else{
@@ -198,9 +198,7 @@ Property::GreensFunction Diagonalizer::calculateGreensFunction(
 }
 
 Property::DOS Diagonalizer::calculateDOS(){
-	const Solver::Diagonalizer &solver = getSolver();
-	const CArray<double> &eigenValues = solver.getEigenValues();
-
+	const CArray<double> &eigenValues = getSolver().getEigenValues();
 	const Range &energyWindow = getEnergyWindow();
 	Property::DOS dos(energyWindow);
 	double dE = dos.getDeltaE();
@@ -221,28 +219,28 @@ complex<double> Diagonalizer::calculateExpectationValue(
 
 	complex<double> expectationValue = 0.;
 
-	const Solver::Diagonalizer &solver = getSolver();
-	Statistics statistics = solver.getModel().getStatistics();
+	const Model &model = getSolver().getModel();
+	Statistics statistics = model.getStatistics();
 
-	for(int n = 0; n < solver.getModel().getBasisSize(); n++){
+	for(int n = 0; n < model.getBasisSize(); n++){
 		double weight;
 		if(statistics == Statistics::FermiDirac){
 			weight = Functions::fermiDiracDistribution(
-				solver.getEigenValue(n),
-				solver.getModel().getChemicalPotential(),
-				solver.getModel().getTemperature()
+				getEigenValue(n),
+				model.getChemicalPotential(),
+				model.getTemperature()
 			);
 		}
 		else{
 			weight = Functions::boseEinsteinDistribution(
-				solver.getEigenValue(n),
-				solver.getModel().getChemicalPotential(),
-				solver.getModel().getTemperature()
+				getEigenValue(n),
+				model.getChemicalPotential(),
+				model.getTemperature()
 			);
 		}
 
-		complex<double> u_to = solver.getAmplitude(n, to);
-		complex<double> u_from = solver.getAmplitude(n, from);
+		complex<double> u_to = getAmplitude(n, to);
+		complex<double> u_from = getAmplitude(n, from);
 
 		expectationValue += weight*conj(u_to)*u_from;
 	}
@@ -356,8 +354,7 @@ Property::Magnetization Diagonalizer::calculateMagnetization(
 	);
 	patternValidator.validate(patterns);
 
-	const Solver::Diagonalizer &solver = getSolver();
-	IndexTreeGenerator indexTreeGenerator(solver.getModel());
+	IndexTreeGenerator indexTreeGenerator(getSolver().getModel());
 	IndexTree allIndices = indexTreeGenerator.generateAllIndices(patterns);
 	IndexTree memoryLayout
 		= indexTreeGenerator.generateMemoryLayout(patterns);
@@ -410,8 +407,7 @@ Property::LDOS Diagonalizer::calculateLDOS(
 	);
 	patternValidator.validate(patterns);
 
-	const Solver::Diagonalizer &solver = getSolver();
-	IndexTreeGenerator indexTreeGenerator(solver.getModel());
+	IndexTreeGenerator indexTreeGenerator(getSolver().getModel());
 	IndexTree allIndices = indexTreeGenerator.generateAllIndices(patterns);
 	IndexTree memoryLayout
 		= indexTreeGenerator.generateMemoryLayout(patterns);
@@ -485,8 +481,7 @@ Property::SpinPolarizedLDOS Diagonalizer::calculateSpinPolarizedLDOS(
 	);
 	patternValidator.validate(patterns);
 
-	const Solver::Diagonalizer &solver = getSolver();
-	IndexTreeGenerator indexTreeGenerator(solver.getModel());
+	IndexTreeGenerator indexTreeGenerator(getSolver().getModel());
 	IndexTree allIndices = indexTreeGenerator.generateAllIndices(patterns);
 	IndexTree memoryLayout
 		= indexTreeGenerator.generateMemoryLayout(patterns);
@@ -509,26 +504,26 @@ Property::SpinPolarizedLDOS Diagonalizer::calculateSpinPolarizedLDOS(
 }
 
 double Diagonalizer::calculateEntropy(){
-	const Solver::Diagonalizer &solver = getSolver();
-	Statistics statistics = solver.getModel().getStatistics();
+	const Model &model = getSolver().getModel();
+	Statistics statistics = model.getStatistics();
 
 	double entropy = 0.;
-	for(int n = 0; n < solver.getModel().getBasisSize(); n++){
+	for(int n = 0; n < model.getBasisSize(); n++){
 		double p;
 
 		switch(statistics){
 		case Statistics::FermiDirac:
 			p = Functions::fermiDiracDistribution(
 				getEigenValue(n),
-				solver.getModel().getChemicalPotential(),
-				solver.getModel().getTemperature()
+				model.getChemicalPotential(),
+				model.getTemperature()
 			);
 			break;
 		case Statistics::BoseEinstein:
 			p = Functions::boseEinsteinDistribution(
 				getEigenValue(n),
-				solver.getModel().getChemicalPotential(),
-				solver.getModel().getTemperature()
+				model.getChemicalPotential(),
+				model.getTemperature()
 			);
 			break;
 		default:
@@ -572,7 +567,8 @@ void Diagonalizer::calculateGreensFunctionCallback(
 	Information &information
 ){
 	Diagonalizer *propertyExtractor = (Diagonalizer*)cb_this;
-	const Solver::Diagonalizer &solver = propertyExtractor->getSolver();
+//	const Solver::Diagonalizer &solver = propertyExtractor->getSolver();
+	const Model &model = propertyExtractor->getSolver().getModel();
 
 	vector<Index> components = index.split();
 
@@ -605,11 +601,7 @@ void Diagonalizer::calculateGreensFunctionCallback(
 		for(unsigned int e = 0; e < energyWindow.getResolution(); e++){
 			double E = energyWindow[e];;
 
-			for(
-				int n = 0;
-				n < solver.getModel().getBasisSize();
-				n++
-			){
+			for(int n = 0; n < model.getBasisSize(); n++){
 				double E_n = propertyExtractor->getEigenValue(n);
 				complex<double> amplitude0
 					= propertyExtractor->getAmplitude(n, components[0]);
@@ -628,18 +620,13 @@ void Diagonalizer::calculateGreensFunctionCallback(
 	{
 		unsigned int numMatsubaraEnergies
 			= greensFunction.getNumMatsubaraEnergies();
-		double chemicalPotential = solver.getModel(
-			).getChemicalPotential();
+		double chemicalPotential = model.getChemicalPotential();
 
 		for(unsigned int e = 0; e < numMatsubaraEnergies; e++){
 			complex<double> E = greensFunction.getMatsubaraEnergy(e)
 				+ chemicalPotential;
 
-			for(
-				int n = 0;
-				n < solver.getModel().getBasisSize();
-				n++
-			){
+			for(int n = 0; n < model.getBasisSize(); n++){
 				double E_n = propertyExtractor->getEigenValue(n);
 				complex<double> amplitude0
 					= propertyExtractor->getAmplitude(n, components[0]);
