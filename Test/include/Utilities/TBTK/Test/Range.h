@@ -4,6 +4,12 @@
 
 namespace TBTK{
 
+//TBTKFeature Utilities.Range.construction.0 2020-07-03
+TEST(Range, construction0){
+	//Cerify that this compiles.
+	Range range;
+}
+
 //TBTKFeature Utilities.Range.construction.1 2019-11-02
 TEST(Range, construction1){
 	Range range(-10, 10, 100);
@@ -59,6 +65,14 @@ TEST(Range, operatorArraySubscript1){
 	Range range(-10, 10, 100);
 	for(unsigned int n = 0; n < range.getResolution(); n++)
 		EXPECT_FLOAT_EQ(range[n], -10 + n*20/(double)99);
+}
+
+//TBTKFeature Utilities.Range.operatorComparison.1 2020-07-03
+TEST(Range, operatorComparison1){
+	EXPECT_TRUE(Range(-10, 10, 1000) == Range(-10, 10, 1000));
+	EXPECT_FALSE(Range(-10, 10, 1000) == Range(-9, 10, 1000));
+	EXPECT_FALSE(Range(-10, 10, 1000) == Range(-10, 9, 1000));
+	EXPECT_FALSE(Range(-10, 10, 1000) == Range(-10, 10, 999));
 }
 
 //TBTKFeature Utilities.Range.getLast.1 2020-07-03

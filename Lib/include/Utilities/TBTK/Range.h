@@ -51,6 +51,9 @@ namespace TBTK{
  *  \snippet output/Utilities/Range.txt Range */
 class Range : public Serializable{
 public:
+	/** Constructor. */
+	Range();
+
 	/** Constructor.
 	 *
 	 *  @param lowerBound The lower bound of the range.
@@ -91,6 +94,14 @@ public:
 	 *  @return The nth entry in the Range. */
 	double operator[](unsigned int n) const;
 
+	/** Comparison operator.
+	 *
+	 *  @param rhs The right hand side of the expression.
+	 *
+	 *  @returns True if the ranges have the exact same size and elements,
+	 *  otherwise false. */
+	bool operator==(const Range &rhs) const;
+
 	/** Get the last element.
 	 *
 	 *  @return The last element. */
@@ -113,8 +124,17 @@ private:
 	unsigned int resolution;
 };
 
+inline Range::Range(){
+}
+
 inline double Range::operator[](unsigned int n) const{
 	return start + n*dx;
+}
+
+inline bool Range::operator==(const Range &rhs) const{
+	return start == rhs.start
+		&& dx == rhs.dx
+		&& resolution == rhs.resolution;
 }
 
 inline unsigned int Range::getResolution() const{
