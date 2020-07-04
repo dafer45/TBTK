@@ -66,6 +66,15 @@ namespace PropertyExtractor{
  *    patternValidator.setAllowedSubindexFlags({IDX_ALL, IDX_SPIN});
  *  ```
  *
+ *  # Predefined patterns
+ *  The PatternValidator also defines a number of static functions for
+ *  validating common standard patterns. These are on the following form
+ *  ```cpp
+ *    PatternValidator::validatePROPERTYPatterns(patterns);
+ *  ```
+ *  Here 'PROPERTY' is to be replaced by the corresponding @link
+ *  Property::AbstractProperty Property@endlink.
+ *
  *  # Example
  *  \snippet PropertyExtractor/PatternValidator.cpp PatternValidator
  *  ## Output
