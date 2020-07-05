@@ -543,6 +543,7 @@ TEST(HoppingAmplitudeSet, serialize){
 
 TEST(HoppingAmplitudeSet, getSizeInBytes){
 	HoppingAmplitudeSet hoppingAmplitudeSet;
+	hoppingAmplitudeSet.add(HoppingAmplitude(1, {1, 2}, {1, 2}));
 	EXPECT_TRUE(hoppingAmplitudeSet.getSizeInBytes() > 0);
 }
 

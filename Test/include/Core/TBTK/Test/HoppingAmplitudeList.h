@@ -59,6 +59,7 @@ TEST(HoppingAmplitudeList, serialize){
 
 TEST(HoppingAmplitudeList, getSizeInBytes){
 	HoppingAmplitudeList hoppingAmplitudeList;
+	hoppingAmplitudeList.add(HoppingAmplitude(1, {1, 2}, {3, 4}));
 	EXPECT_TRUE(hoppingAmplitudeList.getSizeInBytes() > 0);
 }
 

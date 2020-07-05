@@ -187,12 +187,18 @@ TEST(HoppingAmplitude, getAmplitudeCallback){
 	EXPECT_EQ(&hoppingAmplitude1.getAmplitudeCallback(), &amplitudeCallback);
 }
 
-TEST(HoppingAmplitude, toString){
-	//Not tested due to insuficient control of number formating.
+TEST(HoppingAmplitude, toString0){
+	HoppingAmplitude hoppingAmplitude(1, {1, 2}, {3, 4});
+	hoppingAmplitude.toString();
+}
+
+TEST(HoppingAmplitude, toString1){
+	HoppingAmplitude hoppingAmplitude(AmplitudeCallback(), {1, 2}, {3, 4});
+	hoppingAmplitude.toString();
 }
 
 TEST(HoppingAmplitude, operatorOstream){
-	HoppingAmplitude hoppingAmplitude(1, {1, 2}, {3, 4});
+	HoppingAmplitude hoppingAmplitude(1, {1, 2}, {1, 2});
 	std::stringstream stream;
 	stream << hoppingAmplitude;
 

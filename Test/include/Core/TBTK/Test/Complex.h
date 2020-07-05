@@ -33,7 +33,7 @@ TEST(Complex, Constructor3){
 	EXPECT_EQ(std::imag(c), 0);
 }
 
-TEST(Complex, serializeToJSON){
+TEST(Complex, serializeToJSON0){
 	Complex complex0(std::complex<double>(7, 3));
 	Complex complex1(
 		complex0.serialize(Serializable::Mode::JSON),
@@ -45,6 +45,32 @@ TEST(Complex, serializeToJSON){
 	EXPECT_EQ(std::imag(c), 3);
 }
 
+TEST(Complex, serializeToJSON1){
+	Complex complex(std::complex<double>(7, 3));
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			complex.serialize(static_cast<Serializable::Mode>(-1));
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+TEST(Complex, serializeToJSON2){
+	Complex complex(std::complex<double>(7, 3));
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			Complex(
+				complex.serialize(Serializable::Mode::JSON),
+				static_cast<Serializable::Mode>(-1)
+			);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
 TEST(Complex, operatorStdComplexDouble){
 	Complex complex(std::complex<double>(7, 3));
 

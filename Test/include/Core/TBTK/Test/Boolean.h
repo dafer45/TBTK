@@ -17,7 +17,7 @@ TEST(Boolean, Constructor1){
 	EXPECT_EQ(boolean, true);
 }
 
-TEST(Boolean, serializeToJSON){
+TEST(Boolean, serializeToJSON0){
 	Boolean boolean0(true);
 	Boolean boolean1(
 		boolean0.serialize(Serializable::Mode::JSON),
@@ -25,6 +25,33 @@ TEST(Boolean, serializeToJSON){
 	);
 
 	EXPECT_EQ(boolean1, true);
+}
+
+TEST(Boolean, serializeToJSON1){
+	Boolean boolean;
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			boolean.serialize(static_cast<Serializable::Mode>(-1));
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+TEST(Boolean, serializeToJSON2){
+	Boolean boolean;
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			Boolean(
+				boolean.serialize(Serializable::Mode::JSON),
+				static_cast<Serializable::Mode>(-1)
+			);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
 }
 
 TEST(Boolean, operatorBool){

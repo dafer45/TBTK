@@ -16,7 +16,7 @@ TEST(Integer, Constructor1){
 	EXPECT_EQ(integer, 7);
 }
 
-TEST(Integer, serializeToJSON){
+TEST(Integer, serializeToJSON0){
 	Integer integer0(7);
 	Integer integer1(
 		integer0.serialize(Serializable::Mode::JSON),
@@ -24,6 +24,33 @@ TEST(Integer, serializeToJSON){
 	);
 
 	EXPECT_EQ(integer1, 7);
+}
+
+TEST(Integer, serializeToJSON1){
+	Integer integer(7);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			integer.serialize(static_cast<Serializable::Mode>(-1));
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+TEST(Integer, serializeToJSON2){
+	Integer integer0(7);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			Integer integer1(
+				integer0.serialize(Serializable::Mode::JSON),
+				static_cast<Serializable::Mode>(-1)
+			);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
 }
 
 TEST(Integer, operatorInt){
