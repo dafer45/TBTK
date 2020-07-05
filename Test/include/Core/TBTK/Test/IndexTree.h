@@ -857,6 +857,14 @@ TEST(IndexTree, Iterator){
 	++iterator;
 	EXPECT_FALSE(iterator != indexTree.cend());
 	EXPECT_TRUE(iterator == indexTree.cend());
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			*iterator;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
 }
 
 };

@@ -516,6 +516,7 @@ TEST_F(ArrayAlgorithmsTest, max0){
 //TBTKFeature Math.ArrayAlgorithms.min.0 2020-05-18
 TEST_F(ArrayAlgorithmsTest, min0){
 	EXPECT_EQ(min(A), 1);
+	EXPECT_EQ(min(C), -6);
 }
 
 //TBTKFeature Math.ArrayAlgorithms.trace.0 2020-05-26
