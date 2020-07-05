@@ -13,7 +13,7 @@ ENABLE_TESTING()
 
 LIST(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake/Modules/")
 IF(CMAKE_BUILD_TYPE MATCHES DEBUG OR CMAKE_BUILD_TYPE MATCHES Debug)
-	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage")
+	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage -fno-inline -fno-inline-small-functions -fno-default-inline")
 	SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -coverage")
 	FILE(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/Coverage")
 	ADD_CUSTOM_TARGET(
@@ -23,7 +23,7 @@ IF(CMAKE_BUILD_TYPE MATCHES DEBUG OR CMAKE_BUILD_TYPE MATCHES Debug)
 	)
 	ADD_CUSTOM_TARGET(
 		coverage
-		COMMAND lcov --directory ${CMAKE_BINARY_DIR} --capture --output-file Coverage/CoverageTest.info
+		COMMAND lcov --capture --directory ${CMAKE_BINARY_DIR} --output-file Coverage/CoverageTest.info
 		COMMAND lcov --add-tracefile Coverage/CoverageBaseline.info --add-tracefile Coverage/CoverageTest.info --output-file Coverage/Coverage.info
 		COMMAND cd Coverage && genhtml Coverage.info
 	)
@@ -321,7 +321,11 @@ ENDIF(TBTK_ENABLE_ALL_OPTIONS)
 MESSAGE("================================================================================")
 
 #C++ flags
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -O3")
+IF(CMAKE_BUILD_TYPE MATCHES DEBUG OR CMAKE_BUILD_TYPE MATCHES Debug)
+	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -O0")
+ELSE(CMAKE_BUILD_TYPE MATCHES DEBUG OR CMAKE_BUILD_TYPE MATCHES Debug)
+	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -O3")
+ENDIF(CMAKE_BUILD_TYPE MATCHES DEBUG OR CMAKE_BUILD_TYPE MATCHES Debug)
 IF("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang")
 	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-undefined-var-template")
 ENDIF("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang")
