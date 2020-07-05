@@ -139,9 +139,6 @@ public:
 	 *  @return The Hermitian conjugate of the HoppingAmplitude. */
 	HoppingAmplitude getHermitianConjugate() const;
 
-	/** Print HoppingAmplitude. Mainly for debugging. */
-	void print() const;
-
 	//TBTKFeature Core.HoppingAmplitude.getAmplitude.1 2019-09-23
 	//TBTKFeature Core.HoppingAmplitude.getAmplitude.2 2019-09-23
 	/** Get the amplitude value \f$a_{ij}\f$.

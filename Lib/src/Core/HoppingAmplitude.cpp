@@ -142,20 +142,6 @@ HoppingAmplitude HoppingAmplitude::getHermitianConjugate() const{
 		return HoppingAmplitude(conj(amplitude), fromIndex, toIndex);
 }
 
-void HoppingAmplitude::print() const{
-	Streams::out << "From index:\t";
-	for(unsigned int n = 0; n < fromIndex.getSize(); n++){
-		Streams::out << fromIndex.at(n) << " ";
-	}
-	Streams::out << "\n";
-	Streams::out << "To index:\t";
-	for(unsigned int n = 0; n < toIndex.getSize(); n++){
-		Streams::out << toIndex.at(n) << " ";
-	}
-	Streams::out << "\n";
-	Streams::out << "Amplitude:\t" << getAmplitude() << "\n";
-}
-
 string HoppingAmplitude::serialize(Serializable::Mode mode) const{
 	TBTKAssert(
 		amplitudeCallback == nullptr,
