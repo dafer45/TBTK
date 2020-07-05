@@ -18,6 +18,7 @@ IF(GTest_FOUND)
 		INCLUDE_DIRECTORIES(
 			include/
 			include/Core
+			include/Elements
 			include/Exceptions
 			include/FiniteDifferences
 			include/FourierTransform

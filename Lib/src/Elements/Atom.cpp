@@ -750,6 +750,9 @@ const Atom &Atom::Lv	= atoms[116];
 const Atom &Atom::Ts	= atoms[117];
 const Atom &Atom::Og	= atoms[118];
 
+Atom::Atom(){
+}
+
 Atom::Atom(unsigned int atomicNumber){
 	this->atomicNumber = atomicNumber;
 }

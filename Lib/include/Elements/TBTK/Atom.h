@@ -32,6 +32,9 @@ namespace TBTK{
 class Atom{
 public:
 	/** Constructor. */
+	Atom();
+
+	/** Constructor. */
 	Atom(unsigned int atomicNumber);
 
 	/** Destructor. */
