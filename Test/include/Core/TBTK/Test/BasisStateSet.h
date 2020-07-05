@@ -70,7 +70,7 @@ TEST(BasisStateSet, add){
 	);
 }
 
-TEST(BasisStateSet, get){
+TEST(BasisStateSet, get0){
 	BasisStateSet basisStateSet;
 	basisStateSet.add(TestState({1, 2}));
 	basisStateSet.add(TestState({2, 1}));
@@ -95,6 +95,19 @@ TEST(BasisStateSet, get){
 		},
 		::testing::ExitedWithCode(1),
 		""
+	);
+}
+
+TEST(BasisStateSet, get1){
+	BasisStateSet basisStateSet;
+	basisStateSet.add(TestState({1, 2}));
+	basisStateSet.add(TestState({2, 1}));
+	basisStateSet.add(TestState({3, 2}));
+
+	//Check that all added basis state are possible to get.
+	EXPECT_EQ(
+		&((const BasisStateSet&)basisStateSet).get({1, 2}),
+		&basisStateSet.get({1, 2})
 	);
 }
 

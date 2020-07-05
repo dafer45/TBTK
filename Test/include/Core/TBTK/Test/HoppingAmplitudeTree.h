@@ -598,9 +598,7 @@ TEST(HoppingAmplitudeTreeIterator, operatorDereference0){
 //TBTKFeature HoppingAmplitudeTree.Iterator.operatorDereference.1 2020-07-05
 TEST(HoppingAmplitudeTreeIterator, operatorDereference1){
 	HoppingAmplitudeTree hoppingAmplitudeTree;
-	hoppingAmplitudeTree.add(
-		HoppingAmplitude(1, {1, 2}, {1, 2})
-	);
+	hoppingAmplitudeTree.add(HoppingAmplitude(1, {1, 2}, {1, 2}));
 	auto iterator = hoppingAmplitudeTree.getSubTree({1, 2})->cbegin();
 	++iterator;
 	EXPECT_EXIT(
