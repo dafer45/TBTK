@@ -19,10 +19,12 @@ IF(CMAKE_BUILD_TYPE MATCHES DEBUG OR CMAKE_BUILD_TYPE MATCHES Debug)
 	ADD_CUSTOM_TARGET(
 		clearCoverage
 		COMMAND lcov --directory ${CMAKE_BINARY_DIR} --zerocounters
+		COMMAND lcov --capture --initial --directory ${CMAKE_BINARY_DIR} --output-file Coverage/CoverageBaseline.info
 	)
 	ADD_CUSTOM_TARGET(
 		coverage
-		COMMAND lcov --directory ${CMAKE_BINARY_DIR} --capture --output-file Coverage/Coverage.info
+		COMMAND lcov --directory ${CMAKE_BINARY_DIR} --capture --output-file Coverage/CoverageTest.info
+		COMMAND lcov --add-tracefile Coverage/CoverageBaseline.info --add-tracefile Coverage/CoverageTest.info --output-file Coverage/Coverage.info
 		COMMAND cd Coverage && genhtml Coverage.info
 	)
 ENDIF(CMAKE_BUILD_TYPE MATCHES DEBUG OR CMAKE_BUILD_TYPE MATCHES Debug)
