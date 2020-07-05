@@ -46,12 +46,9 @@ Property::WaveFunctions Diagonalizer::calculateWaveFunctions(
 	vector<Subindex> states
 ){
 	PatternValidator::validateWaveFunctionPatterns(patterns);
-
+	IndexTree allIndices = generateAllIndices(patterns);
+	IndexTree memoryLayout = generateMemoryLayout(patterns);
 	const Model &model = getSolver().getModel();
-	IndexTreeGenerator indexTreeGenerator(model);
-	IndexTree allIndices = indexTreeGenerator.generateAllIndices(patterns);
-	IndexTree memoryLayout
-		= indexTreeGenerator.generateMemoryLayout(patterns);
 
 	vector<unsigned int> statesVector;
 	if(states.size() == 1){
@@ -100,12 +97,9 @@ Property::GreensFunction Diagonalizer::calculateGreensFunction(
 	Property::GreensFunction::Type type
 ){
 	PatternValidator::validateGreensFunctionPatterns(patterns);
-
-	const Solver::Diagonalizer &solver = getSolver();
-	IndexTreeGenerator indexTreeGenerator(solver.getModel());
-	IndexTree allIndices = indexTreeGenerator.generateAllIndices(patterns);
-	IndexTree memoryLayout
-		= indexTreeGenerator.generateMemoryLayout(patterns);
+	IndexTree allIndices = generateAllIndices(patterns);
+	IndexTree memoryLayout = generateMemoryLayout(patterns);
+	const Model &model = getSolver().getModel();
 
 	Property::GreensFunction greensFunction;
 
@@ -117,7 +111,7 @@ Property::GreensFunction Diagonalizer::calculateGreensFunction(
 			memoryLayout,
 			type,
 			getEnergyWindow()
-	);
+		);
 
 		Information information;
 		calculate(
@@ -149,7 +143,7 @@ Property::GreensFunction Diagonalizer::calculateGreensFunction(
 			"This should never happen, contact the developer."
 		);
 
-		double temperature = solver.getModel().getTemperature();
+		double temperature = model.getTemperature();
 		double kT = UnitHandler::getConstantInNaturalUnits("k_B")*temperature;
 		double fundamentalMatsubaraEnergy = M_PI*kT;
 
@@ -244,14 +238,10 @@ Property::Density Diagonalizer::calculateDensity(
 
 Property::Density Diagonalizer::calculateDensity(vector<Index> patterns){
 	PatternValidator::validateDensityPatterns(patterns);
-
-	IndexTreeGenerator indexTreeGenerator(getSolver().getModel());
-	IndexTree allIndices = indexTreeGenerator.generateAllIndices(patterns);
-	IndexTree memoryLayout
-		= indexTreeGenerator.generateMemoryLayout(patterns);
+	IndexTree allIndices = generateAllIndices(patterns);
+	IndexTree memoryLayout = generateMemoryLayout(patterns);
 
 	Property::Density density(memoryLayout);
-
 	Information information;
 	calculate(
 		calculateDensityCallback,
@@ -307,14 +297,10 @@ Property::Magnetization Diagonalizer::calculateMagnetization(
 	vector<Index> patterns
 ){
 	PatternValidator::validateMagnetizationPatterns(patterns);
-
-	IndexTreeGenerator indexTreeGenerator(getSolver().getModel());
-	IndexTree allIndices = indexTreeGenerator.generateAllIndices(patterns);
-	IndexTree memoryLayout
-		= indexTreeGenerator.generateMemoryLayout(patterns);
+	IndexTree allIndices = generateAllIndices(patterns);
+	IndexTree memoryLayout = generateMemoryLayout(patterns);
 
 	Property::Magnetization magnetization(memoryLayout);
-
 	Information information;
 	calculate(
 		calculateMAGCallback,
@@ -354,14 +340,10 @@ Property::LDOS Diagonalizer::calculateLDOS(
 	vector<Index> patterns
 ){
 	PatternValidator::validateLDOSPatterns(patterns);
-
-	IndexTreeGenerator indexTreeGenerator(getSolver().getModel());
-	IndexTree allIndices = indexTreeGenerator.generateAllIndices(patterns);
-	IndexTree memoryLayout
-		= indexTreeGenerator.generateMemoryLayout(patterns);
+	IndexTree allIndices = generateAllIndices(patterns);
+	IndexTree memoryLayout = generateMemoryLayout(patterns);
 
 	Property::LDOS ldos(memoryLayout, getEnergyWindow());
-
 	Information information;
 	calculate(
 		calculateLDOSCallback,
@@ -420,17 +402,13 @@ Property::SpinPolarizedLDOS Diagonalizer::calculateSpinPolarizedLDOS(
 	vector<Index> patterns
 ){
 	PatternValidator::validateSpinPolarizedLDOSPatterns(patterns);
-
-	IndexTreeGenerator indexTreeGenerator(getSolver().getModel());
-	IndexTree allIndices = indexTreeGenerator.generateAllIndices(patterns);
-	IndexTree memoryLayout
-		= indexTreeGenerator.generateMemoryLayout(patterns);
+	IndexTree allIndices = generateAllIndices(patterns);
+	IndexTree memoryLayout = generateMemoryLayout(patterns);
 
 	Property::SpinPolarizedLDOS spinPolarizedLDOS(
 		memoryLayout,
 		getEnergyWindow()
 	);
-
 	Information information;
 	calculate(
 		calculateSP_LDOSCallback,
@@ -484,7 +462,6 @@ void Diagonalizer::calculateGreensFunctionCallback(
 	Information &information
 ){
 	Diagonalizer *propertyExtractor = (Diagonalizer*)cb_this;
-//	const Solver::Diagonalizer &solver = propertyExtractor->getSolver();
 	const Model &model = propertyExtractor->getSolver().getModel();
 
 	vector<Index> components = index.split();

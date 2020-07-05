@@ -33,6 +33,7 @@
 #include "TBTK/Property/LDOS.h"
 #include "TBTK/Property/Magnetization.h"
 #include "TBTK/Property/SpinPolarizedLDOS.h"
+#include "TBTK/PropertyExtractor/IndexTreeGenerator.h"
 #include "TBTK/Range.h"
 #include "TBTK/Solver/Solver.h"
 
@@ -599,6 +600,25 @@ protected:
 		double energy,
 		const Model &model
 	);
+
+	/** Get all Indices in the Model that are compatible with the given
+	 *  patterns.
+	 *
+	 *  @param patterns The patterns to match agains.
+	 *
+	 *  @return An IndexTree containing all the mathing indices. */
+	IndexTree generateAllIndices(const std::vector<Index> &patterns) const;
+
+	/** Get an IndexTree containing the memory layout for a Property that
+	 *  is compatible with the Model and the given patterns. Similar to
+	 *  getAllIndices(), but IDX_SUM_ALL are kept in place.
+	 *
+	 *  @param patterns The patterns to match agains.
+	 *
+	 *  @return An IndexTree containing the memory layout. */
+	IndexTree generateMemoryLayout(
+		const std::vector<Index> &patterns
+	) const;
 private:
 	/** Energy type used for energy dependent quantities. */
 	EnergyType energyType;
@@ -892,6 +912,20 @@ inline double PropertyExtractor::getThermodynamicEquilibriumOccupation(
 			"This should never happen, contact the developer."
 		);
 	}
+}
+
+inline IndexTree PropertyExtractor::generateAllIndices(
+	const std::vector<Index> &patterns
+) const{
+	IndexTreeGenerator generator(getSolver<Solver::Solver>().getModel());
+	return generator.generateAllIndices(patterns);
+}
+
+inline IndexTree PropertyExtractor::generateMemoryLayout(
+	const std::vector<Index> &patterns
+) const{
+	IndexTreeGenerator generator(getSolver<Solver::Solver>().getModel());
+	return generator.generateMemoryLayout(patterns);
 }
 
 inline void PropertyExtractor::Information::setSpinIndex(int spinIndex){

@@ -53,17 +53,14 @@ Property::WaveFunctions BlockDiagonalizer::calculateWaveFunctions(
 	vector<Subindex> states
 ){
 	PatternValidator::validateWaveFunctionPatterns(patterns);
-
-	const Solver::BlockDiagonalizer &solver = getSolver();
-	IndexTreeGenerator indexTreeGenerator(solver.getModel());
-	IndexTree allIndices = indexTreeGenerator.generateAllIndices(patterns);
-	IndexTree memoryLayout
-		= indexTreeGenerator.generateMemoryLayout(patterns);
+	IndexTree allIndices = generateAllIndices(patterns);
+	IndexTree memoryLayout = generateMemoryLayout(patterns);
+	const Model &model = getSolver().getModel();
 
 	vector<unsigned int> statesVector;
 	if(states.size() == 1){
 		if((*states.begin()).isWildcard()){
-			for(int n = 0; n < solver.getModel().getBasisSize(); n++)
+			for(int n = 0; n < model.getBasisSize(); n++)
 				statesVector.push_back(n);
 		}
 		else{
@@ -139,12 +136,9 @@ Property::GreensFunction BlockDiagonalizer::calculateGreensFunction(
 	Property::GreensFunction::Type type
 ){
 	PatternValidator::validateGreensFunctionPatterns(patterns);
-
-	const Solver::BlockDiagonalizer &solver = getSolver();
-	IndexTreeGenerator indexTreeGenerator(solver.getModel());
-	IndexTree allIndices = indexTreeGenerator.generateAllIndices(patterns);
-	IndexTree memoryLayout
-		= indexTreeGenerator.generateMemoryLayout(patterns);
+	IndexTree allIndices = generateAllIndices(patterns);
+	IndexTree memoryLayout = generateMemoryLayout(patterns);
+	const Model &model = getSolver().getModel();
 
 	switch(type){
 	case Property::GreensFunction::Type::Advanced:
@@ -186,7 +180,7 @@ Property::GreensFunction BlockDiagonalizer::calculateGreensFunction(
 			"This should never happen, contact the developer."
 		);
 
-		double temperature = solver.getModel().getTemperature();
+		double temperature = model.getTemperature();
 		double kT = UnitHandler::getConstantInNaturalUnits("k_B")*temperature;
 		double fundamentalMatsubaraEnergy = M_PI*kT;
 
@@ -266,14 +260,10 @@ Property::Density BlockDiagonalizer::calculateDensity(
 	vector<Index> patterns
 ){
 	PatternValidator::validateDensityPatterns(patterns);
-
-	IndexTreeGenerator indexTreeGenerator(getSolver().getModel());
-	IndexTree allIndices = indexTreeGenerator.generateAllIndices(patterns);
-	IndexTree memoryLayout
-		= indexTreeGenerator.generateMemoryLayout(patterns);
+	IndexTree allIndices = generateAllIndices(patterns);
+	IndexTree memoryLayout = generateMemoryLayout(patterns);
 
 	Property::Density density(memoryLayout);
-
 	Information information;
 	calculate(
 		calculateDensityCallback,
@@ -290,14 +280,10 @@ Property::Magnetization BlockDiagonalizer::calculateMagnetization(
 	vector<Index> patterns
 ){
 	PatternValidator::validateMagnetizationPatterns(patterns);
-
-	IndexTreeGenerator indexTreeGenerator(getSolver().getModel());
-	IndexTree allIndices = indexTreeGenerator.generateAllIndices(patterns);
-	IndexTree memoryLayout
-		= indexTreeGenerator.generateMemoryLayout(patterns);
+	IndexTree allIndices = generateAllIndices(patterns);
+	IndexTree memoryLayout = generateMemoryLayout(patterns);
 
 	Property::Magnetization magnetization(memoryLayout);
-
 	Information information;
 	calculate(
 		calculateMagnetizationCallback,
@@ -314,7 +300,6 @@ Property::LDOS BlockDiagonalizer::calculateLDOS(
 	vector<Index> patterns
 ){
 	PatternValidator::validateLDOSPatterns(patterns);
-
 	TBTKAssert(
 		getEnergyType() == EnergyType::Real,
 		"PropertyExtractor::BlockDiagonalizer::calculateLDOS()",
@@ -322,14 +307,10 @@ Property::LDOS BlockDiagonalizer::calculateLDOS(
 		"Use PropertyExtractor::BlockDiagonalizer::setEnergyWindow()"
 		<< " to set a real energy window."
 	);
-
-	IndexTreeGenerator indexTreeGenerator(getSolver().getModel());
-	IndexTree allIndices = indexTreeGenerator.generateAllIndices(patterns);
-	IndexTree memoryLayout
-		= indexTreeGenerator.generateMemoryLayout(patterns);
+	IndexTree allIndices = generateAllIndices(patterns);
+	IndexTree memoryLayout = generateMemoryLayout(patterns);
 
 	Property::LDOS ldos(memoryLayout, getEnergyWindow());
-
 	Information information;
 	calculate(
 		calculateLDOSCallback,
@@ -346,7 +327,6 @@ Property::SpinPolarizedLDOS BlockDiagonalizer::calculateSpinPolarizedLDOS(
 	vector<Index> patterns
 ){
 	PatternValidator::validateSpinPolarizedLDOSPatterns(patterns);
-
 	TBTKAssert(
 		getEnergyType() == EnergyType::Real,
 		"PropertyExtractor::BlockDiagonalizer::calculateSpinPolarizedLDOS()",
@@ -354,17 +334,13 @@ Property::SpinPolarizedLDOS BlockDiagonalizer::calculateSpinPolarizedLDOS(
 		"Use PropertyExtractor::BlockDiagonalizer::setEnergyWindow()"
 		<< " to set a real energy window."
 	);
-
-	IndexTreeGenerator indexTreeGenerator(getSolver().getModel());
-	IndexTree allIndices = indexTreeGenerator.generateAllIndices(patterns);
-	IndexTree memoryLayout
-		= indexTreeGenerator.generateMemoryLayout(patterns);
+	IndexTree allIndices = generateAllIndices(patterns);
+	IndexTree memoryLayout = generateMemoryLayout(patterns);
 
 	Property::SpinPolarizedLDOS spinPolarizedLDOS(
 		memoryLayout,
 		getEnergyWindow()
 	);
-
 	Information information;
 	calculate(
 		calculateSP_LDOSCallback,
