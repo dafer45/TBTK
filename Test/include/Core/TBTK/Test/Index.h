@@ -211,6 +211,22 @@ TEST(Index, equals){
 			})
 		)
 	) << errorMessage;
+	//TBTKFeature Core.Index.Equals.11 2020-07-05
+	EXPECT_FALSE(
+		Index(
+			Index({0, 1, 1, 2, 3, 2})
+		).equals(
+			Index({
+				0,
+				IDX_ALL_(0),
+				IDX_ALL_(0),
+				IDX_ALL_(1),
+				IDX_ALL_(1),
+				2
+			}),
+			true
+		)
+	) << errorMessage;
 }
 
 //TBTKFeature Core.Index.at.1 2019-09-19

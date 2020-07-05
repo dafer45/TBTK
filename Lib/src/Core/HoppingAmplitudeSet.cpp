@@ -133,10 +133,6 @@ IndexTree HoppingAmplitudeSet::getIndexTree(const Index &subspace) const{
 	return indexTree;
 }
 
-void HoppingAmplitudeSet::print(){
-	HoppingAmplitudeTree::print();
-}
-
 string HoppingAmplitudeSet::serialize(Mode mode) const{
 	switch(mode){
 	case Mode::Debug:

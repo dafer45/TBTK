@@ -255,9 +255,6 @@ public:
 	 *  @return True if the Index is a pattern index, otherwise false. */
 	bool isPatternIndex() const;
 
-	/** Print index. Mainly for debuging. */
-	void print() const;
-
 	//TBTKFeature Core.Index.toString.1 2019-09-19
 	//TBTKFeature Core.Index.toString.2 2019-09-19
 	/** Get string representation of the Index.
@@ -335,16 +332,6 @@ private:
 	/** Subindex container. */
 	std::vector<Subindex> indices;
 };
-
-inline void Index::print() const{
-	Streams::out << "{";
-	for(unsigned int n = 0; n < indices.size(); n++){
-		if(n != 0)
-			Streams::out << ", ";
-		Streams::out << indices.at(n);
-	}
-	Streams::out << "}\n";
-}
 
 inline std::string Index::toString() const{
 	std::string str = "{";

@@ -212,14 +212,14 @@ void DifferenceRule::print() const{
 		if(n > 0)
 			Streams::out << ", ";
 
-		addStateIndices.at(n).print();
+		Streams::out << addStateIndices.at(n);
 	}
 	Streams::out << ") - Sum(";
 	for(unsigned int n = 0; n < subtractStateIndices.size(); n++){
 		if(n > 0)
 			Streams::out << ", ";
 
-		subtractStateIndices.at(n).print();
+		Streams::out << subtractStateIndices.at(n);
 	}
 	Streams::out << ") = " << difference;
 }

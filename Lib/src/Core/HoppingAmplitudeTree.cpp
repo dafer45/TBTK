@@ -465,9 +465,12 @@ const std::vector<
 		//If the subindex is bigger than the current number of child
 		//nodes, an error has occured.
 		if(currentIndex >= (int)children.size()){
-			Streams::err << "Error, index out of bound: ";
-			index.print();
-			exit(1);
+			TBTKExit(
+				"HoppingAmplitudeTree::_getHoppingAmplitudes()",
+				"Out of bounds error. The Index '" << index
+				<< "' is not in the Index tree.",
+				""
+			);
 		}
 		//Continue to the next node level.
 		return children.at(currentIndex)._getHoppingAmplitudes(
@@ -496,9 +499,12 @@ int HoppingAmplitudeTree::_getBasisIndex(const Index &index, unsigned int subind
 		//If the subindex is bigger than the current number of child
 		//nodes, an error has occured.
 		if(currentIndex >= (int)children.size()){
-			Streams::err << "Error, index out of bound: ";
-			index.print();
-			exit(1);
+			TBTKExit(
+				"HoppingAmplitudeTree::_getBasisIndex()",
+				"Out of bounds error. The Index '" << index
+				<< "' is not in the Index tree.",
+				""
+			);
 		}
 		//Continue to the next node level.
 		return children.at(currentIndex)._getBasisIndex(index, subindex+1);
