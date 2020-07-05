@@ -7,7 +7,8 @@ namespace TBTK{
 #if TBTK_WRAP_PRIMITIVE_TYPES
 
 TEST(Boolean, Constructor0){
-	//Not testable on its own.
+	//Verify that this compiles.
+	Boolean boolean;
 }
 
 TEST(Boolean, Constructor1){
