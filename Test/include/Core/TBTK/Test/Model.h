@@ -5,6 +5,15 @@
 
 namespace TBTK{
 
+TEST(Model, DynamicTypeInformation){
+	Model model;
+	EXPECT_EQ(
+		model.dynamicTypeInformation.getName(),
+		std::string("Model")
+	);
+	EXPECT_EQ(model.dynamicTypeInformation.getNumParents(), 0);
+}
+
 TEST(Model, Constructor){
 	//Check default values.
 	Model model;

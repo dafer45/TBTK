@@ -430,7 +430,7 @@ TEST(PropertyExtractor, calculateLDOSRangesFormat){
 	EXPECT_EXIT(
 		{
 			Streams::setStdMuteErr();
-			propertyExtractor.calculateSpinPolarizedLDOS({IDX_ALL}, {0});
+			propertyExtractor.calculateLDOS({IDX_ALL}, {0});
 		},
 		::testing::ExitedWithCode(1),
 		""
@@ -444,7 +444,7 @@ TEST(PropertyExtractor, calculateSpinLDOSCustomFormat){
 	EXPECT_EXIT(
 		{
 			Streams::setStdMuteErr();
-			propertyExtractor.calculateSpinPolarizedLDOS({{IDX_ALL}});
+			propertyExtractor.calculateLDOS({{IDX_ALL}});
 		},
 		::testing::ExitedWithCode(1),
 		""

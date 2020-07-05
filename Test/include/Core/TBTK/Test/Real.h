@@ -16,7 +16,7 @@ TEST(Real, Constructor1){
 	EXPECT_EQ(real, 7);
 }
 
-TEST(Real, serializeToJSON){
+TEST(Real, serializeToJSON0){
 	Real real0(7);
 	Real real1(
 		real0.serialize(Serializable::Mode::JSON),
@@ -24,6 +24,33 @@ TEST(Real, serializeToJSON){
 	);
 
 	EXPECT_EQ(real1, 7);
+}
+
+TEST(Real, serializeToJSON1){
+	Real real(7);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			real.serialize(static_cast<Serializable::Mode>(-1));
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+TEST(Real, serializeToJSON2){
+	Real real(7);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			Real(
+				real.serialize(Serializable::Mode::JSON),
+				static_cast<Serializable::Mode>(-1)
+			);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
 }
 
 TEST(Real, operatorDouble){

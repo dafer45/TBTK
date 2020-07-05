@@ -8,7 +8,7 @@ TEST(BoundaryCondition, Constructor){
 	//Not testable on its own.
 }
 
-TEST(BoundaryCondition, SerializeToJSON){
+TEST(BoundaryCondition, SerializeToJSON0){
 	BoundaryCondition boundaryCondition0;
 	boundaryCondition0.add(HoppingAmplitude(1, {0, 0}, {0, 0}));
 	boundaryCondition0.add(HoppingAmplitude(2, {0, 0}, {0, 1}));
@@ -35,6 +35,20 @@ TEST(BoundaryCondition, SerializeToJSON){
 
 	//EliminationIndex.
 	EXPECT_TRUE(boundaryCondition1.getEliminationIndex().equals({0, 0}));
+}
+
+TEST(BoundaryCondition, SerializeToJSON1){
+	BoundaryCondition boundaryCondition;
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			boundaryCondition.serialize(
+				static_cast<Serializable::Mode>(-1)
+			);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
 }
 
 TEST(BoundaryCondition, add){

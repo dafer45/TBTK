@@ -16,7 +16,7 @@ TEST(Natural, Constructor1){
 	EXPECT_EQ(natural, 7);
 }
 
-TEST(Natural, serializeToJSON){
+TEST(Natural, serializeToJSON0){
 	Natural natural0(7);
 	Natural natural1(
 		natural0.serialize(Serializable::Mode::JSON),
@@ -24,6 +24,33 @@ TEST(Natural, serializeToJSON){
 	);
 
 	EXPECT_EQ(natural1, 7);
+}
+
+TEST(Natural, serializeToJSON1){
+	Natural natural(7);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			natural.serialize(static_cast<Serializable::Mode>(-1));
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+TEST(Natural, serializeToJSON2){
+	Natural natural(7);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			Natural(
+				natural.serialize(Serializable::Mode::JSON),
+				static_cast<Serializable::Mode>(-1)
+			);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
 }
 
 TEST(Natural, operatorUnsignedInt){
