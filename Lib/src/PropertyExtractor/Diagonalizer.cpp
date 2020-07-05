@@ -51,20 +51,9 @@ Property::WaveFunctions Diagonalizer::calculateWaveFunctions(
 	const Model &model = getSolver().getModel();
 
 	vector<unsigned int> statesVector;
-	if(states.size() == 1){
-		if((*states.begin()).isWildcard()){
-			for(int n = 0; n < model.getBasisSize(); n++)
-				statesVector.push_back(n);
-		}
-		else{
-			TBTKAssert(
-				*states.begin() >= 0,
-				"PropertyExtractor::Diagonalizer::calculateWaveFunctions()",
-				"Found unexpected index symbol.",
-				"Use only positive numbers or '{IDX_ALL}'"
-			);
-			statesVector.push_back(*states.begin());
-		}
+	if(states.size() == 1 && (*states.begin()).isWildcard()){
+		for(int n = 0; n < model.getBasisSize(); n++)
+			statesVector.push_back(n);
 	}
 	else{
 		for(unsigned int n = 0; n < states.size(); n++){
@@ -79,7 +68,6 @@ Property::WaveFunctions Diagonalizer::calculateWaveFunctions(
 	}
 
 	Property::WaveFunctions waveFunctions(memoryLayout, statesVector);
-
 	Information information;
 	calculate(
 		calculateWaveFunctionsCallback,
@@ -193,10 +181,7 @@ Property::DOS Diagonalizer::calculateDOS(){
 	return dos;
 }
 
-complex<double> Diagonalizer::calculateExpectationValue(
-	Index to,
-	Index from
-){
+complex<double> Diagonalizer::calculateExpectationValue(Index to, Index from){
 	complex<double> expectationValue = 0.;
 	const Model &model = getSolver().getModel();
 	for(int n = 0; n < model.getBasisSize(); n++){
@@ -213,10 +198,7 @@ complex<double> Diagonalizer::calculateExpectationValue(
 	return expectationValue;
 }
 
-Property::Density Diagonalizer::calculateDensity(
-	Index pattern,
-	Index ranges
-){
+Property::Density Diagonalizer::calculateDensity(Index pattern, Index ranges){
 	ensureCompliantRanges(pattern, ranges);
 
 	vector<int> loopRanges = getLoopRanges(pattern, ranges);
