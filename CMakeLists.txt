@@ -12,6 +12,20 @@ EXECUTE_PROCESS(
 ENABLE_TESTING()
 
 LIST(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake/Modules/")
+IF(CMAKE_BUILD_TYPE MATCHES DEBUG OR CMAKE_BUILD_TYPE MATCHES Debug)
+	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage")
+	SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -coverage")
+	FILE(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/Coverage")
+	ADD_CUSTOM_TARGET(
+		clearCoverage
+		COMMAND lcov --directory ${CMAKE_BINARY_DIR} --zerocounters
+	)
+	ADD_CUSTOM_TARGET(
+		coverage
+		COMMAND lcov --directory ${CMAKE_BINARY_DIR} --capture --output-file Coverage/Coverage.info
+		COMMAND cd Coverage && genhtml Coverage.info
+	)
+ENDIF(CMAKE_BUILD_TYPE MATCHES DEBUG OR CMAKE_BUILD_TYPE MATCHES Debug)
 
 INCLUDE(TBTKVersionInfo)
 INCLUDE(TBTKBuildOptions)
