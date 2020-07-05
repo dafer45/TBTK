@@ -132,6 +132,20 @@ TEST_F(ContextTest, erase0){
 	);
 }
 
+//TBTKFeature Core.Context.erase.1 2020-07-05
+TEST_F(ContextTest, erase1){
+	Context &context = Context::getContext();
+	context.create<Derived>("Name");
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			context.erase("WrongName");
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
 //TBTKFeature Core.Context.get.0 2020-06-06
 TEST_F(ContextTest, get0){
 	Context &context = Context::getContext();
