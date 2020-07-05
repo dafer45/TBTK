@@ -7,6 +7,15 @@ namespace Solver{
 
 const double EPSILON_100 = 100*std::numeric_limits<double>::epsilon();
 
+TEST(ArnoldiIterator, DynamicTypeInformation){
+	ArnoldiIterator solver;
+	const DynamicTypeInformation &typeInformation
+		= solver.getDynamicTypeInformation();
+	EXPECT_EQ(typeInformation.getName(), "Solver::ArnoldiIterator");
+	EXPECT_EQ(typeInformation.getNumParents(), 1);
+	EXPECT_EQ(typeInformation.getParent(0).getName(), "Solver::Solver");
+}
+
 TEST(ArnoldiIterator, Constructor){
 	//Not testable on its own.
 }

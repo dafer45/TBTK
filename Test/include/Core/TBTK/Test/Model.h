@@ -7,11 +7,10 @@ namespace TBTK{
 
 TEST(Model, DynamicTypeInformation){
 	Model model;
-	EXPECT_EQ(
-		model.dynamicTypeInformation.getName(),
-		std::string("Model")
-	);
-	EXPECT_EQ(model.dynamicTypeInformation.getNumParents(), 0);
+	const DynamicTypeInformation &typeInformation
+		= model.getDynamicTypeInformation();
+	EXPECT_EQ(typeInformation.getName(), "Model");
+	EXPECT_EQ(typeInformation.getNumParents(), 0);
 }
 
 TEST(Model, Constructor){

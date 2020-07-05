@@ -5,6 +5,14 @@
 namespace TBTK{
 namespace Solver{
 
+TEST(Solver, DynamicTypeInformation){
+	Solver solver;
+	const DynamicTypeInformation &typeInformation
+		=solver.getDynamicTypeInformation();
+	EXPECT_EQ(typeInformation.getName(), "Solver::Solver");
+	EXPECT_EQ(typeInformation.getNumParents(), 0);
+}
+
 TEST(Solver, Constructor){
 	//Not testable on its own.
 }

@@ -5,6 +5,15 @@
 namespace TBTK{
 namespace Solver{
 
+TEST(ChebyshevExpander, DynamicTypeInformation){
+	ChebyshevExpander solver;
+	const DynamicTypeInformation &typeInformation
+		= solver.getDynamicTypeInformation();
+	EXPECT_EQ(typeInformation.getName(), "Solver::ChebyshevExpander");
+	EXPECT_EQ(typeInformation.getNumParents(), 1);
+	EXPECT_EQ(typeInformation.getParent(0).getName(), "Solver::Solver");
+}
+
 TEST(ChebyshevExpander, Constructor){
 	//Not testable on its own.
 }

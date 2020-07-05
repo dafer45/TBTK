@@ -16,6 +16,15 @@ namespace Solver{
 
 const double EPSILON_100 = 100*std::numeric_limits<double>::epsilon();
 
+TEST(Greens, DynamicTypeInformation){
+	Greens solver;
+	const DynamicTypeInformation &typeInformation
+		= solver.getDynamicTypeInformation();
+	EXPECT_EQ(typeInformation.getName(), "Solver::Greens");
+	EXPECT_EQ(typeInformation.getNumParents(), 1);
+	EXPECT_EQ(typeInformation.getParent(0).getName(), "Solver::Solver");
+}
+
 TEST(Greens, Destructor){
 	//Not testable on its own.
 }

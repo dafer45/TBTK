@@ -5,6 +5,15 @@
 namespace TBTK{
 namespace Solver{
 
+TEST(BlockDiagonalizer, DynamicTypeInformation){
+	BlockDiagonalizer solver;
+	const DynamicTypeInformation &typeInformation
+		= solver.getDynamicTypeInformation();
+	EXPECT_EQ(typeInformation.getName(), "Solver::BlockDiagonalizer");
+	EXPECT_EQ(typeInformation.getNumParents(), 1);
+	EXPECT_EQ(typeInformation.getParent(0).getName(), "Solver::Solver");
+}
+
 TEST(BlockDiagonalizer, Constructor){
 	//Not testable on its own.
 }
