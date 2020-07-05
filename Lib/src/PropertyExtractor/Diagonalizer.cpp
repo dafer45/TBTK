@@ -45,13 +45,7 @@ Property::WaveFunctions Diagonalizer::calculateWaveFunctions(
 	vector<Index> patterns,
 	vector<Subindex> states
 ){
-	PatternValidator patternValidator;
-	patternValidator.setNumRequiredComponentIndices(1);
-	patternValidator.setAllowedSubindexFlags({IDX_ALL, IDX_SUM_ALL});
-	patternValidator.setCallingFunctionName(
-		"PropertyExtractor::Diagonalizer::calculateWaveFunction()"
-	);
-	patternValidator.validate(patterns);
+	PatternValidator::validateWaveFunctionPatterns(patterns);
 
 	const Model &model = getSolver().getModel();
 	IndexTreeGenerator indexTreeGenerator(model);
@@ -105,13 +99,7 @@ Property::GreensFunction Diagonalizer::calculateGreensFunction(
 	const vector<Index> &patterns,
 	Property::GreensFunction::Type type
 ){
-	PatternValidator patternValidator;
-	patternValidator.setNumRequiredComponentIndices(2);
-	patternValidator.setAllowedSubindexFlags({IDX_ALL, IDX_SUM_ALL});
-	patternValidator.setCallingFunctionName(
-		"PropertyExtractor::Diagonalizer::calculateGreensFunction()"
-	);
-	patternValidator.validate(patterns);
+	PatternValidator::validateGreensFunctionPatterns(patterns);
 
 	const Solver::Diagonalizer &solver = getSolver();
 	IndexTreeGenerator indexTreeGenerator(solver.getModel());
@@ -255,13 +243,7 @@ Property::Density Diagonalizer::calculateDensity(
 }
 
 Property::Density Diagonalizer::calculateDensity(vector<Index> patterns){
-	PatternValidator patternValidator;
-	patternValidator.setNumRequiredComponentIndices(1);
-	patternValidator.setAllowedSubindexFlags({IDX_ALL, IDX_SUM_ALL});
-	patternValidator.setCallingFunctionName(
-		"PropertyExtractor::Diagonalizer::calculateDensity()"
-	);
-	patternValidator.validate(patterns);
+	PatternValidator::validateDensityPatterns(patterns);
 
 	IndexTreeGenerator indexTreeGenerator(getSolver().getModel());
 	IndexTree allIndices = indexTreeGenerator.generateAllIndices(patterns);
@@ -324,15 +306,7 @@ Property::Magnetization Diagonalizer::calculateMagnetization(
 Property::Magnetization Diagonalizer::calculateMagnetization(
 	vector<Index> patterns
 ){
-	PatternValidator patternValidator;
-	patternValidator.setNumRequiredComponentIndices(1);
-	patternValidator.setAllowedSubindexFlags(
-		{IDX_ALL, IDX_SUM_ALL, IDX_SPIN}
-	);
-	patternValidator.setCallingFunctionName(
-		"PropertyExtractor::Diagonalizer::calculateMagnetization()"
-	);
-	patternValidator.validate(patterns);
+	PatternValidator::validateMagnetizationPatterns(patterns);
 
 	IndexTreeGenerator indexTreeGenerator(getSolver().getModel());
 	IndexTree allIndices = indexTreeGenerator.generateAllIndices(patterns);
@@ -379,13 +353,7 @@ Property::LDOS Diagonalizer::calculateLDOS(
 Property::LDOS Diagonalizer::calculateLDOS(
 	vector<Index> patterns
 ){
-	PatternValidator patternValidator;
-	patternValidator.setNumRequiredComponentIndices(1);
-	patternValidator.setAllowedSubindexFlags({IDX_ALL, IDX_SUM_ALL});
-	patternValidator.setCallingFunctionName(
-		"PropertyExtractor::Diagonalizer::calculateLDOS()"
-	);
-	patternValidator.validate(patterns);
+	PatternValidator::validateLDOSPatterns(patterns);
 
 	IndexTreeGenerator indexTreeGenerator(getSolver().getModel());
 	IndexTree allIndices = indexTreeGenerator.generateAllIndices(patterns);
@@ -451,15 +419,7 @@ Property::SpinPolarizedLDOS Diagonalizer::calculateSpinPolarizedLDOS(
 Property::SpinPolarizedLDOS Diagonalizer::calculateSpinPolarizedLDOS(
 	vector<Index> patterns
 ){
-	PatternValidator patternValidator;
-	patternValidator.setNumRequiredComponentIndices(1);
-	patternValidator.setAllowedSubindexFlags(
-		{IDX_ALL, IDX_SUM_ALL, IDX_SPIN}
-	);
-	patternValidator.setCallingFunctionName(
-		"PropertyExtractor::Diagonalizer::calculateSpinPolarizedLDOS()"
-	);
-	patternValidator.validate(patterns);
+	PatternValidator::validateSpinPolarizedLDOSPatterns(patterns);
 
 	IndexTreeGenerator indexTreeGenerator(getSolver().getModel());
 	IndexTree allIndices = indexTreeGenerator.generateAllIndices(patterns);

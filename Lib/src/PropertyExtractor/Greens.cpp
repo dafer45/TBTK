@@ -78,13 +78,7 @@ Property::Density Greens::calculateDensity(
 Property::Density Greens::calculateDensity(
 	vector<Index> patterns
 ){
-	PatternValidator patternValidator;
-	patternValidator.setNumRequiredComponentIndices(1);
-	patternValidator.setAllowedSubindexFlags({IDX_ALL, IDX_SUM_ALL});
-	patternValidator.setCallingFunctionName(
-		"PropertyExtractor::Greens::calculateDensity()"
-	);
-	patternValidator.validate(patterns);
+	PatternValidator::validateDensityPatterns(patterns);
 
 	const Solver::Greens &solver = getSolver();
 	IndexTree allIndices = generateIndexTree(
@@ -118,13 +112,7 @@ Property::Density Greens::calculateDensity(
 Property::LDOS Greens::calculateLDOS(
 	vector<Index> patterns
 ){
-	PatternValidator patternValidator;
-	patternValidator.setNumRequiredComponentIndices(1);
-	patternValidator.setAllowedSubindexFlags({IDX_ALL, IDX_SUM_ALL});
-	patternValidator.setCallingFunctionName(
-		"PropertyExtractor::Greens::calculateLDOS()"
-	);
-	patternValidator.validate(patterns);
+	PatternValidator::validateLDOSPatterns(patterns);
 
 	const Solver::Greens &solver = getSolver();
 	IndexTree allIndices = generateIndexTree(
