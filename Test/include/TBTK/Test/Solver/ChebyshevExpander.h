@@ -1,9 +1,12 @@
+#include "TBTK/Range.h"
 #include "TBTK/Solver/ChebyshevExpander.h"
 
 #include "gtest/gtest.h"
 
 namespace TBTK{
 namespace Solver{
+
+const double EPSILON_100 = 100*std::numeric_limits<double>::epsilon();
 
 TEST(ChebyshevExpander, DynamicTypeInformation){
 	ChebyshevExpander solver;
@@ -352,9 +355,209 @@ TEST(ChebyshevExpander, calculateCoefficients){
 	#endif
 }
 
-//TODO
-//...
-TEST(ChebyshevExpander, generateGreensFunction){
+TEST(ChebyshevExpander, generateGreensFunction0){
+	const double SCALE_FACTOR = 10;
+	Range energyWindow(-5, 5, 10);
+	std::complex<double> i(0, 1);
+
+	ChebyshevExpander solver;
+	solver.setScaleFactor(SCALE_FACTOR);
+	solver.setGenerateGreensFunctionsOnGPU(false);
+	solver.setUseLookupTable(false);
+	solver.setNumCoefficients(3);
+	solver.setLowerBound(energyWindow[0]);
+	solver.setUpperBound(energyWindow.getLast());
+	solver.setEnergyResolution(energyWindow.getResolution());
+
+	std::vector<std::complex<double>> coefficients = {1, 2, 3};
+	std::vector<std::complex<double>> greensFunction
+		= solver.generateGreensFunction(
+			coefficients,
+			ChebyshevExpander::Type::Retarded
+		);
+
+	for(unsigned int n = 0; n < energyWindow.getResolution(); n++){
+		std::complex<double> reference = -coefficients[0]/2.;
+		for(unsigned int c = 1; c < coefficients.size(); c++){
+			reference -= coefficients[c]*exp(
+				-i*((double)c)*acos(energyWindow[n]/SCALE_FACTOR)
+			);
+		}
+		reference *= 2.*i/sqrt(
+			pow(SCALE_FACTOR, 2) - pow(energyWindow[n], 2)
+		);
+		EXPECT_NEAR(real(greensFunction[n]), real(reference), EPSILON_100);
+		EXPECT_NEAR(imag(greensFunction[n]), imag(reference), EPSILON_100);
+	}
+}
+
+TEST(ChebyshevExpander, generateGreensFunction1){
+	const double SCALE_FACTOR = 10;
+	Range energyWindow(-5, 5, 10);
+	std::complex<double> i(0, 1);
+
+	ChebyshevExpander solver;
+	solver.setScaleFactor(SCALE_FACTOR);
+	solver.setGenerateGreensFunctionsOnGPU(false);
+	solver.setUseLookupTable(false);
+	solver.setNumCoefficients(3);
+	solver.setLowerBound(energyWindow[0]);
+	solver.setUpperBound(energyWindow.getLast());
+	solver.setEnergyResolution(energyWindow.getResolution());
+
+	std::vector<std::complex<double>> coefficients = {1, 2, 3};
+	std::vector<std::complex<double>> greensFunction
+		= solver.generateGreensFunction(
+			coefficients,
+			ChebyshevExpander::Type::Advanced
+		);
+
+	for(unsigned int n = 0; n < energyWindow.getResolution(); n++){
+		std::complex<double> reference = coefficients[0]/2.;
+		for(unsigned int c = 1; c < coefficients.size(); c++){
+			reference += coefficients[c]*exp(
+				i*((double)c)*acos(energyWindow[n]/SCALE_FACTOR)
+			);
+		}
+		reference *= 2.*i/sqrt(
+			pow(SCALE_FACTOR, 2) - pow(energyWindow[n], 2)
+		);
+		EXPECT_NEAR(real(greensFunction[n]), real(reference), EPSILON_100);
+		EXPECT_NEAR(imag(greensFunction[n]), imag(reference), EPSILON_100);
+	}
+}
+
+TEST(ChebyshevExpander, generateGreensFunction2){
+	const double SCALE_FACTOR = 10;
+	Range energyWindow(-5, 5, 10);
+	std::complex<double> i(0, 1);
+
+	ChebyshevExpander solver;
+	solver.setScaleFactor(SCALE_FACTOR);
+	solver.setGenerateGreensFunctionsOnGPU(false);
+	solver.setUseLookupTable(false);
+	solver.setNumCoefficients(3);
+	solver.setLowerBound(energyWindow[0]);
+	solver.setUpperBound(energyWindow.getLast());
+	solver.setEnergyResolution(energyWindow.getResolution());
+
+	std::vector<std::complex<double>> coefficients = {1, 2, 3};
+	std::vector<std::complex<double>> greensFunction
+		= solver.generateGreensFunction(
+			coefficients,
+			ChebyshevExpander::Type::Principal
+		);
+
+	for(unsigned int n = 0; n < energyWindow.getResolution(); n++){
+		std::complex<double> reference = 0;
+		for(unsigned int c = 1; c < coefficients.size(); c++){
+			reference += coefficients[c]*sin(
+				((double)c)*acos(energyWindow[n]/SCALE_FACTOR)
+			);
+		}
+		reference *= 2./sqrt(
+			pow(SCALE_FACTOR, 2) - pow(energyWindow[n], 2)
+		);
+		EXPECT_NEAR(real(greensFunction[n]), real(reference), EPSILON_100);
+		EXPECT_NEAR(imag(greensFunction[n]), imag(reference), EPSILON_100);
+	}
+}
+
+TEST(ChebyshevExpander, generateGreensFunction3){
+	const double SCALE_FACTOR = 10;
+	Range energyWindow(-5, 5, 10);
+	std::complex<double> i(0, 1);
+
+	ChebyshevExpander solver;
+	solver.setScaleFactor(SCALE_FACTOR);
+	solver.setGenerateGreensFunctionsOnGPU(false);
+	solver.setUseLookupTable(false);
+	solver.setNumCoefficients(3);
+	solver.setLowerBound(energyWindow[0]);
+	solver.setUpperBound(energyWindow.getLast());
+	solver.setEnergyResolution(energyWindow.getResolution());
+
+	std::vector<std::complex<double>> coefficients = {1, 2, 3};
+	std::vector<std::complex<double>> greensFunction
+		= solver.generateGreensFunction(
+			coefficients,
+			ChebyshevExpander::Type::NonPrincipal
+		);
+
+	for(unsigned int n = 0; n < energyWindow.getResolution(); n++){
+		std::complex<double> reference = coefficients[0]/2.;
+		for(unsigned int c = 1; c < coefficients.size(); c++){
+			reference += coefficients[c]*cos(
+				((double)c)*acos(energyWindow[n]/SCALE_FACTOR)
+			);
+		}
+		reference *= 2.*i/sqrt(
+			pow(SCALE_FACTOR, 2) - pow(energyWindow[n], 2)
+		);
+		EXPECT_NEAR(real(greensFunction[n]), real(reference), EPSILON_100);
+		EXPECT_NEAR(imag(greensFunction[n]), imag(reference), EPSILON_100);
+	}
+}
+
+TEST(ChebyshevExpander, generateGreensFunction4){
+	const double SCALE_FACTOR = 10;
+	Range energyWindow(-5, 5, 10);
+	std::complex<double> i(0, 1);
+
+	for(unsigned int m = 0; m < 4; m++){
+		ChebyshevExpander solver[2];
+		for(unsigned int n = 0; n < 2; n++){
+			solver[n].setScaleFactor(SCALE_FACTOR);
+			solver[n].setGenerateGreensFunctionsOnGPU(false);
+			solver[n].setUseLookupTable(false);
+			solver[n].setNumCoefficients(3);
+			solver[n].setLowerBound(energyWindow[0]);
+			solver[n].setUpperBound(energyWindow.getLast());
+			solver[n].setEnergyResolution(energyWindow.getResolution());
+		}
+		solver[0].setUseLookupTable(false);
+		solver[1].setUseLookupTable(true);
+
+		std::vector<std::complex<double>> coefficients = {1, 2, 3};
+		ChebyshevExpander::Type type;
+		switch(m){
+		case 0:
+			type = ChebyshevExpander::Type::Retarded;
+			break;
+		case 1:
+			type = ChebyshevExpander::Type::Advanced;
+			break;
+		case 2:
+			type = ChebyshevExpander::Type::Principal;
+			break;
+		case 3:
+			type = ChebyshevExpander::Type::NonPrincipal;
+			break;
+		}
+		std::vector<std::complex<double>> greensFunction0
+			= solver[0].generateGreensFunction(
+				coefficients,
+				type
+			);
+		std::vector<std::complex<double>> greensFunction1
+			= solver[1].generateGreensFunction(
+				coefficients,
+				type
+			);
+
+		for(unsigned int n = 0; n < energyWindow.getResolution(); n++){
+			EXPECT_NEAR(
+				real(greensFunction0[n]),
+				real(greensFunction1[n]),
+				EPSILON_100
+			);
+			EXPECT_NEAR(
+				imag(greensFunction0[n]),
+				imag(greensFunction1[n]),
+				EPSILON_100
+			);
+		}
+	}
 }
 
 };	//End of namespace Solver

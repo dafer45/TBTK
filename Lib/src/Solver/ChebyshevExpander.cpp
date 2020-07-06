@@ -644,7 +644,6 @@ void ChebyshevExpander::generateLookupTable(
 	for(int n = 0; n < numCoefficients; n++)
 		generatingFunctionLookupTable[n] = new complex<double>[energyResolution];
 
-	const double DELTA = 0.0001;
 	#pragma omp parallel for
 	for(int n = 0; n < numCoefficients; n++){
 		double denominator = 1.;
@@ -652,8 +651,12 @@ void ChebyshevExpander::generateLookupTable(
 			denominator = 2.;
 
 		for(int e = 0; e < energyResolution; e++){
-			double E = (lowerBound + (upperBound - lowerBound)*e/(double)energyResolution)/scaleFactor;
-			generatingFunctionLookupTable[n][e] = (1/scaleFactor)*(-2.*i/sqrt(1+DELTA - E*E))*exp(-i*((double)n)*acos(E))/denominator;
+			double E;
+			if(energyResolution == 1)
+				E = lowerBound;
+			else
+				E = (lowerBound + (upperBound - lowerBound)*e/(double)(energyResolution - 1))/scaleFactor;
+			generatingFunctionLookupTable[n][e] = (1/scaleFactor)*(-2.*i/sqrt(1 - E*E))*exp(-i*((double)n)*acos(E))/denominator;
 		}
 	}
 }
@@ -723,7 +726,6 @@ vector<complex<double>> ChebyshevExpander::generateGreensFunctionCPU(
 
 	vector<complex<double>> greensFunctionData(energyResolution, 0);
 
-	const double DELTA = 0.0001;
 	if(type == Type::Retarded){
 		if(generatingFunctionLookupTable){
 			for(int n = 0; n < lookupTableNumCoefficients; n++){
@@ -739,8 +741,12 @@ vector<complex<double>> ChebyshevExpander::generateGreensFunctionCPU(
 					denominator = 2.;
 
 				for(int e = 0; e < energyResolution; e++){
-					double E = (lowerBound + (upperBound - lowerBound)*e/(double)energyResolution)/scaleFactor;
-					greensFunctionData[e] += coefficients[n]*(1/scaleFactor)*(-2.*i/sqrt(1+DELTA - E*E))*exp(-i*((double)n)*acos(E))/denominator;
+					double E;
+					if(energyResolution == 1)
+						E = lowerBound;
+					else
+						E = (lowerBound + (upperBound - lowerBound)*e/(double)(energyResolution-1))/scaleFactor;
+					greensFunctionData[e] += coefficients[n]*(1/scaleFactor)*(-2.*i/sqrt(1 - E*E))*exp(-i*((double)n)*acos(E))/denominator;
 				}
 			}
 		}
@@ -760,8 +766,12 @@ vector<complex<double>> ChebyshevExpander::generateGreensFunctionCPU(
 					denominator = 2.;
 
 				for(int e = 0; e < energyResolution; e++){
-					double E = (lowerBound + (upperBound - lowerBound)*e/(double)energyResolution)/scaleFactor;
-					greensFunctionData[e] += coefficients[n]*conj((1/scaleFactor)*(-2.*i/sqrt(1+DELTA - E*E))*exp(-i*((double)n)*acos(E))/denominator);
+					double E;
+					if(energyResolution == 1)
+						E = lowerBound;
+					else
+						E = (lowerBound + (upperBound - lowerBound)*e/(double)(energyResolution-1))/scaleFactor;
+					greensFunctionData[e] += coefficients[n]*conj((1/scaleFactor)*(-2.*i/sqrt(1 - E*E))*exp(-i*((double)n)*acos(E))/denominator);
 				}
 			}
 		}
@@ -781,8 +791,12 @@ vector<complex<double>> ChebyshevExpander::generateGreensFunctionCPU(
 					denominator = 2.;
 
 				for(int e = 0; e < energyResolution; e++){
-					double E = (lowerBound + (upperBound - lowerBound)*e/(double)energyResolution)/scaleFactor;
-					greensFunctionData[e] += -coefficients[n]*real((1/scaleFactor)*(-2.*i/sqrt(1+DELTA - E*E))*exp(-i*((double)n)*acos(E))/denominator);
+					double E;
+					if(energyResolution == 1)
+						E = lowerBound;
+					else
+						E = (lowerBound + (upperBound - lowerBound)*e/(double)(energyResolution-1))/scaleFactor;
+					greensFunctionData[e] += coefficients[n]*(1/scaleFactor)*(2./sqrt(1 - E*E))*sin(((double)n)*acos(E))/denominator;
 				}
 			}
 		}
@@ -802,8 +816,12 @@ vector<complex<double>> ChebyshevExpander::generateGreensFunctionCPU(
 					denominator = 2.;
 
 				for(int e = 0; e < energyResolution; e++){
-					double E = (lowerBound + (upperBound - lowerBound)*e/(double)energyResolution)/scaleFactor;
-					greensFunctionData[e] -= coefficients[n]*i*imag((1/scaleFactor)*(-2.*i/sqrt(1+DELTA - E*E))*exp(-i*((double)n)*acos(E))/denominator);
+					double E;
+					if(energyResolution == 1)
+						E = lowerBound;
+					else
+						E = (lowerBound + (upperBound - lowerBound)*e/(double)(energyResolution-1))/scaleFactor;
+					greensFunctionData[e] += coefficients[n]*(1/scaleFactor)*(2.*i/sqrt(1 - E*E))*cos(((double)n)*acos(E))/denominator;
 				}
 			}
 		}
