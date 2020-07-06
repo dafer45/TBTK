@@ -42,12 +42,10 @@ namespace{
 }
 
 ChebyshevExpander::ChebyshevExpander() : Communicator(false){
-	scaleFactor = 1.;
+	scaleFactor = 1.1;
 	numCoefficients = 1000;
 	broadening = 1e-6;
-	energyResolution = 1000;
-	lowerBound = -1;
-	upperBound = 1;
+	energyWindow = Range(-1, 1, 1000);
 	calculateCoefficientsOnGPU = false;
 	generateGreensFunctionsOnGPU = false;
 	useLookupTable = false;
@@ -688,28 +686,33 @@ vector<complex<double>> ChebyshevExpander::generateGreensFunctionCPU(
 		""
 	);
 	TBTKAssert(
-		energyResolution > 0,
+		energyWindow.getResolution() > 0,
 		"ChebyshevExpander::generateGreensFunctionCPU()",
-		"energyResolution has to be larger than 0.",
+		"The energy resolution has to be larger than 0.",
 		""
 	);
 	TBTKAssert(
-		lowerBound < upperBound,
+		energyWindow[0] < energyWindow.getLast(),
 		"ChebyshevExpander::generateGreensFunctionCPU()",
-		"lowerBound has to be smaller than upperBound.",
+		"The energy windows lower bound has to be smaller than upper"
+		<< " bound.",
 		""
 	);
 	TBTKAssert(
-		lowerBound >= -scaleFactor,
+		energyWindow[0] > -scaleFactor,
 		"ChebyshevExpander::generateGreensFunctionCPU()",
-		"lowerBound has to be larger than -scaleFactor.",
-		"Use ChebyshevExpander::setScaleFactor to set a larger scale factor."
+		"The energy windows lower bound has to be larger than"
+		<< " -scaleFactor.",
+		"Use ChebyshevExpander::setScaleFactor to set a larger scale"
+		<< " factor."
 	);
 	TBTKAssert(
-		upperBound <= scaleFactor,
+		energyWindow.getLast() < scaleFactor,
 		"ChebyshevExpander::generateGreensFunctionCPU()",
-		"upperBound has to be smaller than scaleFactor.",
-		"Use ChebyshevExpander::setScaleFactor to set a larger scale factor."
+		"The energy windows upper bound has to be smaller than"
+		<< " scaleFactor.",
+		"Use ChebyshevExpander::setScaleFactor to set a larger scale"
+		<< " factor."
 	);
 /*	TBTKAssert(
 		generatingFunctionLookupTable != nullptr,
@@ -724,7 +727,10 @@ vector<complex<double>> ChebyshevExpander::generateGreensFunctionCPU(
 	for(int e = 0; e < energyResolution; e++)
 		greensFunctionData[e] = 0.;*/
 
-	vector<complex<double>> greensFunctionData(energyResolution, 0);
+	vector<complex<double>> greensFunctionData(
+		energyWindow.getResolution(),
+		0
+	);
 
 	if(type == Type::Retarded){
 		if(generatingFunctionLookupTable){
@@ -740,12 +746,16 @@ vector<complex<double>> ChebyshevExpander::generateGreensFunctionCPU(
 				if(n == 0)
 					denominator = 2.;
 
-				for(int e = 0; e < energyResolution; e++){
+				for(
+					unsigned int e = 0;
+					e < energyWindow.getResolution();
+					e++
+				){
 					double E;
-					if(energyResolution == 1)
-						E = lowerBound;
+					if(energyWindow.getResolution() == 1)
+						E = energyWindow[0];
 					else
-						E = (lowerBound + (upperBound - lowerBound)*e/(double)(energyResolution-1))/scaleFactor;
+						E = (energyWindow[0] + (energyWindow.getLast() - energyWindow[0])*e/(double)(energyWindow.getResolution()-1))/scaleFactor;
 					greensFunctionData[e] += coefficients[n]*(1/scaleFactor)*(-2.*i/sqrt(1 - E*E))*exp(-i*((double)n)*acos(E))/denominator;
 				}
 			}
@@ -765,12 +775,16 @@ vector<complex<double>> ChebyshevExpander::generateGreensFunctionCPU(
 				if(n == 0)
 					denominator = 2.;
 
-				for(int e = 0; e < energyResolution; e++){
+				for(
+					unsigned int e = 0;
+					e < energyWindow.getResolution();
+					e++
+				){
 					double E;
-					if(energyResolution == 1)
-						E = lowerBound;
+					if(energyWindow.getResolution() == 1)
+						E = energyWindow[0];
 					else
-						E = (lowerBound + (upperBound - lowerBound)*e/(double)(energyResolution-1))/scaleFactor;
+						E = (energyWindow[0] + (energyWindow.getLast() - energyWindow[0])*e/(double)(energyWindow.getResolution()-1))/scaleFactor;
 					greensFunctionData[e] += coefficients[n]*conj((1/scaleFactor)*(-2.*i/sqrt(1 - E*E))*exp(-i*((double)n)*acos(E))/denominator);
 				}
 			}
@@ -790,12 +804,16 @@ vector<complex<double>> ChebyshevExpander::generateGreensFunctionCPU(
 				if(n == 0)
 					denominator = 2.;
 
-				for(int e = 0; e < energyResolution; e++){
+				for(
+					unsigned int e = 0;
+					e < energyWindow.getResolution();
+					e++
+				){
 					double E;
-					if(energyResolution == 1)
-						E = lowerBound;
+					if(energyWindow.getResolution() == 1)
+						E = energyWindow[0];
 					else
-						E = (lowerBound + (upperBound - lowerBound)*e/(double)(energyResolution-1))/scaleFactor;
+						E = (energyWindow[0] + (energyWindow.getLast() - energyWindow[0])*e/(double)(energyWindow.getResolution()-1))/scaleFactor;
 					greensFunctionData[e] += coefficients[n]*(1/scaleFactor)*(2./sqrt(1 - E*E))*sin(((double)n)*acos(E))/denominator;
 				}
 			}
@@ -815,12 +833,16 @@ vector<complex<double>> ChebyshevExpander::generateGreensFunctionCPU(
 				if(n == 0)
 					denominator = 2.;
 
-				for(int e = 0; e < energyResolution; e++){
+				for(
+					unsigned int e = 0;
+					e < energyWindow.getResolution();
+					e++
+				){
 					double E;
-					if(energyResolution == 1)
-						E = lowerBound;
+					if(energyWindow.getResolution() == 1)
+						E = energyWindow[0];
 					else
-						E = (lowerBound + (upperBound - lowerBound)*e/(double)(energyResolution-1))/scaleFactor;
+						E = (energyWindow[0] + (energyWindow.getLast() - energyWindow[0])*e/(double)(energyWindow.getResolution()-1))/scaleFactor;
 					greensFunctionData[e] += coefficients[n]*(1/scaleFactor)*(2.*i/sqrt(1 - E*E))*cos(((double)n)*acos(E))/denominator;
 				}
 			}

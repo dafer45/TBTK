@@ -40,8 +40,8 @@ TEST(ChebyshevExpander, setScaleFactor){
 TEST(ChebyshevExpander, getScaleFactor){
 	ChebyshevExpander solver;
 
-	//Default value is 1.
-	EXPECT_DOUBLE_EQ(solver.getScaleFactor(), 1);
+	//Default value is 1.1.
+	EXPECT_DOUBLE_EQ(solver.getScaleFactor(), 1.1);
 
 	//Test setting and getting.
 	solver.setScaleFactor(10);
@@ -78,49 +78,47 @@ TEST(ChebyshevExpander, getBroadening){
 	EXPECT_DOUBLE_EQ(solver.getBroadening(), 0.01);
 }
 
-TEST(ChebyshevExpander, setEnergyResolution){
-	//Tested through ChebyshevExpander::getEnergyResolution().
-}
-
-TEST(ChebyshevExpander, getEnergyResolution){
+TEST(ChebyshevExpander, setEnergyWindow0){
 	ChebyshevExpander solver;
-
-	//Default value is 1000.
-	EXPECT_EQ(solver.getEnergyResolution(), 1000);
-
-	//Test setting and getting.
-	solver.setEnergyResolution(2000);
-	EXPECT_EQ(solver.getEnergyResolution(), 2000);
+	solver.setScaleFactor(10);
+	solver.setEnergyWindow(Range(-9.999, 9.999, 10));
 }
 
-TEST(ChebyshevExpander, setLowerBound){
-	//Tested through ChebyshevExpander::getLowerBound().
-}
-
-TEST(ChebyshevExpander, getLowerBound){
+TEST(ChebyshevExpander, setEnergyWindow1){
 	ChebyshevExpander solver;
-
-	//Default value is -1.
-	EXPECT_EQ(solver.getLowerBound(), -1);
-
-	//Test setting and getting.
-	solver.setLowerBound(-2);
-	EXPECT_EQ(solver.getLowerBound(), -2);
+	solver.setScaleFactor(10);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			solver.setEnergyWindow(Range(-10, 9.999, 10));
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
 }
 
-TEST(ChebyshevExpander, setUpperBound){
-	//Tested through ChebyshevExpander::getUpperBound().
-}
-
-TEST(ChebyshevExpander, getUpperBound){
+TEST(ChebyshevExpander, setEnergyWindow2){
 	ChebyshevExpander solver;
+	solver.setScaleFactor(10);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			solver.setEnergyWindow(Range(-9.999, 10, 10));
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
 
-	//Default value is 1.
-	EXPECT_EQ(solver.getUpperBound(), 1);
+TEST(ChebyshevExpander, getEnergyWindow0){
+	ChebyshevExpander solver;
+	EXPECT_EQ(solver.getEnergyWindow(), Range(-1, 1, 1000));
+}
 
-	//Test setting and getting.
-	solver.setUpperBound(2);
-	EXPECT_EQ(solver.getUpperBound(), 2);
+TEST(ChebyshevExpander, getEnergyWindow1){
+	ChebyshevExpander solver;
+	solver.setEnergyWindow(Range(-0.1, 0.2, 10));
+	EXPECT_EQ(solver.getEnergyWindow(), Range(-0.1, 0.2, 10));
 }
 
 TEST(ChebyshevExpander, setCalculateCoefficientsOnGPU){
@@ -365,9 +363,7 @@ TEST(ChebyshevExpander, generateGreensFunction0){
 	solver.setGenerateGreensFunctionsOnGPU(false);
 	solver.setUseLookupTable(false);
 	solver.setNumCoefficients(3);
-	solver.setLowerBound(energyWindow[0]);
-	solver.setUpperBound(energyWindow.getLast());
-	solver.setEnergyResolution(energyWindow.getResolution());
+	solver.setEnergyWindow(energyWindow);
 
 	std::vector<std::complex<double>> coefficients = {1, 2, 3};
 	std::vector<std::complex<double>> greensFunction
@@ -401,9 +397,7 @@ TEST(ChebyshevExpander, generateGreensFunction1){
 	solver.setGenerateGreensFunctionsOnGPU(false);
 	solver.setUseLookupTable(false);
 	solver.setNumCoefficients(3);
-	solver.setLowerBound(energyWindow[0]);
-	solver.setUpperBound(energyWindow.getLast());
-	solver.setEnergyResolution(energyWindow.getResolution());
+	solver.setEnergyWindow(energyWindow);
 
 	std::vector<std::complex<double>> coefficients = {1, 2, 3};
 	std::vector<std::complex<double>> greensFunction
@@ -437,9 +431,7 @@ TEST(ChebyshevExpander, generateGreensFunction2){
 	solver.setGenerateGreensFunctionsOnGPU(false);
 	solver.setUseLookupTable(false);
 	solver.setNumCoefficients(3);
-	solver.setLowerBound(energyWindow[0]);
-	solver.setUpperBound(energyWindow.getLast());
-	solver.setEnergyResolution(energyWindow.getResolution());
+	solver.setEnergyWindow(energyWindow);
 
 	std::vector<std::complex<double>> coefficients = {1, 2, 3};
 	std::vector<std::complex<double>> greensFunction
@@ -473,9 +465,7 @@ TEST(ChebyshevExpander, generateGreensFunction3){
 	solver.setGenerateGreensFunctionsOnGPU(false);
 	solver.setUseLookupTable(false);
 	solver.setNumCoefficients(3);
-	solver.setLowerBound(energyWindow[0]);
-	solver.setUpperBound(energyWindow.getLast());
-	solver.setEnergyResolution(energyWindow.getResolution());
+	solver.setEnergyWindow(energyWindow);
 
 	std::vector<std::complex<double>> coefficients = {1, 2, 3};
 	std::vector<std::complex<double>> greensFunction
@@ -511,9 +501,7 @@ TEST(ChebyshevExpander, generateGreensFunction4){
 			solver[n].setGenerateGreensFunctionsOnGPU(false);
 			solver[n].setUseLookupTable(false);
 			solver[n].setNumCoefficients(3);
-			solver[n].setLowerBound(energyWindow[0]);
-			solver[n].setUpperBound(energyWindow.getLast());
-			solver[n].setEnergyResolution(energyWindow.getResolution());
+			solver[n].setEnergyWindow(energyWindow);
 		}
 		solver[0].setUseLookupTable(false);
 		solver[1].setUseLookupTable(true);

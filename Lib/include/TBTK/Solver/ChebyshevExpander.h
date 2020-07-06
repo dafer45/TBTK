@@ -27,6 +27,7 @@
 
 #include "TBTK/Communicator.h"
 #include "TBTK/Model.h"
+#include "TBTK/Range.h"
 #include "TBTK/Solver/Solver.h"
 
 #include <complex>
@@ -114,41 +115,17 @@ public:
 	 *  @return The broadening parameter used. */
 	double getBroadening() const;
 
-	/** Set the number of energy point to use when generating Green's
-	 *  functions. The default value is 1000.
+	/** Set the energy window. The energy window must be contained in the
+	 *  window (-SCALE_FACTOR, SCALE_FACTOR).
 	 *
-	 *  @param energyResolution The number of energy points to use. */
-	void setEnergyResolution(int energyResolution);
+	 *  @param energyWindow The energy window to use when calculating the
+	 *  Green's function. */
+	void setEnergyWindow(const Range &energyWindow);
 
-	/** Get the number of energy point to use when generating Green's
-	 *  functions.
+	/** Get the energy window used by the ChebyshevExpander.
 	 *
-	 *  @return The number of energy points to use. */
-	int getEnergyResolution() const;
-
-	/** Set the lower bound to use for the energy when generating the
-	 *  Green's function. The default value is -1.
-	 *
-	 *  @param lowerBound The lower bound for the energy. */
-	void setLowerBound(double lowerBound);
-
-	/** Get the lower bound to use for the energy when generating the
-	 *  Green's function.
-	 *
-	 *  @return The lower bound for the energy. */
-	double getLowerBound() const;
-
-	/** Set the upper bound to use for the energy when generating the
-	 *  Green's function. The default value is 1.
-	 *
-	 *  @param upperBound The upper bound for the energy. */
-	void setUpperBound(double upperBound);
-
-	/** Get the upper bound to use for the energy when generating the
-	 *  Green's function.
-	 *
-	 *  @return The upper bound for the energy. */
-	double getUpperBound() const;
+	 *  @return The energy window. */
+	const Range& getEnergyWindow() const;
 
 	/** Set whether Chebyshev coefficients should be calculated on GPU. The
 	 *  default value is false.
@@ -292,15 +269,8 @@ private:
 	/** Broadening parameter to use to remedy Gibbs oscilations. */
 	double broadening;
 
-	/** The number of of energy points to use when generating the Green's
-	 *  function. */
-	int energyResolution;
-
-	/** The lower bound for the energy for the Green's function. */
-	double lowerBound;
-
-	/** The upper bound for the energy for the Green's function. */
-	double upperBound;
+	/** The energy window to calculate the Green's function over. */
+	Range energyWindow;
 
 	/** Flag indicating whether to use GPU to calculate Chebyshev
 	 *  coefficients. */
@@ -345,9 +315,9 @@ private:
 	 *  functions. Required if evaluation is to be performed on GPU.
 	 *  @param numCoefficeints Number of coefficients used in Chebyshev
 	 *  @param lowerBound Lower bound, has to be larger or equal to
-	 *  -scaleFactor set by setScaleFactor (default value 1).
+	 *  -scaleFactor set by setScaleFactor (default value 1.1).
 	 *  @param upperBound Upper bound, has to be smaller or equal to
-	 *  scaleFactor setBy setScaleFactor (default value 1).
+	 *  scaleFactor setBy setScaleFactor (default value 1.1).
 	 *  expansion.*/
 	void generateLookupTable(
 		int numCoefficeints,
@@ -446,9 +416,9 @@ private:
 	 *  @param numCoefficeints Number of coefficients in coefficients.
 	 *  @param energyResolution Number of elements in greensFunction.
 	 *  @param lowerBound Lower bound, has to be larger or equal to
-	 *  -scaleFactor set by setScaleFactor (default value 1).
+	 *  -scaleFactor set by setScaleFactor (default value 1.1).
 	 *  @param upperBound Upper bound, has to be smaller or equal to
-	 *  scaleFactor setBy setScaleFactor (default value 1).
+	 *  scaleFactor setBy setScaleFactor (default value 1.1).
 	 */
 /*	std::complex<double>* generateGreensFunctionCPU(
 		std::complex<double> *coefficients,
@@ -524,43 +494,28 @@ inline double ChebyshevExpander::getBroadening() const{
 	return broadening;
 }
 
-inline void ChebyshevExpander::setEnergyResolution(int energyResolution){
+inline void ChebyshevExpander::setEnergyWindow(const Range &energyWindow){
+	const double epsilon = std::numeric_limits<double>::epsilon();
+	TBTKAssert(
+		energyWindow[0] > -scaleFactor*(1 - 16*epsilon)
+		&& energyWindow.getLast() < scaleFactor*(1 - 16*epsilon),
+		"Solver::ChebyshevExpander::setEnergyWindow()",
+		"Invalid energy window. The 'energyWindow=['"
+		<< energyWindow[0] << ", " << energyWindow.getLast() << "] is"
+		<< " not contained in the interval (-scaleFactor, scaleFactor)"
+		<< "=(" << scaleFactor << ", scaleFactor).",
+		""
+	);
 	if(generatingFunctionLookupTable != nullptr)
 		destroyLookupTable();
 	if(generatingFunctionLookupTable_device != nullptr)
 		destroyLookupTableGPU();
 
-	this->energyResolution = energyResolution;
+	this->energyWindow = energyWindow;
 }
 
-inline int ChebyshevExpander::getEnergyResolution() const{
-	return energyResolution;
-}
-
-inline void ChebyshevExpander::setLowerBound(double lowerBound){
-	if(generatingFunctionLookupTable != nullptr)
-		destroyLookupTable();
-	if(generatingFunctionLookupTable_device != nullptr)
-		destroyLookupTableGPU();
-
-	this->lowerBound = lowerBound;
-}
-
-inline double ChebyshevExpander::getLowerBound() const{
-	return lowerBound;
-}
-
-inline void ChebyshevExpander::setUpperBound(double upperBound){
-	if(generatingFunctionLookupTable != nullptr)
-		destroyLookupTable();
-	if(generatingFunctionLookupTable_device != nullptr)
-		destroyLookupTableGPU();
-
-	this->upperBound = upperBound;
-}
-
-inline double ChebyshevExpander::getUpperBound() const{
-	return upperBound;
+inline const Range& ChebyshevExpander::getEnergyWindow() const{
+	return energyWindow;
 }
 
 inline void ChebyshevExpander::setCalculateCoefficientsOnGPU(
@@ -668,8 +623,14 @@ inline void ChebyshevExpander::setDamping(std::complex<double> *damping){
 
 inline void ChebyshevExpander::ensureLookupTableIsReady(){
 	if(useLookupTable){
-		if(!generatingFunctionLookupTable)
-			generateLookupTable(numCoefficients, energyResolution, lowerBound, upperBound);
+		if(!generatingFunctionLookupTable){
+			generateLookupTable(
+				numCoefficients,
+				energyWindow.getResolution(),
+				energyWindow[0],
+				energyWindow.getLast()
+			);
+		}
 		if(generateGreensFunctionsOnGPU && !generatingFunctionLookupTable_device)
 			loadLookupTableGPU();
 	}

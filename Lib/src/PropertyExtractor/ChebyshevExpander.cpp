@@ -88,9 +88,9 @@ void ChebyshevExpander::setEnergyWindow(
 	);
 
 	Solver::ChebyshevExpander &solver = getSolver();
-	solver.setLowerBound(lowerBound);
-	solver.setUpperBound(upperBound);
-	solver.setEnergyResolution(energyResolution);
+	solver.setEnergyWindow(
+		Range(lowerBound, upperBound, energyResolution)
+	);
 }
 
 Property::GreensFunction ChebyshevExpander::calculateGreensFunction(
