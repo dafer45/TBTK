@@ -832,6 +832,20 @@ TEST(Array, operatorMultiplication12){
 	);
 }
 
+//TBTKFeature Utilities.Array.operatorMultiplication.13 2020-07-06
+TEST(Array, operatorMultiplication13){
+	Array<unsigned int> u({2, 3});
+	Array<unsigned int> N({2, 3, 4});
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			u*N;
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
 //TBTKFeature Utilities.Array.operatorDivision.1 2019-10-31
 TEST(Array, operatorDivision0){
 	Array<unsigned int> array({2, 3});
