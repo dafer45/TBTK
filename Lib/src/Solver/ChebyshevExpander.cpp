@@ -751,11 +751,7 @@ vector<complex<double>> ChebyshevExpander::generateGreensFunctionCPU(
 					e < energyWindow.getResolution();
 					e++
 				){
-					double E;
-					if(energyWindow.getResolution() == 1)
-						E = energyWindow[0];
-					else
-						E = (energyWindow[0] + (energyWindow.getLast() - energyWindow[0])*e/(double)(energyWindow.getResolution()-1))/scaleFactor;
+					double E = energyWindow[e]/scaleFactor;
 					greensFunctionData[e] += coefficients[n]*(1/scaleFactor)*(-2.*i/sqrt(1 - E*E))*exp(-i*((double)n)*acos(E))/denominator;
 				}
 			}
@@ -780,11 +776,7 @@ vector<complex<double>> ChebyshevExpander::generateGreensFunctionCPU(
 					e < energyWindow.getResolution();
 					e++
 				){
-					double E;
-					if(energyWindow.getResolution() == 1)
-						E = energyWindow[0];
-					else
-						E = (energyWindow[0] + (energyWindow.getLast() - energyWindow[0])*e/(double)(energyWindow.getResolution()-1))/scaleFactor;
+					double E = energyWindow[e]/scaleFactor;
 					greensFunctionData[e] += coefficients[n]*conj((1/scaleFactor)*(-2.*i/sqrt(1 - E*E))*exp(-i*((double)n)*acos(E))/denominator);
 				}
 			}
@@ -809,11 +801,7 @@ vector<complex<double>> ChebyshevExpander::generateGreensFunctionCPU(
 					e < energyWindow.getResolution();
 					e++
 				){
-					double E;
-					if(energyWindow.getResolution() == 1)
-						E = energyWindow[0];
-					else
-						E = (energyWindow[0] + (energyWindow.getLast() - energyWindow[0])*e/(double)(energyWindow.getResolution()-1))/scaleFactor;
+					double E = energyWindow[e]/scaleFactor;
 					greensFunctionData[e] += coefficients[n]*(1/scaleFactor)*(2./sqrt(1 - E*E))*sin(((double)n)*acos(E))/denominator;
 				}
 			}
@@ -838,11 +826,7 @@ vector<complex<double>> ChebyshevExpander::generateGreensFunctionCPU(
 					e < energyWindow.getResolution();
 					e++
 				){
-					double E;
-					if(energyWindow.getResolution() == 1)
-						E = energyWindow[0];
-					else
-						E = (energyWindow[0] + (energyWindow.getLast() - energyWindow[0])*e/(double)(energyWindow.getResolution()-1))/scaleFactor;
+					double E = energyWindow[e]/scaleFactor;
 					greensFunctionData[e] += coefficients[n]*(1/scaleFactor)*(2.*i/sqrt(1 - E*E))*cos(((double)n)*acos(E))/denominator;
 				}
 			}
