@@ -50,7 +50,7 @@ ChebyshevExpander::ChebyshevExpander() : Communicator(false){
 	generateGreensFunctionsOnGPU = false;
 	useLookupTable = false;
 	damping = NULL;
-	generatingFunctionLookupTable = NULL;
+	generatingFunctionLookupTable.setIsValid(false);
 	generatingFunctionLookupTable_device = NULL;
 	lookupTableNumCoefficients = 0;
 	lookupTableResolution = 0;
@@ -59,12 +59,6 @@ ChebyshevExpander::ChebyshevExpander() : Communicator(false){
 }
 
 ChebyshevExpander::~ChebyshevExpander(){
-	if(generatingFunctionLookupTable != nullptr){
-		for(int n = 0; n < lookupTableNumCoefficients; n++)
-			delete [] generatingFunctionLookupTable[n];
-
-		delete [] generatingFunctionLookupTable;
-	}
 	if(generatingFunctionLookupTable_device != nullptr)
 		destroyLookupTableGPU();
 }
@@ -626,21 +620,17 @@ void ChebyshevExpander::generateLookupTable(
 		Streams::out << "\tUpper bound: " << upperBound << "\n";
 	}
 
-	if(generatingFunctionLookupTable != NULL){
-		for(int n = 0; n < lookupTableNumCoefficients; n++)
-			delete [] generatingFunctionLookupTable[n];
-
-		delete [] generatingFunctionLookupTable;
-	}
-
 	lookupTableNumCoefficients = numCoefficients;
 	lookupTableResolution = energyResolution;
 	lookupTableLowerBound = lowerBound;
 	lookupTableUpperBound = upperBound;
 
-	generatingFunctionLookupTable = new complex<double>*[numCoefficients];
-	for(int n = 0; n < numCoefficients; n++)
-		generatingFunctionLookupTable[n] = new complex<double>[energyResolution];
+	generatingFunctionLookupTable
+		= CArray<CArray<complex<double>>>(numCoefficients);
+	for(int n = 0; n < numCoefficients; n++){
+		generatingFunctionLookupTable[n]
+			= CArray<complex<double>>(energyResolution);
+	}
 
 	#pragma omp parallel for
 	for(int n = 0; n < numCoefficients; n++){
@@ -657,21 +647,12 @@ void ChebyshevExpander::generateLookupTable(
 			generatingFunctionLookupTable[n][e] = (1/scaleFactor)*(-2.*i/sqrt(1 - E*E))*exp(-i*((double)n)*acos(E))/denominator;
 		}
 	}
+	generatingFunctionLookupTable.setIsValid(true);
 }
 
 void ChebyshevExpander::destroyLookupTable(){
-	TBTKAssert(
-		generatingFunctionLookupTable != nullptr,
-		"ChebyshevExpander::destroyLookupTable()",
-		"No lookup table generated.",
-		""
-	);
-	for(int n = 0; n < lookupTableNumCoefficients; n++)
-		delete [] generatingFunctionLookupTable[n];
-
-	delete [] generatingFunctionLookupTable;
-
-	generatingFunctionLookupTable = nullptr;
+	generatingFunctionLookupTable = CArray<CArray<complex<double>>>();
+	generatingFunctionLookupTable.setIsValid(false);
 }
 
 //Property::GreensFunction* ChebyshevExpander::generateGreensFunction(
@@ -733,7 +714,7 @@ vector<complex<double>> ChebyshevExpander::generateGreensFunctionCPU(
 	);
 
 	if(type == Type::Retarded){
-		if(generatingFunctionLookupTable){
+		if(useLookupTable){
 			for(int n = 0; n < lookupTableNumCoefficients; n++){
 				for(int e = 0; e < lookupTableResolution; e++){
 					greensFunctionData[e] += generatingFunctionLookupTable[n][e]*coefficients[n];
@@ -758,7 +739,7 @@ vector<complex<double>> ChebyshevExpander::generateGreensFunctionCPU(
 		}
 	}
 	else if(type == Type::Advanced){
-		if(generatingFunctionLookupTable){
+		if(useLookupTable){
 			for(int n = 0; n < lookupTableNumCoefficients; n++){
 				for(int e = 0; e < lookupTableResolution; e++){
 					greensFunctionData[e] += coefficients[n]*conj(generatingFunctionLookupTable[n][e]);
@@ -783,7 +764,7 @@ vector<complex<double>> ChebyshevExpander::generateGreensFunctionCPU(
 		}
 	}
 	else if(type == Type::Principal){
-		if(generatingFunctionLookupTable){
+		if(useLookupTable){
 			for(int n = 0; n < lookupTableNumCoefficients; n++){
 				for(int e = 0; e < lookupTableResolution; e++){
 					greensFunctionData[e] += -coefficients[n]*real(generatingFunctionLookupTable[n][e]);
@@ -808,7 +789,7 @@ vector<complex<double>> ChebyshevExpander::generateGreensFunctionCPU(
 		}
 	}
 	else if(type == Type::NonPrincipal){
-		if(generatingFunctionLookupTable){
+		if(useLookupTable){
 			for(int n = 0; n < lookupTableNumCoefficients; n++){
 				for(int e = 0; e < lookupTableResolution; e++){
 					greensFunctionData[e] -= coefficients[n]*i*imag(generatingFunctionLookupTable[n][e]);
