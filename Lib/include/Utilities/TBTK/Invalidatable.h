@@ -15,7 +15,8 @@
 
 /** @package TBTKcalc
  *  @file Invalidateable.h
- *  @brief Container for objects that can be invalidated.
+ *  @brief Ammends a class with the ability to indicate whether the object is
+ *  valid or not.
  *
  *  @author Kristofer Björnson
  */
@@ -30,7 +31,24 @@
 
 namespace TBTK{
 
-/** @brief Container for objects that can be invalidated. */
+/** @brief Ammends a class with the ability to indicate whether the object is
+ *  valid or not.
+ *
+ *  By wrapping a class in an Invalidatable, the class aquires the additional
+ *  capability to keep track of whether or not the object is valid. This can be
+ *  used for indicating that an object has become obsolete, without immediately
+ *  removing or replacing it.
+ *
+ *  An Invalidatable is created through
+ *  ```cpp
+ *    Invalidatable<MyClass> myObject;
+ *  ```
+ *  After this, myObject can be used as an ordinary object of class MyClass,
+ *  but with the added ability to set and get its validity using
+ *  ```cpp
+ *    myObject.setIsValid(true);
+ *    bool isValid = myObject.getIsValid();
+ *  ``` */
 template<typename DataType>
 class Invalidatable : public DataType, public Serializable{
 public:
