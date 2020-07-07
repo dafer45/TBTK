@@ -81,12 +81,21 @@ void addHamiltonianProduct(
 	}
 }
 
+void cyclicSwap(
+	CArray<complex<double>> &jIn1,
+	CArray<complex<double>> &jIn2,
+	CArray<complex<double>> &jResult
+){
+	CArray<complex<double>> temp = std::move(jIn2);
+	jIn2 = std::move(jIn1);
+	jIn1 = std::move(jResult);
+	jResult = std::move(temp);
+}
+
 vector<complex<double>> ChebyshevExpander::calculateCoefficientsCPU(
 	Index to,
 	Index from
 ){
-	const Model &model = getModel();
-
 	TBTKAssert(
 		scaleFactor > 0,
 		"ChebyshevExpander::calculateCoefficients()",
@@ -106,7 +115,7 @@ vector<complex<double>> ChebyshevExpander::calculateCoefficientsCPU(
 		coefficients.push_back(0);
 
 	const HoppingAmplitudeSet &hoppingAmplitudeSet
-		= model.getHoppingAmplitudeSet();
+		= getModel().getHoppingAmplitudeSet();
 	const int basisSize = hoppingAmplitudeSet.getBasisSize();
 
 	int fromBasisIndex = hoppingAmplitudeSet.getBasisIndex(from);
@@ -123,7 +132,6 @@ vector<complex<double>> ChebyshevExpander::calculateCoefficientsCPU(
 	CArray<complex<double>> jIn1(basisSize);
 	CArray<complex<double>> jIn2(basisSize);
 	CArray<complex<double>> jResult(basisSize);
-	CArray<complex<double>> jTemp;
 	for(int n = 0; n < basisSize; n++){
 		jIn1[n] = 0.;
 		jIn2[n] = 0.;
@@ -147,12 +155,7 @@ vector<complex<double>> ChebyshevExpander::calculateCoefficientsCPU(
 	for(int c = 0; c < basisSize; c++)
 		jResult[c] = 0.;
 	addHamiltonianProduct(sparseMatrix, jIn1, jResult);
-
-	jTemp = std::move(jIn2);
-	jIn2 = std::move(jIn1);
-	jIn1 = std::move(jResult);
-	jResult = std::move(jTemp);
-
+	cyclicSwap(jIn1, jIn2, jResult);
 	coefficients[1] = jIn1[toBasisIndex];
 
 	//Multiply hopping amplitudes by factor two, to speed up calculation of
@@ -163,14 +166,8 @@ vector<complex<double>> ChebyshevExpander::calculateCoefficientsCPU(
 	for(int n = 2; n < numCoefficients; n++){
 		for(int c = 0; c < basisSize; c++)
 			jResult[c] = -jIn2[c];
-
 		addHamiltonianProduct(sparseMatrix, jIn1, jResult);
-
-		jTemp = std::move(jIn2);
-		jIn2 = std::move(jIn1);
-		jIn1 = std::move(jResult);
-		jResult = std::move(jTemp);
-
+		cyclicSwap(jIn1, jIn2, jResult);
 		coefficients[n] = jIn1[toBasisIndex];
 
 		if(getGlobalVerbose() && getVerbose()){
@@ -197,7 +194,6 @@ vector<vector<complex<double>>> ChebyshevExpander::calculateCoefficientsCPU(
 	vector<Index> &to,
 	Index from
 ){
-	const Model &model = getModel();
 	TBTKAssert(
 		scaleFactor > 0,
 		"ChebyshevExpander::calculateCoefficients()",
@@ -220,7 +216,7 @@ vector<vector<complex<double>>> ChebyshevExpander::calculateCoefficientsCPU(
 	}
 
 	const HoppingAmplitudeSet &hoppingAmplitudeSet
-		= model.getHoppingAmplitudeSet();
+		= getModel().getHoppingAmplitudeSet();
 	unsigned int basisSize = hoppingAmplitudeSet.getBasisSize();
 
 	int fromBasisIndex = hoppingAmplitudeSet.getBasisIndex(from);
@@ -240,7 +236,6 @@ vector<vector<complex<double>>> ChebyshevExpander::calculateCoefficientsCPU(
 	CArray<complex<double>> jIn1(basisSize);
 	CArray<complex<double>> jIn2(basisSize);
 	CArray<complex<double>> jResult(basisSize);
-	CArray<complex<double>> jTemp;
 	for(unsigned int n = 0; n < basisSize; n++){
 		jIn1[n] = 0.;
 		jIn2[n] = 0.;
@@ -266,12 +261,7 @@ vector<vector<complex<double>>> ChebyshevExpander::calculateCoefficientsCPU(
 	for(unsigned int c = 0; c < basisSize; c++)
 		jResult[c] = 0.;
 	addHamiltonianProduct(sparseMatrix, jIn1, jResult);
-
-	jTemp = std::move(jIn2);
-	jIn2 = std::move(jIn1);
-	jIn1 = std::move(jResult);
-	jResult = std::move(jTemp);
-
+	cyclicSwap(jIn1, jIn2, jResult);
 	for(unsigned int n = 0; n < basisSize; n++)
 		if(coefficientMap[n] != -1)
 			coefficients[coefficientMap[n]][1] = jIn1[n];
@@ -284,14 +274,8 @@ vector<vector<complex<double>>> ChebyshevExpander::calculateCoefficientsCPU(
 	for(int n = 2; n < numCoefficients; n++){
 		for(unsigned int c = 0; c < basisSize; c++)
 			jResult[c] = -jIn2[c];
-
 		addHamiltonianProduct(sparseMatrix, jIn1, jResult);
-
-		jTemp = std::move(jIn2);
-		jIn2 = std::move(jIn1);
-		jIn1 = std::move(jResult);
-		jResult = std::move(jTemp);
-
+		cyclicSwap(jIn1, jIn2, jResult);
 		for(unsigned int c = 0; c < basisSize; c++)
 			if(coefficientMap[c] != -1)
 				coefficients[coefficientMap[c]][n] = jIn1[c];
