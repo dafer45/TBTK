@@ -62,6 +62,25 @@ ChebyshevExpander::~ChebyshevExpander(){
 		destroyLookupTableGPU();
 }
 
+void addHamiltonianProduct(
+	const SparseMatrix<complex<double>> &sparseMatrix,
+	const CArray<complex<double>> &vector,
+	CArray<complex<double>> &result
+){
+	const unsigned int *csrRowPointers = sparseMatrix.getCSRRowPointers();
+	const unsigned int *csrColumns = sparseMatrix.getCSRColumns();
+	const complex<double> *values = sparseMatrix.getCSRValues();
+	for(unsigned int row = 0; row < sparseMatrix.getNumRows(); row++){
+		for(
+			unsigned int n = csrRowPointers[row];
+			n < csrRowPointers[row+1];
+			n++
+		){
+			result[row] += values[n]*vector[csrColumns[n]];
+		}
+	}
+}
+
 vector<complex<double>> ChebyshevExpander::calculateCoefficientsCPU(
 	Index to,
 	Index from
@@ -115,37 +134,21 @@ vector<complex<double>> ChebyshevExpander::calculateCoefficientsCPU(
 
 	coefficients[0] = jIn1[toBasisIndex];
 
-	//Generate a fixed hopping amplitude and inde list, for speed.
-	int numHoppingAmplitudes = 0;
-	for(auto hoppingAmplitude : hoppingAmplitudeSet)
-		numHoppingAmplitudes++;
-
-	CArray<complex<double>> hoppingAmplitudes(numHoppingAmplitudes);
-	CArray<int> toIndices(numHoppingAmplitudes);
-	CArray<int> fromIndices(numHoppingAmplitudes);
-	int counter = 0;
-	for(auto hoppingAmplitude : hoppingAmplitudeSet){
-		toIndices[counter] = hoppingAmplitudeSet.getBasisIndex(
-			hoppingAmplitude.getToIndex()
-		);
-		fromIndices[counter] = hoppingAmplitudeSet.getBasisIndex(
-			hoppingAmplitude.getFromIndex()
-		);
-		hoppingAmplitudes[counter]
-			= hoppingAmplitude.getAmplitude()/scaleFactor;
-
-		counter++;
-	}
+	//Get the Hamiltonian on SparseMatrix format and scale it by the scale
+	//factor.
+	SparseMatrix<complex<double>> sparseMatrix
+		= hoppingAmplitudeSet.getSparseMatrix();
+	sparseMatrix.setStorageFormat(
+		SparseMatrix<complex<double>>::StorageFormat::CSR
+	);
+	sparseMatrix *= 1/scaleFactor;
 
 	//Calculate |j1>
 	for(int c = 0; c < basisSize; c++)
 		jResult[c] = 0.;
-	for(int n = 0; n < numHoppingAmplitudes; n++){
-		int from = fromIndices[n];
-		int to = toIndices[n];
 
-		jResult[to] += hoppingAmplitudes[n]*jIn1[from];
-	}
+	//Add H|j1>.
+	addHamiltonianProduct(sparseMatrix, jIn1, jResult);
 
 	jTemp = std::move(jIn2);
 	jIn2 = std::move(jIn1);
@@ -154,21 +157,16 @@ vector<complex<double>> ChebyshevExpander::calculateCoefficientsCPU(
 
 	coefficients[1] = jIn1[toBasisIndex];
 
-	//Multiply hopping amplitudes by factor two, to spped up calculation of 2H|j(n-1)> - |j(n-2)>.
-	for(int n = 0; n < numHoppingAmplitudes; n++)
-		hoppingAmplitudes[n] *= 2.;
+	//Multiply hopping amplitudes by factor two, to speed up calculation of
+	//the first term in 2H|j(n-1)> - |j(n-2)>.
+	sparseMatrix *= 2;
 
 	//Iteratively calculate |jn> and corresponding Chebyshev coefficients.
 	for(int n = 2; n < numCoefficients; n++){
 		for(int c = 0; c < basisSize; c++)
 			jResult[c] = -jIn2[c];
 
-		for(int c = 0; c < numHoppingAmplitudes; c++){
-			int from = fromIndices[c];
-			int to = toIndices[c];
-
-			jResult[to] += hoppingAmplitudes[c]*jIn1[from];
-		}
+		addHamiltonianProduct(sparseMatrix, jIn1, jResult);
 
 		jTemp = std::move(jIn2);
 		jIn2 = std::move(jIn1);
