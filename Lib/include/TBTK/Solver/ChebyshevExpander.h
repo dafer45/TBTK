@@ -392,6 +392,14 @@ private:
 };
 
 inline void ChebyshevExpander::setScaleFactor(double scaleFactor){
+	TBTKAssert(
+		scaleFactor > 0,
+		"Solver::ChebyshevExapnder::setScaleFactor()",
+		"The 'scaleFactor=" << scaleFactor << "' has to be larger than"
+		<< " '0'.",
+		""
+	);
+
 	destroyLookupTable();
 	if(generatingFunctionLookupTable_device != nullptr)
 		destroyLookupTableGPU();

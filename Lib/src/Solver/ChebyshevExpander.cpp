@@ -96,110 +96,14 @@ vector<complex<double>> ChebyshevExpander::calculateCoefficientsCPU(
 	Index to,
 	Index from
 ){
-	TBTKAssert(
-		scaleFactor > 0,
-		"ChebyshevExpander::calculateCoefficients()",
-		"Scale factor must be larger than zero.",
-		"Use ChebyshevExpander::setScaleFactor() to set scale factor."
-	);
-	TBTKAssert(
-		numCoefficients > 0,
-		"ChebyshevExpander::calculateCoefficients()",
-		"numCoefficients has to be larger than 0.",
-		""
-	);
-
-	vector<complex<double>> coefficients;
-	coefficients.reserve(numCoefficients);
-	for(int n = 0; n < numCoefficients; n++)
-		coefficients.push_back(0);
-
-	const HoppingAmplitudeSet &hoppingAmplitudeSet
-		= getModel().getHoppingAmplitudeSet();
-	const int basisSize = hoppingAmplitudeSet.getBasisSize();
-
-	int fromBasisIndex = hoppingAmplitudeSet.getBasisIndex(from);
-	int toBasisIndex = hoppingAmplitudeSet.getBasisIndex(to);
-
-	if(getGlobalVerbose() && getVerbose()){
-		Streams::out << "ChebyshevExpander::calculateCoefficients\n";
-		Streams::out << "\tFrom Index: " << fromBasisIndex << "\n";
-		Streams::out << "\tTo Index: " << toBasisIndex << "\n";
-		Streams::out << "\tBasis size: " << basisSize << "\n";
-		Streams::out << "\tProgress (100 coefficients per dot): ";
-	}
-
-	CArray<complex<double>> jIn1(basisSize);
-	CArray<complex<double>> jIn2(basisSize);
-	CArray<complex<double>> jResult(basisSize);
-	for(int n = 0; n < basisSize; n++){
-		jIn1[n] = 0.;
-		jIn2[n] = 0.;
-		jResult[n] = 0.;
-	}
-	//Set up initial state (|j0>)
-	jIn1[fromBasisIndex] = 1.;
-
-	coefficients[0] = jIn1[toBasisIndex];
-
-	//Get the Hamiltonian on SparseMatrix format and scale it by the scale
-	//factor.
-	SparseMatrix<complex<double>> sparseMatrix
-		= hoppingAmplitudeSet.getSparseMatrix();
-	sparseMatrix.setStorageFormat(
-		SparseMatrix<complex<double>>::StorageFormat::CSR
-	);
-	sparseMatrix *= 1/scaleFactor;
-
-	//Calculate |j1>
-	for(int c = 0; c < basisSize; c++)
-		jResult[c] = 0.;
-	addHamiltonianProduct(sparseMatrix, jIn1, jResult);
-	cyclicSwap(jIn1, jIn2, jResult);
-	coefficients[1] = jIn1[toBasisIndex];
-
-	//Multiply hopping amplitudes by factor two, to speed up calculation of
-	//the first term in 2H|j(n-1)> - |j(n-2)>.
-	sparseMatrix *= 2;
-
-	//Iteratively calculate |jn> and corresponding Chebyshev coefficients.
-	for(int n = 2; n < numCoefficients; n++){
-		for(int c = 0; c < basisSize; c++)
-			jResult[c] = -jIn2[c];
-		addHamiltonianProduct(sparseMatrix, jIn1, jResult);
-		cyclicSwap(jIn1, jIn2, jResult);
-		coefficients[n] = jIn1[toBasisIndex];
-
-		if(getGlobalVerbose() && getVerbose()){
-			if(n%100 == 0)
-				Streams::out << "." << flush;
-			if(n%1000 == 0)
-				Streams::out << " " << flush;
-		}
-	}
-	if(getGlobalVerbose() && getVerbose())
-		Streams::out << "\n";
-
-	//Lorentzian convolution
-	if(broadening != 0){
-		double lambda = broadening*numCoefficients;
-		for(int n = 0; n < numCoefficients; n++)
-			coefficients[n] = coefficients[n]*sinh(lambda*(1 - n/(double)numCoefficients))/sinh(lambda);
-	}
-
-	return coefficients;
+	vector<Index> tos = {to};
+	return calculateCoefficientsCPU(tos, from)[0];
 }
 
 vector<vector<complex<double>>> ChebyshevExpander::calculateCoefficientsCPU(
 	vector<Index> &to,
 	Index from
 ){
-	TBTKAssert(
-		scaleFactor > 0,
-		"ChebyshevExpander::calculateCoefficients()",
-		"Scale factor must be larger than zero.",
-		"Use ChebyshevExpander::setScaleFactor() to set scale factor."
-	);
 	TBTKAssert(
 		numCoefficients > 0,
 		"ChebyshevExpander::calculateCoefficients()",
@@ -233,21 +137,6 @@ vector<vector<complex<double>>> ChebyshevExpander::calculateCoefficientsCPU(
 		Streams::out << "\tProgress (100 coefficients per dot): ";
 	}
 
-	CArray<complex<double>> jIn1(basisSize);
-	CArray<complex<double>> jIn2(basisSize);
-	CArray<complex<double>> jResult(basisSize);
-	for(unsigned int n = 0; n < basisSize; n++){
-		jIn1[n] = 0.;
-		jIn2[n] = 0.;
-		jResult[n] = 0.;
-	}
-	//Set up initial state (|j0>)
-	jIn1[fromBasisIndex] = 1.;
-
-	for(unsigned int n = 0; n < basisSize; n++)
-		if(coefficientMap[n] != -1)
-			coefficients[coefficientMap[n]][0] = jIn1[n];
-
 	//Get the Hamiltonian on SparseMatrix format and scale it by the scale
 	//factor.
 	SparseMatrix<complex<double>> sparseMatrix
@@ -257,9 +146,17 @@ vector<vector<complex<double>>> ChebyshevExpander::calculateCoefficientsCPU(
 	);
 	sparseMatrix *= 1/scaleFactor;
 
+	//Initialize workspace and set the initial state (|j0>).
+	CArray<complex<double>> jIn1(basisSize, 0);
+	CArray<complex<double>> jIn2(basisSize, 0);
+	CArray<complex<double>> jResult(basisSize, 0);
+	jIn1[fromBasisIndex] = 1.;
+
+	for(unsigned int n = 0; n < basisSize; n++)
+		if(coefficientMap[n] != -1)
+			coefficients[coefficientMap[n]][0] = jIn1[n];
+
 	//Calculate |j1>
-	for(unsigned int c = 0; c < basisSize; c++)
-		jResult[c] = 0.;
 	addHamiltonianProduct(sparseMatrix, jIn1, jResult);
 	cyclicSwap(jIn1, jIn2, jResult);
 	for(unsigned int n = 0; n < basisSize; n++)

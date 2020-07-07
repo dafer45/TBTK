@@ -33,8 +33,23 @@ TEST(ChebyshevExpander, setModel){
 }
 
 TEST(ChebyshevExpander, setScaleFactor){
-	//Tested through
-	//ChebyshevExpander::getScaleFactor().
+	ChebyshevExpander solver;
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			solver.setScaleFactor(0);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			solver.setScaleFactor(-1);
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
 }
 
 TEST(ChebyshevExpander, getScaleFactor){
