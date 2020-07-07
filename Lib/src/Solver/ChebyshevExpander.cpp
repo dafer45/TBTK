@@ -120,19 +120,19 @@ vector<complex<double>> ChebyshevExpander::calculateCoefficientsCPU(
 	for(auto hoppingAmplitude : hoppingAmplitudeSet)
 		numHoppingAmplitudes++;
 
-	complex<double> *hoppingAmplitudes = new complex<double>[numHoppingAmplitudes];
-	int *toIndices = new int[numHoppingAmplitudes];
-	int *fromIndices = new int[numHoppingAmplitudes];
+	CArray<complex<double>> hoppingAmplitudes(numHoppingAmplitudes);
+	CArray<int> toIndices(numHoppingAmplitudes);
+	CArray<int> fromIndices(numHoppingAmplitudes);
 	int counter = 0;
-	for(
-		HoppingAmplitudeSet::ConstIterator iterator
-			= hoppingAmplitudeSet.cbegin();
-		iterator != hoppingAmplitudeSet.cend();
-		++iterator
-	){
-		toIndices[counter] = hoppingAmplitudeSet.getBasisIndex((*iterator).getToIndex());
-		fromIndices[counter] = hoppingAmplitudeSet.getBasisIndex((*iterator).getFromIndex());
-		hoppingAmplitudes[counter] = (*iterator).getAmplitude()/scaleFactor;
+	for(auto hoppingAmplitude : hoppingAmplitudeSet){
+		toIndices[counter] = hoppingAmplitudeSet.getBasisIndex(
+			hoppingAmplitude.getToIndex()
+		);
+		fromIndices[counter] = hoppingAmplitudeSet.getBasisIndex(
+			hoppingAmplitude.getFromIndex()
+		);
+		hoppingAmplitudes[counter]
+			= hoppingAmplitude.getAmplitude()/scaleFactor;
 
 		counter++;
 	}
@@ -186,10 +186,6 @@ vector<complex<double>> ChebyshevExpander::calculateCoefficientsCPU(
 	}
 	if(getGlobalVerbose() && getVerbose())
 		Streams::out << "\n";
-
-	delete [] hoppingAmplitudes;
-	delete [] toIndices;
-	delete [] fromIndices;
 
 	//Lorentzian convolution
 	if(broadening != 0){
