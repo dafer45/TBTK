@@ -55,6 +55,12 @@ public:
 	 *  @param size The size of the array. */
 	CArray(unsigned int size);
 
+	/** Constructor.
+	 *
+	 *  @param size The size of the array.
+	 *  @param value Value to initialize each element with. */
+	CArray(unsigned int size, const DataType &value);
+
 	//TBTKFeature Utilities.CArray.copyConstruction.1.C++ 2019-10-30
 	/** Copy constructor.
 	 *
@@ -130,6 +136,11 @@ public:
 	 *  @return The size of the array. */
 	unsigned int getSize() const;
 
+	/** Set all elements to the given value.
+	 *
+	 *  @param value The value to set all elements to. */
+	void setAllElements(const DataType &value);
+
 	/** Serialize the CArray. Note that CArray is pseudo-Serializable in
 	 *  that it implements Serializable interface, but does so
 	 *  non-virtually.
@@ -155,6 +166,14 @@ template<typename DataType>
 CArray<DataType>::CArray(unsigned int size){
 	this->size = size;
 	data = new DataType[size];
+}
+
+template<typename DataType>
+CArray<DataType>::CArray(unsigned int size, const DataType &value){
+	this->size = size;
+	data = new DataType[size];
+	for(unsigned int n = 0; n < size; n++)
+		data[n] = value;
 }
 
 template<typename DataType>
@@ -327,6 +346,12 @@ const DataType* CArray<DataType>::getData() const{
 template<typename DataType>
 unsigned int CArray<DataType>::getSize() const{
 	return size;
+}
+
+template<typename DataType>
+void CArray<DataType>::setAllElements(const DataType &value){
+	for(unsigned int n = 0; n < size; n++)
+		data[n] = value;
 }
 
 template<typename DataType>

@@ -16,6 +16,13 @@ TEST(CArray, constructor1){
 
 //TBTKFeature Utilities.CArray.construction.3 2020-07-04
 TEST(CArray, constructor2){
+	CArray<unsigned int> carray(10, 7);
+	for(unsigned int n = 0; n < 10; n++)
+		EXPECT_EQ(carray[n], 7);
+}
+
+//TBTKFeature Utilities.CArray.construction.3 2020-07-04
+TEST(CArray, constructor3){
 	CArray<unsigned int> carray = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 	for(unsigned int n = 0; n < 10; n++)
 		EXPECT_EQ(carray[n], n);
@@ -134,6 +141,14 @@ TEST(CArray, getData1){
 TEST(CArray, getSize){
 	CArray<unsigned int> carray(10);
 	EXPECT_EQ(carray.getSize(), 10);
+}
+
+//TBTKFeature Utilities.CArray.setAllElements.0 2020-07-07
+TEST(CArray, setAllElements){
+	CArray<unsigned int> carray(10);
+	carray.setAllElements(7);
+	for(unsigned int n = 0; n < 10; n++)
+		EXPECT_EQ(carray[n], 7);
 }
 
 };
