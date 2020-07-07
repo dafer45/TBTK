@@ -222,43 +222,6 @@ public:
 		Type type = Type::Retarded
 	);
 private:
-	//These three functions are experimental and therefore not part of the
-	//public interface of released code.
-
-	/** Experimental. */
-	void calculateCoefficientsWithCutoff(
-		Index to,
-		Index from,
-		std::complex<double> *coefficients,
-		int numCoefficients,
-		double componentCutoff,
-		double broadening = 0.000001
-	);
-
-	/** Damping potential based on J. Chem. Phys. 117, 9552 (2002).
-	 *
-	 *  @param distanceToEdge Distance from edge to the point at which to
-	 *  calculate the damping factor.
-	 *  @param boundarySize Size of the boundary region.
-	 *  @param b Tuning parameter for optimizing the potential
-	 *  @param c Tuning parameter for optimizing the potential
-	 *
-	 *  @return exp(-gamma), where gamma = 0 in the interior, infty outside
-	 *  the edge, and determined by the function described in J. Chem.
-	 *  Phys. 117, 9552 (2002), inside the boundary region. */
-	std::complex<double> getMonolopoulosABCDamping(
-		double distanceToEdge,
-		double boundarySize,
-		double e = 1.,
-		double c = 2.62
-	);
-
-	/** Set damping mask. The damping mask will be used as prefactor in the
-	 *  modified Chebyshev expansion used for implementing absorbing
-	 *  boundary conditions. If set to NULL (default), no damping term will
-	 *  be applied.*/
-	void setDamping(std::complex<double> *damping);
-private:
 	/** Scale factor. */
 	double scaleFactor;
 
@@ -282,9 +245,6 @@ private:
 	/** Flag indicating whether to use a lookup table when generating
 	 *  Green's functions. */
 	bool useLookupTable;
-
-	/** Damping mask. */
-	std::complex<double> *damping;
 
 	/** Pointer to lookup table used to speed up evaluation of multiple
 	 *  Green's functions. */
@@ -580,10 +540,6 @@ inline std::vector<std::complex<double>> ChebyshevExpander::generateGreensFuncti
 	else{
 		return generateGreensFunctionCPU(coefficients, type);
 	}
-}
-
-inline void ChebyshevExpander::setDamping(std::complex<double> *damping){
-	this->damping = damping;
 }
 
 inline void ChebyshevExpander::ensureLookupTableIsReady(){

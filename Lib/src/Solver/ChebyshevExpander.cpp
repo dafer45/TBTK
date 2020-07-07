@@ -49,7 +49,6 @@ ChebyshevExpander::ChebyshevExpander() : Communicator(false){
 	calculateCoefficientsOnGPU = false;
 	generateGreensFunctionsOnGPU = false;
 	useLookupTable = false;
-	damping = NULL;
 	generatingFunctionLookupTable.setIsValid(false);
 	generatingFunctionLookupTable_device = NULL;
 	lookupTableNumCoefficients = 0;
@@ -152,11 +151,6 @@ vector<complex<double>> ChebyshevExpander::calculateCoefficientsCPU(
 		jResult[to] += hoppingAmplitudes[n]*jIn1[from];
 	}
 
-	if(damping != NULL){
-		for(int n = 0; n < hoppingAmplitudeSet.getBasisSize(); n++)
-			jResult[n] *= damping[n];
-	}
-
 	jTemp = jIn2;
 	jIn2 = jIn1;
 	jIn1 = jResult;
@@ -173,21 +167,11 @@ vector<complex<double>> ChebyshevExpander::calculateCoefficientsCPU(
 		for(int c = 0; c < hoppingAmplitudeSet.getBasisSize(); c++)
 			jResult[c] = -jIn2[c];
 
-		if(damping != NULL){
-			for(int c = 0; c < hoppingAmplitudeSet.getBasisSize(); c++)
-				jResult[c] *= damping[c];
-		}
-
 		for(int c = 0; c < numHoppingAmplitudes; c++){
 			int from = fromIndices[c];
 			int to = toIndices[c];
 
 			jResult[to] += hoppingAmplitudes[c]*jIn1[from];
-		}
-
-		if(damping != NULL){
-			for(int c = 0; c < hoppingAmplitudeSet.getBasisSize(); c++)
-				jResult[c] *= damping[c];
 		}
 
 		jTemp = jIn2;
@@ -320,11 +304,6 @@ vector<vector<complex<double>>> ChebyshevExpander::calculateCoefficientsCPU(
 		jResult[to] += hoppingAmplitudes[n]*jIn1[from];
 	}
 
-	if(damping != NULL){
-		for(int c = 0; c < hoppingAmplitudeSet.getBasisSize(); c++)
-			jResult[c] *= damping[c];
-	}
-
 	jTemp = jIn2;
 	jIn2 = jIn1;
 	jIn1 = jResult;
@@ -343,21 +322,11 @@ vector<vector<complex<double>>> ChebyshevExpander::calculateCoefficientsCPU(
 		for(int c = 0; c < hoppingAmplitudeSet.getBasisSize(); c++)
 			jResult[c] = -jIn2[c];
 
-		if(damping != NULL){
-			for(int c = 0; c < hoppingAmplitudeSet.getBasisSize(); c++)
-				jResult[c] *= damping[c];
-		}
-
 		for(int c = 0; c < numHoppingAmplitudes; c++){
 			int from = fromIndices[c];
 			int to = toIndices[c];
 
 			jResult[to] += hoppingAmplitudes[c]*jIn1[from];
-		}
-
-		if(damping != NULL){
-			for(int c = 0; c < hoppingAmplitudeSet.getBasisSize(); c++)
-				jResult[c] *= damping[c];
 		}
 
 		jTemp = jIn2;
@@ -395,174 +364,6 @@ vector<vector<complex<double>>> ChebyshevExpander::calculateCoefficientsCPU(
 	}
 
 	return coefficients;
-}
-
-void ChebyshevExpander::calculateCoefficientsWithCutoff(
-	Index to,
-	Index from,
-	complex<double> *coefficients,
-	int numCoefficients,
-	double componentCutoff,
-	double broadening
-){
-	const Model &model = getModel();
-
-	TBTKAssert(
-		scaleFactor > 0,
-		"ChebyshevExpander::calculateCoefficientsWithCutoff()",
-		"Scale factor must be larger than zero.",
-		"Use ChebyshevExpander::setScaleFactor() to set scale factor."
-	);
-	TBTKAssert(
-		numCoefficients > 0,
-		"ChebyshevExpander::calculateCoefficientsWithCutoff()",
-		"numCoefficients has to be larger than 0.",
-		""
-	);
-
-	const HoppingAmplitudeSet &hoppingAmplitudeSet = model.getHoppingAmplitudeSet();
-
-	int fromBasisIndex = hoppingAmplitudeSet.getBasisIndex(from);
-	int toBasisIndex = hoppingAmplitudeSet.getBasisIndex(to);
-
-	if(getGlobalVerbose() && getVerbose()){
-		Streams::out << "ChebyshevExpander::calculateCoefficients\n";
-		Streams::out << "\tFrom Index: " << fromBasisIndex << "\n";
-		Streams::out << "\tTo Index: " << toBasisIndex << "\n";
-		Streams::out << "\tBasis size: " << hoppingAmplitudeSet.getBasisSize() << "\n";
-		Streams::out << "\tProgress (100 coefficients per dot): ";
-	}
-
-	complex<double> *jIn1 = new complex<double>[hoppingAmplitudeSet.getBasisSize()];
-	complex<double> *jIn2 = new complex<double>[hoppingAmplitudeSet.getBasisSize()];
-	complex<double> *jResult = new complex<double>[hoppingAmplitudeSet.getBasisSize()];
-	complex<double> *jTemp = NULL;
-	for(int n = 0; n < hoppingAmplitudeSet.getBasisSize(); n++){
-		jIn1[n] = 0.;
-		jIn2[n] = 0.;
-		jResult[n] = 0.;
-	}
-	//Set up initial state |j0>.
-	jIn1[fromBasisIndex] = 1.;
-
-	coefficients[0] = jIn1[toBasisIndex];
-
-	HALinkedList haLinkedList(hoppingAmplitudeSet);
-	haLinkedList.rescaleAmplitudes(scaleFactor);
-	haLinkedList.addLinkedList(fromBasisIndex);
-
-	int *newlyReachedIndices = new int[hoppingAmplitudeSet.getBasisSize()];
-	int *everReachedIndices = new int[hoppingAmplitudeSet.getBasisSize()];
-	bool *everReachedIndicesAdded = new bool[hoppingAmplitudeSet.getBasisSize()];
-	int newlyReachedIndicesCounter = 0;
-	int everReachedIndicesCounter = 0;
-	for(int n = 0; n < hoppingAmplitudeSet.getBasisSize(); n++){
-		newlyReachedIndices[n] = -1;
-		everReachedIndices[n] = -1;
-		everReachedIndicesAdded[n] = false;
-	}
-
-	HALink *link = haLinkedList.getFirstMainLink();
-	while(link != NULL){
-		int from = link->from;
-		int to = link->to;
-
-		jResult[to] += link->amplitude*jIn1[from];
-		if(!everReachedIndicesAdded[to]){
-			newlyReachedIndices[newlyReachedIndicesCounter] = to;
-			newlyReachedIndicesCounter++;
-		}
-
-		link = link->next2;
-	}
-
-	for(int n = 0; n < newlyReachedIndicesCounter; n++){
-		if(abs(jResult[newlyReachedIndices[n]]) > componentCutoff){
-			haLinkedList.addLinkedList(newlyReachedIndices[n]);
-			if(!everReachedIndicesAdded[newlyReachedIndices[n]]){
-				everReachedIndicesAdded[newlyReachedIndices[n]] = true;
-				everReachedIndices[everReachedIndicesCounter] = newlyReachedIndices[n];
-				everReachedIndicesCounter++;
-			}
-		}
-		else{
-			jResult[newlyReachedIndices[n]] = 0.;
-		}
-	}
-
-	jTemp = jIn2;
-	jIn2 = jIn1;
-	jIn1 = jResult;
-	jResult = jTemp;
-
-	coefficients[1] = jIn1[toBasisIndex];
-
-	//Multiply hopping amplitudes by factor two, to speed up calculation of 2H|j(n-1)> - |j(n-2)>.
-	HALink *links = haLinkedList.getLinkArray();
-	for(int n = 0; n < haLinkedList.getLinkArraySize(); n++)
-		links[n].amplitude *= 2.;
-
-	//Iteratively calcuate |jn> and corresponding coefficients.
-	for(int n = 2; n < numCoefficients; n++){
-		for(int c = 0; c < everReachedIndicesCounter; c++)
-			jResult[everReachedIndices[c]] = -jIn2[everReachedIndices[c]];
-
-		newlyReachedIndicesCounter = 0.;
-		HALink *link = haLinkedList.getFirstMainLink();
-		while(link != NULL){
-			int from = link->from;
-			int to = link->to;
-
-			jResult[to] += link->amplitude*jIn1[from];
-			if(!everReachedIndicesAdded[to]){
-				newlyReachedIndices[newlyReachedIndicesCounter] = to;
-				newlyReachedIndicesCounter++;
-			}
-
-			link = link->next2;
-		}
-
-		for(int c = 0; c < newlyReachedIndicesCounter; c++){
-			if(abs(jResult[newlyReachedIndices[c]]) > componentCutoff){
-				haLinkedList.addLinkedList(newlyReachedIndices[c]);
-				if(!everReachedIndicesAdded[newlyReachedIndices[c]]){
-					everReachedIndicesAdded[newlyReachedIndices[c]] = true;
-					everReachedIndices[everReachedIndicesCounter] = newlyReachedIndices[c];
-					everReachedIndicesCounter++;
-				}
-				else{
-					jResult[newlyReachedIndices[c]] = 0.;
-				}
-			}
-		}
-
-		jTemp = jIn2;
-		jIn2 = jIn1;
-		jIn1 = jResult;
-		jResult = jTemp;
-
-		coefficients[n] = jIn1[toBasisIndex];
-
-		if(getVerbose() && getGlobalVerbose()){
-			if(n%100 == 0)
-				Streams::out << ".";
-			if(n%1000 == 0)
-				Streams::out << " ";
-		}
-	}
-
-	delete [] jIn1;
-	delete [] jIn2;
-	delete [] jResult;
-	delete [] newlyReachedIndices;
-	delete [] everReachedIndices;
-
-	//Lorentzian convolution
-	if(broadening != 0){
-		double lambda = broadening*numCoefficients;
-		for(int n = 0; n < numCoefficients; n++)
-			coefficients[n] = coefficients[n]*sinh(lambda*(1 - n/(double)numCoefficients))/sinh(lambda);
-	}
 }
 
 void ChebyshevExpander::generateLookupTable(
@@ -629,11 +430,7 @@ void ChebyshevExpander::generateLookupTable(
 			denominator = 2.;
 
 		for(int e = 0; e < energyResolution; e++){
-			double E;
-			if(energyResolution == 1)
-				E = lowerBound;
-			else
-				E = (lowerBound + (upperBound - lowerBound)*e/(double)(energyResolution - 1))/scaleFactor;
+			double E = energyWindow[e]/scaleFactor;
 			generatingFunctionLookupTable[n][e] = (1/scaleFactor)*(-2.*i/sqrt(1 - E*E))*exp(-i*((double)n)*acos(E))/denominator;
 		}
 	}
@@ -801,28 +598,6 @@ vector<complex<double>> ChebyshevExpander::generateGreensFunctionCPU(
 	}
 
 	return greensFunctionData;
-}
-
-complex<double> ChebyshevExpander::getMonolopoulosABCDamping(
-	double distanceToBoundary,
-	double boundarySize,
-	double e,
-	double c
-){
-	complex<double> gamma = 0.;
-
-	if(distanceToBoundary < 0){
-		return 0.;
-	}
-	else if(distanceToBoundary < boundarySize){
-		double hbar = UnitHandler::getConstantInNaturalUnits("hbar");
-		double m = UnitHandler::getConstantInNaturalUnits("m_e");
-		double y = c*(boundarySize - distanceToBoundary)/boundarySize;
-		double f = 4./pow(c-y, 2) + 4./pow(c+y, 2) - 8./pow(c, 2);
-		gamma = asinh(e*(pow(hbar, 2)/(2*m))*pow(2*M_PI/boundarySize, 2)*(f/scaleFactor));
-	}
-
-	return exp(-gamma);
 }
 
 };	//End of namespace Solver
