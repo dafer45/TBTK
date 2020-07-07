@@ -281,7 +281,6 @@ vector<vector<complex<double>>> ChebyshevExpander::calculateCoefficientsCPU(
 	for(int n = 0; n < hoppingAmplitudeSet.getBasisSize(); n++)
 		if(coefficientMap[n] != -1)
 			coefficients[coefficientMap[n]][0] = jIn1[n];
-//			coefficients[coefficientMap[n]*numCoefficients] = jIn1[n];
 
 	//Generate a fixed hopping amplitude and inde list, for speed.
 	int numHoppingAmplitudes = 0;
@@ -334,7 +333,6 @@ vector<vector<complex<double>>> ChebyshevExpander::calculateCoefficientsCPU(
 	for(int n = 0; n < hoppingAmplitudeSet.getBasisSize(); n++)
 		if(coefficientMap[n] != -1)
 			coefficients[coefficientMap[n]][1] = jIn1[n];
-//			coefficients[coefficientMap[n]*numCoefficients + 1] = jIn1[n];
 
 	//Multiply hopping amplitudes by factor two, to spped up calculation of 2H|j(n-1)> - |j(n-2)>.
 	for(int n = 0; n < numHoppingAmplitudes; n++)
@@ -370,7 +368,6 @@ vector<vector<complex<double>>> ChebyshevExpander::calculateCoefficientsCPU(
 		for(int c = 0; c < hoppingAmplitudeSet.getBasisSize(); c++)
 			if(coefficientMap[c] != -1)
 				coefficients[coefficientMap[c]][n] = jIn1[c];
-//				coefficients[coefficientMap[c]*numCoefficients + n] = jIn1[c];
 
 		if(getGlobalVerbose() && getVerbose()){
 			if(n%100 == 0)
@@ -395,7 +392,6 @@ vector<vector<complex<double>>> ChebyshevExpander::calculateCoefficientsCPU(
 		for(int n = 0; n < numCoefficients; n++)
 			for(unsigned int c = 0; c < to.size(); c++)
 				coefficients[c][n] = coefficients[c][n]*sinh(lambda*(1 - n/(double)numCoefficients))/sinh(lambda);
-//			coefficients[n] = coefficients[n]*sinh(lambda*(1 - n/(double)numCoefficients))/sinh(lambda);
 	}
 
 	return coefficients;
@@ -411,12 +407,6 @@ void ChebyshevExpander::calculateCoefficientsWithCutoff(
 ){
 	const Model &model = getModel();
 
-/*	TBTKAssert(
-		model != NULL,
-		"ChebyshevExpander::calculateCoefficientsWithCutoff()",
-		"Model not set.",
-		"Use ChebyshevExpander::setModel() to set model."
-	);*/
 	TBTKAssert(
 		scaleFactor > 0,
 		"ChebyshevExpander::calculateCoefficientsWithCutoff()",
@@ -655,7 +645,6 @@ void ChebyshevExpander::destroyLookupTable(){
 	generatingFunctionLookupTable.setIsValid(false);
 }
 
-//Property::GreensFunction* ChebyshevExpander::generateGreensFunction(
 vector<complex<double>> ChebyshevExpander::generateGreensFunctionCPU(
 	const vector<complex<double>> &coefficients,
 	Type type
@@ -695,18 +684,8 @@ vector<complex<double>> ChebyshevExpander::generateGreensFunctionCPU(
 		"Use ChebyshevExpander::setScaleFactor to set a larger scale"
 		<< " factor."
 	);
-/*	TBTKAssert(
-		generatingFunctionLookupTable != nullptr,
-		"ChebyshevExpander::generateGreensFunction()",
-		"Lookup table has not been generated.",
-		"Use ChebyshevExpander::generateLookupTable() to generate lookup table."
-	);*/
 
 	ensureLookupTableIsReady();
-
-/*	complex<double> *greensFunctionData = new complex<double>[energyResolution];
-	for(int e = 0; e < energyResolution; e++)
-		greensFunctionData[e] = 0.;*/
 
 	vector<complex<double>> greensFunctionData(
 		energyWindow.getResolution(),
@@ -823,54 +802,6 @@ vector<complex<double>> ChebyshevExpander::generateGreensFunctionCPU(
 
 	return greensFunctionData;
 }
-
-/*complex<double>* ChebyshevExpander::generateGreensFunctionCPU(
-	complex<double> *coefficients,
-//	Property::GreensFunction::Type type
-	Type type
-){
-	TBTKAssert(
-		generatingFunctionLookupTable != NULL,
-		"ChebyshevExpander::generateGreensFunction()",
-		"Lookup table has not been generated.",
-		"Use ChebyshevExpander::generateLookupTable() to generate lookup table."
-	);
-
-	complex<double> *greensFunctionData = new complex<double>[lookupTableResolution];
-	for(int e = 0; e < lookupTableResolution; e++)
-		greensFunctionData[e] = 0.;
-
-	if(type == Type::Retarded){
-		for(int n = 0; n < lookupTableNumCoefficients; n++){
-			for(int e = 0; e < lookupTableResolution; e++){
-				greensFunctionData[e] += generatingFunctionLookupTable[n][e]*coefficients[n];
-			}
-		}
-	}
-	else if(type == Type::Advanced){
-		for(int n = 0; n < lookupTableNumCoefficients; n++){
-			for(int e = 0; e < lookupTableResolution; e++){
-				greensFunctionData[e] += coefficients[n]*conj(generatingFunctionLookupTable[n][e]);
-			}
-		}
-	}
-	else if(type == Type::Principal){
-		for(int n = 0; n < lookupTableNumCoefficients; n++){
-			for(int e = 0; e < lookupTableResolution; e++){
-				greensFunctionData[e] += -coefficients[n]*real(generatingFunctionLookupTable[n][e]);
-			}
-		}
-	}
-	else if(type == Type::NonPrincipal){
-		for(int n = 0; n < lookupTableNumCoefficients; n++){
-			for(int e = 0; e < lookupTableResolution; e++){
-				greensFunctionData[e] -= coefficients[n]*i*imag(generatingFunctionLookupTable[n][e]);
-			}
-		}
-	}
-
-	return greensFunctionData;
-}*/
 
 complex<double> ChebyshevExpander::getMonolopoulosABCDamping(
 	double distanceToBoundary,
