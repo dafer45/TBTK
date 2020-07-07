@@ -280,12 +280,7 @@ private:
 	 *  @param upperBound Upper bound, has to be smaller or equal to
 	 *  scaleFactor setBy setScaleFactor (default value 1.1).
 	 *  expansion.*/
-	void generateLookupTable(
-		int numCoefficeints,
-		int energyResolution,
-		double lowerBound = -1.,
-		double upperBound = 1.
-	);
+	void generateLookupTable();
 
 	/** Free memory allocated by ChebyshevExpander::generateLookupTable(). */
 	void destroyLookupTable();
@@ -544,14 +539,8 @@ inline std::vector<std::complex<double>> ChebyshevExpander::generateGreensFuncti
 
 inline void ChebyshevExpander::ensureLookupTableIsReady(){
 	if(useLookupTable){
-		if(!generatingFunctionLookupTable.getIsValid()){
-			generateLookupTable(
-				numCoefficients,
-				energyWindow.getResolution(),
-				energyWindow[0],
-				energyWindow.getLast()
-			);
-		}
+		if(!generatingFunctionLookupTable.getIsValid())
+			generateLookupTable();
 		if(generateGreensFunctionsOnGPU && !generatingFunctionLookupTable_device)
 			loadLookupTableGPU();
 	}

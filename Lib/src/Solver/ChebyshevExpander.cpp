@@ -366,12 +366,7 @@ vector<vector<complex<double>>> ChebyshevExpander::calculateCoefficientsCPU(
 	return coefficients;
 }
 
-void ChebyshevExpander::generateLookupTable(
-	int numCoefficients,
-	int energyResolution,
-	double lowerBound,
-	double upperBound
-){
+void ChebyshevExpander::generateLookupTable(){
 	TBTKAssert(
 		numCoefficients > 0,
 		"ChebyshevExpander::generateLookupTable()",
@@ -379,48 +374,53 @@ void ChebyshevExpander::generateLookupTable(
 		""
 	);
 	TBTKAssert(
-		energyResolution > 0,
+		energyWindow.getResolution() > 0,
 		"ChebyshevExpander::generateLookupTable()",
-		"energyResolution has to be larger than 0.",
+		"The energy windows resolution has to be larger than 0.",
 		""
 	);
 	TBTKAssert(
-		lowerBound < upperBound,
+		energyWindow[0] < energyWindow.getLast(),
 		"ChebyshevExpander::generateLookupTable()",
-		"lowerBound has to be smaller than upperBound.",
+		"The energy windows lower bound has to be smaller than its"
+		<< " upper bound.",
 		""
 	);
 	TBTKAssert(
-		lowerBound >= -scaleFactor,
+		energyWindow[0] > -scaleFactor,
 		"ChebyshevExpander::generateLookupTable()",
-		"lowerBound has to be larger than -scaleFactor.",
-		"Use ChebyshevExpander::setScaleFactor to set a larger scale factor."
+		"The energy windows lower bound has to be larger than"
+		<< " -scaleFactor.",
+		"Use ChebyshevExpander::setScaleFactor to set a larger scale"
+		<< " factor."
 	);
 	TBTKAssert(
-		upperBound <= scaleFactor,
+		energyWindow.getLast() < scaleFactor,
 		"ChebyshevExpander::generateLookupTable()",
-		"upperBound has to be smaller than scaleFactor.",
-		"Use ChebyshevExpander::setScaleFactor to set a larger scale factor."
+		"The energy windows upper bound has to be smaller than"
+		<< " scaleFactor.",
+		"Use ChebyshevExpander::setScaleFactor to set a larger scale"
+		<< " factor."
 	);
 
 	if(getGlobalVerbose() && getVerbose()){
 		Streams::out << "Generating lookup table\n";
 		Streams::out << "\tNum coefficients: " << numCoefficients << "\n";
-		Streams::out << "\tEnergy resolution: " << energyResolution << "\n";
-		Streams::out << "\tLower bound: " << lowerBound << "\n";
-		Streams::out << "\tUpper bound: " << upperBound << "\n";
+		Streams::out << "\tEnergy resolution: " << energyWindow.getResolution() << "\n";
+		Streams::out << "\tLower bound: " << energyWindow[0] << "\n";
+		Streams::out << "\tUpper bound: " << energyWindow.getLast() << "\n";
 	}
 
 	lookupTableNumCoefficients = numCoefficients;
-	lookupTableResolution = energyResolution;
-	lookupTableLowerBound = lowerBound;
-	lookupTableUpperBound = upperBound;
+	lookupTableResolution = energyWindow.getResolution();
+	lookupTableLowerBound = energyWindow[0];
+	lookupTableUpperBound = energyWindow.getLast();
 
 	generatingFunctionLookupTable
 		= CArray<CArray<complex<double>>>(numCoefficients);
 	for(int n = 0; n < numCoefficients; n++){
 		generatingFunctionLookupTable[n]
-			= CArray<complex<double>>(energyResolution);
+			= CArray<complex<double>>(energyWindow.getResolution());
 	}
 
 	#pragma omp parallel for
@@ -429,7 +429,7 @@ void ChebyshevExpander::generateLookupTable(
 		if(n == 0)
 			denominator = 2.;
 
-		for(int e = 0; e < energyResolution; e++){
+		for(unsigned int e = 0; e < energyWindow.getResolution(); e++){
 			double E = energyWindow[e]/scaleFactor;
 			generatingFunctionLookupTable[n][e] = (1/scaleFactor)*(-2.*i/sqrt(1 - E*E))*exp(-i*((double)n)*acos(E))/denominator;
 		}
