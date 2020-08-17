@@ -321,112 +321,114 @@ vector<complex<double>> ChebyshevExpander::generateGreensFunctionCPU(
 		0
 	);
 
-	if(type == Type::Retarded){
-		if(useLookupTable){
+	if(useLookupTable){
+		switch(type){
+		case Type::Retarded:
 			for(int n = 0; n < lookupTableNumCoefficients; n++){
 				for(int e = 0; e < lookupTableResolution; e++){
-					greensFunctionData[e] += generatingFunctionLookupTable[n][e]*coefficients[n];
+					greensFunctionData[e]
+						+= generatingFunctionLookupTable[n][e]*coefficients[n];
 				}
 			}
-		}
-		else{
-			for(int n = 0; n < numCoefficients; n++){
-				double denominator = 1.;
-				if(n == 0)
-					denominator = 2.;
-
-				for(
-					unsigned int e = 0;
-					e < energyWindow.getResolution();
-					e++
-				){
-					double E = energyWindow[e]/scaleFactor;
-					greensFunctionData[e] += coefficients[n]*(1/scaleFactor)*(-2.*i/sqrt(1 - E*E))*exp(-i*((double)n)*acos(E))/denominator;
-				}
-			}
-		}
-	}
-	else if(type == Type::Advanced){
-		if(useLookupTable){
+			break;
+		case Type::Advanced:
 			for(int n = 0; n < lookupTableNumCoefficients; n++){
 				for(int e = 0; e < lookupTableResolution; e++){
-					greensFunctionData[e] += coefficients[n]*conj(generatingFunctionLookupTable[n][e]);
+					greensFunctionData[e]
+						+= coefficients[n]*conj(generatingFunctionLookupTable[n][e]);
 				}
 			}
-		}
-		else{
-			for(int n = 0; n < numCoefficients; n++){
-				double denominator = 1.;
-				if(n == 0)
-					denominator = 2.;
-
-				for(
-					unsigned int e = 0;
-					e < energyWindow.getResolution();
-					e++
-				){
-					double E = energyWindow[e]/scaleFactor;
-					greensFunctionData[e] += coefficients[n]*conj((1/scaleFactor)*(-2.*i/sqrt(1 - E*E))*exp(-i*((double)n)*acos(E))/denominator);
-				}
-			}
-		}
-	}
-	else if(type == Type::Principal){
-		if(useLookupTable){
+			break;
+		case Type::Principal:
 			for(int n = 0; n < lookupTableNumCoefficients; n++){
 				for(int e = 0; e < lookupTableResolution; e++){
-					greensFunctionData[e] += -coefficients[n]*real(generatingFunctionLookupTable[n][e]);
+					greensFunctionData[e]
+						+= -coefficients[n]*real(
+							generatingFunctionLookupTable[n][e]
+						);
 				}
 			}
-		}
-		else{
-			for(int n = 0; n < numCoefficients; n++){
-				double denominator = 1.;
-				if(n == 0)
-					denominator = 2.;
-
-				for(
-					unsigned int e = 0;
-					e < energyWindow.getResolution();
-					e++
-				){
-					double E = energyWindow[e]/scaleFactor;
-					greensFunctionData[e] += coefficients[n]*(1/scaleFactor)*(2./sqrt(1 - E*E))*sin(((double)n)*acos(E))/denominator;
-				}
-			}
-		}
-	}
-	else if(type == Type::NonPrincipal){
-		if(useLookupTable){
+			break;
+		case Type::NonPrincipal:
 			for(int n = 0; n < lookupTableNumCoefficients; n++){
 				for(int e = 0; e < lookupTableResolution; e++){
-					greensFunctionData[e] -= coefficients[n]*i*imag(generatingFunctionLookupTable[n][e]);
+					greensFunctionData[e]
+						-= coefficients[n]*i*imag(
+							generatingFunctionLookupTable[n][e]
+						);
 				}
 			}
-		}
-		else{
-			for(int n = 0; n < numCoefficients; n++){
-				double denominator = 1.;
-				if(n == 0)
-					denominator = 2.;
-
-				for(
-					unsigned int e = 0;
-					e < energyWindow.getResolution();
-					e++
-				){
-					double E = energyWindow[e]/scaleFactor;
-					greensFunctionData[e] += coefficients[n]*(1/scaleFactor)*(2.*i/sqrt(1 - E*E))*cos(((double)n)*acos(E))/denominator;
-				}
-			}
+			break;
+		default:
+			TBTKExit(
+				"Solver::ChebyshevExpander::generateGreensFunctionCPU()",
+				"Unkown Green's function type.",
+				"This should never happen, contact the"
+				<< " developer."
+			);
 		}
 	}
 	else{
-		TBTKExit(
-			"ChebyshevExpander::generateGreensFunction()",
-			"Unknown GreensFunctionType",
-			""
-		);
+		for(
+			unsigned int e = 0;
+			e < energyWindow.getResolution();
+			e++
+		){
+			if(type == Type::Principal)
+				greensFunctionData[e] = 0;
+			else
+				greensFunctionData[e] = coefficients[0]/2.;
+
+			double E = energyWindow[e]/scaleFactor;
+			double acosE = acos(E);
+			switch(type){
+			case Type::Retarded:
+				for(int n = 1; n < numCoefficients; n++){
+					greensFunctionData[e]
+						+= coefficients[n]*exp(
+							-i*((double)n)*acosE
+						);
+				}
+				greensFunctionData[e] *= -2.*i/scaleFactor;
+				break;
+			case Type::Advanced:
+				for(int n = 1; n < numCoefficients; n++){
+					greensFunctionData[e] += conj(
+						coefficients[n]*exp(
+							-i*((double)n)*acosE
+						)
+					);
+				}
+				greensFunctionData[e] *= 2.*i/scaleFactor;
+				break;
+			case Type::Principal:
+				for(int n = 1; n < numCoefficients; n++){
+					greensFunctionData[e]
+						+= coefficients[n]*sin(
+							((double)n)*acosE
+						);
+				}
+				greensFunctionData[e] *= 2./scaleFactor;
+				break;
+			case Type::NonPrincipal:
+				for(int n = 1; n < numCoefficients; n++){
+					greensFunctionData[e]
+						+= coefficients[n]*cos(
+							((double)n)*acosE
+						);
+				}
+				greensFunctionData[e] *= 2.*i/scaleFactor;
+				break;
+			default:
+				TBTKExit(
+					"Solver::ChebyshevExpander::generateGreensFunctionCPU()",
+					"Unkown Green's function type.",
+					"This should never happen, contact the"
+					<< " developer."
+				);
+			}
+			greensFunctionData[e] /= sqrt(1 - E*E);
+		}
 	}
 
 	return greensFunctionData;
