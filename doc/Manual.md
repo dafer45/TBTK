@@ -907,11 +907,11 @@ The @link TBTK::Solver::ArnoldiIterator ArnoldiIterator@endlink can be set up as
 	solver.setModel(model);
 	solver.setNumLanczosVectors(200);
 	solver.setMaxIterations(500);
-	solver.setNumEigenVectors(100);
+	solver.setNumEigenValues(100);
 	solver.setCalculateEigenVectors(true);
 	solver.run();
 ```
-Here, *solver.setNumLanczosVectors()* sets the size of the subspace that is to be generated, while *solver.setNumEigenVectors()* determines the number of eigenvalues to calculate.
+Here, *solver.setNumLanczosVectors()* sets the size of the subspace that is to be generated, while *solver.setNumEigenValues()* determines the number of eigenvalues to calculate.
 The number of eigenvalues should at most be as large as the number of Lanczos vectors.
 However, since the iteration starts with a random vector, choosing a smaller number of eigenvalues results in the less accurate subspace to be ignored.
 Finally, the @link TBTK::Solver::ArnoldiIterator ArnoldiIterator@endlink uses a modified version of the procedure described above called implicitly restarted Arnoldi iteration (see the [ARPACK](https://www.caam.rice.edu/software/ARPACK/) documentation).
