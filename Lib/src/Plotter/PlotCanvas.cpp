@@ -55,7 +55,11 @@ void PlotCanvas::drawAxes(){
 		getCVPoint(maxX, minY),
 		Scalar(0, 0, 0),
 		2,
+#if CV_MAJOR_VERSION > 3
 		cv::LINE_AA
+#else
+		CV_AA
+#endif
 	);
 	line(
 		canvas,
@@ -63,7 +67,11 @@ void PlotCanvas::drawAxes(){
 		getCVPoint(minX, maxY),
 		Scalar(0, 0, 0),
 		2,
+#if CV_MAJOR_VERSION > 3
 		cv::LINE_AA
+#else
+		CV_AA
+#endif
 	);
 
 	//Axes values
