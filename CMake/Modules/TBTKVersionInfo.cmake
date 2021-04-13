@@ -1,7 +1,7 @@
 #Avoid printing setting and printing information multiple times.
 IF(NOT TBTK_VERSION_DEFINED)
 	SET(TBTK_VERSION_MAJOR 2)
-	SET(TBTK_VERSION_MINOR 2)
+	SET(TBTK_VERSION_MINOR 3)
 	SET(TBTK_VERSION_PATCH 0)
 	SET(
 		TBTK_VERSION
