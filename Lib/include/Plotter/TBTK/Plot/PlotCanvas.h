@@ -297,10 +297,14 @@ inline void PlotCanvas::clear(){
 	canvas = cv::Mat::zeros(height, width, CV_8UC3);
 	cv::rectangle(
 		canvas,
-		cvPoint(0, 0),
-		cvPoint(width-1, height-1),
+		cv::Point(0, 0),
+		cv::Point(width-1, height-1),
 		cv::Scalar(255, 255, 255),
+#if CV_MAJOR_VERSION > 3
+		cv::FILLED,
+#else
 		CV_FILLED,
+#endif
 		8,
 		0
 	);
@@ -371,7 +375,11 @@ inline void PlotCanvas::drawLine(
 		getCVPoint(x1, y1),
 		cv::Scalar(color[2], color[1], color[0]),
 		width,
+#if CV_MAJOR_VERSION > 3
+		cv::LINE_AA
+#else
 		CV_AA
+#endif
 	);
 }
 
@@ -398,7 +406,11 @@ inline void PlotCanvas::drawCircle(
 		size,
 		cv::Scalar(color[2], color[1], color[0]),
 		-1,
+#if CV_MAJOR_VERSION > 3
+		cv::LINE_AA
+#else
 		CV_AA
+#endif
 	);
 }
 

@@ -28,7 +28,7 @@ TEST(Boolean, serializeToJSON0){
 }
 
 TEST(Boolean, serializeToJSON1){
-	Boolean boolean;
+	Boolean boolean(true);
 	EXPECT_EXIT(
 		{
 			Streams::setStdMuteErr();
@@ -40,7 +40,7 @@ TEST(Boolean, serializeToJSON1){
 }
 
 TEST(Boolean, serializeToJSON2){
-	Boolean boolean;
+	Boolean boolean(true);
 	EXPECT_EXIT(
 		{
 			Streams::setStdMuteErr();
