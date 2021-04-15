@@ -42,7 +42,7 @@ Streams::NullBuffer Streams::nullBuffer;
 //created objects are intended to last throughout the existence of the program.
 Streams::ForkBuffer Streams::stdOutBuffer(&cout, &Streams::log);
 Streams::LogBuffer Streams::stdLogBuffer;
-Streams::ForkBuffer Streams::stdErrBuffer(&cout, &Streams::log);
+Streams::ForkBuffer Streams::stdErrBuffer(&cerr, &Streams::log);
 ofstream Streams::logFile;
 
 int Streams::NullBuffer::overflow(int c){
