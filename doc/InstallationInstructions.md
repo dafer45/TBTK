@@ -59,6 +59,7 @@ It is possible to customize the build by passing these flags to cmake.
 | Flag                             | Description                                                                                                |
 |----------------------------------|------------------------------------------------------------------------------------------------------------|
 | -DCMAKE_INSTALL_PREFIX:PATH=XXX  | Specify a custom insallation path. For example a local path if administrator privileges are not available. |
+| -DARPACK_LIBRARY_PATH:PATH=XXX   | Specify a non standard search path for ARPACK library files.                                               |
 | -DSUPER_LU_INCLUDE_PATH:PATH=XXX | Specify a non standard search path for SuperLU include files.                                              |
 | -DSUPER_LU_LIBRARY_PATH:PATH=XXX | Specify a non standard search path for SuperLU library files.                                              |
 
