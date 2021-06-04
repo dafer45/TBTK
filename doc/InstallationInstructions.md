@@ -19,7 +19,7 @@ Installation instructions {#InstallationInstructions}
 Always work agains a public release.
 This is done by checking out the latset release using
 ```cpp
-	git checkout v2.3.3
+	git checkout v2.4.0
 ```
 A full list of public releases can be found at https://github.com/dafer45/TBTK/releases.
 By remembering the version number that an application is compiled with, it is guaranted that the application will be possible to build again anytime in the future.
@@ -59,6 +59,7 @@ It is possible to customize the build by passing these flags to cmake.
 | Flag                             | Description                                                                                                |
 |----------------------------------|------------------------------------------------------------------------------------------------------------|
 | -DCMAKE_INSTALL_PREFIX:PATH=XXX  | Specify a custom insallation path. For example a local path if administrator privileges are not available. |
+| -DARPACK_LIBRARY_PATH:PATH=XXX   | Specify a non standard search path for ARPACK library files.                                               |
 | -DSUPER_LU_INCLUDE_PATH:PATH=XXX | Specify a non standard search path for SuperLU include files.                                              |
 | -DSUPER_LU_LIBRARY_PATH:PATH=XXX | Specify a non standard search path for SuperLU library files.                                              |
 
@@ -91,12 +92,12 @@ The following table shows the optional libraries that are required to enable the
 | Resource                          |        |      | X    |       |     |                                  |                  |
 
 # Update TBTK {#UpdateTBTK}
-If TBTK is already installed, it can be updated to v2.3.3 as follows.
+If TBTK is already installed, it can be updated to v2.4.0 as follows.
 We here assume that TBTK has been downloaded and built in two parallel folders TBTK and TBTKBuild, as described above.
 ```cpp
 	cd TBTK
 	git pull
-	git checkout v2.3.3
+	git checkout v2.4.0
 	cd ../TBTKBuild
 	cmake ../TBTK
 	make
