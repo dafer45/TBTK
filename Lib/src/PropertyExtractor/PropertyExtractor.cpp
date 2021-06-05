@@ -234,6 +234,65 @@ Property::DOS PropertyExtractor::calculateDOS(){
 	);
 }
 
+Property::DOS PropertyExtractor::sampleDOS(
+	unsigned int numSamples,
+	const vector<Index> &patterns,
+	unsigned int seed
+){
+	bool selectiveSample = true;
+	if(patterns.size() == 0)
+		selectiveSample = false;
+
+	const Model &model = getSolver().getModel();
+	const HoppingAmplitudeSet &hoppingAmplitudeSet
+		= model.getHoppingAmplitudeSet();
+	unsigned int sampleSpaceSize;
+	if(selectiveSample){
+		sampleSpaceSize
+			= hoppingAmplitudeSet.getIndexListMultiplePatterns(
+				patterns
+			).size();
+	}
+	else{
+		sampleSpaceSize = model.getBasisSize();
+	}
+	TBTKAssert(
+		sampleSpaceSize > 0,
+		"PropertyExtractor::sampleDOS()",
+		"The provided 'patterns' does not match any Index in the"
+		<< " Model.",
+		""
+	);
+
+	Property::DOS dos(lowerBound, upperBound, energyResolution);
+	srand(seed);
+	for(int n = 0; n < (int)numSamples; n++){
+		int state = rand()%model.getBasisSize();
+		Index index = hoppingAmplitudeSet.getPhysicalIndex(state);
+		if(selectiveSample){
+			bool acceptedIndex = false;
+			for(auto pattern : patterns){
+				if(pattern.equals(index, true)){
+					acceptedIndex = true;
+					break;
+				}
+			}
+			if(!acceptedIndex){
+				n--;
+				continue;
+			}
+		}
+
+		Property::LDOS ldos = calculateLDOS({index});
+		for(unsigned int n = 0; n < dos.getResolution(); n++)
+			dos(n) += ldos(index, n);
+	}
+	for(unsigned int n = 0; n < dos.getResolution(); n++)
+		dos(n) *= sampleSpaceSize/(double)numSamples;
+
+	return dos;
+}
+
 double PropertyExtractor::calculateEntropy(){
 	TBTKExit(
 		"PropertyExtractor::calculateEntropy()",

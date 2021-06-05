@@ -553,6 +553,31 @@ TEST(HoppingAmplitudeTree, getIndexList){
 	EXPECT_TRUE(indices[1].equals({1, 1, 1}));
 }
 
+TEST(HoppingAmplitudeTree, getIndexListMultiplePatterns){
+	HoppingAmplitudeTree hoppingAmplitudeTree;
+	hoppingAmplitudeTree.add(HoppingAmplitude(1, {0, 0, 0}, {0, 0, 0}));
+	hoppingAmplitudeTree.add(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 1}));
+	hoppingAmplitudeTree.add(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 2}));
+	hoppingAmplitudeTree.add(HoppingAmplitude(1, {0, 0, 2}, {0, 0, 1}));
+	hoppingAmplitudeTree.add(HoppingAmplitude(1, {0, 1, 0}, {0, 1, 0}));
+	hoppingAmplitudeTree.add(HoppingAmplitude(1, {0, 1, 0}, {0, 1, 1}));
+	hoppingAmplitudeTree.add(HoppingAmplitude(1, {0, 1, 1}, {0, 1, 0}));
+	hoppingAmplitudeTree.add(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 0}));
+	hoppingAmplitudeTree.add(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 1}));
+	hoppingAmplitudeTree.add(HoppingAmplitude(1, {1, 1, 1}, {1, 1, 0}));
+	hoppingAmplitudeTree.generateBasisIndices();
+
+	std::vector<Index> indices = hoppingAmplitudeTree.getIndexListMultiplePatterns({
+		{0, IDX_ALL, 0},
+		{0, 0, IDX_ALL}
+	});
+	EXPECT_EQ(indices.size(), 4);
+	EXPECT_TRUE(indices[0].equals({0, 0, 0}));
+	EXPECT_TRUE(indices[1].equals({0, 0, 1}));
+	EXPECT_TRUE(indices[2].equals({0, 0, 2}));
+	EXPECT_TRUE(indices[3].equals({0, 1, 0}));
+}
+
 //TODO
 //...
 /*TEST(HoppingAmplitudeTree, sort){

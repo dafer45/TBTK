@@ -216,6 +216,19 @@ public:
 	 *  pattern. */
 	std::vector<Index> getIndexList(const Index &pattern) const;
 
+	/** Generate a list containing the indices in the HoppingAmplitudeTree
+	 *  that satisfies the specified patterns. The indices are ordered in
+	 *  terms of rising Hilbert space indices.
+	 *
+	 *  @param patterns Patterns to match against. IDX_ALL can be used as a
+	 *  wildcard.
+	 *
+	 *  @return A list of physical indices that match the specified
+	 *  patterns. */
+	std::vector<Index> getIndexListMultiplePatterns(
+		const std::vector<Index> &patterns
+	) const;
+
 	/** Sort HoppingAmplitudes in row order. */
 	void sort(HoppingAmplitudeTree *rootNode);
 

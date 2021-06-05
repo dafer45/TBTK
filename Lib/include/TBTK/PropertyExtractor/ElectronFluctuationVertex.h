@@ -75,7 +75,14 @@ private:
 
 	/** Solver::ElectronFluctautionVertex to work on. */
 	Solver::ElectronFluctuationVertex *solver;
+
+	/** Implements PropertyExtractor::getSolver(). */
+	virtual const Solver::Solver& getSolver() const;
 };
+
+inline const Solver::Solver& ElectronFluctuationVertex::getSolver() const{
+	return *solver;
+}
 
 };	//End of namespace PropertyExtractor
 };	//End of namespace TBTK

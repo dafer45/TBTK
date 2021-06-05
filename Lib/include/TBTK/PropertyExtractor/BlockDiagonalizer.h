@@ -234,6 +234,9 @@ private:
 
 	/** Solver::Diagonalizer to work on. */
 	Solver::BlockDiagonalizer &solver;
+
+	/** Implements PropertyExtractor::getSolver(). */
+	virtual const Solver::Solver& getSolver() const;
 };
 
 inline double BlockDiagonalizer::getEigenValue(int state) const{
@@ -260,6 +263,10 @@ inline const std::complex<double> BlockDiagonalizer::getAmplitude(
 	const Index &intraBlockIndex
 ) const{
 	return solver.getAmplitude(blockIndex, state, intraBlockIndex);
+}
+
+inline const Solver::Solver& BlockDiagonalizer::getSolver() const{
+	return solver;
 }
 
 };	//End of namespace PropertyExtractor

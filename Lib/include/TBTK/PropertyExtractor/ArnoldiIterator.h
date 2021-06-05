@@ -139,6 +139,9 @@ private:
 
 	/** Solver::ArnoldiIterator to work on. */
 	Solver::ArnoldiIterator *aSolver;
+
+	/** Implements PropertyExtractor::getSolver(). */
+	virtual const Solver::Solver& getSolver() const;
 };
 
 inline double ArnoldiIterator::getEigenValue(int state){
@@ -150,6 +153,10 @@ inline const std::complex<double> ArnoldiIterator::getAmplitude(
 	const Index &index
 ){
 	return aSolver->getAmplitude(state, index);
+}
+
+inline const Solver::Solver& ArnoldiIterator::getSolver() const{
+	return *aSolver;
 }
 
 };	//End of namespace PropertyExtractor

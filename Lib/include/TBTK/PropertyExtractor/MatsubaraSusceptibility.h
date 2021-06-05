@@ -86,6 +86,9 @@ private:
 
 	/** Energies. */
 	std::vector<std::complex<double>> energies;
+
+	/** Implements PropertyExtractor::getSolver(). */
+	virtual const Solver::Solver& getSolver() const;
 };
 
 inline void MatsubaraSusceptibility::SusceptibilityBlockInformation::setCalculateSusceptibilityForAllBlocks(
@@ -98,6 +101,10 @@ inline void MatsubaraSusceptibility::SusceptibilityBlockInformation::setCalculat
 inline bool MatsubaraSusceptibility::SusceptibilityBlockInformation::getCalculateSusceptibilityForAllBlocks(
 ) const{
 	return calculateSusceptibilityForAllBlocks;
+}
+
+inline const Solver::Solver& MatsubaraSusceptibility::getSolver() const{
+	return *solver;
 }
 
 };	//End of namespace PropertyExtractor

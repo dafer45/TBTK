@@ -63,7 +63,14 @@ private:
 
 	/** Energies. */
 	std::vector<std::complex<double>> energies;
+
+	/** Implements PropertyExtractor::getSolver(). */
+	virtual const Solver::Solver& getSolver() const;
 };
+
+inline const Solver::Solver& SelfEnergy::getSolver() const{
+	return *solver;
+}
 
 };	//End of namespace PropertyExtractor
 };	//End of namespace TBTK

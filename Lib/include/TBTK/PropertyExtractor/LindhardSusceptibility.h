@@ -60,9 +60,16 @@ private:
 	/** Solver::Diagonalizer to work on. */
 	Solver::LindhardSusceptibility *solver;
 
+	/** Implements PropertyExtractor::getSolver(). */
+	virtual const Solver::Solver& getSolver() const;
+
 	/** Energies. */
 	std::vector<std::complex<double>> energies;
 };
+
+inline const Solver::Solver& LindhardSusceptibility::getSolver() const{
+	return *solver;
+}
 
 };	//End of namespace PropertyExtractor
 };	//End of namespace TBTK

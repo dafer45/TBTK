@@ -82,6 +82,9 @@ private:
 
 	/** Solver::SelfEnergy2 to work on. */
 	Solver::SelfEnergy2 *solver;
+
+	/** Implements PropertyExtractor::getSolver(). */
+	virtual const Solver::Solver& getSolver() const;
 };
 
 inline void SelfEnergy2::SelfEnergyBlockInformation::setCalculateSelfEnergyForAllBlocks(
@@ -94,6 +97,10 @@ inline void SelfEnergy2::SelfEnergyBlockInformation::setCalculateSelfEnergyForAl
 inline bool SelfEnergy2::SelfEnergyBlockInformation::getCalculateSelfEnergyForAllBlocks(
 ) const{
 	return calculateSelfEnergyForAllBlocks;
+}
+
+inline const Solver::Solver& SelfEnergy2::getSolver() const{
+	return *solver;
 }
 
 };	//End of namespace PropertyExtractor

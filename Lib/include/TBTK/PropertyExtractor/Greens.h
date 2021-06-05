@@ -73,6 +73,9 @@ private:
 	/** ChebyshevExpander to work on. */
 	Solver::Greens *solver;
 
+	/** Implements PropertyExtractor::getSolver(). */
+	virtual const Solver::Solver& getSolver() const;
+
 	/** Callback for calculating the density. Used by calculateDensity. */
 	static void calculateDensityCallback(
 		PropertyExtractor *cb_this,
@@ -92,6 +95,10 @@ private:
 		Information &information
 	);
 };
+
+inline const Solver::Solver& Greens::getSolver() const{
+	return *solver;
+}
 
 };	//End of namespace PropertyExtractor
 };	//End of namespace TBTK

@@ -78,6 +78,9 @@ private:
 	/** Diagonalizer to work on. */
 	Solver::ExactDiagonalizer *edSolver;
 
+	/** Implement PropertyExtractor::getSolver(). */
+	virtual const Solver::Solver& getSolver() const;
+
 	/** Callback for calculating density. Used by calculateDensity(). */
 	static void calculateDensityCallback(
 		PropertyExtractor *cb_this,
@@ -117,6 +120,10 @@ private:
 		Information &information
 	);
 };
+
+inline const Solver::Solver& ExactDiagonalizer::getSolver() const{
+	return *edSolver;
+}
 
 };	//End of namespace PropertyExtractor
 };	//End of namespace TBTK

@@ -109,6 +109,9 @@ private:
 		std::vector<std::complex<double>>
 	> rpaSusceptibilityTree;
 
+	/** Implements PropertyExtractor::getSolver(). */
+	virtual const Solver::Solver& getSolver() const;
+
 	/** Charge susceptibility tree for storing results between calls to the
 	 *  calculateChargeSusceptibilityCallback(). */
 /*	IndexedDataTree<
@@ -121,6 +124,10 @@ private:
 		std::vector<std::complex<double>>
 	> spinSusceptibilityTree;*/
 };
+
+inline const Solver::Solver& RPASusceptibility::getSolver() const{
+	return *solver;
+}
 
 };	//End of namespace PropertyExtractor
 };	//End of namespace TBTK

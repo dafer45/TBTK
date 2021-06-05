@@ -31,6 +31,7 @@
 #include "TBTK/Property/LDOS.h"
 #include "TBTK/Property/Magnetization.h"
 #include "TBTK/Property/SpinPolarizedLDOS.h"
+#include "TBTK/Solver/Solver.h"
 
 #include <complex>
 //#include <initializer_list>
@@ -346,6 +347,25 @@ public:
 	 *  @return A Property::DOS containing the density of states. */
 	virtual Property::DOS calculateDOS();
 
+	/** Sample the DOS by averaging over the LDOS for multiple random @link
+	 *  Index Indices@endlink. The resulting DOS is normalized to integrate
+	 *  to the total number of states in the sample space covered by the
+	 *  patterns @link Index Indices@endlink.
+	 *
+	 *  @param numSamples The number of samples to use.
+	 *  @param patterns A list of patterns to randomize over. If the list
+	 *  is empty (default value), all @link Index Indices@endlink are
+	 *  randomized over.
+	 *
+	 *  @param seed Seed to use for randomization.
+	 *
+	 *  @return A Property::DOS containing the sampled DOS. */
+	virtual Property::DOS sampleDOS(
+		unsigned int numSamples,
+		const std::vector<Index> &patterns = {},
+		unsigned int seed = time(nullptr)
+	);
+
 	/** Calculate the entropy. This function should be overriden by those
 	 *  deriving classes that provide support for calculating the entropy.
 	 *  By default the PropertyExtractor prints an error message that the
@@ -627,6 +647,9 @@ private:
 	/** The nergy infinitesimal \f$\delta\f$ that for example can be used
 	 *  in the denominator of the Green's function as \f$i\delta\f$. */
 	double energyInfinitesimal;
+
+	/** Should return the solver the PropertyExtractor is using. */
+	virtual const Solver::Solver& getSolver() const;
 };
 
 inline PropertyExtractor::EnergyType PropertyExtractor::getEnergyType() const{
@@ -857,6 +880,15 @@ inline void PropertyExtractor::Information::setSpinIndex(int spinIndex){
 
 inline int PropertyExtractor::Information::getSpinIndex() const{
 	return spinIndex;
+}
+
+inline const Solver::Solver& PropertyExtractor::getSolver() const{
+	TBTKExit(
+		"PropertyExtractor::getSolver()",
+		"Missing implementation of PropertyExtractor::getSolver() in"
+		" deriving class.",
+		""
+	);
 }
 
 };	//End of namespace PropertyExtractor
