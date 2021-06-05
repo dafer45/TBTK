@@ -511,7 +511,21 @@ TEST(PropertyExtractor, sampleDOS0){
 	for(unsigned int n = 0; n < ENERGY_RESOLUTION; n++){
 		EXPECT_NEAR(sampledDOS0(n), dos0Reference(n), EPSILON_10000);
 		EXPECT_NEAR(sampledDOS1(n), dos1Reference(n), EPSILON_10000);
-		EXPECT_NEAR(sampledDOSTotal(n), dosTotalReference(n), EPSILON_10000 + 0.1*dosTotalReference(n));
+		EXPECT_NEAR(
+			sampledDOSTotal(n),
+			dosTotalReference(n),
+			//EPSILON_10000 covers cases where the DOS is zero. The
+			//additional margin for non-zero entries is added to
+			//allow for unequal sampling of the {0, IDX_ALL} and
+			//{1, IDX_ALL} subsystems. Within each subsystem, there
+			//is no variation in the contribution to the DOS
+			//because of the symmetry in the second subindex. But
+			//for the total system, the asymmetry between the two
+			//subsystems result in unequal contributions to the
+			//sampled DOS, which only converges with the reference
+			//DOS in the limit of infinitly many samples.
+			EPSILON_10000 + 0.1*dosTotalReference(n)
+		);
 	}
 
 	for(unsigned int n = 0; n < 3; n++)
