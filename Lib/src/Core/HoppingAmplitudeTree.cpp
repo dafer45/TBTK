@@ -23,6 +23,7 @@
 #include "TBTK/Streams.h"
 
 #include <algorithm>
+#include <set>
 
 #include "TBTK/json.hpp"
 
@@ -179,7 +180,7 @@ HoppingAmplitudeTree::HoppingAmplitudeTree(
 HoppingAmplitudeTree::~HoppingAmplitudeTree(){
 }
 
-vector<Index> HoppingAmplitudeTree::getIndexList(const Index &pattern) const{
+vector<Index> HoppingAmplitudeTree::_getIndexList(const Index &pattern) const{
 	vector<Index> indexList;
 
 	Index subTreeIndex;
@@ -209,6 +210,19 @@ vector<Index> HoppingAmplitudeTree::getIndexList(const Index &pattern) const{
 	}
 
 	return indexList;
+}
+
+vector<Index> HoppingAmplitudeTree::getIndexList(
+	const vector<Index> &patterns
+) const{
+	set<Index> indexSet;
+	for(auto pattern : patterns){
+		vector<Index> indices = _getIndexList(pattern);
+		for(auto index : indices)
+			indexSet.insert(index);
+	}
+
+	return vector<Index>(indexSet.begin(), indexSet.end());
 }
 
 void HoppingAmplitudeTree::print(){

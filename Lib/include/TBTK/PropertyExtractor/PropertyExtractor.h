@@ -357,6 +357,25 @@ public:
 	 *  @return A Property::DOS containing the density of states. */
 	virtual Property::DOS calculateDOS();
 
+	/** Sample the DOS by averaging over the LDOS for multiple random @link
+	 *  Index Indices@endlink. The resulting DOS is normalized to integrate
+	 *  to the total number of states in the sample space covered by the
+	 *  patterns @link Index Indices@endlink.
+	 *
+	 *  @param numSamples The number of samples to use.
+	 *  @param patterns A list of patterns to randomize over. If the list
+	 *  is empty (default value), all @link Index Indices@endlink are
+	 *  randomized over.
+	 *
+	 *  @param seed Seed to use for randomization.
+	 *
+	 *  @return A Property::DOS containing the sampled DOS. */
+	virtual Property::DOS sampleDOS(
+		unsigned int numSamples,
+		const std::vector<Index> &patterns = {},
+		unsigned int seed = time(nullptr)
+	);
+
 	/** Calculate the entropy. This function should be overriden by those
 	 *  deriving classes that provide support for calculating the entropy.
 	 *  By default the PropertyExtractor prints an error message that the

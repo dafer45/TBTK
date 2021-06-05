@@ -66,7 +66,7 @@ IndexTree IndexTreeGenerator::generate(
 			}
 
 			vector<Index> indices = hoppingAmplitudeSet.getIndexList(
-				pattern
+				{pattern}
 			);
 			Index p = *(patterns.begin() + n);
 			for(unsigned int c = 0; c < indices.size(); c++){

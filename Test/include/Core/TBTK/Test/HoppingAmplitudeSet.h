@@ -50,16 +50,18 @@ TEST(HoppingAmplitudeSet, SerializeToJSON){
 
 	EXPECT_EQ(hoppingAmplitudeSet1.getBasisSize(), 5);
 
-	std::vector<Index> indices = hoppingAmplitudeSet1.getIndexList({0, 0, IDX_ALL});
+	std::vector<Index> indices = hoppingAmplitudeSet1.getIndexList({
+		{0, 0, IDX_ALL}
+	});
 	EXPECT_TRUE(indices[0].equals({0, 0, 0}));
 	EXPECT_TRUE(indices[1].equals({0, 0, 1}));
 	EXPECT_TRUE(indices[2].equals({0, 0, 2}));
 
-	indices = hoppingAmplitudeSet1.getIndexList({1, 1, IDX_ALL});
+	indices = hoppingAmplitudeSet1.getIndexList({{1, 1, IDX_ALL}});
 	EXPECT_TRUE(indices[0].equals({1, 1, 0}));
 	EXPECT_TRUE(indices[1].equals({1, 1, 1}));
 
-	indices = hoppingAmplitudeSet1.getIndexList({IDX_ALL, IDX_ALL, 1});
+	indices = hoppingAmplitudeSet1.getIndexList({{IDX_ALL, IDX_ALL, 1}});
 	EXPECT_TRUE(indices[0].equals({0, 0, 1}));
 	EXPECT_TRUE(indices[1].equals({1, 1, 1}));
 }
@@ -379,16 +381,16 @@ TEST(HoppingAmplitudeSet, getIndexList){
 	hoppingAmplitudeSet.add(HoppingAmplitude(1, {1, 1, 1}, {1, 1, 0}));
 	hoppingAmplitudeSet.construct();
 
-	std::vector<Index> indices = hoppingAmplitudeSet.getIndexList({0, 0, IDX_ALL});
+	std::vector<Index> indices = hoppingAmplitudeSet.getIndexList({{0, 0, IDX_ALL}});
 	EXPECT_TRUE(indices[0].equals({0, 0, 0}));
 	EXPECT_TRUE(indices[1].equals({0, 0, 1}));
 	EXPECT_TRUE(indices[2].equals({0, 0, 2}));
 
-	indices = hoppingAmplitudeSet.getIndexList({1, 1, IDX_ALL});
+	indices = hoppingAmplitudeSet.getIndexList({{1, 1, IDX_ALL}});
 	EXPECT_TRUE(indices[0].equals({1, 1, 0}));
 	EXPECT_TRUE(indices[1].equals({1, 1, 1}));
 
-	indices = hoppingAmplitudeSet.getIndexList({IDX_ALL, IDX_ALL, 1});
+	indices = hoppingAmplitudeSet.getIndexList({{IDX_ALL, IDX_ALL, 1}});
 	EXPECT_TRUE(indices[0].equals({0, 0, 1}));
 	EXPECT_TRUE(indices[1].equals({1, 1, 1}));
 }

@@ -206,15 +206,15 @@ public:
 	void generateBasisIndices();
 
 	/** Generate a list containing the indices in the HoppingAmplitudeTree
-	 *  that satisfies the specified pattern. The indices are ordered in
+	 *  that satisfies the specified patterns. The indices are ordered in
 	 *  terms of rising Hilbert space indices.
 	 *
-	 *  @param pattern Pattern to match against. IDX_ALL can be used as a
+	 *  @param patterns Patterns to match against. IDX_ALL can be used as a
 	 *  wildcard.
 	 *
 	 *  @return A list of physical indices that match the specified
-	 *  pattern. */
-	std::vector<Index> getIndexList(const Index &pattern) const;
+	 *  patterns. */
+	std::vector<Index> getIndexList(const std::vector<Index> &patterns) const;
 
 	/** Sort HoppingAmplitudes in row order. */
 	void sort(HoppingAmplitudeTree *rootNode);
@@ -469,6 +469,11 @@ private:
 	 *  HoppingAmplitudeTree::generateBasisIndices and is called
 	 *  recursively. */
 	int generateBasisIndices(int i);
+
+	/** Generate a list containing the indices in the HoppingAmplitudeTree
+	 *  that satisfies the specified pattern. Is called by
+	 *  HoppingAmplitudeTree::getIndexList. */
+	std::vector<Index> _getIndexList(const Index &pattern) const;
 
 	/** Print HoppingAmplitudes. Is called by the public
 	 *  HoppingAmplitudeTree::print and is called recursively. Mainly for

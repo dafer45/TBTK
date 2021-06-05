@@ -278,7 +278,7 @@ unsigned int FockSpace<BIT_REGISTER>::getSumParticles(
 	const Index &pattern
 ) const{
 	if(pattern.isPatternIndex()){
-		std::vector<Index> indexList = hoppingAmplitudeSet->getIndexList(pattern);
+		std::vector<Index> indexList = hoppingAmplitudeSet->getIndexList({pattern});
 
 		unsigned int numParticles = 0;
 		for(unsigned int n = 0; n < indexList.size(); n++){

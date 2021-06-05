@@ -231,6 +231,73 @@ Property::DOS PropertyExtractor::calculateDOS(){
 	);
 }
 
+Property::DOS PropertyExtractor::sampleDOS(
+	unsigned int numSamples,
+	const vector<Index> &patterns,
+	unsigned int seed
+){
+	bool selectiveSample = true;
+	if(patterns.size() == 0)
+		selectiveSample = false;
+
+/*	bool hasPatternMatchingIndex = false;
+	const HoppingAmplitudeSet &hoppingAmplitudeSet
+		= getSolver<Solver::Solver>().getModel().getHoppingAmplitudeSet();
+	for(auto pattern : patterns){
+		if(hoppingAmplitudeSet.getIndexList({pattern}).size() != 0){
+			hasPatternMatchingIndex = true;
+			break;
+		}
+	}*/
+	const Model &model = getSolver<Solver::Solver>().getModel();
+	const HoppingAmplitudeSet &hoppingAmplitudeSet
+		= model.getHoppingAmplitudeSet();
+	unsigned int sampleSpaceSize;
+	if(selectiveSample){
+		sampleSpaceSize = hoppingAmplitudeSet.getIndexList(
+			patterns
+		).size();
+	}
+	else{
+		sampleSpaceSize = model.getBasisSize();
+	}
+	TBTKAssert(
+		sampleSpaceSize > 0,
+		"PropertyExtractor::sampleDOS()",
+		"The provided 'patterns' does not match any Index in the"
+		<< " Model.",
+		""
+	);
+
+	Property::DOS dos(energyWindow);
+	srand(seed);
+	for(int n = 0; n < (int)numSamples; n++){
+		int state = rand()%model.getBasisSize();
+		Index index = hoppingAmplitudeSet.getPhysicalIndex(state);
+		if(selectiveSample){
+			bool acceptedIndex = false;
+			for(auto pattern : patterns){
+				if(pattern.equals(index, true)){
+					acceptedIndex = true;
+					break;
+				}
+			}
+			if(!acceptedIndex){
+				n--;
+				continue;
+			}
+		}
+
+		Property::LDOS ldos = calculateLDOS({index});
+		for(unsigned int n = 0; n < dos.getResolution(); n++)
+			dos(n) += ldos(index, n);
+	}
+	for(unsigned int n = 0; n < dos.getResolution(); n++)
+		dos(n) *= sampleSpaceSize/(double)numSamples;
+
+	return dos;
+}
+
 double PropertyExtractor::calculateEntropy(){
 	TBTKExit(
 		"PropertyExtractor::calculateEntropy()",
@@ -301,7 +368,7 @@ IndexTree PropertyExtractor::generateIndexTree(
 			}
 
 			vector<Index> indices = hoppingAmplitudeSet.getIndexList(
-				pattern
+				{pattern}
 			);
 			Index p = *(patterns.begin() + n);
 			for(unsigned int c = 0; c < indices.size(); c++){

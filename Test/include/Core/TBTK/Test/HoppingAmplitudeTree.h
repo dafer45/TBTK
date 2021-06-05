@@ -30,18 +30,18 @@ TEST(HoppingAmplitudeTree, SerializeToJSON){
 
 	EXPECT_EQ(hoppingAmplitudeTree1.getBasisSize(), 5);
 
-	std::vector<Index> indices = hoppingAmplitudeTree1.getIndexList(
+	std::vector<Index> indices = hoppingAmplitudeTree1.getIndexList({
 		{0, 0, IDX_ALL}
-	);
+	});
 	EXPECT_TRUE(indices[0].equals({0, 0, 0}));
 	EXPECT_TRUE(indices[1].equals({0, 0, 1}));
 	EXPECT_TRUE(indices[2].equals({0, 0, 2}));
 
-	indices = hoppingAmplitudeTree1.getIndexList({1, 1, IDX_ALL});
+	indices = hoppingAmplitudeTree1.getIndexList({{1, 1, IDX_ALL}});
 	EXPECT_TRUE(indices[0].equals({1, 1, 0}));
 	EXPECT_TRUE(indices[1].equals({1, 1, 1}));
 
-	indices = hoppingAmplitudeTree1.getIndexList({IDX_ALL, IDX_ALL, 1});
+	indices = hoppingAmplitudeTree1.getIndexList({{IDX_ALL, IDX_ALL, 1}});
 	EXPECT_TRUE(indices[0].equals({0, 0, 1}));
 	EXPECT_TRUE(indices[1].equals({1, 1, 1}));
 }
@@ -526,7 +526,7 @@ TEST(HoppingAmplitudeTree, generateBasisIndices){
 	//HoppingAmplitudeTree::getPhysicalIndex()
 }
 
-TEST(HoppingAmplitudeTree, getIndexList){
+TEST(HoppingAmplitudeTree, getIndexList0){
 	HoppingAmplitudeTree hoppingAmplitudeTree;
 	hoppingAmplitudeTree.add(HoppingAmplitude(1, {0, 0, 0}, {0, 0, 0}));
 	hoppingAmplitudeTree.add(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 1}));
@@ -537,20 +537,45 @@ TEST(HoppingAmplitudeTree, getIndexList){
 	hoppingAmplitudeTree.add(HoppingAmplitude(1, {1, 1, 1}, {1, 1, 0}));
 	hoppingAmplitudeTree.generateBasisIndices();
 
-	std::vector<Index> indices = hoppingAmplitudeTree.getIndexList(
+	std::vector<Index> indices = hoppingAmplitudeTree.getIndexList({
 		{0, 0, IDX_ALL}
-	);
+	});
 	EXPECT_TRUE(indices[0].equals({0, 0, 0}));
 	EXPECT_TRUE(indices[1].equals({0, 0, 1}));
 	EXPECT_TRUE(indices[2].equals({0, 0, 2}));
 
-	indices = hoppingAmplitudeTree.getIndexList({1, 1, IDX_ALL});
+	indices = hoppingAmplitudeTree.getIndexList({{1, 1, IDX_ALL}});
 	EXPECT_TRUE(indices[0].equals({1, 1, 0}));
 	EXPECT_TRUE(indices[1].equals({1, 1, 1}));
 
-	indices = hoppingAmplitudeTree.getIndexList({IDX_ALL, IDX_ALL, 1});
+	indices = hoppingAmplitudeTree.getIndexList({{IDX_ALL, IDX_ALL, 1}});
 	EXPECT_TRUE(indices[0].equals({0, 0, 1}));
 	EXPECT_TRUE(indices[1].equals({1, 1, 1}));
+}
+
+TEST(HoppingAmplitudeTree, getIndexList1){
+	HoppingAmplitudeTree hoppingAmplitudeTree;
+	hoppingAmplitudeTree.add(HoppingAmplitude(1, {0, 0, 0}, {0, 0, 0}));
+	hoppingAmplitudeTree.add(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 1}));
+	hoppingAmplitudeTree.add(HoppingAmplitude(1, {0, 0, 1}, {0, 0, 2}));
+	hoppingAmplitudeTree.add(HoppingAmplitude(1, {0, 0, 2}, {0, 0, 1}));
+	hoppingAmplitudeTree.add(HoppingAmplitude(1, {0, 1, 0}, {0, 1, 0}));
+	hoppingAmplitudeTree.add(HoppingAmplitude(1, {0, 1, 0}, {0, 1, 1}));
+	hoppingAmplitudeTree.add(HoppingAmplitude(1, {0, 1, 1}, {0, 1, 0}));
+	hoppingAmplitudeTree.add(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 0}));
+	hoppingAmplitudeTree.add(HoppingAmplitude(1, {1, 1, 0}, {1, 1, 1}));
+	hoppingAmplitudeTree.add(HoppingAmplitude(1, {1, 1, 1}, {1, 1, 0}));
+	hoppingAmplitudeTree.generateBasisIndices();
+
+	std::vector<Index> indices = hoppingAmplitudeTree.getIndexList({
+		{0, IDX_ALL, 0},
+		{0, 0, IDX_ALL}
+	});
+	EXPECT_EQ(indices.size(), 4);
+	EXPECT_TRUE(indices[0].equals({0, 0, 0}));
+	EXPECT_TRUE(indices[1].equals({0, 0, 1}));
+	EXPECT_TRUE(indices[2].equals({0, 0, 2}));
+	EXPECT_TRUE(indices[3].equals({0, 1, 0}));
 }
 
 //TODO

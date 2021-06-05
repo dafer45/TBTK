@@ -1,4 +1,6 @@
 #include "TBTK/Functions.h"
+#include "TBTK/Model.h"
+#include "TBTK/PropertyExtractor/Diagonalizer.h"
 #include "TBTK/PropertyExtractor/PropertyExtractor.h"
 #include "TBTK/Solver/ArnoldiIterator.h"
 #include "TBTK/Solver/Diagonalizer.h"
@@ -11,6 +13,7 @@ namespace TBTK{
 namespace PropertyExtractor{
 
 const double EPSILON_100 = 100*std::numeric_limits<double>::epsilon();
+const double EPSILON_10000 = 10000*std::numeric_limits<double>::epsilon();
 
 //Helper class that exposes the PropertyExtractors protected functions.
 class PublicPropertyExtractor : public PropertyExtractor{
@@ -501,6 +504,75 @@ TEST(PropertyExtractor, calculateDOS){
 		{
 			Streams::setStdMuteErr();
 			propertyExtractor.calculateDOS();
+		},
+		::testing::ExitedWithCode(1),
+		""
+	);
+}
+
+TEST(PropertyExtractor, sampleDOS0){
+	const unsigned int SIZE = 10;
+	Model models[3];
+	for(unsigned int n = 0; n < SIZE; n++){
+		models[0] << HoppingAmplitude(-1, {n}, {(n+1)%SIZE}) + HC;
+		models[1] << HoppingAmplitude(-2, {n}, {(n+1)%SIZE}) + HC;
+		models[2] << HoppingAmplitude(-1, {0, n}, {0, (n+1)%SIZE}) + HC;
+		models[2] << HoppingAmplitude(-2, {1, n}, {1, (n+1)%SIZE}) + HC;
+	}
+	for(unsigned int n = 0; n < 3; n++)
+		models[n].construct();
+
+	Solver::Diagonalizer solvers[3];
+	for(unsigned int n = 0; n < 3; n++){
+		solvers[n].setModel(models[n]);
+		solvers[n].run();
+	}
+
+	Diagonalizer propertyExtractors[3];
+	const double LOWER_BOUND = -10;
+	const double UPPER_BOUND = 10;
+	const unsigned int ENERGY_RESOLUTION = 1000;
+	for(unsigned int n = 0; n < 3; n++){
+		propertyExtractors[n].setSolver(solvers[n]);
+		propertyExtractors[n].setEnergyWindow(
+			LOWER_BOUND,
+			UPPER_BOUND,
+			ENERGY_RESOLUTION
+		);
+	}
+
+	Property::DOS dos0Reference = propertyExtractors[0].calculateDOS();
+	Property::DOS dos1Reference = propertyExtractors[1].calculateDOS();
+	Property::DOS dosTotalReference = propertyExtractors[2].calculateDOS();
+
+	const unsigned int NUM_SAMPLES = 100;
+	const unsigned int RANDOM_SEED = 0;
+	Property::DOS sampledDOS0 = propertyExtractors[2].sampleDOS(NUM_SAMPLES, {{0, IDX_ALL}}, RANDOM_SEED);
+	Property::DOS sampledDOS1 = propertyExtractors[2].sampleDOS(NUM_SAMPLES, {{1, IDX_ALL}}, RANDOM_SEED);
+	Property::DOS sampledDOSTotal = propertyExtractors[2].sampleDOS(NUM_SAMPLES, {}, RANDOM_SEED);
+
+	for(unsigned int n = 0; n < ENERGY_RESOLUTION; n++){
+		EXPECT_NEAR(sampledDOS0(n), dos0Reference(n), EPSILON_10000);
+		EXPECT_NEAR(sampledDOS1(n), dos1Reference(n), EPSILON_10000);
+		EXPECT_NEAR(sampledDOSTotal(n), dosTotalReference(n), EPSILON_10000 + 0.1*dosTotalReference(n));
+	}
+}
+
+TEST(PropertyExtractor, sampleDOS1){
+	Model model;
+	model << HoppingAmplitude(-1, {0}, {0});
+	model.construct();
+
+	Solver::Diagonalizer solver;
+	solver.setModel(model);
+	solver.run();
+
+	Diagonalizer propertyExtractor;
+	propertyExtractor.setSolver(solver);
+	EXPECT_EXIT(
+		{
+			Streams::setStdMuteErr();
+			propertyExtractor.sampleDOS(100, {{1}});
 		},
 		::testing::ExitedWithCode(1),
 		""
