@@ -240,15 +240,6 @@ Property::DOS PropertyExtractor::sampleDOS(
 	if(patterns.size() == 0)
 		selectiveSample = false;
 
-/*	bool hasPatternMatchingIndex = false;
-	const HoppingAmplitudeSet &hoppingAmplitudeSet
-		= getSolver<Solver::Solver>().getModel().getHoppingAmplitudeSet();
-	for(auto pattern : patterns){
-		if(hoppingAmplitudeSet.getIndexList({pattern}).size() != 0){
-			hasPatternMatchingIndex = true;
-			break;
-		}
-	}*/
 	const Model &model = getSolver<Solver::Solver>().getModel();
 	const HoppingAmplitudeSet &hoppingAmplitudeSet
 		= model.getHoppingAmplitudeSet();
