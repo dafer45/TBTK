@@ -44,6 +44,9 @@ namespace Property{
  *  \image html output/Property/WaveFunctions/figures/PropertyWaveFunctionsWaveFunction2D.png */
 class WaveFunctions : public AbstractProperty<std::complex<double>>{
 public:
+	/** Constructs an uninitialized WaveFunctions. */
+	WaveFunctions();
+
 	/** Constructs WaveFunctions on the Custom format. [See
 	 *  AbstractProperty for detailed information about the Custom format.]
 	 *
@@ -132,6 +135,9 @@ private:
 	/** IndexTree describing*/
 	std::vector<unsigned int> states;
 };
+
+inline WaveFunctions::WaveFunctions(){
+}
 
 inline const std::vector<unsigned int>& WaveFunctions::getStates() const{
 	return states;
