@@ -7,6 +7,10 @@ namespace TBTK{
 namespace Property{
 
 TEST(WaveFunctions, Constructor0){
+	WaveFunctions waveFunctions;
+}
+
+TEST(WaveFunctions, Constructor1){
 	IndexTree indexTree;
 	indexTree.add({1, 1});
 	indexTree.add({1, 2});
@@ -113,7 +117,7 @@ TEST(WaveFunctions, Constructor0){
 	);
 }
 
-TEST(WaveFunctions, Constructor1){
+TEST(WaveFunctions, Constructor2){
 	IndexTree indexTree;
 	indexTree.add({1, 1});
 	indexTree.add({1, 2});
