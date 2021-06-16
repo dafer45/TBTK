@@ -437,10 +437,10 @@ inline void ChebyshevExpander::setEnergyWindow(const Range &energyWindow){
 		energyWindow[0] > -scaleFactor*(1 - 16*epsilon)
 		&& energyWindow.getLast() < scaleFactor*(1 - 16*epsilon),
 		"Solver::ChebyshevExpander::setEnergyWindow()",
-		"Invalid energy window. The 'energyWindow=['"
-		<< energyWindow[0] << ", " << energyWindow.getLast() << "] is"
+		"Invalid energy window. The 'energyWindow=["
+		<< energyWindow[0] << ", " << energyWindow.getLast() << "]' is"
 		<< " not contained in the interval (-scaleFactor, scaleFactor)"
-		<< "=(" << scaleFactor << ", scaleFactor).",
+		<< "=(" << -scaleFactor << ", " << scaleFactor << ").",
 		""
 	);
 	destroyLookupTable();
