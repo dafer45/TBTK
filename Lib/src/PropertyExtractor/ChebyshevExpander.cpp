@@ -66,8 +66,8 @@ ChebyshevExpander::ChebyshevExpander(Solver::ChebyshevExpander &solver){
 	setSolver(solver);
 
 	setEnergyWindow(
-		-solver.getScaleFactor(),
-		solver.getScaleFactor(),
+		energyWindow[0],
+		energyWindow.getLast(),
 		energyWindow.getResolution()
 	);
 
@@ -679,9 +679,8 @@ void ChebyshevExpander::calculateLDOSCallback(
 		= greensFunction.getData();
 
 	const Range &energyWindow = propertyExtractor->getEnergyWindow();
-	const double dE = energyWindow[1] - energyWindow[0];
 	for(unsigned int n = 0; n < energyWindow.getResolution(); n++)
-		data[offset + n] += imag(greensFunctionData[n])/M_PI*dE;
+		data[offset + n] += imag(greensFunctionData[n])/M_PI;
 }
 
 void ChebyshevExpander::calculateSP_LDOSCallback(
@@ -701,7 +700,6 @@ void ChebyshevExpander::calculateSP_LDOSCallback(
 	Index from(index);
 
 	const Range &energyWindow = propertyExtractor->getEnergyWindow();
-	const double dE = energyWindow[1] - energyWindow[0];
 	for(int n = 0; n < 4; n++){
 		to.at(spinIndex) = n/2;		//up, up, down, down
 		from.at(spinIndex) = n%2;	//up, down, up, down
@@ -716,7 +714,7 @@ void ChebyshevExpander::calculateSP_LDOSCallback(
 
 		for(unsigned int e = 0; e < energyWindow.getResolution(); e++){
 			data[offset + e].at(n/2, n%2)
-				+= -i*greensFunctionData[e]/M_PI*dE;
+				+= -i*greensFunctionData[e]/M_PI;
 		}
 	}
 }
