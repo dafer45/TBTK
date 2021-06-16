@@ -12,22 +12,6 @@ EXECUTE_PROCESS(
 ENABLE_TESTING()
 
 LIST(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake/Modules/")
-IF(CMAKE_BUILD_TYPE MATCHES DEBUG OR CMAKE_BUILD_TYPE MATCHES Debug)
-	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage -fno-inline -fno-inline-small-functions -fno-default-inline")
-	SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -coverage")
-	FILE(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/Coverage")
-	ADD_CUSTOM_TARGET(
-		clearCoverage
-		COMMAND lcov --directory ${CMAKE_BINARY_DIR} --zerocounters
-		COMMAND lcov --capture --initial --directory ${CMAKE_BINARY_DIR} --output-file Coverage/CoverageBaseline.info
-	)
-	ADD_CUSTOM_TARGET(
-		coverage
-		COMMAND lcov --capture --directory ${CMAKE_BINARY_DIR} --output-file Coverage/CoverageTest.info
-		COMMAND lcov --add-tracefile Coverage/CoverageBaseline.info --add-tracefile Coverage/CoverageTest.info --output-file Coverage/Coverage.info
-		COMMAND cd Coverage && genhtml Coverage.info
-	)
-ENDIF(CMAKE_BUILD_TYPE MATCHES DEBUG OR CMAKE_BUILD_TYPE MATCHES Debug)
 
 INCLUDE(TBTKVersionInfo)
 INCLUDE(TBTKBuildOptions)
@@ -320,6 +304,35 @@ IF(TBTK_ENABLE_ALL_OPTIONS)
 ENDIF(TBTK_ENABLE_ALL_OPTIONS)
 
 MESSAGE("================================================================================")
+
+MESSAGE("")
+MESSAGE("================================ TEST COVERAGE ===============================")
+IF(CMAKE_BUILD_TYPE MATCHES DEBUG OR CMAKE_BUILD_TYPE MATCHES Debug)
+	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage -fno-inline -fno-inline-small-functions -fno-default-inline")
+	SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -coverage")
+	FILE(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/Coverage")
+	ADD_CUSTOM_TARGET(
+		clearCoverage
+		COMMAND lcov --directory ${CMAKE_BINARY_DIR} --zerocounters
+		COMMAND lcov --capture --initial --directory ${CMAKE_BINARY_DIR} --output-file Coverage/CoverageBaseline.info
+	)
+	ADD_CUSTOM_TARGET(
+		coverage
+		COMMAND lcov --capture --directory ${CMAKE_BINARY_DIR} --output-file Coverage/CoverageTest.info
+		COMMAND lcov --add-tracefile Coverage/CoverageBaseline.info --add-tracefile Coverage/CoverageTest.info --output-file Coverage/Coverage.info
+		COMMAND cd Coverage && genhtml Coverage.info
+	)
+	MESSAGE("Test coverage enabled. Make sure 'lcov' is installed for the following")
+	MESSAGE(" commands to work.")
+	MESSAGE("--------------------------------------------------------------------------------")
+	MESSAGE("make coverage - Generate test coverage report.")
+	MESSAGE("make clearCoverage - Clear test coverage report.")
+	MESSAGE("==============================================================================")
+ELSE(CMAKE_BUILD_TYPE MATCHES DEBUG OR CMAKE_BUILD_TYPE MATCHES Debug)
+	MESSAGE("Test coverage only available in debug mode. To enable test coverage report,")
+	MESSAGE(" set -DSMAKE_BUILD_TYPE=DEBUG and install lcov.")
+	MESSAGE("==============================================================================")
+ENDIF(CMAKE_BUILD_TYPE MATCHES DEBUG OR CMAKE_BUILD_TYPE MATCHES Debug)
 
 #C++ flags
 IF(CMAKE_BUILD_TYPE MATCHES DEBUG OR CMAKE_BUILD_TYPE MATCHES Debug)
