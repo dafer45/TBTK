@@ -205,7 +205,7 @@ See the documentation for deatiled information about the corresponding component
 ## Installation
 ```bash
 git clone http://github.com/dafer45/TBTK
-git checkout v2.5.0
+git checkout v2.6.1
 mkdir TBTKBuild
 cd TBTKBuild
 cmake ../TBTK
