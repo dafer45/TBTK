@@ -64,8 +64,8 @@ TEST(ChebyshevExpander, calculateLDOS1){
 	Diagonalizer propertyExtractorReference;
 	propertyExtractorReference.setSolver(solverReference);
 
-	const double LOWER_BOUND = -SCALE_FACTOR*0.9;
-	const double UPPER_BOUND = SCALE_FACTOR*0.9;
+	const double LOWER_BOUND = -2.5;
+	const double UPPER_BOUND = 2.5;
 	const unsigned int RESOLUTION = 1000;
 	propertyExtractor.setEnergyWindow(
 		LOWER_BOUND,
@@ -85,8 +85,8 @@ TEST(ChebyshevExpander, calculateLDOS1){
 	//genereates very unsmooth data, while the ChebyshevExpander generates
 	//smoother data. Putting them both through a smoother evens out the
 	//differences.
-	const double SMOOTHING_SIGMA = 0.2;
-	const unsigned int SMOOTHING_WINDOW = 101;
+	const double SMOOTHING_SIGMA = 0.3;
+	const unsigned int SMOOTHING_WINDOW = 1001;
 	ldos = Smooth::gaussian(ldos, SMOOTHING_SIGMA, SMOOTHING_WINDOW);
 	ldosReference = Smooth::gaussian(
 		ldosReference,
@@ -94,8 +94,13 @@ TEST(ChebyshevExpander, calculateLDOS1){
 		SMOOTHING_WINDOW
 	);
 
-	for(unsigned int n = 0; n < ldos.getResolution(); n++)
-		EXPECT_NEAR(ldos({0}, n), ldosReference({0}, n), 0.02);
+	for(unsigned int n = 0; n < ldos.getResolution(); n++){
+		EXPECT_NEAR(
+			ldos({0}, n),
+			ldosReference({0}, n),
+			(ldosReference({0}, n) + ldos({0}, n))*0.1
+		);
+	}
 }
 
 };	//End of namespace PropertyExtractor
