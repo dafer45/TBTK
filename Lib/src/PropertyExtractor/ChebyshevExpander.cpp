@@ -723,13 +723,10 @@ void ChebyshevExpander::calculateLDOSCallback(
 	const std::vector<complex<double>> &greensFunctionData
 		= greensFunction.getData();
 
-	double lowerBound = pe->getLowerBound();
-	double upperBound = pe->getUpperBound();
 	int energyResolution = pe->getEnergyResolution();
 
-	const double dE = (upperBound - lowerBound)/energyResolution;
 	for(int n = 0; n < energyResolution; n++)
-		data[offset + n] += imag(greensFunctionData[n])/M_PI*dE;
+		data[offset + n] += imag(greensFunctionData[n])/M_PI;
 }
 
 void ChebyshevExpander::calculateSP_LDOSCallback(
@@ -748,11 +745,8 @@ void ChebyshevExpander::calculateSP_LDOSCallback(
 	Index to(index);
 	Index from(index);
 
-	double lowerBound = pe->getLowerBound();
-	double upperBound = pe->getUpperBound();
 	int energyResolution = pe->getEnergyResolution();
 
-	const double dE = (upperBound - lowerBound)/energyResolution;
 	for(int n = 0; n < 4; n++){
 		to.at(spinIndex) = n/2;		//up, up, down, down
 		from.at(spinIndex) = n%2;	//up, down, up, down
@@ -765,7 +759,7 @@ void ChebyshevExpander::calculateSP_LDOSCallback(
 			= greensFunction.getData();
 
 		for(int e = 0; e < energyResolution; e++)
-			data[offset + e].at(n/2, n%2) += -i*greensFunctionData[e]/M_PI*dE;
+			data[offset + e].at(n/2, n%2) += -i*greensFunctionData[e]/M_PI;
 	}
 }
 
