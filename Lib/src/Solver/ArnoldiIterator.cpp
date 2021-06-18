@@ -516,7 +516,7 @@ void ArnoldiIterator::arnoldiLoop(){
 		//Sigma not applied by zneupd_ in normal mode. Therefore add
 		//it.
 		if(mode == Mode::Normal)
-			for(int n = 0; n < basisSize; n++)
+			for(int n = 0; n < numEigenValues+1; n++)
 				eigenValues[n] += sigma;
 		//Calculate |Ax - lambda*x| here
 		//...
