@@ -51,6 +51,13 @@ Property::WaveFunctions ArnoldiIterator::calculateWaveFunctions(
 	vector<Index> patterns,
 	vector<Subindex> states
 ){
+	TBTKAssert(
+                aSolver->getCalculateEigenVectors(),
+                "PropertyExtractor::ArnoldiIterator::calculateWaveFunctions()",
+                "Eigenvectors not available.",
+                "Configure the solver to calculate eigenvectors using"
+                << " Solver::ArnoldiIterator::setCalculateEigenVectors()."
+        );
 	IndexTree allIndices = generateIndexTree(
 		patterns,
 		aSolver->getModel().getHoppingAmplitudeSet(),
@@ -68,7 +75,7 @@ Property::WaveFunctions ArnoldiIterator::calculateWaveFunctions(
 	vector<unsigned int> statesVector;
 	if(states.size() == 1){
 		if((*states.begin()).isWildcard()){
-			for(int n = 0; n < aSolver->getModel().getBasisSize(); n++)
+			for(int n = 0; n < aSolver->getNumEigenValues(); n++)
 				statesVector.push_back(n);
 		}
 		else{
