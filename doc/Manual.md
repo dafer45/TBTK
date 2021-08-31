@@ -1498,7 +1498,7 @@ If the Property is on the Custom format, an additional pattern @link TBTK::Index
 For example, it is possible to export a Property with the index structure {x, y, z} for all Indices of the form {x, 5, z} as follows.
 ```cpp
 	Exporter exporter;
-	exporter.save({_a_, 5, _a_}, property, "Filename");
+	exporter.save(property, {_a_, 5, _a_}, "Filename");
 ```
 
 By default, the @link TBTK::Exporter Exporter@endlink exports data using row major order.
