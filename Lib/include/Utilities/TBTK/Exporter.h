@@ -88,7 +88,7 @@ namespace TBTK{
  *  IndexDescriptor::Format::Custom can be exported as follows.
  *  ```cpp
  *    Exporter exporter;
- *    exporter.save({_a_, 5, _a_}, property, "Filename");
+ *    exporter.save(property, {_a_, 5, _a_}, "Filename");
  *  ```
  *  Here it is assumed that *property* has the index structure {x, y, z} and
  *  that the data for all indices satisfying the pattern {x, 5, z}. are to be
@@ -105,7 +105,7 @@ namespace TBTK{
  *  ```cpp
  *    Exporter exporter;
  *    exporter.setFormat(Exporter::Format::ColumnMajor);
- *    exporter.save({_a_, _a_, _a_}, density, "Filename");
+ *    exporter.save(density, {_a_, _a_, _a_}, "Filename");
  *  ```
  *
  *  ### Import to MATLAB
@@ -121,7 +121,7 @@ namespace TBTK{
  *
  *  ```cpp
  *    Exporter exporter;
- *    exporter.save({_a_, _a_, _a_}, density, "Filename");
+ *    exporter.save(density, {_a_, _a_, _a_}, "Filename");
  *  ```
  *
  *  ### Import to Python
