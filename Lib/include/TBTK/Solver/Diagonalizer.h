@@ -92,6 +92,12 @@ public:
 	 *  self-consistent callculation. */
 	void setMaxIterations(int maxIterations);
 
+	/** Set if you want to use GPU acceleration provided by CUDA routines.
+	 *
+	 *  @param useGPUAcceleration Turns GPU acceleration for the Diagonalizer 
+	 *  solver off or on. */
+	void setUseGPUAcceleration(bool useGPUAcceleration);
+
 	/** Run calculations. Diagonalizes ones if no self-consistency callback
 	 *  have been set, or otherwise multiple times until self-consistencey
 	 *  or maximum number of iterations has been reached. */
@@ -159,6 +165,9 @@ private:
 	/** Maximum number of iterations in the self-consistency loop. */
 	int maxIterations;
 
+	/** Enables GPU acceleration for the solver. */
+	bool useGPUAcceleration;
+
 	/** SelfConsistencyCallback to call each time a diagonalization has
 	 *  been completed. */
 	SelfConsistencyCallback *selfConsistencyCallback;
@@ -171,6 +180,9 @@ private:
 
 	/** Diagonalizes the Hamiltonian. */
 	void solve();
+
+	/** Diagonalizes the Hamiltonian using the GPU. */
+	void solveGPU();
 
 	/** Setup the basis transformation. */
 	void setupBasisTransformation();
