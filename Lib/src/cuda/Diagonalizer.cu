@@ -25,6 +25,7 @@
 
 #include <cusolverDn.h>
 #include <cuda_runtime.h>
+#include "cusolver_utils.h"
 
 using namespace std;
 
@@ -166,29 +167,49 @@ void Diagonalizer::solveGPU(){
     //Run the diagonalization routine
     
 
-    TBTKAssert(
-        cusolverDnXsyevd(
-            cusolverHandle, 
-            NULL, 
-            jobz, 
-            uplo,
-            n, 
-            CUDA_C_64F,
-            hamiltonian_device,
-            n,
-            CUDA_R_64F,
-            eigenValues_device,
-            CUDA_C_64F,
-            buffer_device,
-            sizeBuffer_device,
-            buffer_host,
-            sizeBuffer_host,
-            info_device
-        ) == CUSOLVER_STATUS_SUCCESS,
-        "Diagonalizer::solveGPU()",
-        "CUDA error in cusolverDnXsyevd.",
-        "" 
-    )
+    // TBTKAssert(
+    //     cusolverDnXsyevd(
+    //         cusolverHandle, 
+    //         NULL, 
+    //         jobz, 
+    //         uplo,
+    //         n, 
+    //         CUDA_C_64F,
+    //         hamiltonian_device,
+    //         n,
+    //         CUDA_R_64F,
+    //         eigenValues_device,
+    //         CUDA_C_64F,
+    //         buffer_device,
+    //         sizeBuffer_device,
+    //         buffer_host,
+    //         sizeBuffer_host,
+    //         info_device
+    //     ) == CUSOLVER_STATUS_SUCCESS,
+    //     "Diagonalizer::solveGPU()",
+    //     "CUDA error in cusolverDnXsyevd.",
+    //     "" 
+    // )
+
+    int nrEigenValues = 0;
+    CUSOLVER_CHECK( cusolverDnXsyevd(
+        cusolverHandle, 
+        NULL, 
+        jobz, 
+        uplo,
+        n, 
+        CUDA_C_64F,
+        hamiltonian_device,
+        n,
+        CUDA_R_64F,
+        eigenValues_device,
+        CUDA_C_64F,
+        buffer_device,
+        sizeBuffer_device,
+        buffer_host,
+        sizeBuffer_host,
+        info_device
+    ));
 
     TBTKAssert(
         cudaMemcpyAsync(

@@ -47,7 +47,12 @@ void Diagonalizer::run(){
 			Streams::out << "." << flush;
 		}
 
-		solve();
+		if(useGPUAcceleration){
+			solveGPU();
+		}
+		else{
+			solve();
+		}
 
 		if(selfConsistencyCallback){
 			if(selfConsistencyCallback->selfConsistencyCallback(*this))
@@ -71,7 +76,13 @@ void Diagonalizer::init(){
 	if(getGlobalVerbose() && getVerbose())
 		Streams::out << "\tBasis size: " << basisSize << "\n";
 
-	hamiltonian = CArray<complex<double>>((basisSize*(basisSize+1))/2);
+	if(useGPUAcceleration){
+		hamiltonian = CArray<complex<double>>(basisSize*basisSize);
+	}
+	else{
+		hamiltonian = CArray<complex<double>>((basisSize*(basisSize+1))/2);
+	}
+	
 	eigenValues = CArray<double>(basisSize);
 	eigenVectors = CArray<complex<double>>(basisSize*basisSize);
 
@@ -97,12 +108,18 @@ void Diagonalizer::update(){
 		int to = model.getHoppingAmplitudeSet().getBasisIndex(
 			(*iterator).getToIndex()
 		);
-		if(from >= to)
+		if(!useGPUAcceleration && from >= to)
 			hamiltonian[to + (from*(from+1))/2] += (*iterator).getAmplitude();
+		else{
+			hamiltonian[to*basisSize + from] += (*iterator).getAmplitude();
+		}
 	}
 
-	setupBasisTransformation();
-	transformToOrthonormalBasis();
+	if(!useGPUAcceleration){
+		setupBasisTransformation();
+		transformToOrthonormalBasis();
+	}
+
 }
 
 //Lapack function for matrix diagonalization of triangular matrix.

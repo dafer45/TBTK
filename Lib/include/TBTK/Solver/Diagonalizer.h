@@ -232,6 +232,10 @@ inline const double Diagonalizer::getEigenValue(int state){
 	return eigenValues[state];
 }
 
+inline void Diagonalizer::setUseGPUAcceleration(bool useGPUAcceleration){
+	this->useGPUAcceleration = useGPUAcceleration;
+}
+
 };	//End of namespace Solver
 };	//End of namespace TBTK
 
