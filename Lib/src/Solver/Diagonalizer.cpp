@@ -108,11 +108,13 @@ void Diagonalizer::update(){
 		int to = model.getHoppingAmplitudeSet().getBasisIndex(
 			(*iterator).getToIndex()
 		);
-		if(!useGPUAcceleration && from >= to)
-			hamiltonian[to + (from*(from+1))/2] += (*iterator).getAmplitude();
-		else{
-			hamiltonian[to*basisSize + from] += (*iterator).getAmplitude();
-		}
+		if(from >= to)
+			if(!useGPUAcceleration){
+				hamiltonian[to + (from*(from+1))/2] += (*iterator).getAmplitude();
+			}
+			else{
+				hamiltonian[to + from*basisSize] += (*iterator).getAmplitude();
+			}
 	}
 
 	if(!useGPUAcceleration){
