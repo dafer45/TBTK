@@ -25,7 +25,6 @@
 
 #include <cusolverDn.h>
 #include <cuda_runtime.h>
-#include "cusolver_utils.h"
 
 using namespace std;
 
@@ -153,9 +152,10 @@ void Diagonalizer::solveGPU(){
         ""
     )
 
-    
+    // Cuda managed memory is used, instead of device memory, as this allocation
+    // can become substancial for bigger hamiltonians
     TBTKAssert(
-        cudaMalloc(reinterpret_cast<void **>(&buffer_device), 
+        cudaMallocManaged(reinterpret_cast<void **>(&buffer_device),
         sizeof(complex<double>) * sizeBuffer_device
         ) == cudaSuccess,
         "Diagonalizer::solveGPU()",
@@ -165,34 +165,8 @@ void Diagonalizer::solveGPU(){
     buffer_host = malloc(sizeof(complex<double>) * sizeBuffer_host);
 
     //Run the diagonalization routine
-    
-
-    // TBTKAssert(
-    //     cusolverDnXsyevd(
-    //         cusolverHandle, 
-    //         NULL, 
-    //         jobz, 
-    //         uplo,
-    //         n, 
-    //         CUDA_C_64F,
-    //         hamiltonian_device,
-    //         n,
-    //         CUDA_R_64F,
-    //         eigenValues_device,
-    //         CUDA_C_64F,
-    //         buffer_device,
-    //         sizeBuffer_device,
-    //         buffer_host,
-    //         sizeBuffer_host,
-    //         info_device
-    //     ) == CUSOLVER_STATUS_SUCCESS,
-    //     "Diagonalizer::solveGPU()",
-    //     "CUDA error in cusolverDnXsyevd.",
-    //     "" 
-    // )
-
-    int nrEigenValues = 0;
-    CUSOLVER_CHECK( cusolverDnXsyevd(
+    TBTKAssert(
+        cusolverDnXsyevd(
         cusolverHandle, 
         NULL, 
         jobz, 
@@ -209,7 +183,11 @@ void Diagonalizer::solveGPU(){
         buffer_host,
         sizeBuffer_host,
         info_device
-    ));
+        ) == CUSOLVER_STATUS_SUCCESS,
+        "Diagonalizer::solveGPU()",
+        "CUDA error in cusolverDnXsyevd.",
+        "" 
+    )
 
     TBTKAssert(
         cudaMemcpyAsync(
