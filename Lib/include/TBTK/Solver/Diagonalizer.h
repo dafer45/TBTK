@@ -138,7 +138,7 @@ public:
 	 *  @param state The state number, ordered in accending order.
 	 *
 	 *  @return The eigenvalue for the given state. */
-	const double getEigenValue(int state);
+	double getEigenValue(int state);
 
 	/** Get amplitude for given eigenvector \f$n\f$ and physical index
 	 * \f$x\f$: \f$\Psi_{n}(x)\f$.
@@ -228,7 +228,7 @@ inline const std::complex<double> Diagonalizer::getAmplitude(
 	return eigenVectors[model.getBasisSize()*state + model.getBasisIndex(index)];
 }
 
-inline const double Diagonalizer::getEigenValue(int state){
+inline double Diagonalizer::getEigenValue(int state){
 	return eigenValues[state];
 }
 

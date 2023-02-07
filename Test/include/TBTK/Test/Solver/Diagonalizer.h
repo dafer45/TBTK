@@ -122,7 +122,7 @@ TEST(Diagonalizer, getEigenValues){
 	solver2.setModel(model1);
 	solver2.setUseGPUAcceleration(true);
 	#ifdef TBTK_CUDA_ENABLED
-		solver2.run()
+		solver2.run();
 		const CArray<double> &eigenValues3 = solver2.getEigenValues();
 		EXPECT_NEAR(eigenValues3[0], -1, EPSILON_100);
 		EXPECT_NEAR(eigenValues3[1], 1, EPSILON_100);
@@ -186,7 +186,7 @@ TEST(Diagonalizer, getEigenVectors){
 	solver2.setModel(model);
 	solver2.setUseGPUAcceleration(true);
 	#ifdef TBTK_CUDA_ENABLED
-		solver2.run()
+		solver2.run();
 		//Normal access.
 		const CArray<std::complex<double>> &eigenVectors3
 			= solver2.getEigenVectors();
@@ -266,7 +266,7 @@ TEST(Diagonalizer, getEigenVectors){
 	solver3.setModel(model1);
 	solver3.setUseGPUAcceleration(true);
 	#ifdef TBTK_CUDA_ENABLED
-		solver3.run()
+		solver3.run();
 		const CArray<std::complex<double>> &eigenVectors5
 			= solver3.getEigenVectors();
 		EXPECT_NEAR(real(eigenVectors5[0]), sqrt(2), EPSILON_100);
@@ -309,6 +309,28 @@ TEST(Diagonalizer, getEigenValue){
 
 	EXPECT_DOUBLE_EQ(solver.getEigenValue(0), -1);
 	EXPECT_DOUBLE_EQ(solver.getEigenValue(1), 1);
+
+	/////////////////////////////
+	// Test GPU implementation //
+	/////////////////////////////
+	Diagonalizer solver1;
+	solver1.setVerbose(false);
+	solver1.setModel(model);
+	solver1.setUseGPUAcceleration(true);
+	#ifdef TBTK_CUDA_ENABLED
+		solver1.run();
+		EXPECT_DOUBLE_EQ(solver1.getEigenValue(0), -1);
+		EXPECT_DOUBLE_EQ(solver1.getEigenValue(1), 1);
+	#else
+		EXPECT_EXIT(
+			{
+				Streams::setStdMuteErr();
+				solver1.run();
+			},
+			::testing::ExitedWithCode(1),
+			""
+		);
+	#endif
 }
 
 TEST(Diagonalizer, getAmplitude){
@@ -343,7 +365,7 @@ TEST(Diagonalizer, getAmplitude){
 	solver1.setModel(model);
 	solver1.setUseGPUAcceleration(true);
 	#ifdef TBTK_CUDA_ENABLED
-		solver1.run()
+		solver1.run();
 		EXPECT_DOUBLE_EQ(
 			real(solver1.getAmplitude(0, {0})/solver1.getAmplitude(0, {1})), -1
 		);

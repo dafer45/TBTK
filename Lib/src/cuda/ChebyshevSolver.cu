@@ -143,7 +143,6 @@ vector<
 	int basisSize = hoppingAmplitudeSet.getBasisSize();
 	thrust::host_vector<complex<double>> jIn1(basisSize, 0.);
 	thrust::host_vector<complex<double>> jIn2(basisSize, 0.);
-	thrust::host_vector<complex<double>> *jTemp = NULL;
 
 	//Set up initial state (|j0>)
 	jIn1[fromBasisIndex] = 1.;
