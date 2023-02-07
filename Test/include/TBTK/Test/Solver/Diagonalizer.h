@@ -112,6 +112,32 @@ TEST(Diagonalizer, getEigenValues){
 	const CArray<double> &eigenValues2 = solver1.getEigenValues();
 	EXPECT_NEAR(eigenValues2[0], -1, EPSILON_100);
 	EXPECT_NEAR(eigenValues2[1], 1, EPSILON_100);
+
+
+	/////////////////////////////
+	// Test GPU implementation //
+	/////////////////////////////
+	Diagonalizer solver2;
+	solver2.setVerbose(false);
+	solver2.setModel(model1);
+	solver2.setUseGPUAcceleration(true);
+	#ifdef TBTK_CUDA_ENABLED
+		solver2.run()
+		const CArray<double> &eigenValues3 = solver2.getEigenValues();
+		EXPECT_NEAR(eigenValues3[0], -1, EPSILON_100);
+		EXPECT_NEAR(eigenValues3[1], 1, EPSILON_100);
+
+
+	#else
+		EXPECT_EXIT(
+			{
+				Streams::setStdMuteErr();
+				solver2.run();
+			},
+			::testing::ExitedWithCode(1),
+			""
+		);
+	#endif
 }
 
 TEST(Diagonalizer, getEigenValuesRW){
@@ -151,6 +177,50 @@ TEST(Diagonalizer, getEigenVectors){
 	EXPECT_DOUBLE_EQ(real(eigenVectors0[0]), 2);
 	EXPECT_DOUBLE_EQ(imag(eigenVectors0[0]), 0);
 
+
+	/////////////////////////////
+	// Test GPU implementation //
+	/////////////////////////////
+	Diagonalizer solver2;
+	solver2.setVerbose(false);
+	solver2.setModel(model);
+	solver2.setUseGPUAcceleration(true);
+	#ifdef TBTK_CUDA_ENABLED
+		solver2.run()
+		//Normal access.
+		const CArray<std::complex<double>> &eigenVectors3
+			= solver2.getEigenVectors();
+		EXPECT_DOUBLE_EQ(real(eigenVectors3[0]/eigenVectors3[1]), -1);
+		EXPECT_DOUBLE_EQ(imag(eigenVectors3[0]/eigenVectors3[1]), 0);
+		EXPECT_DOUBLE_EQ(real(eigenVectors3[2]/eigenVectors3[3]), 1);
+		EXPECT_DOUBLE_EQ(imag(eigenVectors3[2]/eigenVectors3[3]), 0);
+
+		//Access with write permissions.
+		CArray<std::complex<double>> &eigenVectors4
+			= solver.getEigenVectorsRW();
+		EXPECT_DOUBLE_EQ(real(eigenVectors4[0]/eigenVectors4[1]), -1);
+		EXPECT_DOUBLE_EQ(imag(eigenVectors4[0]/eigenVectors4[1]), 0);
+		EXPECT_DOUBLE_EQ(real(eigenVectors4[2]/eigenVectors4[3]), 1);
+		EXPECT_DOUBLE_EQ(imag(eigenVectors4[2]/eigenVectors4[3]), 0);
+
+		//Verify that write to internal data works (note that write is
+		//performed to eigenVectors1, while read is from eigenVectors0).
+		eigenVectors4[0] = 2;
+		EXPECT_DOUBLE_EQ(real(eigenVectors4[0]), 2);
+		EXPECT_DOUBLE_EQ(imag(eigenVectors4[0]), 0);
+
+
+	#else
+		EXPECT_EXIT(
+			{
+				Streams::setStdMuteErr();
+				solver2.run();
+			},
+			::testing::ExitedWithCode(1),
+			""
+		);
+	#endif
+
 	///////////////////////////
 	// Non-orthonormal basis //
 	///////////////////////////
@@ -187,6 +257,39 @@ TEST(Diagonalizer, getEigenVectors){
 	EXPECT_NEAR(imag(eigenVectors2[2]), 0, EPSILON_100);
 	EXPECT_NEAR(real(eigenVectors2[3]), 1, EPSILON_100);
 	EXPECT_NEAR(imag(eigenVectors2[3]), 0, EPSILON_100);
+
+	/////////////////////////////
+	// Test GPU implementation //
+	/////////////////////////////
+	Diagonalizer solver3;
+	solver3.setVerbose(false);
+	solver3.setModel(model1);
+	solver3.setUseGPUAcceleration(true);
+	#ifdef TBTK_CUDA_ENABLED
+		solver3.run()
+		const CArray<std::complex<double>> &eigenVectors5
+			= solver3.getEigenVectors();
+		EXPECT_NEAR(real(eigenVectors5[0]), sqrt(2), EPSILON_100);
+		EXPECT_NEAR(imag(eigenVectors5[0]), 0, EPSILON_100);
+		EXPECT_NEAR(real(eigenVectors5[1]), -1, EPSILON_100);
+		EXPECT_NEAR(imag(eigenVectors5[1]), 0, EPSILON_100);
+
+		EXPECT_NEAR(real(eigenVectors5[2]), 0, EPSILON_100);
+		EXPECT_NEAR(imag(eigenVectors5[2]), 0, EPSILON_100);
+		EXPECT_NEAR(real(eigenVectors5[3]), 1, EPSILON_100);
+		EXPECT_NEAR(imag(eigenVectors5[3]), 0, EPSILON_100);
+
+
+	#else
+		EXPECT_EXIT(
+			{
+				Streams::setStdMuteErr();
+				solver3.run();
+			},
+			::testing::ExitedWithCode(1),
+			""
+		);
+	#endif
 }
 
 TEST(Diagonalizer, getEigenVectorsRW){
@@ -231,6 +334,40 @@ TEST(Diagonalizer, getAmplitude){
 	EXPECT_DOUBLE_EQ(
 		imag(solver.getAmplitude(1, {0})/solver.getAmplitude(1, {1})), 0
 	);
+
+	/////////////////////////////
+	// Test GPU implementation //
+	/////////////////////////////
+	Diagonalizer solver1;
+	solver1.setVerbose(false);
+	solver1.setModel(model);
+	solver1.setUseGPUAcceleration(true);
+	#ifdef TBTK_CUDA_ENABLED
+		solver1.run()
+		EXPECT_DOUBLE_EQ(
+			real(solver1.getAmplitude(0, {0})/solver1.getAmplitude(0, {1})), -1
+		);
+		EXPECT_DOUBLE_EQ(
+			imag(solver1.getAmplitude(0, {0})/solver1.getAmplitude(0, {1})), 0
+		);
+		EXPECT_DOUBLE_EQ(
+			real(solver1.getAmplitude(1, {0})/solver1.getAmplitude(1, {1})), 1
+		);
+		EXPECT_DOUBLE_EQ(
+			imag(solver1.getAmplitude(1, {0})/solver1.getAmplitude(1, {1})), 0
+	);
+
+
+	#else
+		EXPECT_EXIT(
+			{
+				Streams::setStdMuteErr();
+				solver1.run();
+			},
+			::testing::ExitedWithCode(1),
+			""
+		);
+	#endif
 }
 
 };	//End of namespace Solver
