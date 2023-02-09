@@ -31,7 +31,7 @@ using namespace std;
 namespace TBTK{
 namespace Solver{
 
-void Diagonalizer::solveGPU(){
+void Diagonalizer::solveGPU(CArray<complex<double>>& matrix, CArray<double>& eigenValues){
     //Initialize device
     int device = GPUResourceManager::getInstance().allocateDevice();
 	TBTKAssert(
@@ -81,7 +81,7 @@ void Diagonalizer::solveGPU(){
     TBTKAssert(
         cudaMalloc(
             reinterpret_cast<void **>(&hamiltonian_device), 
-            sizeof(complex<double>) * hamiltonian.getSize()
+            sizeof(complex<double>) * matrix.getSize()
         ) == cudaSuccess,
         "Diagonalizer::solveGPU()",
         "CUDA error allocating memory on device.",
@@ -90,7 +90,7 @@ void Diagonalizer::solveGPU(){
     TBTKAssert(
         cudaMalloc(
             reinterpret_cast<void **>(&eigenValues_device),
-             sizeof(double) * n
+             sizeof(double) * eigenValues.getSize()
         ) == cudaSuccess,
         "Diagonalizer::solveGPU()",
         "CUDA error allocating memory on device.",
@@ -110,8 +110,8 @@ void Diagonalizer::solveGPU(){
     TBTKAssert(
         cudaMemcpyAsync(
             hamiltonian_device, 
-            hamiltonian.getData(), 
-            sizeof(complex<double>) * hamiltonian.getSize(), 
+            matrix.getData(), 
+            sizeof(complex<double>) * matrix.getSize(), 
             cudaMemcpyHostToDevice,
             stream) == cudaSuccess,
         "Diagonalizer::solveGPU()",
@@ -210,9 +210,9 @@ void Diagonalizer::solveGPU(){
 
     TBTKAssert(
         cudaMemcpyAsync(
-            getEigenVectorsRW().getData(),
+            matrix.getData(),
             hamiltonian_device,
-            sizeof(complex<double>)*hamiltonian.getSize(),
+            sizeof(complex<double>)*matrix.getSize(),
             cudaMemcpyDeviceToHost,
             stream
         ) == cudaSuccess,
@@ -223,9 +223,9 @@ void Diagonalizer::solveGPU(){
 
     TBTKAssert(
         cudaMemcpyAsync(
-            getEigenValuesRW().getData(),
+            eigenValues.getData(),
             eigenValues_device,
-            sizeof(double)*n,
+            sizeof(double)*eigenValues.getSize(),
             cudaMemcpyDeviceToHost,
             stream
         ) == cudaSuccess,
@@ -296,6 +296,108 @@ void Diagonalizer::solveGPU(){
 
     free(buffer_host);
     buffer_host = nullptr;
+}
+
+void Diagonalizer::setupBasisTransformationGPU(){
+	//Get the OverlapAmplitudeSet.
+	const OverlapAmplitudeSet &overlapAmplitudeSet
+		= getModel().getOverlapAmplitudeSet();
+
+	//Skip if the basis is assumed to be orthonormal.
+	if(overlapAmplitudeSet.getAssumeOrthonormalBasis())
+		return;
+
+	//Fill the overlap matrix.
+	int basisSize = getModel().getBasisSize();
+	CArray<complex<double>> overlapMatrix(basisSize*basisSize);
+	for(int n = 0; n < basisSize*basisSize; n++)
+		overlapMatrix[n] = 0.;
+
+	for(
+		OverlapAmplitudeSet::ConstIterator iterator
+			= overlapAmplitudeSet.cbegin();
+		iterator != overlapAmplitudeSet.cend();
+		++iterator
+	){
+		int row = getModel().getHoppingAmplitudeSet().getBasisIndex(
+			(*iterator).getBraIndex()
+		);
+		int col = getModel().getHoppingAmplitudeSet().getBasisIndex(
+			(*iterator).getKetIndex()
+		);
+		if(col >= row){
+			overlapMatrix[row + col*basisSize]
+				+= (*iterator).getAmplitude();
+		}
+	}
+
+	//Diagonalize the overlap matrix.
+	CArray<double> overlapMatrixEigenValues(basisSize);
+    solveGPU( overlapMatrix, 
+                overlapMatrixEigenValues);
+
+	//Setup basisTransformation storage.
+	basisTransformation = CArray<complex<double>>(basisSize*basisSize);
+
+	//Calculate the basis transformation using canonical orthogonalization.
+	//See for example section 3.4.5 in Moder Quantum Chemistry, Attila
+	//Szabo and Neil S. Ostlund.
+	for(int row = 0; row < basisSize; row++){
+		for(int col = 0; col < basisSize; col++){
+			basisTransformation[row + basisSize*col]
+				= overlapMatrix[
+					row + basisSize*col
+				]/sqrt(
+					overlapMatrixEigenValues[col]
+				);
+		}
+	}
+}
+
+void Diagonalizer::transformToOrthonormalBasisGPU(){
+	//Skip if no basis transformation has been set up (the original basis
+	//is assumed to be orthonormal).
+	if(basisTransformation.getData() == nullptr)
+		return;
+
+	int basisSize = getModel().getBasisSize();
+
+	//Perform the transformation H' = U^{\dagger}HU, where U is the
+	//transform to the orthonormal basis.
+	Matrix<complex<double>> h(basisSize, basisSize);
+	Matrix<complex<double>> U(basisSize, basisSize);
+	Matrix<complex<double>> Udagger(basisSize, basisSize);
+	for(int row = 0; row < basisSize; row++){
+		for(int col = 0; col < basisSize; col++){
+			if(col >= row){
+				h.at(row, col)
+					= hamiltonian[row + col*basisSize];
+			}
+			else{
+				h.at(row, col) = conj(
+					hamiltonian[col + row*basisSize]
+				);
+			}
+
+			U.at(row, col)
+				= basisTransformation[row + basisSize*col];
+
+			Udagger.at(row, col) = conj(
+				basisTransformation[col + basisSize*row]
+			);
+		}
+	}
+
+	Matrix<complex<double>> hp = Udagger*h*U;
+
+	for(int row = 0; row < basisSize; row++){
+		for(int col = 0; col < basisSize; col++){
+			if(col >= row){
+				hamiltonian[row + col*basisSize]
+					= hp.at(row, col);
+			}
+		}
+	}
 }
 
 };	//End of namespace Solver

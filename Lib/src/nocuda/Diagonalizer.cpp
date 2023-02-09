@@ -29,12 +29,28 @@ using namespace std;
 namespace TBTK{
 namespace Solver{
 
-vector<complex<double>> Diagonalizer::solveGPU(
-	Index to,
-	Index from
-){
+void Diagonalizer::solveGPU(
+	CArray<complex<double>>& matrix,
+	CArray<double>& eigenValues)
+	{
+		TBTKExit(
+			"Diagonalizer::solveGPU()",
+			"GPU Not supported.",
+			"Install with GPU support or use CPU version."
+		);
+}
+
+void Diagonalizer::transformToOrthonormalBasisGPU(){
 	TBTKExit(
-		"Diagonalizer::solveGPU()",
+		"Diagonalizer::transformToOrthonormalBasisGPU()",
+		"GPU Not supported.",
+		"Install with GPU support or use CPU version."
+	);
+}
+
+void Diagonalizer::setupBasisTransformationGPU(){
+	TBTKExit(
+		"Diagonalizer::setupBasisTransformationGPU()",
 		"GPU Not supported.",
 		"Install with GPU support or use CPU version."
 	);

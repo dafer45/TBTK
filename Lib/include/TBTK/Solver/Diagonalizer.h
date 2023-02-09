@@ -181,14 +181,27 @@ private:
 	/** Diagonalizes the Hamiltonian. */
 	void solve();
 
-	/** Diagonalizes the Hamiltonian using the GPU. */
-	void solveGPU();
+	/** Diagonalizes the matrix using the GPU. 
+	 * \f$x\f$: \f$\Psi_{n}(x)\f$.
+	 *
+	 *  @param matrix Matrix nxn to diagonalize
+	 *  @param eigenValues vector of size n
+	 *
+	 *  @return Function overwrites matrix with eigenvectors
+	 * 			and returns eigenvalues in eigenValues     */
+	void solveGPU(CArray<std::complex<double>>& matrix, CArray<double>& eigenValues);
 
 	/** Setup the basis transformation. */
 	void setupBasisTransformation();
 
+	/** Setup the basis transformation on GPU. */
+	void setupBasisTransformationGPU();
+
 	/** Transform the Hamiltonian to an orthonormal basis. */
 	void transformToOrthonormalBasis();
+
+	/** Transform the Hamiltonian to an orthonormal basis on GPU. */	
+	void transformToOrthonormalBasisGPU();
 
 	/** Transform the eigen vectors to the original basis. */
 	void transformToOriginalBasis();
