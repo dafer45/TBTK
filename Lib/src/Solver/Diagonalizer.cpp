@@ -30,7 +30,7 @@ namespace Solver{
 Diagonalizer::Diagonalizer() : Communicator(false){
 	maxIterations = 50;
 	selfConsistencyCallback = nullptr;
-	useGPUAcceleration = true;
+	useGPUAcceleration = false;
 }
 
 void Diagonalizer::run(){
