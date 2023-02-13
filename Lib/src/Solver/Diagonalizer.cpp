@@ -30,6 +30,7 @@ namespace Solver{
 Diagonalizer::Diagonalizer() : Communicator(false){
 	maxIterations = 50;
 	selfConsistencyCallback = nullptr;
+	useGPUAcceleration = true;
 }
 
 void Diagonalizer::run(){
@@ -120,13 +121,13 @@ void Diagonalizer::update(){
 		}
 	}
 
-	if(!useGPUAcceleration){
-		setupBasisTransformation();
-		transformToOrthonormalBasis();
-	}
-	else{
+	if(useGPUAcceleration){
 		setupBasisTransformationGPU();
 		transformToOrthonormalBasisGPU();
+	}
+	else{
+		setupBasisTransformation();
+		transformToOrthonormalBasis();
 	}
 }
 

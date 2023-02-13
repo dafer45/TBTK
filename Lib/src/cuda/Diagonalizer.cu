@@ -304,8 +304,9 @@ void Diagonalizer::setupBasisTransformationGPU(){
 		= getModel().getOverlapAmplitudeSet();
 
 	//Skip if the basis is assumed to be orthonormal.
-	if(overlapAmplitudeSet.getAssumeOrthonormalBasis())
+	if(overlapAmplitudeSet.getAssumeOrthonormalBasis()){
 		return;
+    }
 
 	//Fill the overlap matrix.
 	int basisSize = getModel().getBasisSize();
