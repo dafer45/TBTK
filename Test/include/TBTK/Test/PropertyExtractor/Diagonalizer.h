@@ -67,13 +67,47 @@ TEST(Diagonalizer, getEigenValue){
 			EPSILON_100
 		);
 	}
+	//Test GPU implementation if enabled
+	#ifdef TBTK_CUDA_ENABLED
+		Solver::Diagonalizer solverGPU;
+		solverGPU.setModel(model);
+		solverGPU.setUseGPUAcceleration(true);
+		Diagonalizer propertyExtractorGPU(solver);
+		for(unsigned int n = 0; n < SIZE; n++){
+			EXPECT_NEAR(
+				propertyExtractorGPU.getEigenValue(n),
+				analyticalEigenValues[n],
+				EPSILON_100
+			);
+		}
+	#endif
 }
 
 TEST(Diagonalizer, getAmplitude){
 	SETUP_MODEL();
 	SETUP_AND_RUN_SOLVER();
 
+	Solver::Diagonalizer solverGPU;
+	solverGPU.setModel(model);
+	solverGPU.setUseGPUAcceleration(true);
+	
+
+	#ifdef TBTK_CUDA_ENABLED
+		solverGPU.run();
+	#else
+		EXPECT_EXIT(
+			{
+				Streams::setStdMuteErr();
+				solverGPU.run();
+			},
+			::testing::ExitedWithCode(1),
+			""
+		);
+	#endif
+
+
 	Diagonalizer propertyExtractor(solver);
+	Diagonalizer propertyExtractorGPU(solverGPU);
 
 	//Check that the states are normalized.
 	for(unsigned int n = 0; n < SIZE; n++){
@@ -85,6 +119,18 @@ TEST(Diagonalizer, getAmplitude){
 		}
 		EXPECT_NEAR(totalProbability, 1, EPSILON_100);
 	}
+
+	#ifdef TBTK_CUDA_ENABLED
+		for(unsigned int n = 0; n < SIZE; n++){
+			double totalProbability = 0;
+			for(int x = 0; x < SIZE; x++){
+				std::complex<double> amplitude
+					= propertyExtractorGPU.getAmplitude(n, {x});
+				totalProbability += pow(abs(amplitude), 2);
+			}
+			EXPECT_NEAR(totalProbability, 1, EPSILON_100);
+		}
+	#endif
 
 	//The lowest energy state is in the subspace spanned by 1, the next two
 	//states are in the subspace spanned by cos(x) and sin(x), the third
@@ -135,6 +181,25 @@ TEST(Diagonalizer, getAmplitude){
 		);
 		EXPECT_NEAR(std::abs(projectionAmplitudeTotal), 1, EPSILON_100);
 	}
+
+	#ifdef TBTK_CUDA_ENABLED
+		for(unsigned int n = 0; n < SIZE; n++){
+			std::complex<double> projectionAmplitude0 = 0;
+			std::complex<double> projectionAmplitude1 = 0;
+			for(int x = 0; x < SIZE; x++){
+				std::complex<double> amplitude
+					= propertyExtractorGPU.getAmplitude(n, {x});
+
+				projectionAmplitude0 += subspaceBases[n][0][x]*amplitude;
+				projectionAmplitude1 += subspaceBases[n][1][x]*amplitude;
+			}
+			double projectionAmplitudeTotal = sqrt(
+				pow(std::abs(projectionAmplitude0), 2.)
+				+ pow(std::abs(projectionAmplitude1), 2.)
+			);
+			EXPECT_NEAR(std::abs(projectionAmplitudeTotal), 1, EPSILON_100);
+		}
+	#endif
 }
 
 TEST(Diagonalizer, calculateGreensFunction){

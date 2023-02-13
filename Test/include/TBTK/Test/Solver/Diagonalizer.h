@@ -197,7 +197,7 @@ TEST(Diagonalizer, getEigenVectors){
 
 		//Access with write permissions.
 		CArray<std::complex<double>> &eigenVectors4
-			= solver.getEigenVectorsRW();
+			= solver2.getEigenVectorsRW();
 		EXPECT_DOUBLE_EQ(real(eigenVectors4[0]/eigenVectors4[1]), -1);
 		EXPECT_DOUBLE_EQ(imag(eigenVectors4[0]/eigenVectors4[1]), 0);
 		EXPECT_DOUBLE_EQ(real(eigenVectors4[2]/eigenVectors4[3]), 1);
@@ -378,8 +378,6 @@ TEST(Diagonalizer, getAmplitude){
 		EXPECT_DOUBLE_EQ(
 			imag(solver1.getAmplitude(1, {0})/solver1.getAmplitude(1, {1})), 0
 	);
-
-
 	#else
 		EXPECT_EXIT(
 			{
