@@ -181,9 +181,10 @@ private:
 	/** Diagonalizes the Hamiltonian. */
 	void solve();
 
-	/** Diagonalizes the matrix using the GPU. 
-	 * \f$x\f$: \f$\Psi_{n}(x)\f$.
-	 *
+	/** Diagonalizes the input matrix using a GPU device.
+	 *  The output for the eigen vectors is
+	 *  written into the input matrix. 
+	 * 
 	 *  @param matrix Matrix nxn to diagonalize
 	 *  @param eigenValues vector of size n
 	 *

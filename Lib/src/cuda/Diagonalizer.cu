@@ -79,23 +79,24 @@ void Diagonalizer::solveGPU(CArray<complex<double>>& matrix, CArray<double>& eig
     int *info_device = nullptr;
 
     TBTKAssert(
-        cudaMalloc(
+        cudaMallocManaged(
             reinterpret_cast<void **>(&hamiltonian_device), 
             sizeof(complex<double>) * matrix.getSize()
         ) == cudaSuccess,
         "Diagonalizer::solveGPU()",
-        "CUDA error allocating memory on device.",
+        "CUDA error allocating unified memory.",
         ""
-    )
+    ) 
     TBTKAssert(
-        cudaMalloc(
+        cudaMallocManaged(
             reinterpret_cast<void **>(&eigenValues_device),
-             sizeof(double) * eigenValues.getSize()
+            sizeof(double) * eigenValues.getSize()
         ) == cudaSuccess,
         "Diagonalizer::solveGPU()",
         "CUDA error allocating memory on device.",
         ""
-    )
+    ) 
+
     TBTKAssert(
         cudaMalloc(
             reinterpret_cast<void **>(&info_device),
@@ -156,12 +157,13 @@ void Diagonalizer::solveGPU(CArray<complex<double>>& matrix, CArray<double>& eig
     // can become substancial for bigger hamiltonians
     TBTKAssert(
         cudaMallocManaged(reinterpret_cast<void **>(&buffer_device),
-        sizeof(complex<double>) * sizeBuffer_device
+            sizeof(complex<double>) * sizeBuffer_device
         ) == cudaSuccess,
         "Diagonalizer::solveGPU()",
         "Failed to allocate buffer memory on device.",
         "" 
     )
+
     buffer_host = malloc(sizeof(complex<double>) * sizeBuffer_host);
 
     //Run the diagonalization routine
@@ -239,7 +241,7 @@ void Diagonalizer::solveGPU(CArray<complex<double>>& matrix, CArray<double>& eig
             stream
         ) == cudaSuccess,
         "Diagonalizer::solveGPU()",
-        "CUDA error while synchronizing stream.",
+        "CUDA error while synchronizing device stream.",
         ""
     )
 
