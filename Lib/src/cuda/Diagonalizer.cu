@@ -106,6 +106,20 @@ void Diagonalizer::solveGPU(CArray<complex<double>>& matrix, CArray<double>& eig
         "CUDA error allocating memory on device.",
         ""
     )
+    //Prefetching memory on the device (it is allowed to fail, if
+    // memory oversubscription is needed)
+    cudaMemPrefetchAsync(
+        &eigenValues_device, 
+        sizeof(double) * eigenValues.getSize(), 
+        device, 
+        stream
+    );
+    cudaMemPrefetchAsync(
+        &hamiltonian_device, 
+        sizeof(complex<double>) * matrix.getSize(), 
+        device, 
+        stream
+    );
 
     //Copy hamiltonian to device
     TBTKAssert(
@@ -119,6 +133,7 @@ void Diagonalizer::solveGPU(CArray<complex<double>>& matrix, CArray<double>& eig
         "CUDA error copying to memory on device.",
         ""
     )
+
 
     //Set up the cusolver routine
     cusolverEigMode_t jobz = CUSOLVER_EIG_MODE_VECTOR;		//...eigenvalues and eigenvectors...
@@ -163,6 +178,12 @@ void Diagonalizer::solveGPU(CArray<complex<double>>& matrix, CArray<double>& eig
         "Failed to allocate buffer memory on device.",
         "" 
     )
+    cudaMemPrefetchAsync(
+        &buffer_device, 
+        sizeof(complex<double>) * sizeBuffer_device, 
+        device, 
+        stream
+    );
 
     buffer_host = malloc(sizeof(complex<double>) * sizeBuffer_host);
 
