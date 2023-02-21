@@ -3,11 +3,11 @@ UNSET(PYTHON_LIBRARIES CACHE)
 FIND_PATH(
 	PYTHON_INCLUDES
 	NAMES Python.h
-	PATH_SUFFIXES python3.0 python3.1 python3.2 python3.3 python3.4 python3.5 python3.6 python3.7 python3.8 python3.9 python3.10 python3.11 python3.0m python3.1m python3.2m python3.3m python3.4m python3.5m python3.6m python3.7m python3.8m python3.9m python3.10m python3.11m python3.0d python3.1d python3.2d python3.3d python3.4d python3.5d python3.6d python3.7d python3.8d python3.9d python3.10d python3.0u python3.1u python3.2u python3.3u python3.4u python3.5u python3.6u python3.7u python3.8u python3.9u python3.10u python3.11u
+	PATH_SUFFIXES python3.0 python3.1 python3.2 python3.3 python3.4 python3.5 python3.6 python3.7 python3.8 python3.9 python3.10 python3.11 python3.0m python3.1m python3.2m python3.3m python3.4m python3.5m python3.6m python3.7m python3.8m python3.9m python3.10m python3.11m python3.0d python3.1d python3.2d python3.3d python3.4d python3.5d python3.6d python3.7d python3.8d python3.9d python3.10d python3.11d python3.0u python3.1u python3.2u python3.3u python3.4u python3.5u python3.6u python3.7u python3.8u python3.9u python3.10u python3.11u
 )
 FIND_LIBRARY(
 	PYTHON_LIBRARIES
-	NAMES python3.0 python3.1 python3.2 python3.3 python3.4 python3.5 python3.6 python3.7 python3.8 python3.9 python3.10 python3.11 python3.0m python3.1m python3.2m python3.3m python3.4m python3.5m python3.6m python3.7m python3.8m python3.9m python3.10m python3.11m python3.0d python3.1d python3.2d python3.3d python3.4d python3.5d python3.6d python3.7d python3.8d python3.9d python3.10d python3.0u python3.1u python3.2u python3.3u python3.4u python3.5u python3.6u python3.7u python3.8u python3.9u python3.10u python3.11u
+	NAMES python3.0 python3.1 python3.2 python3.3 python3.4 python3.5 python3.6 python3.7 python3.8 python3.9 python3.10 python3.11 python3.0m python3.1m python3.2m python3.3m python3.4m python3.5m python3.6m python3.7m python3.8m python3.9m python3.10m python3.11m python3.0d python3.1d python3.2d python3.3d python3.4d python3.5d python3.6d python3.7d python3.8d python3.9d python3.10d python3.11d python3.0u python3.1u python3.2u python3.3u python3.4u python3.5u python3.6u python3.7u python3.8u python3.9u python3.10u python3.11u
 	PATH_SUFFIXES lib lib32 lib64
 )
 IF(("${PYTHON_INCLUDES}" MATCHES "PYTHON_INCLUDES-NOTFOUND") OR ("${PYTHON_LIBRARIES}" MATCHES "PYTHON_LIBRARIES-NOTFOUND"))
