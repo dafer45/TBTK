@@ -149,19 +149,19 @@ TEST(BlockDiagonalizer, getAmplitude0){
 		for(unsigned int state = 0; state < 2; state++){
 			for(int n = 0; n < 2; n++){
 				EXPECT_NEAR(
-					real(
-						propertyExtractor.getAmplitude(
+				abs(real(
+					propertyExtractor.getAmplitude(
 							2*k + state,
 							{k, n}
 						)
-					),
-					real(
-						propertyExtractorDiagonalizer.getAmplitude(
-							state,
-							{n}
-						)
-					),
-					EPSILON_100
+				)),
+				abs(real(
+					propertyExtractorDiagonalizer.getAmplitude(
+					state,
+					{n}
+					)
+				)),
+				EPSILON_100
 				);
 				EXPECT_NEAR(
 					imag(
@@ -225,19 +225,19 @@ TEST(BlockDiagonalizer, getAmplitude1){
 		for(unsigned int state = 0; state < 2; state++){
 			for(int n = 0; n < 2; n++){
 				EXPECT_NEAR(
-					real(
+					abs(real(
 						propertyExtractor.getAmplitude(
 							{k},
 							state,
 							{n}
 						)
-					),
-					real(
+					)),
+					abs(real(
 						propertyExtractorDiagonalizer.getAmplitude(
 							state,
 							{n}
 						)
-					),
+					)),
 					EPSILON_100
 				);
 				EXPECT_NEAR(

@@ -30,6 +30,7 @@ namespace Solver{
 Diagonalizer::Diagonalizer() : Communicator(false){
 	maxIterations = 50;
 	selfConsistencyCallback = nullptr;
+	useGPUAcceleration = false;
 }
 
 void Diagonalizer::run(){
@@ -47,7 +48,14 @@ void Diagonalizer::run(){
 			Streams::out << "." << flush;
 		}
 
-		solve();
+		if(useGPUAcceleration){
+			eigenVectors = hamiltonian;
+			solveGPU(eigenVectors, eigenValues);
+			transformToOriginalBasis();
+		}
+		else{
+			solve();
+		}
 
 		if(selfConsistencyCallback){
 			if(selfConsistencyCallback->selfConsistencyCallback(*this))
@@ -71,7 +79,13 @@ void Diagonalizer::init(){
 	if(getGlobalVerbose() && getVerbose())
 		Streams::out << "\tBasis size: " << basisSize << "\n";
 
-	hamiltonian = CArray<complex<double>>((basisSize*(basisSize+1))/2);
+	if(useGPUAcceleration){
+		hamiltonian = CArray<complex<double>>(basisSize*basisSize);
+	}
+	else{
+		hamiltonian = CArray<complex<double>>((basisSize*(basisSize+1))/2);
+	}
+	
 	eigenValues = CArray<double>(basisSize);
 	eigenVectors = CArray<complex<double>>(basisSize*basisSize);
 
@@ -97,12 +111,24 @@ void Diagonalizer::update(){
 		int to = model.getHoppingAmplitudeSet().getBasisIndex(
 			(*iterator).getToIndex()
 		);
-		if(from >= to)
-			hamiltonian[to + (from*(from+1))/2] += (*iterator).getAmplitude();
+		if(from >= to){
+			if(useGPUAcceleration){
+				hamiltonian[to + from*basisSize] += (*iterator).getAmplitude();
+			}
+			else{
+				hamiltonian[to + (from*(from+1))/2] += (*iterator).getAmplitude();
+			}
+		}
 	}
 
-	setupBasisTransformation();
-	transformToOrthonormalBasis();
+	if(useGPUAcceleration){
+		setupBasisTransformationGPU();
+		transformToOrthonormalBasisGPU();
+	}
+	else{
+		setupBasisTransformation();
+		transformToOrthonormalBasis();
+	}
 }
 
 //Lapack function for matrix diagonalization of triangular matrix.
@@ -118,7 +144,7 @@ extern "C" void zhpev_(char *jobz,		//'E' = Eigenvalues only, 'V' = Eigenvalues 
 			int *info);		//0 = successful, <0 = -info value was illegal, >0 = info number of off-diagonal elements failed to converge.
 
 //Lapack function for matrix diagonalization of banded triangular matrix
-extern "C" void zhbeb_(
+extern "C" void zhbeb_( //TODO this function is not used?
 	char *jobz,		//'E' = Eigenvalues only, 'V' = Eigenvalues and eigenvectors.
 	char *uplo,		//'U' = Stored as upper triangular, 'L' = Stored as lower triangular.
 	int *n,			//n*n = Matrix size

@@ -92,6 +92,12 @@ public:
 	 *  self-consistent callculation. */
 	void setMaxIterations(int maxIterations);
 
+	/** Set if you want to use GPU acceleration provided by CUDA routines.
+	 *
+	 *  @param useGPUAcceleration Turns GPU acceleration for the Diagonalizer 
+	 *  solver off or on. */
+	void setUseGPUAcceleration(bool useGPUAcceleration);
+
 	/** Run calculations. Diagonalizes ones if no self-consistency callback
 	 *  have been set, or otherwise multiple times until self-consistencey
 	 *  or maximum number of iterations has been reached. */
@@ -132,7 +138,7 @@ public:
 	 *  @param state The state number, ordered in accending order.
 	 *
 	 *  @return The eigenvalue for the given state. */
-	const double getEigenValue(int state);
+	double getEigenValue(int state);
 
 	/** Get amplitude for given eigenvector \f$n\f$ and physical index
 	 * \f$x\f$: \f$\Psi_{n}(x)\f$.
@@ -159,6 +165,9 @@ private:
 	/** Maximum number of iterations in the self-consistency loop. */
 	int maxIterations;
 
+	/** Enables GPU acceleration for the solver. */
+	bool useGPUAcceleration;
+
 	/** SelfConsistencyCallback to call each time a diagonalization has
 	 *  been completed. */
 	SelfConsistencyCallback *selfConsistencyCallback;
@@ -172,11 +181,28 @@ private:
 	/** Diagonalizes the Hamiltonian. */
 	void solve();
 
+	/** Diagonalizes the input matrix using a GPU device.
+	 *  The output for the eigen vectors is
+	 *  written into the input matrix. 
+	 * 
+	 *  @param matrix Matrix nxn to diagonalize
+	 *  @param eigenValues vector of size n
+	 *
+	 *  @return Function overwrites matrix with eigenvectors
+	 * 			and returns eigenvalues in eigenValues     */
+	void solveGPU(CArray<std::complex<double>>& matrix, CArray<double>& eigenValues);
+
 	/** Setup the basis transformation. */
 	void setupBasisTransformation();
 
+	/** Setup the basis transformation on GPU. */
+	void setupBasisTransformationGPU();
+
 	/** Transform the Hamiltonian to an orthonormal basis. */
 	void transformToOrthonormalBasis();
+
+	/** Transform the Hamiltonian to an orthonormal basis on GPU. */	
+	void transformToOrthonormalBasisGPU();
 
 	/** Transform the eigen vectors to the original basis. */
 	void transformToOriginalBasis();
@@ -216,8 +242,12 @@ inline const std::complex<double> Diagonalizer::getAmplitude(
 	return eigenVectors[model.getBasisSize()*state + model.getBasisIndex(index)];
 }
 
-inline const double Diagonalizer::getEigenValue(int state){
+inline double Diagonalizer::getEigenValue(int state){
 	return eigenValues[state];
+}
+
+inline void Diagonalizer::setUseGPUAcceleration(bool useGPUAcceleration){
+	this->useGPUAcceleration = useGPUAcceleration;
 }
 
 };	//End of namespace Solver
