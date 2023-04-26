@@ -183,9 +183,18 @@ public:
 	 *
 	 *  @param format The output format to use.*/
 	void setFormat(Format format);
+
+	/** Sets the number of significant digits to use in the save
+	 * file. The default is 6.
+	 *
+	 *  @param numberDigits The number of significant digits to use.*/
+	void setNumberSiginificantDigits(const unsigned& numberDigits);
 private:
 	/** The output format. */
 	Format format;
+
+	/** sets the number of significant digits */
+	unsigned numberSiginificantDigits;
 
 	/** Write double to output stream. */
 	template<typename DataType>
@@ -194,6 +203,7 @@ private:
 
 inline Exporter::Exporter(){
 	format = Format::RowMajor;
+	numberSiginificantDigits = 6; // C++ standard
 }
 
 template<typename DataType>
@@ -241,6 +251,7 @@ void Exporter::save(
 	}
 
 	std::ofstream fout(filename);
+	fout << std::setprecision(numberSiginificantDigits);
 	if(!fout){
 		TBTKExit(
 			"Exporter::save()",
@@ -305,6 +316,10 @@ inline void Exporter::write<SpinMatrix>(
 			""
 		);
 	}
+}
+
+inline void Exporter::setNumberSiginificantDigits(const unsigned& numberDigits){
+	numberSiginificantDigits = numberDigits;
 }
 
 }; //End of namesapce TBTK
