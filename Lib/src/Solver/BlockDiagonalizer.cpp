@@ -89,10 +89,7 @@ void BlockDiagonalizer::init(){
 	){
 		unsigned int numStates
 			= blockStructureDescriptor.getNumStatesInBlock(n);
-		if(useGPUAcceleration){
-			blockSizes.push_back(numStates*numStates);
-		}
-		else{
+		if(!useGPUAcceleration){
 			blockSizes.push_back((numStates*(numStates+1))/2);
 		}
 		eigenVectorSizes.push_back(numStates*numStates);
@@ -123,10 +120,7 @@ void BlockDiagonalizer::init(){
 		unsigned int numStatesInBlock
 			= blockStructureDescriptor.getNumStatesInBlock(n);
 		eigenVectorsSize += numStatesInBlock*numStatesInBlock;
-		if(useGPUAcceleration){
-			hamiltonianSize += numStatesInBlock*numStatesInBlock;
-		}
-		else{
+		if(!useGPUAcceleration){
 			hamiltonianSize += (numStatesInBlock*(numStatesInBlock + 1))/2;
 		}
 	}
@@ -179,10 +173,12 @@ void BlockDiagonalizer::init(){
 		Streams::out << "\tNumber of blocks: "
 			<< blockStructureDescriptor.getNumBlocks() << "\n";
 	}
-	hamiltonian = CArray<complex<double>>(hamiltonianSize);
+	if(!useGPUAcceleration){ //No hamiltonian needs to be stored as GPU solver 
+								//solves it in place of CArray eigenVectors
+		hamiltonian = CArray<complex<double>>(hamiltonianSize);
+	}
 	eigenValues = CArray<double>(getModel().getBasisSize());
 	eigenVectors = CArray<complex<double>>(eigenVectorsSize);
-
 	update();
 }
 
@@ -197,21 +193,26 @@ void BlockDiagonalizer::update(){
 	){
 		unsigned int numStatesInBlock
 			= blockStructureDescriptor.getNumStatesInBlock(n);
-		if(useGPUAcceleration){ //TODO See if one could avoid this
-			hamiltonianSize += numStatesInBlock*numStatesInBlock;
-		}
-		else{
+		if(!useGPUAcceleration){ //TODO See if one could avoid this
 			hamiltonianSize += (numStatesInBlock*(numStatesInBlock + 1))/2;
 		}
 		
 	}
-	for(unsigned int n = 0; n < hamiltonianSize; n++)
-		hamiltonian[n] = 0.;
+	if(useGPUAcceleration){
+		for(unsigned int n = 0; n < eigenVectors.getSize(); n++){
+			eigenVectors[n] = 0.;
+		}
+	}
+	else{
+		for(unsigned int n = 0; n < hamiltonianSize; n++)
+			hamiltonian[n] = 0.;
+	}
+
 
 	IndexTree blockIndices
 		= getModel().getHoppingAmplitudeSet().getSubspaceIndices();
 	IndexTree::ConstIterator blockIterator = blockIndices.cbegin();
-	if(parallelExecution){
+	if(parallelExecution  && !useGPUAcceleration){
 		vector<HoppingAmplitudeSet::ConstIterator> iterators;
 		vector<HoppingAmplitudeSet::ConstIterator> endIterators;
 
@@ -300,7 +301,8 @@ void BlockDiagonalizer::update(){
 				else if(useGPUAcceleration){
 					unsigned int numStates
 						= blockStructureDescriptor.getNumStatesInBlock(blockCounter);
-					hamiltonian[eigenVectorOffsets.at(blockCounter) +
+					//Temporarily store hamiltonian in eigenVectors
+					eigenVectors[eigenVectorOffsets.at(blockCounter) +
 						to + 
 						from*numStates] 
 						+= (*iterator).getAmplitude();
@@ -344,7 +346,7 @@ extern "C" void zhbeb_(
 
 void BlockDiagonalizer::solve(){
 	if(true){//Currently no support for banded matrices.
-		if(parallelExecution){
+		if(parallelExecution && !useGPUAcceleration){
 			vector<unsigned int> eigenValuesOffsets;
 			eigenValuesOffsets.push_back(0);
 			for(
@@ -406,14 +408,8 @@ void BlockDiagonalizer::solve(){
 			){
 				int n = blockStructureDescriptor.getNumStatesInBlock(b);	//...nxn-matrix.
 				if(useGPUAcceleration){
-					for(unsigned j = 0; j < n*n; j++){ //Copying uses unneccesary resources
-						*(eigenVectors.getData()
-							+ eigenVectorOffsets.at(b) + j) = 	*(hamiltonian.getData()
-												+ eigenVectorOffsets.at(b)
-												+ j);
-					}
 					solveGPU(
-						eigenVectors.getData() + eigenVectorOffsets.at(b), 
+						eigenVectors.getData() + eigenVectorOffsets.at(b), //Hamiltionian is stored in eigenVectors
 							eigenValues.getData()+ eigenValuesOffset,
 							n
 						);
