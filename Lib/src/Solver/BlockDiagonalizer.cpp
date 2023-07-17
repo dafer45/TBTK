@@ -29,7 +29,7 @@ using namespace std;
 namespace TBTK{
 namespace Solver{
 
-BlockDiagonalizer::BlockDiagonalizer() : Communicator(false){
+BlockDiagonalizer::BlockDiagonalizer(){
 	maxIterations = 50;
 	selfConsistencyCallback = nullptr;
 
@@ -89,7 +89,12 @@ void BlockDiagonalizer::init(){
 	){
 		unsigned int numStates
 			= blockStructureDescriptor.getNumStatesInBlock(n);
-		blockSizes.push_back((numStates*(numStates+1))/2);
+		if(useGPUAcceleration){
+			blockSizes.push_back(numStates*numStates);
+		}
+		else{
+			blockSizes.push_back((numStates*(numStates+1))/2);
+		}
 		eigenVectorSizes.push_back(numStates*numStates);
 		if(n == 0){
 			blockOffsets.push_back(0);
@@ -117,8 +122,13 @@ void BlockDiagonalizer::init(){
 	){
 		unsigned int numStatesInBlock
 			= blockStructureDescriptor.getNumStatesInBlock(n);
-		hamiltonianSize += (numStatesInBlock*(numStatesInBlock + 1))/2;
 		eigenVectorsSize += numStatesInBlock*numStatesInBlock;
+		if(useGPUAcceleration){
+			hamiltonianSize += numStatesInBlock*numStatesInBlock;
+		}
+		else{
+			hamiltonianSize += (numStatesInBlock*(numStatesInBlock + 1))/2;
+		}
 	}
 
 	if(getGlobalVerbose() && getVerbose()){
@@ -169,7 +179,6 @@ void BlockDiagonalizer::init(){
 		Streams::out << "\tNumber of blocks: "
 			<< blockStructureDescriptor.getNumBlocks() << "\n";
 	}
-
 	hamiltonian = CArray<complex<double>>(hamiltonianSize);
 	eigenValues = CArray<double>(getModel().getBasisSize());
 	eigenVectors = CArray<complex<double>>(eigenVectorsSize);
@@ -188,7 +197,13 @@ void BlockDiagonalizer::update(){
 	){
 		unsigned int numStatesInBlock
 			= blockStructureDescriptor.getNumStatesInBlock(n);
-		hamiltonianSize += (numStatesInBlock*(numStatesInBlock + 1))/2;
+		if(useGPUAcceleration){ //TODO See if one could avoid this
+			hamiltonianSize += numStatesInBlock*numStatesInBlock;
+		}
+		else{
+			hamiltonianSize += (numStatesInBlock*(numStatesInBlock + 1))/2;
+		}
+		
 	}
 	for(unsigned int n = 0; n < hamiltonianSize; n++)
 		hamiltonian[n] = 0.;
@@ -234,14 +249,21 @@ void BlockDiagonalizer::update(){
 				).getBasisIndex(
 					(*iterator).getToIndex()
 				) - minBasisIndex;
-				if(from >= to){
+				if(from >= to && !useGPUAcceleration){
 					hamiltonian[
 						blockOffsets.at(block)
 						+ to
 						+ (from*(from+1))/2
 					] += (*iterator).getAmplitude();
 				}
-
+				else if(useGPUAcceleration){
+					unsigned int numStates
+						= blockStructureDescriptor.getNumStatesInBlock(block);
+					hamiltonian[eigenVectorOffsets.at(block) +
+						to + 
+						from*numStates] 
+						+= (*iterator).getAmplitude();
+				}
 				++iterator;
 			}
 		}
@@ -268,12 +290,20 @@ void BlockDiagonalizer::update(){
 				).getBasisIndex(
 					(*iterator).getToIndex()
 				) - minBasisIndex;
-				if(from >= to){
+				if(from >= to && !useGPUAcceleration){
 					hamiltonian[
 						blockOffsets.at(blockCounter)
 						+ to
 						+ (from*(from+1))/2
 					] += (*iterator).getAmplitude();
+				}
+				else if(useGPUAcceleration){
+					unsigned int numStates
+						= blockStructureDescriptor.getNumStatesInBlock(blockCounter);
+					hamiltonian[eigenVectorOffsets.at(blockCounter) +
+						to + 
+						from*numStates] 
+						+= (*iterator).getAmplitude();
 				}
 
 				++iterator;
@@ -374,37 +404,52 @@ void BlockDiagonalizer::solve(){
 				b < blockStructureDescriptor.getNumBlocks();
 				b++
 			){
-				//Setup zhpev to calculate...
-				char jobz = 'V';						//...eigenvalues and eigenvectors...
-				char uplo = 'U';						//...for an upper triangular...
 				int n = blockStructureDescriptor.getNumStatesInBlock(b);	//...nxn-matrix.
-				//Initialize workspaces
-				CArray<complex<double>> work(2*n-1);
-				CArray<double> rwork(3*n-2);
-				int info;
-				//Solve brop
-				zhpev_(
-					&jobz,
-					&uplo,
-					&n,
-					hamiltonian.getData()
-						+ blockOffsets.at(b),
-					eigenValues.getData()
-						+ eigenValuesOffset,
-					eigenVectors.getData()
-						+ eigenVectorOffsets.at(b),
-					&n,
-					work.getData(),
-					rwork.getData(),
-					&info
-				);
+				if(useGPUAcceleration){
+					for(unsigned j = 0; j < n*n; j++){ //Copying uses unneccesary resources
+						*(eigenVectors.getData()
+							+ eigenVectorOffsets.at(b) + j) = 	*(hamiltonian.getData()
+												+ eigenVectorOffsets.at(b)
+												+ j);
+					}
+					solveGPU(
+						eigenVectors.getData() + eigenVectorOffsets.at(b), 
+							eigenValues.getData()+ eigenValuesOffset,
+							n
+						);
+				}
+				else{
+					//Setup zhpev to calculate...
+					char jobz = 'V';						//...eigenvalues and eigenvectors...
+					char uplo = 'U';						//...for an upper triangular...
+					//Initialize workspaces
+					CArray<complex<double>> work(2*n-1);
+					CArray<double> rwork(3*n-2);
+					int info;
+					//Solve brop
+					zhpev_(
+						&jobz,
+						&uplo,
+						&n,
+						hamiltonian.getData()
+							+ blockOffsets.at(b),
+						eigenValues.getData()
+							+ eigenValuesOffset,
+						eigenVectors.getData()
+							+ eigenVectorOffsets.at(b),
+						&n,
+						work.getData(),
+						rwork.getData(),
+						&info
+					);
 
-				TBTKAssert(
-					info == 0,
-					"Diagonalizer:solve()",
-					"Diagonalization routine zhpev exited with INFO=" + to_string(info) + ".",
-					"See LAPACK documentation for zhpev for further information."
-				);
+					TBTKAssert(
+						info == 0,
+						"Diagonalizer:solve()",
+						"Diagonalization routine zhpev exited with INFO=" + to_string(info) + ".",
+						"See LAPACK documentation for zhpev for further information."
+					);
+				}
 
 				eigenValuesOffset += blockStructureDescriptor.getNumStatesInBlock(b);
 			}

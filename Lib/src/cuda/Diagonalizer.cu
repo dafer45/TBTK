@@ -31,7 +31,7 @@ using namespace std;
 namespace TBTK{
 namespace Solver{
 
-void Diagonalizer::solveGPU(CArray<complex<double>>& matrix, CArray<double>& eigenValues){
+void Diagonalizer::solveGPU(complex<double>* matrix, double* eigenValues, int n){
     //Initialize device
     int device = GPUResourceManager::getInstance().allocateDevice();
 	TBTKAssert(
@@ -73,7 +73,6 @@ void Diagonalizer::solveGPU(CArray<complex<double>>& matrix, CArray<double>& eig
     ) 
 
     //Allocate memory on device for hamiltonian and corresponding output
-    int n = getModel().getBasisSize();	//...nxn-matrix.
     complex<double> *hamiltonian_device;
     double *eigenValues_device;
     int *info_device = nullptr;
@@ -81,7 +80,7 @@ void Diagonalizer::solveGPU(CArray<complex<double>>& matrix, CArray<double>& eig
     TBTKAssert(
         cudaMallocManaged(
             reinterpret_cast<void **>(&hamiltonian_device), 
-            sizeof(complex<double>) * matrix.getSize()
+            sizeof(complex<double>) * n*n
         ) == cudaSuccess,
         "Diagonalizer::solveGPU()",
         "CUDA error allocating unified memory.",
@@ -90,7 +89,7 @@ void Diagonalizer::solveGPU(CArray<complex<double>>& matrix, CArray<double>& eig
     TBTKAssert(
         cudaMallocManaged(
             reinterpret_cast<void **>(&eigenValues_device),
-            sizeof(double) * eigenValues.getSize()
+            sizeof(double) * n
         ) == cudaSuccess,
         "Diagonalizer::solveGPU()",
         "CUDA error allocating memory on device.",
@@ -110,13 +109,13 @@ void Diagonalizer::solveGPU(CArray<complex<double>>& matrix, CArray<double>& eig
     // memory oversubscription is needed)
     cudaMemPrefetchAsync(
         &eigenValues_device, 
-        sizeof(double) * eigenValues.getSize(), 
+        sizeof(double) * n,
         device, 
         stream
     );
     cudaMemPrefetchAsync(
         &hamiltonian_device, 
-        sizeof(complex<double>) * matrix.getSize(), 
+        sizeof(complex<double>) * n*n, 
         device, 
         stream
     );
@@ -125,8 +124,8 @@ void Diagonalizer::solveGPU(CArray<complex<double>>& matrix, CArray<double>& eig
     TBTKAssert(
         cudaMemcpyAsync(
             hamiltonian_device, 
-            matrix.getData(), 
-            sizeof(complex<double>) * matrix.getSize(), 
+            matrix, 
+            sizeof(complex<double>) * n*n, 
             cudaMemcpyHostToDevice,
             stream) == cudaSuccess,
         "Diagonalizer::solveGPU()",
@@ -233,9 +232,9 @@ void Diagonalizer::solveGPU(CArray<complex<double>>& matrix, CArray<double>& eig
 
     TBTKAssert(
         cudaMemcpyAsync(
-            matrix.getData(),
+            matrix,
             hamiltonian_device,
-            sizeof(complex<double>)*matrix.getSize(),
+            sizeof(complex<double>)*n*n,
             cudaMemcpyDeviceToHost,
             stream
         ) == cudaSuccess,
@@ -246,9 +245,9 @@ void Diagonalizer::solveGPU(CArray<complex<double>>& matrix, CArray<double>& eig
 
     TBTKAssert(
         cudaMemcpyAsync(
-            eigenValues.getData(),
+            eigenValues,
             eigenValues_device,
-            sizeof(double)*eigenValues.getSize(),
+            sizeof(double)*n,
             cudaMemcpyDeviceToHost,
             stream
         ) == cudaSuccess,
@@ -357,8 +356,8 @@ void Diagonalizer::setupBasisTransformationGPU(){
 
 	//Diagonalize the overlap matrix.
 	CArray<double> overlapMatrixEigenValues(basisSize);
-    solveGPU( overlapMatrix, 
-                overlapMatrixEigenValues);
+    solveGPU( overlapMatrix.getData(), 
+                overlapMatrixEigenValues.getData(), basisSize);
 
 	//Setup basisTransformation storage.
 	basisTransformation = CArray<complex<double>>(basisSize*basisSize);

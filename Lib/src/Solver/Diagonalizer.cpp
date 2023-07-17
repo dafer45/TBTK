@@ -50,7 +50,8 @@ void Diagonalizer::run(){
 
 		if(useGPUAcceleration){
 			eigenVectors = hamiltonian;
-			solveGPU(eigenVectors, eigenValues);
+			int BasisSize = getModel().getBasisSize();
+			solveGPU(eigenVectors.getData(), eigenValues.getData(), BasisSize);
 			transformToOriginalBasis();
 		}
 		else{

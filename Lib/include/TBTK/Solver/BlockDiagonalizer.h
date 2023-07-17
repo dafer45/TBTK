@@ -27,7 +27,7 @@
 #include "TBTK/CArray.h"
 #include "TBTK/Communicator.h"
 #include "TBTK/Model.h"
-#include "TBTK/Solver/Solver.h"
+#include "TBTK/Solver/Diagonalizer.h"
 #include "TBTK/Timer.h"
 
 #include <complex>
@@ -65,7 +65,7 @@ namespace Solver{
  *  \snippet Solver/BlockDiagonalizer.cpp BlockDiagonalizer
  *  ## Output
  *  \snippet output/Solver/BlockDiagonalizer.txt BlockDiagonalizer */
-class BlockDiagonalizer : public Solver, public Communicator{
+class BlockDiagonalizer : public Diagonalizer{
 public:
 	/** Abstract base class for self-consistency callbacks. */
 	class SelfConsistencyCallback{

@@ -148,6 +148,22 @@ public:
 	 *
 	 *  @return The amplitude \f$\Psi_{n}(x)\f$. */
 	const std::complex<double> getAmplitude(int state, const Index &index);
+protected:
+	/** Enables GPU acceleration for the solver. */
+	bool useGPUAcceleration;
+
+	/** Diagonalizes the input matrix using a GPU device.
+	 *  The output for the eigen vectors is
+	 *  written into the input matrix. 
+	 * 
+	 *  @param matrix Matrix nxn to diagonalize
+	 *  @param eigenValues vector of size n
+	 *  @param n basis size of the matrix
+	 *
+	 *  @return Function overwrites matrix with eigenvectors
+	 * 			and returns eigenvalues in eigenValues     */
+	void solveGPU(std::complex<double>* matrix, double* eigenValues, int n);
+
 private:
 	/** pointer to array containing Hamiltonian. */
 	CArray<std::complex<double>> hamiltonian;
@@ -165,9 +181,6 @@ private:
 	/** Maximum number of iterations in the self-consistency loop. */
 	int maxIterations;
 
-	/** Enables GPU acceleration for the solver. */
-	bool useGPUAcceleration;
-
 	/** SelfConsistencyCallback to call each time a diagonalization has
 	 *  been completed. */
 	SelfConsistencyCallback *selfConsistencyCallback;
@@ -180,17 +193,6 @@ private:
 
 	/** Diagonalizes the Hamiltonian. */
 	void solve();
-
-	/** Diagonalizes the input matrix using a GPU device.
-	 *  The output for the eigen vectors is
-	 *  written into the input matrix. 
-	 * 
-	 *  @param matrix Matrix nxn to diagonalize
-	 *  @param eigenValues vector of size n
-	 *
-	 *  @return Function overwrites matrix with eigenvectors
-	 * 			and returns eigenvalues in eigenValues     */
-	void solveGPU(CArray<std::complex<double>>& matrix, CArray<double>& eigenValues);
 
 	/** Setup the basis transformation. */
 	void setupBasisTransformation();
