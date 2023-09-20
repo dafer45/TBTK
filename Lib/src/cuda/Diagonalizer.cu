@@ -78,7 +78,7 @@ void Diagonalizer::solveGPU(complex<double>* matrix, double* eigenValues, int n)
     int *info_device = nullptr;
 
     TBTKAssert(
-        cudaMallocManaged(
+        cudaMalloc(
             reinterpret_cast<void **>(&hamiltonian_device), 
             sizeof(complex<double>) * n*n
         ) == cudaSuccess,
@@ -87,7 +87,7 @@ void Diagonalizer::solveGPU(complex<double>* matrix, double* eigenValues, int n)
         ""
     ) 
     TBTKAssert(
-        cudaMallocManaged(
+        cudaMalloc(
             reinterpret_cast<void **>(&eigenValues_device),
             sizeof(double) * n
         ) == cudaSuccess,
@@ -170,7 +170,7 @@ void Diagonalizer::solveGPU(complex<double>* matrix, double* eigenValues, int n)
     // Cuda managed memory is used, instead of device memory, as this allocation
     // can become substancial for bigger hamiltonians
     TBTKAssert(
-        cudaMallocManaged(reinterpret_cast<void **>(&buffer_device),
+        cudaMalloc(reinterpret_cast<void **>(&buffer_device),
             sizeof(complex<double>) * sizeBuffer_device
         ) == cudaSuccess,
         "Diagonalizer::solveGPU()",
