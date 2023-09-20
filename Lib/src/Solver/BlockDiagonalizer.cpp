@@ -127,6 +127,9 @@ void BlockDiagonalizer::init(){
 		if(!useGPUAcceleration){
 			hamiltonianSize += (numStatesInBlock*(numStatesInBlock + 1))/2;
 		}
+		else{
+			hamiltonianSize += numStatesInBlock*numStatesInBlock;
+		}
 	}
 
 	if(getGlobalVerbose() && getVerbose()){
