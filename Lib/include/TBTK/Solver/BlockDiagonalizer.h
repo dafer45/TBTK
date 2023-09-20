@@ -175,6 +175,13 @@ public:
 	 *
 	 *  @pragma parallelExecution True to enable parallel execution. */
 	void setParallelExecution(bool parallelExecution);
+
+	/** Set if you want to use GPU acceleration provided by CUDA routines.
+	 *
+	 *  @param useGPUAcceleration Turns GPU acceleration for the BlockDiagonalizer 
+	 *  solver off or on. */
+	void setUseGPUAcceleration(bool useGPUAcceleration);
+
 private:
 	/** pointer to array containing Hamiltonian. */
 	CArray<std::complex<double>> hamiltonian;
@@ -215,6 +222,9 @@ private:
 
 	/** Updates Hamiltonian. */
 	void update();
+
+
+
 
 	/** Diagonalizes the Hamiltonian. */
 	void solve();
@@ -328,7 +338,21 @@ inline unsigned int BlockDiagonalizer::getLastStateInBlock(
 inline void BlockDiagonalizer::setParallelExecution(
 	bool parallelExecution
 ){
-	this->parallelExecution = parallelExecution;
+	if(this->useGPUAcceleration && parallelExecution){
+		//GPU acceleration does not support parallel execution on the host at this stage
+		this->parallelExecution = false;
+	}
+	else{
+		this->parallelExecution = parallelExecution;
+	}
+}
+
+inline void BlockDiagonalizer::setUseGPUAcceleration(bool useGPUAcceleration){
+	this->useGPUAcceleration = useGPUAcceleration;
+	if(useGPUAcceleration){
+		//GPU acceleration does not support parallel execution on the host at this stage
+		this->parallelExecution = false;
+	}
 }
 
 };	//End of namespace Solver

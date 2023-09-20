@@ -96,7 +96,7 @@ public:
 	 *
 	 *  @param useGPUAcceleration Turns GPU acceleration for the Diagonalizer 
 	 *  solver off or on. */
-	void setUseGPUAcceleration(bool useGPUAcceleration);
+	virtual void setUseGPUAcceleration(bool useGPUAcceleration);
 
 	/** Run calculations. Diagonalizes ones if no self-consistency callback
 	 *  have been set, or otherwise multiple times until self-consistencey

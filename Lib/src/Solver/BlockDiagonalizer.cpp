@@ -89,21 +89,25 @@ void BlockDiagonalizer::init(){
 	){
 		unsigned int numStates
 			= blockStructureDescriptor.getNumStatesInBlock(n);
-		if(!useGPUAcceleration){
+		if(useGPUAcceleration){
+			blockSizes.push_back(numStates*numStates);
+		}
+		else{
 			blockSizes.push_back((numStates*(numStates+1))/2);
 		}
 		eigenVectorSizes.push_back(numStates*numStates);
+
 		if(n == 0){
 			blockOffsets.push_back(0);
 			eigenVectorOffsets.push_back(0);
 		}
 		else{
 			blockOffsets.push_back(
-				blockOffsets.at(n-1) + blockSizes.at(n-1)
+				blockOffsets.back() + blockSizes.at(n-1)
 			);
 			eigenVectorOffsets.push_back(
-				eigenVectorOffsets.at(n-1)
-				+ eigenVectorSizes.at(n-1)
+				eigenVectorOffsets.back() + 
+				eigenVectorSizes.at(n-1)
 			);
 		}
 	}
@@ -117,7 +121,7 @@ void BlockDiagonalizer::init(){
 		n < blockStructureDescriptor.getNumBlocks();
 		n++
 	){
-		unsigned int numStatesInBlock
+		size_t numStatesInBlock
 			= blockStructureDescriptor.getNumStatesInBlock(n);
 		eigenVectorsSize += numStatesInBlock*numStatesInBlock;
 		if(!useGPUAcceleration){
@@ -196,6 +200,9 @@ void BlockDiagonalizer::update(){
 		if(!useGPUAcceleration){ //TODO See if one could avoid this
 			hamiltonianSize += (numStatesInBlock*(numStatesInBlock + 1))/2;
 		}
+		else{
+			hamiltonianSize += hamiltonianSize*hamiltonianSize;
+		}
 		
 	}
 	if(useGPUAcceleration){
@@ -257,14 +264,6 @@ void BlockDiagonalizer::update(){
 						+ (from*(from+1))/2
 					] += (*iterator).getAmplitude();
 				}
-				else if(useGPUAcceleration){
-					unsigned int numStates
-						= blockStructureDescriptor.getNumStatesInBlock(block);
-					hamiltonian[eigenVectorOffsets.at(block) +
-						to + 
-						from*numStates] 
-						+= (*iterator).getAmplitude();
-				}
 				++iterator;
 			}
 		}
@@ -302,15 +301,13 @@ void BlockDiagonalizer::update(){
 					unsigned int numStates
 						= blockStructureDescriptor.getNumStatesInBlock(blockCounter);
 					//Temporarily store hamiltonian in eigenVectors
-					eigenVectors[eigenVectorOffsets.at(blockCounter) +
+					eigenVectors[blockOffsets.at(blockCounter) +
 						to + 
 						from*numStates] 
 						+= (*iterator).getAmplitude();
 				}
-
 				++iterator;
 			}
-
 			blockCounter++;
 			++blockIterator;
 		}
