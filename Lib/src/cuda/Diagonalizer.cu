@@ -72,6 +72,33 @@ void Diagonalizer::solveGPU(complex<double>* matrix, double* eigenValues, int n)
         ""
     ) 
 
+    //Print device memory use
+    if(getGlobalVerbose() && getVerbose()){
+            size_t deviceMemorySize = n*n*sizeof(
+                complex<double> //Matrix size
+            );
+            deviceMemorySize += sizeof(double) * n; //Eigenvalues
+            deviceMemorySize += sizeof(int); //Info device
+
+            Streams::out << "\tDevice memory use for input: ";
+            if(deviceMemorySize < 1024){
+                Streams::out << deviceMemorySize
+                    << "B\n";
+            }
+            else if(deviceMemorySize < 1024*1024){
+                Streams::out << deviceMemorySize/1024
+                << "KB\n";
+            }
+            else if(deviceMemorySize < 1024*1024*1024){
+                Streams::out << deviceMemorySize/1024/1024
+                 << "MB\n";
+            }
+            else{
+                Streams::out << deviceMemorySize/1024/1024/1024
+                    << "GB\n";
+            }
+        }
+
     //Allocate memory on device for hamiltonian and corresponding output
     complex<double> *hamiltonian_device;
     double *eigenValues_device;
@@ -105,21 +132,6 @@ void Diagonalizer::solveGPU(complex<double>* matrix, double* eigenValues, int n)
         "CUDA error allocating memory on device.",
         ""
     )
-    //Prefetching memory on the device (it is allowed to fail, if
-    // memory oversubscription is needed)
-    cudaMemPrefetchAsync(
-        &eigenValues_device, 
-        sizeof(double) * n,
-        device, 
-        stream
-    );
-    cudaMemPrefetchAsync(
-        &hamiltonian_device, 
-        sizeof(complex<double>) * n*n, 
-        device, 
-        stream
-    );
-
     //Copy hamiltonian to device
     TBTKAssert(
         cudaMemcpyAsync(
@@ -167,22 +179,43 @@ void Diagonalizer::solveGPU(complex<double>* matrix, double* eigenValues, int n)
         ""
     )
 
+    //Print device memory use
+    if(getGlobalVerbose() && getVerbose()){
+        size_t deviceMemorySize = sizeBuffer_device;
+            // *sizeof(complex<double>);
+        deviceMemorySize += sizeof(double) * n; //Eigenvalues
+        deviceMemorySize += sizeof(int); //Info device
+
+        Streams::out << "\tDevice memory use for buffer: ";
+        if(deviceMemorySize < 1024){
+            Streams::out << deviceMemorySize
+                << "B\n";
+        }
+        else if(deviceMemorySize < 1024*1024){
+            Streams::out << deviceMemorySize/1024
+            << "KB\n";
+        }
+        else if(deviceMemorySize < 1024*1024*1024){
+            Streams::out << deviceMemorySize/1024/1024
+             << "MB\n";
+        }
+        else{
+            Streams::out << deviceMemorySize/1024/1024/1024
+                << "GB\n";
+        }
+    }
+
     // Cuda managed memory is used, instead of device memory, as this allocation
     // can become substancial for bigger hamiltonians
     TBTKAssert(
         cudaMalloc(reinterpret_cast<void **>(&buffer_device),
-            sizeof(complex<double>) * sizeBuffer_device
+            // sizeof(complex<double>) //TODO
+            sizeBuffer_device
         ) == cudaSuccess,
         "Diagonalizer::solveGPU()",
         "Failed to allocate buffer memory on device.",
         "" 
     )
-    cudaMemPrefetchAsync(
-        &buffer_device, 
-        sizeof(complex<double>) * sizeBuffer_device, 
-        device, 
-        stream
-    );
 
     buffer_host = malloc(sizeof(complex<double>) * sizeBuffer_host);
 
