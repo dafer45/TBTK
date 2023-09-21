@@ -33,7 +33,17 @@ namespace Solver{
 
 void Diagonalizer::solveGPU(complex<double>* matrix, double* eigenValues, int n){
     //Initialize device
-    int device = GPUResourceManager::getInstance().allocateDevice();
+    int numDevices;
+    cudaGetDeviceCount(&numDevices);
+    int device;
+    if(numDevices > 1){
+        device = GPUResourceManager::getInstance().allocateDevice();
+    }
+    else{
+        device = 0;
+    }
+    //Run in parallel on one gpu instead
+    
 	TBTKAssert(
 		cudaSetDevice(device) == cudaSuccess,
 		"Diagonalizer::solveGPU()",
@@ -348,8 +358,9 @@ void Diagonalizer::solveGPU(complex<double>* matrix, double* eigenValues, int n)
         "CUDA error destroying cuda stream.",
         ""
     )
-	GPUResourceManager::getInstance().freeDevice(device);
-
+    if(numDevices > 1){
+        GPUResourceManager::getInstance().freeDevice(device);
+    }
     free(buffer_host);
     buffer_host = nullptr;
 }
