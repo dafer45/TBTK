@@ -105,18 +105,20 @@ void Diagonalizer::solveGPU(complex<double>* matrix, double* eigenValues, int n)
     int *info_device = nullptr;
 
     TBTKAssert(
-        cudaMalloc(
+        cudaMallocAsync(
             reinterpret_cast<void **>(&hamiltonian_device), 
-            sizeof(complex<double>) * n*n
+            sizeof(complex<double>) * n*n,
+            stream
         ) == cudaSuccess,
         "Diagonalizer::solveGPU()",
         "CUDA error allocating unified memory.",
         ""
     ) 
     TBTKAssert(
-        cudaMalloc(
+        cudaMallocAsync(
             reinterpret_cast<void **>(&eigenValues_device),
-            sizeof(double) * n
+            sizeof(double) * n,
+            stream
         ) == cudaSuccess,
         "Diagonalizer::solveGPU()",
         "CUDA error allocating memory on device.",
@@ -124,15 +126,17 @@ void Diagonalizer::solveGPU(complex<double>* matrix, double* eigenValues, int n)
     ) 
 
     TBTKAssert(
-        cudaMalloc(
+        cudaMallocAsync(
             reinterpret_cast<void **>(&info_device),
-             sizeof(int)
+             sizeof(int),
+             stream
         ) == cudaSuccess,
         "Diagonalizer::solveGPU()",
         "CUDA error allocating memory on device.",
         ""
     )
     //Copy hamiltonian to device
+    cudaStreamSynchronize(stream);
     TBTKAssert(
         cudaMemcpyAsync(
             hamiltonian_device, 
@@ -205,8 +209,9 @@ void Diagonalizer::solveGPU(complex<double>* matrix, double* eigenValues, int n)
     // Cuda managed memory is used, instead of device memory, as this allocation
     // can become substancial for bigger hamiltonians
     TBTKAssert(
-        cudaMalloc(reinterpret_cast<void **>(&buffer_device),
-            sizeBuffer_device
+        cudaMallocAsync(reinterpret_cast<void **>(&buffer_device),
+            sizeBuffer_device,
+            stream
         ) == cudaSuccess,
         "Diagonalizer::solveGPU()",
         "Failed to allocate buffer memory on device.",
@@ -214,7 +219,7 @@ void Diagonalizer::solveGPU(complex<double>* matrix, double* eigenValues, int n)
     )
 
     buffer_host = malloc(sizeof(complex<double>) * sizeBuffer_host);
-
+    cudaStreamSynchronize(stream);
     //Run the diagonalization routine
     TBTKAssert(
         cusolverDnXsyevd(

@@ -222,7 +222,7 @@ void BlockDiagonalizer::update(){
 	IndexTree blockIndices
 		= getModel().getHoppingAmplitudeSet().getSubspaceIndices();
 	IndexTree::ConstIterator blockIterator = blockIndices.cbegin();
-	if(parallelExecution  && !useGPUAcceleration){
+	if(parallelExecution){
 		vector<HoppingAmplitudeSet::ConstIterator> iterators;
 		vector<HoppingAmplitudeSet::ConstIterator> endIterators;
 
@@ -266,6 +266,15 @@ void BlockDiagonalizer::update(){
 						+ to
 						+ (from*(from+1))/2
 					] += (*iterator).getAmplitude();
+				}
+				else if(useGPUAcceleration){
+					unsigned int numStates
+						= blockStructureDescriptor.getNumStatesInBlock(block);
+					//Temporarily store hamiltonian in eigenVectors
+					eigenVectors[blockOffsets.at(block) +
+						to + 
+						from*numStates] 
+						+= (*iterator).getAmplitude();
 				}
 				++iterator;
 			}
@@ -346,7 +355,7 @@ extern "C" void zhbeb_(
 
 void BlockDiagonalizer::solve(){
 	if(true){//Currently no support for banded matrices.
-		if(parallelExecution && !useGPUAcceleration){
+		if(parallelExecution){
 			vector<unsigned int> eigenValuesOffsets;
 			eigenValuesOffsets.push_back(0);
 			for(
@@ -366,37 +375,47 @@ void BlockDiagonalizer::solve(){
 				b < blockStructureDescriptor.getNumBlocks();
 				b++
 			){
-				//Setup zhpev to calculate...
-				char jobz = 'V';						//...eigenvalues and eigenvectors...
-				char uplo = 'U';						//...for an upper triangular...
-				int n = blockStructureDescriptor.getNumStatesInBlock(b);	//...nxn-matrix.
-				//Initialize workspaces
-				CArray<complex<double>> work(2*n-1);
-				CArray<double> rwork(3*n-2);
-				int info;
-				//Solve brop
-				zhpev_(
-					&jobz,
-					&uplo,
-					&n,
-					hamiltonian.getData()
-						+ blockOffsets.at(b),
-					eigenValues.getData()
-						+ eigenValuesOffsets[b],
-					eigenVectors.getData()
-						+ eigenVectorOffsets.at(b),
-					&n,
-					work.getData(),
-					rwork.getData(),
-					&info
-				);
+				if(useGPUAcceleration){
+					int n = blockStructureDescriptor.getNumStatesInBlock(b);
+					solveGPU(
+						eigenVectors.getData() + eigenVectorOffsets.at(b), //Hamiltionian is stored in eigenVectors
+							eigenValues.getData()+ eigenValuesOffsets[b],
+							n
+						);
+				}
+				else{
+					//Setup zhpev to calculate...
+					char jobz = 'V';						//...eigenvalues and eigenvectors...
+					char uplo = 'U';						//...for an upper triangular...
+					int n = blockStructureDescriptor.getNumStatesInBlock(b);	//...nxn-matrix.
+					//Initialize workspaces
+					CArray<complex<double>> work(2*n-1);
+					CArray<double> rwork(3*n-2);
+					int info;
+					//Solve brop
+					zhpev_(
+						&jobz,
+						&uplo,
+						&n,
+						hamiltonian.getData()
+							+ blockOffsets.at(b),
+						eigenValues.getData()
+							+ eigenValuesOffsets[b],
+						eigenVectors.getData()
+							+ eigenVectorOffsets.at(b),
+						&n,
+						work.getData(),
+						rwork.getData(),
+						&info
+					);
 
-				TBTKAssert(
-					info == 0,
-					"Diagonalizer:solve()",
-					"Diagonalization routine zhpev exited with INFO=" + to_string(info) + ".",
-					"See LAPACK documentation for zhpev for further information."
-				);
+					TBTKAssert(
+						info == 0,
+						"Diagonalizer:solve()",
+						"Diagonalization routine zhpev exited with INFO=" + to_string(info) + ".",
+						"See LAPACK documentation for zhpev for further information."
+					);
+				}
 			}
 		}
 		else{

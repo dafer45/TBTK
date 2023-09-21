@@ -338,21 +338,11 @@ inline unsigned int BlockDiagonalizer::getLastStateInBlock(
 inline void BlockDiagonalizer::setParallelExecution(
 	bool parallelExecution
 ){
-	if(this->useGPUAcceleration && parallelExecution){
-		//GPU acceleration does not support parallel execution on the host at this stage
-		this->parallelExecution = false;
-	}
-	else{
-		this->parallelExecution = parallelExecution;
-	}
+	this->parallelExecution = parallelExecution;
 }
 
 inline void BlockDiagonalizer::setUseGPUAcceleration(bool useGPUAcceleration){
 	this->useGPUAcceleration = useGPUAcceleration;
-	if(useGPUAcceleration){
-		//GPU acceleration does not support parallel execution on the host at this stage
-		this->parallelExecution = false;
-	}
 }
 
 };	//End of namespace Solver
