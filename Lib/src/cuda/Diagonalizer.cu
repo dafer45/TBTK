@@ -99,33 +99,6 @@ void Diagonalizer::solveGPU(complex<double>* matrix, double* eigenValues, int n)
             }
         }
 
-    //Print device memory use
-    if(getGlobalVerbose() && getVerbose()){
-            size_t deviceMemorySize = n*n*sizeof(
-                complex<double> //Matrix size
-            );
-            deviceMemorySize += sizeof(double) * n; //Eigenvalues
-            deviceMemorySize += sizeof(int); //Info device
-
-            Streams::out << "\tDevice memory use for input: ";
-            if(deviceMemorySize < 1024){
-                Streams::out << deviceMemorySize
-                    << "B\n";
-            }
-            else if(deviceMemorySize < 1024*1024){
-                Streams::out << deviceMemorySize/1024
-                << "KB\n";
-            }
-            else if(deviceMemorySize < 1024*1024*1024){
-                Streams::out << deviceMemorySize/1024/1024
-                 << "MB\n";
-            }
-            else{
-                Streams::out << deviceMemorySize/1024/1024/1024
-                    << "GB\n";
-            }
-        }
-
     //Allocate memory on device for hamiltonian and corresponding output
     complex<double> *hamiltonian_device;
     double *eigenValues_device;
