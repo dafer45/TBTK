@@ -227,7 +227,9 @@ ParameterSet FileParser::readParameterSet(string fileName){
 			break;
 		}*/
 	}
-
+	//Clear the stringstream
+	ssin.str("");
+	ssin.clear();
 	return parameterSet;
 }
 
@@ -241,6 +243,9 @@ void FileParser::closeOutput(){
 
 void FileParser::readInput(string fileName){
 	fstream fin;
+	//Clear ssin before writing to it
+	ssin.str("");
+	ssin.clear();
 	fin.open(fileName);
 	TBTKAssert(
 		fin,
