@@ -19,6 +19,7 @@
  *  @brief GPU resource manager.
  *
  *  @ author Kristofer Björnson
+ *  @author Andreas Theiler	
  */
 
 #ifndef COM_DAFER45_TBTK_GPU_RESOURCE_MANAGER
@@ -42,6 +43,9 @@ public:
 
 	/** Free GPU device. */
 	void freeDevice(int device);
+
+	/** enables peer to peer communication if available	*/
+	void enableP2PAccess();
 
 	/** Get singleton instance. */
 	static GPUResourceManager& getInstance();

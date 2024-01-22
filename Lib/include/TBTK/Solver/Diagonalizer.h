@@ -18,6 +18,7 @@
  *  @brief Solves a Model using diagonalization.
  *
  *  @author Kristofer Björnson
+ *  @author Andreas Theiler	
  */
 
 #ifndef COM_DAFER45_TBTK_SOLVER_DIAGONALIZATION
@@ -98,6 +99,15 @@ public:
 	 *  solver off or on. */
 	virtual void setUseGPUAcceleration(bool useGPUAcceleration);
 
+	/** Set if you want to use Multi GPU acceleration provided by CUDA routines.
+	 *  This implementation works for single nodes with multiple GPUs, by sharing
+	 *  the memory between the GPUs. Recommended for large Hamiltonians
+	 *  that do not fit into the memory of a single GPU.
+	 *
+	 *  @param useMultiGPUAcceleration Turns multi GPU acceleration for the
+	 *  Diagonalizer solver off or on. */
+	virtual void setUseMultiGPUAcceleration(bool useMultiGPUAcceleration);
+
 	/** Run calculations. Diagonalizes ones if no self-consistency callback
 	 *  have been set, or otherwise multiple times until self-consistencey
 	 *  or maximum number of iterations has been reached. */
@@ -152,6 +162,9 @@ protected:
 	/** Enables GPU acceleration for the solver. */
 	bool useGPUAcceleration;
 
+	/** Enables Multi GPU acceleration on one node for the solver. */
+	bool useMultiGPUAcceleration;
+
 	/** Diagonalizes the input matrix using a GPU device.
 	 *  The output for the eigen vectors is
 	 *  written into the input matrix. 
@@ -162,7 +175,7 @@ protected:
 	 *
 	 *  @return Function overwrites matrix with eigenvectors
 	 * 			and returns eigenvalues in eigenValues     */
-	void solveGPU(std::complex<double>* matrix, double* eigenValues, int n);
+	void solveGPU(std::complex<double>* matrix, double* eigenValues, const int &n);
 
 private:
 	/** pointer to array containing Hamiltonian. */
@@ -208,6 +221,37 @@ private:
 
 	/** Transform the eigen vectors to the original basis. */
 	void transformToOriginalBasis();
+
+	/** Diagonalizes the input matrix using multiple GPU devices.
+	 *  The output for the eigen vectors is
+	 *  written into the input matrix. 
+	 * 
+	 *  @param matrix Matrix nxn to diagonalize
+	 *  @param eigenValues vector of size n
+	 *  @param n basis size of the matrix
+	 *
+	 *  @return Function overwrites matrix with eigenvectors
+	 * 			and returns eigenvalues in eigenValues     */
+	void solveMultiGPU(std::complex<double>* matrix, double* eigenValues, const int &n);
+
+	// TODO delete if not needed anymore
+	// /** Helper function for solveMultiGPU. It create a empty local 
+	//  * matrix A with A := 0
+	//  * 
+	//  *  @param numDevices number of GPUs in use
+	//  *  @param deviceIdA  int array of dimension numDevices
+	//  *  @param N_A number of columns of global matrix
+	//  *  @param T_A number of columns per column tile
+	//  *  @param llda leading dimension of local matrix
+	//  *  @param array_d_A host pointer array of dimension numDevices
+	//  */
+	// void createEmptyMatrix(int numDevices, 
+	// 									const int *deviceIdA,
+	// 									int N_A,
+	// 									int T_A,
+	// 									int llda,
+	// 									std::complex<double> **array_d_A
+	// );
 };
 
 inline void Diagonalizer::setSelfConsistencyCallback(
@@ -250,6 +294,16 @@ inline double Diagonalizer::getEigenValue(int state){
 
 inline void Diagonalizer::setUseGPUAcceleration(bool useGPUAcceleration){
 	this->useGPUAcceleration = useGPUAcceleration;
+}
+
+inline void Diagonalizer::setUseMultiGPUAcceleration(bool useMultiGPUAcceleration){
+	if(useMultiGPUAcceleration){
+		this->useGPUAcceleration = useMultiGPUAcceleration;
+		this->useMultiGPUAcceleration = useMultiGPUAcceleration;
+	}
+	else{
+		this->useMultiGPUAcceleration = useMultiGPUAcceleration;
+	}
 }
 
 };	//End of namespace Solver

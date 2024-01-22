@@ -15,6 +15,7 @@
 
 /** @file Diagonalizer.cu
  *
+ *  @author Kristofer Björnson
  *  @author Andreas Theiler
  */
 
@@ -23,15 +24,167 @@
 #include "TBTK/TBTKMacros.h"
 #include "TBTK/GPUResourceManager.h"
 
+#include <vector>
+
 #include <cusolverDn.h>
+#include <cusolverMg.h>
 #include <cuda_runtime.h>
+//TODO put his .h in a different directory (3rd party?)
+#include "TBTK/cusolverMg_utils.h"
 
 using namespace std;
 
 namespace TBTK{
 namespace Solver{
 
-void Diagonalizer::solveGPU(complex<double>* matrix, double* eigenValues, int n){
+void Diagonalizer::solveMultiGPU(complex<double>* matrix, double* eigenValues, const int &n){
+    
+    int numDevices;
+    cudaGetDeviceCount(&numDevices);
+    if(numDevices <= 1){
+        Streams::out << "Detect 1 gpu or less, falling back to single GPU operation." << endl;
+        useMultiGPUAcceleration = false;
+        solveGPU(matrix, eigenValues,n);
+    }
+    //Allocate available devices
+    std::vector<int> deviceList(numDevices);
+    for(int i = 0; i < numDevices; i++) {
+        deviceList[i] = GPUResourceManager::getInstance().allocateDevice();
+    }
+    GPUResourceManager::getInstance().enableP2PAccess();
+
+    // set up various calculation parameters and resources
+    const int IA = 1;
+    const int JA = 1;
+    const int T_A = 256; // tile size recommended size is 256 or 512
+    const int lda = n;
+
+    cusolverEigMode_t jobz = CUSOLVER_EIG_MODE_VECTOR;
+
+    cudaLibMgMatrixDesc_t descrMatrix;
+    cudaLibMgGrid_t gridA;
+    cusolverMgGridMapping_t mapping = CUDALIBMG_GRID_MAPPING_COL_MAJOR;
+
+    cusolverMgHandle_t cusolverHandle = NULL;
+    //TODO check for CUSOLVER_STATUS_SUCCESS
+    cusolverMgCreate(&cusolverHandle);
+    cusolverMgDeviceSelect(cusolverHandle, numDevices, deviceList.data());
+    cusolverMgCreateDeviceGrid(&gridA, 1, numDevices, deviceList.data(), mapping);
+    cusolverMgCreateMatrixDesc(&descrMatrix, n, // nubmer of rows of matrix
+                                n,          // number of columns of matrix
+                                n,          // number or rows in a tile
+                                T_A,        // number of columns in a tile
+                                CUDA_C_64F, gridA);
+
+    vector<complex<double> *> array_d_A(numDevices, nullptr);
+
+    // Allocate resource for local matrices on the devices
+    // createEmptyMatrix(numDevices, 
+    //                     deviceList.data(),
+    //                     n,                  // number of columns of global matrix
+    //                     T_A,                // number of columns per column tile 
+    //                     lda,                // leading dimension of local matrix
+    //                     array_d_A.data());
+    createMat<complex<double>>(numDevices, deviceList.data(), n, /* number of columns of global A */
+    T_A,                          /* number of columns per column tile */
+    lda,                          /* leading dimension of local A */
+    array_d_A.data());
+    memcpyH2D<complex<double>>(numDevices, deviceList.data(), n, n,
+                         /* input */
+                         matrix,
+                         lda,
+                         /* output */
+                         n,                /* number of columns of global A */
+                         T_A,              /* number of columns per column tile */
+                         lda,              /* leading dimension of local A */
+                         array_d_A.data(), /* host pointer array of dimension nbGpus */
+                         IA, JA);
+    // Allocate buffer memory
+    int64_t lwork = 0;
+    //TODO check for CUSOLVER_STATUS_SUCCESS
+    cusolverMgSyevd_bufferSize(
+        cusolverHandle, (cusolverEigMode_t)jobz, CUBLAS_FILL_MODE_LOWER,
+        n, reinterpret_cast<void **>(array_d_A.data()), IA,
+        JA,                                                     
+        descrMatrix, reinterpret_cast<void *>(eigenValues), CUDA_R_64F,
+        CUDA_C_64F, &lwork);
+
+    std::vector<complex<double> *> array_d_work(numDevices, nullptr);
+
+    // array_d_work[i] points to device workspace of device i
+    workspaceAlloc(numDevices, deviceList.data(),
+                    sizeof(complex<double>) * lwork,
+                    reinterpret_cast<void **>(array_d_work.data()));
+    // sync all devices before calculation
+    //TODO check for cudaSuccess
+    cudaDeviceSynchronize();
+    // Run the eigenvalue solver
+    int info = 0;
+     //TODO check for CUSOLVER_STATUS_SUCCESS
+    cusolverMgSyevd(
+        cusolverHandle, (cusolverEigMode_t)jobz, CUBLAS_FILL_MODE_LOWER,
+        n, reinterpret_cast<void **>(array_d_A.data()),
+        IA, JA, descrMatrix, reinterpret_cast<void **>(eigenValues),
+        CUDA_R_64F, CUDA_C_64F,
+        reinterpret_cast<void **>(array_d_work.data()), lwork, &info
+        );
+    // sync all devices after calculation
+    //TODO check for cudaSuccess
+    cudaDeviceSynchronize();
+    CUDA_CHECK(cudaDeviceSynchronize());
+
+    // Copy data to host from devices
+    memcpyD2H<complex<double>>(numDevices, deviceList.data(), n, n,
+                         n, 
+                         T_A,
+                         lda,
+                         array_d_A.data(), IA, JA,
+                         matrix,
+                         lda);
+
+    // Clean up
+    destroyMat(numDevices, deviceList.data(), n,
+                T_A,
+                reinterpret_cast<void **>(array_d_A.data()));
+          
+    workspaceFree(numDevices, deviceList.data(), reinterpret_cast<void **>(array_d_work.data()));
+
+}
+
+// TODO delete if not needed anymore
+// void Diagonalizer::createEmptyMatrix(int numDevices, 
+//                                 const int *deviceIdA,
+//                                 int N_A,
+//                                 int T_A,
+//                                 int llda,
+//                                 complex<double> **array_d_A){
+//     int currentDev = 0; // Get current device id
+//     // TODO check against cudaSuccess
+//     cudaGetDevice(&currentDev);
+//     cudaDeviceSynchronize();
+//     const int matrixNumblks = (N_A + T_A - 1) / T_A;
+//     const int numBlocksDevice = (matrixNumblks + numDevices - 1) / numDevices;
+//     // Allocate base pointers
+//     for(int p = 0; p < numDevices; p++){
+//         // TODO check against cudaSuccess
+//         cudaSetDevice(deviceIdA[p]);
+//         // Allocate numBlocksDevice blocks per device
+//         // TODO check against cudaSuccess
+//         cudaMalloc(&(array_d_A[p]), sizeof(complex<double>) * llda * T_A * numBlocksDevice);
+//         // Set local matrix to zero
+//         // TODO check against cudaSuccess
+//         cudaMemset(array_d_A[p], 0, sizeof(complex<double>) * llda * T_A * numBlocksDevice);
+//     }
+//     // TODO check against cudaSuccess
+//     cudaDeviceSynchronize();
+//     cudaSetDevice(currentDev);
+// }
+
+void Diagonalizer::solveGPU(complex<double>* matrix, double* eigenValues, const int &n){
+    if(useMultiGPUAcceleration){
+        solveMultiGPU(matrix, eigenValues, n);
+        return;
+    }
     //Initialize device
     int numDevices;
     cudaGetDeviceCount(&numDevices);

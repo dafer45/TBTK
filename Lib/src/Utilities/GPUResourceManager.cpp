@@ -16,6 +16,7 @@
 /** @file GPUResourceManager.h
  *
  *  @author Kristofer Björnson
+ *  @author Andreas Theiler
  */
 
 #include "TBTK/GPUResourceManager.h"
@@ -88,5 +89,6 @@ void GPUResourceManager::freeDevice(int device){
 	omp_unset_lock(&busyDevicesLock);
 #endif
 }
+
 
 };	//End of namespace TBTK

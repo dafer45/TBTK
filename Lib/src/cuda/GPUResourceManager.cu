@@ -16,10 +16,12 @@
 /** @file GPUResourceManager.cu
  *  
  *  @author Kristofer Björnson
+ *  @author Andreas Theiler	
  */
 
 #include "TBTK/GPUResourceManager.h"
 #include "TBTK/Streams.h"
+#include <cuda_runtime.h>
 
 using namespace std;
 
@@ -43,6 +45,49 @@ void GPUResourceManager::destroyDeviceTable(){
 		delete [] busyDevices;
 		busyDevices = NULL;
 	}
+}
+
+// Code based on enablePeerAccess from Nvidias CUDA sample library
+void GPUResourceManager::enableP2PAccess() {
+    
+	// Check if any devices are allocated
+	if(!busyDevices){
+		//TODO error message
+		return;
+	}
+	cudaError_t cudaError = cudaSuccess;
+	int currentDevice;
+	for(int i = 0; i < numDevices; i++){
+		if(busyDevices[i]){
+			currentDevice = i;
+			// TODO error check cudaSuccess // TODO not sure if this check is needed
+			cudaError = cudaGetDevice(&currentDevice);
+		}
+	}    
+
+    /* Remark: access granted by this cudaDeviceEnablePeerAccess is unidirectional */
+    /* Rows and columns represents a connectivity matrix between GPUs in the system */
+    for (int activeDevice = 0; activeDevice < numDevices; activeDevice++) {
+		if(busyDevices[activeDevice]){
+			// TODO error check
+			cudaError = cudaSetDevice(activeDevice);
+		}
+        for (int peer = 0; peer < numDevices; peer++) {
+            if (activeDevice != peer && busyDevices[peer]) {
+                int canAccessPeer = 0;
+				// TODO error check
+				cudaError = cudaDeviceCanAccessPeer(&canAccessPeer, activeDevice, peer);
+                if (canAccessPeer) {
+					// TODO error check
+					cudaError = cudaDeviceEnablePeerAccess(peer, 0);
+					// TODO remove 
+					Streams::out << "P2P enabled" << endl;
+                }
+            }
+        }
+    }
+	// TODO error check
+	cudaError = cudaSetDevice(currentDevice);
 }
 
 };	//End of namespace TBTK
