@@ -64,80 +64,163 @@ TEST(Diagonalizer, run){
 }
 
 TEST(Diagonalizer, getEigenValues){
-	Model model;
-	model.setVerbose(false);
-	model << HoppingAmplitude(1, {1}, {0}) + HC;
-	model.construct();
+	{
+		Model model;
+		model.setVerbose(false);
+		model << HoppingAmplitude(1, {1}, {0}) + HC;
+		model.construct();
+		Diagonalizer solver;
+		solver.setVerbose(false);
+		solver.setModel(model);
+		solver.run();
 
-	Diagonalizer solver;
-	solver.setVerbose(false);
-	solver.setModel(model);
-	solver.run();
+		//Normal access.
+		const CArray<double> &eigenValues0 = solver.getEigenValues();
+		EXPECT_DOUBLE_EQ(eigenValues0[0], -1);
+		EXPECT_DOUBLE_EQ(eigenValues0[1], 1);
 
-	//Normal access.
-	const CArray<double> &eigenValues0 = solver.getEigenValues();
-	EXPECT_DOUBLE_EQ(eigenValues0[0], -1);
-	EXPECT_DOUBLE_EQ(eigenValues0[1], 1);
+		//Access with write permissions.
+		CArray<double> &eigenValues1 = solver.getEigenValuesRW();
+		EXPECT_DOUBLE_EQ(eigenValues1[0], -1);
+		EXPECT_DOUBLE_EQ(eigenValues1[1], 1);
 
-	//Access with write permissions.
-	CArray<double> &eigenValues1 = solver.getEigenValuesRW();
-	EXPECT_DOUBLE_EQ(eigenValues1[0], -1);
-	EXPECT_DOUBLE_EQ(eigenValues1[1], 1);
+		//Verify that write to internal data works (note that write is
+		//performed to eigenValues1, while read is from eigenValues0).
+		eigenValues1[0] = 2;
+		EXPECT_DOUBLE_EQ(eigenValues0[0], 2);
+		///////////////////////////
+		// Non-orthonormal basis //
+		///////////////////////////
+		//This is the same problem as above, but using the basis [1 0],
+		//[1/sqrt(2) 1/sqrt(2)]. The eigenvalues are therefore the same.
+		Model model1;
+		model1.setVerbose(false);
+		model1 << HoppingAmplitude(1/sqrt(2), {0}, {1}) + HC;
+		model1 << HoppingAmplitude(1, {1}, {1});
+		model1.construct();
 
-	//Verify that write to internal data works (note that write is
-	//performed to eigenValues1, while read is from eigenValues0).
-	eigenValues1[0] = 2;
-	EXPECT_DOUBLE_EQ(eigenValues0[0], 2);
+		model1 << OverlapAmplitude(1, {0}, {0});
+		model1 << OverlapAmplitude(1/sqrt(2), {0}, {1});
+		model1 << OverlapAmplitude(1/sqrt(2), {1}, {0});
+		model1 << OverlapAmplitude(1, {1}, {1});
 
-	///////////////////////////
-	// Non-orthonormal basis //
-	///////////////////////////
-	//This is the same problem as above, but using the basis [1 0],
-	//[1/sqrt(2) 1/sqrt(2)]. The eigenvalues are therefore the same.
-	Model model1;
-	model1.setVerbose(false);
-	model1 << HoppingAmplitude(1/sqrt(2), {0}, {1}) + HC;
-	model1 << HoppingAmplitude(1, {1}, {1});
-	model1.construct();
+		Diagonalizer solver1;
+		solver1.setVerbose(false);
+		solver1.setModel(model1);
+		solver1.run();
 
-	model1 << OverlapAmplitude(1, {0}, {0});
-	model1 << OverlapAmplitude(1/sqrt(2), {0}, {1});
-	model1 << OverlapAmplitude(1/sqrt(2), {1}, {0});
-	model1 << OverlapAmplitude(1, {1}, {1});
-
-	Diagonalizer solver1;
-	solver1.setVerbose(false);
-	solver1.setModel(model1);
-	solver1.run();
-
-	const CArray<double> &eigenValues2 = solver1.getEigenValues();
-	EXPECT_NEAR(eigenValues2[0], -1, EPSILON_100);
-	EXPECT_NEAR(eigenValues2[1], 1, EPSILON_100);
-
+		const CArray<double> &eigenValues2 = solver1.getEigenValues();
+		EXPECT_NEAR(eigenValues2[0], -1, EPSILON_100);
+		EXPECT_NEAR(eigenValues2[1], 1, EPSILON_100);
+	}
 
 	/////////////////////////////
 	// Test GPU implementation //
 	/////////////////////////////
-	Diagonalizer solver2;
-	solver2.setVerbose(false);
-	solver2.setModel(model1);
-	solver2.setUseGPUAcceleration(true);
 	#ifdef TBTK_CUDA_ENABLED
-		solver2.run();
-		const CArray<double> &eigenValues3 = solver2.getEigenValues();
-		EXPECT_NEAR(eigenValues3[0], -1, EPSILON_100);
-		EXPECT_NEAR(eigenValues3[1], 1, EPSILON_100);
+	{
+		Model model;
+		model.setVerbose(false);
+		model << HoppingAmplitude(1, {1}, {0}) + HC;
+		model.construct();
+		Diagonalizer solver;
+		solver.setVerbose(false);
+		solver.setModel(model);
+		solver.setUseGPUAcceleration(true);
+		solver.run();
+
+		//Normal access.
+		const CArray<double> &eigenValues0 = solver.getEigenValues();
+		EXPECT_DOUBLE_EQ(eigenValues0[0], -1);
+		EXPECT_DOUBLE_EQ(eigenValues0[1], 1);
+
+		//Access with write permissions.
+		CArray<double> &eigenValues1 = solver.getEigenValuesRW();
+		EXPECT_DOUBLE_EQ(eigenValues1[0], -1);
+		EXPECT_DOUBLE_EQ(eigenValues1[1], 1);
+
+		//Verify that write to internal data works (note that write is
+		//performed to eigenValues1, while read is from eigenValues0).
+		eigenValues1[0] = 2;
+		EXPECT_DOUBLE_EQ(eigenValues0[0], 2);
+		///////////////////////////
+		// Non-orthonormal basis //
+		///////////////////////////
+		//This is the same problem as above, but using the basis [1 0],
+		//[1/sqrt(2) 1/sqrt(2)]. The eigenvalues are therefore the same.
+		Model model1;
+		model1.setVerbose(false);
+		model1 << HoppingAmplitude(1/sqrt(2), {0}, {1}) + HC;
+		model1 << HoppingAmplitude(1, {1}, {1});
+		model1.construct();
+
+		model1 << OverlapAmplitude(1, {0}, {0});
+		model1 << OverlapAmplitude(1/sqrt(2), {0}, {1});
+		model1 << OverlapAmplitude(1/sqrt(2), {1}, {0});
+		model1 << OverlapAmplitude(1, {1}, {1});
+
+		Diagonalizer solver1;
+		solver1.setVerbose(false);
+		solver1.setModel(model1);
+		solver1.setUseGPUAcceleration(true);
+		solver1.run();
+
+		const CArray<double> &eigenValues2 = solver1.getEigenValues();
+		EXPECT_NEAR(eigenValues2[0], -1, EPSILON_100);
+		EXPECT_NEAR(eigenValues2[1], 1, EPSILON_100);
+	}
 
 		int numDevices = GPUResourceManager::getInstance().getNumDevices();
 		if(numDevices > 1){
-			Diagonalizer solver3;
-			solver3.setVerbose(false);
-			solver3.setModel(model1);
-			solver3.setUseMultiGPUAcceleration(true);
-			solver3.run();
-			const CArray<double> &eigenValues4 = solver3.getEigenValues();
-			EXPECT_NEAR(eigenValues4[0], -1, EPSILON_100);
-			EXPECT_NEAR(eigenValues4[1], 1, EPSILON_100);
+			Model model;
+			model.setVerbose(false);
+			model << HoppingAmplitude(1, {1}, {0}) + HC;
+			model.construct();
+			Diagonalizer solver;
+			solver.setVerbose(false);
+			solver.setModel(model);
+			solver.setUseMultiGPUAcceleration(true);
+			solver.run();
+
+			//Normal access.
+			const CArray<double> &eigenValues0 = solver.getEigenValues();
+			EXPECT_DOUBLE_EQ(eigenValues0[0], -1);
+			EXPECT_DOUBLE_EQ(eigenValues0[1], 1);
+
+			//Access with write permissions.
+			CArray<double> &eigenValues1 = solver.getEigenValuesRW();
+			EXPECT_DOUBLE_EQ(eigenValues1[0], -1);
+			EXPECT_DOUBLE_EQ(eigenValues1[1], 1);
+
+			//Verify that write to internal data works (note that write is
+			//performed to eigenValues1, while read is from eigenValues0).
+			eigenValues1[0] = 2;
+			EXPECT_DOUBLE_EQ(eigenValues0[0], 2);
+			///////////////////////////
+			// Non-orthonormal basis //
+			///////////////////////////
+			//This is the same problem as above, but using the basis [1 0],
+			//[1/sqrt(2) 1/sqrt(2)]. The eigenvalues are therefore the same.
+			Model model1;
+			model1.setVerbose(false);
+			model1 << HoppingAmplitude(1/sqrt(2), {0}, {1}) + HC;
+			model1 << HoppingAmplitude(1, {1}, {1});
+			model1.construct();
+
+			model1 << OverlapAmplitude(1, {0}, {0});
+			model1 << OverlapAmplitude(1/sqrt(2), {0}, {1});
+			model1 << OverlapAmplitude(1/sqrt(2), {1}, {0});
+			model1 << OverlapAmplitude(1, {1}, {1});
+
+			Diagonalizer solver1;
+			solver1.setVerbose(false);
+			solver1.setModel(model1);
+			solver1.setUseMultiGPUAcceleration(true);
+			solver1.run();
+
+			const CArray<double> &eigenValues2 = solver1.getEigenValues();
+			EXPECT_NEAR(eigenValues2[0], -1, EPSILON_100);
+			EXPECT_NEAR(eigenValues2[1], 1, EPSILON_100);
 		}
 
 
@@ -218,7 +301,7 @@ TEST(Diagonalizer, getEigenVectors){
 			EXPECT_DOUBLE_EQ(imag(eigenVectors4[2]/eigenVectors4[3]), 0);
 
 			//Verify that write to internal data works (note that write is
-			//performed to eigenVectors1, while read is from eigenVectors0).
+			//performed to eigenVectors4, while read is from eigenVectors3).
 			eigenVectors4[0] = 2;
 			EXPECT_DOUBLE_EQ(real(eigenVectors3[0]), 2);
 			EXPECT_DOUBLE_EQ(imag(eigenVectors3[0]), 0);
@@ -248,7 +331,7 @@ TEST(Diagonalizer, getEigenVectors){
 			EXPECT_DOUBLE_EQ(imag(eigenVectors4[2]/eigenVectors4[3]), 0);
 
 			//Verify that write to internal data works (note that write is
-			//performed to eigenVectors1, while read is from eigenVectors0).
+			//performed to eigenVectors4, while read is from eigenVectors3).
 			eigenVectors4[0] = 2;
 			EXPECT_DOUBLE_EQ(real(eigenVectors3[0]), 2);
 			EXPECT_DOUBLE_EQ(imag(eigenVectors3[0]), 0);
@@ -305,44 +388,85 @@ TEST(Diagonalizer, getEigenVectors){
 	/////////////////////////////
 	// Test GPU implementation //
 	/////////////////////////////
-	Diagonalizer solver3;
-	solver3.setVerbose(false);
-	solver3.setModel(model1);
-	solver3.setUseGPUAcceleration(true);
 	#ifdef TBTK_CUDA_ENABLED
-		solver3.run();
 		{
-			const CArray<std::complex<double>> &eigenVectors5
-				= solver3.getEigenVectors();
-			EXPECT_NEAR(real(eigenVectors5[0]), sqrt(2), EPSILON_100);
-			EXPECT_NEAR(imag(eigenVectors5[0]), 0, EPSILON_100);
-			EXPECT_NEAR(real(eigenVectors5[1]), -1, EPSILON_100);
-			EXPECT_NEAR(imag(eigenVectors5[1]), 0, EPSILON_100);
+			///////////////////////////
+			// Non-orthonormal basis //
+			///////////////////////////
+			//This is the same problem as above, but using the basis [1 0],
+			//[1/sqrt(2) 1/sqrt(2)]. Since the eigen vectors in the orthonormal
+			//basis are [1/sqrt(2) -1/sqrt(2)] and [1/sqrt(2) 1/sqrt(2)], the eigen
+			//vectors in this alternative basis are given by
+			//a[1 0] + b[1/sqrt(2) 1/sqrt(2)], and thus [a b] are [sqrt(2) -1] and
+			//[0 1] for the positive and negative eigenvalues, respectively.
+			Model model1;
+			model1.setVerbose(false);
+			model1 << HoppingAmplitude(1/sqrt(2), {0}, {1}) + HC;
+			model1 << HoppingAmplitude(1, {1}, {1});
+			model1.construct();
 
-			EXPECT_NEAR(real(eigenVectors5[2]), 0, EPSILON_100);
-			EXPECT_NEAR(imag(eigenVectors5[2]), 0, EPSILON_100);
-			EXPECT_NEAR(real(eigenVectors5[3]), 1, EPSILON_100);
-			EXPECT_NEAR(imag(eigenVectors5[3]), 0, EPSILON_100);
+			model1 << OverlapAmplitude(1, {0}, {0});
+			model1 << OverlapAmplitude(1/sqrt(2), {0}, {1});
+			model1 << OverlapAmplitude(1/sqrt(2), {1}, {0});
+			model1 << OverlapAmplitude(1, {1}, {1});
+
+			Diagonalizer solver1;
+			solver1.setVerbose(false);
+			solver1.setModel(model1);
+			solver1.setUseGPUAcceleration(true);
+			solver1.run();
+
+			const CArray<std::complex<double>> &eigenVectors2
+				= solver1.getEigenVectors();
+			EXPECT_NEAR(real(eigenVectors2[0]), sqrt(2), EPSILON_100);
+			EXPECT_NEAR(imag(eigenVectors2[0]), 0, EPSILON_100);
+			EXPECT_NEAR(real(eigenVectors2[1]), -1, EPSILON_100);
+			EXPECT_NEAR(imag(eigenVectors2[1]), 0, EPSILON_100);
+
+			EXPECT_NEAR(real(eigenVectors2[2]), 0, EPSILON_100);
+			EXPECT_NEAR(imag(eigenVectors2[2]), 0, EPSILON_100);
+			EXPECT_NEAR(real(eigenVectors2[3]), 1, EPSILON_100);
+			EXPECT_NEAR(imag(eigenVectors2[3]), 0, EPSILON_100);
 		}
-
+		// MultiGPU
 		if(numDevices > 1){
-			Diagonalizer solver4;
-			solver4.setVerbose(false);
-			solver4.setModel(model);
-			solver4.setUseMultiGPUAcceleration(true);
-			solver4.run();
-			const CArray<std::complex<double>> &eigenVectors5
-				= solver4.getEigenVectors();
-			EXPECT_NEAR(real(eigenVectors5[0]), sqrt(2), EPSILON_100);
-			EXPECT_NEAR(imag(eigenVectors5[0]), 0, EPSILON_100);
-			EXPECT_NEAR(real(eigenVectors5[1]), -1, EPSILON_100);
-			EXPECT_NEAR(imag(eigenVectors5[1]), 0, EPSILON_100);
+			///////////////////////////
+			// Non-orthonormal basis //
+			///////////////////////////
+			//This is the same problem as above, but using the basis [1 0],
+			//[1/sqrt(2) 1/sqrt(2)]. Since the eigen vectors in the orthonormal
+			//basis are [1/sqrt(2) -1/sqrt(2)] and [1/sqrt(2) 1/sqrt(2)], the eigen
+			//vectors in this alternative basis are given by
+			//a[1 0] + b[1/sqrt(2) 1/sqrt(2)], and thus [a b] are [sqrt(2) -1] and
+			//[0 1] for the positive and negative eigenvalues, respectively.
+			Model model1;
+			model1.setVerbose(false);
+			model1 << HoppingAmplitude(1/sqrt(2), {0}, {1}) + HC;
+			model1 << HoppingAmplitude(1, {1}, {1});
+			model1.construct();
 
-			EXPECT_NEAR(real(eigenVectors5[2]), 0, EPSILON_100);
-			EXPECT_NEAR(imag(eigenVectors5[2]), 0, EPSILON_100);
-			EXPECT_NEAR(real(eigenVectors5[3]), 1, EPSILON_100);
-			EXPECT_NEAR(imag(eigenVectors5[3]), 0, EPSILON_100);
+			model1 << OverlapAmplitude(1, {0}, {0});
+			model1 << OverlapAmplitude(1/sqrt(2), {0}, {1});
+			model1 << OverlapAmplitude(1/sqrt(2), {1}, {0});
+			model1 << OverlapAmplitude(1, {1}, {1});
 
+			Diagonalizer solver1;
+			solver1.setVerbose(false);
+			solver1.setModel(model1);
+			solver1.setUseMultiGPUAcceleration(true);
+			solver1.run();
+
+			const CArray<std::complex<double>> &eigenVectors2
+				= solver1.getEigenVectors();
+			EXPECT_NEAR(real(eigenVectors2[0]), sqrt(2), EPSILON_100);
+			EXPECT_NEAR(imag(eigenVectors2[0]), 0, EPSILON_100);
+			EXPECT_NEAR(real(eigenVectors2[1]), -1, EPSILON_100);
+			EXPECT_NEAR(imag(eigenVectors2[1]), 0, EPSILON_100);
+
+			EXPECT_NEAR(real(eigenVectors2[2]), 0, EPSILON_100);
+			EXPECT_NEAR(imag(eigenVectors2[2]), 0, EPSILON_100);
+			EXPECT_NEAR(real(eigenVectors2[3]), 1, EPSILON_100);
+			EXPECT_NEAR(imag(eigenVectors2[3]), 0, EPSILON_100);
 		}
 
 

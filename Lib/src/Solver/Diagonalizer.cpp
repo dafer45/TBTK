@@ -53,11 +53,11 @@ void Diagonalizer::run(){
 			eigenVectors = hamiltonian;
 			int BasisSize = getModel().getBasisSize();
 			solveGPU(eigenVectors.getData(), eigenValues.getData(), BasisSize);
-			transformToOriginalBasis();
 		}
 		else{
 			solve();
 		}
+		transformToOriginalBasis();
 
 		if(selfConsistencyCallback){
 			if(selfConsistencyCallback->selfConsistencyCallback(*this))
@@ -98,7 +98,7 @@ void Diagonalizer::update(){
 	const Model &model = getModel();
 	int basisSize = model.getBasisSize();
 
-	for(int n = 0; n < (basisSize*(basisSize+1))/2; n++)
+	for(unsigned n = 0; n < hamiltonian.getSize(); n++)
 		hamiltonian[n] = 0.;
 
 	for(
@@ -113,13 +113,11 @@ void Diagonalizer::update(){
 		int to = model.getHoppingAmplitudeSet().getBasisIndex(
 			(*iterator).getToIndex()
 		);
-		if(from >= to){
-			if(useGPUAcceleration){
-				hamiltonian[to + from*basisSize] += (*iterator).getAmplitude();
-			}
-			else{
+		if(useGPUAcceleration){
+			hamiltonian[to + from*basisSize] += (*iterator).getAmplitude();
+		}
+		else if(from >= to){
 				hamiltonian[to + (from*(from+1))/2] += (*iterator).getAmplitude();
-			}
 		}
 	}
 
@@ -369,8 +367,6 @@ void Diagonalizer::solve(){
 		delete [] work;
 		delete [] rwork;
 	}*/
-
-	transformToOriginalBasis();
 }
 
 };	//End of namespace Solver

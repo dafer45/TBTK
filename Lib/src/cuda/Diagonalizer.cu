@@ -25,6 +25,7 @@
 #include "TBTK/GPUResourceManager.h"
 
 #include <vector>
+#include <type_traits>
 
 #include <cusolverDn.h>
 #include <cusolverMg.h>
@@ -37,7 +38,8 @@ using namespace std;
 namespace TBTK{
 namespace Solver{
 
-void Diagonalizer::solveMultiGPU(complex<double>* matrix, double* eigenValues, const int &n){
+template<typename data_type>
+void Diagonalizer::solveMultiGPU(data_type* matrix, double* eigenValues, const int &n){
     
     int numDevices = 0;
     cudaGetDeviceCount(&numDevices);
@@ -45,6 +47,22 @@ void Diagonalizer::solveMultiGPU(complex<double>* matrix, double* eigenValues, c
         Streams::out << "Detect 1 gpu or less, falling back to single GPU operation." << endl;
         useMultiGPUAcceleration = false;
         solveGPU(matrix, eigenValues,n);
+    }
+    // Check for compute type of the calculation, i.e. real or complex matrix
+    cudaDataType_t computeType = CUDA_C_64F; // Default is complex double
+    if constexpr (is_same_v<data_type, complex<double>>) {
+        computeType = CUDA_C_64F;
+    }
+    else if constexpr (is_same_v<data_type, double>){
+        computeType = CUDA_R_64F;
+    }
+    else{
+        TBTKAssert(
+            false,
+            "Diagonalizer::solveGPU()",
+            "Only supported datatypes for matrix are double and complex<double>",
+            ""
+        );
     }
     //Allocate available devices
     std::vector<int> deviceList(numDevices);
@@ -60,6 +78,7 @@ void Diagonalizer::solveMultiGPU(complex<double>* matrix, double* eigenValues, c
         }
         
     }
+    
     GPUResourceManager::getInstance().enableP2PAccess();
 
     // set up various calculation parameters and resources
@@ -83,9 +102,9 @@ void Diagonalizer::solveMultiGPU(complex<double>* matrix, double* eigenValues, c
                                 n,          // number of columns of matrix
                                 n,          // number or rows in a tile
                                 T_A,        // number of columns in a tile
-                                CUDA_C_64F, gridA);
+                                computeType, gridA);
 
-    vector<complex<double> *> array_d_A(numDevices, nullptr);
+    vector<data_type *> array_d_A(numDevices, nullptr);
 
     // Allocate resource for local matrices on the devices
     // createEmptyMatrix(numDevices, 
@@ -94,11 +113,11 @@ void Diagonalizer::solveMultiGPU(complex<double>* matrix, double* eigenValues, c
     //                     T_A,                // number of columns per column tile 
     //                     lda,                // leading dimension of local matrix
     //                     array_d_A.data());
-    createMat<complex<double>>(numDevices, deviceList.data(), n, /* number of columns of global A */
+    createMat<data_type>(numDevices, deviceList.data(), n, /* number of columns of global A */
     T_A,                          /* number of columns per column tile */
     lda,                          /* leading dimension of local A */
     array_d_A.data());
-    memcpyH2D<complex<double>>(numDevices, deviceList.data(), n, n,
+    memcpyH2D<data_type>(numDevices, deviceList.data(), n, n,
                          /* input */
                          matrix,
                          lda,
@@ -112,17 +131,17 @@ void Diagonalizer::solveMultiGPU(complex<double>* matrix, double* eigenValues, c
     int64_t lwork = 0;
     //TODO check for CUSOLVER_STATUS_SUCCESS
     cusolverMgSyevd_bufferSize(
-        cusolverHandle, (cusolverEigMode_t)jobz, CUBLAS_FILL_MODE_LOWER,
+        cusolverHandle, (cusolverEigMode_t)jobz, CUBLAS_FILL_MODE_LOWER, // Only lower supported according to documentation
         n, reinterpret_cast<void **>(array_d_A.data()), IA,
         JA,                                                     
         descrMatrix, reinterpret_cast<void *>(eigenValues), CUDA_R_64F,
-        CUDA_C_64F, &lwork);
+        computeType, &lwork);
 
-    std::vector<complex<double> *> array_d_work(numDevices, nullptr);
+    std::vector<data_type *> array_d_work(numDevices, nullptr);
 
     // array_d_work[i] points to device workspace of device i
     workspaceAlloc(numDevices, deviceList.data(),
-                    sizeof(complex<double>) * lwork,
+                    sizeof(data_type) * lwork,
                     reinterpret_cast<void **>(array_d_work.data()));
     // sync all devices before calculation
     //TODO check for cudaSuccess
@@ -134,7 +153,7 @@ void Diagonalizer::solveMultiGPU(complex<double>* matrix, double* eigenValues, c
         cusolverHandle, (cusolverEigMode_t)jobz, CUBLAS_FILL_MODE_LOWER,
         n, reinterpret_cast<void **>(array_d_A.data()),
         IA, JA, descrMatrix, reinterpret_cast<void **>(eigenValues),
-        CUDA_R_64F, CUDA_C_64F,
+        CUDA_R_64F, computeType,
         reinterpret_cast<void **>(array_d_work.data()), lwork, &info
         );
     // sync all devices after calculation
@@ -143,7 +162,7 @@ void Diagonalizer::solveMultiGPU(complex<double>* matrix, double* eigenValues, c
     CUDA_CHECK(cudaDeviceSynchronize());
 
     // Copy data to host from devices
-    memcpyD2H<complex<double>>(numDevices, deviceList.data(), n, n,
+    memcpyD2H<data_type>(numDevices, deviceList.data(), n, n,
                          n, 
                          T_A,
                          lda,
@@ -164,39 +183,28 @@ void Diagonalizer::solveMultiGPU(complex<double>* matrix, double* eigenValues, c
     }
 }
 
-// TODO delete if not needed anymore
-// void Diagonalizer::createEmptyMatrix(int numDevices, 
-//                                 const int *deviceIdA,
-//                                 int N_A,
-//                                 int T_A,
-//                                 int llda,
-//                                 complex<double> **array_d_A){
-//     int currentDev = 0; // Get current device id
-//     // TODO check against cudaSuccess
-//     cudaGetDevice(&currentDev);
-//     cudaDeviceSynchronize();
-//     const int matrixNumblks = (N_A + T_A - 1) / T_A;
-//     const int numBlocksDevice = (matrixNumblks + numDevices - 1) / numDevices;
-//     // Allocate base pointers
-//     for(int p = 0; p < numDevices; p++){
-//         // TODO check against cudaSuccess
-//         cudaSetDevice(deviceIdA[p]);
-//         // Allocate numBlocksDevice blocks per device
-//         // TODO check against cudaSuccess
-//         cudaMalloc(&(array_d_A[p]), sizeof(complex<double>) * llda * T_A * numBlocksDevice);
-//         // Set local matrix to zero
-//         // TODO check against cudaSuccess
-//         cudaMemset(array_d_A[p], 0, sizeof(complex<double>) * llda * T_A * numBlocksDevice);
-//     }
-//     // TODO check against cudaSuccess
-//     cudaDeviceSynchronize();
-//     cudaSetDevice(currentDev);
-// }
-
-void Diagonalizer::solveGPU(complex<double>* matrix, double* eigenValues, const int &n){
+template <typename data_type>
+void Diagonalizer::solveGPU(data_type* matrix, double* eigenValues, const int &n){
+    GPUResourceManager::getInstance().setVerbose(getVerbose());
     if(useMultiGPUAcceleration){
         solveMultiGPU(matrix, eigenValues, n);
         return;
+    }
+    // Check for compute type of the calculation, i.e. real or complex matrix
+    cudaDataType_t computeType = CUDA_C_64F; // Default is complex double
+    if constexpr (is_same_v<data_type, complex<double>>) {
+        computeType = CUDA_C_64F;
+    }
+    else if constexpr (is_same_v<data_type, double>){
+        computeType = CUDA_R_64F;
+    }
+    else{
+        TBTKAssert(
+            false,
+            "Diagonalizer::solveGPU()",
+            "Only supported datatypes for matrix are double and complex<double>",
+            ""
+        );
     }
     //Initialize device
     int numDevices;
@@ -246,12 +254,12 @@ void Diagonalizer::solveGPU(complex<double>* matrix, double* eigenValues, const 
         "Diagonalizer::solveGPU()",
         "CUDA error setting up stream for cusolver.",
         ""
-    ) 
+    )
 
     //Print device memory use
     if(getGlobalVerbose() && getVerbose()){
             size_t deviceMemorySize = n*n*sizeof(
-                complex<double> //Matrix size
+                data_type //Matrix size
             );
             deviceMemorySize += sizeof(double) * n; //Eigenvalues
             deviceMemorySize += sizeof(int); //Info device
@@ -276,14 +284,14 @@ void Diagonalizer::solveGPU(complex<double>* matrix, double* eigenValues, const 
         }
 
     //Allocate memory on device for hamiltonian and corresponding output
-    complex<double> *hamiltonian_device;
+    data_type *hamiltonian_device;
     double *eigenValues_device;
     int *info_device = nullptr;
 
     TBTKAssert(
         cudaMallocAsync(
             reinterpret_cast<void **>(&hamiltonian_device), 
-            sizeof(complex<double>) * n*n,
+            sizeof(data_type) * n*n,
             stream
         ) == cudaSuccess,
         "Diagonalizer::solveGPU()",
@@ -317,7 +325,7 @@ void Diagonalizer::solveGPU(complex<double>* matrix, double* eigenValues, const 
         cudaMemcpyAsync(
             hamiltonian_device, 
             matrix, 
-            sizeof(complex<double>) * n*n, 
+            sizeof(data_type) * n*n, 
             cudaMemcpyHostToDevice,
             stream) == cudaSuccess,
         "Diagonalizer::solveGPU()",
@@ -345,12 +353,12 @@ void Diagonalizer::solveGPU(complex<double>* matrix, double* eigenValues, const 
             jobz, 
             uplo, 
             n, 
-            CUDA_C_64F, //Complex double input matrix
+            computeType, //Complex double input matrix
             hamiltonian_device,
             n,
             CUDA_R_64F,
             eigenValues_device, 
-            CUDA_C_64F,
+            computeType,
             &sizeBuffer_device,
             &sizeBuffer_host
         ) == CUSOLVER_STATUS_SUCCESS,
@@ -394,7 +402,7 @@ void Diagonalizer::solveGPU(complex<double>* matrix, double* eigenValues, const 
         "" 
     )
 
-    buffer_host = malloc(sizeof(complex<double>) * sizeBuffer_host);
+    buffer_host = malloc(sizeof(data_type) * sizeBuffer_host);
     cudaStreamSynchronize(stream);
     //Run the diagonalization routine
     TBTKAssert(
@@ -404,12 +412,12 @@ void Diagonalizer::solveGPU(complex<double>* matrix, double* eigenValues, const 
         jobz, 
         uplo,
         n, 
-        CUDA_C_64F,
+        computeType,
         hamiltonian_device,
         n,
         CUDA_R_64F,
         eigenValues_device,
-        CUDA_C_64F,
+        computeType,
         buffer_device,
         sizeBuffer_device,
         buffer_host,
@@ -444,7 +452,7 @@ void Diagonalizer::solveGPU(complex<double>* matrix, double* eigenValues, const 
         cudaMemcpyAsync(
             matrix,
             hamiltonian_device,
-            sizeof(complex<double>)*n*n,
+            sizeof(data_type)*n*n,
             cudaMemcpyDeviceToHost,
             stream
         ) == cudaSuccess,
@@ -557,10 +565,10 @@ void Diagonalizer::setupBasisTransformationGPU(){
 		int col = getModel().getHoppingAmplitudeSet().getBasisIndex(
 			(*iterator).getKetIndex()
 		);
-		if(col >= row){
+		// if(col >= row){
 			overlapMatrix[row + col*basisSize]
 				+= (*iterator).getAmplitude();
-		}
+		// }
 	}
 
 	//Diagonalize the overlap matrix.

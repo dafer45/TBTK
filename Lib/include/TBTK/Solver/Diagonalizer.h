@@ -160,7 +160,8 @@ public:
 	const std::complex<double> getAmplitude(int state, const Index &index);
 
 	// TODO remove
-	void solveGPU(std::complex<double>* matrix, double* eigenValues, const int &n);
+	template <typename data_type>
+	void solveGPU(data_type* matrix, double* eigenValues, const int &n);
 protected:
 	/** Enables GPU acceleration for the solver. */
 	bool useGPUAcceleration;
@@ -236,7 +237,8 @@ private:
 	 *
 	 *  @return Function overwrites matrix with eigenvectors
 	 * 			and returns eigenvalues in eigenValues     */
-	void solveMultiGPU(std::complex<double>* matrix, double* eigenValues, const int &n);
+	template <typename data_type>
+	void solveMultiGPU(data_type* matrix, double* eigenValues, const int &n);
 
 	// TODO delete if not needed anymore
 	// /** Helper function for solveMultiGPU. It create a empty local 
@@ -302,11 +304,11 @@ inline void Diagonalizer::setUseGPUAcceleration(bool useGPUAcceleration){
 
 inline void Diagonalizer::setUseMultiGPUAcceleration(bool useMultiGPUAcceleration){
 	if(useMultiGPUAcceleration){
-		this->useGPUAcceleration = useMultiGPUAcceleration;
-		this->useMultiGPUAcceleration = useMultiGPUAcceleration;
+		this->useGPUAcceleration = true;
+		this->useMultiGPUAcceleration = true;
 	}
 	else{
-		this->useMultiGPUAcceleration = useMultiGPUAcceleration;
+		this->useMultiGPUAcceleration = false;
 	}
 }
 

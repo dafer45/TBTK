@@ -80,8 +80,11 @@ void GPUResourceManager::enableP2PAccess() {
                 if (canAccessPeer) {
 					// TODO error check
 					cudaError = cudaDeviceEnablePeerAccess(peer, 0);
-					// TODO remove 
-					Streams::out << "P2P enabled" << endl;
+					if(getVerbose()){
+						Streams::out << "P2P enabled between device " << 
+										activeDevice << " and " <<
+										peer <<	endl;
+					}
                 }
             }
         }
