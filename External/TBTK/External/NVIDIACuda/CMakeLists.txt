@@ -1,0 +1,6 @@
+INSTALL(
+	DIRECTORY .
+	DESTINATION include/TBTK/External/NVIDIACuda
+	FILES_MATCHING PATTERN cusolver_utils.h
+	FILES_MATCHING PATTERN cusolverMg_utils.h
+)
