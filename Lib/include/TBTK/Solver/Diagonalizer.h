@@ -158,6 +158,9 @@ public:
 	 *
 	 *  @return The amplitude \f$\Psi_{n}(x)\f$. */
 	const std::complex<double> getAmplitude(int state, const Index &index);
+
+	// TODO remove
+	void solveGPU(std::complex<double>* matrix, double* eigenValues, const int &n);
 protected:
 	/** Enables GPU acceleration for the solver. */
 	bool useGPUAcceleration;
@@ -165,17 +168,18 @@ protected:
 	/** Enables Multi GPU acceleration on one node for the solver. */
 	bool useMultiGPUAcceleration;
 
-	/** Diagonalizes the input matrix using a GPU device.
-	 *  The output for the eigen vectors is
-	 *  written into the input matrix. 
-	 * 
-	 *  @param matrix Matrix nxn to diagonalize
-	 *  @param eigenValues vector of size n
-	 *  @param n basis size of the matrix
-	 *
-	 *  @return Function overwrites matrix with eigenvectors
-	 * 			and returns eigenvalues in eigenValues     */
-	void solveGPU(std::complex<double>* matrix, double* eigenValues, const int &n);
+	// TODO uncomment
+	// /** Diagonalizes the input matrix using a GPU device.
+	//  *  The output for the eigen vectors is
+	//  *  written into the input matrix. 
+	//  * 
+	//  *  @param matrix Matrix nxn to diagonalize
+	//  *  @param eigenValues vector of size n
+	//  *  @param n basis size of the matrix
+	//  *
+	//  *  @return Function overwrites matrix with eigenvectors
+	//  * 			and returns eigenvalues in eigenValues     */
+	// void solveGPU(std::complex<double>* matrix, double* eigenValues, const int &n);
 
 private:
 	/** pointer to array containing Hamiltonian. */

@@ -47,6 +47,9 @@ public:
 	/** enables peer to peer communication if available	*/
 	void enableP2PAccess();
 
+	/** Checks if device is busy/available. */
+	bool getDeviceBusy(const int &deviceID);
+
 	/** Get singleton instance. */
 	static GPUResourceManager& getInstance();
 private:

@@ -42,6 +42,14 @@ GPUResourceManager& GPUResourceManager::getInstance(){
 	return instance;
 }
 
+bool GPUResourceManager::getDeviceBusy(const int &deviceID){
+	if(deviceID > getNumDevices()){
+		//TODO 
+		Streams::err << "Invalid device ID" << std::endl;
+	}
+	return busyDevices[deviceID];
+}
+
 int GPUResourceManager::allocateDevice(){
 	TBTKAssert(
 		numDevices > 0,

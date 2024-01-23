@@ -178,9 +178,15 @@ public:
 
 	/** Set if you want to use GPU acceleration provided by CUDA routines.
 	 *
-	 *  @param useGPUAcceleration Turns GPU acceleration for the BlockDiagonalizer 
+	 *  @param useGPUAcceleration Turns on GPU acceleration for the BlockDiagonalizer 
 	 *  solver off or on. */
 	void setUseGPUAcceleration(bool useGPUAcceleration);
+
+	/** Set if you want to use multi GPU acceleration provided by CUDA routines.
+	 *
+	 *  @param useMultiGPUAcceleration Turns multi GPU acceleration for the BlockDiagonalizer 
+	 *  solver off or on. */
+	void setUseMultiGPUAcceleration(bool useMultiGPUAcceleration);
 
 private:
 	/** pointer to array containing Hamiltonian. */
@@ -339,10 +345,21 @@ inline void BlockDiagonalizer::setParallelExecution(
 	bool parallelExecution
 ){
 	this->parallelExecution = parallelExecution;
+	if(parallelExecution){
+		this->setUseMultiGPUAcceleration(false);
+	}
 }
 
 inline void BlockDiagonalizer::setUseGPUAcceleration(bool useGPUAcceleration){
 	this->useGPUAcceleration = useGPUAcceleration;
+}
+
+inline void BlockDiagonalizer::setUseMultiGPUAcceleration(bool input){
+	this->useMultiGPUAcceleration = input;
+	if(input){
+		this->useGPUAcceleration = true;
+		this->parallelExecution = false;
+	}	
 }
 
 };	//End of namespace Solver

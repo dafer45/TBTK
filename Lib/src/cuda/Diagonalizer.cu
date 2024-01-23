@@ -39,7 +39,7 @@ namespace Solver{
 
 void Diagonalizer::solveMultiGPU(complex<double>* matrix, double* eigenValues, const int &n){
     
-    int numDevices;
+    int numDevices = 0;
     cudaGetDeviceCount(&numDevices);
     if(numDevices <= 1){
         Streams::out << "Detect 1 gpu or less, falling back to single GPU operation." << endl;
@@ -48,8 +48,17 @@ void Diagonalizer::solveMultiGPU(complex<double>* matrix, double* eigenValues, c
     }
     //Allocate available devices
     std::vector<int> deviceList(numDevices);
-    for(int i = 0; i < numDevices; i++) {
-        deviceList[i] = GPUResourceManager::getInstance().allocateDevice();
+    const int deviceCount = numDevices;
+    for(int i = 0; i < deviceCount; i++) {
+        if(!GPUResourceManager::getInstance().getDeviceBusy(i)){
+            deviceList[i] = GPUResourceManager::getInstance().allocateDevice();
+        }
+        else{
+            //TODO 
+            Streams::err << "Not all GPUs are available" << endl;
+            numDevices--;
+        }
+        
     }
     GPUResourceManager::getInstance().enableP2PAccess();
 
@@ -148,7 +157,11 @@ void Diagonalizer::solveMultiGPU(complex<double>* matrix, double* eigenValues, c
                 reinterpret_cast<void **>(array_d_A.data()));
           
     workspaceFree(numDevices, deviceList.data(), reinterpret_cast<void **>(array_d_work.data()));
-
+    for(int i = 0; i < deviceCount; i++){
+        if(GPUResourceManager::getInstance().getDeviceBusy(i)){
+            GPUResourceManager::getInstance().freeDevice(deviceList[i]);
+        }
+    }
 }
 
 // TODO delete if not needed anymore
@@ -511,9 +524,7 @@ void Diagonalizer::solveGPU(complex<double>* matrix, double* eigenValues, const 
         "CUDA error destroying cuda stream.",
         ""
     )
-    if(numDevices > 1){
-        GPUResourceManager::getInstance().freeDevice(device);
-    }
+    GPUResourceManager::getInstance().freeDevice(device);
     free(buffer_host);
     buffer_host = nullptr;
 }

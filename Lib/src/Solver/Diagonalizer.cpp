@@ -31,6 +31,7 @@ Diagonalizer::Diagonalizer() : Communicator(false){
 	maxIterations = 50;
 	selfConsistencyCallback = nullptr;
 	useGPUAcceleration = false;
+	useMultiGPUAcceleration = false;
 }
 
 void Diagonalizer::run(){
