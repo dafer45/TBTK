@@ -1,6 +1,7 @@
 #include "TBTK/Solver/BlockDiagonalizer.h"
 #include <iostream>
 #include "gtest/gtest.h"
+#include "TBTK/GPUResourceManager.h"
 
 namespace TBTK{
 namespace Solver{
@@ -71,6 +72,47 @@ TEST(BlockDiagonalizer, setSelfConsistencyCallback){
 			solver2.setMaxIterations(5);
 			solver2.run();
 			EXPECT_EQ(selfConsistencyCallback.selfConsistencyCounter, 5);
+			int numDevices = GPUResourceManager::getInstance().getNumDevices();
+			if(numDevices > 1){
+				//Test parallel execution on multiple devices with indivitual 
+				// blocks on different devices
+				{
+					BlockDiagonalizer solver3;
+					solver3.setVerbose(false);
+					solver3.setModel(model);
+					solver3.setUseGPUAcceleration(true);
+					solver3.setParallelExecution(true);
+					selfConsistencyCallback.selfConsistencyCounter = 0;
+					solver3.setSelfConsistencyCallback(selfConsistencyCallback);
+					solver3.run();
+					EXPECT_EQ(selfConsistencyCallback.selfConsistencyCounter, 10);
+
+					selfConsistencyCallback.selfConsistencyCounter = 0;
+					solver3.setSelfConsistencyCallback(selfConsistencyCallback);
+					solver3.setMaxIterations(5);
+					solver3.run();
+					EXPECT_EQ(selfConsistencyCallback.selfConsistencyCounter, 5);
+				}
+				// Test execution on multiple devices with indivitual 
+				// shared between different devices
+				{
+					BlockDiagonalizer solver3;
+					solver3.setVerbose(false);
+					solver3.setModel(model);
+					solver3.setUseGPUAcceleration(true);
+					solver3.setUseMultiGPUAcceleration(true);
+					selfConsistencyCallback.selfConsistencyCounter = 0;
+					solver3.setSelfConsistencyCallback(selfConsistencyCallback);
+					solver3.run();
+					EXPECT_EQ(selfConsistencyCallback.selfConsistencyCounter, 10);
+
+					selfConsistencyCallback.selfConsistencyCounter = 0;
+					solver3.setSelfConsistencyCallback(selfConsistencyCallback);
+					solver3.setMaxIterations(5);
+					solver3.run();
+					EXPECT_EQ(selfConsistencyCallback.selfConsistencyCounter, 5);
+				}
+			}
 		#else
 			EXPECT_EXIT(
 				{
@@ -139,6 +181,7 @@ TEST(BlockDiagonalizer, getEigenValue){
 			if(n == 0)
 				solver.setParallelExecution(false);
 			else
+				// Test parallel execution
 				solver.setParallelExecution(true);
 			solver.setVerbose(false);
 			solver.setModel(model);
@@ -157,6 +200,57 @@ TEST(BlockDiagonalizer, getEigenValue){
 			EXPECT_DOUBLE_EQ(solver.getEigenValue({1}, 0), 2);
 			EXPECT_DOUBLE_EQ(solver.getEigenValue({2}, 0), -3);
 			EXPECT_DOUBLE_EQ(solver.getEigenValue({2}, 1), 3);
+		}
+		int numDevices = GPUResourceManager::getInstance().getNumDevices();
+		if(numDevices > 1){
+			//Test parallel execution on multiple devices with indivitual 
+			// blocks on different devices
+			{
+				BlockDiagonalizer solver;
+				solver.setUseGPUAcceleration(true);
+				solver.setParallelExecution(true);
+				solver.setVerbose(false);
+				solver.setModel(model);
+				solver.run();
+				std::cout << solver.getEigenValue(0) << " != " << -1 << std::endl;
+				//Access using global state index.
+				EXPECT_DOUBLE_EQ(solver.getEigenValue(0), -1);
+				EXPECT_DOUBLE_EQ(solver.getEigenValue(1), 1);
+				EXPECT_DOUBLE_EQ(solver.getEigenValue(2), 2);
+				EXPECT_DOUBLE_EQ(solver.getEigenValue(3), -3);
+				EXPECT_DOUBLE_EQ(solver.getEigenValue(4), 3);
+
+				//Access using block state index.
+				EXPECT_DOUBLE_EQ(solver.getEigenValue({0}, 0), -1);
+				EXPECT_DOUBLE_EQ(solver.getEigenValue({0}, 1), 1);
+				EXPECT_DOUBLE_EQ(solver.getEigenValue({1}, 0), 2);
+				EXPECT_DOUBLE_EQ(solver.getEigenValue({2}, 0), -3);
+				EXPECT_DOUBLE_EQ(solver.getEigenValue({2}, 1), 3);
+			}
+			// Test execution on multiple devices with indivitual 
+			// shared between different devices
+			{
+				BlockDiagonalizer solver;
+				solver.setUseGPUAcceleration(true);
+				solver.setUseMultiGPUAcceleration(true);
+				solver.setVerbose(false);
+				solver.setModel(model);
+				solver.run();
+				std::cout << solver.getEigenValue(0) << " != " << -1 << std::endl;
+				//Access using global state index.
+				EXPECT_DOUBLE_EQ(solver.getEigenValue(0), -1);
+				EXPECT_DOUBLE_EQ(solver.getEigenValue(1), 1);
+				EXPECT_DOUBLE_EQ(solver.getEigenValue(2), 2);
+				EXPECT_DOUBLE_EQ(solver.getEigenValue(3), -3);
+				EXPECT_DOUBLE_EQ(solver.getEigenValue(4), 3);
+
+				//Access using block state index.
+				EXPECT_DOUBLE_EQ(solver.getEigenValue({0}, 0), -1);
+				EXPECT_DOUBLE_EQ(solver.getEigenValue({0}, 1), 1);
+				EXPECT_DOUBLE_EQ(solver.getEigenValue({1}, 0), 2);
+				EXPECT_DOUBLE_EQ(solver.getEigenValue({2}, 0), -3);
+				EXPECT_DOUBLE_EQ(solver.getEigenValue({2}, 1), 3);
+			}
 		}
 	#endif
 }
@@ -404,6 +498,237 @@ TEST(BlockDiagonalizer, getEigenVectors){
 			);
 			::testing::FLAGS_gtest_death_test_style = "fast";
 		}
+		int numDevices = GPUResourceManager::getInstance().getNumDevices();
+		if(numDevices > 1){
+			//Test parallel execution on multiple devices with indivitual 
+			// blocks on different devices
+			{
+				BlockDiagonalizer solver;
+				solver.setUseGPUAcceleration(true);
+				solver.setParallelExecution(true);
+				solver.setVerbose(false);
+				solver.setModel(model);
+				solver.run();
+			//Access using global state index.
+			EXPECT_DOUBLE_EQ(
+				real(solver.getAmplitude(0, {0, 0})/solver.getAmplitude(0, {0, 1})),
+				-1
+			);
+			EXPECT_DOUBLE_EQ(
+				imag(solver.getAmplitude(0, {0, 0})/solver.getAmplitude(0, {0, 1})),
+				0
+			);
+			EXPECT_DOUBLE_EQ(
+				real(solver.getAmplitude(1, {0, 0})/solver.getAmplitude(1, {0, 1})),
+				1
+			);
+			EXPECT_DOUBLE_EQ(
+				imag(solver.getAmplitude(1, {0, 0})/solver.getAmplitude(1, {0, 1})),
+				0
+			);
+
+			EXPECT_DOUBLE_EQ(real(solver.getAmplitude(2, {1, 0})), 1);
+			EXPECT_DOUBLE_EQ(imag(solver.getAmplitude(2, {1, 0})), 0);
+
+			EXPECT_DOUBLE_EQ(
+				real(solver.getAmplitude(3, {2, 0})/solver.getAmplitude(3, {2, 1})),
+				-1
+			);
+			EXPECT_DOUBLE_EQ(
+				imag(solver.getAmplitude(3, {2, 0})/solver.getAmplitude(3, {2, 1})),
+				0
+			);
+			EXPECT_DOUBLE_EQ(
+				real(solver.getAmplitude(4, {2, 0})/solver.getAmplitude(4, {2, 1})),
+				1
+			);
+			EXPECT_DOUBLE_EQ(
+				imag(solver.getAmplitude(4, {2, 0})/solver.getAmplitude(4, {2, 1})),
+				0
+			);
+
+			//Give zero for valid Indices that are outside the block that the
+			//eigenstate belongs to.
+			EXPECT_DOUBLE_EQ(real(solver.getAmplitude(0, {1, 0})), 0);
+			EXPECT_DOUBLE_EQ(imag(solver.getAmplitude(0, {1, 0})), 0);
+			EXPECT_DOUBLE_EQ(real(solver.getAmplitude(0, {2, 0})), 0);
+			EXPECT_DOUBLE_EQ(imag(solver.getAmplitude(0, {2, 0})), 0);
+			EXPECT_DOUBLE_EQ(real(solver.getAmplitude(0, {2, 1})), 0);
+			EXPECT_DOUBLE_EQ(imag(solver.getAmplitude(0, {2, 1})), 0);
+
+			//Access using block state index.
+			EXPECT_DOUBLE_EQ(
+				real(solver.getAmplitude({0}, 0, {0})/solver.getAmplitude({0}, 0, {1})),
+				-1
+			);
+			EXPECT_DOUBLE_EQ(
+				imag(solver.getAmplitude({0}, 0, {0})/solver.getAmplitude({0}, 0, {1})),
+				0
+			);
+			EXPECT_DOUBLE_EQ(
+				real(solver.getAmplitude({0}, 1, {0})/solver.getAmplitude({0}, 1, {1})),
+				1
+			);
+			EXPECT_DOUBLE_EQ(
+				imag(solver.getAmplitude({0}, 1, {0})/solver.getAmplitude({0}, 1, {1})),
+				0
+			);
+
+			EXPECT_DOUBLE_EQ(real(solver.getAmplitude({1}, 0, {0})), 1);
+			EXPECT_DOUBLE_EQ(imag(solver.getAmplitude({1}, 0, {0})), 0);
+
+			EXPECT_DOUBLE_EQ(
+				real(solver.getAmplitude({2}, 0, {0})/solver.getAmplitude({2}, 0, {1})),
+				-1
+			);
+			EXPECT_DOUBLE_EQ(
+				imag(solver.getAmplitude({2}, 0, {0})/solver.getAmplitude({2}, 0, {1})),
+				0
+			);
+			EXPECT_DOUBLE_EQ(
+				real(solver.getAmplitude({2}, 1, {0})/solver.getAmplitude({2}, 1, {1})),
+				1
+			);
+			EXPECT_DOUBLE_EQ(
+				imag(solver.getAmplitude({2}, 1, {0})/solver.getAmplitude({2}, 1, {1})),
+				0
+			);
+
+			//Fail to get amplitude for state with invalid state number.
+			::testing::FLAGS_gtest_death_test_style = "threadsafe";
+			EXPECT_EXIT(
+				{
+					Streams::setStdMuteErr();
+					solver.getAmplitude({0}, -1, {0});
+				},
+				::testing::ExitedWithCode(1),
+				""
+			);
+			EXPECT_EXIT(
+				{
+					Streams::setStdMuteErr();
+					solver.getAmplitude({0}, 2, {0});
+				},
+				::testing::ExitedWithCode(1),
+				""
+			);
+			::testing::FLAGS_gtest_death_test_style = "fast";
+			}
+			// Test execution on multiple devices with indivitual 
+			// shared between different devices
+			{
+				BlockDiagonalizer solver;
+				solver.setUseGPUAcceleration(true);
+				solver.setUseMultiGPUAcceleration(true);
+				solver.setVerbose(false);
+				solver.setModel(model);
+				solver.run();
+			//Access using global state index.
+			EXPECT_DOUBLE_EQ(
+				real(solver.getAmplitude(0, {0, 0})/solver.getAmplitude(0, {0, 1})),
+				-1
+			);
+			EXPECT_DOUBLE_EQ(
+				imag(solver.getAmplitude(0, {0, 0})/solver.getAmplitude(0, {0, 1})),
+				0
+			);
+			EXPECT_DOUBLE_EQ(
+				real(solver.getAmplitude(1, {0, 0})/solver.getAmplitude(1, {0, 1})),
+				1
+			);
+			EXPECT_DOUBLE_EQ(
+				imag(solver.getAmplitude(1, {0, 0})/solver.getAmplitude(1, {0, 1})),
+				0
+			);
+
+			EXPECT_DOUBLE_EQ(real(solver.getAmplitude(2, {1, 0})), 1);
+			EXPECT_DOUBLE_EQ(imag(solver.getAmplitude(2, {1, 0})), 0);
+
+			EXPECT_DOUBLE_EQ(
+				real(solver.getAmplitude(3, {2, 0})/solver.getAmplitude(3, {2, 1})),
+				-1
+			);
+			EXPECT_DOUBLE_EQ(
+				imag(solver.getAmplitude(3, {2, 0})/solver.getAmplitude(3, {2, 1})),
+				0
+			);
+			EXPECT_DOUBLE_EQ(
+				real(solver.getAmplitude(4, {2, 0})/solver.getAmplitude(4, {2, 1})),
+				1
+			);
+			EXPECT_DOUBLE_EQ(
+				imag(solver.getAmplitude(4, {2, 0})/solver.getAmplitude(4, {2, 1})),
+				0
+			);
+
+			//Give zero for valid Indices that are outside the block that the
+			//eigenstate belongs to.
+			EXPECT_DOUBLE_EQ(real(solver.getAmplitude(0, {1, 0})), 0);
+			EXPECT_DOUBLE_EQ(imag(solver.getAmplitude(0, {1, 0})), 0);
+			EXPECT_DOUBLE_EQ(real(solver.getAmplitude(0, {2, 0})), 0);
+			EXPECT_DOUBLE_EQ(imag(solver.getAmplitude(0, {2, 0})), 0);
+			EXPECT_DOUBLE_EQ(real(solver.getAmplitude(0, {2, 1})), 0);
+			EXPECT_DOUBLE_EQ(imag(solver.getAmplitude(0, {2, 1})), 0);
+
+			//Access using block state index.
+			EXPECT_DOUBLE_EQ(
+				real(solver.getAmplitude({0}, 0, {0})/solver.getAmplitude({0}, 0, {1})),
+				-1
+			);
+			EXPECT_DOUBLE_EQ(
+				imag(solver.getAmplitude({0}, 0, {0})/solver.getAmplitude({0}, 0, {1})),
+				0
+			);
+			EXPECT_DOUBLE_EQ(
+				real(solver.getAmplitude({0}, 1, {0})/solver.getAmplitude({0}, 1, {1})),
+				1
+			);
+			EXPECT_DOUBLE_EQ(
+				imag(solver.getAmplitude({0}, 1, {0})/solver.getAmplitude({0}, 1, {1})),
+				0
+			);
+
+			EXPECT_DOUBLE_EQ(real(solver.getAmplitude({1}, 0, {0})), 1);
+			EXPECT_DOUBLE_EQ(imag(solver.getAmplitude({1}, 0, {0})), 0);
+
+			EXPECT_DOUBLE_EQ(
+				real(solver.getAmplitude({2}, 0, {0})/solver.getAmplitude({2}, 0, {1})),
+				-1
+			);
+			EXPECT_DOUBLE_EQ(
+				imag(solver.getAmplitude({2}, 0, {0})/solver.getAmplitude({2}, 0, {1})),
+				0
+			);
+			EXPECT_DOUBLE_EQ(
+				real(solver.getAmplitude({2}, 1, {0})/solver.getAmplitude({2}, 1, {1})),
+				1
+			);
+			EXPECT_DOUBLE_EQ(
+				imag(solver.getAmplitude({2}, 1, {0})/solver.getAmplitude({2}, 1, {1})),
+				0
+			);
+
+			//Fail to get amplitude for state with invalid state number.
+			::testing::FLAGS_gtest_death_test_style = "threadsafe";
+			EXPECT_EXIT(
+				{
+					Streams::setStdMuteErr();
+					solver.getAmplitude({0}, -1, {0});
+				},
+				::testing::ExitedWithCode(1),
+				""
+			);
+			EXPECT_EXIT(
+				{
+					Streams::setStdMuteErr();
+					solver.getAmplitude({0}, 2, {0});
+				},
+				::testing::ExitedWithCode(1),
+				""
+			);
+			::testing::FLAGS_gtest_death_test_style = "fast";
+			}
+		}
 	#endif
 }
 
@@ -452,6 +777,39 @@ TEST(BlockDiagonalizer, getFirstStateInBlock){
 			EXPECT_EQ(solver.getFirstStateInBlock({2, 0}), 3);
 			EXPECT_EQ(solver.getFirstStateInBlock({2, 1}), 3);
 		}
+		int numDevices = GPUResourceManager::getInstance().getNumDevices();
+		if(numDevices > 1){
+			//Test parallel execution on multiple devices with indivitual 
+			// blocks on different devices
+			{
+				BlockDiagonalizer solver;
+				solver.setUseGPUAcceleration(true);
+				solver.setParallelExecution(true);
+				solver.setVerbose(false);
+				solver.setModel(model);
+				solver.run();
+				EXPECT_EQ(solver.getFirstStateInBlock({0, 0}), 0);
+				EXPECT_EQ(solver.getFirstStateInBlock({0, 1}), 0);
+				EXPECT_EQ(solver.getFirstStateInBlock({1, 0}), 2);
+				EXPECT_EQ(solver.getFirstStateInBlock({2, 0}), 3);
+				EXPECT_EQ(solver.getFirstStateInBlock({2, 1}), 3);
+			}
+			// Test execution on multiple devices with indivitual 
+			// shared between different devices
+			{
+				BlockDiagonalizer solver;
+				solver.setUseGPUAcceleration(true);
+				solver.setUseMultiGPUAcceleration(true);
+				solver.setVerbose(false);
+				solver.setModel(model);
+				solver.run();
+				EXPECT_EQ(solver.getFirstStateInBlock({0, 0}), 0);
+				EXPECT_EQ(solver.getFirstStateInBlock({0, 1}), 0);
+				EXPECT_EQ(solver.getFirstStateInBlock({1, 0}), 2);
+				EXPECT_EQ(solver.getFirstStateInBlock({2, 0}), 3);
+				EXPECT_EQ(solver.getFirstStateInBlock({2, 1}), 3);
+			}
+		}
 	#endif
 }
 
@@ -499,6 +857,39 @@ TEST(BlockDiagonalizer, getLastStateInBlock){
 			EXPECT_EQ(solver.getLastStateInBlock({1, 0}), 2);
 			EXPECT_EQ(solver.getLastStateInBlock({2, 0}), 4);
 			EXPECT_EQ(solver.getLastStateInBlock({2, 1}), 4);
+		}
+		int numDevices = GPUResourceManager::getInstance().getNumDevices();
+		if(numDevices > 1){
+			//Test parallel execution on multiple devices with indivitual 
+			// blocks on different devices
+			{
+				BlockDiagonalizer solver;
+				solver.setUseGPUAcceleration(true);
+				solver.setParallelExecution(true);
+				solver.setVerbose(false);
+				solver.setModel(model);
+				solver.run();
+				EXPECT_EQ(solver.getLastStateInBlock({0, 0}), 1);
+				EXPECT_EQ(solver.getLastStateInBlock({0, 1}), 1);
+				EXPECT_EQ(solver.getLastStateInBlock({1, 0}), 2);
+				EXPECT_EQ(solver.getLastStateInBlock({2, 0}), 4);
+				EXPECT_EQ(solver.getLastStateInBlock({2, 1}), 4);
+			}
+			// Test execution on multiple devices with indivitual 
+			// shared between different devices
+			{
+				BlockDiagonalizer solver;
+				solver.setUseGPUAcceleration(true);
+				solver.setUseMultiGPUAcceleration(true);
+				solver.setVerbose(false);
+				solver.setModel(model);
+				solver.run();
+				EXPECT_EQ(solver.getLastStateInBlock({0, 0}), 1);
+				EXPECT_EQ(solver.getLastStateInBlock({0, 1}), 1);
+				EXPECT_EQ(solver.getLastStateInBlock({1, 0}), 2);
+				EXPECT_EQ(solver.getLastStateInBlock({2, 0}), 4);
+				EXPECT_EQ(solver.getLastStateInBlock({2, 1}), 4);
+			}
 		}
 	#endif
 }

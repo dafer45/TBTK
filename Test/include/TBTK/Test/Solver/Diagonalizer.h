@@ -1,4 +1,5 @@
 #include "TBTK/Solver/Diagonalizer.h"
+#include "TBTK/GPUResourceManager.h"
 
 #include "gtest/gtest.h"
 
@@ -127,6 +128,18 @@ TEST(Diagonalizer, getEigenValues){
 		EXPECT_NEAR(eigenValues3[0], -1, EPSILON_100);
 		EXPECT_NEAR(eigenValues3[1], 1, EPSILON_100);
 
+		int numDevices = GPUResourceManager::getInstance().getNumDevices();
+		if(numDevices > 1){
+			Diagonalizer solver3;
+			solver3.setVerbose(false);
+			solver3.setModel(model1);
+			solver3.setUseMultiGPUAcceleration(true);
+			solver3.run();
+			const CArray<double> &eigenValues4 = solver3.getEigenValues();
+			EXPECT_NEAR(eigenValues4[0], -1, EPSILON_100);
+			EXPECT_NEAR(eigenValues4[1], 1, EPSILON_100);
+		}
+
 
 	#else
 		EXPECT_EXIT(
@@ -187,28 +200,59 @@ TEST(Diagonalizer, getEigenVectors){
 	solver2.setUseGPUAcceleration(true);
 	#ifdef TBTK_CUDA_ENABLED
 		solver2.run();
-		//Normal access.
-		const CArray<std::complex<double>> &eigenVectors3
-			= solver2.getEigenVectors();
-		EXPECT_DOUBLE_EQ(real(eigenVectors3[0]/eigenVectors3[1]), -1);
-		EXPECT_DOUBLE_EQ(imag(eigenVectors3[0]/eigenVectors3[1]), 0);
-		EXPECT_DOUBLE_EQ(real(eigenVectors3[2]/eigenVectors3[3]), 1);
-		EXPECT_DOUBLE_EQ(imag(eigenVectors3[2]/eigenVectors3[3]), 0);
+		{
+			//Normal access.
+			const CArray<std::complex<double>> &eigenVectors3
+				= solver2.getEigenVectors();
+			EXPECT_DOUBLE_EQ(real(eigenVectors3[0]/eigenVectors3[1]), -1);
+			EXPECT_DOUBLE_EQ(imag(eigenVectors3[0]/eigenVectors3[1]), 0);
+			EXPECT_DOUBLE_EQ(real(eigenVectors3[2]/eigenVectors3[3]), 1);
+			EXPECT_DOUBLE_EQ(imag(eigenVectors3[2]/eigenVectors3[3]), 0);
 
-		//Access with write permissions.
-		CArray<std::complex<double>> &eigenVectors4
-			= solver2.getEigenVectorsRW();
-		EXPECT_DOUBLE_EQ(real(eigenVectors4[0]/eigenVectors4[1]), -1);
-		EXPECT_DOUBLE_EQ(imag(eigenVectors4[0]/eigenVectors4[1]), 0);
-		EXPECT_DOUBLE_EQ(real(eigenVectors4[2]/eigenVectors4[3]), 1);
-		EXPECT_DOUBLE_EQ(imag(eigenVectors4[2]/eigenVectors4[3]), 0);
+			//Access with write permissions.
+			CArray<std::complex<double>> &eigenVectors4
+				= solver2.getEigenVectorsRW();
+			EXPECT_DOUBLE_EQ(real(eigenVectors4[0]/eigenVectors4[1]), -1);
+			EXPECT_DOUBLE_EQ(imag(eigenVectors4[0]/eigenVectors4[1]), 0);
+			EXPECT_DOUBLE_EQ(real(eigenVectors4[2]/eigenVectors4[3]), 1);
+			EXPECT_DOUBLE_EQ(imag(eigenVectors4[2]/eigenVectors4[3]), 0);
 
-		//Verify that write to internal data works (note that write is
-		//performed to eigenVectors1, while read is from eigenVectors0).
-		eigenVectors4[0] = 2;
-		EXPECT_DOUBLE_EQ(real(eigenVectors4[0]), 2);
-		EXPECT_DOUBLE_EQ(imag(eigenVectors4[0]), 0);
+			//Verify that write to internal data works (note that write is
+			//performed to eigenVectors1, while read is from eigenVectors0).
+			eigenVectors4[0] = 2;
+			EXPECT_DOUBLE_EQ(real(eigenVectors3[0]), 2);
+			EXPECT_DOUBLE_EQ(imag(eigenVectors3[0]), 0);
+		}
 
+		int numDevices = GPUResourceManager::getInstance().getNumDevices();
+		if(numDevices > 1){
+			Diagonalizer solver3;
+			solver3.setVerbose(false);
+			solver3.setModel(model);
+			solver3.setUseMultiGPUAcceleration(true);
+			solver3.run();
+			//Normal access.
+			const CArray<std::complex<double>>&eigenVectors3
+				= solver3.getEigenVectors();
+			EXPECT_DOUBLE_EQ(real(eigenVectors3[0]/eigenVectors3[1]), -1);
+			EXPECT_DOUBLE_EQ(imag(eigenVectors3[0]/eigenVectors3[1]), 0);
+			EXPECT_DOUBLE_EQ(real(eigenVectors3[2]/eigenVectors3[3]), 1);
+			EXPECT_DOUBLE_EQ(imag(eigenVectors3[2]/eigenVectors3[3]), 0);
+
+			//Access with write permissions.
+			CArray<std::complex<double>>&eigenVectors4
+				= solver3.getEigenVectorsRW();
+			EXPECT_DOUBLE_EQ(real(eigenVectors4[0]/eigenVectors4[1]), -1);
+			EXPECT_DOUBLE_EQ(imag(eigenVectors4[0]/eigenVectors4[1]), 0);
+			EXPECT_DOUBLE_EQ(real(eigenVectors4[2]/eigenVectors4[3]), 1);
+			EXPECT_DOUBLE_EQ(imag(eigenVectors4[2]/eigenVectors4[3]), 0);
+
+			//Verify that write to internal data works (note that write is
+			//performed to eigenVectors1, while read is from eigenVectors0).
+			eigenVectors4[0] = 2;
+			EXPECT_DOUBLE_EQ(real(eigenVectors3[0]), 2);
+			EXPECT_DOUBLE_EQ(imag(eigenVectors3[0]), 0);
+		}
 
 	#else
 		EXPECT_EXIT(
@@ -267,17 +311,39 @@ TEST(Diagonalizer, getEigenVectors){
 	solver3.setUseGPUAcceleration(true);
 	#ifdef TBTK_CUDA_ENABLED
 		solver3.run();
-		const CArray<std::complex<double>> &eigenVectors5
-			= solver3.getEigenVectors();
-		EXPECT_NEAR(real(eigenVectors5[0]), sqrt(2), EPSILON_100);
-		EXPECT_NEAR(imag(eigenVectors5[0]), 0, EPSILON_100);
-		EXPECT_NEAR(real(eigenVectors5[1]), -1, EPSILON_100);
-		EXPECT_NEAR(imag(eigenVectors5[1]), 0, EPSILON_100);
+		{
+			const CArray<std::complex<double>> &eigenVectors5
+				= solver3.getEigenVectors();
+			EXPECT_NEAR(real(eigenVectors5[0]), sqrt(2), EPSILON_100);
+			EXPECT_NEAR(imag(eigenVectors5[0]), 0, EPSILON_100);
+			EXPECT_NEAR(real(eigenVectors5[1]), -1, EPSILON_100);
+			EXPECT_NEAR(imag(eigenVectors5[1]), 0, EPSILON_100);
 
-		EXPECT_NEAR(real(eigenVectors5[2]), 0, EPSILON_100);
-		EXPECT_NEAR(imag(eigenVectors5[2]), 0, EPSILON_100);
-		EXPECT_NEAR(real(eigenVectors5[3]), 1, EPSILON_100);
-		EXPECT_NEAR(imag(eigenVectors5[3]), 0, EPSILON_100);
+			EXPECT_NEAR(real(eigenVectors5[2]), 0, EPSILON_100);
+			EXPECT_NEAR(imag(eigenVectors5[2]), 0, EPSILON_100);
+			EXPECT_NEAR(real(eigenVectors5[3]), 1, EPSILON_100);
+			EXPECT_NEAR(imag(eigenVectors5[3]), 0, EPSILON_100);
+		}
+
+		if(numDevices > 1){
+			Diagonalizer solver4;
+			solver4.setVerbose(false);
+			solver4.setModel(model);
+			solver4.setUseMultiGPUAcceleration(true);
+			solver4.run();
+			const CArray<std::complex<double>> &eigenVectors5
+				= solver4.getEigenVectors();
+			EXPECT_NEAR(real(eigenVectors5[0]), sqrt(2), EPSILON_100);
+			EXPECT_NEAR(imag(eigenVectors5[0]), 0, EPSILON_100);
+			EXPECT_NEAR(real(eigenVectors5[1]), -1, EPSILON_100);
+			EXPECT_NEAR(imag(eigenVectors5[1]), 0, EPSILON_100);
+
+			EXPECT_NEAR(real(eigenVectors5[2]), 0, EPSILON_100);
+			EXPECT_NEAR(imag(eigenVectors5[2]), 0, EPSILON_100);
+			EXPECT_NEAR(real(eigenVectors5[3]), 1, EPSILON_100);
+			EXPECT_NEAR(imag(eigenVectors5[3]), 0, EPSILON_100);
+
+		}
 
 
 	#else
@@ -321,6 +387,16 @@ TEST(Diagonalizer, getEigenValue){
 		solver1.run();
 		EXPECT_DOUBLE_EQ(solver1.getEigenValue(0), -1);
 		EXPECT_DOUBLE_EQ(solver1.getEigenValue(1), 1);
+		int numDevices = GPUResourceManager::getInstance().getNumDevices();
+		if(numDevices > 1){
+			Diagonalizer solver2;
+			solver2.setVerbose(false);
+			solver2.setModel(model);
+			solver2.setUseMultiGPUAcceleration(true);
+			solver2.run();
+			EXPECT_DOUBLE_EQ(solver2.getEigenValue(0), -1);
+			EXPECT_DOUBLE_EQ(solver2.getEigenValue(1), 1);
+		}
 	#else
 		EXPECT_EXIT(
 			{
@@ -377,7 +453,27 @@ TEST(Diagonalizer, getAmplitude){
 		);
 		EXPECT_DOUBLE_EQ(
 			imag(solver1.getAmplitude(1, {0})/solver1.getAmplitude(1, {1})), 0
-	);
+		);
+		int numDevices = GPUResourceManager::getInstance().getNumDevices();
+		if(numDevices > 1){
+			Diagonalizer solver2;
+			solver2.setVerbose(false);
+			solver2.setModel(model);
+			solver2.setUseMultiGPUAcceleration(true);
+			solver2.run();
+			EXPECT_DOUBLE_EQ(
+				real(solver2.getAmplitude(0, {0})/solver2.getAmplitude(0, {1})), -1
+			);
+			EXPECT_DOUBLE_EQ(
+				imag(solver2.getAmplitude(0, {0})/solver2.getAmplitude(0, {1})), 0
+			);
+			EXPECT_DOUBLE_EQ(
+				real(solver2.getAmplitude(1, {0})/solver2.getAmplitude(1, {1})), 1
+			);
+			EXPECT_DOUBLE_EQ(
+				imag(solver2.getAmplitude(1, {0})/solver2.getAmplitude(1, {1})), 0
+			);
+		}
 	#else
 		EXPECT_EXIT(
 			{
