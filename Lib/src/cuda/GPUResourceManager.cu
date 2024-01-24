@@ -52,35 +52,34 @@ void GPUResourceManager::enableP2PAccess() {
     
 	// Check if any devices are allocated
 	if(!busyDevices){
-		//TODO error message
+		Streams::err << "Unable to enable P2P access, no device allocated" << endl;
 		return;
 	}
-	cudaError_t cudaError = cudaSuccess;
 	int currentDevice;
 	for(int i = 0; i < numDevices; i++){
 		if(busyDevices[i]){
 			currentDevice = i;
 			// TODO error check cudaSuccess // TODO not sure if this check is needed
-			cudaError = cudaGetDevice(&currentDevice);
+			cudaGetDevice(&currentDevice);
 		}
 	}    
 
-    /* Remark: access granted by this cudaDeviceEnablePeerAccess is unidirectional */
-    /* Rows and columns represents a connectivity matrix between GPUs in the system */
+    // Remark: access granted by this cudaDeviceEnablePeerAccess is unidirectional
+    // activeDevices and peers represents a connectivity matrix between GPUs in the system
     for (int activeDevice = 0; activeDevice < numDevices; activeDevice++) {
 		if(busyDevices[activeDevice]){
 			// TODO error check
-			cudaError = cudaSetDevice(activeDevice);
+			cudaSetDevice(activeDevice);
 		}
         for (int peer = 0; peer < numDevices; peer++) {
             if (activeDevice != peer && busyDevices[peer]) {
                 int canAccessPeer = 0;
 				// TODO error check
-				cudaError = cudaDeviceCanAccessPeer(&canAccessPeer, activeDevice, peer);
+				cudaDeviceCanAccessPeer(&canAccessPeer, activeDevice, peer);
                 if (canAccessPeer) {
 					// TODO error check
-					cudaError = cudaDeviceEnablePeerAccess(peer, 0);
-					if(getVerbose()){
+					cudaDeviceEnablePeerAccess(peer, 0);
+					if(getGlobalVerbose()){
 						Streams::out << "P2P enabled between device " << 
 										activeDevice << " and " <<
 										peer <<	endl;
@@ -90,7 +89,7 @@ void GPUResourceManager::enableP2PAccess() {
         }
     }
 	// TODO error check
-	cudaError = cudaSetDevice(currentDevice);
+	cudaSetDevice(currentDevice);
 }
 
 };	//End of namespace TBTK

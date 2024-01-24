@@ -32,8 +32,7 @@
 #include <cassert>
 #include <stdexcept>
 
-//TODO remove TBTK/ when done
-#include "TBTK/Extern/NVIDIACuda/cusolver_utils.h"
+#include "cusolver_utils.h"
 
 #ifndef IDX2F
 #define IDX2F(i, j, lda) ((((j)-1) * (static_cast<size_t>(lda))) + ((i)-1))

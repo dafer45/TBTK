@@ -32,6 +32,7 @@ Diagonalizer::Diagonalizer() : Communicator(false){
 	selfConsistencyCallback = nullptr;
 	useGPUAcceleration = false;
 	useMultiGPUAcceleration = false;
+	calculationMode = CalculationMode::EigenValuesAndEigenVectors;
 }
 
 void Diagonalizer::run(){

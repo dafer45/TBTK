@@ -108,6 +108,20 @@ public:
 	 *  Diagonalizer solver off or on. */
 	virtual void setUseMultiGPUAcceleration(bool useMultiGPUAcceleration);
 
+	/** If using a gpu accelerator, two calculation modes are available:
+	 * EigenValues: Calculates the eigenvalues of the model Hamiltonian only 
+	 * EigenValuesAndEigenVectors: Same as above plus all Eigenstates */
+	enum class CalculationMode{ EigenValues, EigenValuesAndEigenVectors};
+
+	/** If using gpu acceleration, this option determines if the solver calculates
+	 *  the model Hamiltonians eigenvalues only or eigenvalues and eigenstates.
+	 *  The former option can be chosen to save calculation resources, however, will
+	 *  give an error if eigenstate based properties are calculated.
+	 *
+	 *  @param calculationMode options are EigenValues and EigenValuesAndEigenVectors
+	 */
+	virtual void setCalculationMode(const CalculationMode calculationMode);
+
 	/** Run calculations. Diagonalizes ones if no self-consistency callback
 	 *  have been set, or otherwise multiple times until self-consistencey
 	 *  or maximum number of iterations has been reached. */
@@ -159,9 +173,6 @@ public:
 	 *  @return The amplitude \f$\Psi_{n}(x)\f$. */
 	const std::complex<double> getAmplitude(int state, const Index &index);
 
-	// TODO remove
-	template <typename data_type>
-	void solveGPU(data_type* matrix, double* eigenValues, const int &n);
 protected:
 	/** Enables GPU acceleration for the solver. */
 	bool useGPUAcceleration;
@@ -169,18 +180,23 @@ protected:
 	/** Enables Multi GPU acceleration on one node for the solver. */
 	bool useMultiGPUAcceleration;
 
-	// TODO uncomment
-	// /** Diagonalizes the input matrix using a GPU device.
-	//  *  The output for the eigen vectors is
-	//  *  written into the input matrix. 
-	//  * 
-	//  *  @param matrix Matrix nxn to diagonalize
-	//  *  @param eigenValues vector of size n
-	//  *  @param n basis size of the matrix
-	//  *
-	//  *  @return Function overwrites matrix with eigenvectors
-	//  * 			and returns eigenvalues in eigenValues     */
-	// void solveGPU(std::complex<double>* matrix, double* eigenValues, const int &n);
+
+
+	/** Calculation mode used when calculations are run on gpu(s)*/
+	CalculationMode calculationMode;
+
+	/** Diagonalizes the input matrix using a GPU device.
+	 *  The output for the eigen vectors is
+	 *  written into the input matrix. 
+	 * 
+	 *  @param matrix Matrix nxn to diagonalize
+	 *  @param eigenValues vector of size n
+	 *  @param n basis size of the matrix
+	 *
+	 *  @return Function overwrites matrix with eigenvectors
+	 * 			and returns eigenvalues in eigenValues     */
+	template <typename data_type>
+	void solveGPU(data_type* matrix, double* eigenValues, const int &n);
 
 private:
 	/** pointer to array containing Hamiltonian. */
@@ -239,25 +255,6 @@ private:
 	 * 			and returns eigenvalues in eigenValues     */
 	template <typename data_type>
 	void solveMultiGPU(data_type* matrix, double* eigenValues, const int &n);
-
-	// TODO delete if not needed anymore
-	// /** Helper function for solveMultiGPU. It create a empty local 
-	//  * matrix A with A := 0
-	//  * 
-	//  *  @param numDevices number of GPUs in use
-	//  *  @param deviceIdA  int array of dimension numDevices
-	//  *  @param N_A number of columns of global matrix
-	//  *  @param T_A number of columns per column tile
-	//  *  @param llda leading dimension of local matrix
-	//  *  @param array_d_A host pointer array of dimension numDevices
-	//  */
-	// void createEmptyMatrix(int numDevices, 
-	// 									const int *deviceIdA,
-	// 									int N_A,
-	// 									int T_A,
-	// 									int llda,
-	// 									std::complex<double> **array_d_A
-	// );
 };
 
 inline void Diagonalizer::setSelfConsistencyCallback(
@@ -279,10 +276,24 @@ inline CArray<double>& Diagonalizer::getEigenValuesRW(){
 }
 
 inline const CArray<std::complex<double>>& Diagonalizer::getEigenVectors(){
+	if(calculationMode == Diagonalizer::CalculationMode::EigenValues){
+		TBTKExit(
+			"Diagonalizer::getEigenVectors()",
+			"Eigenvectors not available.",
+			"Use CalculationMode::EigenValuesAndEigenVectors instead."
+		);
+	}
 	return eigenVectors;
 }
 
 inline CArray<std::complex<double>>& Diagonalizer::getEigenVectorsRW(){
+	if(calculationMode == Diagonalizer::CalculationMode::EigenValues){
+		TBTKExit(
+			"Diagonalizer::getEigenVectorsRW()",
+			"Eigenvectors not available.",
+			"Use CalculationMode::EigenValuesAndEigenVectors instead."
+		);
+	}
 	return eigenVectors;
 }
 
@@ -291,7 +302,7 @@ inline const std::complex<double> Diagonalizer::getAmplitude(
 	const Index &index
 ){
 	const Model &model = getModel();
-	return eigenVectors[model.getBasisSize()*state + model.getBasisIndex(index)];
+	return getEigenVectors()[model.getBasisSize()*state + model.getBasisIndex(index)];
 }
 
 inline double Diagonalizer::getEigenValue(int state){
@@ -310,6 +321,16 @@ inline void Diagonalizer::setUseMultiGPUAcceleration(bool useMultiGPUAcceleratio
 	else{
 		this->useMultiGPUAcceleration = false;
 	}
+}
+
+inline void Diagonalizer::setCalculationMode(const CalculationMode calculationMode){
+	// Give error if gpu is not set and verbose is activated
+	if(!useGPUAcceleration && getGlobalVerbose() && getVerbose()){
+		Streams::out << "Warning! No gpu acceleration activated,"
+		 	<< "option TBTK::Solver::Diagonalizer::CalculationMode will be ignored."
+			<< std::endl;
+	}
+	this->calculationMode = calculationMode;
 }
 
 };	//End of namespace Solver

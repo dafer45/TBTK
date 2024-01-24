@@ -30,8 +30,7 @@
 #include <cusolverDn.h>
 #include <cusolverMg.h>
 #include <cuda_runtime.h>
-//TODO put his .h in a different directory (3rd party?)
-#include "TBTK/cusolverMg_utils.h"
+#include "cusolverMg_utils.h"
 
 using namespace std;
 
@@ -84,10 +83,14 @@ void Diagonalizer::solveMultiGPU(data_type* matrix, double* eigenValues, const i
     // set up various calculation parameters and resources
     const int IA = 1;
     const int JA = 1;
-    const int T_A = 256; // tile size recommended size is 256 or 512
+    const int T_A = 256; // tile size recommended value is 256 or 512
     const int lda = n;
 
+    
     cusolverEigMode_t jobz = CUSOLVER_EIG_MODE_VECTOR;
+    if(calculationMode == CalculationMode::EigenValues){
+        jobz = CUSOLVER_EIG_MODE_NOVECTOR;
+    }
 
     cudaLibMgMatrixDesc_t descrMatrix;
     cudaLibMgGrid_t gridA;
@@ -159,7 +162,6 @@ void Diagonalizer::solveMultiGPU(data_type* matrix, double* eigenValues, const i
     // sync all devices after calculation
     //TODO check for cudaSuccess
     cudaDeviceSynchronize();
-    CUDA_CHECK(cudaDeviceSynchronize());
 
     // Copy data to host from devices
     memcpyD2H<data_type>(numDevices, deviceList.data(), n, n,
@@ -295,7 +297,7 @@ void Diagonalizer::solveGPU(data_type* matrix, double* eigenValues, const int &n
             stream
         ) == cudaSuccess,
         "Diagonalizer::solveGPU()",
-        "CUDA error allocating unified memory.",
+        "CUDA error allocating device memory.",
         ""
     ) 
     TBTKAssert(
@@ -335,7 +337,10 @@ void Diagonalizer::solveGPU(data_type* matrix, double* eigenValues, const int &n
 
 
     //Set up the cusolver routine
-    cusolverEigMode_t jobz = CUSOLVER_EIG_MODE_VECTOR;		//...eigenvalues and eigenvectors...
+    cusolverEigMode_t jobz = CUSOLVER_EIG_MODE_VECTOR; //...eigenvalues and eigenvectors...
+    if(calculationMode == CalculationMode::EigenValues){
+        jobz = CUSOLVER_EIG_MODE_NOVECTOR;
+    }		
     cublasFillMode_t uplo = CUBLAS_FILL_MODE_UPPER;		//...for an upper triangular Matrix...
 
     void *buffer_device = nullptr; // Device buffer memory
