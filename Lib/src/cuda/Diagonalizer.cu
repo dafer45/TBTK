@@ -183,6 +183,11 @@ void Diagonalizer::solveMultiGPU(data_type* matrix, double* eigenValues, const i
             GPUResourceManager::getInstance().freeDevice(deviceList[i]);
         }
     }
+
+
+    //TODO check against CUSOLVER_STATUS_SUCCESS
+    cusolverMgDestroyMatrixDesc(descrMatrix);
+    cusolverMgDestroy(cusolverHandle);
 }
 
 template <typename data_type>
@@ -341,7 +346,7 @@ void Diagonalizer::solveGPU(data_type* matrix, double* eigenValues, const int &n
     if(calculationMode == CalculationMode::EigenValues){
         jobz = CUSOLVER_EIG_MODE_NOVECTOR;
     }		
-    cublasFillMode_t uplo = CUBLAS_FILL_MODE_UPPER;		//...for an upper triangular Matrix...
+    cublasFillMode_t uplo = CUBLAS_FILL_MODE_LOWER;		//...for an lower triangular Matrix...
 
     void *buffer_device = nullptr; // Device buffer memory
     void *buffer_host = nullptr;  //Host buffer memory
@@ -632,15 +637,13 @@ void Diagonalizer::transformToOrthonormalBasisGPU(){
 			);
 		}
 	}
-
+    // TODO this could be on on gpu as well...
 	Matrix<complex<double>> hp = Udagger*h*U;
 
 	for(int row = 0; row < basisSize; row++){
 		for(int col = 0; col < basisSize; col++){
-			if(col >= row){
-				hamiltonian[row + col*basisSize]
-					= hp.at(row, col);
-			}
+            hamiltonian[row + col*basisSize]
+                = hp.at(row, col);
 		}
 	}
 }

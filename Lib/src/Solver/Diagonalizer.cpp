@@ -56,7 +56,11 @@ void Diagonalizer::run(){
 			solveGPU(eigenVectors.getData(), eigenValues.getData(), BasisSize);
 		}
 		else{
-			solve();
+			int BasisSize = getModel().getBasisSize();
+			solveCPU(hamiltonian.getData(), 
+					eigenValues.getData(), 
+					eigenVectors.getData(), 
+					BasisSize);
 		}
 		transformToOriginalBasis();
 
@@ -88,10 +92,8 @@ void Diagonalizer::init(){
 	else{
 		hamiltonian = CArray<complex<double>>((basisSize*(basisSize+1))/2);
 	}
-	
 	eigenValues = CArray<double>(basisSize);
 	eigenVectors = CArray<complex<double>>(basisSize*basisSize);
-
 	update();
 }
 
@@ -144,20 +146,51 @@ extern "C" void zhpev_(char *jobz,		//'E' = Eigenvalues only, 'V' = Eigenvalues 
 			double *rwork,		//Workspace, dimension = max(1, 3*N-2)
 			int *info);		//0 = successful, <0 = -info value was illegal, >0 = info number of off-diagonal elements failed to converge.
 
-//Lapack function for matrix diagonalization of banded triangular matrix
-extern "C" void zhbeb_( //TODO this function is not used?
-	char *jobz,		//'E' = Eigenvalues only, 'V' = Eigenvalues and eigenvectors.
-	char *uplo,		//'U' = Stored as upper triangular, 'L' = Stored as lower triangular.
-	int *n,			//n*n = Matrix size
-	int *kd,		//Number of (sub/super)diagonal elements
-	complex<double> *ab,	//Input matrix
-	int *ldab,		//Leading dimension of array ab. ldab >= kd + 1
-	double *w,		//Eigenvalues, is in accending order if info = 0
-	complex<double> *z,	//Eigenvectors
-	int *ldz,		//
-	complex<double> *work,	//Workspace, dimension = max(1, 2*N-1)
-	double *rwork,		//Workspace, dimension = max(1, 3*N-2)
-	int *info);		//0 = successful, <0 = -info value was illegal, >0 = info number of off-diagonal elements failed to converge.
+//TODO this function is not used?
+// //Lapack function for matrix diagonalization of banded triangular matrix
+// extern "C" void zhbeb_( 
+// 	char *jobz,		//'E' = Eigenvalues only, 'V' = Eigenvalues and eigenvectors.
+// 	char *uplo,		//'U' = Stored as upper triangular, 'L' = Stored as lower triangular.
+// 	int *n,			//n*n = Matrix size
+// 	int *kd,		//Number of (sub/super)diagonal elements
+// 	complex<double> *ab,	//Input matrix
+// 	int *ldab,		//Leading dimension of array ab. ldab >= kd + 1
+// 	double *w,		//Eigenvalues, is in accending order if info = 0
+// 	complex<double> *z,	//Eigenvectors
+// 	int *ldz,		//
+// 	complex<double> *work,	//Workspace, dimension = max(1, 2*N-1)
+// 	double *rwork,		//Workspace, dimension = max(1, 3*N-2)
+// 	int *info);		//0 = successful, <0 = -info value was illegal, >0 = info number of off-diagonal elements failed to converge.
+
+void Diagonalizer::solveCPU(complex<double>* matrix, 
+							double* eigenValues, 
+							complex<double>* eigenVectors, 
+							const int &n){
+	char jobz = 'V';
+	char uplo = 'U';
+	int N = n;
+	CArray<complex<double>> work(2*N-1);
+	CArray<double> rwork(3*N-2);
+	int info;
+	zhpev_(
+		&jobz,
+		&uplo,
+		&N,
+		matrix,
+		eigenValues,
+		eigenVectors,
+		&N,
+		work.getData(),
+		rwork.getData(),
+		&info
+	);
+	TBTKAssert(
+		info == 0,
+		"Diagonalizer:solveCPU()",
+		"Diagonalization routine zhpev exited with INFO=" + to_string(info) + ".",
+		"See LAPACK documentation for zhpev for further information."
+	);
+}
 
 void Diagonalizer::setupBasisTransformation(){
 	//Get the OverlapAmplitudeSet.
@@ -192,30 +225,13 @@ void Diagonalizer::setupBasisTransformation(){
 		}
 	}
 
-	//Diagonalize the overlap matrix.
-	char jobz = 'V';
-	char uplo = 'U';
-	int n = basisSize;
-
-	CArray<complex<double>> work(2*n-1);
-	CArray<double> rwork(3*n-2);
-	int info;
-
 	CArray<double> overlapMatrixEigenValues(basisSize);
 	CArray<complex<double>> overlapMatrixEigenVectors(basisSize*basisSize);
-
-	zhpev_(
-		&jobz,
-		&uplo,
-		&n,
-		overlapMatrix.getData(),
-		overlapMatrixEigenValues.getData(),
-		overlapMatrixEigenVectors.getData(),
-		&n,
-		work.getData(),
-		rwork.getData(),
-		&info
-	);
+	//Diagonalize the overlap matrix.
+	solveCPU(overlapMatrix.getData(), 
+				overlapMatrixEigenValues.getData(),
+				overlapMatrixEigenVectors.getData(),
+				basisSize);
 
 	//Setup basisTransformation storage.
 	basisTransformation = CArray<complex<double>>(basisSize*basisSize);
@@ -313,62 +329,58 @@ void Diagonalizer::transformToOriginalBasis(){
 	}
 }
 
-void Diagonalizer::solve(){
-	if(true){//Currently no support for banded matrices.
-		//Setup zhpev to calculate...
-		char jobz = 'V';		//...eigenvalues and eigenvectors...
-		char uplo = 'U';		//...for an upper triangular...
-		int n = getModel().getBasisSize();	//...nxn-matrix.
-		//Initialize workspaces
-		CArray<complex<double>> work(2*n-1);
-		CArray<double> rwork(3*n-2);
-		int info;
-		//Solve brop
-		zhpev_(
-			&jobz,
-			&uplo,
-			&n,
-			hamiltonian.getData(),
-			eigenValues.getData(),
-			eigenVectors.getData(),
-			&n,
-			work.getData(),
-			rwork.getData(),
-			&info
-		);
+// TODO obsolete
+// void Diagonalizer::solve(){
+// 	if(true){//Currently no support for banded matrices.
+// 		//Setup zhpev to calculate...
+// 		char jobz = 'V';		//...eigenvalues and eigenvectors...
+// 		char uplo = 'U';		//...for an upper triangular...
+// 		int n = getModel().getBasisSize();	//...nxn-matrix.
+// 		//Initialize workspaces
+// 		CArray<complex<double>> work(2*n-1);
+// 		CArray<double> rwork(3*n-2);
+// 		int info;
+// 		//Solve brop
+// 		zhpev_(
+// 			&jobz,
+// 			&uplo,
+// 			&n,
+// 			hamiltonian.getData(),
+// 			eigenValues.getData(),
+// 			eigenVectors.getData(),
+// 			&n,
+// 			work.getData(),
+// 			rwork.getData(),
+// 			&info
+// 		);
 
-		TBTKAssert(
-			info == 0,
-			"Diagonalizer:solve()",
-			"Diagonalization routine zhpev exited with INFO=" + to_string(info) + ".",
-			"See LAPACK documentation for zhpev for further information."
-		);
-	}
-/*	else{
-		int kd;
-		if(size_z != 1)
-			kd = orbitals*size_x*size_y*size_z;
-		else if(size_y != 1)
-			kd = orbitals*size_x*size_y;
-		else
-			kd = orbitals*size_x;
-		//Setup zhbev to calculate...
-		char jobz = 'V';			//...eigenvalues and eigenvectors...
-		char uplo = 'U';			//...for and upper triangluar...
-		int n = orbitals*size_x*size_y*size_z;	//...nxn-matrix.
-		int ldab = kd + 1;
-		//Initialize workspaces
-		complex<double> *work = new complex<double>[n];
-		double *rwork = new double[3*n-2];
-		int info;
-		//Solve brop
-		zhbev_(&jobz, &uplo, &n, &kd, hamiltonian, &ldab, eigenValues, eigenVectors, &n, work, rwork, &info);
 
-		//delete workspaces
-		delete [] work;
-		delete [] rwork;
-	}*/
-}
+// 	}
+// /*	else{
+// 		int kd;
+// 		if(size_z != 1)
+// 			kd = orbitals*size_x*size_y*size_z;
+// 		else if(size_y != 1)
+// 			kd = orbitals*size_x*size_y;
+// 		else
+// 			kd = orbitals*size_x;
+// 		//Setup zhbev to calculate...
+// 		char jobz = 'V';			//...eigenvalues and eigenvectors...
+// 		char uplo = 'U';			//...for and upper triangluar...
+// 		int n = orbitals*size_x*size_y*size_z;	//...nxn-matrix.
+// 		int ldab = kd + 1;
+// 		//Initialize workspaces
+// 		complex<double> *work = new complex<double>[n];
+// 		double *rwork = new double[3*n-2];
+// 		int info;
+// 		//Solve brop
+// 		zhbev_(&jobz, &uplo, &n, &kd, hamiltonian, &ldab, eigenValues, eigenVectors, &n, work, rwork, &info);
+
+// 		//delete workspaces
+// 		delete [] work;
+// 		delete [] rwork;
+// 	}*/
+// }
 
 };	//End of namespace Solver
 };	//End of namespace TBTK

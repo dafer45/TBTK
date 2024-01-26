@@ -198,6 +198,23 @@ protected:
 	template <typename data_type>
 	void solveGPU(data_type* matrix, double* eigenValues, const int &n);
 
+	/** Diagonalizes the input matrix on the cpu.
+	 *  The input is in array matrix 
+	 *  The output is written into eigenVectors and
+	 *  eigenValues. 
+	 * 
+	 *  @param matrix Upper part of matrix nxn to diagonalize
+	 *  @param eigenValues vector of size n
+	 *  @param eigenVectors array with eigenvectors of size nxn
+	 *  @param n basis size of the matrix
+	 *
+	 *  @return Function overwrites matrix with eigenvectors
+	 * 			and returns eigenvalues in eigenValues     */
+	void solveCPU(std::complex<double>* matrix, 
+								double* eigenValues, 
+								std::complex<double>* eigenVectors, 
+								const int &n);
+
 private:
 	/** pointer to array containing Hamiltonian. */
 	CArray<std::complex<double>> hamiltonian;
@@ -225,8 +242,8 @@ private:
 	/** Updates Hamiltonian. */
 	void update();
 
-	/** Diagonalizes the Hamiltonian. */
-	void solve();
+	// /** Diagonalizes the Hamiltonian. */
+	// void solve();
 
 	/** Setup the basis transformation. */
 	void setupBasisTransformation();
@@ -276,7 +293,7 @@ inline CArray<double>& Diagonalizer::getEigenValuesRW(){
 }
 
 inline const CArray<std::complex<double>>& Diagonalizer::getEigenVectors(){
-	if(calculationMode == Diagonalizer::CalculationMode::EigenValues){
+	if(calculationMode != Diagonalizer::CalculationMode::EigenValuesAndEigenVectors){
 		TBTKExit(
 			"Diagonalizer::getEigenVectors()",
 			"Eigenvectors not available.",
@@ -287,7 +304,7 @@ inline const CArray<std::complex<double>>& Diagonalizer::getEigenVectors(){
 }
 
 inline CArray<std::complex<double>>& Diagonalizer::getEigenVectorsRW(){
-	if(calculationMode == Diagonalizer::CalculationMode::EigenValues){
+	if(calculationMode != Diagonalizer::CalculationMode::EigenValuesAndEigenVectors){
 		TBTKExit(
 			"Diagonalizer::getEigenVectorsRW()",
 			"Eigenvectors not available.",
