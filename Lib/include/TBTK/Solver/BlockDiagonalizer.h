@@ -250,6 +250,13 @@ inline const std::complex<double> BlockDiagonalizer::getAmplitude(
 	int state,
 	const Index &index
 ){
+	if(calculationMode != Diagonalizer::CalculationMode::EigenValuesAndEigenVectors){
+		TBTKExit(
+			"BlockDiagonalizer::getAmplitude()",
+			"Eigenvectors not available.",
+			"Use CalculationMode::EigenValuesAndEigenVectors instead."
+		);
+	}
 	const Model &model = getModel();
 	unsigned int block = blockStructureDescriptor.getBlockIndex(state);
 	unsigned int offset = eigenVectorOffsets.at(block);
@@ -279,6 +286,13 @@ inline const std::complex<double> BlockDiagonalizer::getAmplitude(
 	int state,
 	const Index &intraBlockIndex
 ){
+	if(calculationMode != Diagonalizer::CalculationMode::EigenValuesAndEigenVectors){
+		TBTKExit(
+			"BlockDiagonalizer::getAmplitude()",
+			"Eigenvectors not available.",
+			"Use CalculationMode::EigenValuesAndEigenVectors instead."
+		);
+	}
 	int firstStateInBlock = getModel().getHoppingAmplitudeSet(
 	).getFirstIndexInBlock(blockIndex);
 	unsigned int block = blockStructureDescriptor.getBlockIndex(

@@ -382,6 +382,7 @@ TEST(BlockDiagonalizer, getEigenVectors){
 	// Test GPU implementation //
 	/////////////////////////////
 	#ifdef TBTK_CUDA_ENABLED
+		//Testing w/ and w/o parallel execution on gpu
 		for(unsigned int n = 0; n < 2; n++){
 			BlockDiagonalizer solver;
 			solver.setUseGPUAcceleration(true);
@@ -614,7 +615,7 @@ TEST(BlockDiagonalizer, getEigenVectors){
 			);
 			::testing::FLAGS_gtest_death_test_style = "fast";
 			}
-			// Test execution on multiple devices with indivitual 
+			// Test execution on multiple devices with indivitual matrices
 			// shared between different devices
 			{
 				BlockDiagonalizer solver;
