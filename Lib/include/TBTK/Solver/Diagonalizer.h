@@ -249,14 +249,8 @@ private:
 	/** Setup the basis transformation. */
 	void setupBasisTransformation();
 
-	/** Setup the basis transformation on GPU. */
-	void setupBasisTransformationGPU();
-
 	/** Transform the Hamiltonian to an orthonormal basis. */
 	void transformToOrthonormalBasis();
-
-	/** Transform the Hamiltonian to an orthonormal basis on GPU. */	
-	void transformToOrthonormalBasisGPU();
 
 	/** Transform the eigen vectors to the original basis. */
 	void transformToOriginalBasis();
@@ -342,12 +336,6 @@ inline void Diagonalizer::setUseMultiGPUAcceleration(bool useMultiGPUAcceleratio
 }
 
 inline void Diagonalizer::setCalculationMode(const CalculationMode calculationMode){
-	// Give error if gpu is not set and verbose is activated
-	if(!useGPUAcceleration && getGlobalVerbose() && getVerbose()){
-		Streams::out << "Warning! No gpu acceleration activated,"
-		 	<< "option TBTK::Solver::Diagonalizer::CalculationMode will be ignored."
-			<< std::endl;
-	}
 	this->calculationMode = calculationMode;
 }
 

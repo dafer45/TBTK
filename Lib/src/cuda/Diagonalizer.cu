@@ -26,6 +26,7 @@
 
 #include <vector>
 #include <type_traits>
+#include <string>
 
 #include <cusolverDn.h>
 #include <cusolverMg.h>
@@ -38,16 +39,22 @@ namespace TBTK{
 namespace Solver{
 
 void Diagonalizer::solveMultiGPU(complex<double>* matrix, double* eigenValues, const int &n){
-    
     int numDevices = 0;
-    cudaGetDeviceCount(&numDevices);
+    TBTKAssert(
+		cudaGetDeviceCount(&numDevices) == cudaSuccess,
+		"Diagonalizer::solveMultiGPU()",
+		"Error in cudaGetDeviceCount().",
+		""
+	);
+    
     if(numDevices <= 1){
         Streams::out << "Detect 1 gpu or less, falling back to single GPU operation." << endl;
         useMultiGPUAcceleration = false;
         solveGPU(matrix, eigenValues,n);
     }
     // // Check for compute type of the calculation, i.e. real or complex matrix
-    // cudaDataType_t computeType = CUDA_C_64F; // Default is complex double
+    cudaDataType_t computeType = CUDA_C_64F; // At the moment only complex double is supported
+    typedef complex<double> data_type;
     // if constexpr (is_same_v<data_type, complex<double>>) {
     //     computeType = CUDA_C_64F;
     // }
@@ -96,15 +103,37 @@ void Diagonalizer::solveMultiGPU(complex<double>* matrix, double* eigenValues, c
     cusolverMgGridMapping_t mapping = CUDALIBMG_GRID_MAPPING_COL_MAJOR;
 
     cusolverMgHandle_t cusolverHandle = NULL;
-    //TODO check for CUSOLVER_STATUS_SUCCESS
-    cusolverMgCreate(&cusolverHandle);
-    cusolverMgDeviceSelect(cusolverHandle, numDevices, deviceList.data());
-    cusolverMgCreateDeviceGrid(&gridA, 1, numDevices, deviceList.data(), mapping);
-    cusolverMgCreateMatrixDesc(&descrMatrix, n, // nubmer of rows of matrix
-                                n,          // number of columns of matrix
-                                n,          // number or rows in a tile
-                                T_A,        // number of columns in a tile
-                                computeType, gridA);
+    TBTKAssert(
+		cusolverMgCreate(&cusolverHandle) == CUSOLVER_STATUS_SUCCESS,
+		"Diagonalizer::solveMultiGPU()",
+		"Error in cusolverMgCreate().",
+		""
+	);
+    TBTKAssert(
+		cusolverMgDeviceSelect(cusolverHandle, numDevices, deviceList.data())
+                     == CUSOLVER_STATUS_SUCCESS,
+		"Diagonalizer::solveMultiGPU()",
+		"Error in cusolverMgDeviceSelect().",
+		""
+	);
+    TBTKAssert(
+		cusolverMgCreateDeviceGrid(&gridA, 1, numDevices, deviceList.data(), mapping)
+                     == CUSOLVER_STATUS_SUCCESS,
+		"Diagonalizer::solveMultiGPU()",
+		"Error in cusolverMgCreateDeviceGrid().",
+		""
+	);
+    TBTKAssert(
+        cusolverMgCreateMatrixDesc(&descrMatrix, n, // nubmer of rows of matrix
+            n,          // number of columns of matrix
+            n,          // number or rows in a tile
+            T_A,        // number of columns in a tile
+            computeType, gridA)
+         == CUSOLVER_STATUS_SUCCESS,
+		"Diagonalizer::solveMultiGPU()",
+		"Error in cusolverMgCreateMatrixDesc().",
+		""
+	);
 
     vector<data_type *> array_d_A(numDevices, nullptr);
 
@@ -131,14 +160,18 @@ void Diagonalizer::solveMultiGPU(complex<double>* matrix, double* eigenValues, c
                          IA, JA);
     // Allocate buffer memory
     int64_t lwork = 0;
-    //TODO check for CUSOLVER_STATUS_SUCCESS
-    cusolverMgSyevd_bufferSize(
-        cusolverHandle, (cusolverEigMode_t)jobz, CUBLAS_FILL_MODE_LOWER, // Only lower supported according to documentation
-        n, reinterpret_cast<void **>(array_d_A.data()), IA,
-        JA,                                                     
-        descrMatrix, reinterpret_cast<void *>(eigenValues), CUDA_R_64F,
-        computeType, &lwork);
-
+    TBTKAssert(
+        cusolverMgSyevd_bufferSize(
+            cusolverHandle, (cusolverEigMode_t)jobz, CUBLAS_FILL_MODE_LOWER, // Only lower supported according to documentation
+            n, reinterpret_cast<void **>(array_d_A.data()), IA,
+            JA,                                                     
+            descrMatrix, reinterpret_cast<void *>(eigenValues), CUDA_R_64F,
+            computeType, &lwork)
+         == CUSOLVER_STATUS_SUCCESS,
+		"Diagonalizer::solveMultiGPU()",
+		"Error in cusolverMgSyevd_bufferSize().",
+		""
+	);
     std::vector<data_type *> array_d_work(numDevices, nullptr);
 
     // array_d_work[i] points to device workspace of device i
@@ -146,11 +179,16 @@ void Diagonalizer::solveMultiGPU(complex<double>* matrix, double* eigenValues, c
                     sizeof(data_type) * lwork,
                     reinterpret_cast<void **>(array_d_work.data()));
     // sync all devices before calculation
-    //TODO check for cudaSuccess
-    cudaDeviceSynchronize();
+    TBTKAssert(
+        cudaDeviceSynchronize() == cudaSuccess,
+		"Diagonalizer::solveMultiGPU()",
+		"Error in cudaDeviceSynchronize().",
+		""
+	);
     // Run the eigenvalue solver
     int info = 0;
-     //TODO check for CUSOLVER_STATUS_SUCCESS
+    cusolverStatus_t error;
+    error =
     cusolverMgSyevd(
         cusolverHandle, (cusolverEigMode_t)jobz, CUBLAS_FILL_MODE_LOWER,
         n, reinterpret_cast<void **>(array_d_A.data()),
@@ -158,10 +196,56 @@ void Diagonalizer::solveMultiGPU(complex<double>* matrix, double* eigenValues, c
         CUDA_R_64F, computeType,
         reinterpret_cast<void **>(array_d_work.data()), lwork, &info
         );
-    // sync all devices after calculation
-    //TODO check for cudaSuccess
-    cudaDeviceSynchronize();
+    string errorString;
+    // More fine grained error handling for this
+    if(error != CUSOLVER_STATUS_SUCCESS){
+        switch(error){
+            case CUSOLVER_STATUS_INVALID_VALUE:
+                errorString = "CUSOLVER_STATUS_INVALID_VALUE";
+                break;
+            case CUSOLVER_STATUS_INTERNAL_ERROR:
+                errorString = "CUSOLVER_STATUS_INTERNAL_ERROR";
+                break;
+            case CUSOLVER_STATUS_MATRIX_TYPE_NOT_SUPPORTED:
+                errorString = "CUSOLVER_STATUS_MATRIX_TYPE_NOT_SUPPORTED";
+                break;
+            case CUSOLVER_STATUS_NOT_INITIALIZED:
+                errorString = "CUSOLVER_STATUS_NOT_INITIALIZED";
+                break;
+            case CUSOLVER_STATUS_ALLOC_FAILED:
+                errorString = "CUSOLVER_STATUS_ALLOC_FAILED";
+                break;
+            case CUSOLVER_STATUS_ARCH_MISMATCH:
+                errorString = "CUSOLVER_STATUS_ARCH_MISMATCH";
+                break;
+            case CUSOLVER_STATUS_EXECUTION_FAILED:
+                errorString = "CUSOLVER_STATUS_EXECUTION_FAILED";
+                break;
+            default:
+                errorString = "Unknown cusolverStatus_t error: " + error;            
+        }
 
+    }
+    TBTKAssert(
+        error
+          == CUSOLVER_STATUS_SUCCESS,
+		"Diagonalizer::solveMultiGPU()",
+		"Error in cusolverMgSyevd().",
+		"cusolverStatus_t error: " << errorString << ". Error info value: " << info
+	);
+    TBTKAssert(
+        info == 0,
+		"Diagonalizer::solveMultiGPU()",
+		"Error in cusolverMgSyevd().",
+		"For more information see Nvidia documentation regarding info error of: " << info
+	);
+    // sync all devices after calculation
+    TBTKAssert(
+        cudaDeviceSynchronize() == cudaSuccess,
+		"Diagonalizer::solveMultiGPU()",
+		"Error in cudaDeviceSynchronize().",
+		""
+	);
     // Copy data to host from devices
     memcpyD2H<data_type>(numDevices, deviceList.data(), n, n,
                          n, 
@@ -184,9 +268,28 @@ void Diagonalizer::solveMultiGPU(complex<double>* matrix, double* eigenValues, c
     }
 
 
-    //TODO check against CUSOLVER_STATUS_SUCCESS
-    cusolverMgDestroyMatrixDesc(descrMatrix);
-    cusolverMgDestroy(cusolverHandle);
+    TBTKAssert(
+        cusolverMgDestroyGrid(gridA)
+         == CUSOLVER_STATUS_SUCCESS,
+		"Diagonalizer::cusolverMgDestroyGrid()",
+		"Error in cusolverMgDestroyGrid().",
+		""
+	);
+    TBTKAssert(
+        cusolverMgDestroyMatrixDesc(descrMatrix)
+         == CUSOLVER_STATUS_SUCCESS,
+		"Diagonalizer::solveMultiGPU()",
+		"Error in cusolverMgDestroyMatrixDesc().",
+		""
+	);
+    // TODO this crashes the function if executed twice???
+    // TBTKAssert(
+    //     cusolverMgDestroy(cusolverHandle)
+    //      == CUSOLVER_STATUS_SUCCESS,
+	// 	"Diagonalizer::solveMultiGPU()",
+	// 	"Error in cusolverMgDestroy().",
+	// 	""
+	// );
 }
 
 void Diagonalizer::solveGPU(complex<double>* matrix, double* eigenValues, const int &n){
@@ -195,22 +298,8 @@ void Diagonalizer::solveGPU(complex<double>* matrix, double* eigenValues, const 
         solveMultiGPU(matrix, eigenValues, n);
         return;
     }
-    // // Check for compute type of the calculation, i.e. real or complex matrix
-    // cudaDataType_t computeType = CUDA_C_64F; // Default is complex double
-    // if constexpr (is_same_v<data_type, complex<double>>) {
-    //     computeType = CUDA_C_64F;
-    // }
-    // else if constexpr (is_same_v<data_type, double>){
-    //     computeType = CUDA_R_64F;
-    // }
-    // else{
-    //     TBTKAssert(
-    //         false,
-    //         "Diagonalizer::solveGPU()",
-    //         "Only supported datatypes for matrix are double and complex<double>",
-    //         ""
-    //     );
-    // }
+    cudaDataType_t computeType = CUDA_C_64F; // At the moment only complex double is supported
+    typedef complex<double> data_type;
     //Initialize device
     int numDevices;
     cudaGetDeviceCount(&numDevices);
@@ -543,107 +632,6 @@ void Diagonalizer::solveGPU(complex<double>* matrix, double* eigenValues, const 
     GPUResourceManager::getInstance().freeDevice(device);
     free(buffer_host);
     buffer_host = nullptr;
-}
-
-void Diagonalizer::setupBasisTransformationGPU(){
-	//Get the OverlapAmplitudeSet.
-	const OverlapAmplitudeSet &overlapAmplitudeSet
-		= getModel().getOverlapAmplitudeSet();
-
-	//Skip if the basis is assumed to be orthonormal.
-	if(overlapAmplitudeSet.getAssumeOrthonormalBasis()){
-		return;
-    }
-
-	//Fill the overlap matrix.
-	int basisSize = getModel().getBasisSize();
-	CArray<complex<double>> overlapMatrix(basisSize*basisSize);
-	for(int n = 0; n < basisSize*basisSize; n++)
-		overlapMatrix[n] = 0.;
-
-	for(
-		OverlapAmplitudeSet::ConstIterator iterator
-			= overlapAmplitudeSet.cbegin();
-		iterator != overlapAmplitudeSet.cend();
-		++iterator
-	){
-		int row = getModel().getHoppingAmplitudeSet().getBasisIndex(
-			(*iterator).getBraIndex()
-		);
-		int col = getModel().getHoppingAmplitudeSet().getBasisIndex(
-			(*iterator).getKetIndex()
-		);
-		// if(col >= row){
-			overlapMatrix[row + col*basisSize]
-				+= (*iterator).getAmplitude();
-		// }
-	}
-
-	//Diagonalize the overlap matrix.
-	CArray<double> overlapMatrixEigenValues(basisSize);
-    solveGPU( overlapMatrix.getData(), 
-                overlapMatrixEigenValues.getData(), basisSize);
-
-	//Setup basisTransformation storage.
-	basisTransformation = CArray<complex<double>>(basisSize*basisSize);
-
-	//Calculate the basis transformation using canonical orthogonalization.
-	//See for example section 3.4.5 in Moder Quantum Chemistry, Attila
-	//Szabo and Neil S. Ostlund.
-	for(int row = 0; row < basisSize; row++){
-		for(int col = 0; col < basisSize; col++){
-			basisTransformation[row + basisSize*col]
-				= overlapMatrix[
-					row + basisSize*col
-				]/sqrt(
-					overlapMatrixEigenValues[col]
-				);
-		}
-	}
-}
-
-void Diagonalizer::transformToOrthonormalBasisGPU(){
-	//Skip if no basis transformation has been set up (the original basis
-	//is assumed to be orthonormal).
-	if(basisTransformation.getData() == nullptr)
-		return;
-
-	int basisSize = getModel().getBasisSize();
-
-	//Perform the transformation H' = U^{\dagger}HU, where U is the
-	//transform to the orthonormal basis.
-	Matrix<complex<double>> h(basisSize, basisSize);
-	Matrix<complex<double>> U(basisSize, basisSize);
-	Matrix<complex<double>> Udagger(basisSize, basisSize);
-	for(int row = 0; row < basisSize; row++){
-		for(int col = 0; col < basisSize; col++){
-			if(col >= row){
-				h.at(row, col)
-					= hamiltonian[row + col*basisSize];
-			}
-			else{
-				h.at(row, col) = conj(
-					hamiltonian[col + row*basisSize]
-				);
-			}
-
-			U.at(row, col)
-				= basisTransformation[row + basisSize*col];
-
-			Udagger.at(row, col) = conj(
-				basisTransformation[col + basisSize*row]
-			);
-		}
-	}
-    // TODO this could be on on gpu as well...
-	Matrix<complex<double>> hp = Udagger*h*U;
-
-	for(int row = 0; row < basisSize; row++){
-		for(int col = 0; col < basisSize; col++){
-            hamiltonian[row + col*basisSize]
-                = hp.at(row, col);
-		}
-	}
 }
 
 };	//End of namespace Solver

@@ -49,7 +49,6 @@ void Diagonalizer::run(){
 				Streams::out << "\n";
 			Streams::out << "." << flush;
 		}
-
 		if(useGPUAcceleration){
 			eigenVectors = hamiltonian;
 			int BasisSize = getModel().getBasisSize();
@@ -86,6 +85,7 @@ void Diagonalizer::init(){
 	if(getGlobalVerbose() && getVerbose())
 		Streams::out << "\tBasis size: " << basisSize << "\n";
 
+	//GPU matrix is full size, CPU only lower triangle
 	if(useGPUAcceleration){
 		hamiltonian = CArray<complex<double>>(basisSize*basisSize);
 	}
@@ -115,23 +115,20 @@ void Diagonalizer::update(){
 		int to = model.getHoppingAmplitudeSet().getBasisIndex(
 			(*iterator).getToIndex()
 		);
-		if(useGPUAcceleration){
-			hamiltonian[to + from*basisSize] += (*iterator).getAmplitude();
+		// Populate only lower part of hamiltonian
+		if(from <= to){
+			if(useGPUAcceleration){
+				hamiltonian[to + from*basisSize] += (*iterator).getAmplitude();
+			}
+			else{
+				// For lower part of matrix: A(i + (j-1)*(2*n-j)/2) = A(i,j); With Fortran indexing
+				// starting from 1
+				hamiltonian[to + (from*(2*basisSize-from-1))/2] += (*iterator).getAmplitude();
+			}
 		}
-		else if(from <= to){
-			// For lower part of matrix: A(i + (j-1)*(2*n-j)/2) = A(i,j); With Fortran indexing
-			// starting from 1
-			hamiltonian[to + (from*(2*basisSize-from-1))/2] += (*iterator).getAmplitude();
-		}
 	}
-	if(useGPUAcceleration){
-		setupBasisTransformationGPU();
-		transformToOrthonormalBasisGPU();
-	}
-	else{
-		setupBasisTransformation();
-		transformToOrthonormalBasis();
-	}
+	setupBasisTransformation();
+	transformToOrthonormalBasis();
 }
 
 //Lapack function for matrix diagonalization of triangular matrix.
@@ -167,6 +164,9 @@ void Diagonalizer::solveCPU(complex<double>* matrix,
 							complex<double>* eigenVectors, 
 							const int &n){
 	char jobz = 'V';
+	if(calculationMode == CalculationMode::EigenValues){
+		jobz = 'E';
+	}
 	char uplo = 'L';
 	int N = n;
 	CArray<complex<double>> work(2*N-1);
@@ -203,8 +203,14 @@ void Diagonalizer::setupBasisTransformation(){
 
 	//Fill the overlap matrix.
 	int basisSize = getModel().getBasisSize();
-	CArray<complex<double>> overlapMatrix((basisSize*(basisSize+1))/2);
-	for(int n = 0; n < (basisSize*(basisSize+1))/2; n++)
+	CArray<complex<double>> overlapMatrix;
+	if(useGPUAcceleration){
+		overlapMatrix = CArray<complex<double>>(basisSize*basisSize);
+	}
+	else{
+		overlapMatrix = CArray<complex<double>>((basisSize*(basisSize+1))/2);
+	}
+	for(unsigned n = 0; n < overlapMatrix.getSize(); n++)
 		overlapMatrix[n] = 0;
 
 	for(
@@ -220,18 +226,41 @@ void Diagonalizer::setupBasisTransformation(){
 			(*iterator).getKetIndex()
 		);
 		if(col <= row){
-			overlapMatrix[row + (col*(2*basisSize-col-1))/2]
-				+= (*iterator).getAmplitude();
+			if(useGPUAcceleration){
+				overlapMatrix[row + col*basisSize]
+					+= (*iterator).getAmplitude();
+			}
+			else{
+				overlapMatrix[row + (col*(2*basisSize-col-1))/2]
+					+= (*iterator).getAmplitude();
+			}
 		}
 	}
 
 	CArray<double> overlapMatrixEigenValues(basisSize);
 	CArray<complex<double>> overlapMatrixEigenVectors(basisSize*basisSize);
-	//Diagonalize the overlap matrix.
-	solveCPU(overlapMatrix.getData(), 
+	// This routine needs access to Eigenvectors
+	bool switchMode = false;
+	if(calculationMode == CalculationMode::EigenValues){
+		switchMode = true;
+		calculationMode = CalculationMode::EigenValuesAndEigenVectors;
+	}
+	if(useGPUAcceleration){
+		overlapMatrixEigenVectors = overlapMatrix;
+		solveGPU(overlapMatrixEigenVectors.getData(),
 				overlapMatrixEigenValues.getData(),
-				overlapMatrixEigenVectors.getData(),
 				basisSize);
+	}
+	else{
+		//Diagonalize the overlap matrix.
+		solveCPU(overlapMatrix.getData(), 
+					overlapMatrixEigenValues.getData(),
+					overlapMatrixEigenVectors.getData(),
+					basisSize);
+	}
+	if(switchMode){
+		calculationMode = CalculationMode::EigenValues;
+	}
 
 	//Setup basisTransformation storage.
 	basisTransformation = CArray<complex<double>>(basisSize*basisSize);
@@ -266,14 +295,29 @@ void Diagonalizer::transformToOrthonormalBasis(){
 	Matrix<complex<double>> Udagger(basisSize, basisSize);
 	for(int row = 0; row < basisSize; row++){
 		for(int col = 0; col < basisSize; col++){
-			if(col >= row){
-				h.at(row, col)
-					= hamiltonian[row + (col*(col+1))/2];
+			if(col <= row){
+				if(useGPUAcceleration){
+					h.at(row, col) =
+					conj(
+						hamiltonian[row + basisSize*col]
+					);
+				}
+				else{
+					h.at(row, col) =
+						conj(
+							hamiltonian[row + (col*(2*basisSize-col-1))/2]
+						);
+				}
 			}
 			else{
-				h.at(row, col) = conj(
-					hamiltonian[col + (row*(row+1))/2]
-				);
+				if(useGPUAcceleration){
+					h.at(row, col) = 
+						hamiltonian[col + basisSize*row];
+				}
+				else{
+					h.at(row, col) = 
+						hamiltonian[col + (row*(2*basisSize-row-1))/2];
+				}
 			}
 
 			U.at(row, col)
@@ -284,14 +328,21 @@ void Diagonalizer::transformToOrthonormalBasis(){
 			);
 		}
 	}
-
+ 
+	// TODO this step could be done on GPU as well
 	Matrix<complex<double>> hp = Udagger*h*U;
 
 	for(int row = 0; row < basisSize; row++){
 		for(int col = 0; col < basisSize; col++){
-			if(col >= row){
-				hamiltonian[row + (col*(col+1))/2]
-					= hp.at(row, col);
+			if(col <= row){
+				if(useGPUAcceleration){
+					hamiltonian[row + basisSize*col]
+						= hp.at(row, col);
+				}
+				else{
+					hamiltonian[row + (col*(2*basisSize-col-1))/2]
+						= hp.at(row, col);
+				}
 			}
 		}
 	}
