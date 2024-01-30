@@ -290,6 +290,8 @@ void BlockDiagonalizer::update(){
 					blockIndex
 				);
 			int minBasisIndex = iterator.getMinBasisIndex();
+			unsigned int numStates
+				= blockStructureDescriptor.getNumStatesInBlock(blockCounter);
 			while(
 				iterator != getModel().getHoppingAmplitudeSet(
 				).cend(blockIndex)
@@ -302,16 +304,15 @@ void BlockDiagonalizer::update(){
 				).getBasisIndex(
 					(*iterator).getToIndex()
 				) - minBasisIndex;
-				if(from >= to && !useGPUAcceleration){
+				if(from <= to && !useGPUAcceleration){
 					hamiltonian[
 						blockOffsets.at(blockCounter)
-						+ to
-						+ (from*(from+1))/2
+						+ to 
+						+ (from*(2*numStates-from-1))/2
 					] += (*iterator).getAmplitude();
 				}
 				else if(useGPUAcceleration){
-					unsigned int numStates
-						= blockStructureDescriptor.getNumStatesInBlock(blockCounter);
+
 					//Temporarily store hamiltonian in eigenVectors
 					eigenVectors[blockOffsets.at(blockCounter) +
 						to + 
@@ -326,32 +327,20 @@ void BlockDiagonalizer::update(){
 	}
 }
 
-//Lapack function for matrix diagonalization of triangular matrix.
-extern "C" void zhpev_(char *jobz,		//'E' = Eigenvalues only, 'V' = Eigenvalues and eigenvectors.
-			char *uplo,		//'U' = Stored as upper triangular, 'L' = Stored as lower triangular.
-			int *n,			//n*n = Matrix size
-			complex<double> *ap,	//Input matrix
-			double *w,		//Eigenvalues, is in accending order if info = 0
-			complex<double> *z,	//Eigenvectors
-			int *ldz,		//
-			complex<double> *work,	//Workspace, dimension = max(1, 2*N-1)
-			double *rwork,		//Workspace, dimension = max(1, 3*N-2)
-			int *info);		//0 = successful, <0 = -info value was illegal, >0 = info number of off-diagonal elements failed to converge.
-
-//Lapack function for matrix diagonalization of banded triangular matrix
-extern "C" void zhbeb_(
-	char *jobz,		//'E' = Eigenvalues only, 'V' = Eigenvalues and eigenvectors.
-	char *uplo,		//'U' = Stored as upper triangular, 'L' = Stored as lower triangular.
-	int *n,			//n*n = Matrix size
-	int *kd,		//Number of (sub/super)diagonal elements
-	complex<double> *ab,	//Input matrix
-	int *ldab,		//Leading dimension of array ab. ldab >= kd + 1
-	double *w,		//Eigenvalues, is in accending order if info = 0
-	complex<double> *z,	//Eigenvectors
-	int *ldz,		//
-	complex<double> *work,	//Workspace, dimension = max(1, 2*N-1)
-	double *rwork,		//Workspace, dimension = max(1, 3*N-2)
-	int *info);		//0 = successful, <0 = -info value was illegal, >0 = info number of off-diagonal elements failed to converge.
+// //Lapack function for matrix diagonalization of banded triangular matrix
+// extern "C" void zhbeb_(
+// 	char *jobz,		//'E' = Eigenvalues only, 'V' = Eigenvalues and eigenvectors.
+// 	char *uplo,		//'U' = Stored as upper triangular, 'L' = Stored as lower triangular.
+// 	int *n,			//n*n = Matrix size
+// 	int *kd,		//Number of (sub/super)diagonal elements
+// 	complex<double> *ab,	//Input matrix
+// 	int *ldab,		//Leading dimension of array ab. ldab >= kd + 1
+// 	double *w,		//Eigenvalues, is in accending order if info = 0
+// 	complex<double> *z,	//Eigenvectors
+// 	int *ldz,		//
+// 	complex<double> *work,	//Workspace, dimension = max(1, 2*N-1)
+// 	double *rwork,		//Workspace, dimension = max(1, 3*N-2)
+// 	int *info);		//0 = successful, <0 = -info value was illegal, >0 = info number of off-diagonal elements failed to converge.
 
 void BlockDiagonalizer::solve(){
 	if(true){//Currently no support for banded matrices.
@@ -384,38 +373,14 @@ void BlockDiagonalizer::solve(){
 						);
 				}
 				else{
-					//TODO Use the diagonalizer routine solveCPU()
-					//Setup zhpev to calculate...
-					char jobz = 'V';						//...eigenvalues and eigenvectors...
-					char uplo = 'U';						//...for an upper triangular...
-					int n = blockStructureDescriptor.getNumStatesInBlock(b);	//...nxn-matrix.
-					//Initialize workspaces
-					CArray<complex<double>> work(2*n-1);
-					CArray<double> rwork(3*n-2);
-					int info;
-					//Solve brop
-					zhpev_(
-						&jobz,
-						&uplo,
-						&n,
-						hamiltonian.getData()
-							+ blockOffsets.at(b),
-						eigenValues.getData()
+					solveCPU(hamiltonian.getData()
+							+ blockOffsets.at(b), 
+							eigenValues.getData()
 							+ eigenValuesOffsets[b],
-						eigenVectors.getData()
-							+ eigenVectorOffsets.at(b),
-						&n,
-						work.getData(),
-						rwork.getData(),
-						&info
-					);
-
-					TBTKAssert(
-						info == 0,
-						"Diagonalizer:solve()",
-						"Diagonalization routine zhpev exited with INFO=" + to_string(info) + ".",
-						"See LAPACK documentation for zhpev for further information."
-					);
+							eigenVectors.getData()
+					 		+ eigenVectorOffsets.at(b),
+							blockStructureDescriptor.getNumStatesInBlock(b)
+							);
 				}
 			}
 		}
@@ -435,36 +400,14 @@ void BlockDiagonalizer::solve(){
 						);
 				}
 				else{
-					//Setup zhpev to calculate...
-					char jobz = 'V';						//...eigenvalues and eigenvectors...
-					char uplo = 'U';						//...for an upper triangular...
-					//Initialize workspaces
-					CArray<complex<double>> work(2*n-1);
-					CArray<double> rwork(3*n-2);
-					int info;
-					//Solve brop
-					zhpev_(
-						&jobz,
-						&uplo,
-						&n,
-						hamiltonian.getData()
-							+ blockOffsets.at(b),
-						eigenValues.getData()
+					solveCPU(hamiltonian.getData()
+							+ blockOffsets.at(b), 
+							eigenValues.getData()
 							+ eigenValuesOffset,
-						eigenVectors.getData()
-							+ eigenVectorOffsets.at(b),
-						&n,
-						work.getData(),
-						rwork.getData(),
-						&info
-					);
-
-					TBTKAssert(
-						info == 0,
-						"Diagonalizer:solve()",
-						"Diagonalization routine zhpev exited with INFO=" + to_string(info) + ".",
-						"See LAPACK documentation for zhpev for further information."
-					);
+							eigenVectors.getData()
+					 		+ eigenVectorOffsets.at(b),
+							n
+							);
 				}
 
 				eigenValuesOffset += blockStructureDescriptor.getNumStatesInBlock(b);
