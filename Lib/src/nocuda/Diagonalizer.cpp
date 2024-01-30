@@ -29,12 +29,20 @@ using namespace std;
 namespace TBTK{
 namespace Solver{
 
-void Diagonalizer::solveGPU(
-	CArray<complex<double>>& matrix,
-	CArray<double>& eigenValues)
+template < typename data_type>
+void Diagonalizer::solveGPU(data_type* matrix, double* eigenValues, const int &n)
 	{
 		TBTKExit(
 			"Diagonalizer::solveGPU()",
+			"GPU Not supported.",
+			"Install with GPU support or use CPU version."
+		);
+}
+
+template < typename data_type>
+void Diagonalizer::solveMultiGPU(data_type* matrix, double* eigenValues, const int &n){
+		TBTKExit(
+			"Diagonalizer::solveMultiGPU()",
 			"GPU Not supported.",
 			"Install with GPU support or use CPU version."
 		);

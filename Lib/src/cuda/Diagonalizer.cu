@@ -37,7 +37,7 @@ using namespace std;
 namespace TBTK{
 namespace Solver{
 
-template<typename data_type>
+template < typename data_type>
 void Diagonalizer::solveMultiGPU(data_type* matrix, double* eigenValues, const int &n){
     
     int numDevices = 0;
@@ -190,7 +190,7 @@ void Diagonalizer::solveMultiGPU(data_type* matrix, double* eigenValues, const i
     cusolverMgDestroy(cusolverHandle);
 }
 
-template <typename data_type>
+template < typename data_type>
 void Diagonalizer::solveGPU(data_type* matrix, double* eigenValues, const int &n){
     GPUResourceManager::getInstance().setVerbose(getVerbose());
     if(useMultiGPUAcceleration){

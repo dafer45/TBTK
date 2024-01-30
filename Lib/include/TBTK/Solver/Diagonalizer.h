@@ -30,6 +30,7 @@
 #include "TBTK/Solver/Solver.h"
 
 #include <complex>
+#include <type_traits>
 
 namespace TBTK{
 namespace Solver{
@@ -189,13 +190,14 @@ protected:
 	 *  The output for the eigen vectors is
 	 *  written into the input matrix. 
 	 * 
-	 *  @param matrix Matrix nxn to diagonalize
+	 *  @param matrix Lower part of nxn matrix  to diagonalize, possible types are
+	 * 				std::complex<double> or double
 	 *  @param eigenValues vector of size n
 	 *  @param n basis size of the matrix
 	 *
 	 *  @return Function overwrites matrix with eigenvectors
 	 * 			and returns eigenvalues in eigenValues     */
-	template <typename data_type>
+	template < typename data_type>
 	void solveGPU(data_type* matrix, double* eigenValues, const int &n);
 
 	/** Diagonalizes the input matrix on the cpu.
@@ -203,7 +205,7 @@ protected:
 	 *  The output is written into eigenVectors and
 	 *  eigenValues. 
 	 * 
-	 *  @param matrix Upper part of matrix nxn to diagonalize
+	 *  @param matrix Lower part of nxn Matrix to diagonalize
 	 *  @param eigenValues vector of size n
 	 *  @param eigenVectors array with eigenvectors of size nxn
 	 *  @param n basis size of the matrix
@@ -264,13 +266,14 @@ private:
 	 *  The output for the eigen vectors is
 	 *  written into the input matrix. 
 	 * 
-	 *  @param matrix Matrix nxn to diagonalize
+	 *  @param matrix Lower part of nxn matrix  to diagonalize, possible types are
+	 * 				std::complex<double> or double
 	 *  @param eigenValues vector of size n
 	 *  @param n basis size of the matrix
 	 *
 	 *  @return Function overwrites matrix with eigenvectors
 	 * 			and returns eigenvalues in eigenValues     */
-	template <typename data_type>
+	template < typename data_type>
 	void solveMultiGPU(data_type* matrix, double* eigenValues, const int &n);
 };
 

@@ -103,7 +103,10 @@ void Diagonalizer::update(){
 
 	for(unsigned n = 0; n < hamiltonian.getSize(); n++)
 		hamiltonian[n] = 0.;
-
+	//TODO remove
+	Streams::out << "before filling H" << endl;
+	Streams::out << "Size H: " << hamiltonian.getSize() << endl;
+	Streams::out << flush;
 	for(
 		HoppingAmplitudeSet::ConstIterator iterator
 			= model.getHoppingAmplitudeSet().cbegin();
@@ -120,10 +123,15 @@ void Diagonalizer::update(){
 			hamiltonian[to + from*basisSize] += (*iterator).getAmplitude();
 		}
 		else if(from >= to){
-				hamiltonian[to + (from*(from+1))/2] += (*iterator).getAmplitude();
+			Streams::out << "to: " << to << endl;
+			Streams::out << "from: " << from << endl;
+			Streams::out << "Index in new H: " << to + (from*(from+1))/2 << endl;
+			// For lower part of matrix: A(i + (j-1)*(2*n-j)/2) = A(i,j);
+			hamiltonian[to + (from*(from+1))/2] += (*iterator).getAmplitude();
 		}
 	}
-
+	//TODO remove
+	Streams::out << "after filling H" << endl;
 	if(useGPUAcceleration){
 		setupBasisTransformationGPU();
 		transformToOrthonormalBasisGPU();
@@ -167,7 +175,7 @@ void Diagonalizer::solveCPU(complex<double>* matrix,
 							complex<double>* eigenVectors, 
 							const int &n){
 	char jobz = 'V';
-	char uplo = 'U';
+	char uplo = 'L';
 	int N = n;
 	CArray<complex<double>> work(2*N-1);
 	CArray<double> rwork(3*N-2);
