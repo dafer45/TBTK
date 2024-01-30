@@ -37,8 +37,7 @@ using namespace std;
 namespace TBTK{
 namespace Solver{
 
-template < typename data_type>
-void Diagonalizer::solveMultiGPU(data_type* matrix, double* eigenValues, const int &n){
+void Diagonalizer::solveMultiGPU(complex<double>* matrix, double* eigenValues, const int &n){
     
     int numDevices = 0;
     cudaGetDeviceCount(&numDevices);
@@ -47,22 +46,22 @@ void Diagonalizer::solveMultiGPU(data_type* matrix, double* eigenValues, const i
         useMultiGPUAcceleration = false;
         solveGPU(matrix, eigenValues,n);
     }
-    // Check for compute type of the calculation, i.e. real or complex matrix
-    cudaDataType_t computeType = CUDA_C_64F; // Default is complex double
-    if constexpr (is_same_v<data_type, complex<double>>) {
-        computeType = CUDA_C_64F;
-    }
-    else if constexpr (is_same_v<data_type, double>){
-        computeType = CUDA_R_64F;
-    }
-    else{
-        TBTKAssert(
-            false,
-            "Diagonalizer::solveGPU()",
-            "Only supported datatypes for matrix are double and complex<double>",
-            ""
-        );
-    }
+    // // Check for compute type of the calculation, i.e. real or complex matrix
+    // cudaDataType_t computeType = CUDA_C_64F; // Default is complex double
+    // if constexpr (is_same_v<data_type, complex<double>>) {
+    //     computeType = CUDA_C_64F;
+    // }
+    // else if constexpr (is_same_v<data_type, double>){
+    //     computeType = CUDA_R_64F;
+    // }
+    // else{
+    //     TBTKAssert(
+    //         false,
+    //         "Diagonalizer::solveGPU()",
+    //         "Only supported datatypes for matrix are double and complex<double>",
+    //         ""
+    //     );
+    // }
     //Allocate available devices
     std::vector<int> deviceList(numDevices);
     const int deviceCount = numDevices;
@@ -190,29 +189,28 @@ void Diagonalizer::solveMultiGPU(data_type* matrix, double* eigenValues, const i
     cusolverMgDestroy(cusolverHandle);
 }
 
-template < typename data_type>
-void Diagonalizer::solveGPU(data_type* matrix, double* eigenValues, const int &n){
+void Diagonalizer::solveGPU(complex<double>* matrix, double* eigenValues, const int &n){
     GPUResourceManager::getInstance().setVerbose(getVerbose());
     if(useMultiGPUAcceleration){
         solveMultiGPU(matrix, eigenValues, n);
         return;
     }
-    // Check for compute type of the calculation, i.e. real or complex matrix
-    cudaDataType_t computeType = CUDA_C_64F; // Default is complex double
-    if constexpr (is_same_v<data_type, complex<double>>) {
-        computeType = CUDA_C_64F;
-    }
-    else if constexpr (is_same_v<data_type, double>){
-        computeType = CUDA_R_64F;
-    }
-    else{
-        TBTKAssert(
-            false,
-            "Diagonalizer::solveGPU()",
-            "Only supported datatypes for matrix are double and complex<double>",
-            ""
-        );
-    }
+    // // Check for compute type of the calculation, i.e. real or complex matrix
+    // cudaDataType_t computeType = CUDA_C_64F; // Default is complex double
+    // if constexpr (is_same_v<data_type, complex<double>>) {
+    //     computeType = CUDA_C_64F;
+    // }
+    // else if constexpr (is_same_v<data_type, double>){
+    //     computeType = CUDA_R_64F;
+    // }
+    // else{
+    //     TBTKAssert(
+    //         false,
+    //         "Diagonalizer::solveGPU()",
+    //         "Only supported datatypes for matrix are double and complex<double>",
+    //         ""
+    //     );
+    // }
     //Initialize device
     int numDevices;
     cudaGetDeviceCount(&numDevices);

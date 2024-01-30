@@ -197,8 +197,7 @@ protected:
 	 *
 	 *  @return Function overwrites matrix with eigenvectors
 	 * 			and returns eigenvalues in eigenValues     */
-	template < typename data_type>
-	void solveGPU(data_type* matrix, double* eigenValues, const int &n);
+	void solveGPU(std::complex<double>* matrix, double* eigenValues, const int &n);
 
 	/** Diagonalizes the input matrix on the cpu.
 	 *  The input is in array matrix 
@@ -273,8 +272,7 @@ private:
 	 *
 	 *  @return Function overwrites matrix with eigenvectors
 	 * 			and returns eigenvalues in eigenValues     */
-	template < typename data_type>
-	void solveMultiGPU(data_type* matrix, double* eigenValues, const int &n);
+	void solveMultiGPU(std::complex<double>* matrix, double* eigenValues, const int &n);
 };
 
 inline void Diagonalizer::setSelfConsistencyCallback(

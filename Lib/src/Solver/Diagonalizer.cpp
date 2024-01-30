@@ -103,10 +103,6 @@ void Diagonalizer::update(){
 
 	for(unsigned n = 0; n < hamiltonian.getSize(); n++)
 		hamiltonian[n] = 0.;
-	//TODO remove
-	Streams::out << "before filling H" << endl;
-	Streams::out << "Size H: " << hamiltonian.getSize() << endl;
-	Streams::out << flush;
 	for(
 		HoppingAmplitudeSet::ConstIterator iterator
 			= model.getHoppingAmplitudeSet().cbegin();
@@ -122,16 +118,12 @@ void Diagonalizer::update(){
 		if(useGPUAcceleration){
 			hamiltonian[to + from*basisSize] += (*iterator).getAmplitude();
 		}
-		else if(from >= to){
-			Streams::out << "to: " << to << endl;
-			Streams::out << "from: " << from << endl;
-			Streams::out << "Index in new H: " << to + (from*(from+1))/2 << endl;
-			// For lower part of matrix: A(i + (j-1)*(2*n-j)/2) = A(i,j);
-			hamiltonian[to + (from*(from+1))/2] += (*iterator).getAmplitude();
+		else if(from <= to){
+			// For lower part of matrix: A(i + (j-1)*(2*n-j)/2) = A(i,j); With Fortran indexing
+			// starting from 1
+			hamiltonian[to + (from*(2*basisSize-from-1))/2] += (*iterator).getAmplitude();
 		}
 	}
-	//TODO remove
-	Streams::out << "after filling H" << endl;
 	if(useGPUAcceleration){
 		setupBasisTransformationGPU();
 		transformToOrthonormalBasisGPU();
@@ -227,8 +219,8 @@ void Diagonalizer::setupBasisTransformation(){
 		int col = getModel().getHoppingAmplitudeSet().getBasisIndex(
 			(*iterator).getKetIndex()
 		);
-		if(col >= row){
-			overlapMatrix[row + (col*(col+1))/2]
+		if(col <= row){
+			overlapMatrix[row + (col*(2*basisSize-col-1))/2]
 				+= (*iterator).getAmplitude();
 		}
 	}

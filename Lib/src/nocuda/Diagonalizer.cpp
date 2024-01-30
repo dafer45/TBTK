@@ -23,29 +23,19 @@
 #include "TBTK/Streams.h"
 
 #include <iostream>
+#include <type_traits>
 
 using namespace std;
 
 namespace TBTK{
 namespace Solver{
 
-template < typename data_type>
-void Diagonalizer::solveGPU(data_type* matrix, double* eigenValues, const int &n)
-	{
-		TBTKExit(
-			"Diagonalizer::solveGPU()",
-			"GPU Not supported.",
-			"Install with GPU support or use CPU version."
-		);
-}
-
-template < typename data_type>
-void Diagonalizer::solveMultiGPU(data_type* matrix, double* eigenValues, const int &n){
-		TBTKExit(
-			"Diagonalizer::solveMultiGPU()",
-			"GPU Not supported.",
-			"Install with GPU support or use CPU version."
-		);
+void Diagonalizer::solveGPU(complex<double>* matrix, double* eigenValues, const int &n){
+	TBTKExit(
+		"Diagonalizer::solveGPU()",
+		"GPU Not supported.",
+		"Install with GPU support or use CPU version."
+	);
 }
 
 void Diagonalizer::transformToOrthonormalBasisGPU(){

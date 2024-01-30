@@ -227,8 +227,16 @@ TEST(Diagonalizer, getEigenValues){
 	#else
 		EXPECT_EXIT(
 			{
+				Model model;
+				model.setVerbose(false);
+				model << HoppingAmplitude(1, {1}, {0}) + HC;
+				model.construct();
+				Diagonalizer solver;
+				solver.setVerbose(false);
+				solver.setModel(model);
+				solver.setUseGPUAcceleration(true);
 				Streams::setStdMuteErr();
-				solver2.run();
+				solver.run();
 			},
 			::testing::ExitedWithCode(1),
 			""
@@ -473,8 +481,23 @@ TEST(Diagonalizer, getEigenVectors){
 	#else
 		EXPECT_EXIT(
 			{
+				Model model1;
+				model1.setVerbose(false);
+				model1 << HoppingAmplitude(1/sqrt(2), {0}, {1}) + HC;
+				model1 << HoppingAmplitude(1, {1}, {1});
+				model1.construct();
+
+				model1 << OverlapAmplitude(1, {0}, {0});
+				model1 << OverlapAmplitude(1/sqrt(2), {0}, {1});
+				model1 << OverlapAmplitude(1/sqrt(2), {1}, {0});
+				model1 << OverlapAmplitude(1, {1}, {1});
+
+				Diagonalizer solver1;
+				solver1.setVerbose(false);
+				solver1.setModel(model1);
+				solver1.setUseGPUAcceleration(true);
 				Streams::setStdMuteErr();
-				solver3.run();
+				solver1.run();
 			},
 			::testing::ExitedWithCode(1),
 			""
