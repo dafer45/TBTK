@@ -39,6 +39,8 @@ namespace TBTK{
 namespace Solver{
 
 void Diagonalizer::solveMultiGPU(complex<double>* matrix, double* eigenValues, const int &n){
+    const cudaDataType_t computeType = CUDA_C_64F; // At the moment only complex double is supported
+    typedef complex<double> data_type; // Could also be double
     int numDevices = 0;
     TBTKAssert(
 		cudaGetDeviceCount(&numDevices) == cudaSuccess,
@@ -52,26 +54,16 @@ void Diagonalizer::solveMultiGPU(complex<double>* matrix, double* eigenValues, c
         useMultiGPUAcceleration = false;
         solveGPU(matrix, eigenValues,n);
     }
-    // // Check for compute type of the calculation, i.e. real or complex matrix
-    cudaDataType_t computeType = CUDA_C_64F; // At the moment only complex double is supported
-    typedef complex<double> data_type;
-    // if constexpr (is_same_v<data_type, complex<double>>) {
-    //     computeType = CUDA_C_64F;
-    // }
-    // else if constexpr (is_same_v<data_type, double>){
-    //     computeType = CUDA_R_64F;
-    // }
-    // else{
-    //     TBTKAssert(
-    //         false,
-    //         "Diagonalizer::solveGPU()",
-    //         "Only supported datatypes for matrix are double and complex<double>",
-    //         ""
-    //     );
-    // }
+    // set up various calculation parameters and resources
+    const int IA = 1;
+    const int JA = 1;
+    const int T_A = 256; // tile size recommended value is 256 or 512
+    const int lda = n;
+
     //Allocate available devices
-    std::vector<int> deviceList(numDevices);
+    static std::vector<int> deviceList(numDevices);
     const int deviceCount = numDevices;
+    
     for(int i = 0; i < deviceCount; i++) {
         if(!GPUResourceManager::getInstance().getDeviceBusy(i)){
             deviceList[i] = GPUResourceManager::getInstance().allocateDevice();
@@ -83,14 +75,15 @@ void Diagonalizer::solveMultiGPU(complex<double>* matrix, double* eigenValues, c
         }
         
     }
-    
-    GPUResourceManager::getInstance().enableP2PAccess();
 
-    // set up various calculation parameters and resources
-    const int IA = 1;
-    const int JA = 1;
-    const int T_A = 256; // tile size recommended value is 256 or 512
-    const int lda = n;
+    //TODO used for workaround of memory leak in cuSolverMg
+    //TODO All static variables can be removed once bug fix from nvidia comes back, same for all  if(!isInitialized)
+    static bool isInitialized = false;
+    if(!isInitialized){
+        GPUResourceManager::getInstance().enableP2PAccess();
+    }
+    
+    
 
     
     cusolverEigMode_t jobz = CUSOLVER_EIG_MODE_VECTOR;
@@ -98,42 +91,45 @@ void Diagonalizer::solveMultiGPU(complex<double>* matrix, double* eigenValues, c
         jobz = CUSOLVER_EIG_MODE_NOVECTOR;
     }
 
-    cudaLibMgMatrixDesc_t descrMatrix;
-    cudaLibMgGrid_t gridA;
-    cusolverMgGridMapping_t mapping = CUDALIBMG_GRID_MAPPING_COL_MAJOR;
+    static cudaLibMgMatrixDesc_t descrMatrix;
+    static cudaLibMgGrid_t gridA;
+    static cusolverMgGridMapping_t mapping = CUDALIBMG_GRID_MAPPING_COL_MAJOR;
 
-    cusolverMgHandle_t cusolverHandle = NULL;
-    TBTKAssert(
-		cusolverMgCreate(&cusolverHandle) == CUSOLVER_STATUS_SUCCESS,
-		"Diagonalizer::solveMultiGPU()",
-		"Error in cusolverMgCreate().",
-		""
-	);
-    TBTKAssert(
-		cusolverMgDeviceSelect(cusolverHandle, numDevices, deviceList.data())
-                     == CUSOLVER_STATUS_SUCCESS,
-		"Diagonalizer::solveMultiGPU()",
-		"Error in cusolverMgDeviceSelect().",
-		""
-	);
-    TBTKAssert(
-		cusolverMgCreateDeviceGrid(&gridA, 1, numDevices, deviceList.data(), mapping)
-                     == CUSOLVER_STATUS_SUCCESS,
-		"Diagonalizer::solveMultiGPU()",
-		"Error in cusolverMgCreateDeviceGrid().",
-		""
-	);
-    TBTKAssert(
-        cusolverMgCreateMatrixDesc(&descrMatrix, n, // nubmer of rows of matrix
-            n,          // number of columns of matrix
-            n,          // number or rows in a tile
-            T_A,        // number of columns in a tile
-            computeType, gridA)
-         == CUSOLVER_STATUS_SUCCESS,
-		"Diagonalizer::solveMultiGPU()",
-		"Error in cusolverMgCreateMatrixDesc().",
-		""
-	);
+    static cusolverMgHandle_t cusolverHandle = NULL;
+    if(!isInitialized){
+        TBTKAssert(
+            cusolverMgCreate(&cusolverHandle) == CUSOLVER_STATUS_SUCCESS,
+            "Diagonalizer::solveMultiGPU()",
+            "Error in cusolverMgCreate().",
+            ""
+        );
+        TBTKAssert(
+            cusolverMgDeviceSelect(cusolverHandle, numDevices, deviceList.data())
+                        == CUSOLVER_STATUS_SUCCESS,
+            "Diagonalizer::solveMultiGPU()",
+            "Error in cusolverMgDeviceSelect().",
+            ""
+        );
+        TBTKAssert(
+            cusolverMgCreateDeviceGrid(&gridA, 1, numDevices, deviceList.data(), mapping)
+                        == CUSOLVER_STATUS_SUCCESS,
+            "Diagonalizer::solveMultiGPU()",
+            "Error in cusolverMgCreateDeviceGrid().",
+            ""
+        );
+        TBTKAssert(
+            cusolverMgCreateMatrixDesc(&descrMatrix, n, // nubmer of rows of matrix
+                n,          // number of columns of matrix
+                n,          // number or rows in a tile
+                T_A,        // number of columns in a tile
+                computeType, gridA)
+            == CUSOLVER_STATUS_SUCCESS,
+            "Diagonalizer::solveMultiGPU()",
+            "Error in cusolverMgCreateMatrixDesc().",
+            ""
+        );
+    }
+    isInitialized = true;
 
     vector<data_type *> array_d_A(numDevices, nullptr);
 
@@ -162,7 +158,7 @@ void Diagonalizer::solveMultiGPU(complex<double>* matrix, double* eigenValues, c
     int64_t lwork = 0;
     TBTKAssert(
         cusolverMgSyevd_bufferSize(
-            cusolverHandle, (cusolverEigMode_t)jobz, CUBLAS_FILL_MODE_LOWER, // Only lower supported according to documentation
+            cusolverHandle, jobz, CUBLAS_FILL_MODE_LOWER, // Only lower supported according to documentation
             n, reinterpret_cast<void **>(array_d_A.data()), IA,
             JA,                                                     
             descrMatrix, reinterpret_cast<void *>(eigenValues), CUDA_R_64F,
@@ -190,7 +186,7 @@ void Diagonalizer::solveMultiGPU(complex<double>* matrix, double* eigenValues, c
     cusolverStatus_t error;
     error =
     cusolverMgSyevd(
-        cusolverHandle, (cusolverEigMode_t)jobz, CUBLAS_FILL_MODE_LOWER,
+        cusolverHandle, jobz, CUBLAS_FILL_MODE_LOWER,
         n, reinterpret_cast<void **>(array_d_A.data()),
         IA, JA, descrMatrix, reinterpret_cast<void **>(eigenValues),
         CUDA_R_64F, computeType,
@@ -255,36 +251,40 @@ void Diagonalizer::solveMultiGPU(complex<double>* matrix, double* eigenValues, c
                          matrix,
                          lda);
 
+    // sync all devices before clean up
+    TBTKAssert(
+        cudaDeviceSynchronize() == cudaSuccess,
+		"Diagonalizer::solveMultiGPU()",
+		"Error in cudaDeviceSynchronize().",
+		""
+	);
+
     // Clean up
     destroyMat(numDevices, deviceList.data(), n,
                 T_A,
                 reinterpret_cast<void **>(array_d_A.data()));
           
     workspaceFree(numDevices, deviceList.data(), reinterpret_cast<void **>(array_d_work.data()));
-    for(int i = 0; i < deviceCount; i++){
-        if(GPUResourceManager::getInstance().getDeviceBusy(i)){
-            GPUResourceManager::getInstance().freeDevice(deviceList[i]);
-        }
-    }
 
 
-    TBTKAssert(
-        cusolverMgDestroyGrid(gridA)
-         == CUSOLVER_STATUS_SUCCESS,
-		"Diagonalizer::cusolverMgDestroyGrid()",
-		"Error in cusolverMgDestroyGrid().",
-		""
-	);
-    gridA = NULL;
-    TBTKAssert(
-        cusolverMgDestroyMatrixDesc(descrMatrix)
-         == CUSOLVER_STATUS_SUCCESS,
-		"Diagonalizer::solveMultiGPU()",
-		"Error in cusolverMgDestroyMatrixDesc().",
-		""
-	);
-    descrMatrix = NULL;
-    // TODO this crashes the function if executed twice???
+    //TODO uncomment after bug fix in CUDA library
+    // TBTKAssert(
+    //     cusolverMgDestroyGrid(gridA)
+    //      == CUSOLVER_STATUS_SUCCESS,
+	// 	"Diagonalizer::cusolverMgDestroyGrid()",
+	// 	"Error in cusolverMgDestroyGrid().",
+	// 	""
+	// );
+    // gridA = NULL;
+    // TBTKAssert(
+    //     cusolverMgDestroyMatrixDesc(descrMatrix)
+    //      == CUSOLVER_STATUS_SUCCESS,
+	// 	"Diagonalizer::solveMultiGPU()",
+	// 	"Error in cusolverMgDestroyMatrixDesc().",
+	// 	""
+	// );
+    // descrMatrix = NULL;
+    // // TODO this crashes the function if executed twice???
     // TBTKAssert(
     //     cusolverMgDestroy(cusolverHandle)
     //      == CUSOLVER_STATUS_SUCCESS,
@@ -293,6 +293,50 @@ void Diagonalizer::solveMultiGPU(complex<double>* matrix, double* eigenValues, c
 	// 	""
 	// );
     // cusolverHandle = NULL;
+	TBTKAssert(
+		cudaDeviceSynchronize() == cudaSuccess,
+		"Diagonalizer::solveMultiGPU()",
+		"Error in cudaDeviceSynchronize().",
+		""
+	);
+    //Workaround to avoid memory leak caused by the cuSolverMg library
+    // TODO remove if memory leak is fixed
+	// int currentDevice = 0;
+	// TBTKAssert(
+	// 	cudaGetDevice(&currentDevice) == cudaSuccess,
+	// 	"Diagonalizer::solveMultiGPU()",
+	// 	"Error in cudaGetDevice().",
+	// 	""
+	// );
+    // for(int i = 0; i < deviceCount; i++){
+    //     if(GPUResourceManager::getInstance().getDeviceBusy(i)){
+	// 		TBTKAssert(
+	// 			cudaSetDevice(deviceList[i]) == cudaSuccess,
+	// 			"Diagonalizer::solveMultiGPU()",
+	// 			"Error in cudaSetDevice().",
+	// 			""
+	// 		);
+	// 		TBTKAssert(
+	// 			cudaDeviceReset() == cudaSuccess,
+	// 			"Diagonalizer::solveMultiGPU()",
+	// 			"Error in cudaResetDevice().",
+	// 			""
+	// 		);
+	// 		TBTKAssert(
+	// 			cudaSetDevice(currentDevice) == cudaSuccess,
+	// 			"Diagonalizer::solveMultiGPU()",
+	// 			"Error in cudaSetDevice().",
+	// 			""
+	// 		);
+    //     }
+    // }
+    // // -------- End of workaround
+
+    for(int i = 0; i < deviceCount; i++){
+        if(GPUResourceManager::getInstance().getDeviceBusy(i)){
+            GPUResourceManager::getInstance().freeDevice(deviceList[i]);
+        }
+    }
 }
 
 void Diagonalizer::solveGPU(complex<double>* matrix, double* eigenValues, const int &n){
