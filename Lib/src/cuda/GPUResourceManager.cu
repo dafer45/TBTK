@@ -22,6 +22,7 @@
 #include "TBTK/GPUResourceManager.h"
 #include "TBTK/Streams.h"
 #include <cuda_runtime.h>
+#include "TBTK/TBTKMacros.h"
 
 using namespace std;
 
@@ -59,8 +60,12 @@ void GPUResourceManager::enableP2PAccess() {
 	for(int i = 0; i < numDevices; i++){
 		if(busyDevices[i]){
 			currentDevice = i;
-			// TODO error check cudaSuccess // TODO not sure if this check is needed
-			cudaGetDevice(&currentDevice);
+			TBTKAssert(
+				cudaGetDevice(&currentDevice) == cudaSuccess,
+				"GPUResourceManager::enableP2PAccess()",
+				"Error in cudaGetDevice().",
+				""
+			);
 		}
 	}    
 
@@ -68,18 +73,40 @@ void GPUResourceManager::enableP2PAccess() {
     // activeDevices and peers represents a connectivity matrix between GPUs in the system
     for (int activeDevice = 0; activeDevice < numDevices; activeDevice++) {
 		if(busyDevices[activeDevice]){
-			// TODO error check
-			cudaSetDevice(activeDevice);
+			TBTKAssert(
+				cudaSetDevice(activeDevice) == cudaSuccess,
+				"GPUResourceManager::enableP2PAccess()",
+				"Error in cudaGetDevice().",
+				""
+			);
 		}
         for (int peer = 0; peer < numDevices; peer++) {
             if (activeDevice != peer && busyDevices[peer]) {
                 int canAccessPeer = 0;
-				// TODO error check
-				cudaDeviceCanAccessPeer(&canAccessPeer, activeDevice, peer);
+				TBTKAssert(
+					cudaDeviceCanAccessPeer(&canAccessPeer, 
+						activeDevice, 
+						peer)
+					 == cudaSuccess,
+					"GPUResourceManager::enableP2PAccess()",
+					"Error in cudaDeviceCanAccessPeer().",
+					""
+				);
+				
                 if (canAccessPeer) {
-					// TODO error check
-					cudaDeviceEnablePeerAccess(peer, 0);
-					if(getGlobalVerbose()){
+                    cudaError_t cudaError = cudaSuccess;
+                    cudaError = cudaDeviceEnablePeerAccess(peer, 0);
+					// Continue if peer access is already enabled
+                    if(cudaError == cudaErrorPeerAccessAlreadyEnabled){
+                        cudaError = cudaSuccess;
+                    }
+					TBTKAssert(
+						cudaError == cudaSuccess,
+						"GPUResourceManager::enableP2PAccess()",
+						"Error in cudaDeviceEnablePeerAccess().",
+						"Error code: " << cudaError
+					);
+					if(getGlobalVerbose() && getVerbose()){
 						Streams::out << "P2P enabled between device " << 
 										activeDevice << " and " <<
 										peer <<	endl;
@@ -88,8 +115,12 @@ void GPUResourceManager::enableP2PAccess() {
             }
         }
     }
-	// TODO error check
-	cudaSetDevice(currentDevice);
+	TBTKAssert(
+		cudaSetDevice(currentDevice) == cudaSuccess,
+		"GPUResourceManager::enableP2PAccess()",
+		"Error in cudaSetDevice().",
+		""
+	);
 }
 
 };	//End of namespace TBTK

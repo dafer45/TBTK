@@ -275,6 +275,7 @@ void Diagonalizer::solveMultiGPU(complex<double>* matrix, double* eigenValues, c
 		"Error in cusolverMgDestroyGrid().",
 		""
 	);
+    gridA = NULL;
     TBTKAssert(
         cusolverMgDestroyMatrixDesc(descrMatrix)
          == CUSOLVER_STATUS_SUCCESS,
@@ -282,6 +283,7 @@ void Diagonalizer::solveMultiGPU(complex<double>* matrix, double* eigenValues, c
 		"Error in cusolverMgDestroyMatrixDesc().",
 		""
 	);
+    descrMatrix = NULL;
     // TODO this crashes the function if executed twice???
     // TBTKAssert(
     //     cusolverMgDestroy(cusolverHandle)
@@ -290,6 +292,7 @@ void Diagonalizer::solveMultiGPU(complex<double>* matrix, double* eigenValues, c
 	// 	"Error in cusolverMgDestroy().",
 	// 	""
 	// );
+    // cusolverHandle = NULL;
 }
 
 void Diagonalizer::solveGPU(complex<double>* matrix, double* eigenValues, const int &n){
