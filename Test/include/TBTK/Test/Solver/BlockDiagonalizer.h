@@ -1,7 +1,10 @@
 #include "TBTK/Solver/BlockDiagonalizer.h"
 #include <iostream>
 #include "gtest/gtest.h"
-#include "TBTK/GPUResourceManager.h"
+#ifdef TBTK_CUDA_ENABLED
+	#include "TBTK/GPUResourceManager.h"
+#endif
+
 
 namespace TBTK{
 namespace Solver{

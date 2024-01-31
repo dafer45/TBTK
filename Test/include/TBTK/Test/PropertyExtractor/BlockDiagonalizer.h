@@ -4,7 +4,12 @@
 #include "TBTK/UnitHandler.h"
 #include <cmath>
 
+#ifdef TBTK_CUDA_ENABLED
+	#include "TBTK/GPUResourceManager.h"
+#endif
+
 #include "gtest/gtest.h"
+#include <vector>
 
 namespace TBTK{
 namespace PropertyExtractor{
@@ -38,6 +43,7 @@ const double CHEMICAL_POTENTIAL = 1;
 	}
 
 #define SETUP_AND_RUN_SOLVER() \
+	std::vector<Solver::BlockDiagonalizer> solvers; \
 	Solver::BlockDiagonalizer solver; \
 	solver.setVerbose(false); \
 	solver.setModel(model); \
@@ -48,7 +54,42 @@ const double CHEMICAL_POTENTIAL = 1;
 		solverDiagonalizer[k].setVerbose(false); \
 		solverDiagonalizer[k].setModel(modelDiagonalizer[k]); \
 		solverDiagonalizer[k].run(); \
+	} \
+	solvers.push_back(solver);
+
+#define SETUP_AND_RUN_GPU_SOLVER() \
+	{ \
+		Solver::BlockDiagonalizer solver; \
+		solver.setVerbose(false); \
+		solver.setModel(model); \
+		solver.setUseGPUAcceleration(true); \
+		solver.run(); \
+	\
+		Solver::Diagonalizer solverDiagonalizer[SIZE]; \
+		for(int k = 0; k < SIZE; k++){ \
+			solverDiagonalizer[k].setVerbose(false); \
+			solverDiagonalizer[k].setModel(modelDiagonalizer[k]); \
+			solverDiagonalizer[k].run(); \
+		} \
+		solvers.push_back(solver); \
+	} \
+	int numDevices = GPUResourceManager::getInstance().getNumDevices(); \
+	if(numDevices > 1){ \
+		Solver::BlockDiagonalizer solver; \
+		solver.setVerbose(false); \
+		solver.setModel(model); \
+		solver.setUseMultiGPUAcceleration(true); \
+		solver.run(); \
+	\
+		Solver::Diagonalizer solverDiagonalizer[SIZE]; \
+		for(int k = 0; k < SIZE; k++){ \
+			solverDiagonalizer[k].setVerbose(false); \
+			solverDiagonalizer[k].setModel(modelDiagonalizer[k]); \
+			solverDiagonalizer[k].run(); \
+		} \
+		solvers.push_back(solver); \
 	}
+
 
 //TODO
 //...
@@ -66,33 +107,41 @@ TEST(BlockDiagonalizer, setEnergyWindowMatsubara){
 TEST(BlockDiagonalizer, getEigenValues){
 	SETUP_MODEL();
 	SETUP_AND_RUN_SOLVER();
+	#ifdef TBTK_CUDA_ENABLED
+		SETUP_AND_RUN_GPU_SOLVER();
+	#endif
+	for(Solver::BlockDiagonalizer solver : solvers){
+		BlockDiagonalizer propertyExtractor(solver);
+		Property::EigenValues eigenValues = propertyExtractor.getEigenValues();
 
-	BlockDiagonalizer propertyExtractor(solver);
-	Property::EigenValues eigenValues = propertyExtractor.getEigenValues();
+		for(int k = 0; k < SIZE; k++){
+			Diagonalizer propertyExtractorDiagonalizer(
+				solverDiagonalizer[k]
+			);
 
-	for(int k = 0; k < SIZE; k++){
-		Diagonalizer propertyExtractorDiagonalizer(
-			solverDiagonalizer[k]
-		);
-
-		Property::EigenValues eigenValuesDiagonalizer
-			= propertyExtractorDiagonalizer.getEigenValues();
-		EXPECT_NEAR(
-			eigenValues(2*k + 0),
-			eigenValuesDiagonalizer(0),
-			EPSILON_100
-		);
-		EXPECT_NEAR(
-			eigenValues(2*k + 1),
-			eigenValuesDiagonalizer(1),
-			EPSILON_100
-		);
+			Property::EigenValues eigenValuesDiagonalizer
+				= propertyExtractorDiagonalizer.getEigenValues();
+			EXPECT_NEAR(
+				eigenValues(2*k + 0),
+				eigenValuesDiagonalizer(0),
+				EPSILON_100
+			);
+			EXPECT_NEAR(
+				eigenValues(2*k + 1),
+				eigenValuesDiagonalizer(1),
+				EPSILON_100
+			);
+		}
 	}
 }
 
 TEST(BlockDiagonalizer, getEigenValue0){
 	SETUP_MODEL();
 	SETUP_AND_RUN_SOLVER();
+	#ifdef TBTK_CUDA_ENABLED
+		SETUP_AND_RUN_GPU_SOLVER();
+	#endif
+	for(Solver::BlockDiagonalizer solver : solvers){
 
 	BlockDiagonalizer propertyExtractor(solver);
 	for(int k = 0; k < SIZE; k++){
@@ -111,11 +160,16 @@ TEST(BlockDiagonalizer, getEigenValue0){
 			EPSILON_100
 		);
 	}
+	}
 }
 
 TEST(BlockDiagonalizer, getEigenValue1){
 	SETUP_MODEL();
 	SETUP_AND_RUN_SOLVER();
+	#ifdef TBTK_CUDA_ENABLED
+		SETUP_AND_RUN_GPU_SOLVER();
+	#endif
+	for(Solver::BlockDiagonalizer solver : solvers){
 
 	BlockDiagonalizer propertyExtractor(solver);
 	for(int k = 0; k < SIZE; k++){
@@ -134,11 +188,16 @@ TEST(BlockDiagonalizer, getEigenValue1){
 			EPSILON_100
 		);
 	}
+	}
 }
 
 TEST(BlockDiagonalizer, getAmplitude0){
 	SETUP_MODEL();
 	SETUP_AND_RUN_SOLVER();
+	#ifdef TBTK_CUDA_ENABLED
+		SETUP_AND_RUN_GPU_SOLVER();
+	#endif
+	for(Solver::BlockDiagonalizer solver : solvers){
 
 	BlockDiagonalizer propertyExtractor(solver);
 	for(int k = 0; k < SIZE; k++){
@@ -210,11 +269,16 @@ TEST(BlockDiagonalizer, getAmplitude0){
 			}
 		}
 	}
+	}
 }
 
 TEST(BlockDiagonalizer, getAmplitude1){
 	SETUP_MODEL();
-	SETUP_AND_RUN_SOLVER();
+		SETUP_AND_RUN_SOLVER();
+	#ifdef TBTK_CUDA_ENABLED
+		SETUP_AND_RUN_GPU_SOLVER();
+	#endif
+	for(Solver::BlockDiagonalizer solver : solvers){
 
 	BlockDiagonalizer propertyExtractor(solver);
 	for(int k = 0; k < SIZE; k++){
@@ -259,11 +323,16 @@ TEST(BlockDiagonalizer, getAmplitude1){
 			}
 		}
 	}
+	}
 }
 
 TEST(BlockDiagonalizer, calculateWaveFunction){
 	SETUP_MODEL();
 	SETUP_AND_RUN_SOLVER();
+	#ifdef TBTK_CUDA_ENABLED
+		SETUP_AND_RUN_GPU_SOLVER();
+	#endif
+	for(Solver::BlockDiagonalizer solver : solvers){
 
 	//Check when all states are calculated.
 	BlockDiagonalizer propertyExtractor(solver);
@@ -329,11 +398,16 @@ TEST(BlockDiagonalizer, calculateWaveFunction){
 		""
 	);
 	::testing::FLAGS_gtest_death_test_style = "fast";
+	}
 }
 
 TEST(BlockDiagonalizer, calculateGreensFunction){
 	SETUP_MODEL();
 	SETUP_AND_RUN_SOLVER();
+	#ifdef TBTK_CUDA_ENABLED
+		SETUP_AND_RUN_GPU_SOLVER();
+	#endif
+	for(Solver::BlockDiagonalizer solver : solvers){
 
 	//Setup patterns to calculate the Green's function for.
 	std::vector<Index> patterns;
@@ -563,11 +637,16 @@ TEST(BlockDiagonalizer, calculateGreensFunction){
 			}
 		}
 	}
+	}
 }
 
 TEST(BlockDiagonalizer, calculateDOS){
 	SETUP_MODEL();
 	SETUP_AND_RUN_SOLVER();
+	#ifdef TBTK_CUDA_ENABLED
+		SETUP_AND_RUN_GPU_SOLVER();
+	#endif
+	for(Solver::BlockDiagonalizer solver : solvers){
 	const double LOWER_BOUND = -100;
 	const double UPPER_BOUND = 100;
 	const int RESOLUTION = 1000;
@@ -605,6 +684,7 @@ TEST(BlockDiagonalizer, calculateDOS){
 	//Compare the DOS.
 	for(int n = 0; n < RESOLUTION; n++)
 		EXPECT_NEAR(dos(n), dosDiagonalizer(n), EPSILON_100);
+	}
 }
 
 //TODO

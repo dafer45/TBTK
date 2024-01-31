@@ -1,5 +1,8 @@
 #include "TBTK/Solver/Diagonalizer.h"
-#include "TBTK/GPUResourceManager.h"
+
+#ifdef TBTK_CUDA_ENABLED
+	#include "TBTK/GPUResourceManager.h"
+#endif
 
 #include "gtest/gtest.h"
 
