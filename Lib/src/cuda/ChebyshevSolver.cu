@@ -480,8 +480,6 @@ vector<
 	if(damping != NULL)
 		cudaFree(damping_device);
 
-	GPUResourceManager::getInstance().freeDevice(device);
-
 	//Lorentzian convolution
 	if(broadening != 0){
 		double lambda = broadening*numCoefficients;
@@ -497,7 +495,7 @@ vector<
 			}
 		}
 	}
-
+	GPUResourceManager::getInstance().freeDevice(device);
 	return coefficients;
 }
 
@@ -703,7 +701,7 @@ vector<complex<double>> ChebyshevExpander::generateGreensFunctionGPU(
 	);
 
 	TBTKAssert(
-		cudaMemcpy(
+		cudaMemcpyAsync(
 			greensFunctionData_device,
 			greensFunctionData.data(),
 			lookupTableResolution*sizeof(complex<double>),
@@ -714,7 +712,7 @@ vector<complex<double>> ChebyshevExpander::generateGreensFunctionGPU(
 		""
 	);
 	TBTKAssert(
-		cudaMemcpy(
+		cudaMemcpyAsync(
 			coefficients_device,
 			coefficients.data(),
 			lookupTableNumCoefficients*sizeof(complex<double>),
@@ -733,7 +731,7 @@ vector<complex<double>> ChebyshevExpander::generateGreensFunctionGPU(
 		Streams::out << "\tCUDA Block size: " << block_size << "\n";
 		Streams::out << "\tCUDA Num blocks: " << num_blocks << "\n";
 	}
-
+	cudaDeviceSynchronize();
 	calculateGreensFunction <<< num_blocks, block_size>>> (
 		(cuDoubleComplex*)greensFunctionData_device,
 		(cuDoubleComplex*)coefficients_device,
@@ -753,10 +751,8 @@ vector<complex<double>> ChebyshevExpander::generateGreensFunctionGPU(
 		"CUDA memcpy error while copying greensFunction_device.",
 		""
 	);
-
 	cudaFree(greensFunctionData_device);
 	cudaFree(coefficients_device);
-
 	GPUResourceManager::getInstance().freeDevice(device);
 
 /*	Property::GreensFunction *greensFunction = new Property::GreensFunction(
