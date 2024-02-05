@@ -84,14 +84,12 @@ void Diagonalizer::solveMultiGPU(complex<double>* matrix, double* eigenValues, c
     }
     
     
-
-    
     cusolverEigMode_t jobz = CUSOLVER_EIG_MODE_VECTOR;
     if(calculationMode == CalculationMode::EigenValues){
         jobz = CUSOLVER_EIG_MODE_NOVECTOR;
     }
 
-    static cudaLibMgMatrixDesc_t descrMatrix;
+    cudaLibMgMatrixDesc_t descrMatrix;
     static cudaLibMgGrid_t gridA;
     static cusolverMgGridMapping_t mapping = CUDALIBMG_GRID_MAPPING_COL_MAJOR;
 
@@ -117,18 +115,18 @@ void Diagonalizer::solveMultiGPU(complex<double>* matrix, double* eigenValues, c
             "Error in cusolverMgCreateDeviceGrid().",
             ""
         );
-        TBTKAssert(
-            cusolverMgCreateMatrixDesc(&descrMatrix, n, // nubmer of rows of matrix
-                n,          // number of columns of matrix
-                n,          // number or rows in a tile
-                T_A,        // number of columns in a tile
-                computeType, gridA)
-            == CUSOLVER_STATUS_SUCCESS,
-            "Diagonalizer::solveMultiGPU()",
-            "Error in cusolverMgCreateMatrixDesc().",
-            ""
-        );
     }
+    TBTKAssert(
+        cusolverMgCreateMatrixDesc(&descrMatrix, n, // nubmer of rows of matrix
+            n,          // number of columns of matrix
+            n,          // number or rows in a tile
+            T_A,        // number of columns in a tile
+            computeType, gridA)
+        == CUSOLVER_STATUS_SUCCESS,
+        "Diagonalizer::solveMultiGPU()",
+        "Error in cusolverMgCreateMatrixDesc().",
+        ""
+    );
     isInitialized = true;
 
     vector<data_type *> array_d_A(numDevices, nullptr);
@@ -276,14 +274,14 @@ void Diagonalizer::solveMultiGPU(complex<double>* matrix, double* eigenValues, c
 	// 	""
 	// );
     // gridA = NULL;
-    // TBTKAssert(
-    //     cusolverMgDestroyMatrixDesc(descrMatrix)
-    //      == CUSOLVER_STATUS_SUCCESS,
-	// 	"Diagonalizer::solveMultiGPU()",
-	// 	"Error in cusolverMgDestroyMatrixDesc().",
-	// 	""
-	// );
-    // descrMatrix = NULL;
+    TBTKAssert(
+        cusolverMgDestroyMatrixDesc(descrMatrix)
+         == CUSOLVER_STATUS_SUCCESS,
+		"Diagonalizer::solveMultiGPU()",
+		"Error in cusolverMgDestroyMatrixDesc().",
+		""
+	);
+    descrMatrix = NULL;
     // // TODO this crashes the function if executed twice???
     // TBTKAssert(
     //     cusolverMgDestroy(cusolverHandle)
