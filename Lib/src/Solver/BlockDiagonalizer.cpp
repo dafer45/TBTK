@@ -260,21 +260,24 @@ void BlockDiagonalizer::update(){
 				).getBasisIndex(
 					(*iterator).getToIndex()
 				) - minBasisIndex;
-				if(from >= to && !useGPUAcceleration){
-					hamiltonian[
-						blockOffsets.at(block)
-						+ to
-						+ (from*(from+1))/2
-					] += (*iterator).getAmplitude();
-				}
-				else if(useGPUAcceleration){
+				if(from <= to){
 					unsigned int numStates
 						= blockStructureDescriptor.getNumStatesInBlock(block);
-					//Temporarily store hamiltonian in eigenVectors
-					eigenVectors[blockOffsets.at(block) +
-						to + 
-						from*numStates] 
-						+= (*iterator).getAmplitude();
+					if(useGPUAcceleration){
+						//Temporarily store hamiltonian in eigenVectors
+						eigenVectors[blockOffsets.at(block) +
+							to + 
+							from*numStates] 
+							+= (*iterator).getAmplitude();
+					}
+					else{
+						hamiltonian[
+							blockOffsets.at(block)
+							+ to
+							+ (from*(2*numStates-from-1))/2
+						] += (*iterator).getAmplitude();
+					}
+
 				}
 				++iterator;
 			}
@@ -304,20 +307,21 @@ void BlockDiagonalizer::update(){
 				).getBasisIndex(
 					(*iterator).getToIndex()
 				) - minBasisIndex;
-				if(from <= to && !useGPUAcceleration){
-					hamiltonian[
-						blockOffsets.at(blockCounter)
-						+ to 
-						+ (from*(2*numStates-from-1))/2
-					] += (*iterator).getAmplitude();
-				}
-				else if(useGPUAcceleration){
-
-					//Temporarily store hamiltonian in eigenVectors
-					eigenVectors[blockOffsets.at(blockCounter) +
-						to + 
-						from*numStates] 
-						+= (*iterator).getAmplitude();
+				if(from <= to){
+					if(useGPUAcceleration){
+						//Temporarily store hamiltonian in eigenVectors
+						eigenVectors[blockOffsets.at(blockCounter) +
+							to + 
+							from*numStates] 
+							+= (*iterator).getAmplitude();
+					}
+					else{
+						hamiltonian[
+							blockOffsets.at(blockCounter)
+							+ to
+							+ (from*(2*numStates-from-1))/2
+						] += (*iterator).getAmplitude();
+					}
 				}
 				++iterator;
 			}
