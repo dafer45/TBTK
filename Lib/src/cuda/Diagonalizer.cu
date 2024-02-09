@@ -335,6 +335,9 @@ void Diagonalizer::solveMultiGPU(complex<double>* matrix, double* eigenValues, c
             GPUResourceManager::getInstance().freeDevice(deviceList[i]);
         }
     }
+	if(calculationMode == CalculationMode::EigenValuesAndEigenVectors){
+		eigenVectorsAvailable = true;
+	}
 }
 
 void Diagonalizer::solveGPU(complex<double>* matrix, double* eigenValues, const int &n){
@@ -677,6 +680,9 @@ void Diagonalizer::solveGPU(complex<double>* matrix, double* eigenValues, const 
     GPUResourceManager::getInstance().freeDevice(device);
     free(buffer_host);
     buffer_host = nullptr;
+	if(calculationMode == CalculationMode::EigenValuesAndEigenVectors){
+		eigenVectorsAvailable = true;
+	}
 }
 
 };	//End of namespace Solver

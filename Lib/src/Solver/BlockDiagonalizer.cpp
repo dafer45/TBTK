@@ -39,7 +39,7 @@ BlockDiagonalizer::BlockDiagonalizer(){
 void BlockDiagonalizer::run(){
 	int iterationCounter = 0;
 	init();
-
+	eigenVectorsAvailable = false;
 	if(getGlobalVerbose() && getVerbose())
 		Streams::out << "Running Diagonalizer\n";
 	while(iterationCounter++ < maxIterations){
@@ -442,6 +442,75 @@ void BlockDiagonalizer::solve(){
 		delete [] work;
 		delete [] rwork;
 	}*/
+}
+
+const std::complex<double> BlockDiagonalizer::getAmplitude(
+	int state,
+	const Index &index
+){
+	TBTKAssert( eigenVectorsAvailable == true,
+		"BlockDiagonalizer::getAmplitude()",
+		"Eigenvectors not available.",
+		"Use CalculationMode::EigenValuesAndEigenVectors instead."
+	);
+	const Model &model = getModel();
+	unsigned int block = blockStructureDescriptor.getBlockIndex(state);
+	unsigned int offset = eigenVectorOffsets.at(block);
+	unsigned int linearIndex = model.getBasisIndex(index);
+	unsigned int firstStateInBlock
+		= blockStructureDescriptor.getFirstStateInBlock(block);
+	unsigned int lastStateInBlock = firstStateInBlock
+		+ blockStructureDescriptor.getNumStatesInBlock(block)-1;
+	offset += (
+		state - firstStateInBlock
+	)*blockStructureDescriptor.getNumStatesInBlock(block);
+	if(
+		linearIndex >= firstStateInBlock
+		&& linearIndex <= lastStateInBlock
+	){
+		return eigenVectors[
+			offset + (linearIndex - firstStateInBlock)
+		];
+	}
+	else{
+		return 0;
+	}
+}
+
+const std::complex<double> BlockDiagonalizer::getAmplitude(
+	const Index &blockIndex,
+	int state,
+	const Index &intraBlockIndex
+){
+	TBTKAssert( eigenVectorsAvailable == true,
+		"BlockDiagonalizer::getAmplitude()",
+		"Eigenvectors not available.",
+		"Use CalculationMode::EigenValuesAndEigenVectors instead."
+	);
+	int firstStateInBlock = getModel().getHoppingAmplitudeSet(
+	).getFirstIndexInBlock(blockIndex);
+	unsigned int block = blockStructureDescriptor.getBlockIndex(
+		firstStateInBlock
+	);
+	TBTKAssert(
+		state >= 0
+		&& state < (int)blockStructureDescriptor.getNumStatesInBlock(
+			block
+		),
+		"BlockDiagonalizer::getAmplitude()",
+		"Out of bound error. The block with block Index "
+		<< blockIndex.toString() << " has "
+		<< blockStructureDescriptor.getNumStatesInBlock(block)
+		<< " states, but state " << state << " was requested.",
+		""
+	);
+	unsigned int offset = eigenVectorOffsets.at(block)
+		+ state*blockStructureDescriptor.getNumStatesInBlock(block);
+	unsigned int linearIndex = getModel().getBasisIndex(
+		Index(blockIndex, intraBlockIndex)
+	);
+
+	return eigenVectors[offset + (linearIndex - firstStateInBlock)];
 }
 
 };	//End of namespace Solver

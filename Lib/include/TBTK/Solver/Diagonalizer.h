@@ -181,7 +181,8 @@ protected:
 	/** Enables Multi GPU acceleration on one node for the solver. */
 	bool useMultiGPUAcceleration;
 
-
+	/** Flag that tracks if eigenVectors are available. */
+	bool eigenVectorsAvailable;
 
 	/** Calculation mode used when calculations are run on gpu(s)*/
 	CalculationMode calculationMode;
@@ -288,24 +289,20 @@ inline CArray<double>& Diagonalizer::getEigenValuesRW(){
 }
 
 inline const CArray<std::complex<double>>& Diagonalizer::getEigenVectors(){
-	if(calculationMode != Diagonalizer::CalculationMode::EigenValuesAndEigenVectors){
-		TBTKExit(
-			"Diagonalizer::getEigenVectors()",
-			"Eigenvectors not available.",
-			"Use CalculationMode::EigenValuesAndEigenVectors instead."
-		);
-	}
+	TBTKAssert( eigenVectorsAvailable == true,
+		"Diagonalizer::getEigenVectors()",
+		"Eigenvectors not available.",
+		"Use CalculationMode::EigenValuesAndEigenVectors instead."
+	);
 	return eigenVectors;
 }
 
 inline CArray<std::complex<double>>& Diagonalizer::getEigenVectorsRW(){
-	if(calculationMode != Diagonalizer::CalculationMode::EigenValuesAndEigenVectors){
-		TBTKExit(
-			"Diagonalizer::getEigenVectorsRW()",
-			"Eigenvectors not available.",
-			"Use CalculationMode::EigenValuesAndEigenVectors instead."
-		);
-	}
+	TBTKAssert( eigenVectorsAvailable == true,
+		"Diagonalizer::getEigenVectorsRW()",
+		"Eigenvectors not available.",
+		"Use CalculationMode::EigenValuesAndEigenVectors instead."
+	);
 	return eigenVectors;
 }
 

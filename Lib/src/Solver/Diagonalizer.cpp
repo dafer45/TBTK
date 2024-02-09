@@ -33,12 +33,13 @@ Diagonalizer::Diagonalizer() : Communicator(false){
 	useGPUAcceleration = false;
 	useMultiGPUAcceleration = false;
 	calculationMode = CalculationMode::EigenValuesAndEigenVectors;
+	eigenVectorsAvailable = false;
 }
 
 void Diagonalizer::run(){
 	int iterationCounter = 0;
 	init();
-
+	eigenVectorsAvailable = false; //Eigenvectors not ready
 	if(getGlobalVerbose() && getVerbose())
 		Streams::out << "Running Diagonalizer\n";
 	while(iterationCounter++ < maxIterations){
@@ -190,6 +191,9 @@ void Diagonalizer::solveCPU(complex<double>* matrix,
 		"Diagonalization routine zhpev exited with INFO=" + to_string(info) + ".",
 		"See LAPACK documentation for zhpev for further information."
 	);
+	if(calculationMode == CalculationMode::EigenValuesAndEigenVectors){
+		eigenVectorsAvailable = true;
+	}
 }
 
 void Diagonalizer::setupBasisTransformation(){
