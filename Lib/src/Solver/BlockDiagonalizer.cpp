@@ -513,5 +513,33 @@ const std::complex<double> BlockDiagonalizer::getAmplitude(
 	return eigenVectors[offset + (linearIndex - firstStateInBlock)];
 }
 
+double* BlockDiagonalizer::getBlockEigenValuesRW(const unsigned& block, unsigned& size){
+	TBTKAssert( block < blockStructureDescriptor.getNumBlocks(),
+		"BlockDiagonalizer::getEigenValuesBlockRW()",
+		"Invalid block index.",
+		"The number of blocks is " << blockStructureDescriptor.getNumBlocks()
+
+	);
+	size = blockStructureDescriptor.getNumStatesInBlock(block);
+	unsigned offset = 0;
+	for(unsigned n = 0; n < block; n++){
+		offset += blockStructureDescriptor.getNumStatesInBlock(n);
+	}
+	return &eigenValues[offset];
+}
+complex<double>* BlockDiagonalizer::getBlockEigenVectorsRW(const unsigned& block, unsigned& size){
+	TBTKAssert( block < blockStructureDescriptor.getNumBlocks(),
+		"BlockDiagonalizer::getEigenValuesBlockRW()",
+		"Invalid block index.",
+		"The number of blocks is " << blockStructureDescriptor.getNumBlocks()
+
+	);
+	size = blockStructureDescriptor.getNumStatesInBlock(block);
+	size *= size;
+	unsigned offset = eigenVectorOffsets[block];
+	return &eigenVectors[offset];
+
+}
+
 };	//End of namespace Solver
 };	//End of namespace TBTK

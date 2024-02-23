@@ -174,6 +174,8 @@ public:
 	 *  @return The amplitude \f$\Psi_{n}(x)\f$. */
 	const std::complex<double> getAmplitude(int state, const Index &index);
 
+	// TODO
+
 protected:
 	/** Enables GPU acceleration for the solver. */
 	bool useGPUAcceleration;

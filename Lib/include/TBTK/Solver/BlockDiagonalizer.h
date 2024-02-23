@@ -189,6 +189,14 @@ public:
 	 *  solver off or on. */
 	void setUseMultiGPUAcceleration(bool useMultiGPUAcceleration);
 
+	/** Allocates space for Hamiltonian etc. */
+	void init();
+
+	void setEigenVectorsAvailable(const bool& available);
+
+	double* getBlockEigenValuesRW(const unsigned& block, unsigned& size);
+	std::complex<double>* getBlockEigenVectorsRW(const unsigned& block, unsigned& size);
+
 private:
 	/** pointer to array containing Hamiltonian. */
 	CArray<std::complex<double>> hamiltonian;
@@ -223,9 +231,6 @@ private:
 	/** Callback function to call each time a diagonalization has been
 	 *  completed. */
 	SelfConsistencyCallback *selfConsistencyCallback;
-
-	/** Allocates space for Hamiltonian etc. */
-	void init();
 
 	/** Updates Hamiltonian. */
 	void update();
@@ -299,6 +304,10 @@ inline void BlockDiagonalizer::setUseMultiGPUAcceleration(bool input){
 		this->useGPUAcceleration = true;
 		this->parallelExecution = false;
 	}	
+}
+
+inline void BlockDiagonalizer::setEigenVectorsAvailable(const bool& available){
+	eigenVectorsAvailable = available;
 }
 
 };	//End of namespace Solver
