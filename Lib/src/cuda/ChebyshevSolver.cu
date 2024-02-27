@@ -20,7 +20,7 @@
 
 //Flag used to work around incompatibilities between nlohmann::json and CUDA.
 //This disables code in header files that depends on nlohmann::json.
-// #define TBTK_DISABLE_NLOHMANN_JSON //TODO compiles fine without the flag?
+#define TBTK_DISABLE_NLOHMANN_JSON
 
 #include "TBTK/Solver/ChebyshevExpander.h"
 #include "TBTK/GPUResourceManager.h"
@@ -49,13 +49,6 @@ complex<double> one(1., 0.);
 complex<double> two(2., 0.);
 complex<double> zero(0., 0.);
 complex<double> i(0., 1.);
-
-
-
-
-
-
-
 
 vector<complex<double>> ChebyshevExpander::calculateCoefficientsGPU(
 	Index to,
@@ -145,7 +138,6 @@ vector<
 	int basisSize = hoppingAmplitudeSet.getBasisSize();
 	thrust::host_vector<complex<double>> jIn1(basisSize, 0.);
 	thrust::host_vector<complex<double>> jIn2(basisSize, 0.);
-	thrust::host_vector<complex<double>> *jTemp = NULL;
 
 	//Set up initial state (|j0>)
 	jIn1[fromBasisIndex] = 1.;
@@ -496,7 +488,6 @@ vector<
 					)
 				)/sinh(lambda);
 //				coefficients[n + c*numCoefficients] = coefficients[n + c*numCoefficients]*sinh(lambda*(1 - n/(double)numCoefficients))/sinh(lambda);
-				//TODO it looks like the code is different here for the cpu version
 			}
 		}
 	}
