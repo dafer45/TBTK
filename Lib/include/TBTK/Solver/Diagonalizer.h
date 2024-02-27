@@ -114,14 +114,26 @@ public:
 	 * EigenValuesAndEigenVectors: Same as above plus all Eigenstates */
 	enum class CalculationMode{ EigenValues, EigenValuesAndEigenVectors};
 
-	/** If using gpu acceleration, this option determines if the solver calculates
-	 *  the model Hamiltonians eigenvalues only or eigenvalues and eigenstates.
+	/** This option determines if the solver calculates
+	 *  the model Hamiltonian's eigenvalues only or eigenvalues and eigenstates.
 	 *  The former option can be chosen to save calculation resources, however, will
 	 *  give an error if eigenstate based properties are calculated.
 	 *
 	 *  @param calculationMode options are EigenValues and EigenValuesAndEigenVectors
 	 */
-	virtual void setCalculationMode(const CalculationMode calculationMode);
+	void setCalculationMode(const CalculationMode calculationMode);
+
+
+	/** This option allows to access the solvers internally stored eigenvectors,
+	 *  even if calculationMode::EigenValues is set. For example to be able to 
+	 *  set them manually in a Solver::Diagonalizer class, using 
+	 *  getEigenVectorsRW().
+	 *  Warning: Setting this label to true can lead to unexpected behaviour,
+	 *  as the internal stored eigenvectors might be uninitialized.
+	 *
+	 *  @param available Bool to set if eigenVectors are available or not.
+	 */
+	void setEigenVectorsAvailable(const bool& available);
 
 	/** Run calculations. Diagonalizes ones if no self-consistency callback
 	 *  have been set, or otherwise multiple times until self-consistencey
@@ -131,13 +143,13 @@ public:
 	/** Get eigenvalues. Eigenvalues are ordered in accending order.
 	 *
 	 *  @return A pointer to the internal storage for the eigenvalues. */
-	const CArray<double>& getEigenValues();
+	virtual const CArray<double>& getEigenValues();
 
 	/** Get eigenvalues. Eigenvalues are ordered in accending order. Same
 	 *  as getEigenValues(), but with write access. Use with caution.
 	 *
 	 *  @return A pointer to the internal storage for the eigenvalues. */
-	CArray<double>& getEigenValuesRW();
+	virtual CArray<double>& getEigenValuesRW();
 
 	/** Get eigenvectors. The eigenvectors are stored successively in
 	 *  memory, with the eigenvector corresponding to the smallest
@@ -146,7 +158,7 @@ public:
 	 *  'basisSize' is the basis size of the Model.
 	 *
 	 *  @return A pointer to the internal storage for the eigenvectors. **/
-	const CArray<std::complex<double>>& getEigenVectors();
+	virtual const CArray<std::complex<double>>& getEigenVectors();
 
 	/** Get eigenvectors. The eigenvectors are stored successively in
 	 *  memory, with the eigenvector corresponding to the smallest
@@ -156,7 +168,7 @@ public:
 	 *  getEigenVectors(), but with write access. Use with caution.
 	 *
 	 *  @return A pointer to the internal storage for the eigenvectors. **/
-	CArray<std::complex<double>>& getEigenVectorsRW();
+	virtual CArray<std::complex<double>>& getEigenVectorsRW();
 
 	/** Get eigenvalue for a specific state.
 	 *
@@ -173,8 +185,6 @@ public:
 	 *
 	 *  @return The amplitude \f$\Psi_{n}(x)\f$. */
 	const std::complex<double> getAmplitude(int state, const Index &index);
-
-	// TODO
 
 protected:
 	/** Enables GPU acceleration for the solver. */
@@ -283,14 +293,32 @@ inline void Diagonalizer::setMaxIterations(int maxIterations){
 }
 
 inline const CArray<double>& Diagonalizer::getEigenValues(){
+	TBTKAssert(
+		typeid(*this) == typeid(Diagonalizer),
+		"Diagonalizer::getEigenValues()",
+		"This function is only available for TBTK::Solver::Diagonalizer.",
+		"Use different implementation for derived solvers instead."
+	)
 	return eigenValues;
 }
 
 inline CArray<double>& Diagonalizer::getEigenValuesRW(){
+	TBTKAssert(
+		typeid(*this) == typeid(Diagonalizer),
+		"Diagonalizer::getEigenValuesRW()",
+		"This function is only available for TBTK::Solver::Diagonalizer.",
+		"Use different implementation for derived solvers instead."
+	)
 	return eigenValues;
 }
 
 inline const CArray<std::complex<double>>& Diagonalizer::getEigenVectors(){
+	TBTKAssert(
+		typeid(*this) == typeid(Diagonalizer),
+		"Diagonalizer::getEigenVectors()",
+		"This function is only available for TBTK::Solver::Diagonalizer.",
+		"Use different implementation for derived solvers instead."
+	)
 	TBTKAssert( eigenVectorsAvailable == true,
 		"Diagonalizer::getEigenVectors()",
 		"Eigenvectors not available.",
@@ -300,6 +328,12 @@ inline const CArray<std::complex<double>>& Diagonalizer::getEigenVectors(){
 }
 
 inline CArray<std::complex<double>>& Diagonalizer::getEigenVectorsRW(){
+	TBTKAssert(
+		typeid(*this) == typeid(Diagonalizer),
+		"Diagonalizer::getEigenVectorsRW()",
+		"This function is only available for TBTK::Solver::Diagonalizer.",
+		"Use different implementation for derived solvers instead."
+	)
 	TBTKAssert( eigenVectorsAvailable == true,
 		"Diagonalizer::getEigenVectorsRW()",
 		"Eigenvectors not available.",
@@ -337,7 +371,9 @@ inline void Diagonalizer::setUseMultiGPUAcceleration(bool useMultiGPUAcceleratio
 inline void Diagonalizer::setCalculationMode(const CalculationMode calculationMode){
 	this->calculationMode = calculationMode;
 }
-
+inline void Diagonalizer::setEigenVectorsAvailable(const bool& available){
+	eigenVectorsAvailable = available;
+}
 };	//End of namespace Solver
 };	//End of namespace TBTK
 

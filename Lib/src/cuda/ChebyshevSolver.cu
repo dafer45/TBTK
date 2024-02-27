@@ -16,6 +16,7 @@
 /** @file ChebyshevExpander.cu
  *
  *  @author Kristofer Björnson
+ *  @author Andreas Theiler
  */
 
 //Flag used to work around incompatibilities between nlohmann::json and CUDA.

@@ -16,6 +16,7 @@
 /** @file BlockDiagonalizer.cpp
  *
  *  @author Kristofer Björnson
+ *  @author Andreas Theiler
  */
 
 #include "TBTK/Solver/BlockDiagonalizer.h"
@@ -82,6 +83,7 @@ void BlockDiagonalizer::init(){
 	eigenVectorSizes.clear();
 	blockOffsets.clear();
 	eigenVectorOffsets.clear();
+	eigenValuesOffsets.clear();
 	for(
 		unsigned int n = 0;
 		n < blockStructureDescriptor.getNumBlocks();
@@ -100,6 +102,7 @@ void BlockDiagonalizer::init(){
 		if(n == 0){
 			blockOffsets.push_back(0);
 			eigenVectorOffsets.push_back(0);
+			eigenValuesOffsets.push_back(0);
 		}
 		else{
 			blockOffsets.push_back(
@@ -108,6 +111,10 @@ void BlockDiagonalizer::init(){
 			eigenVectorOffsets.push_back(
 				eigenVectorOffsets.back() + 
 				eigenVectorSizes.at(n-1)
+			);
+			eigenValuesOffsets.push_back(
+				eigenValuesOffsets.back()
+				+ blockStructureDescriptor.getNumStatesInBlock(n-1)
 			);
 		}
 	}
@@ -349,19 +356,6 @@ void BlockDiagonalizer::update(){
 void BlockDiagonalizer::solve(){
 	if(true){//Currently no support for banded matrices.
 		if(parallelExecution){
-			vector<unsigned int> eigenValuesOffsets;
-			eigenValuesOffsets.push_back(0);
-			for(
-				unsigned int b = 1;
-				b < blockStructureDescriptor.getNumBlocks();
-				b++
-			){
-				eigenValuesOffsets.push_back(
-					eigenValuesOffsets[b-1]
-					+ blockStructureDescriptor.getNumStatesInBlock(b-1)
-				);
-			}
-
 			#pragma omp parallel for
 			for(
 				unsigned int b = 0;
@@ -389,7 +383,6 @@ void BlockDiagonalizer::solve(){
 			}
 		}
 		else{
-			unsigned int eigenValuesOffset = 0;
 			for(
 				unsigned int b = 0;
 				b < blockStructureDescriptor.getNumBlocks();
@@ -399,7 +392,7 @@ void BlockDiagonalizer::solve(){
 				if(useGPUAcceleration){
 					solveGPU(
 						eigenVectors.getData() + eigenVectorOffsets.at(b), //Hamiltionian is stored in eigenVectors
-							eigenValues.getData()+ eigenValuesOffset,
+							eigenValues.getData()+ eigenValuesOffsets[b],
 							n
 						);
 				}
@@ -407,14 +400,12 @@ void BlockDiagonalizer::solve(){
 					solveCPU(hamiltonian.getData()
 							+ blockOffsets.at(b), 
 							eigenValues.getData()
-							+ eigenValuesOffset,
+							+ + eigenValuesOffsets[b],
 							eigenVectors.getData()
 					 		+ eigenVectorOffsets.at(b),
 							n
 							);
 				}
-
-				eigenValuesOffset += blockStructureDescriptor.getNumStatesInBlock(b);
 			}
 		}
 	}
@@ -521,11 +512,7 @@ double* BlockDiagonalizer::getBlockEigenValuesRW(const unsigned& block, unsigned
 
 	);
 	size = blockStructureDescriptor.getNumStatesInBlock(block);
-	unsigned offset = 0;
-	for(unsigned n = 0; n < block; n++){
-		offset += blockStructureDescriptor.getNumStatesInBlock(n);
-	}
-	return &eigenValues[offset];
+	return &eigenValues[eigenValuesOffsets[block]];
 }
 complex<double>* BlockDiagonalizer::getBlockEigenVectorsRW(const unsigned& block, unsigned& size){
 	TBTKAssert( block < blockStructureDescriptor.getNumBlocks(),

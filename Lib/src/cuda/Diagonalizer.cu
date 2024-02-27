@@ -130,27 +130,17 @@ void Diagonalizer::solveMultiGPU(complex<double>* matrix, double* eigenValues, c
     isInitialized = true;
 
     vector<data_type *> array_d_A(numDevices, nullptr);
-
-    // Allocate resource for local matrices on the devices
-    // createEmptyMatrix(numDevices, 
-    //                     deviceList.data(),
-    //                     n,                  // number of columns of global matrix
-    //                     T_A,                // number of columns per column tile 
-    //                     lda,                // leading dimension of local matrix
-    //                     array_d_A.data());
-    createMat<data_type>(numDevices, deviceList.data(), n, /* number of columns of global A */
-    T_A,                          /* number of columns per column tile */
-    lda,                          /* leading dimension of local A */
+    createMat<data_type>(numDevices, deviceList.data(), n, // Number of columns of global matrix
+    T_A,                          // Number of columns per column tile
+    lda,                          // Leading dimension of local matrix
     array_d_A.data());
     memcpyH2D<data_type>(numDevices, deviceList.data(), n, n,
-                         /* input */
-                         matrix,
+                         matrix, // Input
                          lda,
-                         /* output */
-                         n,                /* number of columns of global A */
-                         T_A,              /* number of columns per column tile */
-                         lda,              /* leading dimension of local A */
-                         array_d_A.data(), /* host pointer array of dimension nbGpus */
+                         n,                // Number of columns of global matrix
+                         T_A,              // Number of columns per column tile
+                         lda,              // Leading dimension of local matrix
+                         array_d_A.data(), // Host array of dimension numDevices
                          IA, JA);
     // Allocate buffer memory
     int64_t lwork = 0;

@@ -16,6 +16,7 @@
 /** @file BlockDiagonalizer.cpp
  *
  *  @author Kristofer Björnson
+ *  @author Andreas Theiler
  */
 
 #include "TBTK/PropertyExtractor/BlockDiagonalizer.h"

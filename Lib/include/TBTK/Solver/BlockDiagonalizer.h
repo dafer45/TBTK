@@ -18,6 +18,7 @@
  *  @brief Solves a block diagonal Model using diagonalization.
  *
  *  @author Kristofer Björnson
+ *  @author Andreas Theiler
  */
 
 #ifndef COM_DAFER45_TBTK_SOLVER_BLOCK_DIAGONALIZER
@@ -30,6 +31,7 @@
 #include "TBTK/Solver/Diagonalizer.h"
 #include "TBTK/Timer.h"
 #include "TBTK/TBTKMacros.h"
+#include "TBTK/Exception.h"
 
 #include <complex>
 
@@ -192,9 +194,29 @@ public:
 	/** Allocates space for Hamiltonian etc. */
 	void init();
 
-	void setEigenVectorsAvailable(const bool& available);
-
+	/** Get eigenvalues of a block. The eigenvalues are stored successively in
+	 *  memory for a single block. The number of elements in this block is 
+	 * 	returned in the parameter size.
+	 *  Can also be used to change the eigenvalues in memory. Use with caution.
+	 *
+	 *  @param block Block identifier for which the eigenvalues are read.
+	 *  @param size Returns the size of the memory in which the eigenvalues are
+	 *  			stored.
+	 *  @return A pointer to the internal storage for the eigenvalues. **/
 	double* getBlockEigenValuesRW(const unsigned& block, unsigned& size);
+
+	/** Get eigenvectors of a block. The eigenvectors are stored successively in
+	 *  memory, with the eigenvector corresponding to the smallest
+	 *  eigenvalue in a block occupying the 'blockSize' first positions, 
+	 *  the second occupying the next 'blockSize' elements, and so forth.
+	 *  The total size of the array in memory can be accessed via the parameter
+	 *  size.
+	 *  Can also be used to change the eigenvectors in memory. Use with caution.
+	 *
+	 *  @param block Block identifier for which the eigenvectors are read.
+	 *  @param size Returns the size of the memory in which the eigenvectors are
+	 *  			stored.
+	 *  @return A pointer to the internal storage for the eigenvectors. **/
 	std::complex<double>* getBlockEigenVectorsRW(const unsigned& block, unsigned& size);
 
 private:
@@ -221,6 +243,9 @@ private:
 
 	/** Eigen vector offsets. */
 	std::vector<unsigned int> eigenVectorOffsets;
+
+	/** Eigen value offsets. */
+	std::vector<unsigned int> eigenValuesOffsets;
 
 	/** Maximum number of iterations in the self-consistency loop. */
 	int maxIterations;
@@ -304,10 +329,6 @@ inline void BlockDiagonalizer::setUseMultiGPUAcceleration(bool input){
 		this->useGPUAcceleration = true;
 		this->parallelExecution = false;
 	}	
-}
-
-inline void BlockDiagonalizer::setEigenVectorsAvailable(const bool& available){
-	eigenVectorsAvailable = available;
 }
 
 };	//End of namespace Solver

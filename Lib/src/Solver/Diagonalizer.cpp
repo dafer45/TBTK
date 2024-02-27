@@ -16,6 +16,7 @@
 /** @file Diagonalizer.cpp
  *
  *  @author Kristofer Björnson
+ *  @author Andreas Theiler
  */
 
 #include "TBTK/Solver/Diagonalizer.h"
