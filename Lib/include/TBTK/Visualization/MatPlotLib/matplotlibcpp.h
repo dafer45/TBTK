@@ -303,8 +303,8 @@ void plot_surface(const std::vector<::std::vector<Numeric>> &x,
 
   // Build up the kw args.
   PyObject *kwargs = PyDict_New();
-  PyDict_SetItemString(kwargs, "rstride", PyInt_FromLong(1));
-  PyDict_SetItemString(kwargs, "cstride", PyInt_FromLong(1));
+//   PyDict_SetItemString(kwargs, "rstride", PyInt_FromLong(1));
+//   PyDict_SetItemString(kwargs, "cstride", PyInt_FromLong(1));
 
   PyObject *python_colormap_coolwarm = PyObject_GetAttrString(
       detail::Interpreter::get().s_python_colormap, "coolwarm");
@@ -531,8 +531,8 @@ void contourf(
 
   // Build up the kw args.
   PyObject *kwargs = PyDict_New();
-  PyDict_SetItemString(kwargs, "rstride", PyInt_FromLong(1));
-  PyDict_SetItemString(kwargs, "cstride", PyInt_FromLong(1));
+//   PyDict_SetItemString(kwargs, "rstride", PyInt_FromLong(1));
+//   PyDict_SetItemString(kwargs, "cstride", PyInt_FromLong(1));
 
   PyObject *python_colormap_coolwarm = PyObject_GetAttrString(
       detail::Interpreter::get().s_python_colormap, "coolwarm");
