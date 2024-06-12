@@ -80,6 +80,10 @@ void Diagonalizer::run(){
 }
 
 void Diagonalizer::init(){
+	if(!getModel().isHermitian()){
+		Streams::err << "Warning model is not Hermitian."
+			<< "Solver::Diagonalizer implementation only works correctly for hermitian systems.\n";
+	}
 	if(getGlobalVerbose() && getVerbose())
 		Streams::out << "Initializing Diagonalizer\n";
 

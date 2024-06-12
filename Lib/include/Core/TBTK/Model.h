@@ -158,6 +158,11 @@ public:
 	 *  @return True if the Hilbert space basis has been constructed. */
 	bool getIsConstructed();
 
+	/** Check whether the Hamiltonian is Hermitian.
+	 *
+	 *  @return True if the Hamiltonian is Hermitian. */
+	bool isHermitian();
+
 	/** Set temperature.
 	 *
 	 *  @param temperature The temperature. */

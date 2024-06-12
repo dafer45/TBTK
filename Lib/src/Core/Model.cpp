@@ -29,6 +29,7 @@
 #include <cmath>
 #include <sstream>
 #include <string>
+#include <limits>
 
 #include "TBTK/json.hpp"
 
@@ -249,6 +250,24 @@ void Model::construct(){
 
 	if(getGlobalVerbose() && getVerbose())
 		Streams::out << "\tBasis size: " << basisSize << "\n";
+}
+
+bool Model::isHermitian(){
+	TBTKAssert(
+		getIsConstructed() == true,
+		"Model::isHermitian()",
+		"Model needs to be constructed for this check",
+		"Call Model::construct() first."
+	);
+	SparseMatrix<std::complex<double>> hamiltonian = getHoppingAmplitudeSet().getSparseMatrix();
+	SparseMatrix<std::complex<double>> toTestSpMat = hamiltonian - hamiltonian.hermitianConjugate();
+	const complex<double>* values = toTestSpMat.getCSCValues();
+	for(unsigned iterator = 0; iterator < toTestSpMat.getCSCNumMatrixElements(); ++iterator ){
+		if(abs(values[iterator]) > numeric_limits<double>::epsilon()){
+			return false;
+		}
+	}
+	return true;
 }
 
 ostream& operator<<(ostream &stream, const Model &model){
