@@ -1,6 +1,8 @@
 Installation instructions {#InstallationInstructions}
 ======
 
+**Note: It is recommended to use the Visual Studio Code dev-container (https://github.com/dafer45/TBTKDevContainer) as long as you only need to run calculations on your local computer. Ensuring the relevant dependencies are correctly installed is a difficult problem. Only follow these instructions if you need a custom install, e.g. because you cannot use Docker, need to run on a custom configured supercomputer, or need access to special hardware such as GPU.**
+
 # System requirements {#SystemRequirements}
 | Required software and libraries | Further information          |
 |---------------------------------|------------------------------|

@@ -10,6 +10,8 @@
 
 *Always work against a versioned release. See "Quickstart" below for instructions on how to checkout the latest release.*
 
+*It is now recommended to use the Visual Studio Code dev-container (https://github.com/dafer45/TBTKDevContainer) unless you have special needs that require a custom installation.*
+
 # TBTK
 Welcome to TBTK, a library for modeling and solving second quantized Hamiltonians with discrete indices.
 That is, Hamiltonians of the form  
@@ -203,6 +205,7 @@ See the documentation for deatiled information about the corresponding component
 
 # Quickstart
 ## Installation
+Use the preconfigured dev-container for Visual Studio Code (https://github.com/dafer45/TBTKDevContainer), which is recommended, or install locally using
 ```bash
 git clone http://github.com/dafer45/TBTK
 git checkout v2.6.5
