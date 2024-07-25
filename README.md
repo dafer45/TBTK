@@ -205,7 +205,7 @@ See the documentation for deatiled information about the corresponding component
 
 # Quickstart
 ## Installation
-Use the preconfigured dev-container for Visual Studio Code (https://github.com/dafer45/TBTKDevContainer), which is recommended, or install locally using
+Use the preconfigured dev-container for Visual Studio Code (https://github.com/dafer45/TBTKDevContainer), which is recommended unless you have special needs, or install manually using
 ```bash
 git clone http://github.com/dafer45/TBTK
 git checkout v2.6.5
