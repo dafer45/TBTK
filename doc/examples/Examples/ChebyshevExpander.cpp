@@ -70,8 +70,8 @@ int main(){
 	const unsigned int ENERGY_RESOLUTION = 1000;
 	PropertyExtractor::ChebyshevExpander propertyExtractor(solver);
 	propertyExtractor.setEnergyWindow(
-		-SCALE_FACTOR,
-		SCALE_FACTOR,
+		-SCALE_FACTOR*0.99,
+		SCALE_FACTOR*0.99,
 		ENERGY_RESOLUTION
 	);
 
